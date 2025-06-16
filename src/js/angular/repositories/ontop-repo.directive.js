@@ -4,9 +4,9 @@ angular
     .module('graphdb.framework.repositories.ontop-repo.directive', [])
     .directive('ontopRepo', ontopRepoDirective);
 
-ontopRepoDirective.$inject = ['$modal', 'RepositoriesRestService', 'toastr', 'Upload'];
+ontopRepoDirective.$inject = ['$uibModal', 'RepositoriesRestService', 'toastr', 'Upload'];
 
-function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload) {
+function ontopRepoDirective($uibModal, RepositoriesRestService, toastr, Upload) {
     return {
         restrict: 'E',
         scope: false,
@@ -93,7 +93,7 @@ function ontopRepoDirective($modal, RepositoriesRestService, toastr, Upload) {
         }
 
         $scope.editFile = function(file) {
-            const modalInstance = $modal.open({
+            const modalInstance = $uibModal.open({
                 templateUrl: 'js/angular/templates/modal/editRepoFile.html',
                 controller: 'EditRepositoryFileCtrl',
                 resolve: {

@@ -151,8 +151,8 @@ securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '
         };
     }]);
 
-securityCtrl.controller('UsersCtrl', ['$scope', '$modal', 'toastr', '$window', '$jwtAuth', '$timeout', 'ModalService', 'SecurityRestService',
-    function ($scope, $modal, toastr, $window, $jwtAuth, $timeout, ModalService, SecurityRestService) {
+securityCtrl.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$window', '$jwtAuth', '$timeout', 'ModalService', 'SecurityRestService',
+    function ($scope, $uibModal, toastr, $window, $jwtAuth, $timeout, ModalService, SecurityRestService) {
 
         $scope.loader = true;
         $scope.securityEnabled = function () {
@@ -213,7 +213,7 @@ securityCtrl.controller('UsersCtrl', ['$scope', '$modal', 'toastr', '$window', '
                         'IGNORE_SHARED_QUERIES': false,
                         'DEFAULT_VIS_GRAPH_SCHEMA': true
                     };
-                    const modalInstance = $modal.open({
+                    const modalInstance = $uibModal.open({
                         templateUrl: 'js/angular/security/templates/modal/default-authorities.html',
                         controller: 'DefaultAuthoritiesCtrl',
                         resolve: {
@@ -288,8 +288,8 @@ securityCtrl.controller('UsersCtrl', ['$scope', '$modal', 'toastr', '$window', '
         };
     }]);
 
-securityCtrl.controller('DefaultAuthoritiesCtrl', ['$scope', '$http', '$modalInstance', 'data', '$rootScope',
-    function ($scope, $http, $modalInstance, data, $rootScope) {
+securityCtrl.controller('DefaultAuthoritiesCtrl', ['$scope', '$http', '$uibModalInstance', 'data', '$rootScope',
+    function ($scope, $http, $uibModalInstance, data, $rootScope) {
         $scope.grantedAuthorities = data.defaultAuthorities();
         $scope.appSettings = data.appSettings;
 
@@ -320,12 +320,12 @@ securityCtrl.controller('DefaultAuthoritiesCtrl', ['$scope', '$http', '$modalIns
                 }
             }
             if (!$scope.repositoryCheckError) {
-                $modalInstance.close({authorities: auth, appSettings: $scope.appSettings});
+                $uibModalInstance.close({authorities: auth, appSettings: $scope.appSettings});
             }
         };
 
         $scope.cancel = function () {
-            $modalInstance.dismiss('cancel');
+            $uibModalInstance.dismiss('cancel');
         };
     }]);
 
@@ -799,14 +799,14 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
         };
     }]);
 
-securityCtrl.controller('DeleteUserCtrl', ['$scope', '$modalInstance', 'username', function ($scope, $modalInstance, username) {
+securityCtrl.controller('DeleteUserCtrl', ['$scope', '$uibModalInstance', 'username', function ($scope, $uibModalInstance, username) {
     $scope.username = username;
 
     $scope.ok = function () {
-        $modalInstance.close();
+        $uibModalInstance.close();
     };
 
     $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
+        $uibModalInstance.dismiss('cancel');
     };
 }]);

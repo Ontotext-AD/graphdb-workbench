@@ -109,9 +109,9 @@ function MenuItemsProvider() {
     };
 }
 
-ModalService.$inject = ['$modal', '$timeout', '$sce'];
+ModalService.$inject = ['$uibModal', '$timeout', '$sce'];
 
-function ModalService($modal, $timeout, $sce) {
+function ModalService($uibModal, $timeout, $sce) {
     return {
         openSimpleModal: openSimpleModal,
         openCopyToClipboardModal: openCopyToClipboardModal
@@ -121,7 +121,7 @@ function ModalService($modal, $timeout, $sce) {
         const simpleTemplate = 'js/angular/core/templates/modal/modal-simple.html';
         const warningTemplate = 'js/angular/core/templates/modal/modal-warning.html';
 
-        return $modal.open({
+        return $uibModal.open({
             templateUrl: config.warning ? warningTemplate : simpleTemplate,
             controller: 'SimpleModalCtrl',
             size: config.size,
@@ -137,7 +137,7 @@ function ModalService($modal, $timeout, $sce) {
     }
 
     function openCopyToClipboardModal(uri) {
-        const modalInstance = $modal.open({
+        const modalInstance = $uibModal.open({
             templateUrl: 'js/angular/core/templates/modal/copy-to-clipboard-modal.html',
             controller: 'CopyToClipboardModalCtrl',
             resolve: {

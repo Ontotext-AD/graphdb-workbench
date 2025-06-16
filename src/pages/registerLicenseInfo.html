@@ -3,7 +3,7 @@
 <h1>
 	{{title}}
 	<span class="btn btn-link"
-		popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+		uib-popover-template="'js/angular/templates/titlePopoverTemplate.html'"
 		popover-trigger="mouseenter"
 		popover-placement="bottom-right"
 		popover-append-to-body="true"><span class="icon-info"></span></span>
@@ -31,7 +31,7 @@
 		class="btn btn-outline-primary btn-lg text-xs-left mb-2"
 		accept="license">
 		<em class="icon-upload icon-lg pull-left"
-			tooltip="Select license file"
+			uib-tooltip="Select license file"
 			tooltip-trigger="mouseenter"
 			tooltip-placement="top-right"
 			tooltip-append-to-body="true">
@@ -47,7 +47,7 @@
 	<div class="form-group">
 		<label><em>or</em> copy your license code below</label>
 		<textarea class="form-control" rows="15" ng-model="licenseCode" placeholder="{{sample}}"
-			popover="Copy your license code here and click Register"
+			uib-popover="Copy your license code here and click Register"
 			popover-placement="bottom"
 popover-trigger="focus"></textarea>
 	</div>

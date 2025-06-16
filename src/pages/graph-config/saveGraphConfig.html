@@ -9,7 +9,7 @@
 <h1>
     {{title}}
     <span class="btn btn-link"
-          popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+          uib-popover-template="'js/angular/templates/titlePopoverTemplate.html'"
           popover-trigger="mouseenter"
           popover-placement="bottom-right"
           popover-append-to-body="true"><span class="icon-info"></span></span>
@@ -21,28 +21,12 @@
         <div class="input-group input-group-lg">
             <input required class="form-control graph-config-name" type="text" placeholder="My graph config (required)" ng-model="newConfig.name" >
         </div>
-        <br/>
-        <p>Description</p>
-        <div class="input-group input-group-lg">
-            <input class="form-control graph-config-description" type="text"
-                   placeholder="Enter a description to guide users what this visual graph represents"
-                   ng-model="newConfig.description" >
-        </div>
-        <div ng-if="newConfig.startMode === 'search'">
-            <br/>
-            <p>Hint</p>
-            <div class="input-group input-group-lg">
-                <input  class="form-control graph-config-example" type="text"
-                        placeholder="Add a hint to guide users what the starting point IRI should be"
-                        ng-model="newConfig.hint" >
-            </div>
-        </div>
     </div>
 </div>
 
 <div>
     <button ng-show="page != 1" type="button" class="btn btn-link pull-right" ng-click="toggleHelp()">
-        <span class="icon-help" popover="Toggle help"
+        <span class="icon-help" uib-popover="Toggle help"
                                 popover-placement="top"
                                 popover-trigger="mouseenter">
         </span>
@@ -79,6 +63,7 @@
 <div class="card" style="border-top: none">
     <div class="card-block">
         <div>
+
                 <div class="image-label-container mb-3" ng-show="page == 1">
                     <label class="image-label d-flex" ng-class="{'active': newConfig.startMode == 'search'}">
                         <input type="radio" class="form-check-input" id="checkboxSuccess" ng-model="newConfig.startMode" value="search">
@@ -130,8 +115,8 @@
                     </div>
                 </div>
                 <!-- help info boxes -->
-                <div collapse="helpHidden" class="alert alert-info no-icon p-1 mb-2" ng-if="page != 1">
-                    <div class="d-flex" ng-if="page == 2">
+                <div uib-collapse="helpHidden" class="alert alert-info no-icon p-1 mb-2" ng-if="page != 1">
+                   <div class="d-flex" ng-if="page == 2">
                         <button class="close absolute" ng-click="toggleHelp(0)"></button>
                         <div class="alert alert-help">
                             <p class="lead">This is a <span class="small-caps">CONSTRUCT</span> query that determines which nodes and edges are added to the graph when the user expands an existing node.</p>
@@ -318,8 +303,11 @@
                                 </a>
                             </div>
                         </div>
+
                     </div>
                 </div>
+
+
         </div>
     </div>
 </div>
@@ -327,32 +315,32 @@
 <div class="m-0 clearfix" style="padding-bottom: 2rem">
     <div>
         <label for="share-graph-config"
-               tooltip="If checked other users will be able to see the visual graph, but not delete or edit it.">
+               uib-tooltip="If checked other users will be able to see the visual graph, but not delete or edit it.">
             <input id="share-graph-config" type="checkbox" ng-model="newConfig.shared">
             Share visual graph with other users
         </label>
     </div>
     <div class="pull-left">
         <a href ng-click="saveGraphConfig()" class="btn btn-lg btn-primary btn-save-config"
-            popover="Closes configuration and saves all changes."
+            uib-popover="Closes configuration and saves all changes."
             popover-placement="top"
             popover-trigger="mouseenter">
             Save
         </a>
         <button class="btn btn-lg btn-secondary" ng-click="showPreview()" ng-hide="viewMode == 'editor' || (page == 1 && newConfig.startMode != 'query')"
-            popover="Executes the SPARQL query and shows a preview of the results. Only the first 100 results will be shown."
+            uib-popover="Executes the SPARQL query and shows a preview of the results. Only the first 100 results will be shown."
             popover-placement="top"
             popover-trigger="mouseenter">
             Preview
         </button>
         <button class="btn btn-lg btn-secondary" ng-click="showEditor()" ng-show="viewMode == 'editor' && (page != 1 || newConfig.startMode == 'query')"
-            popover="Closes the preview and shows the query editor."
+            uib-popover="Closes the preview and shows the query editor."
             popover-placement="top"
             popover-trigger="mouseenter">
             Edit query
         </button>
         <button class="btn btn-lg btn-secondary" ng-click="revertEditor()" ng-disabled="!queryEditorIsDirty" ng-hide="!revertConfig || viewMode == 'editor' || (page == 1 && newConfig.startMode != 'query')"
-                popover="Reverts the changes in the query editor."
+                uib-popover="Reverts the changes in the query editor."
                 popover-placement="top"
                 popover-trigger="mouseenter">
             Revert changes
@@ -360,17 +348,17 @@
     </div>
     <div class="pull-right">
         <button href ng-show="page > 1" ng-click="goToPreviousPage()" class="btn btn-lg btn-secondary"
-                popover="Go to previous configuration step."
+                uib-popover="Go to previous configuration step."
                 popover-placement="top"
                 popover-trigger="mouseenter"> <span class="icon-arrow-left"></span> Previous </button>
 
         <button href ng-show="page < totalPages" ng-click="goToNextPage()" class="btn btn-lg btn-secondary"
-                popover="Go to next configuration step."
+                uib-popover="Go to next configuration step."
                 popover-placement="top"
                 popover-trigger="mouseenter"> Next <span class="icon-arrow-right"></span></button>
 
-        <a ng-href="graphs-visualizations/" class="btn btn-lg btn-secondary"
-            popover="Closes the configuration without saving the changes."
+        <a ng-href="/graphs-visualizations/" class="btn btn-lg btn-secondary"
+            uib-popover="Closes the configuration without saving the changes."
             popover-placement="top"
             popover-trigger="mouseenter">
             Cancel

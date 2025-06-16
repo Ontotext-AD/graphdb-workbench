@@ -8,7 +8,7 @@
         <div class="input-group mb-1">
             <input required validate-uri id="dataUrl" name="dataUrl" placeholder="Data URL" type="url"
                    ng-model="dataUrl" class="form-control"
-                   popover="URL with RDF data. Supported formats are {{fileFormatsHuman}}. "
+                   uib-popover="URL with RDF data. Supported formats are {{fileFormatsHuman}}. "
                    popover-placement="bottom"
                    popover-trigger="focus">
         </div>
@@ -20,7 +20,7 @@
 
 <div class="modal-footer">
     <div class="mb-1">
-        <span popover="Enable this option to start the import when you click the Import button. If it is disabled the import will be added to the list but not started automatically."
+        <span uib-popover="Enable this option to start the import when you click the Import button. If it is disabled the import will be added to the list but not started automatically."
               popover-trigger="mouseenter"
               popover-placement="top">
             <input id="import-now-checkbox" type="checkbox" ng-model="startImport"/>
@@ -29,8 +29,8 @@
     </div>
     <div>
         <button type="button" ng-click="cancel()" class="btn btn-secondary">Cancel</button>
-        <div class="btn-group import-format-dropdown" dropdown>
-            <button class="btn btn-secondary dropdown-toggle import-format-dropdown-btn" dropdown-toggle>
+        <div class="btn-group import-format-dropdown" uib-dropdown>
+            <button class="btn btn-secondary dropdown-toggle import-format-dropdown-btn" uib-dropdown-toggle>
                 Format: {{importFormat.name}}
             </button>
             <ul class="dropdown-menu" role="menu">

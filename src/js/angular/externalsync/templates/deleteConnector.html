@@ -4,7 +4,7 @@
 </div>
 <div class="modal-body">
     <p>Are you sure you want to delete this connector?</p>
-    <span popover="Force delete will remove the connector even if part of the operation fails. Use it if normal delete does not work.{{ isExternal ? (' Note that you may have to drop the index manually from ' + type + '.') : '' }}"
+    <span uib-popover="Force delete will remove the connector even if part of the operation fails. Use it if normal delete does not work.{{ isExternal ? (' Note that you may have to drop the index manually from ' + type + '.') : '' }}"
          popover-trigger="mouseenter"
          popover-placement="bottom">
         <input id="force-delete" type="checkbox" ng-model="force"><label for="force-delete">&nbsp;Force delete</label>

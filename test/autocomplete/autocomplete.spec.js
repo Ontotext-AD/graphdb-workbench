@@ -33,7 +33,7 @@ describe('Autocomplete', function () {
         let $interval;
         let toastr;
         let $repositories;
-        let $modal;
+        let $uibModal;
         let $timeout;
         let $controller;
         let AutocompleteRestService;
@@ -50,8 +50,8 @@ describe('Autocomplete', function () {
             $interval = _$interval_;
             toastr = _toastr_;
             $repositories = _$repositories_;
-            $modal = new FakeModal($q, _$rootScope_);
-            modalInstance = $modal;
+            $uibModal = new FakeModal($q, _$rootScope_);
+            modalInstance = $uibModal;
             $timeout = _$timeout_;
             $controller = _$controller_;
             AutocompleteRestService = _AutocompleteRestService_;
@@ -64,7 +64,7 @@ describe('Autocomplete', function () {
                 $interval: $interval,
                 toastr: toastr,
                 $repositories: $repositories,
-                $modal: $modal,
+                $uibModal: $uibModal,
                 $timeout: $timeout,
                 AutocompleteRestService,
                 $autocompleteStatus
@@ -372,7 +372,7 @@ describe('Autocomplete', function () {
 
         describe('addLabel', () => {
             it('should add new label', () => {
-                spyOn($modal, 'open').and.returnValue(modalInstance);
+                spyOn($uibModal, 'open').and.returnValue(modalInstance);
                 $scope.loader = false;
                 // expect labels service to be called
                 $httpBackend.expectPUT('rest/autocomplete/labels', {
@@ -386,7 +386,7 @@ describe('Autocomplete', function () {
 
                 $scope.addLabel();
 
-                const argument = $modal.open.calls.first().args[0];
+                const argument = $uibModal.open.calls.first().args[0];
                 expect(argument.templateUrl).toEqual('js/angular/autocomplete/templates/modal/add-label.html');
                 expect(argument.controller).toEqual('AddLabelCtrl');
 
@@ -400,7 +400,7 @@ describe('Autocomplete', function () {
 
         describe('editLabel', () => {
             it('should edit label', () => {
-                spyOn($modal, 'open').and.returnValue(modalInstance);
+                spyOn($uibModal, 'open').and.returnValue(modalInstance);
                 $scope.loader = false;
                 // expect labels service to be called
                 $httpBackend.expectPUT('rest/autocomplete/labels', {
@@ -414,7 +414,7 @@ describe('Autocomplete', function () {
 
                 $scope.editLabel({labelIri: 'label/iri', languages: 'en'}, true);
 
-                const argument = $modal.open.calls.first().args[0];
+                const argument = $uibModal.open.calls.first().args[0];
                 expect(argument.templateUrl).toEqual('js/angular/autocomplete/templates/modal/add-label.html');
                 expect(argument.controller).toEqual('AddLabelCtrl');
 
@@ -427,7 +427,7 @@ describe('Autocomplete', function () {
 
             it('should show notification on error', () => {
                 spyOn(toastr, 'error');
-                spyOn($modal, 'open').and.returnValue(modalInstance);
+                spyOn($uibModal, 'open').and.returnValue(modalInstance);
                 $scope.loader = false;
                 // expect labels service to be called and respond with an error
                 $httpBackend.expectPUT('rest/autocomplete/labels', {
@@ -452,7 +452,7 @@ describe('Autocomplete', function () {
 
             it('should show notification when labels refresh fails', () => {
                 spyOn(toastr, 'error');
-                spyOn($modal, 'open').and.returnValue(modalInstance);
+                spyOn($uibModal, 'open').and.returnValue(modalInstance);
                 $scope.loader = false;
                 // expect labels service to be called and respond with an error
                 $httpBackend.expectPUT('rest/autocomplete/labels', {
@@ -645,18 +645,18 @@ describe('Autocomplete', function () {
 
     describe('AddLabelCtrl', () => {
         let $scope;
-        let $modalInstance;
+        let $uibModalInstance;
         let $timeout;
         let createController;
 
         beforeEach(angular.mock.inject(function (_$rootScope_, _$timeout_, _$controller_, $q) {
             $scope = _$rootScope_.$new();
-            $modalInstance = new FakeModal($q, _$rootScope_);
+            $uibModalInstance = new FakeModal($q, _$rootScope_);
             $timeout = _$timeout_;
 
             createController = () => _$controller_('AddLabelCtrl', {
                 $scope: $scope,
-                $modalInstance: $modalInstance,
+                $uibModalInstance: $uibModalInstance,
                 $timeout: $timeout,
                 data: {label: {label: 'test label'}, isNew: true}
             });
@@ -673,30 +673,30 @@ describe('Autocomplete', function () {
         describe('when ok is selected', () => {
             it('should close the dialog when form is valid', () => {
                 $scope.form = {$valid: true};
-                spyOn($modalInstance, 'close');
+                spyOn($uibModalInstance, 'close');
 
                 $scope.ok();
 
-                expect($modalInstance.close).toHaveBeenCalledWith($scope.label);
+                expect($uibModalInstance.close).toHaveBeenCalledWith($scope.label);
             });
 
             it('should not close the dialog when form is invalid', () => {
                 $scope.form = {$valid: false};
-                spyOn($modalInstance, 'close');
+                spyOn($uibModalInstance, 'close');
 
                 $scope.ok();
 
-                expect($modalInstance.close).not.toHaveBeenCalled();
+                expect($uibModalInstance.close).not.toHaveBeenCalled();
             });
         });
 
         describe('when cancel is selected', () => {
             it('should close the dialog', () => {
-                spyOn($modalInstance, 'dismiss');
+                spyOn($uibModalInstance, 'dismiss');
 
                 $scope.cancel();
 
-                expect($modalInstance.dismiss).toHaveBeenCalled();
+                expect($uibModalInstance.dismiss).toHaveBeenCalled();
             });
         });
 

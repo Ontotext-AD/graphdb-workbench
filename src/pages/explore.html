@@ -6,11 +6,11 @@
             <a href="{{details.img}}"><img ng-src="{{details.img}}" alt="details image"/></a>
         </div>
         <h1>
-            <a href="{{details.uri}}" tooltip="{{details.uri}}" tooltip-trigger="mouseenter">
+            <a href="{{details.uri}}" uib-tooltip="{{details.uri}}" tooltip-trigger="mouseenter">
                 {{details.label ? details.label : getLocalName(details.uri)}}
             </a>
 
-            <a tooltip="Edit resource" href="resource/edit?uri={{details.encodeURI}}"
+            <a uib-tooltip="Edit resource" href="resource/edit?uri={{details.encodeURI}}"
                ng-if="canWriteActiveRepo(true)"
                class="btn btn-link">
                 <span class="icon-edit"></span>
@@ -31,7 +31,7 @@
             <a href="{{details.img}}"><img ng-src="{{details.img}}" alt="details image"/></a>
         </div>
         <h1 fit-text fit-text-min="30">
-            <a href="sparql?query=describe%20{{encodeURIComponent(tripleParam)}}" tooltip="{{tripleParam}}" tooltip-trigger="mouseenter">
+            <a href="sparql?query=describe%20{{encodeURIComponent(tripleParam)}}" uib-tooltip="{{tripleParam}}" tooltip-trigger="mouseenter">
                 {{getRdfStarLocalNames(tripleParam)}}
             </a>
         </h1>
@@ -58,7 +58,7 @@
                 ng-class="loading ? 'disabled' : ''"
                 ng-show="inference != 'explicit'"
                 ng-click="sameAs = !sameAs; exploreResource()"
-                popover="Expand results over owl:sameAs: {{sameAs ? 'ON' : 'OFF'}}"
+                uib-popover="Expand results over owl:sameAs: {{sameAs ? 'ON' : 'OFF'}}"
                 popover-trigger="mouseenter"
                 popover-placement="bottom">
             <span class="icon-2-5x"
@@ -67,14 +67,14 @@
 
         <button type="button" class="btn btn-sm" ng-model="blanks"
                 ng-class="loading ? 'disabled' : (blanks ? 'btn-primary' : 'btn-secondary')"
-                btn-checkbox btn-checkbox-true="true"
+                uib-btn-checkbox btn-checkbox-true="true"
                 btn-checkbox-false="false" ng-change="exploreResource()">
             Show Blank Nodes
         </button>
 
-        <div class="btn-group" dropdown is-open="isopen">
+        <div class="btn-group" uib-dropdown is-open="isopen">
             <button type="button" ng-class="loading ? 'disabled' : ''" class="btn btn-sm btn-secondary dropdown-toggle"
-                    dropdown-toggle>
+                    uib-dropdown-toggle>
                 Download as
             </button>
             <ul class="dropdown-menu small" role="menu">
@@ -85,7 +85,7 @@
         </div>
 
         <button type="button" role="button" class="btn btn-primary btn-sm"
-                popover="Click to explore the graph visually"
+                uib-popover="Click to explore the graph visually"
                 popover-trigger="mouseenter"
                 popover-placement="bottom"
                 ng-click="goToGraphsViz()">
@@ -106,7 +106,7 @@
     </div>
 
     <div id="yasr">
-        <!--<pagination class="nav navbar-right" ng-show="allResultsCount > pageSize" total-items="allResultsCount" items-per-page="pageSize" ng-model="page" ng-change="changePagination()" direction-links="false" boundary-links="true" max-size="5" rotate="true"></pagination>-->
+        <!--<uib-pagination class="nav navbar-right" ng-show="allResultsCount > pageSize" total-items="allResultsCount" items-per-page="pageSize" ng-model="page" ng-change="changePagination()" direction-links="false" boundary-links="true" max-size="5" rotate="true"></uib-pagination>-->
         <div class="yasr" id="yasr-inner">
             <div class='yasr_results'></div>
         </div>

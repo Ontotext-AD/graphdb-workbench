@@ -7,19 +7,19 @@
 
     <div ng-show="getActiveRepositoryNoError()" class="pull-right mt-1">
         <div id="hideEditor" class="btn-group btn-group-sm" ng-click="showHideEditor()">
-            <button class="btn btn-secondary btn-sm editor-only-btn" ng-model="viewMode" btn-radio="'yasr'" uncheckable>
+            <button class="btn btn-secondary btn-sm editor-only-btn" ng-model="viewMode" uib-btn-radio="'yasr'" uncheckable>
                 Editor only
             </button>
-            <button class="btn btn-secondary btn-sm editor-and-results-btn" ng-model="viewMode" btn-radio="'none'" uncheckable>
+            <button class="btn btn-secondary btn-sm editor-and-results-btn" ng-model="viewMode" uib-btn-radio="'none'" uncheckable>
                 Editor and results
             </button>
-            <button class="btn btn-secondary btn-sm results-only-btn" ng-model="viewMode" btn-radio="'editor'" uncheckable>
+            <button class="btn btn-secondary btn-sm results-only-btn" ng-model="viewMode" uib-btn-radio="'editor'" uncheckable>
                 Results only
             </button>
 
             <button class="btn btn-link btn-sm p-0 ml-1 toggle-horizontal-view-btn"
                     ng-click="changeViewMode(currentQuery.id)"
-                    tooltip="Switch to {{orientationViewMode ? 'vertical' : 'horizontal'}} view"
+                    uib-tooltip="Switch to {{orientationViewMode ? 'vertical' : 'horizontal'}} view"
                     tooltip-placement="left">
                 <span class="icon-columns icon-lg m-0"
                       ng-class="orientationViewMode ? 'icon-rotate-90' : 'icon-rotate-270'"></span>
@@ -30,7 +30,7 @@
      <h1>
         {{title}}
         <span class="btn btn-link"
-              popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+              uib-popover-template="'js/angular/templates/titlePopoverTemplate.html'"
               popover-trigger="mouseenter"
               popover-placement="bottom-right"
               popover-append-to-body="true"><span class="icon-info"></span></span>

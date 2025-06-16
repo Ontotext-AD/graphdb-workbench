@@ -410,9 +410,9 @@ function FindResourceCtrl($scope, $http, $location, $repositories, $q, $timeout,
     }
 }
 
-EditResourceCtrl.$inject = ['$scope', '$http', '$location', 'toastr', '$repositories', '$modal', '$timeout', 'ClassInstanceDetailsService', 'StatementsService', 'RDF4JRepositoriesRestService'];
+EditResourceCtrl.$inject = ['$scope', '$http', '$location', 'toastr', '$repositories', '$uibModal', '$timeout', 'ClassInstanceDetailsService', 'StatementsService', 'RDF4JRepositoriesRestService'];
 
-function EditResourceCtrl($scope, $http, $location, toastr, $repositories, $modal, $timeout, ClassInstanceDetailsService, StatementsService, RDF4JRepositoriesRestService) {
+function EditResourceCtrl($scope, $http, $location, toastr, $repositories, $uibModal, $timeout, ClassInstanceDetailsService, StatementsService, RDF4JRepositoriesRestService) {
     $scope.uriParam = $location.search().uri;
     $scope.newRow = {
         subject: $scope.uriParam,
@@ -550,7 +550,7 @@ function EditResourceCtrl($scope, $http, $location, toastr, $repositories, $moda
     }
 
     function viewTrig() {
-        $modal.open({
+        $uibModal.open({
             templateUrl: 'js/angular/explore/templates/viewTrig.html',
             controller: 'ViewTrigCtrl',
             size: 'lg',
@@ -585,12 +585,12 @@ function EditResourceCtrl($scope, $http, $location, toastr, $repositories, $moda
     }
 }
 
-ViewTrigCtrl.$inject = ['$scope', '$modalInstance', 'data'];
+ViewTrigCtrl.$inject = ['$scope', '$uibModalInstance', 'data'];
 
-function ViewTrigCtrl($scope, $modalInstance, data) {
+function ViewTrigCtrl($scope, $uibModalInstance, data) {
     $scope.trig = data;
 
     $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
+        $uibModalInstance.dismiss('cancel');
     };
 }

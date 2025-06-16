@@ -24,23 +24,23 @@
                         <a href ng-click="querySelected(query)">{{query.name}}</a>
                         &nbsp;
                         <em class="icon-warning" ng-show="query.owner != principal().username && isUser()"
-                           popover="Query shared by another user. You may not edit or delete it."
+                           uib-popover="Query shared by another user. You may not edit or delete it."
                            popover-trigger="mouseenter"></em>
                         <span class="actions-bar hovered-item">
 							<button class="btn btn-link btn-sm"
                                     ng-show="query.owner == principal().username && isUser()"
-                                    popover="Edit query" popover-trigger="mouseenter"
+                                    uib-popover="Edit query" popover-trigger="mouseenter"
                                     ng-click="editQuery(query)">
 								<span class="icon-edit"></span>
 							</button>
 							<button class="btn btn-link btn-sm"
                                     ng-show="query.owner == principal().username && isUser()"
-                                    popover="Delete query" popover-trigger="mouseenter"
+                                    uib-popover="Delete query" popover-trigger="mouseenter"
                                     ng-click="deleteQuery(query.name)">
 								<span class="icon-trash"></span>
 							</button>
 							<button class="btn btn-link btn-sm"
-                                    popover="Get URL to query" popover-trigger="mouseenter"
+                                    uib-popover="Get URL to query" popover-trigger="mouseenter"
                                     ng-click="copyToClipboardQuery(query.name, query.owner)">
 								<span class="icon-link"></span>
 							</button>
@@ -57,9 +57,9 @@
 
                                     <a href="#" ng-click="querySelected(query.body)"><i class="fa fa-1x fa-caret-right"></i>{{query.name}}</a>
                                     <span>
-                                        <i ng-show="canWriteActiveRepo()" tooltip="Edit query" tooltip-trigger="mouseenter" href="#" class="fa fa-pencil-square-o fa-1x editSampleQuery" ng-click="editQuery(query)"></i>
-                                        <i ng-show="canWriteActiveRepo()" tooltip="Delete query" tooltip-trigger="mouseenter" href="#" class="fa fa-trash-o fa-1x deleteSampleQuery" ng-click="deleteQuery(query.name)"></i>
-                                        <i tooltip="Get URL to query" tooltip-trigger="mouseenter" href="#" class="fa fa-link fa-1x" ng-click="copyToClipboardQuery(query.name)"></i>
+                                        <i ng-show="canWriteActiveRepo()" uib-tooltip="Edit query" tooltip-trigger="mouseenter" href="#" class="fa fa-pencil-square-o fa-1x editSampleQuery" ng-click="editQuery(query)"></i>
+                                        <i ng-show="canWriteActiveRepo()" uib-tooltip="Delete query" tooltip-trigger="mouseenter" href="#" class="fa fa-trash-o fa-1x deleteSampleQuery" ng-click="deleteQuery(query.name)"></i>
+                                        <i uib-tooltip="Get URL to query" tooltip-trigger="mouseenter" href="#" class="fa fa-link fa-1x" ng-click="copyToClipboardQuery(query.name)"></i>
                                     </span>
                                 </li>
                             </ul>
@@ -76,7 +76,7 @@
                                 ng-show="!notoolbarSaved && isUser()"
                                 ng-click="saveTab(currentQuery.id); saveQuery(currentQuery);"
                                 data-container="#queryEditor"
-                                tooltip="Create saved query"
+                                uib-tooltip="Create saved query"
                                 tooltip-append-to-body="true"
                                 tooltip-trigger="mouseenter">
                             <em class="icon-save icon-2-5x"></em>
@@ -86,16 +86,16 @@
                            ng-hide="notoolbarSaved"
                            ng-click="toggleSampleQueries()"
                            data-container="#queryEditor"
-                           tooltip="Show saved queries"
+                           uib-tooltip="Show saved queries"
                            tooltip-append-to-body="true"
                            tooltip-trigger="mouseenter"
-                           popover-template="'sampleQueriesPopoverTemplate.html'"
+                           uib-popover-template="'sampleQueriesPopoverTemplate.html'"
                            popover-trigger="focus"
                            popover-placement="left"
                            popover-append-to-body="true">
                             <!-- This popover has to be on the both elements (<a> and inner <span>) so it can be shown in all browsers (Chrome, IE11, Edge, Firefox) -->
                             <span class="icon-folder icon-2-5x"
-                                  popover-template="'sampleQueriesPopoverTemplate.html'"
+                                  uib-popover-template="'sampleQueriesPopoverTemplate.html'"
                                   popover-trigger="focus"
                                   popover-placement="left"
                                   popover-append-to-body="true"></span>
@@ -103,14 +103,14 @@
                         <button class="btn btn-link" id="wb-sparql-copyToClipboardQuery"
                                 ng-hide="notoolbarCopy"
                                 ng-click="copyToClipboardQuery()"
-                                tooltip="Get URL to current query"
+                                uib-tooltip="Get URL to current query"
                                 tooltip-append-to-body="true">
                             <span class="icon-link icon-2-5x"></span>
                         </button>
                         <button class="btn btn-link" id="inference"
                                 ng-hide="notoolbarInference"
                                 ng-click="currentQuery.inference = !currentQuery.inference"
-                                tooltip="Include inferred data in results: {{currentQuery.inference ? 'ON' : 'OFF'}}"
+                                uib-tooltip="Include inferred data in results: {{currentQuery.inference ? 'ON' : 'OFF'}}"
                                 tooltip-append-to-body="true">
                             <span class="icon-2-5x"
                                   ng-class="{'icon-inferred-on':currentQuery.inference, 'icon-inferred-off':!currentQuery.inference}"></span>
@@ -118,7 +118,7 @@
                         <button class="btn btn-link" id="sameAs"
                                 ng-hide="notoolbarSameAs"
                                 ng-click="currentQuery.sameAs = !currentQuery.sameAs"
-                                tooltip="Expand results over owl:sameAs: {{currentQuery.sameAs ? 'ON' : 'OFF'}}"
+                                uib-tooltip="Expand results over owl:sameAs: {{currentQuery.sameAs ? 'ON' : 'OFF'}}"
                                 tooltip-append-to-body="true">
                             <span class="icon-2-5x"
                                   tooltip="{{!currentQuery.inference ? 'Requires \'Include Inferred\'!' : ''}}"
@@ -155,7 +155,7 @@
 
     <div class="clearfix mb-2" ng-hide="viewMode === 'yasr'" id="yasr"
          ng-class="orientationViewMode ? 'col-xs-12 col-lg-12' : viewMode == 'editor' ? 'col-xs-12 vertical' : 'col-xs-6 vertical'">
-        <pagination
+        <uib-pagination
                 class="nav navbar-right"
                 ng-show="currentTabConfig.queryType != 'UPDATE' && !queryIsRunning && currentTabConfig.allResultsCount > currentTabConfig.pageSize"
                 total-items="currentTabConfig.allResultsCount"
@@ -170,7 +170,7 @@
                 next-text="&rsaquo;"
                 first-text="&laquo;"
                 last-text="&raquo;">
-        </pagination>
+        </uib-pagination>
 
         <div class="yasr" id="yasr-inner">
             <div ng-hide="nostatus || currentTabConfig.queryType || queryIsRunning"
@@ -194,7 +194,7 @@
                 <div class="text-xs-right">
                     <span class="icon-warning icon-lg"
                             ng-show="getStaleWarningMessage()"
-                            tooltip="{{getStaleWarningMessage()}}" tooltip-trigger="mouseenter"
+                            uib-tooltip="{{getStaleWarningMessage()}}" tooltip-trigger="mouseenter"
                             tooltip-append-to-body="true"></span>
                     <span ng-show="currentTabConfig.queryType != 'ASK'" class="results-description">
                         {{getResultsDescription()}}
@@ -225,7 +225,7 @@
         </div>
 
         <div ng-show="queryIsRunning && currentTrackAlias" class="qe-aborter">
-            <div disabled-wrapper class="d-inline-block" popover="{{abortRequested ? (lastRunQueryMode === 'update' ? 'Update was requested to abort and will be terminated if possible' : 'Query was requested to abort and will be terminated on the first I/O operation') : (lastRunQueryMode === 'update' ? 'Click to abort update' : 'Click to abort query')}}"
+            <div disabled-wrapper class="d-inline-block" uib-popover="{{abortRequested ? (lastRunQueryMode === 'update' ? 'Update was requested to abort and will be terminated if possible' : 'Query was requested to abort and will be terminated on the first I/O operation') : (lastRunQueryMode === 'update' ? 'Click to abort update' : 'Click to abort query')}}"
                  popover-trigger="mouseenter"
                  popover-placement="left">
                 <div ng-class="abortRequested ? 'disabled' : ''"> <!-- Keep this div -->

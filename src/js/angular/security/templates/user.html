@@ -42,14 +42,14 @@
 						<h3>Login</h3>
 						<div class="form-group" ng-class="{'has-danger': usernameError}">
 							<div class="input-group">
-								<span class="input-group-addon" tooltip="Username" tooltip-trigger="mouseenter"><em class="icon-user icon-2x text-muted"></em></span>
+								<span class="input-group-addon" uib-tooltip="Username" tooltip-trigger="mouseenter"><em class="icon-user icon-2x text-muted"></em></span>
 								<input id="wb-user-username" placeholder="User name" name="username" class="form-control form-control-lg" type="text" ng-model="user.username" ng-readonly="mode !== 'add'">
 							</div>
 							<div ng-show="usernameError" class="form-control-feedback">{{usernameError}}</div>
 						</div>
 						<div class="form-group" ng-class="{'has-danger': passwordError}">
 							<div class="input-group">
-								<span class="input-group-addon" tooltip="Password" tooltip-trigger="mouseenter"><em class="icon-lock icon-2x text-muted"></em></span>
+								<span class="input-group-addon" uib-tooltip="Password" tooltip-trigger="mouseenter"><em class="icon-lock icon-2x text-muted"></em></span>
 								<input id="wb-user-password" placeholder="{{passwordPlaceholder}}" name="password" class="form-control form-control-lg" type="password"	ng-model="user.password" ng-hide="user.external || hasExternalAuthUser()" ng-readonly="noPassword">
 								<span ng-show="user.external || hasExternalAuthUser()">This is a user authenticated via an external module. The password cannot be changed from GraphDB.</span>
 							</div>
@@ -57,7 +57,7 @@
 						</div>
 						<div class="form-group" ng-class="{'has-danger': confirmPasswordError}" ng-hide="user.external || hasExternalAuthUser()">
 							<div class="input-group">
-								<span class="input-group-addon" tooltip="Confirm password" tooltip-trigger="mouseenter"><em class="icon-lock icon-2x text-muted"></em></span>
+								<span class="input-group-addon" uib-tooltip="Confirm password" tooltip-trigger="mouseenter"><em class="icon-lock icon-2x text-muted"></em></span>
 								<input id="wb-user-confirmpassword" placeholder="Confirm password" name="password_confirm" class="form-control form-control-lg" type="password" ng-model="user.confirmpassword" ng-readonly="noPassword">
 							</div>
 							<div ng-show="confirmPasswordError" class="form-control-feedback">{{confirmPasswordError}}</div>
@@ -83,7 +83,7 @@
 									{{user.appSettings.DEFAULT_SAMEAS ? 'ON' : 'OFF'}}
 								</span>
 							</span>
-							<span tooltip="Click me" tooltip-placement="top" tooltip-trigger="mouseenter"
+							<span uib-tooltip="Click me" tooltip-placement="top" tooltip-trigger="mouseenter"
 								  ng-click="user.appSettings.DEFAULT_SAMEAS = !user.appSettings.DEFAULT_SAMEAS"
 								  class="switch mr-0">
 								<input type="checkbox" class="switch" ng-checked="user.appSettings.DEFAULT_SAMEAS"/>
@@ -99,7 +99,7 @@
 									{{user.appSettings.DEFAULT_INFERENCE ? 'ON' : 'OFF'}}
 								</span>
 							</span>
-							<span tooltip="Click me" tooltip-placement="top" tooltip-trigger="mouseenter"
+							<span uib-tooltip="Click me" tooltip-placement="top" tooltip-trigger="mouseenter"
 								  ng-click="user.appSettings.DEFAULT_INFERENCE = !user.appSettings.DEFAULT_INFERENCE"
 								  class="switch mr-0">
 								<input type="checkbox" class="switch" ng-checked="user.appSettings.DEFAULT_INFERENCE"/>
@@ -114,7 +114,7 @@
 								<span class="tag {{user.appSettings.DEFAULT_VIS_GRAPH_SCHEMA ? 'tag-primary' : 'tag-default'}}">
 									{{user.appSettings.DEFAULT_VIS_GRAPH_SCHEMA ? 'ON' : 'OFF'}}
 								</span>
-                                <span tooltip="Click me" tooltip-placement="top" tooltip-trigger="mouseenter"
+                                <span uib-tooltip="Click me" tooltip-placement="top" tooltip-trigger="mouseenter"
                                       ng-click="user.appSettings.DEFAULT_VIS_GRAPH_SCHEMA = !user.appSettings.DEFAULT_VIS_GRAPH_SCHEMA"
                                       class="switch mr-0">
 								<input type="checkbox" class="switch" ng-checked="user.appSettings.DEFAULT_VIS_GRAPH_SCHEMA"/>
@@ -144,20 +144,20 @@
 					<div class="card-block">
 						<h3>User role</h3>
 						<label class="mr-1"
-							   popover-template="'popover-content-user.html'"
+							   uib-popover-template="'popover-content-user.html'"
 							   popover-trigger="mouseenter"
 							   popover-placement="bottom">
 							<input type="radio" ng-model="userType" id="roleUser" value="user" ng-disabled="hasEditRestrictions()" >
 							User
 						</label>
 						<label class="mr-1"
-							   popover-template="'popover-content-repo-manager.html'"
+							   uib-popover-template="'popover-content-repo-manager.html'"
 							   popover-trigger="mouseenter"
 							   popover-placement="bottom">
 							<input type="radio" ng-model="userType" id="roleRepoAdmin" value="repoManager" ng-disabled="hasEditRestrictions()">
 							Repository manager
 						</label>
-						<label popover-template="'popover-content-admin.html'"
+						<label uib-popover-template="'popover-content-admin.html'"
 							   popover-trigger="mouseenter"
 							   popover-placement="bottom">
 							<input type="radio" ng-model="userType" id="roleAdmin" value="admin" ng-disabled="hasEditRestrictions()">
@@ -178,14 +178,14 @@
 							<thead>
 								<tr>
 									<th id="repositoryIdColumn">Repository</th>
-									<th id="readRightsColumn" class="text-xs-center"><em class="icon-eye icon-lg" tooltip="Read" tooltip-trigger="mouseenter"></em></th>
-									<th id="writeRightColumn" class="text-xs-center"><em class="icon-edit icon-lg" tooltip="Write" tooltip-trigger="mouseenter"></em></th>
+									<th id="readRightsColumn" class="text-xs-center"><em class="icon-eye icon-lg" uib-tooltip="Read" tooltip-trigger="mouseenter"></em></th>
+									<th id="writeRightColumn" class="text-xs-center"><em class="icon-edit icon-lg" uib-tooltip="Write" tooltip-trigger="mouseenter"></em></th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr>
 									<td>Any data repository
-										<em class="icon-info text-primary" tooltip="Data repositories are all repositories that aren't the SYSTEM repository."></em>
+										<em class="icon-info text-primary" uib-tooltip="Data repositories are all repositories that aren't the SYSTEM repository."></em>
 									</td>
 									<td class="text-xs-center">
                                         <input class="read" type="checkbox" ng-model="grantedAuthorities.READ_REPO['*']"  ng-checked="hasReadPermission('*')" ng-disabled="readCheckDisabled('*')" ng-click="setGrantedAuthorities()">

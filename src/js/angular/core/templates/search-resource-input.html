@@ -3,7 +3,7 @@
            ng-change="onChange()"
            ng-keydown="onKeyDown($event)">
     <button ng-if="clearInputIcon && showClearInputIcon" class="btn btn-link clear-icon"
-          tooltip="Clear" tooltip-placement="bottom" tooltip-trigger="mouseenter">
+          uib-tooltip="Clear" tooltip-placement="bottom" tooltip-trigger="mouseenter">
         <i class="icon-close" aria-hidden="true" ng-click="clearInput()"></i>
     </button>
     <span ng-if="!radioButtons" class="input-group-btn">
@@ -17,10 +17,10 @@
         </button>
     </span>
     <span ng-if="radioButtons" class="input-group-btn">
-        <button class="btn btn-secondary display-type-table-btn" ng-model="searchType" btn-radio="searchDisplayType.table" ng-click="changeSearchType(searchDisplayType.table)">
+        <button class="btn btn-secondary display-type-table-btn" ng-model="searchType" uib-btn-radio="searchDisplayType.table" ng-click="changeSearchType(searchDisplayType.table)">
             {{textButtonLabel}}
         </button>
-        <button class="btn btn-secondary display-type-visual-btn" ng-model="searchType" btn-radio="searchDisplayType.visual" ng-click="changeSearchType(searchDisplayType.visual)">
+        <button class="btn btn-secondary display-type-visual-btn" ng-model="searchType" uib-btn-radio="searchDisplayType.visual" ng-click="changeSearchType(searchDisplayType.visual)">
             {{visualButtonLabel}}
         </button>
     </span>

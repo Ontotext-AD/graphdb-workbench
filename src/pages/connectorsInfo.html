@@ -2,7 +2,7 @@
     <h1>
         {{title}}
         <span class="btn btn-link"
-              popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+              uib-popover-template="'js/angular/templates/titlePopoverTemplate.html'"
               popover-trigger="mouseenter"
               popover-placement="bottom-right"
               popover-append-to-body="true"><span class="icon-info"></span></span>
@@ -18,7 +18,7 @@
         <div class="pull-right">
             <button class="btn btn-lg btn-link p-0" type="button"
                     ng-click="getConnectors()"
-                    tooltip="Reload all connector information" tooltip-placement="left">
+                    uib-tooltip="Reload all connector information" tooltip-placement="left">
                 <em class="icon-reload"></em>
             </button>
         </div>
@@ -33,17 +33,17 @@
 								<div class="pull-right">
 									<button class="btn btn-link p-0" type="button"
 										ng-click="copyConnector(connector, exist)"
-										tooltip="Copy connector {{exist.name}}" tooltip-append-to-body="true">
+										uib-tooltip="Copy connector {{exist.name}}" tooltip-append-to-body="true">
 										<em class="icon-copy"></em>
 									</button>
 									<button class="btn btn-link p-0" type="button"
 										ng-click="repair(exist, connector)"
-										tooltip="Repair connector {{exist.name}}" tooltip-append-to-body="true">
+										uib-tooltip="Repair connector {{exist.name}}" tooltip-append-to-body="true">
 										<em class="icon-reload"></em>
 									</button>
 									<button class="btn btn-link secondary p-0" type="button"
 										ng-click="delete(exist, connector)"
-										tooltip="Delete connector {{exist.name}}" tooltip-append-to-body="true">
+										uib-tooltip="Delete connector {{exist.name}}" tooltip-append-to-body="true">
 										<em class="icon-trash"></em>
                                     </button>
 								</div>

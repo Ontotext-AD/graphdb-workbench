@@ -10,20 +10,20 @@
             The version of GraphDB at your active location does not support settings.
         </div>
         <div ng-show="supportsStatistics" class="container" ng-init="moreInfo = false">
-           
+
 			<div class="form-check">
-				<label tooltip="Click to {{settings.statistics ? 'disable' : 'enable'}} this setting"
+				<label uib-tooltip="Click to {{settings.statistics ? 'disable' : 'enable'}} this setting"
 					   tooltip-placement="top" tooltip-trigger="mouseenter" class="form-check-label">
 					<input type="checkbox" ng-model="settings.statistics" class="form-check-input">
 					Send anonymous usage statistics to Ontotext
 				</label>
 			</div>
-            
+
             <div class="clearfix">
 				<button ng-click="moreInfo = !moreInfo" class="btn btn-link btn-sm pull-right" ng-show="!moreInfo">more info <span class="icon-caret-down"></span></button>
 				<button ng-click="moreInfo = !moreInfo" class="btn btn-link btn-sm pull-right" ng-show="moreInfo">less info <span class="icon-caret-up"></span></button>
             </div>
-               
+
 			<div id="statisticsInfo" ng-if="moreInfo">
 				<h4>Why should you send us your statistics?</h4>
 				<p>We aim to provide better products that suit the needs of our users and customers.

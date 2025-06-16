@@ -79,7 +79,7 @@ describe('=> NamespacesCtrl tests', function () {
 
         var controller = $controller('NamespacesCtrl', {
             $scope: $scope,
-            $modal: modalInstance,
+            $uibModal: modalInstance,
             RDF4JRepositoriesRestService: RDF4JRepositoriesRestService,
             toastr: toastr,
             ModalService: {

@@ -10,13 +10,13 @@
 
 					<div class="form-group mb-2" ng-class="wrongCredentials ? 'has-error' : ''">
 						<div class="input-group">
-							<span class="input-group-addon" tooltip="Username" tooltip-trigger="mouseenter"><em class="icon-user icon-2x text-muted"></em></span>
+							<span class="input-group-addon" uib-tooltip="Username" tooltip-trigger="mouseenter"><em class="icon-user icon-2x text-muted"></em></span>
 							<input id="wb-login-username" ng-model="$parent.username" placeholder="Your name" type="text" class="form-control form-control-lg" autofocus required ng-blur="wrongCredentials = false">
 						</div>
 					</div>
 					<div class="form-group mb-2"  ng-class="wrongCredentials ? 'has-error' : ''">
 						<div class="input-group">
-							<span class="input-group-addon" tooltip="Password" tooltip-trigger="mouseenter"><em class="icon-lock icon-2x text-muted"></em></span>
+							<span class="input-group-addon" uib-tooltip="Password" tooltip-trigger="mouseenter"><em class="icon-lock icon-2x text-muted"></em></span>
 							<input id="wb-login-password" type="password" placeholder="Your password" ng-model="$parent.password" class="form-control form-control-lg" required ng-blur="wrongCredentials = false">
 						</div>
 					</div>

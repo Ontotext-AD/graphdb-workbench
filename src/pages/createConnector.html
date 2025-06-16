@@ -10,7 +10,7 @@
 		<div class="form-group row">
 			<label class="col-xs-2 col-form-label">Name<sup>*</sup></label>
 			<div class="col-xs-10 connector-name-field">
-				<input type="text" class="form-control" placeholder="connector name" ng-model="name" required popover="Name that identifies the connector." popover-trigger="focus" popover-placement="bottom">
+				<input type="text" class="form-control" placeholder="connector name" ng-model="name" required uib-popover="Name that identifies the connector." popover-trigger="focus" popover-placement="bottom">
 			</div>
 		</div>
 
@@ -19,32 +19,32 @@
 				ng-class="{'col-form-label': option.__type != 'Boolean', 'font-weight-bold':option.__required }">{{option.__label}}<sup ng-if="option.__required">*</sup></label>
 			<div class="col-xs-10">
 				<div ng-if="option.__type == 'Boolean'" class="form-check">
-					<label class="form-check-label" popover="{{option.__description}}" popover-trigger="mouseenter" popover-placement="bottom">
+					<label class="form-check-label" uib-popover="{{option.__description}}" popover-trigger="mouseenter" popover-placement="bottom">
 						<input class="form-check-input" type="checkbox" ng-model="values[option.__name]">
 					</label>
 				</div>
                 <div ng-if="option.__type == 'String'">
-					<input type="text" class="form-control" placeholder="{{option.__hint}}" ng-model="values[option.__name]" ng-required="option.__required" popover="{{option.__description}}" popover-trigger="focus" popover-placement="bottom">
+					<input type="text" class="form-control" placeholder="{{option.__hint}}" ng-model="values[option.__name]" ng-required="option.__required" uib-popover="{{option.__description}}" popover-trigger="focus" popover-placement="bottom">
 				</div>
 				<div ng-if="option.__type == 'BigString'">
-					<textarea type="text" class="form-control" placeholder="{{option.__hint}}" ng-model="values[option.__name]" ng-required="option.__required" popover="{{option.__description}}" popover-trigger="focus" popover-placement="bottom">
+					<textarea type="text" class="form-control" placeholder="{{option.__hint}}" ng-model="values[option.__name]" ng-required="option.__required" uib-popover="{{option.__description}}" popover-trigger="focus" popover-placement="bottom">
 					</textarea>
 				</div>
 				<div ng-if="option.__type == 'JsonString'">
-					<textarea type="text" class="form-control" placeholder="{{option.__hint}}" ng-model="values[option.__name]" ng-required="option.__required" popover="{{option.__description}}" popover-trigger="focus" popover-placement="bottom">
+					<textarea type="text" class="form-control" placeholder="{{option.__hint}}" ng-model="values[option.__name]" ng-required="option.__required" uib-popover="{{option.__description}}" popover-trigger="focus" popover-placement="bottom">
 					</textarea>
 				</div>
 				<div ng-if="option.__type == 'Long'">
-					<input type="number" class="form-control" placeholder="{{option.__hint}}" ng-model="values[option.__name]" ng-required="option.__required" popover="{{option.__description}}" popover-trigger="focus" popover-placement="bottom">
+					<input type="number" class="form-control" placeholder="{{option.__hint}}" ng-model="values[option.__name]" ng-required="option.__required" uib-popover="{{option.__description}}" popover-trigger="focus" popover-placement="bottom">
 				</div>
                 <div ng-if="option.__type == 'StringArray'" ng-repeat="value in values[option.__name] track by $index">
 					<div class="input-group mb-1 {{'property-' + option.__name}}">
-						<input type="text" class="form-control" placeholder="{{option.__hint}}"  ng-model="values[option.__name][$index]" ng-required="option.__required" popover="{{option.__description}}" popover-trigger="focus" popover-placement="bottom">
+						<input type="text" class="form-control" placeholder="{{option.__hint}}"  ng-model="values[option.__name][$index]" ng-required="option.__required" uib-popover="{{option.__description}}" popover-trigger="focus" popover-placement="bottom">
 						<span class="input-group-btn btn-group-sm">
-							<button type="button" ng-disabled="values[option.__name].length == 1" class="btn btn-link" popover="Delete {{option.__label | singular}}" popover-trigger="mouseenter" popover-placement="bottom"  ng-click="deleteOption($index, values[option.__name])">
+							<button type="button" ng-disabled="values[option.__name].length == 1" class="btn btn-link" uib-popover="Delete {{option.__label | singular}}" popover-trigger="mouseenter" popover-placement="bottom"  ng-click="deleteOption($index, values[option.__name])">
 								<em class="icon-minus"></em>
 							</button>
-							<button type="button" class="btn btn-link" popover="Add {{option.__label | singular}}" popover-trigger="mouseenter" popover-placement="bottom"  ng-click="addOption($index, values[option.__name])">
+							<button type="button" class="btn btn-link" uib-popover="Add {{option.__label | singular}}" popover-trigger="mouseenter" popover-placement="bottom"  ng-click="addOption($index, values[option.__name])">
 								<em class="icon-plus"></em>
 							</button>
 						</span>
@@ -59,18 +59,18 @@
 										ng-class="{'col-form-label': true, 'font-weight-bold':child.__required }">{{child.__label}}<sup ng-if="child.__required">*</sup></label>
 									<div class="col-xs-9">
 										<div ng-if="child.__type == 'String'">
-											<input type="text" class="form-control" placeholder="{{child.__hint}}" ng-model="values[option.__name][fieldIndex][child.__name]" ng-required="child.__required"  popover="{{child.__description}}" popover-trigger="focus" popover-placement="bottom">
+											<input type="text" class="form-control" placeholder="{{child.__hint}}" ng-model="values[option.__name][fieldIndex][child.__name]" ng-required="child.__required"  uib-popover="{{child.__description}}" popover-trigger="focus" popover-placement="bottom">
 										</div>
 										<div ng-if="child.__type == 'Long'">
-											<input type="number" class="form-control" placeholder="{{child.__hint}}" ng-model="values[option.__name][fieldIndex][child.__name]" ng-required="child.__required"  popover="{{child.__description}}" popover-trigger="focus" popover-placement="bottom">
+											<input type="number" class="form-control" placeholder="{{child.__hint}}" ng-model="values[option.__name][fieldIndex][child.__name]" ng-required="child.__required"  uib-popover="{{child.__description}}" popover-trigger="focus" popover-placement="bottom">
 										</div>
 										<div class="input-group mb-1" ng-if="child.__type == 'StringArray'" ng-repeat="value in values[option.__name][fieldIndex][child.__name] track by $index">
-											<input type="text" class="form-control" placeholder="{{child.__hint}}" ng-model="values[option.__name][fieldIndex][child.__name][$index]" ng-required="child.__required"  popover="{{child.__description}}" popover-trigger="focus" popover-placement="bottom">
+											<input type="text" class="form-control" placeholder="{{child.__hint}}" ng-model="values[option.__name][fieldIndex][child.__name][$index]" ng-required="child.__required"  uib-popover="{{child.__description}}" popover-trigger="focus" popover-placement="bottom">
 											<span class="input-group-btn btn-group-sm">
-												<button type="button" ng-disabled="values[option.__name][fieldIndex][child.__name].length == 1" class="btn btn-link btn-sm" popover="Delete {{child.__label | singular}}" popover-trigger="mouseenter" popover-placement="bottom" ng-click="deleteOption($index, values[option.__name][fieldIndex][child.__name])" >
+												<button type="button" ng-disabled="values[option.__name][fieldIndex][child.__name].length == 1" class="btn btn-link btn-sm" uib-popover="Delete {{child.__label | singular}}" popover-trigger="mouseenter" popover-placement="bottom" ng-click="deleteOption($index, values[option.__name][fieldIndex][child.__name])" >
 													<em class="icon-minus"></em>
 												</button>
-												<button type="button" class="btn btn-link btn-sm" popover="Add {{child.__label | singular}}" popover-trigger="mouseenter" popover-placement="bottom"  ng-click="addOption($index, values[option.__name][fieldIndex][child.__name])">
+												<button type="button" class="btn btn-link btn-sm" uib-popover="Add {{child.__label | singular}}" popover-trigger="mouseenter" popover-placement="bottom"  ng-click="addOption($index, values[option.__name][fieldIndex][child.__name])">
 													<em class="icon-plus"></em>
 												</button>
 											</span>
@@ -84,7 +84,7 @@
 									<div class="col-xs-3"></div>
 									<div class="col-xs-9">
 										<label ng-repeat="child in option.__childOptions | filter: {__type: 'Boolean'}: true" class="mr-1"
-											   popover="{{boolean.__description}}" popover-trigger="mouseenter" popover-placement="bottom">
+											   uib-popover="{{boolean.__description}}" popover-trigger="mouseenter" popover-placement="bottom">
 											<input type="checkbox" ng-model="values[option.__name][fieldIndex][child.__name]"> {{child.__label}}
 										</label>
 									</div>
@@ -93,10 +93,10 @@
 						</div>
 						<div class="col-xs-1 p-0" style="margin-left: -1rem">
 							<span class="input-group-btn btn-group-sm">
-							<button type="button" ng-disabled="values[option.__name].length == 1" class="btn btn-link" popover="Delete Field" popover-trigger="mouseenter" popover-placement="bottom" ng-click="deleteOption($index, values[option.__name])">
+							<button type="button" ng-disabled="values[option.__name].length == 1" class="btn btn-link" uib-popover="Delete Field" popover-trigger="mouseenter" popover-placement="bottom" ng-click="deleteOption($index, values[option.__name])">
 								<em class="icon-minus"></em>
 							</button>
-							<button type="button" class="btn btn-link" popover="Add Field" popover-trigger="mouseenter" popover-placement="bottom" ng-click="addField($index, option.__name)">
+							<button type="button" class="btn btn-link" uib-popover="Add Field" popover-trigger="mouseenter" popover-placement="bottom" ng-click="addField($index, option.__name)">
 								<em class="icon-plus"></em>
 							</button>
 							</span>
@@ -107,7 +107,7 @@
 					<div class="col-form-label mb-1">
 						<label><em>No {{option.__label}} added</em></label>
 						<span class="btn-group-sm">
-							<button type="button" class="btn btn-link" popover="Add {{option.__label | singular}}" popover-trigger="mouseenter" popover-placement="bottom"  ng-click="addMapOption($index, values[option.__name])">
+							<button type="button" class="btn btn-link" uib-popover="Add {{option.__label | singular}}" popover-trigger="mouseenter" popover-placement="bottom"  ng-click="addMapOption($index, values[option.__name])">
 								<em class="icon-plus"></em>
 							</button>
 						</span>
@@ -117,17 +117,17 @@
 					<div class="input-group mb-1">
 						<div class="row">
 							<div class="col-xs-6">
-								<input type="text" class="form-control" placeholder="key"  ng-model="kv.key" ng-required="option.__required" popover="{{option.__description}}" popover-trigger="focus" popover-placement="bottom">
+								<input type="text" class="form-control" placeholder="key"  ng-model="kv.key" ng-required="option.__required" uib-popover="{{option.__description}}" popover-trigger="focus" popover-placement="bottom">
 							</div>
 							<div class="col-xs-6">
-								<input type="text" class="form-control" placeholder="value"  ng-model="kv.value" ng-required="option.__required" popover="{{option.__description}}" popover-trigger="focus" popover-placement="bottom">
+								<input type="text" class="form-control" placeholder="value"  ng-model="kv.value" ng-required="option.__required" uib-popover="{{option.__description}}" popover-trigger="focus" popover-placement="bottom">
 							</div>
 						</div>
 						<span class="input-group-btn btn-group-sm">
-							<button type="button" ng-disabled="values[option.__name].length == 0" class="btn btn-link" popover="Delete {{option.__label | singular}}" popover-trigger="mouseenter" popover-placement="bottom"  ng-click="deleteMapOption($index, values[option.__name])">
+							<button type="button" ng-disabled="values[option.__name].length == 0" class="btn btn-link" uib-popover="Delete {{option.__label | singular}}" popover-trigger="mouseenter" popover-placement="bottom"  ng-click="deleteMapOption($index, values[option.__name])">
 								<em class="icon-minus"></em>
 							</button>
-							<button type="button" class="btn btn-link" popover="Add {{option.__label | singular}}" popover-trigger="mouseenter" popover-placement="bottom"  ng-click="addMapOption($index, values[option.__name])">
+							<button type="button" class="btn btn-link" uib-popover="Add {{option.__label | singular}}" popover-trigger="mouseenter" popover-placement="bottom"  ng-click="addMapOption($index, values[option.__name])">
 								<em class="icon-plus"></em>
 							</button>
 						</span>

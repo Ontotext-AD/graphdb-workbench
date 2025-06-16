@@ -6,7 +6,7 @@
 <h1>
     {{title}}
     <span class="btn btn-link"
-          popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+          uib-popover-template="'js/angular/templates/titlePopoverTemplate.html'"
           popover-trigger="mouseenter"
           popover-placement="bottom-right"
           popover-append-to-body="true"><span class="icon-info"></span></span>
@@ -22,25 +22,25 @@
                 <div class="form-group" style="width: 130px;">
                     <input id="wb-namespaces-prefix"
                            type="text" ng-model="namespace.prefix" placeholder="examplePrefix"
-                           class="form-control" tooltip-trigger="mouseenter" tooltip="Prefix" style="width: 130px;"/>
+                           class="form-control" tooltip-trigger="mouseenter" uib-tooltip="Prefix" style="width: 130px;"/>
                 </div>
                 <div class="form-group" style="width: 260px;">
                     <input required id="wb-namespaces-namespace"
                            type="url" ng-model="namespace.namespace"
                            placeholder="http://example.com/data#" class="form-control"
-                           tooltip-trigger="mouseenter" tooltip="Namespace" style="width: 260px;"/>
+                           tooltip-trigger="mouseenter" uib-tooltip="Namespace" style="width: 260px;"/>
                 </div>
                 <button id="wb-namespaces-addNamespace" type="submit" ng-click="addNamespace()"
                         class="btn btn-primary add-namespace"
-                        tooltip-trigger="mouseenter" tooltip="Add namespace">
+                        tooltip-trigger="mouseenter" uib-tooltip="Add namespace">
                     <span class="icon-plus"></span>
                     Add namespace
                 </button>
             </form>
         </div>
         <div ng-show="displayedNamespaces.length > 0" class="clearfix">
-            <div class="btn-group pull-right namespaces-per-page-menu" dropdown>
-                <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" dropdown-toggle
+            <div class="btn-group pull-right namespaces-per-page-menu" uib-dropdown>
+                <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" uib-dropdown-toggle
                         ng-disabled="disabled">
                     <span ng-if="pageSizeOptions.indexOf(displayedNamespaces.length) > -1">{{pageSize}}</span>
                     <span ng-if="pageSizeOptions.indexOf(displayedNamespaces.length) === -1">All</span>
@@ -59,7 +59,7 @@
         <div ng-show="namespaces.length > 0" class="ot-owlim-ctrl clearfix namespaces-result-header">
             <span class="pull-left">
                 <input type="text" class="form-control namespaces-filter" placeholder="Search namespaces"
-                       ng-model="searchNamespaces" tooltip-trigger="mouseenter" tooltip="Search"
+                       ng-model="searchNamespaces" tooltip-trigger="mouseenter" uib-tooltip="Search"
                        ng-change="onNamespaceSearch()">
             </span>
             <div paginations class="ot-export-pagination pull-right namespaces-header-pagination"></div>
@@ -76,7 +76,7 @@
                     </label>
                     <button type="button" class="btn btn-link btn-sm secondary p-0 delete-namespaces-btn" ng-click="deleteSelected()"
                             ng-disabled="!canWriteActiveRepo() || !haveSelected" tooltip-trigger="mouseenter"
-                            tooltip="Delete selected"><span class="icon-trash"></span></button>
+                            uib-tooltip="Delete selected"><span class="icon-trash"></span></button>
                 </th>
                 <th id="prefixColumn" style="width: 20%">Prefix</th>
                 <th id="uriColumn">URI</th>
@@ -110,17 +110,17 @@
                           ng-show="rowform.$visible" class="d-inline-block"
                           shown="inserted === namespace">
                         <button type="submit" class="btn btn-primary" ng-disabled="rowform.$waiting"
-                                tooltip-trigger="mouseenter" tooltip="Save"><span class="icon-save"></span></button>
+                                tooltip-trigger="mouseenter" uib-tooltip="Save"><span class="icon-save"></span></button>
                         <button type="button" class="btn btn-secondary" ng-disabled="rowform.$waiting"
-                                ng-click="rowform.$cancel()" tooltip-trigger="mouseenter" tooltip="Cancel"><span
+                                ng-click="rowform.$cancel()" tooltip-trigger="mouseenter" uib-tooltip="Cancel"><span
                                 class="icon-close"></span></button>
                     </form>
                 </td>
                 <td class="actions-bar"><!--ng-show="!rowform.$visible && canWriteActiveRepo()"-->
                     <button class="btn btn-link edit-namespace-btn" ng-click="rowform.$show()" tooltip-trigger="mouseenter"
-                            tooltip="Edit namespace"><span class="icon-edit"></span></button>
+                            uib-tooltip="Edit namespace"><span class="icon-edit"></span></button>
                     <button class="btn btn-link secondary delete-namespace-btn" ng-click="removeNamespace(namespace)"
-                            ng-disabled="!canWriteActiveRepo()" tooltip-trigger="mouseenter" tooltip="Delete namespace">
+                            ng-disabled="!canWriteActiveRepo()" tooltip-trigger="mouseenter" uib-tooltip="Delete namespace">
                         <span class="icon-trash"></span></button>
                 </td>
             </tr>

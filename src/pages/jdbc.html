@@ -2,7 +2,7 @@
     <h1>
         {{title}}
         <span class="btn btn-link"
-              popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+              uib-popover-template="'js/angular/templates/titlePopoverTemplate.html'"
               popover-trigger="mouseenter"
               popover-placement="bottom-right"
               popover-append-to-body="true"><span class="icon-info"></span></span>
@@ -33,12 +33,12 @@
                             <span class="actions-bar hovered-item">
                                     <a class="btn btn-link edit-query-btn"
                                        ng-if="canWriteActiveRepo()" href="jdbc/configuration/create?name={{index}}"
-                                       tooltip="Edit JDBC configuration">
+                                       uib-tooltip="Edit JDBC configuration">
                                         <em class="icon-edit"></em>
                                     </a>
                                 </span>
                             <button type="button" ng-if="canWriteActiveRepo()" ng-click="deleteConfiguration(index)"
-                                    class="btn btn-link delete-configuration-btn" tooltip="Delete JDBC configuration"><span
+                                    class="btn btn-link delete-configuration-btn" uib-tooltip="Delete JDBC configuration"><span
                                 class="icon-trash"></span>
                             </button>
                         </td>

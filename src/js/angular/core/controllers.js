@@ -4,24 +4,24 @@ angular
     .controller('SimpleModalCtrl', SimpleModalCtrl)
     .controller('ViewQueryCtrl', ViewQueryCtrl);
 
-SimpleModalCtrl.$inject = ['$scope', '$modalInstance', 'title', 'message'];
+SimpleModalCtrl.$inject = ['$scope', '$uibModalInstance', 'title', 'message'];
 
-function SimpleModalCtrl($scope, $modalInstance, title, message) {
+function SimpleModalCtrl($scope, $uibModalInstance, title, message) {
     $scope.title = title;
     $scope.message = message;
 
     $scope.ok = function () {
-        $modalInstance.close();
+        $uibModalInstance.close();
     };
 
     $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
+        $uibModalInstance.dismiss('cancel');
     };
 }
 
-CopyToClipboardModalCtrl.$inject = ['$scope', '$modalInstance', 'uri', 'toastr'];
+CopyToClipboardModalCtrl.$inject = ['$scope', '$uibModalInstance', 'uri', 'toastr'];
 
-function CopyToClipboardModalCtrl($scope, $modalInstance, uri, toastr) {
+function CopyToClipboardModalCtrl($scope, $uibModalInstance, uri, toastr) {
     $scope.clipboardURI = uri;
 
     $scope.ok = function () {
@@ -33,20 +33,20 @@ function CopyToClipboardModalCtrl($scope, $modalInstance, uri, toastr) {
         } catch (e) {
             toastr.error('Your browser doesn\'t support "copy" operation.\nPress Ctrl-C / Cmd-C to copy URL manually.');
         }
-        $modalInstance.close();
+        $uibModalInstance.close();
     };
 
     $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
+        $uibModalInstance.dismiss('cancel');
     };
 }
 
-ViewQueryCtrl.$inject = ['$scope', '$modalInstance', 'query', 'toastr'];
+ViewQueryCtrl.$inject = ['$scope', '$uibModalInstance', 'query', 'toastr'];
 
-function ViewQueryCtrl($scope, $modalInstance, query, toastr) {
+function ViewQueryCtrl($scope, $uibModalInstance, query, toastr) {
     $scope.query = query;
     $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
+        $uibModalInstance.dismiss('cancel');
     };
 
     $scope.selectQuery = function () {
@@ -57,7 +57,7 @@ function ViewQueryCtrl($scope, $modalInstance, query, toastr) {
         try {
             $scope.selectQuery();
             document.execCommand('copy');
-            $modalInstance.close();
+            $uibModalInstance.close();
             toastr.success('Query copied successfully to clipboard.');
         } catch (e) {
             toastr.error('Your browser doesn\'t support "copy" operation.\nPress Ctrl-C / Cmd-C to copy query to clipboard manually.');

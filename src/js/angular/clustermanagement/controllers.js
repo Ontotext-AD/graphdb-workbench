@@ -21,10 +21,10 @@ function getLocation(node) {
     return node.location.split('/repositories/')[0];
 }
 
-ClusterManagementCtrl.$inject = ['$scope', '$http', '$q', 'toastr', '$repositories', '$modal', '$sce',
+ClusterManagementCtrl.$inject = ['$scope', '$http', '$q', 'toastr', '$repositories', '$uibModal', '$sce',
     '$window', '$interval', 'ModalService', '$timeout', 'ClusterRestService', 'RepositoriesRestService'];
 
-function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal, $sce,
+function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibModal, $sce,
                                $window, $interval, ModalService, $timeout, ClusterRestService,
                                RepositoriesRestService) {
     // TODO: Similar function is declared multiple times in different components. Find out how to avoid it!
@@ -89,7 +89,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
     $scope.showCloneModal = function () {
         $scope.clone.locations = $scope.locations();
         $scope.clone.repositoryID = $scope.selectedNode.name;
-        const modalInstance = $modal.open({
+        const modalInstance = $uibModal.open({
             templateUrl: 'js/angular/clustermanagement/templates/modal/clone-modal.html',
             controller: 'CloneRepositoryCtrl',
             resolve: {
@@ -757,20 +757,20 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $modal,
     });
 }
 
-CloneRepositoryCtrl.$inject = ['$scope', '$modalInstance', 'clone'];
+CloneRepositoryCtrl.$inject = ['$scope', '$uibModalInstance', 'clone'];
 
-function CloneRepositoryCtrl($scope, $modalInstance, clone) {
+function CloneRepositoryCtrl($scope, $uibModalInstance, clone) {
 
     $scope.clone = angular.copy(clone);
     $scope.ok = function () {
         const patt = new RegExp('^[a-zA-Z0-9-_]+$');
         $scope.isInvalidRepoName = !patt.test($scope.clone.repositoryID);
         if (!$scope.isInvalidRepoName) {
-            $modalInstance.close($scope.clone);
+            $uibModalInstance.close($scope.clone);
         }
     };
 
     $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
+        $uibModalInstance.dismiss('cancel');
     };
 }

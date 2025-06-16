@@ -3,7 +3,7 @@
 	<h1>
 		{{title}}
 		<em class="btn btn-link"
-		   popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+		   uib-popover-template="'js/angular/templates/titlePopoverTemplate.html'"
 		   popover-trigger="mouseenter"
 		   popover-placement="bottom-right"
 		   popover-append-to-body="true"><span class="icon-info"></span></em>
@@ -33,7 +33,7 @@
 		<div ng-if="pluginFound && !getDegradedReason()">
             <div class="lead mb-1" id="toggleIndex">
 				<span class="autocomplete-header">Autocomplete for repository <strong>{{getActiveRepository()}}</strong> is <span class="tag {{autocompleteEnabled ? 'tag-primary' : 'tag-default'}}">{{autocompleteEnabled ? 'ON' : 'OFF'}}</span></span>
-				<span tooltip="Click to {{autocompleteEnabled ? 'disable' : 'enable'}} autocomplete" tooltip-placement="top" tooltip-trigger="mouseenter" ng-click="toggleAutocomplete()" class="switch autocomplete-switch enable-autocomplete-switch">
+				<span uib-tooltip="Click to {{autocompleteEnabled ? 'disable' : 'enable'}} autocomplete" tooltip-placement="top" tooltip-trigger="mouseenter" ng-click="toggleAutocomplete()" class="switch autocomplete-switch enable-autocomplete-switch">
                     <input type="checkbox" class="switch" ng-checked="autocompleteEnabled"/>
                     <label for="toggleIndex"></label>
                 </span>
@@ -47,7 +47,7 @@
 							Building...
 						</span>
 						<button class="btn btn-link btn-sm" ng-click="interruptIndexing()"
-								tooltip="Interrupt indexing" tooltip-trigger="mouseenter" tooltip-append-to-body="true"><span class="icon-close"></span></button>
+								uib-tooltip="Interrupt indexing" tooltip-trigger="mouseenter" tooltip-append-to-body="true"><span class="icon-close"></span></button>
 					</span>
 
 					<span class="tag tag-danger" ng-show="indexStatus.indexOf('ERROR') == 0"><em class="icon-warning icon-lg"></em> {{indexStatus}}</span>
@@ -68,7 +68,7 @@
 
 			<button id="wb-autocomplete-addLabel" type="submit" ng-click="addLabel()"
 					ng-disabled="indexStatus == 'BUILDING'" class="btn btn-sm btn-primary pull-right"
-					tooltip-trigger="mouseenter" tooltip="Add label config">
+					tooltip-trigger="mouseenter" uib-tooltip="Add label config">
 				<span class="icon-plus"></span>
 				Add label
 			</button>
@@ -76,7 +76,7 @@
 			<div id="toggleIRIs" class="pull-right">
 				Index IRIs is
 				<span class="tag {{shouldIndexIRIs ? 'tag-primary' : 'tag-default'}}">{{shouldIndexIRIs ? 'ON' : 'OFF'}}</span></span>
-				<span tooltip="Click to {{shouldIndexIRIs ? 'disable' : 'enable'}} indexing of IRIs" tooltip-placement="top" tooltip-trigger="mouseenter" ng-click="toggleIndexIRIs()" class="switch">
+				<span uib-tooltip="Click to {{shouldIndexIRIs ? 'disable' : 'enable'}} indexing of IRIs" tooltip-placement="top" tooltip-trigger="mouseenter" ng-click="toggleIndexIRIs()" class="switch">
                     <input type="checkbox" class="switch" ng-checked="shouldIndexIRIs"/>
                     <label for="toggleIRIs"></label>
                 </span>
@@ -109,9 +109,9 @@
 
 					<td class="actions-bar">
 						<button class="btn btn-link" ng-click="editLabel(label)" tooltip-trigger="mouseenter"
-								tooltip="Edit label languages"><span class="icon-edit"></span></button>
+								uib-tooltip="Edit label languages"><span class="icon-edit"></span></button>
 						<button class="btn btn-link secondary" ng-click="removeLabel(label)"
-								tooltip-trigger="mouseenter" tooltip="Delete label config">
+								tooltip-trigger="mouseenter" uib-tooltip="Delete label config">
 							<span class="icon-trash"></span>
 						</button>
 					</td>

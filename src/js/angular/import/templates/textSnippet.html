@@ -7,7 +7,7 @@
     <div class="form-group">
         <textarea id="wb-import-textarea" class="form-control" rows="10" ng-model="rdfText"
                   placeholder="# Example: rdf:predicate a rdf:Property ."
-                  popover="Put your RDF data here and select its format."
+                  uib-popover="Put your RDF data here and select its format."
                   popover-placement="bottom"
                   popover-trigger="focus"></textarea>
     </div>
@@ -16,7 +16,7 @@
 <div class="modal-footer">
     <div class="mb-1">
         <span
-            popover="Enable this option to start the import when you click the Import button. If it is disabled the import will be added to the list but not started automatically."
+            uib-popover="Enable this option to start the import when you click the Import button. If it is disabled the import will be added to the list but not started automatically."
             popover-trigger="mouseenter"
             popover-placement="top">
             <input id="import-now-checkbox" type="checkbox" ng-model="startImport"/>
@@ -25,8 +25,8 @@
     </div>
     <div>
         <button type="button" ng-click="cancel()" class="btn btn-secondary">Cancel</button>
-        <div class="btn-group import-format-dropdown" dropdown>
-            <button type="button" class="btn btn-secondary dropdown-toggle import-format-dropdown-btn" dropdown-toggle>
+        <div class="btn-group import-format-dropdown" uib-dropdown>
+            <button type="button" class="btn btn-secondary dropdown-toggle import-format-dropdown-btn" uib-dropdown-toggle>
                 Format: {{importFormat.name}}
             </button>
             <ul class="dropdown-menu" role="menu">

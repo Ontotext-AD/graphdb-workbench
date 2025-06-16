@@ -35,7 +35,7 @@ describe('mainCtrl', function () {
     let $controller;
     let $httpBackend;
     let createController;
-    let $modal;
+    let $uibModal;
 
     beforeEach(angular.mock.inject(function (_$rootScope_, $menuItems, _$jwtAuth_, _$http_, _toastr_, _$location_, _$repositories_, _localStorageService_, _productInfo_, _$timeout_, _ModalService_, _$interval_, _$filter_, _LicenseRestService_, _RepositoriesRestService_, _$controller_, _$httpBackend_, $q) {
         $scope = _$rootScope_.$new();
@@ -56,7 +56,7 @@ describe('mainCtrl', function () {
         RepositoriesRestService = _RepositoriesRestService_;
         $controller = _$controller_;
         $httpBackend = _$httpBackend_;
-        $modal = new FakeModal($q, _$rootScope_);
+        $uibModal = new FakeModal($q, _$rootScope_);
 
         createController = () => $controller('mainCtrl', {
             $scope, menuItems, $jwtAuth, $http, toastr, $location, $repositories, $rootScope, localStorageService, productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService, RepositoriesRestService

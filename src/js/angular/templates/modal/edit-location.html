@@ -9,17 +9,17 @@
         <div class="form-group row">
             <label class="col-md-4 col-form-label">Authentication type</label>
             <div class="col-md-8">
-                <label class="col-form-label" tooltip="No authentication used with remote location">
+                <label class="col-form-label" uib-tooltip="No authentication used with remote location">
                     <input type="radio" name="authType" ng-model="editedLocation.authType" value="none"/>
                     None
                 </label>
                 &nbsp;
-                <label class="col-form-label" tooltip="Basic authentication with username/password">
+                <label class="col-form-label" uib-tooltip="Basic authentication with username/password">
                     <input type="radio" name="authType" ng-model="editedLocation.authType" value="basic"/>
                     Basic auth
                 </label>
                 &nbsp;
-                <label class="col-form-label" tooltip="Signature authentication with shared secret">
+                <label class="col-form-label" uib-tooltip="Signature authentication with shared secret">
                     <input type="radio" name="authType" ng-model="editedLocation.authType" value="signature"/>
                     Signature
                 </label>

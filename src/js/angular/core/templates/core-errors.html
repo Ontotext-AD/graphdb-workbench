@@ -29,7 +29,7 @@
                             <span class="popover-anchor"
                                   popover-popup-delay="500"
                                   popover-trigger="show" popover-placement="{{$index % 2 === 0 ? 'bottom-right' : 'left-bottom'}}"
-                                  popover-template="popoverTemplate" popover-title="Repository {{repository.id}}">
+                                  uib-popover-template="popoverTemplate" popover-title="Repository {{repository.id}}">
                             <em class="icon-lg" ng-class="'icon-repo-' + repository.type"></em>
                             <strong>{{repository.id}}</strong></span><small ng-show="repository.title"><span class="small"> &middot; {{repository.title}}</span></small>
                         </div>

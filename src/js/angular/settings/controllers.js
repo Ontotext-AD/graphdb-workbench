@@ -14,9 +14,9 @@ angular
     .controller('RegisterLicenseCtrl', RegisterLicenseCtrl)
     .controller('LoaderSamplesCtrl', LoaderSamplesCtrl);
 
-ActiveLocationSettingsCtrl.$inject = ['$scope', 'toastr', '$modalInstance', 'LicenseRestService'];
+ActiveLocationSettingsCtrl.$inject = ['$scope', 'toastr', '$uibModalInstance', 'LicenseRestService'];
 
-function ActiveLocationSettingsCtrl($scope, toastr, $modalInstance, LicenseRestService) {
+function ActiveLocationSettingsCtrl($scope, toastr, $uibModalInstance, LicenseRestService) {
     $scope.supportsStatistics = true;
     $scope.settings = {statistics: false};
     $scope.getSettings = getSettings;
@@ -41,7 +41,7 @@ function ActiveLocationSettingsCtrl($scope, toastr, $modalInstance, LicenseRestS
     $scope.setSettings = function () {
         $scope.loader = true;
         LicenseRestService.toggleStatistics($scope.settings.statistics).then(function () {
-            $modalInstance.close();
+            $uibModalInstance.close();
             toastr.success('Settings have been saved');
         }, function (response) {
             const msg = getError(response.data);
@@ -54,7 +54,7 @@ function ActiveLocationSettingsCtrl($scope, toastr, $modalInstance, LicenseRestS
     };
 
     $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
+        $uibModalInstance.dismiss('cancel');
     };
 }
 
@@ -87,9 +87,9 @@ function LicenseCtrl($scope, LicenseRestService, toastr, $rootScope) {
         });
 }
 
-RegisterLicenseCtrl.$inject = ['$scope', 'LicenseRestService', '$location', '$modal', 'toastr', '$window', '$jwtAuth'];
+RegisterLicenseCtrl.$inject = ['$scope', 'LicenseRestService', '$location', '$uibModal', 'toastr', '$window', '$jwtAuth'];
 
-function RegisterLicenseCtrl($scope, LicenseRestService, $location, $modal, toastr, $window, $jwtAuth) {
+function RegisterLicenseCtrl($scope, LicenseRestService, $location, $uibModal, toastr, $window, $jwtAuth) {
     $scope.$on('securityInit', function () {
         if (!$jwtAuth.isAdmin()) {
             $location.path('/license');
@@ -142,7 +142,7 @@ function RegisterLicenseCtrl($scope, LicenseRestService, $location, $modal, toas
     // pops a modal dialog which asks you if your expected license details are correct
     // and sends license to GraphDB upon confirmation
     function confirmWantedNewLicenseDetails(license, licenseCode) {
-        const modalInstance = $modal.open({
+        const modalInstance = $uibModal.open({
             templateUrl: 'js/angular/settings/modal/validate-license.html',
             controller: 'ValidateLicenseModalCtrl',
             resolve: {
@@ -179,19 +179,19 @@ function RegisterLicenseCtrl($scope, LicenseRestService, $location, $modal, toas
     }
 }
 
-ValidateLicenseModalCtrl.$inject = ['$scope', '$modalInstance', 'license'];
+ValidateLicenseModalCtrl.$inject = ['$scope', '$uibModalInstance', 'license'];
 
-function ValidateLicenseModalCtrl($scope, $modalInstance, license) {
+function ValidateLicenseModalCtrl($scope, $uibModalInstance, license) {
     $scope.ok = ok;
     $scope.cancel = cancel;
     $scope.license = license;
 
     function ok() {
-        $modalInstance.close();
+        $uibModalInstance.close();
     }
 
     function cancel() {
-        $modalInstance.dismiss('cancel');
+        $uibModalInstance.dismiss('cancel');
     }
 }
 
