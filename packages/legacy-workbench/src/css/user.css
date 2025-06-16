@@ -41,3 +41,9 @@
 .wb-user .repository-name {
     word-wrap: break-word;
 }
+
+.wb-user .fa-user {
+    font-size: 2rem;
+    padding-left: .25rem;
+    padding-bottom: 0;
+}
