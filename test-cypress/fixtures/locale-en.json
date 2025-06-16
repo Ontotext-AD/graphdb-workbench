@@ -305,6 +305,7 @@
             "text_copy_failed": "Failed copying to the clipboard."
         },
         "chat": {
+            "default_name": "New chat",
             "loading_chats": "Loading chats...",
             "deleting_chat": "Deleting chats...",
             "btn": {

@@ -15,6 +15,16 @@ TTYGService.$inject = ['TTYGRestService', '$repositories'];
 
 function TTYGService(TTYGRestService, $repositories) {
 
+    /**
+     * Creates a new chat.
+     *
+     * @returns {Promise<string>} A promise that resolves with the newly created chat ID.
+     */
+    const createChat = () => {
+        return TTYGRestService.createChat()
+            .then((response) => response.data.conversationId);
+    };
+
     const getConversations = (savedQueryName, owner) => {
         return TTYGRestService.getConversations()
             .then((response) => chatsListMapper(response.data));
@@ -198,6 +208,7 @@ function TTYGService(TTYGRestService, $repositories) {
     };
 
     return {
+        createChat,
         getConversation,
         renameConversation,
         exportConversation,

@@ -183,7 +183,9 @@ function TTYGViewCtrl(
      * Creates a new chat and selects it.
      */
     $scope.startNewChat = () => {
-        TTYGContextService.deselectChat();
+        if (!TTYGContextService.getChats().containsNewChats()) {
+            TTYGContextService.deselectChat();
+        }
     };
 
     /**
@@ -426,33 +428,19 @@ function TTYGViewCtrl(
      * @param {ChatItemModel} chatItem
      */
     const onCreateNewChat = (chatItem) => {
-        let nonPersistedChat = TTYGContextService.getChats().getNonPersistedChat();
-        if (!nonPersistedChat) {
-            nonPersistedChat = ChatModel.getEmptyChat();
-            TTYGContextService.addChat(nonPersistedChat);
-        }
-        TTYGContextService.selectChat(nonPersistedChat);
 
-        TTYGService.createConversation(chatItem)
-            .then((chatAnswer) => {
-                TTYGContextService.emit(TTYGEventName.CREATE_CHAT_SUCCESSFUL);
-                const selectedChat = TTYGContextService.getSelectedChat();
-                // If the selected chat is not changed during the creation process.
-                if (selectedChat && !selectedChat.id) {
-                    // Give the newly created things the real IDs
-                    selectedChat.id = chatAnswer.chatId;
-                    chatItem.chatId = chatAnswer.chatId;
+        TTYGService.createChat().then((conversationId) => {
+            const newChat = ChatModel.getNewChat();
+            newChat.name = $translate.instant('ttyg.chat.default_name');
+            newChat.id = conversationId;
+            TTYGContextService.addChat(newChat);
+            TTYGContextService.selectChat(newChat);
+            TTYGStorageService.saveChat(newChat);
+            TTYGContextService.emit(TTYGEventName.CREATE_CHAT_SUCCESSFUL);
 
-                    // Replace the placeholder with the newly created chat
-                    const nonPersistedChat = TTYGContextService.getChats().getNonPersistedChat();
-                    TTYGContextService.replaceChat(selectedChat, nonPersistedChat);
-                    TTYGStorageService.saveChat(selectedChat);
-
-                    // Process the messages
-                    updateChatAnswersFirstResponse(selectedChat, chatItem, chatAnswer);
-                }
-            })
-            .catch((error) => {
+            chatItem.chatId = conversationId;
+            TTYGContextService.emit(TTYGEventName.ASK_QUESTION, chatItem);
+        }).catch((error) => {
                 TTYGContextService.emit(TTYGEventName.CREATE_CHAT_FAILURE);
                 toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
             });
@@ -467,6 +455,12 @@ function TTYGViewCtrl(
                 const selectedChat = TTYGContextService.getSelectedChat();
                 // If still the same chat selected
                 if (selectedChat && selectedChat.id === chatItem.chatId) {
+                    if (selectedChat.isNew()) {
+                        selectedChat.new = false;
+                        const chats = TTYGContextService.getChats();
+                        chats.setChatAsOld(selectedChat.id);
+                        TTYGContextService.updateChats(chats);
+                    }
                     // just process the messages
                     updateChatAnswersFirstResponse(selectedChat, chatItem, chatAnswer);
                 }
@@ -660,7 +654,7 @@ function TTYGViewCtrl(
     const onSelectedChatChanged = (selectedChat) => {
         // If the selected chat has no ID, it indicates that this is a new (dummy) chat
         // and does not need to be loaded from the server.
-        if (selectedChat && selectedChat.id) {
+        if (selectedChat && !selectedChat.isNew()) {
             TTYGService.getConversation(selectedChat.id)
                 .then((chat) => {
                     TTYGContextService.updateSelectedChat(chat);

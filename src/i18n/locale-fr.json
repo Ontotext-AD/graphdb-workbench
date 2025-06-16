@@ -304,6 +304,7 @@
             "text_copy_failed": "Échec de la copie dans le presse-papiers."
         },
         "chat": {
+            "default_name": "Nouveau chat",
             "loading_chats": "Chargement des discussions...",
             "deleting_chat": "Suppression des discussions...",
             "btn": {

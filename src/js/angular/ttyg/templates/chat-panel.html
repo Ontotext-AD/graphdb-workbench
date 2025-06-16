@@ -1,6 +1,6 @@
 <link href="css/ttyg/chat-panel.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 
-<div class="chat-panel h-100" ng-class="chat.chatHistory.isEmpty() && !askingChatItem ? 'no-content' : ''">
+<div class="chat-panel h-100" ng-class="!chat && !askingChatItem ? 'no-content' : ''">
 
     <div class="chat-loading" ng-if="loadingChat" onto-loader-new size="40"></div>
 
@@ -59,7 +59,7 @@
         </div>
     </div>
 
-    <div class="messages-hint text-muted" ng-if="!loadingChat && chat.chatHistory.isEmpty() && !waitingForLastMessage" ng-cloak>
+    <div class="messages-hint text-muted" ng-if="!loadingChat && !chat && !waitingForLastMessage" ng-cloak>
         <div class="hint2" ng-bind="'ttyg.chat_panel.hint2' | translate"></div>
         <div class="hint1" ng-bind-html="'ttyg.chat_panel.hint1' | translate | trustAsHtml"></div>
     </div>

@@ -149,8 +149,13 @@ export class TTYGStubs extends Stubs {
         }).as('get-agent-defaults');
     }
 
-    static stubCrateNewChat(fixture = 'ttyg/chats/create/create-chat-response.json') {
-        cy.fixture(fixture).then((fixtureData) => {
+    static stubCrateNewChat() {
+            cy.intercept('POST', '/rest/chat/chats/create', {
+                fixture: 'ttyg/chats/create/create-chat-response.json',
+                statusCode: 200
+            }).as('ask-first-chat-question');
+
+            cy.fixture('ttyg/chats/create/question-response-after-chat-creation.json').then((fixtureData) => {
             const today = Math.floor(Date.now() / 1000) + '';
             const body = JSON.stringify(fixtureData).replace(/"creationDate"/g, today);
             cy.intercept('POST', '/rest/chat/conversations', {
@@ -158,7 +163,6 @@ export class TTYGStubs extends Stubs {
                 body: JSON.parse(body)
             }).as('create-chat');
         });
-
     }
 
     static stubExplainResponse(fixture = '/ttyg/chats/explain-response-1.json') {

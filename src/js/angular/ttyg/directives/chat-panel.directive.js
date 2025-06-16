@@ -163,8 +163,8 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, $timeout) {
              */
             const onSelectedChatUpdated = (chat) => {
                 $scope.chat = chat;
-                if (!chat || !chat.id && $scope.askingChatItem) {
-                    // Do nothing if the chat is new (dummy) and a question is currently being asked.
+                if (!$scope.chat || $scope.chat.isNew()) {
+                    // Do nothing if the chat is new and a question is currently being asked.
                     return;
                 }
                 $scope.loadingChat = false;
@@ -199,8 +199,8 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, $timeout) {
 
             const onSelectedChatChanged = (chat) => {
                 if (chat) {
-                    // Skip the loading indication if it is a new (dummy) chat that has not been created yet.
-                    $scope.loadingChat = chat && chat.id;
+                    // Skip the loading indication if it is a new chat that hasn't received an answer yet.
+                    $scope.loadingChat = chat && !chat.isNew();
                     $scope.chatItem = getEmptyChatItem();
                     focusQuestionInput();
                 } else {
@@ -269,7 +269,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, $timeout) {
             };
 
             const reset = () => {
-                $scope.chat = ChatModel.getEmptyChat();
+                $scope.chat = undefined;
                 $scope.loadingChat = false;
                 $scope.chatItem = getEmptyChatItem();
                 $scope.askingChatItem = undefined;
@@ -278,7 +278,6 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, $timeout) {
             };
 
             const init = () => {
-                $scope.chat = ChatModel.getEmptyChat();
                 $scope.chatItem = getEmptyChatItem();
                 focusQuestionInput();
             };
