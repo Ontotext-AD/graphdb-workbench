@@ -20,11 +20,7 @@
     white-space: nowrap;
     place-items: center;
     transition: all 0.15s ease-out;
-
-    & .username {
-      padding: 0 5px;
-      color: var(--secondary-color);
-    }
+    color: var(--secondary-color);
 
     &:hover {
       background-color: #d4d4d4;
@@ -53,6 +49,10 @@
           transform: scale(1.2);
         }
       }
+    }
+
+    .username {
+      padding: 0 5px;
     }
 
     i {
