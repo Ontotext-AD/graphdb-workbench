@@ -21,6 +21,7 @@ import {AgentSettingsModal} from "../model/agent-settings-modal";
 import {decodeHTML} from "../../../../app";
 import {status as httpStatus} from "../../models/http-status";
 import {ContinueChatRun} from "../../models/ttyg/chat-answer";
+import {ChatMessageModel} from "../../models/ttyg/chat-message";
 import {service, AuthenticationService} from "@ontotext/workbench-api";
 
 const modules = [
@@ -86,6 +87,20 @@ function TTYGViewCtrl(
     const labels = {
         filter_all: $translate.instant('ttyg.agent.btn.filter.all')
     };
+
+    /**
+     * A promise that resolves when the active question cancellation completes,
+     * or rejects if the cancellation fails.
+     */
+    let pendingQuestionCancelingPromise;
+
+    /**
+     * This is not translated, because the back-end sends it like this.
+     * When the page is refreshed, any unnamed chat will be called "New chat",
+     * regardless of the user selected language.
+     * @type {string}
+     */
+    const newChatDefaultName = 'New chat';
 
     // =========================
     // Public variables
@@ -186,7 +201,9 @@ function TTYGViewCtrl(
      * Creates a new chat and selects it.
      */
     $scope.startNewChat = () => {
-        TTYGContextService.deselectChat();
+        if (!TTYGContextService.getChats().containsNewChats()) {
+            TTYGContextService.deselectChat();
+        }
     };
 
     /**
@@ -430,33 +447,17 @@ function TTYGViewCtrl(
      * @param {ChatItemModel} chatItem
      */
     const onCreateNewChat = (chatItem) => {
-        let nonPersistedChat = TTYGContextService.getChats().getNonPersistedChat();
-        if (!nonPersistedChat) {
-            nonPersistedChat = ChatModel.getEmptyChat();
-            TTYGContextService.addChat(nonPersistedChat);
-        }
-        TTYGContextService.selectChat(nonPersistedChat);
 
-        TTYGService.createConversation(chatItem)
-            .then((chatAnswer) => {
-                TTYGContextService.emit(TTYGEventName.CREATE_CHAT_SUCCESSFUL);
-                const selectedChat = TTYGContextService.getSelectedChat();
-                // If the selected chat is not changed during the creation process.
-                if (selectedChat && !selectedChat.id) {
-                    // Give the newly created things the real IDs
-                    selectedChat.id = chatAnswer.chatId;
-                    chatItem.chatId = chatAnswer.chatId;
+        TTYGService.createChat().then((conversationId) => {
+            const newChat = ChatModel.getNewChat();
+            newChat.name = newChatDefaultName;
+            newChat.id = conversationId;
+            TTYGContextService.createChat(newChat);
+            TTYGStorageService.saveChat(newChat);
 
-                    // Replace the placeholder with the newly created chat
-                    const nonPersistedChat = TTYGContextService.getChats().getNonPersistedChat();
-                    TTYGContextService.replaceChat(selectedChat, nonPersistedChat);
-                    TTYGStorageService.saveChat(selectedChat);
-
-                    // Process the messages
-                    updateChatAnswersFirstResponse(selectedChat, chatItem, chatAnswer);
-                }
-            })
-            .catch((error) => {
+            chatItem.chatId = conversationId;
+            TTYGContextService.emit(TTYGEventName.ASK_QUESTION, chatItem);
+        }).catch((error) => {
                 TTYGContextService.emit(TTYGEventName.CREATE_CHAT_FAILURE);
                 toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
             });
@@ -466,11 +467,21 @@ function TTYGViewCtrl(
      * @param {ChatItemModel} chatItem
      */
     const onAskQuestion = (chatItem) => {
-        TTYGService.askQuestion(chatItem)
+        TTYGContextService.emit(TTYGEventName.ASK_QUESTION_STARTING);
+        // Reset the pending question cancellation promise to avoid interfering with the next question.
+        // Currently, we can only ask a question for the selected chat, so it's safe to reset the promise here.
+        pendingQuestionCancelingPromise = undefined;
+        TTYGService.askQuestion(chatItem, chatItem.chatId)
             .then((chatAnswer) => {
                 const selectedChat = TTYGContextService.getSelectedChat();
                 // If still the same chat selected
                 if (selectedChat && selectedChat.id === chatItem.chatId) {
+                    if (selectedChat.isNew()) {
+                        selectedChat.new = false;
+                        const chats = TTYGContextService.getChats();
+                        chats.setChatAsOld(selectedChat.id);
+                        TTYGContextService.updateChats(chats);
+                    }
                     // just process the messages
                     updateChatAnswersFirstResponse(selectedChat, chatItem, chatAnswer);
                 }
@@ -526,8 +537,32 @@ function TTYGViewCtrl(
     };
 
     const updateChatAnswersFirstResponse = (selectedChat, chatItem, chatAnswer) => {
-        selectedChat.chatHistory.appendItem(chatItem);
-        updateChatAnswers(selectedChat, chatItem, chatAnswer);
+        if (pendingQuestionCancelingPromise) {
+            // If the answer is canceled, we need to wait for the cancellation to complete
+            // and prepare a proper answer message that describes the reason for the cancellation.
+            pendingQuestionCancelingPromise.then((cancelingResponse) => {
+                const currentSelectedChat = TTYGContextService.getSelectedChat();
+                // If selected chat is changed while waiting for the canceling response,
+                // Skip the response processing.
+                if (currentSelectedChat && currentSelectedChat.id !== chatItem.chatId) {
+                    return;
+                }
+                const message = new ChatMessageModel({
+                    message: cancelingResponse.data.message,
+                    status: cancelingResponse.data.runStatus,
+                    isTerminalState: true,
+                    tokenUsageInfo: chatAnswer.tokenUsageInfo
+                });
+
+                message.addToChatAnswer(chatAnswer);
+                selectedChat.chatHistory.appendItem(chatItem);
+                updateChatAnswers(selectedChat, chatItem, chatAnswer);
+            });
+        } else {
+            // If the answer is not canceled, we can process it immediately.
+            selectedChat.chatHistory.appendItem(chatItem);
+            updateChatAnswers(selectedChat, chatItem, chatAnswer);
+        }
     };
 
     /**
@@ -597,6 +632,19 @@ function TTYGViewCtrl(
             .finally(() => TTYGContextService.emit(TTYGEventName.DELETING_CHAT, {chatId: chat.id, inProgress: false}));
     };
 
+    const onCancelPendingQuestion = (chatItem) => {
+        const selectedChatId = chatItem.chatId || TTYGContextService.getSelectedChat().id;
+        pendingQuestionCancelingPromise = TTYGService.cancelPendingQuestion(selectedChatId)
+            .then((answer) => {
+                TTYGContextService.emit(TTYGEventName.PENDING_QUESTION_CANCELED_SUCCESSFUL);
+                return answer;
+            })
+            .catch((error) => {
+            TTYGContextService.emit(TTYGEventName.CANCEL_PENDING_QUESTION_FAILURE);
+            return error;
+        });
+    }
+
     /**
      * Handles the export of a chat by calling the service and updating the chats list.
      * @param {ChatModel} chat - the chat to be exported.
@@ -662,9 +710,11 @@ function TTYGViewCtrl(
     };
 
     const onSelectedChatChanged = (selectedChat) => {
-        // If the selected chat has no ID, it indicates that this is a new (dummy) chat
-        // and does not need to be loaded from the server.
-        if (selectedChat && selectedChat.id) {
+        // Reset the pending question cancellation promise because the chat has changed,
+        // and any previous promise is no longer relevant.
+        pendingQuestionCancelingPromise = undefined;
+        // If the selected chat is a chat and does not need to be loaded from the server.
+        if (selectedChat && !selectedChat.isNew()) {
             TTYGService.getConversation(selectedChat.id)
                 .then((chat) => {
                     TTYGContextService.updateSelectedChat(chat);
@@ -850,6 +900,7 @@ function TTYGViewCtrl(
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CREATE_CHAT, onCreateNewChat));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.RENAME_CHAT, onRenameChat));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.DELETE_CHAT, onDeleteChat));
+    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CANCEL_PENDING_QUESTION, onCancelPendingQuestion));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CHAT_EXPORT, onExportChat));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.ASK_QUESTION, onAskQuestion));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CONTINUE_CHAT_RUN, onContinueChatRun));
