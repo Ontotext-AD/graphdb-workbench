@@ -14,6 +14,15 @@ angular
 TTYGService.$inject = ['TTYGRestService', '$repositories'];
 
 function TTYGService(TTYGRestService, $repositories) {
+    /**
+     * Creates a new chat.
+     * @param {ChatItemModel} chatItem
+     * @returns {Promise<string>} A promise that resolves with the newly created chat ID.
+     */
+    const createChat = (chatItem) => {
+        return TTYGRestService.createChat(chatItem)
+            .then((response) => response.data.conversationId);
+    };
 
     const getConversations = (savedQueryName, owner) => {
         return TTYGRestService.getConversations()
@@ -47,7 +56,7 @@ function TTYGService(TTYGRestService, $repositories) {
      * */
     const exportConversation = (id) => {
         return TTYGRestService.exportConversation(id)
-            .then(function (res) {
+            .then(function(res) {
                 const data = res.data;
                 const headers = res.headers();
                 const contentDispositionHeader = headers['content-disposition'];
@@ -62,7 +71,7 @@ function TTYGService(TTYGRestService, $repositories) {
 
     /**
      * Asks a question.
-     * @param {ChatItemModel} chatItem .
+     * @param {ChatItemModel} chatItem
      * @return {Promise<ChatAnswerModel>} the answer of the question.
      */
     const askQuestion = (chatItem) => {
@@ -88,6 +97,17 @@ function TTYGService(TTYGRestService, $repositories) {
      */
     const deleteConversation = (id) => {
         return TTYGRestService.deleteConversation(id);
+    };
+
+    /**
+     * Cancels a pending question within a chat.
+     *
+     * @param {string|number} chatId - The unique identifier of the chat containing the pending question to be canceled.
+     * @returns {Promise} A promise that resolves when the pending question has been successfully canceled,
+     * or rejects with an error.
+     */
+    const cancelPendingQuestion = (chatId) => {
+        return TTYGRestService.cancelPendingQuestion(chatId);
     };
 
     /**
@@ -198,6 +218,7 @@ function TTYGService(TTYGRestService, $repositories) {
     };
 
     return {
+        createChat,
         getConversation,
         renameConversation,
         exportConversation,
@@ -206,6 +227,7 @@ function TTYGService(TTYGRestService, $repositories) {
         getConversations,
         deleteConversation,
         createConversation,
+        cancelPendingQuestion,
         getAgents,
         getAgent,
         createAgent,
@@ -213,6 +235,6 @@ function TTYGService(TTYGRestService, $repositories) {
         deleteAgent,
         explainResponse,
         getDefaultAgent,
-        explainAgentSettings
+        explainAgentSettings,
     };
 }

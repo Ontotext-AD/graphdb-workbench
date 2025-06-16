@@ -62,6 +62,10 @@
 .chat-detail .assistant-message .actions {
 }
 
+.chat-detail .assistant-message markdown-content.italic .markdown-content p {
+    font-style: italic;
+}
+
 .chat-detail .assistant-message .derived-answer-hint {
     display: flex;
     flex-wrap: wrap;
