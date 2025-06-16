@@ -177,6 +177,12 @@ function TTYGViewCtrl(
 
     const cancelPromiseMap = new Map();
 
+    /**
+     * The last answer which came from the Ask endpoint.
+     * @type {ChatAnswerModel}
+     */
+    let lastChatAnswer = null;
+
     // =========================
     // Public functions
     // =========================
@@ -439,6 +445,7 @@ function TTYGViewCtrl(
             TTYGContextService.addChat(nonPersistedChat);
             TTYGContextService.selectChat(nonPersistedChat);
             onAskQuestion(chatItem);
+            TTYGContextService.emit(TTYGEventName.CREATE_CHAT_SUCCESSFUL);
         }).catch((error) => {
             TTYGContextService.emit(TTYGEventName.CREATE_CHAT_FAILURE);
             toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
@@ -451,10 +458,9 @@ function TTYGViewCtrl(
     const onAskQuestion = (chatItem) => {
         // Delay showing cancel button, so that a new chat can be created in the BE and an ID for it can be returned.
         // If clicked too soon after asking, the chatId is undefined and the response hangs
-        TTYGContextService.emit(TTYGEventName.SHOW_ABORT_BUTTON);
+        TTYGContextService.emit(TTYGEventName.ASK_QUESTION_STARTING);
         TTYGService.askQuestion(chatItem)
             .then((chatAnswer) => {
-                TTYGContextService.emit(TTYGEventName.CREATE_CHAT_SUCCESSFUL);
                 const selectedChat = TTYGContextService.getSelectedChat();
                 // If the selected chat is not changed during the creation process.
                 if (selectedChat && !selectedChat.id) {
@@ -470,6 +476,7 @@ function TTYGViewCtrl(
 
                 // If still the same chat selected
                 if (selectedChat && selectedChat.id === chatItem.chatId) {
+                    lastChatAnswer = chatAnswer;
                     // just process the messages
                     updateChatAnswersFirstResponse(selectedChat, chatItem, chatAnswer);
                 }
@@ -526,7 +533,6 @@ function TTYGViewCtrl(
     };
 
     const updateChatAnswersFirstResponse = (selectedChat, chatItem, chatAnswer) => {
-        // If cancelling, wait before appending
         if ($scope.cancelling) {
             const cancellationPromise = cancelPromiseMap.get(chatItem.chatId);
             if (cancellationPromise) {
@@ -540,12 +546,14 @@ function TTYGViewCtrl(
                     })
                     .then((result) => {
                         const data = {
-                            message: result.data,
+                            message: result.data.message,
+                            status: result.data.runStatus,
                             isTerminalState: true,
                             tokenUsageInfo: chatAnswer.tokenUsageInfo
                         };
                         chatItem.answers.push(new ChatMessageModel(data));
                         selectedChat.chatHistory.appendItem(chatItem);
+                        console.log(selectedChat.chatHistory);
                         updateChatAnswers(selectedChat, chatItem, chatAnswer);
                         cancelPromiseMap.delete(chatItem.chatId);
                         $scope.cancelling = false;
@@ -631,7 +639,8 @@ function TTYGViewCtrl(
             .then((res) => {
                 return res;
             }).catch((error) => {
-                return error;
+                TTYGContextService.emit(TTYGEventName.CANCEL_CHAT_FAILURE);
+                toastr.error(error);
             });
         cancelPromiseMap.set(selectedChatId, cancelPromise);
     }

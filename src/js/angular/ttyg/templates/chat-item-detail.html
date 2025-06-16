@@ -14,8 +14,7 @@
                  gdb-tooltip="{{'ttyg.chat_panel.labels.agent_name' | translate : { agentName: agentNameByIdMap[chatItemDetail.agentId], date: getHumanReadableQuestionTimestamp(chatItemDetail.question.timestamp), time: (chatItemDetail.question.timestamp | date:'HH:mm') } }}">
                 <i class="fa fa-lg fa-message-bot"></i>
             </div>
-            <!--  TODO on assistant-message add ng-if="answer.status !== 'completed'" -->
-            <div class="assistant-message">
+            <div class="assistant-message" ng-if="answer.status !== 'completed'">
                 <markdown-content class="answer" ng-class="{'italic': answer.isTerminalState}" content="{{answer.message}}" options="markdownContentOptions"></markdown-content>
                 <div class="actions" ng-class="{'hidden-actions': !explainResponseModel[answer.id].expanded && (!showActions || !$last)}">
                     <button class="btn btn-link btn-sm regenerate-question-btn"

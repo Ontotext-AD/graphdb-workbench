@@ -571,5 +571,7 @@ export const TTYGEventName = {
 
     CAN_MODIFY_AGENT_UPDATED: "canModifyAgentUpdated",
 
-    SHOW_ABORT_BUTTON: "showAbortQuestionButton"
+    ASK_QUESTION_STARTING: "askQuestionStarting",
+
+    ASK_QUESTION_CANCELED: "askQuestionCanceled"
 };

@@ -248,7 +248,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
                 $scope.askingChatItem = undefined;
             };
 
-            const onShowAbortButton = () => {
+            const onAskQuestionStarting = () => {
                 $scope.showCancelButton = true;
             };
 
@@ -324,7 +324,8 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.DELETE_CHAT_SUCCESSFUL, onChatDeleted));
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CANCEL_CHAT_SUCCESSFUL, onChatCancelled));
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CANCEL_CHAT_FAILURE, onChatCancelled));
-            subscriptions.push(TTYGContextService.subscribe(TTYGEventName.SHOW_ABORT_BUTTON, onShowAbortButton));
+            subscriptions.push(TTYGContextService.subscribe(TTYGEventName.ASK_QUESTION_STARTING, onAskQuestionStarting));
+            //subscriptions.push(TTYGContextService.subscribe(TTYGEventName.ASK_QUESTION_CANCELED, onSelectedChatUpdated));
 
             // Deregister the watcher when the scope/directive is destroyed
             $scope.$on('$destroy', removeAllSubscribers);
