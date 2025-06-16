@@ -6,7 +6,7 @@ import {getHumanReadableTimestamp} from "../services/ttyg.utils";
 
 const modules = [
     'graphdb.framework.core.directives.open-in-sparql-editor',
-    'graphdb.framework.core.directives.markdown-content'
+    'graphdb.framework.core.directives.markdown-content',
 ];
 
 angular
@@ -36,10 +36,9 @@ function ChatItemDetailComponent(toastr, $translate, TTYGContextService, TTYGSer
             asking: '=',
             disabled: '=',
             onRegenerateQuestion: '&',
-            onAskHowDeliveredAnswer: '&'
+            onAskHowDeliveredAnswer: '&',
         },
         link: ($scope, element, attrs) => {
-
             // =========================
             // Public variables
             // =========================
@@ -47,6 +46,11 @@ function ChatItemDetailComponent(toastr, $translate, TTYGContextService, TTYGSer
             $scope.ExplainQueryType = ExplainQueryType;
             $scope.repositoryId = undefined;
             $scope.markdownContentOptions = undefined;
+            /**
+             * Flag that indicates if answer cancellation is in progress.
+             * @type {boolean}
+             */
+            $scope.isCancellingAnswer = false;
 
             /**
              * Mapping of agent id to agent name which is used to display the agent name in the UI.
@@ -124,7 +128,7 @@ function ChatItemDetailComponent(toastr, $translate, TTYGContextService, TTYGSer
                 if ($scope.chatItemDetail.agentId) {
                     TTYGContextService.emit(TTYGEventName.GO_TO_SPARQL_EDITOR, {
                         query,
-                        repositoryId: $scope.repositoryId
+                        repositoryId: $scope.repositoryId,
                     });
                 }
             };
@@ -168,17 +172,38 @@ function ChatItemDetailComponent(toastr, $translate, TTYGContextService, TTYGSer
                 $scope.agentNameByIdMap = TTYGContextService.getAgents().agentNameByIdMap;
             };
 
+            const onPendingQuestionCancelled = () => {
+                $scope.isCancellingAnswer = false;
+            };
+
+            const onCancelPendingQuestion = (chatItem) => {
+                // If the chat item is not the same as the one in scope, do nothing.
+                // We check by timestamp because it's the only unique identifier we have for the question.
+                // The question has an ID, but it’s not always available in the chat item.
+                // When the chat is loaded, all questions are loaded with their IDs.
+                // However, when we ask a new question, it does not yet have an ID.
+                // This means we can have multiple questions with no ID, which may cause issues
+                // like displaying more than one loader indicator.
+                if ($scope.chatItemDetail.question.timestamp !== chatItem.question.timestamp) {
+                    return;
+                }
+                $scope.isCancellingAnswer = true;
+            };
+
             // =========================
             // Subscriptions
             // =========================
-            const subscriptions = [];
+            const subscriptions = [
+                TTYGContextService.onExplainResponseCacheUpdated(onExplainResponseCacheUpdated),
+                TTYGContextService.onAgentsListChanged(onAgentsListChanged),
+                TTYGContextService.subscribe(TTYGEventName.PENDING_QUESTION_CANCELED_SUCCESSFUL, onPendingQuestionCancelled),
+                TTYGContextService.subscribe(TTYGEventName.CANCEL_PENDING_QUESTION_FAILURE, onPendingQuestionCancelled),
+                TTYGContextService.subscribe(TTYGEventName.CANCEL_PENDING_QUESTION, onCancelPendingQuestion),
+            ];
 
             const removeAllSubscribers = () => {
                 subscriptions.forEach((subscription) => subscription());
             };
-
-            subscriptions.push(TTYGContextService.onExplainResponseCacheUpdated(onExplainResponseCacheUpdated));
-            subscriptions.push(TTYGContextService.onAgentsListChanged(onAgentsListChanged));
 
             // Deregister the watcher when the scope/directive is destroyed
             $scope.$on('$destroy', removeAllSubscribers);
@@ -187,6 +212,6 @@ function ChatItemDetailComponent(toastr, $translate, TTYGContextService, TTYGSer
             // Initialization
             // =========================
             init();
-        }
+        },
     };
 }

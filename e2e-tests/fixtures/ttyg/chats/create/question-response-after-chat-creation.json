@@ -1,0 +1,29 @@
+{
+    "id": "thread_tpv1izmd9bIjxkhUiCd5x2Xz",
+    "name": "Hello! How can I assist you today?",
+    "messages": [
+        {
+            "id": "msg_drDW9OTkPkY0oGoXSdPD5qEx",
+            "conversationId": "thread_tpv1izmd9bIjxkhUiCd5x2Xz",
+            "agentId": "asst_0llP8yAJlFY2yCWrz8Ovfzjs",
+            "role": "assistant",
+            "message": "Hello! How can I assist you today?",
+            "timestamp": "creationDate",
+            "name": null,
+            "usage": {
+                "completionTokens": 11,
+                "promptTokens": 374,
+                "totalTokens": 385
+            },
+            "isTerminalState": false,
+            "terminalStatusCode": null
+        }
+    ],
+    "timestamp": "creationDate",
+    "continueRunId": null,
+    "usage": {
+        "completionTokens": 11,
+        "promptTokens": 374,
+        "totalTokens": 385
+    }
+}

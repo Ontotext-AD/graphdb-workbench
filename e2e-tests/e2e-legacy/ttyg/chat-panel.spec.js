@@ -190,6 +190,36 @@ describe('Ttyg ChatPanel', () => {
             .and('contain', 'completion tokens');
     });
 
+    it('Should abort question', () => {
+        // When I type a question
+        ChatPanelSteps.getQuestionInputElement()
+            .should('be.visible')
+            .and('not.have.attr', 'disabled');
+        ChatPanelSteps.getQuestionInputElement()
+            .type('Who is Han Solo?');
+
+        // Then I expect the "Ask" button be active
+        ChatPanelSteps.getAskButtonElement().should('be.enabled');
+
+        // When I click on "Ask" button
+        TTYGStubs.stubAnswerQuestionWithDelay();
+        TTYGStubs.stubCancelQuestion();
+        ChatPanelSteps.askQuestion();
+        // Then the Cancel button should become visible and the Ask button should be hidden
+        ChatPanelSteps.getAskButtonElement().should('not.exist');
+        ChatPanelSteps.getCancelButton().should('be.visible');
+        // When I cancel the question
+        ChatPanelSteps.cancelQuestion();
+        // Then the Cancel button should be replaced with the Ask button
+        ChatPanelSteps.getCancelButton().should('not.exist');
+        ChatPanelSteps.getAskButtonElement().should('be.visible');
+        // Then the default Agent response should be visible
+        ChatPanelSteps.getAssistantAnswer(2).invoke('text').then((text) => {
+            expect(text.trim()).to.equal('Request cancelled by the user.');
+        });
+        ChatPanelSteps.getAssistantIcon(2).should('not.exist');
+    });
+
     // Can't test this on CI
     it.skip('Should copy an answer when click on copy button', () => {
         // When I click on copy button
