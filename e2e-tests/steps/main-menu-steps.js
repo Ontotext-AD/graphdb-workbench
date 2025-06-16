@@ -106,4 +106,9 @@ export class MainMenuSteps {
         this.clickOnExplore();
         this.getSubMenuButton('sub-menu-class-relationships').click();
     }
+
+    static clickOnSimilarity() {
+        this.clickOnExplore();
+        this.getSubMenuButton('sub-menu-similarity').click();
+    }
 }
