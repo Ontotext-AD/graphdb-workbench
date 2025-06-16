@@ -2851,7 +2851,7 @@
     "sign.in": "Sign in",
     "sign.in.openid": "Sign in with OpenID",
     "gdb.license.info.header": "GraphDB License Information",
-    "supply.license.or.contact.us.warning": "Please supply a valid license. You can obtain a free license for GraphDB Free or an evaluation license for GraphDB Enterprise at <a href='https://www.ontotext.com/products/graphdb/#try-graphdb'>Ontotext's website</a>.",
+    "supply.license.or.contact.us.warning": "Please supply a valid license. You can obtain a free license for GraphDB Free or an evaluation license for GraphDB Enterprise at <a rel=\"noopener\" target=\"_blank\" href='https://www.ontotext.com/products/graphdb/#try-graphdb'>Ontotext's website</a>.",
     "remove.license": "Remove license",
     "no.license.restrictions": "Without a valid license, GraphDB works in restricted mode and the only allowed operation is exporting repositories.",
     "no.license": "No license",
