@@ -57,11 +57,18 @@
     gap: 0.625rem;
 }
 
+.chat-panel .cancel-ask-button {
+    width: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .chat-panel .user-message .question {
     max-width: 70%;
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
-    padding-top: 1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-top: 0.5rem;
     color: var(--text-color);
 }
 

@@ -15,6 +15,16 @@ TTYGService.$inject = ['TTYGRestService', '$repositories'];
 
 function TTYGService(TTYGRestService, $repositories) {
 
+    /**
+     * Creates a new chat.
+     *
+     * @returns {Promise<string>} A promise that resolves with the newly created chat ID.
+     */
+    const createChat = () => {
+        return TTYGRestService.createChat()
+            .then((response) => response.data.conversationId);
+    };
+
     const getConversations = (savedQueryName, owner) => {
         return TTYGRestService.getConversations()
             .then((response) => chatsListMapper(response.data));
@@ -63,10 +73,11 @@ function TTYGService(TTYGRestService, $repositories) {
     /**
      * Asks a question.
      * @param {ChatItemModel} chatItem .
+     * @param {string} id conversation ID
      * @return {Promise<ChatAnswerModel>} the answer of the question.
      */
-    const askQuestion = (chatItem) => {
-        return TTYGRestService.askQuestion(chatItem.toAskRequestPayload())
+    const askQuestion = (chatItem, id) => {
+        return TTYGRestService.askQuestion(chatItem.toAskRequestPayload(), id)
             .then((response) => chatAnswerModelMapper(response.data));
     };
 
@@ -88,6 +99,17 @@ function TTYGService(TTYGRestService, $repositories) {
      */
     const deleteConversation = (id) => {
         return TTYGRestService.deleteConversation(id);
+    };
+
+    /**
+     * Cancels a pending question within a chat.
+     *
+     * @param {string|number} chatId - The unique identifier of the chat containing the pending question to be canceled.
+     * @returns {Promise} A promise that resolves when the pending question has been successfully canceled,
+     * or rejects with an error.
+     */
+    const cancelPendingQuestion = (chatId) => {
+        return TTYGRestService.cancelPendingQuestion(chatId);
     };
 
     /**
@@ -198,6 +220,7 @@ function TTYGService(TTYGRestService, $repositories) {
     };
 
     return {
+        createChat,
         getConversation,
         renameConversation,
         exportConversation,
@@ -206,6 +229,7 @@ function TTYGService(TTYGRestService, $repositories) {
         getConversations,
         deleteConversation,
         createConversation,
+        cancelPendingQuestion,
         getAgents,
         getAgent,
         createAgent,
