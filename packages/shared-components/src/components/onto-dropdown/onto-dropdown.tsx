@@ -218,10 +218,11 @@ export class OntoDropdown {
   private toggleButtonClickHandler() {
     return (event: MouseEvent) => {
       const target = event.currentTarget as HTMLElementWithTooltip;
-      if (target?.hideTooltip) {
-        target.hideTooltip();
-      }
       this.toggleComponent();
+      if (target?.hideTooltip) {
+        // in a timeout so that the state is updated before the tooltip is hidden
+        setTimeout(() => target.hideTooltip(), 50)
+      }
     }
   }
 
