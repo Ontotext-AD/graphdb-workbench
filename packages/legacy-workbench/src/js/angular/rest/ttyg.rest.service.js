@@ -9,12 +9,24 @@ TTYGRestService.$inject = ['$http'];
 const CONVERSATIONS_ENDPOINT = 'rest/chat/conversations';
 const AGENTS_ENDPOINT = 'rest/chat/agents';
 const EXPLAIN_RESPONSE_ENDPOINT = `${CONVERSATIONS_ENDPOINT}/explain`;
+const CHATS_ENDPOINT = 'rest/chat/chats';
 
 const DEVELOPMENT = false;
 
 function TTYGRestService($http) {
-
     const _fakeBackend = new TtygRestServiceFakeBackend();
+
+    /**
+     * Creates a new chat.
+     * @param {*} data the payload
+     * @returns {Promise<string>} A promise that resolves with the newly created chat ID.
+     */
+    const createChat = (data) => {
+        if (DEVELOPMENT) {
+            return _fakeBackend.createChat();
+        }
+        return $http.post(CHATS_ENDPOINT, data);
+    };
 
     const getConversations = () => {
         if (DEVELOPMENT) {
@@ -65,14 +77,14 @@ function TTYGRestService($http) {
 
     /**
      * Calls the REST API to ask a question.
-     * @param {*} data
+     * @param {*} data the payload
      * @return {*}
      */
     const askQuestion = (data) => {
         if (DEVELOPMENT) {
             return _fakeBackend.askQuestion(data);
         }
-        return $http.post(`${CONVERSATIONS_ENDPOINT}`, data);
+        return $http.post(`${CHATS_ENDPOINT}/question`, data);
     };
 
     /**
@@ -109,6 +121,20 @@ function TTYGRestService($http) {
             return _fakeBackend.createConversation(data);
         }
         return $http.post(CONVERSATIONS_ENDPOINT, data);
+    };
+
+    /**
+     * Cancels a pending question within a chat.
+     *
+     * @param {string|number} chatId - The unique identifier of the chat containing the pending question to be canceled.
+     * @returns {Promise} A promise that resolves when the pending question has been successfully canceled,
+     * or rejects with an error.
+     */
+    const cancelPendingQuestion = (chatId) => {
+        if (DEVELOPMENT) {
+            return _fakeBackend.cancelPendingQuestion(false);
+        }
+        return $http.post(`${CHATS_ENDPOINT}/${chatId}/cancel`);
     };
 
     /**
@@ -211,6 +237,7 @@ function TTYGRestService($http) {
 
 
     return {
+        createChat,
         getConversation,
         renameConversation,
         exportConversation,
@@ -219,6 +246,7 @@ function TTYGRestService($http) {
         getConversations,
         deleteConversation,
         createConversation,
+        cancelPendingQuestion,
         getAgents,
         getAgent,
         createAgent,
@@ -226,6 +254,6 @@ function TTYGRestService($http) {
         deleteAgent,
         explainResponse,
         getAgentDefaultValues,
-        explainAgentSettings
+        explainAgentSettings,
     };
 }

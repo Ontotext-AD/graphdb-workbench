@@ -117,6 +117,21 @@ export class TtygRestServiceFakeBackend {
         return this.askQuestion(askRequestData);
     }
 
+    createChat() {
+        return new Promise((resolve) => setTimeout(() => resolve({data: {
+            "id": null,
+                "conversationId": "thread_1r5uVXAJKxzK5osAsTh4gyiS",
+                "agentId": null,
+                "role": null,
+                "message": null,
+                "timestamp": 0,
+                "name": "New chat",
+                "usage": null,
+                "isTerminalState": false,
+                "terminalStatusCode": null
+        }})));
+    }
+
     getAgents() {
         return new Promise((resolve) => setTimeout(() => resolve({data: [...agentsList]}), LOAD_AGENTS_DELAY));
     }
@@ -237,6 +252,28 @@ export class TtygRestServiceFakeBackend {
                     }
                 ]
             }});
+    }
+
+    /**
+     * Cancels the current conversation and provides a response indicating the success or failure of the operation.
+     *
+     * @param {boolean} returnError - Flag indicating whether the cancellation should simulate an error scenario.
+     * @return {Promise<Object>} A promise that resolves with the outcome of the cancellation.
+     *                            If `returnError` is true, the promise rejects with an error object containing the status and message.
+     *                            If `returnError` is false, the promise resolves with an object containing the success status and message.
+     */
+    cancelPendingQuestion(returnError) {
+        if (returnError) {
+            return Promise.reject({
+                status: 500,
+                message: "Error while cancelling run due to: ttyg.exceptions.GenericServerException: Timeout waiting for cancellation. Run run_z12dSC remains active. Please start a new chat thread."
+            });
+        } else {
+            return Promise.resolve({
+                status: 200,
+                message: 'Current chat was successfully sent for cancelling.'
+            });
+        }
     }
 }
 

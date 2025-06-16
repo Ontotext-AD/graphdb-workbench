@@ -2,10 +2,11 @@ import {ChatItemsListModel} from "./chat-item";
 import {md5HashGenerator} from "../../utils/hash-utils";
 
 export class ChatModel {
-    static getEmptyChat() {
+    static getNewChat() {
         const data = {
             name: "\u00B7 \u00B7 \u00B7",
-            timestamp: Math.floor(Date.now() / 1000)
+            timestamp: Math.floor(Date.now() / 1000),
+            new: true,
         };
         return new ChatModel(data, md5HashGenerator());
     }
@@ -32,7 +33,16 @@ export class ChatModel {
          * @type {ChatItemsListModel}
          */
         this._chatHistory = data.chatHistory || new ChatItemsListModel();
+        this._new = data.new ?? false;
         this.hash = this.generateHash();
+    }
+
+    isNew() {
+        return this._new;
+    }
+
+    set new(value) {
+        this._new = value;
     }
 
     generateHash() {
@@ -140,6 +150,15 @@ export class ChatsListModel {
     }
 
     /**
+     * Checks if there is at least one new chat.
+     *
+     * @returns {boolean} True if any chat is marked as new, otherwise false.
+     */
+    containsNewChats() {
+        return this._chats.some((chat) => chat.isNew());
+    }
+
+    /**
      * Sorts the list of chats by timestamp in descending order, with the newest items on top.
      */
     sortByTime() {
@@ -159,6 +178,18 @@ export class ChatsListModel {
             chat.timestamp = timestamp;
             this.sortByTime();
             this.updateChatsByDay();
+        }
+    }
+
+    /**
+     * Marks the specified chat as no longer new.
+     *
+     * @param {string} chatId - The ID of the chat to update.
+     */
+    setChatAsOld(chatId) {
+        const chat = this._chats.find((chat) => chat.id === chatId);
+        if (chat) {
+            chat.new = false;
         }
     }
 
