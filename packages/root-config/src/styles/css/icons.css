@@ -365,10 +365,6 @@
     content: "\e92c";
 }
 
-.icon-user-alt:before {
-    content: "\e92d";
-}
-
 .icon-export-alt:before {
     content: "\e92e";
 }
@@ -427,10 +423,6 @@
 
 .icon-translation:before {
     content: "\e961";
-}
-
-.icon-user:before {
-    content: "\e962";
 }
 
 .icon-follower:before {
