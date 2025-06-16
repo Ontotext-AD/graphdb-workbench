@@ -42,6 +42,9 @@ describe('Home page: with selected repository', () => {
     ActiveRepositoryWidgetSteps.getWidget().should('be.visible');
     ActiveRepositoryWidgetSteps.getActiveRepository().should('contain', repositoryId);
     ActiveRepositoryWidgetSteps.getWidgetName().should('contain', 'Active repository');
+    ActiveRepositoryWidgetSteps.getTotalStatements().should('contain', 70);
+    ActiveRepositoryWidgetSteps.getInferredStatements().should('contain', 70);
+    ActiveRepositoryWidgetSteps.getExplicitStatements().should('contain', 0);
   });
 
   it('should not render repository errors widget', () => {
