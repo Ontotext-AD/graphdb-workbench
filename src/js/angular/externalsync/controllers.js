@@ -237,9 +237,9 @@ function parseFirstBuildingResult(results) {
     return {};
 }
 
-ConnectorsCtrl.$inject = ['$scope', '$http', '$repositories', '$modal', 'toastr', 'ModalService', '$q', 'RDF4JRepositoriesRestService', 'ConnectorsRestService'];
+ConnectorsCtrl.$inject = ['$scope', '$http', '$repositories', '$uibModal', 'toastr', 'ModalService', '$q', 'RDF4JRepositoriesRestService', 'ConnectorsRestService'];
 
-function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalService, $q, RDF4JRepositoriesRestService, ConnectorsRestService) {
+function ConnectorsCtrl($scope, $http, $repositories, $uibModal, toastr, ModalService, $q, RDF4JRepositoriesRestService, ConnectorsRestService) {
     $scope.loader = false;
 
     $scope.controllers = [];
@@ -389,7 +389,7 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
             }
         });
 
-        $scope.beingBuiltConnector.modalInstance = $modal.open({
+        $scope.beingBuiltConnector.modalInstance = $uibModal.open({
             templateUrl: 'pages/connectorProgress.html',
             controller: 'CreateProgressCtrl',
             size: 'lg',
@@ -437,7 +437,7 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
             newValues = angular.copy(values);
             newValues.name = newValues.name + '-copy';
         }
-        const modal = $modal.open({
+        const modal = $uibModal.open({
             templateUrl: 'pages/createConnector.html',
             controller: 'CreateConnectorCtrl',
             size: 'lg',
@@ -464,7 +464,7 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
     };
 
     $scope.newConnector = function (connector, values) {
-        const modal = $modal.open({
+        const modal = $uibModal.open({
             templateUrl: 'pages/createConnector.html',
             controller: 'CreateConnectorCtrl',
             size: 'lg',
@@ -520,7 +520,7 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
     $scope.delete = function (inst, type) {
         const isExternal = type.key.indexOf("Elastic") >= 0 || type.key.indexOf("Solr") >= 0;
 
-        $modal.open({
+        $uibModal.open({
             templateUrl: 'js/angular/externalsync/templates/deleteConnector.html',
             controller: 'DeleteConnectorCtrl',
             resolve: {
@@ -560,7 +560,7 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
     };
 
     $scope.viewQuery = function (connector, inst) {
-        $modal.open({
+        $uibModal.open({
             templateUrl: 'pages/viewQuery.html',
             controller: 'ViewQueryCtrl',
             resolve: {
@@ -574,23 +574,23 @@ function ConnectorsCtrl($scope, $http, $repositories, $modal, toastr, ModalServi
     };
 }
 
-DeleteConnectorCtrl.$inject = ['$scope', '$modalInstance', 'type', 'isExternal'];
-function DeleteConnectorCtrl($scope, $modalInstance, type, isExternal) {
+DeleteConnectorCtrl.$inject = ['$scope', '$uibModalInstance', 'type', 'isExternal'];
+function DeleteConnectorCtrl($scope, $uibModalInstance, type, isExternal) {
     $scope.force = false;
     $scope.type = type;
     $scope.isExternal = isExternal;
 
     $scope.ok = function () {
-        $modalInstance.close($scope.force);
+        $uibModalInstance.close($scope.force);
     };
 
     $scope.cancel = function () {
-        $modalInstance.dismiss();
+        $uibModalInstance.dismiss();
     };
 }
 
-ExtendNewConnectorCtrl.$inject = ['$scope', '$modalInstance', 'connector', '$modal', 'toastr'];
-function ExtendNewConnectorCtrl($scope, $modalInstance, connector, $modal, toastr) {
+ExtendNewConnectorCtrl.$inject = ['$scope', '$uibModalInstance', 'connector', '$uibModal', 'toastr'];
+function ExtendNewConnectorCtrl($scope, $uibModalInstance, connector, $uibModal, toastr) {
 
     $scope.connector = connector;
 
@@ -627,7 +627,7 @@ function ExtendNewConnectorCtrl($scope, $modalInstance, connector, $modal, toast
             const query = toQuery();
 
             if (query) {
-                $modalInstance.close({name: $scope.name, values: $scope.values, options: $scope.options, query: query});
+                $uibModalInstance.close({name: $scope.name, values: $scope.values, options: $scope.options, query: query});
             }
         }
     };
@@ -636,7 +636,7 @@ function ExtendNewConnectorCtrl($scope, $modalInstance, connector, $modal, toast
         const query = toQuery();
 
         if (query) {
-            $modal.open({
+            $uibModal.open({
                 templateUrl: 'pages/viewQuery.html',
                 controller: 'ViewQueryCtrl',
                 resolve: {
@@ -649,18 +649,18 @@ function ExtendNewConnectorCtrl($scope, $modalInstance, connector, $modal, toast
     };
 
     $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
+        $uibModalInstance.dismiss('cancel');
     };
 }
 
-CreateConnectorCtrl.$inject = ['$scope', '$controller', '$http', '$modalInstance', 'connector', '$modal', 'values', 'options'];
+CreateConnectorCtrl.$inject = ['$scope', '$controller', '$http', '$uibModalInstance', 'connector', '$uibModal', 'values', 'options'];
 
-function CreateConnectorCtrl($scope, $controller, $http, $modalInstance, connector, $modal, values, options) {
+function CreateConnectorCtrl($scope, $controller, $http, $uibModalInstance, connector, $uibModal, values, options) {
     angular.extend(this, $controller('ExtendNewConnectorCtrl', {
         $scope: $scope,
-        $modalInstance: $modalInstance,
+        $uibModalInstance: $uibModalInstance,
         connector: connector,
-        $modal: $modal
+        $uibModal: $uibModal
     }));
     $scope.values = values.values;
     $scope.options = options;

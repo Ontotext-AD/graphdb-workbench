@@ -18,8 +18,8 @@ const modules = [
 const moduleDefinition = function (productInfo) {
     const workbench = angular.module('graphdb.workbench', modules);
 
-    workbench.config(['$routeProvider', '$locationProvider', '$menuItemsProvider', 'toastrConfig', 'localStorageServiceProvider', '$tooltipProvider', '$httpProvider', '$templateRequestProvider',
-        function ($routeProvider, $locationProvider, $menuItemsProvider, toastrConfig, localStorageServiceProvider, $tooltipProvider, $httpProvider, $templateRequestProvider) {
+    workbench.config(['$routeProvider', '$locationProvider', '$menuItemsProvider', 'toastrConfig', 'localStorageServiceProvider', '$uibTooltipProvider', '$httpProvider', '$templateRequestProvider',
+        function ($routeProvider, $locationProvider, $menuItemsProvider, toastrConfig, localStorageServiceProvider, $uibTooltipProvider, $httpProvider, $templateRequestProvider) {
 
             angular.extend(toastrConfig, {
                 timeOut: 5000,
@@ -77,8 +77,8 @@ const moduleDefinition = function (productInfo) {
             $locationProvider.html5Mode(true);
 
             // Extra triggers for tooltip/popover so we can do fancier stuff (see core-errors for example)
-            $tooltipProvider.setTriggers({'show': 'hide'});
-            $tooltipProvider.options({appendToBody: true});
+            $uibTooltipProvider.setTriggers({'show': 'hide'});
+            $uibTooltipProvider.options({appendToBody: true});
 
             // Due to angular weirdness and what gets injected where we can't inject the productInfo constant
             // at the time of module creation so we pass it to $menuItemsProvider. The info can be used

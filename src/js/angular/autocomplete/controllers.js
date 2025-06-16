@@ -10,9 +10,9 @@ angular
     .controller('AutocompleteCtrl', AutocompleteCtrl)
     .controller('AddLabelCtrl', AddLabelCtrl);
 
-AutocompleteCtrl.$inject = ['$scope', '$interval', 'toastr', '$repositories', '$modal', '$timeout', 'AutocompleteRestService', '$autocompleteStatus'];
+AutocompleteCtrl.$inject = ['$scope', '$interval', 'toastr', '$repositories', '$uibModal', '$timeout', 'AutocompleteRestService', '$autocompleteStatus'];
 
-function AutocompleteCtrl($scope, $interval, toastr, $repositories, $modal, $timeout, AutocompleteRestService, $autocompleteStatus) {
+function AutocompleteCtrl($scope, $interval, toastr, $repositories, $uibModal, $timeout, AutocompleteRestService, $autocompleteStatus) {
 
     let timer;
 
@@ -221,7 +221,7 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $modal, $tim
     };
 
     $scope.editLabel = function (label, isNew) {
-        const modalInstance = $modal.open({
+        const modalInstance = $uibModal.open({
             templateUrl: 'js/angular/autocomplete/templates/modal/add-label.html',
             controller: 'AddLabelCtrl',
             resolve: {
@@ -257,20 +257,20 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $modal, $tim
     init();
 }
 
-AddLabelCtrl.$inject = ['$scope', '$modalInstance', '$timeout', 'data'];
+AddLabelCtrl.$inject = ['$scope', '$uibModalInstance', '$timeout', 'data'];
 
-function AddLabelCtrl($scope, $modalInstance, $timeout, data) {
+function AddLabelCtrl($scope, $uibModalInstance, $timeout, data) {
     $scope.label = angular.copy(data.label);
     $scope.isNew = data.isNew;
 
     $scope.ok = function () {
         if ($scope.form.$valid) {
-            $modalInstance.close($scope.label);
+            $uibModalInstance.close($scope.label);
         }
     };
 
     $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
+        $uibModalInstance.dismiss('cancel');
     };
 
     $scope.setTemplate = function (iri) {

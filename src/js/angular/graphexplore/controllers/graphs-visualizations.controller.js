@@ -17,13 +17,13 @@ angular
     .module('graphdb.framework.graphexplore.controllers.graphviz', modules)
     .controller('GraphsVisualizationsCtrl', GraphsVisualizationsCtrl)
     .controller('SaveGraphModalCtrl', SaveGraphModalCtrl)
-    .config(['$tooltipProvider', function ($tooltipProvider) {
-        $tooltipProvider.options({appendToBody: true});
+    .config(['$uibTooltipProvider', function ($uibTooltipProvider) {
+        $uibTooltipProvider.options({appendToBody: true});
     }]);
 
-GraphsVisualizationsCtrl.$inject = ["$scope", "$rootScope", "$repositories", "toastr", "$timeout", "$http", "ClassInstanceDetailsService", "AutocompleteRestService", "$q", "$location", "$jwtAuth", "UiScrollService", "ModalService", "$modal", "$window", "LocalStorageAdapter", "LSKeys", "SavedGraphsRestService", "GraphConfigRestService", "RDF4JRepositoriesRestService"];
+GraphsVisualizationsCtrl.$inject = ["$scope", "$rootScope", "$repositories", "toastr", "$timeout", "$http", "ClassInstanceDetailsService", "AutocompleteRestService", "$q", "$location", "$jwtAuth", "UiScrollService", "ModalService", "$uibModal", "$window", "LocalStorageAdapter", "LSKeys", "SavedGraphsRestService", "GraphConfigRestService", "RDF4JRepositoriesRestService"];
 
-function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $timeout, $http, ClassInstanceDetailsService, AutocompleteRestService, $q, $location, $jwtAuth, UiScrollService, ModalService, $modal, $window, LocalStorageAdapter, LSKeys, SavedGraphsRestService, GraphConfigRestService, RDF4JRepositoriesRestService) {
+function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $timeout, $http, ClassInstanceDetailsService, AutocompleteRestService, $q, $location, $jwtAuth, UiScrollService, ModalService, $uibModal, $window, LocalStorageAdapter, LSKeys, SavedGraphsRestService, GraphConfigRestService, RDF4JRepositoriesRestService) {
 
     $scope.languageChanged = false;
     $scope.propertiesObj = {};
@@ -2847,7 +2847,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
     };
 
     $scope.saveGraphModal = function (mode, graphToSave, graphExists) {
-        const modalInstance = $modal.open({
+        const modalInstance = $uibModal.open({
             templateUrl: 'js/angular/graphexplore/templates/modal/save-graph.html',
             controller: 'SaveGraphModalCtrl',
             resolve: {
@@ -2990,9 +2990,9 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, toastr, $ti
     }
 }
 
-SaveGraphModalCtrl.$inject = ['$scope', '$modalInstance', 'data'];
+SaveGraphModalCtrl.$inject = ['$scope', '$uibModalInstance', 'data'];
 
-function SaveGraphModalCtrl($scope, $modalInstance, data) {
+function SaveGraphModalCtrl($scope, $uibModalInstance, data) {
     $scope.mode = data.mode;
     $scope.graph = angular.copy(data.graph);
     $scope.graphExists = data.graphExists;
@@ -3013,16 +3013,16 @@ function SaveGraphModalCtrl($scope, $modalInstance, data) {
 
     $scope.ok = function () {
         if ($scope.form.$valid) {
-            $modalInstance.close({graph: $scope.graph, mode: $scope.mode});
+            $uibModalInstance.close({graph: $scope.graph, mode: $scope.mode});
         }
     };
 
     $scope.saveNew = function () {
         $scope.graph.name = $scope.graph.name + ' (new)';
-        $modalInstance.close({graph: $scope.graph, mode: 'new', restart: true});
+        $uibModalInstance.close({graph: $scope.graph, mode: 'new', restart: true});
     };
 
     $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
+        $uibModalInstance.dismiss('cancel');
     };
 }

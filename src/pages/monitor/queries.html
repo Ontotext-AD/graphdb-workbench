@@ -8,7 +8,7 @@
 	<h1>
 		{{title}}
 		<span class="btn btn-link"
-		   popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+		   uib-popover-template="'js/angular/templates/titlePopoverTemplate.html'"
 		   popover-trigger="mouseenter"
 		   popover-placement="bottom-right"
 		   popover-append-to-body="true"><span class="icon-info"></span></span>
@@ -31,8 +31,8 @@
 			<div ng-hide="loader || jolokiaError">
 				<div class="pause-bar">
 					<button type="button" class="btn pull-right pause-btn" ng-model="paused"  ng-class="paused ? 'btn-primary' : 'btn-secondary'"
-							btn-checkbox
-						tooltip="Temporarily pauses query monitoring so you can copy text"
+							uib-btn-checkbox
+						uib-tooltip="Temporarily pauses query monitoring so you can copy text"
 						tooltip-placement="left">
 						{{paused ? 'Paused' : 'Pause'}}
 					</button>
@@ -74,13 +74,13 @@
 									<div ng-if="query.sparqlString.length > stringLimit && !expanded[query.trackId]" class="query-string">{{query.sparqlString | limitTo: stringLimit}}...</div>
 									<div ng-if="query.sparqlString.length <= stringLimit || expanded[query.trackId]" class="query-string">{{query.sparqlString}}</div>
 								</td>
-								<td><span tooltip="{{query.msSinceCreated}} ms">{{query.humanLifetime}}</span></td>
+								<td><span uib-tooltip="{{query.msSinceCreated}} ms">{{query.humanLifetime}}</span></td>
 								<td>
 									<p>{{query.state}}</p>
 									<div>{{query.numberOfOperations}} operations</div>
 								</td>
 								<td>
-									<div disabled-wrapper popover="{{query.isRequestedToStop ? (query.type == 'QUERY' ? 'Query was requested to abort and will be terminated on the first I/O operation' : 'Update was requested to abort and will be terminated if possible') : (query.type == 'QUERY' ? 'Click to abort query' : 'Click to abort update')}}"
+									<div disabled-wrapper uib-popover="{{query.isRequestedToStop ? (query.type == 'QUERY' ? 'Query was requested to abort and will be terminated on the first I/O operation' : 'Update was requested to abort and will be terminated if possible') : (query.type == 'QUERY' ? 'Click to abort query' : 'Click to abort update')}}"
 										 popover-trigger="mouseenter"
 										 popover-placement="bottom">
 										<div ng-class="query.isRequestedToStop ? 'disabled' : ''"> <!-- Keep this div -->

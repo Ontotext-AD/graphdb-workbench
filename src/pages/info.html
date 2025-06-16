@@ -2,15 +2,15 @@
 	<h1>
 		{{title}}
 		<span class="btn btn-link"
-		   popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+		   uib-popover-template="'js/angular/templates/titlePopoverTemplate.html'"
 		   popover-trigger="mouseenter"
 		   popover-placement="bottom-right"
 		   popover-append-to-body="true"><span class="icon-info"></span></span>
 	</h1>
 
-	<tabset>
-		<tab>
-		    <tab-heading class="nav-item application-info-tab"><span class="nav-link">Application info</span></tab-heading>
+	<uib-tabset>
+		<uib-tab>
+		    <uib-tab-heading class="nav-item application-info-tab"><span class="nav-link">Application info</span></uib-tab-heading>
 			<div class="list-group border-top-0 application-info-body">
 				<div class="list-group-item">
 					<div class="row">
@@ -56,8 +56,8 @@
 						</button>
 					</h5>
 
-					<div collapse="!isHelpVisible" class="alert alert-info server-report-help">
-						<button type="button" ng-click="isHelpVisible = false" tooltip="Close" class="close"
+					<div uib-collapse="!isHelpVisible" class="alert alert-info server-report-help">
+						<button type="button" ng-click="isHelpVisible = false" uib-tooltip="Close" class="close"
 								aria-label="Close"></button>
 						A server report is a .zip file that contains various bits of information that help with diagnosing problems.
 						The file will contain:
@@ -82,11 +82,11 @@
 
 					<div class="pt-1 pb-3 reports-toobar">
 						<div class="btn-group">
-							<button class="btn btn-primary mr-1 new-report-btn" ng-click="makeReport()" ng-disabled="status === 'IN_PROGRESS'" tooltip="Generates a new server report">
+							<button class="btn btn-primary mr-1 new-report-btn" ng-click="makeReport()" ng-disabled="status === 'IN_PROGRESS'" uib-tooltip="Generates a new server report">
 								<em class="icon-monitoring"></em>
 								New report
 							</button>
-							<button class="btn btn-primary download-report-btn" ng-click="getReport()" ng-disabled="status === 'IN_PROGRESS' || !(timestamp > 0)" tooltip="Download the latest report file">
+							<button class="btn btn-primary download-report-btn" ng-click="getReport()" ng-disabled="status === 'IN_PROGRESS' || !(timestamp > 0)" uib-tooltip="Download the latest report file">
 								<em class="icon-download"></em>
 								Download
 							</button>
@@ -96,15 +96,15 @@
 				</div>
 			</div>
 
-		</tab>
-		<tab>
-		    <tab-heading class="nav-item jvm-arguments"><span class="nav-link">JVM Arguments</span></tab-heading>
+		</uib-tab>
+		<uib-tab>
+		    <uib-tab-heading class="nav-item jvm-arguments"><span class="nav-link">JVM Arguments</span></uib-tab-heading>
 			<ul class="list-group border-top-0 jvm-arguments-body">
 				<li ng-repeat="argument in info.jvmArguments track by $index" class="list-group-item">{{argument}}</li>
 			</ul>
-		</tab>
-		<tab>
-		    <tab-heading class="nav-item configuration-parameters"><span class="nav-link">Configuration Parameters</span></tab-heading>
+		</uib-tab>
+		<uib-tab>
+		    <uib-tab-heading class="nav-item configuration-parameters"><span class="nav-link">Configuration Parameters</span></uib-tab-heading>
 			<ul class="list-group border-top-0 configuration-parameters-body">
 				<li ng-repeat="property in info.properties track by $index" class="list-group-item">
 					<div class="row">
@@ -114,8 +114,8 @@
 					</div>
 				</li>
 			</ul>
-		</tab>
-	</tabset>
+		</uib-tab>
+	</uib-tabset>
 
 
 

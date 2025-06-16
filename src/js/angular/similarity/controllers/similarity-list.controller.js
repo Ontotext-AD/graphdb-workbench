@@ -4,9 +4,9 @@ angular
     .module('graphdb.framework.similarity.controllers.list', [])
     .controller('SimilarityCtrl', SimilarityCtrl);
 
-SimilarityCtrl.$inject = ['$scope', '$interval', 'toastr', '$repositories', 'ModalService', '$modal', 'SimilarityRestService', 'AutocompleteRestService', 'productInfo', 'RDF4JRepositoriesRestService'];
+SimilarityCtrl.$inject = ['$scope', '$interval', 'toastr', '$repositories', 'ModalService', '$uibModal', 'SimilarityRestService', 'AutocompleteRestService', 'productInfo', 'RDF4JRepositoriesRestService'];
 
-function SimilarityCtrl($scope, $interval, toastr, $repositories, ModalService, $modal, SimilarityRestService, AutocompleteRestService, productInfo, RDF4JRepositoriesRestService) {
+function SimilarityCtrl($scope, $interval, toastr, $repositories, ModalService, $uibModal, SimilarityRestService, AutocompleteRestService, productInfo, RDF4JRepositoriesRestService) {
 
     const PREFIX = 'http://www.ontotext.com/graphdb/similarity/';
     const PREFIX_PREDICATION = 'http://www.ontotext.com/graphdb/similarity/psi/';
@@ -250,7 +250,7 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, ModalService, 
             .replace('?givenObject', iriForQuery($scope.analogicalObject))
             .replace('?searchSubject', iriForQuery($scope.searchSubject));
 
-        $modal.open({
+        $uibModal.open({
             templateUrl: 'pages/viewQuery.html',
             controller: 'ViewQueryCtrl',
             resolve: {
@@ -289,7 +289,7 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, ModalService, 
             viewType: index.type,
             indexAnalyzer: index.analyzer
         }).success(function (query) {
-            $modal.open({
+            $uibModal.open({
                 templateUrl: 'pages/viewQuery.html',
                 controller: 'ViewQueryCtrl',
                 resolve: {

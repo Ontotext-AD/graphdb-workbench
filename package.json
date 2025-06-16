@@ -78,6 +78,7 @@
         "webpack-merge-and-include-globally": "^2.1.20"
     },
     "dependencies": {
+        "@babel/runtime": "^7.27.6",
         "angular-animate": "1.3.8",
         "angular-bowser": "0.0.4",
         "angular-cookies": "1.3.8",
@@ -86,7 +87,7 @@
         "angular-route": "1.3.8",
         "angular-sanitize": "1.3.11",
         "angular-toastr": "^2.1.1",
-        "angular-ui-bootstrap": "0.13.0",
+        "angular-ui-bootstrap": "0.14.3",
         "angular-ui-scroll": "^1.7.6",
         "angular-xeditable": "^0.10.0",
         "angularjs-slider": "^7.0.0",
@@ -95,11 +96,11 @@
         "d3": "4.2.1",
         "font-awesome": "^4.7.0",
         "jquery": "^3.4.1",
+        "jsrsasign": "^10.3.0",
         "lodash": "^4.17.21",
         "ng-file-upload": "^12.2.13",
         "ng-tags-input": "^3.2.0",
-        "oclazyload": "^1.1.0",
-        "jsrsasign": "^10.3.0"
+        "oclazyload": "^1.1.0"
     },
     "resolutions": {
         "minimist": "^1.2.5"

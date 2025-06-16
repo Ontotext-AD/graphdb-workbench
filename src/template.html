@@ -22,7 +22,7 @@
 <div class="status-bar" ng-hide="isSecurityEnabled() && !isUserLoggedIn() && !isFreeAccessEnabled()" ng-cloak>
     <div class="btn-group btn-group-lg" role="group" aria-label="Button group with nested dropdown">
         <div class="btn alert alert-warning no-icon" ng-if="!license.valid && showLicense"
-             tooltip="{{license.message}}" tooltip-placement="bottom" tooltip-trigger="mouseenter">
+             uib-tooltip="{{license.message}}" tooltip-placement="bottom" tooltip-trigger="mouseenter">
             <span class="icon-warning"></span> No valid license
             <a ng-show="!isLicenseHardcoded" href="license/register" class="btn btn-secondary btn-sm" style="margin: -5px 0 -5px 0">Set</a>
         </div>
@@ -52,9 +52,9 @@
         <div id="repositorySelectDropdown" class="btn-group" role="group" ng-show="!embedded">
             <button id="btnReposGroup" type="button" class="btn btn-lg btn-secondary dropdown-toggle"
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <a dropdown-toggle>
+                <a uib-dropdown-toggle>
                     <span ng-mouseover="setPopoverRepo(getActiveRepositoryObject())" popover-popup-delay="1000" popover-trigger="mouseenter" popover-placement="left-bottom"
-                          popover-template="popoverTemplate" popover-title="Repository {{getActiveRepositoryObject().id}}" ng-if="getActiveRepository()" class="active-repository">
+                          uib-popover-template="popoverTemplate" popover-title="Repository {{getActiveRepositoryObject().id}}" ng-if="getActiveRepository()" class="active-repository">
 						<em ng-class="'icon-repo-' + getActiveRepositoryObject().type"></em>
                         {{getActiveRepository()}}
                     </span>
@@ -67,7 +67,7 @@
                     ng-if="repository.id !== getActiveRepository()"
                     ng-mouseover="setPopoverRepo(repository)" popover-popup-delay="500"
                     popover-trigger="mouseenter" popover-placement="left"
-                    popover-template="popoverTemplate" popover-title="Repository {{repository.id}}">
+                    uib-popover-template="popoverTemplate" popover-title="Repository {{repository.id}}">
                     <a class="dropdown-item" ng-click="setRepository(repository.id)">
                         <span class="multiline-text">
                             <em ng-class="'icon-repo-' + repository.type"></em>

@@ -8,7 +8,7 @@
     <h1>
         {{title}}
         <span class="btn btn-link"
-              popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+              uib-popover-template="'js/angular/templates/titlePopoverTemplate.html'"
               popover-trigger="mouseenter"
               popover-placement="bottom-right"
               popover-append-to-body="true"><span class="icon-info"></span></span>
@@ -23,14 +23,14 @@
 
     <div class="toolbar-holder" ng-show="configLoaded && getActiveRepository() && 'SYSTEM' !== getActiveRepository()">
         <button ng-show="!queryResultsMode && !noGoHome" class="btn btn-link p-0 return-home-btn"
-                tooltip="Back to visual graph home"
+                uib-tooltip="Back to visual graph home"
                 tooltip-placement="bottom"
                 tooltip-trigger="mouseenter"
                 ng-click="goToHome()">
             <em class="icon-arrow-up icon-2x"></em>
         </button>
         <button ng-show="!queryResultsMode && configLoaded.startMode == 'search'" class="btn btn-link p-0"
-                tooltip="Search another resource"
+                uib-tooltip="Search another resource"
                 tooltip-placement="bottom"
                 tooltip-trigger="mouseenter"
                 ng-disabled="!nodeSelected"
@@ -38,7 +38,7 @@
             <em class="icon-search icon-2x"></em>
         </button>
         <button class="btn btn-link p-0"
-                tooltip="Click to rotate the graph to the left"
+                uib-tooltip="Click to rotate the graph to the left"
                 tooltip-placement="bottom"
                 tooltip-trigger="mouseenter"
                 ng-disabled="!nodeSelected"
@@ -46,7 +46,7 @@
             <em class="icon-rotate-left icon-2x"></em>
         </button>
         <button class="btn btn-link p-0"
-                tooltip="Click to rotate the graph to the right"
+                uib-tooltip="Click to rotate the graph to the right"
                 tooltip-placement="bottom"
                 tooltip-trigger="mouseenter"
                 ng-disabled="!nodeSelected"
@@ -54,7 +54,7 @@
             <em class="icon-rotate-right icon-2x"></em>
         </button>
         <button class="btn btn-link p-0"
-                tooltip="{{numberOfPinnedNodes > 0 ? 'Unpin all nodes' : 'Pin down all nodes'}}"
+                uib-tooltip="{{numberOfPinnedNodes > 0 ? 'Unpin all nodes' : 'Pin down all nodes'}}"
                 ng-class="numberOfPinnedNodes > 0 ? 'active' : ''"
                 tooltip-placement="bottom"
                 tooltip-trigger="mouseenter"
@@ -63,7 +63,7 @@
             <em class="icon-pin icon-2x"></em>
         </button>
         <button class="btn btn-link p-0"
-                tooltip="Save graph snapshot"
+                uib-tooltip="Save graph snapshot"
                 tooltip-placement="bottom"
                 tooltip-trigger="mouseenter"
                 ng-if="isUser() && !embedded"
@@ -72,7 +72,7 @@
             <em class="icon-save icon-2x"></em>
         </button>
         <button class="btn btn-link p-0"
-                tooltip="Click to configure the view"
+                uib-tooltip="Click to configure the view"
                 tooltip-placement="bottom"
                 tooltip-trigger="mouseenter"
                 ng-if="isUser()"
@@ -137,9 +137,9 @@
                             <tr ng-repeat="config in graphConfigs">
                                 <td width="20">
                                     <a href ng-click="goToGraphConfig(config)">
-                                        <img ng-if="config.startMode == 'search'" src="css/images/search.png?v=[AIV]{version}[/AIV]" alt="" width="64" popover="Starting point - Search box" popover-trigger="mouseenter">
-                                        <img ng-if="config.startMode == 'node'" src="css/images/node.png?v=[AIV]{version}[/AIV]" alt="" width="64" popover="Starting point - Fixed resource" popover-trigger="mouseenter">
-                                        <img ng-if="config.startMode == 'query'" src="css/images/query.png?v=[AIV]{version}[/AIV]" alt="" width="64" popover="Starting point - Query results" popover-trigger="mouseenter">
+                                        <img ng-if="config.startMode == 'search'" src="css/images/search.png?v=[AIV]{version}[/AIV]" alt="" width="64" uib-popover="Starting point - Search box" popover-trigger="mouseenter">
+                                        <img ng-if="config.startMode == 'node'" src="css/images/node.png?v=[AIV]{version}[/AIV]" alt="" width="64" uib-popover="Starting point - Fixed resource" popover-trigger="mouseenter">
+                                        <img ng-if="config.startMode == 'query'" src="css/images/query.png?v=[AIV]{version}[/AIV]" alt="" width="64" uib-popover="Starting point - Query results" popover-trigger="mouseenter">
                                     </a>
                                 </td>
                                 <td>
@@ -150,8 +150,8 @@
                                     <samp class="text-muted small text-overflow d-block" ng-if="config.startMode == 'node'">{{config.startIRI}}</samp>
                                 </td>
                                 <td class="text-xs-right" ng-if="isUser() && config.owner === principal().username">
-                                    <a ng-href="graphs-visualizations/config/save/{{config.id}}" class="btn btn-link" tooltip="Edit configuration"><span class="icon-edit"></span></a>
-                                    <button type="button" ng-click="deleteConfig(config)" class="btn btn-link delete-config" tooltip="Delete configuration"><span class="icon-trash"></span></button>
+                                    <a ng-href="graphs-visualizations/config/save/{{config.id}}" class="btn btn-link" uib-tooltip="Edit configuration"><span class="icon-edit"></span></a>
+                                    <button type="button" ng-click="deleteConfig(config)" class="btn btn-link delete-config" uib-tooltip="Delete configuration"><span class="icon-trash"></span></button>
                                 </td>
                             </tr>
                             </tbody>
@@ -175,19 +175,19 @@
                                 </td>
                                 <td class="text-xs-right">
                                     <button class="btn btn-link"
-                                            tooltip="Get URL to graph" tooltip-trigger="mouseenter"
+                                            uib-tooltip="Get URL to graph" tooltip-trigger="mouseenter"
                                             ng-click="copyToClipboardSavedGraph(graph)">
                                         <span class="icon-link"></span>
                                     </button>
                                     <button class="btn btn-link"
                                             ng-if="isUser() && graph.owner === principal().username"
-                                            tooltip="Rename graph" tooltip-trigger="mouseenter"
+                                            uib-tooltip="Rename graph" tooltip-trigger="mouseenter"
                                             ng-click="renameSavedGraph(graph)">
                                         <span class="icon-edit"></span>
                                     </button>
                                     <button class="btn btn-link"
                                             ng-if="isUser() && graph.owner === principal().username"
-                                            tooltip="Delete graph" tooltip-trigger="mouseenter"
+                                            uib-tooltip="Delete graph" tooltip-trigger="mouseenter"
                                             ng-click="deleteSavedGraph(graph)">
                                         <span class="icon-trash"></span>
                                     </button>
@@ -243,7 +243,7 @@
 
             <div>
                 <div class="form-group mb-2">
-                    <label tooltip="Limit the number of links when often they are too many">Maximum links to show</label>
+                    <label uib-tooltip="Limit the number of links when often they are too many">Maximum links to show</label>
                     <div class="form-inline">
                         <button type="button" class="btn btn-link px-0" ng-disabled="settings['linksLimit'] < 1"
                                 ng-click="changeLimit(-1)">
@@ -265,7 +265,7 @@
                     </div>
                 </div>
                 <div class="form-group mb-2" ng-show="shouldShowSettings()">
-                    <label tooltip="Preferred languages for node and predicates labels">Preferred languages</label>
+                    <label uib-tooltip="Preferred languages for node and predicates labels">Preferred languages</label>
                     <div class="input-group preferred-languages">
                         <tags-input class="wb-tags-input" ng-model="settings['languagesMap']" min-length="2" add-on-space="true"
                                     add-on-comma="true" placeholder="Add a language tag"></tags-input>
@@ -273,7 +273,7 @@
                 </div>
                 <div class="form-group mb-2">
                     <div class="checkbox">
-                        <label tooltip="Include/Exclude predicates from owl: rdf: rdfs: sesame: dul: prov: fibo: wd:">
+                        <label uib-tooltip="Include/Exclude predicates from owl: rdf: rdfs: sesame: dul: prov: fibo: wd:">
                         <input type="checkbox" ng-model="settings['includeSchema']" class="include-schema-statements">
                             Include schema statements
                         </label>
@@ -281,7 +281,7 @@
                 </div>
                 <div class="form-group mb-2">
                     <div class="checkbox">
-                        <label tooltip="Include/exclude inferred statements">
+                        <label uib-tooltip="Include/exclude inferred statements">
                             <input type="checkbox" ng-model="settings['includeInferred']" class="include-inferred-statements">
                             Include inferred statements
                         </label>
@@ -291,7 +291,7 @@
 
 
                 <div class="form-group mb-2">
-                    <div class="checkbox" tooltip="{{shouldDisableSameAs() ? 'Requires \'Include Inferred\'!' : ''}}">
+                    <div class="checkbox" uib-tooltip="{{shouldDisableSameAs() ? 'Requires \'Include Inferred\'!' : ''}}">
                         <label style="{{'opacity: ' + (!settings['includeInferred'] ? '0.5' : '1')}}" >
                             <input id="sameAsCheck" type="checkbox" ng-model="settings['sameAsState']"
                                    ng-disabled="shouldDisableSameAs()">
@@ -304,20 +304,20 @@
                 <!-- Enable-Disable owl:sameAs checkbox -->
                 <div class="form-group mb-2">
                     <div class="checkbox">
-                        <label tooltip="Show predicate labels as links titles">
+                        <label uib-tooltip="Show predicate labels as links titles">
                             <input type="checkbox" class="show-predicate-labels" ng-model="settings['showLinksText']">
                             Show predicate labels
                         </label>
                     </div>
                 </div>
 
-                <tabset active="active" ng-show="shouldShowSettings()">
-                    <tab>
-                        <tab-heading class="nav-item"
+                <uib-tabset active="active" ng-show="shouldShowSettings()">
+                    <uib-tab>
+                        <uib-tab-heading class="nav-item"
                                      tooltip-placement="bottom"
-                                     tooltip-trigger="mouseenter"><span class="nav-link">Types</span></tab-heading>
+                                     tooltip-trigger="mouseenter"><span class="nav-link">Types</span></uib-tab-heading>
                         <div class="form-group mb-2 mt-1">
-                            <label tooltip="Types of nodes to show with preference when there are too many nodes">Preferred types</label>
+                            <label uib-tooltip="Types of nodes to show with preference when there are too many nodes">Preferred types</label>
                             <div>
                                 <tags-input class="preferred-types wb-tags-input" ng-model="settings['preferredTypesMap']" min-length="3" add-on-space="true"
                                             add-on-comma="true" placeholder="Add preferred type"
@@ -327,7 +327,7 @@
                         </div>
                         <div class="form-group mb-2">
                             <div class="checkbox">
-                                <label tooltip="Show only nodes of the preferred types">
+                                <label uib-tooltip="Show only nodes of the preferred types">
                                     <input type="checkbox" class="show-preferred-types-only" ng-model="settings['preferredTypesOnly']">
                                     Show preferred types only
                                 </label>
@@ -335,7 +335,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label tooltip="Types of nodes to exclude from the visual graph">Ignored types</label>
+                            <label uib-tooltip="Types of nodes to exclude from the visual graph">Ignored types</label>
                             <div>
                                 <tags-input class="ignored-types wb-tags-input" ng-model="settings['rejectedTypesMap']" min-length="3" add-on-space="true"
                                             add-on-comma="true" placeholder="Add ignored type"
@@ -343,14 +343,14 @@
                                             on-tag-added="addedTag($tag)"></tags-input>
                             </div>
                         </div>
-                    </tab>
-                    <tab>
-                        <tab-heading class="nav-item"
+                    </uib-tab>
+                    <uib-tab>
+                        <uib-tab-heading class="nav-item"
                                      tooltip-placement="bottom"
-                                     tooltip-trigger="mouseenter"><span class="nav-link predicates-tab">Predicates</span></tab-heading>
+                                     tooltip-trigger="mouseenter"><span class="nav-link predicates-tab">Predicates</span></uib-tab-heading>
                         <div class="form-group mb-2 mt-1">
                             <div>
-                                <label tooltip="Predicates to show with preference when there are too many links">Preferred predicates</label>
+                                <label uib-tooltip="Predicates to show with preference when there are too many links">Preferred predicates</label>
 
                                 <tags-input class="preferred-predicates wb-tags-input" ng-model="settings['preferredPredicatesMap']" min-length="3"
                                             add-on-space="true"
@@ -361,7 +361,7 @@
                         </div>
                         <div class="form-group mb-2">
                             <div class="checkbox">
-                                <label tooltip="Show only links of the preferred predicates">
+                                <label uib-tooltip="Show only links of the preferred predicates">
                                     <input type="checkbox" class="show-preferred-predicates-only" ng-model="settings['preferredPredicatesOnly']">
                                     Show preferred predicates only
                                 </label>
@@ -369,7 +369,7 @@
                         </div>
 
                         <div class="form-group ">
-                            <label tooltip="Ignored predicates will not appear as links in the visual graph but will be listed as instance properties when you click on a node">Ignored predicates</label>
+                            <label uib-tooltip="Ignored predicates will not appear as links in the visual graph but will be listed as instance properties when you click on a node">Ignored predicates</label>
                             <div>
                                 <tags-input class="ignored-predicates wb-tags-input" ng-model="settings['rejectedPredicatesMap']" min-length="3"
                                             add-on-space="true"
@@ -380,8 +380,8 @@
                                             tag-class="getTagClass($tag.text)"></tags-input>
                             </div>
                         </div>
-                    </tab>
-                </tabset>
+                    </uib-tab>
+                </uib-tabset>
 
                 <div class="mt-1">
                     <button type="button" class="btn btn-secondary btn-lg reset-settings" ng-click="resetSettings()">Reset</button>
@@ -390,7 +390,7 @@
 
                 <script type="text/ng-template" id="ignored-predicates-template">
                     <div class="tag-template">
-                        <div tooltip="{{$getDisplayText().endsWith('*') ? 'IRIs that end with * are treated as wildcards and will match any IRI that begins with the text before the *' : ''}}">
+                        <div uib-tooltip="{{$getDisplayText().endsWith('*') ? 'IRIs that end with * are treated as wildcards and will match any IRI that begins with the text before the *' : ''}}">
                             <span>{{$getDisplayText()}}</span>
                             <a class="remove-button" ng-click="$removeTag()">&#xD7;</a>
                         </div>
@@ -419,7 +419,7 @@
 
             <div class="media mb-1">
                 <div class="media-left"
-                     tooltip="Labels"
+                     uib-tooltip="Labels"
                      tooltip-placement="top"
                      tooltip-trigger="mouseenter">
                     <em class="icon-tag icon-lg" aria-hidden="true"></em>

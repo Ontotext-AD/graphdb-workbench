@@ -12,7 +12,7 @@
     <h1>
         {{editSearchQuery ? (viewType === 'text' ? 'Edit search query':(page === 2 ? 'Edit search query' : 'Edit analogical query')) : title}}
         <span ng-hide="editSearchQuery" class="btn btn-link"
-              popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+              uib-popover-template="'js/angular/templates/titlePopoverTemplate.html'"
               popover-trigger="mouseenter"
               popover-placement="bottom-right"
               popover-append-to-body="true"><span class="icon-info"></span></span>
@@ -65,7 +65,7 @@
           </div>
             <div class="checkbox offset-xs-3 offset-md-4" ng-show="viewType == 'text'">
                 <label class="col-xs-6 col-md-6"
-                       tooltip="Literal indexes can be used as input for Predication indexes. These index can not be used for searching."
+                       uib-tooltip="Literal indexes can be used as input for Predication indexes. These index can not be used for searching."
                        tooltip-placement="bottom">
                     <input type="checkbox" class="literal-index" ng-true-value="'true'" ng-false-value="'false'" ng-model="newIndex.isLiteralIndex"/>
                     Literal index
@@ -86,7 +86,7 @@
         <div class="card-block">
 
             <button type="button" class="btn btn-link pull-right" ng-click="toggleHelp()">
-              <span class="icon-help" popover="Toggle help" popover-placement="top" popover-trigger="mouseenter"></span>
+              <span class="icon-help" uib-popover="Toggle help" popover-placement="top" popover-trigger="mouseenter"></span>
               <span class="hidden-lg-down">Help</span>
             </button>
 
@@ -109,7 +109,7 @@
             </ul>
 
             <div>
-                <div class="alert alert-help mb-2" id="query-help" collapse="helpHidden" ng-show="page == 1">
+                <div class="alert alert-help mb-2" id="query-help" uib-collapse="helpHidden" ng-show="page == 1">
                     <button class="close absolute" ng-click="toggleHelp(0)"></button>
                     <p class="lead">
                         This <span class="small-caps">SELECT</span> query determines the data that will be indexed.
@@ -131,7 +131,7 @@
                     It is a subquery of a more complicated query you can see from the 'View Index Query' link bellow.
                 </div>
 
-                <div class="alert alert-help mb-2" id="query-help" collapse="helpHidden" ng-show="page == 2">
+                <div class="alert alert-help mb-2" id="query-help" uib-collapse="helpHidden" ng-show="page == 2">
                     <button class="close absolute" ng-click="toggleHelp(0)"></button>
                     <p class="lead">
                         This <span class="small-caps">SELECT</span> query determines the data that will be fetched on search.
@@ -140,7 +140,7 @@
                     This query is executed during search. Add more bindings by modifying this query to see more data in the results table.
                 </div>
 
-                <div class="alert alert-help mb-2" id="query-help" collapse="helpHidden" ng-show="page == 3">
+                <div class="alert alert-help mb-2" id="query-help" uib-collapse="helpHidden" ng-show="page == 3">
                     <button class="close absolute" ng-click="toggleHelp(0)"></button>
                     <p class="lead">
                         This <span class="small-caps">SELECT</span> query determines the data that will be fetched on analogical search.
@@ -173,20 +173,20 @@
 
             <div class="clearfix">
                 <div class="pull-right">
-                    <a ng-href="similarity" class="btn btn-lg btn-secondary"
-                       popover="{{getCloseBtnMsg()}}"
+                    <a ng-href="/similarity" class="btn btn-lg btn-secondary"
+                       uib-popover="{{getCloseBtnMsg()}}"
                        popover-placement="top"
                        popover-trigger="mouseenter">
                         Cancel
                     </a>
                     <button ng-if="!editSearchQuery" class="btn btn-lg btn-primary create-similarity-index-btn" ng-click="createIndex()"
-                            popover="Create index"
+                            uib-popover="Create index"
                             popover-placement="top"
                             popover-trigger="mouseenter">
                         Create
                     </button>
                     <button ng-if="editSearchQuery" class="btn btn-lg btn-primary save-query-btn" ng-click="saveSearchQuery()"
-                            popover="Edit query"
+                            uib-popover="Edit query"
                             popover-placement="top"
                             popover-trigger="mouseenter">
                         Save
@@ -195,13 +195,13 @@
                 <div class="pull-left">
                   <button ng-if="!editSearchQuery" type="button" class="btn btn-link pull-left" ng-click="viewQuery()">View Index Query</button>
                   <button class="btn btn-link test-query-btn" ng-click="showPreview()" ng-hide="viewMode == 'editor' || page != 1"
-                          popover="Executes the SPARQL query and shows a preview of the results. Only the first 100 results will be shown."
+                          uib-popover="Executes the SPARQL query and shows a preview of the results. Only the first 100 results will be shown."
                           popover-placement="top"
                           popover-trigger="mouseenter">
                       Test Query
                   </button>
                   <button class="btn btn-link" ng-click="showEditor()" ng-show="viewMode == 'editor' && page == 1"
-                          popover="Closes the preview and shows the query editor."
+                          uib-popover="Closes the preview and shows the query editor."
                           popover-placement="top"
                           popover-trigger="mouseenter">
                       Edit query

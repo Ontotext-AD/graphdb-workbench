@@ -39,7 +39,7 @@ describe('==> Repository module controllers tests', function () {
             $scope = $rootScope.$new();
             var controller = $controller('LocationsAndRepositoriesCtrl', {
                 $scope: $scope,
-                $modal: modalInstance,
+                $uibModal: modalInstance,
                 ModalService: modalInstance,
                 $jwtAuth: jwtAuthMock
             });

@@ -9,9 +9,9 @@ angular
     .controller('QueryEditorCtrl', QueryEditorCtrl)
     .controller('QuerySampleModalCtrl', QuerySampleModalCtrl);
 
-QueryEditorCtrl.$inject = ['$scope', '$timeout', 'toastr', '$repositories', '$modal', 'ModalService', 'SparqlRestService', '$filter', '$window', '$jwtAuth', 'RDF4JRepositoriesRestService', 'MonitoringRestService', 'LocalStorageAdapter', 'LSKeys'];
+QueryEditorCtrl.$inject = ['$scope', '$timeout', 'toastr', '$repositories', '$uibModal', 'ModalService', 'SparqlRestService', '$filter', '$window', '$jwtAuth', 'RDF4JRepositoriesRestService', 'MonitoringRestService', 'LocalStorageAdapter', 'LSKeys'];
 
-function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalService, SparqlRestService, $filter, $window, $jwtAuth, RDF4JRepositoriesRestService, MonitoringRestService, LocalStorageAdapter, LSKeys) {
+function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $uibModal, ModalService, SparqlRestService, $filter, $window, $jwtAuth, RDF4JRepositoriesRestService, MonitoringRestService, LocalStorageAdapter, LSKeys) {
     const defaultTabConfig = {
         id: "1",
         name: '',
@@ -461,7 +461,7 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
     }
 
     function editQuery(query) {
-        const modalInstance = $modal.open({
+        const modalInstance = $uibModal.open({
             templateUrl: 'js/angular/core/directives/queryeditor/templates/query-sample.html',
             controller: 'QuerySampleModalCtrl',
             resolve: {
@@ -549,7 +549,7 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
     }
 
     function saveQuery(query, queryExists) {
-        const modalInstance = $modal.open({
+        const modalInstance = $uibModal.open({
             templateUrl: 'js/angular/core/directives/queryeditor/templates/query-sample.html',
             controller: 'QuerySampleModalCtrl',
             resolve: {
@@ -926,9 +926,9 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $modal, ModalS
     }
 }
 
-QuerySampleModalCtrl.$inject = ['$scope', '$modalInstance', 'data'];
+QuerySampleModalCtrl.$inject = ['$scope', '$uibModalInstance', 'data'];
 
-function QuerySampleModalCtrl($scope, $modalInstance, data) {
+function QuerySampleModalCtrl($scope, $uibModalInstance, data) {
     if (data.queryExists) {
         $scope.queryExists = true;
     }
@@ -938,11 +938,11 @@ function QuerySampleModalCtrl($scope, $modalInstance, data) {
     $scope.okButtonText = data.okButtonText;
     $scope.ok = function () {
         if ($scope.form.$valid) {
-            $modalInstance.close($scope.query);
+            $uibModalInstance.close($scope.query);
         }
     };
 
     $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
+        $uibModalInstance.dismiss('cancel');
     };
 }

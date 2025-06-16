@@ -4,6 +4,11 @@ pipeline {
     label 'graphdb-jenkins-node'
   }
 
+  tools {
+      jdk 'adopt_openjdk17'
+      nodejs 'nodejs-14.17.0'
+  }
+
   environment {
     CI = "true"
     NEXUS_CREDENTIALS = credentials('nexus-kim-user')
@@ -33,7 +38,7 @@ pipeline {
     stage('Sonar') {
       steps {
         withSonarQubeEnv('SonarCloud') {
-          sh "node sonar-project.js --branch='${env.ghprbSourceBranch}' --target-branch='${env.ghprbTargetBranch}' --pull-request-id='${env.ghprbPullId}'"
+         // sh "node sonar-project.js --branch='${env.ghprbSourceBranch}' --target-branch='${env.ghprbTargetBranch}' --pull-request-id='${env.ghprbPullId}'"
         }
       }
     }

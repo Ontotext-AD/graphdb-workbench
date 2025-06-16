@@ -202,7 +202,8 @@ describe('My Settings', () => {
         cy.get('.rdf-info-side-panel .filter-sidepanel').should('be.visible');
         cy.get('.include-schema-statements')
             .scrollIntoView().should('be.visible').click()
-            .then(() => {
+            .then(($el) => {
+                cy.wrap($el).trigger('mouseleave', {force: true});
                 cy.get('.include-schema-statements').scrollIntoView()
                     .should('be.visible').and('not.be.checked');
                 saveGraphSettings()
