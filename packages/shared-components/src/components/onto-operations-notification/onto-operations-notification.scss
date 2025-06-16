@@ -21,6 +21,7 @@ $hover-color: #d4d4d4;
     &:hover {
       background-color: $hover-color;
       border-color: $hover-color;
+
       i:not(.fa-angle-down) {
         transform: scale(1.2);
       }
@@ -125,6 +126,7 @@ $hover-color: #d4d4d4;
           text-decoration: none;
           background-color: $hover-color;
           border-color: $hover-color;
+
           & i {
             transform: scale(1.2);
           }
@@ -132,35 +134,35 @@ $hover-color: #d4d4d4;
       }
     }
   }
-}
 
-.status-information {
-  color: var(--color-info-dark, #004177) !important;
-}
-
-.status-warning {
-  color: var(--color-warning-dark, #7e2308) !important;
-}
-
-.status-critical {
-  color: var(--color-danger-dark, #a31425) !important;
-}
-
-i {
-  padding-left: 3px;
-  padding-right: 3px;
-  font-size: 1.1em;
-  line-height: 1.6rem !important;
-  align-content: center;
-  transition: transform 0.15s ease-out;
-
-  &.fa-angle-down {
-    color: rgba(0, 0, 0, .35);
-    transition: all 0.2s ease-in;
+  .status-information {
+    color: var(--color-info-dark, #004177) !important;
   }
-}
 
-// TODO: remove, once the import icon is replaced with the font awesome version
-.icon-import {
-  font-size: 21px;
+  .status-warning {
+    color: var(--color-warning-dark, #7e2308) !important;
+  }
+
+  .status-critical {
+    color: var(--color-danger-dark, #a31425) !important;
+  }
+
+  i {
+    padding-left: 3px;
+    padding-right: 3px;
+    font-size: 1.1em;
+    line-height: 1.6rem !important;
+    align-content: center;
+    transition: transform 0.15s ease-out;
+
+    &.fa-angle-down {
+      color: rgba(0, 0, 0, .35);
+      transition: all 0.2s ease-in;
+    }
+  }
+
+  // TODO: remove, once the import icon is replaced with the font awesome version
+  .icon-import {
+    font-size: 21px;
+  }
 }
