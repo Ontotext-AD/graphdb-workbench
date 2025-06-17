@@ -7,7 +7,7 @@ import {
   LicenseService,
   SecurityContextService,
   CookieConsent,
-  CookieService, LicenseContextService, AuthenticatedUser
+  CookieService, LicenseContextService
 } from '@ontotext/workbench-api';
 
 /**
@@ -86,12 +86,13 @@ export class OntoFooter {
   private subscribeToUserChange(): void {
     // TODO: move to cookieService, when the authenticatedUser is available synchronously
     this.subscriptions.add(
-      this.securityContextService.onAuthenticatedUserChanged((user) => {
-        this.setCookieConsentVisibility(user);
+      this.securityContextService.onAuthenticatedUserChanged(() => {
+        this.setCookieConsentVisibility();
       }));
   }
 
-  private setCookieConsentVisibility(user?: AuthenticatedUser) {
+  private setCookieConsentVisibility() {
+    const user = this.securityContextService.getAuthenticatedUser();
     this.shouldShowCookieConsent = this.isTrackingAllowed() && !new CookieConsent(user?.appSettings?.COOKIE_CONSENT).policyAccepted;
   }
 
