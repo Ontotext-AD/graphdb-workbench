@@ -480,6 +480,26 @@ export const TTYGEventName = {
     CONTINUE_CHAT_RUN: 'continueChatRun',
 
     /**
+     * Emitting the "cancelPendingQuestion" event triggers the cancellation of a pending question in a chat.
+     */
+    CANCEL_PENDING_QUESTION: "cancelPendingQuestion",
+
+    /**
+     * This event is emitted when the cancellation of the pending question succeeds.
+     */
+    PENDING_QUESTION_CANCELED_SUCCESSFUL: "pendingQuestionCanceledSuccessful",
+
+    /**
+     * This event is emitted when the cancellation of the pending question fails.
+     */
+    CANCEL_PENDING_QUESTION_FAILURE: "cancelPendingQuestionFailed",
+
+    /**
+     * This event will be fired before a question is sent to BE for processing.
+     */
+    ASK_QUESTION_STARTING: "askQuestionStarting",
+
+    /**
      * Emitting the "loadChats" event will trigger an action to loads all chats from backend server.
      */
     LOAD_CHATS: 'loadChats',

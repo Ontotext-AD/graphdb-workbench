@@ -101,6 +101,17 @@ function TTYGService(TTYGRestService, $repositories) {
     };
 
     /**
+     * Cancels a pending question within a chat.
+     *
+     * @param {string|number} chatId - The unique identifier of the chat containing the pending question to be canceled.
+     * @returns {Promise} A promise that resolves when the pending question has been successfully canceled,
+     * or rejects with an error.
+     */
+    const cancelPendingQuestion = (chatId) => {
+        return TTYGRestService.cancelPendingQuestion(chatId);
+    };
+
+    /**
      * Creates a new conversation. The creation of a chat and asking a question share the same endpoint. If the request payload
      * doesn't contain the chat ID, the backend will create a new chat and return the answer, which includes the ID of the created chat.
      *
@@ -217,6 +228,7 @@ function TTYGService(TTYGRestService, $repositories) {
         getConversations,
         deleteConversation,
         createConversation,
+        cancelPendingQuestion,
         getAgents,
         getAgent,
         createAgent,
