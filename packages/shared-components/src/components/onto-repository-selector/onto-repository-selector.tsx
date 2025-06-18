@@ -3,8 +3,8 @@ import {
   Repository,
   ServiceProvider,
   RepositoryContextService,
-  UriUtil, RepositorySizeInfo,
-} from "@ontotext/workbench-api";
+  UriUtil, RepositorySizeInfo, RestrictedPages, SecurityContextService
+} from '@ontotext/workbench-api';
 import {DropdownItem} from '../../models/dropdown/dropdown-item';
 import {DropdownItemAlignment} from '../../models/dropdown/dropdown-item-alignment';
 import {RepositorySelection} from './repository-selection';
@@ -249,6 +249,11 @@ export class OntoRepositorySelector {
   }
 
   private onRepositoryChanged(selectedRepository: Repository): void {
+    // TODO: Move this in a subscription to updateSelectedRepository, after security is fully migrated.
+    // If we do this now, we get race conditions, between the context services and the components. Both work
+    // in parallel and it causes issues. Migrated components should load their data after updateApplicationDataState
+    // is called, with DATA_LOADED. This will ensure components start loading their data, after the contexts are updated
+    ServiceProvider.get(SecurityContextService).updateRestrictedPages(new RestrictedPages());
     this.repositoryContextService.updateSelectedRepository(selectedRepository);
   }
 
