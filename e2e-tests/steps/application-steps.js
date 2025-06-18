@@ -23,7 +23,7 @@ export class ApplicationSteps {
 
     // navigation via main menu
     static openImportPage() {
-        cy.get('.main-menu .menu-element-root[href=import]').click();
+        cy.get('onto-navbar .menu-element').eq(0).click();
     }
 
     static geLoader() {
