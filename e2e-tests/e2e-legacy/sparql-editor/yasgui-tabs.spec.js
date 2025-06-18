@@ -99,10 +99,7 @@ describe('Yasgui tabs', () => {
         YasguiSteps.getCurrentTabTitle().should('have.text', 'Unnamed 1');
     });
 
-    /**
-     * TODO: Fix me. Broken due to migration (Changes in main menu)
-     */
-    it.skip('Should display information about ongoing requests if try to navigate to other page when there is a tab with ongoing request', () => {
+    it('Should display information about ongoing requests if try to navigate to other page when there is a tab with ongoing request', () => {
         // When I execute a long-running query,
         QueryStubs.stubLongRunningQuery(repositoryId);
         SparqlEditorSteps.visitSparqlEditorPage();
