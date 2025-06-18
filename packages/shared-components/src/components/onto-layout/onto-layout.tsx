@@ -233,7 +233,7 @@ export class OntoLayout {
 
   private shouldShowMenu(role: Authority): boolean {
     return this.isAuthenticatedFully()
-      && ServiceProvider.get(AuthenticationService).hasRole(role, this.securityConfig, this.authenticatedUser);
+      && ServiceProvider.get(AuthenticationService).hasRole(role);
   }
 
   // ========================

@@ -25,7 +25,7 @@ import {
   LanguageService,
   LanguageContextService,
   ObjectUtil,
-  getCurrentRoute,
+  getCurrentRoute, AuthenticationService
 } from '@ontotext/workbench-api';
 import {TranslationService} from '../../services/translation.service';
 import {HtmlUtil} from '../../utils/html-util';
@@ -56,6 +56,7 @@ export class OntoHeader {
   private readonly languageService: LanguageService = ServiceProvider.get(LanguageService);
   private readonly UPDATE_ACTIVE_OPERATION_TIME_INTERVAL = 2000;
   private readonly fibonacciGenerator = new FibonacciGenerator();
+  private readonly authService = ServiceProvider.get(AuthenticationService);
 
   // ========================
   // State
@@ -252,8 +253,8 @@ export class OntoHeader {
       repositories = this.repositoryList.getItems();
     }
 
-    // TODO: GDB-10442 filter if not rights to read repo see jwt-auth.service.js canReadRepo function
     return repositories
+      .filter((repository) => this.authService.canReadRepo(repository))
       .map((repository) => {
         return new DropdownItem<Repository>()
           .setName(<SelectorItemButton repository={repository}/>)
