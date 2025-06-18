@@ -149,6 +149,32 @@ export class TTYGStubs extends Stubs {
         }).as('get-agent-defaults');
     }
 
+    static stubAnswerQuestionWithDelay(fixture = '/ttyg/chats/ask-question-cancel.json', delay = 1000) {
+        cy.intercept({
+            method: 'POST',
+            url: '/rest/chat/conversations',
+        }, (req) => {
+            req.reply({
+                fixture,
+                statusCode: 200,
+                delay
+            });
+        }).as('get-cancelled-answer');
+    }
+
+    static stubCancelQuestion(fixture = '/ttyg/chats/cancel-question-response.json', delay = 1000) {
+        cy.intercept({
+            method: 'POST',
+            url: 'rest/chat/chats/cancel/**'
+        }, (req) => {
+            req.reply({
+                fixture,
+                statusCode: 200,
+                delay
+            });
+        }).as('get-cancel-response');
+    }
+
     static stubCrateNewChat() {
             cy.intercept('POST', '/rest/chat/chats/create', {
                 fixture: 'ttyg/chats/create/create-chat-response.json',

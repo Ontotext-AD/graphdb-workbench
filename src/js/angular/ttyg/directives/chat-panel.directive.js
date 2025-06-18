@@ -213,6 +213,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
                     // Skip the loading indication if it is a new chat that hasn't received an answer yet.
                     $scope.loadingChat = chat && !chat.isNew();
                     $scope.chatItem = getEmptyChatItem();
+                    $scope.waitingForLastMessage = false;
                     focusQuestionInput();
                 } else {
                     reset();

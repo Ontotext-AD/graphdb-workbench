@@ -25,8 +25,7 @@ function TTYGRestService($http) {
      */
     const createChat = () => {
         if (DEVELOPMENT) {
-            // TODO add backend mock
-            //return _fakeBackend.createChat();
+            return _fakeBackend.createChat();
         }
         return $http.post(CREATE_ENDPOINT);
     };
