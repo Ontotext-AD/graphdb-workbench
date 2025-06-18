@@ -45,4 +45,20 @@ export class RepositoryService implements Service {
     return this.repositoryRestService.getRepositorySizeInfo(repository)
       .then(this.repositorySizeInfoMapper.mapToModel);
   }
+
+  isSystemRepository(repository: Repository): boolean {
+    return repository.id === 'SYSTEM';
+  }
+
+  getLocationSpecificId(repo: Repository): string {
+    return repo.location ? `${repo.id}@${repo.location}` : repo.id;
+  }
+
+  getCurrentRepoAuthority(action: string, repoId: string): string {
+    return `${action}_REPO_${repoId}`;
+  }
+
+  getOverallRepoAuthority(action: string): string {
+    return `${action}_REPO_*`;
+  }
 }
