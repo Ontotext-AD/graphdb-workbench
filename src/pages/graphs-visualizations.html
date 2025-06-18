@@ -144,7 +144,7 @@
                                 </td>
                                 <td>
                                     <h5>
-                                        <a href ng-click="goToGraphConfig(config)" popover={{config.description}} popover-trigger="mouseenter">{{config.name}}</a>
+                                        <a href ng-click="goToGraphConfig(config)" uib-popover={{config.description}} popover-trigger="mouseenter">{{config.name}}</a>
                                     </h5>
                                     <samp class="text-muted small text-overflow d-block" ng-if="config.startMode == 'query'">{{config.startGraphQuery}}</samp>
                                     <samp class="text-muted small text-overflow d-block" ng-if="config.startMode == 'node'">{{config.startIRI}}</samp>
@@ -259,7 +259,7 @@
                         </button>
                         <span style="margin-top: 5px" ng-if="invalidLimit"
                               class="idError alert alert-danger"
-                              tooltip="{{INVALID_LINKS_TOOLTIP}}">
+                              uib-tooltip="{{INVALID_LINKS_TOOLTIP}}">
                             {{INVALID_LINKS_MSG}}
                         </span>
                     </div>

@@ -12,7 +12,7 @@
     <h1>
         {{title}}
         <span class="btn btn-link"
-              popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+              uib-popover-template="'js/angular/templates/titlePopoverTemplate.html'"
               popover-trigger="mouseenter"
               popover-placement="bottom-right"
               popover-append-to-body="true"><span class="icon-info"></span></span>
@@ -46,21 +46,21 @@
         </div>
     </div>
     <button class="btn btn-lg btn-primary save-query-btn" ng-click="saveTemplate()"
-            popover="Save SPARQL template"
+            uib-popover="Save SPARQL template"
             popover-placement="top"
             popover-trigger="mouseenter"
             ng-if="canWriteActiveRepo()">
         Save
     </button>
     <a ng-href="sparql-templates" class="btn btn-lg btn-secondary cancel-query-btn"
-       popover="Cancel SPARQL template creation"
+       uib-popover="Cancel SPARQL template creation"
        popover-placement="top"
        popover-trigger="mouseenter"
        ng-if="canWriteActiveRepo()">
         Cancel
     </a>
     <a ng-href="sparql-templates" class="btn btn-lg btn-secondary"
-       popover="Cancel SPARQL template creation"
+       uib-popover="Cancel SPARQL template creation"
        popover-placement="top"
        popover-trigger="mouseenter"
        ng-if="!canWriteActiveRepo()">
