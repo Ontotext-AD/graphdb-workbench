@@ -14,9 +14,7 @@ const jsonld = JSON.stringify({
     "ab:email": "richard491@hotmail.com"
 });
 
-// TODO: Fix me. Broken due to migration (Error: beforeEach)
-describe.skip('Import user data: File upload', () => {
-
+describe('Import user data: File upload', () => {
     let repositoryId;
     const testFiles = [
         'bnodes.ttl',
@@ -40,7 +38,8 @@ describe.skip('Import user data: File upload', () => {
         // Given there are no files uploaded yet
         ImportUserDataSteps.getResourcesTable().should('be.hidden');
         // When I start to upload a file
-        ImportUserDataSteps.selectFile(ImportUserDataSteps.createFile(testFiles[0], bnodes));
+        const file1 = ImportUserDataSteps.createFile(testFiles[0], bnodes);
+        ImportUserDataSteps.selectFile(file1);
         // Then the import settings dialog should open automatically
         ImportSettingsDialogSteps.getDialog().should('be.visible');
         ImportSettingsDialogSteps.import();
@@ -64,7 +63,8 @@ describe.skip('Import user data: File upload', () => {
         // Given there are no files uploaded yet
         ImportUserDataSteps.getResourcesTable().should('be.hidden');
         // And I have selected to upload a file
-        ImportUserDataSteps.selectFile(ImportUserDataSteps.createFile(testFiles[0], bnodes));
+        const file = ImportUserDataSteps.createFile(testFiles[0], bnodes);
+        ImportUserDataSteps.selectFile(file);
         ImportSettingsDialogSteps.getDialog().should('be.visible');
         // When I cancel the file upload via the cancel button
         ImportSettingsDialogSteps.cancelUpload();
@@ -73,7 +73,7 @@ describe.skip('Import user data: File upload', () => {
         // And there should be no files uploaded
         ImportUserDataSteps.getResourcesTable().should('be.hidden');
         // When I select to upload a file again
-        ImportUserDataSteps.selectFile(ImportUserDataSteps.createFile(testFiles[0], bnodes));
+        ImportUserDataSteps.selectFile(file);
         // Then the import settings dialog should open
         ImportSettingsDialogSteps.getDialog().should('be.visible');
         // And I close the file upload dialog via the close button
@@ -88,7 +88,8 @@ describe.skip('Import user data: File upload', () => {
         // Given there are no files uploaded yet
         ImportUserDataSteps.getResourcesTable().should('be.hidden');
         // When I start to upload a file
-        ImportUserDataSteps.selectFile(ImportUserDataSteps.createFile(testFiles[0], bnodes));
+        const file = ImportUserDataSteps.createFile(testFiles[0], bnodes);
+        ImportUserDataSteps.selectFile(file);
         // Then the import settings dialog should open automatically
         ImportSettingsDialogSteps.getDialog().should('be.visible');
         // And the option for replace graph should be active
@@ -99,21 +100,24 @@ describe.skip('Import user data: File upload', () => {
         // Given there are no files uploaded yet
         ImportUserDataSteps.getResourcesTable().should('be.hidden');
         // When I upload a file
-        ImportUserDataSteps.selectFile(ImportUserDataSteps.createFile(testFiles[0], bnodes));
+        const file = ImportUserDataSteps.createFile(testFiles[0], bnodes);
+        ImportUserDataSteps.selectFile(file);
         // Then the import settings dialog should open automatically
         ImportSettingsDialogSteps.getDialog().should('be.visible');
         ImportSettingsDialogSteps.import();
         // Then I should see the uploaded file
         ImportUserDataSteps.checkImportedResource(0, 'bnodes.ttl');
         // When I upload another file
-        ImportUserDataSteps.selectFile(ImportUserDataSteps.createFile(testFiles[1], jsonld));
+        const file2 = ImportUserDataSteps.createFile(testFiles[1], jsonld);
+        ImportUserDataSteps.selectFile(file2);
         ImportSettingsDialogSteps.getDialog().should('be.visible');
         ImportSettingsDialogSteps.import();
         // Then I should see the uploaded file - it becomes first in the list
         ImportUserDataSteps.checkImportedResource(0, 'jsonld.jsonld');
         ImportUserDataSteps.checkImportedResource(1, 'bnodes.ttl');
         // When I override the first file
-        ImportUserDataSteps.selectFile(ImportUserDataSteps.createFile(testFiles[0], bnodes));
+        const file3 = ImportUserDataSteps.createFile(testFiles[0], bnodes);
+        ImportUserDataSteps.selectFile(file3);
         FileOverwriteDialogSteps.overwrite();
         ImportSettingsDialogSteps.getDialog().should('be.visible');
         ImportSettingsDialogSteps.import();
@@ -122,7 +126,7 @@ describe.skip('Import user data: File upload', () => {
         ImportUserDataSteps.checkImportedResource(0, 'jsonld.jsonld');
         ImportUserDataSteps.checkImportedResource(1, 'bnodes.ttl');
         // When I override the second file
-        ImportUserDataSteps.selectFile(ImportUserDataSteps.createFile(testFiles[1], jsonld));
+        ImportUserDataSteps.selectFile(file2);
         FileOverwriteDialogSteps.overwrite();
         ImportSettingsDialogSteps.getDialog().should('be.visible');
         ImportSettingsDialogSteps.import();
@@ -131,14 +135,12 @@ describe.skip('Import user data: File upload', () => {
         ImportUserDataSteps.checkImportedResource(1, 'bnodes.ttl');
     });
 
-    /**
-     * TODO: Fix me. Broken due to migration (Changes in main menu)
-     */
-    it.skip('should be able to only upload a single file without importing it', () => {
+    it('should be able to only upload a single file without importing it', () => {
         // Given there are no files uploaded yet
         ImportUserDataSteps.getResourcesTable().should('be.hidden');
         // When I start to upload a file
-        ImportUserDataSteps.selectFile(ImportUserDataSteps.createFile(testFiles[0], bnodes));
+        const file = ImportUserDataSteps.createFile(testFiles[0], bnodes);
+        ImportUserDataSteps.selectFile(file);
         // Then the import settings dialog should open automatically
         ImportSettingsDialogSteps.getDialog().should('be.visible');
         ImportSettingsDialogSteps.uploadOnly();
@@ -151,10 +153,7 @@ describe.skip('Import user data: File upload', () => {
         ImportUserDataSteps.getResources().should('have.length', 1);
     });
 
-    /**
-     * TODO: Fix me. Broken due to migration (Changes in main menu)
-     */
-    it.skip('Should be able to upload multiple unique files', () => {
+    it('Should be able to upload multiple unique files', () => {
         // Given there are no files uploaded yet
         ImportUserDataSteps.getResourcesTable().should('be.hidden');
         // When I upload a file
