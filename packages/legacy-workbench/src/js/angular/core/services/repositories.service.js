@@ -9,7 +9,16 @@ import {QueryMode} from "../../models/ontotext-yasgui/query-mode";
 import {md5HashGenerator} from "../../utils/hash-utils";
 import {RemoteLocationModel} from "../../models/repository/remote-location.model";
 import {SelectMenuOptionsModel} from "../../models/form-fields";
-import {RepositoryStorageService, RepositoryContextService, ServiceProvider, RepositoryLocationContextService, MapperProvider, RepositoryListMapper} from "@ontotext/workbench-api";
+import {
+    RepositoryStorageService,
+    RepositoryContextService,
+    ServiceProvider,
+    RepositoryLocationContextService,
+    MapperProvider,
+    RepositoryListMapper,
+    SecurityContextService,
+    RestrictedPages
+} from "@ontotext/workbench-api";
 
 const modules = [
     'ngCookies',
@@ -395,6 +404,12 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
             const eventData = {oldRepository: this.repository, newRepository: repo, cancel: false};
             eventEmitterService.emit('repositoryWillChangeEvent', eventData, (eventData) => {
                 if (!eventData.cancel) {
+                    // TODO: Move this in a subscription to updateSelectedRepository, after security is fully migrated.
+                    // If we do this now, we get race conditions, between the context services and the components. Both work
+                    // in parallel and it causes issues. Migrated components should load their data after updateApplicationDataState
+                    // is called, with DATA_LOADED. This will ensure components start loading their data, after the contexts are updated
+                    ServiceProvider.get(SecurityContextService).updateRestrictedPages(new RestrictedPages());
+
                     const repositoryContextService = ServiceProvider.get(RepositoryContextService);
                     // if the current repo is unreadable by the currently logged in user (or free access user)
                     // we unset the repository
