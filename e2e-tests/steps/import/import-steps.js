@@ -67,13 +67,7 @@ class ImportSteps {
         }
 
         cy.visit('/import#' + type);
-
-        // cy.get('.ot-splash').should('not.be.visible');
-
         cy.get('#import-' + type).should('be.visible');
-
-        // cy.get('.ot-loader').should('not.be.visible');
-
         return this;
     }
 
@@ -98,7 +92,6 @@ class ImportSteps {
     }
 
     static openUserDataTab() {
-        // cy.get('.ot-loader').should('not.be.visible');
         return this.getTabs().eq(0).click();
     }
 
@@ -111,7 +104,6 @@ class ImportSteps {
     }
 
     static openServerFilesTab() {
-        // cy.get('.ot-loader').should('not.be.visible');
         return this.getTabs().eq(1).click();
     }
 
@@ -198,7 +190,6 @@ class ImportSteps {
     }
 
     static checkImportedResource(index, resourceName, expectedStatus) {
-        if (expectedStatus === undefined) {}
         const status = expectedStatus || 'Imported successfully';
         this.getResourceByName(resourceName).should('contain', resourceName);
         this.getResourceStatus(resourceName).should('contain', status);
@@ -209,7 +200,6 @@ class ImportSteps {
     }
 
     static checkUserDataUploadedResource(index, resourceName) {
-        // this.getResource(index).should('contain', resourceName);
         this.getResourceByName(resourceName).should('contain', resourceName);
         this.getResourceStatus(resourceName).should('be.hidden');
     }
@@ -272,7 +262,7 @@ class ImportSteps {
     }
 
     static importFile(index) {
-        this.getResource(index).find('.import-resource-action-import-btn').click();
+        this.getResource(index).find('.import-resource-action-import-btn').invoke('show').trigger('click');
     }
 
     static importResourceByName(name) {
@@ -296,7 +286,8 @@ class ImportSteps {
     }
 
     static selectFile(files) {
-        cy.get('#wb-import-uploadFile label').selectFile(files);
+        cy.wait(1000)
+        cy.get('#wb-import-uploadFile label').selectFile(files, { force: true });
     }
 
     static uploadFile(filePath) {
