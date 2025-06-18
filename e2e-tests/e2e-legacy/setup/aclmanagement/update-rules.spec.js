@@ -82,10 +82,7 @@ describe('ACL Management: update rules', () => {
         AclManagementSteps.checkStatementRules([ACL_VIEW[0], newRule, editedRule, ACL_VIEW[2], ACL_VIEW[3]]);
     });
 
-    /**
-     * TODO: Fix me. Broken due to migration (Changes in main menu)
-     */
-    it.skip('Should prevent leaving the page when there is new rule added', () => {
+    it('Should prevent leaving the page when there is new rule added', () => {
         // Given I have opened ACL management page
         // When I don't change anything and try to leave the page
         ApplicationSteps.openImportPage();
@@ -109,10 +106,7 @@ describe('ACL Management: update rules', () => {
         cy.url().should('contain', '/import');
     });
 
-    /**
-     * TODO: Fix me. Broken due to migration (Changes in main menu)
-     */
-    it.skip('Should prevent leaving the page when there is an edited rule', () => {
+    it('Should prevent leaving the page when there is an edited rule', () => {
         // Given I have opened ACL management page
         // When I edit a rule
         AclManagementSteps.editRule(1);
@@ -124,10 +118,7 @@ describe('ACL Management: update rules', () => {
         ModalDialogSteps.getDialog().should('be.visible');
     });
 
-    /**
-     * TODO: Fix me. Broken due to migration (Changes in main menu)
-     */
-    it.skip('Should prevent leaving the page when there is a deleted rule', () => {
+    it('Should prevent leaving the page when there is a deleted rule', () => {
         // Given I have opened ACL management page
         // When I delete a rule
         AclManagementSteps.deleteRule(1);
@@ -138,10 +129,7 @@ describe('ACL Management: update rules', () => {
         ModalDialogSteps.getDialog().should('be.visible');
     });
 
-    /**
-     * TODO: Fix me. Broken due to migration (Changes in main menu)
-     */
-    it.skip('Should prevent leaving the page when there is a moved rule', () => {
+    it('Should prevent leaving the page when there is a moved rule', () => {
         // Given I have opened ACL management page
         // When I move a rule
         AclManagementSteps.moveRuleDown(1);
