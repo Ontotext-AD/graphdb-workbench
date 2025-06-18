@@ -1,9 +1,10 @@
 import {Service} from '../../providers/service/service';
-import {AuthenticatedUser, Authority, SecurityConfig} from '../../models/security';
+import {AuthenticatedUser, Authority, Rights, SecurityConfig} from '../../models/security';
 import {ServiceProvider} from '../../providers';
 import {EventService} from '../event-service';
 import {Logout} from '../../models/events';
 import {SecurityContextService} from './security-context.service';
+import {Repository} from '../../models/repositories';
 
 /**
  * Service responsible for handling authentication-related operations.
@@ -42,11 +43,12 @@ export class AuthenticationService implements Service {
   /**
    * Checks if the user has a specific role based on the provided authority, configuration, and user details.
    * @param {Authority} role - The authority role to check.
-   * @param {SecurityConfig} [config] - The security configuration object.
-   * @param {AuthenticatedUser} [user] - The authenticated user object.
    * @returns {boolean | undefined} True if the user has the specified role, false or undefined otherwise.
    */
-  hasRole(role?: Authority, config?: SecurityConfig, user?: AuthenticatedUser): boolean | undefined {
+  hasRole(role?: Authority): boolean | undefined {
+    const config = this.getSecurityConfig();
+    const user = this.getAuthenticatedUser();
+
     if (!role || !config?.enabled) {
       return true;
     }
@@ -58,14 +60,55 @@ export class AuthenticationService implements Service {
   }
 
   /**
-   * Checks if security is enabled.
+   * Checks if security is enabled
    * @returns {boolean} True if security is enabled, false otherwise.
    */
   isSecurityEnabled(): boolean {
     return !!this.getSecurityConfig()?.enabled;
   }
 
+  canReadRepo(repository?: Repository): boolean {
+    if (!repository || repository.id === '') {
+      return false;
+    }
+
+    const config = this.getSecurityConfig();
+    const user = this.getAuthenticatedUser();
+
+    if (config?.enabled) {
+      if (!user) {
+        return false;
+      }
+      if (this.hasRole(Authority.ROLE_ADMIN) || this.hasRole(Authority.ROLE_REPO_MANAGER)) {
+        return true;
+      }
+      if (repository.id === 'SYSTEM') {
+        return false;
+      }
+      return this.hasBaseRights(Rights.READ, repository);
+    }
+
+    return true;
+  }
+
   private getSecurityConfig(): SecurityConfig | undefined {
     return ServiceProvider.get(SecurityContextService).getSecurityConfig();
+  }
+
+  private getAuthenticatedUser(): AuthenticatedUser | undefined {
+    return ServiceProvider.get(SecurityContextService).getAuthenticatedUser();
+  }
+
+  private hasBaseRights(action: string, repo: Repository): boolean {
+    const repoId = repo.location ? `${repo.id}@${repo.location}` : repo.id;
+    const overCurrentRepo = `${action}_REPO_${repoId}`;
+    const overAllRepos = `${action}_REPO_*`;
+
+    const user = this.getAuthenticatedUser();
+
+    return !!(
+      user?.authorities.hasAuthority(overCurrentRepo as Authority) ||
+      user?.authorities.hasAuthority(overAllRepos as Authority)
+    );
   }
 }
