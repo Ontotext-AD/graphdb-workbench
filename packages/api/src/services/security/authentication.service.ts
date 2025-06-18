@@ -5,11 +5,14 @@ import {EventService} from '../event-service';
 import {Logout} from '../../models/events';
 import {SecurityContextService} from './security-context.service';
 import {Repository} from '../../models/repositories';
+import {RepositoryService} from '../repository';
 
 /**
  * Service responsible for handling authentication-related operations.
  */
 export class AuthenticationService implements Service {
+  private readonly repositoryService = ServiceProvider.get(RepositoryService);
+
   login(): string {
     return 'Authentication.login from the API';
   }
@@ -79,16 +82,20 @@ export class AuthenticationService implements Service {
       if (!user) {
         return false;
       }
-      if (this.hasRole(Authority.ROLE_ADMIN) || this.hasRole(Authority.ROLE_REPO_MANAGER)) {
+      if (this.isAdminOrRepoManager()) {
         return true;
       }
-      if (repository.id === 'SYSTEM') {
+      if (this.repositoryService.isSystemRepository(repository)) {
         return false;
       }
       return this.hasBaseRights(Rights.READ, repository);
     }
 
     return true;
+  }
+
+  private isAdminOrRepoManager() {
+    return this.hasRole(Authority.ROLE_ADMIN) || this.hasRole(Authority.ROLE_REPO_MANAGER);
   }
 
   private getSecurityConfig(): SecurityConfig | undefined {
@@ -100,9 +107,9 @@ export class AuthenticationService implements Service {
   }
 
   private hasBaseRights(action: string, repo: Repository): boolean {
-    const repoId = repo.location ? `${repo.id}@${repo.location}` : repo.id;
-    const overCurrentRepo = `${action}_REPO_${repoId}`;
-    const overAllRepos = `${action}_REPO_*`;
+    const repoId = this.repositoryService.getLocationSpecificId(repo);
+    const overCurrentRepo = this.repositoryService.getCurrentRepoAuthority(action, repoId);
+    const overAllRepos = this.repositoryService.getOverallRepoAuthority(action);
 
     const user = this.getAuthenticatedUser();
 
