@@ -271,6 +271,28 @@ function ExploreCtrl(
         ModalService.openCopyToClipboardModal(uri);
     };
 
+    /**
+     * ================================================
+     * Cypress test support — global exposure hack ️
+     * ================================================
+     * `jsonld` id imported as local ES modules
+     * and is not available in the global `window` scope at runtime.
+     *
+     * However, Cypress tests often rely on mocking/stubbing or spying on
+     * functions like `jsonld.compact()` to isolate behavior.
+     *
+     * Cypress’ `cy.stub(win, 'someFunction')` only works for **own properties**
+     * of the `window` object. That means: unless `jsonld` is explicitly attached
+     * to `window`, Cypress cannot replace or observe it.
+     *
+     * This block ensures that in cypress mode (`window.Cypress`),
+     * we attach `jsonld` to `window`, making it accessible
+     * to Cypress tests that need to stub or assert usage.
+     */
+    if (window.Cypress) {
+        window.jsonld = jsonld;
+    }
+
     // =========================
     // Private functions
     // =========================
