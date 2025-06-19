@@ -21,7 +21,7 @@ export class MainMenuSteps {
     }
 
     static getMenuSetup() {
-        return MainMenuSteps.getMenuButton('Setup');
+        return this.getMainMenu().getByTestId('menu-setup');
     }
 
     static getMenuSparql() {
@@ -137,5 +137,14 @@ export class MainMenuSteps {
     static clickOnSystemMonitoring() {
         this.clickOnMenuMonitoring();
         this.getSubMenuButton('sub-menu-system-monitoring').click();
+    }
+
+    static clickOnSetupMenu() {
+        this.getMenuSetup().click()
+    }
+
+    static clickOnRepositories() {
+        this.clickOnSetupMenu();
+        this.getSubMenuButton('sub-menu-repositories').click();
     }
 }
