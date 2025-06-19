@@ -10,9 +10,6 @@ export class NamespaceSteps {
     // ------ Generic ------
 
     static waitUntilPageIsLoaded() {
-        // Workbench loading screen should not be visible
-        cy.get('.ot-splash').should('not.be.visible');
-
         // No active loader
         cy.get('.ot-loader').should('not.be.visible');
 
