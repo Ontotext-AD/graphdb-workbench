@@ -112,7 +112,7 @@ export abstract class ContextService<TFields extends Record<string, unknown>> im
   ): Subscription {
     const unsubscribeFns: SubscriptionList = new SubscriptionList();
     // iterate through service-defined fields
-    for (const key of this.context.keys()) {
+    for (const key of this.getContextFields()) {
       unsubscribeFns.add(
         this.subscribe<T>(
           key,
@@ -124,7 +124,39 @@ export abstract class ContextService<TFields extends Record<string, unknown>> im
     }
     return (): void => unsubscribeFns.unsubscribeAll();
   }
-
+  
+  /**
+   * Retrieves the names of all context fields defined in the service,
+   * which will be used to register change subscriptions.
+   *
+   * This method is part of the abstract base class for context services.
+   * Each subclass defines a specific set of properties that are managed
+   * through methods such as `updateProperty` and `onPropertyChanged`.
+   *
+   * This method generically collects all string-typed values defined in the subclass,
+   * under the assumption that all such values represent valid context property names.
+   * It assumes that:
+   * - Subclasses will only define properties related to the context (i.e., no extra fields).
+   * - These properties are managed entirely by the base service logic.
+   *
+   * While this design simplifies property management and change detection,
+   * it is a known limitation that it does not strictly enforce property scoping.
+   * It may inadvertently include properties that are not intended for context management
+   * if subclasses define unrelated string values.
+   *
+   * **Note**: This approach is a temporary solution and will be deprecated once
+   * all pages are migrated away from AngularJS. At that point, this generic behavior
+   * will be replaced with more explicit and type-safe mechanisms.
+   *
+   * Subclasses may override this method if they wish to manually control
+   * which context fields are exposed for subscription.
+   *
+   * @returns An array of property names (strings) to which change subscriptions should be applied.
+   */
+  protected getContextFields(): string[] {
+    return Object.values(this).filter((value): value is string => typeof value === 'string');
+  }
+  
   /**
    * Retrieves the value context for a specific property or creates a new context if it doesn't exist.
    *

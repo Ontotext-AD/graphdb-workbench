@@ -23,6 +23,14 @@ export class SubscriptionList extends ModelList<Subscription> {
   }
   
   /**
+   * Adds multiple subscriptions to the list.
+   * @param subscriptions - An array of Subscription functions to be added.
+   */
+  addAll(subscriptions: Subscription[]): void {
+    this.items.push(...subscriptions);
+  }
+  
+  /**
    * Calls all subscription functions in the list and then clears the list. Calling a subscription
    * function unsubscribes the subscription. This effectively unsubscribes all subscriptions
    * and removes them from the list.
