@@ -1,9 +1,6 @@
 import {RdfRankSteps} from "../../steps/setup/rdf-rank-steps";
 
-/**
- * TODO: Fix me. Broken due to migration (loader is not implemented)
- */
-describe.skip('RDF Rank view', () => {
+describe('RDF Rank view', () => {
 
     let repositoryId;
 
