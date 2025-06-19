@@ -111,4 +111,20 @@ export class MainMenuSteps {
         this.clickOnExplore();
         this.getSubMenuButton('sub-menu-similarity').click();
     }
+
+    // --------------------------
+    // --     Monitoring menu  --
+    // --------------------------
+    static getMenuMonitoring() {
+        return MainMenuSteps.getMainMenu().getByTestId('menu-monitoring');
+    }
+
+    static clickOnMenuMonitoring () {
+        this.getMenuMonitoring().click();
+    }
+
+    static clickOnQueryAndUpdate() {
+        this.clickOnMenuMonitoring();
+        this.getSubMenuButton('sub-menu-queries-and-updates').click();
+    }
 }

@@ -20,6 +20,7 @@ PluginRegistry.add('main.menu', {
             order: 1,
             parent: 'Monitor',
             guideSelector: 'sub-menu-queries-and-updates',
+            testSelector: 'sub-menu-queries-and-updates',
             children: []
         }
     ]
