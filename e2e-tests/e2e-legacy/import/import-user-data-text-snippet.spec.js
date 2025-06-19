@@ -1,8 +1,7 @@
 import {ImportUserDataSteps} from "../../steps/import/import-user-data-steps";
 import {ImportSettingsDialogSteps} from "../../steps/import/import-settings-dialog-steps";
 
-// TODO: Fix me. Broken due to migration (Error: beforeEach)
-describe.skip('Import user data: Text snippet', () => {
+describe('Import user data: Text snippet', () => {
 
     let repositoryId;
     const INITIAL_DATA = "<urn:s1> <urn:p1> <urn:o1>.";
@@ -115,10 +114,7 @@ describe.skip('Import user data: Text snippet', () => {
         ImportUserDataSteps.checkImportedResource(0, TEXT_SNIPPET);
     });
 
-    /**
-     * TODO: Fix me. Broken due to migration (problem with '/graphs' view)
-     */
-    it.skip('Should import RDF text snippet successfully with filled base URI and context', () => {
+    it('Should import RDF text snippet successfully with filled base URI and context', () => {
         ImportUserDataSteps.openImportTextSnippetDialog();
         ImportUserDataSteps.fillRDFTextSnippet(RDF_TEXT_SNIPPET_2);
         ImportUserDataSteps.clickImportTextSnippetButton();
@@ -131,7 +127,6 @@ describe.skip('Import user data: Text snippet', () => {
 
         // Go to Graphs overview
         cy.visit('/graphs');
-        cy.get('.ot-splash').should('not.be.visible');
 
         const graphName = CONTEXT.slice(0, CONTEXT.lastIndexOf('.'));
 
@@ -140,10 +135,7 @@ describe.skip('Import user data: Text snippet', () => {
         cy.get('#export-graphs').should('be.visible').should('contain', graphName);
     });
 
-    /**
-     * TODO: Fix me. Broken due to migration (problem with '/graphs' view)
-     */
-    it.skip('Should import RDF snippet in the default graph (from data) and replace data in the default graph', () => {
+    it('Should import RDF snippet in the default graph (from data) and replace data in the default graph', () => {
         ImportUserDataSteps.openImportTextSnippetDialog();
         ImportUserDataSteps.fillRDFTextSnippet(INITIAL_DATA);
         ImportUserDataSteps.selectRDFFormat("TriG");
@@ -160,10 +152,7 @@ describe.skip('Import user data: Text snippet', () => {
         ImportUserDataSteps.verifyGraphData("The default graph", "urn:replaced-s1", "urn:replaced-p1", "urn:replaced-o1", "http://www.ontotext.com/explicit", true, "urn:s1");
     });
 
-    /**
-     * TODO: Fix me. Broken due to migration (problem with '/graphs' view)
-     */
-    it.skip('Should import RDF snippet with a custom graph (from data) and replace data in the custom graph', () => {
+    it('Should import RDF snippet with a custom graph (from data) and replace data in the custom graph', () => {
         ImportUserDataSteps.openImportTextSnippetDialog();
         ImportUserDataSteps.fillRDFTextSnippet(PRE_DEFINED_INITIAL_GRAPH_DATA);
         ImportUserDataSteps.selectRDFFormat("TriG");
@@ -180,10 +169,7 @@ describe.skip('Import user data: Text snippet', () => {
         ImportUserDataSteps.verifyGraphData("urn:graph1", "urn:replaced-s1-custom", "urn:replaced-p1-custom", "urn:replaced-o1-custom", "urn:graph1", true, "urn:s1-custom");
     });
 
-    /**
-     * TODO: Fix me. Broken due to migration (problem with '/graphs' view)
-     */
-    it.skip('Should import RDF snippet in the default graph (The default graph) and replace data in the default graph', () => {
+    it('Should import RDF snippet in the default graph (The default graph) and replace data in the default graph', () => {
         ImportUserDataSteps.openImportTextSnippetDialog();
         ImportUserDataSteps.fillRDFTextSnippet(INITIAL_DATA);
         ImportUserDataSteps.selectRDFFormat("TriG");
@@ -200,10 +186,7 @@ describe.skip('Import user data: Text snippet', () => {
         ImportUserDataSteps.verifyGraphData("The default graph", "urn:replaced-s1", "urn:replaced-p1", "urn:replaced-o1", "http://www.ontotext.com/explicit", true, "urn:s1");
     });
 
-    /**
-     * TODO: Fix me. Broken due to migration (problem with '/graphs' view)
-     */
-    it.skip('Should import RDF snippet in a named graph (Named graph) and replace data in the named graph', () => {
+    it('Should import RDF snippet in a named graph (Named graph) and replace data in the named graph', () => {
         ImportUserDataSteps.openImportTextSnippetDialog();
         ImportUserDataSteps.fillRDFTextSnippet(INITIAL_DATA);
         ImportUserDataSteps.selectRDFFormat("TriG");
@@ -220,10 +203,7 @@ describe.skip('Import user data: Text snippet', () => {
         ImportUserDataSteps.verifyGraphData("http://graph1", "urn:replaced-s1", "urn:replaced-p1", "urn:replaced-o1", "http://graph1", true, "urn:s1");
     });
 
-    /**
-     * TODO: Fix me. Broken due to migration (problem with '/graphs' view)
-     */
-    it.skip('Should import JSON-LD text snippet successfully without URI', () => {
+    it('Should import JSON-LD text snippet successfully without URI', () => {
         ImportUserDataSteps.openImportTextSnippetDialog();
         ImportUserDataSteps.fillRDFTextSnippet(JSONLD_TEXT_SNIPPET);
         ImportUserDataSteps.selectRDFFormat(JSONLD_FORMAT);
@@ -235,7 +215,6 @@ describe.skip('Import user data: Text snippet', () => {
 
         // Go to Graphs overview
         cy.visit('/graphs');
-        cy.get('.ot-splash').should('not.be.visible');
 
         const graphName = CONTEXT.slice(0, CONTEXT.lastIndexOf('.'));
 
@@ -244,10 +223,7 @@ describe.skip('Import user data: Text snippet', () => {
         cy.get('#export-graphs').should('be.visible').should('contain', graphName);
     });
 
-    /**
-     * TODO: Fix me. Broken due to migration (problem with '/graphs' view)
-     */
-    it.skip('Should import JSON-LD text snippet successfully with URI and context', () => {
+    it('Should import JSON-LD text snippet successfully with URI and context', () => {
         ImportUserDataSteps.openImportTextSnippetDialog();
         ImportUserDataSteps.fillRDFTextSnippet(JSONLD_TEXT_SNIPPET);
         ImportUserDataSteps.selectRDFFormat(JSONLD_FORMAT);
