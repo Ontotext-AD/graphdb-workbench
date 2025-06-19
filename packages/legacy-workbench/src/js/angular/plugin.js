@@ -17,6 +17,7 @@ PluginRegistry.add('main.menu', {
                 role: 'IS_AUTHENTICATED_FULLY',
                 icon: "icon-settings",
                 guideSelector: 'menu-setup',
+                testSelector: 'menu-setup',
                 children: []
             },
             {

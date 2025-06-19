@@ -61,7 +61,8 @@ PluginRegistry.add('main.menu', {
                 {
                     href: 'repository/edit/*'
                 }
-            ]
-            , guideSelector: 'sub-menu-repositories'
+            ],
+            guideSelector: 'sub-menu-repositories',
+            testSelector: 'sub-menu-repositories'
         }]
 });
