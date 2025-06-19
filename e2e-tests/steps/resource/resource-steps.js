@@ -151,4 +151,8 @@ export class ResourceSteps {
     static clickOnTripleResourceLink() {
         ResourceSteps.getTripleResourceLink().click();
     }
+
+    static getDataTable() {
+        return cy.get('.dataTable');
+    }
 }
