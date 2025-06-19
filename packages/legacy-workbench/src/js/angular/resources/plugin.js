@@ -22,7 +22,8 @@ PluginRegistry.add('main.menu', {
             role: 'ROLE_MONITORING',
             order: 3,
             parent: 'Monitor',
-            guideSelector: 'sub-menu-resources'
+            guideSelector: 'sub-menu-system-monitoring',
+            testSelector: 'sub-menu-system-monitoring'
         }
     ]
 });
