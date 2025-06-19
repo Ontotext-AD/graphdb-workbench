@@ -91,6 +91,8 @@ function TTYGViewCtrl(
      */
     let pendingQuestionCancelingPromise;
 
+    const newChatDefaultName = 'New chat';
+
     // =========================
     // Public variables
     // =========================
@@ -438,7 +440,7 @@ function TTYGViewCtrl(
 
         TTYGService.createChat().then((conversationId) => {
             const newChat = ChatModel.getNewChat();
-            newChat.name = $translate.instant('ttyg.chat.default_name');
+            newChat.name = newChatDefaultName;
             newChat.id = conversationId;
             TTYGContextService.addChat(newChat);
             TTYGContextService.selectChat(newChat);
