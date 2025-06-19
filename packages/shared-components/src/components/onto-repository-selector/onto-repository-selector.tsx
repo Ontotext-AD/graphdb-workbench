@@ -116,6 +116,7 @@ export class OntoRepositorySelector {
       <Host>
         <onto-dropdown
           class='onto-repository-selector'
+          data-test={'onto-repository-selector'}
           onValueChanged={this.onValueChanged()}
           dropdownButtonName={repositorySelection}
           dropdownButtonTooltip={this.createTooltipFunctionForRepository(this.currentRepository)}
