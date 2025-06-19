@@ -11,7 +11,7 @@
     <page-info-tooltip></page-info-tooltip>
 </h1>
 
-<div id="wb-monitoringResources" class="ot-owlim-resources">
+<div id="wb-monitoringResources" data-test="system-monitoring-page" class="ot-owlim-resources">
     <div class="ot-loader ot-main-loader" onto-loader size="50" ng-if="loader"></div>
 
     <div ng-if="!loader" class="graphics row">
@@ -30,7 +30,7 @@
                     <div class="tabs ml-2 mr-2">
                         <div class="tab-pane fade in" ng-if="activeTab === AVAILABLE_TABS.RESOURCE_MONITOR" id="resourceTab">
                             <div class="row mt-2">
-                                <div id="CPUUsageGraphic" class="col-lg-12 col-xl-6">
+                                <div id="CPUUsageGraphic" data-test="cpu-usage-chart" class="col-lg-12 col-xl-6">
                                     <div class="title h4" style="text-align: center;">
                                         {{'resource.system.cpu_load.label' | translate}}
                                         <span class="btn btn-link" uib-popover="{{'resource.system.cpu_load.tooltip' | translate}}" popover-trigger="mouseenter"
@@ -45,7 +45,7 @@
                                          chart="resourceMonitorData.charts.cpuLoad"
                                          style="width: 100%; height: 500px"></div>
                                 </div>
-                                <div id="openFileDescriptors" class="col-lg-12 col-xl-6">
+                                <div id="openFileDescriptors" data-test="file-descriptor-chart" class="col-lg-12 col-xl-6">
                                     <div class="title h4" style="text-align: center;">
                                         {{'resource.system.file_descriptors.label' | translate}}
                                         <span class="btn btn-link" uib-popover="{{'resource.system.file_descriptors.tooltip' | translate}}" popover-trigger="mouseenter"
@@ -62,7 +62,7 @@
                                 </div>
                             </div>
                             <div class="row mt-2">
-                                <div id="heapMemoryGraphic" class="col-lg-12 col-xl-6">
+                                <div id="heapMemoryGraphic" data-test="heap-memory-chart" class="col-lg-12 col-xl-6">
                                     <div class="title h4" style="text-align: center;">
                                         {{'resource.memory.heap.label' | translate}}
                                         <span class="btn btn-link" uib-popover="{{'resource.memory.heap.tooltip' | translate}}" popover-trigger="mouseenter"
@@ -77,7 +77,7 @@
                                          chart="resourceMonitorData.charts.heapMemory"
                                          style="width: 100%; height: 500px"></div>
                                 </div>
-                                <div id="offHeapMemoryGraphic" class="col-lg-12 col-xl-6">
+                                <div id="offHeapMemoryGraphic" data-test="off-heap-memory-chart" class="col-lg-12 col-xl-6">
                                     <div class="title h4" style="text-align: center;">
                                         {{'resource.memory.non_heap.label' | translate}}
                                         <span class="btn btn-link" uib-popover="{{'resource.memory.non_heap.tooltip' | translate}}" popover-trigger="mouseenter"
@@ -94,7 +94,7 @@
                                 </div>
                             </div>
                             <div class="row mt-2">
-                                <div id="diskStorage" class="col-lg-12 col-xl-6">
+                                <div id="diskStorage" data-test="disk-storage-chart" class="col-lg-12 col-xl-6">
                                     <div class="title h4" style="text-align: center;">
                                         {{'resource.storage.label' | translate}}
                                         <span class="btn btn-link" uib-popover="{{'resource.storage.tooltip' | translate}}" popover-trigger="mouseenter"
