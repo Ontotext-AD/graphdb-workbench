@@ -1,5 +1,5 @@
 <link href="css/backup-and-restore.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
-<div>
+<div data-test="backup-and-restore-page">
     <title>${messages.app.title} : ${messages.jmx.QueryMonitoringPage.title}</title>
 
 
@@ -59,7 +59,7 @@
             </tbody>
         </table>
         </div>
-        <div class="alert alert-info no-icon no-running-backup-and-restore-alert"
+        <div class="alert alert-info no-icon" data-test="no-running-backup-and-restore-alert"
              ng-if="!backupAndRestoreInfos || !backupAndRestoreInfos.length || backupAndRestoreInfos.length === 0">
             {{'view.monitoring.backup_and_restore.no_running_backup_and_restore' | translate}}
         </div>

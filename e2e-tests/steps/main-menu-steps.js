@@ -127,4 +127,9 @@ export class MainMenuSteps {
         this.clickOnMenuMonitoring();
         this.getSubMenuButton('sub-menu-queries-and-updates').click();
     }
+
+    static clickOnBackupAndRestore() {
+        this.clickOnMenuMonitoring();
+        this.getSubMenuButton('sub-menu-backup-and-restore').click();
+    }
 }
