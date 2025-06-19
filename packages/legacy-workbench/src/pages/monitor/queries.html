@@ -12,7 +12,7 @@
 
     <div core-errors ontop></div>
 
-	<div id="wb-monitoringQueries" class="ot-owlim-monitoring-queries" ng-if="!isActiveRepoOntopType()">
+	<div id="wb-monitoringQueries" data-test="monitoring-queries-and-updates" class="ot-owlim-monitoring-queries" ng-if="!isActiveRepoOntopType()">
 		<div ng-show="getActiveRepository()">
 			<div class="ot-loader ot-main-loader" onto-loader size="50" ng-show="loader"></div>
 
@@ -26,7 +26,7 @@
 
 			<div ng-hide="loader || error">
 				<div class="pause-bar">
-					<button type="button" class="btn pull-right pause-btn" ng-click="togglePause()"  ng-class="paused ? 'btn-primary' : 'btn-secondary'"
+					<button type="button" class="btn pull-right pause-btn" ng-click="togglePause()" data-test="pause-button" ng-class="paused ? 'btn-primary' : 'btn-secondary'"
 							gdb-tooltip="{{paused ? 'monitoring.restart' : 'temp.pause' | translate}}"
 						tooltip-placement="left">
 						{{paused ? 'paused.btn' : 'pause.btn' | translate}}
@@ -90,7 +90,7 @@
 						</tbody>
 					</table>
 				</div>
-				<div class="alert alert-info no-icon no-running-queries-alert" ng-show="noQueries">
+				<div class="alert alert-info no-icon no-running-queries-alert" data-test="no-running-queries-or-updates-alert" ng-show="noQueries">
 					{{'no.running.queries.updates' | translate}}
 				</div>
 			</div>
