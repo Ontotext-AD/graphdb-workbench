@@ -28,6 +28,7 @@ PluginRegistry.add('main.menu', {
                 role: 'ROLE_USER',
                 icon: 'icon-monitoring',
                 guideSelector: 'menu-monitor',
+                testSelector: 'menu-monitoring',
                 children: []
             },
             {
