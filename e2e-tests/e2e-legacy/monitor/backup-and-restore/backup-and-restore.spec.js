@@ -1,5 +1,5 @@
-import {BackupAndRestoreSteps} from "../../steps/monitoring/backup-and-restore-steps";
-import {BackupAndRestoreStubs} from "../../stubs/backup-and-restore-stubs";
+import {BackupAndRestoreSteps} from "../../../steps/monitoring/backup-and-restore-steps";
+import {BackupAndRestoreStubs} from "../../../stubs/backup-and-restore-stubs";
 
 describe("Monitoring 'Backup And Restore'", () => {
 
