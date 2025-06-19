@@ -19,6 +19,7 @@ PluginRegistry.add('main.menu', {
             order: 2,
             parent: 'Monitor',
             guideSelector: 'sub-menu-backup-and-restore',
+            testSelector: 'sub-menu-backup-and-restore',
             role: 'ROLE_REPO_MANAGER'
         }
     ]
