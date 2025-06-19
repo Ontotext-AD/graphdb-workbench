@@ -1,10 +1,7 @@
 import {AutocompleteSteps} from "../../steps/setup/autocomplete-steps";
 import {LicenseStubs} from "../../stubs/license-stubs";
 
-/**
- * TODO: Fix me. Broken due to migration (loader is not implemented)
- */
-describe.skip('Autocomplete ', () => {
+describe('Autocomplete ', () => {
 
     let repositoryId;
 

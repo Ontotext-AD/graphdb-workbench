@@ -9,9 +9,6 @@ export class RdfRankSteps {
     }
 
     static waitUntilRdfRankPageIsLoaded() {
-        // Workbench loading screen should not be visible
-        cy.get('.ot-splash').should('not.be.visible');
-
         // No active loader
         cy.get('.ot-loader').should('not.exist');
 
