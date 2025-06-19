@@ -23,6 +23,7 @@ type GlobalSubscription = {
  */
 export class ContextSubscriptionManager implements Service {
   private readonly subscribers: GlobalSubscription[] = [];
+  private readonly unsubFns: SubscriptionList = new SubscriptionList();
 
   /**
    * Subscribes a ContextService instance to all currently registered global subscriptions.
@@ -41,6 +42,7 @@ export class ContextSubscriptionManager implements Service {
         sub.afterChangeCallback
       )
     );
+    this.unsubFns.addAll(unsubFns);
     return () => unsubFns.forEach(unsub => unsub());
   }
 
@@ -58,13 +60,12 @@ export class ContextSubscriptionManager implements Service {
     beforeChangeValidationPromise?: BeforeChangeValidationPromise<unknown>,
     afterChangeCallback?: ValueChangeCallback<unknown>
   ): () => void {
-    const unsubFns: SubscriptionList = new SubscriptionList();
 
     const services = ServiceProvider.getAllBySuperType(ContextService)
       .filter(service => service.canSubscribeAll);
     // Subscribe to already registered context services
     for (const service of services) {
-      unsubFns.add(service.subscribeAll(callback, beforeChangeValidationPromise, afterChangeCallback));
+      this.unsubFns.add(service.subscribeAll(callback, beforeChangeValidationPromise, afterChangeCallback));
     }
 
     const subscriber: GlobalSubscription = {
@@ -84,7 +85,7 @@ export class ContextSubscriptionManager implements Service {
       unsubscribed = true;
 
       // Unsubscribe from all previously registered services
-      unsubFns.unsubscribeAll();
+      this.unsubFns.unsubscribeAll();
 
       // Remove global subscriber
       const index = this.subscribers.indexOf(subscriber);
