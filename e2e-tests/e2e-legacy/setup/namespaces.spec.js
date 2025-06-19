@@ -3,10 +3,7 @@ import {ApplicationSteps} from "../../steps/application-steps";
 import {NamespaceStubs} from "../../stubs/namespace-stubs";
 import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
 
-/**
- * TODO: Fix me. Broken due to migration (loader is not implemented)
- */
-describe.skip('Namespaces', () => {
+describe('Namespaces', () => {
 
     let repositoryId;
     const DEFAULT_NAMESPACES = {};
