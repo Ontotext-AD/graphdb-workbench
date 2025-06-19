@@ -2,14 +2,18 @@ import {HttpOptions} from '../../models/http/http-options';
 import {InterceptorService} from '../interceptor/interceptor.service';
 import {HttpRequest} from '../../models/http/http-request';
 import {ServiceProvider} from '../../providers';
+import {EventEmitter} from '../../emitters/event.emitter';
 
 const JSON_CONTENT_TYPES = ['application/json', 'application/sparql-results+json'];
+
+export const HTTP_REQUEST_DONE_EVENT = 'http-request-done-event';
 
 /**
  * A service class for performing HTTP requests.
  */
 export class HttpService {
   private readonly interceptorService = ServiceProvider.get(InterceptorService);
+  private readonly eventEmitter = new EventEmitter<undefined>();
 
   /**
    * Performs an HTTP GET request.
@@ -122,7 +126,8 @@ export class HttpService {
         }
         const isJson = this.hasValidJson(response);
         return (isJson ? response.json() : Promise.resolve()) as Promise<T>;
-      });
+      })
+      .finally(() => this.eventEmitter.emit({NAME: HTTP_REQUEST_DONE_EVENT, payload: undefined}));
   }
 
   private hasValidJson(response: Response) {

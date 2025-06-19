@@ -1,4 +1,5 @@
-import {ServiceProvider, ContextSubscriptionManager} from "@ontotext/workbench-api";
+import {ContextSubscriptionManager, HTTP_REQUEST_DONE_EVENT, ServiceProvider} from "@ontotext/workbench-api";
+
 const defaultOpts = {
     // required opts
     angular: null,
@@ -12,7 +13,7 @@ const defaultOpts = {
     elementId: "__single_spa_angular_1",
     strictDi: false,
     template: undefined,
-    subscriptions: undefined
+    subscriptions: []
 };
 
 export default function singleSpaAngularJS(userOpts) {
@@ -116,18 +117,26 @@ function mount(opts, mountedInstances, props = {}) {
             // ]);
         }
 
-        opts.subscriptions = ServiceProvider.get(ContextSubscriptionManager)
-            .subscribeToAllRegisteredContexts(() => {}, undefined, () => {
-                const $timeout = mountedInstances.instance?.get('$timeout');
-                const $rootScope = mountedInstances.instance?.get('$rootScope');
+        const triggerDigest = () => {
+            const $timeout = mountedInstances.instance?.get('$timeout');
+            const $rootScope = mountedInstances.instance?.get('$rootScope');
 
-                if ($timeout && $rootScope) {
-                    $timeout(() => {
-                        $rootScope.$apply();
-                    });
-                }
+            if ($timeout && $rootScope) {
+                $timeout(() => {
+                    $rootScope.$apply();
+                });
             }
-        )
+        }
+
+        const subscribeToHttpRequests = () => {
+            document.body.addEventListener(HTTP_REQUEST_DONE_EVENT, triggerDigest)
+            return () => document.body.removeEventListener(HTTP_REQUEST_DONE_EVENT, triggerDigest);
+        }
+
+        const unsubscribeToAllContexts = ServiceProvider.get(ContextSubscriptionManager)
+            .subscribeToAllRegisteredContexts(() => {}, undefined, triggerDigest)
+        opts.subscriptions.push(unsubscribeToAllContexts)
+        opts.subscriptions.push(subscribeToHttpRequests())
 
         // mountedInstances.instance.get("$rootScope").singleSpaProps = props;
         //
@@ -193,8 +202,10 @@ function unmount(opts, mountedInstances, props = {}) {
         }
 
         // unsubscribe
-        opts.subscriptions?.();
-        opts.subscriptions = undefined;
+        if (opts.subscriptions?.length) {
+            opts.subscriptions.forEach((unsubscribe) => unsubscribe());
+            opts.subscriptions = [];
+        }
 
         setTimeout(resolve);
     });
