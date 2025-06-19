@@ -35,7 +35,7 @@ export class RepositorySteps {
     }
 
     static getRepositoriesDropdown() {
-        return cy.get('#repositorySelectDropdown')
+        return cy.getByTestId('onto-repository-selector')
             .scrollIntoView()
             .should('be.visible');
     }
