@@ -42,3 +42,6 @@ export * from './services/app-lifecycle';
 
 // Export utils for external usages.
 export * from './services/utils';
+
+// Export constants for external usages.
+export {HTTP_REQUEST_DONE_EVENT} from './services/http/http.service';

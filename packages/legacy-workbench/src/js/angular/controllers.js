@@ -111,9 +111,6 @@ function homeCtrl($scope,
             })
             .catch(function (e) {
                 $scope.activeRepositorySizeError = e.data.message;
-            })
-            .finally(function () {
-                $scope.$apply();
             });
     };
 
