@@ -1,3 +1,5 @@
+import {SystemMonitoringSteps} from "../../../steps/monitoring/system-monitoring-steps";
+
 describe('Monitor Resources', () => {
 
     let repositoryId;
@@ -10,8 +12,7 @@ describe('Monitor Resources', () => {
     beforeEach(() => {
         cy.presetRepository(repositoryId);
 
-        cy.visit('/monitor/system');
-        cy.window();
+        SystemMonitoringSteps.visit();
 
         // Wait for loaders to disappear
         getTabsPanel().should('be.visible');
@@ -105,8 +106,7 @@ describe('Monitor Resources', () => {
         verifyCharts(charts);
     });
 
-    // TODO: Fix me. Broken due to migration (Error: unknown)
-    it.skip('Performance monitoring tab should show charts', () => {
+    it('Performance monitoring tab should show charts', () => {
         getTabButtons().eq(1).click();
         const charts = [{
             id: 'activeQueries',

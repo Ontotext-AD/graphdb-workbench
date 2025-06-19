@@ -132,4 +132,10 @@ export class MainMenuSteps {
         this.clickOnMenuMonitoring();
         this.getSubMenuButton('sub-menu-backup-and-restore').click();
     }
+
+
+    static clickOnSystemMonitoring() {
+        this.clickOnMenuMonitoring();
+        this.getSubMenuButton('sub-menu-system-monitoring').click();
+    }
 }
