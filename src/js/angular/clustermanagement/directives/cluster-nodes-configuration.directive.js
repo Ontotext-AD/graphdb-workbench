@@ -182,6 +182,7 @@ function ClusterNodesConfigurationComponent($translate, $timeout, productInfo, t
             $scope.cancel = () => {
                 $scope.editedNodeIndex = undefined;
                 $scope.addNewLocation = false;
+                resetNodeEditState();
                 ClusterContextService.emitUpdateClusterView();
             };
 

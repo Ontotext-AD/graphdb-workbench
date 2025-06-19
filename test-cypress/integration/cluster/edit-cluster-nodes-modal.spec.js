@@ -358,6 +358,50 @@ describe('Cluster management', () => {
         ApplicationSteps.getSuccessNotifications().contains('Cluster updated successfully');
     });
 
+    it('should not replace node after replace action is canceled and a new node is added', () => {
+        const clusterLocations = ['http://pc-desktop:7200', 'http://pc-desktop:7201', 'http://pc-desktop:7202'];
+        ClusterStubs.stubClusterConfigByList(clusterLocations);
+        ClusterStubs.stubClusterGroupStatus();
+        ClusterStubs.stubClusterNodeStatus();
+        RemoteLocationStubs.stubGetRemoteLocations(3);
+        RemoteLocationStubs.stubRemoteLocationFilter();
+        RemoteLocationStubs.stubRemoteLocationStatusInCluster();
+        RemoteLocationStubs.stubRemoteLocationCheckByAddress([
+            {uri: 'pc-desktop:7200', rpc: 'pc-desktop:7300'},
+            {uri: 'pc-desktop:7201', rpc: 'pc-desktop:7301'},
+            {uri: 'pc-desktop:7202', rpc: 'pc-desktop:7302'}
+        ]);
+
+        // Given I have opened the cluster management page
+        ClusterPageSteps.visit();
+        // When I click on update cluster
+        ClusterPageSteps.updateCluster();
+        ClusterNodesConfigurationSteps.getClusterNodesConfigurationModal().should('be.visible');
+        // When I replace a node
+        ClusterNodesConfigurationSteps.clickReplaceNodeButtonByEndpoint('http://pc-desktop:7201');
+        // I expect to see replacing confirmation dialog
+        ModalDialogSteps.getDialogBody().should('contain', 'Are you sure you want to change the location?');
+        // When I confirm
+        ModalDialogSteps.clickOnConfirmButton();
+        // Then I should see the edit node row
+        ClusterNodesConfigurationSteps.getEditNodeRow().should('be.visible');
+        // Then I cancel the action
+        ClusterNodesConfigurationSteps.clickCancelNodeButton();
+        // Then I add a new node
+        ClusterNodesConfigurationSteps.clickAddNodeButton();
+        const newNodeEndpoint = 'http://pc-desktop:7233';
+        ClusterNodesConfigurationSteps.enterNodeEndpoint(newNodeEndpoint);
+        // And I save the new node
+        RemoteLocationStubs.stubAddRemoteLocation();
+        ClusterNodesConfigurationSteps.clickSaveNodeButton();
+        // Then the originally replaced node (canceled action) should not be replaced
+        ClusterNodesConfigurationSteps.getNodeStatusByEndpoint('http://pc-desktop:7201').should('eq', '');
+        // And the new node should be added
+        ClusterNodesConfigurationSteps.getNodeStatusByEndpoint('http://pc-desktop:7233').should('eq', 'Node will be added');
+        ClusterStubs.stubClusterGroupStatusAfterAdd();
+        ClusterNodesConfigurationSteps.clickOkButton();
+    });
+
     it('Should be able to open a create cluster dialog', () => {
         ClusterStubs.stubNoClusterNodeStatus();
         ClusterStubs.stubNoClusterGroupStatus();
