@@ -17,8 +17,7 @@ const OBJECT_RESOURCE = 'http:%2F%2Fexample.com%2Fontology%23Metric';
 const IMPLICIT_EXPLICIT_RESOURCE = 'http:%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23type';
 const TRIPLE_RESOURCE = '%3C%3C%3Chttp:%2F%2Fexample.com%2Fresource%2Fperson%2FW6J1827%3E%20%3Chttp:%2F%2Fexample.com%2Fontology%23hasAddress%3E%20%3Chttp:%2F%2Fexample.com%2Fresource%2Fperson%2FW6J1827%2Faddress%3E%3E%3E';
 
-// TODO: Fix me. Broken due to migration (Error: unknown)
-describe.skip('Resource view', () => {
+describe('Resource view', () => {
     let repositoryId;
     beforeEach(() => {
         repositoryId = 'repository-' + Date.now();
@@ -63,10 +62,7 @@ describe.skip('Resource view', () => {
         YasrSteps.getResults().should('have.length', 5);
     });
 
-    /**
-     * TODO: Fix me. Broken due to migration (problem with '/graphs-visualizations' view)
-     */
-    it.skip('should navigate to visual graph view', () => {
+    it('should navigate to visual graph view', () => {
         // When I am on resource view and page loaded a resource.
         ResourceSteps.visit(`uri=${SUBJECT_RESOURCE}&role=subject`);
 
@@ -326,11 +322,7 @@ describe.skip('Resource view', () => {
         });
     });
 
-    /**
-     * TODO: Fix me. Broken due to migration (problem with yasgui in resource view)
-     */
-    context.skip('Triple resource', () => {
-
+    context('Triple resource', () => {
         it('should show triple resource', {
             retries: {
                 runMode: 1,
@@ -343,6 +335,8 @@ describe.skip('Resource view', () => {
             // Then I expect resource link to exist.
             ResourceSteps.getTripleResourceLink().should('contain.text', '<<<W6J1827> <hasAddress> <address>>>');
 
+            // And I expect to see data table
+            ResourceSteps.getDataTable().should('exist').and('be.visible');
             // When I click on the link.
             ResourceSteps.clickOnTripleResourceLink();
 
@@ -358,6 +352,8 @@ describe.skip('Resource view', () => {
             // Then I expect target link to exist.
             ResourceSteps.getTargetLink().should('contain.text', '<<<http://example.com/resource/person/W6J1827> <http://example.com/ontology#hasAddress> <http://example.com/resource/person/W6J1827/address>>>');
 
+            // And I expect to see data table
+            ResourceSteps.getDataTable().should('exist').and('be.visible');
             // When I click on the link.
             ResourceSteps.clickOnTripleResourceLink();
 
@@ -374,6 +370,18 @@ describe.skip('Resource view', () => {
         it('should download as JSON-LD and then restore defaults', () => {
             // Given I am in the Resource view
             ResourceSteps.visit(`uri=${SUBJECT_RESOURCE}&role=subject`);
+            cy.window().then((win) => {
+                expect(win.jsonld).to.exist;
+                cy.stub(win.jsonld, 'compact').resolves({
+                    "@context": {
+                        "dc11": "http://purl.org/dc/elements/1.1/",
+                        "ex": "http://example.org/vocab#",
+                        "ex:authored": {"@type": "@id"},
+                        "ex:contains": {"@type": "@id"},
+                        "foaf": "http://xmlns.com/foaf/0.1/"
+                    }
+                });
+            });
             ResourceSteps.verifyActiveRoleTab('subject');
 
             // When I download as JSON-LD
