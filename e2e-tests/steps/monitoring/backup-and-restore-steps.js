@@ -1,14 +1,20 @@
-export class BackupAndRestoreSteps {
+import {BaseSteps} from "../base-steps";
+
+export class BackupAndRestoreSteps extends BaseSteps {
 
     static visit() {
         cy.visit('/monitor/backup-and-restore');
     }
 
+    static getBackupAndRestorePage() {
+        return this.getByTestId('backup-and-restore-page');
+    }
+
     static getInfoMessageElement() {
-        return cy.get('.no-running-backup-and-restore-alert');
+        return this.getBackupAndRestorePage().getByTestId('no-running-backup-and-restore-alert');
     }
 
     static getBackupAndRestoreResults() {
-        return cy.get('.backup-and-restore table tbody tr');
+        return this.getBackupAndRestorePage().find('table tbody tr');
     }
 }
