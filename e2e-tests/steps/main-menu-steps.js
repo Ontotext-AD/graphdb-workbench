@@ -20,10 +20,6 @@ export class MainMenuSteps {
         return MainMenuSteps.getMenuButton('Explore');
     }
 
-    static getMenuSetup() {
-        return this.getMainMenu().getByTestId('menu-setup');
-    }
-
     static getMenuSparql() {
         return MainMenuSteps.getMenuButton('SPARQL');
     }
@@ -139,37 +135,49 @@ export class MainMenuSteps {
         this.getSubMenuButton('sub-menu-system-monitoring').click();
     }
 
-    static clickOnSetupMenu() {
-        this.getMenuSetup().click()
+    // --------------------------
+    // --     Setup menu  --
+    // --------------------------
+    static getMenuSetup() {
+        return MainMenuSteps.getMainMenu().getByTestId('menu-setup');
+    }
+
+    static clickOnMenuSetup() {
+        this.getMenuSetup().click();
     }
 
     static clickOnRepositories() {
-        this.clickOnSetupMenu();
+        this.clickOnMenuSetup();
         this.getSubMenuButton('sub-menu-repositories').click();
     }
 
     static clickOnACLManagement() {
-        this.clickOnSetupMenu();
+        this.clickOnMenuSetup();
         this.getSubMenuButton('sub-menu-acl-management').click();
     }
 
     static clickOnUsersAndAccess() {
-        this.clickOnSetupMenu();
+        this.clickOnMenuSetup();
         this.getSubMenuButton('sub-menu-users-and-access').click();
     }
 
+    static clickOnLicense() {
+        this.clickOnMenuSetup();
+        this.getSubMenuButton('sub-menu-license').click();
+    }
+
     static clickOnSparqlTemplates() {
-        this.clickOnSetupMenu();
+        this.clickOnMenuSetup();
         this.getSubMenuButton('sub-menu-sparql-templates').click();
     }
 
     static clickOnJDBC() {
-        this.clickOnSetupMenu();
+        this.clickOnMenuSetup();
         this.getSubMenuButton('sub-menu-jdbc').click();
     }
 
     static clickOnRDFRank() {
-        this.clickOnSetupMenu();
+        this.clickOnMenuSetup();
         this.getSubMenuButton('sub-menu-rdf-rank').click();
     }
 }
