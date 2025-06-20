@@ -3,7 +3,7 @@ import {GraphiqlPlaygroundSteps} from "../../steps/graphql/graphiql-playground-s
 import {GraphiQLEditorToolsSteps} from "../../steps/graphql/graphiql-editor-tools-steps";
 import {LanguageSelectorSteps} from "../../steps/language-selector-steps";
 
-describe.skip('GraphQL Playground', () => {
+describe('GraphQL Playground', () => {
     let repositoryId;
 
     beforeEach(() => {

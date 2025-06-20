@@ -5,7 +5,7 @@ import {ApplicationSteps} from "../../steps/application-steps";
 import {RepositoriesStub} from "../../stubs/repositories-stub";
 
 // TODO: Fix me. Broken due to migration (Error: unknown)
-describe.skip('TTYG view', () => {
+describe('TTYG view', () => {
 
     const repositoryId = 'starwars';
 

@@ -10,10 +10,10 @@ export class LoginSteps {
     }
 
     static logout() {
-        cy.get('#btnGroupDrop2').click();
-        cy.get('.dropdown-item')
+        cy.get('onto-user-menu').click();
+        cy.get('.onto-user-menu-dropdown')
             .contains('Logout')
-            .closest('a')
+            .first()
             // Force the click because Cypress sometimes determines that the item has 0x0 dimensions
             .click({force: true});
     }

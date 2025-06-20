@@ -1,8 +1,5 @@
 import {REPOSITORIES_URL} from "../support/repository-commands";
 
-/**
- * TODO: Fix me. Broken due to migration (loader is not implemented)
- */
 export class RepositorySteps {
 
     static visit() {
@@ -11,7 +8,6 @@ export class RepositorySteps {
         cy.visit('/repository');
         RepositorySteps.waitLoader();
         cy.wait('@getLocations');
-        // cy.window();
         RepositorySteps.waitUntilRepositoriesPageIsLoaded();
     }
 
@@ -24,12 +20,6 @@ export class RepositorySteps {
     }
 
     static waitUntilRepositoriesPageIsLoaded() {
-        // Workbench loading screen should not be visible
-        /**
-         * TODO: Fix me. Broken due to migration (loader is not implemented)
-         */
-        // cy.get('.ot-splash').should('not.be.visible');
-
         RepositorySteps.getRepositoriesDropdown().should('not.be.disabled');
         RepositorySteps.getCreateRepositoryButton().should('be.visible').and('not.be.disabled');
     }
@@ -39,6 +29,17 @@ export class RepositorySteps {
             .scrollIntoView()
             .should('be.visible');
     }
+
+    static getRepositorySelection() {
+        return cy.getByTestId('repository-selection')
+            .scrollIntoView()
+            .should('be.visible');
+    }
+
+    static getRepositoriesInDropdown() {
+        return cy.get('.onto-dropdown-menu-item');
+    }
+
 
     static getRepositoriesList() {
         return cy.get('#wb-repositories-repositoryInGetRepositories');
@@ -76,7 +77,7 @@ export class RepositorySteps {
             // Forcefully clicking it due to https://github.com/cypress-io/cypress/issues/695
             .should('be.visible')
             .and('not.be.disabled')
-            .click({force: true});
+            .click();
     }
 
     static editRepository(repositoryId) {
@@ -203,13 +204,11 @@ export class RepositorySteps {
     }
 
     static selectRepoFromDropdown(repositoryId) {
-        RepositorySteps.getRepositoriesDropdown()
-            .click()
-            .find('.dropdown-menu-right .dropdown-item')
+        RepositorySteps.getRepositoriesDropdown().click();
+        RepositorySteps.getRepositoriesInDropdown()
             .contains(repositoryId)
-            .closest('a')
-            // Force the click because Cypress sometimes determines that the item has 0x0 dimensions
-            .click({force: true});
+            .first()
+            .click();
     }
 
     static getSHACLRepositoryCheckbox() {
