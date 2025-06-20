@@ -147,4 +147,9 @@ export class MainMenuSteps {
         this.clickOnSetupMenu();
         this.getSubMenuButton('sub-menu-repositories').click();
     }
+
+    static clickOnACLManagement() {
+        this.clickOnSetupMenu();
+        this.getSubMenuButton('sub-menu-acl-management').click();
+    }
 }
