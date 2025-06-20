@@ -10,13 +10,7 @@ const USER_NAME = 'saved_query_user';
 const USER_ADMINISTRATOR = 'admin';
 const PASSWORD = 'root';
 
-/**
- * Skipped because this type of implementation is not ideal. If the test fails and the `afterEach` hook
- * fails to toggle security, all remaining tests will fail because security remains enabled.
- *
- * Tests like this should be refactored to use stubs or other alternative implementations.
- */
-describe.skip('Readonly saved query', () => {
+describe('Readonly saved query', () => {
 
     let repositoryId;
 
@@ -32,12 +26,12 @@ describe.skip('Readonly saved query', () => {
     });
 
     afterEach(() => {
-        LoginSteps.logout();
-        cy.deleteRepository(repositoryId);
-        UserAndAccessSteps.visit();
-        LoginSteps.loginWithUser(USER_ADMINISTRATOR, PASSWORD);
-        UserAndAccessSteps.toggleSecurity();
-        cy.deleteUser(USER_NAME);
+        cy.loginAsAdmin().then(()=> {
+            return cy.switchOffSecurity(true);
+        }).then(()=> {
+            cy.deleteUser(USER_NAME, true);
+            cy.deleteRepository(repositoryId);
+        });
     });
 
     it('Should not allow modifying a saved query if it is readonly', () => {

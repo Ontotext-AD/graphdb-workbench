@@ -23,6 +23,7 @@ class ImportSteps {
     static visit() {
         cy.visit('/import');
         cy.url().should('include', '/import');
+        cy.get('#wb-import h1').should('be.visible');
     }
 
     static getView() {

@@ -1,0 +1,34 @@
+{
+    "": [
+        {
+            "id": "test",
+            "title": "",
+            "uri": "http://localhost:8080/graphdb/repositories/test",
+            "externalUrl": "http://boyantonchev:9000/repositories/test",
+            "local": true,
+            "type": "graphdb",
+            "sesameType": "graphdb:SailRepository",
+            "location": "",
+            "readable": true,
+            "writable": true,
+            "unsupported": false,
+            "state": "RUNNING"
+        }
+    ],
+    "http://localhost:7201": [
+        {
+            "id": "movies",
+            "title": "",
+            "uri": "http://localhost:7202/repositories/movies",
+            "externalUrl": "http://localhost:7202/repositories/movies",
+            "local": false,
+            "type": "graphdb",
+            "sesameType": "graphdb:SailRepository",
+            "location": "http://localhost:7202",
+            "readable": true,
+            "writable": true,
+            "unsupported": false,
+            "state": "RUNNING"
+        }
+    ]
+}

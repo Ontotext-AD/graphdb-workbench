@@ -6,8 +6,7 @@ import {AutocompleteStubs} from "../../../stubs/autocomplete/autocomplete-stubs"
 const FILE_TO_IMPORT = 'wine.rdf';
 const VALID_RESOURCE = 'USRegion';
 
-// TODO: Fix me. Broken due to migration (Error: unknown)
-describe.skip('Visual graph screen validation', () => {
+describe('Visual graph screen validation', () => {
 
     let repositoryId;
 
