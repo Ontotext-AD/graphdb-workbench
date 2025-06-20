@@ -18,8 +18,10 @@ interface RepositorySelectionProps {
  *
  */
 export const RepositorySelection: FunctionalComponent<RepositorySelectionProps> = ({repository, defaultToggleButtonName, location}) => {
+  const className = repository ? 'repository-selection active-repository' : 'repository-selection no-selected-repository';
   return (
-    <div class="repository-selection">
+    <div class={className}
+         data-test={'repository-selection'}>
       {/* TODO: add tooltip with repository info*/}
       {repository && <i class={'button-icon icon-repo-' + repository.type}></i>}&nbsp;{repository?.id ?? defaultToggleButtonName}{location}
     </div>
