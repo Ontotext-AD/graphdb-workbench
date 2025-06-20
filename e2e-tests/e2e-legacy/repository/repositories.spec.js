@@ -8,7 +8,8 @@ import {ImportSettingsDialogSteps} from "../../steps/import/import-settings-dial
 import {ClusterStubs} from "../../stubs/cluster/cluster-stubs";
 import {RepositoriesStubs} from "../../stubs/repositories/repositories-stubs";
 
-describe.skip('Repositories', () => {
+// TODO: Refactor these tests to follow our step based approach for better decoupling from the page implementation
+describe('Repositories', () => {
 
     let repositoryId;
     const SHACL_SHAPE_DATA = "prefix ex: <http://example.com/ns#>\n" +
@@ -110,32 +111,25 @@ describe.skip('Repositories', () => {
             .should('be.visible')
             .and('not.be.disabled');
 
+        // It should have not selected the new repo
+        RepositorySteps.getRepositorySelection().should('have.class', 'no-selected-repository')
+
         // Connect to the repository via the menu
-        RepositorySteps.getRepositoriesDropdown().click().within(() => {
-            // It should have not selected the new repo
+        RepositorySteps.getRepositoriesDropdown().click()
+        // The dropdown should contain the newly created repository
+        cy.get('.onto-dropdown-menu-item').should('exist');
+        cy.get('.onto-dropdown-menu-item')
+            .contains(repositoryId)
+            .first()
+            .scrollIntoView()
+            .click();
 
-            // Note: The better test here should verify for .no-selected-repository presence but in Travis it seems there is a selected
-            // repository although Cypress clears cookies before each test OR the dropdown is not yet fully loaded which is strange
-            // because the test has been running for several seconds before this check
-            cy.get('#btnReposGroup').should('not.contain', repositoryId);
+        // Should visualize the selected repo
+        cy.get('.no-selected-repository').should('not.exist');
+        cy.get('.active-repository')
+            .should('be.visible')
+            .and('contain', repositoryId);
 
-            // The dropdown should contain the newly created repository
-            cy.get('#btnReposGroup').should('have.attr', 'aria-expanded', 'true');
-            // Wait about the menu to become visible due to a strange behavior of elements having size 0x0px thus treated as invisible.
-            // Alternative is to have the click forced, which might lead to false positive result.
-            cy.get('.dropdown-menu-right').should('be.visible').wait(500);
-            cy.get('.dropdown-menu-right .dropdown-item')
-                .contains(repositoryId)
-                .closest('a')
-                .scrollIntoView()
-                .click();
-
-            // Should visualize the selected repo
-            cy.get('.no-selected-repository').should('not.exist');
-            cy.get('.active-repository')
-                .should('be.visible')
-                .and('contain', repositoryId);
-        });
 
         // The repo should be connected after selecting it from the menu
         RepositorySteps.getRepositoryConnectionOnBtn(repositoryId).should('be.visible');
@@ -144,7 +138,7 @@ describe.skip('Repositories', () => {
         RepositorySteps.getRepositoriesDropdown()
             .click()
             .then(() => {
-                cy.get('.dropdown-menu-right')
+                cy.get('.onto-dropdown-menu-item')
                     .should('not.contain', repositoryId);
             });
     });
@@ -289,7 +283,7 @@ describe.skip('Repositories', () => {
         // The first should return back to the dropdown items
         RepositorySteps.getRepositoriesDropdown()
             .click()
-            .find('.dropdown-menu-right .dropdown-item')
+            .find('.onto-dropdown-menu-item')
             .should('contain', repositoryId);
         // Hide the menu
         RepositorySteps.getRepositoriesDropdown().click();
@@ -380,9 +374,8 @@ describe.skip('Repositories', () => {
         RepositorySteps.confirmModal();
 
         // Check the repo has been deselected and is not present in the repo dropdown menu
-        RepositorySteps.getRepositoriesDropdown().click().within(() => {
-            cy.get('#btnReposGroup').should('not.contain', repositoryId);
-        });
+        RepositorySteps.getRepositoriesDropdown().click();
+        RepositorySteps.getRepositoriesInDropdown().should('not.contain', repositoryId);
     });
 
     it('should restart an existing repository', () => {
@@ -408,21 +401,17 @@ describe.skip('Repositories', () => {
         //Make sure that repository is in status INACTIVE
         RepositorySteps.assertRepositoryStatus(repositoryId, "INACTIVE");
 
-        RepositorySteps.getRepositoriesDropdown().click().within(() => {
-
-            // Wait about the menu to become visible due to a strange behavior of elements having size 0x0px thus treated as invisible.
-            // Alternative is to have the click forced, which might lead to false positive result.
-            cy.get('.dropdown-menu-right').should('be.visible').wait(500);
-            cy.get('.dropdown-menu-right .dropdown-item')
-                .contains(repositoryId)
-                .closest('a')
-                .click();
+        RepositorySteps.getRepositoriesDropdown().click();
+        RepositorySteps.getRepositoriesInDropdown()
+            .should('be.visible')
+            .contains(repositoryId)
+            .eq(0)
+            .click();
             // Should visualize the selected repo
             cy.get('.no-selected-repository').should('not.exist');
             cy.get('.active-repository')
                 .should('be.visible')
                 .and('contain', repositoryId);
-        });
 
         HomeSteps.visitAndWaitLoader();
         cy.visit('/repository');

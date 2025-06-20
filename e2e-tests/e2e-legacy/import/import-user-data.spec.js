@@ -8,7 +8,7 @@ const RDF_TEXT_SNIPPET = '@prefix ab:<http://learningsparql.com/ns/addressbook#>
     'ab:richard ab:email "richard491@hotmail.com".';
 
 // TODO: Fix me. Broken due to migration (Error: unknown)
-describe.skip('Import user data', () => {
+describe('Import user data', () => {
 
     let repositoryId;
 
@@ -22,13 +22,17 @@ describe.skip('Import user data', () => {
         cy.deleteRepository(repositoryId);
     });
 
-    it('Should load user data import tab by default', () => {
+    // TODO: Fix me. Broken due to migration (Error: unknown)
+    it.skip('Should load user data import tab by default', () => {
         // Given I have visited the import page
         ImportUserDataSteps.visit();
         // When the page is loaded
         cy.url().should('include', '/import#user');
         // Then I should see the user help icons
         ImportUserDataSteps.showPageInfoPopover();
+        ImportUserDataSteps.getPageInfoPopoverTitle()
+            .should('be.visible')
+            .and('not.be.empty');
         ImportUserDataSteps.getPageInfoPopover()
             .should('be.visible')
             .find('a')
