@@ -18,6 +18,28 @@ export class LicenseStubs {
         }).as('enterpriseLicense');
     }
 
+    static stubNoValidLicense() {
+        cy.intercept('GET', '/rest/graphdb-settings/license', {
+            statusCode: 200,
+            body:{
+                "installationId": null,
+                "message": "No license was set",
+                "productType": "unknown",
+                "licenseCapabilities": [],
+                "present": false,
+                "valid": false,
+                "version": "Invalid",
+                "product": "Invalid",
+                "licensee": "Invalid",
+                "typeOfUse": "Invalid",
+                "maxCpuCores": 0,
+                "usageRestriction": "Invalid",
+                "expiryDate": 0,
+                "latestPublicationDate": 0
+            }
+        }).as('noValidLicense');
+    }
+
     static stubEvaluationLicense() {
         cy.intercept('GET', '/rest/graphdb-settings/license', {
             statusCode: 200,
