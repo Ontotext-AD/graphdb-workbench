@@ -16,7 +16,7 @@ angular
     .module('graphdb.framework.ttyg.directives.chat-panel', modules)
     .directive('chatPanel', ChatPanelComponent);
 
-ChatPanelComponent.$inject = ['toastr', '$translate', 'TTYGContextService', '$timeout'];
+ChatPanelComponent.$inject = ['toastr', '$translate', 'TTYGContextService'];
 
 /**
  * @ngdoc directive
@@ -32,7 +32,7 @@ ChatPanelComponent.$inject = ['toastr', '$translate', 'TTYGContextService', '$ti
  * @example
  * <chat-panel></chat-panel>
  */
-function ChatPanelComponent(toastr, $translate, TTYGContextService, $timeout) {
+function ChatPanelComponent(toastr, $translate, TTYGContextService) {
     return {
         restrict: 'E',
         templateUrl: 'js/angular/ttyg/templates/chat-panel.html',
@@ -74,6 +74,8 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, $timeout) {
              */
             $scope.loadingChat = true;
 
+            $scope.showCancelButton = false;
+
             // =========================
             // Private variables
             // =========================
@@ -97,6 +99,11 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, $timeout) {
                 scrollToBottom();
                 focusQuestionInput();
             };
+
+            $scope.cancelPendingQuestion = () => {
+                $scope.showCancelButton = false;
+                TTYGContextService.emit(TTYGEventName.CANCEL_PENDING_QUESTION, $scope.chatItem);
+            }
 
             /**
              * Regenerates the answer for the provided chat item.
@@ -148,14 +155,17 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, $timeout) {
             // =========================
 
             const createNewChat = () => {
-                $scope.waitingForLastMessage = true;
                 TTYGContextService.emit(TTYGEventName.CREATE_CHAT, $scope.chatItem);
             };
 
             const askQuestion = (chatItem) => {
-                $scope.waitingForLastMessage = true;
                 TTYGContextService.emit(TTYGEventName.ASK_QUESTION, chatItem);
             };
+
+            const onAskQuestionStarted = () => {
+                $scope.waitingForLastMessage = true;
+                $scope.showCancelButton = true;
+            }
 
             /**
              * Handles the update of the selected chat.
@@ -163,8 +173,8 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, $timeout) {
              */
             const onSelectedChatUpdated = (chat) => {
                 $scope.chat = chat;
-                if (!chat || !chat.id && $scope.askingChatItem) {
-                    // Do nothing if the chat is new (dummy) and a question is currently being asked.
+                if (!$scope.chat || $scope.chat.isNew()) {
+                    // Do nothing if the chat is new and a question is currently being asked.
                     return;
                 }
                 $scope.loadingChat = false;
@@ -185,6 +195,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, $timeout) {
 
             const onLastMessageReceived = () => {
                 $scope.waitingForLastMessage = false;
+                $scope.showCancelButton = false;
             };
 
             /**
@@ -199,9 +210,10 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, $timeout) {
 
             const onSelectedChatChanged = (chat) => {
                 if (chat) {
-                    // Skip the loading indication if it is a new (dummy) chat that has not been created yet.
-                    $scope.loadingChat = chat && chat.id;
+                    // Skip the loading indication if it is a new chat that hasn't received an answer yet.
+                    $scope.loadingChat = chat && !chat.isNew();
                     $scope.chatItem = getEmptyChatItem();
+                    $scope.waitingForLastMessage = false;
                     focusQuestionInput();
                 } else {
                     reset();
@@ -212,6 +224,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, $timeout) {
                 $scope.chatItem = cloneDeep($scope.askingChatItem);
                 $scope.askingChatItem = undefined;
                 $scope.waitingForLastMessage = false;
+                $scope.showCancelButton = false;
             };
 
             /**
@@ -269,16 +282,16 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, $timeout) {
             };
 
             const reset = () => {
-                $scope.chat = ChatModel.getEmptyChat();
+                $scope.chat = undefined;
                 $scope.loadingChat = false;
                 $scope.chatItem = getEmptyChatItem();
                 $scope.askingChatItem = undefined;
                 $scope.waitingForLastMessage = false;
+                $scope.showCancelButton = false;
                 focusQuestionInput();
             };
 
             const init = () => {
-                $scope.chat = ChatModel.getEmptyChat();
                 $scope.chatItem = getEmptyChatItem();
                 focusQuestionInput();
             };
@@ -301,6 +314,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, $timeout) {
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.ASK_QUESTION_FAILURE, onQuestionFailure));
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CREATE_CHAT_FAILURE, onQuestionFailure));
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.DELETE_CHAT_SUCCESSFUL, onChatDeleted));
+            subscriptions.push(TTYGContextService.subscribe(TTYGEventName.ASK_QUESTION_STARTING, onAskQuestionStarted));
 
             // Deregister the watcher when the scope/directive is destroyed
             $scope.$on('$destroy', removeAllSubscribers);

@@ -50,6 +50,7 @@ describe('TTYG create chat', () => {
         TTYGStubs.stubCrateNewChat();
         ChatPanelSteps.getAskButtonElement().scrollIntoView().click();
         cy.wait('@create-chat');
+        cy.wait('@ask-first-chat-question');
 
         // Then I expect new chat to be created in a new group "Today" and be selected
         TTYGViewSteps.getChatGroup(0).should('contain', 'Today');
