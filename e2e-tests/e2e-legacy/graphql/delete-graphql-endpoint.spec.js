@@ -2,7 +2,7 @@ import {GraphqlEndpointManagementSteps} from "../../steps/graphql/graphql-endpoi
 import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
 import {ApplicationSteps} from "../../steps/application-steps";
 
-describe.skip('Graphql: delete endpoint', () => {
+describe('Graphql: delete endpoint', () => {
     let repositoryId;
 
     beforeEach(() => {

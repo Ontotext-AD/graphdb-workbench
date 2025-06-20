@@ -1,8 +1,7 @@
 import {ImportUserDataSteps} from "../../steps/import/import-user-data-steps";
 import {ImportSettingsDialogSteps} from "../../steps/import/import-settings-dialog-steps";
 
-// TODO: Fix me. Broken due to migration (Error: beforeEach)
-describe.skip('Import user data: URL import', () => {
+describe('Import user data: URL import', () => {
 
     let repositoryId;
 

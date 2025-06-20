@@ -7,10 +7,7 @@ describe('Create repository', () => {
         HomeSteps.visitAndWaitLoader();
     });
 
-    /**
-     * TODO: Fix me. Broken due to migration (Repository selector is changed)
-     */
-    it.skip('Test create and select new repository via home page', () => {
+    it('Test create and select new repository via home page', () => {
         HomeSteps.verifyCreateRepositoryLink();
 
         const repositoryId = HomeSteps.createRepo();
@@ -24,8 +21,7 @@ describe('Create repository', () => {
         cy.deleteRepository(repositoryId);
     });
 
-    // TODO: Fix me. Broken due to migration (Error: unknown)
-    it.skip('Test saved SPARQL queries links on home page and confirm dialog appearance', () => {
+    it('Test saved SPARQL queries links on home page and confirm dialog appearance', () => {
         const repositoryId = HomeSteps.createRepo();
         HomeSteps.selectRepo(repositoryId);
 
