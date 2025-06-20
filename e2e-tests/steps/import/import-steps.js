@@ -23,6 +23,7 @@ class ImportSteps {
     static visit() {
         cy.visit('/import');
         cy.url().should('include', '/import');
+        cy.get('#wb-import h1').should('be.visible');
     }
 
     static getView() {
@@ -39,6 +40,10 @@ class ImportSteps {
 
     static getPageInfoPopover() {
         return cy.get('.help-info');
+    }
+
+    static getPageInfoPopoverTitle() {
+        return cy.get('.help-info h4');
     }
 
     static hidePageInfoPopover() {
