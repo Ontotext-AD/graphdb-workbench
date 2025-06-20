@@ -152,4 +152,9 @@ export class MainMenuSteps {
         this.clickOnSetupMenu();
         this.getSubMenuButton('sub-menu-acl-management').click();
     }
+
+    static clickOnUsersAndAccess() {
+        this.clickOnSetupMenu();
+        this.getSubMenuButton('sub-menu-users-and-access').click();
+    }
 }

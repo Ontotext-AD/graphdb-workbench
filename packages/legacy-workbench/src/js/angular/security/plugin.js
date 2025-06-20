@@ -84,7 +84,8 @@ PluginRegistry.add('main.menu', {
                 href: 'user/*',
                 children: []
             }],
-            guideSelector: 'sub-menu-user-and-access'
+            guideSelector: 'sub-menu-user-and-access',
+            testSelector: 'sub-menu-users-and-access'
         },
         {
             label: 'My Settings',
