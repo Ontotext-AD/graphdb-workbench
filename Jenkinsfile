@@ -165,7 +165,7 @@ pipeline {
 
                             if (caughtError) {
                                 echo "Tests failed — archiving Cypress video artifacts."
-                                archiveArtifacts allowEmptyArchive: true, artifacts: 'cypress/screenshots/**/*.png, cypress/videos/**/*.mp4'
+                                archiveArtifacts allowEmptyArchive: true, artifacts: 'e2e-tests/report/screenshots/**/*.png, e2e-tests/report/videos/**/*.mp4, e2e-tests/cypress/logs/*.log'
                                 error("Cypress tests failed, job failed.")
                             }
 

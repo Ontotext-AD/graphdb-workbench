@@ -1,7 +1,6 @@
 import HomeSteps from '../../steps/home-steps';
 
-// TODO: Fix me. Broken due to migration (Error unknown)
-describe.skip('View resource autocomplete', () => {
+describe('View resource autocomplete', () => {
 
     const FOAT_SNIPPET = '@base <http://example.org/> .\n' +
         '@prefix foaf: <http://xmlns.com/foaf/0.1/> .\n' +
@@ -14,10 +13,7 @@ describe.skip('View resource autocomplete', () => {
         cy.viewport(1280, 1000);
     });
 
-    /**
-     * TODO: Fix me. Broken due to migration (The issue GDB-10501 not implemented)
-     */
-    it.skip('Test homepage autocomplete when it is enabled', () => {
+    it('Test homepage autocomplete when it is enabled', () => {
         const repositoryId = HomeSteps.createRepo();
         HomeSteps.selectRepo(repositoryId);
 

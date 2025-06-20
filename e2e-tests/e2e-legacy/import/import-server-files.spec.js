@@ -4,8 +4,7 @@ import {ImportSettingsDialogSteps} from "../../steps/import/import-settings-dial
 import {ImportResourceMessageDialog} from "../../steps/import/import-resource-message-dialog";
 import {SERVER_FILES_COUNT} from "../../steps/import/import-test-constants";
 
-// TODO: Fix me. Broken due to migration (Error: beforeEach)
-describe.skip('Import server files', () => {
+describe('Import server files', () => {
 
     let repositoryId;
 
