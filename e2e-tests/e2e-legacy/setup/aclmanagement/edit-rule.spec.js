@@ -2,8 +2,7 @@ import {AclManagementSteps} from "../../../steps/setup/acl-management-steps";
 import {ACL_VIEW} from "../../../steps/setup/acl-management-steps";
 import {ApplicationSteps} from "../../../steps/application-steps";
 
-//TODO: Fix me. Broken due to migration (Error: beforeEach)
-describe.skip('ACL Management: edit rule', () => {
+describe('ACL Management: edit rule', () => {
 
     let repositoryId;
 

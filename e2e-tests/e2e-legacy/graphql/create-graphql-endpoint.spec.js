@@ -4,7 +4,7 @@ import {CreateGraphqlEndpointSteps} from "../../steps/graphql/create-graphql-end
 import {RepositoriesStubs} from "../../stubs/repositories/repositories-stubs";
 import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
 
-describe.skip('Graphql: create endpoint', () => {
+describe('Graphql: create endpoint', () => {
     let repositoryId;
 
     beforeEach(() => {
@@ -245,7 +245,6 @@ describe.skip('Graphql: create endpoint', () => {
         // Then I should be on the generate endpoint step
         CreateGraphqlEndpointSteps.getActiveStep().should('contain', 'Create');
         CreateGraphqlEndpointSteps.getGenerateEndpointView().should('be.visible');
-
     });
 
     it('should be able to cancel the endpoint creation wizard', () => {
@@ -277,5 +276,4 @@ describe.skip('Graphql: create endpoint', () => {
         ModalDialogSteps.getDialog().should('not.exist');
         cy.url().should('include', '/graphql/endpoints');
     });
-
 });

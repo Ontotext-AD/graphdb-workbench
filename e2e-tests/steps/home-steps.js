@@ -2,6 +2,7 @@ import {LicenseWidgetSteps} from "./widgets/license-widget-steps";
 import {RepositoryErrorsWidgetSteps} from "./widgets/repository-errors-widget-steps";
 import {ActiveRepositoryWidgetSteps} from "./widgets/active-repository-widget-steps";
 import {SavedSparqlQueriesWidgetSteps} from "./widgets/saved-sparql-queries-widget-steps";
+import {RepositorySteps} from "./repository-steps";
 
 class HomeSteps {
 
@@ -22,8 +23,7 @@ class HomeSteps {
         }
 
         cy.window();
-
-        // return cy.get('.ot-loader-new-content').should('not.exist');
+        return cy.get('.ot-loader-new-content').should('not.exist');
     }
 
     static getView() {
@@ -153,10 +153,7 @@ class HomeSteps {
     }
 
     static verifyRepositoryIsSelected(repositoryId) {
-        cy.get('ul.repos')
-            .contains(repositoryId).should('not.exist');
-        cy.get('#btnReposGroup')
-            .should('contain', repositoryId);
+        return RepositorySteps.getRepositorySelection().should('contain', repositoryId);
     }
 
     static hasRepositoryInfo(repositoryId) {

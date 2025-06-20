@@ -1,7 +1,7 @@
 import {GraphqlEndpointManagementSteps} from "../../steps/graphql/graphql-endpoint-management-steps";
 import {ApplicationSteps} from "../../steps/application-steps";
 
-describe.skip('GraphQL endpoints filtering', () => {
+describe('GraphQL endpoints filtering', () => {
     let repositoryId;
 
     beforeEach(() => {
@@ -45,7 +45,7 @@ describe.skip('GraphQL endpoints filtering', () => {
         GraphqlEndpointManagementSteps.getEndpointsInfo().should('have.length', 3);
     });
 
-    it.only('should render no results banner when all endpoints are filtered', () => {
+    it('should render no results banner when all endpoints are filtered', () => {
         // Given I have a repository with active GraphQL endpoints
         // When I visit the endpoint management view
         GraphqlEndpointManagementSteps.visit();

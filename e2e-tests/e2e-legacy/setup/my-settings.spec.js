@@ -14,6 +14,7 @@ describe('My Settings', () => {
     beforeEach(() => {
         repositoryId = 'my-settings-' + Date.now();
         cy.createRepository({id: repositoryId});
+        cy.presetRepository(repositoryId);
         cy.importServerFile(repositoryId, FILE_TO_IMPORT);
         cy.setDefaultUserData();
         visitSettingsView();
@@ -77,8 +78,7 @@ describe('My Settings', () => {
             .and('be.disabled');
     });
 
-    // TODO: Fix me. Broken due to migration (Error: unknown)
-    it.skip('should change settings for admin and verify changes are reflected in SPARQL editor', () => {
+    it('should change settings for admin and verify changes are reflected in SPARQL editor', () => {
         SecurityStubs.resetGetAdminUserStub();
         cy.get('.sparql-editor-settings').should('be.visible');
 
@@ -138,8 +138,7 @@ describe('My Settings', () => {
             });
     });
 
-    // TODO: Fix me. Broken due to migration (Error: unknown)
-    it.skip('Should test the "Show schema ON/OFF by default in visual graph" setting in My Settings', () => {
+    it('Should test the "Show schema ON/OFF by default in visual graph" setting in My Settings', () => {
         const DRY_GRAPH = "http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#Dry";
         //Verify that schema statements are ON in My settings
         cy.get('#schema-on').find('.switch:checkbox').should('be.checked');

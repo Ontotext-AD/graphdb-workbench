@@ -5,8 +5,7 @@ const CLASS_COUNT_OF_NEWS_GRAPH = 35;
 const FILE_TO_IMPORT = 'wine.rdf';
 const CLASS_HIERARCHY = 'class hierarchy';
 
-// TODO: Fix me. Broken due to migration (Error: beforeEach)
-describe.skip('Class hierarchy screen validation', () => {
+describe('Class hierarchy screen validation', () => {
     let repositoryId;
 
     beforeEach(() => {

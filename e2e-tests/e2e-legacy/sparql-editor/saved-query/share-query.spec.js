@@ -7,10 +7,7 @@ import {SavedQueriesDialog} from "../../../steps/yasgui/saved-queries-dialog";
 import {ShareSavedQueryDialog} from "../../../steps/yasgui/share-saved-query-dialog";
 
 
-/**
- * TODO: Fix me. Broken due to migration (Error: beforeEach)
- */
-describe.skip('Share saved queries', () => {
+describe('Share saved queries', () => {
 
     let repositoryId;
 

@@ -3,10 +3,7 @@ import {AttachRepositorySteps} from "../../steps/repositories/attach-repository-
 import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
 import {RepositoriesStubs} from "../../stubs/repositories/repositories-stubs";
 
-/**
- * TODO: Fix me. Broken due to migration (loader is not implemented)
- */
-describe.skip('Attach remote location', () => {
+describe('Attach remote location', () => {
 
     it('Should create and delete remote instance', () => {
         cy.visit('/repository');
@@ -121,9 +118,9 @@ describe.skip('Attach remote location', () => {
         RepositoriesStubs.stubRepositories();
         RepositoriesStubs.stubLocations();
         cy.visit('/repository');
-        cy.wait('@get-all-repositories');
         RepositorySteps.waitLoader();
         RepositorySteps.waitUntilRepositoriesPageIsLoaded();
+        cy.wait('@get-all-repositories');
 
         // When I open the Repositories view that contains all possible kind of locations.
         RepositorySteps.getLocalGraphDBTable().should('exist');
