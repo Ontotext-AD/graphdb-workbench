@@ -31,6 +31,7 @@ PluginRegistry.add('main.menu', {
         order: 100,
         role: 'ROLE_ADMIN',
         parent: 'Setup',
-        guideSelector: 'sub-menu-license'
+        guideSelector: 'sub-menu-license',
+        testSelector: 'sub-menu-license',
     }]
 });
