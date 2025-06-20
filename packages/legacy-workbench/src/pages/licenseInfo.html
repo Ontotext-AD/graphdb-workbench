@@ -7,17 +7,17 @@
 
 <div class="ot-loader ot-main-loader" onto-loader size="100" ng-show="loadingLicense()"></div>
 
-<div class="license-container" ng-show="!loadingLicense()">
+<div class="license-container" data-test="license-info-page" ng-show="!loadingLicense()">
     <div class="card">
-        <h4 ng-if="isLicensePresent()" class="card-header">GraphDB {{getProductType() | titlecase}} {{'edition' | translate}}</h4>
-        <h4 ng-if="!isLicensePresent()" class="card-header">{{'no.license' | translate}}</h4>
-        <div class="alert alert-danger" ng-if="!isLicenseValid()">
+        <h4 ng-if="isLicensePresent()" class="card-header" data-test="valid-license-title">GraphDB {{getProductType() | titlecase}} {{'edition' | translate}}</h4>
+        <h4 ng-if="!isLicensePresent()" class="card-header" data-test="no-valid-license-title">{{'no.license' | translate}}</h4>
+        <div class="alert alert-danger" ng-if="!isLicenseValid()" data-test="no-valid-license-alert">
             <strong>{{getLicenseErrorMsg()}}</strong>
             <div ng-bind-html="'supply.license.or.contact.us.warning' | translate | trustAsHtml"></div>
             <div class="mt-1">{{'no.license.restrictions' | translate}}</div>
         </div>
         <div class="card-block">
-            <div ng-if="isLicensePresent()">
+            <div ng-if="isLicensePresent()" data-test="valid-license-content">
                 <div class="float-xs-left d-inline-block mr-2 mb-1">
                     {{'licensed.to' | translate}}
                     <span class="data-value d-block">{{getLicense().licensee}}</span>
@@ -55,10 +55,13 @@
             <div class="text-right">
                 <button ng-click="removeLicense()" ng-if="!isLicenseHardcoded() && isAdmin()"
                         ng-disabled="!isLicensePresent()"
-                        class="btn btn-secondary revert-to-free-license-btn">
+                        class="btn btn-secondary revert-to-free-license-btn"
+                        data-test="remove-license-button">
                     {{'remove.license' | translate}}
                 </button>
-                <a href="license/register" ng-if="!isLicenseHardcoded() && isAdmin()" class="btn btn-primary set-new-license-link">
+                <a href="license/register" ng-if="!isLicenseHardcoded() && isAdmin()"
+                   class="btn btn-primary set-new-license-link"
+                   data-test="set-new-license-link">
                     {{'core.errors.set.new.license.warning.msg' | translate}}
                 </a>
             </div>
