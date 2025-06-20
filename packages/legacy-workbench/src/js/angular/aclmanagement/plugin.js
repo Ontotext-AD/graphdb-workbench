@@ -20,7 +20,8 @@ PluginRegistry.add('main.menu', {
             order: 6,
             parent: 'Setup',
             role: "ROLE_ADMIN",
-            guideSelector: 'sub-menu-aclmanagement'
+            guideSelector: 'sub-menu-aclmanagement',
+            testSelector: 'sub-menu-acl-management'
         }
     ]
 });
