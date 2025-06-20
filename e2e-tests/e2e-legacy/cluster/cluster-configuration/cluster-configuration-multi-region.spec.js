@@ -6,10 +6,7 @@ import {ClusterConfigurationSteps} from "../../../steps/cluster/cluster-configur
 import {ModalDialogSteps} from "../../../steps/modal-dialog-steps";
 import {ApplicationSteps} from "../../../steps/application-steps";
 
-/**
- * TODO: Fix me. Broken due to migration (Error: unknown)
- */
-describe.skip('Cluster configuration', () => {
+describe('Cluster configuration', () => {
     let repositoryId;
 
     beforeEach(() => {
