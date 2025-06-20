@@ -1,10 +1,10 @@
-import {UserAndAccessSteps} from "../../steps/setup/user-and-access-steps";
-import {RepositoriesStubs} from "../../stubs/repositories/repositories-stubs";
-import {RepositorySelectorSteps} from "../../steps/repository-selector-steps";
-import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
-import {ToasterSteps} from "../../steps/toaster-steps";
-import HomeSteps from "../../steps/home-steps";
-import {LoginSteps} from "../../steps/login-steps";
+import {UserAndAccessSteps} from "../../../steps/setup/user-and-access-steps";
+import {RepositoriesStubs} from "../../../stubs/repositories/repositories-stubs";
+import {RepositorySelectorSteps} from "../../../steps/repository-selector-steps";
+import {ModalDialogSteps} from "../../../steps/modal-dialog-steps";
+import {ToasterSteps} from "../../../steps/toaster-steps";
+import HomeSteps from "../../../steps/home-steps";
+import {LoginSteps} from "../../../steps/login-steps";
 
 
 /**
