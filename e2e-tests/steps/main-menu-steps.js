@@ -155,4 +155,9 @@ export class MainMenuSteps {
         this.clickOnMenuSetup();
         this.getSubMenuButton('sub-menu-license').click();
     }
+
+    static clickOnSparqlTemplates() {
+        this.clickOnMenuSetup();
+        this.getSubMenuButton('sub-menu-sparql-templates').click();
+    }
 }
