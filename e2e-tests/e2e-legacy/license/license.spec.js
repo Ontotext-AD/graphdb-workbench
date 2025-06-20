@@ -9,8 +9,8 @@ describe('License', () => {
       LicenseSteps.getLicenseHeader().should('have.text', "GraphDB Enterprise Edition");
 
       LicenseSteps.getHardcodedAlertMessage().should('exist');
-      LicenseSteps.getRemoveLicenseLicenseButton().should('not.exist');
-      LicenseSteps.getSetNewLicenseElement().should('not.exist');
+      LicenseSteps.getRemoveLicenseButton().should('not.exist');
+      LicenseSteps.getSetNewLicenseButton().should('not.exist');
    });
 
    it('Should not displays an informational message if the license is not provided through a file (not hardcoded)', () => {
@@ -20,7 +20,7 @@ describe('License', () => {
       LicenseSteps.getLicenseHeader().should('have.text', "GraphDB Enterprise Edition");
 
       LicenseSteps.getHardcodedAlertMessage().should('not.exist');
-      LicenseSteps.getRemoveLicenseLicenseButton().should('exist');
-      LicenseSteps.getSetNewLicenseElement().should('exist');
+      LicenseSteps.getRemoveLicenseButton().should('exist');
+      LicenseSteps.getSetNewLicenseButton().should('exist');
    });
 });
