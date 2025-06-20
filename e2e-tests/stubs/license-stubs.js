@@ -18,6 +18,57 @@ export class LicenseStubs {
         }).as('enterpriseLicense');
     }
 
+    static stubLicenseNotSet() {
+        cy.intercept('GET', '/rest/graphdb-settings/license', {
+            statusCode: 200,
+            body:{
+                "installationId": null,
+                "message": "No license was set",
+                "productType": "unknown",
+                "licenseCapabilities": [],
+                "present": false,
+                "valid": false,
+                "version": "Invalid",
+                "product": "Invalid",
+                "licensee": "Invalid",
+                "typeOfUse": "Invalid",
+                "maxCpuCores": 0,
+                "usageRestriction": "Invalid",
+                "expiryDate": 0,
+                "latestPublicationDate": 0
+            }
+        }).as('licenseNotSet');
+    }
+
+    static stubNoValidLicense() {
+        cy.intercept('GET', '/rest/graphdb-settings/license', {
+            statusCode: 200,
+            body:{
+                "installationId": null,
+                "message": "The license key expired on 2025-01-31",
+                "valid": false,
+                "productType": "enterprise",
+                "licenseCapabilities": [
+                    "Lucene connector",
+                    "Solr connector",
+                    "Elasticsearch connector",
+                    "OpenSearch connector",
+                    "Kafka connector",
+                    "Cluster"
+                ],
+                "version": null,
+                "product": "GRAPHDB_ENTERPRISE",
+                "licensee": "ONTOTEXT_INTERNAL",
+                "typeOfUse": "Non-commercial research only",
+                "usageRestriction": null,
+                "expiryDate": 1738274400000,
+                "latestPublicationDate": null,
+                "maxCpuCores": null,
+                "present": true
+            }
+        }).as('noValidLicense');
+    }
+
     static stubEvaluationLicense() {
         cy.intercept('GET', '/rest/graphdb-settings/license', {
             statusCode: 200,
