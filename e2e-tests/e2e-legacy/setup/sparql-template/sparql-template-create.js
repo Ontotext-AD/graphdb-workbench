@@ -1,14 +1,12 @@
-import {SparqlCreateUpdateSteps} from "../../steps/setup/sparql-create-update-steps";
-import {YasqeSteps} from "../../steps/yasgui/yasqe-steps";
-import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
-import {MainMenuSteps} from "../../steps/main-menu-steps";
-import {RepositorySelectorSteps} from "../../steps/repository-selector-steps";
-import {SparqlTemplatesSteps} from "../../steps/setup/sparql-templates-steps";
-import {ImportUserDataSteps} from "../../steps/import/import-user-data-steps";
+import {SparqlCreateUpdateSteps} from "../../../steps/setup/sparql-create-update-steps";
+import {YasqeSteps} from "../../../steps/yasgui/yasqe-steps";
+import {ModalDialogSteps} from "../../../steps/modal-dialog-steps";
+import {MainMenuSteps} from "../../../steps/main-menu-steps";
+import {RepositorySelectorSteps} from "../../../steps/repository-selector-steps";
+import {SparqlTemplatesSteps} from "../../../steps/setup/sparql-templates-steps";
+import {ImportUserDataSteps} from "../../../steps/import/import-user-data-steps";
 
-/**
-* TODO: Fix me. Broken due to migration (unknown - locally passes)
-*/
+// TODO: Fix me. Broken due to migration (Error: unknown)
 describe.skip('SPARQL create template', () => {
 
     let repositoryId;
