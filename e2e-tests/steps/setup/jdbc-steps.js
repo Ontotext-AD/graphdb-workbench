@@ -1,4 +1,6 @@
-export class JdbcSteps {
+import {BaseSteps} from "../base-steps";
+
+export class JdbcSteps extends BaseSteps {
 
     static visit() {
         cy.visit('/jdbc');
@@ -8,12 +10,24 @@ export class JdbcSteps {
         cy.url().should('include', '/jdbc');
     }
 
-    static getCreateNewJDBCConfigurationButton() {
-        return cy.get('.create-sql-table-configuration');
+    static getJDBCPage() {
+        return this.getByTestId('jdbc-page');
+    }
+
+    static getJDBCConfiguration() {
+        return this.getJDBCPage().getByTestId('jdbc-configurations');
+    }
+
+    static getCreateSQLTableConfigurationButton() {
+        return this.getJDBCConfiguration().getByTestId('create-sql-table-configuration');
+    }
+
+    static getNoSQLConfigurationsMessage() {
+        return this.getJDBCConfiguration().getByTestId('no-sql-configurations-message');
     }
 
     static clickOnCreateJdbcConfigurationButton() {
-        JdbcSteps.getCreateNewJDBCConfigurationButton().click();
+        JdbcSteps.getCreateSQLTableConfigurationButton().click();
     }
 
     static getJDBCConfigurations() {

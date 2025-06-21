@@ -1,4 +1,4 @@
-import {RdfRankSteps} from "../../steps/setup/rdf-rank-steps";
+import {RdfRankSteps} from "../../../steps/setup/rdf-rank-steps";
 
 describe('RDF Rank view', () => {
 

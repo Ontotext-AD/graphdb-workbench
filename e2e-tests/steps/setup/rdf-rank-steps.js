@@ -1,5 +1,6 @@
+import {BaseSteps} from "../base-steps";
 
-export class RdfRankSteps {
+export class RdfRankSteps extends BaseSteps {
     static visit() {
         cy.visit('/rdfrank');
     }
@@ -22,6 +23,26 @@ export class RdfRankSteps {
 
     static getRdfRankPage() {
         return cy.get('#rdfRank');
+    }
+
+    static getRDFRankPage() {
+        return this.getByTestId('rdf-rank-page');
+    }
+
+    static getRDFRankContent() {
+        return this.getRDFRankPage().getByTestId('rdf-rank-content');
+    }
+
+    static getRDFRankLabel() {
+        return this.getRDFRankPage().getByTestId('rdf-rank-status-label');
+    }
+
+    static getRDFRandComputeButton() {
+        return this.getRDFRankPage().getByTestId('compute-rdf-rank-btn');
+    }
+
+    static getFilter() {
+        return this.getRdfRankPage().getByTestId('filter-content');
     }
 
     static getRdfStatusHeader() {

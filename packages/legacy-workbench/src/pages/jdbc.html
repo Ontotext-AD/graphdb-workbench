@@ -1,13 +1,17 @@
-<div class="container-fluid">
+<div class="container-fluid" data-test="jdbc-page">
     <h1>
         {{title}}
         <page-info-tooltip></page-info-tooltip>
     </h1>
     <div core-errors ontop fedx></div>
-    <div class="jdbc-list-configurations card mb-2" ng-if="getActiveRepository() && !isActiveRepoOntopType() && !isActiveRepoFedXType()">
-        <div class="card-block" ng-init="getSqlConfigurations();">
+    <div class="jdbc-list-configurations card mb-2"
+         ng-if="getActiveRepository() && !isActiveRepoOntopType() && !isActiveRepoFedXType()">
+        <div class="card-block" ng-init="getSqlConfigurations();" data-test="jdbc-configurations">
             <div class="clearfix">
-                <a ng-href="jdbc/configuration/create" ng-if="canWriteActiveRepo()" class="btn btn-link pull-right">
+                <a ng-href="jdbc/configuration/create"
+                   ng-if="canWriteActiveRepo()"
+                   data-test="create-sql-table-configuration"
+                   class="btn btn-link pull-right">
                     <span class="icon-plus create-sql-table-configuration"></span> {{'jdbc.create.new.configuration' | translate}}
                 </a>
                 <h3 class="mb-0"><span class="collapsible-heading" data-toggle="collapse"
@@ -16,7 +20,9 @@
             </div>
 
             <div class="collapse in mt-1" id="configurations-table">
-                <div class="no-indexes" ng-if="jdbcConfigurations.length == 0"><em>{{'jdbc.no.tables.defined' | translate}}</em></div>
+                <div class="no-indexes"
+                     data-test="no-sql-configurations-message"
+                     ng-if="jdbcConfigurations.length == 0"><em>{{'jdbc.no.tables.defined' | translate}}</em></div>
                 <table class="table table-hover mb-0" aria-describedby="JDBC configurations table">
                     <tbody>
                     <tr ng-repeat="index in jdbcConfigurations track by $index"
