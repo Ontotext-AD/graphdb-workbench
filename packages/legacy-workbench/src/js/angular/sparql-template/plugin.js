@@ -34,6 +34,7 @@ PluginRegistry.add('main.menu', {
             parent: 'Setup',
             role: "IS_AUTHENTICATED_FULLY",
             guideSelector: 'sub-menu-sparql-templates',
+            testSelector: 'sub-menu-sparql-templates',
             children: [
                 {
                     href: 'sparql-template/create'

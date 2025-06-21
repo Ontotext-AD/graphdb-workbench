@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div class="container-fluid" data-test="sparql-templates-page">
     <h1>
         {{title}}
         <page-info-tooltip></page-info-tooltip>
@@ -11,10 +11,15 @@
         set-plugin-active="setPluginIsActive(isPluginActive)"
         ng-if="isLicenseValid()">
     </inactive-plugin-directive>
-    <div class="sparql-templates-list card mb-2" ng-if="isLicenseValid() && pluginIsActive && getActiveRepository() && !isActiveRepoOntopType() && !isActiveRepoFedXType()">
+    <div class="sparql-templates-list card mb-2"
+         ng-if="isLicenseValid() && pluginIsActive && getActiveRepository() && !isActiveRepoOntopType() && !isActiveRepoFedXType()"
+         data-test="sparql-templates-content">
         <div class="card-block" ng-init="getSparqlTemplates();">
             <div class="clearfix">
-                <a ng-href="sparql-template/create" ng-if="canWriteActiveRepo()" class="btn btn-link pull-right create-sparql-template">
+                <a ng-href="sparql-template/create"
+                   ng-if="canWriteActiveRepo()"
+                   data-test="create-sparql-template-link"
+                   class="btn btn-link pull-right create-sparql-template">
                     <span class="icon-plus create-sql-table-configuration"></span> {{'create.new.sparql.template' | translate}}
                 </a>
                 <h3 class="mb-0"><span class="collapsible-heading" data-toggle="collapse"
@@ -23,7 +28,9 @@
             </div>
 
             <div class="collapse in mt-1" id="configurations-table">
-                <div class="no-indexes" ng-if="sparqlTemplateIds.length == 0"><em>{{'no.sparql.templates.defined' | translate}}</em></div>
+                <div class="no-indexes"
+                     data-test="no-sparql-templates-message"
+                     ng-if="sparqlTemplateIds.length == 0"><em>{{'no.sparql.templates.defined' | translate}}</em></div>
                 <table class="table table-hover mb-0" aria-describedby="SPARQL templates">
                     <tbody>
                     <tr ng-repeat="templateID in sparqlTemplateIds track by $index"

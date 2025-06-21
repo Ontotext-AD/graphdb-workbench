@@ -1,7 +1,7 @@
 <link href="css/rdfrank.css?v=[AIV]{version}[/AIV]" rel="stylesheet">
 <link href="css/lib/ng-tags-input/ng-tags-input.min.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 
-<div id="rdfRank" class="page">
+<div id="rdfRank" class="page" data-test="rdf-rank-page">
 	<h1>
 		{{title}}
         <page-info-tooltip></page-info-tooltip>
@@ -24,14 +24,16 @@
         ng-if="isLicenseValid()">
     </inactive-plugin-directive>
 
-    <div ng-show="isLicenseValid() && canWriteActiveRepo() && !loading && pluginIsActive">
+    <div ng-show="isLicenseValid() && canWriteActiveRepo() && !loading && pluginIsActive"
+		 data-test="rdf-rank-content">
 		<div class="alert alert-info" ng-if="!loader && pluginFound && getDegradedReason()">
 			<h4>{{'not.fully.supported.rdfrank.warning' | translate}}</h4>
 			<p>{{'configuring.rdfrank.not.supported.warning' | translate}} {{getDegradedReason()}}</p>
 		</div>
 		<div ng-show="!isRestricted && pluginFound && !getDegradedReason()">
             <div class="lead mb-1" id="toggleIndex">
-				<span class="rdf-rank-status">{{'rdfrank.for.repo.label' | translate}} <strong>{{getActiveRepository()}}</strong> {{'is.with.status.label' | translate}}</span>
+				<span class="rdf-rank-status"
+					  data-test="rdf-rank-status-label">{{'rdfrank.for.repo.label' | translate}} <strong>{{getActiveRepository()}}</strong> {{'is.with.status.label' | translate}}</span>
                 <span class="tag tag-success" ng-show="currentRankStatus.indexOf('COMPUTED') == 0"><em class="icon-check icon-lg"></em> {{'computed.status' | translate}}</span>
 
                 <span ng-show="currentRankStatus == 'COMPUTING'">
@@ -50,7 +52,10 @@
                 <span class="tag tag-warning" ng-show="currentRankStatus == rdfStatus.EMPTY"><em class="icon-info icon-lg"></em> {{'rdfrank.not.build.yet.warning' | translate}}</span>
 
 				<p class="pull-right">
-					<button ng-disabled="currentRankStatus == rdfStatus.COMPUTING" ng-click="computeRank()" class="btn btn-primary compute-rdf-rank-btn">{{'compute.full.btn' | translate}}</button>
+					<button ng-disabled="currentRankStatus == rdfStatus.COMPUTING"
+							ng-click="computeRank()"
+							data-test="compute-rdf-rank-btn"
+							class="btn btn-primary compute-rdf-rank-btn">{{'compute.full.btn' | translate}}</button>
                     <button ng-hide="currentRankStatus != rdfStatus.OUTDATED"
 							ng-click="computeIncrementalRank()" class="btn btn-primary">{{'compute.incremental.btn' | translate}}</button>
 				</p>
@@ -58,7 +63,7 @@
 
 			<br>
 
-			<div id="toggleFilterMode">
+			<div id="toggleFilterMode" data-test="filter-content">
 				<h3 class="d-inline-block mr-1">{{'filtering.header' | translate}}</h3>
 				<span class="tag {{filteringEnabled ? 'tag-primary' : 'tag-default'}}">{{filteringEnabled ? 'common.on.btn' : 'common.off.btn' | translate}}</span>
                 <span gdb-tooltip="{{'click.to' | translate}} {{filteringEnabled ? 'disable' : 'enable' | translate}} {{'filtering' | translate}}" tooltip-placement="top" ng-click="toggleFiltering()" class="switch rdf-rank-filter-switch">

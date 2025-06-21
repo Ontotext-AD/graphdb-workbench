@@ -320,7 +320,7 @@ menuItems = [
         "order": 50,
         "parent": "Setup",
         "role": "IS_AUTHENTICATED_FULLY",
-        "guideSelector": "sub-menu-jdbs",
+        "guideSelector": "sub-menu-jdbc",
         "shouldShow": true
       }
     ]

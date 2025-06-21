@@ -1,4 +1,6 @@
-export class SparqlTemplatesSteps {
+import {BaseSteps} from "../base-steps";
+
+export class SparqlTemplatesSteps extends BaseSteps {
 
     static visit() {
         cy.visit('/sparql-templates');
@@ -6,6 +8,22 @@ export class SparqlTemplatesSteps {
 
     static verifyUrl() {
         cy.url().should('include', '/sparql-templates');
+    }
+
+    static getSparqlTemplatesPage() {
+        return this.getByTestId('sparql-templates-page');
+    }
+
+    static getSparqlTemplatesContent() {
+        return this.getSparqlTemplatesPage().getByTestId('sparql-templates-content');
+    }
+
+    static getSparqlTemplatesCreateLink() {
+        return this.getSparqlTemplatesPage().getByTestId('create-sparql-template-link');
+    }
+
+    static getNoSparqlTemplatesMessage() {
+        return this.getSparqlTemplatesPage().getByTestId('no-sparql-templates-message');
     }
 
     static getSparqlTemplatesListContainer() {

@@ -157,4 +157,19 @@ export class MainMenuSteps {
         this.clickOnSetupMenu();
         this.getSubMenuButton('sub-menu-users-and-access').click();
     }
+
+    static clickOnSparqlTemplates() {
+        this.clickOnSetupMenu();
+        this.getSubMenuButton('sub-menu-sparql-templates').click();
+    }
+
+    static clickOnJDBC() {
+        this.clickOnSetupMenu();
+        this.getSubMenuButton('sub-menu-jdbc').click();
+    }
+
+    static clickOnRDFRank() {
+        this.clickOnSetupMenu();
+        this.getSubMenuButton('sub-menu-rdf-rank').click();
+    }
 }
