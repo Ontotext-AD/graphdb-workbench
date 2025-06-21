@@ -1,7 +1,7 @@
-import {SparqlTemplatesSteps} from "../../steps/setup/sparql-templates-steps";
-import {SparqlCreateUpdateSteps} from "../../steps/setup/sparql-create-update-steps";
-import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
-import {ToasterSteps} from "../../steps/toaster-steps";
+import {SparqlTemplatesSteps} from "../../../steps/setup/sparql-templates-steps";
+import {SparqlCreateUpdateSteps} from "../../../steps/setup/sparql-create-update-steps";
+import {ModalDialogSteps} from "../../../steps/modal-dialog-steps";
+import {ToasterSteps} from "../../../steps/toaster-steps";
 
 describe('SPARQL Templates', () => {
 
@@ -36,8 +36,7 @@ describe('SPARQL Templates', () => {
         SparqlTemplatesSteps.getNoTemplateDefinedElement().should('contain.text', 'No templates are defined');
     });
 
-    // TODO: Fix me. Broken due to migration (Error: unknown)
-    it.skip('should create a query and delete it', () => {
+    it('should create a query and delete it', () => {
         // When I visit 'Sparql templates' view,
         // and click on create template button.
         SparqlTemplatesSteps.clickOnCreateSparqlTemplateButton();
