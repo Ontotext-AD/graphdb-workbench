@@ -33,7 +33,8 @@ PluginRegistry.add('main.menu', {
             order: 50,
             parent: 'Setup',
             role: "IS_AUTHENTICATED_FULLY",
-            guideSelector: 'sub-menu-jdbs',
+            guideSelector: 'sub-menu-jdbc',
+            testSelector: 'sub-menu-jdbc',
             children: [
                 {
                     href: 'jdbc/configuration/create'
