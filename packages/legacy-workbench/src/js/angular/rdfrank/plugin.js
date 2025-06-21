@@ -20,7 +20,8 @@ PluginRegistry.add('main.menu', {
             order: 45,
             parent: 'Setup',
             role: 'IS_AUTHENTICATED_FULLY',
-            guideSelector: 'sub-menu-rdf-rank'
+            guideSelector: 'sub-menu-rdf-rank',
+            testSelector: 'sub-menu-rdf-rank'
         }
     ]
 });
