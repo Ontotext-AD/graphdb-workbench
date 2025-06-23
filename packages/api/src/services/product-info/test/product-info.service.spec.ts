@@ -14,7 +14,7 @@ describe('ProductInfoService', () => {
     // Given, I have a mocked local version information
     // Note: the Workbench property in the response has an uppercase 'W'
     const mockProductInfo = {Workbench: '2.8.0', productVersion: '1.0.0' } as ProductInfo & { Workbench: string };
-    TestUtil.mockResponse(new ResponseMock('/rest/info/version?local=1').setResponse(mockProductInfo));
+    TestUtil.mockResponse(new ResponseMock('rest/info/version?local=1').setResponse(mockProductInfo));
 
     // When I call the getVersionLocal method
     const result = await productInfoService.getProductInfoLocal();
