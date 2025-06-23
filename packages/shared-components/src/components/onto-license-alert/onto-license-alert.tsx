@@ -32,6 +32,6 @@ export class OntoLicenseAlert {
     event.preventDefault();
     // Navigate to the license page without reloading.
     // @ts-ignore
-    window.singleSpa.navigateToUrl('/license');
+    window.singleSpa.navigateToUrl('license');
   }
 }

@@ -20,7 +20,8 @@ module.exports = (env, argv) => merge(commonConfig(env, argv), {
         chunkFilename: '[name].[contenthash].bundle.js',
         path: path.resolve(__dirname, 'dist'),
         libraryTarget: "module",
-        publicPath: '/'
+        // Path must be relative for production so that it works behind context
+        publicPath: './'
     },
     plugins: [
         new CopyPlugin({
