@@ -185,4 +185,9 @@ export class MainMenuSteps {
         this.clickOnMenuSetup();
         this.getSubMenuButton('sub-menu-connectors').click();
     }
+
+    static clickOnMySettings() {
+        this.clickOnMenuSetup();
+        this.getSubMenuButton('sub-menu-my-settings').click();
+    }
 }
