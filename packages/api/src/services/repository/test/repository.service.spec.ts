@@ -13,7 +13,7 @@ describe('RepositoryService', () => {
 
   test('getRepositories should return repositories', async () => {
     const response = {'': [RepositoryMockProvider.provideRawRepository('repo-id')]};
-    TestUtil.mockResponse(new ResponseMock('/rest/repositories/all').setResponse(response));
+    TestUtil.mockResponse(new ResponseMock('rest/repositories/all').setResponse(response));
     const expectedResult = {items: [RepositoryMockProvider.provideRepository('repo-id')]};
 
     // When the service is called to fetch all repositories,
@@ -33,7 +33,7 @@ describe('RepositoryService', () => {
     };
     const repository: Repository = RepositoryMockProvider.provideRepository('repo-id', 'repo-location');
 
-    TestUtil.mockResponse(new ResponseMock(`/rest/repositories/${repository.id}/size?location=${repository.location}`).setResponse(rawRepositorySizeInfo));
+    TestUtil.mockResponse(new ResponseMock(`rest/repositories/${repository.id}/size?location=${repository.location}`).setResponse(rawRepositorySizeInfo));
     const expectedResult = rawRepositorySizeInfo;
 
     // When the service is called to fetch size info of a repository.

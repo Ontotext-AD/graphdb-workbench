@@ -5,7 +5,7 @@ import { LanguageConfig, TranslationBundle } from '../../models/language';
  * Service for handling language-related REST operations.
  */
 export class LanguageRestService extends HttpService {
-  private readonly I18N_ENDPOINT = '/assets/i18n';
+  private readonly I18N_ENDPOINT = 'assets/i18n';
 
   /**
    * Retrieves the translation bundle for a specific language.

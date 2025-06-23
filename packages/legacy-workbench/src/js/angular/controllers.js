@@ -313,7 +313,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     };
 
     $scope.goToAddRepo = function () {
-        $location.path('/repository/create').search({previous: 'home'});
+        $location.path('repository/create').search({previous: 'home'});
     };
 
     $scope.goToEditRepo = function (repository) {

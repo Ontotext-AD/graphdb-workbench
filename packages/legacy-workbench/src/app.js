@@ -333,7 +333,7 @@ function loadTranslations(language) {
 // Fetch the product version information before bootstrapping the app
 function loadAppInfo() {
     return new Promise((resolve, reject) => {
-        $.get('/rest/info/version?local=1', function (data) {
+        $.get('rest/info/version?local=1', function (data) {
             // Extract major.minor version as short version
             const versionArray = data.productVersion.match(/^(\d+\.\d+)/);
             if (versionArray.length) {

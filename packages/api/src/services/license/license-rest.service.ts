@@ -15,6 +15,6 @@ export class LicenseRestService extends HttpService {
    * @returns A Promise that resolves to a License object containing the current license information.
    */
   getLicense(): Promise<License> {
-    return this.get<License>('/rest/graphdb-settings/license');
+    return this.get<License>('rest/graphdb-settings/license');
   }
 }

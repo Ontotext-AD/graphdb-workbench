@@ -5,7 +5,7 @@ import {HttpService} from '../http/http.service';
  * Service for handling autocomplete REST operations.
  */
 export class AutocompleteRestService extends HttpService {
-  private readonly autocompleteRestPrefix = '/rest/autocomplete';
+  private readonly autocompleteRestPrefix = 'rest/autocomplete';
 
   /**
    * Performs an autocomplete search based on the provided search term.
