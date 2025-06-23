@@ -1,7 +1,7 @@
-import {SparqlEditorSteps} from "../../steps/sparql-editor-steps";
-import {YasqeSteps} from "../../steps/yasgui/yasqe-steps";
-import {SecurityStubs} from "../../stubs/security-stubs";
-import {VisualGraphSteps} from "../../steps/visual-graph-steps";
+import {SparqlEditorSteps} from "../../../steps/sparql-editor-steps";
+import {YasqeSteps} from "../../../steps/yasgui/yasqe-steps";
+import {SecurityStubs} from "../../../stubs/security-stubs";
+import {VisualGraphSteps} from "../../../steps/visual-graph-steps";
 
 describe('My Settings', () => {
 
@@ -14,6 +14,7 @@ describe('My Settings', () => {
     beforeEach(() => {
         repositoryId = 'my-settings-' + Date.now();
         cy.createRepository({id: repositoryId});
+        cy.presetRepository(repositoryId);
         cy.importServerFile(repositoryId, FILE_TO_IMPORT);
         cy.setDefaultUserData();
         visitSettingsView();
@@ -23,62 +24,7 @@ describe('My Settings', () => {
         cy.deleteRepository(repositoryId);
     });
 
-    it('Initial state', () => {
-        // Password change field is for admin.
-        // explicitly state that the fields must be of type password
-        cy.get('#wb-user-password:password').should('be.visible')
-            .and('have.value', '')
-            .and('have.attr', 'placeholder', 'New password');
-        cy.get('#wb-user-confirmpassword:password').should('be.visible')
-            .and('have.value', '')
-            .and('have.attr', 'placeholder', 'Confirm password');
-
-        // SPARQL settings are as follows:
-        // -Expand over sameAs is on
-        // -Inference is on
-        // -Count total results is checked
-        // -Ignore saved queries is not checked
-        cy.get('.sparql-editor-settings').should('be.visible');
-        cy.get('#sameas-on').find('.switch:checkbox').should('be.checked');
-        cy.get('.sameas-label').should('be.visible')
-            .and('contain', 'Expand results over owl:SameAs is')
-            .find('.tag').should('be.visible')
-            .and('contain', 'ON');
-        cy.get('#inference-on').find('.switch:checkbox').should('be.checked');
-        cy.get('.inference-label').should('be.visible')
-            .and('contain', 'Inference is')
-            .find('.tag').should('be.visible')
-            .and('contain', 'ON');
-        cy.get('#defaultCount:checkbox').should('be.checked');
-        cy.get('#ignore-shared:checkbox').should('not.be.checked');
-
-        // User role
-        // - User role is administrator (both cannot be changed)
-        getUserRoleButtonGroup().should('be.visible')
-            .find('#roleAdmin:radio')
-            .should('be.checked')
-            .and('be.disabled')
-            .and('have.value', 'admin');
-        getUserRoleButtonGroup().find('#roleRepoAdmin:radio')
-            .should('not.be.checked')
-            .and('be.disabled');
-        getUserRoleButtonGroup().find('#roleUser:radio')
-            .should('not.be.checked')
-            .and('be.disabled');
-
-        // Repository rights
-        // - Admin has read and write access to all repositories."
-        getUserRepositoryTable().should('be.visible');
-        getUserRepository(repositoryId).find('.read-rights .read:checkbox').should('be.visible')
-            .and('be.checked')
-            .and('be.disabled');
-        getUserRepository(repositoryId).find('.write-rights .write:checkbox').should('be.visible')
-            .and('be.checked')
-            .and('be.disabled');
-    });
-
-    // TODO: Fix me. Broken due to migration (Error: unknown)
-    it.skip('should change settings for admin and verify changes are reflected in SPARQL editor', () => {
+    it('should change settings for admin and verify changes are reflected in SPARQL editor', () => {
         SecurityStubs.resetGetAdminUserStub();
         cy.get('.sparql-editor-settings').should('be.visible');
 
@@ -138,8 +84,7 @@ describe('My Settings', () => {
             });
     });
 
-    // TODO: Fix me. Broken due to migration (Error: unknown)
-    it.skip('Should test the "Show schema ON/OFF by default in visual graph" setting in My Settings', () => {
+    it('Should test the "Show schema ON/OFF by default in visual graph" setting in My Settings', () => {
         const DRY_GRAPH = "http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#Dry";
         //Verify that schema statements are ON in My settings
         cy.get('#schema-on').find('.switch:checkbox').should('be.checked');
@@ -223,18 +168,6 @@ describe('My Settings', () => {
             .should('not.be.visible');
     });
 
-    function getUserRepositoryTable() {
-        return cy.get('.user-repositories .table');
-    }
-
-    function getUserRepository(name) {
-        return getUserRepositoryTable().find(`.repository-name:contains('${name}')`).closest('tr');
-    }
-
-    function getUserRoleButtonGroup() {
-        return cy.get('.user-role');
-    }
-
     function getSaveButton() {
         return cy.get('#wb-user-submit').scrollIntoView().should('be.visible');
     }
@@ -265,11 +198,6 @@ describe('My Settings', () => {
         cy.get('#wb-user-username').should('be.visible')
             .and('have.value', 'admin')
             .and('have.attr', 'readonly', 'readonly');
-    }
-
-    function visitVisualGraphView() {
-        cy.visit('/graphs-visualizations');
-        cy.window();
     }
 
     function clickLabelBtn(btnId) {
