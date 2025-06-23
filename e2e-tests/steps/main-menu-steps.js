@@ -180,4 +180,9 @@ export class MainMenuSteps {
         this.clickOnMenuSetup();
         this.getSubMenuButton('sub-menu-rdf-rank').click();
     }
+
+    static clickOnConnectors() {
+        this.clickOnMenuSetup();
+        this.getSubMenuButton('sub-menu-connectors').click();
+    }
 }

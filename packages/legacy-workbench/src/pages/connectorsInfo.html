@@ -1,4 +1,4 @@
-<div class="connectorsPage">
+<div class="connectorsPage" data-test="connectors-page">
     <h1>
         {{title}}
         <page-info-tooltip></page-info-tooltip>
@@ -14,6 +14,7 @@
         <div class="pull-right">
             <button class="btn btn-lg btn-link p-0" type="button"
                     ng-click="getConnectors()"
+                    data-test="reload-all-connectors"
                     gdb-tooltip="{{'reload.all.connector.info' | translate}}" tooltip-placement="left">
                 <em class="icon-reload"></em>
             </button>
@@ -165,7 +166,9 @@
                     <div ng-hide="existing[connector.key].length">{{'no.connector.instances' | translate}}</div>
                 </section>
                 <section>
-                    <button class="btn btn-primary new-connector-btn" ng-click="newConnector(connector)"><em class="icon-plus"></em>
+                    <button class="btn btn-primary new-connector-btn"
+                            ng-click="newConnector(connector)"
+                            data-test="connector-{{connector.key.replace(' ', '-') | lowercase}}"><em class="icon-plus"></em>
                         {{'new.sentence.start' | translate}} {{connector.key}} {{'connector.label' | translate}}
                     </button>
                 </section>
