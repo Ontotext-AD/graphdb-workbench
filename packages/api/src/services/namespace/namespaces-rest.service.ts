@@ -5,7 +5,7 @@ import {NamespacesResponse} from '../../models/repositories/namespace/api/namesp
  * Service for interacting with the RDF4J repository REST API.
  */
 export class NamespacesRestService extends HttpService {
-  private readonly REPOSITORIES_ENDPOINT = '/repositories';
+  private readonly REPOSITORIES_ENDPOINT = 'repositories';
 
   /**
    * Retrieves namespace information for a specific repository.

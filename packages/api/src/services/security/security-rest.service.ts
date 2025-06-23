@@ -5,7 +5,7 @@ import {AuthenticatedUser, SecurityConfig} from '../../models/security';
  * Service class for handling security-related REST operations.
  */
 export class SecurityRestService extends HttpService {
-  private readonly SECURITY_ENDPOINT = '/rest/security';
+  private readonly SECURITY_ENDPOINT = 'rest/security';
 
   /**
    * Updates the application settings for a specific user.

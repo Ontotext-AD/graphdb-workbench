@@ -15,7 +15,7 @@ describe('LicenseService', () => {
   test('should retrieve the license, mapped to a License object', async () => {
     // Given, I have a mocked license
     const mockLicense = { licensee: 'Test Company', expiryDate: 1672531200000 } as License;
-    TestUtil.mockResponse(new ResponseMock('/rest/graphdb-settings/license').setResponse(mockLicense));
+    TestUtil.mockResponse(new ResponseMock('rest/graphdb-settings/license').setResponse(mockLicense));
 
     // When I call the getLicense method
     const result = await licenseService.getLicense();

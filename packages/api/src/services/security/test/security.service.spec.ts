@@ -27,7 +27,7 @@ describe('SecurityService', () => {
       }
     });
 
-    TestUtil.mockResponse(new ResponseMock('/rest/security/users/testuser').setResponse({}));
+    TestUtil.mockResponse(new ResponseMock('rest/security/users/testuser').setResponse({}));
 
     // When the service is called to update the user data
     await securityService.updateUserData(updatedUser);

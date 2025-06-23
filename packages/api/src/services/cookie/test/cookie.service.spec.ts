@@ -27,7 +27,7 @@ describe('CookiesService', () => {
       }
     });
     ServiceProvider.get(SecurityContextService).updateAuthenticatedUser(mockAuthenticatedUser);
-    TestUtil.mockResponse(new ResponseMock(`/rest/security/users/${mockAuthenticatedUser.username}`).setResponse({}));
+    TestUtil.mockResponse(new ResponseMock(`rest/security/users/${mockAuthenticatedUser.username}`).setResponse({}));
 
     // When I call the acceptCookiePolicy method
     await cookiesService.acceptCookiePolicy();

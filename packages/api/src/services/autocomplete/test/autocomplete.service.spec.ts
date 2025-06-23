@@ -29,7 +29,7 @@ describe('Autocomplete service', () => {
       ],
     };
     const searchTerm = 'test';
-    TestUtil.mockResponse(new ResponseMock(`/rest/autocomplete/query?q=${searchTerm}`).setResponse(mockSearchResult));
+    TestUtil.mockResponse(new ResponseMock(`rest/autocomplete/query?q=${searchTerm}`).setResponse(mockSearchResult));
 
     // When, I call the search method
     const result = await autocompleteService.search(searchTerm);
