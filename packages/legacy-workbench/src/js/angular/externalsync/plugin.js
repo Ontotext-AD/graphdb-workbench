@@ -20,7 +20,8 @@ PluginRegistry.add('main.menu', {
             order: 10,
             parent: 'Setup',
             role: 'IS_AUTHENTICATED_FULLY',
-            guideSelector: 'sub-menu-connectors'
+            guideSelector: 'sub-menu-connectors',
+            testSelector: 'sub-menu-connectors'
         }
     ]
 });
