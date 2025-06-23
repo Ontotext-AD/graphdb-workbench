@@ -94,7 +94,8 @@ PluginRegistry.add('main.menu', {
             order: 6,
             parent: 'Setup',
             role: 'ROLE_USER',
-            guideSelector: 'sub-menu-my-settings'
+            guideSelector: 'sub-menu-my-settings',
+            testSelector: 'sub-menu-my-settings'
         }
     ]
 });
