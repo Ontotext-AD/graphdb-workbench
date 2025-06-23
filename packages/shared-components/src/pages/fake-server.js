@@ -1,13 +1,13 @@
 module.exports = function (req, res, next) {
-  if (req.url === '/rest/repositories/all') {
+  if (req.url.includes('/rest/repositories/all')) {
     // custom response overriding the dev server
     res.writeHead(200, {"Content-Type": "application/json"});
     res.end(JSON.stringify(getAllRepositories));
-  } else if (/^\/rest\/repositories\/[^/]+\/size\?location=/.test(req.url)) {
+  } else if (/\/rest\/repositories\/[^/]+\/size\?location=/.test(req.url)) {
     // custom response overriding the dev server
     res.writeHead(200, {"Content-Type": "application/json"});
     res.end(JSON.stringify(repositorySizeInfo));
-  } else if (/^\/rest\/security\/users\/.*/.test(req.url)) {
+  } else if (/\/rest\/security\/users\/.*/.test(req.url)) {
     // custom response overriding the dev server
     // user update does not return a response body
     res.writeHead(200);
@@ -16,7 +16,7 @@ module.exports = function (req, res, next) {
     // custom response overriding the dev server
     res.writeHead(200, {"Content-Type": "application/json"});
     res.end(JSON.stringify(monitoringOperations));
-  } else if (/^\/repositories\/[^/]+\/namespaces/.test(req.url)) {
+  } else if (/\/repositories\/[^/]+\/namespaces/.test(req.url)) {
     res.writeHead(200, {"Content-Type": "application/sparql-results+json"});
     res.end(JSON.stringify(namespaces));
   } else if (req.url.includes('/rest/autocomplete/query?q=')) {
