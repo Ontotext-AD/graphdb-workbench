@@ -5,7 +5,7 @@ import { HttpService } from '../http/http.service';
  * Service for product information REST calls.
  */
 export class ProductInfoRestService extends HttpService {
-  private readonly VERSION_URL = '/rest/info/version';
+  private readonly VERSION_URL = 'rest/info/version';
 
   /**
    * Retrieves the local version information of the product.

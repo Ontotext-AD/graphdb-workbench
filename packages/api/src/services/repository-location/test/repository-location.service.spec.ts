@@ -13,7 +13,7 @@ describe('RepositoryLocationService', () => {
 
   test('getActiveRepositoryLocation should return the active repository location', async () => {
     const rawRepository = RepositoryLocationMockProvider.provideRawRepositoryLocation('repo-location-uri');
-    TestUtil.mockResponse(new ResponseMock('/rest/locations/active').setResponse(rawRepository));
+    TestUtil.mockResponse(new ResponseMock('rest/locations/active').setResponse(rawRepository));
     const expectedResult = RepositoryLocationMockProvider.provideRepositoryLocation('repo-location-uri');
 
     // When the service is called to fetch the active repository location,

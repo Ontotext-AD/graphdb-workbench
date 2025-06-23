@@ -110,7 +110,7 @@ export class OntoNavbar {
       openInNewTab(externalLink);
       return;
     }
-    
+
     // Skip navigation when the selected item is a parent menu because it has no associated navigation.
     if (!menuItem.hasSubmenus()) {
       navigate(menuItem.href);
@@ -249,8 +249,8 @@ export class OntoNavbar {
     if (!this.menuModel) {
       return;
     }
-    const logoImg1 = '/assets/graphdb-logo.svg#Layer_1';
-    const logoImg2 = '/assets/graphdb-logo-sq.svg#Layer_1';
+    const logoImg1 = 'assets/graphdb-logo.svg#Layer_1';
+    const logoImg2 = 'assets/graphdb-logo-sq.svg#Layer_1';
     return (
       <Host>
         <ul class="navbar-component">
