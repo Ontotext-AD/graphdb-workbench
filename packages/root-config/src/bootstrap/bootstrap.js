@@ -5,7 +5,12 @@ import {autoCompleteBootstrap} from './autocomplete/autocomplete';
 import {securityBootstrap} from './security/security-bootstrap';
 import {repositoryBootstrap} from './repository/repository-bootstrap';
 
-import {ServiceProvider, SecurityContextService, ApplicationLifecycleContextService, LifecycleState} from '@ontotext/workbench-api';
+import {
+  ServiceProvider,
+  SecurityContextService,
+  ApplicationLifecycleContextService,
+  LifecycleState
+} from '@ontotext/workbench-api';
 import {start} from 'single-spa';
 import {defineCustomElements} from '../../../shared-components/loader';
 
@@ -16,7 +21,26 @@ const bootstrapPromises = [
 ];
 
 const settleAllPromises = (bootstrapPromises) => {
-  return Promise.allSettled(bootstrapPromises.map((bootstrapFn) => bootstrapFn()));
+  return Promise.allSettled(executePromises(bootstrapPromises));
+};
+
+/**
+ * Executes all promises in parallel
+ * @param bootstrapFns the bootstrap functions to execute
+ * @returns an array with all called promises
+ */
+const executePromises = (bootstrapFns) => {
+  return bootstrapFns.map((bootstrapFn) => bootstrapFn());
+};
+
+/**
+ * Executes all promises, which are essential to be loaded prior to bootstrapping the workbench.
+ */
+const loadEssentials = () => {
+  return Promise.all([
+    executePromises(languageBootstrap),
+    securityBootstrap.loadSecurityConfig()
+  ]);
 };
 
 const loadApplicationData = () => {
@@ -44,15 +68,16 @@ const subscribeToAuthenticatedUserChange = () => {
   });
 };
 
+/**
+ * The main function to bootstrap the workbench.
+ * Loads language bundles and security configuration and then proceeds to load single spa and sets up
+ * subscriptions for config changes and authenticated user changes.
+ */
 export const bootstrapWorkbench = () => {
-  return settleAllPromises(languageBootstrap)
-    .then(() => securityBootstrap.loadSecurityConfig())
-    .then(() => {
-      securityBootstrap.subscribeToSecurityConfigChange();
-      subscribeToAuthenticatedUserChange();
-      defineCustomElements();
-      return start();
-    }).catch((error) => {
-      console.error('Error during bootstrap of workbench', error);
-    });
+  return loadEssentials().then(() => {
+    securityBootstrap.subscribeToSecurityConfigChange();
+    subscribeToAuthenticatedUserChange();
+    defineCustomElements();
+    return start();
+  });
 };
