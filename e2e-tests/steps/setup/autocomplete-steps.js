@@ -1,4 +1,6 @@
-export class AutocompleteSteps {
+import {BaseSteps} from "../base-steps";
+
+export class AutocompleteSteps extends BaseSteps {
 
     static visit() {
         cy.visit('/autocomplete');
@@ -23,7 +25,11 @@ export class AutocompleteSteps {
     }
 
     static getAutocompletePage() {
-        return cy.get('#autocomplete');
+        return this.getByTestId('autocomplete-page');
+    }
+
+    static getAutocompletePageContent() {
+        return this.getAutocompletePage().getByTestId('autocomplete-content');
     }
 
     static getAutocompleteIndex() {
@@ -31,7 +37,11 @@ export class AutocompleteSteps {
     }
 
     static getAutocompleteHeader() {
-        return this.getAutocompleteIndex().find('.autocomplete-header');
+        return this.getAutocompletePageContent().getByTestId('autocomplete-header');
+    }
+
+    static getAutocompleteLabelsContainer() {
+        return this.getAutocompletePage().getByTestId('autocomplete-labels-container');
     }
 
     static getAutocompleteSwitch() {

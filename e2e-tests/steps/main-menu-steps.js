@@ -190,4 +190,9 @@ export class MainMenuSteps {
         this.clickOnMenuSetup();
         this.getSubMenuButton('sub-menu-my-settings').click();
     }
+
+    static clickOnAutocomplete() {
+        this.clickOnMenuSetup();
+        this.getSubmenuAutocomplete().click();
+    }
 }
