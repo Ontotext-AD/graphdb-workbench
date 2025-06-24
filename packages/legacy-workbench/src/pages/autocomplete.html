@@ -1,5 +1,5 @@
 <link href="css/autocomplete.css?v=[AIV]{version}[/AIV]" rel="stylesheet">
-<div id="autocomplete" class="page">
+<div id="autocomplete" class="page" data-test="autocomplete-page">
 	<h1>
 		{{title}}
         <page-info-tooltip></page-info-tooltip>
@@ -22,14 +22,15 @@
         ng-if="isLicenseValid()">
     </inactive-plugin-directive>
 
-    <div ng-if="isLicenseValid() && canWriteActiveRepo() && !loading && !isRestricted && pluginIsActive">
+    <div ng-if="isLicenseValid() && canWriteActiveRepo() && !loading && !isRestricted && pluginIsActive"
+		 data-test="autocomplete-content">
 		<div class="alert alert-info autocomplete-configuring-not-supported-alert" ng-if="!loader && pluginFound && getDegradedReason()">
 			<h4>{{'autocomplete.not.supported' | translate}}</h4>
 			<p>{{'autocomplete.config.not.supported' | translate}} {{getDegradedReason()}}</p>
 		</div>
 		<div ng-if="pluginFound && !getDegradedReason()">
             <div class="lead mb-1" id="toggleIndex">
-				<span class="autocomplete-header">{{'autocomplete.for.repo' | translate}} <strong>{{getActiveRepository()}}</strong> {{'is.label' | translate}} <span class="tag {{autocompleteEnabled ? 'tag-primary' : 'tag-default'}}">{{autocompleteEnabled ? 'common.on.btn' : 'common.off.btn' | translate}}</span></span>
+				<span class="autocomplete-header" data-test="autocomplete-header">{{'autocomplete.for.repo' | translate}} <strong>{{getActiveRepository()}}</strong> {{'is.label' | translate}} <span class="tag {{autocompleteEnabled ? 'tag-primary' : 'tag-default'}}">{{autocompleteEnabled ? 'common.on.btn' : 'common.off.btn' | translate}}</span></span>
 				<span gdb-tooltip="{{'click.to' | translate}} {{autocompleteEnabled ? 'disable.label' : 'enable.label' | translate}} {{'autocomplete.sentence.end' | translate}}"
                       tooltip-placement="top"
                       ng-click="toggleAutocomplete()"
@@ -83,7 +84,10 @@
                 </span>
 			</div>
 
-			<table id="wb-autocomplete-labels" class="table table-striped table-hover" aria-describedby="Autocomplete labels table">
+			<table id="wb-autocomplete-labels"
+				   data-test="autocomplete-labels-container"
+				   class="table table-striped table-hover"
+				   aria-describedby="Autocomplete labels table">
 				<thead>
 				<tr>
 					<th id="labelIRIColumn">{{'label.iri' | translate}}</th>
