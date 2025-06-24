@@ -1,5 +1,5 @@
-import {AutocompleteSteps} from "../../steps/setup/autocomplete-steps";
-import {LicenseStubs} from "../../stubs/license-stubs";
+import {AutocompleteSteps} from "../../../steps/setup/autocomplete-steps";
+import {LicenseStubs} from "../../../stubs/license-stubs";
 
 describe('Autocomplete ', () => {
 
