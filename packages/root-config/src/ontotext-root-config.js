@@ -88,7 +88,11 @@ const registerSingleSpaRouterListeners = () => {
 };
 
 registerSingleSpaRouterListeners();
-bootstrapWorkbench().then(() => showSplashScreen(false));
+bootstrapWorkbench()
+  .then(() => showSplashScreen(false))
+  .catch((error) => {
+    console.error('Error during bootstrap of workbench', error);
+  });
 
 // window.addEventListener("single-spa:routing-event", (evt) => {
 //     console.log("single-spa finished mounting/unmounting applications!");

@@ -7,6 +7,7 @@ export const loadSecurityConfig = () => {
     })
     .catch((error) => {
       console.error('Could not load security config', error);
+      throw error;
     });
 };
 
