@@ -20,7 +20,8 @@ PluginRegistry.add('main.menu', {
         order: 20,
         role: 'ROLE_USER',
         parent: 'Setup',
-        guideSelector: 'sub-menu-cluster'
+        guideSelector: 'sub-menu-cluster',
+        testSelector: 'sub-menu-cluster'
     }]
 });
 
