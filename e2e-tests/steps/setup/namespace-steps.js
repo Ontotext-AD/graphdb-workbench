@@ -1,10 +1,16 @@
-export class NamespaceSteps {
+import {BaseSteps} from "../base-steps";
+
+export class NamespaceSteps extends BaseSteps {
     static visit() {
         cy.visit('/namespaces');
     }
 
     static getNamespacesView() {
-        return cy.get('#wb-namespaces');
+        return this.getByTestId('namespaces-page')
+    }
+
+    static getNamespacesContent() {
+        return this.getNamespacesView().getByTestId('namespaces-content');
     }
 
     // ------ Generic ------
