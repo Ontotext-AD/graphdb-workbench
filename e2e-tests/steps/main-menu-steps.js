@@ -195,4 +195,9 @@ export class MainMenuSteps {
         this.clickOnMenuSetup();
         this.getSubmenuAutocomplete().click();
     }
+
+    static clickOnNamespaces() {
+        this.clickOnMenuSetup();
+        this.getSubMenuButton('sub-menu-namespaces').click();
+    }
 }
