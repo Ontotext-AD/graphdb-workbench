@@ -1,10 +1,16 @@
-export class ClusterPageSteps {
+import {BaseSteps} from "../base-steps";
+
+export class ClusterPageSteps extends BaseSteps {
     static visit() {
         cy.visit('/cluster');
     }
 
     static getClusterPage() {
         return cy.get('.cluster-view');
+    }
+
+    static getNoClusterImage() {
+        return this.getClusterPage().find('.no-cluster')
     }
 
     static getCreateClusterButton() {
@@ -47,8 +53,12 @@ export class ClusterPageSteps {
         this.getPreviewClusterConfigButton().click();
     }
 
+    static getLegendButton() {
+        return this.getByTestId('toggle-legend-button');
+    }
+
     static openLegend() {
-        return cy.get('.toggle-legend-btn button').click();
+        return this.getLegendButton().click();
     }
 
     static getLegend() {
