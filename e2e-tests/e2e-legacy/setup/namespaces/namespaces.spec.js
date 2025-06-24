@@ -1,7 +1,7 @@
-import {NamespaceSteps} from "../../steps/setup/namespace-steps";
-import {ApplicationSteps} from "../../steps/application-steps";
-import {NamespaceStubs} from "../../stubs/namespace-stubs";
-import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
+import {NamespaceSteps} from "../../../steps/setup/namespace-steps";
+import {ApplicationSteps} from "../../../steps/application-steps";
+import {NamespaceStubs} from "../../../stubs/namespace-stubs";
+import {ModalDialogSteps} from "../../../steps/modal-dialog-steps";
 
 describe('Namespaces', () => {
 
