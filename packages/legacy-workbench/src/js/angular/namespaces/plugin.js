@@ -19,7 +19,8 @@ PluginRegistry.add('main.menu', {
             href: 'namespaces',
             order: 30,
             parent: 'Setup',
-            guideSelector: 'sub-menu-namespaces'
+            guideSelector: 'sub-menu-namespaces',
+            testSelector: 'sub-menu-namespaces'
         }
     ]
 });
