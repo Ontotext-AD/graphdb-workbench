@@ -232,4 +232,9 @@ export class MainMenuSteps {
         this.clickOnMenuHelp();
         this.getSubMenuButton('sub-menu-system-information').click();
     }
+
+    static clickOnCluster() {
+        this.clickOnMenuSetup();
+        this.getSubMenuButton('sub-menu-cluster').click();
+    }
 }
