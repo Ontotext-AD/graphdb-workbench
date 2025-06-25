@@ -53,10 +53,12 @@ export namespace Components {
     interface OntoDropdown {
         /**
           * Flag to determine if the dropdown should close automatically when a click occurs outside the dropdown.
+          * @default true
          */
         "autoClose": boolean;
         /**
           * Specifies the dropdown items' alignment. If not provided, the items and the dropdown button will be aligned to the left.
+          * @default DropdownItemAlignment.LEFT
          */
         "dropdownAlignment": DropdownItemAlignment;
         /**
@@ -81,10 +83,12 @@ export namespace Components {
         "dropdownButtonTooltipLabelKey": string;
         /**
           * Specifies the events that trigger the dropdown button tooltip to appear. Multiple event names should be separated by spaces.
+          * @default 'manual'
          */
         "dropdownTooltipTrigger": string;
         /**
           * Icon class for the main dropdown button.
+          * @default ''
          */
         "iconClass": string;
         /**
@@ -93,6 +97,7 @@ export namespace Components {
         "items": DropdownItem<any>[];
         /**
           * Specifies the items tooltip placement. Accepts a string of the placement or a function that returns the placement. The function takes the isOpen parameter as a boolean and returns the placement as a string. If not provided, the tooltip will be placed to the left.
+          * @default OntoTooltipPlacement.LEFT
          */
         "tooltipPlacement": OntoTooltipPlacement | ((isOpen: boolean) => OntoTooltipPlacement);
         /**
@@ -117,6 +122,7 @@ export namespace Components {
     interface OntoLanguageSelector {
         /**
           * Specifies the dropdown items' alignment. If not provided, the items and the dropdown button will be aligned to the left.
+          * @default DropdownItemAlignment.LEFT
          */
         "dropdownAlignment": DropdownItemAlignment;
     }
@@ -191,6 +197,7 @@ export namespace Components {
         "context": string;
         /**
           * Whether the search component is currently hidden. Can be shown/hidden in the RDF search
+          * @default false
          */
         "isHidden": boolean;
         /**
@@ -199,6 +206,7 @@ export namespace Components {
         "preserveSearch": boolean;
         /**
           * Whether the rdf resource pre-search validation should be skipped.
+          * @default false
          */
         "skipValidation": boolean;
     }
@@ -291,6 +299,7 @@ export namespace Components {
     interface OntoToggleSwitch {
         /**
           * Determines whether the toggle switch is checked or not.
+          * @default false
          */
         "checked": boolean;
         /**
@@ -341,6 +350,7 @@ export namespace Components {
         "labelKey": string;
         /**
           * Represents an array of translation parameters.
+          * @default []
          */
         "translationParameters": TranslationParameter[];
     }
@@ -652,10 +662,12 @@ declare namespace LocalJSX {
     interface OntoDropdown {
         /**
           * Flag to determine if the dropdown should close automatically when a click occurs outside the dropdown.
+          * @default true
          */
         "autoClose"?: boolean;
         /**
           * Specifies the dropdown items' alignment. If not provided, the items and the dropdown button will be aligned to the left.
+          * @default DropdownItemAlignment.LEFT
          */
         "dropdownAlignment"?: DropdownItemAlignment;
         /**
@@ -680,10 +692,12 @@ declare namespace LocalJSX {
         "dropdownButtonTooltipLabelKey"?: string;
         /**
           * Specifies the events that trigger the dropdown button tooltip to appear. Multiple event names should be separated by spaces.
+          * @default 'manual'
          */
         "dropdownTooltipTrigger"?: string;
         /**
           * Icon class for the main dropdown button.
+          * @default ''
          */
         "iconClass"?: string;
         /**
@@ -696,6 +710,7 @@ declare namespace LocalJSX {
         "onValueChanged"?: (event: OntoDropdownCustomEvent<any>) => void;
         /**
           * Specifies the items tooltip placement. Accepts a string of the placement or a function that returns the placement. The function takes the isOpen parameter as a boolean and returns the placement as a string. If not provided, the tooltip will be placed to the left.
+          * @default OntoTooltipPlacement.LEFT
          */
         "tooltipPlacement"?: OntoTooltipPlacement | ((isOpen: boolean) => OntoTooltipPlacement);
         /**
@@ -720,6 +735,7 @@ declare namespace LocalJSX {
     interface OntoLanguageSelector {
         /**
           * Specifies the dropdown items' alignment. If not provided, the items and the dropdown button will be aligned to the left.
+          * @default DropdownItemAlignment.LEFT
          */
         "dropdownAlignment"?: DropdownItemAlignment;
     }
@@ -798,6 +814,7 @@ declare namespace LocalJSX {
         "context"?: string;
         /**
           * Whether the search component is currently hidden. Can be shown/hidden in the RDF search
+          * @default false
          */
         "isHidden"?: boolean;
         /**
@@ -806,6 +823,7 @@ declare namespace LocalJSX {
         "preserveSearch"?: boolean;
         /**
           * Whether the rdf resource pre-search validation should be skipped.
+          * @default false
          */
         "skipValidation"?: boolean;
     }
@@ -824,6 +842,7 @@ declare namespace LocalJSX {
     interface OntoToggleSwitch {
         /**
           * Determines whether the toggle switch is checked or not.
+          * @default false
          */
         "checked"?: boolean;
         /**
@@ -878,6 +897,7 @@ declare namespace LocalJSX {
         "labelKey"?: string;
         /**
           * Represents an array of translation parameters.
+          * @default []
          */
         "translationParameters"?: TranslationParameter[];
     }

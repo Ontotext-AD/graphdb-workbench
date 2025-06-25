@@ -5,7 +5,7 @@ pipeline {
     }
 
     tools {
-        nodejs 'nodejs-18.9.0'
+        nodejs 'nodejs-22'
     }
 
     environment {
@@ -15,13 +15,6 @@ pipeline {
 
     stages {
         stage('Install') {
-            agent {
-                docker {
-                    image 'node:20-alpine'
-                    label 'aws-large'
-                    reuseNode true
-                }
-            }
             steps {
                 script {
                     sh 'npm run install:ci'
@@ -30,13 +23,6 @@ pipeline {
         }
 
         stage('Build') {
-            agent {
-                docker {
-                    image 'node:20-alpine'
-                    label 'aws-large'
-                    reuseNode true
-                }
-            }
             steps {
                 script {
                     sh 'npm run build'
