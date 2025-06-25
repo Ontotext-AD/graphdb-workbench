@@ -12,7 +12,9 @@
     ],
     "baseUrl": "./",
     "paths": {
-      "@ontotext/workbench-api": ["../api/dist/ontotext-workbench-api.d.ts"]
+      "@ontotext/workbench-api": [
+        "../api/dist/ontotext-workbench-api.d.ts"
+      ]
     },
     "moduleResolution": "node",
     "module": "esnext",
@@ -28,5 +30,10 @@
   ],
   "exclude": [
     "node_modules"
-  ]
+  ],
+  "types": [
+    "jest",
+    "jest-stencil-runner"
+  ],
+  "esModuleInterop": true
 }

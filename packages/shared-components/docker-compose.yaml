@@ -1,8 +1,8 @@
-version: '3.2'
+version: '3.4'
 
 services:
   shared_components:
-    image: node:18-alpine
+    image: node:22-alpine
     working_dir: /app
     user: "${UID}:${GID}"
     ports:
@@ -12,11 +12,17 @@ services:
       - ../api:/api
       - ../root-config:/root-config
     command: npm run start
+    healthcheck:
+      test: [ "CMD", "sh", "-c", "wget -q -O - http://shared_components:3333/ | grep -q 'Main'" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   cypress:
-    image: cypress/included:13.17.0
+    image: cypress/included:14.5.0
     depends_on:
-      - shared_components
+      shared_components:
+        condition: service_healthy
     environment:
       - CYPRESS_baseUrl=http://shared_components:3333
       - NO_COLOR=true

@@ -11,7 +11,7 @@
 // This function is called when a project is opened or re-opened (e.g. due to
 // the project's config changing)
 
-const del = require('del');
+const deleteSync = require('del').deleteSync;
 const retryTracker = {};
 
 module.exports = (on, config) => {
@@ -64,7 +64,7 @@ module.exports = (on, config) => {
                 test.attempts.some((attempt) => attempt.state === 'failed')
             );
             if (!failures) {
-                return del(results.video);
+                return deleteSync(results.video);
             }
         }
     });
