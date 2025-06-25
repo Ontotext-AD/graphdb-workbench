@@ -1,9 +1,11 @@
 <link href="css/ttyg/no-agents-view.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 
-<div class="no-agents-view-component">
+<div class="no-agents-view-component" data-test="no-agents-view-component">
     <div class="content">
-        <div class="alert alert-help mb-3" ng-bind-html="'ttyg.agent.messages.help_1' | translate | trustAsHtml"></div>
-        <div class="alert alert-help mb-3" ng-bind-html="'ttyg.agent.messages.help_2' | translate | trustAsHtml"></div>
+        <div class="alert alert-help mb-3"
+             data-test="ttyg-info-message" ng-bind-html="'ttyg.agent.messages.help_1' | translate | trustAsHtml"></div>
+        <div class="alert alert-help mb-3" data-test="ttyg-agent-message"
+             ng-bind-html="'ttyg.agent.messages.help_2' | translate | trustAsHtml"></div>
 
         <div class="actions">
             <button class="btn btn-outline-primary btn-lg text-xs-left create-agent-btn"
@@ -15,7 +17,7 @@
             </button>
         </div>
 
-        <div class="alert alert-warning mt-3">
+        <div class="alert alert-warning mt-3" data-test="ttyg-api-key-message">
             <div ng-bind-html="'ttyg.agent.messages.help_config' | translate: {talkToGraphDocumentationLink: talkToGraphDocumentationLink} | trustAsHtml"></div>
         </div>
     </div>

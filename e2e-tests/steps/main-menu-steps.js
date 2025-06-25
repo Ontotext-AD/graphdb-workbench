@@ -237,4 +237,20 @@ export class MainMenuSteps {
         this.clickOnMenuSetup();
         this.getSubMenuButton('sub-menu-cluster').click();
     }
+
+    // --------------------------
+    // --     Lab menu  --
+    // --------------------------
+    static getMenuLab() {
+        return this.getMainMenu().getByTestId('menu-lab');
+    }
+
+    static clickOnMenuLab() {
+        return this.getMenuLab().click();
+    }
+
+    static clickOnTTYG() {
+        this.clickOnMenuLab();
+        this.getSubMenuButton('sub-menu-ttyg').click();
+    }
 }

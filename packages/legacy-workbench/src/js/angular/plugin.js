@@ -40,6 +40,7 @@ PluginRegistry.add('main.menu', {
                 role: 'IS_AUTHENTICATED_FULLY',
                 icon: "fa fa-flask",
                 guideSelector: 'menu-lab',
+                testSelector: 'menu-lab',
                 children: []
             }
         ]
