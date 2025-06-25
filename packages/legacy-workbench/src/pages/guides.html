@@ -4,7 +4,7 @@
     <page-info-tooltip></page-info-tooltip>
 </h1>
 
-<div ng-show="displayedGuides.length > 0" class="clearfix">
+<div ng-show="displayedGuides.length > 0" class="clearfix" data-test="guides-per-page-bar">
     <div class="btn-group pull-right namespaces-per-page-menu" uib-dropdown>
         <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" uib-dropdown-toggle ng-disabled="disabled">
             <span>{{pageSize}}</span>
@@ -20,12 +20,14 @@
     </div>
     <span class="pull-right mr-1">{{'view.guides.guides.per.page.label' | translate}}</span>
 </div>
-<div ng-show="displayedGuides.length > 0">
+<div ng-show="displayedGuides.length > 0" data-test="guides-paginator">
     <div paginations class="ot-guides-pagination pull-right ot-owlim-ctrl"></div>
     <span class="showing-info-namespaces pull-right">{{'showing.label' | translate}} {{(pageSize * (page - 1)) + 1}} - {{pageSize * page >= displayedGuides.length ? displayedGuides.length + (pageSize * (page - 1)) : pageSize * page}} {{'pagination.of.label' | translate}} {{guides.length}}</span>
 </div>
 
-<table ng-show="displayedGuides.length > 0" id="guides-table" class="table table-striped table-hover" aria-describedby="Guides table">
+<table ng-show="displayedGuides.length > 0" id="guides-table" class="table table-striped table-hover"
+       data-test="guides-list"
+       aria-describedby="Guides table">
     <thead>
     <tr>
         <th id="name" style="width: 80%">{{'view.guides.table.column.name' | translate}}</th>
