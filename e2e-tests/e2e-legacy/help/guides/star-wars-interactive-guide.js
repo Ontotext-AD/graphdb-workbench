@@ -1,5 +1,5 @@
-import {GuideSteps} from "../../steps/guides/guide-steps";
-import {StarWarsGuideSteps} from "../../steps/guides/star-wars-guide-steps";
+import {GuideSteps} from "../../../steps/guides/guide-steps";
+import {StarWarsGuideSteps} from "../../../steps/guides/star-wars-guide-steps";
 
 const STAR_WARS_FILE_FOR_IMPORT = 'starwars.ttl';
 

@@ -205,4 +205,31 @@ export class MainMenuSteps {
         this.clickOnMenuSetup();
         this.getSubMenuButton('sub-menu-plugins').click();
     }
+
+    // --------------------------
+    // --     Help menu  --
+    // --------------------------
+
+    static getMenuHelp() {
+        return MainMenuSteps.getMainMenu().getByTestId('menu-help');
+    }
+
+    static clickOnMenuHelp() {
+        this.getMenuHelp().click();
+    }
+
+    static clickOnInteractiveGuides() {
+        this.clickOnMenuHelp();
+        this.getSubMenuButton('sub-menu-guide').click();
+    }
+
+    static clickOnRestApiDocumentation() {
+        this.clickOnMenuHelp();
+        this.getSubMenuButton('sub-menu-rest-api').click();
+    }
+
+    static clickOnSystemInformation() {
+        this.clickOnMenuHelp();
+        this.getSubMenuButton('sub-menu-system-information').click();
+    }
 }

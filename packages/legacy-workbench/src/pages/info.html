@@ -1,14 +1,14 @@
-<div class="page">
+<div class="page" data-test="system-info-page">
 	<h1>
 		{{title}}
         <page-info-tooltip></page-info-tooltip>
 	</h1>
 
-	<uib-tabset>
+	<uib-tabset data-test="system-info-content">
 		<uib-tab>
 		    <uib-tab-heading class="nav-item application-info-tab"><span class="nav-link">{{'app.info' | translate}}</span></uib-tab-heading>
-			<div class="list-group border-top-0 application-info-body">
-				<div class="list-group-item">
+			<div class="list-group border-top-0 application-info-body" data-test="application-info-tab">
+				<div class="list-group-item" data-test="graphdb-info">
 					<div class="row">
 						<div class="col-md-3 gdb-item">
 							<h5 class="list-group-item-heading">GraphDB</h5>
@@ -28,7 +28,7 @@
                         </div>
 					</div>
 				</div>
-				<div class="list-group-item">
+				<div class="list-group-item" data-test="operation-system-info">
 					<div class="row">
 						<div class="col-md-3 os-item">
 							<h5 class="list-group-item-heading">OS</h5>
@@ -44,7 +44,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="list-group-item">
+				<div class="list-group-item" data-test="server-report">
 					<h5>
 						{{'server.report' | translate}}
 						<button type="button" ng-click="isHelpVisible = !isHelpVisible" class="btn btn-link server-report-help-btn">
@@ -77,11 +77,19 @@
 
 					<div class="pt-1 pb-3 reports-toobar">
 						<div class="btn-group">
-							<button class="btn btn-primary mr-1 new-report-btn" ng-click="makeReport()" ng-disabled="status === 'IN_PROGRESS'" gdb-tooltip="{{'new.server.report.tooltip' | translate}}">
+							<button class="btn btn-primary mr-1 new-report-btn"
+									ng-click="makeReport()"
+									ng-disabled="status === 'IN_PROGRESS'"
+									data-test="new-report-btn"
+									gdb-tooltip="{{'new.server.report.tooltip' | translate}}">
 								<em class="icon-monitoring"></em>
 								{{'new.server.report' | translate}}
 							</button>
-							<button class="btn btn-primary download-report-btn" ng-click="getReport()" ng-disabled="status === 'IN_PROGRESS' || !(timestamp > 0)" gdb-tooltip="{{'download.server.report.tooltip' | translate}}">
+							<button class="btn btn-primary download-report-btn"
+									ng-click="getReport()"
+									ng-disabled="status === 'IN_PROGRESS' || !(timestamp > 0)"
+									data-test="download-report-btn"
+									gdb-tooltip="{{'download.server.report.tooltip' | translate}}">
 								<em class="icon-download"></em>
 								{{'common.download' | translate}}
 							</button>
@@ -94,13 +102,13 @@
 		</uib-tab>
 		<uib-tab>
 		    <uib-tab-heading class="nav-item jvm-arguments"><span class="nav-link">{{'view.system.information.jvm.args' | translate}}</span></uib-tab-heading>
-			<ul class="list-group border-top-0 jvm-arguments-body">
+			<ul class="list-group border-top-0 jvm-arguments-body" data-test="jvm-arguments-tab">
 				<li ng-repeat="argument in info.jvmArguments track by $index" class="list-group-item">{{argument}}</li>
 			</ul>
 		</uib-tab>
 		<uib-tab>
 		    <uib-tab-heading class="nav-item configuration-parameters"><span class="nav-link">{{'info.configuration.parameters' | translate}}</span></uib-tab-heading>
-			<ul class="list-group border-top-0 configuration-parameters-body">
+			<ul class="list-group border-top-0 configuration-parameters-body" data-test="configuration-parameters-tab">
 				<li ng-repeat="property in info.properties track by $index" class="list-group-item">
 					<div class="row">
 						<span class="col-md-5 property-key">{{property.key}}</span>
