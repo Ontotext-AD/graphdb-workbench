@@ -1,10 +1,20 @@
-export class PluginsSteps {
+import {BaseSteps} from "../base-steps";
+
+export class PluginsSteps extends BaseSteps {
     static visit() {
         cy.visit('/plugins');
     }
 
     static getPluginsView() {
         return cy.get('#plugins');
+    }
+
+    static getSearchPluginBar() {
+        return this.getPluginsView().getByTestId('search-plugins-bar');
+    }
+
+    static getPluginsList() {
+        return this.getPluginsView().getByTestId('plugins-list');
     }
 
     static waitUntilPluginsPageIsLoaded() {

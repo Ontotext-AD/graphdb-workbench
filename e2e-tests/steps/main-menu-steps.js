@@ -200,4 +200,9 @@ export class MainMenuSteps {
         this.clickOnMenuSetup();
         this.getSubMenuButton('sub-menu-namespaces').click();
     }
+
+    static clickOnPlugins() {
+        this.clickOnMenuSetup();
+        this.getSubMenuButton('sub-menu-plugins').click();
+    }
 }
