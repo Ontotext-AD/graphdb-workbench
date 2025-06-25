@@ -21,6 +21,7 @@ PluginRegistry.add('main.menu', {
             order: 20,
             role: 'ROLE_USER',
             parent: 'Lab',
-            guideSelector: 'sub-menu-ttyg'
+            guideSelector: 'sub-menu-ttyg',
+            testSelector: 'sub-menu-ttyg'
         }]
 });
