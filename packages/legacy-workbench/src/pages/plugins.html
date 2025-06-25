@@ -15,7 +15,9 @@
     <div core-errors write ontop fedx license></div>
 
     <!--search box-->
-    <div class="search-bar" ng-show="plugins.length > 0 && !loader">
+    <div class="search-bar"
+         ng-show="plugins.length > 0 && !loader"
+         data-test="search-plugins-bar">
             <span class="pull-left" id="searchbox-plugins">
                 <input type="text" class="form-control plugins-filter" placeholder="{{'search.plugins.placeholder' | translate}}"
                        ng-model="searchPluginsTerm" gdb-tooltip="{{'common.search.btn' | translate}}"
@@ -26,6 +28,7 @@
 
     <table ng-if="isLicenseValid() && canWriteActiveRepo() && !isRestricted"
            id="wb-plugins-pluginInPlugins"
+           data-test="plugins-list"
            class="table table-hover" aria-describedby="Plugins table">
         <tbody>
         <tr ng-repeat="(key, plugin) in displayedPlugins" class="wb-plugins-row plugin" loader-post-repeat-directive>
