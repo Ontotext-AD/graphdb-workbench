@@ -1,6 +1,6 @@
-import {PluginsSteps} from "../../steps/setup/plugins-steps";
-import {PluginsStubs} from "../../stubs/setup/plugins-stubs";
-import {LicenseStubs} from "../../stubs/license-stubs";
+import {PluginsSteps} from "../../../steps/setup/plugins-steps";
+import {PluginsStubs} from "../../../stubs/setup/plugins-stubs";
+import {LicenseStubs} from "../../../stubs/license-stubs";
 
 describe('Plugins view', () => {
 
