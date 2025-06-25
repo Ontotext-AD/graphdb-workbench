@@ -21,7 +21,8 @@ PluginRegistry.add('main.menu', {
             icon: 'paste',
             href: 'guides',
             role: 'ROLE_REPO_MANAGER',
-            guideSelector: 'sub-menu-guide'
+            guideSelector: 'sub-menu-guide',
+            testSelector: 'sub-menu-guide'
         }
     ]
 });
