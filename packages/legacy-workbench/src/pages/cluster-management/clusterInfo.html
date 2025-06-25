@@ -33,7 +33,7 @@
 </div>
 
 <div id="nodeTooltip" class="nodetooltip" ng-hide="selectedNode == null">
-    <a href="{{selectedNode.endpoint}}" class="break-word"><strong>{{selectedNode.endpoint}}</strong></a>
+    <a href="{{selectedNode.endpoint}}" target="_blank" rel="noopener" class="break-word"><strong>{{selectedNode.endpoint}}</strong></a>
     <hr style="margin-top: 10px; margin-bottom: 10px"/>
     <div class="row">
         <div class="col-sm-6">{{'cluster_management.cluster_status.node.rpc_address' | translate}}</div>
