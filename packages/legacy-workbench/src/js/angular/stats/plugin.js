@@ -28,6 +28,7 @@ PluginRegistry.add('main.menu', {
             order: 8,
             icon: 'icon-help',
             guideSelector: 'menu-help',
+            testSelector: 'menu-help',
             children: []
         }, {
             label: 'System information',
@@ -36,14 +37,16 @@ PluginRegistry.add('main.menu', {
             order: 50,
             parent: 'Help',
             role: 'ROLE_ADMIN',
-            guideSelector: 'sub-menu-system-information'
+            guideSelector: 'sub-menu-system-information',
+            testSelector: 'sub-menu-system-information'
         }, {
             label: 'REST API',
             labelKey: 'menu.rest.api.label',
             href: 'webapi',
             order: 1,
             parent: 'Help',
-            guideSelector: 'sub-menu-rest-api'
+            guideSelector: 'sub-menu-rest-api',
+            testSelector: 'sub-menu-rest-api'
         }, {
             label: 'Documentation',
             labelKey: 'menu.documentation.label',

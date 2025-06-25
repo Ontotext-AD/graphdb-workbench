@@ -1,5 +1,5 @@
-import {GuideSteps} from "../../steps/guides/guide-steps";
-import {MoviesGuideSteps} from "../../steps/guides/movies-guide-steps";
+import {GuideSteps} from "../../../steps/guides/guide-steps";
+import {MoviesGuideSteps} from "../../../steps/guides/movies-guide-steps";
 
 const MOVIES_FILE_FOR_IMPORT = 'movies.ttl';
 

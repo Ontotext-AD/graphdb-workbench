@@ -4,8 +4,9 @@ import {RepositorySteps} from "../repository-steps";
 import {RepositorySelectorSteps} from "../repository-selector-steps";
 import {AutocompleteSteps} from "../setup/autocomplete-steps";
 import ImportSteps from "../import/import-steps";
+import {BaseSteps} from "../base-steps";
 
-export class GuideSteps {
+export class GuideSteps extends BaseSteps {
     static visit() {
         cy.visit('/guides');
     }
@@ -260,5 +261,23 @@ export class GuideSteps {
         });
 
         GuideDialogSteps.assertDialogWithTitleIsVisible('End of guide');
+    }
+
+    static getGuidesPerPageBar() {
+        return this.getByTestId('guides-per-page-bar');
+    }
+
+    static getGuidesPaginator() {
+        return this.getByTestId('guides-paginator');
+    }
+
+    static getGuidesList() {
+        return this.getByTestId('guides-list');
+    }
+
+    static verifyInitialState() {
+        this.getGuidesPerPageBar().should('be.visible');
+        this.getGuidesPaginator().should('exist');
+        this.getGuidesList().should('be.visible');
     }
 }
