@@ -13,10 +13,10 @@
   "license": "Apache-2.0",
   "description": "",
   "dependencies": {
-    "lighthouse": "^12.3.0",
+    "lighthouse": "^12.6.1",
     "node-fetch": "^3.3.2",
     "pdf-merger-js": "^5.1.2",
-    "puppeteer": "^24.1.0",
-    "yargs": "^17.7.2"
+    "puppeteer": "^24.11.0",
+    "yargs": "^18.0.0"
   }
 }
