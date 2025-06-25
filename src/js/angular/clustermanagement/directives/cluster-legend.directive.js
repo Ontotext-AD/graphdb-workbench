@@ -69,8 +69,7 @@ function clusterLegend($rootScope, ClusterViewContextService, $translate, $docum
                         return `translate(${CLUSTER_MANAGEMENT_CONSTANTS.LEGEND_ITEM_PADDING_LEFT}, ${legendHeight + CLUSTER_MANAGEMENT_CONSTANTS.LEGEND_ITEM_PADDING_TOP})`;
                     })
                     .append('text')
-                    .style('font-size', CLUSTER_MANAGEMENT_CONSTANTS.LEGEND_ITEM_FONT_SIZE)
-                    .style('line-height', CLUSTER_MANAGEMENT_CONSTANTS.LEGEND_ITEM_LINE_HEIGHT)
+                    .classed('links-statuses', true)
                     .style('font-weight', CLUSTER_MANAGEMENT_CONSTANTS.LEGEND_ITEM_FONT_WEIGHT)
                     .style('fill', CLUSTER_MANAGEMENT_CONSTANTS.LEGEND_ITEM_COLOR)
                     .attr('x', CLUSTER_MANAGEMENT_CONSTANTS.PADDING_LEFT + CLUSTER_MANAGEMENT_CONSTANTS.SVG_NODE_WIDTH)
@@ -92,10 +91,7 @@ function clusterLegend($rootScope, ClusterViewContextService, $translate, $docum
 
                 syncStatusesGroups
                     .append('text')
-                    .classed('sync-status', true)
-                    .attr('class', (d) => d.classes)
-                    .style('font-size', CLUSTER_MANAGEMENT_CONSTANTS.LEGEND_ITEM_ICON_FONT_SIZE)
-                    .style('line-height', CLUSTER_MANAGEMENT_CONSTANTS.TITLE_LINE_HEIGHT)
+                    .attr('class', (d) => `sync-status ${d.classes}`)
                     .attr('x', CLUSTER_MANAGEMENT_CONSTANTS.LEGEND_ITEM_PADDING_LEFT - 10)
                     .attr('y', function (d, index) {
                         const rowTop = index * (20 + CLUSTER_MANAGEMENT_CONSTANTS.LEGEND_ITEM_PADDING_TOP) + legendHeight + CLUSTER_MANAGEMENT_CONSTANTS.LEGEND_ITEMS_PADDING_TOP;
@@ -109,8 +105,6 @@ function clusterLegend($rootScope, ClusterViewContextService, $translate, $docum
                 const labelOffsetY = (CLUSTER_MANAGEMENT_CONSTANTS.LEGEND_ITEM_ICON_FONT_SIZE - CLUSTER_MANAGEMENT_CONSTANTS.LEGEND_ITEM_FONT_SIZE) / 2;
                 syncStatusesGroups
                     .append('text')
-                    .style('font-size', CLUSTER_MANAGEMENT_CONSTANTS.LEGEND_ITEM_FONT_SIZE)
-                    .style('line-height', CLUSTER_MANAGEMENT_CONSTANTS.LEGEND_ITEM_LINE_HEIGHT)
                     .style('font-weight', CLUSTER_MANAGEMENT_CONSTANTS.LEGEND_ITEM_FONT_WEIGHT)
                     .style('fill', CLUSTER_MANAGEMENT_CONSTANTS.LEGEND_ITEM_COLOR)
                     .text(function (d) {
@@ -148,9 +142,9 @@ function clusterLegend($rootScope, ClusterViewContextService, $translate, $docum
                             const lineMidPoint = lineWidth / 2;
                             // In order to draw an arrowhead in the middle of a line, the line needs to be composed by
                             // two segments, otherwise the arrowhead won't show up.
-                            line = `M${CLUSTER_MANAGEMENT_CONSTANTS.PADDING_LEFT},${y},L${lineMidPoint},${y},L${lineWidth},${y}`;
+                            line = `M${CLUSTER_MANAGEMENT_CONSTANTS.PADDING_LEFT} ${y} L${lineMidPoint} ${y} L${lineWidth} ${y}`;
                         } else {
-                            line = `M${CLUSTER_MANAGEMENT_CONSTANTS.PADDING_LEFT},${y},${lineWidth},${y}`;
+                            line = `M${CLUSTER_MANAGEMENT_CONSTANTS.PADDING_LEFT} ${y} ${lineWidth} ${y}`;
                         }
                         return line;
                     })

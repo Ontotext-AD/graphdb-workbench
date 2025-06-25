@@ -140,6 +140,14 @@ text.id-host, .node-info-fo {
     font-weight: 400;
 }
 
+text.sync-status {
+    font-size: 0.95rem;
+}
+
+text.links-statuses {
+    font-size: 0.7rem;
+}
+
 .node-info-fo {
     cursor: pointer;
 }
