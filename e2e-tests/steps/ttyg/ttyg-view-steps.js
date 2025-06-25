@@ -1,4 +1,6 @@
-export class TTYGViewSteps {
+import {BaseSteps} from "../base-steps";
+
+export class TTYGViewSteps extends BaseSteps {
     static visit() {
         cy.visit('/ttyg');
     }
@@ -12,7 +14,23 @@ export class TTYGViewSteps {
     }
 
     static getNoAgentsView() {
-        return this.getTtygView().find('.no-agents-view-component');
+        return this.getTtygView().getByTestId('no-agents-view-component');
+    }
+
+    static getTtygInfoMessage() {
+        return this.getNoAgentsView().getByTestId('ttyg-info-message');
+    }
+
+    static getTtygagentMessage() {
+        return this.getNoAgentsView().getByTestId('ttyg-agent-message');
+    }
+
+    static getApiKeyMessage() {
+        return this.getNoAgentsView().getByTestId('ttyg-api-key-message');
+    }
+
+    static getMissingApiKeyToastMessage() {
+        return cy.get('.toast.toast-error');
     }
 
     static getTtygViewContent() {
