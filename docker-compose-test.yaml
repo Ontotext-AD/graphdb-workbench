@@ -43,7 +43,7 @@ services:
       retries: 5
 
   cypress:
-    image: cypress/included:13.17.0
+    image: cypress/included:14.5.0
     depends_on:
       - workbench
     environment:

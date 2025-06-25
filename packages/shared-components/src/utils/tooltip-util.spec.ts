@@ -1,18 +1,23 @@
-import { TooltipUtil } from './tooltip-util';
-import tippy, { Instance } from 'tippy.js';
+import {TooltipUtil} from './tooltip-util';
+import * as tippyModule from 'tippy.js';
+import {newSpecPage, SpecPage} from "jest-stencil-runner";
 
-jest.mock('tippy.js');
+const tippySpy = jest.spyOn(tippyModule, 'default');
 
 describe('TooltipUtil', () => {
   let element: HTMLElement;
+  let page: SpecPage;
 
-  beforeEach(() => {
-    element = document.createElement('button');
-    document.body.appendChild(element);
+  beforeEach(async () => {
+    page = await newSpecPage({
+      components: [],
+      html: '<button>Click me</button>',
+    });
+    element = page.body.querySelector('button');
   });
 
   afterEach(() => {
-    document.body.innerHTML = '';
+    page.body.innerHTML = '';
     jest.resetAllMocks();
   });
 
@@ -22,7 +27,7 @@ describe('TooltipUtil', () => {
     });
 
     it('should return the existing tooltip instance', () => {
-      const instance = {} as Instance;
+      const instance = {} as tippyModule.Instance;
       // @ts-ignore
       element._tippy = instance;
       expect(TooltipUtil.getTooltipInstance(element)).toBe(instance);
@@ -39,7 +44,7 @@ describe('TooltipUtil', () => {
 
       TooltipUtil.createTooltip(element);
 
-      expect(tippy).toHaveBeenCalledWith(element, expect.objectContaining({
+      expect(tippySpy).toHaveBeenCalledWith(element, expect.objectContaining({
         content: 'test',
         theme: 'dark',
         placement: 'top',
@@ -51,7 +56,7 @@ describe('TooltipUtil', () => {
 
   describe('getOrCreateTooltipInstance', () => {
     it('should return existing tooltip instance if present', () => {
-      const instance = {} as Instance;
+      const instance = {} as tippyModule.Instance;
       // @ts-ignore
       element._tippy = instance;
       const result = TooltipUtil.getOrCreateTooltipInstance(element);
@@ -61,14 +66,14 @@ describe('TooltipUtil', () => {
     it('should create new instance if none exists', () => {
       element.setAttribute('tooltip-content', 'new');
       TooltipUtil.getOrCreateTooltipInstance(element);
-      expect(tippy).toHaveBeenCalled();
+      expect(tippySpy).toHaveBeenCalled();
     });
   });
 
   describe('updateTooltipContent', () => {
     it('should update content if tooltip exists and content is not empty', () => {
       const setContent = jest.fn();
-      const instance = { setContent } as unknown as Instance;
+      const instance = {setContent} as unknown as tippyModule.Instance;
       // @ts-ignore
       element._tippy = instance;
 
@@ -82,7 +87,7 @@ describe('TooltipUtil', () => {
 
     it('should do nothing if content is empty', () => {
       const setContent = jest.fn();
-      const instance = { setContent } as unknown as Instance;
+      const instance = {setContent} as unknown as tippyModule.Instance;
       // @ts-ignore
       element._tippy = instance;
 
@@ -94,7 +99,7 @@ describe('TooltipUtil', () => {
   describe('destroyTooltip', () => {
     it('should destroy tooltip if instance exists', () => {
       const destroy = jest.fn();
-      const instance = { destroy } as unknown as Instance;
+      const instance = {destroy} as unknown as tippyModule.Instance;
       // @ts-ignore
       element._tippy = instance;
 
