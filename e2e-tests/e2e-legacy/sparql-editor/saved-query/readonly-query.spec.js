@@ -36,6 +36,8 @@ describe('Readonly saved query', () => {
     it('Should not allow modifying a saved query if it is readonly', () => {
         // Given: There is a public saved query created by a user.
         LoginSteps.loginWithUser(USER_NAME, PASSWORD);
+        // Wait for the users page to be loaded, before changing the URL to ensure the user is logged in successfully
+        UserAndAccessSteps.isUsersUrlLoaded();
         SparqlEditorSteps.visitSparqlEditorPage();
         YasguiSteps.getYasgui().should('be.visible');
         const savedQueryName = SavedQuery.generateQueryName();
@@ -45,7 +47,6 @@ describe('Readonly saved query', () => {
         // When: I log in with another user
         LoginSteps.loginWithUser(USER_ADMINISTRATOR, PASSWORD);
         // and open the popup with the saved query.
-        SparqlEditorSteps.visitSparqlEditorPage();
         YasguiSteps.showSavedQueries();
 
         // Then: I expect:

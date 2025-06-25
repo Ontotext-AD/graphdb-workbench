@@ -7,6 +7,10 @@ export class UserAndAccessSteps {
         return cy.url();
     }
 
+    static isUsersUrlLoaded() {
+        return this.getUrl().should('include', '/users');
+    }
+
     static getSplashLoader() {
         return cy.get('.ot-loader');
     }
