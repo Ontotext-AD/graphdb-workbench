@@ -21,6 +21,21 @@ function directive($timeout, $compile) {
             hideTrigger: '='
         },
         link: function ($scope, element, attrs) {
+            /**
+             * Maximum number of attempts to reposition the tooltip.
+             *
+             * This limit is used to prevent infinite recursion when calculating
+             * the tooltip's position. It helps avoid browser crashes (e.g., "too much recursion"
+             * in Firefox) caused by continuous repositioning due to dynamic style changes or
+             * floating-point precision issues.
+             *
+             * In most cases observed during testing, the correct position is reached
+             * within 3 to 6 attempts.
+             *
+             * @constant {number}
+             */
+            const MAX_TRIES_TO_SET_POSITION = 100;
+
             let showTrigger = 'mouseenter';
             let hideTrigger = 'mouseleave';
 
@@ -48,12 +63,12 @@ function directive($timeout, $compile) {
                 }
             };
 
-            function setPosition(oldPosition = {}) {
+            function setPosition(oldPosition = {}, attempt = 0) {
                 const pos = $scope.calculatePosition($scope.tooltipElement, $scope.getDirection());
                 $scope.tooltipElement.addClass('angular-tooltip-' + pos.direction).css(pos);
 
-                if (oldPosition.left !== pos.left || oldPosition.top !== pos.top) {
-                    setPosition(pos);
+                if (attempt < MAX_TRIES_TO_SET_POSITION && (oldPosition.left !== pos.left || oldPosition.top !== pos.top)) {
+                    setPosition(pos, ++attempt);
                 }
             }
 
@@ -147,8 +162,8 @@ function directive($timeout, $compile) {
                     }
                 }
 
-                pos.left += 'px';
-                pos.top += 'px';
+                pos.left = Math.round(pos.left) + 'px';
+                pos.top = Math.round(pos.top) + 'px';
                 pos.direction = direction;
 
                 return pos;
@@ -171,8 +186,13 @@ function directive($timeout, $compile) {
                 element.off(hideTrigger, $scope.removeTooltip);
             }
 
-            element.on('destroy', $scope.removeTooltip);
-            $scope.$on('$destroy', $scope.removeTooltip);
+            const removeListeners = () => {
+                element.off(showTrigger, $scope.createTooltip);
+                element.off(hideTrigger, $scope.removeTooltip);
+                $scope.removeTooltip();
+            }
+
+            $scope.$on('$destroy', removeListeners);
         }
     };
 }
