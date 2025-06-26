@@ -40,12 +40,24 @@ export function isHomePage(): boolean {
 }
 
 /**
- * Retrieves the pathname portion of the current URL.
+ * Retrieves the pathname portion of the current URL without the context prefix.
  *
- * @returns {string} The pathname of the current URL, which represents the path segment that comes after the host and before the query string.
+ * @returns {string} The pathname of the current URL, which represents the path segment that comes after the context (if any) and before the query string.
  */
 export function getPathName(): string {
-  return window.location.pathname;
+  return window.location.pathname.substring(getContextName().length - 1);
+}
+
+/**
+ * Returns the context name (base href) from the `<base>` tag in the document.
+ *
+ * This is usually the base path under which the app is deployed, e.g. '/graphdb/'.
+ * If no `<base>` tag is found, returns '/' by default.
+ *
+ * @returns {string} The context path as specified in the base href (always ending with a slash).
+ */
+export function getContextName(): string {
+  return document.querySelector('base')?.getAttribute('href') ?? '/';
 }
 
 /**
