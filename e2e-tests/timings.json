@@ -1,0 +1,616 @@
+{
+    "durations": [
+        {
+            "spec": "ttyg/delete-agent.spec.js",
+            "duration": 125
+        },
+        {
+            "spec": "ttyg/edit-agent.spec.js",
+            "duration": 57
+        },
+        {
+            "spec": "ttyg/ttyg-permission.spec.js",
+            "duration": 50
+        },
+        {
+            "spec": "ttyg/ttyg-view.spec.js",
+            "duration": 55
+        },
+        {
+            "spec": "cluster/cluster-configuration/cluster-configuration-multi-region.spec.js",
+            "duration": 59
+        },
+        {
+            "spec": "cluster/cluster-configuration/cluster-configuration-nodes.spec.js",
+            "duration": 59
+        },
+        {
+            "spec": "cluster/cluster-configuration/cluster-configuration-properties.spec.js",
+            "duration": 59
+        },
+        {
+            "spec": "cluster/cluster-configuration/cluster-configuration.spec.js",
+            "duration": 58
+        },
+        {
+            "spec": "explore/class-hierarchy/class-hierarchy-with-selected-repository-without-class-hierarchy.spec.js",
+            "duration": 75
+        },
+        {
+            "spec": "explore/class-hierarchy/class-hierarchy-with-selected-repository.spec.js",
+            "duration": 77
+        },
+        {
+            "spec": "explore/class-hierarchy/class-hierarchy-without-selected-repository.spec.js",
+            "duration": 55
+        },
+        {
+            "spec": "explore/class-hierarchy/class.hierarchy.spec.js",
+            "duration": 143
+        },
+        {
+            "spec": "explore/class-relationships/class-relationships-repository-with-data.spec.js",
+            "duration": 84
+        },
+        {
+            "spec": "explore/class-relationships/class-relationships-with-selected-repository.spec.js",
+            "duration": 73
+        },
+        {
+            "spec": "explore/class-relationships/class-relationships-without-selected-repository.spec.js",
+            "duration": 113
+        },
+        {
+            "spec": "explore/class-relationships/class-relationships.spec.js",
+            "duration": 106
+        },
+        {
+            "spec": "explore/graphs-overview/graphs.overview.spec.js",
+            "duration": 142
+        },
+        {
+            "spec": "explore/similarity-index/similarity-index-with-repository.spec.js",
+            "duration": 76
+        },
+        {
+            "spec": "explore/similarity-index/similarity-index-without-repository.spec.js",
+            "duration": 49
+        },
+        {
+            "spec": "jdbc/jdbc-with-repository.spec.js",
+            "duration": 132
+        },
+        {
+            "spec": "jdbc/jdbc-without-repository.spec.js",
+            "duration": 58
+        },
+        {
+            "spec": "jdbc/jdbc.spec.js",
+            "duration": 106
+        },
+        {
+            "spec": "namespaces/namespaces-with-repository.spec.js",
+            "duration": 71
+        },
+        {
+            "spec": "namespaces/namespaces-without-repository.spec.js",
+            "duration": 55
+        },
+        {
+            "spec": "namespaces/namespaces.spec.js",
+            "duration": 159
+        },
+        {
+            "spec": "plugins/plugins-with-repository.spec.js",
+            "duration": 69
+        },
+        {
+            "spec": "plugins/plugins-without-repository.spec.js",
+            "duration": 56
+        },
+        {
+            "spec": "plugins/plugins.spec.js",
+            "duration": 79
+        },
+        {
+            "spec": "rdf-rank/rdf-rank-with-repository.spec.js",
+            "duration": 72
+        },
+        {
+            "spec": "rdf-rank/rdf-rank-without-repository.spec.js",
+            "duration": 53
+        },
+        {
+            "spec": "rdf-rank/rdf-rank.spec.js",
+            "duration": 84
+        },
+        {
+            "spec": "repositories/repositories-view-with-repositories.spec.js",
+            "duration": 71
+        },
+        {
+            "spec": "repositories/repositories-view-without-repositories.spec.js",
+            "duration": 53
+        },
+        {
+            "spec": "settings/my-settings-initial-state.spec.js",
+            "duration": 78
+        },
+        {
+            "spec": "settings/my-settings.spec.js",
+            "duration": 119
+        },
+        {
+            "spec": "sparql-template/sparql-template-with-repository.spec.js",
+            "duration": 68
+        },
+        {
+            "spec": "sparql-template/sparql-template-without-repository.spec.js",
+            "duration": 57
+        },
+        {
+            "spec": "sparql-template/sparql-templates.spec.js",
+            "duration": 77
+        },
+        {
+            "spec": "monitor/global-operation-statuses-component.spec.js",
+            "duration": 114
+        },
+        {
+            "spec": "repository/attach-remote-location.spec.js",
+            "duration": 73
+        },
+        {
+            "spec": "repository/ontop-repository.spec.js",
+            "duration": 108
+        },
+        {
+            "spec": "repository/repositories.spec.js",
+            "duration": 182
+        },
+        {
+            "spec": "repository/repository-commands.spec.js",
+            "duration": 56
+        },
+        {
+            "spec": "resource/resource.spec.js",
+            "duration": 235
+        },
+        {
+            "spec": "setup/connectors-lucene.spec.js",
+            "duration": 82
+        },
+        {
+            "spec": "sparql-editor/internationalization.spec.js",
+            "duration": 91
+        },
+        {
+            "spec": "sparql-editor/sparql-editor.spec.js",
+            "duration": 76
+        },
+        {
+            "spec": "sparql-editor/sparql-page-with-selected-repository.spec.js",
+            "duration": 76
+        },
+        {
+            "spec": "sparql-editor/sparql-page-without-selected-repository.spec.js",
+            "duration": 54
+        },
+        {
+            "spec": "sparql-editor/yasgui-tabs.spec.js",
+            "duration": 86
+        },
+        {
+            "spec": "ttyg/agent-list.spec.js",
+            "duration": 65
+        },
+        {
+            "spec": "ttyg/agent-select-menu.spec.js",
+            "duration": 61
+        },
+        {
+            "spec": "ttyg/chat-list.spec.js",
+            "duration": 45
+        },
+        {
+            "spec": "ttyg/chat-panel.spec.js",
+            "duration": 77
+        },
+        {
+            "spec": "ttyg/clone-agent.spec.js",
+            "duration": 48
+        },
+        {
+            "spec": "ttyg/create-agent.spec.js",
+            "duration": 64
+        },
+        {
+            "spec": "ttyg/create-chat.spec.js",
+            "duration": 46
+        },
+        {
+            "spec": "setup/users-and-access/user-and-access.spec.js",
+            "duration": 170
+        },
+        {
+            "spec": "setup/users-and-access/users-and-access-initial-state.spec.js",
+            "duration": 55
+        },
+        {
+            "spec": "sparql-editor/actions/execute-query.spec.js",
+            "duration": 59
+        },
+        {
+            "spec": "sparql-editor/actions/expand-results-over-sameas.spec.js",
+            "duration": 92
+        },
+        {
+            "spec": "sparql-editor/actions/include-inferred-statements.spec.js",
+            "duration": 79
+        },
+        {
+            "spec": "sparql-editor/actions/inferred-sameas.spec.js",
+            "duration": 53
+        },
+        {
+            "spec": "sparql-editor/actions/save-query.spec.js",
+            "duration": 81
+        },
+        {
+            "spec": "sparql-editor/actions/show-saved-queries.spec.js",
+            "duration": 77
+        },
+        {
+            "spec": "sparql-editor/saved-query/abort-query.spec.js",
+            "duration": 78
+        },
+        {
+            "spec": "sparql-editor/saved-query/delete-query.spec.js",
+            "duration": 63
+        },
+        {
+            "spec": "sparql-editor/saved-query/edit-query.spec.js",
+            "duration": 74
+        },
+        {
+            "spec": "sparql-editor/saved-query/readonly-query.spec.js",
+            "duration": 77
+        },
+        {
+            "spec": "sparql-editor/saved-query/share-query.spec.js",
+            "duration": 65
+        },
+        {
+            "spec": "sparql-editor/yasr/download-as.spec.js",
+            "duration": 95
+        },
+        {
+            "spec": "sparql-editor/yasr/pagination.spec.js",
+            "duration": 144
+        },
+        {
+            "spec": "sparql-editor/yasr/table-plugin.spec.js",
+            "duration": 65
+        },
+        {
+            "spec": "explore/graphs-overview/initial-state/graphs-overview-with-selected-repository.spec.js",
+            "duration": 73
+        },
+        {
+            "spec": "explore/graphs-overview/initial-state/graphs-overview-without-selected-repository.spec.js",
+            "duration": 58
+        },
+        {
+            "spec": "sparql-editor/yasr/toolbar/visual-graph-button.spec.js",
+            "duration": 70
+        },
+        {
+            "spec": "cluster/cluster-legend.spec.js",
+            "duration": 122
+        },
+        {
+            "spec": "cluster/cluster-states.spec.js",
+            "duration": 61
+        },
+        {
+            "spec": "cluster/edit-cluster-nodes-modal.spec.js",
+            "duration": 83
+        },
+        {
+            "spec": "graphql/activate-deactivate-graphql-endpoint.spec.js",
+            "duration": 79
+        },
+        {
+            "spec": "graphql/create-graphql-endpoint.spec.js",
+            "duration": 122
+        },
+        {
+            "spec": "graphql/delete-graphql-endpoint.spec.js",
+            "duration": 76
+        },
+        {
+            "spec": "graphql/edit-graphql-enpoint.spec.js",
+            "duration": 120
+        },
+        {
+            "spec": "graphql/export-graphql-endpoint-definition.spec.js",
+            "duration": 74
+        },
+        {
+            "spec": "graphql/filter-graphql-endpoints-on-management-view.spec.js",
+            "duration": 83
+        },
+        {
+            "spec": "graphql/graphql-endpoint management-without-selected-repository.spec.js",
+            "duration": 61
+        },
+        {
+            "spec": "graphql/graphql-endpoint-management-view.spec.js",
+            "duration": 104
+        },
+        {
+            "spec": "graphql/graphql-endpoint-management-with-endpoints.spec.js",
+            "duration": 98
+        },
+        {
+            "spec": "graphql/graphql-playground-with-endpoints.spec.js",
+            "duration": 89
+        },
+        {
+            "spec": "graphql/graphql-playground-with-selected-repository.spec.js",
+            "duration": 71
+        },
+        {
+            "spec": "graphql/graphql-playground-without-selected-repository.spec.js",
+            "duration": 135
+        },
+        {
+            "spec": "graphql/graphql-playground.spec.js",
+            "duration": 110
+        },
+        {
+            "spec": "graphql/import-graphql-endpoint-definitions.spec.js",
+            "duration": 83
+        },
+        {
+            "spec": "graphql/set-default-graphql-endpoint.spec.js",
+            "duration": 54
+        },
+        {
+            "spec": "home/cookie-policy.spec.js",
+            "duration": 29
+        },
+        {
+            "spec": "home/create-repository.spec.js",
+            "duration": 42
+        },
+        {
+            "spec": "monitor/system/system-monitoring-without-repository.spec.js",
+            "duration": 122
+        },
+        {
+            "spec": "setup/aclmanagement/acl-management-with-selected repository.spec.js",
+            "duration": 67
+        },
+        {
+            "spec": "setup/aclmanagement/acl-management-without-repositories.spec.js",
+            "duration": 56
+        },
+        {
+            "spec": "setup/aclmanagement/create-rule.spec.js",
+            "duration": 181
+        },
+        {
+            "spec": "setup/aclmanagement/delete-rule.spec.js",
+            "duration": 83
+        },
+        {
+            "spec": "setup/aclmanagement/edit-rule.spec.js",
+            "duration": 112
+        },
+        {
+            "spec": "setup/aclmanagement/render-rules.spec.js",
+            "duration": 84
+        },
+        {
+            "spec": "setup/aclmanagement/reorder-rules.spec.js",
+            "duration": 92
+        },
+        {
+            "spec": "setup/aclmanagement/revert-rules.spec.js",
+            "duration": 120
+        },
+        {
+            "spec": "setup/aclmanagement/scopes.spec.js",
+            "duration": 102
+        },
+        {
+            "spec": "setup/aclmanagement/update-rules.spec.js",
+            "duration": 156
+        },
+        {
+            "spec": "setup/autocomplete/autocomplete-with-repository.spec.js",
+            "duration": 70
+        },
+        {
+            "spec": "setup/autocomplete/autocomplete-without-repository.spec.js",
+            "duration": 54
+        },
+        {
+            "spec": "setup/autocomplete/autocomplete.spec.js",
+            "duration": 90
+        },
+        {
+            "spec": "setup/cluster/cluster-initial-state-with-cluster.spec.js",
+            "duration": 62
+        },
+        {
+            "spec": "setup/cluster/cluster-initial-state-without-cluster.spec.js",
+            "duration": 62
+        },
+        {
+            "spec": "setup/connectors/connectors-initial-state-with-selected-repository.spec.js",
+            "duration": 47
+        },
+        {
+            "spec": "setup/connectors/connectors-initial-state-without-repositories.spec.js",
+            "duration": 28
+        },
+        {
+            "spec": "setup/jdbc/jdbc-create.spec.js",
+            "duration": 25
+        },
+        {
+            "spec": "home/documentation-link.spec.js",
+            "duration": 115
+        },
+        {
+            "spec": "home/google-analytics.spec.js",
+            "duration": 59
+        },
+        {
+            "spec": "home/home-page-with-selected-repository.spec.js",
+            "duration": 82
+        },
+        {
+            "spec": "home/home-page-without-repositories.spec.js",
+            "duration": 89
+        },
+        {
+            "spec": "home/home-page-without-selected-repository.spec.js",
+            "duration": 64
+        },
+        {
+            "spec": "home/language-change.spec.js",
+            "duration": 64
+        },
+        {
+            "spec": "home/rdf-resource-search.spec.js",
+            "duration": 51
+        },
+        {
+            "spec": "home/view-resource-autocomplete.spec.js",
+            "duration": 82
+        },
+        {
+            "spec": "import/import-server-files-batch-operations.spec.js",
+            "duration": 101
+        },
+        {
+            "spec": "import/import-server-files.spec.js",
+            "duration": 117
+        },
+        {
+            "spec": "import/import-user-data-file-upload.spec.js",
+            "duration": 175
+        },
+        {
+            "spec": "import/import-user-data-settings-dialog.spec.js",
+            "duration": 51
+        },
+        {
+            "spec": "import/import-user-data-text-snippet.spec.js",
+            "duration": 255
+        },
+        {
+            "spec": "import/import-user-data-url.spec.js",
+            "duration": 96
+        },
+        {
+            "spec": "import/import-user-data.spec.js",
+            "duration": 187
+        },
+        {
+            "spec": "import/import-view.spec.js",
+            "duration": 57
+        },
+        {
+            "spec": "license/license-with-repository.spec.js",
+            "duration": 54
+        },
+        {
+            "spec": "license/license-without-repository.spec.js",
+            "duration": 27
+        },
+        {
+            "spec": "license/license.spec.js",
+            "duration": 21
+        },
+        {
+            "spec": "explore/visual-graph/graphs-config.spec.js",
+            "duration": 276
+        },
+        {
+            "spec": "explore/visual-graph/visual-graph-node-labels.spec.js",
+            "duration": 75
+        },
+        {
+            "spec": "explore/visual-graph/visual.graph.spec.js",
+            "duration": 349
+        },
+        {
+            "spec": "help/guides/guides-with-repository.spec.js",
+            "duration": 74
+        },
+        {
+            "spec": "help/guides/guides-without-repository.spec.js",
+            "duration": 56
+        },
+        {
+            "spec": "help/guides/movies-interactive-guide.spec.js",
+            "duration": 232
+        },
+        {
+            "spec": "help/rest-api-documentatio/rest-api-documentation-with-repository.spec.js",
+            "duration": 74
+        },
+        {
+            "spec": "help/rest-api-documentatio/rest-api-documentation-without-repository.spec.js",
+            "duration": 58
+        },
+        {
+            "spec": "help/system-information/system-information-with-repository.spec.js",
+            "duration": 77
+        },
+        {
+            "spec": "help/system-information/system-information-without-repository.spec.js",
+            "duration": 63
+        },
+        {
+            "spec": "help/system-information/system-information.spec.js",
+            "duration": 70
+        },
+        {
+            "spec": "import/initial-state/import-page-without-selected-repository.spec.js",
+            "duration": 62
+        },
+        {
+            "spec": "monitor/backup-and-restore/backup-and-restore-with-repository.spec.js",
+            "duration": 69
+        },
+        {
+            "spec": "monitor/backup-and-restore/backup-and-restore-without-repository.spec.js",
+            "duration": 39
+        },
+        {
+            "spec": "monitor/backup-and-restore/backup-and-restore.spec.js",
+            "duration": 32
+        },
+        {
+            "spec": "monitor/query-and-updates/queries-and-updates-with-repository.spec.js",
+            "duration": 33
+        },
+        {
+            "spec": "monitor/query-and-updates/queries-and-updates-without-repository.spec.js",
+            "duration": 21
+        },
+        {
+            "spec": "monitor/system/monitor.resources.spec.js",
+            "duration": 28
+        },
+        {
+            "spec": "monitor/system/system-monitoring-with-repository.spec.js",
+            "duration": 27
+        }
+    ]
+}
