@@ -98,15 +98,15 @@
 						<uib-tab-heading class="nav-item"
 									 tooltip-placement="bottom"
 									 tooltip-trigger="mouseenter"><span class="nav-link">Graphs</span></uib-tab-heading>
-						<div class="included-graphs-filter" ng-include="'js/angular/rdfrank/templates/filter-list.html'" ng-repeat="list in [filterLists.INCLUDED_GRAPHS]" />
-						<div class="excluded-graphs-filter" ng-include="'js/angular/rdfrank/templates/filter-list.html'" ng-repeat="list in [filterLists.EXCLUDED_GRAPHS]" />
+                        <div class="included-graphs-filter" ng-include="'js/angular/rdfrank/templates/filter-list.html'" ng-repeat="list in [filterLists.INCLUDED_GRAPHS]"></div>
+                        <div class="excluded-graphs-filter" ng-include="'js/angular/rdfrank/templates/filter-list.html'" ng-repeat="list in [filterLists.EXCLUDED_GRAPHS]"></div>
 					</uib-tab>
 					<uib-tab>
 						<uib-tab-heading class="nav-item"
 									 tooltip-placement="bottom"
 									 tooltip-trigger="mouseenter"><span class="nav-link">Predicates</span></uib-tab-heading>
-						<div class="included-predicates-filter" ng-include="'js/angular/rdfrank/templates/filter-list.html'" ng-repeat="list in [filterLists.INCLUDED_PREDICATES]" />
-						<div class="excluded-predicates-filter" ng-include="'js/angular/rdfrank/templates/filter-list.html'" ng-repeat="list in [filterLists.EXCLUDED_PREDICATES]" />
+                        <div class="included-predicates-filter" ng-include="'js/angular/rdfrank/templates/filter-list.html'" ng-repeat="list in [filterLists.INCLUDED_PREDICATES]"></div>
+                        <div class="excluded-predicates-filter" ng-include="'js/angular/rdfrank/templates/filter-list.html'" ng-repeat="list in [filterLists.EXCLUDED_PREDICATES]"></div>
 					</uib-tab>
 				</uib-tabset>
 
