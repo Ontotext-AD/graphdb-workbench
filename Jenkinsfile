@@ -6,7 +6,7 @@ pipeline {
 
   tools {
       jdk 'adopt_openjdk17'
-      nodejs 'nodejs-14.17.0'
+      nodejs 'nodejs-12.12.0'
   }
 
   environment {
