@@ -46,7 +46,7 @@ describe('User Menu', () => {
     UserMenuSteps.selectDropdownItem(0)
 
     // Then I should be redirected to the My Settings page
-    UserMenuSteps.getRedirectUrl().should('have.text', `redirect to /settings`);
+    UserMenuSteps.getRedirectUrl().should('have.text', `redirect to settings`);
     // And the dropdown should be closed
     UserMenuSteps.getDropdown().should('not.exist');
   });
