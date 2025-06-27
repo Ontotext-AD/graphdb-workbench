@@ -125,7 +125,7 @@ export class NavbarModel {
     }
     return item.children.some(child => this.hasSelection(child));
   }
-  
+
   /**
    * Recursively checks if any submenu (child or nested) is selected.
    * @param {NavbarItemModel} item - The submenu item to check.
@@ -256,7 +256,7 @@ export class NavbarModel {
       if (item.href?.includes('*')) {
         path = this.getWildcardPath(selectedMenu, item.href);
       }
-      if (item.href === path) {
+      if (path.endsWith(item.href)) {
         if (item.hasParent) {
           this.open(item);
         }
@@ -278,20 +278,23 @@ export class NavbarModel {
   private getWildcardPath(path: string, href: string): string {
     const pathParts = path.split('/');
     const hrefParts = href.split('/');
-
-    if (pathParts.length !== hrefParts.length) {
-      return path; // Path and href have different number of segments, no match
-    }
-
+    const largerArrayLength = Math.max(pathParts.length, hrefParts.length);
     const resultParts = [];
 
-    for (let i = 0; i < hrefParts.length; i++) {
-      if (hrefParts[i] === '*') {
-        resultParts.push('*');
-      } else if (hrefParts[i] !== pathParts[i]) {
+    for (let i = 0; i < largerArrayLength; i++) {
+      const hrefIndex = hrefParts.length - 1 - i;
+      const pathIndex = pathParts.length - 1 - i;
+
+      if (hrefIndex < 0 || pathIndex < 0) {
+        break;
+      }
+
+      if (hrefParts[hrefIndex] === '*') {
+        resultParts.unshift('*');
+      } else if (hrefParts[hrefIndex] !== pathParts[pathIndex]) {
         return path; // Mismatch in non-wildcard segment
       } else {
-        resultParts.push(hrefParts[i]);
+        resultParts.unshift(hrefParts[hrefIndex]);
       }
     }
 
@@ -323,7 +326,7 @@ export class NavbarModel {
   private walk(callback: (item: NavbarItemModel) => void): void {
     this.walkRecursively(this.items, callback);
   }
-  
+
   /**
    * Recursively walks through a list of navbar items and applies the callback.
    * @param items The items to walk through.
@@ -395,7 +398,7 @@ export class NavbarItemModel {
       this.addChild(child);
     });
   }
-  
+
   /**
    * Determines whether the current menu item has submenus.
    * In this context, items with a href value of '#' are treated as parent items
@@ -407,7 +410,7 @@ export class NavbarItemModel {
   hasSubmenus(): boolean {
     return this._href === '#';
   }
-  
+
   get parent(): string {
     return this._parent;
   }
