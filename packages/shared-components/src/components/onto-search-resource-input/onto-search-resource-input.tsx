@@ -212,7 +212,7 @@ export class OntoSearchResourceInput {
       const message = TranslationService.translate('rdf_search.toasts.autocomplete_is_off');
       this.toastrService.warning(`<a style="font-weight: 500">${message}</a>`,
         {
-          onClick: navigateTo('/autocomplete'),
+          onClick: navigateTo('autocomplete'),
           removeOnClick: true
         });
     }

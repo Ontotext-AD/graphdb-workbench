@@ -46,7 +46,7 @@ export class OntoUserMenu {
           </button>
           {this.isOpen ?
             <section class='onto-user-menu-dropdown'>
-              <translate-label onClick={navigateTo('/settings')}
+              <translate-label onClick={navigateTo('settings')}
                                labelKey={'user_menu.my_settings'}></translate-label>
               {!this.securityConfig?.hasExternalAuthUser ?
                 <translate-label onClick={this.logout}

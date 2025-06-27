@@ -74,7 +74,7 @@ describe('RDF Search', () => {
     // Then, I expect to not see the notification anymore
     RdfSearchSteps.getToastNotification().should('not.exist');
     // And, I expect to have been redirected to the setup page
-    RdfSearchSteps.getRedirectUrl().should('have.text', `redirect to /autocomplete`);
+    RdfSearchSteps.getRedirectUrl().should('have.text', `redirect to autocomplete`);
 
     // When, I enable autocomplete
     RdfSearchSteps.enableAutocomplete();
