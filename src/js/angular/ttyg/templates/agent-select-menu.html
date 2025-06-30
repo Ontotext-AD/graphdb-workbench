@@ -12,6 +12,7 @@
                gdb-tooltip="{{'ttyg.agent.deleted_repository' | translate}}">
             </i>
             <span class="repository-id">{{selectedAgent.repositoryId}}</span>
+            <span class="model-name">{{selectedAgent.model}}</span>
         </div>
         <span ng-if="selectedAgent && selectedAgent.isDeleted" class="text-warning">
             <i class="fa fa-triangle-exclamation"></i>
@@ -37,6 +38,7 @@
                 </i>
                 <span class="repository-id">{{agentOption.data.agent.repositoryId}}</span>
             </a>
+            <span class="model-name">{{agentOption.data.agent.model}}</span>
         </li>
     </ul>
 </div>

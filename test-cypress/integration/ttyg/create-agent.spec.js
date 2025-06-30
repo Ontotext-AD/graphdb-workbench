@@ -105,12 +105,12 @@ describe('TTYG create new agent', () => {
 
         // Validate the other agent settings
 
-        // gpt model
-        TtygAgentSettingsModalSteps.getGptModelField().should('have.value', 'gpt-4o');
-        TtygAgentSettingsModalSteps.clearGptModel();
+        // LLM model
+        TtygAgentSettingsModalSteps.getLLMModelField().should('have.value', 'gpt-4o');
+        TtygAgentSettingsModalSteps.clearLLMModel();
         TtygAgentSettingsModalSteps.getSaveAgentButton().should('be.disabled');
-        TtygAgentSettingsModalSteps.getGptModelError().should('be.visible').and('contain', 'This field is required');
-        TtygAgentSettingsModalSteps.typeGptModel('gpt-4o');
+        TtygAgentSettingsModalSteps.getLLMModelError().should('be.visible').and('contain', 'This field is required');
+        TtygAgentSettingsModalSteps.typeLLMModel('gpt-4o');
 
         // temperature
         TtygAgentSettingsModalSteps.setTemperature('0.2');
@@ -480,7 +480,7 @@ describe('TTYG create new agent', () => {
         TtygAgentSettingsModalSteps.setTemperature('1.2');
         TtygAgentSettingsModalSteps.getTemperatureSliderField().should('have.value', '1.2');
         // Then I should see a warning message
-        TtygAgentSettingsModalSteps.getTemperatureWarning().should('be.visible');
+        TtygAgentSettingsModalSteps.scrollToTemperatureWarning().should('be.visible');
         TtygAgentSettingsModalSteps.getTemperatureField().should('have.class', 'has-warning');
         // When I change the temperature to value below 1.0
         TtygAgentSettingsModalSteps.setTemperature('0.9');

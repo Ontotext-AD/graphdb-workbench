@@ -4,6 +4,7 @@ import 'angular/ttyg/directives/agent-list.directive';
 import 'angular/ttyg/directives/agent-select-menu.directive';
 import 'angular/ttyg/directives/no-agents-view.directive';
 import 'angular/ttyg/directives/show-tooltip-on-overflow.directive';
+import 'angular/ttyg/directives/help-info-popover.directive';
 import 'angular/ttyg/controllers/agent-settings-modal.controller';
 import 'angular/core/services/ttyg.service';
 import 'angular/ttyg/services/ttyg-context.service';
@@ -33,7 +34,8 @@ const modules = [
     'graphdb.framework.ttyg.directives.agent-select-menu',
     'graphdb.framework.ttyg.directives.no-agents-view',
     'graphdb.framework.ttyg.directives.show-tooltip-on-overflow',
-    'graphdb.framework.ttyg.controllers.agent-settings-modal'
+    'graphdb.framework.ttyg.controllers.agent-settings-modal',
+    'graphdb.framework.core.directives.help-info-popover',
 ];
 
 angular
