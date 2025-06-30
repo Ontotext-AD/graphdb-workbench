@@ -9,6 +9,7 @@ import {REPOSITORY_PARAMS} from "../../models/repository/repository";
 import {TTYGEventName} from "../services/ttyg-context.service";
 import {AGENT_OPERATION, TTYG_ERROR_MSG_LENGTH} from "../services/constants";
 import {mapUriAsNtripleAutocompleteResponse} from "../../rest/mappers/autocomplete-mapper";
+import {DocumentationUrlResolver} from "../../utils/documentation-url-resolver";
 
 angular
     .module('graphdb.framework.ttyg.controllers.agent-settings-modal', [
@@ -41,7 +42,8 @@ AgentSettingsModalController.$inject = [
     'TTYGService',
     'ExtractionMethodTemplates',
     'AutocompleteService',
-    'AutocompleteRestService'];
+    'AutocompleteRestService',
+    'productInfo'];
 
 function AgentSettingsModalController(
     $scope,
@@ -60,7 +62,8 @@ function AgentSettingsModalController(
     TTYGService,
     ExtractionMethodTemplates,
     AutocompleteService,
-    AutocompleteRestService) {
+    AutocompleteRestService,
+    productInfo) {
 
     // =========================
     // Private variables
@@ -221,16 +224,11 @@ function AgentSettingsModalController(
         additionalExtractionPanelToggleHandlers[extractionMethod.method](extractionMethod);
     };
 
-    /**
-     * Resolves the hint message for the agent model property. This is needed because the hint contains a html link that
-     * should be properly rendered.
-     * @return {*}
-     */
-    $scope.getModelHelpMessage = () => {
-        // The hint contains a html link which should be properly rendered.
-        const message = decodeHTML($translate.instant('ttyg.agent.create_agent_modal.form.model.hint'));
-        return $sce.trustAsHtml(message);
-    };
+    $scope.helpInfoForModel = {
+        ttygHelpInfo: getModelHelpMessage(),
+        linkText: $translate.instant('ttyg.agent.create_agent_modal.form.model.link_text'),
+        documentationUrl: DocumentationUrlResolver.getDocumentationUrl(productInfo.productShortVersion, 'talk-to-graph.html#prerequisites-and-configuration')
+    }
 
     /**
      * Resolves the hint for the FTS search missing message. This is needed because the hint contains a html link that
@@ -459,6 +457,18 @@ function AgentSettingsModalController(
     // =========================
     // Private functions
     // =========================
+
+    /**
+     * Resolves the hint message for the agent model property.
+     * This is needed because the hint contains a html link that
+     * should be properly rendered.
+     * @return {*}
+     */
+    function getModelHelpMessage() {
+        // The hint contains a html link which should be properly rendered.
+        const message = decodeHTML($translate.instant('ttyg.agent.create_agent_modal.form.model.hint'));
+        return $sce.trustAsHtml(message);
+    }
 
     /**
      * Mapping of agent operations to their respective handlers.
