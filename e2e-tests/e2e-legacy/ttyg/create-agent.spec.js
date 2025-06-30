@@ -480,7 +480,7 @@ describe('TTYG create new agent', () => {
         TtygAgentSettingsModalSteps.setTemperature('1.2');
         TtygAgentSettingsModalSteps.getTemperatureSliderField().should('have.value', '1.2');
         // Then I should see a warning message
-        TtygAgentSettingsModalSteps.getTemperatureWarning().should('be.visible');
+        TtygAgentSettingsModalSteps.scrollToTemperatureWarning().should('be.visible');
         TtygAgentSettingsModalSteps.getTemperatureField().should('have.class', 'has-warning');
         // When I change the temperature to value below 1.0
         TtygAgentSettingsModalSteps.setTemperature('0.9');

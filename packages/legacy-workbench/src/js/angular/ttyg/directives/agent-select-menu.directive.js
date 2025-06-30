@@ -30,6 +30,8 @@ function AgentSelectMenuComponent(TTYGContextService, $translate, $sce, ModalSer
              */
             $scope.selectedAgent = undefined;
 
+            $scope.provider = undefined;
+
             // =========================
             // Private variables
             // =========================

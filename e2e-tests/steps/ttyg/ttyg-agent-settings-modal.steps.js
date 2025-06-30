@@ -366,6 +366,10 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
         return this.getTemperatureFormGroup().find('.high-temperature-warning');
     }
 
+    static scrollToTemperatureWarning() {
+        return this.getTemperatureWarning().scrollIntoView();
+    }
+
     // Top P
 
     static getTopPFormGroup() {
