@@ -461,6 +461,11 @@
                         "label": "Repository ID",
                         "tooltip": "The ID of the repository that will be used to retrieve information from GraphDB. Ontop and FedX repositories are not supported."
                     },
+                    "llm_provider": {
+                        "label": "LLM provider",
+                        "tooltip": "The LLM provider can only be changed using a configuration property that requires a restart to take effect.",
+                        "documentation_text": "Learn how to configure the provider in the GraphDB documentation."
+                    },
                     "model": {
                         "label": "Model",
                         "tooltip": "The model to use for this agent. More powerful models will provide better results.",

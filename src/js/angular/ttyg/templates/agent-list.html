@@ -33,13 +33,16 @@
                         </i>
                         {{agent.name}}
                     </div>
-                    <div class="related-repository">
-                        <i ng-if="!agent.isRepositoryDeleted" class="fa-kit fa-gdb-repo-graphdb"></i>
-                        <i ng-if="agent.isRepositoryDeleted"
-                           class="fa fa-triangle-exclamation text-warning agent-with-deleted-repository"
-                           gdb-tooltip="{{'ttyg.agent.deleted_repository' | translate}}">
-                        </i>
-                        {{agent.repositoryId}}
+                    <div class="repository-provider-group">
+                        <div class="related-repository">
+                            <i ng-if="!agent.isRepositoryDeleted" class="fa-kit fa-gdb-repo-graphdb"></i>
+                            <i ng-if="agent.isRepositoryDeleted"
+                               class="fa fa-triangle-exclamation text-warning agent-with-deleted-repository"
+                               gdb-tooltip="{{'ttyg.agent.deleted_repository' | translate}}">
+                            </i>
+                            {{agent.repositoryId}}
+                        </div>
+                        <div class="provider-name">{{provider}}</div>
                     </div>
                 </div>
                 <div class="btn-group">

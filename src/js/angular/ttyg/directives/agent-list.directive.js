@@ -37,10 +37,12 @@ function AgentListComponent(TTYGContextService, ModalService, $translate) {
             $scope.selectedAgentsFilter = undefined;
 
             /**
-             * An event instance holding the agent to be deleted and if the progres is ongoing.
+             * An event instance holding the agent to be deleted and if the progress is ongoing.
              * @type {agentId: string, inProgress: boolean}
              */
             $scope.deletingAgent = undefined;
+
+            $scope.provider = undefined;
 
             // =========================
             // Private variables
@@ -113,6 +115,14 @@ function AgentListComponent(TTYGContextService, ModalService, $translate) {
                 $scope.selectedAgent = agent;
             };
 
+            /**
+             * Updates the provider.
+             * @param provider
+             */
+            const onProviderUpdated = (provider) => {
+                $scope.provider = provider;
+            };
+
             // =========================
             // Subscriptions
             // =========================
@@ -126,6 +136,7 @@ function AgentListComponent(TTYGContextService, ModalService, $translate) {
             subscriptions.push($scope.$watch('agentListFilterModel', updateSelectedAgentsFilter));
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.DELETING_AGENT, onDeletingAgent));
             subscriptions.push(TTYGContextService.onSelectedAgentChanged(onSelectedAgentChanged));
+            subscriptions.push(TTYGContextService.onProviderUpdated(onProviderUpdated));
 
             // Deregister the watcher when the scope/directive is destroyed
             $scope.$on('$destroy', removeAllSubscribers);
@@ -136,6 +147,7 @@ function AgentListComponent(TTYGContextService, ModalService, $translate) {
 
             function initialize() {
                 updateSelectedAgentsFilter();
+                $scope.provider = TTYGContextService.getProvider();
             }
             initialize();
         }

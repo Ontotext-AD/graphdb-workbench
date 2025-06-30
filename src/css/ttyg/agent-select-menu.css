@@ -60,6 +60,7 @@
 .agent-select-menu .agent-option {
     padding-left: 10px;
     padding-right: 10px;
+    white-space: nowrap;
 }
 
 .agent-select-menu .agent-option .agent-name,
@@ -88,6 +89,18 @@
 }
 
 .agent-select-menu .agent-option .agent-with-deleted-repository,
-.agent-select-menu .selected-agent-option .agent-with-deleted-repository{
+.agent-select-menu .selected-agent-option .agent-with-deleted-repository {
     flex: 0 1 auto;
+}
+
+.agent-select-menu .dropdown-toggle-btn .selected-agent-option .provider-name {
+    margin-left: auto;
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.agent-select-menu .agent-option .provider-name {
+    margin-left: auto;
+    text-align: right;
+    flex-shrink: 0;
 }

@@ -197,6 +197,10 @@ function TTYGService(TTYGRestService, $repositories) {
             });
     };
 
+    const getProvider = () => {
+      return TTYGRestService.getProvider();
+    }
+
     return {
         getConversation,
         renameConversation,
@@ -213,6 +217,7 @@ function TTYGService(TTYGRestService, $repositories) {
         deleteAgent,
         explainResponse,
         getDefaultAgent,
-        explainAgentSettings
+        explainAgentSettings,
+        getProvider
     };
 }

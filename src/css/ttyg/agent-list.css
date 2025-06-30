@@ -64,7 +64,13 @@
     cursor: pointer;
 }
 
-.agent-list-component .agent-item .related-repository {
+.agent-list-component .agent-item .repository-provider-group {
+    display: flex;
+    justify-content: space-between;
+}
+
+.agent-list-component .agent-item .repository-provider-group .related-repository,
+.agent-list-component .agent-item .repository-provider-group .provider-name {
     color: var(--gray-color-dark);
 }
 

@@ -238,6 +238,10 @@ export class TtygRestServiceFakeBackend {
                 ]
             }});
     }
+
+    getProvider() {
+        return Promise.resolve({data: {provider: "OpenAI"}});
+    }
 }
 
 const conversationList = [

@@ -30,6 +30,8 @@ function AgentSelectMenuComponent(TTYGContextService, $translate, $sce, ModalSer
              */
             $scope.selectedAgent = undefined;
 
+            $scope.provider = undefined;
+
             // =========================
             // Private variables
             // =========================
@@ -123,6 +125,14 @@ function AgentSelectMenuComponent(TTYGContextService, $translate, $sce, ModalSer
                 });
             };
 
+            /**
+             * Updates the provider.
+             * @param provider
+             */
+            const onProviderUpdated = (provider) => {
+                $scope.provider = provider;
+            };
+
             // =========================
             // Subscriptions
             // =========================
@@ -136,6 +146,7 @@ function AgentSelectMenuComponent(TTYGContextService, $translate, $sce, ModalSer
             subscriptions.push(TTYGContextService.onAgentsListChanged(onAgentListChanged));
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.AGENT_DELETED, onAgentDeleted));
             subscriptions.push(TTYGContextService.onSelectedAgentChanged(onSelectedAgentChanged));
+            subscriptions.push(TTYGContextService.onProviderUpdated(onProviderUpdated));
             // Deregister the watcher when the scope/directive is destroyed
             $scope.$on('$destroy', removeAllSubscribers);
 

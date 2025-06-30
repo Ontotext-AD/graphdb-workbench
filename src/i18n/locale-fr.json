@@ -460,6 +460,11 @@
                         "label": "ID du dépôt",
                         "tooltip": "L'ID du référentiel qui sera utilisé pour récupérer les informations de GraphDB. Les référentiels Ontop et FedX ne sont pas pris en charge."
                     },
+                    "llm_provider": {
+                        "label": "Fournisseur de modèle de langage",
+                        "tooltip": "Le fournisseur LLM ne peut être modifié qu'à l'aide d'une propriété de configuration qui nécessite un redémarrage pour prendre effet.",
+                        "documentation_text": "Découvrez comment configurer le fournisseur dans la documentation GraphDB."
+                    },
                     "model": {
                         "label": "Modèle",
                         "tooltip": "Le modèle à utiliser pour cet agent. Des modèles plus puissants fourniront de meilleurs résultats.",

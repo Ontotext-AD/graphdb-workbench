@@ -53,6 +53,13 @@ function TTYGContextService(EventEmitterService) {
 
     let _canModifyAgent = false;
 
+    /**
+     * The provider for the TTYG view.
+     * @type {string | undefined}
+     * @private
+     */
+    let _provider = undefined;
+
     const resetContext = () => {
         _agents = undefined;
         _chats = undefined;
@@ -339,6 +346,37 @@ function TTYGContextService(EventEmitterService) {
     };
 
     /**
+     * @return {string | undefined}
+     */
+    const getProvider = () => {
+        return cloneDeep(_provider);
+    };
+
+    /**
+     * Updates the current provider and emits a `PROVIDER_UPDATED` event with the updated provider.
+     *
+     * @function
+     * @param {string} provider - The provider to be updated.
+     */
+    const updateProvider = (provider) => {
+        _provider = cloneDeep(provider);
+        emit(TTYGEventName.PROVIDER_UPDATED, provider);
+    }
+
+    /**
+     * Registers a callback function to be executed whenever a provider update event occurs.
+     * This function listens for the event `PROVIDER_UPDATED` and triggers the provided callback
+     * with the updated provider data as the argument.
+     *
+     * @param {Function} callback - The callback function to execute when the provider is updated.
+     *                              It receives a single parameter which contains the updated provider information.
+     * @returns {Function} A function to unsubscribe from the provider update event.
+     */
+    const onProviderUpdated = (callback) => {
+        return subscribe(TTYGEventName.PROVIDER_UPDATED, (provider) => callback(provider));
+    }
+
+    /**
      * Emits an event with a deep-cloned payload using the EventEmitterService.
      *
      * @param {string} tTYGEventName - The name of the event to emit. It must be a value from {@link TTYGEventName}.
@@ -396,6 +434,10 @@ function TTYGContextService(EventEmitterService) {
         getExplainResponse,
         addExplainResponseCache,
         onExplainResponseCacheUpdated,
+        // provider
+        getProvider,
+        updateProvider,
+        onProviderUpdated
     };
 }
 
@@ -555,5 +597,7 @@ export const TTYGEventName = {
      */
     GO_TO_SPARQL_EDITOR: "openQueryInSparqlEditor",
 
-    CAN_MODIFY_AGENT_UPDATED: "canModifyAgentUpdated"
+    CAN_MODIFY_AGENT_UPDATED: "canModifyAgentUpdated",
+
+    PROVIDER_UPDATED: "providerUpdated"
 };
