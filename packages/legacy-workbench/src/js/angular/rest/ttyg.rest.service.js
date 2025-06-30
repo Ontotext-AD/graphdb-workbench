@@ -9,6 +9,7 @@ TTYGRestService.$inject = ['$http'];
 const CONVERSATIONS_ENDPOINT = 'rest/chat/conversations';
 const AGENTS_ENDPOINT = 'rest/chat/agents';
 const EXPLAIN_RESPONSE_ENDPOINT = `${CONVERSATIONS_ENDPOINT}/explain`;
+const PROVIDER_ENDPOINT = 'rest/ttyg/provider';
 
 const DEVELOPMENT = false;
 

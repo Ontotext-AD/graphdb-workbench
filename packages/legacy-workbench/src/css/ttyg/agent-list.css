@@ -49,6 +49,7 @@
     padding: 6px 8px;
     display: flex;
     justify-content: space-between;
+    flex-direction: column;
 }
 
 .agent-list-component .agent-item.selected {
@@ -56,7 +57,9 @@
 }
 
 .agent-list-component .agent-item .agent-info {
-    width: 92%;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
 }
 
 .agent-list-component .agent-item:hover {
@@ -64,7 +67,13 @@
     cursor: pointer;
 }
 
-.agent-list-component .agent-item .related-repository {
+.agent-list-component .agent-item .repository-model-group {
+    display: flex;
+    justify-content: space-between;
+}
+
+.agent-list-component .agent-item .repository-model-group .related-repository,
+.agent-list-component .agent-item .repository-model-group .model-name {
     color: var(--gray-color-dark);
 }
 

@@ -321,27 +321,27 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
         this.getRetrievalConnectorField().find('option:selected').should('have.text', connectorName);
     }
 
-    // GPT model
+    // LLM model
 
-    static getGptModelFormGroup() {
-        return this.getDialog().find('.gpt-model');
+    static getLLMModelFormGroup() {
+        return this.getDialog().find('.llm-model');
     }
 
-    static getGptModelField() {
-        return this.getGptModelFormGroup().find('input');
+    static getLLMModelField() {
+        return this.getLLMModelFormGroup().find('input');
     }
 
-    static clearGptModel() {
-        this.getGptModelField().clear();
+    static clearLLMModel() {
+        this.getLLMModelField().clear();
         cy.realPress('Tab');
     }
 
-    static getGptModelError() {
-        return this.getGptModelFormGroup().find('.alert-danger');
+    static getLLMModelError() {
+        return this.getLLMModelFormGroup().find('.alert-danger');
     }
 
-    static typeGptModel(value) {
-        return this.getGptModelField().type(value);
+    static typeLLMModel(value) {
+        return this.getLLMModelField().type(value);
     }
 
     // temperature
@@ -364,6 +364,10 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
 
     static getTemperatureWarning() {
         return this.getTemperatureFormGroup().find('.high-temperature-warning');
+    }
+
+    static scrollToTemperatureWarning() {
+        return this.getTemperatureWarning().scrollIntoView();
     }
 
     // Top P
