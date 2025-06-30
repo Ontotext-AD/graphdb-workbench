@@ -263,7 +263,7 @@ class ImportSteps {
     }
 
     static deleteUploadedFile(index) {
-        this.getResource(index).find('.import-resource-action-remove-btn').click();
+        this.getResource(index).find('.import-resource-action-remove-btn').invoke('show').trigger('click');
     }
 
     static importFile(index) {
