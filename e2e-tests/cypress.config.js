@@ -8,8 +8,10 @@ module.exports = defineConfig({
     video: true,
     screenshotOnRunFailure: true,
     trashAssetsBeforeRuns: true,
-    defaultCommandTimeout: 40000,
+    defaultCommandTimeout: 10000,
     numTestsKeptInMemory: 10,
+    viewportWidth: 1280,
+    viewportHeight: 720,
     e2e: {
         retries: {
             runMode: 2,

@@ -473,7 +473,10 @@ function SparqlTemplateCreateCtrl(
         }
     };
 
-    const repositoryChangedHandler = () => {
+    const repositoryChangedHandler = (repository) => {
+        if (!repository) {
+            return;
+        }
         if (initialRepoChangeTrigger) {
             initialRepoChangeTrigger = false;
         } else {
