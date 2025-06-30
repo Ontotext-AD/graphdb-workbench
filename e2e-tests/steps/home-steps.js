@@ -288,14 +288,6 @@ class HomeSteps {
         return cy.get('.cookie-policy-modal');
     }
 
-    static getHelpMenu() {
-        return cy.get('.main-menu .menu-element-root').eq(8);
-    }
-
-    static clickHelpMenu() {
-        return HomeSteps.getHelpMenu().click();
-    }
-
     static getDocumentationLink() {
         return cy.get('[guide-selector="sub-menu-documentation"]');
     }
