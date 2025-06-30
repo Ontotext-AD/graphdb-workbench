@@ -7,7 +7,6 @@ const RDF_TEXT_SNIPPET = '@prefix ab:<http://learningsparql.com/ns/addressbook#>
     'ab:richard ab:homeTel "(229)276-5135".\n' +
     'ab:richard ab:email "richard491@hotmail.com".';
 
-// TODO: Fix me. Broken due to migration (Error: unknown)
 describe('Import user data', () => {
 
     let repositoryId;
