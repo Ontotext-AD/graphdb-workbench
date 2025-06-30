@@ -15,18 +15,18 @@
     -->
     <script src="resources/runtime.js"></script>
 
-    <!--
-      This CSP allows any SSL-enabled host and for arbitrary eval(), but you should limit these directives further to increase your app's security.
-      Learn more about CSP policies at https://content-security-policy.com/#directive
-    -->
-    <meta http-equiv="Content-Security-Policy"
-          content=" default-src 'self' <%= microFrontEndsUrls %>;
-                    script-src 'self' 'unsafe-inline' 'unsafe-eval' <%= microFrontEndsUrls %> <%= externalJavaScripts %>;
-                    connect-src 'self' <%= microFrontEndsUrls %> https://www.googletagmanager.com https://region1.google-analytics.com;
-                    style-src 'self' 'unsafe-inline' <%= microFrontEndsUrls %> <%= externalCSSs %>;
-                    img-src 'self' data: <%= microFrontEndsUrls %>  <%= externalImages %>;
-                    font-src 'self' <%= microFrontEndsUrls %>;
-                    base-uri 'self';">
+<!--    &lt;!&ndash;-->
+<!--      This CSP allows any SSL-enabled host and for arbitrary eval(), but you should limit these directives further to increase your app's security.-->
+<!--      Learn more about CSP policies at https://content-security-policy.com/#directive-->
+<!--    &ndash;&gt;-->
+<!--    <meta http-equiv="Content-Security-Policy"-->
+<!--          content=" default-src 'self' <%= microFrontEndsUrls %>;-->
+<!--                    script-src 'self' 'unsafe-inline' 'unsafe-eval' <%= microFrontEndsUrls %> <%= externalJavaScripts %>;-->
+<!--                    connect-src 'self' <%= microFrontEndsUrls %> https://www.googletagmanager.com https://region1.google-analytics.com;-->
+<!--                    style-src 'self' 'unsafe-inline' <%= microFrontEndsUrls %> <%= externalCSSs %>;-->
+<!--                    img-src 'self' data: <%= microFrontEndsUrls %>  <%= externalImages %>;-->
+<!--                    font-src 'self' <%= microFrontEndsUrls %>;-->
+<!--                    base-uri 'self';">-->
     <meta name="importmap-type" use-injector />
 
     <script src="plugin-registry.js?v=<%= buildVersion %>"></script>
