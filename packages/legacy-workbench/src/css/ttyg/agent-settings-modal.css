@@ -23,6 +23,20 @@
     font-weight: var(--field-label-weight);
 }
 
+.agent-settings-modal .agent-settings-form .llm-model .page-info-icon .icon-info {
+    vertical-align: baseline;
+    font-size: 1rem;
+    color: var(--primary-color-dark);
+}
+
+.agent-settings-modal .agent-settings-form .provider-name {
+    padding-left: 5px;
+}
+
+.agent-settings-modal .agent-settings-form .llm-model {
+    padding-left: 0;
+}
+
 .agent-settings-modal .agent-settings-form [type="checkbox"],
 .agent-settings-modal .agent-settings-form [type="checkbox"] + label {
     cursor: pointer;
