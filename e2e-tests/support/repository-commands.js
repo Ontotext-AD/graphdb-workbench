@@ -39,7 +39,9 @@ Cypress.Commands.add('deleteRepository', (id, secured = false) => {
             headers,
         // Prevent Cypress from failing the test on non-2xx status codes
             failOnStatusCode: false
-        });
+        }).then((response) => {
+        cy.waitUntil(() => response);
+    });
 });
 
 Cypress.Commands.add('presetRepository', (id) => {
@@ -49,6 +51,15 @@ Cypress.Commands.add('presetRepository', (id) => {
             .then((preset) => {
                 const presetRepo = JSON.parse(preset);
                 return presetRepo && presetRepo.id === id
+            }));
+});
+
+Cypress.Commands.add('unsetRepository', () => {
+    cy.removeLocalStorage(PRESET_REPO);
+    cy.waitUntil(() =>
+        cy.getLocalStorage(PRESET_REPO)
+            .then((preset) => {
+                return !preset;
             }));
 });
 

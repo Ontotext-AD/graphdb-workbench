@@ -6,8 +6,7 @@ import {RepositorySelectorSteps} from "../../../steps/repository-selector-steps"
 import {SparqlTemplatesSteps} from "../../../steps/setup/sparql-templates-steps";
 import {ImportUserDataSteps} from "../../../steps/import/import-user-data-steps";
 
-// TODO: Fix me. Broken due to migration (Error: unknown)
-describe.skip('SPARQL create template', () => {
+describe('SPARQL create template', () => {
 
     let repositoryId;
     let secondRepositoryId;
@@ -18,15 +17,16 @@ describe.skip('SPARQL create template', () => {
         cy.presetRepository(repositoryId);
         secondRepositoryId = 'sparql-templates-second-repo' + Date.now();
         cy.createRepository({id: secondRepositoryId});
-        SparqlCreateUpdateSteps.visit();
     });
 
     afterEach(() => {
+        cy.unsetRepository();
         cy.deleteRepository(repositoryId);
         cy.deleteRepository(secondRepositoryId);
     });
 
     it('should has error message described that template id is required', () => {
+        SparqlCreateUpdateSteps.visit();
         // When I visit 'Sparql create template' view,
         // and click on "Save" button without to fill template id.
         SparqlCreateUpdateSteps.clickOnSaveButton();
@@ -36,6 +36,7 @@ describe.skip('SPARQL create template', () => {
     });
 
     it('should has error message described that template id is invalid', () => {
+        SparqlCreateUpdateSteps.visit();
         // When I visit 'Sparql create template' view,
         // and fill an invalid template id,
         const invalidTemplateName = 'invalid-template-id';
@@ -48,6 +49,7 @@ describe.skip('SPARQL create template', () => {
     });
 
     it('should has error message described that query mode is invalid', () => {
+        SparqlCreateUpdateSteps.visit();
         // When I visit 'Sparql create template' view,
         // and fill  valid template id.
         SparqlCreateUpdateSteps.typeTemplateId('http://test');
@@ -63,6 +65,7 @@ describe.skip('SPARQL create template', () => {
     });
 
     it('should navigate to other view if there are no changes', () => {
+        SparqlCreateUpdateSteps.visit();
         // When I visit 'Sparql create template' view,
         // and navigate to other view.
         ImportUserDataSteps.visitUserImport(repositoryId);
@@ -72,6 +75,7 @@ describe.skip('SPARQL create template', () => {
     });
 
     it('should confirm me before navigate when template id is changed', () => {
+        SparqlCreateUpdateSteps.visit();
         // When I visit 'Sparql create template' view,
         // and set template id.
         SparqlCreateUpdateSteps.typeTemplateId('http://test');
@@ -105,6 +109,7 @@ describe.skip('SPARQL create template', () => {
     });
 
     it('should not change the view if I am creating a new sparql template and change the repository', () => {
+        SparqlCreateUpdateSteps.visit();
         // When I visit 'Sparql create template' view,
         // make some changes.
         SparqlCreateUpdateSteps.typeTemplateId('http://test');
@@ -117,6 +122,7 @@ describe.skip('SPARQL create template', () => {
     });
 
     it('Should redirect to templates catalog view when repository is changed', () => {
+        SparqlCreateUpdateSteps.visit();
         // When I visit 'Sparql create template' view
         // When I change the repository.
         RepositorySelectorSteps.selectRepository(secondRepositoryId);
@@ -126,6 +132,7 @@ describe.skip('SPARQL create template', () => {
     });
 
     it('should ask for confirmation when try to save sparql template with already existing template id', () => {
+        SparqlCreateUpdateSteps.visit();
         // When I visit 'Sparql create template' view,
         // create a SPARQL template
         const templateName = 'http://' + Date.now();
