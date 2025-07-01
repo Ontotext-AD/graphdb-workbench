@@ -235,12 +235,12 @@ export class TTYGViewSteps extends BaseSteps {
         return this.getAgent(index).realHover().find('.open-agent-actions-btn');
     }
 
-    static openAgentActionMenu(index) {
+    static toggleAgentActionMenu(index) {
         this.getOpenAgentActionsButton(index).click();
     }
 
     static triggerEditAgentActionMenu(index) {
-        this.openAgentActionMenu(index);
+        this.toggleAgentActionMenu(index);
         this.getEditAgentButton(index).click();
     }
 
@@ -249,7 +249,7 @@ export class TTYGViewSteps extends BaseSteps {
     }
 
     static triggerCloneAgentActionMenu(index) {
-        this.openAgentActionMenu(index);
+        this.toggleAgentActionMenu(index);
         this.getCloneAgentButton(index).click();
     }
 
@@ -258,7 +258,7 @@ export class TTYGViewSteps extends BaseSteps {
     }
 
     static triggerDeleteAgentActionMenu(index) {
-        this.openAgentActionMenu(index);
+        this.toggleAgentActionMenu(index);
         this.getDeleteAgentButton(index).click();
     }
 
