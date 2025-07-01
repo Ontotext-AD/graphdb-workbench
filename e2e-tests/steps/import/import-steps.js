@@ -35,7 +35,7 @@ class ImportSteps {
     }
 
     static showPageInfoPopover() {
-        return this.getPageInfoIcon().realHover();
+        return this.getPageInfoIcon().trigger('mouseover');
     }
 
     static getPageInfoPopover() {
@@ -47,7 +47,7 @@ class ImportSteps {
     }
 
     static hidePageInfoPopover() {
-        return cy.get('.menu-element-root').realHover();
+        return this.getPageInfoIcon().trigger('mouseleave');
     }
 
     static visitUserImport(repository) {
