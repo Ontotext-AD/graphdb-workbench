@@ -1,18 +1,20 @@
 import HomeSteps from '../../steps/home-steps';
+import {RdfResourceSearchSteps} from "../../steps/rdf-resource-search-steps";
+import ImportSteps from "../../steps/import/import-steps";
+import {BaseSteps} from "../../steps/base-steps";
+import {BrowserStubs} from "../../stubs/browser-stubs";
 
 const FILE_TO_IMPORT = 'wine.rdf';
 
-/**
- * TODO: Fix me. Broken due to migration (The issue GDB-11314 not implemented)
- */
-describe.skip('RDF resource search', () => {
+describe('RDF resource search', () => {
     let repositoryId;
     beforeEach(() => {
         cy.viewport(1280, 1000);
-        repositoryId = '23repo' + Date.now();
+        repositoryId = 'rdf-resource-search-' + Date.now();
         cy.createRepository({id: repositoryId});
         cy.initializeRepository(repositoryId);
         cy.enableAutocomplete(repositoryId);
+        BrowserStubs.stubCryptoUUID();
     });
 
     afterEach(() => {
@@ -21,160 +23,127 @@ describe.skip('RDF resource search', () => {
 
     it('Search button should not be present when no repo is selected', () => {
         HomeSteps.visitAndWaitLoader();
-        // Given the page has loaded the license label (otherwise locally test passes after the loader disappears and before other elements are rendered)
-        HomeSteps.getLicenseAsLabel().should('be.visible');
-        cy.get('.search-rdf-btn').should('not.exist');
-        cy.get('.search-rdf-input').should('not.exist');
+        RdfResourceSearchSteps.getComponent().should('not.exist');
     });
 
-    it('Search should be made from home page search when repo is set and on home page', () => {
-        // When I visit home page with selected repository
+    it('Search should only be triggered from the home page when a repository is selected', () => {
+        // When: I visit home page with selected repository
         cy.presetRepository(repositoryId);
         HomeSteps.visitAndWaitLoader();
-        // Search rdf button should be visible
-        cy.get('.search-rdf-btn').should('be.visible');
-        // When I click the button
-        HomeSteps.doNotOpenRdfSearchBoxButFocusResourceSearch();
-        // I should be able to type some text in the input on home page
-        cy.get('#search-resource-input-home > #search-resource-box > input').type('hasPos');
-        // And the autocomplete dropdown should become visible
-        cy.get('#search-resource-input-home > #auto-complete-results-wrapper').should('be.visible');
-        // // When I click the close button
-        cy.get('#search-resource-input-home > #search-resource-box > .clear-icon').click();
-        // // The input should be cleared
-        cy.get('#search-resource-input-home > #search-resource-box > input').should('have.value', '');
+        // And: I click the button
+        RdfResourceSearchSteps.clickOnShowViewResourceMessageButton();
+        // Then: I should be able to type some text in the input on home page
+        HomeSteps.getRdfResourceSearchInput().type('hasPos');
+        // And: the autocomplete dropdown should become visible
+        HomeSteps.getAutocompleteResultsContainer().should('be.visible');
+        // When: I click the close button
+        HomeSteps.closeRdfResourceSearchBox();
+        // The input should be cleared
+        HomeSteps.getRdfResourceSearchInput().should('have.value', '');
     });
 
-    it('Search should be present when repo is set', () => {
-        // When I visit not home page with selected repository
+    it('should be visible when a repository is selected and the user is not on the Home page', () => {
+        // When: There is a repository selected and I visit a page other than home.
         cy.presetRepository(repositoryId);
-        cy.visit('/graphs');
-        cy.get('.ot-splash').should('not.be.visible');
-        cy.get('.ot-loader-new-content').should('not.exist');
-        // Search rdf button should be visible
-        cy.get('.search-rdf-btn').should('be.visible');
-        // When I click the button
-        HomeSteps.openRdfSearchBox();
-        // I should be able to type some text in the input
-        cy.get('.search-rdf-input search-resource-input .view-res-input').type('hasPos');
-        // And the autocomplete dropdown should become visible
-        cy.get('.search-rdf-input #auto-complete-results-wrapper').should('be.visible');
-        // When I click the close button
-        cy.get('.close-rdf-search-btn').click();
-        // The input should not be cleared
-        cy.get('.search-rdf-input search-resource-input .view-res-input').should('have.value', 'hasPos');
-        // And the search bar should hide and not be visible
-        cy.get('.search-rdf-input').should('not.be.visible');
-        // And the suggestions list should not be visible
-        cy.get('.search-rdf-input #auto-complete-results-wrapper').should('not.be.visible');
-        // And the search button should be visible
-        cy.get('.search-rdf-btn').should('be.visible');
-        // When I open again the search box
-        HomeSteps.openRdfSearchBox();
-        // The input should have value 'hasPos'
-        cy.get('.search-rdf-input search-resource-input .view-res-input').should('have.value', 'hasPos');
-        // And dropdown should be visible
-        cy.get('.search-rdf-input #auto-complete-results-wrapper').should('be.visible');
-        // When I press 'escape'
-        cy.get('.search-rdf-input search-resource-input .view-res-input').type('{esc}');
-        // Search box should not be visible
-        cy.get('.search-rdf-input').should('not.be.visible');
+        ImportSteps.visit();
+        // Then: Search rdf button should be visible
+        RdfResourceSearchSteps.getOpenButton().should('be.visible');
+
+        // When: I click the button
+        RdfResourceSearchSteps.openRdfSearchBox();
+        // Then: I should be able to type some text in the input
+        RdfResourceSearchSteps.getRDFResourceSearchInput().type('hasPos');
+        // And: the autocomplete dropdown should become visible
+        RdfResourceSearchSteps.getAutocompleteResults().should('be.visible');
+
+        // When: I close the RDF search box
+        RdfResourceSearchSteps.closeRDFSearchBox();
+        // And: open again the search box
+        RdfResourceSearchSteps.openRdfSearchBox();
+        // Then: The input should have value 'hasPos'
+        RdfResourceSearchSteps.getRDFResourceSearchInput().should('have.value', 'hasPos');
+        // And: the autocomplete dropdown should become visible
+        RdfResourceSearchSteps.getAutocompleteResults().should('be.visible');
+
+        // When: I press 'escape'
+        BaseSteps.typeEscapeKey();
+        // Then: Search box should not be visible
+        RdfResourceSearchSteps.getRDFResourceSearchInput().should('not.be.visible');
     });
 
     it('Search should be persisted on page reload', () => {
-        // Given I've selected a repository and visit the page
+        // Given: There is a repository selected and I visit a page other than home.
         cy.presetRepository(repositoryId);
-        cy.visit('/graphs', {
-            onBeforeLoad(win) {
-                cy.stub(win, 'open').as('window.open');
-            }
-        });
-        cy.get('.ot-splash').should('not.be.visible');
-        cy.get('.ot-loader-new-content').should('not.exist');
-        // Search rdf button should be visible
-        cy.get('.search-rdf-btn').should('be.visible');
-        // When I click the button
-        HomeSteps.openRdfSearchBox();
-        // I should be able to type some text in the input
-        cy.get('.search-rdf-input search-resource-input .view-res-input')
-            .type('hasPos').then(() => {
-            // When I select option from suggestions
-            cy.get(".search-rdf-input #auto-complete-results-wrapper p")
-                .contains('hasPos')
-                .click()
-                .then(() => {
-                    // Search result should be opened in new window
-                    cy.get('@window.open').should('be.calledWith', 'resource?uri=http%3A%2F%2Fwww.w3.org%2Fns%2Forg%23hasPost');
-                });
-        });
-
-        // When I revisit the home page
-        cy.visit('/graphs');
-        // When I open again the search box
-        HomeSteps.openRdfSearchBox();
-        // The input should have value 'hasPos' from previous search
-        cy.get('.search-rdf-input search-resource-input .view-res-input').should('have.value', 'hasPos');
-        // And dropdown should be visible
-        cy.get('.search-rdf-input #auto-complete-results-wrapper').should('be.visible');
-        // When I press 'escape'
-        cy.get('.search-rdf-input search-resource-input .view-res-input')
-            .type('{esc}')
+        ImportSteps.visit();
+        BrowserStubs.stubWindowOpen();
+        // When: I open the search resource component
+        RdfResourceSearchSteps.openRdfSearchBox();
+        //Then: I should be able to type some text in the input
+        RdfResourceSearchSteps.getRDFResourceSearchInput().type('hasPos')
             .then(() => {
-                // Search box should not be visible
-                cy.get('.search-rdf-input').should('not.be.visible');
+                // When: I select option from suggestions
+                RdfResourceSearchSteps.clickOnAutocompleteSuggestionByPartialText('hasPos')
+                    .then(() => {
+                        // Then: Search result should be opened in new window
+                        cy.get(BrowserStubs.WINDOW_OPEN_ALIAS()).should('have.been.calledWithMatch', `resource?uri=http%3A%2F%2Fwww.w3.org%2Fns%2Forg%23hasPost`, "_blank");
+                    });
             });
+
+        // When: I revisit the home page
+        ImportSteps.visit();
+        // And: I open again the search box
+        RdfResourceSearchSteps.openRdfSearchBox();
+        // Then: The input should have value 'hasPos' from previous search
+        RdfResourceSearchSteps.getRDFResourceSearchInput().should('have.value', 'hasPos');
+        // And: the autocomplete dropdown should become visible
+        RdfResourceSearchSteps.getAutocompleteResults().should('be.visible');
+
+        // When: I press 'escape'
+        BaseSteps.typeEscapeKey();
+        // Then: Search box should not be visible
+        RdfResourceSearchSteps.getRDFResourceSearchInput().should('not.be.visible');
     });
 
     it('Should test RDF resource search box', () => {
-        //Prepare repository and import data.
+        // Given: I have a repository with RDF data
         cy.presetRepository(repositoryId);
         cy.importServerFile(repositoryId, FILE_TO_IMPORT);
+        // And: I visit the home page
         HomeSteps.visitAndWaitLoader();
 
-        //Verify that the main resource search box is focused
-        getRDFResourceSearchBox().click();
-        cy.focused().should('have.attr', 'placeholder', 'Search RDF resources...');
+        // When: I click on the RDF resource search button
+        RdfResourceSearchSteps.clickOnShowViewResourceMessageButton();
+        // Then: The input for RDF resource search should be visible (This is the legacy component used prior to the migration)
+        HomeSteps.getRdfResourceSearchInput().should('have.attr', 'placeholder', 'Search RDF resources...')
+            .and('be.focused');
 
         //Navigate away from the Homepage, to be able to test the new resource search box
-        cy.visit('/graphs', {
-            onBeforeLoad(win) {
-                cy.stub(win, 'open').as('window.open');
-            }
-        });
+        HomeSteps.visitAndWaitLoader();
+        BrowserStubs.stubWindowOpen();
+        // When: I click on the RDF resource search button
+        RdfResourceSearchSteps.clickOnShowViewResourceMessageButton();
+        // Then: The input for RDF resource search should be visible (This is the legacy component used prior to the migration)
+        HomeSteps.getRdfResourceSearchInput().should('have.attr', 'placeholder', 'Search RDF resources...')
+            .and('be.focused');
 
-        cy.get('.ot-splash').should('not.be.visible');
-        cy.get('.ot-loader-new-content').should('not.exist');
+        // When: I type some text in the input
+        HomeSteps.getRdfResourceSearchInput().type('Dry');
+        // Then: The autocomplete results should be visible
+        HomeSteps.getAutocompleteSuggestion().should('be.visible')
+            .and('have.length', 7);
 
-        getRDFResourceSearchBox().click();
-        //Verify that the new resource search box is focused
-        cy.focused().should('have.attr', 'placeholder', 'Search RDF resources...');
+        // When: The table display button is active
+        HomeSteps.getTableDisplayButton().click();
+        // And: click on some suggestion
+        HomeSteps.getAutocompleteSuggestionByPartialText('http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#').click();
+        // Then: The clicked suggestion should be opened in new window
+        cy.get(BrowserStubs.WINDOW_OPEN_ALIAS()).should('have.been.calledWithMatch', `resource?uri=http%3A%2F%2Fwww.w3.org%2FTR%2F2003%2FPR-owl-guide-20031209%2Fwine%23Dry`);
 
-        //Verify autocomplete suggestions count
-        cy.focused().then(() => {
-            cy.get('#search-resource-box input')
-                .should('be.visible')
-                .type('Dry');
-            cy.get('#auto-complete-results-wrapper')
-                .should('be.visible')
-                .children()
-                .should('have.length', 7);
-        });
-
-        //Test table and visual buttons.
-        cy.get("#auto_0").should('be.visible').click();
-        // Search result should be opened in new window
-        cy.get('@window.open').should('be.calledWith', 'resource?uri=http%3A%2F%2Fwww.w3.org%2FTR%2F2003%2FPR-owl-guide-20031209%2Fwine%23Dry');
-
-        getVisualButton().click();
-        cy.get("#auto_0").should('be.visible').click();
-        cy.get('@window.open').should('be.calledWith', 'graphs-visualizations?uri=http%3A%2F%2Fwww.w3.org%2FTR%2F2003%2FPR-owl-guide-20031209%2Fwine%23Dry');
+        // When: The visual display button is active
+        HomeSteps.getVisualDisplayButton().click();
+        // And: click on some suggestion
+        HomeSteps.getAutocompleteSuggestionByPartialText('http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#').click();
+        // Then: The clicked suggestion should be opened in new window
+        cy.get(BrowserStubs.WINDOW_OPEN_ALIAS()).should('have.been.calledWithMatch', `graphs-visualizations?uri=http%3A%2F%2Fwww.w3.org%2FTR%2F2003%2FPR-owl-guide-20031209%2Fwine%23Dry`);
     });
 });
-
-function getRDFResourceSearchBox() {
-    return cy.get('rdf-resource-search').should('be.visible');
-}
-
-function getVisualButton() {
-    return cy.get('.display-type-visual-btn').should('be.visible');
-}

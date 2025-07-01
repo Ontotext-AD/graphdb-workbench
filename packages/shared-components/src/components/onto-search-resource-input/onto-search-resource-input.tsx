@@ -118,6 +118,7 @@ export class OntoSearchResourceInput {
                    placeholder={`${TranslationService.translate('rdf_search.labels.search')}...`}
                    ref={(ref) => this.inputRef = ref}
                    onKeyDown={this.onKeyDown}
+                   data-test={this.context}
                    onInput={this.handleInput}/>
             {this.inputValue?.length ?
               <i onClick={this.clearInput}
@@ -133,10 +134,11 @@ export class OntoSearchResourceInput {
           ))}
         </div>
         <span class="hint">{TranslationService.translate('rdf_search.labels.hint')}</span>
-        <section class="autocomplete-results-wrapper">
+        <section class="autocomplete-results-wrapper" data-test='onto-autocomplete-results'>
           {this.searchResult?.getSuggestions().getItems().map((suggestion) => (
             <p key={suggestion.getId()}
                onClick={this.onSuggestionClick(suggestion)}
+               data-test='onto-autocomplete-suggestion'
                onMouseMove={this.hoverSuggestion(suggestion)}
                class={`${suggestion.isHovered() ? 'hovered' : ''} ${suggestion.isSelected() ? 'selected' : ''}`}
                innerHTML={suggestion.getDescription()}></p>
