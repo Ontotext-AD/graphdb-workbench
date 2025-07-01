@@ -17,10 +17,7 @@ describe('GraphQL endpoints filtering', () => {
         cy.deleteRepository(repositoryId);
     });
 
-    /**
-     * TODO Fixme broken due migration (Error unknown)
-     */
-    it.skip('should be able to filter endpoints', () => {
+    it('should be able to filter endpoints', () => {
         // Given I have a repository with active GraphQL endpoints
         // When I visit the endpoint management view
         GraphqlEndpointManagementSteps.visit();
