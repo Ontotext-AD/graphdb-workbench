@@ -66,15 +66,20 @@ export class OntoRdfSearch {
 
   render() {
     return (
-      <section ref={(ref) => this.rdfSearchRef = ref} class="onto-rdf-search" onKeyDown={this.onKeyDown()}>
+      <section ref={(ref) => this.rdfSearchRef = ref}
+               class="onto-rdf-search"
+               onKeyDown={this.onKeyDown()}
+               data-test='onto-rdf-search-component'>
         <section class={`search-area ${this.isOpen ? 'visible' : 'invisible'}`}>
           <i onClick={this.setIsOpen(false)}
              tooltip-content={TranslationService.translate('rdf_search.tooltips.close_search_area')}
              tooltip-placement={OntoTooltipPlacement.BOTTOM}
+             data-test='onto-rdf-resource-search-close-btn'
              class="fa-light fa-xmark-large close-btn"></i>
           <onto-search-resource-input buttonConfig={this.buttonConfig}
                                       preserveSearch={true}
                                       isHidden={!this.isOpen}
+                                      data-test='onto-rdf-resource-search-input'
                                       context={this.RDF_CONTEXT}></onto-search-resource-input>
         </section>
         {!this.isOpen ? <onto-search-icon onClick={this.setIsOpen(true)}></onto-search-icon> : ''}
