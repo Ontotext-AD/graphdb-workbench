@@ -1,0 +1,13 @@
+{
+    "enabled": false,
+    "authorities": [
+        "READ_REPO_configurations@http://localhost:7202"
+    ],
+    "appSettings": {
+        "DEFAULT_INFERENCE": true,
+        "DEFAULT_VIS_GRAPH_SCHEMA": true,
+        "DEFAULT_SAMEAS": true,
+        "IGNORE_SHARED_QUERIES": false,
+        "EXECUTE_COUNT": true
+    }
+}

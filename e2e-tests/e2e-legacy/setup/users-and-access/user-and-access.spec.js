@@ -120,6 +120,36 @@ describe('User and Access', () => {
             UserAndAccessSteps.getUsersTable().should('be.visible');
             UserAndAccessSteps.getSplashLoader().should('not.be.visible');
         });
+
+        it('should toggle free access after Admin has logged in', () => {
+            // Given I have available repositories to allow Free Access for
+            RepositoriesStubs.stubRepositories();
+            RepositoriesStubs.stubFreeAccess();
+            // When I enable security
+            UserAndAccessSteps.toggleSecurity();
+            // When I log in as an Admin
+            LoginSteps.loginWithUser("admin", DEFAULT_ADMIN_PASSWORD);
+            // Then the page should load
+            UserAndAccessSteps.getSplashLoader().should('not.be.visible');
+            UserAndAccessSteps.getUsersTable().should('be.visible');
+            // The Free Access toggle should be OFF
+            UserAndAccessSteps.getFreeAccessSwitchInput().should('not.be.checked');
+            // When I toggle Free Access ON
+            UserAndAccessSteps.toggleFreeAccess();
+            // And I allow free access to a repository
+            ModalDialogSteps.getDialog().should('be.visible');
+            // Then I click OK in the modal
+            ModalDialogSteps.clickOKButton();
+            // Then the toggle button should be ON
+            UserAndAccessSteps.getFreeAccessSwitchInput().should('be.checked');
+            // And I should see a success message
+            ToasterSteps.verifySuccess('Free access has been enabled.');
+            UserAndAccessSteps.getUsersTable().should('be.visible');
+            // When I toggle Free Access OFF
+            UserAndAccessSteps.toggleFreeAccess();
+            // Then I should see a success message
+            ToasterSteps.verifySuccess('Free access has been disabled.');
+        });
     })
 
     context('GraphQL only', () => {
