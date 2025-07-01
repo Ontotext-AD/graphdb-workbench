@@ -388,6 +388,7 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
      */
     const onEndpointsInfoLoaded = (endpointsInfoList) => {
         $scope.endpointsInfoList = endpointsInfoList;
+        $scope.endpointsInfoList.filter($scope.filterTerm);
         if ($scope.endpointsInfoList && $scope.endpointsInfoList.endpoints.length > 0) {
             $scope.hasEndpoints = true;
             // Find out the default endpoint. If there is no default endpoint in the list, then create a new one dummy
