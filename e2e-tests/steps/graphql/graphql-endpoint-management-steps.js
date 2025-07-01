@@ -89,7 +89,7 @@ export class GraphqlEndpointManagementSteps {
             const endpointInfo = data[index];
             cy.wrap($row).within(() => {
                 const statusCheck = endpointInfo.status === 'deleted' ? 'not.exist' : 'be.visible';
-                cy.get('td').eq(1).find('.endpoint-link').should(statusCheck);
+                cy.get('td').eq(2).find('.endpoint-link').should(statusCheck);
                 cy.get('td').eq(2).should('contain', endpointInfo.id);
                 cy.get('td').eq(3).should('contain', endpointInfo.label);
                 const isDefaultCheck = endpointInfo.default ? 'be.checked' : 'not.be.checked'

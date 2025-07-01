@@ -73,7 +73,6 @@ describe('Graphql: import endpoint definitions', () => {
 
         GraphqlEndpointManagementSteps.verifyEndpointInfo([
             {
-                status: 'deleted',
                 id: 'swapi',
                 label: 'Ontotext Star Wars Ontology',
                 description: '',
@@ -170,7 +169,6 @@ describe('Graphql: import endpoint definitions', () => {
         GraphqlEndpointManagementSteps.getEndpointsInfo().should('have.length', 3);
         GraphqlEndpointManagementSteps.verifyEndpointInfo([
             {
-                status: 'deleted',
                 id: 'swapi',
                 label: 'Ontotext Star Wars Ontology',
                 description: '',
@@ -181,7 +179,6 @@ describe('Graphql: import endpoint definitions', () => {
                 properties: 68
             },
             {
-                status: 'deleted',
                 id: 'swapi-planets',
                 label: 'Star Wars planets API',
                 description: '',
@@ -192,7 +189,6 @@ describe('Graphql: import endpoint definitions', () => {
                 properties: 10
             },
             {
-                status: 'deleted',
                 id: 'swapi-species',
                 label: 'Star Wars species API',
                 description: '',
@@ -236,7 +232,6 @@ describe('Graphql: import endpoint definitions', () => {
         GraphqlEndpointManagementSteps.getEndpointsInfo().should('have.length', 2);
         GraphqlEndpointManagementSteps.verifyEndpointInfo([
             {
-                status: 'deleted',
                 id: 'swapi-planets',
                 label: 'Star Wars planets API',
                 description: '',
@@ -247,7 +242,6 @@ describe('Graphql: import endpoint definitions', () => {
                 properties: 10
             },
             {
-                status: 'deleted',
                 id: 'swapi-species',
                 label: 'Star Wars species API',
                 description: '',

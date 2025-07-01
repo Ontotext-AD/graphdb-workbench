@@ -21,8 +21,7 @@ describe('Import user data', () => {
         cy.deleteRepository(repositoryId);
     });
 
-    // TODO: Fix me. Broken due to migration (Error: unknown)
-    it.skip('Should load user data import tab by default', () => {
+    it('Should load user data import tab by default', () => {
         // Given I have visited the import page
         ImportUserDataSteps.visit();
         // When the page is loaded
