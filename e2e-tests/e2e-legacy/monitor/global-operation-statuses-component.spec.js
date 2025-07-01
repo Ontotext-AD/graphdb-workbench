@@ -2,11 +2,9 @@ import HomeSteps from "../../steps/home-steps";
 import {OperationsStatusesComponentSteps} from "../../steps/operations-statuses-component-steps";
 import {GlobalOperationsStatusesStub} from "../../stubs/global-operations-statuses-stub";
 import {ImportUserDataSteps} from "../../steps/import/import-user-data-steps";
+import {BrowserStubs} from "../../stubs/browser-stubs";
 
-/**
- * TODO: Fix me. Broken due to migration (The issue GDB-11318 is not implemented)
- */
-describe.skip('Operations Status Component', () => {
+describe('Operations Status Component', () => {
 
     const repositoryId = 'backup-and-restore-' + Date.now();
     beforeEach(() => {
@@ -75,7 +73,7 @@ describe.skip('Operations Status Component', () => {
         OperationsStatusesComponentSteps.openOperationStatusesDialog();
         // When I click on "Running query" operation element.
         // Then I expect to be redirected to "Query and Update monitoring" view.
-        OperationsStatusesComponentSteps.checkOperationElementUrl('monitor/queries', 3);
+        checkOperationElementUrl('monitor/queries', 3);
         // Then I expect "Global Operations Component" to still be displayed.
         OperationsStatusesComponentSteps.getOperationsStatusesComponent().should('exist');
     });
@@ -90,7 +88,7 @@ describe.skip('Operations Status Component', () => {
         OperationsStatusesComponentSteps.openOperationStatusesDialog();
         // When I click on "Running updates" operation element.
         // Then I expect to be redirected to "Query and Update monitoring" view.
-        OperationsStatusesComponentSteps.checkOperationElementUrl('monitor/queries', 4);
+        checkOperationElementUrl('monitor/queries', 4);
         // Then I expect "Global Operations Component" to still be displayed.
         OperationsStatusesComponentSteps.getOperationsStatusesComponent().should('exist');
     });
@@ -105,7 +103,7 @@ describe.skip('Operations Status Component', () => {
         OperationsStatusesComponentSteps.openOperationStatusesDialog();
         // When I click on "Running imports" operation element.
         // Then I expect to be redirected to "Query and Update monitoring" view.
-        OperationsStatusesComponentSteps.checkOperationElementUrl('import', 2);
+        checkOperationElementUrl('import', 2);
         // Then I expect "Global Operations Component" to still be displayed.
         OperationsStatusesComponentSteps.getOperationsStatusesComponent().should('exist');
     });
@@ -120,7 +118,7 @@ describe.skip('Operations Status Component', () => {
         OperationsStatusesComponentSteps.openOperationStatusesDialog();
         // When I click on "Creating backup" operation element.
         // Then I expect to be redirected to "Backup and Restore" view.
-        OperationsStatusesComponentSteps.checkOperationElementUrl('monitor/backup-and-restore', 1);
+        checkOperationElementUrl('monitor/backup-and-restore', 1);
         // Then I expect "Global Operations Component" to still be displayed.
         OperationsStatusesComponentSteps.getOperationsStatusesComponent().should('exist');
 
@@ -136,9 +134,15 @@ describe.skip('Operations Status Component', () => {
         OperationsStatusesComponentSteps.openOperationStatusesDialog();
         // When I click on "Unavailable nodes" operation element.
         // Then I expect to be redirected to "Cluster Monitoring" view.
-        OperationsStatusesComponentSteps.checkOperationElementUrl('cluster', 0);
+        checkOperationElementUrl('cluster', 0);
         // Then I expect "Global Operations Component" to still be displayed.
         OperationsStatusesComponentSteps.getOperationsStatusesComponent().should('exist');
 
     });
+
+    function checkOperationElementUrl(expectedUrl, operationIndex = 0) {
+        BrowserStubs.spyNavigateToUrl();
+        OperationsStatusesComponentSteps.getOperationStatuses().eq(operationIndex).click();
+        cy.get(BrowserStubs.NAVIGATE_TO_URL_ALIAS()).should('have.been.calledWithMatch', expectedUrl)
+    }
 });
