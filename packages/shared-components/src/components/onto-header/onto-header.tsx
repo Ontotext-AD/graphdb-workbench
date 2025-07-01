@@ -111,9 +111,11 @@ export class OntoHeader {
           <onto-search-icon
             class="rdf-search-button"
             onClick={this.showViewResourceMessage}
+            data-test='onto-show-view-resource-message'
             style={{display: this.shouldShowSearch && this.isHomePage ? 'block' : 'none'}}>
           </onto-search-icon>
           <onto-rdf-search
+            data-test='onto-open-rdf-search-button'
             style={{display: this.shouldShowSearch && !this.isHomePage ? 'block' : 'none'}}>
           </onto-rdf-search>
           {this.activeOperations?.allRunningOperations.getItems().length

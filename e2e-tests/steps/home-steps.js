@@ -3,26 +3,17 @@ import {RepositoryErrorsWidgetSteps} from "./widgets/repository-errors-widget-st
 import {ActiveRepositoryWidgetSteps} from "./widgets/active-repository-widget-steps";
 import {SavedSparqlQueriesWidgetSteps} from "./widgets/saved-sparql-queries-widget-steps";
 import {RepositorySteps} from "./repository-steps";
+import {BaseSteps} from "./base-steps";
 
-class HomeSteps {
+class HomeSteps extends BaseSteps {
 
     static visit() {
         cy.visit('/');
         HomeSteps.getTutorialPanel().should('be.visible');
     }
 
-    static visitAndWaitLoader(stubNewWindow) {
-        if (stubNewWindow) {
-            cy.visit('/', {
-                onBeforeLoad (win) {
-                    cy.stub(win, 'open').as('window.open');
-                }
-            });
-        } else {
-            cy.visit('/');
-        }
-
-        cy.window();
+    static visitAndWaitLoader() {
+        cy.visit('/');
         return cy.get('.ot-loader-new-content').should('not.exist');
     }
 
@@ -233,19 +224,40 @@ class HomeSteps {
         cy.wait('@getAutocompleteStatus').then(callback);
     }
 
-    static openRdfSearchBox() {
-        cy.get('.search-rdf-btn').click();
-        cy.get('.search-rdf-input').should('be.visible');
-        cy.get('.search-rdf-input search-resource-input .view-res-input').should('be.visible')
-            .and('be.focused');
+    static getRdfResourceSearchComponent() {
+        return this.getByTestId('search-rdf-resource-component');
     }
 
-    static doNotOpenRdfSearchBoxButFocusResourceSearch() {
-        cy.get('.search-rdf-btn').click();
-        cy.get('.search-rdf-input').should('not.exist');
-        cy.get('.search-rdf-input search-resource-input .view-res-input').should('not.exist');
-        cy.get('#search-resource-input-home > #search-resource-box > input').should('be.visible')
-            .and('be.focused');
+    static getRdfResourceSearchInput() {
+        return this.getRdfResourceSearchComponent().getByTestId('rdf-resource-input');
+    }
+
+    static getAutocompleteResultsContainer() {
+        return this.getRdfResourceSearchComponent().getByTestId('auto-complete-results');
+    }
+
+    static getAutocompleteSuggestion() {
+        return this.getAutocompleteResultsContainer().getByTestId('autocomplete-suggestion');
+    }
+
+    static getAutocompleteSuggestionByPartialText(partialText) {
+        return this.getAutocompleteSuggestion().contains(partialText);
+    }
+
+    static getTableDisplayButton() {
+        return this.getRdfResourceSearchComponent().getByTestId('display-table-button');
+    }
+
+    static getVisualDisplayButton() {
+        return this.getRdfResourceSearchComponent().getByTestId('display-visual-button');
+    }
+
+    static getRdfResourceSearchCloseButton() {
+        return this.getRdfResourceSearchComponent().getByTestId('rdf-resource-clear-button');
+    }
+
+    static closeRdfResourceSearchBox() {
+        this.getRdfResourceSearchCloseButton().click();
     }
 
     static getViewResourceAsLabel() {

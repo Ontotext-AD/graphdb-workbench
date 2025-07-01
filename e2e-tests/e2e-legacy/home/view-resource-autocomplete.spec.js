@@ -1,4 +1,5 @@
 import HomeSteps from '../../steps/home-steps';
+import {BrowserStubs} from "../../stubs/browser-stubs";
 
 describe('View resource autocomplete', () => {
 
@@ -9,12 +10,20 @@ describe('View resource autocomplete', () => {
         'foaf:name "Green Goblin" .\n';
     const GOBLIN_URI = 'http://example.org/#green-goblin';
 
+    let repositoryId;
+
     beforeEach(() => {
         cy.viewport(1280, 1000);
+        repositoryId = 'view-resource-autocomplete-' + Date.now();
+        cy.createRepository({id: repositoryId});
+        BrowserStubs.stubWindowOpen();
+    });
+
+    afterEach(() => {
+        cy.deleteRepository(repositoryId);
     });
 
     it('Test homepage autocomplete when it is enabled', () => {
-        const repositoryId = HomeSteps.createRepo();
         HomeSteps.selectRepo(repositoryId);
 
         // Type an invalid resource
@@ -24,21 +33,27 @@ describe('View resource autocomplete', () => {
         cy.importRDFTextSnippet(repositoryId, FOAT_SNIPPET);
         cy.enableAutocomplete(repositoryId);
 
-        HomeSteps.visitAndWaitLoader(true).then((el) => el)
-            .then(() => HomeSteps.getAutocompleteDisplayTypeButton('table').click())
-            .then(() => HomeSteps.autocompleteText('Green', GOBLIN_URI))
-            .then(() => HomeSteps.getAutocompleteResultElement(GOBLIN_URI).click())
-            .then(() => // Search result should be opened in new window
-                cy.get('@window.open').should('be.calledWith', 'resource?uri=http%3A%2F%2Fexample.org%2F%23green-goblin'))
-            .then(() => HomeSteps.getAutocompleteDisplayTypeButton('visual').click())
-            .then(() => HomeSteps.getAutocompleteResultElement(GOBLIN_URI).click())
-            .then(() => // Search result should be opened in new window
-                cy.get('@window.open').should('be.calledWith', 'graphs-visualizations?uri=http%3A%2F%2Fexample.org%2F%23green-goblin'));
-        cy.deleteRepository(repositoryId);
+        HomeSteps.visitAndWaitLoader();
+        BrowserStubs.stubWindowOpen();
+
+        // When: The table display button is active
+        HomeSteps.getAutocompleteDisplayTypeButton('table').click();
+        // And: select an autocomplete suggestion
+        HomeSteps.autocompleteText('Green', GOBLIN_URI)
+        HomeSteps.autocompleteText('Green', GOBLIN_URI)
+        HomeSteps.getAutocompleteResultElement(GOBLIN_URI).click()
+        // Then: The clicked suggestion should be opened in new window
+        cy.get(BrowserStubs.WINDOW_OPEN_ALIAS()).should('be.calledWith', 'resource?uri=http%3A%2F%2Fexample.org%2F%23green-goblin');
+
+        // When: The visual display button is active
+        HomeSteps.getAutocompleteDisplayTypeButton('visual').click();
+        // And: select an autocomplete suggestion
+        HomeSteps.getAutocompleteResultElement(GOBLIN_URI).click()
+        // Then: clicked suggestion should be opened in new window
+        cy.get(BrowserStubs.WINDOW_OPEN_ALIAS()).should('be.calledWith', 'graphs-visualizations?uri=http%3A%2F%2Fexample.org%2F%23green-goblin')
     });
 
     it('should not suggest resources in "View resources" when autocomplete is not enabled', () => {
-        const repositoryId = HomeSteps.createRepo();
         cy.importRDFTextSnippet(repositoryId, FOAT_SNIPPET);
 
         HomeSteps.visitAndWaitLoader();
@@ -46,7 +61,5 @@ describe('View resource autocomplete', () => {
 
         HomeSteps.getAutocompleteInput().type('Green');
         HomeSteps.noAutocompleteToast();
-
-        cy.deleteRepository(repositoryId);
     });
 });
