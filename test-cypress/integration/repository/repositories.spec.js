@@ -510,19 +510,19 @@ describe('Repositories', () => {
         ModalDialogSteps.verifyDialogBody('Changing the repository ID is a dangerous operation since it renames the repository folder and enforces repository shutdown.');
     });
 
-    it('should NOT allow restart of LOCAL repository from EDIT PAGE, if node is in cluster', () => {
+    it('should allow restart of LOCAL repository from EDIT PAGE, if node is in cluster', () => {
         // Given I create a repository
         cy.createRepository({id: repositoryId});
         // When I set the node in a cluster
         GlobalOperationsStatusesStub.stubGlobalOperationsStatusesResponse(repositoryId);
         // Then go to the local repository's edit page
         RepositorySteps.visitEditPage(repositoryId);
-        // I expect the repository restart checkbox button to be disabled
+        // I expect the repository restart checkbox button to be enabled
         RepositorySteps.getEditViewRestartButton().should('be.visible');
-        RepositorySteps.getEditViewRestartButton().should('be.disabled');
+        RepositorySteps.getEditViewRestartButton().should('not.be.disabled');
     });
 
-    it('should NOT allow restart of LOCAL repositories from REPOSITORIES PAGE, if node is in cluster', () => {
+    it('should allow restart of LOCAL repositories from REPOSITORIES PAGE, if node is in cluster', () => {
         // Given I create a repository
         cy.createRepository({id: repositoryId});
         // When I set the node in a cluster
@@ -530,9 +530,9 @@ describe('Repositories', () => {
         ClusterStubs.stubClusterNodeStatus();
         // Then go to the repositories page
         RepositorySteps.visit();
-        // I expect the local repository's restart button to be disabled
+        // I expect the local repository's restart button to be enabled
         RepositorySteps.getRepositoryRestartButton(repositoryId).should('be.visible');
-        RepositorySteps.getRepositoryRestartButton(repositoryId).should('be.disabled');
+        RepositorySteps.getRepositoryRestartButton(repositoryId).should('not.be.disabled');
     });
 
     it('should ALLOW restart of REMOTE repositories from REPOSITORIES PAGE, if node is in cluster', () => {
