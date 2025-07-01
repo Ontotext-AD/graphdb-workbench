@@ -223,7 +223,7 @@ export class GraphqlEndpointsInfoList {
         this._endpoints = this._originalEndpointsList
             .filter((endpoint) => {
                 return endpoint.endpointId.toLowerCase().includes(filterTerm.toLowerCase()) ||
-                    endpoint.label.toLowerCase().includes(filterTerm.toLowerCase());
+                    endpoint.label?.toLowerCase().includes(filterTerm.toLowerCase());
             });
     }
 
