@@ -156,6 +156,14 @@ class ImportSteps {
         return this.getResourcesTable().find('.row.title-row');
     }
 
+    static checkMainCheckbox() {
+        this.getMainCheckbox().click();
+    }
+
+    static getMainCheckbox() {
+        return this.getResourcesTable().find('#importSelectCheckboxInput');
+    }
+
     static getSelectedResources() {
         return this.getResources().find('.select-checkbox:checked');
     }
