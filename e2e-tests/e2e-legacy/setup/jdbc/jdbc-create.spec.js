@@ -17,8 +17,8 @@ const DEFAULT_QUERY = 'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n' +
     '    # The following placeholder must be present in the query\n' +
     '    #!filter\n' +
     '}';
-// TODO: Fix me. Broken due to migration (Error: unknown)
-describe.skip('JDBC configuration', () => {
+
+describe('JDBC configuration', () => {
 
     let repositoryId;
     let secondRepositoryId;

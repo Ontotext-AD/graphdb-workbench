@@ -69,6 +69,8 @@ describe('GraphQL endpoints management', () => {
             // Given I have a repository with active GraphQL endpoints
             // When I visit the endpoint management view
             GraphqlEndpointManagementSteps.visit();
+            // And I toggle the 3rd endpoint's active state to inactive
+            GraphqlEndpointManagementSteps.toggleEndpointActiveState(2);
             // Then I should see the endpoints info
             GraphqlEndpointManagementSteps.getEndpointTable().within(() => {
                 cy.get('thead th').should('have.length', 10);
@@ -105,11 +107,12 @@ describe('GraphQL endpoints management', () => {
                     properties: 10
                 },
                 {
+                    status: "deleted",
                     id: 'swapi-species',
                     label: 'Star Wars species API',
                     description: '',
                     default: false,
-                    active: true,
+                    active: false,
                     modified: ApplicationSteps.getCurrentDate(),
                     types: 2,
                     properties: 17
