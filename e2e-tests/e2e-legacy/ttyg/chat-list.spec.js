@@ -8,8 +8,7 @@ import {ChatPanelSteps} from "../../steps/ttyg/chat-panel-steps";
 import {AlertDialogSteps} from "../../steps/alert-dialog-steps";
 import {RepositoriesStub} from "../../stubs/repositories-stub";
 
-// TODO: Fix me. Broken due to migration (Error: unknown)
-describe.skip('TTYG chat list', () => {
+describe('TTYG chat list', () => {
 
     beforeEach(() => {
         RepositoriesStubs.stubRepositories(0, '/repositories/get-ttyg-repositories.json');
