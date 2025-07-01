@@ -4,10 +4,8 @@ import {QueryStubs} from "../../../stubs/yasgui/query-stubs";
 import {SavedQuery} from "../../../steps/yasgui/saved-query";
 import {SavedQueriesDialog} from "../../../steps/yasgui/saved-queries-dialog";
 import {SaveQueryDialog} from "../../../steps/yasgui/save-query-dialog";
+import {RepositorySelectorSteps} from "../../../steps/repository-selector-steps";
 
-/**
- * TODO: Fix me. Broken due to migration (Error: beforeEach)
- */
 describe('Edit saved queries', () => {
 
     let repositoryId;
@@ -22,7 +20,7 @@ describe('Edit saved queries', () => {
         QueryStubs.stubDefaultQueryResponse(repositoryId);
 
         SparqlEditorSteps.visitSparqlEditorPage();
-        YasguiSteps.getYasgui().should('be.visible');
+        RepositorySelectorSteps.getSelectedRepository().should('contain', repositoryId);
     });
 
     afterEach(() => {
@@ -57,8 +55,7 @@ describe('Edit saved queries', () => {
         SaveQueryDialog.closeSaveQueryDialog();
     });
 
-    // TODO skipped until .env can be updated with BE version, which includes the API changes
-    it.skip('should allow renaming saved query', () => {
+    it('should allow renaming saved query', () => {
         // Given I have created a query
         SavedQuery.create(savedQueryName);
         // When I open the saved queries popup

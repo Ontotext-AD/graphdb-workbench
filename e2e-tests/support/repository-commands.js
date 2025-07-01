@@ -15,6 +15,7 @@ Cypress.Commands.add('createRepository', (options = {}) => {
         }
     }).then((response) => {
         cy.waitUntil(() => response && response.status === 201); // 201 Created
+        cy.log('Created repository with ID:', options.id);
     });
 });
 
@@ -52,6 +53,7 @@ Cypress.Commands.add('presetRepository', (id) => {
                 const presetRepo = JSON.parse(preset);
                 return presetRepo && presetRepo.id === id
             }));
+    cy.log('Pre-set repository:', id);
 });
 
 Cypress.Commands.add('unsetRepository', () => {

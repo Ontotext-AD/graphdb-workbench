@@ -614,7 +614,11 @@ function JdbcCreateCtrl(
         subscriptions.forEach((subscription) => subscription());
     };
 
-    const repositoryChangedHandler = () => {
+    const repositoryChangedHandler = (repository) => {
+        console.log(repository)
+        if (!repository) {
+            return;
+        }
         if (initialRepoChangeTrigger) {
             initialRepoChangeTrigger = false;
         } else {
