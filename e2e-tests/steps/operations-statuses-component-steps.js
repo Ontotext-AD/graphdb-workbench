@@ -1,3 +1,5 @@
+import {BrowserStubs} from "../stubs/browser-stubs";
+
 export class OperationsStatusesComponentSteps {
 
     static getOperationsStatusesComponent() {
@@ -13,15 +15,15 @@ export class OperationsStatusesComponentSteps {
     }
 
     static getQueriesOperationStatusHeaderElement() {
-        return OperationsStatusesComponentSteps.getOperationStatusHeader('.icon-exchange');
+        return OperationsStatusesComponentSteps.getOperationStatusHeader('.fa-arrow-right-arrow-left');
     }
 
     static getBackupAndRestoreOperationStatusHeaderElement() {
-        return OperationsStatusesComponentSteps.getOperationStatusHeader('.fa.fa-archive');
+        return OperationsStatusesComponentSteps.getOperationStatusHeader('.fa-archive');
     }
 
     static getClusterOperationStatusHeaderElement() {
-        return OperationsStatusesComponentSteps.getOperationStatusHeader('.fa.fa-sitemap');
+        return OperationsStatusesComponentSteps.getOperationStatusHeader('.fa-sitemap');
     }
 
     static getOperationStatuses() {
@@ -30,12 +32,5 @@ export class OperationsStatusesComponentSteps {
 
     static openOperationStatusesDialog() {
         OperationsStatusesComponentSteps.getOperationsStatusesComponent().click();
-    }
-
-    static checkOperationElementUrl(expectedUrl, operationIndex = 0) {
-        OperationsStatusesComponentSteps.getOperationStatuses().eq(operationIndex).then(($operationElement) => {
-            expect($operationElement).to.have.attr('target', '_blank');
-            expect($operationElement).to.have.attr('href', expectedUrl);
-        });
     }
 }

@@ -45,7 +45,7 @@ describe('Share saved queries', () => {
         ApplicationSteps.getSuccessNotifications().should('be.visible');
     });
 
-    // TODO: Fix me. Broken due to migration (Error: unknown)
+    // FIX: Skipped because the functionality is not working. There is a bug in the application https://graphwise.atlassian.net/browse/GDB-12633
     it.skip('Should be able to open a share link in a new editor tab', () => {
         // Given I have created a query
         YasguiSteps.getTabs().should('have.length', 1);

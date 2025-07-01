@@ -117,7 +117,7 @@
                 <td>
                     <span ng-if="!endpoint.active"
                           gdb-tooltip="{{'graphql.endpoints_management.table.actions.explore_endpoint.inactive.tooltip' | translate}}"
-                          class="endpoint-link">{{endpoint.endpointId}}</span>
+                          class="endpoint-id">{{endpoint.endpointId}}</span>
                     <a ng-if="endpoint.active" href="#" ng-click="onExploreEndpoint(endpoint)"
                        gdb-tooltip="{{'graphql.endpoints_management.table.actions.explore_endpoint.active.tooltip' | translate}}"
                        class="endpoint-link">{{endpoint.endpointId}}</a>
