@@ -7,6 +7,10 @@ export class RepositoriesStubs extends Stubs {
         RepositoriesStubs.stubGetQueryResponse('/rest/repositories/all', fixture, 'get-all-repositories', withDelay);
     }
 
+    static stubFreeAccess(withDelay = 0, fixture = '/repositories/free-access.json') {
+        RepositoriesStubs.stubGetQueryResponse('/rest/security/free-access', fixture, 'free-access', withDelay);
+    }
+
     static spyGetRepositories() {
         cy.intercept('GET', '/rest/repositories/all').as('getRepositories');
     }
