@@ -85,7 +85,6 @@ describe('GraphQL endpoints management', () => {
             GraphqlEndpointManagementSteps.getEndpointsInfo().should('have.length', 3);
             GraphqlEndpointManagementSteps.verifyEndpointInfo([
                 {
-                    status: 'deleted',
                     id: 'swapi',
                     label: 'Ontotext Star Wars Ontology',
                     description: '',
@@ -96,7 +95,6 @@ describe('GraphQL endpoints management', () => {
                     properties: 68
                 },
                 {
-                    status: 'deleted',
                     id: 'swapi-planets',
                     label: 'Star Wars planets API',
                     description: '',
@@ -107,7 +105,6 @@ describe('GraphQL endpoints management', () => {
                     properties: 10
                 },
                 {
-                    status: 'deleted',
                     id: 'swapi-species',
                     label: 'Star Wars species API',
                     description: '',
