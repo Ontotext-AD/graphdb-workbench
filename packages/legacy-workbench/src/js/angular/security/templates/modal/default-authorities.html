@@ -31,7 +31,7 @@
                 <span class="fa-kit fa-gdb-graphql fa-1andAhalfx col-xs-1" gdb-tooltip="{{'security.tooltip.graphql' | translate}}"
                       tooltip-placement="top" style="margin-top: 10px"></span>
             </div>
-            <div id="access-user-repos access-user-rights" class="row"
+            <div class="row"
                  ng-repeat="repository in getRepositories() | orderBy: ['id', 'location']">
                 <p class="col-xs-9">{{repository.id}}<small> &middot; {{repository.location ? repository.location : 'Local'}}</small></p>
                 <label class="col-xs-1">
