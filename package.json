@@ -2,6 +2,9 @@
     "name": "graphdb-workbench",
     "version": "3.1.0-WBM-9",
     "description": "The web application for GraphDB APIs",
+    "engines": {
+      "node": ">=22.0.0"
+    },
     "scripts": {
         "clean": "sh scripts/clean.sh",
         "clean-install": "sh scripts/clean.sh && npm run install:local",
@@ -62,6 +65,7 @@
         "babel-loader": "^10.0.0",
         "babel-polyfill": "^6.26.0",
         "clean-webpack-plugin": "^4.0.0",
+        "cli-table3": "^0.6.5",
         "concurrently": "^9.2.0",
         "copy-webpack-plugin": "^13.0.0",
         "css-loader": "^7.1.2",
@@ -85,7 +89,8 @@
         "webpack-cli": "^6.0.1",
         "webpack-config-single-spa": "^8.0.0",
         "webpack-dev-server": "^5.2.2",
-        "webpack-merge-and-include-globally": "^2.3.4"
+        "webpack-merge-and-include-globally": "^2.3.4",
+        "xml2js": "^0.6.2"
     },
     "resolutions": {},
     "dependencies": {

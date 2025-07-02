@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  cypress:
+    image: workbench-cypress:latest
+    build:
+      context: .
+      dockerfile: cypress.Dockerfile
+    init: true
+    environment:
+      - IS_DOCKER=true
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - NO_COLOR=1
+      - GDB_VERSION
+      - SPLIT
+      - SPLIT_INDEX
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./e2e-tests/fixtures/graphdb.license:/app/fixtures/graphdb.license
+      - ./cypress/results/${SPLIT_INDEX}:/app/cypress/results
+      - ./cypress/logs/${SPLIT_INDEX}:/app/cypress/logs
+      - ./cypress/screenshots/${SPLIT_INDEX}:/app/report/screenshots
+      - ./cypress/videos/${SPLIT_INDEX}:/app/report/videos
+    command: bash -c "npm run test:split"
+

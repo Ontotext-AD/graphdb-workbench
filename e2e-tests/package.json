@@ -11,9 +11,14 @@
     "cy:run": "npm run cy:run-legacy && cypress run",
     "cy:run:partial": "cypress run --config-file cypress-legacy.config.js --spec \"e2e-legacy/**/jdbc-create.spec.js\" --browser chrome",
     "cy:run-legacy": "cypress run --config-file cypress-legacy.config.js --browser chrome",
+    "cy:run-testcontainers": "cypress run --config-file cypress-testcontainers.config.js --browser chrome",
     "cy:run-flaky": "cypress run --config-file cypress-flaky.config.js --browser chrome",
     "test": "npm run cy:run-legacy",
-    "test:core": "cypress run --spec e2e-legacy/repository/**,e2e-legacy/import/**,e2e-legacy/sparql-editor/**,e2e-legacy/monitor/**,e2e-legacy/cluster/**,e2e-legacy/ttyg/**"
+    "test:core": "cypress run --spec e2e-legacy/repository/**,e2e-legacy/import/**,e2e-legacy/sparql-editor/**,e2e-legacy/monitor/**,e2e-legacy/cluster/**,e2e-legacy/ttyg/**",
+    "merge-reports": "junit-merge -d cypress/results -o cypress/results/merged-results.xml",
+    "cy:run-parallel": "node scripts/ci/run-parallel.js",
+    "test:split": "node scripts/ci/run-cy-tests.js",
+    "test:print-summary": "node scripts/ci/print-summary.js"
   },
   "author": {
     "name": "Ontotext AD",
@@ -29,16 +34,24 @@
     "url": "git+https://github.com/Ontotext-AD/graphdb-workbench.git"
   },
   "devDependencies": {
+    "@bahmutov/cypress-code-coverage": "^2.7.2",
+    "babel-plugin-istanbul": "^7.0.0",
+    "cross-env-shell": "^7.0.3",
     "cypress": "^14.5.0",
     "cypress-failed-log": "^2.10.0",
     "cypress-file-upload": "^5.0.8",
     "cypress-localstorage-commands": "^2.2.7",
     "cypress-multi-reporters": "^2.0.5",
     "cypress-real-events": "^1.14.0",
+    "cypress-split": "^1.24.18",
     "cypress-terminal-report": "^7.2.0",
     "cypress-wait-until": "^3.0.2",
-    "del": "^8.0.0",
+    "dotenv": "^16.5.0",
+    "get-port": "^7.1.0",
+    "glob": "^10.4.5",
+    "junit-merge": "^2.0.0",
     "minimist": "^1.2.8",
-    "mocha-junit-reporter": "^2.2.1"
+    "mocha-junit-reporter": "^2.2.1",
+    "testcontainers": "^10.28.0"
   }
 }
