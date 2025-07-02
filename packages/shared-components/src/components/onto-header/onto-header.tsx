@@ -254,7 +254,7 @@ export class OntoHeader {
     }
 
     return repositories
-      .filter((repository) => this.authService.canReadRepo(repository))
+      .filter((repository) => this.authService.canReadRepo(repository) || this.authService.canReadGqlRepo(repository))
       .map((repository) => {
         return new DropdownItem<Repository>()
           .setName(<SelectorItemButton repository={repository}/>)
