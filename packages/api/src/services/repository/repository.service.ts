@@ -12,6 +12,7 @@ import {Mapper} from '../../providers/mapper/mapper';
  * and mapping the responses to application models.
  */
 export class RepositoryService implements Service {
+  private readonly GRAPHQL_REPO_AUTHORITY = 'GRAPHQL';
   private repositoryRestService: RepositoryRestService;
   private repositoryListMapper: Mapper<RepositoryList>;
   private repositorySizeInfoMapper: Mapper<RepositorySizeInfo>;
@@ -48,6 +49,14 @@ export class RepositoryService implements Service {
 
   isSystemRepository(repository: Repository): boolean {
     return repository.id === 'SYSTEM';
+  }
+
+  getCurrentGqlRepoAuthority(action: string, repoId: string): string {
+    return `${this.getCurrentRepoAuthority(action, repoId)}:${this.GRAPHQL_REPO_AUTHORITY}`;
+  }
+
+  getOverallGqlRepoAuthority(action: string): string {
+    return `${this.getOverallRepoAuthority(action)}:${this.GRAPHQL_REPO_AUTHORITY}`;
   }
 
   getLocationSpecificId(repo: Repository): string {

@@ -12,6 +12,7 @@ import {RepositoryService} from '../repository';
  */
 export class AuthenticationService implements Service {
   private readonly repositoryService = ServiceProvider.get(RepositoryService);
+  private readonly securityContextService = ServiceProvider.get(SecurityContextService);
 
   login(): string {
     return 'Authentication.login from the API';
@@ -92,6 +93,30 @@ export class AuthenticationService implements Service {
     }
 
     return true;
+  }
+
+  canReadGqlRepo(repository: Repository): boolean {
+    if (!repository || repository.id === '') {
+      return false;
+    }
+    return this.hasGraphqlAuthority(Rights.READ, repository);
+  }
+
+  private hasGraphqlAuthority(action: string, repo: Repository): boolean {
+    const user = this.securityContextService.getAuthenticatedUser();
+
+    if (!user) {
+      return false;
+    }
+
+    const repoId = this.repositoryService.getLocationSpecificId(repo);
+    const overCurrentRepoGraphql = this.repositoryService.getCurrentGqlRepoAuthority(action, repoId);
+    const overAllReposGraphql = this.repositoryService.getOverallGqlRepoAuthority(action);
+
+    return (
+      user.authorities.hasAuthority(overCurrentRepoGraphql as Authority) ||
+      user.authorities.hasAuthority(overAllReposGraphql as Authority)
+    );
   }
 
   private isAdminOrRepoManager() {
