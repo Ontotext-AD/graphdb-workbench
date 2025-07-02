@@ -2,11 +2,10 @@ import {TooltipUtil} from './tooltip-util';
 import * as tippyModule from 'tippy.js';
 import {newSpecPage, SpecPage} from "jest-stencil-runner";
 
-const tippySpy = jest.spyOn(tippyModule, 'default');
-
 describe('TooltipUtil', () => {
   let element: HTMLElement;
   let page: SpecPage;
+  let tippySpy;
 
   beforeEach(async () => {
     page = await newSpecPage({
@@ -14,6 +13,18 @@ describe('TooltipUtil', () => {
       html: '<button>Click me</button>',
     });
     element = page.body.querySelector('button');
+
+    tippySpy = jest.spyOn(tippyModule, 'default')
+      // @ts-ignore
+      .mockImplementation((t, p) => {
+        const tippyInstance: tippyModule.Instance = {
+          destroy: jest.fn(),
+          setContent: jest.fn()
+        } as unknown as tippyModule.Instance;
+        // @ts-ignore
+        t._tippy = tippyInstance;
+        return tippyInstance;
+      });
   });
 
   afterEach(() => {
@@ -27,9 +38,7 @@ describe('TooltipUtil', () => {
     });
 
     it('should return the existing tooltip instance', () => {
-      const instance = {} as tippyModule.Instance;
-      // @ts-ignore
-      element._tippy = instance;
+      const instance = TooltipUtil.getOrCreateTooltipInstance(element);
       expect(TooltipUtil.getTooltipInstance(element)).toBe(instance);
     });
   });
@@ -51,60 +60,61 @@ describe('TooltipUtil', () => {
         trigger: 'click',
         appendTo: expect.anything(),
       }));
+      expect(element.classList.contains('onto-tooltip')).toBeTruthy();
     });
   });
 
   describe('getOrCreateTooltipInstance', () => {
     it('should return existing tooltip instance if present', () => {
-      const instance = {} as tippyModule.Instance;
-      // @ts-ignore
-      element._tippy = instance;
+      const instance = TooltipUtil.createTooltip(element);
       const result = TooltipUtil.getOrCreateTooltipInstance(element);
       expect(result).toBe(instance);
     });
 
     it('should create new instance if none exists', () => {
       element.setAttribute('tooltip-content', 'new');
-      TooltipUtil.getOrCreateTooltipInstance(element);
+      let instance = TooltipUtil.getTooltipInstance(element);
+      expect(instance).toBeFalsy();
+      instance = TooltipUtil.getOrCreateTooltipInstance(element);
+      expect(instance).toBeTruthy();
       expect(tippySpy).toHaveBeenCalled();
     });
   });
 
   describe('updateTooltipContent', () => {
     it('should update content if tooltip exists and content is not empty', () => {
-      const setContent = jest.fn();
-      const instance = {setContent} as unknown as tippyModule.Instance;
-      // @ts-ignore
-      element._tippy = instance;
-
+      const instance = TooltipUtil.createTooltip(element);
       TooltipUtil.updateTooltipContent(element, 'Updated');
-      expect(setContent).toHaveBeenCalledWith('Updated');
+      expect(instance.setContent).toHaveBeenCalledWith('Updated');
     });
 
     it('should do nothing if no tooltip is present', () => {
+      TooltipUtil.updateTooltipContent(element, 'Noop')
       expect(() => TooltipUtil.updateTooltipContent(element, 'Noop')).not.toThrow();
     });
 
     it('should do nothing if content is empty', () => {
-      const setContent = jest.fn();
-      const instance = {setContent} as unknown as tippyModule.Instance;
-      // @ts-ignore
-      element._tippy = instance;
-
+      const instance = TooltipUtil.createTooltip(element);
       TooltipUtil.updateTooltipContent(element, '');
-      expect(setContent).not.toHaveBeenCalled();
+      expect(instance.setContent).not.toHaveBeenCalled();
     });
   });
 
   describe('destroyTooltip', () => {
-    it('should destroy tooltip if instance exists', () => {
+    it('should not destroy tooltip if instance exists, but not created by util method', () => {
       const destroy = jest.fn();
       const instance = {destroy} as unknown as tippyModule.Instance;
       // @ts-ignore
       element._tippy = instance;
 
       TooltipUtil.destroyTooltip(element);
-      expect(destroy).toHaveBeenCalled();
+      expect(destroy).not.toHaveBeenCalled();
+    });
+
+    it('should destroy tooltip if instance exists when created by util method', () => {
+      const instance = TooltipUtil.getOrCreateTooltipInstance(element);
+      TooltipUtil.destroyTooltip(element);
+      expect(instance.destroy).toHaveBeenCalled();
     });
 
     it('should not throw if no instance exists', () => {
