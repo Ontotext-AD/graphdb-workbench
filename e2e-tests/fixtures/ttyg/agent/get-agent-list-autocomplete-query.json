@@ -6,7 +6,7 @@
         "temperature": 0.7,
         "topP": 1.0,
         "repositoryId": "starwars",
-        "instructions": {
+        "assistantsInstructions": {
             "systemInstruction": null,
             "userInstruction": null
         },
