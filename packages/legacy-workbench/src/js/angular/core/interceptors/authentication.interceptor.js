@@ -11,10 +11,15 @@ angular.module('graphdb.framework.core.interceptors.authentication', [
                     const headers = config.headers || {};
 
                     // When using OpenID, during authentication process, the additional headers modification must be skipped
-                    const openIDUrls = [AuthTokenService.OPENID_CONFIG.openIdKeysUri, AuthTokenService.OPENID_CONFIG.openIdTokenUrl];
-                    const isOpenIdUrl = openIDUrls.some((url) => config.url.indexOf(url) > -1);
-                    if (isOpenIdUrl) {
-                        return config;
+                    const openIdKeysUri = AuthTokenService.OPENID_CONFIG.openIdKeysUri;
+                    const openIdTokenUrl = AuthTokenService.OPENID_CONFIG.openIdTokenUrl;
+
+                    if (openIdKeysUri && openIdTokenUrl) {
+                        const openIDUrls = [openIdKeysUri, openIdTokenUrl];
+                        const isOpenIdUrl = openIDUrls.some((url) => config.url && config.url.indexOf(url) > -1);
+                        if (isOpenIdUrl) {
+                            return config;
+                        }
                     }
 
                     // Angular doesn't send this header by default, and we need it to detect XHR requests
