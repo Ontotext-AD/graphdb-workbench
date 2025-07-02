@@ -6,8 +6,8 @@ angular
 
 TTYGRestService.$inject = ['$http'];
 
-const CONVERSATIONS_ENDPOINT = 'rest/chat/conversations';
-const AGENTS_ENDPOINT = 'rest/chat/agents';
+const CONVERSATIONS_ENDPOINT = 'rest/ttyg/chats';
+const AGENTS_ENDPOINT = 'rest/ttyg/agents';
 const EXPLAIN_RESPONSE_ENDPOINT = `${CONVERSATIONS_ENDPOINT}/explain`;
 const PROVIDER_ENDPOINT = 'rest/ttyg/provider';
 
