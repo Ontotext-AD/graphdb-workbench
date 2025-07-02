@@ -207,60 +207,71 @@ export class AgentInstructionsModel {
 }
 
 export class ExtractionMethodModel {
-    constructor(data) {
+    constructor({
+                    method,
+                    ontologyGraph = null,
+                    addMissingNamespaces = null,
+                    sparqlQuery = null,
+                    similarityIndex = null,
+                    similarityIndexThreshold = null,
+                    maxNumberOfTriplesPerCall = null,
+                    queryTemplate = null,
+                    retrievalConnectorInstance = null,
+                    limit = null
+    }) {
         /**
          * The extraction method name.
          * @type {string}
          * @private
          */
-        this._method = data.method;
+        this._method = method;
         /**
          * Whether to add missing namespaces to the generated SPARQL query.
-         * @type {boolean}
+         * @type {boolean | null}
          * @private
          */
-        this._addMissingNamespaces = data.addMissingNamespaces;
+        this._addMissingNamespaces = addMissingNamespaces;
         /**
          * The ontology graph used for the extraction method.
-         * @type {string}
+         * @type {string | null}
          * @private
          */
-        this._ontologyGraph = data.ontologyGraph;
+        this._ontologyGraph = ontologyGraph;
         /**
          * The construct query used for the extraction method.
-         * @type {string}
+         * @type {string | null}
          * @private
          */
-        this._sparqlQuery = data.sparqlQuery;
+        this._sparqlQuery = sparqlQuery;
         /**
          * The maximum number of triples per call for the extraction method.
-         * @type {number}
+         * @type {number | null}
          */
-        this._maxNumberOfTriplesPerCall = data.maxNumberOfTriplesPerCall;
+        this._maxNumberOfTriplesPerCall = limit;
         /**
          * The similarity index used for the similarity extraction method.
-         * @type {string}
+         * @type {string | null}
          * @private
          */
-        this._similarityIndex = data.similarityIndex;
+        this._similarityIndex = similarityIndex;
         /**
          * The similarity threshold used for the similarity extraction method.
-         * @type {number}
+         * @type {number | null}
          * @private
          */
-        this._similarityIndexThreshold = data.similarityIndexThreshold;
+        this._similarityIndexThreshold = similarityIndexThreshold;
         /**
          * The query template used for the extraction method.
-         * @type {string}
+         * @type {string | null}
          * @private
          */
-        this._queryTemplate = data.queryTemplate;
+        this._queryTemplate = queryTemplate;
         /**
          * The retrieval connector instance used for the retrieval extraction method.
-         * @type {string}
+         * @type {string | null}
          * @private
          */
-        this._retrievalConnectorInstance = data.retrievalConnectorInstance;
+        this._retrievalConnectorInstance = retrievalConnectorInstance;
     }
 
     get method() {
@@ -357,7 +368,7 @@ export class AdditionalExtractionMethodsModel {
 export class AdditionalExtractionMethodModel {
     constructor(data) {
         /**
-         * @type {'iri_discovery_search' | 'autocomplete_iri_discovery_search'}
+         * @type {'iri_discovery' | 'autocomplete_iri_discovery_search'}
          * @private
          */
         this._method = data.method;
@@ -462,13 +473,13 @@ export class AgentListModel {
 
 export const ExtractionMethod = {
     FTS_SEARCH: 'fts_search',
-    SPARQL: 'sparql_search',
+    SPARQL: 'sparql_query',
     SIMILARITY: 'similarity_search',
     RETRIEVAL: 'retrieval_search'
 };
 
 export const AdditionalExtractionMethod = {
-    IRI_DISCOVERY_SEARCH: 'iri_discovery_search',
+    IRI_DISCOVERY: 'iri_discovery',
     AUTOCOMPLETE_IRI_DISCOVERY_SEARCH: 'autocomplete_iri_discovery_search'
 };
 

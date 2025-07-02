@@ -69,13 +69,13 @@ const agentInstructionsFormMapper = (currentAgentModelInstructions, defaultInstr
  */
 const extractionMethodsFormMapper = (agentFormModel, operation, defaultData, data = []) => {
     const defaultExtractionMethods = defaultData.filter((defaultExtractionMethod) => !data.some((agentMethod) => agentMethod.method === defaultExtractionMethod.method));
-    const defaultSparqlMethodValues = defaultData.find((defaultExtractionMethod) => defaultExtractionMethod.method === 'sparql_search');
+    const defaultSparqlMethodValues = defaultData.find((defaultExtractionMethod) => defaultExtractionMethod.method === 'sparql_query');
     const extractionMethods = [...data, ...defaultExtractionMethods];
     extractionMethods.forEach((extractionMethod) => {
         const isMethodSelected = data.some((method) => method.method === extractionMethod.method);
         // The sparqlOption is applicable only for the sparql_search method.
         let sparqlOption = '';
-        if (isMethodSelected && extractionMethod.method === 'sparql_search') {
+        if (isMethodSelected && extractionMethod.method === 'sparql_query') {
             if (AGENT_OPERATION.CREATE === operation) {
                 sparqlOption = '';
             } else if (extractionMethod.sparqlQuery) {
@@ -90,10 +90,10 @@ const extractionMethodsFormMapper = (agentFormModel, operation, defaultData, dat
             selected: shouldShowSelectedMethods && isMethodSelected,
             method: extractionMethod.method,
             sparqlOption: sparqlOption,
-            ontologyGraph: extractionMethod.ontologyGraph || defaultSparqlMethodValues.ontologyGraph,
+            ontologyGraph: extractionMethod.ontologyGraph ? extractionMethod.ontologyGraph : defaultSparqlMethodValues.ontologyGraph,
             addMissingNamespaces: extractionMethod.addMissingNamespaces,
             sparqlQuery: new TextFieldModel({
-                value: extractionMethod.sparqlQuery || defaultSparqlMethodValues.sparqlQuery,
+                value: extractionMethod.sparqlQuery ? extractionMethod.sparqlQuery : defaultSparqlMethodValues.sparqlQuery,
                 minLength: 1,
                 maxLength: 2380
             }),
@@ -133,7 +133,7 @@ function additionalExtractionMethodsFormMapper(additionalExtractionMethodsRespon
             method: method.method || defaultAdditionalExtractionMethodData.method,
             expanded: method.expanded || defaultAdditionalExtractionMethodData.expanded,
         };
-        if (method.method === AdditionalExtractionMethod.IRI_DISCOVERY_SEARCH || method.method === AdditionalExtractionMethod.AUTOCOMPLETE_IRI_DISCOVERY_SEARCH) {
+        if (method.method === AdditionalExtractionMethod.IRI_DISCOVERY || method.method === AdditionalExtractionMethod.AUTOCOMPLETE_IRI_DISCOVERY_SEARCH) {
             data.selected = additionalExtractionMethodsResponse.some((agentMethod) => agentMethod.method === method.method);
         }
 
@@ -175,7 +175,7 @@ export const agentModelMapper = (data, localRepositoryIds) => {
         temperature: data.temperature,
         topP: data.topP,
         seed: data.seed,
-        instructions: agentInstructionsMapper(data.instructions),
+        instructions: agentInstructionsMapper(data.assistantsInstructions),
         assistantExtractionMethods: extractionMethodsMapper(data.assistantExtractionMethods),
         additionalExtractionMethods: additionalExtractionMethodsMapper(data.additionalExtractionMethods),
         compatibility: data.compatibility,
@@ -186,47 +186,65 @@ const extractionMethodsMapper = (data) => {
     if (!data) {
         return;
     }
-    return data.map((extractionMethod) => extractionMethodMapper(extractionMethod));
-};
+    const methods = [];
 
-const extractionMethodMapper = (data) => {
-    if (!data) {
-        return;
+    if (data.sparql_query) {
+        methods.push(new ExtractionMethodModel({
+            method: 'sparql_query',
+            ontologyGraph: data.sparql_query.ontologyGraph,
+            addMissingNamespaces: data.sparql_query.addMissingNamespaces,
+            sparqlQuery: data.sparql_query.ontologyQuery
+        }));
     }
-    return new ExtractionMethodModel({
-        method: data.method,
-        ontologyGraph: data.ontologyGraph,
-        addMissingNamespaces: data.addMissingNamespaces,
-        sparqlQuery: data.sparqlQuery,
-        similarityIndex: data.similarityIndex,
-        similarityIndexThreshold: data.similarityIndexThreshold,
-        maxNumberOfTriplesPerCall: data.maxNumberOfTriplesPerCall,
-        queryTemplate: data.queryTemplate,
-        retrievalConnectorInstance: data.retrievalConnectorInstance
-    });
+
+    if (data.fts_search) {
+        methods.push(new ExtractionMethodModel({
+            method: 'fts_search',
+            limit: data.fts_search.limit
+        }));
+    }
+
+    if (data.similarity_search) {
+        methods.push(new ExtractionMethodModel({
+            method: 'similarity_search',
+            similarityIndex: data.similarity_search.similarityIndex,
+            similarityIndexThreshold: data.similarity_search.resultThreshold,
+            limit: data.similarity_search.limit
+        }));
+    }
+
+    if (data.retrieval_search) {
+        methods.push(new ExtractionMethodModel({
+            method: 'retrieval_search',
+            queryTemplate: data.retrieval_search.queryTemplate,
+            retrievalConnectorInstance: data.retrieval_search.connectorInstance,
+            limit: data.retrieval_search.limit
+        }));
+    }
+
+    return methods;
 };
 
 const additionalExtractionMethodsMapper = (data) => {
     if (!data) {
         return;
     }
-    return data.map((additionalExtractionMethod) => additionalExtractionMethodMapper(additionalExtractionMethod));
-};
+    const methods = [];
 
-const additionalExtractionMethodMapper = (data) => {
-    if (!data) {
-        return;
+    if (data.iri_discovery) {
+        methods.push(new AdditionalExtractionMethodModel({
+            method: AdditionalExtractionMethod.IRI_DISCOVERY
+        }));
     }
-    if (data.method === AdditionalExtractionMethod.AUTOCOMPLETE_IRI_DISCOVERY_SEARCH) {
-        return new AdditionalExtractionMethodModel({
-            method: data.method,
-            maxNumberOfResultsPerCall: data.limit || 0
-        });
-    } else if (data.method === AdditionalExtractionMethod.IRI_DISCOVERY_SEARCH) {
-        return new AdditionalExtractionMethodModel({
-            method: data.method
-        });
+
+    if (data.autocomplete_iri_discovery_search) {
+        methods.push(new AdditionalExtractionMethodModel({
+            method: AdditionalExtractionMethod.AUTOCOMPLETE_IRI_DISCOVERY_SEARCH,
+            maxNumberOfResultsPerCall: data.autocomplete_iri_discovery_search.limit || 0
+        }));
     }
+
+    return methods;
 };
 
 const agentInstructionsMapper = (data) => {

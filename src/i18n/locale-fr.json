@@ -499,7 +499,7 @@
                         "tooltip": "Limitez le nombre maximal de triplets renvoyés par la recherche en texte intégral. La valeur par défaut est automatique et déterminée au moment de l'exécution. En cas de doute, laissez la valeur par défaut.",
                         "placeholder": "Valeur automatique"
                     },
-                    "sparql_search": {
+                    "sparql_query": {
                         "label": "SPARQL",
                         "tooltip": "Répond aux questions en exécutant une requête SPARQL. Cela fonctionne bien pour les ensembles de données avec de bonnes ontologies et fonctionne bien sur les questions fermées, y compris les agrégations.",
                         "required_option": "Sélectionnez la manière dont une ontologie doit être récupérée"
@@ -605,7 +605,7 @@
                         "label": "Méthodes de requête supplémentaires",
                         "tooltip": "Des méthodes de requête supplémentaires complètent les méthodes de requête principales, mais ne peuvent pas être utilisées seules pour répondre à des questions générales.",
                         "method": {
-                            "iri_discovery_search": {
+                            "iri_discovery": {
                                 "label": "Recherche de texte intégral dans les étiquettes pour la découverte d'IRI",
                                 "tooltip": "Aide le modèle à découvrir les IRI (à l'aide de FTS) pour une requête incomplète particulière, par exemple le nom Michael dans \"Quel est le numéro de téléphone de Michael?\""
                             },

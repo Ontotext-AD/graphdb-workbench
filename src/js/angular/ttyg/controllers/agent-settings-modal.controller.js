@@ -19,7 +19,7 @@ angular
         'ngTagsInput'
     ])
     .constant('ExtractionMethodTemplates', {
-    'iri_discovery_search': 'iri-discovery-search',
+    'iri_discovery': 'iri-discovery-search',
     'autocomplete_iri_discovery_search': 'autocomplete-iri-discovery-search'
     })
     .controller('AgentSettingsModalController', AgentSettingsModalController);
@@ -655,7 +655,7 @@ function AgentSettingsModalController(
 
     const additionalExtractionPanelToggleHandlers = {
         [AdditionalExtractionMethod.AUTOCOMPLETE_IRI_DISCOVERY_SEARCH]: (extractionMethod) => handleAutocompleteExtractionMethodPanelToggle(extractionMethod),
-        [AdditionalExtractionMethod.IRI_DISCOVERY_SEARCH]: () => {},
+        [AdditionalExtractionMethod.IRI_DISCOVERY]: () => {},
     };
 
     const handleAutocompleteExtractionMethodPanelToggle = () => {

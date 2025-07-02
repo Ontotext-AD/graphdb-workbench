@@ -500,7 +500,7 @@
                         "tooltip": "Limit the maximum number of triples returned by Full-text search. The default value is automatic and determined at runtime. If not sure, leave the default value.",
                         "placeholder": "Automatic value"
                     },
-                    "sparql_search": {
+                    "sparql_query": {
                         "label": "SPARQL",
                         "tooltip": "Answers questions by performing a SPARQL query. This works well for datasets with good ontologies and performs well on closed-ended questions, including aggregations.",
                         "required_option": "Select how an ontology should be fetched"
@@ -606,7 +606,7 @@
                         "label": "Additional query methods",
                         "tooltip": "Additional query methods supplement the main query methods but cannot be used on their own to answer general questions.",
                         "method": {
-                            "iri_discovery_search": {
+                            "iri_discovery": {
                                 "label": "Full-text search in labels for IRI discovery",
                                 "tooltip": "Helps the model discover the IRIs (using FTS) for a particular incomplete query, for example the name Michael in \"What's Michael's phone number?\""
                             },

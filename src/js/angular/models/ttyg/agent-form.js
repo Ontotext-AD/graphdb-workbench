@@ -90,7 +90,7 @@ export class AgentFormModel {
         const additionalExtractionMethods = [];
         additionalExtractionMethods.push(
             new AdditionalExtractionMethodFormModel({
-                method: AdditionalExtractionMethod.IRI_DISCOVERY_SEARCH}),
+                method: AdditionalExtractionMethod.IRI_DISCOVERY}),
             new AdditionalExtractionMethodFormModel({
                 method: AdditionalExtractionMethod.AUTOCOMPLETE_IRI_DISCOVERY_SEARCH,
                 maxNumberOfResultsPerCall: 0}));
@@ -218,7 +218,10 @@ export class ExtractionMethodsFormModel {
     toPayload() {
         return this._extractionMethods
             .filter((method) => method.selected)
-            .map((method) => method.toPayload());
+            .reduce((acc, method) => {
+                acc[method.method] = method.toPayload();
+                return acc;
+            }, {});
     }
 
     /**
@@ -275,7 +278,7 @@ export class ExtractionMethodFormModel {
     constructor(data) {
         this._selected = data.selected || false;
         /**
-         * @type {'fts_search' | 'sparql_search' | 'similarity_search' | 'retrieval_search'}
+         * @type {'fts_search' | 'sparql_query' | 'similarity_search' | 'retrieval_search'}
          * @private
          */
         this._method = data.method;
@@ -336,8 +339,11 @@ export class ExtractionMethodFormModel {
 
     toPayload() {
         // Add to the payload only the properties which are available in the model.
-        const payload = {};
-        payload.method = this._method ? this._method : null;
+        const payload = {
+            // Required property for the backend model.
+            // It is not tracked in the UI, but must be added to the form model payload for all extraction methods
+            enabled: true
+        };
         // SPARQL method - only one of the following properties can be set
         if (this._sparqlOption === 'ontologyGraph') {
             payload.ontologyGraph = this._ontologyGraph ? this._ontologyGraph : null;
@@ -352,7 +358,7 @@ export class ExtractionMethodFormModel {
         }
         // this is used for all but the SPARQL method
         if (this._maxNumberOfTriplesPerCall) {
-            payload.maxNumberOfTriplesPerCall = this._maxNumberOfTriplesPerCall;
+            payload.limit = this._maxNumberOfTriplesPerCall;
         }
         // Similarity search method
         if (this._similarityIndex) {
@@ -480,7 +486,10 @@ export class AdditionalExtractionMethodsFormModel {
     toPayload() {
         return this._additionalExtractionMethods
             .filter((method) => method.selected)
-            .map((method) => method.toPayload());
+            .reduce((acc, method) => {
+                acc[method.method] = method.toPayload();
+                return acc;
+            }, {});
     }
 
     /**
@@ -522,7 +531,7 @@ export class AdditionalExtractionMethodFormModel {
     constructor(data) {
         this._selected = data.selected || false;
         /**
-         * @type {'iri_discovery_search' | 'autocomplete_iri_discovery_search'}
+         * @type {'iri_discovery' | 'autocomplete_iri_discovery_search'}
          * @private
          */
         this._method = data.method;
@@ -531,10 +540,12 @@ export class AdditionalExtractionMethodFormModel {
     }
 
     toPayload() {
-        const payload = {};
         const isAutocompleteMethod = this._method === AdditionalExtractionMethod.AUTOCOMPLETE_IRI_DISCOVERY_SEARCH;
-        payload.method = this._method;
-
+        // Required property for the backend model.
+        // It is not tracked in the UI, but must be added to the form model payload for all extraction methods
+        const payload = {
+            enabled: true
+        };
         if (isAutocompleteMethod && this._maxNumberOfResultsPerCall) {
             payload.limit = this._maxNumberOfResultsPerCall;
         }
