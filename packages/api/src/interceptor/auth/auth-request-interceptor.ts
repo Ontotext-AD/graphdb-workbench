@@ -59,8 +59,16 @@ export class AuthRequestInterceptor extends HttpInterceptor<HttpRequest> {
     if (!openIdConfig) {
       return true;
     }
-    const openIDUrls = [openIdConfig?.openIdKeysUri, openIdConfig?.openIdTokenUrl];
-    const isOpenIdUrl = openIDUrls.some((url) => url && request.url.indexOf(url) > -1);
-    return !isOpenIdUrl;
+
+    const openIdKeysUri = openIdConfig?.openIdKeysUri;
+    const openIdTokenUrl = openIdConfig?.openIdTokenUrl;
+
+    if (openIdKeysUri && openIdTokenUrl) {
+      const openIDUrls = [openIdConfig?.openIdKeysUri, openIdConfig?.openIdTokenUrl];
+      const isOpenIdUrl = openIDUrls.some((url) => url && request.url.indexOf(url) > -1);
+      return !isOpenIdUrl;
+    }
+
+    return true;
   }
 }
