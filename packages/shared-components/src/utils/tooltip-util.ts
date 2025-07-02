@@ -9,6 +9,7 @@ export class TooltipUtil {
   private static readonly ATTR_PLACEMENT = 'tooltip-placement';
   private static readonly ATTR_TRIGGER = 'tooltip-trigger';
   private static readonly ATTR_APPEND_TO = 'tooltip-append-to';
+  private static readonly TOOLTIP_CLASS = 'onto-tooltip';
 
   /**
    * Returns the Tippy instance associated with an element, if it exists.
@@ -26,6 +27,7 @@ export class TooltipUtil {
    * @returns The newly created Tippy Instance.
    */
   static createTooltip(target: HTMLElement): Instance {
+    target.classList.add(TooltipUtil.TOOLTIP_CLASS);
     return tippy(target, TooltipUtil.getConfig(target));
   }
 
@@ -68,7 +70,7 @@ export class TooltipUtil {
    */
   static destroyTooltip(target: HTMLElement): void {
     const tip = TooltipUtil.getTooltipInstance(target);
-    if (tip && !tip.state?.isDestroyed) {
+    if (target.classList.contains(TooltipUtil.TOOLTIP_CLASS) && tip && !tip.state?.isDestroyed) {
       tip.destroy();
     }
   }
