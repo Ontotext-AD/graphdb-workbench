@@ -80,12 +80,15 @@ describe('TTYG agent list', () => {
         TTYGViewSteps.visit();
         // Then: Only the delete action should be available for incompatible agents
         TTYGViewSteps.expandAgentsSidebar();
-        TTYGViewSteps.openAgentActionMenu(0);
+        TTYGViewSteps.getAgentsPanel(0).should('be.visible');
+        TTYGViewSteps.getOpenAgentActionsButton(0).should('be.visible');
+        TTYGViewSteps.toggleAgentActionMenu(0);
         TTYGViewSteps.getDeleteAgentButton(0).should('be.visible');
         TTYGViewSteps.getCloneAgentButton(0).should('not.exist');
         TTYGViewSteps.getEditAgentButton(0).should('not.exist');
+        TTYGViewSteps.toggleAgentActionMenu(0);
         // And: All actions should be available for compatible agents
-        TTYGViewSteps.openAgentActionMenu(1);
+        TTYGViewSteps.toggleAgentActionMenu(1);
         TTYGViewSteps.getDeleteAgentButton(1).should('be.visible');
         TTYGViewSteps.getCloneAgentButton(1).should('be.visible');
         TTYGViewSteps.getEditAgentButton(1).should('be.visible');
