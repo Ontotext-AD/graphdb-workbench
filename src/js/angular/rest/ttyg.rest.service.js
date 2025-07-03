@@ -9,8 +9,9 @@ TTYGRestService.$inject = ['$http'];
 const CONVERSATIONS_ENDPOINT = 'rest/chat/conversations';
 const AGENTS_ENDPOINT = 'rest/chat/agents';
 const EXPLAIN_RESPONSE_ENDPOINT = `${CONVERSATIONS_ENDPOINT}/explain`;
+const PROVIDER_ENDPOINT = 'rest/ttyg/provider';
 
-const DEVELOPMENT = false;
+const DEVELOPMENT = true;
 
 function TTYGRestService($http) {
 
@@ -209,6 +210,17 @@ function TTYGRestService($http) {
         return $http.post(`${AGENTS_ENDPOINT}/explain`, data);
     };
 
+    const getProvider = () => {
+      if (DEVELOPMENT) {
+          return _fakeBackend.getProvider();
+      }
+      return $http.get(PROVIDER_ENDPOINT, {
+          headers: {
+              'Accept': 'application/json'
+          }
+      });
+    }
+
     return {
         getConversation,
         renameConversation,
@@ -225,6 +237,7 @@ function TTYGRestService($http) {
         deleteAgent,
         explainResponse,
         getAgentDefaultValues,
-        explainAgentSettings
+        explainAgentSettings,
+        getProvider
     };
 }

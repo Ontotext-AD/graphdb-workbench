@@ -1,0 +1,11 @@
+<div class="help-info">
+    <div ng-if="helpInfo.ttygHelpInfo">
+        <p ng-bind-html="helpInfo.ttygHelpInfo"></p>
+    </div>
+    <div ng-if="helpInfo.documentationUrl">
+        <a ng-href="{{helpInfo.documentationUrl}}" target="_blank" rel="noopener">
+            {{helpInfo.learnMoreKey | translate}}
+        </a>
+        <i class="fa fa-arrow-up-right-from-square"></i>
+    </div>
+</div>

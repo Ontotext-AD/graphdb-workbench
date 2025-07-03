@@ -172,6 +172,8 @@ function AgentSettingsModalController(
      */
     $scope.autocompleteSuggestions = [];
 
+    $scope.provider = TTYGContextService.getProvider();
+
     // =========================
     // Public functions
     // =========================
@@ -226,11 +228,25 @@ function AgentSettingsModalController(
      * should be properly rendered.
      * @return {*}
      */
-    $scope.getModelHelpMessage = () => {
+    $scope.getModelHelpMessage = () => { // TODO: no longer used in template, move to private functions
         // The hint contains a html link which should be properly rendered.
         const message = decodeHTML($translate.instant('ttyg.agent.create_agent_modal.form.model.hint'));
         return $sce.trustAsHtml(message);
     };
+
+    /**
+     * Contains the help information for the agent LLM provider property.
+     * This is needed because the hint contains an HTML link that should be properly rendered.
+     */
+    $scope.helpInfoForLlm = {
+        ttygHelpInfo:  $sce.trustAsHtml($translate.instant('ttyg.agent.create_agent_modal.form.llm_provider.tooltip')),
+        documentationUrl: "https://graphdb.ontotext.com/documentation/11.0/talk-to-graph.html#prerequisites-and-configuration",
+        learnMoreKey: "ttyg.agent.create_agent_modal.form.llm_provider.documentation_text"
+    };
+
+    $scope.helpInfoForModel = {
+        ttygHelpInfo: $scope.getModelHelpMessage()
+    }
 
     /**
      * Resolves the hint for the FTS search missing message. This is needed because the hint contains a html link that
