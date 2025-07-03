@@ -2,7 +2,6 @@ import {OntoToastrService} from '../onto-toastr.service';
 
 describe('OntoToastrService', () => {
   let service: OntoToastrService;
-  window.crypto.randomUUID = jest.fn();
 
   beforeEach(() => {
     service = new OntoToastrService();

@@ -7,7 +7,6 @@ import {OperationSummaryMapper} from '../mapper/operation-summary-mapper';
 
 describe('MonitoringService', () => {
   let monitoringService: MonitoringService;
-  window.crypto.randomUUID = jest.fn();
 
   beforeEach(() => {
     monitoringService = new MonitoringService();

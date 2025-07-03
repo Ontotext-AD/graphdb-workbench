@@ -3,7 +3,7 @@
  */
 export class GeneratorUtils {
   /**
-   * Generates a random UUID (Universally Unique Identifier) using the browser's crypto API.
+   * Generates a pseudo random UUID (Universally Unique Identifier).
    *
    * This method creates a version 4 UUID, which is based on random numbers.
    * The generated UUID follows the RFC 4122 standard format.
@@ -13,7 +13,28 @@ export class GeneratorUtils {
    * and y is one of 8, 9, a, or b.
    */
   static uuid(): string {
-    return window.crypto.randomUUID();
+    const HEX_RADIX = 16;
+    const UUID_V4_TEMPLATE = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx';
+    const VARIANT_BITMASK = 0x3;
+    const VARIANT_VALUE = 0x8;
+
+    let timestamp = new Date().getTime();
+    let performanceNow = (performance?.now() ?? 0) * 1000;
+
+    return UUID_V4_TEMPLATE.replace(/[xy]/g, (char) => {
+      let random = Math.random() * HEX_RADIX;
+
+      if (timestamp > 0) {
+        random = (timestamp + random) % HEX_RADIX | 0;
+        timestamp = Math.floor(timestamp / HEX_RADIX);
+      } else {
+        random = (performanceNow + random) % HEX_RADIX | 0;
+        performanceNow = Math.floor(performanceNow / HEX_RADIX);
+      }
+
+      const value = char === 'x' ? random : (random & VARIANT_BITMASK) | VARIANT_VALUE;
+      return value.toString(HEX_RADIX);
+    });
   }
 
   /**

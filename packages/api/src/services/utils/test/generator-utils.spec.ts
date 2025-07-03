@@ -12,4 +12,13 @@ describe('Generator Utils', () => {
     const str2 = 'hello universe';
     expect(GeneratorUtils.hashCode(str1)).not.toEqual(GeneratorUtils.hashCode(str2));
   });
+
+  test('should generate a valid UUID', () => {
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+    expect(uuidRegex.test(GeneratorUtils.uuid())).toEqual(true);
+  });
+
+  test('should generate a different UUID for each call', () => {
+    expect(GeneratorUtils.uuid()).not.toEqual(GeneratorUtils.uuid());
+  });
 });

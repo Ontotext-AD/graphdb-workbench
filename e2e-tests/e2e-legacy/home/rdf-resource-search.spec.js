@@ -14,7 +14,6 @@ describe('RDF resource search', () => {
         cy.createRepository({id: repositoryId});
         cy.initializeRepository(repositoryId);
         cy.enableAutocomplete(repositoryId);
-        BrowserStubs.stubCryptoUUID();
     });
 
     afterEach(() => {
