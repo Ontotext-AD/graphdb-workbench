@@ -27,8 +27,7 @@ export class AutocompleteSearchResult extends Model<AutocompleteSearchResult> {
    * Sets the hovered state of the first suggestion to true, if present.
    */
   hoverFirstSuggestion() {
-    this.hoverSuggestion(this.getSuggestions().getItems()[0]);
-    return this.copy();
+    return this.hoverSuggestion(this.getSuggestions().getItems()[0]);
   }
 
   /**
