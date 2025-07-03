@@ -9,6 +9,23 @@ const INSTALLATION_COOKIE_VERSION = 'WB1';
 // In this case, the cookie is set to expire in 400 days from the date it is created.
 const INSTALLATION_COOKIE_EXPIRATION_IN_DAYS = 400;
 
+/**
+ * The SameSite attribute controls when the browser includes this cookie in request headers:
+ *
+ * - First-party requests (same-site):
+ *   - Always include the cookie for any method (GET, POST, PUT, etc.).
+ *
+ * - Cross-site requests (third-party):
+ *   - 'Strict':  never include the cookie in any cross-site context.
+ *   - 'Lax':     include the cookie only on top-level GET navigations (e.g., clicking a link, entering URL),
+ *                but block it on background or embedded requests (iframes, AJAX, form POSTs).
+ *   - 'None':    include the cookie in all cross-site requests but requires Secure (HTTPS) flag.
+ *
+ * We choose 'Lax' to ensure cookies are sent on normal navigations while preventing
+ * them on most cross-site POSTs and embedded resource requests, reducing CSRF exposure.
+ */
+const SAME_SITE_POLICY = 'Lax';
+
 const modules = [];
 
 angular.module('graphdb.framework.core.services.installationCookieService', modules)
@@ -43,7 +60,7 @@ function InstallationCookieService(CookieService) {
     const set = (installationId) => {
         const timestamp = Date.now();
         const cookieValue = `${INSTALLATION_COOKIE_VERSION}.${installationId}.${timestamp}`;
-        CookieService.set(INSTALLATION_COOKIE_NAME, cookieValue, {expiration: INSTALLATION_COOKIE_EXPIRATION_IN_DAYS});
+        CookieService.set(INSTALLATION_COOKIE_NAME, cookieValue, {expiration: INSTALLATION_COOKIE_EXPIRATION_IN_DAYS, sameSite: SAME_SITE_POLICY});
     };
 
     /**
