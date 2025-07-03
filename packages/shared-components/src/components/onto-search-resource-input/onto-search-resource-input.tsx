@@ -68,9 +68,11 @@ export class OntoSearchResourceInput {
   @Prop() isHidden = false;
 
   @Watch('isHidden')
-  onVisibilityChange(isVisible: boolean) {
-    if (!isVisible) {
-      this.scrollToActiveSuggestion();
+  onVisibilityChange(isHidden: boolean) {
+    if (isHidden) {
+      this.searchResult?.clearSuggestions();
+    } else {
+      this.loadAutocompleteResults();
     }
   }
 
@@ -94,7 +96,7 @@ export class OntoSearchResourceInput {
   /**
    * Whether the autocomplete setting is enabled.
    */
-  @State() private isAutocompleteEnabled = true;
+  @State() private isAutocompleteEnabled = false;
 
   connectedCallback() {
     this.onAutocompleteEnabledChange();
@@ -172,6 +174,10 @@ export class OntoSearchResourceInput {
   };
 
   private loadAutocompleteResults() {
+    if (!this.inputValue) {
+      this.searchResult?.clearSuggestions();
+      return;
+    }
     if (this.isAutocompleteEnabled) {
       this.autocompleteService.search(this.inputValue)
         .then((searchResult) => {
@@ -198,12 +204,7 @@ export class OntoSearchResourceInput {
     this.isAutocompleteEnabled = this.autocompleteStorageService.isEnabled();
     this.subscriptions.add(
       this.autocompleteContextService.onAutocompleteEnabledChanged((enabled) => {
-        if (enabled != undefined) {
-          this.isAutocompleteEnabled = enabled;
-        }
-        if (!this.isAutocompleteEnabled) {
-          this.searchResult = this.searchResult?.clearSuggestions();
-        }
+        this.isAutocompleteEnabled = enabled ?? this.isAutocompleteEnabled;
       })
     );
   }
@@ -356,10 +357,7 @@ export class OntoSearchResourceInput {
     if (!this.preserveSearch) {
       return;
     }
-    const savedInput = this.resourceSearchStorageService.getInputValue();
-    if (savedInput) {
-      this.setInputValue(savedInput);
-    }
+    this.inputValue = this.resourceSearchStorageService.getInputValue() || '';
   }
 
   private onResultsReceived(searchResult: AutocompleteSearchResult) {
@@ -373,11 +371,5 @@ export class OntoSearchResourceInput {
       this.searchResult = searchResult.hoverFirstSuggestion();
       this.scrollToSuggestionBySelector('p.hovered', {block: 'start'});
     }
-  }
-
-  private scrollToActiveSuggestion() {
-    const lastSelectedSuggestion = this.resourceSearchStorageService.getLastSelectedValue();
-    const scrollToInitially = lastSelectedSuggestion ? 'p.selected' : 'p.hovered';
-    this.scrollToSuggestionBySelector(scrollToInitially, {block: 'start'});
   }
 }
