@@ -3,11 +3,6 @@ import {BaseSteps} from "../../steps/base-steps";
 import {NavbarSteps} from "../../steps/navbar/navbar-steps";
 
 describe('RDF Search', () => {
-  beforeEach(() => {
-    cy.on('window:before:load', (win) => {
-      win.crypto.randomUUID = () => new Date().toISOString();
-    })
-  })
 
   it('should display RDF search', () => {
     // Given, I visit the RDF search page

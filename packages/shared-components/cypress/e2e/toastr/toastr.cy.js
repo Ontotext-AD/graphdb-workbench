@@ -10,12 +10,6 @@ const assertToastMessage = (toastClass, toastIconClass) => {
 }
 
 describe('OntoToastr', () => {
-  beforeEach(() => {
-    cy.on('window:before:load', (win) => {
-      win.crypto.randomUUID = () => '123e4567-e89b-12d3-a456-426655440000';
-    });
-  });
-
   it('should display different toast types', () => {
     // Given I visit the onto-toastr page
     ToastrSteps.visit();

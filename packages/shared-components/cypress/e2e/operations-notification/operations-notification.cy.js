@@ -19,12 +19,6 @@ const assertRedirectLink = (index, textValue) => {
 }
 
 describe('onto-operations-notification', () => {
-  beforeEach(() => {
-    cy.on('window:before:load', (win) => {
-      win.crypto.randomUUID = () => '123e4567-e89b-12d3-a456-426655440000';
-    });
-  });
-
   it('should display operations notification', () => {
     // Given, I am on the operations notification page and I have added mock operations
     OperationsNotificationSteps.visit();
