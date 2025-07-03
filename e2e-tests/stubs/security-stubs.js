@@ -1,5 +1,9 @@
 export class SecurityStubs {
 
+    static spyOnAuthenticatedUser() {
+        cy.intercept('/rest/security/authenticated-user').as('get-authenticated-user')
+    }
+
     static stubUserSecurity(infer = true, sameAs = true, userName = 'admin') {
         cy.intercept(`rest/security/users/${userName}`, (req) => {
             req.reply(SecurityStubs.getAdminResponse(infer, sameAs));

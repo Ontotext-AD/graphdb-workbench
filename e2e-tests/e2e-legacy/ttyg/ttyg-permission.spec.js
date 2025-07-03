@@ -1,9 +1,9 @@
 import {RepositoriesStubs} from "../../stubs/repositories/repositories-stubs";
 import {RepositoriesStub} from "../../stubs/repositories-stub";
-import {UserAndAccessSteps} from "../../steps/setup/user-and-access-steps";
 import {TTYGStubs} from "../../stubs/ttyg/ttyg-stubs";
 import {TTYGViewSteps} from "../../steps/ttyg/ttyg-view-steps";
 import {LoginSteps} from "../../steps/login-steps";
+import {SecurityStubs} from "../../stubs/security-stubs";
 
 const USER_WITH_ROLE_USER = 'ttyg_user';
 const USER_WITH_ROLE_REPO_MANAGER = 'ttyg_repo_manager';
@@ -14,12 +14,8 @@ const DISABLED = false;
 
 describe('TTYG permissions', () => {
 
-
     before(() => {
-        RepositoriesStubs.stubRepositories(0, '/repositories/get-ttyg-repositories.json');
-        RepositoriesStub.stubBaseEndpoints('starwars');
         cy.loginAsAdmin();
-        cy.presetRepository('starwars');
         cy.createUser({username: USER_WITH_ROLE_USER, password: PASSWORD});
         cy.createUser({
             username: USER_WITH_ROLE_REPO_MANAGER,
@@ -29,6 +25,13 @@ describe('TTYG permissions', () => {
         cy.switchOnSecurity();
     });
 
+    beforeEach(() => {
+        SecurityStubs.spyOnAuthenticatedUser();
+        RepositoriesStubs.stubRepositories(0, '/repositories/get-ttyg-repositories.json');
+        RepositoriesStub.stubBaseEndpoints('starwars');
+        cy.presetRepository('starwars');
+    })
+
     after(() => {
         cy.loginAsAdmin();
         cy.deleteUser(USER_WITH_ROLE_USER, true);
@@ -36,14 +39,17 @@ describe('TTYG permissions', () => {
         cy.switchOffSecurity(true);
     });
 
-    it('should disable all buttons that can modify the agent', () => {
-
+    it('should disable all buttons that can modify the agent when user is with ROLE_USER', () => {
         // When I log in with a user who has the ROLE_USER role, I expect all buttons modifying the agent to be disabled.
         verifyCanCreateAgentForFirstTime(USER_WITH_ROLE_USER, PASSWORD, DISABLED);
+    });
 
+    it('should enable all buttons that can modify the agent when user is with role ROLE_REPO_MANAGER', () => {
         // When I log in with a user who has the ROLE_REPO_MANAGER role, I expect all buttons modifying the agent to be enabled.
         verifyCanCreateAgentForFirstTime(USER_WITH_ROLE_REPO_MANAGER, PASSWORD, ENABLED);
+    });
 
+    it('should enable all buttons that can modify the agent when user is admin', () => {
         // When I log in with a user who is administrator, I expect all buttons modifying the agent to be enabled.
         verifyCanCreateAgentForFirstTime(USER_ADMINISTRATOR, PASSWORD, ENABLED);
     });
@@ -52,6 +58,10 @@ describe('TTYG permissions', () => {
         const shouldBe = enable ? 'be.enabled' : 'be.disabled';
         TTYGStubs.stubAgentListGet('/ttyg/agent/get-agent-list-0.json');
         TTYGViewSteps.visit();
+        cy.url().should('include', '/login');
+        cy.wait('@get-authenticated-user');
+        cy.wait('@get-authenticated-user');
+        cy.wait('@get-authenticated-user');
         LoginSteps.loginWithUser(user, password);
         TTYGViewSteps.getCreateFirstAgentButton().should(shouldBe);
         TTYGStubs.stubChatsListGet();
