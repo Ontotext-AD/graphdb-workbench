@@ -1,0 +1,12 @@
+{
+    "id": "requestBody.conversationId",
+    "name": "Han Solo is a character",
+    "timestamp": 43523452,
+    "messages": [],
+    "continueRunId": null,
+    "usage": {
+        "completionTokens": 50,
+        "promptTokens": 2450,
+        "totalTokens": 2500
+    }
+}
