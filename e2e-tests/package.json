@@ -29,6 +29,7 @@
     "url": "git+https://github.com/Ontotext-AD/graphdb-workbench.git"
   },
   "devDependencies": {
+    "@bahmutov/cypress-code-coverage": "^2.7.2",
     "cypress": "^14.5.0",
     "cypress-failed-log": "^2.10.0",
     "cypress-file-upload": "^5.0.8",
@@ -40,5 +41,22 @@
     "del": "^8.0.0",
     "minimist": "^1.2.8",
     "mocha-junit-reporter": "^2.2.1"
-  }
+  },
+    "nyc": {
+        "all": true,
+        "cwd": "..",
+        "temp-directory": "e2e-tests/.nyc_output",
+        "include": [
+            "packages/api/src/**/*.ts",
+            "packages/legacy-workbench/src/js/angular/**/*.js",
+            "packages/root-config/src/**/*.js",
+            "packages/shared-components/src/**/*.tsx",
+            "packages/workbench/src/**/*.ts"
+        ],
+        "reporter": [
+            "lcov",
+            "text",
+            "text-summary"
+        ]
+    }
 }

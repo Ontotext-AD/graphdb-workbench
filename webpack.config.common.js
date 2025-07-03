@@ -351,10 +351,11 @@ module.exports = (webpackConfigEnv, argv) => {
         module: {
             rules: [
                 {
-                  test: /\.js$/,
-                  exclude: /node_modules/,
+                  test: /\.(js|ts|tsx)$/,
+                  exclude: [/node_modules/, /src\/js\/lib/],
                   use: {
-                    loader: 'babel-loader'
+                    loader: 'babel-loader',
+                    options: { babelrc: true }
                   }
                 },
                 {

@@ -21,6 +21,7 @@ import './commands';
 
 import 'cypress-real-events';
 import 'cypress-file-upload';
+import '@bahmutov/cypress-code-coverage/support'
 import {LicenseStubs} from "../stubs/license-stubs";
 import {SecurityStubs} from "../stubs/security-stubs";
 

@@ -16,7 +16,9 @@ module.exports = defineConfig({
         // We've imported your old cypress plugins here.
         // You may want to clean this up later by importing these.
         setupNodeEvents(on, config) {
-            return require('./plugins')(on, config);
+            require('@bahmutov/cypress-code-coverage/plugin')(on, config);
+            require('./plugins')(on, config);
+            return config;
         },
         baseUrl: 'http://localhost:9000',
         specPattern: 'e2e-legacy/**/*.{js,jsx,ts,tsx}',
