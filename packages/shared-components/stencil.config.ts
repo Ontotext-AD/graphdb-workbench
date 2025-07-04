@@ -24,7 +24,7 @@ export const config: Config = {
       copy: [
         {src: 'pages'},
         {src: 'assets'},
-        {src: '../../root-config/src/styles/css/font-awesome', dest: 'pages/css'},
+        {src: '../../root-config/src/vendor/font-awesome', dest: 'pages/css'},
         {src: '../../api/dist/ontotext-workbench-api.js', dest: 'resources/ontotext-workbench-api.js'},
       ]
     },
