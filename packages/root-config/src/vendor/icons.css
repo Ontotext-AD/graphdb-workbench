@@ -3,11 +3,11 @@
 -------------------------------------------------------------*/
 @font-face {
     font-family: 'icomoon';
-    src: url('../fonts/icons.eot?z4jeba');
-    src: url('../fonts/icons.eot?z4jeba#iefix') format('embedded-opentype'),
-    url('../fonts/icons.ttf?z4jeba') format('truetype'),
-    url('../fonts/icons.woff?z4jeba') format('woff'),
-    url('../fonts/icons.svg?z4jeba#icons') format('svg');
+    src: url('../styles/fonts/icons.eot?z4jeba');
+    src: url('../styles/fonts/icons.eot?z4jeba#iefix') format('embedded-opentype'),
+    url('../styles/fonts/icons.ttf?z4jeba') format('truetype'),
+    url('../styles/fonts/icons.woff?z4jeba') format('woff'),
+    url('../styles/fonts/icons.svg?z4jeba#icons') format('svg');
     font-weight: normal;
     font-style: normal;
 }
