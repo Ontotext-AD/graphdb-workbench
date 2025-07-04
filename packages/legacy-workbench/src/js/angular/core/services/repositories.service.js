@@ -404,12 +404,6 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
             const eventData = {oldRepository: this.repository, newRepository: repo, cancel: false};
             eventEmitterService.emit('repositoryWillChangeEvent', eventData, (eventData) => {
                 if (!eventData.cancel) {
-                    // TODO: Move this in a subscription to updateSelectedRepository, after security is fully migrated.
-                    // If we do this now, we get race conditions, between the context services and the components. Both work
-                    // in parallel and it causes issues. Migrated components should load their data after updateApplicationDataState
-                    // is called, with DATA_LOADED. This will ensure components start loading their data, after the contexts are updated
-                    ServiceProvider.get(SecurityContextService).updateRestrictedPages(new RestrictedPages());
-
                     const repositoryContextService = ServiceProvider.get(RepositoryContextService);
                     // if the current repo is unreadable by the currently logged in user (or free access user)
                     // we unset the repository
@@ -426,6 +420,11 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
         this.onRepositorySet = function (newRepository) {
             this.setRepositoryHeaders(newRepository);
             $rootScope.$broadcast('repositoryIsSet', {newRepo: newRepository?.isNew});
+            // TODO: Move this in a subscription to updateSelectedRepository, after security is fully migrated.
+            // If we do this now, we get race conditions, between the context services and the components. Both work
+            // in parallel and it causes issues. Migrated components should load their data after updateApplicationDataState
+            // is called, with DATA_LOADED. This will ensure components start loading their data, after the contexts are updated
+            ServiceProvider.get(SecurityContextService).updateRestrictedPages(new RestrictedPages());
             // reset denied permissions (different repo, different rights)
             $rootScope.deniedPermissions = {};
         }
