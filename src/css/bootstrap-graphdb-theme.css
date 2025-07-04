@@ -1877,99 +1877,57 @@ code {
 /*-------------------------------------------------------------
 	Tooltips
 -------------------------------------------------------------*/
-.tooltip-inner {
-    text-decoration: none;
+.angular-tooltip {
     background-color: #04355E;
-    border-radius: 0;
 }
 
-/* tooltip arrows from bootstrap 3 (needed because of angular bootstrap controls which use the old markup) */
-.tooltip.top {
-    padding: 5px 0;
-    margin-top: -3px;
-}
-
-.tooltip.right {
-    padding: 0 5px;
-    margin-left: 3px;
-}
-
-.tooltip.bottom {
-    padding: 5px 0;
-    margin-top: 3px;
-}
-
-.tooltip.left {
-    padding: 0 5px;
-    margin-left: -3px;
-}
-
-.tooltip-arrow {
-    position: absolute;
-    width: 0;
-    height: 0;
-    border-color: transparent;
-    border-style: solid;
-}
-
-.tooltip.top .tooltip-arrow {
-    bottom: 0;
-    left: 50%;
-    margin-left: -5px;
+.angular-tooltip.angular-tooltip-top:after {
     border-top-color: #04355E;
-    border-width: 5px 5px 0;
 }
 
-.tooltip.top-left .tooltip-arrow {
-    bottom: 0;
-    left: 5px;
+.angular-tooltip.angular-tooltip-top-left:after {
     border-top-color: #04355E;
-    border-width: 5px 5px 0;
 }
 
-.tooltip.top-right .tooltip-arrow {
-    right: 5px;
-    bottom: 0;
+.angular-tooltip.angular-tooltip-top-right:after {
     border-top-color: #04355E;
-    border-width: 5px 5px 0;
 }
 
-.tooltip.right .tooltip-arrow {
-    top: 50%;
-    left: 0;
-    margin-top: -5px;
+
+.angular-tooltip.angular-tooltip-right-top:after {
     border-right-color: #04355E;
-    border-width: 5px 5px 5px 0;
 }
 
-.tooltip.left .tooltip-arrow {
-    top: 50%;
-    right: 0;
-    margin-top: -5px;
+.angular-tooltip.angular-tooltip-right:after {
+    border-right-color: #04355E;
+}
+
+.angular-tooltip.angular-tooltip-right-bottom:after {
+    border-right-color: #04355E;
+}
+
+.angular-tooltip.angular-tooltip-bottom:after {
+    border-bottom-color: #04355E;
+}
+
+.angular-tooltip.angular-tooltip-bottom-left:after {
+    border-bottom-color: #04355E;
+}
+
+.angular-tooltip.angular-tooltip-bottom-right:after {
+    border-bottom-color: #04355E;
+}
+
+.angular-tooltip.angular-tooltip-left:after {
     border-left-color: #04355E;
-    border-width: 5px 0 5px 5px;
 }
 
-.tooltip.bottom .tooltip-arrow {
-    top: 0;
-    left: 50%;
-    margin-left: -5px;
-    border-bottom-color: #04355E;
-    border-width: 0 5px 5px;
+.angular-tooltip.angular-tooltip-left-bottom:after {
+    border-left-color: #04355E;
 }
 
-.tooltip.bottom-left .tooltip-arrow {
-    top: 0;
-    left: 5px;
-    border-bottom-color: #04355E;
-    border-width: 0 5px 5px;
-}
-
-.tooltip.bottom-right .tooltip-arrow {
-    top: 0;
-    right: 5px;
-    border-bottom-color: #04355E;
-    border-width: 0 5px 5px;
+.angular-tooltip.angular-tooltip-left-top:after {
+    border-left-color: #04355E;
 }
 
 /*-------------------------------------------------------------
@@ -2106,9 +2064,24 @@ input.ng-invalid.ng-touched, .ng-submitted input.ng-invalid {
     border-top: 0;
 }
 
+.tuclas .tooltip-inner {
+    color: #880000;
+    background-color: #ffff66;
+    box-shadow: 0 6px 12px rgba(0,0,0,.175);
+    /*max-height: 30px;*/
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+
+    /*width: 100px;*/
+    /*word-wrap: unset;*/
+    /*white-space: unset;*/
+}
 /*-------------------------------------------------------------
 	Switch control
 -------------------------------------------------------------*/
+
+
 span.switch {
     clear: both;
     margin: 0 5px;

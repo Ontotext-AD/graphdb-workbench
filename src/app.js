@@ -4,6 +4,7 @@ import 'angular/core/angularCancelOnNavigateModule';
 import 'oclazyload';
 import 'angular/core/interceptors/unauthorized.interceptor';
 import 'angular/core/directives/rdfresourcesearch/rdf-resource-search.directive';
+import 'angular/core/directives/angulartooltips/angular-tooltips.js';
 
 const modules = [
     'ngRoute',
@@ -12,14 +13,15 @@ const modules = [
     'angularCancelOnNavigateModule',
     'oc.lazyLoad',
     'graphdb.framework.core.interceptors.unauthorized',
-    'graphdb.framework.core.directives.rdfresourcesearch.rdfresourcesearch'
+    'graphdb.framework.core.directives.rdfresourcesearch.rdfresourcesearch',
+    'graphdb.framework.core.directives.angular-tooltips'
 ];
 
 const moduleDefinition = function (productInfo) {
     const workbench = angular.module('graphdb.workbench', modules);
 
-    workbench.config(['$routeProvider', '$locationProvider', '$menuItemsProvider', 'toastrConfig', 'localStorageServiceProvider', '$uibTooltipProvider', '$httpProvider', '$templateRequestProvider',
-        function ($routeProvider, $locationProvider, $menuItemsProvider, toastrConfig, localStorageServiceProvider, $uibTooltipProvider, $httpProvider, $templateRequestProvider) {
+    workbench.config(['$routeProvider', '$locationProvider', '$menuItemsProvider', 'toastrConfig', 'localStorageServiceProvider', '$httpProvider', '$templateRequestProvider',
+        function ($routeProvider, $locationProvider, $menuItemsProvider, toastrConfig, localStorageServiceProvider, $httpProvider, $templateRequestProvider) {
 
             angular.extend(toastrConfig, {
                 timeOut: 5000,
@@ -75,10 +77,6 @@ const moduleDefinition = function (productInfo) {
 
             // use the HTML5 History API
             $locationProvider.html5Mode(true);
-
-            // Extra triggers for tooltip/popover so we can do fancier stuff (see core-errors for example)
-            $uibTooltipProvider.setTriggers({'show': 'hide'});
-            $uibTooltipProvider.options({appendToBody: true});
 
             // Due to angular weirdness and what gets injected where we can't inject the productInfo constant
             // at the time of module creation so we pass it to $menuItemsProvider. The info can be used

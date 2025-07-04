@@ -57,7 +57,7 @@
 					</h5>
 
 					<div uib-collapse="!isHelpVisible" class="alert alert-info server-report-help">
-						<button type="button" ng-click="isHelpVisible = false" uib-tooltip="Close" class="close"
+						<button type="button" ng-click="isHelpVisible = false" gdb-tooltip="Close" class="close"
 								aria-label="Close"></button>
 						A server report is a .zip file that contains various bits of information that help with diagnosing problems.
 						The file will contain:
@@ -82,11 +82,11 @@
 
 					<div class="pt-1 pb-3 reports-toobar">
 						<div class="btn-group">
-							<button class="btn btn-primary mr-1 new-report-btn" ng-click="makeReport()" ng-disabled="status === 'IN_PROGRESS'" uib-tooltip="Generates a new server report">
+							<button class="btn btn-primary mr-1 new-report-btn" ng-click="makeReport()" ng-disabled="status === 'IN_PROGRESS'" gdb-tooltip="Generates a new server report">
 								<em class="icon-monitoring"></em>
 								New report
 							</button>
-							<button class="btn btn-primary download-report-btn" ng-click="getReport()" ng-disabled="status === 'IN_PROGRESS' || !(timestamp > 0)" uib-tooltip="Download the latest report file">
+							<button class="btn btn-primary download-report-btn" ng-click="getReport()" ng-disabled="status === 'IN_PROGRESS' || !(timestamp > 0)" gdb-tooltip="Download the latest report file">
 								<em class="icon-download"></em>
 								Download
 							</button>

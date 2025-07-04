@@ -32,7 +32,7 @@
 				<div class="pause-bar">
 					<button type="button" class="btn pull-right pause-btn" ng-model="paused"  ng-class="paused ? 'btn-primary' : 'btn-secondary'"
 							uib-btn-checkbox
-						uib-tooltip="Temporarily pauses query monitoring so you can copy text"
+						gdb-tooltip="Temporarily pauses query monitoring so you can copy text"
 						tooltip-placement="left">
 						{{paused ? 'Paused' : 'Pause'}}
 					</button>
@@ -74,7 +74,7 @@
 									<div ng-if="query.sparqlString.length > stringLimit && !expanded[query.trackId]" class="query-string">{{query.sparqlString | limitTo: stringLimit}}...</div>
 									<div ng-if="query.sparqlString.length <= stringLimit || expanded[query.trackId]" class="query-string">{{query.sparqlString}}</div>
 								</td>
-								<td><span uib-tooltip="{{query.msSinceCreated}} ms">{{query.humanLifetime}}</span></td>
+								<td><span gdb-tooltip="{{query.msSinceCreated}} ms">{{query.humanLifetime}}</span></td>
 								<td>
 									<p>{{query.state}}</p>
 									<div>{{query.numberOfOperations}} operations</div>

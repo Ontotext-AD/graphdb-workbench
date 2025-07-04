@@ -16,10 +16,7 @@ const modules = [
 angular
     .module('graphdb.framework.graphexplore.controllers.graphviz', modules)
     .controller('GraphsVisualizationsCtrl', GraphsVisualizationsCtrl)
-    .controller('SaveGraphModalCtrl', SaveGraphModalCtrl)
-    .config(['$uibTooltipProvider', function ($uibTooltipProvider) {
-        $uibTooltipProvider.options({appendToBody: true});
-    }]);
+    .controller('SaveGraphModalCtrl', SaveGraphModalCtrl);
 
 GraphsVisualizationsCtrl.$inject = ["$scope", "$rootScope", "$repositories", "toastr", "$timeout", "$http", "ClassInstanceDetailsService", "AutocompleteRestService", "$q", "$location", "$jwtAuth", "UiScrollService", "ModalService", "$uibModal", "$window", "LocalStorageAdapter", "LSKeys", "SavedGraphsRestService", "GraphConfigRestService", "RDF4JRepositoriesRestService"];
 

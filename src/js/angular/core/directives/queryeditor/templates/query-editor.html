@@ -57,9 +57,9 @@
 
                                     <a href="#" ng-click="querySelected(query.body)"><i class="fa fa-1x fa-caret-right"></i>{{query.name}}</a>
                                     <span>
-                                        <i ng-show="canWriteActiveRepo()" uib-tooltip="Edit query" tooltip-trigger="mouseenter" href="#" class="fa fa-pencil-square-o fa-1x editSampleQuery" ng-click="editQuery(query)"></i>
-                                        <i ng-show="canWriteActiveRepo()" uib-tooltip="Delete query" tooltip-trigger="mouseenter" href="#" class="fa fa-trash-o fa-1x deleteSampleQuery" ng-click="deleteQuery(query.name)"></i>
-                                        <i uib-tooltip="Get URL to query" tooltip-trigger="mouseenter" href="#" class="fa fa-link fa-1x" ng-click="copyToClipboardQuery(query.name)"></i>
+                                        <i ng-show="canWriteActiveRepo()" gdb-tooltip="Edit query" tooltip-trigger="mouseenter" href="#" class="fa fa-pencil-square-o fa-1x editSampleQuery" ng-click="editQuery(query)"></i>
+                                        <i ng-show="canWriteActiveRepo()" gdb-tooltip="Delete query" tooltip-trigger="mouseenter" href="#" class="fa fa-trash-o fa-1x deleteSampleQuery" ng-click="deleteQuery(query.name)"></i>
+                                        <i gdb-tooltip="Get URL to query" tooltip-trigger="mouseenter" href="#" class="fa fa-link fa-1x" ng-click="copyToClipboardQuery(query.name)"></i>
                                     </span>
                                 </li>
                             </ul>
@@ -76,7 +76,7 @@
                                 ng-show="!notoolbarSaved && isUser()"
                                 ng-click="saveTab(currentQuery.id); saveQuery(currentQuery);"
                                 data-container="#queryEditor"
-                                uib-tooltip="Create saved query"
+                                gdb-tooltip="Create saved query"
                                 tooltip-append-to-body="true"
                                 tooltip-trigger="mouseenter">
                             <em class="icon-save icon-2-5x"></em>
@@ -86,7 +86,7 @@
                            ng-hide="notoolbarSaved"
                            ng-click="toggleSampleQueries()"
                            data-container="#queryEditor"
-                           uib-tooltip="Show saved queries"
+                           gdb-tooltip="Show saved queries"
                            tooltip-append-to-body="true"
                            tooltip-trigger="mouseenter"
                            uib-popover-template="'sampleQueriesPopoverTemplate.html'"
@@ -103,14 +103,14 @@
                         <button class="btn btn-link" id="wb-sparql-copyToClipboardQuery"
                                 ng-hide="notoolbarCopy"
                                 ng-click="copyToClipboardQuery()"
-                                uib-tooltip="Get URL to current query"
+                                gdb-tooltip="Get URL to current query"
                                 tooltip-append-to-body="true">
                             <span class="icon-link icon-2-5x"></span>
                         </button>
                         <button class="btn btn-link" id="inference"
                                 ng-hide="notoolbarInference"
                                 ng-click="currentQuery.inference = !currentQuery.inference"
-                                uib-tooltip="Include inferred data in results: {{currentQuery.inference ? 'ON' : 'OFF'}}"
+                                gdb-tooltip="Include inferred data in results: {{currentQuery.inference ? 'ON' : 'OFF'}}"
                                 tooltip-append-to-body="true">
                             <span class="icon-2-5x"
                                   ng-class="{'icon-inferred-on':currentQuery.inference, 'icon-inferred-off':!currentQuery.inference}"></span>
@@ -118,10 +118,10 @@
                         <button class="btn btn-link" id="sameAs"
                                 ng-hide="notoolbarSameAs"
                                 ng-click="currentQuery.sameAs = !currentQuery.sameAs"
-                                uib-tooltip="Expand results over owl:sameAs: {{currentQuery.sameAs ? 'ON' : 'OFF'}}"
+                                gdb-tooltip="Expand results over owl:sameAs: {{currentQuery.sameAs ? 'ON' : 'OFF'}}"
                                 tooltip-append-to-body="true">
                             <span class="icon-2-5x"
-                                  tooltip="{{!currentQuery.inference ? 'Requires \'Include Inferred\'!' : ''}}"
+                                  gdb-tooltip="{{!currentQuery.inference ? 'Requires \'Include Inferred\'!' : ''}}"
                                   ng-class="{'icon-sameas-on':currentQuery.sameAs, 'icon-sameas-off':!currentQuery.sameAs}"></span>
                         </button>
                     </div>
@@ -194,7 +194,7 @@
                 <div class="text-xs-right">
                     <span class="icon-warning icon-lg"
                             ng-show="getStaleWarningMessage()"
-                            uib-tooltip="{{getStaleWarningMessage()}}" tooltip-trigger="mouseenter"
+                            gdb-tooltip="{{getStaleWarningMessage()}}" tooltip-trigger="mouseenter"
                             tooltip-append-to-body="true"></span>
                     <span ng-show="currentTabConfig.queryType != 'ASK'" class="results-description">
                         {{getResultsDescription()}}

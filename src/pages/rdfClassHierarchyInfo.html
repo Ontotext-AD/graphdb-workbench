@@ -16,7 +16,7 @@
                 data-toggle="dropdown"
                 aria-expanded="false">
             <a uib-dropdown-toggle>
-				<span tooltip-trigger="mouseenter" tooltip-placement="bottom" uib-tooltip="Select graph">
+				<span tooltip-trigger="mouseenter" tooltip-placement="bottom" gdb-tooltip="Select graph">
 					{{getSelGraphValue()}}
 				</span>
             </a>
@@ -42,7 +42,7 @@
 
 	<button class="btn btn-link p-0 prefix-toggle-btn" type="button"
 		ng-click="hidePrefixes = !hidePrefixes"
-		uib-tooltip="{{hidePrefixes ? 'Show prefixes' : 'Hide prefixes'}}"
+		gdb-tooltip="{{hidePrefixes ? 'Show prefixes' : 'Hide prefixes'}}"
 		tooltip-placement="bottom"
 		tooltip-trigger="mouseenter">
 		<em class="fa fa-2x"
@@ -50,7 +50,7 @@
 	</button>
 
 	<button class="btn btn-link p-0 focus-diagram-btn"
-		uib-tooltip="Focus diagram"
+		gdb-tooltip="Focus diagram"
 		tooltip-placement="bottom"
 		tooltip-trigger="mouseenter"
 		ng-click="focusOnRoot()">
@@ -58,7 +58,7 @@
 	</button>
 
 	<button class="btn btn-link p-0 reload-diagram-btn"
-		uib-tooltip="Reload diagram"
+		gdb-tooltip="Reload diagram"
 		tooltip-placement="bottom"
 		tooltip-trigger="mouseenter"
 		ng-click="confirmReloadClassHierarchy()">
@@ -66,7 +66,7 @@
 	</button>
 
 	<a href class="btn btn-link p-0" id="download-svg"
-		uib-tooltip="Export Diagram"
+		gdb-tooltip="Export Diagram"
 		tooltip-placement="bottom"
 		tooltip-trigger="mouseenter">
 		<em class="icon-export icon-2x"></em>
@@ -113,7 +113,7 @@
 		<div class="top-offset alert alert-danger" ng-show="hierarchyError">
 			<p>The class hierarchy for the currently selected repository cannot be loaded:
 				<button class="btn btn-link p-0 pull-right"
-						uib-tooltip="Reload diagram"
+						gdb-tooltip="Reload diagram"
 						tooltip-placement="bottom"
 						tooltip-trigger="mouseenter"
 						ng-click="confirmReloadClassHierarchy()">

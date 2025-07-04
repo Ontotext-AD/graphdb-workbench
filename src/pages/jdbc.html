@@ -33,12 +33,12 @@
                             <span class="actions-bar hovered-item">
                                     <a class="btn btn-link edit-query-btn"
                                        ng-if="canWriteActiveRepo()" href="jdbc/configuration/create?name={{index}}"
-                                       uib-tooltip="Edit JDBC configuration">
+                                       gdb-tooltip="Edit JDBC configuration">
                                         <em class="icon-edit"></em>
                                     </a>
                                 </span>
                             <button type="button" ng-if="canWriteActiveRepo()" ng-click="deleteConfiguration(index)"
-                                    class="btn btn-link delete-configuration-btn" uib-tooltip="Delete JDBC configuration"><span
+                                    class="btn btn-link delete-configuration-btn" gdb-tooltip="Delete JDBC configuration"><span
                                 class="icon-trash"></span>
                             </button>
                         </td>
