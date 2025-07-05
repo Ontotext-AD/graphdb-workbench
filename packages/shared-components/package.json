@@ -34,6 +34,7 @@
     "start": "stencil build --dev --watch --serve",
     "test": "npm run test:unit",
     "test:unit": "jest",
+    "test:coverage": "jest --coverage",
     "test:unit:watch": "jest --watch",
     "cy:open": "cypress open",
     "cy:run": "cypress run",

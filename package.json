@@ -29,10 +29,12 @@
         "lint": "sh scripts/lint.sh",
         "validate": "sh scripts/validate.sh",
         "test": "sh scripts/test.sh",
+        "test:coverage": "sh scripts/test-coverage.sh",
         "cy:run": "sh scripts/cy.sh",
         "sonar": "sh scripts/sonar.sh",
         "hotdeploy": "node scripts/hotdeploy.js",
-        "qa": "npm run clean-install && npm run start"
+        "qa": "npm run clean-install && npm run start",
+        "instrument:legacy-workbench": "npx nyc instrument --in-place --compact false --source-map --produce-source-map packages/legacy-workbench/src/js/angular"
     },
     "files": [
         "dist/"
@@ -60,10 +62,12 @@
         "@babel/preset-env": "^7.27.2",
         "@babel/runtime": "^7.27.6",
         "babel-loader": "^10.0.0",
+        "babel-plugin-istanbul": "^7.0.0",
         "babel-polyfill": "^6.26.0",
         "clean-webpack-plugin": "^4.0.0",
         "concurrently": "^9.2.0",
         "copy-webpack-plugin": "^13.0.0",
+        "cross-env": "^7.0.3",
         "css-loader": "^7.1.2",
         "css-minimizer-webpack-plugin": "^7.0.2",
         "expose-loader": "^5.0.1",
@@ -76,6 +80,7 @@
         "merge-jsons-webpack-plugin": "^2.0.1",
         "mini-css-extract-plugin": "^2.9.2",
         "nodemon": "^3.1.10",
+        "nyc": "^17.1.0",
         "sass": "^1.89.2",
         "sass-loader": "^16.0.5",
         "sonarqube-scanner": "^3.3.0",

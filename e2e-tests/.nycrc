@@ -1,0 +1,10 @@
+{
+    "temp-directory": "../.nyc_output",
+    "include": [
+      "packages/legacy-workbench/src/**/*.js"
+    ],
+    "exclude": [
+      "packages/root-config/**",
+      "packages/shared-components/**"
+    ]
+}

@@ -11,6 +11,7 @@
     "cy:run": "npm run cy:run-legacy && cypress run",
     "cy:run:partial": "cypress run --config-file cypress-legacy.config.js --spec \"e2e-legacy/**/jdbc-create.spec.js\" --browser chrome",
     "cy:run-legacy": "cypress run --config-file cypress-legacy.config.js --browser chrome",
+    "cy:run-legacy:coverage": "cypress run --config-file cypress-legacy.config.js --browser chrome",
     "cy:run-flaky": "cypress run --config-file cypress-flaky.config.js --browser chrome",
     "test": "npm run cy:run-legacy",
     "test:core": "cypress run --spec e2e-legacy/repository/**,e2e-legacy/import/**,e2e-legacy/sparql-editor/**,e2e-legacy/monitor/**,e2e-legacy/cluster/**,e2e-legacy/ttyg/**"
@@ -29,7 +30,9 @@
     "url": "git+https://github.com/Ontotext-AD/graphdb-workbench.git"
   },
   "devDependencies": {
-    "cypress": "^14.5.0",
+    "@bahmutov/cypress-code-coverage": "^2.7.2",
+    "babel-plugin-istanbul": "^7.0.0",
+    "cypress": "14.5.1",
     "cypress-failed-log": "^2.10.0",
     "cypress-file-upload": "^5.0.8",
     "cypress-localstorage-commands": "^2.2.7",
@@ -38,6 +41,7 @@
     "cypress-terminal-report": "^7.2.0",
     "cypress-wait-until": "^3.0.2",
     "del": "^8.0.0",
+    "dotenv": "^17.0.1",
     "minimist": "^1.2.8",
     "mocha-junit-reporter": "^2.2.1"
   }
