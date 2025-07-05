@@ -38,6 +38,8 @@ export class OntoToastr {
    *
    * @param event - Custom event containing the toast message to be displayed
    */
+  // TODO Fix jest tests are failing- usage variables in stencil decorators is enabled since 4.3.0
+  // see https://github.com/stenciljs/core/issues/2924
   @Listen(CREATE_TOAST_EVENT, {target: 'body'})
   handleToastCreate(event: CustomEvent<ToastMessage>) {
     this.addToast(event.detail);

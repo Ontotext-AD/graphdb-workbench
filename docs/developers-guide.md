@@ -1056,6 +1056,18 @@ If new static folders are created in the `dist` folder to be published (or old o
 
 ---
 
+# Code Coverage Analysis
+Code coverage is run in a separate Jenkins job, which is triggered manually on demand, typically for feature branches.
+
+## How to Run It
+Find the **graphdb-workbench-coverage** job in Jenkins.
+
+Start it using the Build with Parameters option, specifying the Git branch you want to analyze.
+
+After the job completes, the final HTML report with the results is available as a build artifact in Jenkins.
+
+---
+
 # Release
 
 ## Jenkins Release Pipeline Documentation

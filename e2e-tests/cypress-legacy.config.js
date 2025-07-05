@@ -1,5 +1,7 @@
 const {defineConfig} = require('cypress');
 
+const isCoverage = process.env.COVERAGE === 'true';
+
 module.exports = defineConfig({
     projectId: 'v35btb',
     fixturesFolder: 'fixtures',
@@ -18,7 +20,11 @@ module.exports = defineConfig({
         // We've imported your old cypress plugins here.
         // You may want to clean this up later by importing these.
         setupNodeEvents(on, config) {
-            return require('./plugins')(on, config);
+            require('./plugins')(on, config);
+            if (isCoverage) {
+                require('@bahmutov/cypress-code-coverage/plugin')(on, config)
+            }
+            return config;
         },
         baseUrl: 'http://localhost:9000',
         specPattern: 'e2e-legacy/**/*.{js,jsx,ts,tsx}',

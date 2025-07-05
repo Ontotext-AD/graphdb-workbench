@@ -5,6 +5,7 @@
     "lint:fix": "eslint src --fix",
     "validate": "node ./scripts/validate-translations.js",
     "test": "jest",
+    "test:coverage": "jest --coverage",
     "test:watch": "jest --watch"
   },
   "devDependencies": {
