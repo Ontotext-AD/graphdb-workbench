@@ -4,3 +4,5 @@ logs/
 cypress/
 test-cypress/logs/
 .downloads
+coverage/
+.nyc_output

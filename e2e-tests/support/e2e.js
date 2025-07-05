@@ -23,6 +23,8 @@ import 'cypress-real-events';
 import 'cypress-file-upload';
 import {LicenseStubs} from "../stubs/license-stubs";
 import {SecurityStubs} from "../stubs/security-stubs";
+// https://github.com/bahmutov/cypress-code-coverage
+require('@bahmutov/cypress-code-coverage/support');
 
 // Configures an environment variable with the key used for common actions (cmd on mac, ctrl on other OS).
 // This variable must be used in all actions that type e.g. ctrl-a to select text.
@@ -44,6 +46,5 @@ beforeEach(() => {
         // for some reason.
         // It'll be good to investigate it a bit sometime.
         SecurityStubs.stubGetAdminUser();
-        // SecurityStubs.stubUpdateUserData('admin');
     }
 });

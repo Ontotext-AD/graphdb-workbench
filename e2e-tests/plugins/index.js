@@ -95,4 +95,5 @@ module.exports = (on, config) => {
         printGroup('[FAIL] Broken tests', broken);
         console.log('====================================================================================================\n');
     });
+    return config;
 };
