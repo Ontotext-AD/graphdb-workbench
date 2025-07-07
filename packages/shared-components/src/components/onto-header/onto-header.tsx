@@ -280,11 +280,12 @@ export class OntoHeader {
   };
 
   private loadNamespaces() {
-    if (this.currentRepository) {
-      // TODO: check why loaction not used maybe it is added in autorization interceptor
-      this.namespacesService.getNamespaces(this.currentRepository.id)
-        .then((namespaces) => this.namespaceContextService.updateNamespaces(namespaces))
+    if (!this.currentRepository || !this.authService.canReadRepo(this.currentRepository)) {
+      return;
     }
+    // TODO: check why loaction not used maybe it is added in autorization interceptor
+    this.namespacesService.getNamespaces(this.currentRepository.id)
+      .then((namespaces) => this.namespaceContextService.updateNamespaces(namespaces));
   }
 
   // ========================
