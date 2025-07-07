@@ -28,7 +28,15 @@ import 'angularjs-slider/dist/rzslider.min';
 import {debounce} from "lodash";
 import {DocumentationUrlResolver} from "./utils/documentation-url-resolver";
 import {NamespacesListModel} from "./models/namespaces/namespaces-list";
-import {RepositoryContextService, EventService, EventName, ServiceProvider, ApplicationLifecycleContextService, RepositoryService} from "@ontotext/workbench-api";
+import {
+    RepositoryContextService,
+    EventService,
+    EventName,
+    ServiceProvider,
+    ApplicationLifecycleContextService,
+    RepositoryService,
+    AuthenticationService
+} from "@ontotext/workbench-api";
 
 angular
     .module('graphdb.workbench.se.controllers', [
@@ -126,15 +134,16 @@ function homeCtrl($scope,
     const subscriptions = [];
 
     const onSelectedRepositoryUpdated = (repository) => {
-        const selectedRepositoryId = repository?.id || $repositories.getActiveRepository();
+        const authService = ServiceProvider.get(AuthenticationService);
+        const hasGqlRights = authService.hasGqlRights(repository);
 
         // Don't call API, if no repo ID, or with GQL read-only or write rights
-        if (!selectedRepositoryId || $jwtAuth.hasGraphqlRightsOverCurrentRepo()) {
+        if (!repository || hasGqlRights) {
             $scope.repositoryNamespaces = new NamespacesListModel();
             return;
         }
         $scope.getActiveRepositorySize();
-        RDF4JRepositoriesService.getNamespaces(selectedRepositoryId)
+        RDF4JRepositoriesService.getNamespaces(repository.id)
             .then((repositoryNamespaces) => {
                 $scope.repositoryNamespaces = repositoryNamespaces;
             })

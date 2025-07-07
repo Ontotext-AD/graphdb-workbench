@@ -71,6 +71,14 @@ export class AuthenticationService implements Service {
     return !!this.getSecurityConfig()?.enabled;
   }
 
+  /**
+   * Checks if the current user has read permissions for the specified repository.
+   * This method evaluates if the user can read the repository based on security configuration,
+   * user authentication status, and user roles.
+   *
+   * @param {Repository} repository - The repository to check read permissions for.
+   * @returns {boolean} True if the user has read permissions for the repository, false otherwise.
+   */
   canReadRepo(repository?: Repository): boolean {
     if (!repository || repository.id === '') {
       return false;
@@ -95,11 +103,43 @@ export class AuthenticationService implements Service {
     return true;
   }
 
+  /**
+   * Checks if the current user has GraphQL read permissions for the specified repository.
+   * This method determines if the user can execute GraphQL read operations on the repository.
+   *
+   * @param {Repository} repository - The repository to check GraphQL read permissions for.
+   * @returns {boolean} True if the user has GraphQL read permissions for the repository, false otherwise.
+   */
   canReadGqlRepo(repository: Repository): boolean {
     if (!repository || repository.id === '') {
       return false;
     }
     return this.hasGraphqlAuthority(Rights.READ, repository);
+  }
+
+  /**
+   * Checks if the current user has GraphQL write permissions for the specified repository.
+   * This method determines if the user can execute GraphQL write operations on the repository.
+   *
+   * @param {Repository} repository - The repository to check GraphQL write permissions for.
+   * @returns {boolean} True if the user has GraphQL write permissions for the repository, false otherwise.
+   */
+  canWriteGqlRepo(repository: Repository): boolean {
+    if (!repository || repository.id === '') {
+      return false;
+    }
+    return this.hasGraphqlAuthority(Rights.WRITE, repository);
+  }
+
+  /**
+   * Checks if the current user has any GraphQL permissions (read or write) for the specified repository.
+   * This is a convenience method that combines the results of canReadGqlRepo and canWriteGqlRepo.
+   *
+   * @param {Repository} repository - The repository to check GraphQL permissions for.
+   * @returns {boolean} True if the user has any GraphQL permissions for the repository, false otherwise.
+   */
+  hasGqlRights(repository: Repository): boolean {
+    return this.canReadGqlRepo(repository) || this.canWriteGqlRepo(repository);
   }
 
   private hasGraphqlAuthority(action: string, repo: Repository): boolean {
