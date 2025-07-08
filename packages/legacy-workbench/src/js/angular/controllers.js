@@ -37,6 +37,7 @@ import {
     RepositoryService,
     AuthenticationService
 } from "@ontotext/workbench-api";
+import {EventConstants} from "./utils/event-constants";
 
 angular
     .module('graphdb.workbench.se.controllers', [
@@ -579,6 +580,10 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     }
 
     ServiceProvider.get(EventService).subscribe(EventName.LOGOUT, () => logout());
+
+    ServiceProvider.get(EventService).subscribe(EventConstants.RDF_SEARCH_ICON_CLICKED, () => {
+        $rootScope.$broadcast('rdfResourceSearchExpanded');
+    });
 
     function logout() {
         $jwtAuth.clearAuthentication();

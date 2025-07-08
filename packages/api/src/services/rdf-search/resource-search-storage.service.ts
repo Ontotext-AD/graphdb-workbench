@@ -10,6 +10,10 @@ export class ResourceSearchStorageService extends LocalStorageService {
   private readonly LAST_SELECTED_KEY = 'lastSelected';
   NAMESPACE = 'resourceSearch';
 
+  private readonly LEGACY_LAST_SELECTED_KEY = 'ls.rdf-search.resource-description';
+  private readonly LEGACY_INPUT_KEY = 'ls.rdf-search.search-input';
+  private readonly LEGACY_SELECTED_VIEW_KEY = 'ls.rdf-search.search-type';
+
   set(key: string, value: string): void {
     this.storeValue(key, value);
   }
@@ -20,6 +24,8 @@ export class ResourceSearchStorageService extends LocalStorageService {
    */
   setSelectedView(viewType: string) {
     this.set(this.SELECTED_VIEW_KEY, viewType);
+    // TODO: Remove, once all resource-input-search components are fully migrated
+    localStorage.setItem(this.LEGACY_SELECTED_VIEW_KEY, viewType);
   }
 
   /**
@@ -36,6 +42,8 @@ export class ResourceSearchStorageService extends LocalStorageService {
    */
   setInputValue(value: string): void {
     this.set(this.INPUT_KEY, value);
+    // TODO: Remove, once all resource-input-search components are fully migrated
+    localStorage.setItem(this.LEGACY_INPUT_KEY, value);
   }
 
   /**
@@ -52,6 +60,8 @@ export class ResourceSearchStorageService extends LocalStorageService {
    */
   setLastSelected(suggestion: Suggestion): void {
     this.set(this.LAST_SELECTED_KEY, suggestion.getValue());
+    // TODO: Remove, once all resource-input-search components are fully migrated
+    localStorage.setItem(this.LEGACY_LAST_SELECTED_KEY, suggestion.getDescription() || '');
   }
 
   /**
@@ -69,5 +79,8 @@ export class ResourceSearchStorageService extends LocalStorageService {
   clearStoredSearch(): void {
     this.remove(this.INPUT_KEY);
     this.remove(this.LAST_SELECTED_KEY);
+    // TODO: Remove, once all resource-input-search components are fully migrated
+    localStorage.removeItem(this.LEGACY_INPUT_KEY);
+    localStorage.removeItem(this.LEGACY_LAST_SELECTED_KEY);
   }
 }

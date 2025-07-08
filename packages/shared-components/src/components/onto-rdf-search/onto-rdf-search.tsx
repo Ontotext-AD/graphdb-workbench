@@ -3,12 +3,13 @@ import {
   SearchButton,
   SearchButtonConfig,
   ServiceProvider,
-  SubscriptionList, SUGGESTION_SELECTED_EVENT, SuggestionSelectedPayload, UriUtil, VISUAL_VIEW, TABLE_VIEW
+  SubscriptionList, SuggestionSelectedPayload, UriUtil
 } from '@ontotext/workbench-api';
 import {Component, h, Listen, State} from '@stencil/core';
 import {TranslationService} from '../../services/translation.service';
 import {HtmlUtil} from '../../utils/html-util';
 import {OntoTooltipPlacement} from "../onto-tooltip/models/onto-tooltip-placement";
+import {ResourceSearchConstants} from '../../models/resource-search/resource-search-constants';
 
 /**
  * OntoRdfSearch component for RDF resource search.
@@ -60,7 +61,6 @@ export class OntoRdfSearch {
 
   componentDidLoad() {
     this.buttonConfig = this.createButtonConfig();
-    this.loadSelectedViewFromStorage();
   }
 
 
@@ -94,6 +94,9 @@ export class OntoRdfSearch {
   private setIsOpen(isOpen: boolean) {
     return () => {
       this.isOpen = isOpen;
+      if (this.isOpen) {
+        this.loadSelectedViewFromStorage();
+      }
     };
   }
 
@@ -106,20 +109,20 @@ export class OntoRdfSearch {
       isRadio: true,
       buttons: [
         this.createSearchButton(
-          TABLE_VIEW,
+          ResourceSearchConstants.TABLE_VIEW,
           'rdf_search.buttons.table',
           () => {
             this.redirectUrl = UriUtil.RESOURCE_URL;
-            this.resourceSearchStorageService.setSelectedView(TABLE_VIEW);
+            this.resourceSearchStorageService.setSelectedView(ResourceSearchConstants.TABLE_VIEW);
           },
           true
         ),
         this.createSearchButton(
-          VISUAL_VIEW,
+          ResourceSearchConstants.VISUAL_VIEW,
           'rdf_search.buttons.visual',
           () => {
             this.redirectUrl = UriUtil.GRAPHS_VISUALIZATIONS_URL;
-            this.resourceSearchStorageService.setSelectedView(VISUAL_VIEW);
+            this.resourceSearchStorageService.setSelectedView(ResourceSearchConstants.VISUAL_VIEW);
           },
           false
         )
@@ -146,7 +149,7 @@ export class OntoRdfSearch {
 
   private onSuggestionSelected() {
     this.subscriptions.add(
-      this.eventService.subscribe<SuggestionSelectedPayload>(SUGGESTION_SELECTED_EVENT, (payload) => {
+      this.eventService.subscribe<SuggestionSelectedPayload>(ResourceSearchConstants.SUGGESTION_SELECTED_EVENT, (payload) => {
         if (payload.getContext() === this.RDF_CONTEXT) {
           const redirectUrl = payload.getSuggestion().getOverrideToVisual()
             ? UriUtil.GRAPHS_VISUALIZATIONS_URL
