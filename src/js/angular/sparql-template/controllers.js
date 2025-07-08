@@ -294,7 +294,7 @@ function SparqlTemplateCreateCtrl($scope, $location, toastr, $repositories, $win
                 .then(() => {
                     if (templateExist) {
                         const modalMsg = `<div>SPARQL Template <strong>${$scope.currentQuery.templateID}</strong> already exists.</div><br>
-                                        <div><span class="icon-2x icon-warning" style="color: #d54a33"/> Do you want to override the template query?</div>`;
+                                        <div><span class="icon-2x icon-warning" style="color: #d54a33"></span> Do you want to override the template query?</div>`;
                         ModalService.openSimpleModal({
                             title: 'Confirm save',
                             message: modalMsg,
