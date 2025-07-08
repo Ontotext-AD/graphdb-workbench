@@ -31,6 +31,7 @@ import {TranslationService} from '../../services/translation.service';
 import {HtmlUtil} from '../../utils/html-util';
 import {DropdownItem} from "../../models/dropdown/dropdown-item";
 import {SelectorItemButton} from "../onto-repository-selector/selector-item";
+import {ResourceSearchConstants} from '../../models/resource-search/resource-search-constants';
 
 /**
  * OntoHeader component for rendering the header of the application.
@@ -57,6 +58,7 @@ export class OntoHeader {
   private readonly UPDATE_ACTIVE_OPERATION_TIME_INTERVAL = 2000;
   private readonly fibonacciGenerator = new FibonacciGenerator();
   private readonly authService = ServiceProvider.get(AuthenticationService);
+  private readonly eventService = ServiceProvider.get(EventService);
 
   // ========================
   // State
@@ -213,7 +215,7 @@ export class OntoHeader {
 
   private subscribeToNavigationEnd() {
     this.subscriptions.add(
-      ServiceProvider.get(EventService).subscribe(
+      this.eventService.subscribe(
         EventName.NAVIGATION_END, () => {
           this.shouldShowSearch = this.shouldShowRdfSearch();
           this.isHomePage = isHomePage();
@@ -335,6 +337,7 @@ export class OntoHeader {
     this.toastrService.info(TranslationService.translate('rdf_search.toasts.use_view_resource'));
     this.shouldShowSearch = false;
     HtmlUtil.focusElement('#search-resource-input-home input');
+    this.eventService.emit({NAME: ResourceSearchConstants.RDF_SEARCH_ICON_CLICKED})
   }
 
   // ========================

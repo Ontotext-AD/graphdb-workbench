@@ -14,7 +14,6 @@ import {
   ServiceProvider,
   SubscriptionList,
   Suggestion,
-  SUGGESTION_SELECTED_EVENT,
   SuggestionSelectedPayload,
   SuggestionType,
   UriUtil
@@ -22,6 +21,7 @@ import {
 import {TranslationService} from '../../services/translation.service';
 import {HtmlUtil} from '../../utils/html-util';
 import {OntoTooltipPlacement} from "../onto-tooltip/models/onto-tooltip-placement";
+import {ResourceSearchConstants} from '../../models/resource-search/resource-search-constants';
 
 /**
  * A component for rendering RDF search resource input with configurable buttons.
@@ -72,7 +72,7 @@ export class OntoSearchResourceInput {
     if (isHidden) {
       this.searchResult?.clearSuggestions();
     } else {
-      this.loadAutocompleteResults();
+      this.setInputValue(this.resourceSearchStorageService.getInputValue());
     }
   }
 
@@ -242,7 +242,7 @@ export class OntoSearchResourceInput {
   private notifyRdfResourceSelected(suggestion: Suggestion) {
     this.searchResult = this.searchResult?.selectSuggestion(suggestion);
     this.eventService.emit({
-      NAME: SUGGESTION_SELECTED_EVENT,
+      NAME: ResourceSearchConstants.SUGGESTION_SELECTED_EVENT,
       payload: new SuggestionSelectedPayload(suggestion, this.context)
     });
   }

@@ -1,4 +1,3 @@
-import {TABLE_VIEW, VISUAL_VIEW} from '../../../models/rdf-search/rdf-search-constants';
 import {ResourceSearchStorageService} from '../resource-search-storage.service';
 import {Suggestion, SuggestionType} from '../../../models/rdf-search';
 
@@ -35,10 +34,11 @@ describe('Resource Search Store Service', () => {
 
   test('Should store and retrieve selected view', () => {
     expect(service.getSelectedView()).toEqual('');
-
+    const TABLE_VIEW = 'table';
     service.setSelectedView(TABLE_VIEW);
     expect(service.getSelectedView()).toEqual(TABLE_VIEW);
 
+    const VISUAL_VIEW = 'visual';
     service.setSelectedView(VISUAL_VIEW);
     expect(service.getSelectedView()).toEqual(VISUAL_VIEW);
   });

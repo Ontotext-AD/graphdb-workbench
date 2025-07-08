@@ -1,5 +1,6 @@
 import 'angular/utils/local-storage-adapter';
 import {decodeHTML} from "../../../app";
+import {ServiceProvider, ResourceSearchStorageService, Suggestion} from '@ontotext/workbench-api';
 
 angular
     .module('graphdb.framework.core.directives', [
@@ -319,6 +320,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             const SEARCH_INPUT_FIELD = element.find('.view-res-input');
             $scope.textButtonLabel = $scope.textButton || 'query.editor.table.btn';
             $scope.visualButtonLabel = $scope.visualButton || 'query.editor.visual.btn';
+            const resourceSearchStorage = ServiceProvider.get(ResourceSearchStorageService);
 
             // use a global var to keep old uri in order to change it when a new one appears
             let expandedUri;
@@ -330,7 +332,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
 
             $scope.changeSearchType = function (type) {
                 $scope.searchType = type;
-                LocalStorageAdapter.set(LSKeys.RDF_SEARCH_TYPE, $scope.searchType);
+                resourceSearchStorage.setSelectedView($scope.searchType);
             };
             $scope.$on('addStartFixedNodeAutomatically', function (event, args) {
                 if (!$scope.searchInput && args.startIRI) {
@@ -470,8 +472,8 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                     if (IS_SEARCH_PRESERVED) {
                         $scope.selectedElementIndex = $scope.activeSearchElm;
                         LocalStorageAdapter.set(LSKeys.RDF_SEARCH_EXPANDED_URI, expandedUri);
-                        LocalStorageAdapter.set(LSKeys.RDF_SEARCH_INPUT, $scope.searchInput);
-                        LocalStorageAdapter.set(LSKeys.RDF_RESOURCE_DESCRIPTION, resource.description);
+                        resourceSearchStorage.setInputValue($scope.searchInput);
+                        resourceSearchStorage.setLastSelected(new Suggestion(resource))
                     } else if ($scope.preserveInput === 'true') {
                         $scope.searchInput = textResource;
                         $scope.autoCompleteUriResults = [];
@@ -535,7 +537,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             $scope.onChange = function () {
                 $scope.showClearInputIcon = $scope.clearInputIcon;
                 if (IS_SEARCH_PRESERVED) {
-                    LocalStorageAdapter.set(LSKeys.RDF_SEARCH_INPUT, $scope.searchInput);
+                    resourceSearchStorage.setInputValue($scope.searchInput);
                 }
                 if ($scope.uriValidation !== 'false') {
                     $scope.searchInput = expandPrefix($scope.searchInput);
