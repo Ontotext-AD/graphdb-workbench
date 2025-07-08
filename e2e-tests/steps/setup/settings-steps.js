@@ -1,6 +1,24 @@
+import {EnvironmentStubs} from "../../stubs/environment-stubs";
+
 export class SettingsSteps {
     static visit() {
         cy.visit('/settings');
+    }
+
+    static visitInProdMode() {
+        cy.visit('/settings', {
+            onBeforeLoad: (win) => {
+                EnvironmentStubs.stubWbProdMode();
+            }
+        });
+    }
+
+    static visitInDevMode() {
+        cy.visit('/settings', {
+            onBeforeLoad: (win) => {
+                EnvironmentStubs.stubWbDevMode();
+            }
+        });
     }
 
     static getSettingsPage() {

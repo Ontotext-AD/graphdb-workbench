@@ -161,7 +161,8 @@ function ImportEndpointDefinitionModalController($scope, $q, toastr, $uibModal, 
      * @param {EndpointGenerationReport} endpointGenerationReport The report to display.
      * @returns {Promise} The promise that resolves when the modal is closed.
      */
-    $scope.onOpenReport = (endpointGenerationReport) => {
+    $scope.onOpenReport = (event, endpointGenerationReport) => {
+        event.preventDefault();
         return $uibModal.open({
             templateUrl: 'js/angular/graphql/templates/modal/endpoint-generation-failure-result-modal.html',
             controller: 'EndpointGenerationResultFailureModalController',

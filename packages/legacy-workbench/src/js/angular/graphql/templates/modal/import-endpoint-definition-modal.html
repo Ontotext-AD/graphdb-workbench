@@ -49,7 +49,7 @@
                        gdb-tooltip="{{'graphql.endpoints_management.import_definition_modal.actions.explore_endpoint.tooltip' | translate}}"
                        class="endpoint-link">{{definitionFile.endpointId}}</a>
                     <a href="#" ng-if="definitionFile.report && definitionFile.status === ImportStatus.FAIL"
-                       ng-click="onOpenReport(definitionFile.report)"
+                       ng-click="onOpenReport($event, definitionFile.report)"
                        gdb-tooltip="{{'graphql.endpoints_management.import_definition_modal.actions.view_report.tooltip' | translate}}"
                        class="report-link btn-link">
                         {{'graphql.endpoints_management.import_definition_modal.actions.view_report.label' | translate}}

@@ -85,10 +85,7 @@ describe('Graphql: import endpoint definitions', () => {
         ]);
     });
 
-    /**
-     * TODO Fixme broken due migration (Error unknown)
-     */
-    it.skip('should be able to import broken endpoint definition', () => {
+    it('should be able to import broken endpoint definition', () => {
         visitAndOpenImportModal();
         // When I select the file to upload
         ImportEndpointDefinitionModalSteps.selectFile(brokenSwapiDefinitionPath);

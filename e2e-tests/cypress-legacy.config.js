@@ -8,6 +8,8 @@ module.exports = defineConfig({
     video: true,
     defaultCommandTimeout: 25000,
     numTestsKeptInMemory: 10,
+    viewportWidth: 1280,
+    viewportHeight: 720,
     e2e: {
         retries: {
             runMode: 2,

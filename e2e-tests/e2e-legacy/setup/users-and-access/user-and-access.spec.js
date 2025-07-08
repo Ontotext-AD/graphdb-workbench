@@ -5,11 +5,9 @@ import {ModalDialogSteps} from "../../../steps/modal-dialog-steps";
 import {ToasterSteps} from "../../../steps/toaster-steps";
 import HomeSteps from "../../../steps/home-steps";
 import {LoginSteps} from "../../../steps/login-steps";
+import {MainMenuSteps} from "../../../steps/main-menu-steps";
 
 
-/**
- * TODO: Fix me. Broken due to migration (Error: unknown)
- */
 describe('User and Access', () => {
 
     const PASSWORD = "password";
@@ -179,6 +177,7 @@ describe('User and Access', () => {
                 cy.deleteRepository(repositoryId2, true);
                 cy.deleteRepository(repositoryId3, true);
                 cy.deleteUser(graphqlUser, true);
+                cy.switchOffFreeAccess(true);
                 cy.switchOffSecurity(true);
             });
 
@@ -454,9 +453,9 @@ describe('User and Access', () => {
     function navigateMenuPath(pathArray, expectedUrl, expectedTitle) {
         pathArray.forEach((label, index) => {
             if (index === 0) {
-                UserAndAccessSteps.clickMenuItem(label);
+                MainMenuSteps.clickOnMenu(label);
             } else {
-                UserAndAccessSteps.clickSubmenuItem(label);
+                MainMenuSteps.clickOnSubMenu(label);
                 const title = expectedTitle ? expectedTitle : label;
                 cy.get('h1').should('contain', title);
             }

@@ -4,12 +4,29 @@ import {ActiveRepositoryWidgetSteps} from "./widgets/active-repository-widget-st
 import {SavedSparqlQueriesWidgetSteps} from "./widgets/saved-sparql-queries-widget-steps";
 import {RepositorySteps} from "./repository-steps";
 import {BaseSteps} from "./base-steps";
+import {EnvironmentStubs} from "../stubs/environment-stubs";
 
 class HomeSteps extends BaseSteps {
 
     static visit() {
         cy.visit('/');
         HomeSteps.getTutorialPanel().should('be.visible');
+    }
+
+    static visitInProdMode() {
+        cy.visit('/', {
+            onBeforeLoad: (win) => {
+                EnvironmentStubs.stubWbProdMode();
+            }
+        });
+    }
+
+    static visitInDevMode() {
+        cy.visit('/', {
+            onBeforeLoad: (win) => {
+                EnvironmentStubs.stubWbDevMode();
+            }
+        });
     }
 
     static visitAndWaitLoader() {
