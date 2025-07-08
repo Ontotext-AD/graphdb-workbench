@@ -11,10 +11,9 @@ describe('Documentation links resolver', () => {
     });
 
     it('Should link to master version when in dev mode', () => {
-        HomeSteps.visit();
+        HomeSteps.visitInDevMode();
         waitForProductInfo();
         BrowserStubs.stubWindowOpen();
-        EnvironmentStubs.stubWbDevMode();
         MainMenuSteps.clickOnMenuHelp();
         // Assert that links point to the master version
         assertDocumentationLinks('master');
@@ -23,10 +22,9 @@ describe('Documentation links resolver', () => {
 
     it('Should link to master version when in prod mode and unofficial version', () => {
         EnvironmentStubs.stubProductInfo('10.8-TR1-test');
-        HomeSteps.visit();
+        HomeSteps.visitInProdMode();
         waitForProductInfo();
         BrowserStubs.stubWindowOpen();
-        EnvironmentStubs.stubWbProdMode();
         MainMenuSteps.clickOnMenuHelp();
         // Assert that links point to the master version
         assertDocumentationLinks('master');
@@ -34,10 +32,9 @@ describe('Documentation links resolver', () => {
 
     it('Should link to GDB version when in prod mode and official version', () => {
         EnvironmentStubs.stubProductInfo('10.8');
-        HomeSteps.visit();
+        HomeSteps.visitInProdMode();
         waitForProductInfo();
         BrowserStubs.stubWindowOpen();
-        EnvironmentStubs.stubWbProdMode();
         MainMenuSteps.clickOnMenuHelp();
         // Assert that links point to the specific GDB version
         assertDocumentationLinks('10.8');

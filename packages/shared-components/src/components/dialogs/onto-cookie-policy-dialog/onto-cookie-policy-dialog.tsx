@@ -32,7 +32,8 @@ export class OntoCookiePolicyDialog implements OntoDialog {
   render() {
     const config = {
       dialogTitle: TranslationService.translate('cookie.policy.title'),
-      onClose: () => this.dialogHandler.onDialogClose()
+      onClose: () => this.dialogHandler.onDialogClose(),
+      modalClass: 'cookie-policy-modal',
     };
     const cookieConsent = new CookieConsent(this.user?.appSettings?.COOKIE_CONSENT);
 

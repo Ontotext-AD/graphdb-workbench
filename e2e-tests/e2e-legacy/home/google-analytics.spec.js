@@ -11,8 +11,7 @@ describe('Google analytics', () => {
     // Note: Google API calls are stubbed for all specs in support/index.js
     it('Should set GA tracking code in header and a cookie when free license and prodMode', () => {
         LicenseStubs.stubFreeLicense();
-        HomeSteps.visit();
-        EnvironmentStubs.stubWbProdMode();
+        HomeSteps.visitInProdMode();
 
         cy.document()
             .get('head script')
@@ -28,8 +27,7 @@ describe('Google analytics', () => {
 
     it('Should set GA tracking code in header and cookie when evaluation enterprise license and prodMode', () => {
         LicenseStubs.stubEvaluationLicense();
-        HomeSteps.visit();
-        EnvironmentStubs.stubWbProdMode();
+        HomeSteps.visitInProdMode();
 
         cy.document()
             .get('head script')
@@ -45,8 +43,7 @@ describe('Google analytics', () => {
 
     it('Should NOT set GA tracking code in header and cookie when enterprise license in prodMode', () => {
         LicenseStubs.stubEnterpriseLicense();
-        HomeSteps.visit();
-        EnvironmentStubs.stubWbProdMode();
+        HomeSteps.visitInProdMode();
 
         cy.document()
             .get('head script')

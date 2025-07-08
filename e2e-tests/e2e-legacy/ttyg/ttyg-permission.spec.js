@@ -4,7 +4,9 @@ import {TTYGStubs} from "../../stubs/ttyg/ttyg-stubs";
 import {TTYGViewSteps} from "../../steps/ttyg/ttyg-view-steps";
 import {LoginSteps} from "../../steps/login-steps";
 import {SecurityStubs} from "../../stubs/security-stubs";
+import {RepositorySelectorSteps} from "../../steps/repository-selector-steps";
 
+const REPOSITORY_ID = 'starwars';
 const USER_WITH_ROLE_USER = 'ttyg_user';
 const USER_WITH_ROLE_REPO_MANAGER = 'ttyg_repo_manager';
 const USER_ADMINISTRATOR = 'admin';
@@ -28,8 +30,7 @@ describe('TTYG permissions', () => {
     beforeEach(() => {
         SecurityStubs.spyOnAuthenticatedUser();
         RepositoriesStubs.stubRepositories(0, '/repositories/get-ttyg-repositories.json');
-        RepositoriesStub.stubBaseEndpoints('starwars');
-        cy.presetRepository('starwars');
+        RepositoriesStub.stubBaseEndpoints(REPOSITORY_ID);
     })
 
     after(() => {
@@ -63,6 +64,7 @@ describe('TTYG permissions', () => {
         cy.wait('@get-authenticated-user');
         cy.wait('@get-authenticated-user');
         LoginSteps.loginWithUser(user, password);
+        RepositorySelectorSteps.selectRepository(REPOSITORY_ID);
         TTYGViewSteps.getCreateFirstAgentButton().should(shouldBe);
         TTYGStubs.stubChatsListGet();
         TTYGStubs.stubAgentListGet();
@@ -71,6 +73,5 @@ describe('TTYG permissions', () => {
         TTYGViewSteps.getCreateAgentButton().should(shouldBe);
         TTYGViewSteps.getEditCurrentAgentButton().should(shouldBe);
         TTYGViewSteps.getToggleAgentsSidebarButton().should(shouldBe);
-        LoginSteps.logout();
     }
 });

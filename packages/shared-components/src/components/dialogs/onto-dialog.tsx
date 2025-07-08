@@ -4,6 +4,7 @@ import {HtmlUtil} from '../../utils/html-util';
 export type DialogConfig = {
   dialogTitle: string;
   onClose: (evt: MouseEvent | KeyboardEvent) => void;
+  modalClass?: string;
 }
 
 @Component({
@@ -35,7 +36,7 @@ export class OntoDialog {
   render() {
     return (
       <Host tabindex="-1">
-        <div class="dialog-overlay">
+        <div class={`dialog-overlay ${this.config.modalClass ? this.config.modalClass : ''}`}>
           <dialog class="dialog">
             <header class="dialog-header">
               <h3 class="dialog-title">{this.config.dialogTitle}</h3>

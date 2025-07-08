@@ -24,6 +24,7 @@ export class CookieService implements Service {
     const cookieConsent = new CookieConsent(user.appSettings?.COOKIE_CONSENT as CookieConsent);
 
     cookieConsent.policyAccepted = true;
+    cookieConsent.updatedAt = Date.now();
     user.appSettings.COOKIE_CONSENT = cookieConsent;
     return user;
   }
