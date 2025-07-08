@@ -299,7 +299,7 @@ function LocationsAndRepositoriesCtrl($scope, $uibModal, toastr, $repositories, 
         ModalService.openSimpleModal({
             title: 'Confirm restart',
             message: `<p>Are you sure you want to restart the repository <strong>${repositoryId}</strong>?</p>
-                        <p><span class="icon-2x icon-warning" style="color: #d54a33"/>
+                        <p><span class="icon-2x icon-warning" style="color: #d54a33"></span>
                             The repository will be shut down immediately and all running queries
                             and updates will be cancelled.</p>`,
             warning: true
@@ -857,13 +857,13 @@ function EditRepositoryCtrl($scope, $routeParams, toastr, $repositories, $locati
         const invalidValues = checkInvalidValues($scope.invalidValues);
         let modalMsg = `Save changes to repository <strong>${$scope.repositoryInfo.id}</strong>?<br><br>`;
         if ($scope.repositoryInfo.saveId !== $scope.repositoryInfo.id) {
-            modalMsg += `<span class="icon-2x icon-warning" style="color: #d54a33"/>
+            modalMsg += `<span class="icon-2x icon-warning" style="color: #d54a33"></span>
                         The repository will be stopped and renamed.`;
         } else if ($scope.repositoryInfo.restartRequested) {
-            modalMsg += `<span class="icon-2x icon-warning" style="color: #d54a33"/>
+            modalMsg += `<span class="icon-2x icon-warning" style="color: #d54a33"></span>
                         The repository will be restarted.`;
         } else {
-            modalMsg += `<span class="icon-2x icon-warning" style="color: #d54a33"/>
+            modalMsg += `<span class="icon-2x icon-warning" style="color: #d54a33"></span>
                         Repository restart required for changes to take effect.`;
         }
         if ($scope.isInvalidRepoName) {
