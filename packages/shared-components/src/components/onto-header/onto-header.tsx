@@ -329,7 +329,8 @@ export class OntoHeader {
   // ========================
   private shouldShowRdfSearch(): boolean {
     return !!this.currentRepository &&
-      (!this.isActiveLocationLoading || getPathName() === '/repository');
+      (!this.isActiveLocationLoading || getPathName() === '/repository') &&
+      this.authService.canReadRepo(this.currentRepository);
   }
 
   private readonly showViewResourceMessage= (event:MouseEvent) => {
