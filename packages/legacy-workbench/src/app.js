@@ -380,7 +380,26 @@ const ngLifecycles = singleSpaAngularJS({
     elementId: 'workbench-app',
     template: `
         <div ng-controller="mainCtrl">
-            <div class="main-container">
+            <div class="container-fluid main-container no-authority-panel" ng-if="hasPermission() && !hasAuthority() && getActiveRepository()">
+                <h1>
+                    {{title}}
+                    <page-info-tooltip></page-info-tooltip>
+                </h1>
+                <div class="mb-2 row">
+                    <div role="alert">
+                        <div class="mb-1 mt-1 ml-1 mr-1">
+                            <div class="card repository-errors">
+                                <div class="alert lead alert-warning">
+                                    <div>{{'core.errors.restricted.warning.msg' | translate}}
+                                        <span>{{'core.errors.no.auth.to.repository.warning.msg' | translate}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="main-container" ng-if="hasPermission() && hasAuthority()">
                 <div ng-view></div>
             </div>
         </div>
