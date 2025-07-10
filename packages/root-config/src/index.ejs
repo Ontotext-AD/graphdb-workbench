@@ -2,6 +2,25 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <!--
+      SANITIZE TRAILING SLASH FROM PATHNAME BEFORE SPA BOOTSTRAP
+      This inline script executes immediately upon page load,
+      before any <base> tag or import-map is processed. It detects
+      if the URL’s pathname is longer than 1 character and ends
+      with a “/”, and if so, removes that trailing slash while
+      preserving query strings and hash fragments via
+      history.replaceState.
+    -->
+    <script>
+      (function() {
+        const { pathname, search, hash } = window.location;
+        if (pathname.length > 1 && pathname.endsWith('/')) {
+          const clean = pathname.slice(0, -1) + search + hash;
+          window.history.replaceState({}, '', clean);
+        }
+      })();
+    </script>
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <base href="/">
