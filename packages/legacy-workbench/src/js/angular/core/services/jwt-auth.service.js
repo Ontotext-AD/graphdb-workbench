@@ -410,7 +410,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 }
 
                 // If there is no selected repository, there are no auth restrictions
-                if (!getActiveRepositoryObjectFromStorage()) {
+                if (getActiveRepositoryObjectFromStorage().id === '') {
                     return true;
                 }
 
@@ -425,7 +425,6 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                     // Check if any of the allowed authorities match one of the principal's authorities
                     return auth.some(allowAuth => this.principal.authorities.indexOf(allowAuth) > -1);
                 }
-
                 // If none of the above conditions apply, return true by default
                 return true;
             }
