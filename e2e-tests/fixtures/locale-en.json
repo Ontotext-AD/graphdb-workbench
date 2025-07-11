@@ -463,8 +463,8 @@
                     },
                     "model": {
                         "label": "Model",
-                        "tooltip": "The model to use for this agent. More powerful models will provide better results.",
-                        "hint": "Check out the available OpenAI models <a href=\"https://platform.openai.com/docs/models\" target=\"_blank\">here</a>."
+                        "hint": "The default model is an admin-set property. Check with them for other available models.",
+                        "link_text": " Learn how to configure the model in the GraphDB documentation."
                     },
                     "temperature": {
                         "label": "Temperature",

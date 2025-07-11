@@ -37,7 +37,7 @@ function AgentListComponent(TTYGContextService, ModalService, $translate) {
             $scope.selectedAgentsFilter = undefined;
 
             /**
-             * An event instance holding the agent to be deleted and if the progres is ongoing.
+             * An event instance holding the agent to be deleted and if the progress is ongoing.
              * @type {agentId: string, inProgress: boolean}
              */
             $scope.deletingAgent = undefined;
