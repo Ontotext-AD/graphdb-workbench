@@ -37,6 +37,9 @@ clean_directory "packages/legacy-workbench/node_modules"
 clean_directory "packages/root-config/dist"
 clean_directory "packages/root-config/node_modules"
 
+clean_directory "packages/security-module/dist"
+clean_directory "packages/security-module/node_modules"
+
 clean_directory "e2e-tests/node_modules"
 clean_directory "e2e-tests/report"
 clean_directory "e2e-tests/cypress"
