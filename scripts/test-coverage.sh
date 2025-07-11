@@ -25,6 +25,7 @@ test_package() {
 test_package "api"
 test_package "shared-components"
 test_package "root-config"
+test_package "security-module"
 
 echo ''
 echo '########################   All packages tested successfully!   ###########################'

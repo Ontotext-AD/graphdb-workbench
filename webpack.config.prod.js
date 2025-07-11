@@ -39,6 +39,10 @@ module.exports = (env, argv) => merge(commonConfig(env, argv), {
                 to: 'api'
               },
               {
+                from: 'packages/security-module/dist',
+                to: 'security-module'
+              },
+              {
                 from: 'packages/workbench/dist',
                 to: 'workbench'
               }

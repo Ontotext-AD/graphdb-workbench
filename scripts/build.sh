@@ -23,6 +23,7 @@ build_package() {
 build_package "api"
 build_package "shared-components"
 build_package "workbench"
+build_package "security-module"
 
 echo ''
 echo '########################   All packages built successfully!   ###########################'

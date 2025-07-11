@@ -23,6 +23,7 @@ lint_package "root-config"
 lint_package "workbench"
 lint_package "api"
 lint_package "shared-components"
+lint_package "security-module"
 
 echo ''
 echo '########################   All packages lint check passed successfully!   ###########################'

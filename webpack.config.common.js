@@ -81,7 +81,7 @@ module.exports = (webpackConfigEnv, argv) => {
             ],
             extensions: ['.js']
         },
-        externals: ["@ontotext/workbench-api"],
+        externals: ["@ontotext/workbench-api", "@ontotext/security-module"],
         // modify the webpack config however you'd like to by adding to this object
         plugins: [
             new HtmlWebpackPlugin({
@@ -96,9 +96,10 @@ module.exports = (webpackConfigEnv, argv) => {
                         legacyWorkbenchBundle:  Object.keys(compilation.assets).find(asset => asset.includes('legacyWorkbench') && asset.endsWith('.js')),
                         apiBundle: Object.keys(compilation.assets).find(asset => asset.includes('ontotext-workbench-api') && asset.endsWith('.js')),
                         workbenchAppBundle: Object.keys(compilation.assets).find(asset => asset.includes('workbenchApp') && asset.endsWith('.js')),
+                        securityModuleBundle: Object.keys(compilation.assets).find(asset => asset.includes('ontotext-security-module') && asset.endsWith('.js')),
                         contentHash: assets.contentHash,
                         buildVersion: PACKAGE.version,
-                        microFrontEndsUrls: 'http://localhost:9002 http://localhost:9003 ws://localhost:9003 ws://localhost:9002',
+                        microFrontEndsUrls: 'http://localhost:9002 http://localhost:9003 http://localhost:9004 ws://localhost:9003 ws://localhost:9002 ws://localhost:9004',
                         externalCSSs: externalCSSs.join(' '),
                         externalJavaScripts: externalJavaScripts.join(' '),
                         externalImages: externalImages.join(' ')
@@ -125,6 +126,7 @@ module.exports = (webpackConfigEnv, argv) => {
             new MergeJsonPlugin({
                 files: [
                     'packages/api/dist/license-checker.json',
+                    'packages/security-module/dist/license-checker.json',
                     'packages/legacy-workbench/dist/license-checker.json',
                     'packages/root-config/dist/license-checker.json',
                     'packages/shared-components/dist/license-checker.json',

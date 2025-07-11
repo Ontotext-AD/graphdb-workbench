@@ -59,6 +59,7 @@
             {
                 "imports": {
                     "single-spa": "/resources/single-spa.dev.js?v=<%= buildVersion %>",
+                    "@ontotext/security-module": "http://localhost:9004/ontotext-security-module.js?v=<%= buildVersion %>",
                     "@ontotext/workbench-api": "http://localhost:9003/ontotext-workbench-api.js?v=<%= buildVersion %>",
                     "@ontotext/root-config": "/<%= mainBundle %>?v=<%= buildVersion %>",
                     "@ontotext/legacy-workbench": "/<%= legacyWorkbenchBundle %>?v=<%= buildVersion %>",
@@ -71,6 +72,7 @@
             {
                 "imports": {
                     "single-spa": "./resources/single-spa.min.js?v=<%= buildVersion %>",
+                    "@ontotext/security-module": "./<%= securityModuleBundle %>?v=<%= buildVersion %>",
                     "@ontotext/workbench-api": "./<%= apiBundle %>?v=<%= buildVersion %>",
                     "@ontotext/root-config": "./<%= mainBundle %>",
                     "@ontotext/legacy-workbench": "./<%= legacyWorkbenchBundle %>",

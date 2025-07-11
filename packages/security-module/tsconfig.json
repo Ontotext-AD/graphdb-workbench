@@ -1,0 +1,23 @@
+{
+  "extends": "ts-config-single-spa",
+  "files": ["src/ontotext-security-module.ts"],
+  "compilerOptions": {
+    "declarationDir": "dist",
+    "outDir": "dist",
+    "baseUrl": "./",
+    "typeRoots": ["./node_modules/@types"],
+    "target": "ESNext",
+    "module": "commonjs",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "paths": {
+      "@ontotext/workbench-api": [
+        "../api/dist/ontotext-workbench-api.d.ts"
+      ]
+    }
+  },
+  "include": ["src/**/*", "global.d.ts"],
+  "exclude": ["src/**/*.test*"]
+}
