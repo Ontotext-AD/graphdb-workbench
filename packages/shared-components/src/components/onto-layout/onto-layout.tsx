@@ -202,7 +202,8 @@ export class OntoLayout {
   private setPermission(permissions: RestrictedPages) {
     if (permissions) {
       const path = location.pathname;
-      this.hasPermission = !permissions.isRestricted(path);
+      // Delegate to legacy, when a user has authority in order to show the authority banner, which is not migrated yet
+      this.hasPermission = !permissions.isRestricted(path) ? true : !this.authenticationService.hasAuthority();
     } else {
       // If the permissions are undefined, the user can access the url
       this.hasPermission = true;

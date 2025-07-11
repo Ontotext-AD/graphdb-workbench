@@ -2,7 +2,8 @@ import {
   ServiceProvider,
   AutocompleteService,
   AutocompleteContextService,
-  RepositoryContextService
+  RepositoryContextService,
+  AuthenticationService
 } from '@ontotext/workbench-api';
 
 /**
@@ -11,9 +12,10 @@ import {
  * If there is no selected repository, the request will not be made.
  */
 const isAutocompleteEnabled = () => {
+  const authenticationService = ServiceProvider.get(AuthenticationService);
   return new Promise((resolve, reject) => {
     ServiceProvider.get(RepositoryContextService).onSelectedRepositoryChanged((selectedRepository) => {
-      if (!selectedRepository?.id) {
+      if (!selectedRepository?.id || !authenticationService.canReadRepo(selectedRepository)) {
         ServiceProvider.get(AutocompleteContextService).updateAutocompleteEnabled(false);
         return resolve();
       }
