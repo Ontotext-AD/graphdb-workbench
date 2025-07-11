@@ -285,7 +285,7 @@
         }
     },
     "ttyg": {
-        "helpInfo": "The <b>Talk to Your Graph</b> view lets you interact with your database through a conversational interface. You can ask natural language questions about the data and receive answers generated through the combined power of GraphDB and OpenAI. It supports multiple agent configurations and persistent chats for ongoing, contextual conversations.",
+        "helpInfo": "<b>Talk to Your Graph</b> lets you interact with your database through a conversational interface. Ask natural language questions about the data and receive answers generated through the combined power of GraphDB and LLMs. It supports multiple agent configurations and persistent chats for ongoing, contextual conversations.",
         "loading": "Loading...",
         "help": {
             "btn": {
@@ -752,7 +752,7 @@
                 "no_agents": "No agents found for the selected filter.",
                 "help_1": "{{'ttyg.helpInfo'|translate|trustAsHtml}}",
                 "help_2": "{{'ttyg.help.how.content2'|translate|trustAsHtml}}",
-                "help_config": "To use <b>Talk to Your Graph</b>, GraphDB must first be configured to work with OpenAI. Please ensure that the necessary API keys and settings are in place before starting. For detailed setup instructions, refer to the <a href=\"{{talkToGraphDocumentationLink}}\" target=\"_blank\" rel=\"noopener\">documentation<i class=\"icon-external\"></i></a> or contact your administrator.",
+                "help_config": "To use <b>Talk to Your Graph</b>, GraphDB must first be configured to work with LLM API. Please ensure that the necessary LLM API type, url and key are in place before starting. For detailed setup instructions, refer to the <a href=\"{{talkToGraphDocumentationLink}}\" target=\"_blank\" rel=\"noopener\">documentation<i class=\"icon-external\"></i></a> or contact your administrator.",
                 "token_prop_warn1": "To enable this feature, set the config property",
                 "token_prop_warn2": "to your GPT token in",
                 "token_prop_warn3": "file.",
@@ -768,7 +768,7 @@
         "help.what.content": "{{'ttyg.helpInfo'|translate|trustAsHtml}}",
         "help.how.title": "How does it work?",
         "help.how.content": "The bot uses the ChatGPT Retrieval connector to fetch information it does not know about. As such, you must first create a suitable connector. See also the settings for fine-tuning the integration with the Retrieval connector.",
-        "help.how.content1": "<b>Talk to Your Graph</b> is powered by OpenAI's Assistants API. You begin by selecting or configuring an agent, which defines the context and rules for querying. Once set, you can start a conversation by asking questions in natural language. The assistant interprets your query, runs the appropriate query methods to retrieve data, and responds with an answer. Persistent chat ensures conversations stay contextually aware, enabling deeper, more coherent interactions over time. You can use multiple agents concurrently to cover various domains or data sources.",
+        "help.how.content1": "<b>Talk to Your Graph</b> is powered by LLM API configured by the database administrator. You begin by selecting or configuring an agent, which defines the context and rules for querying. Once set, you can start a conversation by asking questions in natural language. The assistant interprets your query, runs the appropriate query methods to retrieve data, and responds with an answer. Persistent chat ensures conversations stay contextually aware, enabling deeper, more coherent interactions over time. You can use multiple agents concurrently to cover various domains or data sources.",
         "help.how.content2": "An agent in <b>Talk to Your Graph</b> is an AI-driven assistant specifically configured to interact with your graph database. It uses advanced natural language processing to understand and respond to your questions by querying the database and delivering relevant information. Each agent is tailored to a specific context, making interactions seamless and efficient, whether you're retrieving data, exploring insights, or working on complex projects."
     },
     "graphql": {
@@ -3259,7 +3259,7 @@
     "guide.step_plugin.welcome-what.content": "{{translatedGuideDescription}}<p>Let's get started for real now!</p>",
     "guide.step_plugin.create-ttyg-agent.intro": "An agent is a helpful assistant that can answer your queries. You need to configure an agent in order to ask anything of Talk to Your Graph.",
     "guide.step_plugin.ttyg.missing-key.title": "Missing OpenAI key",
-    "guide.step_plugin.ttyg.missing-key.content": "To use <b>Talk to Your Graph</b>, GraphDB must first be configured to work with OpenAI. Please ensure that the necessary API keys and settings are in place before starting. For detailed setup instructions, refer to the documentation or contact your administrator.",
+    "guide.step_plugin.ttyg.missing-key.content": "To use <b>Talk to Your Graph</b>, GraphDB must first be configured to work with LLM API. Please ensure that the necessary LLM API type, url and key are in place before starting. For detailed setup instructions, refer to the documentation or contact your administrator.",
     "guide.step_plugin.create-ttyg-agent.create-agent": "Click on the create agent button to create a new agent.",
     "guide.step_plugin.create-ttyg-agent.save-agent-settings": "Click to save the agent settings.",
     "guide.step_plugin.sparql-search-method.content": "Enabling SPARQL search allows the agent to answers questions by performing a SPARQL query. This works well for datasets with good ontologies and performs well on closed-ended questions, including aggregations.",
