@@ -13,7 +13,7 @@ import {
   AuthenticatedUser,
   SecurityConfig,
   Authority,
-  AuthenticationService, NavigationEndPayload, NavigationContextService
+  AuthenticationService, NavigationEndPayload, NavigationContextService, getPathName
 } from '@ontotext/workbench-api';
 import {ExternalMenuItemModel} from '../onto-navbar/external-menu-model';
 
@@ -201,8 +201,9 @@ export class OntoLayout {
 
   private setPermission(permissions: RestrictedPages) {
     if (permissions) {
-      const path = location.pathname;
-      this.hasPermission = !permissions.isRestricted(path);
+      const path = getPathName();
+      // Delegate to legacy, when a user has authority in order to show the authority banner, which is not migrated yet
+      this.hasPermission = !permissions.isRestricted(path) ? true : !this.authenticationService.hasAuthority();
     } else {
       // If the permissions are undefined, the user can access the url
       this.hasPermission = true;

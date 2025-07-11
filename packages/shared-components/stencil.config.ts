@@ -45,5 +45,11 @@ export const config: Config = {
   ],
   devServer: {
     requestListenerPath: path
+  },
+  // https://github.com/stenciljs/core/issues/4284
+  // https://github.com/stenciljs/core/issues/5215
+  // The main slot was not appearing in the DOM
+  extras: {
+    experimentalSlotFixes: true
   }
 };
