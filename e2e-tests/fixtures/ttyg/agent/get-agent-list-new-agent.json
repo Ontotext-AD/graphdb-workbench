@@ -7,7 +7,7 @@
         "topP": 0.2,
         "seed": 2,
         "repositoryId": "starwars",
-        "instructions": {
+        "assistantsInstructions": {
             "systemInstruction": "",
             "userInstruction": ""
         },
