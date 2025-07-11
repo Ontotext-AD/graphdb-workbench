@@ -22,6 +22,7 @@ remove_lock "packages/api/package-lock.json"
 remove_lock "packages/workbench/package-lock.json"
 remove_lock "packages/legacy-workbench/package-lock.json"
 remove_lock "packages/root-config/package-lock.json"
+remove_lock "packages/security-module/package-lock.json"
 
 echo '########################   All package locks are deleted successfully!   ###########################'
 echo ''
