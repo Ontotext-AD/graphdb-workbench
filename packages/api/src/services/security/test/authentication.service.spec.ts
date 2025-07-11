@@ -7,6 +7,10 @@ import {SecurityContextService} from '../security-context.service';
 import {EventService} from '../../event-service';
 import {Logout} from '../../../models/events';
 import {Repository} from '../../../models/repositories';
+import {WindowService} from '../../window/window.service';
+import {RouteItemModel} from '../../../models/routing/route-item-model';
+import {RoutingService} from '../../routing/routing.service';
+import {RepositoryStorageService} from '../../repository';
 
 describe('AuthenticationService', () => {
   let authService: AuthenticationService;
@@ -335,5 +339,72 @@ describe('AuthenticationService', () => {
 
     // Then, I expect to have read access to any repository
     expect(authService.canReadRepo(repository)).toBe(true);
+  });
+
+  test('hasAuthority should return true for admin users', () => {
+    // Given, I have a user with admin authority
+    const adminAuthority = Authority.ROLE_ADMIN;
+    const userWithAdminAuthority = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
+      {external: false, authorities: [adminAuthority]} as unknown as AuthenticatedUser
+    );
+
+    securityContextService.updateAuthenticatedUser(userWithAdminAuthority);
+
+    // When, I check if the user has admin authority
+    // Then, I expect to have admin authority
+    expect(authService.hasAuthority()).toBe(true);
+  });
+
+  test('hasAuthority should return false if there are no active routes', () => {
+    // Given, I have no active routes, a regular user and enabled security
+    const regularUser = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
+      {external: false, authorities: [Authority.ROLE_USER]} as unknown as AuthenticatedUser
+    );
+    securityContextService.updateAuthenticatedUser(regularUser);
+
+    const securityConfig = {enabled: true} as unknown as SecurityConfig;
+    securityContextService.updateSecurityConfig(securityConfig);
+
+    jest.spyOn(WindowService, 'getRoutePlugins').mockReturnValue([]);
+    // Then, I shouldn't have authority
+    expect(authService.hasAuthority()).toBe(false);
+  });
+
+  test('should calculate authority of user', () => {
+    // Given, I have a user without read permissions for all repositories
+    const regularUser = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
+      {authorities: [Authority.ROLE_USER]} as unknown as AuthenticatedUser
+    );
+    securityContextService.updateAuthenticatedUser(regularUser);
+    const securityConfig = {enabled: true} as unknown as SecurityConfig;
+    securityContextService.updateSecurityConfig(securityConfig);
+
+    const activeRoute = new RouteItemModel({
+      url: '/aclmanagement',
+      module: 'graphdb.framework.aclmanagement',
+      path: 'aclmanagement/app',
+      chunk: 'aclmanagement',
+      controller: 'AclManagementCtrl',
+      templateUrl: 'pages/aclmanagement.html',
+      title: 'view.aclmanagement.title',
+      helpInfo: 'view.aclmanagement.helpInfo',
+      documentationUrl: 'managing-fgac-workbench.html',
+      allowAuthorities: [
+        'READ_REPO_{repoId}'
+      ]
+    });
+    const routingService = ServiceProvider.get(RoutingService);
+    jest.spyOn(routingService, 'getActiveRoute').mockReturnValue(activeRoute);
+    ServiceProvider.get(RepositoryStorageService).setRepositoryReference({id: 'testRepoId', location: 'testLocation' });
+
+    // When, I calculate the authority of the user
+    // Then, I shouldn't have authority
+    expect(authService.hasAuthority()).toBe(false);
+
+    // When, I have read permissions for all repositories
+    regularUser.authorities.addToStart('READ_REPO_*' as Authority);
+    securityContextService.updateAuthenticatedUser(regularUser);
+    // Then, I should have authority
+    expect(authService.hasAuthority()).toBe(true);
   });
 });

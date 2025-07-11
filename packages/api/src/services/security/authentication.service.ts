@@ -5,7 +5,8 @@ import {EventService} from '../event-service';
 import {Logout} from '../../models/events';
 import {SecurityContextService} from './security-context.service';
 import {Repository} from '../../models/repositories';
-import {RepositoryService} from '../repository';
+import {RepositoryService, RepositoryStorageService} from '../repository';
+import {RoutingService} from '../routing/routing.service';
 
 /**
  * Service responsible for handling authentication-related operations.
@@ -140,6 +141,78 @@ export class AuthenticationService implements Service {
    */
   hasGqlRights(repository: Repository): boolean {
     return this.canReadGqlRepo(repository) || this.canWriteGqlRepo(repository);
+  }
+
+  /**
+   * Determines if the current user has authority to access the active route.
+   *
+   * This method checks if the user has the necessary permissions to access the current route
+   * based on the route's defined authority requirements and the user's assigned roles.
+   * The method follows these rules:
+   * - If no active route exists, access is denied
+   * - Admin users always have access to all routes
+   * - Routes without defined authority requirements are accessible to all
+   * - If no repository is selected, authority checks are bypassed
+   * - If the user has any of the authorities required by the route, access is granted
+   *
+   * @returns {boolean} True if the user has authority to access the current route, false otherwise
+   */
+  hasAuthority(): boolean {
+    // If the user has an admin role, they always have access
+    if (this.hasRole(Authority.ROLE_ADMIN)) {
+      return true;
+    }
+
+    const activeRoute = ServiceProvider.get(RoutingService).getActiveRoute();
+    // If there is no current active route, return false – access cannot be determined
+    if (!activeRoute) {
+      return false;
+    }
+
+    // If the current route doesn't define "allowAuthorities", assume there are no restrictions
+    if (!activeRoute.allowAuthorities) {
+      return true;
+    }
+
+    // If there is no selected repository, there are no auth restrictions
+    if (!ServiceProvider.get(RepositoryStorageService).getRepositoryReference()?.id) {
+      return true;
+    }
+
+    const authenticatedUser = this.getAuthenticatedUser();
+    // If there is no principal defined, assume is admin and return true
+    if (!authenticatedUser) {
+      return true;
+    }
+
+    if (activeRoute.allowAuthorities.length) {
+      const resolvedAuthorities = this.resolveAuthorities(activeRoute.allowAuthorities);
+      return resolvedAuthorities.some(allowAuth => authenticatedUser.authorities.hasAuthority(allowAuth as Authority));
+    }
+
+    return true;
+  }
+
+  private resolveAuthorities(authoritiesList?: string[]) {
+    // If no authorities list is provided, return empty array.
+    if (!authoritiesList) {
+      return [];
+    }
+
+    // Get the selected repository's ID from the current context.
+    const repo = ServiceProvider.get(RepositoryStorageService).getRepositoryReference();
+    // If there is no selected repository ID, return the original authorities list.
+    if (!repo?.id) {
+      return authoritiesList;
+    }
+
+    // Replace the "{repoId}" placeholder with the actual repository ID for specific access.
+    const authListForCurrentRepo = authoritiesList.map(authority => authority.replace('{repoId}', repo.id));
+    // Replace the "{repoId}" placeholder with a wildcard '*' to denote access to any repository.
+    const authListForAllRepos = authoritiesList.map(authority => authority.replace('{repoId}', '*'));
+
+    // Combine both lists into a single array and return.
+    return [...authListForCurrentRepo, ...authListForAllRepos];
   }
 
   private hasGraphqlAuthority(action: string, repo: Repository): boolean {
