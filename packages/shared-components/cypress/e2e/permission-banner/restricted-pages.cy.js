@@ -18,7 +18,7 @@ describe("Restricted pages", () => {
         // Then: I expect to see the permission banner
         PermissionBannerSteps.getPermissionBanner().should('exist').and('be.visible');
         // and page content not be visible
-        RestrictedPagesSteps.getPageContentElement().should('not.exist');
+        RestrictedPagesSteps.getPageContentElement().should('not.be.visible');
 
         // When: I make page unrestricted
         RestrictedPagesSteps.makeCurrentPageUnrestricted();

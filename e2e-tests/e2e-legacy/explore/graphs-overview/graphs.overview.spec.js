@@ -125,7 +125,7 @@ describe('Graphs overview screen validation', () => {
         verifyVisibleGraphsCount(1);
         verifyGraphExistence('The default graph');
         // open default graph through the link and verify that the table view is rendered
-        cy.contains('The default graph').click();
+        cy.getByTestId('graph-is-not-shaql').contains('The default graph').trigger('mouseover').click();
         cy.url().should('contain', Cypress.config('baseUrl') + '/resource');
         YasrSteps.getResultTableHeader().should('be.visible');
         YasrSteps.getResultTableHeaderColumns().should('have.length', 5);
