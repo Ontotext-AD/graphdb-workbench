@@ -38,6 +38,7 @@ addErrorHandler((err) => {
 // to properly resolve the urls for the dynamic imports. Otherwise it wouldn't be
 // able to load the modules.
 const appModules = {
+  '@ontotext/security-module': () => import('@ontotext/security-module'),
   '@ontotext/legacy-workbench': () => import('@ontotext/legacy-workbench'),
   '@ontotext/workbench-api': () => import('@ontotext/workbench-api'),
   '@ontotext/root-config': () => import('@ontotext/root-config'),
