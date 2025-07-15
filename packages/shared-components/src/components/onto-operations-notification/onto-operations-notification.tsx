@@ -75,7 +75,7 @@ export class OntoOperationsNotification {
                 <section class="operations-statuses-content">
                   {this.activeOperations.allRunningOperations.getItems().map((operation) => (
                     <li key={operation.id}>
-                      <a class={`operation-status-content onto-btn ${operationStatusToWarningClass[operation.status]}`}
+                      <a class={`operation-status-content onto-btn no-underline ${operationStatusToWarningClass[operation.status]}`}
                          target="_blank"
                          onClick={navigateTo(operation.href)}>
                         <i class={operationGroupToIcon[operation.group]}></i>
