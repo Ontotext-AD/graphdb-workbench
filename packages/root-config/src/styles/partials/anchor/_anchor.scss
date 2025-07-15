@@ -1,9 +1,9 @@
 a {
-  &:hover:not(.btn, .nav-link, .menu-element-root, .nodes-list .data-value),
-  &:active:not(.btn, .nav-link, .menu-element-root, .nodes-list .data-value),
-  &[href^="http"]:not(.nodes-list .data-value),
-  &[href^="http"]:hover,
-  &[href^="http"]:active {
+  &:hover:not(.btn, .nav-link, .menu-element-root, .nodes-list .data-value, .no-underline),
+  &:active:not(.btn, .nav-link, .menu-element-root, .nodes-list .data-value, .no-underline),
+  &[href^="http"]:not(.nodes-list .data-value, .no-underline),
+  &[href^="http"]:hover:not(.no-underline),
+  &[href^="http"]:active:not(.no-underline) {
     text-decoration-line: underline !important;
     text-decoration-style: solid !important;
     text-decoration-thickness: var(--link-decoration-thickness) !important;

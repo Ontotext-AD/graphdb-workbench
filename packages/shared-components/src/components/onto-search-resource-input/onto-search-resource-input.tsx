@@ -213,7 +213,7 @@ export class OntoSearchResourceInput {
     if (this.inputValue.length > 0 && !this.isAutocompleteEnabled && !this.autocompleteWarningShown) {
       this.autocompleteWarningShown = true;
       const message = TranslationService.translate('rdf_search.toasts.autocomplete_is_off');
-      this.toastrService.warning(`<a style="font-weight: 500">${message}</a>`,
+      this.toastrService.warning(`<a class="no-underline" style="font-weight: 500">${message}</a>`,
         {
           onClick: navigateTo('autocomplete'),
           removeOnClick: true
