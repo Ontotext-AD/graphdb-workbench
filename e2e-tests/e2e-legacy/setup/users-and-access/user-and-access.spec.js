@@ -85,22 +85,22 @@ describe('User and Access', () => {
             // Then the 'create' button should be disabled
             UserAndAccessSteps.getConfirmUserCreateButton().should('be.disabled');
             // And the field should show an error
-            UserAndAccessSteps.getFieldError().should('contain.text', 'Must be at least 2 symbols long');
+            UserAndAccessSteps.getCustomRoleFieldError().should('contain.text', 'Must be at least 2 symbols long');
             // When I add more text to the custom role tag
             UserAndAccessSteps.addTextToCustomRoleField('A{enter}');
             // Then the 'create' button should be enabled
             UserAndAccessSteps.getConfirmUserCreateButton().should('be.enabled');
             // And the field error should not exist
-            UserAndAccessSteps.getFieldError().should('not.be.visible');
+            UserAndAccessSteps.getCustomRoleFieldError().should('not.be.visible');
 
             // When I type an invalid tag
             UserAndAccessSteps.addTextToCustomRoleField('B{enter}');
             // And the field shows an error
-            UserAndAccessSteps.getFieldError().should('contain.text', 'Must be at least 2 symbols long');
+            UserAndAccessSteps.getCustomRoleFieldError().should('contain.text', 'Must be at least 2 symbols long');
             // When I delete the invalid text
             UserAndAccessSteps.addTextToCustomRoleField('{backspace}');
             // Then the error should not be visible
-            UserAndAccessSteps.getFieldError().should('not.be.visible');
+            UserAndAccessSteps.getCustomRoleFieldError().should('not.be.visible');
         });
 
         it('Adding a role with a CUSTOM_ prefix shows a warning message', () => {

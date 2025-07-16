@@ -155,8 +155,20 @@ export class UserAndAccessSteps {
         cy.get('.write').click();
     }
 
-    static getFieldError() {
-        return cy.get('div.small');
+    static getCustomRoleFieldError() {
+        return cy.get('#user-custom-roles').find('small');
+    }
+
+    /**
+     * Returns the feedback <div> for the given login field error.
+     * @param field One of "username", "password", "confirmPassword"
+     */
+    static getUserFieldError(field) {
+        return cy.get(`.login-credentials [ng-show="${field}Error"].form-control-feedback`);
+    }
+
+    static getRepositoryRightsError() {
+        return cy.get('#user-repos [ng-show="repositoryCheckError"].form-control-feedback');
     }
 
     static getError() {
