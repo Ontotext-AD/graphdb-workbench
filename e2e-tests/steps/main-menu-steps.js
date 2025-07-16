@@ -1,7 +1,7 @@
 export class MainMenuSteps {
 
     static getMainMenu() {
-        return cy.get('.navbar-component');
+        return cy.get('onto-navbar');
     }
 
     static openHomePage() {
@@ -12,12 +12,12 @@ export class MainMenuSteps {
         return MainMenuSteps.getMainMenu().find('.menu-element').contains(menuName);
     }
 
-    static getMenuImport() {
-        return MainMenuSteps.getMenuButton('Import');
+    static getSubMenuButtonByName(menuName) {
+        return MainMenuSteps.getMainMenu().find('.sub-menu-link').contains(menuName);
     }
 
-    static getMenuExplore() {
-        return MainMenuSteps.getMenuButton('Explore');
+    static getMenuImport() {
+        return MainMenuSteps.getMenuButton('Import');
     }
 
     static getMenuSparql() {
@@ -58,7 +58,7 @@ export class MainMenuSteps {
         // Forced it because some element as "Explore" for example has CSS pointer-events: none
         MainMenuSteps.getMenuButton(menuName).click({force: true});
     }
-
+    
     static clickOnSubmenuTriggerElement(menuName) {
         MainMenuSteps.getMainMenu().find('.menu-element-root').contains(menuName).parent().click();
     }
@@ -252,5 +252,12 @@ export class MainMenuSteps {
     static clickOnTTYG() {
         this.clickOnMenuLab();
         this.getSubMenuButton('sub-menu-ttyg').click();
+    }
+
+    // --------------------------
+    // --     Explore menu  --
+    // --------------------------
+    static getMenuExplore() {
+        return MainMenuSteps.getMainMenu().getByTestId('menu-explore');
     }
 }

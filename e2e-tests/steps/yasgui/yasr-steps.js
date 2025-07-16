@@ -11,6 +11,10 @@ export class YasrSteps {
         return YasrSteps.getYasr().find('.yasr_response_chip');
     }
 
+    static getResponseInfoMessage() {
+        return YasrSteps.getResponseInfo().find('.response-info-message');
+    }
+
     static getErrorHeader() {
         return YasrSteps.getResultHeader().get('.errorHeader');
     }

@@ -663,6 +663,36 @@ registered theme plugins for the user to select from. There are two prebuilt the
 `default-theme` is carefully crafted so that the colors used in the theme comply with the WCAG AAA color contrast 
 standard. The second provided theme uses the Ontotext brand colors and does not comply with the WCAG color standard.
 
+## Security Testing
+
+The **Security Suite** under `e2e-tests/e2e-security/` validates:
+
+- Turning security on/off
+- Login flows with good and bad credentials
+- Password change enforcement
+- Role-based access for:
+  - Read-only users (SPARQL & GraphQL)
+  - Read/write users
+  - GraphQL-only users (mutation restrictions)
+  - Repository-admin users
+
+> **Note:** For now these security tests are intended for **local** execution only.  
+> They use a dedicated Cypress config file (`e2e-tests/cypress-security.config.js`)  
+> and can be run with:
+>
+> ```bash
+> # open interactive:
+> npm run cy:open-security
+>
+> # headless CI style:
+> npm run cy:run-security
+> ```
+>
+> Make sure your local GraphDB instance is running at `http://localhost:9000`  
+> and initialized with a clean state before you start.
+> 
+> Yoy should use GraphDB Enterprise Edition with + GraphQL extended support license when running the security tests
+
 
 ## Bundling
 

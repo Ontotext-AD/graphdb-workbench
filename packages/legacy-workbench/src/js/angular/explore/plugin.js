@@ -38,6 +38,7 @@ PluginRegistry.add('main.menu', {
         role: 'IS_AUTHENTICATED_FULLY',
         icon: "icon-data",
         guideSelector: 'menu-explore',
+        testSelector: 'menu-explore',
         children: []
     }]
 });

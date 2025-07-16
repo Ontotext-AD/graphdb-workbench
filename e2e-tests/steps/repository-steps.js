@@ -206,6 +206,7 @@ export class RepositorySteps {
     static selectRepoFromDropdown(repositoryId) {
         RepositorySteps.getRepositoriesDropdown().click();
         RepositorySteps.getRepositoriesInDropdown()
+            .should('be.visible')
             .contains(repositoryId)
             .first()
             .click();

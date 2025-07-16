@@ -22,4 +22,8 @@ export class ActiveRepositoryWidgetSteps {
     static getInferredStatements() {
         return this.getWidget().find('.inferred-statements .data-value');
     }
+
+    static getImportLink() {
+        return this.getWidget().find('a.btn-link[href="import"]');
+    }
 }
