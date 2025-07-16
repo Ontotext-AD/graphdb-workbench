@@ -469,6 +469,7 @@ function GuidesService(
             $route,
             $timeout,
             ShepherdService,
+            GuidesService: this,
             $repositories,
             YasguiComponentDirectiveUtil,
             EventEmitterService,
