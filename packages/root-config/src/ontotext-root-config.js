@@ -13,6 +13,7 @@ import microfrontendLayout from './microfrontend-layout.html';
 import './styles/onto-stylesheet.scss';
 import './onto-vendor';
 import './styles/main.scss';
+// import 'shepherd.js/dist/css/shepherd.css';
 import {bootstrapWorkbench} from './bootstrap/bootstrap';
 import {
   ServiceProvider,
@@ -20,6 +21,7 @@ import {
   NavigationEnd,
   NavigationStart
 } from '@ontotext/workbench-api';
+import {GuidesService} from './guides/guides.service';
 
 const showSplashScreen = (show) => {
   const splashScreen = document.getElementById('splash-screen');
@@ -89,7 +91,10 @@ const registerSingleSpaRouterListeners = () => {
 
 registerSingleSpaRouterListeners();
 bootstrapWorkbench()
-  .then(() => showSplashScreen(false))
+  .then(() => {
+    showSplashScreen(false);
+    GuidesService.init();
+  })
   .catch((error) => {
     console.error('Error during bootstrap of workbench', error);
   });
