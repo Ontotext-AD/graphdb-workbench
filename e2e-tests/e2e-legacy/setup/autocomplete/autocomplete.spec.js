@@ -45,10 +45,9 @@ describe('Autocomplete ', () => {
             .and('not.be.disabled');
 
         // Should have default labels
-        AutocompleteSteps.getAutocompleteLabels()
-            .should('be.visible')
-            .find('.wb-autocomplete-labels-row')
-            .should('have.length', 1)
+        AutocompleteSteps.getAutocompleteLabels().should('be.visible')
+
+        AutocompleteSteps.getLabelRows().should('have.length', 1)
             .and('contain', 'http://www.w3.org/2000/01/rdf-schema#label');
 
         // Enable autocomplete and verify status is OK (possible slow operation)
