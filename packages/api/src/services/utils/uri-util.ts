@@ -1,4 +1,4 @@
-import {BuildUtil} from './build-util';
+import {WindowService} from '../window';
 
 /**
  * Utility class for handling and manipulating URIs.
@@ -145,7 +145,7 @@ export class UriUtil {
     }
 
     const isUnofficialVersion = productVersion.includes('-');
-    const version = (BuildUtil.isDevMode() || isUnofficialVersion) ? this.LATEST_UNOFFICIAL_VERSION : productVersion;
+    const version = (WindowService.isDevMode() || isUnofficialVersion) ? this.LATEST_UNOFFICIAL_VERSION : productVersion;
     return `${this.BASE_DOCUMENTATION_URL}${version}/${endpointPath}`;
   }
 

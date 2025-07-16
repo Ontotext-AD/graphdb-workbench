@@ -1,5 +1,5 @@
 import {NavbarService} from '../navbar-service';
-import {ExternalMenuModel} from '../external-menu-model';
+import {ExternalMenuModel} from '@ontotext/workbench-api';
 import {NavbarItemModel, NavbarModel} from '../navbar-model';
 
 describe('NavbarService', () => {

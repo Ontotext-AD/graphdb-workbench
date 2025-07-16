@@ -1,3 +1,5 @@
+import {WindowService} from '../window/window.service';
+
 /**
  * Redirects the current page to a specified URL using the single-spa framework.
  * Made to be used from views. If you are not navigating from a view, use <code>navigate</code> instead
@@ -19,7 +21,7 @@ export function navigateTo(url: string): (event: Event) => void {
  * @param url - The target URL to which the page should be redirected.
  */
 export function navigate(url: string) {
-  window.singleSpa.navigateToUrl(url);
+  WindowService.navigateToUrl(url);
 }
 
 /**
@@ -27,7 +29,7 @@ export function navigate(url: string) {
  * @param url - The URL to open in a new tab.
  */
 export function openInNewTab(url: string): void {
-  window.open(url, '_blank');
+  WindowService.openInNewTab(url);
 }
 
 /**
@@ -45,7 +47,7 @@ export function isHomePage(): boolean {
  * @returns {string} The pathname of the current URL, which represents the path segment that comes after the context (if any) and before the query string.
  */
 export function getPathName(): string {
-  return window.location.pathname.substring(getContextName().length - 1);
+  return WindowService.getPathName().substring(getContextName().length - 1);
 }
 
 /**

@@ -10,7 +10,7 @@ import {
   State,
   Watch
 } from '@stencil/core';
-import {ExternalMenuModel} from "./external-menu-model";
+import {ExternalMenuModel} from "@ontotext/workbench-api";
 import {NavbarToggledEvent} from "./navbar-toggled-event";
 import {NavbarService} from "./navbar-service";
 import {NavbarItemModel, NavbarModel} from "./navbar-model";

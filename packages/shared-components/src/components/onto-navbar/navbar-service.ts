@@ -1,4 +1,4 @@
-import {ExternalMenuItemModel, ExternalMenuModel} from "./external-menu-model";
+import {ExternalMenuItemModel, ExternalMenuModel} from "@ontotext/workbench-api";
 import {NavbarItemModel, NavbarModel} from "./navbar-model";
 
 export class NavbarService {

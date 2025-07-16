@@ -1,5 +1,6 @@
-import {ExternalMenuModel} from '../../components/onto-navbar/external-menu-model';
+import {RouteModel, ExtensionPoint, ExternalMenuModel} from '@ontotext/workbench-api';
 
 export interface PluginRegistry {
-  get(extensionPoint: string): ExternalMenuModel;
+  get(extensionPoint: ExtensionPoint.MAIN_MENU): ExternalMenuModel;
+  get(extensionPoint: ExtensionPoint.ROUTE): RouteModel;
 }
