@@ -35,7 +35,8 @@ import {
     ServiceProvider,
     ApplicationLifecycleContextService,
     RepositoryService,
-    AuthenticationService
+    AuthenticationService,
+    AuthenticationStorageService
 } from "@ontotext/workbench-api";
 import {EventConstants} from "./utils/event-constants";
 
@@ -616,10 +617,11 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
      * @type {undefined | boolean}
      */
     let isAuthenticated = undefined;
+    const authEvents = [AuthTokenService.AUTH_STORAGE_NAME, AuthTokenService.AUTHENTICATED_STORAGE_NAME];
 
     const localStoreChangeHandler = (localStoreEvent) => {
-        if (AuthTokenService.AUTH_STORAGE_NAME === localStoreEvent.key) {
-            const newAuthenticationState = $jwtAuth.isAuthenticated();
+        if (authEvents.includes(localStoreEvent.key)) {
+            const newAuthenticationState = ServiceProvider.get(AuthenticationStorageService).isAuthenticated();
             $jwtAuth.updateReturnUrl();
             if (isAuthenticated !== newAuthenticationState) {
                 isAuthenticated = newAuthenticationState;

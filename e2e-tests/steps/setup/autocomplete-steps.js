@@ -83,6 +83,10 @@ export class AutocompleteSteps extends BaseSteps {
         return this.getAutocompletePage().find('#wb-autocomplete-labels');
     }
 
+    static getLabelRows() {
+        return this.getAutocompleteLabels().find('.wb-autocomplete-labels-row')
+    }
+
     static getTableRows() {
         return cy.get('.wb-autocomplete-labels-row');
     }

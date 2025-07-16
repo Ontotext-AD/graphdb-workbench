@@ -74,7 +74,12 @@ const subscribeToAuthenticatedUserChange = () => {
  * subscriptions for config changes and authenticated user changes.
  */
 export const bootstrapWorkbench = () => {
-  return loadEssentials().then(() => {
+  return loadEssentials().catch((error) => {
+    // Only throw error if it's not a 401 Unauthorized error, as it's expected when the user is not authenticated.
+    if (error.status !== 401) {
+      throw error;
+    }
+  }).then(() => {
     securityBootstrap.subscribeToSecurityConfigChange();
     subscribeToAuthenticatedUserChange();
     defineCustomElements();
