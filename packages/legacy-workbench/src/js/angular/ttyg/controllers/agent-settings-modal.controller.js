@@ -240,7 +240,7 @@ function AgentSettingsModalController(
         const message = decodeHTML(
             $translate.instant(
                 'ttyg.agent.create_agent_modal.form.fts_search.fts_disabled_message',
-                {repositoryEditPage: '#/repository/edit/' + $scope.agentFormModel.repositoryId}
+                {repositoryEditPage: 'repository/edit/' + $scope.agentFormModel.repositoryId}
             )
         );
         return $sce.trustAsHtml(message);
