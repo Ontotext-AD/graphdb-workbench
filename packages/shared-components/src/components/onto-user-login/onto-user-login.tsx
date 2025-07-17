@@ -10,7 +10,7 @@ export class OntoUserLogin {
   render() {
     return (
       <section class="onto-user-login">
-        <button onClick={navigateTo('/login')}>
+        <button onClick={navigateTo('login')}>
           <i class="icon-arrow-right"></i>
           <translate-label
             class="user-login-label"
