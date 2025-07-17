@@ -1,3 +1,5 @@
+import {WindowService} from '../window';
+
 /**
  * Utility class for build-related functionality.
  */
@@ -8,6 +10,6 @@ export class BuildUtil {
    * @returns {boolean} True if the application is in development mode, false otherwise.
    */
   static isDevMode(): boolean {
-    return window.wbDevMode;
+    return WindowService.getWindow().wbDevMode;
   }
 }

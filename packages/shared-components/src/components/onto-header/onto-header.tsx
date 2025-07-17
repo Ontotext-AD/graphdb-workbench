@@ -25,7 +25,7 @@ import {
   LanguageService,
   LanguageContextService,
   ObjectUtil,
-  getCurrentRoute, AuthenticationService
+  getCurrentRoute, AuthenticationService, WindowService
 } from '@ontotext/workbench-api';
 import {TranslationService} from '../../services/translation.service';
 import {HtmlUtil} from '../../utils/html-util';
@@ -295,7 +295,7 @@ export class OntoHeader {
   // ========================
   private startOperationPolling() {
     clearInterval(this.pollingInterval);
-    this.pollingInterval = window.setInterval(() => {
+    this.pollingInterval = WindowService.getWindow().setInterval(() => {
 
       if (this.skipUpdateActiveOperationsTimes > 0) {
         // Requested to skip this run, the number of skips is a Fibonacci sequence when errors are consecutive.
