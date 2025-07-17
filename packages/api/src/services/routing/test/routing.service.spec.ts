@@ -4,9 +4,19 @@ import {RouteItemModel} from '../../../models/routing/route-item-model';
 
 describe('RoutingService', () => {
   let routingService: RoutingService;
+  const windowMock = {
+    PluginRegistry: {
+      get: jest.fn()
+    }
+  } as unknown as Window;
+
+  beforeEach(() => {
+    jest.spyOn(WindowService, 'getWindow').mockReturnValue(windowMock);
+  });
 
   test('should return undefined when no route matches the given path', () => {
-    jest.spyOn(WindowService, 'getRoutePlugins').mockReturnValue([]);
+    jest.spyOn(windowMock.PluginRegistry, 'get').mockReturnValue([]);
+
     routingService = new RoutingService();
 
     const result = routingService.getActiveRoute('/non-existent-path');
@@ -24,7 +34,7 @@ describe('RoutingService', () => {
       templateUrl: 'home.component.html',
       title: 'Home'
     };
-    jest.spyOn(WindowService, 'getRoutePlugins').mockReturnValue([
+    jest.spyOn(windowMock.PluginRegistry, 'get').mockReturnValue([
       expectedRoute, {
         url: '/aclmanagement',
         module: 'graphdb.framework.aclmanagement',
@@ -58,7 +68,7 @@ describe('RoutingService', () => {
         'READ_REPO_{repoId}'
       ]
     };
-    jest.spyOn(WindowService, 'getRoutePlugins').mockReturnValue([
+    jest.spyOn(windowMock.PluginRegistry, 'get').mockReturnValue([
       expectedRoute, {
         url: '/aclmanagement',
         module: 'graphdb.framework.aclmanagement',
@@ -93,7 +103,7 @@ describe('RoutingService', () => {
         'READ_REPO_{repoId}'
       ]
     };
-    jest.spyOn(WindowService, 'getRoutePlugins').mockReturnValue([
+    jest.spyOn(windowMock.PluginRegistry, 'get').mockReturnValue([
       expectedRoute, {
         url: '/aclmanagement',
         module: 'graphdb.framework.aclmanagement',
@@ -124,7 +134,7 @@ describe('RoutingService', () => {
         'READ_REPO_{repoId}'
       ]
     };
-    jest.spyOn(WindowService, 'getRoutePlugins').mockReturnValue([
+    jest.spyOn(windowMock.PluginRegistry, 'get').mockReturnValue([
       expectedRoute, {
         url: '/aclmanagement',
         module: 'graphdb.framework.aclmanagement',
