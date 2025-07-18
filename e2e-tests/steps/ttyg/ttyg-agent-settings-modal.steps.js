@@ -37,6 +37,30 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
         return this.getAgentNameFormGroup().find('.alert-danger');
     }
 
+    static getExtIntegrationConfigBtn() {
+        return cy.get('.external-config-btn');
+    }
+
+    static openExtIntegrationConfig() {
+        this.getExtIntegrationConfigBtn().click();
+    }
+
+    static getExternalIntegrationModal() {
+        return cy.get('.external-integration-configuration-modal .modal-content');
+    }
+
+    static getAgentUrlField() {
+        return this.getExternalIntegrationModal().find('#agentId');
+    }
+
+    static getMethodUrlField() {
+        return this.getExternalIntegrationModal().find('#queryMethods');
+    }
+
+    static getDifyUrlField() {
+        return this.getExternalIntegrationModal().find('#difyExtension');
+    }
+
     // Repository ID
 
     static getRepositoryIdFromGroup() {

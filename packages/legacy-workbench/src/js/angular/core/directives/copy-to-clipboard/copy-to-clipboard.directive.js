@@ -82,6 +82,10 @@ function copyToClipboard($translate, toastr) {
                     opacity: 1;
                 }
 
+                .custom-link-icon.visible {
+                    opacity: 1 !important;
+                }
+
                 .custom-tooltip-popup {
                     font-family: Arial, sans-serif;
                     position: absolute;
@@ -112,7 +116,7 @@ function copyToClipboard($translate, toastr) {
                 class="btn btn-link btn-sm copy-btn"
                 ng-if="customTooltipStyle"
                 ng-click="copyToClipboard($event)">
-                <i class="fa fa-clone custom-link-icon" aria-hidden="true"></i>
+                <i class="fa fa-clone custom-link-icon" aria-hidden="true" ng-class="{'visible': alwaysShowIcon === 'true'}"></i>
             </button>
         `,
         restrict: 'E',
@@ -121,7 +125,8 @@ function copyToClipboard($translate, toastr) {
             textToCopy: '@',
             customTooltipStyle: '@?',
             targetSelector: '@?',
-            customTooltipText: '@?'
+            customTooltipText: '@?',
+            successMessage: '@?'
         },
         link: function ($scope, element) {
             $scope.copyToClipboard = function() {
@@ -149,7 +154,8 @@ function copyToClipboard($translate, toastr) {
                     if ($scope.customTooltipStyle) {
                         showCustomTooltip();
                     } else {
-                        toastr.success($translate.instant('common.messages.copied_to_clipboard'));
+                        const message = $scope.successMessage || $translate.instant('common.messages.copied_to_clipboard');
+                        toastr.success(message);
                     }
                 }
 

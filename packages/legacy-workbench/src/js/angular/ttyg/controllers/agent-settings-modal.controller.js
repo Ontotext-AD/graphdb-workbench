@@ -5,6 +5,7 @@ import 'angular/core/services/connectors.service';
 import 'angular/core/services/ttyg.service';
 import 'angular/rest/repositories.rest.service';
 import 'angular/ttyg/controllers/agent-instructions-explain-modal.controller';
+import 'angular/ttyg/services/externalIntegrationModal.service';
 import {REPOSITORY_PARAMS} from "../../models/repository/repository";
 import {TTYGEventName} from "../services/ttyg-context.service";
 import {AGENT_OPERATION, TTYG_ERROR_MSG_LENGTH} from "../services/constants";
@@ -17,6 +18,7 @@ angular
         'graphdb.framework.core.services.connectors',
         'graphdb.framework.rest.repositories.service',
         'graphdb.framework.ttyg.controllers.agent-instructions-explain-modal',
+        'graphdb.framework.ttyg.services.externalIntegrationModal',
         'ngTagsInput'
     ])
     .constant('ExtractionMethodTemplates', {
@@ -43,6 +45,7 @@ AgentSettingsModalController.$inject = [
     'ExtractionMethodTemplates',
     'AutocompleteService',
     'AutocompleteRestService',
+    'ExternalIntegrationModalService',
     'productInfo'];
 
 function AgentSettingsModalController(
@@ -63,6 +66,7 @@ function AgentSettingsModalController(
     ExtractionMethodTemplates,
     AutocompleteService,
     AutocompleteRestService,
+    ExternalIntegrationModalService,
     productInfo) {
 
     // =========================
@@ -358,6 +362,16 @@ function AgentSettingsModalController(
                 $scope.extractionMethodLoaderFlags[ExtractionMethod.FTS_SEARCH] = false;
                 $scope.agentSettingsForm.$setValidity('FTSDisabled', $scope.ftsEnabled);
             });
+    };
+
+    /**
+     * Opens a modal to copy the external integration for the currently edited agent.
+     *
+     * @function
+     */
+    $scope.openExternalIntegrationConfig = () => {
+        const agent = $scope.agentFormModel;
+        ExternalIntegrationModalService.open(agent);
     };
 
     /**
