@@ -70,7 +70,7 @@ const mapAuthoritiesFromBackend = (authorities) => {
 };
 
 // Transformation function for UI-to-BE conversion.
-const mapAuthoritiesToBackend = (uiAuthorities) => {
+export const mapAuthoritiesToBackend = (uiAuthorities) => {
     if (!Array.isArray(uiAuthorities)) {
         return uiAuthorities;
     }

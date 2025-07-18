@@ -14,6 +14,7 @@ import {
     WRITE_REPO_PREFIX
 } from "./services/constants";
 import {createUniqueKey, parseAuthorities} from "./services/authorities-util";
+import {mapAuthoritiesToBackend} from "./services/user-mapper";
 
 const modules = [
     'ngCookies',
@@ -198,7 +199,7 @@ securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$windo
                 }
             });
             modalInstance.result.then(function (data) {
-                authorities = data.authorities;
+                authorities = mapAuthoritiesToBackend(data.authorities);
                 appSettings = data.appSettings;
                 $jwtAuth.toggleFreeAccess(updateFreeAccess || !$jwtAuth.isFreeAccessEnabled(), authorities, appSettings, updateFreeAccess);
             });
