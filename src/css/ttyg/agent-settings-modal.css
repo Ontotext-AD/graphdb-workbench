@@ -23,6 +23,15 @@
     font-weight: var(--field-label-weight);
 }
 
+.agent-settings-modal .agent-settings-form .external-config-btn {
+    all: unset;
+    cursor: pointer;
+    color: inherit;
+    font: inherit;
+    padding: 0 8px;
+    margin: 8px 0 24px 8px;
+}
+
 .agent-settings-modal .agent-settings-form .llm-model .page-info-icon .icon-info {
     vertical-align: baseline;
     font-size: 1rem;

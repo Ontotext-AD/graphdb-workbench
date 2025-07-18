@@ -167,4 +167,11 @@ export class TTYGStubs extends Stubs {
             statusCode: 200
         }).as('explain-response');
     }
+
+    static getExternalUrl() {
+        cy.intercept('GET', 'rest/info/external-url', {
+            statusCode: 200,
+            body: 'http://user-pc:7200'
+        }).as('external-url');
+    }
 }

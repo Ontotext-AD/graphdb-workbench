@@ -230,9 +230,21 @@ export class TTYGViewSteps {
         return this.getAgent(index).find('.agent-actions-menu .edit-agent-btn');
     }
 
+    static getExternalIntegrationConfigButton(index) {
+        return this.getAgent(index).find('.agent-actions-menu .ext-integration-agent-btn');
+    }
+
+    static openExternalIntegrationConfigButton(index) {
+        return this.getExternalIntegrationConfigButton(index).click();
+    }
+
     static triggerCloneAgentActionMenu(index) {
         this.openAgentActionMenu(index);
         this.getCloneAgentButton(index).click();
+    }
+
+    static toggleAgentActionMenu(index) {
+        this.getOpenAgentActionsButton(index).click();
     }
 
     static getCloneAgentButton(index) {
