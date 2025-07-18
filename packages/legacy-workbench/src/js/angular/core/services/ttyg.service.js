@@ -197,6 +197,14 @@ function TTYGService(TTYGRestService, $repositories) {
             });
     };
 
+    /**
+     * Calls the backend to fetch the external URL for Copy Agent links.
+     * @returns {*} the external URL
+     */
+    const getExternalUrl = () => {
+        return TTYGRestService.getExternalUrl().then((response) => response.data);
+    }
+
     return {
         getConversation,
         renameConversation,
@@ -213,6 +221,7 @@ function TTYGService(TTYGRestService, $repositories) {
         deleteAgent,
         explainResponse,
         getDefaultAgent,
-        explainAgentSettings
+        explainAgentSettings,
+        getExternalUrl
     };
 }

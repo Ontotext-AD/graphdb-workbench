@@ -9,7 +9,7 @@ TTYGRestService.$inject = ['$http'];
 const CONVERSATIONS_ENDPOINT = 'rest/chat/conversations';
 const AGENTS_ENDPOINT = 'rest/chat/agents';
 const EXPLAIN_RESPONSE_ENDPOINT = `${CONVERSATIONS_ENDPOINT}/explain`;
-const PROVIDER_ENDPOINT = 'rest/ttyg/provider';
+const EXTERNAL_URL_ENDPOINT = '/rest/info/external-url';
 
 const DEVELOPMENT = false;
 
@@ -210,6 +210,13 @@ function TTYGRestService($http) {
         return $http.post(`${AGENTS_ENDPOINT}/explain`, data);
     };
 
+    const getExternalUrl = () => {
+        if (DEVELOPMENT) {
+            return _fakeBackend.getExternalUrl();
+        }
+        return $http.get(EXTERNAL_URL_ENDPOINT);
+    }
+
     return {
         getConversation,
         renameConversation,
@@ -226,6 +233,7 @@ function TTYGRestService($http) {
         deleteAgent,
         explainResponse,
         getAgentDefaultValues,
-        explainAgentSettings
+        explainAgentSettings,
+        getExternalUrl
     };
 }
