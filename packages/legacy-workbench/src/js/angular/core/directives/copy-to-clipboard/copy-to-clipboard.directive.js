@@ -82,6 +82,10 @@ function copyToClipboard($translate, toastr) {
                     opacity: 1;
                 }
 
+                .custom-link-icon.visible {
+                    opacity: 1 !important;
+                }
+
                 .custom-tooltip-popup {
                     font-family: Arial, sans-serif;
                     position: absolute;
@@ -112,7 +116,7 @@ function copyToClipboard($translate, toastr) {
                 class="btn btn-link btn-sm copy-btn"
                 ng-if="customTooltipStyle"
                 ng-click="copyToClipboard($event)">
-                <i class="fa fa-clone custom-link-icon" aria-hidden="true"></i>
+                <i class="fa fa-clone custom-link-icon" aria-hidden="true" ng-class="{'visible': alwaysShowIcon === 'true'}"></i>
             </button>
         `,
         restrict: 'E',
@@ -121,7 +125,11 @@ function copyToClipboard($translate, toastr) {
             textToCopy: '@',
             customTooltipStyle: '@?',
             targetSelector: '@?',
-            customTooltipText: '@?'
+            customTooltipText: '@?',
+            tooltipPosition: '@?',
+            alwaysShowIcon: '@?',
+            tooltipOffsetX: '@?',
+            tooltipOffsetY: '@?' // TODO add new properties to jsdoc, if they will remain
         },
         link: function ($scope, element) {
             $scope.copyToClipboard = function() {
@@ -129,11 +137,44 @@ function copyToClipboard($translate, toastr) {
 
                 function showCustomTooltip() {
                     const tooltip = document.createElement("span");
-                    tooltip.innerText = $scope.customTooltipText;
+                    tooltip.innerText = $scope.customTooltipText || $scope.tooltipText;
                     tooltip.className = "custom-tooltip-popup";
-                    const iconElement = element[0].querySelector('.custom-link-icon');
+                    document.body.appendChild(tooltip);
+                    const offsetX = parseInt($scope.tooltipOffsetX || 0, 10);
+                    const offsetY = parseInt($scope.tooltipOffsetY || 0, 10);
 
-                    iconElement.appendChild(tooltip);
+                    const target = element[0].querySelector('.custom-link-icon');
+
+                    const targetRect = target.getBoundingClientRect();
+                    const tooltipRect = tooltip.getBoundingClientRect();
+
+                    const position = $scope.tooltipPosition || 'right';
+
+                    let top, left;
+
+                    switch (position) {
+                        case 'top':
+                            top = targetRect.top - tooltipRect.height - 4 + offsetY;
+                            left = targetRect.left + (targetRect.width - tooltipRect.width) / 2 + offsetX;
+                            break;
+                        case 'bottom':
+                            top = targetRect.bottom + 4 + offsetY;
+                            left = targetRect.left + (targetRect.width - tooltipRect.width) / 2 + offsetX;
+                            break;
+                        case 'left':
+                            top = targetRect.top + (targetRect.height - tooltipRect.height) / 2 + offsetY;
+                            left = targetRect.left - tooltipRect.width - 4 + offsetX;
+                            break;
+                        case 'right':
+                        default:
+                            top = targetRect.top + (targetRect.height - tooltipRect.height) / 2 + offsetY;
+                            left = targetRect.right + 4 + offsetX;
+                            break;
+                    }
+
+                    tooltip.style.position = 'absolute';
+                    tooltip.style.top = `${top + window.scrollY}px`;
+                    tooltip.style.left = `${left + window.scrollX}px`;
 
                     requestAnimationFrame(() => {
                         tooltip.classList.add("show");

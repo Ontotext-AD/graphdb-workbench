@@ -106,4 +106,40 @@ describe('TTYG edit an agent', () => {
         // Then: I expect the dialog be disappeared and the disabled message still visible
         TtygAgentSettingsModalSteps.getAutocompleteDisabledMessage().should('be.visible');
     });
+
+    it('should allow copy of External integration configuration', () => {
+        TTYGStubs.stubAgentListGet('/ttyg/agent/get-agent-list-autocomplete-query.json');
+        TTYGStubs.getExternalUrl();
+        // Given I have opened the ttyg page
+        TTYGViewSteps.visit();
+        cy.wait('@get-agent-list');
+        // When I select an agent
+        TTYGViewSteps.expandAgentsSidebar();
+        TTYGViewSteps.openAgentsMenu();
+        TTYGViewSteps.selectAgent(0);
+        TTYGViewSteps.editCurrentAgent();
+
+        // Then I should see the External integration configuration button
+        TtygAgentSettingsModalSteps.getExtIntegrationConfigBtn().should('be.visible');
+        // When I click the button
+        TtygAgentSettingsModalSteps.openExtIntegrationConfig();
+        cy.wait('@external-url');
+        // The url dialog should open
+        TtygAgentSettingsModalSteps.getExternalIntegrationModal().should('be.visible');
+        // The dialog should have all the fields
+        TtygAgentSettingsModalSteps.getAgentUrlField().invoke('val')
+            .then((val) => {
+                expect(val).to.equal('asst_G8EtHyT8kAGeDmCa3Nh6y74v');
+            });
+
+        TtygAgentSettingsModalSteps.getMethodUrlField().invoke('val')
+            .then((val) => {
+                expect(val).to.equal('http://user-pc:7200/rest/llm/tool/ttyg/asst_G8EtHyT8kAGeDmCa3Nh6y74v');
+            });
+
+        TtygAgentSettingsModalSteps.getDifyUrlField().invoke('val')
+            .then((val) => {
+                expect(val).to.equal('http://user-pc:7200/rest/llm/ttyg/asst_G8EtHyT8kAGeDmCa3Nh6y74v/dify');
+            });
+    });
 });

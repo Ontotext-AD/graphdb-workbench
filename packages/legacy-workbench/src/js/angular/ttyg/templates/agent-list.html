@@ -52,6 +52,13 @@
                             <span>{{'ttyg.agent.btn.edit_agent.label' | translate}}</span>
                         </button>
                         <button ng-if="agent.isCompatible"
+                                class="dropdown-item ext-integration-agent-btn"
+                                type="button"
+                                ng-click="onExternalIntegration(agent)">
+                            <i class="fa-regular fa-plug-circle-plus"></i>
+                            <span>{{'ttyg.agent.btn.external_integration' | translate}}</span>
+                        </button>
+                        <button ng-if="agent.isCompatible"
                                 class="dropdown-item clone-agent-btn"
                                 type="button"
                                 ng-click="onCloneAgent(agent)">

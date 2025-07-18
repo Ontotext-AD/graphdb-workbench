@@ -1,16 +1,20 @@
 import {decodeHTML} from "../../../../app";
 import {TTYGEventName} from "../services/ttyg-context.service";
+import 'angular/ttyg/controllers/external-integration-configuration-modal.controller';
+import 'angular/core/services/ttyg.service';
+import {TTYG_ERROR_MSG_LENGTH} from "../services/constants";
 
 const modules = [
+    'graphdb.framework.ttyg.controllers.external-integration-configuration-modal'
 ];
 
 angular
     .module('graphdb.framework.ttyg.directives.agent-list', modules)
     .directive('agentList', AgentListComponent);
 
-AgentListComponent.$inject = ['TTYGContextService', 'ModalService', '$translate'];
+AgentListComponent.$inject = ['TTYGContextService', 'ModalService', '$translate', '$uibModal', 'TTYGService'];
 
-function AgentListComponent(TTYGContextService, ModalService, $translate) {
+function AgentListComponent(TTYGContextService, ModalService, $translate, $uibModal, TTYGService) {
     return {
         restrict: 'E',
         templateUrl: 'js/angular/ttyg/templates/agent-list.html',
@@ -57,6 +61,33 @@ function AgentListComponent(TTYGContextService, ModalService, $translate) {
             $scope.onEditAgent = (agent) => {
                 TTYGContextService.emit(TTYGEventName.EDIT_AGENT, agent);
             };
+
+            $scope.onExternalIntegration = (agent) => {
+                TTYGService.getExternalUrl().then((url) => {
+                    const options = {
+                        templateUrl: 'js/angular/ttyg/templates/modal/external-integration-configuration-modal.html',
+                        controller: 'ExternalIntegrationConfigurationModalController',
+                        windowClass: 'external-integration-configuration-modal',
+                        backdrop: 'static',
+                        resolve: {
+                            dialogModel: function () {
+                                return {
+                                    agentName: agent.name,
+                                    agentId: agent.id,
+                                    queryMethodsUrl: `${url}/rest/llm/tool/ttyg/${agent.id}`,
+                                    difyExtensionUrl: `${url}/rest/llm/ttyg/${agent.id}/dify`
+                                };
+                            }
+                        }
+                    };
+                    $uibModal.open(options).result
+                        .then(() => {
+                            // Do nothing
+                        });
+                }).catch((error) => {
+                    toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
+                });
+            }
 
             /**
              * Triggers the agent clone process.

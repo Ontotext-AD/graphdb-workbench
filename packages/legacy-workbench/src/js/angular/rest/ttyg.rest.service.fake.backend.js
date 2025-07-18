@@ -238,6 +238,48 @@ export class TtygRestServiceFakeBackend {
                 ]
             }});
     }
+
+    getExternalUrl() {
+        return Promise.resolve({
+            "data": "http://user-pc:7200",
+            "status": 200,
+            "config": {
+                "method": "GET",
+                "transformRequest": [
+                    null
+                ],
+                "transformResponse": [
+                    null
+                ],
+                "url": "/rest/info/external-url",
+                "headers": {
+                    "Accept": "application/json, text/plain, */*",
+                    "X-Requested-With": "XMLHttpRequest",
+                    "X-GraphDB-Repository": "acme"
+                },
+                "timeout": {
+                    "$$state": {
+                        "status": 0,
+                        "pending": [
+                            [
+                                {
+                                    "promise": {
+                                        "$$state": {
+                                            "status": 0
+                                        }
+                                    }
+                                },
+                                null,
+                                null,
+                                null
+                            ]
+                        ]
+                    }
+                }
+            },
+            "statusText": "OK"
+        });
+    }
 }
 
 const conversationList = [

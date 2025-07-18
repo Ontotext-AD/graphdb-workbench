@@ -5,6 +5,7 @@ import 'angular/core/services/connectors.service';
 import 'angular/core/services/ttyg.service';
 import 'angular/rest/repositories.rest.service';
 import 'angular/ttyg/controllers/agent-instructions-explain-modal.controller';
+import 'angular/ttyg/controllers/external-integration-configuration-modal.controller';
 import {REPOSITORY_PARAMS} from "../../models/repository/repository";
 import {TTYGEventName} from "../services/ttyg-context.service";
 import {AGENT_OPERATION, TTYG_ERROR_MSG_LENGTH} from "../services/constants";
@@ -17,6 +18,7 @@ angular
         'graphdb.framework.core.services.connectors',
         'graphdb.framework.rest.repositories.service',
         'graphdb.framework.ttyg.controllers.agent-instructions-explain-modal',
+        'graphdb.framework.ttyg.controllers.external-integration-configuration-modal',
         'ngTagsInput'
     ])
     .constant('ExtractionMethodTemplates', {
@@ -350,6 +352,34 @@ function AgentSettingsModalController(
             $scope.agentSettingsForm.$setValidity('FTSDisabled', $scope.ftsEnabled);
         });
     };
+
+    $scope.openExternalIntegrationConfig = () => {
+        const agentId = TTYGContextService.getSelectedAgent().id;
+        TTYGService.getExternalUrl().then((url) => {
+            const options = {
+                templateUrl: 'js/angular/ttyg/templates/modal/external-integration-configuration-modal.html',
+                controller: 'ExternalIntegrationConfigurationModalController',
+                windowClass: 'external-integration-configuration-modal',
+                backdrop: 'static',
+                resolve: {
+                    dialogModel: function () {
+                        return {
+                            agentId: agentId,
+                            agentName: TTYGContextService.getSelectedAgent().name,
+                            queryMethodsUrl: `${url}/rest/llm/tool/ttyg/${agentId}`,
+                            difyExtensionUrl: `${url}/rest/llm/ttyg/${agentId}/dify`
+                        };
+                    }
+                }
+            };
+            $uibModal.open(options).result
+                .then(() => {
+                    // Do nothing
+                });
+        }).catch((error) => {
+            toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
+        });
+    }
 
     /**
      * Handles the change in the repository id field. This is needed because

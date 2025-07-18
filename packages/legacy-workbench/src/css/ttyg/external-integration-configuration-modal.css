@@ -1,0 +1,12 @@
+.modal-body .copy-field-group .input-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-body .copy-field-group .input-group .input-copy-group {
+    display: flex;
+}
+
+copy-to-clipboard .custom-link-icon {
+    color: var(--primary-color-dark);
+}

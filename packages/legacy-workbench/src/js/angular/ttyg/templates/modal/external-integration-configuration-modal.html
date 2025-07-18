@@ -1,0 +1,70 @@
+<link href="css/ttyg/external-integration-configuration-modal.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
+
+<div class="modal-header">
+    <button type="button" class="close" ng-click="close()"></button>
+    <h4 class="modal-title">{{'ttyg.agent.external_integration_config_modal.title' | translate}}</h4>
+</div>
+
+<div class="modal-body">
+    <div class="subtitle">
+        {{'ttyg.agent.external_integration_config_modal.label' | translate:{ agentName: agentName } }}
+    </div>
+    <div class="copy-field-group">
+        <div class="input-group">
+            <div class="id-group">
+                <label for="agentId" class="col-form-label">
+                    {{'ttyg.agent.external_integration_config_modal.agent_id_label' | translate}}</label>
+                <div class="input-copy-group">
+                    <input
+                        class="form-control"
+                        ng-model="agentId"
+                        readonly
+                        id="agentId">
+
+                <!--                <button ng-click=""><i class="fa-light fa-copy"></i></button> TODO check with UX expert which icon should be used-->
+                    <span gdb-tooltip="{{'ttyg.agent.external_integration_config_modal.copy_tooltip' | translate}}">
+                        <copy-to-clipboard text-to-copy="{{agentId}}" custom-tooltip-style="true" tooltip-position="top"
+                                           always-show-icon="true"
+                                           custom-tooltip-text="{{'ttyg.agent.external_integration_config_modal.agent_id_copied' | translate}}"
+                                           tooltip-offset-x="-25"
+                                           tooltip-offset-y="-8"
+                                           ng-attr-target-selector="#agentId"></copy-to-clipboard>
+                    </span>
+                </div>
+            </div>
+
+            <div class="query-methods-group">
+                <label for="queryMethods" class="col-form-label">
+                    {{'ttyg.agent.external_integration_config_modal.query_methods' | translate}}</label>
+                <div class="input-copy-group">
+                    <input
+                        class="form-control"
+                        ng-model="queryMethods"
+                        readonly
+                        id="queryMethods">
+
+                <!--                <button ng-click=""><i class="fa-light fa-copy"></i></button>-->
+                    <span gdb-tooltip="{{'ttyg.agent.external_integration_config_modal.copy_tooltip' | translate}}">
+                        <copy-to-clipboard text-to-copy="{{queryMethods}}"></copy-to-clipboard>
+                    </span>
+                </div>
+            </div>
+
+            <div class="dify-extension-group">
+                <label for="difyExtension" class="col-form-label">
+                    {{'ttyg.agent.external_integration_config_modal.dify_extension' | translate}}</label>
+                <div class="input-copy-group">
+                    <input
+                        class="form-control"
+                        ng-model="difyExtension"
+                        readonly
+                        id="difyExtension">
+                <!--                <button ng-click=""><i class="fa-light fa-copy"></i></button>-->
+                    <span gdb-tooltip="{{'ttyg.agent.external_integration_config_modal.copy_tooltip' | translate}}">
+                        <copy-to-clipboard text-to-copy="{{difyExtension}}"></copy-to-clipboard>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
