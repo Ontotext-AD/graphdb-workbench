@@ -2,6 +2,7 @@ import {TTYGViewSteps} from "../../steps/ttyg/ttyg-view-steps";
 import {TTYGStubs} from "../../stubs/ttyg/ttyg-stubs";
 import {RepositoriesStubs} from "../../stubs/repositories/repositories-stubs";
 import {RepositoriesStub} from "../../stubs/repositories-stub";
+import {TtygAgentSettingsModalSteps} from "../../steps/ttyg/ttyg-agent-settings-modal.steps";
 
 describe('TTYG agent list', () => {
     beforeEach(() => {
@@ -89,5 +90,36 @@ describe('TTYG agent list', () => {
         TTYGViewSteps.getDeleteAgentButton(1).should('be.visible');
         TTYGViewSteps.getCloneAgentButton(1).should('be.visible');
         TTYGViewSteps.getEditAgentButton(1).should('be.visible');
+    });
+
+    it('should allow copy of External integration configuration from agent list', () => {
+        TTYGStubs.stubAgentListGet('/ttyg/agent/get-agent-list-autocomplete-query.json');
+        TTYGStubs.getExternalUrl();
+        // Given I have opened the ttyg page
+        TTYGViewSteps.visit();
+        cy.wait('@get-agent-list');
+        // When I select an agent from the sidebar
+        TTYGViewSteps.expandAgentsSidebar();
+        TTYGViewSteps.toggleAgentActionMenu(0);
+        TTYGViewSteps.getExternalIntegrationConfigButton(0).should('be.visible');
+        TTYGViewSteps.openExternalIntegrationConfigButton(0);
+        cy.wait('@external-url');
+        // The url dialog should open
+        TtygAgentSettingsModalSteps.getExternalIntegrationModal().should('be.visible');
+        // The dialog should have all the fields
+        TtygAgentSettingsModalSteps.getAgentUrlField().invoke('val')
+            .then((val) => {
+                expect(val).to.equal('asst_G8EtHyT8kAGeDmCa3Nh6y74v');
+            });
+
+        TtygAgentSettingsModalSteps.getMethodUrlField().invoke('val')
+            .then((val) => {
+                expect(val).to.equal('http://user-pc:7200/rest/llm/tool/ttyg/asst_G8EtHyT8kAGeDmCa3Nh6y74v');
+            });
+
+        TtygAgentSettingsModalSteps.getDifyUrlField().invoke('val')
+            .then((val) => {
+                expect(val).to.equal('http://user-pc:7200/rest/llm/ttyg/asst_G8EtHyT8kAGeDmCa3Nh6y74v/dify');
+            });
     });
 });

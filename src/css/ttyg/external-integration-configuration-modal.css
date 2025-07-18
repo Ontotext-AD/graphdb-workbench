@@ -1,0 +1,23 @@
+.modal-body .form-control {
+    background-color: #FFFFFF;
+}
+
+.modal-body .form-horizontal {
+    margin-top: 16px;
+}
+
+form.form-horizontal .form-group label.control-label[for="agentId"],
+form.form-horizontal .form-group label.control-label[for="queryMethods"],
+form.form-horizontal .form-group label.control-label[for="difyExtension"] {
+    font-weight: 500;
+}
+
+.input-group-addon copy-to-clipboard {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+copy-to-clipboard .custom-link-icon {
+    color: var(--primary-color-dark);
+}

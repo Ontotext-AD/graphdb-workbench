@@ -7,6 +7,7 @@ LocationsRestService.$inject = ['$http'];
 const LOCATIONS_ENDPOINT = 'rest/locations';
 const ACTIVE_LOCATION_ENDPOINT = `${LOCATIONS_ENDPOINT}/active`;
 const RPC_ADDRESS_ENDPOINT = 'rest/info/rpc-address';
+const EXTERNAL_URL_ENDPOINT = 'rest/info/external-url';
 
 function LocationsRestService($http) {
 
@@ -17,7 +18,8 @@ function LocationsRestService($http) {
         deleteLocation,
         getActiveLocation,
         setDefaultRepository,
-        getLocationRpcAddress
+        getLocationRpcAddress,
+        getExternalUrl
     };
 
     function getLocations(abortRequestPromise) {
@@ -60,5 +62,13 @@ function LocationsRestService($http) {
                 location
             }
         });
+    }
+
+    /**
+     * Calls the backend to fetch the external URL for Copy Agent links.
+     * @returns {Promise<string>} the external URL
+     */
+    function getExternalUrl() {
+        return $http.get(EXTERNAL_URL_ENDPOINT);
     }
 }
