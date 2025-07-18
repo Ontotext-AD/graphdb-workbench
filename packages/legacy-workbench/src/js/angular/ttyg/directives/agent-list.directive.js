@@ -1,16 +1,18 @@
 import {decodeHTML} from "../../../../app";
 import {TTYGEventName} from "../services/ttyg-context.service";
+import 'angular/ttyg/services/externalIntegrationModal.service';
 
 const modules = [
+    'graphdb.framework.ttyg.services.externalIntegrationModal'
 ];
 
 angular
     .module('graphdb.framework.ttyg.directives.agent-list', modules)
     .directive('agentList', AgentListComponent);
 
-AgentListComponent.$inject = ['TTYGContextService', 'ModalService', '$translate'];
+AgentListComponent.$inject = ['TTYGContextService', 'ModalService', '$translate', '$uibModal', 'ExternalIntegrationModalService'];
 
-function AgentListComponent(TTYGContextService, ModalService, $translate) {
+function AgentListComponent(TTYGContextService, ModalService, $translate, $uibModal, ExternalIntegrationModalService) {
     return {
         restrict: 'E',
         templateUrl: 'js/angular/ttyg/templates/agent-list.html',
@@ -56,6 +58,18 @@ function AgentListComponent(TTYGContextService, ModalService, $translate) {
              */
             $scope.onEditAgent = (agent) => {
                 TTYGContextService.emit(TTYGEventName.EDIT_AGENT, agent);
+            };
+
+            /**
+             * Opens a modal to copy the external integration for a given agent.
+             *
+             * Used when the agent is already provided.
+             *
+             * @function
+             * @param {AgentModel} agent - The agent for which to configure the integration.
+             */
+            $scope.onExternalIntegration = (agent) => {
+                ExternalIntegrationModalService.open(agent);
             };
 
             /**

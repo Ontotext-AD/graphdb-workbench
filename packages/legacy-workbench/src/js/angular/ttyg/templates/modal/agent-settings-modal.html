@@ -23,6 +23,15 @@
                 {{'required.field' | translate}}
             </div>
         </div>
+        <div>
+            <button class="external-config-btn" ng-click="openExternalIntegrationConfig()"
+                    ng-if="operation !== AGENT_OPERATION.CREATE"
+                    uib-popover="{{'ttyg.agent.create_agent_modal.form.external_config.tooltip' | translate}}"
+                    popover-trigger="mouseenter">
+                <i class="fa-regular fa-plug-circle-plus"></i>
+                {{'ttyg.agent.create_agent_modal.form.external_config.label' | translate}}
+            </button>
+        </div>
         <div class="form-group repository-id">
             <label for="repositoryId"
                    uib-popover="{{'ttyg.agent.create_agent_modal.form.repository.tooltip' | translate}}"

@@ -457,6 +457,10 @@
                         "placeholder": "Enter а user friendly name",
                         "tooltip": "A descriptive name that helps you identify this agent."
                     },
+                    "external_config": {
+                        "label": "External integration configuration",
+                        "tooltip": "Show URLs for the agent’s external access and integration"
+                    },
                     "repository": {
                         "label": "Repository ID",
                         "tooltip": "The ID of the repository that will be used to retrieve information from GraphDB. Ontop and FedX repositories are not supported."
@@ -701,6 +705,17 @@
                     }
                 }
             },
+            "external_integration_config_modal": {
+                "title": "Agent endpoints and external access",
+                "label": "Access {{agentName}} query methods via OpenAPI endpoints",
+                "agent_id_label": "Agent ID",
+                "query_methods": "Query methods via OpenAPI endpoints",
+                "dify_extension": "Dify extension",
+                "copy_tooltip": "Copy",
+                "agent_copied_tooltip": "Agent ID copied",
+                "openAPI_copied_tooltip": "OpenAPI endpoints link copied",
+                "dify_extension_copied_tooltip": "Dify extension link copied"
+            },
             "agent_select_menu": {
                 "no_selection_label": "Select an agent",
                 "deleted_agent": "[deleted agent]",
@@ -725,6 +740,7 @@
                     "tooltip": "Edit agent settings",
                     "tooltip_disabled": "You do not have permission to edit the agent"
                 },
+                "external_integration": "External integration",
                 "clone_agent": {
                     "label": "Clone",
                     "tooltip": "Clone Agent"
