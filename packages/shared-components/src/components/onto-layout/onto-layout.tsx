@@ -13,7 +13,7 @@ import {
   AuthenticatedUser,
   SecurityConfig,
   Authority,
-  AuthenticationService, NavigationEndPayload, NavigationContextService, getPathName
+  AuthenticationService, NavigationEndPayload, NavigationContextService, getPathName, WindowService
 } from '@ontotext/workbench-api';
 import {ExternalMenuItemModel} from '../onto-navbar/external-menu-model';
 
@@ -62,7 +62,7 @@ export class OntoLayout {
   // ========================
   constructor() {
     this.windowResizeObserver = debounce(() => this.windowResizeHandler(), 50);
-    window.addEventListener("storage", this.handleStorageChange);
+    WindowService.getWindow().addEventListener("storage", this.handleStorageChange);
   }
 
   componentDidLoad() {
@@ -152,7 +152,7 @@ export class OntoLayout {
   // Handlers
   // ========================
   private windowResizeHandler(): void {
-    this.isLowResolution = window.innerWidth <= WINDOW_WIDTH_FOR_COLLAPSED_NAVBAR;
+    this.isLowResolution = WindowService.getWindow().innerWidth <= WINDOW_WIDTH_FOR_COLLAPSED_NAVBAR;
     if (!this.isLowResolution && !this.isNavbarCollapsed) {
       this.hostElement.classList.remove('expanded');
     } else {
@@ -244,7 +244,7 @@ export class OntoLayout {
   private assignNavbarRef() {
     return (navbar: HTMLOntoNavbarElement) => {
       this.navbarRef = navbar;
-      this.navbarRef.menuItems = window.PluginRegistry.get('main.menu');
+      this.navbarRef.menuItems = WindowService.getWindow().PluginRegistry.get('main.menu');
       this.setNavbarItemVisibility();
     }
   }

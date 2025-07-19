@@ -1,4 +1,4 @@
-import { License } from '@ontotext/workbench-api';
+import {License, navigateTo} from '@ontotext/workbench-api';
 import { Component, Host, h, Prop } from '@stencil/core';
 import {OntoTooltipPlacement} from "../onto-tooltip/models/onto-tooltip-placement";
 
@@ -20,18 +20,11 @@ export class OntoLicenseAlert {
   render() {
     return (
       <Host tooltip-content={this.license?.message} tooltip-placement={OntoTooltipPlacement.BOTTOM} data-test='onto-license-alert'>
-        <button class="onto-license-alert onto-btn" onClick={this.onLicenseAlertClick}>
+        <button class="onto-license-alert onto-btn" onClick={navigateTo('license')}>
           <span class="icon-warning"></span>
           <translate-label labelKey={'license_alert.label'}></translate-label>
         </button>
       </Host>
     );
-  }
-
-  private onLicenseAlertClick(event: Event) {
-    event.preventDefault();
-    // Navigate to the license page without reloading.
-    // @ts-ignore
-    window.singleSpa.navigateToUrl('license');
   }
 }

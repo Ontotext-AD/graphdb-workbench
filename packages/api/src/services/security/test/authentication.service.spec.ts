@@ -15,11 +15,17 @@ import {RepositoryStorageService} from '../../repository';
 describe('AuthenticationService', () => {
   let authService: AuthenticationService;
   const securityContextService = ServiceProvider.get(SecurityContextService);
+  const windowMock = {
+    PluginRegistry: {
+      get: jest.fn()
+    }
+  } as unknown as Window;
 
   beforeEach(() => {
     authService = new AuthenticationService();
     ServiceProvider.get(AuthenticationStorageService).remove('jwt');
     securityContextService.updateSecurityConfig({} as unknown as SecurityConfig);
+    jest.spyOn(WindowService, 'getWindow').mockReturnValue(windowMock);
   });
 
   test('login should return the correct login message', () => {
@@ -357,6 +363,12 @@ describe('AuthenticationService', () => {
 
   test('hasAuthority should return false if there are no active routes', () => {
     // Given, I have no active routes, a regular user and enabled security
+    jest.spyOn(WindowService, 'getWindow').mockReturnValue({
+      location: {
+        pathname: '/home'
+      },
+      PluginRegistry: {get: jest.fn(() => [])}
+    } as unknown as Window);
     const regularUser = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
       {external: false, authorities: [Authority.ROLE_USER]} as unknown as AuthenticatedUser
     );
@@ -365,7 +377,7 @@ describe('AuthenticationService', () => {
     const securityConfig = {enabled: true} as unknown as SecurityConfig;
     securityContextService.updateSecurityConfig(securityConfig);
 
-    jest.spyOn(WindowService, 'getRoutePlugins').mockReturnValue([]);
+    jest.spyOn(windowMock.PluginRegistry, 'get').mockReturnValue([]);
     // Then, I shouldn't have authority
     expect(authService.hasAuthority()).toBe(false);
   });

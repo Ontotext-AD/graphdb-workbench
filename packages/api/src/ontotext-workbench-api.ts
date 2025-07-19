@@ -39,6 +39,7 @@ export * from './services/namespace';
 export * from './services/rdf-search';
 export * from './services/navigation';
 export * from './services/app-lifecycle';
+export * from './services/window';
 
 // Export utils for external usages.
 export * from './services/utils';

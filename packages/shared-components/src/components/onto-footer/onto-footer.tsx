@@ -7,7 +7,7 @@ import {
   LicenseService,
   SecurityContextService,
   CookieConsent,
-  CookieService, LicenseContextService
+  CookieService, LicenseContextService, WindowService
 } from '@ontotext/workbench-api';
 
 /**
@@ -80,7 +80,7 @@ export class OntoFooter {
   }
 
   private isTrackingAllowed(): boolean {
-    return ServiceProvider.get(LicenseService).isTrackableLicense() && !window.wbDevMode;
+    return ServiceProvider.get(LicenseService).isTrackableLicense() && !WindowService.getWindow().wbDevMode;
   }
 
   private subscribeToUserChange(): void {

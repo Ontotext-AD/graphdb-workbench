@@ -1,5 +1,12 @@
 import {Component, h, Listen, State} from '@stencil/core';
-import {ToastMessage, ToastType, ToastMessageList, CREATE_TOAST_EVENT, ToastrConfig} from '@ontotext/workbench-api';
+import {
+  ToastMessage,
+  ToastType,
+  ToastMessageList,
+  CREATE_TOAST_EVENT,
+  ToastrConfig,
+  WindowService
+} from '@ontotext/workbench-api';
 import {sanitizeHTML} from '../../utils/html-utils';
 
 const toastTypeToIconMap = {
@@ -92,7 +99,7 @@ export class OntoToastr {
    * @param toast - The toast message to set timeout for
    */
   private setTimeoutForToast(toast: ToastMessage): void {
-    const timeout = window.setTimeout(() => {
+    const timeout = WindowService.getWindow().setTimeout(() => {
       this.toasts.remove(toast);
       this.clearToastTimeout(toast);
     }, toast.config?.timeout || this.config.timeout);
