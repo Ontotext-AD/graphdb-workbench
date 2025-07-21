@@ -1,0 +1,1114 @@
+{
+  "inputtext": {
+    "background": {
+      "$type": "color",
+      "$value": "{form.field.background}"
+    },
+    "disabled": {
+      "background": {
+        "$type": "color",
+        "$value": "{form.field.disabled.background}"
+      },
+      "color": {
+        "$type": "color",
+        "$value": "{form.field.disabled.color}"
+      }
+    },
+    "filled": {
+      "background": {
+        "$type": "color",
+        "$value": "{form.field.filled.background}"
+      },
+      "focus": {
+        "background": {
+          "$type": "color",
+          "$value": "{form.field.filled.focus.background}"
+        }
+      },
+      "hover": {
+        "background": {
+          "$type": "color",
+          "$value": "{form.field.filled.hover.background}"
+        }
+      }
+    },
+    "border": {
+      "color": {
+        "$type": "color",
+        "$value": "{form.field.border.color}"
+      },
+      "radius": {
+        "$type": "borderRadius",
+        "$value": "{gdb.border.radius.default}"
+      }
+    },
+    "hover": {
+      "border": {
+        "color": {
+          "$type": "color",
+          "$value": "{form.field.hover.border.color}"
+        }
+      }
+    },
+    "focus": {
+      "border": {
+        "color": {
+          "$type": "color",
+          "$value": "{form.field.focus.border.color}"
+        }
+      },
+      "ring": {
+        "width": {
+          "$type": "borderWidth",
+          "$value": "{form.field.focus.ring.width}"
+        },
+        "style": {
+          "$type": "other",
+          "$value": "{form.field.focus.ring.style}"
+        },
+        "color": {
+          "$type": "color",
+          "$value": "{form.field.focus.ring.color}"
+        },
+        "offset": {
+          "$type": "borderWidth",
+          "$value": "{form.field.focus.ring.offset}"
+        },
+        "shadow": {
+          "$type": "boxShadow",
+          "$value": "{form.field.focus.ring.shadow}"
+        }
+      }
+    },
+    "invalid": {
+      "border": {
+        "color": {
+          "$type": "color",
+          "$value": "{form.field.invalid.border.color}"
+        }
+      },
+      "placeholder": {
+        "color": {
+          "$type": "color",
+          "$value": "{form.field.invalid.placeholder.color}"
+        }
+      }
+    },
+    "color": {
+      "$type": "color",
+      "$value": "{form.field.color}"
+    },
+    "placeholder": {
+      "color": {
+        "$type": "color",
+        "$value": "{form.field.placeholder.color}"
+      }
+    },
+    "shadow": {
+      "$type": "boxShadow",
+      "$value": "{form.field.shadow}"
+    },
+    "padding": {
+      "x": {
+        "$type": "spacing",
+        "$value": "{form.field.padding.x}"
+      },
+      "y": {
+        "$type": "spacing",
+        "$value": "{form.field.padding.y}"
+      }
+    },
+    "figma": {
+      "stroke": {
+        "$type": "border",
+        "$value": {
+          "color": "{inputtext.border.color}",
+          "width": "1",
+          "style": "solid"
+        }
+      },
+      "hover": {
+        "stroke": {
+          "$type": "border",
+          "$value": {
+            "color": "{inputtext.hover.border.color}",
+            "width": "1",
+            "style": "solid"
+          }
+        }
+      },
+      "focus": {
+        "stroke": {
+          "$type": "border",
+          "$value": {
+            "color": "{inputtext.focus.border.color}",
+            "width": "1",
+            "style": "solid"
+          }
+        },
+        "ring": {
+          "stroke": {
+            "$type": "border",
+            "$value": {
+              "color": "{inputtext.focus.ring.color}",
+              "width": "{inputtext.focus.ring.width} + {inputtext.focus.ring.offset}",
+              "style": "{inputtext.focus.ring.style}"
+            }
+          },
+          "offset": {
+            "stroke": {
+              "$type": "border",
+              "$value": {
+                "color": "{app.card.background}",
+                "width": "{inputtext.focus.ring.offset}",
+                "style": "solid"
+              }
+            }
+          }
+        }
+      },
+      "invalid": {
+        "stroke": {
+          "$type": "border",
+          "$value": {
+            "color": "{inputtext.invalid.border.color}",
+            "width": "1",
+            "style": "solid"
+          }
+        }
+      }
+    },
+    "sm": {
+      "font": {
+        "size": {
+          "$type": "fontSizes",
+          "$value": "0.875rem"
+        }
+      },
+      "padding": {
+        "x": {
+          "$type": "spacing",
+          "$value": "{form.field.sm.padding.x}"
+        },
+        "y": {
+          "$type": "spacing",
+          "$value": "{form.field.sm.padding.y}"
+        }
+      }
+    },
+    "lg": {
+      "padding": {
+        "x": {
+          "$type": "spacing",
+          "$value": "{form.field.lg.padding.x}"
+        },
+        "y": {
+          "$type": "spacing",
+          "$value": "{form.field.lg.padding.y}"
+        }
+      },
+      "font": {
+        "size": {
+          "$type": "fontSizes",
+          "$value": "1.125rem"
+        }
+      }
+    },
+    "transition": {
+      "duration": {
+        "$type": "other",
+        "$value": "{form.field.transition.duration}"
+      }
+    }
+  },
+  "panel": {
+    "background": {
+      "$type": "color",
+      "$value": "{content.background}"
+    },
+    "border": {
+      "color": {
+        "$type": "color",
+        "$value": "{content.border.color}"
+      },
+      "radius": {
+        "$type": "borderRadius",
+        "$value": "{content.border.radius}"
+      }
+    },
+    "color": {
+      "$type": "color",
+      "$value": "{content.color}"
+    },
+    "header": {
+      "background": {
+        "$type": "color",
+        "$value": "transparent"
+      },
+      "color": {
+        "$type": "color",
+        "$value": "{text.color}"
+      },
+      "border": {
+        "color": {
+          "$type": "color",
+          "$value": "{content.border.color}"
+        },
+        "radius": {
+          "$type": "borderRadius",
+          "$value": "0"
+        },
+        "width": {
+          "$type": "borderWidth",
+          "$value": "0"
+        }
+      },
+      "padding": {
+        "$type": "spacing",
+        "$value": "1.125rem"
+      }
+    },
+    "figma": {
+      "header": {
+        "stroke": {
+          "$type": "border",
+          "$value": {
+            "color": "{panel.header.border.color}",
+            "width": "{panel.header.border.width}",
+            "style": "none"
+          }
+        }
+      },
+      "stroke": {
+        "$type": "border",
+        "$value": {
+          "color": "{panel.border.color}",
+          "width": "1",
+          "style": "solid"
+        }
+      }
+    },
+    "toggleable": {
+      "header": {
+        "padding": {
+          "$type": "spacing",
+          "$value": "0.375rem 1.125rem"
+        }
+      }
+    },
+    "title": {
+      "font": {
+        "weight": {
+          "$type": "fontWeights",
+          "$value": "600"
+        }
+      }
+    },
+    "content": {
+      "padding": {
+        "$type": "spacing",
+        "$value": "0 1.125rem 1.125rem 1.125rem"
+      }
+    },
+    "footer": {
+      "padding": {
+        "$type": "spacing",
+        "$value": "0 1.125rem 1.125rem 1.125rem"
+      }
+    }
+  },
+  "button": {
+    "border": {
+      "radius": {
+        "$type": "borderRadius",
+        "$value": "{form.field.border.radius}"
+      }
+    },
+    "rounded": {
+      "border": {
+        "radius": {
+          "$type": "borderRadius",
+          "$value": "2rem"
+        }
+      }
+    },
+    "gap": {
+      "$type": "spacing",
+      "$value": "0.5rem"
+    },
+    "padding": {
+      "x": {
+        "$type": "spacing",
+        "$value": "{form.field.padding.x}"
+      },
+      "y": {
+        "$type": "spacing",
+        "$value": "{form.field.padding.y}"
+      }
+    },
+    "icon": {
+      "only": {
+        "width": {
+          "$type": "sizing",
+          "$value": "2.5rem"
+        }
+      }
+    },
+    "sm": {
+      "font": {
+        "size": {
+          "$type": "fontSizes",
+          "$value": "0.875rem"
+        }
+      },
+      "padding": {
+        "x": {
+          "$type": "spacing",
+          "$value": "0.625rem"
+        },
+        "y": {
+          "$type": "spacing",
+          "$value": "0.375rem"
+        }
+      },
+      "icon": {
+        "only": {
+          "width": {
+            "$type": "sizing",
+            "$value": "2rem"
+          }
+        }
+      }
+    },
+    "lg": {
+      "font": {
+        "size": {
+          "$type": "fontSizes",
+          "$value": "1.125rem"
+        }
+      },
+      "padding": {
+        "x": {
+          "$type": "spacing",
+          "$value": "0.875rem"
+        },
+        "y": {
+          "$type": "spacing",
+          "$value": "0.625rem"
+        }
+      },
+      "icon": {
+        "only": {
+          "width": {
+            "$type": "sizing",
+            "$value": "3rem"
+          }
+        }
+      }
+    },
+    "label": {
+      "font": {
+        "weight": {
+          "$type": "fontWeights",
+          "$value": "500"
+        }
+      }
+    },
+    "raised": {
+      "shadow": {
+        "$type": "boxShadow",
+        "$value": [
+          {
+            "x": "0",
+            "y": "3",
+            "blur": "1",
+            "spread": "-2",
+            "color": "rgba(0, 0, 0, 0.2)",
+            "type": "dropShadow"
+          },
+          {
+            "x": "0",
+            "y": "2",
+            "blur": "2",
+            "spread": "0",
+            "color": "rgba(0, 0, 0, 0.14)",
+            "type": "dropShadow"
+          },
+          {
+            "x": "0",
+            "y": "1",
+            "blur": "5",
+            "spread": "0",
+            "color": "rgba(0, 0, 0, 0.12)",
+            "type": "dropShadow"
+          }
+        ]
+      }
+    },
+    "focus": {
+      "ring": {
+        "width": {
+          "$type": "borderWidth",
+          "$value": "{focus.ring.width}"
+        },
+        "offset": {
+          "$type": "borderWidth",
+          "$value": "{focus.ring.offset}"
+        },
+        "style": {
+          "$type": "other",
+          "$value": "{focus.ring.style}"
+        }
+      }
+    },
+    "badge": {
+      "size": {
+        "$type": "sizing",
+        "$value": "1rem"
+      }
+    },
+    "transition": {
+      "duration": {
+        "$type": "other",
+        "$value": "{form.field.transition.duration}"
+      }
+    },
+    "figma": {
+      "sm": {
+        "icon": {
+          "size": {
+            "$type": "sizing",
+            "$value": "{button.sm.font.size}"
+          }
+        }
+      },
+      "lg": {
+        "icon": {
+          "size": {
+            "$type": "sizing",
+            "$value": "{button.lg.font.size}"
+          }
+        }
+      }
+    }
+  },
+  "floatlabel": {
+    "color": {
+      "$type": "color",
+      "$value": "{form.field.float.label.color}"
+    },
+    "focus": {
+      "color": {
+        "$type": "color",
+        "$value": "{form.field.float.label.focus.color}"
+      }
+    },
+    "invalid": {
+      "color": {
+        "$type": "color",
+        "$value": "{form.field.float.label.invalid.color}"
+      }
+    },
+    "active": {
+      "color": {
+        "$type": "color",
+        "$value": "{form.field.float.label.active.color}"
+      },
+      "font": {
+        "size": {
+          "$type": "fontSizes",
+          "$value": "0.75rem"
+        },
+        "weight": {
+          "$type": "fontWeights",
+          "$value": "400"
+        }
+      }
+    },
+    "transition": {
+      "duration": {
+        "$type": "other",
+        "$value": "0.2s"
+      }
+    },
+    "position": {
+      "x": {
+        "$type": "spacing",
+        "$value": "{form.field.padding.x}"
+      },
+      "y": {
+        "$type": "spacing",
+        "$value": "{form.field.padding.y}"
+      }
+    },
+    "font": {
+      "weight": {
+        "$type": "fontWeights",
+        "$value": "500"
+      }
+    },
+    "over": {
+      "active": {
+        "top": {
+          "$type": "spacing",
+          "$value": "-1.25rem"
+        }
+      }
+    },
+    "in": {
+      "input": {
+        "padding": {
+          "top": {
+            "$type": "spacing",
+            "$value": "2.5rem"
+          },
+          "bottom": {
+            "$type": "spacing",
+            "$value": "{form.field.padding.y}"
+          }
+        }
+      },
+      "active": {
+        "top": {
+          "$type": "spacing",
+          "$value": "{form.field.padding.y}"
+        }
+      }
+    },
+    "on": {
+      "border": {
+        "radius": {
+          "$type": "borderRadius",
+          "$value": "{border.radius.xs}"
+        }
+      },
+      "active": {
+        "background": {
+          "$type": "color",
+          "$value": "{form.field.background}"
+        },
+        "padding": {
+          "$type": "spacing",
+          "$value": "0 0.125rem"
+        }
+      }
+    }
+  },
+  "card": {
+    "background": {
+      "$type": "color",
+      "$value": "{content.background}"
+    },
+    "border": {
+      "radius": {
+        "$type": "borderRadius",
+        "$value": "{border.radius.xl}"
+      }
+    },
+    "color": {
+      "$type": "color",
+      "$value": "{content.color}"
+    },
+    "shadow": {
+      "$type": "boxShadow",
+      "$value": [
+        {
+          "x": "0",
+          "y": "1",
+          "blur": "3",
+          "spread": "0",
+          "color": "rgba(0, 0, 0, 0.1)",
+          "type": "dropShadow"
+        },
+        {
+          "x": "0",
+          "y": "1",
+          "blur": "2",
+          "spread": "-1",
+          "color": "rgba(0, 0, 0, 0.1)",
+          "type": "dropShadow"
+        }
+      ]
+    },
+    "body": {
+      "padding": {
+        "$type": "spacing",
+        "$value": "1.25rem"
+      },
+      "gap": {
+        "$type": "spacing",
+        "$value": "0.5rem"
+      }
+    },
+    "caption": {
+      "gap": {
+        "$type": "spacing",
+        "$value": "0.5rem"
+      }
+    },
+    "title": {
+      "font": {
+        "size": {
+          "$type": "fontSizes",
+          "$value": "1.25rem"
+        },
+        "weight": {
+          "$type": "fontWeights",
+          "$value": "500"
+        }
+      }
+    },
+    "subtitle": {
+      "color": {
+        "$type": "color",
+        "$value": "{text.muted.color}"
+      }
+    }
+  },
+  "overlay": {
+    "title": {
+      "font": {
+        "size": {
+          "$type": "fontSizes",
+          "$value": "1.5rem"
+        }
+      }
+    }
+  },
+  "inputgroup": {
+    "addon": {
+      "background": {
+        "$type": "color",
+        "$value": "{form.field.background}"
+      },
+      "border": {
+        "color": {
+          "$type": "color",
+          "$value": "{form.field.border.color}"
+        },
+        "radius": {
+          "$type": "borderRadius",
+          "$value": "{form.field.border.radius}"
+        }
+      },
+      "color": {
+        "$type": "color",
+        "$value": "{form.field.icon.color}"
+      },
+      "padding": {
+        "$type": "spacing",
+        "$value": "0.5rem"
+      },
+      "min": {
+        "width": {
+          "$type": "sizing",
+          "$value": "2.5rem"
+        }
+      }
+    },
+    "figma": {
+      "addon": {
+        "stroke": {
+          "$type": "border",
+          "$value": {
+            "color": "{inputgroup.addon.border.color}",
+            "width": "1",
+            "style": "solid"
+          }
+        }
+      }
+    }
+  },
+  "textarea": {
+    "background": {
+      "$type": "color",
+      "$value": "{form.field.background}"
+    },
+    "disabled": {
+      "background": {
+        "$type": "color",
+        "$value": "{form.field.disabled.background}"
+      },
+      "color": {
+        "$type": "color",
+        "$value": "{form.field.disabled.color}"
+      }
+    },
+    "filled": {
+      "background": {
+        "$type": "color",
+        "$value": "{form.field.filled.background}"
+      },
+      "focus": {
+        "background": {
+          "$type": "color",
+          "$value": "{form.field.filled.focus.background}"
+        }
+      },
+      "hover": {
+        "background": {
+          "$type": "color",
+          "$value": "{form.field.filled.hover.background}"
+        }
+      }
+    },
+    "border": {
+      "color": {
+        "$type": "color",
+        "$value": "{form.field.border.color}"
+      },
+      "radius": {
+        "$type": "borderRadius",
+        "$value": "{form.field.border.radius}"
+      }
+    },
+    "hover": {
+      "border": {
+        "color": {
+          "$type": "color",
+          "$value": "{form.field.hover.border.color}"
+        }
+      }
+    },
+    "focus": {
+      "border": {
+        "color": {
+          "$type": "color",
+          "$value": "{form.field.focus.border.color}"
+        }
+      },
+      "ring": {
+        "width": {
+          "$type": "borderWidth",
+          "$value": "{form.field.focus.ring.width}"
+        },
+        "offset": {
+          "$type": "borderWidth",
+          "$value": "{form.field.focus.ring.offset}"
+        },
+        "color": {
+          "$type": "color",
+          "$value": "{form.field.focus.ring.color}"
+        },
+        "style": {
+          "$type": "other",
+          "$value": "{form.field.focus.ring.style}"
+        },
+        "shadow": {
+          "$type": "boxShadow",
+          "$value": "{form.field.focus.ring.shadow}"
+        }
+      }
+    },
+    "invalid": {
+      "border": {
+        "color": {
+          "$type": "color",
+          "$value": "{form.field.invalid.border.color}"
+        }
+      },
+      "placeholder": {
+        "color": {
+          "$type": "color",
+          "$value": "{form.field.invalid.placeholder.color}"
+        }
+      }
+    },
+    "color": {
+      "$type": "color",
+      "$value": "{form.field.color}"
+    },
+    "placeholder": {
+      "color": {
+        "$type": "color",
+        "$value": "{form.field.placeholder.color}"
+      }
+    },
+    "shadow": {
+      "$type": "boxShadow",
+      "$value": "{form.field.shadow}"
+    },
+    "padding": {
+      "x": {
+        "$type": "spacing",
+        "$value": "{form.field.padding.x}"
+      },
+      "y": {
+        "$type": "spacing",
+        "$value": "{form.field.padding.y}"
+      }
+    },
+    "figma": {
+      "stroke": {
+        "$type": "border",
+        "$value": {
+          "color": "{textarea.border.color}",
+          "width": "1",
+          "style": "solid"
+        }
+      },
+      "hover": {
+        "stroke": {
+          "$type": "border",
+          "$value": {
+            "color": "{textarea.hover.border.color}",
+            "width": "1",
+            "style": "solid"
+          }
+        }
+      },
+      "focus": {
+        "stroke": {
+          "$type": "border",
+          "$value": {
+            "color": "{textarea.focus.border.color}",
+            "width": "1",
+            "style": "solid"
+          }
+        }
+      },
+      "invalid": {
+        "stroke": {
+          "$type": "border",
+          "$value": {
+            "color": "{textarea.invalid.border.color}",
+            "width": "1",
+            "style": "solid"
+          }
+        }
+      }
+    },
+    "sm": {
+      "padding": {
+        "x": {
+          "$type": "spacing",
+          "$value": "{form.field.sm.padding.x}"
+        },
+        "y": {
+          "$type": "spacing",
+          "$value": "{form.field.sm.padding.y}"
+        }
+      },
+      "font": {
+        "size": {
+          "$type": "fontSizes",
+          "$value": "{form.field.sm.font.size}"
+        }
+      }
+    },
+    "lg": {
+      "padding": {
+        "x": {
+          "$type": "spacing",
+          "$value": "{form.field.lg.padding.x}"
+        },
+        "y": {
+          "$type": "spacing",
+          "$value": "{form.field.lg.padding.y}"
+        }
+      },
+      "font": {
+        "size": {
+          "$type": "fontSizes",
+          "$value": "{form.field.lg.font.size}"
+        }
+      }
+    },
+    "transition": {
+      "duration": {
+        "$type": "other",
+        "$value": "{form.field.transition.duration}"
+      }
+    }
+  },
+  "inputnumber": {
+    "button": {
+      "width": {
+        "$type": "sizing",
+        "$value": "2.5rem"
+      },
+      "border": {
+        "radius": {
+          "$type": "borderRadius",
+          "$value": "{form.field.border.radius}"
+        }
+      },
+      "vertical": {
+        "padding": {
+          "$type": "spacing",
+          "$value": "{form.field.padding.y}"
+        }
+      }
+    },
+    "transition": {
+      "duration": {
+        "$type": "other",
+        "$value": "{transition.duration}"
+      }
+    }
+  },
+  "tooltip": {
+    "max": {
+      "width": {
+        "$type": "sizing",
+        "$value": "12.5rem"
+      }
+    },
+    "gutter": {
+      "$type": "spacing",
+      "$value": "0.25rem"
+    },
+    "shadow": {
+      "$type": "boxShadow",
+      "$value": "{overlay.popover.shadow}"
+    },
+    "padding": {
+      "$type": "spacing",
+      "$value": "0.5rem 0.75rem"
+    },
+    "border": {
+      "radius": {
+        "$type": "borderRadius",
+        "$value": "{overlay.popover.border.radius}"
+      }
+    }
+  },
+  "popover": {
+    "background": {
+      "$type": "color",
+      "$value": "{overlay.popover.background}"
+    },
+    "border": {
+      "color": {
+        "$type": "color",
+        "$value": "{overlay.popover.border.color}"
+      },
+      "radius": {
+        "$type": "borderRadius",
+        "$value": "{overlay.popover.border.radius}"
+      }
+    },
+    "color": {
+      "$type": "color",
+      "$value": "{overlay.popover.color}"
+    },
+    "shadow": {
+      "$type": "boxShadow",
+      "$value": "{overlay.popover.shadow}"
+    },
+    "gutter": {
+      "$type": "spacing",
+      "$value": "10px"
+    },
+    "arrow": {
+      "offset": {
+        "$type": "spacing",
+        "$value": "1.25rem"
+      }
+    },
+    "content": {
+      "padding": {
+        "$type": "spacing",
+        "$value": "{overlay.popover.padding}"
+      }
+    },
+    "figma": {
+      "stroke": {
+        "$type": "border",
+        "$value": {
+          "color": "{popover.border.color}",
+          "width": "1",
+          "style": "solid"
+        }
+      }
+    }
+  },
+  "inputotp": {
+    "input": {
+      "width": {
+        "$type": "sizing",
+        "$value": "2.5rem"
+      },
+      "sm": {
+        "width": {
+          "$type": "sizing",
+          "$value": "2rem"
+        }
+      },
+      "lg": {
+        "width": {
+          "$type": "sizing",
+          "$value": "3rem"
+        }
+      }
+    },
+    "gap": {
+      "$type": "spacing",
+      "$value": "0.5rem"
+    }
+  },
+  "iftalabel": {
+    "color": {
+      "$type": "color",
+      "$value": "{form.field.float.label.color}"
+    },
+    "focus": {
+      "color": {
+        "$type": "color",
+        "$value": "{form.field.float.label.focus.color}"
+      }
+    },
+    "invalid": {
+      "color": {
+        "$type": "color",
+        "$value": "{form.field.float.label.invalid.color}"
+      }
+    },
+    "transition": {
+      "duration": {
+        "$type": "other",
+        "$value": "0.2s"
+      }
+    },
+    "position": {
+      "x": {
+        "$type": "spacing",
+        "$value": "{form.field.padding.x}"
+      }
+    },
+    "top": {
+      "$type": "spacing",
+      "$value": "{form.field.padding.y}"
+    },
+    "font": {
+      "size": {
+        "$type": "fontSizes",
+        "$value": "0.75rem"
+      },
+      "weight": {
+        "$type": "fontWeights",
+        "$value": "400"
+      }
+    },
+    "input": {
+      "padding": {
+        "top": {
+          "$type": "spacing",
+          "$value": "1.5rem"
+        },
+        "bottom": {
+          "$type": "spacing",
+          "$value": "{form.field.padding.y}"
+        }
+      }
+    },
+    "figma": {
+      "line": {
+        "height": {
+          "$type": "lineHeights",
+          "$value": "{iftalabel.font.size}"
+        }
+      }
+    }
+  }
+}

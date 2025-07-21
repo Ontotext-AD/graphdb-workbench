@@ -25,3 +25,25 @@ PluginRegistry.add('main.menu', {
         }
     ]
 });
+
+PluginRegistry.add('main.menu', {
+    'items': [
+        {
+            label: 'ds-test-new',
+            labelKey: 'DS TEST A18',
+            href: 'ds-test-new',
+            order: 0
+        }
+    ]
+});
+
+PluginRegistry.add('main.menu', {
+    'items': [
+        {
+            label: 'ds-test',
+            labelKey: 'DS TEST Legacy',
+            href: 'ds-test',
+            order: 0
+        }
+    ]
+});

@@ -6,15 +6,18 @@ import { register, expandTypesMap } from "@tokens-studio/sd-transforms";
 register(StyleDictionary);
 
 const sd = new StyleDictionary({
-  source: ["tokens/prime/**/*.json"],
+  source: ["tokens/donka/**/*.json"],
   preprocessors: ["tokens-studio"], // <-- since 0.16.0 this must be explicit
   expand: {
     typesMap: expandTypesMap,
   },
+  log: {
+    verbosity: "verbose",
+  },
   platforms: {
     css: {
       buildPath: "src/css/",
-      prefix: "p",
+      prefix: "gw",
       // transforms: ["attribute/cti", "name/cti/kebab", "dimension/pixelToRem"],
       // transformGroup: "css",
       transformGroup: "tokens-studio", // <-- apply the tokens-studio transformGroup to apply all transforms
@@ -24,7 +27,7 @@ const sd = new StyleDictionary({
           format: "css/variables",
           destination: "variables.css",
           options: {
-            // outputReferences: true,
+            outputReferences: true,
             //   selector: ".gdb",
             //   outputReferenceFallbacks: true
           },
