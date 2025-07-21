@@ -228,7 +228,7 @@
                             <div ng-if="!similarityIndexes.length" class="no-similarity-index-message">
                                 {{'ttyg.agent.create_agent_modal.form.similarity_index.no_similarity_index.message_1' |
                                 translate}}
-                                <a href="#" target="_blank" ng-click="goToCreateSimilarityView()">
+                                <a href="" ng-click="goToCreateSimilarityView($event)">
                                     {{'ttyg.agent.create_agent_modal.form.similarity_index.no_similarity_index.message_2'
                                     | translate}}
                                 </a>
@@ -299,7 +299,7 @@
                             <div ng-if="!retrievalConnectors.length" class="no-retrieval-connector-message">
                                 {{'ttyg.agent.create_agent_modal.form.retrieval_search.no_retrieval_connectors.message_1'
                                 | translate}}
-                                <a href="#" target="_blank" ng-click="goToConnectorsView()">
+                                <a href="" ng-click="goToConnectorsView($event)">
                                     {{'ttyg.agent.create_agent_modal.form.retrieval_search.no_retrieval_connectors.message_2'
                                     | translate}}
                                 </a>

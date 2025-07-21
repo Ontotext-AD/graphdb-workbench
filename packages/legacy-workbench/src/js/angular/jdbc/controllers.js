@@ -615,7 +615,6 @@ function JdbcCreateCtrl(
     };
 
     const repositoryChangedHandler = (repository) => {
-        console.log(repository)
         if (!repository) {
             return;
         }
