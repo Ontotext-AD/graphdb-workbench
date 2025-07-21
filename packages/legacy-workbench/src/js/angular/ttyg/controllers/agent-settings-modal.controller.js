@@ -249,21 +249,24 @@ function AgentSettingsModalController(
     /**
      * Opens the 'Autocomplete index' view in a new tab.
      */
-    $scope.goToAutocompleteView = () => {
+    $scope.goToAutocompleteView = (event) => {
+        event.preventDefault();
         TTYGContextService.emit(TTYGEventName.GO_TO_AUTOCOMPLETE_INDEX_VIEW, {repositoryId: $scope.agentFormModel.repositoryId});
     }
 
     /**
      * Opens the 'Create Similarity' view in a new tab.
      */
-    $scope.goToCreateSimilarityView = () => {
+    $scope.goToCreateSimilarityView = (event) => {
+        event.preventDefault();
         TTYGContextService.emit(TTYGEventName.GO_TO_CREATE_SIMILARITY_VIEW, {repositoryId: $scope.agentFormModel.repositoryId});
     };
 
     /**
      * Opens the 'Connectors' view in a new tab.
      */
-    $scope.goToConnectorsView = () => {
+    $scope.goToConnectorsView = (event) => {
+        event.preventDefault();
         TTYGContextService.emit(TTYGEventName.GO_TO_CONNECTORS_VIEW, {repositoryId: $scope.agentFormModel.repositoryId});
     };
 
