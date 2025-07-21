@@ -12,6 +12,7 @@ import 'autofill-event/autofill-event';
 import 'angular/core/directives';
 import 'angular/core/controllers';
 import 'angular-translate/dist/angular-translate';
+import {ServiceProvider, AuthenticationStorageService} from '@ontotext/workbench-api';
 
 const DEFAULT_MODAL_SERVICE_CONFIG = {
     title: '',
@@ -351,16 +352,19 @@ function ClassInstanceDetailsService($http) {
 function AuthTokenService() {
     const authStorageName = 'ontotext.gdb.auth.jwt';
     const OPENID_CONFIG = {};
+    const authenticatedStorageName = 'ontotext.gdb.auth.authenticated';
 
     return {
         AUTH_STORAGE_NAME: authStorageName,
         getAuthToken: getAuthToken,
         setAuthToken: setAuthToken,
         clearAuthToken: clearAuthToken,
-        OPENID_CONFIG: OPENID_CONFIG
+        OPENID_CONFIG: OPENID_CONFIG,
+        AUTHENTICATED_STORAGE_NAME: authenticatedStorageName,
     };
 
     function setAuthToken(token) {
+        ServiceProvider.get(AuthenticationStorageService).setAuthenticated(true);
         localStorage.setItem(authStorageName, token);
     }
 

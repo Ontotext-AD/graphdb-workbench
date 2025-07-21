@@ -6,6 +6,7 @@ import {StorageData} from '../../models/storage';
  */
 export class AuthenticationStorageService extends LocalStorageService {
   private readonly jwtKey = 'jwt';
+  private readonly authenticatedKey = 'authenticated';
   readonly NAMESPACE = 'auth';
 
   set(key: string, value: string) {
@@ -18,5 +19,13 @@ export class AuthenticationStorageService extends LocalStorageService {
    */
   getAuthToken(): StorageData {
     return this.get(this.jwtKey);
+  }
+
+  setAuthenticated(authenticated: boolean) {
+    this.storeValue(this.authenticatedKey, authenticated?.toString() || '');
+  }
+
+  isAuthenticated(): boolean {
+    return this.get(this.authenticatedKey).getValue() === 'true';
   }
 }

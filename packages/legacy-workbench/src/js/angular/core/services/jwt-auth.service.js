@@ -10,7 +10,8 @@ import {
   SecurityContextService,
   SecurityConfigMapper,
   AuthenticatedUserMapper,
-  OpenidConfigMapper
+  OpenidConfigMapper,
+  AuthenticationStorageService
 } from "@ontotext/workbench-api";
 
 angular.module('graphdb.framework.core.services.jwtauth', [
@@ -194,6 +195,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                         } else {
                             that.getAuthenticatedUserFromBackend();
                         }
+                        that.broadcastSecurityInit(that.securityEnabled, that.hasExplicitAuthentication(), that.hasOverrideAuth)
                     } else {
                         AuthTokenService.clearAuthToken();
                         const overrideAuthData = res.data.overrideAuth;
@@ -610,6 +612,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                     userLoggedIn,
                     freeAccessActive: freeAccess
                 }
+                ServiceProvider.get(AuthenticationStorageService).setAuthenticated(this.isAuthenticated());
                 ServiceProvider.get(SecurityContextService).updateSecurityConfig(MapperProvider.get(SecurityConfigMapper).mapToModel(config));
             }
         }]);
