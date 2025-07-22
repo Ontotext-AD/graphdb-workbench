@@ -660,6 +660,10 @@
                     },
                     "confirm_repository_change_before_open_autocomplete_index": {
                         "body": "If you proceed with enabling the autocomplete index, GraphDB will open in a new tab and switch to the <b>{{repositoryId}}</b> repository."
+                    },
+                    "repository_not_selected_warning": {
+                        "title": "No repository selected",
+                        "body": "Please select a repository to proceed"
                     }
                 }
             },

@@ -20,8 +20,8 @@ angular
         'ngTagsInput'
     ])
     .constant('ExtractionMethodTemplates', {
-    'iri_discovery_search': 'iri-discovery-search',
-    'autocomplete_iri_discovery_search': 'autocomplete-iri-discovery-search'
+        'iri_discovery_search': 'iri-discovery-search',
+        'autocomplete_iri_discovery_search': 'autocomplete-iri-discovery-search'
     })
     .controller('AgentSettingsModalController', AgentSettingsModalController);
 
@@ -106,7 +106,7 @@ function AgentSettingsModalController(
      * @type {{[string]: boolean}} - the key is the extraction method types in <code>ExtractionMethod</code>
      */
     $scope.extractionMethodLoaderFlags = {
-      [ExtractionMethod.SIMILARITY]: false
+        [ExtractionMethod.SIMILARITY]: false
     };
 
     /**
@@ -214,7 +214,7 @@ function AgentSettingsModalController(
         additionalExtractionPanelToggleHandlers[extractionMethod.method](extractionMethod);
     };
 
-     /**
+    /**
      * Handles the panel toggle event for the additional extraction method. This is used to do some initialization when the user
      * opens the panel for a specific extraction method.
      * @param {AdditionalExtractionMethodFormModel} extractionMethod
@@ -251,7 +251,9 @@ function AgentSettingsModalController(
      */
     $scope.goToAutocompleteView = (event) => {
         event.preventDefault();
-        TTYGContextService.emit(TTYGEventName.GO_TO_AUTOCOMPLETE_INDEX_VIEW, {repositoryId: $scope.agentFormModel.repositoryId});
+        if (isRepositoryIdFieldValid()) {
+            TTYGContextService.emit(TTYGEventName.GO_TO_AUTOCOMPLETE_INDEX_VIEW, {repositoryId: $scope.agentFormModel.repositoryId});
+        }
     }
 
     /**
@@ -259,7 +261,9 @@ function AgentSettingsModalController(
      */
     $scope.goToCreateSimilarityView = (event) => {
         event.preventDefault();
-        TTYGContextService.emit(TTYGEventName.GO_TO_CREATE_SIMILARITY_VIEW, {repositoryId: $scope.agentFormModel.repositoryId});
+        if (isRepositoryIdFieldValid()) {
+            TTYGContextService.emit(TTYGEventName.GO_TO_CREATE_SIMILARITY_VIEW, {repositoryId: $scope.agentFormModel.repositoryId});
+        }
     };
 
     /**
@@ -267,7 +271,9 @@ function AgentSettingsModalController(
      */
     $scope.goToConnectorsView = (event) => {
         event.preventDefault();
-        TTYGContextService.emit(TTYGEventName.GO_TO_CONNECTORS_VIEW, {repositoryId: $scope.agentFormModel.repositoryId});
+        if (isRepositoryIdFieldValid()) {
+            TTYGContextService.emit(TTYGEventName.GO_TO_CONNECTORS_VIEW, {repositoryId: $scope.agentFormModel.repositoryId});
+        }
     };
 
     /**
@@ -345,13 +351,13 @@ function AgentSettingsModalController(
         RepositoriesRestService.getRepositoryModel({id: $scope.agentFormModel.repositoryId}).then((repositoryModel) => {
             $scope.ftsEnabled = repositoryModel.getParamValue(REPOSITORY_PARAMS.enableFtsIndex);
         })
-        .catch((error) => {
-            logAndShowError(error, 'ttyg.agent.messages.error_repository_config_loading');
-        })
-        .finally(() => {
-            $scope.extractionMethodLoaderFlags[ExtractionMethod.FTS_SEARCH] = false;
-            $scope.agentSettingsForm.$setValidity('FTSDisabled', $scope.ftsEnabled);
-        });
+            .catch((error) => {
+                logAndShowError(error, 'ttyg.agent.messages.error_repository_config_loading');
+            })
+            .finally(() => {
+                $scope.extractionMethodLoaderFlags[ExtractionMethod.FTS_SEARCH] = false;
+                $scope.agentSettingsForm.$setValidity('FTSDisabled', $scope.ftsEnabled);
+            });
     };
 
     /**
@@ -420,30 +426,30 @@ function AgentSettingsModalController(
      * Opens the agent instructions explain modal.
      */
     $scope.onExplainAgentSettings = () => {
-      const agentPayload = $scope.agentFormModel.toPayload();
-      TTYGService.explainAgentSettings(agentPayload)
-          .then((agentInstructionsExplain) => {
-            const options = {
-                templateUrl: 'js/angular/ttyg/templates/modal/agent-instructions-explain-modal.html',
-                controller: 'AgentInstructionsExplainModalController',
-                windowClass: 'agent-instructions-explain-modal',
-                backdrop: 'static',
-                resolve: {
-                    dialogModel: function () {
-                        return {
-                            agentInstructionsExplain
-                        };
-                    }
-                },
-                size: 'lg'
-            };
-            $uibModal.open(options).result
-                .then(() => {
-                    // Do nothing
-                });
-          }).catch((error) => {
-              toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
-          });
+        const agentPayload = $scope.agentFormModel.toPayload();
+        TTYGService.explainAgentSettings(agentPayload)
+            .then((agentInstructionsExplain) => {
+                const options = {
+                    templateUrl: 'js/angular/ttyg/templates/modal/agent-instructions-explain-modal.html',
+                    controller: 'AgentInstructionsExplainModalController',
+                    windowClass: 'agent-instructions-explain-modal',
+                    backdrop: 'static',
+                    resolve: {
+                        dialogModel: function () {
+                            return {
+                                agentInstructionsExplain
+                            };
+                        }
+                    },
+                    size: 'lg'
+                };
+                $uibModal.open(options).result
+                    .then(() => {
+                        // Do nothing
+                    });
+            }).catch((error) => {
+            toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
+        });
     };
 
     $scope.getSuggestions = (event) => {
@@ -451,9 +457,9 @@ function AgentSettingsModalController(
         AutocompleteRestService.getAutocompleteSuggestions(inputText)
             .then(mapUriAsNtripleAutocompleteResponse)
             .then((suggestions) => {
-                $scope.autocompleteSuggestions = suggestions.map(item => ({ text: item.value }));
+                $scope.autocompleteSuggestions = suggestions.map(item => ({text: item.value}));
             }).catch((error) => {
-                toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
+            toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
         });
     }
 
@@ -661,14 +667,16 @@ function AgentSettingsModalController(
 
     const extractionPanelToggleHandlers = {
         [ExtractionMethod.FTS_SEARCH]: (extractionMethod) => handleFTSExtractionMethodPanelToggle(extractionMethod),
-        [ExtractionMethod.SPARQL]: (extractionMethod) => {},
+        [ExtractionMethod.SPARQL]: (extractionMethod) => {
+        },
         [ExtractionMethod.SIMILARITY]: (extractionMethod) => handleSimilaritySearchExtractionMethodPanelToggle(extractionMethod),
         [ExtractionMethod.RETRIEVAL]: (extractionMethod) => handleRetrievalConnectorExtractionMethodPanelToggle(extractionMethod)
     };
 
     const additionalExtractionPanelToggleHandlers = {
         [AdditionalExtractionMethod.AUTOCOMPLETE_IRI_DISCOVERY_SEARCH]: (extractionMethod) => handleAutocompleteExtractionMethodPanelToggle(extractionMethod),
-        [AdditionalExtractionMethod.IRI_DISCOVERY_SEARCH]: () => {},
+        [AdditionalExtractionMethod.IRI_DISCOVERY_SEARCH]: () => {
+        },
     };
 
     const handleAutocompleteExtractionMethodPanelToggle = () => {
@@ -687,6 +695,12 @@ function AgentSettingsModalController(
             refreshValidations();
         }
     };
+
+    function isRepositoryIdFieldValid() {
+        $scope.agentSettingsForm.repositoryId.$setTouched();
+        $scope.agentSettingsForm.repositoryId.$validate();
+        return $scope.agentSettingsForm.repositoryId.$valid;
+    }
 
     // =========================
     // Subscriptions
@@ -707,6 +721,11 @@ function AgentSettingsModalController(
     // =========================
 
     const init = () => {
+        // Set repository id to null if it is missing from the list of active repositories
+        const selectedRepositoryInfo = getSelectedRepositoryInfo();
+        if (!selectedRepositoryInfo.repositoryId) {
+            $scope.agentFormModel.repositoryId = null;
+        }
         // Delay the validation status setting because angular form ngmodel is not present immediately
         setTimeout(setExtractionMethodValidityStatus, 0);
     };
