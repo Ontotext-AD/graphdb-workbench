@@ -274,26 +274,30 @@ angular.module('graphdb.framework.core.services.jwtauth', [
 
             this.toggleFreeAccess = function (enabled, authorities, appSettings, updateFreeAccess) {
                 if (enabled !== this.freeAccess || updateFreeAccess) {
-                    if (enabled) {
-                        this.freeAccessPrincipal = {authorities: authorities, appSettings: appSettings};
-                    } else {
-                        this.freeAccessPrincipal = undefined;
-                    }
                     SecurityService.setFreeAccess({
                         enabled: enabled ? 'true' : 'false',
                         authorities: authorities,
                         appSettings: appSettings
-                    }).then(() => {
-                        this.freeAccess = enabled;
-                        if (updateFreeAccess) {
-                            toastr.success($translate.instant('jwt.auth.free.access.updated.msg'));
-                        } else {
-                            toastr.success($translate.instant('jwt.auth.free.access.status', {status: ($translate.instant(enabled ? 'enabled.status' : 'disabled.status'))}));
-                        }
-                    }).catch((err) => {
-                        toastr.error(err.data, $translate.instant('common.error'));
-                    });
-                    this.broadcastSecurityInit(this.securityEnabled, this.hasExplicitAuthentication(), this.freeAccess)
+                    })
+                        .then(() => {
+                            this.freeAccess = enabled;
+                            return enabled ? SecurityService.getFreeAccess() : {}
+                        })
+                        .then((freeAccess) => {
+                            this.freeAccessPrincipal = {
+                                authorities: freeAccess.authorities,
+                                appSettings: freeAccess.appSettings
+                            };
+                            if (updateFreeAccess) {
+                                toastr.success($translate.instant('jwt.auth.free.access.updated.msg'));
+                            } else {
+                                toastr.success($translate.instant('jwt.auth.free.access.status', {status: ($translate.instant(enabled ? 'enabled.status' : 'disabled.status'))}));
+                            }
+                        })
+                        .finally(() => this.broadcastSecurityInit(this.securityEnabled, this.hasExplicitAuthentication(), this.freeAccess))
+                        .catch((err) => {
+                            toastr.error(err.data, $translate.instant('common.error'));
+                        });
                 }
             };
 
