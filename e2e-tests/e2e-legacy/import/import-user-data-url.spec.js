@@ -79,6 +79,8 @@ describe('Import user data: URL import', () => {
     });
 
     it('should import JSON-LD file via URL with correct request body', () => {
+        cy.intercept('GET', `/rest/repositories/${repositoryId}/import/upload`).as('upload');
+
         ImportUserDataSteps.stubPostJSONLDFromURL(repositoryId);
         ImportUserDataSteps.openImportURLDialog(IMPORT_JSONLD_URL);
         ImportUserDataSteps.selectRDFFormat(JSONLD_FORMAT);
@@ -90,14 +92,28 @@ describe('Import user data: URL import', () => {
             expect(xhr.request.body.type).to.eq('url');
             expect(xhr.request.body.hasContextLink).to.be.true;
         });
+        cy.waitUntil(() =>
+            cy.wait('@upload').then((xhr) => {
+                console.log(xhr.response.body)
+                return xhr.response.body[0]?.status === 'ERROR'
+            }), {timeout: 10000, interval: 1000}
+        )
     });
 
-    it('should show error on invalid JSON-LD URL', () => {
+    it.only('should show error on invalid JSON-LD URL', () => {
+        cy.intercept('GET', `/rest/repositories/${repositoryId}/import/upload`).as('upload');
+
         ImportUserDataSteps.stubPostJSONLDFromURL();
         ImportUserDataSteps.openImportURLDialog(IMPORT_JSONLD_URL);
         ImportUserDataSteps.selectRDFFormat(JSONLD_FORMAT);
         ImportUserDataSteps.clickImportUrlButton();
         ImportSettingsDialogSteps.import();
+        cy.waitUntil(() =>
+            cy.wait('@upload').then((xhr) => {
+                console.log(xhr.response.body)
+                return xhr.response.body[0]?.status === 'ERROR'
+            }), {timeout: 10000, interval: 1000}
+        )
         ImportUserDataSteps.checkImportedResource(0, IMPORT_JSONLD_URL, 'https://example.com/0007-context.jsonld');
     });
 });
