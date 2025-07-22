@@ -659,6 +659,10 @@
                     },
                     "confirm_repository_change_before_open_autocomplete_index": {
                         "body": "Si vous continuez à activer l’index d’autocomplétion, GraphDB s'ouvrira dans un nouvel onglet et passera au dépôt <b>{{repositoryId}}</b>."
+                    },
+                    "repository_not_selected_warning": {
+                        "title": "Aucun dépôt n'est sélectionné",
+                        "body": "Veuillez sélectionner un dépôt pour continuer"
                     }
                 }
             },
