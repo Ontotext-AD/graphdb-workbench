@@ -1,3 +1,10 @@
+const createCopyToEditorListener = (YasguiComponentDirectiveUtil, sparqlDirectiveSelector, query) => {
+    return (event) => {
+        event.preventDefault();
+        YasguiComponentDirectiveUtil.setQuery(sparqlDirectiveSelector, query).then(() => {});
+    }
+}
+
 PluginRegistry.add('guide.step', [
     {
         guideBlockName: 'execute-sparql-query',
@@ -13,7 +20,8 @@ PluginRegistry.add('guide.step', [
 
             const code = document.createElement('code');
             const copy = document.createElement('button');
-            copy.className = 'btn btn-sm btn-secondary';
+            const copyToEditorButtonClass = 'guide-copy-to-editor-query-button';
+            copy.className = `btn btn-sm btn-secondary ${copyToEditorButtonClass}`;
             copy.innerText = $translate.instant('guide.step_plugin.execute-sparql-query.copy-to-editor.button');
             copy.setAttribute('ng-click', 'copyQuery()');
 
@@ -37,6 +45,9 @@ PluginRegistry.add('guide.step', [
                 queries[index] = query;
                 code.innerText = query;
                 options.queryAsHtmlCodeElement = '<div class="shepherd-code">' + code.outerHTML + copy.outerHTML + '</div>';
+
+                const copyToEditorListener = createCopyToEditorListener(YasguiComponentDirectiveUtil, SPARQL_DIRECTIVE_SELECTOR, query);
+                let stepHTMLElement;
 
                 steps.push({
                     guideBlockName: 'input-element',
@@ -86,8 +97,14 @@ PluginRegistry.add('guide.step', [
                         },
                         scrollToHandler: GuideUtils.scrollToTop,
                         extraContent: queryDef.queryExtraContent,
-                        onScope: (scope) => {
-                            scope.copyQuery = () => YasguiComponentDirectiveUtil.setQuery(SPARQL_DIRECTIVE_SELECTOR, query).then(() => {});
+                        show: (_guide) => () => {
+                            stepHTMLElement = _guide.currentStep.el.querySelector(`.${copyToEditorButtonClass}`);
+                            stepHTMLElement.addEventListener('click', copyToEditorListener);
+                        },
+                        hide: () => () => {
+                            if (stepHTMLElement) {
+                                stepHTMLElement.removeEventListener('click', copyToEditorListener);
+                            }
                         }
                     }, options)
                 });
