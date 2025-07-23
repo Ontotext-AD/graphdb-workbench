@@ -57,7 +57,7 @@ export class OntoToastr {
       <section style={{display: this.toasts.isEmpty() ? 'none' : 'flex'}}
                class={`onto-toastr-container ${this.config.position}`}>
         {this.toasts?.getItems().map((toast) => (
-          <div class={`onto-toast ${toast.type}`} key={toast.id}
+          <div class={`onto-toast toast ${toast.type}`} key={toast.id}
                onMouseEnter={this.onToastMouseEnter(toast)}
                onMouseLeave={this.onToastMouseLeave(toast)}>
               <i class={`fa-regular ${toastTypeToIconMap[toast.type]}`}></i>

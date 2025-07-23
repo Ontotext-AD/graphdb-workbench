@@ -2,13 +2,11 @@ import {mapObject} from "../../utils/map-object";
 import {UserModel} from "../../models/security/security";
 import {
     GRAPHQL_PREFIX,
-    GRAPHQL_SUFFIX,
     GRAPHQL_SUFFIX_WITH_DELIMITER,
     READ_REPO_PREFIX,
-    SUFFIX_DELIMITER,
     WRITE_REPO_PREFIX
 } from "./constants";
-import {getRepoFromAuthority} from "./authorities-util";
+import {MapperProvider, GrantedAuthoritiesUiModelMapper, AuthoritiesUtil} from "@ontotext/workbench-api";
 
 export const toUserModelMapper = (data, key = 'grantedAuthorities') => {
     if (Array.isArray(data)) {
@@ -40,33 +38,7 @@ export const fromUserModelMapper = (uiModel, key = 'grantedAuthorities') => {
 
 // Transformation function for BE-to-UI conversion.
 const mapAuthoritiesFromBackend = (authorities) => {
-    const result = [];
-    for (const auth of authorities) {
-        if (auth.includes(SUFFIX_DELIMITER)) {
-            // For example: "READ_REPO_ABC:GRAPHQL" or "WRITE_REPO_ABC:GRAPHQL"
-            const [oldAuth, suffix] = auth.split(SUFFIX_DELIMITER);
-            const hasRepoRights = oldAuth.indexOf(READ_REPO_PREFIX) === 0 || oldAuth.indexOf(WRITE_REPO_PREFIX) === 0;
-            if (hasRepoRights && suffix === GRAPHQL_SUFFIX) {
-                // Use the helper to extract the repository id.
-                const repoData = getRepoFromAuthority(oldAuth);
-                if (repoData) {
-                    const { repo } = repoData;
-                    const uiAuth = GRAPHQL_PREFIX + repo;
-                    if (!result.includes(oldAuth)) {
-                        result.push(oldAuth);
-                    }
-                    if (!result.includes(uiAuth)) {
-                        result.push(uiAuth);
-                    }
-                    continue;
-                }
-            }
-        }
-        if (!result.includes(auth)) {
-            result.push(auth);
-        }
-    }
-    return result;
+    return MapperProvider.get(GrantedAuthoritiesUiModelMapper).mapToModel(authorities).getItems();
 };
 
 // Transformation function for UI-to-BE conversion.
@@ -89,7 +61,7 @@ const mapAuthoritiesToBackend = (uiAuthorities) => {
     let isWriteAll = false;
     let isGraphqlAll = false;
     uiAuthorities.forEach((auth) => {
-        const repoData = getRepoFromAuthority(auth);
+        const repoData = AuthoritiesUtil.getRepoFromAuthority(auth);
         if (repoData) {
             const { prefix, repo } = repoData;
             const entry = getOrCreateRepo(repo);

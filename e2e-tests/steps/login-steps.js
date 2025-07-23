@@ -3,11 +3,16 @@ export class LoginSteps {
         cy.visit('/login');
     }
 
+    static visitLoginPageWithReturnUrl(returnURL) {
+        const returnURLEncoded = encodeURIComponent(returnURL);
+        cy.visit(`/login?r=${returnURLEncoded}`);
+    }
+
     static loginWithUser(username, password) {
         cy.get('.login-form').should('be.visible');
-        cy.get('#wb-login-username').type(username);
-        cy.get('#wb-login-password').type(password);
-        cy.get('#wb-login-submitLogin').click();
+        cy.getByTestId('username-input').type(username);
+        cy.getByTestId('password-input').type(password);
+        cy.getByTestId('submit-btn').click();
     }
 
     static logout() {

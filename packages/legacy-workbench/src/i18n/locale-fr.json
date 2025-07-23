@@ -3088,6 +3088,7 @@
     "choose.repo": "Choisissez le dépôt",
     "no.accessible.repos.warning": "Aucun dépôt accessible",
     "sign.out.label": "Se déconnecter",
+    "sign.out.success": "Déconnecté",
     "logout.label": "Déconnexion",
     "open.external.page": "Ouvrir une page externe",
     "no.access.permission.to.functionality.error": "Vous n'avez pas la permission d'accéder à cette fonctionnalité avec vos informations d'identification actuelles.",
