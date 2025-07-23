@@ -192,16 +192,16 @@
 
                         <div
                             ng-if="extractionMethod.expanded && extractionMethod.method === extractionMethods.FTS_SEARCH"
-                            ng-class="{'has-error': agentSettingsForm.$error.FTSDisabled}"
+                            ng-class="{'has-error': agentSettingsForm.$error.FTSDisabled || agentSettingsForm.repositoryId.$invalid}"
                             class="extraction-method-options">
-                            <button class="btn btn-link btn-sm pull-right"
+                            <button ng-if="agentFormModel.repositoryId" class="btn btn-link btn-sm pull-right"
                                     ng-click="checkIfFTSEnabled()"
                                     gdb-tooltip="{{'ttyg.agent.create_agent_modal.form.fts_search.btn.reload.tooltip' | translate}}">
                                 <i class="fa fa-arrows-rotate"></i>
                             </button>
                             <div class="alert alert-danger missing-repositoryid-error mb-0"
-                                 ng-if="!agentFormModel.repositoryId">
-                                {{'ttyg.agent.create_agent_modal.form.fts_search.missing_repository_id' | translate}}
+                                 ng-if="agentSettingsForm.repositoryId.$invalid">
+                                {{'ttyg.agent.create_agent_modal.form.missing_repository_id' | translate}}
                             </div>
                             <div ng-if="!ftsEnabled && agentFormModel.repositoryId" class="fts-disabled-message"
                                  ng-bind-html="getFTSDisabledHelpMessage()">
@@ -226,15 +226,19 @@
 
                         <div
                             ng-if="extractionMethod.expanded && extractionMethod.method === extractionMethods.SIMILARITY"
-                            ng-class="{'has-error': agentSettingsForm.$error.missingIndex}"
+                            ng-class="{'has-error': agentSettingsForm.$error.missingIndex || agentSettingsForm.repositoryId.$invalid}"
                             class="extraction-method-options">
-                            <button class="btn btn-link btn-sm pull-right"
+                            <button ng-if="agentFormModel.repositoryId" class="btn btn-link btn-sm pull-right"
                                     ng-click="updateSimilaritySearchPanel()"
                                     ng-disabled="disabled"
                                     gdb-tooltip="{{'ttyg.agent.create_agent_modal.form.similarity_index.btn.reload.tooltip' | translate}}">
                                 <i class="fa fa-arrows-rotate"></i>
                             </button>
-                            <div ng-if="!similarityIndexes.length" class="no-similarity-index-message">
+                            <div class="alert alert-danger missing-repositoryid-error mb-0"
+                                 ng-if="agentSettingsForm.repositoryId.$invalid">
+                                {{'ttyg.agent.create_agent_modal.form.missing_repository_id' | translate}}
+                            </div>
+                            <div ng-if="agentFormModel.repositoryId && !similarityIndexes.length" class="no-similarity-index-message">
                                 {{'ttyg.agent.create_agent_modal.form.similarity_index.no_similarity_index.message_1' |
                                 translate}}
                                 <a href="" ng-click="goToCreateSimilarityView($event)">
@@ -297,15 +301,19 @@
 
                         <div
                             ng-if="extractionMethod.expanded && extractionMethod.method === extractionMethods.RETRIEVAL"
-                            ng-class="{'has-error': agentSettingsForm.$error.missingConnector}"
+                            ng-class="{'has-error': agentSettingsForm.$error.missingConnector || agentSettingsForm.repositoryId.$invalid}"
                             class="extraction-method-options">
-                            <button class="btn btn-link btn-sm pull-right"
+                            <button ng-if="agentFormModel.repositoryId" class="btn btn-link btn-sm pull-right"
                                     ng-click="updateRetrievalConnectorPanel()"
                                     ng-disabled="disabled"
                                     gdb-tooltip="{{'ttyg.agent.create_agent_modal.form.retrieval_search.btn.reload.tooltip' | translate}}">
                                 <i class="fa fa-arrows-rotate"></i>
                             </button>
-                            <div ng-if="!retrievalConnectors.length" class="no-retrieval-connector-message">
+                            <div class="alert alert-danger missing-repositoryid-error mb-0"
+                                 ng-if="agentSettingsForm.repositoryId.$invalid">
+                                {{'ttyg.agent.create_agent_modal.form.missing_repository_id' | translate}}
+                            </div>
+                            <div ng-if="agentFormModel.repositoryId && !retrievalConnectors.length" class="no-retrieval-connector-message">
                                 {{'ttyg.agent.create_agent_modal.form.retrieval_search.no_retrieval_connectors.message_1'
                                 | translate}}
                                 <a href="" ng-click="goToConnectorsView($event)">
