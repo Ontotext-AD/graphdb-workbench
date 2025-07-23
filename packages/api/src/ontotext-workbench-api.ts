@@ -1,5 +1,7 @@
 // Anything exported from this file is importable by other in-browser modules.
 
+export * from './frontend';
+
 // Export models for external usages.
 export * from './models/repositories';
 export * from './models/repository-location';

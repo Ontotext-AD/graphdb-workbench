@@ -2,6 +2,7 @@ import 'angular/guides/guides.service';
 import 'angular/core/directives/paginations';
 import {GuideUtils} from "./guide-utils";
 import {GuideLevel} from "./model/guides";
+import {ServiceProvider, GuideEngineService} from '@ontotext/workbench-api';
 
 const modules = [
     'ui.bootstrap',
@@ -25,12 +26,19 @@ function GuidesCtrl($scope, $rootScope, GuidesService, $filter, $translate, $int
     $scope.page = 1;
     $scope.pageSize = $scope.pageSizeOptions[0];
     $scope.translationSubscription = undefined;
+    const guideEngineService = ServiceProvider.get(GuideEngineService);
 
     // =========================
     // Public functions
     // =========================
 
+    $scope.startInteractiveGuide = (guide) => {
+        console.log('%cstartInteractiveGuide', 'background: yellow', guide);
+        guideEngineService.start(guide);
+    };
+
     $scope.startGuide = (guide) => {
+        console.log('%cstartGuide', 'background: yellow', guide);
         GuidesService.startGuide(guide);
     };
 
