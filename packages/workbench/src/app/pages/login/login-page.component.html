@@ -1,0 +1,53 @@
+<div class="login-form">
+  <div class="login-card">
+    <h1>{{ 'login.title' | transloco }}</h1>
+
+    @if (isGDBLoginEnabled()) {
+      <form [formGroup]="loginForm" (ngSubmit)="login()" novalidate>
+        @let hasWrongCredentials = loginForm.hasError('wrongCredentials');
+
+        <div class="group" [ngClass]="{'has-error': hasWrongCredentials}">
+          <div class="input-wrapper">
+            <span class="icon-wrapper">
+              <i class="fa-solid fa-user"></i>
+            </span>
+            <input
+              formControlName="username"
+              autocomplete
+              type="text"
+              placeholder="{{ 'login.username_placeholder' | transloco }}"
+              class="input-field"
+              data-test="username-input"
+            />
+          </div>
+        </div>
+
+        <div class="group" [ngClass]="{'has-error': hasWrongCredentials}">
+          <div class="input-wrapper">
+            <span class="icon-wrapper">
+              <i class="fa-solid fa-lock"></i>
+            </span>
+            <input
+              formControlName="password"
+              autocomplete
+              type="password"
+              placeholder="{{ 'login.password_placeholder' | transloco }}"
+              class="input-field"
+              data-test="password-input"
+            />
+          </div>
+        </div>
+
+        <div class="action">
+          <button type="submit" class="onto-btn onto-btn-primary onto-lg" data-test="submit-btn">
+            {{ 'login.sign_in' | transloco }}
+          </button>
+        </div>
+      </form>
+    } @else if (isOpenIDEnabled()) {
+      <button (click)="loginWithOpenID()" class="onto-btn onto-btn-primary onto-lg">
+        {{ 'login.sign_in_openid' | transloco }}
+      </button>
+    }
+  </div>
+</div>

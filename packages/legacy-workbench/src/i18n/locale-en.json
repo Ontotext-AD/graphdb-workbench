@@ -3128,6 +3128,7 @@
     "choose.repo": "Choose repository",
     "no.accessible.repos.warning": "No accessible repositories",
     "sign.out.label": "Sign out",
+    "sign.out.success": "Signed out",
     "logout.label": "Logout",
     "open.external.page": "Open external page",
     "no.access.permission.to.functionality.error": "You have no permission to access this functionality with your current credentials.",

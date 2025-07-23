@@ -1,25 +1,24 @@
 import {ModelList} from '../common';
-import {Authority} from './authority';
 
 /**
  * Represents a list of authorities in an authenticated user.
  */
-export class AuthorityList extends ModelList<Authority> {
+export class AuthorityList extends ModelList<string> {
   private readonly WILDCARD = '*';
   private readonly GQL_WILDCARD = '*:GRAPHQL';
 
-  constructor(authorities?: Authority[]) {
+  constructor(authorities?: string[]) {
     super(authorities);
   }
 
   /**
    * Checks if the list contains a specific authority.
    *
-   * @param authority - The Authority object to check for in the list.
+   * @param authority - The Authority string to check for in the list.
    * @returns A boolean indicating whether the specified authority is present in the list.
    *          Returns true if the authority is found, false otherwise.
    */
-  hasAuthority(authority: Authority): boolean {
+  hasAuthority(authority: string): boolean {
     return this.items.includes(authority);
   }
 
