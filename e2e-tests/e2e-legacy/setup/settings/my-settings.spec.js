@@ -2,6 +2,7 @@ import {SparqlEditorSteps} from "../../../steps/sparql-editor-steps";
 import {YasqeSteps} from "../../../steps/yasgui/yasqe-steps";
 import {SecurityStubs} from "../../../stubs/security-stubs";
 import {VisualGraphSteps} from "../../../steps/visual-graph-steps";
+import {ToasterSteps} from "../../../steps/toaster-steps";
 
 describe('My Settings', () => {
 
@@ -173,9 +174,7 @@ describe('My Settings', () => {
     }
 
     function verifyUserSettingsUpdated() {
-        cy.waitUntil(() =>
-            cy.get('#toast-container')
-                .then(toast => toast && toast.text().includes('The user admin was updated')));
+        cy.waitUntil(() => ToasterSteps.verifySuccess('The user admin was updated'));
     }
 
     function saveGraphSettings() {

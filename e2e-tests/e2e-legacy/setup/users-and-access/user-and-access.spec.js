@@ -21,7 +21,6 @@ describe('User and Access', () => {
 
         beforeEach(() => {
             UserAndAccessSteps.visit();
-            cy.window();
             // Users table should be visible
             UserAndAccessSteps.getUsersTable().should('be.visible');
         });
@@ -395,6 +394,7 @@ describe('User and Access', () => {
     function testForUser(name, isAdmin) {
         //enable security
         UserAndAccessSteps.toggleSecurity();
+        LoginSteps.visitLoginPageWithReturnUrl('/users')
         //login new user
         LoginSteps.loginWithUser(name, PASSWORD);
         //verify permissions

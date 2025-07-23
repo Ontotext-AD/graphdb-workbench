@@ -8,8 +8,7 @@ import {Subscription} from 'rxjs';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
   imports: [
-    RouterOutlet,
-    RouterLink
+    RouterOutlet
   ]
 })
 export class AppComponent implements OnInit, OnDestroy {

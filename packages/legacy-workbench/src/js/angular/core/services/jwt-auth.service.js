@@ -12,6 +12,7 @@ import {
   AuthenticatedUserMapper,
   OpenidConfigMapper,
   AuthenticationStorageService,
+  OntoToastrService,
 } from "@ontotext/workbench-api";
 import {LoggerProvider} from "./logger-provider";
 
@@ -22,9 +23,10 @@ angular.module('graphdb.framework.core.services.jwtauth', [
     'graphdb.framework.core.services.security-service',
     'graphdb.framework.core.services.openIDService',
 ])
-    .service('$jwtAuth', ['$http', 'toastr', '$location', '$rootScope', 'SecurityService', '$openIDAuth', '$translate', '$q', '$route', 'AuthTokenService',
+    .service('$jwtAuth', ['$http', '$location', '$rootScope', 'SecurityService', '$openIDAuth', '$translate', '$q', '$route', 'AuthTokenService',
         /* eslint-disable no-invalid-this */
-        function($http, toastr, $location, $rootScope, SecurityService, $openIDAuth, $translate, $q, $route, AuthTokenService) {
+        function($http, $location, $rootScope, SecurityService, $openIDAuth, $translate, $q, $route, AuthTokenService) {
+            const toastrService = ServiceProvider.get(OntoToastrService);
             const jwtAuth = this;
             $rootScope.hasPermission = function() {
                 const path = $location.path();
@@ -37,6 +39,8 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             this.updateReturnUrl = () => {
                 if ($location.url().indexOf('/login') !== 0) {
                     $rootScope.returnToUrl = $location.url();
+                } else {
+                    $rootScope.returnToUrl = '';
                 }
             };
 
@@ -50,6 +54,10 @@ angular.module('graphdb.framework.core.services.jwtauth', [
              * @return {Promise<unknown>}
              */
             $rootScope.redirectToLogin = function(expired, noaccess) {
+                if ($location.path().includes('/login')) {
+                    // just resolve if path is already the login page
+                    return Promise.resolve();
+                }
                 if (jwtAuth.authTokenIsType('Bearer')) {
                     // OpenID login may be detected as expired either on initial validation
                     // when we get expired = true or indirectly via 401, setting expired = true
@@ -60,12 +68,22 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 // remember where we were so we can return there
                 jwtAuth.updateReturnUrl();
 
-                $location.path('/login');
-                if (noaccess) {
-                    $location.search('noaccess');
-                } else if (expired) {
-                    $location.search('expired');
+                const params = {};
+                if ($rootScope.returnToUrl) {
+                    params.r = encodeURIComponent($rootScope.returnToUrl);
                 }
+
+                if (noaccess) {
+                    params.noaccess = true;
+                }
+
+                if (expired) {
+                    params.expired = true;
+                }
+
+                $location
+                    .path('/login')
+                    .search(params);
                 // Countering race condition. When the unauthorized interceptor catches error 401 or 409, then we must make
                 // sure that a request is made to access the login page before proceeding with the rejection of the
                 // original request. Otherwise the login page is not accessible in the context of spring security.
@@ -253,13 +271,13 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 if (enabled !== this.securityEnabled) {
                     return SecurityService.toggleSecurity(enabled)
                         .then(function() {
-                            toastr.success($translate.instant('jwt.auth.security.status', {status: ($translate.instant(enabled ? 'enabled.status' : 'disabled.status'))}));
+                            toastrService.success($translate.instant('jwt.auth.security.status', {status: ($translate.instant(enabled ? 'enabled.status' : 'disabled.status'))}));
                             AuthTokenService.clearAuthToken();
                             that.initSecurity();
                             that.securityEnabled = enabled;
                         })
                         .catch(function(err) {
-                            toastr.error(err.data, $translate.instant('common.error'));
+                            toastrService.error(err.data, $translate.instant('common.error'));
                         });
                 }
                 return Promise.resolve();
@@ -282,14 +300,14 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                                 appSettings: freeAccess.appSettings,
                             };
                             if (updateFreeAccess) {
-                                toastr.success($translate.instant('jwt.auth.free.access.updated.msg'));
+                                toastrService.success($translate.instant('jwt.auth.free.access.updated.msg'));
                             } else {
-                                toastr.success($translate.instant('jwt.auth.free.access.status', {status: ($translate.instant(enabled ? 'enabled.status' : 'disabled.status'))}));
+                                toastrService.success($translate.instant('jwt.auth.free.access.status', {status: ($translate.instant(enabled ? 'enabled.status' : 'disabled.status'))}));
                             }
                         })
                         .finally(() => this.broadcastSecurityInit(this.securityEnabled, this.hasExplicitAuthentication(), this.freeAccess))
                         .catch((err) => {
-                            toastr.error(err.data, $translate.instant('common.error'));
+                            toastrService.error(err.data, $translate.instant('common.error'));
                         });
                 }
             };

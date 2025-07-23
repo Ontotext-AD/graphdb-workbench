@@ -1,4 +1,20 @@
 {
-  "new-view": "NewView Works in English!"
+  "new-view": "NewView Works in English!",
+  "login":{
+    "title": "Login",
+    "sign_in": "Sign in",
+    "username_mismatch": "Password or username did not match!",
+    "username": "Username",
+    "username_placeholder": "Your name",
+    "password": "Password",
+    "password_placeholder": "Your password",
+    "sign_in_openid": "Sign in with OpenID",
+    "error": "Login error",
+    "errors": {
+      "no_rights": "User has no access rights or configuration error.",
+      "auth_token_expired": "Your authentication token has expired. Please login again.",
+      "wrong_credentials": "Wrong credentials!"
+    }
+  }
 }
 

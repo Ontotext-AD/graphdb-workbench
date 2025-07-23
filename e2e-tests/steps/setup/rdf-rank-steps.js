@@ -120,8 +120,4 @@ export class RdfRankSteps extends BaseSteps {
     static getExcludedPredicatesFilter() {
         return this.getFilteringConfig().find('.excluded-predicates-filter');
     }
-
-    static getToast() {
-        return cy.get('#toast-container');
-    }
 }
