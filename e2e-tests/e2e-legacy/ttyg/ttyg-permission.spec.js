@@ -58,12 +58,12 @@ describe('TTYG permissions', () => {
     function verifyCanCreateAgentForFirstTime(user, password, enable) {
         const shouldBe = enable ? 'be.enabled' : 'be.disabled';
         TTYGStubs.stubAgentListGet('/ttyg/agent/get-agent-list-0.json');
-        TTYGViewSteps.visit();
+        LoginSteps.visitLoginPageWithReturnUrl('/ttyg');
         cy.url().should('include', '/login');
-        cy.wait('@get-authenticated-user');
-        cy.wait('@get-authenticated-user');
-        cy.wait('@get-authenticated-user');
         LoginSteps.loginWithUser(user, password);
+        cy.wait('@get-authenticated-user');
+        cy.wait('@get-authenticated-user');
+        cy.wait('@get-authenticated-user');
         RepositorySelectorSteps.selectRepository(REPOSITORY_ID);
         TTYGViewSteps.getCreateFirstAgentButton().should(shouldBe);
         TTYGStubs.stubChatsListGet();

@@ -21,6 +21,9 @@ export * from './models/configuration';
 export * from './models/notification';
 export * from './models/translation';
 
+// Export enums for external usages.
+export * from './models/url';
+
 // Export providers for external usages.
 export * from './providers';
 
