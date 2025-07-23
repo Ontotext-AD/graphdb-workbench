@@ -1,24 +1,24 @@
 export class ToasterSteps {
     static getToast() {
-        return cy.get('#toast-container');
+        return cy.get('.toast');
     }
 
     static verifyTitle(title) {
-        ToasterSteps.getToast()
+        return ToasterSteps.getToast()
             .find('.toast-title')
             .should('be.visible')
             .and('contain', title);
     }
 
     static verifySuccess(successMessage) {
-        ToasterSteps.getToast()
+        return ToasterSteps.getToast()
             .should('exist')
             .find('.toast-message')
             .and('contain', successMessage);
     }
 
     static verifyWarning(warningMessage) {
-        ToasterSteps.getToast()
+        return ToasterSteps.getToast()
             .find('.toast-warning')
             .should('be.visible')
             .find('.toast-message')
@@ -26,9 +26,9 @@ export class ToasterSteps {
     }
 
     static verifyError(errorMessage) {
-        ToasterSteps.getToast()
-            .find('.toast-error')
+        return ToasterSteps.getToast()
             .should('be.visible')
+            .and('have.class', 'toast-error')
             .find('.toast-message')
             .and('contain', errorMessage);
     }
