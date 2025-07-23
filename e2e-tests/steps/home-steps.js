@@ -134,6 +134,7 @@ class HomeSteps extends BaseSteps {
 
     static selectSPARQLQueryToExecute(query) {
         cy.contains('ul.saved-queries li', query)
+            .scrollIntoView()
             .should('be.visible')
             .trigger('hover')
             .find('.execute-saved-query')

@@ -20,14 +20,6 @@ PluginRegistry.add('route', [
         'title': 'Create new user',
         'allowAuthorities': ['READ_REPO_{repoId}']
     }, {
-        'url': '/login',
-        'module': 'graphdb.framework.security',
-        'path': 'security/app',
-        'chunk': 'security',
-        'controller': 'LoginCtrl',
-        'templateUrl': 'pages/login.html',
-        'title': 'view.login.title'
-    }, {
         'url': '/user/:userId',
         'module': 'graphdb.framework.security',
         'path': 'security/app',
