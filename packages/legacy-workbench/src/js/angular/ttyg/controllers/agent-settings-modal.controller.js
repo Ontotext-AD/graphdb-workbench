@@ -255,9 +255,7 @@ function AgentSettingsModalController(
      */
     $scope.goToAutocompleteView = (event) => {
         event.preventDefault();
-        if (isRepositoryIdFieldValid()) {
-            TTYGContextService.emit(TTYGEventName.GO_TO_AUTOCOMPLETE_INDEX_VIEW, {repositoryId: $scope.agentFormModel.repositoryId});
-        }
+        TTYGContextService.emit(TTYGEventName.GO_TO_AUTOCOMPLETE_INDEX_VIEW, {repositoryId: $scope.agentFormModel.repositoryId});
     }
 
     /**
@@ -265,9 +263,7 @@ function AgentSettingsModalController(
      */
     $scope.goToCreateSimilarityView = (event) => {
         event.preventDefault();
-        if (isRepositoryIdFieldValid()) {
-            TTYGContextService.emit(TTYGEventName.GO_TO_CREATE_SIMILARITY_VIEW, {repositoryId: $scope.agentFormModel.repositoryId});
-        }
+        TTYGContextService.emit(TTYGEventName.GO_TO_CREATE_SIMILARITY_VIEW, {repositoryId: $scope.agentFormModel.repositoryId});
     };
 
     /**
@@ -275,9 +271,7 @@ function AgentSettingsModalController(
      */
     $scope.goToConnectorsView = (event) => {
         event.preventDefault();
-        if (isRepositoryIdFieldValid()) {
-            TTYGContextService.emit(TTYGEventName.GO_TO_CONNECTORS_VIEW, {repositoryId: $scope.agentFormModel.repositoryId});
-        }
+        TTYGContextService.emit(TTYGEventName.GO_TO_CONNECTORS_VIEW, {repositoryId: $scope.agentFormModel.repositoryId});
     };
 
     /**
@@ -387,12 +381,19 @@ function AgentSettingsModalController(
      * Checks the status of the autocomplete index.
      */
     $scope.checkAutocompleteIndexEnabled = () => {
+        if (!$scope.agentFormModel.repositoryId) {
+            return;
+        }
         const selectedRepositoryInfo = getSelectedRepositoryInfo();
-        AutocompleteService.checkAutocompleteStatus(selectedRepositoryInfo.repositoryId, selectedRepositoryInfo.repositoryLocation).then((autocompleteEnabled) => {
-            $scope.autocompleteEnabled = autocompleteEnabled;
-        }).catch((error) => {
-            toastr.error(getError(error));
-        });
+        AutocompleteService.checkAutocompleteStatus(selectedRepositoryInfo.repositoryId, selectedRepositoryInfo.repositoryLocation)
+            .then((autocompleteEnabled) => {
+                $scope.autocompleteEnabled = autocompleteEnabled;
+                $scope.agentSettingsForm.$setValidity('autocompleteDisabled', autocompleteEnabled);
+            })
+            .catch((error) => {
+                $scope.agentSettingsForm.$setValidity('autocompleteDisabled', false);
+                toastr.error(getError(error));
+            });
     }
 
     /**
@@ -594,7 +595,9 @@ function AgentSettingsModalController(
             // clear the validation status if method is deselected.
             $scope.agentSettingsForm.$setValidity('missingIndex', true);
         }
-
+        if (!$scope.agentFormModel.repositoryId) {
+            return;
+        }
         if (extractionMethod.expanded) {
             $scope.extractionMethodLoaderFlags[extractionMethod.method] = true;
             const selectedRepositoryInfo = getSelectedRepositoryInfo();
@@ -633,6 +636,9 @@ function AgentSettingsModalController(
     };
 
     const handleRetrievalConnectorExtractionMethodPanelToggle = (extractionMethod) => {
+        if (!$scope.agentFormModel.repositoryId) {
+            return;
+        }
         if (!extractionMethod.selected) {
             // clear the validation status if method is deselected.
             $scope.agentSettingsForm.$setValidity('missingConnector', true);
@@ -693,7 +699,11 @@ function AgentSettingsModalController(
         },
     };
 
-    const handleAutocompleteExtractionMethodPanelToggle = () => {
+    const handleAutocompleteExtractionMethodPanelToggle = (extractionMethod) => {
+        if (!extractionMethod.selected) {
+            // clear the validation status if method is deselected.
+            $scope.agentSettingsForm.$setValidity('autocompleteDisabled', true);
+        }
         $scope.checkAutocompleteIndexEnabled();
     }
 
@@ -709,12 +719,6 @@ function AgentSettingsModalController(
             refreshValidations();
         }
     };
-
-    function isRepositoryIdFieldValid() {
-        $scope.agentSettingsForm.repositoryId.$setTouched();
-        $scope.agentSettingsForm.repositoryId.$validate();
-        return $scope.agentSettingsForm.repositoryId.$valid;
-    }
 
     // =========================
     // Subscriptions
