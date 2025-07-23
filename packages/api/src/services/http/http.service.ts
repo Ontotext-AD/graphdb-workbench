@@ -3,6 +3,7 @@ import {InterceptorService} from '../interceptor/interceptor.service';
 import {HttpRequest} from '../../models/http/http-request';
 import {ServiceProvider} from '../../providers';
 import {EventEmitter} from '../../emitters/event.emitter';
+import {HttpResponse} from '../../models/http/http-response';
 
 const JSON_CONTENT_TYPES = ['application/json', 'application/sparql-results+json'];
 
@@ -40,6 +41,18 @@ export class HttpService {
    */
   post<T>(url: string, body?: unknown, headers?: Record<string, string>): Promise<T> {
     return this.request<T>(url, 'POST', {body, headers});
+  }
+
+  /**
+   * Performs an HTTP POST request and returns full HttpResponse (body of type `T`, status, headers).
+   *
+   * @param url     The URL to send the request to.
+   * @param body    (Optional) The body of the request.
+   * @param headers (Optional) An object containing request headers as key-value pairs.
+   * @returns A Promise that resolves to the full HttpResponse (body of type `T`, status, headers).
+   */
+  public postFull<T>(url: string, body?: unknown, headers?: Record<string, string>): Promise<HttpResponse<T>> {
+    return this.requestFull<T>(url, 'POST', {body, headers});
   }
 
   /**
@@ -136,6 +149,66 @@ export class HttpService {
       return false;
     }
     return JSON_CONTENT_TYPES.some((contentType) => responseContentType.includes(contentType));
+  }
+
+  /**
+   * Performs an HTTP request with the specified method and options.
+   *
+   * @param url     The URL to send the request to.
+   * @param method  The HTTP method to use (GET, POST, PUT, DELETE).
+   * @param options (Optional) An object containing the request options, including:
+   *                 - `params`: Query parameters as key-value pairs.
+   *                 - `headers`: Request headers as key-value pairs.
+   *                 - `body`: The request body.
+   * @returns A Promise that resolves with the full HttpResponse (body of type `T`, status, headers), or is rejected with an error if the request fails.
+   */
+  private requestFull<T>(
+    url: string,
+    method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH',
+    options: HttpOptions = {}
+  ): Promise<HttpResponse<T>> {
+    const queryString = this.buildQueryParams(options.params);
+    const fullUrl = `${url}${queryString ? `?${queryString}` : ''}`;
+    const headers = {
+      'Content-Type': 'application/json',
+      Accept: 'application/json, text/plain, */*',
+      ...options.headers,
+    };
+
+    return this.interceptorService
+      .preProcess(new HttpRequest({ url: fullUrl, method, headers, body: options.body }))
+      .then((request) =>
+        fetch(request.url, {
+          method: request.method,
+          headers: request.headers as HeadersInit,
+          body: request.body ? JSON.stringify(request.body) : null,
+        })
+      )
+      .then((response) => this.interceptorService.postProcess(response))
+      .then((response) => {
+        if (!response.ok) {
+          return Promise.reject(response);
+        }
+        const isJson = this.hasValidJson(response);
+        return {
+          json: (isJson ? response.json() : Promise.resolve()),
+          response
+        };
+      })
+      .then((data) => {
+        const headersObj: Record<string, string> = {};
+        data.response.headers.forEach((value, key) => {
+          headersObj[key] = value;
+        });
+        return {
+          data: data.json as T,
+          status: data.response.status,
+          headers: headersObj,
+        } as HttpResponse<T>;
+      })
+      .finally(() =>
+        this.eventEmitter.emit({ NAME: HTTP_REQUEST_DONE_EVENT, payload: undefined })
+      );
   }
 
   /**

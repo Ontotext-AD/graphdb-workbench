@@ -5,6 +5,8 @@ import {AuthenticatedUser, SecurityConfig} from '../../models/security';
 import {SecurityContextService} from './security-context.service';
 import {SecurityConfigMapper} from './mappers/security-config.mapper';
 import {AuthenticatedUserMapper} from './mappers/authenticated-user.mapper';
+import {HttpResponse} from '../../models/http/http-response';
+import {AuthenticationStorageService} from './authentication-storage.service';
 
 /**
  * Service class for handling security-related operations.
@@ -12,6 +14,7 @@ import {AuthenticatedUserMapper} from './mappers/authenticated-user.mapper';
 export class SecurityService implements Service {
   private readonly securityRestService: SecurityRestService = ServiceProvider.get(SecurityRestService);
   private readonly securityContextService: SecurityContextService = ServiceProvider.get(SecurityContextService);
+  private readonly authStorageService: AuthenticationStorageService = ServiceProvider.get(AuthenticationStorageService);
 
   /**
    * Updates the data of an authenticated user.
@@ -49,5 +52,49 @@ export class SecurityService implements Service {
   getAuthenticatedUser(): Promise<AuthenticatedUser> {
     return this.securityRestService.getAuthenticatedUser()
       .then((response) => MapperProvider.get(AuthenticatedUserMapper).mapToModel(response));
+  }
+
+  /**
+   * Checks if password-based login is enabled in the current security configuration.
+   *
+   * @returns `true` if password login is enabled; `undefined` if no config is present.
+   */
+  isPasswordLoginEnabled(): boolean | undefined {
+    return this.securityContextService.getSecurityConfig()?.passwordLoginEnabled;
+  }
+
+  /**
+   * Checks if OpenID login is enabled in the current security configuration.
+   *
+   * @returns `true` if OpenID is enabled; `undefined` if no config is present.
+   */
+  isOpenIDEnabled(): boolean | undefined {
+    return this.securityContextService.getSecurityConfig()?.openIdEnabled;
+  }
+
+  /**
+   * Authenticates the user with username and password.
+   *
+   * Stores the auth token (if returned), updates the security context
+   * with the mapped user, and returns the authenticated user model.
+   *
+   * @param username - The username of the user.
+   * @param password - The password of the user.
+   * @returns A Promise that resolves to the authenticated `AuthenticatedUser` model.
+   */
+  login(username: string, password: string): Promise<AuthenticatedUser> {
+    return this.securityRestService.login(username, password)
+      .then((response: HttpResponse<AuthenticatedUser>) => {
+        const authHeader = response.headers['authorization'];
+        if (authHeader) {
+          this.authStorageService.setAuthToken(authHeader);
+        }
+        return response.data;
+      })
+      .then((data)=> {
+        const authUser = MapperProvider.get(AuthenticatedUserMapper).mapToModel(data);
+        this.securityContextService.updateAuthenticatedUser(authUser);
+        return authUser;
+      });
   }
 }

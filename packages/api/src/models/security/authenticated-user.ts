@@ -3,6 +3,7 @@ import {AuthorityList} from './authority-list';
 import {MapperProvider} from '../../providers';
 import {AuthorityListMapper} from '../../services/security/mappers/authority-list.mapper';
 import {AppSettings} from './app-settings';
+import {GrantedAuthoritiesUiModelMapper} from '../../services/security/mappers/granted-authorities-ui-model.mapper';
 
 /**
  * Represents an authenticated user in the system
@@ -12,6 +13,7 @@ export class AuthenticatedUser extends Model<AuthenticatedUser> {
   username: string;
   password: string;
   authorities: AuthorityList;
+  grantedAuthoritiesUiModel: AuthorityList;
   appSettings: AppSettings;
 
   constructor(data?: Partial<AuthenticatedUser>) {
@@ -20,6 +22,7 @@ export class AuthenticatedUser extends Model<AuthenticatedUser> {
     this.username = data?.username ?? '';
     this.password = data?.password ?? '';
     this.authorities = MapperProvider.get(AuthorityListMapper).mapToModel(data?.authorities);
+    this.grantedAuthoritiesUiModel = MapperProvider.get(GrantedAuthoritiesUiModelMapper).mapToModel(data?.authorities);
     this.appSettings = data?.appSettings ?? {};
   }
 }

@@ -1,5 +1,5 @@
 import {Component, CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {AuthenticationService, RepositoryContextService, ServiceProvider, RepositoryList} from "@ontotext/workbench-api";
+import {RepositoryContextService, ServiceProvider, RepositoryList} from "@ontotext/workbench-api";
 import {TranslocoPipe} from '@jsverse/transloco';
 
 @Component({
@@ -13,7 +13,6 @@ import {TranslocoPipe} from '@jsverse/transloco';
 })
 export class NewViewComponent {
   constructor() {
-    console.log('NewViewComponent login', ServiceProvider.get(AuthenticationService).login());
     ServiceProvider.get(RepositoryContextService).onRepositoryListChanged((repositoryList: RepositoryList | undefined) => {
       console.log('NewViewComponent repositories', repositoryList?.getItems());
     });

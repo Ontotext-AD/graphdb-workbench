@@ -16,6 +16,7 @@ export * from './models/toastr';
 export * from './models/rdf-search';
 export * from './models/single-spa';
 export * from './models/app-lifecycle';
+export * from './models/url';
 
 // Export providers for external usages.
 export * from './providers';

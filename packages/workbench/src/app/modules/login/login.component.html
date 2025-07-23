@@ -1,0 +1,47 @@
+<div class="login-form" id="wb-login">
+  <div class="card">
+    <div class="card-body">
+      <h1>{{ 'login.title' | transloco }}</h1>
+
+      <form *ngIf="isGDBLoginEnabled()" [formGroup]="loginForm" (ngSubmit)="login()" novalidate>
+        <div *ngIf="error" class="alert alert-danger">
+          {{ 'login.username_mismatch' | transloco }}
+        </div>
+
+        <div class="form-group" [ngClass]="{'has-error': wrongCredentials}">
+  <span class="icon-wrapper">
+    <i class="fa-solid fa-user"></i>
+  </span>
+          <input
+            formControlName="username"
+            type="text"
+            placeholder="{{ 'login.username_placeholder' | transloco }}"
+            class="input-field"
+          />
+        </div>
+
+        <div class="form-group" [ngClass]="{'has-error': wrongCredentials}">
+  <span class="icon-wrapper">
+    <i class="fa-solid fa-lock"></i>
+  </span>
+          <input
+            formControlName="password"
+            type="password"
+            placeholder="{{ 'login.password_placeholder' | transloco }}"
+            class="input-field"
+          />
+        </div>
+
+        <div class="text-end">
+          <button type="submit" class="btn btn-primary btn-lg">
+            {{ 'login.sign_in' | transloco }}
+          </button>
+        </div>
+      </form>
+
+      <button *ngIf="isOpenIDEnabled()" (click)="loginWithOpenID()" class="btn btn-primary btn-lg">
+        {{ 'login.sign_in_openid' | transloco }}
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,10 +1,12 @@
 import {Routes} from '@angular/router';
 import {SparqlComponent} from './sparql/sparql.component';
 import {EmptyRouteComponent} from './empty-route/empty-route.component';
+import {LoginComponent} from "./modules/login/login.component";
 import {NewViewComponent} from "./new-view/new-view.component";
 
 export const routes: Routes = [
   {path: 'sparql-new', component: SparqlComponent},
   {path: 'new-view', component: NewViewComponent},
+  {path: 'login', component: LoginComponent},
   {path: "**", component: EmptyRouteComponent}
 ];
