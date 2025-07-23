@@ -155,6 +155,7 @@ export class OntoHeader {
     this.subscribeToActiveRepoLoadingChange();
     this.subscribeToNavigationEnd();
     this.subscribeToLanguageChanged();
+    this.subscribeToAuthenticatedUserChange();
   }
 
   private subscribeToRepositoryListChanged(): () => void {
@@ -181,7 +182,7 @@ export class OntoHeader {
         this.currentRepository ? this.startOperationPolling() : this.stopOperationPolling();
         this.shouldShowSearch = this.shouldShowRdfSearch();
         this.loadNamespaces();
-        this.repositoryItems = this.getRepositoriesDropdownItems();
+        this.updateRepositoryItems();
       })
     );
   }
@@ -194,6 +195,12 @@ export class OntoHeader {
     this.subscriptions.add(this.securityContextService.onSecurityConfigChanged((config) => {
       this.securityConfig = config;
     }));
+  }
+
+  private subscribeToAuthenticatedUserChange() {
+    this.subscriptions.add(this.securityContextService.onAuthenticatedUserChanged(() => {
+      this.updateRepositoryItems();
+    }))
   }
 
   private subscribeToActiveRepositoryLocationChange() {
@@ -242,6 +249,10 @@ export class OntoHeader {
 
   private initOnRepositoryListChanged(repositories: RepositoryList): void {
     this.repositoryList = repositories;
+    this.updateRepositoryItems();
+  }
+
+  private updateRepositoryItems() {
     this.repositoryItems = this.getRepositoriesDropdownItems();
   }
 
