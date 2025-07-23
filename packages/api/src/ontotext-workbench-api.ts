@@ -46,3 +46,4 @@ export * from './services/utils';
 
 // Export constants for external usages.
 export {HTTP_REQUEST_DONE_EVENT} from './services/http/http.service';
+export {COOKIE_CONSENT_CHANGED_EVENT} from './services/cookie/cookie.service';
