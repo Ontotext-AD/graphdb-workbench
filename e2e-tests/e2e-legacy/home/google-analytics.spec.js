@@ -13,6 +13,7 @@ describe('Google analytics', () => {
         LicenseStubs.stubFreeLicense();
         HomeSteps.visitInProdMode();
 
+        // Check if the GA tracking script is set correctly in the head
         cy.document()
             .get('head script')
             .should("have.attr", "src")
