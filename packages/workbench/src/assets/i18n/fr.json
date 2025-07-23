@@ -1,3 +1,19 @@
 {
-  "new-view": "NewView Works in French!"
+  "new-view": "NewView fonctionne en français!",
+  "login": {
+    "title": "Connexion",
+    "sign_in": "Se connecter",
+    "username_mismatch": "Le mot de passe ou le nom d’utilisateur est incorrect!",
+    "username": "Nom d’utilisateur",
+    "username_placeholder": "Votre nom",
+    "password": "Mot de passe",
+    "password_placeholder": "Votre mot de passe",
+    "sign_in_openid": "Se connecter avec OpenID",
+    "error": "Erreur de connexion",
+    "errors": {
+      "no_rights": "L’utilisateur n’a pas les droits d’accès ou il y a une erreur de configuration.",
+      "auth_token_expired": "Votre jeton d’authentification a expiré. Veuillez vous reconnecter.",
+      "wrong_credentials": "Identifiants incorrects!"
+    }
+  }
 }

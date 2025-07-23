@@ -36,6 +36,10 @@ export class RepositorySteps {
             .should('be.visible');
     }
 
+    static verifyRepositoryIsSelected(repositoryId) {
+        return RepositorySteps.getRepositorySelection().should('contain', repositoryId);
+    }
+
     static getRepositoriesInDropdown() {
         return cy.get('.onto-dropdown-menu-item');
     }

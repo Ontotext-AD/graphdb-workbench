@@ -39,6 +39,7 @@ import {
     RepositoryService,
     ServiceProvider,
     SecurityContextService,
+    OntoToastrService
 } from "@ontotext/workbench-api";
 import {EventConstants} from "./utils/event-constants";
 import {CookieConsent} from "./models/cookie-policy/cookie-consent";
@@ -181,15 +182,16 @@ function homeCtrl($scope,
     });
 }
 
-mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', 'toastr', '$location', '$repositories', '$licenseService', '$rootScope',
+mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', '$location', '$repositories', '$licenseService', '$rootScope',
     'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'LicenseRestService', 'RepositoriesRestService',
     'MonitoringRestService', 'SparqlRestService', '$sce', 'LocalStorageAdapter', 'LSKeys', '$translate', 'UriUtils', '$q', 'GuidesService', '$route', '$window', 'AuthTokenService', 'TrackingService',
     'WorkbenchContextService', 'AutocompleteService'];
 
-function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repositories, $licenseService, $rootScope,
+function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories, $licenseService, $rootScope,
                   productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService, RepositoriesRestService,
                   MonitoringRestService, SparqlRestService, $sce, LocalStorageAdapter, LSKeys, $translate, UriUtils, $q, GuidesService, $route, $window, AuthTokenService, TrackingService,
                   WorkbenchContextService, AutocompleteService) {
+    const toastrService = ServiceProvider.get(OntoToastrService);
     $scope.descr = $translate.instant('main.gdb.description');
     $scope.documentation = '';
     $scope.menu = $menuItems;
@@ -247,7 +249,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         if (isHomePage()) {
             $scope.hideRdfResourceSearch = true;
             $('#search-resource-input-home input').focus();
-            toastr.info(decodeHTML($translate.instant('search.resource.current.page.msg')), $translate.instant('search.resources.msg'), {
+            toastrService.info(decodeHTML($translate.instant('search.resource.current.page.msg')), $translate.instant('search.resources.msg'), {
                 allowHtml: true,
             });
         }
@@ -306,7 +308,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
                 .then(() => TrackingService.applyTrackingConsent())
                 .catch((error) => {
                     const msg = getError(error.data, error.status);
-                    toastr.error(msg, $translate.instant('common.error'));
+                    toastrService.error(msg, $translate.instant('common.error'));
                 });
         }
     });
@@ -616,25 +618,21 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
             });
     }
 
-    ServiceProvider.get(EventService).subscribe(EventName.LOGOUT, () => logout());
+    const onLogoutSubscription = ServiceProvider.get(EventService).subscribe(EventName.LOGOUT, () => logout());
 
     ServiceProvider.get(EventService).subscribe(EventConstants.RDF_SEARCH_ICON_CLICKED, () => {
         $rootScope.$broadcast('rdfResourceSearchExpanded');
     });
 
     function logout() {
-        $jwtAuth.clearAuthentication();
         if ($jwtAuth.freeAccess) {
             // if it's free access check if we still can access the current repo
             // if not, a new default repo will be set or the current repo will be unset
             $repositories.resetActiveRepository();
-            $jwtAuth.updateReturnUrl();
-        } else if ($jwtAuth.isSecurityEnabled()) {
-            // otherwise show login screen if security is on
-            $rootScope.redirectToLogin().then(() => {
-                toastr.success('Signed out');
-            });
         }
+        // clearAuthentication() triggers broadcast of `securityInit` which triggers $rootScope.redirectToLogin()
+        $jwtAuth.clearAuthentication();
+        toastrService.success($translate.instant('sign.out.success'));
     }
 
     $scope.showMainManuAndStatusBar = () => {
@@ -786,7 +784,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
             })
             .error(function(data) {
                 const msg = getError(data);
-                toastr.error(msg, $translate.instant('query.editor.get.saved.queries.error'));
+                toastrService.error(msg, $translate.instant('query.editor.get.saved.queries.error'));
             });
     };
 
@@ -1024,7 +1022,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
                 .catch((error) => {
                     $scope.licenseIsSet = false;
                     const msg = getError(error.data, error.status);
-                    toastr.error(msg, $translate.instant('common.error'));
+                    toastrService.error(msg, $translate.instant('common.error'));
                 });
 
             const queryParams = $location.search();
@@ -1142,7 +1140,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
                 LocalStorageAdapter.set(LSKeys.AUTOCOMPLETE_ENABLED, autocompleteEnabled);
             })
             .catch(() => {
-                toastr.error($translate.instant('explore.error.autocomplete'));
+                toastrService.error($translate.instant('explore.error.autocomplete'));
             });
     };
 
@@ -1182,21 +1180,21 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     $scope.downloadGuidesFile = (resourcePath, resourceFile) => {
         GuidesService.downloadGuidesFile(resourcePath, resourceFile)
             .catch((error) => {
-                toastr.error($translate.instant('guide.step_plugin.download-guide-resource.download.message.failure', {resourceFile}));
+                toastrService.error($translate.instant('guide.step_plugin.download-guide-resource.download.message.failure', {resourceFile}));
             });
     };
 
     $scope.$on('$destroy', () => {
         onSelectedRepositoryChangedSubscription?.();
-        cookieConsentChangedSubscription?.();
-        onAppDataLoaded();
-        document.removeEventListener('click', closeActiveRepoPopoverEventHandler);
-        window.removeEventListener('storage', localStoreChangeHandler);
-        $scope.cancelPopoverOpen();
-        deregisterMenuWatcher();
-        if ($scope.checkMenu) {
-            $timeout.cancel($scope.checkMenu);
-        }
+        cookieConsentChangedSubscription?.();onAppDataLoaded();
+        onLogoutSubscription?.()
+      document.removeEventListener('click', closeActiveRepoPopoverEventHandler);
+      window.removeEventListener('storage', localStoreChangeHandler);
+      $scope.cancelPopoverOpen();
+      deregisterMenuWatcher();
+      if ($scope.checkMenu) {
+        $timeout.cancel($scope.checkMenu);
+      }
     });
 }
 

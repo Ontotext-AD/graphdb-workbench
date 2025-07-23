@@ -46,6 +46,7 @@ describe('Readonly saved query', () => {
 
         // When: I log in with another user
         LoginSteps.loginWithUser(USER_ADMINISTRATOR, PASSWORD);
+        SparqlEditorSteps.visitSparqlEditorPage();
         // and open the popup with the saved query.
         YasguiSteps.showSavedQueries();
 
