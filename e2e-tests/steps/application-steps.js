@@ -1,24 +1,26 @@
+import {ToasterSteps} from "./toaster-steps";
+
 export class ApplicationSteps {
 
     // notifications
     static getNotifications() {
-        return cy.get('#toast-container');
+        return ToasterSteps.getToast()
     }
 
     static getSuccessNotifications() {
-        return this.getNotifications().find('.toast-success');
+        return this.getNotifications().filter('.toast-success');
     }
 
     static getErrorNotifications() {
-        return this.getNotifications().find('.toast-error');
+        return this.getNotifications().filter('.toast-error');
     }
 
     static getInfoNotification() {
-        return this.getNotifications().find('.toast-info');
+        return this.getNotifications().filter('.toast-info');
     }
 
     static getWarningNotification() {
-        return this.getNotifications().find('.toast-warning');
+        return this.getNotifications().filter('.toast-warning');
     }
 
     // navigation via main menu

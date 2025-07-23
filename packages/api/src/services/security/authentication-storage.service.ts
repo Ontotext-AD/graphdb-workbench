@@ -28,4 +28,8 @@ export class AuthenticationStorageService extends LocalStorageService {
   isAuthenticated(): boolean {
     return this.get(this.authenticatedKey).getValue() === 'true';
   }
+
+  setAuthToken(value: string): void {
+    this.set(this.jwtKey, value);
+  }
 }

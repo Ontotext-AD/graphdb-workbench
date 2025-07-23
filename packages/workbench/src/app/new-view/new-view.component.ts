@@ -1,5 +1,5 @@
 import {Component, CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {AuthenticationService, RepositoryContextService, ServiceProvider, RepositoryList} from '@ontotext/workbench-api';
+import {RepositoryContextService, ServiceProvider, RepositoryList} from '@ontotext/workbench-api';
 import {TranslocoPipe} from '@jsverse/transloco';
 import {LoggerProvider} from '../services/logger-provider';
 
@@ -14,7 +14,6 @@ import {LoggerProvider} from '../services/logger-provider';
 export class NewViewComponent {
   private readonly logger = LoggerProvider.logger;
   constructor() {
-    this.logger.info('NewViewComponent login', ServiceProvider.get(AuthenticationService).login());
     ServiceProvider.get(RepositoryContextService).onRepositoryListChanged((repositoryList: RepositoryList | undefined) => {
       this.logger.info('NewViewComponent repositories', repositoryList?.getItems());
     });

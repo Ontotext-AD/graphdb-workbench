@@ -28,11 +28,6 @@ describe('AuthenticationService', () => {
     jest.spyOn(WindowService, 'getWindow').mockReturnValue(windowMock);
   });
 
-  test('login should return the correct login message', () => {
-    const result = authService.login();
-    expect(result).toBe('Authentication.login from the API');
-  });
-
   test('isAuthenticated should return true if the user is authenticated', () => {
     // When, I have an enabled security and logged user
     const securityConfig = {enabled: true, userLoggedIn: true} as unknown as SecurityConfig;

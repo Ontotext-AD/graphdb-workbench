@@ -1,6 +1,7 @@
 /**
  * Reusable functions for interacting with graph dropdown on Class hierarchy and relationships pages.
  */
+import {ToasterSteps} from "./toaster-steps";
 
 export const GRAPH_FILE = 'graphdb-news-dataset.zip';
 export const ALL_GRAPHS = 'All graphs';
@@ -181,9 +182,7 @@ class ClassViewsSteps {
     }
 
     static verifyDataChangedWarning() {
-        cy.get('#toast-container').find('.toast-title')
-            .should('be.visible')
-            .and('contain', 'Repository data has changed');
+        ToasterSteps.verifyTitle('Repository data has changed');
     }
 
     static confirmReload() {

@@ -21,16 +21,17 @@ const logger = LoggerProvider.logger;
 const loadLanguageConfig = () => {
   const languageService = ServiceProvider.get(LanguageService);
   const languageContextService = ServiceProvider.get(LanguageContextService);
-  const storedLanguage = ServiceProvider.get(LanguageStorageService).get(languageContextService.SELECTED_LANGUAGE);
+  const storedLanguageContext = ServiceProvider.get(LanguageStorageService).get(languageContextService.SELECTED_LANGUAGE);
   let isStoredAndDefaultLangEqual = false;
   return languageService.getLanguageConfiguration()
     .then((config) => {
       if (config) {
+        const storedLanguage = storedLanguageContext.value ?? config.defaultLanguage;
         languageContextService.setLanguageConfig(config);
-        isStoredAndDefaultLangEqual = storedLanguage && storedLanguage.value === config.defaultLanguage;
+        isStoredAndDefaultLangEqual = storedLanguage === config.defaultLanguage;
         if (!isStoredAndDefaultLangEqual) {
           // Update the selected language to the local store one
-          languageContextService.updateSelectedLanguage(storedLanguage.value);
+          languageContextService.updateSelectedLanguage(storedLanguage);
         }
         return languageService.getLanguage(config.defaultLanguage);
       }
