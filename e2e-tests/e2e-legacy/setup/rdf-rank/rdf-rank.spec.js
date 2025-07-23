@@ -1,4 +1,5 @@
 import {RdfRankSteps} from "../../../steps/setup/rdf-rank-steps";
+import {ToasterSteps} from "../../../steps/toaster-steps";
 
 describe('RDF Rank view', () => {
 
@@ -98,10 +99,7 @@ describe('RDF Rank view', () => {
         RdfRankSteps.getIncludedPredicatesFilter()
             .find('.tag-list .tag-item')
             .should('have.length', 0);
-        RdfRankSteps.getToast()
-            .find('.toast-error')
-            .should('be.visible')
-            .and('contain', 'is not a valid IRI');
+        ToasterSteps.verifyError('is not a valid IRI')
 
         // Enter valid one and rebuild
         RdfRankSteps.getIncludedPredicatesFilter()

@@ -19,6 +19,9 @@ export * from './models/app-lifecycle';
 export * from './models/plugins';
 export * from './models/configuration';
 
+// Export enums for external usages.
+export * from './models/url';
+
 // Export providers for external usages.
 export * from './providers';
 

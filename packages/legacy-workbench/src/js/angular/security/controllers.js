@@ -27,65 +27,6 @@ const modules = [
 
 const securityModule = angular.module('graphdb.framework.security.controllers', modules);
 
-securityModule.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '$openIDAuth', '$location', '$rootScope', '$translate', 'TrackingService', 'SecurityService',
-    function ($scope, $http, toastr, $jwtAuth, $openIDAuth, $location, $rootScope, $translate, TrackingService, SecurityService) {
-        $scope.username = '';
-        $scope.password = '';
-
-        // Reinitialize security settings, if failed for some reason
-        $jwtAuth.reinitializeSecurity();
-
-        TrackingService.applyTrackingConsent()
-            .catch((error) => {
-                const msg = getError(error.data, error.status);
-                toastr.error(msg, $translate.instant('common.error'));
-            });
-
-        $scope.loginWithOpenID = function () {
-            $jwtAuth.loginOpenID();
-        };
-
-        if ($location.search().noaccess) {
-            toastr.error($translate.instant('security.no.rights.config.error'), $translate.instant('security.login.error'));
-        } else if ($location.search().expired) {
-            toastr.error($translate.instant('security.auth.token.expired'), $translate.instant('security.login.error'));
-        }
-
-        $scope.isGDBLoginEnabled = function () {
-            return $jwtAuth.passwordLoginEnabled;
-        };
-
-        $scope.isOpenIDEnabled = function () {
-            return $jwtAuth.openIDEnabled;
-        };
-
-        $scope.login = function () {
-            return SecurityService.login($scope.username, $scope.password)
-                .then(function ({data, status, headers}) {
-                $jwtAuth.authenticate(data, headers('Authorization'))
-                    .then(() => {
-                        if ($rootScope.returnToUrl) {
-                            // go back to remembered url
-                            $location.url($rootScope.returnToUrl);
-                        } else {
-                            // don't have a remembered url, go home
-                            $location.path('/');
-                        }
-                    });
-            }).catch(function ({data, status}) {
-                if (status === 401) {
-                    toastr.error($translate.instant('security.wrong.credentials'), $translate.instant('common.error'));
-                    $scope.wrongCredentials = true;
-                    $scope.username = '';
-                    $scope.password = '';
-                } else {
-                    const msg = getError(data);
-                    toastr.error(msg, status);
-                }
-            });
-        };
-    }]);
-
 securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$window', '$jwtAuth', '$timeout', 'ModalService', 'SecurityService', '$translate',
     function ($scope, $uibModal, toastr, $window, $jwtAuth, $timeout, ModalService, SecurityService, $translate) {
 

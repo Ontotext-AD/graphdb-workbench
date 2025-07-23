@@ -6,6 +6,20 @@ import {AuthenticatedUser, SecurityConfig} from '../../models/security';
  */
 export class SecurityRestService extends HttpService {
   private readonly SECURITY_ENDPOINT = 'rest/security';
+  private readonly LOGIN_ENDPOINT = 'rest/login';
+
+  /**
+   * Authenticates a user by sending credentials to the server.
+   *
+   * Sends a POST request to the login endpoint with the provided username and password.
+   *
+   * @param username - The user's login name.
+   * @param password - The user's password.
+   * @returns A Promise resolving to an HttpResponse containing the AuthenticatedUser data on success.
+   */
+  login(username: string, password: string): Promise<Response> {
+    return this.postFull(this.LOGIN_ENDPOINT, {username, password});
+  }
 
   /**
    * Updates the application settings for a specific user.
