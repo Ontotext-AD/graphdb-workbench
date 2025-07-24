@@ -74,4 +74,14 @@ describe('Turn on Security', () => {
     UserAndAccessSteps.typeConfirmPasswordField(newPassword);
     UserAndAccessSteps.confirmUserEdit();
   });
+
+  it('should show toaster when after logging out', () => {
+      UserAndAccessSteps.visit();
+      LoginSteps.loginWithUser('admin', 'root');
+      // Log out
+      LoginSteps.logout();
+      cy.url().should('include', '/login');
+      // Verify toaster message
+      ToasterSteps.verifySuccess('Signed out');
+  })
 });
