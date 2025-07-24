@@ -179,6 +179,12 @@ function AgentSettingsModalController(
      */
     $scope.autocompleteSuggestions = [];
 
+    /**
+     * Flag to determine if the context size field should be visible in the form.
+     * @type {boolean}
+     */
+    $scope.showContextSize = ($scope.agentFormModel.contextSize !== null);
+
     // =========================
     // Public functions
     // =========================
@@ -385,6 +391,13 @@ function AgentSettingsModalController(
             toastr.error(getError(error));
         });
     }
+
+    /**
+     * Restores the default context size.
+     */
+    $scope.onRestoreDefaultContextSize = () => {
+        $scope.agentFormModel.contextSize = $scope.agentFormModel.contextSizeCopy;
+    };
 
     /**
      * Restores the default system instructions.

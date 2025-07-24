@@ -135,9 +135,9 @@ export class TTYGStubs extends Stubs {
         }).as('delete-agent');
     }
 
-    static stubAgentDefaultsGet() {
+    static stubAgentDefaultsGet(fixture = '/ttyg/agent/get-agent-defaults.json') {
         cy.intercept('GET', '/rest/chat/agents/default', {
-            fixture: '/ttyg/agent/get-agent-defaults.json',
+            fixture,
             statusCode: 200
         }).as('get-agent-defaults');
     }
@@ -173,5 +173,14 @@ export class TTYGStubs extends Stubs {
             statusCode: 200,
             body: 'http://user-pc:7200'
         }).as('external-url');
+    }
+
+    static stubForApiType(type = 'default') {
+        const fixtures = {
+            default: '/ttyg/agent/get-agent-defaults.json',
+            assistants: '/ttyg/agent/get-agent-defaults-assistant-api.json'
+        };
+        this.stubAgentListGet('/ttyg/agent/get-agent-list-autocomplete-query.json');
+        this.stubAgentDefaultsGet(fixtures[type]);
     }
 }

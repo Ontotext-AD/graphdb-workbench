@@ -38,12 +38,53 @@
     color: var(--primary-color-dark);
 }
 
-.agent-settings-modal .agent-settings-form .provider-name {
-    padding-left: 5px;
+.agent-settings-modal .agent-settings-form .context-size .input-with-unit {
+    position: relative;
+}
+
+.agent-settings-modal .agent-settings-form .context-size .input-with-unit input {
+    padding-right: 3.5em;
+}
+
+.agent-settings-modal .agent-settings-form .context-size .input-with-unit .token-unit-label {
+    position: absolute;
+    right: 0.5em;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+    pointer-events: none;
+}
+
+.agent-settings-modal .agent-settings-form .form-group.context-size,
+.agent-settings-modal .agent-settings-form .form-group.temperature,
+.agent-settings-modal .agent-settings-form .form-group.top-p {
+    padding-top: 6px;
+}
+
+.agent-settings-modal .agent-settings-form .context-size .reset-context-size-btn {
+    float: right;
+}
+
+.agent-settings-modal .agent-settings-form .context-size .reset-context-size-btn .icon-info {
+    color: var(--primary-color-dark);
+}
+
+.context-size-wrapper .reset-context-size-btn {
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity .15s;
+}
+
+.context-size-wrapper:hover .reset-context-size-btn,
+.context-size-wrapper:focus-within .reset-context-size-btn {
+    visibility: visible;
+    opacity: 1;
 }
 
 .agent-settings-modal .agent-settings-form .llm-model {
     padding-left: 0;
+    overflow: visible;
+    position: static;
 }
 
 .agent-settings-modal .agent-settings-form [type="checkbox"],

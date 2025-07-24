@@ -368,6 +368,41 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
         return this.getLLMModelField().type(value);
     }
 
+    static clickLLMModelField() {
+        this.getLLMModelField().click();
+    }
+
+    // Context size
+
+    static getContextSizeFormGroup() {
+        return this.getDialog().find('.context-size');
+    }
+
+    static getContextSizeField() {
+        return this.getDialog().find('.context-size input');
+    }
+
+    static clearContextSize() {
+        return this.getContextSizeField().clear();
+    }
+
+    static enterContextSize(input) {
+        this.getContextSizeField().type(input);
+    }
+
+    static getContextSizeError() {
+        return this.getContextSizeFormGroup().find('.alert-danger');
+    }
+
+    static resetContextSizeValue() {
+        this.getContextSizeField()
+            .realHover()
+            .then(() => this.getContextSizeFormGroup().find('.reset-context-size-btn'))
+            .scrollIntoView()
+            .should('be.visible')
+            .click();
+    }
+
     // temperature
 
     static getTemperatureFormGroup() {
