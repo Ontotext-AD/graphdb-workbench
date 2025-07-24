@@ -69,6 +69,29 @@ describe('Cookie policy', () => {
                 expect(updatedAt).to.be.within(now - oneHourInMilliseconds, now + oneHourInMilliseconds);
             });
         });
+
+        it('Should set cookies for tracking when accepted', () => {
+            HomeSteps.visitInProdMode();
+            SecurityStubs.stubUpdateUserData('admin');
+
+            // When I click Agree button
+            HomeSteps.clickAgreeButton();
+
+            // I expect to save cookie consent in user settings
+            cy.wait('@updateUser');
+
+            // Check if the GA tracking script is set correctly in the head
+            cy.document()
+                .get('head script')
+                .should("have.attr", "src")
+                .should('include', 'https://www.googletagmanager.com/gtm.js?id=GTM-WBP6C6Z4');
+
+            // Check if the installation ID cookie is set correctly
+            cy.getCookie('_wb').then((cookie) => {
+                expect(cookie).to.exist;
+                expect(cookie.value).to.match(/^WB1\.[a-zA-Z0-9\-]+\.\d+$/); // Check the cookie structure: WB1.<installationId>.<timestamp>
+            });
+        })
     })
 
     context('should not show', () => {
