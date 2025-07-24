@@ -142,4 +142,50 @@ describe('TTYG edit an agent', () => {
                 expect(val).to.equal('http://user-pc:7200/rest/llm/ttyg/asst_G8EtHyT8kAGeDmCa3Nh6y74v/dify');
             });
     });
+
+    it('should show Context size if not openai-assistants API', () => {
+        TTYGStubs.stubAgentListGet('/ttyg/agent/get-agent-list-autocomplete-query.json');
+        TTYGStubs.stubAgentDefaultsGet();
+        // Given I have opened the TTYG page
+        // And API is not openai-assistants API
+        TTYGViewSteps.visit();
+        cy.wait('@get-agent-list');
+        // When I select an agent
+        TTYGViewSteps.expandAgentsSidebar();
+        TTYGViewSteps.openAgentsMenu();
+        TTYGViewSteps.selectAgent(0);
+        TTYGViewSteps.editCurrentAgent();
+
+        // Then I should see the Context size field
+        TtygAgentSettingsModalSteps.getContextSizeField().should('be.visible');
+        // When I clear the value
+        TtygAgentSettingsModalSteps.clearContextSize();
+        // And click another field
+        TtygAgentSettingsModalSteps.clickLLMModelField();
+        // Then the error for required should appear
+        TtygAgentSettingsModalSteps.getContextSizeError().should('be.visible');
+        // When I type a value
+        TtygAgentSettingsModalSteps.enterContextSize('120000');
+        // Then the error disappears
+        TtygAgentSettingsModalSteps.getContextSizeError().should('not.exist');
+        // I should be allowed to reset the value of the Context size
+        TtygAgentSettingsModalSteps.resetContextSizeValue();
+    });
+
+    it('should NOT show Context size if openai-assistants API', () => {
+        TTYGStubs.stubAgentListGet('/ttyg/agent/get-agent-list-autocomplete-query.json');
+        TTYGStubs.stubAgentDefaultsGet('/ttyg/agent/get-agent-defaults-assistant-api.json');
+        // Given I have opened the TTYG page
+        // And API is not openai-assistants API
+        TTYGViewSteps.visit();
+        cy.wait('@get-agent-list');
+        // When I select an agent
+        TTYGViewSteps.expandAgentsSidebar();
+        TTYGViewSteps.openAgentsMenu();
+        TTYGViewSteps.selectAgent(0);
+        TTYGViewSteps.editCurrentAgent();
+
+        // Then I should see the Context size field
+        TtygAgentSettingsModalSteps.getContextSizeField().should('not.exist');
+    });
 });

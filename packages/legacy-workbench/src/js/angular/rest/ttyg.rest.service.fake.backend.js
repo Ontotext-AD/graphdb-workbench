@@ -418,6 +418,8 @@ const defaultAgentValues = {
     "id": "id",
     "name": "Quadro",
     "model": "gpt-4o",
+    "api": "openai-completions",
+    "contextSize": 128000,
     "temperature": 0.7,
     "topP": 1,
     "seed": 0,

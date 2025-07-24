@@ -148,6 +148,7 @@ describe('TTYG create new agent', () => {
                 "name": "Test Agent",
                 "repositoryId": "starwars",
                 "model": "gpt-4o",
+                "contextSize": 128000,
                 "temperature": "0.2",
                 "topP": "0.2",
                 "seed": 0,

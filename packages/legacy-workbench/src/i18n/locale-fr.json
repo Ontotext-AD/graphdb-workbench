@@ -470,6 +470,14 @@
                         "hint": "Le modèle par défaut est une propriété définie par l'administrateur. Consultez-le pour connaître les autres modèles disponibles.",
                         "link_text": " Apprenez à configurer le modèle dans la documentation de GraphDB."
                     },
+                    "context_size": {
+                        "label": "Taille du contexte",
+                        "tooltip": "Taille de la fenêtre de contexte – nombre maximal de jetons provenant des messages précédents inclus pour la compréhension contextuelle. Assurez-vous que le modèle peut gérer la limite de contexte définie.",
+                        "field_addon": "jetons",
+                        "restore_default_btn": {
+                            "tooltip": "Réinitialiser par défaut"
+                        }
+                    },
                     "temperature": {
                         "label": "Température",
                         "tooltip": "La température d'échantillonnage à utiliser, entre 0 et 2. Des valeurs plus élevées comme 0,8 rendront la sortie plus aléatoire, tandis que des valeurs plus faibles comme 0,2 la rendront plus ciblée et déterministe.",

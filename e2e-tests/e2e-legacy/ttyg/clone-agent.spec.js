@@ -51,6 +51,7 @@ describe('TTYG clone an agent', () => {
                 "name": "agent-11",
                 "repositoryId": "starwars",
                 "model": "gpt-4o",
+                "contextSize": 128000,
                 "temperature": 0,
                 "topP": 0,
                 "seed": 0,
