@@ -1,6 +1,16 @@
+import {EnvironmentStubs} from "../../stubs/environment-stubs";
+
 export class UserAndAccessSteps {
     static visit() {
         cy.visit('/users');
+    }
+
+    static visitInProdMode() {
+        cy.visit('/users', {
+            onBeforeLoad: (win) => {
+                EnvironmentStubs.stubWbProdMode();
+            }
+        });
     }
 
     static getUrl() {

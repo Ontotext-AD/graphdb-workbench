@@ -19,6 +19,22 @@ export class CookieConsent {
     }
 
     /**
+     * Predefined default: policy not accepted, but statistic and third-party cookies are allowed.
+     * Equivalent to: new CookieConsent(undefined, true, true)
+     */
+    static get NOT_ACCEPTED_WITH_TRACKING() {
+        return new CookieConsent(undefined, true, true);
+    }
+
+    /**
+     * Predefined default: policy accepted, no statistic or third-party cookies allowed.
+     * Equivalent to: new CookieConsent(true, false, false)
+     */
+    static get ACCEPTED_NO_TRACKING() {
+        return new CookieConsent(true, false, false);
+    }
+
+    /**
      * Sets the overall cookie policy acceptance status.
      * @param {boolean} consent - The user's decision for the entire cookie policy.
      * @return {CookieConsent} Returns the instance to allow chaining.
