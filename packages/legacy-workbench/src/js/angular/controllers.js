@@ -606,7 +606,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
 
     function logout() {
         $jwtAuth.clearAuthentication();
-        toastr.success('Signed out');
         if ($jwtAuth.freeAccess) {
             // if it's free access check if we still can access the current repo
             // if not, a new default repo will be set or the current repo will be unset
@@ -614,7 +613,9 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
             $jwtAuth.updateReturnUrl();
         } else if ($jwtAuth.isSecurityEnabled()) {
             // otherwise show login screen if security is on
-            $rootScope.redirectToLogin();
+            $rootScope.redirectToLogin().then(() => {
+                toastr.success('Signed out');
+            })
         }
     }
 
