@@ -22,14 +22,19 @@
          class="show extraction-method-content"
          aria-labelledby="{{extractionMethod.method + '_method_heading'}}"
          data-parent="#additionalExtractionMethods">
-           <div ng-if="extractionMethod.expanded" class="extraction-method-options">
-               <button class="btn btn-link btn-sm pull-right"
+           <div ng-if="extractionMethod.expanded" class="extraction-method-options"
+                ng-class="{'has-error': (extractionMethod.selected && agentSettingsForm.$error.autocompleteDisabled) || agentSettingsForm.repositoryId.$invalid}">
+               <button ng-if="agentFormModel.repositoryId" class="btn btn-link btn-sm pull-right"
                        ng-click="checkAutocompleteIndexEnabled()"
                        ng-disabled="disabled"
                        gdb-tooltip="{{'ttyg.agent.create_agent_modal.form.additional_query_methods.method.autocomplete_iri_discovery_search.btn.reload.tooltip' | translate}}">
                    <i class="fa fa-arrows-rotate"></i>
                </button>
-               <div ng-if="!autocompleteEnabled" class="autocomplete-disabled-message">
+               <div class="alert alert-danger missing-repositoryid-error mb-0"
+                    ng-if="!agentFormModel.repositoryId">
+                   {{'ttyg.agent.create_agent_modal.form.missing_repository_id' | translate}}
+               </div>
+               <div ng-if="agentFormModel.repositoryId && !autocompleteEnabled" class="autocomplete-disabled-message">
                    {{'ttyg.agent.create_agent_modal.form.additional_query_methods.autocomplete_disabled_message.message_1' | translate}}
                    <a href="" ng-click="goToAutocompleteView($event)">
                        {{'ttyg.agent.create_agent_modal.form.additional_query_methods.autocomplete_disabled_message.message_2' | translate}}
