@@ -60,4 +60,28 @@ describe('User and Access', () => {
         // Then: I should see the error message, because import view is available only for write access, repositoryId2 has only graphql rights.
         ErrorSteps.verifyError('Some functionalities are not available because you do not have the required repository permissions.')
     });
+
+    it('should restrict the repositories depending on whether free access is enabled and whether the user is logged in', () => {
+        // Given: There at least two repositories.
+        // When: I enable the security
+        UserAndAccessSteps.toggleSecurity();
+        LoginSteps.loginWithUser('admin', 'root');
+        // And: turn on Free Access
+        UserAndAccessSteps.toggleFreeAccess();
+        // And: set rights for the second repository when free access is ON
+        UserAndAccessSteps.clickFreeWriteAccessRepo(repositoryId2);
+        ModalDialogSteps.clickOKButton();
+
+        // When: I logout
+        LoginSteps.logout();
+        // Then: I should see only repositoryId2, as it is the only one configured for free access
+        RepositorySelectorSteps.getRepositorySelectorButton(repositoryId1).should('not.exist');
+        RepositorySelectorSteps.getRepositorySelectorButton(repositoryId2).should('exist');
+
+        // When: I log in again with a user who has access to all repositories
+        LoginSteps.loginWithUser('admin', 'root');
+        // Then: I should see both repositories in the repository selector, because the user has access to all repositories
+        RepositorySelectorSteps.getRepositorySelectorButton(repositoryId1).should('exist');
+        RepositorySelectorSteps.getRepositorySelectorButton(repositoryId2).should('exist');
+    });
 });
