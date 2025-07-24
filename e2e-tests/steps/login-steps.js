@@ -1,6 +1,16 @@
+import {EnvironmentStubs} from "../stubs/environment-stubs";
+
 export class LoginSteps {
     static visitLoginPage() {
         cy.visit('/login');
+    }
+
+    static visitInProdMode() {
+        cy.visit('/login', {
+            onBeforeLoad: (win) => {
+                EnvironmentStubs.stubWbProdMode();
+            }
+        });
     }
 
     static loginWithUser(username, password) {

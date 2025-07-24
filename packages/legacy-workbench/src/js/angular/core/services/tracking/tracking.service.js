@@ -83,18 +83,20 @@ function TrackingService($window, $jwtAuth, $licenseService, InstallationCookieS
     const getCookieConsent = () => {
         return $jwtAuth.getPrincipal()
             .then((principal) => {
-                const localConsent = LocalStorageAdapter.get(LSKeys.COOKIE_CONSENT);
-
                 // No username => use local storage
-                if (principal && !principal.username) {
-                    if (localConsent) {
-                        return CookieConsent.fromJSON(localConsent);
+                if (!principal || !principal.username) {
+                    if ($jwtAuth.isFreeAccessEnabled()) {
+                        const localConsent = LocalStorageAdapter.get(LSKeys.COOKIE_CONSENT);
+                        if (localConsent) {
+                            return CookieConsent.fromJSON(localConsent);
+                        }
+                        return CookieConsent.NOT_ACCEPTED_WITH_TRACKING;
                     }
-                    return new CookieConsent(undefined, true, true);
+                    return CookieConsent.ACCEPTED_NO_TRACKING;
                 }
 
                 if (!principal.appSettings || !principal.appSettings.COOKIE_CONSENT) {
-                    return new CookieConsent(undefined, true, true);
+                    return CookieConsent.NOT_ACCEPTED_WITH_TRACKING;
                 }
 
                 return CookieConsent.fromJSON(principal.appSettings.COOKIE_CONSENT);
