@@ -60,7 +60,7 @@ describe('onto-operations-notification', () => {
     OperationsNotificationSteps.getRepositoryItems().should('have.length', 6);
     OperationsNotificationSteps.setMarvelRepo();
 
-    const operationLinks = ['cluster', 'monitor/backup-and-restore', 'imports', 'monitor/queries', 'monitor/queries'];
+    const operationLinks = ['cluster', 'monitor/backup-and-restore', 'import', 'monitor/queries', 'monitor/queries'];
 
     // When, I click on each operation link
     operationLinks.forEach((link, index) => {

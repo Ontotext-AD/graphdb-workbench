@@ -6,7 +6,7 @@ import {OperationType} from '../../../models/monitoring/operation-type';
 const OPERATION_TYPE_SORT_ORDER = {
   [OperationType.CLUSTER_HEALTH]: 0,
   [OperationType.BACKUP_AND_RESTORE]: 1,
-  [OperationType.IMPORTS]: 2,
+  [OperationType.IMPORT]: 2,
   [OperationType.QUERIES]: 3,
   [OperationType.UPDATES]: 4
 };
