@@ -24,6 +24,20 @@ export class AgentFormModel {
          * @private
          */
         this._model = data && data.model || 'gpt-4o';
+
+        /**
+         * @type {number}
+         * @private
+         */
+        this._contextSize = data && data.contextSize;
+
+        /**
+         * Used in case the user wants to revert the context size to the original one.
+         * @type {number}
+         * @private
+         */
+        this._contextSizeCopy = data && data.contextSize;
+
         /**
          * @type {NumericRangeModel}
          * @private
@@ -108,6 +122,7 @@ export class AgentFormModel {
             name: this._name,
             repositoryId: this._repositoryId,
             model: this._model,
+            contextSize: this._contextSize,
             temperature: this._temperature.value,
             topP: this._topP.value,
             seed: this._seed,
@@ -155,6 +170,22 @@ export class AgentFormModel {
 
     set model(value) {
         this._model = value;
+    }
+
+    get contextSize() {
+        return this._contextSize;
+    }
+
+    set contextSize(value) {
+        this._contextSize = value;
+    }
+
+    get contextSizeCopy() {
+        return this._contextSizeCopy;
+    }
+
+    set contextSizeCopy(value) {
+        this._contextSizeCopy = value;
     }
 
     get temperature() {

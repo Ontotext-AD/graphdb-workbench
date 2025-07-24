@@ -32,10 +32,7 @@ describe('TTYG edit an agent', () => {
         cy.wait('@get-agent-list');
         cy.wait('@get-chat');
         // When I select an agent that don't have activated additional extraction method
-        TTYGViewSteps.expandAgentsSidebar();
-        TTYGViewSteps.openAgentsMenu();
-        TTYGViewSteps.selectAgent(0);
-        TTYGViewSteps.editCurrentAgent();
+        TTYGViewSteps.openAgentSettingsModalForAgent(0);
 
         // Then I expect that the iri discovery checkbox is not checked
         TtygAgentSettingsModalSteps.getIriDiscoverySearchCheckbox().should('not.be.checked');
@@ -65,10 +62,7 @@ describe('TTYG edit an agent', () => {
         TTYGViewSteps.visit();
         cy.wait('@get-agent-list');
         // When I select an agent that don't have activated additional extraction method
-        TTYGViewSteps.expandAgentsSidebar();
-        TTYGViewSteps.openAgentsMenu();
-        TTYGViewSteps.selectAgent(0);
-        TTYGViewSteps.editCurrentAgent();
+        TTYGViewSteps.openAgentSettingsModalForAgent(0);
 
         // Then I expect that the autocomplete iri discovery checkbox is not checked
         TtygAgentSettingsModalSteps.getAutocompleteSearchCheckbox().should('not.be.checked');
@@ -114,10 +108,7 @@ describe('TTYG edit an agent', () => {
         TTYGViewSteps.visit();
         cy.wait('@get-agent-list');
         // When I select an agent
-        TTYGViewSteps.expandAgentsSidebar();
-        TTYGViewSteps.openAgentsMenu();
-        TTYGViewSteps.selectAgent(0);
-        TTYGViewSteps.editCurrentAgent();
+        TTYGViewSteps.openAgentSettingsModalForAgent(0);
 
         // Then I should see the External integration configuration button
         TtygAgentSettingsModalSteps.getExtIntegrationConfigBtn().should('be.visible');
@@ -141,5 +132,38 @@ describe('TTYG edit an agent', () => {
             .then((val) => {
                 expect(val).to.equal('http://user-pc:7200/rest/llm/ttyg/asst_G8EtHyT8kAGeDmCa3Nh6y74v/dify');
             });
+    });
+
+    it('should show Context size if not openai-assistants API', () => {
+        // Open TTYG page and select first agent
+        TTYGViewSteps.visit();
+        TTYGStubs.stubForApiType('default');
+        cy.wait('@get-agent-list');
+        TTYGViewSteps.openAgentSettingsModalForAgent(0);
+
+        // Then I should see the Context size field
+        TtygAgentSettingsModalSteps.getContextSizeField().should('be.visible');
+        // When I clear the value
+        TtygAgentSettingsModalSteps.clearContextSize();
+        // And click another field
+        TtygAgentSettingsModalSteps.clickLLMModelField();
+        // Then the error for required should appear
+        TtygAgentSettingsModalSteps.getContextSizeError().should('be.visible');
+        // When I type a value
+        TtygAgentSettingsModalSteps.enterContextSize('120000');
+        // Then the error disappears
+        TtygAgentSettingsModalSteps.getContextSizeError().should('not.exist');
+        // I should be allowed to reset the value of the Context size
+        TtygAgentSettingsModalSteps.resetContextSizeValue();
+    });
+
+    it('should NOT show Context size if openai-assistants API', () => {
+        // Open TTYG page and select first agent
+        TTYGViewSteps.visit();
+        TTYGStubs.stubForApiType('assistants');
+        cy.wait('@get-agent-list');
+        TTYGViewSteps.openAgentSettingsModalForAgent(0);
+        // Then I should see the Context size field
+        TtygAgentSettingsModalSteps.getContextSizeField().should('not.exist');
     });
 });

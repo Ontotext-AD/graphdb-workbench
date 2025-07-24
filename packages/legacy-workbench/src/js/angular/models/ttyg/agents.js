@@ -33,6 +33,14 @@ export class AgentModel {
          * @private
          */
         this._model = data.model;
+
+        /**
+         *
+         * @type {number}
+         * @private
+         */
+        this._contextSize = data.contextSize;
+
         /**
          * @type {number}
          * @private
@@ -117,6 +125,14 @@ export class AgentModel {
 
     set model(value) {
         this._model = value;
+    }
+
+    get contextSize() {
+        return this._contextSize;
+    }
+
+    set contextSize(value) {
+        this._contextSize = value;
     }
 
     get temperature() {
