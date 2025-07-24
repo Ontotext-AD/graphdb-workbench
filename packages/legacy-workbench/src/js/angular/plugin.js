@@ -42,15 +42,6 @@ PluginRegistry.add('main.menu', {
                 guideSelector: 'menu-lab',
                 testSelector: 'menu-lab',
                 children: []
-            },
-            {
-                label: 'NewView',
-                labelKey: 'menu.newview',
-                href: 'new-view',
-                order: 1001,
-                role: 'IS_AUTHENTICATED_FULLY',
-                icon: "fa fa-sparkles",
-                children: []
             }
         ]
     }

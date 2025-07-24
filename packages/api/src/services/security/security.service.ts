@@ -59,8 +59,8 @@ export class SecurityService implements Service {
    *
    * @returns `true` if password login is enabled; `undefined` if no config is present.
    */
-  isPasswordLoginEnabled(): boolean | undefined {
-    return this.securityContextService.getSecurityConfig()?.passwordLoginEnabled;
+  isPasswordLoginEnabled(): boolean {
+    return !!this.securityContextService.getSecurityConfig()?.passwordLoginEnabled;
   }
 
   /**
@@ -68,8 +68,8 @@ export class SecurityService implements Service {
    *
    * @returns `true` if OpenID is enabled; `undefined` if no config is present.
    */
-  isOpenIDEnabled(): boolean | undefined {
-    return this.securityContextService.getSecurityConfig()?.openIdEnabled;
+  isOpenIDEnabled(): boolean {
+    return !!this.securityContextService.getSecurityConfig()?.openIdEnabled;
   }
 
   /**
@@ -85,14 +85,11 @@ export class SecurityService implements Service {
   login(username: string, password: string): Promise<AuthenticatedUser> {
     return this.securityRestService.login(username, password)
       .then((response: HttpResponse<AuthenticatedUser>) => {
-        const authHeader = response.headers['authorization'];
+        const authHeader = response.headers.get('authorization');
         if (authHeader) {
           this.authStorageService.setAuthToken(authHeader);
         }
-        return response.data;
-      })
-      .then((data)=> {
-        const authUser = MapperProvider.get(AuthenticatedUserMapper).mapToModel(data);
+        const authUser = MapperProvider.get(AuthenticatedUserMapper).mapToModel(response.body);
         this.securityContextService.updateAuthenticatedUser(authUser);
         return authUser;
       });

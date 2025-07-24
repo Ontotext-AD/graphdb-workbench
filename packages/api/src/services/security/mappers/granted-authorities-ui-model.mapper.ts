@@ -3,14 +3,18 @@ import {Mapper} from '../../../providers/mapper/mapper';
 import {Authority} from '../../../models/security/authority';
 
 /**
- * Mapper class for converting Authority arrays to AuthorityList models.
+ * Mapper for converting an array of authority strings into an AuthorityList model.
+ *
+ * This class handles suffix-delimited authorities (e.g. "READ_REPO_ABC:GRAPHQL"),
+ * extracting repository-specific GraphQL rights and including both the base and UI-specific authorities.
  */
 export class GrantedAuthoritiesUiModelMapper extends Mapper<AuthorityList> {
   /**
-   * Maps an array of Authority objects to a UI AuthorityList model.
+   * Transforms a list of authority identifiers into a UI AuthorityList  model.
    *
-   * @param data - An array of Authority objects to be mapped into an AuthorityList.
-   * @returns A new AuthorityList instance containing the provided authorities.
+   * @param data - An array of authority identifiers (string codes) to map.
+   *               May include suffix-delimited entries for repository GraphQL rights.
+   * @returns An AuthorityList containing unique authority codes, including derived GraphQL UI authorities.
    */
   mapToModel(data: string[]): AuthorityList {
     const result: string[] = [];

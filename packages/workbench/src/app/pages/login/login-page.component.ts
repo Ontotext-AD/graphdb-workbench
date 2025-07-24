@@ -1,5 +1,12 @@
-import {Component, CUSTOM_ELEMENTS_SCHEMA, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
+import {Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit} from '@angular/core';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  ValidationErrors,
+  ValidatorFn,
+  Validators
+} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {TranslocoPipe, TranslocoService} from "@jsverse/transloco";
 import {
@@ -20,36 +27,37 @@ import {CommonModule} from "@angular/common";
     CommonModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  templateUrl: './login.component.html',
-  styleUrl: './login.component.scss'
+  templateUrl: './login-page.component.html',
+  styleUrl: './login-page.component.scss'
 })
-export class LoginComponent implements OnInit {
+export class LoginPageComponent implements OnInit {
   private readonly toastrService = ServiceProvider.get(OntoToastrService);
   private readonly securityService =  ServiceProvider.get(SecurityService);
   private readonly authenticationService =  ServiceProvider.get(AuthenticationService);
 
-  loginForm!: FormGroup;
+  private readonly fb = inject(FormBuilder);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly translocoService = inject(TranslocoService);
+
+  loginForm: FormGroup;
   wrongCredentials = false;
   error = false;
-  returnUrl!: string;
+  returnUrl: string;
 
-  constructor(
-    private readonly fb: FormBuilder,
-    private readonly route: ActivatedRoute,
-    private readonly router: Router,
-    private readonly translocoService: TranslocoService
-  ) {}
-
-  ngOnInit(): void {
-    this.initializeForm();
-    this.handleQueryParams();
-  }
-
-  private initializeForm(): void {
+  constructor() {
     this.loginForm = this.fb.group({
       username: ['', Validators.required],
       password: ['', Validators.required]
+    },
+    {
+      validators: this.wrongCredentialsValidator()
     });
+    this.returnUrl = '/';
+  }
+
+  ngOnInit(): void {
+    this.handleQueryParams();
   }
 
   private handleQueryParams(): void {
@@ -93,6 +101,12 @@ export class LoginComponent implements OnInit {
           this.toastrService.error(err.message, err.status);
         }
     });
+  }
+
+  private wrongCredentialsValidator(): ValidatorFn {
+    return (): ValidationErrors | null => {
+      return this.wrongCredentials ? { wrongCredentials: true } : null;
+    };
   }
 
   loginWithOpenID(): void {

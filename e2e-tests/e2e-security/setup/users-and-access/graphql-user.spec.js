@@ -59,6 +59,10 @@ describe('GraphQL-only User – Playground Access & Mutation Restriction', () =>
 
         // Log in as GraphQL-only user
         LoginSteps.loginWithUser(gqlUsername, testPassword);
+
+        // The repository is set
+        RepositorySteps.verifyRepositoryIsSelected(repositoryId);
+
         // Verify only the assigned repository appears in endpoints
         GraphqlPlaygroundSteps.visit();
         GraphqlPlaygroundSteps.getView().should('be.visible');
@@ -93,6 +97,9 @@ describe('GraphQL-only User – Playground Access & Mutation Restriction', () =>
 
         // Log in as the new user
         LoginSteps.loginWithUser(gqlUsername, testPassword);
+
+        // The repository is set
+        RepositorySteps.verifyRepositoryIsSelected(repositoryId);
 
         // Visit GraphQL Playground
         GraphqlPlaygroundSteps.visit();

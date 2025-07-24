@@ -6,9 +6,9 @@ import {Mapper} from '../../../providers/mapper/mapper';
  */
 export class AuthorityListMapper extends Mapper<AuthorityList> {
   /**
-   * Maps an array of Authority objects to an AuthorityList model.
+   * Maps an array of Authority strings to an AuthorityList model.
    *
-   * @param data - An array of Authority objects to be mapped into an AuthorityList.
+   * @param data - An array of Authority strings to be mapped into an AuthorityList.
    * @returns A new AuthorityList instance containing the provided authorities.
    */
   mapToModel(data: string[]): AuthorityList {

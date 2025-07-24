@@ -4,10 +4,10 @@ export class LoginSteps {
     }
 
     static loginWithUser(username, password) {
-        cy.get('#wb-login').should('be.visible');
-        cy.get('input[formControlName="username"]').type(username);
-        cy.get('input[formControlName="password"]').type(password);
-        cy.get('button[type="submit"]').click();
+        cy.get('.login-form').should('be.visible');
+        cy.getByTestId('username-input').type(username);
+        cy.getByTestId('password-input').type(password);
+        cy.getByTestId('submit-btn').click();
     }
 
     static logout() {

@@ -114,6 +114,20 @@ export class HttpService {
    * @returns A Promise that resolves with the response data of type T, or is rejected with an error if the request fails.
    */
   private request<T>(url: string, method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH', options: HttpOptions = {}): Promise<T> {
+    const {fullUrl, headers} = this.getRequestConfig(url, options);
+
+    return this.executeRequest(new HttpRequest({url: fullUrl, method, headers, body: options.body}))
+      .then((response) => {
+        if (!response.ok) {
+          return Promise.reject(response);
+        }
+        const isJson = this.hasValidJson(response);
+        return (isJson ? response.json() : Promise.resolve());
+      })
+      .finally(() => this.eventEmitter.emit({NAME: HTTP_REQUEST_DONE_EVENT, payload: undefined}));
+  }
+
+  private getRequestConfig(url: string, options: HttpOptions) {
     const queryString = this.buildQueryParams(options.params);
     const fullUrl = `${url}${queryString ? `?${queryString}` : ''}`;
     const headers = {
@@ -121,26 +135,19 @@ export class HttpService {
       Accept: 'application/json, text/plain, */*',
       ...options.headers,
     };
+    return {fullUrl, headers};
+  }
 
-    return this.interceptorService.preProcess(new HttpRequest({url: fullUrl, method, headers, body: options.body}))
-      .then((request) => {
-        return fetch(request.url, {
+  private executeRequest(request: HttpRequest): Promise<Response> {
+    return this.interceptorService.preProcess(request)
+      .then((request) =>
+        fetch(request.url, {
           method: request.method,
           headers: request.headers as HeadersInit,
           body: request.body ? JSON.stringify(request.body) : null,
-        });
-      })
-      .then((response) => {
-        return this.interceptorService.postProcess(response);
-      })
-      .then((response) => {
-        if (!response.ok) {
-          return Promise.reject(response);
-        }
-        const isJson = this.hasValidJson(response);
-        return (isJson ? response.json() : Promise.resolve()) as Promise<T>;
-      })
-      .finally(() => this.eventEmitter.emit({NAME: HTTP_REQUEST_DONE_EVENT, payload: undefined}));
+        })
+      )
+      .then((response) => this.interceptorService.postProcess(response));
   }
 
   private hasValidJson(response: Response) {
@@ -167,48 +174,27 @@ export class HttpService {
     method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH',
     options: HttpOptions = {}
   ): Promise<HttpResponse<T>> {
-    const queryString = this.buildQueryParams(options.params);
-    const fullUrl = `${url}${queryString ? `?${queryString}` : ''}`;
-    const headers = {
-      'Content-Type': 'application/json',
-      Accept: 'application/json, text/plain, */*',
-      ...options.headers,
-    };
+    const {fullUrl, headers} = this.getRequestConfig(url, options);
 
-    return this.interceptorService
-      .preProcess(new HttpRequest({ url: fullUrl, method, headers, body: options.body }))
-      .then((request) =>
-        fetch(request.url, {
-          method: request.method,
-          headers: request.headers as HeadersInit,
-          body: request.body ? JSON.stringify(request.body) : null,
-        })
-      )
-      .then((response) => this.interceptorService.postProcess(response))
+    return this.executeRequest(new HttpRequest({url: fullUrl, method, headers, body: options.body}))
       .then((response) => {
         if (!response.ok) {
           return Promise.reject(response);
         }
         const isJson = this.hasValidJson(response);
         return {
-          json: (isJson ? response.json() : Promise.resolve()),
+          json: isJson ? response.json() : Promise.resolve(),
           response
         };
       })
-      .then((data) => {
-        const headersObj: Record<string, string> = {};
-        data.response.headers.forEach((value, key) => {
-          headersObj[key] = value;
-        });
-        return {
-          data: data.json as T,
-          status: data.response.status,
-          headers: headersObj,
-        } as HttpResponse<T>;
+      .then(({response, json}) => {
+        return Object.assign(response, {
+          json: (): Promise<T> => Promise.resolve(json as T),
+        }) as HttpResponse<T>;
       })
-      .finally(() =>
-        this.eventEmitter.emit({ NAME: HTTP_REQUEST_DONE_EVENT, payload: undefined })
-      );
+      .finally(() => {
+        this.eventEmitter.emit({NAME: HTTP_REQUEST_DONE_EVENT, payload: undefined});
+      });
   }
 
   /**
