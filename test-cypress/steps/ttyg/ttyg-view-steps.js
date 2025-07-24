@@ -106,6 +106,13 @@ export class TTYGViewSteps {
         return this.getToggleChatsSidebarButton().click();
     }
 
+    static openAgentSettingsModalForAgent(index) {
+        TTYGViewSteps.expandAgentsSidebar();
+        TTYGViewSteps.openAgentsMenu();
+        TTYGViewSteps.selectAgent(index);
+        TTYGViewSteps.editCurrentAgent();
+    }
+
     static getCreateChatButton() {
         return this.getChatsSidebar().find('.create-chat-btn');
     }
