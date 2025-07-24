@@ -48,7 +48,7 @@
         </div>
 
         <div class="form-row clearfix">
-            <div class="form-group llm-model col-md-4">
+            <div class="form-group llm-model" ng-class="{'col-md-3': showContextSize, 'col-md-4': !showContextSize}">
                 <label for="model">{{'ttyg.agent.create_agent_modal.form.model.label' | translate}}</label>
                 <help-info-popover help-info="helpInfoForModel"></help-info-popover>
                 <input type="text" class="form-control" id="model" name="model" ng-model="agentFormModel.model" guide-selector="model"
@@ -58,7 +58,35 @@
                     {{'required.field' | translate}}
                 </div>
             </div>
-            <div class="form-group temperature col-md-4">
+            <div ng-if="showContextSize" class="form-group context-size col-md-3">
+                <div class="context-size-wrapper">
+                    <label for="contextSize">
+                        <span uib-popover="{{'ttyg.agent.create_agent_modal.form.context_size.tooltip' | translate}}"
+                              popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.context_size.label' | translate}}</span>
+                    </label>
+
+                    <button type="button"
+                            class="btn btn-link btn-sm reset-context-size-btn"
+                            ng-click="onRestoreDefaultContextSize()"
+                            gdb-tooltip="{{'ttyg.agent.create_agent_modal.form.context_size.restore_default_btn.tooltip' | translate}}">
+                        <i class="fa fa-arrow-rotate-left"></i>
+                    </button>
+                    <div class="input-with-unit">
+                        <input type="text" id="contextSize" name="contextSize"
+                               class="form-control"
+                               ng-model="agentFormModel.contextSize"
+                               required autocomplete="off">
+                        <span class="token-unit-label">
+                          {{'ttyg.agent.create_agent_modal.form.context_size.field_addon' | translate}}
+                        </span>
+                    </div>
+                </div>
+                <div class="alert alert-danger"
+                     ng-if="agentSettingsForm.contextSize.$touched && agentSettingsForm.contextSize.$invalid">
+                    {{'required.field' | translate}}
+                </div>
+            </div>
+            <div class="form-group temperature" ng-class="{'col-md-3': showContextSize, 'col-md-4': !showContextSize}">
                 <label for="temperature">
                     <span uib-popover="{{'ttyg.agent.create_agent_modal.form.temperature.tooltip' | translate}}"
                           popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.temperature.label' | translate}}</span>
@@ -76,7 +104,7 @@
                        ng-change="onTemperatureChange()"
                        ng-model="agentFormModel.temperature.value"/>
             </div>
-            <div class="form-group top-p col-md-4">
+            <div class="form-group top-p" ng-class="{'col-md-3': showContextSize, 'col-md-4': !showContextSize}">
                 <label for="topP" uib-popover="{{'ttyg.agent.create_agent_modal.form.top_p.tooltip' | translate}}"
                        popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.top_p.label' |
                 translate}}</label>
