@@ -2,7 +2,7 @@ import {Stubs} from "../stubs";
 
 export class TTYGStubs extends Stubs {
     static stubChatsListGet(fixture = '/ttyg/chats/get-chat-list.json', delay = 0) {
-        cy.intercept('GET', '/rest/chat/conversations', {
+        cy.intercept('GET', '/rest/ttyg/chats', {
             fixture: fixture,
             statusCode: 200,
             delay: delay
@@ -10,7 +10,7 @@ export class TTYGStubs extends Stubs {
     }
 
     static stubChatListGetError() {
-        cy.intercept('GET', '/rest/chat/conversations', {
+        cy.intercept('GET', '/rest/ttyg/chats', {
             statusCode: 500,
             response: {
                 error: 'Internal Server Error'
@@ -19,7 +19,7 @@ export class TTYGStubs extends Stubs {
     }
 
     static stubChatsListGetNoResults() {
-        cy.intercept('GET', '/rest/chat/conversations', {
+        cy.intercept('GET', '/rest/ttyg/chats', {
             fixture: '/ttyg/chats/get-chat-list-0.json',
             statusCode: 200
         }).as('get-chat-list');
@@ -34,7 +34,7 @@ export class TTYGStubs extends Stubs {
         cy.fixture('/ttyg/chats/get-chat.json').then((body) => {
             cy.intercept({
                 method: 'GET',
-                url: '/rest/chat/conversations/*'
+                url: '/rest/ttyg/chats/*'
             }, (req) => {
                 const chatId = req.url.split('/').pop();
                 const chat = body[chatId];
@@ -49,7 +49,7 @@ export class TTYGStubs extends Stubs {
     }
 
     static stubChatGet404Error() {
-        cy.intercept('GET', '/rest/chat/conversations/*', {
+        cy.intercept('GET', '/rest/ttyg/chats/*', {
             statusCode: 404,
             response: {
                 error: 'Not Found'
@@ -58,28 +58,28 @@ export class TTYGStubs extends Stubs {
     }
 
     static stubChatUpdate() {
-        cy.intercept('PUT', '/rest/chat/conversations/*', {
+        cy.intercept('PUT', '/rest/ttyg/chats/*', {
             fixture: '/ttyg/chats/renamed-chat.json',
             statusCode: 200
         }).as('update-chat');
     }
 
     static stubChatDelete() {
-        cy.intercept('DELETE', '/rest/chat/conversations/*', {
+        cy.intercept('DELETE', '/rest/ttyg/chats/*', {
             fixture: '/ttyg/chats/deleted-chat.json',
             statusCode: 200
         }).as('delete-chat');
     }
 
     static stubChatExport() {
-        cy.intercept('GET', '/rest/chat/conversations/export/*', {
+        cy.intercept('GET', '/rest/ttyg/chats/export/*', {
             fixture: '/ttyg/chats/export-chat.json',
             statusCode: 200
         }).as('export-chat');
     }
 
     static stubAgentListGet(fixture = '/ttyg/agent/get-agent-list.json', delay = 0) {
-        cy.intercept('GET', '/rest/chat/agents', {
+        cy.intercept('GET', '/rest/ttyg/agents', {
             fixture: fixture,
             statusCode: 200,
             delay: delay
@@ -91,7 +91,7 @@ export class TTYGStubs extends Stubs {
     }
 
     static stubAgentGet(fixture = '/ttyg/agent/get-agent.json', delay = 0) {
-        cy.intercept('GET', '/rest/chat/agents/*', {
+        cy.intercept('GET', '/rest/ttyg/agents/*', {
             fixture: fixture,
             statusCode: 200,
             delay: delay
@@ -99,7 +99,7 @@ export class TTYGStubs extends Stubs {
     }
 
     static stubAgentListGetError() {
-        cy.intercept('GET', '/rest/chat/agents', {
+        cy.intercept('GET', '/rest/ttyg/agents', {
             statusCode: 500,
             response: {
                 error: 'Internal Server Error'
@@ -108,7 +108,7 @@ export class TTYGStubs extends Stubs {
     }
 
     static stubAgentCreate(delay = 0) {
-        cy.intercept('POST', '/rest/chat/agents', {
+        cy.intercept('POST', '/rest/ttyg/agents', {
             fixture: '/ttyg/agent/create-agent.json',
             statusCode: 200,
             delay: delay
@@ -118,7 +118,7 @@ export class TTYGStubs extends Stubs {
     static stubAgentEdit() {
         cy.intercept({
             method: 'PUT',
-            url: '/rest/chat/agents'
+            url: '/rest/ttyg/agents'
         }, (req) => {
             const requestBody = req.body;
             req.reply({
@@ -129,21 +129,21 @@ export class TTYGStubs extends Stubs {
     }
 
     static stubAgentDelete(delay = 0) {
-        cy.intercept('DELETE', '/rest/chat/agents/**', {
+        cy.intercept('DELETE', '/rest/ttyg/agents/**', {
             statusCode: 200,
             delay: delay
         }).as('delete-agent');
     }
 
     static stubAgentDefaultsGet() {
-        cy.intercept('GET', '/rest/chat/agents/default', {
+        cy.intercept('GET', '/rest/ttyg/agents/default', {
             fixture: '/ttyg/agent/get-agent-defaults.json',
             statusCode: 200
         }).as('get-agent-defaults');
     }
 
     static stubAnswerQuestion(fixture = '/ttyg/chats/ask-question.json') {
-        cy.intercept('POST', '/rest/chat/conversations', {
+        cy.intercept('POST', '/rest/ttyg/chats', {
             fixture,
             statusCode: 200
         }).as('get-agent-defaults');
@@ -153,7 +153,7 @@ export class TTYGStubs extends Stubs {
         cy.fixture(fixture).then((fixtureData) => {
             const today = Math.floor(Date.now() / 1000) + '';
             const body = JSON.stringify(fixtureData).replace(/"creationDate"/g, today);
-            cy.intercept('POST', '/rest/chat/conversations', {
+            cy.intercept('POST', '/rest/ttyg/chats', {
                 statusCode: 200,
                 body: JSON.parse(body)
             }).as('create-chat');
@@ -162,7 +162,7 @@ export class TTYGStubs extends Stubs {
     }
 
     static stubExplainResponse(fixture = '/ttyg/chats/explain-response-1.json') {
-        cy.intercept('POST', 'rest/chat/conversations/explain', {
+        cy.intercept('POST', 'rest/ttyg/chats/explain', {
             fixture,
             statusCode: 200
         }).as('explain-response');

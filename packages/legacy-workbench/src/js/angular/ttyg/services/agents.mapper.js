@@ -175,7 +175,7 @@ export const agentModelMapper = (data, localRepositoryIds) => {
         temperature: data.temperature,
         topP: data.topP,
         seed: data.seed,
-        instructions: agentInstructionsMapper(data.instructions),
+        instructions: agentInstructionsMapper(data.assistantsInstructions),
         assistantExtractionMethods: extractionMethodsMapper(data.assistantExtractionMethods),
         additionalExtractionMethods: additionalExtractionMethodsMapper(data.additionalExtractionMethods),
         compatibility: data.compatibility,
@@ -186,6 +186,7 @@ const extractionMethodsMapper = (data) => {
     if (!data) {
         return;
     }
+
     return data.map((extractionMethod) => extractionMethodMapper(extractionMethod));
 };
 
@@ -193,6 +194,7 @@ const extractionMethodMapper = (data) => {
     if (!data) {
         return;
     }
+
     return new ExtractionMethodModel({
         method: data.method,
         ontologyGraph: data.ontologyGraph,
@@ -204,12 +206,13 @@ const extractionMethodMapper = (data) => {
         queryTemplate: data.queryTemplate,
         retrievalConnectorInstance: data.retrievalConnectorInstance
     });
-};
+}
 
 const additionalExtractionMethodsMapper = (data) => {
     if (!data) {
         return;
     }
+
     return data.map((additionalExtractionMethod) => additionalExtractionMethodMapper(additionalExtractionMethod));
 };
 
@@ -227,7 +230,7 @@ const additionalExtractionMethodMapper = (data) => {
             method: data.method
         });
     }
-};
+}
 
 const agentInstructionsMapper = (data) => {
     if (!data) {
