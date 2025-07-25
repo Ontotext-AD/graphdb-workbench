@@ -33,6 +33,19 @@ export class AgentModel {
          * @private
          */
         this._model = data.model;
+
+        /**
+         *
+         * @type {number}
+         * @private
+         */
+        this._contextSize = data.contextSize;
+
+        /**
+         * The API used
+         * @private {string}
+         */
+        this._api = data.api;
         /**
          * @type {number}
          * @private
@@ -119,6 +132,22 @@ export class AgentModel {
         this._model = value;
     }
 
+    get contextSize() {
+        return this._contextSize;
+    }
+
+    set contextSize(value) {
+        this._contextSize = value;
+    }
+
+    get api() {
+        return this._api;
+    }
+
+    set api(value) {
+        this._api = value;
+    }
+
     get temperature() {
         return this._temperature;
     }
@@ -173,6 +202,10 @@ export class AgentModel {
     get isCompatible() {
         return this._isCompatible;
     }
+}
+
+export const LLMApi = {
+    ASSISTANTS_API: 'openai-assistants'
 }
 
 export class AgentInstructionsModel {

@@ -1,5 +1,5 @@
 import {decodeHTML} from "../../../../app";
-import {AdditionalExtractionMethod, ExtractionMethod} from "../../models/ttyg/agents";
+import {AdditionalExtractionMethod, ExtractionMethod, LLMApi} from "../../models/ttyg/agents";
 import 'angular/core/services/similarity.service';
 import 'angular/core/services/connectors.service';
 import 'angular/core/services/ttyg.service';
@@ -178,6 +178,12 @@ function AgentSettingsModalController(
      * @type {*[]}
      */
     $scope.autocompleteSuggestions = [];
+
+    /**
+     * Flag to determine if the context size field should be visible in the form.
+     * @type {boolean}
+     */
+    $scope.showContextSize = ($scope.agentFormModel.api !== LLMApi.ASSISTANTS_API);
 
     // =========================
     // Public functions
@@ -395,6 +401,13 @@ function AgentSettingsModalController(
                 toastr.error(getError(error));
             });
     }
+
+    /**
+     * Restores the default context size.
+     */
+    $scope.onRestoreDefaultContextSize = () => {
+        $scope.agentFormModel.contextSize = $scope.agentFormModel.contextSizeCopy;
+    };
 
     /**
      * Restores the default system instructions.
