@@ -7,6 +7,7 @@ import {SecurityContextService} from './security-context.service';
 import {Repository} from '../../models/repositories';
 import {RepositoryService, RepositoryStorageService} from '../repository';
 import {RoutingService} from '../routing/routing.service';
+import {SecurityService} from './security.service';
 
 /**
  * Service responsible for handling authentication-related operations.
@@ -14,9 +15,20 @@ import {RoutingService} from '../routing/routing.service';
 export class AuthenticationService implements Service {
   private readonly repositoryService = ServiceProvider.get(RepositoryService);
   private readonly securityContextService = ServiceProvider.get(SecurityContextService);
+  private readonly securityService = ServiceProvider.get(SecurityService);
 
-  login(): string {
-    return 'Authentication.login from the API';
+  /**
+   * Authenticates the user with username and password.
+   *
+   * Stores the auth token (if returned), updates the security context
+   * with the mapped user, and returns the authenticated user model.
+   *
+   * @param username - The username of the user.
+   * @param password - The password of the user.
+   * @returns A Promise that resolves to the authenticated `AuthenticatedUser` model.
+   */
+  login(username: string, password: string): Promise<AuthenticatedUser> {
+    return this.securityService.login(username, password);
   }
 
   /**

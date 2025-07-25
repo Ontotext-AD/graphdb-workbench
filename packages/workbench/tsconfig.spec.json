@@ -7,7 +7,8 @@
       "jest"
     ],
     "paths": {
-      "@ontotext/workbench-api": ["../api/dist/ontotext-workbench-api.d.ts"]
+      "@ontotext/workbench-api": ["../api/dist/ontotext-workbench-api.d.ts"],
+      "@ontotext/security-module": ["../security-module/dist/ontotext-security-module.d.ts"]
     },
   },
   "include": [

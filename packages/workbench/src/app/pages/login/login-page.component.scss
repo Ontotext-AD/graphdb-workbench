@@ -1,0 +1,76 @@
+:host {
+  display: block;
+
+  .login-form {
+    margin: 4rem auto;
+  }
+
+  .card {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+    .card-body {
+      padding: 2rem;
+    }
+  }
+
+  h1 {
+    margin-bottom: 1.5rem;
+    font-size: 2.5rem;
+  }
+
+  .form-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+
+    &.has-error .input-field {
+      border: 1px solid #dc3545;
+      background-color: rgba(220, 53, 69, 0.1);
+    }
+  }
+
+  .icon-wrapper {
+    flex: none;
+    margin-right: 0.75rem;
+    font-size: 1.4rem;
+    color: #666;
+    width: 1.8rem;
+    text-align: center;
+  }
+
+  .input-field {
+    flex: 1;
+    border: 1px solid rgba(0, 0, 0, .15);
+    border-radius: 0;
+    padding: 0.75rem 0.75rem;
+    font-size: 1rem;
+    outline: none;
+
+    &:focus {
+      box-shadow: none;
+    }
+  }
+
+  .action {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 2rem;
+  }
+
+  .btn-primary {
+    background-color: #9e2b0a;
+    color: #fff;
+    border: none;
+    padding: 0.6rem 1.4rem;
+    font-size: 1rem;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: #7e2308;
+    }
+  }
+}

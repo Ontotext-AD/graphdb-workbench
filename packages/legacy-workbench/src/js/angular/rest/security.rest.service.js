@@ -13,7 +13,6 @@ const ROLES_ENDPOINT = 'rest/roles';
 
 function SecurityRestService($http) {
     return {
-        login,
         getUser,
         getAdminUser,
         getUsers,
@@ -30,16 +29,6 @@ function SecurityRestService($http) {
         getAuthenticatedUser
     };
 
-    function login(username, password) {
-        return $http({
-            method: 'POST',
-            url: LOGIN_ENDPOINT,
-            data: {
-                username,
-                password
-            }
-        });
-    }
 
     function getUser(username) {
         return $http.get(`${SECURITY_USER_ENDPOINT}/${fixedEncodeURIComponent(username)}`);

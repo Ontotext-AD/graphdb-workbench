@@ -43,6 +43,8 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             this.updateReturnUrl = () => {
                 if ($location.url().indexOf('/login') !== 0) {
                     $rootScope.returnToUrl = $location.url();
+                } else {
+                    $rootScope.returnToUrl = '';
                 }
             };
 
@@ -66,12 +68,22 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 // remember where we were so we can return there
                 jwtAuth.updateReturnUrl();
 
-                $location.path('/login');
-                if (noaccess) {
-                    $location.search('noaccess');
-                } else if (expired) {
-                    $location.search('expired');
+                const params = {};
+                if ($rootScope.returnToUrl) {
+                    params.r = encodeURIComponent($rootScope.returnToUrl);
                 }
+
+                if (noaccess) {
+                    params.noaccess = true;
+                }
+
+                if (expired) {
+                    params.expired = true;
+                }
+
+                $location
+                    .path('/login')
+                    .search(params);
                 // Countering race condition. When the unauthorized interceptor catches error 401 or 409, then we must make
                 // sure that a request is made to access the login page before proceeding with the rejection of the
                 // original request. Otherwise the login page is not accessible in the context of spring security.
