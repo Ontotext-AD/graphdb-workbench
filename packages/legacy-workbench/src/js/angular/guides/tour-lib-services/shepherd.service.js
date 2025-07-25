@@ -921,20 +921,6 @@ function ShepherdService($translate, LocalStorageAdapter, LSKeys, $interpolate, 
         this._addTotalProgress(currentStep, currentStepElement);
 
         this._addTypeIcon(currentStepElement, stepDescription);
-
-        // We have some Angular bits on the elements and this is needed to make them work
-        const scope = angular.element(currentStepElement).scope();
-        // After the migration, the scope here is always undefined.
-        // This broke the "copy query to editor" functionality in the execute-sparql-query plugin.
-        // Note: The scope is used only in the execute-sparql-query plugin.
-        // TODO: To restore this functionality, it needs to be reimplemented in a way that does not depend on AngularJS.
-        if (scope) {
-            if (this._isFunction(stepDescription.onScope)) {
-                // Step definitions may want to add functions to the scope
-                stepDescription.onScope(scope);
-            }
-            setTimeout(() => scope.$apply(() => $compile(currentStepElement)(scope)));
-        }
     };
 
     this._toParagraph = (text, textClass) => {

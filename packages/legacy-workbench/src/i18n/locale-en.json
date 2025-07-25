@@ -452,10 +452,15 @@
                     "hide": "Hide advanced settings"
                 },
                 "form": {
+                    "missing_repository_id": "Repository ID must be selected",
                     "agent_name": {
                         "label": "Agent name",
                         "placeholder": "Enter а user friendly name",
                         "tooltip": "A descriptive name that helps you identify this agent."
+                    },
+                    "external_config": {
+                        "label": "External integration configuration",
+                        "tooltip": "Show URLs for the agent’s external access and integration"
                     },
                     "repository": {
                         "label": "Repository ID",
@@ -488,7 +493,6 @@
                         "label": "Full-text search",
                         "tooltip": "Answers questions by using full-text search in literals and IRIs. Performs well on open-ended questions but not so well on providing aggregations.",
                         "fts_disabled_message": "You must <a href=\"{{repositoryEditPage}}\" target=\"_blank\">enable the full-text search (FTS) index</a> to use this method.",
-                        "missing_repository_id": "Repository ID must be selected",
                         "btn": {
                             "reload": {
                                 "tooltip": "Refresh the FTS index status"
@@ -660,10 +664,6 @@
                     },
                     "confirm_repository_change_before_open_autocomplete_index": {
                         "body": "If you proceed with enabling the autocomplete index, GraphDB will open in a new tab and switch to the <b>{{repositoryId}}</b> repository."
-                    },
-                    "repository_not_selected_warning": {
-                        "title": "No repository selected",
-                        "body": "Please select a repository to proceed"
                     }
                 }
             },
@@ -701,6 +701,17 @@
                     }
                 }
             },
+            "external_integration_config_modal": {
+                "title": "Agent endpoints and external access",
+                "label": "Access {{agentName}} query methods via OpenAPI endpoints",
+                "agent_id_label": "Agent ID",
+                "query_methods": "Query methods via OpenAPI endpoints",
+                "dify_extension": "Dify extension",
+                "copy_tooltip": "Copy",
+                "agent_copied_tooltip": "Agent ID copied",
+                "openAPI_copied_tooltip": "OpenAPI endpoints link copied",
+                "dify_extension_copied_tooltip": "Dify extension link copied"
+            },
             "agent_select_menu": {
                 "no_selection_label": "Select an agent",
                 "deleted_agent": "[deleted agent]",
@@ -725,6 +736,7 @@
                     "tooltip": "Edit agent settings",
                     "tooltip_disabled": "You do not have permission to edit the agent"
                 },
+                "external_integration": "External integration",
                 "clone_agent": {
                     "label": "Clone",
                     "tooltip": "Clone Agent"

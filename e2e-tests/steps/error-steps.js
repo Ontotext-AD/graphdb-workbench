@@ -1,14 +1,11 @@
 export class ErrorSteps {
-    static getErrorElement() {
-        return cy.get('.idError');
-    }
-
-    static verifyError(errorMessage) {
-        ErrorSteps.getErrorElement().contains(errorMessage);
-    }
 
     static getRepositoryErrors() {
         return cy.get('.card.repository-errors')
+    }
+
+    static verifyError(errorMessage) {
+        ErrorSteps.getRepositoryErrors().contains(errorMessage);
     }
 
     static getNoConnectedRepoMessage() {

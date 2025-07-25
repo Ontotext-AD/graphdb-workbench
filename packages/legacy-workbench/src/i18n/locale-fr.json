@@ -451,10 +451,15 @@
                     "hide": "Masquer les paramètres avancés"
                 },
                 "form": {
+                    "missing_repository_id": "L'ID du référentiel doit être sélectionné",
                     "agent_name": {
                         "label": "Nom de l'Agent",
                         "placeholder": "Entrez un nom convivial",
                         "tooltip": "Un nom descriptif qui vous aide à identifier cet agent."
+                    },
+                    "external_config": {
+                        "label": "Configuration de l'intégration externe",
+                        "tooltip": "Afficher les URL pour l'accès externe et l'intégration de l'agent"
                     },
                     "repository": {
                         "label": "ID du dépôt",
@@ -487,7 +492,6 @@
                         "label": "Recherche en texte intégral",
                         "tooltip": "Répond aux questions en utilisant la recherche en texte intégral dans les littéraux et les IRI. Fonctionne bien sur les questions ouvertes, mais moins bien sur les agrégations.",
                         "fts_disabled_message": "Vous devez <a href=\"{{repositoryEditPage}}\" target=\"_blank\">activer l'index de recherche en texte intégral (FTS)</a> pour utiliser cette méthode.",
-                        "missing_repository_id": "L'ID du référentiel doit être sélectionné",
                         "btn": {
                             "reload": {
                                 "tooltip": "Rafraîchir l'état de l'index FTS"
@@ -659,10 +663,6 @@
                     },
                     "confirm_repository_change_before_open_autocomplete_index": {
                         "body": "Si vous continuez à activer l’index d’autocomplétion, GraphDB s'ouvrira dans un nouvel onglet et passera au dépôt <b>{{repositoryId}}</b>."
-                    },
-                    "repository_not_selected_warning": {
-                        "title": "Aucun dépôt n'est sélectionné",
-                        "body": "Veuillez sélectionner un dépôt pour continuer"
                     }
                 }
             },
@@ -700,6 +700,17 @@
                     }
                 }
             },
+            "external_integration_config_modal": {
+                "title": "Points de terminaison des agents et accès externes",
+                "label": "Accéder aux méthodes de requête {{agentName}} via les points de terminaison OpenAPI",
+                "agent_id_label": "ID d'agent",
+                "query_methods": "Méthodes de requête via les points de terminaison OpenAPI",
+                "dify_extension": "Dify l'extension",
+                "copy_tooltip": "Copie",
+                "agent_copied_tooltip": "ID d'agent copié",
+                "openAPI_copied_tooltip": "Lien vers les points de terminaison OpenAPI copié",
+                "dify_extension_copied_tooltip": "Lien d'extension Dify copié"
+            },
             "agent_select_menu": {
                 "no_selection_label": "Sélectionner un agent",
                 "deleted_agent": "[agent supprimé]",
@@ -724,6 +735,7 @@
                     "tooltip": "Paramètres de l'agent",
                     "tooltip_disabled": "Vous n'avez pas l'autorisation de modifier l'agent."
                 },
+                "external_integration": "Intégration externe",
                 "clone_agent": {
                     "label": "Cloner",
                     "tooltip": "Cloner l'agent"

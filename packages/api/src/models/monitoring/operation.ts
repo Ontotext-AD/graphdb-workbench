@@ -4,13 +4,13 @@ import {OperationType} from './operation-type';
 import {OperationGroup} from './operation-group';
 
 /** Not all operations have counts as values */
-const OPERATIONS_WITH_COUNT = [OperationType.QUERIES, OperationType.UPDATES, OperationType.IMPORTS];
+const OPERATIONS_WITH_COUNT = [OperationType.QUERIES, OperationType.UPDATES, OperationType.IMPORT];
 
 const OPERATION_TYPE_TO_HREF = {
   [OperationType.UPDATES]: 'monitor/queries',
   [OperationType.QUERIES]: 'monitor/queries',
   [OperationType.BACKUP_AND_RESTORE]: 'monitor/backup-and-restore',
-  [OperationType.IMPORTS]: 'imports',
+  [OperationType.IMPORT]: 'import',
   [OperationType.CLUSTER_HEALTH]: 'cluster'
 };
 
@@ -18,7 +18,7 @@ const OPERATION_TYPE_TO_GROUP = {
   [OperationType.QUERIES]: OperationGroup.QUERY,
   [OperationType.UPDATES]: OperationGroup.QUERY,
   [OperationType.BACKUP_AND_RESTORE]: OperationGroup.BACKUP,
-  [OperationType.IMPORTS]: OperationGroup.IMPORT,
+  [OperationType.IMPORT]: OperationGroup.IMPORT,
   [OperationType.CLUSTER_HEALTH]: OperationGroup.CLUSTER
 };
 

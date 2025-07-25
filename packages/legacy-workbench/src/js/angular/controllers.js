@@ -29,16 +29,18 @@ import {debounce} from "lodash";
 import {DocumentationUrlResolver} from "./utils/documentation-url-resolver";
 import {NamespacesListModel} from "./models/namespaces/namespaces-list";
 import {
-    RepositoryContextService,
-    EventService,
-    EventName,
-    ServiceProvider,
     ApplicationLifecycleContextService,
-    RepositoryService,
     AuthenticationService,
-    AuthenticationStorageService
+    AuthenticationStorageService,
+    COOKIE_CONSENT_CHANGED_EVENT,
+    EventName,
+    EventService,
+    RepositoryContextService,
+    RepositoryService,
+    ServiceProvider
 } from "@ontotext/workbench-api";
 import {EventConstants} from "./utils/event-constants";
+import {CookieConsent} from "./models/cookie-policy/cookie-consent";
 
 angular
     .module('graphdb.workbench.se.controllers', [
@@ -283,6 +285,22 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
                 });
         }
     });
+
+    function updateCookieConsentHandler(consentChangedEvent) {
+        const consent = CookieConsent.fromJSON(consentChangedEvent.detail);
+        TrackingService.updateCookieConsent(consent);
+    }
+
+    const subscribeToCookieConsentChanged = () => {
+        document.body.addEventListener(COOKIE_CONSENT_CHANGED_EVENT, updateCookieConsentHandler)
+        return () => document.body.removeEventListener(COOKIE_CONSENT_CHANGED_EVENT, updateCookieConsentHandler);
+    }
+
+    let cookieConsentChangedSubscription;
+    if (cookieConsentChangedSubscription) {
+        cookieConsentChangedSubscription();
+    }
+    cookieConsentChangedSubscription = subscribeToCookieConsentChanged();
 
     $scope.resumeGuide = function () {
         $rootScope.$broadcast('guideResume');
@@ -588,7 +606,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
 
     function logout() {
         $jwtAuth.clearAuthentication();
-        toastr.success('Signed out');
         if ($jwtAuth.freeAccess) {
             // if it's free access check if we still can access the current repo
             // if not, a new default repo will be set or the current repo will be unset
@@ -596,7 +613,9 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
             $jwtAuth.updateReturnUrl();
         } else if ($jwtAuth.isSecurityEnabled()) {
             // otherwise show login screen if security is on
-            $rootScope.redirectToLogin();
+            $rootScope.redirectToLogin().then(() => {
+                toastr.success('Signed out');
+            })
         }
     }
 
@@ -1149,6 +1168,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
 
     $scope.$on('$destroy', () => {
       onSelectedRepositoryChangedSubscription?.();
+      cookieConsentChangedSubscription?.();
       onAppDataLoaded();
       document.removeEventListener('click', closeActiveRepoPopoverEventHandler);
       window.removeEventListener('storage', localStoreChangeHandler);

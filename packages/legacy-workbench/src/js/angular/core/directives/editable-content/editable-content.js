@@ -63,6 +63,37 @@ function editableContent() {
                 editableDiv.html(ngModelCtrl.$viewValue || '');
             };
 
+            /**
+             * Handles paste events in the contenteditable element by inserting plain text only.
+             * Prevents the default paste behavior and manually inserts the clipboard text as plain text,
+             * preserving line breaks by converting them to <br> elements.
+             *
+             * @param {Event} event - The paste event object containing clipboard data.
+             */
+            const pasteHandler = (event) => {
+                event.preventDefault();
+
+                const text = (event.originalEvent || event).clipboardData.getData('text/plain');
+                const selection = window.getSelection();
+
+                if (!selection.rangeCount) return;
+
+                selection.deleteFromDocument();
+                const range = selection.getRangeAt(0);
+                const fragment = document.createDocumentFragment();
+                const lines = text.split('\n');
+
+                lines.forEach((line, index) => {
+                    fragment.appendChild(document.createTextNode(line));
+                    if (index < lines.length - 1) {
+                        fragment.appendChild(document.createElement('br'));
+                    }
+                });
+
+                range.insertNode(fragment);
+                selection.collapseToEnd();
+            }
+
             // =========================
             // Subscriptions
             // =========================
@@ -72,10 +103,12 @@ function editableContent() {
              */
             const removeAllSubscribers = () => {
                 editableDiv.off('blur keyup change input', updateModelValue);
+                editableDiv.off('paste', pasteHandler);
             };
 
             scope.$on('$destroy', removeAllSubscribers);
             editableDiv.on('blur keyup change input', updateModelValue);
+            editableDiv.on('paste', pasteHandler)
         }
     };
 }
