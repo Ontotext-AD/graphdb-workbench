@@ -1,5 +1,5 @@
 import {decodeHTML} from "../../../../app";
-import {AdditionalExtractionMethod, ExtractionMethod} from "../../models/ttyg/agents";
+import {AdditionalExtractionMethod, ExtractionMethod, LLMApi} from "../../models/ttyg/agents";
 import 'angular/core/services/similarity.service';
 import 'angular/core/services/connectors.service';
 import 'angular/core/services/ttyg.service';
@@ -183,7 +183,7 @@ function AgentSettingsModalController(
      * Flag to determine if the context size field should be visible in the form.
      * @type {boolean}
      */
-    $scope.showContextSize = ($scope.agentFormModel.contextSize !== null);
+    $scope.showContextSize = ($scope.agentFormModel.api !== LLMApi.ASSISTANTS_API);
 
     // =========================
     // Public functions

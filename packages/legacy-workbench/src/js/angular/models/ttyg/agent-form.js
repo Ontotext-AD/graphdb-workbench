@@ -26,6 +26,12 @@ export class AgentFormModel {
         this._model = data && data.model || 'gpt-4o';
 
         /**
+         * The API used
+         * @private {string}
+         */
+        this._api = data && data.api;
+
+        /**
          * @type {number}
          * @private
          */
@@ -170,6 +176,14 @@ export class AgentFormModel {
 
     set model(value) {
         this._model = value;
+    }
+
+    get api() {
+        return this._api;
+    }
+
+    set api(value) {
+        this._api = value;
     }
 
     get contextSize() {

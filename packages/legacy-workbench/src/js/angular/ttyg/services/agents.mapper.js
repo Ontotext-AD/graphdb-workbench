@@ -32,6 +32,7 @@ export const agentFormModelMapper = (agentModel, defaultAgentModel, operation ) 
     agentFormModel.name = agentModel.name || defaultAgentModel.name;
     agentFormModel.repositoryId = agentModel.repositoryId || defaultAgentModel.repositoryId;
     agentFormModel.model = agentModel.model || defaultAgentModel.model;
+    agentFormModel.api = defaultAgentModel.api;
     agentFormModel.contextSize = agentModel.contextSize || defaultAgentModel.contextSize;
     agentFormModel.contextSizeCopy = defaultAgentModel.contextSize;
     agentFormModel.temperature.value = agentModel.temperature !== undefined ? agentModel.temperature : defaultAgentModel.temperature;
@@ -174,7 +175,8 @@ export const agentModelMapper = (data, localRepositoryIds) => {
         // Sets the isRepositoryDeleted flag based on whether the repository ID is not in the list of repositories.
         isRepositoryDeleted: !localRepositoryIds.includes(data.repositoryId),
         model: data.model,
-        contextSize: data.api === 'openai-assistants' ? null : data.contextSize,
+        contextSize: data.contextSize,
+        api: data.api,
         temperature: data.temperature,
         topP: data.topP,
         seed: data.seed,
