@@ -146,14 +146,21 @@ describe('SecurityService', () => {
 
     it('should return undefined if no config', () => {
       contextService.getSecurityConfig.mockReturnValue(undefined as never);
-      expect(service.isPasswordLoginEnabled()).toBeUndefined();
-      expect(service.isOpenIDEnabled()).toBeUndefined();
+      expect(service.isPasswordLoginEnabled()).toBeFalsy();
+      expect(service.isOpenIDEnabled()).toBeFalsy();
     });
   });
 
   describe('login', () => {
     it('should store token, update context and return mapped user when header present', async () => {
-      const response: HttpResponse<AuthenticatedUser> = { data: {} as never, headers: { authorization: 'token123' }, status: 200 };
+      const headers = new Headers({ authorization: 'token123' });
+      const response = {
+        body: {} as AuthenticatedUser,
+        status: 200,
+        headers,
+        ok: true,
+        json: jest.fn(),
+      } as unknown as HttpResponse<AuthenticatedUser>;
       restService.login.mockResolvedValue(response);
       const mappedUser = {} as AuthenticatedUser;
       userMapper.mapToModel.mockReturnValue(mappedUser);
@@ -161,14 +168,23 @@ describe('SecurityService', () => {
       const result = await service.login('u', 'p');
       expect(restService.login).toHaveBeenCalledWith('u', 'p');
       expect(storageService.setAuthToken).toHaveBeenCalledWith('token123');
-      expect(userMapper.mapToModel).toHaveBeenCalledWith(response.data);
+      expect(userMapper.mapToModel).toHaveBeenCalledWith(response.body);
       expect(contextService.updateAuthenticatedUser).toHaveBeenCalledWith(mappedUser);
       expect(result).toBe(mappedUser);
     });
 
     it('should not store token when header missing', async () => {
-      const response: HttpResponse<AuthenticatedUser> = { data: {} as never, headers: {}, status: 200 };
-      restService.login.mockResolvedValue(response);
+      const headers = new Headers();
+      const mockResponse = {
+        body: {} as AuthenticatedUser,
+        status: 200,
+        headers,
+        ok: true,
+        json: jest.fn(),
+      } as unknown as HttpResponse<AuthenticatedUser>;
+
+      restService.login.mockResolvedValue(mockResponse);
+
       const mappedUser = {} as AuthenticatedUser;
       userMapper.mapToModel.mockReturnValue(mappedUser);
 

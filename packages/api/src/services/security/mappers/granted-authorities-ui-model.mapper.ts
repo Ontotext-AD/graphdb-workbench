@@ -1,6 +1,7 @@
 import {AuthorityList} from '../../../models/security/authority-list';
 import {Mapper} from '../../../providers/mapper/mapper';
 import {Authority} from '../../../models/security/authority';
+import {AuthoritiesUtil} from '../utils/authorities-util';
 
 /**
  * Mapper for converting an array of authority strings into an AuthorityList model.
@@ -20,25 +21,8 @@ export class GrantedAuthoritiesUiModelMapper extends Mapper<AuthorityList> {
     const result: string[] = [];
     const authorities = data ?? [];
     for (const auth of authorities) {
-      if (auth.includes(Authority.SUFFIX_DELIMITER)) {
-        // For example: "READ_REPO_ABC:GRAPHQL" or "WRITE_REPO_ABC:GRAPHQL"
-        const [oldAuth, suffix] = auth.split(Authority.SUFFIX_DELIMITER);
-        const hasRepoRights = oldAuth.startsWith(Authority.READ_REPO_PREFIX) || oldAuth.startsWith(Authority.WRITE_REPO_PREFIX);
-        if (hasRepoRights && suffix === Authority.GRAPHQL) {
-          // Use the helper to extract the repository id.
-          const repoData = this.getRepoFromAuthority(oldAuth);
-          if (repoData) {
-            const { repo } = repoData;
-            const uiAuth = Authority.GRAPHQL_PREFIX + repo;
-            if (!result.includes(oldAuth)) {
-              result.push(oldAuth);
-            }
-            if (!result.includes(uiAuth)) {
-              result.push(uiAuth);
-            }
-            continue;
-          }
-        }
+      if (this.handleRepoGraphQL(auth, result)) {
+        continue;
       }
       if (!result.includes(auth)) {
         result.push(auth);
@@ -48,16 +32,36 @@ export class GrantedAuthoritiesUiModelMapper extends Mapper<AuthorityList> {
     return new AuthorityList(result);
   }
 
-  private readonly getRepoFromAuthority = (role: string) => {
-    if (role.startsWith(Authority.READ_REPO_PREFIX)) {
-      return { prefix: Authority.READ_REPO_PREFIX, repo: role.substring(Authority.READ_REPO_PREFIX.length) };
+  /**
+   * Checks whether a given authority string has the ":GRAPHQL" suffix
+   * and appropriate repository rights, and if so adds both the base
+   * authority and its UI‑specific GraphQL variant.
+   * Returns true if this authority was processed here; false otherwise.
+   */
+  private handleRepoGraphQL(auth: string, result: string[]): boolean {
+    if (!auth.includes(Authority.SUFFIX_DELIMITER)) {
+      return false;
     }
-    if (role.startsWith(Authority.WRITE_REPO_PREFIX)) {
-      return { prefix: Authority.WRITE_REPO_PREFIX, repo: role.substring(Authority.WRITE_REPO_PREFIX.length) };
+    // For example: "READ_REPO_ABC:GRAPHQL" or "WRITE_REPO_ABC:GRAPHQL"
+    const [oldAuth, suffix] = auth.split(Authority.SUFFIX_DELIMITER);
+    const hasRepoRights = oldAuth.startsWith(Authority.READ_REPO_PREFIX) || oldAuth.startsWith(Authority.WRITE_REPO_PREFIX);
+    if (!hasRepoRights || suffix !== Authority.GRAPHQL) {
+      return false;
     }
-    if (role.startsWith(Authority.GRAPHQL_PREFIX)) {
-      return { prefix: Authority.GRAPHQL_PREFIX, repo: role.substring(Authority.GRAPHQL_PREFIX.length) };
+    // Use the helper to extract the repository id.
+    const repoData = AuthoritiesUtil.getRepoFromAuthority(oldAuth);
+    if (!repoData) {
+      return false;
     }
-    return null;
-  };
+
+    const {repo} = repoData;
+    const uiAuth = Authority.GRAPHQL_PREFIX + repo;
+    if (!result.includes(oldAuth)) {
+      result.push(oldAuth);
+    }
+    if (!result.includes(uiAuth)) {
+      result.push(uiAuth);
+    }
+    return true;
+  }
 }

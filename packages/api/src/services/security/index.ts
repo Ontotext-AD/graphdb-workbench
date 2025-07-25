@@ -6,3 +6,5 @@ export {AuthenticationStorageService} from './authentication-storage.service';
 export {SecurityService} from './security.service';
 export {SecurityContextService} from './security-context.service';
 export {OpenidConfigMapper} from './openid-config.mapper';
+export {AuthoritiesUtil} from './utils/authorities-util';
+export {GrantedAuthoritiesUiModelMapper} from './mappers/granted-authorities-ui-model.mapper';
