@@ -1,6 +1,6 @@
 import {APP_INITIALIZER} from '@angular/core';
 import {provideTransloco, TranslocoService} from '@jsverse/transloco';
-import {ServiceProvider, LanguageService, LanguageContextService, TranslationBundle} from '@ontotext/workbench-api';
+import {LanguageContextService, LanguageService, ServiceProvider, TranslationBundle} from '@ontotext/workbench-api';
 import {environment} from '../../../environments/environment';
 
 /**
@@ -24,8 +24,8 @@ const translocoInitializeProvider = {
             const languageCode = languageContextService.getSelectedLanguage() || languageService.getDefaultLanguage();
             translocoService.setTranslation(languageBundle, languageCode);
             translocoService.setActiveLang(languageCode);
+            resolve();
           }
-          resolve();
         });
       });
     };

@@ -41,7 +41,6 @@ export class LoginPageComponent implements OnInit {
   private readonly translocoService = inject(TranslocoService);
 
   loginForm: FormGroup;
-  wrongCredentials = false;
   error = false;
   returnUrl: string;
 
@@ -49,9 +48,6 @@ export class LoginPageComponent implements OnInit {
     this.loginForm = this.fb.group({
       username: ['', Validators.required],
       password: ['', Validators.required]
-    },
-    {
-      validators: this.wrongCredentialsValidator()
     });
     this.returnUrl = '/';
   }
@@ -88,6 +84,7 @@ export class LoginPageComponent implements OnInit {
 
   login(): void {
     const {username, password} = this.loginForm.value;
+    this.loginForm.setErrors({ wrongCredentials: false });
 
     this.authenticationService.login(username, password).then(() => {
       this.router.navigateByUrl(this.returnUrl);
@@ -95,18 +92,12 @@ export class LoginPageComponent implements OnInit {
       .catch((err) => {
         if (err.status === 401) {
           this.toastrService.error(this.translocoService.translate('login.errors.wrong_credentials'), this.translocoService.translate('login.error'));
-          this.wrongCredentials = true;
+          this.loginForm.setErrors({ wrongCredentials: true });
           this.loginForm.reset();
         } else {
           this.toastrService.error(err.message, err.status);
         }
     });
-  }
-
-  private wrongCredentialsValidator(): ValidatorFn {
-    return (): ValidationErrors | null => {
-      return this.wrongCredentials ? { wrongCredentials: true } : null;
-    };
   }
 
   loginWithOpenID(): void {

@@ -182,12 +182,8 @@ export class HttpService {
           return Promise.reject(response);
         }
         const isJson = this.hasValidJson(response);
-        return {
-          json: isJson ? response.json() : Promise.resolve(),
-          response
-        };
-      })
-      .then(({response, json}) => {
+        const json = isJson ? response.json() : Promise.resolve();
+
         return Object.assign(response, {
           json: (): Promise<T> => Promise.resolve(json as T),
         }) as HttpResponse<T>;

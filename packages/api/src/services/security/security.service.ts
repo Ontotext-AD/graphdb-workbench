@@ -60,7 +60,7 @@ export class SecurityService implements Service {
    * @returns `true` if password login is enabled; `undefined` if no config is present.
    */
   isPasswordLoginEnabled(): boolean {
-    return !!this.securityContextService.getSecurityConfig()?.passwordLoginEnabled;
+    return this.securityContextService.getSecurityConfig()?.passwordLoginEnabled ?? false;
   }
 
   /**
@@ -69,7 +69,7 @@ export class SecurityService implements Service {
    * @returns `true` if OpenID is enabled; `undefined` if no config is present.
    */
   isOpenIDEnabled(): boolean {
-    return !!this.securityContextService.getSecurityConfig()?.openIdEnabled;
+    return this.securityContextService.getSecurityConfig()?.openIdEnabled ?? false;
   }
 
   /**
