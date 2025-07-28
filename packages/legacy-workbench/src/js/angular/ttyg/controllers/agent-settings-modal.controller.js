@@ -379,9 +379,19 @@ function AgentSettingsModalController(
 
     /**
      * Checks the status of the autocomplete index.
+     * @param {AdditionalExtractionMethodFormModel|undefined} method - The extraction method to check the autocomplete
+     * index for. This function can be called in the visibilitychange handler, so the method might not be defined.
+     * If not provided, it will check the 'Autocomplete IRI discovery search' method from the additional extraction
+     * methods.
      */
-    $scope.checkAutocompleteIndexEnabled = () => {
-        if (!$scope.agentFormModel.repositoryId) {
+    $scope.checkAutocompleteIndexEnabled = (method) => {
+        if (!method) {
+            method = $scope.agentFormModel.additionalExtractionMethods.additionalExtractionMethods
+                .find((extractionMethod) => extractionMethod.method === AdditionalExtractionMethod.AUTOCOMPLETE_IRI_DISCOVERY_SEARCH);
+        }
+        // If the method is not selected, we don't need to check the autocomplete index status.
+        // Also, if the repository id is not set, we can't check the autocomplete index status.
+        if (method && !method.selected || !$scope.agentFormModel.repositoryId) {
             return;
         }
         const selectedRepositoryInfo = getSelectedRepositoryInfo();
@@ -704,7 +714,7 @@ function AgentSettingsModalController(
             // clear the validation status if method is deselected.
             $scope.agentSettingsForm.$setValidity('autocompleteDisabled', true);
         }
-        $scope.checkAutocompleteIndexEnabled();
+        $scope.checkAutocompleteIndexEnabled(extractionMethod);
     }
 
     const refreshValidations = (clearIndexSelection = false, clearRetrievalConnectorSelection = false) => {
