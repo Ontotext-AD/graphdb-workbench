@@ -16,6 +16,7 @@ export * from './models/toastr';
 export * from './models/rdf-search';
 export * from './models/single-spa';
 export * from './models/app-lifecycle';
+export * from './models/plugins';
 
 // Export providers for external usages.
 export * from './providers';
@@ -40,6 +41,7 @@ export * from './services/rdf-search';
 export * from './services/navigation';
 export * from './services/app-lifecycle';
 export * from './services/window';
+export * from './services/plugins';
 
 // Export utils for external usages.
 export * from './services/utils';

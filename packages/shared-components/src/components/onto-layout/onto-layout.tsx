@@ -13,7 +13,7 @@ import {
   AuthenticatedUser,
   SecurityConfig,
   Authority,
-  AuthenticationService, NavigationEndPayload, NavigationContextService, getPathName, WindowService
+  AuthenticationService, NavigationEndPayload, NavigationContextService, getPathName, WindowService,
 } from '@ontotext/workbench-api';
 import {ExternalMenuItemModel} from '../onto-navbar/external-menu-model';
 

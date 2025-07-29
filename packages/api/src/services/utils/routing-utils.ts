@@ -51,6 +51,15 @@ export function getPathName(): string {
 }
 
 /**
+ * Retrieves the current URL including the context prefix, if present.
+ *
+ * @returns {string} The current URL including the context prefix.
+ */
+export function getOrigin(): string {
+  return `${WindowService.getWindow().location.origin}${getContextName()}`;
+}
+
+/**
  * Returns the context name (base href) from the `<base>` tag in the document.
  *
  * This is usually the base path under which the app is deployed, e.g. '/graphdb/'.

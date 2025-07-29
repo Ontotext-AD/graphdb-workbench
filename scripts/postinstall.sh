@@ -5,6 +5,9 @@
 # Source the error handling script
 . scripts/error-handling.sh
 
+# Source the copy plugins script
+. scripts/copy-plugins.sh
+
 build_package() {
     local package=$1
     local description
