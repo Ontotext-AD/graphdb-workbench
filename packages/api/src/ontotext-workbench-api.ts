@@ -40,6 +40,7 @@ export * from './services/rdf-search';
 export * from './services/navigation';
 export * from './services/app-lifecycle';
 export * from './services/window';
+export * from './services/plugins';
 
 // Export utils for external usages.
 export * from './services/utils';

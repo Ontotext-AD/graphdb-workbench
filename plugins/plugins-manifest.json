@@ -1,0 +1,8 @@
+{
+  "plugins": [
+    {
+      "name": "alert-tool",
+      "entry": "/plugins/tools/plugin.js"
+    }
+  ]
+}
