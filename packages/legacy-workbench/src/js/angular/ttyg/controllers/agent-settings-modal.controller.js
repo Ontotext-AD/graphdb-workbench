@@ -743,6 +743,13 @@ function AgentSettingsModalController(
         }
     };
 
+    const refreshSliderById = (elementId, value) => {
+        const slider = document.getElementById(elementId);
+        if (slider) {
+            slider.value = value;
+        }
+    };
+
     // =========================
     // Subscriptions
     // =========================
@@ -769,6 +776,10 @@ function AgentSettingsModalController(
         }
         // Delay the validation status setting because angular form ngmodel is not present immediately
         setTimeout(setExtractionMethodValidityStatus, 0);
+        $uibModalInstance.rendered.then(() => {
+            refreshSliderById('temperatureSlider', $scope.agentFormModel.temperature.value);
+            refreshSliderById('topPSlider', $scope.agentFormModel.topP.value);
+        });
     };
     init();
 }
