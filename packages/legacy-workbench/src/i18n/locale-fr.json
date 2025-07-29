@@ -3217,6 +3217,7 @@
     "guide.step_plugin.import_rdf_file.content": "Cliquez sur le bouton <b>{{'upload.rdf.files.label'|translate}}</b> et choisissez un fichier avec le nom <b>{{resourceFile}}</b>.",
     "guide.step_plugin.create_repository.create_repository_button.content": "Cliquez sur le bouton <b>{{'repository.create.btn'|translate}}</b>.",
     "guide.step_plugin.create_repository.graph_db_repository.content": "Cliquez sur le bouton <b>{{'graphdb.repo'|translate}}</b>.",
+    "guide.step_plugin.execute-sparql-query.visual-sparql-results.content": "Cliquez sur le bouton <b>Visualiser</b>.",
     "guide.step_plugin.create_repository.repository_id.content": "Entrez l'ID du dépôt : <b>{{repositoryId}}.</b>",
     "guide.step_plugin.create_repository.save_button.content": "Cliquez sur le bouton <b>{{'common.create.btn'|translate}}</b>.",
     "guide.step_plugin.create_repository.ruleset_dropdown.content": "Choisissez l'ensemble de règles : <b>{{rulesetName}}</b>.",
