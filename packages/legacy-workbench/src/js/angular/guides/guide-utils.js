@@ -155,7 +155,7 @@ const GuideUtils = (function () {
                 const waitTime = 100;
                 const alphaCheck = setInterval(() => {
                     const alpha = scope.d3alpha;
-                    if (alpha < alphaThreshold) {
+                    if (alpha < alphaThreshold && isVisible(elementSelector)) {
                         // D3 settled below the given alpha threshold => OK
                         clearInterval(alphaCheck);
                         resolve();
@@ -363,7 +363,8 @@ const GuideUtils = (function () {
         SPARQL_EDITOR_SELECTOR: '.tabPanel.active .yasqe .CodeMirror-code',
         SPARQL_RESULTS_SELECTOR: '.tabPanel.active .yasr_results',
         SPARQL_RESULTS_ROWS_SELECTOR: '.tabPanel.active .yasr_results tbody',
-        SPARQL_RUN_BUTTON_SELECTOR: '.tabPanel.active .yasqe .yasqe_queryButton'
+        SPARQL_RUN_BUTTON_SELECTOR: '.tabPanel.active .yasqe .yasqe_queryButton',
+        SPARQL_VISUAL_BUTTON_SELECTOR: '.tabPanel.active .yasr-toolbar .explore-visual-graph-button'
     };
 
     return {
