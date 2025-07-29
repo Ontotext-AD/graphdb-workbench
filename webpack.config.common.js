@@ -134,6 +134,11 @@ module.exports = (webpackConfigEnv, argv) => {
             }),
             new CopyPlugin({
                 patterns: [
+                    // TODO: enable, when plugins are available via npm and copied to /plugins post install
+                    // {
+                    //   from: 'plugins',
+                    //   to: 'plugins'
+                    // },
                     {
                         from: 'packages/legacy-workbench/src/js/angular/plugin-registry.js',
                         to: 'plugin-registry.js'

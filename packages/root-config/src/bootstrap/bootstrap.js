@@ -38,13 +38,13 @@ const executePromises = (bootstrapFns) => {
  */
 const loadEssentials = () => {
   return Promise.all([
-    executePromises(languageBootstrap),
+    executePromises([...languageBootstrap]),
     securityBootstrap.loadSecurityConfig()
   ]);
 };
 
 const loadApplicationData = () => {
-  return settleAllPromises(repositoryBootstrap)
+  return settleAllPromises([...repositoryBootstrap])
     .then(() => settleAllPromises(bootstrapPromises))
     .then((results) => {
       const rejected = results.filter(r => r.status === 'rejected');
