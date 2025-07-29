@@ -650,7 +650,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
                     reloadPageOutsideAngularScope();
                 } else {
                     $rootScope.redirectToLogin();
-                    reloadPageOutsideAngularScope();
                 }
             }
         } else if ('ls.' + LSKeys.AUTOCOMPLETE_ENABLED === localStoreEvent.key) {
