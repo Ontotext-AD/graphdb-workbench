@@ -4,6 +4,7 @@ import {productInfoBootstrap} from './product-info/product-info-bootstrap';
 import {autoCompleteBootstrap} from './autocomplete/autocomplete';
 import {securityBootstrap} from './security/security-bootstrap';
 import {repositoryBootstrap} from './repository/repository-bootstrap';
+import {pluginsBootstrap} from './plugins/plugins-bootstrap';
 
 import {
   ServiceProvider,
@@ -16,6 +17,7 @@ import {defineCustomElements} from '../../../shared-components/loader';
 import {pluginsBootstrap} from './plugins/plugins-bootstrap';
 
 const bootstrapPromises = [
+  ...pluginsBootstrap,
   ...licenseBootstrap,
   ...productInfoBootstrap,
   ...autoCompleteBootstrap,
