@@ -4,6 +4,7 @@ import {productInfoBootstrap} from './product-info/product-info-bootstrap';
 import {autoCompleteBootstrap} from './autocomplete/autocomplete';
 import {securityBootstrap} from './security/security-bootstrap';
 import {repositoryBootstrap} from './repository/repository-bootstrap';
+import {pluginsBootstrap} from './plugins/plugins-bootstrap';
 
 import {
   ServiceProvider,
@@ -38,13 +39,13 @@ const executePromises = (bootstrapFns) => {
  */
 const loadEssentials = () => {
   return Promise.all([
-    executePromises(languageBootstrap),
+    executePromises([...pluginsBootstrap, ...languageBootstrap]),
     securityBootstrap.loadSecurityConfig()
   ]);
 };
 
 const loadApplicationData = () => {
-  return settleAllPromises(repositoryBootstrap)
+  return settleAllPromises([...repositoryBootstrap])
     .then(() => settleAllPromises(bootstrapPromises))
     .then((results) => {
       const rejected = results.filter(r => r.status === 'rejected');

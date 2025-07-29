@@ -1,0 +1,16 @@
+{
+  "plugins": [
+    {
+      "name": "alert-tool",
+      "entry": "http://localhost:9000/plugins/tools/alert-tool-plugin.js"
+    },
+    {
+      "name": "console-tool",
+      "entry": "http://localhost:9000/plugins/tools/console-tool-plugin.js"
+    },
+    {
+      "name": "core-steps",
+      "entry": "http://localhost:9000/plugins/guides/core-steps-plugin.js"
+    }
+  ]
+}
