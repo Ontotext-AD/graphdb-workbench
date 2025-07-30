@@ -6,7 +6,71 @@ const enableAllNodes = () => () => {
     $('.node-wrapper').removeClass('disable-visual-graph-node');
 };
 
+const VISUAL_GRAPH_DEFAULT_TITLE = 'visual.graph.label';
+
 PluginRegistry.add('guide.step', [
+    {
+        guideBlockName: 'visual-graph-intro',
+        getSteps: (options) => {
+            return [
+                {
+                    guideBlockName: 'read-only-element',
+                    options: {
+                        title: VISUAL_GRAPH_DEFAULT_TITLE,
+                        content: 'guide.step_plugin.visual_graph_intro.content',
+                        url: '/graphs-visualizations',
+                        elementSelector: '.graph-visualization',
+                        placement: 'left',
+                        canBePaused: false,
+                        ...options
+                    }
+                }
+            ]
+        }
+    },
+    {
+        guideBlockName: 'visual-graph-search-rdf-resources-input',
+        getSteps: (options, services) => {
+            const GuideUtils = services.GuideUtils;
+            return [
+                {
+                    guideBlockName: 'input-element',
+                    options: {
+                        title: VISUAL_GRAPH_DEFAULT_TITLE,
+                        content: 'guide.step_plugin.visual_graph_input_IRI.content',
+                        forceReload: true,
+                        url: '/graphs-visualizations',
+                        elementSelector: GuideUtils.getGuideElementSelector('graphVisualisationSearchInputNotConfigured', ' input'),
+                        class: 'visual-graph-input-iri-guide-dialog',
+                        onNextValidate: (step) => Promise.resolve(GuideUtils.validateTextInput(step.elementSelector, step.easyGraphInputText)),
+                        ...options
+                    }
+                }
+            ]
+        }
+    },
+    {
+        guideBlockName: 'visual-graph-search-rdf-resources-input-autocomplete-item',
+        getSteps: (options, services) => {
+            const GuideUtils = services.GuideUtils;
+            return [
+                {
+                    guideBlockName: 'clickable-element',
+                    options: {
+                        title: VISUAL_GRAPH_DEFAULT_TITLE,
+                        content: 'guide.step_plugin.visual_graph_show_autocomplete.content',
+                        url: '/graphs-visualizations',
+                        elementSelector: GuideUtils.getGuideElementSelector(`autocomplete-${options.iri}`),
+                        class: 'visual-graph-show-autocomplete-guide-dialog',
+                        onNextClick: (guide, step) => GuideUtils.waitFor(step.elementSelector, 3).then(() => $(step.elementSelector).trigger('click')),
+                        canBePaused: false,
+                        forceReload: true,
+                        ...options
+                    }
+                }
+            ];
+        }
+    },
     {
         guideBlockName: 'visual-graph',
         getSteps: (options, services) => {
@@ -17,38 +81,20 @@ PluginRegistry.add('guide.step', [
             return [
                 {
                     guideBlockName: 'click-main-menu',
-                    options: angular.extend({}, {
+                    options: {
                         menu: 'visual-graph',
-                        showIntro: true
-                    }, options)
+                        showIntro: true,
+                        options: {...options}
+                    }
                 }, {
-                    guideBlockName: 'input-element',
-                    options: angular.extend({}, {
-                        content: 'guide.step_plugin.visual_graph_input_IRI.content',
-                        forceReload: true,
-                        url: '/graphs-visualizations',
-                        elementSelector: GuideUtils.getGuideElementSelector('graphVisualisationSearchInputNotConfigured', ' input'),
-                        class: 'visual-graph-input-iri-guide-dialog',
-                        onNextValidate: (step) => Promise.resolve(GuideUtils.validateTextInput(step.elementSelector, step.easyGraphInputText))
-                    }, options)
+                    guideBlockName: 'visual-graph-search-rdf-resources-input',
+                    options: {...options}
                 }, {
-                    guideBlockName: 'clickable-element',
-                    options: angular.extend({}, {
-                        content: 'guide.step_plugin.visual_graph_show_autocomplete.content',
-                        url: '/graphs-visualizations',
-                        elementSelector: GuideUtils.getGuideElementSelector(`autocomplete-${options.iri}`),
-                        class: 'visual-graph-show-autocomplete-guide-dialog',
-                        onNextClick: (guide, step) => GuideUtils.waitFor(step.elementSelector, 3).then(() => $(step.elementSelector).trigger('click')),
-                        canBePaused: false,
-                        forceReload: true
-                    }, options)
+                    guideBlockName: 'visual-graph-search-rdf-resources-input-autocomplete-item',
+                    options: {...options}
                 }, {
-                    guideBlockName: 'read-only-element',
-                    options: angular.extend({}, {
-                        content: 'guide.step_plugin.visual_graph_intro.content',
-                        url: '/graphs-visualizations',
-                        elementSelector: '.graph-visualization',
-                        placement: 'left',
+                    guideBlockName: 'visual-graph-intro',
+                    options: {
                         onPreviousClick: () => {
                             RoutingUtil.navigate('/graphs-visualizations');
                             const searchInputSelector = GuideUtils.getGuideElementSelector('graphVisualisationSearchInputNotConfigured', ' input');
@@ -67,8 +113,9 @@ PluginRegistry.add('guide.step', [
                             return Promise.resolve();
                         },
                         canBePaused: false,
-                        forceReload: true
-                    }, options)
+                        forceReload: true,
+                        ...options
+                    }
                 }
             ];
         }
@@ -94,7 +141,7 @@ PluginRegistry.add('guide.step', [
             return [
                 {
                     guideBlockName: 'clickable-element',
-                    options: angular.extend({}, {
+                    options: {
                         title: 'guide.step_plugin.visual-graph-expand.title',
                         content: 'guide.step_plugin.visual-graph-expand.content',
                         url: '/graphs-visualizations',
@@ -143,8 +190,9 @@ PluginRegistry.add('guide.step', [
                                             return GuideUtils.awaitAlphaDropD3(null, $rootScope)();
                                         });
                                 });
-                        }
-                    }, options)
+                        },
+                        ...options
+                    }
                 }
             ];
         }
@@ -180,7 +228,7 @@ PluginRegistry.add('guide.step', [
             const steps = [
                 {
                     guideBlockName: 'clickable-element',
-                    options: angular.extend({}, {
+                    options: {
                         title: 'guide.step_plugin.visual-graph-properties.title',
                         content: 'guide.step_plugin.visual-graph-properties.content',
                         url: '/graphs-visualizations',
@@ -202,12 +250,13 @@ PluginRegistry.add('guide.step', [
                             GuideUtils.graphVizShowNodeInfo(step.elementSelector);
                             guide.next();
                         },
-                        beforeShowPromise: GuideUtils.awaitAlphaDropD3(elementSelector, $rootScope)
-                    }, options)
+                        beforeShowPromise: GuideUtils.awaitAlphaDropD3(elementSelector, $rootScope),
+                        ...options
+                    }
                 },
                 {
                     guideBlockName: 'read-only-element',
-                    options: angular.extend({}, {
+                    options: {
                         title: 'guide.step_plugin.visual-graph-properties-side-panel.title',
                         content: 'guide.step_plugin.visual-graph-properties-side-panel.content',
                         url: '/graphs-visualizations',
@@ -222,14 +271,15 @@ PluginRegistry.add('guide.step', [
                                     $(closeButtonSelector).trigger('click');
                                     resolve();
                                 }).catch(() => resolve());
-                        })
-                    }, options)
+                        }),
+                        ...options
+                    }
                 }
             ];
 
-            if (angular.isArray(options.focusProperties)) {
+            if (Array.isArray(options.focusProperties)) {
                 options.focusProperties.forEach((focusProperty) => {
-                    if (!angular.isObject(focusProperty)) {
+                    if (focusProperty !== 'object') {
                         focusProperty = {
                             property: focusProperty
                         };
@@ -239,7 +289,7 @@ PluginRegistry.add('guide.step', [
                         null : 'guide.step_plugin.visual-graph-properties-focus' + translationIdSuffix + '.content';
                     steps.push({
                         guideBlockName: 'read-only-element',
-                        options: angular.extend({}, {
+                        options: {
                             title: 'guide.step_plugin.visual-graph-properties-focus' + translationIdSuffix + '.title',
                             content: content,
                             url: '/graphs-visualizations',
@@ -248,8 +298,9 @@ PluginRegistry.add('guide.step', [
                             placement: 'left',
                             elementSelector: GuideUtils.getGuideElementSelector('graph-visualization-node-info-' + focusProperty.property),
                             focusProperty: focusProperty.property,
-                            extraContent: focusProperty.message
-                        }, options)
+                            extraContent: focusProperty.message,
+                            ...options
+                        }
                     });
                 });
             }
@@ -257,7 +308,7 @@ PluginRegistry.add('guide.step', [
             const closeButtonSelector = GuideUtils.getGuideElementSelector('close-info-panel');
             steps.push({
                 guideBlockName: 'clickable-element',
-                options: angular.extend({}, {
+                options: {
                     title: 'guide.step_plugin.visual-graph-properties-side-panel-close.title',
                     content: 'guide.step_plugin.visual-graph-properties-side-panel-close.content',
                     url: '/graphs-visualizations',
@@ -275,8 +326,9 @@ PluginRegistry.add('guide.step', [
                         GuideUtils.graphVizShowNodeInfo(elementSelector);
                         return GuideUtils.deferredShow(500)();
                     },
-                    onNextClick: () => GuideUtils.waitFor(closeButtonSelector, 3).then(() => $(closeButtonSelector).trigger('click'))
-                }, options)
+                    onNextClick: () => GuideUtils.waitFor(closeButtonSelector, 3).then(() => $(closeButtonSelector).trigger('click')),
+                    ...options
+                }
             });
 
             return steps;
@@ -291,7 +343,7 @@ PluginRegistry.add('guide.step', [
             return [
                 {
                     guideBlockName: 'read-only-element',
-                    options: angular.extend({}, {
+                    options: {
                         title: 'guide.step_plugin.visual-graph-link-focus.title',
                         content: 'guide.step_plugin.visual-graph-link-focus.content',
                         url: '/graphs-visualizations',
@@ -300,8 +352,9 @@ PluginRegistry.add('guide.step', [
                         elementSelector,
                         show: disableAllNodes,
                         hide: enableAllNodes,
-                        beforeShowPromise: GuideUtils.awaitAlphaDropD3(elementSelector, $rootScope)
-                    }, options)
+                        beforeShowPromise: GuideUtils.awaitAlphaDropD3(elementSelector, $rootScope),
+                        ...options
+                    }
                 }
             ];
         }
@@ -315,7 +368,7 @@ PluginRegistry.add('guide.step', [
             return [
                 {
                     guideBlockName: 'read-only-element',
-                    options: angular.extend({}, {
+                    options: {
                         title: 'guide.step_plugin.visual-graph-node-focus.title',
                         content: 'guide.step_plugin.visual-graph-node-focus.content',
                         url: '/graphs-visualizations',
@@ -332,8 +385,9 @@ PluginRegistry.add('guide.step', [
 
                             const previousStep = services.ShepherdService.getPreviousStepFromHistory(stepId);
                             return previousStep.options.initPreviousStep(services, previousStep.id);
-                        }
-                    }, options)
+                        },
+                        ...options
+                    }
                 }
             ];
         }
