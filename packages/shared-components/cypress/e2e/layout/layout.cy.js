@@ -20,14 +20,12 @@ describe('Layout', () => {
     const setupMenuIndex = 4;
     const helpMenuIndex = 6;
 
-    // When I open monitoring, setup and help menus, so submenus can be visible
-    NavbarSteps.openSubmenus(monitoringMenuIndex);
-    NavbarSteps.openSubmenus(setupMenuIndex);
-    NavbarSteps.openSubmenus(helpMenuIndex);
     // And, I enable security
     LayoutSteps.enableSecurityUserLoggedIn();
     // And I set the authenticated user role to admin
     LayoutSteps.setAdminRole();
+    // And I open setup menu so submenus can be visible
+    NavbarSteps.openSubmenus(setupMenuIndex);
 
     // Then I should see submenus for admin role
     const adminRoleSetupSubmenuItems = [
@@ -47,6 +45,8 @@ describe('Layout', () => {
     ]
     assertSubmenuItems(setupMenuIndex, adminRoleSetupSubmenuItems);
 
+    // And I open monitoring menu so submenus can be visible
+    NavbarSteps.openSubmenus(monitoringMenuIndex);
     const adminMonitoringMenuItems = [
       'Queries and Updates',
       'Backup and Restore',
@@ -54,6 +54,8 @@ describe('Layout', () => {
     ]
     assertSubmenuItems(monitoringMenuIndex, adminMonitoringMenuItems);
 
+    // And I open help menu so submenus can be visible
+    NavbarSteps.openSubmenus(helpMenuIndex);
     const adminHelpSubmenuItems = [
       'Interactive guides',
       'REST API',
@@ -66,6 +68,8 @@ describe('Layout', () => {
 
     // When I set the authenticated user role to user
     LayoutSteps.setUserRole();
+    // And I open setup menu so submenus can be visible
+    NavbarSteps.openSubmenus(setupMenuIndex);
 
     // Then I should see 9 sub menu items for Setup
     const userRoleSetupSubmenuItems = [
@@ -81,12 +85,16 @@ describe('Layout', () => {
     ]
     assertSubmenuItems(setupMenuIndex, userRoleSetupSubmenuItems);
 
+    // And I open monitoring menu so submenus can be visible
+    NavbarSteps.openSubmenus(monitoringMenuIndex);
     const userMonitoringMenuItems = [
       'Queries and Updates',
       'Backup and Restore',
     ]
     assertSubmenuItems(monitoringMenuIndex, userMonitoringMenuItems);
 
+    // And I open help menu so submenus can be visible
+    NavbarSteps.openSubmenus(helpMenuIndex);
     const userHelpSubmenuItems = [
       'Interactive guides',
       'REST API',
@@ -98,6 +106,9 @@ describe('Layout', () => {
 
     // When I set the authenticated user role to repo manager
     LayoutSteps.setRepoManagerRole();
+
+    // And I open setup menu so submenus can be visible
+    NavbarSteps.openSubmenus(setupMenuIndex);
 
     // Then I should see 10 sub menu items for Setup
     const repoManagerRoleSetupSubmenuItems = [

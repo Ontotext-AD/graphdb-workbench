@@ -214,7 +214,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                         } else {
                             that.getAuthenticatedUserFromBackend();
                         }
-                        that.broadcastSecurityInit(that.securityEnabled, that.hasExplicitAuthentication(), that.hasOverrideAuth)
+                        that.broadcastSecurityInit(that.securityEnabled, that.hasExplicitAuthentication(), that.freeAccess);
                     } else {
                         AuthTokenService.clearAuthToken();
                         const overrideAuthData = res.data.overrideAuth;
@@ -230,7 +230,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                          } else {
                             return SecurityService.getAdminUser().then(function (res) {
                                 that.principal = {username: 'admin', appSettings: res.appSettings, authorities: res.grantedAuthorities, grantedAuthoritiesUiModel: res.grantedAuthoritiesUiModel};
-                                that.broadcastSecurityInit(that.securityEnabled, true, that.hasOverrideAuth)
+                                that.broadcastSecurityInit(that.securityEnabled, true, false);
                             });
                         }
                     }

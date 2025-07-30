@@ -1,9 +1,9 @@
 import {languageBootstrap} from './language/language-bootstrap';
 import {licenseBootstrap} from './license/license-bootstrap';
-import {productInfoBootstrap} from './product-info/product-info-bootstrap';
+import {loadProductInfoLocal} from './product-info/product-info-bootstrap';
 import {autoCompleteBootstrap} from './autocomplete/autocomplete';
 import {securityBootstrap} from './security/security-bootstrap';
-import {repositoryBootstrap} from './repository/repository-bootstrap';
+import {loadRepositories, repositoryBootstrap} from './repository/repository-bootstrap';
 
 import {
   ServiceProvider,
@@ -16,7 +16,6 @@ import {defineCustomElements} from '../../../shared-components/loader';
 
 const bootstrapPromises = [
   ...licenseBootstrap,
-  ...productInfoBootstrap,
   ...autoCompleteBootstrap,
 ];
 
@@ -39,7 +38,9 @@ const executePromises = (bootstrapFns) => {
 const loadEssentials = () => {
   return Promise.all([
     executePromises(languageBootstrap),
-    securityBootstrap.loadSecurityConfig()
+    securityBootstrap.loadSecurityConfig(),
+    loadRepositories(),
+    loadProductInfoLocal()
   ]);
 };
 
