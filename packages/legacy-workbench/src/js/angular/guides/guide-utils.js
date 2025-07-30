@@ -359,6 +359,10 @@ const GuideUtils = (function () {
         return typeof elementSelector === 'function' ? elementSelector() : elementSelector;
     };
 
+    const isObject = (value) => {
+        return value !== null && typeof value === 'object' && !Array.isArray(value);
+    }
+
     const CSS_SELECTORS = {
         SPARQL_EDITOR_SELECTOR: '.tabPanel.active .yasqe .CodeMirror-code',
         SPARQL_RESULTS_SELECTOR: '.tabPanel.active .yasr_results',
@@ -396,6 +400,7 @@ const GuideUtils = (function () {
         isGuideElementChecked,
         defaultInitPreviousStep,
         getElementSelector,
+        isObject,
         CSS_SELECTORS
     };
 })();
