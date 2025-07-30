@@ -13,7 +13,8 @@ import {
   AuthenticatedUser,
   SecurityConfig,
   Authority,
-  AuthenticationService, NavigationEndPayload, NavigationContextService, getPathName, WindowService
+  AuthenticationService, NavigationEndPayload, NavigationContextService, getPathName, WindowService,
+  PluginDefinition
 } from '@ontotext/workbench-api';
 import {ExternalMenuItemModel} from '../onto-navbar/external-menu-model';
 
@@ -90,6 +91,14 @@ export class OntoLayout {
     this.subscriptions.unsubscribeAll();
   }
 
+  private getTools() {
+    const toolPlugins = window.PluginRegistry.get<PluginDefinition[]>('tools');
+    console.log('%ctools plugins', 'background: orange', toolPlugins);
+    return toolPlugins.map((plugin) => (
+      <button class="tool-button" onClick={plugin.action}>{plugin.label}</button>
+    ));
+  }
+
   render() {
     return (
       <Host class="wb-layout">
@@ -98,6 +107,7 @@ export class OntoLayout {
           <slot name="default"></slot>
         </div>
         <header class="wb-header">
+          {this.getTools()}
           {this.isVisible && <onto-header></onto-header>}
         </header>
 
