@@ -10,7 +10,8 @@ const setUserRole = (role) => {
 const setSecurity = (enabled, userLoggedIn) => {
   setSecurityConfig({
     enabled: enabled,
-    userLoggedIn: userLoggedIn
+    userLoggedIn: userLoggedIn,
+    freeAccess: {enabled: false, authorities: {hasAuthority: () => false}}
   });
 }
 

@@ -104,6 +104,7 @@ export class OntoHeader {
     this.setupTotalRepositoryFormater();
     this.subscribeToEvents();
     this.currentRoute = getCurrentRoute();
+    this.startOperationPolling();
   }
 
   render() {
@@ -147,10 +148,10 @@ export class OntoHeader {
   // Subscriptions
   // ========================
   private subscribeToEvents(): void {
+    this.subscribeToSecurityContextChange();
     this.subscribeToRepositoryListChanged();
     this.subscribeToLicenseChange();
     this.subscribeToRepositoryChange();
-    this.subscribeToSecurityContextChange();
     this.subscribeToActiveRepositoryLocationChange();
     this.subscribeToActiveRepoLoadingChange();
     this.subscribeToNavigationEnd();
@@ -178,7 +179,6 @@ export class OntoHeader {
     this.subscriptions.add(
       this.repositoryContextService.onSelectedRepositoryChanged((repository) => {
         this.currentRepository = repository;
-        this.currentRepository ? this.startOperationPolling() : this.stopOperationPolling();
         this.shouldShowSearch = this.shouldShowRdfSearch();
         this.loadNamespaces();
         this.repositoryItems = this.getRepositoriesDropdownItems();
@@ -296,10 +296,18 @@ export class OntoHeader {
   private startOperationPolling() {
     clearInterval(this.pollingInterval);
     this.pollingInterval = WindowService.getWindow().setInterval(() => {
+      if (!this.authService.isAuthenticated()) {
+        this.activeOperations = undefined;
+        return;
+      }
 
       if (this.skipUpdateActiveOperationsTimes > 0) {
         // Requested to skip this run, the number of skips is a Fibonacci sequence when errors are consecutive.
         this.skipUpdateActiveOperationsTimes--;
+        return;
+      }
+
+      if (!this.currentRepository) {
         return;
       }
 

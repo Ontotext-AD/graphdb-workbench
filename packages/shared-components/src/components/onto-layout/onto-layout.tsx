@@ -44,7 +44,7 @@ export class OntoLayout {
   @State() securityConfig: SecurityConfig;
   @State() isLowResolution = false;
   @State() hasPermission: boolean = true;
-  @State() showFooter = this.isAuthenticatedFully();
+  @State() showHeader = this.isAuthenticatedFully();
   @State() isVisible: boolean;
 
   // ========================
@@ -98,7 +98,7 @@ export class OntoLayout {
           <slot name="default"></slot>
         </div>
         <header class="wb-header">
-          {this.isVisible && <onto-header></onto-header>}
+          {this.showHeader && <onto-header></onto-header>}
         </header>
 
         <nav class="wb-navbar">
@@ -113,7 +113,7 @@ export class OntoLayout {
           <onto-permission-banner></onto-permission-banner>
         )}
         <footer class="wb-footer">
-          {this.isVisible && <onto-footer></onto-footer>}
+          <onto-footer></onto-footer>
         </footer>
         <onto-tooltip></onto-tooltip>
         <onto-toastr></onto-toastr>
@@ -218,19 +218,19 @@ export class OntoLayout {
   private updateVisibility() {
     if (!this.authenticationService.isSecurityEnabled()) {
       this.isVisible = true;
-      this.showFooter = true;
+      this.showHeader = true;
     } else {
       const hasAuth = !!this.authenticatedUser && !!this.securityConfig;
-      const isAuthenticated = this.authenticationService.isAuthenticated() || this.authenticationService.hasFreeAccess();
+      const isAuthenticated = this.authenticationService.isLoggedIn() || this.authenticationService.hasFreeAccess();
 
       this.isVisible = hasAuth && isAuthenticated;
-      this.showFooter = isAuthenticated;
+      this.showHeader = isAuthenticated;
     }
   }
 
   private isAuthenticatedFully() {
     const authService = ServiceProvider.get(AuthenticationService);
-    return !authService.isSecurityEnabled() || authService.isAuthenticated() || authService.hasFreeAccess();
+    return !authService.isSecurityEnabled() || authService.isLoggedIn() || authService.hasFreeAccess();
   }
 
   private shouldShowMenu(role: Authority): boolean {

@@ -7,7 +7,7 @@ import {
   RepositoryLocationContextService
 } from '@ontotext/workbench-api';
 
-const loadRepositories = () => {
+export const loadRepositories = () => {
   return ServiceProvider.get(RepositoryService).getRepositories()
     .then((repositories) => {
       const repositoryContextService = ServiceProvider.get(RepositoryContextService);
@@ -30,4 +30,4 @@ const loadActiveRepositoryLocation = () => {
     });
 };
 
-export const repositoryBootstrap = [loadRepositories, loadActiveRepositoryLocation];
+export const repositoryBootstrap = [loadActiveRepositoryLocation];
