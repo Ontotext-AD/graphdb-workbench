@@ -236,19 +236,16 @@ function updateNodesInfoText(nodes) {
         })
         .append('foreignObject')
         .attr('width', function (d) {
-            if (isEmpty(d.recoveryStatus)) {
-                return 0;
+            let shortMessage = '';
+            if (!isEmpty(d.recoveryStatus)) {
+                shortMessage = extractShortMessageFromNode(d);
             }
-            const shortMessage = extractShortMessageFromNode(d);
             const rect = calculateElementSizeByText(shortMessage);
             objectHeight = rect.height;
             objectWidth = rect.width;
             return objectWidth;
         })
         .attr('height', function (d) {
-            if (isEmpty(d.recoveryStatus)) {
-                return 0;
-            }
             return objectHeight;
         })
         .attr('x', function (d) {
