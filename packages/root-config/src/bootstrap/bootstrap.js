@@ -17,7 +17,6 @@ import {defineCustomElements} from '../../../shared-components/loader';
 import {pluginsBootstrap} from './plugins/plugins-bootstrap';
 
 const bootstrapPromises = [
-  ...pluginsBootstrap,
   ...licenseBootstrap,
   ...productInfoBootstrap,
   ...autoCompleteBootstrap,
