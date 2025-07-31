@@ -18,7 +18,7 @@ PluginRegistry.add('guide.step', [
                         skipPoint: true,
                         content: `guide.step_plugin.ask-ttyg-agent.input-question`,
                         class: 'input-question-guide-dialog',
-                        url: '/ttyg',
+                        url: 'ttyg',
                         elementSelector: GuideUtils.getGuideElementSelector('question-input'),
                         show: (guide) => () => {
                             const elementSelector = GuideUtils.getGuideElementSelector('contenteditable');
@@ -54,7 +54,7 @@ PluginRegistry.add('guide.step', [
                         // If button is not visible for some reason, skip the whole step
                         guideBlockName: 'info-message',
                         options: angular.extend({}, {
-                            url: '/ttyg',
+                            url: 'ttyg',
                             beforeShowPromise: (guide, currentStep) => GuideUtils.waitFor(elementSelector, 1)
                                 .then(() => {
                                     // Using a timeout because the library executes logic to show the step in a then clause which causes current and next steps to show
@@ -72,7 +72,7 @@ PluginRegistry.add('guide.step', [
                         options: angular.extend({}, {
                             content: 'guide.step_plugin.ask-ttyg-agent.explain-answer',
                             class: 'explain-answer-guide-dialog',
-                            url: '/ttyg',
+                            url: 'ttyg',
                             elementSelector,
                             disablePreviousFlow: true,
                             disableNextFlow: true
@@ -91,7 +91,7 @@ PluginRegistry.add('guide.step', [
                         // If button is not visible for some reason, skip the whole step
                         guideBlockName: 'info-message',
                         options: angular.extend({}, {
-                            url: '/ttyg',
+                            url: 'ttyg',
                             beforeShowPromise: (guide, currentStep) => GuideUtils.waitFor(elementSelector, 1)
                                 .then(() => {
                                     // Using a timeout because the library executes logic to show the step in a then clause which causes current and next steps to show
@@ -109,7 +109,7 @@ PluginRegistry.add('guide.step', [
                         options: angular.extend({}, {
                             content: 'guide.step_plugin.ask-ttyg-agent.explore-sparql',
                             class: 'explore-sparql-guide-dialog',
-                            url: '/ttyg',
+                            url: 'ttyg',
                             disablePreviousFlow: true,
                             disableNextFlow: true,
                             elementSelector
@@ -127,7 +127,7 @@ PluginRegistry.add('guide.step', [
                         // If button is not visible for some reason, skip the whole step
                         guideBlockName: 'info-message',
                         options: angular.extend({}, {
-                            url: '/ttyg',
+                            url: 'ttyg',
                             beforeShowPromise: (guide, currentStep) => {
                                 return GuideUtils.waitFor(elementSelector, 1)
                                     .then(() => {
@@ -148,7 +148,7 @@ PluginRegistry.add('guide.step', [
                         options: angular.extend({}, {
                             content: 'guide.step_plugin.ask-ttyg-agent.explain-answer-more',
                             class: 'input-agent-name-guide-dialog',
-                            url: '/ttyg',
+                            url: 'ttyg',
                             elementSelector,
                             show: (guide) => () => {
                                 // Add "click" listener to the element. Upon clicking the element is hidden and this breaks the default flow of the guide.
@@ -179,7 +179,7 @@ const getWaitForAnswerStep = (GuideUtils, options) => {
         options: angular.extend({}, {
             content: 'guide.step_plugin.ask-ttyg-agent.wait-for-answer',
             class: 'wait-for-answer-guide-dialog',
-            url: '/ttyg',
+            url: 'ttyg',
             placement: 'left',
             elementSelector: GuideUtils.getGuideElementSelector('chat-details'),
             elementSelectorToWait: GuideUtils.getGuideElementSelector('question-loader'),

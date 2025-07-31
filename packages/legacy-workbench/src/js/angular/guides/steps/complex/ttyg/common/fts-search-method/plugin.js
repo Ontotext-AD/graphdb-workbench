@@ -14,7 +14,7 @@ PluginRegistry.add('guide.step', [
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.fts-search-method.disable-toggle',
                         class: 'toggle-fts-search-guide-dialog',
-                        url: '/ttyg',
+                        url: 'ttyg',
                         showOn: () => GuideUtils.isChecked(toggleSelector),
                         elementSelector: GuideUtils.getGuideElementSelector('query-method-fts_search'),
                         clickableElementSelector: toggleSelector,
@@ -28,7 +28,7 @@ PluginRegistry.add('guide.step', [
                     guideBlockName: 'info-message',
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.fts-search-method.content',
-                        url: '/ttyg',
+                        url: 'ttyg',
                         class: 'info-fts-search-guide-dialog',
                         disablePreviousFlow: true
                     }, options)
@@ -38,7 +38,7 @@ PluginRegistry.add('guide.step', [
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.fts-search-method.enable-toggle',
                         class: 'toggle-fts-search-guide-dialog',
-                        url: '/ttyg',
+                        url: 'ttyg',
                         elementSelector: GuideUtils.getGuideElementSelector('query-method-fts_search'),
                         clickableElementSelector: toggleSelector,
                         onNextValidate: () => Promise.resolve(GuideUtils.isChecked(toggleSelector))

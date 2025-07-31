@@ -26,7 +26,7 @@ PluginRegistry.add('guide.step', [
                     guideBlockName: 'read-only-element',
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.class_hierarchy_intro.content',
-                        url: '/hierarchy',
+                        url: 'hierarchy',
                         elementSelector: '#classChart',
                         placement: 'left'
                     }, options)
@@ -39,7 +39,7 @@ PluginRegistry.add('guide.step', [
                     options: angular.extend({}, {
                         content: '',
                         extraContent: options.introExtraContent,
-                        url: '/hierarchy',
+                        url: 'hierarchy',
                         elementSelector: '#classChart #main-group',
                         class: 'clas-hierarchy-intro-guide-dialog',
                         placement: 'left'
@@ -54,7 +54,7 @@ PluginRegistry.add('guide.step', [
                         guideBlockName: 'clickable-element',
                         options: angular.extend({}, {
                             content: 'guide.step_plugin.class_hierarchy_zoom.content',
-                            url: '/hierarchy',
+                            url: 'hierarchy',
                             placement: 'left',
                             elementSelector: selector,
                             class: 'class-hierarchy-zoom-content-guide-dialog',
@@ -70,7 +70,7 @@ PluginRegistry.add('guide.step', [
                             options: angular.extend({}, {
                                 content: '',
                                 extraContent: zoomIri.postExtraContent,
-                                url: '/hierarchy',
+                                url: 'hierarchy',
                                 placement: 'left',
                                 beforeShowPromise: GuideUtils.deferredShow(800),
                                 elementSelector: selector,
@@ -97,7 +97,7 @@ PluginRegistry.add('guide.step', [
                     guideBlockName: 'clickable-element',
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.class-hierarchy-instances.content',
-                        url: '/hierarchy',
+                        url: 'hierarchy',
                         elementSelector: clasInstanceSelector,
                         class: 'class-hierarchy-instance-guide-dialog',
                         placement: 'top',
@@ -118,7 +118,7 @@ PluginRegistry.add('guide.step', [
                     guideBlockName: 'read-only-element',
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.class-hierarchy-instances-side-panel.content',
-                        url: '/hierarchy',
+                        url: 'hierarchy',
                         elementSelector: '.rdf-info-side-panel div',
                         class: 'class-hierarchy-side-panel-info-guide-dialog',
                         canBePaused: false,
@@ -144,7 +144,7 @@ PluginRegistry.add('guide.step', [
                         guideBlockName: 'read-only-element',
                         options: angular.extend({}, {
                             content: 'guide.step_plugin.class-hierarchy-instances-focus.content',
-                            url: '/hierarchy',
+                            url: 'hierarchy',
                             canBePaused: false,
                             elementSelector: GuideUtils.getGuideElementSelector('instance-' + focusInstance.instance),
                             class: 'class-hierarchy-side-bar-instance-info-guide-dialog',
@@ -161,7 +161,7 @@ PluginRegistry.add('guide.step', [
                     guideBlockName: 'clickable-element',
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.class-hierarchy-instances-count.content',
-                        url: '/hierarchy',
+                        url: 'hierarchy',
                         canBePaused: false,
                         elementSelector: instanceCountSelector,
                         class: 'class-hierarchy-side-panel-instances-count-guide-dialog',
@@ -173,7 +173,7 @@ PluginRegistry.add('guide.step', [
                     guideBlockName: 'read-only-element',
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.class-hierarchy-instances-query.content',
-                        url: '/sparql',
+                        url: 'sparql',
                         elementSelector: GuideUtils.CSS_SELECTORS.SPARQL_EDITOR_SELECTOR,
                         beforeShowPromise: () => GuideUtils.waitFor(GuideUtils.CSS_SELECTORS.SPARQL_EDITOR_SELECTOR, 3)
                             .then(() => GuideUtils.deferredShow(500)()),
@@ -187,7 +187,7 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.class-hierarchy-instances-results.content',
                         extraContent: options.showExtraCommentSparql !== false ?
                             'guide.step_plugin.class-hierarchy-instances-results.extraContent' : null,
-                        url: '/sparql',
+                        url: 'sparql',
                         placement: 'top',
                         elementSelector: GuideUtils.CSS_SELECTORS.SPARQL_RESULTS_SELECTOR,
                         class: 'class-hierarchy-instances-results-guide-dialog',
@@ -206,7 +206,7 @@ PluginRegistry.add('guide.step', [
                 guideBlockName: 'clickable-element',
                 options: angular.extend({}, {
                     content: 'guide.step_plugin.class-hierarchy-instances-side-panel-close.content',
-                    url: '/hierarchy',
+                    url: 'hierarchy',
                     canBePaused: false,
                     elementSelector: closeButtonSelector,
                     class: 'class-hierarchy-side-panel-close-guide-dialog',

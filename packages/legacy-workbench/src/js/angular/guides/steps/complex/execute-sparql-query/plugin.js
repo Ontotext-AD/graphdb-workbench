@@ -20,7 +20,7 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.execute-sparql-query.visual-sparql-results.content',
                         // If mainAction is set the title will be set automatically
                         ...(options.mainAction ? {} : {title: SPARQL_EDITOR_DEFAULT_TITLE}),
-                        url: '/sparql',
+                        url: 'sparql',
                         elementSelector: GuideUtils.CSS_SELECTORS.SPARQL_VISUAL_BUTTON_SELECTOR,
                         disablePreviousFlow: true,
                         class: 'visual-sparql-results-button-guide-dialog',
@@ -45,7 +45,7 @@ PluginRegistry.add('guide.step', [
                         // If mainAction is set the title will be set automatically
                         ...(options.mainAction ? {} : {title: SPARQL_EDITOR_DEFAULT_TITLE}),
                         content: 'guide.step_plugin.execute-sparql-query.run-sparql-query.content',
-                        url: '/sparql',
+                        url: 'sparql',
                         elementSelector: GuideUtils.CSS_SELECTORS.SPARQL_RUN_BUTTON_SELECTOR,
                         disablePreviousFlow: true,
                         class: 'yasgui-run-button-guide-dialog',
@@ -88,7 +88,7 @@ PluginRegistry.add('guide.step', [
                         // If mainAction is set the title will be set automatically
                         ...(options.mainAction ? {} : {title: SPARQL_EDITOR_DEFAULT_TITLE}),
                         content: 'guide.step_plugin.execute-sparql-query.query-editor.content',
-                        url: '/sparql',
+                        url: 'sparql',
                         elementSelector: GuideUtils.CSS_SELECTORS.SPARQL_EDITOR_SELECTOR,
                         class: 'yasgui-query-editor-guide-dialog',
                         disablePreviousFlow: true,
@@ -134,7 +134,7 @@ PluginRegistry.add('guide.step', [
                         // If mainAction is set the title will be set automatically
                         ...(options.mainAction ? {} : {title: SPARQL_EDITOR_DEFAULT_TITLE}),
                         content: 'guide.step_plugin.execute-sparql-query.result-explain.content',
-                        url: '/sparql',
+                        url: 'sparql',
                         placement: 'top',
                         elementSelector: GuideUtils.CSS_SELECTORS.SPARQL_RESULTS_SELECTOR,
                         class: 'yasgui-query-results-guide-dialog',

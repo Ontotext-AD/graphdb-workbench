@@ -37,7 +37,7 @@ PluginRegistry.add('guide.step', [
                     guideBlockName: 'clickable-element',
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.import_rdf_file.content',
-                        url: '/import',
+                        url: 'import',
                         elementSelector: GuideUtils.getGuideElementSelector('uploadRdfFileButton'),
                         class: 'upload-rdf-file-button-guide-dialog',
                         // Disable default behavior of service when element is clicked.
@@ -104,7 +104,7 @@ PluginRegistry.add('guide.step', [
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.import_rdf_file.confirm_duplicate_files_dialog.content',
                         elementSelector: GuideUtils.getElementSelector('.confirm-duplicate-files-dialog .confirm-overwrite-btn'),
-                        url: '/import',
+                        url: 'import',
                         placement: 'bottom',
                         class: 'import-file-button-guide-dialog',
                         skipFromHistory: true,
@@ -145,7 +145,7 @@ PluginRegistry.add('guide.step', [
                     guideBlockName: 'read-only-element',
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.import_status_info.content',
-                        url: '/import',
+                        url: 'import',
                         elementSelector: '.import-resource-message',
                         class: 'import-status-info-guide-dialog',
                         beforeShowPromise: () => {

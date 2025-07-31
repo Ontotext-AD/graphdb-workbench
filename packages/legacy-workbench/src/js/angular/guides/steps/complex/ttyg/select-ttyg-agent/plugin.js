@@ -10,7 +10,7 @@ PluginRegistry.add('guide.step', [
                     guideBlockName: 'info-message',
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.select-ttyg-agent.info.content',
-                        url: '/ttyg',
+                        url: 'ttyg',
                         class: 'select-ttyg-agent-guide-dialog',
                         skipPoint: true,
                         disablePreviousFlow: true,
@@ -21,7 +21,7 @@ PluginRegistry.add('guide.step', [
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.select-ttyg-agent.open-agent-dropdown',
                         class: 'open-agent-dropdown-guide-dialog',
-                        url: '/ttyg',
+                        url: 'ttyg',
                         elementSelector: GuideUtils.getGuideElementSelector('select-agent-dropdown'),
                         disableNextFlow: true
                     }, options)

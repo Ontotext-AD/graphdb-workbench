@@ -52,7 +52,7 @@ PluginRegistry.add('guide.step', [
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.edit-ttyg-agent.edit-agent',
                         class: 'edit-agent-btn-guide-dialog',
-                        url: '/ttyg',
+                        url: 'ttyg',
                         elementSelector: GuideUtils.getGuideElementSelector('edit-current-agent'),
                         disablePreviousFlow: true,
                         disableNextFlow: true
@@ -67,7 +67,7 @@ PluginRegistry.add('guide.step', [
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.edit-ttyg-agent.save-agent-settings',
                         class: 'save-agent-guide-dialog',
-                        url: '/ttyg',
+                        url: 'ttyg',
                         elementSelector: GuideUtils.getGuideElementSelector('save-agent-settings'),
                         disableNextFlow: true
                     }, options)

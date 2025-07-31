@@ -36,7 +36,7 @@ PluginRegistry.add('guide.step', [
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.configure-agent.name-input',
                         class: 'input-agent-name-guide-dialog',
-                        url: '/ttyg',
+                        url: 'ttyg',
                         disablePreviousFlow: true,
                         beforeShowPromise: () => GuideUtils.waitFor(GuideUtils.getGuideElementSelector('agent-form'), 5)
                             .catch((error) => {
@@ -59,7 +59,7 @@ PluginRegistry.add('guide.step', [
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.configure-agent.model-input',
                         class: 'input-model-guide-dialog',
-                        url: '/ttyg',
+                        url: 'ttyg',
                         elementSelector: GuideUtils.getGuideElementSelector('model'),
                         onNextValidate: () => Promise.resolve(GuideUtils.validateTextInput(GuideUtils.getGuideElementSelector('model'), options.model, false))
                     }, options)
@@ -72,7 +72,7 @@ PluginRegistry.add('guide.step', [
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.configure-agent.user-instructions-input',
                         class: 'input-user-instructions-guide-dialog',
-                        url: '/ttyg',
+                        url: 'ttyg',
                         elementSelector: GuideUtils.getGuideElementSelector('user-instructions'),
                         onNextValidate: () => Promise.resolve(GuideUtils.validateTextInput(GuideUtils.getGuideElementSelector('user-instructions'), options.userInstructions, false))
                     }, options)
