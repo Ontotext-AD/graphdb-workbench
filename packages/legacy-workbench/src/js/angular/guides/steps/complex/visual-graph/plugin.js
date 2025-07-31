@@ -19,7 +19,7 @@ PluginRegistry.add('guide.step', [
                         // If mainAction is set the title will be set automatically
                         ...(options.mainAction ? {} : {title: VISUAL_GRAPH_DEFAULT_TITLE}),
                         content: 'guide.step_plugin.visual_graph_intro.content',
-                        url: '/graphs-visualizations',
+                        url: 'graphs-visualizations',
                         elementSelector: '.graph-visualization',
                         placement: 'left',
                         canBePaused: false,
@@ -41,7 +41,7 @@ PluginRegistry.add('guide.step', [
                         ...(options.mainAction ? {} : {title: VISUAL_GRAPH_DEFAULT_TITLE}),
                         content: 'guide.step_plugin.visual_graph_input_IRI.content',
                         forceReload: true,
-                        url: '/graphs-visualizations',
+                        url: 'graphs-visualizations',
                         elementSelector: GuideUtils.getGuideElementSelector('graphVisualisationSearchInputNotConfigured', ' input'),
                         class: 'visual-graph-input-iri-guide-dialog',
                         onNextValidate: (step) => Promise.resolve(GuideUtils.validateTextInput(step.elementSelector, step.easyGraphInputText)),
@@ -62,7 +62,7 @@ PluginRegistry.add('guide.step', [
                         // If mainAction is set the title will be set automatically
                         ...(options.mainAction ? {} : {title: VISUAL_GRAPH_DEFAULT_TITLE}),
                         content: 'guide.step_plugin.visual_graph_show_autocomplete.content',
-                        url: '/graphs-visualizations',
+                        url: 'graphs-visualizations',
                         elementSelector: GuideUtils.getGuideElementSelector(`autocomplete-${options.iri}`),
                         class: 'visual-graph-show-autocomplete-guide-dialog',
                         onNextClick: (guide, step) => GuideUtils.waitFor(step.elementSelector, 3).then(() => $(step.elementSelector).trigger('click')),
@@ -146,7 +146,7 @@ PluginRegistry.add('guide.step', [
                     options: {
                         title: 'guide.step_plugin.visual-graph-expand.title',
                         content: 'guide.step_plugin.visual-graph-expand.content',
-                        url: '/graphs-visualizations',
+                        url: 'graphs-visualizations',
                         canBePaused: false,
                         class: 'visual-graph-expand-node-guide-dialog',
                         elementSelector,
@@ -233,7 +233,7 @@ PluginRegistry.add('guide.step', [
                     options: {
                         title: 'guide.step_plugin.visual-graph-properties.title',
                         content: 'guide.step_plugin.visual-graph-properties.content',
-                        url: '/graphs-visualizations',
+                        url: 'graphs-visualizations',
                         class: 'visual-graph-show-properties-intro-guide-dialog',
                         elementSelector,
                         canBePaused: false,
@@ -261,7 +261,7 @@ PluginRegistry.add('guide.step', [
                     options: {
                         title: 'guide.step_plugin.visual-graph-properties-side-panel.title',
                         content: 'guide.step_plugin.visual-graph-properties-side-panel.content',
-                        url: '/graphs-visualizations',
+                        url: 'graphs-visualizations',
                         elementSelector: '.rdf-side-panel-content',
                         class: 'visual-graph-side-panel-content-guide-dialog',
                         canBePaused: false,
@@ -294,7 +294,7 @@ PluginRegistry.add('guide.step', [
                         options: {
                             title: 'guide.step_plugin.visual-graph-properties-focus' + translationIdSuffix + '.title',
                             content: content,
-                            url: '/graphs-visualizations',
+                            url: 'graphs-visualizations',
                             class: 'visual-graph-properties-focus-guide-dialog',
                             canBePaused: false,
                             placement: 'left',
@@ -313,7 +313,7 @@ PluginRegistry.add('guide.step', [
                 options: {
                     title: 'guide.step_plugin.visual-graph-properties-side-panel-close.title',
                     content: 'guide.step_plugin.visual-graph-properties-side-panel-close.content',
-                    url: '/graphs-visualizations',
+                    url: 'graphs-visualizations',
                     canBePaused: false,
                     placement: 'left',
                     class: 'visual-graph-properties-side-panel-close-guide-dialog',
@@ -348,7 +348,7 @@ PluginRegistry.add('guide.step', [
                     options: {
                         title: 'guide.step_plugin.visual-graph-link-focus.title',
                         content: 'guide.step_plugin.visual-graph-link-focus.content',
-                        url: '/graphs-visualizations',
+                        url: 'graphs-visualizations',
                         canBePaused: false,
                         class: 'visual-graph-link-focus-guide-dialog',
                         elementSelector,
@@ -373,7 +373,7 @@ PluginRegistry.add('guide.step', [
                     options: {
                         title: 'guide.step_plugin.visual-graph-node-focus.title',
                         content: 'guide.step_plugin.visual-graph-node-focus.content',
-                        url: '/graphs-visualizations',
+                        url: 'graphs-visualizations',
                         canBePaused: false,
                         elementSelector,
                         class: 'visual-graph-node-focus-guide-dialog',

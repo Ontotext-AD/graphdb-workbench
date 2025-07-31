@@ -14,7 +14,7 @@ PluginRegistry.add('guide.step', [
                     guideBlockName: 'info-message',
                     options: angular.extend({}, {
                         skipPoint: true,
-                        url: '/ttyg',
+                        url: 'ttyg',
                         class: 'conversation-info-guide-dialog',
                         content: 'guide.step_plugin.conversation-with-ttyg-agent.info',
                     }, options)
@@ -28,7 +28,7 @@ PluginRegistry.add('guide.step', [
                         // If button is not visible for some reason, skip the whole step
                         guideBlockName: 'info-message',
                         options: angular.extend({}, {
-                            url: '/ttyg',
+                            url: 'ttyg',
                             beforeShowPromise: (guide, currentStep) => GuideUtils.waitFor(createChatBtnSelector, 1)
                                 .then(() => {
                                     // Using a timeout because the library executes logic to show the step in a then clause which causes current and next steps to show
@@ -46,7 +46,7 @@ PluginRegistry.add('guide.step', [
                         options: angular.extend({}, {
                             content: 'guide.step_plugin.conversation-with-ttyg-agent.start-conversation',
                             class: 'start-conversation-guide-dialog',
-                            url: '/ttyg',
+                            url: 'ttyg',
                             elementSelector: createChatBtnSelector,
                             disableNextFlow: true
                         }, options)

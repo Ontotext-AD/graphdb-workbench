@@ -14,7 +14,7 @@ PluginRegistry.add('guide.step', [
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.sparql-search-method.disable-toggle',
                         class: 'toggle-sparql-search-guide-dialog',
-                        url: '/ttyg',
+                        url: 'ttyg',
                         showOn: () => GuideUtils.isChecked(toggleSelector),
                         elementSelector: GuideUtils.getGuideElementSelector('query-method-sparql_search'),
                         clickableElementSelector: toggleSelector,
@@ -29,7 +29,7 @@ PluginRegistry.add('guide.step', [
                     options: angular.extend({}, {
                         content: `guide.step_plugin.sparql-search-method.content`,
                         class: 'info-sparql-search-guide-dialog',
-                        url: '/ttyg',
+                        url: 'ttyg',
                         disablePreviousFlow: true
                     }, options)
                 },
@@ -38,7 +38,7 @@ PluginRegistry.add('guide.step', [
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.sparql-search-method.enable-toggle',
                         class: 'toggle-sparql-search-guide-dialog',
-                        url: '/ttyg',
+                        url: 'ttyg',
                         elementSelector: GuideUtils.getGuideElementSelector('query-method-sparql_search'),
                         clickableElementSelector: toggleSelector,
                         onNextValidate: () => Promise.resolve(GuideUtils.isChecked(toggleSelector))
@@ -49,7 +49,7 @@ PluginRegistry.add('guide.step', [
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.sparql-search-method.enable-ontology-from-graph',
                         class: 'enable-ontology-from-graph-guide-dialog',
-                        url: '/ttyg',
+                        url: 'ttyg',
                         elementSelector: GuideUtils.getGuideElementSelector('sparql-ontology-graph-option'),
                         clickableElementSelector: GuideUtils.getGuideElementSelector('sparql-ontology-graph-option-input'),
                         onNextValidate: () => Promise.resolve(GuideUtils.isChecked(GuideUtils.getGuideElementSelector('sparql-ontology-graph-option-input')))
@@ -60,7 +60,7 @@ PluginRegistry.add('guide.step', [
                     options: angular.extend({}, {
                         content: `guide.step_plugin.sparql-search-method.type-ontology-graph-name`,
                         class: 'input-ontology-graph-name-guide-dialog',
-                        url: '/ttyg',
+                        url: 'ttyg',
                         elementSelector: GuideUtils.getGuideElementSelector('sparql-ontology-graph-input'),
                         onNextValidate: () => Promise.resolve(GuideUtils.validateTextInput(GuideUtils.getGuideElementSelector('sparql-ontology-graph-input'), options.ontologyGraph, false))
                     }, options)

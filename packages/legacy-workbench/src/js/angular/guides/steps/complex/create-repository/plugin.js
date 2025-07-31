@@ -19,7 +19,7 @@ PluginRegistry.add('guide.step', [
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.create_repository.create_repository_button.content',
                         class: 'create-repository-guide-dialog',
-                        url: '/repository',
+                        url: 'repository',
                         elementSelector: GuideUtils.getGuideElementSelector('createRepository'),
                         onNextClick: GuideUtils.clickOnGuideElement('createRepository')
                     }, options)
@@ -28,7 +28,7 @@ PluginRegistry.add('guide.step', [
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.create_repository.graph_db_repository.content',
                         class: 'create-gdb-repository-guide-dialog',
-                        url: '/repository/create',
+                        url: 'repository/create',
                         elementSelector: GuideUtils.getGuideElementSelector('createGraphDBRepository'),
                         onNextClick: GuideUtils.clickOnGuideElement('createGraphDBRepository')
                     }, options)
@@ -37,7 +37,7 @@ PluginRegistry.add('guide.step', [
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.create_repository.repository_id.content',
                         class: 'gdb-repository-id-input-guide-dialog',
-                        url: '/repository/create/graphdb',
+                        url: 'repository/create/graphdb',
                         elementSelector: repositoryIdInputSelector,
                         onNextValidate: () => Promise.resolve(GuideUtils.validateTextInput(repositoryIdInputSelector, repositoryId))
                     }, options)
@@ -49,7 +49,7 @@ PluginRegistry.add('guide.step', [
                     guideBlockName: 'clickable-element',
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.create_repository.ruleset_dropdown.content',
-                        url: '/repository/create/graphdb',
+                        url: 'repository/create/graphdb',
                         class: 'gdb-repository-ruleset-select-guide-dialog',
                         elementSelector: GuideUtils.getGuideElementSelector('graphDBRepositoryRulesetSelect'),
                         show: () => () => {
@@ -63,7 +63,7 @@ PluginRegistry.add('guide.step', [
                                guideBlockName: 'clickable-element',
                                options: angular.extend({}, {
                                    content: 'guide.step_plugin.create_repository.enable-fts.content',
-                                   url: '/repository/create/graphdb',
+                                   url: 'repository/create/graphdb',
                                    class: 'gdb-repository-enable-fts-guide-dialog',
                                    extraContent: 'guide.step_plugin.create_repository.enable-fts.extra-content',
                                    extraContentClass: 'alert alert-help text-left',
@@ -76,7 +76,7 @@ PluginRegistry.add('guide.step', [
                 guideBlockName: 'clickable-element',
                 options: angular.extend({}, {
                     content: 'guide.step_plugin.create_repository.save_button.content',
-                    url: '/repository/create/graphdb',
+                    url: 'repository/create/graphdb',
                     class: 'create-repository-button-guide-dialog',
                     elementSelector: GuideUtils.getGuideElementSelector('graphDBRepositoryCrateButton'),
                     show: () => () => {

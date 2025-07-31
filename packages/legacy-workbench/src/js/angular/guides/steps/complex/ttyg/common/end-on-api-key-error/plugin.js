@@ -11,7 +11,7 @@ PluginRegistry.add('guide.step', [
                     options: angular.extend({}, {
                         title: 'guide.step_plugin.ttyg.missing-key.title',
                         content: 'guide.step_plugin.ttyg.missing-key.content',
-                        url: '/ttyg',
+                        url: 'ttyg',
                         beforeShowPromise: (guide, currentStepDescription) => {
                             // Check if error toast is visible waiting for 1 seconds
                             return GuideUtils.waitFor('.toast-message', 1)

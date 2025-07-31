@@ -150,7 +150,7 @@ PluginRegistry.add('guide.step', [
                                 options: angular.extend({}, {
                                     content: 'guide.step_plugin.visual_graph_intro.content',
                                     extraContent: subStep.extraContentVisualIntro,
-                                    url: '/graphs-visualizations',
+                                    url: 'graphs-visualizations',
                                     elementSelector: '.graph-visualization',
                                     placement: 'left',
                                     canBePaused: false,
