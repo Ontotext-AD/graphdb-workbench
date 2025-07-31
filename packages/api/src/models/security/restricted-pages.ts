@@ -8,7 +8,7 @@ export class RestrictedPages extends Model<RestrictedPages>{
   private pages: Record<string, boolean> = {};
 
   isRestricted(pageUrl: string): boolean {
-    return this.pages[pageUrl];
+    return this.pages[pageUrl] ?? false;
   }
 
   setPageRestriction(pageUrl: string, isRestricted = true): RestrictedPages {

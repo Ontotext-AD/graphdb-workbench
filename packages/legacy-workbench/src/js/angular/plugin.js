@@ -37,7 +37,7 @@ PluginRegistry.add('main.menu', {
                 labelKey: 'menu.lab.label',
                 href: '#',
                 order: 6,
-                role: 'IS_AUTHENTICATED_FULLY',
+                role: 'ROLE_USER',
                 icon: "fa fa-flask",
                 guideSelector: 'menu-lab',
                 testSelector: 'menu-lab',

@@ -108,7 +108,8 @@ export class OntoLayout {
 
         {this.hasPermission ? (
           <div class='main-slot-wrapper'>
-            <slot name="main"></slot></div>
+            <slot name="main"></slot>
+          </div>
         ) : (
           <onto-permission-banner></onto-permission-banner>
         )}
@@ -202,8 +203,7 @@ export class OntoLayout {
   private setPermission(permissions: RestrictedPages) {
     if (permissions) {
       const path = getPathName();
-      // Delegate to legacy, when a user has authority in order to show the authority banner, which is not migrated yet
-      this.hasPermission = !permissions.isRestricted(path) ? true : !this.authenticationService.hasAuthority();
+      this.hasPermission = !permissions.isRestricted(path);
     } else {
       // If the permissions are undefined, the user can access the url
       this.hasPermission = true;
