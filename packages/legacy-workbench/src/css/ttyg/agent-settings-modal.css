@@ -46,6 +46,18 @@
     padding-right: 3.5em;
 }
 
+/* Hide number arrows in Chrome, Edge, Safari */
+.agent-settings-modal .agent-settings-form .context-size .input-with-unit input::-webkit-outer-spin-button,
+.agent-settings-modal .agent-settings-form .context-size .input-with-unit input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Hide number arrows in Firefox */
+.agent-settings-modal .agent-settings-form .context-size .input-with-unit input[type=number] {
+    -moz-appearance: textfield;
+}
+
 .agent-settings-modal .agent-settings-form .context-size .input-with-unit .token-unit-label {
     position: absolute;
     right: 0.5em;
