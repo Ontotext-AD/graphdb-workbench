@@ -23,7 +23,7 @@ angular.module('graphdb.framework.settings', [
 config.$inject = ['$httpProvider', '$routeProvider'];
 
 function config($httpProvider) {
-    $httpProvider.interceptors.push('$unauthorizedInterceptor');
+    // $httpProvider.interceptors.push('$unauthorizedInterceptor');
     $httpProvider.interceptors.push('$authenticationInterceptor');
 }
 

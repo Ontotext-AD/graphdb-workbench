@@ -191,7 +191,8 @@ const moduleDefinition = function (productInfo, translations) {
             //     });
             // });
 
-            $httpProvider.interceptors.push('$unauthorizedInterceptor');
+            // Disable uauthorizedInterceptor because limitations are implemented with different logic
+            // $httpProvider.interceptors.push('$unauthorizedInterceptor');
             $httpProvider.interceptors.push('$authenticationInterceptor');
 
             // Hack the template request provider to add a version parameter to templates that
@@ -231,7 +232,7 @@ const moduleDefinition = function (productInfo, translations) {
             function updateTitleAndHelpInfo() {
                 // In the new implementation of the language service, the event is triggered too early,
                 // before the route is ready. Therefore, we need to check if the route is ready before translate the title.
-                if(!$route.current) {
+                if (!$route.current) {
                     return;
                 }
                 if ($route.current.title) {
@@ -242,7 +243,7 @@ const moduleDefinition = function (productInfo, translations) {
 
                 $rootScope.helpInfo = $route.current.helpInfo && $sce.trustAsHtml(decodeHTML($translate.instant($route.current.helpInfo)));
                 $rootScope.title = decodeHTML($translate.instant($route.current.title));
-                $rootScope.documentationUrl =  DocumentationUrlResolver.getDocumentationUrl(productInfo.productShortVersion, $route.current.documentationUrl);
+                $rootScope.documentationUrl = DocumentationUrlResolver.getDocumentationUrl(productInfo.productShortVersion, $route.current.documentationUrl);
             }
 
             // Check if theme is set in local storage workbench settings and apply
@@ -272,7 +273,7 @@ const moduleDefinition = function (productInfo, translations) {
                 translateChangeUnsubscribe();
                 // Remove all routes so that when navigating from legacy-workbench to the new workbench and back, the
                 // router will not try to load the route before the app is bootstrapped again.
-                Object.keys($route.routes).forEach(function(route) {
+                Object.keys($route.routes).forEach(function (route) {
                     delete $route.routes[route];
                 });
             })
@@ -380,7 +381,7 @@ const ngLifecycles = singleSpaAngularJS({
     elementId: 'workbench-app',
     template: `
         <div ng-controller="mainCtrl">
-            <div class="container-fluid main-container no-authority-panel" ng-if="hasPermission() && !hasAuthority() && getActiveRepository()">
+            <div class="container-fluid main-container no-authority-panel" ng-if="getActiveRepository() && !hasAuthority()">
                 <h1>
                     {{title}}
                     <page-info-tooltip></page-info-tooltip>
@@ -399,7 +400,7 @@ const ngLifecycles = singleSpaAngularJS({
                     </div>
                 </div>
             </div>
-            <div class="main-container" ng-if="hasPermission() && hasAuthority()">
+            <div class="main-container" ng-if="hasAuthority() || (!getActiveRepository() && !hasAuthority())">
                 <div ng-view></div>
             </div>
         </div>

@@ -22,22 +22,12 @@ angular.module('graphdb.framework.core.services.jwtauth', [
     .service('$jwtAuth', ['$http', 'toastr', '$location', '$rootScope', 'SecurityService', '$openIDAuth', '$translate', '$q', '$route', 'AuthTokenService',
         function ($http, toastr, $location, $rootScope, SecurityService, $openIDAuth, $translate, $q, $route, AuthTokenService) {
             const jwtAuth = this;
-
-            $rootScope.deniedPermissions = {};
-            $rootScope.setPermissionDenied = (path) => {
-                if (path === '/login' || !jwtAuth.isAuthenticated()) {
-                    return false;
-                }
-                if(jwtAuth.isAuthenticated() && this.hasGraphqlRightsOverCurrentRepo()) {
-                    return true;
-                }
-
-                $rootScope.deniedPermissions[path] = true;
-                return true;
-            };
             $rootScope.hasPermission = function () {
                 const path = $location.path();
-                return !$rootScope.deniedPermissions[path];
+                const securityContextService = ServiceProvider.get(SecurityContextService);
+                const restrictedPages = securityContextService.getRestrictedPages();
+
+                return restrictedPages.isRestricted(path);
             };
 
             this.updateReturnUrl = () => {
@@ -195,7 +185,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                         } else {
                             that.getAuthenticatedUserFromBackend();
                         }
-                        that.broadcastSecurityInit(that.securityEnabled, that.hasExplicitAuthentication(), that.hasOverrideAuth)
+                        that.broadcastSecurityInit(that.securityEnabled, that.hasExplicitAuthentication(), that.freeAccess)
                     } else {
                         AuthTokenService.clearAuthToken();
                         const overrideAuthData = res.data.overrideAuth;
@@ -311,7 +301,6 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                     }
 
                     this.principal = data;
-                    $rootScope.deniedPermissions = {};
                     this.securityInitialized = true;
 
                     const selectedRepo = getActiveRepositoryObjectFromStorage();
@@ -321,8 +310,6 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                         // we unset the repository
                         const repositoryContextService = ServiceProvider.get(RepositoryContextService);
                         repositoryContextService.updateSelectedRepository(undefined);
-                        // reset denied permissions (different repo, different rights)
-                        $rootScope.deniedPermissions = {};
                     }
 
                     this.broadcastSecurityInit(this.securityEnabled, this.hasExplicitAuthentication(), this.freeAccess)

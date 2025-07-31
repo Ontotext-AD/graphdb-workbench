@@ -421,9 +421,6 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
         this.onRepositorySet = function (newRepository) {
             this.setRepositoryHeaders(newRepository);
             $rootScope.$broadcast('repositoryIsSet', {newRepo: newRepository?.isNew});
-            ServiceProvider.get(SecurityContextService).updateRestrictedPages(new RestrictedPages());
-            // reset denied permissions (different repo, different rights)
-            $rootScope.deniedPermissions = {};
         }
 
         this.getDefaultRepository = function () {

@@ -37,7 +37,8 @@ import {
     EventService,
     RepositoryContextService,
     RepositoryService,
-    ServiceProvider
+    ServiceProvider,
+    SecurityContextService
 } from "@ontotext/workbench-api";
 import {EventConstants} from "./utils/event-constants";
 import {CookieConsent} from "./models/cookie-policy/cookie-consent";
@@ -207,6 +208,29 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     $scope.showRdfResourceSearch = () => {
         return !$scope.hideRdfResourceSearch && !!$scope.getActiveRepository() && $scope.hasActiveLocation() && (!$scope.isLoadingLocation() || $scope.isLoadingLocation() && $location.url() === '/repository');
     };
+
+    // Update page permissions based on menu item role
+    const updatePermissions = () => {
+        const securityContextService = ServiceProvider.get(SecurityContextService);
+        const restrictedPages = securityContextService.getRestrictedPages();
+
+        const routes = PluginRegistry.get('route');
+        const menuItems = PluginRegistry.get('main.menu');
+
+        angular.forEach(routes, function (route) {
+            const menuItem = menuItems.flatMap((mi) => mi.items)
+                .filter((menuItem) => menuItem.role?.includes('ROLE_'))
+                .find((menuItem) => route.url.includes(menuItem.href));
+
+            if (!menuItem) {
+                return;
+            }
+
+            const isAccessToPageRestricted = $scope.principal.authorities.indexOf(menuItem.role) === -1;
+            restrictedPages.setPageRestriction(route.url, isAccessToPageRestricted);
+        });
+        securityContextService.updateRestrictedPages(restrictedPages);
+    }
 
     const startGuide = (guideId) => {
         // Check to see if $translate service is ready with the language before starting the guide as the steps are translated ahead on time. Will retry 20 times (1 second).
@@ -653,7 +677,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
                 }
             }
         } else if ('ls.' + LSKeys.AUTOCOMPLETE_ENABLED === localStoreEvent.key) {
-          WorkbenchContextService.setAutocompleteEnabled(localStoreEvent.newValue === 'true');
+            WorkbenchContextService.setAutocompleteEnabled(localStoreEvent.newValue === 'true');
         }
     };
 
@@ -990,6 +1014,9 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         } else {
             setPrincipal()
                 .then(() => {
+                    // Update Restricted Pages permissions on securityInit
+                    updatePermissions()
+
                     // Added timeout because, when the 'securityInit' event is fired after user logged-in.
                     // The authentication headers are still not set correctly when a request that loads saved queries is called and the $unauthorizedInterceptor rejects the request.
                     // There are many places where setTimeout is used, see $jwtAuth#authenticate and $jwtAuth#setAuthHeaders.
@@ -1159,23 +1186,23 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     });
 
     $scope.downloadGuidesFile = (resourcePath, resourceFile) => {
-      GuidesService.downloadGuidesFile(resourcePath, resourceFile)
-        .catch((error) => {
-          toastr.error($translate.instant('guide.step_plugin.download-guide-resource.download.message.failure', {resourceFile}));
-        });
+        GuidesService.downloadGuidesFile(resourcePath, resourceFile)
+            .catch((error) => {
+                toastr.error($translate.instant('guide.step_plugin.download-guide-resource.download.message.failure', {resourceFile}));
+            });
     };
 
     $scope.$on('$destroy', () => {
-      onSelectedRepositoryChangedSubscription?.();
-      cookieConsentChangedSubscription?.();
-      onAppDataLoaded();
-      document.removeEventListener('click', closeActiveRepoPopoverEventHandler);
-      window.removeEventListener('storage', localStoreChangeHandler);
-      $scope.cancelPopoverOpen();
-      deregisterMenuWatcher();
-      if ($scope.checkMenu) {
-        $timeout.cancel($scope.checkMenu);
-      }
+        onSelectedRepositoryChangedSubscription?.();
+        cookieConsentChangedSubscription?.();
+        onAppDataLoaded();
+        document.removeEventListener('click', closeActiveRepoPopoverEventHandler);
+        window.removeEventListener('storage', localStoreChangeHandler);
+        $scope.cancelPopoverOpen();
+        deregisterMenuWatcher();
+        if ($scope.checkMenu) {
+            $timeout.cancel($scope.checkMenu);
+        }
     });
 }
 
