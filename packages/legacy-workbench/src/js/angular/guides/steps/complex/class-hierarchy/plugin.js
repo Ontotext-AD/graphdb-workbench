@@ -87,11 +87,19 @@ PluginRegistry.add('guide.step', [
     {
         guideBlockName: 'class-hierarchy-instances',
         getSteps: (options, services) => {
+            let element;
             const GuideUtils = services.GuideUtils;
             const RoutingUtil = services.RoutingUtil;
             options.title = 'guide.step_plugin.class-hierarchy-instances.title';
             const closeButtonSelector = GuideUtils.getGuideElementSelector('close-info-panel');
             const clasInstanceSelector = GuideUtils.getGuideElementSelector('class-' + options.iri);
+            const handleDoubleClick = () => (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                // Ensure the side panel always appears
+                return reloadAndOpenInfoPanel({RoutingUtil, GuideUtils}, clasInstanceSelector);
+            };
+            let dblClickHandler = handleDoubleClick();
             const steps = [
                 {
                     guideBlockName: 'clickable-element',
@@ -111,7 +119,21 @@ PluginRegistry.add('guide.step', [
                             }
 
                             return Promise.resolve();
-                        }
+                        },
+                        show: () => () => {
+                            // Add a "dblclick" listener to the element.
+                            // We have to open side panel info manually when a selected node is clicked.
+                            element = document.querySelector(clasInstanceSelector);
+                            if (element) {
+                                element.addEventListener('dblclick', dblClickHandler, true);
+                            }
+                        },
+                        hide: () => () => {
+                            if (element) {
+                                element.removeEventListener('dblclick', dblClickHandler);
+                                element = null;
+                            }
+                        },
                     }, options)
                 },
                 {
