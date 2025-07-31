@@ -72,8 +72,9 @@
                         <i class="fa fa-arrow-rotate-left"></i>
                     </button>
                     <div class="input-with-unit">
-                        <input type="text" id="contextSize" name="contextSize"
+                        <input type="number" id="contextSize" name="contextSize"
                                class="form-control"
+                               min="1"
                                ng-model="agentFormModel.contextSize"
                                required autocomplete="off">
                         <span class="token-unit-label">
