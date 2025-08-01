@@ -22,7 +22,6 @@ PluginRegistry.add('guide.step', [
                         ...(options.mainAction ? {} : {title: SPARQL_EDITOR_DEFAULT_TITLE}),
                         url: 'sparql',
                         elementSelector: GuideUtils.CSS_SELECTORS.SPARQL_VISUAL_BUTTON_SELECTOR,
-                        disablePreviousFlow: true,
                         class: 'visual-sparql-results-button-guide-dialog',
                         scrollToHandler: GuideUtils.scrollToTop,
                         onNextClick: () => GuideUtils.clickOnElement(GuideUtils.CSS_SELECTORS.SPARQL_VISUAL_BUTTON_SELECTOR)(),
@@ -47,7 +46,6 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.execute-sparql-query.run-sparql-query.content',
                         url: 'sparql',
                         elementSelector: GuideUtils.CSS_SELECTORS.SPARQL_RUN_BUTTON_SELECTOR,
-                        disablePreviousFlow: true,
                         class: 'yasgui-run-button-guide-dialog',
                         onNextClick: (guide) => YasguiComponentDirectiveUtil.getOntotextYasguiElementAsync(SPARQL_DIRECTIVE_SELECTOR)
                             .then((yasgui) => {
@@ -91,7 +89,6 @@ PluginRegistry.add('guide.step', [
                         url: 'sparql',
                         elementSelector: GuideUtils.CSS_SELECTORS.SPARQL_EDITOR_SELECTOR,
                         class: 'yasgui-query-editor-guide-dialog',
-                        disablePreviousFlow: true,
                         queryAsHtmlCodeElement: '<div class="shepherd-code">' + code.outerHTML + copy.outerHTML + '</div>',
                         beforeShowPromise: () => YasguiComponentDirectiveUtil.getOntotextYasguiElementAsync(SPARQL_DIRECTIVE_SELECTOR)
                             .then(() => GuideUtils.waitFor(GuideUtils.CSS_SELECTORS.SPARQL_EDITOR_SELECTOR, 3))
@@ -185,7 +182,6 @@ PluginRegistry.add('guide.step', [
                     options: {
                         query,
                         queryExtraContent: queryDef.queryExtraContent,
-                        disablePreviousFlow: false,
                         beforeShowPromise: () => YasguiComponentDirectiveUtil.getOntotextYasguiElementAsync(SPARQL_DIRECTIVE_SELECTOR)
                             .then(() => GuideUtils.waitFor(GuideUtils.CSS_SELECTORS.SPARQL_EDITOR_SELECTOR, 3))
                             .then(() => GuideUtils.deferredShow(500)())
@@ -231,7 +227,6 @@ PluginRegistry.add('guide.step', [
                 steps.push({
                     guideBlockName: 'sparql-editor-run-button',
                     options: {
-                        disablePreviousFlow: false,
                         initPreviousStep: (services, stepId) => {
                             const previousStep = services.ShepherdService.getPreviousStepFromHistory(stepId);
                             return previousStep.options.initPreviousStep(services, previousStep.options.id)

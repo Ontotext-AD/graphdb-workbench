@@ -45,6 +45,7 @@ PluginRegistry.add('guide.step', [
                         class: 'save-agent-guide-dialog',
                         url: 'ttyg',
                         elementSelector: GuideUtils.getGuideElementSelector('save-agent-settings'),
+                        disablePreviousFlow: false,
                         disableNextFlow: true
                     }, options)
                 },

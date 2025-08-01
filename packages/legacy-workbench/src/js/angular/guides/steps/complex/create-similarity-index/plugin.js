@@ -19,6 +19,7 @@ PluginRegistry.add('guide.step', [
                         class: 'similarity-index-guide-dialog',
                         url: 'similarity',
                         elementSelector: GuideUtils.getGuideElementSelector('create-similarity-index'),
+                        disableNextFlow: true,
                         onNextClick: () => {
                         }
                     }, options)
@@ -38,6 +39,8 @@ PluginRegistry.add('guide.step', [
                         class: 'create-similarity-index-guide-dialog',
                         url: 'similarity/index/create',
                         elementSelector: GuideUtils.getGuideElementSelector('create-similarity-index-btn'),
+                        disablePreviousFlow: false,
+                        disableNextFlow: true,
                         onNextClick: () => {
                         }
                     }, options)

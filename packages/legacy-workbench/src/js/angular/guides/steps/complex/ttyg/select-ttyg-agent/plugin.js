@@ -53,7 +53,6 @@ PluginRegistry.add('guide.step', [
                                 }
                             }
                         },
-                        disablePreviousFlow: true,
                         disableNextFlow: true,
                         hide: () => () => {
                             options.observer.disconnect();
@@ -75,8 +74,7 @@ PluginRegistry.add('guide.step', [
                                     // Using a timeout because the library executes logic to show the step in a then clause which causes current and next steps to show
                                     setTimeout(() => guide.show(stepId + 2))
                                 })
-                        },
-                        disablePreviousFlow: true
+                        }
                     }, options)
                 },
                 {

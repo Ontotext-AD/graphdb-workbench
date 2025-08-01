@@ -29,8 +29,7 @@ PluginRegistry.add('guide.step', [
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.similarity-search-method.content',
                         url: 'ttyg',
-                        class: 'info-similarity-search-guide-dialog',
-                        disablePreviousFlow: true
+                        class: 'info-similarity-search-guide-dialog'
                     }, options)
                 },
                 {
