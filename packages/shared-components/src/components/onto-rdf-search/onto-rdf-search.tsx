@@ -96,6 +96,7 @@ export class OntoRdfSearch {
       this.isOpen = isOpen;
       if (this.isOpen) {
         this.loadSelectedViewFromStorage();
+        this.focusSearchInput();
       }
     };
   }
@@ -170,7 +171,9 @@ export class OntoRdfSearch {
 
   private focusSearchInput() {
     if (this.isOpen) {
-      HtmlUtil.focusElement(`#${this.RDF_CONTEXT}`);
+      const searchResourceId = `#${this.RDF_CONTEXT}`;
+      HtmlUtil.waitForElement(searchResourceId)
+        .then(() => HtmlUtil.focusElement(searchResourceId));
     }
   }
 

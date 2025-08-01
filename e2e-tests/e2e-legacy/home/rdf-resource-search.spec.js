@@ -70,7 +70,7 @@ describe('RDF resource search', () => {
         RdfResourceSearchSteps.getRDFResourceSearchInput().should('not.be.visible');
     });
 
-    it('Search should be persisted on page reload', () => {
+    it.only('Search should be persisted on page reload', () => {
         // Given: There is a repository selected and I visit a page other than home.
         cy.presetRepository(repositoryId);
         ImportSteps.visit();
