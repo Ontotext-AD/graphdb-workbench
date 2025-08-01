@@ -15,9 +15,7 @@ import {
     ServiceProvider,
     RepositoryLocationContextService,
     MapperProvider,
-    RepositoryListMapper,
-    SecurityContextService,
-    RestrictedPages
+    RepositoryListMapper
 } from "@ontotext/workbench-api";
 
 const modules = [
