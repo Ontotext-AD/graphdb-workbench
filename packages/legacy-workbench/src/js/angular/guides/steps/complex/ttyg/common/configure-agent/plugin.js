@@ -10,7 +10,10 @@ PluginRegistry.add('guide.step', [
                 return methods.map((method) => {
                     return {
                         guideBlockName: method.guideBlockName,
-                        options: angular.extend({}, method.options)
+                        options: {
+                            disablePreviousFlow: false,
+                            ...method.options
+                        }
                     };
                 });
             };
@@ -37,7 +40,7 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.configure-agent.name-input',
                         class: 'input-agent-name-guide-dialog',
                         url: 'ttyg',
-                        disablePreviousFlow: true,
+                        disablePreviousFlow: false,
                         beforeShowPromise: () => GuideUtils.waitFor(GuideUtils.getGuideElementSelector('agent-form'), 5)
                             .catch((error) => {
                                 services.toastr.error(services.$translate.instant('guide.unexpected.error.message'));
@@ -61,6 +64,7 @@ PluginRegistry.add('guide.step', [
                         class: 'input-model-guide-dialog',
                         url: 'ttyg',
                         elementSelector: GuideUtils.getGuideElementSelector('model'),
+                        disablePreviousFlow: false,
                         onNextValidate: () => Promise.resolve(GuideUtils.validateTextInput(GuideUtils.getGuideElementSelector('model'), options.model, false))
                     }, options)
                 })
@@ -74,11 +78,13 @@ PluginRegistry.add('guide.step', [
                         class: 'input-user-instructions-guide-dialog',
                         url: 'ttyg',
                         elementSelector: GuideUtils.getGuideElementSelector('user-instructions'),
+                        disablePreviousFlow: false,
                         onNextValidate: () => Promise.resolve(GuideUtils.validateTextInput(GuideUtils.getGuideElementSelector('user-instructions'), options.userInstructions, false))
                     }, options)
                 })
             }
-
+            // Removes the "Previous" button from the first method control step, because there is no previous step in the form.
+            steps[1].options.disablePreviousFlow = true;
             return steps;
         }
     }

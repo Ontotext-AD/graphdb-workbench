@@ -29,8 +29,7 @@ PluginRegistry.add('guide.step', [
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.fts-search-method.content',
                         url: 'ttyg',
-                        class: 'info-fts-search-guide-dialog',
-                        disablePreviousFlow: true
+                        class: 'info-fts-search-guide-dialog'
                     }, options)
                 },
                 {

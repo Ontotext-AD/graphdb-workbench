@@ -29,8 +29,7 @@ PluginRegistry.add('guide.step', [
                     options: angular.extend({}, {
                         content: `guide.step_plugin.sparql-search-method.content`,
                         class: 'info-sparql-search-guide-dialog',
-                        url: 'ttyg',
-                        disablePreviousFlow: true
+                        url: 'ttyg'
                     }, options)
                 },
                 {

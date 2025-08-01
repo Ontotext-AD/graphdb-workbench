@@ -38,7 +38,6 @@ PluginRegistry.add('guide.step', [
                             // Remove the "keydown" listener of element. It is important when step is hidden.
                             $(elementSelector).off('keydown');
                         },
-                        disablePreviousFlow: true,
                         disableNextFlow: true
                     }, options)
                 },
@@ -74,7 +73,6 @@ PluginRegistry.add('guide.step', [
                             class: 'explain-answer-guide-dialog',
                             url: 'ttyg',
                             elementSelector,
-                            disablePreviousFlow: true,
                             disableNextFlow: true
                         }, options)
                     },
@@ -110,7 +108,6 @@ PluginRegistry.add('guide.step', [
                             content: 'guide.step_plugin.ask-ttyg-agent.explore-sparql',
                             class: 'explore-sparql-guide-dialog',
                             url: 'ttyg',
-                            disablePreviousFlow: true,
                             disableNextFlow: true,
                             elementSelector
                         }, options)
@@ -139,8 +136,7 @@ PluginRegistry.add('guide.step', [
                                         // Using a timeout because the library executes logic to show the step in a then clause which causes current and next steps to show
                                         setTimeout(() => guide.show(stepId + 3))
                                     })
-                            },
-                            disablePreviousFlow: true
+                            }
                         }, options)
                     },
                     {

@@ -8,6 +8,7 @@ const BASIC_STEP = {
     maxWaitTime: 3,
     canBePaused: true,
     onNextClick: undefined,
+    disablePreviousFlow: true,
     onNextValidate: () => Promise.resolve(true),
     onPreviousClick: undefined,
     skipPoint: false,
@@ -121,7 +122,6 @@ PluginRegistry.add('guide.step', [
             };
             return angular.extend({}, BASIC_STEP, {
                 initPreviousStep: services.GuideUtils.defaultInitPreviousStep,
-                disablePreviousFlow: true,
                 onNextValidate: () => Promise.resolve(!services.GuideUtils.isVisible(options.elementSelectorToWait))
             }, options, notOverridable);
         }
@@ -134,7 +134,6 @@ PluginRegistry.add('guide.step', [
             };
             return angular.extend({}, BASIC_STEP, {
                 initPreviousStep: services.GuideUtils.defaultInitPreviousStep,
-                disablePreviousFlow: true,
                 onNextValidate: () => Promise.resolve(services.GuideUtils.isVisible(options.elementSelectorToWait))
             }, options, notOverridable);
         }
