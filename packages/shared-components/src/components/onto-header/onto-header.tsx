@@ -345,8 +345,12 @@ export class OntoHeader {
     event.stopPropagation();
     this.toastrService.info(TranslationService.translate('rdf_search.toasts.use_view_resource'));
     this.shouldShowSearch = false;
-    HtmlUtil.focusElement('#search-resource-input-home input');
-    this.eventService.emit({NAME: ResourceSearchConstants.RDF_SEARCH_ICON_CLICKED})
+    const searchInputId = '#search-resource-input-home input';
+    HtmlUtil.waitForElement(searchInputId)
+      .then(() => {
+        HtmlUtil.focusElement(searchInputId);
+        this.eventService.emit({NAME: ResourceSearchConstants.RDF_SEARCH_ICON_CLICKED});
+      });
   }
 
   // ========================
