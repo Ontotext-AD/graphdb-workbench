@@ -30,6 +30,7 @@ PluginRegistry.add('guide.step', [
                         class: 'create-gdb-repository-guide-dialog',
                         url: 'repository/create',
                         elementSelector: GuideUtils.getGuideElementSelector('createGraphDBRepository'),
+                        disablePreviousFlow: false,
                         onNextClick: GuideUtils.clickOnGuideElement('createGraphDBRepository')
                     }, options)
                 }, {
@@ -39,6 +40,7 @@ PluginRegistry.add('guide.step', [
                         class: 'gdb-repository-id-input-guide-dialog',
                         url: 'repository/create/graphdb',
                         elementSelector: repositoryIdInputSelector,
+                        disablePreviousFlow: false,
                         onNextValidate: () => Promise.resolve(GuideUtils.validateTextInput(repositoryIdInputSelector, repositoryId))
                     }, options)
                 }
@@ -52,6 +54,7 @@ PluginRegistry.add('guide.step', [
                         url: 'repository/create/graphdb',
                         class: 'gdb-repository-ruleset-select-guide-dialog',
                         elementSelector: GuideUtils.getGuideElementSelector('graphDBRepositoryRulesetSelect'),
+                        disablePreviousFlow: false,
                         show: () => () => {
                             GuideUtils.validateTextInput(repositoryIdInputSelector, repositoryId);
                         }
@@ -68,6 +71,7 @@ PluginRegistry.add('guide.step', [
                                    extraContent: 'guide.step_plugin.create_repository.enable-fts.extra-content',
                                    extraContentClass: 'alert alert-help text-left',
                                    elementSelector: GuideUtils.getGuideElementSelector('enable-fts-search'),
+                                   disablePreviousFlow: false,
                                    onNextValidate: () => Promise.resolve(GuideUtils.isChecked(GuideUtils.getGuideElementSelector('enable-fts-search', 'input')))
                                }, options)
                            });
@@ -79,6 +83,7 @@ PluginRegistry.add('guide.step', [
                     url: 'repository/create/graphdb',
                     class: 'create-repository-button-guide-dialog',
                     elementSelector: GuideUtils.getGuideElementSelector('graphDBRepositoryCrateButton'),
+                    disablePreviousFlow: false,
                     show: () => () => {
                         GuideUtils.validateTextInput(repositoryIdInputSelector, repositoryId);
                     },
