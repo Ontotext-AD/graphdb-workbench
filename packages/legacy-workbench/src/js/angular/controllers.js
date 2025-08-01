@@ -226,7 +226,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
                 return;
             }
 
-            const isAccessToPageRestricted = $scope.principal.authorities.indexOf(menuItem.role) === -1;
+            const isAccessToPageRestricted = !$jwtAuth.isAdmin() && $scope.principal.authorities.indexOf(menuItem.role) === -1;
             restrictedPages.setPageRestriction(route.url, isAccessToPageRestricted);
         });
         securityContextService.updateRestrictedPages(restrictedPages);

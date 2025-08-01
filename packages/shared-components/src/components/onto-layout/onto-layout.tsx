@@ -189,7 +189,6 @@ export class OntoLayout {
       ServiceProvider.get(EventService).subscribe(EventName.LOGOUT, () => {
         this.setNavbarItemVisibility();
         this.updateVisibility();
-        this.securityContextService.updateRestrictedPages(new RestrictedPages());
       })
     );
     this.subscriptions.add(
