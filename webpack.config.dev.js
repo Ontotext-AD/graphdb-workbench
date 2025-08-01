@@ -30,10 +30,10 @@ module.exports = (env, argv) => merge(commonConfig(env, argv), {
       {
         directory: path.join(__dirname, 'dist/')
       },
-      {
-        directory: path.join(__dirname, 'plugins'),
-        publicPath: '/plugins'
-      }
+      // {
+      //   directory: path.join(__dirname, 'plugins'),
+      //   publicPath: '/plugins'
+      // }
     ],
     compress: true,
     hot: false,
@@ -50,7 +50,7 @@ module.exports = (env, argv) => merge(commonConfig(env, argv), {
       disableDotRule: true
     },
     proxy: [{
-      context: ['/rest', '/repositories', '/protocol', '/rdf-bridge'],
+      context: ['/rest', '/repositories', '/protocol', '/rdf-bridge', '/plugins'],
       target: 'http://' + host + ':' + portThere,
       onProxyRes: (proxyRes) => {
         var key = 'www-authenticate';
