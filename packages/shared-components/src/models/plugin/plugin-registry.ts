@@ -1,5 +1,5 @@
 export interface PluginRegistry {
   get<T>(extensionPoint: string): T;
 
-  add(plugin: unknown): void;
+  add<T>(plugin: T): void;
 }

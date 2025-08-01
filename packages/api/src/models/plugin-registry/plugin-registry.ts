@@ -9,5 +9,5 @@ export interface PluginRegistry {
   // TODO: make this generic as it needs to be
   get(extensionPoint: ExtensionPoint.ROUTE): RouteModel;
 
-  add(pluginModule: PluginDefinition): void;
+  add(extensionPoint: ExtensionPoint, pluginDefinition: PluginDefinition): void;
 }

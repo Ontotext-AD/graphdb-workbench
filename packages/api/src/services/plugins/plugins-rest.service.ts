@@ -1,14 +1,12 @@
 import {HttpService} from '../http/http.service';
 import {PluginModule, PluginsManifest} from '../../models/plugin-registry';
-import {WindowService} from '../window/window.service';
+import {WindowService} from '../window';
 
 const MANIFEST_URL = '/plugins/plugins-manifest.json';
 
 export class PluginsRestService extends HttpService {
 
-  getPluginsManifest(): Promise<object> {
-    // Manifest should be a relative path, e.g. "/plugins/plugins.json"
-    const origin = window.location.origin; // Same origin as the shell/root-config
+  getPluginsManifest(origin: string): Promise<object> {
     const manifestFullUrl = `${origin}${MANIFEST_URL}`;
     return this.get(manifestFullUrl);
   }
