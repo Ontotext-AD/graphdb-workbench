@@ -30,6 +30,7 @@
         "license-report-shared-components": "npx license-checker --production --json --customPath license-checker/license-checker-format.json --start packages/shared-components --out packages/shared-components/dist/license-checker.json",
         "license-report-workbench": "npx license-checker --production --json --customPath license-checker/license-checker-format.json --start packages/workbench --out packages/workbench/dist/license-checker.json",
         "lint": "sh scripts/lint.sh",
+        "lint-staged": "lint-staged",
         "validate": "sh scripts/validate.sh",
         "test": "sh scripts/test.sh",
         "test:coverage": "sh scripts/test-coverage.sh",
@@ -38,7 +39,8 @@
         "sonar": "sh scripts/sonar.sh",
         "hotdeploy": "node scripts/hotdeploy.js",
         "qa": "npm run clean-install && npm run start",
-        "instrument:legacy-workbench": "npx nyc instrument --in-place --compact false --source-map --produce-source-map packages/legacy-workbench/src/js/angular"
+        "instrument:legacy-workbench": "npx nyc instrument --in-place --compact false --source-map --produce-source-map packages/legacy-workbench/src/js/angular",
+        "prepare": "husky"
     },
     "files": [
         "dist/"
@@ -77,10 +79,12 @@
         "expose-loader": "^5.0.1",
         "fs-extra": "^11.3.0",
         "html-loader": "^5.1.0",
+        "husky": "^9.1.7",
         "ignore-loader": "^0.1.2",
         "less": "^4.3.0",
         "less-loader": "^12.3.0",
         "license-checker": "^25.0.1",
+        "lint-staged": "^16.1.2",
         "merge-jsons-webpack-plugin": "^2.0.1",
         "mini-css-extract-plugin": "^2.9.2",
         "nodemon": "^3.1.10",

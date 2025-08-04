@@ -23,6 +23,51 @@ in watch mode and will proxy requests to a GraphDB instance running on `localhos
 
 ### Acceptance/functional tests
 
+## Code quality
+
+###  ESLint Setup
+This project enforces consistent code quality using ESLint, configured per microfrontend/package.
+
+Each microfrontend has its own eslint.config.js or eslint.config.cjs
+
+Lint rules are automatically enforced on file save and commit
+
+**The legacy-workbench package uses an older ESLint setup but is still linted on commit and during local development.**
+
+### Linting on Save
+You can have ESLint running in your editor:
+
+**IntelliJ**: enabled via Settings > Languages & Frameworks > JavaScript > Code Quality Tools > ESLint
+
+### Linting SCSS files
+The microfrontends which have .scss files also have stylelint.config.cjs configurations.
+These are used when committing 
+a file.
+
+Automatic style linting can also be set up in the editor:
+
+**Intellij**: Settings > Languages & Frameworks > Style Sheets > Stylelint.
+Click Enable.
+One microfrontend's configuration file can be chosen per project with Intellij.
+Currently, there is no root style lint config specifically for this purpose.
+
+### Pre-commit Hook (ESLint)
+
+Before each commit, ESLint runs on staged files via Husky and lint-staged.
+
+This project uses Husky and lint-staged to automatically lint only staged files during a commit.
+
+Pre-commit behavior:
+
+- Lints changed files using each package’s local ESLint config
+
+- Blocks the commit if any lint errors remain
+
+To troubleshoot:
+1. Look for lint error messages in your terminal
+2. Run `npm run lint-staged --debug` to see which files are affected
+3. Run `npm run lint` manually to check all files
+
 ## Release and publish
 
 The workbench is regularly published as a package in the NPM registry.
