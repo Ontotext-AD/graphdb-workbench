@@ -1,0 +1,22 @@
+#!/usr/bin/env sh
+echo "Running pre-commit hook..."
+#. "$(dirname "$0")/_/h"
+
+if [ $? -ne 0 ]; then
+  echo "Husky initialization failed."
+  exit 1
+fi
+
+# Check if lint-staged is available
+which lint-staged
+if [ $? -ne 0 ]; then
+  echo "lint-staged not found. Please ensure it's installed."
+  exit 1
+fi
+
+npx lint-staged --debug
+
+if ! lint-staged; then
+  echo "Linting failed, commit aborted."
+  exit 1
+fi
