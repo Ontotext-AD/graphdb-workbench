@@ -3266,6 +3266,7 @@
     "guide.step_plugin.class-hierarchy-instances-query.content": "This SPARQL query selects all instances of the class <b>{{iri}}</b>. The query was entered automatically when you clicked on the view instances link.",
     "guide.step_plugin.class-hierarchy-instances-results.content": "The table shows the results. Note that in this particular case, the query was executed automatically.",
     "guide.step_plugin.class-hierarchy-instances-results.extraContent": "Do not worry &mdash; there will be a dedicated section on the SPARQL editor later in the guide.",
+    "guide.step_plugin.class-hierarchy-toggle-prefixes.content": "Click on <b>Show prefixes/Hide prefixes</b> to toggle the display of the prefixes.",
     "guide.step_plugin.table-graph-overview": "The table shows RDF statements where the subject is the selected IRI, <b>{{iriLabel}}</b>. The view can be configured to show statements where the IRI is the <i>subject</i>, <i>predicate</i>, <i>object</i>, <i>context</i> or in any position.",
     "guide.step_plugin.table-graph-link": "You can click on any IRI in the table to navigate to it. Click on <b>{{iriLabel}}</b>.",
     "guide.step_plugin.table-graph-role": "You can configure the view to show RDF statements where the current IRI is the <i>subject</i>, <i>predicate</i>, <i>object</i>, <i>context</i> or in any position. Click on the <b>{{role|translate}}</b> tab.",

@@ -254,6 +254,30 @@ PluginRegistry.add('guide.step', [
         }
     },
     {
+        guideBlockName: 'class-hierarchy-toggle-prefixes',
+        getSteps: (options, services) => {
+            const GuideUtils = services.GuideUtils;
+            return [
+                {
+                    guideBlockName: 'clickable-element',
+                    options: {
+                        // If mainAction is set the title will be set automatically
+                        ...(options.mainAction ? {} : {title: CLASS_HIERARCHY_DEFAULT_TITLE}),
+                        content: 'guide.step_plugin.class-hierarchy-toggle-prefixes.content',
+                        url: 'hierarchy',
+                        elementSelector: '.prefix-toggle-btn',
+                        class: 'class-hierarchy-toggle-prefixes',
+                        scrollToHandler: GuideUtils.scrollToTop,
+                        onNextClick: (guide) => {
+                            GuideUtils.clickOnElement('.prefix-toggle-btn')();
+                        },
+                        ...options
+                    }
+                }
+            ]
+        }
+    },
+    {
         guideBlockName: 'class-hierarchy',
         getSteps: (options, services) => {
             const GuideUtils = services.GuideUtils;
