@@ -6,6 +6,7 @@ const createCopyToEditorListener = (YasguiComponentDirectiveUtil, sparqlDirectiv
     }
 }
 
+const SPARQL_DIRECTIVE_SELECTOR = '#query-editor';
 const SPARQL_EDITOR_DEFAULT_TITLE = 'view.sparql-editor.title';
 
 PluginRegistry.add('guide.step', [
@@ -22,7 +23,7 @@ PluginRegistry.add('guide.step', [
                         ...(options.mainAction ? {} : {title: SPARQL_EDITOR_DEFAULT_TITLE}),
                         url: 'sparql',
                         elementSelector: GuideUtils.CSS_SELECTORS.SPARQL_VISUAL_BUTTON_SELECTOR,
-                        class: 'visual-sparql-results-button-guide-dialog',
+                        class: 'visual-sparql-results-button',
                         scrollToHandler: GuideUtils.scrollToTop,
                         onNextClick: () => GuideUtils.clickOnElement(GuideUtils.CSS_SELECTORS.SPARQL_VISUAL_BUTTON_SELECTOR)(),
                         ...options
@@ -34,7 +35,6 @@ PluginRegistry.add('guide.step', [
     {
         guideBlockName: 'sparql-editor-run-button',
         getSteps: (options, services) => {
-            const SPARQL_DIRECTIVE_SELECTOR = '#query-editor';
             const GuideUtils = services.GuideUtils;
             const YasguiComponentDirectiveUtil = services.YasguiComponentDirectiveUtil;
             return [
@@ -46,7 +46,7 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.execute-sparql-query.run-sparql-query.content',
                         url: 'sparql',
                         elementSelector: GuideUtils.CSS_SELECTORS.SPARQL_RUN_BUTTON_SELECTOR,
-                        class: 'yasgui-run-button-guide-dialog',
+                        class: 'yasgui-run-button',
                         onNextClick: (guide) => YasguiComponentDirectiveUtil.getOntotextYasguiElementAsync(SPARQL_DIRECTIVE_SELECTOR)
                             .then((yasgui) => {
                                 yasgui.query();
@@ -60,10 +60,38 @@ PluginRegistry.add('guide.step', [
         }
     },
     {
+        guideBlockName: 'sparql-explain-editor',
+        getSteps: (options, services) => {
+            const GuideUtils = services.GuideUtils;
+            const YasguiComponentDirectiveUtil = services.YasguiComponentDirectiveUtil;
+            return [
+                {
+                    guideBlockName: 'input-element',
+                    options: {
+                        // If mainAction is set the title will be set automatically
+                        ...(options.mainAction ? {} : {title: SPARQL_EDITOR_DEFAULT_TITLE}),
+                        url: 'sparql',
+                        elementSelector: GuideUtils.CSS_SELECTORS.SPARQL_EDITOR_SELECTOR,
+                        class: 'sparql-explain-editor',
+                        beforeShowPromise: () => YasguiComponentDirectiveUtil.getOntotextYasguiElementAsync(SPARQL_DIRECTIVE_SELECTOR)
+                            .then(() => GuideUtils.waitFor(GuideUtils.CSS_SELECTORS.SPARQL_EDITOR_SELECTOR, 3))
+                            .then(() => GuideUtils.deferredShow(500)())
+                            .catch((error) => {
+                                services.toastr.error(services.$translate.instant('guide.unexpected.error.message'));
+                                throw error;
+                            }),
+                        scrollToHandler: GuideUtils.scrollToTop,
+                        extraContent: options.extraContent,
+                        ...options
+                    }
+                }
+            ]
+        }
+    },
+    {
         guideBlockName: 'sparql-editor',
         getSteps: (options, services) => {
             const $translate = services.$translate;
-            const SPARQL_DIRECTIVE_SELECTOR = '#query-editor';
             const GuideUtils = services.GuideUtils;
             const YasguiComponentDirectiveUtil = services.YasguiComponentDirectiveUtil;
 
@@ -88,7 +116,7 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.execute-sparql-query.query-editor.content',
                         url: 'sparql',
                         elementSelector: GuideUtils.CSS_SELECTORS.SPARQL_EDITOR_SELECTOR,
-                        class: 'yasgui-query-editor-guide-dialog',
+                        class: 'yasgui-query-editor',
                         queryAsHtmlCodeElement: '<div class="shepherd-code">' + code.outerHTML + copy.outerHTML + '</div>',
                         beforeShowPromise: () => YasguiComponentDirectiveUtil.getOntotextYasguiElementAsync(SPARQL_DIRECTIVE_SELECTOR)
                             .then(() => GuideUtils.waitFor(GuideUtils.CSS_SELECTORS.SPARQL_EDITOR_SELECTOR, 3))
@@ -130,11 +158,11 @@ PluginRegistry.add('guide.step', [
                     options: {
                         // If mainAction is set the title will be set automatically
                         ...(options.mainAction ? {} : {title: SPARQL_EDITOR_DEFAULT_TITLE}),
-                        content: 'guide.step_plugin.execute-sparql-query.result-explain.content',
+                        content: 'guide.step_plugin.sparql-results-explain.content',
                         url: 'sparql',
                         placement: 'top',
                         elementSelector: GuideUtils.CSS_SELECTORS.SPARQL_RESULTS_SELECTOR,
-                        class: 'yasgui-query-results-guide-dialog',
+                        class: 'yasgui-query-results',
                         fileName: options.fileName,
                         scrollToHandler: GuideUtils.scrollToTop,
                         extraContent: options.resultExtraContent,
@@ -148,7 +176,6 @@ PluginRegistry.add('guide.step', [
     {
         guideBlockName: 'execute-sparql-query',
         getSteps: (options, services) => {
-            const SPARQL_DIRECTIVE_SELECTOR = '#query-editor';
             const GuideUtils = services.GuideUtils;
             const YasguiComponentDirectiveUtil = services.YasguiComponentDirectiveUtil;
             const toastr = services.toastr;
