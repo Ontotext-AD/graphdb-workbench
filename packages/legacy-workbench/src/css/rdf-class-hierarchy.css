@@ -160,3 +160,6 @@
     display: none;
 }
 
+.disable-rdf-class.rdf-class {
+    pointer-events: none;
+}

@@ -8,7 +8,251 @@ const reloadAndOpenInfoPanel = (services, clasInstanceSelector) => {
         });
 };
 
+const disableAllRDFClasses = () => {
+    document.querySelectorAll('.rdf-class')
+        .forEach(el => {
+            el.classList.add('disable-rdf-class');
+        });
+};
+
+const enableAllRDFClasses = () => {
+    document.querySelectorAll('.rdf-class')
+        .forEach(el => {
+            el.classList.remove('disable-rdf-class');
+        });
+};
+
+const CLASS_HIERARCHY_DEFAULT_TITLE = 'view.class.hierarchy.title';
+const CLASS_HIERARCHY_RDF_INSTANCES_DEFAULT_TITLE = 'guide.step_plugin.class-hierarchy-instances.title';
+
 PluginRegistry.add('guide.step', [
+    {
+        guideBlockName: 'class-hierarchy-intro',
+        getSteps: (options) => {
+            return [
+                {
+                    guideBlockName: 'read-only-element',
+                    options: {
+                        content: 'guide.step_plugin.class-hierarchy-intro.content',
+                        url: 'hierarchy',
+                        elementSelector: '#classChart',
+                        placement: 'left',
+                        class: 'clas-hierarchy-intro',
+                        // If mainAction is set the title will be set automatically
+                        ...(options.mainAction ? {} : {title: CLASS_HIERARCHY_DEFAULT_TITLE}),
+                        ...options
+                    }
+                }
+            ];
+        }
+    },
+    {
+        guideBlockName: 'class-hierarchy-dataset-intro',
+        getSteps: (options) => {
+            return [
+                {
+                    guideBlockName: 'read-only-element',
+                    options: {
+                        url: 'hierarchy',
+                        elementSelector: '#classChart #main-group',
+                        placement: 'left',
+                        class: 'class-hierarchy-dataset-intro',
+                        // If mainAction is set the title will be set automatically
+                        ...(options.mainAction ? {} : {title: CLASS_HIERARCHY_DEFAULT_TITLE}),
+                        ...options
+                    }
+                }
+            ];
+        }
+    },
+    {
+        guideBlockName: 'class-hierarchy-zoom-class',
+        getSteps: (options, services) => {
+            const GuideUtils = services.GuideUtils;
+            const selector = GuideUtils.getGuideElementSelector('class-' + options.iri);
+            return [
+                {
+                    guideBlockName: 'clickable-element',
+                    options: {
+                        url: 'hierarchy',
+                        placement: 'left',
+                        elementSelector: selector,
+                        content: 'guide.step_plugin.class-hierarchy-zoom-class.content',
+                        class: 'class-hierarchy-zoom-class',
+                        // If mainAction is set the title will be set automatically
+                        ...(options.mainAction ? {} : {title: CLASS_HIERARCHY_DEFAULT_TITLE}),
+                        onNextClick: (guide, step) => {
+                            GuideUtils.classHierarchyZoom(step.elementSelector);
+                            guide.next();
+                        },
+                        ...options
+                    }
+                }
+            ];
+        }
+    },
+    {
+        guideBlockName: 'class-hierarchy-explain-class',
+        getSteps: (options, services) => {
+            const GuideUtils = services.GuideUtils;
+            const selector = GuideUtils.getGuideElementSelector('class-' + options.iri);
+            return [
+                {
+                    guideBlockName: 'read-only-element',
+                    options: {
+                        url: 'hierarchy',
+                        placement: 'left',
+                        elementSelector: selector,
+                        class: 'class-hierarchy-explain-class',
+                        // If mainAction is set the title will be set automatically
+                        ...(options.mainAction ? {} : {title: CLASS_HIERARCHY_DEFAULT_TITLE}),
+                        show: () => disableAllRDFClasses,
+                        hide: () => enableAllRDFClasses,
+                        ...options
+                    }
+                }
+            ]
+        }
+    },
+    {
+        guideBlockName: 'class-hierarchy-open-rdf-instances-side-panel',
+        getSteps: (options, services) => {
+            let element;
+            const GuideUtils = services.GuideUtils;
+            const selector = GuideUtils.getGuideElementSelector('class-' + options.iri);
+            const RoutingUtil = services.RoutingUtil;
+            const handleDoubleClick = () => (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                // Ensure the side panel always appears
+                return reloadAndOpenInfoPanel({RoutingUtil, GuideUtils}, selector);
+            };
+            return [
+                {
+                    guideBlockName: 'clickable-element',
+                    options: {
+                        content: 'guide.step_plugin.class-hierarchy-open-rdf-instances-side-panel.content',
+                        url: 'hierarchy',
+                        elementSelector: selector,
+                        class: 'class-hierarchy-open-rdf-instances-side-panel',
+                        placement: 'top',
+                        // If mainAction is set the title will be set automatically
+                        ...(options.mainAction ? {} : {title: CLASS_HIERARCHY_DEFAULT_TITLE}),
+                        onNextClick: (guide) => {
+                            GuideUtils.classHierarchyFocus(selector);
+                            guide.next();
+                        },
+                        show: () => () => {
+                            // Add a "dblclick" listener to the element.
+                            // We have to open side panel info manually when a selected node is clicked.
+                            element = document.querySelector(selector);
+                            if (element) {
+                                element.addEventListener('dblclick', handleDoubleClick, true);
+                            }
+                        },
+                        hide: () => () => {
+                            if (element) {
+                                element.removeEventListener('dblclick', handleDoubleClick);
+                                element = null;
+                            }
+                        },
+                        ...options
+                    }
+                }
+            ];
+        }
+    },
+    {
+        guideBlockName: 'class-hierarchy-close-rdf-instances-side-panel',
+        getSteps: (options, services) => {
+            const GuideUtils = services.GuideUtils;
+            const closeButtonSelector = GuideUtils.getGuideElementSelector('close-info-panel');
+            return [
+                {
+                    guideBlockName: 'clickable-element',
+                    options: {
+                        content: 'guide.step_plugin.class-hierarchy-close-rdf-instances-side-panel.content',
+                        url: 'hierarchy',
+                        canBePaused: false,
+                        elementSelector: closeButtonSelector,
+                        class: 'class-hierarchy-close-rdf-instances-side-panel',
+                        placement: 'left',
+                        // If mainAction is set the title will be set automatically
+                        ...(options.mainAction ? {} : {title: CLASS_HIERARCHY_RDF_INSTANCES_DEFAULT_TITLE}),
+                        onNextClick: () => GuideUtils.waitFor(closeButtonSelector, 3)
+                            .then(() => GuideUtils.clickOnElement(closeButtonSelector)()),
+                        ...options
+                    }
+                }
+            ];
+        }
+    },
+    {
+        guideBlockName: 'class-hierarchy-rdf-instances-side-panel-intro',
+        getSteps: (options) => {
+            return [
+                {
+                    guideBlockName: 'read-only-element',
+                    options: {
+                        content: 'guide.step_plugin.class-hierarchy-rdf-instances-side-panel-intro.content',
+                        url: 'hierarchy',
+                        elementSelector: '.rdf-info-side-panel div',
+                        class: 'class-hierarchy-rdf-instances-side-panel-intro',
+                        canBePaused: false,
+                        placement: 'left',
+                        // If mainAction is set the title will be set automatically
+                        ...(options.mainAction ? {} : {title: CLASS_HIERARCHY_DEFAULT_TITLE}),
+                        ...options
+                    }
+                }
+            ];
+        }
+    },
+    {
+        guideBlockName: 'class-hierarchy-rdf-instances-side-panel-open-all-instances-in-sparql',
+        getSteps: (options, services) => {
+            const GuideUtils = services.GuideUtils;
+            return [
+                {
+                    guideBlockName: 'clickable-element',
+                    options: {
+                        content: 'guide.step_plugin.class-hierarchy-rdf-instances-side-panel-open-all-instances-in-sparql.content',
+                        url: 'hierarchy',
+                        canBePaused: false,
+                        elementSelector: GuideUtils.getGuideElementSelector('instances-count'),
+                        class: 'class-hierarchy-rdf-instances-side-panel-open-all-instances-in-sparql',
+                        onNextClick: GuideUtils.clickOnGuideElement('instances-count'),
+                        // If mainAction is set the title will be set automatically
+                        ...(options.mainAction ? {} : {title: CLASS_HIERARCHY_DEFAULT_TITLE}),
+                        ...options
+                    }
+                }
+            ]
+        }
+    },
+    {
+        guideBlockName: "class-hierarchy-explain-rdf-instance",
+        getSteps: (options, services) => {
+            const GuideUtils = services.GuideUtils;
+            return [
+                {
+                    guideBlockName: 'read-only-element',
+                    options: {
+                        content: 'guide.step_plugin.class-hierarchy-explain-rdf-instance.content',
+                        url: 'hierarchy',
+                        canBePaused: false,
+                        elementSelector: GuideUtils.getGuideElementSelector('instance-' + options.instance),
+                        class: 'class-hierarchy-explain-rdf-instance',
+                        focusInstance: options.instance,
+                        extraContent: options.extraContent,
+                        // If mainAction is set the title will be set automatically
+                        ...(options.mainAction ? {} : {title: CLASS_HIERARCHY_DEFAULT_TITLE}),
+                        ...options
+                    }
+                }
+            ]
+        }
+    },
     {
         guideBlockName: 'class-hierarchy',
         getSteps: (options, services) => {
@@ -23,59 +267,39 @@ PluginRegistry.add('guide.step', [
                         showIntro: true
                     }, options)
                 }, {
-                    guideBlockName: 'read-only-element',
-                    options: angular.extend({}, {
-                        content: 'guide.step_plugin.class_hierarchy_intro.content',
-                        url: 'hierarchy',
-                        elementSelector: '#classChart',
-                        placement: 'left'
-                    }, options)
+                    guideBlockName: 'class-hierarchy-intro',
+                    options: {...options}
                 }
             ];
 
             if (options.introExtraContent) {
                 steps.push({
-                    guideBlockName: 'read-only-element',
-                    options: angular.extend({}, {
-                        content: '',
-                        extraContent: options.introExtraContent,
-                        url: 'hierarchy',
-                        elementSelector: '#classChart #main-group',
-                        class: 'clas-hierarchy-intro-guide-dialog',
-                        placement: 'left'
-                    }, options)
+                    guideBlockName: 'class-hierarchy-dataset-intro',
+                    options: {
+                        content: options.introExtraContent,
+                        ...options
+                    }
                 });
             }
 
-            if (angular.isArray(options.zoomIris)) {
+            if (Array.isArray(options.zoomIris)) {
                 options.zoomIris.forEach((zoomIri) => {
-                    const selector = GuideUtils.getGuideElementSelector('class-' + zoomIri.iri);
                     steps.push({
-                        guideBlockName: 'clickable-element',
-                        options: angular.extend({}, {
-                            content: 'guide.step_plugin.class_hierarchy_zoom.content',
-                            url: 'hierarchy',
-                            placement: 'left',
-                            elementSelector: selector,
-                            class: 'class-hierarchy-zoom-content-guide-dialog',
-                            onNextClick: (guide, step) => {
-                                GuideUtils.classHierarchyZoom(step.elementSelector);
-                                guide.next();
-                            }
-                        }, options, zoomIri)
+                        guideBlockName: 'class-hierarchy-zoom-class',
+                        options: {
+                            iri: zoomIri.iri,
+                            ...options,
+                        }
                     });
                     if (zoomIri.postExtraContent) {
                         steps.push({
-                            guideBlockName: 'read-only-element',
-                            options: angular.extend({}, {
-                                content: '',
-                                extraContent: zoomIri.postExtraContent,
-                                url: 'hierarchy',
-                                placement: 'left',
+                            guideBlockName: 'class-hierarchy-explain-class',
+                            options: {
+                                content: zoomIri.postExtraContent,
                                 beforeShowPromise: GuideUtils.deferredShow(800),
-                                elementSelector: selector,
-                                class: 'class-hierarchy-instances-guide-dialog'
-                            }, options)
+                                iri: zoomIri.iri,
+                                ...options
+                            }
                         });
                     }
                 });
@@ -87,32 +311,17 @@ PluginRegistry.add('guide.step', [
     {
         guideBlockName: 'class-hierarchy-instances',
         getSteps: (options, services) => {
-            let element;
             const GuideUtils = services.GuideUtils;
             const RoutingUtil = services.RoutingUtil;
-            options.title = 'guide.step_plugin.class-hierarchy-instances.title';
+            // If mainAction is set the title will be set automatically
+            options.title = CLASS_HIERARCHY_RDF_INSTANCES_DEFAULT_TITLE;
             const closeButtonSelector = GuideUtils.getGuideElementSelector('close-info-panel');
             const clasInstanceSelector = GuideUtils.getGuideElementSelector('class-' + options.iri);
-            const handleDoubleClick = () => (event) => {
-                event.preventDefault();
-                event.stopPropagation();
-                // Ensure the side panel always appears
-                return reloadAndOpenInfoPanel({RoutingUtil, GuideUtils}, clasInstanceSelector);
-            };
-            let dblClickHandler = handleDoubleClick();
+            const instanceCountSelector = GuideUtils.getGuideElementSelector('instances-count');
             const steps = [
                 {
-                    guideBlockName: 'clickable-element',
-                    options: angular.extend({}, {
-                        content: 'guide.step_plugin.class-hierarchy-instances.content',
-                        url: 'hierarchy',
-                        elementSelector: clasInstanceSelector,
-                        class: 'class-hierarchy-instance-guide-dialog',
-                        placement: 'top',
-                        onNextClick: (guide) => {
-                            GuideUtils.classHierarchyFocus(clasInstanceSelector);
-                            guide.next();
-                        },
+                    guideBlockName: 'class-hierarchy-open-rdf-instances-side-panel',
+                    options: {
                         initPreviousStep: () => {
                             if (!GuideUtils.isVisible(closeButtonSelector)) {
                                 return reloadAndOpenInfoPanel({RoutingUtil, GuideUtils}, clasInstanceSelector);
@@ -120,101 +329,61 @@ PluginRegistry.add('guide.step', [
 
                             return Promise.resolve();
                         },
-                        show: () => () => {
-                            // Add a "dblclick" listener to the element.
-                            // We have to open side panel info manually when a selected node is clicked.
-                            element = document.querySelector(clasInstanceSelector);
-                            if (element) {
-                                element.addEventListener('dblclick', dblClickHandler, true);
-                            }
-                        },
-                        hide: () => () => {
-                            if (element) {
-                                element.removeEventListener('dblclick', dblClickHandler);
-                                element = null;
-                            }
-                        },
-                    }, options)
+                        ...options
+                    }
                 },
                 {
-                    guideBlockName: 'read-only-element',
-                    options: angular.extend({}, {
-                        content: 'guide.step_plugin.class-hierarchy-instances-side-panel.content',
-                        url: 'hierarchy',
-                        elementSelector: '.rdf-info-side-panel div',
-                        class: 'class-hierarchy-side-panel-info-guide-dialog',
-                        canBePaused: false,
-                        placement: 'left',
+                    guideBlockName: 'class-hierarchy-rdf-instances-side-panel-intro',
+                    options: {
+                        skipPoint: true,
                         beforeShowPromise: GuideUtils.deferredShow(800),
                         onPreviousClick: () => new Promise(function (resolve) {
                             GuideUtils.waitFor(closeButtonSelector, 1)
                                 .then(() => $(closeButtonSelector).trigger('click'));
                             resolve();
-                        })
-                    }, options)
+                        }),
+                        ...options
+                    }
                 }
             ];
 
             if (angular.isArray(options.focusInstances)) {
                 options.focusInstances.forEach((focusInstance) => {
-                    if (!angular.isObject(focusInstance)) {
+                    if (!GuideUtils.isObject(focusInstance)) {
                         focusInstance = {
                             instance: focusInstance
                         };
                     }
                     steps.push({
-                        guideBlockName: 'read-only-element',
-                        options: angular.extend({}, {
-                            content: 'guide.step_plugin.class-hierarchy-instances-focus.content',
-                            url: 'hierarchy',
-                            canBePaused: false,
-                            elementSelector: GuideUtils.getGuideElementSelector('instance-' + focusInstance.instance),
-                            class: 'class-hierarchy-side-bar-instance-info-guide-dialog',
-                            focusInstance: focusInstance.instance,
-                            extraContent: focusInstance.message
-                        }, options)
+                        guideBlockName: 'class-hierarchy-explain-rdf-instance',
+                        options: {
+                            instance: focusInstance.instance,
+                            extraContent: focusInstance.message,
+                            ...options
+                        }
                     });
                 });
             }
 
-            const instanceCountSelector = GuideUtils.getGuideElementSelector('instances-count');
+
             if (options.followCountLink) {
                 steps.push({
-                    guideBlockName: 'clickable-element',
-                    options: angular.extend({}, {
-                        content: 'guide.step_plugin.class-hierarchy-instances-count.content',
-                        url: 'hierarchy',
-                        canBePaused: false,
-                        elementSelector: instanceCountSelector,
-                        class: 'class-hierarchy-side-panel-instances-count-guide-dialog',
-                        onNextClick: GuideUtils.clickOnGuideElement('instances-count')
-                    }, options)
+                    guideBlockName: 'class-hierarchy-rdf-instances-side-panel-open-all-instances-in-sparql',
+                    options: {...options}
                 });
 
                 steps.push({
-                    guideBlockName: 'read-only-element',
-                    options: angular.extend({}, {
+                    guideBlockName: 'sparql-explain-editor',
+                    options: {
                         content: 'guide.step_plugin.class-hierarchy-instances-query.content',
-                        url: 'sparql',
-                        elementSelector: GuideUtils.CSS_SELECTORS.SPARQL_EDITOR_SELECTOR,
-                        beforeShowPromise: () => GuideUtils.waitFor(GuideUtils.CSS_SELECTORS.SPARQL_EDITOR_SELECTOR, 3)
-                            .then(() => GuideUtils.deferredShow(500)()),
-                        class: 'class-hierarchy-instances-query-guide-dialog',
-                        scrollToHandler: GuideUtils.scrollToTop
-                    }, options)
+                        ...options
+                    }
                 });
                 steps.push({
-                    guideBlockName: 'read-only-element',
+                    guideBlockName: 'sparql-results-explain',
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.class-hierarchy-instances-results.content',
-                        extraContent: options.showExtraCommentSparql !== false ?
-                            'guide.step_plugin.class-hierarchy-instances-results.extraContent' : null,
-                        url: 'sparql',
-                        placement: 'top',
-                        elementSelector: GuideUtils.CSS_SELECTORS.SPARQL_RESULTS_SELECTOR,
-                        class: 'class-hierarchy-instances-results-guide-dialog',
-                        fileName: options.fileName,
-                        scrollToHandler: GuideUtils.scrollToTop,
+                        extraContent: options.showExtraCommentSparql !== false ? 'guide.step_plugin.class-hierarchy-instances-results.extraContent' : null,
                         onNextClick: (guide) => {
                             window.history.back();
                             guide.next();
@@ -225,23 +394,11 @@ PluginRegistry.add('guide.step', [
             }
 
             steps.push({
-                guideBlockName: 'clickable-element',
-                options: angular.extend({}, {
-                    content: 'guide.step_plugin.class-hierarchy-instances-side-panel-close.content',
-                    url: 'hierarchy',
-                    canBePaused: false,
-                    elementSelector: closeButtonSelector,
-                    class: 'class-hierarchy-side-panel-close-guide-dialog',
-                    placement: 'left',
+                guideBlockName: 'class-hierarchy-close-rdf-instances-side-panel',
+                options: {
                     // If we followed the count link we come back here from another view
                     // and the side panel needs time to open
                     beforeShowPromise: options.followCountLink ? GuideUtils.deferredShow(1500) : Promise.resolve(),
-                    advanceOn: {
-                        selector: closeButtonSelector,
-                        event: 'click'
-                    },
-                    onNextClick: () => GuideUtils.waitFor(closeButtonSelector, 3)
-                        .then(() => $(closeButtonSelector).trigger('click')),
                     initPreviousStep: (services, stepId) => {
 
                         const currentStepId = services.ShepherdService.getCurrentStepId();
@@ -256,8 +413,9 @@ PluginRegistry.add('guide.step', [
                         }
                         // If is called from other step we have to reload and open the info panel.
                         return reloadAndOpenInfoPanel({RoutingUtil, GuideUtils}, clasInstanceSelector);
-                    }
-                }, options)
+                    },
+                    ...options
+                }
             });
 
             return steps;
