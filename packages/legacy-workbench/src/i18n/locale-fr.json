@@ -3265,6 +3265,7 @@
     "guide.step_plugin.class-hierarchy-instances-query.content": "Cette requête SPARQL sélectionne toutes les instances de la classe <b>{{iri}}</b>. La requête a été saisie automatiquement lorsque vous avez cliqué sur la vue lien d'instances.",
     "guide.step_plugin.class-hierarchy-instances-results.content": "Le tableau montre les résultats. Notez que dans ce cas particulier, la requête a été exécutée automatiquement.",
     "guide.step_plugin.class-hierarchy-instances-results.extraContent": "Ne vous inquiétez pas &mdash; il y aura une section dédiée à l'éditeur SPARQL plus tard dans le guide.",
+    "guide.step_plugin.class-hierarchy-toggle-prefixes.content": "Cliquez sur <b>Afficher les préfixes/Masquer les préfixes</b> pour afficher ou masquer les préfixes.",
     "guide.step_plugin.table-graph-overview": "Le tableau affiche les déclarations RDF où le sujet est l'IRI sélectionné, <b>{{iriLabel}}</b>. La vue peut être configurée pour afficher les déclarations où l'IRI est le <i>sujet</i>, le <i>prédicat</i>, l'<i>objet</i>, le <i>contexte</i> ou dans n'importe quelle position.",
     "guide.step_plugin.table-graph-link": "Vous pouvez cliquer sur n'importe quel IRI du tableau pour y accéder. Cliquez sur <b>{{iriLabel}}</b>.",
     "guide.step_plugin.table-graph-role": "Vous pouvez configurer la vue pour afficher les déclarations RDF où l'IRI actuel est le <i>sujet</i>, le <i>prédicat</i>, l'<i>objet</i>, le <i>contexte</i> ou dans n'importe quelle position. Cliquez sur l'onglet <b>{{role|translate}}</b>.",
