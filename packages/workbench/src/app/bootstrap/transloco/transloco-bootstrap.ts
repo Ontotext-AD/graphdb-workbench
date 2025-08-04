@@ -1,4 +1,4 @@
-import {APP_INITIALIZER} from '@angular/core';
+import {inject, provideAppInitializer} from '@angular/core';
 import {provideTransloco, TranslocoService} from '@jsverse/transloco';
 import {ServiceProvider, LanguageService, LanguageContextService, TranslationBundle} from '@ontotext/workbench-api';
 import {environment} from '../../../environments/environment';
@@ -11,28 +11,22 @@ import {environment} from '../../../environments/environment';
  * @param translocoService - The transloco service.
  * @returns A Promise that resolves when the transloco configuration is complete.
  */
-const translocoInitializeProvider = {
-  provide: APP_INITIALIZER,
-  useFactory: (translocoService: TranslocoService) => {
-    return () => {
-      const languageContextService = ServiceProvider.get(LanguageContextService);
-      const languageService = ServiceProvider.get(LanguageService);
+const translocoInitializeProvider = provideAppInitializer(() => {
+  const translocoService = inject(TranslocoService);
+  const languageContextService = ServiceProvider.get(LanguageContextService);
+  const languageService = ServiceProvider.get(LanguageService);
 
-      return new Promise<void>((resolve) => {
-        languageContextService.onLanguageBundleChanged((languageBundle?: TranslationBundle) => {
-          if (languageBundle) {
-            const languageCode = languageContextService.getSelectedLanguage() || languageService.getDefaultLanguage();
-            translocoService.setTranslation(languageBundle, languageCode);
-            translocoService.setActiveLang(languageCode);
-          }
-          resolve();
-        });
-      });
-    };
-  },
-  deps: [TranslocoService],
-  multi: true,
-};
+  return new Promise<void>((resolve) => {
+    languageContextService.onLanguageBundleChanged((languageBundle?: TranslationBundle) => {
+      if (languageBundle) {
+        const languageCode = languageContextService.getSelectedLanguage() || languageService.getDefaultLanguage();
+        translocoService.setTranslation(languageBundle, languageCode);
+        translocoService.setActiveLang(languageCode);
+      }
+      resolve();
+    });
+  });
+});
 
 const translocoConfigProvider = provideTransloco({
   config: {
