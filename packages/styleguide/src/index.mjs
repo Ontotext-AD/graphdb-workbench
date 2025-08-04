@@ -7,7 +7,7 @@ register(StyleDictionary, {
   excludeParentKeys: true,
 });
 
-const SOURCE_GLOB = "tokens/donka/**/*.json";
+const SOURCE_GLOB = "tokens/**/*.json";
 
 // Define the configuration using the Config type from style-dictionary
 const configuration = {
