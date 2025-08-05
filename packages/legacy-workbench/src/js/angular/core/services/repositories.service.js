@@ -277,18 +277,12 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
             return this.getRepositories().find((repository) => repository.id === repositoryId);
         };
 
-        this.getReadableRepositories = function () {
-            return _.filter(this.getRepositories(), function (repo) {
-                return $jwtAuth.canReadRepo(repo);
-            });
-        };
-
         this.getReadableGraphdbRepositories = function () {
             return this.getReadableRepositories()
                 .filter((repo) => repo.type === 'graphdb');
         };
 
-        this.getAllAccessibleRepositories = function () {
+        this.getReadableRepositories = function () {
             return _.filter(this.getRepositories(), function (repo) {
                 return $jwtAuth.canReadRepo(repo) || $jwtAuth.hasGraphqlReadRights(repo);
             });
@@ -546,7 +540,7 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
         });
 
         $rootScope.$watch(() => {
-            const currentRepos = that.getAllAccessibleRepositories();
+            const currentRepos = that.getReadableRepositories();
             return JSON.stringify(currentRepos);
         }, (newVal, oldVal) => {
             if (newVal !== oldVal) {
