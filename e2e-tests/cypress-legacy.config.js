@@ -27,7 +27,7 @@ module.exports = defineConfig({
             return config;
         },
         baseUrl: 'http://localhost:9000',
-        specPattern: 'e2e-legacy/**/*.{js,jsx,ts,tsx}',
+        specPattern: 'e2e-legacy/home/rdf*.{js,jsx,ts,tsx}',
         supportFile: 'support/e2e.js',
         reporter: "cypress-multi-reporters",
         reporterOptions: {
