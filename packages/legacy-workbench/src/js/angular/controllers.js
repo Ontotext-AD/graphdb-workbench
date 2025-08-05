@@ -511,10 +511,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         return $repositories.getReadableRepositories();
     };
 
-    $scope.getAllAccessibleRepositories = function () {
-        return $repositories.getAllAccessibleRepositories();
-    };
-
     $scope.getWritableRepositories = function () {
         return $repositories.getWritableRepositories();
     };
