@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Home</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Home</h1>
+
+    
+
+
+
+    
+
+
+    <h3> </h3>
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+    <section>
+        <article><h1>graphdb-workbench</h1>
+<p>The web application for GraphDB APIs</p>
+<p>[<img src="https://jenkins.ontotext.com/buildStatus/icon?job=graphdb-workbench-pipeline" alt="Build Status">]</p>
+<h3>Setup Environment</h3>
+<ul>
+<li>Clone the project or check it out from version control.</li>
+<li>Open a terminal, navigate to the project's root directory, and run <code>npm install:ci</code> to install all required dependencies.
+The <code>api</code> project is built automatically.</li>
+</ul>
+<h2>Development</h2>
+<h3>Interactive guides</h3>
+<p><a href="/packages/legacy-workbench/src/js/angular/guides/README.md">Interactive Guides README</a></p>
+<h3>Developers guide</h3>
+<p>https://ontotext-ad.github.io/graphdb-workbench/developers-guide</p>
+<h3>Dev server</h3>
+<p>The workbench can be run in a development mode by executing <code>npm run start</code>. This will start each of the child applications
+in watch mode and will proxy requests to a GraphDB instance running on <code>localhost:7200</code> (default).</p>
+<h2>Testing</h2>
+<h3>Acceptance/functional tests</h3>
+<h2>Release and publish</h2>
+<p>The workbench is regularly published as a package in the NPM registry.</p>
+<h3>Build</h3>
+<h2>Deploying</h2>
+<h3>Standalone (Docker)</h3>
+<h4>Local development</h4>
+<p>For ease of use in local development with a locally running GraphDB at localhost:7200, there is also a
+Docker compose that can be built and started with <code>docker-compose up --build</code>. The docker-compose requires
+to have <code>.env</code> file in the root directory of the project where the <code>HOST_IP</code> environment variable
+must be specified, e.g. <code>HOST_IP=10.131.2.176</code>. This is needed to proxy requests to locally running GraphDB.</p>
+<h3>Using GraphDB distribution</h3>
+<p>GraphDB exposes a configuration param <code>-Dgraphdb.workbench.home</code> for overriding the bundled workbench.
+This allows to easily point it to the <code>dist/</code> folder of the workbench after it has been bundled
+with <code>npm run build</code>.</p>
+<p>Note: Wrongly configuring the parameter will result in GraphDb responding with HTTP 404.</p>
+<h4>GraphDB Docker distribution</h4>
+<p>The Docker distribution of GraphDB can also be configured to serve custom workbench, the only difference
+is that the workbench must be mounted, example:</p>
+<pre class="prettyprint source"><code>docker run -d \
+    -p 7200:7200 \
+    -v /graphdb-workbench/dist:/workbench docker-registry.ontotext.com/graphdb-free:9.0.0 \
+    -Dgraphdb.workbench.home=/workbench
+</code></pre>
+<p>Note: Instead of mounting the workbench, this can be done in a custom Docker image using the
+GraphDB one as a base and then copy the custom workbench.</p>
+<h2>CI</h2>
+<p>The CI pipeline is managed using a Jenkinsfile, which defines the stages for building, testing, and analyzing the project.</p>
+<p>The CI pipeline uses a Docker Compose utility setup to ensure independence from the Node.js version installed on the Jenkins agent.</p>
+<p>The <strong>Jenkinsfile</strong> defines the CI pipeline for building, testing, and analyzing the <strong>GraphDB Workbench</strong> project. Below is an overview of the workflow:</p>
+<table>
+<thead>
+<tr>
+<th><strong>Stage</strong></th>
+<th><strong>Purpose</strong></th>
+<th><strong>Tools/Commands</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Build Info</strong></td>
+<td>Logs environment details for traceability</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Install</strong></td>
+<td>Installs dependencies and builds packages</td>
+<td><code>npm run install:ci</code>, <code>docker-compose</code></td>
+</tr>
+<tr>
+<td><strong>Build</strong></td>
+<td>Builds the project</td>
+<td><code>npm run buid</code>, <code>docker-compose</code></td>
+</tr>
+<tr>
+<td><strong>Lint</strong></td>
+<td>Performs lint checks</td>
+<td><code>npm run lint</code>, <code>docker-compose</code></td>
+</tr>
+<tr>
+<td><strong>Test</strong></td>
+<td>Runs unit tests</td>
+<td><code>npm run test</code>, <code>docker-compose</code></td>
+</tr>
+<tr>
+<td><strong>Cypress Test</strong></td>
+<td>Executes end-to-end tests</td>
+<td><code>npm run cy:run</code>,</td>
+</tr>
+<tr>
+<td><strong>Sonar</strong></td>
+<td>Performs static code analysis to ensure code quality</td>
+<td><code>npm run sonar</code></td>
+</tr>
+</tbody>
+</table>
+<p>Note: If any stage fails, the pipeline is marked as failed, but proceeds to the next stage.</p>
+<h2>License</h2>
+<p><a href="licenses/LICENSE">LICENSE</a></p></article>
+    </section>
+
+
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#beforeShowPromise">beforeShowPromise</a></li><li><a href="global.html#getSteps">getSteps</a></li><li><a href="global.html#guideBlockName">guideBlockName</a></li><li><a href="global.html#reloadAndOpenInfoPanel">reloadAndOpenInfoPanel</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Wed Aug 06 2025 18:43:15 GMT+0300 (Eastern European Summer Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

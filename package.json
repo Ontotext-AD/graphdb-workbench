@@ -6,6 +6,7 @@
         "node": ">=22.17"
     },
     "scripts": {
+        "doc": "jsdoc -c jsdoc.conf.json",
         "clean": "sh scripts/clean.sh",
         "clean-install": "sh scripts/clean.sh && npm run install:local",
         "install:ci": "sh scripts/install.sh && sh scripts/postinstall.sh",
@@ -77,6 +78,7 @@
         "fs-extra": "^11.3.0",
         "html-loader": "^5.1.0",
         "ignore-loader": "^0.1.2",
+        "jsdoc": "^4.0.4",
         "less": "^4.3.0",
         "less-loader": "^12.3.0",
         "license-checker": "^25.0.1",

@@ -10,6 +10,10 @@ The web application for GraphDB APIs
 
 ## Development
 
+### Interactive guides
+
+[Interactive Guides README](/packages/legacy-workbench/src/js/angular/guides/README.md)
+
 ### Developers guide
 
 https://ontotext-ad.github.io/graphdb-workbench/developers-guide
