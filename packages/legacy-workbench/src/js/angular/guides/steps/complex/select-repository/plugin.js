@@ -74,7 +74,7 @@ PluginRegistry.add('guide.step', [
         guideBlockName: 'repositories-select-repository',
         getSteps: (options, services) => {
             const GuideUtils = services.GuideUtils;
-            const repositoryId = getRepositoryName(services, options);
+            const repositoryId = options.repositoryIdToSelect ?? getRepositoryName(services, options);
             const selectRepositoryRowSelector = GuideUtils.getGuideElementSelector(`repository-${repositoryId}`);
             const selectRepositoryButtonWrapperSelector = `${selectRepositoryRowSelector} ${GuideUtils.getGuideElementSelector('select-repository-button-wrapper')}`;
             const selectRepositoryButtonSelector = `${selectRepositoryButtonWrapperSelector} ${GuideUtils.getGuideElementSelector('select-repository-button')}`;
