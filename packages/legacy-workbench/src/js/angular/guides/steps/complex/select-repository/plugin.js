@@ -14,6 +14,7 @@ const setRepositorySelectorAutoClose = (autoClose) => {
     }
 }
 
+const REPOSITORIES_DEFAULT_TITLE = 'guide.step_plugin.repositories.default-title'
 
 PluginRegistry.add('guide.step', [
     {
@@ -70,18 +71,28 @@ PluginRegistry.add('guide.step', [
         }
     },
     {
-        guideBlockName: 'select-repository-plug',
+        guideBlockName: 'repositories-select-repository',
         getSteps: (options, services) => {
             const GuideUtils = services.GuideUtils;
-            return [{
-                guideBlockName: 'clickable-element',
-                options: angular.extend({}, {
-                    content: 'guide.step_plugin.select-repository-plug.content',
-                    elementSelector: GuideUtils.getGuideElementSelector(`repository-${options.repositoryId}-plug`),
-                    onNextClick: GuideUtils.getGuideElementSelector(`repository-${options.repositoryId}-plug`)
-                }, options)
-            }
-            ];
+            const repositoryId = getRepositoryName(services, options);
+            const selectRepositoryRowSelector = GuideUtils.getGuideElementSelector(`repository-${repositoryId}`);
+            const selectRepositoryButtonWrapperSelector = `${selectRepositoryRowSelector} ${GuideUtils.getGuideElementSelector('select-repository-button-wrapper')}`;
+            const selectRepositoryButtonSelector = `${selectRepositoryButtonWrapperSelector} ${GuideUtils.getGuideElementSelector('select-repository-button')}`;
+            return [
+                {
+                    guideBlockName: 'clickable-element',
+                    options: {
+                        content: 'guide.step_plugin.repositories.select-repository.content',
+                        // If mainAction is set the title will be set automatically
+                        ...(options.mainAction ? {} : {title: REPOSITORIES_DEFAULT_TITLE}),
+                        url: 'repository',
+                        elementSelector: selectRepositoryButtonWrapperSelector,
+                        class: 'repositories-select-repository',
+                        onNextClick: () => GuideUtils.clickOnElement(selectRepositoryButtonSelector)(),
+                        ...options
+                    }
+                }
+            ]
         }
     }
 ]);
