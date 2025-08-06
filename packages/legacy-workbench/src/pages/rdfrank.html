@@ -55,7 +55,9 @@
 					<button ng-disabled="currentRankStatus == rdfStatus.COMPUTING"
 							ng-click="computeRank()"
 							data-test="compute-rdf-rank-btn"
-							class="btn btn-primary compute-rdf-rank-btn">{{'compute.full.btn' | translate}}</button>
+							class="btn btn-primary compute-rdf-rank-btn"
+							guide-selector="compute-rdf-rank-btn">{{'compute.full.btn' | translate}}
+					</button>
                     <button ng-hide="currentRankStatus != rdfStatus.OUTDATED"
 							ng-click="computeIncrementalRank()" class="btn btn-primary">{{'compute.incremental.btn' | translate}}</button>
 				</p>
@@ -67,8 +69,8 @@
 				<h3 class="d-inline-block mr-1">{{'filtering.header' | translate}}</h3>
 				<span class="tag {{filteringEnabled ? 'tag-primary' : 'tag-default'}}">{{filteringEnabled ? 'common.on.btn' : 'common.off.btn' | translate}}</span>
                 <span gdb-tooltip="{{'click.to' | translate}} {{filteringEnabled ? 'disable' : 'enable' | translate}} {{'filtering' | translate}}" tooltip-placement="top" ng-click="toggleFiltering()" class="switch rdf-rank-filter-switch">
-                    <input type="checkbox" class="switch" ng-checked="filteringEnabled"/>
-                    <label for="toggleFilterMode"></label>
+                    <input id="toggleFilterModeInput" type="checkbox" class="switch" ng-checked="filteringEnabled"/>
+                    <label for="toggleFilterModeInput">&#8203;</label>
                 </span>
 			</div>
 
@@ -80,8 +82,8 @@
 						{{'include.explicit.header' | translate}}
 						<span class="tag {{includeExplicit ? 'tag-primary' : 'tag-default'}}">{{includeExplicit ? 'yes' : 'no' | translate}}</span>
                         <span gdb-tooltip="{{'click.to' | translate}} {{includeExplicit ? 'exclude' : 'include' | translate}} {{'explicit.statements' | translate}}" tooltip-placement="top" ng-click="toggleIncludeExplicit()" class="switch">
-	                    <input type="checkbox" class="switch" ng-checked="includeExplicit"/>
-	                    <label for="toggleIncludeExplicit"></label>
+	                    <input id="toggleIncludeExplicitInput" type="checkbox" class="switch" ng-checked="includeExplicit"/>
+	                    <label for="toggleIncludeExplicitInput">&#8204;</label>
 	                </span>
 					</div>
 
@@ -89,8 +91,8 @@
 						{{'include.implicit.header' | translate}}
 						<span class="tag {{includeImplicit ? 'tag-primary' : 'tag-default'}}">{{includeImplicit ? 'yes' : 'no' | translate}}</span>
 						<span gdb-tooltip="{{'click.to' | translate}} {{includeImplicit ? 'exclude' : 'include' | translate}} {{'implicit.statements' | translate}}" tooltip-placement="top" ng-click="toggleIncludeImplicit()" class="switch">
-	                    <input type="checkbox" class="switch" ng-checked="includeImplicit"/>
-	                    <label for="toggleIncludeImplicit"></label>
+	                    <input id="toggleIncludeImplicitInput" type="checkbox" class="switch" ng-checked="includeImplicit"/>
+	                    <label for="toggleIncludeImplicitInput">&#8204;</label>
 	                </span>
 					</div>
 				</div>

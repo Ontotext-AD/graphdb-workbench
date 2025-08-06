@@ -107,6 +107,16 @@ PluginRegistry.add('guide.step', [
                     viewName = 'menu.similarity.label';
                     helpInfo = 'guide.step-help-info.create-similarity-index';
                     break;
+                case "rdf-rank":
+                    menuSelector = 'menu-setup';
+                    menuTitle = 'menu.setup.label';
+                    menuDialogClass = 'menu-setup-guide-dialog';
+                    submenuSelector = 'sub-menu-rdf-rank';
+                    submenuTitle = 'view.rdf.rank.title';
+                    submenuDialogClass = 'sub-menu-rdf-rank-guide-dialog';
+                    viewName = 'view.rdf.rank.title';
+                    helpInfo = 'view.rdf.rank.helpInfo';
+                    break;
             }
 
             const mainMenuClickElementPostSelector = submenuSelector ? ' div' : ' a';
@@ -116,19 +126,20 @@ PluginRegistry.add('guide.step', [
             if (options.showIntro && options.mainAction) {
                 steps.push({
                     guideBlockName: 'info-message',
-                    options: angular.extend({}, {
+                    options: {
                         content: 'guide.step-intro.' + options.mainAction,
                         extraContent: helpInfo,
                         extraContentClass: 'alert alert-help text-left',
-                        skipPoint: true
-                    }, options)
+                        skipPoint: true,
+                        ...options
+                    }
                 });
             }
 
             // Main menu element
             steps.push({
                 guideBlockName: 'clickable-element',
-                options: angular.extend({}, {
+                options: {
                     content: 'guide.step-menu.click-menu',
                     menuLabelKey: menuTitle,
                     class: menuDialogClass,
@@ -148,14 +159,15 @@ PluginRegistry.add('guide.step', [
                         }
 
                         return Promise.resolve();
-                    }
-                }, options)
+                    },
+                    ...options
+                }
             });
 
             if (submenuSelector) {
                 steps.push({
                     guideBlockName: 'clickable-element',
-                    options: angular.extend({}, {
+                    options: {
                         content: 'guide.step-menu.click-menu',
                         menuLabelKey: submenuTitle,
                         class: submenuDialogClass,
@@ -170,8 +182,9 @@ PluginRegistry.add('guide.step', [
                             }
 
                             return Promise.resolve();
-                        }
-                    }, options)
+                        },
+                        ...options
+                    }
                 });
             }
             return steps;

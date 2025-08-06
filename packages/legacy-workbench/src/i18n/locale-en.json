@@ -3338,6 +3338,7 @@
     "guide.step_plugin.class-relationships-class-list-intro.content": "The left panel shows all classes, sorted by number of links, displaying both incoming and outgoing connections.",
     "guide.step_plugin.class-relationships-class-list-background-intro.content": "A <b>green background</b> behind a class name in the list indicates that it is currently shown in the diagram.",
     "guide.step_plugin.class-relationships-class-list-selection.content": "Use the <b>+ / –</b> icons next to each class name to add or remove it from the diagram display.",
+    "guide.step_plugin.rdf-rank-compute-fill.content": "Click on <b>Compute Full</b> to start the RDF Rank computation.",
     "guide.confirm.cancel.message": "Are you sure you want to stop the guide?",
     "guide.unexpected.error.message": "The guide was cancelled due to an unexpected error. Please run the guide again and if the problem persists contact the support.",
     "guide.start.unexpected.error.message": "The guide cannot be started due to an unexpected error. Please try running the guide again and if the problem persists contact the support.",

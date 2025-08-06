@@ -16,3 +16,20 @@
     padding-top: calc((100vh - 300px) / 2);
     background-color: rgba(255,255,255,0.66);
 }
+
+/**
+   Fixes Sonar issue: "Label elements should have a text label and an associated control."
+   https://sonarcloud.io/organizations/ontotext-ad/rules?open=Web%3AS6853&rule_key=Web%3AS6853&tab=why
+
+   The issue occurs because Bootstrap Toggle expects an empty <label> to follow the <input> element.
+   Adding a zero-width whitespace (&#8203;) to the <label> tag resolves the Sonar warning,
+   but it visually breaks the toggle's layout. The additional CSS at the bottom is applied to fix
+   the visual misalignment caused by this change.
+ */
+#toggleIncludeExplicit label, #toggleIncludeImplicit label, #toggleFilterMode label  {
+    vertical-align: middle;
+    display: inline-block;
+    height: 1.2em;
+    line-height: 1.2em;
+    margin-bottom: -2px;
+}
