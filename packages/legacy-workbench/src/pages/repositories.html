@@ -67,17 +67,21 @@
                                 <tbody>
                                 <tr class="repository"
                                     ng-repeat="repository in getRepositoriesFromLocation(location.uri) | orderBy: ['type === \'system\'', 'location', 'id'] track by repository.hash"
-                                    ng-class="{'table-info text-secondary': isRepoActive(repository)}">
-                                    <td width="25">
+                                    ng-class="{'table-info text-secondary': isRepoActive(repository)}"
+                                    guide-selector="repository-{{repository.id}}">
+                                    <td class="select-repository-button-wrapper" guide-selector="select-repository-button-wrapper">
                                         <span role="button" class="icon-connection-off icon-lg text-secondary m-0"
                                               gdb-tooltip="{{'connect.repo' | translate}}" tooltip-placement="top"
                                               ng-click="setRepository(repository)"
                                               ng-if="!isRepoActive(repository)"
                                               data-repository-id="{{repository}}"
-                                              guide-selector="repository-{{repository.id}}-plug"></span>
+                                              guide-selector="select-repository-button">
+                                        </span>
                                         <span role="button" class="icon-connection-on icon-lg text-tertiary"
                                               gdb-tooltip="{{'connected.tooltip' | translate}}" tooltip-placement="top"
-                                              ng-if="isRepoActive(repository)"></span>
+                                              ng-if="isRepoActive(repository)"
+                                              guide-selector="select-repository-button">
+                                        </span>
                                     </td>
                                     <td>
                                         <div class="lead text-overflow" ng-mouseover="setPopoverRepo(repository)">

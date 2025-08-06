@@ -437,6 +437,10 @@ span.label {
     flex-shrink: 0;
 }
 
+.repository .select-repository-button-wrapper {
+    width: 25px;
+}
+
 .location-item {
     padding: 2px;
     -webkit-user-select: none;
