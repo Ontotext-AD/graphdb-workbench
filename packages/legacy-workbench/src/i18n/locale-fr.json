@@ -3336,6 +3336,7 @@
     "guide.step_plugin.class-relationships-class-list-intro.content": "Le panneau de gauche montre toutes les classes, triées par nombre de liens, affichant les connexions entrantes et sortantes.",
     "guide.step_plugin.class-relationships-class-list-background-intro.content": "Un <b>arrière-plan vert</b> derrière un nom de classe dans la liste indique qu'elle est actuellement affichée dans le diagramme.",
     "guide.step_plugin.class-relationships-class-list-selection.content": "Utilisez les icônes <b>+ / –</b> à côté de chaque nom de classe pour l'ajouter ou la retirer de l'affichage du diagramme.",
+    "guide.step_plugin.rdf-rank-compute-fill.content": "Cliquez sur <b>Calculer tout</b> pour lancer le calcul du RDF Rank.",
     "guide.confirm.cancel.message": "Êtes-vous sûr de vouloir arrêter le guide?",
     "guide.unexpected.error.message": "Le guide a été annulé en raison d'une erreur inattendue. Veuillez exécuter à nouveau le guide et si le problème persiste, contactez le support.",
     "guide.start.unexpected.error.message": "Le guide ne peut pas être démarré en raison d'une erreur inattendue. Veuillez réessayer d'exécuter le guide et si le problème persiste, contactez le support.",
