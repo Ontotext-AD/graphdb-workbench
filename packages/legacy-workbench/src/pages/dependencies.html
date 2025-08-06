@@ -15,9 +15,9 @@
 
     <p>{{repositoryError}}</p>
 </div>
-<div class="content" ng-show="!isActiveRepoFedXType() && !repositoryError && isLicenseValid() && !isSystemRepository()">
+<div class="content" ng-show="!isActiveRepoFedXType() && !repositoryError && isLicenseValid() && !isSystemRepository()" guide-selector="relationships-page">
     <div class="pull-right relations-toolbar" ng-show="status != 'NO_REPO' && status != 'N/A' && !isLoading()">
-        <div id="selectGraphDropdown" class="btn-group" role="group" ng-show="graphsInRepo.length > 2">
+        <div id="selectGraphDropdown" class="btn-group" role="group" ng-show="graphsInRepo.length > 2" guide-selector="graph-select-dropdown">
             <button id="graphsBtnGroup" type="button" class="btn btn-lg btn-secondary"
                     data-toggle="dropdown"
                     uib-dropdown
@@ -88,7 +88,7 @@
     <div class="ot-loader ot-main-loader" onto-loader size="100" ng-show="isLoading() && status != 'NO_REPO'"></div>
     <div class="row deps-sidebar" ng-show="!isLoading() && allNotFilteredClasses.length > 0">
         <div class="col-sm-5 col-lg-4">
-            <div ng-show="!classToShow">
+            <div ng-show="!classToShow" guide-selector="class-list-wrapper">
                 <div>
                     <list-items-search-filter
                             filter-query-obj="classQuery"
@@ -122,7 +122,7 @@
                     <div class="col-sm-6">{{'class.label' | translate}}</div>
                     <div class="col-sm-6">{{'links.label' | translate}}</div>
                 </div>
-                <ul ui-scroll-viewport id="wb-dependencies-classInClasses" class="rdf-list row">
+                <ul ui-scroll-viewport id="wb-dependencies-classInClasses" class="rdf-list row" guide-selector="class-list">
                     <li ui-scroll="class in datasource" buffer-size="70" padding="1" adapter="adapterContainer.adapter" class="item class-row col-sm-12 row"
                         padding="li">
                             <div class="col-sm-11 row deps-data" ng-class="{
@@ -206,7 +206,7 @@
         </div>
 
         <div class="col-sm-7 col-lg-8 text-center">
-            <div dependencies-chord class="dependencies-chord"
+            <div dependencies-chord class="dependencies-chord" guide-selector="relationships-diagram"
                  dependencies-data="dependenciesData"
                  ng-show="status == 'READY' && selectedClasses.length > 1 && dependenciesData.hasLinks"></div>
         </div>

@@ -75,6 +75,17 @@ PluginRegistry.add('guide.step', [
                     helpInfo = 'view.class.hierarchy.helpInfo';
 
                     break;
+                case "class-relationships":
+                    menuSelector = 'menu-explore';
+                    menuTitle = 'menu.explore.label';
+                    menuDialogClass = 'menu-explore';
+                    submenuSelector = 'sub-menu-class-relationships';
+                    submenuTitle = 'menu.class.relationships.label';
+                    submenuDialogClass = 'sub-menu-class-relationships-guide-dialog';
+                    viewName = 'view.class.relationships.title';
+                    helpInfo = 'view.class.relationships.helpInfo';
+
+                    break;
                 case "ttyg":
                     menuSelector = 'menu-lab';
                     menuTitle = 'menu.lab.label';
