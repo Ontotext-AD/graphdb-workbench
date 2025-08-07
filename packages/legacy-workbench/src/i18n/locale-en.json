@@ -3353,6 +3353,35 @@
     "guide.step_plugin.class-relationships-class-list-background-intro.content": "A <b>green background</b> behind a class name in the list indicates that it is currently shown in the diagram.",
     "guide.step_plugin.class-relationships-class-list-selection.content": "Use the <b>+ / –</b> icons next to each class name to add or remove it from the diagram display.",
     "guide.step_plugin.rdf-rank-compute-fill.content": "Click on <b>Compute Full</b> to start the RDF Rank computation.",
+
+
+
+    "guide.step_plugin.connectors-lucene-connectors-intro.content": "The Lucene Connector in GraphDB enables extremely fast keyword and faceted (aggregation) searches. Unlike traditional setups where indexing is handled externally, this connector stays automatically synchronized with your repository data, ensuring accurate and up-to-date search results at all times.",
+    "guide.step_plugin.connectors-lucene-connectors.title": "Lucene connector",
+    "guide.step_plugin.connectors-lucene-connector.content": "This is the <b>Lucene connector</b> named <b>{{connectorInstanceName}}</b>. You can open, restart, or delete it using the icons on the right.",
+    "guide.step_plugin.connectors-lucene-expand-connector.content": "Click on <b>{{instanceName}}</b> to view its configuration and SPARQL query.",
+    "guide.step_plugin.connectors-lucene-fields-intro.content": "The fields define exactly what parts of each entity will be synchronized as well as the specific details on the connector side. The field is the smallest synchronization unit, and it maps a property chain from GraphDB to a field in Lucene. The fields are specified as a list of field objects. At least one field object is required.",
+    "guide.step_plugin.connectors-lucene-fields-field-name-intro.content": "The <b>Field name</b> defines the mapping on the connector side and is specified as a string. It is also used at query time to reference the field.",
+    "guide.step_plugin.connectors-lucene-fields-field-name-transform-intro.content": "Defines an optional transformation of the field name.<ul><li><b>none</b>: The field name is supplied via the fieldName option.</li><li><b>predicate</b> The field name is equal to the full IRI of the last predicate of the chain. For example, if the last predicate was http://www.w3.org/2000/01/rdf-schema#label, then the field name will also be http://www.w3.org/2000/01/rdf-schema#label.</li><li><b>predicate.localName</b>: The field name is derived from the local name of the IRI of the last predicate of the chain. For example, if the last predicate was http://www.w3.org/2000/01/rdf-schema#comment, then the field name will be comment.</li></ul>",
+    "guide.step_plugin.connectors-lucene-fields-property-chain-intro.content": "The <b>Property chain</b> defines the mapping on the GraphDB side. A property chain is a sequence of triples where the entity IRI is the subject of the first triple, its object is the subject of the next triple and so on. In this model, a property chain with a single element corresponds to a direct property defined by a single triple. Property chains are specified as a list of IRIs where at least one IRI must be provided.",
+    "guide.step_plugin.connectors-lucene-fields-default-value-intro.content": "The <b>Default value</b> specifies the value to use for the field when the property chain has no matching values in GraphDB. The default can be a plain literal, a literal with a datatype (the xsd: prefix is supported), a literal with a language tag, or an IRI. If not set, there is no default value.",
+    "guide.step_plugin.connectors-lucene-fields-datatype-intro.content": "By default, the Lucene Connector maps literal values to Lucene types based on their datatype. You can override this per field using the datatype parameter, which accepts any supported xsd: type.",
+    "guide.step_plugin.connectors-lucene-fields-value-filter-intro.content": "The <b>Value filter</b> specifies the value filter for the field",
+    "guide.step_plugin.connectors-lucene-fields-indexed-intro.content": "When a field is indexed, it becomes searchable with Lucene queries. This corresponds to Lucene’s indexed field option. By default, indexing is enabled.",
+    "guide.step_plugin.connectors-lucene-fields-stored-intro.content": "Determines whether the field’s values are stored in Lucene. This corresponds to Lucene’s stored property. By default, fields are stored (true).\"",
+    "guide.step_plugin.connectors-lucene-fields-analyzed-intro.content": "When literal fields are indexed in Lucene, they are processed according to the analyzer settings. Use this option to control whether a field is analyzed. Note: IRIs are never analyzed. This corresponds to Lucene’s tokenized property. By default, fields are analyzed (true).",
+    "guide.step_plugin.connectors-lucene-fields-multivalued-intro.content": "RDF properties and synchronized fields may have more than one value. If \"multivalued\" is set to true, all values will be synchronized to Lucene. If set to false, only a single value will be synchronized. true by default.",
+    "guide.step_plugin.connectors-lucene-fields-ignore-invalid-values-intro.content": "Per-field option that controls what happens when a value cannot be converted to the requested (or previously detected) type. False by default.",
+
+
+
+
+
+
+
+
+
+
     "guide.confirm.cancel.message": "Are you sure you want to stop the guide?",
     "guide.unexpected.error.message": "The guide was cancelled due to an unexpected error. Please run the guide again and if the problem persists contact the support.",
     "guide.start.unexpected.error.message": "The guide cannot be started due to an unexpected error. Please try running the guide again and if the problem persists contact the support.",

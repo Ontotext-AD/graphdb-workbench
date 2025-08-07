@@ -5,6 +5,9 @@ import {
     navigate,
     getPathName
 } from '@ontotext/workbench-api';
+import {ScrollToInline} from "../model/scroll-to-inline";
+import {ScrollToAnimation} from "../model/scroll-to-animation";
+import {ScrollToBlock} from "../model/scroll-to-block";
 
 export const GUIDE_ID = 'shepherd.guide_id';
 export const GUIDE_CURRENT_STEP_ID = 'shepherd.guide.current.step.id';
@@ -212,7 +215,11 @@ function ShepherdService($translate, LocalStorageAdapter, LSKeys, $interpolate, 
             confirmCancel: this._confirmGuideCancel,
             defaultStepOptions: {
                 classes: 'shadow-md bg-purple-dark',
-                scrollTo: true
+                scrollTo: {
+                    behavior: ScrollToAnimation.AUTO,
+                    block: ScrollToBlock.NEAREST,
+                    inline: ScrollToInline.NEAREST
+                }
             }
         });
     };

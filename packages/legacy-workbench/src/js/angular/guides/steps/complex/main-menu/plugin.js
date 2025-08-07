@@ -34,6 +34,17 @@ PluginRegistry.add('guide.step', [
                     helpInfo = 'view.import.helpInfo';
 
                     break;
+                case "connectors":
+                    menuSelector = 'menu-setup';
+                    menuTitle = 'menu.setup.label';
+                    menuDialogClass = 'menu-setup-guide-dialog';
+                    submenuSelector = 'sub-menu-connectors';
+                    submenuTitle = 'menu.connectors.label';
+                    submenuDialogClass = 'sub-menu-connectors-guide-dialog';
+                    viewName = 'view.connector.management.title';
+                    helpInfo = 'view.connector.management.helpInfo';
+
+                    break;
                 case "autocomplete":
                     menuSelector = 'menu-setup';
                     menuTitle = 'menu.setup.label';
