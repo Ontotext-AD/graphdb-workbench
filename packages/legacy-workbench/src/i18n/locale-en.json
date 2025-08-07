@@ -3299,6 +3299,7 @@
     "guide.step_plugin.fts-search-method.content": "Enabling FTS search allows the agent to answer questions by using full-text search in literals and IRIs. Performs well on open-ended questions but not so well on providing aggregations.",
     "guide.step_plugin.fts-search-method.enable-toggle": "Click on the toggle to enable FTS search query method.",
     "guide.step_plugin.fts-search-method.disable-toggle": "Click on the toggle to disable FTS search query method.",
+    "guide.step_plugin.fts-search-method.set-max-triples-per-call": "Type <b>{{maxTriplesPerCall}}</b> as the maximum number of triples to retrieve per call.",
     "guide.step_plugin.similarity-search-method.content": "Enabling Similarity search allows the agent to answer questions by using Similarity search. Performs well on open-ended questions but not so well on providing aggregations.",
     "guide.step_plugin.similarity-search-method.enable-toggle": "Click on the toggle to enable Similarity search query method.",
     "guide.step_plugin.similarity-search-method.disable-toggle": "Click on the toggle to disable Similarity search query method.",
