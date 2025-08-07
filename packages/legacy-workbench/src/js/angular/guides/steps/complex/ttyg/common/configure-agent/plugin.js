@@ -50,6 +50,40 @@ PluginRegistry.add('guide.step', [
         }
     },
     {
+        guideBlockName: 'configure-iri-discovery-search',
+        getSteps: (options, services) => {
+            const GuideUtils = services.GuideUtils;
+            const toggleSelector = GuideUtils.getGuideElementSelector('iri-discovery-search-input');
+            const shouldToggleOff = options.disable;
+            console.log(options)
+            let content;
+            if (shouldToggleOff) {
+                content = 'guide.step_plugin.iri-discovery-search.disable-toggle';
+            } else {
+                content = 'guide.step_plugin.iri-discovery-search.enable-toggle';
+            }
+
+            return {
+                guideBlockName: 'clickable-element',
+                options: angular.extend({}, {
+                    content,
+                    class: 'toggle-iri-discovery-search-guide-dialog',
+                    url: 'ttyg',
+                    elementSelector: GuideUtils.getGuideElementSelector('iri-discovery-search'),
+                    clickableElementSelector: toggleSelector,
+                    showOn: () => {
+                        const isEnabled = GuideUtils.isChecked(toggleSelector);
+                        return shouldToggleOff ? isEnabled : !isEnabled;
+                    },
+                    onNextValidate: () => {
+                        const isEnabled = GuideUtils.isChecked(toggleSelector);
+                        return Promise.resolve(shouldToggleOff ? !isEnabled : isEnabled);
+                    }
+                }, options)
+            }
+        }
+    },
+    {
         guideBlockName: 'configure-agent',
         getSteps: (options, services) => {
             const GuideUtils = services.GuideUtils;
@@ -74,6 +108,7 @@ PluginRegistry.add('guide.step', [
             const shouldConfigureExtractionMethods = !!options.methods?.length;
             const shouldConfigureTopP = options.topP !== undefined;
             const shouldConfigureTemperature = options.temperature !== undefined;
+            const shouldConfigureIriDiscoverySearch = !!options.iriDiscoverySearch;
 
             const steps = [
                 {
@@ -118,10 +153,6 @@ PluginRegistry.add('guide.step', [
                 })
             }
 
-            if (shouldConfigureExtractionMethods) {
-                steps.push(...configureExtractionMethods(services, options))
-            }
-
             if (hasModelName) {
                 steps.push({
                     guideBlockName: 'input-element',
@@ -132,6 +163,19 @@ PluginRegistry.add('guide.step', [
                         elementSelector: GuideUtils.getGuideElementSelector('model'),
                         disablePreviousFlow: false,
                         onNextValidate: () => Promise.resolve(GuideUtils.validateTextInput(GuideUtils.getGuideElementSelector('model'), options.model, false))
+                    }, options)
+                })
+            }
+
+            if (shouldConfigureExtractionMethods) {
+                steps.push(...configureExtractionMethods(services, options))
+            }
+
+            if (shouldConfigureIriDiscoverySearch) {
+                steps.push({
+                    guideBlockName: 'configure-iri-discovery-search',
+                    options: angular.extend({}, {
+                        disable: options.iriDiscoverySearch.disable,
                     }, options)
                 })
             }
