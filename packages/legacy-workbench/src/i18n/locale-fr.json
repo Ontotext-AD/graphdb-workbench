@@ -3353,6 +3353,13 @@
     "guide.step_plugin.rdf-rank-compute-fill.content": "Cliquez sur <b>Calculer tout</b> pour lancer le calcul du RDF Rank.",
     "guide.confirm.cancel.message": "Êtes-vous sûr de vouloir arrêter le guide?",
     "guide.unexpected.error.message": "Le guide a été annulé en raison d'une erreur inattendue. Veuillez exécuter à nouveau le guide et si le problème persiste, contactez le support.",
+
+    "guide.step_plugin.connectors-lucene-connectors-intro.content": "Le connecteur Lucene dans GraphDB permet des recherches par mot-clé et facettes (agrégation) extrêmement rapides. Contrairement aux configurations traditionnelles où l’indexation est gérée de manière externe, ce connecteur reste automatiquement synchronisé avec les données du dépôt, garantissant ainsi des résultats de recherche précis et à jour en permanence.",
+    "guide.step_plugin.connectors-lucene-connectors.title": "Connecteur Lucene",
+    "guide.step_plugin.connectors-lucene-connector.content": "Ceci est le <b>connecteur Lucene</b> nommé <b>{{connectorInstanceName}}</b>. Vous pouvez l’ouvrir, le redémarrer ou le supprimer en utilisant les icônes à droite.",
+    "guide.step_plugin.connectors-lucene-expand-connector.content": "Cliquez sur <b>{{instanceName}}</b> pour voir sa configuration et sa requête SPARQL.",
+
+
     "guide.start.unexpected.error.message": "Le guide ne peut pas être démarré en raison d'une erreur inattendue. Veuillez réessayer d'exécuter le guide et si le problème persiste, contactez le support.",
     "global.operations_statuses.queries.title": "Exécution de requêtes",
     "global.operations_statuses.updates.title": "Exécution de mises à jour",
