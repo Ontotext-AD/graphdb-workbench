@@ -11,7 +11,7 @@ PluginRegistry.add('guide.step', [
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.select-ttyg-agent.info.content',
                         url: 'ttyg',
-                        class: 'select-ttyg-agent-guide-dialog',
+                        class: 'select-ttyg-agent',
                         skipPoint: true,
                         disablePreviousFlow: true,
                     }, options)
@@ -20,7 +20,7 @@ PluginRegistry.add('guide.step', [
                     guideBlockName: 'clickable-element',
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.select-ttyg-agent.open-agent-dropdown',
-                        class: 'open-agent-dropdown-guide-dialog',
+                        class: 'open-agent-dropdown',
                         url: 'ttyg',
                         elementSelector: GuideUtils.getGuideElementSelector('select-agent-dropdown'),
                         disableNextFlow: true
@@ -31,7 +31,7 @@ PluginRegistry.add('guide.step', [
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.select-ttyg-agent.select-agent',
                         elementSelector: GuideUtils.getGuideElementSelector('select-agent-panel'),
-                        class: 'select-your-agent-guide-dialog',
+                        class: 'select-your-agent',
                         show: () => () => {
                             const elementToObserve = document.querySelector(GuideUtils.getGuideElementSelector('select-agent-dropdown'));
                             const dropdownToggleElement = document.querySelector(GuideUtils.getGuideElementSelector('select-agent-dropdown-toggle'));

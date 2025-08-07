@@ -15,7 +15,7 @@ PluginRegistry.add('guide.step', [
                     options: angular.extend({}, {
                         skipPoint: true,
                         url: 'ttyg',
-                        class: 'conversation-info-guide-dialog',
+                        class: 'conversation-info',
                         content: 'guide.step_plugin.conversation-with-ttyg-agent.info',
                     }, options)
                 })
@@ -45,7 +45,7 @@ PluginRegistry.add('guide.step', [
                         guideBlockName: 'clickable-element',
                         options: angular.extend({}, {
                             content: 'guide.step_plugin.conversation-with-ttyg-agent.start-conversation',
-                            class: 'start-conversation-guide-dialog',
+                            class: 'start-conversation',
                             url: 'ttyg',
                             elementSelector: createChatBtnSelector,
                             disableNextFlow: true

@@ -26,7 +26,7 @@ PluginRegistry.add('guide.step', [
                     guideBlockName: 'clickable-element',
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.create-ttyg-agent.create-agent',
-                        class: 'create-agent-btn-guide-dialog',
+                        class: 'create-agent-btn',
                         url: 'ttyg',
                         maxWaitTime: 10,
                         elementSelector: GuideUtils.getGuideElementSelector('create-agent-btn'),
@@ -42,7 +42,7 @@ PluginRegistry.add('guide.step', [
                     guideBlockName: 'clickable-element',
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.create-ttyg-agent.save-agent-settings',
-                        class: 'save-agent-guide-dialog',
+                        class: 'save-agent',
                         url: 'ttyg',
                         elementSelector: GuideUtils.getGuideElementSelector('save-agent-settings'),
                         disablePreviousFlow: false,
