@@ -39,7 +39,7 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.import_rdf_file.content',
                         url: 'import',
                         elementSelector: GuideUtils.getGuideElementSelector('uploadRdfFileButton'),
-                        class: 'upload-rdf-file-button-guide-dialog',
+                        class: 'upload-rdf-file-button',
                         // Disable default behavior of service when element is clicked.
                         advanceOn: undefined,
                         show: (guide) => () => {
@@ -106,7 +106,7 @@ PluginRegistry.add('guide.step', [
                         elementSelector: GuideUtils.getElementSelector('.confirm-duplicate-files-dialog .confirm-overwrite-btn'),
                         url: 'import',
                         placement: 'bottom',
-                        class: 'import-file-button-guide-dialog',
+                        class: 'import-file-button',
                         skipFromHistory: true,
                         // Checks whether the confirm dialog is currently open.
                         showOn: () => GuideUtils.isVisible(GuideUtils.getElementSelector('.confirm-duplicate-files-dialog')),
@@ -125,7 +125,7 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.import_rdf_file.import-settings.import.button.content',
                         elementSelector: importSettingsButtonSelector,
                         placement: 'top',
-                        class: 'import-settings-import-file-button-guide-dialog',
+                        class: 'import-settings-import-file-button',
                         onPreviousClick: () => new Promise(function (resolve) {
                             GuideUtils.clickOnGuideElement('import-settings-cancel-button')()
                                 .then(() => resolve());
@@ -147,7 +147,7 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.import_status_info.content',
                         url: 'import',
                         elementSelector: '.import-resource-message',
-                        class: 'import-status-info-guide-dialog',
+                        class: 'import-status-info',
                         beforeShowPromise: () => {
                             if (GuideUtils.isVisible('.import-resource-message')) {
                                 return Promise.resolve();

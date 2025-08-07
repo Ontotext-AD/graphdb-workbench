@@ -16,7 +16,7 @@ PluginRegistry.add('guide.step', [
                     guideBlockName: 'clickable-element',
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.create-similarity-index.create-similarity-index',
-                        class: 'similarity-index-guide-dialog',
+                        class: 'similarity-index',
                         url: 'similarity',
                         elementSelector: GuideUtils.getGuideElementSelector('create-similarity-index'),
                         disableNextFlow: true,
@@ -27,7 +27,7 @@ PluginRegistry.add('guide.step', [
                     guideBlockName: 'input-element',
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.create-similarity-index.input-index-name',
-                        class: 'similarity-index-name-input-guide-dialog',
+                        class: 'similarity-index-name-input',
                         url: 'similarity/index/create',
                         elementSelector: GuideUtils.getGuideElementSelector('similarity-index-name'),
                         onNextValidate: () => Promise.resolve(GuideUtils.validateTextInputNotEmpty(GuideUtils.getGuideElementSelector('similarity-index-name')))
@@ -36,7 +36,7 @@ PluginRegistry.add('guide.step', [
                     guideBlockName: 'clickable-element',
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.create-similarity-index.create-index',
-                        class: 'create-similarity-index-guide-dialog',
+                        class: 'create-similarity-index',
                         url: 'similarity/index/create',
                         elementSelector: GuideUtils.getGuideElementSelector('create-similarity-index-btn'),
                         disablePreviousFlow: false,
@@ -64,7 +64,7 @@ PluginRegistry.add('guide.step', [
                     guideBlockName: 'hold-and-wait-until-shown',
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.create-similarity-index.wait',
-                        class: 'wait-for-index-guide-dialog',
+                        class: 'wait-for-index',
                         elementSelectorToWait: GuideUtils.getGuideElementSelector('similarity-indexes-table'),
                     }, options)
                 }

@@ -18,10 +18,10 @@ PluginRegistry.add('guide.step', [
                 case "repositories":
                     menuSelector = 'menu-setup';
                     menuTitle = 'menu.setup.label';
-                    menuDialogClass = 'menu-setup-guide-dialog';
+                    menuDialogClass = 'menu-setup';
                     submenuSelector = 'sub-menu-repositories';
                     submenuTitle = 'menu.repositories.label';
-                    submenuDialogClass = 'sub-menu-repositories-guide-dialog';
+                    submenuDialogClass = 'sub-menu-repositories';
                     viewName = 'menu.repositories.label';
                     helpInfo = 'view.repositories.helpInfo';
 
@@ -29,7 +29,7 @@ PluginRegistry.add('guide.step', [
                 case "import":
                     menuSelector = 'menu-import';
                     menuTitle = 'common.import';
-                    menuDialogClass = 'menu-import-guide-dialog';
+                    menuDialogClass = 'menu-import';
                     viewName = 'common.import';
                     helpInfo = 'view.import.helpInfo';
 
@@ -37,10 +37,10 @@ PluginRegistry.add('guide.step', [
                 case "autocomplete":
                     menuSelector = 'menu-setup';
                     menuTitle = 'menu.setup.label';
-                    menuDialogClass = 'menu-setup-guide-dialog';
+                    menuDialogClass = 'menu-setup';
                     submenuSelector = 'sub-menu-autocomplete';
                     submenuTitle = 'menu.autocomplete.label';
-                    submenuDialogClass = 'sub-menu-autocomplete-guide-dialog';
+                    submenuDialogClass = 'sub-menu-autocomplete';
                     viewName = 'view.autocomplete.title';
                     helpInfo = 'view.autocomplete.helpInfo';
 
@@ -48,10 +48,10 @@ PluginRegistry.add('guide.step', [
                 case "visual-graph":
                     menuSelector = 'menu-explore';
                     menuTitle = 'menu.explore.label';
-                    menuDialogClass = 'menu-explore-guide-dialog';
+                    menuDialogClass = 'menu-explore';
                     submenuSelector = 'sub-menu-visual-graph';
                     submenuTitle = 'visual.graph.label';
-                    submenuDialogClass = 'sub-menu-visual-graph-guide-dialog';
+                    submenuDialogClass = 'sub-menu-visual-graph';
                     viewName = 'visual.graph.label';
                     helpInfo = 'view.visual.graph.helpInfo';
 
@@ -59,7 +59,7 @@ PluginRegistry.add('guide.step', [
                 case "sparql":
                     menuSelector = 'menu-sparql';
                     menuTitle = 'menu.sparql.label';
-                    menuDialogClass = 'menu-sparql-guide-dialog';
+                    menuDialogClass = 'menu-sparql';
                     viewName = 'view.sparql-editor.title';
                     helpInfo = 'view.sparql-editor.helpInfo';
 
@@ -67,10 +67,10 @@ PluginRegistry.add('guide.step', [
                 case "class-hierarchy":
                     menuSelector = 'menu-explore';
                     menuTitle = 'menu.explore.label';
-                    menuDialogClass = 'menu-explore-guide-dialog';
+                    menuDialogClass = 'menu-explore';
                     submenuSelector = 'menu-class-hierarchy';
                     submenuTitle = 'menu.class.hierarchy.label';
-                    submenuDialogClass = 'sub-menu-class-hierarchy-guide-dialog';
+                    submenuDialogClass = 'sub-menu-class-hierarchy';
                     viewName = 'view.class.hierarchy.title';
                     helpInfo = 'view.class.hierarchy.helpInfo';
 
@@ -81,7 +81,7 @@ PluginRegistry.add('guide.step', [
                     menuDialogClass = 'menu-explore';
                     submenuSelector = 'sub-menu-class-relationships';
                     submenuTitle = 'menu.class.relationships.label';
-                    submenuDialogClass = 'sub-menu-class-relationships-guide-dialog';
+                    submenuDialogClass = 'sub-menu-class-relationships';
                     viewName = 'view.class.relationships.title';
                     helpInfo = 'view.class.relationships.helpInfo';
 
@@ -89,10 +89,10 @@ PluginRegistry.add('guide.step', [
                 case "ttyg":
                     menuSelector = 'menu-lab';
                     menuTitle = 'menu.lab.label';
-                    menuDialogClass = 'menu-lab-guide-dialog';
+                    menuDialogClass = 'menu-lab';
                     submenuSelector = 'sub-menu-ttyg';
                     submenuTitle = 'menu.ttyg.label';
-                    submenuDialogClass = 'sub-menu-ttyg-guide-dialog';
+                    submenuDialogClass = 'sub-menu-ttyg';
                     viewName = 'menu.ttyg.label';
                     helpInfo = 'ttyg.helpInfo';
 
@@ -100,10 +100,10 @@ PluginRegistry.add('guide.step', [
                 case "similarity":
                     menuSelector = 'menu-explore';
                     menuTitle = 'menu.explore.label';
-                    menuDialogClass = 'menu-explore-guide-dialog';
+                    menuDialogClass = 'menu-explore';
                     submenuSelector = 'sub-menu-similarity';
                     submenuTitle = 'menu.similarity.label';
-                    submenuDialogClass = 'sub-menu-similarity-guide-dialog';
+                    submenuDialogClass = 'sub-menu-similarity';
                     viewName = 'menu.similarity.label';
                     helpInfo = 'guide.step-help-info.create-similarity-index';
                     break;
