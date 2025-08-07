@@ -87,7 +87,7 @@
                     {{'required.field' | translate}}
                 </div>
             </div>
-            <div class="form-group temperature" ng-class="{'col-md-3': showContextSize, 'col-md-4': !showContextSize}">
+            <div class="form-group temperature" ng-class="{'col-md-3': showContextSize, 'col-md-4': !showContextSize}" guide-selector="temperature-control">
                 <label for="temperature">
                     <span uib-popover="{{'ttyg.agent.create_agent_modal.form.temperature.tooltip' | translate}}"
                           popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.temperature.label' | translate}}</span>
@@ -99,19 +99,19 @@
                 <input type="text" id="temperature" name="temperature" readonly
                        class="form-control" ng-class="{'has-warning': showHighTemperatureWarning}"
                        ng-model="agentFormModel.temperature.value">
-                <input id="temperatureSlider" name="temperature" type="range"
+                <input id="temperatureSlider" name="temperature" type="range" guide-selector="temperature-control-input"
                        min="{{agentFormModel.temperature.minValue}}"
                        max="{{agentFormModel.temperature.maxValue}}" step="{{agentFormModel.temperature.step}}"
                        ng-change="onTemperatureChange()"
                        ng-model="agentFormModel.temperature.value"/>
             </div>
-            <div class="form-group top-p" ng-class="{'col-md-3': showContextSize, 'col-md-4': !showContextSize}">
+            <div class="form-group top-p" ng-class="{'col-md-3': showContextSize, 'col-md-4': !showContextSize}" guide-selector="top-p-control">
                 <label for="topP" uib-popover="{{'ttyg.agent.create_agent_modal.form.top_p.tooltip' | translate}}"
                        popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.top_p.label' |
                 translate}}</label>
                 <input type="text" class="form-control" id="topP" name="topP" readonly
                        ng-model="agentFormModel.topP.value">
-                <input id="topPSlider" name="topP" type="range" min="{{agentFormModel.topP.minValue}}"
+                <input id="topPSlider" name="topP" type="range" min="{{agentFormModel.topP.minValue}}" guide-selector="top-p-control-input"
                        max="{{agentFormModel.topP.maxValue}}" step="{{agentFormModel.topP.step}}"
                        ng-model="agentFormModel.topP.value"/>
             </div>
