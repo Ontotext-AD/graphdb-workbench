@@ -225,6 +225,10 @@ const GuideUtils = (function () {
         const element = document.querySelector(elementSelector);
         if (!element) return false;
 
+        if (typeof expectedInput !== 'string') {
+            expectedInput = String(expectedInput);
+        }
+
         const input = element.value;
         if (input === '' && applyInput) {
             element.value = expectedInput;

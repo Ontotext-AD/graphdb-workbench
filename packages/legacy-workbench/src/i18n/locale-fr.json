@@ -3297,6 +3297,7 @@
     "guide.step_plugin.fts-search-method.content": "L'activation de la recherche FTS permet à l'agent de répondre aux questions en utilisant la recherche plein texte dans les littéraux et les IRI. Les résultats sont bons pour les questions ouvertes, mais moins bons pour la fourniture d'agrégations..",
     "guide.step_plugin.fts-search-method.enable-toggle": "Cliquez sur le bouton pour activer la méthode de recherche FTS.",
     "guide.step_plugin.fts-search-method.disable-toggle": "Cliquez sur le bouton pour désactiver la méthode de recherche FTS.",
+    "guide.step_plugin.fts-search-method.set-max-triples-per-call": "Saisissez <b>{{maxTriplesPerCall}}</b> comme nombre maximum de triplets à récupérer par appel.",
     "guide.step_plugin.similarity-search-method.content": "L'activation de la recherche par similarité permet à l'agent de répondre aux questions en utilisant la recherche par similarité. Les résultats sont bons pour les questions ouvertes, mais moins bons pour les agrégations.",
     "guide.step_plugin.similarity-search-method.enable-toggle": "Cliquez sur la case à cocher pour activer la méthode de recherche par similarité.",
     "guide.step_plugin.similarity-search-method.disable-toggle": "Cliquez sur le bouton pour désactiver la méthode de recherche par similarité.",

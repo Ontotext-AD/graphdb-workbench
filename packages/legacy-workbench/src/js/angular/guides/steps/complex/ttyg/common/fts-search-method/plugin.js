@@ -1,5 +1,27 @@
 PluginRegistry.add('guide.step', [
     {
+        guideBlockName: 'set-max-triples-per-call',
+        getSteps: (options, services) => {
+            const GuideUtils = services.GuideUtils;
+
+            return {
+                guideBlockName: 'input-element',
+                options: angular.extend({}, {
+                    elementSelector: GuideUtils.getGuideElementSelector('max-triples-per-call-input'),
+                    content: 'guide.step_plugin.fts-search-method.set-max-triples-per-call',
+                    class: 'toggle-fts-search-guide-dialog',
+                    url: 'ttyg',
+                    onNextValidate: () => {
+                        if (options.maxTriplesPerCall) {
+                            return Promise.resolve(GuideUtils.validateTextInput(GuideUtils.getGuideElementSelector('max-triples-per-call-input'), options.maxTriplesPerCall, false));
+                        }
+                        return Promise.resolve(true);
+                    }
+                }, options)
+            }
+        }
+    },
+    {
         guideBlockName: 'fts-search-method',
         getSteps: (options, services) => {
             const GuideUtils = services.GuideUtils;
@@ -23,7 +45,7 @@ PluginRegistry.add('guide.step', [
                 }]
             }
 
-            return [
+            const steps = [
                 {
                     guideBlockName: 'info-message',
                     options: angular.extend({}, {
@@ -44,6 +66,15 @@ PluginRegistry.add('guide.step', [
                     }, options)
                 }
             ];
+
+            if (options.maxTriplesPerCall) {
+                steps.push({
+                    guideBlockName: 'set-max-triples-per-call',
+                    options: angular.extend({}, options)
+                })
+            }
+
+            return steps
         }
     }
 ]);
