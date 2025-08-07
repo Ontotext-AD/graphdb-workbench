@@ -100,7 +100,6 @@ PluginRegistry.add('guide.step', [
             const copyToEditorButtonClass = 'guide-copy-to-editor-query-button';
             copy.className = `btn btn-sm btn-secondary ${copyToEditorButtonClass}`;
             copy.innerText = $translate.instant('guide.step_plugin.execute-sparql-query.copy-to-editor.button');
-            copy.setAttribute('ng-click', 'copyQuery()');
             const query = options.query;
             const copyToEditorListener = createCopyToEditorListener(YasguiComponentDirectiveUtil, SPARQL_DIRECTIVE_SELECTOR, query);
             code.innerText = query;

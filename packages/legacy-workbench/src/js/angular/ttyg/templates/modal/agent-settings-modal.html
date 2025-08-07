@@ -182,17 +182,17 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="sparql-option sparql-query-option">
+                            <div class="sparql-option sparql-query-option" guide-selector="sparql-query-option">
                                 <label class="radio-inline"
                                        uib-popover="{{'ttyg.agent.create_agent_modal.form.construct_query.tooltip' | translate}}"
                                        popover-trigger="mouseenter">
-                                    <input type="radio" name="sparqlOption" ng-required="extractionMethod.selected"
+                                    <input type="radio" name="sparqlOption" ng-required="extractionMethod.selected" guide-selector="sparql-query-option-input"
                                            ng-model="extractionMethod.sparqlOption" value="sparqlQuery">
                                     {{'ttyg.agent.create_agent_modal.form.construct_query.label' | translate}}
                                 </label>
                                 <div class="panel" ng-show="extractionMethod.sparqlOption === 'sparqlQuery'">
                                     <div class="form-group">
-                                            <textarea type="text" class="form-control" id="sparqlQuery"
+                                            <textarea type="text" class="form-control" id="sparqlQuery" guide-selector="sparql-query-input"
                                                       name="sparqlQuery" rows="10"
                                                       ng-required="extractionMethod.selected && extractionMethod.sparqlOption === 'sparqlQuery'"
                                                       ng-minlength="extractionMethod.sparqlQuery.minLength"
@@ -207,7 +207,7 @@
                                 {{'ttyg.agent.create_agent_modal.form.sparql_search.required_option' | translate}}
                             </div>
                             <div class="add-missing-namespaces-option mt-1" guide-selector="add-missing-namespaces-option">
-                                <input id="addMissingNamespaces" name="addMissingNamespaces" type="checkbox" guide-selector="add-missing-namespaces"
+                                <input id="addMissingNamespaces" name="addMissingNamespaces" type="checkbox" guide-selector="add-missing-namespaces-input"
                                        ng-model="extractionMethod.addMissingNamespaces">
                                 <label for="addMissingNamespaces"
                                        uib-popover="{{'ttyg.agent.create_agent_modal.form.add_missing_namespaces.tooltip' | translate}}"

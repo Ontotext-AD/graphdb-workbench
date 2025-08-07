@@ -34,6 +34,14 @@ const beforeShowPromise = (services, elementSelector, maxWaitTime) => {
     };
 };
 
+const createCopyToInputListener = (elementSelector, text) => {
+    return (event) => {
+        event.preventDefault();
+        const inputElement = document.querySelector(elementSelector);
+        inputElement.value = text;
+    }
+}
+
 PluginRegistry.add('guide.step', [
     {
         // An element which is expected to be clicked. If onNextClick is not defined, it will automatically click on the element on next button press
@@ -101,6 +109,46 @@ PluginRegistry.add('guide.step', [
                 stepDescription.beforeShowPromise = beforeShowPromise(services, stepDescription.elementSelector, stepDescription.maxWaitTime);
             }
             return stepDescription;
+        }
+    },
+    {
+        guideBlockName: 'copy-text-element',
+        getSteps: (options, services) => {
+            const $translate = services.$translate;
+            const GuideUtils = services.GuideUtils;
+
+            const text = options.text;
+            const code = document.createElement('code');
+            code.innerText = text;
+
+            const copy = document.createElement('button');
+            const copyToInputQueryButtonClass = 'guide-copy-to-input-query-button';
+            copy.className = `btn btn-sm btn-secondary ${copyToInputQueryButtonClass}`;
+            copy.innerText = $translate.instant('guide.step_plugin.core-steps.copy-text-element.copy-to-input');
+
+
+            let stepHTMLElement;
+            const copyToInputListener = createCopyToInputListener(GuideUtils.getElementSelector(options.elementSelector), text);
+
+            return [
+                {
+                    guideBlockName: 'input-element',
+                    options: {
+                        content: 'guide.step_plugin.core-steps.copy-text-element.content',
+                        textAsHtmlCodeElement: '<div class="shepherd-code">' + code.outerHTML + copy.outerHTML + '</div>',
+                        ...options,
+                        show: (_guide) => () => {
+                            stepHTMLElement = _guide.currentStep.el.querySelector(`.${copyToInputQueryButtonClass}`);
+                            stepHTMLElement.addEventListener('click', copyToInputListener);
+                        },
+                        hide: () => () => {
+                            if (stepHTMLElement) {
+                                stepHTMLElement.removeEventListener('click', copyToInputListener);
+                            }
+                        },
+                    }
+                }
+            ]
         }
     },
     {
