@@ -22,11 +22,12 @@
         <div create-progress ng-show="beingBuiltConnector.inline && beingBuiltConnector.percentDone > 0"></div>
         <div ng-show="!isActiveRepoFedXType() && connectors.length">
             <div id="connectorManagement" class="mb-3" ng-repeat="connector in connectors"
-                 ng-init="keyForDom = connector.key.replace(' ', '-')">
+                 ng-init="keyForDom = connector.key.replace(' ', '-')"
+                 guide-selector="connector-key-{{keyForDom}}">
                 <h3>{{connector.key}}</h3>
                 <section class="mb-1">
                     <div id="accordion-{{keyForDom}}" role="tablist" aria-multiselectable="true">
-                        <div class="card" ng-repeat="exist in existing[connector.key]">
+                        <div class="card" ng-repeat="exist in existing[connector.key]" guide-selector="{{exist.name}}-connector-card">
                             <div class="card-header" role="tab" id="heading-{{keyForDom}}{{$index}}">
 								<div class="pull-right">
 									<button class="btn btn-link p-0" type="button"
@@ -45,7 +46,7 @@
 										<em class="icon-trash"></em>
                                     </button>
 								</div>
-                                <h5 class="mb-0">
+                                <h5 class="mb-0" guide-selector="{{exist.name}}-connector-toggle-button">
                                     <a class="collapsed" data-toggle="collapse" data-parent="#accordion-{{keyForDom}}"
                                        href="#collapse-{{keyForDom}}{{$index}}" aria-expanded="false"
                                        aria-controls="collapse-{{keyForDom}}{{$index}}">
