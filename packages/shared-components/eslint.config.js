@@ -1,17 +1,18 @@
 const stencilEslintPlugin = require('@stencil-community/eslint-plugin');
 const reactPlugin = require("eslint-plugin-react");
 const tsParser = require('@typescript-eslint/parser');
+const path = require('node:path');
 
 module.exports = [
   {
-    ignores: ["**/*cy.js", "cypress.config.js", "src/**/*d.ts"],
+    ignores: ["**/*cy.js", "cypress.config.js", "**/*d.ts"],
   },
   {
-    files: ["src/**/*.ts", "src/**/*.tsx"],
+    files: ['**/*.{ts,tsx}'],
     languageOptions: {
       parser: tsParser,
       parserOptions: {
-        project: "./tsconfig.json",
+        project: path.join(__dirname, 'tsconfig.json'),
         ecmaVersion: "latest",
         sourceType: "module",
       },
