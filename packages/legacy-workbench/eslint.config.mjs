@@ -8,7 +8,11 @@ const filteredGoogleRules = Object.fromEntries(
 export default [
     {
         files: ['**/*.js'],
-        ignores: ['dist/**', 'node_modules/**'],
+        ignores: [
+            '**/dist/**',
+            '**/node_modules/**',
+            '**/src/js/lib/**'
+        ],
 
         languageOptions: {
             ecmaVersion: 2018,
