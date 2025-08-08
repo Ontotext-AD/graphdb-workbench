@@ -110,10 +110,10 @@ PluginRegistry.add('guide.step', [
                 case "rdf-rank":
                     menuSelector = 'menu-setup';
                     menuTitle = 'menu.setup.label';
-                    menuDialogClass = 'menu-setup-guide-dialog';
+                    menuDialogClass = 'menu-setup';
                     submenuSelector = 'sub-menu-rdf-rank';
                     submenuTitle = 'view.rdf.rank.title';
-                    submenuDialogClass = 'sub-menu-rdf-rank-guide-dialog';
+                    submenuDialogClass = 'sub-menu-rdf-rank';
                     viewName = 'view.rdf.rank.title';
                     helpInfo = 'view.rdf.rank.helpInfo';
                     break;
