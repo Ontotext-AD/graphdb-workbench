@@ -30,11 +30,10 @@ module.exports = (env, argv) => merge(commonConfig(env, argv), {
       {
         directory: path.join(__dirname, 'dist/')
       },
-      // TODO: enable, when plugins are available via npm and copied to /plugins post install
-      // {
-      //   directory: path.join(__dirname, 'plugins'),
-      //   publicPath: '/plugins'
-      // }
+      {
+        directory: path.join(__dirname, 'plugins'),
+        publicPath: '/plugins'
+      }
     ],
     compress: true,
     hot: false,
@@ -51,7 +50,7 @@ module.exports = (env, argv) => merge(commonConfig(env, argv), {
       disableDotRule: true
     },
     proxy: [{
-      context: ['/rest', '/repositories', '/protocol', '/rdf-bridge', '/plugins'],
+      context: ['/rest', '/repositories', '/protocol', '/rdf-bridge'],
       target: 'http://' + host + ':' + portThere,
       onProxyRes: (proxyRes) => {
         var key = 'www-authenticate';

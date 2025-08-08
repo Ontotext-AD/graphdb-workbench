@@ -13,6 +13,7 @@ import {
 } from '@ontotext/workbench-api';
 import {start} from 'single-spa';
 import {defineCustomElements} from '../../../shared-components/loader';
+import {pluginsBootstrap} from './plugins/plugins-bootstrap';
 
 const bootstrapPromises = [
   ...licenseBootstrap,
@@ -38,7 +39,7 @@ const executePromises = (bootstrapFns) => {
  */
 const loadEssentials = () => {
   return Promise.all([
-    executePromises([...languageBootstrap]),
+    executePromises([...pluginsBootstrap, ...languageBootstrap]),
     securityBootstrap.loadSecurityConfig()
   ]);
 };
