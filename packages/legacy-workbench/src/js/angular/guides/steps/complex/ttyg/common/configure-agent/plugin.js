@@ -138,13 +138,14 @@ PluginRegistry.add('guide.step', [
 
             if (hasUserInstructions) {
                 steps.push({
-                    guideBlockName: 'input-element',
+                    guideBlockName: 'copy-text-element',
                     options: angular.extend({}, {
-                        content: 'guide.step_plugin.configure-agent.user-instructions-input',
+                        extraContent: 'guide.step_plugin.configure-agent.user-instructions-input',
                         class: 'input-user-instructions',
                         url: 'ttyg',
                         elementSelector: GuideUtils.getGuideElementSelector('user-instructions'),
                         disablePreviousFlow: false,
+                        text: options.userInstructions,
                         onNextValidate: () => Promise.resolve(GuideUtils.validateTextInput(GuideUtils.getGuideElementSelector('user-instructions'), options.userInstructions, false))
                     }, options)
                 })

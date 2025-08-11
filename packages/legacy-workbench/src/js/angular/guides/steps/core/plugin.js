@@ -134,9 +134,9 @@ PluginRegistry.add('guide.step', [
                 {
                     guideBlockName: 'input-element',
                     options: {
+                        ...options,
                         content: 'guide.step_plugin.core-steps.copy-text-element.content',
                         textAsHtmlCodeElement: '<div class="shepherd-code">' + code.outerHTML + copy.outerHTML + '</div>',
-                        ...options,
                         show: (_guide) => () => {
                             stepHTMLElement = _guide.currentStep.el.querySelector(`.${copyToInputQueryButtonClass}`);
                             stepHTMLElement.addEventListener('click', copyToInputListener);
