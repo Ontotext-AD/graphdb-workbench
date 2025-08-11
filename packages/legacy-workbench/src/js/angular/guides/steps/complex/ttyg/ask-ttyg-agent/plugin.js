@@ -17,7 +17,7 @@ PluginRegistry.add('guide.step', [
                     options: angular.extend({}, {
                         skipPoint: true,
                         content: `guide.step_plugin.ask-ttyg-agent.input-question`,
-                        class: 'input-question-guide-dialog',
+                        class: 'input-question',
                         url: 'ttyg',
                         elementSelector: GuideUtils.getGuideElementSelector('question-input'),
                         show: (guide) => () => {
@@ -70,7 +70,7 @@ PluginRegistry.add('guide.step', [
                         guideBlockName: 'clickable-element',
                         options: angular.extend({}, {
                             content: 'guide.step_plugin.ask-ttyg-agent.explain-answer',
-                            class: 'explain-answer-guide-dialog',
+                            class: 'explain-answer',
                             url: 'ttyg',
                             elementSelector,
                             disableNextFlow: true
@@ -106,7 +106,7 @@ PluginRegistry.add('guide.step', [
                         guideBlockName: 'clickable-element',
                         options: angular.extend({}, {
                             content: 'guide.step_plugin.ask-ttyg-agent.explore-sparql',
-                            class: 'explore-sparql-guide-dialog',
+                            class: 'explore-sparql',
                             url: 'ttyg',
                             disableNextFlow: true,
                             elementSelector
@@ -143,7 +143,7 @@ PluginRegistry.add('guide.step', [
                         guideBlockName: 'clickable-element',
                         options: angular.extend({}, {
                             content: 'guide.step_plugin.ask-ttyg-agent.explain-answer-more',
-                            class: 'input-agent-name-guide-dialog',
+                            class: 'input-agent-name',
                             url: 'ttyg',
                             elementSelector,
                             show: (guide) => () => {
@@ -174,7 +174,7 @@ const getWaitForAnswerStep = (GuideUtils, options) => {
         guideBlockName: 'hold-and-wait-until-hidden',
         options: angular.extend({}, {
             content: 'guide.step_plugin.ask-ttyg-agent.wait-for-answer',
-            class: 'wait-for-answer-guide-dialog',
+            class: 'wait-for-answer',
             url: 'ttyg',
             placement: 'left',
             elementSelector: GuideUtils.getGuideElementSelector('chat-details'),

@@ -30,7 +30,7 @@ PluginRegistry.add('guide.step', [
                     skipPoint: true,
                     content: 'guide.step_plugin.choose-repository.content',
                     elementSelector: '.onto-repository-selector',
-                    class: 'repositories-group-button-guide-dialog',
+                    class: 'repositories-group-button',
                     onNextClick: GuideUtils.clickOnElement('.onto-repository-selector .onto-dropdown-button')
                 }, options)
             }, {
@@ -40,7 +40,7 @@ PluginRegistry.add('guide.step', [
                     elementSelector: () => {
                         return getRepositoryElementSelector(services, options);
                     },
-                    class: 'repository-select-button-guide-dialog',
+                    class: 'repository-select-button',
                     advanceOn: undefined,
                     beforeShowPromise: () => services.GuideUtils.waitFor(getRepositoryElementSelector(services, options), 1)
                         .catch((error) => {
@@ -74,7 +74,7 @@ PluginRegistry.add('guide.step', [
         guideBlockName: 'repositories-select-repository',
         getSteps: (options, services) => {
             const GuideUtils = services.GuideUtils;
-            const repositoryId = getRepositoryName(services, options);
+            const repositoryId = options.repositoryIdToSelect ?? getRepositoryName(services, options);
             const selectRepositoryRowSelector = GuideUtils.getGuideElementSelector(`repository-${repositoryId}`);
             const selectRepositoryButtonWrapperSelector = `${selectRepositoryRowSelector} ${GuideUtils.getGuideElementSelector('select-repository-button-wrapper')}`;
             const selectRepositoryButtonSelector = `${selectRepositoryButtonWrapperSelector} ${GuideUtils.getGuideElementSelector('select-repository-button')}`;

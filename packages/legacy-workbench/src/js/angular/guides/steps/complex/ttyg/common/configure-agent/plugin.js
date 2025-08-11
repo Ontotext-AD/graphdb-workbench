@@ -90,7 +90,7 @@ PluginRegistry.add('guide.step', [
                     guideBlockName: 'input-element',
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.configure-agent.name-input',
-                        class: 'input-agent-name-guide-dialog',
+                        class: 'input-agent-name',
                         url: 'ttyg',
                         disablePreviousFlow: false,
                         beforeShowPromise: () => GuideUtils.waitFor(GuideUtils.getGuideElementSelector('agent-form'), 5)
@@ -127,7 +127,7 @@ PluginRegistry.add('guide.step', [
                     guideBlockName: 'input-element',
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.configure-agent.model-input',
-                        class: 'input-model-guide-dialog',
+                        class: 'input-model',
                         url: 'ttyg',
                         elementSelector: GuideUtils.getGuideElementSelector('model'),
                         disablePreviousFlow: false,
@@ -141,7 +141,7 @@ PluginRegistry.add('guide.step', [
                     guideBlockName: 'input-element',
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.configure-agent.user-instructions-input',
-                        class: 'input-user-instructions-guide-dialog',
+                        class: 'input-user-instructions',
                         url: 'ttyg',
                         elementSelector: GuideUtils.getGuideElementSelector('user-instructions'),
                         disablePreviousFlow: false,

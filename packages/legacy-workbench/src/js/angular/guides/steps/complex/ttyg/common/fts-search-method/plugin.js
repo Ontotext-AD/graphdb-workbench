@@ -9,7 +9,7 @@ PluginRegistry.add('guide.step', [
                 options: angular.extend({}, {
                     elementSelector: GuideUtils.getGuideElementSelector('max-triples-per-call-input'),
                     content: 'guide.step_plugin.fts-search-method.set-max-triples-per-call',
-                    class: 'toggle-fts-search-guide-dialog',
+                    class: 'toggle-fts-search',
                     url: 'ttyg',
                     onNextValidate: () => {
                         if (options.maxTriplesPerCall) {
@@ -35,7 +35,7 @@ PluginRegistry.add('guide.step', [
                     guideBlockName: 'clickable-element',
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.fts-search-method.disable-toggle',
-                        class: 'toggle-fts-search-guide-dialog',
+                        class: 'toggle-fts-search',
                         url: 'ttyg',
                         showOn: () => GuideUtils.isChecked(toggleSelector),
                         elementSelector: GuideUtils.getGuideElementSelector('query-method-fts_search'),
@@ -51,14 +51,14 @@ PluginRegistry.add('guide.step', [
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.fts-search-method.content',
                         url: 'ttyg',
-                        class: 'info-fts-search-guide-dialog'
+                        class: 'info-fts-search'
                     }, options)
                 },
                 {
                     guideBlockName: 'clickable-element',
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.fts-search-method.enable-toggle',
-                        class: 'toggle-fts-search-guide-dialog',
+                        class: 'toggle-fts-search',
                         url: 'ttyg',
                         elementSelector: GuideUtils.getGuideElementSelector('query-method-fts_search'),
                         clickableElementSelector: toggleSelector,

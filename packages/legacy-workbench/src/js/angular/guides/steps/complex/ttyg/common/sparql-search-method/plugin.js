@@ -12,7 +12,7 @@ PluginRegistry.add('guide.step', [
                     guideBlockName: 'clickable-element',
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.sparql-search-method.enable-ontology-from-graph',
-                        class: 'enable-ontology-from-graph-guide-dialog',
+                        class: 'enable-ontology-from-graph',
                         url: 'ttyg',
                         elementSelector: GuideUtils.getGuideElementSelector('sparql-ontology-graph-option'),
                         clickableElementSelector: GuideUtils.getGuideElementSelector('sparql-ontology-graph-option-input'),
@@ -23,7 +23,7 @@ PluginRegistry.add('guide.step', [
                     guideBlockName: 'input-element',
                     options: angular.extend({}, {
                         content: `guide.step_plugin.sparql-search-method.type-ontology-graph-name`,
-                        class: 'input-ontology-graph-name-guide-dialog',
+                        class: 'input-ontology-graph-name',
                         url: 'ttyg',
                         elementSelector: GuideUtils.getGuideElementSelector('sparql-ontology-graph-input'),
                         onNextValidate: () => Promise.resolve(GuideUtils.validateTextInput(GuideUtils.getGuideElementSelector('sparql-ontology-graph-input'), options.ontologyGraph, false))
@@ -42,7 +42,7 @@ PluginRegistry.add('guide.step', [
                     guideBlockName: 'clickable-element',
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.sparql-search-method.enable-sparql-query',
-                        class: 'enable-sparql-query-guide-dialog',
+                        class: 'enable-sparql-query',
                         url: 'ttyg',
                         elementSelector: GuideUtils.getGuideElementSelector('sparql-query-option'),
                         clickableElementSelector: GuideUtils.getGuideElementSelector('sparql-query-option-input'),
@@ -62,7 +62,7 @@ PluginRegistry.add('guide.step', [
                     options: angular.extend({}, {
                         elementSelector: GuideUtils.getGuideElementSelector('add-missing-namespaces-option'),
                         content: 'guide.step_plugin.sparql-search-method.add-missing-namespaces',
-                        class: 'enable-sparql-query-guide-dialog',
+                        class: 'enable-sparql-query',
                         url: 'ttyg',
                         onNextValidate: () => Promise.resolve(GuideUtils.isChecked(GuideUtils.getGuideElementSelector('add-missing-namespaces-input')))
                     }, options)
@@ -91,7 +91,7 @@ PluginRegistry.add('guide.step', [
                     guideBlockName: 'clickable-element',
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.sparql-search-method.disable-toggle',
-                        class: 'toggle-sparql-search-guide-dialog',
+                        class: 'toggle-sparql-search',
                         url: 'ttyg',
                         showOn: () => GuideUtils.isChecked(toggleSelector),
                         elementSelector: GuideUtils.getGuideElementSelector('query-method-sparql_search'),
@@ -106,7 +106,7 @@ PluginRegistry.add('guide.step', [
                     guideBlockName: 'info-message',
                     options: angular.extend({}, {
                         content: `guide.step_plugin.sparql-search-method.content`,
-                        class: 'info-sparql-search-guide-dialog',
+                        class: 'info-sparql-search',
                         url: 'ttyg'
                     }, options)
                 },
@@ -114,7 +114,7 @@ PluginRegistry.add('guide.step', [
                     guideBlockName: 'clickable-element',
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.sparql-search-method.enable-toggle',
-                        class: 'toggle-sparql-search-guide-dialog',
+                        class: 'toggle-sparql-search',
                         url: 'ttyg',
                         elementSelector: GuideUtils.getGuideElementSelector('query-method-sparql_search'),
                         clickableElementSelector: toggleSelector,

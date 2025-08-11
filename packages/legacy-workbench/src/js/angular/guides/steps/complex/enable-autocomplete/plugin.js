@@ -19,7 +19,7 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.enable-autocomplete.content',
                         url: 'autocomplete',
                         elementSelector: autocompleteCheckboxSelector,
-                        class: 'enable-autocomplete-checkbox-guide-dialog',
+                        class: 'enable-autocomplete-checkbox',
                         // Disable default behavior of service when element is clicked.
                         advanceOn: undefined,
                         beforeShowPromise: () => GuideUtils.deferredShow(500)(),
@@ -54,7 +54,7 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.enable-autocomplete.status_info.content',
                         url: 'autocomplete',
                         elementSelector: GuideUtils.getGuideElementSelector('autocompleteStatus'),
-                        class: 'autocomplete-status-info-guide-dialog',
+                        class: 'autocomplete-status-info',
                         canBePaused: false
                     }, options)
                 }
