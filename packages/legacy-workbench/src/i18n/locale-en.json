@@ -3333,7 +3333,7 @@
     "guide.step_plugin.create-similarity-index.wait": "Wait for index to be created",
     "guide.step_plugin.configure-agent.name-input": "Type a name for the agent. You will refer to it later.",
     "guide.step_plugin.configure-agent.model-input": "Here you can type the name of the OpenAI model to be used.<br>Type: \"<b>{{model}}</b>\" to configure the agent to use this model",
-    "guide.step_plugin.configure-agent.user-instructions-input": "Here you can type additional instructions which will be passed to the agent.<br> Type: \"<b>{{userInstructions}}</b>\"",
+    "guide.step_plugin.configure-agent.user-instructions-input": "Those are additional instructions which will be passed to the agent.",
     "guide.step_plugin.class-relationships-intro.content": "This view shows how data instances from different classes are connected based on real RDF statements.",
     "guide.step_plugin.class-relationships-diagram-intro.content": "The diagram shows bundled connections between class pairs. Each connection represents multiple RDF links (subject–predicate–object) between instances of two classes.",
     "guide.step_plugin.class-relationships-digram-thickness-intro.content": "Each connection line varies in <b>thickness</b> based on the number of links, <b>color</b> based on the class with more incoming links, and <b>direction</b> as links may go both ways (from class A to class B and vice versa).",
