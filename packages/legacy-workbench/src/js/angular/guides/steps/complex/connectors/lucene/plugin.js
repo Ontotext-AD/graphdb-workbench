@@ -37,7 +37,24 @@ PluginRegistry.add('guide.step', [
         guideBlockName: 'connectors-open-lucine-connector',
         getSteps: (options, services) => {
             const GuideUtils = services.GuideUtils;
-            let connectorToggleButtonSelector = GuideUtils.getGuideElementSelector(`${options.connectorName}-connector-toggle-button`, ' a');
+            const connectorToggleButtonSelector = GuideUtils.getGuideElementSelector(`${options.connectorName}-connector-toggle-button`, 'a');
+
+            const clickHandler = (event) => {
+                if (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                let guideElementSelector = GuideUtils.getGuideElementSelector(`${options.connectorName}-connector-content`);
+                console.log(guideElementSelector);
+
+
+                let $1 = $(guideElementSelector);
+                console.log($1)
+                $1.collapse('show');
+            }
+            let stepHTMLElement = undefined;
+
+
             return [{
                 guideBlockName: 'clickable-element',
                 options: {
@@ -48,7 +65,24 @@ PluginRegistry.add('guide.step', [
                     class: 'connectors-open-lucine-connector',
                     url: 'connectors',
                     elementSelector: connectorToggleButtonSelector,
-                    onNextClick: GuideUtils.clickOnElement(connectorToggleButtonSelector)
+                    onNextClick: (guide) => {
+                        clickHandler();
+                        guide.next(guide);
+                        return Promise.resolve(true);
+
+                    },
+                    show: () => () => {
+                        stepHTMLElement = document.querySelector(GuideUtils.getGuideElementSelector(`${options.connectorName}-connector-toggle-button`));
+                        if (stepHTMLElement) {
+                            stepHTMLElement.addEventListener('click', clickHandler);
+                        }
+                    },
+                    hide: () => () => {
+                        if (stepHTMLElement) {
+                            stepHTMLElement.removeEventListener('click', clickHandler);
+                            stepHTMLElement = undefined;
+                        }
+                    }
                 }
             }];
         }
