@@ -28,7 +28,7 @@ in watch mode and will proxy requests to a GraphDB instance running on `localhos
 ###  ESLint Setup
 This project enforces consistent code quality using ESLint, configured per microfrontend/package.
 
-Each microfrontend has its own eslint.config.js or eslint.config.mjs
+Each microfrontend has its own eslint.config.js or eslint.config.cjs
 
 Lint rules are automatically enforced on file save and commit
 
@@ -38,6 +38,18 @@ Lint rules are automatically enforced on file save and commit
 You can have ESLint running in your editor:
 
 **IntelliJ**: enabled via Settings > Languages & Frameworks > JavaScript > Code Quality Tools > ESLint
+
+### Linting SCSS files
+The microfrontends which have .scss files also have stylelint.config.cjs configurations.
+These are used when committing 
+a file.
+
+Automatic style linting can also be set up in the editor:
+
+**Intellij**: Settings > Languages & Frameworks > Style Sheets > Stylelint.
+Click Enable.
+One microfrontend's configuration file can be chosen per project with Intellij.
+Currently, there is no root style lint config specifically for this purpose.
 
 ### Pre-commit Hook (ESLint)
 
