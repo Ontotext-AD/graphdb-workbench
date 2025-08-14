@@ -1,3 +1,5 @@
+const FTS_METHOD_DEFAULT_TITLE = "guide.step-action.fts-search-method"
+
 PluginRegistry.add('guide.step', [
     {
         guideBlockName: 'set-max-triples-per-call',
@@ -6,71 +8,116 @@ PluginRegistry.add('guide.step', [
 
             return {
                 guideBlockName: 'input-element',
-                options: angular.extend({}, {
-                    elementSelector: GuideUtils.getGuideElementSelector('max-triples-per-call-input'),
+                options: {
                     content: 'guide.step_plugin.fts-search-method.set-max-triples-per-call',
+                    // If mainAction is set the title will be set automatically
+                    ...(options.mainAction ? {} : { title: FTS_METHOD_DEFAULT_TITLE }),
                     class: 'toggle-fts-search',
+                    ...options,
                     url: 'ttyg',
+                    elementSelector: GuideUtils.getGuideElementSelector('max-triples-per-call-input'),
                     onNextValidate: () => {
                         if (options.maxTriplesPerCall) {
                             return Promise.resolve(GuideUtils.validateTextInput(GuideUtils.getGuideElementSelector('max-triples-per-call-input'), options.maxTriplesPerCall, false));
                         }
                         return Promise.resolve(true);
                     }
-                }, options)
+                }
             }
         }
     },
     {
-        guideBlockName: 'fts-search-method',
+        guideBlockName: "ttyg-fts-method-disable",
         getSteps: (options, services) => {
             const GuideUtils = services.GuideUtils;
-            options.mainAction = 'fts-search-method';
-
-            const shouldToggleOff = options.disable;
             const toggleSelector = GuideUtils.getGuideElementSelector('query-method-fts_search-input');
 
-            if (shouldToggleOff) {
-                return [{
+            return [
+                {
                     guideBlockName: 'clickable-element',
-                    options: angular.extend({}, {
+                    options: {
                         content: 'guide.step_plugin.fts-search-method.disable-toggle',
+                        // If mainAction is set the title will be set automatically
+                        ...(options.mainAction ? {} : { title: FTS_METHOD_DEFAULT_TITLE }),
                         class: 'toggle-fts-search',
+                        ...options,
                         url: 'ttyg',
                         showOn: () => GuideUtils.isChecked(toggleSelector),
                         elementSelector: GuideUtils.getGuideElementSelector('query-method-fts_search'),
                         clickableElementSelector: toggleSelector,
                         onNextValidate: () => Promise.resolve(!GuideUtils.isChecked(toggleSelector))
-                    }, options)
+                    }
+                }
+            ]
+        }
+    },
+    {
+        guideBlockName: "ttyg-fts-method-info",
+        getSteps: (options, services) => {
+            return [
+                {
+                    guideBlockName: 'info-message',
+                    options: {
+                        content: 'guide.step_plugin.fts-search-method.content',
+                        // If mainAction is set the title will be set automatically
+                        ...(options.mainAction ? {} : { title: FTS_METHOD_DEFAULT_TITLE }),
+                        class: 'info-fts-search',
+                        ...options,
+                        url: 'ttyg'
+                    }
+                }
+            ]
+        }
+    },
+    {
+        guideBlockName: "ttyg-fts-method-enable",
+        getSteps: (options, services) => {
+            const GuideUtils = services.GuideUtils;
+            const toggleSelector = GuideUtils.getGuideElementSelector('query-method-fts_search-input');
+
+            return [
+                {
+                    guideBlockName: 'clickable-element',
+                    options: {
+                        content: 'guide.step_plugin.fts-search-method.enable-toggle',
+                        // If mainAction is set the title will be set automatically
+                        ...(options.mainAction ? {} : { title: FTS_METHOD_DEFAULT_TITLE }),
+                        class: 'toggle-fts-search',
+                        ...options,
+                        url: 'ttyg',
+                        elementSelector: GuideUtils.getGuideElementSelector('query-method-fts_search'),
+                        clickableElementSelector: toggleSelector,
+                        onNextValidate: () => Promise.resolve(GuideUtils.isChecked(toggleSelector))
+                    }
+                }
+            ]
+        }
+    },
+    {
+        guideBlockName: 'fts-search-method',
+        getSteps: (options, services) => {
+            options.mainAction = 'fts-search-method';
+            const shouldToggleOff = options.disable;
+
+            if (shouldToggleOff) {
+                return [{
+                    guideBlockName: 'ttyg-fts-method-disable', options: {...options}
                 }]
             }
 
             const steps = [
                 {
-                    guideBlockName: 'info-message',
-                    options: angular.extend({}, {
-                        content: 'guide.step_plugin.fts-search-method.content',
-                        url: 'ttyg',
-                        class: 'info-fts-search'
-                    }, options)
+                    guideBlockName: 'ttyg-fts-method-info', options: {...options}
                 },
                 {
-                    guideBlockName: 'clickable-element',
-                    options: angular.extend({}, {
-                        content: 'guide.step_plugin.fts-search-method.enable-toggle',
-                        class: 'toggle-fts-search',
-                        url: 'ttyg',
-                        elementSelector: GuideUtils.getGuideElementSelector('query-method-fts_search'),
-                        clickableElementSelector: toggleSelector,
-                        onNextValidate: () => Promise.resolve(GuideUtils.isChecked(toggleSelector))
-                    }, options)
+                    guideBlockName: 'ttyg-fts-method-enable', options: {...options}
                 }
             ];
 
             if (options.maxTriplesPerCall) {
                 steps.push({
                     guideBlockName: 'set-max-triples-per-call',
-                    options: angular.extend({}, options)
+                    options: {...options}
                 })
             }
 
