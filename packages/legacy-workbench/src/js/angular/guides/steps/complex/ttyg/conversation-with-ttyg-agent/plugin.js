@@ -1,4 +1,47 @@
+const CONVERSATION_WITH_AGENT_DEFAULT_TITLE = 'guide.step-action.conversation-with-ttyg-agent';
+
 PluginRegistry.add('guide.step', [
+    {
+        guideBlockName: 'ttyg-conversation-info-message',
+        getSteps: (options, services) => {
+            return [
+                {
+                    guideBlockName: 'info-message',
+                    options: {
+                        skipPoint: true,
+                        class: 'conversation-info',
+                        // If mainAction is set the title will be set automatically
+                        ...(options.mainAction ? {} : { title: CONVERSATION_WITH_AGENT_DEFAULT_TITLE }),
+                        content: 'guide.step_plugin.conversation-with-ttyg-agent.info',
+                        ...options,
+                        url: 'ttyg',
+                    }
+                }
+            ]
+        }
+    },
+    {
+      guideBlockName: 'ttyg-click-to-create-new-chat',
+      getSteps: (options, services) => {
+          const GuideUtils = services.GuideUtils;
+          const createChatBtnSelector = GuideUtils.getGuideElementSelector('create-chat-btn')
+          return [
+              {
+                  guideBlockName: 'clickable-element',
+                  options: {
+                      content: 'guide.step_plugin.conversation-with-ttyg-agent.start-conversation',
+                      // If mainAction is set the title will be set automatically
+                      ...(options.mainAction ? {} : { title: CONVERSATION_WITH_AGENT_DEFAULT_TITLE }),
+                      class: 'start-conversation',
+                      disableNextFlow: true,
+                      ...options,
+                      url: 'ttyg',
+                      elementSelector: createChatBtnSelector,
+                  }
+              }
+          ]
+      }
+    },
     {
         guideBlockName: 'conversation-with-ttyg-agent',
         getSteps: (options, services) => {
@@ -11,13 +54,8 @@ PluginRegistry.add('guide.step', [
 
             if (showInfo) {
                 steps.push({
-                    guideBlockName: 'info-message',
-                    options: angular.extend({}, {
-                        skipPoint: true,
-                        url: 'ttyg',
-                        class: 'conversation-info',
-                        content: 'guide.step_plugin.conversation-with-ttyg-agent.info',
-                    }, options)
+                    guideBlockName: 'ttyg-conversation-info-message',
+                    options: {...options}
                 })
             }
 
@@ -42,14 +80,7 @@ PluginRegistry.add('guide.step', [
                         }, options)
                     },
                     {
-                        guideBlockName: 'clickable-element',
-                        options: angular.extend({}, {
-                            content: 'guide.step_plugin.conversation-with-ttyg-agent.start-conversation',
-                            class: 'start-conversation',
-                            url: 'ttyg',
-                            elementSelector: createChatBtnSelector,
-                            disableNextFlow: true
-                        }, options)
+                        guideBlockName: 'ttyg-click-to-create-new-chat', options: {...options}
                     }
                 ]
                 steps.push(...newConversationStartSteps);
