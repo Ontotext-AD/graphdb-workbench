@@ -1,33 +1,191 @@
 const CONFIGURATION_OPTION_ONTOLOGY_GRAPH = 'ontologyGraph';
 const CONFIGURATION_OPTION_SPARQL_QUERY = 'sparqlQuery';
+const TTYG_SPARQL_SEARCH_METHOD_DEFAULT_TITLE = 'guide.step-action.sparql-search-method';
 
 PluginRegistry.add('guide.step', [
     {
-        guideBlockName: 'sparql-search-method-enable-ontology-graph',
+        guideBlockName: "ttyg-sparql-method-enable-ontology",
         getSteps: (options, services) => {
             const GuideUtils = services.GuideUtils;
 
             return [
                 {
                     guideBlockName: 'clickable-element',
-                    options: angular.extend({}, {
+                    options: {
                         content: 'guide.step_plugin.sparql-search-method.enable-ontology-from-graph',
                         class: 'enable-ontology-from-graph',
+                        // If mainAction is set the title will be set automatically
+                        ...(options.mainAction ? {} : {title: TTYG_SPARQL_SEARCH_METHOD_DEFAULT_TITLE}),
+                        ...options,
                         url: 'ttyg',
                         elementSelector: GuideUtils.getGuideElementSelector('sparql-ontology-graph-option'),
                         clickableElementSelector: GuideUtils.getGuideElementSelector('sparql-ontology-graph-option-input'),
                         onNextValidate: () => Promise.resolve(GuideUtils.isChecked(GuideUtils.getGuideElementSelector('sparql-ontology-graph-option-input')))
-                    }, options)
-                },
+                    }
+                }
+            ]
+        }
+    },
+    {
+        guideBlockName: 'sparql-search-method-type-graph-name',
+        getSteps: (options, services) => {
+            const GuideUtils = services.GuideUtils;
+
+            return [
                 {
                     guideBlockName: 'input-element',
-                    options: angular.extend({}, {
+                    options: {
                         content: `guide.step_plugin.sparql-search-method.type-ontology-graph-name`,
+                        // If mainAction is set the title will be set automatically
+                        ...(options.mainAction ? {} : {title: TTYG_SPARQL_SEARCH_METHOD_DEFAULT_TITLE}),
                         class: 'input-ontology-graph-name',
+                        ...options,
                         url: 'ttyg',
                         elementSelector: GuideUtils.getGuideElementSelector('sparql-ontology-graph-input'),
                         onNextValidate: () => Promise.resolve(GuideUtils.validateTextInput(GuideUtils.getGuideElementSelector('sparql-ontology-graph-input'), options.ontologyGraph, false))
-                    }, options)
+                    }
+                }
+            ]
+        }
+    },
+    {
+        guideBlockName: 'ttyg-sparql-query-click-enable',
+        getSteps: (options, services) => {
+            const GuideUtils = services.GuideUtils;
+
+            return [
+                {
+                    guideBlockName: 'clickable-element',
+                    options: {
+                        content: 'guide.step_plugin.sparql-search-method.enable-sparql-query',
+                        // If mainAction is set the title will be set automatically
+                        ...(options.mainAction ? {} : {title: TTYG_SPARQL_SEARCH_METHOD_DEFAULT_TITLE}),
+                        class: 'enable-sparql-query',
+                        ...options,
+                        url: 'ttyg',
+                        elementSelector: GuideUtils.getGuideElementSelector('sparql-query-option'),
+                        clickableElementSelector: GuideUtils.getGuideElementSelector('sparql-query-option-input'),
+                        onNextValidate: () => Promise.resolve(GuideUtils.isChecked(GuideUtils.getGuideElementSelector('sparql-query-option-input')))
+                    }
+                }
+            ]
+        }
+    },
+    {
+        guideBlockName: "ttyg-sparql-copy-query-text",
+        getSteps: (options, services) => {
+            const GuideUtils = services.GuideUtils;
+
+            return [
+                {
+                    guideBlockName: 'copy-text-element',
+                    options: {
+                        elementSelector: GuideUtils.getGuideElementSelector('sparql-query-input'),
+                        text: options.sparqlQuery,
+                        ...options,
+                        onNextValidate: () => Promise.resolve(GuideUtils.validateTextInput(GuideUtils.getGuideElementSelector('sparql-query-input'), options.sparqlQuery, false))
+                    }
+                }
+            ]
+        }
+    },
+    {
+      guideBlockName: 'ttyg-sparql-click-add-namespaces',
+      getSteps: (options, services) => {
+          const GuideUtils = services.GuideUtils;
+
+          return [
+              {
+                  guideBlockName: 'clickable-element',
+                  options: {
+                      content: 'guide.step_plugin.sparql-search-method.add-missing-namespaces',
+                      // If mainAction is set the title will be set automatically
+                      ...(options.mainAction ? {} : {title: TTYG_SPARQL_SEARCH_METHOD_DEFAULT_TITLE}),
+                      class: 'enable-sparql-query',
+                      ...options,
+                      url: 'ttyg',
+                      elementSelector: GuideUtils.getGuideElementSelector('add-missing-namespaces-option'),
+                      onNextValidate: () => Promise.resolve(GuideUtils.isChecked(GuideUtils.getGuideElementSelector('add-missing-namespaces-input')))
+                  }
+              }
+          ]
+      }
+    },
+    {
+      guideBlockName: 'ttyg-sparql-method-disable',
+      getSteps: (options, services) => {
+          const GuideUtils = services.GuideUtils;
+          const toggleSelector = GuideUtils.getGuideElementSelector('query-method-sparql_search-input');
+
+          return [
+              {
+                  guideBlockName: 'clickable-element',
+                  options: {
+                      content: 'guide.step_plugin.sparql-search-method.disable-toggle',
+                      // If mainAction is set the title will be set automatically
+                      ...(options.mainAction ? {} : {title: TTYG_SPARQL_SEARCH_METHOD_DEFAULT_TITLE}),
+                      class: 'toggle-sparql-search',
+                      ...options,
+                      url: 'ttyg',
+                      showOn: () => GuideUtils.isChecked(toggleSelector),
+                      elementSelector: GuideUtils.getGuideElementSelector('query-method-sparql_search'),
+                      clickableElementSelector: toggleSelector,
+                      onNextValidate: () => Promise.resolve(!GuideUtils.isChecked(toggleSelector))
+                  }
+              }
+          ]
+      }
+    },
+    {
+      guideBlockName: 'ttyg-enabling-sparql-info-message',
+      getSteps: (options, services) => {
+          return [
+              {
+                  guideBlockName: 'info-message',
+                  options: {
+                      content: `guide.step_plugin.sparql-search-method.content`,
+                      // If mainAction is set the title will be set automatically
+                      ...(options.mainAction ? {} : {title: TTYG_SPARQL_SEARCH_METHOD_DEFAULT_TITLE}),
+                      class: 'info-sparql-search',
+                      ...options,
+                      url: 'ttyg'
+                  }
+              }
+          ]
+      }
+    },
+    {
+       guideBlockName: 'ttyg-sparql-method-enable-toggle',
+       getSteps: (options, services) => {
+           const GuideUtils = services.GuideUtils;
+           const toggleSelector = GuideUtils.getGuideElementSelector('query-method-sparql_search-input');
+           return [
+               {
+                   guideBlockName: 'clickable-element',
+                   options: {
+                       content: 'guide.step_plugin.sparql-search-method.enable-toggle',
+                       // If mainAction is set the title will be set automatically
+                       ...(options.mainAction ? {} : {title: TTYG_SPARQL_SEARCH_METHOD_DEFAULT_TITLE}),
+                       class: 'toggle-sparql-search',
+                       ...options,
+                       url: 'ttyg',
+                       elementSelector: GuideUtils.getGuideElementSelector('query-method-sparql_search'),
+                       clickableElementSelector: toggleSelector,
+                       onNextValidate: () => Promise.resolve(GuideUtils.isChecked(toggleSelector))
+                   }
+               }
+           ]
+       }
+    },
+    {
+        guideBlockName: 'sparql-search-method-enable-ontology-graph',
+        getSteps: (options, services) => {
+            return [
+                {
+                    guideBlockName: 'ttyg-sparql-method-enable-ontology', options: {...options}
+                },
+                {
+                    guideBlockName: 'sparql-search-method-type-graph-name', options: {...options}
                 }
             ]
         }
@@ -35,37 +193,15 @@ PluginRegistry.add('guide.step', [
     {
         guideBlockName: 'sparql-search-method-enable-sparql-query',
         getSteps: (options, services) => {
-            const GuideUtils = services.GuideUtils;
-
             return [
                 {
-                    guideBlockName: 'clickable-element',
-                    options: angular.extend({}, {
-                        content: 'guide.step_plugin.sparql-search-method.enable-sparql-query',
-                        class: 'enable-sparql-query',
-                        url: 'ttyg',
-                        elementSelector: GuideUtils.getGuideElementSelector('sparql-query-option'),
-                        clickableElementSelector: GuideUtils.getGuideElementSelector('sparql-query-option-input'),
-                        onNextValidate: () => Promise.resolve(GuideUtils.isChecked(GuideUtils.getGuideElementSelector('sparql-query-option-input')))
-                    }, options)
+                    guideBlockName: 'ttyg-sparql-query-click-enable', options: {...options}
                 },
                 {
-                    guideBlockName: 'copy-text-element',
-                    options: angular.extend({}, {
-                        elementSelector: GuideUtils.getGuideElementSelector('sparql-query-input'),
-                        text: options.sparqlQuery,
-                        onNextValidate: () => Promise.resolve(GuideUtils.validateTextInput(GuideUtils.getGuideElementSelector('sparql-query-input'), options.sparqlQuery, false))
-                    }, options)
+                    guideBlockName: 'ttyg-sparql-copy-query-text', options: {...options}
                 },
                 {
-                    guideBlockName: 'clickable-element',
-                    options: angular.extend({}, {
-                        elementSelector: GuideUtils.getGuideElementSelector('add-missing-namespaces-option'),
-                        content: 'guide.step_plugin.sparql-search-method.add-missing-namespaces',
-                        class: 'enable-sparql-query',
-                        url: 'ttyg',
-                        onNextValidate: () => Promise.resolve(GuideUtils.isChecked(GuideUtils.getGuideElementSelector('add-missing-namespaces-input')))
-                    }, options)
+                    guideBlockName: 'ttyg-sparql-click-add-namespaces', options: {...options}
                 }
             ]
         }
@@ -73,11 +209,9 @@ PluginRegistry.add('guide.step', [
     {
         guideBlockName: 'sparql-search-method',
         getSteps: (options, services) => {
-            const GuideUtils = services.GuideUtils;
             options.mainAction = 'sparql-search-method';
 
             const shouldToggleOff = options.disable;
-            const toggleSelector = GuideUtils.getGuideElementSelector('query-method-sparql_search-input');
 
             let configurationOption;
             if (options.ontologyGraph) {
@@ -88,50 +222,28 @@ PluginRegistry.add('guide.step', [
 
             if (shouldToggleOff) {
                 return [{
-                    guideBlockName: 'clickable-element',
-                    options: angular.extend({}, {
-                        content: 'guide.step_plugin.sparql-search-method.disable-toggle',
-                        class: 'toggle-sparql-search',
-                        url: 'ttyg',
-                        showOn: () => GuideUtils.isChecked(toggleSelector),
-                        elementSelector: GuideUtils.getGuideElementSelector('query-method-sparql_search'),
-                        clickableElementSelector: toggleSelector,
-                        onNextValidate: () => Promise.resolve(!GuideUtils.isChecked(toggleSelector))
-                    }, options)
+                    guideBlockName: 'ttyg-sparql-method-disable', options: {...options}
                 }]
             }
 
             const steps = [
                 {
-                    guideBlockName: 'info-message',
-                    options: angular.extend({}, {
-                        content: `guide.step_plugin.sparql-search-method.content`,
-                        class: 'info-sparql-search',
-                        url: 'ttyg'
-                    }, options)
+                    guideBlockName: 'ttyg-enabling-sparql-info-message', options: {...options}
                 },
                 {
-                    guideBlockName: 'clickable-element',
-                    options: angular.extend({}, {
-                        content: 'guide.step_plugin.sparql-search-method.enable-toggle',
-                        class: 'toggle-sparql-search',
-                        url: 'ttyg',
-                        elementSelector: GuideUtils.getGuideElementSelector('query-method-sparql_search'),
-                        clickableElementSelector: toggleSelector,
-                        onNextValidate: () => Promise.resolve(GuideUtils.isChecked(toggleSelector))
-                    }, options)
+                    guideBlockName: 'ttyg-sparql-method-enable-toggle', options: {...options}
                 },
             ]
 
             if (configurationOption === CONFIGURATION_OPTION_ONTOLOGY_GRAPH) {
                 steps.push({
                     guideBlockName: 'sparql-search-method-enable-ontology-graph',
-                    options: angular.extend({}, options)
+                    options: {...options}
                 });
             } else if (configurationOption === CONFIGURATION_OPTION_SPARQL_QUERY) {
                 steps.push({
                     guideBlockName: 'sparql-search-method-enable-sparql-query',
-                    options: angular.extend({}, options)
+                    options: {...options}
                 });
             }
 
