@@ -1,4 +1,128 @@
+const TTYG_SELECT_AGENT_DEFAULT_TITLE = 'guide.step-action.select-ttyg-agent';
+
 PluginRegistry.add('guide.step', [
+    {
+        guideBlockName: 'ttyg-select-agent-info-message',
+        getSteps: (options, services) => {
+            return [
+                {
+                    guideBlockName: 'info-message',
+                    options: {
+                        content: 'guide.step_plugin.select-ttyg-agent.info.content',
+                        // If mainAction is set the title will be set automatically
+                        ...(options.mainAction ? {} : { title: TTYG_SELECT_AGENT_DEFAULT_TITLE }),
+                        class: 'select-ttyg-agent',
+                        skipPoint: true,
+                        disablePreviousFlow: true,
+                        ...options,
+                        url: 'ttyg'
+                    }
+                }
+            ]
+        }
+    },
+    {
+        guideBlockName: 'ttyg-select-agent-dropdown',
+        getSteps: (options, services) => {
+            const GuideUtils = services.GuideUtils;
+
+            return [
+                {
+                    guideBlockName: 'clickable-element',
+                    options: {
+                        content: 'guide.step_plugin.select-ttyg-agent.open-agent-dropdown',
+                        // If mainAction is set the title will be set automatically
+                        ...(options.mainAction ? {} : { title: TTYG_SELECT_AGENT_DEFAULT_TITLE }),
+                        class: 'open-agent-dropdown',
+                        disableNextFlow: true,
+                        ...options,
+                        url: 'ttyg',
+                        elementSelector: GuideUtils.getGuideElementSelector('select-agent-dropdown'),
+                    }
+                }
+            ]
+        }
+    },
+    {
+      guideBlockName: 'ttyg-select-agent-auto-reopen-dropdown',
+      getSteps: (options, services) => {
+          const GuideUtils = services.GuideUtils;
+          return [
+              {
+                  guideBlockName: 'clickable-element',
+                  options: {
+                      content: 'guide.step_plugin.select-ttyg-agent.select-agent',
+                      // If mainAction is set the title will be set automatically
+                      ...(options.mainAction ? {} : { title: TTYG_SELECT_AGENT_DEFAULT_TITLE }),
+                      disableNextFlow: true,
+                      class: 'select-your-agent',
+                      ...options,
+                      elementSelector: GuideUtils.getGuideElementSelector('select-agent-panel'),
+                      show: () => () => {
+                          const elementToObserve = document.querySelector(GuideUtils.getGuideElementSelector('select-agent-dropdown'));
+                          const dropdownToggleElement = document.querySelector(GuideUtils.getGuideElementSelector('select-agent-dropdown-toggle'));
+
+                          options.observer = new MutationObserver(attributesChangeCallback);
+                          options.observer.observe(elementToObserve, {attributes: true});
+
+                          function attributesChangeCallback(mutationList) {
+                              for (const mutation of mutationList) {
+                                  if (mutation.type === 'attributes') {
+                                      const isOpened = mutation.target.classList.contains('open');
+
+                                      // The component we use for selecting the agent automatically closes
+                                      // after the user clicks on the view, which is why we have to open it.
+                                      if (!(isOpened)) {
+                                          dropdownToggleElement.click();
+                                      }
+                                  }
+                              }
+                          }
+                      },
+                      hide: () => () => {
+                          options.observer.disconnect();
+                      }
+                  }
+              }
+          ]
+      }
+    },
+    {
+      guideBlockName: 'ttyg-select-agent-missing-repository-cancel',
+      getSteps: (options, services) => {
+          const GuideUtils = services.GuideUtils;
+
+          return [
+              {
+                  guideBlockName: 'clickable-element',
+                  options: {
+                      content: 'guide.step_plugin.select-ttyg-agent.missing-repository',
+                      // If mainAction is set the title will be set automatically
+                      ...(options.mainAction ? {} : { title: TTYG_SELECT_AGENT_DEFAULT_TITLE }),
+                      ...options,
+                      elementSelector: GuideUtils.getElementSelector('.confirm-dialog .cancel-btn'),
+                      showOn: () => GuideUtils.isVisible('.confirm-dialog .cancel-btn'),
+                      onNextClick: () => {
+                          // Close the modal by clicking on the cancel button
+                          GuideUtils.clickOnElement('.confirm-dialog .cancel-btn')();
+                      },
+                      show: (guide, currentStep) => () => {
+                          const currentStepId = currentStep.id;
+                          // Add a "click" listener to the element.
+                          // Upon clicking the element, the guide is set back 3 steps to "open dropdown" step
+                          $(currentStep.elementSelector).on('click', () => {
+                              guide.show(currentStepId - 3)
+                          });
+                      },
+                      hide: (guide, currentStep) => () => {
+                          // Remove the "click" listener of the element. It is important when the step is hidden.
+                          $(currentStep.elementSelector).off('click');
+                      }
+                  }
+              }
+          ]
+      }
+    },
     {
         guideBlockName: 'select-ttyg-agent',
         getSteps: (options, services) => {
@@ -7,57 +131,16 @@ PluginRegistry.add('guide.step', [
 
             return [
                 {
-                    guideBlockName: 'info-message',
-                    options: angular.extend({}, {
-                        content: 'guide.step_plugin.select-ttyg-agent.info.content',
-                        url: 'ttyg',
-                        class: 'select-ttyg-agent',
-                        skipPoint: true,
-                        disablePreviousFlow: true,
-                    }, options)
+                    guideBlockName: 'ttyg-select-agent-info-message',
+                    options: {...options}
                 },
                 {
-                    guideBlockName: 'clickable-element',
-                    options: angular.extend({}, {
-                        content: 'guide.step_plugin.select-ttyg-agent.open-agent-dropdown',
-                        class: 'open-agent-dropdown',
-                        url: 'ttyg',
-                        elementSelector: GuideUtils.getGuideElementSelector('select-agent-dropdown'),
-                        disableNextFlow: true
-                    }, options)
+                    guideBlockName: 'ttyg-select-agent-dropdown',
+                    options: {...options}
                 },
                 {
-                    guideBlockName: 'clickable-element',
-                    options: angular.extend({}, {
-                        content: 'guide.step_plugin.select-ttyg-agent.select-agent',
-                        elementSelector: GuideUtils.getGuideElementSelector('select-agent-panel'),
-                        class: 'select-your-agent',
-                        show: () => () => {
-                            const elementToObserve = document.querySelector(GuideUtils.getGuideElementSelector('select-agent-dropdown'));
-                            const dropdownToggleElement = document.querySelector(GuideUtils.getGuideElementSelector('select-agent-dropdown-toggle'));
-
-                            options.observer = new MutationObserver(attributesChangeCallback);
-                            options.observer.observe(elementToObserve, {attributes: true});
-
-                            function attributesChangeCallback(mutationList) {
-                                for (const mutation of mutationList) {
-                                    if (mutation.type === 'attributes') {
-                                        const isOpened = mutation.target.classList.contains('open');
-
-                                        // The component we use for selecting the agent automatically closes
-                                        // after the user clicks on the view, which is why we have to open it.
-                                        if (!(isOpened)) {
-                                            dropdownToggleElement.click();
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        disableNextFlow: true,
-                        hide: () => () => {
-                            options.observer.disconnect();
-                        }
-                    }, options)
+                    guideBlockName: 'ttyg-select-agent-auto-reopen-dropdown',
+                    options: {...options}
                 },
                 {
                     // If missing repository modal is visible go to next step, otherwise skip it
@@ -78,27 +161,8 @@ PluginRegistry.add('guide.step', [
                     }, options)
                 },
                 {
-                    guideBlockName: 'clickable-element',
-                    options: angular.extend({}, {
-                        content: 'guide.step_plugin.select-ttyg-agent.missing-repository',
-                        elementSelector: GuideUtils.getElementSelector('.confirm-dialog .cancel-btn'),
-                        showOn: () => GuideUtils.isVisible('.confirm-dialog .cancel-btn'),
-                        onNextClick: () => {
-                            // Close the modal by clicking on cancel button
-                            GuideUtils.clickOnElement('.confirm-dialog .cancel-btn')();
-                        },
-                        show: (guide, currentStep) => () => {
-                            const currentStepId = currentStep.id;
-                            // Add "click" listener to the element. Upon clicking the element the guide is set back 3 steps to open dropdown step
-                            $(currentStep.elementSelector).on('click', () => {
-                                guide.show(currentStepId - 3)
-                            });
-                        },
-                        hide: (guide, currentStep) => () => {
-                            // Remove the "click" listener of element. It is important when step is hidden.
-                            $(currentStep.elementSelector).off('click');
-                        }
-                    }, options)
+                    guideBlockName: 'ttyg-select-agent-missing-repository-cancel',
+                    options: {...options}
                 },
             ];
         }

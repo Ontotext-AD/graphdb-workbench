@@ -1,4 +1,67 @@
+const TTYG_CREATE_AGENT_DEFAULT_TITLE = 'guide.step-action.create-ttyg-agent';
+
 PluginRegistry.add('guide.step', [
+    {
+      guideBlockName: 'ttyg-create-agent-intro-message',
+      getSteps: (options, services) => {
+          return [
+              {
+                  guideBlockName: 'info-message',
+                  options: {
+                      content: 'guide.step_plugin.create-ttyg-agent.intro',
+                      // If mainAction is set the title will be set automatically
+                      ...(options.mainAction ? {} : { title: TTYG_CREATE_AGENT_DEFAULT_TITLE }),
+                      ...options
+                  }
+              },
+          ]
+      }
+    },
+    {
+        guideBlockName: 'ttyg-create-agent-click',
+        getSteps: (options, services) => {
+            const GuideUtils = services.GuideUtils;
+            return [
+                {
+                    guideBlockName: 'clickable-element',
+                    options: {
+                        content: 'guide.step_plugin.create-ttyg-agent.create-agent',
+                        // If mainAction is set the title will be set automatically
+                        ...(options.mainAction ? {} : { title: TTYG_CREATE_AGENT_DEFAULT_TITLE }),
+                        class: 'create-agent-btn',
+                        maxWaitTime: 10,
+                        disableNextFlow: true,
+                        ...options,
+                        url: 'ttyg',
+                        elementSelector: GuideUtils.getGuideElementSelector('create-agent-btn'),
+                    }
+                }
+            ]
+        }
+    },
+    {
+      guideBlockName: 'ttyg-create-agent-save',
+      getSteps: (options, services) => {
+          const GuideUtils = services.GuideUtils;
+
+          return [
+              {
+                  guideBlockName: 'clickable-element',
+                  options: {
+                      content: 'guide.step_plugin.create-ttyg-agent.save-agent-settings',
+                      // If mainAction is set the title will be set automatically
+                      ...(options.mainAction ? {} : { title: TTYG_CREATE_AGENT_DEFAULT_TITLE }),
+                      class: 'save-agent',
+                      disablePreviousFlow: false,
+                      disableNextFlow: true,
+                      ...options,
+                      url: 'ttyg',
+                      elementSelector: GuideUtils.getGuideElementSelector('save-agent-settings')
+                  }
+              }
+          ]
+      }
+    },
     {
         guideBlockName: 'create-ttyg-agent',
         getSteps: (options, services) => {
@@ -8,46 +71,29 @@ PluginRegistry.add('guide.step', [
             return [
                 {
                     guideBlockName: 'click-main-menu',
-                    options: angular.extend({}, {
-                        menu: 'ttyg',
-                        showIntro: true
-                    }, options)
+                    options: {
+                        showIntro: true,
+                        ...options,
+                        menu: 'ttyg'
+                    }
                 },
                 {
                     guideBlockName: 'end-on-api-key-error'
                 },
                 {
-                    guideBlockName: 'info-message',
-                    options: angular.extend({}, {
-                        content: 'guide.step_plugin.create-ttyg-agent.intro',
-                    }, options)
+                    guideBlockName: 'ttyg-create-agent-intro-message',
+                    options: {...options}
                 },
                 {
-                    guideBlockName: 'clickable-element',
-                    options: angular.extend({}, {
-                        content: 'guide.step_plugin.create-ttyg-agent.create-agent',
-                        class: 'create-agent-btn',
-                        url: 'ttyg',
-                        maxWaitTime: 10,
-                        elementSelector: GuideUtils.getGuideElementSelector('create-agent-btn'),
-                        disableNextFlow: true
-                    }, options)
+                    guideBlockName: 'ttyg-create-agent-click', options: {...options}
                 },
                 {
                     guideBlockName: 'configure-agent',
                     // Set name field as mandatory for creation
-                    options: angular.extend({}, options, {editName: true})
+                    options: { ...options, editName: true }
                 },
                 {
-                    guideBlockName: 'clickable-element',
-                    options: angular.extend({}, {
-                        content: 'guide.step_plugin.create-ttyg-agent.save-agent-settings',
-                        class: 'save-agent',
-                        url: 'ttyg',
-                        elementSelector: GuideUtils.getGuideElementSelector('save-agent-settings'),
-                        disablePreviousFlow: false,
-                        disableNextFlow: true
-                    }, options)
+                    guideBlockName: 'ttyg-create-agent-save', options: {...options}
                 },
                 {
                     guideBlockName: 'wait-for-element-to-hide',
