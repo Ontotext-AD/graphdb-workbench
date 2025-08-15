@@ -4,6 +4,8 @@ import {productInfoBootstrap} from './product-info/product-info-bootstrap';
 import {autoCompleteBootstrap} from './autocomplete/autocomplete';
 import {securityBootstrap} from './security/security-bootstrap';
 import {repositoryBootstrap} from './repository/repository-bootstrap';
+import {pluginsBootstrap} from './plugins/plugins-bootstrap';
+import {configurationsBootstrap} from './configuration/configuration-bootstrap';
 
 import {
   ServiceProvider,
@@ -13,7 +15,6 @@ import {
 } from '@ontotext/workbench-api';
 import {start} from 'single-spa';
 import {defineCustomElements} from '../../../shared-components/loader';
-import {pluginsBootstrap} from './plugins/plugins-bootstrap';
 
 const bootstrapPromises = [
   ...licenseBootstrap,
@@ -60,6 +61,10 @@ const loadApplicationData = () => {
     });
 };
 
+const loadApplicationConfigurations = () => {
+  return configurationsBootstrap();
+};
+
 const subscribeToAuthenticatedUserChange = () => {
   const securityContextService = ServiceProvider.get(SecurityContextService);
   securityContextService.onAuthenticatedUserChanged((authenticatedUser) => {
@@ -75,15 +80,18 @@ const subscribeToAuthenticatedUserChange = () => {
  * subscriptions for config changes and authenticated user changes.
  */
 export const bootstrapWorkbench = () => {
-  return loadEssentials().catch((error) => {
-    // Only throw error if it's not a 401 Unauthorized error, as it's expected when the user is not authenticated.
-    if (error.status !== 401) {
-      throw error;
-    }
-  }).then(() => {
-    securityBootstrap.subscribeToSecurityConfigChange();
-    subscribeToAuthenticatedUserChange();
-    defineCustomElements();
-    return start();
-  });
+  return loadApplicationConfigurations()
+    .then(loadEssentials)
+    .catch((error) => {
+      // Only throw error if it's not a 401 Unauthorized error, as it's expected when the user is not authenticated.
+      if (error.status !== 401) {
+        throw error;
+      }
+    })
+    .then(() => {
+      securityBootstrap.subscribeToSecurityConfigChange();
+      subscribeToAuthenticatedUserChange();
+      defineCustomElements();
+      return start();
+    });
 };
