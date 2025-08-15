@@ -7,5 +7,5 @@ module.exports = {
     "no-descending-specificity": true,
     "string-quotes": "single"
   },
-  ignoreFiles: ["**/node_modules/**", "dist/**"],
+  ignoreFiles: ["**/node_modules/**", "dist/**", "src/pages/**"]
 };

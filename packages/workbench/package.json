@@ -9,6 +9,8 @@
     "test": "ng test",
     "lint": "eslint src --config eslint.config.js",
     "lint:fix": "eslint src --fix --config eslint.config.js",
+    "stylelint": "stylelint \"src/**/*.{css,scss}\"",
+    "stylelint:fix": "stylelint \"src/**/*.{css,scss}\" --fix",
     "sonar": "./sonar-run.sh"
   },
   "private": true,

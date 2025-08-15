@@ -1,27 +1,10 @@
-#!/usr/bin/env sh
+#!/bin/sh
 echo "Running pre-commit hook..."
 
-# Load Husky helpers if available
-HUSKY_SH="$(dirname "$0")/_/husky.sh"
-if [ -s "$HUSKY_SH" ]; then
-  . "$HUSKY_SH"
-else
-  echo "Warning: Husky helpers not found, continuing anyway..."
-fi
+# Load Husky helpers
+. "$(dirname "$0")/_/husky.sh"
 
-# Ensure Node is installed
-if ! command -v node >/dev/null 2>&1; then
-  echo "Node.js not found. Skipping lint-staged."
-  exit 0
-fi
-
-# Ensure npm is installed
-if ! command -v npm >/dev/null 2>&1; then
-  echo "npm not found. Skipping lint-staged."
-  exit 0
-fi
-
-# Load nvm if available
+# Try to load nvm if available (for machines using nvm)
 export NVM_DIR="$HOME/.nvm"
 if [ -s "$NVM_DIR/nvm.sh" ]; then
   . "$NVM_DIR/nvm.sh"

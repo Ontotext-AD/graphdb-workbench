@@ -42,6 +42,8 @@
     "generate": "stencil generate",
     "lint": "eslint src/**/*{.ts,.tsx}",
     "lint:fix": "eslint --fix src/**/*{.ts,.tsx}",
+    "stylelint": "stylelint \"src/**/*.{css,scss}\"",
+    "stylelint:fix": "stylelint \"src/**/*.{css,scss}\" --fix",
     "sonar": "./sonar-run.sh"
   },
   "devDependencies": {
