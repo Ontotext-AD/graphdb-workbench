@@ -1,14 +1,14 @@
 import {HttpService} from '../http/http.service';
 import {PluginModule, PluginsManifest, PluginsManifestResponse} from '../../models/plugins';
 import {getOrigin} from '../utils';
-
-// TODO: move this to a configuration file or environment variable
-const MANIFEST_URL = 'plugins/plugins-manifest.json';
+import {service} from '../../providers';
+import {ConfigurationContextService} from '../configuration/configuration-context.service';
 
 /**
  * Service responsible for handling REST operations related to plugins.
  */
 export class PluginsRestService extends HttpService {
+  private readonly configurationContextService = service(ConfigurationContextService);
 
   /**
    * Fetches the plugins manifest from the server.
@@ -17,7 +17,8 @@ export class PluginsRestService extends HttpService {
    * information about available plugins.
    */
   getPluginsManifest(): Promise<PluginsManifestResponse> {
-    return this.get(MANIFEST_URL);
+    const configuration = this.configurationContextService.getApplicationConfiguration();
+    return this.get(configuration.pluginsManifestPath);
   }
 
   /**
@@ -38,7 +39,7 @@ export class PluginsRestService extends HttpService {
 
           return await import(/* webpackIgnore: true */ entryUrl) as PluginModule;
         } catch (err) {
-          console.error(`Failed to load plugin ${pluginDef.name}:`, err);
+          console.warn(`Failed to load plugin ${pluginDef.name}:`, err);
         }
       })
     );

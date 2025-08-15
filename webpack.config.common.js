@@ -135,6 +135,10 @@ module.exports = (webpackConfigEnv, argv) => {
             new CopyPlugin({
                 patterns: [
                     {
+                      from: 'assets',
+                      to: 'assets'
+                    },
+                    {
                       from: 'plugins',
                       to: 'plugins',
                       noErrorOnMissing: true
