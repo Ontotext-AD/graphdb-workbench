@@ -1,4 +1,68 @@
+const TTYG_EDIT_AGENT_DEFAULT_TITLE = 'guide.step-action.edit-ttyg-agent';
+
 PluginRegistry.add('guide.step', [
+    {
+        guideBlockName: 'ttyg-edit-agent-intro-message',
+        getSteps: (options, services) => {
+            return [
+                {
+                    guideBlockName: 'info-message',
+                    options: {
+                        content: 'guide.step_plugin.edit-ttyg-agent.intro',
+                        // If mainAction is set the title will be set automatically
+                        ...(options.mainAction ? {} : { title: TTYG_EDIT_AGENT_DEFAULT_TITLE }),
+                        skipPoint: true,
+                        ...options
+                    }
+                }
+            ]
+        }
+    },
+    {
+      guideBlockName: 'ttyg-click-to-edit-selected-agent',
+      getSteps: (options, services) => {
+          const GuideUtils = services.GuideUtils;
+
+          return [
+              {
+                  guideBlockName: 'clickable-element',
+                  options: {
+                      content: 'guide.step_plugin.edit-ttyg-agent.edit-agent',
+                      // If mainAction is set the title will be set automatically
+                      ...(options.mainAction ? {} : { title: TTYG_EDIT_AGENT_DEFAULT_TITLE }),
+                      class: 'edit-agent-btn',
+                      disableNextFlow: true,
+                      ...options,
+                      url: 'ttyg',
+                      elementSelector: GuideUtils.getGuideElementSelector('edit-current-agent'),
+                  }
+              }
+          ]
+      }
+    },
+    {
+      guideBlockName: 'ttyg-edit-agent-click-to-save',
+      getSteps: (options, services) => {
+          const GuideUtils = services.GuideUtils;
+
+          return [
+              {
+                  guideBlockName: 'clickable-element',
+                  options: {
+                      content: 'guide.step_plugin.edit-ttyg-agent.save-agent-settings',
+                      // If mainAction is set the title will be set automatically
+                      ...(options.mainAction ? {} : { title: TTYG_EDIT_AGENT_DEFAULT_TITLE }),
+                      class: 'save-agent',
+                      disablePreviousFlow: false,
+                      disableNextFlow: true,
+                      ...options,
+                      url: 'ttyg',
+                      elementSelector: GuideUtils.getGuideElementSelector('save-agent-settings'),
+                  }
+              }
+          ]
+      }
+    },
     {
         guideBlockName: 'edit-ttyg-agent',
         getSteps: (options, services) => {
@@ -9,20 +73,18 @@ PluginRegistry.add('guide.step', [
             return [
                 {
                     guideBlockName: 'click-main-menu',
-                    options: angular.extend({}, {
+                    options: {
+                        ...options,
                         menu: 'ttyg',
                         showOn: () => 'ttyg' !== RoutingUtil.getCurrentRoute()
-                    }, options)
+                    }
                 },
                 {
                     guideBlockName: 'end-on-api-key-error'
                 },
                 {
-                    guideBlockName: 'info-message',
-                    options: angular.extend({}, {
-                        content: 'guide.step_plugin.edit-ttyg-agent.intro',
-                        skipPoint: true
-                    }, options)
+                    guideBlockName: 'ttyg-edit-agent-intro-message',
+                    options: {...options}
                 },
                 {
                     // Skip next step (which is actually 5 core steps) if there is a selected agent
@@ -45,32 +107,19 @@ PluginRegistry.add('guide.step', [
                 },
                 {
                     guideBlockName: 'select-ttyg-agent',
-                    options: angular.extend({}, options)
+                    options: {...options}
                 },
                 {
-                    guideBlockName: 'clickable-element',
-                    options: angular.extend({}, {
-                        content: 'guide.step_plugin.edit-ttyg-agent.edit-agent',
-                        class: 'edit-agent-btn',
-                        url: 'ttyg',
-                        elementSelector: GuideUtils.getGuideElementSelector('edit-current-agent'),
-                        disableNextFlow: true
-                    }, options)
+                    guideBlockName: 'ttyg-click-to-edit-selected-agent',
+                    options: {...options}
                 },
                 {
                     guideBlockName: 'configure-agent',
                     options
                 },
                 {
-                    guideBlockName: 'clickable-element',
-                    options: angular.extend({}, {
-                        content: 'guide.step_plugin.edit-ttyg-agent.save-agent-settings',
-                        class: 'save-agent',
-                        url: 'ttyg',
-                        elementSelector: GuideUtils.getGuideElementSelector('save-agent-settings'),
-                        disablePreviousFlow: false,
-                        disableNextFlow: true
-                    }, options)
+                    guideBlockName: 'ttyg-edit-agent-click-to-save',
+                    options: {...options}
                 },
                 {
                     guideBlockName: 'wait-for-element-to-hide',
