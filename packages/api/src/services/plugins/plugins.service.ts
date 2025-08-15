@@ -24,8 +24,8 @@ export class PluginsService implements Service {
    * @returns A promise that resolves to the plugins manifest containing information about available plugins.
    */
   async getPluginsManifest(): Promise<PluginsManifest> {
-    return await this.pluginsRestService.getPluginsManifest()
-      .then((response) => this.pluginsManifestMapper.mapToModel(response));
+    const response = await this.pluginsRestService.getPluginsManifest();
+    return this.pluginsManifestMapper.mapToModel(response);
   }
 
   /**
