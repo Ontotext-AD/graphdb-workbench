@@ -1,4 +1,0 @@
-# Ignore everything except the app.js and js/angular where is the workbench actual implementation
-src/js/*
-!src/js/angular/
-!src/app.js
