@@ -1,4 +1,128 @@
+const TTYG_ASK_DEFAULT_TITLE = 'guide.step-action.ask-ttyg-agent';
+
 PluginRegistry.add('guide.step', [
+    {
+        guideBlockName: 'ttyg-ask-question',
+        getSteps: (options, services) => {
+            const GuideUtils = services.GuideUtils;
+            return [
+                {
+                    guideBlockName: 'input-element',
+                    options: {
+                        content: `guide.step_plugin.ask-ttyg-agent.input-question`,
+                        // If mainAction is set the title will be set automatically
+                        ...(options.mainAction ? {} : { title: TTYG_ASK_DEFAULT_TITLE }),
+                        class: 'input-question',
+                        disableNextFlow: true,
+                        ...options,
+                        url: 'ttyg',
+                        elementSelector: GuideUtils.getGuideElementSelector('question-input'),
+                        show: (guide) => () => {
+                            const elementSelector = GuideUtils.getGuideElementSelector('contenteditable');
+
+                            // Add "keydown" listener to the element.
+                            // The question-input directive listens for "Enter" keypress to trigger question asking.
+                            // When enter is pressed, proceed with next step.
+                            // Using 'keydown' to trigger before the directive 'keypress', which clears the value.
+                            $(elementSelector).on('keydown', (event) => {
+                                const value = $(elementSelector).text();
+
+                                if (value && event.key === 'Enter' && !event.shiftKey && !event.ctrlKey) {
+                                    guide.next();
+                                }
+                            });
+                        },
+                        hide: () => () => {
+                            const elementSelector = GuideUtils.getGuideElementSelector('contenteditable');
+                            // Remove the "keydown" listener of the element. It is important when the step is hidden.
+                            $(elementSelector).off('keydown');
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    {
+        guideBlockName: 'ttyg-explain-response',
+        getSteps: (options, services) => {
+            const GuideUtils = services.GuideUtils;
+            const explainBtnSelector = GuideUtils.getLastGuideElementSelector('explain-response-btn');
+            const elementSelector = GuideUtils.getLastGuideElementSelector('chat-item', explainBtnSelector);
+            return [
+                {
+                    guideBlockName: 'clickable-element',
+                    options: {
+                        content: 'guide.step_plugin.ask-ttyg-agent.explain-answer',
+                        // If mainAction is set the title will be set automatically
+                        ...(options.mainAction ? {} : { title: TTYG_ASK_DEFAULT_TITLE }),
+                        class: 'explain-answer',
+                        disableNextFlow: true,
+                        ...options,
+                        url: 'ttyg',
+                        elementSelector,
+                    }
+                }
+            ]
+        }
+    },
+    {
+        guideBlockName: 'ttyg-ask-agent-explore-sparql',
+        getSteps: (options, services) => {
+            const GuideUtils = services.GuideUtils;
+            const exploreSparqlBtnSelector = GuideUtils.getLastGuideElementSelector('open-in-sparql-editor-btn');
+            const elementSelector = GuideUtils.getLastGuideElementSelector('chat-item', exploreSparqlBtnSelector);
+
+            return [
+                {
+                    guideBlockName: 'clickable-element',
+                    options: {
+                        content: 'guide.step_plugin.ask-ttyg-agent.explore-sparql',
+                        class: 'explore-sparql',
+                        // If mainAction is set the title will be set automatically
+                        ...(options.mainAction ? {} : { title: TTYG_ASK_DEFAULT_TITLE }),
+                        disableNextFlow: true,
+                        ...options,
+                        url: 'ttyg',
+                        elementSelector
+                    }
+                }
+            ]
+        }
+    },
+    {
+        guideBlockName: 'ttyg-ask-explain-answer-more',
+        getSteps: (options, services) => {
+            const GuideUtils = services.GuideUtils;
+            const explainMoreBtnSelector = GuideUtils.getLastGuideElementSelector('how-derive-answer-btn');
+            const elementSelector = GuideUtils.getLastGuideElementSelector('chat-item', explainMoreBtnSelector);
+            return [
+                {
+                    guideBlockName: 'clickable-element',
+                    options: {
+                        content: 'guide.step_plugin.ask-ttyg-agent.explain-answer-more',
+                        class: 'input-agent-name',
+                        // If mainAction is set the title will be set automatically
+                        ...(options.mainAction ? {} : { title: TTYG_ASK_DEFAULT_TITLE }),
+                        disableNextFlow: true,
+                        ...options,
+                        url: 'ttyg',
+                        elementSelector,
+                        show: (guide) => () => {
+                            // Add "click" listener to the element. Upon clicking the element is hidden and this breaks the default flow of the guide.
+                            // Adding a handler to proceed to next step
+                            $(elementSelector).on('click', () => {
+                                guide.next()
+                            });
+                        },
+                        hide: () => () => {
+                            // Remove the "click" listener of element. It is important when step is hidden.
+                            $(elementSelector).off('click');
+                        }
+                    }
+                }
+            ]
+        }
+    },
     {
         guideBlockName: 'ask-ttyg-agent',
         getSteps: (options, services) => {
@@ -13,33 +137,7 @@ PluginRegistry.add('guide.step', [
 
             const steps = [
                 {
-                    guideBlockName: 'input-element',
-                    options: angular.extend({}, {
-                        skipPoint: true,
-                        content: `guide.step_plugin.ask-ttyg-agent.input-question`,
-                        class: 'input-question',
-                        url: 'ttyg',
-                        elementSelector: GuideUtils.getGuideElementSelector('question-input'),
-                        show: (guide) => () => {
-                            const elementSelector = GuideUtils.getGuideElementSelector('contenteditable');
-
-                            // Add "keydown" listener to the element. The question-input directive listens for keypress of enter to trigger question asking.
-                            // When enter is pressed, proceed with next step. Using 'keydown' to trigger before the directive 'keypress', which clears the value.
-                            $(elementSelector).on('keydown', (event) => {
-                                const value = $(elementSelector).text();
-
-                                if (value && event.key === 'Enter' && !event.shiftKey && !event.ctrlKey) {
-                                    guide.next();
-                                }
-                            });
-                        },
-                        hide: () => () => {
-                            const elementSelector = GuideUtils.getGuideElementSelector('contenteditable');
-                            // Remove the "keydown" listener of element. It is important when step is hidden.
-                            $(elementSelector).off('keydown');
-                        },
-                        disableNextFlow: true
-                    }, options)
+                    guideBlockName: 'ttyg-ask-question', options: {...options, skipPoint: true}
                 },
                 getWaitForAnswerStep(GuideUtils, options)
             ];
@@ -67,14 +165,7 @@ PluginRegistry.add('guide.step', [
                         }, options)
                     },
                     {
-                        guideBlockName: 'clickable-element',
-                        options: angular.extend({}, {
-                            content: 'guide.step_plugin.ask-ttyg-agent.explain-answer',
-                            class: 'explain-answer',
-                            url: 'ttyg',
-                            elementSelector,
-                            disableNextFlow: true
-                        }, options)
+                        guideBlockName: 'ttyg-explain-response', options: {...options}
                     },
                     getWaitForAnswerStep(GuideUtils, options)
                 )
@@ -103,14 +194,7 @@ PluginRegistry.add('guide.step', [
                         }, options)
                     },
                     {
-                        guideBlockName: 'clickable-element',
-                        options: angular.extend({}, {
-                            content: 'guide.step_plugin.ask-ttyg-agent.explore-sparql',
-                            class: 'explore-sparql',
-                            url: 'ttyg',
-                            disableNextFlow: true,
-                            elementSelector
-                        }, options)
+                        guideBlockName: 'ttyg-ask-agent-explore-sparql', options: {...options}
                     }
                 )
             }
@@ -140,25 +224,7 @@ PluginRegistry.add('guide.step', [
                         }, options)
                     },
                     {
-                        guideBlockName: 'clickable-element',
-                        options: angular.extend({}, {
-                            content: 'guide.step_plugin.ask-ttyg-agent.explain-answer-more',
-                            class: 'input-agent-name',
-                            url: 'ttyg',
-                            elementSelector,
-                            show: (guide) => () => {
-                                // Add "click" listener to the element. Upon clicking the element is hidden and this breaks the default flow of the guide.
-                                // Adding a handler to proceed to next step
-                                $(elementSelector).on('click', () => {
-                                    guide.next()
-                                });
-                            },
-                            hide: () => () => {
-                                // Remove the "click" listener of element. It is important when step is hidden.
-                                $(elementSelector).off('click');
-                            },
-                            disableNextFlow: true
-                        }, options)
+                        guideBlockName: 'ttyg-ask-explain-answer-more', options: {...options}
                     },
                     getWaitForAnswerStep(GuideUtils, options)
                 )
