@@ -35,8 +35,8 @@ describe('TTYG agent select menu', () => {
         TTYGViewSteps.visit();
         // And: The agent dropdown menu is not visible
         TTYGViewSteps.getAgentsDropdownMenu().should('not.be.visible');
-        // And: No agent is currently selected
-        TTYGViewSteps.getAgentsMenuToggleButton().should('contain', 'Select an agent');
+        // And: The first agent is selected
+        TTYGViewSteps.getAgentsMenuToggleButton().should('contain', 'agent-1');
 
         // When: I open the agent selection menu
         TTYGViewSteps.openAgentsMenu();
@@ -48,7 +48,7 @@ describe('TTYG agent select menu', () => {
         // When: I attempt to select an incompatible agent from the menu
         TTYGViewSteps.selectAgent(0);
         // Then: The incompatible agent should not be selected
-        TTYGViewSteps.getAgentsMenuToggleButton().should('contain', 'Select an agent');
+        TTYGViewSteps.getAgentsMenuToggleButton().should('contain', 'agent-1');
         // And: The dropdown menu should remain open
         TTYGViewSteps.getAgentsDropdownMenu().should('be.visible');
     });
