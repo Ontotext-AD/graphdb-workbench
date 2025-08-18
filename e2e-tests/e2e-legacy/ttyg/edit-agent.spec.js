@@ -43,11 +43,11 @@ describe('TTYG edit an agent', () => {
         // and save the agent.
         TTYGStubs.stubAgentEdit();
         TtygAgentSettingsModalSteps.saveAgent();
-        cy.wait('@edit-agent');
+        cy.wait('@edit-agent').then((interception) => {
+            expect(interception.request.body.additionalExtractionMethods[0].method).to.equal('iri_discovery_search');
+        });
         // Then I expect the agent to be saved
         ToasterSteps.verifySuccess('The agent \'agent-1\' was saved successfully.');
-        TTYGViewSteps.editCurrentAgent();
-        TtygAgentSettingsModalSteps.getIriDiscoverySearchCheckbox().should('be.checked');
     });
 
 
@@ -76,13 +76,16 @@ describe('TTYG edit an agent', () => {
         // When I save the agent
         TTYGStubs.stubAgentEdit();
         TtygAgentSettingsModalSteps.saveAgent();
-        cy.wait('@edit-agent');
+        cy.wait('@edit-agent').then((interception) => {
+            const additionalMethod = interception.request.body.additionalExtractionMethods[0];
+            expect(additionalMethod).to.not.be.undefined;
+            expect(additionalMethod.method).to.equal('autocomplete_iri_discovery_search');
+            expect(additionalMethod.limit).to.equal(2);
+        });
         // Then I expect the agent to be saved
         ToasterSteps.verifySuccess('The agent \'Test autocomplete extraction agent\' was saved successfully.');
         TTYGViewSteps.editCurrentAgent();
-        TtygAgentSettingsModalSteps.getAutocompleteSearchCheckbox().should('be.checked');
         TtygAgentSettingsModalSteps.toggleAutocompleteSearchPanel();
-        TtygAgentSettingsModalSteps.getAutocompleteMaxResults().should('have.value', '2');
 
         // When: I select a repository with disabled autocomplete
         AutocompleteStubs.stubAutocompleteEnabled(false);
