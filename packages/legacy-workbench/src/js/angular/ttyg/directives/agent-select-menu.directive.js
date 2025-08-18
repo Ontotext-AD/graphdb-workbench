@@ -8,9 +8,9 @@ angular
     .module('graphdb.framework.ttyg.directives.agent-select-menu', modules)
     .directive('agentSelectMenu', AgentSelectMenuComponent);
 
-AgentSelectMenuComponent.$inject = ['TTYGContextService', '$translate', '$sce', 'ModalService'];
+AgentSelectMenuComponent.$inject = ['TTYGContextService', '$translate', '$sce', 'ModalService', 'TTYGStorageService'];
 
-function AgentSelectMenuComponent(TTYGContextService, $translate, $sce, ModalService) {
+function AgentSelectMenuComponent(TTYGContextService, $translate, $sce, ModalService, TTYGStorageService) {
     return {
         restrict: 'E',
         templateUrl: 'js/angular/ttyg/templates/agent-select-menu.html',
@@ -52,6 +52,7 @@ function AgentSelectMenuComponent(TTYGContextService, $translate, $sce, ModalSer
                     return;
                 }
                 markAsSelected(agent);
+                TTYGStorageService.saveAgent(agent);
                 $scope.selectedAgent = agent;
                 TTYGContextService.selectAgent(agent);
                 if (agent.isRepositoryDeleted) {
@@ -83,7 +84,35 @@ function AgentSelectMenuComponent(TTYGContextService, $translate, $sce, ModalSer
              */
             const onAgentListChanged = (agents) => {
                 buildAgentOptionsModel(agents);
+                selectLastUsedOrDefaultAgent();
             };
+
+            /**
+             * Function to select the most recently used agent (according to local store) or selects the first in the list
+             * if no recent agent is available.
+             *
+             * @function
+             */
+            const selectLastUsedOrDefaultAgent = () => {
+                let selectedAgent;
+                const storedAgentId = TTYGStorageService.getAgentId();
+
+                if (storedAgentId) {
+                    // If saved in the LocalStore, the user has selected it, so select it here
+                    $scope.agentOptionsList.forEach((agent) => {
+                        if (agent.data.agent.id === storedAgentId) {
+                            selectedAgent = agent.data.agent
+                        }
+                    });
+                }
+
+                // Otherwise, select the first in the option list
+                if (!selectedAgent && $scope.agentOptionsList[0]) {
+                    selectedAgent = $scope.agentOptionsList[0].data.agent;
+                }
+                onSelectedAgentChanged(selectedAgent);
+                TTYGContextService.selectAgent(selectedAgent);
+            }
 
             /**
              * Handles the agent deleted event.
