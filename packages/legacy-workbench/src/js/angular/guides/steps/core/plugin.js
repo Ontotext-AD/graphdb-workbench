@@ -12,7 +12,7 @@ const BASIC_STEP = {
     onNextValidate: () => Promise.resolve(true),
     onPreviousClick: undefined,
     skipPoint: false,
-    class: ''
+    class: '',
 };
 
 /**
@@ -39,8 +39,8 @@ const createCopyToInputListener = (elementSelector, text) => {
         event.preventDefault();
         const inputElement = document.querySelector(elementSelector);
         inputElement.value = text;
-    }
-}
+    };
+};
 
 /**
  * List of common DOM events to consider for interaction control.
@@ -55,8 +55,8 @@ const COMMON_DOM_EVENTS = [
     'input',
     'submit',
     'scroll',
-    'wheel'
-]
+    'wheel',
+];
 const SCROLL_EVENTS = ['scroll', 'wheel'];
 
 /**
@@ -75,14 +75,14 @@ const _configureInteractions = (allowedEvents, interactable, elementSelector, se
 
     services.GuideUtils.getOrWaitFor(elementSelector)
         .then((element) => {
-            const eventsToPrevent = COMMON_DOM_EVENTS.filter(event => !allowedEvents.includes(event));
+            const eventsToPrevent = COMMON_DOM_EVENTS.filter((event) => !allowedEvents.includes(event));
             if (interactable) {
                 eventsToPrevent.forEach((event) => element.removeEventListener(event, preventDefault, true));
             } else {
                 eventsToPrevent.forEach((event) => element.addEventListener(event, preventDefault, true));
             }
-        })
-}
+        });
+};
 
 /**
  * Enables all interactions on the specified element.
@@ -108,7 +108,7 @@ const allowEvents = (allowedEvents, elementSelector, services) => _configureInte
 const preventDefault = (event) => {
     event.preventDefault();
     event.stopPropagation();
-}
+};
 
 PluginRegistry.add('guide.step', [
     {
@@ -116,53 +116,53 @@ PluginRegistry.add('guide.step', [
         guideBlockName: 'clickable-element',
         getStep: (options, services) => {
             const notOverridable = {
-                type: 'clickable'
+                type: 'clickable',
             };
 
             const stepDescription = angular.extend({}, BASIC_STEP, {
                 advanceOn: {
                     selector: options.clickableElementSelector || options.elementSelector,
-                    event: 'click'
+                    event: 'click',
                 },
-                initPreviousStep: services.GuideUtils.defaultInitPreviousStep
+                initPreviousStep: services.GuideUtils.defaultInitPreviousStep,
             }, options, notOverridable);
 
             if (!stepDescription.beforeShowPromise) {
                 stepDescription.beforeShowPromise = beforeShowPromise(services, stepDescription.elementSelector, stepDescription.maxWaitTime);
             }
             return stepDescription;
-        }
+        },
     },
     {
         // An element which is expected to be focused. It allows user interaction.
         guideBlockName: 'focus-element',
         getStep: (options, services) => {
             const stepDescription = angular.extend({}, BASIC_STEP, {
-                initPreviousStep: services.GuideUtils.defaultInitPreviousStep
+                initPreviousStep: services.GuideUtils.defaultInitPreviousStep,
             }, options);
 
             if (!stepDescription.beforeShowPromise) {
                 stepDescription.beforeShowPromise = beforeShowPromise(services, stepDescription.elementSelector, stepDescription.maxWaitTime);
             }
             return stepDescription;
-        }
+        },
     },
     {
         // An element which is expected to be focused, but interactions are disabled.
         guideBlockName: 'read-only-element',
         getStep: (options, services) => {
             const notOverridable = {
-                type: 'readonly'
+                type: 'readonly',
             };
             const stepDescription = angular.extend({}, BASIC_STEP, {
-                    initPreviousStep: services.GuideUtils.defaultInitPreviousStep
+                    initPreviousStep: services.GuideUtils.defaultInitPreviousStep,
                 },
                 options, notOverridable);
             if (!stepDescription.beforeShowPromise) {
                 stepDescription.beforeShowPromise = beforeShowPromise(services, stepDescription.elementSelector, stepDescription.maxWaitTime);
             }
             return stepDescription;
-        }
+        },
     },
     {
         guideBlockName: 'scroll-only-element',
@@ -172,28 +172,28 @@ PluginRegistry.add('guide.step', [
                 initPreviousStep: services.GuideUtils.defaultInitPreviousStep,
                 show: () => allowEvents(SCROLL_EVENTS, options.elementSelector, services),
                 hide: () => allowAll(options.elementSelector, services),
-                ...options
+                ...options,
             };
             if (!stepDescription.beforeShowPromise) {
                 stepDescription.beforeShowPromise = beforeShowPromise(services, stepDescription.elementSelector, stepDescription.maxWaitTime);
             }
             return stepDescription;
-        }
+        },
     },
     {
         guideBlockName: 'input-element',
         getStep: (options, services) => {
             const notOverridable = {
-                type: 'input'
+                type: 'input',
             };
             const stepDescription = angular.extend({}, BASIC_STEP, {
-                initPreviousStep: services.GuideUtils.defaultInitPreviousStep
+                initPreviousStep: services.GuideUtils.defaultInitPreviousStep,
             }, options, notOverridable);
             if (!stepDescription.beforeShowPromise) {
                 stepDescription.beforeShowPromise = beforeShowPromise(services, stepDescription.elementSelector, stepDescription.maxWaitTime);
             }
             return stepDescription;
-        }
+        },
     },
     {
         guideBlockName: 'copy-text-element',
@@ -230,21 +230,21 @@ PluginRegistry.add('guide.step', [
                                 stepHTMLElement.removeEventListener('click', copyToInputListener);
                             }
                         },
-                    }
-                }
-            ]
-        }
+                    },
+                },
+            ];
+        },
     },
     {
         guideBlockName: 'info-message',
         getStep: (options, services) => {
             const notOverridable = {
-                type: 'readonly'
+                type: 'readonly',
             };
             return angular.extend({}, BASIC_STEP, {
-                initPreviousStep: services.GuideUtils.defaultInitPreviousStep
+                initPreviousStep: services.GuideUtils.defaultInitPreviousStep,
             }, options, notOverridable);
-        }
+        },
     },
     {
         guideBlockName: 'hold-and-wait-until-hidden',
@@ -253,21 +253,21 @@ PluginRegistry.add('guide.step', [
                 initPreviousStep: services.GuideUtils.defaultInitPreviousStep,
                 onNextValidate: () => Promise.resolve(!services.GuideUtils.isVisible(options.elementSelectorToWait)),
                 show: () => allowEvents(SCROLL_EVENTS, options.elementSelector, services),
-                hide: () => allowAll(options.elementSelector, services)
+                hide: () => allowAll(options.elementSelector, services),
             }, options);
-        }
+        },
     },
     {
         guideBlockName: 'hold-and-wait-until-shown',
         getStep: (options, services) => {
             const notOverridable = {
-                type: 'readonly'
+                type: 'readonly',
             };
             return angular.extend({}, BASIC_STEP, {
                 initPreviousStep: services.GuideUtils.defaultInitPreviousStep,
-                onNextValidate: () => Promise.resolve(services.GuideUtils.isVisible(options.elementSelectorToWait))
+                onNextValidate: () => Promise.resolve(services.GuideUtils.isVisible(options.elementSelectorToWait)),
             }, options, notOverridable);
-        }
+        },
     },
     {
         guideBlockName: 'wait-for-element-to-hide',
@@ -276,14 +276,14 @@ PluginRegistry.add('guide.step', [
                 initPreviousStep: services.GuideUtils.defaultInitPreviousStep,
                 beforeShowPromise: (guide) => services.GuideUtils.waitUntilHidden(options.elementSelectorToHide, options.timeToWait || 2)
                     .catch(() => {
-                        services.ShepherdService._abortGuide(guide)
+                        services.ShepherdService._abortGuide(guide);
                     }),
                 show: (guide) => () => {
                     // Using a timeout because the library executes async logic
-                    setTimeout(() => guide.next())
-                }
+                    setTimeout(() => guide.next());
+                },
             }, options);
-        }
+        },
     },
     {
         guideBlockName: 'wait-for-element-to-show',
@@ -292,14 +292,14 @@ PluginRegistry.add('guide.step', [
                 initPreviousStep: services.GuideUtils.defaultInitPreviousStep,
                 beforeShowPromise: (guide) => services.GuideUtils.getOrWaitFor(options.elementSelectorToShow, options.timeToWait || 2)
                     .catch(() => {
-                        services.ShepherdService._abortGuide(guide)
+                        services.ShepherdService._abortGuide(guide);
                     }),
                 show: (guide) => () => {
                     // Using a timeout because the library executes async logic
-                    setTimeout(() => guide.next())
-                }
+                    setTimeout(() => guide.next());
+                },
             }, options);
-        }
+        },
     },
     {
         guideBlockName: 'guide-end',
@@ -308,11 +308,11 @@ PluginRegistry.add('guide.step', [
                 type: 'readonly',
                 title: options.title || 'guide.step_plugin.guide-ended.title',
                 content: options.content || 'guide.step_plugin.guide-ended.content',
-                lastStep: true
+                lastStep: true,
             };
             return angular.extend({}, BASIC_STEP, {
-                initPreviousStep: services.GuideUtils.defaultInitPreviousStep
+                initPreviousStep: services.GuideUtils.defaultInitPreviousStep,
             }, options, notOverridable);
-        }
-    }
+        },
+    },
 ]);
