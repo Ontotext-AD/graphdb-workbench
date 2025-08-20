@@ -1,4 +1,4 @@
-@Library('ontotext-platform@v0.1.49') _
+@Library('ontotext-platform@v0.1.51') _
 pipeline {
     agent {
         label 'aws-large'
@@ -11,12 +11,15 @@ pipeline {
     environment {
         DOCKER_COMPOSE_FILE = "docker-compose-test.yaml"
         SONAR_ENVIRONMENT = "SonarCloud"
+        NPM_CONFIG_REGISTRY = 'https://registry.npmjs.org/'
     }
 
     stages {
         stage('Install') {
             steps {
                 script {
+                    sh 'echo "Registry from env: $NPM_CONFIG_REGISTRY"'
+                    sh 'npm config get registry'
                     sh 'npm run install:ci'
                 }
             }
