@@ -26,9 +26,15 @@ module.exports = (env, argv) => merge(commonConfig(env, argv), {
     // disableHostCheck: true,
     allowedHosts: 'all',
     // contentBase: path.join(__dirname, 'dist/'),
-    static: {
-      directory: path.join(__dirname, 'dist/')
-    },
+    static: [
+      {
+        directory: path.join(__dirname, 'dist/')
+      },
+      {
+        directory: path.join(__dirname, 'plugins'),
+        publicPath: '/plugins'
+      }
+    ],
     compress: true,
     hot: false,
     liveReload: true,
