@@ -30,7 +30,7 @@
   ],
   "scripts": {
     "build:watch": "stencil build --watch",
-    "build": "stencil build",
+    "build": "stencil build && rimraf \"dist/**/.stencil\"",
     "start": "stencil build --dev --watch --serve",
     "test": "npm run test:unit",
     "test:unit": "jest",
