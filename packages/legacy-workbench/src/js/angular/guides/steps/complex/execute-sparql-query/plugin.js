@@ -293,6 +293,33 @@ PluginRegistry.add('guide.step', [
             return steps;
         }
     },
+    {
+        guideBlockName: 'sparql-results-click-on-iri',
+        getSteps: (options, services) => {
+            const GuideUtils = services.GuideUtils;
+            return [
+                {
+                    guideBlockName: 'clickable-element',
+                    options: {
+                        content: 'guide.step_plugin.sparql-results-click-on-iri.content',
+                        placement: 'top',
+                        // If mainAction is set the title will be set automatically
+                        ...(options.mainAction ? {} : {title: SPARQL_EDITOR_DEFAULT_TITLE}),
+                        ...options,
+                        scrollToHandler: GuideUtils.scrollToTop,
+                        elementSelector: GuideUtils.getSparqlResultsSelectorForIri(options.iri),
+                        class: 'table-graph-instance',
+                        url: '/sparql',
+                        onNextClick: (guide, step) => {
+                            GuideUtils.waitFor(step.elementSelector, 3)
+                                .then(() => $(step.elementSelector).trigger('click'))
+                                .then(() => guide.next());
+                        }
+                    }
+                }
+            ]
+        }
+    },
 
     {
         guideBlockName: 'visualise-sparql-query',
