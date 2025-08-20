@@ -15,7 +15,7 @@ PluginRegistry.add('guide.step', [
                     url: 'ttyg',
                     elementSelector,
                     placement: 'bottom',
-                    class: 'configure-top-p-guide-dialog',
+                    class: 'configure-top-p',
                     content: 'guide.step_plugin.configure-top-p.info',
                     onNextValidate: () => Promise.resolve(GuideUtils.validateTextInput(inputSelector, options.topP)),
                     // If mainAction is set the title will be set automatically
@@ -39,7 +39,7 @@ PluginRegistry.add('guide.step', [
                     url: 'ttyg',
                     elementSelector,
                     placement: 'bottom',
-                    class: 'configure-temperature-guide-dialog',
+                    class: 'configure-temperature',
                     content: 'guide.step_plugin.configure-temperature.info',
                     onNextValidate: () => Promise.resolve(GuideUtils.validateTextInput(inputSelector, options.temperature)),
                     // If mainAction is set the title will be set automatically
@@ -67,7 +67,7 @@ PluginRegistry.add('guide.step', [
                 guideBlockName: 'clickable-element',
                 options: {
                     content,
-                    class: 'toggle-iri-discovery-search-guide-dialog',
+                    class: 'toggle-iri-discovery-search',
                     // If mainAction is set the title will be set automatically
                     ...(options.mainAction ? {} : {title: TTYG_DEFAULT_TITLE}),
                     ...options,
