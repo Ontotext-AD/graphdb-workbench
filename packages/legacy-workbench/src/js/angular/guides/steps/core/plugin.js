@@ -42,6 +42,37 @@ const createCopyToInputListener = (elementSelector, text) => {
     }
 }
 
+/**
+ * Configures an element interactability, by consuming events and preventing them from propagating.
+ * This allows to keep scrolling, while disallowing interaction with other elements
+ * (such as clicking buttons).
+ * @param interactable - true to make the element interactable, false to make it non interactable
+ * @param elementSelector - the elementSelector
+ * @param services - The services object
+ */
+const _configureInteractions = (interactable, elementSelector, services) => () => {
+    if (!elementSelector) {
+        return;
+    }
+    const eventsToPrevent = ['click', 'dblclick'];
+    services.GuideUtils.getOrWaitFor(elementSelector)
+        .then((element) => {
+            if (interactable) {
+                eventsToPrevent.forEach((event) => element.removeEventListener(event, preventDefault, true));
+            } else {
+                eventsToPrevent.forEach((event) => element.addEventListener(event, preventDefault, true));
+            }
+        })
+}
+
+const disableInteractions = (elementSelector, services) => _configureInteractions(false, elementSelector, services);
+const enableInteractions = (elementSelector, services) => _configureInteractions(true, elementSelector, services);
+
+const preventDefault = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+}
+
 PluginRegistry.add('guide.step', [
     {
         // An element which is expected to be clicked. If onNextClick is not defined, it will automatically click on the element on next button press
@@ -165,13 +196,12 @@ PluginRegistry.add('guide.step', [
     {
         guideBlockName: 'hold-and-wait-until-hidden',
         getStep: (options, services) => {
-            const notOverridable = {
-                type: 'readonly'
-            };
             return angular.extend({}, BASIC_STEP, {
                 initPreviousStep: services.GuideUtils.defaultInitPreviousStep,
-                onNextValidate: () => Promise.resolve(!services.GuideUtils.isVisible(options.elementSelectorToWait))
-            }, options, notOverridable);
+                onNextValidate: () => Promise.resolve(!services.GuideUtils.isVisible(options.elementSelectorToWait)),
+                show: () => disableInteractions(options.elementSelector, services),
+                hide: () => enableInteractions(options.elementSelector, services)
+            }, options);
         }
     },
     {
