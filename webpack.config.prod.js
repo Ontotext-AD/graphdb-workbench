@@ -32,7 +32,10 @@ module.exports = (env, argv) => merge(commonConfig(env, argv), {
                 },
               {
                 from: 'packages/shared-components/dist',
-                to: 'shared-components'
+                to: 'shared-components',
+                globOptions: {
+                    ignore: ['**/.stencil/**']
+                }
               },
               {
                 from: 'packages/api/dist',
