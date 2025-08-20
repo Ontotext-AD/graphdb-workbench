@@ -5,10 +5,11 @@ const path = `${__dirname}/src/pages/fake-server.js`;
 
 export const config: Config = {
   namespace: 'shared-components',
+  sourceMap: false,
   outputTargets: [
     {
       type: 'dist',
-      esmLoaderPath: '../loader',
+      esmLoaderPath: '../loader'
     },
     // {
     //   type: 'dist-custom-elements',
