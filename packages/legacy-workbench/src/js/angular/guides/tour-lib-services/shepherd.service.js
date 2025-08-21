@@ -481,7 +481,9 @@ function ShepherdService($translate, LocalStorageAdapter, LSKeys, $interpolate, 
 
 
     this._getCancelButton = (guide) => {
-        return this._getButton($translate.instant('common.close'), () => this._completeGuide(guide), true);
+        const cancelButton = this._getButton($translate.instant('common.close'), () => this._completeGuide(guide), true);
+        cancelButton.classes += ' shepherd-cancel-button';
+        return cancelButton;
     };
 
     this._backToGuidesButton = (guide) => {
@@ -633,7 +635,9 @@ function ShepherdService($translate, LocalStorageAdapter, LSKeys, $interpolate, 
     this._getPreviousButton = (guide) => {
         const text = $translate.instant('previous.btn');
         const action = this._getPreviousButtonAction(guide);
-        return this._getButton(text, action);
+        const prevButton = this._getButton(text, action);
+        prevButton.classes += ' shepherd-prev-button'
+        return prevButton;
     };
 
     this._getPreviousButtonAction = (guide) => {
@@ -692,7 +696,9 @@ function ShepherdService($translate, LocalStorageAdapter, LSKeys, $interpolate, 
     this._getNextButton = (guide, currentStepDescription, nextStepDescription) => {
         const text = $translate.instant('next.btn');
         const action = _getNextButtonAction(guide, currentStepDescription, nextStepDescription);
-        return this._getButton(text, action);
+        const nextButton = this._getButton(text, action);
+        nextButton.classes += ' shepherd-next-button';
+        return nextButton;
     };
 
     const _getNextButtonAction = (guide, currentStepDescription, nextStepDescription) => {

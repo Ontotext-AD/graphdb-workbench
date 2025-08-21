@@ -58,6 +58,14 @@
     padding-bottom: 0.5em;
 }
 
+/*
+  Moves the 'Previous' button to the left when it's the only button shown.
+  This avoids UX confusion, as primary actions ('Next') is usually on the right.
+*/
+.shepherd-footer:has(> .shepherd-prev-button:only-child) {
+    justify-content: flex-start;
+}
+
 .shepherd-progress {
     display: block;
     text-align: right;
