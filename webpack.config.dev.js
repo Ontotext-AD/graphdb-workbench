@@ -32,7 +32,8 @@ module.exports = (env, argv) => merge(commonConfig(env, argv), {
       },
       {
         directory: path.join(__dirname, 'plugins'),
-        publicPath: '/plugins'
+        publicPath: '/plugins',
+        watch: true
       }
     ],
     compress: true,
