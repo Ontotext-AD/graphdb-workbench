@@ -38,7 +38,9 @@
         "sonar": "sh scripts/sonar.sh",
         "hotdeploy": "node scripts/hotdeploy.js",
         "qa": "npm run clean-install && npm run start",
-        "instrument:legacy-workbench": "npx nyc instrument --in-place --compact false --source-map --produce-source-map packages/legacy-workbench/src/js/angular"
+        "instrument:legacy-workbench": "npx nyc instrument --in-place --compact false --source-map --produce-source-map packages/legacy-workbench/src/js/angular",
+        "watch:plugins": "nodemon --watch ../graphdb-workbench-plugins/dist --ext js,json --exec \"npm run copy-plugins\"",
+        "dev:with-plugins": "concurrently \"npm run start\" \"npm run watch:plugins\""
     },
     "files": [
         "dist/"
