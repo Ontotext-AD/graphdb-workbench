@@ -53,7 +53,7 @@ export namespace Components {
     interface OntoDropdown {
         /**
           * Flag to determine if the dropdown should close automatically when a click occurs outside the dropdown.
-          * @default true
+          * @default false
          */
         "autoClose": boolean;
         /**
@@ -94,7 +94,7 @@ export namespace Components {
         /**
           * Array of dropdown options.
          */
-        "items": DropdownItem<any>[];
+        "items": DropdownItem<unknown>[];
         /**
           * Specifies the items tooltip placement. Accepts a string of the placement or a function that returns the placement. The function takes the isOpen parameter as a boolean and returns the placement as a string. If not provided, the tooltip will be placed to the left.
           * @default OntoTooltipPlacement.LEFT
@@ -662,7 +662,7 @@ declare namespace LocalJSX {
     interface OntoDropdown {
         /**
           * Flag to determine if the dropdown should close automatically when a click occurs outside the dropdown.
-          * @default true
+          * @default false
          */
         "autoClose"?: boolean;
         /**
@@ -703,7 +703,7 @@ declare namespace LocalJSX {
         /**
           * Array of dropdown options.
          */
-        "items"?: DropdownItem<any>[];
+        "items"?: DropdownItem<unknown>[];
         /**
           * Event emitted when a dropdown item is selected. The event payload contains the value of the selected item.
          */

@@ -2,7 +2,7 @@ import {Component, h, Prop, Event, EventEmitter, State} from '@stencil/core';
 import {TranslationService} from '../../services/translation.service';
 import {ToggleEventPayload} from '../../models/toggle-switch/toggle-event-payload';
 import {SubscriptionList} from '../../../../api/src/models/common';
-import {OntoTooltipPlacement} from "../onto-tooltip/models/onto-tooltip-placement";
+import {OntoTooltipPlacement} from '../onto-tooltip/models/onto-tooltip-placement';
 
 @Component({
   tag: 'onto-toggle-switch',
@@ -80,10 +80,10 @@ export class OntoToggleSwitch {
           </label>
         }
         <button class="toggle-switch"
-              onClick={this.toggle}
-              tooltip-append-to="parent"
-              tooltip-content={this.tooltipLabel}
-              tooltip-placement={OntoTooltipPlacement.TOP}>
+          onClick={this.toggle}
+          tooltip-append-to="parent"
+          tooltip-content={this.tooltipLabel}
+          tooltip-placement={OntoTooltipPlacement.TOP}>
           <input type="checkbox" checked={this.checked}/>
           <label></label>
         </button>

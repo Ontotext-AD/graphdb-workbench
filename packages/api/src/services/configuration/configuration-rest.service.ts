@@ -18,7 +18,7 @@ export class ConfigurationRestService extends HttpService {
     try {
       configResponse = await this.get(environment.configUrl);
       if (configResponse) {
-        console.debug(`Configuration file ${environment.configUrl} was downloaded`, configResponse);
+        console.info(`Configuration file ${environment.configUrl} was downloaded`, configResponse);
         return configResponse as Configuration;
       }
     } catch {

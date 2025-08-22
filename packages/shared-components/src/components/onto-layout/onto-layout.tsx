@@ -1,7 +1,7 @@
 import {Component, Host, h, Listen, Element, State} from '@stencil/core';
-import {NavbarToggledEvent} from "../onto-navbar/navbar-toggled-event";
-import {debounce} from "../../utils/function-utils";
-import {WINDOW_WIDTH_FOR_COLLAPSED_NAVBAR} from "../../models/constants";
+import {NavbarToggledEvent} from '../onto-navbar/navbar-toggled-event';
+import {debounce} from '../../utils/function-utils';
+import {WINDOW_WIDTH_FOR_COLLAPSED_NAVBAR} from '../../models/constants';
 import {
   ServiceProvider,
   LocalStorageSubscriptionHandlerService,
@@ -43,7 +43,7 @@ export class OntoLayout {
   @State() authToken: string | null;
   @State() securityConfig: SecurityConfig;
   @State() isLowResolution = false;
-  @State() hasPermission: boolean = true;
+  @State() hasPermission = true;
   @State() showFooter = this.isAuthenticatedFully();
   @State() isVisible: boolean;
 
@@ -54,7 +54,7 @@ export class OntoLayout {
    * List of subscriptions to manage component lifecycle
    * */
   private readonly subscriptions: SubscriptionList = new SubscriptionList();
-  private readonly windowResizeObserver: (...args: any) => void;
+  private readonly windowResizeObserver: () => void;
   private isNavbarCollapsed = false;
 
   // ========================
@@ -62,7 +62,7 @@ export class OntoLayout {
   // ========================
   constructor() {
     this.windowResizeObserver = debounce(() => this.windowResizeHandler(), 50);
-    WindowService.getWindow().addEventListener("storage", this.handleStorageChange);
+    WindowService.getWindow().addEventListener('storage', this.handleStorageChange);
   }
 
   componentDidLoad() {
@@ -103,7 +103,7 @@ export class OntoLayout {
 
         <nav class="wb-navbar">
           <onto-navbar ref={this.assignNavbarRef()}
-                       navbar-collapsed={this.isLowResolution}></onto-navbar>
+            navbar-collapsed={this.isLowResolution}></onto-navbar>
         </nav>
 
         {this.hasPermission ? (
@@ -245,7 +245,7 @@ export class OntoLayout {
       this.navbarRef = navbar;
       this.navbarRef.menuItems = WindowService.getWindow().PluginRegistry.get('main.menu');
       this.setNavbarItemVisibility();
-    }
+    };
   }
 
   private setNavbarItemVisibility() {

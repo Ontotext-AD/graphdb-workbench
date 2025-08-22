@@ -8,7 +8,7 @@ import {
 import {Component, h, Listen, State} from '@stencil/core';
 import {TranslationService} from '../../services/translation.service';
 import {HtmlUtil} from '../../utils/html-util';
-import {OntoTooltipPlacement} from "../onto-tooltip/models/onto-tooltip-placement";
+import {OntoTooltipPlacement} from '../onto-tooltip/models/onto-tooltip-placement';
 import {ResourceSearchConstants} from '../../models/resource-search/resource-search-constants';
 
 /**
@@ -26,7 +26,7 @@ export class OntoRdfSearch {
 
   private readonly RDF_CONTEXT = 'rdfSearchContext';
 
-  @State() private isOpen: boolean = false;
+  @State() private isOpen = false;
   @State() private buttonConfig: SearchButtonConfig;
 
   private redirectUrl: string = UriUtil.RESOURCE_URL;
@@ -63,24 +63,23 @@ export class OntoRdfSearch {
     this.buttonConfig = this.createButtonConfig();
   }
 
-
   render() {
     return (
       <section ref={(ref) => this.rdfSearchRef = ref}
-               class="onto-rdf-search"
-               onKeyDown={this.onKeyDown()}
-               data-test='onto-rdf-search-component'>
+        class="onto-rdf-search"
+        onKeyDown={this.onKeyDown()}
+        data-test='onto-rdf-search-component'>
         <section class={`search-area ${this.isOpen ? 'visible' : 'invisible'}`}>
           <i onClick={this.setIsOpen(false)}
-             tooltip-content={TranslationService.translate('rdf_search.tooltips.close_search_area')}
-             tooltip-placement={OntoTooltipPlacement.BOTTOM}
-             data-test='onto-rdf-resource-search-close-btn'
-             class="fa-light fa-xmark-large close-btn"></i>
+            tooltip-content={TranslationService.translate('rdf_search.tooltips.close_search_area')}
+            tooltip-placement={OntoTooltipPlacement.BOTTOM}
+            data-test='onto-rdf-resource-search-close-btn'
+            class="fa-light fa-xmark-large close-btn"></i>
           <onto-search-resource-input buttonConfig={this.buttonConfig}
-                                      preserveSearch={true}
-                                      isHidden={!this.isOpen}
-                                      data-test='onto-rdf-resource-search-input'
-                                      context={this.RDF_CONTEXT}></onto-search-resource-input>
+            preserveSearch={true}
+            isHidden={!this.isOpen}
+            data-test='onto-rdf-resource-search-input'
+            context={this.RDF_CONTEXT}></onto-search-resource-input>
         </section>
         {!this.isOpen ? <onto-search-icon onClick={this.setIsOpen(true)}></onto-search-icon> : ''}
       </section>
@@ -165,7 +164,7 @@ export class OntoRdfSearch {
       if (event.key === 'Escape') {
         this.isOpen = false;
       }
-    }
+    };
   }
 
   private focusSearchInput() {
@@ -179,7 +178,7 @@ export class OntoRdfSearch {
     if (selectedView) {
       const selectedButton = this.buttonConfig.getButtons().find((button) => button.id === selectedView);
       if (selectedButton) {
-        this.buttonConfig = this.buttonConfig.selectButton(selectedButton)
+        this.buttonConfig = this.buttonConfig.selectButton(selectedButton);
       }
     }
   }

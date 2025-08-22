@@ -1,6 +1,6 @@
 import {License, navigateTo} from '@ontotext/workbench-api';
 import { Component, Host, h, Prop } from '@stencil/core';
-import {OntoTooltipPlacement} from "../onto-tooltip/models/onto-tooltip-placement";
+import {OntoTooltipPlacement} from '../onto-tooltip/models/onto-tooltip-placement';
 
 @Component({
   tag: 'onto-license-alert',

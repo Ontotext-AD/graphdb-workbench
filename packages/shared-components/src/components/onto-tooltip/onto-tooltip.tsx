@@ -1,5 +1,5 @@
 import {Component, h, Host, Listen} from '@stencil/core';
-import {TooltipUtil} from "../../utils/tooltip-util";
+import {TooltipUtil} from '../../utils/tooltip-util';
 
 @Component({
   tag: 'onto-tooltip',
@@ -25,7 +25,7 @@ export class OntoTooltip {
     const tooltipInstance = TooltipUtil.getOrCreateTooltipInstance(target);
     tooltipInstance.show();
     target.hideTooltip = () => {
-      tooltipInstance.hide()
+      tooltipInstance.hide();
     };
   }
 

@@ -20,7 +20,7 @@ import {
 } from '@ontotext/workbench-api';
 import {TranslationService} from '../../services/translation.service';
 import {HtmlUtil} from '../../utils/html-util';
-import {OntoTooltipPlacement} from "../onto-tooltip/models/onto-tooltip-placement";
+import {OntoTooltipPlacement} from '../onto-tooltip/models/onto-tooltip-placement';
 import {ResourceSearchConstants} from '../../models/resource-search/resource-search-constants';
 
 /**
@@ -114,36 +114,36 @@ export class OntoSearchResourceInput {
         <div class="input-row">
           <span class="input-wrapper">
             <input value={this.inputValue}
-                   id={this.context}
-                   type="text"
-                   autocomplete="off"
-                   placeholder={`${TranslationService.translate('rdf_search.labels.search')}...`}
-                   ref={(ref) => this.inputRef = ref}
-                   onKeyDown={this.onKeyDown}
-                   data-test={this.context}
-                   onInput={this.handleInput}/>
+              id={this.context}
+              type="text"
+              autocomplete="off"
+              placeholder={`${TranslationService.translate('rdf_search.labels.search')}...`}
+              ref={(ref) => this.inputRef = ref}
+              onKeyDown={this.onKeyDown}
+              data-test={this.context}
+              onInput={this.handleInput}/>
             {this.inputValue?.length ?
               <i onClick={this.clearInput}
-                 tooltip-content={TranslationService.translate('rdf_search.tooltips.clear')}
-                 tooltip-placement={OntoTooltipPlacement.BOTTOM}
-                 class="fa-light fa-xmark clear-input"></i> : ''
+                tooltip-content={TranslationService.translate('rdf_search.tooltips.clear')}
+                tooltip-placement={OntoTooltipPlacement.BOTTOM}
+                class="fa-light fa-xmark clear-input"></i> : ''
             }
           </span>
           {this.buttonConfig?.getButtons().getItems().map((button) => (
             <button key={button.label}
-                    onClick={this.handleButtonClick(button)}
-                    class={`${button.selected ? 'selected' : ''}`}>{button.label}</button>
+              onClick={this.handleButtonClick(button)}
+              class={`${button.selected ? 'selected' : ''}`}>{button.label}</button>
           ))}
         </div>
         <span class="hint">{TranslationService.translate('rdf_search.labels.hint')}</span>
         <section class="autocomplete-results-wrapper" data-test='onto-autocomplete-results'>
           {this.searchResult?.getSuggestions().getItems().map((suggestion) => (
             <p key={suggestion.getId()}
-               onClick={this.onSuggestionClick(suggestion)}
-               data-test='onto-autocomplete-suggestion'
-               onMouseMove={this.hoverSuggestion(suggestion)}
-               class={`${suggestion.isHovered() ? 'hovered' : ''} ${suggestion.isSelected() ? 'selected' : ''}`}
-               innerHTML={suggestion.getDescription()}></p>
+              onClick={this.onSuggestionClick(suggestion)}
+              data-test='onto-autocomplete-suggestion'
+              onMouseMove={this.hoverSuggestion(suggestion)}
+              class={`${suggestion.isHovered() ? 'hovered' : ''} ${suggestion.isSelected() ? 'selected' : ''}`}
+              innerHTML={suggestion.getDescription()}></p>
           ))}
         </section>
       </section>
@@ -270,20 +270,20 @@ export class OntoSearchResourceInput {
 
   private readonly onKeyDown = (event: KeyboardEvent) => {
     switch (event.key) {
-      case 'Enter':
-        this.onEnter(event);
-        break;
-      case 'Escape':
-        this.onEscape();
-        break;
-      case 'ArrowUp':
-        this.onArrowUp(event);
-        break;
-      case 'ArrowDown':
-        this.onArrowDown(event);
-        break;
-      default:
-        break;
+    case 'Enter':
+      this.onEnter(event);
+      break;
+    case 'Escape':
+      this.onEscape();
+      break;
+    case 'ArrowUp':
+      this.onArrowUp(event);
+      break;
+    case 'ArrowDown':
+      this.onArrowDown(event);
+      break;
+    default:
+      break;
     }
   };
 

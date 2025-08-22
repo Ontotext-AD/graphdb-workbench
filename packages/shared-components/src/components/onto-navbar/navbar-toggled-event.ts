@@ -1,10 +1,10 @@
-import {ComponentEvent} from "../../models/component-event";
+import {ComponentEvent} from '../../models/component-event';
 
 /**
  * Event fired when the navbar is toggled by the user.
  */
 export class NavbarToggledEvent implements ComponentEvent {
-  type: string = 'navbarToggled';
+  type = 'navbarToggled';
   payload: boolean;
 
   /**

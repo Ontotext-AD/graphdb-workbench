@@ -55,15 +55,15 @@ export class OntoToastr {
   render() {
     return (
       <section style={{display: this.toasts.isEmpty() ? 'none' : 'flex'}}
-               class={`onto-toastr-container ${this.config.position}`}>
+        class={`onto-toastr-container ${this.config.position}`}>
         {this.toasts?.getItems().map((toast) => (
           <div class={`onto-toast ${toast.type}`} key={toast.id}
-               onMouseEnter={this.onToastMouseEnter(toast)}
-               onMouseLeave={this.onToastMouseLeave(toast)}>
-              <i class={`fa-regular ${toastTypeToIconMap[toast.type]}`}></i>
-              <span onClick={this.handleToastClick(toast)}
-                    class="toast-message"
-                    innerHTML={sanitizeHTML(toast.message)}></span>
+            onMouseEnter={this.onToastMouseEnter(toast)}
+            onMouseLeave={this.onToastMouseLeave(toast)}>
+            <i class={`fa-regular ${toastTypeToIconMap[toast.type]}`}></i>
+            <span onClick={this.handleToastClick(toast)}
+              class="toast-message"
+              innerHTML={sanitizeHTML(toast.message)}></span>
           </div>
         ))}
       </section>
@@ -145,6 +145,6 @@ export class OntoToastr {
         this.toasts.remove(toast);
         this.clearToastTimeout(toast);
       }
-    }
+    };
   }
 }

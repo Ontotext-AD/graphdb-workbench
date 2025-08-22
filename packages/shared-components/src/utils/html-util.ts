@@ -30,7 +30,7 @@ export class HtmlUtil {
    * @param activeElementSelector - The CSS selector for identifying focusable elements.
    */
   static focusNextElement(parentElement: HTMLElement, activeElementSelector = INTERACTIVE_ELEMENTS_SELECTOR): void {
-    const focusableElements: any [] = Array.from(parentElement.querySelectorAll(activeElementSelector));
+    const focusableElements: unknown[] = Array.from(parentElement.querySelectorAll(activeElementSelector));
     if (focusableElements.length > 0) {
       const currentIndex = focusableElements.indexOf(document.activeElement);
       const nextIndex = (currentIndex + 1) % focusableElements.length;
@@ -48,7 +48,7 @@ export class HtmlUtil {
    * @param activeElementSelector - The CSS selector for identifying focusable elements.
    */
   static focusPreviousElement(parentElement: HTMLElement, activeElementSelector = INTERACTIVE_ELEMENTS_SELECTOR): void {
-    const focusableElements: any[] = Array.from(parentElement.querySelectorAll(activeElementSelector));
+    const focusableElements: unknown[] = Array.from(parentElement.querySelectorAll(activeElementSelector));
     if (focusableElements.length > 0) {
       const currentIndex = focusableElements.indexOf(document.activeElement);
       const previousIndex = (currentIndex - 1 + focusableElements.length) % focusableElements.length;
@@ -109,7 +109,7 @@ export class HtmlUtil {
    *          or rejects if an error occurs during the observation process.
    */
   static waitForElement(selector: string): Promise<HTMLElement> {
-     return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       const observer = new MutationObserver(() => {
         try {
           const element = document.querySelector(selector) as HTMLElement;

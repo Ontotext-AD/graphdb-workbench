@@ -1,4 +1,4 @@
-import {ServiceProvider, LanguageContextService, TranslationBundle} from "@ontotext/workbench-api";
+import {ServiceProvider, LanguageContextService, TranslationBundle} from '@ontotext/workbench-api';
 import {TranslationParameter} from '../models/translation/translation-parameter';
 import {TranslationCallback, TranslationObserver} from '../models/translation/translation-observer';
 import {sanitizeHTML} from '../utils/html-utils';

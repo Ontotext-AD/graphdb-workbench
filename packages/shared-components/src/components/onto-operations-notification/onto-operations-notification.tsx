@@ -36,7 +36,7 @@ export class OntoOperationsNotification {
   @Prop() activeOperations: OperationStatusSummary;
 
   /** Whether the dropdown menu is open or closed */
-  @State() isOpen: boolean = false;
+  @State() isOpen = false;
 
   /** Grouped info about operations, to be displayed in the button */
   private operationGroups: OperationGroupSummaryList;
@@ -72,29 +72,29 @@ export class OntoOperationsNotification {
         </button>
         {this.isOpen &&
             <ul class="operations-dropdown">
-                <section class="operations-statuses-content">
-                  {this.activeOperations.allRunningOperations.getItems().map((operation) => (
-                    <li key={operation.id}>
-                      <a class={`operation-status-content onto-btn no-underline ${operationStatusToWarningClass[operation.status]}`}
-                         target="_blank"
-                         onClick={navigateTo(operation.href)}>
-                        <i class={operationGroupToIcon[operation.group]}></i>
-                        <span class="operation-status-label">
-                          <translate-label
-                            labelKey={`operations_notification.links.${operation.labelKey}`}>
-                          </translate-label>
-                        </span>
+              <section class="operations-statuses-content">
+                {this.activeOperations.allRunningOperations.getItems().map((operation) => (
+                  <li key={operation.id}>
+                    <a class={`operation-status-content onto-btn no-underline ${operationStatusToWarningClass[operation.status]}`}
+                      target="_blank"
+                      onClick={navigateTo(operation.href)}>
+                      <i class={operationGroupToIcon[operation.group]}></i>
+                      <span class="operation-status-label">
+                        <translate-label
+                          labelKey={`operations_notification.links.${operation.labelKey}`}>
+                        </translate-label>
+                      </span>
 
-                        <span class="operation-number">
-                          {operation.count
-                            ? <span class="operation-status-running-operation-count">{operation.count}</span>
-                            : ''
-                          }
-                        </span>
-                      </a>
-                    </li>
-                  ))}
-                </section>
+                      <span class="operation-number">
+                        {operation.count
+                          ? <span class="operation-status-running-operation-count">{operation.count}</span>
+                          : ''
+                        }
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </section>
             </ul>}
       </section>
     );
