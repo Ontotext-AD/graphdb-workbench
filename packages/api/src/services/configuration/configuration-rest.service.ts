@@ -9,7 +9,7 @@ export class ConfigurationRestService extends HttpService {
   async getConfiguration(): Promise<Configuration | undefined> {
     let environment: Environment = envDefault as Environment;
     try {
-      environment = await this.get(ENV_JSON_URL) as Environment;
+      environment = await this.get(ENV_JSON_URL);
     } catch {
       console.warn('No downloadable "env.json" was found. Fallback to default:', environment);
     }

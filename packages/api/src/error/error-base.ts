@@ -1,5 +1,5 @@
 export abstract class ErrorBase extends Error {
-  public constructor(private text?: string) {
+  public constructor(private readonly text?: string) {
     super();
   }
 
