@@ -21,6 +21,7 @@ import {AgentSettingsModal} from "../model/agent-settings-modal";
 import {decodeHTML} from "../../../../app";
 import {status as httpStatus} from "../../models/http-status";
 import {ContinueChatRun} from "../../models/ttyg/chat-answer";
+import {service, AuthenticationService} from "@ontotext/workbench-api";
 
 const modules = [
     'toastr',
@@ -419,7 +420,8 @@ function TTYGViewCtrl(
     };
 
     const getActiveRepositoryObjectHandler = (activeRepo) => {
-        if (activeRepo) {
+        const authService = service(AuthenticationService);
+        if (activeRepo && !authService.hasGqlRights(activeRepo)) {
             onInit();
         }
     };
