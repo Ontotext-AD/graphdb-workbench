@@ -140,10 +140,10 @@ describe('NavbarService', () => {
           selected: false,
           shouldShow: true
         })
-      )
+      );
       actual.addItem(importItem);
       actual.addItem(exploreItem);
-      expect(navbarModel).toEqual(actual)
+      expect(navbarModel).toEqual(actual);
     });
   });
 });

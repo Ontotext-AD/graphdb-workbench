@@ -9,7 +9,7 @@ import {DropdownItem} from '../../models/dropdown/dropdown-item';
 import {DropdownItemAlignment} from '../../models/dropdown/dropdown-item-alignment';
 import {RepositorySelection} from './repository-selection';
 import {TranslationService} from '../../services/translation.service';
-import {OntoTooltipPlacement} from "../onto-tooltip/models/onto-tooltip-placement";
+import {OntoTooltipPlacement} from '../onto-tooltip/models/onto-tooltip-placement';
 
 @Component({
   tag: 'onto-repository-selector',
@@ -110,8 +110,8 @@ export class OntoRepositorySelector {
 
   render() {
     const repositorySelection = <RepositorySelection repository={this.currentRepository}
-                                                     defaultToggleButtonName={this.getButtonLabel()}
-                                                     location={this.getLocation()}/>;
+      defaultToggleButtonName={this.getButtonLabel()}
+      location={this.getLocation()}/>;
     return (
       <Host>
         <onto-dropdown
@@ -125,7 +125,8 @@ export class OntoRepositorySelector {
           dropdownAlignment={DropdownItemAlignment.RIGHT}
           tooltipPlacement={this.tooltipAlignment}
           tooltipTheme='light-border'
-          items={this.dropdownItems}>
+          items={this.dropdownItems}
+          auto-close>
         </onto-dropdown>
       </Host>
     );
@@ -237,7 +238,7 @@ export class OntoRepositorySelector {
     return html;
   }
 
-  private subscribeToTranslationChanged(): Array<() => void> {
+  private subscribeToTranslationChanged(): (() => void)[] {
     return [
       TranslationService.onTranslate('repository-selector.btn.toggle', [], (toggleButtonName) => {
         this.defaultToggleButtonName = toggleButtonName;
@@ -254,7 +255,7 @@ export class OntoRepositorySelector {
 
   private getLocation() {
     if (!this.currentRepository?.location) {
-      return ``;
+      return '';
     }
     return `@${UriUtil.shortenIri(this.currentRepository.location)}`;
   }

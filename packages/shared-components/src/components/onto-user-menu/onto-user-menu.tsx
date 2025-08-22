@@ -47,14 +47,14 @@ export class OntoUserMenu {
           {this.isOpen ?
             <section class='onto-user-menu-dropdown'>
               <translate-label onClick={navigateTo('settings')}
-                               labelKey={'user_menu.my_settings'}></translate-label>
+                labelKey={'user_menu.my_settings'}></translate-label>
               {!this.securityConfig?.hasExternalAuthUser ?
                 <translate-label onClick={this.logout}
-                                 labelKey={'user_menu.logout'}></translate-label> : ''}
+                  labelKey={'user_menu.logout'}></translate-label> : ''}
             </section> : ''}
         </div>
       </section>
-  );
+    );
   }
 
   /**
@@ -62,7 +62,7 @@ export class OntoUserMenu {
   */
   private readonly logout = (): void => {
     ServiceProvider.get(AuthenticationService).logout();
-  }
+  };
 
   /**
    * Toggles the dropdown menu's open state.
@@ -71,7 +71,7 @@ export class OntoUserMenu {
    */
   private readonly toggleDropdown = (): void => {
     this.isOpen = !this.isOpen;
-  }
+  };
 
   /**
    * Closes the dropdown if the user clicks outside the component.

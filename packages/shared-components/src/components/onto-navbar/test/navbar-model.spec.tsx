@@ -451,13 +451,13 @@ describe('NavbarModel', () => {
       expect(child2.selected).toBeTruthy();
     });
   });
-})
+});
 
 function buildModelFromInstances(items: NavbarItemModel[] = []): NavbarModel {
   return new NavbarModel(items);
 }
 
-function buildModel(items: any[] = []): NavbarModel {
+function buildModel(items: Partial<NavbarItemModel>[] = []): NavbarModel {
   const _items = items.map(item => new NavbarItemModel({...item}));
   return new NavbarModel(_items);
 }

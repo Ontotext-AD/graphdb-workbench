@@ -3,5 +3,5 @@
  */
 export interface ComponentEvent {
   type: string;
-  payload: any;
+  payload: unknown;
 }

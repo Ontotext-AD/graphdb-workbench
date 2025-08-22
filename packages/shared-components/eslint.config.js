@@ -10,7 +10,7 @@ const tsPlugin = require('@typescript-eslint/eslint-plugin');
 module.exports = [
   ...base,
   {
-    ignores: ['**/*cy.js', 'cypress.config.js', '**/*d.ts'],
+    ignores: ['**/*cy.js', 'cypress.config.js', 'src/**/*d.ts'],
   },
   {
     files: ['**/*.{ts,tsx}'],

@@ -4,7 +4,7 @@ import {
   ServiceProvider,
   LanguageService,
   LanguageContextService,
-} from "@ontotext/workbench-api";
+} from '@ontotext/workbench-api';
 import {DropdownItemAlignment} from '../../models/dropdown/dropdown-item-alignment';
 
 @Component({
@@ -52,14 +52,15 @@ export class OntoLanguageSelector {
           dropdownAlignment={this.dropdownAlignment ?? DropdownItemAlignment.RIGHT}
           dropdownTooltipTrigger={'mouseenter focus'}
           iconClass='icon-translation'
-          items={this.items}>
+          items={this.items}
+          auto-close>
         </onto-dropdown>
       </Host>
     );
   }
 
   private valueChangeHandler() {
-    return (newLanguage: any) => this.onSelectedLanguageChanged(newLanguage);
+    return (newLanguage: CustomEvent) => this.onSelectedLanguageChanged(newLanguage);
   }
 
   private changeLanguage(newLanguage: string): void {

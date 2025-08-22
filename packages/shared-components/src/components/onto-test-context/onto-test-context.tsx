@@ -56,7 +56,7 @@ export class OntoTestContext {
     return Promise.resolve();
   }
 
-    /**
+  /**
    * Updates the product information in the context.
    *
    * This method uses the ProductInfoContextService to update the product information
@@ -81,8 +81,6 @@ export class OntoTestContext {
     });
     return Promise.resolve();
   }
-
-
 
   /**
    * Sets the authenticated user in the application context.
@@ -110,7 +108,7 @@ export class OntoTestContext {
     return Promise.resolve();
   }
 
-    /**
+  /**
    * Changes the application's language by updating the language bundle.
    *
    * This method uses the LanguageContextService to update the language bundle
@@ -218,7 +216,7 @@ export class OntoTestContext {
     return Promise.resolve();
   }
 
-    /**
+  /**
    * Sets up a listener for language changes and updates the application language accordingly.
    *
    * This private method subscribes to language change events using the LanguageContextService.

@@ -83,17 +83,17 @@ export class OntoCookiePolicyDialog implements OntoDialog {
               <translate-label labelKey={'cookie.policy.manage_cookies_heading'}></translate-label>
             </h4>
             <onto-toggle-switch checked={cookieConsent?.statistic}
-                                labelKey={'cookie.policy.statistic_cookies'}
-                                tooltipTranslationKey={'cookie.policy.statistic_tooltip'}
-                                context={CookieType.STATISTIC}></onto-toggle-switch>
+              labelKey={'cookie.policy.statistic_cookies'}
+              tooltipTranslationKey={'cookie.policy.statistic_tooltip'}
+              context={CookieType.STATISTIC}></onto-toggle-switch>
             <p>
               <translate-label labelKey={'cookie.policy.statistic_text'}></translate-label>
             </p>
 
             <onto-toggle-switch checked={cookieConsent?.thirdParty}
-                                labelKey={'cookie.policy.third_party_cookies'}
-                                tooltipTranslationKey={'cookie.policy.third_party_tooltip'}
-                                context={CookieType.THIRD_PARTY}></onto-toggle-switch>
+              labelKey={'cookie.policy.third_party_cookies'}
+              tooltipTranslationKey={'cookie.policy.third_party_tooltip'}
+              context={CookieType.THIRD_PARTY}></onto-toggle-switch>
             <p>
               <translate-label labelKey={'cookie.policy.third_party_cookies_text'}></translate-label>
             </p>
@@ -102,17 +102,17 @@ export class OntoCookiePolicyDialog implements OntoDialog {
           <p>
             <span>
               <translate-label labelKey={'cookie.policy.change_cookies'}></translate-label>
-                <i>
+              <i>
                   &nbsp;
-                  <translate-label labelKey={'menu.setup.label'}></translate-label>
+                <translate-label labelKey={'menu.setup.label'}></translate-label>
                   &nbsp;&gt;&nbsp;
-                  <translate-label labelKey={'menu.my.settings.label'}></translate-label>
+                <translate-label labelKey={'menu.my.settings.label'}></translate-label>
                   &nbsp;&gt;&nbsp;
-                  <translate-label labelKey={'security.user.settings'}></translate-label>
+                <translate-label labelKey={'security.user.settings'}></translate-label>
                   &nbsp;&gt;&nbsp;
-                  <translate-label labelKey={'cookie.policy.change_cookies_location4'}></translate-label>
+                <translate-label labelKey={'cookie.policy.change_cookies_location4'}></translate-label>
                   &nbsp;
-                </i>
+              </i>
             </span>
           </p>
         </div>
