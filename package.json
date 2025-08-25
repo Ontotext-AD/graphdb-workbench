@@ -76,6 +76,7 @@
         "cross-env": "^7.0.3",
         "css-loader": "^7.1.2",
         "css-minimizer-webpack-plugin": "^7.0.2",
+        "eslint": "^9.34.0",
         "expose-loader": "^5.0.1",
         "fs-extra": "^11.3.0",
         "html-loader": "^5.1.0",
