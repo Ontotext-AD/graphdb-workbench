@@ -5,18 +5,17 @@ import {CHAT_MESSAGE_ROLE, ChatMessageModel} from "../../models/ttyg/chat-messag
 import {ChatItemModel} from "../../models/ttyg/chat-item";
 import {cloneDeep} from "lodash";
 import {decodeHTML} from "../../../../app";
-import {ChatModel} from "../../models/ttyg/chats";
 
 const modules = [
     'graphdb.framework.ttyg.directives.chat-item-detail',
-    'graphdb.framework.core.directives.editable-content'
+    'graphdb.framework.core.directives.editable-content',
 ];
 
 angular
     .module('graphdb.framework.ttyg.directives.chat-panel', modules)
     .directive('chatPanel', ChatPanelComponent);
 
-ChatPanelComponent.$inject = ['toastr', '$translate', 'TTYGContextService', '$timeout'];
+ChatPanelComponent.$inject = ['toastr', '$translate', 'TTYGContextService'];
 
 /**
  * @ngdoc directive
@@ -32,12 +31,11 @@ ChatPanelComponent.$inject = ['toastr', '$translate', 'TTYGContextService', '$ti
  * @example
  * <chat-panel></chat-panel>
  */
-function ChatPanelComponent(toastr, $translate, TTYGContextService, $timeout) {
+function ChatPanelComponent(toastr, $translate, TTYGContextService) {
     return {
         restrict: 'E',
         templateUrl: 'js/angular/ttyg/templates/chat-panel.html',
         link: ($scope, element, attrs) => {
-
             // =========================
             // Public variables
             // =========================
@@ -74,6 +72,8 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, $timeout) {
              */
             $scope.loadingChat = true;
 
+            $scope.showCancelButton = false;
+
             // =========================
             // Private variables
             // =========================
@@ -96,6 +96,16 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, $timeout) {
                 $scope.chatItem = getEmptyChatItem();
                 scrollToBottom();
                 focusQuestionInput();
+            };
+
+
+            /**
+             * Cancels a pending question tied to the current scope.
+             * Hides cancel button.
+             */
+            $scope.cancelPendingQuestion = () => {
+                $scope.showCancelButton = false;
+                TTYGContextService.emit(TTYGEventName.CANCEL_PENDING_QUESTION, $scope.chatItem);
             };
 
             /**
@@ -148,13 +158,20 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, $timeout) {
             // =========================
 
             const createNewChat = () => {
-                $scope.waitingForLastMessage = true;
                 TTYGContextService.emit(TTYGEventName.CREATE_CHAT, $scope.chatItem);
             };
 
             const askQuestion = (chatItem) => {
-                $scope.waitingForLastMessage = true;
                 TTYGContextService.emit(TTYGEventName.ASK_QUESTION, chatItem);
+            };
+
+            const setAskingState = (isAsking) => {
+                $scope.waitingForLastMessage = isAsking;
+                $scope.showCancelButton = isAsking;
+            };
+
+            const onAskQuestionStarted = () => {
+                setAskingState(true);
             };
 
             /**
@@ -163,12 +180,12 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, $timeout) {
              */
             const onSelectedChatUpdated = (chat) => {
                 $scope.chat = chat;
-                if (!chat || !chat.id && $scope.askingChatItem) {
-                    // Do nothing if the chat is new (dummy) and a question is currently being asked.
+                if (!$scope.chat || $scope.chat.isNew()) {
+                    // Do nothing if the chat is new and a question is currently being asked.
                     return;
                 }
                 $scope.loadingChat = false;
-                let message = $scope.chatItem.question.message;
+                const message = $scope.chatItem.question.message;
                 $scope.chatItem = getEmptyChatItem();
                 $scope.chatItem.question.message = message;
                 $scope.askingChatItem = undefined;
@@ -184,7 +201,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, $timeout) {
             };
 
             const onLastMessageReceived = () => {
-                $scope.waitingForLastMessage = false;
+                setAskingState(false);
             };
 
             /**
@@ -199,9 +216,10 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, $timeout) {
 
             const onSelectedChatChanged = (chat) => {
                 if (chat) {
-                    // Skip the loading indication if it is a new (dummy) chat that has not been created yet.
-                    $scope.loadingChat = chat && chat.id;
+                    // Skip the loading indication if it is a new chat that hasn't received an answer yet.
+                    $scope.loadingChat = !chat.isNew();
                     $scope.chatItem = getEmptyChatItem();
+                    setAskingState(false);
                     focusQuestionInput();
                 } else {
                     reset();
@@ -211,7 +229,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, $timeout) {
             const onQuestionFailure = () => {
                 $scope.chatItem = cloneDeep($scope.askingChatItem);
                 $scope.askingChatItem = undefined;
-                $scope.waitingForLastMessage = false;
+                setAskingState(false);
             };
 
             /**
@@ -251,12 +269,12 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, $timeout) {
                 // Moving focus to the end of the JS call stack with a timeout, because on first Agent select,
                 // the dropdown .agent-option steals the focus, or the browser assigns it to the document <body>.
                 setTimeout(() => {
-                    let inputElement = document.querySelector('.question-input');
+                    const inputElement = document.querySelector('.question-input');
                     if (inputElement) {
                         inputElement.focus();
                     }
                 });
-            }
+            };
 
             const scrollToBottom = () => {
                 // Call it in a timeout to ensure that Angular's digest cycle is finished and all elements are displayed.
@@ -269,16 +287,15 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, $timeout) {
             };
 
             const reset = () => {
-                $scope.chat = ChatModel.getEmptyChat();
+                $scope.chat = undefined;
                 $scope.loadingChat = false;
                 $scope.chatItem = getEmptyChatItem();
                 $scope.askingChatItem = undefined;
-                $scope.waitingForLastMessage = false;
+                setAskingState(false);
                 focusQuestionInput();
             };
 
             const init = () => {
-                $scope.chat = ChatModel.getEmptyChat();
                 $scope.chatItem = getEmptyChatItem();
                 focusQuestionInput();
             };
@@ -301,6 +318,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, $timeout) {
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.ASK_QUESTION_FAILURE, onQuestionFailure));
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CREATE_CHAT_FAILURE, onQuestionFailure));
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.DELETE_CHAT_SUCCESSFUL, onChatDeleted));
+            subscriptions.push(TTYGContextService.subscribe(TTYGEventName.ASK_QUESTION_STARTING, onAskQuestionStarted));
 
             // Deregister the watcher when the scope/directive is destroyed
             $scope.$on('$destroy', removeAllSubscribers);
@@ -309,6 +327,6 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, $timeout) {
             // Initialization
             // =========================
             init();
-        }
+        },
     };
 }

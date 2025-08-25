@@ -1,0 +1,12 @@
+{
+    "id": "thread_YHVy625Ir8TJkUuwy94l46Om",
+    "name": "New chat",
+    "messages": [],
+    "timestamp": 1756128759,
+    "continueRunId": null,
+    "usage": {
+        "completionTokens": 0,
+        "promptTokens": 0,
+        "totalTokens": 0
+    }
+}
