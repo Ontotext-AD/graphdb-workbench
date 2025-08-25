@@ -3,9 +3,9 @@ import {DropdownItem} from '../../models/dropdown/dropdown-item';
 import {TranslationService} from '../../services/translation.service';
 import {DropdownItemAlignment} from '../../models/dropdown/dropdown-item-alignment';
 import {Awaitable} from '@ontotext/workbench-api';
-import {TooltipUtil} from "../../utils/tooltip-util";
+import {TooltipUtil} from '../../utils/tooltip-util';
 import {HTMLElementWithTooltip} from '../onto-tooltip/models/html-element-with-tooltip';
-import {OntoTooltipPlacement} from "../onto-tooltip/models/onto-tooltip-placement";
+import {OntoTooltipPlacement} from '../onto-tooltip/models/onto-tooltip-placement';
 
 /**
  * A reusable dropdown component built using StencilJS. This component supports configurable labels, tooltips, icons,
@@ -32,7 +32,7 @@ export class OntoDropdown {
   /**
    * Holds the content of the tooltip
    */
-  @State() buttonTooltipContent: string = '';
+  @State() buttonTooltipContent = '';
 
   /**
    * The name for the dropdown button. This can either be a string (used directly as the button label)
@@ -74,7 +74,7 @@ export class OntoDropdown {
   /**
    * Array of dropdown options.
    */
-  @Prop() items: DropdownItem<any>[];
+  @Prop() items: DropdownItem<unknown>[];
 
   /**
    *  The tooltip theme to be used. For more information {@link OntoTooltipConfiguration#theme}.
@@ -98,7 +98,7 @@ export class OntoDropdown {
   /**
    * Flag to determine if the dropdown should close automatically when a click occurs outside the dropdown.
    */
-  @Prop() autoClose: boolean = true;
+  @Prop() autoClose = false;
 
   /**
    * Event emitted when a dropdown item is selected.
@@ -151,14 +151,14 @@ export class OntoDropdown {
     return (
       <div class={`onto-dropdown ${this.open ? 'open' : 'closed'}`}>
         <button class="onto-dropdown-button"
-                ref={(el) => this.dropdownButtonElement = el as HTMLElementWithTooltip}
-                {...(this.dropdownButtonGuideSelector ? { [this.GUIDE_SELECTOR_ATTR]: this.dropdownButtonGuideSelector } : {})}
-                tooltip-placement={tooltipPlacement}
-                tooltip-trigger={this.dropdownTooltipTrigger}
-                tooltip-content={this.buttonTooltipContent}
-                {...(this.tooltipTheme ? {'tooltip-theme': this.tooltipTheme} : {})}
-                onMouseEnter={this.setDropdownButtonTooltip()}
-                onClick={this.toggleButtonClickHandler}>
+          ref={(el) => this.dropdownButtonElement = el as HTMLElementWithTooltip}
+          {...(this.dropdownButtonGuideSelector ? { [this.GUIDE_SELECTOR_ATTR]: this.dropdownButtonGuideSelector } : {})}
+          tooltip-placement={tooltipPlacement}
+          tooltip-trigger={this.dropdownTooltipTrigger}
+          tooltip-content={this.buttonTooltipContent}
+          {...(this.tooltipTheme ? {'tooltip-theme': this.tooltipTheme} : {})}
+          onMouseEnter={this.setDropdownButtonTooltip()}
+          onClick={this.toggleButtonClickHandler}>
           {this.iconClass ? <i class={'button-icon ' + this.iconClass}></i> : ''}
           <span class='button-name'>
             {this.dropdownButtonName ?? this.translate(this.dropdownButtonNameLabelKey)}
@@ -170,12 +170,12 @@ export class OntoDropdown {
           class={'onto-dropdown-menu ' + dropdownAlignmentClass}>
           {this.items?.map((item) =>
             <button class={'onto-dropdown-menu-item ' + item.cssClass}
-                    {...(item.guideSelector ? { [this.GUIDE_SELECTOR_ATTR]: item.guideSelector } : {})}
-                    tooltip-placement={OntoTooltipPlacement.LEFT}
-                    tooltip-trigger={item.dropdownTooltipTrigger}
-                    {...(this.tooltipTheme ? {'tooltip-theme': this.tooltipTheme} : {})}
-                    onMouseEnter={this.setDropdownItemTooltip(item)}
-                    onClick={this.itemClickHandler(item.value)}>
+              {...(item.guideSelector ? { [this.GUIDE_SELECTOR_ATTR]: item.guideSelector } : {})}
+              tooltip-placement={OntoTooltipPlacement.LEFT}
+              tooltip-trigger={item.dropdownTooltipTrigger}
+              {...(this.tooltipTheme ? {'tooltip-theme': this.tooltipTheme} : {})}
+              onMouseEnter={this.setDropdownItemTooltip(item)}
+              onClick={this.itemClickHandler(item.value)}>
               {item.iconClass ? <span class={'onto-dropdown-option-icon ' + item.iconClass}></span> : ''}
               <span>{item.name ?? this.translate(item.nameLabelKey)}</span>
             </button>)}
@@ -193,7 +193,7 @@ export class OntoDropdown {
         tooltipContent =  this.dropdownButtonTooltip ?? this.translate(this.dropdownButtonTooltipLabelKey);
       }
       this.buttonTooltipContent = tooltipContent;
-    }
+    };
   }
 
   private setDropdownItemTooltip(item) {
@@ -208,24 +208,24 @@ export class OntoDropdown {
           item.tooltip ?? this.translate(item.tooltipLabelKey)
         );
       }
-    }
+    };
   }
 
   private readonly toggleButtonClickHandler = () => {
     TooltipUtil.destroyTooltip(this.dropdownButtonElement);
     this.buttonTooltipContent = '';
     this.toggleComponent();
-  }
+  };
 
-  private itemClickHandler(value: any) {
-    return () => this.onSelect(value)
+  private itemClickHandler<T>(value: T) {
+    return () => this.onSelect(value);
   }
 
   private translate(key) {
     return key ? TranslationService.translate(key) : '';
   }
 
-  private onSelect(value: any): void {
+  private onSelect<T>(value: T): void {
     this.open = false;
     this.valueChanged.emit(value);
   }

@@ -110,7 +110,7 @@ export class NavbarModel {
     if (item.label) {
       item.selected = true;
     } else {
-      this.selectItem(item.parentModel)
+      this.selectItem(item.parentModel);
     }
   }
 
@@ -125,7 +125,7 @@ export class NavbarModel {
     }
     return item.children.some(child => this.hasSelection(child));
   }
-  
+
   /**
    * Recursively checks if any submenu (child or nested) is selected.
    * @param {NavbarItemModel} item - The submenu item to check.
@@ -323,7 +323,7 @@ export class NavbarModel {
   private walk(callback: (item: NavbarItemModel) => void): void {
     this.walkRecursively(this.items, callback);
   }
-  
+
   /**
    * Recursively walks through a list of navbar items and applies the callback.
    * @param items The items to walk through.
@@ -354,8 +354,8 @@ export class NavbarItemModel {
   private _children: NavbarItemModel[];
   private _hasParent: boolean;
   private _parent: string;
-  private _selected: boolean = false;
-  private _open: boolean = false;
+  private _selected = false;
+  private _open = false;
   private _documentationHref: string;
   private _hrefFun?: string;
   private _editions?: string;
@@ -363,9 +363,10 @@ export class NavbarItemModel {
   private _role?: string;
   private _guideSelector?: string;
   private _testSelector?: string;
+  private _shouldShow?: boolean;
   private _parentModel?: NavbarItemModel;
 
-  constructor(data: any) {
+  constructor(data: Partial<NavbarItemModel>) {
     this._order = data.order;
     this._label = data.label;
     this._labelKey = data.labelKey;
@@ -382,6 +383,7 @@ export class NavbarItemModel {
     this._role = data.role;
     this._guideSelector = data.guideSelector;
     this._testSelector = data.testSelector;
+    this._shouldShow = data.shouldShow;
     this._parentModel = data.parentModel;
   }
 
@@ -395,7 +397,7 @@ export class NavbarItemModel {
       this.addChild(child);
     });
   }
-  
+
   /**
    * Determines whether the current menu item has submenus.
    * In this context, items with a href value of '#' are treated as parent items
@@ -407,7 +409,7 @@ export class NavbarItemModel {
   hasSubmenus(): boolean {
     return this._href === '#';
   }
-  
+
   get parent(): string {
     return this._parent;
   }
@@ -542,6 +544,14 @@ export class NavbarItemModel {
 
   set parentModel(value: NavbarItemModel) {
     this._parentModel = value;
+  }
+
+  get shouldShow(): boolean {
+    return this._shouldShow;
+  }
+
+  set shouldShow(value: boolean) {
+    this._shouldShow = value;
   }
 
   private setParent(parent: NavbarItemModel) {

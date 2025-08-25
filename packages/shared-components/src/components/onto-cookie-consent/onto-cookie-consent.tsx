@@ -31,12 +31,12 @@ export class OntoCookieConsent implements DialogHandler {
       <Host>
         <div class="cookie-consent-modal">
           <section class="cookie-consent-content">
-          <span>
-            <translate-label labelKey={'cookie.cookie_consent'}></translate-label>
-            <a id="cookie-policy-link" href="#" onClick={this.openModal} class="btn btn-link p-0">
-              <translate-label labelKey={'cookie.cookie_policy_url_label'}></translate-label>
-            </a>.
-          </span>
+            <span>
+              <translate-label labelKey={'cookie.cookie_consent'}></translate-label>
+              <a id="cookie-policy-link" href="#" onClick={this.openModal} class="btn btn-link p-0">
+                <translate-label labelKey={'cookie.cookie_policy_url_label'}></translate-label>
+              </a>.
+            </span>
             <button id="accept-cookie-policy" class="onto-btn onto-btn-primary" onClick={this.handleConsentClick}>
               <translate-label labelKey={'common.button.ok'}></translate-label>
             </button>
@@ -56,7 +56,7 @@ export class OntoCookieConsent implements DialogHandler {
   private openModal = (event: Event) => {
     event.preventDefault();
     this.showModal = true;
-  }
+  };
 
   /**
    * Handles the click event on the consent button.
@@ -64,5 +64,5 @@ export class OntoCookieConsent implements DialogHandler {
    */
   private handleConsentClick = () => {
     this.consentGiven.emit();
-  }
+  };
 }

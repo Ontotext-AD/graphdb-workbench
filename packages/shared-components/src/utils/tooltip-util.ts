@@ -1,7 +1,7 @@
-import {OntoTooltipConfiguration} from "../components/onto-tooltip/models/onto-tooltip-configuration";
-import tippy, {Instance} from "tippy.js";
-import {OntoTooltipPlacement} from "../components/onto-tooltip/models/onto-tooltip-placement";
-import {HTMLElementWithTooltip} from "../components/onto-tooltip/models/html-element-with-tooltip";
+import {OntoTooltipConfiguration} from '../components/onto-tooltip/models/onto-tooltip-configuration';
+import tippy, {Instance} from 'tippy.js';
+import {OntoTooltipPlacement} from '../components/onto-tooltip/models/onto-tooltip-placement';
+import {HTMLElementWithTooltip} from '../components/onto-tooltip/models/html-element-with-tooltip';
 
 export class TooltipUtil {
   private static readonly ATTR_CONTENT = 'tooltip-content';
@@ -15,7 +15,7 @@ export class TooltipUtil {
    * Returns the Tippy instance associated with an element, if it exists.
    */
   static getTooltipInstance(element: HTMLElement): Instance | undefined {
-    // @ts-ignore
+    // @ts-expect-error TS2339: Property _tippy does not exist on type HTMLElement
     return element._tippy;
   }
 

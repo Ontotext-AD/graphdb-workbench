@@ -16,7 +16,8 @@
     "cy:run-legacy:coverage": "cypress run --config-file cypress-legacy.config.js --browser chrome",
     "cy:run-flaky": "cypress run --config-file cypress-flaky.config.js --browser chrome",
     "test": "npm run cy:run-legacy",
-    "test:core": "cypress run --spec e2e-legacy/repository/**,e2e-legacy/import/**,e2e-legacy/sparql-editor/**,e2e-legacy/monitor/**,e2e-legacy/cluster/**,e2e-legacy/ttyg/**"
+    "test:core": "cypress run --spec e2e-legacy/repository/**,e2e-legacy/import/**,e2e-legacy/sparql-editor/**,e2e-legacy/monitor/**,e2e-legacy/cluster/**,e2e-legacy/ttyg/**",
+    "lint": "eslint '**/*.{js,mjs,cjs}'"
   },
   "author": {
     "name": "Ontotext AD",
@@ -33,6 +34,7 @@
   },
   "devDependencies": {
     "@bahmutov/cypress-code-coverage": "^2.7.2",
+    "@eslint/js": "^9.33.0",
     "babel-plugin-istanbul": "^7.0.0",
     "cypress": "14.5.1",
     "cypress-failed-log": "^2.10.0",
@@ -44,6 +46,9 @@
     "cypress-wait-until": "^3.0.2",
     "del": "^8.0.0",
     "dotenv": "^17.0.1",
+    "eslint": "^9.33.0",
+    "eslint-plugin-cypress": "^5.1.0",
+    "globals": "^16.3.0",
     "minimist": "^1.2.8",
     "mocha-junit-reporter": "^2.2.1"
   }

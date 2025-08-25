@@ -18,7 +18,7 @@ import {TranslationService} from '../../services/translation.service';
 })
 export class TranslateLabel {
 
-  private unsubscribeTranslationChanged: Function;
+  private unsubscribeTranslationChanged: (() => void) | null = null;
 
   /**
    * Represents a label key.
@@ -37,7 +37,10 @@ export class TranslateLabel {
   }
 
   disconnectedCallback(): void {
-    this.unsubscribeTranslationChanged && this.unsubscribeTranslationChanged();
+    if (this.unsubscribeTranslationChanged) {
+      this.unsubscribeTranslationChanged();
+      this.unsubscribeTranslationChanged = null;
+    }
   }
 
   render() {

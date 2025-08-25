@@ -1,7 +1,7 @@
-const eslint = require('@eslint/js');
+const base = require('../../eslint.config.base.js');
 
 module.exports = [
-  eslint.configs.recommended,
+  ...base,
   {
     files: ['**/*.js'],
     languageOptions: {
@@ -16,15 +16,8 @@ module.exports = [
         setTimeout: 'readonly',
       },
     },
-    rules: {
-      'no-console': ['error', {allow: ['warn', 'error', 'info']}],
-      'no-unused-vars': 'warn',
-      'eqeqeq': 'error',
-      'curly': 'error',
-      'quotes': ['error', 'single'],
-      'semi': ['error', 'always'],
-      'indent': ['error', 2],
-      'no-multiple-empty-lines': ['error', {max: 1}],
-    },
+  },
+  {
+    ignores: ['**/*.html'],
   },
 ];

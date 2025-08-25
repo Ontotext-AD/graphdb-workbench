@@ -5,4 +5,4 @@ import {translocoBootstrapProviders} from './transloco/transloco-bootstrap';
  */
 export const bootstrapProviders = [
   ...translocoBootstrapProviders
-]
+];

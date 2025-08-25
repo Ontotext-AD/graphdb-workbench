@@ -1,6 +1,6 @@
 import {TooltipUtil} from './tooltip-util';
 import * as tippyModule from 'tippy.js';
-import {newSpecPage, SpecPage} from "jest-stencil-runner";
+import {newSpecPage, SpecPage} from 'jest-stencil-runner';
 
 describe('TooltipUtil', () => {
   let element: HTMLElement;
@@ -15,13 +15,13 @@ describe('TooltipUtil', () => {
     element = page.body.querySelector('button');
 
     tippySpy = jest.spyOn(tippyModule, 'default')
-      // @ts-ignore
-      .mockImplementation((t, p) => {
+      // @ts-expect-error Type Instance<Props> is missing the following properties from type Instance<Props>[]: length, pop, push, concat, and 28 more.
+      .mockImplementation((t) => {
         const tippyInstance: tippyModule.Instance = {
           destroy: jest.fn(),
           setContent: jest.fn()
         } as unknown as tippyModule.Instance;
-        // @ts-ignore
+        // @ts-expect-error TS2339: Property _tippy does not exist on type HTMLElement
         t._tippy = tippyInstance;
         return tippyInstance;
       });
@@ -89,7 +89,7 @@ describe('TooltipUtil', () => {
     });
 
     it('should do nothing if no tooltip is present', () => {
-      TooltipUtil.updateTooltipContent(element, 'Noop')
+      TooltipUtil.updateTooltipContent(element, 'Noop');
       expect(() => TooltipUtil.updateTooltipContent(element, 'Noop')).not.toThrow();
     });
 
@@ -104,7 +104,7 @@ describe('TooltipUtil', () => {
     it('should not destroy tooltip if instance exists, but not created by util method', () => {
       const destroy = jest.fn();
       const instance = {destroy} as unknown as tippyModule.Instance;
-      // @ts-ignore
+      // @ts-expect-error TS2339: Property _tippy does not exist on type HTMLElement
       element._tippy = instance;
 
       TooltipUtil.destroyTooltip(element);

@@ -10,10 +10,10 @@ import {
   State,
   Watch
 } from '@stencil/core';
-import {ExternalMenuModel} from "./external-menu-model";
-import {NavbarToggledEvent} from "./navbar-toggled-event";
-import {NavbarService} from "./navbar-service";
-import {NavbarItemModel, NavbarModel} from "./navbar-model";
+import {ExternalMenuModel} from './external-menu-model';
+import {NavbarToggledEvent} from './navbar-toggled-event';
+import {NavbarService} from './navbar-service';
+import {NavbarItemModel, NavbarModel} from './navbar-model';
 import {TranslationService} from '../../services/translation.service';
 import {
   EventName,
@@ -43,7 +43,7 @@ export class OntoNavbar {
     [labelKeys.EXPAND]: TranslationService.translate(labelKeys.EXPAND),
     [labelKeys.COLLAPSE]:TranslationService.translate(labelKeys.COLLAPSE),
     [labelKeys.LOGO_LINK]: TranslationService.translate(labelKeys.LOGO_LINK)
-  }
+  };
 
   private productInfo: ProductInfo;
   /**
@@ -238,7 +238,7 @@ export class OntoNavbar {
   private handleSelectMenuItem(item: NavbarItemModel) {
     return (event: MouseEvent) => {
       this.select(event, item);
-    }
+    };
   }
 
   private toggleNavbarHandler() {
@@ -258,7 +258,7 @@ export class OntoNavbar {
             <span class="toggle-menu" title={
               this.isCollapsed ? this.labels[labelKeys.EXPAND] : this.labels[labelKeys.COLLAPSE]
             } onClick={this.toggleNavbarHandler()}>
-                <em class={this.isCollapsed ? 'icon-caret-right' : 'icon-caret-left'}></em>
+              <em class={this.isCollapsed ? 'icon-caret-right' : 'icon-caret-left'}></em>
             </span>
             <a class="menu-element-root home-page" onClick={navigateTo('./')}>
               <svg class="big-logo">
@@ -273,11 +273,11 @@ export class OntoNavbar {
           </li>
           {this.menuModel.items.map((item) => (
             <li key={item.labelKey} class={{'menu-element': true, 'open': item.open}}
-                data-test={item.testSelector} guide-selector={item.guideSelector}>
+              data-test={item.testSelector} guide-selector={item.guideSelector}>
               {item.children.length > 0 &&
                 <Fragment>
                   <div class={{'menu-element-root': true, 'active': item.selected}}
-                       onClick={this.handleSelectMenuItem(item)}>
+                    onClick={this.handleSelectMenuItem(item)}>
                     <span class={`menu-item-icon ${item.icon}`}></span>&nbsp;
                     <translate-label class="menu-item" labelKey={item.labelKey}></translate-label>
                   </div>
@@ -288,7 +288,7 @@ export class OntoNavbar {
                     {
                       item.children.map((submenu) => (
                         <li key={submenu.labelKey} class={{'sub-menu-item': true, 'active': submenu.selected}}
-                            data-test={submenu.testSelector}  guide-selector={submenu.guideSelector}>
+                          data-test={submenu.testSelector}  guide-selector={submenu.guideSelector}>
                           <a class="sub-menu-link" href={submenu.href} onClick={this.handleSelectMenuItem(submenu)}>
                             <translate-label class="menu-item" labelKey={submenu.labelKey}></translate-label>
                             {submenu.icon &&
@@ -303,7 +303,7 @@ export class OntoNavbar {
               }
               {item.children.length === 0 &&
                 <a class={{'menu-element-root': true, 'active': item.selected}}
-                   href={item.href} onClick={this.handleSelectMenuItem(item)}>
+                  href={item.href} onClick={this.handleSelectMenuItem(item)}>
                   <span class={`menu-item-icon ${item.icon}`}></span>&nbsp;
                   <translate-label class="menu-item" labelKey={item.labelKey}></translate-label>
                 </a>
@@ -318,6 +318,6 @@ export class OntoNavbar {
   private subscribeToProductInfoChanges() {
     this.subscriptions.add(
       this.productInfoContextService.onProductInfoChanged((productInfo: ProductInfo) => this.productInfo = productInfo)
-    )
+    );
   }
 }

@@ -29,8 +29,8 @@ import {
 } from '@ontotext/workbench-api';
 import {TranslationService} from '../../services/translation.service';
 import {HtmlUtil} from '../../utils/html-util';
-import {DropdownItem} from "../../models/dropdown/dropdown-item";
-import {SelectorItemButton} from "../onto-repository-selector/selector-item";
+import {DropdownItem} from '../../models/dropdown/dropdown-item';
+import {SelectorItemButton} from '../onto-repository-selector/selector-item';
 import {ResourceSearchConstants} from '../../models/resource-search/resource-search-constants';
 
 /**
@@ -67,9 +67,9 @@ export class OntoHeader {
   @State() activeOperations?: OperationStatusSummary;
   /** The current license information */
   @State() license: License;
-  @State() isFreeAccessEnabled: boolean
+  @State() isFreeAccessEnabled: boolean;
   /** Whether the search component should appear */
-  @State() shouldShowSearch: boolean = true;
+  @State() shouldShowSearch = true;
   @State() isHomePage = isHomePage();
   /** The list of repositories in the database. */
   @State() repositoryList: RepositoryList;
@@ -77,7 +77,6 @@ export class OntoHeader {
   /** The model of the currently selected repository, if any. */
   @State() currentRepository: Repository | undefined;
   @State() securityConfig: SecurityConfig;
-
 
   // ========================
   // Private
@@ -179,12 +178,20 @@ export class OntoHeader {
     this.subscriptions.add(
       this.repositoryContextService.onSelectedRepositoryChanged((repository) => {
         this.currentRepository = repository;
-        this.currentRepository ? this.startOperationPolling() : this.stopOperationPolling();
+        this.handleOperationPolling();
         this.shouldShowSearch = this.shouldShowRdfSearch();
         this.loadNamespaces();
         this.updateRepositoryItems();
       })
     );
+  }
+
+  private handleOperationPolling(): void {
+    if (this.currentRepository) {
+      this.startOperationPolling();
+    } else {
+      this.stopOperationPolling();
+    }
   }
 
   private subscribeToSecurityContextChange() {
@@ -200,7 +207,7 @@ export class OntoHeader {
   private subscribeToAuthenticatedUserChange() {
     this.subscriptions.add(this.securityContextService.onAuthenticatedUserChanged(() => {
       this.updateRepositoryItems();
-    }))
+    }));
   }
 
   private subscribeToActiveRepositoryLocationChange() {
@@ -275,10 +282,11 @@ export class OntoHeader {
           .setName(<SelectorItemButton repository={repository}/>)
           .setValue(repository)
           .setDropdownTooltipTrigger('mouseenter focus')
-          .setGuideSelector(`repository-id-${repository.id}`)
+          .setGuideSelector(`repository-id-${repository.id}`);
       });
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private canWriteRepoInLocation(_repository: Repository): boolean {
     // TODO: implement the condition when GDB-10442 is ready
     return true;
@@ -349,8 +357,8 @@ export class OntoHeader {
     this.toastrService.info(TranslationService.translate('rdf_search.toasts.use_view_resource'));
     this.shouldShowSearch = false;
     HtmlUtil.focusElement('#search-resource-input-home input');
-    this.eventService.emit({NAME: ResourceSearchConstants.RDF_SEARCH_ICON_CLICKED})
-  }
+    this.eventService.emit({NAME: ResourceSearchConstants.RDF_SEARCH_ICON_CLICKED});
+  };
 
   // ========================
   // Language, formatting

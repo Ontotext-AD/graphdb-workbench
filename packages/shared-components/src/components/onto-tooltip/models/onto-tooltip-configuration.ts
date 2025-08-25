@@ -1,4 +1,4 @@
-import {OntoTooltipPlacement} from "./onto-tooltip-placement";
+import {OntoTooltipPlacement} from './onto-tooltip-placement';
 
 /**
  * Holds all tooltip configurations related to tippy.js properties.
@@ -50,15 +50,12 @@ export class OntoTooltipConfiguration {
   /**
    * Invoked once the tooltip begins to show.
    */
-  onShow = () => document.querySelectorAll('.jfk-tooltip').forEach(popper => popper.classList.add('hidden'))
+  onShow = () => document.querySelectorAll('.jfk-tooltip').forEach(popper => popper.classList.add('hidden'));
 
   /**
    * Invoked once the tooltip begins to hide.
    */
   onHide = () => document.querySelectorAll('.jfk-tooltip').forEach(popper => popper.classList.remove('hidden'));
-
-  constructor() {
-  }
 
   setHideOnClick(hideOnClick: boolean): OntoTooltipConfiguration {
     this.hideOnClick = hideOnClick;
