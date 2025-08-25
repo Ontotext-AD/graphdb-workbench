@@ -1,7 +1,6 @@
 import HomeSteps from '../../steps/home-steps';
 import {EnvironmentStubs} from "../../stubs/environment-stubs";
 import {MainMenuSteps} from "../../steps/main-menu-steps";
-import {BrowserStubs} from "../../stubs/browser-stubs";
 
 describe('Documentation links resolver', () => {
 
@@ -12,50 +11,31 @@ describe('Documentation links resolver', () => {
 
     it('Should link to master version when in dev mode', () => {
         HomeSteps.visitInDevMode();
-        waitForProductInfo();
-        BrowserStubs.stubWindowOpen();
         MainMenuSteps.clickOnMenuHelp();
         // Assert that links point to the master version
-        assertDocumentationLinks('master');
-
+        MainMenuSteps.getSubMenuButtonByName('Documentation').should('have.attr', 'href').and('include', 'https://graphdb.ontotext.com/documentation/master/index.html');
+        MainMenuSteps.getSubMenuButtonByName('Tutorials').should('have.attr', 'href').and('include', 'https://graphdb.ontotext.com/documentation/master/tutorials.html');
+        MainMenuSteps.getSubMenuButtonByName('Support').should('have.attr', 'href').and('include', 'https://graphdb.ontotext.com/documentation/master/support.html');
     });
 
     it('Should link to master version when in prod mode and unofficial version', () => {
         EnvironmentStubs.stubProductInfo('10.8-TR1-test');
         HomeSteps.visitInProdMode();
-        waitForProductInfo();
-        BrowserStubs.stubWindowOpen();
         MainMenuSteps.clickOnMenuHelp();
         // Assert that links point to the master version
-        assertDocumentationLinks('master');
+        MainMenuSteps.getSubMenuButtonByName('Documentation').should('have.attr', 'href').and('include', 'https://graphdb.ontotext.com/documentation/master/index.html');
+        MainMenuSteps.getSubMenuButtonByName('Tutorials').should('have.attr', 'href').and('include', 'https://graphdb.ontotext.com/documentation/master/tutorials.html');
+        MainMenuSteps.getSubMenuButtonByName('Support').should('have.attr', 'href').and('include', 'https://graphdb.ontotext.com/documentation/master/support.html');
     });
 
     it('Should link to GDB version when in prod mode and official version', () => {
         EnvironmentStubs.stubProductInfo('10.8');
         HomeSteps.visitInProdMode();
-        waitForProductInfo();
-        BrowserStubs.stubWindowOpen();
         MainMenuSteps.clickOnMenuHelp();
         // Assert that links point to the specific GDB version
-        assertDocumentationLinks('10.8');
+        MainMenuSteps.getSubMenuButtonByName('Documentation').should('have.attr', 'href').and('include', 'https://graphdb.ontotext.com/documentation/10.8/index.html');
+        MainMenuSteps.getSubMenuButtonByName('Tutorials').should('have.attr', 'href').and('include', 'https://graphdb.ontotext.com/documentation/10.8/tutorials.html');
+        MainMenuSteps.getSubMenuButtonByName('Support').should('have.attr', 'href').and('include', 'https://graphdb.ontotext.com/documentation/10.8/support.html');
     });
 });
 
-function waitForProductInfo() {
-    // We must wait for both requests, old legacy one and the new from the API
-    cy.wait(EnvironmentStubs.PRODUCT_INFO_ALIAS());
-    cy.wait(EnvironmentStubs.PRODUCT_INFO_ALIAS());
-}
-
-function assertDocumentationLinks(version) {
-    const baseUrl = `https://graphdb.ontotext.com/documentation/${version}`;
-
-    MainMenuSteps.clickOnSubMenu('Documentation')
-    cy.get(BrowserStubs.WINDOW_OPEN_ALIAS()).should('have.been.calledWithMatch', `${baseUrl}/index.html`, "_blank")
-
-    MainMenuSteps.clickOnSubMenu('Tutorials')
-    cy.get(BrowserStubs.WINDOW_OPEN_ALIAS()).should('have.been.calledWithMatch', `${baseUrl}/tutorials.html`, "_blank")
-
-    MainMenuSteps.clickOnSubMenu('Support')
-    cy.get(BrowserStubs.WINDOW_OPEN_ALIAS()).should('have.been.calledWithMatch', `${baseUrl}/support.html`, "_blank")
-}

@@ -14,7 +14,20 @@ export default [
     {
         files: ['**/*.{js,mjs,cjs}'],
         plugins: { cypress: pluginCypress },
-        languageOptions: { globals: globals.browser },
+        languageOptions: {
+            globals: {
+                ...globals.browser,
+                cy: 'readonly',
+                Cypress: 'readonly',
+                describe: 'readonly',
+                it: 'readonly',
+                beforeEach: 'readonly',
+                afterEach: 'readonly',
+                before: 'readonly',
+                after: 'readonly',
+                expect: 'readonly'
+            }
+        },
         rules: {
             ...pluginJs.configs.recommended.rules,
             ...pluginCypress.configs.recommended.rules,

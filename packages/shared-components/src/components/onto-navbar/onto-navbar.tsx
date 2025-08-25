@@ -98,7 +98,7 @@ export class OntoNavbar {
   @Event() navbarToggled: EventEmitter<NavbarToggledEvent>;
 
   private init(menuItems: ExternalMenuModel): void {
-    const internalModel = NavbarService.map(menuItems || []);
+    const internalModel = NavbarService.map(menuItems || [], this.productInfo);
     internalModel.initSelected(getCurrentRoute());
     this.menuModel = internalModel;
   }
@@ -289,12 +289,23 @@ export class OntoNavbar {
                       item.children.map((submenu) => (
                         <li key={submenu.labelKey} class={{'sub-menu-item': true, 'active': submenu.selected}}
                           data-test={submenu.testSelector}  guide-selector={submenu.guideSelector}>
-                          <a class="sub-menu-link" href={submenu.href} onClick={this.handleSelectMenuItem(submenu)}>
-                            <translate-label class="menu-item" labelKey={submenu.labelKey}></translate-label>
-                            {submenu.icon &&
-                              <span title="some title" class={`text-muted ${submenu.icon}`}></span>
-                            }
-                          </a>
+                          {submenu.documentationHref ?
+                            <a class="sub-menu-link external-link" href={submenu.href} target="_blank"
+                              rel="noopener noreferrer">
+                              <translate-label class="menu-item" labelKey={submenu.labelKey}></translate-label>
+                              {submenu.icon &&
+                                <span class={`text-muted ${submenu.icon}`}></span>
+                              }
+                            </a>
+                            :
+                            <a class="sub-menu-link" href={submenu.href}
+                              onClick={this.handleSelectMenuItem(submenu)}>
+                              <translate-label class="menu-item" labelKey={submenu.labelKey}></translate-label>
+                              {submenu.icon &&
+                                <span class={`text-muted ${submenu.icon}`}></span>
+                              }
+                            </a>
+                          }
                         </li>
                       ))
                     }
@@ -321,3 +332,4 @@ export class OntoNavbar {
     );
   }
 }
+

@@ -1,5 +1,5 @@
 import { Service } from '../../providers/service/service';
-import { ServiceProvider } from '../../providers';
+import { service } from '../../providers';
 import { ProductInfo } from '../../models/product-info';
 import { ProductInfoMapper } from './mappers/product-info.mapper';
 import { ProductInfoRestService } from './product-info-rest.service';
@@ -8,8 +8,8 @@ import { ProductInfoRestService } from './product-info-rest.service';
  * Service responsible for retrieving and managing product information.
  */
 export class ProductInfoService implements Service {
-  private readonly productInfoMapper: ProductInfoMapper = ServiceProvider.get(ProductInfoMapper);
-  private readonly productInfoService: ProductInfoRestService = ServiceProvider.get(ProductInfoRestService);
+  private readonly productInfoMapper: ProductInfoMapper = service(ProductInfoMapper);
+  private readonly productInfoService: ProductInfoRestService = service(ProductInfoRestService);
 
   /**
    * Retrieves the local version information of the product.
@@ -20,8 +20,8 @@ export class ProductInfoService implements Service {
    * @returns {Promise<ProductInfo>} A Promise that resolves to a ProductInfo object
    * containing the local version information of the product.
    */
-  getProductInfoLocal(): Promise<ProductInfo> {
-    return this.productInfoService.getProductInfoLocal()
-      .then(response => this.productInfoMapper.mapToModel(response));
+  async getProductInfoLocal(): Promise<ProductInfo> {
+    const response = await this.productInfoService.getProductInfoLocal();
+    return this.productInfoMapper.mapToModel(response);
   }
 }

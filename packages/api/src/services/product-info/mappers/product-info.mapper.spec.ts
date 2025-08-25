@@ -23,6 +23,7 @@ describe('ProductInfoMapper', () => {
     expect(result.workbench).toBe('1.0.0');
     expect(result.productType).toBe('GraphDB');
     expect(result.productVersion).toBe('9.10.1');
+    expect(result.shortVersion).toBe('9.10');
     expect(result.sesame).toBe('3.6.0');
     expect(result.connectors).toBe('5.0.0');
   });
@@ -40,7 +41,20 @@ describe('ProductInfoMapper', () => {
     expect(result.workbench).toEqual('1.0.0');
     expect(result.productType).toEqual('GraphDB');
     expect(result.productVersion).toEqual('9.10.1');
+    expect(result.shortVersion).toEqual('9.10');
     expect(result.sesame).toEqual('');
     expect(result.connectors).toEqual('');
+  });
+
+  it('should calculate the shortVersion with the first attribute only', () => {
+    const input = {
+      Workbench: '1.0.0',
+      productType: 'GraphDB',
+      productVersion: '9.10.1-M3-RC1'
+    };
+
+    const result = mapper.mapToModel(input);
+
+    expect(result.shortVersion).toEqual('9.10-M3');
   });
 });
