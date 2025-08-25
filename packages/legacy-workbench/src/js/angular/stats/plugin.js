@@ -46,7 +46,8 @@ PluginRegistry.add('main.menu', {
             order: 1,
             parent: 'Help',
             guideSelector: 'sub-menu-rest-api',
-            testSelector: 'sub-menu-rest-api'
+            testSelector: 'sub-menu-rest-api',
+            role: 'ROLE_USER',
         }, {
             label: 'Documentation',
             labelKey: 'menu.documentation.label',

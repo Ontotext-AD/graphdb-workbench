@@ -214,6 +214,9 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         const securityContextService = ServiceProvider.get(SecurityContextService);
         const restrictedPages = securityContextService.getRestrictedPages();
 
+        const isAdministratorUser = $jwtAuth.isAdmin();
+        const hasAuthority = (role) => $scope.principal.authorities.indexOf(role) !== -1;
+
         const routes = PluginRegistry.get('route');
         const menuItems = PluginRegistry.get('main.menu');
 
@@ -226,7 +229,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
                 return;
             }
 
-            const isAccessToPageRestricted = !$jwtAuth.isAdmin() && $scope.principal.authorities.indexOf(menuItem.role) === -1;
+            const isAccessToPageRestricted = !isAdministratorUser && !hasAuthority(menuItem.role);
             restrictedPages.setPageRestriction(route.url, isAccessToPageRestricted);
         });
         securityContextService.updateRestrictedPages(restrictedPages);
