@@ -10,6 +10,9 @@ if [ -s "$NVM_DIR/nvm.sh" ]; then
   . "$NVM_DIR/nvm.sh"
 fi
 
+# Add local node_modules binaries to PATH
+export PATH="$PATH:$(npm bin)"
+
 # Ensure lint-staged is available
 if ! command -v npx >/dev/null 2>&1; then
   echo "npx not found. Skipping lint-staged."

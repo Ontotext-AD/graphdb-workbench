@@ -2,6 +2,14 @@ import {NavbarService} from '../navbar-service';
 import {ExternalMenuModel} from '../external-menu-model';
 import {NavbarItemModel, NavbarModel} from '../navbar-model';
 
+interface ProductInfo {
+  workbench: string;
+  productType: string;
+  productVersion: string;
+  sesame: string;
+  connectors: string;
+}
+
 describe('NavbarService', () => {
   let mockExternalMenuModel: ExternalMenuModel;
 
@@ -74,7 +82,7 @@ describe('NavbarService', () => {
 
   describe('map', () => {
     it('should map external menu model to navbar model', () => {
-      const navbarModel = NavbarService.map(mockExternalMenuModel);
+      const navbarModel = NavbarService.map(mockExternalMenuModel, {} as ProductInfo);
       expect(navbarModel).toBeInstanceOf(NavbarModel);
       const actual = new NavbarModel();
       const importItem = new NavbarItemModel({
