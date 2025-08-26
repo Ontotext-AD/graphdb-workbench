@@ -54,7 +54,11 @@ export class PluginsService implements Service {
       pluginModules
         .filter((pluginModule): pluginModule is PluginModule => pluginModule !== undefined)
         .forEach((pluginModule: PluginModule) => {
-          pluginModule.register(WindowService.getPluginRegistry());
+          if (pluginModule.register !== undefined) {
+            pluginModule.register(WindowService.getPluginRegistry());
+          } else {
+            console.warn('Plugin module is missing the register method. Skipping registration.', pluginModule);
+          }
         });
     }
   }
