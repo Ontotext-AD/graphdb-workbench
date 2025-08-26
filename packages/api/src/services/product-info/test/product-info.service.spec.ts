@@ -23,6 +23,7 @@ describe('ProductInfoService', () => {
       workbench: '2.8.0',
       productType: '',
       productVersion: '1.0.0',
+      shortVersion: '1.0',
       sesame: '',
       connectors: '',
     };
