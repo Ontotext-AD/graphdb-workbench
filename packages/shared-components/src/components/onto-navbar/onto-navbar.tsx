@@ -18,10 +18,10 @@ import {TranslationService} from '../../services/translation.service';
 import {
   EventName,
   EventService, getCurrentRoute, isHomePage,
-  navigateTo, openInNewTab, ProductInfo, ProductInfoContextService,
+  navigateTo, ProductInfo, ProductInfoContextService,
   navigate,
   ServiceProvider,
-  SubscriptionList, UriUtil
+  SubscriptionList,
 } from '@ontotext/workbench-api';
 
 const labelKeys = {
@@ -105,11 +105,6 @@ export class OntoNavbar {
 
   private select(event: MouseEvent, menuItem: NavbarItemModel) {
     event.preventDefault();
-    if (menuItem.documentationHref) {
-      const externalLink = UriUtil.resolveDocumentationUrl(this.productInfo?.productVersion, menuItem.documentationHref);
-      openInNewTab(externalLink);
-      return;
-    }
 
     // Skip navigation when the selected item is a parent menu because it has no associated navigation.
     if (!menuItem.hasSubmenus()) {

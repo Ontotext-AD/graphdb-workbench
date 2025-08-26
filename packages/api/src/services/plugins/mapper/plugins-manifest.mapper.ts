@@ -1,7 +1,5 @@
 import {Mapper} from '../../../providers/mapper/mapper';
-import {PluginsManifest} from '../../../models/plugins';
-import {PluginsManifestResponse} from '../../../models/plugins';
-import {PluginDefinitionList} from '../../../models/plugins';
+import {PluginsManifestResponse, PluginDefinitionList, PluginsManifest} from '../../../models/plugins';
 
 export class PluginsManifestMapper extends Mapper<PluginsManifest> {
 

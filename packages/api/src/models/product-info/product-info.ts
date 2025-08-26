@@ -25,11 +25,13 @@ export class ProductInfo {
     }
 
     // Extract major.minor version (e.g., "10.0" from "10.0.0-M3-RC1")
-    const majorMinorMatch = productVersion.match(/^(\d+\.\d+)/);
+    const majorMinorRegex = /^(\d+\.\d+)/;
+    const majorMinorMatch = majorMinorRegex.exec(productVersion);
     const baseVersion = majorMinorMatch?.[1] ?? productVersion;
 
     // Extract first attribute after dash (e.g., "M3" from "10.0.0-M3-RC1")
-    const attributeMatch = productVersion.match(/(-[^-]+)/);
+    const attributeRegex = /(-[^-]+)/;
+    const attributeMatch = attributeRegex.exec(productVersion);
     const firstAttribute = attributeMatch?.[1] ?? '';
 
     return baseVersion + firstAttribute;
