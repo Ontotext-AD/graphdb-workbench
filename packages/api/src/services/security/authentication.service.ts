@@ -95,27 +95,19 @@ export class AuthenticationService implements Service {
    * @returns {boolean} True if the user has read permissions for the repository, false otherwise.
    */
   canReadRepo(repository?: Repository): boolean {
-    if (!repository || repository.id === '') {
-      return false;
-    }
+    return this.checkRepoRights(Rights.READ, repository);
+  }
 
-    const config = this.getSecurityConfig();
-    const user = this.getAuthenticatedUser();
-
-    if (config?.enabled) {
-      if (!user) {
-        return false;
-      }
-      if (this.isAdminOrRepoManager()) {
-        return true;
-      }
-      if (this.repositoryService.isSystemRepository(repository)) {
-        return false;
-      }
-      return this.hasBaseRights(Rights.READ, repository);
-    }
-
-    return true;
+  /**
+   * Checks if the current user has write permissions for the specified repository.
+   * This method evaluates if the user can write to the repository based on security configuration,
+   * user authentication status, and user roles.
+   *
+   * @param {Repository} repository - The repository to check write permissions for. Optional parameter.
+   * @returns {boolean} True if the user has write permissions for the repository, false otherwise.
+   */
+  canWriteRepo(repository?: Repository): boolean {
+    return this.checkRepoRights(Rights.WRITE, repository);
   }
 
   /**
@@ -201,7 +193,8 @@ export class AuthenticationService implements Service {
 
     if (activeRoute.allowAuthorities.length) {
       const resolvedAuthorities = this.resolveAuthorities(activeRoute.allowAuthorities);
-      return resolvedAuthorities.some(allowAuth => authenticatedUser.authorities.hasAuthority(allowAuth as Authority));
+      return resolvedAuthorities.some(allowAuth => authenticatedUser.authorities.hasAuthority(allowAuth as Authority))
+        || resolvedAuthorities.some(allowAuth => authenticatedUser.authorities.hasWildcardAuthority(allowAuth as Authority));
     }
 
     return true;
@@ -241,8 +234,9 @@ export class AuthenticationService implements Service {
     const overAllReposGraphql = this.repositoryService.getOverallGqlRepoAuthority(action);
 
     return (
-      user.authorities.hasAuthority(overCurrentRepoGraphql as Authority) ||
-      user.authorities.hasAuthority(overAllReposGraphql as Authority)
+      user.authorities.hasAuthority((overCurrentRepoGraphql as Authority)) ||
+      user.authorities.hasAuthority(overAllReposGraphql as Authority) ||
+      user.authorities.hasWildcardAuthority(overCurrentRepoGraphql, true)
     );
   }
 
@@ -267,7 +261,32 @@ export class AuthenticationService implements Service {
 
     return !!(
       user?.authorities.hasAuthority(overCurrentRepo as Authority) ||
-      user?.authorities.hasAuthority(overAllRepos as Authority)
+      user?.authorities.hasAuthority(overAllRepos as Authority) ||
+      user?.authorities.hasWildcardAuthority(overCurrentRepo)
     );
+  }
+
+  private checkRepoRights(rights: Rights, repository?: Repository): boolean {
+    if (!repository || repository.id === '') {
+      return false;
+    }
+
+    const config = this.getSecurityConfig();
+    const user = this.getAuthenticatedUser();
+
+    if (config?.enabled) {
+      if (!user) {
+        return false;
+      }
+      if (this.isAdminOrRepoManager()) {
+        return true;
+      }
+      if (this.repositoryService.isSystemRepository(repository)) {
+        return false;
+      }
+      return this.hasBaseRights(rights, repository);
+    }
+
+    return true;
   }
 }
