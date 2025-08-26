@@ -46,8 +46,12 @@
                                     </button>
 								</div>
                                 <h5 class="mb-0">
-                                    <a class="collapsed" data-toggle="collapse" data-parent="#accordion-{{keyForDom}}"
-                                       href="#collapse-{{keyForDom}}{{$index}}" aria-expanded="false"
+                                    <a class="collapsed"
+                                       data-toggle="collapse"
+                                       data-parent="#accordion-{{keyForDom}}"
+                                       href=""
+                                       data-target="#collapse-{{keyForDom}}{{$index}}"
+                                       aria-expanded="false"
                                        aria-controls="collapse-{{keyForDom}}{{$index}}">
                                         {{exist.name}}
                                     </a>
