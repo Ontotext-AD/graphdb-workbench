@@ -13,7 +13,7 @@ export class MainMenuSteps {
     }
 
     static getSubMenuButtonByName(menuName) {
-        return MainMenuSteps.getMainMenu().find('.sub-menu-link').contains(menuName);
+        return MainMenuSteps.getMainMenu().find('.sub-menu-link').contains(menuName).closest('.sub-menu-link');
     }
 
     static getMenuImport() {
@@ -58,7 +58,7 @@ export class MainMenuSteps {
         // Forced it because some element as "Explore" for example has CSS pointer-events: none
         MainMenuSteps.getMenuButton(menuName).click({force: true});
     }
-    
+
     static clickOnSubmenuTriggerElement(menuName) {
         MainMenuSteps.getMainMenu().find('.menu-element-root').contains(menuName).parent().click();
     }

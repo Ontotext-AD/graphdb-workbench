@@ -18,7 +18,6 @@ import {defineCustomElements} from '../../../shared-components/loader';
 
 const bootstrapPromises = [
   ...licenseBootstrap,
-  ...productInfoBootstrap,
   ...autoCompleteBootstrap,
 ];
 
@@ -40,7 +39,7 @@ const executePromises = (bootstrapFns) => {
  */
 const loadEssentials = () => {
   return Promise.all([
-    executePromises([...pluginsBootstrap, ...languageBootstrap]),
+    executePromises([...pluginsBootstrap, ...productInfoBootstrap, ...languageBootstrap]),
     securityBootstrap.loadSecurityConfig()
   ]);
 };
