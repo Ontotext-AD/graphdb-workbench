@@ -419,4 +419,52 @@ describe('AuthenticationService', () => {
     // Then, I should have authority
     expect(authService.hasAuthority()).toBe(true);
   });
+
+  test('should calculate wildcard read and write rights', () => {
+    // Given, I have a user with wildcard read permissions for EMSPGM- repositories
+    const regularUser = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
+      {authorities: [Authority.ROLE_USER, 'READ_REPO_EMSPGM-*' as Authority]} as unknown as AuthenticatedUser
+    );
+    securityContextService.updateAuthenticatedUser(regularUser);
+    const securityConfig = {enabled: true} as unknown as SecurityConfig;
+    securityContextService.updateSecurityConfig(securityConfig);
+
+    // Then, I should have read rights for all EMSPGM-repositories
+    expect(authService.canReadRepo(new Repository({id: 'EMSPGM-'}))).toBe(true);
+    expect(authService.canReadRepo(new Repository({id: 'EMSPGM-1'}))).toBe(true);
+    expect(authService.canReadRepo(new Repository({id: 'EMSPGM-2'}))).toBe(true);
+    expect(authService.canReadRepo(new Repository({id: 'EMSPGM-3'}))).toBe(true);
+
+    // Missing the - at the end. Not a complete match so should not have read rights
+    expect(authService.canReadRepo(new Repository({id: 'EMSPGM'}))).toBe(false);
+    // No write rights for EMSPGM- repositories
+    expect(authService.canWriteRepo(new Repository({id: 'EMSPGM-1-'}))).toBe(false);
+  });
+
+  test('should calculate wildcard read and write GQL rights', () => {
+    // Given, I have a user with wildcard read permissions for EMSPGM-*:GRAPHQL repositories
+    const regularUser = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
+      {authorities: [Authority.ROLE_USER, 'READ_REPO_EMSPGM-*:GRAPHQL' as Authority]} as unknown as AuthenticatedUser
+    );
+    securityContextService.updateAuthenticatedUser(regularUser);
+    const securityConfig = {enabled: true} as unknown as SecurityConfig;
+    securityContextService.updateSecurityConfig(securityConfig);
+
+    // Then, I should have read rights for all EMSPGM-*:GRAPHQL repositories
+    expect(authService.canReadGqlRepo(new Repository({id: 'EMSPGM-'}))).toBe(true);
+    expect(authService.canReadGqlRepo(new Repository({id: 'EMSPGM-1'}))).toBe(true);
+
+    // Not a complete match
+    expect(authService.canReadGqlRepo(new Repository({id: 'EMSPGM'}))).toBe(false);
+    // No write permissions
+    expect(authService.canWriteGqlRepo(new Repository({id: 'EMSPGM'}))).toBe(false);
+  });
+
+  test('canReadRepo should return true, when there is no security configuration', () => {
+    // Given, no security configuration
+    // When, I check if a repository can be read
+    const repository = new Repository({id: 'testRepoId', location: 'testLocation' });
+    // Then, it should return true
+    expect(authService.canReadRepo(repository)).toBe(true);
+  });
 });
