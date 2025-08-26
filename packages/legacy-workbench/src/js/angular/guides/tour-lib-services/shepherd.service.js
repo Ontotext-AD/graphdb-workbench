@@ -5,6 +5,7 @@ import {
     navigate,
     getPathName
 } from '@ontotext/workbench-api';
+import {NEAREST, SMOOTH} from "../model/guides";
 
 export const GUIDE_ID = 'shepherd.guide_id';
 export const GUIDE_CURRENT_STEP_ID = 'shepherd.guide.current.step.id';
@@ -212,7 +213,11 @@ function ShepherdService($translate, LocalStorageAdapter, LSKeys, $interpolate, 
             confirmCancel: this._confirmGuideCancel,
             defaultStepOptions: {
                 classes: 'shadow-md bg-purple-dark',
-                scrollTo: true
+                scrollTo: {
+                    behavior: SMOOTH,
+                    block: NEAREST,
+                    inline: NEAREST
+                }
             }
         });
     };

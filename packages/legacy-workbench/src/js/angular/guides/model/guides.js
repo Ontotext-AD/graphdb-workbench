@@ -3,3 +3,6 @@ export const GuideLevel = Object.freeze({
     INTERMEDIATE: 1,
     ADVANCED: 2
 });
+
+export const SMOOTH = 'smooth';
+export const NEAREST = 'nearest';
