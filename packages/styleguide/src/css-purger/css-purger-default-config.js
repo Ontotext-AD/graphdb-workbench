@@ -22,29 +22,29 @@
  */
 const DEFAULT_CONFIG = {
   // Input/Output files
-  inputFile: "src/css/variables.css",
-  outputFile: "src/css/variables-optimized.css",
+  inputFile: 'src/css/variables.css',
+  outputFile: 'src/css/variables-optimized.css',
 
   // File scanning patterns
   searchPaths: [
-    "../legacy-workbench/**/*.{html,js,ts,jsx,tsx,scss,css}",
-    "../workbench/**/*.{html,js,ts,jsx,tsx,scss,css}",
-    "../shared-components/**/*.{html,js,ts,jsx,tsx,scss,css}",
-    "../root-config/**/*.{html,js,ts,jsx,tsx,scss,css}",
+    '../legacy-workbench/**/*.{html,js,ts,jsx,tsx,scss,css}',
+    '../workbench/**/*.{html,js,ts,jsx,tsx,scss,css}',
+    '../shared-components/**/*.{html,js,ts,jsx,tsx,scss,css}',
+    '../root-config/**/*.{html,js,ts,jsx,tsx,scss,css}',
   ],
 
   // Paths to ignore during scanning
   ignorePaths: [
-    "../**/node_modules/**",
-    "../**/dist/**",
-    "../**/.git/**",
-    "../**/variables.css",
-    "../**/variables-optimized.css",
-    "**/node_modules/**",
-    "**/dist/**",
-    "**/.git/**",
-    "**/variables.css",
-    "**/variables-optimized.css",
+    '../**/node_modules/**',
+    '../**/dist/**',
+    '../**/.git/**',
+    '../**/variables.css',
+    '../**/variables-optimized.css',
+    '**/node_modules/**',
+    '**/dist/**',
+    '**/.git/**',
+    '**/variables.css',
+    '**/variables-optimized.css',
   ],
 
   // Variables to always preserve
