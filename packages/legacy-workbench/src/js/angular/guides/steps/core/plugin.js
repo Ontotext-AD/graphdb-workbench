@@ -43,20 +43,39 @@ const createCopyToInputListener = (elementSelector, text) => {
 }
 
 /**
+ * List of common DOM events to consider for interaction control.
+ * @type {string[]}
+ */
+const COMMON_DOM_EVENTS = [
+    'click',
+    'dblclick',
+    'keydown',
+    'keypress',
+    'keyup',
+    'input',
+    'submit',
+    'scroll',
+    'wheel'
+]
+const SCROLL_EVENTS = ['scroll', 'wheel'];
+
+/**
  * Configures an element interactability, by consuming events and preventing them from propagating.
  * This allows to keep scrolling, while disallowing interaction with other elements
  * (such as clicking buttons).
+ * @param {string[]} allowedEvents - List of event types to allow.
  * @param interactable - true to make the element interactable, false to make it non interactable
  * @param elementSelector - the elementSelector
  * @param services - The services object
  */
-const _configureInteractions = (interactable, elementSelector, services) => () => {
+const _configureInteractions = (allowedEvents, interactable, elementSelector, services) => () => {
     if (!elementSelector) {
         return;
     }
-    const eventsToPrevent = ['click', 'dblclick'];
+
     services.GuideUtils.getOrWaitFor(elementSelector)
         .then((element) => {
+            const eventsToPrevent = COMMON_DOM_EVENTS.filter(event => !allowedEvents.includes(event));
             if (interactable) {
                 eventsToPrevent.forEach((event) => element.removeEventListener(event, preventDefault, true));
             } else {
@@ -65,9 +84,27 @@ const _configureInteractions = (interactable, elementSelector, services) => () =
         })
 }
 
-const disableInteractions = (elementSelector, services) => _configureInteractions(false, elementSelector, services);
-const enableInteractions = (elementSelector, services) => _configureInteractions(true, elementSelector, services);
+/**
+ * Enables all interactions on the specified element.
+ *
+ * @param {string} elementSelector - A CSS selector identifying the target element.
+ * @param {Object} services - An object containing utility services, including GuideUtils.
+ */
+const allowAll = (elementSelector, services) => _configureInteractions([], true, elementSelector, services);
 
+/**
+ * Restricts the specified element to only process events listed in <code>allowedEvents</code>.
+ *
+ * @param {string[]} allowedEvents - An array of event types that should remain enabled.
+ * @param {string} elementSelector - A CSS selector identifying the target element.
+ * @param {Object} services - An object containing utility services, including GuideUtils.
+ */
+const allowEvents = (allowedEvents, elementSelector, services) => _configureInteractions(allowedEvents, false, elementSelector, services);
+
+/**
+ * Prevents the default action of an event and stops its propagation.
+ * @param {Event} event - The event to prevent.
+ */
 const preventDefault = (event) => {
     event.preventDefault();
     event.stopPropagation();
@@ -121,6 +158,22 @@ PluginRegistry.add('guide.step', [
                     initPreviousStep: services.GuideUtils.defaultInitPreviousStep
                 },
                 options, notOverridable);
+            if (!stepDescription.beforeShowPromise) {
+                stepDescription.beforeShowPromise = beforeShowPromise(services, stepDescription.elementSelector, stepDescription.maxWaitTime);
+            }
+            return stepDescription;
+        }
+    },
+    {
+        guideBlockName: 'scroll-only-element',
+        getStep: (options, services) => {
+            const stepDescription = {
+                ...BASIC_STEP,
+                initPreviousStep: services.GuideUtils.defaultInitPreviousStep,
+                show: () => allowEvents(SCROLL_EVENTS, options.elementSelector, services),
+                hide: () => allowAll(options.elementSelector, services),
+                ...options
+            };
             if (!stepDescription.beforeShowPromise) {
                 stepDescription.beforeShowPromise = beforeShowPromise(services, stepDescription.elementSelector, stepDescription.maxWaitTime);
             }
@@ -199,8 +252,8 @@ PluginRegistry.add('guide.step', [
             return angular.extend({}, BASIC_STEP, {
                 initPreviousStep: services.GuideUtils.defaultInitPreviousStep,
                 onNextValidate: () => Promise.resolve(!services.GuideUtils.isVisible(options.elementSelectorToWait)),
-                show: () => disableInteractions(options.elementSelector, services),
-                hide: () => enableInteractions(options.elementSelector, services)
+                show: () => allowEvents(SCROLL_EVENTS, options.elementSelector, services),
+                hide: () => allowAll(options.elementSelector, services)
             }, options);
         }
     },
