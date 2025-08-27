@@ -22,11 +22,12 @@
         <div create-progress ng-show="beingBuiltConnector.inline && beingBuiltConnector.percentDone > 0"></div>
         <div ng-show="!isActiveRepoFedXType() && connectors.length">
             <div id="connectorManagement" class="mb-3" ng-repeat="connector in connectors"
-                 ng-init="keyForDom = connector.key.replace(' ', '-')">
+                 ng-init="keyForDom = connector.key.replace(' ', '-')"
+                 guide-selector="connector-name-{{keyForDom}}">
                 <h3>{{connector.key}}</h3>
                 <section class="mb-1">
                     <div id="accordion-{{keyForDom}}" role="tablist" aria-multiselectable="true">
-                        <div class="card" ng-repeat="exist in existing[connector.key]">
+                        <div class="card" ng-repeat="exist in existing[connector.key]" guide-selector="{{exist.name}}-connector-card">
                             <div class="card-header" role="tab" id="heading-{{keyForDom}}{{$index}}">
 								<div class="pull-right">
 									<button class="btn btn-link p-0" type="button"
@@ -45,11 +46,12 @@
 										<em class="icon-trash"></em>
                                     </button>
 								</div>
-                                <h5 class="mb-0">
+                                <h5 class="mb-0" guide-selector="{{exist.name}}-connector-toggle-button">
                                     <a class="collapsed"
                                        data-toggle="collapse"
                                        data-parent="#accordion-{{keyForDom}}"
                                        href=""
+                                       ng-click="$event.preventDefault()"
                                        data-target="#collapse-{{keyForDom}}{{$index}}"
                                        aria-expanded="false"
                                        aria-controls="collapse-{{keyForDom}}{{$index}}">
@@ -58,10 +60,12 @@
                                 </h5>
                             </div>
                             <div id="collapse-{{keyForDom}}{{$index}}" class="collapse" role="tabpanel"
-                                 aria-labelledby="heading-{{keyForDom}}{{$index}}">
+                                 aria-labelledby="heading-{{keyForDom}}{{$index}}" guide-selector="{{exist.name}}-connector-content">
                                 <div class="card-block">
                                     <div class="form-horizontal">
-                                        <div class="row form-group" ng-repeat="option in getOptions(connector)"
+                                        <div class="row form-group"
+                                             ng-repeat="option in getOptions(connector)"
+                                             guide-selector="{{option.__name}}-connector-parameter"
                                              ng-init="key = option.__name; value = exist.values[key] != null ? exist.values[key] : option.__defaultValue">
                                             <label class="col-xs-2 col-form-label">{{option.__label}}</label>
                                             <div ng-if="value == null" class="col-xs-10">
@@ -116,7 +120,8 @@
                                                               ng-init="fieldIndex = $index">
                                                         <div class="alert alert-info no-icon">
                                                             <div class="form-group row"
-                                                                 ng-repeat="child in option.__childOptions | filter: { __type: '!Boolean' }: true">
+                                                                 ng-repeat="child in option.__childOptions | filter: { __type: '!Boolean' }: true"
+                                                                 guide-selector="{{child.__name}}-connector-subproperty">
                                                                 <label class="col-xs-2 col-form-label">{{child.__label}}</label>
                                                                 <div class="col-xs-10">
                                                                     <input type="text" class="form-control"
@@ -143,7 +148,8 @@
                                                             <div class="form-group row">
                                                                 <div class="col-xs-2"></div>
                                                                 <div class="col-xs-10">
-                                                                    <label class="form-check-inline" ng-repeat="child in option.__childOptions | filter: { __type: 'Boolean' }: true">
+                                                                    <label class="form-check-inline" ng-repeat="child in option.__childOptions | filter: { __type: 'Boolean' }: true"
+                                                                           guide-selector="{{child.__name}}-connector-subproperty">
                                                                         <input type="checkbox"
                                                                                class="form-check-input"
                                                                                ng-checked="field[child.__name] != null ? field[child.__name] : child.__defaultValue"
@@ -159,7 +165,9 @@
                                         </div>
                                         <div class="form-group">
                                             <button class="btn btn-secondary pull-right"
-                                                    ng-click="viewQuery(connector, exist)">{{'view.sparql.query' | translate}}
+                                                    ng-click="viewQuery(connector, exist)"
+                                            guide-selector="open-view-sparql-query-dialog">
+                                                {{'view.sparql.query' | translate}}
                                             </button>
                                         </div>
                                     </div>
