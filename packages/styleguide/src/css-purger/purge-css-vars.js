@@ -5,7 +5,7 @@
 
 /* eslint-env node */
 
-const CSSVariablePurger = require("./CSS-variable-purger");
+const CSSVariablePurger = require('./CSS-variable-purger');
 
 // CLI usage
 if (require.main === module) {
@@ -14,25 +14,25 @@ if (require.main === module) {
 
   // Parse command line arguments
   for (let i = 0; i < args.length; i += 2) {
-    const key = args[i].replace(/^--/, "");
+    const key = args[i].replace(/^--/, '');
     const value = args[i + 1];
 
     switch (key) {
-      case "input":
-        options.inputFile = value;
-        break;
-      case "output":
-        options.outputFile = value;
-        break;
-      case "debug":
-        options.debug = value === "true";
-        break;
-      case "include-dependencies":
-        options.includeDependencies = value === "true";
-        break;
-      case "include-string-refs":
-        options.includeStringReferences = value === "true";
-        break;
+    case 'input':
+      options.inputFile = value;
+      break;
+    case 'output':
+      options.outputFile = value;
+      break;
+    case 'debug':
+      options.debug = value === 'true';
+      break;
+    case 'include-dependencies':
+      options.includeDependencies = value === 'true';
+      break;
+    case 'include-string-refs':
+      options.includeStringReferences = value === 'true';
+      break;
     }
   }
 
@@ -42,7 +42,7 @@ if (require.main === module) {
     .purgeUnusedVariables()
     .then((result) => {
       // eslint-disable-next-line no-console
-      console.log("\n✨ Purge completed successfully!");
+      console.log('\n✨ Purge completed successfully!');
       // eslint-disable-next-line no-console
       console.log(
         `📁 Output file contains ${result.usedVariables} used variables`
@@ -52,10 +52,9 @@ if (require.main === module) {
       process.exit(0);
     })
     .catch((error) => {
-      // eslint-disable-next-line no-console
-      console.error("\n❌ Purge failed:", error.message);
+      console.error('\n❌ Purge failed:', error.message);
       if (options.debug) {
-        // eslint-disable-next-line no-console
+
         console.error(error.stack);
       }
       process.exit(1);

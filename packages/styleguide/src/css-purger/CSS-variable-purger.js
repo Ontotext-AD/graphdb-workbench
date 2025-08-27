@@ -6,10 +6,10 @@
 
 /* eslint-env node */
 
-const fs = require("fs");
-const path = require("path");
-const glob = require("glob");
-const { DEFAULT_CONFIG } = require("./css-purger-default-config");
+const fs = require('fs');
+const path = require('path');
+const glob = require('glob');
+const { DEFAULT_CONFIG } = require('./css-purger-default-config');
 
 /**
  * @typedef {Object} PurgeResult
@@ -55,23 +55,23 @@ class CSSVariablePurger {
       {
         pattern: /var\(\s*(--[\w-]+)/g,
         extractor: (match) =>
-          match.replace(/var\(\s*/, "").replace(/\).*$/, ""),
-        description: "CSS var() function usage",
+          match.replace(/var\(\s*/, '').replace(/\).*$/, ''),
+        description: 'CSS var() function usage',
       },
       {
         pattern: /['"`](--[\w-]+)['"`]/g,
-        extractor: (match) => match.replace(/['"`]/g, ""),
-        description: "String literal references",
+        extractor: (match) => match.replace(/['"`]/g, ''),
+        description: 'String literal references',
       },
       {
         pattern: /getPropertyValue\s*\(\s*['"`](--[\w-]+)['"`]\s*\)/g,
         extractor: (match) => match.match(/['"`](--[\w-]+)['"`]/)[1],
-        description: "JavaScript getPropertyValue calls",
+        description: 'JavaScript getPropertyValue calls',
       },
       {
         pattern: /setProperty\s*\(\s*['"`](--[\w-]+)['"`]/g,
         extractor: (match) => match.match(/['"`](--[\w-]+)['"`]/)[1],
-        description: "JavaScript setProperty calls",
+        description: 'JavaScript setProperty calls',
       },
     ];
   }
@@ -83,7 +83,7 @@ class CSSVariablePurger {
    * @throws {Error} When input file is not found or processing fails
    */
   async purgeUnusedVariables() {
-    this._logInfo("🔍 Starting CSS variable purge...");
+    this._logInfo('🔍 Starting CSS variable purge...');
 
     // Read and validate input file
     const cssContent = this._readInputFile();
@@ -139,7 +139,7 @@ class CSSVariablePurger {
     if (!fs.existsSync(inputPath)) {
       throw new Error(`Input file not found: ${inputPath}`);
     }
-    return fs.readFileSync(inputPath, "utf8");
+    return fs.readFileSync(inputPath, 'utf8');
   }
 
   /**
@@ -208,7 +208,7 @@ class CSSVariablePurger {
         files.forEach((file) => {
           try {
             const filePath = path.resolve(process.cwd(), file);
-            const fileContent = fs.readFileSync(filePath, "utf8");
+            const fileContent = fs.readFileSync(filePath, 'utf8');
             processedFiles++;
 
             // Apply all usage patterns to find variables
@@ -240,7 +240,7 @@ class CSSVariablePurger {
       matches.forEach((match) => {
         try {
           const variable = extractor(match);
-          if (variable && variable.startsWith("--")) {
+          if (variable && variable.startsWith('--')) {
             usedVariables.add(variable);
           }
         } catch (error) {
@@ -277,7 +277,7 @@ class CSSVariablePurger {
    * @returns {Object} Object containing purged CSS content and count of actually written variables
    */
   _generatePurgedCSS(originalCSS, usedVariables) {
-    const lines = originalCSS.split("\n");
+    const lines = originalCSS.split('\n');
     const outputLines = [];
     let insideRootRule = false;
     let braceDepth = 0;
@@ -287,7 +287,7 @@ class CSSVariablePurger {
       const line = lines[i];
 
       // Track when we enter/exit :root rule
-      if (!insideRootRule && line.includes(":root")) {
+      if (!insideRootRule && line.includes(':root')) {
         insideRootRule = true;
 
         // Count braces on the same line as :root declaration
@@ -373,7 +373,7 @@ class CSSVariablePurger {
     }
 
     return {
-      content: outputLines.join("\n"),
+      content: outputLines.join('\n'),
       actualVariableCount: actuallyWrittenVariables,
     };
   }
@@ -437,7 +437,7 @@ class CSSVariablePurger {
       const currentVariable = processingQueue.shift();
       const dependencies = dependencyMap.get(currentVariable);
 
-      if (!dependencies) continue;
+      if (!dependencies) {continue;}
 
       for (const dependency of dependencies) {
         if (!processedVariables.has(dependency)) {
@@ -456,7 +456,7 @@ class CSSVariablePurger {
    */
   _writeOutputFile(content) {
     const outputPath = path.resolve(this.config.outputFile);
-    fs.writeFileSync(outputPath, content, "utf8");
+    fs.writeFileSync(outputPath, content, 'utf8');
     this._logInfo(`💾 Wrote purged CSS to: ${outputPath}`);
   }
 
@@ -503,7 +503,7 @@ class CSSVariablePurger {
   _logDebugResults(allVariables, usedVariables) {
     // Log kept variables
     // eslint-disable-next-line no-console
-    console.log("\n📋 Kept variables:");
+    console.log('\n📋 Kept variables:');
     const keptArray = Array.from(usedVariables);
     keptArray
       .slice(0, 10)
@@ -516,7 +516,7 @@ class CSSVariablePurger {
 
     // Log removed variables
     // eslint-disable-next-line no-console
-    console.log("\n📋 Removed variables:");
+    console.log('\n📋 Removed variables:');
     const removedVariables = Array.from(allVariables).filter(
       (variable) => !usedVariables.has(variable)
     );

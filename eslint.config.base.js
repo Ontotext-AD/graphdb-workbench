@@ -16,6 +16,7 @@ module.exports = [
   },
   {
     files: ['**/*.html'],
+    ignores: ['**/node_modules/**', '**/dist/**', '**/coverage/**'],
     rules: {
       indent: 'off',
     },
