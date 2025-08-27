@@ -1,13 +1,13 @@
-<div class="modal-header">
-	<button type="button" class="close" ng-click="cancel()"></button>
+<div class="modal-header" guide-selector="view-query-header">
+	<button type="button" class="close" ng-click="cancel()" guide-selector="close-view-query-dialog"></button>
 	<h3 class="modal-title">{{'view.sparql.query.title' | translate}}</h3>
 </div>
-<div class="modal-body">
+<div class="modal-body" guide-selector="view-query-body">
 
 	<pre id="create-query" ng-click="selectQuery()">{{query}}</pre>
 
 </div>
-<div class="modal-footer">
+<div class="modal-footer" guide-selector="view-query-footer">
 	<button class="btn btn-secondary" ng-click="cancel()">{{'common.cancel.btn' | translate}}</button>
 	<button class="btn btn-primary" ng-click="copyQueryToClipboard()">{{'copy.to.clipboard.modal.ok.btn' | translate}}</button>
 </div>
