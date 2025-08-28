@@ -14,6 +14,12 @@ export class WindowService implements Service {
     return window;
   }
 
+  /**
+   * Returns the PluginRegistry instance from the global window object.
+   * This method assumes that the PluginRegistry is attached to the window object.
+   *
+   * @returns The PluginRegistry instance.
+   */
   static getPluginRegistry(): PluginRegistry {
     return WindowService.getWindow().PluginRegistry;
   }

@@ -1,5 +1,6 @@
 import {ExtensionPoint} from './extension-point';
 import {PluginDefinition} from './plugin-definition';
+import {PluginsManifest} from './plugins-manifest';
 
 /**
  * PluginRegistry interface defines the methods for managing plugins in the application.
@@ -18,4 +19,10 @@ export interface PluginRegistry {
    * @param pluginDefinition - The plugin definition to add to the registry.
    */
   add(extensionPoint: ExtensionPoint, pluginDefinition: PluginDefinition): void;
+
+  /**
+   * Sets the plugins manifest for the registry.
+   * @param pluginsManifest - The plugins manifest to set in the registry.
+   */
+  setPluginsManifest(pluginsManifest: PluginsManifest): void;
 }

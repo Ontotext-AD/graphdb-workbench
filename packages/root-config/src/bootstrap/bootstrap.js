@@ -36,11 +36,14 @@ const executePromises = (bootstrapFns) => {
 };
 
 /**
- * Executes all promises, which are essential to be loaded prior to bootstrapping the workbench.
+ * Executes all promises, which are essential to be loaded before bootstrapping the workbench.
  */
 const loadEssentials = () => {
   return Promise.all([
-    executePromises([...pluginsBootstrap, ...languageBootstrap]),
+    executePromises([
+      ...pluginsBootstrap,
+      ...languageBootstrap
+    ]),
     securityBootstrap.loadSecurityConfig()
   ]);
 };

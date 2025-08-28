@@ -1,7 +1,8 @@
-import {ServiceProvider, PluginsService} from '@ontotext/workbench-api';
+import {service, PluginsService} from '@ontotext/workbench-api';
 
 const loadPlugins = () => {
-  return ServiceProvider.get(PluginsService).loadPlugins()
+  // return service(PluginsService).loadPlugins()
+  return service(PluginsService).loadPluginsManifest()
     .catch((error) => {
       console.error('Failed to load plugins:', error);
     });

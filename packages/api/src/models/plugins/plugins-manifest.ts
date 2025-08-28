@@ -20,4 +20,13 @@ export class PluginsManifest extends Model<PluginsManifest> {
   getPluginDefinitions(): PluginDefinitionList {
     return this._pluginDefinitions;
   }
+
+  /**
+   * Finds a plugin definition by its name.
+   * @param name - The name of the plugin to find.
+   * @return The PluginDefinition if found, otherwise undefined.
+   */
+  getPluginDefinitionByName(name: string) {
+    return this._pluginDefinitions.getItems().find(plugin => plugin.name === name);
+  }
 }

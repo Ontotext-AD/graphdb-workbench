@@ -2,16 +2,16 @@ import 'angular/utils/local-storage-adapter';
 import 'angular/guides/tour-lib-services/shepherd.service';
 import 'angular/rest/guides.rest.service';
 import {GuideUtils} from "./guide-utils";
-import {YasguiComponentDirectiveUtil} from "../core/directives/yasgui-component/yasgui-component-directive.util";
-import {FileUtils} from "../utils/file-utils";
+import {YasguiComponentDirectiveUtil} from '../core/directives/yasgui-component/yasgui-component-directive.util';
+import {FileUtils} from '../utils/file-utils';
 import {
     navigate,
-    getCurrentRoute
+    getCurrentRoute,
 } from '@ontotext/workbench-api';
 
 const modules = [
     'graphdb.framework.guides.shepherd.services',
-    'graphdb.framework.rest.guides.service'
+    'graphdb.framework.rest.guides.service',
 ];
 
 angular
@@ -166,6 +166,8 @@ GuidesService.$inject = [
  * @param {*} toastr
  * @param {*} $route
  * @param {*} $timeout
+ * @param EventEmitterService
+ * @param GuidesRestService
  * @package {EventEmitterService} EventEmitterService
  * @constructor
  */
@@ -181,7 +183,6 @@ function GuidesService(
     $timeout,
     EventEmitterService,
     GuidesRestService) {
-
     this.guideResumeSubscription = undefined;
     this.languageChangeSubscription = undefined;
     this.guideCancelSubscription = undefined;
@@ -209,6 +210,7 @@ function GuidesService(
      * </ol>
      * @param {*} guide - the guide to start as an object.
      * @param {*} startStepId
+     * @param isAutoStarted - true if the guide is auto started
      */
     this.startGuide = (guide, startStepId, isAutoStarted = false) => {
         if (guide?.options?.repositoryIdBase) {
@@ -263,7 +265,7 @@ function GuidesService(
                 this.startGuide(selectedGuide, undefined, true);
             }
         });
-    }
+    };
 
     /**
      * Fetches list with all available guides.
@@ -459,7 +461,7 @@ function GuidesService(
      * @return {*[]} - an array with core steps.
      * @private
      */
-    this._getSteps = (complexStep, parentOptions) => {
+    this._getSteps = async (complexStep, parentOptions) => {
         const services = {
             $translate,
             $interpolate,
@@ -475,15 +477,18 @@ function GuidesService(
             EventEmitterService,
             RoutingUtil: {
                 navigate,
-                getCurrentRoute
-            }
+                getCurrentRoute,
+            },
         };
         let steps = [];
-        if (angular.isArray(complexStep)) {
+        if (Array.isArray(complexStep)) {
             complexStep.forEach((stepDescription) => {
                 steps = steps.concat(this._getSteps(stepDescription, angular.extend({}, complexStep.options, parentOptions)));
             });
         } else {
+            // console.log('%ccomplexStep.guideBlockName', 'background: plum', complexStep.guideBlockName, complexStep);
+            // const plugin = await service(PluginsService).loadPluginByName(complexStep.guideBlockName);
+            // console.log('%cloaded plugin', 'background: red', plugin);
             const predefinedStepDescription = PluginRegistry.get('guide.step').find(((predefinedStep) => predefinedStep.guideBlockName === complexStep.guideBlockName));
 
             if (predefinedStepDescription) {

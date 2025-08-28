@@ -1,5 +1,5 @@
 import {HttpService} from '../http/http.service';
-import {PluginModule, PluginsManifest, PluginsManifestResponse} from '../../models/plugins';
+import {PluginDefinition, PluginModule, PluginsManifest, PluginsManifestResponse} from '../../models/plugins';
 import {getOrigin} from '../utils';
 import {service} from '../../providers';
 import {ConfigurationContextService} from '../configuration/configuration-context.service';
@@ -22,6 +22,23 @@ export class PluginsRestService extends HttpService {
   }
 
   /**
+   * Dynamically loads a plugin module based on the provided plugin definition.
+   * @param pluginDefinition - The definition of the plugin to load, including its entry point.
+   * @returns A Promise that resolves to the loaded plugin module, or undefined if loading fails
+   */
+  async loadPlugin(pluginDefinition: PluginDefinition): Promise<PluginModule | undefined> {
+    try {
+      const entryUrl = pluginDefinition.entry.startsWith('http')
+        ? pluginDefinition.entry
+        : `${getOrigin()}${pluginDefinition.entry}`;
+
+      return await import(/* webpackIgnore: true */ entryUrl) as PluginModule;
+    } catch (err) {
+      console.warn(`Failed to load plugin ${pluginDefinition.name}:`, err);
+    }
+  }
+
+  /**
    * Dynamically loads all plugins defined in the plugins manifest.
    *
    * @param pluginsManifest - The manifest object containing the list of plugins to load.
@@ -32,15 +49,7 @@ export class PluginsRestService extends HttpService {
   async loadPlugins(pluginsManifest: PluginsManifest) {
     return await Promise.all(
       pluginsManifest.getPluginDefinitions().getItems().map(async (pluginDef) => {
-        try {
-          const entryUrl = pluginDef.entry.startsWith('http')
-            ? pluginDef.entry
-            : `${getOrigin()}${pluginDef.entry}`;
-
-          return await import(/* webpackIgnore: true */ entryUrl) as PluginModule;
-        } catch (err) {
-          console.warn(`Failed to load plugin ${pluginDef.name}:`, err);
-        }
+        return this.loadPlugin(pluginDef);
       })
     );
   }

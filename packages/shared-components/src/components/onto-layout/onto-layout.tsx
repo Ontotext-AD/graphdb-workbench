@@ -1,4 +1,4 @@
-import {Component, Host, h, Listen, Element, State} from '@stencil/core';
+import {Component, Element, h, Host, Listen, State} from '@stencil/core';
 import {NavbarToggledEvent} from '../onto-navbar/navbar-toggled-event';
 import {debounce} from '../../utils/function-utils';
 import {WINDOW_WIDTH_FOR_COLLAPSED_NAVBAR} from '../../models/constants';

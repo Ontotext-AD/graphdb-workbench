@@ -1,5 +1,5 @@
-import {SingleSpa} from './src/models/single-spa/single-spa';
-import {PluginRegistry} from './src/models/plugins/plugin-registry';
+import {SingleSpa} from './src/models/single-spa';
+import {PluginRegistry} from './src/models/plugins';
 
 declare global {
   interface Window {

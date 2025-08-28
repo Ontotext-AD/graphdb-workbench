@@ -1,8 +1,9 @@
 window.PluginRegistry = (function() {
-
     const plugins = [];
 
     const registry = {};
+
+    let pluginsManifest = undefined;
 
     function processOrderedPlugin(pluginDefinition, currentExtensions) {
         let sameOrderPluginIndex;
@@ -113,14 +114,50 @@ window.PluginRegistry = (function() {
         return plugins[extensionPoint].find(predicate);
     };
 
+    /**
+     * Clears all registered plugins for the given extension point.
+     * @param {string} extensionPoint The extension point name for which to clear the registered plugins.
+     */
     registry.clear = function(extensionPoint) {
         plugins[extensionPoint] = [];
     };
 
+    /**
+     * List all registered extension points and their plugins.
+     * @returns {*[]}
+     */
     registry.listModules = function() {
         return plugins;
     };
 
-    return registry;
+    /**
+     * Set the plugins manifest.
+     * @param {{name: string, entry: string, lazy: boolean}[]} manifest
+     */
+    registry.setPluginsManifest = function(manifest) {
+        pluginsManifest = manifest;
+    };
 
+    /**
+     * Get the plugins manifest.
+     * @returns {{name: string, entry: string, lazy: boolean}[]}|undefined The plugins manifest or undefined if not set
+     */
+    registry.getPluginsManifest = function() {
+        return pluginsManifest;
+    };
+
+    /**
+     * Get plugin info from the manifest.
+     * @param {string} name The plugin name
+     * @returns {{name: string, entry: string, lazy: boolean}} The plugin info
+     * @throws {Error} When the manifest is not set
+     */
+    registry.getFromManifest = function(name) {
+        if (!pluginsManifest) {
+            throw new Error('Plugins manifest is not set');
+        }
+        return pluginsManifest[name];
+    };
+
+    return registry;
 })();
