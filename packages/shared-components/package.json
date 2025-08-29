@@ -48,11 +48,13 @@
   },
   "devDependencies": {
     "@stencil-community/eslint-plugin": "^0.10.0",
+    "@stencil-community/postcss": "^2.2.0",
     "@stencil/core": "^4.35.1",
     "@stencil/sass": "^3.2.1",
     "@types/jest": "^30.0.0",
     "@types/node": "^24.0.4",
     "@typescript-eslint/parser": "^8.35.0",
+    "autoprefixer": "^10.4.21",
     "concurrently": "^9.2.0",
     "cypress": "^14.5.0",
     "eslint": "^9.29.0",
