@@ -9,6 +9,8 @@ const {MergeJsonPlugin} = require('./webpack/merge-json-plugin.js');
 const {MergeI18nPlugin} = require('./webpack/merge-i18n-plugin.js');
 const path = require("path");
 const fs = require('fs');
+const postcss = require('postcss');
+const autoprefixer = require('autoprefixer');
 
 // The "string-replace-loader" replaces the version in all HTML and JS files except those copied by CopyPlugin.
 // This function must be used as the transform parameter of the plugin to replace the version.
@@ -18,6 +20,14 @@ const replaceVersion = (content) => content.toString().replace(/\[AIV]{version}\
 const languagesConfig = JSON.stringify(
     JSON.parse(fs.readFileSync(path.resolve(__dirname, 'packages/legacy-workbench/src/i18n/languages.json'), 'utf8'))
 );
+
+// Autoprefix CSS, which is manually copied and not imported/required, so it is not in any bundle
+const autoprefixCss = async (content, absoluteFrom) => {
+  const result = await postcss([autoprefixer]).process(content.toString(), {
+    from: absoluteFrom, // Provides context to PostCSS for better source maps
+  });
+  return result.css;
+};
 
 const externalCSSs = [
     // pivot table
@@ -167,7 +177,8 @@ module.exports = (webpackConfigEnv, argv) => {
                     },
                     {
                       from: 'packages/root-config/src/styles/css',
-                      to: 'css'
+                      to: 'css',
+                      transform: autoprefixCss
                     },
                     {
                         from: 'packages/legacy-workbench/node_modules/angularjs-slider/dist/rzslider.min.css',
@@ -394,15 +405,15 @@ module.exports = (webpackConfigEnv, argv) => {
                 },
                 {
                   test: /\.css$/,
-                  use: ['style-loader', 'css-loader']
+                  use: ['style-loader', 'css-loader', 'postcss-loader']
                 },
                 {
                   test: /\.less$/,
-                  use: ['style-loader', 'css-loader', 'less-loader']
+                  use: ['style-loader', 'css-loader', 'postcss-loader', 'less-loader']
                 },
                 {
                   test: /\.scss$/,
-                  use: ['style-loader', 'css-loader', 'sass-loader']
+                  use: ['style-loader', 'css-loader', 'postcss-loader', 'sass-loader']
                 },
                 {
                     test: /d3.js/,
