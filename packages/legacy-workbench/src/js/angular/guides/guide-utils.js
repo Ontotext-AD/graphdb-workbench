@@ -1,8 +1,8 @@
 import {select} from 'd3';
+import {ObjectUtils} from "../utils/object-utils";
 
 const d3 = {select};
-const GuideUtils = (function () {
-
+const GuideUtils = (function() {
     /**
      * Checks whether a given DOM element is visible in the document.
      *
@@ -14,16 +14,16 @@ const GuideUtils = (function () {
 
         const style = window.getComputedStyle(element);
         return style.display !== 'none' && style.visibility !== 'hidden' && style.opacity !== '0';
-    }
+    };
 
-    const clickOnElement = function (elementSelector) {
+    const clickOnElement = function(elementSelector) {
         return () => waitFor(elementSelector)
             .then((element) => {
                 element.click();
             });
     };
 
-    const clickOnGuideElement = function (elementSelector, postSelector) {
+    const clickOnGuideElement = function(elementSelector, postSelector) {
         return GuideUtils.clickOnElement(GuideUtils.getGuideElementSelector(elementSelector, postSelector));
     };
 
@@ -34,15 +34,15 @@ const GuideUtils = (function () {
      * @param {boolean} checkVisibility - if true will wait to become visible. Default value is true
      * @return {Promise}
      */
-    const waitFor = function (elementSelector, timeoutInSeconds = 1, checkVisibility = true) {
+    const waitFor = function(elementSelector, timeoutInSeconds = 1, checkVisibility = true) {
         const selector = getElementSelector(elementSelector);
-        return new Promise(function (resolve, reject) {
+        return new Promise(function(resolve, reject) {
             let iteration = timeoutInSeconds * 1000;
             const waitTime = 100;
             const elementExist = setInterval(() => {
                 try {
                     const element = document.querySelector(selector);
-                    if (element != null) {
+                    if (!ObjectUtils.isNullOrUndefined(element)) {
                         if (!checkVisibility || isElementVisible(element)) {
                             clearInterval(elementExist);
                             setTimeout(() => {
@@ -52,7 +52,7 @@ const GuideUtils = (function () {
                             iteration -= waitTime;
                             if (iteration < 0) {
                                 clearInterval(elementExist);
-                                console.debug('Element is not visible: ' + selector);
+                                console.warn('Element is not visible: ' + selector);
                                 reject(new Error('Element is not visible: ' + selector));
                             }
                         }
@@ -60,24 +60,24 @@ const GuideUtils = (function () {
                         iteration -= waitTime;
                         if (iteration < 0) {
                             clearInterval(elementExist);
-                            console.debug('Element is not found: ' + selector);
+                            console.warn('Element is not found: ' + selector);
                             reject(new Error('Element is not found: ' + selector));
                         }
                     }
                 } catch (error) {
                     clearInterval(elementExist);
-                    console.debug('Error when processing selector: ' + selector);
-                    console.debug(error);
+                    console.error('Error when processing selector: ' + selector);
+                    console.error(error);
                     reject(error);
                 }
             }, waitTime);
         });
     };
 
-    const waitUntilHidden = function (elementSelector, timeoutInSeconds = 1) {
+    const waitUntilHidden = function(elementSelector, timeoutInSeconds = 1) {
         const selector = getElementSelector(elementSelector);
 
-        return new Promise(function (resolve, reject) {
+        return new Promise(function(resolve, reject) {
             let iteration = timeoutInSeconds * 1000;
             const waitTime = 100;
             const elementExist = setInterval(() => {
@@ -88,7 +88,7 @@ const GuideUtils = (function () {
                         iteration -= waitTime;
                         if (iteration < 0) {
                             clearInterval(elementExist);
-                            console.debug('Element is still visible: ' + selector);
+                            console.warn('Element is still visible: ' + selector);
                             reject(new Error('Element is still visible: ' + selector));
                         }
                     } else {
@@ -100,8 +100,8 @@ const GuideUtils = (function () {
                     }
                 } catch (error) {
                     clearInterval(elementExist);
-                    console.debug('Error when processing selector: ' + selector);
-                    console.debug(error);
+                    console.error('Error when processing selector: ' + selector);
+                    console.error(error);
                     reject(error);
                 }
             }, waitTime);
@@ -111,26 +111,26 @@ const GuideUtils = (function () {
     const getOrWaitFor = (elementSelector, timeoutInSeconds = 1, checkVisibility = true) => {
         const selector = getElementSelector(elementSelector);
         const element = document.querySelector(selector);
-        if (element != null && (!checkVisibility || isElementVisible(element))) {
+        if (!ObjectUtils.isNullOrUndefined(element) && (!checkVisibility || isElementVisible(element))) {
             return Promise.resolve(element);
         }
         return waitFor(elementSelector, timeoutInSeconds, checkVisibility);
     };
 
-    const isVisible = function (selector) {
+    const isVisible = function(selector) {
         const element = document.querySelector(selector);
         return isElementVisible(element);
     };
 
-    const isGuideElementVisible = function (guideSelectorValue) {
+    const isGuideElementVisible = function(guideSelectorValue) {
         return isVisible(getGuideElementSelector(guideSelectorValue));
     };
 
-    const getGuideElementSelector = function (guideSelectorValue, postSelector) {
+    const getGuideElementSelector = function(guideSelectorValue, postSelector) {
         return `[guide-selector="${guideSelectorValue}"] ${postSelector ? postSelector : ''}`;
     };
 
-    const getLastGuideElementSelector = function (guideSelectorValue, postSelector) {
+    const getLastGuideElementSelector = function(guideSelectorValue, postSelector) {
         return `[guide-selector="${guideSelectorValue}"]:last-of-type ${postSelector ? postSelector : ''}`;
     };
 
@@ -144,8 +144,8 @@ const GuideUtils = (function () {
      * @param {number} alphaThreshold alpha value threshold, the default is 0.1
      * @return {function(): Promise<unknown>}
      */
-    const awaitAlphaDropD3 = function (elementSelector, scope, timeoutInSeconds = 2, alphaThreshold = 0.1) {
-        return () => new Promise(function (resolve) {
+    const awaitAlphaDropD3 = function(elementSelector, scope, timeoutInSeconds = 2, alphaThreshold = 0.1) {
+        return () => new Promise(function(resolve) {
             if (isVisible(elementSelector)) {
                 resolve();
                 return;
@@ -176,7 +176,7 @@ const GuideUtils = (function () {
      * Expands a graph visualization node by firing a custom event to the visual graph code.
      * @param {string} elementSelector the node to expand
      */
-    const graphVizExpandNode = function (elementSelector) {
+    const graphVizExpandNode = function(elementSelector) {
         const element = d3.select(elementSelector);
         const evt = new CustomEvent('gdb-expand-node', {detail: element.datum()});
         element.node().dispatchEvent(evt);
@@ -186,7 +186,7 @@ const GuideUtils = (function () {
      * Opens the visual graph node info panel by firing a custom event to the visual graph code.
      * @param {string} elementSelector the node to show the info for
      */
-    const graphVizShowNodeInfo = function (elementSelector) {
+    const graphVizShowNodeInfo = function(elementSelector) {
         const element = d3.select(elementSelector);
         const evt = new CustomEvent('gdb-show-node-info', {detail: element.datum()});
         element.node().dispatchEvent(evt);
@@ -196,7 +196,7 @@ const GuideUtils = (function () {
      * Focuses a class in the class hierarchy view by firing a custom event.
      * @param {string} elementSelector the node to focus
      */
-    const classHierarchyFocus = function (elementSelector) {
+    const classHierarchyFocus = function(elementSelector) {
         const element = d3.select(elementSelector);
         const evt = new CustomEvent('gdb-focus', {detail: element.datum()});
         element.node().dispatchEvent(evt);
@@ -206,7 +206,7 @@ const GuideUtils = (function () {
      * Zooms to a class in the class hierarchy view by firing a custom event.
      * @param {string} elementSelector the node to zoom to
      */
-    const classHierarchyZoom = function (elementSelector) {
+    const classHierarchyZoom = function(elementSelector) {
         const element = d3.select(elementSelector);
         const evt = new CustomEvent('gdb-zoom', {detail: element.datum()});
         element.node().dispatchEvent(evt);
@@ -221,7 +221,7 @@ const GuideUtils = (function () {
      * @return {boolean} true if the input element is exactly equal to the expected user input,
      * false otherwise
      */
-    const validateTextInput = function (elementSelector, expectedInput, applyInput = true) {
+    const validateTextInput = function(elementSelector, expectedInput, applyInput = true) {
         const element = document.querySelector(elementSelector);
         if (!element) return false;
 
@@ -233,8 +233,8 @@ const GuideUtils = (function () {
         if (input === '' && applyInput) {
             element.value = expectedInput;
 
-            const inputEvent = new Event('input', { bubbles: true });
-            const changeEvent = new Event('change', { bubbles: true });
+            const inputEvent = new Event('input', {bubbles: true});
+            const changeEvent = new Event('change', {bubbles: true});
 
             element.dispatchEvent(inputEvent);
             element.dispatchEvent(changeEvent);
@@ -252,7 +252,7 @@ const GuideUtils = (function () {
      * @param {*}elementSelector a selector to an input element
      * @return {boolean} true if the input element is not empty, false otherwise
      */
-    const validateTextInputNotEmpty = function (elementSelector) {
+    const validateTextInputNotEmpty = function(elementSelector) {
         const element = document.querySelector(elementSelector);
         if (!element) return false;
 
@@ -317,7 +317,7 @@ const GuideUtils = (function () {
      * @return {function(): Promise<unknown>}
      */
     const deferredShow = (delay) => {
-        return () => new Promise(function (resolve) {
+        return () => new Promise(function(resolve) {
             setTimeout(() => {
                 resolve();
             }, delay);
@@ -348,7 +348,7 @@ const GuideUtils = (function () {
         return isChecked(GuideUtils.getGuideElementSelector('autocompleteCheckbox', postSelect));
     };
 
-    const defaultInitPreviousStep = (services, stepId) => new Promise(function (resolve, reject) {
+    const defaultInitPreviousStep = (services, stepId) => new Promise(function(resolve, reject) {
         const previousStep = services.ShepherdService.getPreviousStepFromHistory(stepId);
         if (previousStep) {
             previousStep.options.initPreviousStep(services, previousStep.options.id)
@@ -365,14 +365,14 @@ const GuideUtils = (function () {
 
     const isObject = (value) => {
         return value !== null && typeof value === 'object' && !Array.isArray(value);
-    }
+    };
 
     const CSS_SELECTORS = {
         SPARQL_EDITOR_SELECTOR: '.tabPanel.active .yasqe .CodeMirror-code',
         SPARQL_RESULTS_SELECTOR: '.tabPanel.active .yasr_results',
         SPARQL_RESULTS_ROWS_SELECTOR: '.tabPanel.active .yasr_results tbody',
         SPARQL_RUN_BUTTON_SELECTOR: '.tabPanel.active .yasqe .yasqe_queryButton',
-        SPARQL_VISUAL_BUTTON_SELECTOR: '.tabPanel.active .yasr-toolbar .explore-visual-graph-button'
+        SPARQL_VISUAL_BUTTON_SELECTOR: '.tabPanel.active .yasr-toolbar .explore-visual-graph-button',
     };
 
     return {
@@ -405,10 +405,10 @@ const GuideUtils = (function () {
         defaultInitPreviousStep,
         getElementSelector,
         isObject,
-        CSS_SELECTORS
+        CSS_SELECTORS,
     };
 })();
 
 export {
-    GuideUtils
+    GuideUtils,
 };
