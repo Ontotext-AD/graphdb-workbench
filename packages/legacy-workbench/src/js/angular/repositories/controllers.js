@@ -2,7 +2,7 @@ import {
     FILENAME_PATTERN,
     NUMBER_PATTERN,
     REPOSITORY_TYPES,
-    STATIC_RULESETS
+    STATIC_RULESETS,
 } from "./repository.constants";
 import {decodeHTML} from "../../../app";
 import './controllers/manage-remote-location-dialog.controller';
@@ -10,7 +10,7 @@ import {RemoteLocationType} from "../models/repository/remote-location.model";
 
 const ENTITY_INDEX_SIZE_MIN = 10000;
 
-export const getFileName = function (path) {
+export const getFileName = function(path) {
     let lastIdx = path.lastIndexOf('/');
     if (lastIdx === -1) {
         lastIdx = path.lastIndexOf('\\');
@@ -22,12 +22,12 @@ export const getFileName = function (path) {
     return name;
 };
 
-const parseNumberParamsIfNeeded = function (params) {
+const parseNumberParamsIfNeeded = function(params) {
     if (!params) {
         return;
     }
 
-    Object.keys(params).forEach(key => {
+    Object.keys(params).forEach((key) => {
         const param = params[key];
         if (param && typeof param.value === 'string') {
             const possibleNumber = parseFloat(params[key].value);
@@ -40,13 +40,13 @@ const parseNumberParamsIfNeeded = function (params) {
     });
 };
 
-const parseMemberParamIfNeeded = function (param) {
+const parseMemberParamIfNeeded = function(param) {
     if (param && param.member) {
         param.member.value = [];
     }
 };
 
-const getShaclOptionsClass = function () {
+const getShaclOptionsClass = function() {
     const optionsModule = document.getElementById('shaclOptions');
 
     if (optionsModule) {
@@ -70,7 +70,7 @@ const numberParamToErrorKey = {
     entityIndexSize: 'invalid.entity.index.size',
 };
 
-const getNumberFormatError = function (params, $translate) {
+const getNumberFormatError = function(params, $translate) {
     if (!params) {
         return '';
     }
@@ -85,10 +85,10 @@ const getNumberFormatError = function (params, $translate) {
         : '';
 };
 
-const getDocBase = function (productInfo) {
+const getDocBase = function(productInfo) {
     return `https://graphdb.ontotext.com/documentation/${productInfo.productShortVersion}`;
 };
-const filterLocations = function (result) {
+const filterLocations = function(result) {
     return result.filter((location) => location.isGraphDBLocation() && !location.errorMsg && !location.degradedReason);
 };
 
@@ -97,7 +97,7 @@ const filterLocations = function (result) {
  * @param {*} $repositories the repositories service
  * @return {[] | Promise} returns the locations as array or a promise of the array
  */
-const getFilteredLocations = function ($repositories) {
+const getFilteredLocations = function($repositories) {
     // Don't allow the user to create repository on location with error or degradeded reason
     return $repositories.getLocations().then((locations) => filterLocations(locations));
 };
@@ -127,7 +127,6 @@ LocationsAndRepositoriesCtrl.$inject = ['$scope', '$rootScope', '$uibModal', 'to
 
 function LocationsAndRepositoriesCtrl($scope, $rootScope, $uibModal, toastr, $repositories, ModalService, AuthTokenService, LocationsRestService,
     LocalStorageAdapter, $interval, $translate, $q, GuidesService) {
-
     $scope.RemoteLocationType = RemoteLocationType;
     $scope.loader = true;
     /**
@@ -135,7 +134,7 @@ function LocationsAndRepositoriesCtrl($scope, $rootScope, $uibModal, toastr, $re
      */
     $scope.locations = [];
 
-    $scope.isLocationInactive = function (location) {
+    $scope.isLocationInactive = function(location) {
         return !location.active || !$scope.hasActiveLocation();
     };
 
@@ -165,52 +164,52 @@ function LocationsAndRepositoriesCtrl($scope, $rootScope, $uibModal, toastr, $re
         return locationTypes.some((locationType) => $scope.getLocalLocation(local, locationType).length > 0);
     };
 
-    $scope.hasActiveLocation = function () {
+    $scope.hasActiveLocation = function() {
         return $repositories.hasActiveLocation();
     };
 
-    $scope.getActiveLocation = function () {
+    $scope.getActiveLocation = function() {
         return $repositories.getActiveLocation();
     };
 
-    $scope.getLocationError = function () {
+    $scope.getLocationError = function() {
         return $repositories.getLocationError();
     };
 
-    $scope.getDegradedReason = function () {
+    $scope.getDegradedReason = function() {
         return $repositories.getDegradedReason();
     };
 
-    $scope.getRepositories = function () {
+    $scope.getRepositories = function() {
         return $repositories.getRepositories();
     };
 
-    $scope.isRepoActive = function (repo) {
+    $scope.isRepoActive = function(repo) {
         return $repositories.isRepoActive(repo);
     };
 
     //Delete location
-    $scope.deleteLocation = function (uri) {
+    $scope.deleteLocation = function(uri) {
         ModalService.openSimpleModal({
             title: $translate.instant('location.confirm.detach'),
             message: $translate.instant('location.confirm.detach.warning', {uri: uri}),
-            warning: true
+            warning: true,
         }).result
-            .then(function () {
+            .then(function() {
                 $scope.loader = true;
                 $repositories.deleteLocation(uri).finally(() => getLocations());
             });
     };
 
     //Add new location
-    $scope.addLocationHttp = function (dataAddLocation) {
+    $scope.addLocationHttp = function(dataAddLocation) {
         $scope.loader = true;
         LocationsRestService.addLocation(dataAddLocation)
-            .success(function () {
+            .success(function() {
                 //Reload locations and repositories
                 $repositories.init();
             })
-            .error(function (data) {
+            .error(function(data) {
                 const msg = getError(data);
                 toastr.error(msg, $translate.instant('common.error'));
             })
@@ -241,10 +240,10 @@ function LocationsAndRepositoriesCtrl($scope, $rootScope, $uibModal, toastr, $re
             resolve: {
                 data: () => {
                     return {
-                        remoteLocation
+                        remoteLocation,
                     };
-                }
-            }
+                },
+            },
         }).result.then((dataAddLocation) => {
                 if (remoteLocation) {
                     $scope.editLocationHttp(dataAddLocation);
@@ -255,14 +254,14 @@ function LocationsAndRepositoriesCtrl($scope, $rootScope, $uibModal, toastr, $re
     };
 
     //Edit location
-    $scope.editLocationHttp = function (dataEditLocation) {
+    $scope.editLocationHttp = function(dataEditLocation) {
         $scope.loader = true;
         LocationsRestService.editLocation(dataEditLocation)
-            .success(function () {
+            .success(function() {
                 //Reload locations and repositories
                 $repositories.init();
             })
-            .error(function (data) {
+            .error(function(data) {
                 const msg = getError(data);
                 toastr.error(msg, $translate.instant('common.error'));
             })
@@ -270,18 +269,18 @@ function LocationsAndRepositoriesCtrl($scope, $rootScope, $uibModal, toastr, $re
     };
 
     //Change repository
-    $scope.setRepository = function (repo) {
+    $scope.setRepository = function(repo) {
         $repositories.setRepository(repo);
     };
 
     //Delete repository
-    $scope.deleteRepository = function (repository) {
+    $scope.deleteRepository = function(repository) {
         ModalService.openSimpleModal({
             title: $translate.instant('common.confirm.delete'),
             message: decodeHTML($translate.instant('delete.repo.warning.msg', {repositoryId: repository.id})),
-            warning: true
+            warning: true,
         }).result
-            .then(function () {
+            .then(function() {
                 $scope.loader = true;
                 $repositories.deleteRepository(repository)
                     .finally(() => {
@@ -292,19 +291,19 @@ function LocationsAndRepositoriesCtrl($scope, $rootScope, $uibModal, toastr, $re
             });
     };
 
-    $scope.restartRepository = function (repository) {
+    $scope.restartRepository = function(repository) {
         ModalService.openSimpleModal({
             title: $translate.instant('confirm.restart.repo'),
             message: decodeHTML($translate.instant('confirm.restart.repo.warning.msg', {repositoryId: repository.id})),
-            warning: true
+            warning: true,
         }).result
-            .then(function () {
+            .then(function() {
                 $scope.loader = true;
                 $repositories.restartRepository(repository).finally(() => getLocations());
             });
     };
 
-    $scope.toggleDefaultRepository = function (repositoryId) {
+    $scope.toggleDefaultRepository = function(repositoryId) {
         if ($scope.getDefaultRepository() === repositoryId) {
             // unset
             $repositories.setDefaultRepository(null);
@@ -314,7 +313,7 @@ function LocationsAndRepositoriesCtrl($scope, $rootScope, $uibModal, toastr, $re
         }
     };
 
-    $scope.getDefaultRepository = function () {
+    $scope.getDefaultRepository = function() {
         return $repositories.getDefaultRepository();
     };
 
@@ -341,7 +340,7 @@ function LocationsAndRepositoriesCtrl($scope, $rootScope, $uibModal, toastr, $re
      };
      */
 
-    $scope.getRepositoryDownloadLink = function (repository) {
+    $scope.getRepositoryDownloadLink = function(repository) {
         let url = `rest/repositories/${repository.id}${(repository.type === REPOSITORY_TYPES.ontop ? '/download-zip'
             : '/download-ttl')}?location=${repository.location}`;
         const token = AuthTokenService.getAuthToken();
@@ -352,30 +351,30 @@ function LocationsAndRepositoriesCtrl($scope, $rootScope, $uibModal, toastr, $re
     };
 
     ///Copy to clipboard popover options
-    $scope.copyToClipboard = function (uri) {
+    $scope.copyToClipboard = function(uri) {
         ModalService.openCopyToClipboardModal(uri);
     };
 
-    $scope.fromFile = function () {
+    $scope.fromFile = function() {
         const modalInstance = $uibModal.open({
             templateUrl: 'js/angular/templates/modal/upload-repository-config.html',
-            controller: 'UploadRepositoryConfigCtrl'
+            controller: 'UploadRepositoryConfigCtrl',
         });
-        modalInstance.result.then(function () {
+        modalInstance.result.then(function() {
             $repositories.init();
         });
     };
 
     //Delete repository
-    $scope.openActiveLocationSettings = function () {
+    $scope.openActiveLocationSettings = function() {
         $uibModal.open({
             templateUrl: 'js/angular/settings/modal/location-settings.html',
-            controller: 'ActiveLocationSettingsCtrl'
+            controller: 'ActiveLocationSettingsCtrl',
         });
     };
 
     getLocations();
-    const timer = $interval(function () {
+    const timer = $interval(function() {
         if (GuidesService.isActive() && !$rootScope.guidePaused) {
             // Don't refresh list while a guide is active
             return;
@@ -386,7 +385,7 @@ function LocationsAndRepositoriesCtrl($scope, $rootScope, $uibModal, toastr, $re
         getLocations();
     }, 5000);
 
-    $scope.$on('$destroy', function () {
+    $scope.$on('$destroy', function() {
         $interval.cancel(timer);
         // If there is a getLocations request in progress, abort it so the service can properly clear flags
         if (getLocationsAbortRequestPromise) {
@@ -397,7 +396,7 @@ function LocationsAndRepositoriesCtrl($scope, $rootScope, $uibModal, toastr, $re
     function removeCachedGraphsOnDelete(repo) {
         const cashedDependenciesGraphPrefix = `dependencies-selectedGraph-${repo.id}`;
         const cashedClassHierarchyGraphPrefix = `classHierarchy-selectedGraph-${repo.id}`;
-        angular.forEach(LocalStorageAdapter.keys(), function (key) {
+        angular.forEach(LocalStorageAdapter.keys(), function(key) {
             // remove everything but the hide prefixes setting, it should always persist
             if (key.startsWith(cashedClassHierarchyGraphPrefix) || key.startsWith(cashedDependenciesGraphPrefix)) {
                 LocalStorageAdapter.remove(key);
@@ -405,7 +404,7 @@ function LocationsAndRepositoriesCtrl($scope, $rootScope, $uibModal, toastr, $re
         });
     }
 
-    $scope.getRepositoriesFromLocation = function (locationId) {
+    $scope.getRepositoriesFromLocation = function(locationId) {
         return $repositories.getRepositoriesFromLocation(locationId);
     };
 }
@@ -413,31 +412,31 @@ function LocationsAndRepositoriesCtrl($scope, $rootScope, $uibModal, toastr, $re
 UploadRepositoryConfigCtrl.$inject = ['$scope', '$uibModalInstance', 'Upload', 'toastr', '$translate'];
 
 function UploadRepositoryConfigCtrl($scope, $uibModalInstance, Upload, toastr, $translate) {
-    $scope.upload = function (files) {
+    $scope.upload = function(files) {
         if (files && files.length) {
             $scope.uploadFile = files[0];
         }
     };
-    $scope.ok = function () {
+    $scope.ok = function() {
         if ($scope.uploadFile) {
             $scope.uploadFileLoader = true;
             Upload.upload({
                 url: 'rest/repositories',
                 method: 'POST',
-                data: {config: $scope.uploadFile}
+                data: {config: $scope.uploadFile},
             })
-                .success(function () {
+                .success(function() {
                     $scope.uploadFileLoader = false;
                     $uibModalInstance.close();
                 })
-                .error(function (data) {
+                .error(function(data) {
                     const msg = getError(data);
                     toastr.error(msg, $translate.instant('common.error'));
                     $scope.uploadFileLoader = false;
                 });
         }
     };
-    $scope.cancel = function () {
+    $scope.cancel = function() {
         $uibModalInstance.dismiss('cancel');
     };
 }
@@ -445,23 +444,22 @@ function UploadRepositoryConfigCtrl($scope, $uibModalInstance, Upload, toastr, $
 AddLocationCtrl.$inject = ['$scope', '$uibModalInstance', 'toastr', 'productInfo', '$translate'];
 
 function AddLocationCtrl($scope, $uibModalInstance, toastr, productInfo, $translate) {
-
     $scope.newLocation = {
         'uri': '',
         'authType': 'none',
         'username': '',
         'password': '',
-        'active': false
+        'active': false,
     };
     $scope.docBase = getDocBase(productInfo);
 
-    $scope.isValidLocation = function () {
+    $scope.isValidLocation = function() {
         return ($scope.newLocation.uri.length < 6 ||
                 $scope.newLocation.uri.indexOf('http:') === 0 || $scope.newLocation.uri.indexOf('https:') === 0)
             && $scope.newLocation.uri.indexOf('/repositories') <= -1;
     };
 
-    $scope.ok = function () {
+    $scope.ok = function() {
         if (!$scope.newLocation) {
             toastr.error($translate.instant('location.cannot.be.empty.error'));
             return;
@@ -469,7 +467,7 @@ function AddLocationCtrl($scope, $uibModalInstance, toastr, productInfo, $transl
         $uibModalInstance.close($scope.newLocation);
     };
 
-    $scope.cancel = function () {
+    $scope.cancel = function() {
         $uibModalInstance.dismiss('cancel');
     };
 }
@@ -477,15 +475,14 @@ function AddLocationCtrl($scope, $uibModalInstance, toastr, productInfo, $transl
 EditLocationCtrl.$inject = ['$scope', '$uibModalInstance', 'location', 'productInfo'];
 
 function EditLocationCtrl($scope, $uibModalInstance, location, productInfo) {
-
     $scope.editedLocation = _.cloneDeep(location);
     $scope.docBase = getDocBase(productInfo);
 
-    $scope.ok = function () {
+    $scope.ok = function() {
         $uibModalInstance.close($scope.editedLocation);
     };
 
-    $scope.cancel = function () {
+    $scope.cancel = function() {
         $uibModalInstance.dismiss('cancel');
     };
 }
@@ -494,7 +491,7 @@ ChooseRepositoryCtrl.$inject = ['$scope', '$location'];
 
 function ChooseRepositoryCtrl($scope, $location) {
     $scope.repositoryTypes = REPOSITORY_TYPES;
-    $scope.chooseRepositoryType = function (repoType) {
+    $scope.chooseRepositoryType = function(repoType) {
         $location.path(`${$location.path()}/${repoType}`);
     };
 }
@@ -517,7 +514,7 @@ function AddRepositoryCtrl($rootScope, $scope, toastr, $repositories, $location,
         params: {},
         title: '',
         type: '',
-        location: ''
+        location: '',
     };
 
     getFilteredLocations($repositories)
@@ -525,7 +522,7 @@ function AddRepositoryCtrl($rootScope, $scope, toastr, $repositories, $location,
             $scope.locations = locations;
         });
 
-    $scope.changedLocation = function () {
+    $scope.changedLocation = function() {
         $scope.$broadcast('changedLocation');
     };
 
@@ -569,8 +566,8 @@ function AddRepositoryCtrl($rootScope, $scope, toastr, $repositories, $location,
         }
     }
 
-    $scope.getConfig = function (repoType) {
-        RepositoriesRestService.getRepositoryConfiguration(repoType).then(function (resp) {
+    $scope.getConfig = function(repoType) {
+        RepositoriesRestService.getRepositoryConfiguration(repoType).then(function(resp) {
             const data = resp.data;
             $scope.repositoryInfo.params = data.params;
             $scope.repositoryInfo.type = data.type;
@@ -580,11 +577,11 @@ function AddRepositoryCtrl($rootScope, $scope, toastr, $repositories, $location,
             // The clean way is the "autofocus" attribute and we use it but it doesn't seem to
             // work in all browsers because of the way dynamic content is handled so give it another
             // try here.
-            $timeout(function () {
+            $timeout(function() {
                 // Focus the ID field
                 angular.element(document).find('#id').focus();
             }, 50);
-        }).catch(function (data) {
+        }).catch(function(data) {
             const msg = getError(data);
             toastr.error(msg, $translate.instant('common.error'));
             $scope.loader = false;
@@ -599,26 +596,26 @@ function AddRepositoryCtrl($rootScope, $scope, toastr, $repositories, $location,
         $location.path('/repository/create');
     }
 
-    $scope.hasActiveLocation = function () {
+    $scope.hasActiveLocation = function() {
         return $repositories.hasActiveLocation();
     };
 
-    $scope.activeLocation = function () {
+    $scope.activeLocation = function() {
         return $repositories.getActiveLocation();
     };
 
     let isInvalidPieFile = false;
-    $scope.uploadRuleset = function (files) {
+    $scope.uploadRuleset = function(files) {
         if (files && files.length) {
             $scope.uploadFile = files[0];
             $scope.uploadFileLoader = true;
             Upload.upload({
                 url: 'rest/repositories/ruleset/upload',
-                data: {ruleset: $scope.uploadFile, location: $scope.repositoryInfo.location}
-            }).progress(function (evt) {
+                data: {ruleset: $scope.uploadFile, location: $scope.repositoryInfo.location},
+            }).progress(function(evt) {
                 /*						var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
                  console.log('progress: ' + progressPercentage + '% ' + evt.config.file.name);*/
-            }).success(function (data) {
+            }).success(function(data) {
                 if (!data.success) {
                     toastr.error(data.errorMessage);
                     isInvalidPieFile = true;
@@ -639,7 +636,7 @@ function AddRepositoryCtrl($rootScope, $scope, toastr, $repositories, $location,
                     $scope.repositoryInfo.params.ruleset.value = $scope.rulesetPie;
                 }
                 $scope.uploadFileLoader = false;
-            }).error(function (data) {
+            }).error(function(data) {
                 const msg = getError(data);
                 toastr.error(msg, $translate.instant('common.error'));
                 $scope.uploadFile = '';
@@ -649,28 +646,31 @@ function AddRepositoryCtrl($rootScope, $scope, toastr, $repositories, $location,
         }
     };
 
-    $scope.noMembersError = function () {
+    $scope.noMembersError = function() {
         toastr.error($translate.instant('fedx.create.repo.no.members.warning'));
     };
 
-    $scope.goBackToPreviousLocation = function () {
-        if (angular.isDefined($routeParams.previous)) {
-            delete $location.$$search.previous;
-            $location.path('/');
+    $scope.goBackToPreviousLocation = function() {
+        const previous = $location.search().previous;
+        if (previous) {
+            $location.search('previous', null);
+            const isAbsolute = typeof previous === 'string' && previous.charAt(0) === '/';
+            const target = isAbsolute ? previous : '/' + previous;
+            $location.url(target);
         } else {
             $location.path('/repository');
         }
     };
 
-    $scope.createRepoHttp = function () {
+    $scope.createRepoHttp = function() {
         $scope.loader = true;
         RepositoriesRestService.createRepository($scope.repositoryInfo)
-            .then(function () {
+            .then(function() {
                 toastr.success($translate.instant('created.repo.success.msg', {repoId: $scope.repositoryInfo.id}));
                 return $repositories.init();
             })
             .then(() => $scope.goBackToPreviousLocation())
-            .catch(function (error) {
+            .catch(function(error) {
                 const msg = getError(error.data);
                 toastr.error(msg, $translate.instant('common.error'));
             })
@@ -679,7 +679,7 @@ function AddRepositoryCtrl($rootScope, $scope, toastr, $repositories, $location,
             });
     };
 
-    $scope.createRepo = function () {
+    $scope.createRepo = function() {
         if (!$scope.repositoryInfo.id) {
             toastr.error($translate.instant('empty.repoid.warning'));
             return;
@@ -697,14 +697,14 @@ function AddRepositoryCtrl($rootScope, $scope, toastr, $repositories, $location,
             $scope.noMembersError();
         } else if (numberFormatError) {
             toastr.error(numberFormatError);
-        } else if ($scope.isInvalidEntityIndexSizeMin){
+        } else if ($scope.isInvalidEntityIndexSizeMin) {
             toastr.error($translate.instant('repo.error.entityIndex.min'));
         } else {
             $scope.createRepoHttp();
         }
     };
 
-    $scope.rulesetWarning = function () {
+    $scope.rulesetWarning = function() {
         const pp = $scope.repositoryInfo.params;
         if (pp === undefined || pp.ruleset === undefined || pp.disableSameAs === undefined) {
             return '';
@@ -721,7 +721,7 @@ function AddRepositoryCtrl($rootScope, $scope, toastr, $repositories, $location,
         }
     };
 
-    $scope.getShaclOptionsClass = function () {
+    $scope.getShaclOptionsClass = function() {
         return getShaclOptionsClass();
     };
     //TODO - check if repositoryID exist
@@ -740,25 +740,24 @@ function AddRepositoryCtrl($rootScope, $scope, toastr, $repositories, $location,
 EditRepositoryFileCtrl.$inject = ['$scope', '$uibModalInstance', 'RepositoriesRestService', 'file', 'toastr', '$translate', 'dialogTitle', 'location'];
 
 function EditRepositoryFileCtrl($scope, $uibModalInstance, RepositoriesRestService, file, toastr, $translate, dialogTitle, location) {
-
     $scope.dialogTitle = dialogTitle ? dialogTitle : $translate.instant('update.file.content.header');
     if (file) {
-        RepositoriesRestService.getRepositoryFileContent(file, location).success(function (data) {
+        RepositoriesRestService.getRepositoryFileContent(file, location).success(function(data) {
             $scope.fileContent = data;
-        }).error(function (data) {
+        }).error(function(data) {
             const msg = getError(data);
             toastr.error(msg, $translate.instant('common.error'));
         });
     }
 
-    $scope.ok = function () {
+    $scope.ok = function() {
         $uibModalInstance.close({
             content: $scope.fileContent,
-            fileLocation: file
+            fileLocation: file,
         });
     };
 
-    $scope.cancel = function () {
+    $scope.cancel = function() {
         $uibModalInstance.dismiss('cancel');
     };
 }
@@ -767,7 +766,6 @@ EditRepositoryCtrl.$inject = ['$rootScope', '$scope', '$routeParams', 'toastr', 
     '$translate', 'MonitoringRestService'];
 
 function EditRepositoryCtrl($rootScope, $scope, $routeParams, toastr, $repositories, $location, ModalService, RepositoriesRestService, $translate, MonitoringRestService) {
-
     $scope.rulesets = STATIC_RULESETS.slice();
     $scope.repositoryTypes = REPOSITORY_TYPES;
     $scope.entityIndexSizeMin = ENTITY_INDEX_SIZE_MIN;
@@ -784,7 +782,7 @@ function EditRepositoryCtrl($rootScope, $scope, $routeParams, toastr, $repositor
     $scope.repositoryType = '';
     $scope.saveRepoId = $scope.params.repositoryId;
     $scope.pageTitle = $translate.instant('view.edit.repo.title', {repositoryId: $scope.params.repositoryId});
-    $scope.hasActiveLocation = function () {
+    $scope.hasActiveLocation = function() {
         return $repositories.hasActiveLocation();
     };
 
@@ -799,7 +797,7 @@ function EditRepositoryCtrl($rootScope, $scope, $routeParams, toastr, $repositor
         const repositoryInfo = repositoryInfoResponse.data;
         if (angular.isDefined(repositoryInfo.params.ruleset)) {
             let ifRulesetExists = false;
-            angular.forEach($scope.rulesets, function (item) {
+            angular.forEach($scope.rulesets, function(item) {
                 if (item.id === repositoryInfo.params.ruleset.value) {
                     ifRulesetExists = true;
                 }
@@ -816,7 +814,7 @@ function EditRepositoryCtrl($rootScope, $scope, $routeParams, toastr, $repositor
         $scope.loader = false;
     };
 
-    $scope.$watch($scope.hasActiveLocation, function () {
+    $scope.$watch($scope.hasActiveLocation, function() {
         if ($scope.hasActiveLocation) {
             // Should get locations before getting repository info
             let repositoryInfoResponse;
@@ -851,7 +849,7 @@ function EditRepositoryCtrl($rootScope, $scope, $routeParams, toastr, $repositor
                 toastr.error(toastrMsg, $translate.instant('common.error'), {allowHtml: true});
 
                 if (status === 404) {
-                    setTimeout(function () {
+                    setTimeout(function() {
                         $scope.loader = false;
                         $location.path('repository');
                     }, 1000);
@@ -862,31 +860,31 @@ function EditRepositoryCtrl($rootScope, $scope, $routeParams, toastr, $repositor
         }
     });
 
-    $scope.setRepositoryType = function (type) {
+    $scope.setRepositoryType = function(type) {
         $scope.repositoryType = type;
     };
 
-    $scope.noMembersError = function () {
+    $scope.noMembersError = function() {
         toastr.error($translate.instant('fedx.create.repo.no.members.warning'));
     };
 
-    $scope.editRepoHttp = function () {
+    $scope.editRepoHttp = function() {
         $scope.loader = true;
         RepositoriesRestService.editRepository($scope.repositoryInfo.saveId, $scope.repositoryInfo)
-            .success(function () {
+            .success(function() {
                 toastr.success($translate.instant('edit.repo.success.msg', {saveId: $scope.repositoryInfo.saveId}));
                 $repositories.init().finally(() => $scope.goBackToPreviousLocation());
                 if ($scope.repositoryInfo.saveId === $scope.repositoryInfo.id && $scope.repositoryInfo.restartRequested) {
                     $repositories.restartRepository($scope.repositoryInfo);
                 }
-            }).error(function (data) {
+            }).error(function(data) {
             const msg = getError(data);
             toastr.error(msg, $translate.instant('common.error'));
             $scope.loader = false;
         });
     };
 
-    $scope.editRepository = function () {
+    $scope.editRepository = function() {
         $scope.isInvalidRepoName = !FILENAME_PATTERN.test($scope.repositoryInfo.id);
         $scope.isInvalidEntityIndexSizeMin = $scope.repositoryInfo.params.entityIndexSize?.value < ENTITY_INDEX_SIZE_MIN;
         const numberFormatError = getNumberFormatError($scope.repositoryInfo.params, $translate);
@@ -904,33 +902,33 @@ function EditRepositoryCtrl($rootScope, $scope, $routeParams, toastr, $repositor
             $scope.noMembersError();
         } else if (numberFormatError) {
             toastr.error(numberFormatError);
-        } else if ($scope.isInvalidEntityIndexSizeMin){
+        } else if ($scope.isInvalidEntityIndexSizeMin) {
             toastr.error($translate.instant('repo.error.entityIndex.min'));
         } else {
             ModalService.openSimpleModal({
                 title: $translate.instant('common.confirm.save'),
                 message: modalMsg,
-                warning: true
+                warning: true,
             }).result
-                .then(function () {
+                .then(function() {
                     $scope.editRepoHttp();
                 });
         }
     };
 
-    $scope.editRepositoryId = function () {
-        let msg = decodeHTML($translate.instant('edit.repo.id.warning.msg'));
+    $scope.editRepositoryId = function() {
+        const msg = decodeHTML($translate.instant('edit.repo.id.warning.msg'));
 
         ModalService.openSimpleModal({
             title: $translate.instant('confirm.enable.edit'),
             message: msg,
-            warning: true
-        }).result.then(function () {
+            warning: true,
+        }).result.then(function() {
             $scope.canEditRepoId = true;
         });
     };
 
-    $scope.goBackToPreviousLocation = function () {
+    $scope.goBackToPreviousLocation = function() {
         if (angular.isDefined($routeParams.previous)) {
             delete $location.$$search.previous;
             $location.path('/');
@@ -939,7 +937,7 @@ function EditRepositoryCtrl($rootScope, $scope, $routeParams, toastr, $repositor
         }
     };
 
-    $scope.getShaclOptionsClass = function () {
+    $scope.getShaclOptionsClass = function() {
         return getShaclOptionsClass();
     };
 

@@ -20,11 +20,11 @@ PluginRegistry.add('guide.step', [
                         url: 'ttyg',
                         elementSelector: GuideUtils.getGuideElementSelector('query-method-sparql_search'),
                         clickableElementSelector: toggleSelector,
-                        onNextValidate: () => Promise.resolve(GuideUtils.isChecked(toggleSelector))
-                    }
-                }
-            ]
-        }
+                        onNextValidate: () => Promise.resolve(GuideUtils.isChecked(toggleSelector)),
+                    },
+                },
+            ];
+        },
     },
     {
         guideBlockName: 'ttyg-sparql-method-disable',
@@ -45,11 +45,11 @@ PluginRegistry.add('guide.step', [
                         showOn: () => GuideUtils.isChecked(toggleSelector),
                         elementSelector: GuideUtils.getGuideElementSelector('query-method-sparql_search'),
                         clickableElementSelector: toggleSelector,
-                        onNextValidate: () => Promise.resolve(!GuideUtils.isChecked(toggleSelector))
-                    }
-                }
-            ]
-        }
+                        onNextValidate: () => Promise.resolve(!GuideUtils.isChecked(toggleSelector)),
+                    },
+                },
+            ];
+        },
     },
     {
         guideBlockName: "ttyg-sparql-method-ontology-select",
@@ -68,11 +68,11 @@ PluginRegistry.add('guide.step', [
                         url: 'ttyg',
                         elementSelector: GuideUtils.getGuideElementSelector('sparql-ontology-graph-option'),
                         clickableElementSelector: GuideUtils.getGuideElementSelector('sparql-ontology-graph-option-input'),
-                        onNextValidate: () => Promise.resolve(GuideUtils.isChecked(GuideUtils.getGuideElementSelector('sparql-ontology-graph-option-input')))
-                    }
-                }
-            ]
-        }
+                        onNextValidate: () => Promise.resolve(GuideUtils.isChecked(GuideUtils.getGuideElementSelector('sparql-ontology-graph-option-input'))),
+                    },
+                },
+            ];
+        },
     },
     {
         guideBlockName: 'sparql-search-method-type-graph-name',
@@ -90,11 +90,11 @@ PluginRegistry.add('guide.step', [
                         ...options,
                         url: 'ttyg',
                         elementSelector: GuideUtils.getGuideElementSelector('sparql-ontology-graph-input'),
-                        onNextValidate: () => Promise.resolve(GuideUtils.validateTextInput(GuideUtils.getGuideElementSelector('sparql-ontology-graph-input'), options.ontologyGraph, false))
-                    }
-                }
-            ]
-        }
+                        onNextValidate: () => Promise.resolve(GuideUtils.validateTextInput(GuideUtils.getGuideElementSelector('sparql-ontology-graph-input'), options.ontologyGraph, false)),
+                    },
+                },
+            ];
+        },
     },
     {
         guideBlockName: 'ttyg-sparql-method-sparql-query-select',
@@ -110,11 +110,11 @@ PluginRegistry.add('guide.step', [
                         url: 'ttyg',
                         elementSelector: GuideUtils.getGuideElementSelector('sparql-query-option'),
                         clickableElementSelector: GuideUtils.getGuideElementSelector('sparql-query-option-input'),
-                        onNextValidate: () => Promise.resolve(GuideUtils.isChecked(GuideUtils.getGuideElementSelector('sparql-query-option-input')))
-                    }, options)
-                }
-            ]
-        }
+                        onNextValidate: () => Promise.resolve(GuideUtils.isChecked(GuideUtils.getGuideElementSelector('sparql-query-option-input'))),
+                    }, options),
+                },
+            ];
+        },
     },
     {
         guideBlockName: "ttyg-sparql-copy-query-text",
@@ -128,11 +128,11 @@ PluginRegistry.add('guide.step', [
                         elementSelector: GuideUtils.getGuideElementSelector('sparql-query-input'),
                         text: options.sparqlQuery,
                         ...options,
-                        onNextValidate: () => Promise.resolve(GuideUtils.validateTextInput(GuideUtils.getGuideElementSelector('sparql-query-input'), options.sparqlQuery, false))
-                    }
-                }
-            ]
-        }
+                        onNextValidate: () => Promise.resolve(GuideUtils.validateTextInput(GuideUtils.getGuideElementSelector('sparql-query-input'), options.sparqlQuery, false)),
+                    },
+                },
+            ];
+        },
     },
     {
       guideBlockName: 'ttyg-sparql-click-add-namespaces',
@@ -150,11 +150,11 @@ PluginRegistry.add('guide.step', [
                       ...options,
                       url: 'ttyg',
                       elementSelector: GuideUtils.getGuideElementSelector('add-missing-namespaces-option'),
-                      onNextValidate: () => Promise.resolve(GuideUtils.isChecked(GuideUtils.getGuideElementSelector('add-missing-namespaces-input')))
-                  }
-              }
-          ]
-      }
+                      onNextValidate: () => Promise.resolve(GuideUtils.isChecked(GuideUtils.getGuideElementSelector('add-missing-namespaces-input'))),
+                  },
+              },
+          ];
+      },
     },
     {
       guideBlockName: 'ttyg-enabling-sparql-info-message',
@@ -168,40 +168,53 @@ PluginRegistry.add('guide.step', [
                       ...(options.mainAction ? {} : {title: TTYG_SPARQL_SEARCH_METHOD_DEFAULT_TITLE}),
                       class: 'info-sparql-search',
                       ...options,
-                      url: 'ttyg'
-                  }
-              }
-          ]
-      }
+                      url: 'ttyg',
+                  },
+              },
+          ];
+      },
     },
     {
         guideBlockName: 'sparql-search-method-enable-ontology-graph',
         getSteps: (options, services) => {
-            return [
+            const steps = [
                 {
-                    guideBlockName: 'ttyg-sparql-method-ontology-select', options: {...options}
+                    guideBlockName: 'ttyg-sparql-method-ontology-select', options: {...options},
                 },
                 {
-                    guideBlockName: 'sparql-search-method-type-graph-name', options: {...options}
-                }
-            ]
-        }
+                    guideBlockName: 'sparql-search-method-type-graph-name', options: {...options},
+                },
+            ];
+
+            if (options.addMissingNamespaces) {
+                steps.push({
+                    guideBlockName: 'ttyg-sparql-click-add-namespaces', options: {...options},
+                });
+            }
+
+            return steps;
+        },
     },
     {
         guideBlockName: 'sparql-search-method-enable-sparql-query',
         getSteps: (options, services) => {
-            return [
+            const steps = [
                 {
-                    guideBlockName: 'ttyg-sparql-method-sparql-query-select', options: {...options}
+                    guideBlockName: 'ttyg-sparql-method-sparql-query-select', options: {...options},
                 },
                 {
-                    guideBlockName: 'ttyg-sparql-copy-query-text', options: {...options}
+                    guideBlockName: 'ttyg-sparql-copy-query-text', options: {...options},
                 },
-                {
-                    guideBlockName: 'ttyg-sparql-click-add-namespaces', options: {...options}
-                }
-            ]
-        }
+            ];
+
+            if (options.addMissingNamespaces) {
+                steps.push({
+                    guideBlockName: 'ttyg-sparql-click-add-namespaces', options: {...options},
+                });
+            }
+
+            return steps;
+        },
     },
     {
         guideBlockName: 'sparql-search-method',
@@ -219,32 +232,32 @@ PluginRegistry.add('guide.step', [
 
             if (shouldToggleOff) {
                 return [{
-                    guideBlockName: 'ttyg-sparql-method-disable', options: {...options}
-                }]
+                    guideBlockName: 'ttyg-sparql-method-disable', options: {...options},
+                }];
             }
 
             const steps = [
                 {
-                    guideBlockName: 'ttyg-enabling-sparql-info-message', options: {...options}
+                    guideBlockName: 'ttyg-enabling-sparql-info-message', options: {...options},
                 },
                 {
-                    guideBlockName: 'ttyg-sparql-method-enable', options: {...options}
+                    guideBlockName: 'ttyg-sparql-method-enable', options: {...options},
                 },
-            ]
+            ];
 
             if (configurationOption === CONFIGURATION_OPTION_ONTOLOGY_GRAPH) {
                 steps.push({
                     guideBlockName: 'sparql-search-method-enable-ontology-graph',
-                    options: {...options}
+                    options: {...options},
                 });
             } else if (configurationOption === CONFIGURATION_OPTION_SPARQL_QUERY) {
                 steps.push({
                     guideBlockName: 'sparql-search-method-enable-sparql-query',
-                    options: {...options}
+                    options: {...options},
                 });
             }
 
             return steps;
-        }
-    }
+        },
+    },
 ]);

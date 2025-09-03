@@ -11,17 +11,20 @@
 // This function is called when a project is opened or re-opened (e.g. due to
 // the project's config changing)
 
-const deleteSync = require('del').deleteSync;
+import { deleteSync } from 'del';
+import failed from 'cypress-failed-log/src/failed.js';
+import installLogsPrinter from 'cypress-terminal-report/src/installLogsPrinter.js';
+
 const retryTracker = {};
 
-module.exports = (on, config) => {
+export default (on, config) => {
     // `on` is used to hook into various events Cypress emits
     // `config` is the resolved Cypress config
     on('task', {
-        failed: require('cypress-failed-log/src/failed')()
+        failed: failed()
     });
 
-    require('cypress-terminal-report/src/installLogsPrinter')(on, {
+    installLogsPrinter(on, {
         logToFilesOnAfterRun: true,
         printLogsToConsole: 'onFail',
         outputRoot: config.projectRoot + '/logs/',
@@ -95,5 +98,6 @@ module.exports = (on, config) => {
         printGroup('[FAIL] Broken tests', broken);
         console.log('====================================================================================================\n');
     });
+
     return config;
 };

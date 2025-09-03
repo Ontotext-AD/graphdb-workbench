@@ -15,7 +15,7 @@ class HomeSteps extends BaseSteps {
 
     static visitInProdMode() {
         cy.visit('/', {
-            onBeforeLoad: (win) => {
+            onBeforeLoad: () => {
                 EnvironmentStubs.stubWbProdMode();
             }
         });
@@ -23,7 +23,7 @@ class HomeSteps extends BaseSteps {
 
     static visitInDevMode() {
         cy.visit('/', {
-            onBeforeLoad: (win) => {
+            onBeforeLoad: () => {
                 EnvironmentStubs.stubWbDevMode();
             }
         });
@@ -135,10 +135,16 @@ class HomeSteps extends BaseSteps {
     static selectSPARQLQueryToExecute(query) {
         cy.contains('ul.saved-queries li', query)
             .should('be.visible')
-            .trigger('hover')
+            .as('savedQueryItem');
+
+        cy.get('@savedQueryItem')
+            .trigger('hover');
+
+        cy.get('@savedQueryItem')
             .find('.execute-saved-query')
-            .click({force: true});
+            .click({ force: true });
     }
+
 
     static verifyQueryLink(queryName, modifiesRepoModal) {
         HomeSteps.selectSPARQLQueryToExecute(queryName);
@@ -188,7 +194,7 @@ class HomeSteps extends BaseSteps {
                 HomeSteps.getCreateRepositoryLink()
                     .click()
                     .url()
-                    .should('eq', Cypress.config("baseUrl") + '/repository/create?previous=home');
+                    .should('eq', Cypress.config("baseUrl") + '/repository/create?previous=%2F');
             });
         cy.get('.big-logo').click();
     }
@@ -205,9 +211,8 @@ class HomeSteps extends BaseSteps {
     }
 
     static getAutocompleteInput() {
-        const input = cy.get('.home-rdf-resource-search search-resource-input .view-res-input');
-        input.should('be.visible');
-        return input;
+        return cy.get('.home-rdf-resource-search search-resource-input .view-res-input')
+            .should('be.visible');
     }
 
     static shouldHaveAutocompleteResult(uri) {
@@ -220,9 +225,9 @@ class HomeSteps extends BaseSteps {
     }
 
     static getAutocompleteResultElement(uri) {
-        const element = cy.get("#auto-complete-results-wrapper p").contains(uri);
-        element.trigger('mouseover');
-        return element;
+        return cy.get('#auto-complete-results-wrapper p')
+            .contains(uri)
+            .trigger('mouseover');
     }
 
     static verifyAutocompleteResourceLink(uri) {

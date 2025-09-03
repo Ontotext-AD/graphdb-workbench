@@ -24,14 +24,16 @@ import 'cypress-file-upload';
 import {LicenseStubs} from "../stubs/license-stubs";
 import {SecurityStubs} from "../stubs/security-stubs";
 // https://github.com/bahmutov/cypress-code-coverage
-require('@bahmutov/cypress-code-coverage/support');
+import '@bahmutov/cypress-code-coverage/support';
 
 // Configures an environment variable with the key used for common actions (cmd on mac, ctrl on other OS).
 // This variable must be used in all actions that type e.g. ctrl-a to select text.
 Cypress.env('modifierKey', Cypress.platform === 'darwin' ? '{cmd}' : '{ctrl}');
 
-require('cypress-failed-log');
-require('cypress-terminal-report/src/installLogsCollector')();
+import 'cypress-failed-log';
+import * as ctr from 'cypress-terminal-report/src/installLogsCollector';
+const installLogsCollector = ('default' in ctr) ? ctr.default : ctr;
+installLogsCollector();
 
 // We don't want any tests to hit real Google
 beforeEach(() => {

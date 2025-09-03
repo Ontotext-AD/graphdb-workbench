@@ -25,7 +25,10 @@ export default [
                 afterEach: 'readonly',
                 before: 'readonly',
                 after: 'readonly',
-                expect: 'readonly'
+                expect: 'readonly',
+
+                // Node.js globals for scripts
+                process: 'readonly',
             }
         },
         rules: {

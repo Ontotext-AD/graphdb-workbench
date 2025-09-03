@@ -38,7 +38,7 @@ import {
     RepositoryContextService,
     RepositoryService,
     ServiceProvider,
-    SecurityContextService
+    SecurityContextService,
 } from "@ontotext/workbench-api";
 import {EventConstants} from "./utils/event-constants";
 import {CookieConsent} from "./models/cookie-policy/cookie-consent";
@@ -70,7 +70,7 @@ angular
         'pageslide-directive',
         'graphdb.core.services.workbench-context',
         'graphdb.framework.core.services.rdf4j.repositories',
-        'rzSlider'
+        'rzSlider',
     ])
     .controller('mainCtrl', mainCtrl)
     .controller('homeCtrl', homeCtrl)
@@ -104,7 +104,6 @@ function homeCtrl($scope,
                   WorkbenchContextService,
                   RDF4JRepositoriesService,
                   toastr) {
-
     $scope.doClear = false;
 
     // =========================
@@ -119,15 +118,15 @@ function homeCtrl($scope,
         $scope.activeRepositorySizeError = undefined;
 
         ServiceProvider.get(RepositoryService).getRepositorySizeInfo(repo)
-            .then(function (repositorySizeInfo) {
+            .then(function(repositorySizeInfo) {
                 $scope.activeRepositorySize = repositorySizeInfo;
             })
-            .catch(function (e) {
+            .catch(function(e) {
                 $scope.activeRepositorySizeError = e.data.message;
             });
     };
 
-    $scope.onKeyDown = function (event) {
+    $scope.onKeyDown = function(event) {
         if (event.keyCode === 27) {
             $scope.doClear = true;
         }
@@ -167,7 +166,7 @@ function homeCtrl($scope,
 
     $scope.$on('$destroy', () => subscriptions.forEach((subscription) => subscription()));
 
-    $scope.$on('$routeChangeSuccess', function ($event, current, previous) {
+    $scope.$on('$routeChangeSuccess', function($event, current, previous) {
         if (previous) {
             // If previous is defined we got here through navigation, hence security is already
             // initialized and its safe to refresh the repository info.
@@ -180,7 +179,6 @@ function homeCtrl($scope,
             }
         }
     });
-
 }
 
 mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', 'toastr', '$location', '$repositories', '$licenseService', '$rootScope',
@@ -220,7 +218,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         const routes = PluginRegistry.get('route');
         const menuItems = PluginRegistry.get('main.menu');
 
-        angular.forEach(routes, function (route) {
+        angular.forEach(routes, function(route) {
             const menuItem = menuItems.flatMap((mi) => mi.items)
                 .filter((menuItem) => menuItem.role?.includes('ROLE_'))
                 .find((menuItem) => route.url.includes(menuItem.href));
@@ -233,24 +231,24 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
             restrictedPages.setPageRestriction(route.url, isAccessToPageRestricted);
         });
         securityContextService.updateRestrictedPages(restrictedPages);
-    }
+    };
 
     const startGuide = (guideId) => {
         // Check to see if $translate service is ready with the language before starting the guide as the steps are translated ahead on time. Will retry 20 times (1 second).
-        const timer = $interval(function () {
+        const timer = $interval(function() {
             if ($translate.use()) {
-                GuidesService.autoStartGuide(guideId)
+                GuidesService.autoStartGuide(guideId);
                 $interval.cancel(timer);
             }
         }, 50, 20);
-    }
+    };
 
     $scope.onRdfResourceSearch = () => {
         if (isHomePage()) {
             $scope.hideRdfResourceSearch = true;
             $('#search-resource-input-home input').focus();
             toastr.info(decodeHTML($translate.instant('search.resource.current.page.msg')), $translate.instant('search.resources.msg'), {
-                allowHtml: true
+                allowHtml: true,
             });
         }
     };
@@ -259,31 +257,31 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         return $location.url() === '/';
     };
 
-    $scope.isMenuCollapsedOnLoad = function () {
+    $scope.isMenuCollapsedOnLoad = function() {
         return $('.main-menu').hasClass('collapsed');
     };
 
-    $scope.checkMenu = debounce(function () {
+    $scope.checkMenu = debounce(function() {
         const collapsed = $scope.isMenuCollapsedOnLoad();
         if ($scope.menuCollapsed !== collapsed) {
             $scope.menuCollapsed = collapsed;
         }
     }, 0, {trailing: true});
 
-    const deregisterMenuWatcher = $scope.$watch(function () {
+    const deregisterMenuWatcher = $scope.$watch(function() {
         return $scope.isMenuCollapsedOnLoad();
-    }, function (newValue, oldValue) {
+    }, function(newValue, oldValue) {
         if (newValue !== oldValue || typeof newValue === 'undefined') {
             // Trigger debounced check on both collapse and expand
             $scope.checkMenu();
         }
     });
 
-    $scope.showLabel = function (item) {
+    $scope.showLabel = function(item) {
         return item.children ? true : !$scope.menuCollapsed;
     };
 
-    const setYears = function () {
+    const setYears = function() {
         const date = new Date();
         $scope.currentYear = date.getFullYear();
         $scope.previousYear = 2002; // Peio says this is 2002 or 2003, in other words the year of the earliest file.
@@ -291,7 +289,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
 
     setYears();
 
-    $('#repositorySelectDropdown').on('hide.bs.dropdown', function (e) {
+    $('#repositorySelectDropdown').on('hide.bs.dropdown', function(e) {
         if (GuidesService.isActive()) {
             if ($('#repositorySelectDropdown.autoCloseOff').length > 0) {
                 e.preventDefault();
@@ -299,7 +297,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         }
     });
 
-    $scope.$on("$routeChangeSuccess", function ($event, current, previous) {
+    $scope.$on("$routeChangeSuccess", function($event, current, previous) {
         $scope.clicked = false;
         $scope.hideRdfResourceSearch = false;
         if (previous) {
@@ -319,40 +317,36 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     }
 
     const subscribeToCookieConsentChanged = () => {
-        document.body.addEventListener(COOKIE_CONSENT_CHANGED_EVENT, updateCookieConsentHandler)
+        document.body.addEventListener(COOKIE_CONSENT_CHANGED_EVENT, updateCookieConsentHandler);
         return () => document.body.removeEventListener(COOKIE_CONSENT_CHANGED_EVENT, updateCookieConsentHandler);
-    }
+    };
 
-    let cookieConsentChangedSubscription;
-    if (cookieConsentChangedSubscription) {
-        cookieConsentChangedSubscription();
-    }
-    cookieConsentChangedSubscription = subscribeToCookieConsentChanged();
+    const cookieConsentChangedSubscription = subscribeToCookieConsentChanged();
 
-    $scope.resumeGuide = function () {
+    $scope.resumeGuide = function() {
         $rootScope.$broadcast('guideResume');
     };
 
-    $rootScope.$on('guideReset', function () {
+    $rootScope.$on('guideReset', function() {
         $scope.guidePaused = false;
         $rootScope.guidePaused = false;
     });
 
-    $rootScope.$on('guideStarted', function () {
+    $rootScope.$on('guideStarted', function() {
         $scope.guidePaused = false;
         $rootScope.guidePaused = false;
     });
 
-    $rootScope.$on('guidePaused', function () {
+    $rootScope.$on('guidePaused', function() {
         $scope.guidePaused = true;
         $rootScope.guidePaused = true;
     });
 
-    $rootScope.$on('$translateChangeSuccess', function () {
-        $scope.menu.forEach(function (menu) {
+    $rootScope.$on('$translateChangeSuccess', function() {
+        $scope.menu.forEach(function(menu) {
             menu.label = $translate.instant(menu.labelKey);
             if (menu.children) {
-                menu.children.forEach(function (child) {
+                menu.children.forEach(function(child) {
                     child.label = $translate.instant(child.labelKey);
                 });
             }
@@ -364,27 +358,28 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     });
 
     //Copy to clipboard popover options
-    $scope.copyToClipboard = function (uri) {
+    $scope.copyToClipboard = function(uri) {
         ModalService.openCopyToClipboardModal(uri);
     };
 
-    $scope.goToAddRepo = function () {
-        $location.path('repository/create').search({previous: 'home'});
+    $scope.goToAddRepo = function() {
+        const returnTo = $location.url();
+        $location.path('repository/create').search({previous: returnTo});
     };
 
-    $scope.goToEditRepo = function (repository) {
+    $scope.goToEditRepo = function(repository) {
         $location.path(`repository/edit/${repository.id}`).search({previous: 'home', location: repository.location});
     };
 
-    $scope.getLocationFromUri = function (location) {
+    $scope.getLocationFromUri = function(location) {
         return $repositories.getLocationFromUri(location);
     };
 
-    $scope.$on("$locationChangeSuccess", function () {
+    $scope.$on("$locationChangeSuccess", function() {
         $scope.showFooter = true;
     });
 
-    $scope.$on("repositoryIsSet", function () {
+    $scope.$on("repositoryIsSet", function() {
         $scope.setRestricted();
         LocalStorageAdapter.clearClassHieararchyState();
     });
@@ -397,7 +392,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
 
     $scope.sesameVersion = productInfo.sesame;
 
-    $scope.select = function (index, event, clicked) {
+    $scope.select = function(index, event, clicked) {
         if ($('.main-menu').hasClass('collapsed')) {
             if (!$(event.target).parents(".menu-element").children('.menu-element-root').hasClass('active')) {
                 if (!$(event.target).parents(".menu-element").hasClass('open') && clicked) {
@@ -432,7 +427,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
                     $scope.selected = index;
                 }
             } else {
-                $timeout(function () {
+                $timeout(function() {
                     $(event.target).parents(".menu-element").children('.menu-element-root').addClass('active');
                 }, 50);
                 $scope.selected = index;
@@ -440,7 +435,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         }
     };
 
-    $('body').bind('click', function (e) {
+    $('body').bind('click', function(e) {
         if (!$(e.target).parents(".main-menu").length && $('.main-menu').hasClass('collapsed')) {
             $scope.clicked = false;
             $scope.selected = -1;
@@ -449,13 +444,13 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
 
     $scope.resolveUrl = (productVersion, endpointPath) => DocumentationUrlResolver.getDocumentationUrl(productVersion, endpointPath);
 
-    $scope.isCurrentPath = function (path) {
+    $scope.isCurrentPath = function(path) {
         return $location.path() === '/' + path;
     };
 
-    $scope.isCurrentSubmenuChildPath = function (submenu) {
+    $scope.isCurrentSubmenuChildPath = function(submenu) {
         if (submenu.children.length !== 0) {
-            return submenu.children.some(function (child) {
+            return submenu.children.some(function(child) {
                 return $scope.isCurrentPath(child.href);
             });
         }
@@ -466,7 +461,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     if ($location.path() === '/') {
         $scope.selected = -1;
     } else {
-        $timeout(function () {
+        $timeout(function() {
             const route = $location.path().replace('/', '');
             const elem = $('a[href^="' + route + '"]');
             $scope.selected = elem.closest('.menu-element').index() - 1;
@@ -477,56 +472,56 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     $scope.popoverTemplate = 'js/angular/templates/repositorySize.html';
 
     $scope.securityEnabled = true;
-    $scope.isSecurityEnabled = function () {
+    $scope.isSecurityEnabled = function() {
         return $jwtAuth.isSecurityEnabled();
     };
-    $scope.isFreeAccessEnabled = function () {
+    $scope.isFreeAccessEnabled = function() {
         return $jwtAuth.isFreeAccessEnabled();
     };
-    $scope.hasExternalAuthUser = function () {
+    $scope.hasExternalAuthUser = function() {
         return $jwtAuth.hasExternalAuthUser();
     };
-    $scope.isDefaultAuthEnabled = function () {
+    $scope.isDefaultAuthEnabled = function() {
         return $jwtAuth.isDefaultAuthEnabled();
     };
 
-    $scope.isUserLoggedIn = function () {
+    $scope.isUserLoggedIn = function() {
         return $scope.userLoggedIn;
     };
 
-    $scope.hasActiveLocation = function () {
+    $scope.hasActiveLocation = function() {
         return $repositories.hasActiveLocation();
     };
 
-    $scope.getActiveLocation = function () {
+    $scope.getActiveLocation = function() {
         return $repositories.getActiveLocation();
     };
 
-    $scope.isLoadingLocation = function () {
+    $scope.isLoadingLocation = function() {
         return $repositories.isLoadingLocation();
     };
 
-    $scope.getRepositories = function () {
+    $scope.getRepositories = function() {
         return $repositories.getRepositories();
     };
 
-    $scope.getReadableRepositories = function () {
+    $scope.getReadableRepositories = function() {
         return $repositories.getReadableRepositories();
     };
 
-    $scope.getWritableRepositories = function () {
+    $scope.getWritableRepositories = function() {
         return $repositories.getWritableRepositories();
     };
 
-    $scope.getActiveRepository = function () {
+    $scope.getActiveRepository = function() {
         return $repositories.getActiveRepository();
     };
 
-    $scope.canWriteRepoInLocation = function (repository) {
+    $scope.canWriteRepoInLocation = function(repository) {
         return $jwtAuth.canWriteRepo(repository);
     };
 
-    $scope.canWriteActiveRepo = function (noSystem) {
+    $scope.canWriteActiveRepo = function(noSystem) {
         const activeRepository = $repositories.getActiveRepositoryObject();
         if (activeRepository) {
             // If the parameter noSystem is true then we don't allow write access to the SYSTEM repository
@@ -536,11 +531,11 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         return false;
     };
 
-    $scope.getActiveRepositoryObject = function () {
+    $scope.getActiveRepositoryObject = function() {
         return $repositories.getActiveRepositoryObject();
     };
 
-    $scope.getActiveRepositoryShortLocation = function () {
+    $scope.getActiveRepositoryShortLocation = function() {
         const repo = $repositories.getActiveRepositoryObject();
         if (repo) {
             const location = repo.location;
@@ -552,19 +547,19 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         return '';
     };
 
-    $scope.isActiveRepoOntopType = function () {
+    $scope.isActiveRepoOntopType = function() {
         return $repositories.isActiveRepoOntopType();
     };
 
-    $scope.isActiveRepoFedXType = function () {
+    $scope.isActiveRepoFedXType = function() {
         return $repositories.isActiveRepoFedXType();
     };
 
-    $scope.isLicensePresent = function () {
+    $scope.isLicensePresent = function() {
         return $licenseService.isLicensePresent();
     };
 
-    $scope.isLicenseValid = function () {
+    $scope.isLicenseValid = function() {
         return $licenseService.isLicenseValid();
     };
 
@@ -572,7 +567,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
      *  Sets attrs property in the directive
      * @param attrs
      */
-    $scope.setAttrs = function (attrs) {
+    $scope.setAttrs = function(attrs) {
         $scope.attrs = attrs;
     };
 
@@ -583,7 +578,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
      *  If on the other hand attribute "ontop" or "fedx" is found and such repo, proper message about the
      * restrictions related with repository of type Ontop or FedX will be shown to the user
      */
-    $scope.setRestricted = function () {
+    $scope.setRestricted = function() {
         if ($scope.attrs) {
             $scope.isRestricted =
                 $scope.attrs.hasOwnProperty('license') && !$licenseService.isLicenseValid() ||
@@ -593,7 +588,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         }
     };
 
-    $scope.toHumanReadableType = function (type) {
+    $scope.toHumanReadableType = function(type) {
         switch (type) {
             case 'graphdb':
                 return 'Graphdb';
@@ -608,7 +603,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         }
     };
 
-    $scope.setRepository = function (repository) {
+    $scope.setRepository = function(repository) {
         $repositories.setRepository(repository);
     };
 
@@ -638,7 +633,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
             // otherwise show login screen if security is on
             $rootScope.redirectToLogin().then(() => {
                 toastr.success('Signed out');
-            })
+            });
         }
     }
 
@@ -680,60 +675,60 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         }
     };
 
-    $scope.isAdmin = function () {
+    $scope.isAdmin = function() {
         return $scope.hasRole(UserRole.ROLE_ADMIN);
     };
 
-    $scope.isUser = function () {
+    $scope.isUser = function() {
         return $scope.hasRole(UserRole.ROLE_USER);
     };
 
-    $scope.hasRole = function (role) {
+    $scope.hasRole = function(role) {
         if (!angular.isUndefined(role)) {
             return $jwtAuth.hasRole(role);
         }
         return true;
     };
 
-    $scope.hasPermission = function () {
+    $scope.hasPermission = function() {
         return $rootScope.hasPermission();
     };
 
-    $scope.canReadRepo = function (repo) {
+    $scope.canReadRepo = function(repo) {
         return $jwtAuth.canReadRepo(repo);
     };
 
-    $scope.checkForWrite = function (role, repo) {
+    $scope.checkForWrite = function(role, repo) {
         return $jwtAuth.checkForWrite(role, repo);
     };
 
-    $scope.hasAuthority = function () {
+    $scope.hasAuthority = function() {
         return $jwtAuth.hasAuthority();
-    }
+    };
 
-    $scope.hasGraphqlRightsOverCurrentRepo = function () {
+    $scope.hasGraphqlRightsOverCurrentRepo = function() {
         return $jwtAuth.hasGraphqlRightsOverCurrentRepo();
-    }
+    };
 
-    $scope.setPopoverRepo = function (repository) {
+    $scope.setPopoverRepo = function(repository) {
         $scope.popoverRepo = repository;
     };
 
     // When the dropdown list is open, the popover of the already selected repo should disappear on mouseover on any of the listed options
-    $scope.handlePopovers = function (repository) {
+    $scope.handlePopovers = function(repository) {
         $scope.setPopoverRepo(repository);
         $scope.closeActiveRepoPopover();
     };
 
-    $scope.isRepoActive = function (repository) {
+    $scope.isRepoActive = function(repository) {
         return $repositories.isRepoActive(repository);
     };
 
-    $scope.getRepositorySize = function () {
+    $scope.getRepositorySize = function() {
         $scope.repositorySize = {};
         if ($scope.popoverRepo) {
             $scope.repositorySize.loading = true;
-            RepositoriesRestService.getSize($scope.popoverRepo).then(function (res) {
+            RepositoriesRestService.getSize($scope.popoverRepo).then(function(res) {
                 $scope.repositorySize = res.data;
             });
         }
@@ -745,10 +740,10 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
      */
     let popoverTimer;
 
-    $scope.openActiveRepoPopover = function () {
+    $scope.openActiveRepoPopover = function() {
         if ($scope.getActiveRepository()) {
             $scope.cancelPopoverOpen();
-            popoverTimer = $timeout(function () {
+            popoverTimer = $timeout(function() {
                 $scope.isActiveRepoPopoverOpen = true;
             }, 1000);
         }
@@ -757,18 +752,18 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     /**
      * Cancels the popover timer.
      */
-    $scope.cancelPopoverOpen = function () {
+    $scope.cancelPopoverOpen = function() {
         $timeout.cancel(popoverTimer);
-    }
+    };
 
-    $scope.closeActiveRepoPopover = function () {
+    $scope.closeActiveRepoPopover = function() {
         $scope.isActiveRepoPopoverOpen = false;
     };
 
-    const closeActiveRepoPopoverEventHandler = function (event) {
+    const closeActiveRepoPopoverEventHandler = function(event) {
         const popoverElement = document.querySelector('.popover');
         if ($scope.isActiveRepoPopoverOpen && popoverElement && !popoverElement.contains(event.target)) {
-            $timeout(function () {
+            $timeout(function() {
                 $scope.isActiveRepoPopoverOpen = false;
             }, 0);
         }
@@ -776,40 +771,40 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
 
     document.addEventListener('click', closeActiveRepoPopoverEventHandler);
 
-    $scope.getDegradedReason = function () {
+    $scope.getDegradedReason = function() {
         return $repositories.getDegradedReason();
     };
 
-    $scope.canManageRepositories = function () {
+    $scope.canManageRepositories = function() {
         return $jwtAuth.hasRole(UserRole.ROLE_REPO_MANAGER) && !$repositories.getDegradedReason();
     };
 
-    $scope.getSavedQueries = function () {
+    $scope.getSavedQueries = function() {
         SparqlRestService.getSavedQueries()
-            .success(function (data) {
+            .success(function(data) {
                 $scope.sampleQueries = data;
             })
-            .error(function (data) {
+            .error(function(data) {
                 const msg = getError(data);
                 toastr.error(msg, $translate.instant('query.editor.get.saved.queries.error'));
             });
     };
 
-    $scope.goToSparqlEditor = function (query) {
+    $scope.goToSparqlEditor = function(query) {
         $location.path('/sparql').search({savedQueryName: query.name, owner: query.owner, execute: true});
     };
 
-    $scope.declineTutorial = function () {
+    $scope.declineTutorial = function() {
         LocalStorageAdapter.set(LSKeys.TUTORIAL_STATE, 1);
         $scope.tutorialState = false;
     };
 
-    $scope.showTutorial = function () {
+    $scope.showTutorial = function() {
         $scope.tutorialState = true;
         LocalStorageAdapter.remove(LSKeys.TUTORIAL_STATE);
     };
 
-    $scope.initTutorial = function () {
+    $scope.initTutorial = function() {
         if (!$scope.tutorialState && $location.path() !== '/') {
             return;
         }
@@ -818,29 +813,29 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
                 "title": $translate.instant("main.info.title.welcome.page"),
                 "info": '<p>' + decodeHTML($translate.instant('main.info.welcome.page')) + '</p>'
                     + '<p>' + decodeHTML($translate.instant('main.info.welcome.page.guides')) + '</p>'
-                    + '<p>' + decodeHTML($translate.instant('main.info.welcome.page.footer')) + '</p>'
+                    + '<p>' + decodeHTML($translate.instant('main.info.welcome.page.footer')) + '</p>',
             },
             {
                 "title": $translate.instant('main.info.title.create.repo.page'),
-                "info": decodeHTML($translate.instant('main.info.create.repo.page', {link: "<a href=\"https://graphdb.ontotext.com/documentation/" + productInfo.productShortVersion + "/configuring-a-repository.html\" target=\"_blank\">"}))
+                "info": decodeHTML($translate.instant('main.info.create.repo.page', {link: "<a href=\"https://graphdb.ontotext.com/documentation/" + productInfo.productShortVersion + "/configuring-a-repository.html\" target=\"_blank\">"})),
             },
             {
                 "title": $translate.instant('main.info.title.load.sample.dataset'),
-                "info": $translate.instant('main.info.load.sample.dataset')
+                "info": $translate.instant('main.info.load.sample.dataset'),
             },
             {
                 "title": $translate.instant('main.info.title.run.sparql.query'),
-                "info": decodeHTML($translate.instant('main.info.run.sparql.query'))
+                "info": decodeHTML($translate.instant('main.info.run.sparql.query')),
             },
             {
                 "title": $translate.instant('menu.rest.api.label'),
-                "info": decodeHTML($translate.instant('main.info.rest.api'))
-            }
+                "info": decodeHTML($translate.instant('main.info.rest.api')),
+            },
         ];
         $scope.activePage = 0;
         $(".pages-wrapper .page-slide").css("opacity", 100);
         const widthOfParentElm = $(".main-container")[0].offsetWidth + 200;
-        $timeout(function () {
+        $timeout(function() {
             const $pageSlider = $(".pages-wrapper .page-slide");
             $pageSlider.css("left", widthOfParentElm + "px");
             $($pageSlider[$scope.activePage]).css("left", 0 + "px");
@@ -848,11 +843,11 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         }, 50);
     };
 
-    $scope.getTutorialPageHtml = function (page) {
+    $scope.getTutorialPageHtml = function(page) {
         return $sce.trustAsHtml(page.info);
     };
 
-    $scope.checkSubMenuPosition = function (index) {
+    $scope.checkSubMenuPosition = function(index) {
         if (index === 0) {
             $('.main-menu.collapsed .sub-menu').removeClass('align-bottom');
         } else {
@@ -866,7 +861,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
 
     collapsedMenuLogicOnInit();
 
-    $(window).resize(function () {
+    $(window).resize(function() {
         collapseMenuLogicOnResize();
         if ($scope.tutorialState && $location.path() === '/') {
             $scope.initTutorial();
@@ -931,7 +926,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         }
     }
 
-    $scope.slideToPage = function (index) {
+    $scope.slideToPage = function(index) {
         const widthOfParentElm = $(".main-container")[0].offsetWidth;
         const $pageSlider = $(".pages-wrapper .page-slide");
         $pageSlider.css("opacity", "0").delay(200).css("left", widthOfParentElm + "px");
@@ -939,7 +934,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         $($pageSlider[$scope.activePage]).css("opacity", "100").css("left", 0 + "px");
     };
 
-    $scope.slideNext = function () {
+    $scope.slideNext = function() {
         let nextPageIndex = ++$scope.activePage;
         if (nextPageIndex >= $scope.tutorialInfo.length) {
             nextPageIndex = 0;
@@ -948,7 +943,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         $($(".btn-toolbar.pull-right .btn-group .btn")[$scope.activePage]).focus();
     };
 
-    $scope.toggleNavigation = function () {
+    $scope.toggleNavigation = function() {
         const $mainMenu = $('.main-menu');
         const $activeSubmenu = $('.sub-menu li.active');
         if (!$mainMenu.hasClass('collapsed')) {
@@ -980,7 +975,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         }
     };
 
-    $scope.$on('onToggleNavWidth', function (e, isCollapsed) {
+    $scope.$on('onToggleNavWidth', function(e, isCollapsed) {
         $scope.menuState = isCollapsed;
         if (isCollapsed) {
             LocalStorageAdapter.set(LSKeys.MENU_STATE, 'collapsedMenu');
@@ -989,7 +984,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         }
         if ($scope.tutorialState && $location.path() === '/') {
             const withOfParentElm = $(".pages-wrapper")[0].offsetWidth + 200;
-            $timeout(function () {
+            $timeout(function() {
                 const $pageSlider = $(".pages-wrapper .page-slide");
                 $pageSlider.css("left", withOfParentElm + "px");
                 $($pageSlider[$scope.activePage]).css("left", 0 + "px");
@@ -1001,7 +996,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         $scope.getSavedQueries();
     }
 
-    $scope.$on('securityInit', function (scope, securityEnabled, userLoggedIn, freeAccess) {
+    $scope.$on('securityInit', function(scope, securityEnabled, userLoggedIn, freeAccess) {
         $scope.securityEnabled = securityEnabled;
         $scope.userLoggedIn = userLoggedIn;
 
@@ -1014,7 +1009,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
             setPrincipal()
                 .then(() => {
                     // Update Restricted Pages permissions on securityInit
-                    updatePermissions()
+                    updatePermissions();
 
                     // Added timeout because, when the 'securityInit' event is fired after user logged-in.
                     // The authentication headers are still not set correctly when a request that loads saved queries is called and the $unauthorizedInterceptor rejects the request.
@@ -1024,7 +1019,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
             $licenseService.checkLicenseStatus()
                 .then(() => {
                     $scope.licenseIsSet = true;
-                    TrackingService.applyTrackingConsent()
+                    TrackingService.applyTrackingConsent();
                 })
                 .catch((error) => {
                     $scope.licenseIsSet = false;
@@ -1040,49 +1035,49 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         }
     });
 
-    $scope.isTrackingAllowed = function () {
+    $scope.isTrackingAllowed = function() {
         if (!$scope.licenseIsSet) {
             return;
         }
         return TrackingService.isTrackingAllowed();
     };
 
-    $scope.getProductType = function () {
+    $scope.getProductType = function() {
         return $licenseService.productType();
     };
 
-    $scope.isEnterprise = function () {
+    $scope.isEnterprise = function() {
         return $scope.getProductType() === "enterprise";
     };
 
-    $scope.isFreeEdition = function () {
+    $scope.isFreeEdition = function() {
         return $scope.getProductType() === "free";
     };
 
-    $scope.checkEdition = function (editions) {
-        if (editions == null) {
+    $scope.checkEdition = function(editions) {
+        if (editions === null) {
             return true;
         }
         return _.indexOf(editions, $scope.getProductType()) >= 0;
     };
 
-    $scope.showLicense = function () {
+    $scope.showLicense = function() {
         return $licenseService.showLicense();
     };
 
-    $scope.getLicense = function () {
+    $scope.getLicense = function() {
         return $licenseService.license();
     };
 
-    $scope.getLicenseErrorMsg = function () {
+    $scope.getLicenseErrorMsg = function() {
         return $licenseService.licenseErrorMsg();
-    }
+    };
 
-    $scope.isLicenseHardcoded = function () {
+    $scope.isLicenseHardcoded = function() {
         return $licenseService.isLicenseHardcoded();
     };
 
-    $scope.getHumanReadableSeconds = function (s, preciseSeconds) {
+    $scope.getHumanReadableSeconds = function(s, preciseSeconds) {
         const days = Math.floor(s / 86400);
         const hours = Math.floor((s % 86400) / 3600);
         const minutes = Math.floor((s % 3600) / 60);
@@ -1113,7 +1108,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         return message.replace(/( 0[a-z])+$/, "");
     };
 
-    $scope.getHumanReadableTimestamp = function (time) {
+    $scope.getHumanReadableTimestamp = function(time) {
         const now = Date.now();
         const delta = (now - time) / 1000;
         if (delta < 60) {
@@ -1208,8 +1203,8 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
 repositorySizeCtrl.$inject = ['$scope', '$http', 'RepositoriesRestService'];
 
 function repositorySizeCtrl($scope, $http, RepositoriesRestService) {
-    $scope.getRepositorySize = function (repository) {
-        RepositoriesRestService.getSize(repository).then(function (res) {
+    $scope.getRepositorySize = function(repository) {
+        RepositoriesRestService.getSize(repository).then(function(res) {
             $scope.size = res.data;
         });
     };
@@ -1223,19 +1218,19 @@ function uxTestCtrl($scope, $repositories, toastr, ModalService) {
         {name: 'white', shade: 'light'},
         {name: 'red', shade: 'dark'},
         {name: 'blue', shade: 'dark'},
-        {name: 'yellow', shade: 'light'}
+        {name: 'yellow', shade: 'light'},
     ];
     $scope.myColor = $scope.colors[2];
 
     $scope.specialValue = {
         "id": "12345",
-        "value": "green"
+        "value": "green",
     };
 
     $scope.checkedItem = {name: 'black', shade: 'dark'};
 
     $scope.toggleOn = true;
-    $scope.toggleSwitch = function () {
+    $scope.toggleSwitch = function() {
         $scope.toggleOn = !$scope.toggleOn;
     };
 
@@ -1244,16 +1239,16 @@ function uxTestCtrl($scope, $repositories, toastr, ModalService) {
 
     $scope.onopen = $scope.onclose = () => angular.noop();
     $scope.openInfoPanel = false;
-    $scope.showInfoPanel = function () {
+    $scope.showInfoPanel = function() {
         $scope.openInfoPanel = true;
     };
-    $scope.closeInfoPanel = function () {
+    $scope.closeInfoPanel = function() {
         $scope.openInfoPanel = false;
     };
 
     $scope.slideOpen = false;
 
-    $scope.toggleSlide = function () {
+    $scope.toggleSlide = function() {
         $scope.slideOpen = !$scope.slideOpen;
     };
 
@@ -1264,33 +1259,33 @@ function uxTestCtrl($scope, $repositories, toastr, ModalService) {
         options: {
             floor: 0,
             ceil: 100,
-            step: 1
-        }
+            step: 1,
+        },
     };
 
-    $scope.openModal = function () {
+    $scope.openModal = function() {
         const modal = ModalService.openSimpleModal({
             title: 'Confirm',
             message: 'Lorem ipsum dolor sit amet.',
-            warning: true
+            warning: true,
         });
 
-        modal.result.then(function () {
+        modal.result.then(function() {
             modal.dismiss('cancel');
         });
     };
 
-    $scope.demoToast = function (alertType, secondArg = true) {
+    $scope.demoToast = function(alertType, secondArg = true) {
         toastr[alertType]('Consectetur adipiscing elit. Sic transit gloria mundi.',
             secondArg ? 'Lorem ipsum dolor sit amet' : undefined,
             {timeOut: 300000, extendedTimeOut: 300000});
     };
 
-    $scope.clearToasts = function () {
+    $scope.clearToasts = function() {
         toastr.clear();
     };
 
-    $scope.clearRepo = function () {
+    $scope.clearRepo = function() {
         $repositories.setRepository('');
     };
 }

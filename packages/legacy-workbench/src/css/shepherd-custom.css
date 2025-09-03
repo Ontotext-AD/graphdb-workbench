@@ -32,6 +32,7 @@
     text-align: center;
     min-height: 90px;
     margin-top: 10px;
+    overflow-wrap: break-word;
 }
 
 .shepherd-text ol, .shepherd-text ul {

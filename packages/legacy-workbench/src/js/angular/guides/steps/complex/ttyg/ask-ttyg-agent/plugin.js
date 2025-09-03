@@ -1,4 +1,5 @@
 const TTYG_ASK_DEFAULT_TITLE = 'guide.step-action.ask-ttyg-agent';
+const CHAT_DETAILS_SELECTOR = 'chat-details';
 
 PluginRegistry.add('guide.step', [
     {
@@ -11,7 +12,7 @@ PluginRegistry.add('guide.step', [
                     options: {
                         content: `guide.step_plugin.ask-ttyg-agent.input-question`,
                         // If mainAction is set the title will be set automatically
-                        ...(options.mainAction ? {} : { title: TTYG_ASK_DEFAULT_TITLE }),
+                        ...(options.mainAction ? {} : {title: TTYG_ASK_DEFAULT_TITLE}),
                         class: 'input-question',
                         disableNextFlow: true,
                         ...options,
@@ -28,7 +29,8 @@ PluginRegistry.add('guide.step', [
                                 const value = $(elementSelector).text();
 
                                 if (value && event.key === 'Enter' && !event.shiftKey && !event.ctrlKey) {
-                                    guide.next();
+                                    GuideUtils.waitFor(GuideUtils.getGuideElementSelector(CHAT_DETAILS_SELECTOR))
+                                        .then(() => guide.next());
                                 }
                             });
                         },
@@ -36,12 +38,12 @@ PluginRegistry.add('guide.step', [
                             const elementSelector = GuideUtils.getGuideElementSelector('contenteditable');
                             // Remove the "keydown" listener of the element. It is important when the step is hidden.
                             $(elementSelector).off('keydown');
-                        }
-                    }
+                        },
+                    },
                 },
-                getWaitForAnswerStep(GuideUtils, options)
-            ]
-        }
+                getWaitForAnswerStep(GuideUtils, options),
+            ];
+        },
     },
     {
         guideBlockName: 'ttyg-explain-response',
@@ -58,31 +60,31 @@ PluginRegistry.add('guide.step', [
                         beforeShowPromise: (guide, currentStep) => GuideUtils.waitFor(elementSelector, 1)
                             .then(() => {
                                 // Using a timeout because the library executes logic to show the step in a then clause which causes current and next steps to show
-                                setTimeout(() => guide.next())
+                                setTimeout(() => guide.next());
                             })
                             .catch(() => {
                                 const stepId = currentStep.id;
                                 // Using a timeout because the library executes logic to show the step in a then clause which causes current and next steps to show
-                                setTimeout(() => guide.show(stepId + 3))
+                                setTimeout(() => guide.show(stepId + 3));
                             }),
-                    }, options)
+                    }, options),
                 },
                 {
                     guideBlockName: 'clickable-element',
                     options: {
                         content: 'guide.step_plugin.ask-ttyg-agent.explain-answer',
                         // If mainAction is set the title will be set automatically
-                        ...(options.mainAction ? {} : { title: TTYG_ASK_DEFAULT_TITLE }),
+                        ...(options.mainAction ? {} : {title: TTYG_ASK_DEFAULT_TITLE}),
                         class: 'explain-answer',
                         disableNextFlow: true,
                         ...options,
                         url: 'ttyg',
                         elementSelector,
-                    }
+                    },
                 },
-                getWaitForAnswerStep(GuideUtils, options)
-            ]
-        }
+                getWaitForAnswerStep(GuideUtils, options),
+            ];
+        },
     },
     {
         guideBlockName: 'ttyg-ask-agent-explore-sparql',
@@ -100,14 +102,14 @@ PluginRegistry.add('guide.step', [
                         beforeShowPromise: (guide, currentStep) => GuideUtils.waitFor(elementSelector, 1)
                             .then(() => {
                                 // Using a timeout because the library executes logic to show the step in a then clause which causes current and next steps to show
-                                setTimeout(() => guide.next())
+                                setTimeout(() => guide.next());
                             })
                             .catch(() => {
                                 const stepId = currentStep.id;
                                 // Using a timeout because the library executes logic to show the step in a then clause which causes current and next steps to show
-                                setTimeout(() => guide.show(stepId + 2))
+                                setTimeout(() => guide.show(stepId + 2));
                             }),
-                    }, options)
+                    }, options),
                 },
                 {
                     guideBlockName: 'clickable-element',
@@ -115,15 +117,15 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.ask-ttyg-agent.explore-sparql',
                         class: 'explore-sparql',
                         // If mainAction is set the title will be set automatically
-                        ...(options.mainAction ? {} : { title: TTYG_ASK_DEFAULT_TITLE }),
+                        ...(options.mainAction ? {} : {title: TTYG_ASK_DEFAULT_TITLE}),
                         disableNextFlow: true,
                         ...options,
                         url: 'ttyg',
-                        elementSelector
-                    }
-                }
-            ]
-        }
+                        elementSelector,
+                    },
+                },
+            ];
+        },
     },
     {
         guideBlockName: 'ttyg-ask-explain-answer-more',
@@ -141,15 +143,15 @@ PluginRegistry.add('guide.step', [
                             return GuideUtils.waitFor(elementSelector, 1)
                                 .then(() => {
                                     // Using a timeout because the library executes logic to show the step in a then clause which causes current and next steps to show
-                                    setTimeout(() => guide.next())
+                                    setTimeout(() => guide.next());
                                 })
                                 .catch(() => {
                                     const stepId = currentStep.id;
                                     // Using a timeout because the library executes logic to show the step in a then clause which causes current and next steps to show
-                                    setTimeout(() => guide.show(stepId + 3))
-                                })
-                        }
-                    }, options)
+                                    setTimeout(() => guide.show(stepId + 3));
+                                });
+                        },
+                    }, options),
                 },
                 {
                     guideBlockName: 'clickable-element',
@@ -157,7 +159,7 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.ask-ttyg-agent.explain-answer-more',
                         class: 'input-agent-name',
                         // If mainAction is set the title will be set automatically
-                        ...(options.mainAction ? {} : { title: TTYG_ASK_DEFAULT_TITLE }),
+                        ...(options.mainAction ? {} : {title: TTYG_ASK_DEFAULT_TITLE}),
                         disableNextFlow: true,
                         ...options,
                         url: 'ttyg',
@@ -166,18 +168,18 @@ PluginRegistry.add('guide.step', [
                             // Add "click" listener to the element. Upon clicking the element is hidden and this breaks the default flow of the guide.
                             // Adding a handler to proceed to next step
                             $(elementSelector).on('click', () => {
-                                guide.next()
+                                guide.next();
                             });
                         },
                         hide: () => () => {
                             // Remove the "click" listener of element. It is important when step is hidden.
                             $(elementSelector).off('click');
-                        }
-                    }
+                        },
+                    },
                 },
-                getWaitForAnswerStep(GuideUtils, options)
-            ]
-        }
+                getWaitForAnswerStep(GuideUtils, options),
+            ];
+        },
     },
     {
         guideBlockName: 'ask-ttyg-agent',
@@ -192,37 +194,37 @@ PluginRegistry.add('guide.step', [
 
             const steps = [
                 {
-                    guideBlockName: 'ttyg-ask-question', options: {...options, skipPoint: true}
-                }
+                    guideBlockName: 'ttyg-ask-question', options: {...options, skipPoint: true},
+                },
             ];
 
             if (explain) {
                 steps.push(
                     {
-                        guideBlockName: 'ttyg-explain-response', options: {...options}
-                    }
-                )
+                        guideBlockName: 'ttyg-explain-response', options: {...options},
+                    },
+                );
             }
 
             if (explain && exploreSparql) {
                 steps.push(
                     {
-                        guideBlockName: 'ttyg-ask-agent-explore-sparql', options: {...options}
-                    }
-                )
+                        guideBlockName: 'ttyg-ask-agent-explore-sparql', options: {...options},
+                    },
+                );
             }
 
             if (explain && explainMore) {
                 steps.push(
                     {
-                        guideBlockName: 'ttyg-ask-explain-answer-more', options: {...options}
+                        guideBlockName: 'ttyg-ask-explain-answer-more', options: {...options},
                     },
-                )
+                );
             }
 
             return steps;
-        }
-    }
+        },
+    },
 ]);
 
 const getWaitForAnswerStep = (GuideUtils, options) => {
@@ -233,8 +235,8 @@ const getWaitForAnswerStep = (GuideUtils, options) => {
             class: 'wait-for-answer',
             url: 'ttyg',
             placement: 'left',
-            elementSelector: GuideUtils.getGuideElementSelector('chat-details'),
+            elementSelector: GuideUtils.getGuideElementSelector(CHAT_DETAILS_SELECTOR),
             elementSelectorToWait: GuideUtils.getGuideElementSelector('question-loader'),
-        }, options)
-    }
-}
+        }, options),
+    };
+};
