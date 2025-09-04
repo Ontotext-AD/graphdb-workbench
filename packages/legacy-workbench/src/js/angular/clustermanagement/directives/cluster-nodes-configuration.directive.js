@@ -34,7 +34,7 @@ function ClusterNodesConfigurationComponent($translate, $timeout, productInfo, t
                 $scope.addNewLocation = true;
                 $scope.newLocation = new Location();
                 // Timeout used because field is added dynamically on "Add Node" and needs to render before it can be focused
-                $timeout(function () {
+                $timeout(function() {
                     const input = document.querySelector("input[name='location']");
                     if (input) {
                         input.focus();
@@ -78,6 +78,23 @@ function ClusterNodesConfigurationComponent($translate, $timeout, productInfo, t
             };
 
             /**
+             * Handles keyboard events for form input fields.
+             * Processes Enter key to save the node when form is valid and Escape key to cancel.
+             *
+             * @param {KeyboardEvent} event - The keyboard event object
+             * @param {boolean} formValid - Whether the current form is valid
+             * @param {string} endpoint - The endpoint URL to save
+             */
+            $scope.handleKeydown = function(event, formValid, endpoint) {
+                if (event.key === 'Enter' && formValid) {
+                    event.preventDefault();
+                    $scope.saveNode(endpoint);
+                } else if (event.key === 'Escape') {
+                    $scope.cancel();
+                }
+            };
+
+            /**
              * Saves a node to the cluster based on the provided endpoint.
              * If the node is found in the cluster deletion list, it is restored.
              * If the node is available in the cluster, it is added.
@@ -103,7 +120,7 @@ function ClusterNodesConfigurationComponent($translate, $timeout, productInfo, t
                 ModalService.openSimpleModal({
                     title: $translate.instant('location.confirm.detach'),
                     message: $translate.instant('location.confirm.detach.warning', {uri: itemView.endpoint}),
-                    warning: true
+                    warning: true,
                 }).result.then(() => {
                     ClusterContextService.deleteFromCluster(itemView.item);
                 });
@@ -119,7 +136,7 @@ function ClusterNodesConfigurationComponent($translate, $timeout, productInfo, t
                 ModalService.openSimpleModal({
                     title: $translate.instant('location.change.confirm'),
                     message: $translate.instant('location.change.confirm.warning'),
-                    warning: true
+                    warning: true,
                 }).result.then(() => {
                     ClusterContextService.setPendingReplace(itemView.item);
                     $scope.editedNodeIndex = index;
@@ -244,7 +261,7 @@ function ClusterNodesConfigurationComponent($translate, $timeout, productInfo, t
                 'clusterConfiguration.heartbeatInterval',
                 'clusterConfiguration.messageSizeKB',
                 'clusterConfiguration.verificationTimeout',
-                'clusterConfiguration.transactionLogMaximumSizeGB'
+                'clusterConfiguration.transactionLogMaximumSizeGB',
             ], (newValues, oldValues) => {
                 const isValid = $scope.isClusterConfigurationValid();
                 ClusterContextService.updateClusterValidity(isValid);
@@ -253,6 +270,6 @@ function ClusterNodesConfigurationComponent($translate, $timeout, productInfo, t
             subscriptions.push(unwatch);
             subscriptions.push(ClusterContextService.onClusterViewChanged(onClusterViewChanged));
             $scope.$on('$destroy', removeAllListeners);
-        }
+        },
     };
 }
