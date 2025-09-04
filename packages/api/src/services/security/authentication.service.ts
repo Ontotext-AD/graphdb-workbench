@@ -36,15 +36,6 @@ export class AuthenticationService implements Service {
   }
 
   /**
-   * Checks if the user is logged in based on the provided configuration and user details.
-   * @returns {boolean} True if the user is authenticated, false otherwise.
-   */
-  isLoggedIn(): boolean {
-    const config = this.getSecurityConfig();
-    return !!(config?.enabled && config?.userLoggedIn);
-  }
-
-  /**
    * Check if the user is authenticated.
    * A user is considered authenticated, if security is disabled, if he is external, or if there is an
    * auth token in the store

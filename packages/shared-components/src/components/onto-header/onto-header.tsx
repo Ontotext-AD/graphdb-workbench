@@ -136,8 +136,8 @@ export class OntoHeader {
             totalTripletsFormatter={this.totalTripletsFormatter}
             canWriteRepo={this.canWriteRepo}>
           </onto-repository-selector>
-          {this.securityConfig?.enabled && this.securityConfig?.userLoggedIn ? <onto-user-menu user={this.user} securityConfig={this.securityConfig}></onto-user-menu> : ''}
-          {this.securityConfig?.enabled && !this.securityConfig?.userLoggedIn && (this.currentRoute !== 'login') ? <onto-user-login></onto-user-login> : ''}
+          {this.authService.isAuthenticated() ? <onto-user-menu user={this.user} securityConfig={this.securityConfig}></onto-user-menu> : ''}
+          {this.securityConfig?.enabled && !this.authService.isAuthenticated() && (this.currentRoute !== 'login') ? <onto-user-login></onto-user-login> : ''}
           <onto-language-selector dropdown-alignment="right"></onto-language-selector>
         </div>
       </Host>
