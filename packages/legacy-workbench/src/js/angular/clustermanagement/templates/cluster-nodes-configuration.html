@@ -110,6 +110,7 @@
                                       ng-change="filterSuggestions(node)"
                                       ng-blur="hideSuggestions(node)"
                                       ng-click="filterSuggestions(node)"
+                                      ng-keydown="handleKeydown($event, form.location.$valid, node.endpoint)"
                                       auto-grow
                                       validate-url exclude="/repositories" exclude-protocol="ftp,ftps"
                                       validate-duplicate-url excluded-urls="clusterNodesEndpoints"
@@ -164,6 +165,7 @@
                                       ng-change="filterSuggestions(newLocation)"
                                       ng-blur="hideSuggestions(newLocation)"
                                       ng-click="filterSuggestions(newLocation)"
+                                      ng-keydown="handleKeydown($event, form.location.$valid, newLocation.endpoint)"
                                       auto-grow
                                       validate-url exclude="/repositories" exclude-protocol="ftp,ftps"
                                       validate-duplicate-url excluded-urls="clusterNodesEndpoints"
