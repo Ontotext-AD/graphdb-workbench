@@ -24,32 +24,51 @@ describe('AuthenticationService', () => {
   beforeEach(() => {
     authService = new AuthenticationService();
     ServiceProvider.get(AuthenticationStorageService).remove('jwt');
-    securityContextService.updateSecurityConfig({} as unknown as SecurityConfig);
+    securityContextService.updateSecurityConfig(undefined as unknown as SecurityConfig);
+    securityContextService.updateAuthenticatedUser(undefined as unknown as AuthenticatedUser);
     jest.spyOn(WindowService, 'getWindow').mockReturnValue(windowMock);
   });
 
   test('isAuthenticated should return true if the user is authenticated', () => {
     // When, I have an enabled security and logged user
-    const securityConfig = {enabled: true, userLoggedIn: true, freeAccess: {authorities: new AuthorityList()}} as unknown as SecurityConfig;
+    const securityConfig = {enabled: true, freeAccess: {authorities: new AuthorityList()}} as unknown as SecurityConfig;
     ServiceProvider.get(SecurityContextService).updateSecurityConfig(securityConfig);
+    ServiceProvider.get(AuthenticationStorageService).set('jwt', 'testjwt');
     // Then, I expect to be authenticated
-    expect(authService.isLoggedIn()).toEqual(true);
+    expect(authService.isAuthenticated()).toEqual(true);
+
+    const externalUser = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
+      {external: true} as unknown as AuthenticatedUser
+    );
+    securityContextService.updateAuthenticatedUser(externalUser);
+
+    // Then, I expect not to be authenticated
+    expect(authService.isAuthenticated()).toEqual(true);
+
+    // Given, I have disabled security
+    const disabledSecurityConfig = {enabled: true, freeAccess: {authorities: new AuthorityList()}} as unknown as SecurityConfig;
+    ServiceProvider.get(SecurityContextService).updateSecurityConfig(disabledSecurityConfig);
+    // When, I check, if I am authenticated
+    // Then, I expect be authenticated
+    expect(authService.isAuthenticated()).toEqual(true);
   });
 
   test('isAuthenticated should return false if the user is not authenticated', () => {
     // Given, I have enabled security
-    const enabledSecurityConfig = {enabled: true, freeAccess: {authorities: new AuthorityList()}} as unknown as SecurityConfig;
-    ServiceProvider.get(SecurityContextService).updateSecurityConfig(enabledSecurityConfig);
-    // When, I check, if I am authenticated
-    // Then, I expect, not to be authenticated
-    expect(authService.isLoggedIn()).toEqual(false);
-
-    // Given, I have disabled security
-    const disabledSecurityConfig = {enabled: false} as unknown as SecurityConfig;
+    const disabledSecurityConfig = {enabled: true} as unknown as SecurityConfig;
     ServiceProvider.get(SecurityContextService).updateSecurityConfig(disabledSecurityConfig);
-    // When, I check, if I am authenticated
-    // Then, I expect, not to be authenticated
-    expect(authService.isLoggedIn()).toEqual(false);
+
+    // Then, I expect not to be authenticated
+    expect(authService.isAuthenticated()).toEqual(false);
+
+    // When I have a internal user (external: false)
+    const internalUser = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
+      {external: false} as unknown as AuthenticatedUser
+    );
+    securityContextService.updateAuthenticatedUser(internalUser);
+
+    // Then, I expect not to be authenticated
+    expect(authService.isAuthenticated()).toEqual(false);
   });
 
   test('hasFreeAccess should return true if free access is enabled', () => {
@@ -415,3 +434,4 @@ describe('AuthenticationService', () => {
     expect(authService.hasAuthority()).toBe(true);
   });
 });
+
