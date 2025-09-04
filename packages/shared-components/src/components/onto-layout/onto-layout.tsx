@@ -221,7 +221,7 @@ export class OntoLayout {
       this.showHeader = true;
     } else {
       const hasAuth = !!this.authenticatedUser && !!this.securityConfig;
-      const isAuthenticated = this.authenticationService.isLoggedIn() || this.authenticationService.hasFreeAccess();
+      const isAuthenticated = this.authenticationService.isAuthenticated() || this.authenticationService.hasFreeAccess();
 
       this.isVisible = hasAuth && isAuthenticated;
       this.showHeader = isAuthenticated;
@@ -230,7 +230,7 @@ export class OntoLayout {
 
   private isAuthenticatedFully() {
     const authService = ServiceProvider.get(AuthenticationService);
-    return !authService.isSecurityEnabled() || authService.isLoggedIn() || authService.hasFreeAccess();
+    return !authService.isSecurityEnabled() || authService.isAuthenticated() || authService.hasFreeAccess();
   }
 
   private shouldShowMenu(role: Authority): boolean {

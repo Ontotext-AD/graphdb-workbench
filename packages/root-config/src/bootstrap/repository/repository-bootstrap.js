@@ -30,4 +30,4 @@ const loadActiveRepositoryLocation = () => {
     });
 };
 
-export const repositoryBootstrap = [loadActiveRepositoryLocation];
+export const repositoryBootstrap = [loadActiveRepositoryLocation, loadRepositories];
