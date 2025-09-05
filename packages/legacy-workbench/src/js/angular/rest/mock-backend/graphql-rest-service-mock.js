@@ -4,7 +4,6 @@ const GET_ENDPOINTS_DELAY = 200;
 const GET_ENDPOINTS_INFO_DELAY = 200;
 
 export class GraphqlRestServiceMock {
-
     getEndpointsMock(repositoryId) {
         return new Promise((resolve) => {
             setTimeout(() => resolve({data: cloneDeep(endpoints)}), GET_ENDPOINTS_DELAY);
@@ -29,6 +28,12 @@ export class GraphqlRestServiceMock {
             setTimeout(() => resolve({data: cloneDeep(endpointConfiguration)}), GET_ENDPOINTS_INFO_DELAY);
         });
     }
+
+    getGraphqlGenerationSettingsMock() {
+        return new Promise((resolve) => {
+            setTimeout(() => resolve({data: cloneDeep(configSettingsForRepo)}), GET_ENDPOINTS_INFO_DELAY);
+        });
+    }
 }
 
 const endpoints = {
@@ -38,25 +43,26 @@ const endpoints = {
             "id": "swapi",
             "graphQL": "/rest/repositories/swapi/graphql/swapi",
             "active": true,
-            "default": true
+            "default": true,
         },
         {
             "id": "film-restricted",
             "graphQL": "/rest/repositories/swapi/graphql/film-restricted",
             "active": true,
-            "default": false
+            "default": false,
         },
         {
             "id": "swapi-charcters",
             "graphQL": "/rest/repositories/swapi/graphql/swapi-charcters",
             "active": false,
-            "default": false
-        }
-    ]
+            "default": false,
+        },
+    ],
 };
 
+// eslint-disable-next-line no-unused-vars
 const emptyEndpointsInfo = {
-    "endpoints": []
+    "endpoints": [],
 };
 
 const endpointsInfo = {
@@ -74,7 +80,7 @@ const endpointsInfo = {
             "properties_count": 120,
             "warnings": 0,
             "errors": 0,
-            "status": ""
+            "status": "",
         },
         {
             "id": "gqlendpoint2",
@@ -89,7 +95,7 @@ const endpointsInfo = {
             "properties_count": 133,
             "warnings": 0,
             "errors": 0,
-            "status": ""
+            "status": "",
         },
         {
             "id": "gqlendpoint3",
@@ -104,9 +110,9 @@ const endpointsInfo = {
             "properties_count": 20,
             "warnings": 0,
             "errors": 0,
-            "status": ""
-        }
-    ]
+            "status": "",
+        },
+    ],
 };
 
 const graphqlSchemaShapes = {
@@ -115,88 +121,88 @@ const graphqlSchemaShapes = {
             "id": "https://schema.ubs.net/schema/AIModelSchema",
             "name": "AI Model Schema",
             "label": "AI Model Schema",
-            "description": null
+            "description": null,
         },
         {
             "id": "https://schema.ubs.net/schema/AIProductSchema",
             "name": "AI Product Schema",
             "label": "AI Product Schema",
-            "description": null
+            "description": null,
         },
         {
             "id": "https://schema.ubs.net/schema/DatabaseSchema",
             "name": null,
             "label": "Database Schema",
-            "description": null
+            "description": null,
         },
         {
             "id": "https://schema.ubs.net/schema/BbsPermissionSchema",
             "name": null,
             "label": "BBS Permissions",
-            "description": null
+            "description": null,
         },
         {
             "id": "https://schema.ubs.net/schema/DataProductBasicSchema",
             "name": null,
             "label": "Data Product Basic Schema No Policy and No Provenance",
-            "description": null
+            "description": null,
         },
         {
             "id": "https://schema.ubs.net/schema/DataQualityMetricSchema",
             "name": null,
             "label": "Data Quality Metric Schema",
-            "description": "This is the basic schema for DQV initiated from Metric class"
+            "description": "This is the basic schema for DQV initiated from Metric class",
         },
         {
             "id": "https://schema.ubs.net/schema/DataQualityObservationSchema",
             "name": null,
             "label": "Data Quality Observation Schema",
-            "description": null
+            "description": null,
         },
         {
             "id": "https://schema.ubs.net/schema/DatasetSchema",
             "name": null,
             "label": "Dataset Schema",
-            "description": null
+            "description": null,
         },
         {
             "id": "https://schema.ubs.net/schema/ApplicationSchema",
             "name": null,
             "label": "Application Schema",
-            "description": null
+            "description": null,
         },
         {
             "id": "https://schema.ubs.net/schema/PolicyBasicSchema",
             "name": null,
             "label": "Policy Basic Schema",
-            "description": null
+            "description": null,
         },
         {
             "id": "https://schema.ubs.net/schema/DataQualityMeasurementSchema",
             "name": null,
             "label": "Data Quality Measurement Schema",
-            "description": null
+            "description": null,
         },
         {
             "id": "https://schema.ubs.net/schema/DataProductFullSchema",
             "name": null,
             "label": "Data Product Schema where datasets can also be defined",
-            "description": null
+            "description": null,
         },
         {
             "id": "https://schema.ubs.net/schema/ValidationSchema",
             "name": null,
             "label": "Validation Schema",
-            "description": null
+            "description": null,
         },
         {
             "id": "https://schema.ubs.net/schema/WMAAccountSchema",
             "name": null,
             "label": "WMA Account Schema",
-            "description": null
-        }
-    ]
-}
+            "description": null,
+        },
+    ],
+};
 
 const endpointConfiguration = {
     configs: [
@@ -207,7 +213,7 @@ const endpointConfiguration = {
             collection: false,
             value: 'strValue',
             values: [],
-            regex: '^(?:ALL:?)?(?:(?:-?[\\w]{2}(?:-[\\w]*)?~?|-?NONE|ANY|BROWSER)?(?:,(?:-?[\\w]{2}(?:-[\\w]*)?~?|-?NONE|ANY|BROWSER))*)$'
+            regex: '^(?:ALL:?)?(?:(?:-?[\\w]{2}(?:-[\\w]*)?~?|-?NONE|ANY|BROWSER)?(?:,(?:-?[\\w]{2}(?:-[\\w]*)?~?|-?NONE|ANY|BROWSER))*)$',
         },
         {
             key: 'bool',
@@ -216,7 +222,7 @@ const endpointConfiguration = {
             type: 'boolean',
             collection: false,
             value: false,
-            values: []
+            values: [],
         },
         {
             key: 'select',
@@ -224,7 +230,7 @@ const endpointConfiguration = {
             type: '',
             collection: false,
             value: 'Two',
-            values: ['One', 'Two', 'Three']
+            values: ['One', 'Two', 'Three'],
         },
         {
             key: 'multiselect',
@@ -232,7 +238,7 @@ const endpointConfiguration = {
             type: '',
             collection: true,
             value: ['Angular', 'JavaScript'],
-            values: ['Angular', 'JavaScript', 'WebDevelopment']
+            values: ['Angular', 'JavaScript', 'WebDevelopment'],
         },
         {
             key: 'json',
@@ -241,7 +247,133 @@ const endpointConfiguration = {
             collection: false,
             value: '{"foo": "bar"}',
             values: [],
-            required: true
-        }
-    ]
+            required: true,
+        },
+    ],
+};
+
+const configSettingsForRepo = {
+    "configs": [
+    {
+        "key": "stringMode",
+        "value": "stringOrLangString",
+        "label": "stringMode",
+        "description": "Specifies the default string mode for data properties without a range definition",
+        "type": "string",
+        "collection": false,
+        "values": [
+            "string",
+            "langString",
+            "stringOrLangString",
+        ],
+        "required": true,
+        "regex": null,
+        "group": "generic",
+        "hidden": false,
+    },
+    {
+        "key": "useUnions",
+        "value": true,
+        "label": "useUnions",
+        "description": "Should GraphQL Unions be used in the result model",
+        "type": "boolean",
+        "collection": false,
+        "values": null,
+        "required": false,
+        "regex": null,
+        "group": "generic",
+        "hidden": false,
+    },
+    {
+        "key": "forceInterfaceTypes",
+        "value": false,
+        "label": "forceInterfaceTypes",
+        "description": "Decide if parent types are always interfaces or split with interface and subclass",
+        "type": "boolean",
+        "collection": false,
+        "values": null,
+        "required": false,
+        "regex": null,
+        "group": "generic",
+        "hidden": false,
+    },
+    {
+        "key": "defaultMaxCardinality",
+        "value": "inf",
+        "label": "defaultMaxCardinality",
+        "description": "The default maximum cardinality for all values. This defines if properties without explicit cardinality configuration are by default multi or single valued.",
+        "type": "string",
+        "collection": false,
+        "values": null,
+        "required": false,
+        "regex": "^\\d+|inf$",
+        "group": "generic",
+        "hidden": false,
+    },
+    {
+        "key": "readShaclPropertyLabels",
+        "value": true,
+        "label": "readShaclPropertyLabels",
+        "description": "If the labels and description for the sh:PropertyShape should be used over the sh:path label and description",
+        "type": "boolean",
+        "collection": false,
+        "values": null,
+        "required": false,
+        "regex": null,
+        "group": "generic",
+        "hidden": true,
+    },
+    {
+        "key": "removeUnknownRanges",
+        "value": true,
+        "label": "removeUnknownRanges",
+        "description": "Should remove the invalid and undefined ranges ",
+        "type": "boolean",
+        "collection": false,
+        "values": null,
+        "required": false,
+        "regex": null,
+        "group": "dataCleanup",
+        "hidden": true,
+    },
+    {
+        "key": "cleanInvalidInverseOf",
+        "value": true,
+        "label": "cleanInvalidInverseOf",
+        "description": "Try to fix invalid owl:inverseOf relations",
+        "type": "boolean",
+        "collection": false,
+        "values": null,
+        "required": false,
+        "regex": null,
+        "group": "dataCleanup",
+        "hidden": true,
+    },
+    {
+        "key": "includeDeactivatedShapes",
+        "value": false,
+        "label": "includeDeactivatedShapes",
+        "description": "Include the sh:deactivated shapes in the model",
+        "type": "boolean",
+        "collection": false,
+        "values": null,
+        "required": false,
+        "regex": null,
+        "group": "dataCleanup",
+        "hidden": true,
+    },
+    {
+        "key": "readRBACRules",
+        "value": true,
+        "label": "readRBACRules",
+        "description": "Read RBAC rules from the models",
+        "type": "boolean",
+        "collection": false,
+        "values": null,
+        "required": false,
+        "regex": null,
+        "group": "enterprise",
+        "hidden": true,
+    },
+    ],
 };
