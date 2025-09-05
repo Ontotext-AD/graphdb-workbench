@@ -11,7 +11,6 @@ GraphqlRestService.$inject = ['$http', 'Upload'];
 const DEVELOPMENT = false;
 
 function GraphqlRestService($http, Upload) {
-
     const _mockBackend = new GraphqlRestServiceMock();
 
     /**
@@ -61,7 +60,7 @@ function GraphqlRestService($http, Upload) {
             return _mockBackend.getPrefixesMock(repositoryId);
         }
         return $http.get(`${REPOSITORIES_ENDPOINT}/${repositoryId}/graphql/manage/prefixes`);
-    }
+    };
 
     /**
      * Get the SHACL shape graphs for the given repository.
@@ -77,13 +76,14 @@ function GraphqlRestService($http, Upload) {
 
     /**
      * Get the GraphQL generation settings from the backend.
+     * @param {string} selectedSourceRepository The selected source repository.
      * @returns {*|Promise<unknown>}
      */
-    const getGraphqlGenerationSettings = () => {
+    const getGraphqlGenerationSettings = (selectedSourceRepository) => {
         if (DEVELOPMENT) {
-            return _mockBackend.getGraphqlGenerationSettingsMock();
+            return _mockBackend.getGraphqlGenerationSettingsMock(selectedSourceRepository);
         }
-        return $http.get(`${REPOSITORIES_ENDPOINT}/graphql/manage/generate/config`);
+        return $http.get(`${REPOSITORIES_ENDPOINT}/${selectedSourceRepository}/graphql/manage/generate/config`);
     };
 
     /**
@@ -173,7 +173,7 @@ function GraphqlRestService($http, Upload) {
      */
     const exportEndpointDefinition = (repositoryId, endpointId) => {
         return $http.get(`${REPOSITORIES_ENDPOINT}/${repositoryId}/graphql/manage/endpoints/${endpointId}/export`, {responseType: 'blob'});
-    }
+    };
 
     /**
      * Import the endpoint definitions, either as a single file or as multiple files where the file type can be either
@@ -187,8 +187,8 @@ function GraphqlRestService($http, Upload) {
             url: `${REPOSITORIES_ENDPOINT}/${repositoryId}/graphql/manage/endpoints/import`,
             data: payload,
             headers: {
-                'Content-Type': undefined
-            }
+                'Content-Type': undefined,
+            },
         });
     };
 
@@ -217,6 +217,6 @@ function GraphqlRestService($http, Upload) {
         generateEndpointFromOwl,
         exportEndpointDefinition,
         importEndpointDefinition,
-        deleteEndpointGenerationReport
+        deleteEndpointGenerationReport,
     };
 }
