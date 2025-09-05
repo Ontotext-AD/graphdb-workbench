@@ -38,7 +38,7 @@ describe('AuthenticationService', () => {
     const securityConfig = {enabled: true, userLoggedIn: true} as unknown as SecurityConfig;
     ServiceProvider.get(SecurityContextService).updateSecurityConfig(securityConfig);
     // Then, I expect to be authenticated
-    expect(authService.isAuthenticated()).toEqual(true);
+    expect(authService.isLoggedIn()).toEqual(true);
   });
 
   test('isAuthenticated should return false if the user is not authenticated', () => {
@@ -47,14 +47,14 @@ describe('AuthenticationService', () => {
     ServiceProvider.get(SecurityContextService).updateSecurityConfig(enabledSecurityConfig);
     // When, I check, if I am authenticated
     // Then, I expect, not to be authenticated
-    expect(authService.isAuthenticated()).toEqual(false);
+    expect(authService.isLoggedIn()).toEqual(false);
 
     // Given, I have disabled security
     const disabledSecurityConfig = {enabled: false} as unknown as SecurityConfig;
     ServiceProvider.get(SecurityContextService).updateSecurityConfig(disabledSecurityConfig);
     // When, I check, if I am authenticated
     // Then, I expect, not to be authenticated
-    expect(authService.isAuthenticated()).toEqual(false);
+    expect(authService.isLoggedIn()).toEqual(false);
   });
 
   test('hasFreeAccess should return true if free access is enabled', () => {
