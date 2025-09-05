@@ -3,7 +3,7 @@ import '../services/graphql-context.service';
 import {
     ConfigureEndpointStep,
     GenerateEndpointStep, SchemaSourceType,
-    SelectSchemaSourceStep
+    SelectSchemaSourceStep,
 } from "../../models/graphql/create-endpoint-wizard-steps";
 import {endpointUrl} from "../models/endpoints";
 import {Wizard} from "../../models/graphql/wizard";
@@ -11,7 +11,6 @@ import 'angular/graphql/directives/select-schema-sources.directive';
 import 'angular/graphql/directives/configure-endpoint.directive';
 import 'angular/graphql/directives/generate-endpoint.directive';
 import {GraphqlEventName} from "../services/graphql-context.service";
-import {GraphqlEndpointConfiguration} from "../../models/graphql/graphql-endpoint-configuration";
 import {resolvePlaygroundUrlWithEndpoint} from "../services/endpoint-utils";
 
 const modules = [
@@ -19,7 +18,7 @@ const modules = [
     'graphdb.framework.graphql.services.graphql-context',
     'graphdb.framework.graphql.directives.select-schema-sources',
     'graphdb.framework.graphql.directives.configure-endpoint',
-    'graphdb.framework.graphql.directives.generate-endpoint'
+    'graphdb.framework.graphql.directives.generate-endpoint',
 ];
 
 angular
@@ -29,7 +28,6 @@ angular
 CreateGraphqlEndpointViewCtrl.$inject = ['$scope', '$location', '$repositories', '$translate', '$uibModal', 'ModalService', 'toastr', 'GraphqlService', 'GraphqlContextService'];
 
 function CreateGraphqlEndpointViewCtrl($scope, $location, $repositories, $translate, $uibModal, ModalService, toastr, GraphqlService, GraphqlContextService) {
-
     // =========================
     // Private variables
     // =========================
@@ -90,7 +88,7 @@ function CreateGraphqlEndpointViewCtrl($scope, $location, $repositories, $transl
         ModalService.openConfirmationModal({
                 title: $translate.instant('graphql.create_endpoint.messages.source_repository_changed.title'),
                 message: $translate.instant('graphql.create_endpoint.messages.source_repository_changed.body'),
-                confirmButtonKey: 'common.confirm'
+                confirmButtonKey: 'common.confirm',
             },
             () => {
                 $scope.previousSelectedSourceRepository = $scope.selectedSourceRepository;
@@ -122,7 +120,7 @@ function CreateGraphqlEndpointViewCtrl($scope, $location, $repositories, $transl
             $scope.wizardModel.setStepActive(step);
             setCurrentStep(step);
         }
-    }
+    };
 
     // =========================
     // Private methods
@@ -148,7 +146,7 @@ function CreateGraphqlEndpointViewCtrl($scope, $location, $repositories, $transl
                 GraphqlContextService.endpointGenerated(generationReport);
                 $scope.generatingEndpoint = false;
             });
-    }
+    };
 
     /**
      * Executes the generation of the GraphQL endpoint from the ontologies.
@@ -170,7 +168,7 @@ function CreateGraphqlEndpointViewCtrl($scope, $location, $repositories, $transl
                 $scope.generatingEndpoint = false;
                 GraphqlContextService.endpointGenerated(generationReport);
             });
-    }
+    };
 
     /**
      * Handles the generation of the GraphQL endpoint. There are two options for generating the endpoint:
@@ -180,7 +178,7 @@ function CreateGraphqlEndpointViewCtrl($scope, $location, $repositories, $transl
      */
     const onGenerateEndpoint = (endpointConfiguration) => {
         const generateFromGraphqlShapes = endpointConfiguration.schemaSourceType === SchemaSourceType.GRAPHQL_SCHEMA_SHAPES;
-        const generateFromOntologies = endpointConfiguration.schemaSourceType === SchemaSourceType.SHACL_SHAPES
+        const generateFromOntologies = endpointConfiguration.schemaSourceType === SchemaSourceType.SHACL_SHAPES;
         if (generateFromGraphqlShapes) {
             return generateEndpointFromGraphqlShapes(endpointConfiguration);
         } else if (generateFromOntologies) {
@@ -224,7 +222,7 @@ function CreateGraphqlEndpointViewCtrl($scope, $location, $repositories, $transl
         const url = resolvePlaygroundUrlWithEndpoint(endpointInfo.endpointId);
         GraphqlContextService.setSelectedEndpoint(endpointInfo);
         window.open(url, '_blank', 'noopener,noreferrer');
-    }
+    };
 
     /**
      * Opens the endpoint generation report modal.
@@ -242,12 +240,12 @@ function CreateGraphqlEndpointViewCtrl($scope, $location, $repositories, $transl
             resolve: {
                 data: () => {
                     return {
-                        endpointReport
+                        endpointReport,
                     };
-                }
-            }
+                },
+            },
         }).result;
-    }
+    };
 
     /**
      * Sets the current step in the create endpoint wizard.
@@ -272,7 +270,7 @@ function CreateGraphqlEndpointViewCtrl($scope, $location, $repositories, $transl
      */
     const setupSourceRepositories = () => {
         $scope.sourceRepositories = $repositories.getRepositoriesAsSelectMenuOptions(
-            () => $repositories.getLocalReadableGraphdbRepositories()
+            () => $repositories.getLocalReadableGraphdbRepositories(),
         );
         const activeRepository = $repositories.getActiveRepository();
         $scope.selectedSourceRepository = $scope.sourceRepositories

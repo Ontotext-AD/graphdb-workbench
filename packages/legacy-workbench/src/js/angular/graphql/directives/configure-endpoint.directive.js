@@ -2,17 +2,17 @@ angular
     .module('graphdb.framework.graphql.directives.configure-endpoint', [])
     .directive('configureEndpoint', ConfigureEndpointComponent);
 
-ConfigureEndpointComponent.$inject = ['$q', 'ModalService', '$translate', 'GraphqlService', 'GraphqlContextService'];
+ConfigureEndpointComponent.$inject = ['$q', 'ModalService', '$translate', 'GraphqlService', 'GraphqlContextService', 'toastr'];
 
-function ConfigureEndpointComponent($q, ModalService, $translate, GraphqlService, GraphqlContextService) {
+function ConfigureEndpointComponent($q, ModalService, $translate, GraphqlService, GraphqlContextService, toastr) {
     return {
         restrict: 'E',
         templateUrl: 'js/angular/graphql/templates/step-configure-endpoint.html',
         scope: {
-            stepDefinition: '='
+            stepDefinition: '=',
+            selectedSourceRepository: '=',
         },
         link: ($scope) => {
-
             // =========================
             // Public variables
             // =========================
@@ -21,7 +21,7 @@ function ConfigureEndpointComponent($q, ModalService, $translate, GraphqlService
              * The endpoint configuration model.
              * @type {GraphqlEndpointConfiguration|undefined}
              */
-            $scope.endpointConfiguration = undefined
+            $scope.endpointConfiguration = undefined;
 
             /**
              * The dynamic form model containing the generation settings.
@@ -91,12 +91,12 @@ function ConfigureEndpointComponent($q, ModalService, $translate, GraphqlService
             // =========================
 
             const loadGenerationSettings = () => {
-                return GraphqlService.getGraphqlGenerationSettings()
+                return GraphqlService.getGraphqlGenerationSettings($scope.selectedSourceRepository.id)
                     .catch((error) => {
                         console.error('Error loading generation settings', error);
                         toastr.error(getError(error));
                     });
-            }
+            };
 
             const loadData = () => {
                 $scope.loadingData = true;
@@ -107,7 +107,7 @@ function ConfigureEndpointComponent($q, ModalService, $translate, GraphqlService
                     .finally(() => {
                         $scope.loadingData = false;
                     });
-            }
+            };
 
             // =========================
             // Subscriptions
@@ -128,8 +128,8 @@ function ConfigureEndpointComponent($q, ModalService, $translate, GraphqlService
                 if (!$scope.endpointConfiguration.settings) {
                     loadData($scope.endpointConfiguration);
                 }
-            }
+            };
             onInit();
-        }
+        },
     };
 }
