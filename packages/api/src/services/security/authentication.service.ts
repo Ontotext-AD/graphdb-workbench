@@ -7,6 +7,7 @@ import {SecurityContextService} from './security-context.service';
 import {Repository} from '../../models/repositories';
 import {RepositoryService, RepositoryStorageService} from '../repository';
 import {RoutingService} from '../routing/routing.service';
+import {AuthenticationStorageService} from './authentication-storage.service';
 
 /**
  * Service responsible for handling authentication-related operations.
@@ -26,14 +27,27 @@ export class AuthenticationService implements Service {
     ServiceProvider.get(EventService).emit(new Logout());
   }
 
-  // TODO: get security config and authenticated user synchronously from context
   /**
-   * Checks if the user is authenticated based on the provided configuration and user details.
+   * Checks if the user is logged in based on the provided configuration and user details.
    * @returns {boolean} True if the user is authenticated, false otherwise.
    */
-  isAuthenticated(): boolean {
+  isLoggedIn(): boolean {
     const config = this.getSecurityConfig();
     return !!(config?.enabled && config?.userLoggedIn);
+  }
+
+  /**
+   * Check if the user is authenticated.
+   * A user is considered authenticated, if security is disabled, if he is external, or if there is an
+   * auth token in the store
+   */
+  isAuthenticated() {
+    const config = this.getSecurityConfig();
+    const user = this.getAuthenticatedUser();
+    return !config?.enabled
+      || user?.external
+      // eslint-disable-next-line eqeqeq
+      || ServiceProvider.get(AuthenticationStorageService).getAuthToken().getValue() != null;
   }
 
   /**
