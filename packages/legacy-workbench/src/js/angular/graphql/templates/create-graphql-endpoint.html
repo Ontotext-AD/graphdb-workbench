@@ -44,7 +44,8 @@
                                     <select-schema-sources step-definition="step"></select-schema-sources>
                                 </div>
                                 <div ng-switch-when="configure_endpoint">
-                                    <configure-endpoint step-definition="step"></configure-endpoint>
+                                    <configure-endpoint step-definition="step"
+                                                        selected-source-repository="selectedSourceRepository.data.repository"></configure-endpoint>
                                 </div>
                                 <div ng-switch-when="generate_endpoint">
                                     <generate-endpoint step-definition="step"></generate-endpoint>

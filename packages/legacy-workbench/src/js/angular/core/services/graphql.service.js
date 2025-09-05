@@ -4,14 +4,13 @@ import {endpointInfoModelMapper, endpointsInfoListMapper} from "../../graphql/se
 import {graphqlSchemaShapesMapper} from "../../graphql/services/graphql-schema-shapes.mapper";
 import {prefixModelToSelectMenuOptionsMapper} from "../../graphql/services/prefix-list.mapper";
 import {
-    shaclShapeGraphListOptionsMapper
+    shaclShapeGraphListOptionsMapper,
 } from "../../graphql/services/shacl-shape-list.mapper";
-import {GraphqlEndpointConfiguration} from "../../models/graphql/graphql-endpoint-configuration";
 import {dynamicFormModelMapper} from "../../rest/mappers/dynamic-form-fied-mapper";
 import {GraphqlEndpointConfigurationSettings} from "../../models/graphql/graphql-endpoint-configuration-setting";
 import {GraphqlEndpointOverviewList} from "../../models/graphql/graphql-endpoint-overview-list";
 import {
-    endpointGenerationReportListMapper
+    endpointGenerationReportListMapper,
 } from "../../graphql/services/endpoint-generation-report.mapper";
 
 const modules = ['graphdb.framework.rest.graphql.service'];
@@ -23,7 +22,6 @@ angular
 GraphqlService.$inject = ['GraphqlRestService'];
 
 function GraphqlService(GraphqlRestService) {
-
     /**
      * Creates a list of GraphQL endpoint overview models from the given data.
      * @param {GraphqlEndpointConfiguration} endpointConfiguration
@@ -75,7 +73,7 @@ function GraphqlService(GraphqlRestService) {
     const getEndpointsAsSelectMenuOptions = (repositoryId) => {
         return GraphqlRestService.getEndpoints(repositoryId)
             .then((response) => {
-                return endpointsToSelectMenuOptionsMapper(response.data, repositoryId)
+                return endpointsToSelectMenuOptionsMapper(response.data, repositoryId);
             });
     };
 
@@ -97,7 +95,7 @@ function GraphqlService(GraphqlRestService) {
     const getGraphqlSchemaShapes = (repositoryId) => {
         return GraphqlRestService.getGraphqlSchemaShapes(repositoryId)
             .then((response) => graphqlSchemaShapesMapper(response.data));
-    }
+    };
 
     /**
      * Get the prefix list as select options for the given repository.
@@ -107,7 +105,7 @@ function GraphqlService(GraphqlRestService) {
     const getPrefixListAsSelectOptions = (repositoryId) => {
         return GraphqlRestService.getPrefixes(repositoryId)
             .then((response) => prefixModelToSelectMenuOptionsMapper(response.data));
-    }
+    };
 
     /**
      * Get the SHACL shape graphs for the given repository as list model.
@@ -117,14 +115,15 @@ function GraphqlService(GraphqlRestService) {
     const getShaclShapeGraphs = (repositoryId) => {
         return GraphqlRestService.getShaclShapeGraphs(repositoryId)
             .then((response) => shaclShapeGraphListOptionsMapper(response.data));
-    }
+    };
 
     /**
      * Get the GraphQL generation settings. These settings are used to configure the GraphQL endpoint generation.
+     * @param selectedSourceRepository - The selected source repository.
      * @returns {Promise<GraphqlEndpointConfigurationSettings>}
      */
-    const getGraphqlGenerationSettings = () => {
-        return GraphqlRestService.getGraphqlGenerationSettings()
+    const getGraphqlGenerationSettings = (selectedSourceRepository) => {
+        return GraphqlRestService.getGraphqlGenerationSettings(selectedSourceRepository)
             .then((response) => {
                 const fieldsModel = dynamicFormModelMapper(response.data);
                 return new GraphqlEndpointConfigurationSettings(fieldsModel);
@@ -198,7 +197,7 @@ function GraphqlService(GraphqlRestService) {
     const generateEndpointFromGraphqlShapes = (repositoryId, request) => {
         return GraphqlRestService.generateEndpointFromGraphqlShapes(repositoryId, request.toJSON())
             .then((response) => endpointGenerationReportListMapper(response.data, repositoryId));
-    }
+    };
 
     /**
      * Generate the GraphQL endpoint from the OWL ontology.
@@ -209,7 +208,7 @@ function GraphqlService(GraphqlRestService) {
     const generateEndpointFromOwl = (repositoryId, request) => {
         return GraphqlRestService.generateEndpointFromOwl(repositoryId, request.toJSON())
             .then((response) => endpointGenerationReportListMapper([response.data], repositoryId));
-    }
+    };
 
     /**
      * Export the endpoint definition.
@@ -230,7 +229,7 @@ function GraphqlService(GraphqlRestService) {
                 }
                 return {data, filename};
             });
-    }
+    };
 
     /**
      * Import endpoint definitions given as payload.
@@ -272,6 +271,6 @@ function GraphqlService(GraphqlRestService) {
         generateEndpointFromOwl,
         exportEndpointDefinition,
         importEndpointDefinition,
-        deleteEndpointGenerationReport
+        deleteEndpointGenerationReport,
     };
 }
