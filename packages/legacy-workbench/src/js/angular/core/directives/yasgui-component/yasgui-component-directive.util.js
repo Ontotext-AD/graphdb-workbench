@@ -10,8 +10,7 @@ const HIGHLIGHT_TAB_NAME_COLORS = ['var(--primary-color)', '', 'var(--primary-co
  */
 const COLOR_CHANGES_INTERVAL = 400;
 
-export const YasguiComponentDirectiveUtil = (function () {
-
+export const YasguiComponentDirectiveUtil = (function() {
     const getOntotextYasguiElementController = (directiveSelector) => {
         const elementById = angular.element(document.querySelector(directiveSelector));
         const directiveElement = angular.element(elementById);
@@ -57,7 +56,7 @@ export const YasguiComponentDirectiveUtil = (function () {
                     iteration -= waitTime;
                     if (iteration < 0) {
                         clearInterval(interval);
-                        console.log('YASGUI component is not found', directiveSelector);
+                        console.warn('YASGUI component is not found', directiveSelector);
                         reject(new Error('Element is not found: ' + directiveSelector));
                     }
                 }
@@ -147,17 +146,17 @@ export const YasguiComponentDirectiveUtil = (function () {
         getOntotextYasguiElementAsync,
         executeSparqlQuery,
         setQuery,
-        highlightTabName
+        highlightTabName,
     };
 })();
 
 export class YasqeButtonsBuilder {
-
     constructor() {
         this.createSavedQueryVisibility = false;
         this.showSavedQueriesVisibility = false;
         this.shareQueryVisibility = false;
         this.includeInferredStatementsVisibility = false;
+        this.explainQueryVisibility = false;
     }
 
     addCreateSavedQuery() {
@@ -180,6 +179,11 @@ export class YasqeButtonsBuilder {
         return this;
     }
 
+    addExplainQuery() {
+        this.explainQueryVisibility = true;
+        return this;
+    }
+
     /**
      *
      * @return {YasqeActionButtonDefinition[]}
@@ -188,17 +192,21 @@ export class YasqeButtonsBuilder {
         return [
             {
                 name: YasqeButtonName.CREATE_SAVED_QUERY,
-                visible: this.createSavedQueryVisibility
+                visible: this.createSavedQueryVisibility,
             }, {
                 name: YasqeButtonName.SHOW_SAVED_QUERIES,
-                visible: this.showSavedQueriesVisibility
+                visible: this.showSavedQueriesVisibility,
             }, {
                 name: YasqeButtonName.SHARE_QUERY,
-                visible: this.shareQueryVisibility
+                visible: this.shareQueryVisibility,
             }, {
                 name: YasqeButtonName.INCLUDE_INFERRED_STATEMENTS,
-                visible: this.includeInferredStatementsVisibility
-            }
+                visible: this.includeInferredStatementsVisibility,
+            },
+            {
+                name: YasqeButtonName.EXPLAIN_QUERY,
+                visible: this.explainQueryVisibility,
+            },
         ];
     }
 }
@@ -207,9 +215,10 @@ export const YasqeButtonName = {
     CREATE_SAVED_QUERY: 'createSavedQuery',
     SHOW_SAVED_QUERIES: 'showSavedQueries',
     SHARE_QUERY: 'shareQuery',
+    EXPLAIN_QUERY: 'aiExplain',
     EXPANDS_RESULTS: 'expandResults',
     INFER_STATEMENTS: 'inferStatements',
-    INCLUDE_INFERRED_STATEMENTS: 'includeInferredStatements'
+    INCLUDE_INFERRED_STATEMENTS: 'includeInferredStatements',
 };
 
 export const DISABLE_YASQE_BUTTONS_CONFIGURATION = new YasqeButtonsBuilder().build();
