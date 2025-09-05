@@ -1,19 +1,23 @@
-import {Component, Host, h, Listen, Element, State} from '@stencil/core';
-import {NavbarToggledEvent} from "../onto-navbar/navbar-toggled-event";
-import {debounce} from "../../utils/function-utils";
-import {WINDOW_WIDTH_FOR_COLLAPSED_NAVBAR} from "../../models/constants";
+import {Component, Element, h, Host, Listen, State} from '@stencil/core';
+import {NavbarToggledEvent} from '../onto-navbar/navbar-toggled-event';
+import {debounce} from '../../utils/function-utils';
+import {WINDOW_WIDTH_FOR_COLLAPSED_NAVBAR} from '../../models/constants';
 import {
-  ServiceProvider,
-  LocalStorageSubscriptionHandlerService,
-  SecurityContextService,
-  RestrictedPages,
-  EventService,
-  EventName,
-  SubscriptionList,
   AuthenticatedUser,
-  SecurityConfig,
+  AuthenticationService,
   Authority,
-  AuthenticationService, NavigationEndPayload, NavigationContextService, getPathName, WindowService,
+  EventName,
+  EventService,
+  getPathName,
+  LocalStorageSubscriptionHandlerService,
+  NavigationContextService,
+  NavigationEndPayload,
+  RestrictedPages,
+  SecurityConfig,
+  SecurityContextService,
+  ServiceProvider,
+  SubscriptionList,
+  WindowService
 } from '@ontotext/workbench-api';
 import {ExternalMenuItemModel} from '../onto-navbar/external-menu-model';
 
@@ -44,8 +48,7 @@ export class OntoLayout {
   @State() securityConfig: SecurityConfig;
   @State() isLowResolution = false;
   @State() hasPermission: boolean = true;
-  @State() showFooter = this.isAuthenticatedFully();
-  @State() isVisible: boolean;
+  @State() showHeader = this.isAuthenticatedFully();
 
   // ========================
   // Private
@@ -98,7 +101,7 @@ export class OntoLayout {
           <slot name="default"></slot>
         </div>
         <header class="wb-header">
-          {this.isVisible && <onto-header></onto-header>}
+          {this.showHeader && <onto-header></onto-header>}
         </header>
 
         <nav class="wb-navbar">
@@ -114,7 +117,7 @@ export class OntoLayout {
           <onto-permission-banner></onto-permission-banner>
         )}
         <footer class="wb-footer">
-          {this.isVisible && <onto-footer></onto-footer>}
+          <onto-footer></onto-footer>
         </footer>
         <onto-tooltip></onto-tooltip>
         <onto-toastr></onto-toastr>
@@ -216,20 +219,15 @@ export class OntoLayout {
 
   private updateVisibility() {
     if (!this.authenticationService.isSecurityEnabled()) {
-      this.isVisible = true;
-      this.showFooter = true;
+      this.showHeader = true;
     } else {
-      const hasAuth = !!this.authenticatedUser && !!this.securityConfig;
-      const isAuthenticated = this.authenticationService.isAuthenticated() || this.authenticationService.hasFreeAccess();
-
-      this.isVisible = hasAuth && isAuthenticated;
-      this.showFooter = isAuthenticated;
+      this.showHeader = this.authenticationService.isLoggedIn() || this.authenticationService.hasFreeAccess();
     }
   }
 
   private isAuthenticatedFully() {
     const authService = ServiceProvider.get(AuthenticationService);
-    return !authService.isSecurityEnabled() || authService.isAuthenticated() || authService.hasFreeAccess();
+    return !authService.isSecurityEnabled() || authService.isLoggedIn() || authService.hasFreeAccess();
   }
 
   private shouldShowMenu(role: Authority): boolean {
