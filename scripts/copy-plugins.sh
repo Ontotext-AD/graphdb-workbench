@@ -8,7 +8,7 @@
 
 copy_plugins() {
     local source_dir="node_modules/graphdb-workbench-plugins/dist"
-    local target_dir="plugins"
+    local target_dir="wb-plugins"
 
     echo "########################   CHECKING FOR PLUGINS   ###########################"
 
