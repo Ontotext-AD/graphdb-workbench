@@ -11,4 +11,4 @@ coverage/
 # Test environment
 graphdb.license
 /translation-report.json
-/plugins/
+/wb-plugins/
