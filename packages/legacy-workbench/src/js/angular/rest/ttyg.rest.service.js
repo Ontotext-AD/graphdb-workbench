@@ -14,7 +14,6 @@ const CHATS_ENDPOINT = 'rest/chat/chats';
 const DEVELOPMENT = false;
 
 function TTYGRestService($http) {
-
     const _fakeBackend = new TtygRestServiceFakeBackend();
 
     /**
@@ -79,14 +78,13 @@ function TTYGRestService($http) {
     /**
      * Calls the REST API to ask a question.
      * @param {*} data the payload
-     * @param {string} id the conversation ID
      * @return {*}
      */
-    const askQuestion = (data, id) => {
+    const askQuestion = (data) => {
         if (DEVELOPMENT) {
             return _fakeBackend.askQuestion(data);
         }
-        return $http.post(`${CHATS_ENDPOINT}/${id}/question`, data);
+        return $http.post(`${CHATS_ENDPOINT}/question`, data);
     };
 
     /**
@@ -137,7 +135,7 @@ function TTYGRestService($http) {
             return _fakeBackend.cancelPendingQuestion(false);
         }
         return $http.post(`${CHATS_ENDPOINT}/${chatId}/cancel`);
-    }
+    };
 
     /**
      * Fetches agents from the backend.
@@ -256,6 +254,6 @@ function TTYGRestService($http) {
         deleteAgent,
         explainResponse,
         getAgentDefaultValues,
-        explainAgentSettings
+        explainAgentSettings,
     };
 }

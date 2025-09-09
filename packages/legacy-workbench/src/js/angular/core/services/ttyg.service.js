@@ -14,7 +14,6 @@ angular
 TTYGService.$inject = ['TTYGRestService', '$repositories'];
 
 function TTYGService(TTYGRestService, $repositories) {
-
     /**
      * Creates a new chat.
      *
@@ -57,7 +56,7 @@ function TTYGService(TTYGRestService, $repositories) {
      * */
     const exportConversation = (id) => {
         return TTYGRestService.exportConversation(id)
-            .then(function (res) {
+            .then(function(res) {
                 const data = res.data;
                 const headers = res.headers();
                 const contentDispositionHeader = headers['content-disposition'];
@@ -72,12 +71,11 @@ function TTYGService(TTYGRestService, $repositories) {
 
     /**
      * Asks a question.
-     * @param {ChatItemModel} chatItem .
-     * @param {string} id conversation ID
+     * @param {ChatItemModel} chatItem
      * @return {Promise<ChatAnswerModel>} the answer of the question.
      */
-    const askQuestion = (chatItem, id) => {
-        return TTYGRestService.askQuestion(chatItem.toAskRequestPayload(), id)
+    const askQuestion = (chatItem) => {
+        return TTYGRestService.askQuestion(chatItem.toAskRequestPayload())
             .then((response) => chatAnswerModelMapper(response.data));
     };
 
@@ -237,6 +235,6 @@ function TTYGService(TTYGRestService, $repositories) {
         deleteAgent,
         explainResponse,
         getDefaultAgent,
-        explainAgentSettings
+        explainAgentSettings,
     };
 }
