@@ -8,7 +8,7 @@ code, pre, kbd, samp, textarea {
 }
 
 .swagger-ui .info {
-    margin: 0;
+    margin: 0 0 20px;
 }
 
 .swagger-ui .info .title {
@@ -33,8 +33,49 @@ code, pre, kbd, samp, textarea {
     padding: 0;
 }
 
-.swagger-ui .opblock-tag a::after {
-    content: ' : ';
+.swagger-ui .opblock-tag > a::after {
+    content: ': ';
+    color: #000000;
+}
+
+.swagger-ui .opblock-tag .info__externaldocs:hover a,
+.swagger-ui .opblock-tag .info__externaldocs a {
+    text-decoration: underline !important;
+}
+
+.swagger-ui a.info__extdocs.link {
+    text-decoration: underline !important;
+    font-size: 100%;
+}
+
+.swagger-ui .info hgroup.main {
+    margin: 0;
+}
+
+.opblock-tag-section .opblock-tag > a.nostyle:link,
+.opblock-tag-section .opblock-tag > a.nostyle:visited {
+    text-decoration: none;
+}
+
+.swagger-ui .opblock-tag a span {
+    color: #000000;
+}
+
+.swagger-ui .opblock-tag {
+    border-bottom: 1px solid rgba(59, 65, 81, 0.1);
+}
+
+.swagger-ui .opblock-tag-section.is-open .opblock-tag {
+    border-bottom: none;
+}
+
+.swagger-ui .opblock-tag-section.is-open {
+    border-bottom: 1px solid rgba(59, 65, 81, 0.1);
+}
+
+.swagger-ui .opblock-tag,
+.swagger-ui .opblock-tag-section {
+    transition: border-color 0.3s ease;
 }
 
 .swagger-ui .renderedMarkdown p {
