@@ -4,6 +4,7 @@ import {PluginsRestService} from './plugins-rest.service';
 import {PluginsManifest, PluginModule} from '../../models/plugins';
 import {WindowService} from '../window';
 import {PluginsManifestMapper} from './mapper/plugins-manifest.mapper';
+import {LoggingService} from '../logging/logging.service';
 
 /**
  * Service responsible for managing plugins in the application.
@@ -12,6 +13,7 @@ import {PluginsManifestMapper} from './mapper/plugins-manifest.mapper';
 export class PluginsService implements Service {
   private readonly pluginsRestService: PluginsRestService;
   private readonly pluginsManifestMapper: PluginsManifestMapper;
+  private readonly logger = LoggingService.logger;
 
   constructor() {
     this.pluginsRestService = ServiceProvider.get(PluginsRestService);
@@ -44,7 +46,7 @@ export class PluginsService implements Service {
     try {
       pluginsManifest = await this.getPluginsManifest();
     } catch (error) {
-      console.warn('Failed to load plugins manifest. Continue with the built-in plugins only.', error);
+      this.logger.warn('Failed to load plugins manifest. Continue with the built-in plugins only.', error);
       // If the manifest cannot be loaded, we will continue with built-in plugins only.
       // This allows the application to function without external plugins.
     }
@@ -57,7 +59,7 @@ export class PluginsService implements Service {
           if (pluginModule.register !== undefined) {
             pluginModule.register(WindowService.getPluginRegistry());
           } else {
-            console.warn('Plugin module is missing the register method. Skipping registration.', pluginModule);
+            this.logger.warn('Plugin module is missing the register method. Skipping registration.', pluginModule);
           }
         });
     }

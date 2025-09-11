@@ -1,3 +1,7 @@
 {
-  "pluginsManifestPath": "wb-plugins/plugins-manifest.json"
+  "pluginsManifestPath": "wb-plugins/plugins-manifest.json",
+  "loggerConfig": {
+    "minLogLevel": "DEBUG",
+    "loggers": ["console"]
+  }
 }
