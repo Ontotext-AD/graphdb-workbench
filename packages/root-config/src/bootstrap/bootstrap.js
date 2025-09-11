@@ -15,7 +15,6 @@ import {
 } from '@ontotext/workbench-api';
 import {start} from 'single-spa';
 import {defineCustomElements} from '../../../shared-components/loader';
-
 const bootstrapPromises = [
   ...licenseBootstrap,
   ...autoCompleteBootstrap,

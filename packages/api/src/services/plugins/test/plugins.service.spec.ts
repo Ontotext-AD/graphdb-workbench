@@ -4,14 +4,21 @@ import {ResponseMock} from '../../http/test/response-mock';
 import {PluginsManifestResponse} from '../../../models/plugins';
 import {ServiceProvider} from '../../../providers';
 import {ConfigurationContextService} from '../../configuration/configuration-context.service';
+import {LoggerType} from '../../../models/logging/logger-type';
+import {LogLevel} from '../../../models/logging/log-level';
 
 describe('PluginsService', () => {
   let pluginsService: PluginsService;
 
   beforeEach(() => {
-    pluginsService = new PluginsService();
     ServiceProvider.get(ConfigurationContextService).updateApplicationConfiguration({
-      pluginsManifestPath: 'plugins/plugins-manifest.json'});
+      pluginsManifestPath: 'plugins/plugins-manifest.json',
+      loggerConfig: {
+        loggers: [LoggerType.CONSOLE],
+        minLogLevel: LogLevel.DEBUG
+      }
+    });
+    pluginsService = new PluginsService();
   });
 
   it('should retrieve plugins manifest', async () => {

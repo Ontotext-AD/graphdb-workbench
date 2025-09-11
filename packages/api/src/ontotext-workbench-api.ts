@@ -44,6 +44,7 @@ export * from './services/app-lifecycle';
 export * from './services/window';
 export * from './services/plugins';
 export * from './services/configuration';
+export * from './services/logging';
 
 // Export utils for external usages.
 export * from './services/utils';
