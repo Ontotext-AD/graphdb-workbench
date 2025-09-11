@@ -14,6 +14,7 @@ export class LoggerService {
   private readonly module: string;
   private readonly config: LoggerConfig = loggerConfigJson as LoggerConfig;
   private readonly loggers = LOGGER_DEFINITIONS;
+  private readonly minLogLevel = BuildUtil.isDevMode() ? this.config.minLogLevel : LogLevel.INFO;
 
   /**
    * Creates a new LoggerService instance for the specified module.
@@ -74,9 +75,8 @@ export class LoggerService {
    * @throws {Error} When a configured logger is not found in LOGGER_DEFINITIONS
    */
   private log(logLevel: LogLevel, message: string, args: unknown[]): void {
-    const minLogLevel = BuildUtil.isDevMode() ? this.config.minLogLevel : LogLevel.INFO;
     this.config.loggers.forEach((loggerKey) => {
-      if (minLogLevel <= logLevel) {
+      if (this.minLogLevel <= logLevel) {
         const logger = this.loggers.get(loggerKey);
         if (!logger) {
           throw new Error(`Logger '${loggerKey}' not found`);

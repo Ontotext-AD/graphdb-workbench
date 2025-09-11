@@ -23,6 +23,7 @@ describe('Logging System Integration', () => {
       warn: jest.spyOn(console, 'warn').mockImplementation(),
       error: jest.spyOn(console, 'error').mockImplementation()
     };
+    Loggers['loggerInstances'].clear();
   });
 
   test('should log from Loggers factory to console output', () => {

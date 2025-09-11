@@ -1278,7 +1278,7 @@ The [`logger.config.json`](/packages/api/src/services/logging/logger.config.json
 
 ```json
 {
-  "logLevel": 0,
+  "minLogLevel": 0,
   "loggers": ["console"]
 }
 ```
@@ -1369,7 +1369,7 @@ Update the [`logger.config.json`](/packages/api/src/services/logging/logger.conf
 
 ```json
 {
-  "logLevel": 0,
+  "minLogLevel": 0,
   "loggers": ["console", "database"]
 }
 ```
@@ -1401,7 +1401,7 @@ When multiple loggers are configured, the same message is sent to all active des
 
 ```json
 {
-  "logLevel": 1,
+  "minLogLevel": 1,
   "loggers": ["console", "database"]
 }
 ```
