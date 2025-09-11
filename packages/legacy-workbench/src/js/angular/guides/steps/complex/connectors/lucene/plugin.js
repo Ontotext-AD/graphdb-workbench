@@ -14,9 +14,9 @@ PluginRegistry.add('guide.step', [
                     ...options,
                     connectorName: LUCENE_CONNECTOR_NAME,
                     class: 'connectors-lucene-type-intro',
-                }
+                },
             }];
-        }
+        },
     },
     {
         guideBlockName: 'connectors-lucene',
@@ -34,9 +34,9 @@ PluginRegistry.add('guide.step', [
                     ...options,
                     connectorName: LUCENE_CONNECTOR_NAME,
                     class: 'connectors-lucene',
-                }
+                },
             }];
-        }
+        },
     },
     {
         guideBlockName: 'connectors-expand-lucene',
@@ -54,9 +54,9 @@ PluginRegistry.add('guide.step', [
                     ...options,
                     connectorName: LUCENE_CONNECTOR_NAME,
                     class: 'connectors-lucene-expand',
-                }
+                },
             }];
-        }
+        },
     },
     {
         guideBlockName: 'connectors-lucene-fields-intro',
@@ -74,10 +74,10 @@ PluginRegistry.add('guide.step', [
                     ...options,
                     class: 'connectors-lucene-fields-intro',
                     connectorName: LUCENE_CONNECTOR_NAME,
-                    parameterName: 'fields'
-                }
+                    parameterName: 'fields',
+                },
             }];
-        }
+        },
     },
     {
         guideBlockName: 'connectors-lucene-fields-field-name-intro',
@@ -96,10 +96,10 @@ PluginRegistry.add('guide.step', [
                     class: 'connectors-lucene-fields-field-name-intro',
                     connectorName: LUCENE_CONNECTOR_NAME,
                     parameterName: 'fields',
-                    subparameterName: "fieldName"
-                }
+                    subparameterName: "fieldName",
+                },
             }];
-        }
+        },
     },
     {
         guideBlockName: 'connectors-lucene-fields-field-name-transform-intro',
@@ -118,10 +118,10 @@ PluginRegistry.add('guide.step', [
                     class: 'connectors-lucene-fields-field-name-transform-intro',
                     connectorName: LUCENE_CONNECTOR_NAME,
                     parameterName: 'fields',
-                    subparameterName: "fieldNameTransform"
-                }
+                    subparameterName: "fieldNameTransform",
+                },
             }];
-        }
+        },
     },
     {
         guideBlockName: 'connectors-lucene-fields-property-chain-intro',
@@ -140,10 +140,10 @@ PluginRegistry.add('guide.step', [
                     class: 'connectors-lucene-fields-property-chain-intro',
                     connectorName: LUCENE_CONNECTOR_NAME,
                     parameterName: 'fields',
-                    subparameterName: "propertyChain"
-                }
+                    subparameterName: "propertyChain",
+                },
             }];
-        }
+        },
     },
     {
         guideBlockName: 'connectors-lucene-fields-default-value-intro',
@@ -162,10 +162,10 @@ PluginRegistry.add('guide.step', [
                     class: 'connectors-lucene-fields-default-value-intro',
                     connectorName: LUCENE_CONNECTOR_NAME,
                     parameterName: 'fields',
-                    subparameterName: "defaultValue"
-                }
+                    subparameterName: "defaultValue",
+                },
             }];
-        }
+        },
     },
     {
         guideBlockName: 'connectors-lucene-fields-datatype-intro',
@@ -184,10 +184,10 @@ PluginRegistry.add('guide.step', [
                     class: 'connectors-lucene-fields-datatype-intro',
                     connectorName: LUCENE_CONNECTOR_NAME,
                     parameterName: 'fields',
-                    subparameterName: "datatype"
-                }
+                    subparameterName: "datatype",
+                },
             }];
-        }
+        },
     },
     {
         guideBlockName: 'connectors-lucene-fields-value-filter-intro',
@@ -206,10 +206,10 @@ PluginRegistry.add('guide.step', [
                     class: 'connectors-lucene-fields-value-filter-intro',
                     connectorName: LUCENE_CONNECTOR_NAME,
                     parameterName: 'fields',
-                    subparameterName: "valueFilter"
-                }
+                    subparameterName: "valueFilter",
+                },
             }];
-        }
+        },
     },
     {
         guideBlockName: 'connectors-lucene-fields-indexed-intro',
@@ -228,10 +228,10 @@ PluginRegistry.add('guide.step', [
                     class: 'connectors-lucene-fields-indexed-intro',
                     connectorName: LUCENE_CONNECTOR_NAME,
                     parameterName: 'fields',
-                    subparameterName: "indexed"
-                }
+                    subparameterName: "indexed",
+                },
             }];
-        }
+        },
     },
     {
         guideBlockName: 'connectors-lucene-fields-stored-intro',
@@ -250,10 +250,10 @@ PluginRegistry.add('guide.step', [
                     class: 'connectors-lucene-fields-stored-intro',
                     connectorName: LUCENE_CONNECTOR_NAME,
                     parameterName: 'fields',
-                    subparameterName: "stored"
-                }
+                    subparameterName: "stored",
+                },
             }];
-        }
+        },
     },
     {
         guideBlockName: 'connectors-lucene-fields-analyzed-intro',
@@ -272,10 +272,10 @@ PluginRegistry.add('guide.step', [
                     class: 'connectors-lucene-fields-analyzed-intro',
                     connectorName: LUCENE_CONNECTOR_NAME,
                     parameterName: 'fields',
-                    subparameterName: "analyzed"
-                }
+                    subparameterName: "analyzed",
+                },
             }];
-        }
+        },
     },
     {
         guideBlockName: 'connectors-lucene-fields-multivalued-intro',
@@ -294,10 +294,10 @@ PluginRegistry.add('guide.step', [
                     class: 'connectors-lucene-fields-multivalued-intro',
                     connectorName: LUCENE_CONNECTOR_NAME,
                     parameterName: 'fields',
-                    subparameterName: "multivalued"
-                }
+                    subparameterName: "multivalued",
+                },
             }];
-        }
+        },
     },
     {
         guideBlockName: 'connectors-lucene-fields-ignore-invalid-values-intro',
@@ -316,10 +316,10 @@ PluginRegistry.add('guide.step', [
                     class: 'connectors-lucene-fields-ignore-invalid-values-intro',
                     connectorName: LUCENE_CONNECTOR_NAME,
                     parameterName: 'fields',
-                    subparameterName: "ignoreInvalidValues"
-                }
+                    subparameterName: "ignoreInvalidValues",
+                },
             }];
-        }
+        },
     },
     {
         guideBlockName: 'connectors-lucene-fields-facet-intro',
@@ -338,10 +338,10 @@ PluginRegistry.add('guide.step', [
                     class: 'connectors-lucene-fields-facet-intro',
                     connectorName: LUCENE_CONNECTOR_NAME,
                     parameterName: 'fields',
-                    subparameterName: "facet"
-                }
+                    subparameterName: "facet",
+                },
             }];
-        }
+        },
     },
     {
         guideBlockName: 'connectors-lucene-languages-intro',
@@ -359,10 +359,10 @@ PluginRegistry.add('guide.step', [
                     ...options,
                     class: 'connectors-lucene-languages-intro',
                     connectorName: LUCENE_CONNECTOR_NAME,
-                    parameterName: 'languages'
-                }
+                    parameterName: 'languages',
+                },
             }];
-        }
+        },
     },
     {
         guideBlockName: 'connectors-lucene-types-intro',
@@ -380,10 +380,10 @@ PluginRegistry.add('guide.step', [
                     ...options,
                     class: 'connectors-lucene-types-intro',
                     connectorName: LUCENE_CONNECTOR_NAME,
-                    parameterName: 'types'
-                }
+                    parameterName: 'types',
+                },
             }];
-        }
+        },
     },
     {
         guideBlockName: 'connectors-lucene-value-filter-intro',
@@ -401,10 +401,10 @@ PluginRegistry.add('guide.step', [
                     ...options,
                     class: 'connectors-lucene-value-filter-intro',
                     connectorName: LUCENE_CONNECTOR_NAME,
-                    parameterName: 'valueFilter'
-                }
+                    parameterName: 'valueFilter',
+                },
             }];
-        }
+        },
     },
     {
         guideBlockName: 'connectors-lucene-document-filter-intro',
@@ -422,10 +422,10 @@ PluginRegistry.add('guide.step', [
                     ...options,
                     class: 'connectors-lucene-document-filter-intro',
                     connectorName: LUCENE_CONNECTOR_NAME,
-                    parameterName: 'documentFilter'
-                }
+                    parameterName: 'documentFilter',
+                },
             }];
-        }
+        },
     },
     {
         guideBlockName: 'connectors-lucene-readonly-intro',
@@ -443,13 +443,13 @@ PluginRegistry.add('guide.step', [
                     ...options,
                     class: 'connectors-lucene-readonly-intro',
                     connectorName: LUCENE_CONNECTOR_NAME,
-                    parameterName: 'readonly'
-                }
+                    parameterName: 'readonly',
+                },
             }];
-        }
+        },
     },
     {
-        guideBlockName: 'connectors-lucene-detect-fields-intro-intro',
+        guideBlockName: 'connectors-lucene-detect-fields-intro',
         /**
          * Options:
          * - <b>instanceName</b>: string (required) – the specific instance name of the Lucene connector.
@@ -464,10 +464,10 @@ PluginRegistry.add('guide.step', [
                     ...options,
                     class: 'connectors-lucene-detect-fields-intro',
                     connectorName: LUCENE_CONNECTOR_NAME,
-                    parameterName: 'detectFields'
-                }
+                    parameterName: 'detectFields',
+                },
             }];
-        }
+        },
     },
     {
         guideBlockName: 'connectors-lucene-import-graph-intro',
@@ -485,10 +485,10 @@ PluginRegistry.add('guide.step', [
                     ...options,
                     class: 'connectors-lucene-import-graph-intro',
                     connectorName: LUCENE_CONNECTOR_NAME,
-                    parameterName: 'importGraph'
-                }
+                    parameterName: 'importGraph',
+                },
             }];
-        }
+        },
     },
     {
         guideBlockName: 'connectors-lucene-import-file-intro',
@@ -506,10 +506,10 @@ PluginRegistry.add('guide.step', [
                     ...options,
                     class: 'connectors-lucene-import-file-intro',
                     connectorName: LUCENE_CONNECTOR_NAME,
-                    parameterName: 'importFile'
-                }
+                    parameterName: 'importFile',
+                },
             }];
-        }
+        },
     },
     {
         guideBlockName: 'connectors-lucene-skip-initial-indexing-intro',
@@ -527,10 +527,10 @@ PluginRegistry.add('guide.step', [
                     ...options,
                     class: 'connectors-lucene-skip-initial-indexing-intro',
                     connectorName: LUCENE_CONNECTOR_NAME,
-                    parameterName: 'skipInitialIndexing'
-                }
+                    parameterName: 'skipInitialIndexing',
+                },
             }];
-        }
+        },
     },
     {
         guideBlockName: 'connectors-lucene-boost-properties-intro',
@@ -548,10 +548,10 @@ PluginRegistry.add('guide.step', [
                     ...options,
                     class: 'connectors-lucene-boost-properties-intro',
                     connectorName: LUCENE_CONNECTOR_NAME,
-                    parameterName: 'boostProperties'
-                }
+                    parameterName: 'boostProperties',
+                },
             }];
-        }
+        },
     },
     {
         guideBlockName: 'connectors-lucene-strip-markup-intro',
@@ -569,10 +569,10 @@ PluginRegistry.add('guide.step', [
                     ...options,
                     class: 'connectors-lucene-strip-markup-intro',
                     connectorName: LUCENE_CONNECTOR_NAME,
-                    parameterName: 'stripMarkup'
-                }
+                    parameterName: 'stripMarkup',
+                },
             }];
-        }
+        },
     },
     {
         guideBlockName: 'connectors-lucene-analyzer-intro',
@@ -590,10 +590,10 @@ PluginRegistry.add('guide.step', [
                     ...options,
                     class: 'connectors-lucene-analyzer-intro',
                     connectorName: LUCENE_CONNECTOR_NAME,
-                    parameterName: 'analyzer'
-                }
+                    parameterName: 'analyzer',
+                },
             }];
-        }
+        },
     },
     {
         guideBlockName: 'connectors-lucene-open-view-sparql-query-dialog',
@@ -611,10 +611,10 @@ PluginRegistry.add('guide.step', [
                     ...options,
                     class: 'connectors-lucene-open-view-sparql-query-dialog',
                     connectorName: LUCENE_CONNECTOR_NAME,
-                    parameterName: 'analyzer'
-                }
+                    parameterName: 'analyzer',
+                },
             }];
-        }
+        },
     },
     {
         guideBlockName: 'connectors-lucene-view-sparql-dialog-intro',
@@ -626,9 +626,9 @@ PluginRegistry.add('guide.step', [
                     // If mainAction is set the title will be set automatically
                     ...(options.mainAction ? {} : {title: LUCENE_DEFAULT_TITLE}),
                     ...options,
-                    class: 'connectors-lucene-view-sparql-dialog-intro'
-                }
+                    class: 'connectors-lucene-view-sparql-dialog-intro',
+                },
             }];
-        }
-    }
+        },
+    },
 ]);
