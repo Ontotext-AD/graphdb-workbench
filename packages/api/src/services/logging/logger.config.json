@@ -1,0 +1,4 @@
+{
+  "loggers": ["console"],
+  "minLogLevel": 0
+}

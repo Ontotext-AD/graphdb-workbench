@@ -26,6 +26,12 @@ module.exports = [
         '@typescript-eslint/no-empty-object-type': 'off',
         '@typescript-eslint/consistent-type-definitions': 'off',
       },
+    },
+    {
+      files: ['**/logging/**/*.ts'],
+      rules: {
+        'no-console': 'off',
+      },
     }
   ),
 ];
