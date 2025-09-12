@@ -2,6 +2,7 @@ import {ServiceProvider, LanguageContextService, TranslationBundle} from '@ontot
 import {TranslationParameter} from '../models/translation/translation-parameter';
 import {TranslationCallback, TranslationObserver} from '../models/translation/translation-observer';
 import {sanitizeHTML} from '../utils/html-utils';
+import {SharedComponentsLoggerService} from './shared-components-logger.service';
 
 /**
  * Service responsible for translation operations in the component.
@@ -14,6 +15,7 @@ class TranslationServiceClassDefinition {
   private readonly languageContextService: LanguageContextService = ServiceProvider.get(LanguageContextService);
   private languageChangeSubscription: () => void;
   private translationChangedObservers: Record<string, TranslationObserver[]> = {};
+  private readonly logger = SharedComponentsLoggerService.logger;
 
   constructor() {
     // log with background color
@@ -79,7 +81,7 @@ class TranslationServiceClassDefinition {
       return sanitizeHTML(translation);
     }
 
-    console.warn(`Missing translation for key: [${key}]`);
+    this.logger.warn(`Missing translation for key: [${key}]`);
     return key;
   }
 
