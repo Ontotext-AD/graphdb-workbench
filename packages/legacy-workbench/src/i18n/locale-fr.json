@@ -349,6 +349,9 @@
                 "ask": {
                     "label": "Demander"
                 },
+                "stop_generation": {
+                    "tooltip": "Arrêter de générer"
+                },
                 "regenerate": {
                     "tooltip": "Régénérer"
                 },
