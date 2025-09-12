@@ -1302,18 +1302,22 @@ export class LoggerService {
 ```
 
 #### Loggers Factory
-The [`Loggers`](/packages/api/src/services/logging/loggers.ts) class provides module-specific logger instances:
+The [`Loggers`](/packages/api/src/services/logging/loggers.ts) class exposes factory method to get module-specific logger instances:
 
 ```typescript
 export class Loggers {
   private static loggerInstances = new Map<Module, LoggerService>();
 
-  static get api(): LoggerService {
-    return this.getLoggerInstance(Module.API);
+  static getLoggerInstance(module: string): LoggerService {
+    if (!this.loggerInstances.has(module)) {
+      this.loggerInstances.set(module, new LoggerService(module));
+    }
+    return this.loggerInstances.get(module)!;
   }
-  // ...other module getters
 }
 ```
+
+
 
 ### How to Add a New Logger Implementation
 
@@ -1381,18 +1385,39 @@ The `loggers` array determines which logger implementations will be active. You 
 #### Basic Usage with Module-Specific Loggers
 
 ```typescript
-// In any microfrontend module
+// In any microfrontend module define a module specific wrapper for the logger
 import { Loggers } from '@ontotext/workbench-api';
 
-// Automatically uses the appropriate module context
-Loggers.workbench.info('SPARQL query executed successfully', { duration: 234 });
-Loggers.api.error('Database connection failed', { error: 'timeout' });
+const MODULE_NAME = 'Workbench';
+
+/**
+ * Logger for the Workbench module.
+ */
+export class WorkbenchLoggerService {
+
+  /**
+   * Gets the logger instance for the Workbench module.
+   *
+   * @returns LoggerService instance for the Workbench module
+   */
+  static get logger() {
+    return Loggers.getLoggerInstance(MODULE_NAME);
+  }
+}
+```
+
+Then use it in a file:
+
+```typescript
+const logger = WorkbenchLoggerService.logger;
+logger.info('SPARQL query executed successfully', { duration: 234 });
+logger.error('Database connection failed', { error: 'timeout' });
 ```
 
 Output example:
 ```
 [INFO] [workbench] 9/11/2025, 2:30:45 PM SPARQL query executed successfully {"duration":234}
-[ERROR] [api] 9/11/2025, 2:30:46 PM Database connection failed {"error":"timeout"}
+[ERROR] [workbench] 9/11/2025, 2:30:46 PM Database connection failed {"error":"timeout"}
 ```
 
 #### Multiple Logger Destinations
@@ -1406,7 +1431,7 @@ When multiple loggers are configured, the same message is sent to all active des
 }
 ```
 
-With this configuration, calling `Loggers.api.info('User logged in')` will:
+With this configuration, calling `logger.info('User logged in')` will:
 1. Display the message in the browser console
 2. Store it in the database
 

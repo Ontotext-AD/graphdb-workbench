@@ -1,5 +1,4 @@
 import {Loggers} from '../loggers';
-import {LogModule} from '../../../models/logging/log-module';
 import {BuildUtil} from '../../utils';
 
 jest.mock('../../utils');
@@ -27,7 +26,7 @@ describe('Logging System Integration', () => {
   });
 
   test('should log from Loggers factory to console output', () => {
-    const apiLogger = Loggers.api;
+    const apiLogger = Loggers.getLoggerInstance('api');
     apiLogger.info('Integration test message', {data: 'test'});
 
     expect(consoleSpy.info).toHaveBeenCalledTimes(1);
@@ -44,7 +43,7 @@ describe('Logging System Integration', () => {
   test('should hide debug logs in prod mode', () => {
     (BuildUtil.isDevMode as jest.Mock).mockReturnValue(false);
 
-    const logger = Loggers.root;
+    const logger = Loggers.getLoggerInstance('root');
 
     logger.debug('Debug message');
     logger.info('Info message');
@@ -59,23 +58,23 @@ describe('Logging System Integration', () => {
 
   test('should show debug logs in development mode', () => {
     (BuildUtil.isDevMode as jest.Mock).mockReturnValue(true);
-    Loggers.api.debug('Development debug message');
+    Loggers.getLoggerInstance('api').debug('Development debug message');
     expect(consoleSpy.debug).toHaveBeenCalledTimes(1);
   });
 
   test('should hide debug logs in production mode', () => {
     (BuildUtil.isDevMode as jest.Mock).mockReturnValue(false);
-    Loggers.api.debug('Production debug message');
+    Loggers.getLoggerInstance('api').debug('Production debug message');
     expect(consoleSpy.debug).not.toHaveBeenCalled();
   });
 
   test('should correctly identify each module in log messages', () => {
     const moduleTests = [
-      {getter: () => Loggers.legacy, expectedModule: LogModule.LEGACY},
-      {getter: () => Loggers.workbench, expectedModule: LogModule.WORKBENCH},
-      {getter: () => Loggers.shared, expectedModule: LogModule.SHARED_COMPONENTS},
-      {getter: () => Loggers.api, expectedModule: LogModule.API},
-      {getter: () => Loggers.root, expectedModule: LogModule.ROOT}
+      {getter: () => Loggers.getLoggerInstance('legacy'), expectedModule: 'legacy'},
+      {getter: () => Loggers.getLoggerInstance('workbench'), expectedModule: 'workbench'},
+      {getter: () => Loggers.getLoggerInstance('shared-components'), expectedModule: 'shared-components'},
+      {getter: () => Loggers.getLoggerInstance('api'), expectedModule: 'api'},
+      {getter: () => Loggers.getLoggerInstance('root'), expectedModule: 'root'}
     ];
 
     moduleTests.forEach(({getter, expectedModule}) => {

@@ -22,7 +22,7 @@ import 'angular/core/directives/prop-indeterminate/prop-indeterminate.directive'
 import 'angular/core/directives/page-info-tooltip.directive';
 import 'angular/core/filters/search-filter';
 import 'angular/core/filters/bytes-filter';
-import 'angular/core/services/language.service'
+import 'angular/core/services/language.service';
 import {defineCustomElements as defineYasguiElements} from 'ontotext-yasgui-web-component/loader';
 import {defineCustomElements as defineGraphQlElements} from 'ontotext-graphql-playground-component/loader';
 import {convertToHumanReadable} from "./js/angular/utils/size-util";
@@ -30,11 +30,12 @@ import {DocumentationUrlResolver} from "./js/angular/utils/documentation-url-res
 import {NumberUtils} from "./js/angular/utils/number-utils";
 import {HtmlUtil} from "./js/angular/utils/html-util";
 import {ServiceProvider, LanguageContextService} from "@ontotext/workbench-api";
+import {LegacyLoggerService} from "./js/angular/core/services/legacy-logger.service";
 
 // $translate.instant converts <b> from strings to &lt;b&gt
 // and $sce.trustAsHtml could not recognise that this is valid html
-export const decodeHTML = function (html) {
-    let txt = document.createElement('textarea');
+export const decodeHTML = function(html) {
+    const txt = document.createElement('textarea');
     txt.innerHTML = html;
     return txt.value;
 };
@@ -61,7 +62,7 @@ const modules = [
     'ngCustomElement',
     'graphdb.framework.core.services.language-service',
     'graphdb.framework.core.filters.searchFilter',
-    'graphdb.framework.core.filters.bytes'
+    'graphdb.framework.core.filters.bytes',
 ];
 
 const providers = [
@@ -74,23 +75,23 @@ const providers = [
     '$httpProvider',
     '$templateRequestProvider',
     '$translateProvider',
-    '$languageServiceProvider'
+    '$languageServiceProvider',
 ];
 
 const workbench = angular.module('graphdb.workbench', modules);
+const logger = LegacyLoggerService.logger;
 
-const moduleDefinition = function (productInfo, translations) {
+const moduleDefinition = function(productInfo, translations) {
     defineYasguiElements();
     defineGraphQlElements();
 
     workbench.config([...providers,
-        function ($routeProvider, $locationProvider, $menuItemsProvider, toastrConfig, localStorageServiceProvider,
+        function($routeProvider, $locationProvider, $menuItemsProvider, toastrConfig, localStorageServiceProvider,
                   $uibTooltipProvider, $httpProvider, $templateRequestProvider, $translateProvider, $languageServiceProvider) {
-
             if (translations && Object.keys(translations).length > 0) {
                 // If translations data is provided, iterate over the object and register each language key
                 // and its corresponding translation data with $translateProvider.
-                Object.keys(translations).forEach(langKey => {
+                Object.keys(translations).forEach((langKey) => {
                     $translateProvider.translations(langKey, translations[langKey]);
                 });
                 $translateProvider.preferredLanguage($languageServiceProvider.getDefaultLanguage());
@@ -101,7 +102,7 @@ const moduleDefinition = function (productInfo, translations) {
                 // the specified pattern (prefix/suffix).
                 $translateProvider.useStaticFilesLoader({
                     prefix: 'i18n/locale-',
-                    suffix: '.json?v=[AIV]{version}[/AIV]'
+                    suffix: '.json?v=[AIV]{version}[/AIV]',
                 });
                 // load 'en' table on startup
                 $translateProvider.preferredLanguage($languageServiceProvider.getDefaultLanguage());
@@ -113,7 +114,7 @@ const moduleDefinition = function (productInfo, translations) {
                 timeOut: 5000,
                 positionClass: 'toast-bottom-right',
                 tapToDismiss: false,
-                extendedTimeOut: 5000
+                extendedTimeOut: 5000,
             });
 
             localStorageServiceProvider
@@ -121,24 +122,24 @@ const moduleDefinition = function (productInfo, translations) {
                 .setNotify(true, true);
 
             const $route = $routeProvider.$get[$routeProvider.$get.length - 1]({
-                $on: function () {
-                }
+                $on: function() {
+                },
             });
 
             // Handle OAuth returned url, _openid_implicit_ is just a placeholder, the actual URL
             // is defined by the regular expression below.
             $routeProvider.when('_openid_implicit_', {
-                controller: function () {
+                controller: function() {
                 },
-                template: "<div></div>"
+                template: "<div></div>",
             });
 
             // The URL will contain access_token=xxx and id_token=xxx and possibly other parameters,
             // separated by &. Parameters may come in any order.
             $route.routes['_openid_implicit_'].regexp = /[&/](?:id_token=.*&access_token=|access_token=.*&id_token=)/;
 
-            let routes = PluginRegistry.get('route');
-            angular.forEach(routes, function (route) {
+            const routes = PluginRegistry.get('route');
+            angular.forEach(routes, function(route) {
                 $routeProvider.when(route.url, {
                     controller: route.controller,
                     templateUrl: route.templateUrl,
@@ -148,22 +149,22 @@ const moduleDefinition = function (productInfo, translations) {
                     allowAuthorities: route.allowAuthorities,
                     reloadOnSearch: route.reloadOnSearch !== undefined ? route.reloadOnSearch : true,
                     resolve: {
-                        preload: ['$ocLazyLoad', '$q', function ($ocLazyLoad, $q) {
+                        preload: ['$ocLazyLoad', '$q', function($ocLazyLoad, $q) {
                             // some modules define routes to just static pages
                             if (!route.path) {
                                 return $q.defer().resolve();
                             }
-                            return import(`angular/${route.path}`).then(module => {
+                            return import(`angular/${route.path}`).then((module) => {
                                 $ocLazyLoad.inject(route.module)
-                                    .catch(err => {
-                                        console.log(err)
+                                    .catch((err) => {
+                                        logger.info(err);
                                     });
-                            }).catch(error => {
-                                console.error(`Error loading module for path: ${route.path}`, error);
+                            }).catch((error) => {
+                                logger.error(`Error loading module for path: ${route.path}`, error);
                                 return $q.reject(error);
                             });
-                        }]
-                    }
+                        }],
+                    },
                 });
             });
 
@@ -200,7 +201,7 @@ const moduleDefinition = function (productInfo, translations) {
             // already aren't actually fetched via HTTP so we don't want to add the parameter there.
             const originalTemplateProviderFn = $templateRequestProvider.$get[3];
             if (typeof originalTemplateProviderFn === 'function') {
-                $templateRequestProvider.$get[3] = function (templateCache, http, q) {
+                $templateRequestProvider.$get[3] = function(templateCache, http, q) {
                     const originalHandleRequestFn = originalTemplateProviderFn(templateCache, http, q);
                     return function handleRequestFn(tpl, ignoreRequestError) {
                         if (!templateCache.get(tpl)) {
@@ -209,7 +210,7 @@ const moduleDefinition = function (productInfo, translations) {
                             tpl = tpl + '?v=[AIV]{version}[/AIV]';
                         }
                         return originalHandleRequestFn(tpl, ignoreRequestError);
-                    }
+                    };
                 };
             }
         }]);
@@ -218,14 +219,14 @@ const moduleDefinition = function (productInfo, translations) {
 
     // we need to inject $jwtAuth here in order to init the service before everything else
     workbench.run(['$rootScope', '$route', 'toastr', '$sce', '$translate', '$languageService', 'ThemeService', 'WorkbenchSettingsStorageService', 'LSKeys', 'GuidesService',
-        function ($rootScope, $route, toastr, $sce, $translate, $languageService, ThemeService, WorkbenchSettingsStorageService, LSKeys, GuidesService) {
-            const routeChangeUnsubscribe = $rootScope.$on('$routeChangeSuccess', function () {
+        function($rootScope, $route, toastr, $sce, $translate, $languageService, ThemeService, WorkbenchSettingsStorageService, LSKeys, GuidesService) {
+            const routeChangeUnsubscribe = $rootScope.$on('$routeChangeSuccess', function() {
                 updateTitleAndHelpInfo();
 
                 toastr.clear();
             });
 
-            const translateChangeUnsubscribe = $rootScope.$on('$translateChangeSuccess', function () {
+            const translateChangeUnsubscribe = $rootScope.$on('$translateChangeSuccess', function() {
                 updateTitleAndHelpInfo();
             });
 
@@ -273,14 +274,14 @@ const moduleDefinition = function (productInfo, translations) {
                 translateChangeUnsubscribe();
                 // Remove all routes so that when navigating from legacy-workbench to the new workbench and back, the
                 // router will not try to load the route before the app is bootstrapped again.
-                Object.keys($route.routes).forEach(function (route) {
+                Object.keys($route.routes).forEach(function(route) {
                     delete $route.routes[route];
                 });
-            })
+            });
         }]);
 
-    workbench.filter('titlecase', function () {
-        return function (input) {
+    workbench.filter('titlecase', function() {
+        return function(input) {
             const s = "" + input;
             return s.charAt(0).toUpperCase() + s.slice(1);
         };
@@ -300,12 +301,12 @@ const wbInit = () => {
 
 // Manually load language files
 function initTranslations() {
-    const languages = __LANGUAGES__.availableLanguages.map(lang => lang.key)
+    const languages = __LANGUAGES__.availableLanguages.map((lang) => lang.key);
     const promises = languages.map(loadTranslations);
     const translations = {};
     return Promise.all(promises)
         .then((results) => {
-            results.forEach(result => {
+            results.forEach((result) => {
                 if (result) {
                     translations[result.language] = result.data;
                 }
@@ -314,7 +315,7 @@ function initTranslations() {
             return translations;
         })
         .catch(() => {
-            console.error('Failed to load one or more translation files.');
+            logger.error('Failed to load one or more translation files.');
             return translations;
         });
 }
@@ -322,11 +323,11 @@ function initTranslations() {
 // Helper function to load translations for a given language
 function loadTranslations(language) {
     return $.getJSON(`i18n/locale-${language}.json?v=[AIV]{version}[/AIV]`)
-        .then(function (data) {
+        .then(function(data) {
             return {language, data};
         })
-        .fail(function () {
-            console.error(`Failed to load translation file for: ${language}`);
+        .fail(function() {
+            logger.error(`Failed to load translation file for: ${language}`);
             return null;
         });
 }
@@ -334,7 +335,7 @@ function loadTranslations(language) {
 // Fetch the product version information before bootstrapping the app
 function loadAppInfo() {
     return new Promise((resolve, reject) => {
-        $.get('rest/info/version?local=1', function (data) {
+        $.get('rest/info/version?local=1', function(data) {
             // Extract major.minor version as short version
             const versionArray = data.productVersion.match(/^(\d+\.\d+)/);
             if (versionArray.length) {
@@ -366,7 +367,7 @@ function startWorkbench() {
             return wbInit();
         })
         .catch((error) => {
-            console.error('Failed to start the workbench.', error);
+            logger.error('Failed to start the workbench.', error);
         });
 }
 
@@ -404,7 +405,7 @@ const ngLifecycles = singleSpaAngularJS({
                 <div ng-view></div>
             </div>
         </div>
-    `
+    `,
 });
 
 export const bootstrap = (props) => {
@@ -418,7 +419,7 @@ export const mount = (props) => {
         .then(() => {
             props.initApplication = () => {
                 return startWorkbench();
-            }
+            };
             return ngLifecycles.mount(props);
         });
 };

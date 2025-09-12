@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import {Logger} from '../../../models/logging/logger';
 import {LogLevel} from '../../../models/logging/log-level';
 
@@ -19,19 +20,19 @@ export class ConsoleLoggerService implements Logger {
   log(level: LogLevel, message: string, args: unknown[]): void {
     switch (level) {
     case LogLevel.DEBUG:
-      console.debug(message, args);
+      console.debug(message, ...args);
       break;
     case LogLevel.INFO:
-      console.info(message, args);
+      console.info(message, ...args);
       break;
     case LogLevel.WARN:
-      console.warn(message, args);
+      console.warn(message, ...args);
       break;
     case LogLevel.ERROR:
-      console.error(message, args);
+      console.error(message, ...args);
       break;
     default:
-      console.debug(message, args);
+      console.debug(message, ...args);
     }
   }
 }
