@@ -88,7 +88,9 @@ export const chatMessageModelMapper = (data) => {
         message: data.message,
         timestamp: data.timestamp,
         tokenUsageInfo: data.usage,
-        data: data
+        data: data,
+        isTerminalState: data.isTerminalState,
+        status: data.terminalStatusCode
     });
 };
 
