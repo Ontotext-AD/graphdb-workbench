@@ -1,5 +1,7 @@
-const layoutElement = document.querySelector("onto-layout");
+// eslint-disable-next-line no-unused-vars
+const layoutElement = document.querySelector('onto-layout');
 window.wbDevMode = true;
+// eslint-disable-next-line no-unused-vars
 const setUserRole = (role) => {
   setAuthUser({
     ...user,
@@ -7,12 +9,16 @@ const setUserRole = (role) => {
   });
 };
 
+// eslint-disable-next-line no-unused-vars
 const setSecurity = (enabled, userLoggedIn) => {
   setSecurityConfig({
     enabled: enabled,
-    userLoggedIn: userLoggedIn
+    userLoggedIn: userLoggedIn,
+    freeAccess: {
+      enabled: false
+    }
   });
-}
+};
 
 const user = {
   username: 'user',
@@ -33,22 +39,22 @@ const user = {
   },
   // external to mimic that the user is authenticated
   external: true
-}
+};
 
 const authorityToRolesMap = {
   ROLE_ADMIN: [
-    "ROLE_USER",
-    "ROLE_ADMIN",
-    "ROLE_MONITORING",
-    "ROLE_REPO_MANAGER",
-    "ROLE_CLUSTER"
+    'ROLE_USER',
+    'ROLE_ADMIN',
+    'ROLE_MONITORING',
+    'ROLE_REPO_MANAGER',
+    'ROLE_CLUSTER'
   ],
   ROLE_REPO_MANAGER: [
-    "ROLE_USER",
-    "ROLE_MONITORING",
-    "ROLE_REPO_MANAGER"
+    'ROLE_USER',
+    'ROLE_MONITORING',
+    'ROLE_REPO_MANAGER'
   ],
   ROLE_USER: [
     'ROLE_USER'
   ]
-}
+};

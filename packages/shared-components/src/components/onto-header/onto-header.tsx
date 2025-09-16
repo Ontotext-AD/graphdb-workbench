@@ -25,7 +25,7 @@ import {
   LanguageService,
   LanguageContextService,
   ObjectUtil,
-  getCurrentRoute, AuthenticationService, WindowService
+  getCurrentRoute, AuthenticationService, WindowService, AuthorizationService
 } from '@ontotext/workbench-api';
 import {TranslationService} from '../../services/translation.service';
 import {HtmlUtil} from '../../utils/html-util';
@@ -58,6 +58,7 @@ export class OntoHeader {
   private readonly UPDATE_ACTIVE_OPERATION_TIME_INTERVAL = 2000;
   private readonly fibonacciGenerator = new FibonacciGenerator();
   private readonly authService = ServiceProvider.get(AuthenticationService);
+  private readonly authorizationService = ServiceProvider.get(AuthorizationService);
   private readonly eventService = ServiceProvider.get(EventService);
 
   // ========================
@@ -268,7 +269,7 @@ export class OntoHeader {
     }
 
     return repositories
-      .filter((repository) => this.authService.canReadRepo(repository) || this.authService.canReadGqlRepo(repository))
+      .filter((repository) => this.authorizationService.canReadRepo(repository) || this.authorizationService.canReadGqlRepo(repository))
       .map((repository) => {
         return new DropdownItem<Repository>()
           .setName(<SelectorItemButton repository={repository}/>)
@@ -293,7 +294,7 @@ export class OntoHeader {
   };
 
   private loadNamespaces() {
-    if (!this.currentRepository || !this.authService.canReadRepo(this.currentRepository)) {
+    if (!this.currentRepository || !this.authorizationService.canReadRepo(this.currentRepository)) {
       return;
     }
     // TODO: check why loaction not used maybe it is added in autorization interceptor
@@ -349,7 +350,7 @@ export class OntoHeader {
   private shouldShowRdfSearch(): boolean {
     return !!this.currentRepository &&
       (!this.isActiveLocationLoading || getPathName() === '/repository') &&
-      this.authService.canReadRepo(this.currentRepository);
+      this.authorizationService.canReadRepo(this.currentRepository);
   }
 
   private readonly showViewResourceMessage= (event:MouseEvent) => {
