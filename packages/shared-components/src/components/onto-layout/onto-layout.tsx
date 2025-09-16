@@ -17,7 +17,7 @@ import {
   SecurityContextService,
   ServiceProvider,
   SubscriptionList,
-  WindowService
+  WindowService, AuthorizationService
 } from '@ontotext/workbench-api';
 import {ExternalMenuItemModel} from '../onto-navbar/external-menu-model';
 
@@ -32,6 +32,7 @@ export class OntoLayout {
   // ========================
   private readonly securityContextService = ServiceProvider.get(SecurityContextService);
   private readonly authenticationService = ServiceProvider.get(AuthenticationService);
+  private readonly authorizationService = ServiceProvider.get(AuthorizationService);
   private readonly navigationContextService = ServiceProvider.get(NavigationContextService);
 
   // ========================
@@ -205,7 +206,8 @@ export class OntoLayout {
   private setPermission(permissions: RestrictedPages) {
     if (permissions) {
       const path = getPathName();
-      this.hasPermission = !permissions.isRestricted(path);
+      // Delegate to legacy, when a user has authority in order to show the authority banner, which is not migrated yet
+      this.hasPermission = !permissions.isRestricted(path) ? true : !this.authorizationService.hasAuthority();
     } else {
       // If the permissions are undefined, the user can access the url
       this.hasPermission = true;
@@ -221,18 +223,16 @@ export class OntoLayout {
     if (!this.authenticationService.isSecurityEnabled()) {
       this.showHeader = true;
     } else {
-      this.showHeader = this.authenticationService.isLoggedIn() || this.authenticationService.hasFreeAccess();
+      this.showHeader = this.authenticationService.isLoggedIn() || this.authorizationService.hasFreeAccess();
     }
   }
 
   private isAuthenticatedFully() {
-    const authService = ServiceProvider.get(AuthenticationService);
-    return !authService.isSecurityEnabled() || authService.isLoggedIn() || authService.hasFreeAccess();
+    return !this.authenticationService.isSecurityEnabled() || this.authenticationService.isLoggedIn() || this.authorizationService.hasFreeAccess();
   }
 
   private shouldShowMenu(role: Authority): boolean {
-    return this.isAuthenticatedFully()
-      && ServiceProvider.get(AuthenticationService).hasRole(role);
+    return this.isAuthenticatedFully() && this.authorizationService.hasRole(role);
   }
 
   // ========================
