@@ -30,7 +30,7 @@ import {DocumentationUrlResolver} from "./utils/documentation-url-resolver";
 import {NamespacesListModel} from "./models/namespaces/namespaces-list";
 import {
     ApplicationLifecycleContextService,
-    AuthenticationService,
+    AuthorizationService,
     AuthenticationStorageService,
     COOKIE_CONSENT_CHANGED_EVENT,
     EventName,
@@ -139,8 +139,8 @@ function homeCtrl($scope,
     const subscriptions = [];
 
     const onSelectedRepositoryUpdated = (repository) => {
-        const authService = ServiceProvider.get(AuthenticationService);
-        const hasGqlRights = authService.hasGqlRights(repository);
+        const authorizationService = ServiceProvider.get(AuthorizationService);
+        const hasGqlRights = authorizationService.hasGqlRights(repository);
 
         // Don't call API, if no repo ID, or with GQL read-only or write rights
         if (!repository || hasGqlRights) {

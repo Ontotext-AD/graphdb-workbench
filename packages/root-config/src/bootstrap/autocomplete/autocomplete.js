@@ -3,7 +3,7 @@ import {
   AutocompleteService,
   AutocompleteContextService,
   RepositoryContextService,
-  AuthenticationService
+  AuthorizationService
 } from '@ontotext/workbench-api';
 import {LoggerProvider} from '../../services/logger-provider';
 
@@ -22,10 +22,10 @@ const setupAutocompleteSubscription = () => {
     unsubscribeFn();
   }
   const autocompleteContextService = service(AutocompleteContextService);
-  const authenticationService = service(AuthenticationService);
+  const authorizationService = service(AuthorizationService);
 
   unsubscribeFn = service(RepositoryContextService).onSelectedRepositoryChanged((selectedRepository) => {
-    if (!selectedRepository?.id || !authenticationService.canReadRepo(selectedRepository)) {
+    if (!selectedRepository?.id || !authorizationService.canReadRepo(selectedRepository)) {
       autocompleteContextService.updateAutocompleteEnabled(false);
     } else {
       service(AutocompleteService).isAutocompleteEnabled()
