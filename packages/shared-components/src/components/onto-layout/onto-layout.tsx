@@ -15,7 +15,7 @@ import {
   SecurityContextService,
   ServiceProvider,
   SubscriptionList,
-  WindowService
+  WindowService, AuthorizationService
 } from '@ontotext/workbench-api';
 import {ExternalMenuItemModel} from '../onto-navbar/external-menu-model';
 
@@ -29,6 +29,7 @@ export class OntoLayout {
   // Services
   // ========================
   private readonly authenticationService = ServiceProvider.get(AuthenticationService);
+  private readonly authorizationService = ServiceProvider.get(AuthorizationService);
   private readonly navigationContextService = ServiceProvider.get(NavigationContextService);
 
   // ========================
@@ -192,18 +193,16 @@ export class OntoLayout {
     if (!this.authenticationService.isSecurityEnabled()) {
       this.showHeader = true;
     } else {
-      this.showHeader = this.authenticationService.isLoggedIn() || this.authenticationService.hasFreeAccess();
+      this.showHeader = this.authenticationService.isLoggedIn() || this.authorizationService.hasFreeAccess();
     }
   }
 
   private isAuthenticatedFully() {
-    const authService = ServiceProvider.get(AuthenticationService);
-    return !authService.isSecurityEnabled() || authService.isLoggedIn() || authService.hasFreeAccess();
+    return !this.authenticationService.isSecurityEnabled() || this.authenticationService.isLoggedIn() || this.authorizationService.hasFreeAccess();
   }
 
   private shouldShowMenu(role: Authority): boolean {
-    return this.isAuthenticatedFully()
-      && ServiceProvider.get(AuthenticationService).hasRole(role);
+    return this.isAuthenticatedFully() && this.authorizationService.hasRole(role);
   }
 
   // ========================

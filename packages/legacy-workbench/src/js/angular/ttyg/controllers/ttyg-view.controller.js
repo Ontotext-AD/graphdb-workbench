@@ -22,7 +22,7 @@ import {decodeHTML} from "../../../../app";
 import {status as httpStatus} from "../../models/http-status";
 import {ContinueChatRun} from "../../models/ttyg/chat-answer";
 import {ChatMessageModel} from "../../models/ttyg/chat-message";
-import {service, AuthenticationService} from "@ontotext/workbench-api";
+import {service, AuthorizationService} from "@ontotext/workbench-api";
 
 const modules = [
     'toastr',
@@ -361,17 +361,17 @@ function TTYGViewCtrl(
                     size: 'lg',
                 };
             }).then((options) => {
-                $uibModal.open(options).result.then(
-                    (updatedAgent) => {
-                        const hasSelectedAgent = TTYGContextService.getSelectedAgent();
-                        if (hasSelectedAgent && updatedAgent.id === hasSelectedAgent.id) {
-                            TTYGContextService.selectAgent(updatedAgent);
-                        }
-                        reloadAgents();
-                    });
-            }).catch((error) => {
-                toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
-            });
+            $uibModal.open(options).result.then(
+                (updatedAgent) => {
+                    const hasSelectedAgent = TTYGContextService.getSelectedAgent();
+                    if (hasSelectedAgent && updatedAgent.id === hasSelectedAgent.id) {
+                        TTYGContextService.selectAgent(updatedAgent);
+                    }
+                    reloadAgents();
+                });
+        }).catch((error) => {
+            toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
+        });
     };
 
     // =========================
@@ -436,8 +436,8 @@ function TTYGViewCtrl(
     };
 
     const getActiveRepositoryObjectHandler = (activeRepo) => {
-        const authService = service(AuthenticationService);
-        if (activeRepo && !authService.hasGqlRights(activeRepo)) {
+        const authorizationService = service(AuthorizationService);
+        if (activeRepo && !authorizationService.hasGqlRights(activeRepo)) {
             onInit();
         }
     };
@@ -699,8 +699,8 @@ function TTYGViewCtrl(
         // TODO: this should be refreshed automatically when the repositories change
         const repositoryObjects = $repositories.getLocalReadableGraphdbRepositories()
             .map((repo) => (
-           new AgentListFilterModel(repo.id, repo.id, repo.id === currentRepository)
-        ));
+                new AgentListFilterModel(repo.id, repo.id, repo.id === currentRepository)
+            ));
         $scope.agentListFilterModel = [
             new AgentListFilterModel(AGENTS_FILTER_ALL_KEY, labels.filter_all),
             ...repositoryObjects,
