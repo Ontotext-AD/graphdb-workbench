@@ -1,4 +1,8 @@
+import {LoggerProvider} from "./logger-provider";
+
 const modules = [];
+
+const logger = LoggerProvider.logger;
 
 angular
     .module('graphdb.framework.core.services.theme-service', modules)
@@ -36,12 +40,11 @@ const ThemeDefinitionModel = {
         'color-help-light': null,
         'logo-color': null,
         'logo-text-color': null,
-        'logo-background-color': null
-    }
+        'logo-background-color': null,
+    },
 };
 
 function ThemeService(workbenchSettingsStorageService, $translate, toastr) {
-
     /**
      * Applies the dark theme mode if it's saved in the local storage with the workbench settings. Otherwise the dark
      * mode is not applied.
@@ -74,7 +77,7 @@ function ThemeService(workbenchSettingsStorageService, $translate, toastr) {
       const defaultThemeDefinition = getDefaultThemeDefinition();
       return {
           name: defaultThemeDefinition.name,
-          label: $translate.instant(defaultThemeDefinition.label) || defaultThemeDefinition.label
+          label: $translate.instant(defaultThemeDefinition.label) || defaultThemeDefinition.label,
       };
     };
 
@@ -118,7 +121,7 @@ function ThemeService(workbenchSettingsStorageService, $translate, toastr) {
         if (selectedThemeDefinition) {
             theme = {
                 name: selectedThemeDefinition.name,
-                label: $translate.instant(selectedThemeDefinition.label) || selectedThemeDefinition.label
+                label: $translate.instant(selectedThemeDefinition.label) || selectedThemeDefinition.label,
             };
         } else {
             theme = getDefaultTheme();
@@ -135,7 +138,7 @@ function ThemeService(workbenchSettingsStorageService, $translate, toastr) {
             .filter(validateThemeDefinition)
             .map((themeDefinition) => ({
                 name: themeDefinition.name,
-                label: $translate.instant(themeDefinition.label) || themeDefinition.label
+                label: $translate.instant(themeDefinition.label) || themeDefinition.label,
             }));
     };
 
@@ -160,7 +163,7 @@ function ThemeService(workbenchSettingsStorageService, $translate, toastr) {
         const validationResult = validate(ThemeDefinitionModel, themeDefinition, '', []);
         if (validationResult.length) {
             toastr.error($translate.instant('security.workbench.settings.theme.validation.missing-fields'));
-            console.error(`
+            logger.error(`
             Color theme validation error. Missing definitions in plugin theme: ${validationResult.join(', ')}.
             Check the developers guide how to create a valid color theme.`);
             return false;
@@ -271,7 +274,7 @@ function ThemeService(workbenchSettingsStorageService, $translate, toastr) {
         getThemeDefinition,
         getTheme,
         getThemes,
-        applyTheme
+        applyTheme,
     };
 }
 

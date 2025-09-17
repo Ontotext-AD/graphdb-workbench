@@ -1,3 +1,7 @@
+import {LoggerProvider} from "../../core/services/logger-provider";
+
+const logger = LoggerProvider.logger;
+
 angular
     .module('graphdb.framework.graphql.directives.configure-endpoint', [])
     .directive('configureEndpoint', ConfigureEndpointComponent);
@@ -93,7 +97,7 @@ function ConfigureEndpointComponent($q, ModalService, $translate, GraphqlService
             const loadGenerationSettings = () => {
                 return GraphqlService.getGraphqlGenerationSettings($scope.selectedSourceRepository.id)
                     .catch((error) => {
-                        console.error('Error loading generation settings', error);
+                        logger.error('Error loading generation settings', error);
                         toastr.error(getError(error));
                     });
             };

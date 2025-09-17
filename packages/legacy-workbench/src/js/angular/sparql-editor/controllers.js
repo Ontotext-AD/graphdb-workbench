@@ -1,5 +1,5 @@
 import {
-    savedQueryResponseMapper, buildQueryModel
+    savedQueryResponseMapper, buildQueryModel,
 } from "../rest/mappers/saved-query-mapper";
 import {RouteConstants} from "../utils/route-constants";
 import 'angular/rest/connectors.rest.service';
@@ -16,14 +16,17 @@ import {CancelAbortingQuery} from "../models/sparql/cancel-aborting-query";
 import {QueryMode} from "../models/ontotext-yasgui/query-mode";
 import 'angular/core/services/event-emitter-service';
 import {navigateTo, LanguageContextService, ServiceProvider, EventService, EventName} from "@ontotext/workbench-api";
+import {LoggerProvider} from "../core/services/logger-provider";
 
 const modules = [
     'ui.bootstrap',
     'graphdb.framework.rest.connectors.service',
     'graphdb.framework.externalsync.controllers',
     'graphdb.framework.utils.event-emitter-service',
-    'graphdb.framework.utils.localstorageadapter'
+    'graphdb.framework.utils.localstorageadapter',
 ];
+
+const logger = LoggerProvider.logger;
 
 angular
     .module('graphdb.framework.sparql-editor.controllers', modules)
@@ -103,9 +106,9 @@ function SparqlEditorCtrl($rootScope,
             beforeUpdateQuery: getBeforeUpdateQueryHandler(),
             outputHandlers: new Map([
                 [EventDataType.QUERY_EXECUTED, queryExecutedHandler],
-                [EventDataType.REQUEST_ABORTED, requestAbortedHandler]
+                [EventDataType.REQUEST_ABORTED, requestAbortedHandler],
             ]),
-            clearState: clearYasguiState !== undefined ? clearYasguiState : false
+            clearState: clearYasguiState !== undefined ? clearYasguiState : false,
         };
     };
 
@@ -197,7 +200,7 @@ function SparqlEditorCtrl($rootScope,
         }).catch((err) => {
             toastr.error($translate.instant('query.editor.missing.saved.query.data.error', {
                 savedQueryName: savedQueryName,
-                error: getError(err)
+                error: getError(err),
             }));
         });
     };
@@ -273,11 +276,11 @@ function SparqlEditorCtrl($rootScope,
             const exploreVisualButtonWrapperElement = document.createElement('button');
             exploreVisualButtonWrapperElement.classList.add("explore-visual-graph-button");
             exploreVisualButtonWrapperElement.classList.add("icon-data");
-            exploreVisualButtonWrapperElement.onclick = function () {
+            exploreVisualButtonWrapperElement.onclick = function() {
                 const paramsToParse = {
                     query: yasr.yasqe.getValue(),
                     sameAs: yasr.yasqe.getSameAs(),
-                    inference: yasr.yasqe.getInfer()
+                    inference: yasr.yasqe.getInfer(),
                 };
                 $location.path('graphs-visualizations').search(paramsToParse);
             };
@@ -298,7 +301,7 @@ function SparqlEditorCtrl($rootScope,
         },
         getOrder: () => {
             return 2;
-        }
+        },
     };
 
     const createParameter = (key, value) => {
@@ -316,7 +319,7 @@ function SparqlEditorCtrl($rootScope,
     const toHasNotSupport = (response) => {
         const parameters = [
             createParameter('connectorName', response.data.connectorName),
-            createParameter('pluginName', response.data.pluginName)
+            createParameter('pluginName', response.data.pluginName),
         ];
         return new BeforeUpdateQueryResult(BeforeUpdateQueryResultStatus.ERROR, 'query.editor.inactive.plugin.warning.msg', parameters);
     };
@@ -329,16 +332,16 @@ function SparqlEditorCtrl($rootScope,
                 processedEntities: 0,
                 estimatedEntities: 0,
                 indexedEntities: 0,
-                entitiesPerSecond: 0
+                entitiesPerSecond: 0,
             },
             actionName,
             eta: "-",
             inline: false,
             iri,
             name: connectorName,
-            doneCallback: function () {
+            doneCallback: function() {
                 connectorProgressModal.dismiss('cancel');
-            }
+            },
         };
         progressScope.getHumanReadableSeconds = $scope.getHumanReadableSeconds;
 
@@ -347,7 +350,7 @@ function SparqlEditorCtrl($rootScope,
             controller: 'CreateProgressCtrl',
             size: 'lg',
             backdrop: 'static',
-            scope: progressScope
+            scope: progressScope,
         });
         return connectorProgressModal;
     };
@@ -392,7 +395,7 @@ function SparqlEditorCtrl($rootScope,
             }).catch((error) => {
                 // For some reason we couldn't check if this is a connector update, so just catch the exception,
                 // to not stop the execution of query.
-                console.log('Checking connector error: ', error);
+                logger.error('Checking connector error: ', error);
             });
     };
 
@@ -417,7 +420,7 @@ function SparqlEditorCtrl($rootScope,
         exitPageConfirmMessage += ".message";
         const params = {
             queriesCount: ongoingRequestsInfo.queriesCount,
-            updatesCount: ongoingRequestsInfo.updatesCount
+            updatesCount: ongoingRequestsInfo.updatesCount,
         };
         return $translate.instant(exitPageConfirmMessage, params);
     };
@@ -478,7 +481,6 @@ function SparqlEditorCtrl($rootScope,
         const ontotextYasguiElement = YasguiComponentDirectiveUtil.getOntotextYasguiElement(QUERY_EDITOR_ID);
         if (!ontotextYasguiElement) {
             return;
-
         }
         // If we set event.returnValue, the browser will prompt the user for confirmation to leave the page,
         // but we don't have a way to handle the user's choice.
@@ -489,7 +491,6 @@ function SparqlEditorCtrl($rootScope,
     window.addEventListener('beforeunload', beforeunloadHandler);
 
     const confirmIfHaveRunQuery = (ongoingRequestsInfo) => new Promise((resolve, reject) => {
-
         if (!ongoingRequestsInfo || ongoingRequestsInfo.queriesCount < 1 && ongoingRequestsInfo.updatesCount < 1) {
             resolve();
             return;
@@ -500,10 +501,10 @@ function SparqlEditorCtrl($rootScope,
         ModalService.openSimpleModal({
             title,
             message,
-            warning: true
-        }).result.then(function () {
+            warning: true,
+        }).result.then(function() {
             resolve();
-        }, function () {
+        }, function() {
             reject(new CancelAbortingQuery());
         });
     });
@@ -534,7 +535,7 @@ function SparqlEditorCtrl($rootScope,
             })
             .catch((error) => {
                 if (!(error instanceof CancelAbortingQuery)) {
-                    console.error(error)
+                    logger.error(error);
                     queriesAreCanceled = true;
                     navigateTo(newUrl)();
                 }
@@ -542,7 +543,7 @@ function SparqlEditorCtrl($rootScope,
     };
 
     subscriptions.push(
-        ServiceProvider.get(EventService).subscribe(EventName.NAVIGATION_START, (eventPayload) => locationChangeHandler(eventPayload))
+        ServiceProvider.get(EventService).subscribe(EventName.NAVIGATION_START, (eventPayload) => locationChangeHandler(eventPayload)),
     );
 
     const removeAllListeners = () => {
@@ -567,31 +568,31 @@ function SparqlEditorCtrl($rootScope,
         // Reloading the page triggers the destruction of the component and persistence of the active repository. The reloading of the page is out of the Angular scope, so the "activeRepository"
         // holds the real repository when the YASGUI is created. If we use $$repositories.getActiveRepository(), the new value will be fetched, which in this case will be incorrect.
         LocalStorageAdapter.set(LSKeys.SPARQL_LAST_REPO, activeRepository);
-    }
+    };
 
     subscriptions.push(
-        $scope.$on('language-changed', function () {
+        $scope.$on('language-changed', function() {
             location.reload();
-        })
+        }),
     );
 
     const onLanguageChange = () => {
         // Do nothing on language change
-    }
+    };
 
     const showLanguageChangeConfirmation = () => {
         return new Promise((resolve) => {
             ModalService.openSimpleModal({
                 title: $translate.instant('query.editor.language.change.warning.title'),
                 message: $translate.instant('query.editor.reload.page.warning'),
-                warning: true
-            }).result.then(function () {
+                warning: true,
+            }).result.then(function() {
                 resolve(true);
-            }, function () {
+            }, function() {
                 resolve(false);
             });
         });
-    }
+    };
 
     const languageContextService = ServiceProvider.get(LanguageContextService);
     const onLanguageChangeSubscription = languageContextService.onSelectedLanguageChanged(onLanguageChange, showLanguageChangeConfirmation);

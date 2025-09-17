@@ -1,6 +1,9 @@
 import {ExternalMenuItemModel, ExternalMenuModel} from './external-menu-model';
 import {NavbarItemModel, NavbarModel} from './navbar-model';
 import {ProductInfo, UriUtil} from '@ontotext/workbench-api';
+import {LoggerProvider} from '../../services/logger-provider';
+
+const logger = LoggerProvider.logger;
 
 export class NavbarService {
 
@@ -17,7 +20,7 @@ export class NavbarService {
         .filter((item) => !item.parent && item.shouldShow)
         .forEach((item) => {
           if (navbarModel.hasParent(item.label)) {
-            console.warn('Doubled parent definition: ', item);
+            logger.warn('Doubled parent definition: ', item);
           } else {
             navbarModel.addItem(this.toMenuItemModel(item, undefined, productInfo, item.children));
           }

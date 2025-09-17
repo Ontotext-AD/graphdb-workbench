@@ -5,7 +5,7 @@ const MODULE_NAME = 'ROOT_CONFIG';
 /**
  * Service class that provides logging functionality for the root configuration.
  */
-export class LoggingService {
+export class LoggerProvider {
   static get logger() {
     return Loggers.getLoggerInstance(MODULE_NAME);
   }

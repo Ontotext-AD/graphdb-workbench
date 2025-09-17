@@ -5,7 +5,7 @@ const MODULE_NAME = 'API';
 /**
  * Logger for the API module.
  */
-export class LoggingService {
+export class LoggerProvider {
   /**
    * Gets the logger instance for the API module.
    *

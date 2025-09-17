@@ -30,6 +30,7 @@ import {DocumentationUrlResolver} from "./js/angular/utils/documentation-url-res
 import {NumberUtils} from "./js/angular/utils/number-utils";
 import {HtmlUtil} from "./js/angular/utils/html-util";
 import {ServiceProvider, LanguageContextService} from "@ontotext/workbench-api";
+import {LoggerProvider} from "./js/angular/core/services/logger-provider";
 
 // $translate.instant converts <b> from strings to &lt;b&gt
 // and $sce.trustAsHtml could not recognise that this is valid html
@@ -38,6 +39,8 @@ export const decodeHTML = function(html) {
     txt.innerHTML = html;
     return txt.value;
 };
+
+const logger = LoggerProvider.logger;
 
 const modules = [
     'ngRoute',
@@ -155,10 +158,10 @@ const moduleDefinition = function(productInfo, translations) {
                             return import(`angular/${route.path}`).then((module) => {
                                 $ocLazyLoad.inject(route.module)
                                     .catch((err) => {
-                                        console.info(err);
+                                        logger.info(err);
                                     });
                             }).catch((error) => {
-                                console.error(`Error loading module for path: ${route.path}`, error);
+                                logger.error(`Error loading module for path: ${route.path}`, error);
                                 return $q.reject(error);
                             });
                         }],
@@ -313,7 +316,7 @@ function initTranslations() {
             return translations;
         })
         .catch(() => {
-            console.error('Failed to load one or more translation files.');
+            logger.error('Failed to load one or more translation files.');
             return translations;
         });
 }
@@ -325,7 +328,7 @@ function loadTranslations(language) {
             return {language, data};
         })
         .fail(function() {
-            console.error(`Failed to load translation file for: ${language}`);
+            logger.error(`Failed to load translation file for: ${language}`);
             return null;
         });
 }
@@ -365,7 +368,7 @@ function startWorkbench() {
             return wbInit();
         })
         .catch((error) => {
-            console.error('Failed to start the workbench.', error);
+            logger.error('Failed to start the workbench.', error);
         });
 }
 

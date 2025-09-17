@@ -1,11 +1,14 @@
+import {LoggerProvider} from "../../core/services/logger-provider";
+
 angular
     .module('graphdb.framework.impex.import.controllers.import-resource-message-dialog', [])
     .controller('ImportResourceMessageDialogController', ImportResourceMessageDialogController);
 
 ImportResourceMessageDialogController.$inject = ['$scope', '$uibModalInstance', '$translate', 'toastr', 'message'];
 
-function ImportResourceMessageDialogController($scope, $uibModalInstance, $translate, toastr, message) {
+const logger = LoggerProvider.logger;
 
+function ImportResourceMessageDialogController($scope, $uibModalInstance, $translate, toastr, message) {
     $scope.message = message;
 
 
@@ -19,7 +22,7 @@ function ImportResourceMessageDialogController($scope, $uibModalInstance, $trans
                 toastr.success($translate.instant('import.help.messages.copied_to_clipboard'));
                 $scope.close();
             }, (err) => {
-                console.error('Could not copy text: ', err);
+                logger.error('Could not copy text: ', err);
             });
     };
 }

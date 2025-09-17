@@ -6,6 +6,9 @@ import {
   RepositoryLocationService,
   RepositoryLocationContextService
 } from '@ontotext/workbench-api';
+import {LoggerProvider} from '../../services/logger-provider';
+
+const logger = LoggerProvider.logger;
 
 const loadRepositories = () => {
   return ServiceProvider.get(RepositoryService).getRepositories()
@@ -19,7 +22,7 @@ const loadRepositories = () => {
       repositoryContextService.updateSelectedRepository(repositoryReference);
     })
     .catch((error) => {
-      console.error('Could not load repositories', error);
+      logger.error('Could not load repositories', error);
     });
 };
 

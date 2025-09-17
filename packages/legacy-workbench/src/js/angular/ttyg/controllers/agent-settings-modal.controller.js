@@ -11,6 +11,9 @@ import {TTYGEventName} from "../services/ttyg-context.service";
 import {AGENT_OPERATION, TTYG_ERROR_MSG_LENGTH} from "../services/constants";
 import {mapUriAsNtripleAutocompleteResponse} from "../../rest/mappers/autocomplete-mapper";
 import {DocumentationUrlResolver} from "../../utils/documentation-url-resolver";
+import {LoggerProvider} from "../../core/services/logger-provider";
+
+const logger = LoggerProvider.logger;
 
 angular
     .module('graphdb.framework.ttyg.controllers.agent-settings-modal', [
@@ -19,11 +22,11 @@ angular
         'graphdb.framework.rest.repositories.service',
         'graphdb.framework.ttyg.controllers.agent-instructions-explain-modal',
         'graphdb.framework.ttyg.services.externalIntegrationModal',
-        'ngTagsInput'
+        'ngTagsInput',
     ])
     .constant('ExtractionMethodTemplates', {
         'iri_discovery_search': 'iri-discovery-search',
-        'autocomplete_iri_discovery_search': 'autocomplete-iri-discovery-search'
+        'autocomplete_iri_discovery_search': 'autocomplete-iri-discovery-search',
     })
     .controller('AgentSettingsModalController', AgentSettingsModalController);
 
@@ -68,7 +71,6 @@ function AgentSettingsModalController(
     AutocompleteRestService,
     ExternalIntegrationModalService,
     productInfo) {
-
     // =========================
     // Private variables
     // =========================
@@ -110,7 +112,7 @@ function AgentSettingsModalController(
      * @type {{[string]: boolean}} - the key is the extraction method types in <code>ExtractionMethod</code>
      */
     $scope.extractionMethodLoaderFlags = {
-        [ExtractionMethod.SIMILARITY]: false
+        [ExtractionMethod.SIMILARITY]: false,
     };
 
     /**
@@ -237,8 +239,8 @@ function AgentSettingsModalController(
     $scope.helpInfoForModel = {
         ttygHelpInfo: getModelHelpMessage(),
         linkText: $translate.instant('ttyg.agent.create_agent_modal.form.model.link_text'),
-        documentationUrl: DocumentationUrlResolver.getDocumentationUrl(productInfo.productShortVersion, 'talk-to-graph.html#prerequisites-and-configuration')
-    }
+        documentationUrl: DocumentationUrlResolver.getDocumentationUrl(productInfo.productShortVersion, 'talk-to-graph.html#prerequisites-and-configuration'),
+    };
 
     /**
      * Resolves the hint for the FTS search missing message. This is needed because the hint contains a html link that
@@ -250,8 +252,8 @@ function AgentSettingsModalController(
         const message = decodeHTML(
             $translate.instant(
                 'ttyg.agent.create_agent_modal.form.fts_search.fts_disabled_message',
-                {repositoryEditPage: 'repository/edit/' + $scope.agentFormModel.repositoryId}
-            )
+                {repositoryEditPage: 'repository/edit/' + $scope.agentFormModel.repositoryId},
+            ),
         );
         return $sce.trustAsHtml(message);
     };
@@ -262,7 +264,7 @@ function AgentSettingsModalController(
     $scope.goToAutocompleteView = (event) => {
         event.preventDefault();
         TTYGContextService.emit(TTYGEventName.GO_TO_AUTOCOMPLETE_INDEX_VIEW, {repositoryId: $scope.agentFormModel.repositoryId});
-    }
+    };
 
     /**
      * Opens the 'Create Similarity' view in a new tab.
@@ -410,7 +412,7 @@ function AgentSettingsModalController(
                 $scope.agentSettingsForm.$setValidity('autocompleteDisabled', false);
                 toastr.error(getError(error));
             });
-    }
+    };
 
     /**
      * Restores the default context size.
@@ -449,9 +451,9 @@ function AgentSettingsModalController(
             $scope.showSystemInstructionWarning = true;
             ModalService.openModalAlert({
                 title: $translate.instant('ttyg.agent.create_agent_modal.form.system_instruction.overriding_system_instruction_warning.title'),
-                message: $translate.instant('ttyg.agent.create_agent_modal.form.system_instruction.overriding_system_instruction_warning.body')
+                message: $translate.instant('ttyg.agent.create_agent_modal.form.system_instruction.overriding_system_instruction_warning.body'),
             }).result
-                .then(function () {
+                .then(function() {
                     // Do nothing, just warning the user
                 });
         }
@@ -473,13 +475,13 @@ function AgentSettingsModalController(
                     windowClass: 'agent-instructions-explain-modal',
                     backdrop: 'static',
                     resolve: {
-                        dialogModel: function () {
+                        dialogModel: function() {
                             return {
-                                agentInstructionsExplain
+                                agentInstructionsExplain,
                             };
-                        }
+                        },
                     },
-                    size: 'lg'
+                    size: 'lg',
                 };
                 $uibModal.open(options).result
                     .then(() => {
@@ -495,11 +497,11 @@ function AgentSettingsModalController(
         AutocompleteRestService.getAutocompleteSuggestions(inputText)
             .then(mapUriAsNtripleAutocompleteResponse)
             .then((suggestions) => {
-                $scope.autocompleteSuggestions = suggestions.map(item => ({text: item.value}));
+                $scope.autocompleteSuggestions = suggestions.map((item) => ({text: item.value}));
             }).catch((error) => {
             toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
         });
-    }
+    };
 
     // =========================
     // Private functions
@@ -524,7 +526,7 @@ function AgentSettingsModalController(
     const agentOperationHandlers = {
         [AGENT_OPERATION.CREATE]: (payload) => createAgent(payload),
         [AGENT_OPERATION.EDIT]: (payload) => editAgent(payload),
-        [AGENT_OPERATION.CLONE]: (payload) => cloneAgent(payload)
+        [AGENT_OPERATION.CLONE]: (payload) => cloneAgent(payload),
     };
 
     /**
@@ -588,7 +590,7 @@ function AgentSettingsModalController(
     };
 
     const logAndShowError = (error, errorMessageKey) => {
-        console.error(error);
+        logger.error(error);
         toastr.error($translate.instant(errorMessageKey));
     };
 
@@ -609,7 +611,7 @@ function AgentSettingsModalController(
         const selectRepositoryInfo = $scope.activeRepositoryList.find((repository) => repository.value === $scope.agentFormModel.repositoryId);
         return {
             repositoryId: selectRepositoryInfo ? selectRepositoryInfo.data.repository.id : undefined,
-            repositoryLocation: selectRepositoryInfo ? selectRepositoryInfo.data.repository.location : undefined
+            repositoryLocation: selectRepositoryInfo ? selectRepositoryInfo.data.repository.location : undefined,
         };
     };
 
@@ -676,7 +678,6 @@ function AgentSettingsModalController(
                     $scope.retrievalConnectors = connectors;
                     $scope.agentSettingsForm.$setValidity('missingConnector', !extractionMethod.selected || !!(connectors && connectors.length));
                     updateSelectedRetrievalConnector($scope.retrievalConnectors, extractionMethod);
-
                 })
                 .catch((error) => {
                     $scope.agentSettingsForm.$setValidity('missingConnector', false);
@@ -713,7 +714,7 @@ function AgentSettingsModalController(
         [ExtractionMethod.SPARQL]: (extractionMethod) => {
         },
         [ExtractionMethod.SIMILARITY]: (extractionMethod) => handleSimilaritySearchExtractionMethodPanelToggle(extractionMethod),
-        [ExtractionMethod.RETRIEVAL]: (extractionMethod) => handleRetrievalConnectorExtractionMethodPanelToggle(extractionMethod)
+        [ExtractionMethod.RETRIEVAL]: (extractionMethod) => handleRetrievalConnectorExtractionMethodPanelToggle(extractionMethod),
     };
 
     const additionalExtractionPanelToggleHandlers = {
@@ -728,7 +729,7 @@ function AgentSettingsModalController(
             $scope.agentSettingsForm.$setValidity('autocompleteDisabled', true);
         }
         $scope.checkAutocompleteIndexEnabled(extractionMethod);
-    }
+    };
 
     const refreshValidations = (clearIndexSelection = false, clearRetrievalConnectorSelection = false) => {
         $scope.checkIfFTSEnabled();

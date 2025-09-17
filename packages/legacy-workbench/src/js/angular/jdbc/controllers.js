@@ -11,34 +11,36 @@ import {toJDBCColumns, updateColumn} from "../models/jdbc/jdbc-column";
 import {DISABLE_YASQE_BUTTONS_CONFIGURATION, YasguiComponentDirectiveUtil} from "../core/directives/yasgui-component/yasgui-component-directive.util";
 import {decodeHTML} from "../../../app";
 import {RepositoryContextService, ServiceProvider} from "@ontotext/workbench-api";
+import {LoggerProvider} from "../core/services/logger-provider";
 
 const modules = [
     'ui.bootstrap',
     'graphdb.framework.core.services.repositories',
     'graphdb.framework.rest.monitoring.service',
     'toastr',
-    'graphdb.framework.utils.event-emitter-service'
+    'graphdb.framework.utils.event-emitter-service',
 ];
 
 angular.module('graphdb.framework.jdbc.controllers', modules, [
-    'graphdb.framework.utils.notifications'
+    'graphdb.framework.utils.notifications',
 ])
     .controller('JdbcListCtrl', JdbcListCtrl)
     .controller('JdbcCreateCtrl', JdbcCreateCtrl);
 
 JdbcListCtrl.$inject = ['$scope', '$repositories', 'JdbcRestService', 'toastr', 'ModalService', '$translate'];
 
-function JdbcListCtrl($scope, $repositories, JdbcRestService, toastr, ModalService, $translate) {
+const logger = LoggerProvider.logger;
 
-    $scope.getSqlConfigurations = function () {
+function JdbcListCtrl($scope, $repositories, JdbcRestService, toastr, ModalService, $translate) {
+    $scope.getSqlConfigurations = function() {
         // Only do this if there is an active repo that isn't an Ontop or FedX repo.
         // Ontop and FedX repos don't support JDBC.
         if ($repositories.getActiveRepository()
             && !$repositories.isActiveRepoOntopType()
             && !$repositories.isActiveRepoFedXType()) {
-            JdbcRestService.getJdbcConfigurations().success(function (data) {
+            JdbcRestService.getJdbcConfigurations().success(function(data) {
                 $scope.jdbcConfigurations = data;
-            }).error(function (data) {
+            }).error(function(data) {
                 const msg = getError(data);
                 toastr.error(msg, $translate.instant('jdbc.not.get.SQL.msg'));
             });
@@ -47,22 +49,22 @@ function JdbcListCtrl($scope, $repositories, JdbcRestService, toastr, ModalServi
         }
     };
 
-    $scope.$watch(function () {
+    $scope.$watch(function() {
         return $repositories.getActiveRepository();
-    }, function () {
+    }, function() {
         $scope.getSqlConfigurations();
     });
 
-    $scope.deleteConfiguration = function (name) {
+    $scope.deleteConfiguration = function(name) {
         ModalService.openSimpleModal({
             title: $translate.instant('common.warning'),
             message: $translate.instant('jdbc.delete.sql.table.warning.msg', {name: name}),
-            warning: true
+            warning: true,
         }).result
-            .then(function () {
-                JdbcRestService.deleteJdbcConfiguration(name).success(function () {
+            .then(function() {
+                JdbcRestService.deleteJdbcConfiguration(name).success(function() {
                     $scope.getSqlConfigurations();
-                }).error(function (e) {
+                }).error(function(e) {
                     toastr.error(getError(e), $translate.instant('jdbc.not.delete.sql.msg'));
                 });
             });
@@ -104,7 +106,6 @@ function JdbcCreateCtrl(
     $translate,
     $languageService,
     EventEmitterService) {
-
     $scope.emptySparqlResponse = "{\"head\": {\"vars\": []},\"results\": {\"bindings\": []}}";
     $scope.getSuggestionSqlType = '';
     $scope.sqlTypes = [];
@@ -181,7 +182,7 @@ function JdbcCreateCtrl(
                 updateYasguiConfiguration({
                     render,
                     sparqlResponse: tablePreviewResults,
-                    initialQuery: jdbcConfigurationInfo.query
+                    initialQuery: jdbcConfigurationInfo.query,
                 });
             })
             .catch((error) => {
@@ -244,13 +245,13 @@ function JdbcCreateCtrl(
         }
     };
 
-    $scope.deleteColumn = function (columnName, index) {
+    $scope.deleteColumn = function(columnName, index) {
         ModalService.openSimpleModal({
             title: $translate.instant('common.warning'),
             message: $translate.instant('jdbc.warning.delete.column.msg', {columnName: columnName}),
-            warning: true
+            warning: true,
         }).result
-            .then(function () {
+            .then(function() {
                 $scope.jdbcConfigurationInfo.columns.splice(index, 1);
                 $scope.setDirty();
             });
@@ -261,9 +262,9 @@ function JdbcCreateCtrl(
             ModalService.openSimpleModal({
                 title: $translate.instant('common.warning'),
                 message: $translate.instant('jdbc.warning.column.type.msg'),
-                warning: true
+                warning: true,
             }).result
-                .then(function () {
+                .then(function() {
                     getSuggestions();
                 });
         } else {
@@ -300,7 +301,7 @@ function JdbcCreateCtrl(
             const sqlView = JSON.stringify({
                 name: $scope.jdbcConfigurationInfo.jdbcConfigurationName,
                 query: $scope.jdbcConfigurationInfo.query,
-                columns: $scope.jdbcConfigurationInfo.columns || []
+                columns: $scope.jdbcConfigurationInfo.columns || [],
             });
             return Promise.all([JdbcRestService.getNewSqlTablePreview(sqlView).then((response) => response.data), Promise.resolve(jdbcConfigurationInfo)]);
         } else {
@@ -332,7 +333,7 @@ function JdbcCreateCtrl(
         const configuration = {
             name: jdbcConfigurationInfo.jdbcConfigurationName,
             query: jdbcConfigurationInfo.query,
-            columns: jdbcConfigurationInfo.columns
+            columns: jdbcConfigurationInfo.columns,
         };
 
         return JdbcRestService.createNewJdbcConfiguration(configuration)
@@ -348,7 +349,7 @@ function JdbcCreateCtrl(
         const configuration = {
             name: jdbcConfigurationInfo.jdbcConfigurationName,
             query: jdbcConfigurationInfo.query,
-            columns: jdbcConfigurationInfo.columns
+            columns: jdbcConfigurationInfo.columns,
         };
         return JdbcRestService.updateJdbcConfiguration(configuration)
             .then(() => {
@@ -383,7 +384,7 @@ function JdbcCreateCtrl(
             getCellContent: getCellContent,
             sparqlResponse: $scope.emptySparqlResponse,
             yasqeActionButtons: DISABLE_YASQE_BUTTONS_CONFIGURATION,
-            yasqeMode: $scope.canEditActiveRepo ? YasqeMode.WRITE : YasqeMode.READ
+            yasqeMode: $scope.canEditActiveRepo ? YasqeMode.WRITE : YasqeMode.READ,
         };
     };
 
@@ -447,26 +448,26 @@ function JdbcCreateCtrl(
             .then(getColumnsTypeSuggestion)
             .then((jdbcConfigurationInfo) => $scope.jdbcConfigurationInfo = jdbcConfigurationInfo)
             .catch((error) => {
-                console.log(error);
+                logger.info(error);
             });
     };
 
     const getColumnNames = (jdbcConfigurationInfo) => {
         return JdbcRestService.getColumnNames(jdbcConfigurationInfo.query)
             .then((response) => [jdbcConfigurationInfo, response.data])
-            .catch(function (e) {
+            .catch(function(e) {
                 toastr.error(getError(e), $translate.instant('jdbc.not.suggest.column.names'));
             });
     };
 
     const getColumnsTypeSuggestion = ([jdbcConfigurationInfo, columns]) => {
         return JdbcRestService.getColumnsTypeSuggestion(jdbcConfigurationInfo.query, columns)
-            .then(function (response) {
+            .then(function(response) {
                 jdbcConfigurationInfo.columns = toJDBCColumns(columns, response.data);
                 jdbcConfigurationInfo.isColumnsEmpty = jdbcConfigurationInfo.columns.length;
                 $scope.setDirty();
                 return jdbcConfigurationInfo;
-            }).catch(function (e) {
+            }).catch(function(e) {
                 toastr.error(getError(e), $translate.instant('jdbc.not.suggest.column.types'));
             });
     };
@@ -499,12 +500,12 @@ function JdbcCreateCtrl(
         ModalService.openSimpleModal({
             title,
             message,
-            warning: true
-        }).result.then(function () {
+            warning: true,
+        }).result.then(function() {
             if (angular.isFunction(onConfirm)) {
                 onConfirm();
             }
-        }, function () {
+        }, function() {
             if (angular.isFunction(onCancel)) {
                 onCancel();
             }
@@ -543,7 +544,7 @@ function JdbcCreateCtrl(
      */
     const goBack = () => {
         // Added timeout a success message to be shown.
-        setTimeout(function () {
+        setTimeout(function() {
             goToJdbcView();
         }, 1000);
     };
@@ -561,8 +562,7 @@ function JdbcCreateCtrl(
     };
 
     const repositoryWillChangeHandler = () => {
-        return new Promise(function (resolve) {
-
+        return new Promise(function(resolve) {
             if ($scope.jdbcConfigurationInfo.isNewJdbcConfiguration) {
                 resolve(true);
                 return;
@@ -643,7 +643,7 @@ function JdbcCreateCtrl(
     const subscriptions = [];
 
     const repositoryContextService = ServiceProvider.get(RepositoryContextService);
-    const repositoryChangeSubscription = repositoryContextService.onSelectedRepositoryChanged(repositoryChangedHandler, repositoryWillChangeHandler)
+    const repositoryChangeSubscription = repositoryContextService.onSelectedRepositoryChanged(repositoryChangedHandler, repositoryWillChangeHandler);
 
     subscriptions.push(repositoryChangeSubscription);
     subscriptions.push($rootScope.$on('$translateChangeSuccess', languageChangedHandler));

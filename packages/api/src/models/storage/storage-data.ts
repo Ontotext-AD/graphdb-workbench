@@ -1,7 +1,11 @@
+import {LoggerProvider} from '../../services/logging/logger-provider';
+
 /**
  * Represents a wrapper of the data obtained from the storage with methods to convert it to different formats.
  */
 export class StorageData {
+  private readonly logger = LoggerProvider.logger;
+
   /**
    * The value obtained from the storage.
    */
@@ -43,9 +47,8 @@ export class StorageData {
     try {
       return JSON.parse(this.value);
     } catch (error) {
-      console.error('Error parsing JSON', error);
+      this.logger.error('Error parsing JSON', error);
       return null;
     }
   }
 }
-

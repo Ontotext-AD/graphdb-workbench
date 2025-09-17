@@ -1,7 +1,9 @@
 import {select} from 'd3';
 import {ObjectUtils} from "../utils/object-utils";
+import {LoggerProvider} from "../core/services/logger-provider";
 
 const d3 = {select};
+const logger = LoggerProvider.logger;
 const GuideUtils = (function() {
     /**
      * Checks whether a given DOM element is visible in the document.
@@ -52,7 +54,7 @@ const GuideUtils = (function() {
                             iteration -= waitTime;
                             if (iteration < 0) {
                                 clearInterval(elementExist);
-                                console.warn('Element is not visible: ' + selector);
+                                logger.warn('Element is not visible: ' + selector);
                                 reject(new Error('Element is not visible: ' + selector));
                             }
                         }
@@ -60,14 +62,14 @@ const GuideUtils = (function() {
                         iteration -= waitTime;
                         if (iteration < 0) {
                             clearInterval(elementExist);
-                            console.warn('Element is not found: ' + selector);
+                            logger.warn('Element is not found: ' + selector);
                             reject(new Error('Element is not found: ' + selector));
                         }
                     }
                 } catch (error) {
                     clearInterval(elementExist);
-                    console.error('Error when processing selector: ' + selector);
-                    console.error(error);
+                    logger.error('Error when processing selector: ' + selector);
+                    logger.error(error);
                     reject(error);
                 }
             }, waitTime);
@@ -88,7 +90,7 @@ const GuideUtils = (function() {
                         iteration -= waitTime;
                         if (iteration < 0) {
                             clearInterval(elementExist);
-                            console.warn('Element is still visible: ' + selector);
+                            logger.warn('Element is still visible: ' + selector);
                             reject(new Error('Element is still visible: ' + selector));
                         }
                     } else {
@@ -100,8 +102,8 @@ const GuideUtils = (function() {
                     }
                 } catch (error) {
                     clearInterval(elementExist);
-                    console.error('Error when processing selector: ' + selector);
-                    console.error(error);
+                    logger.error('Error when processing selector: ' + selector);
+                    logger.error(error);
                     reject(error);
                 }
             }, waitTime);

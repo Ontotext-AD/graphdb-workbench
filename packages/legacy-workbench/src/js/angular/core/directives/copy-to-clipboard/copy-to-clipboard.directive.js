@@ -37,12 +37,14 @@
  *   </copy-to-clipboard>
  * </div>
  */
+import {LoggerProvider} from "../../services/logger-provider";
+
 angular
     .module('graphdb.framework.core.directives.copytoclipboard.copytoclipboard', [])
     .directive('copyToClipboard', copyToClipboard);
 
 copyToClipboard.$inject = ['$translate', 'toastr'];
-
+const logger = LoggerProvider.logger;
 /**
  * @ngdoc method
  * @name copyToClipboard
@@ -126,9 +128,9 @@ function copyToClipboard($translate, toastr) {
             customTooltipStyle: '@?',
             targetSelector: '@?',
             customTooltipText: '@?',
-            successMessage: '@?'
+            successMessage: '@?',
         },
-        link: function ($scope, element) {
+        link: function($scope, element) {
             $scope.copyToClipboard = function() {
                 const textToCopy = $scope.textToCopy ? $scope.textToCopy : element.parent().find('.copyable').text();
 
@@ -172,10 +174,10 @@ function copyToClipboard($translate, toastr) {
                         if (successful) {
                             showSuccessFeedback();
                         } else {
-                            console.error('Unable to copy text');
+                            logger.error('Unable to copy text');
                         }
                     } catch (err) {
-                        console.error('Could not copy text: ', err);
+                        logger.error('Could not copy text: ', err);
                     } finally {
                         document.body.removeChild(tempTextArea);
                     }
@@ -184,8 +186,8 @@ function copyToClipboard($translate, toastr) {
                 if (navigator.clipboard) {
                     navigator.clipboard.writeText(textToCopy).then(() => {
                         showSuccessFeedback();
-                    }).catch(err => {
-                        console.error('Could not copy text: ', err);
+                    }).catch((err) => {
+                        logger.error('Could not copy text: ', err);
                         fallbackCopy(textToCopy);
                     });
                 } else {
@@ -199,7 +201,7 @@ function copyToClipboard($translate, toastr) {
                 setTimeout(() => {
                     const target = document.querySelector($scope.targetSelector);
                     if (target) {
-                        const clickHandler = function (e) {
+                        const clickHandler = function(e) {
                             e.stopPropagation();
                             $scope.copyToClipboard();
                         };
@@ -209,10 +211,10 @@ function copyToClipboard($translate, toastr) {
                             target.removeEventListener('click', clickHandler);
                         });
                     } else {
-                        console.warn('copyToClipboard: targetSelector not found:', $scope.targetSelector);
+                        logger.warn('copyToClipboard: targetSelector not found:', $scope.targetSelector);
                     }
                 }, 0);
             }
-        }
+        },
     };
 }

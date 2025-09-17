@@ -2,10 +2,13 @@ import 'angular/core/directives/shuttle-multiselect/shuttle-multiselect.directiv
 import {GraphListOptions} from "../../models/graphs/graph-list-options";
 import {GraphqlEventName} from "../services/graphql-context.service";
 import {OntologyShaclShapeSource, SchemaSourceType} from "../../models/graphql/create-endpoint-wizard-steps";
+import {LoggerProvider} from "../../core/services/logger-provider";
+
+const logger = LoggerProvider.logger;
 
 const modules = [
-    'graphdb.framework.core.directives.shuttle-multiselect'
-]
+    'graphdb.framework.core.directives.shuttle-multiselect',
+];
 
 angular
     .module('graphdb.framework.graphql.directives.select-schema-sources', modules)
@@ -18,10 +21,9 @@ function SelectSchemaSourcesComponent($q, ModalService, $translate, toastr, $rep
         restrict: 'E',
         templateUrl: 'js/angular/graphql/templates/step-select-schema-sources.html',
         scope: {
-            stepDefinition: '='
+            stepDefinition: '=',
         },
         link: ($scope, element) => {
-
             // =========================
             // Private variables
             // =========================
@@ -48,7 +50,7 @@ function SelectSchemaSourcesComponent($q, ModalService, $translate, toastr, $rep
                 selectAllTooltip: 'graphql.create_endpoint.wizard_steps.shapes_multiselect.actions.add_all.tooltip',
                 deselectTooltip: 'graphql.create_endpoint.wizard_steps.shapes_multiselect.actions.remove.tooltip',
                 deselectAllLabel: 'graphql.create_endpoint.wizard_steps.shapes_multiselect.actions.remove_all.label',
-                deselectAllTooltip: 'graphql.create_endpoint.wizard_steps.shapes_multiselect.actions.remove_all.tooltip'
+                deselectAllTooltip: 'graphql.create_endpoint.wizard_steps.shapes_multiselect.actions.remove_all.tooltip',
             };
 
             /**
@@ -64,14 +66,14 @@ function SelectSchemaSourcesComponent($q, ModalService, $translate, toastr, $rep
                 selectAllTooltip: 'graphql.create_endpoint.wizard_steps.graphs_multiselect.actions.add_all.tooltip',
                 deselectTooltip: 'graphql.create_endpoint.wizard_steps.graphs_multiselect.actions.remove.tooltip',
                 deselectAllLabel: 'graphql.create_endpoint.wizard_steps.graphs_multiselect.actions.remove_all.label',
-                deselectAllTooltip: 'graphql.create_endpoint.wizard_steps.graphs_multiselect.actions.remove_all.tooltip'
-            }
+                deselectAllTooltip: 'graphql.create_endpoint.wizard_steps.graphs_multiselect.actions.remove_all.tooltip',
+            };
 
             /**
              * The endpoint configuration model.
              * @type {GraphqlEndpointConfiguration|undefined}
              */
-            $scope.endpointConfiguration = undefined
+            $scope.endpointConfiguration = undefined;
 
             /**
              * A list of prefixes available for the endpoint
@@ -182,11 +184,10 @@ function SelectSchemaSourcesComponent($q, ModalService, $translate, toastr, $rep
                     // The first option (radiobutton) allows the user to select graphql shapes.
                     if ($scope.stepDefinition.schemaSourceType === SchemaSourceType.GRAPHQL_SCHEMA_SHAPES && hasSelectedShapes) {
                         canProceed = true;
-                    }
-                    // The second option (radiobutton) allows the user to select graphs: all graphs, shacl shape graph or
-                    // manually pick graphs.
-                    // Here the user must also fill in the endpoint parameters form.
-                    else if ($scope.stepDefinition.schemaSourceType === SchemaSourceType.SHACL_SHAPES && hasValidEndpointParameters) {
+                        // The second option (radiobutton) allows the user to select graphs: all graphs, shacl shape graph or
+                        // manually pick graphs.
+                        // Here the user must also fill in the endpoint parameters form.
+                    } else if ($scope.stepDefinition.schemaSourceType === SchemaSourceType.SHACL_SHAPES && hasValidEndpointParameters) {
                         // In case the user selects all graphs, we don't care how many graphs are there. We use all
                         // the data in the repository. Also, it's possible that there are no other graphs in the
                         // repository than the default one.
@@ -199,7 +200,7 @@ function SelectSchemaSourcesComponent($q, ModalService, $translate, toastr, $rep
                     }
                 }
                 return canProceed;
-            }
+            };
 
             // =========================
             // Private functions
@@ -213,13 +214,13 @@ function SelectSchemaSourcesComponent($q, ModalService, $translate, toastr, $rep
                 $scope.loadingPrefixes = true;
                 return GraphqlService.getPrefixListAsSelectOptions(GraphqlContextService.getSourceRepository())
                     .catch((error) => {
-                        console.error('Error loading prefixes', error);
+                        logger.error('Error loading prefixes', error);
                         toastr.error(getError(error));
                     })
                     .finally(() => {
                         $scope.loadingPrefixes = false;
                     });
-            }
+            };
 
             /**
              * Loads all graphs available in the source repository.
@@ -229,13 +230,13 @@ function SelectSchemaSourcesComponent($q, ModalService, $translate, toastr, $rep
                 $scope.loadingGraphs = true;
                 return RDF4JRepositoriesService.getGraphs(GraphqlContextService.getSourceRepository())
                     .catch((error) => {
-                        console.error('Error loading graphs', error);
+                        logger.error('Error loading graphs', error);
                         toastr.error(getError(error));
                     })
                     .finally(() => {
                         $scope.loadingGraphs = false;
                     });
-            }
+            };
 
             /**
              * Loads the GraphQL schema shapes from the source repository.
@@ -244,7 +245,7 @@ function SelectSchemaSourcesComponent($q, ModalService, $translate, toastr, $rep
             const loadGraphqlSchemaShapes = () => {
                 return GraphqlService.getGraphqlSchemaShapes(GraphqlContextService.getSourceRepository())
                     .catch((error) => {
-                        console.error('Error loading GraphQL schema shapes', error);
+                        logger.error('Error loading GraphQL schema shapes', error);
                         toastr.error(getError(error));
                     });
             };
@@ -256,10 +257,10 @@ function SelectSchemaSourcesComponent($q, ModalService, $translate, toastr, $rep
             const loadShaclShapeGraphs = () => {
                 return GraphqlService.getShaclShapeGraphs(GraphqlContextService.getSourceRepository())
                     .catch((error) => {
-                        console.error('Error loading SHACL shape graphs', error);
+                        logger.error('Error loading SHACL shape graphs', error);
                         toastr.error(getError(error));
                     });
-            }
+            };
 
             /**
              * Handles the update of the endpoint configuration model.
@@ -279,14 +280,14 @@ function SelectSchemaSourcesComponent($q, ModalService, $translate, toastr, $rep
                     .finally(() => {
                         $scope.loadingData = false;
                     });
-            }
+            };
 
             /**
              * Handles the update of the source repository.
              */
             const onSourceRepositoryUpdated = () => {
                 loadData(GraphqlContextService.getNewEndpoint());
-            }
+            };
 
             // =========================
             // Subscriptions
@@ -305,12 +306,12 @@ function SelectSchemaSourcesComponent($q, ModalService, $translate, toastr, $rep
                 } else {
                     loadData(newEndpoint);
                 }
-            }
+            };
 
             const onInit = () => {
                 subscribeToEvents();
-            }
+            };
             onInit();
-        }
+        },
     };
 }

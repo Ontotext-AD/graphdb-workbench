@@ -20,6 +20,9 @@ import {
   NavigationEnd,
   NavigationStart
 } from '@ontotext/workbench-api';
+import {LoggerProvider} from './services/logger-provider';
+
+const logger = LoggerProvider.logger;
 
 const showSplashScreen = (show) => {
   const splashScreen = document.getElementById('splash-screen');
@@ -29,9 +32,9 @@ const showSplashScreen = (show) => {
 showSplashScreen(true);
 
 addErrorHandler((err) => {
-  console.error(err);
-  console.error(err.appOrParcelName);
-  console.error(getAppStatus(err.appOrParcelName));
+  logger.error(err);
+  logger.error(err.appOrParcelName);
+  logger.error(getAppStatus(err.appOrParcelName));
 });
 
 // This is a so-called context map which is needed by webpack in order to be able
@@ -57,13 +60,13 @@ const applications = constructApplications({
       if (!name.includes('.')) {
         return appModules[name]()
           .catch((e) => {
-            console.error(`Failed to load module: ${name}`, e);
+            logger.error(`Failed to load module: ${name}`, e);
           });
       } else {
         // This allows us to load submodules exported in a namespace-like fashion. For example: "@ontotext/components.navbar".
         const [module, exported] = name.split('.', 2);
         return appModules[module]().then((module) => module[exported]).catch((e) => {
-          console.error(`Failed to load module: ${name}`, e);
+          logger.error(`Failed to load module: ${name}`, e);
         });
       }
     }
@@ -91,6 +94,6 @@ registerSingleSpaRouterListeners();
 bootstrapWorkbench()
   .then(() => showSplashScreen(false))
   .catch((error) => {
-    console.error('Error during bootstrap of workbench', error);
+    logger.error('Error during bootstrap of workbench', error);
   });
 

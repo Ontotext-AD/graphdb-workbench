@@ -6,6 +6,7 @@ import {Awaitable} from '@ontotext/workbench-api';
 import {TooltipUtil} from '../../utils/tooltip-util';
 import {HTMLElementWithTooltip} from '../onto-tooltip/models/html-element-with-tooltip';
 import {OntoTooltipPlacement} from '../onto-tooltip/models/onto-tooltip-placement';
+import {LoggerProvider} from '../../services/logger-provider';
 
 /**
  * A reusable dropdown component built using StencilJS. This component supports configurable labels, tooltips, icons,
@@ -19,6 +20,7 @@ import {OntoTooltipPlacement} from '../onto-tooltip/models/onto-tooltip-placemen
 })
 export class OntoDropdown {
 
+  private readonly logger = LoggerProvider.logger;
   private readonly GUIDE_SELECTOR_ATTR = 'guide-selector';
   private dropdownButtonElement: HTMLElementWithTooltip;
 
@@ -243,7 +245,7 @@ export class OntoDropdown {
     try {
       tooltipContent = await tooltipFunction();
     } catch (error) {
-      console.error(error);
+      this.logger.error(error);
     }
     return tooltipContent;
   }

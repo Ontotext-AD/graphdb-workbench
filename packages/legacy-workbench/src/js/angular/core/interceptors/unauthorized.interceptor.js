@@ -1,8 +1,11 @@
 import 'angular/core/services';
 import {ServiceProvider, SecurityContextService} from '@ontotext/workbench-api';
+import {LoggerProvider} from "../services/logger-provider";
+
+const logger = LoggerProvider.logger;
 
 angular.module('graphdb.framework.core.interceptors.unauthorized', [
-    'ngCookies'
+    'ngCookies',
 ])
     .factory('$unauthorizedInterceptor', ['$q', '$location', '$rootScope', '$translate',
         function($q, $location, $rootScope, $translate) {
@@ -20,7 +23,7 @@ angular.module('graphdb.framework.core.interceptors.unauthorized', [
                     } else if (response.status === 403) {
                       const pageUrl = $location.path();
                       if ($rootScope.setPermissionDenied(pageUrl)) {
-                            console.log($translate.instant('unauthorized.console.warning')); // eslint-disable-line no-console
+                            logger.info($translate.instant('unauthorized.console.warning'));
                             const securityContext = ServiceProvider.get(SecurityContextService);
                             const restrictedPages = securityContext.getRestrictedPages();
                             restrictedPages.setPageRestriction(pageUrl);
@@ -38,7 +41,7 @@ angular.module('graphdb.framework.core.interceptors.unauthorized', [
                     } else {
                         return $q.reject(response);
                     }
-                }
+                },
             };
         }]);
 

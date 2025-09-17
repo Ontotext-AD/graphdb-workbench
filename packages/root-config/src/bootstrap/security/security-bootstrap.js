@@ -1,4 +1,7 @@
 import {ServiceProvider, SecurityContextService, SecurityService, getCurrentRoute} from '@ontotext/workbench-api';
+import {LoggerProvider} from '../../services/logger-provider';
+
+const logger = LoggerProvider.logger;
 
 export const loadSecurityConfig = () => {
   return ServiceProvider.get(SecurityService).getSecurityConfig()
@@ -6,7 +9,7 @@ export const loadSecurityConfig = () => {
       ServiceProvider.get(SecurityContextService).updateSecurityConfig(securityConfig);
     })
     .catch((error) => {
-      console.error('Could not load security config', error);
+      logger.error('Could not load security config', error);
       throw error;
     });
 };
@@ -20,7 +23,7 @@ const subscribeToSecurityConfigChange = () => {
       securityService.getAuthenticatedUser()
         .then((authenticatedUser) => {
           securityContextService.updateAuthenticatedUser(authenticatedUser);
-        }).catch((error) => console.error('Could not load authenticated user', error));
+        }).catch((error) => logger.error('Could not load authenticated user', error));
     }
   });
 };

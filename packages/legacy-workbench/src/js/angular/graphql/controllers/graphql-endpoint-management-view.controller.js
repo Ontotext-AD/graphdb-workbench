@@ -7,12 +7,14 @@ import {endpointUrl} from "../models/endpoints";
 import {resolvePlaygroundUrlWithEndpoint} from "../services/endpoint-utils";
 import {saveAs} from 'lib/FileSaver-patch';
 import {GraphqlEndpointInfo} from "../../models/graphql/graphql-endpoints-info";
+import {LoggerProvider} from "../../core/services/logger-provider";
 
+const logger = LoggerProvider.logger;
 const modules = [
     'graphdb.framework.core.services.graphql-service',
     'graphdb.framework.graphql.services.graphql-context',
     'graphdb.framework.graphql.controllers.graphql-endpoint-configuration-modal',
-    'graphdb.framework.graphql.controllers.import-endpoint-definition-modal'
+    'graphdb.framework.graphql.controllers.import-endpoint-definition-modal',
 ];
 
 angular
@@ -22,7 +24,6 @@ angular
 GraphqlEndpointManagementViewCtrl.$inject = ['$scope', '$location', '$interval', '$repositories', '$uibModal', 'ModalService', 'toastr', '$translate', 'GraphqlService', 'GraphqlContextService', 'AuthTokenService'];
 
 function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $repositories, $uibModal, ModalService, toastr, $translate, GraphqlService, GraphqlContextService, AuthTokenService) {
-
     // =========================
     // Private variables
     // =========================
@@ -121,7 +122,7 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
             .then((endpointInfo) => {
                 toastr.success(
                     $translate.instant('graphql.endpoints_management.table.actions.set_as_default.success',
-                        {endpointId: endpointInfo.endpointId})
+                        {endpointId: endpointInfo.endpointId}),
                 );
                 $scope.endpointsInfoList.updateEndpoint(endpointInfo);
             })
@@ -136,7 +137,7 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
                     $scope.selectedDefaultEndpoint = undefined;
                 }
                 toastr.error(getError(error));
-                console.error('Error setting default endpoint', error);
+                logger.error('Error setting default endpoint', error);
             })
             .finally(() => {
                 $scope.operationInProgress = false;
@@ -196,8 +197,8 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
                 toastr.success(
                     $translate.instant(
                         `graphql.endpoints_management.table.actions.toggle_active_state.${operationKey}.success`,
-                        {endpointId: updatedEndpoint.endpointId}
-                    )
+                        {endpointId: updatedEndpoint.endpointId},
+                    ),
                 );
                 // Update the endpoint in place in the list. This will trigger the UI update and the user can see the
                 // change immediately, e.g. the updatedAt field will be updated.
@@ -207,12 +208,12 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
                 // something went wrong, revert the active state
                 endpointInfo.active = !newActiveState;
                 toastr.error(getError(error));
-                console.error('Error updating endpoint active state', error);
+                logger.error('Error updating endpoint active state', error);
             })
             .finally(() => {
                 $scope.changingEndpointActiveState = false;
             });
-    }
+    };
 
     /**
      * Opens the import endpoint definition modal from where the user can import endpoint definitions.
@@ -229,10 +230,10 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
             resolve: {
                 data: () => {
                     return {
-                        repositoryId: $repositories.getActiveRepository()
+                        repositoryId: $repositories.getActiveRepository(),
                     };
-                }
-            }
+                },
+            },
         }).result;
     };
 
@@ -247,7 +248,7 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
             })
             .catch((error) => {
                 toastr.error(getError(error));
-                console.error('Error exporting GraphQL endpoint definition', error);
+                logger.error('Error exporting GraphQL endpoint definition', error);
             });
     };
 
@@ -268,10 +269,10 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
                 data: () => {
                     return {
                         repositoryId: $repositories.getActiveRepository(),
-                        endpointConfiguration: endpointConfiguration
+                        endpointConfiguration: endpointConfiguration,
                     };
-                }
-            }
+                },
+            },
         }).result;
     };
 
@@ -283,7 +284,7 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
         ModalService.openConfirmationModal({
                 title: $translate.instant('graphql.endpoints_management.table.actions.delete_endpoint.confirmation.title'),
                 message: $translate.instant('graphql.endpoints_management.table.actions.delete_endpoint.confirmation.body', {name: endpoint.endpointId}),
-                confirmButtonKey: 'common.confirm'
+                confirmButtonKey: 'common.confirm',
             },
             () => {
                 deleteEndpoint(endpoint);
@@ -302,9 +303,9 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
             })
             .catch((error) => {
                 toastr.error(getError(error));
-                console.error('Error loading GraphQL endpoint configuration', error);
+                logger.error('Error loading GraphQL endpoint configuration', error);
             });
-    }
+    };
 
     // =========================
     // Private methods
@@ -336,12 +337,12 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
             resolve: {
                 data: () => {
                     return {
-                        endpointReport: endpointGenerationReport
+                        endpointReport: endpointGenerationReport,
                     };
-                }
-            }
+                },
+            },
         }).result;
-    }
+    };
 
     /**
      * Deletes the given GraphQL endpoint.
@@ -359,12 +360,12 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
             })
             .catch((error) => {
                 toastr.error(getError(error));
-                console.error('Error deleting GraphQL endpoint', error);
+                logger.error('Error deleting GraphQL endpoint', error);
             })
             .finally(() => {
                 $scope.operationInProgress = false;
             });
-    }
+    };
 
     /**
      * Handles the event for deleting endpoint generation report.
@@ -378,7 +379,7 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
             })
             .catch((error) => {
                 toastr.error(getError(error));
-                console.error('Error deleting endpoint generation report', error);
+                logger.error('Error deleting endpoint generation report', error);
             });
     };
 
@@ -395,7 +396,7 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
             // one to be used for binding the UI.
             $scope.selectedDefaultEndpoint = $scope.endpointsInfoList.findDefaultEndpoint() || new GraphqlEndpointInfo();
         }
-    }
+    };
 
     /**
      * Loads the GraphQL endpoints info.
@@ -408,7 +409,7 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
             .then(onEndpointsInfoLoaded)
             .catch((error) => {
                 toastr.error(getError(error));
-                console.error('Error loading GraphQL endpoints info', error);
+                logger.error('Error loading GraphQL endpoints info', error);
             })
             .finally(() => {
                 $scope.loadingEndpointsInfo = false;
@@ -431,14 +432,14 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
             .then(onEndpointsInfoLoaded)
             .catch((error) => {
                 toastr.error(getError(error));
-                console.error('Error loading GraphQL endpoints info', error);
+                logger.error('Error loading GraphQL endpoints info', error);
             })
             .finally(() => {
                 if (endpointsInfoLoader) {
                     endpointsInfoLoader = undefined;
                 }
             });
-    }
+    };
 
     /**
      * Polls the GraphQL endpoints info.
@@ -456,7 +457,7 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
                 endpointsInfoLoader = reloadEndpointsInfo();
             }
         }, ENDPOINTS_INFO_POLLING_INTERVAL);
-    }
+    };
 
     /**
      * Unsubscribes all watchers.
