@@ -11,18 +11,18 @@ PluginRegistry.add('guide.step', [
                     options: {
                         content: 'guide.step_plugin.create-similarity-index.create-similarity-index',
                         // If mainAction is set the title will be set automatically
-                        ...(options.mainAction ? {} : { title: CREATE_SIMILARITY_INDEX_DEFAULT }),
+                        ...(options.mainAction ? {} : {title: CREATE_SIMILARITY_INDEX_DEFAULT}),
                         class: 'similarity-index',
                         disableNextFlow: true,
                         ...options,
                         url: 'similarity',
                         elementSelector: GuideUtils.getGuideElementSelector('create-similarity-index'),
                         onNextClick: () => {
-                        }
-                    }
-                }
-            ]
-        }
+                        },
+                    },
+                },
+            ];
+        },
     },
     {
         guideBlockName: 'similarity-type-index-name',
@@ -34,16 +34,16 @@ PluginRegistry.add('guide.step', [
                     options: {
                         content: 'guide.step_plugin.create-similarity-index.input-index-name',
                         // If mainAction is set the title will be set automatically
-                        ...(options.mainAction ? {} : { title: CREATE_SIMILARITY_INDEX_DEFAULT }),
+                        ...(options.mainAction ? {} : {title: CREATE_SIMILARITY_INDEX_DEFAULT}),
                         class: 'similarity-index-name-input',
                         ...options,
                         url: 'similarity/index/create',
                         elementSelector: GuideUtils.getGuideElementSelector('similarity-index-name'),
-                        onNextValidate: () => Promise.resolve(GuideUtils.validateTextInputNotEmpty(GuideUtils.getGuideElementSelector('similarity-index-name')))
-                    }
-                }
-            ]
-        }
+                        onNextValidate: () => Promise.resolve(GuideUtils.validateTextInputNotEmpty(GuideUtils.getGuideElementSelector('similarity-index-name'))),
+                    },
+                },
+            ];
+        },
     },
     {
         guideBlockName: 'similarity-click-to-create',
@@ -55,7 +55,7 @@ PluginRegistry.add('guide.step', [
                     options: {
                         content: 'guide.step_plugin.create-similarity-index.create-index',
                         // If mainAction is set the title will be set automatically
-                        ...(options.mainAction ? {} : { title: CREATE_SIMILARITY_INDEX_DEFAULT }),
+                        ...(options.mainAction ? {} : {title: CREATE_SIMILARITY_INDEX_DEFAULT}),
                         class: 'create-similarity-index',
                         disablePreviousFlow: false,
                         disableNextFlow: true,
@@ -63,11 +63,11 @@ PluginRegistry.add('guide.step', [
                         url: 'similarity/index/create',
                         elementSelector: GuideUtils.getGuideElementSelector('create-similarity-index-btn'),
                         onNextClick: () => {
-                        }
-                    }
-                }
-            ]
-        }
+                        },
+                    },
+                },
+            ];
+        },
     },
     {
         guideBlockName: 'similarity-hold-and-wait-until-shown',
@@ -75,15 +75,16 @@ PluginRegistry.add('guide.step', [
             const GuideUtils = services.GuideUtils;
             return [
                 {
+                    guideBlockName: 'hold-and-wait-until-shown',
                     options: {
                         content: 'guide.step_plugin.create-similarity-index.wait',
                         class: 'wait-for-index',
                         ...options,
                         elementSelectorToWait: GuideUtils.getGuideElementSelector('similarity-indexes-table'),
-                    }
-                }
-            ]
-        }
+                    },
+                },
+            ];
+        },
     },
     {
         guideBlockName: 'create-similarity-index',
@@ -96,17 +97,17 @@ PluginRegistry.add('guide.step', [
                     guideBlockName: 'click-main-menu',
                     options: angular.extend({}, {
                         menu: 'similarity',
-                        showIntro: true
-                    }, options)
+                        showIntro: true,
+                    }, options),
                 },
                 {
-                    guideBlockName: 'similarity-click-link', options: {...options}
+                    guideBlockName: 'similarity-click-link', options: {...options},
                 },
                 {
-                    guideBlockName: 'similarity-type-index-name', options: {...options}
+                    guideBlockName: 'similarity-type-index-name', options: {...options},
                 },
                 {
-                    guideBlockName: 'similarity-click-to-create', options: {...options}
+                    guideBlockName: 'similarity-click-to-create', options: {...options},
                 },
                 {
                     // check if error block is shown and go back 2 steps or proceed
@@ -119,21 +120,21 @@ PluginRegistry.add('guide.step', [
                                 // because the library executes logic
                                 // to show the step in a then clause
                                 // which causes current and next steps to show
-                                setTimeout(() => guide.show(stepId - 2))
+                                setTimeout(() => guide.show(stepId - 2));
                             })
                             .catch(() => {
                                 // Using a timeout
                                 // because the library executes logic
                                 // to show the step in a then clause
                                 // which causes current and next steps to show
-                                setTimeout(() => guide.next())
+                                setTimeout(() => guide.next());
                             }),
-                    }, options)
+                    }, options),
                 },
                 {
-                    guideBlockName: 'similarity-hold-and-wait-until-shown', options: {...options}
-                }
+                    guideBlockName: 'similarity-hold-and-wait-until-shown', options: {...options},
+                },
             ];
-        }
-    }
+        },
+    },
 ]);
