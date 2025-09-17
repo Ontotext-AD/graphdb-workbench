@@ -27,7 +27,7 @@ export class AuthorizationService implements Service {
    * @param {Authority} role - The authority role to check.
    * @returns {boolean} True if the user has the specified role, false otherwise.
    */
-  hasRole(role?: Authority): boolean | undefined {
+  hasRole(role?: Authority): boolean {
     const config = this.getSecurityConfig();
     const user = this.getAuthenticatedUser();
 
@@ -35,11 +35,15 @@ export class AuthorizationService implements Service {
       return true;
     }
 
+    const hasPrinciple = Object.keys(user || {}).length > 0;
+    if (!hasPrinciple) {
+      return false;
+    }
+
     const isAuthenticatedFully = Authority.IS_AUTHENTICATED_FULLY === role;
     const userHasAuthority = !!user?.authorities.hasAuthority(role);
-    const freeAccessHasAuthority = !!config?.freeAccess.authorities.hasAuthority(role);
 
-    return isAuthenticatedFully || userHasAuthority || freeAccessHasAuthority;
+    return isAuthenticatedFully || userHasAuthority;
   }
 
   /**
@@ -198,15 +202,11 @@ export class AuthorizationService implements Service {
     const overCurrentRepo = this.repositoryService.getCurrentRepoAuthority(action, repoId);
     const overAllRepos = this.repositoryService.getOverallRepoAuthority(action);
 
-    let userAuthorities = this.getAuthenticatedUser()?.authorities;
-    if (!userAuthorities) {
-      // if there is no authenticated user, check for free access authorities
-      userAuthorities = this.getSecurityConfig()?.freeAccess.authorities;
-    }
+    const user = this.getAuthenticatedUser();
 
     return !!(
-      userAuthorities?.hasAuthority(overCurrentRepo as Authority) ||
-      userAuthorities?.hasAuthority(overAllRepos as Authority)
+      user?.authorities.hasAuthority(overCurrentRepo as Authority) ||
+      user?.authorities.hasAuthority(overAllRepos as Authority)
     );
   }
 
