@@ -4,6 +4,9 @@ import {
   LanguageService,
   LanguageContextService
 } from '@ontotext/workbench-api';
+import {LoggerProvider} from '../../services/logger-provider';
+
+const logger = LoggerProvider.logger;
 
 /**
  * Loads the language configuration
@@ -40,7 +43,7 @@ const loadLanguageConfig = () => {
         }
       }
     })
-    .catch((error) => console.error('Could not load language configuration', error));
+    .catch((error) => logger.error('Could not load language configuration', error));
 };
 
 const onLanguageChange = () => {
@@ -53,7 +56,7 @@ const onLanguageChange = () => {
             languageContextService.updateLanguageBundle(bundle);
           }
         })
-        .catch((error) => console.error('Could not load language', error));
+        .catch((error) => logger.error('Could not load language', error));
     }
   });
   return Promise.resolve();

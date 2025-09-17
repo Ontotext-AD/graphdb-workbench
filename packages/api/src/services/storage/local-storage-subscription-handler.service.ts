@@ -2,11 +2,13 @@ import {Service} from '../../providers/service/service';
 import {StorageKey} from '../../models/storage';
 import {ServiceProvider} from '../../providers';
 import {ContextService} from '../context';
+import {LoggerProvider} from '../logging/logger-provider';
 
 /**
  * Service that handles the storage change events and triggers the appropriate context property change handlers.
  */
 export class LocalStorageSubscriptionHandlerService implements Service {
+  private readonly logger = LoggerProvider.logger;
 
   /**
    * Handles the storage change event and triggers the appropriate context property change handlers.
@@ -38,7 +40,7 @@ export class LocalStorageSubscriptionHandlerService implements Service {
    */
   private resolveHandler(namespace: string, propertyName: string): ContextService<Record<string, unknown>> | undefined {
     if (!namespace) {
-      console.warn('Namespace is required to resolve a context property change handler.');
+      this.logger.warn('Namespace is required to resolve a context property change handler.');
       return;
     }
     const handler = ServiceProvider.getAllBySuperType(ContextService)
@@ -46,9 +48,9 @@ export class LocalStorageSubscriptionHandlerService implements Service {
         return service.canHandle(propertyName);
       });
     if (!handler) {
-      console.warn(`No context property change handler found for namespace: ${namespace} and property: ${propertyName}`);
+      this.logger.warn(`No context property change handler found for namespace: ${namespace} and property: ${propertyName}`);
       return;
     }
-    return handler as ContextService<Record<string, unknown>>;
+    return handler;
   }
 }

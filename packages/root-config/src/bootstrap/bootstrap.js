@@ -6,6 +6,7 @@ import {securityBootstrap} from './security/security-bootstrap';
 import {repositoryBootstrap} from './repository/repository-bootstrap';
 import {pluginsBootstrap} from './plugins/plugins-bootstrap';
 import {configurationsBootstrap} from './configuration/configuration-bootstrap';
+import {LoggerProvider} from '../services/logger-provider';
 
 import {
   ServiceProvider,
@@ -19,6 +20,8 @@ const bootstrapPromises = [
   ...licenseBootstrap,
   ...autoCompleteBootstrap,
 ];
+
+const logger = LoggerProvider.logger;
 
 const settleAllPromises = (bootstrapPromises) => {
   return Promise.allSettled(executePromises(bootstrapPromises));
@@ -50,9 +53,9 @@ const loadApplicationData = () => {
       const rejected = results.filter(r => r.status === 'rejected');
 
       if (rejected.length > 0) {
-        console.warn('Some data could not be loaded', rejected.map(r => r.reason));
+        logger.warn('Some data could not be loaded', rejected.map(r => r.reason));
       } else {
-        console.info('Application data loaded');
+        logger.info('Application data loaded');
         //  Notify listeners, all data has been loaded successfully and is available.
         ServiceProvider.get(ApplicationLifecycleContextService).updateApplicationDataState(LifecycleState.DATA_LOADED);
       }

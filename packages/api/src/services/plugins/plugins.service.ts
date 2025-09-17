@@ -4,7 +4,7 @@ import {PluginsRestService} from './plugins-rest.service';
 import {PluginsManifest, PluginModule} from '../../models/plugins';
 import {WindowService} from '../window';
 import {PluginsManifestMapper} from './mapper/plugins-manifest.mapper';
-import {LoggingService} from '../logging/logging.service';
+import {LoggerProvider} from '../logging/logger-provider';
 
 /**
  * Service responsible for managing plugins in the application.
@@ -13,7 +13,7 @@ import {LoggingService} from '../logging/logging.service';
 export class PluginsService implements Service {
   private readonly pluginsRestService: PluginsRestService;
   private readonly pluginsManifestMapper: PluginsManifestMapper;
-  private readonly logger = LoggingService.logger;
+  private readonly logger = LoggerProvider.logger;
 
   constructor() {
     this.pluginsRestService = ServiceProvider.get(PluginsRestService);

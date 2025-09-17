@@ -3,12 +3,22 @@ import {LocalStorageSubscriptionHandlerService} from '../local-storage-subscript
 import {ServiceProvider} from '../../../providers';
 import {StorageKey} from '../../../models/storage';
 import {DeriveContextServiceContract} from '../../../models/context/update-context-method';
+import {ConfigurationContextService} from '../../configuration/configuration-context.service';
+import {LoggerType} from '../../../models/logging/logger-type';
+import {LogLevel} from '../../../models/logging/log-level';
+import {Configuration} from '../../../models/configuration';
 
 describe('LocalStorageSubscriptionHandlerService', () => {
   let service: LocalStorageSubscriptionHandlerService;
   let mockContextService: ContextService<Record<string, unknown>>;
 
   beforeEach(() => {
+    ServiceProvider.get(ConfigurationContextService).updateApplicationConfiguration({
+      loggerConfig: {
+        loggers: [LoggerType.CONSOLE],
+        minLogLevel: LogLevel.DEBUG
+      }
+    } as unknown as Configuration);
     service = new LocalStorageSubscriptionHandlerService();
     // Register the mock context service in the service provider
     mockContextService = ServiceProvider.get(TestContextService);
@@ -39,7 +49,7 @@ describe('LocalStorageSubscriptionHandlerService', () => {
 
     service.handleStorageChange(event);
 
-    expect(consoleWarnSpy).toHaveBeenCalledWith('Namespace is required to resolve a context property change handler.');
+    expect(consoleWarnSpy).toHaveBeenCalledWith(expect.stringContaining('Namespace is required to resolve a context property change handler.'));
   });
 
   test('should warn if no context property change handler is found', () => {
@@ -52,7 +62,7 @@ describe('LocalStorageSubscriptionHandlerService', () => {
 
     service.handleStorageChange(event);
 
-    expect(consoleWarnSpy).toHaveBeenCalledWith('No context property change handler found for namespace: namespace and property: propertyName');
+    expect(consoleWarnSpy).toHaveBeenCalledWith(expect.stringContaining('No context property change handler found for namespace: namespace and property: propertyName'));
   });
 
   test('should not trigger handler if event key is null', () => {

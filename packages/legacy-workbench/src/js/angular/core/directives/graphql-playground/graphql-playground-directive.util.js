@@ -1,5 +1,8 @@
-export class GraphqlPlaygroundDirectiveUtil {
+import {LoggerProvider} from "../../services/logger-provider";
 
+const logger = LoggerProvider.logger;
+
+export class GraphqlPlaygroundDirectiveUtil {
     /**
      * Fetches GraphQL playground directive controller.
      *
@@ -51,7 +54,7 @@ export class GraphqlPlaygroundDirectiveUtil {
                     iteration -= waitTime;
                     if (iteration < 0) {
                         clearInterval(interval);
-                        console.log('GraphQL Playground component is not found', directiveSelector);
+                        logger.info('GraphQL Playground component is not found', directiveSelector);
                         reject(new Error('Element is not found: ' + directiveSelector));
                     }
                 }

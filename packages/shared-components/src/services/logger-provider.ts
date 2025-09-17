@@ -5,7 +5,7 @@ const MODULE_NAME = 'SharedComponents';
 /**
  * Logger for the Shared Components module.
  */
-export class SharedComponentsLoggerService {
+export class LoggerProvider {
   /**
    * Gets the logger instance for the Shared Components module.
    *

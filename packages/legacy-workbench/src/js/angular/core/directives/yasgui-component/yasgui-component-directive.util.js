@@ -1,3 +1,5 @@
+import {LoggerProvider} from "../../services/logger-provider";
+
 /**
  * Defines the colors in which the tab name has to be changed.
  * @type {string[]} - Array of valid CSS values for the color property.
@@ -9,9 +11,9 @@ const HIGHLIGHT_TAB_NAME_COLORS = ['var(--primary-color)', '', 'var(--primary-co
  * @type {number} - Time in milliseconds.
  */
 const COLOR_CHANGES_INTERVAL = 400;
+const logger = LoggerProvider.logger;
 
-export const YasguiComponentDirectiveUtil = (function () {
-
+export const YasguiComponentDirectiveUtil = (function() {
     const getOntotextYasguiElementController = (directiveSelector) => {
         const elementById = angular.element(document.querySelector(directiveSelector));
         const directiveElement = angular.element(elementById);
@@ -57,7 +59,7 @@ export const YasguiComponentDirectiveUtil = (function () {
                     iteration -= waitTime;
                     if (iteration < 0) {
                         clearInterval(interval);
-                        console.log('YASGUI component is not found', directiveSelector);
+                        logger.info('YASGUI component is not found', directiveSelector);
                         reject(new Error('Element is not found: ' + directiveSelector));
                     }
                 }
@@ -147,12 +149,11 @@ export const YasguiComponentDirectiveUtil = (function () {
         getOntotextYasguiElementAsync,
         executeSparqlQuery,
         setQuery,
-        highlightTabName
+        highlightTabName,
     };
 })();
 
 export class YasqeButtonsBuilder {
-
     constructor() {
         this.createSavedQueryVisibility = false;
         this.showSavedQueriesVisibility = false;
@@ -188,17 +189,17 @@ export class YasqeButtonsBuilder {
         return [
             {
                 name: YasqeButtonName.CREATE_SAVED_QUERY,
-                visible: this.createSavedQueryVisibility
+                visible: this.createSavedQueryVisibility,
             }, {
                 name: YasqeButtonName.SHOW_SAVED_QUERIES,
-                visible: this.showSavedQueriesVisibility
+                visible: this.showSavedQueriesVisibility,
             }, {
                 name: YasqeButtonName.SHARE_QUERY,
-                visible: this.shareQueryVisibility
+                visible: this.shareQueryVisibility,
             }, {
                 name: YasqeButtonName.INCLUDE_INFERRED_STATEMENTS,
-                visible: this.includeInferredStatementsVisibility
-            }
+                visible: this.includeInferredStatementsVisibility,
+            },
         ];
     }
 }
@@ -209,7 +210,7 @@ export const YasqeButtonName = {
     SHARE_QUERY: 'shareQuery',
     EXPANDS_RESULTS: 'expandResults',
     INFER_STATEMENTS: 'inferStatements',
-    INCLUDE_INFERRED_STATEMENTS: 'includeInferredStatements'
+    INCLUDE_INFERRED_STATEMENTS: 'includeInferredStatements',
 };
 
 export const DISABLE_YASQE_BUTTONS_CONFIGURATION = new YasqeButtonsBuilder().build();

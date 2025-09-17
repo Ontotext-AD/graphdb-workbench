@@ -11,18 +11,22 @@ import {
   SecurityConfigMapper,
   AuthenticatedUserMapper,
   OpenidConfigMapper,
-  AuthenticationStorageService
+  AuthenticationStorageService,
 } from "@ontotext/workbench-api";
+import {LoggerProvider} from "./logger-provider";
+
+const logger = LoggerProvider.logger;
 
 angular.module('graphdb.framework.core.services.jwtauth', [
     'toastr',
     'graphdb.framework.core.services.security-service',
-    'graphdb.framework.core.services.openIDService'
+    'graphdb.framework.core.services.openIDService',
 ])
     .service('$jwtAuth', ['$http', 'toastr', '$location', '$rootScope', 'SecurityService', '$openIDAuth', '$translate', '$q', '$route', 'AuthTokenService',
-        function ($http, toastr, $location, $rootScope, SecurityService, $openIDAuth, $translate, $q, $route, AuthTokenService) {
+        /* eslint-disable no-invalid-this */
+        function($http, toastr, $location, $rootScope, SecurityService, $openIDAuth, $translate, $q, $route, AuthTokenService) {
             const jwtAuth = this;
-            $rootScope.hasPermission = function () {
+            $rootScope.hasPermission = function() {
                 const path = $location.path();
                 const securityContextService = ServiceProvider.get(SecurityContextService);
                 const restrictedPages = securityContextService.getRestrictedPages();
@@ -45,7 +49,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
              *                           This overrides 'expired'.
              * @return {Promise<unknown>}
              */
-            $rootScope.redirectToLogin = function (expired, noaccess) {
+            $rootScope.redirectToLogin = function(expired, noaccess) {
                 if (jwtAuth.authTokenIsType('Bearer')) {
                     // OpenID login may be detected as expired either on initial validation
                     // when we get expired = true or indirectly via 401, setting expired = true
@@ -71,7 +75,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                     }, 100);
                 });
             };
-            $rootScope.hasExternalAuthUser = function () {
+            $rootScope.hasExternalAuthUser = function() {
                 return jwtAuth.hasExternalAuthUser();
             };
 
@@ -99,7 +103,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             this.getAuthenticatedUserFromBackend = function(noFreeAccessFallback, justLoggedIn) {
                 SecurityService.getAuthenticatedUser().then(function(data) {
                     ServiceProvider.get(SecurityContextService).updateAuthenticatedUser(
-                      MapperProvider.get(AuthenticatedUserMapper).mapToModel(data)
+                      MapperProvider.get(AuthenticatedUserMapper).mapToModel(data),
                     );
                     const token = AuthTokenService.getAuthToken();
                     if (token && token.startsWith('GDB')) {
@@ -107,7 +111,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                         // so refresh the principal
                         that.externalAuthUser = false;
                         that.principal = data;
-                        that.broadcastSecurityInit(that.securityEnabled, true, that.freeAccess)
+                        that.broadcastSecurityInit(that.securityEnabled, true, that.freeAccess);
                         // console.log('previous JWT authentication ok');
                     } else if (that.openIDEnabled && token && token.startsWith('Bearer')) {
                         // The auth was obtained from OpenID, we need to authenticate with the returned user
@@ -119,7 +123,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                         that.authenticate(data, ''); // this will emit securityInit
                         // console.log('external authentication ok');
                     }
-                }).catch(function () {
+                }).catch(function() {
                     if (noFreeAccessFallback || !that.freeAccess) {
                         $rootScope.redirectToLogin(false, justLoggedIn);
                     } else {
@@ -132,10 +136,10 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 });
             };
 
-            this.initSecurity = function () {
+            this.initSecurity = function() {
                 this.securityInitialized = false;
 
-                SecurityService.getSecurityConfig().then(function (res) {
+                SecurityService.getSecurityConfig().then(function(res) {
                     that.securityEnabled = res.data.enabled;
                     that.externalAuth = res.data.hasExternalAuth;
                     that.authImplementation = res.data.authImplementation;
@@ -148,7 +152,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                         if (that.freeAccess) {
                             that.freeAccessPrincipal = {
                                 authorities: freeAccessData.authorities,
-                                appSettings: freeAccessData.appSettings
+                                appSettings: freeAccessData.appSettings,
                             };
                         }
                         if (that.openIDEnabled) {
@@ -157,7 +161,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                             that.gdbUrl = $location.absUrl().replace($location.url().substr(1), '');
                             $openIDAuth.initOpenId(that.openIDConfig,
                                 that.gdbUrl,
-                                function (justLoggedIn) {
+                                function(justLoggedIn) {
                                     // A valid OpenID was obtained just now or previously,
                                     // so we set it as the authentication.
                                     // This function will be called every time the token is refreshed too,
@@ -165,12 +169,12 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                                     // The variable justLoggedIn will be set to true if this is
                                     // a new login that just happened.
                                     AuthTokenService.setAuthToken($openIDAuth.authHeaderGraphDB());
-                                    console.log('oidc: set id/access token as GraphDB auth');
+                                    logger.info('oidc: set id/access token as GraphDB auth');
                                     // When logging via OpenID we may get a token that doesn't have
                                     // rights in GraphDB, this should be considered invalid.
                                     that.getAuthenticatedUserFromBackend(true, justLoggedIn);
-                                }, function () {
-                                    console.log('oidc: not logged or login error');
+                                }, function() {
+                                    logger.info('oidc: not logged or login error');
                                     if (that.authTokenIsType('Bearer')) {
                                         // Possibly previous login with OpenID but token is no longer valid,
                                         // redirect to login and warn user about expired token.
@@ -185,7 +189,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                         } else {
                             that.getAuthenticatedUserFromBackend();
                         }
-                        that.broadcastSecurityInit(that.securityEnabled, that.hasExplicitAuthentication(), that.freeAccess)
+                        that.broadcastSecurityInit(that.securityEnabled, that.hasExplicitAuthentication(), that.freeAccess);
                     } else {
                         AuthTokenService.clearAuthToken();
                         const overrideAuthData = res.data.overrideAuth;
@@ -194,14 +198,13 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                             that.principal = {
                                 username: 'overrideauth',
                                 authorities: overrideAuthData.authorities,
-                                appSettings: overrideAuthData.appSettings
+                                appSettings: overrideAuthData.appSettings,
                             };
-                        that.broadcastSecurityInit(that.securityEnabled, true, that.hasOverrideAuth)
-
+                        that.broadcastSecurityInit(that.securityEnabled, true, that.hasOverrideAuth);
                          } else {
-                            return SecurityService.getAdminUser().then(function (res) {
+                            return SecurityService.getAdminUser().then(function(res) {
                                 that.principal = {username: 'admin', appSettings: res.appSettings, authorities: res.grantedAuthorities, grantedAuthoritiesUiModel: res.grantedAuthoritiesUiModel};
-                                that.broadcastSecurityInit(that.securityEnabled, true, that.hasOverrideAuth)
+                                that.broadcastSecurityInit(that.securityEnabled, true, that.hasOverrideAuth);
                             });
                         }
                     }
@@ -210,73 +213,73 @@ angular.module('graphdb.framework.core.services.jwtauth', [
 
             this.initSecurity();
 
-            this.reinitializeSecurity = function () {
+            this.reinitializeSecurity = function() {
                 if (!this.securityInitialized) {
                     this.initSecurity();
                 }
             };
 
-            this.isSecurityEnabled = function () {
+            this.isSecurityEnabled = function() {
                 return this.securityEnabled;
             };
 
-            this.hasExternalAuth = function () {
+            this.hasExternalAuth = function() {
                 return this.externalAuth;
             };
 
-            this.getAuthImplementation = function () {
+            this.getAuthImplementation = function() {
                 return this.authImplementation;
             };
 
-            this.isFreeAccessEnabled = function () {
+            this.isFreeAccessEnabled = function() {
                 return this.freeAccess;
             };
 
-            this.isDefaultAuthEnabled = function () {
+            this.isDefaultAuthEnabled = function() {
                 return this.hasOverrideAuth && this.principal && this.principal.username === 'overrideauth';
             };
 
-            this.authTokenIsType = function (type) {
+            this.authTokenIsType = function(type) {
                 const token = AuthTokenService.getAuthToken();
                 return token && token.startsWith(type);
             };
 
-            this.loginOpenID = function () {
+            this.loginOpenID = function() {
                 // FIX: This causes the workbench to always return to this.gdbUrl after login, which breaks the logic for multitab login
                 $openIDAuth.login(this.openIDConfig, this.gdbUrl);
             };
 
-            this.toggleSecurity = function (enabled) {
+            this.toggleSecurity = function(enabled) {
                 if (enabled !== this.securityEnabled) {
                     return SecurityService.toggleSecurity(enabled)
-                        .then(function () {
+                        .then(function() {
                             toastr.success($translate.instant('jwt.auth.security.status', {status: ($translate.instant(enabled ? 'enabled.status' : 'disabled.status'))}));
                             AuthTokenService.clearAuthToken();
                             that.initSecurity();
                             that.securityEnabled = enabled;
                         })
-                        .catch(function (err) {
+                        .catch(function(err) {
                             toastr.error(err.data, $translate.instant('common.error'));
                         });
                 }
                 return Promise.resolve();
             };
 
-            this.toggleFreeAccess = function (enabled, authorities, appSettings, updateFreeAccess) {
+            this.toggleFreeAccess = function(enabled, authorities, appSettings, updateFreeAccess) {
                 if (enabled !== this.freeAccess || updateFreeAccess) {
                     SecurityService.setFreeAccess({
                         enabled: enabled ? 'true' : 'false',
                         authorities: authorities,
-                        appSettings: appSettings
+                        appSettings: appSettings,
                     })
                         .then(() => {
                             this.freeAccess = enabled;
-                            return enabled ? SecurityService.getFreeAccess() : {}
+                            return enabled ? SecurityService.getFreeAccess() : {};
                         })
                         .then((freeAccess) => {
                             this.freeAccessPrincipal = {
                                 authorities: freeAccess.authorities,
-                                appSettings: freeAccess.appSettings
+                                appSettings: freeAccess.appSettings,
                             };
                             if (updateFreeAccess) {
                                 toastr.success($translate.instant('jwt.auth.free.access.updated.msg'));
@@ -291,7 +294,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 }
             };
 
-            this.authenticate = function (data, authHeaderValue) {
+            this.authenticate = function(data, authHeaderValue) {
                 return new Promise((resolve) => {
                     if (authHeaderValue) {
                         AuthTokenService.setAuthToken(authHeaderValue);
@@ -312,7 +315,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                         repositoryContextService.updateSelectedRepository(undefined);
                     }
 
-                    this.broadcastSecurityInit(this.securityEnabled, this.hasExplicitAuthentication(), this.freeAccess)
+                    this.broadcastSecurityInit(this.securityEnabled, this.hasExplicitAuthentication(), this.freeAccess);
                     setTimeout(() => {
                         resolve(true);
                     });
@@ -327,17 +330,17 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 }
             };
 
-            this.hasExternalAuthUser = function () {
+            this.hasExternalAuthUser = function() {
                 return this.externalAuthUser;
             };
 
-            this.hasExplicitAuthentication = function () {
+            this.hasExplicitAuthentication = function() {
                 const token = AuthTokenService.getAuthToken();
-                return token != null || this.externalAuthUser;
+                return (token !== null && token !== undefined) || this.externalAuthUser;
             };
 
             // Returns a promise of the principal object if already fetched or a promise which resolves after security initialization
-            this.getPrincipal = function () {
+            this.getPrincipal = function() {
                 if (this.principal) {
                     return Promise.resolve(this.principal);
                 }
@@ -348,25 +351,25 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 return deferred.promise;
             };
 
-            this.clearAuthenticationInternal = function () {
+            this.clearAuthenticationInternal = function() {
                 $openIDAuth.softLogout();
                 this.principal = this.freeAccessPrincipal;
                 AuthTokenService.clearAuthToken();
             };
 
-            this.clearAuthentication = function () {
+            this.clearAuthentication = function() {
                 this.clearAuthenticationInternal();
-                this.broadcastSecurityInit(this.securityEnabled, false, this.freeAccess)
+                this.broadcastSecurityInit(this.securityEnabled, false, this.freeAccess);
             };
 
-            this.isAuthenticated = function () {
+            this.isAuthenticated = function() {
                 return !this.securityEnabled || this.hasExplicitAuthentication();
             };
 
-            this.hasPermission = function () {
+            this.hasPermission = function() {
             };
 
-            this.hasRole = function (role) {
+            this.hasRole = function(role) {
                 if (role !== undefined && (this.securityEnabled || this.hasOverrideAuth)) {
                     if ('string' === typeof role) {
                         role = [role];
@@ -386,7 +389,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             };
 
             // Check if the user has the necessary authority to access the route
-            this.hasAuthority = function () {
+            this.hasAuthority = function() {
                 // If there is no current active route, return false – access cannot be determined
                 if (!$route.current) {
                     return false;
@@ -416,11 +419,11 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 if ($route.current.allowAuthorities.length > 0) {
                     const auth = resolveAuthorities($route.current.allowAuthorities);
                     // Check if any of the allowed authorities match one of the principal's authorities
-                    return auth.some(allowAuth => this.principal.authorities.indexOf(allowAuth) > -1);
+                    return auth.some((allowAuth) => this.principal.authorities.indexOf(allowAuth) > -1);
                 }
                 // If none of the above conditions apply, return true by default
                 return true;
-            }
+            };
 
             // Function to resolve a list of authority strings by replacing the "{repoId}" placeholder
             // with both the specific repository ID and a wildcard for all repositories.
@@ -438,40 +441,39 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 }
 
                 // Replace the "{repoId}" placeholder with the actual repository ID for specific access.
-                const authListForCurrentRepo = authoritiesList.map(authority => authority.replace('{repoId}', repo.id));
+                const authListForCurrentRepo = authoritiesList.map((authority) => authority.replace('{repoId}', repo.id));
                 // Replace the "{repoId}" placeholder with a wildcard '*' to denote access to any repository.
-                const authListForAllRepos = authoritiesList.map(authority => authority.replace('{repoId}', '*'));
+                const authListForAllRepos = authoritiesList.map((authority) => authority.replace('{repoId}', '*'));
 
                 // Combine both lists into a single array and return.
                 return [...authListForCurrentRepo, ...authListForAllRepos];
-            }
+            };
 
 
-
-            this.isAdmin = function () {
+            this.isAdmin = function() {
                 return this.hasRole(UserRole.ROLE_ADMIN);
             };
 
-            this.isRepoManager = function () {
+            this.isRepoManager = function() {
                 return this.hasRole(UserRole.ROLE_REPO_MANAGER);
             };
 
-            this.hasRoleMonitor = function () {
+            this.hasRoleMonitor = function() {
                 return this.hasRole(UserRole.ROLE_MONITORING);
             };
 
-            this.checkForWrite = function (menuRole, repo) {
+            this.checkForWrite = function(menuRole, repo) {
                 if ('WRITE_REPO' === menuRole) {
                     return this.canWriteRepo(repo);
                 }
                 return this.hasRole(menuRole);
             };
 
-            this.hasAdminRole = function () {
+            this.hasAdminRole = function() {
                 return this.isAdmin() || this.isRepoManager();
             };
 
-            this.canWriteRepo = function (repo) {
+            this.canWriteRepo = function(repo) {
                 if (!repo) {
                     return false;
                 }
@@ -489,7 +491,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 }
             };
 
-            this.canReadRepo = function (repo) {
+            this.canReadRepo = function(repo) {
                 if (!repo || repo.id === '') {
                     return false;
                 }
@@ -508,7 +510,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             };
 
 
-            this.checkRights = function (repo, action) {
+            this.checkRights = function(repo, action) {
                 if (!repo) {
                     return false;
                 }
@@ -520,7 +522,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 return this.hasBaseRights(action, repo);
             };
 
-            this.hasBaseRights = function (action, repo) {
+            this.hasBaseRights = function(action, repo) {
                 const repoId = repo.location ? `${repo.id}@${repo.location}` : repo.id;
                 const overCurrentRepo = `${action}_REPO_${repoId}`;
                 const overAllRepos = `${action}_REPO_*`;
@@ -529,28 +531,28 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                     this.principal.authorities.indexOf(overCurrentRepo) > -1 ||
                     this.principal.authorities.indexOf(overAllRepos) > -1
                 );
-            }
+            };
 
-            this.hasGraphqlRightsOverCurrentRepo = function () {
+            this.hasGraphqlRightsOverCurrentRepo = function() {
                 const activeRepo = getActiveRepositoryObjectFromStorage();
                 return this.hasGraphqlReadRights(activeRepo) || this.hasGraphqlWriteRights(activeRepo);
-            }
+            };
 
-            this.hasGraphqlWriteRights = function (repo) {
+            this.hasGraphqlWriteRights = function(repo) {
                 if (!repo || repo.id === '') {
                     return false;
                 }
-                return this.hasGraphqlAuthority('WRITE', repo)
-            }
+                return this.hasGraphqlAuthority('WRITE', repo);
+            };
 
-            this.hasGraphqlReadRights = function (repo) {
+            this.hasGraphqlReadRights = function(repo) {
                 if (!repo || repo.id === '') {
                     return false;
                 }
-                return this.hasGraphqlAuthority('READ', repo)
-            }
+                return this.hasGraphqlAuthority('READ', repo);
+            };
 
-            this.hasGraphqlAuthority = function (action, repo) {
+            this.hasGraphqlAuthority = function(action, repo) {
                 if (!this.principal) {
                     return false;
                 }
@@ -562,7 +564,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                     this.principal.authorities.indexOf(overCurrentRepoGraphql) > -1 ||
                     this.principal.authorities.indexOf(overAllReposGraphql) > -1
                 );
-            }
+            };
 
             this.updateUserData = (data) => SecurityService.updateUserData(data);
 
@@ -580,7 +582,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                     securityContextService.updateAuthenticatedUser(authenticatedUser);
                 });
 
-                let config = {
+                const config = {
                     enabled: this.securityEnabled,
                     hasExternalAuth: this.externalAuth,
                     hasExternalAuthUser: this.hasExternalAuthUser(),
@@ -589,21 +591,21 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                     overrideAuth: {
                         enabled: this.hasOverrideAuth,
                         authorities: this.principal?.authorities || [],
-                        appSettings: this.principal?.appSettings || {}
+                        appSettings: this.principal?.appSettings || {},
                     },
                     methodSettings: {
-                        openid: this.openIDConfig || {}
+                        openid: this.openIDConfig || {},
                     },
                     freeAccess: {
                         enabled: this.freeAccess,
                         authorities: this.freeAccessPrincipal?.authorities || [],
-                        appSettings: this.freeAccessPrincipal?.appSettings || {}
+                        appSettings: this.freeAccessPrincipal?.appSettings || {},
                     },
                     authImplementation: this.authImplementation,
                     userLoggedIn,
-                    freeAccessActive: freeAccess
-                }
+                    freeAccessActive: freeAccess,
+                };
                 ServiceProvider.get(AuthenticationStorageService).setAuthenticated(this.isAuthenticated());
                 ServiceProvider.get(SecurityContextService).updateSecurityConfig(MapperProvider.get(SecurityConfigMapper).mapToModel(config));
-            }
+            };
         }]);

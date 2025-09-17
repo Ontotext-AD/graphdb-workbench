@@ -1,4 +1,7 @@
+import {LoggerProvider} from "./logger-provider";
+
 const modules = [];
+const logger = LoggerProvider.logger;
 
 angular
     .module('graphdb.framework.utils.event-emitter-service', modules)
@@ -32,7 +35,7 @@ function EventEmitterService() {
         subscribers[eventName].push(subscriber);
 
         // Return an unsubscribe function
-        return function () {
+        return function() {
             const index = subscribers[eventName].indexOf(subscriber);
             if (index !== -1) {
                 subscribers[eventName].splice(index, 1);
@@ -90,7 +93,7 @@ function EventEmitterService() {
         syncSubscribers[eventName].push(callback);
 
         // Return an unsubscribe function
-        return function () {
+        return function() {
             const index = syncSubscribers[eventName].indexOf(callback);
             if (index !== -1) {
                 syncSubscribers[eventName].splice(index, 1);
@@ -113,7 +116,7 @@ function EventEmitterService() {
             if (angular.isFunction(callback)) {
                 callback(eventData);
             } else {
-                console.error(`Callback of "${eventName}" is not function:`, callback);
+                logger.error(`Callback of "${eventName}" is not function:`, callback);
             }
         });
     };
@@ -122,6 +125,6 @@ function EventEmitterService() {
         subscribe,
         emit,
         subscribeSync,
-        emitSync
+        emitSync,
     };
 }

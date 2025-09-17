@@ -1,11 +1,13 @@
 import {LocalStorageService} from '../storage';
 import {RepositoryReference} from '../../models/repositories';
+import {LoggerProvider} from '../logging/logger-provider';
 
 /**
  * Service that handles the repository related properties in the local storage.
  */
 export class RepositoryStorageService extends LocalStorageService {
   readonly NAMESPACE = 'repository';
+  private readonly logger = LoggerProvider.logger;
 
   /** Key under which the selected repository reference is stored. */
   readonly SELECTED_REPOSITORY = 'selectedRepository';
@@ -63,7 +65,7 @@ export class RepositoryStorageService extends LocalStorageService {
       try {
         return JSON.parse(serializedRepositoryReference);
       } catch (e) {
-        console.error('Error parsing repository reference', e);
+        this.logger.error('Error parsing repository reference', e);
       }
     }
     return undefined;

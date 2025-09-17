@@ -3,12 +3,14 @@ import {PluginModule, PluginsManifest, PluginsManifestResponse} from '../../mode
 import {getOrigin} from '../utils';
 import {service} from '../../providers';
 import {ConfigurationContextService} from '../configuration/configuration-context.service';
+import {LoggerProvider} from '../logging/logger-provider';
 
 /**
  * Service responsible for handling REST operations related to plugins.
  */
 export class PluginsRestService extends HttpService {
   private readonly configurationContextService = service(ConfigurationContextService);
+  private readonly logger = LoggerProvider.logger;
 
   /**
    * Fetches the plugins manifest from the server.
@@ -39,7 +41,7 @@ export class PluginsRestService extends HttpService {
 
           return await import(/* webpackIgnore: true */ entryUrl) as PluginModule;
         } catch (err) {
-          console.warn(`Failed to load plugin ${pluginDef.name}:`, err);
+          this.logger.warn(`Failed to load plugin ${pluginDef.name}:`, err);
         }
       })
     );

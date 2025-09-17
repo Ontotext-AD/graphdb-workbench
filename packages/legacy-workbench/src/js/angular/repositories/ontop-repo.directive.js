@@ -5,7 +5,9 @@ import {OntopFileInfo} from "../models/ontop/ontop-file-info";
 import {OntopRepositoryError} from "../models/ontop/ontop-repository-error";
 import {OntopDriverData} from "../models/ontop/ontop-driver-data";
 import {JdbcDriverType} from "../models/ontop/jdbc-driver-type";
+import {LoggerProvider} from "../core/services/logger-provider";
 
+const logger = LoggerProvider.logger;
 // A link to Ontop's website with all Ontop configuration keys
 const ONTOP_PROPERTIES_LINK = 'https://ontop-vkg.org/guide/advanced/configuration.html';
 
@@ -21,7 +23,7 @@ function ontopRepoDirective($uibModal, RepositoriesRestService, toastr, Upload, 
         scope: false,
         templateUrl: 'js/angular/repositories/templates/ontop-repo.html',
 
-        link: linkFunc
+        link: linkFunc,
     };
 
     function linkFunc($scope) {
@@ -56,12 +58,10 @@ function ontopRepoDirective($uibModal, RepositoriesRestService, toastr, Upload, 
                 /**
                  * Holds information about repository files.
                  */
-                ontopFiles: []
-            }
+                ontopFiles: [],
+            },
         };
 
-        // =========================
-        // Public functions
         // =========================
 
         /**
@@ -161,7 +161,6 @@ function ontopRepoDirective($uibModal, RepositoriesRestService, toastr, Upload, 
          * @param {OntopFileInfo} ontopFileInfo
          */
         $scope.editFile = (ontopFileInfo) => {
-
             const fileName = $scope.repositoryInfo.params[ontopFileInfo.type].label;
             const title = $translate.instant('update.file.edit.content.header', {fileName});
             const modalInstance = $uibModal.open({
@@ -177,9 +176,9 @@ function ontopRepoDirective($uibModal, RepositoriesRestService, toastr, Upload, 
                         return title;
                     },
                     location: () => {
-                        return $scope.repositoryInfo.location
-                    }
-                }
+                        return $scope.repositoryInfo.location;
+                    },
+                },
             });
 
             modalInstance.result.then((data) => {
@@ -200,7 +199,7 @@ function ontopRepoDirective($uibModal, RepositoriesRestService, toastr, Upload, 
                 ontopFileInfo.loading = true;
                 const uploadData = {
                     url: 'rest/repositories/file/upload',
-                    data: {file: uploadFile, location: $scope.repositoryInfo.location}
+                    data: {file: uploadFile, location: $scope.repositoryInfo.location},
                 };
                 Upload.upload(uploadData)
                     .success((data) => {
@@ -236,7 +235,7 @@ function ontopRepoDirective($uibModal, RepositoriesRestService, toastr, Upload, 
                     if (error instanceof OntopRepositoryError) {
                         toastr.error(error.message);
                     } else {
-                        console.log(error);
+                        logger.info(error);
                     }
                 });
         };
@@ -430,7 +429,7 @@ function ontopRepoDirective($uibModal, RepositoriesRestService, toastr, Upload, 
                 password: connectionInformation.password,
                 driverClass: connectionInformation.driverClass,
                 url: connectionInformation.url,
-                additionalProperties: $scope.formData.settings.additionalProperties
+                additionalProperties: $scope.formData.settings.additionalProperties,
             };
 
             return RepositoriesRestService
@@ -506,8 +505,8 @@ function ontopRepoDirective($uibModal, RepositoriesRestService, toastr, Upload, 
                 connectionInformation: new OntopConnectionInformation(),
                 settings: {
                     additionalProperties: '',
-                    ontopFiles: []
-                }
+                    ontopFiles: [],
+                },
             };
 
             Object.values(OntopFileType)

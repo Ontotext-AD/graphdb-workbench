@@ -1,10 +1,13 @@
 import markdownIt from 'markdown-it';
 import {markdownCodeCopyPlugin} from "./plugins/markdown-code-copy-plugin";
 import {markdownOpenInSparqlEditorPlugin} from "./plugins/markdown-open-in-sparql-editor-plugin";
+import {LoggerProvider} from "../logger-provider";
 
 const OPEN_IN_SPARQL_PLUGIN_OPTIONS = {
-    buttonStyle: 'position: absolute; top: 0; right: 0; margin-right: 24px'
+    buttonStyle: 'position: absolute; top: 0; right: 0; margin-right: 24px',
 };
+
+const logger = LoggerProvider.logger;
 
 /**
  * AngularJS service that provides methods for rendering Markdown text.
@@ -33,7 +36,6 @@ function MarkdownService($sce) {
             return markdownIt()
                 .use(markdownCodeCopyPlugin, config)
                 .use(markdownOpenInSparqlEditorPlugin, _.merge({}, OPEN_IN_SPARQL_PLUGIN_OPTIONS, config));
-
         }
         return markdownInstance;
     };
@@ -48,13 +50,13 @@ function MarkdownService($sce) {
         try {
             return $sce.trustAsHtml(getMarkdown(config).render(text));
         } catch (e) {
-            console.error('Error rendering markdown:', e);
+            logger.error('Error rendering markdown:', e);
             // Return the original text in case of an error
             return $sce.trustAsHtml(text);
         }
     };
 
     return {
-        renderMarkdown
+        renderMarkdown,
     };
 }

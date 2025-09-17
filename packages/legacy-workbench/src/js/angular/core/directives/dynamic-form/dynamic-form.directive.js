@@ -1,5 +1,6 @@
 import 'angular/core/directives/dynamic-form/dynamic-form-field.directive';
 import {FIELD_TYPE} from "./field-type";
+import {LoggerProvider} from "../../services/logger-provider";
 
 /**
  * @function dynamicFormDirective
@@ -37,6 +38,8 @@ angular
 
 dynamicFormDirective.$inject = [];
 
+const logger = LoggerProvider.logger;
+
 function dynamicFormDirective() {
     return {
         restrict: 'E',
@@ -52,7 +55,7 @@ function dynamicFormDirective() {
             showAllFields: '=?',
             onValidityChange: '&?',
             formCtrl: '=?',
-            translationKeyPrefix: '@?'
+            translationKeyPrefix: '@?',
         },
         templateUrl: 'js/angular/core/directives/dynamic-form/templates/dynamic-form.html',
         link: function($scope, element) {
@@ -71,13 +74,13 @@ function dynamicFormDirective() {
                 const formCtrl = formElement.controller('form');
 
                 if (!formCtrl) {
-                    console.error('Form controller not found!');
+                    logger.error('Form controller not found!');
                     return;
                 }
 
                 $scope.formCtrl = formCtrl;
                 const originalSetValidity = formCtrl.$setValidity;
-                $scope.formCtrl.$setValidity = function (validationToken, isValid, modelCtrl) {
+                $scope.formCtrl.$setValidity = function(validationToken, isValid, modelCtrl) {
                     originalSetValidity.call(formCtrl, validationToken, isValid, modelCtrl);
                     if ($scope.onValidityChange) {
                         $scope.onValidityChange({valid: formCtrl.$valid});
@@ -89,7 +92,7 @@ function dynamicFormDirective() {
             // Initialization
             // =========================
             init();
-        }
+        },
     };
 }
 

@@ -14,11 +14,12 @@ import {SimilarityIndexError} from "../../models/similarity/similarity-index-err
 import {QueryType} from "../../models/ontotext-yasgui/query-type";
 import {SimilarityIndexInfo} from "../../models/similarity/similarity-index-info";
 import {RepositoryContextService, ServiceProvider} from "@ontotext/workbench-api";
+import {LoggerProvider} from "../../core/services/logger-provider";
 
 angular
     .module('graphdb.framework.similarity.controllers.create', [
         'graphdb.framework.utils.notifications',
-        'graphdb.framework.utils.localstorageadapter'
+        'graphdb.framework.utils.localstorageadapter',
     ])
     .controller('CreateSimilarityIdxCtrl', CreateSimilarityIdxCtrl);
 
@@ -38,8 +39,10 @@ CreateSimilarityIdxCtrl.$inject = [
     '$translate',
     '$repositories',
     'EventEmitterService',
-    'ModalService'
+    'ModalService',
 ];
+
+const logger = LoggerProvider.logger;
 
 function CreateSimilarityIdxCtrl(
     $scope,
@@ -57,9 +60,8 @@ function CreateSimilarityIdxCtrl(
     $translate,
     $repositories,
     EventEmitterService,
-    ModalService
+    ModalService,
 ) {
-
     /**
      * @type {ProductInfo}
      */
@@ -117,7 +119,7 @@ function CreateSimilarityIdxCtrl(
                 setDefaultQueries($scope.similarityIndexInfo);
                 $scope.setEditorQuery($scope.similarityIndexInfo.getQuery());
             });
-    }
+    };
 
     /**
      * Changes the query tab. ("Data query", "Search query" or "Analogical query").
@@ -135,7 +137,7 @@ function CreateSimilarityIdxCtrl(
             .then((similarityIndexInfo) => validateQueryType(similarityIndexInfo, oldSimilarityQueryType))
             .catch((error) => {
                 if (!(error instanceof SimilarityIndexError)) {
-                    console.log(error);
+                    logger.info(error);
                 }
             })
             .finally(() => {
@@ -149,7 +151,7 @@ function CreateSimilarityIdxCtrl(
                 }
                 ontotextYasgui.setQuery($scope.similarityIndexInfo.getQuery());
             });
-    }
+    };
 
     /**
      * Validates all similarity index data, and if everything is ok calls backend server to create an index.
@@ -197,9 +199,9 @@ function CreateSimilarityIdxCtrl(
                 $scope.similarityIndexInfo.setSelectedYasguiRenderMode(RenderingMode.YASR);
                 ontotextYasgui.query($scope.similarityIndexInfo.getSelectedYasguiRenderMode());
             });
-    }
+    };
 
-    $scope.saveSearchQuery = function () {
+    $scope.saveSearchQuery = function() {
         if (!isDirty) {
             $location.url('similarity');
         } else {
@@ -243,30 +245,30 @@ function CreateSimilarityIdxCtrl(
         } else {
             updateYasguiComponent({initialQuery: query || ' '});
         }
-    }
+    };
 
     $scope.similarityIndexNameChanged = () => {
         $scope.setDirty();
         $scope.similarityIndexInfo.isNameExist = false;
-    }
+    };
 
     $scope.queryChanged = () => {
         $scope.setDirty();
         $scope.similarityIndexInfo.markInvalidQuery(undefined, false);
         $scope.similarityIndexInfo.markInvalidQueryType(undefined, false);
-    }
+    };
 
     $scope.isCloneViewMode = () => {
         return SimilarityViewMode.CLONE === viewMode;
-    }
+    };
 
     $scope.isEditViewMode = () => {
         return SimilarityViewMode.EDIT === viewMode;
-    }
+    };
 
     $scope.isCreateViewMode = () => {
         return SimilarityViewMode.CREATE === viewMode;
-    }
+    };
 
     $scope.setDirty = () => {
         isDirty = true;
@@ -274,11 +276,11 @@ function CreateSimilarityIdxCtrl(
 
     $scope.isYasqeShown = () => {
         return $scope.similarityIndexInfo && $scope.similarityIndexInfo.isYasqeRenderMode();
-    }
+    };
 
     $scope.isYasrShown = () => {
         return $scope.similarityIndexInfo && $scope.similarityIndexInfo.isYasrRenderMode();
-    }
+    };
 
     $scope.showEditor = () => {
         const ontotextYasgui = getOntotextYasgui();
@@ -303,10 +305,10 @@ function CreateSimilarityIdxCtrl(
         }
     };
 
-    $scope.getCloseBtnMsg = function () {
-        let operationType = $scope.editSearchQuery ? $translate.instant('similarity.query.edition.msg') : $translate.instant('similarity.index.creation.msg');
+    $scope.getCloseBtnMsg = function() {
+        const operationType = $scope.editSearchQuery ? $translate.instant('similarity.query.edition.msg') : $translate.instant('similarity.index.creation.msg');
         return $translate.instant('similarity.close.btn.msg', {operation: operationType});
-    }
+    };
 
     $scope.hasQueryError = () => {
         const similarityQueryType = $scope.similarityIndexInfo.getSelectedQueryType();
@@ -324,25 +326,25 @@ function CreateSimilarityIdxCtrl(
         }
 
         return false;
-    }
+    };
 
     $scope.hasSelectQueryError = () => {
         return !$scope.similarityIndexInfo.hasSelectQuery() ||
             $scope.similarityIndexInfo.invalidSelectQuery ||
             $scope.similarityIndexInfo.invalidSelectQueryType;
-    }
+    };
 
     $scope.hasSearchQueryError = () => {
         return !$scope.similarityIndexInfo.hasSearchQuery() ||
             $scope.similarityIndexInfo.invalidSearchQuery ||
             $scope.similarityIndexInfo.invalidSearchQueryType;
-    }
+    };
 
     $scope.hasAnalogicalQueryError = () => {
         return !$scope.similarityIndexInfo.hasAnalogicalQuery() ||
             $scope.similarityIndexInfo.invalidAnalogicalQuery ||
             $scope.similarityIndexInfo.invalidAnalogicalQueryType;
-    }
+    };
 
     $scope.getQueryErrorMessage = () => {
         const similarityQueryType = $scope.similarityIndexInfo.getSelectedQueryType();
@@ -374,7 +376,7 @@ function CreateSimilarityIdxCtrl(
         }
 
         return '';
-    }
+    };
     // =========================
     // Private functions
     // =========================
@@ -389,9 +391,9 @@ function CreateSimilarityIdxCtrl(
                 if ($scope.isEditViewMode()) {
                     initialQueryTab = SimilarityQueryType.SEARCH;
                 }
-                $scope.changeSimilarityIndexType(similarityIndexInfo.getType(), initialQueryTab)
+                $scope.changeSimilarityIndexType(similarityIndexInfo.getType(), initialQueryTab);
             });
-    }
+    };
 
     /**
      * Validates the editor query and updates error statuses of <code>SimilarityIndexInfo</code>. Updates <code>SimilarityIndexInfo</code> query with editor one.
@@ -405,7 +407,7 @@ function CreateSimilarityIdxCtrl(
         return getOntotextYasgui().getQuery()
             .then((query) => similarityIndexInfo.setQuery(query, similarityQueryType))
             .then(() => similarityIndexInfo);
-    }
+    };
 
     /**
      * Fetches the sparql query of currently chosen query type from the backed server.
@@ -422,9 +424,9 @@ function CreateSimilarityIdxCtrl(
             queryInference: similarityIndexInfo.getInference(),
             querySameAs: similarityIndexInfo.getSameAs(),
             viewType: similarityIndexInfo.getSelectedQueryType(),
-            indexAnalyzer: similarityIndexInfo.getAnalyzer()
+            indexAnalyzer: similarityIndexInfo.getAnalyzer(),
         }).then((response) => response.data);
-    }
+    };
 
     /**
      * Shows a modal dialog that displays the <code>query</code>.
@@ -437,13 +439,13 @@ function CreateSimilarityIdxCtrl(
                 templateUrl: 'pages/viewQuery.html',
                 controller: 'ViewQueryCtrl',
                 resolve: {
-                    query: function () {
+                    query: function() {
                         return query;
-                    }
-                }
+                    },
+                },
             });
         }
-    }
+    };
 
     const setDefaultQueries = (similarityIndexInfo) => {
         const similarityIndexType = similarityIndexInfo.getType();
@@ -461,7 +463,7 @@ function CreateSimilarityIdxCtrl(
                 similarityIndexInfo.setQuery(allSampleElement1, SimilarityQueryType.DATA);
             }
         }
-    }
+    };
 
     /**
      * Initializes the similarity index info object with default values if view is opened for create or populates values from url if
@@ -499,7 +501,7 @@ function CreateSimilarityIdxCtrl(
         }
 
         if (similarityIndexInfo.isTextType()) {
-            similarityIndexInfo.setStopList($location.search().stopList)
+            similarityIndexInfo.setStopList($location.search().stopList);
             similarityIndexInfo.setAnalyzer($location.search().analyzer);
             const isLiteralIndex = getAndRemoveOption(similarityIndexInfo.getSimilarityIndex(), '-literal_index');
             if (isLiteralIndex !== undefined) {
@@ -531,14 +533,14 @@ function CreateSimilarityIdxCtrl(
                     }
                     return similarityIndexInfo;
                 })
-                .catch(function (error) {
+                .catch(function(error) {
                     const msg = getError(error);
                     toastr.error(msg, $translate.instant('similarity.could.not.get.indexes.error'));
                 });
         }
 
         return Promise.resolve(similarityIndexInfo);
-    }
+    };
 
     const updateYasguiComponent = (config) => {
         const defaultConfig = {
@@ -558,12 +560,12 @@ function CreateSimilarityIdxCtrl(
             yasqeActionButtons: $scope.isEditViewMode() || !$scope.similarityIndexInfo.isDataQueryTypeSelected() ? DISABLE_YASQE_BUTTONS_CONFIGURATION : INFERRED_AND_SAME_AS_BUTTONS_CONFIGURATION,
             maxPersistentResponseSize: 0,
             yasqeMode: $scope.canWriteActiveRepo() ? YasqeMode.WRITE : YasqeMode.READ,
-        }
+        };
 
-        const yasguiConfig = {}
+        const yasguiConfig = {};
         angular.extend(yasguiConfig, defaultConfig, config);
         $scope.yasguiConfig = yasguiConfig;
-    }
+    };
 
     const getQueryEndpoint = () => {
         return `repositories/${$repositories.getActiveRepository()}`;
@@ -602,38 +604,33 @@ function CreateSimilarityIdxCtrl(
                 toastr.success($translate.instant('similarity.create.index.successfully'));
                 return similarityIndex;
             })
-            .catch(function (err) {
+            .catch(function(err) {
                 const errorMessage = getError(err);
                 toastr.error(errorMessage, $translate.instant('similarity.create.index.error'));
-                console.log(errorMessage);
+                logger.info(errorMessage);
                 return Promise.reject(new SimilarityIndexError('Could not create index.'));
             });
-    }
-
-    const notifySaveSuccess = async (isSearchQuery) => {
-        await Notifications.showToastMessageWithDelay(isSearchQuery ? 'similarity.changed.search.query.msg' : 'similarity.changed.analogical.query.msg');
-        $location.url('similarity');
-    }
+    };
 
     const saveQuery = (similarityIndexInfo) => {
         const isSearchQuery = similarityIndexInfo.isSearchQueryTypeSelected();
-        let data = {
+        const data = {
             name: similarityIndexInfo.getSimilarityIndex().name,
             changedQuery: similarityIndexInfo.getQuery(),
-            isSearchQuery
+            isSearchQuery,
         };
         return SimilarityRestService.saveSearchQuery(JSON.stringify(data))
             .then(() => {
                 isDirty = false;
-                return isSearchQuery
-            })
-    }
+                return isSearchQuery;
+            });
+    };
 
     const goToSimilarityIndexesView = () => {
         $timeout(() =>
             $location.url('similarity')
             , 100);
-    }
+    };
 
     const getOntotextYasgui = () => {
         return YasguiComponentDirectiveUtil.getOntotextYasguiElement('#query-editor');
@@ -661,7 +658,7 @@ function CreateSimilarityIdxCtrl(
         } else {
             return indexType;
         }
-    }
+    };
 
     // TODO simplify
     const getAndRemoveOption = (similarityIndex, key) => {
@@ -678,7 +675,7 @@ function CreateSimilarityIdxCtrl(
             }
         }
         return undefined;
-    }
+    };
 
     /**
      * Calculates the view mode. The view mode can be any value of {@see SimilarityViewMode}.
@@ -702,7 +699,7 @@ function CreateSimilarityIdxCtrl(
         }
 
         return editSearchQuery ? SimilarityViewMode.EDIT : SimilarityViewMode.CLONE;
-    }
+    };
 
 
     // =========================
@@ -722,7 +719,7 @@ function CreateSimilarityIdxCtrl(
             .then(validateQueryType)
             .then(validateQuery)])
             .then(() => similarityIndexInfo);
-    }
+    };
 
     /**
      * Checks if typed similarity index name already exist.
@@ -758,7 +755,7 @@ function CreateSimilarityIdxCtrl(
             return Promise.reject(new SimilarityIndexError('Invalid similarity name.'));
         }
         return Promise.resolve(similarityIndexInfo);
-    }
+    };
 
     /**
      * Validates if similarity index select query exist.
@@ -776,7 +773,7 @@ function CreateSimilarityIdxCtrl(
             return Promise.reject(new SimilarityIndexError('Invalid select query type'));
         }
         return Promise.resolve(similarityIndexInfo);
-    }
+    };
 
     /**
      * Validates if similarity index search query exist.
@@ -794,7 +791,7 @@ function CreateSimilarityIdxCtrl(
             return Promise.reject(new SimilarityIndexError('Invalid search query type'));
         }
         return Promise.resolve(similarityIndexInfo);
-    }
+    };
 
     /**
      * Validates if analogical index search query exist.
@@ -812,7 +809,7 @@ function CreateSimilarityIdxCtrl(
             return Promise.reject(new SimilarityIndexError('Invalid analogical query type'));
         }
         return Promise.resolve(similarityIndexInfo);
-    }
+    };
 
     /**
      * Checks if query mode is valid. The mode have to be "SELECT".
@@ -858,12 +855,12 @@ function CreateSimilarityIdxCtrl(
         ModalService.openSimpleModal({
             title,
             message,
-            warning: true
-        }).result.then(function () {
+            warning: true,
+        }).result.then(function() {
             if (angular.isFunction(onConfirm)) {
                 onConfirm();
             }
-        }, function () {
+        }, function() {
             if (angular.isFunction(onCancel)) {
                 onCancel();
             }
@@ -874,8 +871,7 @@ function CreateSimilarityIdxCtrl(
     // Subscriptions handlers
     // =========================
     const repositoryWillChangeHandler = () => {
-        return new Promise(function (resolve) {
-
+        return new Promise(function(resolve) {
             if ($scope.isCreateViewMode() || $scope.isCloneViewMode()) {
                 resolve(true);
                 return;
@@ -954,7 +950,7 @@ function CreateSimilarityIdxCtrl(
     const subscriptions = [];
 
     const repositoryContextService = ServiceProvider.get(RepositoryContextService);
-    const repositoryChangeSubscription = repositoryContextService.onSelectedRepositoryChanged(repositoryChangedHandler, repositoryWillChangeHandler)
+    const repositoryChangeSubscription = repositoryContextService.onSelectedRepositoryChanged(repositoryChangedHandler, repositoryWillChangeHandler);
 
     subscriptions.push(repositoryChangeSubscription);
     subscriptions.push($scope.$on('$locationChangeStart', locationChangedHandler));
@@ -966,9 +962,9 @@ function CreateSimilarityIdxCtrl(
 
     // Wait until the active repository object is set, otherwise "canWriteActiveRepo()" may return a wrong result and the "ontotext-yasgui"
     // readOnly configuration may be incorrect.
-    const repoIsInitialized = $scope.$watch(function () {
+    const repoIsInitialized = $scope.$watch(function() {
         return $scope.getActiveRepositoryObject();
-    }, function (activeRepo) {
+    }, function(activeRepo) {
         if (activeRepo) {
             $scope.loadingControllerResources = true;
             Promise.all([SimilarityRestService.getSearchQueries(), SimilarityRestService.getSamples(), $repositories.getPrefixes(activeRepo.id)])
@@ -979,7 +975,7 @@ function CreateSimilarityIdxCtrl(
                     usedPrefixes = usedPrefixesResponse;
                     init();
                 }).catch((error) => {
-                    console.log(error)
+                    logger.info(error);
                     $scope.repositoryError = getError(error);
                 }).finally(() => {
                     subscriptions.push($scope.$on('repositoryIsSet', activeRepositoryHandler));

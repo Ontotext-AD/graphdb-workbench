@@ -1,7 +1,11 @@
-import {NavbarService} from '../navbar-service';
 import {ExternalMenuModel} from '../external-menu-model';
 import {NavbarItemModel, NavbarModel} from '../navbar-model';
-import {ProductInfo} from '@ontotext/workbench-api';
+import {ProductInfo, LoggerService} from '@ontotext/workbench-api';
+import {LoggerProvider} from '../../../services/logger-provider';
+jest.spyOn(LoggerProvider, 'logger', 'get').mockReturnValue({
+  loggers: jest.fn()
+} as unknown as LoggerService);
+import {NavbarService} from '../navbar-service';
 
 describe('NavbarService', () => {
   let mockExternalMenuModel: ExternalMenuModel;

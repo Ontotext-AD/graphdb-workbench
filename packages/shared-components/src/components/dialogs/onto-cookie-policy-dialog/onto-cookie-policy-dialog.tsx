@@ -4,6 +4,7 @@ import {OntoDialog} from '../../../models/dialog/onto-dialog';
 import {TranslationService} from '../../../services/translation.service';
 import {SecurityContextService, ServiceProvider, CookieConsent, SecurityService} from '@ontotext/workbench-api';
 import {ToggleEventPayload} from '../../../models/toggle-switch/toggle-event-payload';
+import {LoggerProvider} from '../../../services/logger-provider';
 
 enum CookieType {
   THIRD_PARTY = 'thirdParty',
@@ -15,6 +16,7 @@ enum CookieType {
   styleUrl: 'onto-cookie-policy-dialog.scss',
 })
 export class OntoCookiePolicyDialog implements OntoDialog {
+  private readonly logger = LoggerProvider.logger;
   private readonly user = ServiceProvider.get(SecurityContextService).getAuthenticatedUser();
   private readonly securityService = ServiceProvider.get(SecurityService);
   /**
@@ -26,7 +28,7 @@ export class OntoCookiePolicyDialog implements OntoDialog {
   toggleChanged(event: CustomEvent<ToggleEventPayload>) {
     this.setUserCookieConsent(this.updateCookieConsent(event.detail));
     this.securityService.updateUserData(this.user)
-      .catch(console.error);
+      .catch(this.logger.error);
   }
 
   render() {

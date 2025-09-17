@@ -3,9 +3,10 @@ import Shepherd from "shepherd.js";
 import {decodeHTML} from "../../../../app";
 import {
     navigate,
-    getPathName
+    getPathName,
 } from '@ontotext/workbench-api';
 import {NEAREST, SMOOTH} from "../model/guides";
+import {LoggerProvider} from "../../core/services/logger-provider";
 
 export const GUIDE_ID = 'shepherd.guide_id';
 export const GUIDE_CURRENT_STEP_ID = 'shepherd.guide.current.step.id';
@@ -13,6 +14,7 @@ export const GUIDE_STEP_HISTORY = 'shepherd.guide.step.history';
 export const GUIDE_PAUSE = 'shepherd.guide.pause';
 
 const modules = ['graphdb.framework.utils.localstorageadapter'];
+const logger = LoggerProvider.logger;
 
 angular
     .module('graphdb.framework.guides.shepherd.services', modules)
@@ -192,13 +194,13 @@ function ShepherdService($translate, LocalStorageAdapter, LSKeys, $interpolate, 
     this._isAutostartDisabledForGuide = (guideId) => {
         const guideAutostartState = LocalStorageAdapter.get(LSKeys.GUIDES_AUTOSTART) || {};
         return guideAutostartState[guideId]?.disabled;
-    }
+    };
 
     this._disableAutostartForGuide = (guideId) => {
         const guideAutostartState = LocalStorageAdapter.get(LSKeys.GUIDES_AUTOSTART) || {};
-        guideAutostartState[guideId] = {disabled: true}
+        guideAutostartState[guideId] = {disabled: true};
         LocalStorageAdapter.set(LSKeys.GUIDES_AUTOSTART, JSON.stringify(guideAutostartState));
-    }
+    };
 
     /**
      * Creates a guide.
@@ -216,15 +218,15 @@ function ShepherdService($translate, LocalStorageAdapter, LSKeys, $interpolate, 
                 scrollTo: {
                     behavior: SMOOTH,
                     block: NEAREST,
-                    inline: NEAREST
-                }
-            }
+                    inline: NEAREST,
+                },
+            },
         });
     };
 
     this._confirmGuideCancel = () => {
         const guide = Shepherd.activeTour;
-        const currentStep = guide.getCurrentStep()
+        const currentStep = guide.getCurrentStep();
 
         if (currentStep.options.isLastStep) {
             this._completeGuide(guide);
@@ -245,9 +247,9 @@ function ShepherdService($translate, LocalStorageAdapter, LSKeys, $interpolate, 
                 // Exit of guide is confirmed
                 if (disableAutoStart) {
                     // User choose not to auto start the guide again
-                    this._disableAutostartForGuide(guide.options.name)
+                    this._disableAutostartForGuide(guide.options.name);
                 }
-                return true
+                return true;
             })
             .catch(() => {
                 guide.show(currentStep.id);
@@ -259,19 +261,19 @@ function ShepherdService($translate, LocalStorageAdapter, LSKeys, $interpolate, 
             $scope.title = config.title;
             $scope.message = $sce.trustAsHtml(config.message);
 
-            $scope.exit = function () {
+            $scope.exit = function() {
                 $uibModalInstance.close(false);
             };
 
-            $scope.dontShowAgain = function () {
+            $scope.dontShowAgain = function() {
                 $uibModalInstance.close(true);
             };
 
-            $scope.cancel = function () {
+            $scope.cancel = function() {
                 $uibModalInstance.dismiss();
             };
         }
-    }
+    };
 
     /**
      * Transforms <code>stepsDescriptions</code> to Shepherd Tour steps and add it to <code>guide<code>.
@@ -407,7 +409,7 @@ function ShepherdService($translate, LocalStorageAdapter, LSKeys, $interpolate, 
             GuideUtils.getOrWaitFor(step.options.attachTo.element, step.options.maxWaitTime)
                 .then(() => guide.show(stepIndex))
                 .catch((error) => {
-                    console.log(error);
+                    logger.error(error);
                     toastr.error($translate.instant('guide.start.unexpected.error.message'));
                 });
         } else {
@@ -429,7 +431,7 @@ function ShepherdService($translate, LocalStorageAdapter, LSKeys, $interpolate, 
             if (this.onCancel) {
                 this.onCancel();
             }
-        }
+        };
         if (!this.guideCancelSubscription) {
             this.guideCancelSubscription = Shepherd.on('cancel', guideEndHandler);
         }
@@ -445,7 +447,7 @@ function ShepherdService($translate, LocalStorageAdapter, LSKeys, $interpolate, 
      * @return {Shepherd.Step} the first step.
      * @private
      */
-    this._getFirstStep = function (guide, stepsDescriptions) {
+    this._getFirstStep = function(guide, stepsDescriptions) {
         const nextStepDescription = stepsDescriptions.length > 1 ? stepsDescriptions[1] : undefined;
         return this._toGuideStep(guide, undefined, stepsDescriptions[0], nextStepDescription);
     };
@@ -459,7 +461,7 @@ function ShepherdService($translate, LocalStorageAdapter, LSKeys, $interpolate, 
      * @private
      */
     this._getMiddleStep = (guide, stepsDescriptions, indexOfProcessedStep) => {
-        let currentStep = stepsDescriptions[indexOfProcessedStep];
+        const currentStep = stepsDescriptions[indexOfProcessedStep];
         if (currentStep.lastStep) {
             return this._getLastStep(guide, currentStep);
         }
@@ -503,10 +505,10 @@ function ShepherdService($translate, LocalStorageAdapter, LSKeys, $interpolate, 
      */
     this._completeGuide = (guide) => {
         if (this.guideAutostarted) {
-            this._disableAutostartForGuide(guide.options.name)
+            this._disableAutostartForGuide(guide.options.name);
         }
         guide.complete();
-    }
+    };
 
     /**
      * Abort the guide due to an error.
@@ -580,7 +582,7 @@ function ShepherdService($translate, LocalStorageAdapter, LSKeys, $interpolate, 
      */
     this._isDisablePreviousFlow = (stepDescription) => {
         return this._isDefined(stepDescription.disablePreviousFlow) ? stepDescription.disablePreviousFlow : false;
-    }
+    };
 
     /**
      * Checks if the next flow is disabled for the <code>stepDescription</code>.
@@ -590,7 +592,7 @@ function ShepherdService($translate, LocalStorageAdapter, LSKeys, $interpolate, 
      */
     this._isDisableNextFlow = (stepDescription) => {
         return this._isDefined(stepDescription.disableNextFlow) ? stepDescription.disableNextFlow : false;
-    }
+    };
 
     /**
      * Pauses current ran guide.
@@ -641,7 +643,7 @@ function ShepherdService($translate, LocalStorageAdapter, LSKeys, $interpolate, 
         const text = $translate.instant('previous.btn');
         const action = this._getPreviousButtonAction(guide);
         const prevButton = this._getButton(text, action);
-        prevButton.classes += ' shepherd-prev-button'
+        prevButton.classes += ' shepherd-prev-button';
         return prevButton;
     };
 
@@ -671,7 +673,7 @@ function ShepherdService($translate, LocalStorageAdapter, LSKeys, $interpolate, 
                                 }
                             })
                             .catch((error) => {
-                                console.log(error);
+                                logger.error(error);
                                 this._abortGuide(guide);
                             });
                         return;
@@ -684,7 +686,7 @@ function ShepherdService($translate, LocalStorageAdapter, LSKeys, $interpolate, 
                     guide.show(nextStep.id);
                 })
                 .catch((error) => {
-                    console.log(error);
+                    logger.error(error);
                     this._abortGuide(guide);
                 });
         };
@@ -739,7 +741,7 @@ function ShepherdService($translate, LocalStorageAdapter, LSKeys, $interpolate, 
         const currentStep = activeTour.getCurrentStep();
 
         if (currentStep.options.skipFromHistory) {
-            console.log('Current step: ', currentStep.options.skipFromHistory);
+            logger.log('Current step: ', currentStep.options.skipFromHistory);
             return;
         }
 
@@ -831,7 +833,7 @@ function ShepherdService($translate, LocalStorageAdapter, LSKeys, $interpolate, 
         if (stepDescription.elementSelector) {
             attachTo = {
                 element: stepDescription.elementSelector,
-                on: stepDescription.placement
+                on: stepDescription.placement,
             };
         }
 
@@ -846,7 +848,7 @@ function ShepherdService($translate, LocalStorageAdapter, LSKeys, $interpolate, 
             progress.setAttribute('tooltip-placement', 'bottom');
             progress.innerText = $translate.instant('guide.block.progress', {
                 n: stepDescription.stepN + 1,
-                nn: stepDescription.stepsTotalN
+                nn: stepDescription.stepsTotalN,
             });
             extraTitle = '&nbsp;&mdash;&nbsp;' + progress.outerHTML;
         }
@@ -891,8 +893,8 @@ function ShepherdService($translate, LocalStorageAdapter, LSKeys, $interpolate, 
             forceReload: stepDescription.forceReload,
             isLastStep: !!stepDescription.lastStep,
             when: {
-                show: this._getShowFunction(guide, stepDescription, onShow)
-            }
+                show: this._getShowFunction(guide, stepDescription, onShow),
+            },
         };
 
         if (this._isFunction(stepDescription.hide)) {
@@ -908,7 +910,7 @@ function ShepherdService($translate, LocalStorageAdapter, LSKeys, $interpolate, 
                 return stepDescription.beforeShowPromise(guide, stepDescription);
             };
         }
-    }
+    };
 
     this._getShowFunction = (guide, stepDescription, onShow) => {
         if (this._isFunction(stepDescription.show)) {
@@ -1002,7 +1004,7 @@ function ShepherdService($translate, LocalStorageAdapter, LSKeys, $interpolate, 
     this._getButton = (text, action, isSecondary) => {
         const button = {
             text: text,
-            classes: isSecondary ? 'btn btn-secondary' : 'btn btn-primary'
+            classes: isSecondary ? 'btn btn-secondary' : 'btn btn-primary',
         };
 
         button.action = ($event) => {
@@ -1021,7 +1023,7 @@ function ShepherdService($translate, LocalStorageAdapter, LSKeys, $interpolate, 
      */
     this._isFunction = (value) => {
         return typeof value === 'function';
-    }
+    };
 
     /**
      * Checks whether the given value is defined (not `undefined`).
@@ -1031,5 +1033,5 @@ function ShepherdService($translate, LocalStorageAdapter, LSKeys, $interpolate, 
      */
     this._isDefined = (value) => {
         return typeof value !== 'undefined';
-    }
+    };
 }

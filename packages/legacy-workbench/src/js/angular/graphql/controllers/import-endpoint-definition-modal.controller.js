@@ -1,18 +1,20 @@
 import '../../core/services/graphql.service';
 import {
-    EndpointDefinitionFile,
     EndpointDefinitionFileList,
-    ImportStatus
+    ImportStatus,
 } from "../../models/graphql/endpoint-definition-file";
 import {
-    fileToImportDefinitionsMapper, importEndpointDefinitionListMapper
+    fileToImportDefinitionsMapper, importEndpointDefinitionListMapper,
 } from "../services/file-to-import-definition.mapper";
 import {resolvePlaygroundUrlWithEndpoint} from "../services/endpoint-utils";
 import {GraphqlEndpointInfo} from "../../models/graphql/graphql-endpoints-info";
+import {LoggerProvider} from "../../core/services/logger-provider";
+
+const logger = LoggerProvider.logger;
 
 const modules = [
     'ngFileUpload',
-    'graphdb.framework.core.services.graphql-service'
+    'graphdb.framework.core.services.graphql-service',
 ];
 
 angular
@@ -81,15 +83,15 @@ function ImportEndpointDefinitionModalController($scope, $q, toastr, $uibModal, 
         let selectedFiles = $newFiles || [];
 
         // find out files with invalid extensions in the list
-        const invalidFiles = selectedFiles.filter(file => {
+        const invalidFiles = selectedFiles.filter((file) => {
             const extension = '.' + file.name.split('.').pop().toLowerCase();
             return !allowedFileTypes.includes(extension);
         });
         if (invalidFiles.length) {
-            console.error(`The following files have invalid extensions: ${invalidFiles.map(file => file.name).join(', ')}`);
+            logger.error(`The following files have invalid extensions: ${invalidFiles.map((file) => file.name).join(', ')}`);
         }
         // filter out invalid files
-        selectedFiles = selectedFiles.filter(file => {
+        selectedFiles = selectedFiles.filter((file) => {
             const extension = '.' + file.name.split('.').pop().toLowerCase();
             return allowedFileTypes.includes(extension);
         });
@@ -101,8 +103,8 @@ function ImportEndpointDefinitionModalController($scope, $q, toastr, $uibModal, 
         $scope.progress = undefined;
         // Filter out duplicates by comparing file names
         const existingFileNames = new Set($scope.definitionFiles.getFileNames());
-        const filesToAdd = selectedFiles.filter(file => !existingFileNames.has(file.name));
-        $scope.definitionFiles.appendFiles(fileToImportDefinitionsMapper(filesToAdd, ImportStatus.PENDING).list)
+        const filesToAdd = selectedFiles.filter((file) => !existingFileNames.has(file.name));
+        $scope.definitionFiles.appendFiles(fileToImportDefinitionsMapper(filesToAdd, ImportStatus.PENDING).list);
     };
 
     /**
@@ -150,7 +152,7 @@ function ImportEndpointDefinitionModalController($scope, $q, toastr, $uibModal, 
     $scope.onExploreEndpoint = (endpointId) => {
         const url = resolvePlaygroundUrlWithEndpoint(endpointId);
         GraphqlContextService.setSelectedEndpoint(new GraphqlEndpointInfo({
-            endpointId
+            endpointId,
         }));
         window.open(url, '_blank', 'noopener,noreferrer');
     };
@@ -173,10 +175,10 @@ function ImportEndpointDefinitionModalController($scope, $q, toastr, $uibModal, 
             resolve: {
                 data: () => {
                     return {
-                        endpointReport: endpointGenerationReport
+                        endpointReport: endpointGenerationReport,
                     };
-                }
-            }
+                },
+            },
         }).result;
     };
 
@@ -184,7 +186,7 @@ function ImportEndpointDefinitionModalController($scope, $q, toastr, $uibModal, 
      * Closes the modal.
      */
     $scope.close = () => {
-        $uibModalInstance.dismiss('cancel')
+        $uibModalInstance.dismiss('cancel');
     };
 
     // =========================
@@ -196,15 +198,15 @@ function ImportEndpointDefinitionModalController($scope, $q, toastr, $uibModal, 
      * @returns {FormData} The payload object.
      */
     const buildUploadPayloadObject = () => {
-        let payload = new FormData();
+        const payload = new FormData();
         $scope.definitionFiles.processWith((definition) => {
             payload.append('importFiles', definition.file, definition.file.name);
         });
         return payload;
-    }
+    };
 
     const init = () => {
-    }
+    };
 
     // =========================
     // Initialization

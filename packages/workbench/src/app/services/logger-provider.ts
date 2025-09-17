@@ -5,7 +5,7 @@ const MODULE_NAME = 'Workbench';
 /**
  * Logger for the Workbench module.
  */
-export class LoggingService {
+export class LoggerProvider {
 
   /**
    * Gets the logger instance for the Workbench module.
