@@ -1,5 +1,5 @@
 import {AuthenticationService} from '../authentication.service';
-import {AuthorityList, SecurityConfig} from '../../../models/security';
+import {SecurityConfig} from '../../../models/security';
 import {ServiceProvider} from '../../../providers';
 import {AuthenticationStorageService} from '../authentication-storage.service';
 import {SecurityContextService} from '../security-context.service';
