@@ -4,14 +4,14 @@ import {ServiceProvider} from '../../providers';
 import {EventService} from '../event-service';
 import {Logout} from '../../models/events';
 import {SecurityContextService} from './security-context.service';
-import {SecurityService} from './security.service';
-import {AuthenticationStorageService} from './authentication-storage.service';
+import {AuthStrategy} from '../../models/security/authentication/auth-strategy';
+import {GdbTokenAuthProvider} from '../../models/security/authentication/gdb-token-auth-provider';
 
 /**
  * Service responsible for handling authentication-related operations.
  */
 export class AuthenticationService implements Service {
-  private readonly securityService = ServiceProvider.get(SecurityService);
+  private readonly authStrategy: AuthStrategy = new GdbTokenAuthProvider();
 
   /**
    * Authenticates the user with username and password.
@@ -24,13 +24,14 @@ export class AuthenticationService implements Service {
    * @returns A Promise that resolves to the authenticated `AuthenticatedUser` model.
    */
   login(username: string, password: string): Promise<AuthenticatedUser> {
-    return this.securityService.login(username, password);
+    return this.authStrategy.login({username, password});
   }
 
   /**
    * Updates security context for logout request.
    */
   logout(): void {
+    this.authStrategy.logout();
     ServiceProvider.get(EventService).emit(new Logout());
   }
 
@@ -49,12 +50,7 @@ export class AuthenticationService implements Service {
    * auth token in the store
    */
   isAuthenticated() {
-    const config = this.getSecurityConfig();
-    const user = this.getAuthenticatedUser();
-    return !config?.enabled
-      || user?.external
-      // eslint-disable-next-line eqeqeq
-      || ServiceProvider.get(AuthenticationStorageService).getAuthToken().getValue() != null;
+    return this.authStrategy.isAuthenticated();
   }
 
   /**

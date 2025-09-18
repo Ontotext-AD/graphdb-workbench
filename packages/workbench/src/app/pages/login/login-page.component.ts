@@ -2,7 +2,7 @@ import {Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {TranslocoPipe, TranslocoService} from '@jsverse/transloco';
-import {AuthenticationService, OntoToastrService, SecurityService, ServiceProvider, UrlPathParams} from '@ontotext/workbench-api';
+import {AuthenticationService, OntoToastrService, SecurityService, service, UrlPathParams} from '@ontotext/workbench-api';
 import {CommonModule} from '@angular/common';
 
 @Component({
@@ -18,9 +18,9 @@ import {CommonModule} from '@angular/common';
   styleUrl: './login-page.component.scss'
 })
 export class LoginPageComponent implements OnInit {
-  private readonly toastrService = ServiceProvider.get(OntoToastrService);
-  private readonly securityService = ServiceProvider.get(SecurityService);
-  private readonly authenticationService = ServiceProvider.get(AuthenticationService);
+  private readonly toastrService = service(OntoToastrService);
+  private readonly securityService = service(SecurityService);
+  private readonly authenticationService = service(AuthenticationService);
 
   private readonly fb = inject(FormBuilder);
   private readonly route = inject(ActivatedRoute);

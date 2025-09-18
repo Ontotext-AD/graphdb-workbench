@@ -7,7 +7,7 @@ export class LoginSteps {
 
     static visitInProdMode() {
         cy.visit('/login', {
-            onBeforeLoad: (win) => {
+            onBeforeLoad: () => {
                 EnvironmentStubs.stubWbProdMode();
             }
         });
@@ -16,6 +16,10 @@ export class LoginSteps {
     static visitLoginPageWithReturnUrl(returnURL) {
         const returnURLEncoded = encodeURIComponent(returnURL);
         cy.visit(`/login?r=${returnURLEncoded}`);
+    }
+
+    static navigateToLoginPage() {
+        cy.get('onto-user-login').click();
     }
 
     static loginWithUser(username, password) {

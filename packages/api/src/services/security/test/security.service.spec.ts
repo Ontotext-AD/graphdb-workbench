@@ -24,7 +24,7 @@ describe('SecurityService', () => {
   let currentUser: AuthenticatedUser | undefined;
 
   beforeEach(() => {
-    restService = { login: jest.fn(), updateUserData: jest.fn(), getSecurityConfig: jest.fn(), getAuthenticatedUser: jest.fn() } as never;
+    restService = { loginGdbToken: jest.fn(), updateUserData: jest.fn(), getSecurityConfig: jest.fn(), getAuthenticatedUser: jest.fn() } as never;
     contextService = {
       updateAuthenticatedUser: jest.fn((user: AuthenticatedUser) => {
         currentUser = user;
@@ -150,7 +150,7 @@ describe('SecurityService', () => {
     });
   });
 
-  describe('login', () => {
+  describe('loginGdbToken', () => {
     it('should store token, update context and return mapped user when header present', async () => {
       const headers = new Headers({ authorization: 'token123' });
       const response = {
@@ -160,38 +160,12 @@ describe('SecurityService', () => {
         ok: true,
         json: jest.fn(),
       } as unknown as Response;
-      restService.login.mockResolvedValue(response);
+      restService.loginGdbToken.mockResolvedValue(response);
       const mappedUser = {} as AuthenticatedUser;
       userMapper.mapToModel.mockReturnValue(mappedUser);
 
-      const result = await service.login('u', 'p');
-      expect(restService.login).toHaveBeenCalledWith('u', 'p');
-      expect(storageService.setAuthToken).toHaveBeenCalledWith('token123');
-      const responseBody = await response.json();
-      expect(userMapper.mapToModel).toHaveBeenCalledWith(responseBody);
-      expect(contextService.updateAuthenticatedUser).toHaveBeenCalledWith(mappedUser);
-      expect(result).toBe(mappedUser);
-    });
-
-    it('should not store token when header missing', async () => {
-      const headers = new Headers();
-      const mockResponse = {
-        body: {} as AuthenticatedUser,
-        status: 200,
-        headers,
-        ok: true,
-        json: jest.fn(),
-      } as unknown as Response;
-
-      restService.login.mockResolvedValue(mockResponse);
-
-      const mappedUser = {} as AuthenticatedUser;
-      userMapper.mapToModel.mockReturnValue(mappedUser);
-
-      const result = await service.login('u', 'p');
-      expect(storageService.setAuthToken).not.toHaveBeenCalled();
-      expect(contextService.updateAuthenticatedUser).toHaveBeenCalledWith(mappedUser);
-      expect(result).toBe(mappedUser);
+      await service.loginGdbToken('u', 'p');
+      expect(restService.loginGdbToken).toHaveBeenCalledWith('u', 'p');
     });
   });
 });

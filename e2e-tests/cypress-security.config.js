@@ -1,8 +1,15 @@
-const {defineConfig} = require('cypress');
+import { defineConfig } from 'cypress';
+import setupPlugins from './plugins/index.js';
 
 const isCoverage = process.env.COVERAGE === 'true';
 
-module.exports = defineConfig({
+const loadCodeCoverage = async (on, config) => {
+    const mod = await import('@bahmutov/cypress-code-coverage/plugin');
+    const plugin = ('default' in mod) ? mod.default : mod;
+    plugin(on, config);
+};
+
+export default defineConfig({
     projectId: 'v35btb',
     fixturesFolder: 'fixtures',
     screenshotsFolder: 'report/screenshots',
@@ -19,10 +26,10 @@ module.exports = defineConfig({
         },
         // We've imported your old cypress plugins here.
         // You may want to clean this up later by importing these.
-        setupNodeEvents(on, config) {
-            require('./plugins')(on, config);
+        async setupNodeEvents(on, config) {
+            setupPlugins(on, config);
             if (isCoverage) {
-                require('@bahmutov/cypress-code-coverage/plugin')(on, config)
+                await loadCodeCoverage(on, config);
             }
             return config;
         },

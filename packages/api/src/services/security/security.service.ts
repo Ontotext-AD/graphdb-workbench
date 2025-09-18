@@ -81,19 +81,7 @@ export class SecurityService implements Service {
    * @param password - The password of the user.
    * @returns A Promise that resolves to the authenticated `AuthenticatedUser` model.
    */
-  login(username: string, password: string): Promise<AuthenticatedUser> {
-    return this.securityRestService.login(username, password)
-      .then((response) => {
-        const authHeader = response.headers.get('authorization');
-        if (authHeader) {
-          this.authStorageService.setAuthToken(authHeader);
-        }
-        return response.json();
-      })
-      .then((responseData) => {
-        const authUser = MapperProvider.get(AuthenticatedUserMapper).mapToModel(responseData);
-        this.securityContextService.updateAuthenticatedUser(authUser);
-        return authUser;
-      });
+  loginGdbToken(username: string, password: string): Promise<Response> {
+    return this.securityRestService.loginGdbToken(username, password);
   }
 }
