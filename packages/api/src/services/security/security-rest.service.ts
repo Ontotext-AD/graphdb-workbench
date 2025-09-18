@@ -17,7 +17,7 @@ export class SecurityRestService extends HttpService {
    * @param password - The user's password.
    * @returns A Promise resolving to an HttpResponse containing the AuthenticatedUser data on success.
    */
-  login(username: string, password: string): Promise<Response> {
+  loginGdbToken(username: string, password: string): Promise<Response> {
     return this.postFull(this.LOGIN_ENDPOINT, {username, password});
   }
 
