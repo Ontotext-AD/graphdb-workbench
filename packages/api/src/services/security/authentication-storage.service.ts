@@ -32,4 +32,8 @@ export class AuthenticationStorageService extends LocalStorageService {
   setAuthToken(value: string): void {
     this.set(this.jwtKey, value);
   }
+
+  clearAuthToken(): void {
+    this.remove(this.jwtKey);
+  }
 }
