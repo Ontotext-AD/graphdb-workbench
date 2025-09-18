@@ -1,11 +1,10 @@
-import {RepositoriesStubs} from "../../../stubs/repositories/repositories-stubs";
-import {UserAndAccessSteps} from "../../../steps/setup/user-and-access-steps";
-import {LoginSteps} from "../../../steps/login-steps";
-import {ModalDialogSteps} from "../../../steps/modal-dialog-steps";
-import ImportSteps from "../../../steps/import/import-steps";
-import {MainMenuSteps} from "../../../steps/main-menu-steps";
-import {RepositorySelectorSteps} from "../../../steps/repository-selector-steps";
-import {ErrorSteps} from "../../../steps/error-steps";
+import {RepositoriesStubs} from '../../../stubs/repositories/repositories-stubs';
+import {UserAndAccessSteps} from '../../../steps/setup/user-and-access-steps';
+import {LoginSteps} from '../../../steps/login-steps';
+import {ModalDialogSteps} from '../../../steps/modal-dialog-steps';
+import {MainMenuSteps} from '../../../steps/main-menu-steps';
+import {RepositorySelectorSteps} from '../../../steps/repository-selector-steps';
+import {ErrorSteps} from '../../../steps/error-steps';
 
 describe('User and Access', () => {
 
@@ -79,6 +78,7 @@ describe('User and Access', () => {
         RepositorySelectorSteps.getRepositorySelectorButton(repositoryId2).should('exist');
 
         // When: I log in again with a user who has access to all repositories
+        LoginSteps.navigateToLoginPage();
         LoginSteps.loginWithUser('admin', 'root');
         // Then: I should see both repositories in the repository selector, because the user has access to all repositories
         RepositorySelectorSteps.getRepositorySelectorButton(repositoryId1).should('exist');
