@@ -1,4 +1,8 @@
 import {ContextSubscriptionManager, HTTP_REQUEST_DONE_EVENT, ServiceProvider} from "@ontotext/workbench-api";
+import {LoggerProvider} from "./js/angular/core/services/logger-provider";
+
+const logger = LoggerProvider.logger;
+let angularJsElement;
 
 const defaultOpts = {
     // required opts
@@ -13,7 +17,7 @@ const defaultOpts = {
     elementId: "__single_spa_angular_1",
     strictDi: false,
     template: undefined,
-    subscriptions: []
+    subscriptions: [],
 };
 
 export default function singleSpaAngularJS(userOpts) {
@@ -32,7 +36,7 @@ export default function singleSpaAngularJS(userOpts) {
 
     if (!opts.mainAngularModule) {
         throw new Error(
-            `single-spa-angularjs must be passed opts.mainAngularModule string`
+            `single-spa-angularjs must be passed opts.mainAngularModule string`,
         );
     }
 
@@ -53,6 +57,7 @@ function bootstrap(opts, mountedInstances, singleSpaProps) {
             module = opts.angular.module("single-spa-angularjs");
         } catch (err) {
             // ignore - this means that the module doesn't exist
+            logger.warn(err);
         }
         if (module) {
             module.config([
@@ -67,10 +72,16 @@ function bootstrap(opts, mountedInstances, singleSpaProps) {
 
 function mount(opts, mountedInstances, props = {}) {
     return Promise.resolve().then(() => {
-        window.angular = opts.angular;
-
         const domElementGetter = chooseDomElementGetter(opts, props);
         const domElement = getRootDomEl(domElementGetter, props);
+
+        if (angularJsElement) {
+            domElement.appendChild(angularJsElement);
+            return;
+        }
+
+        window.angular = opts.angular;
+
         const bootstrapEl = document.createElement("div");
         bootstrapEl.id = opts.elementId;
 
@@ -80,15 +91,15 @@ function mount(opts, mountedInstances, props = {}) {
             const uiViewEl = document.createElement("div");
             uiViewEl.setAttribute(
                 "ui-view",
-                opts.uiRouter === true ? "" : opts.uiRouter
+                opts.uiRouter === true ? "" : opts.uiRouter,
             );
             bootstrapEl.appendChild(uiViewEl);
         }
 
-        if (opts.ngRoute){
+        if (opts.ngRoute) {
             const ngViewEl = document.createElement("div");
             ngViewEl.setAttribute(
-                "ng-view",""
+                "ng-view", "",
             );
             bootstrapEl.appendChild(ngViewEl);
         }
@@ -101,7 +112,7 @@ function mount(opts, mountedInstances, props = {}) {
             mountedInstances.instance = opts.angular.bootstrap(
                 bootstrapEl,
                 [opts.mainAngularModule],
-                { strictDi: opts.strictDi }
+                {strictDi: opts.strictDi},
             );
         } else {
             props.initApplication()
@@ -112,9 +123,6 @@ function mount(opts, mountedInstances, props = {}) {
                     // https://github.com/single-spa/single-spa-angularjs/issues/51
                     mountedInstances.instance.get("$rootScope").$apply();
                 });
-            // mountedInstances.instance = opts.angular.bootstrap(bootstrapEl, [
-            //     opts.mainAngularModule,
-            // ]);
         }
 
         const triggerDigest = () => {
@@ -126,88 +134,39 @@ function mount(opts, mountedInstances, props = {}) {
                     $rootScope.$apply();
                 });
             }
-        }
+        };
 
         const subscribeToHttpRequests = () => {
-            document.body.addEventListener(HTTP_REQUEST_DONE_EVENT, triggerDigest)
+            document.body.addEventListener(HTTP_REQUEST_DONE_EVENT, triggerDigest);
             return () => document.body.removeEventListener(HTTP_REQUEST_DONE_EVENT, triggerDigest);
-        }
+        };
 
         const unsubscribeToAllContexts = ServiceProvider.get(ContextSubscriptionManager)
-            .subscribeToAllRegisteredContexts(() => {}, undefined, triggerDigest)
-        opts.subscriptions.push(unsubscribeToAllContexts)
-        opts.subscriptions.push(subscribeToHttpRequests())
-
-        // mountedInstances.instance.get("$rootScope").singleSpaProps = props;
-        //
-        // // https://github.com/single-spa/single-spa-angularjs/issues/51
-        // mountedInstances.instance.get("$rootScope").$apply();
+            .subscribeToAllRegisteredContexts(() => {}, undefined, triggerDigest);
+        opts.subscriptions.push(unsubscribeToAllContexts);
+        opts.subscriptions.push(subscribeToHttpRequests());
     });
 }
 
 function unmount(opts, mountedInstances, props = {}) {
-    return new Promise((resolve, reject) => {
-        if (mountedInstances.instance.has("$uiRouter")) {
-            // https://github.com/single-spa/single-spa-angularjs/issues/53
-            const uiRouter = mountedInstances.instance.get("$uiRouter");
-            if (uiRouter.dispose) {
-                uiRouter.dispose();
-            } else {
-                console.warn(
-                    "single-spa-angularjs: the uiRouter instance doesn't have a dispose method and so it will not be properly unmounted."
-                );
-            }
-        }
-
-        // mountedInstances.instance.get("$rootScope").$destroy();
+    return new Promise((resolve) => {
         const domElementGetter = chooseDomElementGetter(opts, props);
         const domElement = getRootDomEl(domElementGetter, props);
 
-        // const translateModule = opts.angular.module('pascalprecht.translate');
-        // console.log(`%copts.angular:`, 'background: red', translateModule);
-        // translateModule.filter('translate', function() {
-        //     console.log(`%cremove filter:`, 'background: plum', );
-        //     return function(input) {
-        //         return input; // No-op: Just return the input unchanged
-        //     };
-        // });
-
-        if (mountedInstances.instance) {
-            const rootScope = mountedInstances.instance.get("$rootScope");
-            if (rootScope) {
-                rootScope.$broadcast("$destroy");
-            }
-        }
-        // mountedInstances.instance.get("$rootScope").$destroy();
-
-        // Remove the AngularJS module from the registry
-        if (opts.mainAngularModule) {
-            window.angular.module(opts.mainAngularModule)._invokeQueue.length = 0;
-            window.angular.module(opts.mainAngularModule)._configBlocks.length = 0;
-            window.angular.module(opts.mainAngularModule)._runBlocks.length = 0;
-            delete window.angular.module(opts.mainAngularModule);
+        if (!angularJsElement) {
+            angularJsElement = domElement.firstChild;
         }
 
-        const appEl = document.getElementById('workbench-app')
-        angular.element(appEl).off();
-        angular.element(appEl).remove();
-
-        domElement.innerHTML = "";
-
-        if (opts.angular === window.angular && !opts.preserveGlobal) {
-            // TODO: Don't remove angular for now because it causes errors in angular-translate module when legacy-workbench is unmounted
-            // because it expects angular to be available.
-            // TODO: Find a way to destroy the angular-translate module properly.
-            // delete window.angular;
+        if (angularJsElement) {
+            angularJsElement.remove();
         }
 
-        // unsubscribe
         if (opts.subscriptions?.length) {
             opts.subscriptions.forEach((unsubscribe) => unsubscribe());
             opts.subscriptions = [];
         }
 
-        setTimeout(resolve);
+        resolve();
     });
 }
 
@@ -227,7 +186,7 @@ function defaultDomElementGetter(props) {
     const appName = props.appName || props.name;
     if (!appName) {
         throw Error(
-            `single-spa-angularjs was not given an application name as a prop, so it can't make a unique dom element container for the angularjs application`
+            `single-spa-angularjs was not given an application name as a prop, so it can't make a unique dom element container for the angularjs application`,
         );
     }
     const htmlId = `single-spa-application:${appName}`;
@@ -249,7 +208,7 @@ function getRootDomEl(domElementGetter, props) {
         throw new Error(
             `single-spa-angularjs: the domElementGetter for angularjs application '${
                 props.appName || props.name
-            }' is not a function`
+            }' is not a function`,
         );
     }
 
@@ -259,7 +218,7 @@ function getRootDomEl(domElementGetter, props) {
         throw new Error(
             `single-spa-angularjs: domElementGetter function for application '${
                 props.appName || props.name
-            }' did not return a valid dom element. Please pass a valid domElement or domElementGetter via opts or props`
+            }' did not return a valid dom element. Please pass a valid domElement or domElementGetter via opts or props`,
         );
     }
 
