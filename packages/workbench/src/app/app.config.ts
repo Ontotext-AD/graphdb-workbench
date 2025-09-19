@@ -1,5 +1,6 @@
 import {ApplicationConfig, provideZoneChangeDetection} from '@angular/core';
 import {provideRouter} from '@angular/router';
+import {getBasePath} from '@ontotext/workbench-api';
 
 import {routes} from './app.routes';
 import {bootstrapProviders} from './bootstrap/bootstrap';
@@ -12,6 +13,6 @@ export const appConfig: ApplicationConfig = {
     ...bootstrapProviders,
     provideZoneChangeDetection({eventCoalescing: true}),
     provideRouter(routes),
-    {provide: APP_BASE_HREF, useValue: '/'}
+    {provide: APP_BASE_HREF, useValue: getBasePath()}
   ]
 };
