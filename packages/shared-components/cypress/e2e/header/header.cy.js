@@ -60,6 +60,7 @@ describe('Header', () => {
     it('Should be shown, when there are active operations', () => {
       // Given, I visit the header page
       HeaderSteps.visit();
+      HeaderSteps.disableSecurity();
 
       // Then, I expect to not see the operations notification component
       // since, I have not selected any repository

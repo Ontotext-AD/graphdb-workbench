@@ -32,4 +32,8 @@ export class OperationsNotificationSteps extends BaseSteps {
   static getRepositoryItems() {
     return cy.get('.onto-repository-selector .repository-selector-dropdown-item');
   }
+
+  static disableSecurity() {
+    return cy.get('#disable-security').click();
+  }
 }

@@ -33,4 +33,8 @@ export class RepositorySelectorSteps extends BaseSteps {
   static selectRepositorySelectorItem(index) {
     RepositorySelectorSteps.getRepositorySelectorItem(index).click();
   }
+
+  static disableSecurity() {
+    cy.get('#disable-security').click();
+  }
 }

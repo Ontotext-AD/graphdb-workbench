@@ -1,12 +1,12 @@
-import {ServiceProvider, SecurityContextService, SecurityService, getCurrentRoute} from '@ontotext/workbench-api';
+import {AuthenticationService, SecurityContextService, SecurityService, service} from '@ontotext/workbench-api';
 import {LoggerProvider} from '../../services/logger-provider';
 
 const logger = LoggerProvider.logger;
 
 export const loadSecurityConfig = () => {
-  return ServiceProvider.get(SecurityService).getSecurityConfig()
+  return service(SecurityService).getSecurityConfig()
     .then((securityConfig) => {
-      ServiceProvider.get(SecurityContextService).updateSecurityConfig(securityConfig);
+      service(SecurityContextService).updateSecurityConfig(securityConfig);
     })
     .catch((error) => {
       logger.error('Could not load security config', error);
@@ -15,15 +15,12 @@ export const loadSecurityConfig = () => {
 };
 
 const subscribeToSecurityConfigChange = () => {
-  const securityContextService = ServiceProvider.get(SecurityContextService);
-  const securityService = ServiceProvider.get(SecurityService);
+  const securityContextService = service(SecurityContextService);
+  const authenticationService = service(AuthenticationService);
+
   securityContextService.onSecurityConfigChanged((securityConfig) => {
-    // upon login, the user comes from the /login request. No need to query it again.
-    if (securityConfig?.enabled && getCurrentRoute() !== 'login') {
-      securityService.getAuthenticatedUser()
-        .then((authenticatedUser) => {
-          securityContextService.updateAuthenticatedUser(authenticatedUser);
-        }).catch((error) => logger.error('Could not load authenticated user', error));
+    if (securityConfig) {
+      authenticationService.setAuthenticationStrategy(securityConfig);
     }
   });
 };

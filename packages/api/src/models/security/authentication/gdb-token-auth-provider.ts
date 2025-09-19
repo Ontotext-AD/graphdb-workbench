@@ -2,8 +2,9 @@ import {AuthenticatedUser} from '../authenticated-user';
 import {AuthStrategy} from './auth-strategy';
 import {AuthStrategyType} from './auth-strategy-type';
 import {MapperProvider, service} from '../../../providers';
-import {AuthenticatedUserMapper, AuthenticationStorageService, SecurityContextService, SecurityService} from '../../../services/security';
+import {AuthenticatedUserMapper, AuthenticationService, AuthenticationStorageService, SecurityContextService, SecurityService} from '../../../services/security';
 import {LoggerProvider} from '../../../services/logging/logger-provider';
+import {getCurrentRoute} from '../../../services/utils';
 
 type LoginData = {
   username: string;
@@ -14,12 +15,24 @@ export class GdbTokenAuthProvider implements AuthStrategy {
   private readonly logger = LoggerProvider.logger;
   private readonly securityService = service(SecurityService);
   private readonly authStorageService = service(AuthenticationStorageService);
+  private readonly authenticationService = service(AuthenticationService);
   private readonly securityContextService = service(SecurityContextService);
 
   type = AuthStrategyType.GDB_TOKEN;
 
   initialize(): Promise<unknown> {
-    return Promise.resolve();
+    if (this.isCurrentRouteLogin()) {
+      return Promise.resolve();
+    }
+    return this.securityService.getAuthenticatedUser()
+      .then((authenticatedUser) => {
+        if (authenticatedUser) {
+          this.securityContextService.updateAuthenticatedUser(authenticatedUser);
+        }
+      })
+      .catch((error) => {
+        this.logger.error('Could not load authenticated user', error);
+      });
   }
 
   async login(loginData: LoginData): Promise<AuthenticatedUser> {
@@ -42,6 +55,20 @@ export class GdbTokenAuthProvider implements AuthStrategy {
     return authUser;
   }
 
+  logout(): Promise<void> {
+    this.authStorageService.clearAuthToken();
+    return Promise.resolve();
+  }
+
+  isAuthenticated(): boolean {
+    const token = this.authStorageService.getAuthToken().getValue();
+    return !this.authenticationService.isSecurityEnabled() || token !== null;
+  }
+
+  private isCurrentRouteLogin(): boolean {
+    return getCurrentRoute() === 'login';
+  }
+
   private getAuthenticationHeader(response: Response): string | null {
     return response.headers.get('authorization');
   }
@@ -49,16 +76,5 @@ export class GdbTokenAuthProvider implements AuthStrategy {
   private async getUserFromResponse(response: Response): Promise<AuthenticatedUser> {
     const responseData = await response.json();
     return MapperProvider.get(AuthenticatedUserMapper).mapToModel(responseData);
-  }
-
-  logout(): Promise<void> {
-    this.authStorageService.clearAuthToken();
-    return Promise.resolve();
-  }
-
-  isAuthenticated(): boolean {
-    const securityConfig = this.securityContextService.getSecurityConfig();
-    const token = this.authStorageService.getAuthToken().getValue();
-    return !securityConfig?.enabled || token !== null;
   }
 }

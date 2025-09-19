@@ -78,6 +78,7 @@ export class OntoHeader {
   /** The model of the currently selected repository, if any. */
   @State() currentRepository: Repository | undefined;
   @State() securityConfig: SecurityConfig;
+  @State() isSecurityEnabled: boolean;
 
   // ========================
   // Private
@@ -136,8 +137,8 @@ export class OntoHeader {
             totalTripletsFormatter={this.totalTripletsFormatter}
             canWriteRepo={this.canWriteRepo}>
           </onto-repository-selector>
-          {this.securityConfig?.enabled && this.securityConfig?.userLoggedIn ? <onto-user-menu user={this.user} securityConfig={this.securityConfig}></onto-user-menu> : ''}
-          {this.securityConfig?.enabled && !this.securityConfig?.userLoggedIn && (this.currentRoute !== 'login') ? <onto-user-login></onto-user-login> : ''}
+          {this.isSecurityEnabled && this.authService.isAuthenticated() ? <onto-user-menu user={this.user} securityConfig={this.securityConfig}></onto-user-menu> : ''}
+          {this.isSecurityEnabled && !this.authService.isAuthenticated() && (this.currentRoute !== 'login') ? <onto-user-login></onto-user-login> : ''}
           <onto-language-selector dropdown-alignment="right"></onto-language-selector>
         </div>
       </Host>
@@ -194,6 +195,7 @@ export class OntoHeader {
     }));
     this.subscriptions.add(this.securityContextService.onSecurityConfigChanged((config) => {
       this.securityConfig = config;
+      this.isSecurityEnabled = config?.enabled;
     }));
   }
 
