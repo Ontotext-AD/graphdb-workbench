@@ -1,5 +1,5 @@
 import {ResponseMock} from '../../http/test/response-mock';
-import {AuthenticationStorageService, SecurityContextService, SecurityService} from '../../security';
+import {AuthenticationService, AuthenticationStorageService, SecurityContextService, SecurityService} from '../../security';
 import {ServiceProvider} from '../../../providers';
 import {ConfigurationContextService} from '../../configuration/configuration-context.service';
 import {Service} from '../../../providers/service/service';
@@ -63,17 +63,22 @@ export class TestUtil {
     } as never;
     const mockSecurityContextService = {
       updateAuthenticatedUser: jest.fn(),
-      getSecurityConfig: jest.fn()
+      getSecurityConfig: jest.fn(),
+      getAuthenticatedUser: jest.fn()
     } as never;
     const mockConfigurationContextService = {
       getApplicationConfiguration: jest.fn()
+    } as never;
+    const mockAuthenticationService = {
+      isSecurityEnabled: jest.fn()
     } as never;
 
     const mockedServices = {
       [SecurityService.name]: mockSecurityService,
       [AuthenticationStorageService.name]: mockAuthStorageService,
       [SecurityContextService.name]: mockSecurityContextService,
-      [ConfigurationContextService.name]: mockConfigurationContextService
+      [ConfigurationContextService.name]: mockConfigurationContextService,
+      [AuthenticationService.name]: mockAuthenticationService
     };
 
     jest.spyOn(ServiceProvider, 'get').mockImplementation((svc: new () => Service): Service => {

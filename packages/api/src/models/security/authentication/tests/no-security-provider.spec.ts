@@ -9,6 +9,18 @@ describe('NoSecurityProvider', () => {
   let mockAuthStorageService: jest.Mocked<AuthenticationStorageService>;
   let mockSecurityContextService: jest.Mocked<SecurityContextService>;
 
+  const mockAdminUser = new AuthenticatedUser({
+    username: 'testuser',
+    appSettings: {
+      COOKIE_CONSENT: {
+        policyAccepted: false,
+        statistics: true,
+        thirdParty: false,
+        updatedAt: 1738753714185
+      }
+    }
+  });
+
   beforeEach(() => {
     jest.clearAllMocks();
 
@@ -21,44 +33,34 @@ describe('NoSecurityProvider', () => {
   });
 
   describe('initialize', () => {
-    it('should resolve immediately', async () => {
-      await expect(provider.initialize()).resolves.toBeUndefined();
-      expect(mockSecurityService.getAdminUser).not.toHaveBeenCalled();
+    it('should fetch the admin user and update the context', async () => {
+      mockSecurityService.getAdminUser.mockResolvedValue(mockAdminUser);
+      await provider.initialize();
+      expect(mockSecurityService.getAdminUser).toHaveBeenCalled();
+      expect(mockSecurityContextService.updateAuthenticatedUser).toHaveBeenCalledWith(mockAdminUser);
     });
   });
 
   describe('login', () => {
-    const mockAuthenticatedUser = new AuthenticatedUser({
-      username: 'testuser',
-      appSettings: {
-        COOKIE_CONSENT: {
-          policyAccepted: false,
-          statistics: true,
-          thirdParty: false,
-          updatedAt: 1738753714185
-        }
-      }
-    });
-
     it('should clear token', async () => {
-      mockSecurityService.getAdminUser.mockResolvedValue(mockAuthenticatedUser);
+      mockSecurityService.getAdminUser.mockResolvedValue(mockAdminUser);
       await provider.login();
       expect(mockAuthStorageService.clearAuthToken).toHaveBeenCalled();
     });
 
     it('should fetch and return admin user', async () => {
-      mockSecurityService.getAdminUser.mockResolvedValue(mockAuthenticatedUser);
-      await expect(provider.login()).resolves.toBe(mockAuthenticatedUser);
+      mockSecurityService.getAdminUser.mockResolvedValue(mockAdminUser);
+      await expect(provider.login()).resolves.toBe(mockAdminUser);
 
       expect(mockSecurityService.getAdminUser).toHaveBeenCalled();
       expect(mockAuthStorageService.clearAuthToken).toHaveBeenCalled();
     });
 
     it('should update security context with user', async () => {
-      mockSecurityService.getAdminUser.mockResolvedValue(mockAuthenticatedUser);
-      await expect(provider.login()).resolves.toBe(mockAuthenticatedUser);
+      mockSecurityService.getAdminUser.mockResolvedValue(mockAdminUser);
+      await expect(provider.login()).resolves.toBe(mockAdminUser);
       expect(mockSecurityService.getAdminUser).toHaveBeenCalled();
-      expect(mockSecurityContextService.updateAuthenticatedUser).toHaveBeenCalledWith(mockAuthenticatedUser);
+      expect(mockSecurityContextService.updateAuthenticatedUser).toHaveBeenCalledWith(mockAdminUser);
       expect(mockAuthStorageService.clearAuthToken).toHaveBeenCalled();
     });
   });
@@ -70,8 +72,14 @@ describe('NoSecurityProvider', () => {
   });
 
   describe('isAuthenticated', () => {
-    it('should return true', () => {
+    it('should return true if there is an authenticated user', () => {
+      mockSecurityContextService.getAuthenticatedUser.mockReturnValue(mockAdminUser);
       expect(provider.isAuthenticated()).toBe(true);
+    });
+
+    it('should return false if there is no authenticated user', () => {
+      mockSecurityContextService.getAuthenticatedUser.mockReturnValue(undefined);
+      expect(provider.isAuthenticated()).toBe(false);
     });
   });
 });

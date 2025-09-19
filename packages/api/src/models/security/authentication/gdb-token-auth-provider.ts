@@ -2,7 +2,7 @@ import {AuthenticatedUser} from '../authenticated-user';
 import {AuthStrategy} from './auth-strategy';
 import {AuthStrategyType} from './auth-strategy-type';
 import {MapperProvider, service} from '../../../providers';
-import {AuthenticatedUserMapper, AuthenticationStorageService, SecurityContextService, SecurityService} from '../../../services/security';
+import {AuthenticatedUserMapper, AuthenticationService, AuthenticationStorageService, SecurityContextService, SecurityService} from '../../../services/security';
 import {LoggerProvider} from '../../../services/logging/logger-provider';
 import {getCurrentRoute} from '../../../services/utils';
 
@@ -15,6 +15,7 @@ export class GdbTokenAuthProvider implements AuthStrategy {
   private readonly logger = LoggerProvider.logger;
   private readonly securityService = service(SecurityService);
   private readonly authStorageService = service(AuthenticationStorageService);
+  private readonly authenticationService = service(AuthenticationService);
   private readonly securityContextService = service(SecurityContextService);
 
   type = AuthStrategyType.GDB_TOKEN;
@@ -25,7 +26,9 @@ export class GdbTokenAuthProvider implements AuthStrategy {
     }
     return this.securityService.getAuthenticatedUser()
       .then((authenticatedUser) => {
-        this.securityContextService.updateAuthenticatedUser(authenticatedUser);
+        if (authenticatedUser) {
+          this.securityContextService.updateAuthenticatedUser(authenticatedUser);
+        }
       })
       .catch((error) => {
         this.logger.error('Could not load authenticated user', error);
@@ -58,9 +61,8 @@ export class GdbTokenAuthProvider implements AuthStrategy {
   }
 
   isAuthenticated(): boolean {
-    const securityConfig = this.securityContextService.getSecurityConfig();
     const token = this.authStorageService.getAuthToken().getValue();
-    return !securityConfig?.enabled || token !== null;
+    return !this.authenticationService.isSecurityEnabled() || token !== null;
   }
 
   private isCurrentRouteLogin(): boolean {

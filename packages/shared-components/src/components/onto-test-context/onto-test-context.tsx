@@ -22,7 +22,7 @@ import {
   RepositoryLocationContextService,
   AutocompleteContextService,
   NamespacesContextService,
-  NamespaceMap, RepositoryReference, AuthenticationService
+  NamespaceMap, RepositoryReference, AuthenticationService, AuthenticationStorageService
 } from '@ontotext/workbench-api';
 import en from '../../assets/i18n/en.json';
 import fr from '../../assets/i18n/fr.json';
@@ -39,6 +39,7 @@ export class OntoTestContext {
 
   constructor() {
     this.onLanguageChanged();
+    this.setSecurityConfig({enabled: false, freeAccess: {enabled: false}} as unknown as SecurityConfig);
   }
 
   /**
@@ -93,6 +94,7 @@ export class OntoTestContext {
     ServiceProvider.get(SecurityContextService).updateAuthenticatedUser(
       MapperProvider.get(AuthenticatedUserMapper).mapToModel(user)
     );
+    ServiceProvider.get(AuthenticationStorageService).setAuthToken('token');
     return Promise.resolve();
   }
 
@@ -241,6 +243,7 @@ export class OntoTestContext {
    * @param securityConfig - The SecurityConfig object containing the security settings to be applied.
    */
   private setAuthStrategy(securityConfig: SecurityConfig): void {
-    ServiceProvider.get(AuthenticationService).setAuthenticationStrategy(securityConfig);
+    const authService = ServiceProvider.get(AuthenticationService);
+    authService.setAuthenticationStrategy(securityConfig);
   }
 }

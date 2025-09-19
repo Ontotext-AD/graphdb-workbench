@@ -1,6 +1,6 @@
 import {TestUtil} from '../../../../services/utils/test/test-util';
 import {GdbTokenAuthProvider} from '../gdb-token-auth-provider';
-import {AuthenticatedUserMapper, AuthenticationStorageService, SecurityContextService, SecurityService} from '../../../../services/security';
+import {AuthenticatedUserMapper, AuthenticationService, AuthenticationStorageService, SecurityContextService, SecurityService} from '../../../../services/security';
 import {ConfigurationContextService} from '../../../../services/configuration/configuration-context.service';
 import {MapperProvider} from '../../../../providers';
 import {LogLevel} from '../../../logging/log-level';
@@ -24,6 +24,7 @@ describe('GdbTokenAuthProvider', () => {
   let mockSecurityContextService: jest.Mocked<SecurityContextService>;
   let mockAuthenticatedUserMapper: jest.Mocked<AuthenticatedUserMapper>;
   let mockConfigurationContextService: jest.Mocked<ConfigurationContextService>;
+  let mockAuthenticationService: jest.Mocked<AuthenticationService>;
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -37,6 +38,7 @@ describe('GdbTokenAuthProvider', () => {
     mockConfigurationContextService = mockedServices[ConfigurationContextService.name] as jest.Mocked<ConfigurationContextService>;
     mockAuthStorageService = mockedServices[AuthenticationStorageService.name] as jest.Mocked<AuthenticationStorageService>;
     mockSecurityContextService = mockedServices[SecurityContextService.name] as jest.Mocked<SecurityContextService>;
+    mockAuthenticationService = mockedServices[AuthenticationService.name] as jest.Mocked<AuthenticationService>;
 
     jest.spyOn(MapperProvider, 'get').mockReturnValue(mockAuthenticatedUserMapper);
     mockConfigurationContextService.getApplicationConfiguration.mockReturnValue({
@@ -154,6 +156,7 @@ describe('GdbTokenAuthProvider', () => {
       mockAuthStorageService.getAuthToken.mockReturnValue({getValue: () => null} as unknown as StorageData);
       expect(provider.isAuthenticated()).toBe(true);
     });
+
     it('should return true if token exists', () => {
       const securityConfig = {
         enabled: true,
@@ -163,12 +166,9 @@ describe('GdbTokenAuthProvider', () => {
       mockAuthStorageService.getAuthToken.mockReturnValue({getValue: () => 'token'} as unknown as StorageData);
       expect(provider.isAuthenticated()).toBe(true);
     });
-    it('should return false if security is enabled and token is null', () => {
-      const securityConfig = {
-        enabled: true,
-      } as unknown as SecurityConfig;
 
-      mockSecurityContextService.getSecurityConfig.mockReturnValue(securityConfig);
+    it('should return false if security is enabled and token is null', () => {
+      mockAuthenticationService.isSecurityEnabled.mockReturnValue(true);
       mockAuthStorageService.getAuthToken.mockReturnValue({getValue: () => null} as unknown as StorageData);
       expect(provider.isAuthenticated()).toBe(false);
     });

@@ -5,7 +5,6 @@ import {AuthenticatedUser, SecurityConfig} from '../../models/security';
 import {SecurityContextService} from './security-context.service';
 import {SecurityConfigMapper} from './mappers/security-config.mapper';
 import {AuthenticatedUserMapper} from './mappers/authenticated-user.mapper';
-import {AuthenticationStorageService} from './authentication-storage.service';
 
 /**
  * Service class for handling security-related operations.
@@ -13,7 +12,6 @@ import {AuthenticationStorageService} from './authentication-storage.service';
 export class SecurityService implements Service {
   private readonly securityRestService: SecurityRestService = ServiceProvider.get(SecurityRestService);
   private readonly securityContextService: SecurityContextService = ServiceProvider.get(SecurityContextService);
-  private readonly authStorageService: AuthenticationStorageService = ServiceProvider.get(AuthenticationStorageService);
 
   /**
    * Updates the data of an authenticated user.

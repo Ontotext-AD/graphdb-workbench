@@ -6,11 +6,13 @@ import {Logout} from '../../models/events';
 import {SecurityContextService} from './security-context.service';
 import {AuthStrategy} from '../../models/security/authentication/auth-strategy';
 import {AuthStrategyResolver} from './auth-strategy-resolver';
+import {Login} from '../../models/events/auth/login';
 
 /**
  * Service responsible for handling authentication-related operations.
  */
 export class AuthenticationService implements Service {
+  private readonly eventService = service(EventService);
   private readonly authStrategyResolver = new AuthStrategyResolver();
   private authStrategy: AuthStrategy | undefined;
 
@@ -33,7 +35,11 @@ export class AuthenticationService implements Service {
     if (!this.authStrategy) {
       throw new Error('Authentication strategy not set');
     }
-    return this.authStrategy.login({username, password});
+    return this.authStrategy.login({username, password})
+      .then((user) => {
+        this.eventService.emit(new Login());
+        return user;
+      });
   }
 
   /**

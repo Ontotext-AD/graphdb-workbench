@@ -185,7 +185,10 @@ export class OntoLayout {
     this.subscriptions.add(
       securityContextService.onSecurityConfigChanged((securityConfig) => {
         this.securityConfig = securityConfig;
-        this.updateVisibility();
+        // Wait for events to settle everywhere before updating the visibility
+        setTimeout(() => {
+          this.updateVisibility();
+        });
       })
     );
 
@@ -223,12 +226,12 @@ export class OntoLayout {
     if (!this.authenticationService.isSecurityEnabled()) {
       this.showHeader = true;
     } else {
-      this.showHeader = this.authenticationService.isLoggedIn() || this.authorizationService.hasFreeAccess();
+      this.showHeader = this.authenticationService.isAuthenticated() || this.authorizationService.hasFreeAccess();
     }
   }
 
   private isAuthenticatedFully() {
-    return !this.authenticationService.isSecurityEnabled() || this.authenticationService.isLoggedIn() || this.authorizationService.hasFreeAccess();
+    return !this.authenticationService.isSecurityEnabled() || this.authenticationService.isAuthenticated() || this.authorizationService.hasFreeAccess();
   }
 
   private shouldShowMenu(role: Authority): boolean {
