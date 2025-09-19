@@ -5,7 +5,6 @@ import {AuthenticatedUser, SecurityConfig} from '../../models/security';
 import {SecurityContextService} from './security-context.service';
 import {SecurityConfigMapper} from './mappers/security-config.mapper';
 import {AuthenticatedUserMapper} from './mappers/authenticated-user.mapper';
-import {AuthenticationStorageService} from './authentication-storage.service';
 
 /**
  * Service class for handling security-related operations.
@@ -13,7 +12,6 @@ import {AuthenticationStorageService} from './authentication-storage.service';
 export class SecurityService implements Service {
   private readonly securityRestService: SecurityRestService = ServiceProvider.get(SecurityRestService);
   private readonly securityContextService: SecurityContextService = ServiceProvider.get(SecurityContextService);
-  private readonly authStorageService: AuthenticationStorageService = ServiceProvider.get(AuthenticationStorageService);
 
   /**
    * Updates the data of an authenticated user.
@@ -50,6 +48,19 @@ export class SecurityService implements Service {
    */
   getAuthenticatedUser(): Promise<AuthenticatedUser> {
     return this.securityRestService.getAuthenticatedUser()
+      .then((response) => MapperProvider.get(AuthenticatedUserMapper).mapToModel(response));
+  }
+
+  /**
+   * Retrieves the admin user from the backend.
+   *
+   * Fetches the admin user's information and maps it to an `AuthenticatedUser` model
+   * using the appropriate mapper.
+   *
+   * @returns A Promise that resolves with the mapped `AuthenticatedUser` instance representing the admin user.
+   */
+  getAdminUser(): Promise<AuthenticatedUser> {
+    return this.securityRestService.getAdminUser()
       .then((response) => MapperProvider.get(AuthenticatedUserMapper).mapToModel(response));
   }
 
