@@ -54,6 +54,19 @@ export class SecurityService implements Service {
   }
 
   /**
+   * Retrieves the admin user from the backend.
+   *
+   * Fetches the admin user's information and maps it to an `AuthenticatedUser` model
+   * using the appropriate mapper.
+   *
+   * @returns A Promise that resolves with the mapped `AuthenticatedUser` instance representing the admin user.
+   */
+  getAdminUser(): Promise<AuthenticatedUser> {
+    return this.securityRestService.getAdminUser()
+      .then((response) => MapperProvider.get(AuthenticatedUserMapper).mapToModel(response));
+  }
+
+  /**
    * Checks if password-based login is enabled in the current security configuration.
    *
    * @returns `true` if password login is enabled; `undefined` if no config is present.
