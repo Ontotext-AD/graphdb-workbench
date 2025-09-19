@@ -127,6 +127,7 @@ function JdbcCreateCtrl(
 
     // This flag is used to prevent triggering the repository change event listener on initial subscription.
     let initialRepoChangeTrigger = true;
+    let currentRepository;
 
     // =========================
     // Public functions
@@ -620,7 +621,8 @@ function JdbcCreateCtrl(
         }
         if (initialRepoChangeTrigger) {
             initialRepoChangeTrigger = false;
-        } else {
+            currentRepository = repository.id;
+        } else if (repository.id !== currentRepository) {
             getOntotextYasgui().abortQuery().then(goToJdbcView);
         }
     };

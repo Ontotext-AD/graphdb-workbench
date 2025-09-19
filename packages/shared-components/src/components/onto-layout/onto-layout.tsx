@@ -171,7 +171,11 @@ export class OntoLayout {
     this.subscriptions.add(
       securityContextService.onSecurityConfigChanged((securityConfig) => {
         this.securityConfig = securityConfig;
-        this.updateVisibility();
+        // FIXME: Remove  the timeout when the security event handling is refactored
+        // Wait for events to settle everywhere before updating the visibility
+        setTimeout(() => {
+          this.updateVisibility();
+        }, 0);
       })
     );
 
@@ -193,12 +197,12 @@ export class OntoLayout {
     if (!this.authenticationService.isSecurityEnabled()) {
       this.showHeader = true;
     } else {
-      this.showHeader = this.authenticationService.isLoggedIn() || this.authorizationService.hasFreeAccess();
+      this.showHeader = this.authenticationService.isAuthenticated() || this.authorizationService.hasFreeAccess();
     }
   }
 
   private isAuthenticatedFully() {
-    return !this.authenticationService.isSecurityEnabled() || this.authenticationService.isLoggedIn() || this.authorizationService.hasFreeAccess();
+    return !this.authenticationService.isSecurityEnabled() || this.authenticationService.isAuthenticated() || this.authorizationService.hasFreeAccess();
   }
 
   private shouldShowMenu(role: Authority): boolean {

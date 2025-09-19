@@ -1,5 +1,4 @@
 import {AuthStrategyType} from './auth-strategy-type';
-import {AuthenticatedUser} from '../authenticated-user';
 
 /**
  * Interface for authentication strategies.
@@ -22,9 +21,8 @@ export interface AuthStrategy {
   /**
    * Authenticates a user with the provided login data.
    * @param loginData - The data required for authentication (varies by strategy).
-   * @returns A promise resolving to the authenticated user.
    */
-  login(loginData: unknown): Promise<AuthenticatedUser>;
+  login(loginData: unknown): Promise<void>;
 
   /**
    * Logs out the currently authenticated user.

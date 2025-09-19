@@ -1,10 +1,9 @@
-import {SparqlEditorSteps} from "../../../steps/sparql-editor-steps";
-import {YasguiSteps} from "../../../steps/yasgui/yasgui-steps";
-import {QueryStubs} from "../../../stubs/yasgui/query-stubs";
-import {UserAndAccessSteps} from "../../../steps/setup/user-and-access-steps";
-import {SavedQuery} from "../../../steps/yasgui/saved-query";
-import {SavedQueriesDialog} from "../../../steps/yasgui/saved-queries-dialog";
-import {LoginSteps} from "../../../steps/login-steps";
+import {SparqlEditorSteps} from '../../../steps/sparql-editor-steps';
+import {YasguiSteps} from '../../../steps/yasgui/yasgui-steps';
+import {QueryStubs} from '../../../stubs/yasgui/query-stubs';
+import {SavedQuery} from '../../../steps/yasgui/saved-query';
+import {SavedQueriesDialog} from '../../../steps/yasgui/saved-queries-dialog';
+import {LoginSteps} from '../../../steps/login-steps';
 
 const USER_NAME = 'saved_query_user';
 const USER_ADMINISTRATOR = 'admin';
@@ -21,8 +20,7 @@ describe('Readonly saved query', () => {
         cy.presetRepository(repositoryId);
         QueryStubs.stubDefaultQueryResponse(repositoryId);
         cy.createUser({username: USER_NAME, password: PASSWORD});
-        UserAndAccessSteps.visit();
-        UserAndAccessSteps.toggleSecurity();
+        cy.switchOnSecurity();
     });
 
     afterEach(() => {
@@ -34,11 +32,9 @@ describe('Readonly saved query', () => {
     });
 
     it('Should not allow modifying a saved query if it is readonly', () => {
+        SparqlEditorSteps.visitSparqlEditorPage()
         // Given: There is a public saved query created by a user.
         LoginSteps.loginWithUser(USER_NAME, PASSWORD);
-        // Wait for the users page to be loaded, before changing the URL to ensure the user is logged in successfully
-        UserAndAccessSteps.isUsersUrlLoaded();
-        SparqlEditorSteps.visitSparqlEditorPage();
         YasguiSteps.getYasgui().should('be.visible');
         const savedQueryName = SavedQuery.generateQueryName();
         SavedQuery.create(savedQueryName);
