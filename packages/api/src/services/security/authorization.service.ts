@@ -23,6 +23,14 @@ export class AuthorizationService implements Service {
   }
 
   /**
+   * Checks if the current user has an admin role.
+   * @returns {boolean} True if the user has an admin role, false otherwise.
+   */
+  isAdmin(): boolean {
+    return this.hasRole(Authority.ROLE_ADMIN);
+  }
+
+  /**
    * Checks if the user has a specific role based on the provided authority, configuration, and user details.
    * @param {Authority} role - The authority role to check.
    * @returns {boolean} True if the user has the specified role, false otherwise.

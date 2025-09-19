@@ -73,7 +73,12 @@ describe('User Management – Creation, Validation, Permissions & Deletion', () 
             UserAndAccessSteps.clickWriteAccessRepo(repositoryId);
             UserAndAccessSteps.confirmUserCreate();
 
-            ToasterSteps.verifyError('An account with the given username already exists.');
+            // Using the toaster from the shared components which has different class names
+            ToasterSteps.getToast()
+                .should('be.visible')
+                .and('have.class', 'toast error')
+                .find('.toast-message')
+                .and('contain', 'An account with the given username already exists.');
             cy.deleteUser('user');
         });
 

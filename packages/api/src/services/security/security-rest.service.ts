@@ -7,6 +7,7 @@ import {AuthenticatedUser, SecurityConfig} from '../../models/security';
 export class SecurityRestService extends HttpService {
   private readonly SECURITY_ENDPOINT = 'rest/security';
   private readonly LOGIN_ENDPOINT = 'rest/login';
+  private readonly SECURITY_USER_ENDPOINT = `${this.SECURITY_ENDPOINT}/users`;
 
   /**
    * Authenticates a user by sending credentials to the server.
@@ -58,5 +59,17 @@ export class SecurityRestService extends HttpService {
    */
   getAuthenticatedUser(): Promise<AuthenticatedUser> {
     return this.get(`${this.SECURITY_ENDPOINT}/authenticated-user`);
+  }
+
+  /**
+   * Retrieves information about the admin user.
+   *
+   * Sends a GET request to fetch details about the admin user in the system.
+   *
+   * @returns A Promise that resolves with the AuthenticatedUser object containing
+   *          the admin user's details such as username, roles, and application settings.
+   */
+  getAdminUser(): Promise<AuthenticatedUser> {
+    return this.get(`${this.SECURITY_USER_ENDPOINT}/admin`);
   }
 }
