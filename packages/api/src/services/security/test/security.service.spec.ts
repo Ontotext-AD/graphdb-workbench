@@ -136,6 +136,20 @@ describe('SecurityService', () => {
     });
   });
 
+  describe('getAdminUser', () => {
+    it('should fetch and map admin user', async () => {
+      const rawAdminUser = {} as AuthenticatedUser;
+      const mappedAdminUser = {} as AuthenticatedUser;
+      restService.getAdminUser = jest.fn().mockResolvedValue(rawAdminUser);
+      userMapper.mapToModel.mockReturnValue(mappedAdminUser);
+
+      const result = await service.getAdminUser();
+      expect(restService.getAdminUser).toHaveBeenCalled();
+      expect(userMapper.mapToModel).toHaveBeenCalledWith(rawAdminUser);
+      expect(result).toBe(mappedAdminUser);
+    });
+  });
+
   describe('isPasswordLoginEnabled / isOpenIDEnabled', () => {
     it('should return flags from contextService.getSecurityConfig()', () => {
       contextService.getSecurityConfig.mockReturnValue({ passwordLoginEnabled: true, openIdEnabled: false } as never);

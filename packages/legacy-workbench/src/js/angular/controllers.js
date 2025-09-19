@@ -39,7 +39,7 @@ import {
     RepositoryService,
     ServiceProvider,
     SecurityContextService,
-    OntoToastrService
+    OntoToastrService,
 } from "@ontotext/workbench-api";
 import {EventConstants} from "./utils/event-constants";
 import {CookieConsent} from "./models/cookie-policy/cookie-consent";
@@ -618,6 +618,9 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
             });
     }
 
+    const onLoginSubscription = ServiceProvider.get(EventService).subscribe(EventName.LOGIN, () => {
+        $jwtAuth.initSecurity();
+    });
     const onLogoutSubscription = ServiceProvider.get(EventService).subscribe(EventName.LOGOUT, () => logout());
 
     ServiceProvider.get(EventService).subscribe(EventConstants.RDF_SEARCH_ICON_CLICKED, () => {
@@ -1168,15 +1171,17 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
 
     $scope.$on('$destroy', () => {
         onSelectedRepositoryChangedSubscription?.();
-        cookieConsentChangedSubscription?.();onAppDataLoaded();
-        onLogoutSubscription?.()
-      document.removeEventListener('click', closeActiveRepoPopoverEventHandler);
-      window.removeEventListener('storage', localStoreChangeHandler);
-      $scope.cancelPopoverOpen();
-      deregisterMenuWatcher();
-      if ($scope.checkMenu) {
-        $timeout.cancel($scope.checkMenu);
-      }
+        cookieConsentChangedSubscription?.();
+        onAppDataLoaded?.();
+        onLogoutSubscription?.();
+        onLoginSubscription?.();
+        document.removeEventListener('click', closeActiveRepoPopoverEventHandler);
+        window.removeEventListener('storage', localStoreChangeHandler);
+        $scope.cancelPopoverOpen();
+        deregisterMenuWatcher();
+        if ($scope.checkMenu) {
+            $timeout.cancel($scope.checkMenu);
+        }
     });
 }
 

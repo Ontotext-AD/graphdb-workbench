@@ -22,7 +22,7 @@ import {
   RepositoryLocationContextService,
   AutocompleteContextService,
   NamespacesContextService,
-  NamespaceMap, RepositoryReference
+  NamespaceMap, RepositoryReference, AuthenticationService, AuthenticationStorageService
 } from '@ontotext/workbench-api';
 import en from '../../assets/i18n/en.json';
 import fr from '../../assets/i18n/fr.json';
@@ -39,6 +39,7 @@ export class OntoTestContext {
 
   constructor() {
     this.onLanguageChanged();
+    this.setSecurityConfig({enabled: false, freeAccess: {enabled: false}} as unknown as SecurityConfig);
   }
 
   /**
@@ -93,6 +94,7 @@ export class OntoTestContext {
     ServiceProvider.get(SecurityContextService).updateAuthenticatedUser(
       MapperProvider.get(AuthenticatedUserMapper).mapToModel(user)
     );
+    ServiceProvider.get(AuthenticationStorageService).setAuthToken('token');
     return Promise.resolve();
   }
 
@@ -105,6 +107,7 @@ export class OntoTestContext {
   @Method()
   setSecurityConfig(securityConfig: SecurityConfig): Promise<void> {
     ServiceProvider.get(SecurityContextService).updateSecurityConfig(securityConfig);
+    this.setAuthStrategy(securityConfig);
     return Promise.resolve();
   }
 
@@ -228,5 +231,19 @@ export class OntoTestContext {
         this.changeLanguage(languageCode);
       }
     });
+  }
+
+  /**
+   * Configures the authentication strategy based on the provided security configuration.
+   *
+   * This private method retrieves the AuthenticationService and sets the authentication strategy
+   * according to the given SecurityConfig. It ensures that the application uses the correct
+   * authentication mechanism as specified in the security settings.
+   *
+   * @param securityConfig - The SecurityConfig object containing the security settings to be applied.
+   */
+  private setAuthStrategy(securityConfig: SecurityConfig): void {
+    const authService = ServiceProvider.get(AuthenticationService);
+    authService.setAuthenticationStrategy(securityConfig);
   }
 }
