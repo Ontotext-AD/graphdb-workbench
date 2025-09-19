@@ -247,6 +247,11 @@ export namespace Components {
          */
         "setAutocomplete": (enabled: boolean) => Promise<void>;
         /**
+          * Sets the authentication token in the storage.
+          * @param token - The authentication token to be stored.
+         */
+        "setGdbToken": (token?: string) => Promise<void>;
+        /**
           * Sets the security configuration in the application context.
           * @param securityConfig - The SecurityConfig object containing the new security settings to be applied.
           * @returns A Promise that resolves when the security configuration has been successfully updated.

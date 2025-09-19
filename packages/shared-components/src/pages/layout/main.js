@@ -11,9 +11,9 @@ const setUserRole = (role) => {
 
 // eslint-disable-next-line no-unused-vars
 const setSecurity = (enabled, userLoggedIn) => {
+  setGdbToken(userLoggedIn ? 'valid-token' : null);
   setSecurityConfig({
     enabled: enabled,
-    userLoggedIn: userLoggedIn,
     freeAccess: {
       enabled: false
     }

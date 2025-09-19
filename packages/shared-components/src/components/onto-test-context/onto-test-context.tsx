@@ -15,14 +15,16 @@ import {
   RestrictedPages,
   SecurityContextService,
   SecurityConfig,
-  ServiceProvider,
   ToastMessage,
   EventEmitter,
   CREATE_TOAST_EVENT,
   RepositoryLocationContextService,
   AutocompleteContextService,
   NamespacesContextService,
-  NamespaceMap, RepositoryReference
+  NamespaceMap,
+  RepositoryReference,
+  service,
+  AuthenticationStorageService
 } from '@ontotext/workbench-api';
 import en from '../../assets/i18n/en.json';
 import fr from '../../assets/i18n/fr.json';
@@ -52,7 +54,7 @@ export class OntoTestContext {
    */
   @Method()
   updateLicense(license: License): Promise<void> {
-    ServiceProvider.get(LicenseContextService).updateGraphdbLicense(license);
+    service(LicenseContextService).updateGraphdbLicense(license);
     return Promise.resolve();
   }
 
@@ -67,7 +69,7 @@ export class OntoTestContext {
    */
   @Method()
   updateProductInfo(productInfo: ProductInfo): Promise<void> {
-    ServiceProvider.get(ProductInfoContextService).updateProductInfo(productInfo);
+    service(ProductInfoContextService).updateProductInfo(productInfo);
     return Promise.resolve();
   }
 
@@ -76,8 +78,8 @@ export class OntoTestContext {
    */
   @Method()
   loadRepositories(): Promise<void> {
-    ServiceProvider.get(RepositoryService).getRepositories().then((repositories) => {
-      ServiceProvider.get(RepositoryContextService).updateRepositoryList(repositories);
+    service(RepositoryService).getRepositories().then((repositories) => {
+      service(RepositoryContextService).updateRepositoryList(repositories);
     });
     return Promise.resolve();
   }
@@ -90,7 +92,7 @@ export class OntoTestContext {
    */
   @Method()
   setAuthenticatedUser(user: AuthenticatedUser): Promise<void> {
-    ServiceProvider.get(SecurityContextService).updateAuthenticatedUser(
+    service(SecurityContextService).updateAuthenticatedUser(
       MapperProvider.get(AuthenticatedUserMapper).mapToModel(user)
     );
     return Promise.resolve();
@@ -104,7 +106,7 @@ export class OntoTestContext {
    */
   @Method()
   setSecurityConfig(securityConfig: SecurityConfig): Promise<void> {
-    ServiceProvider.get(SecurityContextService).updateSecurityConfig(securityConfig);
+    service(SecurityContextService).updateSecurityConfig(securityConfig);
     return Promise.resolve();
   }
 
@@ -121,7 +123,7 @@ export class OntoTestContext {
    */
   @Method()
   changeLanguage(language: string): Promise<void> {
-    ServiceProvider.get(LanguageContextService).updateLanguageBundle(this.bundles[language]);
+    service(LanguageContextService).updateLanguageBundle(this.bundles[language]);
     return Promise.resolve();
   }
 
@@ -132,7 +134,7 @@ export class OntoTestContext {
    */
   @Method()
   emitNavigateEndEvent(oldUrl: string, newUrl: string): Promise<void> {
-    ServiceProvider.get(EventService).emit(new NavigationEnd(oldUrl, newUrl));
+    service(EventService).emit(new NavigationEnd(oldUrl, newUrl));
     return Promise.resolve();
   }
 
@@ -144,14 +146,14 @@ export class OntoTestContext {
   updateRestrictedPage(restrictedPages: Record<string, boolean>): Promise<void> {
     const restriction = new RestrictedPages();
     if (!restrictedPages) {
-      ServiceProvider.get(SecurityContextService).updateRestrictedPages(undefined);
+      service(SecurityContextService).updateRestrictedPages(undefined);
       return;
     }
 
     Object.entries(restrictedPages).forEach(([key, value]) => {
       restriction.setPageRestriction(key, value);
     });
-    ServiceProvider.get(SecurityContextService).updateRestrictedPages(restriction);
+    service(SecurityContextService).updateRestrictedPages(restriction);
     return Promise.resolve();
   }
 
@@ -164,7 +166,7 @@ export class OntoTestContext {
    */
   @Method()
   updateSelectedRepository(repositoryReference: RepositoryReference): Promise<void> {
-    ServiceProvider.get(RepositoryContextService).updateSelectedRepository(repositoryReference);
+    service(RepositoryContextService).updateSelectedRepository(repositoryReference);
     return Promise.resolve();
   }
 
@@ -177,7 +179,7 @@ export class OntoTestContext {
    */
   @Method()
   updateIsLoadingActiveRepositoryLocation(isLoading: boolean): Promise<void> {
-    ServiceProvider.get(RepositoryLocationContextService).updateIsLoading(isLoading);
+    service(RepositoryLocationContextService).updateIsLoading(isLoading);
     return Promise.resolve();
   }
 
@@ -200,7 +202,7 @@ export class OntoTestContext {
    */
   @Method()
   setAutocomplete(enabled: boolean): Promise<void> {
-    ServiceProvider.get(AutocompleteContextService).updateAutocompleteEnabled(enabled);
+    service(AutocompleteContextService).updateAutocompleteEnabled(enabled);
     return Promise.resolve();
   }
 
@@ -212,7 +214,23 @@ export class OntoTestContext {
    */
   @Method()
   updateNamespaces(rawNamespaces: Record<string, string>): Promise<void> {
-    ServiceProvider.get(NamespacesContextService).updateNamespaces(new NamespaceMap(rawNamespaces));
+    service(NamespacesContextService).updateNamespaces(new NamespaceMap(rawNamespaces));
+    return Promise.resolve();
+  }
+
+  /**
+   * Sets the authentication token in the storage.
+   *
+   * @param token - The authentication token to be stored.
+   */
+  @Method()
+  setGdbToken(token?: string): Promise<void> {
+    const authStorage = service(AuthenticationStorageService);
+    if (token) {
+      authStorage.setAuthToken(token);
+    } else {
+      authStorage.clearAuthToken();
+    }
     return Promise.resolve();
   }
 
@@ -223,7 +241,7 @@ export class OntoTestContext {
    * When a new language is selected, it calls the changeLanguage method to update the application's language.
    */
   private onLanguageChanged(): void {
-    ServiceProvider.get(LanguageContextService).onSelectedLanguageChanged((languageCode) => {
+    service(LanguageContextService).onSelectedLanguageChanged((languageCode) => {
       if (languageCode) {
         this.changeLanguage(languageCode);
       }
