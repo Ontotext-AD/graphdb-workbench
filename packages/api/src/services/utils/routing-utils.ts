@@ -47,7 +47,7 @@ export function isHomePage(): boolean {
  * @returns {string} The pathname of the current URL, which represents the path segment that comes after the context (if any) and before the query string.
  */
 export function getPathName(): string {
-  return WindowService.getWindow().location.pathname.substring(getContextName().length - 1);
+  return WindowService.getWindow().location.pathname.substring(getBasePath().length - 1);
 }
 
 /**
@@ -56,7 +56,7 @@ export function getPathName(): string {
  * @returns {string} The current URL including the context prefix.
  */
 export function getOrigin(): string {
-  return `${WindowService.getWindow().location.origin}${getContextName()}`;
+  return `${WindowService.getWindow().location.origin}${getBasePath()}`;
 }
 
 /**
@@ -67,7 +67,7 @@ export function getOrigin(): string {
  *
  * @returns {string} The context path as specified in the base href (always ending with a slash).
  */
-export function getContextName(): string {
+export function getBasePath(): string {
   return document.querySelector('base')?.getAttribute('href') ?? '/';
 }
 

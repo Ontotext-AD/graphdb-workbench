@@ -19,7 +19,7 @@ import {
   EventService,
   NavigationEnd,
   NavigationStart,
-  getContextName
+  getBasePath
 } from '@ontotext/workbench-api';
 import {LoggerProvider} from './services/logger-provider';
 
@@ -49,7 +49,7 @@ const appModules = {
 };
 
 // Makes the single spa router aware of reverse proxy context
-microfrontendLayout.base = getContextName();
+microfrontendLayout.base = getBasePath();
 const routes = constructRoutes(microfrontendLayout);
 const applications = constructApplications({
   routes,
