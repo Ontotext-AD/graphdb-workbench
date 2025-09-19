@@ -3,7 +3,7 @@ import {AuthStrategy} from './auth-strategy';
 import {AuthStrategyType} from './auth-strategy-type';
 import {MapperProvider, service} from '../../../providers';
 import {AuthenticatedUserMapper, AuthenticationStorageService, SecurityContextService, SecurityService} from '../../../services/security';
-import {LoggingService} from '../../../services/logging/logging.service';
+import {LoggerProvider} from '../../../services/logging/logger-provider';
 
 type LoginData = {
   username: string;
@@ -11,7 +11,7 @@ type LoginData = {
 }
 
 export class GdbTokenAuthProvider implements AuthStrategy {
-  private readonly logger = LoggingService.logger;
+  private readonly logger = LoggerProvider.logger;
   private readonly securityService = service(SecurityService);
   private readonly authStorageService = service(AuthenticationStorageService);
   private readonly securityContextService = service(SecurityContextService);
