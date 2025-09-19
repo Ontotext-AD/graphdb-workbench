@@ -22,7 +22,7 @@ select {
 }
 
 a {
-    color: var(--secondary-color);
+    color: var(--gw-color-secondary-700);
 }
 
 /* General links on hover and actual links that lead to an external site */
@@ -90,8 +90,8 @@ h1 .btn {
 }
 
 .btn-primary {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
+    background-color: var(--gw-color-primary-700);
+    border-color: var(--gw-color-primary-700);
 }
 
 .btn-primary.active, .btn-primary.focus, .btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active.focus,
@@ -104,7 +104,7 @@ h1 .btn {
 .btn-secondary {
     background-color: #EBEBEB;
     border-color: #EBEBEB;
-    color: var(--secondary-color);
+    color: var(--gw-color-secondary-700);
 }
 
 .btn-secondary.focus,
@@ -116,14 +116,14 @@ h1 .btn {
 }
 
 .btn-secondary.active, .btn-secondary.active.focus, .btn-secondary.active:focus, .btn-secondary.active:hover {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
+    background-color: var(--gw-color-primary-700);
+    border-color: var(--gw-color-primary-700);
     color: #fff;
 }
 
 .btn-info {
-    background-color: var(--secondary-color);
-    border-color: var(--secondary-color);
+    background-color: var(--gw-color-secondary-700);
+    border-color: var(--gw-color-secondary-700);
 }
 
 .btn-info.active, .btn-info.focus, .btn-info:hover, .btn-info:focus, .btn-info:active, .btn-info.active.focus,
@@ -135,20 +135,20 @@ h1 .btn {
 
 /* outline buttons */
 .btn-outline-primary {
-    color: var(--primary-color);
-    border-color: var(--primary-color);
+    color: var(--gw-color-primary-700);
+    border-color: var(--gw-color-primary-700);
 }
 
 .btn-outline-primary:hover,
 .btn-outline-primary.focus, .btn-outline-primary:focus, .btn-outline-primary.active, .btn-outline-primary:active, .open > .btn-outline-primary.dropdown-toggle,
 .btn-outline-primary.active.focus, .btn-outline-primary.active:focus, .btn-outline-primary.active:hover, .btn-outline-primary:active.focus, .btn-outline-primary:active:focus, .btn-outline-primary:active:hover, .open > .btn-outline-primary.dropdown-toggle.focus, .open > .btn-outline-primary.dropdown-toggle:focus, .open > .btn-outline-primary.dropdown-toggle:hover {
-    color: var(--primary-color);
+    color: var(--gw-color-primary-700);
     background-color: hsla(var(--primary-color-hsl), 0.075);
-    border-color: var(--primary-color);
+    border-color: var(--gw-color-primary-700);
 }
 
 .btn-outline-secondary {
-    color: var(--secondary-color);
+    color: var(--gw-color-secondary-700);
     background-image: none;
     background-color: transparent;
     border-color: hsla(var(--secondary-color-hsl), 0.5);
@@ -157,14 +157,14 @@ h1 .btn {
 .btn-outline-secondary:hover,
 .btn-outline-secondary.focus, .btn-outline-secondary:focus, .btn-outline-secondary.active, .btn-outline-secondary:active,
 .btn-outline-secondary.active.focus, .btn-outline-secondary.active:focus, .btn-outline-secondary:active.focus, .btn-outline-secondary:active:focus, .btn-outline-secondary:active:hover, .open > .btn-outline-secondary.dropdown-toggle.focus, .open > .btn-outline-secondary.dropdown-toggle:focus, .open > .btn-outline-secondary.dropdown-toggle:hover {
-    color: var(--secondary-color);
+    color: var(--gw-color-secondary-700);
     background-color: hsla(var(--secondary-color-hsl), 0.2);
-    border-color: var(--secondary-color);
+    border-color: var(--gw-color-secondary-700);
 }
 
 .btn-outline-secondary.active:hover {
     background-color: hsla(var(--secondary-color-hsl), 0.2);
-    border-color: var(--secondary-color);
+    border-color: var(--gw-color-secondary-700);
 }
 
 .btn-group-lg > .btn, .btn-lg {
@@ -173,7 +173,7 @@ h1 .btn {
 }
 
 .btn-link, .btn-link a {
-    color: var(--primary-color);
+    color: var(--gw-color-primary-700);
     padding: .5em .8em;
 }
 
@@ -311,11 +311,11 @@ h3 [class^=icon-] {
 }
 
 .text-primary {
-    color: var(--primary-color) !important;
+    color: var(--gw-color-primary-700) !important;
 }
 
 .text-secondary {
-    color: var(--secondary-color) !important;
+    color: var(--gw-color-secondary-700) !important;
 }
 
 .text-tertiary {
@@ -431,11 +431,11 @@ h3 [class^=icon-] {
 	Background colors
 -------------------------------------------------------------*/
 .bg-primary {
-    background-color: var(--primary-color);
+    background-color: var(--gw-color-primary-700);
 }
 
 .bg-secondary {
-    background-color: var(--secondary-color);
+    background-color: var(--gw-color-secondary-700);
     color: #fff;
 }
 
