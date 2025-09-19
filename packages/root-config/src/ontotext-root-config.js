@@ -9,7 +9,7 @@ import {
   constructRoutes,
   constructLayoutEngine,
 } from 'single-spa-layout';
-import microfrontendLayout from './microfrontend-layout.html';
+import microfrontendLayout from './microfrontend-layout.json';
 import './styles/onto-stylesheet.scss';
 import './onto-vendor';
 import './styles/main.scss';
@@ -18,7 +18,8 @@ import {
   ServiceProvider,
   EventService,
   NavigationEnd,
-  NavigationStart
+  NavigationStart,
+  getContextName
 } from '@ontotext/workbench-api';
 import {LoggerProvider} from './services/logger-provider';
 
@@ -47,6 +48,8 @@ const appModules = {
   '@ontotext/workbench': () => import('@ontotext/workbench')
 };
 
+// Makes the single spa router aware of reverse proxy context
+microfrontendLayout.base = getContextName();
 const routes = constructRoutes(microfrontendLayout);
 const applications = constructApplications({
   routes,
