@@ -9,7 +9,7 @@ export class NoSecurityProvider implements AuthStrategy {
   private readonly authStorageService = service(AuthenticationStorageService);
   private readonly securityContextService = service(SecurityContextService);
 
-  type = AuthStrategyType.GDB_TOKEN;
+  type = AuthStrategyType.NO_SECURITY;
 
   initialize(): Promise<unknown> {
     return Promise.resolve();

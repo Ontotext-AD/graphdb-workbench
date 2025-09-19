@@ -81,8 +81,8 @@ export class TestUtil {
       if (service) {
         return service;
       }
-      // @ts-expect-error This is a workaround for the type incompatibility between ServiceProvider and the mocked services
-      return null;
+      // Throw an error to make missing mocks explicit and aid debugging
+      throw new Error(`Unknown or unmocked service requested: ${svc.name}`);
     });
 
     return mockedServices;
