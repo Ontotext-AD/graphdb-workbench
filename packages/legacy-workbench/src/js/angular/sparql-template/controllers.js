@@ -4,17 +4,17 @@ import 'angular/rest/monitoring.rest.service';
 import 'angular/utils/notifications';
 import 'angular/utils/uri-utils';
 import 'angular/core/services/event-emitter-service';
-import {decodeHTML} from "../../../app";
-import {DEFAULT_SPARQL_QUERY, SparqlTemplateInfo} from "../models/sparql-template/sparql-template-info";
-import {SparqlTemplateError} from "../models/sparql-template/sparql-template-error";
-import {YasqeMode} from "../models/ontotext-yasgui/yasqe-mode";
-import {RenderingMode} from "../models/ontotext-yasgui/rendering-mode";
+import {decodeHTML} from '../../../app';
+import {DEFAULT_SPARQL_QUERY, SparqlTemplateInfo} from '../models/sparql-template/sparql-template-info';
+import {SparqlTemplateError} from '../models/sparql-template/sparql-template-error';
+import {YasqeMode} from '../models/ontotext-yasgui/yasqe-mode';
+import {RenderingMode} from '../models/ontotext-yasgui/rendering-mode';
 import {
     DISABLE_YASQE_BUTTONS_CONFIGURATION,
     YasguiComponentDirectiveUtil,
-} from "../core/directives/yasgui-component/yasgui-component-directive.util";
-import {RepositoryContextService, ServiceProvider} from "@ontotext/workbench-api";
-import {LoggerProvider} from "../core/services/logger-provider";
+} from '../core/directives/yasgui-component/yasgui-component-directive.util';
+import {RepositoryContextService, ServiceProvider} from '@ontotext/workbench-api';
+import {LoggerProvider} from '../core/services/logger-provider';
 
 const modules = [
     'ui.bootstrap',
@@ -144,6 +144,7 @@ function SparqlTemplateCreateCtrl(
 
     // This flag is used to prevent triggering the repository change event listener on initial subscription.
     let initialRepoChangeTrigger = true;
+    let currentRepository;
 
     // =========================
     // Public functions
@@ -479,7 +480,8 @@ function SparqlTemplateCreateCtrl(
         }
         if (initialRepoChangeTrigger) {
             initialRepoChangeTrigger = false;
-        } else {
+            currentRepository = repository.id;
+        } else if (repository.id !== currentRepository) {
             goToSparqlTemplatesView();
         }
     };
@@ -506,7 +508,6 @@ function SparqlTemplateCreateCtrl(
     // Subscriptions
     // =========================
     const subscriptions = [];
-
     const repositoryContextService = ServiceProvider.get(RepositoryContextService);
     const repositoryChangeSubscription = repositoryContextService.onSelectedRepositoryChanged(repositoryChangedHandler, repositoryWillChangeHandler);
 

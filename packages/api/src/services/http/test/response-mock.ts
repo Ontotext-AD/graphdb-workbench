@@ -4,6 +4,7 @@ export class ResponseMock {
   private _status = 200;
   private _message = '';
   private _headers?: unknown = undefined;
+  private _shouldThrowOnJson = false;
 
   constructor(url: string) {
     this._url = url;
@@ -46,5 +47,14 @@ export class ResponseMock {
   setHeaders(headers: unknown) {
     this._headers = headers;
     return this;
+  }
+
+  setSetThrowOnJson(shouldThrowOnJson: boolean) {
+    this._shouldThrowOnJson = shouldThrowOnJson;
+    return this;
+  }
+
+  getShouldThrowOnJson(): boolean {
+    return this._shouldThrowOnJson;
   }
 }
