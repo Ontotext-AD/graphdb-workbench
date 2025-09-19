@@ -2,8 +2,9 @@ import {AuthenticatedUser} from '../authenticated-user';
 import {AuthStrategy} from './auth-strategy';
 import {AuthStrategyType} from './auth-strategy-type';
 import {MapperProvider, service} from '../../../providers';
-import {AuthenticatedUserMapper, AuthenticationStorageService, SecurityContextService, SecurityService} from '../../../services/security';
+import {AuthenticatedUserMapper, AuthenticationService, AuthenticationStorageService, SecurityContextService, SecurityService} from '../../../services/security';
 import {LoggerProvider} from '../../../services/logging/logger-provider';
+import {getCurrentRoute} from '../../../services/utils';
 
 type LoginData = {
   username: string;
@@ -14,20 +15,46 @@ export class GdbTokenAuthProvider implements AuthStrategy {
   private readonly logger = LoggerProvider.logger;
   private readonly securityService = service(SecurityService);
   private readonly authStorageService = service(AuthenticationStorageService);
+  private readonly authenticationService = service(AuthenticationService);
   private readonly securityContextService = service(SecurityContextService);
 
   type = AuthStrategyType.GDB_TOKEN;
 
+  /**
+   * Initializes the authentication provider. If the current route is 'login', resolves immediately.
+   * Otherwise, attempts to load the authenticated user and update the security context.
+   * Logs an error if the user cannot be loaded.
+   * @returns {Promise<unknown>} A promise that resolves when initialization is complete.
+   */
   initialize(): Promise<unknown> {
-    return Promise.resolve();
+    if (this.isCurrentRouteLogin()) {
+      return Promise.resolve();
+    }
+    return this.securityService.getAuthenticatedUser()
+      .then((authenticatedUser) => {
+        if (authenticatedUser) {
+          this.securityContextService.updateAuthenticatedUser(authenticatedUser);
+        }
+      })
+      .catch((error) => {
+        this.logger.error('Could not load authenticated user', error);
+      });
   }
 
-  async login(loginData: LoginData): Promise<AuthenticatedUser> {
+  /**
+   * Attempts to log in using the provided username and password.
+   * On success, stores the authentication token and updates the authenticated user in the security context.
+   * Logs and throws an error if the user cannot be mapped from the response.
+   * @param {LoginData} loginData - The login credentials (username and password).
+   * @returns {Promise<void>} A promise that resolves when login is complete.
+   */
+  async login(loginData: LoginData): Promise<void> {
     const {username, password} = loginData;
     const response = await this.securityService.loginGdbToken(username, password);
 
     const authHeader = this.getAuthenticationHeader(response);
     let authUser;
+
     try {
       authUser = await this.getUserFromResponse(response);
     } catch (e) {
@@ -39,7 +66,29 @@ export class GdbTokenAuthProvider implements AuthStrategy {
       this.authStorageService.setAuthToken(authHeader);
       this.securityContextService.updateAuthenticatedUser(authUser);
     }
-    return authUser;
+  }
+
+  /**
+   * Logs out the current user by clearing the authentication token.
+   * @returns {Promise<void>} A promise that resolves when logout is complete.
+   */
+  logout(): Promise<void> {
+    this.authStorageService.clearAuthToken();
+    return Promise.resolve();
+  }
+
+  /**
+   * Checks if the user is authenticated.
+   * Returns true if security is disabled or if an authentication token is present.
+   * @returns {boolean} True if authenticated, false otherwise.
+   */
+  isAuthenticated(): boolean {
+    const token = this.authStorageService.getAuthToken().getValue();
+    return !this.authenticationService.isSecurityEnabled() || token !== null;
+  }
+
+  private isCurrentRouteLogin(): boolean {
+    return getCurrentRoute() === 'login';
   }
 
   private getAuthenticationHeader(response: Response): string | null {
@@ -49,16 +98,5 @@ export class GdbTokenAuthProvider implements AuthStrategy {
   private async getUserFromResponse(response: Response): Promise<AuthenticatedUser> {
     const responseData = await response.json();
     return MapperProvider.get(AuthenticatedUserMapper).mapToModel(responseData);
-  }
-
-  logout(): Promise<void> {
-    this.authStorageService.clearAuthToken();
-    return Promise.resolve();
-  }
-
-  isAuthenticated(): boolean {
-    const securityConfig = this.securityContextService.getSecurityConfig();
-    const token = this.authStorageService.getAuthToken().getValue();
-    return !securityConfig?.enabled || token !== null;
   }
 }

@@ -15,6 +15,7 @@ describe('Layout', () => {
   it('Should filter menu items, based on role', () => {
     // Given I've visited the layout page and loaded menu items for the navbar
     LayoutSteps.visit();
+    LayoutSteps.disableSecurity();
 
     const monitoringMenuIndex = 3;
     const setupMenuIndex = 4;
@@ -124,6 +125,7 @@ describe('Layout', () => {
   it('should hide and display navbar and header based on security', () => {
     // Given I've visited the layout page and loaded menu items for the navbar
     LayoutSteps.visit();
+    LayoutSteps.disableSecurity();
 
     // Then I should see the header and navbar
     HeaderSteps.getHeader().should('exist');
