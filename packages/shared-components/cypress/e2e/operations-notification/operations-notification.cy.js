@@ -19,9 +19,13 @@ const assertRedirectLink = (index, textValue) => {
 }
 
 describe('onto-operations-notification', () => {
-  it('should display operations notification', () => {
+  beforeEach(() => {
     // Given, I am on the operations notification page and I have added mock operations
     OperationsNotificationSteps.visit();
+    OperationsNotificationSteps.disableSecurity();
+  })
+
+  it('should display operations notification', () => {
     // simulate repository selection to trigger request for operations
     OperationsNotificationSteps.loadRepositories();
     OperationsNotificationSteps.getRepositoryItems().should('have.length', 6);
@@ -53,8 +57,6 @@ describe('onto-operations-notification', () => {
   });
 
   it('should redirect to operation specific href, when clicked', () => {
-    // Given, I am on the operations notification page and I have added mock operations
-    OperationsNotificationSteps.visit();
     // simulate repository selection to trigger request for operations
     OperationsNotificationSteps.loadRepositories();
     OperationsNotificationSteps.getRepositoryItems().should('have.length', 6);

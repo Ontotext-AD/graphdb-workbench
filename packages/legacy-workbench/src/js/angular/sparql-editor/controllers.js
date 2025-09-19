@@ -265,8 +265,8 @@ function SparqlEditorCtrl($rootScope,
     };
 
     const setInferAndSameAs = (principal) => {
-        $scope.inferUserSetting = principal.appSettings.DEFAULT_INFERENCE;
-        $scope.sameAsUserSetting = principal.appSettings.DEFAULT_SAMEAS;
+        $scope.inferUserSetting = principal?.appSettings.DEFAULT_INFERENCE;
+        $scope.sameAsUserSetting = principal?.appSettings.DEFAULT_SAMEAS;
     };
 
     const exploreVisualGraphYasrToolbarElementBuilder = {

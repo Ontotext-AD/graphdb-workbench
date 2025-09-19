@@ -13,6 +13,7 @@ import {
   OpenidConfigMapper,
   AuthenticationStorageService,
   OntoToastrService,
+  AuthenticatedUser,
 } from "@ontotext/workbench-api";
 import {LoggerProvider} from "./logger-provider";
 
@@ -84,11 +85,14 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 $location
                     .path('/login')
                     .search(params);
+
                 // Countering race condition. When the unauthorized interceptor catches error 401 or 409, then we must make
                 // sure that a request is made to access the login page before proceeding with the rejection of the
                 // original request. Otherwise the login page is not accessible in the context of spring security.
                 return new Promise((resolve) => {
                     setTimeout(() => {
+                        // Run digest cycle to update the location
+                        $rootScope.$apply();
                         resolve(true);
                     }, 100);
                 });
@@ -595,8 +599,13 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 securityContextService.updateOpenIdConfig(openIdConfigModel);
 
                 this.getPrincipal().then((data) => {
-                    const userMapper = MapperProvider.get(AuthenticatedUserMapper);
-                    const authenticatedUser = userMapper.mapToModel(data);
+                    let authenticatedUser;
+                    if (data instanceof AuthenticatedUser) {
+                        authenticatedUser = data;
+                    } else {
+                        const userMapper = MapperProvider.get(AuthenticatedUserMapper);
+                        authenticatedUser = userMapper.mapToModel(data);
+                    }
                     securityContextService.updateAuthenticatedUser(authenticatedUser);
                 });
 
