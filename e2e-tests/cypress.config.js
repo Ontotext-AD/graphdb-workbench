@@ -1,5 +1,6 @@
 import { defineConfig } from 'cypress';
 import setupPlugins from './plugins/index.js';
+import webpackPreprocessor from '@cypress/webpack-preprocessor';
 
 export default defineConfig({
     projectId: 'v35btb',
@@ -21,6 +22,49 @@ export default defineConfig({
         // We've imported your old cypress plugins here.
         // You may want to clean this up later by importing these.
         setupNodeEvents(on, config) {
+            on('file:preprocessor', webpackPreprocessor({
+                webpackOptions: {
+                    resolve: {
+                        extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
+                        modules: ['node_modules', '.'],
+                        fullySpecified: false,
+                        alias: {
+                            path: 'path-browserify'
+                        },
+                        fallback: {
+                            // Provide empty mocks for Node.js core modules
+                            path: false,
+                            fs: false,
+                            os: false,
+                            crypto: false,
+                            util: false,
+                            buffer: false,
+                            stream: false
+                        }
+                    },
+                    module: {
+                        rules: [
+                            {
+                                test: /\.jsx?$/,
+                                exclude: /node_modules/,
+                                use: {
+                                    loader: 'babel-loader',
+                                    options: {
+                                        presets: ['@babel/preset-env']
+                                    }
+                                }
+                            },
+                            {
+                                test: /\.js$/,
+                                resolve: {
+                                    fullySpecified: false
+                                }
+                            }
+                        ]
+                    },
+                    target: 'web',
+                }
+            }));
             return setupPlugins(on, config);
         },
         baseUrl: 'http://localhost:9000',
