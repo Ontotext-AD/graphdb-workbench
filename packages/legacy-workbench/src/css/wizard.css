@@ -17,8 +17,8 @@
 }
 
 .wizard .wizard-steps .wizard-step.active {
-    color: var(--primary-color);
-    border-bottom: 1px solid var(--primary-color);
+    color: var(--gw-primary-base);
+    border-bottom: 1px solid var(--gw-primary-base);
 }
 
 .wizard .wizard-steps .wizard-step.completed {

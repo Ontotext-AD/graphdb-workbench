@@ -60,7 +60,7 @@
       color: var(--secondary-color, #003663);
 
       &.selected {
-        background-color: var(--primary-color, #9e2b0a);
+        background-color: var(--gw-primary-base, #9e2b0a);
         color: white;
       }
 

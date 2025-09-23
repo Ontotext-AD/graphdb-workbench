@@ -125,8 +125,8 @@ footer.footer .container-fluid.main-container p {
 .open > .btn-secondary.dropdown-toggle:focus,
 .open > .btn-secondary.dropdown-toggle:hover {
     color: #fff;
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
+    background-color: var(--gw-primary-base);
+    border-color: var(--gw-primary-base);
 }
 
 .open > .btn-secondary.dropdown-toggle [class^="icon-"] {
@@ -134,7 +134,7 @@ footer.footer .container-fluid.main-container p {
 }
 
 .btn-secondary.dropdown-toggle [class^="icon-"] {
-    color: var(--primary-color);
+    color: var(--gw-primary-base);
 }
 
 .dropdown-toggle {
@@ -162,7 +162,7 @@ footer.footer .container-fluid.main-container p {
 
 .dropdown-menu {
     border: none;
-    background-color: var(--primary-color);
+    background-color: var(--gw-primary-base);
     border-radius: 0;
     padding: 0;
     min-width: 100%;
@@ -467,7 +467,7 @@ code {
 
 .close:hover::before {
     transform: scale(1.2);
-    color: var(--primary-color);
+    color: var(--gw-primary-base);
 }
 
 .close.absolute {
@@ -881,7 +881,7 @@ code {
     float: right;
     margin-top: 0.7em;
     font-weight: 400;
-    color: var(--primary-color);
+    color: var(--gw-primary-base);
     cursor: pointer;
     display: none;
 }
@@ -1321,8 +1321,8 @@ ul.nav.navbar-right.pagination li.disabled a {
 }
 
 #yasr ul.nav.navbar-right.pagination li.active {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
+    background-color: var(--gw-primary-base);
+    border-color: var(--gw-primary-base);
 }
 
 #yasr ul.nav.navbar-right.pagination li.active a {
@@ -1362,29 +1362,29 @@ ul.nav.navbar-right.pagination li.disabled a {
 	SPARQL editor
 -------------------------------------------------------------*/
 .dialog .dialog-footer .confirm-button {
-    background-color: var(--primary-color) !important;
+    background-color: var(--gw-primary-base) !important;
 }
 
 
 yasgui-component .yasgui-btn.btn-selected {
-    background-color: var(--primary-color) !important;
+    background-color: var(--gw-primary-base) !important;
 }
 
 yasgui-component .btn-orientation {
-    color: var(--primary-color) !important;
+    color: var(--gw-primary-base) !important;
 }
 
 yasgui-component .custom-button {
-    color: var(--primary-color) !important;
+    color: var(--gw-primary-base) !important;
 }
 
 yasgui-component .yasqe_queryButton {
-    background-color: var(--primary-color) !important;
+    background-color: var(--gw-primary-base) !important;
 }
 
 yasgui-component .ontotext-dropdown-button,
 yasgui-component .ontotext-dropdown-menu-item {
-    background-color: var(--primary-color) !important;
+    background-color: var(--gw-primary-base) !important;
 }
 yasgui-component .ontotext-dropdown-button.icon-caret-down-after:after,
 yasgui-component .ontotext-dropdown-button.icon-caret-up-after:after {
@@ -1394,7 +1394,7 @@ yasgui-component .ontotext-dropdown-button.icon-caret-up-after:after {
 yasgui-component .ok-button,
 yasgui-component .primary-button,
 yasgui-component .confirm-button {
-    background-color: var(--primary-color) !important;
+    background-color: var(--gw-primary-base) !important;
 }
 
 yasgui-component .yasr a {
@@ -1421,7 +1421,7 @@ yasgui-component .yasr_plugin_control label .label {
 
 /* End of yasgui-component style overrides */
 .dialog .dialog-footer .confirm-button {
-    background-color: var(--primary-color) !important;
+    background-color: var(--gw-primary-base) !important;
 }
 
 .yasqe .CodeMirror {
@@ -1584,8 +1584,8 @@ input[name=namespace] {
     border-radius: .25rem;
 }
 .badge-default  { background-color: #aaa }
-.badge-primary  { background-color: var(--secondary-color) }
-.badge-info     { background-color: var(--primary-color) }
+.badge-primary  { background-color: var(--gw-color-secondary-700) }
+.badge-info     { background-color: var(--gw-primary-base) }
 .badge-success  { background-color: #5cb85c }
 .badge-warning  { background-color: #f0ad4e }
 

@@ -4,7 +4,7 @@ import {LoggerProvider} from "../../services/logger-provider";
  * Defines the colors in which the tab name has to be changed.
  * @type {string[]} - Array of valid CSS values for the color property.
  */
-const HIGHLIGHT_TAB_NAME_COLORS = ['var(--primary-color)', '', 'var(--primary-color)'];
+const HIGHLIGHT_TAB_NAME_COLORS = ['var(--gw-primary-base)', '', 'var(--gw-primary-base)'];
 /**
  * Defines the time when the tab name color has to change.
  *
