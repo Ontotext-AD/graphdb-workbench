@@ -3,7 +3,7 @@
   opacity: 0;
 
   position: absolute;
-  background: var(--secondary-color);
+  background: var(--gw-secondary-base);
   z-index: 9999;
   padding: 3px 8px;
   border: none;
@@ -49,7 +49,7 @@
   left: 50%;
 
   margin-left: -5px;
-  border-top-color: var(--secondary-color);
+  border-top-color: var(--gw-secondary-base);
 }
 
 .angular-tooltip.angular-tooltip-top-left:after {
@@ -57,7 +57,7 @@
   left: calc(100% - 8px);
 
   margin-left: -5px;
-  border-top-color: var(--secondary-color);
+  border-top-color: var(--gw-secondary-base);
 }
 
 .angular-tooltip.angular-tooltip-top-right:after {
@@ -65,7 +65,7 @@
   right: calc(100% - 8px);
 
   margin-right: -5px;
-  border-top-color: var(--secondary-color);
+  border-top-color: var(--gw-secondary-base);
 }
 
 
@@ -74,7 +74,7 @@
   right: 100%;
 
   margin-top: -5px;
-  border-right-color: var(--secondary-color);
+  border-right-color: var(--gw-secondary-base);
 }
 
 .angular-tooltip.angular-tooltip-right:after {
@@ -82,7 +82,7 @@
   right: 100%;
 
   margin-top: -5px;
-  border-right-color: var(--secondary-color);
+  border-right-color: var(--gw-secondary-base);
 }
 
 .angular-tooltip.angular-tooltip-right-bottom:after {
@@ -90,7 +90,7 @@
   right: 100%;
 
   margin-bottom: -5px;
-  border-right-color: var(--secondary-color);
+  border-right-color: var(--gw-secondary-base);
 }
 
 .angular-tooltip.angular-tooltip-bottom:after {
@@ -98,7 +98,7 @@
   left: 50%;
 
   margin-left: -5px;
-  border-bottom-color: var(--secondary-color);
+  border-bottom-color: var(--gw-secondary-base);
 }
 
 .angular-tooltip.angular-tooltip-bottom-left:after {
@@ -106,7 +106,7 @@
   left: calc(100% - 8px);
 
   margin-left: -5px;
-  border-bottom-color: var(--secondary-color);
+  border-bottom-color: var(--gw-secondary-base);
 }
 
 .angular-tooltip.angular-tooltip-bottom-right:after {
@@ -114,7 +114,7 @@
   right: calc(100% - 8px);
 
   margin-right: -5px;
-  border-bottom-color: var(--secondary-color);
+  border-bottom-color: var(--gw-secondary-base);
 }
 
 .angular-tooltip.angular-tooltip-left:after {
@@ -122,7 +122,7 @@
   left: 100%;
 
   margin-top: -5px;
-  border-left-color: var(--secondary-color);
+  border-left-color: var(--gw-secondary-base);
 }
 
 .angular-tooltip.angular-tooltip-left-bottom:after {
@@ -130,7 +130,7 @@
   left: 100%;
 
   margin-bottom: -5px;
-  border-left-color: var(--secondary-color);
+  border-left-color: var(--gw-secondary-base);
 }
 
 .angular-tooltip.angular-tooltip-left-top:after {
@@ -138,7 +138,7 @@
   left: 100%;
 
   margin-top: -5px;
-  border-left-color: var(--secondary-color);
+  border-left-color: var(--gw-secondary-base);
 }
 
 

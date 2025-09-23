@@ -4,7 +4,9 @@
 
 :root {
   --gw-color-main-gdb-orange-700: #9e2a0a; /** #9E2A0A */
+  --gw-color-main-gdb-blue-700: #003663;
   --gw-color-primary-700: var(--gw-color-main-gdb-orange-700);
   --gw-color-secondary-700: var(--gw-color-main-gdb-blue-700);
   --gw-primary-base: var(--gw-color-primary-700);
+  --gw-secondary-base: var(--gw-color-secondary-700);
 }

@@ -57,7 +57,7 @@
 
 .file-size-prop,
 .server-import-directory-prop {
-    border-bottom: 1px dotted var(--secondary-color);
+    border-bottom: 1px dotted var(--gw-secondary-base);
 }
 
 .import-resource-message-dialog .message {
