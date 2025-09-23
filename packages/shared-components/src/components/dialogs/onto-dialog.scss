@@ -13,15 +13,13 @@
   background-color: rgba(0, 0, 0, .5);
   font-family: var(--main-font), sans-serif;
   font-weight: var(--main-font-weight);
-  color: var(--secondary-color, #373a3c);
+  color: var(--gw-secondary-base, var(--base-text-color));
 }
 
 .dialog {
   z-index: 1001;
   max-width: 60vw;
   max-height: 90vh;
-  background-color: #FFF;
-  box-shadow: 0 5px 15px rgb(0 0 0 / 50%);
   font-family: inherit;
   font-weight: inherit;
   display: flex;
@@ -29,6 +27,9 @@
   position: relative;
   justify-content: space-between;
   border: none;
+  color: var(--gw-dialog-color);
+  background-color: var(--gw-dialog-background);
+  box-shadow: 0 5px 15px rgb(0 0 0 / 50%);
 
   .dialog-header {
     display: flex;

@@ -58,7 +58,7 @@ html, body {
 
 .acl-management-view .acl-rules .no-data {
     text-align: center;
-    background-color: var(--color-info-light);
+    background-color: var(--gw-info-lighter);
 }
 
 .acl-management-view .acl-rules .preview-rule-row td.data {
@@ -220,23 +220,23 @@ input::placeholder {
 }
 
 .acl-tag-allow {
-    background-color: var(--color-success-light);
-    color: var(--color-success-dark);
+    background-color: var(--gw-success-lighter);
+    color: var(--gw-success-dark);
 }
 
 .acl-tag-deny {
-    background-color: var(--color-danger-light);
-    color: var(--color-danger-dark);
+    background-color: var(--gw-tag-danger-background);
+    color: var(--gw-tag-danger-color);
 }
 
 .acl-tag-read {
-    background-color: var(--color-help-light);
-    color: var(--color-info-dark);
+    background-color: var(--gw-neutral-lighter);
+    color: var(--gw-tag-info-color);
 }
 
 .acl-tag-write {
-    background-color: var(--color-warning-light);
-    color: var(--color-warning-dark);
+    background-color: var(--gw-warning-lighter);
+    color: var(--gw-tag-warning-color);
 }
 
 .acl-tag-role {
@@ -246,7 +246,7 @@ input::placeholder {
 
 .acl-tag-role-negated {
     background-color: #ddd;
-    color: var(--gray-color-dark);
+    color: var(--gw-neutral-dark);
 }
 
 .nav-link{
@@ -302,7 +302,7 @@ table td {
 }
 
 .table-info, .table-info > td, .table-info > th {
-    background-color: var(--color-warning-light) !important;
+    background-color: var(--gw-warning-lighter) !important;
 }
 
 .nav-item .nav-link > span,

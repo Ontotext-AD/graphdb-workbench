@@ -121,11 +121,23 @@ class CSSVariablePurger {
     // Generate and log results using actual counts
     const result = this._generatePurgeResults(
       allVariables,
-      actualVariableCount
+      actualVariableCount,
+      this._fetchMissedCssVariables(usedVariables, purgedContent)
     );
     this._logPurgeResults(result, allVariables, usedVariables);
 
     return result;
+  }
+
+  /**
+   * Finds CSS variables that are used but not declared in the provided content.
+   *
+   * @param {Set<string>} usedCssVariables - A set containing all CSS variable names that were detected as used.
+   * @param {string} contentWithDeclaredCssVariables - The CSS content containing only used variables.
+   * @returns {string[]} An array of CSS variable names that are used but not found in the <code>contentWithDeclaredCssVariables</code>.
+   */
+  _fetchMissedCssVariables(usedCssVariables, contentWithDeclaredCssVariables) {
+    return Array.from(usedCssVariables).filter(variableName => !contentWithDeclaredCssVariables.includes(variableName));
   }
 
   /**
@@ -467,7 +479,7 @@ class CSSVariablePurger {
    * @param {number} actualVariableCount - Actual number of variables written to output
    * @returns {PurgeResult} Result statistics
    */
-  _generatePurgeResults(allVariables, actualVariableCount) {
+  _generatePurgeResults(allVariables, actualVariableCount, missedCSSVariables) {
     const removedCount = allVariables.size - actualVariableCount;
 
     return {
@@ -475,6 +487,7 @@ class CSSVariablePurger {
       usedVariables: actualVariableCount,
       removedVariables: removedCount,
       outputFilePath: path.resolve(this.config.outputFile),
+      missedCSSVariables
     };
   }
 

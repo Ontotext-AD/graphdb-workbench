@@ -1,7 +1,3 @@
-// Hue, Saturation, Lightness for #373a3c
-$default-checked-color-hsl: 210, 3%, 22%;
-$default-checked-color: #373a3c;
-
 .toggle-switch {
   all: unset;
   clear: both;
@@ -56,12 +52,12 @@ $default-checked-color: #373a3c;
     &:checked {
       & ~ label {
         &:before {
-          background-color: hsla(var(--secondary-color-hsl, $default-checked-color-hsl), .5);
+          background-color: var(--gw-secondary-light, --base-text-color);
         }
 
         &:after {
           left: 1.3em;
-          background-color: var(--secondary-color, $default-checked-color);
+          background-color: var(--gw-secondary-base, --base-text-color);
         }
       }
     }

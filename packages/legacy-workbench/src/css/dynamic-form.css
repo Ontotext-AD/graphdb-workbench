@@ -52,7 +52,7 @@
         background-color: rgba(255, 255, 255, 0);
     }
     100% {
-        background-color: var(--color-warning-light);
+        background-color: var(--gw-warning-lighter);
     }
 }
 

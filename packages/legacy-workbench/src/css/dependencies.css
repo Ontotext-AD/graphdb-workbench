@@ -7,7 +7,7 @@
 }
 
 #download-svg:hover {
-    color: var(--primary-color);
+    color: var(--gw-primary-base);
 }
 
 #circle:hover path.fade {
@@ -124,7 +124,7 @@ div.tooltip {
     border-left: 1pt solid #ffffff !important;
     border-top: 0.5pt solid #ffffff !important;
     border-right: 1pt solid #ffffff !important;
-    background-color: hsla(var(--tertiary-color-hsl), 0.30) !important;
+    background-color: var(--gw-tertiary-lighter) !important;
 }
 
 .rdf-list > li > div:first-child {
@@ -158,7 +158,7 @@ div.tooltip {
 }
 
 .direction-filter-header {
-    color: var(--secondary-color);
+    color: var(--gw-secondary-base);
     font-size: 18px;
 }
 

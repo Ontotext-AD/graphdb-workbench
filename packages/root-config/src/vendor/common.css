@@ -11,6 +11,9 @@ body {
     font-family: var(--main-font);
     font-weight: var(--main-font-weight);
     margin-bottom: 0;
+    /* Overriding bootstrap's base text color #373a3c */
+    color: var(--gw-body-color);
+    background-color: var(--gw-body-background);
 }
 
 code, kbd, pre, samp {
@@ -22,7 +25,7 @@ select {
 }
 
 a {
-    color: var(--secondary-color);
+    color: var(--gw-secondary-base);
 }
 
 /* General links on hover and actual links that lead to an external site */
@@ -34,7 +37,7 @@ a:hover, a:active, a[href^="http"], a[href^="http"]:hover, a[href^="http"]:activ
 }
 
 a:focus, a:hover {
-    color: var(--secondary-color-light);
+    color: var(--gw-secondary-light);
 }
 
 .font-weight-bold {
@@ -47,7 +50,7 @@ a:focus, a:hover {
 }
 
 .text-muted {
-    color: rgba(0, 0, 0, 0.66) !important
+    color: var(--gw-text-muted-color) !important
 }
 
 .pos-r {
@@ -90,81 +93,88 @@ h1 .btn {
 }
 
 .btn-primary {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
+    color: var(--gw-button-primary-color);
+    background-color: var(--gw-button-primary-background);
+    border-color: var(--gw-button-primary-border-color);
 }
 
 .btn-primary.active, .btn-primary.focus, .btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active.focus,
 .btn-primary.active:focus, .btn-primary.active:hover, .btn-primary:active.focus, .btn-primary:active:focus, .btn-primary:active:hover, .open > .btn-primary.dropdown-toggle.focus, .open > .btn-primary.dropdown-toggle:focus, .open > .btn-primary.dropdown-toggle:hover,
 .btn-primary.disabled:hover, .btn-primary:disabled:hover {
-    background-color: var(--primary-color-dark);
-    border-color: var(--primary-color-dark);
+    color: var(--gw-button-primary-hover-color);
+    background-color: var(--gw-button-primary-hover-background);
+    border-color: var(--gw-button-primary-hover-border-color);
 }
 
 .btn-secondary {
-    background-color: #EBEBEB;
-    border-color: #EBEBEB;
-    color: var(--secondary-color);
+    color: var(--gw-button-secondary-color);
+    background-color: var(--gw-button-secondary-background);
+    border-color: var(--gw-button-secondary-border-color);
 }
 
 .btn-secondary.focus,
 .btn-secondary:hover, .btn-secondary:focus, .btn-secondary:active,
 .btn-secondary:active.focus, .btn-secondary:active:focus, .btn-secondary:active:hover,
-.btn-prisecondarymary.disabled:hover, .btn-secondary:disabled:hover {
-    background-color: #d4d4d4;
-    border-color: #d4d4d4;
+.btn-secondary.disabled:hover, .btn-secondary:disabled:hover {
+    color: var(--gw-button-secondary-hover-color);
+    background-color: var(--gw-button-secondary-hover-background);
+    border-color: var(--gw-button-secondary-hover-border-color);
 }
 
 .btn-secondary.active, .btn-secondary.active.focus, .btn-secondary.active:focus, .btn-secondary.active:hover {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
-    color: #fff;
+    color: var(--gw-button-secondary-active-color);
+    background-color: var(--gw-button-secondary-active-background);
+    border-color: var(--gw-button-secondary-active-border-color);
 }
 
 .btn-info {
-    background-color: var(--secondary-color);
-    border-color: var(--secondary-color);
+    color: var(--gw-button-info-color);
+    background-color: var(--gw-button-info-background);
+    border-color: var(--gw-button-info-border-color);
 }
 
 .btn-info.active, .btn-info.focus, .btn-info:hover, .btn-info:focus, .btn-info:active, .btn-info.active.focus,
 .btn-info.active:focus, .btn-info.active:hover, .btn-info:active.focus, .btn-info:active:focus, .btn-info:active:hover, .open > .btn-info.dropdown-toggle.focus, .open > .btn-info.dropdown-toggle:focus, .open > .btn-info.dropdown-toggle:hover,
 .btn-info.disabled:hover, .btn-info:disabled:hover {
-    background-color: var(--secondary-color-light);
-    border-color: var(--secondary-color-light);
+    color: var(--gw-button-info-hover-color);
+    background-color: var(--gw-button-info-hover-background);
+    border-color: var(--gw-button-info-hover-border-color);
 }
 
 /* outline buttons */
 .btn-outline-primary {
-    color: var(--primary-color);
-    border-color: var(--primary-color);
+    color: var(--gw-button-outlined-primary-color);
+    background-color: var(--gw-button-outlined-primary-background);
+    border-color: var(--gw-button-outlined-primary-border-color);
 }
 
 .btn-outline-primary:hover,
 .btn-outline-primary.focus, .btn-outline-primary:focus, .btn-outline-primary.active, .btn-outline-primary:active, .open > .btn-outline-primary.dropdown-toggle,
 .btn-outline-primary.active.focus, .btn-outline-primary.active:focus, .btn-outline-primary.active:hover, .btn-outline-primary:active.focus, .btn-outline-primary:active:focus, .btn-outline-primary:active:hover, .open > .btn-outline-primary.dropdown-toggle.focus, .open > .btn-outline-primary.dropdown-toggle:focus, .open > .btn-outline-primary.dropdown-toggle:hover {
-    color: var(--primary-color);
-    background-color: hsla(var(--primary-color-hsl), 0.075);
-    border-color: var(--primary-color);
+    color: var(--gw-button-outlined-primary-color);
+    background-color: var(--gw-button-outlined-primary-hover-background);
+    border-color: var(--gw-button-outlined-primary-border-color);
 }
 
 .btn-outline-secondary {
-    color: var(--secondary-color);
     background-image: none;
+    color: var(--gw-button-outlined-secondary-color);
     background-color: transparent;
-    border-color: hsla(var(--secondary-color-hsl), 0.5);
+    border-color: var(--gw-button-outlined-secondary-border-color);
 }
 
 .btn-outline-secondary:hover,
 .btn-outline-secondary.focus, .btn-outline-secondary:focus, .btn-outline-secondary.active, .btn-outline-secondary:active,
 .btn-outline-secondary.active.focus, .btn-outline-secondary.active:focus, .btn-outline-secondary:active.focus, .btn-outline-secondary:active:focus, .btn-outline-secondary:active:hover, .open > .btn-outline-secondary.dropdown-toggle.focus, .open > .btn-outline-secondary.dropdown-toggle:focus, .open > .btn-outline-secondary.dropdown-toggle:hover {
-    color: var(--secondary-color);
-    background-color: hsla(var(--secondary-color-hsl), 0.2);
-    border-color: var(--secondary-color);
+    color: var(--gw-button-outlined-secondary-color);
+    background-color: var(--gw-button-outlined-secondary-hover-background);
+    border-color: var(--gw-button-outlined-secondary-color);
 }
 
 .btn-outline-secondary.active:hover {
-    background-color: hsla(var(--secondary-color-hsl), 0.2);
-    border-color: var(--secondary-color);
+    color: var(--gw-button-outlined-secondary-color);
+    background-color: var(--gw-button-outlined-secondary-hover-background);
+    border-color: var(--gw-button-outlined-secondary-color);
 }
 
 .btn-group-lg > .btn, .btn-lg {
@@ -173,7 +183,7 @@ h1 .btn {
 }
 
 .btn-link, .btn-link a {
-    color: var(--primary-color);
+    color: var(--gw-button-primary-color);
     padding: .5em .8em;
 }
 
@@ -182,6 +192,7 @@ h1 .btn {
     text-decoration-style: dotted;
     text-decoration-thickness: var(--link-decoration-thickness);
     text-underline-offset: var(--link-underline-offset);
+    color: var(--gw-button-primary-link-hover-color);
 }
 
 .btn-link-only-icons {
@@ -193,7 +204,7 @@ h1 .btn {
 }
 
 .btn-link:focus, .btn-link:hover, .btn-link.secondary:hover {
-    color: var(--primary-color-dark);
+    color: var(--gw-button-primary-link-hover-color);
 }
 
 .btn-link.disabled:focus, .btn-link.disabled:hover, .btn-link.disabled.secondary:hover {
@@ -205,7 +216,7 @@ h1 .btn {
 }
 
 .btn-link.active, .btn-link:hover.active, .btn-link:focus.active, .btn-link:active.active {
-    background-color: var(--primary-color-dark);
+    background-color: var(--gw-primary-dark);
     color: #fff;
 }
 
@@ -311,35 +322,31 @@ h3 [class^=icon-] {
 }
 
 .text-primary {
-    color: var(--primary-color) !important;
+    color: var(--gw-primary-base) !important;
 }
 
 .text-secondary {
-    color: var(--secondary-color) !important;
+    color: var(--gw-secondary-base) !important;
 }
 
 .text-tertiary {
-    color: var(--tertiary-color-dark) !important;
-}
-
-.text-info {
-    color: var(--tertiary-color) !important;
+    color: var(--gw-tertiary-base) !important;
 }
 
 .text-danger {
-    color: var(--color-danger-dark) !important;
+    color: var(--gw-message-error-color) !important;
 }
 
 .text-success {
-    color: var(--color-success-dark) !important;
+    color: var(--gw-message-success-color) !important;
 }
 
 .text-warning {
-    color: var(--color-warning-dark) !important;
+    color: var(--gw-message-warning-color) !important;
 }
 
 .text-info {
-    color: var(--color-info-dark) !important;
+    color: var(--gw-message-info-color) !important;
 }
 
 /*-------------------------------------------------------------
@@ -352,28 +359,34 @@ h3 [class^=icon-] {
     padding: 1em;
 }
 
-.alert-warning, .alert-info, .alert-help, .alert-danger, .alert-success {
-    color: #000000AF;
-}
-
 .alert-warning {
-    background-color: var(--color-warning-light);
+    color: var(--gw-message-warning-color);
+    background-color: var(--gw-message-warning-background);
+    border-color: var(--gw-message-warning-border-color);
 }
 
 .alert-info {
-    background-color: var(--color-info-light);
+    color: var(--gw-message-info-color);
+    background-color: var(--gw-message-info-background);
+    border-color: var(--gw-message-info-border-color);
 }
 
 .alert-help {
-    background-color: var(--color-help-light);
+    color: var(--gw-message-help-color);
+    background-color: var(--gw-message-help-background);
+    border-color: var(--gw-message-help-border-color);
 }
 
 .alert-success {
-    background-color: var(--color-success-light);
+    color: var(--gw-message-success-color);
+    background-color: var(--gw-message-success-background);
+    border-color: var(--gw-message-success-border-color);
 }
 
 .alert-danger {
-    background-color: var(--color-danger-light);
+    color: var(--gw-message-error-color);
+    background-color: var(--gw-message-error-background);
+    border-color: var(--gw-message-error-border-color);
 }
 
 .alert-info, .alert-warning, .alert-help, .alert-danger, .alert-success {
@@ -431,16 +444,16 @@ h3 [class^=icon-] {
 	Background colors
 -------------------------------------------------------------*/
 .bg-primary {
-    background-color: var(--primary-color);
+    background-color: var(--gw-primary-base);
 }
 
 .bg-secondary {
-    background-color: var(--secondary-color);
+    background-color: var(--gw-secondary-base);
     color: #fff;
 }
 
 .bg-ternary {
-    background-color: var(--tertiary-color);
+    background-color: var(--gw-tertiary-base);
 }
 
 .bg-lightgray {
@@ -451,9 +464,6 @@ h3 [class^=icon-] {
     background-color: #fff;
 }
 
-.bg-lightgray {
-    background-color: #eee;
-}
 
 .pointer-events-none {
     pointer-events: none;

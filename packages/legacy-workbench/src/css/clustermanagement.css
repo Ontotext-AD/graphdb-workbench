@@ -16,7 +16,7 @@
 }
 
 .cluster-zone {
-    stroke: var(--gray-color);
+    stroke: var(--gw-neutral-base);
     fill: transparent;
 }
 
@@ -32,7 +32,7 @@
 
 .cluster-zone.no-cluster:hover {
     stroke-width: 3 !important;
-    fill: #f7f7f7 !important;
+    fill: var(--gw-hover-background) !important;
     height: 120%;
     width: 120%;
 }
@@ -51,27 +51,27 @@
 
 .node {
     cursor: pointer;
-    fill: var(--gray-color);
+    fill: var(--gw-neutral-base);
 }
 
 .node.leader {
-    fill: var(--primary-color);
-    stroke: var(--primary-color);
+    fill: var(--gw-primary-base);
+    stroke: var(--gw-primary-base);
 }
 
 .node.follower {
-    fill: var(--secondary-color);
-    stroke: var(--secondary-color);
+    fill: var(--gw-secondary-base);
+    stroke: var(--gw-secondary-base);
 }
 
 .node.candidate {
-    fill: var(--tertiary-color);
-    stroke: var(--tertiary-color);
+    fill: var(--gw-tertiary-base);
+    stroke: var(--gw-tertiary-base);
 }
 
 .node.other {
-    fill: var(--gray-color);
-    stroke: var(--gray-color);
+    fill: var(--gw-neutral-base);
+    stroke: var(--gw-neutral-base);
 }
 
 #node-group.legend .node {
@@ -239,7 +239,7 @@ div.nodetooltip {
 }
 
 .location-item .text-only:hover {
-    text-decoration: 1px underline dashed var(--color-success-dark);
+    text-decoration: 1px underline dashed var(--gw-success-base);
     text-underline-offset: 4px;
 }
 
@@ -311,7 +311,7 @@ div.nodetooltip {
 
 .error-message {
     font-size: small;
-    color: var(--color-warning-dark);
+    color: var(--gw-warning-dark);
 }
 
 .alert-save {

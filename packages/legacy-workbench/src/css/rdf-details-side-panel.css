@@ -1,12 +1,12 @@
 .rdf-info-side-panel {
-    background: white;
-    -webkit-box-shadow: -1px 3px 10px 0 rgba(0, 0, 0, 0.3);
-    -moz-box-shadow: -1px 3px 10px 0 rgba(0, 0, 0, 0.3);
-    box-shadow: -1px 3px 10px 0 rgba(0, 0, 0, 0.3);
     /* force it because pageslide sets the top:0 property inline and we need to override it */
     top: 45px !important;
     /* adapt to view width but at least 300px, menu size ignored for all practical screen sizes */
     max-width: max(300px, 25vw);
+    color: var(--gw-panel-color);
+    background-color: var(--gw-panel-background);
+    -webkit-box-shadow: var(--gw-dialog-shadow-1-offset-x) var(--gw-dialog-shadow-1-offset-y) var(--gw-dialog-shadow-1-blur) var(--gw-dialog-shadow-1-spread) var(--gw-dialog-shadow-1-color);
+    box-shadow: var(--gw-dialog-shadow-1-offset-x) var(--gw-dialog-shadow-1-offset-y) var(--gw-dialog-shadow-1-blur) var(--gw-dialog-shadow-1-spread) var(--gw-dialog-shadow-1-color);
 }
 
 .rdf-info-side-panel-expanded {
@@ -119,7 +119,7 @@
     padding: 0 0.3em;
 }
 .toggle-sidepanel:hover {
-	background-color: var(--primary-color);
+	background-color: var(--gw-primary-base);
 	color: #fff;
 }
 

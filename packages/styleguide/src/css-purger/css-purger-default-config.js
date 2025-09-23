@@ -21,8 +21,8 @@
  * @type {CSSPurgerConfig}
  */
 const DEFAULT_CONFIG = {
-  // Input/Output files
-  inputFile: require.resolve('graphwise-styleguide/dist/variables.css'),
+  // This resolves to the variables.css file in the graphwise-styleguide package in node_modules
+  inputFile: 'graphwise-styleguide/dist/variables.css',
   outputFile: 'src/css/variables-optimized.css',
 
   // File scanning patterns
@@ -38,12 +38,10 @@ const DEFAULT_CONFIG = {
     '../**/node_modules/**',
     '../**/dist/**',
     '../**/.git/**',
-    '../**/variables.css',
     '../**/variables-optimized.css',
     '**/node_modules/**',
     '**/dist/**',
     '**/.git/**',
-    '**/variables.css',
     '**/variables-optimized.css',
   ],
 

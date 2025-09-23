@@ -35,7 +35,7 @@
 .agent-settings-modal .agent-settings-form .llm-model .page-info-icon .icon-info {
     vertical-align: baseline;
     font-size: 1rem;
-    color: var(--primary-color-dark);
+    color: var(--gw-primary-dark);
 }
 
 .agent-settings-modal .agent-settings-form .context-size .input-with-unit {
@@ -78,7 +78,7 @@
 }
 
 .agent-settings-modal .agent-settings-form .context-size .reset-context-size-btn .icon-info {
-    color: var(--primary-color-dark);
+    color: var(--gw-primary-dark);
 }
 
 .context-size-wrapper .reset-context-size-btn {
@@ -188,7 +188,7 @@
     position: relative;
     /* move the slider up next to the related input field to match the mockup */
     top: -6px;
-    accent-color: var(--secondary-color);
+    accent-color: var(--gw-secondary-base);
 }
 
 .agent-settings-form .panel-toggle-link .toggle-icon {
@@ -207,7 +207,7 @@
 
 .agent-settings-form .advanced-settings .toolbar .copy-btn,
 .user-instructions .toolbar .copy-btn {
-    color: var(--primary-color);
+    color: var(--gw-primary-base);
     border: none;
     background-color: transparent;
     cursor: pointer;

@@ -1,4 +1,5 @@
 <link rel="stylesheet" type="text/css" href="css/ux-test1.css">
+<link rel="stylesheet" type="text/css" href="css/user.css">
 <link href="js/lib/rzslider/rzslider.min.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 
 <div class="content-wrapper">
@@ -12,6 +13,7 @@
             <a href="#">Non-link 2</a>
             <a href="https://graphdb.ontotext.com/" target="_blank">GraphDB Website</a>
         </div>
+
         <h2>Texts and toasts</h2>
         <div>This is normal text, <span class="text-muted">with something muted</span> and then back to normal again.
         </div>
@@ -28,15 +30,15 @@
         </div>
 
         <div class="row mb-2">
-            <div class="col-md-1" style="background-color: var(--primary-color-light)">&nbsp;</div>
-            <div class="col-md-2" style="background-color: var(--primary-color)">&nbsp;</div>
-            <div class="col-md-1" style="background-color: var(--primary-color-dark)">&nbsp;</div>
-            <div class="col-md-1" style="background-color: var(--secondary-color-light)">&nbsp;</div>
-            <div class="col-md-2" style="background-color: var(--secondary-color)">&nbsp;</div>
-            <div class="col-md-1" style="background-color: var(--secondary-color-dark)">&nbsp;</div>
-            <div class="col-md-1" style="background-color: var(--tertiary-color-light)">&nbsp;</div>
-            <div class="col-md-2" style="background-color: var(--tertiary-color)">&nbsp;</div>
-            <div class="col-md-1" style="background-color: var(--tertiary-color-dark)">&nbsp;</div>
+            <div class="col-md-1" style="background-color: var(--gw-primary-light)">&nbsp;</div>
+            <div class="col-md-2" style="background-color: var(--gw-primary-base)">&nbsp;</div>
+            <div class="col-md-1" style="background-color: var(--gw-primary-dark)">&nbsp;</div>
+            <div class="col-md-1" style="background-color: var(--gw-secondary-light)">&nbsp;</div>
+            <div class="col-md-2" style="background-color: var(--gw-secondary-base)">&nbsp;</div>
+            <div class="col-md-1" style="background-color: var(--gw-secondary-dark)">&nbsp;</div>
+            <div class="col-md-1" style="background-color: var(--gw-tertiary-light)">&nbsp;</div>
+            <div class="col-md-2" style="background-color: var(--gw-tertiary-base)">&nbsp;</div>
+            <div class="col-md-1" style="background-color: var(--gw-tertiary-dark)">&nbsp;</div>
         </div>
 
         <div class="row">
@@ -110,6 +112,33 @@
             </div>
         </div>
 
+        <h2>Buttons</h2>
+        <div class="mb-2">
+            <button class="btn btn-primary">Primary</button>
+            <button class="btn btn-secondary">Secondary</button>
+            <button class="btn btn-info">Info</button>
+            <button class="btn btn-outline-primary">Primary outlined</button>
+            <button class="btn btn-outline-secondary">Secondary outlined</button>
+            <button class="btn btn-link">Button link</button>
+            <button class="btn btn-link secondary">Button link secondary</button>
+        </div>
+
+        <h2>Tooltips</h2>
+        <div class="mb-2">
+            <button class="btn btn-primary" gdb-tooltip="Tooltip on top" tooltip-placement="top">gdb-tooltip (directive)</button>
+            <button class="btn btn-primary"
+                    tooltip-content="<div><div class='header'>Header</div><div class='body'>Body</div></div>"
+                    tooltip-placement="bottom">
+                <span class="button-label">onto-tooltip</span>
+            </button>
+        </div>
+
+        <h2>Dialogs</h2>
+        <div class="mb-2">
+            <button class="btn btn-primary" ng-click="openModal()">Modal dialog</button>
+            <button class="btn btn-primary" ng-click="openConfirmation()">Confirmation</button>
+        </div>
+
         <div style="width: 60%;">
             <!--Inputs and forms-->
             <div class="inputs-container"
@@ -158,6 +187,24 @@
                               popover-trigger="mouseenter"
                               popover-placement="bottom"></textarea>
                 </label>
+
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon" gdb-tooltip="Username"><i class="fa-solid fa-user text-muted"></i></span>
+                        <input placeholder="Username" name="username"
+                               class="form-control form-control-lg" type="text"
+                               value="John Doe">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="input-group has-danger">
+                        <span class="input-group-addon" gdb-tooltip="Username"><i class="fa-solid fa-user text-muted"></i></span>
+                        <input placeholder="Username" name="username"
+                               class="form-control form-control-lg" type="text"
+                               value="123 username">
+                    </div>
+                </div>
             </div>
             <br/>
 
@@ -332,9 +379,7 @@
 
     <!--Action buttons-->
     <div>
-        <h2>Action buttons</h2>
-        <button class="btn btn-primary" ng-click="openModal()">Click to open modal</button>
-
+        <h2>Sidebar</h2>
         <button class="btn btn-primary add-first-rule-btn" ng-click="showInfoPanel()">Click to show side-panel</button>
         <br/>
         <br/>

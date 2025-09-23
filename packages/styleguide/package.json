@@ -1,7 +1,7 @@
 {
   "name": "@ontotext/styleguide",
   "scripts": {
-    "purge-css": "node src/css-purger/purge-css-vars.js",
+    "purge-css": "node ./scripts/purge-css.js",
     "prebuild:webpack": "npm run purge-css",
     "build": "rm -rf dist && npm run build:webpack",
     "build:webpack": "webpack --mode=production",
@@ -35,6 +35,6 @@
     "webpack-merge": "^6.0.1"
   },
   "dependencies": {
-    "graphwise-styleguide": "0.0.1-init1"
+    "graphwise-styleguide": "0.0.1-init9"
   }
 }

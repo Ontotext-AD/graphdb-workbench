@@ -44,9 +44,19 @@
 .sparql-editor-view #query-editor .yasgui-toolbar .yasgui-btn {
     height: 27px;
     margin-right: 3px;
-    color: var(--secondary-color);
+    color: var(--gw-secondary-base);
 }
 
 .sparql-editor-view #query-editor .yasgui-toolbar .btn-selected {
     color: #fff;
+}
+
+
+.ontotext-yasgui-tooltip .tippy-box {
+    background-color: var(--gw-tooltip-background);
+    color: var(--gw-tooltip-color);
+}
+
+.ontotext-yasgui-tooltip .tippy-box .tippy-arrow {
+    color: var(--gw-tooltip-background);
 }

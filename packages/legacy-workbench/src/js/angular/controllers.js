@@ -1247,13 +1247,19 @@ function uxTestCtrl($scope, $repositories, toastr, ModalService) {
 
     $scope.openModal = function() {
         const modal = ModalService.openSimpleModal({
-            title: 'Confirm',
+            title: 'Modal title',
             message: 'Lorem ipsum dolor sit amet.',
-            warning: true,
         });
 
         modal.result.then(function() {
             modal.dismiss('cancel');
+        });
+    };
+
+    $scope.openConfirmation = function() {
+        ModalService.openConfirmationModal({
+            title: 'Confirmation',
+            message: 'Confirm action',
         });
     };
 

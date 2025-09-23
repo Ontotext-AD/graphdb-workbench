@@ -73,7 +73,7 @@ function copyToClipboard($translate, toastr) {
                     opacity: 0;
                     margin-left: 5px;
                     transition: opacity 0.2s ease-in-out;
-                    color: var(--secondary-color);
+                    color: var(--gw-secondary-base);
                 }
 
                 .copy-btn:hover .custom-link-icon {
