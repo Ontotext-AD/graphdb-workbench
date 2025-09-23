@@ -57,7 +57,7 @@
       border: 1px solid transparent;
       padding: .5rem 1rem;
       font-size: 1rem;
-      color: var(--secondary-color, #003663);
+      color: var(--gw-color-secondary-700, #003663);
 
       &.selected {
         background-color: var(--gw-primary-base, #9e2b0a);
@@ -95,7 +95,7 @@
       cursor: pointer;
 
       & b {
-        color: var(--secondary-color, #003663);
+        color: var(--gw-color-secondary-700, #003663);
       }
 
       &.selected {

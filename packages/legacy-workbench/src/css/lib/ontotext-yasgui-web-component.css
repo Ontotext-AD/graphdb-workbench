@@ -237,7 +237,7 @@ yasgui-component .yasr a {
 }
 
 yasgui-component .yasr a {
-    color: var(--secondary-color) !important;
+    color: var(--gw-secondary-base) !important;
 }
 
 yasgui-component .yasr .yasr_header .yasr_response_chip {
@@ -324,7 +324,7 @@ yasgui-component .yasr #explainPlanQuery {
 
 yasgui-component .yasr_response_chip {
     font-size: 16px;
-    color: var(--secondary-color) !important;
+    color: var(--gw-secondary-base) !important;
 }
 
 yasgui-component .yasr_response_chip .response-info-message {
@@ -332,7 +332,7 @@ yasgui-component .yasr_response_chip .response-info-message {
 }
 
 yasgui-component .yasr_plugin_control label {
-    color: var(--secondary-color) !important;
+    color: var(--gw-secondary-base) !important;
     margin-bottom: 0;
 }
 
@@ -353,7 +353,7 @@ yasgui-component .saved-queries-container .saved-queries-popup .saved-query {
 }
 
 yasgui-component .saved-queries-container .saved-queries-popup .saved-query a {
-    color: var(--secondary-color);
+    color: var(--gw-secondary-base);
     font-size: 14px;
     font-weight: bolder;
 }
@@ -377,7 +377,7 @@ yasgui-component .page-button.selected-page {
 }
 
 yasgui-component .page-selector {
-    color: var(--secondary-color) !important;
+    color: var(--gw-secondary-base) !important;
 }
 
 .keyboard-shortcuts-dialog-wrapper {
@@ -392,7 +392,7 @@ yasgui-component .page-selector {
 
 .keyboard-shortcuts-dialog-button {
     font-weight: 400;
-    color: var(--secondary-color);
+    color: var(--gw-secondary-base);
 }
 
 .hidden {

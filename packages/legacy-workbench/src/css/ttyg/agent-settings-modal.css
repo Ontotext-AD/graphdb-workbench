@@ -180,7 +180,7 @@
     position: relative;
     /* move the slider up next to the related input field to match the mockup */
     top: -6px;
-    accent-color: var(--secondary-color);
+    accent-color: var(--gw-secondary-base);
 }
 
 .agent-settings-form .panel-toggle-link .toggle-icon {
