@@ -244,7 +244,7 @@ footer.footer .container-fluid.main-container p {
 .nav-tabs .nav-link {
     border-radius: 0;
     cursor: pointer;
-    color: var(--secondary-color);
+    color: var(--gw-secondary-base);
     background-color: #eee;
 }
 
@@ -408,7 +408,7 @@ ul.style-arrow li:before {
 .progress-square .progress-bar {
     width: 100%;
     display: block;
-    background-color: var(--secondary-color);
+    background-color: var(--gw-secondary-base);
     position: absolute;
     bottom: 0;
 }
@@ -490,7 +490,7 @@ code {
 }
 
 .data-value {
-    color: var(--secondary-color);
+    color: var(--gw-secondary-base);
     font-weight: 400;
 }
 
@@ -521,7 +521,7 @@ code {
 }
 
 .tag-primary {
-    background-color: var(--secondary-color);
+    background-color: var(--gw-secondary-base);
 }
 
 .tag-inverse {
@@ -632,14 +632,14 @@ code {
 }
 
 .card.active {
-    border-color: var(--secondary-color);
+    border-color: var(--gw-secondary-base);
     min-height: 300px;
 }
 
 .card.active .card-footer {
-    background-color: var(--secondary-color);
+    background-color: var(--gw-secondary-base);
     color: #fff;
-    border-color: var(--secondary-color);
+    border-color: var(--gw-secondary-base);
     position: absolute;
     bottom: 0;
     left: 0;
@@ -810,63 +810,63 @@ code {
 -------------------------------------------------------------*/
 .angular-tooltip {
     max-width: 300px;
-    background-color: var(--secondary-color);
+    background-color: var(--gw-secondary-base);
 }
 
 .angular-tooltip.angular-tooltip-top:after {
-    border-top-color: var(--secondary-color);
+    border-top-color: var(--gw-secondary-base);
 }
 
 .angular-tooltip.angular-tooltip-top-left:after {
-    border-top-color: var(--secondary-color);
+    border-top-color: var(--gw-secondary-base);
 }
 
 .angular-tooltip.angular-tooltip-top-right:after {
-    border-top-color: var(--secondary-color);
+    border-top-color: var(--gw-secondary-base);
 }
 
 
 .angular-tooltip.angular-tooltip-right-top:after {
-    border-right-color: var(--secondary-color);
+    border-right-color: var(--gw-secondary-base);
 }
 
 .angular-tooltip.angular-tooltip-right:after {
-    border-right-color: var(--secondary-color);
+    border-right-color: var(--gw-secondary-base);
 }
 
 .angular-tooltip.angular-tooltip-right-bottom:after {
-    border-right-color: var(--secondary-color);
+    border-right-color: var(--gw-secondary-base);
 }
 
 .angular-tooltip.angular-tooltip-bottom:after {
-    border-bottom-color: var(--secondary-color);
+    border-bottom-color: var(--gw-secondary-base);
 }
 
 .angular-tooltip.angular-tooltip-bottom-left:after {
-    border-bottom-color: var(--secondary-color);
+    border-bottom-color: var(--gw-secondary-base);
 }
 
 .angular-tooltip.angular-tooltip-bottom-right:after {
-    border-bottom-color: var(--secondary-color);
+    border-bottom-color: var(--gw-secondary-base);
 }
 
 .angular-tooltip.angular-tooltip-left:after {
-    border-left-color: var(--secondary-color);
+    border-left-color: var(--gw-secondary-base);
 }
 
 .angular-tooltip.angular-tooltip-left-bottom:after {
-    border-left-color: var(--secondary-color);
+    border-left-color: var(--gw-secondary-base);
 }
 
 .angular-tooltip.angular-tooltip-left-top:after {
-    border-left-color: var(--secondary-color);
+    border-left-color: var(--gw-secondary-base);
 }
 
 /*-------------------------------------------------------------
 	List groups
 -------------------------------------------------------------*/
 .list-group-item-action {
-    color: var(--secondary-color) !important;
+    color: var(--gw-secondary-base) !important;
 }
 
 .list-group-item-action:focus, .list-group-item-action:hover {
@@ -1083,7 +1083,7 @@ input.switch:checked ~ label:before {
 
 input.switch:checked ~ label:after {
     left: 1.3em;
-    background-color: var(--secondary-color);
+    background-color: var(--gw-secondary-base);
 }
 
 .card.active input.switch:checked ~ label:before {
@@ -1398,7 +1398,7 @@ yasgui-component .confirm-button {
 }
 
 yasgui-component .yasr a {
-    color: var(--secondary-color) !important;
+    color: var(--gw-secondary-base) !important;
 }
 
 yasgui-component .yasr .dataTable a {
@@ -1407,11 +1407,11 @@ yasgui-component .yasr .dataTable a {
 
 yasgui-component .yasr_response_chip {
     font-size: 16px;
-    color: var(--secondary-color) !important;
+    color: var(--gw-secondary-base) !important;
 }
 
 yasgui-component .yasr_plugin_control label {
-    color: var(--secondary-color) !important;
+    color: var(--gw-secondary-base) !important;
     margin-bottom: 0;
 }
 
@@ -1584,7 +1584,7 @@ input[name=namespace] {
     border-radius: .25rem;
 }
 .badge-default  { background-color: #aaa }
-.badge-primary  { background-color: var(--gw-color-secondary-700) }
+.badge-primary  { background-color: var(--gw-secondary-base) }
 .badge-info     { background-color: var(--gw-primary-base) }
 .badge-success  { background-color: #5cb85c }
 .badge-warning  { background-color: #f0ad4e }
@@ -1674,11 +1674,11 @@ input[name=namespace] {
 }
 
 .rzslider .rz-pointer {
-    background-color: var(--secondary-color) !important;
+    background-color: var(--gw-secondary-base) !important;
 }
 
 .rzslider .rz-selection {
-    background: var(--secondary-color) !important;
+    background: var(--gw-secondary-base) !important;
 }
 
 .login-form {
