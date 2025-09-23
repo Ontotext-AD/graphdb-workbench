@@ -1,7 +1,3 @@
-:root {
-  --user-menu-primary-color: var(--primary-color, #9e2b0a);
-}
-
 .onto-user-menu {
   position: relative;
   width: fit-content;
@@ -20,11 +16,12 @@
     white-space: nowrap;
     place-items: center;
     transition: all 0.15s ease-out;
-    color: var(--secondary-color);
+    background-color: var(--gw-button-secondary-background);
+    color: var(--gw-button-secondary-color);
 
     &:hover {
-      background-color: #d4d4d4;
-      border-color: #d4d4d4;
+      background-color: var(--gw-button-secondary-hover-background);
+      color: var(--gw-button-secondary-hover-color);
 
       & .fa-user {
         transform: scale(1.2);
@@ -37,8 +34,8 @@
 
     &.open {
       color: white;
-      background-color: var(--user-menu-primary-color);
-      border-color: var(--user-menu-primary-color);
+      background-color: var(--gw-primary-base);
+      border-color: var(--gw-primary-base);
 
       & .fa-user {
         color: var(--icon-on-primary-color, #ffffffcc);
@@ -56,7 +53,7 @@
     }
 
     i {
-      color: var(--user-menu-primary-color);
+      color: var(--gw-primary-base);
       line-height: .75;
       font-size: 1.2em;
       transition: 0.15s ease-out;
@@ -75,13 +72,13 @@
     display: flex;
     flex-direction: column;
     cursor: pointer;
-    color: white;
     text-decoration: none;
     right: 0;
     min-width: 7rem;
     font-size: 1rem;
     width: 100%;
-    background-color: var(--user-menu-primary-color);
+    color: var(--gw-primary-contrast-color);
+    background-color: var(--gw-primary-base);
 
     & translate-label {
       padding: .4rem 1rem;

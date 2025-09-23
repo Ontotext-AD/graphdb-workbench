@@ -30,9 +30,9 @@ $initial-background-border-color: #EBEBEB;
 }
 
 .onto-btn-fade-danger {
-  @include fade-with-color(var(--color-danger-medium));
+  @include fade-with-color(var(--gw-error-light));
 }
 
 .onto-btn-fade-warning {
-  @include fade-with-color(var(--color-warning-medium));
+  @include fade-with-color(var(--gw-warning-base));
 }

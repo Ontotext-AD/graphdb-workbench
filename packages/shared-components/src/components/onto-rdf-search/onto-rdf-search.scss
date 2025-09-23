@@ -1,7 +1,3 @@
-:root {
-  --search-primary-color: var(--primary-color, #9e2b0a);
-}
-
 .onto-rdf-search {
   display: flex;
   align-items: center;
@@ -26,9 +22,10 @@
     box-shadow: 0 3px 6px rgba(0,0,0,.1);
     border-radius: 0;
     margin-bottom: 1em;
-    background-color: white;
     padding: 1.6rem;
     border: 1px solid rgba(0,0,0,.125);
+    color: var(--gw-dialog-color);
+    background-color: var(--gw-dialog-background);
 
     &.visible {
       top: 40px;
@@ -51,7 +48,7 @@
 
   & i {
     cursor: pointer;
-    color: var(--search-primary-color);
+    color: var(--gw-primary-base);
     transition: all 0.15s ease-out;
 
     &.fa-magnifying-glass, &.close-btn {

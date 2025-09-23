@@ -49,6 +49,11 @@ common sidebar and slidepanel styles
     /* adapt to view width but at least 220px, menu size ignored for all practical screen sizes */
     max-width: var(--sidebar-width);
     top: var(--toolbar-height) !important;
+    color: var(--gw-panel-color);
+    background-color: var(--gw-panel-background);
+    border: 1px solid var(--gw-panel-border-color);
+    -webkit-box-shadow: var(--gw-dialog-shadow-1-offset-x) var(--gw-dialog-shadow-1-offset-y) var(--gw-dialog-shadow-1-blur) var(--gw-dialog-shadow-1-spread) var(--gw-dialog-shadow-1-color);
+    box-shadow: var(--gw-dialog-shadow-1-offset-x) var(--gw-dialog-shadow-1-offset-y) var(--gw-dialog-shadow-1-blur) var(--gw-dialog-shadow-1-spread) var(--gw-dialog-shadow-1-color);
 }
 
 .ttyg-view .sidebar .slide-panel.slide-panel-expanded  {
@@ -62,16 +67,13 @@ left sidebar
 
 .ttyg-view .left-sidebar .toolbar {
     justify-content: space-between;
-    background-color: var(--base-background-color);
+    background-color: var(--gw-panel-header-background);
 }
 
 .ttyg-view .left-sidebar.collapsed .toolbar {
     justify-content: start;
-    background-color: #fff;
-}
-
-.ttyg-view .left-sidebar .chat-list-panel {
-    background-color: var(--base-background-color);
+    color: var(--gw-panel-header-color);
+    background-color: var(--gw-panel-header-background);
 }
 
 /*

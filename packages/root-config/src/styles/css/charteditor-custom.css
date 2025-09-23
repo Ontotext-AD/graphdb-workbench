@@ -1,0 +1,122 @@
+.modal-dialog.google-visualization-charteditor-dialog {
+    -webkit-box-shadow: var(--gw-dialog-shadow-1-offset-x) var(--gw-dialog-shadow-1-offset-y) var(--gw-dialog-shadow-1-blur) var(--gw-dialog-shadow-1-spread) var(--gw-dialog-shadow-1-color);
+    box-shadow: var(--gw-dialog-shadow-1-offset-x) var(--gw-dialog-shadow-1-offset-y) var(--gw-dialog-shadow-1-blur) var(--gw-dialog-shadow-1-spread) var(--gw-dialog-shadow-1-color);
+}
+
+.modal-dialog.google-visualization-charteditor-dialog,
+.modal-dialog.google-visualization-charteditor-dialog #google-visualization-charteditor-layout-table,
+.modal-dialog.google-visualization-charteditor-dialog #google-visualization-charteditor-layout-table .google-visualization-charteditor-name-input,
+.modal-dialog.google-visualization-charteditor-dialog #google-visualization-charteditor-layout-table .google-visualization-table-tr-head,
+.modal-dialog.google-visualization-charteditor-dialog #google-visualization-charteditor-layout-table .google-visualization-charteditor-section,
+.modal-dialog.google-visualization-charteditor-dialog #google-visualization-charteditor-layout-table .goog-flat-menu-button,
+.goog-menu.google-visualization-charteditor-menu,
+.goog-menu.google-visualization-charteditor-menu .goog-menuitem,
+.goog-menu.google-visualization-charteditor-menu .goog-menuitem .goog-menuitem-content,
+.modal-dialog.google-visualization-charteditor-dialog .modal-dialog-title {
+    color: var(--gw-dialog-color);
+    background-color: var(--gw-dialog-background);
+    border-color: var(--gw-dialog-border-color);
+}
+
+.modal-dialog.google-visualization-charteditor-dialog #google-visualization-charteditor-layout-table .goog-select.goog-inline-block {
+    background-image: none;
+}
+
+.modal-dialog.google-visualization-charteditor-dialog .modal-dialog-buttons button[name=cancel],
+.modal-dialog.google-visualization-charteditor-dialog .modal-dialog-buttons button[name=ok] {
+    background-image: none;
+}
+
+.modal-dialog.google-visualization-charteditor-dialog .modal-dialog-buttons button[name=ok] {
+    color: var(--gw-button-secondary-color) !important;
+    background-color: var(--gw-button-secondary-background) !important;
+    border-color: var(--gw-button-secondary-border-color) !important;
+}
+
+.modal-dialog.google-visualization-charteditor-dialog .modal-dialog-buttons button[name=cancel] {
+    color: var(--gw-button-secondary-color) !important;
+    background-color: var(--gw-dialog-background) !important;
+    border-color: var(--gw-button-secondary-border-color) !important;
+}
+
+.modal-dialog.google-visualization-charteditor-dialog .modal-dialog-buttons button[name=ok]:hover,
+.modal-dialog.google-visualization-charteditor-dialog .modal-dialog-buttons button[name=cancel]:hover {
+    background-color: var(--gw-button-secondary-hover-background) !important;
+    cursor: pointer;
+}
+
+.modal-dialog.google-visualization-charteditor-dialog #google-visualization-charteditor-layout-table .google-visualization-charteditor-panel-navigation-cell.goog-tab {
+    color: var(--gw-tabs-tab-color);
+    background-color: var(--gw-tabs-tab-background);
+    border-color: var(--gw-tabs-tab-border-color);
+    border-bottom-color: var(--gw-tabs-tab-border-bottom-color);
+}
+
+.modal-dialog.google-visualization-charteditor-dialog #google-visualization-charteditor-layout-table .google-visualization-charteditor-panel-navigation-cell.goog-tab:hover {
+    color: var(--gw-tabs-tab-hover-color);
+    background-color: var(--gw-tabs-tab-hover-background);
+    border-color: var(--gw-tabs-tab-hover-border-color);
+    border-bottom-color: var(--gw-tabs-tab-hover-border-bottom-color);
+}
+
+.modal-dialog.google-visualization-charteditor-dialog #google-visualization-charteditor-layout-table .google-visualization-charteditor-panel-navigation-cell.goog-tab-selected {
+    color: var(--gw-tabs-tab-active-color);
+    background-color: var(--gw-tabs-tab-active-background);
+    border-color: var(--gw-tabs-tab-active-border-color) var(--gw-tabs-tab-active-border-color) transparent;
+}
+
+.modal-dialog.google-visualization-charteditor-dialog #google-visualization-charteditor-layout-table .google-visualization-charteditor-panel-navigation-cell.goog-tab-selected:hover {
+    color: var(--gw-tabs-tab-active-color);
+    background-color: var(--gw-tabs-tab-active-background);
+    border-color: var(--gw-tabs-tab-active-border-color) var(--gw-tabs-tab-active-border-color) transparent;
+}
+
+.modal-dialog.google-visualization-charteditor-dialog #google-visualization-charteditor-layout-table .google-visualization-table-tr-odd {
+    background-color: var(--gw-datatable-row-striped-background);
+}
+
+.modal-dialog.google-visualization-charteditor-dialog #google-visualization-charteditor-layout-table .google-visualization-table-tr-even {
+    background-color: var(--gw-datatable-row-background);
+}
+
+.modal-dialog.google-visualization-charteditor-dialog #google-visualization-charteditor-layout-table .google-visualization-table-tr-odd:hover,
+.modal-dialog.google-visualization-charteditor-dialog #google-visualization-charteditor-layout-table .google-visualization-table-tr-even:hover {
+    background-color: var(--gw-datatable-row-hover-background);
+    color: var(--gw-datatable-row-hover-color);
+}
+
+
+.modal-dialog.google-visualization-charteditor-dialog #google-visualization-charteditor-chart-type-categories {
+    color: var(--gw-listbox-color);
+    background-color: var(--gw-listbox-background);
+}
+
+.modal-dialog.google-visualization-charteditor-dialog #google-visualization-charteditor-chart-type-categories .google-visualization-charteditor-category {
+    color: var(--gw-listbox-option-color);
+    background-color: var(--gw-listbox-option-group-background);
+}
+
+.modal-dialog.google-visualization-charteditor-dialog #google-visualization-charteditor-chart-type-categories .google-visualization-charteditor-category:hover {
+    color: var(--gw-listbox-option-focus-color);
+    background-color: var(--gw-listbox-option-focus-background);
+}
+
+.modal-dialog.google-visualization-charteditor-dialog #google-visualization-charteditor-chart-type-categories .google-visualization-charteditor-category.goog-tab.goog-tab-selected {
+    color: var(--gw-listbox-option-selected-color) !important;
+    background-color: var(--gw-listbox-option-selected-background) !important;
+}
+
+.modal-dialog.google-visualization-charteditor-dialog #google-visualization-charteditor-chart-type-categories .google-visualization-charteditor-category.goog-tab.goog-tab-selected:hover {
+    color: var(--gw-listbox-option-selected-focus-color) !important;
+    background-color: var(--gw-listbox-option-selected-focus-background) !important;
+}
+
+.jfk-tooltip {
+    color: var(--gw-tooltip-color);
+    background-color: var(--gw-tooltip-background);
+    border-radius: 0;
+
+    .tippy-arrow {
+        color: var(--gw-tooltip-background);
+    }
+}

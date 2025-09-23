@@ -52,8 +52,8 @@
     }
 
     .modal-content {
-        -webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, .5);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, .5);
+        -webkit-box-shadow: var(--gw-dialog-shadow-1-offset-x) var(--gw-dialog-shadow-1-offset-y) var(--gw-dialog-shadow-1-blur) var(--gw-dialog-shadow-1-spread) var(--gw-dialog-shadow-1-color);
+        box-shadow: var(--gw-dialog-shadow-1-offset-x) var(--gw-dialog-shadow-1-offset-y) var(--gw-dialog-shadow-1-blur) var(--gw-dialog-shadow-1-spread) var(--gw-dialog-shadow-1-color);
     }
 
     .modal-sm {
@@ -107,37 +107,37 @@
 .nav .open > a,
 .nav .open > a:hover,
 .nav .open > a:focus {
-    background-color: var(--secondary-color);
-    border-color: var(--secondary-color);
+    background-color: var(--gw-secondary-base);
+    border-color: var(--gw-secondary-base);
 }
 
 .label-success {
-    background-color: var(--tertiary-color);
+    background-color: var(--gw-tertiary-base);
 }
 
 .navbar-inverse .navbar-nav > li > a:hover,
 .navbar-inverse .navbar-nav > li > a:focus {
-    background-color: var(--tertiary-color);
+    background-color: var(--gw-tertiary-base);
 }
 
 .navbar-inverse .navbar-nav > .active > a,
 .navbar-inverse .navbar-nav > .active > a:hover,
 .navbar-inverse .navbar-nav > .active > a:focus {
-    background-color: var(--tertiary-color);
+    background-color: var(--gw-tertiary-base);
 }
 
 @media (max-width: 767px) {
     .navbar-inverse .navbar-nav .open .dropdown-menu > .dropdown-header {
-        border-color: var(--tertiary-color);
+        border-color: var(--gw-tertiary-base);
     }
     .navbar-inverse .navbar-nav .open .dropdown-menu > li > a:hover,
     .navbar-inverse .navbar-nav .open .dropdown-menu > li > a:focus {
-        background-color: var(--tertiary-color);
+        background-color: var(--gw-tertiary-base);
     }
     .navbar-inverse .navbar-nav .open .dropdown-menu > .active > a,
     .navbar-inverse .navbar-nav .open .dropdown-menu > .active > a:hover,
     .navbar-inverse .navbar-nav .open .dropdown-menu > .active > a:focus {
-        background-color: var(--tertiary-color);
+        background-color: var(--gw-tertiary-base);
     }
 }
 
@@ -167,14 +167,14 @@
 .navbar-inverse .navbar-nav > li > a:hover,
 .navbar-inverse .navbar-nav > li > a:focus {
     color: #ffffff;
-    background-color: var(--tertiary-color);
+    background-color: var(--gw-tertiary-base);
 }
 
 .navbar-inverse .navbar-nav > .active > a,
 .navbar-inverse .navbar-nav > .active > a:hover,
 .navbar-inverse .navbar-nav > .active > a:focus {
     color: #ffffff;
-    background-color: var(--tertiary-color);
+    background-color: var(--gw-tertiary-base);
 }
 
 .navbar-inverse .navbar-nav > .disabled > a,
@@ -227,7 +227,7 @@
 
 @media (max-width: 767px) {
     .navbar-inverse .navbar-nav .open .dropdown-menu > .dropdown-header {
-        border-color: var(--tertiary-color);
+        border-color: var(--gw-tertiary-base);
     }
     .navbar-inverse .navbar-nav .open .dropdown-menu > li > a {
         color: #ffffff;
@@ -235,13 +235,13 @@
     .navbar-inverse .navbar-nav .open .dropdown-menu > li > a:hover,
     .navbar-inverse .navbar-nav .open .dropdown-menu > li > a:focus {
         color: #ffffff;
-        background-color: var(--tertiary-color);
+        background-color: var(--gw-tertiary-base);
     }
     .navbar-inverse .navbar-nav .open .dropdown-menu > .active > a,
     .navbar-inverse .navbar-nav .open .dropdown-menu > .active > a:hover,
     .navbar-inverse .navbar-nav .open .dropdown-menu > .active > a:focus {
         color: #ffffff;
-        background-color: var(--tertiary-color);
+        background-color: var(--gw-tertiary-base);
     }
     .navbar-inverse .navbar-nav .open .dropdown-menu > .disabled > a,
     .navbar-inverse .navbar-nav .open .dropdown-menu > .disabled > a:hover,
@@ -271,7 +271,7 @@
 .navbar-inverse .dropdown-menu > li > a:hover,
 .navbar-inverse .dropdown-menu > .active > a,
 .navbar-inverse .dropdown-menu > .active > a:hover {
-    background-color: var(--tertiary-color);
+    background-color: var(--gw-tertiary-base);
 }
 
 .panel-danger > .panel-heading {
@@ -287,7 +287,7 @@
 /* Styles for the shortcuts directive */
 
 #keyboardShortcuts {
-    background-color: #f7f7f7;
+    background-color: var(--gw-panel-background);
     padding: 0px 5px;
     position: absolute;
     bottom: 0;
@@ -428,7 +428,7 @@
 }
 
 .dynamic-form .dropdown-item.multi-select {
-    color: var(--gray-color) !important;
+    color: var(--gw-neutral-base) !important;
     font-weight: initial !important;
 }
 
@@ -439,7 +439,7 @@
 }
 
 .dynamic-form .dropdown-menu.multi-select .dropdown-item.multi-select {
-    color: var(--gray-color) !important;
+    color: var(--gw-neutral-base) !important;
     font-weight: initial !important;
 }
 

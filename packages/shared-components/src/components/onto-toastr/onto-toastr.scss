@@ -33,19 +33,27 @@
     }
 
     &.warning {
-      background-color: var(--color-warning-dark, #A92B0A);
+      color: var(--gw-toast-warn-color);
+      background-color: var(--gw-toast-warn-background);
+      border-color: var(--gw-toast-warn-border-color);
     }
 
     &.success {
-      background-color: var(--color-success-dark, #01544D);
+      background-color: var(--gw-toast-success-background);
+      border-color: var(--gw-toast-success-border-color);
+      color: var(--gw-toast-success-color);
     }
 
     &.error {
-      background-color: var(--color-danger-dark, #B71C1C);
+      background-color: var(--gw-toast-error-background);
+      border-color: var(--gw-toast-error-border-color);
+      color: var(--gw-toast-error-color);
     }
 
     &.info {
-      background-color: var(--color-info-dark, #004177);
+      background-color: var(--gw-toast-info-background);
+      border-color: var(--gw-toast-info-border-color);
+      color: var(--gw-toast-info-color);
     }
 
     & i {

@@ -75,14 +75,14 @@
             position: sticky;
             top: 0;
             z-index: 1;
-            background: #fff;
+            background: var(--gw-datatable-header-background);
 
             th {
-                background: #fff;
+                background: var(--gw-datatable-header-background);
             }
 
             tr:first-of-type th {
-                border-bottom: 1px solid #ddd;
+                border-bottom: 1px solid var(--gw-datatable-header-cell-border-color);
             }
 
             tr:nth-of-type(2) th {
@@ -203,7 +203,7 @@
 
 .regularTextTitle{
 	font-size: 14px !important;
-	color: var(--primary-color) !important;
+	color: var(--gw-primary-base) !important;
 	font-weight: 400 !important;
 }
 
@@ -217,7 +217,7 @@
 }
 
 .dropDownIcon {
-	color: var(--primary-color) !important;
+	color: var(--gw-primary-base) !important;
 	font-size: 14px;
 }
 
@@ -230,7 +230,7 @@
 
 
 .filterIcon{
-	color: var(--primary-color) !important;
+	color: var(--gw-primary-base) !important;
 	font-size: 15px !important;
 }
 

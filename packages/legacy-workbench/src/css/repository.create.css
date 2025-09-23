@@ -10,7 +10,7 @@
   white-space: normal;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: var(--secondary-color);
+  color: var(--gw-secondary-base);
   border-radius: 20px;
   transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
   max-width: 380px;
@@ -32,7 +32,7 @@
 }
 
 .repository-heading i {
-    color: var(--primary-color);
+    color: var(--gw-primary-base);
 }
 
 .repo-description {

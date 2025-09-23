@@ -29,7 +29,7 @@
     align-items: center;
     font-weight: unset;
     color: inherit;
-    border-color: var(--gray-color);
+    border-color: var(--gw-neutral-base);
 }
 
 .agent-list-component .agents-filter-dropdown .dropdown-toggle .selected-filter {
@@ -74,7 +74,7 @@
 
 .agent-list-component .agent-item .repository-model-group .related-repository,
 .agent-list-component .agent-item .repository-model-group .model-name {
-    color: var(--gray-color-dark);
+    color: var(--gw-neutral-dark);
 }
 
 .agent-list-component .agent-item .agent-name {
@@ -122,10 +122,10 @@
 }
 
 .agent-list-component .selected-filter, .agent-list-component .agent-name {
-    color: var(--secondary-color);
+    color: var(--gw-secondary-base);
     font-weight: 400;
 }
 
 .agent-list-component .agent-name.incompatible-agent {
-    color: var(--gray-color-dark);
+    color: var(--gw-neutral-dark);
 }

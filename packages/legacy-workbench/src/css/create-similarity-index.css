@@ -24,3 +24,7 @@ yasgui-component .CodeMirror {
 .card .card-block .btn-link .hidden-lg-down {
     padding-left: 4px;
 }
+
+code {
+    background-color: var(--gw-body-background);
+}

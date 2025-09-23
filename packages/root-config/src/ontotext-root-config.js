@@ -13,6 +13,7 @@ import microfrontendLayout from './microfrontend-layout.json';
 import './styles/onto-stylesheet.scss';
 import './onto-vendor';
 import './styles/main.scss';
+import './styles/css/charteditor-custom.css';
 import {bootstrapWorkbench} from './bootstrap/bootstrap';
 import {
   ServiceProvider,

@@ -100,13 +100,13 @@
 }
 
 .status-information {
-    color: var(--color-info-dark) !important;
+    color: var(--gw-info-dark) !important;
 }
 
 .status-warning {
-    color: var(--color-warning-dark) !important;
+    color: var(--gw-warning-dark) !important;
 }
 
 .status-critical {
-    color: var(--color-danger-dark) !important;
+    color: var(--gw-error-dark) !important;
 }
