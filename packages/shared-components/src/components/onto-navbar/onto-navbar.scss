@@ -101,7 +101,7 @@ main menu height*/
   width: 2.5rem;
   vertical-align: middle;
   text-align: center;
-  color: var(--primary-color);
+  color: var(--gw-primary-base);
   transform: scale(0.9);
   display: inline-block;
   -moz-transition: all 0.18s ease-out; /* FF4+ */
@@ -117,7 +117,7 @@ main menu height*/
 
 .navbar-component .menu-element-root.active,
 .navbar-component .menu-element-root.active:hover {
-  background-color: var(--primary-color);
+  background-color: var(--gw-primary-base);
   color: #fff;
 }
 
@@ -179,7 +179,7 @@ main menu height*/
 }
 
 .navbar-component .sub-menu li.active a {
-  background-color: var(--primary-color);
+  background-color: var(--gw-primary-base);
   font-weight: 500;
   color: #fff;
 }
@@ -222,7 +222,7 @@ main menu height*/
 }
 
 .toggle-menu:hover {
-  background-color: var(--primary-color);
+  background-color: var(--gw-primary-base);
 }
 
 .toggle-menu [class^="icon-"] {

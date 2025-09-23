@@ -13,7 +13,7 @@ yasgui-component :not(h3,h4,sup) {
 }
 
 yasgui-component .yasgui-btn.btn-selected {
-    background-color: var(--primary-color) !important;
+    background-color: var(--gw-primary-base) !important;
 }
 
 yasgui-component .yasgui-toolbar .yasgui-btn {
@@ -23,7 +23,7 @@ yasgui-component .yasgui-toolbar .yasgui-btn {
 }
 
 yasgui-component .yasgui-toolbar .btn-orientation {
-    color: var(--primary-color) !important;
+    color: var(--gw-primary-base) !important;
     font-size: 28px !important;
     margin-left: 1rem;
 }
@@ -68,7 +68,7 @@ yasgui-component .tabPanel .yasqe  .yasqe-footer-buttons .abort-button {
 }
 
 yasgui-component .custom-button {
-    color: var(--primary-color) !important;
+    color: var(--gw-primary-base) !important;
     font-size: 2.5em !important;
     height: 48px;
 }
@@ -78,7 +78,7 @@ yasgui-component .custom-button:disabled:hover, yasgui-component .custom-button:
 }
 
 yasgui-component .yasqe_queryButton {
-    background-color: var(--primary-color) !important;
+    background-color: var(--gw-primary-base) !important;
     font-family: var(--main-font);
     font-weight: 400;
     height: 38px !important;
@@ -111,7 +111,7 @@ yasgui-component .yasgui .tabsList .addTab:hover {
 
 yasgui-component .editable-text-field-wrapper .save-btn,
 yasgui-component .editable-text-field-wrapper .save-btn:hover {
-    background-color: var(--primary-color);
+    background-color: var(--gw-primary-base);
 }
 
 yasgui-component .editable-text-field-wrapper .save-btn span,
@@ -130,7 +130,7 @@ yasgui-component .ontotext-dropdown-button {
 
 yasgui-component .ontotext-dropdown-button,
 yasgui-component .ontotext-dropdown-menu.open .ontotext-dropdown-menu-item {
-    background-color: var(--primary-color) !important;
+    background-color: var(--gw-primary-base) !important;
     color: #fff !important;
 }
 
@@ -173,7 +173,7 @@ yasgui-component .yasr-toolbar .explore-visual-graph-button {
     border: none;
     outline: none;
     color: #fff;
-    background-color: var(--primary-color);
+    background-color: var(--gw-primary-base);
     padding-left: 16px;
     padding-right: 16px;
 }
@@ -185,7 +185,7 @@ yasgui-component .yasr-toolbar .explore-visual-graph-button:hover {
 
 yasgui-component .yasr-toolbar .chart-download-as-button,
 yasgui-component .yasr-toolbar .pivot-table-download-as-button {
-    background-color: var(--primary-color) !important;
+    background-color: var(--gw-primary-base) !important;
 }
 
 /* Dialog body should have slightly bigger font-size. */
@@ -206,8 +206,8 @@ yasgui-component .ok-button,
 yasgui-component .primary-button,
 yasgui-component .confirm-button,
 .confirmation-dialog .dialog-footer .confirm-button {
-    background-color: var(--primary-color) !important;
-    border-color: var(--primary-color) !important;
+    background-color: var(--gw-primary-base) !important;
+    border-color: var(--gw-primary-base) !important;
 }
 
 yasgui-component .confirm-button:focus,
@@ -359,12 +359,12 @@ yasgui-component .saved-queries-container .saved-queries-popup .saved-query a {
 }
 
 yasgui-component .saved-queries-container .saved-queries-popup .saved-query-actions .saved-query-action {
-    color: var(--primary-color);
+    color: var(--gw-primary-base);
     font-size: 1.25em;
 }
 
 yasgui-component .abort-button {
-    background-color: var(--primary-color) !important;
+    background-color: var(--gw-primary-base) !important;
 }
 
 yasgui-component .abort-button:hover {
@@ -372,7 +372,7 @@ yasgui-component .abort-button:hover {
 }
 
 yasgui-component .page-button.selected-page {
-    background-color: var(--primary-color) !important;
+    background-color: var(--gw-primary-base) !important;
     color: #fff !important;
 }
 
