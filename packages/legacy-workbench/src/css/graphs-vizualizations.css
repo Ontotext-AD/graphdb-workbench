@@ -50,7 +50,6 @@
 }
 
 .search-bar {
-    background-color: white;
     user-select: none;
     /* Non-prefixed version, currently not supported by any browser */
 }
@@ -146,11 +145,11 @@
 }
 
 .triple-pred:hover {
-    color:var(--tertiary-color)
+    color:var(--gw-tertiary-base)
 }
 
 .triple-pred {
-    color: var(--primary-color-dark);
+    color: var(--gw-primary-dark);
 }
 
 .disable-visual-graph-node {

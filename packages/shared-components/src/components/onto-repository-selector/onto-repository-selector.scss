@@ -1,7 +1,3 @@
-:root {
-  --onto-repository-selector-color: var(--secondary-color, #373a3c);
-}
-
 :host {
   display: block;
 }
@@ -12,11 +8,12 @@
 
     &.closed {
       .onto-dropdown-button {
-        background-color: #ebebeb;
-        color: var(--onto-repository-selector-color);
+        background-color: var(--gw-button-secondary-background);
+        color: var(--gw-button-secondary-background);
 
         &:hover {
-          background-color: #d4d4d4;
+          background-color: var(--gw-button-secondary-hover-background);
+          color: var(--gw-button-secondary-hover-color);
         }
       }
     }
@@ -57,18 +54,50 @@
 .tippy-box[data-theme="light-border"] {
   border-radius: 0;
 
+  &.tippy-box[data-placement*=left] > .tippy-arrow:before {
+    border-left-color: var(--gw-dialog-background);
+  }
+
+  &.tippy-box[data-placement*=left]>.tippy-arrow:after {
+    border-left-color: var(--gw-dialog-border-color);
+  }
+
+  &.tippy-box[data-placement*=top] > .tippy-arrow:before {
+    border-top-color: var(--gw-dialog-background);
+  }
+
+  &.tippy-box[data-placement*=top]>.tippy-arrow:after {
+    border-top-color: var(--gw-dialog-border-color);
+  }
+
+  &.tippy-box[data-placement*=right] > .tippy-arrow:before {
+    border-right-color: var(--gw-dialog-background);
+  }
+
+  &.tippy-box[data-placement*=right]>.tippy-arrow:after {
+    border-right-color: var(--gw-dialog-border-color);
+  }
+
+  &.tippy-box[data-placement*=bottom] > .tippy-arrow:before {
+    border-bottom-color: var(--gw-dialog-background);
+  }
+
+  &.tippy-box[data-placement*=bottom]>.tippy-arrow:after {
+    border-bottom-color: var(--gw-dialog-border-color);
+  }
+
   .tippy-content {
     padding: 0;
-    color: #373a3c;
-    border: 1px solid rgba(0, 0, 0, .125);
-    box-shadow: 1px 3px 6px rgba(0, 0, 0, 0.2);
+    color: var(--gw-dialog-color);
+    border: 1px solid var(--gw-dialog-border-color);
+    box-shadow: var(--gw-dialog-shadow-1-offset-x) var(--gw-dialog-shadow-1-offset-y) var(--gw-dialog-shadow-1-blur) var(--gw-dialog-shadow-1-spread) var(--gw-dialog-shadow-1-color);
 
     .repository-tooltip-title {
       font-size: 1rem;
       font-weight: 400;
       padding: 8px 14px;
-      background-color: #f7f7f7;
-      border-bottom: #EBEBEB 1px solid;
+      background-color: var(--gw-dialog-background);
+      border-bottom: var(--gw-dialog-border-color) 1px solid;
 
       .value {
         word-wrap: break-word;
@@ -76,6 +105,7 @@
     }
 
     .repository-tooltip-content {
+      background-color: var(--gw-dialog-background);
       padding: 1.5rem 0.5rem;
       display: flex;
       flex-direction: column;

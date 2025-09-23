@@ -2,6 +2,7 @@ html,body {
   height: 100%;
   margin: 0;
   padding: 0;
+  scrollbar-color: var(--gw-virtualscroller-loader-mask-color) var(--gw-virtualscroller-loader-mask-background);
 }
 
 [id^="single-spa-application"],

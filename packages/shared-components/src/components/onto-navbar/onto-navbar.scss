@@ -32,7 +32,6 @@ main menu height*/
 }
 
 .navbar-component li a {
-  color: var(--secondary-color);
   text-decoration: none;
 }
 
@@ -45,12 +44,6 @@ main menu height*/
   padding-right: 3.5px;
 }
 
-.navbar-component a:not([href]):not([tabindex]),
-.navbar-component a:not([href]):not([tabindex]):focus,
-.navbar-component a:not([href]):not([tabindex]):hover {
-  color: var(--secondary-color);
-}
-
 .navbar-component a.sub-menu-link:not([href]):hover .menu-item,
 .navbar-component a.sub-menu-link[href=""]:hover .menu-item {
   // Overriding !important in _anchor.scss
@@ -59,7 +52,6 @@ main menu height*/
 
 .navbar-component li .menu-element-root:hover,
 .navbar-component .sub-menu li:hover {
-  background-color: rgba(0, 0, 0, .1);
   // Overriding !important in _anchor.scss
   text-decoration-line: none !important;
 }
@@ -74,8 +66,6 @@ main menu height*/
 }
 
 .navbar-component .menu-element {
-  border-bottom: 1px solid #fff;
-  background-color: #f7f7f7;
   position: relative;
 }
 
@@ -89,7 +79,6 @@ main menu height*/
   -o-transition: all 0.18s ease-out; /* Opera 10.5+ */
   -webkit-transition: all 0.18s ease-out; /* Saf3.2+, Chrome */
   transition: all 0.18s ease-out;
-  color: var(--secondary-color);
   cursor: pointer;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -101,7 +90,6 @@ main menu height*/
   width: 2.5rem;
   vertical-align: middle;
   text-align: center;
-  color: var(--primary-color);
   transform: scale(0.9);
   display: inline-block;
   -moz-transition: all 0.18s ease-out; /* FF4+ */
@@ -111,14 +99,17 @@ main menu height*/
   pointer-events: none;
 }
 
+.navbar-component .menu-element-root .menu-item {
+  pointer-events: none;
+}
+
 .navbar-component .menu-element-root.active,
 .navbar-component .menu-element-root.active:hover {
-  background-color: var(--primary-color);
-  color: #fff;
+  background-color: var(--gw-sidenav-submenuitem-active-background);
+  color: #ffffff;
 }
 
 .navbar-component .active .menu-item-icon {
-  color: var(--icon-on-primary-color);
   transform: scale(1.1);
 }
 
@@ -126,37 +117,10 @@ main menu height*/
   font-size: 1.1rem;
 }
 
-.navbar-component .brand {
-  background-color: var(--logo-background-color);
-}
-
 .navbar-component .brand a {
   display: block;
   position: relative;
   z-index: 5;
-}
-
-.navbar-component .product-version {
-  line-height: normal;
-  color: rgba(255, 255, 255, .8);
-  text-transform: uppercase;
-  font-size: 0.625rem;
-  display: block;
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  padding: 0.2em 0.5em;
-  border-color: rgba(255, 255, 255, .2);
-  border-style: solid;
-  border-top-width: 1px;
-  border-left-width: 1px;
-  border-bottom-width: 0;
-  border-right-width: 0;
-}
-
-.navbar-component .menu-element.open,
-.navbar-component.collapsed .menu-element:hover {
-  background-color: #dcdcdc;
 }
 
 .navbar-component .sub-menu {
@@ -175,9 +139,7 @@ main menu height*/
 }
 
 .navbar-component .sub-menu li.active a {
-  background-color: var(--primary-color);
   font-weight: 500;
-  color: #fff;
 }
 
 .navbar-component .menu-element.open ul li {
@@ -203,46 +165,6 @@ main menu height*/
   transform: rotate(180deg);
 }
 
-.toggle-menu {
-  display: block;
-  position: absolute;
-  top: 0;
-  right: 0;
-  color: #fff;
-  font-size: 0.8em;
-  line-height: 1.5;
-  padding: 0 0.3em;
-  background-color: rgba(255, 255, 255, .1);
-  z-index: 10;
-  cursor: pointer;
-}
-
-.toggle-menu:hover {
-  background-color: var(--primary-color);
-}
-
-.toggle-menu [class^="icon-"] {
-  -moz-transition: all 0.2s ease-in; /* FF4+ */
-  -o-transition: all 0.2s ease-in; /* Opera 10.5+ */
-  -webkit-transition: all 0.2s ease-in; /* Saf3.2+, Chrome */
-  transition: all 0.2s ease-in;
-  display: inline-block;
-}
-
-.toggle-menu:hover [class^="icon-"] {
-  transform: scale(1.1);
-}
-
-.small-logo {
-  width: 50px;
-  height: 50px;
-}
-
-.big-logo {
-  width: 180px;
-  height: 50px;
-}
-
 .navbar-component.collapsed {
   width: 4.375rem;
   overflow: visible;
@@ -253,7 +175,6 @@ main menu height*/
   position: absolute;
   top: 0;
   left: 4.375rem;
-  background-color: #EBEBEB;
   width: 15rem;
 }
 
@@ -284,17 +205,11 @@ main menu height*/
   display: block;
   font-size: 1.2em;
   font-weight: 500;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   text-overflow: ellipsis;
   overflow: hidden;
   padding: 0.5em 0.8rem 0.2em 0;
-  color: var(--secondary-color);
   margin-left: 0.8rem;
   margin-bottom: 0.5em;
-}
-
-.navbar-component .sub-menu li.submenu-title:hover {
-  background-color: transparent;
 }
 
 .navbar-component.collapsed .menu-element.open .sub-menu.align-bottom {
@@ -310,14 +225,108 @@ main menu height*/
   padding: 0.4rem;
 }
 
-.navbar-component.collapsed .product-version {
-  display: none;
-}
-
 .navbar-component.collapsed .small-logo, .navbar-component .big-logo {
   display: block;
 }
 
 .navbar-component .small-logo, .navbar-component.collapsed .big-logo {
   display: none;
+}
+
+/* ---------------- Logo ---------------- */
+.navbar-component .brand {
+  background-color: var(--gw-sidenav-logo-background);
+}
+
+.small-logo {
+  width: 50px;
+  height: 50px;
+}
+
+.big-logo {
+  width: 180px;
+  height: 50px;
+}
+
+/* ---------------- Sidenav Toggle ---------------- */
+.toggle-menu {
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 0.8em;
+  line-height: 1.5;
+  padding: 0 0.3em;
+  z-index: 10;
+  cursor: pointer;
+  background-color: var(--gw-sidenav-collapsebutton-background);
+  color: var(--gw-sidenav-collapsebutton-color);
+}
+
+.toggle-menu:hover {
+  color: var(--gw-sidenav-collapsebutton-hover-color);
+  background-color: var(--gw-sidenav-collapsebutton-hover-background);
+}
+
+.toggle-menu [class^="icon-"] {
+  transition: all 0.2s ease-in; /* Cross-browser transitions */
+  display: inline-block;
+}
+
+.toggle-menu:hover [class^="icon-"] {
+  transform: scale(1.1);
+}
+
+/* ---------------- Top-Level Menus ---------------- */
+.navbar-component .menu-element .menu-element-root {
+  background-color: var(--gw-sidenav-item-background);
+  color: var(--gw-sidenav-item-color);
+}
+
+.navbar-component .menu-element .menu-element-root:hover {
+  background-color: var(--gw-sidenav-item-hover-background);
+  color: var(--gw-sidenav-item-hover-color);
+}
+
+.navbar-component .menu-element .menu-element-root .menu-item-icon {
+  color: var(--gw-sidenav-item-icon-color);
+}
+
+.navbar-component .menu-element .menu-element-root .menu-item-icon:hover {
+  color: var(--gw-sidenav-item-hover-icon-color);
+}
+
+/* ---------------- Open Menus (with Submenus) ---------------- */
+.navbar-component .menu-element.open .menu-element-root {
+  background-color: var(--gw-sidenav-item-selected-background);
+  color: var(--gw-sidenav-item-selected-color);
+}
+
+/* ---------------- Active Menu ---------------- */
+.navbar-component .menu-element .menu-element-root.active {
+  background-color: var(--gw-sidenav-item-active-background);
+  color: var(--gw-sidenav-item-active-color);
+}
+
+.navbar-component .menu-element .menu-element-root.active .menu-item-icon {
+  color: var(--gw-sidenav-item-active-icon-color);
+}
+
+/* ---------------- Submenu ---------------- */
+.navbar-component .menu-element .sub-menu-item,
+.navbar-component .menu-element .sub-menu {
+  background-color: var(--gw-sidenav-submenuitem-background);
+  color: var(--gw-sidenav-submenuitem-color);
+}
+
+.navbar-component .menu-element .sub-menu-item:hover {
+  background-color: var(--gw-sidenav-submenuitem-hover-background);
+  color: var(--gw-sidenav-submenuitem-hover-color);
+}
+
+/* ---------------- Active Submenu ---------------- */
+.navbar-component .menu-element .sub-menu-item.active,
+.navbar-component .menu-element .sub-menu-item.active .sub-menu-link {
+  background-color: var(--gw-sidenav-submenuitem-active-background);
+  color: var(--gw-sidenav-submenuitem-active-color);
 }

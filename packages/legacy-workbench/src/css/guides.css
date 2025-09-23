@@ -1,9 +1,3 @@
 .ot-guides-pagination .pagination > li > a {
     padding: 6px 10px;
 }
-
-.ot-owlim-ctrl .pagination > .active > a {
-    background-color: #EBEBEB;
-    border-color: #EBEBEB;
-    color: var(--secondary-color);
-}

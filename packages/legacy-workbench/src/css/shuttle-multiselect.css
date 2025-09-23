@@ -1,5 +1,5 @@
 :root {
-    --color-success-light: #D4EDDA;
+    --gw-success-lighter: #D4EDDA;
     --gap: 0.8em;
 }
 
@@ -39,7 +39,7 @@
     flex: 1;
     height: inherit;
     padding: 0 1em;
-    background-color: var(--color-success-light);
+    background-color: var(--gw-success-lighter);
     overflow: hidden;
     color: #0000008F;
 }
@@ -68,7 +68,7 @@
 }
 
 .shuttle-multiselect .shuttle-panel .options-list .option-item:hover {
-    background-color: var(--color-success-light);
+    background-color: var(--gw-success-lighter);
 }
 
 .shuttle-multiselect .shuttle-panel .options-list .option-item .item-action {

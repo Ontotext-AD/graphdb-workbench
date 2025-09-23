@@ -10,9 +10,9 @@
 /*-------------------------------------------------------------
 	Colors used in multiple places
 -------------------------------------------------------------*/
-    --autocomplete-background: hsla(var(--tertiary-color-hsl), 0.3);
-    --autocomplete-background-selected: hsla(var(--tertiary-color-hsl), 0.5);
-    --autocomplete-match: var(--secondary-color);
+    --autocomplete-background: var(--gw-tertiary-lighter);
+    --autocomplete-background-selected: var(--gw-tertiary-light);
+    --autocomplete-match: var(--gw-secondary-base);
     /* width of menu 15 + margin left 1 + margin right 2 => 18rem */
     --menu-width-expanded: 18rem;
     /* width of menu 4.375 + margin left 1 + margin right 2 => 7.375 */
@@ -24,14 +24,16 @@
     /* Link decoration, see GDB-9013 before you touch these */
     --link-decoration-thickness: clamp(1px, 6%, 10px);
     --link-underline-offset: clamp(1px, 6%, 10px);
-    /* The base text color. This usually comes from the bootstrap, but in some cases it needs to be set explicitly. */
-    --base-text-color: #373a3c;
-    /* The base background color that is used for panels and other similar elements */
-    --base-background-color: #f7f7f7;
-    /* The base background color that is used for selected panels or elements */
-    --base-background-selected-color: #dcdcdc;
+    /* The base text color. This (#373a3c) usually comes from the bootstrap, but in some cases it needs to be set explicitly. */
+    --base-text-color: var(--gw-text-color);
+    /* The base background color (#f7f7f7) that is used for panels and other similar elements */
+    --base-background-color: var(--gw-panel-background);
+    /* The base background color (#dcdcdc) that is used for selected panels or elements */
+    --base-background-selected-color: var(--gw-highlight-background);
     /* The base background color that is used for hover effects in panels and elements */
     --base-background-hover-color: rgba(0, 0, 0, .1);
+    /* A color used for the font/svg icons when placed on a primary color background. */
+    --icon-on-primary-color: rgba(255, 255, 255, 0.8);
 
     /* Graphwise colors */
     --graphwise-blue-color: #001FFF;
@@ -39,4 +41,22 @@
 
     /* Sizing */
     --main-content-rl-padding: 2rem;
+
+    /* Notify browser that we support dark theme, makes checkboxes look better*/
+    color-scheme: light dark;
+}
+
+:root.dark {
+  /* Dark definition variables that affect things at a global scale */
+  /*--body-filter: invert(95%) hue-rotate(180deg);*/
+  /*--html-background: #0d0d0d;*/
+  /*--media-filter: invert(100%) hue-rotate(180deg);*/
+  /*--alert-filter: contrast(2);*/
+  /*--checkbox-filter: invert(100%) hue-rotate(180deg);*/
+  /*--toast-filter: invert(95%) hue-rotate(180deg) contrast(1.2);*/
+  /*!* Slightly different colors that work better in dark mode *!*/
+  /*--primary-color-lightness: 60%;*/
+  /*--secondary-color-saturation: 70%;*/
+  /*--color-warning-light: var(--gw-primary-lighter);*/
+  /*--logo-color: var(--gw-primary-dark);*/
 }

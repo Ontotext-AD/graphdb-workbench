@@ -79,6 +79,6 @@
 }
 
 .import-endpoint-definition-modal .progress-bar-danger {
-    background-color: var(--color-danger-light);
+    background-color: var(--gw-error-lighter);
 }
 

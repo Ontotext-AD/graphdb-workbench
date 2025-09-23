@@ -13,22 +13,22 @@
       min-width: 20vw;
 
       & input {
+        min-width: inherit;
         flex: 1;
         padding: .5rem .75rem;
         font-size: 1rem;
         line-height: 1.25;
-        color: #55595c;
-        background-color: #fff;
+        color: var(--gw-form-field-color);
+        background-color: var(--gw-form-field-background);
         background-image: none;
         -webkit-background-clip: padding-box;
         background-clip: padding-box;
-        border: 1px solid rgba(0,0,0,.15);
-        min-width: inherit;
+        border: 1px solid var(--gw-form-field-border-color);
 
         &:focus {
-          color: #55595c;
-          border-color: #66afe9;
           outline: 0;
+          color: var(--gw-form-field-color);
+          border-color: var(--gw-form-field-focus-border-color);
         }
       }
     }
@@ -57,11 +57,12 @@
       border: 1px solid transparent;
       padding: .5rem 1rem;
       font-size: 1rem;
-      color: var(--secondary-color, #003663);
+      color: var(--gw-button-secondary-color);
+      background-color: var(--gw-button-secondary-background);
 
       &.selected {
-        background-color: var(--primary-color, #9e2b0a);
-        color: white;
+        background-color: var(--gw-button-primary-background);
+        color: var(--gw-button-primary-color);
       }
 
       &:focus {
@@ -69,8 +70,8 @@
       }
 
       &:hover:not(.selected) {
-        background-color: #d4d4d4;
-        border-color: #d4d4d4;
+        background-color: var(--gw-button-secondary-hover-background);
+        border-color: var(--gw-button-secondary-hover-color);
       }
     }
   }
@@ -88,14 +89,14 @@
     & p {
       font-size: 1.1rem;
       line-height: 1.5;
-      color: #373a3c;
-      background-color: #fff;
+      color: var(--gw-autocomplete-option-color);
+      background-color: var(--gw-autocomplete-background);
       margin-bottom: 0;
       padding: 5px 25px;
       cursor: pointer;
 
       & b {
-        color: var(--secondary-color, #003663);
+        color: var(--gw-secondary-base, #003663);
       }
 
       &.selected {

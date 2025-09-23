@@ -1,0 +1,22 @@
+.list-group .list-group-item .query-name {
+    color: var(--gw-secondary-base);
+}
+
+.list-group .list-group-item .execute-saved-query {
+    float: right;
+    margin-top: 0.7em;
+    font-weight: 400;
+    color: var(--gw-primary-base);
+    cursor: pointer;
+    display: none;
+}
+
+.list-group .list-group-item:hover .execute-saved-query {
+    display: inline-block;
+}
+
+.list-group-item samp.query-name {
+    font-family: inherit;
+    font-weight: bolder;
+    font-size: 1.25rem;
+}

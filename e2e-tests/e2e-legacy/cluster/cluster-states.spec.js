@@ -104,14 +104,14 @@ describe('Cluster states', () => {
         ClusterViewSteps.getLink('pc-desktop-7300-pc-desktop-7302').should('have.css', 'stroke-dasharray', '10px, 10px')
             .and('have.css', 'marker-mid', 'url("#arrowhead_big")')
             .invoke('attr', 'stroke')
-            .should('eq', 'var(--secondary-color)');
+            .should('eq', 'var(--gw-secondary-base)');
         // And I expect an out of sync link between the leader and the out of sync node (the one receiving the snapshot)
         ClusterViewSteps.getLink('pc-desktop-7301-pc-desktop-7300').should('have.css', 'stroke-dasharray', '10px, 10px')
             .invoke('attr', 'stroke')
-            .should('eq', 'var(--gray-color)');
+            .should('eq', 'var(--gw-neutral-base)');
         // And I expect to have an in sync link between the leader and the node sending the snapshot
         ClusterViewSteps.getLink('pc-desktop-7301-pc-desktop-7302').should('have.css', 'stroke-dasharray', 'none')
             .invoke('attr', 'stroke')
-            .should('eq', 'var(--secondary-color)');
+            .should('eq', 'var(--gw-secondary-base)');
     });
 });

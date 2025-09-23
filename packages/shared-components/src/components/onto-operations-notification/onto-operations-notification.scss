@@ -55,7 +55,7 @@ $hover-color: #d4d4d4;
     right: 0;
     z-index: 1000;
     border: none;
-    background-color: var(--primary-color, #9e2b0a);
+    background-color: var(--gw-primary-base, #9e2b0a);
     border-radius: 0;
     list-style: none;
     padding: 0;
@@ -107,7 +107,7 @@ $hover-color: #d4d4d4;
             padding: 3px 2px 2px;
             text-align: center;
             font-size: 75%;
-            background-color: var(--color-info-dark, #004177) !important;
+            background-color: var(--gw-info-dark, #004177) !important;
           }
         }
 
@@ -136,15 +136,15 @@ $hover-color: #d4d4d4;
   }
 
   .status-information {
-    color: var(--color-info-dark, #004177) !important;
+    color: var(--gw-message-info-color, #004177) !important;
   }
 
   .status-warning {
-    color: var(--color-warning-dark, #7e2308) !important;
+    color: var(--gw-message-warning-color, #7e2308) !important;
   }
 
   .status-critical {
-    color: var(--color-danger-dark, #a31425) !important;
+    color: var(--gw-message-error-color, #a31425) !important;
   }
 
   i {

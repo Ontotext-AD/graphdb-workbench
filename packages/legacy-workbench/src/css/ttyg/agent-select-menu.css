@@ -8,8 +8,8 @@
     justify-content: space-between;
     align-items: center;
     overflow-x: hidden;
-    background-color: #fff;
-    border-color: var(--gray-color);
+    background-color: var(--base-background-color);
+    border-color: var(--gw-neutral-base);
     color: inherit;
     font-weight: unset;
 }
@@ -18,7 +18,7 @@
     max-height: 50vh;
     overflow-y: auto;
     width: auto;
-    background-color: #fff;
+    background-color: var(--base-background-color);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     max-width: 30vw;
 }
@@ -28,6 +28,7 @@
     padding-top: 4px;
     padding-bottom: 4px;
     padding-right: 15px;
+    background-color: var(--base-background-color);
 }
 
 .agent-select-menu .dropdown-menu li.selected,
@@ -38,7 +39,7 @@
 .agent-select-menu .incompatible-agent .agent-option,
 .agent-select-menu .incompatible-agent .agent-option .agent-name,
 .agent-select-menu .incompatible-agent .agent-option .repository-id {
-    color: var(--gray-color-dark);
+    color: var(--gw-neutral-dark);
 }
 
 .agent-select-menu .dropdown-menu li.incompatible-agent .agent-option {
@@ -66,7 +67,7 @@
 
 .agent-select-menu .agent-option .agent-name,
 .agent-select-menu .agent-option .repository-id {
-    color: var(--secondary-color);
+    color: var(--gw-secondary-base);
     font-weight: 400;
 }
 

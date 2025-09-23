@@ -34,7 +34,7 @@
 }
 
 .link, .loop-link, .property-arrow, .implicit-property-arrow, .collapsed-property-arrow, .property-type-list-item-legend {
-    stroke: var(--secondary-color);
+    stroke: var(--gw-secondary-base);
 }
 
 .legend-class-node {
@@ -92,7 +92,7 @@
 }
 
 .property-name:hover, .loop-link-property-name:hover, .left-class-label:hover, .right-class-label:hover, .rdf-class-label:hover {
-    fill: var(--secondary-color);
+    fill: var(--gw-secondary-base);
 }
 
 .left-class-label {
