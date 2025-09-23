@@ -8,7 +8,7 @@ angular
         'graphdb.framework.graphexplore.controllers.domainrange',
         'graphdb.framework.utils.localstorageadapter'
     ])
-    .constant('ONTO_RED', 'var(--primary-color)')
+    .constant('ONTO_RED', 'var(--gw-primary-base)')
     .constant('ONTO_GREEN', 'var(--tertiary-color)')
     .constant('ONTO_BLUE', 'var(--secondary-color)')
     .constant('NON_COLLAPSED_REFLEXIVE_LINK_LIMIT', 6)

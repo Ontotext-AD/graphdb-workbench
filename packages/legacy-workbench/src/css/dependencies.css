@@ -7,7 +7,7 @@
 }
 
 #download-svg:hover {
-    color: var(--primary-color);
+    color: var(--gw-primary-base);
 }
 
 #circle:hover path.fade {

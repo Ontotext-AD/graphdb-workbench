@@ -55,8 +55,8 @@
 }
 
 .node.leader {
-    fill: var(--primary-color);
-    stroke: var(--primary-color);
+    fill: var(--gw-primary-base);
+    stroke: var(--gw-primary-base);
 }
 
 .node.follower {
