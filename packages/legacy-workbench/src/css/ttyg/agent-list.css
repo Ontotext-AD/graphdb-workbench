@@ -122,7 +122,7 @@
 }
 
 .agent-list-component .selected-filter, .agent-list-component .agent-name {
-    color: var(--secondary-color);
+    color: var(--gw-secondary-base);
     font-weight: 400;
 }
 

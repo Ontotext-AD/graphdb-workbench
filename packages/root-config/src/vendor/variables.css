@@ -12,7 +12,7 @@
 -------------------------------------------------------------*/
     --autocomplete-background: hsla(var(--tertiary-color-hsl), 0.3);
     --autocomplete-background-selected: hsla(var(--tertiary-color-hsl), 0.5);
-    --autocomplete-match: var(--secondary-color);
+    --autocomplete-match: var(--gw-secondary-base);
     /* width of menu 15 + margin left 1 + margin right 2 => 18rem */
     --menu-width-expanded: 18rem;
     /* width of menu 4.375 + margin left 1 + margin right 2 => 7.375 */
