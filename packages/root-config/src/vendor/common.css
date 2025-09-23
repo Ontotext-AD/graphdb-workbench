@@ -90,8 +90,8 @@ h1 .btn {
 }
 
 .btn-primary {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
+    background-color: var(--gw-primary-base);
+    border-color: var(--gw-primary-base);
 }
 
 .btn-primary.active, .btn-primary.focus, .btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active.focus,
@@ -116,8 +116,8 @@ h1 .btn {
 }
 
 .btn-secondary.active, .btn-secondary.active.focus, .btn-secondary.active:focus, .btn-secondary.active:hover {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
+    background-color: var(--gw-primary-base);
+    border-color: var(--gw-primary-base);
     color: #fff;
 }
 
@@ -135,16 +135,16 @@ h1 .btn {
 
 /* outline buttons */
 .btn-outline-primary {
-    color: var(--primary-color);
-    border-color: var(--primary-color);
+    color: var(--gw-primary-base);
+    border-color: var(--gw-primary-base);
 }
 
 .btn-outline-primary:hover,
 .btn-outline-primary.focus, .btn-outline-primary:focus, .btn-outline-primary.active, .btn-outline-primary:active, .open > .btn-outline-primary.dropdown-toggle,
 .btn-outline-primary.active.focus, .btn-outline-primary.active:focus, .btn-outline-primary.active:hover, .btn-outline-primary:active.focus, .btn-outline-primary:active:focus, .btn-outline-primary:active:hover, .open > .btn-outline-primary.dropdown-toggle.focus, .open > .btn-outline-primary.dropdown-toggle:focus, .open > .btn-outline-primary.dropdown-toggle:hover {
-    color: var(--primary-color);
+    color: var(--gw-primary-base);
     background-color: hsla(var(--primary-color-hsl), 0.075);
-    border-color: var(--primary-color);
+    border-color: var(--gw-primary-base);
 }
 
 .btn-outline-secondary {
@@ -173,7 +173,7 @@ h1 .btn {
 }
 
 .btn-link, .btn-link a {
-    color: var(--primary-color);
+    color: var(--gw-primary-base);
     padding: .5em .8em;
 }
 
@@ -311,7 +311,7 @@ h3 [class^=icon-] {
 }
 
 .text-primary {
-    color: var(--primary-color) !important;
+    color: var(--gw-primary-base) !important;
 }
 
 .text-secondary {
@@ -431,7 +431,7 @@ h3 [class^=icon-] {
 	Background colors
 -------------------------------------------------------------*/
 .bg-primary {
-    background-color: var(--primary-color);
+    background-color: var(--gw-primary-base);
 }
 
 .bg-secondary {

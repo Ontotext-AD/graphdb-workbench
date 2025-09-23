@@ -32,7 +32,7 @@
 }
 
 .repository-heading i {
-    color: var(--primary-color);
+    color: var(--gw-primary-base);
 }
 
 .repo-description {

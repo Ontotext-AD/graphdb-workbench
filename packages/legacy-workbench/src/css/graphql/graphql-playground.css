@@ -72,7 +72,7 @@ graphql-playground {
 }
 
 .graphql-playground-view #graphiql .graphiql-sidebar button {
-    color: var(--primary-color);
+    color: var(--gw-primary-base);
     transition: all 0.15s ease-out;
 }
 
@@ -136,7 +136,7 @@ graphql-playground {
 .graphql-playground-view #graphiql .graphiql-sessions .graphiql-session-header .graphiql-tab-add:hover svg,
 .graphql-playground-view #graphiql .graphiql-sessions .graphiql-session-header .graphiql-tab-close:hover {
     background-color: transparent;
-    color: var(--primary-color);
+    color: var(--gw-primary-base);
 }
 
 .graphql-playground-view #graphiql .graphiql-tabs .graphiql-tab-active {
@@ -218,11 +218,11 @@ graphql-playground {
 }
 
 .graphql-playground-view #graphiql .graphiql-sessions .graphiql-editors .graphiql-toolbar button.graphiql-execute-button {
-    background-color: var(--primary-color);
+    background-color: var(--gw-primary-base);
 }
 
 .graphql-playground-view #graphiql .graphiql-sessions .graphiql-editors .graphiql-toolbar .graphiql-toolbar-icon {
-    color: var(--primary-color);
+    color: var(--gw-primary-base);
 }
 
 .graphql-playground-view #graphiql .graphiql-editor-tools {
@@ -243,7 +243,7 @@ graphql-playground {
 }
 
 .graphql-playground-view #graphiql .graphiql-editor-tools .graphiql-toggle-editor-tools:hover svg {
-    color: var(--primary-color);
+    color: var(--gw-primary-base);
 }
 
 /* =============================================== */
@@ -251,7 +251,7 @@ graphql-playground {
 /* =============================================== */
 
 .graphql-playground-view #graphiql .graphiql-history .graphiql-history-item-action {
-    color: var(--primary-color);
+    color: var(--gw-primary-base);
 }
 
 .graphql-playground-view #graphiql .graphiql-history .graphiql-button {
@@ -294,7 +294,7 @@ graphql-playground {
 }
 
 .graphql-playground-view #graphiql .graphiql-history .graphiql-history-item.editable button {
-    color: var(--primary-color);
+    color: var(--gw-primary-base);
 }
 
 .graphql-playground-view #graphiql .graphiql-history .graphiql-history-item.editable button:focus,
@@ -398,7 +398,7 @@ div[data-radix-popper-content-wrapper] * {
 
 .graphql-playground-view #graphiql .docExplorerWrap .toolbar-button:hover span {
     transform: scale(1.2);
-    color: var(--primary-color) !important;
+    color: var(--gw-primary-base) !important;
 }
 
 
@@ -445,7 +445,7 @@ div[data-radix-popper-content-wrapper] * {
 }
 
 .graphql-playground-view #graphiql .CodeMirror-lint-tooltip {
-    color: var(--primary-color);
+    color: var(--gw-primary-base);
 }
 
 /* ================================================ */
@@ -465,7 +465,7 @@ div[data-radix-popper-content-wrapper] * {
 .graphiql-dialog .graphiql-dialog-section a,
 .graphiql-dialog .graphiql-dialog-section a:hover,
 .graphiql-dialog .graphiql-dialog-section a:focus {
-    color: var(--primary-color);
+    color: var(--gw-primary-base);
     text-decoration-line: underline;
     text-decoration-style: dotted;
     text-decoration-thickness: var(--link-decoration-thickness);

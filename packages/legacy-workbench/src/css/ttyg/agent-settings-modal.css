@@ -199,7 +199,7 @@
 
 .agent-settings-form .advanced-settings .toolbar .copy-btn,
 .user-instructions .toolbar .copy-btn {
-    color: var(--primary-color);
+    color: var(--gw-primary-base);
     border: none;
     background-color: transparent;
     cursor: pointer;
