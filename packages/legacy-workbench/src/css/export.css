@@ -35,7 +35,7 @@
 .ot-owlim-ctrl .pagination > .active > a {
     background-color: #EBEBEB;
     border-color: #EBEBEB;
-    color: var(--secondary-color);
+    color: var(--gw-secondary-base);
 }
 
 .ot-page-size .dropdown-menu {
@@ -65,8 +65,8 @@
   top: 3px;
 }
 .ot-owlim-ctrl .btn-primary[disabled] {
-	background-color: var(--secondary-color);
-	border-color: var(--secondary-color);
+	background-color: var(--gw-secondary-base);
+	border-color: var(--gw-secondary-base);
 	color: #fff;
 }
 
@@ -118,8 +118,8 @@
     margin: 0;
     padding: 0;
     list-style: none;
-    background-color: var(--secondary-color);
-    border-color: var(--secondary-color);
+    background-color: var(--gw-secondary-base);
+    border-color: var(--gw-secondary-base);
     display: none;
 }
 
@@ -145,7 +145,7 @@
     height: 0;
     border-left: 8px solid transparent;
     border-right: 8px solid transparent;
-    border-bottom: 8px solid var(--secondary-color);
+    border-bottom: 8px solid var(--gw-secondary-base);
     position: absolute;
     bottom: 0;
     left: 40px;
@@ -208,7 +208,7 @@
 #export-graphs .arrow-up{
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
-    border-bottom: 5px solid var(--secondary-color);
+    border-bottom: 5px solid var(--gw-secondary-base);
     bottom: -2px;
     left: 19px;
 }

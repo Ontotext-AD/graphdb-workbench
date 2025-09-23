@@ -39,7 +39,7 @@
 }
 
 #close-button {
-	color: var(--secondary-color);
+	color: var(--gw-secondary-base);
     font-size: 1.5em;
     cursor: pointer;
 }

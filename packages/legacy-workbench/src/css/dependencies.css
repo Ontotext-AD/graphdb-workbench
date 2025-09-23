@@ -158,7 +158,7 @@ div.tooltip {
 }
 
 .direction-filter-header {
-    color: var(--secondary-color);
+    color: var(--gw-secondary-base);
     font-size: 18px;
 }
 
