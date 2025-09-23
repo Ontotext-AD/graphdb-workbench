@@ -73,7 +73,7 @@
 }
 
 .highlight {
-    color: var(--primary-color);
+    color: var(--gw-primary-base);
 }
 
 .angucomplete-row, .angucomplete-selected-row, .angucomplete-row.angucomplete-selected-row {

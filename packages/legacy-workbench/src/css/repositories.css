@@ -200,7 +200,7 @@ span.required {
     padding-top: 5px;
     font-size: 20px;
     background-color: #D1D1D1;
-    color: var(--primary-color);
+    color: var(--gw-primary-base);
 }
 
 #sesameRepositories .repositoryMainContainer .repositoryContainer .nameRow div {
@@ -215,7 +215,7 @@ span.required {
 #sesameRepositories .repositoryMainContainer .repositoryContainer .nameRow div.iconsContainer div i {
     cursor: pointer;
     font-size: 16px;
-    color: var(--primary-color);
+    color: var(--gw-primary-base);
     margin-left: 5px
 }
 

@@ -16,10 +16,10 @@ export class ChartData {
     }
 
     static get COLORS() {
-        // Using the variables, e.g. 'var(--primary-color)' directly confuses some echarts color calculations
+        // Using the variables, e.g. 'var(--gw-primary-base)' directly confuses some echarts color calculations
         return [
-            ChartData.cssVar('--secondary-color'),
-            ChartData.cssVar('--primary-color'),
+            ChartData.cssVar('--gw-color-secondary-700'),
+            ChartData.cssVar('--gw-primary-base'),
             ChartData.cssVar('--tertiary-color'),
             ChartData.cssVar('--gray-color')
         ];
