@@ -223,12 +223,12 @@ export class OntoLayout {
     if (!this.authenticationService.isSecurityEnabled()) {
       this.showHeader = true;
     } else {
-      this.showHeader = this.authenticationService.isLoggedIn() || this.authorizationService.hasFreeAccess();
+      this.showHeader = this.authenticationService.isAuthenticated() || this.authorizationService.hasFreeAccess();
     }
   }
 
   private isAuthenticatedFully() {
-    return !this.authenticationService.isSecurityEnabled() || this.authenticationService.isLoggedIn() || this.authorizationService.hasFreeAccess();
+    return !this.authenticationService.isSecurityEnabled() || this.authenticationService.isAuthenticated() || this.authorizationService.hasFreeAccess();
   }
 
   private shouldShowMenu(role: Authority): boolean {
