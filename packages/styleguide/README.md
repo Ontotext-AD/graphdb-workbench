@@ -11,13 +11,13 @@ This workflow describes how to update and integrate design tokens and styles fro
 - The UX developer publishes the updated tokens to the `graphwise-styleguide` repository, or exports them as a file and provides them to the UI developers.
 
 ### 3. Update Tokens in Repo
-- The UI developer updates the tokens in the styleguide repository with the new version from Figma.
+- The UI developer updates the tokens in the graphwise-styleguide repository with the new version from Figma.
 
 ### 4. Rebuild Stylesheet
-- The UI developer rebuilds the `variables.css` stylesheet using the new tokens.
+- The UI developer rebuilds the `variables.css` stylesheet using the new tokens in the graphwise-styleguide repository.
 
 ### 5. Publish New Package Version
-- The UI developer publishes a new version of the styleguide package to NPM, following semantic versioning.
+- The UI developer publishes a new version of the graphwise-styleguide package to NPM, following semantic versioning.
 
 ### 6. Install Updated Styleguide
 - The UI developer installs the new styleguide version in the Workbench by updating `/packages/styleguide/package.json`.
