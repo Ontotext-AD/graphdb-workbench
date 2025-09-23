@@ -42,7 +42,7 @@
 }
 
 .angucomplete-selected-row {
-    background-color: var(--secondary-color);
+    background-color: var(--gw-secondary-base);
     color: #ffffff;
 }
 

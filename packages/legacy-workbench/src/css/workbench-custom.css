@@ -107,8 +107,8 @@
 .nav .open > a,
 .nav .open > a:hover,
 .nav .open > a:focus {
-    background-color: var(--secondary-color);
-    border-color: var(--secondary-color);
+    background-color: var(--gw-secondary-base);
+    border-color: var(--gw-secondary-base);
 }
 
 .label-success {
