@@ -9,7 +9,7 @@ const d3 = {
 
 const clusterColors = {
     ontoOrange: 'var(--gw-primary-base)',
-    ontoBlue: 'var(--gw-color-secondary-700)',
+    ontoBlue: 'var(--gw-secondary-base)',
     ontoGreen: 'var(--tertiary-color)',
     ontoGrey: 'var(--gray-color)'
 };
@@ -411,7 +411,7 @@ export function addArrowHead(svg, config) {
         .attr("orient", "auto-start-reverse")
         .append("path")
         .attr("d", `M 0 0 L ${config.size * 2} ${config.size} L 0 ${config.size * 2} z`)
-        .style("fill", "var(--secondary-color)");
+        .style("fill", "var(--gw-secondary-base)");
 }
 
 export function setArrowLink(link, config) {

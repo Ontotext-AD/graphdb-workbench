@@ -18,7 +18,7 @@ export class ChartData {
     static get COLORS() {
         // Using the variables, e.g. 'var(--gw-primary-base)' directly confuses some echarts color calculations
         return [
-            ChartData.cssVar('--gw-color-secondary-700'),
+            ChartData.cssVar('--gw-secondary-base'),
             ChartData.cssVar('--gw-primary-base'),
             ChartData.cssVar('--tertiary-color'),
             ChartData.cssVar('--gray-color')
@@ -206,7 +206,7 @@ export class ChartData {
                             fontSize: 14
                         },
                         b: {
-                            color: ChartData.cssVar('--secondary-color'),
+                            color: ChartData.cssVar('--gw-secondary-base'),
                             fontWeight: 400,
                             fontSize: 14
                         }
