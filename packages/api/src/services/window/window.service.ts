@@ -1,5 +1,5 @@
 import {Service} from '../../providers/service/service';
-import {PluginRegistry} from '../../models/plugins';
+import {PluginRegistry} from '../plugins';
 import {getPathName} from '../utils';
 
 /**
