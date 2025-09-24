@@ -14,6 +14,8 @@ describe('Edit TTYG agent guide', () => {
     beforeEach(() => {
         RepositoriesStubs.stubRepositories(0, '/repositories/get-ttyg-repositories.json');
         RepositoriesStubs.stubBaseEndpoints(repositoryId);
+        cy.presetRepository(repositoryId);
+
         GuidesStubs.stubTTYGEditAgentGuide();
 
         GuideSteps.visit();
@@ -25,7 +27,6 @@ describe('Edit TTYG agent guide', () => {
 
     it('should end guide when no api key is present', () => {
         TTYGStubs.stubAgentListGetError('Set the config property \'graphdb.llm.api-key\' to your LLM API key');
-        cy.presetRepository(repositoryId);
 
         GuideDialogSteps.assertDialogWithTitleIsVisible('Edit an agent — 1/18');
         GuideDialogSteps.assertDialogWithContentIsVisible('Click on the Lab menu.');
@@ -41,7 +42,6 @@ describe('Edit TTYG agent guide', () => {
     });
 
     it('should edit TTYG agent', () => {
-        cy.presetRepository(repositoryId);
         TTYGStubs.stubAgentListGet();
         TTYGStubs.stubAgentDefaultsGet();
         TTYGStubs.stubChatGet();
