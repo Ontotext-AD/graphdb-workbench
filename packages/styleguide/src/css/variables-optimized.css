@@ -8,14 +8,17 @@
   --gw-color-main-gdb-orange-800: #812308;
   --gw-color-main-gdb-blue-600: #005399;
   --gw-color-main-gdb-blue-700: #003663;
+  --gw-color-main-gdb-blue-800: #002b4f;
   --gw-color-primary-600: var(--gw-color-main-gdb-orange-600);
   --gw-color-primary-700: var(--gw-color-main-gdb-orange-700);
   --gw-color-primary-800: var(--gw-color-main-gdb-orange-800);
   --gw-color-secondary-600: var(--gw-color-main-gdb-blue-600);
   --gw-color-secondary-700: var(--gw-color-main-gdb-blue-700);
+  --gw-color-secondary-800: var(--gw-color-main-gdb-blue-800);
   --gw-primary-base: var(--gw-color-primary-700);
   --gw-primary-light: var(--gw-color-primary-600);
   --gw-primary-dark: var(--gw-color-primary-800);
   --gw-secondary-base: var(--gw-color-secondary-700);
   --gw-secondary-light: var(--gw-color-secondary-600);
+  --gw-secondary-dark: var(--gw-color-secondary-800);
 }
