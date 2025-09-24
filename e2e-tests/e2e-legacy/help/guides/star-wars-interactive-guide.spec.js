@@ -3,7 +3,8 @@ import {StarWarsGuideSteps} from "../../../steps/guides/star-wars-guide-steps";
 
 const STAR_WARS_FILE_FOR_IMPORT = 'starwars.ttl';
 
-describe('Describes "Starwars" interactive guide', () => {
+// TODO: Enable when graphdb-workbench-plugins is installed from npm.
+describe.skip('Describes "Starwars" interactive guide', () => {
 
     let repositoryId;
 

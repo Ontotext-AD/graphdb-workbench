@@ -5,7 +5,7 @@
   },
   "applicationLogoPath": "assets/graphdb-logo-dark.svg",
   "applicationFaviconPath": "assets/favicon.png",
-  "pluginsManifestPath": "wb-plugins/plugins-manifest.json",
+  "pluginsManifestPath": "plugins/plugins-manifest.json",
   "loggerConfig": {
     "loggers": ["console"],
     "minLogLevel": "DEBUG"
