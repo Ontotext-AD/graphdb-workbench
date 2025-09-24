@@ -234,7 +234,6 @@ const getWaitForAnswerStep = (GuideUtils, options) => {
             content: 'guide.step_plugin.ask-ttyg-agent.wait-for-answer',
             class: 'wait-for-answer',
             url: 'ttyg',
-            placement: 'left',
             elementSelector: GuideUtils.getGuideElementSelector(CHAT_DETAILS_SELECTOR),
             elementSelectorToWait: GuideUtils.getGuideElementSelector('question-loader'),
         }, options),
