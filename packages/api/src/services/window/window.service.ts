@@ -1,5 +1,5 @@
 import {Service} from '../../providers/service/service';
-import {PluginRegistry} from '../../models/plugins';
+import {PluginRegistry} from '../plugins';
 
 /**
  * Service that provides access to browser window-related functionality.

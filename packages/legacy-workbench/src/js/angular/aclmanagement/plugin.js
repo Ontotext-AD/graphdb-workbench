@@ -8,7 +8,7 @@ PluginRegistry.add('route', {
     'title': 'view.aclmanagement.title',
     'helpInfo': 'view.aclmanagement.helpInfo',
     'documentationUrl': 'managing-fgac-workbench.html',
-    'allowAuthorities': ['READ_REPO_{repoId}']
+    'allowAuthorities': ['READ_REPO_{repoId}'],
 });
 
 PluginRegistry.add('main.menu', {
@@ -21,7 +21,7 @@ PluginRegistry.add('main.menu', {
             parent: 'Setup',
             role: "ROLE_ADMIN",
             guideSelector: 'sub-menu-aclmanagement',
-            testSelector: 'sub-menu-acl-management'
-        }
-    ]
+            testSelector: 'sub-menu-acl-management',
+        },
+    ],
 });

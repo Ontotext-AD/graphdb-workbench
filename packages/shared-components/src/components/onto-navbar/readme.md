@@ -7,10 +7,10 @@
 
 ## Properties
 
-| Property          | Attribute          | Description                                                                                                  | Type                       | Default     |
-| ----------------- | ------------------ | ------------------------------------------------------------------------------------------------------------ | -------------------------- | ----------- |
-| `menuItems`       | `menu-items`       | Configuration for the menu items model. This is the external model that is used to build the internal model. | `ExternalMenuItemsModel[]` | `undefined` |
-| `navbarCollapsed` | `navbar-collapsed` | Configuration whether the navbar should be collapsed.                                                        | `boolean`                  | `undefined` |
+| Property          | Attribute          | Description                                                                                                  | Type               | Default     |
+| ----------------- | ------------------ | ------------------------------------------------------------------------------------------------------------ | ------------------ | ----------- |
+| `menuItems`       | `menu-items`       | Configuration for the menu items model. This is the external model that is used to build the internal model. | `MainMenuPlugin[]` | `undefined` |
+| `navbarCollapsed` | `navbar-collapsed` | Configuration whether the navbar should be collapsed.                                                        | `boolean`          | `undefined` |
 
 
 ## Events
