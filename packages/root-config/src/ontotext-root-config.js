@@ -15,13 +15,20 @@ import {
   EventService,
   NavigationEnd,
   NavigationStart,
-  getBasePath
+  getBasePath,
+  PluginRegistry,
+  MainMenuExtensionPoint,
+  RouteExtensionPoint,
+  InteractiveGuideExtensionPoint,
+  ThemesExtensionPoint
 } from '@ontotext/workbench-api';
 import microfrontendLayout from './microfrontend-layout.json';
 import './styles/onto-stylesheet.scss';
 import './onto-vendor';
 import './styles/main.scss';
 import './styles/css/charteditor-custom.css';
+import {WindowService} from '../../shared-components/api/src/services/window';
+
 
 const SINGLE_SPA_GLOBAL_KEY = 'singleSpa';
 
@@ -129,6 +136,14 @@ function initSingleSpa() {
     console.error(getAppStatus(err.appOrParcelName));
   });
 }
+
+
+const pluginRegistry = new PluginRegistry();
+pluginRegistry.registerExtensionPoint(new MainMenuExtensionPoint());
+pluginRegistry.registerExtensionPoint(new RouteExtensionPoint());
+pluginRegistry.registerExtensionPoint(new InteractiveGuideExtensionPoint());
+pluginRegistry.registerExtensionPoint(new ThemesExtensionPoint());
+WindowService.getWindow().PluginRegistry = pluginRegistry;
 
 async function start() {
   try {

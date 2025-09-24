@@ -7,20 +7,18 @@
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { DialogHandler } from "./models/dialog/dialog-handler";
 import { DialogConfig } from "./components/dialogs/onto-dialog";
-import { AuthenticatedUser, Awaitable, License, Notification, OperationStatusSummary, ProductInfo, Repository, RepositoryReference, RepositorySizeInfo, SearchButtonConfig, SecurityConfig, ToastMessage, TranslationParameter } from "../../api/dist/ontotext-workbench-api.d";
+import { AuthenticatedUser, Awaitable, License, Notification, MainMenuPlugin OperationStatusSummary, ProductInfo, Repository, RepositoryReference, RepositorySizeInfo, SearchButtonConfig, SecurityConfig, ToastMessage, TranslationParameter } from "../../api/dist/ontotext-workbench-api.d";
 import { DropdownItem } from "./models/dropdown/dropdown-item";
 import { OntoTooltipPlacement } from "./components/onto-tooltip/models/onto-tooltip-placement";
 import { DropdownItemAlignment } from "./models/dropdown/dropdown-item-alignment";
-import { ExternalMenuModel } from "./components/onto-navbar/external-menu-model";
 import { NavbarToggledEvent } from "./components/onto-navbar/navbar-toggled-event";
 import { ToggleEventPayload } from "./models/toggle-switch/toggle-event-payload";
 export { DialogHandler } from "./models/dialog/dialog-handler";
 export { DialogConfig } from "./components/dialogs/onto-dialog";
-export { AuthenticatedUser, Awaitable, License, Notification, OperationStatusSummary, ProductInfo, Repository, RepositoryReference, RepositorySizeInfo, SearchButtonConfig, SecurityConfig, ToastMessage, TranslationParameter } from "../../api/dist/ontotext-workbench-api.d";
+export { AuthenticatedUser, Awaitable, License, Notification, MainMenuPlugin, OperationStatusSummary, ProductInfo, Repository, RepositoryReference, RepositorySizeInfo, SearchButtonConfig, SecurityConfig, ToastMessage, TranslationParameter } from "../../api/dist/ontotext-workbench-api.d";
 export { DropdownItem } from "./models/dropdown/dropdown-item";
 export { OntoTooltipPlacement } from "./components/onto-tooltip/models/onto-tooltip-placement";
 export { DropdownItemAlignment } from "./models/dropdown/dropdown-item-alignment";
-export { ExternalMenuModel } from "./components/onto-navbar/external-menu-model";
 export { NavbarToggledEvent } from "./components/onto-navbar/navbar-toggled-event";
 export { ToggleEventPayload } from "./models/toggle-switch/toggle-event-payload";
 export namespace Components {
@@ -136,7 +134,7 @@ export namespace Components {
         /**
           * Configuration for the menu items model. This is the external model that is used to build the internal model.
          */
-        "menuItems": ExternalMenuModel;
+        "menuItems": MainMenuPlugin[];
         /**
           * Configuration whether the navbar should be collapsed.
          */
@@ -749,7 +747,7 @@ declare namespace LocalJSX {
         /**
           * Configuration for the menu items model. This is the external model that is used to build the internal model.
          */
-        "menuItems"?: ExternalMenuModel;
+        "menuItems"?: MainMenuPlugin[];
         /**
           * Configuration whether the navbar should be collapsed.
          */

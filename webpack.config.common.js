@@ -146,10 +146,6 @@ module.exports = (webpackConfigEnv, argv) => {
                       noErrorOnMissing: true
                     },
                     {
-                        from: 'packages/legacy-workbench/src/js/angular/plugin-registry.js',
-                        to: 'plugin-registry.js'
-                    },
-                    {
                         from: 'packages/shared-components/src/assets',
                         to: 'assets',
                         filter: (sourcePath) => {
