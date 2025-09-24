@@ -35,7 +35,7 @@
 .agent-settings-modal .agent-settings-form .llm-model .page-info-icon .icon-info {
     vertical-align: baseline;
     font-size: 1rem;
-    color: var(--primary-color-dark);
+    color: var(--gw-primary-dark);
 }
 
 .agent-settings-modal .agent-settings-form .context-size .input-with-unit {
@@ -78,7 +78,7 @@
 }
 
 .agent-settings-modal .agent-settings-form .context-size .reset-context-size-btn .icon-info {
-    color: var(--primary-color-dark);
+    color: var(--gw-primary-dark);
 }
 
 .context-size-wrapper .reset-context-size-btn {
