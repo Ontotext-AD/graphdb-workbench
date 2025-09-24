@@ -19,5 +19,5 @@ form.form-horizontal .form-group label.control-label[for="difyExtension"] {
 }
 
 copy-to-clipboard .custom-link-icon {
-    color: var(--primary-color-dark);
+    color: var(--gw-primary-dark);
 }
