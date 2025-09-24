@@ -10,7 +10,6 @@ import {
   State,
   Watch
 } from '@stencil/core';
-import {ExternalMenuModel} from './external-menu-model';
 import {NavbarToggledEvent} from './navbar-toggled-event';
 import {NavbarService} from './navbar-service';
 import {NavbarItemModel, NavbarModel} from './navbar-model';
@@ -22,6 +21,7 @@ import {
   navigate,
   ServiceProvider,
   SubscriptionList,
+  MainMenuPlugin
 } from '@ontotext/workbench-api';
 
 const labelKeys = {
@@ -85,10 +85,10 @@ export class OntoNavbar {
   /**
    * Configuration for the menu items model. This is the external model that is used to build the internal model.
    */
-  @Prop() menuItems: ExternalMenuModel;
+  @Prop() menuItems: MainMenuPlugin[];
 
   @Watch('menuItems')
-  menuItemsChanged(menuItems: ExternalMenuModel) {
+  menuItemsChanged(menuItems: MainMenuPlugin[]) {
     this.init(menuItems);
   }
 
@@ -97,7 +97,7 @@ export class OntoNavbar {
    */
   @Event() navbarToggled: EventEmitter<NavbarToggledEvent>;
 
-  private init(menuItems: ExternalMenuModel): void {
+  private init(menuItems: MainMenuPlugin[]): void {
     const internalModel = NavbarService.map(menuItems || [], this.productInfo);
     internalModel.initSelected(getCurrentRoute());
     this.menuModel = internalModel;

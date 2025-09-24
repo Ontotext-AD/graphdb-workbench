@@ -1,4 +1,7 @@
 import {LoggerProvider} from "./logger-provider";
+import {
+    WindowService,
+} from '@ontotext/workbench-api';
 
 const modules = [];
 
@@ -86,7 +89,7 @@ function ThemeService(workbenchSettingsStorageService, $translate, toastr) {
      * @return {ThemeDefinitionModel|undefined} A theme definition obtained from the PluginRegistry by name.
      */
     const getThemeDefinitionByName = (themeName) => {
-        const themeDefinition = PluginRegistry.findPlugin(THEMES_EXTENSION, (themeDefinition) => themeDefinition.name === themeName);
+        const themeDefinition = WindowService.getPluginRegistry().findPlugin(THEMES_EXTENSION, (themeDefinition) => themeDefinition.name === themeName);
         if (themeDefinition) {
             return themeDefinition;
         } else if (themeName !== DEFAULT_THEME_NAME) {
