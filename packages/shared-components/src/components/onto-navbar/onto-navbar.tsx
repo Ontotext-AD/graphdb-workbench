@@ -18,10 +18,10 @@ import {
   EventName,
   EventService, getCurrentRoute, isHomePage, ProductInfo, ProductInfoContextService,
   navigate,
-  ServiceProvider,
   service,
-  SubscriptionList, openInNewTab,
-  ExternalMenuModel,
+  SubscriptionList,
+  MainMenuPlugin,
+  openInNewTab,
   RepositoryContextService,
   REPOSITORY_ID_PARAM
 } from '@ontotext/workbench-api';
@@ -91,10 +91,10 @@ export class OntoNavbar {
   /**
    * Configuration for the menu items model. This is the external model that is used to build the internal model.
    */
-  @Prop() menuItems: ExternalMenuModel;
+  @Prop() menuItems: MainMenuPlugin[];
 
   @Watch('menuItems')
-  menuItemsChanged(menuItems: ExternalMenuModel) {
+  menuItemsChanged(menuItems: MainMenuPlugin[]) {
     this.init(menuItems);
   }
 
@@ -103,7 +103,7 @@ export class OntoNavbar {
    */
   @Event() navbarToggled: EventEmitter<NavbarToggledEvent>;
 
-  private init(menuItems: ExternalMenuModel): void {
+  private init(menuItems: MainMenuPlugin[]): void {
     const selectedRepository = this.repositoryContextService.getSelectedRepository();
     const internalModel = NavbarService.map(menuItems || [], this.productInfo, selectedRepository?.id, REPOSITORY_ID_PARAM);
     internalModel.initSelected(getCurrentRoute());
@@ -152,7 +152,7 @@ export class OntoNavbar {
 
   private subscribeToNavigationEnd() {
     this.subscriptions.add(
-      ServiceProvider.get(EventService).subscribe(
+      service(EventService).subscribe(
         EventName.NAVIGATION_END, () => {
           this.selectItemByUrl();
         }

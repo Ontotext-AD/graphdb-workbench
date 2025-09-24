@@ -6,8 +6,12 @@ import {Repository} from '../../models/repositories';
 import {RepositoryContextService, RepositoryService, RepositoryStorageService} from '../repository';
 import {RoutingService} from '../routing/routing.service';
 import {WindowService} from '../window';
-import {ExtensionPoint, ExternalMenuModel} from '../../models/plugins';
-import {ExternalRouteModel} from '../../models/plugins/extension-models/external-route-item-model';
+import {
+  MainMenuExtensionPoint,
+  MainMenuPlugin,
+  RouteExtensionPoint,
+  RoutePlugin
+} from '../../models/plugins';
 
 /**
  * Service responsible for handling authorization-related operations.
@@ -268,8 +272,8 @@ export class AuthorizationService implements Service {
 
     const isAdministratorUser = this.isAdmin();
 
-    const routes = WindowService.getWindow().PluginRegistry.get<ExternalRouteModel>(ExtensionPoint.ROUTE);
-    const menuItems = WindowService.getWindow().PluginRegistry.get<ExternalMenuModel>(ExtensionPoint.MAIN_MENU);
+    const routes = WindowService.getWindow().PluginRegistry.get<RoutePlugin>(RouteExtensionPoint.NAME);
+    const menuItems = WindowService.getWindow().PluginRegistry.get<MainMenuPlugin>(MainMenuExtensionPoint.NAME);
 
     routes.forEach((route) => {
       const menuItem = menuItems.flatMap((mi) => mi.items)
