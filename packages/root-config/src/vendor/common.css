@@ -143,7 +143,7 @@ h1 .btn {
 .btn-outline-primary.focus, .btn-outline-primary:focus, .btn-outline-primary.active, .btn-outline-primary:active, .open > .btn-outline-primary.dropdown-toggle,
 .btn-outline-primary.active.focus, .btn-outline-primary.active:focus, .btn-outline-primary.active:hover, .btn-outline-primary:active.focus, .btn-outline-primary:active:focus, .btn-outline-primary:active:hover, .open > .btn-outline-primary.dropdown-toggle.focus, .open > .btn-outline-primary.dropdown-toggle:focus, .open > .btn-outline-primary.dropdown-toggle:hover {
     color: var(--gw-primary-base);
-    background-color: hsla(var(--primary-color-hsl), 0.075);
+    background-color: var(--gw-primary-lighter);
     border-color: var(--gw-primary-base);
 }
 
