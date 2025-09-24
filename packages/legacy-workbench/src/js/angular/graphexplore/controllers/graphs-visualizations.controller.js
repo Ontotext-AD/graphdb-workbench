@@ -2546,15 +2546,15 @@ function GraphsVisualizationsCtrl(
     };
 
     function applyElementsStyleChanges(tripleNode) {
-        updatePredicatesColor('predicate', 'var(--primary-color-dark)', tripleNode);
-        updatePredicatesColor('predicates', 'var(--primary-color-dark)', tripleNode);
+        updatePredicatesColor('predicate', 'var(--gw-primary-dark)', tripleNode);
+        updatePredicatesColor('predicates', 'var(--gw-primary-dark)', tripleNode);
 
         const links = document.getElementsByClassName('link');
         if (links) {
             _.each(links, function(link) {
                 const linkLink = link.__data__;
                 if (linkLink.source.iri.indexOf(tripleNode.iri) >= 0 || linkLink.target.iri.indexOf(tripleNode.iri) >= 0) {
-                    link.style.stroke = 'var(--primary-color-dark)';
+                    link.style.stroke = 'var(--gw-primary-dark)';
                     link.style.strokeWidth = 4;
                 }
             });
@@ -2565,7 +2565,7 @@ function GraphsVisualizationsCtrl(
             _.each(markers, function(marker) {
                 const markerLink = marker.__data__;
                 if (markerLink.source.iri.indexOf(tripleNode.iri) >= 0 || markerLink.target.iri.indexOf(tripleNode.iri) >= 0) {
-                    marker.style.stroke = 'var(--primary-color-dark)';
+                    marker.style.stroke = 'var(--gw-primary-dark)';
                     if (!marker.__data__.target.isTriple) {
                         marker.setAttribute("refX", "23");
                     }

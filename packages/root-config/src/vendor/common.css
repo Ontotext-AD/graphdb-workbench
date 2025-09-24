@@ -97,8 +97,8 @@ h1 .btn {
 .btn-primary.active, .btn-primary.focus, .btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active.focus,
 .btn-primary.active:focus, .btn-primary.active:hover, .btn-primary:active.focus, .btn-primary:active:focus, .btn-primary:active:hover, .open > .btn-primary.dropdown-toggle.focus, .open > .btn-primary.dropdown-toggle:focus, .open > .btn-primary.dropdown-toggle:hover,
 .btn-primary.disabled:hover, .btn-primary:disabled:hover {
-    background-color: var(--primary-color-dark);
-    border-color: var(--primary-color-dark);
+    background-color: var(--gw-primary-dark);
+    border-color: var(--gw-primary-dark);
 }
 
 .btn-secondary {
@@ -193,7 +193,7 @@ h1 .btn {
 }
 
 .btn-link:focus, .btn-link:hover, .btn-link.secondary:hover {
-    color: var(--primary-color-dark);
+    color: var(--gw-primary-dark);
 }
 
 .btn-link.disabled:focus, .btn-link.disabled:hover, .btn-link.disabled.secondary:hover {
@@ -205,7 +205,7 @@ h1 .btn {
 }
 
 .btn-link.active, .btn-link:hover.active, .btn-link:focus.active, .btn-link:active.active {
-    background-color: var(--primary-color-dark);
+    background-color: var(--gw-primary-dark);
     color: #fff;
 }
 

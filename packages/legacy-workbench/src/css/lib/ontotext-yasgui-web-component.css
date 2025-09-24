@@ -106,7 +106,7 @@ yasgui-component .yasgui .tabsList .addTab .icon-plus {
 
 yasgui-component .yasgui .tabsList .tab .closeTab:hover,
 yasgui-component .yasgui .tabsList .addTab:hover {
-    color: var(--primary-color-dark) !important;
+    color: var(--gw-primary-dark) !important;
 }
 
 yasgui-component .editable-text-field-wrapper .save-btn,
@@ -142,7 +142,7 @@ yasgui-component .ontotext-download-as .ontotext-dropdown-button .button-name {
 yasgui-component .ontotext-dropdown-button:hover,
 yasgui-component .ontotext-dropdown-menu .ontotext-dropdown-menu-item:hover,
 yasgui-component .ontotext-dropdown-button.icon-caret-up-after {
-    background-color: var(--primary-color-dark) !important;
+    background-color: var(--gw-primary-dark) !important;
 }
 
 yasgui-component .ontotext-dropdown-button.icon-caret-down-after:after,
@@ -180,7 +180,7 @@ yasgui-component .yasr-toolbar .explore-visual-graph-button {
 
 yasgui-component .yasr-toolbar .explore-visual-graph-button:hover {
     cursor: pointer;
-    background-color: var(--primary-color-dark) !important;
+    background-color: var(--gw-primary-dark) !important;
 }
 
 yasgui-component .yasr-toolbar .chart-download-as-button,
@@ -214,8 +214,8 @@ yasgui-component .confirm-button:focus,
 yasgui-component .confirm-button:hover,
 .confirmation-dialog .dialog-footer .confirm-button:focus,
 .confirmation-dialog .dialog-footer .confirm-button:hover {
-    background-color: var(--primary-color-dark) !important;
-    border-color: var(--primary-color-dark) !important;
+    background-color: var(--gw-primary-dark) !important;
+    border-color: var(--gw-primary-dark) !important;
 }
 
 yasgui-component .cancel-button:focus,
@@ -368,7 +368,7 @@ yasgui-component .abort-button {
 }
 
 yasgui-component .abort-button:hover {
-    background-color: var(--primary-color-dark) !important;
+    background-color: var(--gw-primary-dark) !important;
 }
 
 yasgui-component .page-button.selected-page {
