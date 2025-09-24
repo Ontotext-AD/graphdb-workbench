@@ -601,7 +601,7 @@ code {
 }
 
 .card.button:hover {
-    border-color: hsla(var(--primary-color-hsl), 0.4)
+    border-color: var(--gw-primary-hover-color);
 }
 
 .card.button .card-block {
@@ -622,7 +622,7 @@ code {
 }
 
 .card.button .btn:hover {
-    background-color: hsla(var(--primary-color-hsl), 0.1)
+    background-color: var(--gw-primary-hover-color);
 }
 
 .card.button .btn [class^="icon-"] {
@@ -870,7 +870,7 @@ code {
 }
 
 .list-group-item-action:focus, .list-group-item-action:hover {
-    background-color: hsla(var(--primary-color-hsl), 0.1);
+    background-color: var(--gw-highlight-focus-background);
 }
 
 .list-group-item pre {
