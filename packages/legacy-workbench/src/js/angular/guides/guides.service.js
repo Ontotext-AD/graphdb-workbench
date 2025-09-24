@@ -6,12 +6,14 @@ import {YasguiComponentDirectiveUtil} from "../core/directives/yasgui-component/
 import {FileUtils} from "../utils/file-utils";
 import {
     navigate,
-    getCurrentRoute
+    getCurrentRoute,
+    service,
+    LanguageContextService,
 } from '@ontotext/workbench-api';
 
 const modules = [
     'graphdb.framework.guides.shepherd.services',
-    'graphdb.framework.rest.guides.service'
+    'graphdb.framework.rest.guides.service',
 ];
 
 angular
@@ -30,7 +32,8 @@ GuidesService.$inject = [
     '$route',
     '$timeout',
     'EventEmitterService',
-    'GuidesRestService'];
+    'GuidesRestService',
+    '$languageService'];
 
 /**
  * Service for interaction with guide functionality. A guide is described as sequence of steps.
@@ -180,17 +183,85 @@ function GuidesService(
     $route,
     $timeout,
     EventEmitterService,
-    GuidesRestService) {
-
+    GuidesRestService,
+    $languageService) {
     this.guideResumeSubscription = undefined;
-    this.languageChangeSubscription = undefined;
+    this.currentLanguage = undefined;
+    this.defaultLanguage = $languageService.getDefaultLanguage();
     this.guideCancelSubscription = undefined;
 
     this.init = () => {
+        this._subscribeToLanguageChange();
         this._subscribeToGuideResumed();
         this._subscribeToGuideCancel();
         this._subscribeToGuidePause();
     };
+
+    /**
+     * Translates a key into the currently selected locale, falling back to the default language if missing.
+     * @param {Object<string, Object<string, string>>} translationBundle -
+     *   A translation bundle organized by locale. Each locale maps to an object of translation keys and their localized strings.
+     *   Example:
+     *   ```js
+     *   {
+     *     en: {
+     *       "guide.step_plugin.welcome.title": "Welcome to {{translatedGuideName}}",
+     *       "guide.step_plugin.welcome.content": "Throughout the guide you will see boxes like this..."
+     *     },
+     *     fr: {
+     *       "guide.step_plugin.welcome.title": "Bienvenue dans {{translatedGuideName}}",
+     *       "guide.step_plugin.welcome.content": "Tout au long du guide, vous verrez des boîtes comme celle-ci..."
+     *     }
+     *   }
+     *   ```
+     * @param {string} key - The translation key to look up.
+     * @param {Object<string, string>} parameters - Optional parameters to interpolate into the translation string
+     *   (e.g., `{ username: "John" }`).
+     * @returns {string} The translated string, or the key if no translation is available.
+     */
+    this.translate = (translationBundle = {}, key, parameters = {}) => {
+        let translation = translationBundle[this.currentLanguage]?.[key];
+        if (!translation) {
+            // Fallback to the default language
+            translation = translationBundle[this.defaultLanguage]?.[key];
+        }
+
+        if (translation) {
+            return this.applyParameters(translation, parameters);
+        }
+
+        console.warn(`Missing translation for [${key}] key in [${this.currentLanguage}] locale`);
+        return key;
+    };
+
+    /**
+     * Replace placeholders in the translation string with given parameters.
+     *
+     * Example: 'Hello {{name}}' + { name: 'Alice' } → 'Hello Alice'
+     *
+     * @param {string} translation - The translation string with placeholders.
+     * @param {Object<string, string>} parameters - The parameters to replace.
+     * @returns {string} The translation with parameters applied.
+     */
+    this.applyParameters = (translation, parameters = {}) => {
+        return Object.entries(parameters).reduce(
+            (result, [paramKey, paramValue]) => this.replaceAll(result, paramKey, paramValue),
+            translation,
+        );
+    };
+
+    /**
+     * Replace all occurrences of a single parameter placeholder in the translation.
+     *
+     * @param {string} translation - The translation string.
+     * @param {string} key - The placeholder key to replace.
+     * @param {string} value - The value to replace it with.
+     * @returns {string} The updated translation string.
+     */
+    this.replaceAll = (translation, key, value) => {
+        return translation.split(`{{${key}}}`).join(value);
+    };
+
 
     this.downloadGuidesFile = (resourcePath, resourceFile) => {
         return GuidesRestService.downloadGuideResource(`${resourcePath}/${resourceFile}`)
@@ -263,7 +334,7 @@ function GuidesService(
                 this.startGuide(selectedGuide, undefined, true);
             }
         });
-    }
+    };
 
     /**
      * Fetches list with all available guides.
@@ -473,10 +544,11 @@ function GuidesService(
             $repositories,
             YasguiComponentDirectiveUtil,
             EventEmitterService,
+            translate: this.translate,
             RoutingUtil: {
                 navigate,
-                getCurrentRoute
-            }
+                getCurrentRoute,
+            },
         };
         let steps = [];
         if (angular.isArray(complexStep)) {
@@ -532,5 +604,12 @@ function GuidesService(
 
     this._subscribeToGuidePause = () => {
         ShepherdService.subscribeToGuidePause(() => $rootScope.$broadcast('guidePaused'));
+    };
+
+    this._subscribeToLanguageChange = () => {
+        service(LanguageContextService)
+            .onSelectedLanguageChanged((language) => {
+                this.currentLanguage = language;
+            });
     };
 }
