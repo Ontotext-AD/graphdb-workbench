@@ -1,5 +1,5 @@
 import {NavbarItemModel, NavbarModel} from '../navbar-model';
-import {ProductInfo, LoggerService, ExternalMenuModel} from '@ontotext/workbench-api';
+import {ProductInfo, LoggerService, MainMenuPlugin, MainMenuItem} from '@ontotext/workbench-api';
 import {LoggerProvider} from '../../../services/logger-provider';
 jest.spyOn(LoggerProvider, 'logger', 'get').mockReturnValue({
   loggers: jest.fn()
@@ -7,7 +7,8 @@ jest.spyOn(LoggerProvider, 'logger', 'get').mockReturnValue({
 import {NavbarService} from '../navbar-service';
 
 describe('NavbarService', () => {
-  let mockExternalMenuModel: ExternalMenuModel;
+
+  let mockExternalMenuModel: MainMenuPlugin[];
 
   beforeEach(() => {
     mockExternalMenuModel = [
@@ -25,7 +26,7 @@ describe('NavbarService', () => {
             children: []
           }
         ]
-      },
+      } as MainMenuPlugin,
       {
         items: [
           {
@@ -38,9 +39,9 @@ describe('NavbarService', () => {
             guideSelector: 'menu-explore',
             shouldShow: true,
             children: []
-          }
+          } as MainMenuItem
         ]
-      },
+      } as MainMenuPlugin,
       {
         items: [
           {
@@ -51,7 +52,7 @@ describe('NavbarService', () => {
             parent: 'Explore',
             guideSelector: 'sub-menu-class-relationships',
             shouldShow: true
-          },
+          } as MainMenuItem,
           {
             label: 'Class hierarchy',
             labelKey: 'menu.class.hierarchy.label',
@@ -60,7 +61,7 @@ describe('NavbarService', () => {
             parent: 'Explore',
             guideSelector: 'menu-class-hierarchy',
             shouldShow: true
-          },
+          } as MainMenuItem,
           {
             label: 'Visual graph',
             labelKey: 'visual.graph.label',
@@ -70,9 +71,9 @@ describe('NavbarService', () => {
             children: [],
             guideSelector: 'sub-menu-visual-graph',
             shouldShow: true
-          }
+          } as MainMenuItem
         ]
-      }
+      } as MainMenuPlugin
     ];
   });
 
