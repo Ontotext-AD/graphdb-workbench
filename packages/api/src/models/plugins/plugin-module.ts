@@ -1,4 +1,4 @@
-import {PluginRegistry} from './plugin-registry';
+import {PluginRegistry} from '../../services/plugins';
 
 /**
  * PluginModule interface represents a plugin module that can be registered with the PluginRegistry.

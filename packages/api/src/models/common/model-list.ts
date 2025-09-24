@@ -108,4 +108,11 @@ export class ModelList<T> extends Model<T> {
       this.items.splice(index, 1);
     }
   }
+
+  /**
+   * Removes all items from the collection, resetting it to an empty state.
+   */
+  removeAll(): void {
+    this.items = [];
+  }
 }

@@ -7,8 +7,8 @@ import {SecurityContextService} from '../security-context.service';
 import {EventService} from '../../event-service';
 import {Logout} from '../../../models/events';
 import {Repository} from '../../../models/repositories';
-import {WindowService} from '../../window/window.service';
-import {RouteItemModel} from '../../../models/routing/route-item-model';
+import {WindowService} from '../../window';
+import {RoutePlugin} from '../../../models/plugins';
 import {RoutingService} from '../../routing/routing.service';
 import {RepositoryStorageService} from '../../repository';
 
@@ -391,7 +391,7 @@ describe('AuthenticationService', () => {
     const securityConfig = {enabled: true} as unknown as SecurityConfig;
     securityContextService.updateSecurityConfig(securityConfig);
 
-    const activeRoute = new RouteItemModel({
+    const activeRoute = new RoutePlugin({
       url: '/aclmanagement',
       module: 'graphdb.framework.aclmanagement',
       path: 'aclmanagement/app',
