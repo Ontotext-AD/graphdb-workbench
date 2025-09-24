@@ -1,6 +1,6 @@
 import {RoutingService} from '../routing.service';
-import {WindowService} from '../../window/window.service';
-import {RouteItemModel} from '../../../models/routing/route-item-model';
+import {WindowService} from '../../window';
+import {RoutePlugin} from '../../../models/plugins';
 
 describe('RoutingService', () => {
   let routingService: RoutingService;
@@ -25,7 +25,8 @@ describe('RoutingService', () => {
   });
 
   test('should resolve home page route', () => {
-    const expectedRoute = {
+
+    const expectedRoute = new RoutePlugin({
       url: '/',
       module: 'home',
       path: '',
@@ -33,9 +34,10 @@ describe('RoutingService', () => {
       controller: 'HomeComponent',
       templateUrl: 'home.component.html',
       title: 'Home'
-    };
+    });
+
     jest.spyOn(windowMock.PluginRegistry, 'get').mockReturnValue([
-      expectedRoute, {
+      expectedRoute, new RoutePlugin({
         url: '/aclmanagement',
         module: 'graphdb.framework.aclmanagement',
         path: 'aclmanagement/app',
@@ -48,15 +50,15 @@ describe('RoutingService', () => {
         allowAuthorities: [
           'READ_REPO_{repoId}'
         ]
-      }]);
+      })]);
 
     routingService = new RoutingService();
     const result = routingService.getActiveRoute('/');
-    expect(result).toEqual(new RouteItemModel(expectedRoute));
+    expect(result).toEqual(new RoutePlugin(expectedRoute));
   });
 
   test('should resolve route with parameters', () => {
-    const expectedRoute = {
+    const expectedRoute = new RoutePlugin({
       url: '/repository/edit/:repositoryId',
       module: 'graphdb.framework.repositories',
       path: 'repositories/app',
@@ -67,9 +69,9 @@ describe('RoutingService', () => {
       allowAuthorities: [
         'READ_REPO_{repoId}'
       ]
-    };
+    });
     jest.spyOn(windowMock.PluginRegistry, 'get').mockReturnValue([
-      expectedRoute, {
+      expectedRoute, new RoutePlugin({
         url: '/aclmanagement',
         module: 'graphdb.framework.aclmanagement',
         path: 'aclmanagement/app',
@@ -82,16 +84,16 @@ describe('RoutingService', () => {
         allowAuthorities: [
           'READ_REPO_{repoId}'
         ]
-      }
+      })
     ]);
 
     routingService = new RoutingService();
     const result = routingService.getActiveRoute('/repository/edit/123');
-    expect(result).toEqual(new RouteItemModel(expectedRoute));
+    expect(result).toEqual(new RoutePlugin(expectedRoute));
   });
 
   test('should resolve route with optional parameters', () => {
-    const expectedRoute = {
+    const expectedRoute = new RoutePlugin({
       url: '/repository/edit/:repositoryId?',
       module: 'graphdb.framework.repositories',
       path: 'repositories/app',
@@ -102,9 +104,9 @@ describe('RoutingService', () => {
       allowAuthorities: [
         'READ_REPO_{repoId}'
       ]
-    };
+    });
     jest.spyOn(windowMock.PluginRegistry, 'get').mockReturnValue([
-      expectedRoute, {
+      expectedRoute, new RoutePlugin({
         url: '/aclmanagement',
         module: 'graphdb.framework.aclmanagement',
         path: 'aclmanagement/app',
@@ -115,14 +117,14 @@ describe('RoutingService', () => {
         allowAuthorities: [
           'READ_REPO_{repoId}'
         ]
-      }]);
+      })]);
     routingService = new RoutingService();
     const result = routingService.getActiveRoute('/repository/edit');
-    expect(result).toEqual(new RouteItemModel(expectedRoute));
+    expect(result).toEqual(new RoutePlugin(expectedRoute));
   });
 
   test('should resolve route with parameter and wildcard', () => {
-    const expectedRoute = {
+    const expectedRoute = new RoutePlugin({
       url: '/resource/:any*',
       module: 'graphdb.framework.explore',
       chunk: 'explore',
@@ -133,9 +135,9 @@ describe('RoutingService', () => {
       allowAuthorities: [
         'READ_REPO_{repoId}'
       ]
-    };
+    });
     jest.spyOn(windowMock.PluginRegistry, 'get').mockReturnValue([
-      expectedRoute, {
+      expectedRoute, new RoutePlugin({
         url: '/aclmanagement',
         module: 'graphdb.framework.aclmanagement',
         path: 'aclmanagement/app',
@@ -148,9 +150,9 @@ describe('RoutingService', () => {
         allowAuthorities: [
           'READ_REPO_{repoId}'
         ]
-      }]);
+      })]);
     routingService = new RoutingService();
     const result = routingService.getActiveRoute('/resource/test/path/here');
-    expect(result).toEqual(new RouteItemModel(expectedRoute));
+    expect(result).toEqual(new RoutePlugin(expectedRoute));
   });
 });

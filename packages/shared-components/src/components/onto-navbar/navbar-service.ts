@@ -1,20 +1,24 @@
-import {ExternalMenuItemModel, ExternalMenuModel} from './external-menu-model';
 import {NavbarItemModel, NavbarModel} from './navbar-model';
-import {ProductInfo, UriUtil} from '@ontotext/workbench-api';
+import {
+  ProductInfo,
+  UriUtil,
+  MainMenuPlugin,
+  MainMenuItem
+} from '@ontotext/workbench-api';
 import {LoggerProvider} from '../../services/logger-provider';
 
 const logger = LoggerProvider.logger;
 
 export class NavbarService {
 
-  static map(navbarPlugins: ExternalMenuModel, productInfo: ProductInfo): NavbarModel {
+  static map(navbarPlugins: MainMenuPlugin[], productInfo: ProductInfo): NavbarModel {
     const navbarModel = new NavbarModel();
     NavbarService.setTopLevelMenuItems(navbarPlugins, navbarModel, productInfo);
     NavbarService.setSubmenuItems(navbarPlugins, navbarModel, productInfo);
     return navbarModel.sorted();
   }
 
-  private static setTopLevelMenuItems(navbarPlugins: ExternalMenuModel, navbarModel: NavbarModel, productInfo: ProductInfo) {
+  private static setTopLevelMenuItems(navbarPlugins: MainMenuPlugin[], navbarModel: NavbarModel, productInfo: ProductInfo) {
     navbarPlugins.forEach((menuPlugin) => {
       menuPlugin.items
         .filter((item) => !item.parent && item.shouldShow)
@@ -28,7 +32,7 @@ export class NavbarService {
     });
   }
 
-  private static setSubmenuItems(navbarPlugins: ExternalMenuModel, navbarModel: NavbarModel, productInfo: ProductInfo) {
+  private static setSubmenuItems(navbarPlugins: MainMenuPlugin[], navbarModel: NavbarModel, productInfo: ProductInfo) {
     navbarPlugins.forEach((menuPlugin) => {
       menuPlugin.items
         .filter((item) => item.parent && item.shouldShow)
@@ -41,7 +45,7 @@ export class NavbarService {
     });
   }
 
-  private static toMenuItemModel(item: ExternalMenuItemModel, parent: NavbarItemModel, productInfo: ProductInfo, children: ExternalMenuItemModel[] = []): NavbarItemModel {
+  private static toMenuItemModel(item: MainMenuItem, parent: NavbarItemModel, productInfo: ProductInfo, children: MainMenuItem[] = []): NavbarItemModel {
     let externalLink: string;
     if (item.documentationHref) {
       externalLink = UriUtil.resolveDocumentationUrl(productInfo?.shortVersion, item.documentationHref);

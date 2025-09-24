@@ -15,13 +15,19 @@ import './onto-vendor';
 import './styles/main.scss';
 import {bootstrapWorkbench} from './bootstrap/bootstrap';
 import {
-  ServiceProvider,
+  service,
   EventService,
   NavigationEnd,
   NavigationStart,
-  getBasePath
+  getBasePath,
+  PluginRegistry,
+  MainMenuExtensionPoint,
+  RouteExtensionPoint,
+  InteractiveGuideExtensionPoint,
+  ThemesExtensionPoint
 } from '@ontotext/workbench-api';
 import {LoggerProvider} from './services/logger-provider';
+import {WindowService} from '../../shared-components/api/src/services/window';
 
 const logger = LoggerProvider.logger;
 
@@ -85,15 +91,22 @@ const registerSingleSpaRouterListeners = () => {
   if (!window.singleSingleSpaRouterListenersRegistered) {
     window.singleSingleSpaRouterListenersRegistered = true;
     window.addEventListener('single-spa:before-routing-event', (evt) => {
-      ServiceProvider.get(EventService).emit(new NavigationStart(evt.detail.oldUrl, evt.detail.newUrl, evt.detail.cancelNavigation));
+      service(EventService).emit(new NavigationStart(evt.detail.oldUrl, evt.detail.newUrl, evt.detail.cancelNavigation));
     });
     window.addEventListener('single-spa:routing-event', (evt) => {
-      ServiceProvider.get(EventService).emit(new NavigationEnd(evt.detail.oldUrl, evt.detail.newUrl));
+      service(EventService).emit(new NavigationEnd(evt.detail.oldUrl, evt.detail.newUrl));
     });
   }
 };
 
 registerSingleSpaRouterListeners();
+
+const pluginRegistry = new PluginRegistry();
+pluginRegistry.registerExtensionPoint(new MainMenuExtensionPoint());
+pluginRegistry.registerExtensionPoint(new RouteExtensionPoint());
+pluginRegistry.registerExtensionPoint(new InteractiveGuideExtensionPoint());
+pluginRegistry.registerExtensionPoint(new ThemesExtensionPoint());
+WindowService.getWindow().PluginRegistry = pluginRegistry;
 bootstrapWorkbench()
   .then(() => showSplashScreen(false))
   .catch((error) => {

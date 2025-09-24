@@ -15,9 +15,13 @@ import {
   SecurityContextService,
   ServiceProvider,
   SubscriptionList,
-  WindowService
+  WindowService,
+  MainMenuPlugin,
+  MainMenuItem
 } from '@ontotext/workbench-api';
-import {ExternalMenuItemModel} from '../onto-navbar/external-menu-model';
+import {
+  MainMenuExtensionPoint
+} from '../../../../api/src/models/plugins/extension-points/main-menu-extension-point';
 
 @Component({
   tag: 'onto-layout',
@@ -212,7 +216,7 @@ export class OntoLayout {
   private assignNavbarRef() {
     return (navbar: HTMLOntoNavbarElement) => {
       this.navbarRef = navbar;
-      this.navbarRef.menuItems = WindowService.getWindow().PluginRegistry.get('main.menu');
+      this.navbarRef.menuItems = WindowService.getPluginRegistry().get<MainMenuPlugin>(MainMenuExtensionPoint.NAME);
       this.setNavbarItemVisibility();
     };
   }
@@ -222,7 +226,7 @@ export class OntoLayout {
       return;
     }
     // recursively check for children and set their shouldShow property
-    const processItem = (item: ExternalMenuItemModel) => {
+    const processItem = (item: MainMenuItem) => {
       item.shouldShow = this.shouldShowMenu(item.role as Authority);
       if (item.children?.length) {
         item.children.forEach(processItem);

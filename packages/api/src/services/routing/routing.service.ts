@@ -1,11 +1,10 @@
 import {RouteRegexParamPair} from '../../models/routing/route-regex-param-pair';
-import {RouteItemModel} from '../../models/routing/route-item-model';
+import {RoutePlugin} from '../../models/plugins';
 import {getPathName} from '../utils';
 import {ModelList} from '../../models/common';
 import {Service} from '../../providers/service/service';
 import {WindowService} from '../window';
-import {ExtensionPoint} from '../../models/plugins/extension-point';
-import {RouteModel} from '../../models/routing/external-route-item-model';
+import {RouteExtensionPoint} from '../../models/plugins/extension-points/route-extension-point';
 
 /**
  * Service responsible for handling application routing functionality.
@@ -15,7 +14,7 @@ import {RouteModel} from '../../models/routing/external-route-item-model';
  * It works with the application's route configuration obtained from the PluginRegistry.
  */
 export class RoutingService implements Service {
-  private readonly routeConfig = WindowService.getWindow().PluginRegistry.get<RouteModel>(ExtensionPoint.ROUTE);
+  private readonly routePlugins = WindowService.getPluginRegistry().get<RoutePlugin>(RouteExtensionPoint.NAME);
 
   /**
    * Finds and returns the active route based on the provided path.
@@ -27,14 +26,13 @@ export class RoutingService implements Service {
    * @returns A RouteItemModel instance representing the matched route,
    *          or undefined if no matching route is found.
    */
-  getActiveRoute(path: string = getPathName()): RouteItemModel | undefined {
-    const activeRoute = this.routeConfig
+  getActiveRoute(path: string = getPathName()): RoutePlugin | undefined {
+    const activeRoute = this.routePlugins
       .find((route) => {
         const regex = this.routeToRegex(route.url).getRegex();
         return regex.test(path);
       });
-
-    return activeRoute ? new RouteItemModel(activeRoute) : undefined;
+    return activeRoute ? new RoutePlugin(activeRoute) : undefined;
   }
 
   /**
