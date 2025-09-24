@@ -34,7 +34,7 @@ a:hover, a:active, a[href^="http"], a[href^="http"]:hover, a[href^="http"]:activ
 }
 
 a:focus, a:hover {
-    color: var(--secondary-color-light);
+    color: var(--gw-secondary-light);
 }
 
 .font-weight-bold {
@@ -129,8 +129,8 @@ h1 .btn {
 .btn-info.active, .btn-info.focus, .btn-info:hover, .btn-info:focus, .btn-info:active, .btn-info.active.focus,
 .btn-info.active:focus, .btn-info.active:hover, .btn-info:active.focus, .btn-info:active:focus, .btn-info:active:hover, .open > .btn-info.dropdown-toggle.focus, .open > .btn-info.dropdown-toggle:focus, .open > .btn-info.dropdown-toggle:hover,
 .btn-info.disabled:hover, .btn-info:disabled:hover {
-    background-color: var(--secondary-color-light);
-    border-color: var(--secondary-color-light);
+    background-color: var(--gw-secondary-light);
+    border-color: var(--gw-secondary-light);
 }
 
 /* outline buttons */

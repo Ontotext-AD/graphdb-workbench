@@ -233,7 +233,7 @@ yasgui-component .yasr .alert-box .close-button {
 }
 
 yasgui-component .yasr a {
-    color: var(--secondary-color-light) !important;
+    color: var(--gw-secondary-light) !important;
 }
 
 yasgui-component .yasr a {
