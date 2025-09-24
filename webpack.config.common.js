@@ -141,8 +141,8 @@ module.exports = (webpackConfigEnv, argv) => {
                       to: 'assets'
                     },
                     {
-                      from: 'wb-plugins',
-                      to: 'wb-plugins',
+                      from: 'plugins',
+                      to: 'plugins',
                       noErrorOnMissing: true
                     },
                     {
