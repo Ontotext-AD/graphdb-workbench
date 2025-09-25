@@ -389,7 +389,7 @@ ul.style-arrow li:before {
 .progress-bar {
     height: 2rem;
     color: #000;
-    background-color: hsla(var(--tertiary-color-hsl), 0.5);
+    background-color: var(--gw-tertiary-lighter);
     padding: 0 0.2em;
     text-align: center;
 }
