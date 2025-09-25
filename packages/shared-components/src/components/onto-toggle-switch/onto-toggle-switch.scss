@@ -61,7 +61,7 @@ $default-checked-color: #373a3c;
 
         &:after {
           left: 1.3em;
-          background-color: var(--gw-color-secondary-700, $default-checked-color);
+          background-color: var(--gw-secondary-base, $default-checked-color);
         }
       }
     }
