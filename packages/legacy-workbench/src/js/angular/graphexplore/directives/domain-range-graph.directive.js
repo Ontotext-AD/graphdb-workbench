@@ -9,7 +9,7 @@ angular
         'graphdb.framework.utils.localstorageadapter'
     ])
     .constant('ONTO_RED', 'var(--gw-primary-base)')
-    .constant('ONTO_GREEN', 'var(--tertiary-color)')
+    .constant('ONTO_GREEN', 'var(--gw-tertiary-base)')
     .constant('ONTO_BLUE', 'var(--gw-secondary-base)')
     .constant('NON_COLLAPSED_REFLEXIVE_LINK_LIMIT', 6)
     .directive('domainRangeGraph', domainRangeGraphDirective);
