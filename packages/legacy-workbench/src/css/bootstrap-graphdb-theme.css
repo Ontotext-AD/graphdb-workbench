@@ -302,7 +302,7 @@ ul[class*="style-"] li:before {
     left: 0;
     top: -0.07em;
     font-size: 1.2em;
-    color: var(--tertiary-color);
+    color: var(--gw-tertiary-base);
 }
 
 .text-white ul[class*="style-"] li:before {

@@ -65,8 +65,8 @@
 }
 
 .node.candidate {
-    fill: var(--tertiary-color);
-    stroke: var(--tertiary-color);
+    fill: var(--gw-tertiary-base);
+    stroke: var(--gw-tertiary-base);
 }
 
 .node.other {

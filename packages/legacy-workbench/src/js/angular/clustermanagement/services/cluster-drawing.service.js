@@ -10,7 +10,7 @@ const d3 = {
 const clusterColors = {
     ontoOrange: 'var(--gw-primary-base)',
     ontoBlue: 'var(--gw-secondary-base)',
-    ontoGreen: 'var(--tertiary-color)',
+    ontoGreen: 'var(--gw-tertiary-base)',
     ontoGrey: 'var(--gray-color)'
 };
 

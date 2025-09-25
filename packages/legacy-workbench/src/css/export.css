@@ -93,7 +93,7 @@
 }
 
 .arrows-up-down i.fa{
-    color: var(--tertiary-color);
+    color: var(--gw-tertiary-base);
     font-size: 26px;
 }
 
@@ -137,7 +137,7 @@
 
 .formats-list > li:hover{
     cursor: pointer;
-    background-color: var(--tertiary-color);
+    background-color: var(--gw-tertiary-base);
 }
 
 .arrow-up {
