@@ -12,9 +12,9 @@ const setRepositorySelectorAutoClose = (autoClose) => {
         // Enable auto-close when the guide step is closed.
         component.autoClose = autoClose;
     }
-}
+};
 
-const REPOSITORIES_DEFAULT_TITLE = 'guide.step_plugin.repositories.default-title'
+const REPOSITORIES_DEFAULT_TITLE = 'guide.step_plugin.repositories.default-title';
 
 PluginRegistry.add('guide.step', [
     {
@@ -28,11 +28,12 @@ PluginRegistry.add('guide.step', [
                 guideBlockName: 'clickable-element',
                 options: angular.extend({}, {
                     skipPoint: true,
+                    skipButtonLabel: GuideUtils.BUTTONS.SKIP_SECTION,
                     content: 'guide.step_plugin.choose-repository.content',
                     elementSelector: '.onto-repository-selector',
                     class: 'repositories-group-button',
-                    onNextClick: GuideUtils.clickOnElement('.onto-repository-selector .onto-dropdown-button')
-                }, options)
+                    onNextClick: GuideUtils.clickOnElement('.onto-repository-selector .onto-dropdown-button'),
+                }, options),
             }, {
                 guideBlockName: 'clickable-element',
                 options: angular.extend({}, {
@@ -51,7 +52,7 @@ PluginRegistry.add('guide.step', [
                         setRepositorySelectorAutoClose(false);
                         // Added listener to the element.
                         $(getRepositoryElementSelector(services, options))
-                            .on('mouseup.selectRepositoryButtonClick', function () {
+                            .on('mouseup.selectRepositoryButtonClick', function() {
                                 guide.next();
                             });
                     },
@@ -64,11 +65,11 @@ PluginRegistry.add('guide.step', [
                         // Remove ths listener from element. It is important when step is hided.
                         $(getRepositoryElementSelector(services, options)).off('mouseup.selectRepositoryButtonClick');
                     },
-                    canBePaused: false
-                }, options)
-            }
+                    canBePaused: false,
+                }, options),
+            },
             ];
-        }
+        },
     },
     {
         guideBlockName: 'repositories-select-repository',
@@ -89,10 +90,10 @@ PluginRegistry.add('guide.step', [
                         elementSelector: selectRepositoryButtonWrapperSelector,
                         class: 'repositories-select-repository',
                         onNextClick: () => GuideUtils.clickOnElement(selectRepositoryButtonSelector)(),
-                        ...options
-                    }
-                }
-            ]
-        }
-    }
+                        ...options,
+                    },
+                },
+            ];
+        },
+    },
 ]);

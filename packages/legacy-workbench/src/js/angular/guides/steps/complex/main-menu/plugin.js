@@ -142,8 +142,9 @@ PluginRegistry.add('guide.step', [
                         extraContent: helpInfo,
                         extraContentClass: 'alert alert-help text-left',
                         skipPoint: true,
-                        ...options
-                    }
+                        skipButtonLabel: GuideUtils.BUTTONS.SKIP_SECTION,
+                        ...options,
+                    },
                 });
             }
 
@@ -171,8 +172,8 @@ PluginRegistry.add('guide.step', [
 
                         return Promise.resolve();
                     },
-                    ...options
-                }
+                    ...options,
+                },
             });
 
             if (submenuSelector) {
@@ -194,11 +195,11 @@ PluginRegistry.add('guide.step', [
 
                             return Promise.resolve();
                         },
-                        ...options
-                    }
+                        ...options,
+                    },
                 });
             }
             return steps;
-        }
-    }
+        },
+    },
 ]);
