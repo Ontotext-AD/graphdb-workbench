@@ -12,6 +12,7 @@ const BASIC_STEP = {
     onNextValidate: () => Promise.resolve(true),
     onPreviousClick: undefined,
     skipPoint: false,
+    skipButtonLabel: 'skip.btn',
     class: '',
 };
 
