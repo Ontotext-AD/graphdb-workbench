@@ -379,7 +379,7 @@ span.label {
 }
 
 .icon-import.active {
-    color:var(--tertiary-color)
+    color:var(--gw-tertiary-base)
 }
 .checkbox-param-include-inferred {
     position: relative;
