@@ -2,7 +2,7 @@
 @import '../../../node_modules/tippy.js/themes/light-border.css';
 
 :root {
-  --onto-tooltip-background-color: var(--gw-color-secondary-700, #003663);
+  --onto-tooltip-background-color: var(--gw-secondary-base, #003663);
 }
 
 :host {
