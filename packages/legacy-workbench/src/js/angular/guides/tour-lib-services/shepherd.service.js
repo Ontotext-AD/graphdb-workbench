@@ -532,7 +532,7 @@ function ShepherdService($translate, LocalStorageAdapter, LSKeys, $interpolate, 
         const step = this._toBaseGuideStep(guide, $translate, currentStepDescription, () => this._updateLocalStorage());
         const buttons = [];
         if (currentStepDescription.skipPoint) {
-            buttons.push(this._getSkipButton(guide));
+            buttons.push(this._getSkipButton(guide, currentStepDescription.skipButtonLabel));
         }
 
         if (!this._isDisablePreviousFlow(currentStepDescription) && previousStepDescription) {
@@ -551,8 +551,9 @@ function ShepherdService($translate, LocalStorageAdapter, LSKeys, $interpolate, 
         return this._getButton($translate.instant('pause.btn'), () => this._pauseGuide(guide), true);
     };
 
-    this._getSkipButton = (guide) => {
-        return this._getButton($translate.instant('skip.btn'), () => this._skipSteps(guide), true);
+    this._getSkipButton = (guide, message) => {
+        const skipBtnLabel = GuideUtils.translateLocalMessage($translate, $interpolate, message, {});
+        return this._getButton(skipBtnLabel, () => this._skipSteps(guide), true);
     };
 
     this._skipSteps = (guide) => {
@@ -885,6 +886,7 @@ function ShepherdService($translate, LocalStorageAdapter, LSKeys, $interpolate, 
             canClickTarget: clickable,
             keyboardNavigation: false,
             skipPoint: stepDescription.skipPoint,
+            skipButtonLabel: stepDescription.skipButtonLabel,
             skipFromHistory: stepDescription.skipFromHistory,
             onPreviousClick: stepDescription.onPreviousClick,
             initPreviousStep: stepDescription.initPreviousStep,

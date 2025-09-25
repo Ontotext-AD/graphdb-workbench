@@ -10,14 +10,14 @@ const reloadAndOpenInfoPanel = (services, clasInstanceSelector) => {
 
 const disableAllRDFClasses = () => {
     document.querySelectorAll('.rdf-class')
-        .forEach(el => {
+        .forEach((el) => {
             el.classList.add('disable-rdf-class');
         });
 };
 
 const enableAllRDFClasses = () => {
     document.querySelectorAll('.rdf-class')
-        .forEach(el => {
+        .forEach((el) => {
             el.classList.remove('disable-rdf-class');
         });
 };
@@ -40,11 +40,11 @@ PluginRegistry.add('guide.step', [
                         class: 'clas-hierarchy-intro',
                         // If mainAction is set the title will be set automatically
                         ...(options.mainAction ? {} : {title: CLASS_HIERARCHY_DEFAULT_TITLE}),
-                        ...options
-                    }
-                }
+                        ...options,
+                    },
+                },
             ];
-        }
+        },
     },
     {
         guideBlockName: 'class-hierarchy-dataset-intro',
@@ -59,11 +59,11 @@ PluginRegistry.add('guide.step', [
                         class: 'class-hierarchy-dataset-intro',
                         // If mainAction is set the title will be set automatically
                         ...(options.mainAction ? {} : {title: CLASS_HIERARCHY_DEFAULT_TITLE}),
-                        ...options
-                    }
-                }
+                        ...options,
+                    },
+                },
             ];
-        }
+        },
     },
     {
         guideBlockName: 'class-hierarchy-zoom-class',
@@ -85,11 +85,11 @@ PluginRegistry.add('guide.step', [
                             GuideUtils.classHierarchyZoom(step.elementSelector);
                             guide.next();
                         },
-                        ...options
-                    }
-                }
+                        ...options,
+                    },
+                },
             ];
-        }
+        },
     },
     {
         guideBlockName: 'class-hierarchy-explain-class',
@@ -108,11 +108,11 @@ PluginRegistry.add('guide.step', [
                         ...(options.mainAction ? {} : {title: CLASS_HIERARCHY_DEFAULT_TITLE}),
                         show: () => disableAllRDFClasses,
                         hide: () => enableAllRDFClasses,
-                        ...options
-                    }
-                }
-            ]
-        }
+                        ...options,
+                    },
+                },
+            ];
+        },
     },
     {
         guideBlockName: 'class-hierarchy-open-rdf-instances-side-panel',
@@ -156,11 +156,11 @@ PluginRegistry.add('guide.step', [
                                 element = null;
                             }
                         },
-                        ...options
-                    }
-                }
+                        ...options,
+                    },
+                },
             ];
-        }
+        },
     },
     {
         guideBlockName: 'class-hierarchy-close-rdf-instances-side-panel',
@@ -181,11 +181,11 @@ PluginRegistry.add('guide.step', [
                         ...(options.mainAction ? {} : {title: CLASS_HIERARCHY_RDF_INSTANCES_DEFAULT_TITLE}),
                         onNextClick: () => GuideUtils.waitFor(closeButtonSelector, 3)
                             .then(() => GuideUtils.clickOnElement(closeButtonSelector)()),
-                        ...options
-                    }
-                }
+                        ...options,
+                    },
+                },
             ];
-        }
+        },
     },
     {
         guideBlockName: 'class-hierarchy-rdf-instances-side-panel-intro',
@@ -202,11 +202,11 @@ PluginRegistry.add('guide.step', [
                         placement: 'left',
                         // If mainAction is set the title will be set automatically
                         ...(options.mainAction ? {} : {title: CLASS_HIERARCHY_DEFAULT_TITLE}),
-                        ...options
-                    }
-                }
+                        ...options,
+                    },
+                },
             ];
-        }
+        },
     },
     {
         guideBlockName: 'class-hierarchy-rdf-instances-side-panel-open-all-instances-in-sparql',
@@ -224,11 +224,11 @@ PluginRegistry.add('guide.step', [
                         onNextClick: GuideUtils.clickOnGuideElement('instances-count'),
                         // If mainAction is set the title will be set automatically
                         ...(options.mainAction ? {} : {title: CLASS_HIERARCHY_DEFAULT_TITLE}),
-                        ...options
-                    }
-                }
-            ]
-        }
+                        ...options,
+                    },
+                },
+            ];
+        },
     },
     {
         guideBlockName: "class-hierarchy-explain-rdf-instance",
@@ -247,11 +247,11 @@ PluginRegistry.add('guide.step', [
                         extraContent: options.extraContent,
                         // If mainAction is set the title will be set automatically
                         ...(options.mainAction ? {} : {title: CLASS_HIERARCHY_DEFAULT_TITLE}),
-                        ...options
-                    }
-                }
-            ]
-        }
+                        ...options,
+                    },
+                },
+            ];
+        },
     },
     {
         guideBlockName: 'class-hierarchy-toggle-prefixes',
@@ -271,11 +271,11 @@ PluginRegistry.add('guide.step', [
                         onNextClick: (guide) => {
                             GuideUtils.clickOnElement('.prefix-toggle-btn')();
                         },
-                        ...options
-                    }
-                }
-            ]
-        }
+                        ...options,
+                    },
+                },
+            ];
+        },
     },
     {
         guideBlockName: 'class-hierarchy',
@@ -288,12 +288,12 @@ PluginRegistry.add('guide.step', [
                     guideBlockName: 'click-main-menu',
                     options: angular.extend({}, {
                         menu: 'class-hierarchy',
-                        showIntro: true
-                    }, options)
+                        showIntro: true,
+                    }, options),
                 }, {
                     guideBlockName: 'class-hierarchy-intro',
-                    options: {...options}
-                }
+                    options: {...options},
+                },
             ];
 
             if (options.introExtraContent) {
@@ -301,8 +301,8 @@ PluginRegistry.add('guide.step', [
                     guideBlockName: 'class-hierarchy-dataset-intro',
                     options: {
                         content: options.introExtraContent,
-                        ...options
-                    }
+                        ...options,
+                    },
                 });
             }
 
@@ -313,7 +313,7 @@ PluginRegistry.add('guide.step', [
                         options: {
                             iri: zoomIri.iri,
                             ...options,
-                        }
+                        },
                     });
                     if (zoomIri.postExtraContent) {
                         steps.push({
@@ -322,15 +322,15 @@ PluginRegistry.add('guide.step', [
                                 content: zoomIri.postExtraContent,
                                 beforeShowPromise: GuideUtils.deferredShow(800),
                                 iri: zoomIri.iri,
-                                ...options
-                            }
+                                ...options,
+                            },
                         });
                     }
                 });
             }
 
             return steps;
-        }
+        },
     },
     {
         guideBlockName: 'class-hierarchy-instances',
@@ -353,29 +353,30 @@ PluginRegistry.add('guide.step', [
 
                             return Promise.resolve();
                         },
-                        ...options
-                    }
+                        ...options,
+                    },
                 },
                 {
                     guideBlockName: 'class-hierarchy-rdf-instances-side-panel-intro',
                     options: {
                         skipPoint: true,
+                        skipButtonLabel: GuideUtils.BUTTONS.SKIP_SECTION,
                         beforeShowPromise: GuideUtils.deferredShow(800),
-                        onPreviousClick: () => new Promise(function (resolve) {
+                        onPreviousClick: () => new Promise(function(resolve) {
                             GuideUtils.waitFor(closeButtonSelector, 1)
                                 .then(() => $(closeButtonSelector).trigger('click'));
                             resolve();
                         }),
-                        ...options
-                    }
-                }
+                        ...options,
+                    },
+                },
             ];
 
             if (angular.isArray(options.focusInstances)) {
                 options.focusInstances.forEach((focusInstance) => {
                     if (!GuideUtils.isObject(focusInstance)) {
                         focusInstance = {
-                            instance: focusInstance
+                            instance: focusInstance,
                         };
                     }
                     steps.push({
@@ -383,8 +384,8 @@ PluginRegistry.add('guide.step', [
                         options: {
                             instance: focusInstance.instance,
                             extraContent: focusInstance.message,
-                            ...options
-                        }
+                            ...options,
+                        },
                     });
                 });
             }
@@ -393,15 +394,15 @@ PluginRegistry.add('guide.step', [
             if (options.followCountLink) {
                 steps.push({
                     guideBlockName: 'class-hierarchy-rdf-instances-side-panel-open-all-instances-in-sparql',
-                    options: {...options}
+                    options: {...options},
                 });
 
                 steps.push({
                     guideBlockName: 'sparql-explain-editor',
                     options: {
                         content: 'guide.step_plugin.class-hierarchy-instances-query.content',
-                        ...options
-                    }
+                        ...options,
+                    },
                 });
                 steps.push({
                     guideBlockName: 'sparql-results-explain',
@@ -412,8 +413,8 @@ PluginRegistry.add('guide.step', [
                             window.history.back();
                             guide.next();
                         },
-                        initPreviousStep: () => Promise.resolve()
-                    }, options)
+                        initPreviousStep: () => Promise.resolve(),
+                    }, options),
                 });
             }
 
@@ -424,7 +425,6 @@ PluginRegistry.add('guide.step', [
                     // and the side panel needs time to open
                     beforeShowPromise: options.followCountLink ? GuideUtils.deferredShow(1500) : Promise.resolve(),
                     initPreviousStep: (services, stepId) => {
-
                         const currentStepId = services.ShepherdService.getCurrentStepId();
                         // If method is called from same step just click count link
                         if (currentStepId === stepId && options.followCountLink) {
@@ -438,11 +438,11 @@ PluginRegistry.add('guide.step', [
                         // If is called from other step we have to reload and open the info panel.
                         return reloadAndOpenInfoPanel({RoutingUtil, GuideUtils}, clasInstanceSelector);
                     },
-                    ...options
-                }
+                    ...options,
+                },
             });
 
             return steps;
-        }
-    }
+        },
+    },
 ]);

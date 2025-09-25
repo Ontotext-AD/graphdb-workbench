@@ -375,6 +375,10 @@ const GuideUtils = (function() {
         SPARQL_VISUAL_BUTTON_SELECTOR: '.tabPanel.active .yasr-toolbar .explore-visual-graph-button',
     };
 
+    const BUTTONS = {
+        SKIP_SECTION: 'skip.btn.section',
+    };
+
     return {
         waitFor,
         waitUntilHidden,
@@ -406,6 +410,7 @@ const GuideUtils = (function() {
         getElementSelector,
         isObject,
         CSS_SELECTORS,
+        BUTTONS,
     };
 })();
 
