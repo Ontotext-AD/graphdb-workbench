@@ -10,6 +10,8 @@
   --gw-main-gdb-blue-600: #005399;
   --gw-main-gdb-blue-700: #003663;
   --gw-main-gdb-blue-800: #002b4f;
+  --gw-main-gdb-teal-200: #d9f2f0;
+  --gw-main-gdb-teal-600: #38a89f;
   --gw-main-gdb-teal-700: #226762;
   --gw-main-gdb-teal-800: #16413d;
   --gw-primary-200: var(--gw-main-gdb-orange-200);
@@ -19,6 +21,8 @@
   --gw-secondary-600: var(--gw-main-gdb-blue-600);
   --gw-secondary-700: var(--gw-main-gdb-blue-700);
   --gw-secondary-800: var(--gw-main-gdb-blue-800);
+  --gw-tertiary-200: var(--gw-main-gdb-teal-200);
+  --gw-tertiary-600: var(--gw-main-gdb-teal-600);
   --gw-tertiary-700: var(--gw-main-gdb-teal-700);
   --gw-tertiary-800: var(--gw-main-gdb-teal-800);
   --gw-primary-base: var(--gw-primary-700);
@@ -29,6 +33,8 @@
   --gw-secondary-light: var(--gw-secondary-600);
   --gw-secondary-dark: var(--gw-secondary-800);
   --gw-tertiary-base: var(--gw-tertiary-700);
+  --gw-tertiary-lighter: var(--gw-tertiary-200);
+  --gw-tertiary-light: var(--gw-tertiary-600);
   --gw-tertiary-dark: var(--gw-tertiary-800);
   --gw-primary-hover-color: var(--gw-primary-dark);
   --gw-highlight-focus-background: var(--gw-primary-lighter);
