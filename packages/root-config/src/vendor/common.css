@@ -319,7 +319,7 @@ h3 [class^=icon-] {
 }
 
 .text-tertiary {
-    color: var(--tertiary-color-dark) !important;
+    color: var(--gw-tertiary-dark) !important;
 }
 
 .text-info {
