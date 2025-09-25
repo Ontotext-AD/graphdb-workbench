@@ -32,7 +32,7 @@ main menu height*/
 }
 
 .navbar-component li a {
-  color: var(--gw-color-secondary-700);
+  color: var(--gw-secondary-base);
   text-decoration: none;
 }
 
@@ -48,7 +48,7 @@ main menu height*/
 .navbar-component a:not([href]):not([tabindex]),
 .navbar-component a:not([href]):not([tabindex]):focus,
 .navbar-component a:not([href]):not([tabindex]):hover {
-  color: var(--gw-color-secondary-700);
+  color: var(--gw-secondary-base);
 }
 
 .navbar-component a.sub-menu-link:not([href]):hover .menu-item,
@@ -89,7 +89,7 @@ main menu height*/
   -o-transition: all 0.18s ease-out; /* Opera 10.5+ */
   -webkit-transition: all 0.18s ease-out; /* Saf3.2+, Chrome */
   transition: all 0.18s ease-out;
-  color: var(--gw-color-secondary-700);
+  color: var(--gw-secondary-base);
   cursor: pointer;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -292,7 +292,7 @@ main menu height*/
   text-overflow: ellipsis;
   overflow: hidden;
   padding: 0.5em 0.8rem 0.2em 0;
-  color: var(--gw-color-secondary-700);
+  color: var(--gw-secondary-base);
   margin-left: 0.8rem;
   margin-bottom: 0.5em;
 }
