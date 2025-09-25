@@ -38,12 +38,10 @@ const DEFAULT_CONFIG = {
     '../**/node_modules/**',
     '../**/dist/**',
     '../**/.git/**',
-    '../**/variables.css',
     '../**/variables-optimized.css',
     '**/node_modules/**',
     '**/dist/**',
     '**/.git/**',
-    '**/variables.css',
     '**/variables-optimized.css',
   ],
 
