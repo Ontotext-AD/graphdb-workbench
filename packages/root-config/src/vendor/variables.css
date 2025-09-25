@@ -10,8 +10,8 @@
 /*-------------------------------------------------------------
 	Colors used in multiple places
 -------------------------------------------------------------*/
-    --autocomplete-background: hsla(var(--tertiary-color-hsl), 0.3);
-    --autocomplete-background-selected: hsla(var(--tertiary-color-hsl), 0.5);
+    --autocomplete-background: var(--gw-tertiary-lighter);
+    --autocomplete-background-selected: var(--gw-tertiary-light);
     --autocomplete-match: var(--gw-secondary-base);
     /* width of menu 15 + margin left 1 + margin right 2 => 18rem */
     --menu-width-expanded: 18rem;

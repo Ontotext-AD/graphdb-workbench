@@ -45,7 +45,7 @@
     height: 120px;
     margin-top: 0.5em;
     color: var(--gw-secondary-base);
-    background-color: hsla(var(--tertiary-color-hsl), 0.3);
+    background-color: var(--gw-tertiary-lighter);
     overflow: auto;
     white-space: pre-wrap;
 }
