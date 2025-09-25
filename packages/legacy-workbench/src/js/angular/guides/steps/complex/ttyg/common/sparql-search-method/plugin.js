@@ -138,6 +138,7 @@ PluginRegistry.add('guide.step', [
       guideBlockName: 'ttyg-sparql-click-add-namespaces',
       getSteps: (options, services) => {
           const GuideUtils = services.GuideUtils;
+          const namespacesCheckbox = GuideUtils.getGuideElementSelector('add-missing-namespaces-input');
 
           return [
               {
@@ -150,7 +151,8 @@ PluginRegistry.add('guide.step', [
                       ...options,
                       url: 'ttyg',
                       elementSelector: GuideUtils.getGuideElementSelector('add-missing-namespaces-option'),
-                      onNextValidate: () => Promise.resolve(GuideUtils.isChecked(GuideUtils.getGuideElementSelector('add-missing-namespaces-input'))),
+                      clickableElementSelector: namespacesCheckbox,
+                      onNextValidate: () => Promise.resolve(GuideUtils.isChecked(namespacesCheckbox)),
                   },
               },
           ];
