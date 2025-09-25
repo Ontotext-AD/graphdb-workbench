@@ -20,7 +20,7 @@ export class ChartData {
         return [
             ChartData.cssVar('--gw-secondary-base'),
             ChartData.cssVar('--gw-primary-base'),
-            ChartData.cssVar('--tertiary-color'),
+            ChartData.cssVar('--gw-tertiary-base'),
             ChartData.cssVar('--gray-color')
         ];
     }
