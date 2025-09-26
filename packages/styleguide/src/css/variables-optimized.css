@@ -17,6 +17,9 @@
   --gw-main-gdb-teal-800: #16413d;
   --gw-main-gdb-grey-700: #5c5c5c;
   --gw-main-gdb-grey-800: #424242;
+  --gw-additional-red-300: #f4d2d2;
+  --gw-additional-red-600: #cd3737;
+  --gw-additional-red-700: #ab2b2b;
   --gw-primary-200: var(--gw-main-gdb-orange-200);
   --gw-primary-600: var(--gw-main-gdb-orange-600);
   --gw-primary-700: var(--gw-main-gdb-orange-700);
@@ -25,6 +28,9 @@
   --gw-secondary-600: var(--gw-main-gdb-blue-600);
   --gw-secondary-700: var(--gw-main-gdb-blue-700);
   --gw-secondary-800: var(--gw-main-gdb-blue-800);
+  --gw-danger-300: var(--gw-additional-red-300);
+  --gw-danger-600: var(--gw-additional-red-600);
+  --gw-danger-700: var(--gw-additional-red-700);
   --gw-tertiary-200: var(--gw-main-gdb-teal-200);
   --gw-tertiary-600: var(--gw-main-gdb-teal-600);
   --gw-tertiary-700: var(--gw-main-gdb-teal-700);
@@ -39,6 +45,9 @@
   --gw-secondary-lighter: var(--gw-secondary-100);
   --gw-secondary-light: var(--gw-secondary-600);
   --gw-secondary-dark: var(--gw-secondary-800);
+  --gw-danger-base: var(--gw-danger-700);
+  --gw-danger-light: var(--gw-danger-600);
+  --gw-danger-lighter: var(--gw-danger-300);
   --gw-tertiary-base: var(--gw-tertiary-700);
   --gw-tertiary-lighter: var(--gw-tertiary-200);
   --gw-tertiary-light: var(--gw-tertiary-600);

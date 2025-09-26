@@ -1137,7 +1137,7 @@ input.switch:checked ~ label:after {
 }
 
 .toast-error {
-    background-color: var(--color-danger-dark);
+    background-color: var(--gw-danger-base);
 }
 
 .toast-warning {
@@ -1658,7 +1658,7 @@ input[name=namespace] {
 }
 
 .tag-danger {
-    background-color: var(--color-danger-dark) !important;
+    background-color: var(--gw-danger-base) !important;
 }
 
 .tag-success {
@@ -1694,7 +1694,7 @@ input[name=namespace] {
 
 .btn-fade-danger {
     animation: fade-button 2s infinite;
-    --fade-color: var(--color-danger-medium);
+    --fade-color: var(--gw-danger-light);
 }
 
 .btn-fade-warning:hover, .btn-fade-danger:hover {
