@@ -428,7 +428,7 @@
 }
 
 .dynamic-form .dropdown-item.multi-select {
-    color: var(--gray-color) !important;
+    color: var(--gw-neutral-base) !important;
     font-weight: initial !important;
 }
 
@@ -439,7 +439,7 @@
 }
 
 .dynamic-form .dropdown-menu.multi-select .dropdown-item.multi-select {
-    color: var(--gray-color) !important;
+    color: var(--gw-neutral-base) !important;
     font-weight: initial !important;
 }
 

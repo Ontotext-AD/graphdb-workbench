@@ -21,7 +21,7 @@ export class ChartData {
             ChartData.cssVar('--gw-secondary-base'),
             ChartData.cssVar('--gw-primary-base'),
             ChartData.cssVar('--gw-tertiary-base'),
-            ChartData.cssVar('--gray-color')
+            ChartData.cssVar('--gw-neutral-base')
         ];
     }
 
