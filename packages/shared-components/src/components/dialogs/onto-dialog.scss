@@ -13,7 +13,7 @@
   background-color: rgba(0, 0, 0, .5);
   font-family: var(--main-font), sans-serif;
   font-weight: var(--main-font-weight);
-  color: var(--gw-secondary-base, #373a3c);
+  color: var(--gw-secondary-base, var(--base-text-color));
 }
 
 .dialog {
