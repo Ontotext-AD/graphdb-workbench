@@ -9,7 +9,7 @@
     align-items: center;
     overflow-x: hidden;
     background-color: #fff;
-    border-color: var(--gray-color);
+    border-color: var(--gw-neutral-base);
     color: inherit;
     font-weight: unset;
 }

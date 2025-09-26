@@ -16,7 +16,7 @@
 }
 
 .cluster-zone {
-    stroke: var(--gray-color);
+    stroke: var(--gw-neutral-base);
     fill: transparent;
 }
 
@@ -51,7 +51,7 @@
 
 .node {
     cursor: pointer;
-    fill: var(--gray-color);
+    fill: var(--gw-neutral-base);
 }
 
 .node.leader {
@@ -70,8 +70,8 @@
 }
 
 .node.other {
-    fill: var(--gray-color);
-    stroke: var(--gray-color);
+    fill: var(--gw-neutral-base);
+    stroke: var(--gw-neutral-base);
 }
 
 #node-group.legend .node {
