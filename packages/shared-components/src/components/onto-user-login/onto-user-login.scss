@@ -1,5 +1,5 @@
 :root {
-  --onto-user-login-color: var(--gw-secondary-base, #373a3c);
+  --onto-user-login-color: var(--gw-secondary-base, var(--base-text-color));
 }
 
 .onto-user-login {
