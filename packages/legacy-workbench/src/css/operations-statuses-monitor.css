@@ -108,5 +108,5 @@
 }
 
 .status-critical {
-    color: var(--color-danger-dark) !important;
+    color: var(--gw-danger-base) !important;
 }
