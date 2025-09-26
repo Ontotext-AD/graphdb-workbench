@@ -245,7 +245,7 @@ yasgui-component .yasr .yasr_header .yasr_response_chip {
 }
 
 yasgui-component .yasr .yasr_header {
-    background-color: var(--color-info-light) !important;
+    background-color: var(--gw-info-lighter) !important;
 }
 
 yasgui-component .yasr .dataTable .triple-cell .triple-link {
