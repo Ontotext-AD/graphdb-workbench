@@ -239,7 +239,7 @@ div.nodetooltip {
 }
 
 .location-item .text-only:hover {
-    text-decoration: 1px underline dashed var(--color-success-dark);
+    text-decoration: 1px underline dashed var(--gw-success-base);
     text-underline-offset: 4px;
 }
 
