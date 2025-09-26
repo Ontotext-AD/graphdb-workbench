@@ -7,7 +7,7 @@
 }
 
 .btn-secondary.shepherd-button:hover {
-    background-color: #dcdcdc;
+    background-color: var(--gw-highlight-background);
     color: #003663;
 }
 
