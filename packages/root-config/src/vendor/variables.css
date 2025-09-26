@@ -31,8 +31,8 @@
     --base-text-color: var(--gw-text-color);
     /* The base background color (#f7f7f7) that is used for panels and other similar elements */
     --base-background-color: var(--gw-panel-background);
-    /* The base background color that is used for selected panels or elements */
-    --base-background-selected-color: #dcdcdc;
+    /* The base background color (#dcdcdc) that is used for selected panels or elements */
+    --base-background-selected-color: var(--gw-highlight-background);
     /* The base background color that is used for hover effects in panels and elements */
     --base-background-hover-color: rgba(0, 0, 0, .1);
 
