@@ -331,7 +331,7 @@ h3 [class^=icon-] {
 }
 
 .text-success {
-    color: var(--color-success-dark) !important;
+    color: var(--gw-success-base) !important;
 }
 
 .text-warning {
@@ -369,7 +369,7 @@ h3 [class^=icon-] {
 }
 
 .alert-success {
-    background-color: var(--color-success-light);
+    background-color: var(--gw-success-lighter);
 }
 
 .alert-danger {

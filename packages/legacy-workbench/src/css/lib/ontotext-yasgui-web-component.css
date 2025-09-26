@@ -291,7 +291,7 @@ yasgui-component .yasr .extended-boolean-plugin .response-error {
 }
 
 yasgui-component .yasr .extended-boolean-plugin .response-success {
-    background-color: var(--color-success-light) !important;
+    background-color: var(--gw-success-lighter) !important;
 }
 
 yasgui-component .yasr .dataTables_wrapper .dataTable {

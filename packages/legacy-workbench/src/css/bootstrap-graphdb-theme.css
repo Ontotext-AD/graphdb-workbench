@@ -1149,7 +1149,7 @@ input.switch:checked ~ label:after {
 }
 
 .toast-success {
-    background-color: var(--color-success-dark);
+    background-color: var(--gw-success-base);
 }
 
 .toast-error:before,
@@ -1662,7 +1662,7 @@ input[name=namespace] {
 }
 
 .tag-success {
-    background-color: var(--color-success-dark) !important;
+    background-color: var(--gw-success-base) !important;
 }
 
 .tag-warning {

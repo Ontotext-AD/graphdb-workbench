@@ -101,5 +101,5 @@
 }
 
 .graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table .status-success {
-    color: var(--color-success-dark);
+    color: var(--gw-success-base);
 }
