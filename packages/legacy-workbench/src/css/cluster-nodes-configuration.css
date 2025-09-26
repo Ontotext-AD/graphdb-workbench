@@ -58,7 +58,7 @@
 }
 
 .location-cell.adding {
-    color: var(--color-success-dark);
+    color: var(--gw-success-base);
 }
 
 .location-cell.deleting {
@@ -74,7 +74,7 @@
 }
 
 .status-cell .adding {
-    color: var(--color-success-dark);
+    color: var(--gw-success-base);
 }
 
 .status-cell .deleting {
