@@ -432,7 +432,7 @@ div[data-radix-popper-content-wrapper] * {
 
 .graphql-playground-view #graphiql .docExplorerWrap select option {
     background-color: var(--html-background) !important;
-    color: var(--gray-color) !important;
+    color: var(--gw-neutral-base) !important;
 }
 
 /* =============================================== */
