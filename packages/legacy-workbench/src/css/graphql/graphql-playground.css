@@ -1,7 +1,7 @@
 :root {
     --default-btn-bgcolor: #ebebeb;
     --default-btn-focus-bgcolor: #d4d4d4;
-    --default-btn-focus-color: #373a3c;
+    --default-btn-focus-color: var(--base-text-color);
 }
 
 html, body {

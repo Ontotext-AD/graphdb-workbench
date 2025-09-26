@@ -1,5 +1,5 @@
 :root {
-  --onto-repository-selector-color: var(--gw-secondary-base, #373a3c);
+  --onto-repository-selector-color: var(--gw-secondary-base, var(--base-text-color));
 }
 
 :host {
@@ -59,7 +59,7 @@
 
   .tippy-content {
     padding: 0;
-    color: #373a3c;
+    color: var(--base-text-color);
     border: 1px solid rgba(0, 0, 0, .125);
     box-shadow: 1px 3px 6px rgba(0, 0, 0, 0.2);
 
