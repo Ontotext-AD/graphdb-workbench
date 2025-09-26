@@ -678,7 +678,7 @@ function ShepherdService($translate, LocalStorageAdapter, LSKeys, $interpolate, 
                             });
                         return;
                     } else if (nextStep.options.forceReload || nextStep.options.url && nextStep.options.url !== currentStep.options.url) {
-                        if (getPathName() !== nextStep.options.url) {
+                        if (nextStep.options.url && getPathName() !== nextStep.options.url) {
                             navigate(nextStep.options.url);
                         }
                     }
