@@ -1141,7 +1141,7 @@ input.switch:checked ~ label:after {
 }
 
 .toast-warning {
-    background-color: var(--color-warning-dark);
+    background-color: var(--gw-warning-dark);
 }
 
 .toast-info {
@@ -1666,7 +1666,7 @@ input[name=namespace] {
 }
 
 .tag-warning {
-    background-color: var(--color-warning-dark) !important;
+    background-color: var(--gw-warning-dark) !important;
 }
 
 .tag-info {
@@ -1689,7 +1689,7 @@ input[name=namespace] {
 
 .btn-fade-warning {
     animation: fade-button 2s infinite;
-    --fade-color: var(--color-warning-medium);
+    --fade-color: var(--gw-warning-base);
 }
 
 .btn-fade-danger {

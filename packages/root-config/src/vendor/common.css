@@ -335,7 +335,7 @@ h3 [class^=icon-] {
 }
 
 .text-warning {
-    color: var(--color-warning-dark) !important;
+    color: var(--gw-warning-dark) !important;
 }
 
 .text-info {
@@ -357,7 +357,7 @@ h3 [class^=icon-] {
 }
 
 .alert-warning {
-    background-color: var(--color-warning-light);
+    background-color: var(--gw-warning-lighter);
 }
 
 .alert-info {
