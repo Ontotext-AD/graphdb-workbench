@@ -16,6 +16,7 @@
   --gw-main-gdb-teal-600: #38a89f;
   --gw-main-gdb-teal-700: #226762;
   --gw-main-gdb-teal-800: #16413d;
+  --gw-main-gdb-grey-0: #ffffff;
   --gw-main-gdb-grey-100: hsla(0, 0%, 97%);
   --gw-main-gdb-grey-700: #5c5c5c;
   --gw-main-gdb-grey-800: #424242;
@@ -43,6 +44,7 @@
   --gw-danger-700: var(--gw-additional-red-700);
   --gw-info-lighter: var(--gw-main-gdb-blue-100);
   --gw-info-dark: var(--gw-main-gdb-blue-700);
+  --gw-surface-0: var(--gw-main-gdb-grey-0);
   --gw-tertiary-200: var(--gw-main-gdb-teal-200);
   --gw-tertiary-600: var(--gw-main-gdb-teal-600);
   --gw-tertiary-700: var(--gw-main-gdb-teal-700);
@@ -67,6 +69,8 @@
   --gw-tertiary-lighter: var(--gw-tertiary-200);
   --gw-tertiary-light: var(--gw-tertiary-600);
   --gw-tertiary-dark: var(--gw-tertiary-800);
+  --gw-contrast-text: var(--gw-surface-0);
   --gw-primary-hover-color: var(--gw-primary-dark);
+  --gw-secondary-contrast-color: var(--gw-contrast-text);
   --gw-highlight-focus-background: var(--gw-primary-lighter);
 }
