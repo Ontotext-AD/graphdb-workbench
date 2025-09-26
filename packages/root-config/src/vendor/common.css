@@ -365,7 +365,7 @@ h3 [class^=icon-] {
 }
 
 .alert-help {
-    background-color: var(--color-help-light);
+    background-color: var(--gw-neutral-lighter);
 }
 
 .alert-success {
