@@ -72,7 +72,10 @@
   --gw-tertiary-dark: var(--gw-tertiary-800);
   --gw-contrast-text: var(--gw-surface-0);
   --gw-text-color: var(--gw-surface-800);
+  --gw-default-background: var(--gw-surface-0);
   --gw-primary-hover-color: var(--gw-primary-dark);
   --gw-secondary-contrast-color: var(--gw-contrast-text);
+  --gw-highlight-background: var(--gw-primary-lighter);
   --gw-highlight-focus-background: var(--gw-primary-lighter);
+  --gw-panel-background: var(--gw-default-background);
 }

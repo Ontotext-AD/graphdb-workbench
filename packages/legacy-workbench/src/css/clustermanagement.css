@@ -32,7 +32,7 @@
 
 .cluster-zone.no-cluster:hover {
     stroke-width: 3 !important;
-    fill: #f7f7f7 !important;
+    fill: var(--gw-panel-background) !important;
     height: 120%;
     width: 120%;
 }
