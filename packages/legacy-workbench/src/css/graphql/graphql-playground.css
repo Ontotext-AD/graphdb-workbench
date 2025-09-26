@@ -289,7 +289,7 @@ graphql-playground {
 }
 
 .graphql-playground-view #graphiql .graphiql-history .graphiql-history-item.editable input {
-    border: 1px solid hsla(var(--secondary-color-hsl), 0.5);
+    border: 1px solid var(--gw-secondary-light);
     font-weight: 300;
 }
 
@@ -427,7 +427,7 @@ div[data-radix-popper-content-wrapper] * {
 .graphql-playground-view #graphiql .docExplorerWrap select:focus {
     color: #55595c;
     background-color: #fff;
-    border-color: hsla(var(--secondary-color-hsl), 0.5);
+    border-color: var(--gw-secondary-light);
 }
 
 .graphql-playground-view #graphiql .docExplorerWrap select option {
