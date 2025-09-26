@@ -40,9 +40,6 @@ PluginRegistry.add('themes', {
         'color-danger-medium': 'hsl(353, 78%, 83%)',
         'color-warning-medium': 'hsl(var(--primary-color-hue), var(--primary-color-saturation), 83%)',
         // Colors for the logo - logo proper, text in logo, logo background
-        'logo-color': 'var(--primary-color-light)',
-        'logo-text-color': 'white',
-        'logo-background-color': 'var(--secondary-color-dark)'
     },
     // Dark theme
     'dark': {
