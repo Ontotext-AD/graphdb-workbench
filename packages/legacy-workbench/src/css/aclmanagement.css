@@ -246,7 +246,7 @@ input::placeholder {
 
 .acl-tag-role-negated {
     background-color: #ddd;
-    color: var(--gray-color-dark);
+    color: var(--gw-neutral-dark);
 }
 
 .nav-link{
