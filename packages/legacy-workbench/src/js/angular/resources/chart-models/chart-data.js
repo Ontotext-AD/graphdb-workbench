@@ -251,7 +251,7 @@ export class ChartData {
                         minute: '{bold|{HH}:{mm}}',
                         second: '{HH}:{mm}:{ss}'
                     },
-                    color: ChartData.cssVar('--gray-color-dark'),
+                    color: ChartData.cssVar('--gw-neutral-dark'),
                     rich: {
                         bold: {
                             fontWeight: 500
@@ -265,7 +265,7 @@ export class ChartData {
                     show: true
                 },
                 axisLabel: {
-                    color: ChartData.cssVar('--gray-color-dark')
+                    color: ChartData.cssVar('--gw-neutral-dark')
                 },
                 axisTick: {
                     lineStyle: {
