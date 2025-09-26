@@ -12,6 +12,7 @@
   --gw-main-gdb-blue-700: #003663;
   --gw-main-gdb-blue-800: #002b4f;
   --gw-main-gdb-teal-200: #d9f2f0;
+  --gw-main-gdb-teal-300: #bae8e4;
   --gw-main-gdb-teal-600: #38a89f;
   --gw-main-gdb-teal-700: #226762;
   --gw-main-gdb-teal-800: #16413d;
@@ -28,6 +29,8 @@
   --gw-secondary-600: var(--gw-main-gdb-blue-600);
   --gw-secondary-700: var(--gw-main-gdb-blue-700);
   --gw-secondary-800: var(--gw-main-gdb-blue-800);
+  --gw-success-base: var(--gw-main-gdb-teal-700);
+  --gw-success-lighter: var(--gw-main-gdb-teal-300);
   --gw-danger-300: var(--gw-additional-red-300);
   --gw-danger-600: var(--gw-additional-red-600);
   --gw-danger-700: var(--gw-additional-red-700);
