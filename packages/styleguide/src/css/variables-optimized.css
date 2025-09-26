@@ -21,6 +21,9 @@
   --gw-additional-red-300: #f4d2d2;
   --gw-additional-red-600: #cd3737;
   --gw-additional-red-700: #ab2b2b;
+  --gw-additional-gdb-yellow-300: #eee9d8;
+  --gw-additional-gdb-yellow-700: #816e37;
+  --gw-additional-gdb-yellow-800: #68592c;
   --gw-primary-200: var(--gw-main-gdb-orange-200);
   --gw-primary-600: var(--gw-main-gdb-orange-600);
   --gw-primary-700: var(--gw-main-gdb-orange-700);
@@ -31,6 +34,9 @@
   --gw-secondary-800: var(--gw-main-gdb-blue-800);
   --gw-success-base: var(--gw-main-gdb-teal-700);
   --gw-success-lighter: var(--gw-main-gdb-teal-300);
+  --gw-warning-300: var(--gw-additional-gdb-yellow-300);
+  --gw-warning-700: var(--gw-additional-gdb-yellow-700);
+  --gw-warning-dark: var(--gw-additional-gdb-yellow-800);
   --gw-danger-300: var(--gw-additional-red-300);
   --gw-danger-600: var(--gw-additional-red-600);
   --gw-danger-700: var(--gw-additional-red-700);
@@ -48,6 +54,8 @@
   --gw-secondary-lighter: var(--gw-secondary-100);
   --gw-secondary-light: var(--gw-secondary-600);
   --gw-secondary-dark: var(--gw-secondary-800);
+  --gw-warning-base: var(--gw-warning-700);
+  --gw-warning-lighter: var(--gw-warning-300);
   --gw-danger-base: var(--gw-danger-700);
   --gw-danger-light: var(--gw-danger-600);
   --gw-danger-lighter: var(--gw-danger-300);

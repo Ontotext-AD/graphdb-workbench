@@ -235,8 +235,8 @@ input::placeholder {
 }
 
 .acl-tag-write {
-    background-color: var(--color-warning-light);
-    color: var(--color-warning-dark);
+    background-color: var(--gw-warning-lighter);
+    color: var(--gw-warning-dark);
 }
 
 .acl-tag-role {
@@ -302,7 +302,7 @@ table td {
 }
 
 .table-info, .table-info > td, .table-info > th {
-    background-color: var(--color-warning-light) !important;
+    background-color: var(--gw-warning-lighter) !important;
 }
 
 .nav-item .nav-link > span,

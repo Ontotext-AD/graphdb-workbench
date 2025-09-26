@@ -104,7 +104,7 @@
 }
 
 .status-warning {
-    color: var(--color-warning-dark) !important;
+    color: var(--gw-warning-dark) !important;
 }
 
 .status-critical {

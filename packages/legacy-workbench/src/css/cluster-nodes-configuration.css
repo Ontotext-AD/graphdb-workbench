@@ -78,7 +78,7 @@
 }
 
 .status-cell .deleting {
-    color: var(--color-warning-dark);
+    color: var(--gw-warning-dark);
 }
 
 .status-cell .status-icon {
