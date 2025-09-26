@@ -11,6 +11,8 @@ body {
     font-family: var(--main-font);
     font-weight: var(--main-font-weight);
     margin-bottom: 0;
+    /* Overriding bootstrap's base text color #373a3c */
+    color: var(--base-text-color);
 }
 
 code, kbd, pre, samp {
