@@ -222,5 +222,5 @@
 }
 
 .generate-endpoint-view .generate-endpoint-container .generation-report-list .status-success {
-    color: var(--color-success-dark);
+    color: var(--gw-success-base);
 }
