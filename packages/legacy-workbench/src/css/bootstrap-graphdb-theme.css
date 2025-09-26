@@ -1145,7 +1145,7 @@ input.switch:checked ~ label:after {
 }
 
 .toast-info {
-    background-color: var(--color-info-dark);
+    background-color: var(--gw-info-dark);
 }
 
 .toast-success {
@@ -1670,7 +1670,7 @@ input[name=namespace] {
 }
 
 .tag-info {
-    background-color: var(--color-info-dark) !important;
+    background-color: var(--gw-info-dark) !important;
 }
 
 .rzslider .rz-pointer {
