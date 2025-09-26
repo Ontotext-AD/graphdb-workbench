@@ -230,7 +230,7 @@ input::placeholder {
 }
 
 .acl-tag-read {
-    background-color: var(--color-help-light);
+    background-color: var(--gw-neutral-lighter);
     color: var(--gw-info-dark);
 }
 
