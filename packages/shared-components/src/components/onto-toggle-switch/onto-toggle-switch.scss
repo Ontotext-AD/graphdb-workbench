@@ -56,7 +56,7 @@ $default-checked-color: #373a3c;
     &:checked {
       & ~ label {
         &:before {
-          background-color: hsla(var(--secondary-color-hsl, $default-checked-color-hsl), .5);
+          background-color: var(--gw-secondary-light, $default-checked-color);
         }
 
         &:after {

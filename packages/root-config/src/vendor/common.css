@@ -151,19 +151,19 @@ h1 .btn {
     color: var(--gw-secondary-base);
     background-image: none;
     background-color: transparent;
-    border-color: hsla(var(--secondary-color-hsl), 0.5);
+    border-color: var(--gw-secondary-light);
 }
 
 .btn-outline-secondary:hover,
 .btn-outline-secondary.focus, .btn-outline-secondary:focus, .btn-outline-secondary.active, .btn-outline-secondary:active,
 .btn-outline-secondary.active.focus, .btn-outline-secondary.active:focus, .btn-outline-secondary:active.focus, .btn-outline-secondary:active:focus, .btn-outline-secondary:active:hover, .open > .btn-outline-secondary.dropdown-toggle.focus, .open > .btn-outline-secondary.dropdown-toggle:focus, .open > .btn-outline-secondary.dropdown-toggle:hover {
     color: var(--gw-secondary-base);
-    background-color: hsla(var(--secondary-color-hsl), 0.2);
+    background-color: var(--gw-secondary-lighter);
     border-color: var(--gw-secondary-base);
 }
 
 .btn-outline-secondary.active:hover {
-    background-color: hsla(var(--secondary-color-hsl), 0.2);
+    background-color: var(--gw-secondary-lighter);
     border-color: var(--gw-secondary-base);
 }
 
