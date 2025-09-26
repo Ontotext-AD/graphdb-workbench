@@ -19,5 +19,5 @@
 
 #addLabelForm .error-message {
     font-size: small;
-    color: var(--color-warning-dark);
+    color: var(--gw-warning-dark);
 }
