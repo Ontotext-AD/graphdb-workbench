@@ -29,8 +29,8 @@
     --link-underline-offset: clamp(1px, 6%, 10px);
     /* The base text color. This (#373a3c) usually comes from the bootstrap, but in some cases it needs to be set explicitly. */
     --base-text-color: var(--gw-text-color);
-    /* The base background color that is used for panels and other similar elements */
-    --base-background-color: #f7f7f7;
+    /* The base background color (#f7f7f7) that is used for panels and other similar elements */
+    --base-background-color: var(--gw-panel-background);
     /* The base background color that is used for selected panels or elements */
     --base-background-selected-color: #dcdcdc;
     /* The base background color that is used for hover effects in panels and elements */
