@@ -75,7 +75,7 @@ main menu height*/
 
 .navbar-component .menu-element {
   border-bottom: 1px solid #fff;
-  background-color: #f7f7f7;
+  background-color: var(--gw-panel-background);
   position: relative;
 }
 
@@ -160,7 +160,7 @@ main menu height*/
 
 .navbar-component .menu-element.open,
 .navbar-component.collapsed .menu-element:hover {
-  background-color: #dcdcdc;
+  background-color: var(--gw-highlight-background);
 }
 
 .navbar-component .sub-menu {

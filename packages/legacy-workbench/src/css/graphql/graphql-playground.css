@@ -187,7 +187,7 @@ graphql-playground {
 
 .graphql-playground-view #graphiql .graphiql-sessions .graphiql-editors .CodeMirror-gutters {
     border-right: 1px solid #ddd;
-    background-color: #f7f7f7;
+    background-color: var(--gw-panel-background);
 }
 
 .graphql-playground-view #graphiql .graphiql-sessions .graphiql-editors .CodeMirror-gutter-wrapper * {
