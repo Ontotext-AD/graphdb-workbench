@@ -1,6 +1,4 @@
-// Hue, Saturation, Lightness for #373a3c
-$default-checked-color-hsl: 210, 3%, 22%;
-$default-checked-color: #373a3c;
+$default-checked-color: var(--base-text-color);
 
 .toggle-switch {
   all: unset;
