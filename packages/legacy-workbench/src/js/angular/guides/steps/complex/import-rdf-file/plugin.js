@@ -18,7 +18,7 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.import_rdf_file.content',
                         class: 'upload-rdf-file-button',
                         // If mainAction is set the title will be set automatically
-                        ...(options.mainAction ? {} : { title: IMPORT_FILE_DEFAULT_STEP_TITLE }),
+                        ...(options.mainAction ? {} : {title: IMPORT_FILE_DEFAULT_STEP_TITLE}),
                         ...options,
                         url: 'import',
                         elementSelector: GuideUtils.getGuideElementSelector('uploadRdfFileButton'),
@@ -78,14 +78,14 @@ PluginRegistry.add('guide.step', [
                                 })
                                 .catch((error) => {
                                     // This shouldn't be happening.
-                                    console.log(error);
+                                    console.error(error);
                                 })
                                 .finally(() => guide.next());
-                        }
-                    }
-                }
-            ]
-        }
+                        },
+                    },
+                },
+            ];
+        },
     },
     {
         guideBlockName: 'import-confirm-duplicate-files',
@@ -97,7 +97,7 @@ PluginRegistry.add('guide.step', [
                     options: {
                         content: 'guide.step_plugin.import_rdf_file.confirm_duplicate_files_dialog.content',
                         // If mainAction is set the title will be set automatically
-                        ...(options.mainAction ? {} : { title: IMPORT_FILE_DEFAULT_STEP_TITLE }),
+                        ...(options.mainAction ? {} : {title: IMPORT_FILE_DEFAULT_STEP_TITLE}),
                         placement: 'bottom',
                         class: 'import-file-button',
                         ...options,
@@ -112,11 +112,11 @@ PluginRegistry.add('guide.step', [
                                 return GuideUtils.clickOnElement('.confirm-duplicate-files-dialog .cancel-btn');
                             }
                             return Promise.resolve();
-                        }
-                    }
-                }
-            ]
-        }
+                        },
+                    },
+                },
+            ];
+        },
     },
     {
       guideBlockName: 'import-click-on-import-button',
@@ -129,12 +129,12 @@ PluginRegistry.add('guide.step', [
                   options: {
                       content: 'guide.step_plugin.import_rdf_file.import-settings.import.button.content',
                       // If mainAction is set the title will be set automatically
-                      ...(options.mainAction ? {} : { title: IMPORT_FILE_DEFAULT_STEP_TITLE }),
+                      ...(options.mainAction ? {} : {title: IMPORT_FILE_DEFAULT_STEP_TITLE}),
                       placement: 'top',
                       class: 'import-settings-import-file-button',
                       ...options,
                       elementSelector: importSettingsButtonSelector,
-                      onPreviousClick: () => new Promise(function (resolve) {
+                      onPreviousClick: () => new Promise(function(resolve) {
                           GuideUtils.clickOnGuideElement('import-settings-cancel-button')()
                               .then(() => resolve());
                       }),
@@ -143,14 +143,14 @@ PluginRegistry.add('guide.step', [
                               .catch((error) => {
                                   services.toastr.error(services.$translate.instant('guide.unexpected.error.message'));
                                   return Promise.reject(error);
-                              })
+                              }),
                           ),
                       onNextClick: () => GuideUtils.clickOnGuideElement('import-settings-import-button')(),
-                      canBePaused: false
-                  }
-              }
-          ]
-      }
+                      canBePaused: false,
+                  },
+              },
+          ];
+      },
     },
     {
       guideBlockName: 'import-show-progress',
@@ -162,7 +162,7 @@ PluginRegistry.add('guide.step', [
                   options: {
                       content: 'guide.step_plugin.import_status_info.content',
                       // If mainAction is set the title will be set automatically
-                      ...(options.mainAction ? {} : { title: IMPORT_FILE_DEFAULT_STEP_TITLE }),
+                      ...(options.mainAction ? {} : {title: IMPORT_FILE_DEFAULT_STEP_TITLE}),
                       class: 'import-status-info',
                       ...options,
                       url: 'import',
@@ -174,11 +174,13 @@ PluginRegistry.add('guide.step', [
                           return GuideUtils.waitFor('.import-resource-message', 10);
                       },
                       onPreviousClick: () => GuideUtils.getOrWaitFor(GuideUtils.getGuideElementSelector('import-file-' + options.resourceFile), 10)
-                          .then((element) => { element.click() })
-                  }
-              }
-          ]
-      }
+                          .then((element) => {
+                              element.click();
+                          }),
+                  },
+              },
+          ];
+      },
     },
     {
         guideBlockName: 'import-rdf-file',
@@ -190,9 +192,9 @@ PluginRegistry.add('guide.step', [
                     guideBlockName: 'click-main-menu',
                     options: angular.extend({}, {
                         menu: 'import',
-                        showIntro: true
-                    }, options)
-                }
+                        showIntro: true,
+                    }, options),
+                },
             ];
 
             if (options.resourcePath) {
@@ -200,30 +202,33 @@ PluginRegistry.add('guide.step', [
                     {
                         guideBlockName: 'download-guide-resource',
                         options: angular.extend({}, {
-                            title: ''
-                        }, options)
-                    }
+                            title: '',
+                        }, options),
+                    },
                 );
             }
 
             steps.push(...[
                 {
-                    guideBlockName: 'import-upload-rdf-file', options: {...options}
+                    guideBlockName: 'import-upload-rdf-file', options: {
+                        disablePreviousFlow: false,
+                        ...options,
+                    },
                 },
                 // This step is optional and will only appear if the file we want to upload has already been uploaded.
                 // If the file is already uploaded, a confirmation dialog will be opened, and this step will display the confirm button of the dialog.
                 {
-                    guideBlockName: 'import-confirm-duplicate-files', options: {...options}
+                    guideBlockName: 'import-confirm-duplicate-files', options: {...options},
                 },
                 {
-                    guideBlockName: 'import-click-on-import-button', options: {...options}
+                    guideBlockName: 'import-click-on-import-button', options: {...options},
                 },
                 {
-                    guideBlockName: 'import-show-progress', options: {...options}
-                }
+                    guideBlockName: 'import-show-progress', options: {...options},
+                },
             ]);
 
             return steps;
-        }
-    }
+        },
+    },
 ]);
