@@ -58,7 +58,7 @@ html, body {
 
 .acl-management-view .acl-rules .no-data {
     text-align: center;
-    background-color: var(--color-info-light);
+    background-color: var(--gw-info-lighter);
 }
 
 .acl-management-view .acl-rules .preview-rule-row td.data {
@@ -231,7 +231,7 @@ input::placeholder {
 
 .acl-tag-read {
     background-color: var(--color-help-light);
-    color: var(--color-info-dark);
+    color: var(--gw-info-dark);
 }
 
 .acl-tag-write {
