@@ -218,7 +218,7 @@
 
 
 .generate-endpoint-view .generate-endpoint-container .generation-report-list .status-failed {
-    color: var(--color-danger-dark);
+    color: var(--gw-danger-base);
 }
 
 .generate-endpoint-view .generate-endpoint-container .generation-report-list .status-success {
