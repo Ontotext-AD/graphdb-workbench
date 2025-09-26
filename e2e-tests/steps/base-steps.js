@@ -18,4 +18,8 @@ export class BaseSteps {
   static typeEscapeKey() {
     cy.get('body').type('{esc}');
   }
+
+  static getUrl() {
+    return cy.url();
+  }
 }
