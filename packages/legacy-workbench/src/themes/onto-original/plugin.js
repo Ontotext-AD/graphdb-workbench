@@ -25,9 +25,6 @@ PluginRegistry.add('themes', {
         'color-help-light': '#e8f5fe',
         'color-danger-medium': 'hsl(353, 78%, 83%)',
         'color-warning-medium': 'hsl(var(--primary-color-hue), var(--primary-color-saturation), 83%)',
-        'logo-color': '#E84E0F;',
-        'logo-text-color': '#FFFFFF',
-        'logo-background-color': 'var(--secondary-color)'
     },
     'dark': {
         'variables': {
