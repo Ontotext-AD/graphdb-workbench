@@ -125,8 +125,8 @@ footer.footer .container-fluid.main-container p {
 .open > .btn-secondary.dropdown-toggle:focus,
 .open > .btn-secondary.dropdown-toggle:hover {
     color: #fff;
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
+    background-color: var(--gw-primary-base);
+    border-color: var(--gw-primary-base);
 }
 
 .open > .btn-secondary.dropdown-toggle [class^="icon-"] {
@@ -134,7 +134,7 @@ footer.footer .container-fluid.main-container p {
 }
 
 .btn-secondary.dropdown-toggle [class^="icon-"] {
-    color: var(--primary-color);
+    color: var(--gw-primary-base);
 }
 
 .dropdown-toggle {
@@ -162,7 +162,7 @@ footer.footer .container-fluid.main-container p {
 
 .dropdown-menu {
     border: none;
-    background-color: var(--primary-color);
+    background-color: var(--gw-primary-base);
     border-radius: 0;
     padding: 0;
     min-width: 100%;
@@ -244,7 +244,7 @@ footer.footer .container-fluid.main-container p {
 .nav-tabs .nav-link {
     border-radius: 0;
     cursor: pointer;
-    color: var(--secondary-color);
+    color: var(--gw-secondary-base);
     background-color: #eee;
 }
 
@@ -302,7 +302,7 @@ ul[class*="style-"] li:before {
     left: 0;
     top: -0.07em;
     font-size: 1.2em;
-    color: var(--tertiary-color);
+    color: var(--gw-tertiary-base);
 }
 
 .text-white ul[class*="style-"] li:before {
@@ -389,7 +389,7 @@ ul.style-arrow li:before {
 .progress-bar {
     height: 2rem;
     color: #000;
-    background-color: hsla(var(--tertiary-color-hsl), 0.5);
+    background-color: var(--gw-tertiary-lighter);
     padding: 0 0.2em;
     text-align: center;
 }
@@ -408,7 +408,7 @@ ul.style-arrow li:before {
 .progress-square .progress-bar {
     width: 100%;
     display: block;
-    background-color: var(--secondary-color);
+    background-color: var(--gw-secondary-base);
     position: absolute;
     bottom: 0;
 }
@@ -467,7 +467,7 @@ code {
 
 .close:hover::before {
     transform: scale(1.2);
-    color: var(--primary-color);
+    color: var(--gw-primary-base);
 }
 
 .close.absolute {
@@ -490,7 +490,7 @@ code {
 }
 
 .data-value {
-    color: var(--secondary-color);
+    color: var(--gw-secondary-base);
     font-weight: 400;
 }
 
@@ -521,7 +521,7 @@ code {
 }
 
 .tag-primary {
-    background-color: var(--secondary-color);
+    background-color: var(--gw-secondary-base);
 }
 
 .tag-inverse {
@@ -601,7 +601,7 @@ code {
 }
 
 .card.button:hover {
-    border-color: hsla(var(--primary-color-hsl), 0.4)
+    border-color: var(--gw-primary-hover-color);
 }
 
 .card.button .card-block {
@@ -622,7 +622,7 @@ code {
 }
 
 .card.button .btn:hover {
-    background-color: hsla(var(--primary-color-hsl), 0.1)
+    background-color: var(--gw-primary-hover-color);
 }
 
 .card.button .btn [class^="icon-"] {
@@ -632,14 +632,14 @@ code {
 }
 
 .card.active {
-    border-color: var(--secondary-color);
+    border-color: var(--gw-secondary-base);
     min-height: 300px;
 }
 
 .card.active .card-footer {
-    background-color: var(--secondary-color);
+    background-color: var(--gw-secondary-base);
     color: #fff;
-    border-color: var(--secondary-color);
+    border-color: var(--gw-secondary-base);
     position: absolute;
     bottom: 0;
     left: 0;
@@ -810,67 +810,67 @@ code {
 -------------------------------------------------------------*/
 .angular-tooltip {
     max-width: 300px;
-    background-color: var(--secondary-color);
+    background-color: var(--gw-secondary-base);
 }
 
 .angular-tooltip.angular-tooltip-top:after {
-    border-top-color: var(--secondary-color);
+    border-top-color: var(--gw-secondary-base);
 }
 
 .angular-tooltip.angular-tooltip-top-left:after {
-    border-top-color: var(--secondary-color);
+    border-top-color: var(--gw-secondary-base);
 }
 
 .angular-tooltip.angular-tooltip-top-right:after {
-    border-top-color: var(--secondary-color);
+    border-top-color: var(--gw-secondary-base);
 }
 
 
 .angular-tooltip.angular-tooltip-right-top:after {
-    border-right-color: var(--secondary-color);
+    border-right-color: var(--gw-secondary-base);
 }
 
 .angular-tooltip.angular-tooltip-right:after {
-    border-right-color: var(--secondary-color);
+    border-right-color: var(--gw-secondary-base);
 }
 
 .angular-tooltip.angular-tooltip-right-bottom:after {
-    border-right-color: var(--secondary-color);
+    border-right-color: var(--gw-secondary-base);
 }
 
 .angular-tooltip.angular-tooltip-bottom:after {
-    border-bottom-color: var(--secondary-color);
+    border-bottom-color: var(--gw-secondary-base);
 }
 
 .angular-tooltip.angular-tooltip-bottom-left:after {
-    border-bottom-color: var(--secondary-color);
+    border-bottom-color: var(--gw-secondary-base);
 }
 
 .angular-tooltip.angular-tooltip-bottom-right:after {
-    border-bottom-color: var(--secondary-color);
+    border-bottom-color: var(--gw-secondary-base);
 }
 
 .angular-tooltip.angular-tooltip-left:after {
-    border-left-color: var(--secondary-color);
+    border-left-color: var(--gw-secondary-base);
 }
 
 .angular-tooltip.angular-tooltip-left-bottom:after {
-    border-left-color: var(--secondary-color);
+    border-left-color: var(--gw-secondary-base);
 }
 
 .angular-tooltip.angular-tooltip-left-top:after {
-    border-left-color: var(--secondary-color);
+    border-left-color: var(--gw-secondary-base);
 }
 
 /*-------------------------------------------------------------
 	List groups
 -------------------------------------------------------------*/
 .list-group-item-action {
-    color: var(--secondary-color) !important;
+    color: var(--gw-secondary-base) !important;
 }
 
 .list-group-item-action:focus, .list-group-item-action:hover {
-    background-color: hsla(var(--primary-color-hsl), 0.1);
+    background-color: var(--gw-highlight-focus-background);
 }
 
 .list-group-item pre {
@@ -881,7 +881,7 @@ code {
     float: right;
     margin-top: 0.7em;
     font-weight: 400;
-    color: var(--primary-color);
+    color: var(--gw-primary-base);
     cursor: pointer;
     display: none;
 }
@@ -955,7 +955,7 @@ li.remote {
 }
 
 .form-control:focus {
-    border-color: hsla(var(--secondary-color-hsl), 0.5);
+    border-color: var(--gw-secondary-light);
 }
 
 .input-group-btn {
@@ -1078,12 +1078,12 @@ input.switch:empty ~ label:after {
 }
 
 input.switch:checked ~ label:before {
-    background-color: hsla(var(--secondary-color-hsl), .5)
+    background-color: var(--gw-secondary-light);
 }
 
 input.switch:checked ~ label:after {
     left: 1.3em;
-    background-color: var(--secondary-color);
+    background-color: var(--gw-secondary-base);
 }
 
 .card.active input.switch:checked ~ label:before {
@@ -1137,19 +1137,19 @@ input.switch:checked ~ label:after {
 }
 
 .toast-error {
-    background-color: var(--color-danger-dark);
+    background-color: var(--gw-danger-base);
 }
 
 .toast-warning {
-    background-color: var(--color-warning-dark);
+    background-color: var(--gw-warning-dark);
 }
 
 .toast-info {
-    background-color: var(--color-info-dark);
+    background-color: var(--gw-info-dark);
 }
 
 .toast-success {
-    background-color: var(--color-success-dark);
+    background-color: var(--gw-success-base);
 }
 
 .toast-error:before,
@@ -1321,8 +1321,8 @@ ul.nav.navbar-right.pagination li.disabled a {
 }
 
 #yasr ul.nav.navbar-right.pagination li.active {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
+    background-color: var(--gw-primary-base);
+    border-color: var(--gw-primary-base);
 }
 
 #yasr ul.nav.navbar-right.pagination li.active a {
@@ -1362,29 +1362,29 @@ ul.nav.navbar-right.pagination li.disabled a {
 	SPARQL editor
 -------------------------------------------------------------*/
 .dialog .dialog-footer .confirm-button {
-    background-color: var(--primary-color) !important;
+    background-color: var(--gw-primary-base) !important;
 }
 
 
 yasgui-component .yasgui-btn.btn-selected {
-    background-color: var(--primary-color) !important;
+    background-color: var(--gw-primary-base) !important;
 }
 
 yasgui-component .btn-orientation {
-    color: var(--primary-color) !important;
+    color: var(--gw-primary-base) !important;
 }
 
 yasgui-component .custom-button {
-    color: var(--primary-color) !important;
+    color: var(--gw-primary-base) !important;
 }
 
 yasgui-component .yasqe_queryButton {
-    background-color: var(--primary-color) !important;
+    background-color: var(--gw-primary-base) !important;
 }
 
 yasgui-component .ontotext-dropdown-button,
 yasgui-component .ontotext-dropdown-menu-item {
-    background-color: var(--primary-color) !important;
+    background-color: var(--gw-primary-base) !important;
 }
 yasgui-component .ontotext-dropdown-button.icon-caret-down-after:after,
 yasgui-component .ontotext-dropdown-button.icon-caret-up-after:after {
@@ -1394,11 +1394,11 @@ yasgui-component .ontotext-dropdown-button.icon-caret-up-after:after {
 yasgui-component .ok-button,
 yasgui-component .primary-button,
 yasgui-component .confirm-button {
-    background-color: var(--primary-color) !important;
+    background-color: var(--gw-primary-base) !important;
 }
 
 yasgui-component .yasr a {
-    color: var(--secondary-color) !important;
+    color: var(--gw-secondary-base) !important;
 }
 
 yasgui-component .yasr .dataTable a {
@@ -1407,11 +1407,11 @@ yasgui-component .yasr .dataTable a {
 
 yasgui-component .yasr_response_chip {
     font-size: 16px;
-    color: var(--secondary-color) !important;
+    color: var(--gw-secondary-base) !important;
 }
 
 yasgui-component .yasr_plugin_control label {
-    color: var(--secondary-color) !important;
+    color: var(--gw-secondary-base) !important;
     margin-bottom: 0;
 }
 
@@ -1421,7 +1421,7 @@ yasgui-component .yasr_plugin_control label .label {
 
 /* End of yasgui-component style overrides */
 .dialog .dialog-footer .confirm-button {
-    background-color: var(--primary-color) !important;
+    background-color: var(--gw-primary-base) !important;
 }
 
 .yasqe .CodeMirror {
@@ -1584,8 +1584,8 @@ input[name=namespace] {
     border-radius: .25rem;
 }
 .badge-default  { background-color: #aaa }
-.badge-primary  { background-color: var(--secondary-color) }
-.badge-info     { background-color: var(--primary-color) }
+.badge-primary  { background-color: var(--gw-secondary-base) }
+.badge-info     { background-color: var(--gw-primary-base) }
 .badge-success  { background-color: #5cb85c }
 .badge-warning  { background-color: #f0ad4e }
 
@@ -1658,27 +1658,27 @@ input[name=namespace] {
 }
 
 .tag-danger {
-    background-color: var(--color-danger-dark) !important;
+    background-color: var(--gw-danger-base) !important;
 }
 
 .tag-success {
-    background-color: var(--color-success-dark) !important;
+    background-color: var(--gw-success-base) !important;
 }
 
 .tag-warning {
-    background-color: var(--color-warning-dark) !important;
+    background-color: var(--gw-warning-dark) !important;
 }
 
 .tag-info {
-    background-color: var(--color-info-dark) !important;
+    background-color: var(--gw-info-dark) !important;
 }
 
 .rzslider .rz-pointer {
-    background-color: var(--secondary-color) !important;
+    background-color: var(--gw-secondary-base) !important;
 }
 
 .rzslider .rz-selection {
-    background: var(--secondary-color) !important;
+    background: var(--gw-secondary-base) !important;
 }
 
 .login-form {
@@ -1689,12 +1689,12 @@ input[name=namespace] {
 
 .btn-fade-warning {
     animation: fade-button 2s infinite;
-    --fade-color: var(--color-warning-medium);
+    --fade-color: var(--gw-warning-base);
 }
 
 .btn-fade-danger {
     animation: fade-button 2s infinite;
-    --fade-color: var(--color-danger-medium);
+    --fade-color: var(--gw-danger-light);
 }
 
 .btn-fade-warning:hover, .btn-fade-danger:hover {

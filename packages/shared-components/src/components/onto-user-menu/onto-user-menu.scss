@@ -1,5 +1,5 @@
 :root {
-  --user-menu-primary-color: var(--primary-color, #9e2b0a);
+  --user-menu-primary-color: var(--gw-primary-base, #9e2b0a);
 }
 
 .onto-user-menu {
@@ -20,7 +20,7 @@
     white-space: nowrap;
     place-items: center;
     transition: all 0.15s ease-out;
-    color: var(--secondary-color);
+    color: var(--gw-secondary-base);
 
     &:hover {
       background-color: #d4d4d4;

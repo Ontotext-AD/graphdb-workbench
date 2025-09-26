@@ -42,7 +42,7 @@
 }
 
 .angucomplete-selected-row {
-    background-color: var(--secondary-color);
+    background-color: var(--gw-secondary-base);
     color: #ffffff;
 }
 
@@ -73,7 +73,7 @@
 }
 
 .highlight {
-    color: var(--primary-color);
+    color: var(--gw-primary-base);
 }
 
 .angucomplete-row, .angucomplete-selected-row, .angucomplete-row.angucomplete-selected-row {

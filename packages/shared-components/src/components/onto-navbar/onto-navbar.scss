@@ -32,7 +32,7 @@ main menu height*/
 }
 
 .navbar-component li a {
-  color: var(--secondary-color);
+  color: var(--gw-secondary-base);
   text-decoration: none;
 }
 
@@ -48,7 +48,7 @@ main menu height*/
 .navbar-component a:not([href]):not([tabindex]),
 .navbar-component a:not([href]):not([tabindex]):focus,
 .navbar-component a:not([href]):not([tabindex]):hover {
-  color: var(--secondary-color);
+  color: var(--gw-secondary-base);
 }
 
 .navbar-component a.sub-menu-link:not([href]):hover .menu-item,
@@ -75,7 +75,7 @@ main menu height*/
 
 .navbar-component .menu-element {
   border-bottom: 1px solid #fff;
-  background-color: #f7f7f7;
+  background-color: var(--gw-panel-background);
   position: relative;
 }
 
@@ -89,7 +89,7 @@ main menu height*/
   -o-transition: all 0.18s ease-out; /* Opera 10.5+ */
   -webkit-transition: all 0.18s ease-out; /* Saf3.2+, Chrome */
   transition: all 0.18s ease-out;
-  color: var(--secondary-color);
+  color: var(--gw-secondary-base);
   cursor: pointer;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -101,7 +101,7 @@ main menu height*/
   width: 2.5rem;
   vertical-align: middle;
   text-align: center;
-  color: var(--primary-color);
+  color: var(--gw-primary-base);
   transform: scale(0.9);
   display: inline-block;
   -moz-transition: all 0.18s ease-out; /* FF4+ */
@@ -117,7 +117,7 @@ main menu height*/
 
 .navbar-component .menu-element-root.active,
 .navbar-component .menu-element-root.active:hover {
-  background-color: var(--primary-color);
+  background-color: var(--gw-primary-base);
   color: #fff;
 }
 
@@ -160,7 +160,7 @@ main menu height*/
 
 .navbar-component .menu-element.open,
 .navbar-component.collapsed .menu-element:hover {
-  background-color: #dcdcdc;
+  background-color: var(--gw-highlight-background);
 }
 
 .navbar-component .sub-menu {
@@ -179,7 +179,7 @@ main menu height*/
 }
 
 .navbar-component .sub-menu li.active a {
-  background-color: var(--primary-color);
+  background-color: var(--gw-primary-base);
   font-weight: 500;
   color: #fff;
 }
@@ -222,7 +222,7 @@ main menu height*/
 }
 
 .toggle-menu:hover {
-  background-color: var(--primary-color);
+  background-color: var(--gw-primary-base);
 }
 
 .toggle-menu [class^="icon-"] {
@@ -292,7 +292,7 @@ main menu height*/
   text-overflow: ellipsis;
   overflow: hidden;
   padding: 0.5em 0.8rem 0.2em 0;
-  color: var(--secondary-color);
+  color: var(--gw-secondary-base);
   margin-left: 0.8rem;
   margin-bottom: 0.5em;
 }

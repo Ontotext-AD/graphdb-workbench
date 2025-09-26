@@ -146,11 +146,11 @@
 }
 
 .triple-pred:hover {
-    color:var(--tertiary-color)
+    color:var(--gw-tertiary-base)
 }
 
 .triple-pred {
-    color: var(--primary-color-dark);
+    color: var(--gw-primary-dark);
 }
 
 .disable-visual-graph-node {

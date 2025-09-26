@@ -11,7 +11,7 @@
 }
 
 .chat-list-component .chat-group label {
-    color: var(--gray-color-dark);
+    color: var(--gw-neutral-dark);
 }
 
 .chat-list-component .chat-group ul {
@@ -94,6 +94,6 @@
 }
 
 .chat-list-component .chat-name {
-    color: var(--secondary-color);
+    color: var(--gw-secondary-base);
     font-weight: 400;
 }

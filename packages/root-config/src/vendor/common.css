@@ -11,6 +11,8 @@ body {
     font-family: var(--main-font);
     font-weight: var(--main-font-weight);
     margin-bottom: 0;
+    /* Overriding bootstrap's base text color #373a3c */
+    color: var(--base-text-color);
 }
 
 code, kbd, pre, samp {
@@ -22,7 +24,7 @@ select {
 }
 
 a {
-    color: var(--secondary-color);
+    color: var(--gw-secondary-base);
 }
 
 /* General links on hover and actual links that lead to an external site */
@@ -34,7 +36,7 @@ a:hover, a:active, a[href^="http"], a[href^="http"]:hover, a[href^="http"]:activ
 }
 
 a:focus, a:hover {
-    color: var(--secondary-color-light);
+    color: var(--gw-secondary-light);
 }
 
 .font-weight-bold {
@@ -90,21 +92,21 @@ h1 .btn {
 }
 
 .btn-primary {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
+    background-color: var(--gw-primary-base);
+    border-color: var(--gw-primary-base);
 }
 
 .btn-primary.active, .btn-primary.focus, .btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active.focus,
 .btn-primary.active:focus, .btn-primary.active:hover, .btn-primary:active.focus, .btn-primary:active:focus, .btn-primary:active:hover, .open > .btn-primary.dropdown-toggle.focus, .open > .btn-primary.dropdown-toggle:focus, .open > .btn-primary.dropdown-toggle:hover,
 .btn-primary.disabled:hover, .btn-primary:disabled:hover {
-    background-color: var(--primary-color-dark);
-    border-color: var(--primary-color-dark);
+    background-color: var(--gw-primary-dark);
+    border-color: var(--gw-primary-dark);
 }
 
 .btn-secondary {
     background-color: #EBEBEB;
     border-color: #EBEBEB;
-    color: var(--secondary-color);
+    color: var(--gw-secondary-base);
 }
 
 .btn-secondary.focus,
@@ -116,55 +118,55 @@ h1 .btn {
 }
 
 .btn-secondary.active, .btn-secondary.active.focus, .btn-secondary.active:focus, .btn-secondary.active:hover {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
+    background-color: var(--gw-primary-base);
+    border-color: var(--gw-primary-base);
     color: #fff;
 }
 
 .btn-info {
-    background-color: var(--secondary-color);
-    border-color: var(--secondary-color);
+    background-color: var(--gw-secondary-base);
+    border-color: var(--gw-secondary-base);
 }
 
 .btn-info.active, .btn-info.focus, .btn-info:hover, .btn-info:focus, .btn-info:active, .btn-info.active.focus,
 .btn-info.active:focus, .btn-info.active:hover, .btn-info:active.focus, .btn-info:active:focus, .btn-info:active:hover, .open > .btn-info.dropdown-toggle.focus, .open > .btn-info.dropdown-toggle:focus, .open > .btn-info.dropdown-toggle:hover,
 .btn-info.disabled:hover, .btn-info:disabled:hover {
-    background-color: var(--secondary-color-light);
-    border-color: var(--secondary-color-light);
+    background-color: var(--gw-secondary-light);
+    border-color: var(--gw-secondary-light);
 }
 
 /* outline buttons */
 .btn-outline-primary {
-    color: var(--primary-color);
-    border-color: var(--primary-color);
+    color: var(--gw-primary-base);
+    border-color: var(--gw-primary-base);
 }
 
 .btn-outline-primary:hover,
 .btn-outline-primary.focus, .btn-outline-primary:focus, .btn-outline-primary.active, .btn-outline-primary:active, .open > .btn-outline-primary.dropdown-toggle,
 .btn-outline-primary.active.focus, .btn-outline-primary.active:focus, .btn-outline-primary.active:hover, .btn-outline-primary:active.focus, .btn-outline-primary:active:focus, .btn-outline-primary:active:hover, .open > .btn-outline-primary.dropdown-toggle.focus, .open > .btn-outline-primary.dropdown-toggle:focus, .open > .btn-outline-primary.dropdown-toggle:hover {
-    color: var(--primary-color);
-    background-color: hsla(var(--primary-color-hsl), 0.075);
-    border-color: var(--primary-color);
+    color: var(--gw-primary-base);
+    background-color: var(--gw-primary-lighter);
+    border-color: var(--gw-primary-base);
 }
 
 .btn-outline-secondary {
-    color: var(--secondary-color);
+    color: var(--gw-secondary-base);
     background-image: none;
     background-color: transparent;
-    border-color: hsla(var(--secondary-color-hsl), 0.5);
+    border-color: var(--gw-secondary-light);
 }
 
 .btn-outline-secondary:hover,
 .btn-outline-secondary.focus, .btn-outline-secondary:focus, .btn-outline-secondary.active, .btn-outline-secondary:active,
 .btn-outline-secondary.active.focus, .btn-outline-secondary.active:focus, .btn-outline-secondary:active.focus, .btn-outline-secondary:active:focus, .btn-outline-secondary:active:hover, .open > .btn-outline-secondary.dropdown-toggle.focus, .open > .btn-outline-secondary.dropdown-toggle:focus, .open > .btn-outline-secondary.dropdown-toggle:hover {
-    color: var(--secondary-color);
-    background-color: hsla(var(--secondary-color-hsl), 0.2);
-    border-color: var(--secondary-color);
+    color: var(--gw-secondary-base);
+    background-color: var(--gw-secondary-lighter);
+    border-color: var(--gw-secondary-base);
 }
 
 .btn-outline-secondary.active:hover {
-    background-color: hsla(var(--secondary-color-hsl), 0.2);
-    border-color: var(--secondary-color);
+    background-color: var(--gw-secondary-lighter);
+    border-color: var(--gw-secondary-base);
 }
 
 .btn-group-lg > .btn, .btn-lg {
@@ -173,7 +175,7 @@ h1 .btn {
 }
 
 .btn-link, .btn-link a {
-    color: var(--primary-color);
+    color: var(--gw-primary-base);
     padding: .5em .8em;
 }
 
@@ -193,7 +195,7 @@ h1 .btn {
 }
 
 .btn-link:focus, .btn-link:hover, .btn-link.secondary:hover {
-    color: var(--primary-color-dark);
+    color: var(--gw-primary-dark);
 }
 
 .btn-link.disabled:focus, .btn-link.disabled:hover, .btn-link.disabled.secondary:hover {
@@ -205,7 +207,7 @@ h1 .btn {
 }
 
 .btn-link.active, .btn-link:hover.active, .btn-link:focus.active, .btn-link:active.active {
-    background-color: var(--primary-color-dark);
+    background-color: var(--gw-primary-dark);
     color: #fff;
 }
 
@@ -311,35 +313,35 @@ h3 [class^=icon-] {
 }
 
 .text-primary {
-    color: var(--primary-color) !important;
+    color: var(--gw-primary-base) !important;
 }
 
 .text-secondary {
-    color: var(--secondary-color) !important;
+    color: var(--gw-secondary-base) !important;
 }
 
 .text-tertiary {
-    color: var(--tertiary-color-dark) !important;
+    color: var(--gw-tertiary-dark) !important;
 }
 
 .text-info {
-    color: var(--tertiary-color) !important;
+    color: var(--gw-tertiary-base) !important;
 }
 
 .text-danger {
-    color: var(--color-danger-dark) !important;
+    color: var(--gw-danger-base) !important;
 }
 
 .text-success {
-    color: var(--color-success-dark) !important;
+    color: var(--gw-success-base) !important;
 }
 
 .text-warning {
-    color: var(--color-warning-dark) !important;
+    color: var(--gw-warning-dark) !important;
 }
 
 .text-info {
-    color: var(--color-info-dark) !important;
+    color: var(--gw-info-dark) !important;
 }
 
 /*-------------------------------------------------------------
@@ -357,23 +359,23 @@ h3 [class^=icon-] {
 }
 
 .alert-warning {
-    background-color: var(--color-warning-light);
+    background-color: var(--gw-warning-lighter);
 }
 
 .alert-info {
-    background-color: var(--color-info-light);
+    background-color: var(--gw-info-lighter);
 }
 
 .alert-help {
-    background-color: var(--color-help-light);
+    background-color: var(--gw-neutral-lighter);
 }
 
 .alert-success {
-    background-color: var(--color-success-light);
+    background-color: var(--gw-success-lighter);
 }
 
 .alert-danger {
-    background-color: var(--color-danger-light);
+    background-color: var(--gw-danger-lighter);
 }
 
 .alert-info, .alert-warning, .alert-help, .alert-danger, .alert-success {
@@ -431,16 +433,16 @@ h3 [class^=icon-] {
 	Background colors
 -------------------------------------------------------------*/
 .bg-primary {
-    background-color: var(--primary-color);
+    background-color: var(--gw-primary-base);
 }
 
 .bg-secondary {
-    background-color: var(--secondary-color);
+    background-color: var(--gw-secondary-base);
     color: #fff;
 }
 
 .bg-ternary {
-    background-color: var(--tertiary-color);
+    background-color: var(--gw-tertiary-base);
 }
 
 .bg-lightgray {

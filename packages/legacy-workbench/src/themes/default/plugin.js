@@ -26,7 +26,7 @@ PluginRegistry.add('themes', {
         // (i.e. dark colored things)
         'color-danger-dark': 'hsl(353, 78%, 36%)',
         'color-success-dark': 'hsl(var(--tertiary-color-hue), var(--tertiary-color-saturation), calc(var(--tertiary-color-lightness)*0.5))',
-        'color-warning-dark': 'var(--primary-color-dark)',
+        'color-warning-dark': 'var(--gw-primary-dark)',
         'color-info-dark': 'var(--secondary-color-light)',
         // Colors for the alert boxes (i.e. light colored things).
         // Success and info are the same color since we don't use success much if at all
@@ -40,9 +40,6 @@ PluginRegistry.add('themes', {
         'color-danger-medium': 'hsl(353, 78%, 83%)',
         'color-warning-medium': 'hsl(var(--primary-color-hue), var(--primary-color-saturation), 83%)',
         // Colors for the logo - logo proper, text in logo, logo background
-        'logo-color': 'var(--primary-color-light)',
-        'logo-text-color': 'white',
-        'logo-background-color': 'var(--secondary-color-dark)'
     },
     // Dark theme
     'dark': {
@@ -58,7 +55,7 @@ PluginRegistry.add('themes', {
             'primary-color-lightness': '60%',
             'secondary-color-saturation': '70%',
             'color-warning-light': 'hsla(var(--primary-color-hsl), 0.15)',
-            'logo-color': 'var(--primary-color-dark)'
+            'logo-color': 'var(--gw-primary-dark)'
         },
         // CSS properties, "foo: bar" becomes "foo: bar"
         'properties': {

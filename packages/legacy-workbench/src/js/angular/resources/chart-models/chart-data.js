@@ -16,12 +16,12 @@ export class ChartData {
     }
 
     static get COLORS() {
-        // Using the variables, e.g. 'var(--primary-color)' directly confuses some echarts color calculations
+        // Using the variables, e.g. 'var(--gw-primary-base)' directly confuses some echarts color calculations
         return [
-            ChartData.cssVar('--secondary-color'),
-            ChartData.cssVar('--primary-color'),
-            ChartData.cssVar('--tertiary-color'),
-            ChartData.cssVar('--gray-color')
+            ChartData.cssVar('--gw-secondary-base'),
+            ChartData.cssVar('--gw-primary-base'),
+            ChartData.cssVar('--gw-tertiary-base'),
+            ChartData.cssVar('--gw-neutral-base')
         ];
     }
 
@@ -206,7 +206,7 @@ export class ChartData {
                             fontSize: 14
                         },
                         b: {
-                            color: ChartData.cssVar('--secondary-color'),
+                            color: ChartData.cssVar('--gw-secondary-base'),
                             fontWeight: 400,
                             fontSize: 14
                         }
@@ -251,7 +251,7 @@ export class ChartData {
                         minute: '{bold|{HH}:{mm}}',
                         second: '{HH}:{mm}:{ss}'
                     },
-                    color: ChartData.cssVar('--gray-color-dark'),
+                    color: ChartData.cssVar('--gw-neutral-dark'),
                     rich: {
                         bold: {
                             fontWeight: 500
@@ -265,7 +265,7 @@ export class ChartData {
                     show: true
                 },
                 axisLabel: {
-                    color: ChartData.cssVar('--gray-color-dark')
+                    color: ChartData.cssVar('--gw-neutral-dark')
                 },
                 axisTick: {
                     lineStyle: {

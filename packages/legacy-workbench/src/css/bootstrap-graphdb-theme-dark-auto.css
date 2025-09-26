@@ -26,5 +26,5 @@ input[type="checkbox"] {
 
 option {
     background-color: var(--html-background);
-    color: var(--gray-color);
+    color: var(--gw-neutral-base);
 }

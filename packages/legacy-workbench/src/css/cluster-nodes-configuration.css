@@ -58,7 +58,7 @@
 }
 
 .location-cell.adding {
-    color: var(--color-success-dark);
+    color: var(--gw-success-base);
 }
 
 .location-cell.deleting {
@@ -74,11 +74,11 @@
 }
 
 .status-cell .adding {
-    color: var(--color-success-dark);
+    color: var(--gw-success-base);
 }
 
 .status-cell .deleting {
-    color: var(--color-warning-dark);
+    color: var(--gw-warning-dark);
 }
 
 .status-cell .status-icon {
