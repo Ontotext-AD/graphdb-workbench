@@ -16,6 +16,7 @@
   --gw-main-gdb-teal-600: #38a89f;
   --gw-main-gdb-teal-700: #226762;
   --gw-main-gdb-teal-800: #16413d;
+  --gw-main-gdb-grey-100: hsla(0, 0%, 97%);
   --gw-main-gdb-grey-700: #5c5c5c;
   --gw-main-gdb-grey-800: #424242;
   --gw-additional-red-300: #f4d2d2;
@@ -47,6 +48,7 @@
   --gw-tertiary-700: var(--gw-main-gdb-teal-700);
   --gw-tertiary-800: var(--gw-main-gdb-teal-800);
   --gw-neutral-base: var(--gw-main-gdb-grey-700);
+  --gw-neutral-lighter: var(--gw-main-gdb-grey-100);
   --gw-neutral-dark: var(--gw-main-gdb-grey-800);
   --gw-primary-base: var(--gw-primary-700);
   --gw-primary-lighter: var(--gw-primary-200);
