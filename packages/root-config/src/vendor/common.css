@@ -339,7 +339,7 @@ h3 [class^=icon-] {
 }
 
 .text-info {
-    color: var(--color-info-dark) !important;
+    color: var(--gw-info-dark) !important;
 }
 
 /*-------------------------------------------------------------
@@ -361,7 +361,7 @@ h3 [class^=icon-] {
 }
 
 .alert-info {
-    background-color: var(--color-info-light);
+    background-color: var(--gw-info-lighter);
 }
 
 .alert-help {

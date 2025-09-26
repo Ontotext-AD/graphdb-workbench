@@ -100,7 +100,7 @@
 }
 
 .status-information {
-    color: var(--color-info-dark) !important;
+    color: var(--gw-info-dark) !important;
 }
 
 .status-warning {
