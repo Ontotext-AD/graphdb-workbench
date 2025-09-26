@@ -327,7 +327,7 @@ h3 [class^=icon-] {
 }
 
 .text-danger {
-    color: var(--color-danger-dark) !important;
+    color: var(--gw-danger-base) !important;
 }
 
 .text-success {
@@ -373,7 +373,7 @@ h3 [class^=icon-] {
 }
 
 .alert-danger {
-    background-color: var(--color-danger-light);
+    background-color: var(--gw-danger-lighter);
 }
 
 .alert-info, .alert-warning, .alert-help, .alert-danger, .alert-success {
