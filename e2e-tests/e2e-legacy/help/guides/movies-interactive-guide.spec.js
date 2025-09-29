@@ -3,8 +3,7 @@ import {MoviesGuideSteps} from "../../../steps/guides/movies-guide-steps";
 
 const MOVIES_FILE_FOR_IMPORT = 'movies.ttl';
 
-// TODO: Enable when graphdb-workbench-plugins is installed from npm.
-describe.skip('Describes "Movies" interactive guide', () => {
+describe('Describes "Movies" interactive guide', () => {
 
     let repositoryId;
 
