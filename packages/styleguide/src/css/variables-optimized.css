@@ -96,6 +96,8 @@
   --gw-primary-contrast-color: var(--gw-contrast-text);
   --gw-primary-hover-color: var(--gw-primary-dark);
   --gw-secondary-contrast-color: var(--gw-contrast-text);
+  --gw-border-color-primary: var(--gw-primary-base);
+  --gw-button-primary-background: var(--gw-primary-base);
   --gw-highlight-focus-background: var(--gw-primary-lighter);
   --gw-message-success-background: var(--gw-default-success-light-background);
   --gw-message-warn-background: var(--gw-warning-lighter);
@@ -106,4 +108,7 @@
   --gw-tag-danger-color: var(--gw-danger-base);
   --gw-toast-warn-background: var(--gw-warning-base);
   --gw-toast-error-background: var(--gw-danger-base);
+  --gw-button-primary-hover-background: var(--gw-primary-hover-color);
+  --gw-button-primary-hover-border-color: var(--gw-primary-hover-color);
+  --gw-button-primary-border-color: var(--gw-border-color-primary);
 }

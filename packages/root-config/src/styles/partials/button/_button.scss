@@ -17,12 +17,12 @@
 }
 
 .onto-btn-primary {
-  background-color: var(--gw-primary-base);
-  border-color: var(--gw-primary-base);
+  background-color: var(--gw-button-primary-background);
+  border-color: var(--gw-button-primary-border-color);
   color: #FFF;
 
   &:hover {
-    background-color: var(--gw-primary-dark);
-    border-color: var(--gw-primary-base);
+    background-color: var(--gw-button-primary-hover-background);
+    border-color: var(--gw-button-primary-hover-border-color);
   }
 }

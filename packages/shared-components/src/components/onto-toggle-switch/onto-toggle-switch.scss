@@ -1,5 +1,3 @@
-$default-checked-color: var(--base-text-color);
-
 .toggle-switch {
   all: unset;
   clear: both;
@@ -54,12 +52,12 @@ $default-checked-color: var(--base-text-color);
     &:checked {
       & ~ label {
         &:before {
-          background-color: var(--gw-secondary-light, $default-checked-color);
+          background-color: var(--gw-secondary-light, --base-text-color);
         }
 
         &:after {
           left: 1.3em;
-          background-color: var(--gw-secondary-base, $default-checked-color);
+          background-color: var(--gw-secondary-base, --base-text-color);
         }
       }
     }
