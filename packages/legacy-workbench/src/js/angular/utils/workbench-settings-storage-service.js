@@ -10,7 +10,7 @@ function WorkbenchSettingsStorageService(localStorageAdapter, LSKeys) {
      */
     const defaultSettings = {
         theme: 'default-theme',
-        mode: 'light'
+        mode: 'light',
     };
 
     /**
@@ -33,31 +33,8 @@ function WorkbenchSettingsStorageService(localStorageAdapter, LSKeys) {
         localStorageAdapter.set(LSKeys.WORKBENCH_SETTINGS, settings);
     };
 
-    /**
-     * Gets the theme name from the workbench settings stored in the local storage.
-     * @return {string|string|null|*}
-     */
-    const getThemeName = () => {
-        const settings = getWorkbenchSettings();
-        if (settings && settings.theme) {
-            return settings.theme;
-        }
-    };
-
-    /**
-     * Updates the workbench settings with the new theme name.
-     * @param {string} themeName The theme name.
-     */
-    const saveTheme = (themeName) => {
-        const settings = getWorkbenchSettings();
-        settings.theme = themeName;
-        localStorageAdapter.set(LSKeys.WORKBENCH_SETTINGS, settings);
-    };
-
     return {
         getWorkbenchSettings,
         saveWorkbenchSettings,
-        getThemeName,
-        saveTheme
     };
 }
