@@ -48,8 +48,6 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
     // Public variables
     // =========================
 
-    // TODO: remove
-    $scope.themes = ThemeService.getThemes();
     $scope.mode = 'settings';
     $scope.showWorkbenchSettings = true;
     /**
@@ -66,11 +64,6 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
         [GRAPHQL]: {},
     };
     $scope.loader = false;
-    /**
-     * @type {ThemeModel}
-     */
-    // TODO: REMOVE
-    $scope.selectedTheme = ThemeService.getTheme();
     /**
      * Allows to reset the password when updating the user.
      * @type {boolean}
@@ -172,15 +165,6 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
         $scope.selectedThemeMode = $scope.workbenchSettings.mode;
     };
 
-    /**
-     * @param {{name: string, label: string}} theme
-     */
-    $scope.setTheme = (theme) => {
-        $scope.selectedTheme = theme;
-        $scope.workbenchSettings.theme = theme.name;
-        ThemeService.applyTheme(theme.name);
-    };
-
     $scope.showCookiePolicy = ($event) => {
         // The button that triggers this handler is inside a form which has a submit property,
         // and we need to prevent that because it leads to a redirect to the home page.
@@ -256,7 +240,6 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
     $scope.$on('$destroy', function() {
         const workbenchSettings = WorkbenchSettingsStorageService.getWorkbenchSettings();
         ThemeService.toggleThemeMode(workbenchSettings.mode);
-        ThemeService.applyTheme(workbenchSettings.theme);
         $timeout.cancel(waitBeforeRedirectBack);
     });
 
