@@ -1137,19 +1137,19 @@ input.switch:checked ~ label:after {
 }
 
 .toast-error {
-    background-color: var(--gw-danger-base);
+    background-color: var(--gw-toast-error-background);
 }
 
 .toast-warning {
-    background-color: var(--gw-warning-dark);
+    background-color: var(--gw-toast-warn-background);
 }
 
 .toast-info {
-    background-color: var(--gw-info-dark);
+    background-color: var(--gw-toast-info-background);
 }
 
 .toast-success {
-    background-color: var(--gw-success-base);
+    background-color: var(--gw-toast-success-background);
 }
 
 .toast-error:before,
@@ -1658,19 +1658,19 @@ input[name=namespace] {
 }
 
 .tag-danger {
-    background-color: var(--gw-danger-base) !important;
+    background-color: var(--gw-tag-danger-color) !important;
 }
 
 .tag-success {
-    background-color: var(--gw-success-base) !important;
+    background-color: var(--gw-tag-success-color) !important;
 }
 
 .tag-warning {
-    background-color: var(--gw-warning-dark) !important;
+    background-color: var(--gw-tag-warning-color) !important;
 }
 
 .tag-info {
-    background-color: var(--gw-info-dark) !important;
+    background-color: var(--gw-tag-info-color) !important;
 }
 
 .rzslider .rz-pointer {

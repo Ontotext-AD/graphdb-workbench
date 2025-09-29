@@ -221,22 +221,22 @@ input::placeholder {
 
 .acl-tag-allow {
     background-color: var(--gw-success-lighter);
-    color: var(--gw-success-base);
+    color: var(--gw-success-dark);
 }
 
 .acl-tag-deny {
     background-color: var(--gw-danger-lighter);
-    color: var(--gw-danger-base);
+    color: var(--gw-danger-dark);
 }
 
 .acl-tag-read {
     background-color: var(--gw-neutral-lighter);
-    color: var(--gw-info-dark);
+    color: var(--gw-tag-info-color);
 }
 
 .acl-tag-write {
     background-color: var(--gw-warning-lighter);
-    color: var(--gw-warning-dark);
+    color: var(--gw-tag-warning-color);
 }
 
 .acl-tag-role {
