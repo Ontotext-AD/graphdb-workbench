@@ -33,19 +33,19 @@
     }
 
     &.warning {
-      background-color: var(--gw-warning-dark, #A92B0A);
+      background-color: var(--gw-toast-warning-background, #A92B0A);
     }
 
     &.success {
-      background-color: var(--gw-success-base, #01544D);
+      background-color: var(--gw-toast-success-background, #01544D);
     }
 
     &.error {
-      background-color: var(--gw-danger-base, #B71C1C);
+      background-color: var(--gw-toast-danger-background, #B71C1C);
     }
 
     &.info {
-      background-color: var(--gw-info-dark, #004177);
+      background-color: var(--gw-toast-info-background, #004177);
     }
 
     & i {

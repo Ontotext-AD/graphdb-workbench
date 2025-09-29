@@ -324,24 +324,20 @@ h3 [class^=icon-] {
     color: var(--gw-tertiary-dark) !important;
 }
 
-.text-info {
-    color: var(--gw-tertiary-base) !important;
-}
-
 .text-danger {
-    color: var(--gw-danger-base) !important;
+    color: var(--gw-message-error-color) !important;
 }
 
 .text-success {
-    color: var(--gw-success-base) !important;
+    color: var(--gw-message-success-color) !important;
 }
 
 .text-warning {
-    color: var(--gw-warning-dark) !important;
+    color: var(--gw-message-warn-color) !important;
 }
 
 .text-info {
-    color: var(--gw-info-dark) !important;
+    color: var(--gw-message-info-color) !important;
 }
 
 /*-------------------------------------------------------------
@@ -359,23 +355,23 @@ h3 [class^=icon-] {
 }
 
 .alert-warning {
-    background-color: var(--gw-warning-lighter);
+    background-color: var(--gw-message-warn-background);
 }
 
 .alert-info {
-    background-color: var(--gw-info-lighter);
+    background-color: var(--gw-message-info-background);
 }
 
 .alert-help {
-    background-color: var(--gw-neutral-lighter);
+    background-color: var(--gw-message-help-background);
 }
 
 .alert-success {
-    background-color: var(--gw-success-lighter);
+    background-color: var(--gw-message-success-background);
 }
 
 .alert-danger {
-    background-color: var(--gw-danger-lighter);
+    background-color: var(--gw-message-error-background);
 }
 
 .alert-info, .alert-warning, .alert-help, .alert-danger, .alert-success {
@@ -453,9 +449,6 @@ h3 [class^=icon-] {
     background-color: #fff;
 }
 
-.bg-lightgray {
-    background-color: #eee;
-}
 
 .pointer-events-none {
     pointer-events: none;
