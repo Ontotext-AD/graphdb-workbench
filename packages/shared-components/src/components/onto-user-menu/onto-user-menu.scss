@@ -1,7 +1,3 @@
-:root {
-  --user-menu-primary-color: var(--gw-primary-base, #9e2b0a);
-}
-
 .onto-user-menu {
   position: relative;
   width: fit-content;
@@ -37,8 +33,8 @@
 
     &.open {
       color: white;
-      background-color: var(--user-menu-primary-color);
-      border-color: var(--user-menu-primary-color);
+      background-color: var(--gw-primary-base);
+      border-color: var(--gw-primary-base);
 
       & .fa-user {
         color: var(--icon-on-primary-color, #ffffffcc);
