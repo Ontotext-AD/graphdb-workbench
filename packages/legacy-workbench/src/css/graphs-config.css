@@ -62,12 +62,12 @@ yasgui-component .CodeMirror {
 
 .image-label:hover {
     border-color: var(--gw-primary-base);
-    background-color:  var(--gw-primary-hover-color);
+    background-color:  var(--gw-primary-lighter);
 }
 
 .image-label.active, .image-label.active:hover {
     border-color: var(--gw-primary-base);
-    background-color:  var(--gw-primary-hover-color)
+    background-color:  var(--gw-primary-lighter)
 }
 
 .keyboard-shortcuts-dialog-wrapper {
