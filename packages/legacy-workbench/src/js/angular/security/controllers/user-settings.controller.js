@@ -8,7 +8,7 @@ import {CookiePolicyModalController} from "../../core/directives/cookie-policy/c
 
 angular
     .module('graphdb.framework.security.controllers.user-settings', [
-        'graphdb.framework.core.services.security-service'
+        'graphdb.framework.core.services.security-service',
     ])
     .controller('UserSettingsController', UserSettingsController);
 
@@ -28,7 +28,7 @@ UserSettingsController.$inject = [
     '$q',
     '$uibModal',
     '$licenseService',
-    'TrackingService'
+    'TrackingService',
 ];
 
 function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $rootScope, $controller, SecurityService, ModalService, $translate, ThemeService, WorkbenchSettingsStorageService, $q, $uibModal, $licenseService, TrackingService) {
@@ -48,6 +48,7 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
     // Public variables
     // =========================
 
+    // TODO: remove
     $scope.themes = ThemeService.getThemes();
     $scope.mode = 'settings';
     $scope.showWorkbenchSettings = true;
@@ -62,12 +63,13 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
     $scope.grantedAuthorities = {
         [READ_REPO]: {},
         [WRITE_REPO]: {},
-        [GRAPHQL]: {}
+        [GRAPHQL]: {},
     };
     $scope.loader = false;
     /**
      * @type {ThemeModel}
      */
+    // TODO: REMOVE
     $scope.selectedTheme = ThemeService.getTheme();
     /**
      * Allows to reset the password when updating the user.
@@ -84,20 +86,20 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
     // Public functions
     // =========================
 
-    $scope.hasEditRestrictions = function () {
+    $scope.hasEditRestrictions = function() {
         return true;
     };
 
-    $scope.isUser = function () {
+    $scope.isUser = function() {
         return $scope.userType === UserType.USER;
     };
 
-    $scope.goBack = function () {
+    $scope.goBack = function() {
         const previousRoute = ServiceProvider.get(NavigationContextService).getPreviousRoute();
         navigate(previousRoute || '/');
     };
 
-    $scope.getPrincipal = function () {
+    $scope.getPrincipal = function() {
         return $jwtAuth.getPrincipal()
             .then((principal) => {
                 $scope.currentUserData = _.cloneDeep(principal);
@@ -106,25 +108,25 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
             });
     };
 
-    $scope.updateCurrentUserData = function () {
+    $scope.updateCurrentUserData = function() {
         // Using $q.when to proper set values in view
         $q.when($jwtAuth.getPrincipal())
             .then((principal) => _.assign(principal, $scope.userData));
     };
 
-    $scope.redirectAdmin = function () {
+    $scope.redirectAdmin = function() {
         if (!$scope.currentUserData) {
             $rootScope.redirectToLogin();
         }
     };
 
-    $scope.submit = function () {
+    $scope.submit = function() {
         if ($scope.noPassword && $scope.userType === UserType.ADMIN) {
             ModalService.openSimpleModal({
                 title: $translate.instant('security.save.admin.settings'),
                 message: $translate.instant('security.admin.pass.unset'),
-                warning: true
-            }).result.then(function () {
+                warning: true,
+            }).result.then(function() {
                 $scope.updateUser();
             });
         } else {
@@ -132,12 +134,12 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
         }
     };
 
-    $scope.updateUserHttp = function () {
+    $scope.updateUserHttp = function() {
         $scope.loader = true;
         const payload = new UpdateUserPayload({
             username: $scope.user.username,
             password: ($scope.noPassword) ? '' : $scope.user.password || undefined,
-            appSettings: $scope.user.appSettings
+            appSettings: $scope.user.appSettings,
         });
         SecurityService.updateUserData(payload)
             .then(() => {
@@ -155,18 +157,18 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
             });
     };
 
-    $scope.updateUser = function () {
+    $scope.updateUser = function() {
         if (!$scope.validateForm()) {
             return false;
         }
         $scope.updateUserHttp();
     };
 
-    $scope.validateForm = function () {
+    $scope.validateForm = function() {
         return $scope.validatePassword();
     };
 
-    $scope.setThemeMode = function () {
+    $scope.setThemeMode = function() {
         $scope.selectedThemeMode = $scope.workbenchSettings.mode;
     };
 
@@ -193,13 +195,13 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
             resolve: {
                 data: () => {
                     return TrackingService.getCookieConsent()
-                        .then(consent => {
+                        .then((consent) => {
                             return {
-                                cookieConsent: consent
+                                cookieConsent: consent,
                             };
                         });
-                    }
-                }
+                    },
+                },
             })
             // If the modal returns `shouldReload` as true, we reload the page.
             // Reloading is crucial here due to potential memory leaks that arise from dynamically
@@ -223,13 +225,13 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
     };
 
     const goBackToPreviousView = () => {
-        waitBeforeRedirectBack = $timeout(function () {
+        waitBeforeRedirectBack = $timeout(function() {
             $scope.loader = false;
             $window.history.back();
         }, 2000);
     };
 
-    const initUserData = function () {
+    const initUserData = function() {
         // Copy needed so that Cancel would work correctly, need to call updateCurrentUserData on OK
         $scope.userData = _.cloneDeep($scope.currentUserData);
         $scope.user = {username: $scope.userData.username};
@@ -251,7 +253,7 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
     // Subscriptions
     // =========================
 
-    $scope.$on('$destroy', function () {
+    $scope.$on('$destroy', function() {
         const workbenchSettings = WorkbenchSettingsStorageService.getWorkbenchSettings();
         ThemeService.toggleThemeMode(workbenchSettings.mode);
         ThemeService.applyTheme(workbenchSettings.theme);
@@ -265,7 +267,7 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
     const initView = () => {
         if (!$scope.workbenchSettings) {
             $scope.workbenchSettings = {
-                theme: 'light'
+                theme: 'light',
             };
         }
         $scope.getPrincipal();
