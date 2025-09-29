@@ -8,6 +8,7 @@
   --gw-main-gdb-orange-700: #9e2a0a; /** #9E2A0A */
   --gw-main-gdb-orange-800: #812308;
   --gw-main-gdb-blue-100: #f0f8ff;
+  --gw-main-gdb-blue-200: #e0ecf5;
   --gw-main-gdb-blue-600: #005399;
   --gw-main-gdb-blue-700: #003663;
   --gw-main-gdb-blue-800: #002b4f;
@@ -20,6 +21,7 @@
   --gw-main-gdb-grey-100: hsla(0, 0%, 97%);
   --gw-main-gdb-grey-700: #5c5c5c;
   --gw-main-gdb-grey-800: #424242;
+  --gw-main-gdb-grey-900: #0a0a0a;
   --gw-additional-red-300: #f4d2d2;
   --gw-additional-red-600: #cd3737;
   --gw-additional-red-700: #ab2b2b;
@@ -31,6 +33,7 @@
   --gw-primary-700: var(--gw-main-gdb-orange-700);
   --gw-primary-800: var(--gw-main-gdb-orange-800);
   --gw-secondary-100: var(--gw-main-gdb-blue-100);
+  --gw-secondary-200: var(--gw-main-gdb-blue-200);
   --gw-secondary-600: var(--gw-main-gdb-blue-600);
   --gw-secondary-700: var(--gw-main-gdb-blue-700);
   --gw-secondary-800: var(--gw-main-gdb-blue-800);
@@ -45,7 +48,7 @@
   --gw-info-lighter: var(--gw-main-gdb-blue-100);
   --gw-info-dark: var(--gw-main-gdb-blue-700);
   --gw-surface-0: var(--gw-main-gdb-grey-0);
-  --gw-surface-800: var(--gw-main-gdb-grey-800);
+  --gw-surface-100: var(--gw-main-gdb-grey-100);
   --gw-tertiary-200: var(--gw-main-gdb-teal-200);
   --gw-tertiary-600: var(--gw-main-gdb-teal-600);
   --gw-tertiary-700: var(--gw-main-gdb-teal-700);
@@ -53,6 +56,7 @@
   --gw-neutral-base: var(--gw-main-gdb-grey-700);
   --gw-neutral-lighter: var(--gw-main-gdb-grey-100);
   --gw-neutral-dark: var(--gw-main-gdb-grey-800);
+  --gw-neutral-darker: var(--gw-main-gdb-grey-900);
   --gw-primary-base: var(--gw-primary-700);
   --gw-primary-lighter: var(--gw-primary-200);
   --gw-primary-light: var(--gw-primary-600);
@@ -71,11 +75,10 @@
   --gw-tertiary-light: var(--gw-tertiary-600);
   --gw-tertiary-dark: var(--gw-tertiary-800);
   --gw-contrast-text: var(--gw-surface-0);
-  --gw-text-color: var(--gw-surface-800);
-  --gw-default-background: var(--gw-surface-0);
+  --gw-highlight-background: var(--gw-secondary-200);
+  --gw-text-color: var(--gw-neutral-darker);
+  --gw-panel-background: var(--gw-surface-100);
   --gw-primary-hover-color: var(--gw-primary-dark);
   --gw-secondary-contrast-color: var(--gw-contrast-text);
-  --gw-highlight-background: var(--gw-primary-lighter);
   --gw-highlight-focus-background: var(--gw-primary-lighter);
-  --gw-panel-background: var(--gw-default-background);
 }
