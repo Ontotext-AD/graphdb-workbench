@@ -1550,7 +1550,7 @@
     "graphexplore.error.could.not.save": "Erreur ! Impossible de sauvegarder la configuration du graphe",
     "graphexplore.error.cannot.create.graph": "Erreur ! Impossible de créer un graphe enregistré",
     "graphexplore.error.view.will.not.work": "Impossible de récupérer des espaces de noms pour le dépôt. La vue ne fonctionnera pas correctement !",
-    "graphexplore.error.node.connections": "Ce noeud n'existe pas ou n'a pas de connexions visibles. Vérifie les paramètres de ton graphe si tu t'attends à ce que ce soit le cas.",
+    "graphexplore.error.node.connections": "{{count}} connexions sont affichées pour ce noeud. Augmente le paramètre « Nombre maximal de liens » dans Configurer l’affichage pour en afficher davantage (si disponible).",
     "graphexplore.error.exploring.node": "Erreur d'exploration du noeud",
     "graphexplore.error.getting.graphs": "Erreur dans l'obtention des graphes",
     "graphexplore.error.request.failed": "La demande de {{name}} a échoué ! {{error}}",
