@@ -136,6 +136,50 @@ PluginRegistry.add('guide.step', [
         },
     },
     {
+        // An element, which can be toggled via click
+        guideBlockName: 'toggle-element',
+        getStep: (options, services) => {
+            const notOverridable = {
+                type: 'toggleable',
+            };
+
+            let stepHTMLElement;
+            const selector = options.toggleableElementSelector || options.elementSelector;
+
+            const toggleListener = (event) => {
+                if (!event.target.checked) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+            };
+            const stepDescription = {
+                ...BASIC_STEP,
+                advanceOn: {
+                    selector,
+                    event: 'click',
+                },
+
+                initPreviousStep: services.GuideUtils.defaultInitPreviousStep,
+                ...options,
+                show: () => () => {
+                    stepHTMLElement = document.querySelector(selector);
+                    stepHTMLElement.addEventListener('click', toggleListener, true);
+                },
+                hide: () => () => {
+                    if (stepHTMLElement) {
+                        stepHTMLElement.removeEventListener('click', toggleListener);
+                    }
+                },
+                ...notOverridable,
+            };
+
+            if (!stepDescription.beforeShowPromise) {
+                stepDescription.beforeShowPromise = beforeShowPromise(services, stepDescription.elementSelector, stepDescription.maxWaitTime);
+            }
+            return stepDescription;
+        },
+    },
+    {
         // An element which is expected to be focused. It allows user interaction.
         guideBlockName: 'focus-element',
         getStep: (options, services) => {
