@@ -1554,7 +1554,7 @@
     "graphexplore.error.could.not.save": "Error! Could not save graph config",
     "graphexplore.error.cannot.create.graph": "Error! Cannot create saved graph",
     "graphexplore.error.view.will.not.work": "Cannot get namespaces for repository. View will not work properly!",
-    "graphexplore.error.node.connections": "This node either does not exist or has no visible connections. Check your Graph Settings if you expect such.",
+    "graphexplore.error.node.connections": "{{count}} connections are shown for this node. Increase the “Maximum links to show” setting in Configure view to display more (if available).",
     "graphexplore.error.exploring.node": "Error exploring node",
     "graphexplore.error.getting.graphs": "Error getting graphs",
     "graphexplore.error.request.failed": "Request for {{name}} failed! {{error}}",
