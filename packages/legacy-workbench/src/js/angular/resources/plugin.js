@@ -9,7 +9,7 @@ PluginRegistry.add('route', {
     'helpInfo': 'view.resource.monitoring.helpInfo',
     'reloadOnSearch': false,
     'documentationUrl': 'system-monitoring.html',
-    'allowAuthorities': ['READ_REPO_{repoId}']
+    'allowAuthorities': ['READ_REPO_{repoId}'],
 });
 
 PluginRegistry.add('main.menu', {
@@ -23,7 +23,7 @@ PluginRegistry.add('main.menu', {
             order: 3,
             parent: 'Monitor',
             guideSelector: 'sub-menu-system-monitoring',
-            testSelector: 'sub-menu-system-monitoring'
-        }
-    ]
+            testSelector: 'sub-menu-system-monitoring',
+        },
+    ],
 });

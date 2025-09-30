@@ -16,6 +16,6 @@ angular
             if (!searchText) {
                 return items;
             }
-            return items.filter(item => item.label.toLowerCase().includes(searchText.toLowerCase()));
+            return items.filter((item) => item.label.toLowerCase().includes(searchText.toLowerCase()));
         };
     });

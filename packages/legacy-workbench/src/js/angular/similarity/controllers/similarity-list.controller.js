@@ -32,7 +32,7 @@ SimilarityCtrl.$inject = [
     '$translate',
     'SparqlRestService',
     'WorkbenchContextService',
-    'RDF4JRepositoriesService'
+    'RDF4JRepositoriesService',
 ];
 
 function SimilarityCtrl(
@@ -52,7 +52,6 @@ function SimilarityCtrl(
     SparqlRestService,
     WorkbenchContextService,
     RDF4JRepositoriesService) {
-
     const PREFIX = 'http://www.ontotext.com/graphdb/similarity/';
     const PREFIX_PREDICATION = 'http://www.ontotext.com/graphdb/similarity/psi/';
     const acceptContent = 'application/x-sparqlstar-results+json, application/sparql-results+json;q=0.9, */*;q=0.8';
@@ -95,7 +94,7 @@ function SimilarityCtrl(
     $scope.reloadSimilarityIndexes = () => {
         $scope.loadSimilarityIndexes();
         if (!$scope.loadSimilarityIndexesTimer) {
-            $scope.loadSimilarityIndexesTimer = $interval(function () {
+            $scope.loadSimilarityIndexesTimer = $interval(function() {
                 $scope.$broadcast('checkIsActive');
                 if ($('#indexes-table').attr('aria-expanded') !== 'false') {
                     $scope.loadSimilarityIndexes();
@@ -162,8 +161,8 @@ function SimilarityCtrl(
             templateUrl: 'pages/viewQuery.html',
             controller: 'ViewQueryCtrl',
             resolve: {
-                query: () => replacedQuery
-            }
+                query: () => replacedQuery,
+            },
         });
     };
 
@@ -171,9 +170,9 @@ function SimilarityCtrl(
         ModalService.openSimpleModal({
             title: $translate.instant('common.confirm'),
             message: $translate.instant('similarity.delete.index.warning', {name: similarityIndex.name}),
-            warning: true
+            warning: true,
         }).result
-            .then(function () {
+            .then(function() {
                 SimilarityRestService.deleteIndex(similarityIndex)
                     .then(() => $scope.loadSimilarityIndexes())
                     .catch((err) => toastr.error(getError(err)));
@@ -189,14 +188,14 @@ function SimilarityCtrl(
             queryInference: index.infer,
             querySameAs: index.sameAs,
             viewType: index.type,
-            indexAnalyzer: index.analyzer
+            indexAnalyzer: index.analyzer,
         }).success((query) => {
             $uibModal.open({
                 templateUrl: 'pages/viewQuery.html',
                 controller: 'ViewQueryCtrl',
                 resolve: {
-                    query: () => query
-                }
+                    query: () => query,
+                },
             });
         });
     };
@@ -209,7 +208,7 @@ function SimilarityCtrl(
         ModalService.openSimpleModal({
             title: $translate.instant('common.confirm'),
             message: decodeHTML($translate.instant('similarity.rebuild.index.warning', {name: index.name})),
-            warning: true
+            warning: true,
         }).result
             .then(() => {
                 index.status = SimilarityIndexStatus.REBUILDING;
@@ -277,7 +276,7 @@ function SimilarityCtrl(
             type: similarityIndex.type,
             analyzer: similarityIndex.analyzer,
             searchQuery: similarityIndex.searchQuery ? similarityIndex.searchQuery : '',
-            analogicalQuery: similarityIndex.analogicalQuery ? similarityIndex.analogicalQuery : ''
+            analogicalQuery: similarityIndex.analogicalQuery ? similarityIndex.analogicalQuery : '',
         };
         $location.path('similarity/index/create').search(params);
     };
@@ -391,7 +390,7 @@ function SimilarityCtrl(
             $query: $scope.lastSearch.termOrSubject,
             $searchType: iriForQuery(($scope.selectedSimilarityIndex.isTextType() ? PREFIX : PREFIX_PREDICATION) + (SimilaritySearchType.isSearchEntityPredicateType(searchType) ? SimilaritySearchType.SEARCH_ENTITY : searchType)),
             $resultType: iriForQuery($scope.selectedSimilarityIndex.isTextType() ? PREFIX + resultType : PREFIX_PREDICATION + SimilarityResultType.ENTITY_RESULT),
-            $parameters: literalForQuery(parameters)
+            $parameters: literalForQuery(parameters),
         };
 
         if (SimilaritySearchType.isSearchEntityPredicateType(searchType)) {
@@ -455,8 +454,7 @@ function SimilarityCtrl(
             componentId: 'similarity-list-component',
             maxPersistentResponseSize: 0,
             render: RenderingMode.YASR,
-            sparqlResponse: response.data
+            sparqlResponse: response.data,
         };
     };
-
 }

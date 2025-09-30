@@ -18,7 +18,7 @@ const DEFAULT_MODAL_SERVICE_CONFIG = {
     title: '',
     message: '',
     confirmButtonKey: 'common.yes.btn',
-    backdrop: true
+    backdrop: true,
 };
 
 const modules = [
@@ -26,7 +26,7 @@ const modules = [
     'jlareau.bowser',
     'LocalStorageModule',
     'graphdb.framework.core.controllers',
-    'pascalprecht.translate'
+    'pascalprecht.translate',
 ];
 
 angular
@@ -37,7 +37,7 @@ angular
     .factory('AuthTokenService', AuthTokenService);
 
 function MenuItemsProvider() {
-    const findParent = function (items, parent) {
+    const findParent = function(items, parent) {
         for (let i = 0; i < items.length; i++) {
             const item = items[i];
             if (item.label === parent) {
@@ -51,7 +51,7 @@ function MenuItemsProvider() {
         return undefined;
     };
 
-    const exists = function (items, label) {
+    const exists = function(items, label) {
         for (let i = 0; i < items.length; i++) {
             const item = items[i];
             if (item.label === label) {
@@ -71,7 +71,7 @@ function MenuItemsProvider() {
         return 0;
     };
 
-    const cloneItem = function (item, children) {
+    const cloneItem = function(item, children) {
         return {
             label: item.label,
             labelKey: item.labelKey,
@@ -82,7 +82,7 @@ function MenuItemsProvider() {
             editions: item.editions,
             icon: item.icon,
             guideSelector: item.guideSelector,
-            children: children
+            children: children,
         };
     };
 
@@ -91,7 +91,7 @@ function MenuItemsProvider() {
     const items = [];
     let itemsWithMissedParent = [];
 
-    this.addItem = function (item) {
+    this.addItem = function(item) {
         if (angular.isUndefined(item.parent)) {
             if (!exists(items, item.label)) {
                 items.push(cloneItem(item, []));
@@ -106,7 +106,7 @@ function MenuItemsProvider() {
         }
     };
 
-    this.addItemToParent = function (item) {
+    this.addItemToParent = function(item) {
         const parentItem = findParent(items, item.parent);
         if (!angular.isUndefined(parentItem)) {
             if (!exists(parentItem.children, item.label)) {
@@ -117,11 +117,11 @@ function MenuItemsProvider() {
         return false;
     };
 
-    this.updateItemsWithMissedParent = function () {
+    this.updateItemsWithMissedParent = function() {
         if (itemsWithMissedParent.length > 0) {
             const notProcessed = [];
             const self = this;
-            itemsWithMissedParent.forEach(function (itemWithMissedParent) {
+            itemsWithMissedParent.forEach(function(itemWithMissedParent) {
                 if (!self.addItemToParent(itemWithMissedParent)) {
                     notProcessed.push(itemWithMissedParent);
                 }
@@ -130,7 +130,7 @@ function MenuItemsProvider() {
         }
     };
 
-    this.$get = function () {
+    this.$get = function() {
         items.sort(menuItemCompare);
         for (let i = 0; i < items.length; i++) {
             const item = items[i];
@@ -140,11 +140,11 @@ function MenuItemsProvider() {
     };
 
     // TODO Remove
-    this.setProductInfo = function (pinfo) {
+    this.setProductInfo = function(pinfo) {
         productInfo = pinfo;
     };
 
-    this.getProductInfo = function () {
+    this.getProductInfo = function() {
         return productInfo;
     };
 }
@@ -158,7 +158,7 @@ function ModalService($uibModal, $timeout, $sce) {
         openModalAlert: openModalAlert,
         openCopyToClipboardModal: openCopyToClipboardModal,
         openConfirmation: openConfirmation,
-        openCustomModal: openCustomModal
+        openCustomModal: openCustomModal,
     };
 
     /**
@@ -223,8 +223,8 @@ function ModalService($uibModal, $timeout, $sce) {
             windowClass: config.dialogClass,
             backdrop: config.backdrop,
             resolve: {
-                config: () => _.merge({}, DEFAULT_MODAL_SERVICE_CONFIG, config)
-            }
+                config: () => _.merge({}, DEFAULT_MODAL_SERVICE_CONFIG, config),
+            },
         });
     }
 
@@ -236,8 +236,8 @@ function ModalService($uibModal, $timeout, $sce) {
             size: config.size,
             windowClass,
             resolve: {
-                config: () => _.merge({}, DEFAULT_MODAL_SERVICE_CONFIG, config)
-            }
+                config: () => _.merge({}, DEFAULT_MODAL_SERVICE_CONFIG, config),
+            },
         });
     }
 
@@ -246,10 +246,10 @@ function ModalService($uibModal, $timeout, $sce) {
             templateUrl: 'js/angular/core/templates/modal/copy-to-clipboard-modal.html',
             controller: 'CopyToClipboardModalCtrl',
             resolve: {
-                uri: function () {
+                uri: function() {
                     return uri;
-                }
-            }
+                },
+            },
         });
     }
 
@@ -261,8 +261,8 @@ function ModalService($uibModal, $timeout, $sce) {
             windowClass: config.dialogClass,
             backdrop: config.backdrop,
             resolve: {
-                config: () => _.merge({}, DEFAULT_MODAL_SERVICE_CONFIG, config)
-            }
+                config: () => _.merge({}, DEFAULT_MODAL_SERVICE_CONFIG, config),
+            },
         });
     }
 }
@@ -275,17 +275,17 @@ function ClassInstanceDetailsService($http) {
         getGraph: getGraph,
         getNamespaceUriForPrefix: getNamespaceUriForPrefix,
         getNamespacePrefixForUri: getNamespacePrefixForUri,
-        getLocalName: getLocalName
+        getLocalName: getLocalName,
     };
 
     function getDetails(uriParam) {
         return $http.get('rest/explore/details', {
             params: {
-                uri: uriParam
+                uri: uriParam,
             },
             headers: {
-                'Accept': 'application/json'
-            }
+                'Accept': 'application/json',
+            },
         });
     }
 
@@ -299,8 +299,8 @@ function ClassInstanceDetailsService($http) {
             //   uri: encodedUri
             //},
             headers: {
-                Accept: 'application/rdf+json'
-            }
+                Accept: 'application/rdf+json',
+            },
         });
     }
 

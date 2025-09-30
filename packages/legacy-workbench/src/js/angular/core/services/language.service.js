@@ -8,18 +8,18 @@
  * application configuration phase.
  */
 angular.module('graphdb.framework.core.services.language-service', [])
-    .provider('$languageService', function () {
+    .provider('$languageService', function() {
         const LANGUAGES = __LANGUAGES__ || {
             defaultLanguage: 'en',
-            availableLanguages: [{key: 'en', name: 'English'}]
+            availableLanguages: [{key: 'en', name: 'English'}],
         };
         let language = LANGUAGES.defaultLanguage;
 
-        this.getDefaultLanguage = function () {
+        this.getDefaultLanguage = function() {
             return LANGUAGES.defaultLanguage;
         };
 
-        this.$get = function () {
+        this.$get = function() {
             const setLanguage = (lang) => {
                 language = lang;
             };
@@ -34,7 +34,7 @@ angular.module('graphdb.framework.core.services.language-service', [])
                 getLanguage,
                 getDefaultLanguage,
                 getAvailableLanguages,
-                getSupportedLanguages
+                getSupportedLanguages,
             };
         };
     });

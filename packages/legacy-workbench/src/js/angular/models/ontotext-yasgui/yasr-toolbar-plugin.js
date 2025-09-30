@@ -3,7 +3,6 @@
  * These elements will be sorted depends on {@link YasrToolbarPlugin#getOrder};
  */
 export class YasrToolbarPlugin {
-
     constructor() {
         /**
          * This method is called when the yasr toolbar is created.

@@ -6,11 +6,11 @@ UiScrollService.$inject = ['$timeout'];
 
 function UiScrollService($timeout) {
     return {
-        initLazyList: initLazyList
+        initLazyList: initLazyList,
     };
 
     function initLazyList(index, count, success, position, data) {
-        return $timeout(function () {
+        return $timeout(function() {
             const actualIndex = index + position - 1;
             const start = Math.max(0 - position, actualIndex);
             const end = Math.min(actualIndex + count - 1, data.length);

@@ -27,7 +27,7 @@ function RDF4JRepositoriesRestService($http, $translate) {
         getGraphs,
         resolveGraphs,
         downloadResultsAsFile,
-        downloadGraphsAsFile
+        downloadGraphsAsFile,
     };
 
     function getNamespaces(repositoryId) {
@@ -42,14 +42,14 @@ function RDF4JRepositoriesRestService($http, $translate) {
         return $http({
             url: `${REPOSITORIES_ENDPOINT}/${repositoryId}/namespaces/${prefix}`,
             method: 'PUT',
-            data: namespace
+            data: namespace,
         });
     }
 
     function deleteNamespacePrefix(repositoryId, prefix) {
         return $http({
             url: `${REPOSITORIES_ENDPOINT}/${repositoryId}/namespaces/${prefix}`,
-            method: 'DELETE'
+            method: 'DELETE',
         });
     }
 
@@ -58,7 +58,7 @@ function RDF4JRepositoriesRestService($http, $translate) {
             url: `${REPOSITORIES_ENDPOINT}/${repositoryId}/statements`,
             method: 'POST',
             data,
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         });
     }
 
@@ -67,8 +67,8 @@ function RDF4JRepositoriesRestService($http, $translate) {
             method: 'POST',
             url: `${REPOSITORIES_ENDPOINT}/${repositoryId}/statements`,
             params: {
-                update: ACTIVATE_PLUGIN_QUERY.replace('{{pluginName}}', pluginName)
-            }
+                update: ACTIVATE_PLUGIN_QUERY.replace('{{pluginName}}', pluginName),
+            },
         });
     }
 
@@ -77,11 +77,11 @@ function RDF4JRepositoriesRestService($http, $translate) {
             method: 'GET',
             url: `${REPOSITORIES_ENDPOINT}/${repositoryId}`,
             params: {
-                query: CHECK_PLUGIN_ACTIVE_QUERY.replace('{{pluginName}}', pluginName)
+                query: CHECK_PLUGIN_ACTIVE_QUERY.replace('{{pluginName}}', pluginName),
             },
             headers: {
-                'Accept': '*/*'
-            }
+                'Accept': '*/*',
+            },
         });
     }
 
@@ -97,15 +97,15 @@ function RDF4JRepositoriesRestService($http, $translate) {
     function resolveGraphs(repositoryId, limit) {
         let graphsInRepo = [];
         if (repositoryId) {
-            return getGraphs(repositoryId, limit).success(function (graphs) {
+            return getGraphs(repositoryId, limit).success(function(graphs) {
                     graphs.results.bindings.unshift({
                         contextID: {
                             type: "default",
-                            value: 'import.default.graph'
-                        }
+                            value: 'import.default.graph',
+                        },
                     });
 
-                    Object.keys(graphs.results.bindings).forEach(function (key) {
+                    Object.keys(graphs.results.bindings).forEach(function(key) {
                         const binding = graphs.results.bindings[key];
                         if (binding.contextID.type === "bnode") {
                             binding.contextID.value = `_:${binding.contextID.value}`;
@@ -141,10 +141,10 @@ function RDF4JRepositoriesRestService($http, $translate) {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
                 'Accept': acceptHeader,
-                'Link': linkHeader
+                'Link': linkHeader,
             },
             data: payloadString,
-            responseType: "blob"
+            responseType: "blob",
         }).then((response) => HttpUtils.extractFileFromResponse(response));
     }
 
@@ -159,8 +159,8 @@ function RDF4JRepositoriesRestService($http, $translate) {
         return $http({
             method: 'GET',
             url: `${REPOSITORIES_ENDPOINT}/${repositoryId}/contexts`,
-            params: { limit },
-            responseType: "blob"
+            params: {limit},
+            responseType: "blob",
         }).then((response) => HttpUtils.extractFileFromResponse(response));
     }
 }

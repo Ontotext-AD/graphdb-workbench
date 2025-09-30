@@ -21,7 +21,7 @@ export class ChartData {
             ChartData.cssVar('--secondary-color'),
             ChartData.cssVar('--primary-color'),
             ChartData.cssVar('--tertiary-color'),
-            ChartData.cssVar('--gray-color')
+            ChartData.cssVar('--gray-color'),
         ];
     }
 
@@ -62,7 +62,7 @@ export class ChartData {
         this.range = 150;
         this.chartOptions = this.getDefaultChartOptions(this.translateService);
         if (resetData) {
-            this.dataHolder = this.createDataHolder()
+            this.dataHolder = this.createDataHolder();
             this.chartOptions.series = this.dataHolder;
             this.firstLoad = true;
         }
@@ -203,15 +203,15 @@ export class ChartData {
                     rich: {
                         a: {
                             fontWeight: 400,
-                            fontSize: 14
+                            fontSize: 14,
                         },
                         b: {
                             color: ChartData.cssVar('--secondary-color'),
                             fontWeight: 400,
-                            fontSize: 14
-                        }
-                    }
-                }
+                            fontSize: 14,
+                        },
+                    },
+                },
             },
             animation: false,
             color: ChartData.COLORS,
@@ -219,29 +219,29 @@ export class ChartData {
                 right: '15%',
                 top: '6%',
                 textStyle: {
-                    overflow: 'truncate'
+                    overflow: 'truncate',
                 },
-                icon: 'circle'
+                icon: 'circle',
             },
             tooltip: {
                 trigger: 'axis',
                 axisPointer: {
                     animation: false,
                     label: {
-                        formatter: function (params) {
+                        formatter: function(params) {
                             return echarts.time.format(params.value, '{HH}:{mm}:{ss}', false);
-                        }
-                    }
-                }
+                        },
+                    },
+                },
             },
             grid: {
                 containLabel: true,
-                left: 40
+                left: 40,
             },
             xAxis: {
                 type: 'time',
                 splitLine: {
-                    show: true
+                    show: true,
                 },
                 axisLabel: {
                     hideOverlap: true,
@@ -249,35 +249,35 @@ export class ChartData {
                     formatter: {
                         hour: '{bold|{HH}:{mm}}',
                         minute: '{bold|{HH}:{mm}}',
-                        second: '{HH}:{mm}:{ss}'
+                        second: '{HH}:{mm}:{ss}',
                     },
                     color: ChartData.cssVar('--gray-color-dark'),
                     rich: {
                         bold: {
-                            fontWeight: 500
-                        }
-                    }
-                }
+                            fontWeight: 500,
+                        },
+                    },
+                },
             },
             yAxis: {
                 type: 'value',
                 splitLine: {
-                    show: true
+                    show: true,
                 },
                 axisLabel: {
-                    color: ChartData.cssVar('--gray-color-dark')
+                    color: ChartData.cssVar('--gray-color-dark'),
                 },
                 axisTick: {
                     lineStyle: {
-                        type: 'solid'
-                    }
-                }
+                        type: 'solid',
+                    },
+                },
             },
             textStyle: {
                 // Using the variable 'var(--main-font)' directly confuses echarts' font metrics algorithms
                 fontFamily: ChartData.cssVar('--main-font'),
-                fontWeight: 400
-            }
+                fontWeight: 400,
+            },
         };
     }
 
@@ -290,7 +290,7 @@ export class ChartData {
     static getMaxValueFromDataHolder(dataHolder, selectedSeries) {
         const valuesArray = dataHolder
             .filter((data) => !selectedSeries || (angular.isUndefined(selectedSeries[data.name]) || selectedSeries[data.name] === true))
-            .map((data) => ChartData.getMaxValueForDataSeries(data))
+            .map((data) => ChartData.getMaxValueForDataSeries(data));
         return Math.max(1, ...valuesArray);
     }
 
@@ -338,7 +338,7 @@ export class ChartData {
     static formatBytesValue(value, dataHolder, selectedSeries) {
         let maxChartValue = value;
         if (dataHolder) {
-            maxChartValue = ChartData.getMaxValueFromDataHolder(dataHolder, selectedSeries)
+            maxChartValue = ChartData.getMaxValueFromDataHolder(dataHolder, selectedSeries);
         }
 
         const k = 1024;

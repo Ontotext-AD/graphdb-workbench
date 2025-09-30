@@ -1,5 +1,4 @@
 export class HtmlUtil {
-
     /**
      * Extracts and returns the plain text content from a given HTML string by removing any HTML tags.
      *

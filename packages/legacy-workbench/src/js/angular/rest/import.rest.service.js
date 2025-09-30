@@ -19,7 +19,7 @@ function ImportRestService($http) {
         stopServerImport,
         stopUserDataImport,
         resetServerFileStatus,
-        resetUserDataStatus
+        resetUserDataStatus,
     };
 
     /**
@@ -123,7 +123,7 @@ function ImportRestService($http) {
             url: `${BASE_ENDPOINT}/${repositoryId}/import/server/status`,
             params: {remove: remove},
             data,
-            headers: {'Content-type': 'application/json;charset=utf-8'}
+            headers: {'Content-type': 'application/json;charset=utf-8'},
         });
     }
 
@@ -140,7 +140,7 @@ function ImportRestService($http) {
             url: `${BASE_ENDPOINT}/${repositoryId}/import/upload/status`,
             params: {remove: remove},
             data,
-            headers: {'Content-type': 'application/json;charset=utf-8'}
+            headers: {'Content-type': 'application/json;charset=utf-8'},
         });
     }
 

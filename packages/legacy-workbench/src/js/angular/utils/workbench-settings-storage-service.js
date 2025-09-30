@@ -10,7 +10,7 @@ function WorkbenchSettingsStorageService(localStorageAdapter, LSKeys) {
      */
     const defaultSettings = {
         theme: 'default-theme',
-        mode: 'light'
+        mode: 'light',
     };
 
     /**
@@ -58,6 +58,6 @@ function WorkbenchSettingsStorageService(localStorageAdapter, LSKeys) {
         getWorkbenchSettings,
         saveWorkbenchSettings,
         getThemeName,
-        saveTheme
+        saveTheme,
     };
 }

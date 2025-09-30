@@ -1,7 +1,7 @@
 export const ENDPOINT_GENERATION_STATUS = {
     NONE: 'NONE',
     SUCCESS: 'SUCCESS',
-    ERROR: 'ERROR'
+    ERROR: 'ERROR',
 };
 
 export class GraphqlEndpointOverviewList {

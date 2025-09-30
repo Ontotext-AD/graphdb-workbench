@@ -29,10 +29,10 @@ function SecurityService(SecurityRestService) {
                 return {
                     data: toUserModelMapper(data, 'authorities'),
                     status,
-                    headers
-                }
+                    headers,
+                };
             });
-    }
+    };
     /**
      * Retrieves a user by username from the backend.
      * The full response is mapped to convert its data property to a UI model.
@@ -43,7 +43,7 @@ function SecurityService(SecurityRestService) {
     const getUser = (username) => {
         return SecurityRestService.getUser(username)
             .then((response) => toUserModelMapper(response.data));
-    }
+    };
 
     /**
      * Retrieves the authenticated user from the backend.
@@ -54,7 +54,7 @@ function SecurityService(SecurityRestService) {
     const getAuthenticatedUser = () => {
         return SecurityRestService.getAuthenticatedUser()
             .then((response) => toUserModelMapper(response.data, 'authorities'));
-    }
+    };
 
     /**
      * Retrieves the admin user from the backend.
@@ -65,7 +65,7 @@ function SecurityService(SecurityRestService) {
     const getAdminUser = () => {
         return SecurityRestService.getAdminUser()
             .then((response) => toUserModelMapper(response.data));
-    }
+    };
 
     /**
      * Retrieves all users from the backend.
@@ -76,7 +76,7 @@ function SecurityService(SecurityRestService) {
     const getUsers = () => {
         return SecurityRestService.getUsers()
             .then((response) => toUserModelMapper(response.data));
-    }
+    };
 
     /**
      * Creates a new user in the backend.
@@ -87,7 +87,7 @@ function SecurityService(SecurityRestService) {
      */
     const createUser = (data) => {
         return SecurityRestService.createUser(fromUserModelMapper(data));
-    }
+    };
 
     /**
      * Updates an existing user in the backend.
@@ -98,7 +98,7 @@ function SecurityService(SecurityRestService) {
      */
     const updateUser = (data) => {
         return SecurityRestService.updateUser(fromUserModelMapper(data));
-    }
+    };
 
     /**
      * Updates user settings data in the backend using the SecurityRestService.
@@ -117,7 +117,7 @@ function SecurityService(SecurityRestService) {
      */
     const deleteUser = (username) => {
         return SecurityRestService.deleteUser(username);
-    }
+    };
 
     /**
      * Retrieves free access settings from the backend.
@@ -192,6 +192,6 @@ function SecurityService(SecurityRestService) {
         getSecurityConfig,
         toggleSecurity,
         getRoles,
-        getRolesMapping
+        getRolesMapping,
     };
 }

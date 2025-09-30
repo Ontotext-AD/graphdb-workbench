@@ -13,5 +13,5 @@ export const SimilarityIndexType = {
 
     'isPredicationType': (type) => {
         return SimilarityIndexType.PREDICATION === type;
-    }
+    },
 };

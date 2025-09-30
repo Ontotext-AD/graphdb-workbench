@@ -8,4 +8,4 @@ export const GRAPHQL_PREFIX = 'GRAPHQL_';
 export const GRAPHQL_SUFFIX = 'GRAPHQL';
 export const SUFFIX_DELIMITER = ':';
 export const GRAPHQL_SUFFIX_WITH_DELIMITER = SUFFIX_DELIMITER + GRAPHQL_SUFFIX;
-export const CUSTOM_PREFIX = 'CUSTOM_'
+export const CUSTOM_PREFIX = 'CUSTOM_';

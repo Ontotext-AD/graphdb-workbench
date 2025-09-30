@@ -1,7 +1,7 @@
 import {
     ExplainQueryMethodModel,
     ExplainQueryMethodsListModel,
-    ExplainResponseModel
+    ExplainResponseModel,
 } from "../../models/ttyg/explain-response";
 
 /**
@@ -14,7 +14,7 @@ export const explainResponseMapper = (data) => {
     return new ExplainResponseModel({
         chatId: data.conversationId,
         answerId: data.answerId,
-        queryMethods: explainQueryMethodsListMapper(data.queryMethods)
+        queryMethods: explainQueryMethodsListMapper(data.queryMethods),
     });
 };
 

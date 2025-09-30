@@ -9,7 +9,7 @@ PluginRegistry.add('route', [
         'title': 'menu.repositories.label',
         'helpInfo': 'view.repositories.helpInfo',
         'documentationUrl': 'creating-a-repository.html',
-        'allowAuthorities': ['READ_REPO_{repoId}']
+        'allowAuthorities': ['READ_REPO_{repoId}'],
     }, {
         'url': '/repository/create',
         'module': 'graphdb.framework.repositories',
@@ -18,7 +18,7 @@ PluginRegistry.add('route', [
         'controller': 'ChooseRepositoryCtrl',
         'templateUrl': 'pages/choose-repository-type.html',
         'title': 'view.choose.repo.title',
-        'allowAuthorities': ['READ_REPO_{repoId}']
+        'allowAuthorities': ['READ_REPO_{repoId}'],
     }, {
         'url': '/repository/create/:repositoryType',
         'module': 'graphdb.framework.repositories',
@@ -27,7 +27,7 @@ PluginRegistry.add('route', [
         'controller': 'AddRepositoryCtrl',
         'templateUrl': 'pages/repository.html',
         'title': 'Create Repository',
-        'allowAuthorities': ['READ_REPO_{repoId}']
+        'allowAuthorities': ['READ_REPO_{repoId}'],
     }, {
         'url': '/repository/edit/:repositoryId',
         'module': 'graphdb.framework.repositories',
@@ -36,8 +36,8 @@ PluginRegistry.add('route', [
         'controller': 'EditRepositoryCtrl',
         'templateUrl': 'pages/repository.html',
         'title': 'Edit Repository',
-        'allowAuthorities': ['READ_REPO_{repoId}']
-    }
+        'allowAuthorities': ['READ_REPO_{repoId}'],
+    },
 ]);
 
 PluginRegistry.add('main.menu', {
@@ -55,14 +55,14 @@ PluginRegistry.add('main.menu', {
                     children: [
                         {
                             href: 'repository/create/*',
-                        }
-                    ]
+                        },
+                    ],
                 },
                 {
-                    href: 'repository/edit/*'
-                }
+                    href: 'repository/edit/*',
+                },
             ],
             guideSelector: 'sub-menu-repositories',
-            testSelector: 'sub-menu-repositories'
-        }]
+            testSelector: 'sub-menu-repositories',
+        }],
 });

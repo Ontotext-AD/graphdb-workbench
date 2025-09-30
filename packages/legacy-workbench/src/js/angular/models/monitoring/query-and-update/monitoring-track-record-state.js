@@ -34,5 +34,5 @@ export const MonitoringTrackRecordState = {
     /**
      * final state
      */
-    'CLOSED': 'CLOSED'
-}
+    'CLOSED': 'CLOSED',
+};

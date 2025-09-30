@@ -1,6 +1,5 @@
 export class YasrBeforeUpdateQueryResult {
     constructor() {
-
         /**
          * @type {string} - the value have to be one of the {@link QueryResponseStatus} options.
          */

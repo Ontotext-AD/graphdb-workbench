@@ -20,6 +20,6 @@ function ShowTooltipOnOverflow() {
 
             // Needed in order to have values for scrollWidth and clientWidth
             setTimeout(updateTooltip, 0);
-        }
+        },
     };
 }

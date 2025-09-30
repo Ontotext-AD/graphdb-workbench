@@ -17,7 +17,7 @@ const modules = [
     'ui.bootstrap',
     'graphdb.framework.core.services.repositories',
     'graphdb.framework.rest.monitoring.service',
-    'graphdb.framework.rest.cluster.service'
+    'graphdb.framework.rest.cluster.service',
 ];
 
 const resourcesCtrl = angular.module('graphdb.framework.jmx.resources.controllers', modules);
@@ -30,7 +30,7 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$timeout', 'MonitoringRest
         $scope.AVAILABLE_TABS = Object.freeze({
             'RESOURCE_MONITOR': 'resource',
             'PERFORMANCE_MONITOR': 'performance',
-            'CLUSTER_HEALTH': 'cluster'
+            'CLUSTER_HEALTH': 'cluster',
         });
 
         const urlFragment = window.location.hash.slice(1);
@@ -41,47 +41,47 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$timeout', 'MonitoringRest
             error: {
                 hasError: false,
                 message: '',
-                retries: 0
+                retries: 0,
             },
             charts: {
                 cpuLoad: new CpuLoadChart($translate),
                 fileDescriptors: new FileDescriptorsChart($translate, $filter),
                 heapMemory: new HeapMemoryChart($translate),
                 offHeapMemory: new NonHeapMemoryChart($translate),
-                diskStorage: new DiskStorageChart($translate)
-            }
+                diskStorage: new DiskStorageChart($translate),
+            },
         };
         $scope.performanceMonitorData = {
             error: {
                 hasError: false,
                 message: '',
-                retries: 0
+                retries: 0,
             },
             charts: {
                 connectionsChart: new ConnectionsChart($translate),
                 epoolChart: new EpoolChart($translate),
-                queriesChart: new QueriesChart($translate)
-            }
+                queriesChart: new QueriesChart($translate),
+            },
         };
         $scope.structuresMonitorData = {
             error: {
                 hasError: false,
                 message: '',
-                retries: 0
+                retries: 0,
             },
             charts: {
-                globalCacheChart: new GlobalCacheChart($translate, $filter)
-            }
+                globalCacheChart: new GlobalCacheChart($translate, $filter),
+            },
         };
         $scope.clusterHealthData = {
             error: {
                 hasError: false,
                 message: '',
-                retries: 0
+                retries: 0,
             },
             charts: {
-                clusterHealthChart: new ClusterHealthChart($translate)
-            }
+                clusterHealthChart: new ClusterHealthChart($translate),
+            },
         };
 
         $scope.hasCluster = false;
@@ -199,20 +199,20 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$timeout', 'MonitoringRest
             error: {
                 hasError: false,
                 message: '',
-                retries: 0
+                retries: 0,
             },
             fetchFn: getResourceMonitorData,
-            poll: null
+            poll: null,
         });
         $scope.monitors.push({
             chartsHolder: $scope.structuresMonitorData,
             error: {
                 hasError: false,
                 message: '',
-                retries: 0
+                retries: 0,
             },
             fetchFn: getStructuresMonitorData,
-            poll: null
+            poll: null,
         });
 
         $scope.monitors.push({
@@ -220,10 +220,10 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$timeout', 'MonitoringRest
             error: {
                 hasError: false,
                 message: '',
-                retries: 0
+                retries: 0,
             },
             fetchFn: getQueryMonitor,
-            poll: null
+            poll: null,
         });
 
         ClusterRestService.getNodeStatus()
@@ -233,7 +233,7 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$timeout', 'MonitoringRest
                     chartsHolder: $scope.clusterHealthData,
 
                     fetchFn: getClusterMonitorData,
-                    poll: null
+                    poll: null,
                 };
                 $scope.monitors.push(clusterMonitor);
                 getData(clusterMonitor);

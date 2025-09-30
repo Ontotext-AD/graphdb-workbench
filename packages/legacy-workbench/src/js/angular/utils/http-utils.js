@@ -1,5 +1,4 @@
 export class HttpUtils {
-
     /**
      * Extracts the file data and filename from an HTTP response containing a Blob.
      *

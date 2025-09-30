@@ -36,6 +36,6 @@ export const endpointInfoModelMapper = (data, repositoryId) => {
         objectsCount: data.objectsCount,
         propertiesCount: data.propertiesCount,
         warnings: data.warnings,
-        errors: data.errors
+        errors: data.errors,
     });
 };

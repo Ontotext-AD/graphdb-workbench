@@ -9,7 +9,7 @@ PluginRegistry.add('route', {
     'helpInfo': 'view.sparql-editor.helpInfo',
     'reloadOnSearch': false,
     'documentationUrl': 'sparql-queries.html',
-    'allowAuthorities': ['READ_REPO_{repoId}']
+    'allowAuthorities': ['READ_REPO_{repoId}'],
 });
 
 PluginRegistry.add('main.menu', {
@@ -22,7 +22,7 @@ PluginRegistry.add('main.menu', {
             role: 'IS_AUTHENTICATED_FULLY',
             icon: "icon-sparql",
             guideSelector: 'menu-sparql',
-            children: []
-        }
-    ]
+            children: [],
+        },
+    ],
 });

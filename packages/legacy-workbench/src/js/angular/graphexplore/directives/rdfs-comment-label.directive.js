@@ -12,38 +12,38 @@ function rdfsCommentLabelDirective(SHORT_COMMENT_LENGTH) {
             rdfsLabel: '=',
             rdfsComment: '=',
             expanded: '=',
-            alwaysExpanded: '='
+            alwaysExpanded: '=',
         },
         templateUrl: 'js/angular/graphexplore/templates/rdfsCommentLabelTemplate.html',
-        link: function (scope, element) {
+        link: function(scope, element) {
             scope.stringLimit = SHORT_COMMENT_LENGTH;
-            scope.scrollToTop = function () {
+            scope.scrollToTop = function() {
                 element[0].getElementsByClassName('rdfs-comment')[0].scrollTop = 0;
             };
 
-            scope.checkCommentLength = function () {
+            scope.checkCommentLength = function() {
                 const commentLength = element[0].getElementsByClassName('rdfs-comment-text')[0].innerText.length;
                 return commentLength < SHORT_COMMENT_LENGTH;
             };
 
-            scope.equalHeights = function () {
+            scope.equalHeights = function() {
                 const commentHeight = element[0].getElementsByClassName('rdfs-comment-text')[0].innerHeight;
                 if (commentHeight < 250 && scope.expanded) {
                     element[0].getElementsByClassName('rdfs-comment')[0].innerHeight = commentHeight;
                 }
             };
 
-            scope.toggleFullComment = function () {
+            scope.toggleFullComment = function() {
                 scope.expanded = !scope.expanded;
             };
 
-            scope.$watch('expanded || alwaysExpanded', function (value) {
+            scope.$watch('expanded || alwaysExpanded', function(value) {
                 if (value) {
                     scope.stringLimit = scope.rdfsComment.length;
                 } else {
                     scope.stringLimit = SHORT_COMMENT_LENGTH;
                 }
             });
-        }
+        },
     };
 }

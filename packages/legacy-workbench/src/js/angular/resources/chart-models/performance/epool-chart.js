@@ -9,22 +9,22 @@ export class EpoolChart extends ChartData {
         const epoolChartOptions = {
             grid: {
                 containLabel: true,
-                left: 40
+                left: 40,
             },
             yAxis: [
                 {
                     name: this.translateService.instant('resource.epool.reads'),
                     nameLocation: 'middle',
                     type: 'value',
-                    nameGap: 40
+                    nameGap: 40,
                 },
                 {
                     name: this.translateService.instant('resource.epool.writes'),
                     nameLocation: 'middle',
                     type: 'value',
-                    nameGap: 40
-                }
-            ]
+                    nameGap: 40,
+                },
+            ],
         };
         _.merge(chartOptions, epoolChartOptions);
     }
@@ -36,14 +36,14 @@ export class EpoolChart extends ChartData {
             showSymbol: false,
             smooth: true,
             yAxisIndex: 0,
-            data: []
+            data: [],
         }, {
             name: this.translateService.instant('resource.epool.writes'),
             type: 'line',
             showSymbol: false,
             smooth: true,
             yAxisIndex: 1,
-            data: []
+            data: [],
         }];
     }
 
@@ -64,34 +64,34 @@ export class EpoolChart extends ChartData {
         const currentWrites = performanceData.entityPool.epoolWrites;
 
         if (!isFirstLoad) {
-            readsDiff = currentReads - this.lastestData.reads ;
+            readsDiff = currentReads - this.lastestData.reads;
             writesDiff = currentWrites - this.lastestData.writes;
         }
 
         this.lastestData = {
             reads: currentReads,
-            writes: currentWrites
-        }
+            writes: currentWrites,
+        };
 
         readsData.data.push({
             value: [
                 timestamp,
-                readsDiff
-            ]
+                readsDiff,
+            ],
         });
         writesData.data.push({
             value: [
                 timestamp,
-                writesDiff
-            ]
+                writesDiff,
+            ],
         });
     }
 
     updateRange(dataHolder) {
         dataHolder.forEach((data, i) => {
-            const [max, minInterval] = ChartData.getIntegerRangeForValues(data, 0, this.selectedSeries)
+            const [max, minInterval] = ChartData.getIntegerRangeForValues(data, 0, this.selectedSeries);
             this.chartOptions.yAxis[i].max = max;
             this.chartOptions.yAxis[i].minInterval = minInterval;
-        })
+        });
     }
 }

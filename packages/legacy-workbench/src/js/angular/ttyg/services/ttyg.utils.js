@@ -1,5 +1,4 @@
 export const getHumanReadableTimestamp = ($translate, $filter, timestamp, options = {}) => {
-
     if (!timestamp) {
         return '';
     }

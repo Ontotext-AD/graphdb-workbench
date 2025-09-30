@@ -18,7 +18,7 @@ function ClusterRestService($http) {
         addCusterTag,
         deleteClusterTag,
         disableSecondaryMode,
-        enableSecondaryMode
+        enableSecondaryMode,
     };
 
     /**
@@ -47,7 +47,7 @@ function ClusterRestService($http) {
 
     function deleteCluster(forceDelete) {
         const data = $.param({
-            force: forceDelete
+            force: forceDelete,
         });
         return $http.delete(`${CLUSTER_GROUP_ENDPOINT}/config?${data}`);
     }
@@ -74,7 +74,7 @@ function ClusterRestService($http) {
             method: 'DELETE',
             url: `${CLUSTER_GROUP_ENDPOINT}/config/tag`,
             data: {tag},
-            headers: {'Content-type': 'application/json;charset=utf-8'}
+            headers: {'Content-type': 'application/json;charset=utf-8'},
         });
     }
 

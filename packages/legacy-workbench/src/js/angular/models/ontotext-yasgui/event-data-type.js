@@ -9,5 +9,5 @@ export const EventDataType = {
     'COUNT_QUERY_RESPONSE': 'countQueryResponse',
     'REQUEST_ABORTED': 'requestAborted',
     'QUERY_EXECUTED': 'queryExecuted',
-    'SAVE_QUERY_OPENED': 'saveQueryOpened'
+    'SAVE_QUERY_OPENED': 'saveQueryOpened',
 };

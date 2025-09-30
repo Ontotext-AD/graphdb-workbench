@@ -7,7 +7,6 @@ angular
 TTYGContextService.$inject = ['EventEmitterService', 'TTYGService'];
 
 function TTYGContextService(EventEmitterService) {
-
     /**
      * The list of agents.
      * @type {AgentListModel}
@@ -395,7 +394,7 @@ function TTYGContextService(EventEmitterService) {
         toggleExplainResponse,
         getExplainResponse,
         addExplainResponseCache,
-        onExplainResponseCacheUpdated
+        onExplainResponseCacheUpdated,
     };
 }
 

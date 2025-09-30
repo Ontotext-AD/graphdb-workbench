@@ -52,5 +52,5 @@ angular.module('graphdb.framework.graphexplore', [
     'graphdb.framework.graphexplore.directives.domainrange',
     'graphdb.framework.graphexplore.directives.dependencies',
     'graphdb.framework.graphexplore.directives.searchcontrols',
-    'graphdb.framework.core.directives.yasgui-component'
+    'graphdb.framework.core.directives.yasgui-component',
 ]);

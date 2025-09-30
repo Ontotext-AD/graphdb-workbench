@@ -11,7 +11,7 @@ export class QueriesChart extends ChartData {
             type: 'line',
             showSymbol: false,
             smooth: true,
-            data: []
+            data: [],
         }];
     }
 
@@ -28,21 +28,21 @@ export class QueriesChart extends ChartData {
             slowQueries: performanceData.queries.slow,
             suboptimal: performanceData.queries.suboptimal,
             activeQueryData,
-            performanceData
-        }
+            performanceData,
+        };
 
         dataHolder[0].data.push({
             value: [
                 timestamp,
-                activeQueryData.length
-            ]
+                activeQueryData.length,
+            ],
         });
 
         this.configureSubtitle();
     }
 
     updateRange(dataHolder, multiplier) {
-        const [max, minInterval] = ChartData.getIntegerRangeForValues(dataHolder, multiplier, this.selectedSeries)
+        const [max, minInterval] = ChartData.getIntegerRangeForValues(dataHolder, multiplier, this.selectedSeries);
         this.chartOptions.yAxis.max = max;
         this.chartOptions.yAxis.minInterval = minInterval;
     }
@@ -50,10 +50,10 @@ export class QueriesChart extends ChartData {
     configureSubtitle() {
         const subTitleKeyValues = [{
             label: this.translateService.instant('resource.queries.slow'),
-            value: this.latestData.slowQueries
+            value: this.latestData.slowQueries,
         }, {
             label: this.translateService.instant('resource.queries.suboptimal'),
-            value: this.latestData.suboptimal
+            value: this.latestData.suboptimal,
         }];
 
         this.setSubTitle(subTitleKeyValues);

@@ -9,7 +9,7 @@ import {ChatModel} from "../../models/ttyg/chats";
 
 const modules = [
     'graphdb.framework.ttyg.directives.chat-item-detail',
-    'graphdb.framework.core.directives.editable-content'
+    'graphdb.framework.core.directives.editable-content',
 ];
 
 angular
@@ -37,7 +37,6 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, $timeout) {
         restrict: 'E',
         templateUrl: 'js/angular/ttyg/templates/chat-panel.html',
         link: ($scope, element, attrs) => {
-
             // =========================
             // Public variables
             // =========================
@@ -168,7 +167,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, $timeout) {
                     return;
                 }
                 $scope.loadingChat = false;
-                let message = $scope.chatItem.question.message;
+                const message = $scope.chatItem.question.message;
                 $scope.chatItem = getEmptyChatItem();
                 $scope.chatItem.question.message = message;
                 $scope.askingChatItem = undefined;
@@ -251,12 +250,12 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, $timeout) {
                 // Moving focus to the end of the JS call stack with a timeout, because on first Agent select,
                 // the dropdown .agent-option steals the focus, or the browser assigns it to the document <body>.
                 setTimeout(() => {
-                    let inputElement = document.querySelector('.question-input');
+                    const inputElement = document.querySelector('.question-input');
                     if (inputElement) {
                         inputElement.focus();
                     }
                 });
-            }
+            };
 
             const scrollToBottom = () => {
                 // Call it in a timeout to ensure that Angular's digest cycle is finished and all elements are displayed.
@@ -309,6 +308,6 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, $timeout) {
             // Initialization
             // =========================
             init();
-        }
+        },
     };
 }

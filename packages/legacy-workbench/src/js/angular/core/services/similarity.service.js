@@ -11,7 +11,6 @@ angular
 SimilarityService.$inject = ['SimilarityRestService'];
 
 function SimilarityService(SimilarityRestService) {
-
     /**
      * Returns the similarity indexes for the repository with id <code>repositoryId</code> and location <code>repositoryLocation</code>.
      * If the repository ID and repository location are not provided, the currently selected repository will be used.
@@ -44,6 +43,6 @@ function SimilarityService(SimilarityRestService) {
 
     return {
         getIndexes,
-        getIndexesAsMenuModel
+        getIndexesAsMenuModel,
     };
 }

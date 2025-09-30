@@ -8,7 +8,6 @@ angular
 BackupAndRestoreCtrl.$inject = ['$scope', '$interval', 'MonitoringRestService'];
 
 function BackupAndRestoreCtrl($scope, $interval, MonitoringRestService) {
-
     $scope.loading = false;
     $scope.initialized = false;
 

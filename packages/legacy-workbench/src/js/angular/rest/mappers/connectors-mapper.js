@@ -2,7 +2,7 @@ import {
     ConnectorListModel,
     ConnectorModel,
     ConnectorTypeModel,
-    ConnectorTypesListModel
+    ConnectorTypesListModel,
 } from "../../models/connectors/connectors";
 
 /**
@@ -18,7 +18,7 @@ export const connectorTypesListMapper = (data) => {
     connectorListModel.connectors = Object.keys(data).map((key) => {
         return new ConnectorTypeModel({
             name: key,
-            prefix: data[key]
+            prefix: data[key],
         });
     });
     return connectorListModel;

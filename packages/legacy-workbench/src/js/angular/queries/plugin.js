@@ -8,7 +8,7 @@ PluginRegistry.add('route', {
     'title': 'view.query.and.update.monitoring.title',
     'helpInfo': 'view.query.and.update.monitoring.helpInfo',
     'documentationUrl': 'query-monitoring.html',
-    'allowAuthorities': ['READ_REPO_{repoId}']
+    'allowAuthorities': ['READ_REPO_{repoId}'],
 });
 
 PluginRegistry.add('main.menu', {
@@ -21,7 +21,7 @@ PluginRegistry.add('main.menu', {
             parent: 'Monitor',
             guideSelector: 'sub-menu-queries-and-updates',
             testSelector: 'sub-menu-queries-and-updates',
-            children: []
-        }
-    ]
+            children: [],
+        },
+    ],
 });

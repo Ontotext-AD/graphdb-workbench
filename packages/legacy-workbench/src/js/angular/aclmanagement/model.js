@@ -322,11 +322,9 @@ export class StatementACRuleModel extends ACRuleModel {
             predicate: this.predicate,
             object: this.object,
             context: this.context,
-            warnForPrefix: this.warnForPrefix
+            warnForPrefix: this.warnForPrefix,
         };
     }
-
-
 }
 
 /**
@@ -373,7 +371,7 @@ export class PluginACRuleModel extends ACRuleModel {
             role: this.role,
             operation: this.operation,
             plugin: this.plugin,
-            warnForPrefix: this.warnForPrefix
+            warnForPrefix: this.warnForPrefix,
         };
     }
 }
@@ -420,7 +418,7 @@ export class ClearGraphACRuleModel extends ACRuleModel {
             policy: this.policy,
             role: this.role,
             context: this.context,
-            warnForPrefix: this.warnForPrefix
+            warnForPrefix: this.warnForPrefix,
         };
     }
 }
@@ -449,7 +447,7 @@ export class SystemACRuleModel extends ACRuleModel {
             policy: this.policy,
             role: this.role,
             operation: this.operation,
-            warnForPrefix: this.warnForPrefix
+            warnForPrefix: this.warnForPrefix,
         };
     }
 }
@@ -488,66 +486,66 @@ class ACRuleFactory {
 
 export const ACL_POLICY = {
     ALLOW: 'allow',
-    DENY: 'deny'
+    DENY: 'deny',
 };
 
 export const ACL_OPERATION = {
     READ: 'read',
     WRITE: 'write',
-    ALL: '*'
+    ALL: '*',
 };
 
 export const ACL_SCOPE = {
     STATEMENT: 'statement',
     CLEAR_GRAPH: 'clear_graph',
     PLUGIN: 'plugin',
-    SYSTEM: 'system'
+    SYSTEM: 'system',
 };
 
 export const DEFAULT_CONTEXT_VALUES = [
     {
         type: 'default',
         value: "*",
-        description: "acl_management.defaults.asterisk"
+        description: "acl_management.defaults.asterisk",
     },
     {
         type: 'default',
         value: "default",
-        description: "acl_management.defaults.default"
+        description: "acl_management.defaults.default",
     },
     {
         type: 'default',
         value: "named",
-        description: "acl_management.defaults.named"
-    }
+        description: "acl_management.defaults.named",
+    },
 ];
 export const DEFAULT_CLEAR_GRAPH_CONTEXT_VALUES = [
     {
         type: 'default',
         value: "*",
-        description: "acl_management.defaults.asterisk"
+        description: "acl_management.defaults.asterisk",
     },
     {
         type: 'default',
         value: "all",
-        description: "acl_management.defaults.all"
+        description: "acl_management.defaults.all",
     },
     {
         type: 'default',
         value: "default",
-        description: "acl_management.defaults.default"
+        description: "acl_management.defaults.default",
     },
     {
         type: 'default',
         value: "named",
-        description: "acl_management.defaults.named"
-    }
+        description: "acl_management.defaults.named",
+    },
 ];
 export const DEFAULT_URI_VALUES = [
     {
         type: 'default',
         value: "*",
-        description: "acl_management.defaults.asterisk"
-    }
+        description: "acl_management.defaults.asterisk",
+    },
 ];
 

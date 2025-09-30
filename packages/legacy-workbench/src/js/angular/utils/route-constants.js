@@ -5,5 +5,5 @@ export const RouteConstants = {
     // same as savedQueryName but for shared queries - this is how WB handles it
     'name': 'name',
     // same as savedQueryOwner but for shared queries - this is how WB handles it
-    'owner': 'owner'
+    'owner': 'owner',
 };

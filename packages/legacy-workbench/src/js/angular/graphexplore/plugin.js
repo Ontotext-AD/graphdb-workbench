@@ -10,7 +10,7 @@ PluginRegistry.add('route', [
         'reloadOnSearch': false,
         'helpInfo': 'view.class.hierarchy.helpInfo',
         'documentationUrl': 'explore-data-and-class-relationships.html#class-hierarchy',
-        'allowAuthorities': ['READ_REPO_{repoId}']
+        'allowAuthorities': ['READ_REPO_{repoId}'],
 
     }, {
         'url': '/domain-range-graph',
@@ -21,7 +21,7 @@ PluginRegistry.add('route', [
         'templateUrl': 'pages/domainRangeInfo.html',
         'title': 'view.domain.range.graph.title',
         'helpInfo': 'view.domain.range.graph.helpInfo',
-        'allowAuthorities': ['READ_REPO_{repoId}']
+        'allowAuthorities': ['READ_REPO_{repoId}'],
     }, {
         'url': '/relationships',
         'module': 'graphdb.framework.graphexplore',
@@ -32,7 +32,7 @@ PluginRegistry.add('route', [
         'title': 'view.class.relationships.title',
         'helpInfo': 'view.class.relationships.helpInfo',
         'documentationUrl': 'explore-data-and-class-relationships.html#class-relationships',
-        'allowAuthorities': ['READ_REPO_{repoId}']
+        'allowAuthorities': ['READ_REPO_{repoId}'],
     }, {
         'url': '/graphs-visualizations',
         'module': 'graphdb.framework.graphexplore',
@@ -44,7 +44,7 @@ PluginRegistry.add('route', [
         'reloadOnSearch': false,
         'helpInfo': 'view.visual.graph.helpInfo',
         'documentationUrl': 'visualize-and-explore.html#explore-resources-through-the-easy-graph',
-        'allowAuthorities': ['READ_REPO_{repoId}']
+        'allowAuthorities': ['READ_REPO_{repoId}'],
     }, {
         'url': '/graphs-visualizations/config/save/:configName?',
         'module': 'graphdb.framework.graphexplore',
@@ -54,8 +54,8 @@ PluginRegistry.add('route', [
         'templateUrl': 'pages/graph-config/saveGraphConfig.html',
         'title': 'view.create.visual.graph.title',
         'helpInfo': 'view.create.visual.graph.helpInfo',
-        'allowAuthorities': ['READ_REPO_{repoId}']
-    }
+        'allowAuthorities': ['READ_REPO_{repoId}'],
+    },
 ]);
 
 PluginRegistry.add('main.menu', {
@@ -67,7 +67,7 @@ PluginRegistry.add('main.menu', {
             order: 2,
             parent: 'Explore',
             guideSelector: 'sub-menu-class-relationships',
-            testSelector: 'sub-menu-class-relationships'
+            testSelector: 'sub-menu-class-relationships',
         }, {
             label: 'Class hierarchy',
             labelKey: 'menu.class.hierarchy.label',
@@ -75,7 +75,7 @@ PluginRegistry.add('main.menu', {
             order: 1,
             parent: 'Explore',
             guideSelector: 'menu-class-hierarchy',
-            testSelector:'menu-class-hierarchy'
+            testSelector:'menu-class-hierarchy',
         }, {
             label: 'Visual graph',
             labelKey: 'visual.graph.label',
@@ -87,11 +87,11 @@ PluginRegistry.add('main.menu', {
                 children: [
                     {
                         href: 'graphs-visualizations/config/save/*',
-                    }
-                ]
+                    },
+                ],
             }],
             guideSelector: 'sub-menu-visual-graph',
-            testSelector: 'sub-menu-visual-graph'
-        }
-    ]
+            testSelector: 'sub-menu-visual-graph',
+        },
+    ],
 });

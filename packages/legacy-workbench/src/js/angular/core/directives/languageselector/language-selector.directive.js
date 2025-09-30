@@ -2,7 +2,7 @@ import 'angular/utils/local-storage-adapter';
 import 'angular/core/services/event-emitter-service';
 angular
     .module('graphdb.framework.core.directives.languageselector.languageselector', [
-        'graphdb.framework.utils.localstorageadapter', 'graphdb.framework.utils.event-emitter-service'
+        'graphdb.framework.utils.localstorageadapter', 'graphdb.framework.utils.event-emitter-service',
     ])
     .directive('languageSelector', languageSelector);
 
@@ -12,7 +12,7 @@ function languageSelector($translate, LocalStorageAdapter, LSKeys, $languageServ
     return {
         templateUrl: 'js/angular/core/directives/languageselector/templates/languageSelector.html',
         restrict: 'E',
-        link: function ($scope) {
+        link: function($scope) {
             const userPreferredLang = LocalStorageAdapter.get(LSKeys.PREFERRED_LANG);
             const browserPreferredLanguages = navigator.languages;
 
@@ -31,7 +31,7 @@ function languageSelector($translate, LocalStorageAdapter, LSKeys, $languageServ
                 $scope.$broadcast('language-changed', {locale: lang.key});
             }
 
-            $scope.changeLanguage = function (lang) {
+            $scope.changeLanguage = function(lang) {
                 if ($languageService.getLanguage() !== lang.key) {
                     const eventData = {locale: lang.key, cancel: false};
                     eventEmitterService.emit('before-language-change', eventData, (eventData) => {
@@ -42,7 +42,7 @@ function languageSelector($translate, LocalStorageAdapter, LSKeys, $languageServ
                 }
             };
 
-            $scope.getLanguageTooltip = function (lang) {
+            $scope.getLanguageTooltip = function(lang) {
                 if (!lang || !$scope.selectedLang) {
                     return '';
                 }
@@ -74,7 +74,7 @@ function languageSelector($translate, LocalStorageAdapter, LSKeys, $languageServ
             }
 
             getPreferredLanguage()
-                .then(function () {
+                .then(function() {
                     if (!$scope.selectedLang) {
                         // or fallback to English
                         $scope.selectedLang = $scope.languages.find((lang) => lang.key === $languageService.getDefaultLanguage());
@@ -82,6 +82,6 @@ function languageSelector($translate, LocalStorageAdapter, LSKeys, $languageServ
                     $translate.use($scope.selectedLang.key);
                     $languageService.setLanguage($scope.selectedLang.key);
             });
-        }
+        },
     };
 }

@@ -297,7 +297,7 @@ function ClusterContextService(EventEmitterService) {
         getViewModel,
         hasCluster,
         getClusterConfiguration,
-        isChanged
+        isChanged,
     };
 }
 
@@ -307,5 +307,5 @@ function ClusterContextService(EventEmitterService) {
  */
 export const ClusterEventName = {
     CLUSTER_VIEW_UPDATED: 'cluster_view_updated',
-    CLUSTER_VALID_UPDATED: 'cluster_valid_updated'
+    CLUSTER_VALID_UPDATED: 'cluster_valid_updated',
 };

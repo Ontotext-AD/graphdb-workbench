@@ -11,7 +11,7 @@ function RemoteLocationsService($http, toastr, $uibModal, LocationsRestService, 
         addLocationHttp,
         getLocationsWithRpcAddresses,
         createNewLocation,
-        isInCluster
+        isInCluster,
     };
 
     function getLocationsWithRpcAddresses() {
@@ -51,17 +51,17 @@ function RemoteLocationsService($http, toastr, $uibModal, LocationsRestService, 
      */
     function getLocations() {
         return LocationsRestService.getLocations()
-            .then(function (response) {
+            .then(function(response) {
                 return response.data.map((loc) => {
                     return {
                         isLocal: loc.local,
                         endpoint: loc.uri,
                         rpcAddress: loc.rpcAddress || '',
-                        error: loc.errorMsg
+                        error: loc.errorMsg,
                     };
                 });
             })
-            .catch(function (error) {
+            .catch(function(error) {
                 const msg = getError(error.data, error.status);
                 toastr.error(msg, $translate.instant('common.error'));
             });
@@ -107,7 +107,7 @@ function RemoteLocationsService($http, toastr, $uibModal, LocationsRestService, 
             password: '',
             active: false,
             clusterMode: true,
-            isLocal: false
+            isLocal: false,
         };
     }
 

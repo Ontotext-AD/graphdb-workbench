@@ -14,7 +14,7 @@ export const graphListOptionsMapper = (data) => {
         return new GraphOption({
             uri: binding[bindingVar].value,
             label: binding[bindingVar].value,
-            id: binding[bindingVar].value
+            id: binding[bindingVar].value,
         });
     }));
-}
+};

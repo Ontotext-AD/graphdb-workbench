@@ -12,11 +12,10 @@ function listItemsSearchFilterDirective() {
             filterFunction: '&',
             listItemsObj: '=',
             listItemsNotFiltered: '=',
-            searchPlaceholder: '@'
+            searchPlaceholder: '@',
         },
         templateUrl: 'js/angular/graphexplore/templates/listItemsSearchFilterTemplate.html',
-        link: function (scope) {
-
+        link: function(scope) {
             function filter(searchQuery, data, nonFilteredData, customFilter) {
                 if (searchQuery.length > 0) {
                     return _.filter(nonFilteredData, customFilter);
@@ -29,13 +28,13 @@ function listItemsSearchFilterDirective() {
             // unwrap callback filter function
             scope.filterFunction = scope.filterFunction();
 
-            scope.$watch('filterQueryObj.query', function () {
+            scope.$watch('filterQueryObj.query', function() {
                 scope.listItemsObj.items = filter(
                     scope.filterQueryObj.query,
                     scope.listItemsObj.items,
                     scope.listItemsNotFiltered,
                     scope.filterFunction);
             });
-        }
+        },
     };
 }

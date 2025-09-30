@@ -90,7 +90,7 @@ export class GraphqlEndpointInfo {
             description: this.description,
             active: this.active,
             default: this.default,
-            options: endpointSettings
+            options: endpointSettings,
         });
     }
 

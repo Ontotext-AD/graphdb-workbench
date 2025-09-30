@@ -9,7 +9,7 @@ import {ACL_SCOPE, DEFAULT_CONTEXT_VALUES, DEFAULT_URI_VALUES, DEFAULT_CLEAR_GRA
 const modules = [
     'graphdb.framework.rest.plugins.service',
     'graphdb.framework.rest.aclmanagement.service',
-    'graphdb.core.services.workbench-context'
+    'graphdb.core.services.workbench-context',
 ];
 
 angular
@@ -19,7 +19,6 @@ angular
 AclManagementCtrl.$inject = ['$scope', '$location', 'toastr', 'AclManagementRestService', '$repositories', '$translate', 'ModalService', 'RDF4JRepositoriesRestService', 'WorkbenchContextService'];
 
 function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, $repositories, $translate, ModalService, RDF4JRepositoriesRestService, WorkbenchContextService) {
-
     $scope.contextValue = undefined;
 
     //
@@ -318,7 +317,7 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
         setModelDirty(scope);
     };
 
-    $scope.showPrefixWarningIcon = function (showWarning) {
+    $scope.showPrefixWarningIcon = function(showWarning) {
         $scope.hasCustomPrefix = showWarning;
     };
 
@@ -334,7 +333,7 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
      * @param {string} scope - The affected scope
      * @param {FormController} form - The form object.
      */
-    $scope.performSearchActionOnEnter = function (event, scope, form) {
+    $scope.performSearchActionOnEnter = function(event, scope, form) {
         if (event.keyCode === 13) {
             event.stopPropagation();
             event.preventDefault();
@@ -474,13 +473,13 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
             ModalService.openSimpleModal({
                 title: $translate.instant('common.confirm'),
                 message: $translate.instant('acl_management.rulestable.messages.unsaved_changes_confirmation'),
-                warning: true
-            }).result.then(function () {
+                warning: true,
+            }).result.then(function() {
                 unsubscribeListeners();
                 const baseLen = $location.absUrl().length - $location.url().length;
                 const path = newPath.substring(baseLen);
                 $location.path(path);
-            }, function () {});
+            }, function() {});
         }
     };
 

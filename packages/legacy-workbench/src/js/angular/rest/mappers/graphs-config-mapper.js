@@ -17,7 +17,7 @@ export const mapGraphsConfigResponseToModel = (responseData) => {
         responseData.resourcePropertiesQuery,
         responseData.shared,
         responseData.description,
-        responseData.hint
+        responseData.hint,
     );
 };
 
@@ -43,7 +43,7 @@ export const mapGraphConfigSampleToGraphConfig = (responseData) => {
         responseData.expandQueryDescription,
         responseData.resourceQueryDescription,
         responseData.predicateLabelQueryDescription,
-        responseData.resourcePropertiesQueryDescription
+        responseData.resourcePropertiesQueryDescription,
     );
 };
 

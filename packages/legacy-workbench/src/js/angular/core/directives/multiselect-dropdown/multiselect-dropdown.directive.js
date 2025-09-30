@@ -37,13 +37,13 @@
  * @returns {Object} The directive definition object.
  */
 angular.module('graphdb.framework.core.directives.multiselect-dropdown', [])
-    .directive('multiselectDropdown', ['$translate', function ($translate) {
+    .directive('multiselectDropdown', ['$translate', function($translate) {
         return {
             restrict: 'E',
             require: 'ngModel',
             scope: {
                 options: '=',
-                dropdownLabel: '=?'
+                dropdownLabel: '=?',
             },
             templateUrl: 'js/angular/core/directives/multiselect-dropdown/templates/multiselect-dropdown.html',
             link: function($scope, element, attrs, ngModel) {
@@ -69,12 +69,12 @@ angular.module('graphdb.framework.core.directives.multiselect-dropdown', [])
                         return option.selected;
                     });
                     ngModel.$setViewValue(selected);
-                }
+                };
 
                 // =========================
                 // Public methods
                 // =========================
-                $scope.toggleDropdown = function () {
+                $scope.toggleDropdown = function() {
                     $scope.isOpen = !$scope.isOpen;
                 };
 
@@ -82,7 +82,7 @@ angular.module('graphdb.framework.core.directives.multiselect-dropdown', [])
                  * Toggle the selection state of an option.
                  * @param {SelectOptionsModel} option
                  */
-                $scope.toggleSelection = function (option) {
+                $scope.toggleSelection = function(option) {
                     option.selected = !option.selected;
                     updateModel();
                 };
@@ -92,7 +92,7 @@ angular.module('graphdb.framework.core.directives.multiselect-dropdown', [])
                  * Iterates the options and joins the labels of selected options.
                  * @returns {string}
                  */
-                $scope.getSelectedText = function () {
+                $scope.getSelectedText = function() {
                     const selectedOptions = $scope.options.filter((option) => option.selected);
                     if (selectedOptions.length === 0) {
                         return $scope.dropdownLabel || $translate.instant('common.select');
@@ -103,7 +103,7 @@ angular.module('graphdb.framework.core.directives.multiselect-dropdown', [])
                 /**
                  * If ngModel provides an initial value, update the corresponding option selections.
                  */
-                ngModel.$render = function () {
+                ngModel.$render = function() {
                     if (angular.isArray(ngModel.$viewValue)) {
                         $scope.options.forEach(function(option) {
                             option.selected = ngModel.$viewValue.some(function(selectedOption) {
@@ -120,6 +120,6 @@ angular.module('graphdb.framework.core.directives.multiselect-dropdown', [])
                 $scope.$on('$destroy', () => {
                     document.removeEventListener('click', handleDocumentClick);
                 });
-            }
+            },
         };
     }]);

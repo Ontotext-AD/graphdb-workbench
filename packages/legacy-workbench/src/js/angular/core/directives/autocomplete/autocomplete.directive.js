@@ -25,14 +25,13 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
             validateUri: '=?',
             validateSimpleRdfStarValue: '=?',
             validateLiteralValue: '=?',
-            validateDefaultValue: '=?'
+            validateDefaultValue: '=?',
         },
         templateUrl: 'js/angular/core/directives/autocomplete/templates/autocomplete.html',
-        link: linkFunction
+        link: linkFunction,
     };
 
     function linkFunction($scope, element, attrs, ngModel) {
-
         //
         // Private variables
         //
@@ -340,7 +339,7 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
                     $scope.selectResource({
                         type: selectedResource.type,
                         value: selectedResource.value,
-                        description: selectedResource.description
+                        description: selectedResource.description,
                     });
                 }
             } else {
@@ -390,7 +389,7 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
                             $scope.autoCompleteUriResults = filterAndCombineDefaultResults(
                                 $scope.defaultresults,
                                 $scope.searchInput,
-                                suggestions
+                                suggestions,
                             );
                         } else {
                             $scope.autoCompleteUriResults = suggestions;
@@ -474,11 +473,11 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
         const filterAndCombineDefaultResults = (defaultResults, currentInput, backendSuggestions) => {
             // Filter default words based on current input
             const filteredDefaultResults = defaultResults.filter((result) =>
-                result && result.value.toLowerCase().includes(currentInput.toLowerCase())
+                result && result.value.toLowerCase().includes(currentInput.toLowerCase()),
             ).map((result) => ({
                 type: result.type,
                 value: result.value,
-                description: highlightMatch($translate.instant(result.description), currentInput)
+                description: highlightMatch($translate.instant(result.description), currentInput),
             }));
 
             // Concatenate filtered default words with backend suggestions

@@ -10,7 +10,7 @@ function UploadRestService($http, Upload, $translate) {
     return {
         createUploadPayload,
         uploadUserDataFile,
-        updateUserDataFile
+        updateUserDataFile,
     };
 
     /**
@@ -39,7 +39,7 @@ function UploadRestService($http, Upload, $translate) {
     function uploadUserDataFile(repositoryId, file, data) {
         return Upload.upload({
             url: `${BASE_ENDPOINT}/${repositoryId}/import/upload/file`,
-            data: data
+            data: data,
         });
     }
 
@@ -53,7 +53,7 @@ function UploadRestService($http, Upload, $translate) {
     function updateUserDataFile(repositoryId, file, data) {
         return Upload.upload({
             url: `${BASE_ENDPOINT}/${repositoryId}/import/upload/update/file`,
-            data: data
+            data: data,
         });
     }
 }

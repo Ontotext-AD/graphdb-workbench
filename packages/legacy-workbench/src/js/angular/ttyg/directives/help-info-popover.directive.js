@@ -49,6 +49,6 @@ angular.module('graphdb.framework.core.directives.help-info-popover', [])
                     element.off('mouseenter', mouseEnterHandler);
                     element.off('mouseleave', mouseLeaveHandler);
                 });
-            }
+            },
         };
     });

@@ -12,11 +12,11 @@ export class DiskStorageChart extends ChartData {
                 trigger: 'axis',
                 axisPointer: {
                     type: 'shadow',
-                    label: null
+                    label: null,
                 },
-                valueFormatter: function (value) {
+                valueFormatter: function(value) {
                     return (value * 100).toFixed(2) + '%';
-                }
+                },
             },
             xAxis: {
                 type: 'value',
@@ -24,23 +24,23 @@ export class DiskStorageChart extends ChartData {
                 max: 1,
                 splitNumber: 2,
                 axisLabel: {
-                    formatter: function (value) {
+                    formatter: function(value) {
                         return (value * 100).toFixed(2) + '%';
-                    }
-                }
+                    },
+                },
             },
             yAxis: {
                 type: 'category',
                 data: [this.translateService.instant('resource.storage.logs'),
                     this.translateService.instant('resource.storage.work'),
-                    this.translateService.instant('resource.storage.data')]
+                    this.translateService.instant('resource.storage.data')],
             },
             legend: {
                 itemStyle: {
                     // Keeps the colors in the legend solid
-                    opacity: 1
-                }
-            }
+                    opacity: 1,
+                },
+            },
         };
         _.merge(chartOptions, diskStorageChart);
     }
@@ -48,7 +48,7 @@ export class DiskStorageChart extends ChartData {
     createDataHolder() {
         return [
             this.createDataHolderForItem('resource.storage.used', ChartData.COLORS[1]),
-            this.createDataHolderForItem('resource.storage.free', ChartData.COLORS[0])
+            this.createDataHolderForItem('resource.storage.free', ChartData.COLORS[0]),
         ];
     }
 
@@ -69,27 +69,27 @@ export class DiskStorageChart extends ChartData {
             color: color,
             itemStyle: {
                 // Semi-transparent color of the bar
-                opacity: ChartData.AREA_BAR_OPACITY
+                opacity: ChartData.AREA_BAR_OPACITY,
             },
             label: {
                 show: true,
                 color: 'black',
                 opacity: 1,
-                formatter: function ({value}) {
+                formatter: function({value}) {
                     return (value * 100).toFixed(2) + '%';
-                }
+                },
             },
             emphasis: {
                 // Solid color of the bar and white text on hover (emphasis)
                 itemStyle: {
                     color: color,
-                    opacity: 1
+                    opacity: 1,
                 },
                 label: {
-                    color: 'white'
-                }
+                    color: 'white',
+                },
             },
-            data: []
+            data: [],
         };
     }
 
@@ -108,17 +108,17 @@ export class DiskStorageChart extends ChartData {
         this.latestData = {
             data: {
                 used: currentData.dataDirUsed,
-                free: currentData.dataDirFree
+                free: currentData.dataDirFree,
             },
             work: {
                 used: currentData.workDirUsed,
-                free: currentData.workDirFree
+                free: currentData.workDirFree,
             },
             logs: {
                 used: currentData.logsDirUsed,
-                free: currentData.logsDirFree
-            }
-        }
+                free: currentData.logsDirFree,
+            },
+        };
 
         this.configureSubtitle();
 
@@ -132,20 +132,20 @@ export class DiskStorageChart extends ChartData {
         const freeData = currentData.dataDirFree / totalData;
         const freeWork = currentData.workDirFree / totalWork;
         const freeLogs = currentData.logsDirFree / totalLogs;
-        used.data.push(usedLogs, usedWork, usedData)
-        free.data.push(freeLogs, freeWork, freeData)
+        used.data.push(usedLogs, usedWork, usedData);
+        free.data.push(freeLogs, freeWork, freeData);
     }
 
     configureSubtitle() {
         const subTitleKeyValues = [{
             label: this.translateService.instant('resource.storage.subtitle.data'),
-            value: [DiskStorageChart.formatBytesValue(this.latestData.data.used, null, this.selectedSeries), DiskStorageChart.formatBytesValue(this.latestData.data.free, null, this.selectedSeries)]
+            value: [DiskStorageChart.formatBytesValue(this.latestData.data.used, null, this.selectedSeries), DiskStorageChart.formatBytesValue(this.latestData.data.free, null, this.selectedSeries)],
         }, {
             label: this.translateService.instant('resource.storage.subtitle.work'),
-            value: [DiskStorageChart.formatBytesValue(this.latestData.work.used, null, this.selectedSeries), DiskStorageChart.formatBytesValue(this.latestData.work.free, null, this.selectedSeries)]
+            value: [DiskStorageChart.formatBytesValue(this.latestData.work.used, null, this.selectedSeries), DiskStorageChart.formatBytesValue(this.latestData.work.free, null, this.selectedSeries)],
         }, {
             label: this.translateService.instant('resource.storage.subtitle.logs'),
-            value: [DiskStorageChart.formatBytesValue(this.latestData.logs.used, null, this.selectedSeries), DiskStorageChart.formatBytesValue(this.latestData.logs.free, null, this.selectedSeries)]
+            value: [DiskStorageChart.formatBytesValue(this.latestData.logs.used, null, this.selectedSeries), DiskStorageChart.formatBytesValue(this.latestData.logs.free, null, this.selectedSeries)],
         }];
 
         this.setSubTitle(subTitleKeyValues);

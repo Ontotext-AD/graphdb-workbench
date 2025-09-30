@@ -55,7 +55,7 @@ export class FilePrefixRegistry {
             // calling <code>file.name = 'newName'</code> because the File object is immutable.
             return new File([file], prefixedName, {
                 type: file.type,
-                lastModified: file.lastModified
+                lastModified: file.lastModified,
             });
         });
     }

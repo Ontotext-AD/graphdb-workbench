@@ -8,7 +8,7 @@ PluginRegistry.add('route', {
     'title': 'view.rdf.rank.title',
     'helpInfo': 'view.rdf.rank.helpInfo',
     'documentationUrl': 'ranking-results.html',
-    'allowAuthorities': ['READ_REPO_{repoId}']
+    'allowAuthorities': ['READ_REPO_{repoId}'],
 });
 
 PluginRegistry.add('main.menu', {
@@ -21,7 +21,7 @@ PluginRegistry.add('main.menu', {
             parent: 'Setup',
             role: 'IS_AUTHENTICATED_FULLY',
             guideSelector: 'sub-menu-rdf-rank',
-            testSelector: 'sub-menu-rdf-rank'
-        }
-    ]
+            testSelector: 'sub-menu-rdf-rank',
+        },
+    ],
 });

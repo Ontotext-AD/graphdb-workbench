@@ -25,7 +25,7 @@ export class CreateEndpointFromShapesRequest {
         return {
             fromRepo: this.fromRepo,
             shapes: this.shapes,
-            config: this.config
+            config: this.config,
         };
     }
 

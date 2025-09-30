@@ -15,7 +15,7 @@ function SparqlRestService($http) {
         editSavedQuery,
         deleteSavedQuery,
         addNewSavedQuery,
-        getQueryResult
+        getQueryResult,
     };
 
     /**
@@ -121,8 +121,8 @@ function SparqlRestService($http) {
         return $http.get(`repositories/${repositoryId}`, {
             params: sendData,
             headers: {
-                Accept: accept
-            }
+                Accept: accept,
+            },
         });
     }
 }

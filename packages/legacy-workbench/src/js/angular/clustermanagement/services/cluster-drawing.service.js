@@ -4,21 +4,21 @@ import {select, line} from 'd3';
 
 const d3 = {
   line,
-  select
+  select,
 };
 
 const clusterColors = {
     ontoOrange: 'var(--primary-color)',
     ontoBlue: 'var(--secondary-color)',
     ontoGreen: 'var(--tertiary-color)',
-    ontoGrey: 'var(--gray-color)'
+    ontoGrey: 'var(--gray-color)',
 };
 
 const linkStateColors = {
     [LinkState.IN_SYNC]: clusterColors.ontoBlue,
     [LinkState.SYNCING]: clusterColors.ontoBlue,
     [LinkState.OUT_OF_SYNC]: clusterColors.ontoGrey,
-    [LinkState.RECEIVING_SNAPSHOT]: clusterColors.ontoBlue
+    [LinkState.RECEIVING_SNAPSHOT]: clusterColors.ontoBlue,
 };
 
 const linkStateStyle = {
@@ -29,12 +29,12 @@ const linkStateStyle = {
     // dashed line
     [LinkState.OUT_OF_SYNC]: '10 10',
     // dashed line
-    [LinkState.RECEIVING_SNAPSHOT]: '10 10'
+    [LinkState.RECEIVING_SNAPSHOT]: '10 10',
 };
 
 const font = {
     FONT_AWESOME: 'FONT_AWESOME',
-    ICOMOON: 'ICOMOON'
+    ICOMOON: 'ICOMOON',
 };
 
 const shortMessageLimit = 40;
@@ -177,7 +177,7 @@ function updateNodesClasses(nodes) {
 
 function updateNodesIcon(nodes) {
     nodes.select('.node-icon')
-        .each(function (d) {
+        .each(function(d) {
             const iconType = hasRecoveryState(d) ? getNodeInfoIconType(d) : getNodeIconType(d);
             d3.select(this)
                 .classed('icon-any', iconType.font === font.ICOMOON)
@@ -197,7 +197,7 @@ const iconMap = {
     [RecoveryState.APPLYING_SNAPSHOT]: {icon: '\uf050', font: font.FONT_AWESOME},
     [RecoveryState.BUILDING_SNAPSHOT]: {icon: '\uf187', font: font.FONT_AWESOME},
     [RecoveryState.SENDING_SNAPSHOT]: {icon: '\uf0ee', font: font.FONT_AWESOME},
-    [RecoveryState.RECOVERY_OPERATION_FAILURE_WARNING]: {icon: '\ue920', font: font.ICOMOON}
+    [RecoveryState.RECOVERY_OPERATION_FAILURE_WARNING]: {icon: '\ue920', font: font.ICOMOON},
 };
 
 const nodeStateIcons = {
@@ -205,7 +205,7 @@ const nodeStateIcons = {
     [NodeState.NO_CONNECTION]: {icon: '\ue931', font: font.ICOMOON},
     [NodeState.OUT_OF_SYNC]: {icon: '\ue920', font: font.ICOMOON},
     [NodeState.READ_ONLY]: {icon: '\ue95c', font: font.ICOMOON},
-    [NodeState.RESTRICTED]: {icon: '\ue933', font: font.ICOMOON}
+    [NodeState.RESTRICTED]: {icon: '\ue933', font: font.ICOMOON},
 };
 
 function getNodeInfoIconType(node) {
@@ -228,14 +228,14 @@ function updateNodesInfoText(nodes) {
     let objectWidth;
     // Set initial text element
     nodes.select('.node-info-text')
-        .each(function (d) {
+        .each(function(d) {
             d.infoNode = this;
         })
-        .select(function () {
+        .select(function() {
             return this.parentNode;
         })
         .append('foreignObject')
-        .attr('width', function (d) {
+        .attr('width', function(d) {
             let shortMessage = '';
             if (!isEmpty(d.recoveryStatus)) {
                 shortMessage = extractShortMessageFromNode(d);
@@ -245,16 +245,16 @@ function updateNodesInfoText(nodes) {
             objectWidth = rect.width;
             return objectWidth;
         })
-        .attr('height', function (d) {
+        .attr('height', function(d) {
             return objectHeight;
         })
-        .attr('x', function (d) {
+        .attr('x', function(d) {
             return -(objectWidth / 2);
         })
-        .attr('y', function (d) {
+        .attr('y', function(d) {
             return 78;
         })
-        .classed('hidden', function (d) {
+        .classed('hidden', function(d) {
             return isEmpty(d.recoveryStatus);
         })
         .style('font-size', '12px')
@@ -265,7 +265,7 @@ function updateNodesInfoText(nodes) {
         .style('border-radius', '6px')
         .attr('class', 'node-info-fo')
         .append('xhtml:div')
-        .html(function (d) {
+        .html(function(d) {
             return extractShortMessageFromNode(d);
         });
 
@@ -321,7 +321,7 @@ function addRecoveryLabelListeners(object, message, truncatedSize, displayMessag
 
 function resizeLabelDynamic(nodes) {
     nodes.select('.node-info-fo')
-        .each(function (d) {
+        .each(function(d) {
             const object = d3.select(this);
             if (isEmpty(d.recoveryStatus)) {
                 object.attr('width', 0);
@@ -350,26 +350,26 @@ function resizeLabelDynamic(nodes) {
 function updateNodesHostnameText(nodes) {
     nodes
         .select('.id.id-host')
-        .each(function (d) {
+        .each(function(d) {
             d.labelNode = this;
         })
-        .text(function (d) {
+        .text(function(d) {
             return d.hostname;
         });
 
     // Add padding styling to text background. left/right/top/bottom +5
     nodes
         .select('.id-host-background')
-        .attr('width', function (d) {
+        .attr('width', function(d) {
             return d3.select(d.labelNode).node().getBBox().width + 10;
         })
-        .attr('height', function (d) {
+        .attr('height', function(d) {
             return d3.select(d.labelNode).node().getBBox().height + 10;
         })
-        .attr('x', function (d) {
+        .attr('x', function(d) {
             return d3.select(d.labelNode).node().getBBox().x - 5;
         })
-        .attr('y', function (d) {
+        .attr('y', function(d) {
             return d3.select(d.labelNode).node().getBBox().y - 5;
         });
 }
@@ -397,7 +397,7 @@ export function updateLinks(linksDataBinding, nodes) {
 
 export const ARROW_CONFIG = {
     SMALL: {name: 'small', size: 3},
-    BIG: {name: 'big', size: 5}
+    BIG: {name: 'big', size: 5},
 };
 
 export function addArrowHead(svg, config) {

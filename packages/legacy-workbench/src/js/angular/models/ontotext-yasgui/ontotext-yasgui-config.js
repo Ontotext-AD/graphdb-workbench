@@ -9,7 +9,6 @@ import {YasrPluginName} from "./yasr-plugin-name";
  */
 export class OntotextYasguiConfig {
     constructor() {
-
         /**
          * Configure what part of the yasgui should be rendered.
          *

@@ -9,7 +9,7 @@ PluginRegistry.add('route', [
         'title': 'view.sparql.template.title',
         'helpInfo': 'view.sparql.template.helpInfo',
         'documentationUrl': 'updating-data.html#from-the-sparql-editor',
-        'allowAuthorities': ['READ_REPO_{repoId}']
+        'allowAuthorities': ['READ_REPO_{repoId}'],
     },
     {
         'url': '/sparql-template/create',
@@ -20,8 +20,8 @@ PluginRegistry.add('route', [
         'templateUrl': 'pages/sparql-template-create.html',
         'title': 'view.create.sparql.template.title',
         'helpInfo': 'view.create.sparql.template.helpInfo',
-        'allowAuthorities': ['READ_REPO_{repoId}']
-    }
+        'allowAuthorities': ['READ_REPO_{repoId}'],
+    },
 ]);
 
 PluginRegistry.add('main.menu', {
@@ -37,9 +37,9 @@ PluginRegistry.add('main.menu', {
             testSelector: 'sub-menu-sparql-templates',
             children: [
                 {
-                    href: 'sparql-template/create'
-                }
-            ]
-        }
-    ]
+                    href: 'sparql-template/create',
+                },
+            ],
+        },
+    ],
 });

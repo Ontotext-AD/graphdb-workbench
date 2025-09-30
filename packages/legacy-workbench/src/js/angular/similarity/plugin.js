@@ -10,7 +10,7 @@ PluginRegistry.add('route', [
         'helpInfo': 'view.similarity.indexes.helpInfo',
         'documentationUrl': 'semantic-similarity-searches.html#text-based-similarity-searches',
         'allowAuthorities': ['READ_REPO_{repoId}'],
-        testSelector: 'sub-menu-similarity'
+        "testSelector": 'sub-menu-similarity',
     }, {
         'url': '/similarity/index/create',
         'module': 'graphdb.framework.similarity',
@@ -20,8 +20,8 @@ PluginRegistry.add('route', [
         'templateUrl': 'pages/create-index.html',
         'title': 'view.create.similarity.index.title',
         'helpInfo': 'view.create.similarity.index.helpInfo',
-        'allowAuthorities': ['READ_REPO_{repoId}']
-    }
+        'allowAuthorities': ['READ_REPO_{repoId}'],
+    },
 ]);
 
 PluginRegistry.add('main.menu', {
@@ -35,10 +35,10 @@ PluginRegistry.add('main.menu', {
             role: 'IS_AUTHENTICATED_FULLY',
             children: [{
                 href: 'similarity/index/create',
-                children: []
+                children: [],
             }],
             guideSelector: 'sub-menu-similarity',
-            testSelector: 'sub-menu-similarity'
-        }
-    ]
+            testSelector: 'sub-menu-similarity',
+        },
+    ],
 });

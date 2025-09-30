@@ -13,7 +13,7 @@ export const fileToImportResource = (file) => {
         size: file.size,
         type: 'file',
         modifiedOn: file.lastModified,
-        file: file
+        file: file,
     }, hashGenerator);
 };
 
@@ -31,7 +31,7 @@ export const filesToImportResource = (files, initialStatus) => {
             type: 'file',
             modifiedOn: undefined,
             file: file,
-            status: initialStatus
+            status: initialStatus,
         }, hashGenerator);
     });
     return resources;

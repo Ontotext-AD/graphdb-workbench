@@ -9,14 +9,14 @@ const modules = [
     'graphdb.framework.core.services.jwtauth',
     'graphdb.framework.rest.repositories.service',
     'graphdb.framework.rest.rdf4j.repositories.service',
-    'toastr'
+    'toastr',
 ];
 
 const namespaces = angular.module('graphdb.framework.namespaces.controllers', modules);
 
 // A regular expression that validates a prefix according to the SPARQL 1.1 specification.
 // XXX: Technically this should include Unicode chars > 0xFFFF but those aren't fully supported in JavaScript
-const pnPrefixRe = function () {
+const pnPrefixRe = function() {
     const pnCharsBase = '[A-Z]|[a-z]|[\u00C0-\u00D6]|[\u00D8-\u00F6]|[\u00F8-\u02FF]|[\u0370-\u037D]'
         + '|[\u037F-\u1FFF]|[\u200C-\u200D]|[\u2070-\u218F]|[\u2C00-\u2FEF]|[\u3001-\uD7FF]'
         + '|[\uF900-\uFDCF]|[\uFDF0-\uFFFD]';
@@ -31,7 +31,7 @@ function validatePrefix(prefix) {
 }
 
 namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'toastr', '$uibModal', 'ModalService', 'RepositoriesRestService', 'RDF4JRepositoriesRestService', '$translate',
-    function ($scope, $http, $repositories, toastr, $uibModal, ModalService, RepositoriesRestService, RDF4JRepositoriesRestService, $translate) {
+    function($scope, $http, $repositories, toastr, $uibModal, ModalService, RepositoriesRestService, RDF4JRepositoriesRestService, $translate) {
         $scope.namespaces = {};
         $scope.namespace = {};
         $scope.loader = false;
@@ -41,7 +41,7 @@ namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'to
         $scope.pageSize = $scope.pageSizeOptions[0];
         $scope.displayedNamespaces = [];
 
-        $scope.getNamespaces = function () {
+        $scope.getNamespaces = function() {
             if (!$repositories.getActiveRepository()) {
                 return;
             }
@@ -49,15 +49,15 @@ namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'to
             $scope.loader = true;
             $scope.namespaces = {};
             RDF4JRepositoriesRestService.getNamespaces($repositories.getActiveRepository())
-                .success(function (data) {
-                    $scope.namespaces = data.results.bindings.map(function (e) {
+                .success(function(data) {
+                    $scope.namespaces = data.results.bindings.map(function(e) {
                         return {
                             prefix: e.prefix.value,
-                            namespace: e.namespace.value
+                            namespace: e.namespace.value,
                         };
                     });
                     if ($scope.namespaces.length > 0) {
-                        $scope.namespaces.sort(function (a, b) {
+                        $scope.namespaces.sort(function(a, b) {
                             const prefixA = a.prefix.toUpperCase(); // ignore upper and lowercase
                             const prefixB = b.prefix.toUpperCase(); // ignore upper and lowercase
                             if (prefixA < prefixB) {
@@ -75,20 +75,20 @@ namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'to
                         // Remove the loader ourselves
                         $scope.loader = false;
                     } // else let the loaderPostRepeatDirective do it
-                }).error(function (data) {
+                }).error(function(data) {
                     const msg = getError(data);
                     toastr.error(msg);
                     $scope.loader = false;
                 });
         };
 
-        $scope.changePagination = function () {
+        $scope.changePagination = function() {
             if (angular.isDefined($scope.namespaces)) {
                 $scope.displayedNamespaces = $scope.namespaces.slice($scope.pageSize * ($scope.page - 1), $scope.pageSize * $scope.page);
             }
         };
 
-        $scope.changePageSize = function (size) {
+        $scope.changePageSize = function(size) {
             $('.ot-graph-page-size').removeClass('active');
             $scope.page = 1;
             $scope.searchNamespaces = '';
@@ -98,15 +98,15 @@ namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'to
             }
         };
 
-        $scope.$watch('matchedElements', function () {
+        $scope.$watch('matchedElements', function() {
             if (angular.isDefined($scope.matchedElements)) {
                 $scope.displayedNamespaces = $scope.matchedElements.slice($scope.pageSize * ($scope.page - 1), $scope.pageSize * $scope.page);
             }
         });
 
-        $scope.$watch(function () {
+        $scope.$watch(function() {
             return $repositories.getActiveRepository();
-        }, function () {
+        }, function() {
             $scope.searchNamespaces = '';
             $scope.getNamespaces();
             $scope.selectedAll = false;
@@ -121,21 +121,21 @@ namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'to
         };
 
         const filterResults = function() {
-            angular.forEach($scope.namespaces, function (item) {
+            angular.forEach($scope.namespaces, function(item) {
                 if (item.namespace.indexOf($scope.searchNamespaces) !== -1 || item.prefix.indexOf($scope.searchNamespaces) !== -1) {
                     $scope.matchedElements.push(item);
                 }
             });
         };
 
-        $scope.saveNamespace = function (prefix, namespace) {
+        $scope.saveNamespace = function(prefix, namespace) {
             $scope.loader = true;
             return RDF4JRepositoriesRestService.updateNamespacePrefix($repositories.getActiveRepository(), namespace, prefix)
-                .then(function () {
+                .then(function() {
                     $scope.getNamespaces();
                     toastr.success($translate.instant('namespace.saved'));
                     $scope.loader = false;
-                }).catch(function (data) {
+                }).catch(function(data) {
                     const msg = getError(data);
                     toastr.error(msg, $translate.instant('common.error'));
                     $scope.loader = false;
@@ -146,25 +146,25 @@ namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'to
                 });
         };
 
-        $scope.editPrefix = function (oldPrefix, newPrefix) {
+        $scope.editPrefix = function(oldPrefix, newPrefix) {
             $scope.loader = true;
             RepositoriesRestService.getPrefix($repositories.getActiveRepository(), {
                 from: oldPrefix, to: newPrefix, location: $repositories.getActiveRepositoryObject().location})
-                .success(function () {
+                .success(function() {
                     $scope.getNamespaces();
                     $scope.loader = false;
-                }).error(function (data) {
+                }).error(function(data) {
                     const msg = getError(data);
                     toastr.error(msg, $translate.instant('common.error'));
                     $scope.loader = false;
                 });
         };
 
-        const confirmReplace = function (okCallback, cancelCallback) {
+        const confirmReplace = function(okCallback, cancelCallback) {
             return ModalService.openSimpleModal({
                 title: $translate.instant('namespace.confirm.replace'),
                 message: $translate.instant('namespace.already.exists.msg'),
-                warning: true
+                warning: true,
             }).result;
         };
 
@@ -202,7 +202,7 @@ namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'to
                     await ModalService.openSimpleModal({
                         title: $translate.instant('namespace.confirm.replace'),
                         message: $translate.instant('namespace.already.exists.msg'),
-                        warning: true
+                        warning: true,
                     }).result;
                 }
                 return updateNamespace(prefix, oldPrefix, namespace);
@@ -233,14 +233,14 @@ namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'to
          */
         const updateNamespace = (newPrefix, oldPrefix, namespace) => {
             return $scope.saveNamespace(oldPrefix, namespace)
-                .then(function () {
+                .then(function() {
                     if (oldPrefix !== newPrefix) {
                         $scope.editPrefix(oldPrefix, newPrefix);
                     }
                 });
         };
 
-        $scope.addNamespace = function () {
+        $scope.addNamespace = function() {
             if (!$scope.namespace.prefix) {
                 $scope.namespace.prefix = '';
             }
@@ -283,39 +283,39 @@ namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'to
                 });
         };
 
-        $scope.removeNamespace = function (namespace) {
+        $scope.removeNamespace = function(namespace) {
             ModalService.openSimpleModal({
                 title: $translate.instant('common.confirm.delete'),
                 message: $translate.instant('namespace.warning.delete.msg', {prefix: namespace.prefix}),
-                warning: true
-            }).result.then(function () {
+                warning: true,
+            }).result.then(function() {
                 deleteNamespace(namespace);
             });
         };
 
-        $scope.checkAll = function () {
-            angular.forEach($scope.displayedNamespaces, function (item) {
+        $scope.checkAll = function() {
+            angular.forEach($scope.displayedNamespaces, function(item) {
                 item.selected = $scope.selectedAll;
             });
         };
 
-        $scope.deleteSelected = function () {
-            const openModalInstance = function () {
+        $scope.deleteSelected = function() {
+            const openModalInstance = function() {
                 ModalService.openSimpleModal({
                     title: $translate.instant('common.confirm.delete'),
                     message: $translate.instant('namespace.warning.delete.selected'),
-                    warning: true
-                }).result.then(function () {
+                    warning: true,
+                }).result.then(function() {
                     $scope.loader = true;
                     const namespaces = [];
-                    angular.forEach($scope.displayedNamespaces, function (namespace) {
+                    angular.forEach($scope.displayedNamespaces, function(namespace) {
                         if (namespace.selected) {
                             namespaces.push(namespace);
                         }
                     });
                     deleteNamespace(namespaces.shift(), namespaces);
                     $scope.selectedAll = false;
-                }, function () {
+                }, function() {
                     $scope.getNamespaces();
                     $scope.selectedAll = false;
                     $scope.searchNamespaces = '';
@@ -323,7 +323,7 @@ namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'to
             };
 
             let modalInstanceOpened = false;
-            angular.forEach($scope.displayedNamespaces, function (namespace) {
+            angular.forEach($scope.displayedNamespaces, function(namespace) {
                 if (!modalInstanceOpened) {
                     if (namespace.selected) {
                         modalInstanceOpened = true;
@@ -341,7 +341,7 @@ namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'to
                 prefix = namespace;
             }
             RDF4JRepositoriesRestService.deleteNamespacePrefix($repositories.getActiveRepository(), prefix)
-                .success(function () {
+                .success(function() {
                     if (namespaces && namespaces.length > 0) {
                         namespace = namespaces.shift();
                         deleteNamespace(namespace, namespaces);
@@ -359,24 +359,24 @@ namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'to
                             toastr.success($translate.instant('namespace.selected.namespaces.deleted.successfully'), '');
                         }
                     }
-                }).error(function (data) {
+                }).error(function(data) {
                 const msg = getError(data);
                 toastr.error(msg, $translate.instant('common.error'));
                 $scope.loader = false;
             });
         };
 
-        $scope.checkIfSelectedNamespace = function () {
+        $scope.checkIfSelectedNamespace = function() {
             $scope.haveSelected = false;
-            angular.forEach($scope.namespaces, function (item) {
+            angular.forEach($scope.namespaces, function(item) {
                 if (item.selected) {
                     $scope.haveSelected = true;
                 }
             });
         };
 
-        const deselectAll = function () {
-            angular.forEach($scope.namespaces, function (item) {
+        const deselectAll = function() {
+            angular.forEach($scope.namespaces, function(item) {
                 item.selected = false;
             });
         };
@@ -396,14 +396,13 @@ namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'to
         };
     }]);
 
-namespaces.controller('StandartModalCtrl', ['$scope', '$uibModalInstance', function ($scope, $uibModalInstance) {
-
-    $scope.ok = function () {
+namespaces.controller('StandartModalCtrl', ['$scope', '$uibModalInstance', function($scope, $uibModalInstance) {
+    $scope.ok = function() {
         const result = true;
         $uibModalInstance.close(result);
     };
 
-    $scope.cancel = function () {
+    $scope.cancel = function() {
         $uibModalInstance.dismiss('cancel');
     };
 }]);

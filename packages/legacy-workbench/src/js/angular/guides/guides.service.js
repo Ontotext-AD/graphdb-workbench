@@ -6,12 +6,12 @@ import {YasguiComponentDirectiveUtil} from "../core/directives/yasgui-component/
 import {FileUtils} from "../utils/file-utils";
 import {
     navigate,
-    getCurrentRoute
+    getCurrentRoute,
 } from '@ontotext/workbench-api';
 
 const modules = [
     'graphdb.framework.guides.shepherd.services',
-    'graphdb.framework.rest.guides.service'
+    'graphdb.framework.rest.guides.service',
 ];
 
 angular
@@ -181,7 +181,6 @@ function GuidesService(
     $timeout,
     EventEmitterService,
     GuidesRestService) {
-
     this.guideResumeSubscription = undefined;
     this.languageChangeSubscription = undefined;
     this.guideCancelSubscription = undefined;
@@ -263,7 +262,7 @@ function GuidesService(
                 this.startGuide(selectedGuide, undefined, true);
             }
         });
-    }
+    };
 
     /**
      * Fetches list with all available guides.
@@ -475,8 +474,8 @@ function GuidesService(
             EventEmitterService,
             RoutingUtil: {
                 navigate,
-                getCurrentRoute
-            }
+                getCurrentRoute,
+            },
         };
         let steps = [];
         if (angular.isArray(complexStep)) {

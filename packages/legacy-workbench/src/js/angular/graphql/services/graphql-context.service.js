@@ -85,7 +85,7 @@ function GraphqlContextService(EventEmitterService) {
     const createEndpointConfig = () => {
         _newEndpointConfiguration = new GraphqlEndpointConfiguration();
         EventEmitterService.emitSync(GraphqlEventName.ENDPOINT_CONFIG_CREATED, _newEndpointConfiguration);
-    }
+    };
 
     const onEndpointConfigCreated = (callback) => {
         if (_newEndpointConfiguration && angular.isFunction(callback)) {
@@ -100,23 +100,23 @@ function GraphqlContextService(EventEmitterService) {
 
     const cancelEndpointCreation = () => {
         emit(GraphqlEventName.CANCEL_ENDPOINT_CREATION, {});
-    }
+    };
 
     const finishGenerationWorkflow = () => {
         emit(GraphqlEventName.FINISH_GENERATION_WORKFLOW, {});
-    }
+    };
 
     const nextEndpointCreationStep = () => {
         emit(GraphqlEventName.NEXT_ENDPOINT_CREATION_STEP, {});
-    }
+    };
 
     const previousEndpointCreationStep = () => {
         emit(GraphqlEventName.PREVIOUS_ENDPOINT_CREATION_STEP, {});
-    }
+    };
 
     const generateEndpoint = () => {
         emit(GraphqlEventName.GENERATE_ENDPOINT, getNewEndpoint());
-    }
+    };
 
     /**
      * Emits an event when the endpoint generation is completed.
@@ -124,7 +124,7 @@ function GraphqlContextService(EventEmitterService) {
      */
     const endpointGenerated = (endpointGenerationReportList) => {
         emit(GraphqlEventName.ENDPOINT_GENERATED, endpointGenerationReportList);
-    }
+    };
 
     /**
      * Emits an event to explore the generated endpoint in the GraphQL Playground.
@@ -132,7 +132,7 @@ function GraphqlContextService(EventEmitterService) {
      */
     const exploreEndpointInPlayground = (endpoint) => {
         emit(GraphqlEventName.EXPLORE_ENDPOINT_IN_PLAYGROUND, endpoint);
-    }
+    };
 
     /**
      * Emits an event to open the endpoint generation report.
@@ -140,7 +140,7 @@ function GraphqlContextService(EventEmitterService) {
      */
     const openEndpointGenerationReport = (endpointReport) => {
         emit(GraphqlEventName.OPEN_ENDPOINT_GENERATION_REPORT, endpointReport);
-    }
+    };
 
     /**
      * Emits an event to delete the endpoint generation report.
@@ -148,7 +148,7 @@ function GraphqlContextService(EventEmitterService) {
      */
     const deleteEndpointGenerationReport = (endpointReport) => {
         emit(GraphqlEventName.DELETE_ENDPOINT_REPORT, endpointReport);
-    }
+    };
 
     /**
      * Emits an event with a deep-cloned payload using the EventEmitterService.
@@ -190,7 +190,7 @@ function GraphqlContextService(EventEmitterService) {
         finishGenerationWorkflow,
         nextEndpointCreationStep,
         previousEndpointCreationStep,
-        subscribe
+        subscribe,
     };
 }
 
@@ -242,5 +242,5 @@ export const GraphqlEventName = {
     /**
      * The event emitted when the user wants to move to the previous step in the create endpoint wizard.
      */
-    PREVIOUS_ENDPOINT_CREATION_STEP: 'previousEndpointCreationStep'
+    PREVIOUS_ENDPOINT_CREATION_STEP: 'previousEndpointCreationStep',
 };

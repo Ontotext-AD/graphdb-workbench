@@ -96,7 +96,7 @@ export class CookieConsent {
             policyAccepted: this.policyAccepted,
             statistic: this.statistic,
             thirdParty: this.thirdParty,
-            updatedAt: this.updatedAt
+            updatedAt: this.updatedAt,
         };
     }
 
@@ -116,7 +116,7 @@ export class CookieConsent {
             json && json.policyAccepted,
             json && json.statistic,
             json && json.thirdParty,
-            json && json.updatedAt
+            json && json.updatedAt,
         );
     }
 }
@@ -129,5 +129,5 @@ export class CookieConsent {
  */
 export const ConsentTypes = {
     STATISTIC: 'statistic',
-    THIRD_PARTY: 'thirdParty'
+    THIRD_PARTY: 'thirdParty',
 };

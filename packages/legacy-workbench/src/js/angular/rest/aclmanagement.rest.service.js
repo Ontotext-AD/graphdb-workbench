@@ -9,7 +9,7 @@ const REPOSITORIES_ENDPOINT = 'rest/repositories';
 function AclManagementRestService($http) {
     return {
         getAcl,
-        updateAcl
+        updateAcl,
     };
 
     /**

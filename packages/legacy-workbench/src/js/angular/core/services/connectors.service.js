@@ -11,7 +11,6 @@ angular
 ConnectorsService.$inject = ['ConnectorsRestService'];
 
 function ConnectorsService(ConnectorsRestService) {
-
     /**
      * Fetches all connector types from the server for the repository with id <code>repositoryId</code> and location <code>repositoryLocation</code>.
      * If the repository ID and repository location are not provided, the currently selected repository will be used.
@@ -71,7 +70,7 @@ function ConnectorsService(ConnectorsRestService) {
             .then((connectorsModel) => connectorsModel.connectors.map((connector) => {
                 return new SelectMenuOptionsModel({
                     value: connector.name,
-                    label: connector.name
+                    label: connector.name,
                 });
             }));
     };
@@ -80,6 +79,6 @@ function ConnectorsService(ConnectorsRestService) {
         getConnectorTypes,
         getConnectorsByType,
         getConnectorPrefixByName,
-        getConnectorsByTypeAsSelectMenuOptions
+        getConnectorsByTypeAsSelectMenuOptions,
     };
 }

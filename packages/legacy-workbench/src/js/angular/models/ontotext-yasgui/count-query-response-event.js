@@ -4,7 +4,6 @@ import {isNumber} from "lodash";
  * Model for event of type {@link EventDataType.COUNT_QUERY_RESPONSE} emitted by "ontotext-yasgui-web-component".
  */
 export class CountQueryResponseEvent {
-
     /**
      * Constructs the model for {@link EventDataType.COUNT_QUERY_RESPONSE} event.
      *

@@ -12,7 +12,7 @@ AgentInstructionsExplainModalController.$inject = [
     '$uibModalInstance',
     'ModalService',
     '$translate',
-    'dialogModel'
+    'dialogModel',
 ];
 
 function AgentInstructionsExplainModalController($scope, $uibModalInstance, ModalService, $translate, dialogModel) {

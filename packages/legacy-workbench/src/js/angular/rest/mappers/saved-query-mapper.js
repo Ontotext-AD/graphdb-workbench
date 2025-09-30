@@ -51,6 +51,6 @@ export const queryPayloadFromEvent = (event) => {
     return {
         name: event.detail.queryName,
         body: event.detail.query,
-        shared: event.detail.isPublic
+        shared: event.detail.isPublic,
     };
 };

@@ -2,7 +2,7 @@ import 'angular/core/services';
 import {RepositoryStorageService, ServiceProvider} from "@ontotext/workbench-api";
 
 angular.module('graphdb.framework.core.interceptors.authentication', [
-    'ngCookies'
+    'ngCookies',
 ])
     .factory('$authenticationInterceptor', ['AuthTokenService', 'LocalStorageAdapter', 'LSKeys',
         function(AuthTokenService, LocalStorageAdapter, LSKeys) {
@@ -45,7 +45,7 @@ angular.module('graphdb.framework.core.interceptors.authentication', [
 
                     config.headers = headers;
                     return config;
-                }
+                },
             };
         }]);
 

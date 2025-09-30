@@ -7,5 +7,5 @@ export const JdbcDriverType = {
     'DB2': 'DB2',
     'DREMIO': 'dremio',
     'DATABRICKS': 'databricks',
-    'SNOWFLAKE': 'snowflake'
+    'SNOWFLAKE': 'snowflake',
 };

@@ -104,6 +104,6 @@ function UriUtils(ClassInstanceDetailsService) {
         isValidIri: isValidIri,
         validateRdfUri: validateRdfUri,
         shortenIri: shortenIri,
-        expandPrefix: expandPrefix
+        expandPrefix: expandPrefix,
     };
 }

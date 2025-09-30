@@ -6,7 +6,7 @@ import {
     READ_REPO,
     READ_REPO_PREFIX,
     WRITE_REPO,
-    WRITE_REPO_PREFIX
+    WRITE_REPO_PREFIX,
 } from "./constants";
 
 export const parseAuthorities = (authorities) => {
@@ -14,7 +14,7 @@ export const parseAuthorities = (authorities) => {
     const grantedAuthorities = {
         [READ_REPO]: {},
         [WRITE_REPO]: {},
-        [GRAPHQL]: {}
+        [GRAPHQL]: {},
     };
     const repositories = {};
     const customRoles = [];
@@ -31,7 +31,7 @@ export const parseAuthorities = (authorities) => {
         } else if (role.indexOf(READ_REPO_PREFIX) === 0 || role.indexOf(WRITE_REPO_PREFIX) === 0 || role.indexOf(GRAPHQL_PREFIX) === 0) {
             const repoData = getRepoFromAuthority(role);
             if (repoData) {
-                const { prefix, repo } = repoData;
+                const {prefix, repo} = repoData;
                 repositories[repo] = repositories[repo] || {};
                 if (prefix === READ_REPO_PREFIX) {
                     grantedAuthorities[READ_REPO][repo] = true;
@@ -54,11 +54,11 @@ export const parseAuthorities = (authorities) => {
         userTypeDescription: UserUtils.getUserRoleName(userType),
         grantedAuthorities: grantedAuthorities,
         repositories: repositories,
-        customRoles: customRoles
+        customRoles: customRoles,
     };
 };
 
-export const createUniqueKey = function (repository) {
+export const createUniqueKey = function(repository) {
     if (repository.location) {
         return `${repository.id}@${repository.location}`;
     }
@@ -72,13 +72,13 @@ export const createUniqueKey = function (repository) {
  */
 export const getRepoFromAuthority = (role) => {
     if (role.startsWith(READ_REPO_PREFIX)) {
-        return { prefix: READ_REPO_PREFIX, repo: role.substring(READ_REPO_PREFIX.length) };
+        return {prefix: READ_REPO_PREFIX, repo: role.substring(READ_REPO_PREFIX.length)};
     }
     if (role.startsWith(WRITE_REPO_PREFIX)) {
-        return { prefix: WRITE_REPO_PREFIX, repo: role.substring(WRITE_REPO_PREFIX.length) };
+        return {prefix: WRITE_REPO_PREFIX, repo: role.substring(WRITE_REPO_PREFIX.length)};
     }
     if (role.startsWith(GRAPHQL_PREFIX)) {
-        return { prefix: GRAPHQL_PREFIX, repo: role.substring(GRAPHQL_PREFIX.length) };
+        return {prefix: GRAPHQL_PREFIX, repo: role.substring(GRAPHQL_PREFIX.length)};
     }
     return null;
 };

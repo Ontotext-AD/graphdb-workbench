@@ -19,5 +19,5 @@ export const ImportResourceType = {
     /**
      * Text resource with rdf data.
      */
-    'TEXT': 'text'
+    'TEXT': 'text',
 };

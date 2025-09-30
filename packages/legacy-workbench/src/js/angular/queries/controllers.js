@@ -6,13 +6,12 @@ import {MonitoringTrackRecordType} from "../models/monitoring/query-and-update/m
 const queriesCtrl = angular.module('graphdb.framework.jmx.queries.controllers', [
     'ui.bootstrap',
     'toastr',
-    'graphdb.framework.rest.monitoring.service'
+    'graphdb.framework.rest.monitoring.service',
 ]);
 
 queriesCtrl.controller('QueriesCtrl', ['$scope', '$uibModal', 'toastr', '$interval', '$repositories', '$jwtAuth', 'ModalService',
     'MonitoringRestService', '$translate', 'AuthTokenService',
-    function ($scope, $uibModal, toastr, $interval, $repositories, $jwtAuth, ModalService, MonitoringRestService, $translate, AuthTokenService) {
-
+    function($scope, $uibModal, toastr, $interval, $repositories, $jwtAuth, ModalService, MonitoringRestService, $translate, AuthTokenService) {
         $scope.loader = true;
         $scope.stringLimit = 500;
         $scope.expanded = {};
@@ -38,7 +37,7 @@ queriesCtrl.controller('QueriesCtrl', ['$scope', '$uibModal', 'toastr', '$interv
 
         // Parses a node of the kind http://host.example.com:7200/repositories/repo#NN,
         // where NN is the track ID into an array [NN, host:7200, repo].
-        $scope.parseNode = function (node) {
+        $scope.parseNode = function(node) {
             if (node == null) {
                 return null;
             }
@@ -52,16 +51,16 @@ queriesCtrl.controller('QueriesCtrl', ['$scope', '$uibModal', 'toastr', '$interv
                 }
                 shortUrl = hostname + ':' + parser.port;
             }
-            const match = node.match(/\/repositories\/([^\/]+)#(\d+)/); // eslint-disable-line no-useless-escape
+            const match = node.match(/\/repositories\/([^\/]+)#(\d+)/);
 
             return [match[2], shortUrl, match[1]];
         };
 
-        $scope.togglePause = function () {
+        $scope.togglePause = function() {
             $scope.paused = !$scope.paused;
-        }
+        };
 
-        $scope.getQueries = function () {
+        $scope.getQueries = function() {
             // Skip execution if already getting from previous call, if paused, if jolokia returned an error,
             // or if no repository is available
             if ($scope.getQueriesRunning || $scope.paused || $scope.error || !$repositories.getActiveRepository()) {
@@ -69,7 +68,7 @@ queriesCtrl.controller('QueriesCtrl', ['$scope', '$uibModal', 'toastr', '$interv
             }
 
             $scope.getQueriesRunning = true;
-            MonitoringRestService.monitorQuery($repositories.getActiveRepository()).success(function (data) {
+            MonitoringRestService.monitorQuery($repositories.getActiveRepository()).success(function(data) {
                 const newQueries = data;
                 $scope.noQueries = newQueries.length === 0;
 
@@ -84,14 +83,14 @@ queriesCtrl.controller('QueriesCtrl', ['$scope', '$uibModal', 'toastr', '$interv
                 $scope.noActiveRepository = false;
                 $scope.loader = false;
                 $scope.getQueriesRunning = false;
-            }).error(function (data) {
+            }).error(function(data) {
                 $scope.error = getError(data);
                 $scope.loader = false;
                 $scope.getQueriesRunning = false;
             });
         };
 
-        const timer = $interval(function () {
+        const timer = $interval(function() {
             // Don't call getQueries for Ontop type repository
             if ($repositories.isActiveRepoOntopType()) {
                 return;
@@ -99,17 +98,16 @@ queriesCtrl.controller('QueriesCtrl', ['$scope', '$uibModal', 'toastr', '$interv
             $scope.getQueries();
         }, 1000);
 
-        $scope.$on('$destroy', function () {
+        $scope.$on('$destroy', function() {
             $interval.cancel(timer);
         });
 
-        $scope.deleteQueryHttp = function (queryId) {
-
+        $scope.deleteQueryHttp = function(queryId) {
             $scope.loader = true;
-            MonitoringRestService.deleteQuery(queryId, $repositories.getActiveRepository()).success(function () {
+            MonitoringRestService.deleteQuery(queryId, $repositories.getActiveRepository()).success(function() {
                 toastr.success($translate.instant('abort.request.sent.msg'));
                 $scope.loader = false;
-            }).error(function (data) {
+            }).error(function(data) {
                 const msg = getError(data);
                 toastr.error(msg, $translate.instant('common.error'));
 
@@ -117,12 +115,12 @@ queriesCtrl.controller('QueriesCtrl', ['$scope', '$uibModal', 'toastr', '$interv
             });
         };
 
-        $scope.abortQuery = function (queryId) {
+        $scope.abortQuery = function(queryId) {
             ModalService.openSimpleModal({
                 title: $translate.instant('confirm.abort'),
                 message: $translate.instant('confirm.abort.warning.msg'),
-                warning: true
-            }).result.then(function () {
+                warning: true,
+            }).result.then(function() {
                 $scope.deleteQueryHttp(queryId);
             });
         };
@@ -131,7 +129,7 @@ queriesCtrl.controller('QueriesCtrl', ['$scope', '$uibModal', 'toastr', '$interv
          * Downloads the executed query.
          * @param record {MonitoringTrackRecord} The monitoring track record whose query will be downloaded.
          */
-        $scope.downloadQuery = function (record) {
+        $scope.downloadQuery = function(record) {
             const trackId = record.trackId;
             const filename = 'query_' + trackId + (record.type === MonitoringTrackRecordType.GRAPHQL ? '.json' : '.rq');
             let link = 'rest/monitor/repository/' + $repositories.getActiveRepository()
@@ -144,19 +142,18 @@ queriesCtrl.controller('QueriesCtrl', ['$scope', '$uibModal', 'toastr', '$interv
             window.open(link, '_blank');
         };
 
-        $scope.toggleQueryExpanded = function (queryId) {
+        $scope.toggleQueryExpanded = function(queryId) {
             $scope.expanded[queryId] = !$scope.expanded[queryId];
         };
     }]);
 
 
-queriesCtrl.controller('DeleteQueryCtrl', ['$scope', '$uibModalInstance', function ($scope, $uibModalInstance) {
-
-    $scope.ok = function () {
+queriesCtrl.controller('DeleteQueryCtrl', ['$scope', '$uibModalInstance', function($scope, $uibModalInstance) {
+    $scope.ok = function() {
         $uibModalInstance.close();
     };
 
-    $scope.cancel = function () {
+    $scope.cancel = function() {
         $uibModalInstance.dismiss('cancel');
     };
 }]);

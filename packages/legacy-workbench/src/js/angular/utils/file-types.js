@@ -12,5 +12,5 @@ angular.module('graphdb.workbench.utils.filetypes', [])
         {name: 'TriX', translateKey: 'download.as.trix', type: 'application/trix', extension: '.trix'},
         {name: 'TriG', translateKey: 'download.as.trig', type: 'application/x-trig', extension: '.trig'},
         {name: 'TriG*', translateKey: 'download.as.trigstar', type: 'application/x-trigstar', extension: '.trigs'},
-        {name: 'Binary RDF', translateKey: 'download.as.binaryrdf', type: 'application/x-binary-rdf', extension: '.brf'}
+        {name: 'Binary RDF', translateKey: 'download.as.binaryrdf', type: 'application/x-binary-rdf', extension: '.brf'},
     ]);

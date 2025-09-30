@@ -28,7 +28,7 @@ export const endpointModelMapper = (data) => {
         endpointId: data.endpointId,
         endpointURI: data.endpointURI,
         active: data.active,
-        default: data.default
+        default: data.default,
     });
 };
 
@@ -49,8 +49,8 @@ export const endpointsToSelectMenuOptionsMapper = (data, repositoryId) => {
             selected: endpoint.default,
             data: {
                 active: endpoint.active,
-                default: endpoint.default
-            }
+                default: endpoint.default,
+            },
         });
     });
 };

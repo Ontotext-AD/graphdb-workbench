@@ -1,7 +1,7 @@
 import 'angular/rest/plugins.rest.service';
 
 const modules = [
-    'graphdb.framework.rest.plugins.service'
+    'graphdb.framework.rest.plugins.service',
 ];
 
 angular
@@ -11,10 +11,9 @@ angular
 PluginsCtrl.$inject = ['$scope', '$interval', 'toastr', '$repositories', '$licenseService', '$timeout', 'PluginsRestService', '$translate'];
 
 function PluginsCtrl($scope, $interval, toastr, $repositories, $licenseService, $timeout, PluginsRestService, $translate) {
-
     let timer;
 
-    const init = function () {
+    const init = function() {
         $scope.clear();
         if (!$licenseService.isLicenseValid() ||
             !$repositories.getActiveRepository() ||
@@ -25,45 +24,45 @@ function PluginsCtrl($scope, $interval, toastr, $repositories, $licenseService, 
         getPlugins();
     };
 
-    $scope.clear = function () {
+    $scope.clear = function() {
         $scope.searchPluginsTerm = '';
         $scope.plugins = [];
         $scope.displayedPlugins = [];
     };
 
-    const getPlugins = function () {
+    const getPlugins = function() {
         initPlugins();
-        timer = $interval(function () {
+        timer = $interval(function() {
             initPlugins();
         }, 5000);
     };
 
-    const initPlugins = function () {
+    const initPlugins = function() {
         PluginsRestService.getPlugins($scope.getActiveRepository())
-            .success(function (data) {
+            .success(function(data) {
                 $scope.plugins = $scope.buildPluginsArray(data.results.bindings);
-            }).error(function (data) {
+            }).error(function(data) {
             toastr.error(getError(data));
-        }).finally(function () {
+        }).finally(function() {
             $scope.filterResults();
             $scope.setLoader(false);
         });
     };
 
-    $scope.buildPluginsArray = function (plugins) {
+    $scope.buildPluginsArray = function(plugins) {
         return plugins.map((plugin) => ({
             name: plugin.s.value,
-            enabled: plugin.o.value === 'true'
-        })).filter(function (plugin) {
+            enabled: plugin.o.value === 'true',
+        })).filter(function(plugin) {
             return plugin.name !== 'plugincontrol' && plugin.name !== 'literals-index';
-        }).sort(function (a, b) {
+        }).sort(function(a, b) {
             const textA = a.name.toLowerCase();
             const textB = b.name.toLowerCase();
             return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
         });
     };
 
-    $scope.filterResults = function () {
+    $scope.filterResults = function() {
         const matchedPlugins = $scope.plugins.filter((plugin) => plugin.name.indexOf($scope.searchPluginsTerm) !== -1);
         if (displayedPluginsChanged(matchedPlugins)) {
             $scope.updateDisplayedPlugins(matchedPlugins);
@@ -75,7 +74,7 @@ function PluginsCtrl($scope, $interval, toastr, $repositories, $licenseService, 
      * @param {*} plugins - plugins to be checked.
      * @return {boolean} returns true if <code>plugins</code> are different from those which are shown in the view.
      */
-    const displayedPluginsChanged = function (plugins) {
+    const displayedPluginsChanged = function(plugins) {
         if (!$scope.displayedPlugins || $scope.displayedPlugins.length !== plugins.length) {
             return true;
         }
@@ -89,17 +88,17 @@ function PluginsCtrl($scope, $interval, toastr, $repositories, $licenseService, 
         return false;
     };
 
-    $scope.updateDisplayedPlugins = function (plugins) {
+    $scope.updateDisplayedPlugins = function(plugins) {
         $scope.displayedPlugins = plugins;
-        setTimeout(function () {
+        setTimeout(function() {
             $scope.applyRowStyles();
         }, 0);
     };
 
-    $scope.setLoader = function (loader, message) {
+    $scope.setLoader = function(loader, message) {
         $timeout.cancel($scope.loaderTimeout);
         if (loader) {
-            $scope.loaderTimeout = $timeout(function () {
+            $scope.loaderTimeout = $timeout(function() {
                 $scope.loader = loader;
                 $scope.loaderMessage = message;
             }, 300);
@@ -109,17 +108,17 @@ function PluginsCtrl($scope, $interval, toastr, $repositories, $licenseService, 
     };
 
     // this is used when repository is changed from the upper menu to refresh the plugins for it.
-    $scope.$on('repositoryIsSet', function () {
+    $scope.$on('repositoryIsSet', function() {
         cancelTimer();
         init();
     });
 
-    $scope.$on('$destroy', function () {
+    $scope.$on('$destroy', function() {
         cancelTimer();
         $(window).off('resize.plugin');
     });
 
-    $(window).on('resize.plugin', function () {
+    $(window).on('resize.plugin', function() {
         $scope.applyRowStyles();
     });
 
@@ -129,7 +128,7 @@ function PluginsCtrl($scope, $interval, toastr, $repositories, $licenseService, 
         }
     }
 
-    $scope.applyRowStyles = function () {
+    $scope.applyRowStyles = function() {
         const tableWidth = $('#wb-plugins-pluginInPlugins').width();
         const rowWidth = $('tr').width();
         const columnPerRow = Math.floor(tableWidth / rowWidth);
@@ -142,7 +141,7 @@ function PluginsCtrl($scope, $interval, toastr, $repositories, $licenseService, 
         });
     };
 
-    $scope.isGreyBackground = function (columnPerRow, index) {
+    $scope.isGreyBackground = function(columnPerRow, index) {
         const row = Math.floor(index / columnPerRow) + 1;
         const oddRow = row % 2 !== 1;
         const evenElement = index % 2 !== 0;
@@ -165,24 +164,24 @@ function PluginsCtrl($scope, $interval, toastr, $repositories, $licenseService, 
         }
     };
 
-    $scope.togglePlugin = function (pluginName, enabled) {
+    $scope.togglePlugin = function(pluginName, enabled) {
         const repoId = $scope.getActiveRepository();
         const message = enabled ? $translate.instant('deactivating.plugin', {pluginName: pluginName}) : $translate.instant('activating.plugin', {pluginName: pluginName});
         $scope.setLoader(true, message);
         PluginsRestService.togglePlugin(repoId, enabled, pluginName)
-            .error(function (data) {
+            .error(function(data) {
             toastr.error(getError(data));
-        }).finally(function () {
+        }).finally(function() {
             initPlugins();
             $scope.setLoader(false);
         });
     };
 
-    $scope.getLoaderMessage = function () {
+    $scope.getLoaderMessage = function() {
         return $scope.loaderMessage || $translate.instant('common.loading');
     };
 
-    $scope.onSearchTermChanged = function () {
+    $scope.onSearchTermChanged = function() {
         $scope.filterResults();
     };
 

@@ -6,7 +6,7 @@ const modules = [
     'toastr',
     'ui.bootstrap',
     'graphdb.framework.jmx.queries.controllers',
-    'graphdb.framework.core.directives'
+    'graphdb.framework.core.directives',
 ];
 
 angular.module('graphdb.framework.jmx.queries', modules);

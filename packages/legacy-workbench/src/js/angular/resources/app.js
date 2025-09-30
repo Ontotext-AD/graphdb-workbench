@@ -11,7 +11,7 @@ const modules = [
     'graphdb.framework.jmx.resources.controllers',
     'graphdb.framework.core.services.repositories',
     'graphdb.framework.core.directives',
-    'graphdb.framework.resources.directives'
+    'graphdb.framework.resources.directives',
 ];
 
 angular.module('graphdb.framework.jmx.resources', modules);

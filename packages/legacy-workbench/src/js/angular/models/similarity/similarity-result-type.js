@@ -9,5 +9,5 @@ export const SimilarityResultType = {
 
     'isResultTermType': (type) => {
         return SimilarityResultType.TERM_RESULT === type;
-    }
+    },
 };

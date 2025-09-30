@@ -7,7 +7,6 @@ angular
 FileOverrideConfirmationController.$inject = ['$scope', '$uibModalInstance', '$translate', '$sce', 'duplicatedFiles'];
 
 function FileOverrideConfirmationController($scope, $uibModalInstance, $translate, $sce, duplicatedFiles) {
-
     // =========================
     // Public variables
     // =========================
@@ -24,13 +23,13 @@ function FileOverrideConfirmationController($scope, $uibModalInstance, $translat
 
     $scope.keepBoth = () => {
         $uibModalInstance.close({
-            overwrite: false
+            overwrite: false,
         });
     };
 
     $scope.overwrite = () => {
         $uibModalInstance.close({
-            overwrite: true
+            overwrite: true,
         });
     };
 }

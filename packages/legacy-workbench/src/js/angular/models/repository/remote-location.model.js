@@ -44,7 +44,7 @@ export class RemoteLocationModel {
 export const RemoteLocationType = {
     'GRAPH_DB': 'GDB',
     'ONTOPIC': 'ONTOPIC',
-    'SPARQL': 'SPARQL'
+    'SPARQL': 'SPARQL',
 };
 
 /**
@@ -53,5 +53,5 @@ export const RemoteLocationType = {
 export const RemoteLocationAuthType = {
     NONE: 'none',
     BASIC: 'basic',
-    SIGNATURE: 'signature'
+    SIGNATURE: 'signature',
 };

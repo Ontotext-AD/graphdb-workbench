@@ -5,14 +5,13 @@ angular
 TTYGStorageService.$inject = ['LocalStorageAdapter', 'LSKeys'];
 
 function TTYGStorageService(localStorageAdapter, LSKeys) {
-
     const defaultSettings = {
         agent: {
-            id: undefined
+            id: undefined,
         },
         chat: {
-            id: undefined
-        }
+            id: undefined,
+        },
     };
 
     /**
@@ -81,6 +80,6 @@ function TTYGStorageService(localStorageAdapter, LSKeys) {
         saveAgent,
         getAgentId,
         saveChat,
-        getChatId
+        getChatId,
     };
 }

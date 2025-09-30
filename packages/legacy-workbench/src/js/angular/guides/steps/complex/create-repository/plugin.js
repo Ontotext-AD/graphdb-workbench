@@ -11,16 +11,16 @@ PluginRegistry.add('guide.step', [
                     options: {
                         content: 'guide.step_plugin.create_repository.create_repository_button.content',
                         // If mainAction is set the title will be set automatically
-                        ...(options.mainAction ? {} : { title: REPOSITORIES_CREATE_DEFAULT_TITLE }),
+                        ...(options.mainAction ? {} : {title: REPOSITORIES_CREATE_DEFAULT_TITLE}),
                         class: 'create-repository',
                         ...options,
                         url: 'repository',
                         elementSelector: GuideUtils.getGuideElementSelector('createRepository'),
-                        onNextClick: GuideUtils.clickOnGuideElement('createRepository')
-                    }
-                }
+                        onNextClick: GuideUtils.clickOnGuideElement('createRepository'),
+                    },
+                },
             ];
-        }
+        },
     },
     {
         guideBlockName: 'repositories-create-graphdb',
@@ -32,17 +32,17 @@ PluginRegistry.add('guide.step', [
                     options: {
                         content: 'guide.step_plugin.create_repository.graph_db_repository.content',
                         // If mainAction is set the title will be set automatically
-                        ...(options.mainAction ? {} : { title: REPOSITORIES_CREATE_DEFAULT_TITLE }),
+                        ...(options.mainAction ? {} : {title: REPOSITORIES_CREATE_DEFAULT_TITLE}),
                         class: 'create-gdb-repository',
                         ...options,
                         url: 'repository/create',
                         elementSelector: GuideUtils.getGuideElementSelector('createGraphDBRepository'),
                         disablePreviousFlow: false,
-                        onNextClick: GuideUtils.clickOnGuideElement('createGraphDBRepository')
-                    }
-                }
+                        onNextClick: GuideUtils.clickOnGuideElement('createGraphDBRepository'),
+                    },
+                },
             ];
-        }
+        },
     },
     {
         guideBlockName: 'repositories-id-input',
@@ -55,7 +55,7 @@ PluginRegistry.add('guide.step', [
                     options: {
                         content: 'guide.step_plugin.create_repository.repository_id.content',
                         // If mainAction is set the title will be set automatically
-                        ...(options.mainAction ? {} : { title: REPOSITORIES_CREATE_DEFAULT_TITLE }),
+                        ...(options.mainAction ? {} : {title: REPOSITORIES_CREATE_DEFAULT_TITLE}),
                         class: 'gdb-repository-id-input',
                         ...options,
                         url: 'repository/create/graphdb',
@@ -65,13 +65,13 @@ PluginRegistry.add('guide.step', [
                             Promise.resolve(
                                 GuideUtils.validateTextInput(
                                     repositoryIdInputSelector,
-                                    options.repositoryId
-                                )
-                            )
-                    }
-                }
+                                    options.repositoryId,
+                                ),
+                            ),
+                    },
+                },
             ];
-        }
+        },
     },
     {
         guideBlockName: 'repositories-ruleset-dropdown',
@@ -84,7 +84,7 @@ PluginRegistry.add('guide.step', [
                     options: {
                         content: 'guide.step_plugin.create_repository.ruleset_dropdown.content',
                         // If mainAction is set the title will be set automatically
-                        ...(options.mainAction ? {} : { title: REPOSITORIES_CREATE_DEFAULT_TITLE }),
+                        ...(options.mainAction ? {} : {title: REPOSITORIES_CREATE_DEFAULT_TITLE}),
                         class: 'gdb-repository-ruleset-select',
                         ...options,
                         url: 'repository/create/graphdb',
@@ -92,11 +92,11 @@ PluginRegistry.add('guide.step', [
                         disablePreviousFlow: false,
                         show: () => () => {
                             GuideUtils.validateTextInput(repositoryIdInputSelector, options.repositoryId);
-                        }
-                    }
-                }
+                        },
+                    },
+                },
             ];
-        }
+        },
     },
     {
         guideBlockName: 'repositories-enable-fts',
@@ -108,7 +108,7 @@ PluginRegistry.add('guide.step', [
                     options: {
                         content: 'guide.step_plugin.create_repository.enable-fts.content',
                         // If mainAction is set the title will be set automatically
-                        ...(options.mainAction ? {} : { title: REPOSITORIES_CREATE_DEFAULT_TITLE }),
+                        ...(options.mainAction ? {} : {title: REPOSITORIES_CREATE_DEFAULT_TITLE}),
                         class: 'gdb-repository-enable-fts',
                         extraContent: 'guide.step_plugin.create_repository.enable-fts.extra-content',
                         extraContentClass: 'alert alert-help text-left',
@@ -119,13 +119,13 @@ PluginRegistry.add('guide.step', [
                         onNextValidate: () =>
                             Promise.resolve(
                                 GuideUtils.isChecked(
-                                    GuideUtils.getGuideElementSelector('enable-fts-search', 'input')
-                                )
-                            )
-                    }
-                }
+                                    GuideUtils.getGuideElementSelector('enable-fts-search', 'input'),
+                                ),
+                            ),
+                    },
+                },
             ];
-        }
+        },
     },
     {
         guideBlockName: 'repositories-save',
@@ -138,7 +138,7 @@ PluginRegistry.add('guide.step', [
                     options: {
                         content: 'guide.step_plugin.create_repository.save_button.content',
                         // If mainAction is set the title will be set automatically
-                        ...(options.mainAction ? {} : { title: REPOSITORIES_CREATE_DEFAULT_TITLE }),
+                        ...(options.mainAction ? {} : {title: REPOSITORIES_CREATE_DEFAULT_TITLE}),
                         class: 'create-repository-button',
                         ...options,
                         url: 'repository/create/graphdb',
@@ -147,11 +147,11 @@ PluginRegistry.add('guide.step', [
                         show: () => () => {
                             GuideUtils.validateTextInput(repositoryIdInputSelector, options.repositoryId);
                         },
-                        onNextClick: GuideUtils.clickOnGuideElement('graphDBRepositoryCrateButton')
-                    }
-                }
+                        onNextClick: GuideUtils.clickOnGuideElement('graphDBRepositoryCrateButton'),
+                    },
+                },
             ];
-        }
+        },
     },
     {
         guideBlockName: 'create-repository',
@@ -164,24 +164,24 @@ PluginRegistry.add('guide.step', [
                     options: {
                         menu: 'repositories',
                         showIntro: true,
-                        ...options
-                    }
+                        ...options,
+                    },
                 },
-                { guideBlockName: 'repositories-create-repository', options: { ...options } },
-                { guideBlockName: 'repositories-create-graphdb', options: { ...options } },
-                { guideBlockName: 'repositories-id-input', options: { ...options } }
+                {guideBlockName: 'repositories-create-repository', options: {...options}},
+                {guideBlockName: 'repositories-create-graphdb', options: {...options}},
+                {guideBlockName: 'repositories-id-input', options: {...options}},
             ];
 
             if (options.rulesetName) {
-                steps.push({ guideBlockName: 'repositories-ruleset-dropdown', options: { ...options } });
+                steps.push({guideBlockName: 'repositories-ruleset-dropdown', options: {...options}});
             }
             if (options.fts) {
-                steps.push({ guideBlockName: 'repositories-enable-fts', options: { ...options } });
+                steps.push({guideBlockName: 'repositories-enable-fts', options: {...options}});
             }
 
-            steps.push({ guideBlockName: 'repositories-save', options: { ...options } });
+            steps.push({guideBlockName: 'repositories-save', options: {...options}});
 
             return steps;
-        }
-    }
+        },
+    },
 ]);

@@ -1,4 +1,4 @@
 export const YasguiQueryHttpMethod = {
     POST: 'POST',
-    GET: 'GET'
+    GET: 'GET',
 };

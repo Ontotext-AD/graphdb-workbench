@@ -15,7 +15,7 @@ const modules = [
     'graphdb.framework.core.directives',
     'graphdb.framework.rest.sparql-templates.service',
     'graphdb.framework.utils.uriutils',
-    'graphdb.framework.core.directives.yasgui-component'
+    'graphdb.framework.core.directives.yasgui-component',
 ];
 
 angular.module('graphdb.framework.sparql-template', modules);

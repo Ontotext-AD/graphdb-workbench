@@ -8,7 +8,7 @@ PluginRegistry.add('route', {
     'title': 'view.connector.management.title',
     'helpInfo': 'view.connector.management.helpInfo',
     'documentationUrl': 'connectors.html',
-    'allowAuthorities': ['READ_REPO_{repoId}']
+    'allowAuthorities': ['READ_REPO_{repoId}'],
 });
 
 PluginRegistry.add('main.menu', {
@@ -21,7 +21,7 @@ PluginRegistry.add('main.menu', {
             parent: 'Setup',
             role: 'IS_AUTHENTICATED_FULLY',
             guideSelector: 'sub-menu-connectors',
-            testSelector: 'sub-menu-connectors'
-        }
-    ]
+            testSelector: 'sub-menu-connectors',
+        },
+    ],
 });

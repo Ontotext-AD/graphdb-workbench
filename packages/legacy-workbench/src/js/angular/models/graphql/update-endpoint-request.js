@@ -41,7 +41,7 @@ export class UpdateEndpointRequest {
      * @type {GraphqlEndpointConfigurationSettings}
      * @private
      */
-    _options
+    _options;
 
     constructor(data) {
         this._id = data.id;
@@ -58,7 +58,7 @@ export class UpdateEndpointRequest {
      */
     getUpdateDefaultEndpointRequest() {
         return {
-            default: this.default
+            default: this.default,
         };
     }
 
@@ -68,7 +68,7 @@ export class UpdateEndpointRequest {
      */
     getUpdateEndpointActiveStateRequest() {
         return {
-            active: !this.active
+            active: !this.active,
         };
     }
 
@@ -78,7 +78,7 @@ export class UpdateEndpointRequest {
      */
     getUpdateEndpointSettingsRequest() {
         return {
-            options: this.options ? this.options.toFlatJSON() : null
+            options: this.options ? this.options.toFlatJSON() : null,
         };
     }
 

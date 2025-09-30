@@ -3,5 +3,5 @@ export const OntopFileType = {
     'OWL': 'owlFile',
     'CONSTRAINT': 'constraintFile',
     'LENSES': 'lensesFile',
-    'DB_METADATA': 'dbMetadataFile'
+    'DB_METADATA': 'dbMetadataFile',
 };

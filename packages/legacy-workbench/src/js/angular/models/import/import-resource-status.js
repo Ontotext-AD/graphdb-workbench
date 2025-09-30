@@ -33,5 +33,5 @@ export const ImportResourceStatus = {
     /**
      * The rdf resources in this status are interrupted or are marked for interruption.
      */
-    'INTERRUPTING': 'INTERRUPTING'
+    'INTERRUPTING': 'INTERRUPTING',
 };

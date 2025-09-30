@@ -63,7 +63,7 @@ function CookieService($document, $cookies) {
         get,
         set,
         remove,
-        getAll
+        getAll,
     };
 }
 

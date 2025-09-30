@@ -1,6 +1,6 @@
 angular
     .module('graphdb.framework.rest.license.service', [
-        'ngFileUpload'
+        'ngFileUpload',
     ])
     .factory('LicenseRestService', LicenseRestService);
 
@@ -21,7 +21,7 @@ function LicenseRestService($http, Upload) {
         getInfo,
         getVersion,
         getStatistics,
-        toggleStatistics
+        toggleStatistics,
     };
 
     // get activated license details
@@ -38,8 +38,8 @@ function LicenseRestService($http, Upload) {
         const headers = {
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'text/plain'
-            }
+                'Content-Type': 'text/plain',
+            },
         };
         return $http.post(`${LICENSE_INFO_ENDPOINT}validate`, licenseCode, headers);
     }
@@ -50,8 +50,8 @@ function LicenseRestService($http, Upload) {
             url: `${LICENSE_INFO_ENDPOINT}to-base-64`,
             file,
             headers: {
-                'Accept': 'text/plain'
-            }
+                'Accept': 'text/plain',
+            },
         });
     }
 
@@ -66,18 +66,18 @@ function LicenseRestService($http, Upload) {
             method: 'POST',
             url: LICENSE_ENDPOINT,
             headers: {
-                'Content-Type': 'application/octet-stream'
+                'Content-Type': 'application/octet-stream',
             },
             data: array,
-            transformRequest: []
+            transformRequest: [],
         };
         return $http(request);
     }
 
     function unregisterLicense() {
-        var request = {
+        const request = {
             method: 'DELETE',
-            url: 'rest/graphdb-settings/license'
+            url: 'rest/graphdb-settings/license',
         };
         return $http(request);
     }
@@ -94,8 +94,8 @@ function LicenseRestService($http, Upload) {
     function getVersion(locationUri) {
         return $http.get('rest/info/version', {
             headers: {
-                'X-GraphDB-Repository-Location': locationUri
-            }
+                'X-GraphDB-Repository-Location': locationUri,
+            },
         });
     }
 
@@ -108,7 +108,7 @@ function LicenseRestService($http, Upload) {
             method: 'POST',
             url: 'rest/graphdb-settings/statistics',
             headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-            data: `enabled=${enable}`
+            data: `enabled=${enable}`,
         });
     }
 }

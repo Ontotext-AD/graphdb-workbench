@@ -4,7 +4,7 @@ import {endpointUrl} from "../models/endpoints";
 
 angular
     .module('graphdb.framework.graphql.directives.generate-endpoint', [
-        'graphdb.framework.graphql.controllers.endpoint-generation-failure-result-modal'
+        'graphdb.framework.graphql.controllers.endpoint-generation-failure-result-modal',
     ])
     .directive('generateEndpoint', GenerateEndpointComponent);
 
@@ -15,10 +15,9 @@ function GenerateEndpointComponent(ModalService, $uibModal, $translate, $reposit
         restrict: 'E',
         templateUrl: 'js/angular/graphql/templates/step-generate-endpoint.html',
         scope: {
-            stepDefinition: '='
+            stepDefinition: '=',
         },
         link: ($scope) => {
-
             // =========================
             // Public variables
             // =========================
@@ -114,7 +113,7 @@ function GenerateEndpointComponent(ModalService, $uibModal, $translate, $reposit
              */
             $scope.showEndpointReport = (endpointReport) => {
                 GraphqlContextService.openEndpointGenerationReport(endpointReport);
-            }
+            };
 
             /**
              * Opens the endpoint in the playground in a new browser tab.
@@ -122,7 +121,7 @@ function GenerateEndpointComponent(ModalService, $uibModal, $translate, $reposit
              */
             $scope.exploreInPlayground = (endpointReport) => {
                 GraphqlContextService.exploreEndpointInPlayground(endpointReport);
-            }
+            };
 
             // =========================
             // Private functions
@@ -156,8 +155,8 @@ function GenerateEndpointComponent(ModalService, $uibModal, $translate, $reposit
                 $scope.generateFromGraphqlSchemaShapes = $scope.endpointConfiguration.hasSelectedGraphqlSchemaShapes();
                 $scope.endpointsCountToGenerate = GraphqlService.getEndpointsCountToGenerate($scope.endpointConfiguration);
                 $scope.endpointsOverview = GraphqlService.getGenerateEndpointsOverview($scope.endpointConfiguration);
-            }
+            };
             onInit();
-        }
+        },
     };
 }

@@ -19,7 +19,7 @@ const modules = [
     'graphdb.framework.clustermanagement.controllers.delete-cluster',
     'graphdb.framework.clustermanagement.controllers.edit-cluster-nodes-modal',
     'toastr',
-    'pageslide-directive'
+    'pageslide-directive',
 ];
 
 angular
@@ -31,7 +31,6 @@ ClusterManagementCtrl.$inject = ['$scope', '$http', '$q', 'toastr', '$repositori
 
 function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibModal, $sce, $jwtAuth,
                                $window, $interval, ModalService, $timeout, ClusterRestService, $location, $translate, RemoteLocationsService, $rootScope, ClusterViewContextService) {
-
     // =========================
     // Private variables
     // =========================
@@ -103,8 +102,8 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
                 resolve: {
                     data: () => {
                         return {clusterModel: $scope.clusterModel};
-                    }
-                }
+                    },
+                },
             }).result;
         }).then((clusterNodes) => {
             if (clusterNodes.addNodes || clusterNodes.removeNodes) {
@@ -226,7 +225,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
                         id: `${leader.address}-${nodeAddress}`,
                         source: leader.address,
                         target: nodeAddress,
-                        status
+                        status,
                     });
                     // If there are nodes that are out of sync, find if some of them are currently receiving
                     // snapshots and add respective link for them
@@ -244,7 +243,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
                                 id: `${outOfSyncNode.address}-${nodeSendingSnapshot.address}`,
                                 source: nodeSendingSnapshot.address,
                                 target: outOfSyncNode.address,
-                                status: LinkState.RECEIVING_SNAPSHOT
+                                status: LinkState.RECEIVING_SNAPSHOT,
                             });
                         }
                     }
@@ -369,7 +368,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
     /**
      * @param {HTMLElement} targetEl The element which is the event target.
      */
-    const deselectNode = function (targetEl) {
+    const deselectNode = function(targetEl) {
         const nodeTooltipElement = document.getElementById('nodeTooltip');
         if ($scope.selectedNode && nodeTooltipElement !== targetEl && !nodeTooltipElement.contains(targetEl)) {
             selectNode(null);
@@ -410,7 +409,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
         }));
     };
 
-    $scope.$on('$destroy', function () {
+    $scope.$on('$destroy', function() {
         removeAllListeners();
     });
 
@@ -425,11 +424,11 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
 
         loadInitialData()
             .finally(() => {
-                const timer = $interval(function () {
+                const timer = $interval(function() {
                     updateCluster();
                 }, 1000);
 
-                $scope.$on("$destroy", function () {
+                $scope.$on("$destroy", function() {
                     $interval.cancel(timer);
                 });
             });

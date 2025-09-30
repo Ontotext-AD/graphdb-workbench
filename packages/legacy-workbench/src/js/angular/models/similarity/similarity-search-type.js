@@ -23,5 +23,5 @@ export const SimilaritySearchType = {
 
     'isSearchDocumentType': (type) => {
         return SimilaritySearchType.SEARCH_DOCUMENT === type;
-    }
+    },
 };

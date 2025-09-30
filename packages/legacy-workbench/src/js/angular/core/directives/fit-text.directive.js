@@ -10,10 +10,9 @@ function fitTextDirective($timeout) {
         restrict: 'A',
         scope: {
             min: '=',
-            max: '='
+            max: '=',
         },
-        link: function (scope, element, attrs) {
-
+        link: function(scope, element, attrs) {
             const config = {
                 'debounce': _.debounce,
                 'delay': 100,
@@ -22,7 +21,7 @@ function fitTextDirective($timeout) {
                 'min': attrs.fitTextMin || 'inherit',
                 'max': attrs.fitTextMax || 'inherit',
                 'calcSize': 10,
-                'lines': 1
+                'lines': 1,
             };
 
             const parent = element.parent();
@@ -69,30 +68,30 @@ function fitTextDirective($timeout) {
                     $timeout.cancel(resizePromise);
                 }
 
-                resizePromise = $timeout(function () {
+                resizePromise = $timeout(function() {
                     resize();
                 }, config.loadDelay);
             }
 
-            scope.$watch(function () {
+            scope.$watch(function() {
                 return [
                     parent[0].offsetWidth,
-                    element[0].offsetWidth
+                    element[0].offsetWidth,
                 ].join('_');
-            }, function () {
+            }, function() {
                 resizer();
             });
 
-            $(window).on('resize', config.debounce(function () {
-                scope.$apply(resizer)
+            $(window).on('resize', config.debounce(function() {
+                scope.$apply(resizer);
             }, config.delay));
 
-            scope.$on('$destroy', function () {
+            scope.$on('$destroy', function() {
                 if (resizePromise) {
                     $timeout.cancel(resizePromise);
                 }
                 $(window).off('resize');
             });
-        }
+        },
     };
 }

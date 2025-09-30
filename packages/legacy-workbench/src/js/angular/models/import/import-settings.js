@@ -46,7 +46,7 @@ export class ImportSettings {
             failOnUnknownLanguageTags: false,
             verifyLanguageTags: true,
             normalizeLanguageTags: false,
-            stopOnError: true
+            stopOnError: true,
         };
         this.hasContextLink = false;
     }

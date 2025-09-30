@@ -55,6 +55,6 @@ angular.module('graphdb.framework.core.directives.page-info-tooltip', [])
                     element.off('mouseenter', mouseEnterHandler);
                     element.off('mouseleave', mouseLeaveHandler);
                 });
-            }
+            },
         };
     });

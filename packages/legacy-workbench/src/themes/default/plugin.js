@@ -42,7 +42,7 @@ PluginRegistry.add('themes', {
         // Colors for the logo - logo proper, text in logo, logo background
         'logo-color': 'var(--primary-color-light)',
         'logo-text-color': 'white',
-        'logo-background-color': 'var(--secondary-color-dark)'
+        'logo-background-color': 'var(--secondary-color-dark)',
     },
     // Dark theme
     'dark': {
@@ -58,12 +58,12 @@ PluginRegistry.add('themes', {
             'primary-color-lightness': '60%',
             'secondary-color-saturation': '70%',
             'color-warning-light': 'hsla(var(--primary-color-hsl), 0.15)',
-            'logo-color': 'var(--primary-color-dark)'
+            'logo-color': 'var(--primary-color-dark)',
         },
         // CSS properties, "foo: bar" becomes "foo: bar"
         'properties': {
             // Notify browser that we support dark theme, makes checkboxes look better
-            'color-scheme': 'light dark'
-        }
-    }
+            'color-scheme': 'light dark',
+        },
+    },
 });

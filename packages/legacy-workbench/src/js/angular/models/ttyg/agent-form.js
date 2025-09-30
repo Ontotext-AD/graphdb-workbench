@@ -76,26 +76,26 @@ export class AgentFormModel {
                                                                  method: ExtractionMethod.SPARQL,
                                                                  ontologyGraph: 'http://example.com/swgraph',
                                                                  sparqlQuery: new TextFieldModel({value: 'select ?s ?p ?o where {?s ?p ?o .}', minLength: 1, maxLength: 2380}),
-                                                                 selected: false
+                                                                 selected: false,
                                                              }));
         extractionMethods.push(new ExtractionMethodFormModel({
                                                                  method: ExtractionMethod.FTS_SEARCH,
                                                                  maxNumberOfTriplesPerCall: null,
-                                                                 selected: false
+                                                                 selected: false,
                                                              }));
         extractionMethods.push(new ExtractionMethodFormModel({
                                                                  method: ExtractionMethod.SIMILARITY,
                                                                  similarityIndex: null,
                                                                  similarityIndexThreshold: new NumericRangeModel({value: 0.6, minValue: 0, maxValue: 1, step: 0.1}),
                                                                  maxNumberOfTriplesPerCall: null,
-                                                                 selected: false
+                                                                 selected: false,
                                                              }));
         extractionMethods.push(new ExtractionMethodFormModel({
                                                                  method: ExtractionMethod.RETRIEVAL,
                                                                  retrievalConnectorInstance: null,
                                                                  maxNumberOfTriplesPerCall: null,
                                                                  queryTemplate: new TextFieldModel({value: '{"query": "string"}', minLength: 1, maxLength: 2380}),
-                                                                 selected: false
+                                                                 selected: false,
                                                              }));
         return new ExtractionMethodsFormModel(extractionMethods);
     }
@@ -128,7 +128,7 @@ export class AgentFormModel {
             seed: this._seed,
             assistantsInstructions: this._instructions.toPayload(),
             assistantExtractionMethods: this._assistantExtractionMethods.toPayload(),
-            additionalExtractionMethods: this._additionalExtractionMethods.toPayload()
+            additionalExtractionMethods: this._additionalExtractionMethods.toPayload(),
         };
     }
 
@@ -529,7 +529,7 @@ export class AdditionalExtractionMethodsFormModel {
      */
     setAdditionalExtractionMethod(additionalExtractionMethod) {
         if (Array.isArray(additionalExtractionMethod)) {
-            additionalExtractionMethod.forEach(additionalExtractionMethod => {
+            additionalExtractionMethod.forEach((additionalExtractionMethod) => {
                 const existingMethod = this.findAdditionalExtractionMethod(additionalExtractionMethod._method);
                 if (existingMethod) {
                     existingMethod._selected = additionalExtractionMethod._selected;
@@ -638,7 +638,7 @@ export class AgentInstructionsFormModel {
     toPayload() {
         return {
             systemInstruction: this._systemInstruction,
-            userInstruction: this._userInstruction
+            userInstruction: this._userInstruction,
         };
     }
 

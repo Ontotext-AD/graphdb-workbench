@@ -2,7 +2,6 @@
  * Model for event of type {@link EventDataType.DOWNLOAD_AS} emitted by "ontotext-yasgui-web-component".
  */
 export class DownloadAsEvent {
-
     /**
      * Constructs the model for {@link EventDataType.DOWNLOAD_AS} event.
      *

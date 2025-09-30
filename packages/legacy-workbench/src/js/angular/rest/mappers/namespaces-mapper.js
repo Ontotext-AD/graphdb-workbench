@@ -11,7 +11,7 @@ export const mapNamespacesResponse = (response) => {
         return response.data.results.bindings.map((binding) => {
             return {
                 prefix: binding.prefix.value,
-                uri: binding.namespace.value
+                uri: binding.namespace.value,
             };
         });
     }

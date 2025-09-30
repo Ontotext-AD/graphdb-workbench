@@ -18,7 +18,7 @@ const modules = [
     'graphdb.framework.clustermanagement.directives.cluster-configuration',
     'graphdb.framework.clustermanagement.directives.cluster-nodes-configuration',
     'graphdb.framework.core.directives.validate-url',
-    'graphdb.framework.core.directives.validate-duplicate-url'
+    'graphdb.framework.core.directives.validate-duplicate-url',
 ];
 
 angular.module('graphdb.framework.clustermanagement', modules);

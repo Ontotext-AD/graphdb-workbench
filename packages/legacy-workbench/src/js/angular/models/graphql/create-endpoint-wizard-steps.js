@@ -2,31 +2,31 @@ import {WizardStep} from "./wizard";
 
 export const SchemaSourceType = {
     GRAPHQL_SCHEMA_SHAPES: 'graphql_schema_shapes',
-    SHACL_SHAPES: 'shacl_shapes'
+    SHACL_SHAPES: 'shacl_shapes',
 };
 
 export const OntologyShaclShapeSource = {
     USE_ALL_GRAPHS: 'use_all_graphs',
     USE_SHACL_SHAPE_GRAPH: 'use_shacl_shape_graph',
-    PICK_GRAPHS: 'pick_graphs'
-}
+    PICK_GRAPHS: 'pick_graphs',
+};
 
 export class SelectSchemaSourceStep extends WizardStep {
     _schemaSourceTypes = [
         {value: SchemaSourceType.GRAPHQL_SCHEMA_SHAPES},
-        {value: SchemaSourceType.SHACL_SHAPES}
+        {value: SchemaSourceType.SHACL_SHAPES},
     ];
     _schemaSourceType = this._schemaSourceTypes[0].value;
 
     _ontologyShaclShapeSources = [
         {value: OntologyShaclShapeSource.USE_ALL_GRAPHS},
         {value: OntologyShaclShapeSource.USE_SHACL_SHAPE_GRAPH},
-        {value: OntologyShaclShapeSource.PICK_GRAPHS}
+        {value: OntologyShaclShapeSource.PICK_GRAPHS},
     ];
     _ontotlogyShaclShapeSource = this._ontologyShaclShapeSources[0].value;
 
     constructor() {
-        super('select_schema_sources', undefined, 'schema-sources',true);
+        super('select_schema_sources', undefined, 'schema-sources', true);
     }
 
     get ontotlogyShaclShapeSource() {

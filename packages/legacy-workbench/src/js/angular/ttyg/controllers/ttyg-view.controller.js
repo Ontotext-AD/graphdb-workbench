@@ -76,7 +76,6 @@ function TTYGViewCtrl(
     TTYGService,
     TTYGContextService,
     TTYGStorageService) {
-
     // =========================
     // Private variables
     // =========================
@@ -84,7 +83,7 @@ function TTYGViewCtrl(
     const subscriptions = [];
 
     const labels = {
-        filter_all: $translate.instant('ttyg.agent.btn.filter.all')
+        filter_all: $translate.instant('ttyg.agent.btn.filter.all'),
     };
 
     // =========================
@@ -250,16 +249,16 @@ function TTYGViewCtrl(
                     windowClass: 'agent-settings-modal',
                     backdrop: 'static',
                     resolve: {
-                        dialogModel: function () {
+                        dialogModel: function() {
                             return new AgentSettingsModal(
                                 activeRepositoryInfo,
                                 $scope.activeRepositoryList,
                                 agentFormModel,
-                                AGENT_OPERATION.CREATE
+                                AGENT_OPERATION.CREATE,
                             );
-                        }
+                        },
                     },
-                    size: 'lg'
+                    size: 'lg',
                 };
             })
             .then((options) => {
@@ -290,16 +289,16 @@ function TTYGViewCtrl(
                     windowClass: 'agent-settings-modal',
                     backdrop: 'static',
                     resolve: {
-                        dialogModel: function () {
+                        dialogModel: function() {
                             return new AgentSettingsModal(
                                 activeRepositoryInfo,
                                 $scope.activeRepositoryList,
                                 agentFormModel,
-                                AGENT_OPERATION.EDIT
+                                AGENT_OPERATION.EDIT,
                             );
-                        }
+                        },
                     },
-                    size: 'lg'
+                    size: 'lg',
                 };
             })
             .then((options) => {
@@ -333,16 +332,16 @@ function TTYGViewCtrl(
                     windowClass: 'agent-settings-modal',
                     backdrop: 'static',
                     resolve: {
-                        dialogModel: function () {
+                        dialogModel: function() {
                             return new AgentSettingsModal(
                                 activeRepositoryInfo,
                                 $scope.activeRepositoryList,
                                 agentFormModel,
-                                AGENT_OPERATION.CLONE
+                                AGENT_OPERATION.CLONE,
                             );
-                        }
+                        },
                     },
-                    size: 'lg'
+                    size: 'lg',
                 };
             }).then((options) => {
                 $uibModal.open(options).result.then(
@@ -603,7 +602,7 @@ function TTYGViewCtrl(
      */
     const onExportChat = (chat) => {
         TTYGService.exportConversation(chat.id)
-            .then(function ({data, filename}) {
+            .then(function({data, filename}) {
                 saveAs(data, filename);
                 TTYGContextService.emit(TTYGEventName.CHAT_EXPORT_SUCCESSFUL, chat);
             })
@@ -657,7 +656,7 @@ function TTYGViewCtrl(
         ));
         $scope.agentListFilterModel = [
             new AgentListFilterModel(AGENTS_FILTER_ALL_KEY, labels.filter_all),
-            ...repositoryObjects
+            ...repositoryObjects,
         ];
     };
 
@@ -687,9 +686,9 @@ function TTYGViewCtrl(
     const notifyForMissingChat = (selectedChat) => {
         ModalService.openModalAlert({
             title: $translate.instant('ttyg.chat.dialog.chat_is_missing.title'),
-            message: $translate.instant('ttyg.chat.dialog.chat_is_missing.body')
+            message: $translate.instant('ttyg.chat.dialog.chat_is_missing.body'),
         }).result
-            .then(function () {
+            .then(function() {
                 TTYGContextService.deleteChat(selectedChat);
             });
     };
@@ -751,7 +750,7 @@ function TTYGViewCtrl(
                 ModalService.openConfirmationModal({
                         title: $translate.instant('common.confirm'),
                         message: decodeHTML($translate.instant(confirmMessageLabelKey, {repositoryId: repository.id})),
-                        confirmButtonKey: 'ttyg.chat_panel.btn.proceed.label'
+                        confirmButtonKey: 'ttyg.chat_panel.btn.proceed.label',
                     },
                     () => {
                         $repositories.setRepository(repository);
@@ -761,7 +760,7 @@ function TTYGViewCtrl(
         } else {
             openView(viewURL);
         }
-    }
+    };
 
     /**
      * Opens the specified URL in a new browser tab.
@@ -770,7 +769,7 @@ function TTYGViewCtrl(
      */
     const openView = (viewURL) => {
         $window.open(viewURL, '_blank');
-    }
+    };
 
     /**
      * Opens SPARQL editor view with passed query.
@@ -788,7 +787,6 @@ function TTYGViewCtrl(
                         openInSparqlEditorInNewTab(payload.query);
                     });
             }
-
         } else {
             openInSparqlEditorInNewTab(payload.query);
         }
@@ -826,9 +824,9 @@ function TTYGViewCtrl(
                     value: repo.id,
                     label: repo.id,
                     data: {
-                        repository: repo
-                    }
-                }))
+                        repository: repo,
+                    },
+                })),
             );
     };
 

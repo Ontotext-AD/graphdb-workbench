@@ -5,7 +5,6 @@ angular
 ImportTextSnippetController.$inject = ['$scope', '$uibModalInstance', 'text', 'format'];
 
 function ImportTextSnippetController($scope, $uibModalInstance, text, format) {
-
     // =========================
     // Public variables
     // =========================
@@ -22,7 +21,7 @@ function ImportTextSnippetController($scope, $uibModalInstance, text, format) {
         {name: 'Turtle*', type: 'application/x-turtlestar'},
         {name: 'TriX', type: 'application/trix'},
         {name: 'TriG', type: 'application/x-trig'},
-        {name: 'TriG*', type: 'application/x-trigstar'}
+        {name: 'TriG*', type: 'application/x-trigstar'},
     ];
     $scope.rdfText = text;
     $scope.importFormat = $scope.importFormats.find((formatModel) => formatModel.type === format);
@@ -47,7 +46,7 @@ function ImportTextSnippetController($scope, $uibModalInstance, text, format) {
         $uibModalInstance.close({
             text: $scope.rdfText,
             format: $scope.importFormat.type,
-            startImport: $scope.startImport
+            startImport: $scope.startImport,
         });
     };
 }

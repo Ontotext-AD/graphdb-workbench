@@ -5,5 +5,5 @@
 export const endpointUrl = {
     PLAYGROUND: 'graphql/playground',
     CREATE_ENDPOINT: 'graphql/endpoint/create',
-    ENDPOINT_MANAGEMENT: 'graphql/endpoints'
+    ENDPOINT_MANAGEMENT: 'graphql/endpoints',
 };

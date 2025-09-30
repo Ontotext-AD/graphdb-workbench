@@ -4,7 +4,7 @@ import {TTYG_ERROR_MSG_LENGTH} from "./constants";
 angular
     .module('graphdb.framework.ttyg.services.externalIntegrationModal',
         ['graphdb.framework.ttyg.controllers.external-integration-configuration-modal'])
-    .factory('ExternalIntegrationModalService', ExternalIntegrationModalService)
+    .factory('ExternalIntegrationModalService', ExternalIntegrationModalService);
 
 ExternalIntegrationModalService.$inject = ['$uibModal', 'LocationsRestService', 'toastr'];
 
@@ -14,7 +14,7 @@ function ExternalIntegrationModalService($uibModal, LocationsRestService, toastr
             agentName: agent.name,
             agentId: agent.id,
             queryMethodsUrl: `${baseUrl}/rest/llm/tool/ttyg/${agent.id}`,
-            difyExtensionUrl: `${baseUrl}/rest/llm/ttyg/${agent.id}/dify`
+            difyExtensionUrl: `${baseUrl}/rest/llm/ttyg/${agent.id}/dify`,
         };
     }
 
@@ -29,8 +29,8 @@ function ExternalIntegrationModalService($uibModal, LocationsRestService, toastr
                     windowClass: 'external-integration-configuration-modal',
                     backdrop: 'static',
                     resolve: {
-                        dialogModel: () => dialogModel
-                    }
+                        dialogModel: () => dialogModel,
+                    },
                 }).result
                     .then(() => {
                         // Modal was closed with success - do nothing

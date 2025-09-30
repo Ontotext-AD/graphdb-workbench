@@ -402,5 +402,5 @@ export const REPOSITORY_PARAMS = {
     entityIdSize: 'entityIdSize',
     repositoryType: 'repositoryType',
     eclipseRdf4jShaclExtensions: 'eclipseRdf4jShaclExtensions',
-    validationResultsLimitTotal: 'validationResultsLimitTotal'
+    validationResultsLimitTotal: 'validationResultsLimitTotal',
 };

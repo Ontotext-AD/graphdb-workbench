@@ -35,14 +35,14 @@ function GraphDataRestService($http) {
         updateGraph,
 
         // common
-        getRdfsLabelAndComment
+        getRdfsLabelAndComment,
     };
 
     function getClassHierarchyData(graphURI) {
         return $http.get(CLASS_HIERARCHY_ENDPOINT, {
             params: {
-                graphURI: graphURI
-            }
+                graphURI: graphURI,
+            },
         });
     }
 
@@ -50,24 +50,24 @@ function GraphDataRestService($http) {
         return $http.get(CLASS_HIERARCHY_ENDPOINT, {
             params: {
                 doReload: true,
-                graphURI: graphURI
-            }
+                graphURI: graphURI,
+            },
         });
     }
 
     function getClassInstances(targetUri) {
         return $http.get(`${CLASS_HIERARCHY_ENDPOINT}/class-instances`, {
             params: {
-                targetUri
-            }
+                targetUri,
+            },
         });
     }
 
     function checkDomainRangeData(targetUri) {
         return $http.head(DOMAIN_RANGE_ENDPOINT, {
             params: {
-                targetUri
-            }
+                targetUri,
+            },
         });
     }
 
@@ -75,8 +75,8 @@ function GraphDataRestService($http) {
         return $http.get(DOMAIN_RANGE_ENDPOINT, {
             params: {
                 targetUri,
-                collapsed
-            }
+                collapsed,
+            },
         });
     }
 
@@ -84,11 +84,11 @@ function GraphDataRestService($http) {
         return $http.get(`${DEPENDENCIES_ENDPOINT}/matrix`, {
             params: {
                 'mode': direction,
-                'classes': _.map(selectedClasses, function (c) {
+                'classes': _.map(selectedClasses, function(c) {
                     return c.name;
                 }),
-                'graphURI': graphURI
-            }
+                'graphURI': graphURI,
+            },
         });
     }
 
@@ -96,24 +96,24 @@ function GraphDataRestService($http) {
         return $http.get(`${DEPENDENCIES_ENDPOINT}/classes`, {
             params: {
                 'mode': direction,
-                'graphURI': graphURI
-            }
+                'graphURI': graphURI,
+            },
         });
     }
 
     function getRelationshipsStatus(graphURI) {
         return $http.get(`${DEPENDENCIES_ENDPOINT}/status`, {
             params: {
-                graphURI: graphURI
-            }
+                graphURI: graphURI,
+            },
         });
     }
 
     function calculateRelationships(graphURI) {
         return $http.get(`${DEPENDENCIES_ENDPOINT}/update`, {
             params: {
-                graphURI: graphURI
-            }
+                graphURI: graphURI,
+            },
         });
     }
 
@@ -123,34 +123,34 @@ function GraphDataRestService($http) {
                 'from': sourceClass,
                 'to': destinationClass,
                 'mode': 'all',
-                'graphURI': graphURI
-            }
+                'graphURI': graphURI,
+            },
         });
     }
 
     function getInstanceNode(params) {
         return $http.get(`${EXPORE_GRAPH_ENDPOINT}/node`, {
-            params: params
+            params: params,
         });
     }
 
     function getInstanceNodeLinks(params) {
         return $http.get(`${EXPORE_GRAPH_ENDPOINT}/links`, {
-            params: params
+            params: params,
         });
     }
 
     function getProperties(params) {
         return $http.get(`${EXPORE_GRAPH_ENDPOINT}/properties`, {
-            params: params
+            params: params,
         });
     }
 
     function updateGraph(payload) {
         let data = {
             headers: {
-                'Content-Type': 'application/json'
-            }
+                'Content-Type': 'application/json',
+            },
         };
         data = Object.assign(data, payload);
         return $http.post(`${EXPORE_GRAPH_ENDPOINT}/graph`, data);
@@ -163,8 +163,8 @@ function GraphDataRestService($http) {
             method: 'GET',
             params: _.extend(requestParams, {uri: targetUri, languages}),
             headers: {
-                'Accept': 'application/json'
-            }
+                'Accept': 'application/json',
+            },
         });
     }
 }

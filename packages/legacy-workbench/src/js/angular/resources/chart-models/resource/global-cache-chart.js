@@ -11,16 +11,16 @@ export class GlobalCacheChart extends ChartData {
                 axisLabel: {
                     formatter: (value) => {
                         return this.formatNumber(value);
-                    }
+                    },
                 },
-                minInterval: 1
+                minInterval: 1,
             },
             tooltip: {
                 valueFormatter: (value) => {
                     return this.formatNumber(value);
-                }
-            }
-        }
+                },
+            },
+        };
         _.merge(chartOptions, globalCacheChartOptions);
     }
 
@@ -30,13 +30,13 @@ export class GlobalCacheChart extends ChartData {
             type: 'line',
             showSymbol: false,
             smooth: true,
-            data: []
+            data: [],
         }, {
             name: this.translateService.instant('resources.global_cache.miss'),
             type: 'line',
             showSymbol: false,
             smooth: true,
-            data: []
+            data: [],
         }];
     }
 
@@ -52,15 +52,15 @@ export class GlobalCacheChart extends ChartData {
         hit.data.push({
             value: [
                 timestamp,
-                data.cacheHit
-            ]
+                data.cacheHit,
+            ],
         });
 
         miss.data.push({
             value: [
                 timestamp,
-                data.cacheMiss
-            ]
+                data.cacheMiss,
+            ],
         });
     }
 }

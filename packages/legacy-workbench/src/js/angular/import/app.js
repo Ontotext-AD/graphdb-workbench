@@ -17,7 +17,7 @@ const modules = [
     'graphdb.framework.core.services.repositories',
     'graphdb.framework.import.directives.validate-uri',
     'graphdb.framework.import.directives.import-progress-indicator',
-    'graphdb.framework.import.directives.import-resource-tree'
+    'graphdb.framework.import.directives.import-resource-tree',
 ];
 
 angular.module('graphdb.framework.impex.import', modules);

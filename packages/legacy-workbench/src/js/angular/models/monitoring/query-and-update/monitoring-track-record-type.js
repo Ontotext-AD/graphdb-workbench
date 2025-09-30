@@ -14,5 +14,5 @@ export const MonitoringTrackRecordType = {
      */
     'GRAPHQL': 'GRAPHQL',
 
-    'ANY': 'ANY'
+    'ANY': 'ANY',
 };

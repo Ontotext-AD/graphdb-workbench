@@ -7,14 +7,13 @@ const NEW_YASGUI_PERSISTENCE_KEY = `yagui__${VIEW_SPARQL_EDITOR}`;
 const MIGRATION_STATUS = {
     COMPLETED: 'completed',
     FAILED: 'failed',
-    REJECTED: 'rejected'
+    REJECTED: 'rejected',
 };
 
 /**
  * Service for migrating the old yasgui persistence to the new one.
  */
-export const YasguiPersistenceMigrationService = (function () {
-
+export const YasguiPersistenceMigrationService = (function() {
     /**
      * Checks if migration is needed by checking if the old yasgui persistence is present in local storage.
      * @return {boolean} true if migration is needed, false otherwise
@@ -61,18 +60,18 @@ export const YasguiPersistenceMigrationService = (function () {
                     sameAs: oldTab.sameAs,
                     infer: oldTab.inference,
                     pageSize: 1000,
-                    pageNumber: 1
+                    pageNumber: 1,
                 },
                 yasr: {
                     response: null,
                     settings: {
                         selectedPlugin: "extended_table",
-                        pluginsConfig: {}
-                    }
+                        pluginsConfig: {},
+                    },
                 },
                 requestConfig: {
-                    method: "POST"
-                }
+                    method: "POST",
+                },
             };
         }).forEach((newTab, index) => {
             // replace the old tab id with a new one to conform with the new yasgui tab id format
@@ -95,8 +94,8 @@ export const YasguiPersistenceMigrationService = (function () {
             val: {
                 active: null,
                 tabs: [],
-                tabConfig: {}
-            }
+                tabConfig: {},
+            },
         };
     };
 
@@ -104,7 +103,7 @@ export const YasguiPersistenceMigrationService = (function () {
         sparqlViewData.val.migration = {
             date: new Date().toISOString(),
             status: migrationStatus,
-            error: error
+            error: error,
         };
     };
 
@@ -172,6 +171,6 @@ export const YasguiPersistenceMigrationService = (function () {
         isMigrationNeeded,
         revertMigration,
         migrateYasguiPersistence,
-        rejectMigration
+        rejectMigration,
     };
 })();

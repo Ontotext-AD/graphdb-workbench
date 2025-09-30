@@ -1,5 +1,4 @@
 window.PluginRegistry = (function() {
-
     const plugins = [];
 
     const registry = {};
@@ -122,5 +121,4 @@ window.PluginRegistry = (function() {
     };
 
     return registry;
-
 })();

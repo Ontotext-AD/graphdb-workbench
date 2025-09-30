@@ -16,11 +16,11 @@ const modules = [
     'graphdb.framework.namespaces.directives',
     'graphdb.framework.core.services.repositories',
     'graphdb.framework.core.directives',
-    'graphdb.framework.core.directives.paginations'
+    'graphdb.framework.core.directives.paginations',
 ];
 
 const namespacesApp = angular.module('graphdb.framework.namespaces', modules);
 
-namespacesApp.run(['editableOptions', function (editableOptions) {
+namespacesApp.run(['editableOptions', function(editableOptions) {
     editableOptions.theme = 'bs3';
 }]);

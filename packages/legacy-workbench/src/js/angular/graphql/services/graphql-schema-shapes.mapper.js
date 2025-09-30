@@ -11,7 +11,7 @@ export const graphqlSchemaShapesMapper = (data) => {
     }
     const shapeModels = data.shapes.map((shape) => shapeModelMapper(shape));
     return new GraphqlSchemaShapes(shapeModels);
-}
+};
 
 /**
  * Map the GraphQL schema shape data to the model.
@@ -26,6 +26,6 @@ export const shapeModelMapper = (data) => {
         id: data.id,
         name: data.name,
         label: data.label,
-        description: data.description
+        description: data.description,
     });
-}
+};

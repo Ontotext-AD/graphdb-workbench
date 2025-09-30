@@ -6,7 +6,7 @@ angular
         'ngCookies',
         'ui.bootstrap',
         'graphdb.framework.core.services.jwtauth',
-        'toastr'
+        'toastr',
     ])
     .controller('ActiveLocationSettingsCtrl', ActiveLocationSettingsCtrl)
     .controller('ValidateLicenseModalCtrl', ValidateLicenseModalCtrl)
@@ -23,10 +23,10 @@ function ActiveLocationSettingsCtrl($scope, toastr, $uibModalInstance, LicenseRe
 
     function getSettings() {
         $scope.loader = true;
-        LicenseRestService.getStatistics().then(function (response) {
+        LicenseRestService.getStatistics().then(function(response) {
             $scope.settings.statistics = response.data === 'true';
             $scope.supportsStatistics = true;
-        }, function (response) {
+        }, function(response) {
             if (response.status === 404) {
                 $scope.supportsStatistics = false;
             } else {
@@ -38,22 +38,22 @@ function ActiveLocationSettingsCtrl($scope, toastr, $uibModalInstance, LicenseRe
 
     $scope.getSettings();
 
-    $scope.setSettings = function () {
+    $scope.setSettings = function() {
         $scope.loader = true;
-        LicenseRestService.toggleStatistics($scope.settings.statistics).then(function () {
+        LicenseRestService.toggleStatistics($scope.settings.statistics).then(function() {
             $uibModalInstance.close();
             toastr.success($translate.instant('saving.settings.success'));
-        }, function (response) {
+        }, function(response) {
             const msg = getError(response.data);
             toastr.error(msg, $translate.instant('saving.settings.error'));
         });
     };
 
-    $scope.submitForm = function () {
+    $scope.submitForm = function() {
         $scope.setSettings();
     };
 
-    $scope.cancel = function () {
+    $scope.cancel = function() {
         $uibModalInstance.dismiss('cancel');
     };
 }
@@ -61,7 +61,6 @@ function ActiveLocationSettingsCtrl($scope, toastr, $uibModalInstance, LicenseRe
 LicenseCtrl.$inject = ['$scope', 'LicenseRestService', '$licenseService', 'toastr', '$rootScope', 'ModalService', '$translate', 'TrackingService'];
 
 function LicenseCtrl($scope, LicenseRestService, $licenseService, toastr, $rootScope, ModalService, $translate, TrackingService) {
-
     $scope.loadingLicense = function() {
         return $licenseService.loadingLicense();
     };
@@ -69,15 +68,15 @@ function LicenseCtrl($scope, LicenseRestService, $licenseService, toastr, $rootS
     // TODO - Check if redundant call and remove
     $licenseService.checkLicenseStatus();
 
-    $scope.removeLicense = function () {
+    $scope.removeLicense = function() {
         ModalService.openSimpleModal({
             title: $translate.instant('confirm.operation'),
             message: $translate.instant("remove.license.warning.msg"),
-            warning: true
+            warning: true,
         }).result
-            .then(function () {
+            .then(function() {
                 LicenseRestService.unregisterLicense()
-                    .success(function () {
+                    .success(function() {
                         $licenseService.checkLicenseStatus()
                             .then(() => TrackingService.applyTrackingConsent())
                             .catch((error) => {
@@ -92,7 +91,7 @@ function LicenseCtrl($scope, LicenseRestService, $licenseService, toastr, $rootS
 RegisterLicenseCtrl.$inject = ['$scope', 'LicenseRestService', '$location', '$uibModal', 'toastr', '$window', '$jwtAuth', '$translate'];
 
 function RegisterLicenseCtrl($scope, LicenseRestService, $location, $uibModal, toastr, $window, $jwtAuth, $translate) {
-    $scope.$on('securityInit', function () {
+    $scope.$on('securityInit', function() {
         if (!$jwtAuth.isAdmin()) {
             $location.path('/license');
         }
@@ -103,26 +102,26 @@ function RegisterLicenseCtrl($scope, LicenseRestService, $location, $uibModal, t
     const textAreaSel = $('.license-textarea');
 
     // watch for uploaded license file
-    $scope.$watch('currentFile', function () {
+    $scope.$watch('currentFile', function() {
         if ($scope.currentFile) {
             const file = $scope.currentFile;
             LicenseRestService.extractFromLicenseFile(file)
-                .success(function (licenseCode) {
+                .success(function(licenseCode) {
                     sendLicenseToValidateAndActivate(licenseCode);
-                }).error(function () {
+                }).error(function() {
                     toastr.error($translate.instant('could.not.upload.file.error'));
                 });
         }
     });
 
-    $scope.getBackToPreviousPage = function () {
+    $scope.getBackToPreviousPage = function() {
         $window.history.back();
     };
 
     // send license code for validation and activation
     function sendLicenseToValidateAndActivate(licenseCode) {
         LicenseRestService.sendLicenseToValidate(licenseCode)
-            .success(function (validatedLicense) {
+            .success(function(validatedLicense) {
                 if (validatedLicense.present) {
                     // write code to textarea
                     textAreaSel.val(licenseCode);
@@ -135,7 +134,7 @@ function RegisterLicenseCtrl($scope, LicenseRestService, $location, $uibModal, t
                     toastr.error(validatedLicense.message);
                 }
             })
-            .error(function () {
+            .error(function() {
                 toastr.error($translate.instant('invalid.license'));
             });
     }
@@ -149,13 +148,13 @@ function RegisterLicenseCtrl($scope, LicenseRestService, $location, $uibModal, t
             controller: 'ValidateLicenseModalCtrl',
             size: 'lg',
             resolve: {
-                license: function () {
+                license: function() {
                     return license;
-                }
-            }
+                },
+            },
         });
 
-        modalInstance.result.then(function () {
+        modalInstance.result.then(function() {
             registerLicense(licenseCode);
         });
     }
@@ -171,9 +170,9 @@ function RegisterLicenseCtrl($scope, LicenseRestService, $location, $uibModal, t
             // whereas other browser happily ignore the whitespace
             const decodedLicense = atob(licenseCode.replace(/\s/g, ''));
             LicenseRestService.registerLicense(decodedLicense)
-                .success(function () {
+                .success(function() {
                     $window.history.back();
-                }).error(function (error) {
+                }).error(function(error) {
                     toastr.error(error, $translate.instant('license.register.error'));
                 });
         } else {
@@ -202,7 +201,7 @@ LoaderSamplesCtrl.$inject = ['$scope'];
 
 function LoaderSamplesCtrl($scope) {
     $scope.loader = true;
-    $scope.setLoader = function (loader) {
+    $scope.setLoader = function(loader) {
         $scope.loader = loader;
     };
 }

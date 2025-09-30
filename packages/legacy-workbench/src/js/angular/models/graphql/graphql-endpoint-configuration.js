@@ -39,7 +39,7 @@ export class GraphqlEndpointConfiguration {
      * @type {GraphqlEndpointConfigurationSettings|undefined}
      * @private
      */
-    _settings ;
+    _settings;
 
     constructor() {
         this._schemaSourceType = SchemaSourceType.GRAPHQL_SCHEMA_SHAPES;
@@ -75,8 +75,8 @@ export class GraphqlEndpointConfiguration {
         return new CreateEndpointFromShapesRequest({
             fromRepo: sourceRepositoryId,
             shapes: this.selectedGraphqlSchemaShapes.getShapeIds(),
-            config: this.settings.toFlatJSON()
-        })
+            config: this.settings.toFlatJSON(),
+        });
     }
 
     /**
@@ -94,7 +94,7 @@ export class GraphqlEndpointConfiguration {
             fromRepo: sourceRepositoryId,
             namedGraphs: namedGraphs,
             vocabPrefix: this.params.vocPrefix,
-            config: this.settings.toFlatJSON()
+            config: this.settings.toFlatJSON(),
         });
     }
 
@@ -107,20 +107,20 @@ export class GraphqlEndpointConfiguration {
             return this.selectedGraphqlSchemaShapes.processShapes((shape) => {
                 return new GraphqlEndpointOverview({
                     label: shape.label || shape.id,
-                    uri: shape.id
+                    uri: shape.id,
                 });
             });
         }
         if (this.generateFromShaclShapes()) {
             if (this.selectedGraphs.isEmpty) {
                 return [new GraphqlEndpointOverview({
-                    label: `${this.params.endpointId}`
+                    label: `${this.params.endpointId}`,
                 })];
             }
             return this.selectedGraphs.processGraphList((graph) => {
                 return new GraphqlEndpointOverview({
                     label: graph.label || graph.uri,
-                    uri: graph.uri
+                    uri: graph.uri,
                 });
             });
         }
@@ -273,7 +273,7 @@ export class GraphqlEndpointParams {
             endpointId: this.endpointId,
             endpointLabel: this.endpointLabel,
             vocPrefix: this.vocPrefix,
-            description: this.endpointDescription
+            description: this.endpointDescription,
         };
     }
 }

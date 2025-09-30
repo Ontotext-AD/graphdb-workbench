@@ -9,8 +9,8 @@ export const CONFIG_TYPE = {
     STRING: 'string',
     TEXT: 'text',
     BOOLEAN: 'boolean',
-    JSON: 'json'
-}
+    JSON: 'json',
+};
 
 export class GraphqlEndpointConfigurationSettings {
     /**

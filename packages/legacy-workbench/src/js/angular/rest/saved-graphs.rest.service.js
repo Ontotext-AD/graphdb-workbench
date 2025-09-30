@@ -12,7 +12,7 @@ function SavedGraphsRestService($http) {
         getSavedGraph,
         editSavedGraph,
         deleteSavedGraph,
-        addNewSavedGraph
+        addNewSavedGraph,
     };
 
     function getSavedGraphs() {

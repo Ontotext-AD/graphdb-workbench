@@ -3,7 +3,6 @@
  * Model for event of type {@link EventDataType.REQUEST_ABORTED} emitted by "ontotext-yasgui-web-component".
  */
 export class RequestAbortedEvent {
-
     /**
      * Constructs the model for {@link EventDataType.REQUEST_ABORTED} event.
      *

@@ -10,7 +10,6 @@ const RPC_ADDRESS_ENDPOINT = 'rest/info/rpc-address';
 const EXTERNAL_URL_ENDPOINT = 'rest/info/external-url';
 
 function LocationsRestService($http) {
-
     return {
         getLocations,
         addLocation,
@@ -19,7 +18,7 @@ function LocationsRestService($http) {
         getActiveLocation,
         setDefaultRepository,
         getLocationRpcAddress,
-        getExternalUrl
+        getExternalUrl,
     };
 
     function getLocations(abortRequestPromise) {
@@ -42,7 +41,7 @@ function LocationsRestService($http) {
         return $http({
             method: 'GET',
             url: `${ACTIVE_LOCATION_ENDPOINT}`,
-            noCancelOnRouteChange: true
+            noCancelOnRouteChange: true,
         });
     }
 
@@ -51,16 +50,16 @@ function LocationsRestService($http) {
             url: `${ACTIVE_LOCATION_ENDPOINT}/default-repository`,
             method: 'POST',
             data: {
-                defaultRepository: repositoryId
-            }
+                defaultRepository: repositoryId,
+            },
         });
     }
 
     function getLocationRpcAddress(location) {
         return $http.get(`${RPC_ADDRESS_ENDPOINT}`, {
             params: {
-                location
-            }
+                location,
+            },
         });
     }
 

@@ -23,11 +23,11 @@ PluginRegistry.add('guide.step', [
                         elementSelector: '.graph-visualization',
                         placement: 'left',
                         canBePaused: false,
-                        ...options
-                    }
-                }
-            ]
-        }
+                        ...options,
+                    },
+                },
+            ];
+        },
     },
     {
         guideBlockName: 'visual-graph-search-rdf-resources-input',
@@ -45,11 +45,11 @@ PluginRegistry.add('guide.step', [
                         elementSelector: GuideUtils.getGuideElementSelector('graphVisualisationSearchInputNotConfigured', ' input'),
                         class: 'visual-graph-input-iri',
                         onNextValidate: (step) => Promise.resolve(GuideUtils.validateTextInput(step.elementSelector, step.easyGraphInputText)),
-                        ...options
-                    }
-                }
-            ]
-        }
+                        ...options,
+                    },
+                },
+            ];
+        },
     },
     {
         guideBlockName: 'visual-graph-search-rdf-resources-input-autocomplete-item',
@@ -68,11 +68,11 @@ PluginRegistry.add('guide.step', [
                         onNextClick: (guide, step) => GuideUtils.waitFor(step.elementSelector, 3).then(() => $(step.elementSelector).trigger('click')),
                         canBePaused: false,
                         forceReload: true,
-                        ...options
-                    }
-                }
+                        ...options,
+                    },
+                },
             ];
-        }
+        },
     },
     {
         guideBlockName: 'visual-graph',
@@ -86,14 +86,14 @@ PluginRegistry.add('guide.step', [
                     options: {
                         menu: 'visual-graph',
                         showIntro: true,
-                        ...options
-                    }
+                        ...options,
+                    },
                 }, {
                     guideBlockName: 'visual-graph-search-rdf-resources-input',
-                    options: {...options}
+                    options: {...options},
                 }, {
                     guideBlockName: 'visual-graph-search-rdf-resources-input-autocomplete-item',
-                    options: {...options}
+                    options: {...options},
                 }, {
                     guideBlockName: 'visual-graph-intro',
                     options: {
@@ -116,11 +116,11 @@ PluginRegistry.add('guide.step', [
                         },
                         canBePaused: false,
                         forceReload: true,
-                        ...options
-                    }
-                }
+                        ...options,
+                    },
+                },
             ];
-        }
+        },
     },
     {
         guideBlockName: 'visual-graph-expand',
@@ -193,11 +193,11 @@ PluginRegistry.add('guide.step', [
                                         });
                                 });
                         },
-                        ...options
-                    }
-                }
+                        ...options,
+                    },
+                },
             ];
-        }
+        },
     },
     {
         guideBlockName: 'visual-graph-properties',
@@ -219,7 +219,7 @@ PluginRegistry.add('guide.step', [
                     }
                 } else {
                     mouseClickTimeStamp = event.timeStamp;
-                    mouseEventTimer = services.$timeout(function () {
+                    mouseEventTimer = services.$timeout(function() {
                         GuideUtils.graphVizShowNodeInfo(elementSelector);
                         mouseEventTimer = null;
                         guide.next();
@@ -253,8 +253,8 @@ PluginRegistry.add('guide.step', [
                             guide.next();
                         },
                         beforeShowPromise: GuideUtils.awaitAlphaDropD3(elementSelector, $rootScope),
-                        ...options
-                    }
+                        ...options,
+                    },
                 },
                 {
                     guideBlockName: 'read-only-element',
@@ -267,23 +267,23 @@ PluginRegistry.add('guide.step', [
                         canBePaused: false,
                         placement: 'left',
                         beforeShowPromise: GuideUtils.deferredShow(500),
-                        onPreviousClick: () => new Promise(function (resolve) {
+                        onPreviousClick: () => new Promise(function(resolve) {
                             GuideUtils.waitFor(closeButtonSelector, 3)
                                 .then(() => {
                                     $(closeButtonSelector).trigger('click');
                                     resolve();
                                 }).catch(() => resolve());
                         }),
-                        ...options
-                    }
-                }
+                        ...options,
+                    },
+                },
             ];
 
             if (Array.isArray(options.focusProperties)) {
                 options.focusProperties.forEach((focusProperty) => {
                     if (!GuideUtils.isObject(focusProperty)) {
                         focusProperty = {
-                            property: focusProperty
+                            property: focusProperty,
                         };
                     }
                     const translationIdSuffix = focusProperty.property === 'types' ? '-types' : '-property';
@@ -301,8 +301,8 @@ PluginRegistry.add('guide.step', [
                             elementSelector: GuideUtils.getGuideElementSelector('graph-visualization-node-info-' + focusProperty.property),
                             focusProperty: focusProperty.property,
                             extraContent: focusProperty.message,
-                            ...options
-                        }
+                            ...options,
+                        },
                     });
                 });
             }
@@ -320,7 +320,7 @@ PluginRegistry.add('guide.step', [
                     elementSelector: closeButtonSelector,
                     advanceOn: {
                         selector: closeButtonSelector,
-                        event: 'click'
+                        event: 'click',
                     },
                     beforeShowPromise: () => {
                         // We have to be sure that node info sidebar is open. It is needed when this step is loaded when next step "Previous"
@@ -329,12 +329,12 @@ PluginRegistry.add('guide.step', [
                         return GuideUtils.deferredShow(500)();
                     },
                     onNextClick: () => GuideUtils.waitFor(closeButtonSelector, 3).then(() => $(closeButtonSelector).trigger('click')),
-                    ...options
-                }
+                    ...options,
+                },
             });
 
             return steps;
-        }
+        },
     },
     {
         guideBlockName: 'visual-graph-link-focus',
@@ -355,11 +355,11 @@ PluginRegistry.add('guide.step', [
                         show: disableAllNodes,
                         hide: enableAllNodes,
                         beforeShowPromise: GuideUtils.awaitAlphaDropD3(elementSelector, $rootScope),
-                        ...options
-                    }
-                }
+                        ...options,
+                    },
+                },
             ];
-        }
+        },
     },
     {
         guideBlockName: 'visual-graph-node-focus',
@@ -388,10 +388,10 @@ PluginRegistry.add('guide.step', [
                             const previousStep = services.ShepherdService.getPreviousStepFromHistory(stepId);
                             return previousStep.options.initPreviousStep(services, previousStep.id);
                         },
-                        ...options
-                    }
-                }
+                        ...options,
+                    },
+                },
             ];
-        }
-    }
+        },
+    },
 ]);

@@ -8,7 +8,7 @@ const modules = [
     'graphdb.framework.core.services.cookieService',
     'graphdb.framework.core.services.installationCookieService',
     'graphdb.framework.core.services.googleAnalyticsCookieService',
-    'graphdb.framework.core.directives.cookie-consent'
+    'graphdb.framework.core.directives.cookie-consent',
 
 ];
 angular.module('graphdb.framework.core.services.trackingService', modules)
@@ -116,7 +116,7 @@ function TrackingService($window, $jwtAuth, $licenseService, InstallationCookieS
                 } else {
                     const appSettings = data.appSettings;
                     appSettings.COOKIE_CONSENT = consent.toJSON();
-                    return $jwtAuth.updateUserData({ appSettings, username });
+                    return $jwtAuth.updateUserData({appSettings, username});
                 }
             })
             .finally(() => applyTrackingConsent());
@@ -137,6 +137,6 @@ function TrackingService($window, $jwtAuth, $licenseService, InstallationCookieS
         applyTrackingConsent,
         getCookieConsent,
         updateCookieConsent,
-        isTrackingAllowed
+        isTrackingAllowed,
     };
 }

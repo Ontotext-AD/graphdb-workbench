@@ -8,8 +8,8 @@ PluginRegistry.add('route', [
         'title': 'menu.ttyg.label',
         'helpInfo': 'ttyg.helpInfo',
         'documentationUrl': 'talk-to-graph.html',
-        'allowAuthorities': ['READ_REPO_{repoId}']
-    }
+        'allowAuthorities': ['READ_REPO_{repoId}'],
+    },
 ]);
 
 PluginRegistry.add('main.menu', {
@@ -22,6 +22,6 @@ PluginRegistry.add('main.menu', {
             role: 'ROLE_USER',
             parent: 'Lab',
             guideSelector: 'sub-menu-ttyg',
-            testSelector: 'sub-menu-ttyg'
-        }]
+            testSelector: 'sub-menu-ttyg',
+        }],
 });

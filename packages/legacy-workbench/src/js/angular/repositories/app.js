@@ -20,7 +20,7 @@ const modules = [
     'graphdb.framework.core.services.repositories',
     'graphdb.framework.core.directives',
     'graphdb.framework.core.controllers',
-    'graphdb.framework.settings'
+    'graphdb.framework.settings',
 ];
 
 angular.module('graphdb.framework.repositories', modules);

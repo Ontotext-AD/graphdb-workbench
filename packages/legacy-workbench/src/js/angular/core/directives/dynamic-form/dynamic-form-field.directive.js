@@ -13,11 +13,11 @@ function dynamicFormFieldDirective($compile) {
         scope: {
             field: '=',
             form: '=',
-            translationKeyPrefix: '='
+            translationKeyPrefix: '=',
         },
         templateUrl: 'js/angular/core/directives/dynamic-form/templates/form-field-template.html',
         link: function($scope) {
             $scope.FIELD_TYPE = FIELD_TYPE;
-        }
+        },
     };
 }

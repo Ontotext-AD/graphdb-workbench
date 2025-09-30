@@ -2,7 +2,7 @@ import {OPERATION_GROUP_TYPE} from "../../../models/monitoring/operations/operat
 import {OPERATION_STATUS, OPERATION_STATUS_SORT_ORDER} from "../../../models/monitoring/operations/operation-status";
 import {
     OPERATION_TYPE,
-    OPERATION_TYPE_SORT_ORDER
+    OPERATION_TYPE_SORT_ORDER,
 } from "../../../models/monitoring/operations/operation-type";
 import {SequenceGeneratorUtil} from "../../../utils/sequence-generator-util";
 
@@ -14,11 +14,10 @@ angular.module('graphdb.framework.core.directives.operationsstatusesmonitor', []
 operationsStatusesMonitorDirectives.$inject = ['$interval', '$repositories', 'MonitoringRestService', '$jwtAuth'];
 
 function operationsStatusesMonitorDirectives($interval, $repositories, MonitoringRestService, $jwtAuth) {
-
     return {
         restrict: 'E',
         templateUrl: 'js/angular/core/directives/operations-statuses-monitor/templates/operations-statuses-monitor.html',
-        link: linkFunc
+        link: linkFunc,
     };
 
     function linkFunc(scope) {
@@ -105,7 +104,6 @@ function operationsStatusesMonitorDirectives($interval, $repositories, Monitorin
                 }
             });
             scope.operationsSummary = operationsStatusesSummary;
-
         };
 
         const reloadActiveOperations = () => {
@@ -132,7 +130,6 @@ function operationsStatusesMonitorDirectives($interval, $repositories, Monitorin
                 })
                 .catch(() => skipUpdateActiveOperationsTimes = fibonacciGenerator.next())
                 .finally(() => updateActiveRepositoryRun = false);
-
         };
 
         // =========================

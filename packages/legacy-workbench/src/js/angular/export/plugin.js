@@ -8,7 +8,7 @@ PluginRegistry.add('route', {
     'title': 'menu.graphs.overview.label',
     'helpInfo': 'view.export.ctr.helpInfo ',
     'documentationUrl': 'working-with-workbench.html#wbmenu-graphs-overview',
-    'allowAuthorities': ['READ_REPO_{repoId}']
+    'allowAuthorities': ['READ_REPO_{repoId}'],
 });
 
 PluginRegistry.add('main.menu', {
@@ -21,7 +21,7 @@ PluginRegistry.add('main.menu', {
             role: 'IS_AUTHENTICATED_FULLY',
             parent: 'Explore',
             guideSelector: 'sub-menu-graph-overview',
-            testSelector: 'sub-menu-graph-overview'
-        }
-    ]
+            testSelector: 'sub-menu-graph-overview',
+        },
+    ],
 });

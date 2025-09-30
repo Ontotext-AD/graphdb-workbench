@@ -6,7 +6,6 @@ import {ImportResourceType} from "./import-resource-type";
  * DTO represents a resource that describes an import resource of rdf data.
  */
 export class ImportResource {
-
     constructor(importResourceServerData, hashGenerator) {
         // we use hash as a key to tell angular that the object has changed, and it should update the view
         this.hash = hashGenerator(JSON.stringify(importResourceServerData));

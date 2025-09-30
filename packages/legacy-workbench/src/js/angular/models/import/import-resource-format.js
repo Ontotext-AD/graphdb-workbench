@@ -16,5 +16,5 @@ export const ImportResourceFormat = {
     'TriX': 'application/trix',
     'TriG': 'application/x-trig',
     'TriG*': 'application/x-trigstar',
-    'BinaryRDF': 'application/x-binary-rdf'
+    'BinaryRDF': 'application/x-binary-rdf',
 };

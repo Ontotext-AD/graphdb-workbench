@@ -13,12 +13,12 @@ const modules = [
     'graphdb.framework.impex.export.controllers',
     'graphdb.framework.core.directives.paginations',
     'graphdb.framework.core.services.repositories',
-    'graphdb.framework.core.directives'
+    'graphdb.framework.core.directives',
 ];
 
 const exportApp = angular.module('graphdb.framework.impex.export', modules);
 
-exportApp.config(['$uibTooltipProvider', function ($uibTooltipProvider) {
+exportApp.config(['$uibTooltipProvider', function($uibTooltipProvider) {
     //Add custom event for Export repository DD tooltip
     $uibTooltipProvider.setTriggers({'showExportDDTooltip': 'showExportDDTooltip'});
 }]);

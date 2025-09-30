@@ -18,7 +18,7 @@ function GraphConfigRestService($http) {
         createGraphConfig,
         updateGraphConfig,
         deleteGraphConfig,
-        validateQuery
+        validateQuery,
     };
 
     function getGraphConfigs() {
@@ -69,8 +69,8 @@ function GraphConfigRestService($http) {
                 queryType,
                 params,
                 all,
-                oneOf
-            }
+                oneOf,
+            },
         });
     }
 }

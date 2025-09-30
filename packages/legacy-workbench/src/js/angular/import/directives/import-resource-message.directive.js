@@ -15,7 +15,7 @@ function importResourceMessageDirective($uibModal) {
         restrict: 'E',
         templateUrl: 'js/angular/import/templates/import-resource-message.html',
         scope: {
-            resource: '='
+            resource: '=',
         },
         link: ($scope) => {
             $scope.ImportResourceStatus = ImportResourceStatus;
@@ -33,12 +33,12 @@ function importResourceMessageDirective($uibModal) {
                     windowClass: 'import-resource-message-dialog',
                     backdrop: 'static',
                     resolve: {
-                        message: function () {
+                        message: function() {
                             return resourceTreeElement ? resourceTreeElement.importResource.message : '';
-                        }
-                    }
+                        },
+                    },
                 });
-            }
-        }
+            };
+        },
     };
 }

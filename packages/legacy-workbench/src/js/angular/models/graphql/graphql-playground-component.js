@@ -3,7 +3,6 @@
  * This class provides a clearer interface for all exposed methods of the GraphQL playground component.
  */
 export class GraphQLPlaygroundComponent {
-
     /**
      * Creates an instance of GraphQLPlaygroundComponent.
      * @param graphQLPlaygroundComponent - The underlying GraphQL Playground component instance.

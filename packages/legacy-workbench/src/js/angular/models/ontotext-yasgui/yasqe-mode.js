@@ -12,5 +12,5 @@ export const YasqeMode = {
     /**
      * The editor is read-only and the query can't be copied.
      */
-    PROTECTED: 'PROTECTED'
+    PROTECTED: 'PROTECTED',
 };

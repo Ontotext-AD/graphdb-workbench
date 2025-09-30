@@ -69,8 +69,8 @@ function validateUrl() {
     return {
         restrict: 'A',
         require: 'ngModel',
-        link: function (scope, element, attr, ctrl) {
-            ctrl.$validators.validUrl = function (modelValue, viewValue) {
+        link: function(scope, element, attr, ctrl) {
+            ctrl.$validators.validUrl = function(modelValue, viewValue) {
                 // Check if empty values should be allowed
                 if (ctrl.$isEmpty(viewValue)) {
                     return attr.allowEmpty !== 'false';
@@ -92,6 +92,6 @@ function validateUrl() {
                 }
                 return true;
             };
-        }
+        },
     };
 }

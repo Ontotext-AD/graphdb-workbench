@@ -1,7 +1,7 @@
 import {NodeState} from "./node-state";
 import {LinkState} from "./states";
 
-const CLUSTER_MANAGEMENT_CONSTANTS = (function () {
+const CLUSTER_MANAGEMENT_CONSTANTS = (function() {
     const SVG_NODE_WIDTH = 15;
 
     const PADDING_LEFT = 12;
@@ -24,7 +24,7 @@ const CLUSTER_MANAGEMENT_CONSTANTS = (function () {
 
     const BACKGROUND_PADDING = PADDING_LEFT * 2;
 
-    const getLegendNodes = function () {
+    const getLegendNodes = function() {
         const legendNodes = [];
         legendNodes.push({nodeState: NodeState.LEADER, customText: 'node_state_leader'});
         legendNodes.push({nodeState: NodeState.FOLLOWER, customText: 'node_state_follower'});
@@ -34,7 +34,7 @@ const CLUSTER_MANAGEMENT_CONSTANTS = (function () {
         return legendNodes;
     };
 
-    const getLegendLinks = function () {
+    const getLegendLinks = function() {
         const links = [];
         links.push({status: LinkState.IN_SYNC, linkTypeKey: 'link_state_in_sync'});
         links.push({status: LinkState.SYNCING, linkTypeKey: 'link_state_syncing'});
@@ -49,52 +49,52 @@ const CLUSTER_MANAGEMENT_CONSTANTS = (function () {
             {
                 labelKey: 'node_state_candidate',
                 classes: 'icon-any',
-                icon: '\ue914'
+                icon: '\ue914',
             }, {
                 labelKey: 'node_state_no_cluster',
                 classes: 'close',
-                icon: 'X'
+                icon: 'X',
             }, {
                 labelKey: 'link_state_out_of_sync',
                 classes: 'icon-any',
-                icon: '\ue920'
+                icon: '\ue920',
             }, {
                 labelKey: 'node_state_no_connection',
                 classes: 'icon-any',
-                icon: '\ue931'
+                icon: '\ue931',
             }, {
                 labelKey: 'node_state_read_only',
                 classes: 'icon-any',
-                icon: '\ue95c'
+                icon: '\ue95c',
             }, {
                 labelKey: 'node_state_restricted',
                 classes: 'icon-any',
-                icon: '\ue933'
+                icon: '\ue933',
             }, {
                 labelKey: 'recovery_state.searching_for_node',
                 classes: 'fa-d3',
-                icon: '\uf29c'
+                icon: '\uf29c',
             }, {
                 labelKey: 'recovery_state.waiting_for_snapshot',
                 classes: 'fa-d3',
-                icon: '\uf017'
+                icon: '\uf017',
             }, {
                 labelKey: 'recovery_state.building_snapshot',
                 classes: 'fa-d3 fa-solid',
-                icon: '\uf187'
+                icon: '\uf187',
             }, {
                 labelKey: 'recovery_state.sending_snapshot',
                 classes: 'fa-d3 fa-solid',
-                icon: '\uf0ee'
+                icon: '\uf0ee',
             }, {
                 labelKey: 'recovery_state.receiving_snapshot',
                 classes: 'fa-d3 fa-solid',
-                icon: '\uf0ed'
+                icon: '\uf0ed',
             }, {
                 labelKey: 'recovery_state.applying_snapshot',
                 classes: 'fa-d3 fa-solid',
-                icon: '\uf050'
-            }
+                icon: '\uf050',
+            },
         ];
     };
 
@@ -118,10 +118,10 @@ const CLUSTER_MANAGEMENT_CONSTANTS = (function () {
         LEGEND_ITEM_PADDING_LEFT,
         LEGEND_ITEMS_PADDING_TOP,
         LEGEND_ITEM_PADDING_TOP,
-        BACKGROUND_PADDING
+        BACKGROUND_PADDING,
     };
 })();
 
 export {
-    CLUSTER_MANAGEMENT_CONSTANTS
+    CLUSTER_MANAGEMENT_CONSTANTS,
 };

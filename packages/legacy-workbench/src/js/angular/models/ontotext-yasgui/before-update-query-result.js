@@ -9,5 +9,5 @@ export class BeforeUpdateQueryResult {
 
 export const BeforeUpdateQueryResultStatus = {
     ERROR: 'error',
-    SUCCESS: 'success'
+    SUCCESS: 'success',
 };

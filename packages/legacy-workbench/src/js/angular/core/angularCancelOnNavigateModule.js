@@ -12,8 +12,8 @@ angular
   .config(['$httpProvider', function($httpProvider) {
     $httpProvider.interceptors.push('HttpRequestTimeoutInterceptor');
   }])
-  .run(['$rootScope', 'HttpPendingRequestsService', function ($rootScope, HttpPendingRequestsService) {
-    $rootScope.$on('$locationChangeSuccess', function (event, newUrl, oldUrl) {
+  .run(['$rootScope', 'HttpPendingRequestsService', function($rootScope, HttpPendingRequestsService) {
+    $rootScope.$on('$locationChangeSuccess', function(event, newUrl, oldUrl) {
       const newUrlObj = new URL(newUrl);
       const oldUrlObj = new URL(oldUrl);
       // cancel only if the URLs have different origin (proto + host + port) or pathname but not different hash
@@ -24,7 +24,7 @@ angular
   }]);
 
 angular.module('angularCancelOnNavigateModule')
-  .service('HttpPendingRequestsService', ['$q', function ($q) {
+  .service('HttpPendingRequestsService', ['$q', function($q) {
     const cancelPromises = [];
 
     function newTimeout() {
@@ -34,7 +34,7 @@ angular.module('angularCancelOnNavigateModule')
     }
 
     function cancelAll() {
-      angular.forEach(cancelPromises, function (cancelPromise) {
+      angular.forEach(cancelPromises, function(cancelPromise) {
         cancelPromise.promise.isGloballyCancelled = true;
         cancelPromise.resolve();
       });
@@ -43,14 +43,14 @@ angular.module('angularCancelOnNavigateModule')
 
     return {
       newTimeout: newTimeout,
-      cancelAll: cancelAll
+      cancelAll: cancelAll,
     };
   }]);
 
 angular.module('angularCancelOnNavigateModule')
-  .factory('HttpRequestTimeoutInterceptor', ['$q', 'HttpPendingRequestsService', function ($q, HttpPendingRequestsService) {
+  .factory('HttpRequestTimeoutInterceptor', ['$q', 'HttpPendingRequestsService', function($q, HttpPendingRequestsService) {
     return {
-      request: function (config) {
+      request: function(config) {
         const requestConfig = config || {};
         if (requestConfig.timeout === undefined && !requestConfig.noCancelOnRouteChange) {
           requestConfig.timeout = HttpPendingRequestsService.newTimeout();
@@ -58,11 +58,11 @@ angular.module('angularCancelOnNavigateModule')
         return requestConfig;
       },
 
-      responseError: function (response) {
+      responseError: function(response) {
         if (response.config.timeout && response.config.timeout.isGloballyCancelled) {
           return $q.defer().promise;
         }
         return $q.reject(response);
-      }
+      },
     };
   }]);

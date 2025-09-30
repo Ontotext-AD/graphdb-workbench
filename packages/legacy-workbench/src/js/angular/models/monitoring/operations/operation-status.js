@@ -1,7 +1,7 @@
 export const OPERATION_STATUS = {
     'CRITICAL': 'CRITICAL',
     'WARNING': 'WARNING',
-    'INFORMATION': 'INFORMATION'
+    'INFORMATION': 'INFORMATION',
 };
 
 export const OPERATION_STATUS_SORT_ORDER = {
@@ -23,5 +23,5 @@ export const OPERATION_STATUS_SORT_ORDER = {
             default:
                 return OPERATION_STATUS_SORT_ORDER.INFORMATION;
         }
-    }
+    },
 };

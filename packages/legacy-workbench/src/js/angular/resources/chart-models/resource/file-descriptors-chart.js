@@ -11,16 +11,16 @@ export class FileDescriptorsChart extends ChartData {
                 axisLabel: {
                     formatter: (value) => {
                         return this.formatNumber(value);
-                    }
+                    },
                 },
-                min: 0
+                min: 0,
             },
             tooltip: {
                 valueFormatter: (value) => {
                     return this.formatNumber(value);
-                }
-            }
-        }
+                },
+            },
+        };
         _.merge(chartOptions, fileDescriptorsChartOptions);
     }
 
@@ -29,26 +29,26 @@ export class FileDescriptorsChart extends ChartData {
             name: this.translateService.instant('resource.system.file_descriptors.open'),
             type: 'line',
             areaStyle: {
-                opacity: ChartData.AREA_BAR_OPACITY
+                opacity: ChartData.AREA_BAR_OPACITY,
             },
             showSymbol: false,
             smooth: true,
             color: ChartData.COLORS[1],
-            data: []
+            data: [],
         }];
     }
 
     translateLabels() {
         const [fileDescriptorSeries] = this.dataHolder;
         fileDescriptorSeries.name = this.translateService.instant('resource.system.file_descriptors.open');
-        this.configureSubtitle()
+        this.configureSubtitle();
     }
 
     addNewData(dataHolder, timestamp, data) {
         this.latestData = {
             maxFileDescriptors: data.maxFileDescriptors,
-            openFileDescriptors: data.openFileDescriptors
-        }
+            openFileDescriptors: data.openFileDescriptors,
+        };
 
         this.configureSubtitle();
 
@@ -59,8 +59,8 @@ export class FileDescriptorsChart extends ChartData {
         dataHolder[0].data.push({
             value: [
                 timestamp,
-                data.openFileDescriptors
-            ]
+                data.openFileDescriptors,
+            ],
         });
     }
 
@@ -69,11 +69,11 @@ export class FileDescriptorsChart extends ChartData {
         if (this.latestData.openFileDescriptors) {
             subTitleKeyValues = [{
                 label: this.translateService.instant('resource.system.file_descriptors.max'),
-                value: this.formatNumber(this.latestData.maxFileDescriptors)
+                value: this.formatNumber(this.latestData.maxFileDescriptors),
             }];
         } else {
             subTitleKeyValues = [{
-                label: this.translateService.instant('resource.system.file_descriptors.only_unix')
+                label: this.translateService.instant('resource.system.file_descriptors.only_unix'),
             }];
         }
         this.setSubTitle(subTitleKeyValues);

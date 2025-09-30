@@ -8,7 +8,7 @@ PluginRegistry.add('route', [
         'templateUrl': 'pages/registerLicenseInfo.html',
         'title': 'view.register.license.title',
         'helpInfo': 'view.register.license.helpInfo',
-        'allowAuthorities': ['READ_REPO_{repoId}']
+        'allowAuthorities': ['READ_REPO_{repoId}'],
     }, {
         'url': '/license',
         'module': 'graphdb.framework.settings',
@@ -19,8 +19,8 @@ PluginRegistry.add('route', [
         'title': 'view.existing.license.title',
         'helpInfo': 'view.existing.license.helpInfo',
         'documentationUrl': 'working-with-workbench.html#wbmenu-license',
-        'allowAuthorities': ['READ_REPO_{repoId}']
-    }
+        'allowAuthorities': ['READ_REPO_{repoId}'],
+    },
 ]);
 
 PluginRegistry.add('main.menu', {
@@ -33,5 +33,5 @@ PluginRegistry.add('main.menu', {
         parent: 'Setup',
         guideSelector: 'sub-menu-license',
         testSelector: 'sub-menu-license',
-    }]
+    }],
 });

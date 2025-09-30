@@ -32,11 +32,10 @@ function ShuttleMultiselect() {
              * deselectAllLabel
              * deselectAllTooltip
              */
-            labels: '='
+            labels: '=',
         },
         templateUrl: 'js/angular/core/directives/shuttle-multiselect/templates/shuttle-multiselect.html',
-        link: function ($scope) {
-
+        link: function($scope) {
             // =========================
             // Private variables
             // =========================
@@ -109,8 +108,8 @@ function ShuttleMultiselect() {
                 } else {
                     $scope.availableOptions = cloneDeep($scope.options);
                 }
-            }
+            };
             onInit();
-        }
+        },
     };
 }

@@ -13,7 +13,7 @@ function SparqlTemplatesRestService($http) {
         getSparqlTemplate,
         createSparqlTemplate,
         updateSparqlTemplate,
-        deleteSparqlTemplate
+        deleteSparqlTemplate,
     };
 
     function getSparqlTemplates(repositoryID) {
@@ -24,15 +24,15 @@ function SparqlTemplatesRestService($http) {
         return $http.get(`${REPOSITORIES_BASE_URL}${repositoryID}${SPARQL_TEMPLATES_URL}/configuration`,
             {
                 params : {
-                    'templateID': templateID
-                }
+                    'templateID': templateID,
+                },
             });
     }
 
     function createSparqlTemplate(template, repositoryID) {
         return $http.post(`${REPOSITORIES_BASE_URL}${repositoryID}${SPARQL_TEMPLATES_URL}`, {
             templateID: template.templateID,
-            query: template.query
+            query: template.query,
         });
     }
 
@@ -41,11 +41,11 @@ function SparqlTemplatesRestService($http) {
             template.query,
             {
                 params : {
-                    'templateID': template.templateID
+                    'templateID': template.templateID,
                 },
                 headers: {
-                    'Content-Type': 'text/plain'
-                }
+                    'Content-Type': 'text/plain',
+                },
             });
     }
 
@@ -53,8 +53,8 @@ function SparqlTemplatesRestService($http) {
         return $http.delete(`${REPOSITORIES_BASE_URL}${repositoryID}${SPARQL_TEMPLATES_URL}`,
             {
                 params : {
-                    'templateID': templateID
-                }
+                    'templateID': templateID,
+                },
             });
     }
 }

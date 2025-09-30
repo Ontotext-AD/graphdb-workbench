@@ -6,4 +6,6 @@
  * </a>
  * Usage of directive will keep guide safety if someone change link from example to be button or something else, the guide will continue to working.
  */
-angular.module('graphdb.framework.guides.directives', []).directive('guideSelector', function() {return {}});
+angular.module('graphdb.framework.guides.directives', []).directive('guideSelector', function() {
+return {};
+});

@@ -14,7 +14,6 @@ angular
 TTYGService.$inject = ['TTYGRestService', '$repositories'];
 
 function TTYGService(TTYGRestService, $repositories) {
-
     const getConversations = (savedQueryName, owner) => {
         return TTYGRestService.getConversations()
             .then((response) => chatsListMapper(response.data));
@@ -47,7 +46,7 @@ function TTYGService(TTYGRestService, $repositories) {
      * */
     const exportConversation = (id) => {
         return TTYGRestService.exportConversation(id)
-            .then(function (res) {
+            .then(function(res) {
                 const data = res.data;
                 const headers = res.headers();
                 const contentDispositionHeader = headers['content-disposition'];
@@ -213,6 +212,6 @@ function TTYGService(TTYGRestService, $repositories) {
         deleteAgent,
         explainResponse,
         getDefaultAgent,
-        explainAgentSettings
+        explainAgentSettings,
     };
 }

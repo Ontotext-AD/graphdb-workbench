@@ -14,11 +14,11 @@ PluginRegistry.add('guide.step', [
                         placement: 'left',
                         // If mainAction is set the title will be set automatically
                         title: options.mainAction ?? CLASS_RELATIONSHIPS_DEFAULT_TITLE,
-                        ...options
-                    }
-                }
+                        ...options,
+                    },
+                },
             ];
-        }
+        },
     },
     {
         guideBlockName: 'class-relationships-diagram-intro',
@@ -35,11 +35,11 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.class-relationships-diagram-intro.content',
                         // If mainAction is set the title will be set automatically
                         title: options.mainAction ?? CLASS_RELATIONSHIPS_DEFAULT_TITLE,
-                        ...options
-                    }
-                }
+                        ...options,
+                    },
+                },
             ];
-        }
+        },
     },
     {
         guideBlockName: 'class-relationships-digram-thickness-intro',
@@ -56,11 +56,11 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.class-relationships-digram-thickness-intro.content',
                         // If mainAction is set the title will be set automatically
                         title: options.mainAction ?? CLASS_RELATIONSHIPS_DEFAULT_TITLE,
-                        ...options
-                    }
-                }
+                        ...options,
+                    },
+                },
             ];
-        }
+        },
     },
     {
         guideBlockName: 'class-relationships-digram-predicates-intro',
@@ -77,11 +77,11 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.class-relationships-digram-predicates-intro.content',
                         // If mainAction is set the title will be set automatically
                         title: options.mainAction ?? CLASS_RELATIONSHIPS_DEFAULT_TITLE,
-                        ...options
-                    }
-                }
+                        ...options,
+                    },
+                },
             ];
-        }
+        },
     },
     {
         guideBlockName: 'class-relationships-named-graph-selection',
@@ -98,11 +98,11 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.class-relationships-named-graph-selection.content',
                         // If mainAction is set the title will be set automatically
                         title: options.mainAction ?? CLASS_RELATIONSHIPS_DEFAULT_TITLE,
-                        ...options
-                    }
-                }
+                        ...options,
+                    },
+                },
             ];
-        }
+        },
     },
     {
         guideBlockName: 'class-relationships-class-list-intro',
@@ -119,11 +119,11 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.class-relationships-class-list-intro.content',
                         // If mainAction is set the title will be set automatically
                         title: options.mainAction ?? CLASS_RELATIONSHIPS_DEFAULT_TITLE,
-                        ...options
-                    }
-                }
+                        ...options,
+                    },
+                },
             ];
-        }
+        },
     },
     {
         guideBlockName: 'class-relationships-class-list-background-intro',
@@ -140,11 +140,11 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.class-relationships-class-list-background-intro.content',
                         // If mainAction is set the title will be set automatically
                         title: options.mainAction ?? CLASS_RELATIONSHIPS_DEFAULT_TITLE,
-                        ...options
-                    }
-                }
+                        ...options,
+                    },
+                },
             ];
-        }
+        },
     },
     {
         guideBlockName: 'class-relationships-class-list-selection',
@@ -161,11 +161,11 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.class-relationships-class-list-selection.content',
                         // If mainAction is set the title will be set automatically
                         title: options.mainAction ?? CLASS_RELATIONSHIPS_DEFAULT_TITLE,
-                        ...options
-                    }
-                }
+                        ...options,
+                    },
+                },
             ];
-        }
+        },
     },
     {
         guideBlockName: 'class-relationships',
@@ -177,12 +177,12 @@ PluginRegistry.add('guide.step', [
                     guideBlockName: 'click-main-menu',
                     options: angular.extend({}, {
                         menu: 'class-relationships',
-                        showIntro: true
-                    }, options)
+                        showIntro: true,
+                    }, options),
                 }, {
                     guideBlockName: 'class-relationships-intro',
-                    options: {...options}
-                }
+                    options: {...options},
+                },
             ];
 
             if (options.introExtraContent) {
@@ -190,12 +190,12 @@ PluginRegistry.add('guide.step', [
                     guideBlockName: 'class-relationships-diagram-intro',
                     options: {
                         content: options.introExtraContent,
-                        ...options
-                    }
+                        ...options,
+                    },
                 });
             }
 
             return steps;
-        }
+        },
     },
 ]);

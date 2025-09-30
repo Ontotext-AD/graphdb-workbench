@@ -13,7 +13,7 @@ export class AgentSettingsModal {
         activeRepositoryInfo,
         activeRepositoryList,
         agentFormModel,
-        operation
+        operation,
     ) {
         this.activeRepositoryInfo = activeRepositoryInfo;
         this.activeRepositoryList = activeRepositoryList;

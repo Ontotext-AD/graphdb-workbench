@@ -8,7 +8,7 @@ PluginRegistry.add('route', {
     'title': 'view.autocomplete.title',
     'helpInfo': 'view.autocomplete.helpInfo',
     'documentationUrl': 'autocomplete-index.html',
-    'allowAuthorities': ['READ_REPO_{repoId}']
+    'allowAuthorities': ['READ_REPO_{repoId}'],
 });
 
 PluginRegistry.add('main.menu', {
@@ -21,7 +21,7 @@ PluginRegistry.add('main.menu', {
             parent: 'Setup',
             role: "IS_AUTHENTICATED_FULLY",
             guideSelector: 'sub-menu-autocomplete',
-            testSelector: 'sub-menu-autocomplete'
-        }
-    ]
+            testSelector: 'sub-menu-autocomplete',
+        },
+    ],
 });

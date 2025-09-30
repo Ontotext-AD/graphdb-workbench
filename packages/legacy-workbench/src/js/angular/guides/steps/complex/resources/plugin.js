@@ -7,7 +7,7 @@ const getResourceURL = (options) => {
         url += `&uri=${encodeURIComponent(options.iri)}`;
     }
     return url;
-}
+};
 
 PluginRegistry.add('guide.step', [
     {
@@ -22,11 +22,11 @@ PluginRegistry.add('guide.step', [
                         ...(options.mainAction ? {} : {title: RESOURCE_DEFAULT_TITLE}),
                         ...options,
                         ...(options.skipUrl ? {} : {url: getResourceURL(options)}),
-                        class: 'resource-results-explain'
-                    }
-                }
-            ]
-        }
+                        class: 'resource-results-explain',
+                    },
+                },
+            ];
+        },
     },
     {
         guideBlockName: 'resource-results-click-on-iri',
@@ -47,11 +47,11 @@ PluginRegistry.add('guide.step', [
                             GuideUtils.waitFor(step.elementSelector, 3)
                                 .then(() => $(step.elementSelector).trigger('click'))
                                 .then(() => guide.next());
-                        }
-                    }
-                }
-            ]
-        }
+                        },
+                    },
+                },
+            ];
+        },
     },
     {
         guideBlockName: 'resource-results-row-explain',
@@ -67,11 +67,11 @@ PluginRegistry.add('guide.step', [
                         ...options,
                         ...(options.skipUrl ? {} : {url: getResourceURL(options)}),
                         class: 'visual_graph-row',
-                        elementSelector: GuideUtils.getSparqlResultsSelectorForRow(options.row)
-                    }
-                }
-            ]
-        }
+                        elementSelector: GuideUtils.getSparqlResultsSelectorForRow(options.row),
+                    },
+                },
+            ];
+        },
     },
     {
         guideBlockName: 'resource-click-on-role',
@@ -92,11 +92,11 @@ PluginRegistry.add('guide.step', [
                             GuideUtils.waitFor(step.elementSelector, 3)
                                 .then(() => $(step.elementSelector).trigger('click'))
                                 .then(() => guide.next());
-                        }
-                    }
-                }
-            ]
-        }
+                        },
+                    },
+                },
+            ];
+        },
     },
     {
         guideBlockName: 'resource-click-on-visual-graph-button',
@@ -116,11 +116,11 @@ PluginRegistry.add('guide.step', [
                         onNextClick: (guide, step) => {
                             GuideUtils.waitFor(step.elementSelector, 3)
                                 .then(() => $(step.elementSelector).trigger('click'));
-                        }
-                    }
-                }
-            ]
-        }
+                        },
+                    },
+                },
+            ];
+        },
     },
     {
         guideBlockName: 'table-graph-explore',
@@ -142,8 +142,8 @@ PluginRegistry.add('guide.step', [
                             const previousStep = services.ShepherdService.getPreviousStepFromHistory(stepId);
                             return previousStep.options.initPreviousStep(services, previousStep.options.id);
                         },
-                        ...options
-                    }
+                        ...options,
+                    },
                 },
                 {
                     guideBlockName: 'resource-results-explain',
@@ -164,14 +164,13 @@ PluginRegistry.add('guide.step', [
                             }
                             return Promise.resolve();
                         },
-                        ...options
-                    }
-                }
+                        ...options,
+                    },
+                },
             ];
 
             if (angular.isArray(options.subSteps)) {
                 options.subSteps.forEach((subStep) => {
-
                     switch (subStep.type) {
                         case 'link':
                             steps.push({
@@ -199,8 +198,8 @@ PluginRegistry.add('guide.step', [
                                         return GuideUtils.waitFor(GuideUtils.CSS_SELECTORS.SPARQL_RESULTS_ROWS_SELECTOR);
                                     },
                                     ...options,
-                                    ...subStep
-                                }
+                                    ...subStep,
+                                },
                             });
                             break;
                         case 'role':
@@ -227,8 +226,8 @@ PluginRegistry.add('guide.step', [
                                             });
                                     },
                                     ...options,
-                                    ...subStep
-                                }
+                                    ...subStep,
+                                },
                             });
                             break;
                         case 'visual':
@@ -246,8 +245,8 @@ PluginRegistry.add('guide.step', [
                                         return GuideUtils.defaultInitPreviousStep(services, stepId);
                                     },
                                     ...options,
-                                    ...subStep
-                                }
+                                    ...subStep,
+                                },
                             });
                             steps.push({
                                 guideBlockName: 'visual-graph-intro',
@@ -259,8 +258,8 @@ PluginRegistry.add('guide.step', [
                                         guide.next();
                                     },
                                     ...options,
-                                    ...subStep
-                                }
+                                    ...subStep,
+                                },
                             });
                             break;
                         case 'row':
@@ -270,8 +269,8 @@ PluginRegistry.add('guide.step', [
                                     content: 'guide.step_plugin.table-graph-link',
                                     skipUrl: true,
                                     ...options,
-                                    ...subStep
-                                }
+                                    ...subStep,
+                                },
                             });
                             break;
                         case 'table':
@@ -283,8 +282,8 @@ PluginRegistry.add('guide.step', [
                                     skipUrl: true,
                                     placement: 'top',
                                     ...options,
-                                    ...subStep
-                                }
+                                    ...subStep,
+                                },
                             });
                             break;
                     }
@@ -292,6 +291,6 @@ PluginRegistry.add('guide.step', [
             }
 
             return steps;
-        }
-    }
+        },
+    },
 ]);

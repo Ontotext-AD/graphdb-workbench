@@ -1,5 +1,4 @@
 export class NumberUtils {
-
     /**
      * Formats a number according to the specified language's locale rules.
      *

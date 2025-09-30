@@ -28,22 +28,22 @@ function RepositoriesRestService($http) {
         updatePropertiesFile,
         loadPropertiesFile,
         getRepositoriesFromKnownLocation,
-        getRepositoryTurtleConfig
+        getRepositoryTurtleConfig,
     };
 
     function getRepository(repoInfo) {
         return $http.get(`${REPOSITORIES_ENDPOINT}/${repoInfo.id}`, {
             params: {
-                location: repoInfo.location
-            }
+                location: repoInfo.location,
+            },
         });
     }
 
     function getRepositoryModel(repoInfo) {
         return $http.get(`${REPOSITORIES_ENDPOINT}/${repoInfo.id}`, {
             params: {
-                location: repoInfo.location
-            }
+                location: repoInfo.location,
+            },
         }).then((response) => {
             return repositoryConfigMapper(response.data);
         });
@@ -52,10 +52,10 @@ function RepositoriesRestService($http) {
     function getRepositories(location) {
         return $http.get(`${REPOSITORIES_ENDPOINT}/all`, {
             params: {
-                location: location
+                location: location,
             },
             // Added so that location changes would not cancel the request
-            noCancelOnRouteChange: true
+            noCancelOnRouteChange: true,
         });
     }
 
@@ -66,8 +66,8 @@ function RepositoriesRestService($http) {
     function deleteRepository(repo) {
         return $http.delete(`${REPOSITORIES_ENDPOINT}/${repo.id}`, {
             params: {
-                location: repo.location
-            }
+                location: repo.location,
+            },
         });
     }
 
@@ -82,8 +82,8 @@ function RepositoriesRestService($http) {
     function restartRepository(repo) {
         return $http.post(`${REPOSITORIES_ENDPOINT}/${repo.id}/restart`, null, {
             params: {
-                location: repo.location
-            }
+                location: repo.location,
+            },
         });
     }
 
@@ -94,13 +94,13 @@ function RepositoriesRestService($http) {
     function getSize(repository) {
         return $http.get(`${REPOSITORIES_ENDPOINT}/${repository.id}/size`, {
             params: {
-                location: repository.location
-            }
+                location: repository.location,
+            },
         });
     }
 
     function getPrefix(repositoryId, params) {
-        return $http.post(`${REPOSITORIES_ENDPOINT}/${repositoryId}/prefix`, null, { params })
+        return $http.post(`${REPOSITORIES_ENDPOINT}/${repositoryId}/prefix`, null, {params});
     }
 
     function getCluster() {
@@ -115,24 +115,24 @@ function RepositoriesRestService($http) {
         return $http.post(`${REPOSITORIES_ENDPOINT}/file/update`, JSON.stringify(content), {
             params: {
                 fileLocation: fileLocation,
-                location: location
-            }
+                location: location,
+            },
         });
     }
 
     function validateOntopPropertiesConnection(repositoryInfo) {
         return $http.post(`${REPOSITORIES_ENDPOINT}/ontop/test-connection`, repositoryInfo.params.propertiesFile, {
             params: {
-                location: repositoryInfo.location
-            }
+                location: repositoryInfo.location,
+            },
         });
     }
 
     function getSupportedDriversData(repositoryInfo) {
         return $http.get(`${REPOSITORIES_ENDPOINT}/ontop/drivers`, {
             params: {
-                location: repositoryInfo.location
-            }
+                location: repositoryInfo.location,
+            },
         });
     }
 
@@ -143,8 +143,8 @@ function RepositoriesRestService($http) {
                 params: {
                     fileLocation,
                     location,
-                    driverType
-                }
+                    driverType,
+                },
             });
     }
 
@@ -153,16 +153,16 @@ function RepositoriesRestService($http) {
             params: {
                 fileLocation,
                 location,
-                driverType
-            }
+                driverType,
+            },
         });
     }
 
     function getRepositoryTurtleConfig(repository) {
         return $http.get('rest/repositories/' + repository.id, {
             headers: {
-                'Accept': 'text/turtle'
-            }
+                'Accept': 'text/turtle',
+            },
         });
     }
 }

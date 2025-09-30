@@ -6,7 +6,7 @@ import * as d3 from 'd3';
 angular
     .module('graphdb.framework.graphexplore.directives.domainrange', [
         'graphdb.framework.graphexplore.controllers.domainrange',
-        'graphdb.framework.utils.localstorageadapter'
+        'graphdb.framework.utils.localstorageadapter',
     ])
     .constant('ONTO_RED', 'var(--primary-color)')
     .constant('ONTO_GREEN', 'var(--tertiary-color)')
@@ -23,49 +23,49 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
         scope: {
             showPredicatesInfoPanel: '=',
             selectedPredicate: '=',
-            collapseEdges: '='
+            collapseEdges: '=',
         },
-        link: linkFunc
+        link: linkFunc,
     };
 
     function linkFunc(scope) {
-        const timer = $timeout(function () {
+        const timer = $timeout(function() {
             renderDomainRangeGraph(scope);
         }, 50);
 
-        scope.$on("$destroy", function () {
+        scope.$on("$destroy", function() {
             $timeout.cancel(timer);
         });
     }
 
     function renderDomainRangeGraph(scope) {
-        var width = 1200,
-            height = 600;
+        const width = 1200;
+            const height = 600;
 
-        var mainClassSize = width / 18,
-            otherClassSize = width / 110,
-            datatypeSize = otherClassSize / 2,
-            labelFontSize = width / 90,
-            basicArrowStrokeWidth = width / 1000,
-            collapsedArrowStrokeWidth = width / 600;
+        const mainClassSize = width / 18;
+            const otherClassSize = width / 110;
+            const datatypeSize = otherClassSize / 2;
+            const labelFontSize = width / 90;
+            const basicArrowStrokeWidth = width / 1000;
+            const collapsedArrowStrokeWidth = width / 600;
 
-        var svg = d3.select("#domain-range")
+        const svg = d3.select("#domain-range")
             .append("svg")
             .attr("viewBox", "0 0 " + width + " " + height)
             .attr("preserveAspectRatio", "xMidYMid meet")
             .on("dblclick.zoom", null);
 
-        var force = d3.forceSimulation();
+        const force = d3.forceSimulation();
 
-        var drag = d3.drag()
-            .subject(function (d) {
+        const drag = d3.drag()
+            .subject(function(d) {
                 return d;
             })
             .on("start", dragStart)
             .on("end", dragEnd)
             .on("drag", dragged);
 
-        var defs = svg.append("defs");
+        const defs = svg.append("defs");
         generateMarkers(defs);
 
         function generateMarkers(defElement) {
@@ -79,12 +79,12 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
                     markerWidth: 5,
                     markerHeight: 5,
                     orient: "auto",
-                    fill: ONTO_BLUE
+                    fill: ONTO_BLUE,
                 })
                 .append("path")
                 .attrs({
                     d: "M0,-5L10,0L0,5",
-                    class: "arrowHead"
+                    class: "arrowHead",
                 });
 
             defs.append("marker")
@@ -97,12 +97,12 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
                     markerWidth: 4,
                     markerHeight: 4,
                     orient: "auto",
-                    fill: ONTO_BLUE
+                    fill: ONTO_BLUE,
                 })
                 .append("path")
                 .attrs({
                     d: "M0,-5L10,0L0,5",
-                    class: "arrowHead"
+                    class: "arrowHead",
                 });
 
             defs.append("marker")
@@ -115,12 +115,12 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
                     markerWidth: 5,
                     markerHeight: 5,
                     orient: "auto",
-                    fill: ONTO_BLUE
+                    fill: ONTO_BLUE,
                 })
                 .append("path")
                 .attrs({
                     d: "M0,-5L10,0L0,5",
-                    class: "arrowHead"
+                    class: "arrowHead",
                 });
         }
 
@@ -130,18 +130,18 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
          */
         function prepareForSVGImageExport() {
             // get css rules for the diagram
-            var cssRules = SVG.Export.getCSSRules("css/domain-range-graph.css?v=[AIV]{version}[/AIV]");
+            const cssRules = SVG.Export.getCSSRules("css/domain-range-graph.css?v=[AIV]{version}[/AIV]");
 
             // inline css rules in a defs tag
             $("defs").append('<style type="text/css"><![CDATA[' + cssRules + ']]></style>');
 
             // convert selected html to base64
-            var imgSrc = SVG.Export.generateBase64ImageSource("#domain-range svg");
+            const imgSrc = SVG.Export.generateBase64ImageSource("#domain-range svg");
 
             // set the binary image and a name for the downloadable file on the export button
             d3.select(this).attrs({
                 href: imgSrc,
-                download: "domain-range-graph-" + $repositories.getActiveRepository() + ".svg"
+                download: "domain-range-graph-" + $repositories.getActiveRepository() + ".svg",
             });
         }
 
@@ -153,92 +153,92 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
         function generateLegend() {
             // start of code for legend
 
-            var legendBackgroundWidth = width / 7;
-            var legendBackgroundHeight = legendBackgroundWidth * 1.2;
+            const legendBackgroundWidth = width / 7;
+            const legendBackgroundHeight = legendBackgroundWidth * 1.2;
 
-            var svgLegend = d3.select(".legend-container")
+            const svgLegend = d3.select(".legend-container")
                 .append("svg")
                 .attr("viewBox", "0 0 " + legendBackgroundWidth + " " + legendBackgroundHeight)
                 .attr("preserveAspectRatio", "xMidYMid meet");
 
-            var legendCellGroup = svgLegend;
+            const legendCellGroup = svgLegend;
 
             legendCellGroup.append("rect")
                 .attrs({
                     width: legendBackgroundWidth,
-                    height: legendBackgroundHeight
+                    height: legendBackgroundHeight,
                 })
                 .style("fill", "rgba(235, 235, 235, 0.9)");
 
-            var sourceX = width / 75;
-            var sourceY = width / 40;
-            var targetX = sourceX + mainClassSize / 2.5;
-            var targetY = sourceY;
+            const sourceX = width / 75;
+            const sourceY = width / 40;
+            const targetX = sourceX + mainClassSize / 2.5;
+            const targetY = sourceY;
 
-            var legendTextX = targetX + width / 90;
-            var legendLabelFontSize = labelFontSize / 1.1;
+            const legendTextX = targetX + width / 90;
+            const legendLabelFontSize = labelFontSize / 1.1;
 
-            var classNodeY = sourceY;
-            var legendClassNode = legendCellGroup
+            const classNodeY = sourceY;
+            const legendClassNode = legendCellGroup
                 .append("circle")
                 .attrs({
                     class: "legend-class-node",
                     cx: (sourceX + targetX) / 2,
                     cy: classNodeY,
-                    r: mainClassSize / 4.5
+                    r: mainClassSize / 4.5,
                 });
 
-            var classNodeTextY = targetY + width / 370;
+            const classNodeTextY = targetY + width / 370;
             legendCellGroup
                 .append("text")
                 .attrs({
                     x: legendTextX,
-                    y: classNodeTextY
+                    y: classNodeTextY,
                 })
                 .style('font-size', legendLabelFontSize + 'px')
                 .text("main class node");
 
-            var objectNodeY = classNodeY + width / 30;
+            const objectNodeY = classNodeY + width / 30;
             legendCellGroup
                 .append("circle")
                 .attrs({
                     class: "legend-object-node",
                     cx: (sourceX + targetX) / 2,
                     cy: objectNodeY,
-                    r: otherClassSize / 1.25
+                    r: otherClassSize / 1.25,
                 });
 
-            var objectNodeTextY = classNodeTextY + width / 30;
+            const objectNodeTextY = classNodeTextY + width / 30;
             legendCellGroup
                 .append("text")
                 .attrs({
                     x: legendTextX,
-                    y: objectNodeTextY
+                    y: objectNodeTextY,
                 })
                 .style('font-size', legendLabelFontSize + 'px')
                 .text("class node");
 
-            var datatypeNodeY = objectNodeY + width / 45;
+            const datatypeNodeY = objectNodeY + width / 45;
             legendCellGroup
                 .append("circle")
                 .attrs({
                     class: "legend-datatype-node",
                     cx: (sourceX + targetX) / 2,
                     cy: datatypeNodeY,
-                    r: datatypeSize
+                    r: datatypeSize,
                 });
 
-            var datatypeNodeTextY = objectNodeTextY + width / 45;
+            const datatypeNodeTextY = objectNodeTextY + width / 45;
             legendCellGroup
                 .append("text")
                 .attrs({
                     x: legendTextX,
-                    y: datatypeNodeTextY
+                    y: datatypeNodeTextY,
                 })
                 .style('font-size', legendLabelFontSize + 'px')
                 .text("datatype node");
 
-            var basicPropertyArrowY = datatypeNodeY + width / 45;
+            const basicPropertyArrowY = datatypeNodeY + width / 45;
             legendCellGroup
                 .append("line")
                 .attrs({
@@ -246,7 +246,7 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
                     x1: sourceX,
                     y1: basicPropertyArrowY,
                     x2: targetX,
-                    y2: basicPropertyArrowY
+                    y2: basicPropertyArrowY,
                 })
                 .style("stroke-width", basicArrowStrokeWidth)
                 .attr("marker-end", "url(" + $location.absUrl() + "#arrow)");
@@ -255,12 +255,12 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
                 .append("text")
                 .attrs({
                     x: legendTextX,
-                    y: basicPropertyArrowY + (width / 370)
+                    y: basicPropertyArrowY + (width / 370),
                 })
                 .style('font-size', legendLabelFontSize + 'px')
                 .text("explicit property");
 
-            var implicitPropArrowY = basicPropertyArrowY + width / 45;
+            const implicitPropArrowY = basicPropertyArrowY + width / 45;
             legendCellGroup
                 .append("line")
                 .attrs({
@@ -268,7 +268,7 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
                     x1: sourceX,
                     y1: implicitPropArrowY,
                     x2: targetX,
-                    y2: implicitPropArrowY
+                    y2: implicitPropArrowY,
                 })
                 .style("stroke-width", basicArrowStrokeWidth)
                 .attr("marker-end", "url(" + $location.absUrl() + "#arrow)");
@@ -277,12 +277,12 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
                 .append("text")
                 .attrs({
                     x: legendTextX,
-                    y: implicitPropArrowY + (width / 370)
+                    y: implicitPropArrowY + (width / 370),
                 })
                 .style('font-size', legendLabelFontSize + 'px')
                 .text("implicit property");
 
-            var collapsedPropArrowY = implicitPropArrowY + width / 45;
+            const collapsedPropArrowY = implicitPropArrowY + width / 45;
             legendCellGroup
                 .append("line")
                 .attrs({
@@ -290,7 +290,7 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
                     x1: sourceX,
                     y1: collapsedPropArrowY,
                     x2: targetX,
-                    y2: collapsedPropArrowY
+                    y2: collapsedPropArrowY,
                 })
                 .style("stroke-width", collapsedArrowStrokeWidth)
                 .attr("marker-end", "url(" + $location.absUrl() + "#collapsed-arrow)");
@@ -299,24 +299,24 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
                 .append("text")
                 .attrs({
                     x: legendTextX,
-                    y: collapsedPropArrowY + (width / 370)
+                    y: collapsedPropArrowY + (width / 370),
                 })
                 .style('font-size', legendLabelFontSize + 'px')
                 .text("collapsed property");
             // end of code for legend
         }
 
-        var selectedRdfUri = $location.search().uri;
-        var classNodeLabel = $location.search().name;
+        const selectedRdfUri = $location.search().uri;
+        const classNodeLabel = $location.search().name;
         const collapsed = $location.search().collapsed;
 
         getDomainRangeData(selectedRdfUri, collapsed);
 
         function getDomainRangeData(selectedRdfUri, collapsed) {
             GraphDataRestService.getDomainRangeData(selectedRdfUri, collapsed)
-                .success(function (response, status, headers) {
+                .success(function(response, status, headers) {
                     scope.domainRangeGraphData = response;
-                }).error(function (response) {
+                }).error(function(response) {
                 toastr.error("Request for " + classNodeLabel + " failed!");
             });
         }
@@ -325,22 +325,22 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
             $rootScope.$broadcast('switchEdgeMode', {
                 uri: selectedRdfUri,
                 name: classNodeLabel,
-                collapsed: collapsed
+                collapsed: collapsed,
             });
         }
 
         // intercept back button press and set action to local storage
-        $(window).on('popstate', function () {
+        $(window).on('popstate', function() {
             LocalStorageAdapter.set(LSKeys.DOMAIN_RANGE_WENT_BACK, true);
         });
 
-        $window.onpopstate = function (event) {
+        $window.onpopstate = function(event) {
             if (event.state) {
                 $rootScope.$broadcast("changeCollapsedEdgesState", event.state.collapsed);
             }
         };
 
-        scope.$watch('collapseEdges', function () {
+        scope.$watch('collapseEdges', function() {
             if (!angular.isUndefined(scope.collapseEdges)) {
                 LocalStorageAdapter.set(LSKeys.DOMAIN_RANGE_COLLAPSE_EDGES, scope.collapseEdges);
 
@@ -357,9 +357,9 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
             }
         });
 
-        scope.$watch('domainRangeGraphData', function () {
+        scope.$watch('domainRangeGraphData', function() {
             if (scope.domainRangeGraphData) {
-                var graph = _.cloneDeep(scope.domainRangeGraphData);
+                const graph = _.cloneDeep(scope.domainRangeGraphData);
 
                 const nodes = graph.nodes;
                 const links = graph.links;
@@ -368,9 +368,9 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
                     .force('x', d3.forceX(width / 2))
                     .force('y', d3.forceY(height / 2))
                     .force("charge", d3.forceManyBody().strength(-800))
-                    .force("link", d3.forceLink(links).distance(width / 3.5))
+                    .force("link", d3.forceLink(links).distance(width / 3.5));
 
-                var linkGroup = svg.selectAll(".link")
+                const linkGroup = svg.selectAll(".link")
                     .data(links)
                     .enter()
                     .append("g");
@@ -381,23 +381,23 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
                     sel.attr("marker-end", "url(" + $location.absUrl() + "#collapsed-arrow)");
                 }
 
-                var link,
-                    loopLink,
-                    loopLinkEdgeCount = 0;
+                let link;
+                    let loopLink;
+                    let loopLinkEdgeCount = 0;
 
 
                 linkGroup
-                    .each(function (d) {
+                    .each(function(d) {
                         if (d.objectPropNodeClassUri !== selectedRdfUri) {
                             link = linkGroup
                                 .append("line")
                                 .attrs({
-                                    class: "link",
+                                    "class": "link",
                                     // absolute url needed because angular inserts a <base> tag
-                                    "marker-end": "url(" + $location.absUrl() + "#arrow)"
+                                    "marker-end": "url(" + $location.absUrl() + "#arrow)",
                                 })
                                 .style("stroke-width", basicArrowStrokeWidth)
-                                .each(function (d) {
+                                .each(function(d) {
                                     switch (d.propertyType) {
                                         case "objectLeft":
                                             d.targetRadius = mainClassSize;
@@ -411,7 +411,7 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
                                         default:
                                             d.targetRadius = 0;
                                     }
-                                    var sel = d3.select(this);
+                                    const sel = d3.select(this);
                                     if (d.targetNodeEdgeCount > 1) {
                                         styleArrowsInCollapsedMode(sel);
                                     } else if (d.implicit) {
@@ -420,14 +420,14 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
                                 });
                         } else {
                             if (angular.isUndefined(loopLink)) {
-                                var loopLinkSize = mainClassSize / 2;
+                                const loopLinkSize = mainClassSize / 2;
                                 loopLink = d3.select(this)
                                     .append("path")
                                     .attrs({
-                                        d: "M 0 0 A " + loopLinkSize + " " + loopLinkSize + " 0 1 1 0 " + loopLinkSize,
-                                        class: "loop-link",
-                                        fill: "none",
-                                        "marker-end": "url(" + $location.absUrl() + "#arrow-loop)"
+                                        "d": "M 0 0 A " + loopLinkSize + " " + loopLinkSize + " 0 1 1 0 " + loopLinkSize,
+                                        "class": "loop-link",
+                                        "fill": "none",
+                                        "marker-end": "url(" + $location.absUrl() + "#arrow-loop)",
                                     })
                                     .style("stroke-width", basicArrowStrokeWidth);
                             }
@@ -439,7 +439,7 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
                         }
                     });
 
-                var previousPropertyNameSelection = {};
+                const previousPropertyNameSelection = {};
 
                 function disableCollapsedPredicateLabelHightlighting() {
                     if (!$.isEmptyObject(previousPropertyNameSelection)) {
@@ -450,7 +450,7 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
 
                 // when clicking anywhere else but the collapsed labels disable highlighting
                 // of the currently selected one
-                $("document").ready(function () {
+                $("document").ready(function() {
                     $("#domain-range").bind("click", disableCollapsedPredicateLabelHightlighting);
                 });
 
@@ -462,7 +462,7 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
                     previousPropertyNameSelection.text.style("fill", "white");
 
                     previousPropertyNameSelection.background.style("fill", ONTO_BLUE);
-                    $timeout(function () {
+                    $timeout(function() {
                         scope.showPredicatesInfoPanel = true;
                         scope.selectedPredicate = d;
                     });
@@ -470,28 +470,28 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
                 }
 
 
-                var propertyNames = linkGroup
+                let propertyNames = linkGroup
                     .append("text")
-                    .attr("class", function (d) {
+                    .attr("class", function(d) {
                         return d.objectPropNodeClassUri === selectedRdfUri ? "loop-link-property-name" : "property-name";
                     })
-                    .attr("dx", function (d) {
+                    .attr("dx", function(d) {
                         // offset text more towards the main class
                         return mainClassSize / 2 * (d.propertyType === "objectLeft" ? 1 : -1);
                     })
-                    .style("text-anchor", function (d) {
+                    .style("text-anchor", function(d) {
                         return d.propertyType === "objectLeft" ? "end" : "start";
                     })
                     .style("font-size", labelFontSize)
-                    .text(function (d) {
+                    .text(function(d) {
                         return d.targetNodeEdgeCount > 1 ? d.targetNodeEdgeCount + " predicates" : d.name;
                     });
 
 
                 propertyNames
-                    .each(function (d) {
-                        var sel = d3.select(this);
-                        var isCompoundEdge = /\d\spredicates/.test(sel.text());
+                    .each(function(d) {
+                        const sel = d3.select(this);
+                        const isCompoundEdge = /\d\spredicates/.test(sel.text());
 
                         // handle collapsed predicates by making their font bold, make them highlight when clicked
                         // and make them trigger the side panel to display the collapsed edges
@@ -502,67 +502,67 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
                         } else {
                             // for regular predicate labels just attach a link to the "Resources" view
                             // for more helpful information regarding them
-                            sel.on("click", function (event, d) {
+                            sel.on("click", function(event, d) {
                                 $window.open("resource?uri=" + encodeURIComponent(d.uri), "_blank");
                             });
                         }
                     });
-                var textPadding = width / 600;
+                const textPadding = width / 600;
 
 
-                var linkRect = linkGroup
+                const linkRect = linkGroup
                     .append("rect")
-                    .attr("class", function (d) {
-                        return d.objectPropNodeClassUri !== selectedRdfUri ? "link-background" : "loop-link-background"
+                    .attr("class", function(d) {
+                        return d.objectPropNodeClassUri !== selectedRdfUri ? "link-background" : "loop-link-background";
                     })
-                    .attr("width", function (d) {
+                    .attr("width", function(d) {
                         d.calculatedWidth = this.previousSibling.getBBox().width;
                         return d.calculatedWidth + textPadding * 2;
                     })
-                    .attr("height", function (d) {
+                    .attr("height", function(d) {
                         d.calculatedHeight = this.previousSibling.getBBox().height;
                         return d.calculatedHeight + textPadding;
                     })
-                    .attr("transform", function (d) {
+                    .attr("transform", function(d) {
                         // offset rect by the same amount as text (besides the padding)
-                        var translateX = textPadding - mainClassSize / 2 * (d.propertyType === "objectLeft" ? 1 : -1);
+                        let translateX = textPadding - mainClassSize / 2 * (d.propertyType === "objectLeft" ? 1 : -1);
                         if (d.propertyType === "objectLeft") {
                             translateX += d.calculatedWidth;
                         }
                         return "translate(-" + translateX + ",-" + (textPadding + d.calculatedHeight / 2) + ")";
                     })
-                    .on("click", function (event) {
+                    .on("click", function(event) {
                         event.stopPropagation();
                     });
 
 
-                var nodeGroup = svg.selectAll(".node")
+                const nodeGroup = svg.selectAll(".node")
                     .data(nodes)
                     .enter()
                     .append("g");
 
-                var node = nodeGroup
-                    .filter(function (d) {
+                const node = nodeGroup
+                    .filter(function(d) {
                         return d.objectPropClassUri !== selectedRdfUri;
                     })
                     .append("circle")
-                    .each(function (d) {
-                        var sel = d3.select(this);
+                    .each(function(d) {
+                        const sel = d3.select(this);
                         if (d.classPosition === "main") {
                             sel.attrs({
                                 class: "class-node",
-                                r: mainClassSize
+                                r: mainClassSize,
                             })
                                 .attr("marker-end", "url(" + $location.absUrl() + "#loop-link)");
                         } else if (d.objectPropClassName === null) {
                             sel.attrs({
                                 class: "datatype-node",
-                                r: datatypeSize
+                                r: datatypeSize,
                             });
                         } else {
                             sel.attrs({
                                 class: "object-prop-node",
-                                r: otherClassSize
+                                r: otherClassSize,
                             });
                         }
                     })
@@ -570,7 +570,7 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
 
 
                 function reloadDomainRangeGraphView(event, d, collapsed) {
-                    scope.$apply(function () {
+                    scope.$apply(function() {
                         $rootScope.$broadcast('reloadDomainRangeGraphView', d, collapsed);
                     });
                 }
@@ -580,60 +580,60 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
 
 
                 nodeGroup
-                    .filter(function (d) {
+                    .filter(function(d) {
                         return d.objectPropClassName && d.objectPropClassUri !== selectedRdfUri;
                     })
                     .append("text")
-                    .attr("class", function (d) {
+                    .attr("class", function(d) {
                         return d.classPosition + "-class-label";
                     })
                     .style("font-size", labelFontSize)
-                    .text(function (d) {
+                    .text(function(d) {
                         return d.objectPropClassName;
                     })
-                    .on("click", function (event, d) {
+                    .on("click", function(event, d) {
                         $window.open("resource?uri=" + encodeURIComponent(d.objectPropClassUri), "_blank");
                     });
 
-                var objectPropClassName = nodeGroup.select("text");
+                const objectPropClassName = nodeGroup.select("text");
 
                 svg.select(".class-node")
-                    .each(function () {
+                    .each(function() {
                         d3.select(this.parentNode)
                             .append("text")
                             .attr("class", "rdf-class-label")
-                            .style("font-size", function (d) {
-                                return D3.Text.calcFontSize(classNodeLabel, mainClassSize)
+                            .style("font-size", function(d) {
+                                return D3.Text.calcFontSize(classNodeLabel, mainClassSize);
                             })
                             .text(classNodeLabel)
-                            .on("click", function () {
+                            .on("click", function() {
                                 $window.open("resource?uri=" + encodeURIComponent(selectedRdfUri), "_blank");
                             });
                     });
 
 
-                var rdfClassName = svg.select(".class-node + text"),
-                    classNode = d3.select(".class-node"),
-                    loopLinkBackgroundSel = d3.selectAll(".loop-link-background"),
-                    loopLinkPropertyName = d3.selectAll(".loop-link-property-name");
+                const rdfClassName = svg.select(".class-node + text");
+                    const classNode = d3.select(".class-node");
+                    const loopLinkBackgroundSel = d3.selectAll(".loop-link-background");
+                    const loopLinkPropertyName = d3.selectAll(".loop-link-property-name");
 
                 propertyNames = d3.selectAll(".property-name");
 
                 if (!angular.isUndefined(loopLink)) {
                     var loopLinkBackgroundProps = [];
 
-                    loopLinkBackgroundSel.each(function (d, i) {
-                        var sel = d3.select(this);
+                    loopLinkBackgroundSel.each(function(d, i) {
+                        const sel = d3.select(this);
                         loopLinkBackgroundProps.push({
                             idx: i,
                             width: d.calculatedWidth,
-                            height: d.calculatedHeight
+                            height: d.calculatedHeight,
                         });
                     });
                 }
 
                 function tick(e) {
-                    var k = 8 * force.alpha();
+                    const k = 8 * force.alpha();
 
                     function pushEdgesToLeftAndRight(d) {
                         if (d.propertyType === "objectLeft") {
@@ -646,54 +646,54 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
                     }
 
                     link
-                        .filter(function (d) {
+                        .filter(function(d) {
                             return d.objectPropNodeClassUri !== selectedRdfUri;
                         })
-                        .attr("x1", function (d) {
+                        .attr("x1", function(d) {
                             return d.source.x;
                         })
-                        .attr("y1", function (d) {
+                        .attr("y1", function(d) {
                             return d.source.y;
                         })
-                        .attr("x2", function (d) {
+                        .attr("x2", function(d) {
                             return d.targetX;
                         })
-                        .attr("y2", function (d) {
+                        .attr("y2", function(d) {
                             return d.targetY;
                         })
-                        .each(function (d) {
+                        .each(function(d) {
                             pushEdgesToLeftAndRight(d);
 
                             // shortens the line to compensate for the circle at the target
-                            var angle = Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x);
+                            const angle = Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x);
                             d.targetX = d.target.x - Math.cos(angle) * d.targetRadius;
                             d.targetY = d.target.y - Math.sin(angle) * d.targetRadius;
                         });
 
                     function positionLoopLink(d) {
-                        var loopTranslateX = d.x + mainClassSize * 0.96,
-                            loopTranslateY = d.y - mainClassSize / 5.7 - 5;
+                        const loopTranslateX = d.x + mainClassSize * 0.96;
+                            const loopTranslateY = d.y - mainClassSize / 5.7 - 5;
                         loopLink.attr("transform", "rotate(270, " + d.x + "," + d.y + ") translate(" + loopTranslateX + "," + loopTranslateY + ")");
                     }
 
                     function positionLoopLinkLabels(d) {
                         function reposition(sel, i) {
-                            var foundLoopLinkBackgroundProps =
-                                $.grep(loopLinkBackgroundProps, function (obj) {
+                            const foundLoopLinkBackgroundProps =
+                                $.grep(loopLinkBackgroundProps, function(obj) {
                                     return obj.idx == i;
                                 });
-                            var currentBackgroundHeight = 0;
+                            let currentBackgroundHeight = 0;
                             if (i > 0) {
                                 currentBackgroundHeight = parseFloat(2 * i * (foundLoopLinkBackgroundProps[0].height / 1.4));
                             }
 
-                            var loopLinkLabelX = d.x,
-                                loopLinkLabelY = d.y - mainClassSize * 2.1 - currentBackgroundHeight;
+                            const loopLinkLabelX = d.x;
+                                const loopLinkLabelY = d.y - mainClassSize * 2.1 - currentBackgroundHeight;
 
                             sel
                                 .attrs({
                                     x: loopLinkLabelX,
-                                    y: loopLinkLabelY
+                                    y: loopLinkLabelY,
                                 })
                                 .moveToFront();
                         }
@@ -719,10 +719,10 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
                             }
                         }
 
-                        loopLinkPropertyName.each(function (dd, i) {
-                            var sel = d3.select(this);
+                        loopLinkPropertyName.each(function(dd, i) {
+                            const sel = d3.select(this);
 
-                            var predicatesLeft = loopLinkPropertyName.size() - NON_COLLAPSED_REFLEXIVE_LINK_LIMIT;
+                            const predicatesLeft = loopLinkPropertyName.size() - NON_COLLAPSED_REFLEXIVE_LINK_LIMIT;
                             if (predicatesLeft < 0) {
                                 reposition(sel, i);
                             } else {
@@ -752,12 +752,12 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
                     }
 
                     function positionLoopLinkBackgrounds(d) {
-                        var loopLinkBackgroundY = d.x + mainClassSize * 2,
-                            loopLinkBackgroundX = d.y - mainClassSize / 1.9;
+                        let loopLinkBackgroundY = d.x + mainClassSize * 2;
+                            const loopLinkBackgroundX = d.y - mainClassSize / 1.9;
 
                         function reposition(sel, i) {
-                            var foundLoopLinkBackgroundProps =
-                                $.grep(loopLinkBackgroundProps, function (obj) {
+                            const foundLoopLinkBackgroundProps =
+                                $.grep(loopLinkBackgroundProps, function(obj) {
                                     return obj.idx == i;
                                 });
                             if (i > 0) {
@@ -768,7 +768,7 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
                                 .attrs({
                                     transform: "rotate(270, " + d.x + "," + d.y + ") translate(" + loopLinkBackgroundY + "," + loopLinkBackgroundX + ")",
                                     width: foundLoopLinkBackgroundProps[0].height,
-                                    height: foundLoopLinkBackgroundProps[0].width
+                                    height: foundLoopLinkBackgroundProps[0].width,
                                 });
                         }
 
@@ -780,11 +780,11 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
                          *              all reflexive links to the current class
                          */
                         function adjustViewMorePredicatesLabel(allLoopLinkEdges) {
-                            var viewMoreTextWidth;
+                            let viewMoreTextWidth;
                             d3.select(".view-more-preds-label")
                                 // make label bold to resemble a collapsed label
                                 .style("font-weight", "bold")
-                                .each(function (d) {
+                                .each(function(d) {
                                     // attach all reflexive links to the "view more" collapsed predicate
                                     // because in non collapsed mode the backend does not provide them
                                     d.target.allEdges = allLoopLinkEdges;
@@ -800,8 +800,8 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
                                 .attr("height", viewMoreTextWidth + 2 * textPadding);
                         }
 
-                        var allLoopLinkEdges = [];
-                        loopLinkBackgroundSel.each(function (dd, i) {
+                        const allLoopLinkEdges = [];
+                        loopLinkBackgroundSel.each(function(dd, i) {
                             allLoopLinkEdges.push(dd);
                             if (i < NON_COLLAPSED_REFLEXIVE_LINK_LIMIT) {
                                 reposition(d3.select(this), i);
@@ -816,18 +816,18 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
 
                     function centerClassNode(d) {
                         if (!(window.ActiveXObject) && "ActiveXObject" in window) {
-                            Math.log10 = function (x) {
+                            Math.log10 = function(x) {
                                 return Math.log(x) / Math.LN10;
                             };
                         }
-                        var absDiff = classNode.attr("cx") - width / 2,
-                            logOffset = Math.log10(Math.abs(absDiff)) * 0.5;
+                        const absDiff = classNode.attr("cx") - width / 2;
+                            const logOffset = Math.log10(Math.abs(absDiff)) * 0.5;
                         d.x += absDiff > 0 ? -logOffset : logOffset;
                         return d.x;
                     }
 
                     node
-                        .each(function (d) {
+                        .each(function(d) {
                             if (d.classPosition === "main" && !angular.isUndefined(loopLink)) {
                                 positionLoopLink(d);
                                 positionLoopLinkLabels(d);
@@ -836,14 +836,14 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
 
                             if (d.objectPropClassUri !== selectedRdfUri) {
                                 d3.select(this)
-                                    .attr("cx", function (d) {
+                                    .attr("cx", function(d) {
                                         // pushes the main class circle to the centre
                                         if (d.classPosition === "main") {
                                             return centerClassNode(d);
                                         }
                                         return d.x;
                                     })
-                                    .attr("cy", function (d) {
+                                    .attr("cy", function(d) {
                                         return d.y;
                                     });
                             }
@@ -851,27 +851,27 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
 
 
                     rdfClassName
-                        .attr("x", function (d) {
+                        .attr("x", function(d) {
                             return d.x;
                         })
-                        .attr("y", function (d) {
+                        .attr("y", function(d) {
                             return d.y;
                         })
                         .moveToFront();
 
 
                     linkRect
-                        .filter(function (d) {
+                        .filter(function(d) {
                             return d.objectPropNodeClassUri !== selectedRdfUri;
                         })
-                        .attr("x", function (d) {
+                        .attr("x", function(d) {
                             if (d.target.x > d.source.x) {
                                 return (d.source.x + (d.target.x - d.source.x) / 2);
                             } else {
                                 return (d.target.x + (d.source.x - d.target.x) / 2);
                             }
                         })
-                        .attr("y", function (d) {
+                        .attr("y", function(d) {
                             if (d.target.y > d.source.y) {
                                 return (d.source.y + (d.target.y - d.source.y) / 2);
                             } else {
@@ -882,14 +882,14 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
 
 
                     propertyNames
-                        .attr("x", function (d) {
+                        .attr("x", function(d) {
                             if (d.target.x > d.source.x) {
                                 return (d.source.x + (d.target.x - d.source.x) / 2);
                             } else {
                                 return (d.target.x + (d.source.x - d.target.x) / 2);
                             }
                         })
-                        .attr("y", function (d) {
+                        .attr("y", function(d) {
                             if (d.target.y > d.source.y) {
                                 return (d.source.y + (d.target.y - d.source.y) / 2);
                             } else {
@@ -900,21 +900,20 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
 
 
                     objectPropClassName
-                        .attr("x", function (d) {
+                        .attr("x", function(d) {
                             if (d.classPosition === "right") {
                                 return d.x + otherClassSize * 1.2;
                             } else {
                                 return d.x - otherClassSize * 1.2;
                             }
                         })
-                        .attr("y", function (d) {
+                        .attr("y", function(d) {
                             return d.y;
                         })
                         .moveToFront();
                 }
 
-                force.on("tick", tick)
-
+                force.on("tick", tick);
             }
         });
 
@@ -925,7 +924,6 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
             d.fx = event.x;
             d.fy = event.y;
             d3.select(this).classed("selected", true);
-
         }
 
         // Update the subject (dragged node) position during drag.
@@ -950,6 +948,5 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
                 force.restart();
             }
         }
-
     }
 }

@@ -5,7 +5,7 @@ import 'angular/clustermanagement/directives/cluster-configuration/multi-region.
 const modules = [
     'graphdb.framework.clustermanagement.directives.cluster-configuration.cluster-properties',
     'graphdb.framework.clustermanagement.directives.cluster-configuration.cluster-nodes',
-    'graphdb.framework.clustermanagement.directives.cluster-configuration.multi-region'
+    'graphdb.framework.clustermanagement.directives.cluster-configuration.multi-region',
 ];
 
 angular
@@ -17,7 +17,7 @@ ClusterConfiguration.$inject = ['$jwtAuth', '$uibModal', '$translate', 'toastr',
 const CONFIGURATION_TABS = {
     PROPERTIES: 'properties',
     NODES: 'nodes',
-    MULTI_REGION: 'multi_region'
+    MULTI_REGION: 'multi_region',
 };
 
 function ClusterConfiguration($jwtAuth, $uibModal, $translate, toastr, ClusterViewContextService) {
@@ -27,7 +27,7 @@ function ClusterConfiguration($jwtAuth, $uibModal, $translate, toastr, ClusterVi
         scope: {
             currentNode: '=',
             clusterModel: '=',
-            clusterConfiguration: '='
+            clusterConfiguration: '=',
         },
         link: ($scope) => {
             // =========================
@@ -67,7 +67,7 @@ function ClusterConfiguration($jwtAuth, $uibModal, $translate, toastr, ClusterVi
                 subscriptions.forEach((subscription) => subscription());
             };
 
-            $scope.$on('$destroy', function () {
+            $scope.$on('$destroy', function() {
                 removeAllListeners();
                 $scope.closeClusterConfigurationPanel();
             });
@@ -79,6 +79,6 @@ function ClusterConfiguration($jwtAuth, $uibModal, $translate, toastr, ClusterVi
                 subscribeHandlers();
             };
             init();
-        }
+        },
     };
 }

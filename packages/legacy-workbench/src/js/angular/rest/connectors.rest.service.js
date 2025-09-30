@@ -7,12 +7,11 @@ ConnectorsRestService.$inject = ['$http'];
 const CONNECTORS_ENDPOINT = 'rest/connectors';
 
 function ConnectorsRestService($http) {
-
     return {
         getConnectors,
         initConnector,
         hasConnector,
-        checkConnector
+        checkConnector,
     };
 
     /**
@@ -28,8 +27,8 @@ function ConnectorsRestService($http) {
             return $http.get(CONNECTORS_ENDPOINT, {
                 headers: {
                     'X-GraphDB-Repository': repositoryId,
-                    'X-GraphDB-Repository-Location': repositoryLocation
-                }
+                    'X-GraphDB-Repository-Location': repositoryLocation,
+                },
             });
         }
         return $http.get(CONNECTORS_ENDPOINT);
@@ -52,8 +51,8 @@ function ConnectorsRestService($http) {
             return $http.get(`${CONNECTORS_ENDPOINT}/existing?prefix=${prefix}`, {
                 headers: {
                     'X-GraphDB-Repository': repositoryId,
-                    'X-GraphDB-Repository-Location': repositoryLocation
-                }
+                    'X-GraphDB-Repository-Location': repositoryLocation,
+                },
             });
         }
         return $http.get(`${CONNECTORS_ENDPOINT}/existing?prefix=${prefix}`);
@@ -62,8 +61,8 @@ function ConnectorsRestService($http) {
     function checkConnector(data) {
         return $http.post(`${CONNECTORS_ENDPOINT}/check`, data, {
             headers: {
-                'Content-Type': 'text/plain'
-            }
+                'Content-Type': 'text/plain',
+            },
         });
     }
 }

@@ -7,7 +7,7 @@ import {AutocompleteContextService, ServiceProvider} from "@ontotext/workbench-a
 const modules = [
     'toastr',
     'graphdb.framework.rest.autocomplete.service',
-    'graphdb.framework.core.directives.validate-url'
+    'graphdb.framework.core.directives.validate-url',
 ];
 
 angular
@@ -42,7 +42,6 @@ function AutocompleteCtrl(
     AutocompleteService,
     $translate,
     WorkbenchContextService) {
-
     let timer;
 
     function cancelTimer() {
@@ -53,11 +52,11 @@ function AutocompleteCtrl(
 
     $scope.pluginName = 'autocomplete';
 
-    $scope.setPluginIsActive = function (isPluginActive) {
+    $scope.setPluginIsActive = function(isPluginActive) {
         $scope.pluginIsActive = isPluginActive;
     };
 
-    const refreshEnabledStatus = function () {
+    const refreshEnabledStatus = function() {
         AutocompleteService.checkAutocompleteStatus()
             .then((autocompleteEnabled) => {
                 $scope.autocompleteEnabled = autocompleteEnabled;
@@ -68,35 +67,35 @@ function AutocompleteCtrl(
             });
     };
 
-    const refreshIndexIRIs = function () {
+    const refreshIndexIRIs = function() {
         AutocompleteService.refreshIndexIRIs()
-            .success(function (data) {
+            .success(function(data) {
                 $scope.shouldIndexIRIs = data;
-            }).error(function (data) {
+            }).error(function(data) {
             toastr.error(getError(data));
         });
     };
 
-    const refreshIndexStatus = function () {
+    const refreshIndexStatus = function() {
         AutocompleteService.refreshIndexStatus()
-            .success(function (data) {
+            .success(function(data) {
                 $scope.indexStatus = data;
             })
-            .error(function (data) {
+            .error(function(data) {
                 toastr.error(getError(data));
             });
     };
 
-    const refreshLabelConfig = function () {
+    const refreshLabelConfig = function() {
         AutocompleteService.refreshLabelConfig()
-            .success(function (data) {
+            .success(function(data) {
                 $scope.labelConfig = data;
-            }).error(function (data) {
+            }).error(function(data) {
             toastr.error(getError(data));
         });
     };
 
-    const validateAndNormalizeLabelIri = function (label, namespaces) {
+    const validateAndNormalizeLabelIri = function(label, namespaces) {
         const labelIriText = UriUtils.expandPrefix(label.labelIri.toString(), namespaces);
 
         if (UriUtils.isValidIri(label, labelIriText) && labelIriText !== "") {
@@ -105,11 +104,11 @@ function AutocompleteCtrl(
         }
 
         return false;
-    }
+    };
 
     function showInvalidIriError(labelIri) {
         const errorMessage = decodeHTML(
-            $translate.instant('not.valid.iri', { value: labelIri.toString() })
+            $translate.instant('not.valid.iri', {value: labelIri.toString()}),
         );
         toastr.error(errorMessage);
     }
@@ -128,7 +127,7 @@ function AutocompleteCtrl(
             });
     }
 
-    const addLabelConfig = function (updatedLabel) {
+    const addLabelConfig = function(updatedLabel) {
         $scope.setLoader(true, $translate.instant('autocomplete.update'));
 
         if (validateAndNormalizeLabelIri(updatedLabel, $scope.namespaces)) {
@@ -140,7 +139,7 @@ function AutocompleteCtrl(
         }
     };
 
-    const editLabelConfig = function (updatedLabel, originalLabel) {
+    const editLabelConfig = function(updatedLabel, originalLabel) {
         $scope.setLoader(true, $translate.instant('autocomplete.update'));
 
         if (validateAndNormalizeLabelIri(updatedLabel, $scope.namespaces)) {
@@ -152,27 +151,27 @@ function AutocompleteCtrl(
         }
     };
 
-    const removeLabelConfig = function (label) {
+    const removeLabelConfig = function(label) {
         $scope.setLoader(true, $translate.instant('autocomplete.update'));
 
         AutocompleteService.removeLabelConfig(label)
-            .success(function () {
+            .success(function() {
                 refreshLabelConfig();
                 refreshIndexStatus();
-            }).error(function (data) {
+            }).error(function(data) {
             toastr.error(getError(data));
-        }).finally(function () {
+        }).finally(function() {
             $scope.setLoader(false);
         });
     };
 
-    $scope.checkForPlugin = function () {
+    $scope.checkForPlugin = function() {
         $scope.pluginFound = false;
 
         $scope.setLoader(true);
 
         AutocompleteService.checkForPlugin()
-            .success(function (data) {
+            .success(function(data) {
                 $scope.pluginFound = data === true;
                 if ($scope.pluginFound) {
                     loadNamespaces();
@@ -184,15 +183,15 @@ function AutocompleteCtrl(
                     $scope.autocompleteEnabled = false;
                     $scope.loading = false;
                 }
-            }).error(function (data) {
+            }).error(function(data) {
             toastr.error(getError(data));
-        }).finally(function () {
+        }).finally(function() {
             $scope.setLoader(false);
         });
     };
 
-    const pullStatus = function () {
-        timer = $interval(function () {
+    const pullStatus = function() {
+        timer = $interval(function() {
             $scope.$broadcast('checkIsActive');
             if ($scope.autocompleteEnabled) {
                 refreshIndexStatus();
@@ -200,7 +199,7 @@ function AutocompleteCtrl(
         }, 5000);
     };
 
-    $scope.$on("$destroy", function () {
+    $scope.$on("$destroy", function() {
         cancelTimer();
     });
 
@@ -215,10 +214,10 @@ function AutocompleteCtrl(
         pullStatus();
     };
 
-    $scope.setLoader = function (loader, message) {
+    $scope.setLoader = function(loader, message) {
         $timeout.cancel($scope.loaderTimeout);
         if (loader) {
-            $scope.loaderTimeout = $timeout(function () {
+            $scope.loaderTimeout = $timeout(function() {
                 $scope.loader = loader;
                 $scope.loaderMessage = message;
             }, 300);
@@ -227,75 +226,75 @@ function AutocompleteCtrl(
         }
     };
 
-    $scope.getLoaderMessage = function () {
+    $scope.getLoaderMessage = function() {
         return $scope.loaderMessage || $translate.instant('common.loading');
     };
 
-    $scope.toggleAutocomplete = function () {
+    $scope.toggleAutocomplete = function() {
         const newValue = !$scope.autocompleteEnabled;
         $scope.setLoader(true, newValue ? $translate.instant('autocomplete.enabling') : $translate.instant('autocomplete.disabling'));
 
         AutocompleteService.toggleAutocomplete(newValue)
-            .success(function () {
+            .success(function() {
                 refreshEnabledStatus();
                 refreshIndexStatus();
                 ServiceProvider.get(AutocompleteContextService).updateAutocompleteEnabled(newValue);
-            }).error(function (data) {
+            }).error(function(data) {
             toastr.error(getError(data));
-        }).finally(function () {
+        }).finally(function() {
             $scope.setLoader(false);
         });
     };
 
-    $scope.toggleIndexIRIs = function () {
+    $scope.toggleIndexIRIs = function() {
         $scope.setLoader(true, ($translate.instant('autocomplete.index.iri')));
 
         AutocompleteService.toggleIndexIRIs(!$scope.shouldIndexIRIs)
-            .success(function () {
+            .success(function() {
                 refreshIndexIRIs();
                 refreshIndexStatus();
-            }).error(function (data) {
+            }).error(function(data) {
             toastr.error(getError(data));
-        }).finally(function () {
+        }).finally(function() {
             $scope.setLoader(false);
         });
     };
 
-    $scope.buildIndex = function () {
+    $scope.buildIndex = function() {
         $scope.setLoader(true, $translate.instant('autocomplete.index.build'));
 
         AutocompleteService.buildIndex()
-            .success(function () {
+            .success(function() {
                 $scope.indexStatus = 'BUILDING';
-            }).error(function (data) {
+            }).error(function(data) {
             toastr.error(getError(data));
-        }).finally(function () {
+        }).finally(function() {
             $scope.setLoader(false);
         });
     };
 
-    $scope.interruptIndexing = function () {
+    $scope.interruptIndexing = function() {
         $scope.setLoader(true, $translate.instant('index.interrupt'));
 
         AutocompleteService.interruptIndexing()
-            .success(function () {
+            .success(function() {
                 refreshIndexStatus();
-            }).error(function (data) {
+            }).error(function(data) {
             toastr.error(getError(data));
-        }).finally(function () {
+        }).finally(function() {
             $scope.setLoader(false);
         });
     };
 
-    $scope.getDegradedReason = function () {
+    $scope.getDegradedReason = function() {
         return $repositories.getDegradedReason();
     };
 
-    $scope.addLabel = function () {
+    $scope.addLabel = function() {
         $scope.editLabel({labelIri: '', languages: ''}, true);
     };
 
-    $scope.editLabel = function (label, isNew) {
+    $scope.editLabel = function(label, isNew) {
         const handleResult = isNew
             ? (result) => addLabelConfig(result.updated)
             : (result) => editLabelConfig(result.updated, result.original);
@@ -304,21 +303,21 @@ function AutocompleteCtrl(
             templateUrl: 'js/angular/autocomplete/templates/modal/add-label.html',
             controller: 'AddLabelCtrl',
             resolve: {
-                data: function () {
+                data: function() {
                     return {
                         label: label,
-                        isNew: isNew
+                        isNew: isNew,
                     };
-                }
-            }
+                },
+            },
         }).result.then(handleResult);
     };
 
-    $scope.removeLabel = function (label) {
+    $scope.removeLabel = function(label) {
         removeLabelConfig(label);
     };
 
-    $scope.$on('repositoryIsSet', function () {
+    $scope.$on('repositoryIsSet', function() {
         cancelTimer();
         if (!$licenseService.isLicenseValid() ||
             !$repositories.getActiveRepository() ||
@@ -352,22 +351,22 @@ function AddLabelCtrl($scope, $uibModalInstance, $timeout, data) {
     $scope.originalLabel = _.cloneDeep(data.label);
     $scope.isNew = data.isNew;
 
-    $scope.ok = function () {
+    $scope.ok = function() {
         if ($scope.form.$valid) {
             $uibModalInstance.close({
                 original: $scope.originalLabel,
-                updated: $scope.label
+                updated: $scope.label,
             });
         }
     };
 
-    $scope.cancel = function () {
+    $scope.cancel = function() {
         $uibModalInstance.dismiss('cancel');
     };
 
-    $scope.setTemplate = function (iri) {
+    $scope.setTemplate = function(iri) {
         $scope.label.labelIri = iri;
-        $timeout(function () {
+        $timeout(function() {
             $('#wb-autocomplete-languages').focus();
         }, 0);
     };

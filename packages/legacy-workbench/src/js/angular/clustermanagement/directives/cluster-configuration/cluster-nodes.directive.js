@@ -12,7 +12,7 @@ function ClusterNodes() {
         templateUrl: 'js/angular/clustermanagement/templates/cluster-configuration/cluster-nodes.html',
         scope: {
             currentNode: '=',
-            clusterModel: '='
-        }
+            clusterModel: '=',
+        },
     };
 }

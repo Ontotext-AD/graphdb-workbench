@@ -15,7 +15,7 @@
  * @requires ngModel
  */
 angular.module('graphdb.framework.core.directives.ascii-validator', [])
-    .directive('asciiValidator', function () {
+    .directive('asciiValidator', function() {
     return {
         restrict: 'A',
         require: 'ngModel',
@@ -30,6 +30,6 @@ angular.module('graphdb.framework.core.directives.ascii-validator', [])
             }
             ngModel.$parsers.push(validateAscii);
             ngModel.$formatters.push(validateAscii);
-        }
+        },
     };
 });

@@ -13,7 +13,6 @@ const EXPLAIN_RESPONSE_ENDPOINT = `${CONVERSATIONS_ENDPOINT}/explain`;
 const DEVELOPMENT = false;
 
 function TTYGRestService($http) {
-
     const _fakeBackend = new TtygRestServiceFakeBackend();
 
     const getConversations = () => {
@@ -226,6 +225,6 @@ function TTYGRestService($http) {
         deleteAgent,
         explainResponse,
         getAgentDefaultValues,
-        explainAgentSettings
+        explainAgentSettings,
     };
 }

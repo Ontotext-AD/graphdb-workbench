@@ -24,7 +24,7 @@ function AutocompleteRestService($http) {
         buildIndex,
         interruptIndexing,
         checkForPlugin,
-        getAutocompleteSuggestions
+        getAutocompleteSuggestions,
     };
 
     /**
@@ -40,8 +40,8 @@ function AutocompleteRestService($http) {
             return $http.get(AUTOCOMPLETE_ENABLED_ENDPOINT, {
                 headers: {
                     'X-GraphDB-Repository': repositoryId,
-                    'X-GraphDB-Repository-Location': repositoryLocation
-                }
+                    'X-GraphDB-Repository-Location': repositoryLocation,
+                },
             });
         }
         return $http.get(AUTOCOMPLETE_ENABLED_ENDPOINT);
@@ -78,9 +78,9 @@ function AutocompleteRestService($http) {
     function getAutocompleteSuggestions(str, cancelerPromise) {
         return $http.get(`${AUTOCOMPLETE_ENDPOINT}/query`, {
             params: {
-                q: str
+                q: str,
             },
-            timeout: cancelerPromise
+            timeout: cancelerPromise,
         });
     }
 
@@ -96,7 +96,7 @@ function AutocompleteRestService($http) {
         return $http({
             method: 'PUT',
             url: AUTOCOMPLETE_EDIT_LABEL_ENDPOINT,
-            params: params
+            params: params,
         });
     }
 
@@ -104,8 +104,8 @@ function AutocompleteRestService($http) {
         return $http.delete(AUTOCOMPLETE_LABELS_ENDPOINT, {
             data: label,
             headers: {
-                "Content-Type": "application/json;charset=utf-8"
-            }
+                "Content-Type": "application/json;charset=utf-8",
+            },
         });
     }
 }

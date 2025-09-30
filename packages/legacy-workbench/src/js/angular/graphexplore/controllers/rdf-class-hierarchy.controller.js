@@ -9,7 +9,7 @@ const modules = [
     'angucomplete-alt',
     'rzSlider',
     'toastr',
-    'graphdb.framework.utils.localstorageadapter'
+    'graphdb.framework.utils.localstorageadapter',
 ];
 
 const SAFARI_IE_EDGE_CLASS_LIMIT = 400;
@@ -24,7 +24,6 @@ angular
 RdfClassHierarchyCtlr.$inject = ["$scope", "$rootScope", "$location", "$repositories", "$licenseService", "$window", "toastr", "GraphDataRestService", "UiScrollService", "RdfsLabelCommentService", "$timeout", "ModalService", "bowser", "LocalStorageAdapter", "LSKeys", "RDF4JRepositoriesRestService", "$translate"];
 
 function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $licenseService, $window, toastr, GraphDataRestService, UiScrollService, RdfsLabelCommentService, $timeout, ModalService, bowser, LocalStorageAdapter, LSKeys, RDF4JRepositoriesRestService, $translate) {
-
     /**
      * Defines the maximum number of graphs to be loaded in the view.
      *
@@ -54,16 +53,16 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
 
     $scope.graphsDropdownToggled = (isOpen) => {
         if ($scope.hasMoreGraphs && isOpen) {
-            toastr.warning($translate.instant('dependencies.graphs.too.many.warning', {graphsLimit: NumberUtils.formatNumberToLocaleString(MAX_LOADED_GRAPHS, $translate.use())}))
+            toastr.warning($translate.instant('dependencies.graphs.too.many.warning', {graphsLimit: NumberUtils.formatNumberToLocaleString(MAX_LOADED_GRAPHS, $translate.use())}));
         }
-    }
+    };
 
     // creating datasource for class instances data
     const datasource = {};
     let position = 0;
     let current = 0;
     $rootScope.key = "";
-    datasource.get = function (index, count, success) {
+    datasource.get = function(index, count, success) {
         return UiScrollService.initLazyList(index, count, success, position, $scope.instancesObj.items);
     };
 
@@ -72,14 +71,14 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
     // in the drop-down menu otherwise browsers crash.
     let selectedGraph = allGraphs;
 
-    const initView = function () {
+    const initView = function() {
         if (!$scope.getActiveRepository()) {
             return;
         }
         // Try to load one more file than the maximum limit.
         // This allows us to check if there is at least one additional file beyond the set max limit.
-        return RDF4JRepositoriesRestService.resolveGraphs($repositories.getActiveRepository(),MAX_LOADED_GRAPHS + 1)
-            .success(function (graphsInRepo) {
+        return RDF4JRepositoriesRestService.resolveGraphs($repositories.getActiveRepository(), MAX_LOADED_GRAPHS + 1)
+            .success(function(graphsInRepo) {
                 $scope.graphsInRepo = graphsInRepo.results.bindings;
                 // Determines if there are more files than the specified limit.
                 // We increase the limit in the check because:
@@ -87,38 +86,38 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
                 // - Another file (the default graph) is added by the service when the response is received.
                 $scope.hasMoreGraphs = $scope.graphsInRepo.length > MAX_LOADED_GRAPHS + 2;
                 setSelectedGraphFromCache();
-            }).error(function (data) {
+            }).error(function(data) {
             $scope.repositoryError = getError(data);
             toastr.error(getError(data), $translate.instant('graphexplore.error.getting.graphs'));
         });
     };
 
-    const setSelectedGraphFromCache = function () {
+    const setSelectedGraphFromCache = function() {
         const selGraphFromCache = LocalStorageAdapter.get(`classHierarchy-selectedGraph-${$repositories.getActiveRepository()}`);
-        if (selGraphFromCache !== null && $scope.graphsInRepo.some(graph => graph.contextID.uri === selGraphFromCache.contextID.uri)) {
+        if (selGraphFromCache !== null && $scope.graphsInRepo.some((graph) => graph.contextID.uri === selGraphFromCache.contextID.uri)) {
             selectedGraph = selGraphFromCache;
         } else {
             LocalStorageAdapter.set(`classHierarchy-selectedGraph-${$repositories.getActiveRepository()}`, selectedGraph);
         }
     };
 
-    const getPlaceholderText = function () {
+    const getPlaceholderText = function() {
         return $scope.instancesObj.items.length < 1000 ?
             $translate.instant('graphexplore.search.class.instances') :
             $translate.instant('graphexplore.search.first.class.instances');
     };
 
-    $rootScope.$watch(function () {
+    $rootScope.$watch(function() {
         return $rootScope.key;
-    }, function () {
+    }, function() {
         position = 0;
-        _.each($scope.instancesObj.items, function (item) {
+        _.each($scope.instancesObj.items, function(item) {
             if ($rootScope.key > item) position++;
         });
         current++;
     });
 
-    datasource.revision = function () {
+    datasource.revision = function() {
         return current;
     };
     // adapter implementation for ui-scroll directive
@@ -159,15 +158,15 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
 
     initView();
 
-    $scope.$watch('instancesObj.items', function () {
+    $scope.$watch('instancesObj.items', function() {
         if ($scope.instancesObj.items.length > 0) {
-            $timeout(function () {
+            $timeout(function() {
                 $scope.adapterContainer.adapter.reload();
             }, 30);
         }
     });
 
-    $scope.$watch('selectedClass', function () {
+    $scope.$watch('selectedClass', function() {
         if ($scope.showClassInfoPanel) {
             prepareDataForClassInfoSidePanel($scope.selectedClass);
         }
@@ -175,7 +174,7 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
 
     $scope.goToResourceView = () => {
         $location.path("sparql").search($scope.resourceViewInstancesUriParameters);
-    }
+    };
 
     function instancesFilterFunc(inst) {
         return inst.resolvedUri
@@ -197,7 +196,7 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
             $scope.classCountSlider = {};
         }
 
-        const showBrowserCompatibleClassLimitWarning = function (classLimit) {
+        const showBrowserCompatibleClassLimitWarning = function(classLimit) {
             if (bowser.chrome) {
                 toastr.warning($translate.instant('graphexplore.disabling.animations', {classLimit: classLimit}),
                     $translate.instant('graphexplore.reducing.visual.effects'));
@@ -216,10 +215,10 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
                     ceil: classCount,
                     vertical: true,
                     showSelectionBar: true,
-                    onChange: function () {
+                    onChange: function() {
                         $timeout(setNewCurrentSliderValue, 100, true);
-                    }
-                }
+                    },
+                },
             };
 
             if (LocalStorageAdapter.get(LSKeys.CLASS_HIERARCHY_CURRENT_SLIDER_VALUE) === null) {
@@ -248,13 +247,13 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
             toastr.warning($translate.instant('graphexplore.class.count.browser', {count: CLASS_COUNT_THRESHOLD_IE}), $translate.instant('graphexplore.reducing.class.count'));
         }
 
-        $timeout(function () {
+        $timeout(function() {
             $scope.$broadcast('reCalcViewDimensions');
 
             const sliderElement = document.getElementById('rzslider');
             let lastTimeWheel = 0;
 
-            sliderElement.addEventListener('wheel', function (e) {
+            sliderElement.addEventListener('wheel', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
 
@@ -277,7 +276,7 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
                 newValue = Math.max($scope.classCountSlider.options.floor, Math.min($scope.classCountSlider.options.ceil, newValue));
 
                 if (newValue !== $scope.classCountSlider.value) {
-                    $scope.$apply(function () {
+                    $scope.$apply(function() {
                         $scope.classCountSlider.value = newValue;
                         $timeout(setNewCurrentSliderValue, 100, true);
                     });
@@ -297,7 +296,7 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
         const name = selectedClass.data.name;
 
         GraphDataRestService.checkDomainRangeData(uri)
-            .success(function (response, status) {
+            .success(function(response, status) {
                 if (status === 204) {
                     toastr.warning($translate.instant('graphexplore.no.domain.range', {name: name}));
                 } else {
@@ -308,7 +307,7 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
                         .search("uri", uri)
                         .search("name", name);
                 }
-            }).error(function () {
+            }).error(function() {
                 toastr.error($translate.instant('graphexplore.error.request.failed', {name: name}));
             });
     }
@@ -342,16 +341,16 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
             infer: true,
             sameAs: false,
             query,
-            execute: true
-        }
+            execute: true,
+        };
 
         GraphDataRestService.getRdfsLabelAndComment(uri)
-            .success(function (response) {
+            .success(function(response) {
                 $scope.rdfsLabel = response.label;
                 $scope.rdfsComment = response.comment;
                 $scope.expanded = false;
             })
-            .error(function () {
+            .error(function() {
                 toastr.error("Error getting rdfs:label and rdfs:comment");
             });
 
@@ -361,9 +360,9 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
         // get class instances for selected rdf class
         $scope.instancesLoader = true;
         GraphDataRestService.getClassInstances(uri)
-            .success(function (response) {
+            .success(function(response) {
                 $scope.instancesObj.items = [];
-                _.each(response, function (value, key) {
+                _.each(response, function(value, key) {
                     const obj = {};
                     // TODO extract in core function isTriple(str)
                     obj.type = (value.startsWith("<<") && value.endsWith(">>")) ? "triple": "uri";
@@ -377,10 +376,9 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
                 $scope.instancesSearchPlaceholder = getPlaceholderText();
                 $scope.instancesNotFiltered = $scope.instancesObj.items;
             })
-            .error(function () {
+            .error(function() {
                 toastr.error($translate.instant('graphexplore.error.instances.request'));
             });
-
     }
 
     function toggleClassInfoSidePanel() {
@@ -404,8 +402,8 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
 
     // Hack needed to force hide prefix toggle tooltip in order not be
     // visible after icon is switched
-    $(document).ready(function () {
-        $(".prefix-toggle").click(function () {
+    $(document).ready(function() {
+        $(".prefix-toggle").click(function() {
             $(".tooltip").hide();
         });
     });
@@ -443,7 +441,7 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
         // Calling $apply(), $digest() or whatever doesn't help either so we have to resort to this instead.
         // The problem is easy to reproduce when viewing a deeper class and changing the repository.
         if ($scope.hasClassHierarchy()) {
-            $timeout(function () {
+            $timeout(function() {
                 $('#toolbar').removeClass('ng-hide');
             }, 0);
         }
@@ -454,13 +452,13 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
         $scope.loader = true;
         $scope.hierarchyError = false;
         GraphDataRestService.reloadClassHierarchy(selectedGraph.contextID.uri)
-            .success(function (response) {
+            .success(function(response) {
                 $scope.loader = false;
                 $scope.classHierarchyData = response;
                 fixToolbar();
                 initClassCountSlider();
             })
-            .error(function (response) {
+            .error(function(response) {
                 $scope.loader = false;
                 $scope.hierarchyError = getError(response);
                 toastr.error(getError(response), $translate.instant('graphexplore.error.rdf.class.request'));
@@ -471,9 +469,9 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
         ModalService.openSimpleModal({
             title: $translate.instant('confirm.operation'),
             message: $translate.instant('graphexplore.calculating.hierarchy'),
-            warning: true
+            warning: true,
         }).result
-            .then(function () {
+            .then(function() {
                 reloadClassHierarchy();
             });
     }
@@ -498,14 +496,13 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
     }
 
     function getClassHierarchyData() {
-
         refreshDiagramExternalElements();
 
         if (!$scope.isSystemRepository() && $scope.isLicenseValid()) {
             $scope.hierarchyError = false;
             $scope.loader = true;
             GraphDataRestService.getClassHierarchyData(selectedGraph.contextID.uri)
-                .success(function (response, status) {
+                .success(function(response, status) {
                     $scope.showExternalElements = true;
                     $scope.loader = false;
                     $scope.classHierarchyData = response;
@@ -513,7 +510,7 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
                         toastr.warning($translate.instant('graphexplore.update.diagram'), $translate.instant('graphexplore.repository.data.changed'));
                     }
                     fixToolbar();
-                }).error(function (response) {
+                }).error(function(response) {
                 $scope.loader = false;
                 $scope.hierarchyError = getError(response);
                 toastr.error(getError(response), $translate.instant('graphexplore.error.rdf.class.request'));
@@ -521,26 +518,26 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
         }
     }
 
-    $scope.hasClassHierarchy = function () {
+    $scope.hasClassHierarchy = function() {
         return $scope.classHierarchyData.classCount && $scope.getActiveRepositoryNoError() && !$scope.isSystemRepository();
     };
 
-    $scope.isLicenseValid = function () {
+    $scope.isLicenseValid = function() {
         return $licenseService.isLicenseValid();
     };
 
 
-    $scope.chosenGraph = function (graph) {
+    $scope.chosenGraph = function(graph) {
         selectedGraph = graph;
         getClassHierarchyData();
         LocalStorageAdapter.set(`classHierarchy-selectedGraph-${$repositories.getActiveRepository()}`, selectedGraph);
     };
 
-    $scope.getSelGraphValue = function () {
+    $scope.getSelGraphValue = function() {
         return selectedGraph.contextID.value;
     };
 
-    $scope.isAllGraphsSelected = function () {
+    $scope.isAllGraphsSelected = function() {
         return $scope.getSelGraphValue() === 'all.graphs.label';
     };
 }

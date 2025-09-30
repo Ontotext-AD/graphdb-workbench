@@ -2,7 +2,6 @@
  * Model for event of type {@link EventDataType.NOTIFICATION_MESSAGE} emitted by "ontotext-yasgui-web-component".
  */
 export class NotificationMessageEvent {
-
     /**
      * Constructs the model for {@link EventDataType.NOTIFICATION_MESSAGE} event.
      *

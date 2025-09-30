@@ -3,5 +3,5 @@ export const SortingType = {
     "SIZE": "SIZE",
     "MODIFIED": "MODIFIED",
     "IMPORTED": "IMPORTED",
-    "CONTEXT": "CONTEXT"
+    "CONTEXT": "CONTEXT",
 };

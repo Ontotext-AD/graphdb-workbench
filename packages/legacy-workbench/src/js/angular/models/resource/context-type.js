@@ -16,5 +16,5 @@ export class ContextType {
 export const ContextTypes = {
     'ALL': new ContextType('all', 'explore.explicit.implicit'),
     'EXPLICIT': new ContextType('explicit', 'explore.explicit'),
-    'IMPLICIT': new ContextType('implicit', 'explore.implicit')
+    'IMPLICIT': new ContextType('implicit', 'explore.implicit'),
 };

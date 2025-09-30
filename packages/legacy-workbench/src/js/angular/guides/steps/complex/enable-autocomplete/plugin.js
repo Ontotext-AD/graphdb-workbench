@@ -23,8 +23,7 @@ PluginRegistry.add('guide.step', [
                         show: (guide) => () => {
                             // Added listener to the element.
                             $(autocompleteCheckboxSelector)
-                                .on('mouseup.autocompleteCheckboxClick', function () {
-
+                                .on('mouseup.autocompleteCheckboxClick', function() {
                                     // If autocomplete is enabled go to the next step.
                                     GuideUtils.deferredShow(200)()
                                         .then(() => {
@@ -43,12 +42,12 @@ PluginRegistry.add('guide.step', [
                         hide: () => () => {
                             // Remove ths listener from element. It is important when step is hided.
                             $(autocompleteCheckboxSelector).off('mouseup.autocompleteCheckboxClick');
-                        }
-                    }
-                }
+                        },
+                    },
+                },
 
-            ]
-        }
+            ];
+        },
     },
     {
         guideBlockName: 'autocomplete-focus-on-indexing-status',
@@ -65,10 +64,10 @@ PluginRegistry.add('guide.step', [
                     url: 'autocomplete',
                     elementSelector: GuideUtils.getGuideElementSelector('autocompleteStatus'),
                     class: 'autocomplete-status-info',
-                    canBePaused: false
-                }
-            }
-        }
+                    canBePaused: false,
+                },
+            };
+        },
     },
     {
         guideBlockName: 'enable-autocomplete',
@@ -80,15 +79,15 @@ PluginRegistry.add('guide.step', [
                     guideBlockName: 'click-main-menu',
                     options: angular.extend({}, {
                         menu: 'autocomplete',
-                        showIntro: true
-                    }, options)
+                        showIntro: true,
+                    }, options),
                 }, {
-                    guideBlockName: 'autocomplete-enable-checkbox', options: {...options}
+                    guideBlockName: 'autocomplete-enable-checkbox', options: {...options},
                 },
                 {
-                    guideBlockName: 'autocomplete-focus-on-indexing-status', options: {...options}
-                }
+                    guideBlockName: 'autocomplete-focus-on-indexing-status', options: {...options},
+                },
             ];
-        }
-    }
+        },
+    },
 ]);

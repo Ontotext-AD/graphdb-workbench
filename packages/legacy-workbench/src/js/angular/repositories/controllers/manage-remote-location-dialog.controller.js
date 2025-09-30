@@ -2,7 +2,7 @@ import {RemoteLocationAuthType, RemoteLocationModel, RemoteLocationType} from ".
 import 'angular/core/directives/validate-url.directive';
 
 const modules = [
-    'graphdb.framework.core.directives.validate-url'
+    'graphdb.framework.core.directives.validate-url',
 ];
 
 angular.module('graphdb.framework.repositories.controllers.manage-remote-location-dialog', modules)
@@ -25,7 +25,6 @@ ManageRemoteLocationDialogController.$inject = ['$scope', '$uibModalInstance', '
  * @constructor
  */
 function ManageRemoteLocationDialogController($scope, $uibModalInstance, productInfo, data) {
-
     $scope.RemoteLocationType = RemoteLocationType;
     $scope.RemoteLocationAuthType = RemoteLocationAuthType;
     $scope.isEdit = !!data.remoteLocation;
@@ -53,5 +52,5 @@ function ManageRemoteLocationDialogController($scope, $uibModalInstance, product
         } else {
             $scope.remoteLocation.authType = RemoteLocationAuthType.NONE;
         }
-    }
+    };
 }

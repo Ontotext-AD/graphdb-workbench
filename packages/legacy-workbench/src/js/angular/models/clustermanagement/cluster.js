@@ -496,7 +496,7 @@ export class ClusterViewModel {
         const removeNodes = Array.from(this._deleteFromCluster.values()).map((node) => node.endpoint);
         const updateActions = {
             addNodes,
-            removeNodes
+            removeNodes,
         };
 
         const updatedClusterConfig = this.updateClusterConfiguration(addNodes);
@@ -723,7 +723,7 @@ export class ClusterConfiguration {
                     batchUpdateInterval = 5000,
                     nodes = [],
                     secondaryTag,
-                    primaryNodes
+                    primaryNodes,
                 } = {}) {
         this._electionMinTimeout = electionMinTimeout;
         this._electionRangeTimeout = electionRangeTimeout;
@@ -830,7 +830,7 @@ export class ClusterConfiguration {
             verificationTimeout: this._verificationTimeout,
             transactionLogMaximumSizeGB: this._transactionLogMaximumSizeGB,
             batchUpdateInterval: this._batchUpdateInterval,
-            nodes: this._nodes
+            nodes: this._nodes,
         };
         if (this._secondaryTag !== undefined) json.secondaryTag = this._secondaryTag;
         if (this._primaryNodes !== undefined) json.primaryNodes = this._primaryNodes;

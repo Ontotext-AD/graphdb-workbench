@@ -1,7 +1,7 @@
 import 'angular/core/services/markdown/markdown.service';
 
 const modules = [
-    'graphdb.framework.core.services.markdown-service'
+    'graphdb.framework.core.services.markdown-service',
 ];
 
 /**
@@ -34,10 +34,9 @@ function markdownContentDirective($compile, MarkdownService) {
         restrict: 'E',
         scope: {
             content: '@',
-            options: '='
+            options: '=',
         },
-        link: function ($scope, element) {
-
+        link: function($scope, element) {
             // =========================
             // Public variables
             // =========================
@@ -72,6 +71,6 @@ function markdownContentDirective($compile, MarkdownService) {
             };
 
             init();
-        }
+        },
     };
 }

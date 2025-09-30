@@ -14,5 +14,5 @@ export const QueryMode = {
     /**
      * QUERY queries are SELECT, CONSTRUCT, ASK, DESCRIBE
      */
-    'QUERY': 'query'
+    'QUERY': 'query',
 };

@@ -6,7 +6,7 @@ import {GuideLevel} from "./model/guides";
 const modules = [
     'ui.bootstrap',
     'graphdb.framework.guides.services',
-    'graphdb.framework.core.directives.paginations'
+    'graphdb.framework.core.directives.paginations',
 ];
 
 angular
@@ -16,7 +16,6 @@ angular
 GuidesCtrl.$inject = ['$scope', '$rootScope', 'GuidesService', '$filter', '$translate', '$interpolate'];
 
 function GuidesCtrl($scope, $rootScope, GuidesService, $filter, $translate, $interpolate) {
-
     // =========================
     // Public variables
     // =========================
@@ -40,7 +39,7 @@ function GuidesCtrl($scope, $rootScope, GuidesService, $filter, $translate, $int
         }
     };
 
-    $scope.changePageSize = function (size) {
+    $scope.changePageSize = function(size) {
         $scope.page = 1;
         if (size) {
             $scope.pageSize = size;

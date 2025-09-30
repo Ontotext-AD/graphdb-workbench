@@ -34,7 +34,7 @@ export class GraphqlSchemaShapes {
      * @returns {string[]} The ids of the shapes.
      */
     getShapeIds() {
-        return this.shapes.map(shape => shape.id);
+        return this.shapes.map((shape) => shape.id);
     }
 
     get isEmpty() {
@@ -56,7 +56,7 @@ export class GraphqlSchemaShapes {
     }
 
     toJSON() {
-        return this.shapes.map(shape => shape.id);
+        return this.shapes.map((shape) => shape.id);
     }
 }
 

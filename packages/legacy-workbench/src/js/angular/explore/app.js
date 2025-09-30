@@ -17,7 +17,7 @@ const modules = [
     'graphdb.framework.explore.controllers',
     'graphdb.framework.explore.directives',
     'graphdb.framework.core.directives.fittext',
-    'graphdb.framework.core.directives.yasgui-component'
+    'graphdb.framework.core.directives.yasgui-component',
 ];
 
 angular.module('graphdb.framework.explore', modules);

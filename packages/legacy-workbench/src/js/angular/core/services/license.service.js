@@ -53,7 +53,7 @@ function licenseService($window, $document, LicenseRestService, $translate) {
                 _license = {
                     message: NO_LICENSE_MSG,
                     present: false,
-                    valid: false
+                    valid: false,
                 };
             })
             .finally(() => {
@@ -87,7 +87,7 @@ function licenseService($window, $document, LicenseRestService, $translate) {
         } else {
             return $translate.instant("error.license", {message: _license?.message});
         }
-    }
+    };
 
     const loadingLicense = () => {
         return _loadingLicense;
@@ -115,6 +115,6 @@ function licenseService($window, $document, LicenseRestService, $translate) {
         isLicenseHardcoded,
         showLicense,
         productType,
-        isTrackableLicense
+        isTrackableLicense,
     };
 }

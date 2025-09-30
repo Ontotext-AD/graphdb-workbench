@@ -17,7 +17,6 @@ function AgentSelectMenuComponent(TTYGContextService, $translate, $sce, ModalSer
         scope: {
         },
         link: ($scope) => {
-
             // =========================
             // Public variables
             // =========================
@@ -59,7 +58,7 @@ function AgentSelectMenuComponent(TTYGContextService, $translate, $sce, ModalSer
                     const title = $translate.instant('ttyg.agent.agent_select_menu.configure_agent_modal.title');
                     const confirmMessage = $translate.instant('ttyg.agent.agent_select_menu.configure_agent_modal.body');
                     ModalService.openConfirmation(title, confirmMessage,
-                        () => TTYGContextService.emit(TTYGEventName.EDIT_AGENT, agent)
+                        () => TTYGContextService.emit(TTYGEventName.EDIT_AGENT, agent),
                     );
                 }
             };
@@ -101,7 +100,7 @@ function AgentSelectMenuComponent(TTYGContextService, $translate, $sce, ModalSer
                     // If saved in the LocalStore, the user has selected it, so select it here
                     $scope.agentOptionsList.forEach((agent) => {
                         if (agent.data.agent.id === storedAgentId) {
-                            selectedAgent = agent.data.agent
+                            selectedAgent = agent.data.agent;
                         }
                     });
                 }
@@ -112,7 +111,7 @@ function AgentSelectMenuComponent(TTYGContextService, $translate, $sce, ModalSer
                 }
                 onSelectedAgentChanged(selectedAgent);
                 TTYGContextService.selectAgent(selectedAgent);
-            }
+            };
 
             /**
              * Handles the agent deleted event.
@@ -146,8 +145,8 @@ function AgentSelectMenuComponent(TTYGContextService, $translate, $sce, ModalSer
                         value: agent.id,
                         label: agent.name,
                         data: {
-                            agent: agent
-                        }
+                            agent: agent,
+                        },
                     });
                 });
             };
@@ -176,6 +175,6 @@ function AgentSelectMenuComponent(TTYGContextService, $translate, $sce, ModalSer
                 // buildAgentOptionsModel();
             }
             initialize();
-        }
+        },
     };
 }

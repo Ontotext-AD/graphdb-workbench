@@ -14,8 +14,8 @@
  * {{ 1572864 | bytes:2 }}
  */
 angular.module('graphdb.framework.core.filters.bytes', [])
-    .filter('bytes', function () {
-        return function (bytes, precision) {
+    .filter('bytes', function() {
+        return function(bytes, precision) {
             if (isNaN(parseFloat(bytes)) || !isFinite(bytes)) {
                 return '-';
             }
@@ -23,7 +23,7 @@ angular.module('graphdb.framework.core.filters.bytes', [])
                 precision = 1;
             }
             const units = ['bytes', 'kB', 'MB', 'GB', 'TB', 'PB'];
-            let number = Math.floor(Math.log(bytes) / Math.log(1024));
+            const number = Math.floor(Math.log(bytes) / Math.log(1024));
 
             const unit = units[number];
             // If the unit is bytes, we don't need to display the decimal places.'

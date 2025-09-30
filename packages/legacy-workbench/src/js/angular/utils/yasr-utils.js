@@ -2,28 +2,27 @@
 // It holds default value of window width when column resizing will be enabled.
 const DEFAULT_ENABLE_COLUMN_RESIZING_ON_WINDOW_WIDTH = 768;
 
-const YasrUtils = (function () {
-
-    const getYasrConfiguration = function (configuartion) {
+const YasrUtils = (function() {
+    const getYasrConfiguration = function(configuartion) {
         const defaultConfiguration = {
-            table: getDefaultTablePluginConfiguration()
+            table: getDefaultTablePluginConfiguration(),
         };
 
         return angular.extend({}, defaultConfiguration, configuartion);
     };
 
-    const getDefaultTablePluginConfiguration = function () {
+    const getDefaultTablePluginConfiguration = function() {
         return {
-            enableColumnResizingOnWindowWidth: DEFAULT_ENABLE_COLUMN_RESIZING_ON_WINDOW_WIDTH
+            enableColumnResizingOnWindowWidth: DEFAULT_ENABLE_COLUMN_RESIZING_ON_WINDOW_WIDTH,
         };
     };
 
     return {
         getYasrConfiguration,
-        getDefaultTablePluginConfiguration
+        getDefaultTablePluginConfiguration,
     };
 })();
 
 export {
-    YasrUtils
+    YasrUtils,
 };

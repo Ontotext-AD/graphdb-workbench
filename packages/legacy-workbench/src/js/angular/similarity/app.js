@@ -12,5 +12,5 @@ angular.module('graphdb.framework.similarity', [
     'graphdb.framework.rest.similarity.service',
     'graphdb.framework.similarity.controllers.create',
     'graphdb.framework.similarity.controllers.list',
-    'graphdb.framework.core.directives.yasgui-component'
+    'graphdb.framework.core.directives.yasgui-component',
 ]);

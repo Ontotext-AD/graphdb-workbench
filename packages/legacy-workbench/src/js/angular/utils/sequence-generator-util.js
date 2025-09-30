@@ -1,5 +1,4 @@
 export class SequenceGeneratorUtil {
-
     static getFibonacciSequenceGenerator() {
         return SequenceGeneratorUtil.fibonacciSequenceGenerator();
     }
@@ -9,17 +8,17 @@ export class SequenceGeneratorUtil {
         let fibo2 = 1;
 
         return {
-            next: function () {
+            next: function() {
                 const next = fibo2;
                 fibo2 = fibo1 + fibo2;
                 fibo1 = next;
                 return next;
             },
 
-            reset: function () {
+            reset: function() {
                 fibo1 = 0;
                 fibo2 = 1;
-            }
+            },
         };
     }
 }

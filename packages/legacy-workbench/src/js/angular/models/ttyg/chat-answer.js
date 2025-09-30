@@ -93,7 +93,7 @@ export class ContinueChatRun {
             conversationId: this.chatId,
             runId: this._runId,
             agentId: this._chatItem.agentId,
-            tzOffset: -new Date().getTimezoneOffset() // offsets are reversed here hence the minus
+            tzOffset: -new Date().getTimezoneOffset(), // offsets are reversed here hence the minus
         };
     }
 }

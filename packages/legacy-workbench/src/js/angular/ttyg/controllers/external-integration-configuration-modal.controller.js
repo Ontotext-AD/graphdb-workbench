@@ -7,7 +7,7 @@ ExternalIntegrationConfigurationModalController.$inject = [
     '$uibModalInstance',
     'ModalService',
     '$translate',
-    'dialogModel'
+    'dialogModel',
 ];
 
 function ExternalIntegrationConfigurationModalController($scope, $uibModalInstance, ModalService, $translate, dialogModel) {

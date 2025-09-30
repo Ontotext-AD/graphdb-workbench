@@ -2,7 +2,6 @@
  * Model for event of type {@link EventDataType.QUERY} emitted by "ontotext-yasgui-web-component".
  */
 export class QueryRequestEvent {
-
     /**
      * Constructs the model for {@link EventDataType.QUERY} event.
      *

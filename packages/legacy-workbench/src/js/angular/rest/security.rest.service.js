@@ -27,7 +27,7 @@ function SecurityRestService($http) {
         toggleSecurity,
         getRoles,
         getRolesMapping,
-        getAuthenticatedUser
+        getAuthenticatedUser,
     };
 
     function login(username, password) {
@@ -36,8 +36,8 @@ function SecurityRestService($http) {
             url: LOGIN_ENDPOINT,
             data: {
                 username,
-                password
-            }
+                password,
+            },
         });
     }
 
@@ -47,7 +47,7 @@ function SecurityRestService($http) {
 
     function getAuthenticatedUser() {
         return $http.get(`${SECURITY_AUTHENTICATED_ENDPOINT}`, {
-            noCancelOnRouteChange: true
+            noCancelOnRouteChange: true,
         });
     }
 
@@ -66,8 +66,8 @@ function SecurityRestService($http) {
             data: {
                 password: data.pass,
                 appSettings: data.appSettings,
-                grantedAuthorities: data.grantedAuthorities
-            }
+                grantedAuthorities: data.grantedAuthorities,
+            },
         });
     }
 
@@ -78,8 +78,8 @@ function SecurityRestService($http) {
             data: {
                 password: data.pass,
                 appSettings: data.appSettings,
-                grantedAuthorities: data.grantedAuthorities
-            }
+                grantedAuthorities: data.grantedAuthorities,
+            },
         });
     }
 
@@ -94,8 +94,8 @@ function SecurityRestService($http) {
             url: `${SECURITY_USER_ENDPOINT}/${fixedEncodeURIComponent(data.username)}`,
             data: {
                 password: data.password,
-                appSettings: data.appSettings
-            }
+                appSettings: data.appSettings,
+            },
         });
     }
 
@@ -134,7 +134,7 @@ function SecurityRestService($http) {
      * @returns {string} The provided string encoded as a URI component.
      */
     function fixedEncodeURIComponent(str) {
-        return encodeURIComponent(str).replace(/[!'()*]/g, function (c) {
+        return encodeURIComponent(str).replace(/[!'()*]/g, function(c) {
             return '%' + c.charCodeAt(0).toString(16);
         });
     }

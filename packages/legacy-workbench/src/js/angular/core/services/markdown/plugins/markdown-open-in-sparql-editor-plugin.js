@@ -1,6 +1,6 @@
 const DEFAULT_MARKDOWN_CONFIGURATION = {
     buttonStyle: "position: absolute; top: 0; right: 0;",
-    buttonClass: ""
+    buttonClass: "",
 };
 
 /**

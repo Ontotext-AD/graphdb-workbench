@@ -35,10 +35,10 @@ PluginRegistry.add('guide.step', [
                                         guide.next();
                                     });
                                 });
-                        }
-                    }, options)
-                }
+                        },
+                    }, options),
+                },
             ];
-        }
-    }
+        },
+    },
 ]);

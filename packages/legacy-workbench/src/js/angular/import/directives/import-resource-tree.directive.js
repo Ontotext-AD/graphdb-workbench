@@ -10,19 +10,19 @@ import {convertToBytes} from "../../utils/size-util";
 const TYPE_FILTER_OPTIONS = {
     'FILE': 'FILE',
     'DIRECTORY': 'DIRECTORY',
-    'ALL': 'ALL'
+    'ALL': 'ALL',
 };
 
 const STATUS_OPTIONS = {
     'ALL': 'ALL',
     'NONE': 'NONE',
     'IMPORTED': 'IMPORTED',
-    'NOT_IMPORTED': 'NOT_IMPORTED'
+    'NOT_IMPORTED': 'NOT_IMPORTED',
 };
 
 const modules = [
     'graphdb.framework.import.directives.import-resource-message',
-    'graphdb.framework.import.directives.import-resource-status-info'
+    'graphdb.framework.import.directives.import-resource-status-info',
 ];
 
 angular
@@ -55,10 +55,9 @@ function importResourceTreeDirective($timeout, ImportContextService) {
             onReset: '&',
             onRemove: '&',
             onStopImport: '&',
-            onEditResource: '&'
+            onEditResource: '&',
         },
         link: ($scope, element, attrs) => {
-
             // =========================
             // Public variables
             // =========================
@@ -335,6 +334,6 @@ function importResourceTreeDirective($timeout, ImportContextService) {
 
             // Deregister the watcher when the scope/directive is destroyed
             $scope.$on('$destroy', removeAllSubscribers);
-        }
+        },
     };
 }

@@ -9,7 +9,6 @@ AutocompleteService.$inject = ['AutocompleteRestService', 'LSKeys', 'LocalStorag
 
 
 function AutocompleteService(AutocompleteRestService, LSKeys, LocalStorageAdapter) {
-
     /**
      * Checks if the autocomplete index enabled for the repository with id <code>repositoryId</code> and location <code>repositoryLocation</code>.
      * If the repository ID and repository location are not provided, the currently selected repository will be used.
@@ -29,7 +28,7 @@ function AutocompleteService(AutocompleteRestService, LSKeys, LocalStorageAdapte
 
     const addLabelConfig = (label) => {
         return AutocompleteRestService.addLabelConfig(label);
-    }
+    };
 
     const editLabelConfig = (updatedLabel, originalLabel) => {
         const params = {};
@@ -43,43 +42,43 @@ function AutocompleteService(AutocompleteRestService, LSKeys, LocalStorageAdapte
         }
 
         return AutocompleteRestService.editLabelConfig(params);
-    }
+    };
 
     const removeLabelConfig = (label) => {
         return AutocompleteRestService.removeLabelConfig(label);
-    }
+    };
 
     const interruptIndexing = () => {
         return AutocompleteRestService.interruptIndexing();
-    }
+    };
 
     const buildIndex = () => {
         return AutocompleteRestService.buildIndex();
-    }
+    };
 
     const toggleIndexIRIs = (newValue) => {
         return AutocompleteRestService.toggleIndexIRIs(newValue);
-    }
+    };
 
     const checkForPlugin = () => {
         return AutocompleteRestService.checkForPlugin();
-    }
+    };
 
     const refreshLabelConfig = () => {
         return AutocompleteRestService.refreshLabelConfig();
-    }
+    };
 
     const refreshIndexStatus = () => {
         return AutocompleteRestService.refreshIndexStatus();
-    }
+    };
 
     const refreshIndexIRIs = () => {
         return AutocompleteRestService.refreshIndexIRIs();
-    }
+    };
 
     const toggleAutocomplete = (newValue) => {
         return AutocompleteRestService.toggleAutocomplete(newValue);
-    }
+    };
 
     return {
         checkAutocompleteStatus,
@@ -93,6 +92,6 @@ function AutocompleteService(AutocompleteRestService, LSKeys, LocalStorageAdapte
         refreshLabelConfig,
         refreshIndexStatus,
         refreshIndexIRIs,
-        toggleAutocomplete
+        toggleAutocomplete,
     };
 }

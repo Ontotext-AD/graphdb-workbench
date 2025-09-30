@@ -9,5 +9,5 @@ export const FIELD_TYPE = {
     BOOLEAN: 'boolean',
     JSON: 'json',
     SELECT: 'select',
-    MULTI_SELECT: 'multi_select'
-}
+    MULTI_SELECT: 'multi_select',
+};

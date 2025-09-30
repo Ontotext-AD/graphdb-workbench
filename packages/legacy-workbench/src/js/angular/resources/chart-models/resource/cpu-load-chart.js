@@ -10,20 +10,20 @@ export class CpuLoadChart extends ChartData {
             yAxis: {
                 axisLabel: {
                     formatter: (value) => {
-                        return `${value}%`
-                    }
+                        return `${value}%`;
+                    },
                 },
                 min: 0,
-                max: function (value) {
+                max: function(value) {
                     return Math.round(value.max > 50 ? 100 : value.max * 2);
-                }
+                },
             },
             tooltip: {
-                valueFormatter: function (value) {
-                    return `${value}%`
-                }
-            }
-        }
+                valueFormatter: function(value) {
+                    return `${value}%`;
+                },
+            },
+        };
         _.merge(chartOptions, cpuLoadChartOptions);
     }
 
@@ -34,7 +34,7 @@ export class CpuLoadChart extends ChartData {
             smoothMonotone: 'x',
             showSymbol: false,
             smooth: true,
-            data: []
+            data: [],
         }];
     }
 
@@ -47,8 +47,8 @@ export class CpuLoadChart extends ChartData {
         dataHolder[0].data.push({
             value: [
                 timestamp,
-                this.formatValue(data.cpuLoad)
-            ]
+                this.formatValue(data.cpuLoad),
+            ],
         });
     }
 

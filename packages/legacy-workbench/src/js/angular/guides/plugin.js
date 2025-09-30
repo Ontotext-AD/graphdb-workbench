@@ -7,8 +7,8 @@ PluginRegistry.add('route', [
         title: 'view.guides.title',
         controller: 'GuidesCtrl',
         helpInfo: 'view.guides.helpInfo',
-        documentationUrl: 'index.html'
-    }
+        documentationUrl: 'index.html',
+    },
 ]);
 
 PluginRegistry.add('main.menu', {
@@ -22,7 +22,7 @@ PluginRegistry.add('main.menu', {
             href: 'guides',
             role: 'ROLE_REPO_MANAGER',
             guideSelector: 'sub-menu-guide',
-            testSelector: 'sub-menu-guide'
-        }
-    ]
+            testSelector: 'sub-menu-guide',
+        },
+    ],
 });

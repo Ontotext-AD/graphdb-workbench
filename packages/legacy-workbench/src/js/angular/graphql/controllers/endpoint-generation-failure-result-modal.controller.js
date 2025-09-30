@@ -38,7 +38,7 @@ function EndpointGenerationResultFailureModalController($scope, $uibModalInstanc
      */
     $scope.downloadReport = () => {
         const reportData = JSON.stringify($scope.endpointReport.toJSON(), null, 2);
-        const blob = new Blob([reportData], { type: 'application/json' });
+        const blob = new Blob([reportData], {type: 'application/json'});
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
@@ -55,13 +55,13 @@ function EndpointGenerationResultFailureModalController($scope, $uibModalInstanc
     $scope.deleteReport = () => {
         GraphqlContextService.deleteEndpointGenerationReport($scope.endpointReport);
         $scope.close();
-    }
+    };
 
     /**
      * Cancels the operation and dismisses the modal.
      */
     $scope.close = () => {
-        $uibModalInstance.dismiss('cancel')
+        $uibModalInstance.dismiss('cancel');
     };
 
     // =========================

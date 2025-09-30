@@ -19,7 +19,7 @@ export class MonitoringTrackRecord {
         /**
          * @type {boolean}
          */
-        this.isRequestedToStop  = rawData.isRequestedToStop;
+        this.isRequestedToStop = rawData.isRequestedToStop;
         /**
          * @type {string}
          */

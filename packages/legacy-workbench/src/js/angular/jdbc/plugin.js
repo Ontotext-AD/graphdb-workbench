@@ -9,7 +9,7 @@ PluginRegistry.add('route', [
         'title': 'view.jdbc.title',
         'helpInfo': 'view.jdbc.helpInfo',
         'documentationUrl': 'sql-access-over-jdbc.html',
-        'allowAuthorities': ['READ_REPO_{repoId}']
+        'allowAuthorities': ['READ_REPO_{repoId}'],
     },
     {
         'url': '/jdbc/configuration/create',
@@ -20,8 +20,8 @@ PluginRegistry.add('route', [
         'templateUrl': 'pages/jdbc-create.html',
         'title': 'view.jdbc.create.title',
         'helpInfo': 'view.jdbc.create.helpInfo',
-        'allowAuthorities': ['READ_REPO_{repoId}']
-    }
+        'allowAuthorities': ['READ_REPO_{repoId}'],
+    },
 ]);
 
 PluginRegistry.add('main.menu', {
@@ -37,9 +37,9 @@ PluginRegistry.add('main.menu', {
             testSelector: 'sub-menu-jdbc',
             children: [
                 {
-                    href: 'jdbc/configuration/create'
-                }
-            ]
-        }
-    ]
+                    href: 'jdbc/configuration/create',
+                },
+            ],
+        },
+    ],
 });

@@ -36,29 +36,28 @@ const translationsMap = {
         applying_snapshot: "Applying a snapshot",
         building_snapshot: "Building a snapshot for node",
         sending_snapshot: "Sending a snapshot to node",
-        recovery_operation_failure_warning: "Node unable to recover. Action required"
-    }
+        recovery_operation_failure_warning: "Node unable to recover. Action required",
+    },
 };
 
 const idTranslationKeyMap = {
     node_state: 'legend_node_state',
-    link_state: 'legend_link_state'
+    link_state: 'legend_link_state',
 };
 
 const clusterManagementDirectives = angular.module('graphdb.framework.clustermanagement.directives.cluster-graphical-view', [
     'graphdb.framework.utils.localstorageadapter',
-    'graphdb.framework.clustermanagement.directives.cluster-legend'
+    'graphdb.framework.clustermanagement.directives.cluster-legend',
 ]);
 
 clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'LocalStorageAdapter', 'LSKeys', 'UriUtils', '$translate', '$jwtAuth', '$rootScope', 'ClusterViewContextService',
-    function ($window, LocalStorageAdapter, LSKeys, UriUtils, $translate, $jwtAuth, $rootScope, ClusterViewContextService) {
+    function($window, LocalStorageAdapter, LSKeys, UriUtils, $translate, $jwtAuth, $rootScope, ClusterViewContextService) {
         return {
             restrict: 'E',
             scope: {
-                clusterModel: '='
+                clusterModel: '=',
             },
-            link: function (scope, element) {
-
+            link: function(scope, element) {
                 // =========================
                 // Private variables
                 // =========================
@@ -86,11 +85,11 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                 // Public functions
                 // =========================
 
-                scope.width = function () {
+                scope.width = function() {
                     return width;
                 };
 
-                scope.height = function () {
+                scope.height = function() {
                     return height;
                 };
 
@@ -257,12 +256,12 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                     w.bind('resize', resize);
                     w.bind('mousedown', mousedownHandler);
 
-                    subscriptions.push($rootScope.$on('$translateChangeSuccess', function () {
+                    subscriptions.push($rootScope.$on('$translateChangeSuccess', function() {
                         updateTranslations(translationsMap);
                         updateLabels();
                     }));
 
-                    subscriptions.push(scope.$on(MODEL_UPDATED, function () {
+                    subscriptions.push(scope.$on(MODEL_UPDATED, function() {
                         plot();
                     }));
                 };
@@ -271,7 +270,7 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                     subscriptions.forEach((subscription) => subscription());
                 };
 
-                scope.$on("$destroy", function () {
+                scope.$on("$destroy", function() {
                     w.unbind('resize', resize);
                     w.unbind('mousedown', mousedownHandler);
                     CDS.removeEventListeners();
@@ -291,7 +290,7 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                     plot();
                 }
                 initialize();
-            }
+            },
         };
-    }
+    },
 ]);

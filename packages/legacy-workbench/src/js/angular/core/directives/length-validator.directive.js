@@ -21,7 +21,7 @@
  * @requires ngModel
  */
 angular.module('graphdb.framework.core.directives.length-validator', [])
-    .directive('lengthValidator', function () {
+    .directive('lengthValidator', function() {
     return {
         restrict: 'A',
         require: 'ngModel',
@@ -35,6 +35,6 @@ angular.module('graphdb.framework.core.directives.length-validator', [])
             }
             ngModel.$parsers.push(validateLength);
             ngModel.$formatters.push(validateLength);
-        }
+        },
     };
 });

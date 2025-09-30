@@ -5,7 +5,7 @@ import 'angular/core/directives/multiselect-dropdown/multiselect-dropdown.direct
 const modules = [
     'graphdb.framework.core.services.graphql-service',
     'graphdb.framework.core.directives.dynamic-form',
-    'graphdb.framework.core.directives.multiselect-dropdown'
+    'graphdb.framework.core.directives.multiselect-dropdown',
 ];
 
 angular
@@ -80,7 +80,7 @@ function GraphqlEndpointConfigurationModalController($scope, $uibModalInstance, 
      * Cancels the operation and dismisses the modal.
      */
     $scope.cancel = () => {
-        $uibModalInstance.dismiss('cancel')
+        $uibModalInstance.dismiss('cancel');
     };
 
     /**
@@ -117,7 +117,7 @@ function GraphqlEndpointConfigurationModalController($scope, $uibModalInstance, 
             .finally(() => {
                 $scope.loadingEndpointConfigurationSettings = false;
             });
-    }
+    };
 
     /**
      * Saves the endpoint configuration settings to the server.
@@ -136,11 +136,11 @@ function GraphqlEndpointConfigurationModalController($scope, $uibModalInstance, 
             .finally(() => {
                 $scope.savingEndpointSettings = false;
             });
-    }
+    };
 
     const init = () => {
         loadEndpointConfigurationSettings();
-    }
+    };
 
     // =========================
     // Initialization

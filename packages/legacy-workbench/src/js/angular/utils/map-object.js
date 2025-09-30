@@ -18,7 +18,7 @@
  *
  * @returns {Object}
  */
-export const mapObject = (source, rules = {}, { removeOldKey = false } = {}) => {
+export const mapObject = (source, rules = {}, {removeOldKey = false} = {}) => {
     return Object.keys(source).reduce((result, key) => {
         const rule = rules[key];
 

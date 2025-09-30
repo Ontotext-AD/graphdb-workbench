@@ -23,7 +23,7 @@ export const toJDBCColumns = (columnNames = [], columnTypes) => {
             column_name: columnName,
             column_type: columnTypes[columnName].column_type,
             nullable: true,
-            sparql_type: columnTypes[columnName].sparql_type
+            sparql_type: columnTypes[columnName].sparql_type,
         };
     });
 };

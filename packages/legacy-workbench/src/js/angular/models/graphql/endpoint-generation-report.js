@@ -135,7 +135,7 @@ export class EndpointGenerationReport {
             propertiesCount: this._propertiesCount,
             warnings: this._warnings,
             errors: this._errors,
-            messages: this._messages
+            messages: this._messages,
         };
     }
 

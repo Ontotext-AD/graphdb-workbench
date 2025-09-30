@@ -6,7 +6,7 @@ import {getHumanReadableTimestamp} from "../services/ttyg.utils";
 
 const modules = [
     'graphdb.framework.core.directives.open-in-sparql-editor',
-    'graphdb.framework.core.directives.markdown-content'
+    'graphdb.framework.core.directives.markdown-content',
 ];
 
 angular
@@ -36,10 +36,9 @@ function ChatItemDetailComponent(toastr, $translate, TTYGContextService, TTYGSer
             asking: '=',
             disabled: '=',
             onRegenerateQuestion: '&',
-            onAskHowDeliveredAnswer: '&'
+            onAskHowDeliveredAnswer: '&',
         },
         link: ($scope, element, attrs) => {
-
             // =========================
             // Public variables
             // =========================
@@ -124,7 +123,7 @@ function ChatItemDetailComponent(toastr, $translate, TTYGContextService, TTYGSer
                 if ($scope.chatItemDetail.agentId) {
                     TTYGContextService.emit(TTYGEventName.GO_TO_SPARQL_EDITOR, {
                         query,
-                        repositoryId: $scope.repositoryId
+                        repositoryId: $scope.repositoryId,
                     });
                 }
             };
@@ -187,6 +186,6 @@ function ChatItemDetailComponent(toastr, $translate, TTYGContextService, TTYGSer
             // Initialization
             // =========================
             init();
-        }
+        },
     };
 }

@@ -5,7 +5,7 @@ angular
         'ui.scroll.jqlite',
         'ui.scroll',
         'ngSanitize',
-        'graphdb.framework.utils.localstorageadapter'
+        'graphdb.framework.utils.localstorageadapter',
     ])
     .controller('DomainRangeGraphCtlr', DomainRangeGraphCtlr);
 
@@ -28,20 +28,20 @@ function DomainRangeGraphCtlr($scope, $location, $rootScope, $timeout, $reposito
     let position = 0;
     let current = 0;
     $rootScope.key = '';
-    datasource.get = function (index, count, success) {
+    datasource.get = function(index, count, success) {
         return UiScrollService.initLazyList(index, count, success, position, $scope.predicatesObj.items);
     };
-    $rootScope.$watch(function () {
+    $rootScope.$watch(function() {
         return $rootScope.key;
-    }, function () {
+    }, function() {
         position = 0;
-        _.each($scope.predicatesObj.items, function (item) {
+        _.each($scope.predicatesObj.items, function(item) {
             if ($rootScope.key > item) position++;
         });
         current++;
     });
 
-    datasource.revision = function () {
+    datasource.revision = function() {
         return current;
     };
 
@@ -61,7 +61,7 @@ function DomainRangeGraphCtlr($scope, $location, $rootScope, $timeout, $reposito
     $scope.$on('reloadDomainRangeGraphView', reloadDomainRangeGraphView);
     $scope.$on('switchEdgeMode', switchEdgeMode);
     $scope.$on('repositoryIsSet', onRepositoryIsSet);
-    $scope.$on('changeCollapsedEdgesState', function (event, collapsed) {
+    $scope.$on('changeCollapsedEdgesState', function(event, collapsed) {
         $scope.collapseEdges = !collapsed;
         LocalStorageAdapter.set(LSKeys.DOMAIN_RANGE_COLLAPSE_EDGES, $scope.collapseEdges);
     });
@@ -71,15 +71,15 @@ function DomainRangeGraphCtlr($scope, $location, $rootScope, $timeout, $reposito
     $scope.toggleCollapseEdgesState = toggleCollapseEdgesState;
     $scope.predicatesListFilterFunc = predicatesListFilterFunc;
 
-    $scope.$watch('predicatesObj.items', function () {
+    $scope.$watch('predicatesObj.items', function() {
         if ($scope.predicatesObj.items > 0) {
-            $timeout(function () {
+            $timeout(function() {
                 $scope.adapterContainer.adapter.reload();
             }, 30);
         }
     });
 
-    $scope.$watch('selectedPredicate', function () {
+    $scope.$watch('selectedPredicate', function() {
         if ($scope.showPredicatesInfoPanel) {
             prepareDataForPredicatesInfoSidePanel($scope.selectedPredicate);
         }
@@ -111,11 +111,11 @@ function DomainRangeGraphCtlr($scope, $location, $rootScope, $timeout, $reposito
 
         if ($scope.sourceTargetObjectNodeName.indexOf('Literal') === -1) {
             GraphDataRestService.getRdfsLabelAndComment($scope.sourceTargetObjectNodeUri)
-                .success(function (response) {
+                .success(function(response) {
                     $scope.rdfsLabel = response.label;
                     $scope.rdfsComment = response.comment;
                 })
-                .error(function () {
+                .error(function() {
                     toastr.error($translate.instant('domain.range.error.get.label.comment'));
                 });
         } else {
@@ -134,7 +134,7 @@ function DomainRangeGraphCtlr($scope, $location, $rootScope, $timeout, $reposito
             ? targetNode.allEdges
             : sourceNode.allEdges;
 
-        _.each(allEdges, function (pred) {
+        _.each(allEdges, function(pred) {
             const obj = {};
             obj.absUri = encodeURIComponent(pred.uri);
             obj.absUriNonEncoded = pred.uri;
@@ -148,8 +148,8 @@ function DomainRangeGraphCtlr($scope, $location, $rootScope, $timeout, $reposito
 
     // Hack needed to force hide collapsed-mode toggle tooltip in order not be
     // visible after icon is switched
-    $(document).ready(function () {
-        $('.compact-mode-toggle').click(function () {
+    $(document).ready(function() {
+        $('.compact-mode-toggle').click(function() {
             $('.tooltip').hide();
         });
     });

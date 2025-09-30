@@ -14,7 +14,6 @@ function NoAgentsView(TTYGContextService, productInfo) {
         scope: {
         },
         link: ($scope) => {
-
             // =========================
             // Public variables
             // =========================
@@ -48,6 +47,6 @@ function NoAgentsView(TTYGContextService, productInfo) {
             };
             subscriptions.push(TTYGContextService.onCanUpdateAgentUpdated(onCanUpdateAgentUpdated));
             $scope.$on('$destroy', onDestroy);
-        }
+        },
     };
 }

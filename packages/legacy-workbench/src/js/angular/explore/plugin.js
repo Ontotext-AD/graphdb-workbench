@@ -7,7 +7,7 @@ PluginRegistry.add('route', [
         'controller': 'ExploreCtrl',
         'templateUrl': 'pages/explore.html',
         'title': 'view.resource.title',
-        'allowAuthorities': ['READ_REPO_{repoId}']
+        'allowAuthorities': ['READ_REPO_{repoId}'],
     }, {
         'url': '/resource/edit',
         'module': 'graphdb.framework.explore',
@@ -16,7 +16,7 @@ PluginRegistry.add('route', [
         'controller': 'EditResourceCtrl',
         'templateUrl': 'pages/edit.html',
         'title': 'view.resource.title',
-        'allowAuthorities': ['READ_REPO_{repoId}']
+        'allowAuthorities': ['READ_REPO_{repoId}'],
     }, {
         'url': '/resource/:any*',
         'module': 'graphdb.framework.explore',
@@ -25,8 +25,8 @@ PluginRegistry.add('route', [
         'controller': 'ExploreCtrl',
         'templateUrl': 'pages/explore.html',
         'title': 'view.resource.title',
-        'allowAuthorities': ['READ_REPO_{repoId}']
-    }
+        'allowAuthorities': ['READ_REPO_{repoId}'],
+    },
 ]);
 
 PluginRegistry.add('main.menu', {
@@ -39,6 +39,6 @@ PluginRegistry.add('main.menu', {
         icon: "icon-data",
         guideSelector: 'menu-explore',
         testSelector: 'menu-explore',
-        children: []
-    }]
+        children: [],
+    }],
 });

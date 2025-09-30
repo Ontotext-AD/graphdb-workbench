@@ -4,13 +4,13 @@ import {
     AgentInstructionsModel,
     AgentListModel,
     AgentModel,
-    ExtractionMethodModel
+    ExtractionMethodModel,
 } from '../../models/ttyg/agents';
 import {
     AdditionalExtractionMethodFormModel,
     AgentFormModel,
     AgentInstructionsFormModel,
-    ExtractionMethodFormModel
+    ExtractionMethodFormModel,
 } from '../../models/ttyg/agent-form';
 import {NumericRangeModel, TextFieldModel} from '../../models/form-fields';
 import {md5HashGenerator} from '../../utils/hash-utils';
@@ -59,7 +59,7 @@ const agentInstructionsFormMapper = (currentAgentModelInstructions, defaultInstr
         systemInstruction: systemInstruction,
         userInstruction: userInstruction,
         defaultSystemInstruction: defaultInstructions.systemInstruction,
-        defaultUserInstruction: defaultInstructions.userInstruction
+        defaultUserInstruction: defaultInstructions.userInstruction,
     });
 };
 
@@ -97,14 +97,14 @@ const extractionMethodsFormMapper = (agentFormModel, operation, defaultData, dat
             sparqlQuery: new TextFieldModel({
                 value: extractionMethod.sparqlQuery || defaultSparqlMethodValues.sparqlQuery,
                 minLength: 1,
-                maxLength: 2380
+                maxLength: 2380,
             }),
             similarityIndex: extractionMethod.similarityIndex,
             similarityIndexThreshold: extractionMethod.similarityIndexThreshold && new NumericRangeModel({
                 value: extractionMethod.similarityIndexThreshold,
                 minValue: 0,
                 maxValue: 1,
-                step: 0.1
+                step: 0.1,
             }),
             // In case backend returns 0 as a default value this means that there is no limit, so we set the null in order
             // to show the placeholder in the input field.
@@ -112,9 +112,9 @@ const extractionMethodsFormMapper = (agentFormModel, operation, defaultData, dat
             queryTemplate: extractionMethod.queryTemplate && new TextFieldModel({
                 value: extractionMethod.queryTemplate,
                 minLength: 1,
-                maxLength: 2380
+                maxLength: 2380,
             }),
-            retrievalConnectorInstance: extractionMethod.retrievalConnectorInstance
+            retrievalConnectorInstance: extractionMethod.retrievalConnectorInstance,
         });
         agentFormModel.assistantExtractionMethods.setExtractionMethod(existingMethod);
     });
@@ -130,8 +130,8 @@ function additionalExtractionMethodsFormMapper(additionalExtractionMethodsRespon
     if (!additionalExtractionMethodsResponse) {
         return;
     }
-    const additionalExtractionMethods = additionalExtractionMethodsResponse.map(method => {
-        let data = {
+    const additionalExtractionMethods = additionalExtractionMethodsResponse.map((method) => {
+        const data = {
             method: method.method || defaultAdditionalExtractionMethodData.method,
             expanded: method.expanded || defaultAdditionalExtractionMethodData.expanded,
         };
@@ -205,7 +205,7 @@ const extractionMethodMapper = (data) => {
         similarityIndexThreshold: data.similarityIndexThreshold,
         maxNumberOfTriplesPerCall: data.maxNumberOfTriplesPerCall,
         queryTemplate: data.queryTemplate,
-        retrievalConnectorInstance: data.retrievalConnectorInstance
+        retrievalConnectorInstance: data.retrievalConnectorInstance,
     });
 };
 
@@ -223,11 +223,11 @@ const additionalExtractionMethodMapper = (data) => {
     if (data.method === AdditionalExtractionMethod.AUTOCOMPLETE_IRI_DISCOVERY_SEARCH) {
         return new AdditionalExtractionMethodModel({
             method: data.method,
-            maxNumberOfResultsPerCall: data.limit || 0
+            maxNumberOfResultsPerCall: data.limit || 0,
         });
     } else if (data.method === AdditionalExtractionMethod.IRI_DISCOVERY_SEARCH) {
         return new AdditionalExtractionMethodModel({
-            method: data.method
+            method: data.method,
         });
     }
 };
@@ -238,6 +238,6 @@ const agentInstructionsMapper = (data) => {
     }
     return new AgentInstructionsModel({
         systemInstruction: data.systemInstruction,
-        userInstruction: data.userInstruction
+        userInstruction: data.userInstruction,
     });
 };

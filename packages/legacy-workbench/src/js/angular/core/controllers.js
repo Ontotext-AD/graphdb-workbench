@@ -11,11 +11,11 @@ function SimpleModalCtrl($scope, $uibModalInstance, $sce, config) {
     $scope.title = config.title;
     $scope.message = $sce.trustAsHtml(config.message);
 
-    $scope.ok = function () {
+    $scope.ok = function() {
         $uibModalInstance.close();
     };
 
-    $scope.cancel = function () {
+    $scope.cancel = function() {
         $uibModalInstance.dismiss('cancel');
     };
 }
@@ -23,7 +23,7 @@ function SimpleModalCtrl($scope, $uibModalInstance, $sce, config) {
 CopyToClipboardModalCtrl.$inject = ['$scope', '$uibModalInstance', 'uri', 'toastr', '$translate', '$timeout'];
 
 function CopyToClipboardModalCtrl($scope, $uibModalInstance, uri, toastr, $translate, $timeout) {
-    $uibModalInstance.opened.then(function () {
+    $uibModalInstance.opened.then(function() {
         $timeout(() => {
             $('#clipboardURI')[0].select();
         }, 0);
@@ -31,7 +31,7 @@ function CopyToClipboardModalCtrl($scope, $uibModalInstance, uri, toastr, $trans
 
     $scope.clipboardURI = uri;
 
-    $scope.ok = function () {
+    $scope.ok = function() {
         try {
             const copyText = document.getElementById('clipboardURI');
             copyText.select();
@@ -43,7 +43,7 @@ function CopyToClipboardModalCtrl($scope, $uibModalInstance, uri, toastr, $trans
         $uibModalInstance.close();
     };
 
-    $scope.cancel = function () {
+    $scope.cancel = function() {
         $uibModalInstance.dismiss('cancel');
     };
 }
@@ -52,15 +52,15 @@ ViewQueryCtrl.$inject = ['$scope', '$uibModalInstance', 'query', 'toastr', '$tra
 
 function ViewQueryCtrl($scope, $uibModalInstance, query, toastr, $translate) {
     $scope.query = query;
-    $scope.cancel = function () {
+    $scope.cancel = function() {
         $uibModalInstance.dismiss('cancel');
     };
 
-    $scope.selectQuery = function () {
+    $scope.selectQuery = function() {
         $scope.selectElement($('#create-query'));
     };
 
-    $scope.copyQueryToClipboard = function () {
+    $scope.copyQueryToClipboard = function() {
         try {
             $scope.selectQuery();
             document.execCommand('copy');
@@ -72,7 +72,7 @@ function ViewQueryCtrl($scope, $uibModalInstance, query, toastr, $translate) {
     };
 
     // TODO: Rerewrite this in angular/whatever if desired
-    $scope.selectElement = function (elements) {
+    $scope.selectElement = function(elements) {
         if (elements.length > 0) {
             if (window.getSelection) {
                 const sel = window.getSelection();

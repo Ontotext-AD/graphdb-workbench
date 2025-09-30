@@ -4,7 +4,7 @@ angular
 
 function RdfsLabelCommentService() {
     return {
-        processAndFilterLabelAndComment: processAndFilterLabelAndComment
+        processAndFilterLabelAndComment: processAndFilterLabelAndComment,
     };
 
     function processAndFilterLabelAndComment(response) {
@@ -26,7 +26,7 @@ function RdfsLabelCommentService() {
         const results = response.results.bindings;
         const labels = [];
         const comments = [];
-        _.each(results, function (value) {
+        _.each(results, function(value) {
             let processedObj;
             if (!angular.isUndefined(value.label)) {
                 processedObj = processKeysWithColon(value.label);
@@ -39,7 +39,7 @@ function RdfsLabelCommentService() {
             }
         });
 
-        const langFilter = function (item) {
+        const langFilter = function(item) {
             return item.lang === 'en' || item.lang === 'de';
         };
 
@@ -60,7 +60,7 @@ function RdfsLabelCommentService() {
 
         return {
             rdfsLabel: rdfsLabel,
-            rdfsComment: rdfsComment
+            rdfsComment: rdfsComment,
         };
     }
 }

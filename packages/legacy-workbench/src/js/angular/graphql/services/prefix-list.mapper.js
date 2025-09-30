@@ -12,7 +12,7 @@ export const prefixListMapper = (data) => {
     }
     const prefixes = data.prefixes.map((endpoint) => prefixModelMapper(endpoint));
     return new PrefixList(prefixes);
-}
+};
 
 const prefixModelMapper = (data) => {
     if (!data) {
@@ -21,9 +21,9 @@ const prefixModelMapper = (data) => {
     return new Prefix({
         prefix: data.prefix,
         namespace: data.namespace,
-        sources: data.sources
+        sources: data.sources,
     });
-}
+};
 
 /**
  * Maps the prefix list to a list of select menu options.
@@ -38,7 +38,7 @@ export const prefixModelToSelectMenuOptionsMapper = (data) => {
         return new SelectMenuOptionsModel({
             value: prefix.prefix,
             label: prefix.prefix,
-            selected: false
+            selected: false,
         });
     });
-}
+};

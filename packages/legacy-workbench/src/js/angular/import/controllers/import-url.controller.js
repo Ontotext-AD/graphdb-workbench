@@ -5,7 +5,6 @@ angular
 ImportUrlController.$inject = ['$scope', '$uibModalInstance', 'toastr'];
 
 function ImportUrlController($scope, $uibModalInstance) {
-
     // =========================
     // Public variables
     // =========================
@@ -17,15 +16,15 @@ function ImportUrlController($scope, $uibModalInstance) {
     // Public functions
     // =========================
 
-    $scope.cancel = function () {
+    $scope.cancel = function() {
         $uibModalInstance.dismiss();
     };
 
-    $scope.ok = function () {
+    $scope.ok = function() {
         $uibModalInstance.close({
             url: $scope.dataUrl,
             format: $scope.importFormat.type,
-            startImport: $scope.startImport
+            startImport: $scope.startImport,
         });
     };
 }

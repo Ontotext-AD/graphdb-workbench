@@ -27,7 +27,7 @@ PluginRegistry.add('themes', {
         'color-warning-medium': 'hsl(var(--primary-color-hue), var(--primary-color-saturation), 83%)',
         'logo-color': '#E84E0F;',
         'logo-text-color': '#FFFFFF',
-        'logo-background-color': 'var(--secondary-color)'
+        'logo-background-color': 'var(--secondary-color)',
     },
     'dark': {
         'variables': {
@@ -40,10 +40,10 @@ PluginRegistry.add('themes', {
 
             'primary-color-hue': '14',
             'primary-color-saturation': '78%',
-            'primary-color-lightness': '64%'
+            'primary-color-lightness': '64%',
         },
         'properties': {
-            'color-scheme': 'light dark'
-        }
-    }
+            'color-scheme': 'light dark',
+        },
+    },
 });

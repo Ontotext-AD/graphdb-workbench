@@ -23,7 +23,7 @@ function MonitoringRestService($http) {
         deleteQuery,
         getQueryCount,
         checkAutocompleteStatus,
-        monitorQueryTransactionStatistics
+        monitorQueryTransactionStatistics,
     };
 
     function monitorResources() {
@@ -79,7 +79,7 @@ function MonitoringRestService($http) {
         return $http({
             url: `${QUERY_MONITORING_ENDPOINT}/${repositoryID}/query/count`,
             method: 'GET',
-            timeout: 10000
+            timeout: 10000,
         });
     }
 

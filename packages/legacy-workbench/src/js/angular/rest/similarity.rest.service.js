@@ -7,7 +7,6 @@ SimilarityRestService.$inject = ['$http', '$repositories'];
 const SIMILARITY_ENDPOINT = 'rest/similarity';
 
 function SimilarityRestService($http) {
-
     return {
         getIndexes,
         getSearchQueries,
@@ -16,7 +15,7 @@ function SimilarityRestService($http) {
         createIndex,
         getSamples,
         getQuery,
-        saveSearchQuery
+        saveSearchQuery,
     };
 
     /**
@@ -32,8 +31,8 @@ function SimilarityRestService($http) {
             return $http.get(SIMILARITY_ENDPOINT, {
                 headers: {
                     'X-GraphDB-Repository': repositoryId,
-                    'X-GraphDB-Repository-Location': repositoryLocation
-                }
+                    'X-GraphDB-Repository-Location': repositoryLocation,
+                },
             });
         }
         return $http.get(SIMILARITY_ENDPOINT);
@@ -62,9 +61,9 @@ function SimilarityRestService($http) {
                     type,
                     analyzer,
                     searchQuery,
-                    analogicalQuery
-                }
-            }
+                    analogicalQuery,
+                },
+            },
         );
     }
 
@@ -87,8 +86,8 @@ function SimilarityRestService($http) {
                     infer: data.queryInference,
                     sameAs: data.querySameAs,
                     type: data.viewType,
-                    analyzer: data.indexAnalyzer
-                }
+                    analyzer: data.indexAnalyzer,
+                },
             });
     }
 
@@ -96,7 +95,7 @@ function SimilarityRestService($http) {
         return $http({
             method: 'put',
             url: 'rest/similarity/search-query',
-            data
+            data,
         });
     }
 }

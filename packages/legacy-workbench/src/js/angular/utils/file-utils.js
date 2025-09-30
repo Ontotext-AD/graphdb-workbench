@@ -8,7 +8,7 @@ export class FileUtils {
         const extensionSeparatorIndex = fileName.lastIndexOf('.');
         return {
             filename: fileName.substring(0, extensionSeparatorIndex),
-            extension: fileName.substring(extensionSeparatorIndex + 1)
+            extension: fileName.substring(extensionSeparatorIndex + 1),
         };
     }
 

@@ -13,8 +13,8 @@ export const shaclShapeGraphListOptionsMapper = (data) => {
         return new GraphOption({
             uri: graph,
             label: graph,
-            id: graph
+            id: graph,
         });
     });
     return new GraphListOptions(graphModels);
-}
+};

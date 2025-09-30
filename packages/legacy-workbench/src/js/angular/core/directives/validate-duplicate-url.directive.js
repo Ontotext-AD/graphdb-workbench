@@ -40,10 +40,10 @@ function validateDuplicateUrl() {
         restrict: 'A',
         require: 'ngModel',
         scope: {
-            excludedUrls: '='
+            excludedUrls: '=',
         },
-        link: function (scope, element, attr, ctrl) {
-            ctrl.$validators.duplicateUrl = function (modelValue, viewValue) {
+        link: function(scope, element, attr, ctrl) {
+            ctrl.$validators.duplicateUrl = function(modelValue, viewValue) {
                 if (scope.excludedUrls && scope.excludedUrls.includes(viewValue)) {
                     ctrl.$setValidity('duplicateUrl', false);
                     return false;
@@ -52,6 +52,6 @@ function validateDuplicateUrl() {
                 }
                 return true;
             };
-        }
+        },
     };
 }

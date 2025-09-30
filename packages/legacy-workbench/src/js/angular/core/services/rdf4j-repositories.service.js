@@ -9,7 +9,6 @@ angular
 RDF4JRepositoriesService.$inject = ['RDF4JRepositoriesRestService'];
 
 function RDF4JRepositoriesService(RDF4JRepositoriesRestService) {
-
     /**
      * Fetches the namespaces of a repository.
      *
@@ -29,7 +28,7 @@ function RDF4JRepositoriesService(RDF4JRepositoriesRestService) {
     const getGraphs = (repositoryId) => {
         return RDF4JRepositoriesRestService.getGraphs(repositoryId)
             .then((response) => graphListOptionsMapper(response.data));
-    }
+    };
 
     /**
      * Fetches the graphs of a repository as a file.
@@ -40,11 +39,11 @@ function RDF4JRepositoriesService(RDF4JRepositoriesRestService) {
      */
     const downloadGraphsAsFile = (repositoryId, limit) => {
         return RDF4JRepositoriesRestService.downloadGraphsAsFile(repositoryId, limit);
-    }
+    };
 
     return {
         getNamespaces,
         getGraphs,
-        downloadGraphsAsFile
+        downloadGraphsAsFile,
     };
 }

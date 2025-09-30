@@ -24,8 +24,8 @@ function validateUri(UriUtils) {
     return {
         restrict: 'A',
         require: 'ngModel',
-        link: function (scope, element, attr, ctrl) {
-            ctrl.$parsers.unshift(function (value) {
+        link: function(scope, element, attr, ctrl) {
+            ctrl.$parsers.unshift(function(value) {
                 ctrl.$setValidity('validateUri', true);
                 if (!ctrl.$isEmpty(value)) {
                     const valid = UriUtils.isValidIri(value, value.toString());
@@ -33,6 +33,6 @@ function validateUri(UriUtils) {
                 }
                 return value;
             });
-        }
+        },
     };
 }

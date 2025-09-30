@@ -11,7 +11,7 @@ function importResourceStatusInfoDirective($rootScope, $document) {
         restrict: 'E',
         templateUrl: 'js/angular/import/templates/import-resource-status-info.html',
         scope: {
-            resource: '='
+            resource: '=',
         },
         link: ($scope) => {
             const subscribers = [];
@@ -67,6 +67,6 @@ function importResourceStatusInfoDirective($rootScope, $document) {
                 $document.off('keydown', handleEscapeKeyPress);
                 removeAllSubscribers();
             });
-        }
+        },
     };
 }

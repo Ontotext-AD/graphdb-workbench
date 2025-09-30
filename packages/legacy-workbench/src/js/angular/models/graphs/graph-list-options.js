@@ -22,7 +22,7 @@ export class GraphListOptions {
     }
 
     getGraphIds() {
-        return this.graphList.map(graph => graph.uri);
+        return this.graphList.map((graph) => graph.uri);
     }
 
     /**
@@ -53,7 +53,7 @@ export class GraphListOptions {
     }
 
     toJSON() {
-        return this.graphList.map(graph => graph.uri);
+        return this.graphList.map((graph) => graph.uri);
     }
 }
 

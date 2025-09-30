@@ -1,4 +1,4 @@
-const RDF_RANK_DEFAULT_TITLE = 'view.rdf.rank.title'
+const RDF_RANK_DEFAULT_TITLE = 'view.rdf.rank.title';
 
 PluginRegistry.add('guide.step', [
     {
@@ -15,10 +15,10 @@ PluginRegistry.add('guide.step', [
                     // If mainAction is set the title will be set automatically
                     ...(options.mainAction ? {} : {title: RDF_RANK_DEFAULT_TITLE}),
                     onNextClick: computeRDFRankButtonSelector,
-                    ...options
-                }
-            }]
-        }
-    }
+                    ...options,
+                },
+            }];
+        },
+    },
 ]);
 

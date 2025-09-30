@@ -8,13 +8,13 @@ const modules = [
     'graphdb.framework.core.controllers',
     'graphdb.framework.externalsync.controllers',
     'graphdb.framework.externalsync.directives',
-    'graphdb.framework.core.directives'
+    'graphdb.framework.core.directives',
 ];
 
 const externalsync = angular.module('graphdb.framework.externalsync', modules);
 
-externalsync.filter('singular', function () {
-    return function (noun) {
+externalsync.filter('singular', function() {
+    return function(noun) {
         if (angular.isUndefined(noun)) {
             return noun;
         } else {

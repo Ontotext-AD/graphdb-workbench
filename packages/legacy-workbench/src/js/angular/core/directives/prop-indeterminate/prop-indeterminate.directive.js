@@ -27,7 +27,7 @@ function propIndeterminate() {
     return {
         restrict: 'A',
         scope: {
-            propIndeterminate: '='
+            propIndeterminate: '=',
         },
         link: ($scope, element, attributes) => {
             const indeterminateChanged = () => {
@@ -47,6 +47,6 @@ function propIndeterminate() {
 
             // Deregister the watchers when the scope/directive is destroyed
             $scope.$on('$destroy', removeAllSubscribers);
-        }
+        },
     };
 }

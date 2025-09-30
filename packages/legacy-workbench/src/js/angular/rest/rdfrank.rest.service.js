@@ -22,7 +22,7 @@ function RdfRankRestService($http) {
         toggleIncludeImplicit,
         compute,
         computeIncremental,
-        interrupt
+        interrupt,
     };
 
     function getStatus() {
@@ -52,7 +52,7 @@ function RdfRankRestService($http) {
     function deleteFilter(predicate, data) {
         return $http.delete(`${RDFRANK_FILTERING_ENDPOINT}/${predicate}`, {
             data,
-            headers: {'Content-Type': 'application/json;charset=utf-8'}
+            headers: {'Content-Type': 'application/json;charset=utf-8'},
         });
     }
 

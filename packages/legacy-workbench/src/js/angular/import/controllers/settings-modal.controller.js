@@ -9,14 +9,13 @@ export const SettingsModalActions = {
     UPLOAD_ONLY: 'upload_only',
     UPLOAD_AND_IMPORT: 'upload_and_import',
     CANCEL: 'cancel',
-    CANCEL_IMPORT: 'cancel_import'
+    CANCEL_IMPORT: 'cancel_import',
 };
 
 // TODO: combine all model parameters into one object!!!
 SettingsModalController.$inject = ['$scope', '$uibModalInstance', 'toastr', 'UriUtils', '$translate', 'dialogModel'];
 
 function SettingsModalController($scope, $uibModalInstance, toastr, UriUtils, $translate, dialogModel) {
-
     // =========================
     // Public variables
     // =========================
@@ -34,13 +33,13 @@ function SettingsModalController($scope, $uibModalInstance, toastr, UriUtils, $t
     // Public functions
     // =========================
 
-    $scope.hasError = function (error, input) {
-        return _.find(error, function (o) {
+    $scope.hasError = function(error, input) {
+        return _.find(error, function(o) {
             return input === o['$name'];
         });
     };
 
-    $scope.ok = function () {
+    $scope.ok = function() {
         // resets the validity of a field only used for temporary things
         $scope.settingsForm.replaceGraph.$setValidity('replaceGraph', true);
 
@@ -50,32 +49,32 @@ function SettingsModalController($scope, $uibModalInstance, toastr, UriUtils, $t
         }
     };
 
-    $scope.cancel = function () {
+    $scope.cancel = function() {
         fixSettings();
         $uibModalInstance.dismiss(getDismissModel(SettingsModalActions.CANCEL));
     };
 
-    $scope.onlyUpload = function () {
+    $scope.onlyUpload = function() {
         fixSettings();
         $uibModalInstance.dismiss(getDismissModel(SettingsModalActions.UPLOAD_ONLY));
     };
 
-    $scope.cancelImport = function () {
+    $scope.cancelImport = function() {
         fixSettings();
         $uibModalInstance.dismiss(getDismissModel(SettingsModalActions.CANCEL_IMPORT));
     };
 
-    $scope.close = function () {
+    $scope.close = function() {
         fixSettings();
         $uibModalInstance.dismiss(getDismissModel(SettingsModalActions.CANCEL));
     };
 
-    $scope.reset = function () {
+    $scope.reset = function() {
         $scope.settings = _.cloneDeep(dialogModel.defaultSettings);
         $scope.target = 'data';
     };
 
-    $scope.addReplaceGraph = function (graph) {
+    $scope.addReplaceGraph = function(graph) {
         let valid = true;
         if (graph !== 'default') {
             valid = UriUtils.isValidIri(graph, graph.toString());
@@ -94,14 +93,14 @@ function SettingsModalController($scope, $uibModalInstance, toastr, UriUtils, $t
         }
     };
 
-    $scope.checkEnterReplaceGraph = function (event, graph) {
+    $scope.checkEnterReplaceGraph = function(event, graph) {
         if (event.keyCode === 13) {
             event.preventDefault();
             $scope.addReplaceGraph(graph);
         }
     };
 
-    $scope.switchParserSettings = function () {
+    $scope.switchParserSettings = function() {
         $scope.showAdvancedSettings = !$scope.showAdvancedSettings;
     };
 
@@ -114,14 +113,14 @@ function SettingsModalController($scope, $uibModalInstance, toastr, UriUtils, $t
      * @param {string} action The action to be performed.
      * @return {{settings: *, action}}
      */
-    const getDismissModel = function (action) {
+    const getDismissModel = function(action) {
         return {
             settings: $scope.settings,
-            action
+            action,
         };
     };
 
-    const fixSettings = function () {
+    const fixSettings = function() {
         if ($scope.target === 'default') {
             $scope.settings.context = 'default';
         } else if ($scope.target === 'data') {
@@ -140,7 +139,7 @@ function SettingsModalController($scope, $uibModalInstance, toastr, UriUtils, $t
     // Initialization
     // =========================
 
-    const init = function () {
+    const init = function() {
         if ($scope.settings.context) {
             if ($scope.settings.context === 'default') {
                 $scope.target = 'default';

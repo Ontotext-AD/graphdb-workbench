@@ -1,6 +1,5 @@
 export class ExplainResponseModel {
     constructor(data = {}) {
-
         /**
          * @type {string}
          */
@@ -140,5 +139,5 @@ export class ExplainQueryMethodModel {
 export const ExplainQueryType = {
     SPARQL: 'sparql',
     JSON: 'json',
-    OTHER: 'other'
+    OTHER: 'other',
 };

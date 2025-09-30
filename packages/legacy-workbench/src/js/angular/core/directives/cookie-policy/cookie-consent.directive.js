@@ -41,10 +41,10 @@ function cookieConsent($jwtAuth, $uibModal, $licenseService, $translate, toastr,
                     resolve: {
                         data: () => {
                             return {
-                                cookieConsent
-                            }
-                        }
-                    }
+                                cookieConsent,
+                            };
+                        },
+                    },
                 });
             };
 
@@ -84,6 +84,6 @@ function cookieConsent($jwtAuth, $uibModal, $licenseService, $translate, toastr,
             // Initialization
             // =========================
             init();
-        }
+        },
     };
 }

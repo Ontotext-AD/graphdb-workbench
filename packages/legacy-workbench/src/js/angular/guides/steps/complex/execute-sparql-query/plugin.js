@@ -3,8 +3,8 @@ const createCopyToEditorListener = (YasguiComponentDirectiveUtil, sparqlDirectiv
         event.preventDefault();
         YasguiComponentDirectiveUtil.setQuery(sparqlDirectiveSelector, query).then(() => {
         });
-    }
-}
+    };
+};
 
 const SPARQL_DIRECTIVE_SELECTOR = '#query-editor';
 const SPARQL_EDITOR_DEFAULT_TITLE = 'view.sparql-editor.title';
@@ -26,11 +26,11 @@ PluginRegistry.add('guide.step', [
                         class: 'visual-sparql-results-button',
                         scrollToHandler: GuideUtils.scrollToTop,
                         onNextClick: () => GuideUtils.clickOnElement(GuideUtils.CSS_SELECTORS.SPARQL_VISUAL_BUTTON_SELECTOR)(),
-                        ...options
-                    }
-                }
-            ]
-        }
+                        ...options,
+                    },
+                },
+            ];
+        },
     },
     {
         guideBlockName: 'sparql-editor-run-button',
@@ -53,11 +53,11 @@ PluginRegistry.add('guide.step', [
                                 guide.next();
                             }),
                         scrollToHandler: GuideUtils.scrollToTop,
-                        ...options
-                    }
-                }
-            ]
-        }
+                        ...options,
+                    },
+                },
+            ];
+        },
     },
     {
         guideBlockName: 'sparql-explain-editor',
@@ -82,11 +82,11 @@ PluginRegistry.add('guide.step', [
                             }),
                         scrollToHandler: GuideUtils.scrollToTop,
                         extraContent: options.extraContent,
-                        ...options
-                    }
-                }
-            ]
-        }
+                        ...options,
+                    },
+                },
+            ];
+        },
     },
     {
         guideBlockName: 'sparql-editor',
@@ -141,11 +141,11 @@ PluginRegistry.add('guide.step', [
                                 stepHTMLElement.removeEventListener('click', copyToEditorListener);
                             }
                         },
-                        ...options
-                    }
-                }
-            ]
-        }
+                        ...options,
+                    },
+                },
+            ];
+        },
     },
     {
         guideBlockName: 'sparql-results-explain',
@@ -166,11 +166,11 @@ PluginRegistry.add('guide.step', [
                         scrollToHandler: GuideUtils.scrollToTop,
                         extraContent: options.resultExtraContent,
                         canBePaused: false,
-                        ...options
-                    }
-                }
-            ]
-        }
+                        ...options,
+                    },
+                },
+            ];
+        },
     },
     {
         guideBlockName: 'execute-sparql-query',
@@ -189,9 +189,9 @@ PluginRegistry.add('guide.step', [
                     options: {
                         menu: 'sparql',
                         showIntro: true,
-                        ...options
-                    }
-                }
+                        ...options,
+                    },
+                },
             ];
 
             const defaultQuery = 'select * where { \n\t?s ?p ?o .\n} limit 100 \n';
@@ -247,8 +247,8 @@ PluginRegistry.add('guide.step', [
                             return GuideUtils.waitFor(GuideUtils.CSS_SELECTORS.SPARQL_EDITOR_SELECTOR)
                                 .then(() => YasguiComponentDirectiveUtil.executeSparqlQuery("#query-editor", query));
                         },
-                        ...options
-                    }
+                        ...options,
+                    },
                 });
                 steps.push({
                     guideBlockName: 'sparql-editor-run-button',
@@ -266,8 +266,8 @@ PluginRegistry.add('guide.step', [
                                     return YasguiComponentDirectiveUtil.executeSparqlQuery("#query-editor", query);
                                 });
                         },
-                        ...options
-                    }
+                        ...options,
+                    },
                 });
                 steps.push({
                     guideBlockName: 'sparql-results-explain',
@@ -285,13 +285,13 @@ PluginRegistry.add('guide.step', [
                             return previousStep.options.initPreviousStep(services, previousStep.options.id)
                                 .then(() => YasguiComponentDirectiveUtil.setQuery(SPARQL_DIRECTIVE_SELECTOR, query));
                         },
-                        ...options
-                    }
+                        ...options,
+                    },
                 });
             });
 
             return steps;
-        }
+        },
     },
     {
         guideBlockName: 'sparql-results-click-on-iri',
@@ -314,11 +314,11 @@ PluginRegistry.add('guide.step', [
                             GuideUtils.waitFor(step.elementSelector, 3)
                                 .then(() => $(step.elementSelector).trigger('click'))
                                 .then(() => guide.next());
-                        }
-                    }
-                }
-            ]
-        }
+                        },
+                    },
+                },
+            ];
+        },
     },
 
     {
@@ -332,8 +332,8 @@ PluginRegistry.add('guide.step', [
                         menu: 'sparql',
                         mainAction: 'execute-sparql-query',
                         showIntro: true,
-                        ...options
-                    }
+                        ...options,
+                    },
                 });
             }
 
@@ -342,17 +342,17 @@ PluginRegistry.add('guide.step', [
                 options: {
                     query: options.query,
                     queryExtraContent: options.queryExtraContent,
-                    ...options
-                }
+                    ...options,
+                },
             }, {
                 guideBlockName: 'sparql-editor-run-button',
-                options: {...options}
+                options: {...options},
             }, {
                 guideBlockName: 'sparql-results-visual-button',
-                options: {...options}
+                options: {...options},
             });
 
             return steps;
-        }
-    }
+        },
+    },
 ]);

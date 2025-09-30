@@ -9,7 +9,7 @@ PluginRegistry.add('route', {
     'reloadOnSearch': false,
     'helpInfo': 'view.import.helpInfo',
     'documentationUrl': 'loading-data-using-the-workbench.html',
-    'allowAuthorities': ['READ_REPO_{repoId}']
+    'allowAuthorities': ['READ_REPO_{repoId}'],
 });
 
 PluginRegistry.add('main.menu', {
@@ -22,7 +22,7 @@ PluginRegistry.add('main.menu', {
             role: 'IS_AUTHENTICATED_FULLY',
             icon: 'icon-import',
             guideSelector: 'menu-import',
-            children: []
-        }
-    ]
+            children: [],
+        },
+    ],
 });

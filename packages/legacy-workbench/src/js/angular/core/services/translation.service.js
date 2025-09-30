@@ -6,7 +6,6 @@ angular.module('graphdb.framework.core.services.translation-service', modules)
 TranslationService.$inject = ['$translate', '$languageService'];
 
 function TranslationService($translate, $languageService) {
-
     const supportedLanguages = $languageService.getSupportedLanguages();
     let allTranslations;
 
@@ -21,6 +20,6 @@ function TranslationService($translate, $languageService) {
     };
 
     return {
-        getTranslations
+        getTranslations,
     };
 }

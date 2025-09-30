@@ -1,5 +1,5 @@
 (function() {
-  var module;
+  let module;
 
   module = angular.module('angularBootstrapNavTree', []);
 
@@ -13,24 +13,23 @@
           treeData: '=',
           onSelect: '&',
           initialSelection: '@',
-          treeControl: '='
+          treeControl: '=',
         },
-        controller: function($scope, $element, $http){
+        controller: function($scope, $element, $http) {
         	$scope.expandClose = function(branch) {
         		$scope.$parent.fetchChildData(branch);
-        		branch.expanded = !branch.expanded
+        		branch.expanded = !branch.expanded;
         	};
 
-        	$scope.checkBoxClicked = function(row){
-        		if(row.branch.showCheckboxes=='true' && row.level > 2){
+        	$scope.checkBoxClicked = function(row) {
+        		if (row.branch.showCheckboxes=='true' && row.level > 2) {
         			$scope.$parent.fetchChildDataAll(row.branch);
             		$scope.$parent.checkBoxClicked(row.branch);
         		}
-        	}
+        	};
           },
         link: function(scope, element, attrs) {
-
-        	var error, expand_all_parents, expand_level, for_all_ancestors, for_each_branch, get_parent, n, on_treeData_change, select_branch, selected_branch, tree;
+        	let error; let expand_all_parents; let expand_level; let for_all_ancestors; let for_each_branch; let get_parent; let n; let on_treeData_change; let select_branch; let selected_branch; let tree;
           error = function(s) {
             console.log('ERROR:' + s);
             return void 0;
@@ -62,9 +61,9 @@
             }
           }
           for_each_branch = function(f) {
-            var do_f, root_branch, _i, _len, _ref, _results;
+            let do_f; let root_branch; let _i; let _len; let _ref; let _results;
             do_f = function(branch, level) {
-              var child, _i, _len, _ref, _results;
+              let child; let _i; let _len; let _ref; let _results;
               f(branch, level);
               if (branch.children != null) {
                 _ref = branch.children;
@@ -108,7 +107,7 @@
                 if (scope.onSelect != null) {
                   return $timeout(function() {
                     return scope.onSelect({
-                      branch: branch
+                      branch: branch,
                     });
                   });
                 }
@@ -121,7 +120,7 @@
             }
           };
           get_parent = function(child) {
-            var parent;
+            let parent;
             parent = void 0;
             if (child.parent_uid) {
               for_each_branch(function(b) {
@@ -133,7 +132,7 @@
             return parent;
           };
           for_all_ancestors = function(child, fn) {
-            var parent;
+            let parent;
             parent = get_parent(child);
             if (parent != null) {
               fn(parent);
@@ -147,7 +146,7 @@
           };
           scope.tree_rows = [];
           on_treeData_change = function() {
-            var add_branch_to_list, root_branch, _i, _len, _ref, _results;
+            let add_branch_to_list; let root_branch; let _i; let _len; let _ref; let _results;
             for_each_branch(function(b, level) {
               if (!b.uid) {
                 return b.uid = "" + Math.random();
@@ -155,7 +154,7 @@
             });
             console.log('UIDs are set.');
             for_each_branch(function(b) {
-              var child, _i, _len, _ref, _results;
+              let child; let _i; let _len; let _ref; let _results;
               if (angular.isArray(b.children)) {
                 _ref = b.children;
                 _results = [];
@@ -168,21 +167,21 @@
             });
             scope.tree_rows = [];
             for_each_branch(function(branch) {
-              var child, f;
+              let child; let f;
               if (branch.children) {
                 if (branch.children.length > 0) {
                   f = function(e) {
                     if (typeof e === 'string') {
                       return {
                         label: e,
-                        children: []
+                        children: [],
                       };
                     } else {
                       return e;
                     }
                   };
                   return branch.children = (function() {
-                    var _i, _len, _ref, _results;
+                    let _i; let _len; let _ref; let _results;
                     _ref = branch.children;
                     _results = [];
                     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -197,7 +196,7 @@
               }
             });
             add_branch_to_list = function(level, branch, visible) {
-              var child, child_visible, tree_icon, _i, _len, _ref, _results;
+              let child; let child_visible; let tree_icon; let _i; let _len; let _ref; let _results;
               if (branch.expanded == null) {
                 branch.expanded = false;
               }
@@ -224,7 +223,7 @@
                 branch: branch,
                 label: branch.label,
                 tree_icon: tree_icon,
-                visible: visible
+                visible: visible,
               });
               if (branch.children != null) {
                 _ref = branch.children;
@@ -281,7 +280,7 @@
                 }
               };
               tree.select_first_branch = function() {
-                var b;
+                let b;
                 b = tree.get_first_branch();
                 return tree.select_branch(b);
               };
@@ -299,7 +298,7 @@
                 return b.children;
               };
               tree.select_parent_branch = function(b) {
-                var p;
+                let p;
                 if (b == null) {
                   b = tree.get_selected_branch();
                 }
@@ -343,7 +342,7 @@
                 }
               };
               tree.get_siblings = function(b) {
-                var p, siblings;
+                let p; let siblings;
                 if (b == null) {
                   b = selected_branch;
                 }
@@ -358,7 +357,7 @@
                 }
               };
               tree.get_next_sibling = function(b) {
-                var i, siblings;
+                let i; let siblings;
                 if (b == null) {
                   b = selected_branch;
                 }
@@ -372,7 +371,7 @@
                 }
               };
               tree.get_prev_sibling = function(b) {
-                var i, siblings;
+                let i; let siblings;
                 if (b == null) {
                   b = selected_branch;
                 }
@@ -384,7 +383,7 @@
                 }
               };
               tree.select_next_sibling = function(b) {
-                var next;
+                let next;
                 if (b == null) {
                   b = selected_branch;
                 }
@@ -396,7 +395,7 @@
                 }
               };
               tree.select_prev_sibling = function(b) {
-                var prev;
+                let prev;
                 if (b == null) {
                   b = selected_branch;
                 }
@@ -408,7 +407,7 @@
                 }
               };
               tree.get_first_child = function(b) {
-                var _ref;
+                let _ref;
                 if (b == null) {
                   b = selected_branch;
                 }
@@ -419,7 +418,7 @@
                 }
               };
               tree.get_closest_ancestor_next_sibling = function(b) {
-                var next, parent;
+                let next; let parent;
                 next = tree.get_next_sibling(b);
                 if (next != null) {
                   return next;
@@ -429,7 +428,7 @@
                 }
               };
               tree.get_next_branch = function(b) {
-                var next;
+                let next;
                 if (b == null) {
                   b = selected_branch;
                 }
@@ -444,7 +443,7 @@
                 }
               };
               tree.select_next_branch = function(b) {
-                var next;
+                let next;
                 if (b == null) {
                   b = selected_branch;
                 }
@@ -457,7 +456,7 @@
                 }
               };
               tree.last_descendant = function(b) {
-                var last_child;
+                let last_child;
                 n = b.children.length;
                 if (n === 0) {
                   return b;
@@ -467,7 +466,7 @@
                 }
               };
               tree.get_prev_branch = function(b) {
-                var parent, prev_sibling;
+                let parent; let prev_sibling;
                 if (b == null) {
                   b = selected_branch;
                 }
@@ -482,7 +481,7 @@
                 }
               };
               return tree.select_prev_branch = function(b) {
-                var prev;
+                let prev;
                 if (b == null) {
                   b = selected_branch;
                 }
@@ -496,15 +495,14 @@
               };
             }
           }
-        }
+        },
       };
-    }
+    },
   ]);
-
 }).call(this);
 
-function createTemplate(){
-	var template = "<ul class=\"nav nav-list nav-pills nav-stacked ng-tree\">"+
+function createTemplate() {
+	const template = "<ul class=\"nav nav-list nav-pills nav-stacked ng-tree\">"+
 					  "<li ng-repeat=\"row in tree_rows | filter:{visible:true} track by row.branch.uid\" ng-animate=\"'ng-tree-animate'\" data-element-id=\"{{row.branch.id}}\" data-element-label=\"{{row.branch.label}}\" ng-class=\"'level-' + {{ row.level }} + (row.branch.selected ? ' active':'')\" class=\"ng-tree-row\">"+
 //					  	"<a ng-click=\"user_clicks_branch(row.branch)\">"+
 					  	"<a ng-click=\"checkBoxClicked(row)\">"+
@@ -524,5 +522,5 @@ function createTemplate(){
 					  "</li>"+
 					"</ul>";
 
-	return template
+	return template;
 }

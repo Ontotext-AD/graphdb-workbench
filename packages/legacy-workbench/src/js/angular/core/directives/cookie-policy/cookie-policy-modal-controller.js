@@ -29,7 +29,6 @@ export function CookiePolicyModalController($scope, $translate, toastr, Tracking
         } else if (type === ConsentTypes.THIRD_PARTY) {
             callCount++;
             $scope.cookieConsent.setThirdPartyConsent(!$scope.cookieConsent.getThirdPartyConsent());
-
         }
         $scope.saveConsent();
     };

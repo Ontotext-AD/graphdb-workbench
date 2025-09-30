@@ -9,14 +9,14 @@ function systemRepoWarningDirective($repositories, $rootScope) {
         restrict: 'A',
         scope: {},
         templateUrl: 'js/angular/graphexplore/templates/systemRepoWarningTemplate.html',
-        link: function (scope) {
-            scope.isSystemRepository = function () {
+        link: function(scope) {
+            scope.isSystemRepository = function() {
                 return $repositories.getActiveRepository() === 'SYSTEM';
             };
 
-            scope.hasPermission = function () {
+            scope.hasPermission = function() {
                 return $rootScope.hasPermission();
             };
-        }
+        },
     };
 }

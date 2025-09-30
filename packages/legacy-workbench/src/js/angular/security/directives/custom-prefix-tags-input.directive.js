@@ -36,14 +36,14 @@ function customPrefixTagsInputDirective() {
                 const ngModelCtrl = element.controller('ngModel');
 
                 if (isNgTagsInput) {
-                    ngModelCtrl.$parsers.push(function (viewValue) {
+                    ngModelCtrl.$parsers.push(function(viewValue) {
                         if (Array.isArray(viewValue)) {
                             ngModelCtrl.$warning = viewValue.some((tag) => hasCustomOrNegatedPrefix(tag));
                         }
                         return viewValue;
                     });
 
-                    subscriptions.push(scope.$watch(attrs.ngModel, function (newVal) {
+                    subscriptions.push(scope.$watch(attrs.ngModel, function(newVal) {
                         if (Array.isArray(newVal)) {
                             ngModelCtrl.$warning = newVal.some((tag) => hasCustomOrNegatedPrefix(tag));
                         }
@@ -56,6 +56,6 @@ function customPrefixTagsInputDirective() {
             };
 
             subscriptions.push(scope.$on('$destroy', unsubscribeListeners));
-        }
+        },
     };
 }

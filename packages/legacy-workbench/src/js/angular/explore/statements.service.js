@@ -91,9 +91,9 @@ function StatementsService() {
                                 value: object.value,
                                 type: object.type,
                                 datatype: object.datatype,
-                                lang: object.lang
+                                lang: object.lang,
                             },
-                            context: context
+                            context: context,
                         });
                     }
                 }
@@ -106,98 +106,98 @@ function StatementsService() {
         return [
             {
                 value: '',
-                label: 'string'
+                label: 'string',
             }, {
                 value: 'http://www.w3.org/2001/XMLSchema#boolean',
-                label: 'boolean'
+                label: 'boolean',
             }, {
                 value: 'http://www.w3.org/2001/XMLSchema#decimal',
-                label: 'decimal'
+                label: 'decimal',
             }, {
                 value: 'http://www.w3.org/2001/XMLSchema#integer',
-                label: 'integer'
+                label: 'integer',
             }, {
                 value: 'http://www.w3.org/2001/XMLSchema#double',
-                label: 'double'
+                label: 'double',
             }, {
                 value: 'http://www.w3.org/2001/XMLSchema#float',
-                label: 'float'
+                label: 'float',
             }, {
                 value: 'http://www.w3.org/2001/XMLSchema#date',
-                label: 'date'
+                label: 'date',
             }, {
                 value: 'http://www.w3.org/2001/XMLSchema#time',
-                label: 'time'
+                label: 'time',
             }, {
                 value: 'http://www.w3.org/2001/XMLSchema#dateTime',
-                label: 'date time'
+                label: 'date time',
             }, {
                 value: 'http://www.w3.org/2001/XMLSchema#byte',
-                label: 'byte'
+                label: 'byte',
             }, {
                 value: 'http://www.w3.org/2001/XMLSchema#short',
-                label: 'short'
+                label: 'short',
             }, {
                 value: 'http://www.w3.org/2001/XMLSchema#int',
-                label: 'int'
+                label: 'int',
             }, {
                 value: 'http://www.w3.org/2001/XMLSchema#long',
-                label: 'long'
+                label: 'long',
             }, {
                 value: 'http://www.w3.org/2001/XMLSchema#unsignedByte',
-                label: 'unsigned byte'
+                label: 'unsigned byte',
             }, {
                 value: 'http://www.w3.org/2001/XMLSchema#unsignedShort',
-                label: 'unsigned short'
+                label: 'unsigned short',
             }, {
                 value: 'http://www.w3.org/2001/XMLSchema#unsignedInt',
-                label: 'unsigned int'
+                label: 'unsigned int',
             }, {
                 value: 'http://www.w3.org/2001/XMLSchema#unsignedLong',
-                label: 'unsigned long'
+                label: 'unsigned long',
             }, {
                 value: 'http://www.w3.org/2001/XMLSchema#positoveInteger',
-                label: 'positive integer'
+                label: 'positive integer',
             }, {
                 value: 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger',
-                label: 'non-negative integer'
+                label: 'non-negative integer',
             }, {
                 value: 'http://www.w3.org/2001/XMLSchema#negativeInteger',
-                label: 'negative integer'
+                label: 'negative integer',
             }, {
                 value: 'http://www.w3.org/2001/XMLSchema#nonPositiveInteger',
-                label: 'non-positive integer'
+                label: 'non-positive integer',
             }, {
                 value: 'http://www.w3.org/2001/XMLSchema#gYear',
-                label: 'gYear'
+                label: 'gYear',
             }, {
                 value: 'http://www.w3.org/2001/XMLSchema#gMonth',
-                label: 'gMonth'
+                label: 'gMonth',
             }, {
                 value: 'http://www.w3.org/2001/XMLSchema#gDay',
-                label: 'gDay'
+                label: 'gDay',
             }, {
                 value: 'http://www.w3.org/2001/XMLSchema#gYearMonth',
-                label: 'gYearMonth'
+                label: 'gYearMonth',
             }, {
                 value: 'http://www.w3.org/2001/XMLSchema#gMonthDay',
-                label: 'gMonthDay'
+                label: 'gMonthDay',
             }, {
                 value: 'http://www.w3.org/2001/XMLSchema#duration',
-                label: 'duration'
+                label: 'duration',
             }, {
                 value: 'http://www.w3.org/2001/XMLSchema#hexBinary',
-                label: 'hex binary'
+                label: 'hex binary',
             }, {
                 value: 'http://www.w3.org/2001/XMLSchema#base64Binary',
-                label: 'base64 binary'
-            }
+                label: 'base64 binary',
+            },
         ];
     }
 
     return {
         transformToTrig: transformToTrig,
         buildStatements: buildStatements,
-        getDatatypeOptions: getDatatypeOptions
+        getDatatypeOptions: getDatatypeOptions,
     };
 }

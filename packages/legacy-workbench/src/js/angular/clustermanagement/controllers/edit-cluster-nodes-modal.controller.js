@@ -2,7 +2,7 @@ import 'angular/clustermanagement/services/cluster-context.service';
 import {cloneDeep} from "lodash";
 
 const modules = [
-    'graphdb.framework.clustermanagement.services.cluster-context'
+    'graphdb.framework.clustermanagement.services.cluster-context',
 ];
 
 angular
@@ -51,7 +51,7 @@ function EditClusterNodesModalController($scope, $uibModalInstance, $translate, 
             ModalService.openSimpleModal({
                 title: $translate.instant('common.warning'),
                 message: $translate.instant('page.leave.pristine.warning'),
-                warning: true
+                warning: true,
             }).result.then(() => {
                 $uibModalInstance.dismiss('cancel');
             });

@@ -6,7 +6,6 @@ import {CHAT_MESSAGE_ROLE, ChatMessageModel} from "./chat-message";
  *
  */
 export class ChatItemModel {
-
     /**
      * Creates an instance of ChatItemModel.
      *
@@ -14,7 +13,6 @@ export class ChatItemModel {
      * @param {ChatMessageModel} question - The message object representing the question.
      */
     constructor(chatId, question) {
-
         /**
          * @type {string | undefined}
          * @private
@@ -106,7 +104,7 @@ export class ChatItemModel {
     toCreateChatRequestPayload() {
         return {
             agentId: this._agentId,
-            question: this._question.message
+            question: this._question.message,
         };
     }
 
@@ -120,20 +118,19 @@ export class ChatItemModel {
             conversationId: this._chatId,
             agentId: this._agentId,
             question: this._question.message,
-            tzOffset: -new Date().getTimezoneOffset() // offsets are reversed here hence the minus
+            tzOffset: -new Date().getTimezoneOffset(), // offsets are reversed here hence the minus
         };
     }
 
     toExplainResponsePayload(answerId) {
         return {
             conversationId: this._chatId,
-            answerId
+            answerId,
         };
     }
 }
 
 export class ChatItemsListModel {
-
     /**
      * @param {ChatItemModel[]} items
      */

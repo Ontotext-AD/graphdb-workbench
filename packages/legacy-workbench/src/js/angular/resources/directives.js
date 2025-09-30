@@ -3,22 +3,21 @@ import * as echarts from "echarts";
 const chartsDirective = angular.module('graphdb.framework.resources.directives', []);
 
 chartsDirective.directive('chart', ['$rootScope',
-    function ($rootScope) {
+    function($rootScope) {
         return {
             restrict: 'AE',
             scope: {
-                chart: '=',   //chart options, [required]
+                chart: '=', //chart options, [required]
             },
-            link: function (scope, element) {
+            link: function(scope, element) {
                 let myChart;
 
                 const languageChangedSubscription = $rootScope.$on('$translateChangeSuccess', () => {
                     scope.chart.translateLabels();
                     myChart.setOption(scope.chart.chartOptions);
-
                 });
 
-                scope.$watch('chart', function () {
+                scope.$watch('chart', function() {
                     initChart();
                 });
 
@@ -48,14 +47,14 @@ chartsDirective.directive('chart', ['$rootScope',
                     myChart.resize();
                 }
 
-                scope.$on("$destroy", function () {
+                scope.$on("$destroy", function() {
                     myChart.on('legendselectchanged');
                     myChart.dispose();
                     scope.chart.unregisterRefreshHandler(refreshChart);
                     languageChangedSubscription();
                     window.removeEventListener('resize', handleWindowResize);
                 });
-            }
+            },
         };
-    }
+    },
 ]);

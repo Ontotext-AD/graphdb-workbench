@@ -18,9 +18,9 @@ function directive($timeout, $compile) {
             fixedPosition: '=',
             titleClass: '@',
             showTrigger: '=',
-            hideTrigger: '='
+            hideTrigger: '=',
         },
-        link: function ($scope, element, attrs) {
+        link: function($scope, element, attrs) {
             /**
              * Maximum number of attempts to reposition the tooltip.
              *
@@ -47,7 +47,7 @@ function directive($timeout, $compile) {
             }
 
             // adds the tooltip to the body
-            $scope.createTooltip = function (event) {
+            $scope.createTooltip = function(event) {
                 if (attrs.gdbTooltip) {
                     // create the tooltip
                     $scope.tooltipElement = angular.element('<div>').addClass('angular-tooltip').addClass($scope.titleClass);
@@ -72,7 +72,7 @@ function directive($timeout, $compile) {
                 }
             }
 
-            $scope.updateTooltip = function (title) {
+            $scope.updateTooltip = function(title) {
                 // insert html into tooltip
                 $scope.tooltipElement.html(decodeHTML(title));
 
@@ -83,32 +83,32 @@ function directive($timeout, $compile) {
                 setPosition();
 
                 // stop the standard tooltip from being shown
-                $timeout(function () {
+                $timeout(function() {
                     element.removeAttr('ng-attr-title');
                     element.removeAttr('title');
                 });
             };
 
             // if the title changes the update the tooltip
-            $scope.$watch('gdb-tooltip', function (newTitle) {
+            $scope.$watch('gdb-tooltip', function(newTitle) {
                 if ($scope.tooltipElement) {
                     $scope.updateTooltip(newTitle);
                 }
             });
 
             // removes all tooltips from the document to reduce ghosts
-            $scope.removeTooltip = function () {
+            $scope.removeTooltip = function() {
                 const tooltip = angular.element(document.querySelectorAll('.angular-tooltip'));
                 tooltip.remove();
             };
 
             // gets the current direction value
-            $scope.getDirection = function () {
+            $scope.getDirection = function() {
                 return element.attr('tooltip-placement') || 'top';
             };
 
             // calculates the position of the tooltip
-            $scope.calculatePosition = function (tooltip, direction) {
+            $scope.calculatePosition = function(tooltip, direction) {
                 const tooltipBounding = tooltip[0].getBoundingClientRect();
                 const elBounding = element[0].getBoundingClientRect();
                 const scrollLeft = window.scrollX || document.documentElement.scrollLeft;
@@ -169,11 +169,11 @@ function directive($timeout, $compile) {
                 return pos;
             };
 
-            $scope.stringStartsWith = function (searchString, findString) {
+            $scope.stringStartsWith = function(searchString, findString) {
                 return searchString.substr(0, findString.length) === findString;
             };
 
-            $scope.stringContains = function (searchString, findString) {
+            $scope.stringContains = function(searchString, findString) {
                 return searchString.indexOf(findString) !== -1;
             };
             if (attrs.gdbTooltip) {
@@ -190,9 +190,9 @@ function directive($timeout, $compile) {
                 element.off(showTrigger, $scope.createTooltip);
                 element.off(hideTrigger, $scope.removeTooltip);
                 $scope.removeTooltip();
-            }
+            };
 
             $scope.$on('$destroy', removeListeners);
-        }
+        },
     };
 }

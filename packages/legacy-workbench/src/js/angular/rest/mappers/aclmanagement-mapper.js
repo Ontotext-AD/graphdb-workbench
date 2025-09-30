@@ -25,7 +25,7 @@ export const mapAclRulesResponse = (response) => {
                 rule.predicate,
                 rule.object,
                 rule.context,
-                rule.plugin
+                rule.plugin,
             );
         });
     }

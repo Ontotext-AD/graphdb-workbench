@@ -29,7 +29,7 @@ angular
         'SPARQL_LAST_REPO': 'sparql-last-repo',
         'TTYG': 'ttyg',
         'COOKIE_CONSENT': 'cookie-consent',
-        'GUIDES_AUTOSTART': 'guides-autostart'
+        'GUIDES_AUTOSTART': 'guides-autostart',
     });
 
 LocalStorageAdapter.$inject = ['localStorageService', 'LSKeys'];
@@ -43,7 +43,7 @@ function LocalStorageAdapter(localStorageService, LSKeys) {
         clearAll,
 
         // class hierarchy related
-        clearClassHieararchyState
+        clearClassHieararchyState,
     };
 
     function get(key) {

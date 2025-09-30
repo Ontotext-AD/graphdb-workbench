@@ -13,7 +13,7 @@ const modules = [
     'graphdb.framework.core.services.repositories',
     'graphdb.framework.core.directives',
     'graphdb.framework.rest.jdbc.service',
-    'graphdb.framework.core.directives.yasgui-component'
+    'graphdb.framework.core.directives.yasgui-component',
 ];
 
 angular.module('graphdb.framework.jdbc', modules);

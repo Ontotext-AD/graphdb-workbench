@@ -2,7 +2,7 @@ import {
     RepositoryConfigModel,
     RepositoryInfoModel,
     RepositoryParam,
-    RepositoryParams
+    RepositoryParams,
 } from "../../models/repository/repository";
 
 export const repositoryConfigMapper = (data) => {
@@ -12,7 +12,7 @@ export const repositoryConfigMapper = (data) => {
         type: data.type,
         sesameType: data.sesameType,
         location: data.location,
-        params: repositoryParamsMapper(data.params)
+        params: repositoryParamsMapper(data.params),
     });
 };
 
@@ -40,6 +40,6 @@ export const repositoryInfoMapper = (data) => {
         local: data.local,
         readable: data.readable,
         writable: data.writable,
-        unsupported: data.unsupported
+        unsupported: data.unsupported,
     });
-}
+};

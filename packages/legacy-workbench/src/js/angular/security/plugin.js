@@ -9,7 +9,7 @@ PluginRegistry.add('route', [
         'title': 'menu.users.and.access.label',
         'helpInfo': 'view.users.access.helpInfo',
         'documentationUrl': 'working-with-workbench.html#wbmenu-users-and-access',
-        'allowAuthorities': ['READ_REPO_{repoId}']
+        'allowAuthorities': ['READ_REPO_{repoId}'],
     }, {
         'url': '/user/create',
         'module': 'graphdb.framework.security',
@@ -18,7 +18,7 @@ PluginRegistry.add('route', [
         'controller': 'AddUserCtrl',
         'templateUrl': 'js/angular/security/templates/user.html',
         'title': 'Create new user',
-        'allowAuthorities': ['READ_REPO_{repoId}']
+        'allowAuthorities': ['READ_REPO_{repoId}'],
     }, {
         'url': '/login',
         'module': 'graphdb.framework.security',
@@ -26,7 +26,7 @@ PluginRegistry.add('route', [
         'chunk': 'security',
         'controller': 'LoginCtrl',
         'templateUrl': 'pages/login.html',
-        'title': 'view.login.title'
+        'title': 'view.login.title',
     }, {
         'url': '/user/:userId',
         'module': 'graphdb.framework.security',
@@ -35,7 +35,7 @@ PluginRegistry.add('route', [
         'controller': 'EditUserCtrl',
         'templateUrl': 'js/angular/security/templates/user.html',
         'title': 'Edit user',
-        'allowAuthorities': ['READ_REPO_{repoId}']
+        'allowAuthorities': ['READ_REPO_{repoId}'],
     }, {
         'url': '/settings',
         'module': 'graphdb.framework.security',
@@ -44,11 +44,11 @@ PluginRegistry.add('route', [
         'controller': 'UserSettingsController',
         'templateUrl': 'js/angular/security/templates/user.html',
         'title': 'view.settings.title',
-        'documentationUrl': 'customizing-workbench-behavior.html#user-settings'
+        'documentationUrl': 'customizing-workbench-behavior.html#user-settings',
     }, {
         'url': '/accessdenied',
         'templateUrl': 'pages/accessdenied.html',
-        'title': 'view.access.denied.title'
+        'title': 'view.access.denied.title',
     }, {
         'url': '/rolesmappings',
         'module': 'graphdb.framework.security',
@@ -57,18 +57,18 @@ PluginRegistry.add('route', [
         'controller': 'RolesMappingController',
         'templateUrl': 'js/angular/security/templates/roles.html',
         'title': 'view.roles.mapping.title',
-        'allowAuthorities': ['READ_REPO_{repoId}']
+        'allowAuthorities': ['READ_REPO_{repoId}'],
     }, {
         'url': '/ux-test1',
         'templateUrl': 'pages/ux-test1.html',
         'controller': 'uxTestCtrl',
-        'title': 'UX Test'
+        'title': 'UX Test',
     }, {
         'url': '/ux-test2',
         'templateUrl': 'pages/ux-test2.html',
         'controller': 'uxTestCtrl',
-        'title': 'UX Test'
-    }
+        'title': 'UX Test',
+    },
 ]);
 
 PluginRegistry.add('main.menu', {
@@ -82,10 +82,10 @@ PluginRegistry.add('main.menu', {
             role: 'ROLE_ADMIN',
             children: [{
                 href: 'user/*',
-                children: []
+                children: [],
             }],
             guideSelector: 'sub-menu-user-and-access',
-            testSelector: 'sub-menu-users-and-access'
+            testSelector: 'sub-menu-users-and-access',
         },
         {
             label: 'My Settings',
@@ -95,7 +95,7 @@ PluginRegistry.add('main.menu', {
             parent: 'Setup',
             role: 'ROLE_USER',
             guideSelector: 'sub-menu-my-settings',
-            testSelector: 'sub-menu-my-settings'
-        }
-    ]
+            testSelector: 'sub-menu-my-settings',
+        },
+    ],
 });

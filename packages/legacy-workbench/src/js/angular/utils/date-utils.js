@@ -1,5 +1,4 @@
 export class DateUtils {
-
     /**
      * Generates a string representing the current date and time using a Date instance in a specific format.
      * The format is YYYY-MM-DD HH:mm:ss.SSS, where:

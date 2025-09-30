@@ -9,7 +9,7 @@ export const mapUriAsNtripleAutocompleteResponse = (response) => {
             return {
                 type: suggestion.type,
                 value: suggestion.value,
-                description: suggestion.description
+                description: suggestion.description,
             };
         });
     }

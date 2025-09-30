@@ -7,7 +7,7 @@ import {ImportResourceStatus} from "../../models/import/import-resource-status";
 
 export const TABS = {
     USER: 'user',
-    SERVER: 'server'
+    SERVER: 'server',
 };
 
 angular
@@ -17,7 +17,6 @@ angular
 ImportContextService.$inject = ['EventEmitterService'];
 
 function ImportContextService(EventEmitterService) {
-
     let _activeTabId = TABS.USER;
     /**
      * @type {ImportResource[]}
@@ -65,7 +64,7 @@ function ImportContextService(EventEmitterService) {
         getResourceForUpload,
         updateResourcesForUpload,
         getResourcesForUpload,
-        onResourcesForUploadChanged
+        onResourcesForUploadChanged,
     };
 
     /**

@@ -9,7 +9,7 @@ import {REPOSITORIES_ENDPOINT} from "../../rest/repositories.rest.service";
  */
 export const resolveGraphqlEndpoint = (repositoryId, graphqlEndpointId) => {
     return `${REPOSITORIES_ENDPOINT}/${repositoryId}/graphql/${graphqlEndpointId}`;
-}
+};
 
 /**
  * Resolves the playground URL with the given endpoint ID as a query parameter.
@@ -18,4 +18,4 @@ export const resolveGraphqlEndpoint = (repositoryId, graphqlEndpointId) => {
  */
 export const resolvePlaygroundUrlWithEndpoint = (endpointId) => {
     return `${endpointUrl.PLAYGROUND}?endpointId=${endpointId}`;
-}
+};

@@ -8,7 +8,7 @@ const HUMAN_READABLE_SIZE_UNITS = {
     MB: 1024 ** 2,
     GB: 1024 ** 3,
     TB: 1024 ** 4,
-    PB: 1024 ** 5
+    PB: 1024 ** 5,
 };
 
 /**
@@ -39,7 +39,6 @@ const IS_DIGIT_ONLY_REGEX = /^\d+$/;
  * @return {number} The size in bytes. Returns 0 if the input is invalid.
  */
 export const convertToBytes = (size) => {
-
     if (size === undefined || size === null) {
         return 0;
     }
@@ -77,7 +76,6 @@ export const convertToBytes = (size) => {
  * @return {string} A human-readable size string, e.g., "1.50 KB", "100 MB". Returns "0 bytes" if the input is invalid or less than or equal to 0.
  */
 export const convertToHumanReadable = (size) => {
-
     if (!angular.isDefined(size)) {
         return '0 bytes';
     }

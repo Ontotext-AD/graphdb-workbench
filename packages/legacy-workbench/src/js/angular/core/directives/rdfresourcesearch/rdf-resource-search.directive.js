@@ -33,9 +33,9 @@ function rdfResourceSearchDirective(
         templateUrl: 'js/angular/core/directives/rdfresourcesearch/templates/rdfResourceSearchTemplate.html',
         restrict: 'AE',
         scope: {
-            onOpen: '&'
+            onOpen: '&',
         },
-        link: function ($scope, element) {
+        link: function($scope, element) {
             // =========================
             // Public variables
             // =========================
@@ -107,6 +107,6 @@ function rdfResourceSearchDirective(
 
             // Deregister the watcher when the scope/directive is destroyed
             $scope.$on('$destroy', removeAllSubscribers);
-        }
+        },
     };
 }

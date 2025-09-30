@@ -14,7 +14,7 @@ export const endpointGenerationReportListMapper = (data, repositoryId) => {
 
     const reports = data.map((reportResponse) => endpointGenerationReportMapper(reportResponse, repositoryId));
     return new EndpointGenerationReportList(reports);
-}
+};
 
 /**
  * Maps the response data to an endpoint generation report.
@@ -35,9 +35,9 @@ export const endpointGenerationReportMapper = (reportResponse, repositoryId) => 
         propertiesCount: reportResponse.propertiesCount,
         warnings: reportResponse.warnings,
         errors: reportResponse.errors,
-        messages: reportResponse.messages
+        messages: reportResponse.messages,
     });
-}
+};
 
 /**
  * Maps the endpoint definition import response to an endpoint generation report.
@@ -54,6 +54,6 @@ export const importEndpointDefinitionReportMapper = (importResponse, endpointId,
         endpointURI: resolveGraphqlEndpoint(repositoryId, importResponse.id),
         warnings: warningsCount,
         errors: errorsCount,
-        messages: importResponse.messages
+        messages: importResponse.messages,
     });
-}
+};

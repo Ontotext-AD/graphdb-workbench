@@ -3,7 +3,7 @@ import {TTYGEventName} from "../services/ttyg-context.service";
 import 'angular/ttyg/services/externalIntegrationModal.service';
 
 const modules = [
-    'graphdb.framework.ttyg.services.externalIntegrationModal'
+    'graphdb.framework.ttyg.services.externalIntegrationModal',
 ];
 
 angular
@@ -18,10 +18,9 @@ function AgentListComponent(TTYGContextService, ModalService, $translate, $uibMo
         templateUrl: 'js/angular/ttyg/templates/agent-list.html',
         scope: {
             agentList: '=',
-            agentListFilterModel: '='
+            agentListFilterModel: '=',
         },
         link: ($scope, element, attrs) => {
-
             // =========================
             // Public variables
             // =========================
@@ -152,6 +151,6 @@ function AgentListComponent(TTYGContextService, ModalService, $translate, $uibMo
                 updateSelectedAgentsFilter();
             }
             initialize();
-        }
+        },
     };
 }

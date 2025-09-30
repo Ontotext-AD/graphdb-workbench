@@ -6,7 +6,7 @@ export const NodeState = {
     NO_CONNECTION: 'NO_CONNECTION',
     READ_ONLY: 'READ_ONLY',
     RESTRICTED: 'RESTRICTED',
-    NO_CLUSTER: 'NO_CLUSTER'
+    NO_CLUSTER: 'NO_CLUSTER',
 };
 
 export const RecoveryState = {
@@ -16,7 +16,7 @@ export const RecoveryState = {
     APPLYING_SNAPSHOT: 'APPLYING_SNAPSHOT',
     BUILDING_SNAPSHOT: 'BUILDING_SNAPSHOT',
     SENDING_SNAPSHOT: 'SENDING_SNAPSHOT',
-    RECOVERY_OPERATION_FAILURE_WARNING: 'RECOVERY_OPERATION_FAILURE_WARNING'
+    RECOVERY_OPERATION_FAILURE_WARNING: 'RECOVERY_OPERATION_FAILURE_WARNING',
 };
 
 export const LinkState = {
@@ -25,10 +25,10 @@ export const LinkState = {
     SYNCING: 'SYNCING',
     NO_CONNECTION: 'NO_CONNECTION',
     // complimentary state, built based on the recovery state of two nodes when one is receiving snapshot to the other
-    RECEIVING_SNAPSHOT: 'RECEIVING_SNAPSHOT'
+    RECEIVING_SNAPSHOT: 'RECEIVING_SNAPSHOT',
 };
 
 export const TopologyState = {
     PRIMARY_NODE: 'PRIMARY_NODE',
-    SECONDARY_NODE: 'SECONDARY_NODE'
+    SECONDARY_NODE: 'SECONDARY_NODE',
 };

@@ -1,7 +1,6 @@
 import {YasguiComponentDirectiveUtil} from "../core/directives/yasgui-component/yasgui-component-directive.util";
 
 export class YasguiComponent {
-
     constructor(yasguiComponent = YasguiComponentDirectiveUtil.getOntotextYasguiElement('#query-editor')) {
         this.yasguiComponent = yasguiComponent;
     }

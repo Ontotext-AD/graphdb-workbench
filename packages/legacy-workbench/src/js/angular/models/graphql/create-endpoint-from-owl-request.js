@@ -60,7 +60,7 @@ export class CreateEndpointFromOwlRequest {
             fromRepo: this.fromRepo,
             namedGraphs: this.namedGraphs,
             vocabPrefix: this.vocPrefix,
-            config: this.config
+            config: this.config,
         };
     }
 

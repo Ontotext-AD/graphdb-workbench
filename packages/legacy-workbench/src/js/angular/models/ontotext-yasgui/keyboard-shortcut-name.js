@@ -16,5 +16,5 @@ export const KeyboardShortcutName = {
     'SWITCH_PREVIOUS_TAB': 'switch_previous_tab',
     'CLOSES_ALL_TABS': 'closes_all_tabs',
     'FULL_SCREEN': 'full_screen',
-    'ESC': 'esc'
+    'ESC': 'esc',
 };

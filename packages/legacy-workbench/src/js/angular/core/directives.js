@@ -5,7 +5,7 @@ import {ServiceProvider, ResourceSearchStorageService, Suggestion} from '@ontote
 angular
     .module('graphdb.framework.core.directives', [
         'graphdb.framework.core.services.repositories',
-        'graphdb.framework.utils.localstorageadapter'
+        'graphdb.framework.utils.localstorageadapter',
     ])
     .directive('ontoLoader', ontoLoader)
     .directive('ontoLoaderFancy', ontoLoaderFancy)
@@ -23,9 +23,9 @@ ontoLoader.$inject = [];
 
 function ontoLoader() {
     return {
-        template: function (elem, attr) {
+        template: function(elem, attr) {
             return '<object width="' + attr.size + '" height="' + attr.size + '" data="js/angular/templates/loader/ot-loader.svg?v=[AIV]{version}[/AIV]">{{\'common.loading\' | translate}}</object>';
-        }
+        },
     };
 }
 
@@ -43,7 +43,7 @@ ontoLoaderFancy.$inject = [];
  */
 function ontoLoaderFancy() {
     return {
-        template: function (elem, attr) {
+        template: function(elem, attr) {
             let message = '';
             if (attr.hideMessage) {
                 message = '';
@@ -54,19 +54,19 @@ function ontoLoaderFancy() {
                 <object width="${attr.size}" height="${attr.size}" data="js/angular/templates/loader/ot-loader.svg?v=[AIV]{version}[/AIV]"></object>
                 ${message}
             `;
-        }
+        },
     };
 }
 
 ontoLoaderNew.$inject = ['$timeout'];
 
 function ontoLoaderNew($timeout) {
-    const restartTimeout = function ($timeout, scope) {
+    const restartTimeout = function($timeout, scope) {
         scope.timer = undefined;
         scope.currentMessage = scope.getMessage();
         const time = scope.timeout[scope.index % scope.timeout.length];
         if (time) {
-            scope.timer = $timeout(function () {
+            scope.timer = $timeout(function() {
                 if (scope.index + 1 < scope.message.length || scope.message.length === 0) {
                     scope.index++;
                     restartTimeout($timeout, scope);
@@ -83,11 +83,11 @@ function ontoLoaderNew($timeout) {
             messageAttr: '=*message',
             timeoutAttr: '=*timeout',
             ngShow: '=',
-            ngHide: '='
+            ngHide: '=',
         },
-        link: function (scope) {
+        link: function(scope) {
             scope.message = scope.messageAttr;
-            scope.getMessage = function () {
+            scope.getMessage = function() {
                 return scope.message[scope.index];
             };
             if (scope.message === undefined) {
@@ -109,7 +109,7 @@ function ontoLoaderNew($timeout) {
             scope.index = 0;
             restartTimeout($timeout, scope);
 
-            const triggerFunction = function (show) {
+            const triggerFunction = function(show) {
                 if (scope.timer) {
                     $timeout.cancel(scope.timer);
                 }
@@ -119,15 +119,15 @@ function ontoLoaderNew($timeout) {
                 }
             };
 
-            scope.$watch('ngShow', function (value) {
+            scope.$watch('ngShow', function(value) {
                 triggerFunction(value);
             });
 
-            scope.$watch('ngHide', function (value) {
+            scope.$watch('ngHide', function(value) {
                 triggerFunction(!value);
             });
 
-            scope.$on('$destroy', function () {
+            scope.$on('$destroy', function() {
                 if (scope.timer) {
                     $timeout.cancel(scope.timer);
                 }
@@ -136,7 +136,7 @@ function ontoLoaderNew($timeout) {
         template: '<div class="ot-loader-new-content" guide-selector="loader-spinner">'
         + '<img width="{{size}}" height="{{size}}" src="js/angular/templates/loader/ot-loader.svg?v=[AIV]{version}[/AIV]"/>'
         + '<div style="font-size: {{size/4}}px">{{currentMessage}}<div>'
-        + '</div>'
+        + '</div>',
     };
 }
 
@@ -147,9 +147,9 @@ function coreErrors($timeout) {
         restrict: 'EA',
         transclude: true,
         templateUrl: 'js/angular/core/templates/core-errors.html',
-        link: function (scope, element, attrs) {
+        link: function(scope, element, attrs) {
             // watch for changes in the active repository hide host element of this directive
-            scope.$watch('getActiveRepository()', function (newValue) {
+            scope.$watch('getActiveRepository()', function(newValue) {
                 if (newValue && !scope.isRestricted) {
                     element.hide();
                 } else {
@@ -169,7 +169,7 @@ function coreErrors($timeout) {
                 scope.showRemoteLocations = !scope.showRemoteLocations;
             };
 
-            scope.getAccessibleRepositories = function () {
+            scope.getAccessibleRepositories = function() {
                 let remoteLocationsFilter = (repo) => true;
                 if (!scope.showRemoteLocations) {
                     remoteLocationsFilter = (repo) => repo.local;
@@ -181,10 +181,10 @@ function coreErrors($timeout) {
                 }
             };
 
-            scope.showPopoverForRepo = function (event, repository) {
+            scope.showPopoverForRepo = function(event, repository) {
                 scope.hidePopoverForRepo();
                 scope.setPopoverRepo(repository);
-                $timeout(function () {
+                $timeout(function() {
                     const element = $(event.toElement).find('.popover-anchor')[0];
                     previousElement = element;
                     if (element && !scope.getActiveRepository()) {
@@ -194,7 +194,7 @@ function coreErrors($timeout) {
                 event.stopPropagation();
             };
 
-            scope.hidePopoverForRepo = function (event) {
+            scope.hidePopoverForRepo = function(event) {
                 if (event) {
                     // Prevents hiding if we move the mouse over the popover
                     let el = event.relatedTarget;
@@ -206,7 +206,7 @@ function coreErrors($timeout) {
                     }
                 }
                 if (previousElement) {
-                    $timeout(function () {
+                    $timeout(function() {
                         if (previousElement) { // might have been nulled by another timeout
                             previousElement.dispatchEvent(new Event('hide'));
                             previousElement = null;
@@ -217,15 +217,15 @@ function coreErrors($timeout) {
                     event.stopPropagation();
                 }
             };
-        }
+        },
     };
 }
 
 eatClick.$inject = [];
 
 function eatClick() {
-    return function (scope, element) {
-        $(element).click(function (event) {
+    return function(scope, element) {
+        $(element).click(function(event) {
             event.preventDefault();
             event.stopPropagation();
         });
@@ -238,20 +238,19 @@ function multiRequired() {
     return {
         restrict: 'A',
         require: 'ngModel',
-        link: function (scope, elem, attrs, ngModel) {
+        link: function(scope, elem, attrs, ngModel) {
             if (!scope.multiRequired) {
                 scope.multiRequired = [];
             }
 
             const element = attrs.multiRequireElement;
 
-            const setMultiValue = function (value) {
-
+            const setMultiValue = function(value) {
                 if (element && element % 1 === 0) {
                     scope.multiRequired[element - 1] = value;
                 }
             };
-            const checkMultiValueError = function () {
+            const checkMultiValueError = function() {
                 let filledData = false;
                 let emptyData = false;
                 for (let i = 0; i < scope.multiRequired.length; i++) {
@@ -264,23 +263,23 @@ function multiRequired() {
                 ngModel.$setValidity('multiRequire', !(filledData && emptyData));
             };
 
-            ngModel.$parsers.unshift(function (value) {
+            ngModel.$parsers.unshift(function(value) {
                 setMultiValue(value);
                 checkMultiValueError();
                 return value;
             });
 
-            ngModel.$formatters.unshift(function (value) {
+            ngModel.$formatters.unshift(function(value) {
                 setMultiValue(value);
                 checkMultiValueError();
                 return value;
             });
 
             //Check for error if other [multi-required] elements are updated
-            $('[multi-required]').on('blur keyup change focusout', function () {
+            $('[multi-required]').on('blur keyup change focusout', function() {
                 checkMultiValueError();
             });
-        }
+        },
     };
 }
 
@@ -306,10 +305,10 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             openInNewTab: '@',
             preserveSearch: '@',
             radioButtons: '@',
-            clearInputIcon: '@'
+            clearInputIcon: '@',
         },
         templateUrl: 'js/angular/core/templates/search-resource-input.html',
-        link: function ($scope, element, attrs) {
+        link: function($scope, element, attrs) {
             element.autoCompleteStatus = undefined;
             element.autoCompleteWarning = false;
             $scope.empty = false;
@@ -330,11 +329,11 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             $scope.searchType = LocalStorageAdapter.get(LSKeys.RDF_SEARCH_TYPE) || SEARCH_DISPLAY_TYPE.table;
             $scope.searchInput = "";
 
-            $scope.changeSearchType = function (type) {
+            $scope.changeSearchType = function(type) {
                 $scope.searchType = type;
                 resourceSearchStorage.setSelectedView($scope.searchType);
             };
-            $scope.$on('addStartFixedNodeAutomatically', function (event, args) {
+            $scope.$on('addStartFixedNodeAutomatically', function(event, args) {
                 if (!$scope.searchInput && args.startIRI) {
                     $scope.visualCallback({uri: args.startIRI, label: ''});
                     return;
@@ -342,7 +341,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                 $scope.checkIfValidAndSearchText();
             });
 
-            $scope.clearInput = function () {
+            $scope.clearInput = function() {
                 $scope.searchInput = '';
                 $scope.selectedElementIndex = -1;
                 $scope.autoCompleteUriResults = [];
@@ -352,32 +351,32 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                 LocalStorageAdapter.remove(LSKeys.RDF_RESOURCE_DESCRIPTION);
             };
 
-            $scope.$watch('repositoryNamespaces', function () {
+            $scope.$watch('repositoryNamespaces', function() {
                 element.namespaces = $scope.repositoryNamespaces ? $scope.repositoryNamespaces.namespaces : [];
             });
 
-            $scope.$watch('isAutocompleteEnabled', function () {
+            $scope.$watch('isAutocompleteEnabled', function() {
                 element.autoCompleteStatus = !!$scope.isAutocompleteEnabled;
                 if ($scope.searchInput !== '') {
                     $scope.onChange();
                 }
             });
 
-            $scope.$watch('empty', function () {
+            $scope.$watch('empty', function() {
                 if (!IS_SEARCH_PRESERVED) {
                     $scope.searchInput = '';
                     $scope.empty = false;
                 }
             });
 
-            $scope.$watch('clear', function () {
+            $scope.$watch('clear', function() {
                 if ($scope.clear) {
                     $scope.clearInput();
                     $scope.clear = false;
                 }
             });
 
-            $rootScope.$on('$translateChangeSuccess', function () {
+            $rootScope.$on('$translateChangeSuccess', function() {
                 if (attrs.$attr.placeholder) {
                     $scope.placeholder = attrs.$attr.placeholder;
                 } else {
@@ -385,7 +384,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                 }
             });
 
-            const defaultTextCallback = function (params) {
+            const defaultTextCallback = function(params) {
                 const param = params.type || 'uri';
                 if ($scope.openInNewTab === 'true') {
                     openInNewWindowTab(false, params);
@@ -394,7 +393,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                 }
             };
 
-            const defaultVisualCallback = function (params) {
+            const defaultVisualCallback = function(params) {
                 const param = params.type || 'uri';
                 if ($scope.openInNewTab === 'true') {
                     openInNewWindowTab(true, params);
@@ -403,7 +402,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                 }
             };
 
-            const openInNewWindowTab = function (visual, params) {
+            const openInNewWindowTab = function(visual, params) {
                 const view = visual ? 'graphs-visualizations' : 'resource';
                 window.open(`${view}?uri=${encodeURIComponent(params.uri)}`);
             };
@@ -438,11 +437,11 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                 $scope.preserveInput = attrs.$attr.preserveInput;
             }
 
-            $scope.getResultItemHtml = function (resultItem) {
+            $scope.getResultItemHtml = function(resultItem) {
                 return $sce.trustAsHtml(resultItem.description);
             };
 
-            $scope.searchRdfResource = function (resource, callback) {
+            $scope.searchRdfResource = function(resource, callback) {
                 if (resource.type === 'prefix') {
                     $scope.searchInput = expandPrefix(resource.value + ':');
                     SEARCH_INPUT_FIELD.focus();
@@ -473,7 +472,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                         $scope.selectedElementIndex = $scope.activeSearchElm;
                         LocalStorageAdapter.set(LSKeys.RDF_SEARCH_EXPANDED_URI, expandedUri);
                         resourceSearchStorage.setInputValue($scope.searchInput);
-                        resourceSearchStorage.setLastSelected(new Suggestion(resource))
+                        resourceSearchStorage.setLastSelected(new Suggestion(resource));
                     } else if ($scope.preserveInput === 'true') {
                         $scope.searchInput = textResource;
                         $scope.autoCompleteUriResults = [];
@@ -484,7 +483,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                 }
             };
 
-            $scope.searchRdfResourceByEvent = function (uri, event) {
+            $scope.searchRdfResourceByEvent = function(uri, event) {
                 if ($scope.searchType === SEARCH_DISPLAY_TYPE.visual || event.ctrlKey || event.metaKey) {
                     $scope.searchRdfResource(uri, $scope.visualCallback);
                 } else {
@@ -492,7 +491,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                 }
             };
 
-            const checkIfValidAndSearch = function (callback) {
+            const checkIfValidAndSearch = function(callback) {
                 const uri = $scope.searchInput;
                 if (uri === '') {
                     toastr.error($translate.instant('fill.input.field.msg'));
@@ -518,15 +517,15 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                 }
             };
 
-            $scope.checkIfValidAndSearchText = function () {
+            $scope.checkIfValidAndSearchText = function() {
                 checkIfValidAndSearch($scope.textCallback);
             };
 
-            $scope.checkIfValidAndSearchVisual = function () {
+            $scope.checkIfValidAndSearchVisual = function() {
                 checkIfValidAndSearch($scope.visualCallback);
             };
 
-            $scope.checkIfValidAndSearchEvent = function (event) {
+            $scope.checkIfValidAndSearchEvent = function(event) {
                 if ($scope.searchType === SEARCH_DISPLAY_TYPE.visual || event.ctrlKey || event.metaKey) {
                     checkIfValidAndSearch($scope.visualCallback);
                 } else {
@@ -534,7 +533,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                 }
             };
 
-            $scope.onChange = function () {
+            $scope.onChange = function() {
                 $scope.showClearInputIcon = $scope.clearInputIcon;
                 if (IS_SEARCH_PRESERVED) {
                     resourceSearchStorage.setInputValue($scope.searchInput);
@@ -548,7 +547,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                 return Promise.resolve();
             };
 
-            $scope.onKeyDown = function (event) {
+            $scope.onKeyDown = function(event) {
                 if (event.keyCode === 13) {
                     event.preventDefault();
                     if (GuidesService.isActive()) {
@@ -618,7 +617,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                 const automaticScroll = $('#auto_' + $scope.selectedElementIndex);
                 dropDown.animate({
                     scrollTop: automaticScroll.offset().top - dropDown.offset().top +
-                        dropDown.scrollTop()
+                        dropDown.scrollTop(),
                 });
             }
 
@@ -641,9 +640,9 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                     $scope.selectedElementIndex = index;
 
                     isAutocompleteResultsLoaded()
-                        .then(function () {
+                        .then(function() {
                             scrollToPreviouslySelectedEl();
-                        }).catch(function (err) {
+                        }).catch(function(err) {
                         toastr.error(getError(err), $translate.instant('no.prev.search.element'));
                     });
                 }
@@ -653,14 +652,14 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
 
             function loadAutocompleteData() {
                 loadStoredSearchData()
-                    .then(function () {
+                    .then(function() {
                         findPreviousSearchResultIndex();
                     });
             }
 
             $scope.$on('rdfResourceSearchExpanded', loadAutocompleteData);
 
-            $scope.setActiveClassOnMouseMove = function (index) {
+            $scope.setActiveClassOnMouseMove = function(index) {
                 if (!element.autoCompleteStatus) {
                     return;
                 }
@@ -747,7 +746,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                     }
                     canceler = $q.defer();
                     return AutocompleteRestService.getAutocompleteSuggestions(search, canceler.promise)
-                        .then(function (results) {
+                        .then(function(results) {
                             canceler = null;
                             // if (showDropDown) {
                             $scope.autoCompleteUriResults = results.data.suggestions;
@@ -757,7 +756,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                 }
                 return Promise.resolve();
             }
-        }
+        },
     };
 }
 
@@ -767,11 +766,11 @@ function keyboardShortcutsDirective($document) {
     return {
         restrict: 'AE',
         link: linkFunc,
-        template: '<ng-include src="getTemplateUrl()" />'
+        template: '<ng-include src="getTemplateUrl()" />',
     };
 
     function linkFunc(scope, element, attrs) {
-        scope.getTemplateUrl = function () {
+        scope.getTemplateUrl = function() {
             return attrs.templateUrl;
         };
         scope.shortcutsVisible = false;
@@ -803,11 +802,11 @@ function inactivePluginDirective(toastr, RDF4JRepositoriesRestService, ModalServ
             loadSaved: '&',
             setPluginActive: '&',
             pluginName: '@',
-            humanReadablePluginName: '@'
+            humanReadablePluginName: '@',
         },
         templateUrl: 'js/angular/core/templates/inactive-plugin-warning-page.html',
 
-        link: linkFunc
+        link: linkFunc,
     };
 
     function linkFunc($scope) {
@@ -823,36 +822,36 @@ function inactivePluginDirective(toastr, RDF4JRepositoriesRestService, ModalServ
                 return;
             }
             return RDF4JRepositoriesRestService.checkPluginIsActive($scope.pluginName, $repositories.getActiveRepository())
-                .then(function ({data}) {
+                .then(function({data}) {
                     $scope.pluginIsActive = data.indexOf('true') > 0;
                     $scope.setPluginActive({isPluginActive: $scope.pluginIsActive});
                 })
-                .catch(function (data) {
+                .catch(function(data) {
                     toastr.error(getError(data), $translate.instant('check.active.plugin.failure'));
                 });
         }
 
-        $scope.activatePlugin = function () {
+        $scope.activatePlugin = function() {
             const activatePluginWarning= decodeHTML($translate.instant('activate.plugin.warning.msg', {humanReadablePluginName: $scope.humanReadablePluginName}));
             ModalService.openSimpleModal({
                 title: $translate.instant('activate.plugin.confirmation'),
                 message: `<p>${activatePluginWarning}</p>`,
-                warning: true
+                warning: true,
             }).result
-                .then(function () {
+                .then(function() {
                     RDF4JRepositoriesRestService.activatePlugin($scope.pluginName, $repositories.getActiveRepository())
-                        .then(function () {
+                        .then(function() {
                             $scope.pluginIsActive = true;
                             $scope.setPluginActive({isPluginActive: $scope.pluginIsActive});
                             $scope.loadSaved();
                         })
-                        .catch(function (data) {
+                        .catch(function(data) {
                             toastr.error(getError(data), $translate.instant('activate.plugin.failure'));
                         });
                 });
         };
 
-        const repoIsSetListener = $scope.$on('repositoryIsSet', function () {
+        const repoIsSetListener = $scope.$on('repositoryIsSet', function() {
             checkPluginIsActive();
         });
 
@@ -894,7 +893,7 @@ function autoGrowDirective() {
             element.bind('input change', function() {
                 updateHeight();
             });
-        }
+        },
     };
 }
 
@@ -902,7 +901,7 @@ function captureHeightDirective() {
     return {
         restrict: 'A',
         scope: {
-            rowIndex: '=captureHeight'
+            rowIndex: '=captureHeight',
         },
         link: function(scope, element, attrs) {
             scope.$watch(function() {
@@ -911,6 +910,6 @@ function captureHeightDirective() {
                 // Use the rowIndex to store the height for each row specifically
                 scope.$parent.rowHeights[scope.rowIndex] = newHeight + 'px!important';
             });
-        }
+        },
     };
 }

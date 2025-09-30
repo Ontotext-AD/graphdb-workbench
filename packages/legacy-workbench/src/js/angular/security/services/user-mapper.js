@@ -6,7 +6,7 @@ import {
     GRAPHQL_SUFFIX_WITH_DELIMITER,
     READ_REPO_PREFIX,
     SUFFIX_DELIMITER,
-    WRITE_REPO_PREFIX
+    WRITE_REPO_PREFIX,
 } from "./constants";
 import {getRepoFromAuthority} from "./authorities-util";
 
@@ -19,12 +19,12 @@ export const toUserModelMapper = (data, key = 'grantedAuthorities') => {
         {
             [key]: {
                 transform: mapAuthoritiesFromBackend,
-                newKey: 'grantedAuthoritiesUiModel'
-            }
+                newKey: 'grantedAuthoritiesUiModel',
+            },
         },
         {
-            removeOldKey: false
-        }
+            removeOldKey: false,
+        },
     );
     return new UserModel(mappedData);
 };
@@ -33,8 +33,8 @@ export const fromUserModelMapper = (uiModel, key = 'grantedAuthorities') => {
     if (Array.isArray(uiModel)) {
         return uiModel.map((model) => fromUserModelMapper(model));
     }
-    return mapObject(uiModel,  {
-            [key]: mapAuthoritiesToBackend
+    return mapObject(uiModel, {
+            [key]: mapAuthoritiesToBackend,
     });
 };
 
@@ -50,7 +50,7 @@ const mapAuthoritiesFromBackend = (authorities) => {
                 // Use the helper to extract the repository id.
                 const repoData = getRepoFromAuthority(oldAuth);
                 if (repoData) {
-                    const { repo } = repoData;
+                    const {repo} = repoData;
                     const uiAuth = GRAPHQL_PREFIX + repo;
                     if (!result.includes(oldAuth)) {
                         result.push(oldAuth);
@@ -80,7 +80,7 @@ const mapAuthoritiesToBackend = (uiAuthorities) => {
     // Helper to ensure a fresh entry for each repository.
     const getOrCreateRepo = (repoId) => {
         if (!repoMap[repoId]) {
-            repoMap[repoId] = { read: false, write: false, graphql: false };
+            repoMap[repoId] = {read: false, write: false, graphql: false};
         }
         return repoMap[repoId];
     };
@@ -91,21 +91,21 @@ const mapAuthoritiesToBackend = (uiAuthorities) => {
     uiAuthorities.forEach((auth) => {
         const repoData = getRepoFromAuthority(auth);
         if (repoData) {
-            const { prefix, repo } = repoData;
+            const {prefix, repo} = repoData;
             const entry = getOrCreateRepo(repo);
             if (prefix === READ_REPO_PREFIX) {
                 entry.read = true;
-                if(repo === '*') {
+                if (repo === '*') {
                     isReadAll = true;
                 }
             } else if (prefix === WRITE_REPO_PREFIX) {
                 entry.write = true;
-                if(repo === '*') {
+                if (repo === '*') {
                     isWriteAll = true;
                 }
             } else if (prefix === GRAPHQL_PREFIX) {
                 entry.graphql = true;
-                if(repo === '*') {
+                if (repo === '*') {
                     isGraphqlAll = true;
                 }
             }

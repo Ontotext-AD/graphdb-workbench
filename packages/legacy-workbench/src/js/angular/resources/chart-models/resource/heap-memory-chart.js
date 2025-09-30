@@ -11,19 +11,19 @@ export class HeapMemoryChart extends ChartData {
                 axisLabel: {
                     formatter: (value) => {
                         if (this.hasSelectedSeries()) {
-                            return HeapMemoryChart.formatBytesValue(value, this.dataHolder, this.selectedSeries)
+                            return HeapMemoryChart.formatBytesValue(value, this.dataHolder, this.selectedSeries);
                         }
-                        return HeapMemoryChart.formatBytesValue(value, this.dataHolder)
-                    }
+                        return HeapMemoryChart.formatBytesValue(value, this.dataHolder);
+                    },
                 },
-                min: 0
+                min: 0,
             },
             tooltip: {
                 valueFormatter: (value) => {
-                    return HeapMemoryChart.formatBytesValue(value, null, this.selectedSeries)
-                }
-            }
-        }
+                    return HeapMemoryChart.formatBytesValue(value, null, this.selectedSeries);
+                },
+            },
+        };
         _.merge(chartOptions, cpuLoadChartOptions);
     }
 
@@ -33,17 +33,17 @@ export class HeapMemoryChart extends ChartData {
             type: 'line',
             showSymbol: false,
             smooth: true,
-            data: []
+            data: [],
         }, {
             name: this.translateService.instant('resource.memory.used'),
             type: 'line',
             areaStyle: {
-                opacity: ChartData.AREA_BAR_OPACITY
+                opacity: ChartData.AREA_BAR_OPACITY,
             },
             showSymbol: false,
             smooth: true,
-            data: []
-        }
+            data: [],
+        },
         ];
     }
 
@@ -51,7 +51,7 @@ export class HeapMemoryChart extends ChartData {
         const [committed, used] = this.dataHolder;
         committed.name = this.translateService.instant('resource.memory.committed');
         used.name = this.translateService.instant('resource.memory.used');
-        this.configureSubtitle()
+        this.configureSubtitle();
     }
 
     addNewData(dataHolder, timestamp, data) {
@@ -60,19 +60,19 @@ export class HeapMemoryChart extends ChartData {
         this.latestData = {
             committed: memoryData.committed,
             used: memoryData.used,
-            max: memoryData.max
-        }
+            max: memoryData.max,
+        };
         committed.data.push({
             value: [
                 timestamp,
-                memoryData.committed
-            ]
+                memoryData.committed,
+            ],
         });
         used.data.push({
             value: [
                 timestamp,
-                memoryData.used
-            ]
+                memoryData.used,
+            ],
         });
         this.configureSubtitle();
     }
@@ -81,7 +81,7 @@ export class HeapMemoryChart extends ChartData {
         if (this.latestData.max > 0) {
             const subTitleKeyValues = [{
                 label: this.translateService.instant('resource.memory.heap.max'),
-                value: HeapMemoryChart.formatBytesValue(this.latestData.max, null, this.selectedSeries)
+                value: HeapMemoryChart.formatBytesValue(this.latestData.max, null, this.selectedSeries),
             }];
             this.setSubTitle(subTitleKeyValues);
         }

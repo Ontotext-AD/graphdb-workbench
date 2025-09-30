@@ -7,7 +7,7 @@ angular
 function ShareQueryLinkService() {
     return {
         createShareSavedQueryLink,
-        createShareQueryLink
+        createShareQueryLink,
     };
 
     function createShareSavedQueryLink(savedQueryName, owner) {
@@ -24,7 +24,7 @@ function ShareQueryLinkService() {
             query: queryData.body,
             // TODO: pass these from the component as well
             infer: queryData.inference || true,
-            sameAs: queryData.sameAs || true
+            sameAs: queryData.sameAs || true,
         });
     }
 

@@ -40,7 +40,6 @@ angular.module('graphdb.framework.core.services.installationCookieService', modu
  * @return {Object} - Returns an object with methods to get, set, setIfAbsent, and remove installation cookies.
  */
 function InstallationCookieService(CookieService) {
-
     /**
      * Checks if the installation cookie exists and retrieves its value.
      *
@@ -85,6 +84,6 @@ function InstallationCookieService(CookieService) {
         get,
         set,
         setIfAbsent,
-        remove
+        remove,
     };
 }

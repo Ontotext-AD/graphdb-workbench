@@ -3,7 +3,7 @@ import {NumberUtils} from "../../utils/number-utils";
 import {select} from 'd3';
 
 const d3 = {
-  select
+  select,
 };
 
 const STATUS = {
@@ -11,7 +11,7 @@ const STATUS = {
     'NO_REPO': 'NO_REPO',
     'READY': 'READY',
     'IN_PROGRESS': 'IN_PROGRESS',
-    'ERROR': 'ERROR'
+    'ERROR': 'ERROR',
 };
 
 const modules = [
@@ -20,26 +20,28 @@ const modules = [
     'toastr',
     'ui.bootstrap',
     'graphdb.framework.core.services.repositories',
-    'graphdb.framework.utils.localstorageadapter'
+    'graphdb.framework.utils.localstorageadapter',
 ];
 const allGraphs = {
     contextID: {
         type: "all",
         value: "all.graphs.label",
-        uri: ""
-    }
+        uri: "",
+    },
 };
 Object.defineProperty(global, 'allGraphs', {
-    get: () => {return allGraphs;}
+    get: () => {
+return allGraphs;
+},
 });
 
 angular
     .module('graphdb.framework.graphexplore.controllers.dependencies', modules)
     .controller('DependenciesChordCtrl', DependenciesChordCtrl)
-    .config(['$uibTooltipProvider', function ($uibTooltipProvider) {
+    .config(['$uibTooltipProvider', function($uibTooltipProvider) {
         $uibTooltipProvider.options({appendToBody: true});
     }])
-    .filter('humanize', function () {
+    .filter('humanize', function() {
         return humanize;
     });
 
@@ -57,7 +59,6 @@ function humanize(number) {
 DependenciesChordCtrl.$inject = ['$scope', '$rootScope', '$repositories', 'toastr', '$timeout', 'GraphDataRestService', 'UiScrollService', 'ModalService', 'LocalStorageAdapter', 'RDF4JRepositoriesRestService', '$translate'];
 
 function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeout, GraphDataRestService, UiScrollService, ModalService, LocalStorageAdapter, RDF4JRepositoriesRestService, $translate) {
-
     let timer = null;
 
     /**
@@ -73,20 +74,20 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
 
     $scope.graphsDropdownToggled = (isOpen) => {
         if ($scope.hasMoreGraphs && isOpen) {
-            toastr.warning($translate.instant('dependencies.graphs.too.many.warning', {graphsLimit: NumberUtils.formatNumberToLocaleString(MAX_LOADED_GRAPHS, $translate.use())}))
+            toastr.warning($translate.instant('dependencies.graphs.too.many.warning', {graphsLimit: NumberUtils.formatNumberToLocaleString(MAX_LOADED_GRAPHS, $translate.use())}));
         }
-    }
+    };
 
     //allGraphs is used to include all graphs in the chosen repository and represent the Class Relationships diagram and table,
     // while graphsInRepo is sliced to 1000 if there are more than 1000 graphs in the repository, and they are present
     // in the drop-down menu otherwise browsers crash.
     let selectedGraph = allGraphs;
 
-    const initView = function () {
+    const initView = function() {
         // Try to load one more file than the maximum limit.
         // This allows us to check if there is at least one additional file beyond the set max limit.
         RDF4JRepositoriesRestService.resolveGraphs($repositories.getActiveRepository(), MAX_LOADED_GRAPHS + 1)
-            .success(function (graphsInRepo) {
+            .success(function(graphsInRepo) {
                 $scope.graphsInRepo = graphsInRepo.results.bindings;
                 // Determines if there are more files than the specified limit.
                 // We increase the limit in the check because:
@@ -100,47 +101,47 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
                 } else if ($scope.status !== "READY") {
                     getRelationshipsStatus();
                 }
-            }).error(function (data) {
+            }).error(function(data) {
             $scope.repositoryError = getError(data);
             toastr.error(getError(data), $translate.instant('graphexplore.error.getting.graph'));
         });
     };
 
-    const setSelectedGraphFromCache = function () {
+    const setSelectedGraphFromCache = function() {
         const selGraphFromCache = LocalStorageAdapter.get(`dependencies-selectedGraph-${$repositories.getActiveRepository()}`);
-        if (selGraphFromCache !== null && $scope.graphsInRepo.some(graph => graph.contextID.uri === selGraphFromCache.contextID.uri)) {
+        if (selGraphFromCache !== null && $scope.graphsInRepo.some((graph) => graph.contextID.uri === selGraphFromCache.contextID.uri)) {
             selectedGraph = selGraphFromCache;
         } else {
             LocalStorageAdapter.set(`dependencies-selectedGraph-${$repositories.getActiveRepository()}`, selectedGraph);
         }
     };
 
-    const getRelationshipsData = function (selectedClasses) {
+    const getRelationshipsData = function(selectedClasses) {
         d3.select('#dependencies-chord').html('');
 
         $scope.status = STATUS.WAIT;
 
         GraphDataRestService.getRelationshipsData(selectedClasses, $scope.direction, selectedGraph.contextID.uri)
-            .success(function (matrixData) {
+            .success(function(matrixData) {
                 // Check classes empty
                 $scope.dependenciesData = {
                     matrix: matrixData.right,
                     nodes: matrixData.left,
-                    hasLinks: _.sum(_.map(matrixData.right, function (arr) {
+                    hasLinks: _.sum(_.map(matrixData.right, function(arr) {
                         return _.sum(arr);
                     })) > 0,
-                    direction: $scope.direction
+                    direction: $scope.direction,
                 };
                 $scope.status = STATUS.READY;
-            }).error(function (data) {
+            }).error(function(data) {
             $scope.status = STATUS.READY;
             toastr.error(getError(data), $translate.instant('graphexplore.error.dependencies.count'));
         });
     };
 
-    const getRelationshipsClasses = function () {
+    const getRelationshipsClasses = function() {
         GraphDataRestService.getRelationshipsClasses($scope.direction, selectedGraph.contextID.uri)
-            .success(function (classesData, status) {
+            .success(function(classesData, status) {
                 $scope.allClasses.items = _.filter(classesData, classFilterFunc);
                 $scope.allNotFilteredClasses = classesData;
                 $scope.selectedClasses = undefined;
@@ -154,13 +155,13 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
             });
     };
 
-    const getRelationshipsStatus = function (force) {
+    const getRelationshipsStatus = function(force) {
         if ($scope.status === STATUS.READY && !force) {
             return;
         }
         $scope.status = STATUS.WAIT;
         GraphDataRestService.getRelationshipsStatus(selectedGraph.contextID.uri)
-            .success(function (data) {
+            .success(function(data) {
                 $scope.status = data;
                 if ($scope.status === STATUS.IN_PROGRESS) {
                     if (timer !== null) {
@@ -181,7 +182,7 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
                     toastr.error($translate.instant('graphexplore.error.dependencies.calc', {error:$scope.status.substring('ERROR;'.length)}));
                 }
             })
-            .error(function (data) {
+            .error(function(data) {
                 $scope.status = STATUS.ERROR;
                 toastr.error(getError(data), $translate.instant('graphexplore.error.dependencies.count.status'));
             });
@@ -197,21 +198,21 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
     let current = 0;
     $rootScope.key = '';
 
-    datasource.get = function (index, count, success) {
+    datasource.get = function(index, count, success) {
         UiScrollService.initLazyList(index, count, success, position, $scope.allClasses.items);
     };
 
-    $rootScope.$watch(function () {
+    $rootScope.$watch(function() {
         return $rootScope.key;
-    }, function () {
+    }, function() {
         position = 0;
-        _.each($scope.allClasses.items, function (item) {
+        _.each($scope.allClasses.items, function(item) {
             if ($rootScope.key > item) position++;
         });
         current++;
     });
 
-    datasource.revision = function () {
+    datasource.revision = function() {
         return current;
     };
 
@@ -231,15 +232,15 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
             .indexOf($scope.classQuery.query.toLowerCase()) !== -1;
     }
 
-    $scope.$watch('allClasses.items', function () {
+    $scope.$watch('allClasses.items', function() {
         if ($scope.allClasses.items.length > 0) {
-            $timeout(function () {
+            $timeout(function() {
                 $scope.adapterContainer.adapter.reload();
             }, 30);
         }
     });
 
-    $scope.$watch('direction', function () {
+    $scope.$watch('direction', function() {
         if (!$repositories.getActiveRepository() ||
                 $scope.isSystemRepository() || $repositories.isActiveRepoFedXType()) {
             return;
@@ -247,80 +248,80 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
         initView();
     });
 
-    $scope.$on('$destroy', function () {
+    $scope.$on('$destroy', function() {
         $timeout.cancel(timer);
     });
 
-    $scope.isLoading = function () {
+    $scope.isLoading = function() {
         return $scope.status === STATUS.IN_PROGRESS || $scope.status === STATUS.WAIT;
     };
 
-    $scope.confirmCalculateDependencies = function () {
+    $scope.confirmCalculateDependencies = function() {
         ModalService.openSimpleModal({
             title: $translate.instant('confirm.operation'),
             message: $translate.instant('graphexplore.calculating.relationships'),
-            warning: true
+            warning: true,
         }).result
-            .then(function () {
+            .then(function() {
                 $scope.calculateDependencies();
             });
     };
 
-    $scope.calculateDependencies = function () {
+    $scope.calculateDependencies = function() {
         $scope.status = STATUS.WAIT;
         $scope.selectedClasses = undefined;
         GraphDataRestService.calculateRelationships(selectedGraph.contextID.uri)
-            .success(function (data) {
+            .success(function(data) {
                 if (data.indexOf('ERROR;') === 0) {
                     toastr.error($translate.instant('graphexplore.error.dependencies.calc', {error:$scope.status.substring('ERROR;'.length)}));
                 } else {
                     getRelationshipsStatus();
                 }
             })
-            .error(function (data) {
+            .error(function(data) {
                 toastr.error($translate.instant('graphexplore.error.could.not.force.count', {error: getError(data)}));
             });
     };
 
-    $scope.addClass = function (clazz) {
+    $scope.addClass = function(clazz) {
         $scope.selectedClasses.push(clazz);
         getRelationshipsData($scope.selectedClasses);
     };
 
-    $scope.removeClass = function (clazz) {
-        _.remove($scope.selectedClasses, function (c) {
+    $scope.removeClass = function(clazz) {
+        _.remove($scope.selectedClasses, function(c) {
             return c.name === clazz.name;
         });
         getRelationshipsData($scope.selectedClasses);
     };
 
-    $scope.showClass = function (clazz) {
+    $scope.showClass = function(clazz) {
         $scope.classToShow = clazz;
     };
 
-    $scope.isClassByNameShown = function (name) {
+    $scope.isClassByNameShown = function(name) {
         return _.find($scope.selectedClasses, {name: name}) !== undefined;
     };
 
-    $scope.addClassByName = function (name) {
+    $scope.addClassByName = function(name) {
         $scope.selectedClasses.push(_.find($scope.allClasses.items, {name: name}));
         getRelationshipsData($scope.selectedClasses);
     };
 
-    $scope.removeClassByName = function (name) {
-        _.remove($scope.selectedClasses, function (c) {
+    $scope.removeClassByName = function(name) {
+        _.remove($scope.selectedClasses, function(c) {
             return c.name === name;
         });
         getRelationshipsData($scope.selectedClasses);
     };
 
 
-    $scope.removeAllClasses = function () {
+    $scope.removeAllClasses = function() {
         $scope.selectedClasses = [];
         getRelationshipsData($scope.selectedClasses);
     };
 
-    $scope.isSystemRepository = function () {
+    $scope.isSystemRepository = function() {
         return $repositories.getActiveRepository() === 'SYSTEM';
     };
 
@@ -346,17 +347,17 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
         window.removeEventListener('beforeunload', removeRepoIsSetListener);
     }
 
-    $scope.selectGraph = function (graph) {
+    $scope.selectGraph = function(graph) {
         selectedGraph = graph;
         getRelationshipsStatus(true);
         LocalStorageAdapter.set(`dependencies-selectedGraph-${$repositories.getActiveRepository()}`, selectedGraph);
     };
 
-    $scope.getSelectedGraphValue = function () {
+    $scope.getSelectedGraphValue = function() {
         return selectedGraph.contextID.value;
     };
 
-    $scope.isAllGraphsSelected = function () {
+    $scope.isAllGraphsSelected = function() {
         return $scope.getSelectedGraphValue() === 'all.graphs.label';
     };
 }

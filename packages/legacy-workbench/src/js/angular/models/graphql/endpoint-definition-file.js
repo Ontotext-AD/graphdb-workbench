@@ -6,8 +6,8 @@ export const ImportStatus = {
     PENDING: 'PENDING',
     SUCCESS: 'SUCCESS',
     FAIL: 'FAIL',
-    SKIP: 'SKIP'
-}
+    SKIP: 'SKIP',
+};
 
 /**
  * The keys for the import status labels.
@@ -17,7 +17,7 @@ export const ImportStatusLabelKeys = {
     [ImportStatus.PENDING]: 'graphql.endpoints_management.import_definition_modal.status.pending',
     [ImportStatus.SUCCESS]: 'graphql.endpoints_management.import_definition_modal.status.completed',
     [ImportStatus.FAIL]: 'graphql.endpoints_management.import_definition_modal.status.failed',
-    [ImportStatus.SKIP]: 'graphql.endpoints_management.import_definition_modal.status.not_allowed'
+    [ImportStatus.SKIP]: 'graphql.endpoints_management.import_definition_modal.status.not_allowed',
 };
 
 /**
@@ -28,7 +28,7 @@ export const ImportStatusToViewMapping = {
     [ImportStatus.PENDING]: 'tag-warning',
     [ImportStatus.SUCCESS]: 'tag-success',
     [ImportStatus.FAIL]: 'tag-danger',
-    [ImportStatus.SKIP]: 'tag-info'
+    [ImportStatus.SKIP]: 'tag-info',
 };
 
 /**
@@ -67,7 +67,7 @@ export class EndpointDefinitionFileList {
      * @returns {EndpointDefinitionFile}
      */
     findDefinitionFileByName(name) {
-        return this.list.find(definitionFile => definitionFile.file.name === name);
+        return this.list.find((definitionFile) => definitionFile.file.name === name);
     }
 
     /**
@@ -75,7 +75,7 @@ export class EndpointDefinitionFileList {
      * @returns {string[]}
      */
     getFileNames() {
-        return this.list.map(definitionFile => definitionFile.file.name);
+        return this.list.map((definitionFile) => definitionFile.file.name);
     }
 
     /**
@@ -92,7 +92,7 @@ export class EndpointDefinitionFileList {
      * @param {EndpointDefinitionFile} definitionFileToRemove The file to remove.
      */
     removeFile(definitionFileToRemove) {
-        this.list = this.list.filter(definitionFile => definitionFile.file !== definitionFileToRemove.file);
+        this.list = this.list.filter((definitionFile) => definitionFile.file !== definitionFileToRemove.file);
     }
 
     get size() {

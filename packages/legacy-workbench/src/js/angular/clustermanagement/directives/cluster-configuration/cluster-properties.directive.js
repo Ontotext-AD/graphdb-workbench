@@ -15,7 +15,7 @@ function ClusterProperties($jwtAuth, $uibModal) {
         scope: {
             currentNode: '=',
             clusterModel: '=',
-            clusterConfiguration: '='
+            clusterConfiguration: '=',
         },
         link: ($scope) => {
             // =========================
@@ -34,13 +34,13 @@ function ClusterProperties($jwtAuth, $uibModal) {
                     resolve: {
                         data: () => {
                             return {
-                                clusterConfiguration: $scope.clusterConfiguration
+                                clusterConfiguration: $scope.clusterConfiguration,
                             };
-                        }
-                    }
+                        },
+                    },
                 });
 
-                modalInstance.result.finally(function () {
+                modalInstance.result.finally(function() {
                     $scope.$emit(UPDATE_CLUSTER, {force: true});
                 });
             };
@@ -48,7 +48,7 @@ function ClusterProperties($jwtAuth, $uibModal) {
             $scope.showDeleteDialog = () => {
                 const modalInstance = $uibModal.open({
                     templateUrl: 'js/angular/clustermanagement/templates/modal/cluster-delete-dialog.html',
-                    controller: 'DeleteClusterCtrl'
+                    controller: 'DeleteClusterCtrl',
                 });
 
                 modalInstance.result.then((forceDelete) => {
@@ -63,6 +63,6 @@ function ClusterProperties($jwtAuth, $uibModal) {
                 $scope.isAdmin = $jwtAuth.isAuthenticated() && $jwtAuth.isAdmin();
             };
             init();
-        }
+        },
     };
 }

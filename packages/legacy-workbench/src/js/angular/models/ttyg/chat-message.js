@@ -1,6 +1,5 @@
 export class ChatMessageModel {
     constructor(data) {
-
         /**
          * @type {string}
          */
@@ -65,5 +64,5 @@ export class ChatMessageModel {
 
 export const CHAT_MESSAGE_ROLE = {
     USER: 'user',
-    ASSISTANT: 'assistant'
+    ASSISTANT: 'assistant',
 };

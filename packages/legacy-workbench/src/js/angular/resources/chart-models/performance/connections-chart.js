@@ -11,13 +11,13 @@ export class ConnectionsChart extends ChartData {
             type: 'line',
             showSymbol: false,
             smooth: true,
-            data: []
+            data: [],
         }, {
             name: this.translateService.instant('resource.connections.open'),
             type: 'line',
             showSymbol: false,
             smooth: true,
-            data: []
+            data: [],
         }];
     }
 
@@ -34,19 +34,19 @@ export class ConnectionsChart extends ChartData {
         activeTransactionsSeries.data.push({
             value: [
                 timestamp,
-                activeTransactions
-            ]
+                activeTransactions,
+            ],
         });
         openConnectionsSeries.data.push({
             value: [
                 timestamp,
-                openConnections
-            ]
+                openConnections,
+            ],
         });
     }
 
     updateRange(dataHolder, multiplier) {
-        const [max, minInterval] = ChartData.getIntegerRangeForValues(dataHolder, multiplier, this.selectedSeries)
+        const [max, minInterval] = ChartData.getIntegerRangeForValues(dataHolder, multiplier, this.selectedSeries);
         this.chartOptions.yAxis.max = max;
         this.chartOptions.yAxis.minInterval = minInterval;
     }

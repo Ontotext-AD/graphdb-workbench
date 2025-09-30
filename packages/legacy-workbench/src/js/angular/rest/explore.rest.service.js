@@ -7,17 +7,16 @@ ExploreRestService.$inject = ['$http'];
 const EXPLORE_ENDPOINT = 'rest/explore';
 
 function ExploreRestService($http) {
-
     const getResourceDetails = (uri, triple, context, accept) => {
         return $http.get(`${EXPLORE_ENDPOINT}/details`, {
             params: {
                 uri,
                 triple,
-                context
+                context,
             },
             headers: {
-                'Accept': accept || 'application/json'
-            }
+                'Accept': accept || 'application/json',
+            },
         });
     };
 
@@ -38,12 +37,12 @@ function ExploreRestService($http) {
                 role: resourceInfo.role,
                 bnodes: resourceInfo.blanks,
                 sameAs: resourceInfo.sameAs,
-                context: resourceInfo.context
+                context: resourceInfo.context,
             },
             headers: {
                 'Accept': accept || 'application/x-graphdb-table-results+json',
-                'Link': link ? '<' + link + '>' : ""
-            }
+                'Link': link ? '<' + link + '>' : "",
+            },
         })
             .then((response) => response.data);
     };
@@ -51,6 +50,6 @@ function ExploreRestService($http) {
 
     return {
         getResourceDetails,
-        getGraph
+        getGraph,
     };
 }

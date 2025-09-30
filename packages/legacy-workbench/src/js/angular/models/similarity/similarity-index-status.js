@@ -38,5 +38,5 @@ export const SimilarityIndexStatus = {
 
     'isFailedStatus': (status) => {
         return SimilarityIndexStatus.FAILED === status;
-    }
+    },
 };

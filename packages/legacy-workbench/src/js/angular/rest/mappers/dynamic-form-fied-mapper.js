@@ -40,13 +40,13 @@ const buildFormModel = (fields) => {
         targetCollection.push(field);
     });
     return new DynamicFormModel(models);
-}
+};
 
 const buildFieldModels = (configs) => {
     return configs.map((config) => {
-        let type = resolveType(config);
+        const type = resolveType(config);
         let mappedValues = config.values;
-        let selectedValue = [];
+        const selectedValue = [];
 
         if (type === FIELD_TYPE.MULTI_SELECT || type === FIELD_TYPE.SELECT) {
             mappedValues = mappedValues.map((option) => {
@@ -57,7 +57,7 @@ const buildFieldModels = (configs) => {
                 const menuOption = new SelectMenuOptionsModel({
                     label: option,
                     value: option,
-                    selected: isSelected
+                    selected: isSelected,
                 });
 
                 if (isSelected) {
@@ -77,7 +77,7 @@ const buildFieldModels = (configs) => {
 
         return dynamicFormFieldMapper(config, type, mappedValues);
     });
-}
+};
 
 const dynamicFormFieldMapper = (config, type, mappedValues) => {
     return new DynamicFormField({
@@ -91,13 +91,13 @@ const dynamicFormFieldMapper = (config, type, mappedValues) => {
         regex: config.regex,
         required: config.required || false,
         group: config.group,
-        hidden: config.hidden
+        hidden: config.hidden,
     });
 };
 
 const resolveType = (config) => {
     let type;
-    if(config.type === CONFIG_TYPE.TEXT) {
+    if (config.type === CONFIG_TYPE.TEXT) {
         type = FIELD_TYPE.TEXT;
     } else if (config.type === CONFIG_TYPE.BOOLEAN) {
         type = FIELD_TYPE.BOOLEAN;

@@ -43,11 +43,11 @@
  * @scope
  */
 angular.module('graphdb.framework.aclmanagement.directives', [])
-    .directive('customRoleHandler', function () {
+    .directive('customRoleHandler', function() {
         return {
             restrict: 'A',
             require: 'ngModel',
-            link: function (scope, element, attrs, ngModelCtrl) {
+            link: function(scope, element, attrs, ngModelCtrl) {
                 const customPrefix = "CUSTOM_";
                 const negatedCustomPrefix = "!CUSTOM_";
                 const subscriptions = [];
@@ -69,7 +69,7 @@ angular.module('graphdb.framework.aclmanagement.directives', [])
                 }
 
                 // Set up ngModel formatters and parsers for input element
-                ngModelCtrl.$parsers.push(function (viewValue) {
+                ngModelCtrl.$parsers.push(function(viewValue) {
                     ngModelCtrl.$warning = !!(viewValue && hasCustomOrNegatedPrefix(viewValue));
                     return viewValue;
                 });
@@ -83,7 +83,7 @@ angular.module('graphdb.framework.aclmanagement.directives', [])
                 });
 
                 // Angular always runs the $validators second (after either the $parsers or $formatters)
-                ngModelCtrl.$validators.customRoleValidator = function (value) {
+                ngModelCtrl.$validators.customRoleValidator = function(value) {
                     if (!value) {
                         return true;
                     }
@@ -95,6 +95,6 @@ angular.module('graphdb.framework.aclmanagement.directives', [])
                     subscriptions.forEach((subscription) => subscription());
                 };
                 subscriptions.push(scope.$on('$destroy', unsubscribeListeners));
-            }
+            },
         };
     });

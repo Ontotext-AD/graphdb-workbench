@@ -30,6 +30,6 @@ const toTitleCase = (text) => {
 export {
     removeSpecialChars,
     toBoolean,
-    toTitleCase
+    toTitleCase,
 };
 

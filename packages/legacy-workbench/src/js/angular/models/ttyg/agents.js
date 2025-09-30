@@ -480,12 +480,12 @@ export const ExtractionMethod = {
     FTS_SEARCH: 'fts_search',
     SPARQL: 'sparql_search',
     SIMILARITY: 'similarity_search',
-    RETRIEVAL: 'retrieval_search'
+    RETRIEVAL: 'retrieval_search',
 };
 
 export const AdditionalExtractionMethod = {
     IRI_DISCOVERY_SEARCH: 'iri_discovery_search',
-    AUTOCOMPLETE_IRI_DISCOVERY_SEARCH: 'autocomplete_iri_discovery_search'
+    AUTOCOMPLETE_IRI_DISCOVERY_SEARCH: 'autocomplete_iri_discovery_search',
 };
 
 /**
@@ -554,5 +554,5 @@ export const AgentCompatibility = {
      * This may occur when the agent was created using a newer GraphDB version
      * than the one currently running.
      */
-    'INCOMPATIBLE': 'INCOMPATIBLE'
+    'INCOMPATIBLE': 'INCOMPATIBLE',
 };

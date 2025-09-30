@@ -2,7 +2,6 @@
  * Model for event of type {@link EventDataType.COUNT_QUERY} emitted by "ontotext-yasgui-web-component".
  */
 export class CountQueryRequestEvent {
-
     /**
      * Constructs the model for {@link EventDataType.DOWNLOAD_AS} event.
      *

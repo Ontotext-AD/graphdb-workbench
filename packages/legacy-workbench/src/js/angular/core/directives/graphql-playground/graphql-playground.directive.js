@@ -36,7 +36,7 @@ function graphqlPlaygroundDirective($repositories, $translate, MonitoringRestSer
         restrict: 'E',
         templateUrl: 'js/angular/core/directives/graphql-playground/templates/graphql-playground.html',
         scope: {
-            configuration: '='
+            configuration: '=',
         },
         link: ($scope, element, attrs) => {
             // =========================
@@ -70,6 +70,6 @@ function graphqlPlaygroundDirective($repositories, $translate, MonitoringRestSer
             const getGraphQLPlaygroundElements = () => {
                 return element.find('graphql-playground-component');
             };
-        }
+        },
     };
 }

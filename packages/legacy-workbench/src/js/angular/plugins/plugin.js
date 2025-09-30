@@ -8,7 +8,7 @@ PluginRegistry.add('route', {
     'title': 'menu.plugins.label',
     'helpInfo': 'view.plugins.helpInfo',
     'documentationUrl': 'using-plugins.html',
-    'allowAuthorities': ['READ_REPO_{repoId}']
+    'allowAuthorities': ['READ_REPO_{repoId}'],
 });
 
 PluginRegistry.add('main.menu', {
@@ -21,7 +21,7 @@ PluginRegistry.add('main.menu', {
             parent: 'Setup',
             role: "IS_AUTHENTICATED_FULLY",
             guideSelector: 'sub-menu-plugins',
-            testSelector: 'sub-menu-plugins'
-        }
-    ]
+            testSelector: 'sub-menu-plugins',
+        },
+    ],
 });

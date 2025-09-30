@@ -8,8 +8,8 @@ PluginRegistry.add('route', [
         'templateUrl': 'pages/cluster-management/clusterInfo.html',
         'helpInfo': 'view.clusterManagement.helpInfo',
         'title': 'view.clusterManagement.title',
-        'documentationUrl': 'creating-a-cluster.html#using-the-workbench'
-    }
+        'documentationUrl': 'creating-a-cluster.html#using-the-workbench',
+    },
 ]);
 
 PluginRegistry.add('main.menu', {
@@ -21,7 +21,7 @@ PluginRegistry.add('main.menu', {
         role: 'ROLE_USER',
         parent: 'Setup',
         guideSelector: 'sub-menu-cluster',
-        testSelector: 'sub-menu-cluster'
-    }]
+        testSelector: 'sub-menu-cluster',
+    }],
 });
 

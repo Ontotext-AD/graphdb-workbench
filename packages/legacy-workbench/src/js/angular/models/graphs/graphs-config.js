@@ -1,7 +1,7 @@
 export const StartMode = {
     QUERY: 'query',
     NODE: 'node',
-    SEARCH: 'search'
+    SEARCH: 'search',
 };
 
 export class GraphsConfig {
@@ -48,7 +48,7 @@ export class GraphsConfig {
                 expandQueryDescription,
                 resourceQueryDescription,
                 predicateLabelQueryDescription,
-                resourcePropertiesQueryDescription
+                resourcePropertiesQueryDescription,
     ) {
         this._id = id;
         this._name = name;
@@ -159,7 +159,7 @@ export class GraphsConfig {
             resourcePropertiesQuery: this.resourcePropertiesQuery,
             shared: this.shared,
             description: this.description,
-            hint: this.hint
+            hint: this.hint,
         };
     }
 

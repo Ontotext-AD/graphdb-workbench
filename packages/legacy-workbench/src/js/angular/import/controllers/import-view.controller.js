@@ -34,7 +34,7 @@ const modules = [
     'graphdb.framework.impex.import.controllers.settings-modal',
     'graphdb.framework.impex.import.controllers.import-url',
     'graphdb.framework.impex.import.controllers.import-text-snippet',
-    'graphdb.framework.impex.import.controllers.file-override-confirmation'
+    'graphdb.framework.impex.import.controllers.file-override-confirmation',
 ];
 
 const importViewModule = angular.module('graphdb.framework.impex.import.controllers', modules);
@@ -44,18 +44,17 @@ export const Operation = {
     BATCH_IMPORT: 'batch_import',
     IMPORT_SNIPPET: 'import_snippet',
     IMPORT_URL: 'import_url',
-    UPLOAD: 'upload'
+    UPLOAD: 'upload',
 };
 
 const USER_DATA_TYPE = {
     FILE: 'file',
     TEXT: 'text',
-    URL: 'url'
+    URL: 'url',
 };
 
 importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', '$repositories', '$uibModal', '$filter', '$jwtAuth', '$location', '$translate', 'LicenseRestService', 'GuidesService', 'ModalService', 'ImportRestService', 'ImportContextService',
-    function ($scope, toastr, $interval, $repositories, $uibModal, $filter, $jwtAuth, $location, $translate, LicenseRestService, GuidesService, ModalService, ImportRestService, ImportContextService) {
-
+    function($scope, toastr, $interval, $repositories, $uibModal, $filter, $jwtAuth, $location, $translate, LicenseRestService, GuidesService, ModalService, ImportRestService, ImportContextService) {
         // =========================
         // Private variables
         // =========================
@@ -124,18 +123,18 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
                         controller: 'SettingsModalController',
                         windowClass: 'import-settings-modal',
                         resolve: {
-                            dialogModel: function () {
+                            dialogModel: function() {
                                 return {
                                     operation: operation,
                                     settings: _.cloneDeep($scope.settings),
                                     hasParserSettings: $scope.isLocalLocation,
                                     defaultSettings: initialSettings,
                                     isMultiple: !fileName,
-                                    activeTab: $scope.activeTabId
+                                    activeTab: $scope.activeTabId,
                                 };
-                            }
+                            },
                         },
-                        size: 'lg'
+                        size: 'lg',
                     };
 
                     if (GuidesService.isActive()) {
@@ -259,9 +258,9 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
             const file = resource.importResource;
             const importAborter = $scope.activeTabId === TABS.USER ? ImportRestService.stopUserDataImport : ImportRestService.stopServerImport;
             importAborter($repositories.getActiveRepository(), {name: file.name, type: file.type})
-                .success(function () {
+                .success(function() {
                     $scope.updateList();
-                }).error(function (data) {
+                }).error(function(data) {
                 toastr.warning($translate.instant('import.error.could.not.stop', {data: getError(data)}));
             });
         };
@@ -332,10 +331,10 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
             }
 
             return ImportRestService.getDefaultSettings($repositories.getActiveRepository())
-                .success(function (data) {
+                .success(function(data) {
                     defaultSettings = data;
                     return defaultSettings;
-                }).error(function (data) {
+                }).error(function(data) {
                     toastr.warning($translate.instant('import.error.default.settings', {data: getError(data)}));
                 });
         };
@@ -408,7 +407,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
             const filesLoader = $scope.activeTabId === TABS.USER ? ImportRestService.getUploadedFiles : ImportRestService.getServerFiles;
             const executedInTabId = $scope.activeTabId;
             return filesLoader($repositories.getActiveRepository())
-                .success(function (data) {
+                .success(function(data) {
                 if (executedInTabId !== ImportContextService.getActiveTabId()) {
                     return;
                 }
@@ -419,14 +418,14 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
                 if ($scope.files.length === 0 || force) {
                     $scope.files = data;
                     ImportContextService.updateFiles($scope.files);
-                    $scope.files.forEach(function (f) {
+                    $scope.files.forEach(function(f) {
                         if (!f.type) {
                             f.type = $scope.defaultType;
                         }
                     });
                 } else {
                     // update the status of the files using the response from the server
-                    $scope.files.forEach(function (f) {
+                    $scope.files.forEach(function(f) {
                         const remoteStatus = _.find(data, _.matches({'name': f.name}));
                         if (f.status && remoteStatus) {
                             _.assign(f, remoteStatus);
@@ -438,14 +437,14 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
                 }
                 // Need new status here
                 if (force && TABS.USER === $scope.activeTabId) {
-                    $scope.files = _.filter($scope.files, function (f) {
+                    $scope.files = _.filter($scope.files, function(f) {
                         return f.status !== undefined;
                     });
                     ImportContextService.updateFiles($scope.files);
                 }
 
                 $scope.savedSettings = _.mapKeys(_.filter($scope.files, 'parserSettings'), 'name');
-            }).error(function (data) {
+            }).error(function(data) {
                 toastr.warning($translate.instant('import.error.could.not.get.files', {data: getError(data)}));
             });
         };
@@ -455,25 +454,25 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
                 return;
             }
             const resetService = $scope.activeTabId === TABS.USER ? ImportRestService.resetUserDataStatus : ImportRestService.resetServerFileStatus;
-            resetService($repositories.getActiveRepository(), names, remove).success(function () {
+            resetService($repositories.getActiveRepository(), names, remove).success(function() {
                 $scope.updateList(true);
-            }).error(function (data) {
+            }).error(function(data) {
                 toastr.warning($translate.instant('import.error.could.not.clear', {data: getError(data)}));
             });
         };
 
         const getAppData = () => {
-            LicenseRestService.getInfo().success(function (data) {
+            LicenseRestService.getInfo().success(function(data) {
                 $scope.appData = {};
                 $scope.appData.properties = {};
                 for (let i = 0; i < data.length; i++) {
                     $scope.appData.properties[data[i].key] = {
                         source: data[i].source,
-                        value: data[i].value
+                        value: data[i].value,
                     };
                 }
                 $scope.maxUploadFileSizeBytes = $scope.appData.properties['graphdb.workbench.maxUploadSize'].value;
-            }).error(function (data) {
+            }).error(function(data) {
                 const msg = getError(data);
                 toastr.error(msg, $translate.instant('common.error'));
             });
@@ -510,8 +509,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
         };
     }]);
 
-importViewModule.controller('ImportCtrl', ['$scope', 'toastr', '$controller', '$translate', '$repositories', 'ImportRestService', 'ImportContextService', function ($scope, toastr, $controller, $translate, $repositories, ImportRestService, ImportContextService) {
-
+importViewModule.controller('ImportCtrl', ['$scope', 'toastr', '$controller', '$translate', '$repositories', 'ImportRestService', 'ImportContextService', function($scope, toastr, $controller, $translate, $repositories, ImportRestService, ImportContextService) {
     // =========================
     // Private variables
     // =========================
@@ -525,7 +523,7 @@ importViewModule.controller('ImportCtrl', ['$scope', 'toastr', '$controller', '$
         'size': 'import.import_resource_tree.header.size',
         'modified': 'import.import_resource_tree.header.modified',
         'imported': 'import.import_resource_tree.header.imported',
-        'context': 'import.import_resource_tree.header.context'
+        'context': 'import.import_resource_tree.header.context',
     };
     angular.extend(this, $controller('ImportViewCtrl', {$scope: $scope}));
     $scope.defaultType = 'server';
@@ -543,7 +541,7 @@ importViewModule.controller('ImportCtrl', ['$scope', 'toastr', '$controller', '$
         importServerFiles(ImportContextService.getSelectedFilesNames(), overrideSettings);
     };
 
-    $scope.importFile = function (fileName) {
+    $scope.importFile = function(fileName) {
         importServerFiles([fileName]);
     };
 
@@ -551,18 +549,18 @@ importViewModule.controller('ImportCtrl', ['$scope', 'toastr', '$controller', '$
     // Private functions
     // =========================
 
-    const importServerFiles = function (selectedFileNames, overrideSettings) {
+    const importServerFiles = function(selectedFileNames, overrideSettings) {
         if (!$scope.canWriteActiveRepo()) {
             return;
         }
 
         ImportRestService.importServerFiles(
             $repositories.getActiveRepository(),
-            {importSettings: overrideSettings ? null : $scope.settings, fileNames: selectedFileNames}
-        ).success(function () {
+            {importSettings: overrideSettings ? null : $scope.settings, fileNames: selectedFileNames},
+        ).success(function() {
             $scope.updateList();
             $scope.fileChecked = {};
-        }).error(function (data) {
+        }).error(function(data) {
             toastr.error($translate.instant('import.could.not.send.file', {data: getError(data)}));
         });
     };
@@ -576,8 +574,7 @@ importViewModule.controller('ImportCtrl', ['$scope', 'toastr', '$controller', '$
     }
 }]);
 
-importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$uibModal', '$translate', '$repositories', 'ImportRestService', 'UploadRestService', 'ModalService', 'ImportContextService', 'EventEmitterService', '$filter', function ($scope, toastr, $controller, $uibModal, $translate, $repositories, ImportRestService, UploadRestService, ModalService, ImportContextService, EventEmitterService, $filter) {
-
+importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$uibModal', '$translate', '$repositories', 'ImportRestService', 'UploadRestService', 'ModalService', 'ImportContextService', 'EventEmitterService', '$filter', function($scope, toastr, $controller, $uibModal, $translate, $repositories, ImportRestService, UploadRestService, ModalService, ImportContextService, EventEmitterService, $filter) {
     // =========================
     // Private variables
     // =========================
@@ -597,7 +594,7 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
         'size': 'import.import_resource_tree.header.size',
         'modified': 'import.import_resource_tree.header.uploaded',
         'imported': 'import.import_resource_tree.header.imported',
-        'context': 'import.import_resource_tree.header.context'
+        'context': 'import.import_resource_tree.header.context',
     };
     angular.extend(this, $controller('ImportViewCtrl', {$scope: $scope}));
     $scope.defaultType = USER_DATA_TYPE.FILE;
@@ -617,7 +614,7 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
     // Public functions
     // =========================
 
-    $scope.fileSelected = function ($files, $file, $newFiles, $duplicateFiles, $invalidFiles) {
+    $scope.fileSelected = function($files, $file, $newFiles, $duplicateFiles, $invalidFiles) {
         const eventData = {files: $newFiles, cancel: false};
         // Notify that new files have been selected and will be added for uploading.
         // Subscribers of the "filesForUploadSelected" event may cancel the event by setting the 'cancel' property to true in the passed 'eventData' object.
@@ -691,13 +688,13 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
             templateUrl: 'js/angular/import/templates/textSnippet.html',
             controller: 'ImportTextSnippetController',
             resolve: {
-                text: function () {
+                text: function() {
                     return importResource ? importResource.data : '';
                 },
-                format: function () {
+                format: function() {
                     return importResource ? importResource.format : 'text/turtle';
-                }
-            }
+                },
+            },
         });
 
         modalInstance.result.then((data) => {
@@ -714,7 +711,7 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
                         if (data.startImport) {
                             $scope.setSettingsFor(importResource.name, false, importResource.format, Operation.IMPORT_SNIPPET);
                         }
-                    })
+                    });
             } else {
                 importResource = {type: 'text', name: 'Text snippet ' + DateUtils.formatCurrentDateTime(), format: data.format, data: data.text};
                 $scope.files.unshift(importResource);
@@ -733,10 +730,10 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
         const modalInstance = $uibModal.open({
             templateUrl: 'js/angular/import/templates/urlImport.html',
             controller: 'ImportUrlController',
-            scope: $scope
+            scope: $scope,
         });
 
-        modalInstance.result.then(function (data) {
+        modalInstance.result.then(function(data) {
             // URL may already exist
             const existing = _.find($scope.files, {type: 'url', name: data.url});
             if (existing) {
@@ -757,10 +754,10 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
 
     const notifyForTooLargeFiles = (invalidFiles) => {
         if (invalidFiles.length > 0) {
-            invalidFiles.forEach(function (file) {
+            invalidFiles.forEach(function(file) {
                 toastr.warning($translate.instant('import.large.file', {
                     name: file.name,
-                    size: $filter('bytes')(file.size)
+                    size: $filter('bytes')(file.size),
                 }));
             });
         }
@@ -775,22 +772,22 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
 
         const importer = startImport ? ImportRestService.importTextSnippet : ImportRestService.updateTextSnippet;
         importer($repositories.getActiveRepository(), $scope.settings)
-            .success(function () {
+            .success(function() {
                 $scope.updateList();
-            }).error(function (data) {
+            }).error(function(data) {
             toastr.error($translate.instant('import.could.not.send.data', {data: getError(data)}));
             file.status = ImportResourceStatus.ERROR;
             file.message = getError(data);
-        }).finally(nextCallback || function () {});
+        }).finally(nextCallback || function() {});
     };
 
     const updateTextImport = (settings) => {
         $scope.updating = true;
-        return ImportRestService.updateTextSnippet($repositories.getActiveRepository(), settings).success(function (data) {
+        return ImportRestService.updateTextSnippet($repositories.getActiveRepository(), settings).success(function(data) {
             // it's updated
-        }).error(function (data) {
+        }).error(function(data) {
             toastr.error($translate.instant('import.could.not.update.text', {data: getError(data)}));
-        }).finally(function () {
+        }).finally(function() {
             $scope.updating = false;
         });
     };
@@ -803,11 +800,11 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
         file.status = ImportResourceStatus.PENDING;
 
         const importer = startImport ? ImportRestService.importFromUrl : ImportRestService.updateFromUrl;
-        importer($repositories.getActiveRepository(), $scope.settings).success(function () {
+        importer($repositories.getActiveRepository(), $scope.settings).success(function() {
             $scope.updateList();
-        }).error(function (data) {
+        }).error(function(data) {
             toastr.error($translate.instant('import.could.not.send.url', {data: getError(data)}));
-        }).finally(nextCallback || function () {});
+        }).finally(nextCallback || function() {});
     };
 
     const uploadFile = (file, startImport, nextCallback) => {
@@ -906,7 +903,7 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
     };
 
     const removeBZip2Files = (files) => {
-        files.forEach(function (f) {
+        files.forEach(function(f) {
             if (f.name.substr(f.name.lastIndexOf('.') + 1) === 'bz2') {
                 const fileIdx = files.indexOf(f);
                 if (fileIdx > -1) {
@@ -924,8 +921,8 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
             controller: 'FileOverrideConfirmationController',
             windowClass: 'confirm-duplicate-files-dialog',
             resolve: {
-                duplicatedFiles: () => existingFilenames
-            }
+                duplicatedFiles: () => existingFilenames,
+            },
         });
 
         modalInstance.result.then((data) => {
@@ -951,14 +948,14 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
     const uploadedFilesValidatorAndProcess = () => {
         $scope.files = _.uniqBy(
             _.union(
-                _.map($scope.currentFiles, function (file) {
+                _.map($scope.currentFiles, function(file) {
                     return {name: file.name, type: 'file', file: file};
                 }),
-                $scope.files
+                $scope.files,
             ),
-            function (file) {
+            function(file) {
                 return file.name;
-            }
+            },
         );
         $scope.savedSettings = _.mapKeys(_.filter($scope.files, 'parserSettings'), 'name');
         if (isFileListInitialized) {
@@ -1006,7 +1003,7 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
     // Initialization
     // =========================
 
-    const init = function () {
+    const init = function() {
         subscriptions.push(ImportContextService.onFilesUpdated((files) => {
             filesPrefixRegistry.buildPrefixesRegistry(files);
         }));

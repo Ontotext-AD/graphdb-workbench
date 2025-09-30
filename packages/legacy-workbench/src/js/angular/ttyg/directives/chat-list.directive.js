@@ -4,7 +4,7 @@ import {getHumanReadableTimestamp} from "../services/ttyg.utils";
 import {decodeHTML} from "../../../../app";
 
 const modules = [
-    'graphdb.framework.core.directives.inline-editable-text'
+    'graphdb.framework.core.directives.inline-editable-text',
 ];
 
 angular
@@ -18,7 +18,6 @@ function ChatListComponent(TTYGContextService, ModalService, $translate, $filter
         restrict: 'E',
         templateUrl: 'js/angular/ttyg/templates/chat-list.html',
         link: ($scope) => {
-
             // =========================
             // Public variables
             // =========================
@@ -150,6 +149,6 @@ function ChatListComponent(TTYGContextService, ModalService, $translate, $filter
             function initialize() {
             }
             initialize();
-        }
+        },
     };
 }

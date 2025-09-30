@@ -60,7 +60,7 @@ function GoogleAnalyticsCookieService($window, $document, CookieService) {
      */
     const removeGoogleAnalyticsScripts = () => {
         if ($window.dataLayer) {
-            $window.dataLayer.push = function () {
+            $window.dataLayer.push = function() {
                 return null;
             };
         }
@@ -101,6 +101,6 @@ function GoogleAnalyticsCookieService($window, $document, CookieService) {
 
     return {
         setIfAbsent,
-        remove
+        remove,
     };
 }

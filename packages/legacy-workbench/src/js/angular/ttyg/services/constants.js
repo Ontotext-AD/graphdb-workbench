@@ -17,5 +17,5 @@ export const AGENTS_FILTER_ALL_KEY = 'ALL';
 export const AGENT_OPERATION = {
     CREATE: 'create',
     EDIT: 'edit',
-    CLONE: 'clone'
+    CLONE: 'clone',
 };

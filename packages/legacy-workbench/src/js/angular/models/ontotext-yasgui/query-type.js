@@ -15,5 +15,5 @@ export const QueryType = {
     "DROP": "DROP",
     "COPY": "COPY",
     "MOVE": "MOVE",
-    "ADD": "ADD"
+    "ADD": "ADD",
 };

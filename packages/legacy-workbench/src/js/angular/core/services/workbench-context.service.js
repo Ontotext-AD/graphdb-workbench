@@ -15,7 +15,6 @@ WorkbenchContextService.$inject = ['EventEmitterService'];
  * @constructor
  */
 function WorkbenchContextService(EventEmitterService) {
-
     /**
      * Holds the ID of the selected repository.
      * @type {string | undefined}
@@ -111,7 +110,7 @@ function WorkbenchContextService(EventEmitterService) {
         setSelectedRepositoryId,
         getSelectedRepositoryId,
         onSelectedRepositoryIdUpdated,
-        resetContext
+        resetContext,
     };
 }
 
@@ -130,5 +129,5 @@ export const WorkbenchEventName = {
     /**
      * This event is emitted when the namespaces of selected repository changed.
      */
-    SELECTED_REPOSITORY_NAMESPACES_UPDATED: 'selectedRepositoryNamespacesUpdated'
+    SELECTED_REPOSITORY_NAMESPACES_UPDATED: 'selectedRepositoryNamespacesUpdated',
 };

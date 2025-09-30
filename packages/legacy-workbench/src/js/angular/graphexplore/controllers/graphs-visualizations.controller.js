@@ -19,14 +19,14 @@ const modules = [
     'ngTagsInput',
     'graphdb.framework.utils.localstorageadapter',
     'graphdb.core.services.workbench-context',
-    'graphdb.framework.core.services.rdf4j.repositories'
+    'graphdb.framework.core.services.rdf4j.repositories',
 ];
 
 angular
     .module('graphdb.framework.graphexplore.controllers.graphviz', modules)
     .controller('GraphsVisualizationsCtrl', GraphsVisualizationsCtrl)
     .controller('SaveGraphModalCtrl', SaveGraphModalCtrl)
-    .config(['$uibTooltipProvider', function ($uibTooltipProvider) {
+    .config(['$uibTooltipProvider', function($uibTooltipProvider) {
         $uibTooltipProvider.options({appendToBody: true});
     }]);
 
@@ -53,7 +53,7 @@ GraphsVisualizationsCtrl.$inject = [
     "$translate",
     "GuidesService",
     "WorkbenchContextService",
-    'RDF4JRepositoriesService'
+    'RDF4JRepositoriesService',
 ];
 
 function GraphsVisualizationsCtrl(
@@ -79,7 +79,7 @@ function GraphsVisualizationsCtrl(
     $translate,
     GuidesService,
     WorkbenchContextService,
-    RDF4JRepositoriesService
+    RDF4JRepositoriesService,
 ) {
     // =========================
     // Public fields
@@ -127,14 +127,14 @@ function GraphsVisualizationsCtrl(
             "http://factforge.net/*"],
         preferredTypesOnly: false,
         preferredPredicatesOnly: false,
-        includeSchema: true
+        includeSchema: true,
     };
     // Static defaults before we do the actual dynamic default settings in initSettings
     $scope.saveSettings = _.cloneDeep($scope.defaultSettings);
     $scope.defaultGraphConfig = {
         id: 'default',
         name: 'Easy graph',
-        startMode: 'search'
+        startMode: 'search',
     };
 
     // TODO: check if this can be moved in the local scope and not in  the global one
@@ -221,21 +221,21 @@ function GraphsVisualizationsCtrl(
             return;
         }
         $scope.saveSettings = $scope.settings;
-        $scope.saveSettings.languages = _.map($scope.saveSettings['languagesMap'], function (s) {
+        $scope.saveSettings.languages = _.map($scope.saveSettings['languagesMap'], function(s) {
             return s['text'];
         });
 
-        $scope.saveSettings.preferredTypes = _.map($scope.saveSettings['preferredTypesMap'], function (t) {
+        $scope.saveSettings.preferredTypes = _.map($scope.saveSettings['preferredTypesMap'], function(t) {
             return t['text'];
         });
-        $scope.saveSettings.rejectedTypes = _.map($scope.saveSettings['rejectedTypesMap'], function (t) {
+        $scope.saveSettings.rejectedTypes = _.map($scope.saveSettings['rejectedTypesMap'], function(t) {
             return t['text'];
         });
 
-        $scope.saveSettings.preferredPredicates = _.map($scope.saveSettings['preferredPredicatesMap'], function (t) {
+        $scope.saveSettings.preferredPredicates = _.map($scope.saveSettings['preferredPredicatesMap'], function(t) {
             return t['text'];
         });
-        $scope.saveSettings.rejectedPredicates = _.map($scope.saveSettings['rejectedPredicatesMap'], function (t) {
+        $scope.saveSettings.rejectedPredicates = _.map($scope.saveSettings['rejectedPredicatesMap'], function(t) {
             return t['text'];
         });
 
@@ -262,21 +262,21 @@ function GraphsVisualizationsCtrl(
     // Graph Config
     $scope.getGraphConfigs = (graphCallback) => {
         GraphConfigRestService.getGraphConfigs()
-            .success(function (data) {
+            .success(function(data) {
                 $scope.graphConfigs = data;
                 if (graphCallback) {
                     graphCallback();
                 }
-            }).error(function (data) {
+            }).error(function(data) {
             toastr.error(getError(data), $translate.instant('graphexplore.error.graph.configs.short.msg'));
         });
     };
 
-    $scope.findConfigById = function (configId) {
+    $scope.findConfigById = function(configId) {
         if (configId === $scope.defaultGraphConfig.id) {
             return $scope.defaultGraphConfig;
         }
-        return $.grep($scope.graphConfigs, function (e) {
+        return $.grep($scope.graphConfigs, function(e) {
             return e.id === configId;
         })[0];
     };
@@ -294,14 +294,14 @@ function GraphsVisualizationsCtrl(
         ModalService.openSimpleModal({
             title: $translate.instant('common.confirm'),
             message: $translate.instant('graphexplore.delete.graph', {configName: config.name}),
-            warning: true
+            warning: true,
         }).result
-            .then(function () {
+            .then(function() {
                 GraphConfigRestService.deleteGraphConfig(config)
-                    .success(function () {
+                    .success(function() {
                         $scope.getGraphConfigs();
                         $scope.refreshSavedGraphs();
-                    }).error(function (data) {
+                    }).error(function(data) {
                     toastr.error(getError(data), $translate.instant('graphexplore.error.cannot.delete.config'));
                 });
             });
@@ -315,7 +315,7 @@ function GraphsVisualizationsCtrl(
 
     $scope.replaceIRIWithPrefix = (iri) => {
         const namespaces = $scope.namespaces;
-        const namespacePrefix = _.findLast(namespaces, function (o) {
+        const namespacePrefix = _.findLast(namespaces, function(o) {
             return iri.indexOf(o.uri) === 0;
         });
         return namespacePrefix ? (namespacePrefix.prefix + ":" + iri.substring(namespacePrefix.uri.length)) : iri;
@@ -347,7 +347,7 @@ function GraphsVisualizationsCtrl(
 
     const subscriptions = [];
 
-    subscriptions.push($rootScope.$on('$translateChangeSuccess', function () {
+    subscriptions.push($rootScope.$on('$translateChangeSuccess', function() {
         $scope.INVALID_LINKS_MSG = $translate.instant('sidepanel.invalid.limit.links.msg');
         $scope.INVALID_LINKS_TOOLTIP = $translate.instant('sidepanel.invalid.limit.links.tooltip');
         $scope.propertiesSearchPlaceholder = $translate.instant("visual.search.instance.placeholder");
@@ -356,7 +356,7 @@ function GraphsVisualizationsCtrl(
     subscriptions.push(WorkbenchContextService.onAutocompleteEnabledUpdated(onAutocompleteEnabledUpdated));
     subscriptions.push(ServiceProvider.get(RepositoryContextService).onSelectedRepositoryChanged(onSelectedRepositoryUpdated));
 
-    subscriptions.push($scope.$on('repositoryIsSet', function (event, args) {
+    subscriptions.push($scope.$on('repositoryIsSet', function(event, args) {
         // New repo set from dropdown, clear init state
         if (args.newRepo) {
             $scope.hasInitedRepository = false;
@@ -376,14 +376,13 @@ function GraphsVisualizationsCtrl(
                 $scope.goToHome();
                 initGraphFromQueryParam();
             }
-
         }
     }));
 
     const rootScopeGenericWatcher = () => $rootScope.key;
     const rootScopeGenericChangeHandler = () => {
         position = 0;
-        _.each($scope.propertiesObj.items, function (item) {
+        _.each($scope.propertiesObj.items, function(item) {
             if ($rootScope.key > item) {
                 position++;
             }
@@ -394,7 +393,7 @@ function GraphsVisualizationsCtrl(
 
     const propertiesItemsChangeHandler = () => {
         if (angular.isDefined($scope.propertiesObj.items) && $scope.propertiesObj.items.length > 0) {
-            $timeout(function () {
+            $timeout(function() {
                 $scope.adapterContainer.adapter.reload();
             }, 500);
         }
@@ -476,22 +475,22 @@ function GraphsVisualizationsCtrl(
     };
 
     const updateNodeLabels = (nodeLabels) => {
-        nodeLabels.each(function (d) {
+        nodeLabels.each(function(d) {
             d.fontSize = D3.Text.calcFontSizeRaw(d.labels[0].label, d.size, nodeLabelMinFontSize, true);
             // TODO: get language and set it on the label html tag
         })
-            .attr("height", function (d) {
+            .attr("height", function(d) {
                 return d.fontSize * 3;
             })
             // if this was kosher we would use xhtml:body here but if we do that angular (or the browser)
             // goes crazy and resizes/messes up other unrelated elements. div seems to work too.
             .append("xhtml:div")
             .attr("class", "node-label-body")
-            .style("font-size", function (d) {
+            .style("font-size", function(d) {
                 return d.fontSize + 'px';
             })
             .append('xhtml:div')
-            .html(function (d) {
+            .html(function(d) {
                 return HtmlUtil.getText(d.labels[0].label).replaceAll("\n", "<br>");
             });
     };
@@ -524,23 +523,23 @@ function GraphsVisualizationsCtrl(
     };
 
     const renderSettings = () => {
-        $scope.settings.languagesMap = _.map($scope.settings.languages, function (v) {
+        $scope.settings.languagesMap = _.map($scope.settings.languages, function(v) {
             return {'text': v};
         });
 
-        $scope.settings.preferredTypesMap = _.map($scope.settings.preferredTypes, function (v) {
+        $scope.settings.preferredTypesMap = _.map($scope.settings.preferredTypes, function(v) {
             return {'text': v};
         });
 
-        $scope.settings.rejectedTypesMap = _.map($scope.settings.rejectedTypes, function (v) {
+        $scope.settings.rejectedTypesMap = _.map($scope.settings.rejectedTypes, function(v) {
             return {'text': v};
         });
 
-        $scope.settings.preferredPredicatesMap = _.map($scope.settings.preferredPredicates, function (v) {
+        $scope.settings.preferredPredicatesMap = _.map($scope.settings.preferredPredicates, function(v) {
             return {'text': v};
         });
 
-        $scope.settings.rejectedPredicatesMap = _.map($scope.settings.rejectedPredicates, function (v) {
+        $scope.settings.rejectedPredicatesMap = _.map($scope.settings.rejectedPredicates, function(v) {
             return {'text': v};
         });
     };
@@ -561,7 +560,7 @@ function GraphsVisualizationsCtrl(
                 $location.search().inference);
         } else {
             // broadcasted event from view resource directive to take input value
-            $scope.$on('onRootNodeChange', function (e, inputValue) {
+            $scope.$on('onRootNodeChange', function(e, inputValue) {
                 $scope.loading = true;
                 const settings = getSettings();
                 if (angular.isDefined(inputValue)) {
@@ -571,8 +570,8 @@ function GraphsVisualizationsCtrl(
                         config: $scope.configLoaded ? $scope.configLoaded.id : $scope.defaultGraphConfig.id,
                         languages: !$scope.shouldShowSettings() ? [] : settings['languages'],
                         includeInferred: settings['includeInferred'],
-                        sameAsState: settings['sameAsState']
-                    }).then(function (response) {
+                        sameAsState: settings['sameAsState'],
+                    }).then(function(response) {
                         $scope.nodeSelected = true;
                         $scope.searchVisible = false;
                         if (response.data.types === null) {
@@ -584,7 +583,7 @@ function GraphsVisualizationsCtrl(
                         transformValues = INITIAL_CONTAINER_TRANSFORM;
 
                         expandNode(rootNode, true);
-                    }).catch(function (err) {
+                    }).catch(function(err) {
                         $scope.loading = false;
                         toastr.error(getError(err), $translate.instant('graphexplore.error.could.not.load.graph'));
                     });
@@ -598,10 +597,10 @@ function GraphsVisualizationsCtrl(
 
         if ($location.search().saved) {
             SavedGraphsRestService.getSavedGraph($location.search().saved)
-                .success(function (data) {
+                .success(function(data) {
                     $scope.loadSavedGraph(data);
                 })
-                .error(function (data) {
+                .error(function(data) {
                     const msg = getError(data);
                     toastr.error(msg, $translate.instant('graphexplore.error.could.not.open'));
                 });
@@ -618,11 +617,11 @@ function GraphsVisualizationsCtrl(
             linksLimit: settings['linksLimit'],
             languages: !$scope.shouldShowSettings() ? [] : settings['languages'],
             includeInferred: sendInferred,
-            sameAsState: sendSameAs
-        }).then(function (response) {
+            sameAsState: sendSameAs,
+        }).then(function(response) {
             // Node draw will turn off loader
             initGraphFromResponse(response);
-        }, function (response) {
+        }, function(response) {
             $scope.loading = false;
             toastr.error(getError(response.data), $translate.instant('graphexplore.error.cannot.load.graph'));
         });
@@ -729,23 +728,23 @@ function GraphsVisualizationsCtrl(
         if (config.startMode === 'search') {
             $scope.searchVisible = true;
         } else if (config.startMode === 'node' && config.startIRI) {
-            $timeout(function () {
+            $timeout(function() {
                 $scope.openUri(config.startIRI, true);
             }, 0);
         } else if (config.startMode === 'query' && config.startGraphQuery) {
             $scope.loading = true;
             GraphConfigRestService.loadGraphForConfig(config, config.startQueryIncludeInferred, getSettings()['linksLimit'], config.startQuerySameAs)
-                .then(function (response) {
+                .then(function(response) {
                     // Node drawing will turn off loader
                     initGraphFromResponse(response);
-                }, function (data) {
+                }, function(data) {
                     $scope.loading = false;
                     toastr.error(getError(data), $translate.instant('graphexplore.error.graph.load'));
                 });
         }
     };
 
-    const loadGraphFromQueryParam = function () {
+    const loadGraphFromQueryParam = function() {
         // view graph config
         if ($location.search().config) {
             loadConfigForId($location.search().config, initGraphFromQueryParam);
@@ -758,7 +757,7 @@ function GraphsVisualizationsCtrl(
     };
 
     // Global
-    $window.onpopstate = function (event) {
+    $window.onpopstate = function(event) {
         // Single spa triggers this event in some unwanted cases, for example, when displaying the Visual graph view.
         // By adding skipOnPopState we can skip the execution, whenever we don't need it
         if (event.state && event.state.skipOnPopState) {
@@ -784,7 +783,6 @@ function GraphsVisualizationsCtrl(
         $location.search().uri ||
         $location.search().config ||
         $location.search().saved)) {
-
         $scope.noGoHome = true;
     }
 
@@ -818,12 +816,12 @@ function GraphsVisualizationsCtrl(
 
     // creating datasource for class properties data
     $scope.datasource = {
-        get: function (index, count, success) {
+        get: function(index, count, success) {
             return UiScrollService.initLazyList(index, count, success, position, $scope.propertiesObj.items);
         },
-        revision: function () {
+        revision: function() {
             return current;
-        }
+        },
     };
 
     // Using $q.when to proper set values in view
@@ -837,7 +835,7 @@ function GraphsVisualizationsCtrl(
         this.tripleNodes = new Map();
         this.tripleLinksCopy = new Map();
 
-        this.addNode = function (node, x, y) {
+        this.addNode = function(node, x, y) {
             node.x = x;
             node.y = y;
             this.nodes.push(node);
@@ -846,12 +844,12 @@ function GraphsVisualizationsCtrl(
 
         // computes a "connectedness" metric on each link, which is then used to hint for longer links.
         // this results in improved clustering and appearance.
-        this.computeConnectedness = function () {
+        this.computeConnectedness = function() {
             // count the the number of times a given node is connected to other nodes
             // (only for nodes connected to more than one node)
             const counts = {};
             const seenLinks = {};
-            _.each(this.links, function (link) {
+            _.each(this.links, function(link) {
                 const i1 = link.source.iri;
                 const i2 = link.target.iri;
                 const seenKey = _.min([i1, i2]) + "|" + _.max([i1, i2]);
@@ -864,7 +862,7 @@ function GraphsVisualizationsCtrl(
 
             // computes the connectedness of each link based on the number of times its nodes were connected
             // (only for links to/from nodes connected to more than one node)
-            _.each(this.links, function (link) {
+            _.each(this.links, function(link) {
                 if (counts[link.source.iri] > 1 && counts[link.target.iri] > 1) {
                     link.connectedness = Math.min(5, Math.max(counts[link.source.iri], counts[link.target.iri]) - 1);
                 } else {
@@ -873,33 +871,33 @@ function GraphsVisualizationsCtrl(
             });
         };
 
-        this.addAndMatchLinks = function (newLinks) {
+        this.addAndMatchLinks = function(newLinks) {
             const nodes = this.nodes;
             Array.prototype.push.apply(this.links, matchLinksToNodes(newLinks, nodes));
-            for (let key of graph.tripleLinksCopy.keys()) {
+            for (const key of graph.tripleLinksCopy.keys()) {
                 if (graph.tripleLinksCopy.get(key).length === 1) {
                     graph.tripleLinksCopy.delete(key);
                 }
             }
-            this.links = this.links.filter(link => link !== null);
+            this.links = this.links.filter((link) => link !== null);
             this.computeConnectedness();
         };
 
-        const countLinks = function (d, links) {
+        const countLinks = function(d, links) {
             return findLinksForNode(d, links).length;
         };
 
         this.countLinks = countLinks;
 
         function findLinksForNode(d, links) {
-            return _.filter(links, function (l) {
+            return _.filter(links, function(l) {
                 return l.source.iri === d.iri || l.target.iri === d.iri;
             });
         }
 
         function linksTypes(d, links) {
             const linksForNode = findLinksForNode(d, links);
-            const types = _.map(linksForNode, function (l) {
+            const types = _.map(linksForNode, function(l) {
                 return (l.source.iri === d.iri) ? l.target.types : l.source.types;
             });
             return _.uniq(_.flatten(types));
@@ -907,7 +905,7 @@ function GraphsVisualizationsCtrl(
 
         function linksPredicates(d, links) {
             const linksForNode = findLinksForNode(d, links);
-            const predicates = _.map(linksForNode, function (l) {
+            const predicates = _.map(linksForNode, function(l) {
                 return l.predicates;
             });
             return _.uniq(_.flatten(predicates));
@@ -921,25 +919,25 @@ function GraphsVisualizationsCtrl(
          *  Removes generated triple links and related nodes
          * @param triplesToRemove
          */
-        this.removeTriples = function (triplesToRemove) {
-            let targetTriples = [];
+        this.removeTriples = function(triplesToRemove) {
+            const targetTriples = [];
             if (this.tripleNodes.size > 0) {
                 triplesToRemove.forEach((source) => {
                     if (this.tripleNodes.has(source)) {
                         this.tripleNodes.delete(source);
-                        this.links = _.reject(this.links, function (l) {
-                            let sourceSplit = source.split('>');
-                            let lSource = convertTripleToLinkId(l.source.iri);
-                            let lTarget = convertTripleToLinkId(l.target.iri);
+                        this.links = _.reject(this.links, function(l) {
+                            const sourceSplit = source.split('>');
+                            const lSource = convertTripleToLinkId(l.source.iri);
+                            const lTarget = convertTripleToLinkId(l.target.iri);
                             // Handle triple targets
                             if (lSource === source && graph.tripleNodes.delete(lTarget)) {
-                                let targetSplit = lTarget.split('>');
+                                const targetSplit = lTarget.split('>');
                                 targetTriples.push({
                                     source: targetSplit[0],
-                                    target: targetSplit[1]
+                                    target: targetSplit[1],
                                 });
                             }
-                            let isRejected = lSource === source || lTarget === source || (l.source.iri === sourceSplit[0] && l.target.iri === sourceSplit[1]);
+                            const isRejected = lSource === source || lTarget === source || (l.source.iri === sourceSplit[0] && l.target.iri === sourceSplit[1]);
                             if (isRejected) {
                                 graph.tripleLinksCopy.delete(`${lSource}>${lTarget}`);
                                 graph.tripleLinksCopy.delete(`${lTarget}>${lSource}`);
@@ -952,22 +950,22 @@ function GraphsVisualizationsCtrl(
 
             // This step is needed for removing artificially created links representing triples
             targetTriples.forEach((target) => {
-                this.links = _.reject(this.links, function (l) {
+                this.links = _.reject(this.links, function(l) {
                     return l.source.iri === target.source && l.target.iri === target.target;
                 });
             });
-        }
+        };
 
-        this.removeNode = function (d) {
-            let triplesToRemove = [];
-            this.links = _.reject(this.links, function (l) {
-                let isRejected = l.source.iri === d.iri || l.target.iri === d.iri;
+        this.removeNode = function(d) {
+            const triplesToRemove = [];
+            this.links = _.reject(this.links, function(l) {
+                const isRejected = l.source.iri === d.iri || l.target.iri === d.iri;
                 if (isRejected) {
                     if (l.target.isTriple) {
                         triplesToRemove.push(convertTripleToLinkId(l.target.iri));
                     }
                     if (!l.source.isTriple && !l.target.isTriple) {
-                        triplesToRemove.push([l.source.iri, l.target.iri].join('>'))
+                        triplesToRemove.push([l.source.iri, l.target.iri].join('>'));
                     }
                 }
                 return isRejected;
@@ -976,7 +974,7 @@ function GraphsVisualizationsCtrl(
             this.removeTriples(triplesToRemove);
 
             const links = this.links;
-            this.nodes = _.reject(this.nodes, function (n) {
+            this.nodes = _.reject(this.nodes, function(n) {
                 return countLinks(n, links) === 0;
             });
             if (this.nodes.length === 0) {
@@ -986,10 +984,10 @@ function GraphsVisualizationsCtrl(
             this.computeConnectedness();
         };
 
-        this.removeNodeLeafLinks = function (d) {
-            let triplesToRemove = [];
+        this.removeNodeLeafLinks = function(d) {
+            const triplesToRemove = [];
             let links = this.links;
-            this.links = _.reject(this.links, function (l) {
+            this.links = _.reject(this.links, function(l) {
                 let isRejected = (l.source.iri === d.iri && countLinks(l.target, links) === 1 && !l.target.isTriple) ||
                     (l.target.iri === d.iri && countLinks(l.source, links) === 1 && !l.source.isTriple);
                 if (!isRejected) {
@@ -1011,7 +1009,7 @@ function GraphsVisualizationsCtrl(
                         triplesToRemove.push(convertTripleToLinkId(l.target.iri));
                     }
                     if (!l.source.isTriple && !l.target.isTriple) {
-                        triplesToRemove.push([l.source.iri, l.target.iri].join('>'))
+                        triplesToRemove.push([l.source.iri, l.target.iri].join('>'));
                     }
                 }
                 return isRejected;
@@ -1020,58 +1018,58 @@ function GraphsVisualizationsCtrl(
             this.removeTriples(triplesToRemove);
 
             links = this.links;
-            this.nodes = _.reject(this.nodes, function (n) {
+            this.nodes = _.reject(this.nodes, function(n) {
                 return countLinks(n, links) === 0 && n.iri !== d.iri;
             });
 
             this.computeConnectedness();
         };
 
-        this.addTriple = function (triple, x, y) {
+        this.addTriple = function(triple, x, y) {
             triple.x = x;
             triple.y = y;
             triple.weight = 0;
-            let key = convertTripleToLinkId(triple.iri);
+            const key = convertTripleToLinkId(triple.iri);
             if (!this.tripleNodes.has(key)) {
                 triple.weight = 10;
                 this.tripleNodes.set(key, [triple]);
             } else {
-                let value = this.tripleNodes.get(key);
+                const value = this.tripleNodes.get(key);
                 value.push(triple);
                 this.tripleNodes.set(key, value);
             }
-        }
+        };
 
         function matchLinksToNodes(newLinks, nodes) {
-            return _.map(newLinks, function (link) {
+            return _.map(newLinks, function(link) {
                 let source;
                 let target;
                 if (link.isTripleSource) {
                     source = getTripleNode(link.source);
                 } else {
-                    source = _.find(nodes, function (o) {
+                    source = _.find(nodes, function(o) {
                         return o.iri === link.source;
-                    })
+                    });
                 }
                 if (link.isTripleTarget) {
                     target = getTripleNode(link.target);
                 } else {
-                    target = _.find(nodes, function (o) {
+                    target = _.find(nodes, function(o) {
                         return o.iri === link.target;
-                    })
+                    });
                 }
-                let matchedLink = {
+                const matchedLink = {
                     "source": source,
                     "target": target,
-                    "predicates": link.predicates
+                    "predicates": link.predicates,
                 };
                 // make copy of links with triples in them
                 if (link.isTripleSource || link.isTripleTarget) {
-                    let sourceId = matchedLink.source.isTriple ? convertTripleToLinkId(matchedLink.source.iri) : matchedLink.source.iri;
-                    let targetId = matchedLink.target.isTriple ? convertTripleToLinkId(matchedLink.target.iri) : matchedLink.target.iri;
-                    let linkId = `${sourceId}>${targetId}`;
+                    const sourceId = matchedLink.source.isTriple ? convertTripleToLinkId(matchedLink.source.iri) : matchedLink.source.iri;
+                    const targetId = matchedLink.target.isTriple ? convertTripleToLinkId(matchedLink.target.iri) : matchedLink.target.iri;
+                    const linkId = `${sourceId}>${targetId}`;
                     if (graph.tripleLinksCopy.has(linkId)) {
-                        let value = graph.tripleLinksCopy.get(linkId);
+                        const value = graph.tripleLinksCopy.get(linkId);
                         value[0].predicates.push(...matchedLink.predicates);
                         value.push(matchedLink);
                         graph.tripleLinksCopy.set(linkId, value);
@@ -1084,8 +1082,8 @@ function GraphsVisualizationsCtrl(
             });
         }
 
-        this.copyState = function () {
-            const nodesCopy = _.map(this.nodes, function (node) {
+        this.copyState = function() {
+            const nodesCopy = _.map(this.nodes, function(node) {
                 return {
                     iri: node.iri,
                     isTriple: node.isTriple,
@@ -1095,20 +1093,20 @@ function GraphsVisualizationsCtrl(
                     rdfRank: node.rdfRank,
                     x: node.x,
                     y: node.y,
-                    fixed: node.fixed
+                    fixed: node.fixed,
                 };
             });
 
             const triplesCopy = JSON.stringify(Array.from(this.tripleNodes.entries()));
             const tripleLinksCopy = JSON.stringify(Array.from(this.tripleLinksCopy.entries()));
 
-            const linksCopy = _.map(this.links, function (link) {
+            const linksCopy = _.map(this.links, function(link) {
                 return {
                     source: link.source.iri,
                     isTripleSource: link.source.isTriple,
                     target: link.target.iri,
                     isTripleTarget: link.target.isTriple,
-                    predicates: link.predicates
+                    predicates: link.predicates,
                 };
             });
 
@@ -1119,11 +1117,11 @@ function GraphsVisualizationsCtrl(
                 tripleLinksCopy: tripleLinksCopy,
                 colorIndex: colorIndex,
                 type2color: type2color,
-                transform: transformValues
+                transform: transformValues,
             };
         };
 
-        this.restoreState = function (state) {
+        this.restoreState = function(state) {
             $scope.nodeSelected = true;
             $scope.searchVisible = false;
 
@@ -1134,7 +1132,7 @@ function GraphsVisualizationsCtrl(
             this.addAndMatchLinks(state.links);
             this.tripleLinksCopy = state.tripleLinksCopy ? new Map(JSON.parse(state.tripleLinksCopy)) : new Map();
 
-            _.each(this.nodes, function (d) {
+            _.each(this.nodes, function(d) {
                 if (d.fixed) {
                     $scope.numberOfPinnedNodes++;
                 }
@@ -1146,7 +1144,7 @@ function GraphsVisualizationsCtrl(
             }
 
             if (angular.isDefined(state.transform)) {
-                transformValues = d3.zoomIdentity.translate(state.transform.x, state.transform.y).scale(state.transform.k)
+                transformValues = d3.zoomIdentity.translate(state.transform.x, state.transform.y).scale(state.transform.k);
             }
 
             draw();
@@ -1171,7 +1169,7 @@ function GraphsVisualizationsCtrl(
         return str;
     }
 
-    $scope.addedTag = function (tag) {
+    $scope.addedTag = function(tag) {
         if (tag.text.indexOf(':') < 0) {
             toastr.warning($translate.instant('graphexplore.absolute.prefixed.iri'));
             return null;
@@ -1181,7 +1179,7 @@ function GraphsVisualizationsCtrl(
         return tag;
     };
 
-    $scope.validateTag = function (tag, category, wildcardOK) {
+    $scope.validateTag = function(tag, category, wildcardOK) {
         if (tag.text.indexOf(':') < 0) {
             if (wildcardOK) {
                 toastr.warning($translate.instant('graphexplore.absolute.prefixed.iri.option'), category);
@@ -1203,18 +1201,18 @@ function GraphsVisualizationsCtrl(
         return true;
     };
 
-    $scope.getTagClass = function (tagText) {
+    $scope.getTagClass = function(tagText) {
         if (tagText.endsWith('*')) {
             return 'tag-item-wildcard';
         }
         return null;
     };
 
-    $scope.getActiveRepository = function () {
+    $scope.getActiveRepository = function() {
         return $repositories.getActiveRepository();
     };
 
-    $scope.isLicenseValid = function () {
+    $scope.isLicenseValid = function() {
         return $licenseService.isLicenseValid();
     };
 
@@ -1251,7 +1249,7 @@ function GraphsVisualizationsCtrl(
         .range(["hsl(180, 50%, 75%)", "hsl(540, 40%, 82%)"])
         .interpolate(d3.interpolateHslLong);
 
-    $scope.getColor = function (type) {
+    $scope.getColor = function(type) {
         if (angular.isUndefined(type2color[type])) {
             type2color[type] = colorIndex;
             colorIndex++;
@@ -1267,12 +1265,12 @@ function GraphsVisualizationsCtrl(
         }
     };
 
-    const forceX = d3.forceX(width / 2).strength(0.005)
-    const forceY = d3.forceY(height / 2).strength(0.005)
+    const forceX = d3.forceX(width / 2).strength(0.005);
+    const forceY = d3.forceY(height / 2).strength(0.005);
 
     const force = d3.forceSimulation()
         .force('x', forceX)
-        .force('y',  forceY);
+        .force('y', forceY);
 
     const svg = d3.select(".main-container .graph-visualization").append("svg")
         .attr("viewBox", "0 0 " + width + " " + height)
@@ -1287,7 +1285,7 @@ function GraphsVisualizationsCtrl(
         .style("fill", "none")
         .style("pointer-events", "all")
         .call(zoomLayout)
-        .on("click", function (event) {
+        .on("click", function(event) {
             event.stopPropagation();
             removeMenuIfVisible();
             // Clicking outside the graph stops the layout
@@ -1307,7 +1305,7 @@ function GraphsVisualizationsCtrl(
 
 
         container = svg.append("g").attr("class", "nodes-container")
-            .attr("transform", function () {
+            .attr("transform", function() {
                 if (angular.isDefined(transformValues) && !resetRootNode) {
                     return transformValues;
                 }
@@ -1316,14 +1314,14 @@ function GraphsVisualizationsCtrl(
 
         const tip = d3tip()
             .attr('class', 'd3-tip')
-            .customPosition(function () {
+            .customPosition(function() {
                 const bbox = tipElement.getBoundingClientRect();
                 return {
                     top: (bbox.bottom + 10) + 'px',
-                    left: (bbox.left - 30) + 'px'
+                    left: (bbox.left - 30) + 'px',
                 };
             })
-            .html(function (d) {
+            .html(function(d) {
                 let html = '';
 
                 if (d.fixed) {
@@ -1341,14 +1339,14 @@ function GraphsVisualizationsCtrl(
                 return html;
             });
 
-        const numberOfPredLeft = function (d) {
+        const numberOfPredLeft = function(d) {
             return d.predicates.length - 10;
         };
 
         // This will create text that will appear in d3tip
-        const createTipText = function (d) {
+        const createTipText = function(d) {
             let html = '';
-            html += _.join(_.map(d.predicates, function (p, index) {
+            html += _.join(_.map(d.predicates, function(p, index) {
                 if (index === 0) {
                     return getShortPredicate(p);
                     // If we have less than or ten predicates should show them with middle dot separated
@@ -1367,7 +1365,7 @@ function GraphsVisualizationsCtrl(
             return html;
         };
 
-        const calculateWidth = function (d) {
+        const calculateWidth = function(d) {
             const text = createTipText(d);
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext("2d");
@@ -1385,25 +1383,25 @@ function GraphsVisualizationsCtrl(
 
         const tipPredicates = d3tip()
             .attr('class', 'd3-tip')
-            .customPosition(function (d) {
+            .customPosition(function(d) {
                 const bbox = tipPredicateElement.getBoundingClientRect();
                 const textWidth = calculateWidth(d);
                 return {
                     top: (bbox.top - 30) + 'px',
                     left: (bbox.left - 30) + 'px',
-                    width: textWidth + 'px'
+                    width: textWidth + 'px',
                 };
             })
-            .html(function (d) {
+            .html(function(d) {
                 return createTipText(d);
             });
 
         let tipTimer;
         // Shows the tooltip for a node but with a slight delay
-        const showTipForNode = function (d, event) {
+        const showTipForNode = function(d, event) {
             $timeout.cancel(tipTimer);
             const thisTipElement = tipElement = event.target;
-            $timeout(function () {
+            $timeout(function() {
                 if (tipElement === thisTipElement) {
                     tip.show(d, tipElement);
                 }
@@ -1411,18 +1409,18 @@ function GraphsVisualizationsCtrl(
         };
 
         // Hides the tooltip for the node and resets some variables
-        const hideTipForNode = function () {
+        const hideTipForNode = function() {
             $timeout.cancel(tipTimer);
             $timeout.cancel(showNodeTipAndIconsTimer);
             tipElement = null;
             tip.hide();
-            removeIconsTimer = $timeout(function () {
+            removeIconsTimer = $timeout(function() {
                 removeMenuIfVisible();
             }, 500);
         };
 
         // Updates the text in the tooltip if already visible
-        const updateTipForNode = function (d) {
+        const updateTipForNode = function(d) {
             if (tipElement) {
                 tip.show(d, tipElement);
             }
@@ -1431,10 +1429,10 @@ function GraphsVisualizationsCtrl(
         svg.call(tip);
 
         // Shows like tooltip list of predicates but with a slight delay
-        const showPredicateToolTip = function (event, d) {
+        const showPredicateToolTip = function(event, d) {
             $timeout.cancel(tipPredicateTimer);
             const thisPredicateTipElement = tipPredicateElement = event.target;
-            $timeout(function () {
+            $timeout(function() {
                 if (tipPredicateElement === thisPredicateTipElement && d.predicates.length > 1) {
                     tipPredicates.show(d, tipPredicateElement);
                 }
@@ -1442,7 +1440,7 @@ function GraphsVisualizationsCtrl(
         };
 
         // Hides the tooltip with predicates and resets some variables
-        const hidePredicateToolTip = function () {
+        const hidePredicateToolTip = function() {
             $timeout.cancel(tipPredicateTimer);
             tipPredicateElement = null;
             tipPredicates.hide();
@@ -1453,15 +1451,15 @@ function GraphsVisualizationsCtrl(
         let link = svg.selectAll(".link");
         let node = svg.selectAll(".node");
 
-        const collisionForce = d3.forceCollide((d) => d.size + 5).strength(0.5)
+        const collisionForce = d3.forceCollide((d) => d.size + 5).strength(0.5);
         const chargeForce = d3.forceManyBody().strength(-300);
-        const centerForce = d3.forceCenter(width/2,  height/2)
+        const centerForce = d3.forceCenter(width/2, height/2);
 
         force.nodes(graph.nodes)
             .force("charge", chargeForce)
             .force("collide", collisionForce)
             .force("center", centerForce)
-            .force("link", d3.forceLink(graph.links).distance(function (l) {
+            .force("link", d3.forceLink(graph.links).distance(function(l) {
                 if (l.source.isTriple || l.target.isTriple) {
                     return 0;
                 }
@@ -1475,11 +1473,11 @@ function GraphsVisualizationsCtrl(
             .data(graph.links)
             .enter().append("marker")
             .attr("class", "arrow-marker")
-            .attr("id", function (d) {
+            .attr("id", function(d) {
                 return createArrowMarkerUniqueID(d);
             })
             .attr("viewBox", "0 -5 10 10")
-            .attr("refX", function (d) {
+            .attr("refX", function(d) {
                 // The positioning of the arrow for triple target nodes differ from normal ones
                 return d.target.isTriple ? 11 : d.target.size + 11;
             })
@@ -1495,24 +1493,24 @@ function GraphsVisualizationsCtrl(
             .data(graph.links)
             .enter().append("g")
             .attr("class", "link-wrapper")
-            .attr("id", function (d) {
+            .attr("id", function(d) {
                 return removeSpecialChars(convertLinkDataToLinkId(d));
             })
             .append("line")
             .attr("class", "link")
             .style("stroke-width", 1)
             .style("fill", "transparent")
-            .style("marker-end", function (d) {
+            .style("marker-end", function(d) {
                 const targetArrowId = createArrowMarkerUniqueID(d);
                 return `url(#${targetArrowId})`;
             });
 
         const predicate = container.selectAll(".link-wrapper")
             .append("text")
-            .text(function (d) {
+            .text(function(d) {
                 return getPredicate(d);
             })
-            .attr("class", function (d) {
+            .attr("class", function(d) {
                 if (d.predicates.length > 1 || graph.tripleNodes.has(convertLinkDataToLinkId(d))) {
                     return "predicates";
                 }
@@ -1521,25 +1519,25 @@ function GraphsVisualizationsCtrl(
             .attr("dy", "-0.5em")
             .style("text-anchor", "middle")
             .style("display", getSettings()['showLinksText'] ? "" : "none")
-            .on("mouseover", function (event, d) {
+            .on("mouseover", function(event, d) {
                 event.stopPropagation();
                 showPredicateToolTip(event, d);
             })
             .on('mouseout', hidePredicateToolTip)
-            .on("click", function (event, d) {
+            .on("click", function(event, d) {
                 event.stopPropagation();
                 linkActions(event, d);
             });
 
         // node events and variables
         let touchHoldEventTimer;
-        let upEventLast = 0;
+        const upEventLast = 0;
         let moveEventCount = 0;
         let singleClickTimer = null;
         let clickTarget = null;
 
         // track single and double click events
-        const clickEventHandler = function (event, d) {
+        const clickEventHandler = function(event, d) {
             if (event.button && event.button !== 0) {
                 return;
             }
@@ -1563,18 +1561,18 @@ function GraphsVisualizationsCtrl(
             if (!GuidesService.isActive()) {
                 $timeout.cancel(singleClickTimer);
                 // Show node info
-                singleClickTimer = $timeout(function () {
+                singleClickTimer = $timeout(function() {
                     clickedNode(d, element, event);
                     singleClickTimer = null;
-                }, 40 + multiClickDelay)
+                }, 40 + multiClickDelay);
             }
         };
 
         // builds upon clickEventHandler and adds additional functionality for touch devices
-        const touchStartEventHandler = function (d) {
+        const touchStartEventHandler = function(d) {
             // for touch devices we track touch and hold for 1s in order to remove a node
             moveEventCount = 0;
-            touchHoldEventTimer = $timeout(function () {
+            touchHoldEventTimer = $timeout(function() {
                 if (moveEventCount < 5) {
                     // remove the node only if not many move events were fired,
                     // this avoids conflict with dragging nodes
@@ -1584,17 +1582,17 @@ function GraphsVisualizationsCtrl(
             }, 1000);
         };
 
-        const touchEndEventHandler = function () {
+        const touchEndEventHandler = function() {
             $timeout.cancel(touchHoldEventTimer);
             touchHoldEventTimer = null;
         };
 
         // tracks the number of move events (checked in the touchend event handler)
-        const moveEventHandler = function () {
+        const moveEventHandler = function() {
             moveEventCount++;
         };
 
-        const showNodeTipAndIcons = function (event, d) {
+        const showNodeTipAndIcons = function(event, d) {
             if (!d.isBeingDragged) {
                 $timeout.cancel(removeIconsTimer);
                 showNodeTipAndIconsTimer = $timeout(() => {
@@ -1605,10 +1603,10 @@ function GraphsVisualizationsCtrl(
             }
         };
 
-        const expandEventHandler = function (d, i, parentNode) {
+        const expandEventHandler = function(d, i, parentNode) {
             let parent = parentNode || this.parentNode;
             if (Array.isArray(parentNode)) {
-                parent = parentNode[i]
+                parent = parentNode[i];
             }
             const shownLinks = graph.countLinks(d, graph.links);
             if (shownLinks <= getSettings()['linksLimit']) {
@@ -1651,17 +1649,17 @@ function GraphsVisualizationsCtrl(
             }
 
             let pin = container.selectAll('.node-wrapper')
-                .filter(function (innerD) {
+                .filter(function(innerD) {
                     return innerD === d;
                 })
                 .append('text')
                 .text('\ue90f') // pin icon
                 .classed('icon-any pinned', true)
                 .style('font-size', startSize + 'px')
-                .attr('x', function (d) {
+                .attr('x', function(d) {
                     return d.x;
                 })
-                .attr('y', function (d) {
+                .attr('y', function(d) {
                     return d.y;
                 })
                 .attr('opacity', startOpacity);
@@ -1673,7 +1671,7 @@ function GraphsVisualizationsCtrl(
             if (animate) {
                 pin = pin.transition()
                     .duration(1000)
-                    .style('font-size', function () {
+                    .style('font-size', function() {
                         return endSize + 'px';
                     })
                     .attr('opacity', endOpacity);
@@ -1689,7 +1687,7 @@ function GraphsVisualizationsCtrl(
         }
 
         // Unfixes nodes that were dragged previously
-        const rightClickHandler = function (event, d) {
+        const rightClickHandler = function(event, d) {
             if (event.shiftKey) {
                 // Do nothing with shift key, use to access context menu
                 return;
@@ -1719,7 +1717,7 @@ function GraphsVisualizationsCtrl(
         };
 
         const drag = d3.drag()
-            .subject(function (d) {
+            .subject(function(d) {
                 return d;
             })
             .on("start", dragstarted)
@@ -1767,22 +1765,22 @@ function GraphsVisualizationsCtrl(
                 d.isBeingDragged = false;
                 d3.select(this).classed("dragging", false);
             }
-            force.alphaTarget(0)
+            force.alphaTarget(0);
         }
 
         node = container.selectAll(".node")
             .data(graph.nodes)
             .enter().append("g")
             .attr("class", "node-wrapper")
-            .attr("id", function (d) {
+            .attr("id", function(d) {
                 return d.iri;
             })
             .append("circle")
             .attr("class", "node")
-            .attr("r", function (d) {
+            .attr("r", function(d) {
                 return d.size;
             })
-            .style("fill", function (d) {
+            .style("fill", function(d) {
                 if (d.types === "greyColor") {
                     return "c2c2c2";
                 }
@@ -1804,7 +1802,7 @@ function GraphsVisualizationsCtrl(
 
         const nodeLabels = container.selectAll(".node-wrapper").append("foreignObject")
             .style("pointer-events", "none")
-            .attr("width", function (d) {
+            .attr("width", function(d) {
                 return d.size * 2 * nodeLabelRectScaleX;
             });
         // height will be computed by updateNodeLabels
@@ -1813,64 +1811,64 @@ function GraphsVisualizationsCtrl(
 
         updateNodeLabels(nodeLabels);
 
-        force.on("tick", function () {
+        force.on("tick", function() {
             // recalculate links attributes
-            link.attr("x1", function (d) {
+            link.attr("x1", function(d) {
                 return getNodeX(d.source);
-            }).attr("y1", function (d) {
+            }).attr("y1", function(d) {
                 return getNodeY(d.source);
-            }).attr("x2", function (d) {
+            }).attr("x2", function(d) {
                 return getNodeX(d.target);
-            }).attr("y2", function (d) {
+            }).attr("y2", function(d) {
                 return getNodeY(d.target);
             });
 
             // recalculate predicates attributes
-            predicate.attr("x", function (d) {
-                let sourceX = getNodeX(d.source);
-                let targetX = getNodeX(d.target);
+            predicate.attr("x", function(d) {
+                const sourceX = getNodeX(d.source);
+                const targetX = getNodeX(d.target);
                 return d.x = (sourceX + targetX) * 0.5;
-            }).attr("y", function (d) {
-                let sourceY = getNodeY(d.source);
-                let targetY = getNodeY(d.target);
+            }).attr("y", function(d) {
+                const sourceY = getNodeY(d.source);
+                const targetY = getNodeY(d.target);
                 return d.y = (sourceY + targetY) * 0.5;
-            }).attr("transform", function (d) {
+            }).attr("transform", function(d) {
                 const angle = findAngleBetweenNodes(d, d.direction);
                 return "rotate(" + angle + ", " + d.x + ", " + d.y + ")";
             });
 
             // recalculate nodes attributes
-            node.attr("cx", function (d) {
+            node.attr("cx", function(d) {
                 return d.x;
-            }).attr("cy", function (d) {
+            }).attr("cy", function(d) {
                 return d.y;
             });
 
             // update node loader position
-            container.select(".node-loader").attr("x", function (d) {
+            container.select(".node-loader").attr("x", function(d) {
                 return d.x - d.size + 3; //square svg is not perfectly centered and need +3 units on x ordinate to fit in circle
-            }).attr("y", function (d) {
+            }).attr("y", function(d) {
                 return d.y - d.size;
             });
 
-            container.select(".loader-container").attr("cx", function (d) {
+            container.select(".loader-container").attr("cx", function(d) {
                 return d.x;
-            }).attr("cy", function (d) {
+            }).attr("cy", function(d) {
                 return d.y;
             });
 
-            nodeLabels.attr("x", function (d) {
+            nodeLabels.attr("x", function(d) {
                 return d.x - (d.size * nodeLabelRectScaleX);
-            }).attr("y", function (d) {
+            }).attr("y", function(d) {
                 // the height of the nodeLabel box is 3 times the fontSize computed by updateNodeLabels
                 // and we want to offset it so that its middle matches the centre of the circle, hence divided by 2
                 return d.y - 3 * d.fontSize / 2;
             });
 
             // Update position of shrinking pin animation (if any)
-            d3.select('.pinned').attr("x", function (d) {
+            d3.select('.pinned').attr("x", function(d) {
                 return d.x;
-            }).attr("y", function (d) {
+            }).attr("y", function(d) {
                 return d.y;
             });
 
@@ -1885,10 +1883,10 @@ function GraphsVisualizationsCtrl(
             $scope.loading = false;
         }
 
-        d3.selectAll('.link-wrapper').each(function () {
+        d3.selectAll('.link-wrapper').each(function() {
             const source = $(this).attr("id").split(">")[0];
             const target = $(this).attr("id").split(">")[1];
-            d3.selectAll('.link').each(function (link) {
+            d3.selectAll('.link').each(function(link) {
                 const sourceId = removeSpecialChars(link.source.iri);
                 const targetId = removeSpecialChars(link.target.iri);
                 if (sourceId === target && targetId === source) {
@@ -1916,12 +1914,12 @@ function GraphsVisualizationsCtrl(
     function findAngleBetweenNodes(linkedNodes, direction) {
         const p1 = {
             x: getNodeX(linkedNodes.source),
-            y: getNodeY(linkedNodes.source)
+            y: getNodeY(linkedNodes.source),
         };
 
         const p2 = {
             x: getNodeX(linkedNodes.target),
-            y: getNodeY(linkedNodes.target)
+            y: getNodeY(linkedNodes.target),
         };
         if (direction) {
             return Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI;
@@ -2007,7 +2005,7 @@ function GraphsVisualizationsCtrl(
             response.data.types = "greyColor";
         }
         graph = new Graph();
-        transformValues =  INITIAL_CONTAINER_TRANSFORM;
+        transformValues = INITIAL_CONTAINER_TRANSFORM;
     }
 
     function initGraphFromResponse(response) {
@@ -2018,9 +2016,9 @@ function GraphsVisualizationsCtrl(
     function renderGraphFromResponse(response, d, isStartNode) {
         let linksFound = response.data;
         // filter existing links
-        linksFound = _.filter(linksFound, function (newLink) {
+        linksFound = _.filter(linksFound, function(newLink) {
             return _.findIndex(graph.links,
-                function (existingLink) {
+                function(existingLink) {
                     return newLink.source === existingLink.source.iri && newLink.target === existingLink.target.iri;
                 }) === -1;
         });
@@ -2033,26 +2031,26 @@ function GraphsVisualizationsCtrl(
             });
         }
         // filter existing shadow links
-        linksFound = _.filter(linksFound, function (newLink) {
+        linksFound = _.filter(linksFound, function(newLink) {
             return _.findIndex(linksCopy,
-                function (existingLink) {
+                function(existingLink) {
                     return newLink.source === existingLink.source.iri && newLink.target === existingLink.target.iri;
                 }) === -1;
         });
         // filter reflexive links until we find a way to render them  GDB-1853
-        linksFound = _.filter(linksFound, function (newLink) {
+        linksFound = _.filter(linksFound, function(newLink) {
             return newLink.source !== newLink.target;
         });
-        const nodesFromLinks = distinctBy('iri', _.union(_.flatten(_.map(response.data, function (link) {
+        const nodesFromLinks = distinctBy('iri', _.union(_.flatten(_.map(response.data, function(link) {
             return [
                 {iri: link.source, isTriple: link.isTripleSource},
-                {iri: link.target, isTriple: link.isTripleTarget}
+                {iri: link.target, isTriple: link.isTripleTarget},
             ];
         }))));
-        const existingNodes = _.map(graph.nodes, function (n) {
+        const existingNodes = _.map(graph.nodes, function(n) {
             return {
                 iri: n.iri,
-                isTriple: Boolean(n.isTriple)
+                isTriple: Boolean(n.isTriple),
             };
         });
         const tripleNodesIt = graph.tripleNodes.values();
@@ -2061,11 +2059,11 @@ function GraphsVisualizationsCtrl(
             nodes.forEach((node) => {
                 existingNodes.push({
                     iri: node.iri,
-                    isTriple: node.isTriple
+                    isTriple: node.isTriple,
                 });
             });
         }
-        const newNodes = _.reject(nodesFromLinks, function (n) {
+        const newNodes = _.reject(nodesFromLinks, function(n) {
             return _.some(existingNodes, n);
         });
 
@@ -2084,14 +2082,14 @@ function GraphsVisualizationsCtrl(
 
             const settings = getSettings();
 
-            _.forEach(newNodes, function (newNode, index) {
+            _.forEach(newNodes, function(newNode, index) {
                 promises.push(GraphDataRestService.getInstanceNode({
                     iri: newNode.isTriple ? createTriple(newNode.iri) : newNode.iri,
                     config: $scope.configLoaded.id,
                     languages: !$scope.shouldShowSettings() ? [] : settings['languages'],
                     includeInferred: settings['includeInferred'],
-                    sameAsState: settings['sameAsState']
-                }).then(function (res) {
+                    sameAsState: settings['sameAsState'],
+                }).then(function(res) {
                     // Save the data for later
                     newNodesData[index] = res.data;
                 }));
@@ -2100,8 +2098,8 @@ function GraphsVisualizationsCtrl(
             // Waits for all of the collected promises and then:
             // - adds each new node
             // - redraws the graph
-            $q.all(promises).then(function () {
-                _.forEach(newNodesData, function (newNodeData, index) {
+            $q.all(promises).then(function() {
+                _.forEach(newNodesData, function(newNodeData, index) {
                     // Calculate initial positions for the new nodes based on spreading them evenly
                     // on a circle around the node we came from.
                     const theta = 2 * Math.PI * index / newNodesData.length;
@@ -2143,10 +2141,10 @@ function GraphsVisualizationsCtrl(
             preferredPredicatesOnly: !$scope.shouldShowSettings() ? [] : settings['preferredPredicatesOnly'],
             languages: !$scope.shouldShowSettings() ? [] : settings['languages'],
             sameAsState: settings['sameAsState'],
-            includeSchema: settings['includeSchema']
-        }).then(function (response) {
+            includeSchema: settings['includeSchema'],
+        }).then(function(response) {
             renderGraphFromResponse(response, d, isStartNode);
-        }, function (response) {
+        }, function(response) {
             const msg = getError(response.data);
             toastr.error(msg, $translate.instant('graphexplore.error.exploring.node'));
             $scope.loading = false;
@@ -2168,7 +2166,7 @@ function GraphsVisualizationsCtrl(
         this.copyURIIcon = undefined;
         this.actionsTip = undefined;
 
-        this.removeIcons = function () {
+        this.removeIcons = function() {
             this.closeIcon.remove("g");
             if (this.expandIcon) {
                 this.expandIcon.remove("g");
@@ -2197,18 +2195,18 @@ function GraphsVisualizationsCtrl(
             return "translate(" + x + "," + y + ")";
         }
 
-        this.initIcons = function (node, parentNode) {
+        this.initIcons = function(node, parentNode) {
             // init action tips on hover of the icons
             const actionsTip = d3tip()
                 .attr('class', 'd3-tip d3-actions-tip')
-                .customPosition(function (d, event) {
+                .customPosition(function(d, event) {
                     const bbox = event.target.getBoundingClientRect();
                     return {
                         top: (bbox.top - 20) + 'px',
-                        left: (bbox.right + 10) + 'px'
+                        left: (bbox.right + 10) + 'px',
                     };
                 })
-                .html(function (name) {
+                .html(function(name) {
                     return name;
                 });
             svg.call(actionsTip);
@@ -2217,7 +2215,7 @@ function GraphsVisualizationsCtrl(
                 this.collapseIcon = d3.select('.menu-events').append("g")
                     .attr("class", "collapse-icon")
                     .attr("name", "collapse")
-                    .attr("transform", function () {
+                    .attr("transform", function() {
                         return getPositionAndAngle(angle, node);
                     });
                 this.collapseIcon.append("circle")
@@ -2229,15 +2227,15 @@ function GraphsVisualizationsCtrl(
                     .attr("d", "M22.67,12a.59.59,0,0,1-.53.65l-6.88.72H15.2a.59.59,0,0,1-.59-.65l.72-6.88A.58.58,0,0,1,16,5.33a.59.59,0,0,1,.53.65L16,11.11,21.3,5.79a.64.64,0,0,1,.91.91L16.89,12,22,11.49A.59.59,0,0,1,22.67,12ZM12.59,14.75l-6.75.85a.59.59,0,0,0-.51.66.58.58,0,0,0,.66.51l4.95-.62-5.2,5.2a.64.64,0,1,0,.91.91l5.2-5.2L11.23,22a.59.59,0,0,0,.51.66h.07a.59.59,0,0,0,.59-.52l.85-6.75a.59.59,0,0,0-.17-.49A.58.58,0,0,0,12.59,14.75Z")
                     .style("fill", "var(--primary-color)");
 
-                this.collapseIcon.on("click", function () {
+                this.collapseIcon.on("click", function() {
                     collapseNode(node);
-                }).on('mouseover', function (event) {
+                }).on('mouseover', function(event) {
                     actionsTip.show(this.getAttribute("name"), event);
                     $timeout.cancel(showNodeTipAndIconsTimer);
                     $timeout.cancel(removeIconsTimer);
-                }).on('mouseout', function () {
+                }).on('mouseout', function() {
                     actionsTip.hide();
-                    removeIconsTimer = $timeout(function () {
+                    removeIconsTimer = $timeout(function() {
                         removeMenuIfVisible();
                     }, 500);
                 });
@@ -2245,7 +2243,7 @@ function GraphsVisualizationsCtrl(
                 this.expandIcon = d3.select('.menu-events').append("g")
                     .attr("class", "expand-icon")
                     .attr("name", "expand")
-                    .attr("transform", function () {
+                    .attr("transform", function() {
                         return getPositionAndAngle(angle, node);
                     });
                 this.expandIcon.append("circle")
@@ -2257,15 +2255,15 @@ function GraphsVisualizationsCtrl(
                     .attr("d", "M22.37,6.28l-.72,6.88a.59.59,0,0,1-.59.53H21a.59.59,0,0,1-.53-.65L21,7.9l-5.32,5.32a.64.64,0,0,1-.91-.91L20.1,7,15,7.53a.59.59,0,0,1-.12-1.18l6.88-.72a.59.59,0,0,1,.65.65ZM12.89,20.34,7.95,21l5.2-5.2a.64.64,0,0,0-.91-.91L7,20.05l.62-4.95A.59.59,0,0,0,6.48,15l-.85,6.75a.59.59,0,0,0,.59.67h.07L13,21.52a.59.59,0,1,0-.15-1.18Z")
                     .style("fill", "var(--primary-color)");
 
-                this.expandIcon.on("click", function () {
+                this.expandIcon.on("click", function() {
                     expandNode(node, false, parentNode);
-                }).on('mouseover', function (event) {
+                }).on('mouseover', function(event) {
                     actionsTip.show(this.getAttribute("name"), event);
                     $timeout.cancel(removeIconsTimer);
                     $timeout.cancel(showNodeTipAndIconsTimer);
-                }).on('mouseout', function () {
+                }).on('mouseout', function() {
                     actionsTip.hide();
-                    removeIconsTimer = $timeout(function () {
+                    removeIconsTimer = $timeout(function() {
                         removeMenuIfVisible();
                     }, 500);
                 });
@@ -2274,7 +2272,7 @@ function GraphsVisualizationsCtrl(
             this.focusIcon = d3.select('.menu-events').append("g")
                 .attr("class", "focus-icon")
                 .attr("name", "focus")
-                .attr("transform", function () {
+                .attr("transform", function() {
                     return getPositionAndAngle(angle, node);
                 });
             this.focusIcon.append("circle")
@@ -2286,15 +2284,15 @@ function GraphsVisualizationsCtrl(
                 .attr("d", "M14.2,23.81a9.8,9.8,0,1,1,6.93-2.87h0A9.74,9.74,0,0,1,14.2,23.81Zm0-18.17a8.37,8.37,0,1,0,5.92,14.29h0A8.37,8.37,0,0,0,14.2,5.64Zm1.42,6.95a2,2,0,1,0,0,2.85A2,2,0,0,0,15.62,12.59Z")
                 .style("fill", "var(--primary-color)");
 
-            this.focusIcon.on("click", function () {
+            this.focusIcon.on("click", function() {
                 $rootScope.$broadcast("onRootNodeChange", node.iri);
-            }).on('mouseover', function (event) {
+            }).on('mouseover', function(event) {
                 actionsTip.show(this.getAttribute("name"), event);
                 $timeout.cancel(removeIconsTimer);
                 $timeout.cancel(showNodeTipAndIconsTimer);
-            }).on('mouseout', function () {
+            }).on('mouseout', function() {
                 actionsTip.hide();
-                removeIconsTimer = $timeout(function () {
+                removeIconsTimer = $timeout(function() {
                     removeMenuIfVisible();
                 }, 500);
             });
@@ -2302,7 +2300,7 @@ function GraphsVisualizationsCtrl(
             this.copyURIIcon = d3.select('.menu-events').append("g")
                 .attr("class", "icon-link")
                 .attr("name", "link")
-                .attr("transform", function () {
+                .attr("transform", function() {
                     return getPositionAndAngle(angle, node);
                 });
             this.copyURIIcon.append("circle")
@@ -2314,17 +2312,17 @@ function GraphsVisualizationsCtrl(
                 .attr("d", "M 13.457031 10.164062 C 13.648438 10.164062 13.820312 10.242188 13.941406 10.363281 L 15.492188 11.859375 C 15.984375 12.332031 16.292969 12.992188 16.292969 13.714844 C 16.292969 14.441406 15.984375 15.097656 15.492188 15.574219 L 10.394531 20.496094 C 9.902344 20.972656 9.222656 21.265625 8.472656 21.265625 C 7.71875 21.265625 7.039062 20.972656 6.546875 20.496094 L 4.996094 19 C 4.507812 18.523438 4.203125 17.867188 4.203125 17.144531 C 4.203125 16.421875 4.507812 15.765625 4.996094 15.289062 L 7.542969 12.824219 C 7.667969 12.707031 7.84375 12.628906 8.035156 12.628906 C 8.417969 12.628906 8.726562 12.929688 8.726562 13.300781 C 8.726562 13.484375 8.648438 13.652344 8.523438 13.773438 L 5.976562 16.234375 C 5.738281 16.46875 5.589844 16.792969 5.589844 17.148438 C 5.589844 17.503906 5.738281 17.824219 5.976562 18.058594 L 7.527344 19.566406 C 7.773438 19.792969 8.105469 19.929688 8.472656 19.929688 C 8.835938 19.929688 9.167969 19.792969 9.414062 19.566406 L 14.511719 14.644531 C 14.753906 14.410156 14.90625 14.089844 14.90625 13.730469 C 14.90625 13.375 14.753906 13.054688 14.511719 12.820312 L 12.964844 11.324219 C 12.839844 11.203125 12.761719 11.039062 12.761719 10.855469 C 12.761719 10.488281 13.070312 10.1875 13.449219 10.1875 Z M 17.082031 3.976562 C 17.082031 3.976562 17.085938 3.976562 17.085938 3.976562 C 17.824219 3.976562 18.492188 4.261719 18.980469 4.722656 L 20.535156 6.203125 C 21.042969 6.679688 21.355469 7.34375 21.355469 8.082031 C 21.355469 8.792969 21.058594 9.441406 20.582031 9.914062 L 18.0625 12.402344 C 17.9375 12.527344 17.761719 12.605469 17.566406 12.605469 C 17.183594 12.605469 16.875 12.304688 16.875 11.9375 C 16.875 11.753906 16.949219 11.589844 17.070312 11.46875 L 19.605469 8.984375 C 19.847656 8.75 19.996094 8.429688 19.996094 8.070312 C 19.996094 7.714844 19.847656 7.394531 19.605469 7.160156 L 18.019531 5.667969 C 17.773438 5.445312 17.4375 5.304688 17.070312 5.300781 C 16.703125 5.304688 16.367188 5.453125 16.128906 5.691406 L 11.085938 10.667969 C 10.84375 10.898438 10.695312 11.222656 10.695312 11.578125 C 10.695312 11.933594 10.84375 12.257812 11.085938 12.488281 L 12.675781 13.980469 C 12.804688 14.101562 12.882812 14.273438 12.882812 14.457031 C 12.882812 14.828125 12.574219 15.128906 12.191406 15.128906 C 12.003906 15.128906 11.832031 15.054688 11.707031 14.9375 L 10.140625 13.457031 C 9.636719 12.980469 9.324219 12.316406 9.324219 11.582031 C 9.324219 10.863281 9.621094 10.214844 10.101562 9.742188 L 15.140625 4.765625 C 15.625 4.285156 16.304688 3.980469 17.054688 3.976562 Z M 17.082031 3.976562")
                 .style("fill", "var(--primary-color)");
 
-            this.copyURIIcon.on("click", function () {
+            this.copyURIIcon.on("click", function() {
                 $scope.copyToClipboard(node.iri);
                 removeMenuIfVisible();
                 actionsTip.hide();
-            }).on('mouseover', function (event) {
+            }).on('mouseover', function(event) {
                 actionsTip.show("<div style='text-align: center;'><b>Copy to ClipBoard</b><br>" + node.iri + "</div>", event);
                 $timeout.cancel(removeIconsTimer);
                 $timeout.cancel(showNodeTipAndIconsTimer);
-            }).on('mouseout', function () {
+            }).on('mouseout', function() {
                 actionsTip.hide();
-                removeIconsTimer = $timeout(function () {
+                removeIconsTimer = $timeout(function() {
                     removeMenuIfVisible();
                 }, 500);
             });
@@ -2332,7 +2330,7 @@ function GraphsVisualizationsCtrl(
             this.closeIcon = d3.select('.menu-events').append("g")
                 .attr("class", "close-icon")
                 .attr("name", "remove")
-                .attr("transform", function () {
+                .attr("transform", function() {
                     return getPositionAndAngle(angle, node);
                 });
             this.closeIcon.append("circle")
@@ -2344,15 +2342,15 @@ function GraphsVisualizationsCtrl(
                 .attr("d", "M14.94,14l5.87-5.87a.66.66,0,1,0-.94-.94L14,13.06,8.13,7.19a.66.66,0,0,0-.94.94L13.06,14,7.19,19.87a.66.66,0,1,0,.94.94L14,14.94l5.87,5.87a.66.66,0,1,0,.94-.94Z")
                 .style("fill", "var(--primary-color)");
 
-            this.closeIcon.on("click", function () {
+            this.closeIcon.on("click", function() {
                 hideNode(node);
-            }).on('mouseover', function (event) {
+            }).on('mouseover', function(event) {
                 actionsTip.show(this.getAttribute("name"), event);
                 $timeout.cancel(removeIconsTimer);
                 $timeout.cancel(showNodeTipAndIconsTimer);
-            }).on('mouseout', function () {
+            }).on('mouseout', function() {
                 actionsTip.hide();
-                removeIconsTimer = $timeout(function () {
+                removeIconsTimer = $timeout(function() {
                     removeMenuIfVisible();
                 }, 500);
             });
@@ -2360,7 +2358,7 @@ function GraphsVisualizationsCtrl(
             this.animateMenu(node);
         };
 
-        this.animateMenu = function (node) {
+        this.animateMenu = function(node) {
             const animationDuration = 100;
             const easeEffect = d3.easeSin;
             let delay = 0;
@@ -2373,7 +2371,7 @@ function GraphsVisualizationsCtrl(
                     .duration(animationDuration)
                     .style("opacity", 1)
                     .ease(easeEffect)
-                    .attr("transform", function () {
+                    .attr("transform", function() {
                         return getPositionAndAngle(angle, node);
                     })
                     .delay(delay += dellayAddition);
@@ -2385,7 +2383,7 @@ function GraphsVisualizationsCtrl(
                     .duration(animationDuration)
                     .style("opacity", 1)
                     .ease(easeEffect)
-                    .attr("transform", function () {
+                    .attr("transform", function() {
                         return getPositionAndAngle(angle, node);
                     })
                     .delay(delay += dellayAddition);
@@ -2396,7 +2394,7 @@ function GraphsVisualizationsCtrl(
                 .duration(animationDuration)
                 .style("opacity", 1)
                 .ease(easeEffect)
-                .attr("transform", function () {
+                .attr("transform", function() {
                     angle += 30;
                     return getPositionAndAngle(angle, node);
                 })
@@ -2407,7 +2405,7 @@ function GraphsVisualizationsCtrl(
                 .duration(animationDuration)
                 .style("opacity", 1)
                 .ease(easeEffect)
-                .attr("transform", function () {
+                .attr("transform", function() {
                     angle += 30;
                     return getPositionAndAngle(angle, node);
                 })
@@ -2419,7 +2417,7 @@ function GraphsVisualizationsCtrl(
                 .duration(animationDuration)
                 .style("opacity", 1)
                 .ease(easeEffect)
-                .attr("transform", function () {
+                .attr("transform", function() {
                     angle += 30;
                     return getPositionAndAngle(angle, node);
                 })
@@ -2432,24 +2430,24 @@ function GraphsVisualizationsCtrl(
     function Loader() {
         this.state = false;
 
-        this.setLoadingState = function (state) {
+        this.setLoadingState = function(state) {
             this.state = state;
         };
 
-        this.getLoadingState = function () {
+        this.getLoadingState = function() {
             return this.state;
         };
 
-        this.init = function (node, parentNode) {
+        this.init = function(node, parentNode) {
             d3.select(parentNode).append("circle")
-                .attr("cx", function () {
+                .attr("cx", function() {
                     return node.x;
                 })
-                .attr("cy", function () {
+                .attr("cy", function() {
                     return node.y;
                 })
                 .attr("class", "loader-container")
-                .attr("r", function () {
+                .attr("r", function() {
                     return node.size;
                 })
                 .style("fill", "fff")
@@ -2457,16 +2455,16 @@ function GraphsVisualizationsCtrl(
 
             d3.select(parentNode).append("image")
                 .attr("xlink:href", "js/angular/templates/loader/ot-loader.svg?v=[AIV]{version}[/AIV]")
-                .attr("x", function () {
+                .attr("x", function() {
                     return node.x - node.size + 5;
                 })
-                .attr("y", function () {
+                .attr("y", function() {
                     return node.y - node.size;
                 })
-                .attr("width", function () {
+                .attr("width", function() {
                     return node.size * 2;
                 })
-                .attr("height", function () {
+                .attr("height", function() {
                     return node.size * 2;
                 })
                 .attr("class", "node-loader");
@@ -2501,46 +2499,46 @@ function GraphsVisualizationsCtrl(
             languages: !$scope.shouldShowSettings() ? [] : settings['languages'],
             includeInferred: settings['includeInferred'],
             sameAsState: settings['sameAsState'],
-            rejectedPredicates: !$scope.shouldShowSettings() ? [] : settings['rejectedPredicates']
-        }).then(function (response) {
-            $scope.data = _.mapKeys(response.data, function (value, key) {
+            rejectedPredicates: !$scope.shouldShowSettings() ? [] : settings['rejectedPredicates'],
+        }).then(function(response) {
+            $scope.data = _.mapKeys(response.data, function(value, key) {
                 return $scope.replaceIRIWithPrefix(key);
             });
             $scope.propertiesObj.items = [];
 
-            _.forEach($scope.data, function (value, key) {
+            _.forEach($scope.data, function(value, key) {
                 $scope.propertiesObj.items.push({key: key, value: value});
             });
             $scope.nodeImage = undefined;
 
             $scope.propertiesNotFiltered = $scope.propertiesObj.items;
 
-            const imageVal = _.find($scope.propertiesObj.items, function (o) {
+            const imageVal = _.find($scope.propertiesObj.items, function(o) {
                 return o.key === 'image';
             });
             if (imageVal) {
                 $scope.nodeImage = imageVal['value'][0].v;
             }
-            $scope.propertiesObj.items = _.reject($scope.propertiesObj.items, function (o) {
+            $scope.propertiesObj.items = _.reject($scope.propertiesObj.items, function(o) {
                 return o.key === 'image';
             });
             $scope.propertiesNotFiltered = $scope.propertiesObj.items;
-        }, function (response) {
+        }, function(response) {
             toastr.warning(getError(response.data), "Error");
         });
     }
 
-    $scope.toggleSidePanel = function () {
+    $scope.toggleSidePanel = function() {
         $scope.pageslideExpanded = !$scope.pageslideExpanded;
     };
 
-    $scope.closeInfoPanel = function () {
+    $scope.closeInfoPanel = function() {
         $scope.pageslideExpanded = false;
         $scope.openedNodeInfoPanel = undefined;
         $scope.predicates = [];
         openedLink = null;
         // o, angular, o, miracle
-        $timeout(function () {
+        $timeout(function() {
             $scope.showInfoPanel = false;
         });
     };
@@ -2551,7 +2549,7 @@ function GraphsVisualizationsCtrl(
 
         const links = document.getElementsByClassName('link');
         if (links) {
-            _.each(links, function (link) {
+            _.each(links, function(link) {
                 const linkLink = link.__data__;
                 if (linkLink.source.iri.indexOf(tripleNode.iri) >= 0 || linkLink.target.iri.indexOf(tripleNode.iri) >= 0) {
                     link.style.stroke = 'var(--primary-color-dark)';
@@ -2562,7 +2560,7 @@ function GraphsVisualizationsCtrl(
 
         const markers = document.getElementsByClassName('arrow-marker');
         if (markers) {
-            _.each(markers, function (marker) {
+            _.each(markers, function(marker) {
                 const markerLink = marker.__data__;
                 if (markerLink.source.iri.indexOf(tripleNode.iri) >= 0 || markerLink.target.iri.indexOf(tripleNode.iri) >= 0) {
                     marker.style.stroke = 'var(--primary-color-dark)';
@@ -2574,7 +2572,7 @@ function GraphsVisualizationsCtrl(
         }
     }
 
-    $scope.clickLink = function (predData) {
+    $scope.clickLink = function(predData) {
         if (graph.tripleNodes.has(predData.linkId)) {
             revertElementsStyleToDefault();
             const tripleNode = graph.tripleNodes.get(predData.linkId)[predData.nodeIndex];
@@ -2635,7 +2633,7 @@ function GraphsVisualizationsCtrl(
         const preds = document.getElementsByClassName(className);
 
         if (preds) {
-            _.each(preds, function (pred) {
+            _.each(preds, function(pred) {
                 const predLink = pred.__data__;
                 if (tripleNode) {
                     if (predLink.source.iri.indexOf(tripleNode.iri) >= 0 || predLink.target.iri.indexOf(tripleNode.iri) >= 0) {
@@ -2658,7 +2656,7 @@ function GraphsVisualizationsCtrl(
     }
 
     function revertElementsStyleToDefault() {
-        _.each($scope.predicates, function (pred) {
+        _.each($scope.predicates, function(pred) {
             const currEl = document.getElementById(pred.linkId + pred.nodeIndex);
             if (currEl) {
                 currEl.style.fontWeight = "normal";
@@ -2666,7 +2664,7 @@ function GraphsVisualizationsCtrl(
         });
         const links = document.getElementsByClassName('link');
         if (links) {
-            _.each(links, function (link) {
+            _.each(links, function(link) {
                 link.style.stroke = '#999';
                 link.style.strokeWidth = 1;
             });
@@ -2677,7 +2675,7 @@ function GraphsVisualizationsCtrl(
         const markers = document.getElementsByClassName('arrow-marker');
 
         if (markers) {
-            _.each(markers, function (marker) {
+            _.each(markers, function(marker) {
                 marker.style.stroke = '#999';
                 // RefX for triple targets isn't changed, because they are not affected by increasing of stroke-width
                 if (!marker.__data__.target.isTriple) {
@@ -2722,14 +2720,14 @@ function GraphsVisualizationsCtrl(
         openedLink = d;
 
         if ($scope.showPredicates) {
-            $scope.predicates = _.map(d.predicates, function (p) {
+            $scope.predicates = _.map(d.predicates, function(p) {
                 const foundNodeIndex = getTripleNodeIndex(p, d);
                 const isPartOfTriple = foundNodeIndex > -1;
                 return {
                     value: getShortPredicate(p),
                     partOfTriple: isPartOfTriple,
                     linkId: isPartOfTriple ? convertLinkDataToLinkId(d) : '',
-                    nodeIndex: foundNodeIndex
+                    nodeIndex: foundNodeIndex,
                 };
             });
             $scope.showInfoPanel = true;
@@ -2781,23 +2779,23 @@ function GraphsVisualizationsCtrl(
         return textLength * 0.75;
     }
 
-    $scope.splitPredicate = function (predicate) {
+    $scope.splitPredicate = function(predicate) {
         return predicate.split('/')[predicate.split('/').length - 1];
     };
 
-    $scope.getActiveRepository = function () {
+    $scope.getActiveRepository = function() {
         return $repositories.getActiveRepository();
     };
 
-    $scope.isLoadingLocation = function () {
+    $scope.isLoadingLocation = function() {
         return $repositories.isLoadingLocation();
     };
 
-    $scope.hasActiveLocation = function () {
+    $scope.hasActiveLocation = function() {
         return $repositories.hasActiveLocation();
     };
 
-    $scope.rotate = function (isLeft) {
+    $scope.rotate = function(isLeft) {
         removeMenuIfVisible();
 
         // compute common rotation math such as the angle, its sine and cosine and the pivot point
@@ -2809,7 +2807,7 @@ function GraphsVisualizationsCtrl(
 
         // rotates each node around the pivot
         d3.selectAll(".node-wrapper")
-            .each(function (d) {
+            .each(function(d) {
                 d.x = pivotX + (cos * (d.x - pivotX) + sin * (d.y - pivotY));
                 d.y = pivotY + (-sin * (d.x - pivotX) + cos * (d.y - pivotY));
                 if (d.fixed) {
@@ -2822,7 +2820,7 @@ function GraphsVisualizationsCtrl(
         force.alpha(1).restart();
     };
 
-    $scope.openUri = function (uri, noHistory) {
+    $scope.openUri = function(uri, noHistory) {
         if (!noHistory) {
             const searchParams = {};
             if ($scope.configLoaded.id !== $scope.defaultGraphConfig.id) {
@@ -2839,14 +2837,14 @@ function GraphsVisualizationsCtrl(
             graph.config = $scope.configLoaded.id;
         }
         SavedGraphsRestService.addNewSavedGraph(graph)
-            .success(function (data, status, headers) {
+            .success(function(data, status, headers) {
                 $scope.lastSavedGraphName = graph.name;
                 $scope.lastSavedGraphId = headers()['x-saved-graph-id'];
                 $scope.shared = graph.shared;
                 $scope.refreshSavedGraphs();
                 toastr.success($translate.instant('graphexplore.saved.graph', {name: graph.name}));
             })
-            .error(function (data, status) {
+            .error(function(data, status) {
                 if (status === 422) {
                     $scope.saveGraphModal('new', graph, true);
                 } else {
@@ -2856,13 +2854,13 @@ function GraphsVisualizationsCtrl(
             });
     }
 
-    $scope.saveOrUpdateGraph = function () {
+    $scope.saveOrUpdateGraph = function() {
         const data = JSON.stringify(graph.copyState());
         const graphToSave = {
             id: $scope.lastSavedGraphId,
             name: $scope.lastSavedGraphName,
             data: data,
-            shared: $scope.shared
+            shared: $scope.shared,
         };
 
         if (graphToSave.id) {
@@ -2872,49 +2870,49 @@ function GraphsVisualizationsCtrl(
         }
     };
 
-    $scope.renameSavedGraph = function (graphToRename) {
+    $scope.renameSavedGraph = function(graphToRename) {
         // By not sending the 'data' part of a graph we only change the name
         $scope.saveGraphModal('rename', {
             id: graphToRename.id,
             name: graphToRename.name,
             config: graphToRename.config,
-            shared: graphToRename.shared
+            shared: graphToRename.shared,
         });
     };
 
-    const editSavedGraphHttp = function (savedGraph) {
+    const editSavedGraphHttp = function(savedGraph) {
         SavedGraphsRestService.editSavedGraph(savedGraph)
-            .success(function () {
+            .success(function() {
                 $scope.lastSavedGraphName = savedGraph.name;
                 $scope.shared = savedGraph.shared;
                 $scope.refreshSavedGraphs();
                 toastr.success($translate.instant('graphexplore.saved.graph.was.edited', {name: savedGraph.name}));
             })
-            .error(function (data) {
+            .error(function(data) {
                 const msg = getError(data);
                 toastr.error(msg, $translate.instant('graphexplore.error.cannot.edit'));
             });
     };
 
-    $scope.saveGraphModal = function (mode, graphToSave, graphExists) {
+    $scope.saveGraphModal = function(mode, graphToSave, graphExists) {
         const modalInstance = $uibModal.open({
             templateUrl: 'js/angular/graphexplore/templates/modal/save-graph.html',
             controller: 'SaveGraphModalCtrl',
             resolve: {
-                data: function () {
+                data: function() {
                     return {
                         mode: mode,
                         graph: graphToSave,
                         graphExists: graphExists,
-                        shared: graphToSave.shared
+                        shared: graphToSave.shared,
                     };
-                }
-            }
+                },
+            },
         });
         openModalCount++;
         modalIsOpen = true;
 
-        modalInstance.result.then(function (data) {
+        modalInstance.result.then(function(data) {
             if (data.restart) {
                 $scope.saveGraphModal(data.mode, data.graph, false);
                 return;
@@ -2940,19 +2938,19 @@ function GraphsVisualizationsCtrl(
         });
     };
 
-    $scope.refreshSavedGraphs = function () {
+    $scope.refreshSavedGraphs = function() {
         SavedGraphsRestService.getSavedGraphs()
-            .success(function (data) {
+            .success(function(data) {
                 $scope.savedGraphs = data;
             })
-            .error(function (data) {
+            .error(function(data) {
                 const msg = getError(data);
                 toastr.error(msg, $translate.instant('graphexplore.error.getting.saved.graphs'));
             });
     };
 
 
-    $scope.loadSavedGraph = function (graphToLoad, noHistory) {
+    $scope.loadSavedGraph = function(graphToLoad, noHistory) {
         if (graphToLoad.owner) {
             // Own saved graph
             $scope.lastSavedGraphName = graphToLoad.name;
@@ -2978,35 +2976,35 @@ function GraphsVisualizationsCtrl(
         }
     };
 
-    $scope.copyToClipboardSavedGraph = function (savedGraph) {
+    $scope.copyToClipboardSavedGraph = function(savedGraph) {
         const url = [location.protocol, '//', location.host, location.pathname, '?saved=', savedGraph.id].join('');
         $scope.copyToClipboard(url);
     };
 
     function deleteSavedGraphHttp(savedGraph) {
         SavedGraphsRestService.deleteSavedGraph(savedGraph)
-            .success(function () {
+            .success(function() {
                 $scope.refreshSavedGraphs();
                 toastr.success($translate.instant('graphexplore.saved.graph.was.deleted', {name: savedGraph.name}));
             })
-            .error(function (data) {
+            .error(function(data) {
                 const msg = getError(data);
                 toastr.error(msg, $translate.instant('graphexplore.error.cannot.delete'));
             });
     }
 
-    $scope.deleteSavedGraph = function (savedGraph) {
+    $scope.deleteSavedGraph = function(savedGraph) {
         ModalService.openSimpleModal({
             title: $translate.instant('common.confirm'),
             message: $translate.instant('graphexplore.confirm.delete.graph', {graphName: savedGraph.name}),
-            warning: true
+            warning: true,
         }).result
-            .then(function () {
+            .then(function() {
                 deleteSavedGraphHttp(savedGraph);
             });
     };
 
-    $scope.openIRI = function (link, event) {
+    $scope.openIRI = function(link, event) {
         if (event.shiftKey) {
             $scope.$broadcast("onRootNodeChange", link);
         } else {
@@ -3015,13 +3013,13 @@ function GraphsVisualizationsCtrl(
         return false;
     };
 
-    $scope.togglePinAllNodes = function () {
+    $scope.togglePinAllNodes = function() {
         removeMenuIfVisible();
 
         const value = angular.isUndefined($scope.numberOfPinnedNodes) || $scope.numberOfPinnedNodes <= 0;
 
         $scope.numberOfPinnedNodes = 0;
-        d3.selectAll('.node').each(function (d) {
+        d3.selectAll('.node').each(function(d) {
             d.fixed = value;
             if (value) {
                 $scope.numberOfPinnedNodes++;
@@ -3037,8 +3035,7 @@ function GraphsVisualizationsCtrl(
     };
 
     // event for capturing left and right arrows used for rotation
-    $('body').on("keydown", function (event) {
-
+    $('body').on("keydown", function(event) {
         if (GuidesService.isActive() || event.target.nodeName === 'input' || !$scope.nodeSelected) {
             // don't do anything when the target is an input field or no node is selected or a guide is active.
             return;
@@ -3053,7 +3050,7 @@ function GraphsVisualizationsCtrl(
         }
     });
 
-    $scope.getLiteralFromPropValue = function (value) {
+    $scope.getLiteralFromPropValue = function(value) {
         return value.substring(value.indexOf(':') + 1);
     };
 }
@@ -3079,23 +3076,23 @@ function SaveGraphModalCtrl($scope, $uibModalInstance, data, $translate) {
             $scope.okButtonText = $translate.instant('common.save.btn');
     }
 
-    $scope.ok = function () {
+    $scope.ok = function() {
         if ($scope.form.$valid) {
             $scope.graph.name = normalizeString($scope.graph.name);
             $uibModalInstance.close({graph: $scope.graph, mode: $scope.mode});
         }
     };
 
-    $scope.saveNew = function () {
+    $scope.saveNew = function() {
         $scope.graph.name = normalizeString($scope.graph.name) + ' (new)';
         $uibModalInstance.close({graph: $scope.graph, mode: 'new', restart: true});
     };
 
-    $scope.cancel = function () {
+    $scope.cancel = function() {
         $uibModalInstance.dismiss('cancel');
     };
 
     const normalizeString = (text) => {
         return text.replace(/\s+/g, ' ').trim();
-    }
+    };
 }

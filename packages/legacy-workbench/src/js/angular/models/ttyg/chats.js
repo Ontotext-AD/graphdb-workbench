@@ -5,7 +5,7 @@ export class ChatModel {
     static getEmptyChat() {
         const data = {
             name: "\u00B7 \u00B7 \u00B7",
-            timestamp: Math.floor(Date.now() / 1000)
+            timestamp: Math.floor(Date.now() / 1000),
         };
         return new ChatModel(data, md5HashGenerator());
     }

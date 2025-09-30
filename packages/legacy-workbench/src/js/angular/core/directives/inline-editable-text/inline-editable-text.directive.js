@@ -49,11 +49,10 @@ function InlineEditableText($timeout) {
             onCancel: '&',
             onClick: '&',
             onDblclick: '&',
-            isEditing: '='
+            isEditing: '=',
         },
         templateUrl: 'js/angular/core/directives/inline-editable-text/templates/inline-editable-text.template.html',
-        link: function (scope, element) {
-
+        link: function(scope, element) {
             // =========================
             // Public variables
             // =========================
@@ -88,7 +87,7 @@ function InlineEditableText($timeout) {
                     cancelClickTimeout();
                     scope.onDblclick({source: scope.source});
                 } else {
-                    clickTimeout = $timeout(function () {
+                    clickTimeout = $timeout(function() {
                         scope.onClick({source: scope.source});
                         cancelClickTimeout();
                     }, 250);
@@ -139,6 +138,6 @@ function InlineEditableText($timeout) {
 
             // Deregister the watcher when the scope/directive is destroyed
             scope.$on('$destroy', removeAllSubscribers);
-        }
+        },
     };
 }

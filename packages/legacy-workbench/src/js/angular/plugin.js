@@ -4,7 +4,7 @@ PluginRegistry.add('route', {
     'chunk': 'home',
     'path': 'controllers',
     'controller': 'homeCtrl',
-    'templateUrl': 'pages/home.html'
+    'templateUrl': 'pages/home.html',
 });
 
 PluginRegistry.add('main.menu', {
@@ -18,7 +18,7 @@ PluginRegistry.add('main.menu', {
                 icon: "icon-settings",
                 guideSelector: 'menu-setup',
                 testSelector: 'menu-setup',
-                children: []
+                children: [],
             },
             {
                 label: 'Monitor',
@@ -30,7 +30,7 @@ PluginRegistry.add('main.menu', {
                 icon: 'icon-monitoring',
                 guideSelector: 'menu-monitor',
                 testSelector: 'menu-monitoring',
-                children: []
+                children: [],
             },
             {
                 label: 'Lab',
@@ -41,8 +41,8 @@ PluginRegistry.add('main.menu', {
                 icon: "fa fa-flask",
                 guideSelector: 'menu-lab',
                 testSelector: 'menu-lab',
-                children: []
-            }
-        ]
-    }
+                children: [],
+            },
+        ],
+    },
 );

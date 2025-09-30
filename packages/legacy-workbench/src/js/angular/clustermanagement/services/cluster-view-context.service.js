@@ -50,6 +50,6 @@ function ClusterViewContextService(EventEmitterService) {
         setShowClusterConfigurationPanel,
         showClusterConfigurationPanel,
         hideClusterConfigurationPanel,
-        onShowClusterConfigurationPanel
+        onShowClusterConfigurationPanel,
     };
 }
