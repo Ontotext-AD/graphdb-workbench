@@ -28,6 +28,16 @@ const base = require('../../eslint.config.base.js');
 module.exports = [
   ...base,
   {
+    ignores: [
+      'src/res/swagger5/**/*.js',
+      'src/res/swagger5/**/*.css',
+      'src/res/swagger5/**/*.html',
+      'src/js/lib/**/*.js',
+      'src/js/lib/**/*.css',
+      'src/js/lib/**/*.html'
+    ]
+  },
+  {
     files: ['**/*.js'],
     languageOptions: {
       ecmaVersion: 2022,
