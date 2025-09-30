@@ -10,7 +10,7 @@ PluginRegistry.add('guide.step', [
             const toggleSelector = GuideUtils.getGuideElementSelector('query-method-sparql_search-input');
             return [
                 {
-                    guideBlockName: 'clickable-element',
+                    guideBlockName: 'toggle-element',
                     options: {
                         content: 'guide.step_plugin.sparql-search-method.enable-toggle',
                         // If mainAction is set the title will be set automatically
@@ -19,7 +19,7 @@ PluginRegistry.add('guide.step', [
                         ...options,
                         url: 'ttyg',
                         elementSelector: GuideUtils.getGuideElementSelector('query-method-sparql_search'),
-                        clickableElementSelector: toggleSelector,
+                        toggleableElementSelector: toggleSelector,
                         onNextValidate: () => Promise.resolve(GuideUtils.isChecked(toggleSelector)),
                     },
                 },
@@ -142,7 +142,7 @@ PluginRegistry.add('guide.step', [
 
           return [
               {
-                  guideBlockName: 'clickable-element',
+                  guideBlockName: 'toggle-element',
                   options: {
                       content: 'guide.step_plugin.sparql-search-method.add-missing-namespaces',
                       // If mainAction is set the title will be set automatically
@@ -151,7 +151,7 @@ PluginRegistry.add('guide.step', [
                       ...options,
                       url: 'ttyg',
                       elementSelector: GuideUtils.getGuideElementSelector('add-missing-namespaces-option'),
-                      clickableElementSelector: namespacesCheckbox,
+                      toggleableElementSelector: namespacesCheckbox,
                       onNextValidate: () => Promise.resolve(GuideUtils.isChecked(namespacesCheckbox)),
                   },
               },
