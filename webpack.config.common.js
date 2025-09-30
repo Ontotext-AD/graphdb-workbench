@@ -141,7 +141,7 @@ module.exports = (webpackConfigEnv, argv) => {
                       to: 'assets'
                     },
                     {
-                      from: 'plugins',
+                      from: 'node_modules/graphdb-workbench-plugins/dist',
                       to: 'plugins',
                       noErrorOnMissing: true
                     },
