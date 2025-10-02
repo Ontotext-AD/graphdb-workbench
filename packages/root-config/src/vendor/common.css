@@ -454,3 +454,7 @@ h3 [class^=icon-] {
 .bg-lightgray {
     background-color: #eee;
 }
+
+.pointer-events-none {
+    pointer-events: none;
+}
