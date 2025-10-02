@@ -28,14 +28,12 @@ export class AuthenticationService implements Service {
   setAuthenticationStrategy(securityConfig: SecurityConfig): Promise<void> {
     this.authStrategy = this.authStrategyResolver.resolveStrategy(securityConfig);
     return this.authStrategy.initialize().then((isLoggedIn) => {
-      if (isLoginPage() && isLoggedIn) {
+      if (isLoginPage() && (isLoggedIn || securityConfig.freeAccess?.enabled)) {
         window.singleSpa.navigateToUrl('/');
         this.eventService.emit(new Login());
       } else if (isLoginPage() && !isLoggedIn) {
         // stay on login page
-      } else if (securityConfig.freeAccess.enabled) {
-        // window.singleSpa.navigateToUrl('/login');
-      } else {
+      } else if (securityConfig.freeAccess?.enabled) {
         this.eventService.emit(new Login());
       }
     });

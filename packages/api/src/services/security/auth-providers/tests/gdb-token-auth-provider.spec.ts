@@ -39,7 +39,7 @@ describe('GdbTokenAuthProvider', () => {
         updateAuthenticatedUserSpy = jest.spyOn(ServiceProvider.get(SecurityContextService), 'updateAuthenticatedUser');
       });
 
-      it('should resolve immediately if current route is login', async () => {
+      it('should resolve immediately false if current route is login and there is no auth', async () => {
         jest.spyOn(WindowService, 'getWindow').mockReturnValue({
           location: {
             pathname: '/login'
@@ -47,7 +47,7 @@ describe('GdbTokenAuthProvider', () => {
           PluginRegistry: {get: jest.fn(() => [])}
         } as unknown as Window);
 
-        await expect(provider.initialize()).resolves.toBeUndefined();
+        await expect(provider.initialize()).resolves.toEqual(false);
         expect(getAuthenticatedUserSpy).not.toHaveBeenCalled();
       });
 

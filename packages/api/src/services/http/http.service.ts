@@ -143,15 +143,24 @@ export class HttpService {
     return {fullUrl, headers};
   }
 
+  private formatBody(headers: Record<string, string | undefined>, body: unknown): BodyInit | null {
+    if (!body) {
+      return null;
+    }
+
+    if (headers['Content-Type'] === 'application/json') {
+      return JSON.stringify(body);
+    } else if (headers['Content-Type']?.includes('application/x-www-form-urlencoded')) {
+      return body as FormData;
+    }
+    return body as BodyInit;
+  }
+
   private executeRequest(request: HttpRequest): Promise<Response> {
     return this.interceptorService.preProcess(request)
       .then((request) => {
-        let body = null;
-        if (request.headers['Content-Type'] === 'application/json') {
-          body = JSON.stringify(request.body);
-        } else if (request.headers['Content-Type']?.includes('application/x-www-form-urlencoded')) {
-          body = request.body as FormData;
-        }
+        const body = this.formatBody(request.headers, request.body);
+
         return fetch(request.url, {
           method: request.method,
           headers: request.headers as HeadersInit,
