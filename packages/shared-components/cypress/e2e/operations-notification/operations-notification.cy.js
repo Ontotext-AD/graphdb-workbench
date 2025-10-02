@@ -57,6 +57,7 @@ describe('onto-operations-notification', () => {
   });
 
   it('should redirect to operation specific href, when clicked', () => {
+    OperationsNotificationSteps.visit();
     // simulate repository selection to trigger request for operations
     OperationsNotificationSteps.loadRepositories();
     OperationsNotificationSteps.getRepositoryItems().should('have.length', 6);
