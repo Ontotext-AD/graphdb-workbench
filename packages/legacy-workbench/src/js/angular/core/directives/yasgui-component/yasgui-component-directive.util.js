@@ -159,6 +159,7 @@ export class YasqeButtonsBuilder {
         this.showSavedQueriesVisibility = false;
         this.shareQueryVisibility = false;
         this.includeInferredStatementsVisibility = false;
+        this.explainQueryVisibility = false;
     }
 
     addCreateSavedQuery() {
@@ -181,6 +182,11 @@ export class YasqeButtonsBuilder {
         return this;
     }
 
+    addExplainQuery() {
+        this.explainQueryVisibility = true;
+        return this;
+    }
+
     /**
      *
      * @return {YasqeActionButtonDefinition[]}
@@ -200,6 +206,10 @@ export class YasqeButtonsBuilder {
                 name: YasqeButtonName.INCLUDE_INFERRED_STATEMENTS,
                 visible: this.includeInferredStatementsVisibility,
             },
+            {
+                name: YasqeButtonName.EXPLAIN_QUERY,
+                visible: this.explainQueryVisibility,
+            },
         ];
     }
 }
@@ -208,6 +218,7 @@ export const YasqeButtonName = {
     CREATE_SAVED_QUERY: 'createSavedQuery',
     SHOW_SAVED_QUERIES: 'showSavedQueries',
     SHARE_QUERY: 'shareQuery',
+    EXPLAIN_QUERY: 'aiExplain',
     EXPANDS_RESULTS: 'expandResults',
     INFER_STATEMENTS: 'inferStatements',
     INCLUDE_INFERRED_STATEMENTS: 'includeInferredStatements',
