@@ -1,5 +1,4 @@
 window.PluginRegistry = (function() {
-
     const plugins = [];
 
     const registry = {};
@@ -52,37 +51,66 @@ window.PluginRegistry = (function() {
         return typeof variable !== 'undefined';
     }
 
+    function getExtensionPointIdFieldName(extensionPointName) {
+      if ('guide.step' === extensionPointName) {
+        return 'guideBlockName';
+      }
+    }
+
+    function getOrCreateExtensionPointPluginsList(extensionPointName) {
+      if (!isDefined(plugins[extensionPointName])) {
+        const currentPointPlugins = [];
+        currentPointPlugins.extensionPoint = extensionPointName;
+        plugins[extensionPointName] = currentPointPlugins;
+      }
+      return plugins[extensionPointName];
+    }
+
+    function removeIfAlreadyExist(pluginDefinition, currentPointPlugins) {
+      const idFieldName = getExtensionPointIdFieldName(currentPointPlugins.extensionPoint);
+      if (idFieldName && isDefined(pluginDefinition[idFieldName])) {
+        const index = currentPointPlugins.findIndex((registeredPluginDefinition) => registeredPluginDefinition[idFieldName] === pluginDefinition[idFieldName]);
+        if (index !== -1) {
+          currentPointPlugins.splice(index, 1);
+        }
+      }
+    }
+
+    function registerOrderedPlugin(pluginDefinition, currentPointPlugins) {
+      if (currentPointPlugins.ordered === false) {
+        throw new Error('Cannot add an ordered plugin definition to unordered extension point');
+      }
+      assignDefaultPriority(pluginDefinition);
+      processOrderedPlugin(pluginDefinition, currentPointPlugins);
+      currentPointPlugins.ordered = true;
+    }
+
+    function registerUnorderedPlugin(pluginDefinition, currentPointPlugins) {
+      if (currentPointPlugins.ordered === true) {
+        throw new Error('Cannot add unordered plugin definition to an ordered extension point');
+      }
+
+      currentPointPlugins.push(pluginDefinition);
+      currentPointPlugins.ordered = false;
+    }
+
     function registerPlugin(extensionPoint, pluginDefinition) {
-        if (pluginDefinition.disabled) {
-            return;
-        }
+      if (pluginDefinition.disabled) {
+        return;
+      }
 
-        let currentPointPlugins = plugins[extensionPoint];
+      const currentPointPlugins = getOrCreateExtensionPointPluginsList(extensionPoint);
+      // If the plugins defined a unique indified property, and we have already registered it will be removed.
+      // Then we continue to registration of the plugin such it is never registered.
+      // This allows overriding of plugin. If there are many plugins with same id then only the last will be registered.
+      removeIfAlreadyExist(pluginDefinition, currentPointPlugins);
 
-        if (!isDefined(currentPointPlugins)) {
-            currentPointPlugins = [];
-            currentPointPlugins.extensionPoint = extensionPoint;
-            plugins[extensionPoint] = currentPointPlugins;
-        }
-
-        // If there is even one ordered plugin, all of the plugins should be ordered too
-        if (isNumber(pluginDefinition.order)) {
-            if (currentPointPlugins.ordered === false) {
-                throw new Error('Cannot add an ordered plugin definition to unordered extension point');
-            }
-
-            assignDefaultPriority(pluginDefinition);
-
-            processOrderedPlugin(pluginDefinition, currentPointPlugins);
-            currentPointPlugins.ordered = true;
-        } else {
-            if (currentPointPlugins.ordered === true) {
-                throw new Error('Cannot add unordered plugin definition to an ordered extension point');
-            }
-
-            currentPointPlugins.push(pluginDefinition);
-            currentPointPlugins.ordered = false;
-        }
+      // If there is even one ordered plugin, all of the plugins should be ordered too
+      if (isNumber(pluginDefinition.order)) {
+        registerOrderedPlugin(pluginDefinition, currentPointPlugins);
+      } else {
+        registerUnorderedPlugin(pluginDefinition, currentPointPlugins);
+      }
     }
 
     registry.add = function(extensionPoint, pluginDefinition) {
@@ -122,5 +150,4 @@ window.PluginRegistry = (function() {
     };
 
     return registry;
-
 })();

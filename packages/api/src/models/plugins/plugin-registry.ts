@@ -14,6 +14,7 @@ export interface PluginRegistry {
 
   /**
    * Adds a plugin definition to the registry for a specific extension point.
+   * If the extension point has support for a unique identifier, only the last plugin definition with the same identifier will exist in the registry.
    * @param extensionPoint - The extension point to which the plugin definition should be added.
    * @param pluginDefinition - The plugin definition to add to the registry.
    */
