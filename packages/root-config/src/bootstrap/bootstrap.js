@@ -92,7 +92,6 @@ export const bootstrapWorkbench = () => {
       }
     })
     .then(() => {
-      securityBootstrap.subscribeToSecurityConfigChange();
       subscribeToAuthenticatedUserChange();
       defineCustomElements();
       return start();

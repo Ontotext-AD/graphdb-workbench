@@ -3,31 +3,27 @@ import 'angular/core/services/openid-auth.service.js';
 import 'angular/core/services/security.service';
 import {UserRole} from 'angular/utils/user-utils';
 import {
-  RepositoryStorageService,
-  RepositoryContextService,
-  ServiceProvider,
-  MapperProvider,
-  SecurityContextService,
-  SecurityConfigMapper,
-  AuthenticatedUserMapper,
-  OpenidConfigMapper,
-  AuthenticationStorageService,
-  AuthorityList,
-  OntoToastrService,
-  AuthenticatedUser,
-} from "@ontotext/workbench-api";
-import {LoggerProvider} from "./logger-provider";
-
-const logger = LoggerProvider.logger;
+    AuthenticatedUser,
+    AuthenticatedUserMapper,
+    AuthorizationService,
+    MapperProvider,
+    OntoToastrService,
+    RepositoryContextService,
+    RepositoryStorageService,
+    SecurityContextService,
+    SecurityService as SecurityServiceAPI,
+    service,
+    ServiceProvider,
+} from '@ontotext/workbench-api';
 
 angular.module('graphdb.framework.core.services.jwtauth', [
     'toastr',
     'graphdb.framework.core.services.security-service',
     'graphdb.framework.core.services.openIDService',
 ])
-    .service('$jwtAuth', ['$http', '$location', '$rootScope', 'SecurityService', '$openIDAuth', '$translate', '$q', '$route', 'AuthTokenService',
+    .service('$jwtAuth', ['$http', '$location', '$rootScope', 'SecurityService', '$translate', '$q', '$route', 'AuthTokenService',
         /* eslint-disable no-invalid-this */
-        function($http, $location, $rootScope, SecurityService, $openIDAuth, $translate, $q, $route, AuthTokenService) {
+        function($http, $location, $rootScope, SecurityService, $translate, $q, $route, AuthTokenService) {
             const toastrService = ServiceProvider.get(OntoToastrService);
             const jwtAuth = this;
             $rootScope.hasPermission = function() {
@@ -114,6 +110,11 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 return ServiceProvider.get(RepositoryStorageService).getRepositoryReference();
             };
 
+            const isGDBorOpenIDToken = function() {
+                const token = AuthTokenService.getAuthToken();
+                return token && (token.startsWith('GDB') || that.openIDEnabled && token.startsWith('Bearer'));
+            };
+
             /**
              * Determines the currently authenticated user from the backend's point-of-view
              * by sending a request to the dedicated API endpoint using the current authentication
@@ -124,28 +125,32 @@ angular.module('graphdb.framework.core.services.jwtauth', [
              * @param {boolean} justLoggedIn Indicates that the user just logged in.
              */
             this.getAuthenticatedUserFromBackend = function(noFreeAccessFallback, justLoggedIn) {
+                if (isGDBorOpenIDToken) {
+                    return SecurityService.getAuthenticatedUser().then(function(data) {
+                        // FIXME: Update principal with response, because of difference in the principal model and the AuthenticatedUser model
+                        that.authenticate(data); // this will emit securityInit
+                    }).catch(function() {
+                        if (noFreeAccessFallback || !that.freeAccess) {
+                            $rootScope.redirectToLogin(false, justLoggedIn);
+                        } else {
+                            that.securityInitialized = true;
+                            if (!that.hasExplicitAuthentication()) {
+                                that.clearAuthentication();
+                                // console.log('free access fallback');
+                            }
+                        }
+                    });
+                }
+
+                // FIXME: Remove after verification that it is not needed for Kerberos or X509 authentication
                 SecurityService.getAuthenticatedUser().then(function(data) {
                     ServiceProvider.get(SecurityContextService).updateAuthenticatedUser(
-                      MapperProvider.get(AuthenticatedUserMapper).mapToModel(data),
+                        MapperProvider.get(AuthenticatedUserMapper).mapToModel(data),
                     );
-                    const token = AuthTokenService.getAuthToken();
-                    if (token && token.startsWith('GDB')) {
-                        // There is a previous authentication via JWT, it's still valid
-                        // so refresh the principal
-                        that.externalAuthUser = false;
-                        that.principal = data;
-                        that.broadcastSecurityInit(that.securityEnabled, true, that.freeAccess);
-                        // console.log('previous JWT authentication ok');
-                    } else if (that.openIDEnabled && token && token.startsWith('Bearer')) {
-                        // The auth was obtained from OpenID, we need to authenticate with the returned user
-                        that.authenticate(data, token);
-                    } else {
-                        // There is no previous authentication but we got a principal via
-                        // an external authentication mechanism (e.g. Kerberos)
-                        that.externalAuthUser = true;
-                        that.authenticate(data, ''); // this will emit securityInit
-                        // console.log('external authentication ok');
-                    }
+                    // There is no previous authentication but we got a principal via
+                    // an external authentication mechanism (e.g. Kerberos)
+                    that.externalAuthUser = true;
+                    that.authenticate(data); // this will emit securityInit
                 }).catch(function() {
                     if (noFreeAccessFallback || !that.freeAccess) {
                         $rootScope.redirectToLogin(false, justLoggedIn);
@@ -178,40 +183,9 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                                 appSettings: freeAccessData.appSettings,
                             };
                         }
-                        if (that.openIDEnabled) {
-                            that.openIDConfig = res.data.methodSettings.openid;
-                            // Remove the parameters from the url
-                            that.gdbUrl = $location.absUrl().replace($location.url().substr(1), '');
-                            $openIDAuth.initOpenId(that.openIDConfig,
-                                that.gdbUrl,
-                                function(justLoggedIn) {
-                                    // A valid OpenID was obtained just now or previously,
-                                    // so we set it as the authentication.
-                                    // This function will be called every time the token is refreshed too,
-                                    // so keep it clean of other logic.
-                                    // The variable justLoggedIn will be set to true if this is
-                                    // a new login that just happened.
-                                    AuthTokenService.setAuthToken($openIDAuth.authHeaderGraphDB());
-                                    logger.info('oidc: set id/access token as GraphDB auth');
-                                    // When logging via OpenID we may get a token that doesn't have
-                                    // rights in GraphDB, this should be considered invalid.
-                                    that.getAuthenticatedUserFromBackend(true, justLoggedIn);
-                                }, function() {
-                                    logger.info('oidc: not logged or login error');
-                                    if (that.authTokenIsType('Bearer')) {
-                                        // Possibly previous login with OpenID but token is no longer valid,
-                                        // redirect to login and warn user about expired token.
-                                        setTimeout(() => {
-                                            $rootScope.redirectToLogin(true);
-                                        }, 0);
-                                    } else {
-                                        // Logged in via non-OpenID or not logged in at all
-                                        that.getAuthenticatedUserFromBackend();
-                                    }
-                                });
-                        } else {
-                            that.getAuthenticatedUserFromBackend();
-                        }
+                        that.openIDConfig = res.data.methodSettings.openid;
+
+                        that.getAuthenticatedUserFromBackend();
                         that.broadcastSecurityInit(that.securityEnabled, that.hasExplicitAuthentication(), that.freeAccess);
                     } else {
                         AuthTokenService.clearAuthToken();
@@ -267,11 +241,6 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 return token && token.startsWith(type);
             };
 
-            this.loginOpenID = function() {
-                // FIX: This causes the workbench to always return to this.gdbUrl after login, which breaks the logic for multitab login
-                $openIDAuth.login(this.openIDConfig, this.gdbUrl);
-            };
-
             this.toggleSecurity = function(enabled) {
                 if (enabled !== this.securityEnabled) {
                     return SecurityService.toggleSecurity(enabled)
@@ -310,6 +279,15 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                                 toastrService.success($translate.instant('jwt.auth.free.access.status', {status: ($translate.instant(enabled ? 'enabled.status' : 'disabled.status'))}));
                             }
                         })
+                        .then(() => {
+                            // Refetch the security config and update it
+                            return service(SecurityServiceAPI).getSecurityConfig()
+                                .then((securityConfig) => {
+                                    const securityContextService = service(SecurityContextService);
+
+                                    securityContextService.updateSecurityConfig(securityConfig);
+                                });
+                        })
                         .finally(() => this.broadcastSecurityInit(this.securityEnabled, this.hasExplicitAuthentication(), this.freeAccess))
                         .catch((err) => {
                             toastrService.error(err.data, $translate.instant('common.error'));
@@ -317,15 +295,8 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 }
             };
 
-            this.authenticate = function(data, authHeaderValue) {
+            this.authenticate = function(data) {
                 return new Promise((resolve) => {
-                    if (authHeaderValue) {
-                        AuthTokenService.setAuthToken(authHeaderValue);
-                        this.externalAuthUser = false;
-                    } else {
-                        AuthTokenService.clearAuthToken();
-                    }
-
                     this.principal = data;
                     this.securityInitialized = true;
 
@@ -343,14 +314,6 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                         resolve(true);
                     });
                 });
-            };
-
-            this.authenticateOpenID = function(authHeader) {
-                AuthTokenService.clearAuthToken();
-                if (authHeader) {
-                    AuthTokenService.setAuthToken(authHeader);
-                    this.externalAuthUser = false;
-                }
             };
 
             this.hasExternalAuthUser = function() {
@@ -375,7 +338,6 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             };
 
             this.clearAuthenticationInternal = function() {
-                $openIDAuth.softLogout();
                 this.principal = this.freeAccessPrincipal;
                 AuthTokenService.clearAuthToken();
             };
@@ -547,15 +509,17 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             };
 
             this.hasBaseRights = function(action, repo) {
-                const repoId = repo.location ? `${repo.id}@${repo.location}` : repo.id;
-                const overCurrentRepo = `${action}_REPO_${repoId}`;
-                const overAllRepos = `${action}_REPO_*`;
-
-                return (
-                    this.principal.authorities?.indexOf(overCurrentRepo) > -1 ||
-                    this.principal.authorities?.indexOf(overAllRepos) > -1 ||
-                    new AuthorityList(this.principal.authorities).hasWildcardAuthority(overCurrentRepo)
-                );
+                const authorizationService = service(AuthorizationService);
+                return authorizationService.hasBaseRights(action, repo);
+                // FIXME: Keep for reference
+                // const repoId = repo.location ? `${repo.id}@${repo.location}` : repo.id;
+                // const overCurrentRepo = `${action}_REPO_${repoId}`;
+                // const overAllRepos = `${action}_REPO_*`;
+                //
+                // return (
+                //     this.principal.authorities.indexOf(overCurrentRepo) > -1 ||
+                //     this.principal.authorities.indexOf(overAllRepos) > -1
+                // );
             };
 
             this.hasGraphqlRightsOverCurrentRepo = function() {
@@ -597,46 +561,48 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             this.broadcastSecurityInit = (securityEnabled, userLoggedIn, freeAccess) => {
                 $rootScope.$broadcast('securityInit', securityEnabled, userLoggedIn, freeAccess);
 
+                if (isGDBorOpenIDToken) {
+                    return; // already authenticated in security module
+                }
+
+                // FIXME: Remove the principal from the application and use the AuthenticatedUser from the security context service
+                // The following block is required because a free access user is set when authentication is cleared
                 const securityContextService = ServiceProvider.get(SecurityContextService);
-                const openIdConfigMapper = MapperProvider.get(OpenidConfigMapper);
-                const openIdConfigModel = openIdConfigMapper.mapToModel(AuthTokenService.OPENID_CONFIG);
-                securityContextService.updateOpenIdConfig(openIdConfigModel);
 
-                this.getPrincipal().then((data) => {
-                    let authenticatedUser;
-                    if (data instanceof AuthenticatedUser) {
-                        authenticatedUser = data;
-                    } else {
-                        const userMapper = MapperProvider.get(AuthenticatedUserMapper);
-                        authenticatedUser = userMapper.mapToModel(data);
-                    }
-                    securityContextService.updateAuthenticatedUser(authenticatedUser);
-                });
-
-                const config = {
-                    enabled: this.securityEnabled,
-                    hasExternalAuth: this.externalAuth,
-                    hasExternalAuthUser: this.hasExternalAuthUser(),
-                    openIdEnabled: this.openIDEnabled,
-                    passwordLoginEnabled: this.passwordLoginEnabled,
-                    overrideAuth: {
-                        enabled: this.hasOverrideAuth,
-                        authorities: this.principal?.authorities || [],
-                        appSettings: this.principal?.appSettings || {},
-                    },
-                    methodSettings: {
-                        openid: this.openIDConfig || {},
-                    },
-                    freeAccess: {
-                        enabled: this.freeAccess,
-                        authorities: this.freeAccessPrincipal?.authorities || [],
-                        appSettings: this.freeAccessPrincipal?.appSettings || {},
-                    },
-                    authImplementation: this.authImplementation,
-                    userLoggedIn,
-                    freeAccessActive: freeAccess,
-                };
-                ServiceProvider.get(AuthenticationStorageService).setAuthenticated(this.isAuthenticated());
-                ServiceProvider.get(SecurityContextService).updateSecurityConfig(MapperProvider.get(SecurityConfigMapper).mapToModel(config));
+                const data = this.principal;
+                let authenticatedUser;
+                if (data instanceof AuthenticatedUser) {
+                    authenticatedUser = data;
+                } else {
+                    const userMapper = MapperProvider.get(AuthenticatedUserMapper);
+                    authenticatedUser = userMapper.mapToModel(data);
+                }
+                securityContextService.updateAuthenticatedUser(authenticatedUser);
+                // FIXME: Keep for reference
+                // const config = {
+                //     enabled: this.securityEnabled,
+                //     hasExternalAuth: this.externalAuth,
+                //     hasExternalAuthUser: this.hasExternalAuthUser(),
+                //     openIdEnabled: this.openIDEnabled,
+                //     passwordLoginEnabled: this.passwordLoginEnabled,
+                //     overrideAuth: {
+                //         enabled: this.hasOverrideAuth,
+                //         authorities: this.principal?.authorities || [],
+                //         appSettings: this.principal?.appSettings || {},
+                //     },
+                //     methodSettings: {
+                //         openid: this.openIDConfig || {},
+                //     },
+                //     freeAccess: {
+                //         enabled: this.freeAccess,
+                //         authorities: this.freeAccessPrincipal?.authorities || [],
+                //         appSettings: this.freeAccessPrincipal?.appSettings || {},
+                //     },
+                //     authImplementation: this.authImplementation,
+                //     userLoggedIn,
+                //     freeAccessActive: freeAccess,
+                // };
+                // ServiceProvider.get(AuthenticationStorageService).setAuthenticated(this.isAuthenticated());
+                // ServiceProvider.get(SecurityContextService).updateSecurityConfig(MapperProvider.get(SecurityConfigMapper).mapToModel(config));
             };
         }]);
