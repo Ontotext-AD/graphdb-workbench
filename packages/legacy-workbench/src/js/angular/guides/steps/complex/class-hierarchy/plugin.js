@@ -13,6 +13,7 @@ const disableAllRDFClasses = () => {
         .forEach((el) => {
             el.classList.add('disable-rdf-class');
         });
+    disableSidebarInteraction();
 };
 
 const enableAllRDFClasses = () => {
@@ -20,6 +21,19 @@ const enableAllRDFClasses = () => {
         .forEach((el) => {
             el.classList.remove('disable-rdf-class');
         });
+    enableSidebarInteraction();
+};
+
+const disableSidebarInteraction = () => {
+    document.querySelector('.rdf-info-side-panel')
+        .classList
+        .add('pointer-events-none');
+};
+
+const enableSidebarInteraction = () => {
+    document.querySelector('.rdf-info-side-panel')
+        .classList
+        .remove('pointer-events-none');
 };
 
 const CLASS_HIERARCHY_DEFAULT_TITLE = 'view.class.hierarchy.title';
@@ -149,12 +163,14 @@ PluginRegistry.add('guide.step', [
                             if (element) {
                                 element.addEventListener('dblclick', handleDoubleClick, true);
                             }
+                            disableSidebarInteraction();
                         },
                         hide: () => () => {
                             if (element) {
                                 element.removeEventListener('dblclick', handleDoubleClick);
                                 element = null;
                             }
+                            enableSidebarInteraction();
                         },
                         ...options,
                     },
