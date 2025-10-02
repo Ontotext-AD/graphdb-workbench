@@ -1,13 +1,12 @@
-import {TestUtil} from '../../../../services/utils/test/test-util';
+import {TestUtil} from '../../../utils/test/test-util';
 import {GdbTokenAuthProvider} from '../gdb-token-auth-provider';
 import {AuthenticationStorageService, SecurityContextService, SecurityService} from '../../../../services/security';
 import {ServiceProvider} from '../../../../providers';
-import {WindowService} from '../../../../services/window';
-import {ResponseMock} from '../../../../services/http/test/response-mock';
-import {LoggerProvider} from '../../../../services/logging/logger-provider';
-import {SecurityConfig} from '../../security-config';
-import {AuthenticatedUser} from '../../authenticated-user';
+import {WindowService} from '../../../window';
+import {ResponseMock} from '../../../http/test/response-mock';
+import {LoggerProvider} from '../../../logging/logger-provider';
 import {ProviderResponseMocks} from './provider-response-mocks';
+import {AuthenticatedUser, SecurityConfig} from '../../../../models/security';
 
 describe('GdbTokenAuthProvider', () => {
   let provider: GdbTokenAuthProvider;

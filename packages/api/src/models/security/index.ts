@@ -4,5 +4,5 @@ export * from './security-config';
 export * from './authority';
 export * from './authority-list';
 export * from './restricted-pages';
-export * from './openid-config';
+export * from './openid-security-config';
 export * from './rights';

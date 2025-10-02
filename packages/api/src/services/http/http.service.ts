@@ -1,6 +1,6 @@
 import {HttpOptions} from '../../models/http/http-options';
 import {InterceptorService} from '../interceptor/interceptor.service';
-import {HttpRequest} from '../../models/http/http-request';
+import {HttpRequest, RequestConfig} from '../../models/http/http-request';
 import {ServiceProvider} from '../../providers';
 import {EventEmitter} from '../../emitters/event.emitter';
 
@@ -115,6 +115,12 @@ export class HttpService {
   private request<T>(url: string, method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH', options: HttpOptions = {}): Promise<T> {
     const {fullUrl, headers} = this.getRequestConfig(url, options);
 
+    Object.keys(headers).forEach((key) => {
+      if (!headers[key]) {
+        delete headers[key];
+      }
+    });
+
     return this.executeRequest(new HttpRequest({url: fullUrl, method, headers, body: options.body}))
       .then((response) => {
         if (!response.ok) {
@@ -126,25 +132,32 @@ export class HttpService {
       .finally(() => this.eventEmitter.emit({NAME: HTTP_REQUEST_DONE_EVENT, payload: undefined}));
   }
 
-  private getRequestConfig(url: string, options: HttpOptions) {
+  private getRequestConfig(url: string, options: HttpOptions): RequestConfig {
     const queryString = this.buildQueryParams(options.params);
     const fullUrl = `${url}${queryString ? `?${queryString}` : ''}`;
     const headers = {
-      'Content-Type': 'application/json',
       Accept: 'application/json, text/plain, */*',
       ...options.headers,
+      'Content-Type': options.headers?.['Content-Type'] ? options.headers['Content-Type'] : 'application/json'
     };
     return {fullUrl, headers};
   }
 
   private executeRequest(request: HttpRequest): Promise<Response> {
     return this.interceptorService.preProcess(request)
-      .then((request) =>
-        fetch(request.url, {
+      .then((request) => {
+        let body = null;
+        if (request.headers['Content-Type'] === 'application/json') {
+          body = JSON.stringify(request.body);
+        } else if (request.headers['Content-Type']?.includes('application/x-www-form-urlencoded')) {
+          body = request.body as FormData;
+        }
+        return fetch(request.url, {
           method: request.method,
           headers: request.headers as HeadersInit,
-          body: request.body ? JSON.stringify(request.body) : null,
-        })
+          body
+        });
+      }
       )
       .then((response) => this.interceptorService.postProcess(response));
   }
@@ -184,7 +197,7 @@ export class HttpService {
         const json = isJson ? response.json() : Promise.resolve();
 
         return Object.assign(response, {
-          json: (): Promise<T> => Promise.resolve(json as T),
+          json: (): Promise<T> => Promise.resolve(json as T)
         });
       })
       .finally(() => {

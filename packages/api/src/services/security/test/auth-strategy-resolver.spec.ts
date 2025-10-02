@@ -1,7 +1,7 @@
 import { AuthStrategyResolver } from '../auth-strategy-resolver';
 import { SecurityConfig } from '../../../models/security';
-import { GdbTokenAuthProvider } from '../../../models/security/authentication/gdb-token-auth-provider';
-import { NoSecurityProvider } from '../../../models/security/authentication/no-security-provider';
+import {NoSecurityProvider} from '../auth-providers/no-security-provider';
+import {GdbTokenAuthProvider} from '../auth-providers/gdb-token-auth-provider';
 
 // Mock SecurityConfig type for test clarity
 const getConfig = (enabled: boolean, openIdEnabled: boolean): SecurityConfig => ({
