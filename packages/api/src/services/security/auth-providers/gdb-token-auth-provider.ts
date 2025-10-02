@@ -1,10 +1,10 @@
-import {AuthenticatedUser} from '../authenticated-user';
-import {AuthStrategy} from './auth-strategy';
-import {AuthStrategyType} from './auth-strategy-type';
 import {MapperProvider, service} from '../../../providers';
 import {AuthenticatedUserMapper, AuthenticationService, AuthenticationStorageService, SecurityContextService, SecurityService} from '../../../services/security';
-import {LoggerProvider} from '../../../services/logging/logger-provider';
-import {getCurrentRoute} from '../../../services/utils';
+import {LoggerProvider} from '../../logging/logger-provider';
+import {getCurrentRoute} from '../../utils';
+import {AuthStrategy} from '../../../models/security/authentication';
+import {AuthStrategyType} from '../../../models/security/authentication';
+import {AuthenticatedUser} from '../../../models/security';
 
 type LoginData = {
   username: string;
@@ -24,20 +24,29 @@ export class GdbTokenAuthProvider implements AuthStrategy {
    * Initializes the authentication provider. If the current route is 'login', resolves immediately.
    * Otherwise, attempts to load the authenticated user and update the security context.
    * Logs an error if the user cannot be loaded.
-   * @returns {Promise<unknown>} A promise that resolves when initialization is complete.
-   */
-  initialize(): Promise<unknown> {
-    if (this.isCurrentRouteLogin()) {
-      return Promise.resolve();
+   * @returns Promise resolving to true if user is logged in
+   * */
+  initialize(): Promise<boolean> {
+    const isAuthValid = !!this.authStorageService.getAuthToken().getValue();
+
+    if (!isAuthValid) {
+      return Promise.resolve(false);
     }
+
+    if (this.isCurrentRouteLogin()) {
+      return Promise.resolve(isAuthValid);
+    }
+
     return this.securityService.getAuthenticatedUser()
       .then((authenticatedUser) => {
         if (authenticatedUser) {
           this.securityContextService.updateAuthenticatedUser(authenticatedUser);
         }
+        return true;
       })
       .catch((error) => {
         this.logger.error('Could not load authenticated user', error);
+        return false;
       });
   }
 
@@ -84,7 +93,7 @@ export class GdbTokenAuthProvider implements AuthStrategy {
    */
   isAuthenticated(): boolean {
     const token = this.authStorageService.getAuthToken().getValue();
-    return !this.authenticationService.isSecurityEnabled() || token !== null;
+    return token !== null;
   }
 
   private isCurrentRouteLogin(): boolean {

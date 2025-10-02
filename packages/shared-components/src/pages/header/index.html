@@ -26,14 +26,16 @@
 <button id="load-repositories" onclick="loadRepositories()">load repositories</button>
 <button id="enable-security" onclick="setSecurityConfig({enabled: true})">enable security</button>
 <button id="disable-security" onclick="setSecurityConfig({enabled: false})">disable security</button>
-<button id="set-authenticated-user" onclick="setSecurityConfig({enabled: true, userLoggedIn: true}); setAuthUser({external: true, username: 'john.doe'})">set authenticated user</button>
+<button id="set-authenticated-user" onclick="setSecurityConfig({enabled: true, userLoggedIn: true}); setAuthUser({external: true, username: 'john.doe'})">set authenticated user
+</button>
 <button id="set-marvel-repo" onclick="setMarvelRepo()">set Marvel repo</button>
 <button id="set-is-loading" onclick="updateIsLoadingActiveRepositoryLocation(true)">set active location loading</button>
 <button id="set-is-not-loading" onclick="updateIsLoadingActiveRepositoryLocation(false)">set active location not loading</button>
-<button id="activate-free-access" onclick="setSecurityConfig({enabled: true, freeAccessActive: true})">activate free access</button>
-<button id="deactivate-free-access" onclick="setSecurityConfig({enabled: false, freeAccessActive: false})">deactivate free access</button>
-<button id="activate-free-access-and-be-logged-in" onclick="setSecurityConfig({enabled: true, freeAccessActive: true, userLoggedIn: true});
-                                                            setAuthUser({external: false, username: 'john.smith'})">activate free access and login</button>
+<button id="activate-free-access" onclick="setSecurityConfig({enabled: true, freeAccess:{enabled: true}}); setAuthUser(undefined)">activate free access</button>
+<button id="deactivate-free-access" onclick="setSecurityConfig({enabled: false, freeAccess:{enabled: false}})">deactivate free access</button>
+<button id="activate-free-access-and-be-logged-in" onclick="setSecurityConfig({enabled: true, freeAccess:{enabled: true}, userLoggedIn: true});
+                                                              setAuthUser({external: false, username: 'john.smith'})">activate free access and login
+</button>
 <onto-header></onto-header>
 <onto-tooltip></onto-tooltip>
 </body>
