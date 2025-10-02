@@ -17,6 +17,9 @@ export class NoSecurityProvider implements AuthStrategy {
    * @returns Promise resolving to true if user is logged in
    * */
   initialize(): Promise<boolean> {
+    if (this.securityContextService.getSecurityConfig()?.freeAccess?.enabled) {
+      return Promise.resolve(true);
+    }
     return this.securityService.getAdminUser()
       .then((authenticatedUser) => {
         this.securityContextService.updateAuthenticatedUser(authenticatedUser);

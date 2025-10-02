@@ -5,13 +5,14 @@ import {UserRole} from 'angular/utils/user-utils';
 import {
     AuthenticatedUser,
     AuthenticatedUserMapper,
-    AuthenticationStorageService,
+    AuthorizationService,
     MapperProvider,
     OntoToastrService,
     RepositoryContextService,
     RepositoryStorageService,
-    SecurityConfigMapper,
     SecurityContextService,
+    SecurityService as SecurityServiceAPI,
+    service,
     ServiceProvider,
 } from '@ontotext/workbench-api';
 
@@ -264,6 +265,15 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                                 toastrService.success($translate.instant('jwt.auth.free.access.status', {status: ($translate.instant(enabled ? 'enabled.status' : 'disabled.status'))}));
                             }
                         })
+                        .then(() => {
+                            // Refetch the security config and update it
+                            return service(SecurityServiceAPI).getSecurityConfig()
+                                .then((securityConfig) => {
+                                    const securityContextService = service(SecurityContextService);
+
+                                    securityContextService.updateSecurityConfig(securityConfig);
+                                });
+                        })
                         .finally(() => this.broadcastSecurityInit(this.securityEnabled, this.hasExplicitAuthentication(), this.freeAccess))
                         .catch((err) => {
                             toastrService.error(err.data, $translate.instant('common.error'));
@@ -484,14 +494,17 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             };
 
             this.hasBaseRights = function(action, repo) {
-                const repoId = repo.location ? `${repo.id}@${repo.location}` : repo.id;
-                const overCurrentRepo = `${action}_REPO_${repoId}`;
-                const overAllRepos = `${action}_REPO_*`;
-
-                return (
-                    this.principal.authorities.indexOf(overCurrentRepo) > -1 ||
-                    this.principal.authorities.indexOf(overAllRepos) > -1
-                );
+                const authorizationService = service(AuthorizationService);
+                return authorizationService.hasBaseRights(repo, action);
+                // FIXME: Keep for reference
+                // const repoId = repo.location ? `${repo.id}@${repo.location}` : repo.id;
+                // const overCurrentRepo = `${action}_REPO_${repoId}`;
+                // const overAllRepos = `${action}_REPO_*`;
+                //
+                // return (
+                //     this.principal.authorities.indexOf(overCurrentRepo) > -1 ||
+                //     this.principal.authorities.indexOf(overAllRepos) > -1
+                // );
             };
 
             this.hasGraphqlRightsOverCurrentRepo = function() {
@@ -537,43 +550,44 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                     return; // already authenticated in security module
                 }
 
+                // FIXME: Remove the principal from the application and use the AuthenticatedUser from the security context service
+                // The following block is required because a free access user is set when authentication is cleared
                 const securityContextService = ServiceProvider.get(SecurityContextService);
 
-                this.getPrincipal().then((data) => {
-                    let authenticatedUser;
-                    if (data instanceof AuthenticatedUser) {
-                        authenticatedUser = data;
-                    } else {
-                        const userMapper = MapperProvider.get(AuthenticatedUserMapper);
-                        authenticatedUser = userMapper.mapToModel(data);
-                    }
-                    securityContextService.updateAuthenticatedUser(authenticatedUser);
-                });
-
-                const config = {
-                    enabled: this.securityEnabled,
-                    hasExternalAuth: this.externalAuth,
-                    hasExternalAuthUser: this.hasExternalAuthUser(),
-                    openIdEnabled: this.openIDEnabled,
-                    passwordLoginEnabled: this.passwordLoginEnabled,
-                    overrideAuth: {
-                        enabled: this.hasOverrideAuth,
-                        authorities: this.principal?.authorities || [],
-                        appSettings: this.principal?.appSettings || {},
-                    },
-                    methodSettings: {
-                        openid: this.openIDConfig || {},
-                    },
-                    freeAccess: {
-                        enabled: this.freeAccess,
-                        authorities: this.freeAccessPrincipal?.authorities || [],
-                        appSettings: this.freeAccessPrincipal?.appSettings || {},
-                    },
-                    authImplementation: this.authImplementation,
-                    userLoggedIn,
-                    freeAccessActive: freeAccess,
-                };
-                ServiceProvider.get(AuthenticationStorageService).setAuthenticated(this.isAuthenticated());
-                ServiceProvider.get(SecurityContextService).updateSecurityConfig(MapperProvider.get(SecurityConfigMapper).mapToModel(config));
+                const data = this.principal;
+                let authenticatedUser;
+                if (data instanceof AuthenticatedUser) {
+                    authenticatedUser = data;
+                } else {
+                    const userMapper = MapperProvider.get(AuthenticatedUserMapper);
+                    authenticatedUser = userMapper.mapToModel(data);
+                }
+                securityContextService.updateAuthenticatedUser(authenticatedUser);
+                // FIXME: Keep for reference
+                // const config = {
+                //     enabled: this.securityEnabled,
+                //     hasExternalAuth: this.externalAuth,
+                //     hasExternalAuthUser: this.hasExternalAuthUser(),
+                //     openIdEnabled: this.openIDEnabled,
+                //     passwordLoginEnabled: this.passwordLoginEnabled,
+                //     overrideAuth: {
+                //         enabled: this.hasOverrideAuth,
+                //         authorities: this.principal?.authorities || [],
+                //         appSettings: this.principal?.appSettings || {},
+                //     },
+                //     methodSettings: {
+                //         openid: this.openIDConfig || {},
+                //     },
+                //     freeAccess: {
+                //         enabled: this.freeAccess,
+                //         authorities: this.freeAccessPrincipal?.authorities || [],
+                //         appSettings: this.freeAccessPrincipal?.appSettings || {},
+                //     },
+                //     authImplementation: this.authImplementation,
+                //     userLoggedIn,
+                //     freeAccessActive: freeAccess,
+                // };
+                // ServiceProvider.get(AuthenticationStorageService).setAuthenticated(this.isAuthenticated());
+                // ServiceProvider.get(SecurityContextService).updateSecurityConfig(MapperProvider.get(SecurityConfigMapper).mapToModel(config));
             };
         }]);

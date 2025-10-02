@@ -4,6 +4,7 @@ import { LoginSteps } from "../../../steps/login-steps";
 import {ToasterSteps} from "../../../steps/toaster-steps";
 import {YasqeSteps} from "../../../steps/yasgui/yasqe-steps";
 import {YasrSteps} from "../../../steps/yasgui/yasr-steps";
+import {RepositorySteps} from '../../../steps/repository-steps.js';
 
 describe('User Management – Creation, Validation, Permissions & Deletion', () => {
     let repositoryId;
@@ -24,6 +25,7 @@ describe('User Management – Creation, Validation, Permissions & Deletion', () 
     afterEach(() => {
         // Clean up repository
         cy.deleteRepository(repositoryId);
+        cy.deleteUser('user');
     });
 
     describe('Create a new user – validation', () => {
@@ -76,7 +78,7 @@ describe('User Management – Creation, Validation, Permissions & Deletion', () 
             // Using the toaster from the shared components which has different class names
             ToasterSteps.getToast()
                 .should('be.visible')
-                .and('have.class', 'toast error')
+                .and('have.class', 'toast-error')
                 .find('.toast-message')
                 .and('contain', 'An account with the given username already exists.');
             cy.deleteUser('user');
@@ -122,7 +124,7 @@ describe('User Management – Creation, Validation, Permissions & Deletion', () 
             UserAndAccessSteps.toggleSecurity();
 
             LoginSteps.loginWithUser(rwUsername, testPassword);
-            // RepositorySteps.selectRepoFromDropdown(repositoryId);
+            RepositorySteps.selectRepoFromDropdown(repositoryId);
             MainMenuSteps.clickOnSparqlMenu();
 
             YasqeSteps.clearEditor();
@@ -164,6 +166,7 @@ describe('User Management – Creation, Validation, Permissions & Deletion', () 
             UserAndAccessSteps.toggleSecurity();
 
             LoginSteps.loginWithUser(roUsername, testPassword);
+            RepositorySteps.selectRepoFromDropdown(repositoryId);
             MainMenuSteps.clickOnSparqlMenu();
 
             YasqeSteps.clearEditor();

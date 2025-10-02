@@ -13,8 +13,8 @@ import {AuthStrategyResolver} from '../auth-strategy-resolver';
 class TestAuthStrategy implements AuthStrategy {
   type = AuthStrategyType.NO_SECURITY;
 
-  initialize(): Promise<unknown> {
-    return Promise.resolve();
+  initialize(): Promise<boolean> {
+    return Promise.resolve(true);
   }
 
   isAuthenticated(): boolean {
@@ -39,6 +39,9 @@ describe('AuthenticationService', () => {
   const windowMock = {
     PluginRegistry: {
       get: jest.fn()
+    },
+    location: {
+      pathname: '/home'
     }
   } as unknown as Window;
 

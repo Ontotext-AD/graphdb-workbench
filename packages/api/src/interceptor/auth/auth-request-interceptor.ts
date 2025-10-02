@@ -60,7 +60,7 @@ export class AuthRequestInterceptor extends HttpInterceptor<HttpRequest> {
   private isOpenIdUrl(requestUrl: string): boolean {
     const openIdConfig = this.securityContextService.getSecurityConfig()?.openidSecurityConfig;
     if (!openIdConfig) {
-      return true;
+      return false;
     }
 
     const openIdUrls = [openIdConfig?.openIdKeysUri, openIdConfig?.openIdTokenUrl];

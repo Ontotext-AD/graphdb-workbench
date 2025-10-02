@@ -28,7 +28,7 @@ export class SecurityConfig extends Model<SecurityConfig> {
     this.overrideAuth = MapperProvider.get(AuthSettingsMapper).mapToModel(config.overrideAuth);
     this.openIdEnabled = config.openIdEnabled;
     this.userLoggedIn = config.userLoggedIn;
-    this.freeAccessActive = config.freeAccessActive;
+    this.freeAccessActive = config.freeAccess?.enabled;
     this.hasExternalAuthUser = config.hasExternalAuthUser;
     this.openidSecurityConfig = new OpenidSecurityConfig(config.methodSettings?.openid);
   }

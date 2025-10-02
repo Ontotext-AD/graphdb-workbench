@@ -29,6 +29,10 @@ export class GdbTokenAuthProvider implements AuthStrategy {
   initialize(): Promise<boolean> {
     const isAuthValid = !!this.authStorageService.getAuthToken().getValue();
 
+    if (!isAuthValid) {
+      return Promise.resolve(false);
+    }
+
     if (this.isCurrentRouteLogin()) {
       return Promise.resolve(isAuthValid);
     }
@@ -89,7 +93,7 @@ export class GdbTokenAuthProvider implements AuthStrategy {
    */
   isAuthenticated(): boolean {
     const token = this.authStorageService.getAuthToken().getValue();
-    return !this.authenticationService.isSecurityEnabled() || token !== null;
+    return token !== null;
   }
 
   private isCurrentRouteLogin(): boolean {

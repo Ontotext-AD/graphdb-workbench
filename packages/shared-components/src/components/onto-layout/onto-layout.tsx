@@ -178,7 +178,33 @@ export class OntoLayout {
     this.subscriptions.add(
       securityContextService.onAuthenticatedUserChanged((authenticatedUser) => {
         this.authenticatedUser = authenticatedUser;
-        this.updateVisibility();
+        // FIXME: Remove  the timeout when the security event handling is refactored
+        // Wait for events to settle everywhere before updating the visibility
+        setTimeout(() => {
+          this.updateVisibility();
+        }, 0);
+      })
+    );
+
+    this.subscriptions.add(
+      ServiceProvider.get(EventService).subscribe(EventName.LOGIN, () => {
+        // FIXME: Remove  the timeout when the security event handling is refactored
+        // Wait for events to settle everywhere before updating the visibility
+        setTimeout(() => {
+          this.setNavbarItemVisibility();
+          this.updateVisibility();
+        }, 0);
+      })
+    );
+
+    this.subscriptions.add(
+      ServiceProvider.get(EventService).subscribe(EventName.LOGOUT, () => {
+        // FIXME: Remove  the timeout when the security event handling is refactored
+        // Wait for events to settle everywhere before updating the visibility
+        setTimeout(() => {
+          this.setNavbarItemVisibility();
+          this.updateVisibility();
+        }, 0);
       })
     );
 
@@ -195,9 +221,12 @@ export class OntoLayout {
 
     this.subscriptions.add(
       ServiceProvider.get(EventService).subscribe(EventName.LOGOUT, () => {
-        this.setNavbarItemVisibility();
-        this.updateVisibility();
-      })
+        // FIXME: Remove  the timeout when the security event handling is refactored
+        // Wait for events to settle everywhere before updating the visibility
+        setTimeout(() => {
+          this.setNavbarItemVisibility();
+          this.updateVisibility();
+        }, 0);      })
     );
     this.subscriptions.add(
       securityContextService.onAuthTokenChanged(()=>{

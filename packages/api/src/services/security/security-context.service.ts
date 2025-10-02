@@ -17,7 +17,7 @@ type SecurityContextFieldParams = {
   readonly SECURITY_CONFIG: SecurityConfig;
   readonly AUTHENTICATED_USER: AuthenticatedUser;
   readonly AUTH_TOKEN: string;
-  readonly JSON_WEB_KEYS_SET: Record<string, JsonWebKey & {kid: string}>;
+  readonly JSON_WEB_KEYS_SET: Record<string, JsonWebKey & { kid: string }>;
 }
 
 /**
@@ -132,11 +132,11 @@ export class SecurityContextService extends ContextService<SecurityContextFields
     return this.getContextPropertyValue(this.AUTHENTICATED_USER);
   }
 
-  updateJsonWebKeysSet(jsonWebKeysSet: Record<string, JsonWebKey & {kid: string}>): void {
+  updateJsonWebKeysSet(jsonWebKeysSet: Record<string, JsonWebKey & { kid: string }>): void {
     this.updateContextProperty(this.JSON_WEB_KEYS_SET, jsonWebKeysSet);
   }
 
-  getJsonWebKeysSet(): Record<string, JsonWebKey & {kid: string}> | undefined {
+  getJsonWebKeysSet(): Record<string, JsonWebKey & { kid: string }> | undefined {
     return this.getContextPropertyValue(this.JSON_WEB_KEYS_SET);
   }
 }

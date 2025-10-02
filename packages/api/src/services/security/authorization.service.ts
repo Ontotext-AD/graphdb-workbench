@@ -19,7 +19,7 @@ export class AuthorizationService implements Service {
    */
   hasFreeAccess(): boolean {
     const config = this.getSecurityConfig();
-    return !!(config?.enabled && config?.freeAccess.enabled);
+    return !!(config?.enabled && config?.freeAccess?.enabled);
   }
 
   /**

@@ -28,14 +28,12 @@ export class AuthenticationService implements Service {
   setAuthenticationStrategy(securityConfig: SecurityConfig): Promise<void> {
     this.authStrategy = this.authStrategyResolver.resolveStrategy(securityConfig);
     return this.authStrategy.initialize().then((isLoggedIn) => {
-      if (isLoginPage() && isLoggedIn) {
+      if (isLoginPage() && (isLoggedIn || securityConfig.freeAccess?.enabled)) {
         window.singleSpa.navigateToUrl('/');
         this.eventService.emit(new Login());
       } else if (isLoginPage() && !isLoggedIn) {
         // stay on login page
-      } else if (securityConfig.freeAccess.enabled) {
-        // window.singleSpa.navigateToUrl('/login');
-      } else {
+      } else if (securityConfig.freeAccess?.enabled) {
         this.eventService.emit(new Login());
       }
     });
@@ -87,13 +85,17 @@ export class AuthenticationService implements Service {
    */
   isLoggedIn(): boolean {
     const config = this.getSecurityConfig();
-    return !!(config?.enabled && config?.userLoggedIn);
+    const authenticatedUser = service(SecurityContextService).getAuthenticatedUser();
+    return !!(config?.enabled && config?.userLoggedIn) || !!authenticatedUser?.username;
   }
 
   /**
    * Check if the user is authenticated.
    * A user is considered authenticated, if security is disabled, if he is external, or if there is an
    * auth token in the store
+   *
+   * @throws Error if authentication strategy is not set
+   * @returns {boolean} True if the user is authenticated, false otherwise.
    */
   isAuthenticated() {
     if (!this.authStrategy) {
