@@ -2,7 +2,7 @@ import {Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {TranslocoPipe, TranslocoService} from '@jsverse/transloco';
-import {AuthenticationService, OntoToastrService, SecurityService, service, UrlPathParams} from '@ontotext/workbench-api';
+import {AuthenticationService, OpenidStorageService, OntoToastrService, SecurityService, service, UrlPathParams} from '@ontotext/workbench-api';
 import {CommonModule} from '@angular/common';
 
 @Component({
@@ -21,6 +21,7 @@ export class LoginPageComponent implements OnInit {
   private readonly toastrService = service(OntoToastrService);
   private readonly securityService = service(SecurityService);
   private readonly authenticationService = service(AuthenticationService);
+  private readonly openidStorageService = service(OpenidStorageService);
 
   private readonly fb = inject(FormBuilder);
   private readonly route = inject(ActivatedRoute);
@@ -73,9 +74,10 @@ export class LoginPageComponent implements OnInit {
     const {username, password} = this.loginForm.value;
     this.loginForm.setErrors({wrongCredentials: false});
 
-    this.authenticationService.login(username, password).then(() => {
-      this.router.navigateByUrl(this.returnUrl);
-    })
+    this.authenticationService.login(username, password)
+      .then(() => {
+        this.router.navigateByUrl(this.returnUrl);
+      })
       .catch((err) => {
         if (err.status === 401) {
           this.toastrService.error(this.translocoService.translate('login.errors.wrong_credentials'), this.translocoService.translate('login.error'));
@@ -92,6 +94,7 @@ export class LoginPageComponent implements OnInit {
   }
 
   loginWithOpenID(): void {
-    // not implemented
+    this.openidStorageService.setReturnUrl(this.returnUrl);
+    this.login();
   }
 }

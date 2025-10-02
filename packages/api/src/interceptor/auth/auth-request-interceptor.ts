@@ -4,7 +4,6 @@ import {AuthenticationStorageService} from '../../services/security/authenticati
 import {ServiceProvider} from '../../providers';
 import {RepositoryStorageService} from '../../services/repository/repository-storage.service';
 import {SecurityContextService} from '../../services/security/security-context.service';
-import {OpenIdConfig} from '../../models/security/openid-config';
 
 /**
  * AuthRequestInterceptor is responsible for intercepting HTTP requests and adding authentication
@@ -55,20 +54,17 @@ export class AuthRequestInterceptor extends HttpInterceptor<HttpRequest> {
     // Skip header injection if the request is part of the OpenID authentication flow
     // (e.g., token retrieval or OpenID key discovery).
     // see https://github.com/Ontotext-AD/graphdb-workbench/blob/2.8/src/js/angular/core/interceptors/authentication.interceptor.js#L12
-    const openIdConfig: OpenIdConfig | undefined = this.securityContextService.getOpenIdConfig();
+    return !this.isOpenIdUrl(request.url);
+  }
+
+  private isOpenIdUrl(requestUrl: string): boolean {
+    const openIdConfig = this.securityContextService.getSecurityConfig()?.openidSecurityConfig;
     if (!openIdConfig) {
-      return true;
+      return false;
     }
 
-    const openIdKeysUri = openIdConfig?.openIdKeysUri;
-    const openIdTokenUrl = openIdConfig?.openIdTokenUrl;
+    const openIdUrls = [openIdConfig?.openIdKeysUri, openIdConfig?.openIdTokenUrl];
 
-    if (openIdKeysUri && openIdTokenUrl) {
-      const openIDUrls = [openIdConfig?.openIdKeysUri, openIdConfig?.openIdTokenUrl];
-      const isOpenIdUrl = openIDUrls.some((url) => url && request.url.indexOf(url) > -1);
-      return !isOpenIdUrl;
-    }
-
-    return true;
+    return openIdUrls.some((url) => url && requestUrl.indexOf(url) > -1);
   }
 }

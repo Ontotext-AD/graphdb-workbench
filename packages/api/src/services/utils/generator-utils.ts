@@ -1,3 +1,5 @@
+import {WindowService} from '../window';
+
 /**
  * Utility class for generating various values.
  */
@@ -36,6 +38,18 @@ export class GeneratorUtils {
       return value.toString(HEX_RADIX);
     });
   }
+
+  /**
+   * Generates a cryptographically secure random string of the specified length.
+   *
+   * @param {number} length - The desired length of the random string.
+   * @returns {string} A hexadecimal string generated from secure random values.
+   */
+  static generateRandomString(length: number): string {
+    const array = new Uint32Array(length);
+    WindowService.getCrypto().getRandomValues(array);
+    return Array.from(array, (dec) => ('0' + dec.toString(16)).substr(-2)).join('');
+  };
 
   /**
    * Returns a hash code from a string
