@@ -32,4 +32,12 @@ export class ToasterSteps {
             .find('.toast-message')
             .and('contain', errorMessage);
     }
+
+    static verifyNewToasterError(errorMessage) {
+        return ToasterSteps.getToast()
+            .should('be.visible')
+            .and('have.class', 'toast error')
+            .find('.toast-message')
+            .and('contain', errorMessage);
+    }
 }

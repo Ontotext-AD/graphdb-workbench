@@ -1,7 +1,7 @@
 import {ContextService} from '../context';
 import {ValueChangeCallback} from '../../models/context/value-change-callback';
 import {DeriveContextServiceContract} from '../../models/context/update-context-method';
-import {AuthenticatedUser, RestrictedPages, SecurityConfig, OpenIdConfig} from '../../models/security';
+import {AuthenticatedUser, RestrictedPages, SecurityConfig} from '../../models/security';
 import {LifecycleHooks} from '../../providers/service/lifecycle-hooks';
 
 type SecurityContextFields = {
@@ -9,7 +9,7 @@ type SecurityContextFields = {
   readonly SECURITY_CONFIG: string;
   readonly AUTHENTICATED_USER: string;
   readonly AUTH_TOKEN: string;
-  readonly OPEN_ID_CONFIG: string;
+  readonly JSON_WEB_KEYS_SET: string;
 }
 
 type SecurityContextFieldParams = {
@@ -17,7 +17,7 @@ type SecurityContextFieldParams = {
   readonly SECURITY_CONFIG: SecurityConfig;
   readonly AUTHENTICATED_USER: AuthenticatedUser;
   readonly AUTH_TOKEN: string;
-  readonly OPEN_ID_CONFIG: OpenIdConfig;
+  readonly JSON_WEB_KEYS_SET: Record<string, JsonWebKey & { kid: string }>;
 }
 
 /**
@@ -28,7 +28,7 @@ export class SecurityContextService extends ContextService<SecurityContextFields
   readonly SECURITY_CONFIG = 'securityConfig';
   readonly AUTHENTICATED_USER = 'authenticatedUser';
   readonly AUTH_TOKEN = 'jwt';
-  readonly OPEN_ID_CONFIG = 'openIdConfig';
+  readonly JSON_WEB_KEYS_SET = 'jsonWebKeysSet';
 
   /**
    * Retrieves the restricted pages for the user.
@@ -132,21 +132,11 @@ export class SecurityContextService extends ContextService<SecurityContextFields
     return this.getContextPropertyValue(this.AUTHENTICATED_USER);
   }
 
-  /**
-   * Updates the OpenID configuration in the context.
-   *
-   * @param openIdConfig - The new OpenID configuration to set.
-   */
-  updateOpenIdConfig(openIdConfig: OpenIdConfig): void {
-    return this.updateContextProperty(this.OPEN_ID_CONFIG, openIdConfig);
+  updateJsonWebKeysSet(jsonWebKeysSet: Record<string, JsonWebKey & { kid: string }>): void {
+    this.updateContextProperty(this.JSON_WEB_KEYS_SET, jsonWebKeysSet);
   }
 
-  /**
-   * Retrieves the OpenID configuration from the context.
-   *
-   * @returns The current OpenID configuration or undefined.
-   */
-  getOpenIdConfig(): OpenIdConfig | undefined {
-    return this.getContextPropertyValue(this.OPEN_ID_CONFIG);
+  getJsonWebKeysSet(): Record<string, JsonWebKey & { kid: string }> | undefined {
+    return this.getContextPropertyValue(this.JSON_WEB_KEYS_SET);
   }
 }

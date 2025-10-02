@@ -1,9 +1,9 @@
-import { MainMenuSteps } from "../../../steps/main-menu-steps";
-import {UserAndAccessSteps} from "../../../steps/setup/user-and-access-steps";
-import { LoginSteps } from "../../../steps/login-steps";
-import {ToasterSteps} from "../../../steps/toaster-steps";
-import {YasqeSteps} from "../../../steps/yasgui/yasqe-steps";
-import {YasrSteps} from "../../../steps/yasgui/yasr-steps";
+import {MainMenuSteps} from '../../../steps/main-menu-steps';
+import {UserAndAccessSteps} from '../../../steps/setup/user-and-access-steps';
+import {LoginSteps} from '../../../steps/login-steps';
+import {ToasterSteps} from '../../../steps/toaster-steps';
+import {YasqeSteps} from '../../../steps/yasgui/yasqe-steps';
+import {YasrSteps} from '../../../steps/yasgui/yasr-steps';
 
 describe('User Management – Creation, Validation, Permissions & Deletion', () => {
     let repositoryId;
@@ -11,6 +11,8 @@ describe('User Management – Creation, Validation, Permissions & Deletion', () 
     const testUsername = `testuser-${Date.now()}`;
 
     beforeEach(() => {
+        cy.loginAsAdmin();
+        cy.switchOffSecurity(true);
         // Create and initialize a fresh repository for isolation
         repositoryId = `repo-${Date.now()}`;
         cy.createRepository({ id: repositoryId });
@@ -24,11 +26,13 @@ describe('User Management – Creation, Validation, Permissions & Deletion', () 
     afterEach(() => {
         // Clean up repository
         cy.deleteRepository(repositoryId);
+        cy.deleteUser('user');
     });
 
     describe('Create a new user – validation', () => {
         beforeEach(() => {
             UserAndAccessSteps.clickCreateNewUserButton();
+            cy.deleteUser('user');
         });
 
         it('should show error when username is empty', () => {
@@ -74,11 +78,8 @@ describe('User Management – Creation, Validation, Permissions & Deletion', () 
             UserAndAccessSteps.confirmUserCreate();
 
             // Using the toaster from the shared components which has different class names
-            ToasterSteps.getToast()
-                .should('be.visible')
-                .and('have.class', 'toast error')
-                .find('.toast-message')
-                .and('contain', 'An account with the given username already exists.');
+
+            ToasterSteps.verifyError('An account with the given username already exists.');
             cy.deleteUser('user');
         });
 
@@ -122,7 +123,6 @@ describe('User Management – Creation, Validation, Permissions & Deletion', () 
             UserAndAccessSteps.toggleSecurity();
 
             LoginSteps.loginWithUser(rwUsername, testPassword);
-            // RepositorySteps.selectRepoFromDropdown(repositoryId);
             MainMenuSteps.clickOnSparqlMenu();
 
             YasqeSteps.clearEditor();

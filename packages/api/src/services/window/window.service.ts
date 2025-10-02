@@ -17,4 +17,20 @@ export class WindowService implements Service {
   static getPluginRegistry(): PluginRegistry {
     return WindowService.getWindow().PluginRegistry;
   }
+
+  static getCrypto(): Crypto {
+    return WindowService.getWindow().crypto;
+  }
+
+  static setLocationHref(href: string): void {
+    WindowService.getWindow().location.href = href;
+  }
+
+  static getLocationQueryParams(): string {
+    return WindowService.getWindow().location.search;
+  }
+
+  static getLocationHash(): string {
+    return WindowService.getWindow().location.hash;
+  }
 }
