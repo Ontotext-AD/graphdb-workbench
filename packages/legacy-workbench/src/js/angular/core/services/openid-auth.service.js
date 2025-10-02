@@ -15,7 +15,7 @@ const openIDReqHeaders = {headers: {
         'Authorization': undefined,
     }};
 
-
+// FIXME: Deprecated service. Left here for reference until all security is implemented.
 angular.module('graphdb.framework.core.services.openIDService', modules)
     .service('$openIDAuth', ['$http', '$location', '$window', 'toastr', '$translate', 'AuthTokenService',
         function($http, $location, $window, toastr, $translate, AuthTokenService) {

@@ -1,16 +1,29 @@
 import {ResponseMock} from '../../http/test/response-mock';
 
 export class TestUtil {
+  private static requestsMap = new Map<string, RequestInit>();
+
+  static getRequest(url: string): RequestInit | undefined {
+    return TestUtil.requestsMap.get(url);
+  }
 
   static mockResponse(responseMock: ResponseMock): void {
     TestUtil.mockResponses([responseMock]);
   }
 
   static mockResponses(responseMocks: ResponseMock[]): void {
-    global.fetch = jest.fn((url: RequestInfo) => {
+    global.fetch = jest.fn((input: string | URL | Request, request: RequestInit) => {
+      let url;
+      if (typeof input === 'string') {
+        url = input;
+      } else if (input instanceof URL) {
+        url = input.toString();
+      } else {
+        url = input.url;
+      }
       const matchingMock = responseMocks.find((mock) => mock.getUrl() === url);
-
       if (matchingMock) {
+        TestUtil.requestsMap.set(url, request);
         return Promise.resolve({
           ok: matchingMock.getStatus() >= 200 && matchingMock.getStatus() < 300,
           status: matchingMock.getStatus(),
@@ -35,5 +48,6 @@ export class TestUtil {
    */
   static restoreAllMocks(): void {
     jest.restoreAllMocks();
+    this.requestsMap.clear();
   }
 }
