@@ -7,18 +7,44 @@ import {SecurityContextService} from './security-context.service';
 import {AuthStrategy} from '../../models/security/authentication/auth-strategy';
 import {AuthStrategyResolver} from './auth-strategy-resolver';
 import {Login} from '../../models/events/auth/login';
+import {isLoginPage} from '../utils';
 
 /**
- * Service responsible for handling authentication-related operations.
+ * Service responsible for handling authentication operations and managing auth strategies.
+ *
+ * Provides a unified interface for authentication regardless of the underlying strategy
+ * (basic auth, OpenID Connect, etc.) and manages authentication state and events.
  */
 export class AuthenticationService implements Service {
   private readonly eventService = service(EventService);
   private readonly authStrategyResolver = service(AuthStrategyResolver);
   private authStrategy: AuthStrategy | undefined;
 
-  setAuthenticationStrategy(securityConfig: SecurityConfig): void {
+  /**
+   * Sets and initializes the authentication strategy based on security configuration.
+   * @param securityConfig Configuration determining which auth strategy to use
+   * @returns Promise that resolves when strategy is initialized
+   */
+  setAuthenticationStrategy(securityConfig: SecurityConfig): Promise<void> {
     this.authStrategy = this.authStrategyResolver.resolveStrategy(securityConfig);
-    this.authStrategy.initialize();
+    return this.authStrategy.initialize().then((isLoggedIn) => {
+      if (isLoginPage() && (isLoggedIn || securityConfig.freeAccess?.enabled)) {
+        window.singleSpa.navigateToUrl('/');
+        this.eventService.emit(new Login());
+      } else if (isLoginPage() && !isLoggedIn) {
+        // stay on login page
+      } else if (securityConfig.freeAccess?.enabled) {
+        this.eventService.emit(new Login());
+      }
+    });
+  }
+
+  /**
+   * Checks if an authentication strategy has been configured.
+   * @returns True if strategy is set
+   */
+  isAuthenticationStrategySet(): boolean {
+    return !!this.authStrategy;
   }
 
   /**
@@ -42,6 +68,7 @@ export class AuthenticationService implements Service {
   }
 
   /**
+   * Logs out the current user and emits logout event.
    * Updates security context for logout request.
    */
   logout(): void {
@@ -81,6 +108,11 @@ export class AuthenticationService implements Service {
     return !!this.getSecurityConfig()?.enabled;
   }
 
+  /**
+   * Retrieves the current security configuration.
+   * @private
+   * @returns Current security config or undefined if not set
+   */
   private getSecurityConfig(): SecurityConfig | undefined {
     return service(SecurityContextService).getSecurityConfig();
   }

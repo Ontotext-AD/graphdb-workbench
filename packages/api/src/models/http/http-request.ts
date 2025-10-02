@@ -21,3 +21,9 @@ export class HttpRequest {
     this.body = data.body;
   }
 }
+
+export type RequestConfig = {
+  fullUrl: string;
+  headers: Record<string, string>;
+  [key: string]: unknown;
+}

@@ -78,6 +78,7 @@ export class OntoHeader {
   /** The model of the currently selected repository, if any. */
   @State() currentRepository: Repository | undefined;
   @State() securityConfig: SecurityConfig;
+  @State() private user: AuthenticatedUser;
 
   // ========================
   // Private
@@ -88,9 +89,7 @@ export class OntoHeader {
   private totalTripletsFormatter: Intl.NumberFormat;
   /** Array of subscription cleanup functions */
   private readonly subscriptions: SubscriptionList = new SubscriptionList();
-  private user: AuthenticatedUser;
   private skipUpdateActiveOperationsTimes = 0;
-  private isSecurityEnabled: boolean;
 
   // ========================
   // Lifecycle methods
@@ -137,8 +136,8 @@ export class OntoHeader {
             totalTripletsFormatter={this.totalTripletsFormatter}
             canWriteRepo={this.canWriteRepo}>
           </onto-repository-selector>
-          {this.isSecurityEnabled && this.authService.isAuthenticated() ? <onto-user-menu user={this.user} securityConfig={this.securityConfig}></onto-user-menu> : ''}
-          {this.isSecurityEnabled && !this.authService.isAuthenticated() && (this.currentRoute !== 'login') ? <onto-user-login></onto-user-login> : ''}
+          {this.authService.isSecurityEnabled() && this.authService.isAuthenticated() && this.user ? <onto-user-menu user={this.user} securityConfig={this.securityConfig}></onto-user-menu> : ''}
+          {this.authService.isSecurityEnabled() && !this.authService.isAuthenticated() && (this.currentRoute !== 'login') ? <onto-user-login></onto-user-login> : ''}
           <onto-language-selector dropdown-alignment="right"></onto-language-selector>
         </div>
       </Host>
@@ -149,7 +148,6 @@ export class OntoHeader {
   // Subscriptions
   // ========================
   private subscribeToEvents(): void {
-    this.subscribeToSecurityContextChange();
     this.subscribeToRepositoryListChanged();
     this.subscribeToLicenseChange();
     this.subscribeToRepositoryChange();
@@ -188,19 +186,9 @@ export class OntoHeader {
     );
   }
 
-  private subscribeToSecurityContextChange() {
-    // TODO: This should be done by the authentication service, when the config and auth user are available synchronously
+  private subscribeToAuthenticatedUserChange() {
     this.subscriptions.add(this.securityContextService.onAuthenticatedUserChanged((user) => {
       this.user = user;
-    }));
-    this.subscriptions.add(this.securityContextService.onSecurityConfigChanged((config) => {
-      this.securityConfig = config;
-      this.isSecurityEnabled = config?.enabled;
-    }));
-  }
-
-  private subscribeToAuthenticatedUserChange() {
-    this.subscriptions.add(this.securityContextService.onAuthenticatedUserChanged(() => {
       this.updateRepositoryItems();
     }));
   }
