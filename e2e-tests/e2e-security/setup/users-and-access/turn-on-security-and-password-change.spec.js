@@ -31,7 +31,7 @@ describe('Turn on Security', () => {
     LoginSteps.visitLoginPage();
     LoginSteps.loginWithUser('wrongUser', 'wrongPass');
     // Expect error message
-    ToasterSteps.verifyError('Wrong credentials');
+    ToasterSteps.verifyNewToasterError('Wrong credentials');
 
     // Login with correct admin credentials
     LoginSteps.visitLoginPage();
@@ -61,7 +61,7 @@ describe('Turn on Security', () => {
 
     // Attempt login with old password
     LoginSteps.loginWithUser('admin', 'root');
-    ToasterSteps.verifyError('Wrong credentials');
+    ToasterSteps.verifyNewToasterError('Wrong credentials');
 
     // Attempt login with new password
     LoginSteps.visitLoginPage();

@@ -3,6 +3,7 @@ import {InterceptorService} from '../interceptor/interceptor.service';
 import {HttpRequest} from '../../models/http/http-request';
 import {ServiceProvider} from '../../providers';
 import {EventEmitter} from '../../emitters/event.emitter';
+import {HttpRequestConfig} from '../../models/http/http-request-config';
 
 const JSON_CONTENT_TYPES = ['application/json', 'application/sparql-results+json'];
 
@@ -126,25 +127,41 @@ export class HttpService {
       .finally(() => this.eventEmitter.emit({NAME: HTTP_REQUEST_DONE_EVENT, payload: undefined}));
   }
 
-  private getRequestConfig(url: string, options: HttpOptions) {
+  private getRequestConfig(url: string, options: HttpOptions): HttpRequestConfig {
     const queryString = this.buildQueryParams(options.params);
     const fullUrl = `${url}${queryString ? `?${queryString}` : ''}`;
     const headers = {
-      'Content-Type': 'application/json',
       Accept: 'application/json, text/plain, */*',
       ...options.headers,
+      'Content-Type': options.headers?.['Content-Type'] ? options.headers['Content-Type'] : 'application/json'
     };
     return {fullUrl, headers};
   }
 
+  private formatBody(headers: Record<string, string | undefined>, body: unknown): BodyInit | null {
+    if (!body) {
+      return null;
+    }
+
+    if (headers['Content-Type']?.includes('application/json')) {
+      return JSON.stringify(body);
+    } else if (headers['Content-Type']?.includes('application/x-www-form-urlencoded')) {
+      return body as URLSearchParams;
+    }
+    return body as BodyInit;
+  }
+
   private executeRequest(request: HttpRequest): Promise<Response> {
     return this.interceptorService.preProcess(request)
-      .then((request) =>
-        fetch(request.url, {
+      .then((request) => {
+        const body = this.formatBody(request.headers, request.body);
+
+        return fetch(request.url, {
           method: request.method,
           headers: request.headers as HeadersInit,
-          body: request.body ? JSON.stringify(request.body) : null,
-        })
+          body
+        });
+      }
       )
       .then((response) => this.interceptorService.postProcess(response));
   }
@@ -184,7 +201,7 @@ export class HttpService {
         const json = isJson ? response.json() : Promise.resolve();
 
         return Object.assign(response, {
-          json: (): Promise<T> => Promise.resolve(json as T),
+          json: (): Promise<T> => Promise.resolve(json as T)
         });
       })
       .finally(() => {

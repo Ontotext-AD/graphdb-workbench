@@ -1,17 +1,17 @@
-import {TestUtil} from '../../../../services/utils/test/test-util';
+import {TestUtil} from '../../../utils/test/test-util';
 import {GdbTokenAuthProvider} from '../gdb-token-auth-provider';
 import {AuthenticationStorageService, SecurityContextService, SecurityService} from '../../../../services/security';
 import {ServiceProvider} from '../../../../providers';
-import {WindowService} from '../../../../services/window';
-import {ResponseMock} from '../../../../services/http/test/response-mock';
-import {LoggerProvider} from '../../../../services/logging/logger-provider';
-import {SecurityConfig} from '../../security-config';
-import {AuthenticatedUser} from '../../authenticated-user';
+import {WindowService} from '../../../window';
+import {ResponseMock} from '../../../http/test/response-mock';
+import {LoggerProvider} from '../../../logging/logger-provider';
 import {ProviderResponseMocks} from './provider-response-mocks';
+import {AuthenticatedUser, SecurityConfig} from '../../../../models/security';
 
 describe('GdbTokenAuthProvider', () => {
   let provider: GdbTokenAuthProvider;
   let loggerErrorSpy: jest.SpyInstance;
+  let authenticationStorageService: AuthenticationStorageService;
 
   beforeEach(() => {
     TestUtil.restoreAllMocks();
@@ -22,7 +22,7 @@ describe('GdbTokenAuthProvider', () => {
     securityContextService.updateSecurityConfig(undefined as unknown as SecurityConfig);
     securityContextService.updateAuthToken(undefined as unknown as string);
     securityContextService.updateAuthenticatedUser(undefined as unknown as AuthenticatedUser);
-    const authenticationStorageService = ServiceProvider.get(AuthenticationStorageService);
+    authenticationStorageService = ServiceProvider.get(AuthenticationStorageService);
     authenticationStorageService.clearAuthToken();
 
     provider = new GdbTokenAuthProvider();
@@ -40,7 +40,7 @@ describe('GdbTokenAuthProvider', () => {
         updateAuthenticatedUserSpy = jest.spyOn(ServiceProvider.get(SecurityContextService), 'updateAuthenticatedUser');
       });
 
-      it('should resolve immediately if current route is login', async () => {
+      it('should resolve immediately false if current route is login and there is no auth', async () => {
         jest.spyOn(WindowService, 'getWindow').mockReturnValue({
           location: {
             pathname: '/login'
@@ -48,11 +48,24 @@ describe('GdbTokenAuthProvider', () => {
           PluginRegistry: {get: jest.fn(() => [])}
         } as unknown as Window);
 
-        await expect(provider.initialize()).resolves.toBeUndefined();
+        await expect(provider.initialize()).resolves.toEqual(false);
         expect(getAuthenticatedUserSpy).not.toHaveBeenCalled();
       });
 
-      it('should update authenticated user if not on login route', async () => {
+      it('should resolve immediately false if current route is not login and there is no auth', async () => {
+        jest.spyOn(WindowService, 'getWindow').mockReturnValue({
+          location: {
+            pathname: '/login'
+          },
+          PluginRegistry: {get: jest.fn(() => [])}
+        } as unknown as Window);
+
+        await expect(provider.initialize()).resolves.toEqual(false);
+        expect(getAuthenticatedUserSpy).not.toHaveBeenCalled();
+      });
+
+      it('should update authenticated user if not on login route and authentication is valid', async () => {
+        authenticationStorageService.setAuthToken('valid-token');
         jest.spyOn(WindowService, 'getWindow').mockReturnValue({
           location: {
             pathname: '/home'
@@ -77,6 +90,7 @@ describe('GdbTokenAuthProvider', () => {
       });
 
       it('should handle errors from getAuthenticatedUser', async () => {
+        authenticationStorageService.setAuthToken('valid-token');
         jest.spyOn(WindowService, 'getWindow').mockReturnValue({
           location: {
             pathname: '/home'
@@ -142,43 +156,22 @@ describe('GdbTokenAuthProvider', () => {
   });
 
   describe('isAuthenticated', () => {
-    describe('security is enabled', () => {
-      beforeEach(() => {
-        const securityConfig = {
-          enabled: true
-        } as unknown as SecurityConfig;
-        ServiceProvider.get(SecurityContextService).updateSecurityConfig(securityConfig);
-      });
-
-      it('should return true if token exists', async () => {
-        TestUtil.mockResponse(new ResponseMock('rest/login').setResponse(ProviderResponseMocks.loginResponse).setHeaders(new Headers({authorization: 'GDB someToken'})));
-
-        await provider.login({username: 'testUser', password: '1234'});
-        expect(provider.isAuthenticated()).toBe(true);
-      });
-
-      it('should return false if token is null', () => {
-        expect(provider.isAuthenticated()).toBe(false);
-      });
+    beforeEach(() => {
+      const securityConfig = {
+        enabled: true
+      } as unknown as SecurityConfig;
+      ServiceProvider.get(SecurityContextService).updateSecurityConfig(securityConfig);
     });
 
-    describe('security is disabled', () => {
-      beforeEach(() => {
-        const securityConfig = {
-          enabled: false
-        } as unknown as SecurityConfig;
-        ServiceProvider.get(SecurityContextService).updateSecurityConfig(securityConfig);
-      });
+    it('should return true if token exists', async () => {
+      TestUtil.mockResponse(new ResponseMock('rest/login').setResponse(ProviderResponseMocks.loginResponse).setHeaders(new Headers({authorization: 'GDB someToken'})));
 
-      it('should return true if token exists', async () => {
-        TestUtil.mockResponse(new ResponseMock('rest/login').setResponse(ProviderResponseMocks.loginResponse).setHeaders(new Headers({authorization: 'GDB someToken'})));
-        await provider.login({username: 'testUser', password: '1234'});
-        expect(provider.isAuthenticated()).toBe(true);
-      });
+      await provider.login({username: 'testUser', password: '1234'});
+      expect(provider.isAuthenticated()).toBe(true);
+    });
 
-      it('should return true if token is null', async () => {
-        expect(provider.isAuthenticated()).toBe(true);
-      });
+    it('should return false if token is null', () => {
+      expect(provider.isAuthenticated()).toBe(false);
     });
   });
 });

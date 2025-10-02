@@ -4,21 +4,47 @@ import {service} from '../../providers';
 import {EventService} from '../event-service';
 import {Logout} from '../../models/events';
 import {SecurityContextService} from './security-context.service';
-import {AuthStrategy} from '../../models/security/authentication/auth-strategy';
+import {AuthStrategy} from '../../models/security/authentication';
 import {AuthStrategyResolver} from './auth-strategy-resolver';
 import {Login} from '../../models/events/auth/login';
+import {isLoginPage, navigate} from '../utils';
 
 /**
- * Service responsible for handling authentication-related operations.
+ * Service responsible for handling authentication operations and managing auth strategies.
+ *
+ * Provides a unified interface for authentication regardless of the underlying strategy
+ * (basic auth, OpenID Connect, etc.) and manages authentication state and events.
  */
 export class AuthenticationService implements Service {
   private readonly eventService = service(EventService);
   private readonly authStrategyResolver = service(AuthStrategyResolver);
   private authStrategy: AuthStrategy | undefined;
 
-  setAuthenticationStrategy(securityConfig: SecurityConfig): void {
+  /**
+   * Sets and initializes the authentication strategy based on security configuration.
+   * @param securityConfig Configuration determining which auth strategy to use
+   * @returns Promise that resolves when strategy is initialized
+   */
+  setAuthenticationStrategy(securityConfig: SecurityConfig): Promise<void> {
     this.authStrategy = this.authStrategyResolver.resolveStrategy(securityConfig);
-    this.authStrategy.initialize();
+    return this.authStrategy.initialize().then((isLoggedIn) => {
+      if (isLoginPage() && (isLoggedIn || securityConfig.freeAccess?.enabled)) {
+        navigate('/');
+        this.eventService.emit(new Login());
+      } else if (isLoginPage() && !isLoggedIn) {
+        // stay on login page
+      } else if (securityConfig.freeAccess?.enabled) {
+        this.eventService.emit(new Login());
+      }
+    });
+  }
+
+  /**
+   * Checks if an authentication strategy has been configured.
+   * @returns True if strategy is set
+   */
+  isAuthenticationStrategySet(): boolean {
+    return !!this.authStrategy;
   }
 
   /**
@@ -42,6 +68,7 @@ export class AuthenticationService implements Service {
   }
 
   /**
+   * Logs out the current user and emits logout event.
    * Updates security context for logout request.
    */
   logout(): void {
@@ -58,13 +85,17 @@ export class AuthenticationService implements Service {
    */
   isLoggedIn(): boolean {
     const config = this.getSecurityConfig();
-    return !!(config?.enabled && config?.userLoggedIn);
+    const authenticatedUser = service(SecurityContextService).getAuthenticatedUser();
+    return !!(config?.enabled && config?.userLoggedIn) || !!authenticatedUser?.username;
   }
 
   /**
    * Check if the user is authenticated.
    * A user is considered authenticated, if security is disabled, if he is external, or if there is an
    * auth token in the store
+   *
+   * @throws Error if authentication strategy is not set
+   * @returns {boolean} True if the user is authenticated, false otherwise.
    */
   isAuthenticated() {
     if (!this.authStrategy) {
@@ -81,6 +112,11 @@ export class AuthenticationService implements Service {
     return !!this.getSecurityConfig()?.enabled;
   }
 
+  /**
+   * Retrieves the current security configuration.
+   * @private
+   * @returns Current security config or undefined if not set
+   */
   private getSecurityConfig(): SecurityConfig | undefined {
     return service(SecurityContextService).getSecurityConfig();
   }

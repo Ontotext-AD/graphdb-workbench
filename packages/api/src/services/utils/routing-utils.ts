@@ -42,6 +42,15 @@ export function isHomePage(): boolean {
 }
 
 /**
+ * Checks if the current page is the login page.
+ *
+ * @returns {boolean} Returns true if the current page is the login page, false otherwise.
+ */
+export function isLoginPage(): boolean {
+  return getPathName() === '/login';
+}
+
+/**
  * Retrieves the pathname portion of the current URL without the context prefix.
  *
  * @returns {string} The pathname of the current URL, which represents the path segment that comes after the context (if any) and before the query string.

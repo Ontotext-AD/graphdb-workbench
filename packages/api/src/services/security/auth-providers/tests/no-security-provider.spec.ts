@@ -3,8 +3,8 @@ import {TestUtil} from '../../../../services/utils/test/test-util';
 import {ResponseMock} from '../../../../services/http/test/response-mock';
 import {ServiceProvider} from '../../../../providers';
 import {SecurityContextService, SecurityService} from '../../../../services/security';
-import {AuthenticatedUser} from '../../authenticated-user';
 import {ProviderResponseMocks} from './provider-response-mocks';
+import {AuthenticatedUser} from '../../../../models/security';
 
 describe('NoSecurityProvider', () => {
   let provider: NoSecurityProvider;

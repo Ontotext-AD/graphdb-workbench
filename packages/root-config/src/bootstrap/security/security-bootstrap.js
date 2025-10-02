@@ -6,7 +6,13 @@ const logger = LoggerProvider.logger;
 export const loadSecurityConfig = () => {
   return service(SecurityService).getSecurityConfig()
     .then((securityConfig) => {
-      service(SecurityContextService).updateSecurityConfig(securityConfig);
+      const securityContextService = service(SecurityContextService);
+      const authenticationService = service(AuthenticationService);
+
+      securityContextService.updateSecurityConfig(securityConfig);
+      if (securityConfig && !authenticationService.isAuthenticationStrategySet()) {
+        return authenticationService.setAuthenticationStrategy(securityConfig);
+      }
     })
     .catch((error) => {
       logger.error('Could not load security config', error);
@@ -14,15 +20,4 @@ export const loadSecurityConfig = () => {
     });
 };
 
-const subscribeToSecurityConfigChange = () => {
-  const securityContextService = service(SecurityContextService);
-  const authenticationService = service(AuthenticationService);
-
-  securityContextService.onSecurityConfigChanged((securityConfig) => {
-    if (securityConfig) {
-      authenticationService.setAuthenticationStrategy(securityConfig);
-    }
-  });
-};
-
-export const securityBootstrap = {loadSecurityConfig, subscribeToSecurityConfigChange};
+export const securityBootstrap = {loadSecurityConfig};

@@ -239,6 +239,8 @@ export class OntoTestContext {
    * @param securityConfig - The SecurityConfig object containing the security settings to be applied.
    */
   private setAuthStrategy(securityConfig: SecurityConfig): void {
+    const authenticationStorageService = ServiceProvider.get(AuthenticationStorageService);
+    authenticationStorageService.clearAuthToken();
     const authService = ServiceProvider.get(AuthenticationService);
     authService.setAuthenticationStrategy(securityConfig);
   }

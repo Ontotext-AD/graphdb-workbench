@@ -24,10 +24,10 @@ describe('Readonly saved query', () => {
     });
 
     afterEach(() => {
-        cy.loginAsAdmin().then(()=> {
-        cy.switchOffSecurity(true);
-        cy.deleteUser(USER_NAME, true);
-        cy.deleteRepository(repositoryId);
+        cy.loginAsAdmin().then(() => {
+            cy.switchOffSecurity(true);
+            cy.deleteUser(USER_NAME, true);
+            cy.deleteRepository(repositoryId);
         });
     });
 

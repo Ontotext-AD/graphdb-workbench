@@ -1,13 +1,12 @@
-import {AuthStrategy} from './auth-strategy';
-import {AuthStrategyType} from './auth-strategy-type';
 import {service} from '../../../providers';
-import {AuthenticationStorageService, SecurityContextService, SecurityService} from '../../../services/security';
-import {LoggerProvider} from '../../../services/logging/logger-provider';
+import {SecurityContextService, SecurityService} from '../../../services/security';
+import {LoggerProvider} from '../../logging/logger-provider';
+import {AuthStrategy} from '../../../models/security/authentication';
+import {AuthStrategyType} from '../../../models/security/authentication';
 
 export class NoSecurityProvider implements AuthStrategy {
   private readonly logger = LoggerProvider.logger;
   private readonly securityService = service(SecurityService);
-  private readonly authStorageService = service(AuthenticationStorageService);
   private readonly securityContextService = service(SecurityContextService);
 
   type = AuthStrategyType.NO_SECURITY;
@@ -15,15 +14,20 @@ export class NoSecurityProvider implements AuthStrategy {
   /**
    * Initializes the NoSecurityProvider and loads the admin user.
    *
-   * @returns A promise that resolves when the initialization is complete.
-   */
-  initialize(): Promise<unknown> {
+   * @returns Promise resolving to true if user is logged in
+   * */
+  initialize(): Promise<boolean> {
+    if (this.securityContextService.getSecurityConfig()?.freeAccess?.enabled) {
+      return Promise.resolve(true);
+    }
     return this.securityService.getAdminUser()
       .then((authenticatedUser) => {
         this.securityContextService.updateAuthenticatedUser(authenticatedUser);
+        return true;
       })
       .catch((error) => {
         this.logger.error('Could not load authenticated user', error);
+        return false;
       });
   }
 
