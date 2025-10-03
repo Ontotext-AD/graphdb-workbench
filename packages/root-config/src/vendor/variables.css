@@ -51,15 +51,15 @@
 
 :root.dark {
   /* Dark definition variables that affect things at a global scale */
-  --body-filter: invert(95%) hue-rotate(180deg);
-  --html-background: #0d0d0d;
-  --media-filter: invert(100%) hue-rotate(180deg);
-  --alert-filter: contrast(2);
-  --checkbox-filter: invert(100%) hue-rotate(180deg);
-  --toast-filter: invert(95%) hue-rotate(180deg) contrast(1.2);
-  /* Slightly different colors that work better in dark mode */
-  --primary-color-lightness: 60%;
-  --secondary-color-saturation: 70%;
-  --color-warning-light: var(--gw-primary-lighter);
-  --logo-color: var(--gw-primary-dark);
+  /*--body-filter: invert(95%) hue-rotate(180deg);*/
+  /*--html-background: #0d0d0d;*/
+  /*--media-filter: invert(100%) hue-rotate(180deg);*/
+  /*--alert-filter: contrast(2);*/
+  /*--checkbox-filter: invert(100%) hue-rotate(180deg);*/
+  /*--toast-filter: invert(95%) hue-rotate(180deg) contrast(1.2);*/
+  /*!* Slightly different colors that work better in dark mode *!*/
+  /*--primary-color-lightness: 60%;*/
+  /*--secondary-color-saturation: 70%;*/
+  /*--color-warning-light: var(--gw-primary-lighter);*/
+  /*--logo-color: var(--gw-primary-dark);*/
 }
