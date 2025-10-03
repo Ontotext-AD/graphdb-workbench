@@ -13,22 +13,22 @@
       min-width: 20vw;
 
       & input {
+        min-width: inherit;
         flex: 1;
         padding: .5rem .75rem;
         font-size: 1rem;
         line-height: 1.25;
-        color: #55595c;
-        background-color: #fff;
+        color: var(--gw-form-field-color);
+        background-color: var(--gw-form-field-background);
         background-image: none;
         -webkit-background-clip: padding-box;
         background-clip: padding-box;
-        border: 1px solid rgba(0,0,0,.15);
-        min-width: inherit;
+        border: 1px solid var(--gw-form-field-border-color);
 
         &:focus {
-          color: #55595c;
-          border-color: #66afe9;
           outline: 0;
+          color: var(--gw-form-field-focus-color);
+          border-color: var(--gw-form-field-focus-border-color);
         }
       }
     }
@@ -88,8 +88,8 @@
     & p {
       font-size: 1.1rem;
       line-height: 1.5;
-      color: var(--base-text-color);
-      background-color: #fff;
+      color: var(--gw-autocomplete-option-color);
+      background-color: var(--gw-autocomplete-background);
       margin-bottom: 0;
       padding: 5px 25px;
       cursor: pointer;

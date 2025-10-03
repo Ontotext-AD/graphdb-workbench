@@ -1,20 +1,16 @@
 @import '../../../node_modules/tippy.js/dist/tippy.css';
 @import '../../../node_modules/tippy.js/themes/light-border.css';
 
-:root {
-  --onto-tooltip-background-color: var(--gw-secondary-base, #003663);
-}
-
 :host {
   display: block;
 }
 
 .tippy-box[data-theme="onto-tooltip"] {
-  background-color: var(--onto-tooltip-background-color);
-  color: #FFFFFF;
+  color: var(--gw-tooltip-color);
+  background-color: var(--gw-tooltip-background);
   border-radius: 0;
 
   .tippy-arrow {
-    color: var(--onto-tooltip-background-color);
+    color: var(--gw-tooltip-background);
   }
 }
