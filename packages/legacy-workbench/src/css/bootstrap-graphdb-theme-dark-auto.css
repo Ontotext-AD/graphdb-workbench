@@ -1,30 +1,35 @@
-/* Invert all elements on the root while attempting to not alter the hue substantially. */
-:root {
-    filter: var(--body-filter);
-}
+/*
+TODO: remove before merge!!!
+*/
 
-/* Do not invert media (revert the invert) - since the body invert is 95% we can't revert it perfectly
-   (we could if the body invert was 100%) but it's close enough */
-img, video, .brand {
-    filter: var(--media-filter);
-}
 
-/* Make the alert boxes slightly more visible */
-.alert {
-    filter: var(--alert-filter);
-}
+/*!* Invert all elements on the root while attempting to not alter the hue substantially. *!*/
+/*:root {*/
+/*    filter: var(--body-filter);*/
+/*}*/
 
-/* Make the toastr boxes more close to the light theme so they stand out */
-#toast-container .toast {
-    filter: var(--toast-filter);
-}
+/*!* Do not invert media (revert the invert) - since the body invert is 95% we can't revert it perfectly*/
+/*   (we could if the body invert was 100%) but it's close enough *!*/
+/*img, video, .brand {*/
+/*    filter: var(--media-filter);*/
+/*}*/
 
-/* Revert the change on checkboxes and let the browser apply its dark theme there */
-input[type="checkbox"] {
-    filter: var(--checkbox-filter);
-}
+/*!* Make the alert boxes slightly more visible *!*/
+/*.alert {*/
+/*    filter: var(--alert-filter);*/
+/*}*/
 
-option {
-    background-color: var(--html-background);
-    color: var(--gw-neutral-base);
-}
+/*!* Make the toastr boxes more close to the light theme so they stand out *!*/
+/*#toast-container .toast {*/
+/*    filter: var(--toast-filter);*/
+/*}*/
+
+/*!* Revert the change on checkboxes and let the browser apply its dark theme there *!*/
+/*input[type="checkbox"] {*/
+/*    filter: var(--checkbox-filter);*/
+/*}*/
+
+/*option {*/
+/*    background-color: var(--html-background);*/
+/*    color: var(--gw-neutral-base);*/
+/*}*/

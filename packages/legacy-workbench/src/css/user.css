@@ -29,7 +29,7 @@
 }
 
 .wb-user .bordered-table {
-    border: 1px solid #eceeef;
+    border: 1px solid var(--gw-datatable-border-color);
     border-collapse: collapse;
     width: 100%;
 }

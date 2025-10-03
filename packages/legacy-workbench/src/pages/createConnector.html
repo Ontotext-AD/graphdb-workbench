@@ -53,7 +53,7 @@
                     <div ng-if="option.__type == 'OptionArray'">
                         <div ng-repeat="field in values[option.__name] track by $index" ng-init="fieldIndex = $index" class="row">
                             <div class="col-xs-11">
-                                <fieldset class="bg-lightgray mb-1 p-1">
+                                <fieldset class="mb-1 p-1">
                                     <div class="form-group row {{'child-property-' + child.__name}}" ng-repeat="child in option.__childOptions | filter: {__type: '!Boolean'}: true">
                                         <label class="col-xs-3"
                                                ng-class="{'col-form-label': true, 'font-weight-bold':child.__required }">{{child.__label}}<sup ng-if="child.__required">*</sup></label>
