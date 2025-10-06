@@ -333,6 +333,15 @@ ul.style-arrow li:before {
 .table th {
     font-weight: 500;
     vertical-align: middle;
+    color: var(--gw-datatable-header-color);
+    background-color: var(--gw-datatable-header-background);
+    border-color: var(--gw-datatable-header-cell-border-color);
+}
+
+.table td {
+    color: var(--gw-datatable-row-color);
+    background-color: var(--gw-datatable-row-background);
+    border-color: var(--gw-datatable-body-cell-border-color);
 }
 
 .table-sm td, .table-sm th {
@@ -563,11 +572,14 @@ code {
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
     border-radius: 0;
     margin-bottom: 1em;
+    color: var(--gw-panel-color);
+    background-color: var(--gw-panel-background);
 }
 
 .card-header {
     padding: 0.75em 1.8rem;
-    background-color: #fff;
+    color: var(--gw-panel-header-color);
+    background-color: var(--gw-panel-header-background);
 }
 
 .card.inline {
@@ -946,11 +958,35 @@ li.remote {
 /*-------------------------------------------------------------
 	Forms
 -------------------------------------------------------------*/
-.form-control, .form-control-lg, .input-group-lg > .form-control, .input-group-lg > .input-group-addon, .input-group-lg > .input-group-btn > .btn {
+.form-control,
+.form-control-lg {
+    color: var(--gw-form-field-color);
+    background-color: var(--gw-form-field-background);
+}
+
+.form-control:disabled,
+.form-control-lg:disabled {
+    color: var(--gw-form-field-disabled-color);
+    background-color: var(--gw-form-field-disabled-background);
+}
+
+.form-control::placeholder,
+.form-control-lg::placeholder {
+    color: var(--gw-form-field-placeholder-color);
+}
+
+.form-control,
+.form-control-lg,
+.input-group-lg > .form-control,
+.input-group-lg > .input-group-addon,
+.input-group-lg > .input-group-btn > .btn {
     border-radius: 0;
 }
 
-.form-control-lg, .input-group-lg > .form-control, .input-group-lg > .input-group-addon, .input-group-lg > .input-group-btn > .btn {
+.form-control-lg,
+.input-group-lg > .form-control,
+.input-group-lg > .input-group-addon,
+.input-group-lg > .input-group-btn > .btn {
     font-size: 1.125rem;
 }
 
