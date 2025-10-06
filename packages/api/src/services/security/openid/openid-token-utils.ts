@@ -4,7 +4,8 @@ import {service} from '../../../providers';
 import {OpenidStorageService} from '../../../services/security/openid/openid-storage.service';
 import {SecurityContextService} from '../../../services/security';
 import {OpenidSecurityConfig} from '../../../models/security/openid-security-config';
-import {OpenIdTokens} from '../../../models/security/authentication/openid-auth-flow-models';
+import {OpenIdTokens} from '../../../models/security/authentication';
+import {OpenIdError} from './errors/openid-error';
 
 export enum TokenType {
   ACCESS = 'access',
@@ -16,6 +17,7 @@ export class OpenidTokenUtils {
   private readonly logger = LoggerProvider.logger;
   private readonly openidStorageService = service(OpenidStorageService);
   private readonly securityContextService = service(SecurityContextService);
+  private readonly REFRESH_TOKEN_TOLERANCE = 5000; // 5 seconds
 
   /**
    * Determines if there is a valid ID token. A valid ID token means we are logged in.
@@ -45,7 +47,6 @@ export class OpenidTokenUtils {
    * @returns {boolean} True if there is a valid refresh token, false otherwise.
    */
   hasValidRefreshToken(): boolean {
-    const tolerance = 5000; // 5 seconds
     const refreshToken = this.getTokenByType(TokenType.REFRESH);
 
     if (!refreshToken) {
@@ -60,9 +61,9 @@ export class OpenidTokenUtils {
       return true;
     }
 
-    if (refreshData['nbf'] && refreshData['nbf'] * 1000 - Date.now() > tolerance) {
+    if (refreshData['nbf'] && refreshData['nbf'] * 1000 - Date.now() > this.REFRESH_TOKEN_TOLERANCE) {
       return false;
-    } else if (refreshData['exp'] && Date.now() - refreshData['exp'] * 1000 > tolerance) {
+    } else if (refreshData['exp'] && Date.now() - refreshData['exp'] * 1000 > this.REFRESH_TOKEN_TOLERANCE) {
       return false;
     } else {
       return !!refreshData['iat'];
@@ -138,7 +139,7 @@ export class OpenidTokenUtils {
       }
     } catch (e) {
       this.logger.error('oidc: token header decode failed', e);
-      throw new Error('openid.auth.not.jwt.token');
+      throw new OpenIdError('openid.auth.not.jwt.token');
     }
   };
 
@@ -160,7 +161,7 @@ export class OpenidTokenUtils {
       }
     } catch (e) {
       this.logger.debug('Token payload decode error', e);
-      throw new Error('openid.auth.not.jwt.token');
+      throw new OpenIdError('openid.auth.not.jwt.token');
     }
   };
 

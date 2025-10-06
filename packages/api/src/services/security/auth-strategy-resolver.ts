@@ -1,4 +1,4 @@
-import {AuthStrategy} from '../../models/security/authentication/auth-strategy';
+import {AuthStrategy} from '../../models/security/authentication';
 import {SecurityConfig} from '../../models/security';
 import {Service} from '../../providers/service/service';
 import {NoSecurityProvider} from './auth-providers/no-security-provider';

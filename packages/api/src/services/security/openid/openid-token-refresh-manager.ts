@@ -2,6 +2,7 @@ import {service} from '../../../providers';
 import {LoggerProvider} from '../../logging/logger-provider';
 import {OpenidStorageService} from './openid-storage.service';
 import {TokenType, OpenidTokenUtils} from './openid-token-utils';
+import {OpenIdError} from './errors/openid-error';
 
 /**
  * Manages automatic refresh of OpenID Connect tokens before they expire.
@@ -65,7 +66,7 @@ export class OpenIdTokenRefreshManager {
   private calculateRefreshDelay(): number {
     const token = this.tokenUtils.getTokenByType(TokenType.ID);
     if (!token) {
-      throw new Error('No valid ID token found');
+      throw new OpenIdError('No valid ID token found');
     }
 
     const accessToken = this.tokenUtils.getTokenPayload(token) as Record<string, number>;

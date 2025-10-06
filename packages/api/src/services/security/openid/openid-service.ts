@@ -1,19 +1,20 @@
 import {Service} from '../../../providers/service/service';
 import {service} from '../../../providers';
 import {OpenIdRestService} from './openid-rest-service';
-import {SecurityContextService} from './../security-context.service';
+import {SecurityContextService} from '../security-context.service';
 import {LoggerProvider} from '../../logging/logger-provider';
-import {OpenidSecurityConfig} from '../../../models/security/openid-security-config';
+import {OpenidSecurityConfig} from '../../../models/security';
 import {OpenIdUrlBuilder} from './openid-url-builder';
 import {OpenIdAuthFlowHandler} from './openid-auth-flow-handler';
 import {OpenIdTokenRefreshManager} from './openid-token-refresh-manager';
-import {AuthFlowParams, OpenIdAuthFlowType, OpenIdTokens} from '../../../models/security/authentication/openid-auth-flow-models';
+import {AuthFlowParams, OpenIdAuthFlowType, OpenIdTokens} from '../../../models/security/authentication';
 import {OpenidStorageService} from './openid-storage.service';
 import {OpenidTokenUtils} from './openid-token-utils';
 import {OpenIdUtils} from './openid-utils';
 import {AuthenticationStorageService} from '../authentication-storage.service';
 import {EventService} from '../../event-service';
 import {Logout} from '../../../models/events';
+import {OpenIdError} from './errors/openid-error';
 
 /**
  * Service responsible for managing OpenID Connect authentication flows, token management,
@@ -64,7 +65,7 @@ export class OpenIdService implements Service {
   async refreshTokens(refreshToken: string): Promise<void> {
     const openIdSecurityConfig = this.getOpenIdConfig();
     if (!openIdSecurityConfig) {
-      throw new Error('No OpenID configuration');
+      throw new OpenIdError('No OpenID configuration');
     }
 
     try {
@@ -250,7 +251,7 @@ export class OpenIdService implements Service {
   private async exchangeTokensForCode(code: string, redirectUrl: string, codeVerifier?: string | null): Promise<void> {
     const openIdSecurityConfig = this.getOpenIdConfig();
     if (!openIdSecurityConfig) {
-      throw new Error('No OpenID configuration');
+      throw new OpenIdError('No OpenID configuration');
     }
 
     try {
@@ -260,7 +261,7 @@ export class OpenIdService implements Service {
       await this.setupTokensRefresh(true);
     } catch (e) {
       this.logger.error('oidc: openid.auth.cannot.retrieve.token.msg', {error: e});
-      throw new Error('Cannot retrieve tokens');
+      throw new OpenIdError('Cannot retrieve tokens');
     }
   }
 
@@ -306,7 +307,7 @@ export class OpenIdService implements Service {
   private getLoginUrl(state: string, codeChallenge: string, redirectUrl: string): string {
     const openIdSecurityConfig = this.getOpenIdConfig();
     if (!openIdSecurityConfig) {
-      throw new Error('No OpenID configuration');
+      throw new OpenIdError('No OpenID configuration');
     }
 
     const urlBuilder = new OpenIdUrlBuilder(openIdSecurityConfig);

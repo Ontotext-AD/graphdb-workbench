@@ -3,13 +3,12 @@ import {AuthenticationService, AuthenticationStorageService, OpenidStorageServic
 import {LoggerProvider} from '../../logging/logger-provider';
 import {OpenIdService} from '../openid/openid-service';
 import {getOrigin} from '../../utils';
-import {AuthStrategy} from '../../../models/security/authentication/auth-strategy';
+import {AuthStrategy, AuthStrategyType, OpenIdAuthFlowType} from '../../../models/security/authentication';
 import {OpenidTokenUtils} from '../openid/openid-token-utils';
-import {AuthStrategyType} from '../../../models/security/authentication/auth-strategy-type';
 import {OpenidSecurityConfig} from '../../../models/security';
-import {OpenIdUtils} from '../openid/openid-utils';
-import {OpenIdAuthFlowType} from '../../../models/security/authentication/openid-auth-flow-models';
 import {OntoToastrService} from '../../toastr';
+import {GeneratorUtils} from '../../utils/generator-utils';
+import {OpenIdError} from '../openid/errors/openid-error';
 
 // Constants for better maintainability
 const ERRORS = {
@@ -84,7 +83,7 @@ export class OpenidAuthProvider implements AuthStrategy {
     this.validateConfiguration();
 
     const returnToUrl = this.getReturnUrl();
-    const state = OpenIdUtils.generateRandomString();
+    const state = GeneratorUtils.generateRandomString(28);
     const authFlow = this.openIdSecurityConfig!.authFlow as OpenIdAuthFlowType;
 
     this.executeAuthFlow(authFlow, state, returnToUrl);
@@ -140,7 +139,7 @@ export class OpenidAuthProvider implements AuthStrategy {
    */
   private validateConfiguration(): void {
     if (!this.openIdSecurityConfig) {
-      throw new Error(ERRORS.CONFIG_NOT_FOUND);
+      throw new OpenIdError(ERRORS.CONFIG_NOT_FOUND);
     }
   }
 
@@ -224,7 +223,7 @@ export class OpenidAuthProvider implements AuthStrategy {
     default:
       this.logger.debug(`oidc: unknown auth flow: ${authFlow}`);
       this.toasterService.error(`openid.auth.unknown.flow: ${authFlow}`);
-      throw new Error(`oidc: unknown auth flow: ${authFlow}`);
+      throw new OpenIdError(`oidc: unknown auth flow: ${authFlow}`);
     }
   }
 }

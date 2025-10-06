@@ -110,6 +110,11 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 return ServiceProvider.get(RepositoryStorageService).getRepositoryReference();
             };
 
+            const isGDBorOpenIDToken = function() {
+                const token = AuthTokenService.getAuthToken();
+                return token && (token.startsWith('GDB') || that.openIDEnabled && token.startsWith('Bearer'));
+            };
+
             /**
              * Determines the currently authenticated user from the backend's point-of-view
              * by sending a request to the dedicated API endpoint using the current authentication
@@ -120,15 +125,24 @@ angular.module('graphdb.framework.core.services.jwtauth', [
              * @param {boolean} justLoggedIn Indicates that the user just logged in.
              */
             this.getAuthenticatedUserFromBackend = function(noFreeAccessFallback, justLoggedIn) {
-                const token = AuthTokenService.getAuthToken();
-                if (token && token.startsWith('GDB') || that.openIDEnabled && token && token.startsWith('Bearer')) {
-                    SecurityService.getAuthenticatedUser().then(function(data) {
+                if (isGDBorOpenIDToken) {
+                    return SecurityService.getAuthenticatedUser().then(function(data) {
                         // FIXME: Update principal with response, because of difference in the principal model and the AuthenticatedUser model
                         that.authenticate(data); // this will emit securityInit
+                    }).catch(function() {
+                        if (noFreeAccessFallback || !that.freeAccess) {
+                            $rootScope.redirectToLogin(false, justLoggedIn);
+                        } else {
+                            that.securityInitialized = true;
+                            if (!that.hasExplicitAuthentication()) {
+                                that.clearAuthentication();
+                                // console.log('free access fallback');
+                            }
+                        }
                     });
-                    return; // already authenticated in security module
                 }
 
+                // FIXME: Remove after verification that it is not needed for Kerberos or X509 authentication
                 SecurityService.getAuthenticatedUser().then(function(data) {
                     ServiceProvider.get(SecurityContextService).updateAuthenticatedUser(
                         MapperProvider.get(AuthenticatedUserMapper).mapToModel(data),
@@ -495,7 +509,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
 
             this.hasBaseRights = function(action, repo) {
                 const authorizationService = service(AuthorizationService);
-                return authorizationService.hasBaseRights(repo, action);
+                return authorizationService.hasBaseRights(action, repo);
                 // FIXME: Keep for reference
                 // const repoId = repo.location ? `${repo.id}@${repo.location}` : repo.id;
                 // const overCurrentRepo = `${action}_REPO_${repoId}`;
@@ -545,8 +559,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             this.broadcastSecurityInit = (securityEnabled, userLoggedIn, freeAccess) => {
                 $rootScope.$broadcast('securityInit', securityEnabled, userLoggedIn, freeAccess);
 
-                const token = AuthTokenService.getAuthToken();
-                if (token && token.startsWith('GDB') || that.openIDEnabled && token && token.startsWith('Bearer')) {
+                if (isGDBorOpenIDToken) {
                     return; // already authenticated in security module
                 }
 

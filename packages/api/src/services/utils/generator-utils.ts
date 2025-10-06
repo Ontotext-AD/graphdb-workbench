@@ -38,6 +38,28 @@ export class GeneratorUtils {
   }
 
   /**
+   * Generates a random hexadecimal string of specified length.
+   *
+   * @param length - Number of hex bytes to generate (result will be length * 2 characters).
+   * @returns A hexadecimal string with zero-padded bytes.
+   */
+  static generateRandomString(length: number): string {
+    const HEX_RADIX = 16;
+    const result: string[] = [];
+
+    let seed = Date.now() ^ (performance?.now() ?? 0);
+
+    for (let i = 0; i < length; i++) {
+      seed = (seed * 9301 + 49297) % 233280; // simple LCG
+      const rand = seed % 256;
+      const hex = rand.toString(HEX_RADIX).padStart(2, '0');
+      result.push(hex);
+    }
+
+    return result.join('');
+  }
+
+  /**
    * Returns a hash code from a string
    * @param  {String} str The string to hash.
    * @return {Number}    A 32bit integer

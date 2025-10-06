@@ -1,5 +1,5 @@
 <div class="ot-loader ot-loader-home" onto-loader-fancy size="100" ng-show="isLoadingLocation()"></div>
-<div class="content-wrapper" ng-hide="isLoadingLocation()" ng-cloak>
+<div id="wb-home" class="content-wrapper" ng-hide="isLoadingLocation()" ng-cloak>
     <div class="alert alert-danger" role="alert" ng-hide="isLicenseValid()">
         <strong>{{getLicenseErrorMsg()}}</strong>
         <div ng-bind-html="'supply.license.or.contact.us.warning' | translate | trustAsHtml"></div>

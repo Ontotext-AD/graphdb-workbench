@@ -5,9 +5,9 @@ import {AuthenticationStorageService} from '../authentication-storage.service';
 import {SecurityContextService} from '../security-context.service';
 import {EventService} from '../../event-service';
 import {Logout} from '../../../models/events';
-import {WindowService} from '../../window/window.service';
-import {AuthStrategy} from '../../../models/security/authentication/auth-strategy';
-import {AuthStrategyType} from '../../../models/security/authentication/auth-strategy-type';
+import {WindowService} from '../../window';
+import {AuthStrategy} from '../../../models/security/authentication';
+import {AuthStrategyType} from '../../../models/security/authentication';
 import {AuthStrategyResolver} from '../auth-strategy-resolver';
 
 class TestAuthStrategy implements AuthStrategy {

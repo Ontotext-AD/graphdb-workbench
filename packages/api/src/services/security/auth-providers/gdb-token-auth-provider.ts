@@ -1,9 +1,9 @@
 import {MapperProvider, service} from '../../../providers';
 import {AuthenticatedUserMapper, AuthenticationService, AuthenticationStorageService, SecurityContextService, SecurityService} from '../../../services/security';
-import {LoggerProvider} from '../../../services/logging/logger-provider';
-import {getCurrentRoute} from '../../../services/utils';
-import {AuthStrategy} from '../../../models/security/authentication/auth-strategy';
-import {AuthStrategyType} from '../../../models/security/authentication/auth-strategy-type';
+import {LoggerProvider} from '../../logging/logger-provider';
+import {getCurrentRoute} from '../../utils';
+import {AuthStrategy} from '../../../models/security/authentication';
+import {AuthStrategyType} from '../../../models/security/authentication';
 import {AuthenticatedUser} from '../../../models/security';
 
 type LoginData = {

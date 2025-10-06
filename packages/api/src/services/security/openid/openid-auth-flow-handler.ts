@@ -1,12 +1,14 @@
 import {service} from '../../../providers';
-import {OpenidSecurityConfig} from '../../../models/security/openid-security-config';
+import {OpenidSecurityConfig} from '../../../models/security';
 import {LoggerProvider} from '../../logging/logger-provider';
 import {getOrigin} from '../../utils';
-import {AuthFlowParams, OpenIdAuthFlowType} from '../../../models/security/authentication/openid-auth-flow-models';
+import {AuthFlowParams, OpenIdAuthFlowType} from '../../../models/security/authentication';
 import {OpenidStorageService} from './openid-storage.service';
 import {OpenidTokenUtils} from './openid-token-utils';
 import {OpenIdUtils} from './openid-utils';
 import {OntoToastrService} from '../../toastr';
+import {GeneratorUtils} from '../../utils/generator-utils';
+import {OpenIdError} from './errors/openid-error';
 
 export type ExchangeTokensCallback = (code: string, redirectUrl: string, codeVerifier?: string | null) => Promise<void>;
 
@@ -25,7 +27,7 @@ export class OpenIdAuthFlowHandler {
    * @param config OpenID security configuration
    * @param params Authentication flow parameters from callback
    * @param exchangeTokensCallback Function to exchange code for tokens
-   * @returns Promise resolving to true if successful
+   * @returns Promise resolving to true if successful or throws error on failure
    */
   async handleAuthorizationCode(config: OpenidSecurityConfig, params: AuthFlowParams, exchangeTokensCallback: ExchangeTokensCallback): Promise<boolean> {
     const redirectUri = `${getOrigin()}login`;
@@ -35,11 +37,11 @@ export class OpenIdAuthFlowHandler {
         await this.handlePkceFlow(params, redirectUri, exchangeTokensCallback);
       } else if (config.authFlow === OpenIdAuthFlowType.CODE_NO_PKCE) {
         if (!params.code) {
-          throw new Error('Missing authorization code');
+          throw new OpenIdError('Missing authorization code');
         }
         await this.handleCodeNoPkceFlow(params.code, redirectUri, exchangeTokensCallback);
       } else {
-        throw new Error('Invalid OpenID authentication flow');
+        throw new OpenIdError('Invalid OpenID authentication flow');
       }
       return true;
     } catch (error) {
@@ -75,7 +77,7 @@ export class OpenIdAuthFlowHandler {
    */
   storeCodeFlowData(state: string): void {
     this.openidStorageService.setPkceState(state);
-    this.openidStorageService.setPkceCodeVerifier(OpenIdUtils.generateRandomString());
+    this.openidStorageService.setPkceCodeVerifier(GeneratorUtils.generateRandomString(28));
   }
 
   /**
@@ -86,7 +88,7 @@ export class OpenIdAuthFlowHandler {
   getCodeChallengeForCodeFlow(): string {
     const codeVerifier = this.openidStorageService.getPkceCodeVerifier().getValue();
     if (!codeVerifier) {
-      throw new Error('Missing PKCE code verifier');
+      throw new OpenIdError('Missing PKCE code verifier');
     }
     return OpenIdUtils.pkceChallengeFromVerifier(codeVerifier);
   }
@@ -100,11 +102,11 @@ export class OpenIdAuthFlowHandler {
     if (storedState !== params.state) {
       this.logger.debug(`oidc: PKCE state mismatch ${storedState} != ${params.state}`);
       this.toasterService.error('openid.auth.invalid.pkce.state');
-      throw new Error('openid.auth.invalid.pkce.state');
+      throw new OpenIdError('openid.auth.invalid.pkce.state');
     }
 
     if (!params.code) {
-      throw new Error('Missing authorization code');
+      throw new OpenIdError('Missing authorization code');
     }
 
     const codeVerifier = this.openidStorageService.getPkceCodeVerifier().getValue();

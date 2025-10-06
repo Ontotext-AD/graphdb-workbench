@@ -1,5 +1,6 @@
-import {OpenidSecurityConfig} from '../../../models/security/openid-security-config';
-import {OpenIdAuthFlowType, OpenIdResponseType} from '../../../models/security/authentication/openid-auth-flow-models';
+import {OpenidSecurityConfig} from '../../../models/security';
+import {OpenIdAuthFlowType, OpenIdResponseType} from '../../../models/security/authentication';
+import {OpenIdError} from './errors/openid-error';
 
 /**
  * Builds OpenID Connect URLs for authentication and logout operations.
@@ -51,7 +52,7 @@ export class OpenIdUrlBuilder {
     } else if (authFlow === OpenIdAuthFlowType.IMPLICIT) {
       return OpenIdResponseType.TOKEN;
     } else {
-      throw new Error('openid.auth.unknown.flow');
+      throw new OpenIdError('openid.auth.unknown.flow');
     }
   }
 

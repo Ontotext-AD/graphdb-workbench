@@ -1,8 +1,9 @@
 import {HttpOptions} from '../../models/http/http-options';
 import {InterceptorService} from '../interceptor/interceptor.service';
-import {HttpRequest, RequestConfig} from '../../models/http/http-request';
+import {HttpRequest} from '../../models/http/http-request';
 import {ServiceProvider} from '../../providers';
 import {EventEmitter} from '../../emitters/event.emitter';
+import {HttpRequestConfig} from '../../models/http/http-request-config';
 
 const JSON_CONTENT_TYPES = ['application/json', 'application/sparql-results+json'];
 
@@ -115,12 +116,6 @@ export class HttpService {
   private request<T>(url: string, method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH', options: HttpOptions = {}): Promise<T> {
     const {fullUrl, headers} = this.getRequestConfig(url, options);
 
-    Object.keys(headers).forEach((key) => {
-      if (!headers[key]) {
-        delete headers[key];
-      }
-    });
-
     return this.executeRequest(new HttpRequest({url: fullUrl, method, headers, body: options.body}))
       .then((response) => {
         if (!response.ok) {
@@ -132,7 +127,7 @@ export class HttpService {
       .finally(() => this.eventEmitter.emit({NAME: HTTP_REQUEST_DONE_EVENT, payload: undefined}));
   }
 
-  private getRequestConfig(url: string, options: HttpOptions): RequestConfig {
+  private getRequestConfig(url: string, options: HttpOptions): HttpRequestConfig {
     const queryString = this.buildQueryParams(options.params);
     const fullUrl = `${url}${queryString ? `?${queryString}` : ''}`;
     const headers = {
@@ -148,10 +143,10 @@ export class HttpService {
       return null;
     }
 
-    if (headers['Content-Type'] === 'application/json') {
+    if (headers['Content-Type']?.includes('application/json')) {
       return JSON.stringify(body);
     } else if (headers['Content-Type']?.includes('application/x-www-form-urlencoded')) {
-      return body as FormData;
+      return body as URLSearchParams;
     }
     return body as BodyInit;
   }

@@ -4,10 +4,10 @@ import {service} from '../../providers';
 import {EventService} from '../event-service';
 import {Logout} from '../../models/events';
 import {SecurityContextService} from './security-context.service';
-import {AuthStrategy} from '../../models/security/authentication/auth-strategy';
+import {AuthStrategy} from '../../models/security/authentication';
 import {AuthStrategyResolver} from './auth-strategy-resolver';
 import {Login} from '../../models/events/auth/login';
-import {isLoginPage} from '../utils';
+import {isLoginPage, navigate} from '../utils';
 
 /**
  * Service responsible for handling authentication operations and managing auth strategies.
@@ -29,7 +29,7 @@ export class AuthenticationService implements Service {
     this.authStrategy = this.authStrategyResolver.resolveStrategy(securityConfig);
     return this.authStrategy.initialize().then((isLoggedIn) => {
       if (isLoginPage() && (isLoggedIn || securityConfig.freeAccess?.enabled)) {
-        window.singleSpa.navigateToUrl('/');
+        navigate('/');
         this.eventService.emit(new Login());
       } else if (isLoginPage() && !isLoggedIn) {
         // stay on login page

@@ -1,5 +1,6 @@
 import {hextob64u, KJUR} from 'jsrsasign';
-import {AuthFlowParams} from '../../../models/security/authentication/openid-auth-flow-models';
+import {AuthFlowParams} from '../../../models/security/authentication';
+import {WindowService} from '../../window';
 
 export type OpenIdQueryParams = {
   access_token: string | null;
@@ -9,17 +10,6 @@ export type OpenIdQueryParams = {
 }
 
 export class OpenIdUtils {
-  /**
-   * Generates a secure random string using the browser crypto functions.
-   *
-   * @returns {string} A random string.
-   */
-  static generateRandomString(): string {
-    const array = new Uint32Array(28);
-    window.crypto.getRandomValues(array);
-    return Array.from(array, (dec) => ('0' + dec.toString(16)).substr(-2)).join('');
-  };
-
   /**
    * Returns the base64-urlencoded SHA-256 hash for the PKCE challenge.
    *
@@ -43,7 +33,7 @@ export class OpenIdUtils {
     let urlParams;
 
     if (isImplicitFlow) {
-      const fragment = window.location.hash.substring(1);
+      const fragment = WindowService.getWindow().location.hash.substring(1);
       urlParams = new URLSearchParams(fragment);
     } else {
       urlParams = new URLSearchParams(window.location.search);
