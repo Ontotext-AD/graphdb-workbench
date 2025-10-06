@@ -12,7 +12,8 @@ body {
     font-weight: var(--main-font-weight);
     margin-bottom: 0;
     /* Overriding bootstrap's base text color #373a3c */
-    color: var(--base-text-color);
+    color: var(--gw-body-color);
+    background-color: var(--gw-body-background);
 }
 
 code, kbd, pre, samp {
@@ -49,7 +50,7 @@ a:focus, a:hover {
 }
 
 .text-muted {
-    color: rgba(0, 0, 0, 0.66) !important
+    color: var(--gw-text-muted-color) !important
 }
 
 .pos-r {
@@ -92,81 +93,88 @@ h1 .btn {
 }
 
 .btn-primary {
-    background-color: var(--gw-primary-base);
-    border-color: var(--gw-primary-base);
+    color: var(--gw-button-primary-color);
+    background-color: var(--gw-button-primary-background);
+    border-color: var(--gw-button-primary-border-color);
 }
 
 .btn-primary.active, .btn-primary.focus, .btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active.focus,
 .btn-primary.active:focus, .btn-primary.active:hover, .btn-primary:active.focus, .btn-primary:active:focus, .btn-primary:active:hover, .open > .btn-primary.dropdown-toggle.focus, .open > .btn-primary.dropdown-toggle:focus, .open > .btn-primary.dropdown-toggle:hover,
 .btn-primary.disabled:hover, .btn-primary:disabled:hover {
-    background-color: var(--gw-primary-dark);
-    border-color: var(--gw-primary-dark);
+    color: var(--gw-button-primary-hover-color);
+    background-color: var(--gw-button-primary-hover-background);
+    border-color: var(--gw-button-primary-hover-border-color);
 }
 
 .btn-secondary {
-    background-color: #EBEBEB;
-    border-color: #EBEBEB;
-    color: var(--gw-secondary-base);
+    color: var(--gw-button-secondary-color);
+    background-color: var(--gw-button-secondary-background);
+    border-color: var(--gw-button-secondary-border-color);
 }
 
 .btn-secondary.focus,
 .btn-secondary:hover, .btn-secondary:focus, .btn-secondary:active,
 .btn-secondary:active.focus, .btn-secondary:active:focus, .btn-secondary:active:hover,
-.btn-prisecondarymary.disabled:hover, .btn-secondary:disabled:hover {
-    background-color: #d4d4d4;
-    border-color: #d4d4d4;
+.btn-secondary.disabled:hover, .btn-secondary:disabled:hover {
+    color: var(--gw-button-secondary-hover-color);
+    background-color: var(--gw-button-secondary-hover-background);
+    border-color: var(--gw-button-secondary-hover-border-color);
 }
 
 .btn-secondary.active, .btn-secondary.active.focus, .btn-secondary.active:focus, .btn-secondary.active:hover {
-    background-color: var(--gw-primary-base);
-    border-color: var(--gw-primary-base);
-    color: #fff;
+    color: var(--gw-button-secondary-active-color);
+    background-color: var(--gw-button-secondary-active-background);
+    border-color: var(--gw-button-secondary-active-border-color);
 }
 
 .btn-info {
-    background-color: var(--gw-secondary-base);
-    border-color: var(--gw-secondary-base);
+    color: var(--gw-button-info-color);
+    background-color: var(--gw-button-info-background);
+    border-color: var(--gw-button-info-border-color);
 }
 
 .btn-info.active, .btn-info.focus, .btn-info:hover, .btn-info:focus, .btn-info:active, .btn-info.active.focus,
 .btn-info.active:focus, .btn-info.active:hover, .btn-info:active.focus, .btn-info:active:focus, .btn-info:active:hover, .open > .btn-info.dropdown-toggle.focus, .open > .btn-info.dropdown-toggle:focus, .open > .btn-info.dropdown-toggle:hover,
 .btn-info.disabled:hover, .btn-info:disabled:hover {
-    background-color: var(--gw-secondary-light);
-    border-color: var(--gw-secondary-light);
+    color: var(--gw-button-info-hover-color);
+    background-color: var(--gw-button-info-hover-background);
+    border-color: var(--gw-button-info-hover-border-color);
 }
 
 /* outline buttons */
 .btn-outline-primary {
-    color: var(--gw-primary-base);
-    border-color: var(--gw-primary-base);
+    color: var(--gw-button-outlined-primary-color);
+    background-color: var(--gw-button-outlined-primary-background);
+    border-color: var(--gw-button-outlined-primary-border-color);
 }
 
 .btn-outline-primary:hover,
 .btn-outline-primary.focus, .btn-outline-primary:focus, .btn-outline-primary.active, .btn-outline-primary:active, .open > .btn-outline-primary.dropdown-toggle,
 .btn-outline-primary.active.focus, .btn-outline-primary.active:focus, .btn-outline-primary.active:hover, .btn-outline-primary:active.focus, .btn-outline-primary:active:focus, .btn-outline-primary:active:hover, .open > .btn-outline-primary.dropdown-toggle.focus, .open > .btn-outline-primary.dropdown-toggle:focus, .open > .btn-outline-primary.dropdown-toggle:hover {
-    color: var(--gw-primary-base);
-    background-color: var(--gw-primary-lighter);
-    border-color: var(--gw-primary-base);
+    color: var(--gw-button-outlined-primary-color);
+    background-color: var(--gw-button-outlined-primary-hover-background);
+    border-color: var(--gw-button-outlined-primary-border-color);
 }
 
 .btn-outline-secondary {
-    color: var(--gw-secondary-base);
     background-image: none;
+    color: var(--gw-button-outlined-secondary-color);
     background-color: transparent;
-    border-color: var(--gw-secondary-light);
+    border-color: var(--gw-button-outlined-secondary-border-color);
 }
 
 .btn-outline-secondary:hover,
 .btn-outline-secondary.focus, .btn-outline-secondary:focus, .btn-outline-secondary.active, .btn-outline-secondary:active,
 .btn-outline-secondary.active.focus, .btn-outline-secondary.active:focus, .btn-outline-secondary:active.focus, .btn-outline-secondary:active:focus, .btn-outline-secondary:active:hover, .open > .btn-outline-secondary.dropdown-toggle.focus, .open > .btn-outline-secondary.dropdown-toggle:focus, .open > .btn-outline-secondary.dropdown-toggle:hover {
-    color: var(--gw-secondary-base);
-    background-color: var(--gw-secondary-lighter);
-    border-color: var(--gw-secondary-base);
+    color: var(--gw-button-outlined-secondary-color);
+    background-color: var(--gw-button-outlined-secondary-hover-background);
+    border-color: var(--gw-button-outlined-secondary-color);
 }
 
 .btn-outline-secondary.active:hover {
-    background-color: var(--gw-secondary-lighter);
-    border-color: var(--gw-secondary-base);
+    color: var(--gw-button-outlined-secondary-color);
+    background-color: var(--gw-button-outlined-secondary-hover-background);
+    border-color: var(--gw-button-outlined-secondary-color);
 }
 
 .btn-group-lg > .btn, .btn-lg {
@@ -175,7 +183,7 @@ h1 .btn {
 }
 
 .btn-link, .btn-link a {
-    color: var(--gw-primary-base);
+    color: var(--gw-button-link-color);
     padding: .5em .8em;
 }
 
@@ -184,6 +192,7 @@ h1 .btn {
     text-decoration-style: dotted;
     text-decoration-thickness: var(--link-decoration-thickness);
     text-underline-offset: var(--link-underline-offset);
+    color: var(--gw-button-link-hover-color);
 }
 
 .btn-link-only-icons {
@@ -195,7 +204,7 @@ h1 .btn {
 }
 
 .btn-link:focus, .btn-link:hover, .btn-link.secondary:hover {
-    color: var(--gw-primary-dark);
+    color: var(--gw-button-link-hover-color);
 }
 
 .btn-link.disabled:focus, .btn-link.disabled:hover, .btn-link.disabled.secondary:hover {
@@ -350,28 +359,34 @@ h3 [class^=icon-] {
     padding: 1em;
 }
 
-.alert-warning, .alert-info, .alert-help, .alert-danger, .alert-success {
-    color: #000000AF;
-}
-
 .alert-warning {
+    color: var(--gw-message-warn-color);
     background-color: var(--gw-message-warn-background);
+    border-color: var(--gw-message-warn-border-color);
 }
 
 .alert-info {
+    color: var(--gw-message-info-color);
     background-color: var(--gw-message-info-background);
+    border-color: var(--gw-message-info-border-color);
 }
 
 .alert-help {
+    color: var(--gw-message-help-color);
     background-color: var(--gw-message-help-background);
+    border-color: var(--gw-message-help-border-color);
 }
 
 .alert-success {
+    color: var(--gw-message-success-color);
     background-color: var(--gw-message-success-background);
+    border-color: var(--gw-message-success-border-color);
 }
 
 .alert-danger {
+    color: var(--gw-message-error-color);
     background-color: var(--gw-message-error-background);
+    border-color: var(--gw-message-error-border-color);
 }
 
 .alert-info, .alert-warning, .alert-help, .alert-danger, .alert-success {

@@ -107,7 +107,6 @@
 
 .import-resource-tree .import-resources-actions .import-resource-status-dropdown .dropdown-toggle:not(.selected) {
     border: none;
-    background-color: #fff;
 }
 
 .import-resource-tree .import-resources-actions .import-resource-status-dropdown,
