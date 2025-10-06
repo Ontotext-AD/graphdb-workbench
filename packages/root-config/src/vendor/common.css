@@ -50,7 +50,7 @@ a:focus, a:hover {
 }
 
 .text-muted {
-    color: rgba(0, 0, 0, 0.66) !important
+    color: var(--gw-text-muted-color) !important
 }
 
 .pos-r {
