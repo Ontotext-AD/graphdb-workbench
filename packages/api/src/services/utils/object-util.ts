@@ -134,4 +134,8 @@ export class ObjectUtil {
   static hasCopyMethod(value: unknown): boolean {
     return typeof value === 'object' && value !== null && Object.prototype.hasOwnProperty.call(value, 'copy') && typeof (value as { copy: unknown }).copy === 'function';
   }
+
+  static isDefined<T>(value: T | undefined | null): value is T {
+    return value !== undefined && value !== null;
+  }
 }

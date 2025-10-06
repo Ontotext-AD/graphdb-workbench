@@ -1,11 +1,11 @@
-import {ExternalRouteItemModel} from './external-route-item-model';
+import {Plugin} from '../plugin';
 
 /**
  * Represents a route plugin item in the application's routing system.
  * This class encapsulates all properties needed to define a route
  * including its URL, associated module, controller, and access permissions.
  */
-export class RouteItemModel {
+export class RoutePlugin extends Plugin {
   private _url: string;
   private _module: string;
   private _path: string;
@@ -18,7 +18,8 @@ export class RouteItemModel {
   private _documentationUrl?: string;
   private _allowAuthorities?: string[];
 
-  constructor(routeItem: ExternalRouteItemModel) {
+  constructor(routeItem: RoutePlugin) {
+    super();
     this._url = routeItem.url;
     this._module = routeItem.module;
     this._path = routeItem.path;
