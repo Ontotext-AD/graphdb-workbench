@@ -244,8 +244,15 @@ footer.footer .container-fluid.main-container p {
 .nav-tabs .nav-link {
     border-radius: 0;
     cursor: pointer;
-    color: var(--gw-secondary-base);
-    background-color: #eee;
+    color: var(--gw-tabs-tab-color);
+    background-color: var(--gw-tabs-tab-background);
+    border-color: var(--gw-tabs-tab-border-color);
+}
+
+.nav-tabs .nav-link:hover {
+    color: var(--gw-tabs-tab-hover-color);
+    background-color: var(--gw-tabs-tab-hover-background);
+    border-color: var(--gw-tabs-tab-hover-border-color);
 }
 
 .nav-tabs .nav-link .btn {
@@ -257,18 +264,31 @@ footer.footer .container-fluid.main-container p {
     margin-left: 0.8em;
 }
 
-.nav-tabs .active .nav-link {
-    color: #55595c;
-    background-color: #fff;
-    border-color: #ddd #ddd transparent;
+.nav-tabs .active .nav-link,
+.nav-tabs .active.nav-link {
+    color: var(--gw-tabs-tab-active-color);
+    background-color: var(--gw-tabs-tab-active-background);
+    border-color: var(--gw-tabs-tab-active-border-color) var(--gw-tabs-tab-active-border-color) transparent;
+}
+
+.nav-tabs .nav-link.active:hover {
+    color: var(--gw-tabs-tab-active-color);
+    background-color: var(--gw-tabs-tab-active-background);
+    border-color: var(--gw-tabs-tab-active-border-color) var(--gw-tabs-tab-active-border-color) transparent;
+}
+
+.nav-tabs .nav-link.active:focus {
+    color: var(--gw-tabs-tab-active-color);
+    background-color: var(--gw-tabs-tab-active-background);
+    border-color: var(--gw-tabs-tab-active-border-color) var(--gw-tabs-tab-active-border-color) transparent;
 }
 
 .nav-tabs .nav-item.active a,
 .nav-tabs .nav-item.active:focus a,
 .nav-tabs .nav-item.active:hover a {
-    color: #55595c;
-    background-color: #fff;
-    border-color: #ddd #ddd transparent;
+    color: var(--gw-tabs-tab-active-color);
+    background-color: var(--gw-tabs-tab-active-background);
+    border-color: var(--gw-tabs-tab-active-border-color) var(--gw-tabs-tab-active-border-color) transparent;
 }
 
 .nav-tabs .nav-link:focus {
@@ -574,6 +594,7 @@ code {
     margin-bottom: 1em;
     color: var(--gw-panel-color);
     background-color: var(--gw-panel-background);
+    border-color: var(--gw-panel-border-color);
 }
 
 .card-header {
@@ -962,6 +983,12 @@ li.remote {
 .form-control-lg {
     color: var(--gw-form-field-color);
     background-color: var(--gw-form-field-background);
+    border-color: var(--gw-form-field-border-color);
+}
+
+.form-control:focus,
+.form-control-lg:focus {
+    border-color: var(--gw-form-field-focus-border-color);
 }
 
 .form-control:disabled,
@@ -988,10 +1015,6 @@ li.remote {
 .input-group-lg > .input-group-addon,
 .input-group-lg > .input-group-btn > .btn {
     font-size: 1.125rem;
-}
-
-.form-control:focus {
-    border-color: var(--gw-secondary-light);
 }
 
 .input-group-btn {
