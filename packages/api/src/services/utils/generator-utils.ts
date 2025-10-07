@@ -1,3 +1,5 @@
+import {WindowService} from '../window';
+
 /**
  * Utility class for generating various values.
  */
@@ -45,7 +47,7 @@ export class GeneratorUtils {
    */
   static generateRandomString(length: number): string {
     const array = new Uint32Array(length);
-    window.crypto.getRandomValues(array);
+    WindowService.getCrypto().getRandomValues(array);
     return Array.from(array, (dec) => ('0' + dec.toString(16)).substr(-2)).join('');
   };
 

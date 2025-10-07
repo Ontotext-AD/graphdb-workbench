@@ -275,7 +275,7 @@ export class OpenIdService implements Service {
    * @param {string} url - Target URL
    */
   private redirectToUrl(url: string): void {
-    WindowService.getWindow().location.href = url;
+    WindowService.setLocationHref(url);
   }
 
   /**
