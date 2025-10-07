@@ -1,8 +1,9 @@
 import {service} from '../../../providers';
 import {LoggerProvider} from '../../logging/logger-provider';
 import {OpenidStorageService} from './openid-storage.service';
-import {TokenType, OpenidTokenUtils} from './openid-token-utils';
-import {OpenIdError} from './errors/openid-error';
+import {OpenidTokenUtils} from './openid-token-utils';
+import {WindowService} from '../../window';
+import {RefreshTokenConfiguration} from '../../../models/security/authentication';
 
 /**
  * Manages automatic refresh of OpenID Connect tokens before they expire.
@@ -11,31 +12,34 @@ import {OpenIdError} from './errors/openid-error';
  * with automatic timing based on token expiration times.
  */
 export class OpenIdTokenRefreshManager {
+  private readonly DEFAULT_REFRESH_CONFIGURATION: RefreshTokenConfiguration = {refreshAheadMs: 60_000, minDelayMs: 1_000};
   private readonly logger = LoggerProvider.logger;
   private readonly tokenUtils = service(OpenidTokenUtils);
   private readonly openidStorageService = service(OpenidStorageService);
-  private refreshTokensTimer?: NodeJS.Timeout;
+  private refreshTokensTimer?: number;
 
   /**
    * Sets up automatic token refresh based on current token expiration.
-   * @param justGotTokens Whether tokens were just obtained (affects logging)
    * @param refreshCallback Function to call when refresh is needed
+   *
+   * @returns Promise that resolves when setup is complete
    */
-  async setupTokensRefresh(justGotTokens = false, refreshCallback: (refreshToken: string) => Promise<void>): Promise<void> {
+  async setupTokensRefresh(refreshCallback: (refreshToken: string) => Promise<void>): Promise<void> {
     const refreshToken = this.openidStorageService.getRefreshToken().getValue();
 
-    if (!this.shouldSetupRefresh(refreshToken)) {
+    if (!refreshToken || !this.shouldSetupRefresh(refreshToken)) {
+      this.clearRefreshTimer();
       this.logger.debug('oidc: no valid refresh token');
       return;
     }
 
-    const refreshDelay = this.calculateRefreshDelay();
-    if (refreshDelay < 1000) {
-      this.logger.debug('oidc: tokens need refresh now, ' + refreshDelay + '; ' + justGotTokens);
-      await this.executeImmediateRefresh(refreshToken!, justGotTokens, refreshCallback);
+    const refreshDelay = this.calculateRefreshDelay(refreshToken);
+    if (refreshDelay < this.DEFAULT_REFRESH_CONFIGURATION.minDelayMs) {
+      this.logger.debug('oidc: tokens need refresh now, ' + refreshDelay);
+      await this.executeImmediateRefresh(refreshToken, refreshCallback);
     } else {
       this.logger.debug('oidc: scheduling token refresh in', refreshDelay / 1000, 'seconds');
-      this.scheduleTokenRefresh(refreshToken!, refreshDelay, refreshCallback);
+      this.scheduleTokenRefresh(refreshToken, refreshDelay, refreshCallback);
     }
   }
 
@@ -61,38 +65,39 @@ export class OpenIdTokenRefreshManager {
   /**
    * Calculates delay in milliseconds until token refresh should occur.
    * @private
-   * @returns Delay in milliseconds (60 seconds before expiration)
+   * @param token The token to calculate delay for
+   * @returns Delay in milliseconds
    */
-  private calculateRefreshDelay(): number {
-    const token = this.tokenUtils.getTokenByType(TokenType.ID);
-    if (!token) {
-      throw new OpenIdError('No valid ID token found');
-    }
-
-    const accessToken = this.tokenUtils.getTokenPayload(token) as Record<string, number>;
-    if (!accessToken || accessToken['exp'] <= 0) {
+  private calculateRefreshDelay(token: string): number {
+    const tokenPayload = this.tokenUtils.getTokenPayload(token) as Record<string, number>;
+    if (!tokenPayload || tokenPayload['exp'] <= 0) {
       return 0;
     }
-    return accessToken['exp'] * 1000 - Date.now() - 60000;
+    return tokenPayload['exp'] * 1000 - Date.now() - this.DEFAULT_REFRESH_CONFIGURATION.refreshAheadMs;
   }
 
   /**
    * Executes immediate token refresh when tokens are about to expire.
    * @private
+   * @param refreshToken The refresh token to use
+   * @param refreshCallback The callback function to perform the refresh
+   * @returns Promise that resolves when refresh is complete
    */
-  private async executeImmediateRefresh(refreshToken: string, justGotTokens: boolean, refreshCallback: (refreshToken: string) => Promise<void>): Promise<void> {
+  private async executeImmediateRefresh(refreshToken: string, refreshCallback: (refreshToken: string) => Promise<void>): Promise<void> {
     this.clearRefreshTimer();
-    const expiresIn = this.calculateRefreshDelay();
-    this.logger.debug('oidc: tokens will refresh now, ' + expiresIn + '; ' + justGotTokens);
+    this.logger.debug('oidc: tokens will refresh now');
     await refreshCallback(refreshToken);
   }
 
   /**
    * Schedules token refresh to occur after specified delay.
    * @private
+   * @param refreshToken The refresh token to use
+   * @param delay Delay in milliseconds before refresh
+   * @param refreshCallback The callback function to perform the refresh
    */
   private scheduleTokenRefresh(refreshToken: string, delay: number, refreshCallback: (refreshToken: string) => Promise<void>): void {
-    this.refreshTokensTimer = setTimeout(async () => {
+    this.refreshTokensTimer = WindowService.getWindow().setTimeout(async () => {
       this.logger.debug('oidc: tokens will refresh now, ' + delay);
       await refreshCallback(refreshToken);
     }, delay);

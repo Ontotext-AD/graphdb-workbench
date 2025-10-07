@@ -55,7 +55,7 @@ export class OpenidAuthProvider implements AuthStrategy {
     this.loadSecurityConfiguration();
     this.validateConfiguration();
     try {
-      const isLoggedIn = await this.initializeOpenIdService();
+      const isLoggedIn = await this.openIdService.initializeOpenId();
 
       if (isLoggedIn) {
         await this.handleSuccessfulAuthentication();
@@ -141,15 +141,6 @@ export class OpenidAuthProvider implements AuthStrategy {
     if (!this.openIdSecurityConfig) {
       throw new OpenIdError(ERRORS.CONFIG_NOT_FOUND);
     }
-  }
-
-  /**
-   * Initializes the OpenID service with current configuration.
-   * @private
-   * @returns Promise resolving to true if user is already logged in
-   */
-  private async initializeOpenIdService(): Promise<boolean> {
-    return await this.openIdService.initializeOpenId(this.openIdSecurityConfig!);
   }
 
   /**

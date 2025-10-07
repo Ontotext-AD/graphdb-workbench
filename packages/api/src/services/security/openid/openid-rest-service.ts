@@ -8,10 +8,17 @@ export class OpenIdRestService extends HttpService {
   private readonly securityContextService = service(SecurityContextService);
   private readonly OAUTH_IDENTITY_DOMAIN_NAME_HEADER = 'X-OAuth-Identity-Domain-Name';
 
+  /**
+   * Fetches the JSON Web Key Set (JWKS) from the OpenID provider.
+   */
   getJSONWebKeySet(): Promise<{ keys: { kid: string }[] }> {
     return this.get<{ keys: { kid: string }[] }>(this.getJWKSEndpoint(), undefined, this.getDomainHeader());
   }
 
+  /**
+   * Refreshes the OpenID tokens using the provided refresh token.
+   * @param refreshToken
+   */
   refreshToken(refreshToken: string) {
     const params: Record<string, string> = {
       grant_type: 'refresh_token',
@@ -25,6 +32,12 @@ export class OpenIdRestService extends HttpService {
     return this.post<OpenIdTokens>(this.getTokensEndpoint(), body, headers);
   }
 
+  /**
+   * Exchanges the authorization code for tokens.
+   * @param redirectUrl The redirect URL used in the authorization request.
+   * @param code The authorization code received from the OpenID provider.
+   * @param codeVerifier The PKCE code verifier if PKCE was used, otherwise null or undefined.
+   */
   getTokens(redirectUrl: string, code: string, codeVerifier?: string | null) {
     const params: Record<string, string> = {
       grant_type: 'authorization_code',
@@ -48,7 +61,7 @@ export class OpenIdRestService extends HttpService {
    * Transforms an object to an application/x-www-form-urlencoded string.
    *
    * @param obj The object to transform.
-   * @returns {string} The urlencoded string.
+   * @returns The URL-encoded string.
    */
   private transformURLEncodedRequest(obj: Record<string, string>) {
     const data = new URLSearchParams();

@@ -4,14 +4,8 @@ import {service} from '../../../providers';
 import {OpenidStorageService} from '../../../services/security/openid/openid-storage.service';
 import {SecurityContextService} from '../../../services/security';
 import {OpenidSecurityConfig} from '../../../models/security/openid-security-config';
-import {OpenIdTokens} from '../../../models/security/authentication';
+import {OpenIdTokens, TokenType} from '../../../models/security/authentication';
 import {OpenIdError} from './errors/openid-error';
-
-export enum TokenType {
-  ACCESS = 'access',
-  ID = 'id',
-  REFRESH = 'refresh'
-}
 
 export class OpenidTokenUtils {
   private readonly logger = LoggerProvider.logger;

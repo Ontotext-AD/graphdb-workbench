@@ -38,26 +38,16 @@ export class GeneratorUtils {
   }
 
   /**
-   * Generates a random hexadecimal string of specified length.
+   * Generates a cryptographically secure random string of the specified length.
    *
-   * @param length - Number of hex bytes to generate (result will be length * 2 characters).
-   * @returns A hexadecimal string with zero-padded bytes.
+   * @param {number} length - The desired length of the random string.
+   * @returns {string} A hexadecimal string generated from secure random values.
    */
   static generateRandomString(length: number): string {
-    const HEX_RADIX = 16;
-    const result: string[] = [];
-
-    let seed = Date.now() ^ (performance?.now() ?? 0);
-
-    for (let i = 0; i < length; i++) {
-      seed = (seed * 9301 + 49297) % 233280; // simple LCG
-      const rand = seed % 256;
-      const hex = rand.toString(HEX_RADIX).padStart(2, '0');
-      result.push(hex);
-    }
-
-    return result.join('');
-  }
+    const array = new Uint32Array(length);
+    window.crypto.getRandomValues(array);
+    return Array.from(array, (dec) => ('0' + dec.toString(16)).substr(-2)).join('');
+  };
 
   /**
    * Returns a hash code from a string

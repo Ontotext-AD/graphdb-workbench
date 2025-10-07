@@ -28,32 +28,32 @@ export class OpenIdAuthFlowHandler {
    * @param params Authentication flow parameters from callback
    * @param exchangeTokensCallback Function to exchange code for tokens
    * @returns Promise resolving to true if successful or throws error on failure
+   * @throws OpenIdError on failure scenarios
    */
   async handleAuthorizationCode(config: OpenidSecurityConfig, params: AuthFlowParams, exchangeTokensCallback: ExchangeTokensCallback): Promise<boolean> {
+    if (!params.code) {
+      this.logger.error('oidc: Missing authorization code');
+      throw new OpenIdError('Missing authorization code');
+    }
+
     const redirectUri = `${getOrigin()}login`;
 
-    try {
-      if (config.authFlow === OpenIdAuthFlowType.CODE) {
-        await this.handlePkceFlow(params, redirectUri, exchangeTokensCallback);
-      } else if (config.authFlow === OpenIdAuthFlowType.CODE_NO_PKCE) {
-        if (!params.code) {
-          throw new OpenIdError('Missing authorization code');
-        }
-        await this.handleCodeNoPkceFlow(params.code, redirectUri, exchangeTokensCallback);
-      } else {
-        throw new OpenIdError('Invalid OpenID authentication flow');
-      }
-      return true;
-    } catch (error) {
-      this.logger.error('oidc: error handling authorization code', error);
-      throw error;
+    if (config.authFlow === OpenIdAuthFlowType.CODE) {
+      await this.handlePkceFlow(params, redirectUri, exchangeTokensCallback);
+    } else if (config.authFlow === OpenIdAuthFlowType.CODE_NO_PKCE) {
+      await this.handleCodeNoPkceFlow(params.code, redirectUri, exchangeTokensCallback);
+    } else {
+      this.logger.error('oidc: Invalid OpenID authentication flow');
+      throw new OpenIdError('Invalid OpenID authentication flow');
     }
+    return true;
   }
 
   /**
    * Handles implicit flow by directly saving tokens from URL parameters.
    * @param config OpenID security configuration
    * @param params Authentication flow parameters containing tokens
+   * @returns Promise resolving when tokens are saved
    */
   async handleImplicitFlow(config: OpenidSecurityConfig, params: AuthFlowParams): Promise<void> {
     this.tokenUtils.saveTokens(params, config);
@@ -96,6 +96,10 @@ export class OpenIdAuthFlowHandler {
   /**
    * Handles PKCE flow with state validation and code verifier.
    * @private
+   * @param params Authentication flow parameters
+   * @param redirectUri Redirect URI used in the authentication request
+   * @param exchangeTokensCallback Function to exchange code for tokens
+   * @throws OpenIdError on state mismatch or missing code
    */
   private async handlePkceFlow(params: AuthFlowParams, redirectUri: string, exchangeTokensCallback: ExchangeTokensCallback): Promise<void> {
     const storedState = this.openidStorageService.getPkceState().getValue();
@@ -116,12 +120,11 @@ export class OpenIdAuthFlowHandler {
   /**
    * Handles authorization code flow without PKCE.
    * @private
+   * @param code Authorization code
+   * @param redirectUri Redirect URI used in the authentication request
+   * @param exchangeTokensCallback Function to exchange code for tokens
    */
-  private async handleCodeNoPkceFlow(
-    code: string,
-    redirectUri: string,
-    exchangeTokensCallback: (code: string, redirectUrl: string) => Promise<void>
-  ): Promise<void> {
+  private async handleCodeNoPkceFlow(code: string, redirectUri: string, exchangeTokensCallback: (code: string, redirectUrl: string) => Promise<void>): Promise<void> {
     await exchangeTokensCallback(code, redirectUri);
   }
 }

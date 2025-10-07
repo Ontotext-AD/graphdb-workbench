@@ -1,6 +1,8 @@
 import {OpenidSecurityConfig} from '../../../models/security';
 import {OpenIdAuthFlowType, OpenIdResponseType} from '../../../models/security/authentication';
 import {OpenIdError} from './errors/openid-error';
+import {SecurityContextService} from '../security-context.service';
+import {service} from '../../../providers';
 
 /**
  * Builds OpenID Connect URLs for authentication and logout operations.
@@ -9,7 +11,7 @@ import {OpenIdError} from './errors/openid-error';
  * the configured authentication flow (PKCE, implicit, etc.).
  */
 export class OpenIdUrlBuilder {
-  constructor(private readonly config: OpenidSecurityConfig) {}
+  private readonly securityContextService = service(SecurityContextService);
 
   /**
    * Builds the authorization URL for login with all required parameters.
@@ -25,7 +27,7 @@ export class OpenIdUrlBuilder {
     const additionalParams = this.buildAdditionalParameters();
 
     const allParams = [...baseParams, ...flowSpecificParams, ...additionalParams];
-    return `${this.config.oidcAuthorizationEndpoint}?${allParams.join('&')}`;
+    return `${this.getOpenIdConfig().oidcAuthorizationEndpoint}?${allParams.join('&')}`;
   }
 
   /**
@@ -34,9 +36,23 @@ export class OpenIdUrlBuilder {
    * @returns Complete logout URL
    */
   buildLogoutUrl(redirectUrl: string): string {
-    const clientId = this.config.clientId!;
-    const endSessionUrl = this.config.openIdEndSessionUrl!;
+    const config = this.getOpenIdConfig();
+    const clientId = config.clientId!;
+    const endSessionUrl = config.openIdEndSessionUrl!;
     return `${endSessionUrl}?client_id=${encodeURIComponent(clientId)}&post_logout_redirect_uri=${encodeURIComponent(redirectUrl)}`;
+  }
+
+  /**
+   * Gets OpenID security config from context.
+   * @returns {OpenidSecurityConfig} OpenID config
+   * @throws {OpenIdError} If no config
+   */
+  private getOpenIdConfig(): OpenidSecurityConfig {
+    const openIdSecurityConfig = this.securityContextService.getSecurityConfig()?.openidSecurityConfig;
+    if (!openIdSecurityConfig) {
+      throw new OpenIdError('No OpenID configuration');
+    }
+    return openIdSecurityConfig;
   }
 
   /**
@@ -45,7 +61,7 @@ export class OpenIdUrlBuilder {
    * @returns Response type ('code' or 'token')
    */
   private getResponseType(): string {
-    const authFlow = this.config.authFlow;
+    const authFlow = this.getOpenIdConfig().authFlow;
 
     if (authFlow === OpenIdAuthFlowType.CODE || authFlow === OpenIdAuthFlowType.CODE_NO_PKCE) {
       return OpenIdResponseType.CODE;
@@ -64,7 +80,7 @@ export class OpenIdUrlBuilder {
     return [
       `response_type=${encodeURIComponent(responseType)}`,
       `scope=${encodeURIComponent(this.getScope())}`,
-      `client_id=${encodeURIComponent(this.config.clientId!)}`,
+      `client_id=${encodeURIComponent(this.getOpenIdConfig().clientId!)}`,
       `redirect_uri=${encodeURIComponent(redirectUrl)}`
     ];
   }
@@ -74,7 +90,7 @@ export class OpenIdUrlBuilder {
    * @private
    */
   private buildFlowSpecificParameters(state: string, codeChallenge: string): string[] {
-    const authFlow = this.config.authFlow;
+    const authFlow = this.getOpenIdConfig().authFlow;
     const params: string[] = [];
 
     if (authFlow === OpenIdAuthFlowType.CODE) {
@@ -95,14 +111,15 @@ export class OpenIdUrlBuilder {
    * @private
    */
   private buildAdditionalParameters(): string[] {
+    const config = this.getOpenIdConfig();
     const params: string[] = [];
 
-    if (this.config.oracleDomain) {
-      params.push(`domain=${encodeURIComponent(this.config.oracleDomain)}`);
+    if (config.oracleDomain) {
+      params.push(`domain=${encodeURIComponent(config.oracleDomain)}`);
     }
 
-    if (this.config.authorizeParameters) {
-      params.push(this.config.authorizeParameters);
+    if (config.authorizeParameters) {
+      params.push(config.authorizeParameters);
     }
 
     return params;
@@ -117,7 +134,7 @@ export class OpenIdUrlBuilder {
   private getScope(extraScopes?: string): string {
     const scopes: string[] = ['openid'];
 
-    if (this.config.supportsOfflineAccess) {
+    if (this.getOpenIdConfig().supportsOfflineAccess) {
       scopes.push('offline_access');
     }
 

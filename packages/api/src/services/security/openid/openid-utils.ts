@@ -36,7 +36,7 @@ export class OpenIdUtils {
       const fragment = WindowService.getWindow().location.hash.substring(1);
       urlParams = new URLSearchParams(fragment);
     } else {
-      urlParams = new URLSearchParams(window.location.search);
+      urlParams = new URLSearchParams(WindowService.getWindow().location.search);
     }
 
     if (urlParams.size === 0) {
