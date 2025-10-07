@@ -20,6 +20,7 @@
   --gw-main-gdb-grey-0: #ffffff;
   --gw-main-gdb-grey-100: hsla(0, 0%, 97%);
   --gw-main-gdb-grey-200: #e8e8e8;
+  --gw-main-gdb-grey-400: #a3a3a3;
   --gw-main-gdb-grey-500: #8f8f8f;
   --gw-main-gdb-grey-600: #757575;
   --gw-main-gdb-grey-700: #5c5c5c;
@@ -36,6 +37,11 @@
   --gw-tabs-tab-active-background: rgba(0, 0, 0, 0);
   --gw-tabs-tab-hover-background: rgba(0, 0, 0, 0);
   --gw-tabs-tab-background: rgba(0, 0, 0, 0);
+  --gw-dialog-shadow-1-blur: 25px;
+  --gw-dialog-shadow-1-spread: -5px;
+  --gw-dialog-shadow-1-color: rgba(0, 0, 0, 0.1);
+  --gw-dialog-shadow-1-offset-x: 0;
+  --gw-dialog-shadow-1-offset-y: 20px;
   --gw-primary-200: var(--gw-main-gdb-orange-200);
   --gw-primary-600: var(--gw-main-gdb-orange-600);
   --gw-primary-700: var(--gw-main-gdb-orange-700);
@@ -60,6 +66,7 @@
   --gw-surface-0: var(--gw-main-gdb-grey-0);
   --gw-surface-100: var(--gw-main-gdb-grey-100);
   --gw-surface-200: var(--gw-main-gdb-grey-200);
+  --gw-surface-400: var(--gw-main-gdb-grey-400);
   --gw-surface-500: var(--gw-main-gdb-grey-500);
   --gw-surface-600: var(--gw-main-gdb-grey-600);
   --gw-surface-700: var(--gw-main-gdb-grey-700);
@@ -89,6 +96,8 @@
   --gw-form-field-disabled-color: var(--gw-surface-600);
   --gw-form-field-placeholder-color: var(--gw-surface-500);
   --gw-form-field-color: var(--gw-surface-700);
+  --gw-navigation-item-icon-color: var(--gw-surface-400);
+  --gw-overlay-modal-background: var(--gw-surface-0);
   --gw-button-secondary-background: var(--gw-surface-100);
   --gw-button-secondary-hover-background: var(--gw-surface-200);
   --gw-button-secondary-hover-border-color: var(--gw-surface-200);
@@ -111,6 +120,8 @@
   --gw-neutral-darker: var(--gw-surface-900);
   --gw-contrast-text: var(--gw-surface-0);
   --gw-highlight-background: var(--gw-secondary-200);
+  --gw-hover-color: var(--gw-surface-800);
+  --gw-hover-background: var(--gw-surface-200);
   --gw-default-border-color: var(--gw-surface-200);
   --gw-default-background: var(--gw-surface-0);
   --gw-default-success-light-background: var(--gw-success-lighter);
@@ -121,6 +132,8 @@
   --gw-message-warn-color: var(--gw-warning-dark);
   --gw-tag-success-color: var(--gw-success-base);
   --gw-tag-info-color: var(--gw-info-dark);
+  --gw-tooltip-background: var(--gw-surface-700);
+  --gw-tooltip-color: var(--gw-surface-0);
   --gw-toast-info-background: var(--gw-info-base);
   --gw-toast-success-background: var(--gw-success-base);
   --gw-primary-contrast-color: var(--gw-contrast-text);
@@ -131,6 +144,7 @@
   --gw-form-field-background: var(--gw-default-background);
   --gw-form-field-disabled-background: var(--gw-muted-background);
   --gw-border-color-primary: var(--gw-primary-base);
+  --gw-overlay-modal-border-color: var(--gw-default-border-color);
   --gw-button-primary-background: var(--gw-primary-base);
   --gw-button-secondary-hover-color: var(--gw-secondary-base);
   --gw-button-secondary-active-color: var(--gw-secondary-light);
@@ -147,6 +161,7 @@
   --gw-body-color: var(--gw-neutral-darker);
   --gw-body-background: var(--gw-neutral-0);
   --gw-highlight-focus-background: var(--gw-primary-lighter);
+  --gw-highlight-color: var(--gw-primary-base);
   --gw-text-color: var(--gw-neutral-darker);
   --gw-text-muted-color: var(--gw-muted-color);
   --gw-default-color: var(--gw-neutral-darker);
@@ -168,11 +183,17 @@
   --gw-tabs-tab-active-border-color: var(--gw-primary-base);
   --gw-tabs-tab-active-color: var(--gw-primary-base);
   --gw-tabs-tab-hover-border-color: var(--gw-default-border-color);
+  --gw-dialog-background: var(--gw-overlay-modal-background);
+  --gw-panelmenu-item-icon-color: var(--gw-navigation-item-icon-color);
   --gw-datatable-header-background: var(--gw-default-background);
   --gw-datatable-row-background: var(--gw-default-background);
+  --gw-datatable-row-hover-background: var(--gw-hover-background);
+  --gw-datatable-row-hover-color: var(--gw-hover-color);
+  --gw-datatable-row-selected-background: var(--gw-highlight-background);
   --gw-datatable-border-color: var(--gw-default-border-color);
   --gw-toast-warn-background: var(--gw-warning-base);
   --gw-toast-error-background: var(--gw-danger-base);
+  --gw-overlay-modal-color: var(--gw-text-color);
   --gw-button-primary-hover-background: var(--gw-primary-hover-color);
   --gw-button-primary-hover-border-color: var(--gw-primary-hover-color);
   --gw-button-primary-hover-color: var(--gw-primary-contrast-color);
@@ -186,8 +207,11 @@
   --gw-editor-content-color: var(--gw-default-color);
   --gw-tabs-tab-color: var(--gw-text-muted-color);
   --gw-tabs-tab-hover-color: var(--gw-text-color);
+  --gw-dialog-border-color: var(--gw-overlay-modal-border-color);
   --gw-datatable-header-color: var(--gw-default-color);
   --gw-datatable-header-cell-border-color: var(--gw-datatable-border-color);
+  --gw-datatable-row-selected-color: var(--gw-highlight-color);
   --gw-datatable-row-color: var(--gw-default-color);
   --gw-datatable-body-cell-border-color: var(--gw-datatable-border-color);
+  --gw-dialog-color: var(--gw-overlay-modal-color);
 }
