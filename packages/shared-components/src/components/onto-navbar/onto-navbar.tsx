@@ -38,6 +38,9 @@ const labelKeys = {
 export class OntoNavbar {
   private readonly productInfoContextService = ServiceProvider.get(ProductInfoContextService);
   private readonly subscriptions = new SubscriptionList();
+  private readonly resizeHandler = () => this.adjustAllSubmenus(this.hostElement);
+  private readonly SUBMENU_VERTICAL_MARGIN = 8;
+  private readonly MIN_SUBMENU_HEIGHT = 100;
 
   private labels = {
     [labelKeys.EXPAND]: TranslationService.translate(labelKeys.EXPAND),
@@ -105,6 +108,7 @@ export class OntoNavbar {
 
   private select(event: MouseEvent, menuItem: NavbarItemModel) {
     event.preventDefault();
+    this.clearAllOpenedSubmenuStyles();
 
     // Skip navigation when the selected item is a parent menu because it has no associated navigation.
     if (!menuItem.hasSubmenus()) {
@@ -135,6 +139,7 @@ export class OntoNavbar {
     }
 
     this.refreshNavbar();
+    this.adjustAllSubmenus(this.hostElement);
   }
 
   private subscribeToNavigationEnd() {
@@ -157,6 +162,7 @@ export class OntoNavbar {
       this.menuModel.initSelected(getCurrentRoute());
     }
     this.refreshNavbar();
+    this.adjustAllSubmenus(this.hostElement);
   }
 
   private toggleNavbar(): void {
@@ -165,13 +171,16 @@ export class OntoNavbar {
       this.menuModel.highlightSelected();
       this.menuModel.closeOpened();
       this.collapseNavbar();
+      this.clearAllOpenedSubmenuStyles();
     } else {
       this.isCollapsedByUser = false;
       this.menuModel.expandSelected();
       this.menuModel.unhighlightSelected();
       this.expandNavbar();
+      this.clearAllOpenedSubmenuStyles();
     }
     this.refreshNavbar();
+    this.adjustAllSubmenus(this.hostElement);
     this.navbarToggled.emit(new NavbarToggledEvent(this.isCollapsed));
   }
 
@@ -209,6 +218,103 @@ export class OntoNavbar {
         }));
   }
 
+  private toggleNavbarHandler() {
+    return () => this.toggleNavbar();
+  }
+
+  /**
+   * Adjust the max height of a submenu to ensure it fits within the viewport.
+   * The submenu will be positioned either below or above its parent menu item based on available space.
+   * @param sub The submenu element to adjust.
+   * @param margin Margin in pixels to apply when calculating available space. This ensures some space between the
+   * submenu and the viewport edge.
+   */
+  private adjustSubmenuMaxHeight(sub: HTMLElement, margin = this.SUBMENU_VERTICAL_MARGIN): void {
+    if (!sub || typeof sub.getBoundingClientRect !== 'function') {
+      return;
+    }
+
+    const parentElement = sub.closest('.menu-element');
+    if (!parentElement) {
+      return;
+    }
+
+    const subRect = sub.getBoundingClientRect();
+    const parentRect = parentElement.getBoundingClientRect();
+    const viewportHeight = window.innerHeight;
+
+    // Calculate available space above and below the parent menu item
+    const spaceAbove = parentRect.top - margin + parentRect.height;
+    const spaceBelow = viewportHeight - parentRect.bottom + parentRect.height - margin;
+
+    // Determine optimal positioning and max height
+    let maxHeight: number;
+    let shouldAlignBottom = false;
+
+    if (spaceBelow >= subRect.height) {
+      // Enough space below - align to top of parent
+      maxHeight = spaceBelow;
+    } else if (spaceAbove >= subRect.height) {
+      // Not enough space below but enough above - align to bottom of parent
+      maxHeight = spaceAbove;
+      shouldAlignBottom = true;
+    } else {
+      // Not enough space in either direction - use larger space and make scrollable
+      if (spaceBelow > spaceAbove) {
+        maxHeight = spaceBelow;
+        shouldAlignBottom = false;
+      } else {
+        maxHeight = spaceAbove;
+        shouldAlignBottom = true;
+      }
+    }
+
+    // Apply positioning
+    if (shouldAlignBottom) {
+      sub.style.bottom = '0';
+      sub.style.top = 'auto';
+    } else {
+      sub.style.top = '0';
+      sub.style.bottom = 'auto';
+    }
+
+    sub.style.maxHeight = `${Math.max(this.MIN_SUBMENU_HEIGHT, maxHeight)}px`;
+    sub.style.overflowY = 'auto';
+  }
+
+  /**
+   * Adjust all submenus that are currently open.
+   * @param host The host element containing the navbar.
+   * @param margin Margin in pixels to apply when calculating available space. This ensures some space between the
+   * submenu and the viewport edge.
+   */
+  private adjustAllSubmenus(host: HTMLElement, margin = this.SUBMENU_VERTICAL_MARGIN): void {
+    // run after paint so DOM is in final state
+    requestAnimationFrame(() => {
+      if (!host || typeof host.querySelectorAll !== 'function') {
+        return;
+      }
+      this.getAllOpenedSubmenus(host).forEach((s) => this.adjustSubmenuMaxHeight(s, margin));
+    });
+  }
+
+  private getAllOpenedSubmenus(host: HTMLElement): HTMLElement[] {
+    return Array.from(host.querySelectorAll('.navbar-component.collapsed .menu-element.open .sub-menu'));
+  }
+
+  private getAllSubmenus(host: HTMLElement): HTMLElement[] {
+    return Array.from(host.querySelectorAll('.navbar-component .menu-element .sub-menu'));
+  }
+
+  private clearAllOpenedSubmenuStyles() {
+    this.getAllSubmenus(this.hostElement).forEach((s) => {
+      s.style.maxHeight = '';
+      s.style.overflowY = '';
+      s.style.top = '';
+      s.style.bottom = '';
+    });
+  }
+
   // ========================
   // Lifecycle methods
   // ========================
@@ -224,20 +330,19 @@ export class OntoNavbar {
     this.onTranslate(labelKeys.EXPAND);
     this.onTranslate(labelKeys.COLLAPSE);
     this.onTranslate(labelKeys.LOGO_LINK);
+
+    window.addEventListener('resize', this.resizeHandler);
   }
 
   disconnectedCallback() {
     this.subscriptions.unsubscribeAll();
+    window.removeEventListener('resize', this.resizeHandler);
   }
 
   private handleSelectMenuItem(item: NavbarItemModel) {
     return (event: MouseEvent) => {
       this.select(event, item);
     }
-  }
-
-  private toggleNavbarHandler() {
-    return () => this.toggleNavbar();
   }
 
   render() {
