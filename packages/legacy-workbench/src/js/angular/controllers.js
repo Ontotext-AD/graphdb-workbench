@@ -1131,7 +1131,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     };
 
     const updateAutocompleteStatus = () => {
-        if ($repositories.isActiveRepoFedXType() || !$licenseService.isLicenseValid() || !$jwtAuth.canReadRepo($repositories.getActiveRepository())) {
+        if ($repositories.isActiveRepoFedXType() || !$licenseService.isLicenseValid() || !$jwtAuth.canReadRepo($repositories.getActiveRepositoryObject())) {
             WorkbenchContextService.setAutocompleteEnabled(false);
             LocalStorageAdapter.set(LSKeys.AUTOCOMPLETE_ENABLED, false);
             return;
