@@ -25,7 +25,7 @@ export class OpenIdRestService extends HttpService {
       client_id: this.getClientId(),
       refresh_token: refreshToken
     };
-    const headers = {...this.getDomainHeader, 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'};
+    const headers = {...this.getDomainHeader(), 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'};
 
     const body = this.transformURLEncodedRequest(params);
 
