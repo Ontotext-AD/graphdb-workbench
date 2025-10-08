@@ -10,7 +10,7 @@ function verifyStateWithSelectedRepository() {
     TTYGViewSteps.getApiKeyMessage().should('be.visible');
     TTYGViewSteps.getMissingApiKeyToastMessage()
         .should('be.visible')
-        .and('contain', 'Set the config property \'graphdb.llm.api-key\' to your LLM API key.');
+        .and('contain', 'Set the config property \'graphdb.llm.api-key\' to your LLM API key');
 }
 
 // TODO: skipped until BE releases an updated version with the new API key.
