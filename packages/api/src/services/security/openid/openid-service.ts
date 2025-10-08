@@ -90,7 +90,6 @@ export class OpenIdService implements Service {
   async initializeOpenId(): Promise<boolean> {
     const openIdSecurityConfig = this.getOpenIdConfig();
     await this.initializeJsonWebKeySet();
-
     // Check existing authentication
     const isAuthValid = this.authFlowHandler.checkExistingAuthentication(openIdSecurityConfig);
     if (isAuthValid) {
@@ -175,8 +174,12 @@ export class OpenIdService implements Service {
   /**
    * Initiates logout by clearing authentication.
    */
-  logout(): void {
-    this.softLogout();
+  logout(logoutFromIDP = false): void {
+    if (logoutFromIDP) {
+      this.hardLogout('/');
+    } else {
+      this.softLogout();
+    }
   }
 
   // Private helper methods
