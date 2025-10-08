@@ -847,30 +847,12 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         return $sce.trustAsHtml(page.info);
     };
 
-    $scope.checkSubMenuPosition = function(index) {
-        if (index === 0) {
-            $('.main-menu.collapsed .sub-menu').removeClass('align-bottom');
-        } else {
-            if ($(window).height() < 735) {
-                $('.main-menu.collapsed .sub-menu').addClass('align-bottom');
-            } else {
-                $('.main-menu.collapsed .sub-menu').removeClass('align-bottom');
-            }
-        }
-    };
-
     collapsedMenuLogicOnInit();
 
     $(window).resize(function() {
         collapseMenuLogicOnResize();
         if ($scope.tutorialState && $location.path() === '/') {
             $scope.initTutorial();
-        }
-        if ($(window).height() < 735) {
-            $('.sub-menu').addClass('align-bottom');
-            $('.main-menu.collapsed li:nth-child(2) .sub-menu').removeClass('align-bottom');
-        } else {
-            $('.sub-menu').removeClass('align-bottom');
         }
     });
 
