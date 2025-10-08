@@ -8,7 +8,8 @@ import {OpenidTokenUtils} from '../openid/openid-token-utils';
 import {OpenidSecurityConfig} from '../../../models/security';
 import {OntoToastrService} from '../../toastr';
 import {GeneratorUtils} from '../../utils/generator-utils';
-import {OpenIdError} from '../openid/errors/openid-error';
+import {MissingOpenidConfiguration} from '../openid/errors/missing-openid-configuration';
+import {InvalidOpenidAuthFlow} from '../openid/errors/invalid-openid-auth-flow';
 
 // Constants for better maintainability
 const ERRORS = {
@@ -139,7 +140,7 @@ export class OpenidAuthProvider implements AuthStrategy {
    */
   private validateConfiguration(): void {
     if (!this.openIdSecurityConfig) {
-      throw new OpenIdError(ERRORS.CONFIG_NOT_FOUND);
+      throw new MissingOpenidConfiguration();
     }
   }
 
@@ -148,7 +149,7 @@ export class OpenidAuthProvider implements AuthStrategy {
    * @private
    */
   private async handleSuccessfulAuthentication(): Promise<void> {
-    this.logger.debug('oidc: authentication initialized');
+    this.logger.debug('OpenID: authentication initialized');
     this.authenticationStorageService.setAuthToken(this.tokenUtils.authHeaderGraphDB());
 
     try {
@@ -177,7 +178,7 @@ export class OpenidAuthProvider implements AuthStrategy {
    */
   private handleAuthenticationError(error: unknown): void {
     this.authenticationStorageService.clearAuthToken();
-    this.logger.debug('oidc: not logged or login error');
+    this.logger.debug('OpenID: not logged or login error');
     this.logger.error(ERRORS.INIT_FAILED, error);
     this.openIdService.clearAuthentication();
   }
@@ -212,9 +213,9 @@ export class OpenidAuthProvider implements AuthStrategy {
       this.openIdService.setupImplicitFlow(state, returnToUrl);
       break;
     default:
-      this.logger.debug(`oidc: unknown auth flow: ${authFlow}`);
-      this.toasterService.error(`openid.auth.unknown.flow: ${authFlow}`);
-      throw new OpenIdError(`oidc: unknown auth flow: ${authFlow}`);
+      this.logger.debug(`OpenID: Invalid OpenID authentication flow: ${authFlow}`);
+      // TODO: Show toaster with error message `openid.auth.unknown.flow: ${authFlow}` when GDB-13200 is done
+      throw new InvalidOpenidAuthFlow(authFlow);
     }
   }
 }

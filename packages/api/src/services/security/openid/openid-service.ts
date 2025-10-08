@@ -16,6 +16,7 @@ import {EventService} from '../../event-service';
 import {Logout} from '../../../models/events';
 import {OpenIdError} from './errors/openid-error';
 import {WindowService} from '../../window';
+import {MissingOpenidConfiguration} from './errors/missing-openid-configuration';
 
 /**
  * Service responsible for managing OpenID Connect authentication flows, token management,
@@ -69,12 +70,13 @@ export class OpenIdService implements Service {
 
     try {
       const data = await this.openIdRestService.refreshToken(refreshToken);
-      this.logger.debug('oidc: refreshed tokens');
+      this.logger.debug('OpenID: refreshed tokens');
       this.tokenUtils.saveTokens(data, openIdSecurityConfig);
       this.authenticationStorageService.setAuthToken(this.tokenUtils.authHeaderGraphDB());
       await this.setupTokensRefresh();
     } catch (error) {
-      this.logger.debug('oidc: could not refresh tokens', error);
+      this.logger.debug('OpenID: could not refresh tokens', error);
+      // TODO: Show toaster with error message `openid.auth.cannot.refresh.token.msg` when GDB-13200 is done
       this.softLogout();
       service(EventService).emit(new Logout());
     }
@@ -187,7 +189,7 @@ export class OpenIdService implements Service {
   private getOpenIdConfig(): OpenidSecurityConfig {
     const openIdSecurityConfig = this.securityContextService.getSecurityConfig()?.openidSecurityConfig;
     if (!openIdSecurityConfig) {
-      throw new OpenIdError('No OpenID configuration');
+      throw new MissingOpenidConfiguration();
     }
     return openIdSecurityConfig;
   }
@@ -244,12 +246,13 @@ export class OpenIdService implements Service {
 
     try {
       const data = await this.getTokens(redirectUrl, code, codeVerifier);
-      this.logger.debug('oidc: successfully retrieved tokens');
+      this.logger.debug('OpenID: successfully retrieved tokens');
       this.tokenUtils.saveTokens(data, openIdSecurityConfig);
       await this.setupTokensRefresh();
     } catch (e) {
-      this.logger.error('oidc: openid.auth.cannot.retrieve.token.msg', {error: e});
-      throw new OpenIdError('Cannot retrieve tokens');
+      this.logger.error('OpenID: Cannot retrieve token after login', {error: e});
+      // TODO: Show toaster with error message `openid.auth.cannot.retrieve.token.msg` when GDB-13200 is done
+      throw new OpenIdError('Cannot retrieve token after login');
     }
   }
 

@@ -1,8 +1,9 @@
 import {OpenidSecurityConfig} from '../../../models/security';
 import {OpenIdAuthFlowType, OpenIdResponseType} from '../../../models/security/authentication';
-import {OpenIdError} from './errors/openid-error';
 import {SecurityContextService} from '../security-context.service';
 import {service} from '../../../providers';
+import {MissingOpenidConfiguration} from './errors/missing-openid-configuration';
+import {InvalidOpenidAuthFlow} from './errors/invalid-openid-auth-flow';
 
 /**
  * Builds OpenID Connect URLs for authentication and logout operations.
@@ -50,7 +51,7 @@ export class OpenIdUrlBuilder {
   private getOpenIdConfig(): OpenidSecurityConfig {
     const openIdSecurityConfig = this.securityContextService.getSecurityConfig()?.openidSecurityConfig;
     if (!openIdSecurityConfig) {
-      throw new OpenIdError('No OpenID configuration');
+      throw new MissingOpenidConfiguration();
     }
     return openIdSecurityConfig;
   }
@@ -68,7 +69,7 @@ export class OpenIdUrlBuilder {
     } else if (authFlow === OpenIdAuthFlowType.IMPLICIT) {
       return OpenIdResponseType.TOKEN;
     } else {
-      throw new OpenIdError('openid.auth.unknown.flow');
+      throw new InvalidOpenidAuthFlow(authFlow);
     }
   }
 
@@ -128,15 +129,16 @@ export class OpenIdUrlBuilder {
   /**
    * Constructs the OAuth2 scope string with required and optional scopes.
    * @private
-   * @param extraScopes Additional scopes to include
    * @returns Space-separated scope string
    */
-  private getScope(extraScopes?: string): string {
+  private getScope(): string {
     const scopes: string[] = ['openid'];
 
     if (this.getOpenIdConfig().supportsOfflineAccess) {
       scopes.push('offline_access');
     }
+
+    const extraScopes = this.getOpenIdConfig().extraScopes;
 
     if (extraScopes) {
       scopes.push(extraScopes);

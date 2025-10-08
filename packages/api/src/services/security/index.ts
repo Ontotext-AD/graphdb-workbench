@@ -1,4 +1,5 @@
 export * from './security-context.service';
+export * from './openid';
 export {SecurityConfigMapper} from './mappers/security-config.mapper';
 export {AuthenticationService} from './authentication.service';
 export {AuthenticatedUserMapper} from './mappers/authenticated-user.mapper';
@@ -8,4 +9,3 @@ export {SecurityContextService} from './security-context.service';
 export {AuthoritiesUtil} from './utils/authorities-util';
 export {GrantedAuthoritiesUiModelMapper} from './mappers/granted-authorities-ui-model.mapper';
 export {AuthorizationService} from './authorization.service';
-export {OpenidStorageService} from './openid/openid-storage.service';

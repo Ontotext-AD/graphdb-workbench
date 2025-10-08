@@ -5,7 +5,7 @@ import {OpenidStorageService} from '../../../services/security/openid/openid-sto
 import {SecurityContextService} from '../../../services/security';
 import {OpenidSecurityConfig} from '../../../models/security/openid-security-config';
 import {OpenIdTokens, TokenType} from '../../../models/security/authentication';
-import {OpenIdError} from './errors/openid-error';
+import {InvalidJwtToken} from './errors/invalid-jwt-token';
 
 export class OpenidTokenUtils {
   private readonly logger = LoggerProvider.logger;
@@ -133,7 +133,7 @@ export class OpenidTokenUtils {
       }
     } catch (e) {
       this.logger.error('oidc: token header decode failed', e);
-      throw new OpenIdError('openid.auth.not.jwt.token');
+      throw new InvalidJwtToken();
     }
   };
 
@@ -155,7 +155,7 @@ export class OpenidTokenUtils {
       }
     } catch (e) {
       this.logger.debug('Token payload decode error', e);
-      throw new OpenIdError('openid.auth.not.jwt.token');
+      throw new InvalidJwtToken();
     }
   };
 

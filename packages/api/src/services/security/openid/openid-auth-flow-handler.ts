@@ -9,6 +9,8 @@ import {OpenIdUtils} from './openid-utils';
 import {OntoToastrService} from '../../toastr';
 import {GeneratorUtils} from '../../utils/generator-utils';
 import {OpenIdError} from './errors/openid-error';
+import {InvalidOpenidAuthFlow} from './errors/invalid-openid-auth-flow';
+import {MissingAuthorizationCode} from './errors/missing-authorization-code';
 
 export type ExchangeTokensCallback = (code: string, redirectUrl: string, codeVerifier?: string | null) => Promise<void>;
 
@@ -32,8 +34,8 @@ export class OpenIdAuthFlowHandler {
    */
   async handleAuthorizationCode(config: OpenidSecurityConfig, params: AuthFlowParams, exchangeTokensCallback: ExchangeTokensCallback): Promise<boolean> {
     if (!params.code) {
-      this.logger.error('oidc: Missing authorization code');
-      throw new OpenIdError('Missing authorization code');
+      this.logger.error('OpenID: Missing authorization code');
+      throw new MissingAuthorizationCode();
     }
 
     const redirectUri = `${getOrigin()}login`;
@@ -43,8 +45,8 @@ export class OpenIdAuthFlowHandler {
     } else if (config.authFlow === OpenIdAuthFlowType.CODE_NO_PKCE) {
       await this.handleCodeNoPkceFlow(params.code, redirectUri, exchangeTokensCallback);
     } else {
-      this.logger.error('oidc: Invalid OpenID authentication flow');
-      throw new OpenIdError('Invalid OpenID authentication flow');
+      this.logger.error('OpenID: Invalid OpenID authentication flow');
+      throw new InvalidOpenidAuthFlow(config.authFlow);
     }
     return true;
   }
@@ -105,12 +107,12 @@ export class OpenIdAuthFlowHandler {
     const storedState = this.openidStorageService.getPkceState().getValue();
     if (storedState !== params.state) {
       this.logger.debug(`oidc: PKCE state mismatch ${storedState} != ${params.state}`);
-      this.toasterService.error('openid.auth.invalid.pkce.state');
-      throw new OpenIdError('openid.auth.invalid.pkce.state');
+      // TODO: Show toaster with error message `openid.auth.invalid.pkce.state` when GDB-13200 is done
+      throw new OpenIdError('PKCE state mismatch ${storedState} != ${params.state}');
     }
 
     if (!params.code) {
-      throw new OpenIdError('Missing authorization code');
+      throw new MissingAuthorizationCode();
     }
 
     const codeVerifier = this.openidStorageService.getPkceCodeVerifier().getValue();

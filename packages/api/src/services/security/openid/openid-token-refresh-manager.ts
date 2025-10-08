@@ -29,16 +29,16 @@ export class OpenIdTokenRefreshManager {
 
     if (!refreshToken || !this.shouldSetupRefresh(refreshToken)) {
       this.clearRefreshTimer();
-      this.logger.debug('oidc: no valid refresh token');
+      this.logger.debug('OpenID: no valid refresh token');
       return;
     }
 
     const refreshDelay = this.calculateRefreshDelay(refreshToken);
     if (refreshDelay < this.DEFAULT_REFRESH_CONFIGURATION.minDelayMs) {
-      this.logger.debug('oidc: tokens need refresh now, ' + refreshDelay);
+      this.logger.debug('OpenID: tokens need refresh now, ' + refreshDelay);
       await this.executeImmediateRefresh(refreshToken, refreshCallback);
     } else {
-      this.logger.debug('oidc: scheduling token refresh in', refreshDelay / 1000, 'seconds');
+      this.logger.debug('OpenID: scheduling token refresh in', refreshDelay / 1000, 'seconds');
       this.scheduleTokenRefresh(refreshToken, refreshDelay, refreshCallback);
     }
   }
@@ -85,7 +85,7 @@ export class OpenIdTokenRefreshManager {
    */
   private async executeImmediateRefresh(refreshToken: string, refreshCallback: (refreshToken: string) => Promise<void>): Promise<void> {
     this.clearRefreshTimer();
-    this.logger.debug('oidc: tokens will refresh now');
+    this.logger.debug('OpenID: tokens will refresh now');
     await refreshCallback(refreshToken);
   }
 
@@ -98,7 +98,7 @@ export class OpenIdTokenRefreshManager {
    */
   private scheduleTokenRefresh(refreshToken: string, delay: number, refreshCallback: (refreshToken: string) => Promise<void>): void {
     this.refreshTokensTimer = WindowService.getWindow().setTimeout(async () => {
-      this.logger.debug('oidc: tokens will refresh now, ' + delay);
+      this.logger.debug('OpenID: tokens will refresh now, ' + delay);
       await refreshCallback(refreshToken);
     }, delay);
   }

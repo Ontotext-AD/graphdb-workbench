@@ -2,7 +2,7 @@ import {HttpService} from '../../http/http.service';
 import {service} from '../../../providers';
 import {SecurityContextService} from '../security-context.service';
 import {OpenIdTokens} from '../../../models/security/authentication';
-import {OpenIdError} from './errors/openid-error';
+import {MissingOpenidConfiguration} from './errors/missing-openid-configuration';
 
 export class OpenIdRestService extends HttpService {
   private readonly securityContextService = service(SecurityContextService);
@@ -77,7 +77,7 @@ export class OpenIdRestService extends HttpService {
     if (openIdSecurityConfig) {
       return openIdSecurityConfig.clientId!;
     } else {
-      throw new OpenIdError('OpenID security configuration is not available');
+      throw new MissingOpenidConfiguration();
     }
   }
 
@@ -86,7 +86,7 @@ export class OpenIdRestService extends HttpService {
     if (openIdSecurityConfig) {
       return openIdSecurityConfig.openIdKeysUri!;
     } else {
-      throw new OpenIdError('OpenID security configuration is not available');
+      throw new MissingOpenidConfiguration();
     }
   }
 
@@ -95,7 +95,7 @@ export class OpenIdRestService extends HttpService {
     if (openIdSecurityConfig) {
       return openIdSecurityConfig.openIdTokenUrl!;
     } else {
-      throw new OpenIdError('OpenID security configuration is not available');
+      throw new MissingOpenidConfiguration();
     }
   }
 
