@@ -805,7 +805,7 @@ function TTYGViewCtrl(
         // If the chat ID is not stored in the local storage, there is no need to load it.
         // Also, if a chat id is found in the storage but is not present in the chat list, then it probably was deleted,
         // and it will be replaced with a new one on next selection.
-        if (!chatId || !chats.getChat(chatId)) {
+        if (!chatId || !chats?.getChat(chatId)) {
             return;
         }
         TTYGContextService.selectChat(TTYGContextService.getChats().getChat(chatId));

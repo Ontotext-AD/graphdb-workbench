@@ -1,10 +1,19 @@
+const GRAPHDB_API_KEY_PROPERTIES = [
+    'graphdb.llm.api-key',
+    // deprecated
+    'graphdb.openai.api-key',
+];
+
+const isApiKeyError = (text) => {
+    return GRAPHDB_API_KEY_PROPERTIES.some((key) => text.includes(key));
+};
+
 PluginRegistry.add('guide.step', [
     {
         guideBlockName: 'end-on-api-key-error',
         getSteps: (options, services) => {
             const GuideUtils = services.GuideUtils;
             options.mainAction = 'end-on-api-key-error';
-
             return [
                 {
                     guideBlockName: 'guide-end',
@@ -16,7 +25,7 @@ PluginRegistry.add('guide.step', [
                             // Check if error toast is visible waiting for 1 seconds
                             return GuideUtils.waitFor('.toast-message', 1)
                                 .then((element) => {
-                                    if (element.text().includes('graphdb.openai.api-key')) {
+                                    if (isApiKeyError(element.textContent)) {
                                         // Error toast is visible, show this step and complete on next click
                                         currentStepDescription.onNextClick = (guide) => {
                                             guide.complete();
@@ -35,10 +44,10 @@ PluginRegistry.add('guide.step', [
                                         guide.next();
                                     });
                                 });
-                        }
-                    }, options)
-                }
+                        },
+                    }, options),
+                },
             ];
-        }
-    }
+        },
+    },
 ]);
