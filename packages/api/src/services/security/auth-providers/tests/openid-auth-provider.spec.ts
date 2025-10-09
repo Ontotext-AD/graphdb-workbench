@@ -71,6 +71,38 @@ describe('OpenidAuthProvider', () => {
     securityContextService.updateSecurityConfig(securityConfig);
   };
 
+  /**
+   * Mocks successful authentication flow.
+   */
+  const mockSuccessfulAuthentication = () => {
+    jest.spyOn(openIdService, 'initializeOpenId').mockResolvedValue(true);
+    jest.spyOn(tokenUtils, 'authHeaderGraphDB').mockReturnValue('Bearer test-token');
+    TestUtil.mockResponse(
+      new ResponseMock('rest/security/authenticated-user')
+        .setResponse(ProviderResponseMocks.authenticatedUserResponse)
+    );
+  };
+
+  /**
+   * Mocks window service for login tests.
+   */
+  const mockWindowService = () => {
+    jest.spyOn(WindowService, 'getWindow').mockReturnValue({
+      location: {
+        origin: 'http://localhost:3000',
+        pathname: '/home'
+      },
+      crypto: {
+        getRandomValues: jest.fn((array: Uint32Array) => {
+          for (let i = 0; i < array.length; i++) {
+            array[i] = Math.floor(Math.random() * 0xffffffff);
+          }
+          return array;
+        })
+      }
+    } as unknown as Window);
+  };
+
   beforeEach(() => {
     TestUtil.restoreAllMocks();
     jest.clearAllMocks();
@@ -124,259 +156,213 @@ describe('OpenidAuthProvider', () => {
   });
 
   describe('initialize', () => {
-    let initializeOpenIdSpy: jest.SpyInstance;
-    let getAuthenticatedUserSpy: jest.SpyInstance;
-    let updateAuthenticatedUserSpy: jest.SpyInstance;
-    let authHeaderGraphDBSpy: jest.SpyInstance;
+    it('should throw MissingOpenidConfiguration error when OpenID configuration is missing', async () => {
+      setupSecurityConfig(); // No OpenID config
+      const initializeOpenIdSpy = jest.spyOn(openIdService, 'initializeOpenId');
 
-    beforeEach(() => {
-      initializeOpenIdSpy = jest.spyOn(openIdService, 'initializeOpenId');
-      getAuthenticatedUserSpy = jest.spyOn(securityService, 'getAuthenticatedUser');
-      updateAuthenticatedUserSpy = jest.spyOn(securityContextService, 'updateAuthenticatedUser');
-      authHeaderGraphDBSpy = jest.spyOn(tokenUtils, 'authHeaderGraphDB');
+      await expect(provider.initialize()).rejects.toThrow(MissingOpenidConfiguration);
+      expect(initializeOpenIdSpy).not.toHaveBeenCalled();
     });
 
-    describe('when OpenID configuration is missing', () => {
-      it('should throw MissingOpenidConfiguration error', async () => {
-        setupSecurityConfig(); // No OpenID config
+    it('should initialize OpenID and set auth token when user is authenticated', async () => {
+      const openidConfig = createOpenIdConfig();
+      setupSecurityConfig(openidConfig);
+      mockSuccessfulAuthentication();
 
-        await expect(provider.initialize()).rejects.toThrow(MissingOpenidConfiguration);
-        expect(initializeOpenIdSpy).not.toHaveBeenCalled();
-      });
+      const result = await provider.initialize();
+
+      expect(result).toBe(true);
+      expect(loggerDebugSpy).toHaveBeenCalledWith('OpenID: authentication initialized');
+      expect(authenticationStorageService.getAuthToken().getValue()).toBe('Bearer test-token');
     });
 
-    describe('when user is successfully authenticated', () => {
-      beforeEach(() => {
-        const openidConfig = createOpenIdConfig();
-        setupSecurityConfig(openidConfig);
+    it('should load and set authenticated user when authentication succeeds', async () => {
+      const openidConfig = createOpenIdConfig();
+      setupSecurityConfig(openidConfig);
+      mockSuccessfulAuthentication();
+      const getAuthenticatedUserSpy = jest.spyOn(securityService, 'getAuthenticatedUser');
+      const updateAuthenticatedUserSpy = jest.spyOn(securityContextService, 'updateAuthenticatedUser');
 
-        initializeOpenIdSpy.mockResolvedValue(true);
-        authHeaderGraphDBSpy.mockReturnValue('Bearer test-token');
-        TestUtil.mockResponse(
-          new ResponseMock('rest/security/authenticated-user')
-            .setResponse(ProviderResponseMocks.authenticatedUserResponse)
-        );
-      });
+      await provider.initialize();
 
-      it('should initialize OpenID and set auth token', async () => {
-        const result = await provider.initialize();
-
-        expect(result).toBe(true);
-        expect(initializeOpenIdSpy).toHaveBeenCalled();
-        expect(loggerDebugSpy).toHaveBeenCalledWith('OpenID: authentication initialized');
-        expect(authenticationStorageService.getAuthToken().getValue()).toBe('Bearer test-token');
-      });
-
-      it('should load and set authenticated user', async () => {
-        await provider.initialize();
-
-        expect(getAuthenticatedUserSpy).toHaveBeenCalled();
-        expect(updateAuthenticatedUserSpy).toHaveBeenCalledWith(
-          expect.objectContaining({
-            username: 'testUser'
-          })
-        );
-      });
-
-      it('should navigate to return URL if present', async () => {
-        openidStorageService.setReturnUrl('/repositories');
-
-        await provider.initialize();
-
-        expect(window.singleSpa.navigateToUrl).toHaveBeenCalledWith('/repositories');
-        expect(openidStorageService.getReturnUrl().getValue()).toBeNull();
-      });
-
-      it('should not navigate if no return URL', async () => {
-        await provider.initialize();
-
-        expect(window.singleSpa.navigateToUrl).not.toHaveBeenCalled();
-      });
-
-      it('should handle error when loading authenticated user fails', async () => {
-        getAuthenticatedUserSpy.mockRejectedValue(new Error('User load failed'));
-
-        const result = await provider.initialize();
-
-        expect(result).toBe(true);
-        expect(loggerErrorSpy).toHaveBeenCalledWith(
-          'Could not load authenticated user',
-          expect.any(Error)
-        );
-        expect(updateAuthenticatedUserSpy).not.toHaveBeenCalled();
-      });
+      expect(getAuthenticatedUserSpy).toHaveBeenCalled();
+      expect(updateAuthenticatedUserSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          username: 'testUser'
+        })
+      );
     });
 
-    describe('when user is not authenticated', () => {
-      beforeEach(() => {
-        const openidConfig = createOpenIdConfig();
-        setupSecurityConfig(openidConfig);
-        initializeOpenIdSpy.mockResolvedValue(false);
-      });
+    it('should navigate to return URL if present after successful authentication', async () => {
+      const openidConfig = createOpenIdConfig();
+      setupSecurityConfig(openidConfig);
+      mockSuccessfulAuthentication();
+      openidStorageService.setReturnUrl('/repositories');
 
-      it('should return false', async () => {
-        const result = await provider.initialize();
+      await provider.initialize();
 
-        expect(result).toBe(false);
-        expect(authenticationStorageService.getAuthToken().getValue()).toBeNull();
-      });
-
-      it('should not load authenticated user', async () => {
-        await provider.initialize();
-
-        expect(getAuthenticatedUserSpy).not.toHaveBeenCalled();
-        expect(updateAuthenticatedUserSpy).not.toHaveBeenCalled();
-      });
+      expect(window.singleSpa.navigateToUrl).toHaveBeenCalledWith('/repositories');
+      expect(openidStorageService.getReturnUrl().getValue()).toBeNull();
     });
 
-    describe('when OpenID initialization fails', () => {
-      let clearAuthenticationSpy: jest.SpyInstance;
+    it('should not navigate if no return URL after successful authentication', async () => {
+      const openidConfig = createOpenIdConfig();
+      setupSecurityConfig(openidConfig);
+      mockSuccessfulAuthentication();
 
-      beforeEach(() => {
-        const openidConfig = createOpenIdConfig();
-        setupSecurityConfig(openidConfig);
-        clearAuthenticationSpy = jest.spyOn(openIdService, 'clearAuthentication');
-      });
+      await provider.initialize();
 
-      it('should handle errors and clear authentication', async () => {
-        const error = new Error('Init failed');
-        initializeOpenIdSpy.mockRejectedValue(error);
+      expect(window.singleSpa.navigateToUrl).not.toHaveBeenCalled();
+    });
 
-        const result = await provider.initialize();
+    it('should handle error when loading authenticated user fails', async () => {
+      const openidConfig = createOpenIdConfig();
+      setupSecurityConfig(openidConfig);
+      jest.spyOn(openIdService, 'initializeOpenId').mockResolvedValue(true);
+      jest.spyOn(tokenUtils, 'authHeaderGraphDB').mockReturnValue('Bearer test-token');
+      const getAuthenticatedUserSpy = jest.spyOn(securityService, 'getAuthenticatedUser');
+      getAuthenticatedUserSpy.mockRejectedValue(new Error('User load failed'));
+      const updateAuthenticatedUserSpy = jest.spyOn(securityContextService, 'updateAuthenticatedUser');
 
-        expect(result).toBe(false);
-        expect(loggerDebugSpy).toHaveBeenCalledWith('OpenID: not logged or login error');
-        expect(loggerErrorSpy).toHaveBeenCalledWith('Could not initialize OpenID authentication', error);
-        expect(authenticationStorageService.getAuthToken().getValue()).toBeNull();
-        expect(clearAuthenticationSpy).toHaveBeenCalled();
-      });
+      const result = await provider.initialize();
+
+      expect(result).toBe(true);
+      expect(loggerErrorSpy).toHaveBeenCalledWith(
+        'Could not load authenticated user',
+        expect.any(Error)
+      );
+      expect(updateAuthenticatedUserSpy).not.toHaveBeenCalled();
+    });
+
+    it('should return false when user is not authenticated', async () => {
+      const openidConfig = createOpenIdConfig();
+      setupSecurityConfig(openidConfig);
+      const initializeOpenIdSpy = jest.spyOn(openIdService, 'initializeOpenId');
+      initializeOpenIdSpy.mockResolvedValue(false);
+
+      const result = await provider.initialize();
+
+      expect(result).toBe(false);
+      expect(authenticationStorageService.getAuthToken().getValue()).toBeNull();
+    });
+
+    it('should not load authenticated user when authentication fails', async () => {
+      const openidConfig = createOpenIdConfig();
+      setupSecurityConfig(openidConfig);
+      const initializeOpenIdSpy = jest.spyOn(openIdService, 'initializeOpenId');
+      initializeOpenIdSpy.mockResolvedValue(false);
+      const getAuthenticatedUserSpy = jest.spyOn(securityService, 'getAuthenticatedUser');
+      const updateAuthenticatedUserSpy = jest.spyOn(securityContextService, 'updateAuthenticatedUser');
+
+      await provider.initialize();
+
+      expect(getAuthenticatedUserSpy).not.toHaveBeenCalled();
+      expect(updateAuthenticatedUserSpy).not.toHaveBeenCalled();
+    });
+
+    it('should handle errors and clear authentication when OpenID initialization fails', async () => {
+      const openidConfig = createOpenIdConfig();
+      setupSecurityConfig(openidConfig);
+      const error = new Error('Init failed');
+      const initializeOpenIdSpy = jest.spyOn(openIdService, 'initializeOpenId');
+      initializeOpenIdSpy.mockRejectedValue(error);
+      const clearAuthenticationSpy = jest.spyOn(openIdService, 'clearAuthentication');
+
+      const result = await provider.initialize();
+
+      expect(result).toBe(false);
+      expect(loggerDebugSpy).toHaveBeenCalledWith('OpenID: not logged or login error');
+      expect(loggerErrorSpy).toHaveBeenCalledWith('Could not initialize OpenID authentication', error);
+      expect(authenticationStorageService.getAuthToken().getValue()).toBeNull();
+      expect(clearAuthenticationSpy).toHaveBeenCalled();
     });
   });
 
   describe('login', () => {
-    let setupCodeFlowSpy: jest.SpyInstance;
-    let setupCodeNoPkceFlowSpy: jest.SpyInstance;
-    let setupImplicitFlowSpy: jest.SpyInstance;
+    it('should throw MissingOpenidConfiguration error when OpenID configuration is missing', () => {
+      setupSecurityConfig(); // No OpenID config
+      const setupCodeFlowSpy = jest.spyOn(openIdService, 'setupCodeFlow');
 
-    beforeEach(() => {
-      setupCodeFlowSpy = jest.spyOn(openIdService, 'setupCodeFlow');
-      setupCodeNoPkceFlowSpy = jest.spyOn(openIdService, 'setupCodeNoPkceFlow');
-      setupImplicitFlowSpy = jest.spyOn(openIdService, 'setupImplicitFlow');
-
-      // Mock window.location.origin and crypto
-      jest.spyOn(WindowService, 'getWindow').mockReturnValue({
-        location: {
-          origin: 'http://localhost:3000',
-          pathname: '/home'
-        },
-        crypto: {
-          getRandomValues: jest.fn((array: Uint32Array) => {
-            for (let i = 0; i < array.length; i++) {
-              array[i] = Math.floor(Math.random() * 0xffffffff);
-            }
-            return array;
-          })
-        }
-      } as unknown as Window);
+      expect(() => provider.login()).toThrow(MissingOpenidConfiguration);
+      expect(setupCodeFlowSpy).not.toHaveBeenCalled();
     });
 
-    describe('when OpenID configuration is missing', () => {
-      it('should throw MissingOpenidConfiguration error', async () => {
-        setupSecurityConfig(); // No OpenID config
+    it('should initiate code flow with state and return URL for authorization code flow', async () => {
+      const openidConfig = createOpenIdConfig({authFlow: OpenIdAuthFlowType.CODE});
+      setupSecurityConfig(openidConfig);
+      mockWindowService();
+      const setupCodeFlowSpy = jest.spyOn(openIdService, 'setupCodeFlow');
 
-        expect(() => provider.login()).toThrow(MissingOpenidConfiguration);
-        expect(setupCodeFlowSpy).not.toHaveBeenCalled();
-      });
+      const promise = provider.login();
+
+      expect(setupCodeFlowSpy).toHaveBeenCalledWith(
+        expect.any(String),
+        'http://localhost:3000/login'
+      );
+      expect(setupCodeFlowSpy.mock.calls[0][0]).toHaveLength(56); // state length (28 * 2 hex chars)
+
+      // Verify promise never resolves (user gets redirected)
+      const settled = await Promise.race([
+        promise.then(() => 'resolved'),
+        new Promise((resolve) => setTimeout(() => resolve('timeout'), 10))
+      ]);
+      expect(settled).toBe('timeout');
     });
 
-    describe('with authorization code flow', () => {
-      beforeEach(() => {
-        const openidConfig = createOpenIdConfig({authFlow: OpenIdAuthFlowType.CODE});
-        setupSecurityConfig(openidConfig);
-      });
+    it('should initiate code flow without PKCE for CODE_NO_PKCE flow', () => {
+      const openidConfig = createOpenIdConfig({authFlow: OpenIdAuthFlowType.CODE_NO_PKCE});
+      setupSecurityConfig(openidConfig);
+      mockWindowService();
+      const setupCodeNoPkceFlowSpy = jest.spyOn(openIdService, 'setupCodeNoPkceFlow');
 
-      it('should initiate code flow with state and return URL', async () => {
-        const promise = provider.login();
+      provider.login();
 
-        // Should not resolve as user gets redirected
-        expect(setupCodeFlowSpy).toHaveBeenCalledWith(
-          expect.any(String),
-          'http://localhost:3000/login'
-        );
-        expect(setupCodeFlowSpy.mock.calls[0][0]).toHaveLength(56); // state length (28 * 2 hex chars)
-
-        // Verify promise never resolves
-        const settled = await Promise.race([
-          promise.then(() => 'resolved'),
-          new Promise((resolve) => setTimeout(() => resolve('timeout'), 10))
-        ]);
-        expect(settled).toBe('timeout');
-      });
+      expect(setupCodeNoPkceFlowSpy).toHaveBeenCalledWith(
+        expect.any(String),
+        'http://localhost:3000/login'
+      );
+      expect(setupCodeNoPkceFlowSpy.mock.calls[0][0]).toHaveLength(56);
     });
 
-    describe('with authorization code flow without PKCE', () => {
-      beforeEach(() => {
-        const openidConfig = createOpenIdConfig({authFlow: OpenIdAuthFlowType.CODE_NO_PKCE});
-        setupSecurityConfig(openidConfig);
-      });
+    it('should initiate implicit flow for IMPLICIT flow type', () => {
+      const openidConfig = createOpenIdConfig({authFlow: OpenIdAuthFlowType.IMPLICIT});
+      setupSecurityConfig(openidConfig);
+      mockWindowService();
+      const setupImplicitFlowSpy = jest.spyOn(openIdService, 'setupImplicitFlow');
 
-      it('should initiate code flow without PKCE', async () => {
-        provider.login();
+      provider.login();
 
-        expect(setupCodeNoPkceFlowSpy).toHaveBeenCalledWith(
-          expect.any(String),
-          'http://localhost:3000/login'
-        );
-        expect(setupCodeNoPkceFlowSpy.mock.calls[0][0]).toHaveLength(56);
-      });
+      expect(setupImplicitFlowSpy).toHaveBeenCalledWith(
+        expect.any(String),
+        'http://localhost:3000/login'
+      );
+      expect(setupImplicitFlowSpy.mock.calls[0][0]).toHaveLength(56);
     });
 
-    describe('with implicit flow', () => {
-      beforeEach(() => {
-        const openidConfig = createOpenIdConfig({authFlow: OpenIdAuthFlowType.IMPLICIT});
-        setupSecurityConfig(openidConfig);
-      });
+    it('should throw InvalidOpenidAuthFlow error for unknown flow type', () => {
+      const openidConfig = createOpenIdConfig({authFlow: 'unknown' as unknown as OpenIdAuthFlowType});
+      setupSecurityConfig(openidConfig);
+      mockWindowService();
 
-      it('should initiate implicit flow', async () => {
-        provider.login();
-
-        expect(setupImplicitFlowSpy).toHaveBeenCalledWith(
-          expect.any(String),
-          'http://localhost:3000/login'
-        );
-        expect(setupImplicitFlowSpy.mock.calls[0][0]).toHaveLength(56);
-      });
-    });
-
-    describe('with unknown flow type', () => {
-      beforeEach(() => {
-        const openidConfig = createOpenIdConfig({authFlow: 'unknown' as unknown as OpenIdAuthFlowType});
-        setupSecurityConfig(openidConfig);
-      });
-
-      it('should throw InvalidOpenidAuthFlow error', async () => {
-        expect(() => provider.login()).toThrow(InvalidOpenidAuthFlow);
-        expect(loggerDebugSpy).toHaveBeenCalledWith(
-          'OpenID: Invalid OpenID authentication flow: unknown'
-        );
-      });
+      expect(() => provider.login()).toThrow(InvalidOpenidAuthFlow);
+      expect(loggerDebugSpy).toHaveBeenCalledWith(
+        'OpenID: Invalid OpenID authentication flow: unknown'
+      );
     });
   });
 
   describe('logout', () => {
-    let logoutSpy: jest.SpyInstance;
-
-    beforeEach(() => {
-      logoutSpy = jest.spyOn(openIdService, 'logout');
-    });
-
     it('should call openIdService.logout', async () => {
+      const logoutSpy = jest.spyOn(openIdService, 'logout');
+
       await provider.logout();
 
       expect(logoutSpy).toHaveBeenCalled();
     });
 
     it('should resolve immediately', async () => {
+      jest.spyOn(openIdService, 'logout');
+
       const result = await provider.logout();
 
       expect(result).toBeUndefined();
@@ -384,19 +370,19 @@ describe('OpenidAuthProvider', () => {
   });
 
   describe('isAuthenticated', () => {
-    beforeEach(() => {
+    it('should return true when auth token exists and security is enabled', () => {
       const openidConfig = createOpenIdConfig();
       const securityConfig = createSecurityConfig(openidConfig);
       securityContextService.updateSecurityConfig(securityConfig);
-    });
-
-    it('should return true when auth token exists and security is enabled', () => {
       authenticationStorageService.setAuthToken('Bearer test-token');
 
       expect(provider.isAuthenticated()).toBe(true);
     });
 
     it('should return false when auth token is null and security is enabled', () => {
+      const openidConfig = createOpenIdConfig();
+      const securityConfig = createSecurityConfig(openidConfig);
+      securityContextService.updateSecurityConfig(securityConfig);
       authenticationStorageService.clearAuthToken();
 
       expect(provider.isAuthenticated()).toBe(false);
@@ -446,20 +432,12 @@ describe('OpenidAuthProvider', () => {
 
   describe('integration scenarios', () => {
     it('should handle complete authentication flow', async () => {
-      // Setup
       const openidConfig = createOpenIdConfig();
       setupSecurityConfig(openidConfig);
-      jest.spyOn(openIdService, 'initializeOpenId').mockResolvedValue(true);
-      jest.spyOn(tokenUtils, 'authHeaderGraphDB').mockReturnValue('Bearer test-token');
-      TestUtil.mockResponse(
-        new ResponseMock('rest/security/authenticated-user')
-          .setResponse(ProviderResponseMocks.authenticatedUserResponse)
-      );
+      mockSuccessfulAuthentication();
 
-      // Initialize
       const isLoggedIn = await provider.initialize();
 
-      // Verify complete flow
       expect(isLoggedIn).toBe(true);
       expect(provider.isAuthenticated()).toBe(true);
       expect(authenticationStorageService.getAuthToken().getValue()).toBe('Bearer test-token');
@@ -467,19 +445,15 @@ describe('OpenidAuthProvider', () => {
     });
 
     it('should handle complete logout flow', async () => {
-      // Setup authenticated state
       authenticationStorageService.setAuthToken('Bearer test-token');
       const authenticatedUser = ProviderResponseMocks.authenticatedUserResponse as unknown as AuthenticatedUser;
       securityContextService.updateAuthenticatedUser(authenticatedUser);
-
-      // Logout
       jest.spyOn(openIdService, 'logout').mockImplementation(() => {
         authenticationStorageService.clearAuthToken();
       });
 
       await provider.logout();
 
-      // Verify cleanup
       expect(openIdService.logout).toHaveBeenCalled();
     });
   });
