@@ -108,7 +108,7 @@ export class OpenIdAuthFlowHandler {
     if (storedState !== params.state) {
       this.logger.debug(`oidc: PKCE state mismatch ${storedState} != ${params.state}`);
       // TODO: Show toaster with error message `openid.auth.invalid.pkce.state` when GDB-13200 is done
-      throw new OpenIdError('PKCE state mismatch ${storedState} != ${params.state}');
+      throw new OpenIdError(`PKCE state mismatch ${storedState} != ${params.state}`);
     }
 
     if (!params.code) {
