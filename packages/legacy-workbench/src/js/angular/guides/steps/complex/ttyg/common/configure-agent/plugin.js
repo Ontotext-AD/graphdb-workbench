@@ -20,10 +20,10 @@ PluginRegistry.add('guide.step', [
                     onNextValidate: () => Promise.resolve(GuideUtils.validateTextInput(inputSelector, options.topP)),
                     // If mainAction is set the title will be set automatically
                     ...(options.mainAction ? {} : {title: TTYG_DEFAULT_TITLE}),
-                    ...options
-                }
+                    ...options,
+                },
             };
-        }
+        },
     },
     {
         guideBlockName: 'configure-temperature',
@@ -44,10 +44,10 @@ PluginRegistry.add('guide.step', [
                     onNextValidate: () => Promise.resolve(GuideUtils.validateTextInput(inputSelector, options.temperature)),
                     // If mainAction is set the title will be set automatically
                     ...(options.mainAction ? {} : {title: TTYG_DEFAULT_TITLE}),
-                    ...options
-                }
+                    ...options,
+                },
             };
-        }
+        },
     },
     {
         guideBlockName: 'configure-iri-discovery-search',
@@ -64,7 +64,7 @@ PluginRegistry.add('guide.step', [
             }
 
             return {
-                guideBlockName: 'clickable-element',
+                guideBlockName: 'toggle-element',
                 options: {
                     content,
                     class: 'toggle-iri-discovery-search',
@@ -73,18 +73,14 @@ PluginRegistry.add('guide.step', [
                     ...options,
                     url: 'ttyg',
                     elementSelector: GuideUtils.getGuideElementSelector('iri-discovery-search'),
-                    clickableElementSelector: toggleSelector,
-                    showOn: () => {
-                        const isEnabled = GuideUtils.isChecked(toggleSelector);
-                        return shouldToggleOff ? isEnabled : !isEnabled;
-                    },
+                    toggleableElementSelector: toggleSelector,
                     onNextValidate: () => {
                         const isEnabled = GuideUtils.isChecked(toggleSelector);
                         return Promise.resolve(shouldToggleOff ? !isEnabled : isEnabled);
-                    }
-                }
-            }
-        }
+                    },
+                },
+            };
+        },
     },
     {
         guideBlockName: 'configure-agent-type-agent-name',
@@ -107,11 +103,11 @@ PluginRegistry.add('guide.step', [
                                 throw error;
                             }),
                         elementSelector: GuideUtils.getGuideElementSelector('agent-name'),
-                        onNextValidate: () => Promise.resolve(GuideUtils.validateTextInputNotEmpty(GuideUtils.getGuideElementSelector('agent-name')))
-                    }
-                }
-            ]
-        }
+                        onNextValidate: () => Promise.resolve(GuideUtils.validateTextInputNotEmpty(GuideUtils.getGuideElementSelector('agent-name'))),
+                    },
+                },
+            ];
+        },
     },
     {
       guideBlockName: 'configure-agent-type-model-name',
@@ -129,11 +125,11 @@ PluginRegistry.add('guide.step', [
                       ...options,
                       url: 'ttyg',
                       elementSelector: GuideUtils.getGuideElementSelector('model'),
-                      onNextValidate: () => Promise.resolve(GuideUtils.validateTextInput(GuideUtils.getGuideElementSelector('model'), options.model, false))
-                  }
-              }
-          ]
-      }
+                      onNextValidate: () => Promise.resolve(GuideUtils.validateTextInput(GuideUtils.getGuideElementSelector('model'), options.model, false)),
+                  },
+              },
+          ];
+      },
     },
     {
       guideBlockName: 'configure-agent-additional-instructions',
@@ -152,11 +148,11 @@ PluginRegistry.add('guide.step', [
                       ...options,
                       url: 'ttyg',
                       elementSelector: GuideUtils.getGuideElementSelector('user-instructions'),
-                      onNextValidate: () => Promise.resolve(GuideUtils.validateTextInput(GuideUtils.getGuideElementSelector('user-instructions'), options.userInstructions, false))
-                  }
-              }
-          ]
-      }
+                      onNextValidate: () => Promise.resolve(GuideUtils.validateTextInput(GuideUtils.getGuideElementSelector('user-instructions'), options.userInstructions, false)),
+                  },
+              },
+          ];
+      },
     },
     {
         guideBlockName: 'configure-agent',
@@ -171,8 +167,8 @@ PluginRegistry.add('guide.step', [
                         guideBlockName: method.guideBlockName,
                         options: {
                             disablePreviousFlow: false,
-                            ...method.options
-                        }
+                            ...method.options,
+                        },
                     };
                 });
             };
@@ -190,39 +186,39 @@ PluginRegistry.add('guide.step', [
                     guideBlockName: 'wait-for-element-to-show',
                     options: angular.extend({}, {
                         elementSelectorToShow: GuideUtils.getElementSelector('.agent-settings-modal'),
-                        timeToWait: 10
-                    }, options)
-                }
-            ]
+                        timeToWait: 10,
+                    }, options),
+                },
+            ];
 
             if (shouldEditName) {
                 steps.push({
-                    guideBlockName: 'configure-agent-type-agent-name', options: {...options}
-                })
+                    guideBlockName: 'configure-agent-type-agent-name', options: {...options},
+                });
             }
 
             if (shouldConfigureTemperature) {
                 steps.push({
                     guideBlockName: 'configure-temperature',
-                    options: {...options}
-                })
+                    options: {...options},
+                });
             }
 
             if (shouldConfigureTopP) {
                 steps.push({
                     guideBlockName: 'configure-top-p',
-                    options: {...options}
-                })
+                    options: {...options},
+                });
             }
 
             if (hasModelName) {
                 steps.push({
-                    guideBlockName: 'configure-agent-type-model-name', options: {...options}
-                })
+                    guideBlockName: 'configure-agent-type-model-name', options: {...options},
+                });
             }
 
             if (shouldConfigureExtractionMethods) {
-                steps.push(...configureExtractionMethods(services, options))
+                steps.push(...configureExtractionMethods(services, options));
             }
 
             if (shouldConfigureIriDiscoverySearch) {
@@ -230,20 +226,20 @@ PluginRegistry.add('guide.step', [
                     guideBlockName: 'configure-iri-discovery-search',
                     options: {
                         disable: options.iriDiscoverySearch.disable,
-                        ...options
-                    }
-                })
+                        ...options,
+                    },
+                });
                 /**/
             }
 
             if (hasUserInstructions) {
                 steps.push({
-                    guideBlockName: 'configure-agent-additional-instructions', options: {...options}
-                })
+                    guideBlockName: 'configure-agent-additional-instructions', options: {...options},
+                });
             }
             // Removes the "Previous" button from the first method control step, because there is no previous step in the form.
             steps[1].options.disablePreviousFlow = true;
             return steps;
-        }
-    }
+        },
+    },
 ]);
