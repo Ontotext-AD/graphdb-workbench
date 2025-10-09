@@ -17,6 +17,7 @@ import {Logout} from '../../../models/events';
 import {OpenIdError} from './errors/openid-error';
 import {WindowService} from '../../window';
 import {MissingOpenidConfiguration} from './errors/missing-openid-configuration';
+import {getOrigin} from '../../utils';
 
 /**
  * Service responsible for managing OpenID Connect authentication flows, token management,
@@ -176,7 +177,7 @@ export class OpenIdService implements Service {
    */
   logout(logoutFromIDP = false): void {
     if (logoutFromIDP) {
-      this.hardLogout('/');
+      this.hardLogout(getOrigin());
     } else {
       this.softLogout();
     }
