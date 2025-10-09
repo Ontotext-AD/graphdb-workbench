@@ -48,7 +48,7 @@ export class OpenIdTokenRefreshManager {
    */
   clearRefreshTimer(): void {
     if (this.refreshTokensTimer) {
-      clearTimeout(this.refreshTokensTimer);
+      WindowService.getWindow().clearTimeout(this.refreshTokensTimer);
       delete this.refreshTokensTimer;
     }
   }
@@ -70,7 +70,7 @@ export class OpenIdTokenRefreshManager {
    */
   private calculateRefreshDelay(token: string): number {
     const tokenPayload = this.tokenUtils.getTokenPayload(token) as Record<string, number>;
-    if (!tokenPayload || tokenPayload['exp'] <= 0) {
+    if (!tokenPayload || !tokenPayload['exp'] || tokenPayload['exp'] <= 0) {
       return 0;
     }
     return tokenPayload['exp'] * 1000 - Date.now() - this.DEFAULT_REFRESH_CONFIGURATION.refreshAheadMs;
@@ -97,6 +97,7 @@ export class OpenIdTokenRefreshManager {
    * @param refreshCallback The callback function to perform the refresh
    */
   private scheduleTokenRefresh(refreshToken: string, delay: number, refreshCallback: (refreshToken: string) => Promise<void>): void {
+    this.clearRefreshTimer(); // Clear any existing timer before scheduling a new one
     this.refreshTokensTimer = WindowService.getWindow().setTimeout(async () => {
       this.logger.debug('OpenID: tokens will refresh now, ' + delay);
       await refreshCallback(refreshToken);
