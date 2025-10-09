@@ -106,7 +106,7 @@ export class OpenIdAuthFlowHandler {
   private async handlePkceFlow(params: AuthFlowParams, redirectUri: string, exchangeTokensCallback: ExchangeTokensCallback): Promise<void> {
     const storedState = this.openidStorageService.getPkceState().getValue();
     if (storedState !== params.state) {
-      this.logger.debug(`oidc: PKCE state mismatch ${storedState} != ${params.state}`);
+      this.logger.debug(`OpenID: PKCE state mismatch ${storedState} != ${params.state}`);
       // TODO: Show toaster with error message `openid.auth.invalid.pkce.state` when GDB-13200 is done
       throw new OpenIdError(`PKCE state mismatch ${storedState} != ${params.state}`);
     }

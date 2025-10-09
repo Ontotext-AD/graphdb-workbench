@@ -22,14 +22,14 @@ export class OpenidTokenUtils {
   hasValidIdToken(openIdSecurityConfig: OpenidSecurityConfig): boolean {
     const idToken = this.getTokenByType(TokenType.ID);
     if (!idToken) {
-      this.logger.debug('oidc: no id token');
+      this.logger.debug('OpenID: no id token');
       return false;
     }
     if (!this.verifyToken(TokenType.ID, openIdSecurityConfig)) {
-      this.logger.debug('oidc: stale id token');
+      this.logger.debug('OpenID: stale id token');
       return false;
     }
-    this.logger.debug('oidc: valid id token found');
+    this.logger.debug('OpenID: valid id token found');
     return true;
   };
 
@@ -44,7 +44,7 @@ export class OpenidTokenUtils {
     const refreshToken = this.getTokenByType(TokenType.REFRESH);
 
     if (!refreshToken) {
-      this.logger.debug('oidc: no refresh token');
+      this.logger.debug('OpenID: no refresh token');
       return false;
     }
 
@@ -92,7 +92,7 @@ export class OpenidTokenUtils {
 
     this.openidStorageService.setTokenType(openIdSecurityConfig.tokenType!);
 
-    this.logger.debug('oidc: saved tokens');
+    this.logger.debug('OpenID: saved tokens');
 
     // Clean these up since we don't need them anymore
     this.openidStorageService.clearPkceState();
@@ -132,7 +132,7 @@ export class OpenidTokenUtils {
         return decoded;
       }
     } catch (e) {
-      this.logger.error('oidc: token header decode failed', e);
+      this.logger.error('OpenID: token header decode failed', e);
       throw new InvalidJwtToken();
     }
   };
@@ -188,21 +188,21 @@ export class OpenidTokenUtils {
     if (!headerObj.kid) {
       if (tokenType !== TokenType.ID) {
         if (headerObj.error) {
-          this.logger.debug(`oidc: token ${tokenType} is not a JWT token (token considered valid)`);
+          this.logger.debug(`OpenID: token ${tokenType} is not a JWT token (token considered valid)`);
           return true;
         } else {
-          this.logger.debug(`oidc: invalid token ${tokenType} (token is empty)`);
+          this.logger.debug(`OpenID: invalid token ${tokenType} (token is empty)`);
           return false;
         }
       } else {
         // Only the id token must be JWT, access and refresh tokens are always valid if not JWT
-        this.logger.debug('oidc: invalid token id (not a JWT token)');
+        this.logger.debug('OpenID: invalid token id (not a JWT token)');
         return false;
       }
     }
     const jwk = this.securityContextService.getJsonWebKeysSet()?.[headerObj.kid];
     if (!jwk) {
-      this.logger.debug('oidc: no key to verify JWT token (token considered invalid)');
+      this.logger.debug('OpenID: no key to verify JWT token (token considered invalid)');
       return false;
     }
     // @ts-expect-error Not sure the correct type KJUR or dom JsonWebKey
