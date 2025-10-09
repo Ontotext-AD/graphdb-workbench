@@ -1,4 +1,4 @@
-const FTS_METHOD_DEFAULT_TITLE = "guide.step-action.fts-search-method"
+const FTS_METHOD_DEFAULT_TITLE = "guide.step-action.fts-search-method";
 
 PluginRegistry.add('guide.step', [
     {
@@ -11,7 +11,7 @@ PluginRegistry.add('guide.step', [
                 options: {
                     content: 'guide.step_plugin.fts-search-method.set-max-triples-per-call',
                     // If mainAction is set the title will be set automatically
-                    ...(options.mainAction ? {} : { title: FTS_METHOD_DEFAULT_TITLE }),
+                    ...(options.mainAction ? {} : {title: FTS_METHOD_DEFAULT_TITLE}),
                     class: 'toggle-fts-search',
                     ...options,
                     url: 'ttyg',
@@ -21,10 +21,10 @@ PluginRegistry.add('guide.step', [
                             return Promise.resolve(GuideUtils.validateTextInput(GuideUtils.getGuideElementSelector('max-triples-per-call-input'), options.maxTriplesPerCall, false));
                         }
                         return Promise.resolve(true);
-                    }
-                }
-            }
-        }
+                    },
+                },
+            };
+        },
     },
     {
         guideBlockName: "ttyg-fts-method-disable",
@@ -34,22 +34,22 @@ PluginRegistry.add('guide.step', [
 
             return [
                 {
-                    guideBlockName: 'clickable-element',
+                    guideBlockName: 'toggle-element',
                     options: {
                         content: 'guide.step_plugin.fts-search-method.disable-toggle',
                         // If mainAction is set the title will be set automatically
-                        ...(options.mainAction ? {} : { title: FTS_METHOD_DEFAULT_TITLE }),
+                        ...(options.mainAction ? {} : {title: FTS_METHOD_DEFAULT_TITLE}),
                         class: 'toggle-fts-search',
                         ...options,
+                        disable: true,
                         url: 'ttyg',
-                        showOn: () => GuideUtils.isChecked(toggleSelector),
                         elementSelector: GuideUtils.getGuideElementSelector('query-method-fts_search'),
-                        clickableElementSelector: toggleSelector,
-                        onNextValidate: () => Promise.resolve(!GuideUtils.isChecked(toggleSelector))
-                    }
-                }
-            ]
-        }
+                        toggleableElementSelector: toggleSelector,
+                        onNextValidate: () => Promise.resolve(!GuideUtils.isChecked(toggleSelector)),
+                    },
+                },
+            ];
+        },
     },
     {
         guideBlockName: "ttyg-fts-method-info",
@@ -60,14 +60,14 @@ PluginRegistry.add('guide.step', [
                     options: {
                         content: 'guide.step_plugin.fts-search-method.content',
                         // If mainAction is set the title will be set automatically
-                        ...(options.mainAction ? {} : { title: FTS_METHOD_DEFAULT_TITLE }),
+                        ...(options.mainAction ? {} : {title: FTS_METHOD_DEFAULT_TITLE}),
                         class: 'info-fts-search',
                         ...options,
-                        url: 'ttyg'
-                    }
-                }
-            ]
-        }
+                        url: 'ttyg',
+                    },
+                },
+            ];
+        },
     },
     {
         guideBlockName: "ttyg-fts-method-enable",
@@ -77,21 +77,21 @@ PluginRegistry.add('guide.step', [
 
             return [
                 {
-                    guideBlockName: 'clickable-element',
+                    guideBlockName: 'toggle-element',
                     options: {
                         content: 'guide.step_plugin.fts-search-method.enable-toggle',
                         // If mainAction is set the title will be set automatically
-                        ...(options.mainAction ? {} : { title: FTS_METHOD_DEFAULT_TITLE }),
+                        ...(options.mainAction ? {} : {title: FTS_METHOD_DEFAULT_TITLE}),
                         class: 'toggle-fts-search',
                         ...options,
                         url: 'ttyg',
                         elementSelector: GuideUtils.getGuideElementSelector('query-method-fts_search'),
-                        clickableElementSelector: toggleSelector,
-                        onNextValidate: () => Promise.resolve(GuideUtils.isChecked(toggleSelector))
-                    }
-                }
-            ]
-        }
+                        toggleableElementSelector: toggleSelector,
+                        onNextValidate: () => Promise.resolve(GuideUtils.isChecked(toggleSelector)),
+                    },
+                },
+            ];
+        },
     },
     {
         guideBlockName: 'fts-search-method',
@@ -101,27 +101,27 @@ PluginRegistry.add('guide.step', [
 
             if (shouldToggleOff) {
                 return [{
-                    guideBlockName: 'ttyg-fts-method-disable', options: {...options}
-                }]
+                    guideBlockName: 'ttyg-fts-method-disable', options: {...options},
+                }];
             }
 
             const steps = [
                 {
-                    guideBlockName: 'ttyg-fts-method-info', options: {...options}
+                    guideBlockName: 'ttyg-fts-method-info', options: {...options},
                 },
                 {
-                    guideBlockName: 'ttyg-fts-method-enable', options: {...options}
-                }
+                    guideBlockName: 'ttyg-fts-method-enable', options: {...options},
+                },
             ];
 
             if (options.maxTriplesPerCall) {
                 steps.push({
                     guideBlockName: 'set-max-triples-per-call',
-                    options: {...options}
-                })
+                    options: {...options},
+                });
             }
 
-            return steps
-        }
-    }
+            return steps;
+        },
+    },
 ]);

@@ -145,9 +145,12 @@ PluginRegistry.add('guide.step', [
 
             let stepHTMLElement;
             const selector = options.toggleableElementSelector || options.elementSelector;
+            // By default, allow only enabling of the element, unless disable is explicitly set to true. In that case
+            // only disabling will be allowed
+            const shouldDisable = options.disable ?? false;
 
             const toggleListener = (event) => {
-                if (!event.target.checked) {
+                if (event.target.checked === shouldDisable) {
                     event.preventDefault();
                     event.stopPropagation();
                 }
