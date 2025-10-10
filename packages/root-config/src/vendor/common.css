@@ -458,3 +458,7 @@ h3 [class^=icon-] {
 .pointer-events-none {
     pointer-events: none;
 }
+
+.padding-bottom-8 {
+    padding-bottom: 8rem;
+}
