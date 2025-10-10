@@ -4,6 +4,13 @@ import {UserMenuSteps} from "../../steps/user-menu/user-menu-steps";
 import {BaseSteps} from "../../steps/base-steps";
 
 describe('Header', () => {
+  beforeEach(() => {
+    // Given, I am on the header page
+    HeaderSteps.visit();
+    // And, I have disabled security by default
+    HeaderSteps.disableSecurity();
+  });
+
   it('Should render header and various tools inside', () => {
     // Given I visit the header page
     HeaderSteps.visit();
@@ -138,6 +145,9 @@ describe('Header', () => {
     it('Should show/hide login button', () => {
       // Given, I visit the header page, and I am activating free access
       HeaderSteps.visit();
+      HeaderSteps.getLoginButton().should('not.exist');
+
+      // When I activate free access
       HeaderSteps.activateFreeAccess();
 
       // Then, I expect to see the login button

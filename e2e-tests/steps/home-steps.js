@@ -1,10 +1,10 @@
-import {LicenseWidgetSteps} from "./widgets/license-widget-steps";
-import {RepositoryErrorsWidgetSteps} from "./widgets/repository-errors-widget-steps";
-import {ActiveRepositoryWidgetSteps} from "./widgets/active-repository-widget-steps";
-import {SavedSparqlQueriesWidgetSteps} from "./widgets/saved-sparql-queries-widget-steps";
-import {RepositorySteps} from "./repository-steps";
-import {BaseSteps} from "./base-steps";
-import {EnvironmentStubs} from "../stubs/environment-stubs";
+import {LicenseWidgetSteps} from './widgets/license-widget-steps';
+import {RepositoryErrorsWidgetSteps} from './widgets/repository-errors-widget-steps';
+import {ActiveRepositoryWidgetSteps} from './widgets/active-repository-widget-steps';
+import {SavedSparqlQueriesWidgetSteps} from './widgets/saved-sparql-queries-widget-steps';
+import {RepositorySteps} from './repository-steps';
+import {BaseSteps} from './base-steps';
+import {EnvironmentStubs} from '../stubs/environment-stubs';
 
 class HomeSteps extends BaseSteps {
 
@@ -34,8 +34,12 @@ class HomeSteps extends BaseSteps {
         return cy.get('.ot-loader-new-content').should('not.exist');
     }
 
+    static getLayout() {
+        return cy.get('.wb-layout');
+    }
+
     static getView() {
-      return cy.get('.wb-layout');
+        return cy.get('#wb-home');
     }
 
     static getTutorialPanel() {
@@ -43,19 +47,19 @@ class HomeSteps extends BaseSteps {
     }
 
     static hideTutorial() {
-      this.getTutorialPanel().find('.decline-tutorial').click();
+        this.getTutorialPanel().find('.decline-tutorial').click();
     }
 
     static showTutorialPanel() {
-      this.getView().find('.show-tutorial').click();
+        this.getView().find('.show-tutorial').click();
     }
 
     static getNavigationMenu() {
-      return this.getView().find('.wb-navbar');
+        return this.getLayout().find('.wb-navbar');
     }
 
     static getPageHeader() {
-      return this.getView().find('.wb-header');
+        return this.getLayout().find('.wb-header');
     }
 
     // ===========================
@@ -63,7 +67,7 @@ class HomeSteps extends BaseSteps {
     // ===========================
 
     static getRDFSearchButton() {
-      return this.getPageHeader().find('.rdf-search-button i');
+        return this.getPageHeader().find('.rdf-search-button i');
     }
 
     // ===========================
@@ -71,11 +75,11 @@ class HomeSteps extends BaseSteps {
     // ===========================
 
     static getRepositorySelector() {
-      return this.getPageHeader().find('onto-repository-selector');
+        return this.getPageHeader().find('onto-repository-selector');
     }
 
     static getSelectedRepository() {
-      return this.getRepositorySelector().find('.onto-dropdown-button');
+        return this.getRepositorySelector().find('.onto-dropdown-button');
     }
 
     // ===========================
@@ -83,11 +87,11 @@ class HomeSteps extends BaseSteps {
     // ===========================
 
     static getLanguageSelector() {
-      return this.getPageHeader().find('onto-language-selector');
+        return this.getPageHeader().find('onto-language-selector');
     }
 
     static getSelectedLanguage() {
-      return this.getLanguageSelector().find('.onto-dropdown-button');
+        return this.getLanguageSelector().find('.onto-dropdown-button');
     }
 
     // ===========================
@@ -95,7 +99,7 @@ class HomeSteps extends BaseSteps {
     // ===========================
 
     static getActiveRepositoryWidget() {
-      return ActiveRepositoryWidgetSteps.getWidget();
+        return ActiveRepositoryWidgetSteps.getWidget();
     }
 
     // ===========================
@@ -103,7 +107,7 @@ class HomeSteps extends BaseSteps {
     // ===========================
 
     static getLicenseWidget() {
-      return LicenseWidgetSteps.getWidget();
+        return LicenseWidgetSteps.getWidget();
     }
 
     // ===========================
@@ -111,7 +115,7 @@ class HomeSteps extends BaseSteps {
     // ===========================
 
     static getRepositoryErrorsWidget() {
-      return RepositoryErrorsWidgetSteps.getWidget();
+        return RepositoryErrorsWidgetSteps.getWidget();
     }
 
     // ===========================
@@ -119,7 +123,7 @@ class HomeSteps extends BaseSteps {
     // ===========================
 
     static getSavedSparqlQueriesWidget() {
-      return SavedSparqlQueriesWidgetSteps.getWidget();
+        return SavedSparqlQueriesWidgetSteps.getWidget();
     }
 
     // ===========================
@@ -127,23 +131,25 @@ class HomeSteps extends BaseSteps {
     // ===========================
 
     static getPageFooter() {
-      return cy.get('.footer-component');
+        return cy.get('.footer-component');
     }
 
     // ==========================
 
     static selectSPARQLQueryToExecute(query) {
         cy.contains('ul.saved-queries li', query)
-            .scrollIntoView()
-            .should('be.visible')
-            .as('savedQueryItem');
+            .as('savedQueryItem')
+            .scrollIntoView();
+
+        cy.get('@savedQueryItem')
+            .should('be.visible');
 
         cy.get('@savedQueryItem')
             .trigger('hover');
 
         cy.get('@savedQueryItem')
             .find('.execute-saved-query')
-            .click({ force: true });
+            .click({force: true});
     }
 
 
@@ -190,12 +196,12 @@ class HomeSteps extends BaseSteps {
     }
 
     static verifyCreateRepositoryLink() {
-        cy.get('.card.repository-errors').should("be.visible")
+        cy.get('.card.repository-errors').should('be.visible')
             .within(() => {
                 HomeSteps.getCreateRepositoryLink()
                     .click()
                     .url()
-                    .should('eq', Cypress.config("baseUrl") + '/repository/create?previous=%2F');
+                    .should('eq', Cypress.config('baseUrl') + '/repository/create?previous=%2F');
             });
         cy.get('.big-logo').click();
     }
@@ -217,7 +223,7 @@ class HomeSteps extends BaseSteps {
     }
 
     static shouldHaveAutocompleteResult(uri) {
-        return HomeSteps.getAutocompleteResultElement(uri).should("be.visible");
+        return HomeSteps.getAutocompleteResultElement(uri).should('be.visible');
     }
 
     static autocompleteText(text, uri) {
@@ -233,7 +239,7 @@ class HomeSteps extends BaseSteps {
 
     static verifyAutocompleteResourceLink(uri) {
         cy.get('#results-loader.ot-loader').should('not.exist');
-        cy.get('.resource-info').should('be.visible').and("contain", uri);
+        cy.get('.resource-info').should('be.visible').and('contain', uri);
     }
 
     static getAutocompleteButton(type) {
@@ -339,4 +345,5 @@ class HomeSteps extends BaseSteps {
         return cy.get('[guide-selector="sub-menu-support"]');
     }
 }
+
 export default HomeSteps;

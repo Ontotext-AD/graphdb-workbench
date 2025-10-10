@@ -74,7 +74,10 @@ describe('RDF resource search', () => {
         // Given: There is a repository selected and I visit a page other than home.
         cy.presetRepository(repositoryId);
         ImportSteps.visit();
+        ImportSteps.getView().should('be.visible');
         BrowserStubs.stubWindowOpen();
+        // Then: Search rdf button should be visible
+        RdfResourceSearchSteps.getOpenButton().should('be.visible');
         // When: I open the search resource component
         RdfResourceSearchSteps.openRdfSearchBox();
         //Then: I should be able to type some text in the input
@@ -109,6 +112,9 @@ describe('RDF resource search', () => {
         cy.importServerFile(repositoryId, FILE_TO_IMPORT);
         // And: I visit the home page
         HomeSteps.visitAndWaitLoader();
+        HomeSteps.getView().should('be.visible');
+        HomeSteps.getRdfResourceSearchInput().should('be.visible');
+        RdfResourceSearchSteps.getShowViewResourceMessageButton().should('be.visible');
 
         // When: I click on the RDF resource search button
         RdfResourceSearchSteps.clickOnShowViewResourceMessageButton();
@@ -119,6 +125,12 @@ describe('RDF resource search', () => {
         //Navigate away from the Homepage, to be able to test the new resource search box
         HomeSteps.visitAndWaitLoader();
         BrowserStubs.stubWindowOpen();
+        HomeSteps.getView().should('be.visible');
+        HomeSteps.getRdfResourceSearchInput().should('be.visible');
+        RdfResourceSearchSteps.getShowViewResourceMessageButton().should('be.visible');
+
+        // Then: The input for RDF resource search should not be visible (This is the legacy component used prior to the migration)
+        HomeSteps.getRdfResourceSearchInput().should('be.visible');
         // When: I click on the RDF resource search button
         RdfResourceSearchSteps.clickOnShowViewResourceMessageButton();
         // Then: The input for RDF resource search should be visible (This is the legacy component used prior to the migration)

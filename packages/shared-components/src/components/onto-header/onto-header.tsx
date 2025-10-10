@@ -78,6 +78,9 @@ export class OntoHeader {
   /** The model of the currently selected repository, if any. */
   @State() currentRepository: Repository | undefined;
   @State() securityConfig: SecurityConfig;
+  @State() private user: AuthenticatedUser;
+  @State() private showUserMenu = false;
+  @State() private showLoginButton = false;
 
   // ========================
   // Private
@@ -88,9 +91,7 @@ export class OntoHeader {
   private totalTripletsFormatter: Intl.NumberFormat;
   /** Array of subscription cleanup functions */
   private readonly subscriptions: SubscriptionList = new SubscriptionList();
-  private user: AuthenticatedUser;
   private skipUpdateActiveOperationsTimes = 0;
-  private isSecurityEnabled: boolean;
 
   // ========================
   // Lifecycle methods
@@ -115,11 +116,11 @@ export class OntoHeader {
           <onto-search-icon
             class="rdf-search-button"
             onClick={this.showViewResourceMessage}
-            data-test='onto-show-view-resource-message'
+            data-test="onto-show-view-resource-message"
             style={{display: this.shouldShowSearch && this.isHomePage ? 'block' : 'none'}}>
           </onto-search-icon>
           <onto-rdf-search
-            data-test='onto-open-rdf-search-button'
+            data-test="onto-open-rdf-search-button"
             style={{display: this.shouldShowSearch && !this.isHomePage ? 'block' : 'none'}}>
           </onto-rdf-search>
           {this.activeOperations?.allRunningOperations.getItems().length
@@ -127,7 +128,7 @@ export class OntoHeader {
             </onto-operations-notification>
             : ''
           }
-          {this.license &&  !this.license?.valid ?
+          {this.license && !this.license?.valid ?
             <onto-license-alert license={this.license}></onto-license-alert> : ''
           }
           <onto-repository-selector
@@ -137,8 +138,8 @@ export class OntoHeader {
             totalTripletsFormatter={this.totalTripletsFormatter}
             canWriteRepo={this.canWriteRepo}>
           </onto-repository-selector>
-          {this.isSecurityEnabled && this.authService.isAuthenticated() ? <onto-user-menu user={this.user} securityConfig={this.securityConfig}></onto-user-menu> : ''}
-          {this.isSecurityEnabled && !this.authService.isAuthenticated() && (this.currentRoute !== 'login') ? <onto-user-login></onto-user-login> : ''}
+          {this.showUserMenu && this.user ? <onto-user-menu user={this.user} securityConfig={this.securityConfig}></onto-user-menu> : ''}
+          {this.showLoginButton ? <onto-user-login></onto-user-login> : ''}
           <onto-language-selector dropdown-alignment="right"></onto-language-selector>
         </div>
       </Host>
@@ -189,19 +190,19 @@ export class OntoHeader {
   }
 
   private subscribeToSecurityContextChange() {
-    // TODO: This should be done by the authentication service, when the config and auth user are available synchronously
-    this.subscriptions.add(this.securityContextService.onAuthenticatedUserChanged((user) => {
-      this.user = user;
-    }));
     this.subscriptions.add(this.securityContextService.onSecurityConfigChanged((config) => {
       this.securityConfig = config;
-      this.isSecurityEnabled = config?.enabled;
+      setTimeout(() => {
+        this.updateVisibility();
+      });
     }));
   }
 
   private subscribeToAuthenticatedUserChange() {
-    this.subscriptions.add(this.securityContextService.onAuthenticatedUserChanged(() => {
+    this.subscriptions.add(this.securityContextService.onAuthenticatedUserChanged((user) => {
+      this.user = user;
       this.updateRepositoryItems();
+      this.updateVisibility();
     }));
   }
 
@@ -229,6 +230,7 @@ export class OntoHeader {
           this.shouldShowSearch = this.shouldShowRdfSearch();
           this.isHomePage = isHomePage();
           this.currentRoute = getCurrentRoute();
+          this.updateVisibility();
         }
       )
     );
@@ -304,6 +306,21 @@ export class OntoHeader {
       .then((namespaces) => this.namespaceContextService.updateNamespaces(namespaces));
   }
 
+  private updateVisibility() {
+    const isSecurityEnabled = this.securityConfig?.enabled;
+    const isLoggedIn = this.authService.isLoggedIn();
+    let isAuthenticated = false;
+    try {
+      isAuthenticated = this.authService.isAuthenticated();
+    } catch {
+      isAuthenticated = false;
+    }
+    const isFreeAccessEnabled = this.securityConfig?.freeAccess?.enabled;
+    this.showLoginButton = (isSecurityEnabled && isFreeAccessEnabled && !isLoggedIn) || (this.currentRoute === 'login');
+    this.showUserMenu = isSecurityEnabled && isAuthenticated && isLoggedIn;
+    this.shouldShowSearch = this.shouldShowRdfSearch();
+  }
+
   // ========================
   // Monitoring and pooling
   // ========================
@@ -355,7 +372,7 @@ export class OntoHeader {
       this.authorizationService.canReadRepo(this.currentRepository);
   }
 
-  private readonly showViewResourceMessage= (event:MouseEvent) => {
+  private readonly showViewResourceMessage = (event: MouseEvent) => {
     event.stopPropagation();
     this.toastrService.info(TranslationService.translate('rdf_search.toasts.use_view_resource'));
     this.shouldShowSearch = false;
