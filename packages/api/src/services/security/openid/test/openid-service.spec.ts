@@ -170,11 +170,14 @@ describe('OpenIdService', () => {
 
       const saveTokensSpy = jest.spyOn(tokenUtils, 'saveTokens');
       const setAuthTokenSpy = jest.spyOn(authenticationStorageService, 'setAuthToken');
+      const setupTokensRefreshSpy = jest.spyOn(tokenRefreshManager, 'setupTokensRefresh');
+      setupTokensRefreshSpy.mockReturnValue(Promise.resolve());
 
       await openIdService.refreshTokens(refreshToken);
 
       expect(saveTokensSpy).toHaveBeenCalledWith(mockNewTokens, config);
       expect(setAuthTokenSpy).toHaveBeenCalled();
+      expect(setupTokensRefreshSpy).toHaveBeenCalled();
     });
 
     it('should emit logout event on refresh failure', async () => {
@@ -184,6 +187,9 @@ describe('OpenIdService', () => {
 
       const emitSpy = jest.spyOn(eventService, 'emit');
       const clearAuthenticationSpy = jest.spyOn(openIdService, 'clearAuthentication');
+      jest.spyOn(tokenRefreshManager, 'setupTokensRefresh').mockImplementation(() => {
+        throw new Error('Refresh failed');
+      });
 
       await openIdService.refreshTokens('invalid-token');
 
@@ -460,6 +466,8 @@ describe('OpenIdService', () => {
         new ResponseMock(config.openIdTokenUrl!).setResponse(mockTokens).setStatus(200)
       ]);
 
+      jest.spyOn(tokenRefreshManager, 'setupTokensRefresh').mockReturnValue(Promise.resolve());
+
       // Ensure no existing auth
       openidStorageService.clearTokens();
 
@@ -585,6 +593,7 @@ describe('OpenIdService', () => {
         new ResponseMock(config.openIdKeysUri!).setResponse(mockJWKS).setStatus(200),
         new ResponseMock(config.openIdTokenUrl!).setResponse(mockTokens).setStatus(200)
       ]);
+      jest.spyOn(tokenRefreshManager, 'setupTokensRefresh').mockReturnValue(Promise.resolve());
 
       // Clear tokens
       openidStorageService.clearTokens();

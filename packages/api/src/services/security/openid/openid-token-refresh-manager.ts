@@ -32,8 +32,9 @@ export class OpenIdTokenRefreshManager {
       this.logger.debug('OpenID: no valid refresh token');
       return;
     }
+    const accessToken = this.openidStorageService.getAccessToken().getValue()!;
 
-    const refreshDelay = this.calculateRefreshDelay(refreshToken);
+    const refreshDelay = this.calculateRefreshDelay(accessToken);
     if (refreshDelay < this.DEFAULT_REFRESH_CONFIGURATION.minDelayMs) {
       this.logger.debug('OpenID: tokens need refresh now, ' + refreshDelay);
       await this.executeImmediateRefresh(refreshToken, refreshCallback);
@@ -69,8 +70,14 @@ export class OpenIdTokenRefreshManager {
    * @returns Delay in milliseconds
    */
   private calculateRefreshDelay(token: string): number {
-    const tokenPayload = this.tokenUtils.getTokenPayload(token) as Record<string, number>;
-    if (!tokenPayload || !tokenPayload['exp'] || tokenPayload['exp'] <= 0) {
+    let tokenPayload;
+    try {
+      tokenPayload = this.tokenUtils.getTokenPayload(token) as Record<string, number>;
+    } catch {
+      return 0;
+    }
+
+    if (!tokenPayload['exp'] || tokenPayload['exp'] <= 0) {
       return 0;
     }
     return tokenPayload['exp'] * 1000 - Date.now() - this.DEFAULT_REFRESH_CONFIGURATION.refreshAheadMs;

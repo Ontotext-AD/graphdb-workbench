@@ -32,10 +32,10 @@ describe('OpenIdTokenRefreshManager', () => {
   const TEN_MINUTES = 600;
 
   /**
-   * Creates a mock refresh token with a specific expiration time
+   * Creates a mock token with a specific expiration time
    * @param expiresInSeconds - Seconds from NOW when the token expires
    */
-  const createMockRefreshToken = (expiresInSeconds: number): string => {
+  const createMockToken = (expiresInSeconds: number): string => {
     return makeJwt(
       {alg: 'RS256', typ: 'JWT'},
       {exp: NOW + expiresInSeconds, iat: NOW, sub: 'test-user'}
@@ -93,7 +93,7 @@ describe('OpenIdTokenRefreshManager', () => {
     });
 
     it('should not setup refresh when refresh token is invalid', async () => {
-      const refreshToken = createMockRefreshToken(FIVE_MINUTES);
+      const refreshToken = createMockToken(FIVE_MINUTES);
       openidStorageService.setRefreshToken(refreshToken);
 
       // Mock hasValidRefreshToken to return false
@@ -108,7 +108,7 @@ describe('OpenIdTokenRefreshManager', () => {
     });
 
     it('should schedule refresh when token has sufficient time before expiry', async () => {
-      const refreshToken = createMockRefreshToken(FIVE_MINUTES);
+      const refreshToken = createMockToken(FIVE_MINUTES);
       openidStorageService.setRefreshToken(refreshToken);
 
       jest.spyOn(tokenUtils, 'hasValidRefreshToken').mockReturnValue(true);
@@ -130,7 +130,7 @@ describe('OpenIdTokenRefreshManager', () => {
 
     it('should execute immediate refresh when token expires soon', async () => {
       // Token expires in 30 seconds, which is less than refreshAheadMs (60 seconds)
-      const refreshToken = createMockRefreshToken(30);
+      const refreshToken = createMockToken(30);
       openidStorageService.setRefreshToken(refreshToken);
 
       jest.spyOn(tokenUtils, 'hasValidRefreshToken').mockReturnValue(true);
@@ -151,7 +151,7 @@ describe('OpenIdTokenRefreshManager', () => {
 
     it('should execute immediate refresh when token is already expired', async () => {
       // Token expired 10 seconds ago
-      const refreshToken = createMockRefreshToken(-10);
+      const refreshToken = createMockToken(-10);
       openidStorageService.setRefreshToken(refreshToken);
 
       jest.spyOn(tokenUtils, 'hasValidRefreshToken').mockReturnValue(true);
@@ -171,7 +171,7 @@ describe('OpenIdTokenRefreshManager', () => {
     });
 
     it('should execute scheduled refresh callback when timer fires', async () => {
-      const refreshToken = createMockRefreshToken(FIVE_MINUTES);
+      const refreshToken = createMockToken(FIVE_MINUTES);
       openidStorageService.setRefreshToken(refreshToken);
 
       jest.spyOn(tokenUtils, 'hasValidRefreshToken').mockReturnValue(true);
@@ -195,7 +195,7 @@ describe('OpenIdTokenRefreshManager', () => {
     });
 
     it('should clear existing timer before setting up new refresh', async () => {
-      const refreshToken1 = createMockRefreshToken(FIVE_MINUTES);
+      const refreshToken1 = createMockToken(FIVE_MINUTES);
       openidStorageService.setRefreshToken(refreshToken1);
 
       jest.spyOn(tokenUtils, 'hasValidRefreshToken').mockReturnValue(true);
@@ -212,7 +212,7 @@ describe('OpenIdTokenRefreshManager', () => {
       expect(mockSetTimeout).toHaveBeenCalledTimes(1);
 
       // Second setup with different token
-      const refreshToken2 = createMockRefreshToken(TEN_MINUTES);
+      const refreshToken2 = createMockToken(TEN_MINUTES);
       openidStorageService.setRefreshToken(refreshToken2);
       jest.spyOn(tokenUtils, 'getTokenPayload').mockReturnValue({
         exp: NOW + TEN_MINUTES,
@@ -228,7 +228,7 @@ describe('OpenIdTokenRefreshManager', () => {
     });
 
     it('should handle refresh callback errors gracefully', async () => {
-      const refreshToken = createMockRefreshToken(30);
+      const refreshToken = createMockToken(30);
       openidStorageService.setRefreshToken(refreshToken);
 
       jest.spyOn(tokenUtils, 'hasValidRefreshToken').mockReturnValue(true);
@@ -268,7 +268,7 @@ describe('OpenIdTokenRefreshManager', () => {
 
   describe('clearRefreshTimer', () => {
     it('should clear active timer', async () => {
-      const refreshToken = createMockRefreshToken(FIVE_MINUTES);
+      const refreshToken = createMockToken(FIVE_MINUTES);
       openidStorageService.setRefreshToken(refreshToken);
 
       jest.spyOn(tokenUtils, 'hasValidRefreshToken').mockReturnValue(true);
@@ -297,7 +297,7 @@ describe('OpenIdTokenRefreshManager', () => {
     });
 
     it('should allow multiple calls to clearRefreshTimer', async () => {
-      const refreshToken = createMockRefreshToken(FIVE_MINUTES);
+      const refreshToken = createMockToken(FIVE_MINUTES);
       openidStorageService.setRefreshToken(refreshToken);
 
       jest.spyOn(tokenUtils, 'hasValidRefreshToken').mockReturnValue(true);
@@ -324,7 +324,7 @@ describe('OpenIdTokenRefreshManager', () => {
 
   describe('shouldSetupRefresh', () => {
     it('should return true when refresh token exists and is valid', () => {
-      const refreshToken = createMockRefreshToken(FIVE_MINUTES);
+      const refreshToken = createMockToken(FIVE_MINUTES);
 
       jest.spyOn(tokenUtils, 'hasValidRefreshToken').mockReturnValue(true);
 
@@ -342,7 +342,7 @@ describe('OpenIdTokenRefreshManager', () => {
     });
 
     it('should return false when refresh token is invalid', () => {
-      const refreshToken = createMockRefreshToken(FIVE_MINUTES);
+      const refreshToken = createMockToken(FIVE_MINUTES);
 
       jest.spyOn(tokenUtils, 'hasValidRefreshToken').mockReturnValue(false);
 
@@ -360,7 +360,7 @@ describe('OpenIdTokenRefreshManager', () => {
     });
 
     it('should return false when tokenUtils indicates invalid refresh token', () => {
-      const refreshToken = createMockRefreshToken(FIVE_MINUTES);
+      const refreshToken = createMockToken(FIVE_MINUTES);
 
       jest.spyOn(tokenUtils, 'hasValidRefreshToken').mockReturnValue(false);
 
@@ -373,7 +373,7 @@ describe('OpenIdTokenRefreshManager', () => {
 
   describe('configuration defaults', () => {
     it('should use default refreshAheadMs of 60 seconds', async () => {
-      const refreshToken = createMockRefreshToken(FIVE_MINUTES);
+      const refreshToken = createMockToken(FIVE_MINUTES);
       openidStorageService.setRefreshToken(refreshToken);
 
       jest.spyOn(tokenUtils, 'hasValidRefreshToken').mockReturnValue(true);
@@ -394,7 +394,7 @@ describe('OpenIdTokenRefreshManager', () => {
 
     it('should use default minDelayMs of 1 second', async () => {
       // Token expires in exactly 61 seconds (1 second after accounting for refreshAheadMs)
-      const refreshToken = createMockRefreshToken(61);
+      const refreshToken = createMockToken(61);
       openidStorageService.setRefreshToken(refreshToken);
 
       jest.spyOn(tokenUtils, 'hasValidRefreshToken').mockReturnValue(true);
@@ -460,8 +460,10 @@ describe('OpenIdTokenRefreshManager', () => {
       const refreshToken = 'malformed-token';
       openidStorageService.setRefreshToken(refreshToken);
 
+      const accessToken = createMockToken(50);
+      openidStorageService.setAccessToken(accessToken);
+
       jest.spyOn(tokenUtils, 'hasValidRefreshToken').mockReturnValue(true);
-      jest.spyOn(tokenUtils, 'getTokenPayload').mockReturnValue(null as unknown as Record<string, number>);
 
       const refreshCallback = jest.fn().mockResolvedValue(undefined);
 
