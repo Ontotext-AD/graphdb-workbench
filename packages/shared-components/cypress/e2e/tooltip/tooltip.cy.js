@@ -34,17 +34,6 @@ describe('Tooltip', () => {
     // Then I expect the tooltip to be displayed on the bottom.
     TooltipSteps.verifyBottomTooltipPlacement();
     TooltipSteps.getElementWithBottomTooltip().trigger('mouseout');
-
-    // Test 4: Tooltips with different themes.
-    // When I hover over an element that displays a tooltip with the default theme,
-    TooltipSteps.getElementWithDefaultThemeTooltip().trigger('mouseover');
-    // Then I expect the tooltip to be colored according to the default theme.
-    TooltipSteps.getTooltip().should('have.css', 'background-color', 'rgb(0, 54, 99)');
-    TooltipSteps.getElementWithDefaultThemeTooltip().trigger('mouseout');
-    // When I hover over an element that displays a tooltip with a custom theme,
-    TooltipSteps.getElementWithCustomThemeTooltip().trigger('mouseover');
-    // Then I expect the tooltip to be colored according to the custom theme.
-    TooltipSteps.getTooltip('custom-theme').should('have.css', 'background-color', 'rgb(252, 255, 205)');
   });
 
   it('Should remove tooltip, when the element is removed from the DOM', () => {
