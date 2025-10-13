@@ -1,7 +1,7 @@
 import {AuthRequestInterceptor} from '../auth-request-interceptor';
-import {ServiceProvider} from '../../../providers/service/service.provider';
-import {AuthenticationStorageService} from '../../../services/security/authentication-storage.service';
-import {RepositoryStorageService} from '../../../services/repository/repository-storage.service';
+import {ServiceProvider} from '../../../providers';
+import {AuthenticationStorageService} from '../../../services/security';
+import {RepositoryStorageService} from '../../../services/repository';
 import {StorageData} from '../../../models/storage';
 import {Repository} from '../../../models/repositories';
 

@@ -28,6 +28,14 @@ export class StorageData {
   }
 
   /**
+   * Checks if the value is defined (not null or undefined).
+   * @returns True if the value is defined, false otherwise.
+   */
+  isDefined(): boolean {
+    return this.value !== null && this.value !== undefined;
+  }
+
+  /**
    * Returns the value as a string or the default value if the value is null.
    * @param defaultValue The default value to return if the value is null.
    * @returns The value as a string or the default value if the value is null.
