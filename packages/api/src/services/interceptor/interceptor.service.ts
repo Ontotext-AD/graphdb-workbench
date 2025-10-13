@@ -1,5 +1,5 @@
 import {HttpRequest} from '../../models/http/http-request';
-import {RESPONSE_INTERCEPTORS, REQUEST_INTERCEPTORS} from '../../interceptor/interceptors';
+import {RESPONSE_INTERCEPTORS, REQUEST_INTERCEPTORS, initializeInterceptors} from '../../interceptor/interceptors';
 import {HttpInterceptor} from '../../models/interceptor/http-interceptor';
 import {ModelList} from '../../models/common';
 
@@ -17,6 +17,17 @@ export class InterceptorService {
    * It sorts the interceptors based on their priority using the sortInterceptors method.
    */
   constructor() {
+    this.initializeAsync();
+  }
+
+  /**
+   * Initializes the interceptor service by loading and registering default interceptors.
+   * As long as the interceptors are lazy-loaded, this method is asynchronous which means
+   * that the constructor cannot wait for it to complete. However, the interceptors
+   * will be ready by the time the first HTTP request is made.
+   */
+  private async initializeAsync() {
+    await initializeInterceptors();
     this.registerRequestInterceptors(REQUEST_INTERCEPTORS);
     this.registerResponseInterceptors(RESPONSE_INTERCEPTORS);
   }
