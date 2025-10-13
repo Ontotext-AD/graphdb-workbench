@@ -134,4 +134,13 @@ export class ObjectUtil {
   static hasCopyMethod(value: unknown): boolean {
     return typeof value === 'object' && value !== null && Object.prototype.hasOwnProperty.call(value, 'copy') && typeof (value as { copy: unknown }).copy === 'function';
   }
+
+  /**
+   * Checks if the given object is null or undefined.
+   * @param obj - The object to check.
+   * @returns True if the object is null or undefined, false otherwise.
+   */
+  static isNullOrUndefined = (obj: unknown): boolean => {
+    return obj === null || obj === undefined;
+  };
 }
