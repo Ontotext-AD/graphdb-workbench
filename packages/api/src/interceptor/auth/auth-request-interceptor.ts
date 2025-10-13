@@ -1,9 +1,9 @@
 import {HttpRequest} from '../../models/http/http-request';
 import {HttpInterceptor} from '../../models/interceptor/http-interceptor';
-import {AuthenticationStorageService} from '../../services/security/authentication-storage.service';
 import {ServiceProvider} from '../../providers';
 import {RepositoryStorageService} from '../../services/repository/repository-storage.service';
 import {SecurityContextService} from '../../services/security/security-context.service';
+import {AuthenticationStorageService} from '../../services/security/authentication-storage.service';
 
 /**
  * AuthRequestInterceptor is responsible for intercepting HTTP requests and adding authentication

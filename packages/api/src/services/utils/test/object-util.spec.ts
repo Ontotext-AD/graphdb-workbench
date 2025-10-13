@@ -104,4 +104,26 @@ describe('ObjectUtil', () => {
     // Verify that the inner objects do not share the same reference
     expect(obj1.b).not.toBe(obj2.b);
   });
+
+  test('isNullOrUndefined should return true for null values', () => {
+    expect(ObjectUtil.isNullOrUndefined(null)).toBeTruthy();
+  });
+
+  test('isNullOrUndefined should return true for undefined values', () => {
+    expect(ObjectUtil.isNullOrUndefined(undefined)).toBeTruthy();
+  });
+
+  test('isNullOrUndefined should return false for truthy values', () => {
+    expect(ObjectUtil.isNullOrUndefined(1)).toBeFalsy();
+    expect(ObjectUtil.isNullOrUndefined('test')).toBeFalsy();
+    expect(ObjectUtil.isNullOrUndefined(true)).toBeFalsy();
+    expect(ObjectUtil.isNullOrUndefined([])).toBeFalsy();
+    expect(ObjectUtil.isNullOrUndefined({})).toBeFalsy();
+  });
+
+  test('isNullOrUndefined should return false for falsy values that are not null or undefined', () => {
+    expect(ObjectUtil.isNullOrUndefined(0)).toBeFalsy();
+    expect(ObjectUtil.isNullOrUndefined('')).toBeFalsy();
+    expect(ObjectUtil.isNullOrUndefined(false)).toBeFalsy();
+  });
 });

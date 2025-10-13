@@ -1,4 +1,5 @@
 import {LoggerProvider} from '../../services/logging/logger-provider';
+import {ObjectUtil} from '../../services/utils';
 
 /**
  * Represents a wrapper of the data obtained from the storage with methods to convert it to different formats.
@@ -25,6 +26,14 @@ export class StorageData {
    */
   getValue(): string | null {
     return this.value;
+  }
+
+  /**
+   * Checks if the value is defined (not null or undefined).
+   * @returns True if the value is defined, false otherwise.
+   */
+  isDefined(): boolean {
+    return !ObjectUtil.isNullOrUndefined(this.value);
   }
 
   /**
