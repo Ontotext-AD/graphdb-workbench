@@ -73,7 +73,7 @@ PluginRegistry.add('guide.step', [
           const GuideUtils = services.GuideUtils;
           return [
               {
-                  guideBlockName: 'clickable-element',
+                  guideBlockName: 'focus-element',
                   options: {
                       content: 'guide.step_plugin.similarity-search-method.select-index',
                       class: 'select-similarity-index',
