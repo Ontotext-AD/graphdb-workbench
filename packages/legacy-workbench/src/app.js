@@ -383,7 +383,7 @@ const ngLifecycles = singleSpaAngularJS({
     elementId: 'workbench-app',
     template: `
         <div ng-controller="mainCtrl">
-            <div class="container-fluid main-container" ng-if="!hasPermission()">
+            <div data-test="restricted-access-banner" class="container-fluid main-container" ng-if="!hasPermission()">
                 <p class="alert alert-danger">
                 {{'no.access.permission.to.functionality.error' | translate}}
                 <br>
