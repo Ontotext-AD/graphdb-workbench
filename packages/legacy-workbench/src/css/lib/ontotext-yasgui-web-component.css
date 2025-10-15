@@ -345,6 +345,28 @@ yasgui-component .yasr .yasr_header {
     background-color: var(--gw-info-lighter) !important;
 }
 
+yasgui-component .yasr .yasr_results .CodeMirror {
+    color: var(--gw-editor-content-color) !important;
+    background-color: var(--gw-editor-content-background) !important;
+}
+
+yasgui-component .yasr .yasr_results .CodeMirror-gutters {
+    color: var(--gw-editor-content-color) !important;
+    background-color: var(--gw-editor-content-background) !important;
+}
+
+yasgui-component .yasr .yasr_results .overlay_content {
+    /*TODO: override these*/
+    background: #fff;
+    background: linear-gradient(90deg, transparent, #fff 5%, #fff 95%, transparent);
+}
+
+yasgui-component .yasr .yasr_results .yasr_btn.overlay_btn {
+    color: var(--gw-button-secondary-color) !important;
+    background: var(--gw-button-secondary-background) !important;
+    border-color: var(--gw-button-secondary-border-color) !important;
+}
+
 yasgui-component .yasr .dataTable .triple-cell .triple-link {
     color: #708 !important;
 }
@@ -403,6 +425,34 @@ yasgui-component .yasr .extended-boolean-plugin .response-error {
 
 yasgui-component .yasr .extended-boolean-plugin .response-success {
     background-color: var(--gw-success-lighter) !important;
+}
+
+yasgui-component .yasr .google-visualization-table-table {
+    color: var(--gw-datatable-row-color) !important;
+    background: var(--gw-datatable-row-background) !important;
+    border-color: var(--gw-datatable-border-color) !important;
+}
+
+yasgui-component .yasr .google-visualization-table-table .google-visualization-table-tr-head {
+    color: var(--gw-datatable-header-color) !important;
+    background-color: var(--gw-datatable-header-background) !important;
+    border-color: var(--gw-datatable-header-cell-border-color) !important;
+}
+
+yasgui-component .yasr .google-visualization-table-table .google-visualization-table-tr-even {
+    background-color: var(--gw-datatable-row-background) !important;
+}
+
+yasgui-component .yasr .google-visualization-table-table .google-visualization-table-tr-odd {
+    background-color: var(--gw-datatable-row-striped-background) !important;
+}
+
+yasgui-component .yasr .google-visualization-table-table .google-visualization-table-td {
+    border-color: var(--gw-datatable-border-color) !important;
+}
+
+yasgui-component .yasr .google-visualization-table-table .google-visualization-table-th {
+    border-color: var(--gw-datatable-header-cell-border-color) !important;
 }
 
 yasgui-component .yasr .dataTables_wrapper .dataTable {
