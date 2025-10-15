@@ -31,7 +31,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 const securityContextService = ServiceProvider.get(SecurityContextService);
                 const restrictedPages = securityContextService.getRestrictedPages();
 
-                return restrictedPages.isRestricted(path);
+                return !restrictedPages.isRestricted(path);
             };
 
             this.updateReturnUrl = () => {

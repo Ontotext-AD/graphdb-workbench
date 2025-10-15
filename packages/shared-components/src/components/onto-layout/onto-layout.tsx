@@ -8,11 +8,9 @@ import {
   Authority,
   EventName,
   EventService,
-  getPathName,
   LocalStorageSubscriptionHandlerService,
   NavigationContextService,
   NavigationEndPayload,
-  RestrictedPages,
   SecurityConfig,
   SecurityContextService,
   ServiceProvider,
@@ -30,7 +28,6 @@ export class OntoLayout {
   // ========================
   // Services
   // ========================
-  private readonly securityContextService = ServiceProvider.get(SecurityContextService);
   private readonly authenticationService = ServiceProvider.get(AuthenticationService);
   private readonly navigationContextService = ServiceProvider.get(NavigationContextService);
 
@@ -47,7 +44,6 @@ export class OntoLayout {
   @State() authToken: string | null;
   @State() securityConfig: SecurityConfig;
   @State() isLowResolution = false;
-  @State() hasPermission = true;
   @State() showHeader = this.isAuthenticatedFully();
 
   // ========================
@@ -75,14 +71,7 @@ export class OntoLayout {
   connectedCallback() {
     this.subscribeToSecurityChanges();
     this.updateVisibility();
-    // Subscribing here, because after a disconnectedCallback the connectedCallback is called, instead of componentDidLoad or constructor
-    this.subscriptions.add(this.securityContextService.onRestrictedPagesChanged((restrictedPages) => this.setPermission(restrictedPages)));
-    this.subscriptions.add(
-      ServiceProvider.get(EventService).subscribe(EventName.NAVIGATION_END, (navigationEndPayload: NavigationEndPayload) => {
-        this.navigationContextService.updatePreviousRoute(navigationEndPayload.oldUrl);
-        this.setPermission(this.securityContextService.getRestrictedPages());
-      }));
-    this.setPermission(this.securityContextService.getRestrictedPages());
+    this.subscribeToNavigationEnd();
   }
 
   /**
@@ -109,13 +98,10 @@ export class OntoLayout {
             navbar-collapsed={this.isLowResolution}></onto-navbar>
         </nav>
 
-        {this.hasPermission ? (
-          <div class='main-slot-wrapper'>
-            <slot name="main"></slot>
-          </div>
-        ) : (
-          <onto-permission-banner></onto-permission-banner>
-        )}
+        <div class="main-slot-wrapper">
+          <slot name="main"></slot>
+        </div>
+
         <footer class="wb-footer">
           <onto-footer></onto-footer>
         </footer>
@@ -202,21 +188,6 @@ export class OntoLayout {
     );
   }
 
-  private setPermission(permissions: RestrictedPages) {
-    if (permissions) {
-      const path = getPathName();
-      this.hasPermission = !permissions.isRestricted(path);
-    } else {
-      // If the permissions are undefined, the user can access the url
-      this.hasPermission = true;
-    }
-
-    const mainContent = document.querySelector('.wb-layout main') as HTMLElement;
-    if (mainContent) {
-      mainContent.style.display = this.hasPermission ? 'block' : 'none';
-    }
-  }
-
   private updateVisibility() {
     if (!this.authenticationService.isSecurityEnabled()) {
       this.showHeader = true;
@@ -263,5 +234,12 @@ export class OntoLayout {
     });
     // Update the reference to trigger a re-render
     this.navbarRef.menuItems = [...this.navbarRef.menuItems];
+  }
+
+  private subscribeToNavigationEnd() {
+    this.subscriptions.add(
+      ServiceProvider.get(EventService).subscribe(EventName.NAVIGATION_END, (navigationEndPayload: NavigationEndPayload) => {
+        this.navigationContextService.updatePreviousRoute(navigationEndPayload.oldUrl);
+      }));
   }
 }

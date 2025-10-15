@@ -11,7 +11,6 @@
 
 - [onto-header](../onto-header)
 - [onto-navbar](../onto-navbar)
-- [onto-permission-banner](../onto-permission-banner)
 - [onto-footer](../onto-footer)
 - [onto-tooltip](../onto-tooltip)
 - [onto-toastr](../onto-toastr)
@@ -21,7 +20,6 @@
 graph TD;
   onto-layout --> onto-header
   onto-layout --> onto-navbar
-  onto-layout --> onto-permission-banner
   onto-layout --> onto-footer
   onto-layout --> onto-tooltip
   onto-layout --> onto-toastr
@@ -42,7 +40,6 @@ graph TD;
   onto-user-login --> translate-label
   onto-language-selector --> onto-dropdown
   onto-navbar --> translate-label
-  onto-permission-banner --> translate-label
   onto-footer --> translate-label
   onto-footer --> onto-cookie-consent
   onto-cookie-consent --> translate-label

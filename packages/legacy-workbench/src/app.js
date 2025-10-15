@@ -383,7 +383,14 @@ const ngLifecycles = singleSpaAngularJS({
     elementId: 'workbench-app',
     template: `
         <div ng-controller="mainCtrl">
-            <div class="container-fluid main-container no-authority-panel" ng-if="getActiveRepository() && !hasAuthority()">
+            <div class="container-fluid main-container" ng-if="!hasPermission()">
+                <p class="alert alert-danger">
+                {{'no.access.permission.to.functionality.error' | translate}}
+                <br>
+                {{'change.menu.or.user.warning' | translate}}
+                </p>
+            </div>
+            <div class="container-fluid main-container no-authority-panel" ng-if="hasPermission() && getActiveRepository() && !hasAuthority()">
                 <h1>
                     {{title}}
                     <page-info-tooltip></page-info-tooltip>
@@ -402,7 +409,7 @@ const ngLifecycles = singleSpaAngularJS({
                     </div>
                 </div>
             </div>
-            <div class="main-container" ng-if="hasAuthority() || (!getActiveRepository() && !hasAuthority())">
+            <div class="main-container" ng-if="hasPermission() && hasAuthority() || (!getActiveRepository() && !hasAuthority())">
                 <div ng-view></div>
             </div>
         </div>
