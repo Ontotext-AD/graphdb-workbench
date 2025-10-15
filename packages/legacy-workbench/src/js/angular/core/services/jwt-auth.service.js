@@ -528,8 +528,8 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 const overAllRepos = `${action}_REPO_*`;
 
                 return (
-                    this.principal.authorities.indexOf(overCurrentRepo) > -1 ||
-                    this.principal.authorities.indexOf(overAllRepos) > -1
+                    this.principal.authorities?.indexOf(overCurrentRepo) > -1 ||
+                    this.principal.authorities?.indexOf(overAllRepos) > -1
                 );
             };
 
