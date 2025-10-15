@@ -2,11 +2,11 @@
     position: sticky;
     top: 0;
     z-index: 1000;
-    background-color: white;
     width: 100%;
     margin-top: 0;
-    text-align: right;
     padding: 16px 12px 0 12px;
+    text-align: right;
+    background-color: var(--gw-dialog-background);
 }
 
 .cluster-nodes-configuration-modal {

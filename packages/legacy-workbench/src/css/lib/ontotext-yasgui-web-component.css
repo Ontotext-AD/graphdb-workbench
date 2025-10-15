@@ -12,8 +12,16 @@ yasgui-component :not(h3,h4,sup) {
     font-size: 1rem !important;
 }
 
+yasgui-component .yasgui-btn {
+    color: var(--gw-button-secondary-color) !important;
+    background-color: var(--gw-button-secondary-background) !important;
+    border-color: var(--gw-button-secondary-border-color) !important;
+}
+
 yasgui-component .yasgui-btn.btn-selected {
-    background-color: var(--gw-primary-base) !important;
+    color: var(--gw-button-primary-color) !important;
+    background-color: var(--gw-button-primary-background) !important;
+    border-color: var(--gw-button-primary-border-color) !important;
 }
 
 yasgui-component .yasgui-toolbar .yasgui-btn {
@@ -23,15 +31,27 @@ yasgui-component .yasgui-toolbar .yasgui-btn {
 }
 
 yasgui-component .yasgui-toolbar .btn-orientation {
-    color: var(--gw-primary-base) !important;
     font-size: 28px !important;
     margin-left: 1rem;
+    color: var(--gw-button-secondary-color) !important;
+    background-color: transparent !important;
 }
 
 yasgui-component .yasqe .CodeMirror {
     font-family: var(--mono-font) !important;
     font-size: 16px;
     border-color: #ddd !important;
+    background-color: var(--gw-editor-content-background) !important;
+    color: var(--gw-editor-content-color) !important;
+}
+
+yasgui-component .yasqe .CodeMirror-gutters {
+    color: var(--gw-editor-content-color) !important;
+    background-color: var(--gw-editor-content-background) !important;
+}
+
+yasgui-component .yasqe .CodeMirror-cursor {
+    border-left-color: var(--gw-editor-content-color) !important;
 }
 
 /* Unset the font-family so that it can inherit from workbench */
@@ -40,7 +60,7 @@ yasgui-component .CodeMirror-hints {
 }
 
 yasgui-component .CodeMirror-linenumber {
-    color: rgba(0, 0, 0, .66) !important;
+    color: var(--gw-editor-content-color) !important;
 }
 
 yasgui-component li.CodeMirror-hint-active {
@@ -55,6 +75,7 @@ yasgui-component .CodeMirror-hint b, .CodeMirror-hint-active b {
 
 yasgui-component .yasqe .yasqe_buttons {
     right: 21px;
+    background-color: var(--gw-editor-content-background) !important;
 }
 
 yasgui-component .tabPanel .yasqe  .yasqe-footer-buttons {
@@ -68,9 +89,10 @@ yasgui-component .tabPanel .yasqe  .yasqe-footer-buttons .abort-button {
 }
 
 yasgui-component .custom-button {
-    color: var(--gw-primary-base) !important;
     font-size: 2.5em !important;
     height: 48px;
+    color: var(--gw-primary-base) !important;
+    background-color: var(--gw-editor-content-background) !important;
 }
 
 yasgui-component .custom-button:disabled:hover, yasgui-component .custom-button:disabled:focus {
@@ -86,6 +108,27 @@ yasgui-component .yasqe_queryButton {
 
 yasgui-component .yasgui .tabsList .tab {
     padding: 0.46em !important;
+    color: var(--gw-tabs-tab-color) !important;
+    background-color: var(--gw-tabs-tab-background) !important;
+    border-color: var(--gw-tabs-tab-border-color) !important;
+}
+
+yasgui-component .yasgui .tabsList .tab:hover {
+    color: var(--gw-tabs-tab-hover-color) !important;
+    background-color: var(--gw-tabs-tab-hover-background) !important;
+    border-color: var(--gw-tabs-tab-hover-border-color) !important;
+}
+
+yasgui-component .yasgui .tabsList .tab.active {
+    color: var(--gw-tabs-tab-active-color) !important;
+    background-color: var(--gw-tabs-tab-active-background) !important;
+    border-color: var(--gw-tabs-tab-active-border-color) var(--gw-tabs-tab-active-border-color) transparent !important;
+}
+
+yasgui-component .yasgui .tabsList .tab.active:hover {
+    color: var(--gw-tabs-tab-active-color) !important;
+    background-color: var(--gw-tabs-tab-active-background) !important;
+    border-color: var(--gw-tabs-tab-active-border-color) var(--gw-tabs-tab-active-border-color) transparent !important;
 }
 
 yasgui-component .editable-text-field-wrapper,
@@ -96,7 +139,7 @@ yasgui-component .yasgui .tabsList .tab {
 
 yasgui-component .yasgui .tabsList .tab .closeTab,
 yasgui-component .yasgui .tabsList .addTab {
-    color: rgba(0, 0, 0, 0.66) !important;
+    color: inherit !important;
 }
 
 yasgui-component .yasgui .tabsList .tab .closeTab .icon-close,
@@ -107,6 +150,12 @@ yasgui-component .yasgui .tabsList .addTab .icon-plus {
 yasgui-component .yasgui .tabsList .tab .closeTab:hover,
 yasgui-component .yasgui .tabsList .addTab:hover {
     color: var(--gw-primary-dark) !important;
+}
+
+.yasgui-host-element .yasgui .tabsList .create-tab-tab {
+    color: var(--gw-tabs-tab-active-color) !important;
+    background-color: var(--gw-tabs-tab-active-background) !important;
+    border-color: var(--gw-tabs-tab-active-border-color) var(--gw-tabs-tab-active-border-color) transparent !important;
 }
 
 yasgui-component .editable-text-field-wrapper .save-btn,
@@ -188,6 +237,54 @@ yasgui-component .yasr-toolbar .pivot-table-download-as-button {
     background-color: var(--gw-primary-base) !important;
 }
 
+yasgui-component .saved-queries-container {
+    color: var(--gw-tooltip-color) !important;
+    background-color: var(--gw-tooltip-background) !important;
+}
+
+yasgui-component .saved-queries-container .saved-query-actions .saved-query-action {
+    color: var(--gw-button-link-color) !important;
+    background-color: var(--gw-tooltip-background) !important;
+}
+
+/*
+    Dialogs from the yasgui component. Those are not scoped under the yasgui-component class.
+*/
+.dialog {
+    color: var(--gw-dialog-color) !important;
+    background-color: var(--gw-dialog-background) !important;
+    box-shadow: var(--gw-dialog-shadow-1-offset-x) var(--gw-dialog-shadow-1-offset-y) var(--gw-dialog-shadow-1-blur) var(--gw-dialog-shadow-1-spread) var(--gw-dialog-shadow-1-color);
+}
+
+.dialog .dialog-header {
+    border-bottom-color: var(--gw-dialog-border-color) !important;
+}
+
+.dialog .dialog-header .close-button {
+    background-color: inherit;
+    color: inherit;
+}
+
+.dialog .dialog-footer {
+    border-top-color: var(--gw-dialog-border-color) !important;
+}
+
+/*
+    Forms in the dialog
+*/
+.dialog .form-field input,
+.dialog .form-field select,
+.dialog .form-field textarea {
+    color: var(--gw-form-field-color) !important;
+    background-color: var(--gw-form-field-background) !important;
+    border-color: var(--gw-form-field-border-color) !important;
+}
+
+.dialog .form-field input[type=text]:focus,
+.dialog .form-field textarea:focus {
+    border-color: var(--gw-form-field-focus-border-color) !important;
+}
+
 /* Dialog body should have slightly bigger font-size. */
 yasgui-component .dialog-body,
     /* When it is attached directly to the html body. */
@@ -248,8 +345,34 @@ yasgui-component .yasr .yasr_header {
     background-color: var(--gw-info-lighter) !important;
 }
 
+yasgui-component .yasr .yasr_results .CodeMirror {
+    color: var(--gw-editor-content-color) !important;
+    background-color: var(--gw-editor-content-background) !important;
+}
+
+yasgui-component .yasr .yasr_results .CodeMirror-gutters {
+    color: var(--gw-editor-content-color) !important;
+    background-color: var(--gw-editor-content-background) !important;
+}
+
+yasgui-component .yasr .yasr_results .overlay_content {
+    /*TODO: override these*/
+    background: #fff;
+    background: linear-gradient(90deg, transparent, #fff 5%, #fff 95%, transparent);
+}
+
+yasgui-component .yasr .yasr_results .yasr_btn.overlay_btn {
+    color: var(--gw-button-secondary-color) !important;
+    background: var(--gw-button-secondary-background) !important;
+    border-color: var(--gw-button-secondary-border-color) !important;
+}
+
 yasgui-component .yasr .dataTable .triple-cell .triple-link {
     color: #708 !important;
+}
+
+yasgui-component .yasr .yasr_btnGroup {
+    background-color: var(--gw-panel-background) !important;
 }
 
 yasgui-component .yasr .yasr_btnGroup .yasr_btn {
@@ -258,16 +381,26 @@ yasgui-component .yasr .yasr_btnGroup .yasr_btn {
     margin-right: .2rem;
     font-size: 16px;
     font-weight: 400;
-    color: #55595c !important;
-    fill: #55595c !important;
-    background-color: #eee;
-    border-bottom: 1px solid transparent;
+    color: var(--gw-tabs-tab-color) !important;
+    background-color: var(--gw-tabs-tab-background) !important;
+    fill: var(--gw-tabs-tab-color) !important;
+    border: 1px solid;
+    border-color: var(--gw-tabs-tab-border-color) !important;
+    border-bottom: 1px solid transparent !important;
+}
+
+yasgui-component .yasr .yasr_btnGroup .yasr_btn.selected {
+    color: var(--gw-tabs-tab-active-color) !important;
+    background-color: var(--gw-tabs-tab-active-background) !important;
+    border-color: var(--gw-tabs-tab-active-border-color) var(--gw-tabs-tab-active-border-color) transparent !important;
 }
 
 yasgui-component .yasr .yasr_btnGroup .yasr_btn:hover {
-    fill: #55595c !important;
-    border-bottom-width: 1px;
-    border-color: #eceeef #eceeef #ddd;
+    color: var(--gw-tabs-tab-hover-color) !important;
+    background-color: var(--gw-tabs-tab-hover-background) !important;
+    fill: var(--gw-tabs-tab-hover-color) !important;
+    border-color: var(--gw-tabs-tab-hover-border-color) var(--gw-tabs-tab-hover-border-color) transparent !important;
+    border-bottom-width: 1px !important;
 }
 
 yasgui-component .yasr .yasr_btnGroup .yasr_btn.selected {
@@ -294,28 +427,82 @@ yasgui-component .yasr .extended-boolean-plugin .response-success {
     background-color: var(--gw-success-lighter) !important;
 }
 
+yasgui-component .yasr .google-visualization-table-table {
+    color: var(--gw-datatable-row-color) !important;
+    background: var(--gw-datatable-row-background) !important;
+    border-color: var(--gw-datatable-border-color) !important;
+}
+
+yasgui-component .yasr .google-visualization-table-table .google-visualization-table-tr-head {
+    color: var(--gw-datatable-header-color) !important;
+    background-color: var(--gw-datatable-header-background) !important;
+    border-color: var(--gw-datatable-header-cell-border-color) !important;
+}
+
+yasgui-component .yasr .google-visualization-table-table .google-visualization-table-tr-even {
+    background-color: var(--gw-datatable-row-background) !important;
+}
+
+yasgui-component .yasr .google-visualization-table-table .google-visualization-table-tr-odd {
+    background-color: var(--gw-datatable-row-striped-background) !important;
+}
+
+yasgui-component .yasr .google-visualization-table-table .google-visualization-table-td {
+    border-color: var(--gw-datatable-border-color) !important;
+}
+
+yasgui-component .yasr .google-visualization-table-table .google-visualization-table-th {
+    border-color: var(--gw-datatable-header-cell-border-color) !important;
+}
+
 yasgui-component .yasr .dataTables_wrapper .dataTable {
     border-collapse: collapse;
 }
 
-yasgui-component .yasr .dataTables_wrapper .dataTable thead tr th {
+yasgui-component .yasr .dataTables_wrapper .dataTable th {
     font-weight: 500;
+    color: var(--gw-datatable-header-color) !important;
+    background-color: var(--gw-datatable-header-background) !important;
+    border-color: var(--gw-datatable-header-cell-border-color) !important;
+}
+
+yasgui-component .yasr .dataTables_wrapper .dataTable tbody tr {
+    vertical-align: top;
+    color: var(--gw-datatable-row-color) !important;
+    background-color: var(--gw-datatable-row-background) !important;
+}
+
+yasgui-component .yasr .dataTables_wrapper .dataTable tbody tr td {
+    border-color: var(--gw-datatable-border-color) !important;
+}
+
+yasgui-component .yasr .dataTables_wrapper .dataTable tbody tr:hover {
+    background-color: var(--gw-datatable-row-hover-background) !important;
+}
+
+yasgui-component .yasr .dataTables_wrapper .dataTable tbody tr.odd,
+yasgui-component .yasr .dataTables_wrapper .dataTable.withRowNumber tr.odd>td:first-child {
+    background-color: var(--gw-datatable-row-striped-background) !important;
+}
+
+yasgui-component .yasr .dataTables_wrapper .dataTable.withRowNumber tr.even>td:first-child {
+    background-color: var(--gw-datatable-row-background) !important;
 }
 
 yasgui-component .yasr .dataTables_wrapper .dataTable .rowNumber {
-    color: rgba(0, 0, 0, .66) !important;
+    color: var(--gw-datatable-row-color) !important;
 }
 
 yasgui-component .yasr .dataTable a {
     font-size: 16px;
 }
 
-yasgui-component .yasr .dataTable .nonUri sup {
-    color: #666666;
+yasgui-component .yasr .dataTable .nonUri {
+    color: inherit !important;
 }
 
-yasgui-component .yasr .dataTables_wrapper .dataTable tbody tr {
-    vertical-align: top;
+yasgui-component .yasr .dataTable .nonUri sup {
+    color: inherit !important;
 }
 
 yasgui-component .yasr #explainPlanQuery {
@@ -392,7 +579,9 @@ yasgui-component .page-selector {
 
 .keyboard-shortcuts-dialog-button {
     font-weight: 400;
-    color: var(--gw-secondary-base);
+    color: var(--gw-button-secondary-color) !important;
+    background-color: var(--gw-button-secondary-background) !important;
+    border-color: var(--gw-button-secondary-border-color) !important;
 }
 
 .hidden {

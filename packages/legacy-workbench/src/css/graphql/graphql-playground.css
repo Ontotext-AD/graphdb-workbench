@@ -12,7 +12,7 @@ html, body {
 .graphql-playground-view #graphiql .graphiql-container,
 .graphql-playground-view #graphiql .graphiql-container .graphiql-editors,
 .graphiql-container .CodeMirror {
-    background-color: #fff;
+    background-color: var(--gw-editor-content-background);
 }
 
 .page-content,
@@ -116,31 +116,17 @@ graphql-playground {
 }
 
 .graphql-playground-view #graphiql .graphiql-tabs .graphiql-tab {
-    /*background-color: var(--base-background-color);*/
-    background-color: var(--base-background-hover-color);
+    color: var(--gw-tabs-tab-color) !important;
+    background-color: var(--gw-tabs-tab-background) !important;
+    border-width: 1px;
+    border-style: solid;
+    border-color: var(--gw-tabs-tab-border-color) !important;
 }
 
-.graphql-playground-view #graphiql .graphiql-tabs > :not(:first-child) {
-    margin-left: .2em;
-}
-
-.graphql-playground-view #graphiql .graphiql-tabs .graphiql-tab-active {
-    background-color: #fff !important;
-}
-
-.graphql-playground-view #graphiql .graphiql-sessions .graphiql-session-header .graphiql-tab-add {
-    padding: 8px;
-    background-color: var(--base-background-hover-color);
-}
-
-.graphql-playground-view #graphiql .graphiql-sessions .graphiql-session-header .graphiql-tab-add:hover svg,
-.graphql-playground-view #graphiql .graphiql-sessions .graphiql-session-header .graphiql-tab-close:hover {
-    background-color: transparent;
-    color: var(--gw-primary-base);
-}
-
-.graphql-playground-view #graphiql .graphiql-tabs .graphiql-tab-active {
-    background-color: var(--base-background-hover-color);
+.graphql-playground-view #graphiql .graphiql-tabs .graphiql-tab.graphiql-tab-active {
+    color: var(--gw-tabs-tab-active-color) !important;
+    background-color: var(--gw-tabs-tab-active-background) !important;
+    border-color: var(--gw-tabs-tab-active-border-color) var(--gw-tabs-tab-active-border-color) transparent !important;
 }
 
 .graphql-playground-view #graphiql .graphiql-tabs .graphiql-tab-button {
@@ -152,7 +138,21 @@ graphql-playground {
     margin-top: 0;
     margin-right: 0 !important;
     margin-bottom: 0;
-    background-color: #fff;
+}
+
+.graphql-playground-view #graphiql .graphiql-tabs > :not(:first-child) {
+    margin-left: .2em;
+}
+
+.graphql-playground-view #graphiql .graphiql-sessions .graphiql-session-header .graphiql-tab-add {
+    padding: 8px;
+    background-color: var(--base-background-hover-color);
+}
+
+.graphql-playground-view #graphiql .graphiql-sessions .graphiql-session-header .graphiql-tab-add:hover svg,
+.graphql-playground-view #graphiql .graphiql-sessions .graphiql-session-header .graphiql-tab-close:hover {
+    background-color: transparent;
+    color: var(--gw-primary-base);
 }
 
 /* Hide the graphql logo */
@@ -183,6 +183,7 @@ graphql-playground {
 
 .graphql-playground-view #graphiql .graphiql-sessions .graphiql-editors .graphiql-query-editor {
     padding: 0;
+    border-bottom: 1px solid #ddd;
 }
 
 .graphql-playground-view #graphiql .graphiql-sessions .graphiql-editors .CodeMirror-gutters {
@@ -191,7 +192,7 @@ graphql-playground {
 }
 
 .graphql-playground-view #graphiql .graphiql-sessions .graphiql-editors .CodeMirror-gutter-wrapper * {
-    color: rgba(0, 0, 0, .66);
+    color: var(--gw-panel-color);
     font-weight: 300;
 }
 
@@ -230,16 +231,17 @@ graphql-playground {
 }
 
 .graphql-playground-view #graphiql .graphiql-editor-tools button {
-    background-color: #fff;
-    color: var(--gw-secondary-base);
     font-weight: 400;
     transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    color: var(--gw-tabs-tab-color) !important;
+    background-color: var(--gw-tabs-tab-background) !important;
+    border-color: var(--gw-tabs-tab-border-color) !important;
 }
 
 .graphql-playground-view #graphiql .graphiql-editor-tools button:hover {
-    background-color: var(--base-background-hover-color);
-    border-color: var(--base-background-hover-color);
-    color: var(--default-btn-focus-color);
+    color: var(--gw-tabs-tab-hover-color) !important;
+    background-color: var(--gw-tabs-tab-hover-background) !important;
+    border-color: var(--gw-tabs-tab-hover-border-color) !important;
 }
 
 .graphql-playground-view #graphiql .graphiql-editor-tools .graphiql-toggle-editor-tools:hover svg {
