@@ -1,9 +1,14 @@
 import 'angular/core/services';
+import {
+    AuthenticationService,
+    service,
+} from '@ontotext/workbench-api';
 
 const adminInfoApp = angular.module('graphdb.framework.stats', ['toastr']);
 
 adminInfoApp.controller('AdminInfoCtrl', ['$scope', '$http', 'toastr', '$timeout', '$jwtAuth', '$translate', 'AuthTokenService',
     function ($scope, $http, toastr, $timeout, $jwtAuth, $translate, AuthTokenService) {
+        const authenticationService = service(AuthenticationService);
 
         $http.get('rest/info/data')
             .success(function (data) {
@@ -38,7 +43,7 @@ adminInfoApp.controller('AdminInfoCtrl', ['$scope', '$http', 'toastr', '$timeout
 
         $scope.getReport = function () {
             let url = 'rest/report';
-            if ($jwtAuth.isAuthenticated()) {
+            if (authenticationService.isAuthenticated()) {
                 url = url + '?authToken=' + encodeURIComponent(AuthTokenService.getAuthToken());
             }
 
