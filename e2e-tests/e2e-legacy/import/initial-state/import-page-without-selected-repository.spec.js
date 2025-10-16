@@ -23,6 +23,6 @@ describe('Initial state of the import view without a selected repository', () =>
 
     const verifyInitialStateWhenNoRepositoryIsSelected = () => {
         RepositoryErrorsWidgetSteps.getWidget().should('be.visible');
-        ImportUserDataSteps.getResourcesTable().should('be.hidden');
+        ImportUserDataSteps.getResourcesTable().should('not.exist');
     };
 });
