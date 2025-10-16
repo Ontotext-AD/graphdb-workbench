@@ -17,6 +17,8 @@ import {
     RepositoryLocationContextService,
     MapperProvider,
     RepositoryListMapper,
+    AuthorizationService,
+    service
 } from "@ontotext/workbench-api";
 
 const modules = [
@@ -41,6 +43,8 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
         this.locations = [this.location];
         this.repositories = new Map();
         this.locationsShouldReload = true;
+
+        const authorizationService = service(AuthorizationService);
 
         const that = this;
 
@@ -71,7 +75,7 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
                 existsActiveRepo = repositoriesFromLocation.find((repo) => repo.id === repository.id);
             }
             if (existsActiveRepo) {
-                if (!$jwtAuth.canReadRepo(repository) && !$jwtAuth.hasGraphqlReadRights(repository)) {
+                if (!authorizationService.canReadRepo(repository) && !authorizationService.canReadGqlRepo(repository)) {
                     this.setRepository('');
                 } else {
                     $rootScope.$broadcast('repositoryIsSet', {newRepo: false});
@@ -281,7 +285,7 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
 
         this.getReadableRepositories = function() {
             return _.filter(this.getRepositories(), function(repo) {
-                return $jwtAuth.canReadRepo(repo) || $jwtAuth.hasGraphqlReadRights(repo);
+                return authorizationService.canReadRepo(repo) || authorizationService.canReadGqlRepo(repo);
             });
         };
 
@@ -317,7 +321,7 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
         this.getWritableRepositories = function() {
             const that = this;
             return _.filter(this.getRepositories(), function(repo) {
-                return $jwtAuth.canWriteRepo(repo) && !that.isActiveRepoOntopType(repo);
+                return authorizationService.canWriteRepo(repo) && !that.isActiveRepoOntopType(repo);
             });
         };
 
@@ -373,7 +377,7 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
                     const repositoryContextService = service(RepositoryContextService);
                     // if the current repo is unreadable by the currently logged in user (or free access user)
                     // we unset the repository
-                    if (!repo || (!$jwtAuth.canReadRepo(repo) && !$jwtAuth.hasGraphqlReadRights(repo))) {
+                    if (!repo || (!authorizationService.canReadRepo(repo) && !authorizationService.canReadGqlRepo(repo))) {
                         repositoryContextService.updateSelectedRepository(undefined);
                     } else {
                         repo.isNew = true;

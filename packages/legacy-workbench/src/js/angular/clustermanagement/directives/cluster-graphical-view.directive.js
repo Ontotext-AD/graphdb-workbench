@@ -5,6 +5,10 @@ import {ARROW_CONFIG} from "../services/cluster-drawing.service";
 import {cloneDeep, isEmpty} from "lodash";
 import {CLICK_IN_VIEW, CREATE_CLUSTER, MODEL_UPDATED, NODE_SELECTED} from "../events";
 import {select} from 'd3';
+import {
+    AuthorizationService,
+    service,
+} from '@ontotext/workbench-api';
 
 const d3 = {select};
 const navigationBarWidthFull = 240;
@@ -62,6 +66,7 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                 // =========================
                 // Private variables
                 // =========================
+                const authorizationService = service(AuthorizationService);
 
                 const w = angular.element($window);
                 const subscriptions = [];
@@ -283,7 +288,7 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                 // =========================
 
                 function initialize() {
-                    hasAccess = $jwtAuth.isAdmin();
+                    hasAccess = authorizationService.isAdmin();
                     subscribeHandlers();
                     updateTranslations(translationsMap);
                     const hasCluster = !!(scope.clusterModel.nodes && scope.clusterModel.nodes.length);

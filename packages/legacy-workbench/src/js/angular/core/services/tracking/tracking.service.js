@@ -3,6 +3,11 @@ import 'angular/core/services/tracking/installation-cookie.service';
 import 'angular/core/services/tracking/google-analytics-cookie.service';
 import 'angular/core/directives/cookie-policy/cookie-consent.directive';
 import {CookieConsent} from "../../../models/cookie-policy/cookie-consent";
+import {
+    SecurityService,
+    AuthorizationService,
+    service,
+} from '@ontotext/workbench-api';
 
 const modules = [
     'graphdb.framework.core.services.cookieService',
@@ -29,6 +34,10 @@ angular.module('graphdb.framework.core.services.trackingService', modules)
  * @constructor
  */
 function TrackingService($window, $jwtAuth, $licenseService, InstallationCookieService, GoogleAnalyticsCookieService, LocalStorageAdapter, LSKeys) {
+
+    const securityService = service(SecurityService);
+    const authorizationService = service(AuthorizationService);
+
     /**
      * Determines if tracking is allowed based on license and product type.
      * @return {boolean} A boolean indicating if tracking is allowed.
@@ -85,7 +94,7 @@ function TrackingService($window, $jwtAuth, $licenseService, InstallationCookieS
             .then((principal) => {
                 // No username => use local storage
                 if (!principal || !principal.username) {
-                    if ($jwtAuth.isFreeAccessEnabled()) {
+                    if (authorizationService.hasFreeAccess()) {
                         const localConsent = LocalStorageAdapter.get(LSKeys.COOKIE_CONSENT);
                         if (localConsent) {
                             return CookieConsent.fromJSON(localConsent);
@@ -116,7 +125,8 @@ function TrackingService($window, $jwtAuth, $licenseService, InstallationCookieS
                 } else {
                     const appSettings = data.appSettings;
                     appSettings.COOKIE_CONSENT = consent.toJSON();
-                    return $jwtAuth.updateUserData({ appSettings, username });
+                    // TODO: Check if this payload is correct for updating user data with SecurityService
+                    return securityService.updateUserData({ appSettings, username });
                 }
             })
             .finally(() => applyTrackingConsent());

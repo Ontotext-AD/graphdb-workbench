@@ -8,6 +8,7 @@ import {GRAPHQL, GRAPHQL_PREFIX, READ_REPO, READ_REPO_PREFIX, SYSTEM_REPO, WRITE
 import {createUniqueKey, parseAuthorities} from './services/authorities-util';
 import {
     AuthorizationService,
+    AuthenticationService,
     AuthSettingsMapper,
     MapperProvider,
     GrantedAuthoritiesUiModelMapper,
@@ -30,15 +31,15 @@ const modules = [
 const securityModule = angular.module('graphdb.framework.security.controllers', modules);
 
 securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$window', '$jwtAuth', '$timeout', 'ModalService', 'SecurityService', '$translate',
-    function($scope, $uibModal, toastr, $window, $jwtAuth, $timeout, ModalService, SecurityService, $translate) {
+    function ($scope, $uibModal, toastr, $window, $jwtAuth, $timeout, ModalService, SecurityService, $translate) {
         const authorizationService = service(AuthorizationService);
+        const authenticationService = service(AuthenticationService);
         const securityServiceAPI = service(SecurityServiceAPI);
-        const securityContextService = service(SecurityContextService);
         const toastrService = service(OntoToastrService);
 
         $scope.loader = true;
         $scope.securityEnabled = function() {
-            return $jwtAuth.isSecurityEnabled();
+            return authenticationService.isSecurityEnabled();
         };
         $scope.hasExternalAuth = function() {
             return $jwtAuth.hasExternalAuth();
@@ -47,7 +48,7 @@ securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$windo
             return $jwtAuth.getAuthImplementation();
         };
         $scope.freeAccessEnabled = function() {
-            return $jwtAuth.isFreeAccessEnabled();
+            return authorizationService.hasFreeAccess();
         };
         $scope.getUsers = () => {
             return SecurityService.getUsers()
@@ -74,14 +75,13 @@ securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$windo
         });
 
         $scope.toggleSecurity = function() {
-            const isSecurityEnabled = $jwtAuth.isSecurityEnabled();
+            const isSecurityEnabled = authenticationService.isSecurityEnabled();
             $jwtAuth.toggleSecurity(!isSecurityEnabled)
                 .then(() => {
-                    // reload UI only if security status has changed
+                    // reload UI
                     // TODO: Not sure if we really need to reload the page here. The UI state is updated just fine. But maybe the reload is needed for something else?
-                    if (isSecurityEnabled !== $jwtAuth.isSecurityEnabled()) {
-                        $window.location.reload();
-                    }
+                    // Remove and fix this when migrated
+                    $window.location.reload();
                 });
         };
 
@@ -89,6 +89,10 @@ securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$windo
             return securityServiceAPI.setFreeAccess(enabled, authSettings);
         };
 
+        /**
+         * @param {boolean|undefined} updateFreeAccess - Whether to enable or disable free access. If undefined, the
+         * free access has not been set yet.
+         */
         $scope.toggleFreeAccess = function(updateFreeAccess) {
             if (!authorizationService.hasFreeAccess() || (authorizationService.hasFreeAccess() && updateFreeAccess)) {
                 // enable and configure or only configure
@@ -258,12 +262,14 @@ securityModule.controller('DefaultAuthoritiesCtrl', ['$scope', '$http', '$uibMod
     }]);
 
 securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 'toastr', '$window', '$timeout', '$location', '$jwtAuth', '$translate', 'passwordPlaceholder',
-    function($rootScope, $scope, $http, toastr, $window, $timeout, $location, $jwtAuth, $translate, passwordPlaceholder) {
-        $rootScope.$on('$translateChangeSuccess', function() {
+    function ($rootScope, $scope, $http, toastr, $window, $timeout, $location, $jwtAuth, $translate, passwordPlaceholder) {
+        const authorizationService = service(AuthorizationService);
+
+        $rootScope.$on('$translateChangeSuccess', function () {
             $scope.passwordPlaceholder = $translate.instant(passwordPlaceholder);
         });
-        $scope.isAdmin = function() {
-            return $jwtAuth.hasRole(UserRole.ROLE_ADMIN);
+        $scope.isAdmin = function () {
+            return authorizationService.hasRole(UserRole.ROLE_ADMIN);
         };
         $scope.hasExternalAuth = function() {
             return $jwtAuth.hasExternalAuth();
@@ -643,6 +649,8 @@ securityModule.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window
         // eslint-disable-next-line no-invalid-this
         angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope, passwordPlaceholder: 'security.new.password'}));
 
+        const authorizationService = service(AuthorizationService);
+
         $scope.mode = 'edit';
         $scope.saveButtonText = $translate.instant('common.save.btn');
         $scope.goBack = function() {
@@ -665,7 +673,7 @@ securityModule.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window
             'DEFAULT_VIS_GRAPH_SCHEMA': true,
         };
 
-        if (!$jwtAuth.hasRole(UserRole.ROLE_ADMIN)) {
+        if (!authorizationService.hasRole(UserRole.ROLE_ADMIN)) {
             $location.url('settings');
         }
         $scope.getUserData = function() {

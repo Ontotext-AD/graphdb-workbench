@@ -1,17 +1,19 @@
 import {Service} from '../../providers/service/service';
 import {AuthenticatedUser, Authority, Rights, SecurityConfig} from '../../models/security';
-import {ServiceProvider} from '../../providers';
+import {ServiceProvider, service} from '../../providers';
 import {SecurityContextService} from './security-context.service';
 import {Repository} from '../../models/repositories';
-import {RepositoryService, RepositoryStorageService} from '../repository';
+import {RepositoryContextService, RepositoryService, RepositoryStorageService} from '../repository';
 import {RoutingService} from '../routing/routing.service';
 
 /**
  * Service responsible for handling authorization-related operations.
  */
 export class AuthorizationService implements Service {
-  private readonly repositoryService = ServiceProvider.get(RepositoryService);
-  private readonly securityContextService = ServiceProvider.get(SecurityContextService);
+  private readonly repositoryService = service(RepositoryService);
+  private readonly securityContextService = service(SecurityContextService);
+  private readonly repositoryStorageService = service(RepositoryStorageService);
+  private readonly repositoryContextService = service(RepositoryContextService);
 
   /**
    * Determines if free access is allowed based on the security configuration.
@@ -58,6 +60,10 @@ export class AuthorizationService implements Service {
     return this.hasRole(Authority.ROLE_ADMIN);
   }
 
+  /**
+   * Checks if the current user has the repository manager role.
+   * @returns {boolean} True if the user has the repository manager role, false otherwise.
+   */
   isRepoManager(): boolean {
     return this.hasRole(Authority.ROLE_REPO_MANAGER);
   }
@@ -118,6 +124,13 @@ export class AuthorizationService implements Service {
     return true;
   }
 
+  /**
+   * Checks if the current user has write permissions for the specified repository.
+   * This method evaluates if the user can write to the repository based on security configuration,
+   * user authentication status, and user roles.
+   * @param repository - The repository to check write permissions for.
+   * @returns True if the user has write permissions for the repository, false otherwise.
+   */
   canWriteRepo(repository?: Repository): boolean {
     if (!repository || repository.id === '') {
       return false;
@@ -149,7 +162,7 @@ export class AuthorizationService implements Service {
    * @param {Repository} repository - The repository to check GraphQL read permissions for.
    * @returns {boolean} True if the user has GraphQL read permissions for the repository, false otherwise.
    */
-  canReadGqlRepo(repository: Repository): boolean {
+  canReadGqlRepo(repository?: Repository): boolean {
     if (!repository || repository.id === '') {
       return false;
     }
@@ -163,7 +176,7 @@ export class AuthorizationService implements Service {
    * @param {Repository} repository - The repository to check GraphQL write permissions for.
    * @returns {boolean} True if the user has GraphQL write permissions for the repository, false otherwise.
    */
-  canWriteGqlRepo(repository: Repository): boolean {
+  canWriteGqlRepo(repository?: Repository): boolean {
     if (!repository || repository.id === '') {
       return false;
     }
@@ -179,6 +192,16 @@ export class AuthorizationService implements Service {
    */
   hasGqlRights(repository: Repository): boolean {
     return this.canReadGqlRepo(repository) || this.canWriteGqlRepo(repository);
+  }
+
+  /**
+   * Checks if the current user has any GraphQL permissions (read or write) for the active repository.
+   * @returns True if the user has any GraphQL permissions for the current repository, false otherwise.
+   */
+  hasGraphqlRightsOverCurrentRepo(): boolean {
+    const activeRepoReference = this.repositoryStorageService.getRepositoryReference();
+    const activeRepo = this.repositoryContextService.findRepository(activeRepoReference);
+    return this.canReadGqlRepo(activeRepo) || this.canWriteGqlRepo(activeRepo);
   }
 
   /**

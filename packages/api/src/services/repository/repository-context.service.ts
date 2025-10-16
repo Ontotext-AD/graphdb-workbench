@@ -101,7 +101,7 @@ export class RepositoryContextService extends ContextService<RepositoryContextFi
    * @param {RepositoryReference} repositoryReference - The reference containing `id` and `location` to identify the repository.
    * @returns {Repository | undefined} The matching repository if found; otherwise, undefined.
    */
-  private findRepository(repositoryReference?: RepositoryReference): Repository | undefined {
+  findRepository(repositoryReference?: RepositoryReference): Repository | undefined {
     if (!repositoryReference) {
       return undefined;
     }

@@ -121,9 +121,9 @@ export class AuthenticationService implements Service {
    * auth token in the store
    *
    * @throws Error if authentication strategy is not set
-   * @returns {boolean} True if the user is authenticated, false otherwise.
+   * @returns True if the user is authenticated, false otherwise.
    */
-  isAuthenticated() {
+  isAuthenticated(): boolean {
     if (!this.authStrategy) {
       throw new MissingAuthStrategyError();
     }
@@ -145,7 +145,7 @@ export class AuthenticationService implements Service {
 
   /**
    * Checks if security is enabled
-   * @returns {boolean} True if security is enabled, false otherwise.
+   * @returns True if security is enabled, false otherwise.
    */
   isSecurityEnabled(): boolean {
     return !!this.getSecurityConfig()?.isEnabled();
