@@ -229,6 +229,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         const restrictedPages = securityContextService.getRestrictedPages();
 
         const isAdministratorUser = authorizationService.isAdmin();
+        // TODO: checkout this!!!
         const hasAuthority = (role) => $scope.principal.authorities.indexOf(role) !== -1;
 
         const routes = PluginRegistry.get('route');
@@ -718,7 +719,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     };
 
     $scope.hasAuthority = function() {
-        return $jwtAuth.hasAuthority();
+        return authorizationService.hasAuthority();
     };
 
     $scope.hasGraphqlRightsOverCurrentRepo = function() {

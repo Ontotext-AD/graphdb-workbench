@@ -378,42 +378,42 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 // }
             };
 
-            // Check if the user has the necessary authority to access the route
-            this.hasAuthority = function() {
-                // If there is no current active route, return false – access cannot be determined
-                if (!$route.current) {
-                    return false;
-                }
-
-                // If the user has an admin role, they always have access
-                if (this.hasAdminRole()) {
-                    return true;
-                }
-
-                // If the current route doesn't define "allowAuthorities", assume there are no restrictions
-                if (!$route.current.allowAuthorities) {
-                    return true;
-                }
-
-                // If there is no selected repository, there are no auth restrictions
-                if (getActiveRepositoryObjectFromStorage().id === '') {
-                    return true;
-                }
-
-                // If there is no principal defined, assume is admin and return true
-                if (!this.principal) {
-                    return true;
-                }
-
-                // If there are allowed authorities defined for the current route
-                if ($route.current.allowAuthorities.length > 0) {
-                    const auth = resolveAuthorities($route.current.allowAuthorities);
-                    // Check if any of the allowed authorities match one of the principal's authorities
-                    return auth.some((allowAuth) => this.principal.authorities.indexOf(allowAuth) > -1);
-                }
-                // If none of the above conditions apply, return true by default
-                return true;
-            };
+            // // Check if the user has the necessary authority to access the route
+            // this.hasAuthority = function() {
+            //     // If there is no current active route, return false – access cannot be determined
+            //     if (!$route.current) {
+            //         return false;
+            //     }
+            //
+            //     // If the user has an admin role, they always have access
+            //     if (this.hasAdminRole()) {
+            //         return true;
+            //     }
+            //
+            //     // If the current route doesn't define "allowAuthorities", assume there are no restrictions
+            //     if (!$route.current.allowAuthorities) {
+            //         return true;
+            //     }
+            //
+            //     // If there is no selected repository, there are no auth restrictions
+            //     if (getActiveRepositoryObjectFromStorage().id === '') {
+            //         return true;
+            //     }
+            //
+            //     // If there is no principal defined, assume is admin and return true
+            //     if (!this.principal) {
+            //         return true;
+            //     }
+            //
+            //     // If there are allowed authorities defined for the current route
+            //     if ($route.current.allowAuthorities.length > 0) {
+            //         const auth = resolveAuthorities($route.current.allowAuthorities);
+            //         // Check if any of the allowed authorities match one of the principal's authorities
+            //         return auth.some((allowAuth) => this.principal.authorities.indexOf(allowAuth) > -1);
+            //     }
+            //     // If none of the above conditions apply, return true by default
+            //     return true;
+            // };
 
             // Function to resolve a list of authority strings by replacing the "{repoId}" placeholder
             // with both the specific repository ID and a wildcard for all repositories.
