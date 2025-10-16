@@ -14,6 +14,10 @@ import {
     WRITE_REPO_PREFIX
 } from "./services/constants";
 import {createUniqueKey, parseAuthorities} from "./services/authorities-util";
+import {
+    AuthorizationService,
+    service,
+} from '@ontotext/workbench-api';
 
 const modules = [
     'ngCookies',
@@ -29,7 +33,6 @@ const securityModule = angular.module('graphdb.framework.security.controllers', 
 
 securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$window', '$jwtAuth', '$timeout', 'ModalService', 'SecurityService', '$translate',
     function ($scope, $uibModal, toastr, $window, $jwtAuth, $timeout, ModalService, SecurityService, $translate) {
-
         $scope.loader = true;
         $scope.securityEnabled = function () {
             return $jwtAuth.isSecurityEnabled();
@@ -224,11 +227,13 @@ securityModule.controller('DefaultAuthoritiesCtrl', ['$scope', '$http', '$uibMod
 
 securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 'toastr', '$window', '$timeout', '$location', '$jwtAuth', '$translate', 'passwordPlaceholder',
     function ($rootScope, $scope, $http, toastr, $window, $timeout, $location, $jwtAuth, $translate, passwordPlaceholder) {
+        const authorizationService = service(AuthorizationService);
+
         $rootScope.$on('$translateChangeSuccess', function () {
             $scope.passwordPlaceholder = $translate.instant(passwordPlaceholder);
         });
         $scope.isAdmin = function () {
-            return $jwtAuth.hasRole(UserRole.ROLE_ADMIN);
+            return authorizationService.hasRole(UserRole.ROLE_ADMIN);
         };
         $scope.hasExternalAuth = function () {
             return $jwtAuth.hasExternalAuth();
@@ -608,6 +613,8 @@ securityModule.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window
 
         angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope, passwordPlaceholder: 'security.new.password'}));
 
+        const authorizationService = service(AuthorizationService);
+
         $scope.mode = 'edit';
         $scope.saveButtonText = $translate.instant('common.save.btn');
         $scope.goBack = function () {
@@ -630,7 +637,7 @@ securityModule.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window
             'DEFAULT_VIS_GRAPH_SCHEMA': true
         };
 
-        if (!$jwtAuth.hasRole(UserRole.ROLE_ADMIN)) {
+        if (!authorizationService.hasRole(UserRole.ROLE_ADMIN)) {
             $location.url('settings');
         }
         $scope.getUserData = function () {

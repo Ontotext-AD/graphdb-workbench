@@ -689,7 +689,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
 
     $scope.hasRole = function(role) {
         if (!angular.isUndefined(role)) {
-            return $jwtAuth.hasRole(role);
+            return authorizationService.hasRole(role);
         }
         return true;
     };
@@ -780,7 +780,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     };
 
     $scope.canManageRepositories = function() {
-        return $jwtAuth.hasRole(UserRole.ROLE_REPO_MANAGER) && !$repositories.getDegradedReason();
+        return authorizationService.hasRole(UserRole.ROLE_REPO_MANAGER) && !$repositories.getDegradedReason();
     };
 
     $scope.getSavedQueries = function() {

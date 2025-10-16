@@ -358,22 +358,24 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             };
 
             this.hasRole = function(role) {
-                if (role !== undefined && (this.securityEnabled || this.hasOverrideAuth)) {
-                    if ('string' === typeof role) {
-                        role = [role];
-                    }
-                    const hasPrincipal = !_.isEmpty(this.principal);
-                    if (!hasPrincipal) {
-                        return false;
-                    }
-                    if (role[0] === 'IS_AUTHENTICATED_FULLY') {
-                        return hasPrincipal;
-                    } else {
-                        return _.intersection(role, this.principal.authorities).length > 0;
-                    }
-                } else {
-                    return true;
-                }
+                return authorizationService.hasRole(role);
+
+                // if (role !== undefined && (this.securityEnabled || this.hasOverrideAuth)) {
+                //     if ('string' === typeof role) {
+                //         role = [role];
+                //     }
+                //     const hasPrincipal = !_.isEmpty(this.principal);
+                //     if (!hasPrincipal) {
+                //         return false;
+                //     }
+                //     if (role[0] === 'IS_AUTHENTICATED_FULLY') {
+                //         return hasPrincipal;
+                //     } else {
+                //         return _.intersection(role, this.principal.authorities).length > 0;
+                //     }
+                // } else {
+                //     return true;
+                // }
             };
 
             // Check if the user has the necessary authority to access the route
