@@ -350,9 +350,9 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 this.broadcastSecurityInit(this.securityEnabled, false, this.freeAccess);
             };
 
-            this.isAuthenticated = function() {
-                return !this.securityEnabled || this.hasExplicitAuthentication();
-            };
+            // this.isAuthenticated = function() {
+            //     return !this.securityEnabled || this.hasExplicitAuthentication();
+            // };
 
             this.hasPermission = function() {
             };

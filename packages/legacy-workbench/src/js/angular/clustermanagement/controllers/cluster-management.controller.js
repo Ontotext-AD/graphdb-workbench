@@ -9,6 +9,7 @@ import {LinkState, NodeState, RecoveryState} from "../../models/clustermanagemen
 import {CLICK_IN_VIEW, CREATE_CLUSTER, DELETE_CLUSTER, MODEL_UPDATED, NODE_SELECTED, UPDATE_CLUSTER} from "../events";
 import {
     AuthorizationService,
+    AuthenticationService,
     service,
 } from '@ontotext/workbench-api';
 
@@ -41,6 +42,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
     // =========================
 
     const authorizationService = service(AuthorizationService);
+    const authenticationService = service(AuthenticationService);
     const DELETED_ON_NODE_MESSAGE = 'Cluster was deleted on this node.';
     let updateRequest;
     const subscriptions = [];
@@ -71,7 +73,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
     };
 
     $scope.isAdmin = () => {
-        return $jwtAuth.isAuthenticated() && authorizationService.isAdmin();
+        return authenticationService.isAuthenticated() && authorizationService.isAdmin();
     };
 
     $scope.openClusterConfigurationPanel = () => {

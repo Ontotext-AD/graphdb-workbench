@@ -31,6 +31,7 @@ import {NamespacesListModel} from "./models/namespaces/namespaces-list";
 import {
     ApplicationLifecycleContextService,
     AuthorizationService,
+    AuthenticationService,
     AuthenticationStorageService,
     COOKIE_CONSENT_CHANGED_EVENT,
     EventName,
@@ -106,6 +107,16 @@ function homeCtrl($scope,
                   WorkbenchContextService,
                   RDF4JRepositoriesService,
                   toastr) {
+
+    // =========================
+    // Private variables
+    // =========================
+    const authenticationService = service(AuthenticationService);
+    const authorizationService = service(AuthorizationService);
+
+    // =========================
+    // Public variables
+    // =========================
     $scope.doClear = false;
 
     // =========================
@@ -140,7 +151,6 @@ function homeCtrl($scope,
     const subscriptions = [];
 
     const onSelectedRepositoryUpdated = (repository) => {
-        const authorizationService = ServiceProvider.get(AuthorizationService);
         const hasGqlRights = authorizationService.hasGqlRights(repository);
 
         // Don't call API, if no repo ID, or with GQL read-only or write rights
@@ -172,7 +182,7 @@ function homeCtrl($scope,
         if (previous) {
             // If previous is defined we got here through navigation, hence security is already
             // initialized and its safe to refresh the repository info.
-            if ($jwtAuth.isAuthenticated() || $jwtAuth.isFreeAccessEnabled()) {
+            if (authenticationService() || $jwtAuth.isFreeAccessEnabled()) {
                 // Security is OFF or security is ON but we are authenticated
                 $scope.getActiveRepositorySize();
             } else {
@@ -194,6 +204,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
                   WorkbenchContextService, AutocompleteService) {
     const toastrService = service(OntoToastrService);
     const authorizationService = service(AuthorizationService);
+    const authenticationService = service(AuthenticationService);
 
     $scope.descr = $translate.instant('main.gdb.description');
     $scope.documentation = '';
@@ -642,7 +653,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     }
 
     $scope.showMainManuAndStatusBar = () => {
-        return $jwtAuth.isAuthenticated() || $scope.isSecurityEnabled() && $scope.isFreeAccessEnabled();
+        return authenticationService.isAuthenticated() || $scope.isSecurityEnabled() && $scope.isFreeAccessEnabled();
     };
 
     const reloadPageOutsideAngularScope = () => {

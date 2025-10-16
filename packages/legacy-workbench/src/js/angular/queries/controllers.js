@@ -2,6 +2,10 @@ import 'angular/core/services';
 import 'angular/rest/monitoring.rest.service';
 import {MonitoringTrackRecord} from "../models/monitoring/query-and-update/monitoring-track-record";
 import {MonitoringTrackRecordType} from "../models/monitoring/query-and-update/monitoring-track-record-type";
+import {
+    AuthenticationService,
+    service,
+} from '@ontotext/workbench-api';
 
 const queriesCtrl = angular.module('graphdb.framework.jmx.queries.controllers', [
     'ui.bootstrap',
@@ -12,7 +16,14 @@ const queriesCtrl = angular.module('graphdb.framework.jmx.queries.controllers', 
 queriesCtrl.controller('QueriesCtrl', ['$scope', '$uibModal', 'toastr', '$interval', '$repositories', '$jwtAuth', 'ModalService',
     'MonitoringRestService', '$translate', 'AuthTokenService',
     function ($scope, $uibModal, toastr, $interval, $repositories, $jwtAuth, ModalService, MonitoringRestService, $translate, AuthTokenService) {
+        // =========================
+        // Private variables
+        // =========================
+        const authenticationService = service(AuthenticationService);
 
+        // =========================
+        // Public variables
+        // =========================
         $scope.loader = true;
         $scope.stringLimit = 500;
         $scope.expanded = {};
@@ -137,7 +148,7 @@ queriesCtrl.controller('QueriesCtrl', ['$scope', '$uibModal', 'toastr', '$interv
             let link = 'rest/monitor/repository/' + $repositories.getActiveRepository()
                 + '/query/download?query=' + encodeURIComponent(trackId)
                 + '&filename=' + encodeURIComponent(filename);
-            if ($jwtAuth.isAuthenticated()) {
+            if (authenticationService.isAuthenticated()) {
                 link = link + '&authToken=' + encodeURIComponent(AuthTokenService.getAuthToken());
             }
 
