@@ -22,7 +22,10 @@ import {decodeHTML} from "../../../../app";
 import {status as httpStatus} from "../../models/http-status";
 import {ContinueChatRun} from "../../models/ttyg/chat-answer";
 import {ChatMessageModel} from "../../models/ttyg/chat-message";
-import {service, AuthorizationService} from "@ontotext/workbench-api";
+import {
+    AuthorizationService,
+    service,
+} from '@ontotext/workbench-api';
 
 const modules = [
     'toastr',
@@ -81,6 +84,7 @@ function TTYGViewCtrl(
     // Private variables
     // =========================
 
+    const authorizationService = service(AuthorizationService);
     const subscriptions = [];
 
     const labels = {
@@ -432,7 +436,7 @@ function TTYGViewCtrl(
     };
 
     const updateCanModifyAgent = () => {
-        TTYGContextService.setCanModifyAgent($jwtAuth.isRepoManager());
+        TTYGContextService.setCanModifyAgent(authorizationService.isRepoManager());
     };
 
     const getActiveRepositoryObjectHandler = (activeRepo) => {

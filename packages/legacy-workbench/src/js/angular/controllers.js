@@ -31,6 +31,7 @@ import {NamespacesListModel} from "./models/namespaces/namespaces-list";
 import {
     ApplicationLifecycleContextService,
     AuthorizationService,
+    AuthenticationService,
     AuthenticationStorageService,
     COOKIE_CONSENT_CHANGED_EVENT,
     EventName,
@@ -40,6 +41,7 @@ import {
     ServiceProvider,
     SecurityContextService,
     OntoToastrService,
+    service,
 } from "@ontotext/workbench-api";
 import {EventConstants} from "./utils/event-constants";
 import {CookieConsent} from "./models/cookie-policy/cookie-consent";
@@ -105,6 +107,16 @@ function homeCtrl($scope,
                   WorkbenchContextService,
                   RDF4JRepositoriesService,
                   toastr) {
+
+    // =========================
+    // Private variables
+    // =========================
+    const authenticationService = service(AuthenticationService);
+    const authorizationService = service(AuthorizationService);
+
+    // =========================
+    // Public variables
+    // =========================
     $scope.doClear = false;
 
     // =========================
@@ -139,7 +151,6 @@ function homeCtrl($scope,
     const subscriptions = [];
 
     const onSelectedRepositoryUpdated = (repository) => {
-        const authorizationService = ServiceProvider.get(AuthorizationService);
         const hasGqlRights = authorizationService.hasGqlRights(repository);
 
         // Don't call API, if no repo ID, or with GQL read-only or write rights
@@ -171,7 +182,7 @@ function homeCtrl($scope,
         if (previous) {
             // If previous is defined we got here through navigation, hence security is already
             // initialized and its safe to refresh the repository info.
-            if ($jwtAuth.isAuthenticated() || $jwtAuth.isFreeAccessEnabled()) {
+            if (authenticationService.isAuthenticated() || authorizationService.hasFreeAccess()) {
                 // Security is OFF or security is ON but we are authenticated
                 $scope.getActiveRepositorySize();
             } else {
@@ -191,7 +202,10 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
                   productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService, RepositoriesRestService,
                   MonitoringRestService, SparqlRestService, $sce, LocalStorageAdapter, LSKeys, $translate, UriUtils, $q, GuidesService, $route, $window, AuthTokenService, TrackingService,
                   WorkbenchContextService, AutocompleteService) {
-    const toastrService = ServiceProvider.get(OntoToastrService);
+    const toastrService = service(OntoToastrService);
+    const authorizationService = service(AuthorizationService);
+    const authenticationService = service(AuthenticationService);
+
     $scope.descr = $translate.instant('main.gdb.description');
     $scope.documentation = '';
     $scope.menu = $menuItems;
@@ -216,7 +230,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         const authorizationService = ServiceProvider.get(AuthorizationService);
         const user = authorizationService.getAuthenticatedUser();
 
-        const isAdministratorUser = $jwtAuth.isAdmin();
+        const isAdministratorUser = authorizationService.isAdmin();
 
         const routes = PluginRegistry.get('route');
         const menuItems = PluginRegistry.get('main.menu');
@@ -476,13 +490,13 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
 
     $scope.securityEnabled = true;
     $scope.isSecurityEnabled = function() {
-        return $jwtAuth.isSecurityEnabled();
+        return authenticationService.isSecurityEnabled();
     };
     $scope.isFreeAccessEnabled = function() {
-        return $jwtAuth.isFreeAccessEnabled();
+        return authorizationService.hasFreeAccess();
     };
     $scope.hasExternalAuthUser = function() {
-        return $jwtAuth.hasExternalAuthUser();
+        return authenticationService.isExternalUser();
     };
     $scope.isDefaultAuthEnabled = function() {
         return $jwtAuth.isDefaultAuthEnabled();
@@ -521,14 +535,14 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     };
 
     $scope.canWriteRepoInLocation = function(repository) {
-        return $jwtAuth.canWriteRepo(repository);
+        return authorizationService.canWriteRepo(repository);
     };
 
     $scope.canWriteActiveRepo = function(noSystem) {
         const activeRepository = $repositories.getActiveRepositoryObject();
         if (activeRepository) {
             // If the parameter noSystem is true then we don't allow write access to the SYSTEM repository
-            return $jwtAuth.canWriteRepo(activeRepository)
+            return authorizationService.canWriteRepo(activeRepository)
                 && (activeRepository.id !== 'SYSTEM' || !noSystem);
         }
         return false;
@@ -642,7 +656,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     }
 
     $scope.showMainManuAndStatusBar = () => {
-        return $jwtAuth.isAuthenticated() || $scope.isSecurityEnabled() && $scope.isFreeAccessEnabled();
+        return authenticationService.isAuthenticated() || $scope.isSecurityEnabled() && $scope.isFreeAccessEnabled();
     };
 
     const reloadPageOutsideAngularScope = () => {
@@ -689,7 +703,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
 
     $scope.hasRole = function(role) {
         if (!angular.isUndefined(role)) {
-            return $jwtAuth.hasRole(role);
+            return authorizationService.hasRole(role);
         }
         return true;
     };
@@ -699,19 +713,15 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     };
 
     $scope.canReadRepo = function(repo) {
-        return $jwtAuth.canReadRepo(repo);
-    };
-
-    $scope.checkForWrite = function(role, repo) {
-        return $jwtAuth.checkForWrite(role, repo);
+        return authorizationService.canReadRepo(repo);
     };
 
     $scope.hasAuthority = function() {
-        return $jwtAuth.hasAuthority();
+        return authorizationService.hasAuthority();
     };
 
     $scope.hasGraphqlRightsOverCurrentRepo = function() {
-        return $jwtAuth.hasGraphqlRightsOverCurrentRepo();
+        return authorizationService.hasGraphqlRightsOverCurrentRepo();
     };
 
     $scope.setPopoverRepo = function(repository) {
@@ -780,7 +790,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     };
 
     $scope.canManageRepositories = function() {
-        return $jwtAuth.hasRole(UserRole.ROLE_REPO_MANAGER) && !$repositories.getDegradedReason();
+        return authorizationService.hasRole(UserRole.ROLE_REPO_MANAGER) && !$repositories.getDegradedReason();
     };
 
     $scope.getSavedQueries = function() {
@@ -1014,7 +1024,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
                 });
 
             const queryParams = $location.search();
-            if ($jwtAuth.isRepoManager() && $scope.startGuideAfterSecurityInit && queryParams.autostartGuide) {
+            if (authorizationService.isRepoManager() && $scope.startGuideAfterSecurityInit && queryParams.autostartGuide) {
                 startGuide(queryParams.autostartGuide);
                 $scope.startGuideAfterSecurityInit = false;
             }
@@ -1117,7 +1127,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     };
 
     const updateAutocompleteStatus = () => {
-        if ($repositories.isActiveRepoFedXType() || !$licenseService.isLicenseValid() || !$jwtAuth.canReadRepo($repositories.getActiveRepositoryObject())) {
+        if ($repositories.isActiveRepoFedXType() || !$licenseService.isLicenseValid() || !authorizationService.canReadRepo($repositories.getActiveRepositoryObject())) {
             WorkbenchContextService.setAutocompleteEnabled(false);
             LocalStorageAdapter.set(LSKeys.AUTOCOMPLETE_ENABLED, false);
             return;

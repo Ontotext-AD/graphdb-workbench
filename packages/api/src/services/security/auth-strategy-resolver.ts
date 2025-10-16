@@ -29,7 +29,7 @@ export class AuthStrategyResolver implements Service {
    * @returns The authentication strategy instance to use
    */
   resolveStrategy(securityConfig: SecurityConfig): AuthStrategy {
-    if (!securityConfig.enabled) {
+    if (!securityConfig.isEnabled()) {
       return new NoSecurityProvider();
     }
 
