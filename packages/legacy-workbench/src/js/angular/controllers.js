@@ -217,7 +217,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         const securityContextService = ServiceProvider.get(SecurityContextService);
         const restrictedPages = securityContextService.getRestrictedPages();
 
-        const isAdministratorUser = $jwtAuth.isAdmin();
+        const isAdministratorUser = authorizationService.isAdmin();
         const hasAuthority = (role) => $scope.principal.authorities.indexOf(role) !== -1;
 
         const routes = PluginRegistry.get('route');

@@ -1,4 +1,8 @@
 import {DELETE_CLUSTER, UPDATE_CLUSTER} from "../../events";
+import {
+    AuthorizationService,
+    service,
+} from '@ontotext/workbench-api';
 
 const modules = [];
 
@@ -18,6 +22,8 @@ function ClusterProperties($jwtAuth, $uibModal) {
             clusterConfiguration: '='
         },
         link: ($scope) => {
+            const authorizationService = service(AuthorizationService);
+
             // =========================
             // Public variables
             // =========================
@@ -60,7 +66,7 @@ function ClusterProperties($jwtAuth, $uibModal) {
             // Initialization
             // =========================
             const init = () => {
-                $scope.isAdmin = $jwtAuth.isAuthenticated() && $jwtAuth.isAdmin();
+                $scope.isAdmin = $jwtAuth.isAuthenticated() && authorizationService.isAdmin();
             };
             init();
         }

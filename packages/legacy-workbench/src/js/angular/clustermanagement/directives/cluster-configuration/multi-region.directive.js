@@ -2,6 +2,10 @@ import 'angular/core/directives/ascii-validator.directive';
 import 'angular/core/directives/length-validator.directive';
 import {ClusterConfiguration, ClusterModel} from "../../../models/clustermanagement/cluster";
 import {NodeState, TopologyState} from "../../../models/clustermanagement/states";
+import {
+    AuthorizationService,
+    service,
+} from '@ontotext/workbench-api';
 
 const modules = [
     'graphdb.framework.core.directives.ascii-validator',
@@ -31,6 +35,7 @@ function MultiRegion($jwtAuth, $translate, $timeout, toastr, ModalService, Clust
             // =========================
             // Private variables
             // =========================
+            const authorizationService = service(AuthorizationService);
             const subscriptions = [];
 
             // =========================
@@ -243,7 +248,7 @@ function MultiRegion($jwtAuth, $translate, $timeout, toastr, ModalService, Clust
             // Initialization
             // =========================
             const init = () => {
-                $scope.isAdmin = $jwtAuth.isAuthenticated() && $jwtAuth.isAdmin();
+                $scope.isAdmin = $jwtAuth.isAuthenticated() && authorizationService.isAdmin();
                 subscribeHandlers();
                 updateClusterData($scope.clusterModel);
             };
