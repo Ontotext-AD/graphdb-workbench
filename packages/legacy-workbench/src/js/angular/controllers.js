@@ -489,7 +489,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
 
     $scope.securityEnabled = true;
     $scope.isSecurityEnabled = function() {
-        return $jwtAuth.isSecurityEnabled();
+        return authenticationService.isSecurityEnabled();
     };
     $scope.isFreeAccessEnabled = function() {
         return $jwtAuth.isFreeAccessEnabled();

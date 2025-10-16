@@ -16,6 +16,7 @@ import {
 import {createUniqueKey, parseAuthorities} from "./services/authorities-util";
 import {
     AuthorizationService,
+    AuthenticationService,
     service,
 } from '@ontotext/workbench-api';
 
@@ -33,9 +34,11 @@ const securityModule = angular.module('graphdb.framework.security.controllers', 
 
 securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$window', '$jwtAuth', '$timeout', 'ModalService', 'SecurityService', '$translate',
     function ($scope, $uibModal, toastr, $window, $jwtAuth, $timeout, ModalService, SecurityService, $translate) {
+        const authenticationService = service(AuthenticationService);
+
         $scope.loader = true;
         $scope.securityEnabled = function () {
-            return $jwtAuth.isSecurityEnabled();
+            return authenticationService.isSecurityEnabled();
         };
         $scope.hasExternalAuth = function () {
             return $jwtAuth.hasExternalAuth();
@@ -71,12 +74,12 @@ securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$windo
         });
 
         $scope.toggleSecurity = function () {
-            const isSecurityEnabled = $jwtAuth.isSecurityEnabled();
+            const isSecurityEnabled = authenticationService.isSecurityEnabled();
             $jwtAuth.toggleSecurity(!isSecurityEnabled)
                 .then(() => {
                     // reload UI only if security status has changed
                     // TODO: Not sure if we really need to reload the page here. The UI state is updated just fine. But maybe the reload is needed for something else?
-                    if (isSecurityEnabled !== $jwtAuth.isSecurityEnabled()) {
+                    if (isSecurityEnabled !== authenticationService.isSecurityEnabled()) {
                         $window.location.reload();
                     }
                 });

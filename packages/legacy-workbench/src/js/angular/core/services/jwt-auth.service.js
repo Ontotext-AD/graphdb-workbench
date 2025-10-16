@@ -219,9 +219,9 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 }
             };
 
-            this.isSecurityEnabled = function() {
-                return this.securityEnabled;
-            };
+            // this.isSecurityEnabled = function() {
+            //     return this.securityEnabled;
+            // };
 
             this.hasExternalAuth = function() {
                 return this.externalAuth;
