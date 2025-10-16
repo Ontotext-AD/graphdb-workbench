@@ -1,5 +1,9 @@
 import 'angular/core/services';
 import 'angular/core/services/jwt-auth.service';
+import {
+    AuthorizationService,
+    service,
+} from '@ontotext/workbench-api';
 
 angular
     .module('graphdb.framework.settings.controllers', [
@@ -92,8 +96,10 @@ function LicenseCtrl($scope, LicenseRestService, $licenseService, toastr, $rootS
 RegisterLicenseCtrl.$inject = ['$scope', 'LicenseRestService', '$location', '$uibModal', 'toastr', '$window', '$jwtAuth', '$translate'];
 
 function RegisterLicenseCtrl($scope, LicenseRestService, $location, $uibModal, toastr, $window, $jwtAuth, $translate) {
+    const authorizationService = service(AuthorizationService);
+
     $scope.$on('securityInit', function () {
-        if (!$jwtAuth.isAdmin()) {
+        if (!authorizationService.isAdmin()) {
             $location.path('/license');
         }
     });
