@@ -2,9 +2,13 @@ import {OPERATION_GROUP_TYPE} from "../../../models/monitoring/operations/operat
 import {OPERATION_STATUS, OPERATION_STATUS_SORT_ORDER} from "../../../models/monitoring/operations/operation-status";
 import {
     OPERATION_TYPE,
-    OPERATION_TYPE_SORT_ORDER
+    OPERATION_TYPE_SORT_ORDER,
 } from "../../../models/monitoring/operations/operation-type";
 import {SequenceGeneratorUtil} from "../../../utils/sequence-generator-util";
+import {
+    AuthenticationService,
+    service,
+} from '@ontotext/workbench-api';
 
 const UPDATE_ACTIVE_OPERATION_TIME_INTERVAL = 2000;
 
@@ -28,6 +32,10 @@ function operationsStatusesMonitorDirectives($interval, $repositories, Monitorin
         scope.operationsSummary = undefined;
         scope.activeOperations = undefined;
 
+        // =========================
+        // Private variables
+        // =========================
+        const authenticationService = service(AuthenticationService);
         let updateActiveOperationsTimer = undefined;
         let updateActiveRepositoryRun = false;
         let skipUpdateActiveOperationsTimes = 0;
@@ -109,7 +117,7 @@ function operationsStatusesMonitorDirectives($interval, $repositories, Monitorin
         };
 
         const reloadActiveOperations = () => {
-            if (!$jwtAuth.isAuthenticated() || updateActiveRepositoryRun) {
+            if (!authenticationService.isAuthenticated() || updateActiveRepositoryRun) {
                 scope.activeOperations = undefined;
                 return;
             }
