@@ -526,7 +526,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
 
             this.hasGraphqlRightsOverCurrentRepo = function() {
                 const activeRepo = getActiveRepositoryObjectFromStorage();
-                return this.hasGraphqlReadRights(activeRepo) || this.hasGraphqlWriteRights(activeRepo);
+                return authorizationService.canReadGqlRepo(activeRepo) || this.hasGraphqlWriteRights(activeRepo);
             };
 
             this.hasGraphqlWriteRights = function(repo) {
@@ -536,12 +536,12 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 return this.hasGraphqlAuthority('WRITE', repo);
             };
 
-            this.hasGraphqlReadRights = function(repo) {
-                if (!repo || repo.id === '') {
-                    return false;
-                }
-                return this.hasGraphqlAuthority('READ', repo);
-            };
+            // this.hasGraphqlReadRights = function(repo) {
+            //     if (!repo || repo.id === '') {
+            //         return false;
+            //     }
+            //     return this.hasGraphqlAuthority('READ', repo);
+            // };
 
             this.hasGraphqlAuthority = function(action, repo) {
                 if (!this.principal) {

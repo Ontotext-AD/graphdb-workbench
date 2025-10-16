@@ -78,7 +78,7 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
                 existsActiveRepo = repositoriesFromLocation.find((repo) => repo.id === repository.id);
             }
             if (existsActiveRepo) {
-                if (!authorizationService.canReadRepo(repository) && !$jwtAuth.hasGraphqlReadRights(repository)) {
+                if (!authorizationService.canReadRepo(repository) && !authorizationService.canReadGqlRepo(repository)) {
                     this.setRepository('');
                 } else {
                     $rootScope.$broadcast('repositoryIsSet', {newRepo: false});
@@ -288,7 +288,7 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
 
         this.getReadableRepositories = function () {
             return _.filter(this.getRepositories(), function (repo) {
-                return authorizationService.canReadRepo(repo) || $jwtAuth.hasGraphqlReadRights(repo);
+                return authorizationService.canReadRepo(repo) || authorizationService.canReadGqlRepo(repo);
             });
         };
 
@@ -404,7 +404,7 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
                     const repositoryContextService = ServiceProvider.get(RepositoryContextService);
                     // if the current repo is unreadable by the currently logged in user (or free access user)
                     // we unset the repository
-                    if (!repo || (!authorizationService.canReadRepo(repo) && !$jwtAuth.hasGraphqlReadRights(repo))) {
+                    if (!repo || (!authorizationService.canReadRepo(repo) && !authorizationService.canReadGqlRepo(repo))) {
                         repositoryContextService.updateSelectedRepository(undefined);
                     } else {
                         repo.isNew = true;
