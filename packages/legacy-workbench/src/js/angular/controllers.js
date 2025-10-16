@@ -40,6 +40,7 @@ import {
     ServiceProvider,
     SecurityContextService,
     OntoToastrService,
+    service,
 } from "@ontotext/workbench-api";
 import {EventConstants} from "./utils/event-constants";
 import {CookieConsent} from "./models/cookie-policy/cookie-consent";
@@ -191,7 +192,9 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
                   productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService, RepositoriesRestService,
                   MonitoringRestService, SparqlRestService, $sce, LocalStorageAdapter, LSKeys, $translate, UriUtils, $q, GuidesService, $route, $window, AuthTokenService, TrackingService,
                   WorkbenchContextService, AutocompleteService) {
-    const toastrService = ServiceProvider.get(OntoToastrService);
+    const toastrService = service(OntoToastrService);
+    const authorizationService = service(AuthorizationService);
+
     $scope.descr = $translate.instant('main.gdb.description');
     $scope.documentation = '';
     $scope.menu = $menuItems;
@@ -696,7 +699,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     };
 
     $scope.canReadRepo = function(repo) {
-        return $jwtAuth.canReadRepo(repo);
+        return authorizationService.canReadRepo(repo);
     };
 
     $scope.checkForWrite = function(role, repo) {
@@ -1114,7 +1117,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     };
 
     const updateAutocompleteStatus = () => {
-        if ($repositories.isActiveRepoFedXType() || !$licenseService.isLicenseValid() || !$jwtAuth.canReadRepo($repositories.getActiveRepositoryObject())) {
+        if ($repositories.isActiveRepoFedXType() || !$licenseService.isLicenseValid() || !authorizationService.canReadRepo($repositories.getActiveRepositoryObject())) {
             WorkbenchContextService.setAutocompleteEnabled(false);
             LocalStorageAdapter.set(LSKeys.AUTOCOMPLETE_ENABLED, false);
             return;

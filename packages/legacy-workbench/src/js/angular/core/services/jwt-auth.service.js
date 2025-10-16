@@ -24,8 +24,11 @@ angular.module('graphdb.framework.core.services.jwtauth', [
     .service('$jwtAuth', ['$http', '$location', '$rootScope', 'SecurityService', '$translate', '$q', '$route', 'AuthTokenService',
         /* eslint-disable no-invalid-this */
         function($http, $location, $rootScope, SecurityService, $translate, $q, $route, AuthTokenService) {
-            const toastrService = ServiceProvider.get(OntoToastrService);
             const jwtAuth = this;
+
+            const toastrService = service(OntoToastrService);
+            const authorizationService = service(AuthorizationService);
+
             $rootScope.hasPermission = function() {
                 const path = $location.path();
                 const securityContextService = ServiceProvider.get(SecurityContextService);
@@ -302,7 +305,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
 
                     const selectedRepo = getActiveRepositoryObjectFromStorage();
 
-                    if (!jwtAuth.canReadRepo(selectedRepo)) {
+                    if (!authorizationService.canReadRepo(selectedRepo)) {
                         // if the current repo is unreadable by the currently logged-in user (or free access user)
                         // we unset the repository
                         const repositoryContextService = ServiceProvider.get(RepositoryContextService);
@@ -476,24 +479,23 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 }
             };
 
-            this.canReadRepo = function(repo) {
-                if (!repo || repo.id === '') {
-                    return false;
-                }
-                // Adding remote secured location could be done only with admin credentials,
-                // that's why we do no check for rights
-                if (this.securityEnabled) {
-                    if (_.isEmpty(this.principal)) {
-                        return false;
-                    } else if (this.hasAdminRole()) {
-                        return true;
-                    }
-                    return this.checkRights(repo, 'READ');
-                } else {
-                    return true;
-                }
-            };
-
+            // this.canReadRepo = function(repo) {
+            //     if (!repo || repo.id === '') {
+            //         return false;
+            //     }
+            //     // Adding remote secured location could be done only with admin credentials,
+            //     // that's why we do no check for rights
+            //     if (this.securityEnabled) {
+            //         if (_.isEmpty(this.principal)) {
+            //             return false;
+            //         } else if (this.hasAdminRole()) {
+            //             return true;
+            //         }
+            //         return this.checkRights(repo, 'READ');
+            //     } else {
+            //         return true;
+            //     }
+            // };
 
             this.checkRights = function(repo, action) {
                 if (!repo) {
