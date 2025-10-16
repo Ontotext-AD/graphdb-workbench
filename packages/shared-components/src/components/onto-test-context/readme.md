@@ -192,22 +192,6 @@ Type: `Promise<void>`
 
 A Promise that resolves when the product information update is complete.
 
-### `updateRestrictedPage(restrictedPages: Record<string, boolean>) => Promise<void>`
-
-Updates the {@see SecurityContextService} map with <code>restrictedPages</code>.
-
-#### Parameters
-
-| Name              | Type                        | Description                                                                |
-| ----------------- | --------------------------- | -------------------------------------------------------------------------- |
-| `restrictedPages` | `{ [x: string]: boolean; }` | - the map with restricted pages to be set in context service as new value. |
-
-#### Returns
-
-Type: `Promise<void>`
-
-
-
 ### `updateSelectedRepository(repositoryReference: RepositoryReference) => Promise<void>`
 
 Updates the selected repository in the application context.

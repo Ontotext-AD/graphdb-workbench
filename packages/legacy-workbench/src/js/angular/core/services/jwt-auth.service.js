@@ -31,7 +31,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 const securityContextService = ServiceProvider.get(SecurityContextService);
                 const restrictedPages = securityContextService.getRestrictedPages();
 
-                return restrictedPages.isRestricted(path);
+                return !restrictedPages.isRestricted(path);
             };
 
             this.updateReturnUrl = () => {
@@ -528,8 +528,8 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 const overAllRepos = `${action}_REPO_*`;
 
                 return (
-                    this.principal.authorities.indexOf(overCurrentRepo) > -1 ||
-                    this.principal.authorities.indexOf(overAllRepos) > -1
+                    this.principal.authorities?.indexOf(overCurrentRepo) > -1 ||
+                    this.principal.authorities?.indexOf(overAllRepos) > -1
                 );
             };
 

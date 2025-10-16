@@ -7,7 +7,7 @@ export class UserAndAccessSteps {
 
     static visitInProdMode() {
         cy.visit('/users', {
-            onBeforeLoad: (win) => {
+            onBeforeLoad: () => {
                 EnvironmentStubs.stubWbProdMode();
             }
         });
@@ -186,7 +186,7 @@ export class UserAndAccessSteps {
     }
 
     static getPermissionError() {
-        return cy.get('.permission-banner');
+        return cy.getByTestId('restricted-access-banner');
     }
 
     static getModal() {

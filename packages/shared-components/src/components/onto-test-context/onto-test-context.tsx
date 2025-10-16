@@ -12,7 +12,6 @@ import {
   ProductInfoContextService,
   RepositoryContextService,
   RepositoryService,
-  RestrictedPages,
   SecurityContextService,
   SecurityConfig,
   ServiceProvider,
@@ -133,25 +132,6 @@ export class OntoTestContext {
   @Method()
   emitNavigateEndEvent(oldUrl: string, newUrl: string): Promise<void> {
     ServiceProvider.get(EventService).emit(new NavigationEnd(oldUrl, newUrl));
-    return Promise.resolve();
-  }
-
-  /**
-   * Updates the {@see SecurityContextService} map with <code>restrictedPages</code>.
-   * @param restrictedPages - the map with restricted pages to be set in context service as new value.
-   */
-  @Method()
-  updateRestrictedPage(restrictedPages: Record<string, boolean>): Promise<void> {
-    const restriction = new RestrictedPages();
-    if (!restrictedPages) {
-      ServiceProvider.get(SecurityContextService).updateRestrictedPages(undefined);
-      return;
-    }
-
-    Object.entries(restrictedPages).forEach(([key, value]) => {
-      restriction.setPageRestriction(key, value);
-    });
-    ServiceProvider.get(SecurityContextService).updateRestrictedPages(restriction);
     return Promise.resolve();
   }
 
