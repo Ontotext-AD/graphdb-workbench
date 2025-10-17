@@ -3,15 +3,13 @@ import 'angular/core/services/openid-auth.service.js';
 import 'angular/core/services/security.service';
 import {UserRole} from 'angular/utils/user-utils';
 import {
-    AuthenticatedUser,
     AuthenticatedUserMapper,
+    AuthenticationService,
     AuthorizationService,
     MapperProvider,
     OntoToastrService,
-    RepositoryContextService,
     RepositoryStorageService,
     SecurityContextService,
-    SecurityService as SecurityServiceAPI,
     service,
     ServiceProvider,
 } from '@ontotext/workbench-api';
@@ -26,9 +24,12 @@ angular.module('graphdb.framework.core.services.jwtauth', [
         function($http, $location, $rootScope, SecurityService, $translate, $q, $route, AuthTokenService) {
             const toastrService = ServiceProvider.get(OntoToastrService);
             const jwtAuth = this;
+            const authorizationService = service(AuthorizationService);
+            const authenticationService = service(AuthenticationService);
+            const securityContextService = ServiceProvider.get(SecurityContextService);
+
             $rootScope.hasPermission = function() {
                 const path = $location.path();
-                const securityContextService = ServiceProvider.get(SecurityContextService);
                 const restrictedPages = securityContextService.getRestrictedPages();
 
                 return restrictedPages.isRestricted(path);
@@ -99,7 +100,6 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             };
 
             this.securityEnabled = true;
-            this.freeAccess = false;
             this.hasOverrideAuth = false;
             this.externalAuthUser = false;
             this.securityInitialized = false;
@@ -125,34 +125,21 @@ angular.module('graphdb.framework.core.services.jwtauth', [
              * @param {boolean} justLoggedIn Indicates that the user just logged in.
              */
             this.getAuthenticatedUserFromBackend = function(noFreeAccessFallback, justLoggedIn) {
-                if (isGDBorOpenIDToken) {
-                    return SecurityService.getAuthenticatedUser().then(function(data) {
-                        // FIXME: Update principal with response, because of difference in the principal model and the AuthenticatedUser model
-                        that.authenticate(data); // this will emit securityInit
-                    }).catch(function() {
-                        if (noFreeAccessFallback || !that.freeAccess) {
-                            $rootScope.redirectToLogin(false, justLoggedIn);
-                        } else {
-                            that.securityInitialized = true;
-                            if (!that.hasExplicitAuthentication()) {
-                                that.clearAuthentication();
-                                // console.log('free access fallback');
-                            }
-                        }
-                    });
+                if (isGDBorOpenIDToken()) {
+                    return;
                 }
 
                 // FIXME: Remove after verification that it is not needed for Kerberos or X509 authentication
                 SecurityService.getAuthenticatedUser().then(function(data) {
-                    ServiceProvider.get(SecurityContextService).updateAuthenticatedUser(
+                    securityContextService.updateAuthenticatedUser(
                         MapperProvider.get(AuthenticatedUserMapper).mapToModel(data),
                     );
                     // There is no previous authentication but we got a principal via
                     // an external authentication mechanism (e.g. Kerberos)
                     that.externalAuthUser = true;
-                    that.authenticate(data); // this will emit securityInit
+                    that.broadcastSecurityInit();
                 }).catch(function() {
-                    if (noFreeAccessFallback || !that.freeAccess) {
+                    if (noFreeAccessFallback || !authorizationService.hasFreeAccess()) {
                         $rootScope.redirectToLogin(false, justLoggedIn);
                     } else {
                         that.securityInitialized = true;
@@ -175,40 +162,28 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                     that.passwordLoginEnabled = res.data.passwordLoginEnabled;
 
                     if (that.securityEnabled) {
-                        const freeAccessData = res.data.freeAccess;
-                        that.freeAccess = freeAccessData.enabled;
-                        if (that.freeAccess) {
-                            that.freeAccessPrincipal = {
-                                authorities: freeAccessData.authorities,
-                                appSettings: freeAccessData.appSettings,
-                            };
-                        }
                         that.openIDConfig = res.data.methodSettings.openid;
 
                         that.getAuthenticatedUserFromBackend();
-                        that.broadcastSecurityInit(that.securityEnabled, that.hasExplicitAuthentication(), that.freeAccess);
+                        that.broadcastSecurityInit(that.securityEnabled, that.hasExplicitAuthentication());
                     } else {
                         AuthTokenService.clearAuthToken();
                         const overrideAuthData = res.data.overrideAuth;
                         that.hasOverrideAuth = overrideAuthData.enabled;
                         if (that.hasOverrideAuth) {
-                            that.principal = {
-                                username: 'overrideauth',
-                                authorities: overrideAuthData.authorities,
-                                appSettings: overrideAuthData.appSettings,
-                            };
-                        that.broadcastSecurityInit(that.securityEnabled, true, that.hasOverrideAuth);
-                         } else {
-                            return SecurityService.getAdminUser().then(function(res) {
-                                that.principal = {username: 'admin', appSettings: res.appSettings, authorities: res.grantedAuthorities, grantedAuthoritiesUiModel: res.grantedAuthoritiesUiModel};
-                                that.broadcastSecurityInit(that.securityEnabled, true, that.hasOverrideAuth);
-                            });
+                            // TODO: When security is disabled, there is an option to set a default user authorities through configuration and use it instead of admin
+                            // that.principal = {
+                            //     username: 'overrideauth',
+                            //     authorities: overrideAuthData.authorities,
+                            //     appSettings: overrideAuthData.appSettings,
+                            // };
+                            that.broadcastSecurityInit(that.securityEnabled, true, that.hasOverrideAuth);
+                        } else {
+                            that.broadcastSecurityInit(that.securityEnabled, true, that.hasOverrideAuth);
                         }
                     }
                 });
             };
-
-            this.initSecurity();
 
             this.reinitializeSecurity = function() {
                 if (!this.securityInitialized) {
@@ -229,7 +204,8 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             };
 
             this.isFreeAccessEnabled = function() {
-                return this.freeAccess;
+                return authorizationService.hasFreeAccess();
+                // return this.freeAccess;
             };
 
             this.isDefaultAuthEnabled = function() {
@@ -257,65 +233,6 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 return Promise.resolve();
             };
 
-            this.toggleFreeAccess = function(enabled, authorities, appSettings, updateFreeAccess) {
-                if (enabled !== this.freeAccess || updateFreeAccess) {
-                    SecurityService.setFreeAccess({
-                        enabled: enabled ? 'true' : 'false',
-                        authorities: authorities,
-                        appSettings: appSettings,
-                    })
-                        .then(() => {
-                            this.freeAccess = enabled;
-                            return enabled ? SecurityService.getFreeAccess() : {};
-                        })
-                        .then((freeAccess) => {
-                            this.freeAccessPrincipal = {
-                                authorities: freeAccess.authorities,
-                                appSettings: freeAccess.appSettings,
-                            };
-                            if (updateFreeAccess) {
-                                toastrService.success($translate.instant('jwt.auth.free.access.updated.msg'));
-                            } else {
-                                toastrService.success($translate.instant('jwt.auth.free.access.status', {status: ($translate.instant(enabled ? 'enabled.status' : 'disabled.status'))}));
-                            }
-                        })
-                        .then(() => {
-                            // Refetch the security config and update it
-                            return service(SecurityServiceAPI).getSecurityConfig()
-                                .then((securityConfig) => {
-                                    const securityContextService = service(SecurityContextService);
-
-                                    securityContextService.updateSecurityConfig(securityConfig);
-                                });
-                        })
-                        .finally(() => this.broadcastSecurityInit(this.securityEnabled, this.hasExplicitAuthentication(), this.freeAccess))
-                        .catch((err) => {
-                            toastrService.error(err.data, $translate.instant('common.error'));
-                        });
-                }
-            };
-
-            this.authenticate = function(data) {
-                return new Promise((resolve) => {
-                    this.principal = data;
-                    this.securityInitialized = true;
-
-                    const selectedRepo = getActiveRepositoryObjectFromStorage();
-
-                    if (!jwtAuth.canReadRepo(selectedRepo)) {
-                        // if the current repo is unreadable by the currently logged-in user (or free access user)
-                        // we unset the repository
-                        const repositoryContextService = ServiceProvider.get(RepositoryContextService);
-                        repositoryContextService.updateSelectedRepository(undefined);
-                    }
-
-                    this.broadcastSecurityInit(this.securityEnabled, this.hasExplicitAuthentication(), this.freeAccess);
-                    setTimeout(() => {
-                        resolve(true);
-                    });
-                });
-            };
-
             this.hasExternalAuthUser = function() {
                 return this.externalAuthUser;
             };
@@ -327,91 +244,96 @@ angular.module('graphdb.framework.core.services.jwtauth', [
 
             // Returns a promise of the principal object if already fetched or a promise which resolves after security initialization
             this.getPrincipal = function() {
-                if (this.principal) {
-                    return Promise.resolve(this.principal);
+                const authenticatedUser = authorizationService.getAuthenticatedUser();
+                if (authenticatedUser) {
+                    return Promise.resolve(authenticatedUser);
                 }
                 const deferred = $q.defer();
                 $rootScope.$on('securityInit', () => {
-                    deferred.resolve(this.principal);
+                    deferred.resolve(authenticatedUser);
                 });
                 return deferred.promise;
             };
 
             this.clearAuthenticationInternal = function() {
-                this.principal = this.freeAccessPrincipal;
+                // this.principal = this.freeAccessPrincipal;
                 AuthTokenService.clearAuthToken();
             };
 
             this.clearAuthentication = function() {
                 this.clearAuthenticationInternal();
-                this.broadcastSecurityInit(this.securityEnabled, false, this.freeAccess);
+                this.broadcastSecurityInit();
             };
 
             this.isAuthenticated = function() {
-                return !this.securityEnabled || this.hasExplicitAuthentication();
+                return authenticationService.isAuthenticated();
+                // return !this.securityEnabled || this.hasExplicitAuthentication();
             };
 
             this.hasPermission = function() {
             };
 
             this.hasRole = function(role) {
-                if (role !== undefined && (this.securityEnabled || this.hasOverrideAuth)) {
-                    if ('string' === typeof role) {
-                        role = [role];
-                    }
-                    const hasPrincipal = !_.isEmpty(this.principal);
-                    if (!hasPrincipal) {
-                        return false;
-                    }
-                    if (role[0] === 'IS_AUTHENTICATED_FULLY') {
-                        return hasPrincipal;
-                    } else {
-                        return _.intersection(role, this.principal.authorities).length > 0;
-                    }
-                } else {
-                    return true;
-                }
+                return authorizationService.hasRole(role);
+                // if (role !== undefined && (this.securityEnabled || this.hasOverrideAuth)) {
+                //     if ('string' === typeof role) {
+                //         role = [role];
+                //     }
+                //     const hasPrincipal = !_.isEmpty(this.principal);
+                //     if (!hasPrincipal) {
+                //         return false;
+                //     }
+                //     if (role[0] === 'IS_AUTHENTICATED_FULLY') {
+                //         return hasPrincipal;
+                //     } else {
+                //         return _.intersection(role, this.principal.authorities).length > 0;
+                //     }
+                // } else {
+                //     return true;
+                // }
             };
 
             // Check if the user has the necessary authority to access the route
             this.hasAuthority = function() {
-                // If there is no current active route, return false – access cannot be determined
-                if (!$route.current) {
-                    return false;
-                }
-
-                // If the user has an admin role, they always have access
-                if (this.hasAdminRole()) {
-                    return true;
-                }
-
-                // If the current route doesn't define "allowAuthorities", assume there are no restrictions
-                if (!$route.current.allowAuthorities) {
-                    return true;
-                }
-
-                // If there is no selected repository, there are no auth restrictions
-                if (getActiveRepositoryObjectFromStorage().id === '') {
-                    return true;
-                }
-
-                // If there is no principal defined, assume is admin and return true
-                if (!this.principal) {
-                    return true;
-                }
-
-                // If there are allowed authorities defined for the current route
-                if ($route.current.allowAuthorities.length > 0) {
-                    const auth = resolveAuthorities($route.current.allowAuthorities);
-                    // Check if any of the allowed authorities match one of the principal's authorities
-                    return auth.some((allowAuth) => this.principal.authorities.indexOf(allowAuth) > -1);
-                }
-                // If none of the above conditions apply, return true by default
-                return true;
+                return authorizationService.hasAuthority();
+                // // If there is no current active route, return false – access cannot be determined
+                // if (!$route.current) {
+                //     return false;
+                // }
+                //
+                // // If the user has an admin role, they always have access
+                // if (this.hasAdminRole()) {
+                //     return true;
+                // }
+                //
+                // // If the current route doesn't define "allowAuthorities", assume there are no restrictions
+                // if (!$route.current.allowAuthorities) {
+                //     return true;
+                // }
+                //
+                // // If there is no selected repository, there are no auth restrictions
+                // if (getActiveRepositoryObjectFromStorage().id === '') {
+                //     return true;
+                // }
+                //
+                // // If there is no principal defined, assume is admin and return true
+                // if (!this.principal) {
+                //     return true;
+                // }
+                //
+                // // If there are allowed authorities defined for the current route
+                // if ($route.current.allowAuthorities.length > 0) {
+                //     const auth = resolveAuthorities($route.current.allowAuthorities);
+                //     // Check if any of the allowed authorities match one of the principal's authorities
+                //     return auth.some((allowAuth) => this.principal.authorities.indexOf(allowAuth) > -1);
+                // }
+                // // If none of the above conditions apply, return true by default
+                // return true;
             };
 
             // Function to resolve a list of authority strings by replacing the "{repoId}" placeholder
             // with both the specific repository ID and a wildcard for all repositories.
+            // eslint-disable-next-line no-unused-vars
             const resolveAuthorities = (authoritiesList) => {
                 // If no authorities list is provided, return undefined.
                 if (!authoritiesList) {
@@ -436,11 +358,13 @@ angular.module('graphdb.framework.core.services.jwtauth', [
 
 
             this.isAdmin = function() {
-                return this.hasRole(UserRole.ROLE_ADMIN);
+                return authorizationService.isAdmin();
+                // return this.hasRole(UserRole.ROLE_ADMIN);
             };
 
             this.isRepoManager = function() {
-                return this.hasRole(UserRole.ROLE_REPO_MANAGER);
+                return authorizationService.isRepoManager();
+                // return this.hasRole(UserRole.ROLE_REPO_MANAGER);
             };
 
             this.hasRoleMonitor = function() {
@@ -448,6 +372,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             };
 
             this.checkForWrite = function(menuRole, repo) {
+                // Used to build the menu
                 if ('WRITE_REPO' === menuRole) {
                     return this.canWriteRepo(repo);
                 }
@@ -459,53 +384,56 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             };
 
             this.canWriteRepo = function(repo) {
-                if (!repo) {
-                    return false;
-                }
+                return authorizationService.canWriteRepo(repo);
+                // if (!repo) {
+                //     return false;
+                // }
                 // Adding remote secured location could be done only with admin credentials,
                 // that's why we do no check for rights
-                if (this.securityEnabled || this.hasOverrideAuth) {
-                    if (_.isEmpty(this.principal)) {
-                        return false;
-                    } else if (this.hasAdminRole()) {
-                        return true;
-                    }
-                    return this.checkRights(repo, 'WRITE');
-                } else {
-                    return true;
-                }
+                // if (this.securityEnabled || this.hasOverrideAuth) {
+                //     if (_.isEmpty(this.principal)) {
+                //         return false;
+                //     } else if (this.hasAdminRole()) {
+                //         return true;
+                //     }
+                //     return this.checkRights(repo, 'WRITE');
+                // } else {
+                //     return true;
+                // }
             };
 
             this.canReadRepo = function(repo) {
-                if (!repo || repo.id === '') {
-                    return false;
-                }
-                // Adding remote secured location could be done only with admin credentials,
-                // that's why we do no check for rights
-                if (this.securityEnabled) {
-                    if (_.isEmpty(this.principal)) {
-                        return false;
-                    } else if (this.hasAdminRole()) {
-                        return true;
-                    }
-                    return this.checkRights(repo, 'READ');
-                } else {
-                    return true;
-                }
+                return authorizationService.canReadRepo(repo);
+                // if (!repo || repo.id === '') {
+                //     return false;
+                // }
+                // // Adding remote secured location could be done only with admin credentials,
+                // // that's why we do no check for rights
+                // if (this.securityEnabled) {
+                //     if (_.isEmpty(this.principal)) {
+                //         return false;
+                //     } else if (this.hasAdminRole()) {
+                //         return true;
+                //     }
+                //     return this.checkRights(repo, 'READ');
+                // } else {
+                //     return true;
+                // }
             };
 
 
-            this.checkRights = function(repo, action) {
-                if (!repo) {
-                    return false;
-                }
-
-                if (repo.id === 'SYSTEM') {
-                    return false;
-                }
-
-                return this.hasBaseRights(action, repo);
-            };
+            // this.checkRights = function (repo, action) {
+            //     // privately used
+            //     if (!repo) {
+            //         return false;
+            //     }
+            //
+            //     if (repo.id === 'SYSTEM') {
+            //         return false;
+            //     }
+            //
+            //     return this.hasBaseRights(action, repo);
+            // };
 
             this.hasBaseRights = function(action, repo) {
                 const authorizationService = service(AuthorizationService);
@@ -534,73 +462,36 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             };
 
             this.hasGraphqlReadRights = function(repo) {
-                if (!repo || repo.id === '') {
-                    return false;
-                }
-                return this.hasGraphqlAuthority('READ', repo);
+                return authorizationService.canReadGqlRepo(repo);
+                // if (!repo || repo.id === '') {
+                //     return false;
+                // }
+                // return this.hasGraphqlAuthority('READ', repo);
             };
 
             this.hasGraphqlAuthority = function(action, repo) {
-                if (!this.principal) {
-                    return false;
-                }
-                const repoId = repo.location ? `${repo.id}@${repo.location}` : repo.id;
-                const overCurrentRepoGraphql = `${action}_REPO_${repoId}:GRAPHQL`;
-                const overAllReposGraphql = `${action}_REPO_*:GRAPHQL`;
-
-                return (
-                    this.principal.authorities.indexOf(overCurrentRepoGraphql) > -1 ||
-                    this.principal.authorities.indexOf(overAllReposGraphql) > -1
-                );
+                return authorizationService.canWriteGqlRepo(action, repo);
+                // if (!this.principal) {
+                //     return false;
+                // }
+                // const repoId = repo.location ? `${repo.id}@${repo.location}` : repo.id;
+                // const overCurrentRepoGraphql = `${action}_REPO_${repoId}:GRAPHQL`;
+                // const overAllReposGraphql = `${action}_REPO_*:GRAPHQL`;
+                //
+                // return (
+                //     this.principal.authorities.indexOf(overCurrentRepoGraphql) > -1 ||
+                //     this.principal.authorities.indexOf(overAllReposGraphql) > -1
+                // );
             };
 
             this.updateUserData = (data) => SecurityService.updateUserData(data);
 
-            this.broadcastSecurityInit = (securityEnabled, userLoggedIn, freeAccess) => {
-                $rootScope.$broadcast('securityInit', securityEnabled, userLoggedIn, freeAccess);
-
-                if (isGDBorOpenIDToken) {
-                    return; // already authenticated in security module
-                }
-
-                // FIXME: Remove the principal from the application and use the AuthenticatedUser from the security context service
-                // The following block is required because a free access user is set when authentication is cleared
-                const securityContextService = ServiceProvider.get(SecurityContextService);
-
-                const data = this.principal;
-                let authenticatedUser;
-                if (data instanceof AuthenticatedUser) {
-                    authenticatedUser = data;
-                } else {
-                    const userMapper = MapperProvider.get(AuthenticatedUserMapper);
-                    authenticatedUser = userMapper.mapToModel(data);
-                }
-                securityContextService.updateAuthenticatedUser(authenticatedUser);
-                // FIXME: Keep for reference
-                // const config = {
-                //     enabled: this.securityEnabled,
-                //     hasExternalAuth: this.externalAuth,
-                //     hasExternalAuthUser: this.hasExternalAuthUser(),
-                //     openIdEnabled: this.openIDEnabled,
-                //     passwordLoginEnabled: this.passwordLoginEnabled,
-                //     overrideAuth: {
-                //         enabled: this.hasOverrideAuth,
-                //         authorities: this.principal?.authorities || [],
-                //         appSettings: this.principal?.appSettings || {},
-                //     },
-                //     methodSettings: {
-                //         openid: this.openIDConfig || {},
-                //     },
-                //     freeAccess: {
-                //         enabled: this.freeAccess,
-                //         authorities: this.freeAccessPrincipal?.authorities || [],
-                //         appSettings: this.freeAccessPrincipal?.appSettings || {},
-                //     },
-                //     authImplementation: this.authImplementation,
-                //     userLoggedIn,
-                //     freeAccessActive: freeAccess,
-                // };
-                // ServiceProvider.get(AuthenticationStorageService).setAuthenticated(this.isAuthenticated());
-                // ServiceProvider.get(SecurityContextService).updateSecurityConfig(MapperProvider.get(SecurityConfigMapper).mapToModel(config));
+            this.broadcastSecurityInit = (securityEnabled, userLoggedIn) => {
+                const isSecurityEnabled = authenticationService.isSecurityEnabled();
+                const isUserLoggedIn = authenticationService.isLoggedIn();
+                const isFreeAccessEnabled = authorizationService.hasFreeAccess();
+                $rootScope.$broadcast('securityInit', isSecurityEnabled, isUserLoggedIn, isFreeAccessEnabled);
             };
+
+            this.initSecurity();
         }]);

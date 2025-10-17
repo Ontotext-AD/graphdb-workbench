@@ -1,6 +1,6 @@
 import {AuthorizationService} from '../authorization.service';
 import {SecurityContextService} from '../security-context.service';
-import {AuthenticatedUser, Authority, AuthorityList, SecurityConfig} from '../../../models/security';
+import {AuthenticatedUser, Authority, AuthorityList} from '../../../models/security';
 import {Repository} from '../../../models/repositories';
 import {MapperProvider, ServiceProvider} from '../../../providers';
 import {AuthenticatedUserMapper} from '../mappers/authenticated-user.mapper';
@@ -8,6 +8,17 @@ import {WindowService} from '../../window';
 import {RouteItemModel} from '../../../models/routing/route-item-model';
 import {RoutingService} from '../../routing/routing.service';
 import {RepositoryStorageService} from '../../repository';
+import {SecurityConfigTestUtil} from '../../utils/test/security-config-test-util';
+import {AuthSettings} from '../../../models/security/auth-settings';
+
+const getSecurityConfig = (securityEnabled: boolean, freeAccessEnabled: boolean) => {
+  return SecurityConfigTestUtil.createSecurityConfig(
+    {
+      enabled: securityEnabled,
+      freeAccess: new AuthSettings({enabled: freeAccessEnabled, authorities: new AuthorityList()})
+    }
+  );
+};
 
 describe('AuthorizationService', () => {
   let authorizationService: AuthorizationService;
@@ -20,15 +31,14 @@ describe('AuthorizationService', () => {
 
   beforeEach(() => {
     authorizationService = new AuthorizationService();
-    securityContextService.updateSecurityConfig({} as unknown as SecurityConfig);
+    securityContextService.updateSecurityConfig(getSecurityConfig(false, false));
     jest.spyOn(WindowService, 'getWindow').mockReturnValue(windowMock);
   });
 
   describe('hasFreeAccess', () => {
     test('hasFreeAccess should return true if free access is enabled', () => {
       // Given, I have a security config with enabled free access
-      const securityConfigWithFreeAccess = {enabled: true, freeAccess: {enabled: true}} as unknown as SecurityConfig;
-      ServiceProvider.get(SecurityContextService).updateSecurityConfig(securityConfigWithFreeAccess);
+      ServiceProvider.get(SecurityContextService).updateSecurityConfig(getSecurityConfig(true, true));
       // When, I check, if free access is enabled
       // Then, I expect, to have free access
       expect(authorizationService.hasFreeAccess()).toEqual(true);
@@ -36,15 +46,13 @@ describe('AuthorizationService', () => {
 
     test('hasFreeAccess should return false if free access is disabled', () => {
       // Given, I have a security config with disabled free access
-      const securityConfigWithFreeAccess = {enabled: true, freeAccess: {enabled: false}} as unknown as SecurityConfig;
-      ServiceProvider.get(SecurityContextService).updateSecurityConfig(securityConfigWithFreeAccess);
+      ServiceProvider.get(SecurityContextService).updateSecurityConfig(getSecurityConfig(true, false));
       // When, I check, if free access is enabled
       // Then, I expect, not to have free access
       expect(authorizationService.hasFreeAccess()).toEqual(false);
 
       // When, I have disabled security
-      const securityConfigWithoutSecurity = {enabled: false} as unknown as SecurityConfig;
-      ServiceProvider.get(SecurityContextService).updateSecurityConfig(securityConfigWithoutSecurity);
+      ServiceProvider.get(SecurityContextService).updateSecurityConfig(getSecurityConfig(false, false));
       // When, I check, if free access is enabled
       // Then, I expect, not to have free access
       expect(authorizationService.hasFreeAccess()).toEqual(false);
@@ -61,16 +69,14 @@ describe('AuthorizationService', () => {
       securityContextService.updateAuthenticatedUser(userWithRole);
 
       // And, I have a security config with enabled free access
-      const securityConfigWithFreeAccess = {enabled: true, freeAccess: {enabled: true, authorities: new AuthorityList()}} as unknown as SecurityConfig;
-      securityContextService.updateSecurityConfig(securityConfigWithFreeAccess);
+      securityContextService.updateSecurityConfig(getSecurityConfig(true, true));
 
       // When, I check, if the user has the role
       // Then, I expect, to have the role
       expect(authorizationService.hasRole(userRole)).toEqual(true);
 
       // When, I have a disabled security
-      const securityConfigWithoutSecurity = {enabled: false} as unknown as SecurityConfig;
-      securityContextService.updateSecurityConfig(securityConfigWithoutSecurity);
+      securityContextService.updateSecurityConfig(getSecurityConfig(false, false));
 
       // When, I check, if the user has the role
       // Then, I expect to have the role
@@ -103,11 +109,7 @@ describe('AuthorizationService', () => {
       securityContextService.updateAuthenticatedUser(userWithRole);
 
       // And, I have a security config with disabled free access
-      const securityConfigWithFreeAccess = {
-        enabled: true,
-        freeAccess: {enabled: false, authorities: new AuthorityList()}
-      } as unknown as SecurityConfig;
-      securityContextService.updateSecurityConfig(securityConfigWithFreeAccess);
+      securityContextService.updateSecurityConfig(getSecurityConfig(true, false));
 
       // When, I check, if the user has a higher role
       // Then, I expect, not to have the role
@@ -130,8 +132,7 @@ describe('AuthorizationService', () => {
 
     test('canReadRepo should return false when security is enabled but user is not authenticated', () => {
       // Given, I have enabled security
-      const securityConfig = {enabled: true, freeAccess: {authorities: new AuthorityList()}} as unknown as SecurityConfig;
-      securityContextService.updateSecurityConfig(securityConfig);
+      securityContextService.updateSecurityConfig(getSecurityConfig(true, false));
 
       // When, I check if I can read a repository
       const repository = {id: 'testRepo'} as Repository;
@@ -142,9 +143,8 @@ describe('AuthorizationService', () => {
 
     test('canReadRepo should return true when user has ROLE_ADMIN', () => {
       // Given, I have enabled security
-      const securityConfig = {enabled: true, freeAccess: {enabled: false, authorities: new AuthorityList()}} as unknown as SecurityConfig;
       const securityContextService = ServiceProvider.get(SecurityContextService);
-      securityContextService.updateSecurityConfig(securityConfig);
+      securityContextService.updateSecurityConfig(getSecurityConfig(true, false));
 
       // And, I have a user with ROLE_ADMIN authority
       const adminUser = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
@@ -165,9 +165,8 @@ describe('AuthorizationService', () => {
 
     test('canReadRepo should return true when user has ROLE_REPO_MANAGER', () => {
       // Given, I have enabled security
-      const securityConfig = {enabled: true, freeAccess: {authorities: new AuthorityList()}} as unknown as SecurityConfig;
       const securityContextService = ServiceProvider.get(SecurityContextService);
-      securityContextService.updateSecurityConfig(securityConfig);
+      securityContextService.updateSecurityConfig(getSecurityConfig(true, false));
 
       // And, I have a user with ROLE_REPO_MANAGER authority
       const repoManagerUser = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
@@ -188,9 +187,8 @@ describe('AuthorizationService', () => {
 
     test('canReadRepo should return false when user tries to access SYSTEM repository', () => {
       // Given, I have enabled security
-      const securityConfig = {enabled: true, freeAccess: {authorities: new AuthorityList()}} as unknown as SecurityConfig;
       const securityContextService = ServiceProvider.get(SecurityContextService);
-      securityContextService.updateSecurityConfig(securityConfig);
+      securityContextService.updateSecurityConfig(getSecurityConfig(true, false));
 
       // And, I have a user with ROLE_USER authority
       const user = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
@@ -207,9 +205,8 @@ describe('AuthorizationService', () => {
 
     test('canReadRepo should return true when security is not enabled regardless of user authentication status', () => {
       // Given, I have disabled security
-      const securityConfig = {enabled: false} as unknown as SecurityConfig;
       const securityContextService = ServiceProvider.get(SecurityContextService);
-      securityContextService.updateSecurityConfig(securityConfig);
+      securityContextService.updateSecurityConfig(getSecurityConfig(false, false));
 
       // When, I check if I can read a repository
       const repository = {id: 'testRepo'} as Repository;
@@ -224,9 +221,8 @@ describe('AuthorizationService', () => {
 
     test('canReadRepo should return true when user has READ rights on a non-SYSTEM repository', () => {
       // Given, I have enabled security
-      const securityConfig = {enabled: true, freeAccess: {authorities: new AuthorityList()}} as unknown as SecurityConfig;
       const securityContextService = ServiceProvider.get(SecurityContextService);
-      securityContextService.updateSecurityConfig(securityConfig);
+      securityContextService.updateSecurityConfig(getSecurityConfig(true, false));
 
       // And, I have a regular user with specific READ rights for a repository
       const repositoryId = 'testRepo';
@@ -249,9 +245,8 @@ describe('AuthorizationService', () => {
 
     test('canReadRepo should return false when user does not have READ rights on repository', () => {
       // Given, I have enabled security
-      const securityConfig = {enabled: true, freeAccess: {authorities: new AuthorityList()}} as unknown as SecurityConfig;
       const securityContextService = ServiceProvider.get(SecurityContextService);
-      securityContextService.updateSecurityConfig(securityConfig);
+      securityContextService.updateSecurityConfig(getSecurityConfig(true, false));
 
       // And, I have a regular user without specific READ rights for the repository
       const repositoryId = 'testRepo';
@@ -269,9 +264,8 @@ describe('AuthorizationService', () => {
 
     test('canReadRepo should return true for authenticated users with base READ rights for a specific repository location', () => {
       // Given, I have enabled security
-      const securityConfig = {enabled: true, freeAccess: {authorities: new AuthorityList()}} as unknown as SecurityConfig;
       const securityContextService = ServiceProvider.get(SecurityContextService);
-      securityContextService.updateSecurityConfig(securityConfig);
+      securityContextService.updateSecurityConfig(getSecurityConfig(true, false));
 
       // And, I have a repository with a location
       const repositoryId = 'testRepo';
@@ -328,8 +322,7 @@ describe('AuthorizationService', () => {
       );
       securityContextService.updateAuthenticatedUser(regularUser);
 
-      const securityConfig = {enabled: true, freeAccess: {authorities: new AuthorityList()}} as unknown as SecurityConfig;
-      securityContextService.updateSecurityConfig(securityConfig);
+      securityContextService.updateSecurityConfig(getSecurityConfig(true, false));
 
       jest.spyOn(windowMock.PluginRegistry, 'get').mockReturnValue([]);
       // Then, I shouldn't have authority
@@ -342,8 +335,7 @@ describe('AuthorizationService', () => {
         {authorities: [Authority.ROLE_USER]} as unknown as AuthenticatedUser
       );
       securityContextService.updateAuthenticatedUser(regularUser);
-      const securityConfig = {enabled: true, freeAccess: {authorities: new AuthorityList()}} as unknown as SecurityConfig;
-      securityContextService.updateSecurityConfig(securityConfig);
+      securityContextService.updateSecurityConfig(getSecurityConfig(true, false));
 
       const activeRoute = new RouteItemModel({
         url: '/aclmanagement',
@@ -372,6 +364,371 @@ describe('AuthorizationService', () => {
       securityContextService.updateAuthenticatedUser(regularUser);
       // Then, I should have authority
       expect(authorizationService.hasAuthority()).toBe(true);
+    });
+  });
+
+  describe('initializeFreeAccess', () => {
+    test('should initialize free access user when security and free access are enabled', () => {
+      // Given, I have security and free access enabled
+      const config = SecurityConfigTestUtil.createSecurityConfig({
+        enabled: true,
+        freeAccess: new AuthSettings({enabled: true, authorities: [Authority.ROLE_USER] as unknown as AuthorityList, appSettings: {setting1: 'value1'}})
+      });
+      securityContextService.updateSecurityConfig(config);
+
+      // When, I initialize free access
+      authorizationService.initializeFreeAccess();
+
+      // Then, I expect the authenticated user to be set with free access authorities and app settings
+      const authenticatedUser = securityContextService.getAuthenticatedUser();
+      expect(authenticatedUser).toBeDefined();
+      expect(authenticatedUser?.appSettings).toEqual({setting1: 'value1'});
+    });
+
+    test('should not initialize free access user when security is disabled', () => {
+      // Given, I have security disabled
+      securityContextService.updateSecurityConfig(getSecurityConfig(false, false));
+      securityContextService.updateAuthenticatedUser(undefined as unknown as AuthenticatedUser);
+
+      // When, I initialize free access
+      authorizationService.initializeFreeAccess();
+
+      // Then, I expect no authenticated user to be set
+      const authenticatedUser = securityContextService.getAuthenticatedUser();
+      expect(authenticatedUser).toBeUndefined();
+    });
+
+    test('should not initialize free access user when free access is disabled', () => {
+      // Given, I have security enabled but free access disabled
+      securityContextService.updateSecurityConfig(getSecurityConfig(true, false));
+      securityContextService.updateAuthenticatedUser(undefined as unknown as AuthenticatedUser);
+
+      // When, I initialize free access
+      authorizationService.initializeFreeAccess();
+
+      // Then, I expect no authenticated user to be set
+      const authenticatedUser = securityContextService.getAuthenticatedUser();
+      expect(authenticatedUser).toBeUndefined();
+    });
+  });
+
+  describe('isAdmin', () => {
+    test('should return true when user has ROLE_ADMIN', () => {
+      // Given, I have a user with admin role
+      const adminUser = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
+        {external: false, authorities: [Authority.ROLE_ADMIN]} as unknown as AuthenticatedUser
+      );
+      securityContextService.updateAuthenticatedUser(adminUser);
+      securityContextService.updateSecurityConfig(getSecurityConfig(true, false));
+
+      // When, I check if user is admin
+      // Then, I expect true
+      expect(authorizationService.isAdmin()).toBe(true);
+    });
+
+    test('should return false when user does not have ROLE_ADMIN', () => {
+      // Given, I have a regular user without admin role
+      const regularUser = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
+        {external: false, authorities: [Authority.ROLE_USER]} as unknown as AuthenticatedUser
+      );
+      securityContextService.updateAuthenticatedUser(regularUser);
+      securityContextService.updateSecurityConfig(getSecurityConfig(true, false));
+
+      // When, I check if user is admin
+      // Then, I expect false
+      expect(authorizationService.isAdmin()).toBe(false);
+    });
+  });
+
+  describe('isRepoManager', () => {
+    test('should return true when user has ROLE_REPO_MANAGER', () => {
+      // Given, I have a user with repo manager role
+      const repoManagerUser = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
+        {external: false, authorities: [Authority.ROLE_REPO_MANAGER]} as unknown as AuthenticatedUser
+      );
+      securityContextService.updateAuthenticatedUser(repoManagerUser);
+      securityContextService.updateSecurityConfig(getSecurityConfig(true, false));
+
+      // When, I check if user is repo manager
+      // Then, I expect true
+      expect(authorizationService.isRepoManager()).toBe(true);
+    });
+
+    test('should return false when user does not have ROLE_REPO_MANAGER', () => {
+      // Given, I have a regular user without repo manager role
+      const regularUser = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
+        {external: false, authorities: [Authority.ROLE_USER]} as unknown as AuthenticatedUser
+      );
+      securityContextService.updateAuthenticatedUser(regularUser);
+      securityContextService.updateSecurityConfig(getSecurityConfig(true, false));
+
+      // When, I check if user is repo manager
+      // Then, I expect false
+      expect(authorizationService.isRepoManager()).toBe(false);
+    });
+  });
+
+  describe('canWriteRepo', () => {
+    test('should return false when repository is undefined', () => {
+      // Given, I have no repository
+      // When, I check if I can write to repository
+      // Then, I expect false
+      expect(authorizationService.canWriteRepo(undefined)).toBe(false);
+    });
+
+    test('should return false when repository ID is empty', () => {
+      // Given, I have a repository with empty ID
+      // When, I check if I can write to repository
+      // Then, I expect false
+      expect(authorizationService.canWriteRepo({id: ''} as Repository)).toBe(false);
+    });
+
+    test('should return true when security is disabled', () => {
+      // Given, I have security disabled
+      securityContextService.updateSecurityConfig(getSecurityConfig(false, false));
+      const repository = {id: 'testRepo'} as Repository;
+
+      // When, I check if I can write to repository
+      // Then, I expect true
+      expect(authorizationService.canWriteRepo(repository)).toBe(true);
+    });
+
+    test('should return false when security is enabled but user is not authenticated', () => {
+      // Given, I have security enabled but no authenticated user
+      securityContextService.updateSecurityConfig(getSecurityConfig(true, false));
+      securityContextService.updateAuthenticatedUser(undefined as unknown as AuthenticatedUser);
+      const repository = {id: 'testRepo'} as Repository;
+
+      // When, I check if I can write to repository
+      // Then, I expect false
+      expect(authorizationService.canWriteRepo(repository)).toBe(false);
+    });
+
+    test('should return true when user has ROLE_ADMIN', () => {
+      // Given, I have admin user
+      const adminUser = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
+        {external: false, authorities: [Authority.ROLE_ADMIN]} as unknown as AuthenticatedUser
+      );
+      securityContextService.updateAuthenticatedUser(adminUser);
+      securityContextService.updateSecurityConfig(getSecurityConfig(true, false));
+      const repository = {id: 'testRepo'} as Repository;
+
+      // When, I check if I can write to repository
+      // Then, I expect true
+      expect(authorizationService.canWriteRepo(repository)).toBe(true);
+    });
+
+    test('should return true when user has ROLE_REPO_MANAGER', () => {
+      // Given, I have repo manager user
+      const repoManagerUser = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
+        {external: false, authorities: [Authority.ROLE_REPO_MANAGER]} as unknown as AuthenticatedUser
+      );
+      securityContextService.updateAuthenticatedUser(repoManagerUser);
+      securityContextService.updateSecurityConfig(getSecurityConfig(true, false));
+      const repository = {id: 'testRepo'} as Repository;
+
+      // When, I check if I can write to repository
+      // Then, I expect true
+      expect(authorizationService.canWriteRepo(repository)).toBe(true);
+    });
+
+    test('should return false when user tries to write to SYSTEM repository', () => {
+      // Given, I have regular user and SYSTEM repository
+      const regularUser = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
+        {external: false, authorities: [Authority.ROLE_USER]} as unknown as AuthenticatedUser
+      );
+      securityContextService.updateAuthenticatedUser(regularUser);
+      securityContextService.updateSecurityConfig(getSecurityConfig(true, false));
+      const systemRepo = {id: 'SYSTEM'} as Repository;
+
+      // When, I check if I can write to SYSTEM repository
+      // Then, I expect false
+      expect(authorizationService.canWriteRepo(systemRepo)).toBe(false);
+    });
+
+    test('should return true when user has WRITE rights on repository', () => {
+      // Given, I have user with write rights for specific repository
+      const repositoryId = 'testRepo';
+      const writeRepoAuthority = `WRITE_REPO_${repositoryId}` as Authority;
+      const userWithWriteRights = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
+        {external: false, authorities: [Authority.ROLE_USER, writeRepoAuthority]} as unknown as AuthenticatedUser
+      );
+      securityContextService.updateAuthenticatedUser(userWithWriteRights);
+      securityContextService.updateSecurityConfig(getSecurityConfig(true, false));
+      const repository = {id: repositoryId} as Repository;
+
+      // When, I check if I can write to repository
+      // Then, I expect true
+      expect(authorizationService.canWriteRepo(repository)).toBe(true);
+    });
+
+    test('should return false when user does not have WRITE rights on repository', () => {
+      // Given, I have user without write rights for repository
+      const regularUser = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
+        {external: false, authorities: [Authority.ROLE_USER]} as unknown as AuthenticatedUser
+      );
+      securityContextService.updateAuthenticatedUser(regularUser);
+      securityContextService.updateSecurityConfig(getSecurityConfig(true, false));
+      const repository = {id: 'testRepo'} as Repository;
+
+      // When, I check if I can write to repository
+      // Then, I expect false
+      expect(authorizationService.canWriteRepo(repository)).toBe(false);
+    });
+  });
+
+  describe('canReadGqlRepo', () => {
+    test('should return false when repository is undefined', () => {
+      // Given, I have no repository
+      // When, I check if I can read GraphQL from repository
+      // Then, I expect false
+      expect(authorizationService.canReadGqlRepo(undefined as unknown as Repository)).toBe(false);
+    });
+
+    test('should return false when repository ID is empty', () => {
+      // Given, I have repository with empty ID
+      // When, I check if I can read GraphQL from repository
+      // Then, I expect false
+      expect(authorizationService.canReadGqlRepo({id: ''} as Repository)).toBe(false);
+    });
+
+    test('should return false when user is not authenticated', () => {
+      // Given, I have no authenticated user
+      securityContextService.updateAuthenticatedUser(undefined as unknown as AuthenticatedUser);
+      const repository = {id: 'testRepo'} as Repository;
+
+      // When, I check if I can read GraphQL from repository
+      // Then, I expect false
+      expect(authorizationService.canReadGqlRepo(repository)).toBe(false);
+    });
+
+    test('should return true when user has GraphQL READ rights for repository', () => {
+      // Given, I have user with GraphQL read rights for specific repository
+      const repositoryId = 'testRepo';
+      const readGqlAuthority = `READ_REPO_${repositoryId}:GRAPHQL` as Authority;
+      const userWithGqlReadRights = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
+        {external: false, authorities: [Authority.ROLE_USER, readGqlAuthority]} as unknown as AuthenticatedUser
+      );
+      securityContextService.updateAuthenticatedUser(userWithGqlReadRights);
+      const repository = {id: repositoryId} as Repository;
+
+      // When, I check if I can read GraphQL from repository
+      // Then, I expect true
+      expect(authorizationService.canReadGqlRepo(repository)).toBe(true);
+    });
+
+    test('should return true when user has wildcard GraphQL READ rights', () => {
+      // Given, I have user with wildcard GraphQL read rights
+      const wildcardGqlAuthority = 'READ_REPO_*:GRAPHQL' as Authority;
+      const userWithWildcardRights = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
+        {external: false, authorities: [Authority.ROLE_USER, wildcardGqlAuthority]} as unknown as AuthenticatedUser
+      );
+      securityContextService.updateAuthenticatedUser(userWithWildcardRights);
+      const repository = {id: 'testRepo'} as Repository;
+
+      // When, I check if I can read GraphQL from repository
+      // Then, I expect true
+      expect(authorizationService.canReadGqlRepo(repository)).toBe(true);
+    });
+  });
+
+  describe('canWriteGqlRepo', () => {
+    test('should return false when repository is undefined', () => {
+      // Given, I have no repository
+      // When, I check if I can write GraphQL to repository
+      // Then, I expect false
+      expect(authorizationService.canWriteGqlRepo(undefined as unknown as Repository)).toBe(false);
+    });
+
+    test('should return false when repository ID is empty', () => {
+      // Given, I have repository with empty ID
+      // When, I check if I can write GraphQL to repository
+      // Then, I expect false
+      expect(authorizationService.canWriteGqlRepo({id: ''} as Repository)).toBe(false);
+    });
+
+    test('should return false when user is not authenticated', () => {
+      // Given, I have no authenticated user
+      securityContextService.updateAuthenticatedUser(undefined as unknown as AuthenticatedUser);
+      const repository = {id: 'testRepo'} as Repository;
+
+      // When, I check if I can write GraphQL to repository
+      // Then, I expect false
+      expect(authorizationService.canWriteGqlRepo(repository)).toBe(false);
+    });
+
+    test('should return true when user has GraphQL WRITE rights for repository', () => {
+      // Given, I have user with GraphQL write rights for specific repository
+      const repositoryId = 'testRepo';
+      const writeGqlAuthority = `WRITE_REPO_${repositoryId}:GRAPHQL` as Authority;
+      const userWithGqlWriteRights = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
+        {external: false, authorities: [Authority.ROLE_USER, writeGqlAuthority]} as unknown as AuthenticatedUser
+      );
+      securityContextService.updateAuthenticatedUser(userWithGqlWriteRights);
+      const repository = {id: repositoryId} as Repository;
+
+      // When, I check if I can write GraphQL to repository
+      // Then, I expect true
+      expect(authorizationService.canWriteGqlRepo(repository)).toBe(true);
+    });
+
+    test('should return true when user has wildcard GraphQL WRITE rights', () => {
+      // Given, I have user with wildcard GraphQL write rights
+      const wildcardGqlAuthority = 'WRITE_REPO_*:GRAPHQL' as Authority;
+      const userWithWildcardRights = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
+        {external: false, authorities: [Authority.ROLE_USER, wildcardGqlAuthority]} as unknown as AuthenticatedUser
+      );
+      securityContextService.updateAuthenticatedUser(userWithWildcardRights);
+      const repository = {id: 'testRepo'} as Repository;
+
+      // When, I check if I can write GraphQL to repository
+      // Then, I expect true
+      expect(authorizationService.canWriteGqlRepo(repository)).toBe(true);
+    });
+  });
+
+  describe('hasGqlRights', () => {
+    test('should return true when user has GraphQL READ rights', () => {
+      // Given, I have user with GraphQL read rights
+      const repositoryId = 'testRepo';
+      const readGqlAuthority = `READ_REPO_${repositoryId}:GRAPHQL` as Authority;
+      const userWithGqlReadRights = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
+        {external: false, authorities: [Authority.ROLE_USER, readGqlAuthority]} as unknown as AuthenticatedUser
+      );
+      securityContextService.updateAuthenticatedUser(userWithGqlReadRights);
+      const repository = {id: repositoryId} as Repository;
+
+      // When, I check if user has any GraphQL rights
+      // Then, I expect true
+      expect(authorizationService.hasGqlRights(repository)).toBe(true);
+    });
+
+    test('should return true when user has GraphQL WRITE rights', () => {
+      // Given, I have user with GraphQL write rights
+      const repositoryId = 'testRepo';
+      const writeGqlAuthority = `WRITE_REPO_${repositoryId}:GRAPHQL` as Authority;
+      const userWithGqlWriteRights = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
+        {external: false, authorities: [Authority.ROLE_USER, writeGqlAuthority]} as unknown as AuthenticatedUser
+      );
+      securityContextService.updateAuthenticatedUser(userWithGqlWriteRights);
+      const repository = {id: repositoryId} as Repository;
+
+      // When, I check if user has any GraphQL rights
+      // Then, I expect true
+      expect(authorizationService.hasGqlRights(repository)).toBe(true);
+    });
+
+    test('should return false when user has no GraphQL rights', () => {
+      // Given, I have user without GraphQL rights
+      const regularUser = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
+        {external: false, authorities: [Authority.ROLE_USER]} as unknown as AuthenticatedUser
+      );
+      securityContextService.updateAuthenticatedUser(regularUser);
+      const repository = {id: 'testRepo'} as Repository;
+
+      // When, I check if user has any GraphQL rights
+      // Then, I expect false
+      expect(authorizationService.hasGqlRights(repository)).toBe(false);
     });
   });
 });

@@ -1,9 +1,9 @@
 import {OpenIdAuthFlowHandler, ExchangeTokensCallback} from '../openid-auth-flow-handler';
 import {OpenidSecurityConfig} from '../../../../models/security';
 import {OpenIdAuthFlowType, AuthFlowParams} from '../../../../models/security/authentication';
-import {OpenIdError} from '../errors/openid-error';
-import {InvalidOpenidAuthFlow} from '../errors/invalid-openid-auth-flow';
-import {MissingAuthorizationCode} from '../errors/missing-authorization-code';
+import {OpenIdError} from '../../errors/openid/openid-error';
+import {InvalidOpenidAuthFlow} from '../../errors/openid/invalid-openid-auth-flow';
+import {MissingAuthorizationCode} from '../../errors/openid/missing-authorization-code';
 import {OpenidStorageService} from '../openid-storage.service';
 import {service} from '../../../../providers';
 
