@@ -10,7 +10,7 @@ import {service} from '../../../../providers';
 import {OpenidSecurityConfig, SecurityConfig} from '../../../../models/security';
 import {OpenIdAuthFlowType, OpenIdTokens} from '../../../../models/security/authentication';
 import {Logout} from '../../../../models/events';
-import {MissingOpenidConfiguration} from '../errors/missing-openid-configuration';
+import {MissingOpenidConfiguration} from '../../errors/openid/missing-openid-configuration';
 import {ResponseMock} from '../../../http/test/response-mock';
 import {TestUtil} from '../../../utils/test/test-util';
 

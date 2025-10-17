@@ -5,7 +5,7 @@ import {OpenidStorageService} from '../../../services/security/openid/openid-sto
 import {SecurityContextService} from '../../../services/security';
 import {OpenidSecurityConfig} from '../../../models/security/openid-security-config';
 import {OpenIdTokens, TokenType} from '../../../models/security/authentication';
-import {InvalidJwtToken} from './errors/invalid-jwt-token';
+import {InvalidJwtToken} from '../errors/openid/invalid-jwt-token';
 
 export class OpenidTokenUtils {
   private readonly logger = LoggerProvider.logger;

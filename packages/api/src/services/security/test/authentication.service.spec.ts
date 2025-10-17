@@ -1,14 +1,14 @@
 import {AuthenticationService} from '../authentication.service';
-import {SecurityConfig} from '../../../models/security';
+import {AuthenticatedUser, SecurityConfig} from '../../../models/security';
 import {service, ServiceProvider} from '../../../providers';
 import {AuthenticationStorageService} from '../authentication-storage.service';
 import {SecurityContextService} from '../security-context.service';
 import {EventService} from '../../event-service';
 import {Logout} from '../../../models/events';
 import {WindowService} from '../../window';
-import {AuthStrategy} from '../../../models/security/authentication';
-import {AuthStrategyType} from '../../../models/security/authentication';
+import {AuthStrategy, AuthStrategyType} from '../../../models/security/authentication';
 import {AuthStrategyResolver} from '../auth-strategy-resolver';
+import {SecurityConfigTestUtil} from '../../utils/test/security-config-test-util';
 
 class TestAuthStrategy implements AuthStrategy {
   type = AuthStrategyType.NO_SECURITY;
@@ -21,15 +21,18 @@ class TestAuthStrategy implements AuthStrategy {
     return true;
   }
 
-  login(): Promise<void> {
-    return Promise.resolve();
+  login(): Promise<AuthenticatedUser> {
+    return Promise.resolve(new AuthenticatedUser());
   }
 
   logout(): Promise<void> {
     return Promise.resolve();
   }
-
 }
+
+const getSecurityConfig = (securityEnabled: boolean) => {
+  return SecurityConfigTestUtil.createSecurityConfig({enabled: securityEnabled});
+};
 
 describe('AuthenticationService', () => {
   let authService: AuthenticationService;
@@ -42,12 +45,15 @@ describe('AuthenticationService', () => {
     },
     location: {
       pathname: '/home'
+    },
+    singleSpa: {
+      navigateToUrl: jest.fn()
     }
   } as unknown as Window;
 
   beforeEach(() => {
     service(AuthenticationStorageService).remove('jwt');
-    const securityConfig = {} as unknown as SecurityConfig;
+    const securityConfig = getSecurityConfig(true);
     securityContextService.updateSecurityConfig(securityConfig);
     jest.spyOn(WindowService, 'getWindow').mockReturnValue(windowMock);
 
@@ -87,10 +93,10 @@ describe('AuthenticationService', () => {
       expect(testAuthStrategySpy).toHaveBeenCalled();
     });
 
-    test('logout should call authentication strategy logout and emit a Logout event', () => {
+    test('logout should call authentication strategy logout and emit a Logout event', async () => {
       const emitSpy = jest.spyOn(service(EventService), 'emit');
       const testAuthStrategySpy = jest.spyOn(testAuthStrategy, 'logout');
-      authService.logout();
+      await authService.logout();
       expect(emitSpy).toHaveBeenCalledTimes(1);
       expect(emitSpy).toHaveBeenCalledWith(expect.any(Logout));
       expect(testAuthStrategySpy).toHaveBeenCalled();
@@ -112,12 +118,14 @@ describe('AuthenticationService', () => {
   });
 
   describe('isLoggedIn', () => {
-
-    test('isLoggedIn should return true if security is enabled and user is logged in', () => {
-      // Given, I have a security config with enabled security and user logged in
-      const config = {enabled: true, userLoggedIn: true} as unknown as SecurityConfig;
+    test('isLoggedIn should return true if security is enabled and user is logged in', async () => {
+      testAuthStrategy = new TestAuthStrategy();
+      jest.spyOn(ServiceProvider.get(AuthStrategyResolver), 'resolveStrategy').mockReturnValue(testAuthStrategy);
+      const config = getSecurityConfig(true);
       service(SecurityContextService).updateSecurityConfig(config);
-      // When, I check, user is logged in
+      authService.setAuthenticationStrategy(config);
+      // Given, I have a security config with enabled security and user logged in
+      await authService.login('username', 'password');      // When, I check, user is logged in
       expect(authService.isLoggedIn()).toBe(true);
     });
 
@@ -131,7 +139,7 @@ describe('AuthenticationService', () => {
 
     test('isLoggedIn should return false if security is disabled', () => {
       // Given, I have a security config with disabled security
-      const config = {enabled: false, userLoggedIn: false} as unknown as SecurityConfig;
+      const config = getSecurityConfig(false);
       service(SecurityContextService).updateSecurityConfig(config);
       // When, I check, user is not logged in
       expect(authService.isLoggedIn()).toBe(false);
@@ -139,7 +147,7 @@ describe('AuthenticationService', () => {
 
     test('isLoggedIn should return false if security is enabled and user is not logged in', () => {
       // Given, I have a security config with enabled security and user not logged in
-      const config = {enabled: true, userLoggedIn: false} as unknown as SecurityConfig;
+      const config = getSecurityConfig(true);
       service(SecurityContextService).updateSecurityConfig(config);
       // When, I check, user is not logged in
       expect(authService.isLoggedIn()).toBe(false);
@@ -149,7 +157,7 @@ describe('AuthenticationService', () => {
   describe('isSecurityEnabled', () => {
     test('isSecurityEnabled should return true if security is enabled', () => {
       // Given, I have a security config with enabled security
-      const config = {enabled: true} as unknown as SecurityConfig;
+      const config = getSecurityConfig(true);
       service(SecurityContextService).updateSecurityConfig(config);
       // When, I check, security is enabled
       expect(authService.isSecurityEnabled()).toBe(true);
@@ -157,10 +165,96 @@ describe('AuthenticationService', () => {
 
     test('isSecurityEnabled should return false if security is disabled', () => {
       // Given, I have a security config with disabled security
-      const config = {enabled: false} as unknown as SecurityConfig;
+      const config = getSecurityConfig(false);
       service(SecurityContextService).updateSecurityConfig(config);
       // When, I check, security is disabled
       expect(authService.isSecurityEnabled()).toBe(false);
+    });
+  });
+
+  describe('isAuthenticationStrategySet', () => {
+    test('should return false when authentication strategy is not set', () => {
+      // Given, I have not set an authentication strategy
+      // When, I check if strategy is set
+      expect(authService.isAuthenticationStrategySet()).toBe(false);
+    });
+
+    test('should return true when authentication strategy is set', async () => {
+      // Given, I set an authentication strategy
+      testAuthStrategy = new TestAuthStrategy();
+      jest.spyOn(ServiceProvider.get(AuthStrategyResolver), 'resolveStrategy').mockReturnValue(testAuthStrategy);
+      const config = getSecurityConfig(true);
+      await authService.setAuthenticationStrategy(config);
+      // When, I check if strategy is set
+      expect(authService.isAuthenticationStrategySet()).toBe(true);
+    });
+  });
+
+  describe('isExternalUser', () => {
+    test('should return false when user is not logged in', () => {
+      // Given, I have a user that is not logged in
+      const config = getSecurityConfig(true);
+      service(SecurityContextService).updateSecurityConfig(config);
+      // When, I check if user is external
+      expect(authService.isExternalUser()).toBe(false);
+    });
+
+    test('should return false when user is logged in with a token', async () => {
+      // Given, I have a user logged in with a token
+      testAuthStrategy = new TestAuthStrategy();
+      jest.spyOn(ServiceProvider.get(AuthStrategyResolver), 'resolveStrategy').mockReturnValue(testAuthStrategy);
+      const config = getSecurityConfig(true);
+      await authService.setAuthenticationStrategy(config);
+      service(AuthenticationStorageService).set('jwt', 'test-token');
+      await authService.login('username', 'password');
+      // When, I check if user is external
+      expect(authService.isExternalUser()).toBe(false);
+    });
+
+    test('should return true when user is logged in without a token', async () => {
+      // Given, I have a user logged in without a token (external auth)
+      testAuthStrategy = new TestAuthStrategy();
+      jest.spyOn(ServiceProvider.get(AuthStrategyResolver), 'resolveStrategy').mockReturnValue(testAuthStrategy);
+      const config = getSecurityConfig(true);
+      await authService.setAuthenticationStrategy(config);
+      await authService.login('username', 'password');
+      // When, I check if user is external
+      expect(authService.isExternalUser()).toBe(true);
+    });
+  });
+
+  describe('isAuthenticated', () => {
+    test('should return true when security is disabled', async () => {
+      // Given, I have security disabled
+      testAuthStrategy = new TestAuthStrategy();
+      jest.spyOn(ServiceProvider.get(AuthStrategyResolver), 'resolveStrategy').mockReturnValue(testAuthStrategy);
+      const config = getSecurityConfig(false);
+      service(SecurityContextService).updateSecurityConfig(config);
+      await authService.setAuthenticationStrategy(config);
+      // When, I check if user is authenticated
+      expect(authService.isAuthenticated()).toBe(true);
+    });
+
+    test('should return true when user is external', async () => {
+      // Given, I have an external user (logged in without token)
+      testAuthStrategy = new TestAuthStrategy();
+      jest.spyOn(ServiceProvider.get(AuthStrategyResolver), 'resolveStrategy').mockReturnValue(testAuthStrategy);
+      const config = getSecurityConfig(true);
+      await authService.setAuthenticationStrategy(config);
+      await authService.login('username', 'password');
+      // When, I check if user is authenticated
+      expect(authService.isAuthenticated()).toBe(true);
+    });
+
+    test('should return true when authentication strategy confirms authentication', async () => {
+      // Given, authentication strategy returns true for isAuthenticated
+      testAuthStrategy = new TestAuthStrategy();
+      jest.spyOn(testAuthStrategy, 'isAuthenticated').mockReturnValue(true);
+      jest.spyOn(ServiceProvider.get(AuthStrategyResolver), 'resolveStrategy').mockReturnValue(testAuthStrategy);
+      const config = getSecurityConfig(true);
+      await authService.setAuthenticationStrategy(config);
+      // When, I check if user is authenticated
+      expect(authService.isAuthenticated()).toBe(true);
     });
   });
 });

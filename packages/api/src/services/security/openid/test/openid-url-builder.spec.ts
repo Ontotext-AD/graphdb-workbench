@@ -2,7 +2,7 @@ import {OpenIdUrlBuilder} from '../openid-url-builder';
 import {SecurityContextService} from '../../security-context.service';
 import {SecurityConfig} from '../../../../models/security';
 import {OpenIdAuthFlowType} from '../../../../models/security/authentication';
-import {OpenIdError} from '../errors/openid-error';
+import {OpenIdError} from '../../errors/openid/openid-error';
 import {ServiceProvider} from '../../../../providers';
 import {OpenidSecurityConfig} from '../../../../models/security';
 

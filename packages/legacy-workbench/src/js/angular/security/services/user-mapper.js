@@ -9,6 +9,8 @@ import {
 import {MapperProvider, GrantedAuthoritiesUiModelMapper, AuthoritiesUtil} from "@ontotext/workbench-api";
 
 export const toUserModelMapper = (data, key = 'grantedAuthorities') => {
+    // This is used in the legacy for user management for converting BE response to UI model
+    // Also implemented in the new security model by GrantedAuthoritiesUiModelMapper
     if (Array.isArray(data)) {
         return data.map((user) => toUserModelMapper(user));
     }
@@ -28,6 +30,8 @@ export const toUserModelMapper = (data, key = 'grantedAuthorities') => {
 };
 
 export const fromUserModelMapper = (uiModel, key = 'grantedAuthorities') => {
+    // This is used in the legacy for user management for converting UI model to BE request payload
+    // Also implemented in the new security model by BackendAuthoritiesMapper
     if (Array.isArray(uiModel)) {
         return uiModel.map((model) => fromUserModelMapper(model));
     }

@@ -1,5 +1,5 @@
 import 'angular/rest/security.rest.service';
-import {fromUserModelMapper, toUserModelMapper} from "../../security/services/user-mapper";
+import {fromUserModelMapper, toUserModelMapper} from '../../security/services/user-mapper';
 
 const modules = ['graphdb.framework.rest.security.service'];
 
@@ -33,7 +33,7 @@ function SecurityService(SecurityRestService) {
     const getUser = (username) => {
         return SecurityRestService.getUser(username)
             .then((response) => toUserModelMapper(response.data));
-    }
+    };
 
     /**
      * Retrieves the authenticated user from the backend.
@@ -44,7 +44,7 @@ function SecurityService(SecurityRestService) {
     const getAuthenticatedUser = () => {
         return SecurityRestService.getAuthenticatedUser()
             .then((response) => toUserModelMapper(response.data, 'authorities'));
-    }
+    };
 
     /**
      * Retrieves the admin user from the backend.
@@ -55,7 +55,7 @@ function SecurityService(SecurityRestService) {
     const getAdminUser = () => {
         return SecurityRestService.getAdminUser()
             .then((response) => toUserModelMapper(response.data));
-    }
+    };
 
     /**
      * Retrieves all users from the backend.
@@ -66,7 +66,7 @@ function SecurityService(SecurityRestService) {
     const getUsers = () => {
         return SecurityRestService.getUsers()
             .then((response) => toUserModelMapper(response.data));
-    }
+    };
 
     /**
      * Creates a new user in the backend.
@@ -77,7 +77,7 @@ function SecurityService(SecurityRestService) {
      */
     const createUser = (data) => {
         return SecurityRestService.createUser(fromUserModelMapper(data));
-    }
+    };
 
     /**
      * Updates an existing user in the backend.
@@ -88,7 +88,7 @@ function SecurityService(SecurityRestService) {
      */
     const updateUser = (data) => {
         return SecurityRestService.updateUser(fromUserModelMapper(data));
-    }
+    };
 
     /**
      * Updates user settings data in the backend using the SecurityRestService.
@@ -107,26 +107,6 @@ function SecurityService(SecurityRestService) {
      */
     const deleteUser = (username) => {
         return SecurityRestService.deleteUser(username);
-    }
-
-    /**
-     * Retrieves free access settings from the backend.
-     *
-     * @return {Promise<Object>} A promise that resolves to the free access data.
-     */
-    const getFreeAccess = () => {
-        return SecurityRestService.getFreeAccess()
-            .then((response) => toUserModelMapper(response.data, 'authorities'));
-    };
-
-    /**
-     * Sets free access settings in the backend.
-     *
-     * @param {Object} data The free access data to set.
-     * @return {Promise<Object>} A promise that resolves when the free access data is set.
-     */
-    const setFreeAccess = (data) => {
-        return SecurityRestService.setFreeAccess(fromUserModelMapper(data, 'authorities'));
     };
 
     /**
@@ -176,11 +156,9 @@ function SecurityService(SecurityRestService) {
         updateUser,
         updateUserData,
         deleteUser,
-        getFreeAccess,
-        setFreeAccess,
         getSecurityConfig,
         toggleSecurity,
         getRoles,
-        getRolesMapping
+        getRolesMapping,
     };
 }

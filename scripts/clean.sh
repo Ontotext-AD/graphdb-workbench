@@ -22,6 +22,7 @@ clean_directory "packages/shared-components/dist"
 clean_directory "packages/shared-components/loader"
 clean_directory "packages/shared-components/node_modules"
 clean_directory "packages/shared-components/www"
+clean_directory "packages/shared-components/api"
 
 clean_directory "packages/api/dist"
 clean_directory "packages/api/node_modules"

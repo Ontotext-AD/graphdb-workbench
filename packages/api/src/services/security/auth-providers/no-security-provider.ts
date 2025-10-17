@@ -3,6 +3,7 @@ import {SecurityContextService, SecurityService} from '../../../services/securit
 import {LoggerProvider} from '../../logging/logger-provider';
 import {AuthStrategy} from '../../../models/security/authentication';
 import {AuthStrategyType} from '../../../models/security/authentication';
+import {AuthenticatedUser} from '../../../models/security';
 
 export class NoSecurityProvider implements AuthStrategy {
   private readonly logger = LoggerProvider.logger;
@@ -17,9 +18,6 @@ export class NoSecurityProvider implements AuthStrategy {
    * @returns Promise resolving to true if user is logged in
    * */
   initialize(): Promise<boolean> {
-    if (this.securityContextService.getSecurityConfig()?.freeAccess?.enabled) {
-      return Promise.resolve(true);
-    }
     return this.securityService.getAdminUser()
       .then((authenticatedUser) => {
         this.securityContextService.updateAuthenticatedUser(authenticatedUser);
@@ -34,8 +32,8 @@ export class NoSecurityProvider implements AuthStrategy {
   /**
    * Logs in a user. In the NoSecurityProvider, this method does nothing and resolves immediately.
    */
-  login(): Promise<void> {
-    return Promise.resolve();
+  login(): Promise<AuthenticatedUser> {
+    return this.securityService.getAdminUser();
   }
 
   /**

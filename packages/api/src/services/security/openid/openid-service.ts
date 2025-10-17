@@ -14,9 +14,9 @@ import {OpenIdUtils} from './openid-utils';
 import {AuthenticationStorageService} from '../authentication-storage.service';
 import {EventService} from '../../event-service';
 import {Logout} from '../../../models/events';
-import {OpenIdError} from './errors/openid-error';
+import {OpenIdError} from '../errors/openid/openid-error';
 import {WindowService} from '../../window';
-import {MissingOpenidConfiguration} from './errors/missing-openid-configuration';
+import {MissingOpenidConfiguration} from '../errors/openid/missing-openid-configuration';
 import {getOrigin} from '../../utils';
 
 /**

@@ -1,7 +1,7 @@
 import {OpenIdRestService} from '../openid-rest-service';
 import {SecurityContextService} from '../../security-context.service';
 import {OpenIdTokens} from '../../../../models/security/authentication';
-import {MissingOpenidConfiguration} from '../errors/missing-openid-configuration';
+import {MissingOpenidConfiguration} from '../../errors/openid/missing-openid-configuration';
 import {service} from '../../../../providers';
 import {OpenidSecurityConfig, SecurityConfig} from '../../../../models/security';
 

@@ -168,7 +168,7 @@ describe('Header', () => {
       // And the user menu is visible
       UserMenuSteps.getUserMenu()
         .should('be.visible')
-        .and('have.text', 'john.smith');
+        .and('have.text', 'john.doe');
       // And not to see the login button
       HeaderSteps.getLoginButton().should('not.exist');
     });

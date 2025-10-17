@@ -5,11 +5,11 @@ import {OpenIdService} from '../openid/openid-service';
 import {getOrigin} from '../../utils';
 import {AuthStrategy, AuthStrategyType, OpenIdAuthFlowType} from '../../../models/security/authentication';
 import {OpenidTokenUtils} from '../openid/openid-token-utils';
-import {OpenidSecurityConfig} from '../../../models/security';
+import {AuthenticatedUser, OpenidSecurityConfig} from '../../../models/security';
 import {OntoToastrService} from '../../toastr';
 import {GeneratorUtils} from '../../utils/generator-utils';
-import {MissingOpenidConfiguration} from '../openid/errors/missing-openid-configuration';
-import {InvalidOpenidAuthFlow} from '../openid/errors/invalid-openid-auth-flow';
+import {MissingOpenidConfiguration} from '../errors/openid/missing-openid-configuration';
+import {InvalidOpenidAuthFlow} from '../errors/openid/invalid-openid-auth-flow';
 
 // Constants for better maintainability
 const ERRORS = {
@@ -52,7 +52,7 @@ export class OpenidAuthProvider implements AuthStrategy {
    * @returns Promise resolving to true if user is logged in
    * @throws Error if configuration is missing or initialization fails
    */
-  async initialize(): Promise<unknown> {
+  async initialize(): Promise<boolean> {
     this.loadSecurityConfiguration();
     this.validateConfiguration();
     try {
@@ -80,7 +80,7 @@ export class OpenidAuthProvider implements AuthStrategy {
    * @returns Promise that resolves when login flow is initiated
    * @throws Error if configuration is missing or flow type is unknown
    */
-  login(): Promise<void> {
+  login(): Promise<AuthenticatedUser> {
     this.validateConfiguration();
 
     const returnToUrl = this.getReturnUrl();
