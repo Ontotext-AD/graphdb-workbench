@@ -90,6 +90,26 @@ Type: `Promise<void>`
 
 
 
+### `login(username: string, password: string) => Promise<void>`
+
+Logs in a user with the provided username and password.
+
+This method uses the AuthenticationService to perform the login operation.
+It returns a Promise that resolves when the login process is complete.
+
+#### Parameters
+
+| Name       | Type     | Description |
+| ---------- | -------- | ----------- |
+| `username` | `string` |             |
+| `password` | `string` |             |
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
 ### `setAuthenticatedUser(user: AuthenticatedUser) => Promise<void>`
 
 Sets the authenticated user in the application context.

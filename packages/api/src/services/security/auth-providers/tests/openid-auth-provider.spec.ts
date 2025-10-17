@@ -13,11 +13,12 @@ import {LoggerProvider} from '../../../logging/logger-provider';
 import {TestUtil} from '../../../utils/test/test-util';
 import {AuthenticatedUser, OpenidSecurityConfig, SecurityConfig} from '../../../../models/security';
 import {OpenIdAuthFlowType} from '../../../../models/security/authentication';
-import {MissingOpenidConfiguration} from '../../openid/errors/missing-openid-configuration';
-import {InvalidOpenidAuthFlow} from '../../openid/errors/invalid-openid-auth-flow';
+import {MissingOpenidConfiguration} from '../../errors/openid/missing-openid-configuration';
+import {InvalidOpenidAuthFlow} from '../../errors/openid/invalid-openid-auth-flow';
 import {ProviderResponseMocks} from './provider-response-mocks';
 import {ResponseMock} from '../../../http/test/response-mock';
 import {WindowService} from '../../../window';
+import {SecurityConfigTestUtil} from '../../../utils/test/security-config-test-util';
 
 describe('OpenidAuthProvider', () => {
   let provider: OpenidAuthProvider;
@@ -50,24 +51,20 @@ describe('OpenidAuthProvider', () => {
   /**
    * Creates a mock security configuration with OpenID settings.
    */
-  const createSecurityConfig = (openidConfig?: OpenidSecurityConfig): SecurityConfig => {
+  const getSecurityConfig = (openidConfig?: OpenidSecurityConfig) => {
     const config = {
       enabled: true,
-      userLoggedIn: false,
       passwordLoginEnabled: false,
       openIdEnabled: true
     } as SecurityConfig;
-    if (openidConfig) {
-      config.openidSecurityConfig = openidConfig;
-    }
-    return config;
+    return SecurityConfigTestUtil.createSecurityConfig(config, openidConfig);
   };
 
   /**
    * Sets up the security configuration in the context service.
    */
   const setupSecurityConfig = (openidConfig?: OpenidSecurityConfig): void => {
-    const securityConfig = createSecurityConfig(openidConfig);
+    const securityConfig = getSecurityConfig(openidConfig);
     securityContextService.updateSecurityConfig(securityConfig);
   };
 
@@ -147,7 +144,7 @@ describe('OpenidAuthProvider', () => {
       setupSecurityConfig(openidConfig);
 
       // Trigger configuration change
-      const newConfig = createSecurityConfig(openidConfig);
+      const newConfig = getSecurityConfig(openidConfig);
       securityContextService.updateSecurityConfig(newConfig);
 
       // Provider should have received the config
@@ -372,7 +369,7 @@ describe('OpenidAuthProvider', () => {
   describe('isAuthenticated', () => {
     it('should return true when auth token exists and security is enabled', () => {
       const openidConfig = createOpenIdConfig();
-      const securityConfig = createSecurityConfig(openidConfig);
+      const securityConfig = getSecurityConfig(openidConfig);
       securityContextService.updateSecurityConfig(securityConfig);
       authenticationStorageService.setAuthToken('Bearer test-token');
 
@@ -381,7 +378,7 @@ describe('OpenidAuthProvider', () => {
 
     it('should return false when auth token is null and security is enabled', () => {
       const openidConfig = createOpenIdConfig();
-      const securityConfig = createSecurityConfig(openidConfig);
+      const securityConfig = getSecurityConfig(openidConfig);
       securityContextService.updateSecurityConfig(securityConfig);
       authenticationStorageService.clearAuthToken();
 
@@ -389,7 +386,7 @@ describe('OpenidAuthProvider', () => {
     });
 
     it('should return true when security is not enabled', () => {
-      const securityConfig = createSecurityConfig();
+      const securityConfig = getSecurityConfig();
       securityConfig.enabled = false;
       securityContextService.updateSecurityConfig(securityConfig);
       jest.spyOn(authenticationService, 'isSecurityEnabled').mockReturnValue(false);

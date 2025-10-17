@@ -33,7 +33,7 @@ describe('NoSecurityProvider', () => {
 
   describe('login', () => {
     it('should resolve', async () => {
-      await expect(provider.login()).resolves.toBeUndefined();
+      await expect(provider.login()).resolves.toBeTruthy();
     });
   });
 

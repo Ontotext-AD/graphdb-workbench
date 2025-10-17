@@ -2,7 +2,7 @@ import {HttpService} from '../../http/http.service';
 import {service} from '../../../providers';
 import {SecurityContextService} from '../security-context.service';
 import {OpenIdTokens} from '../../../models/security/authentication';
-import {MissingOpenidConfiguration} from './errors/missing-openid-configuration';
+import {MissingOpenidConfiguration} from '../errors/openid/missing-openid-configuration';
 
 export class OpenIdRestService extends HttpService {
   private readonly securityContextService = service(SecurityContextService);
