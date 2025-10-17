@@ -1,5 +1,9 @@
 import 'angular/core/services/workbench-context.service';
 import {NamespacesListModel} from "../../../models/namespaces/namespaces-list";
+import {
+    AuthorizationService,
+    service,
+} from "@ontotext/workbench-api";
 
 const modules = ['graphdb.core.services.workbench-context', 'graphdb.framework.core.services.rdf4j.repositories'];
 angular
@@ -36,6 +40,11 @@ function rdfResourceSearchDirective(
             onOpen: '&'
         },
         link: function ($scope, element) {
+            // =========================
+            // Private variables
+            // =========================
+            const authorizationService = service(AuthorizationService);
+
             // =========================
             // Public variables
             // =========================
@@ -83,7 +92,7 @@ function rdfResourceSearchDirective(
 
             const loadNamespaces = () => {
                 const activeRepository = $repositories.getActiveRepository();
-                if (!activeRepository || !$jwtAuth.canReadRepo(activeRepository)) {
+                if (!activeRepository || !authorizationService.canReadRepo(activeRepository)) {
                     return Promise.resolve(new NamespacesListModel());
                 }
                 return RDF4JRepositoriesService.getNamespaces(activeRepository);

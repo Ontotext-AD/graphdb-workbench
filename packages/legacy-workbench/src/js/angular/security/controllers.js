@@ -14,6 +14,11 @@ import {
     WRITE_REPO_PREFIX
 } from "./services/constants";
 import {createUniqueKey, parseAuthorities} from "./services/authorities-util";
+import {
+    AuthorizationService,
+    AuthenticationService,
+    service,
+} from '@ontotext/workbench-api';
 
 const modules = [
     'ngCookies',
@@ -29,10 +34,11 @@ const securityModule = angular.module('graphdb.framework.security.controllers', 
 
 securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$window', '$jwtAuth', '$timeout', 'ModalService', 'SecurityService', '$translate',
     function ($scope, $uibModal, toastr, $window, $jwtAuth, $timeout, ModalService, SecurityService, $translate) {
+        const authenticationService = service(AuthenticationService);
 
         $scope.loader = true;
         $scope.securityEnabled = function () {
-            return $jwtAuth.isSecurityEnabled();
+            return authenticationService.isSecurityEnabled();
         };
         $scope.hasExternalAuth = function () {
             return $jwtAuth.hasExternalAuth();
@@ -68,12 +74,12 @@ securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$windo
         });
 
         $scope.toggleSecurity = function () {
-            const isSecurityEnabled = $jwtAuth.isSecurityEnabled();
+            const isSecurityEnabled = authenticationService.isSecurityEnabled();
             $jwtAuth.toggleSecurity(!isSecurityEnabled)
                 .then(() => {
                     // reload UI only if security status has changed
                     // TODO: Not sure if we really need to reload the page here. The UI state is updated just fine. But maybe the reload is needed for something else?
-                    if (isSecurityEnabled !== $jwtAuth.isSecurityEnabled()) {
+                    if (isSecurityEnabled !== authenticationService.isSecurityEnabled()) {
                         $window.location.reload();
                     }
                 });
@@ -224,11 +230,13 @@ securityModule.controller('DefaultAuthoritiesCtrl', ['$scope', '$http', '$uibMod
 
 securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 'toastr', '$window', '$timeout', '$location', '$jwtAuth', '$translate', 'passwordPlaceholder',
     function ($rootScope, $scope, $http, toastr, $window, $timeout, $location, $jwtAuth, $translate, passwordPlaceholder) {
+        const authorizationService = service(AuthorizationService);
+
         $rootScope.$on('$translateChangeSuccess', function () {
             $scope.passwordPlaceholder = $translate.instant(passwordPlaceholder);
         });
         $scope.isAdmin = function () {
-            return $jwtAuth.hasRole(UserRole.ROLE_ADMIN);
+            return authorizationService.hasRole(UserRole.ROLE_ADMIN);
         };
         $scope.hasExternalAuth = function () {
             return $jwtAuth.hasExternalAuth();
@@ -608,6 +616,8 @@ securityModule.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window
 
         angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope, passwordPlaceholder: 'security.new.password'}));
 
+        const authorizationService = service(AuthorizationService);
+
         $scope.mode = 'edit';
         $scope.saveButtonText = $translate.instant('common.save.btn');
         $scope.goBack = function () {
@@ -630,7 +640,7 @@ securityModule.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window
             'DEFAULT_VIS_GRAPH_SCHEMA': true
         };
 
-        if (!$jwtAuth.hasRole(UserRole.ROLE_ADMIN)) {
+        if (!authorizationService.hasRole(UserRole.ROLE_ADMIN)) {
             $location.url('settings');
         }
         $scope.getUserData = function () {

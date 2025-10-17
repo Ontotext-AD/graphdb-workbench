@@ -7,6 +7,11 @@ import 'angular/clustermanagement/controllers/edit-cluster-nodes-modal.controlle
 import {isString} from "lodash";
 import {LinkState, NodeState, RecoveryState} from "../../models/clustermanagement/states";
 import {CLICK_IN_VIEW, CREATE_CLUSTER, DELETE_CLUSTER, MODEL_UPDATED, NODE_SELECTED, UPDATE_CLUSTER} from "../events";
+import {
+    AuthorizationService,
+    AuthenticationService,
+    service,
+} from '@ontotext/workbench-api';
 
 const modules = [
     'ui.bootstrap',
@@ -36,6 +41,8 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
     // Private variables
     // =========================
 
+    const authorizationService = service(AuthorizationService);
+    const authenticationService = service(AuthenticationService);
     const DELETED_ON_NODE_MESSAGE = 'Cluster was deleted on this node.';
     let updateRequest;
     const subscriptions = [];
@@ -66,7 +73,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
     };
 
     $scope.isAdmin = () => {
-        return $jwtAuth.isAuthenticated() && $jwtAuth.isAdmin();
+        return authenticationService.isAuthenticated() && authorizationService.isAdmin();
     };
 
     $scope.openClusterConfigurationPanel = () => {
