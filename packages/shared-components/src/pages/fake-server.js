@@ -4,6 +4,9 @@ module.exports = function (req, res, next) {
   if (url.includes('/rest/security/users/admin')) {
     res.writeHead(200, {'Content-Type': 'application/json'});
     res.end(JSON.stringify(getAdminUser));
+  } else if (url.includes('/rest/login')) {
+    res.writeHead(200, {'Content-Type': 'application/json', 'authorization': 'GDB token'});
+    res.end(JSON.stringify(getAuthenticatedUser));
   } else if (url.includes('/rest/security/authenticated-user')) {
     res.writeHead(200, {'Content-Type': 'application/json'});
     res.end(JSON.stringify(getAuthenticatedUser));
@@ -55,7 +58,7 @@ const getAdminUser = {
 };
 
 const getAuthenticatedUser = {
-  username: 'user',
+  username: 'john.doe',
   password: '',
   grantedAuthorities: [
     'ROLE_ADMIN'
