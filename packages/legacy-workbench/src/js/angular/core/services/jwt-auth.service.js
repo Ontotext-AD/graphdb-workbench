@@ -443,9 +443,9 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             //     return this.hasRole(UserRole.ROLE_ADMIN);
             // };
 
-            this.isRepoManager = function() {
-                return this.hasRole(UserRole.ROLE_REPO_MANAGER);
-            };
+            // this.isRepoManager = function() {
+            //     return this.hasRole(UserRole.ROLE_REPO_MANAGER);
+            // };
 
             this.hasRoleMonitor = function() {
                 return this.hasRole(UserRole.ROLE_MONITORING);
@@ -459,7 +459,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             };
 
             this.hasAdminRole = function() {
-                return authorizationService.isAdmin() || this.isRepoManager();
+                return authorizationService.isAdmin() || authorizationService.isRepoManager();
             };
 
             // this.canWriteRepo = function(repo) {

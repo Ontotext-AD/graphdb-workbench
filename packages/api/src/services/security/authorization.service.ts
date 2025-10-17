@@ -204,6 +204,14 @@ export class AuthorizationService implements Service {
     return true;
   }
 
+  /**
+   * Checks if the current user has the repository manager role.
+   * @returns {boolean} True if the user has the repository manager role, false otherwise.
+   */
+  isRepoManager(): boolean {
+    return this.hasRole(Authority.ROLE_REPO_MANAGER);
+  }
+
   private resolveAuthorities(authoritiesList?: string[]) {
     // If no authorities list is provided, return empty array.
     if (!authoritiesList) {

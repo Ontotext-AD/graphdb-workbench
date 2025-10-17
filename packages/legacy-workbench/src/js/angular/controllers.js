@@ -182,7 +182,7 @@ function homeCtrl($scope,
         if (previous) {
             // If previous is defined we got here through navigation, hence security is already
             // initialized and its safe to refresh the repository info.
-            if (authenticationService() || $jwtAuth.isFreeAccessEnabled()) {
+            if (authenticationService.isAuthenticated() || $jwtAuth.isFreeAccessEnabled()) {
                 // Security is OFF or security is ON but we are authenticated
                 $scope.getActiveRepositorySize();
             } else {
@@ -1026,7 +1026,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
                 });
 
             const queryParams = $location.search();
-            if ($jwtAuth.isRepoManager() && $scope.startGuideAfterSecurityInit && queryParams.autostartGuide) {
+            if (authorizationService.isRepoManager() && $scope.startGuideAfterSecurityInit && queryParams.autostartGuide) {
                 startGuide(queryParams.autostartGuide);
                 $scope.startGuideAfterSecurityInit = false;
             }
