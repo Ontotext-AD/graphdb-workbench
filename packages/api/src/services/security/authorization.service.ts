@@ -22,12 +22,26 @@ export class AuthorizationService implements Service {
     return !!(config?.enabled && config?.freeAccess?.enabled);
   }
 
+  initializeFreeAccess(): void {
+    const config = this.getSecurityConfig();
+    if (config?.isEnabled() && config?.isFreeAccessEnabled()) {
+      const freeAccessUser = new AuthenticatedUser();
+      freeAccessUser.authorities = config.freeAccess.authorities;
+      freeAccessUser.appSettings = config.freeAccess.appSettings ?? {};
+      this.securityContextService.updateAuthenticatedUser(freeAccessUser);
+    }
+  }
+
   /**
    * Checks if the current user has an admin role.
    * @returns {boolean} True if the user has an admin role, false otherwise.
    */
   isAdmin(): boolean {
     return this.hasRole(Authority.ROLE_ADMIN);
+  }
+
+  isRepoManager(): boolean {
+    return this.hasRole(Authority.ROLE_REPO_MANAGER);
   }
 
   /**
@@ -81,6 +95,30 @@ export class AuthorizationService implements Service {
         return false;
       }
       return this.hasBaseRights(Rights.READ, repository);
+    }
+
+    return true;
+  }
+
+  canWriteRepo(repository?: Repository): boolean {
+    if (!repository || repository.id === '') {
+      return false;
+    }
+
+    const config = this.getSecurityConfig();
+    const user = this.getAuthenticatedUser();
+
+    if (config?.enabled) {
+      if (!user) {
+        return false;
+      }
+      if (this.isAdminOrRepoManager()) {
+        return true;
+      }
+      if (this.repositoryService.isSystemRepository(repository)) {
+        return false;
+      }
+      return this.hasBaseRights(Rights.WRITE, repository);
     }
 
     return true;
@@ -140,8 +178,9 @@ export class AuthorizationService implements Service {
    * @returns {boolean} True if the user has authority to access the current route, false otherwise
    */
   hasAuthority(): boolean {
-    // If the user has an admin role, they always have access
-    if (this.hasRole(Authority.ROLE_ADMIN)) {
+    // TODO: This needs to be revisited. Why it was implemented? Why do we need granular control of restrictedPages?
+    // If the user has an admin or repository manager role, they always have access
+    if (this.isAdminOrRepoManager()) {
       return true;
     }
 

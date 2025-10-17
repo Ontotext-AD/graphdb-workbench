@@ -1,13 +1,12 @@
 import {AuthenticationService} from '../authentication.service';
-import {SecurityConfig} from '../../../models/security';
+import {AuthenticatedUser, SecurityConfig} from '../../../models/security';
 import {service, ServiceProvider} from '../../../providers';
 import {AuthenticationStorageService} from '../authentication-storage.service';
 import {SecurityContextService} from '../security-context.service';
 import {EventService} from '../../event-service';
 import {Logout} from '../../../models/events';
 import {WindowService} from '../../window';
-import {AuthStrategy} from '../../../models/security/authentication';
-import {AuthStrategyType} from '../../../models/security/authentication';
+import {AuthStrategy, AuthStrategyType} from '../../../models/security/authentication';
 import {AuthStrategyResolver} from '../auth-strategy-resolver';
 
 class TestAuthStrategy implements AuthStrategy {
@@ -21,8 +20,8 @@ class TestAuthStrategy implements AuthStrategy {
     return true;
   }
 
-  login(): Promise<void> {
-    return Promise.resolve();
+  login(): Promise<AuthenticatedUser> {
+    return Promise.resolve(new AuthenticatedUser());
   }
 
   logout(): Promise<void> {
@@ -30,6 +29,18 @@ class TestAuthStrategy implements AuthStrategy {
   }
 
 }
+
+const createSecurityConfig = (overrides?: Partial<SecurityConfig>): SecurityConfig => {
+  const config = {
+    enabled: true,
+    passwordLoginEnabled: false,
+    openIdEnabled: true,
+    freeAccess: {},
+    overrideAuth: {},
+    ...overrides
+  } as SecurityConfig;
+  return new SecurityConfig(config);
+};
 
 describe('AuthenticationService', () => {
   let authService: AuthenticationService;
@@ -42,12 +53,15 @@ describe('AuthenticationService', () => {
     },
     location: {
       pathname: '/home'
+    },
+    singleSpa: {
+      navigateToUrl: jest.fn()
     }
   } as unknown as Window;
 
   beforeEach(() => {
     service(AuthenticationStorageService).remove('jwt');
-    const securityConfig = {} as unknown as SecurityConfig;
+    const securityConfig = createSecurityConfig();
     securityContextService.updateSecurityConfig(securityConfig);
     jest.spyOn(WindowService, 'getWindow').mockReturnValue(windowMock);
 
@@ -87,10 +101,10 @@ describe('AuthenticationService', () => {
       expect(testAuthStrategySpy).toHaveBeenCalled();
     });
 
-    test('logout should call authentication strategy logout and emit a Logout event', () => {
+    test('logout should call authentication strategy logout and emit a Logout event', async () => {
       const emitSpy = jest.spyOn(service(EventService), 'emit');
       const testAuthStrategySpy = jest.spyOn(testAuthStrategy, 'logout');
-      authService.logout();
+      await authService.logout();
       expect(emitSpy).toHaveBeenCalledTimes(1);
       expect(emitSpy).toHaveBeenCalledWith(expect.any(Logout));
       expect(testAuthStrategySpy).toHaveBeenCalled();
@@ -112,12 +126,14 @@ describe('AuthenticationService', () => {
   });
 
   describe('isLoggedIn', () => {
-
-    test('isLoggedIn should return true if security is enabled and user is logged in', () => {
-      // Given, I have a security config with enabled security and user logged in
-      const config = {enabled: true, userLoggedIn: true} as unknown as SecurityConfig;
+    test('isLoggedIn should return true if security is enabled and user is logged in', async () => {
+      testAuthStrategy = new TestAuthStrategy();
+      jest.spyOn(ServiceProvider.get(AuthStrategyResolver), 'resolveStrategy').mockReturnValue(testAuthStrategy);
+      const config = createSecurityConfig({enabled: true});
       service(SecurityContextService).updateSecurityConfig(config);
-      // When, I check, user is logged in
+      authService.setAuthenticationStrategy(config);
+      // Given, I have a security config with enabled security and user logged in
+      await authService.login('username', 'password');      // When, I check, user is logged in
       expect(authService.isLoggedIn()).toBe(true);
     });
 
@@ -131,7 +147,7 @@ describe('AuthenticationService', () => {
 
     test('isLoggedIn should return false if security is disabled', () => {
       // Given, I have a security config with disabled security
-      const config = {enabled: false, userLoggedIn: false} as unknown as SecurityConfig;
+      const config = createSecurityConfig({enabled: false});
       service(SecurityContextService).updateSecurityConfig(config);
       // When, I check, user is not logged in
       expect(authService.isLoggedIn()).toBe(false);
@@ -139,7 +155,7 @@ describe('AuthenticationService', () => {
 
     test('isLoggedIn should return false if security is enabled and user is not logged in', () => {
       // Given, I have a security config with enabled security and user not logged in
-      const config = {enabled: true, userLoggedIn: false} as unknown as SecurityConfig;
+      const config = createSecurityConfig({enabled: true});
       service(SecurityContextService).updateSecurityConfig(config);
       // When, I check, user is not logged in
       expect(authService.isLoggedIn()).toBe(false);
@@ -149,7 +165,7 @@ describe('AuthenticationService', () => {
   describe('isSecurityEnabled', () => {
     test('isSecurityEnabled should return true if security is enabled', () => {
       // Given, I have a security config with enabled security
-      const config = {enabled: true} as unknown as SecurityConfig;
+      const config = createSecurityConfig({enabled: true});
       service(SecurityContextService).updateSecurityConfig(config);
       // When, I check, security is enabled
       expect(authService.isSecurityEnabled()).toBe(true);
@@ -157,7 +173,7 @@ describe('AuthenticationService', () => {
 
     test('isSecurityEnabled should return false if security is disabled', () => {
       // Given, I have a security config with disabled security
-      const config = {enabled: false} as unknown as SecurityConfig;
+      const config = createSecurityConfig({enabled: false});
       service(SecurityContextService).updateSecurityConfig(config);
       // When, I check, security is disabled
       expect(authService.isSecurityEnabled()).toBe(false);

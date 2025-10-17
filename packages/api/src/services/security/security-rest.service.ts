@@ -1,5 +1,6 @@
 import {HttpService} from '../http/http.service';
 import {AuthenticatedUser, SecurityConfig} from '../../models/security';
+import {AuthSettingsResponseModel} from '../../models/security/response-models/auth-settings-response-model';
 
 /**
  * Service class for handling security-related REST operations.
@@ -8,6 +9,7 @@ export class SecurityRestService extends HttpService {
   private readonly SECURITY_ENDPOINT = 'rest/security';
   private readonly LOGIN_ENDPOINT = 'rest/login';
   private readonly SECURITY_USER_ENDPOINT = `${this.SECURITY_ENDPOINT}/users`;
+  private readonly SECURITY_FREE_ACCESS_ENDPOINT = `${this.SECURITY_ENDPOINT}/free-access`;
 
   /**
    * Authenticates a user by sending credentials to the server.
@@ -71,5 +73,17 @@ export class SecurityRestService extends HttpService {
    */
   getAdminUser(): Promise<AuthenticatedUser> {
     return this.get(`${this.SECURITY_USER_ENDPOINT}/admin`);
+  }
+
+  /**
+   * Retrieves the free access settings from the backend.
+   *
+   * Sends a GET request to fetch the configuration related to free access mode.
+   *
+   * @returns A Promise that resolves with the AuthSettingsResponseModel containing
+   *          the free access settings.
+   */
+  getFreeAccess(): Promise<AuthSettingsResponseModel> {
+    return this.get(this.SECURITY_FREE_ACCESS_ENDPOINT);
   }
 }

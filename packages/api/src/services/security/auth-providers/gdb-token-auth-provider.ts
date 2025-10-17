@@ -57,7 +57,7 @@ export class GdbTokenAuthProvider implements AuthStrategy {
    * @param {LoginData} loginData - The login credentials (username and password).
    * @returns {Promise<void>} A promise that resolves when login is complete.
    */
-  async login(loginData: LoginData): Promise<void> {
+  async login(loginData: LoginData): Promise<AuthenticatedUser> {
     const {username, password} = loginData;
     const response = await this.securityService.loginGdbToken(username, password);
 
@@ -71,10 +71,12 @@ export class GdbTokenAuthProvider implements AuthStrategy {
       throw new Error('Failed to map user from response');
     }
 
-    if (authHeader && authUser) {
+    if (authHeader) {
       this.authStorageService.setAuthToken(authHeader);
-      this.securityContextService.updateAuthenticatedUser(authUser);
+    } else {
+      throw new Error('Missing token from authentication header');
     }
+    return authUser;
   }
 
   /**

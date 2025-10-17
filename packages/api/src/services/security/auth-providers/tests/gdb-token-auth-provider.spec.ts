@@ -124,11 +124,11 @@ describe('GdbTokenAuthProvider', () => {
       TestUtil.mockResponse(new ResponseMock('rest/login').setResponse(ProviderResponseMocks.loginResponse).setHeaders(new Headers({authorization: 'GDB someToken'})));
 
       const result = await provider.login(loginData);
-      expect(result).toBeUndefined();
+      expect(result).toBeTruthy();
 
       expect(loginGdbTokenSpy).toHaveBeenCalledWith(loginData.username, loginData.password);
       expect(setAuthTokenSpy).toHaveBeenCalledWith('GDB someToken');
-      expect(updateAuthenticatedUserSpy).toHaveBeenCalled();
+      expect(updateAuthenticatedUserSpy).not.toHaveBeenCalled();
     });
 
     it('should throw if user mapping fails', async () => {
@@ -141,7 +141,7 @@ describe('GdbTokenAuthProvider', () => {
     it('should not set token/user if auth header or user is missing', async () => {
       TestUtil.mockResponse(new ResponseMock('rest/login').setResponse(ProviderResponseMocks.loginResponse));
 
-      await provider.login(loginData);
+      await expect(provider.login(loginData)).rejects.toThrow('Missing token from authentication header');
       expect(setAuthTokenSpy).not.toHaveBeenCalled();
       expect(updateAuthenticatedUserSpy).not.toHaveBeenCalled();
     });

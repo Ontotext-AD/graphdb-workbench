@@ -1,4 +1,4 @@
-import {UserRole, UserType, UserUtils} from "../../utils/user-utils";
+import {UserRole, UserType, UserUtils} from '../../utils/user-utils';
 import {
     CUSTOM_PREFIX,
     GRAPHQL,
@@ -6,21 +6,23 @@ import {
     READ_REPO,
     READ_REPO_PREFIX,
     WRITE_REPO,
-    WRITE_REPO_PREFIX
-} from "./constants";
-import {AuthoritiesUtil} from "@ontotext/workbench-api";
+    WRITE_REPO_PREFIX,
+} from './constants';
+import {AuthoritiesUtil} from '@ontotext/workbench-api';
 
+// TODO: Migrate this to use the Authorization service. The problem is with the authorities model. It is either a string[] or a AuthoritiesList instance
 export const parseAuthorities = (authorities) => {
     let userType = UserType.USER;
     const grantedAuthorities = {
         [READ_REPO]: {},
         [WRITE_REPO]: {},
-        [GRAPHQL]: {}
+        [GRAPHQL]: {},
     };
     const repositories = {};
     const customRoles = [];
-    for (let i = 0; i < authorities.length; i++) {
-        const role = authorities[i];
+    const auths = authorities.getItems ? authorities.getItems() : authorities;
+    for (let i = 0; i < auths.length; i++) {
+        const role = auths[i];
         if (role === UserRole.ROLE_ADMIN) {
             userType = UserType.ADMIN;
         } else if (role === UserRole.ROLE_REPO_MANAGER) {
@@ -32,7 +34,7 @@ export const parseAuthorities = (authorities) => {
         } else if (role.indexOf(READ_REPO_PREFIX) === 0 || role.indexOf(WRITE_REPO_PREFIX) === 0 || role.indexOf(GRAPHQL_PREFIX) === 0) {
             const repoData = AuthoritiesUtil.getRepoFromAuthority(role);
             if (repoData) {
-                const { prefix, repo } = repoData;
+                const {prefix, repo} = repoData;
                 repositories[repo] = repositories[repo] || {};
                 if (prefix === READ_REPO_PREFIX) {
                     grantedAuthorities[READ_REPO][repo] = true;
@@ -55,11 +57,11 @@ export const parseAuthorities = (authorities) => {
         userTypeDescription: UserUtils.getUserRoleName(userType),
         grantedAuthorities: grantedAuthorities,
         repositories: repositories,
-        customRoles: customRoles
+        customRoles: customRoles,
     };
 };
 
-export const createUniqueKey = function (repository) {
+export const createUniqueKey = function(repository) {
     if (repository.location) {
         return `${repository.id}@${repository.location}`;
     }

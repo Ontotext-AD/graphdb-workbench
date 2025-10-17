@@ -1,10 +1,12 @@
 import {Service} from '../../providers/service/service';
 import {SecurityRestService} from './security-rest.service';
-import {MapperProvider, ServiceProvider} from '../../providers';
+import {MapperProvider, service, ServiceProvider} from '../../providers';
 import {AuthenticatedUser, SecurityConfig} from '../../models/security';
 import {SecurityContextService} from './security-context.service';
 import {SecurityConfigMapper} from './mappers/security-config.mapper';
 import {AuthenticatedUserMapper} from './mappers/authenticated-user.mapper';
+import {AuthSettingsMapper} from './mappers/auth-settings.mapper';
+import {AuthSettings} from '../../models/security/auth-settings';
 
 /**
  * Service class for handling security-related operations.
@@ -36,6 +38,13 @@ export class SecurityService implements Service {
    */
   getSecurityConfig(): Promise<SecurityConfig> {
     return this.securityRestService.getSecurityConfig().then((response) => MapperProvider.get(SecurityConfigMapper).mapToModel(response));
+  }
+
+  getFreeAccess(): Promise<AuthSettings> {
+    return this.securityRestService.getFreeAccess()
+      .then(function (response) {
+        return service(AuthSettingsMapper).mapToModel(response);
+      });
   }
 
   /**

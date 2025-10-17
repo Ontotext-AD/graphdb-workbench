@@ -362,7 +362,7 @@ function GraphsVisualizationsCtrl(
             $scope.hasInitedRepository = false;
         }
 
-        initForRepository(args.newRepo);
+        initForRepository(args?.newRepo);
 
         // New repo set from dropdown, clear state and go to home page
         if (args.newRepo) {
