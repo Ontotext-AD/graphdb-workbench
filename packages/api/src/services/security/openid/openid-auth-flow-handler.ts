@@ -8,9 +8,9 @@ import {OpenidTokenUtils} from './openid-token-utils';
 import {OpenIdUtils} from './openid-utils';
 import {OntoToastrService} from '../../toastr';
 import {GeneratorUtils} from '../../utils/generator-utils';
-import {OpenIdError} from './errors/openid-error';
-import {InvalidOpenidAuthFlow} from './errors/invalid-openid-auth-flow';
-import {MissingAuthorizationCode} from './errors/missing-authorization-code';
+import {OpenIdError} from '../errors/openid/openid-error';
+import {InvalidOpenidAuthFlow} from '../errors/openid/invalid-openid-auth-flow';
+import {MissingAuthorizationCode} from '../errors/openid/missing-authorization-code';
 
 export type ExchangeTokensCallback = (code: string, redirectUrl: string, codeVerifier?: string | null) => Promise<void>;
 

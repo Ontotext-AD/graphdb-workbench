@@ -75,6 +75,27 @@ function mount(opts, mountedInstances, props = {}) {
         const domElementGetter = chooseDomElementGetter(opts, props);
         const domElement = getRootDomEl(domElementGetter, props);
 
+        const triggerDigest = () => {
+            const $timeout = mountedInstances.instance?.get('$timeout');
+            const $rootScope = mountedInstances.instance?.get('$rootScope');
+
+            if ($timeout && $rootScope) {
+                $timeout(() => {
+                    $rootScope.$apply();
+                });
+            }
+        };
+
+        const subscribeToHttpRequests = () => {
+            document.body.addEventListener(HTTP_REQUEST_DONE_EVENT, triggerDigest);
+            return () => document.body.removeEventListener(HTTP_REQUEST_DONE_EVENT, triggerDigest);
+        };
+
+        const unsubscribeToAllContexts = ServiceProvider.get(ContextSubscriptionManager)
+            .subscribeToAllRegisteredContexts(() => {}, undefined, triggerDigest);
+        opts.subscriptions.push(unsubscribeToAllContexts);
+        opts.subscriptions.push(subscribeToHttpRequests());
+
         if (angularJsElement) {
             domElement.appendChild(angularJsElement);
             return;
@@ -98,9 +119,7 @@ function mount(opts, mountedInstances, props = {}) {
 
         if (opts.ngRoute) {
             const ngViewEl = document.createElement("div");
-            ngViewEl.setAttribute(
-                "ng-view", "",
-            );
+            ngViewEl.setAttribute("ng-view", "");
             bootstrapEl.appendChild(ngViewEl);
         }
 
@@ -124,27 +143,6 @@ function mount(opts, mountedInstances, props = {}) {
                     mountedInstances.instance.get("$rootScope").$apply();
                 });
         }
-
-        const triggerDigest = () => {
-            const $timeout = mountedInstances.instance?.get('$timeout');
-            const $rootScope = mountedInstances.instance?.get('$rootScope');
-
-            if ($timeout && $rootScope) {
-                $timeout(() => {
-                    $rootScope.$apply();
-                });
-            }
-        };
-
-        const subscribeToHttpRequests = () => {
-            document.body.addEventListener(HTTP_REQUEST_DONE_EVENT, triggerDigest);
-            return () => document.body.removeEventListener(HTTP_REQUEST_DONE_EVENT, triggerDigest);
-        };
-
-        const unsubscribeToAllContexts = ServiceProvider.get(ContextSubscriptionManager)
-            .subscribeToAllRegisteredContexts(() => {}, undefined, triggerDigest);
-        opts.subscriptions.push(unsubscribeToAllContexts);
-        opts.subscriptions.push(subscribeToHttpRequests());
     });
 }
 

@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ActivatedRoute, Router, RouterLink, RouterOutlet} from '@angular/router';
+import {ActivatedRoute, Router, RouterOutlet} from '@angular/router';
 import {EventName, EventService, getCurrentRoute, service} from '@ontotext/workbench-api';
 import {Subscription} from 'rxjs';
 
@@ -32,7 +32,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private subscribeToRoutingEvents() {
     this.subscriptions.add(
       service(EventService).subscribe(EventName.NAVIGATION_END, () => {
-        this.router.navigateByUrl(getCurrentRoute());
+        this.router.navigate([getCurrentRoute()], {queryParamsHandling: 'preserve'});
       })
     );
   }
