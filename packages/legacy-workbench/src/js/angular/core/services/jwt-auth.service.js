@@ -451,12 +451,12 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 return this.hasRole(UserRole.ROLE_MONITORING);
             };
 
-            this.checkForWrite = function(menuRole, repo) {
-                if ('WRITE_REPO' === menuRole) {
-                    return authorizationService.canWriteRepo(repo);
-                }
-                return this.hasRole(menuRole);
-            };
+            // this.checkForWrite = function(menuRole, repo) {
+            //     if ('WRITE_REPO' === menuRole) {
+            //         return authorizationService.canWriteRepo(repo);
+            //     }
+            //     return this.hasRole(menuRole);
+            // };
 
             this.hasAdminRole = function() {
                 return authorizationService.isAdmin() || authorizationService.isRepoManager();

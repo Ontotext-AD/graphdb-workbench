@@ -109,7 +109,7 @@ export class AuthorizationService implements Service {
       } else if (this.isAdminOrRepoManager()) {
         return true;
       }
-      return this.hasBaseRights( Rights.WRITE, repository);
+      return this.hasBaseRights(Rights.WRITE, repository);
     }
 
     return true;

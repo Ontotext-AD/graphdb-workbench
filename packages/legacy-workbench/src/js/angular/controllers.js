@@ -714,9 +714,9 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         return authorizationService.canReadRepo(repo);
     };
 
-    $scope.checkForWrite = function(role, repo) {
-        return $jwtAuth.checkForWrite(role, repo);
-    };
+    // $scope.hasMenuWritePermission = function(role, repo) {
+    //     return authorizationService.hasMenuWritePermission(role, repo);
+    // };
 
     $scope.hasAuthority = function() {
         return authorizationService.hasAuthority();
