@@ -19,6 +19,12 @@
           "routes": [
             {
               "type": "route",
+              "path": "login",
+              "routes": [{ "type": "application", "name": "@ontotext/workbench" }],
+              "default": false
+            },
+            {
+              "type": "route",
               "path": "new-view",
               "routes": [{ "type": "application", "name": "@ontotext/workbench" }],
               "default": false
