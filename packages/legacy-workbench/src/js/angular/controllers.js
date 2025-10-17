@@ -535,14 +535,14 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     };
 
     $scope.canWriteRepoInLocation = function(repository) {
-        return $jwtAuth.canWriteRepo(repository);
+        return authorizationService.canWriteRepo(repository);
     };
 
     $scope.canWriteActiveRepo = function(noSystem) {
         const activeRepository = $repositories.getActiveRepositoryObject();
         if (activeRepository) {
             // If the parameter noSystem is true then we don't allow write access to the SYSTEM repository
-            return $jwtAuth.canWriteRepo(activeRepository)
+            return authorizationService.canWriteRepo(activeRepository)
                 && (activeRepository.id !== 'SYSTEM' || !noSystem);
         }
         return false;

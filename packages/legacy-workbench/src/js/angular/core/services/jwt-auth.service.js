@@ -453,7 +453,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
 
             this.checkForWrite = function(menuRole, repo) {
                 if ('WRITE_REPO' === menuRole) {
-                    return this.canWriteRepo(repo);
+                    return authorizationService.canWriteRepo(repo);
                 }
                 return this.hasRole(menuRole);
             };
@@ -462,23 +462,23 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 return authorizationService.isAdmin() || this.isRepoManager();
             };
 
-            this.canWriteRepo = function(repo) {
-                if (!repo) {
-                    return false;
-                }
-                // Adding remote secured location could be done only with admin credentials,
-                // that's why we do no check for rights
-                if (this.securityEnabled || this.hasOverrideAuth) {
-                    if (_.isEmpty(this.principal)) {
-                        return false;
-                    } else if (this.hasAdminRole()) {
-                        return true;
-                    }
-                    return this.checkRights(repo, 'WRITE');
-                } else {
-                    return true;
-                }
-            };
+            // this.canWriteRepo = function(repo) {
+            //     if (!repo) {
+            //         return false;
+            //     }
+            //     // Adding remote secured location could be done only with admin credentials,
+            //     // that's why we do no check for rights
+            //     if (this.securityEnabled || this.hasOverrideAuth) {
+            //         if (_.isEmpty(this.principal)) {
+            //             return false;
+            //         } else if (this.hasAdminRole()) {
+            //             return true;
+            //         }
+            //         return this.checkRights(repo, 'WRITE');
+            //     } else {
+            //         return true;
+            //     }
+            // };
 
             // this.canReadRepo = function(repo) {
             //     if (!repo || repo.id === '') {

@@ -87,6 +87,35 @@ export class AuthorizationService implements Service {
   }
 
   /**
+   * Checks if the current user has write permissions for the specified repository.
+   * This method evaluates if the user can write to the repository based on security configuration,
+   * user authentication status, and user roles.
+   * @param repository - The repository to check write permissions for.
+   * @returns True if the user has write permissions for the repository, false otherwise.
+   */
+  canWriteRepo(repository?: Repository) {
+    if (!repository || repository.id === '') {
+      return false;
+    }
+
+    const config = this.getSecurityConfig();
+    const user = this.getAuthenticatedUser();
+
+    // Adding remote secured location could be done only with admin credentials,
+    // that's why we do no check for rights
+    if (config?.enabled || config?.overrideAuth.enabled) {
+      if (!user) {
+        return false;
+      } else if (this.isAdminOrRepoManager()) {
+        return true;
+      }
+      return this.hasBaseRights( Rights.WRITE, repository);
+    }
+
+    return true;
+  };
+
+  /**
    * Checks if the current user has GraphQL read permissions for the specified repository.
    * This method determines if the user can execute GraphQL read operations on the repository.
    *

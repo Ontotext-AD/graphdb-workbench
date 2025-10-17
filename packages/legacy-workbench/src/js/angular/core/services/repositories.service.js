@@ -324,7 +324,7 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
         this.getWritableRepositories = function () {
             const that = this;
             return _.filter(this.getRepositories(), function (repo) {
-                return $jwtAuth.canWriteRepo(repo) && !that.isActiveRepoOntopType(repo);
+                return authorizationService.canWriteRepo(repo) && !that.isActiveRepoOntopType(repo);
             });
         };
 
