@@ -359,19 +359,15 @@ export class UserAndAccessSteps {
     }
 
     static clickFreeWriteAccessRepo(repoName) {
-        cy.get('.repo-fields')
-            .contains(repoName)
-            .parent('.row')
-            .find('.write')
-            .realClick();
+        const repoRow = cy.get('.repo-fields').contains(repoName).parent('.row');
+        repoRow.scrollIntoView();
+        repoRow.find('.write').realClick();
     }
 
     static clickFreeGraphqlAccessRepo(repoName) {
-        cy.get('.repo-fields')
-            .contains(repoName)
-            .parent('.row')
-            .find('.graphql')
-            .realClick();
+        const repoRow = cy.get('.repo-fields').contains(repoName).parent('.row');
+        repoRow.scrollIntoView();
+        repoRow.find('.graphql').realClick();
     }
 
 }

@@ -61,7 +61,6 @@ describe('TTYG permissions', () => {
         LoginSteps.visitLoginPageWithReturnUrl('/ttyg');
         cy.url().should('include', '/login');
         LoginSteps.loginWithUser(user, password);
-        cy.wait('@get-authenticated-user');
         RepositorySelectorSteps.selectRepository(REPOSITORY_ID);
         TTYGViewSteps.getCreateFirstAgentButton().should(shouldBe);
         TTYGStubs.stubChatsListGet();

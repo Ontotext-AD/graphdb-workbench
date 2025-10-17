@@ -105,9 +105,24 @@ export class OntoTestContext {
    */
   @Method()
   setSecurityConfig(securityConfig: SecurityConfig): Promise<void> {
-    ServiceProvider.get(SecurityContextService).updateSecurityConfig(securityConfig);
-    this.setAuthStrategy(securityConfig);
+    const config = this.createSecurityConfig(securityConfig);
+    ServiceProvider.get(SecurityContextService).updateSecurityConfig(config);
+    this.setAuthStrategy(config);
     return Promise.resolve();
+  }
+
+  /**
+   * Logs in a user with the provided username and password.
+   *
+   * This method uses the AuthenticationService to perform the login operation.
+   * It returns a Promise that resolves when the login process is complete.
+   * @param username
+   * @param password
+   */
+  @Method()
+  login(username: string, password: string): Promise<void> {
+    const authService = ServiceProvider.get(AuthenticationService);
+    return authService.login(username, password);
   }
 
   /**
@@ -227,5 +242,27 @@ export class OntoTestContext {
     authenticationStorageService.clearAuthToken();
     const authService = ServiceProvider.get(AuthenticationService);
     authService.setAuthenticationStrategy(securityConfig);
+  }
+
+  /**
+   * Creates a SecurityConfig instance, merging default values with any provided overrides.
+   *
+   * This private method constructs a SecurityConfig object by combining default settings
+   * with any specified overrides. It ensures that all necessary properties are set,
+   * providing a complete configuration for security-related operations.
+   * @param overrides
+   * @private
+   */
+  private createSecurityConfig(overrides?: Partial<SecurityConfig>): SecurityConfig {
+    const config = {
+      enabled: true,
+      userLoggedIn: false,
+      passwordLoginEnabled: false,
+      openIdEnabled: false,
+      freeAccess: {},
+      overrideAuth: {},
+      ...overrides
+    } as SecurityConfig;
+    return new SecurityConfig(config);
   }
 }

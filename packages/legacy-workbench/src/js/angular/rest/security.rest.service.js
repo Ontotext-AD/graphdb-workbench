@@ -4,10 +4,12 @@ angular
 
 SecurityRestService.$inject = ['$http'];
 
+// eslint-disable-next-line no-unused-vars
 const LOGIN_ENDPOINT = 'rest/login';
 const SECURITY_ENDPOINT = 'rest/security';
 const SECURITY_USER_ENDPOINT = `${SECURITY_ENDPOINT}/users`;
 const SECURITY_AUTHENTICATED_ENDPOINT = `${SECURITY_ENDPOINT}/authenticated-user`;
+// eslint-disable-next-line no-unused-vars
 const SECURITY_FREE_ACCESS_ENDPOINT = `${SECURITY_ENDPOINT}/free-access`;
 const ROLES_ENDPOINT = 'rest/roles';
 
@@ -20,13 +22,11 @@ function SecurityRestService($http) {
         updateUser,
         updateUserData,
         deleteUser,
-        getFreeAccess,
-        setFreeAccess,
         getSecurityConfig,
         toggleSecurity,
         getRoles,
         getRolesMapping,
-        getAuthenticatedUser
+        getAuthenticatedUser,
     };
 
 
@@ -36,7 +36,7 @@ function SecurityRestService($http) {
 
     function getAuthenticatedUser() {
         return $http.get(`${SECURITY_AUTHENTICATED_ENDPOINT}`, {
-            noCancelOnRouteChange: true
+            noCancelOnRouteChange: true,
         });
     }
 
@@ -55,8 +55,8 @@ function SecurityRestService($http) {
             data: {
                 password: data.pass,
                 appSettings: data.appSettings,
-                grantedAuthorities: data.grantedAuthorities
-            }
+                grantedAuthorities: data.grantedAuthorities,
+            },
         });
     }
 
@@ -67,8 +67,8 @@ function SecurityRestService($http) {
             data: {
                 password: data.pass,
                 appSettings: data.appSettings,
-                grantedAuthorities: data.grantedAuthorities
-            }
+                grantedAuthorities: data.grantedAuthorities,
+            },
         });
     }
 
@@ -83,21 +83,13 @@ function SecurityRestService($http) {
             url: `${SECURITY_USER_ENDPOINT}/${fixedEncodeURIComponent(data.username)}`,
             data: {
                 password: data.password,
-                appSettings: data.appSettings
-            }
+                appSettings: data.appSettings,
+            },
         });
     }
 
     function deleteUser(username) {
         return $http.delete(`${SECURITY_USER_ENDPOINT}/${fixedEncodeURIComponent(username)}`);
-    }
-
-    function getFreeAccess() {
-        return $http.get(SECURITY_FREE_ACCESS_ENDPOINT);
-    }
-
-    function setFreeAccess(data) {
-        return $http.post(SECURITY_FREE_ACCESS_ENDPOINT, data);
     }
 
     function getSecurityConfig() {
@@ -123,7 +115,7 @@ function SecurityRestService($http) {
      * @returns {string} The provided string encoded as a URI component.
      */
     function fixedEncodeURIComponent(str) {
-        return encodeURIComponent(str).replace(/[!'()*]/g, function (c) {
+        return encodeURIComponent(str).replace(/[!'()*]/g, function(c) {
             return '%' + c.charCodeAt(0).toString(16);
         });
     }

@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ActivatedRoute, Router, RouterLink, RouterOutlet} from '@angular/router';
+import {ActivatedRoute, Router, RouterOutlet} from '@angular/router';
 import {EventName, EventService, getCurrentRoute, service} from '@ontotext/workbench-api';
 import {Subscription} from 'rxjs';
 

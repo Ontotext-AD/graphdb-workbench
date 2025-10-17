@@ -2,8 +2,8 @@ import {OpenidSecurityConfig} from '../../../models/security';
 import {OpenIdAuthFlowType, OpenIdResponseType} from '../../../models/security/authentication';
 import {SecurityContextService} from '../security-context.service';
 import {service} from '../../../providers';
-import {MissingOpenidConfiguration} from './errors/missing-openid-configuration';
-import {InvalidOpenidAuthFlow} from './errors/invalid-openid-auth-flow';
+import {MissingOpenidConfiguration} from '../errors/openid/missing-openid-configuration';
+import {InvalidOpenidAuthFlow} from '../errors/openid/invalid-openid-auth-flow';
 
 /**
  * Builds OpenID Connect URLs for authentication and logout operations.
