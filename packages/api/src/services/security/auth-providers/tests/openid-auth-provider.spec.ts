@@ -53,14 +53,17 @@ describe('OpenidAuthProvider', () => {
   const createSecurityConfig = (openidConfig?: OpenidSecurityConfig): SecurityConfig => {
     const config = {
       enabled: true,
-      userLoggedIn: false,
       passwordLoginEnabled: false,
-      openIdEnabled: true
+      openIdEnabled: true,
+      freeAccess: {},
+      overrideAuth: {}
     } as SecurityConfig;
+    const securityConfig = new SecurityConfig(config);
     if (openidConfig) {
-      config.openidSecurityConfig = openidConfig;
+      const openIdConfiguration = new OpenidSecurityConfig(openidConfig);
+      securityConfig.openidSecurityConfig = openIdConfiguration;
     }
-    return config;
+    return securityConfig;
   };
 
   /**

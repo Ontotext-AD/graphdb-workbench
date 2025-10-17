@@ -236,6 +236,12 @@ export namespace Components {
          */
         "loadRepositories": () => Promise<void>;
         /**
+          * Logs in a user with the provided username and password.  This method uses the AuthenticationService to perform the login operation. It returns a Promise that resolves when the login process is complete.
+          * @param username
+          * @param password
+         */
+        "login": (username: string, password: string) => Promise<void>;
+        /**
           * Sets the authenticated user in the application context.
           * @param user - The AuthenticatedUser object containing the user's authentication information.
           * @returns A Promise that resolves when the authenticated user has been successfully updated

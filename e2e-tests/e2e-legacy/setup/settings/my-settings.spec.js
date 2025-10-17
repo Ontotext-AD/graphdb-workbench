@@ -1,15 +1,15 @@
-import {SparqlEditorSteps} from "../../../steps/sparql-editor-steps";
-import {YasqeSteps} from "../../../steps/yasgui/yasqe-steps";
-import {SecurityStubs} from "../../../stubs/security-stubs";
-import {VisualGraphSteps} from "../../../steps/visual-graph-steps";
-import {ToasterSteps} from "../../../steps/toaster-steps";
+import {SparqlEditorSteps} from '../../../steps/sparql-editor-steps';
+import {YasqeSteps} from '../../../steps/yasgui/yasqe-steps';
+import {SecurityStubs} from '../../../stubs/security-stubs';
+import {VisualGraphSteps} from '../../../steps/visual-graph-steps';
+import {ToasterSteps} from '../../../steps/toaster-steps';
 
 describe('My Settings', () => {
 
     let repositoryId;
-    const testResultCountQuery = "select * where { \n" +
-        "\t?s ?p ?o .\n" +
-        "} limit 1001";
+    const testResultCountQuery = 'select * where { \n' +
+        '\t?s ?p ?o .\n' +
+        '} limit 1001';
     const FILE_TO_IMPORT = 'wine.rdf';
 
     beforeEach(() => {
@@ -44,11 +44,8 @@ describe('My Settings', () => {
                     .should('not.be.visible');
             });
 
-        cy.get('#defaultCount:checkbox').uncheck()
-            .then(() => {
-                cy.get('#defaultCount:checkbox')
-                    .should('not.be.checked');
-            });
+        cy.get('#defaultCount:checkbox').uncheck();
+        cy.get('#defaultCount:checkbox').should('not.be.checked');
 
         // Note that saving settings takes time.
         // Make sure that visiting SPARQL view
@@ -76,23 +73,19 @@ describe('My Settings', () => {
 
                 turnOnLabelBtn('#sameas-on');
                 turnOnLabelBtn('#inference-on');
-                cy.get('#defaultCount:checkbox').check()
-                    .then(() => {
-                        cy.get('#defaultCount:checkbox')
-                            .should('be.visible')
-                            .and('be.checked');
-                    });
+                cy.get('#defaultCount:checkbox').check();
+                cy.get('#defaultCount:checkbox').should('be.visible').and('be.checked');
             });
     });
 
     it('Should test the "Show schema ON/OFF by default in visual graph" setting in My Settings', () => {
-        const DRY_GRAPH = "http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#Dry";
         //Verify that schema statements are ON in My settings
         cy.get('#schema-on').find('.switch:checkbox').should('be.checked');
         cy.enableAutocomplete(repositoryId);
         //Verify that schema statements ON is reflected in Visual graph
         VisualGraphSteps.openDryWineUri();
-        cy.get('.visual-graph-settings-btn').scrollIntoView().click();
+        cy.get('.visual-graph-settings-btn').scrollIntoView();
+        cy.get('.visual-graph-settings-btn').click();
         cy.get('.rdf-info-side-panel .filter-sidepanel').should('be.visible');
         cy.get('.include-schema-statements').should('be.visible').and('be.checked');
         saveGraphSettings()
@@ -118,37 +111,37 @@ describe('My Settings', () => {
 
         cy.get('.visual-graph-settings-btn').click();
         cy.get('.rdf-info-side-panel .filter-sidepanel').should('be.visible');
-        cy.get('.include-schema-statements')
-            .scrollIntoView().should('be.visible').click()
-            .then(($el) => {
-                cy.wrap($el).trigger('mouseleave', {force: true});
-                cy.get('.include-schema-statements').scrollIntoView()
-                    .should('be.visible').and('not.be.checked');
-                saveGraphSettings()
-                    .then(() => cy.get('.predicate').should('not.exist'));
-            });
+        cy.get('.include-schema-statements').scrollIntoView();
+        cy.get('.include-schema-statements').should('be.visible').click();
+        cy.get('.include-schema-statements').then(($el) => {
+            cy.wrap($el).trigger('mouseleave', {force: true});
+            cy.get('.include-schema-statements').scrollIntoView();
+            cy.get('.include-schema-statements').should('be.visible').and('not.be.checked');
+            saveGraphSettings()
+                .then(() => cy.get('.predicate').should('not.exist'));
+        });
         //return to My Settings to revert the changes
         visitSettingsView();
         // Wait for loader to disappear
         cy.get('.ot-loader').should('not.be.visible');
         clickLabelBtn('#schema-on')
             .then(() => {
-                cy.waitUntil(() =>
-                    cy.get('#schema-on')
-                        .find('input[type="checkbox"]')
-                        .scrollIntoView()
-                        .then(input => input && input.attr('checked')));
+                cy.waitUntil(() => {
+                        cy.get('#schema-on')
+                            .find('input[type="checkbox"]')
+                            .scrollIntoView();
+                        return cy.get('#schema-on')
+                            .find('input[type="checkbox"]').then(input => input && input.attr('checked'));
+                    }
+                );
             });
     });
 
     it('Saving administrator credentials with checked unset password should show modal window to warn user about' +
         ' unsetting the password', () => {
         // User role is administrator
-        cy.get('#noPassword:checkbox').check()
-            .then(() => {
-                cy.get('#noPassword:checkbox')
-                    .should('be.checked');
-            });
+        cy.get('#noPassword:checkbox').check();
+        cy.get('#noPassword:checkbox').should('be.checked');
         getSaveButton().click()
             .then(() => {
                 cy.get('.modal-dialog').find('.lead').contains('If you unset the password and then enable security,' +
@@ -170,7 +163,8 @@ describe('My Settings', () => {
     });
 
     function getSaveButton() {
-        return cy.get('#wb-user-submit').scrollIntoView().should('be.visible');
+        cy.get('#wb-user-submit').scrollIntoView();
+        return cy.get('#wb-user-submit').should('be.visible');
     }
 
     function verifyUserSettingsUpdated() {
@@ -178,10 +172,8 @@ describe('My Settings', () => {
     }
 
     function saveGraphSettings() {
-        return cy.get('.save-settings-btn')
-            .scrollIntoView()
-            .should('be.visible')
-            .click();
+        cy.get('.save-settings-btn').scrollIntoView();
+        return cy.get('.save-settings-btn').should('be.visible').click();
     }
 
     function visitSettingsView() {
@@ -200,19 +192,16 @@ describe('My Settings', () => {
     }
 
     function clickLabelBtn(btnId) {
-        return cy.get(btnId)
-            .find('.switch.mr-0').scrollIntoView().should('be.visible').click();
+        cy.get(btnId).find('.switch.mr-0').scrollIntoView();
+        return cy.get(btnId).find('.switch.mr-0').should('be.visible').click();
     }
 
     function turnOnLabelBtn(btnId) {
-        cy.get(btnId)
-            .find('input[type="checkbox"]').check({force: true})
-            .then(() => {
-                cy.waitUntil(() =>
-                    cy.get(btnId)
-                        .find('input[type="checkbox"]')
-                        .scrollIntoView()
-                        .then(input => input && input.attr('checked')));
-            });
+        cy.get(btnId).find('input[type="checkbox"]').check({force: true});
+
+        cy.waitUntil(() => {
+            cy.get(btnId).find('input[type="checkbox"]').scrollIntoView();
+            return cy.get(btnId).find('input[type="checkbox"]').then(input => input && input.attr('checked'));
+        });
     }
 });

@@ -213,9 +213,10 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     const updatePermissions = () => {
         const securityContextService = ServiceProvider.get(SecurityContextService);
         const restrictedPages = securityContextService.getRestrictedPages();
+        const authorizationService = ServiceProvider.get(AuthorizationService);
+        const user = authorizationService.getAuthenticatedUser();
 
         const isAdministratorUser = $jwtAuth.isAdmin();
-        const hasAuthority = (role) => $scope.principal.authorities.indexOf(role) !== -1;
 
         const routes = PluginRegistry.get('route');
         const menuItems = PluginRegistry.get('main.menu');
@@ -229,7 +230,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
                 return;
             }
 
-            const isAccessToPageRestricted = !isAdministratorUser && !hasAuthority(menuItem.role);
+            const isAccessToPageRestricted = !isAdministratorUser && !user.authorities.hasAuthority(menuItem.role);
             restrictedPages.setPageRestriction(route.url, isAccessToPageRestricted);
         });
         securityContextService.updateRestrictedPages(restrictedPages);
@@ -628,7 +629,9 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     });
 
     function logout() {
-        if ($jwtAuth.freeAccess) {
+        const authorizationService = ServiceProvider.get(AuthorizationService);
+
+        if (authorizationService.hasFreeAccess()) {
             // if it's free access check if we still can access the current repo
             // if not, a new default repo will be set or the current repo will be unset
             $repositories.resetActiveRepository();
