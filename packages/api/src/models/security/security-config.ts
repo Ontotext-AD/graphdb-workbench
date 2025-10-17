@@ -38,6 +38,10 @@ export class SecurityConfig extends Model<SecurityConfig> {
   }
 
   isFreeAccessEnabled() {
-    return this.freeAccess?.enabled ?? false;
+    return this.freeAccess.enabled ?? false;
+  }
+
+  getFreeAccessAuthSettings() {
+    return this.freeAccess;
   }
 }

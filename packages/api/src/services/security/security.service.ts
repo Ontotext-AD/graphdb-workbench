@@ -1,12 +1,13 @@
 import {Service} from '../../providers/service/service';
 import {SecurityRestService} from './security-rest.service';
-import {MapperProvider, service, ServiceProvider} from '../../providers';
+import {MapperProvider, ServiceProvider} from '../../providers';
 import {AuthenticatedUser, SecurityConfig} from '../../models/security';
 import {SecurityContextService} from './security-context.service';
 import {SecurityConfigMapper} from './mappers/security-config.mapper';
 import {AuthenticatedUserMapper} from './mappers/authenticated-user.mapper';
 import {AuthSettingsMapper} from './mappers/auth-settings.mapper';
 import {AuthSettings} from '../../models/security/auth-settings';
+import {AuthSettingsRequestModel} from '../../models/security/response-models/auth-settings-request-model';
 
 /**
  * Service class for handling security-related operations.
@@ -40,11 +41,40 @@ export class SecurityService implements Service {
     return this.securityRestService.getSecurityConfig().then((response) => MapperProvider.get(SecurityConfigMapper).mapToModel(response));
   }
 
+  /**
+   * Retrieves the free access settings from the backend.
+   *
+   * Fetches the free access settings and maps it to an `AuthSettings` model using the appropriate mapper.
+   *
+   * @returns A Promise that resolves with the mapped `AuthSettings` instance.
+   */
   getFreeAccess(): Promise<AuthSettings> {
     return this.securityRestService.getFreeAccess()
       .then(function (response) {
-        return service(AuthSettingsMapper).mapToModel(response);
+        return MapperProvider.get(AuthSettingsMapper).mapToModel(response);
       });
+  }
+
+  /**
+   * Sets the free access configuration in the backend.
+   *
+   * Sends the updated free access settings to the backend and updates the security configuration
+   * in the context with the latest data.
+   *
+   * @param enabled - A boolean indicating whether free access is enabled.
+   * @param freeAccess - An optional `AuthSettings` object containing additional free access settings.
+   * @returns A Promise that resolves when the free access settings have been successfully updated.
+   */
+  setFreeAccess(enabled: boolean, freeAccess?: AuthSettings): Promise<void> {
+    const freeAccessData: AuthSettingsRequestModel = {
+      enabled: enabled,
+      authorities: freeAccess?.authorities.getItems(),
+      appSettings: freeAccess?.appSettings,
+    };
+
+    return this.securityRestService.setFreeAccess(freeAccessData)
+      .then(() => this.getSecurityConfig())
+      .then((securityConfig) => this.securityContextService.updateSecurityConfig(securityConfig));
   }
 
   /**

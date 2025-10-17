@@ -10,7 +10,6 @@ import {
     OntoToastrService,
     RepositoryStorageService,
     SecurityContextService,
-    SecurityService as SecurityServiceAPI,
     service,
     ServiceProvider,
 } from '@ontotext/workbench-api';
@@ -266,44 +265,6 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                         });
                 }
                 return Promise.resolve();
-            };
-
-            this.toggleFreeAccess = function(enabled, authorities, appSettings, updateFreeAccess) {
-                if (enabled !== this.freeAccess || updateFreeAccess) {
-                    SecurityService.setFreeAccess({
-                        enabled: enabled ? 'true' : 'false',
-                        authorities: authorities,
-                        appSettings: appSettings,
-                    })
-                        .then(() => {
-                            this.freeAccess = enabled;
-                            return enabled ? SecurityService.getFreeAccess() : {};
-                        })
-                        .then((freeAccess) => {
-                            this.freeAccessPrincipal = {
-                                authorities: freeAccess.authorities,
-                                appSettings: freeAccess.appSettings,
-                            };
-                            if (updateFreeAccess) {
-                                toastrService.success($translate.instant('jwt.auth.free.access.updated.msg'));
-                            } else {
-                                toastrService.success($translate.instant('jwt.auth.free.access.status', {status: ($translate.instant(enabled ? 'enabled.status' : 'disabled.status'))}));
-                            }
-                        })
-                        .then(() => {
-                            // Refetch the security config and update it
-                            return service(SecurityServiceAPI).getSecurityConfig()
-                                .then((securityConfig) => {
-                                    const securityContextService = service(SecurityContextService);
-
-                                    securityContextService.updateSecurityConfig(securityConfig);
-                                });
-                        })
-                        .finally(() => this.broadcastSecurityInit(this.securityEnabled, this.hasExplicitAuthentication()))
-                        .catch((err) => {
-                            toastrService.error(err.data, $translate.instant('common.error'));
-                        });
-                }
             };
 
             this.authenticate = function(data) {
@@ -582,7 +543,10 @@ angular.module('graphdb.framework.core.services.jwtauth', [
 
             this.broadcastSecurityInit = (securityEnabled, userLoggedIn) => {
                 // const freeAccess = authorizationService.hasFreeAccess();
-                $rootScope.$broadcast('securityInit', securityEnabled, userLoggedIn);
+                const isSecurityEnabled = authenticationService.isSecurityEnabled();
+                const isUserLoggedIn = authenticationService.isLoggedIn();
+                const isFreeAccessEnabled = authorizationService.hasFreeAccess();
+                $rootScope.$broadcast('securityInit', isSecurityEnabled, isUserLoggedIn, isFreeAccessEnabled);
 
                 // if (isGDBorOpenIDToken()) {
                 //     console.log(`%cisGDBorOpenIDToken`, 'color:white;padding:4px;font-size:1rem;background:red');
