@@ -557,7 +557,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 );
             };
 
-            this.updateUserData = (data) => SecurityService.updateUserData(data);
+            // this.updateUserData = (data) => SecurityService.updateUserData(data);
 
             this.broadcastSecurityInit = (securityEnabled, userLoggedIn, freeAccess) => {
                 $rootScope.$broadcast('securityInit', securityEnabled, userLoggedIn, freeAccess);
