@@ -11,11 +11,12 @@ import {RepositoryStorageService} from '../../repository';
 import {SecurityConfigTestUtil} from '../../utils/test/security-config-test-util';
 import {AuthSettings} from '../../../models/security/auth-settings';
 
-const getSecurityConfig = (securityEnabled: boolean, freeAccessEnabled: boolean) => {
+const getSecurityConfig = (securityEnabled: boolean, freeAccessEnabled: boolean, overrideAuth = false) => {
   return SecurityConfigTestUtil.createSecurityConfig(
     {
       enabled: securityEnabled,
-      freeAccess: new AuthSettings({enabled: freeAccessEnabled, authorities: new AuthorityList()})
+      freeAccess: new AuthSettings({enabled: freeAccessEnabled, authorities: new AuthorityList()}),
+      overrideAuth: new AuthSettings({enabled: overrideAuth, authorities: new AuthorityList()} )
     }
   );
 };
@@ -32,6 +33,7 @@ describe('AuthorizationService', () => {
   beforeEach(() => {
     authorizationService = new AuthorizationService();
     securityContextService.updateSecurityConfig(getSecurityConfig(false, false));
+    securityContextService.updateAuthenticatedUser(undefined as unknown as AuthenticatedUser);
     jest.spyOn(WindowService, 'getWindow').mockReturnValue(windowMock);
   });
 
@@ -729,6 +731,29 @@ describe('AuthorizationService', () => {
       // When, I check if user has any GraphQL rights
       // Then, I expect false
       expect(authorizationService.hasGqlRights(repository)).toBe(false);
+    });
+  });
+  describe('Override Auth', () => {
+    test('should initialize default when no user is logged in and override auth is enabled', async () => {
+      const username = 'overrideauth';
+      const disabledSecurityConfig = getSecurityConfig(false, false, true);
+      securityContextService.updateSecurityConfig(disabledSecurityConfig);
+      authorizationService.initializeOverrideAuth();
+      const authenticatedUser = securityContextService.getAuthenticatedUser();
+      expect(authenticatedUser).toBeDefined();
+      expect(authenticatedUser?.username).toBe(username);
+    });
+
+    test('should not initialize default user when security is enabled, or override auth is false', async () => {
+      const enabledSecurityConfig = getSecurityConfig(true, false, true);
+      securityContextService.updateSecurityConfig(enabledSecurityConfig);
+      authorizationService.initializeOverrideAuth();
+      expect(securityContextService.getAuthenticatedUser()).toBeUndefined();
+
+      const disabledSecurityConfig = getSecurityConfig(false, false);
+      securityContextService.updateSecurityConfig(disabledSecurityConfig);
+      authorizationService.initializeOverrideAuth();
+      expect(securityContextService.getAuthenticatedUser()).toBeUndefined();
     });
   });
 });
