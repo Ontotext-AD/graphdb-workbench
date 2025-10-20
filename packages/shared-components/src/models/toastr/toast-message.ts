@@ -1,5 +1,5 @@
 import {ToastType} from './toast-type';
-import {GeneratorUtils} from '../../services/utils/generator-utils';
+import {GeneratorUtils} from '@ontotext/workbench-api';
 import {ToastConfig} from './toast-config';
 
 /**
@@ -12,15 +12,18 @@ export class ToastMessage {
   /** The type of toast message (e.g., 'success', 'error', 'warning', 'info') */
   type: ToastType;
 
+  title: string;
+
   /** The content text to be displayed in the toast notification */
   message: string;
 
   /** Additional configuration for the toast message */
   config?: ToastConfig;
 
-  constructor(type: ToastType, message: string, config?: ToastConfig) {
+  constructor(type: ToastType, message: string, title = '', config?: ToastConfig) {
     this.id = GeneratorUtils.uuid();
     this.type = type;
+    this.title = title;
     this.message = message;
     this.config = config;
   }

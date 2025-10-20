@@ -15,13 +15,12 @@ import {
   SecurityContextService,
   SecurityConfig,
   ServiceProvider,
-  ToastMessage,
-  EventEmitter,
-  CREATE_TOAST_EVENT,
+  Notification,
   RepositoryLocationContextService,
   AutocompleteContextService,
   NamespacesContextService,
-  NamespaceMap, RepositoryReference
+  NamespaceMap, RepositoryReference,
+  notify,
 } from '@ontotext/workbench-api';
 import en from '../../assets/i18n/en.json';
 import fr from '../../assets/i18n/fr.json';
@@ -34,7 +33,6 @@ import fr from '../../assets/i18n/fr.json';
 })
 export class OntoTestContext {
   private readonly bundles = { en, fr };
-  private readonly eventEmitter = new EventEmitter();
 
   constructor() {
     this.onLanguageChanged();
@@ -162,14 +160,14 @@ export class OntoTestContext {
   }
 
   /**
-   * Adds a toast notification to the application.
+   * Adds a notification to the application.
    *
-   * @param toast - The ToastMessage object containing the notification details
+   * @param notification - The object containing the notification details
    *                such as message content, type, and display options.
    */
   @Method()
-  addToastr(toast: ToastMessage): Promise<void> {
-    this.eventEmitter.emit({NAME: CREATE_TOAST_EVENT, payload: new ToastMessage(toast.type, toast.message)});
+  addNotification(notification: Notification): Promise<void> {
+    notify(notification);
     return Promise.resolve();
   }
 

@@ -12,12 +12,12 @@ export * from './models/storage';
 export * from './models/language';
 export * from './models/cookie';
 export * from './models/monitoring';
-export * from './models/toastr';
 export * from './models/rdf-search';
 export * from './models/single-spa';
 export * from './models/app-lifecycle';
 export * from './models/plugins';
 export * from './models/configuration';
+export * from './models/notification';
 
 // Export providers for external usages.
 export * from './providers';
@@ -35,7 +35,6 @@ export * from './services/security';
 export * from './services/event-service';
 export * from './services/cookie';
 export * from './services/monitoring';
-export * from './services/toastr';
 export * from './services/autocomplete';
 export * from './services/namespace';
 export * from './services/rdf-search';
@@ -45,6 +44,7 @@ export * from './services/window';
 export * from './services/plugins';
 export * from './services/configuration';
 export * from './services/logging';
+export * from './services/notification';
 
 // Export utils for external usages.
 export * from './services/utils';

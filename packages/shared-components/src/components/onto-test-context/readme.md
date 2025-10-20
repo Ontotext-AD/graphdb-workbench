@@ -11,15 +11,15 @@ A component for managing test context in the application. Used only for testing
 
 ## Methods
 
-### `addToastr(toast: ToastMessage) => Promise<void>`
+### `addNotification(notification: Notification) => Promise<void>`
 
-Adds a toast notification to the application.
+Adds a notification to the application.
 
 #### Parameters
 
-| Name    | Type           | Description                                                                                                         |
-| ------- | -------------- | ------------------------------------------------------------------------------------------------------------------- |
-| `toast` | `ToastMessage` | - The ToastMessage object containing the notification details   such as message content, type, and display options. |
+| Name           | Type           | Description                                                                                          |
+| -------------- | -------------- | ---------------------------------------------------------------------------------------------------- |
+| `notification` | `Notification` | - The object containing the notification details such as message content, type, and display options. |
 
 #### Returns
 

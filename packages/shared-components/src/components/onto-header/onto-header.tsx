@@ -11,7 +11,7 @@ import {
   AuthenticatedUser,
   SecurityConfig,
   FibonacciGenerator,
-  OntoToastrService,
+  notify,
   RepositoryLocationContextService,
   EventService,
   EventName,
@@ -25,7 +25,7 @@ import {
   LanguageService,
   LanguageContextService,
   ObjectUtil,
-  getCurrentRoute, AuthenticationService, WindowService
+  getCurrentRoute, AuthenticationService, WindowService, infoNotificationBuilder
 } from '@ontotext/workbench-api';
 import {TranslationService} from '../../services/translation.service';
 import {HtmlUtil} from '../../utils/html-util';
@@ -51,7 +51,6 @@ export class OntoHeader {
   private readonly repositoryLocationContextService = ServiceProvider.get(RepositoryLocationContextService);
   private readonly repositoryService = ServiceProvider.get(RepositoryService);
   private readonly securityContextService = ServiceProvider.get(SecurityContextService);
-  private readonly toastrService = ServiceProvider.get(OntoToastrService);
   private readonly namespacesService = ServiceProvider.get(NamespacesService);
   private readonly namespaceContextService = ServiceProvider.get(NamespacesContextService);
   private readonly languageService: LanguageService = ServiceProvider.get(LanguageService);
@@ -354,7 +353,9 @@ export class OntoHeader {
 
   private readonly showViewResourceMessage= (event:MouseEvent) => {
     event.stopPropagation();
-    this.toastrService.info(TranslationService.translate('rdf_search.toasts.use_view_resource'));
+    notify(infoNotificationBuilder(TranslationService.translate('rdf_search.toasts.use_view_resource'))
+      .getNotification());
+
     this.shouldShowSearch = false;
     HtmlUtil.focusElement('#search-resource-input-home input');
     this.eventService.emit({NAME: ResourceSearchConstants.RDF_SEARCH_ICON_CLICKED});

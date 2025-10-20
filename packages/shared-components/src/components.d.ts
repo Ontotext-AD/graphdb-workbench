@@ -7,7 +7,7 @@
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { DialogHandler } from "./models/dialog/dialog-handler";
 import { DialogConfig } from "./components/dialogs/onto-dialog";
-import { AuthenticatedUser, Awaitable, License, OperationStatusSummary, ProductInfo, Repository, RepositoryReference, RepositorySizeInfo, SearchButtonConfig, SecurityConfig, ToastMessage } from "../../api/dist/ontotext-workbench-api.d";
+import { AuthenticatedUser, Awaitable, License, Notification, OperationStatusSummary, ProductInfo, Repository, RepositoryReference, RepositorySizeInfo, SearchButtonConfig, SecurityConfig } from "../../api/dist/ontotext-workbench-api.d";
 import { DropdownItem } from "./models/dropdown/dropdown-item";
 import { OntoTooltipPlacement } from "./components/onto-tooltip/models/onto-tooltip-placement";
 import { DropdownItemAlignment } from "./models/dropdown/dropdown-item-alignment";
@@ -17,7 +17,7 @@ import { ToggleEventPayload } from "./models/toggle-switch/toggle-event-payload"
 import { TranslationParameter } from "./models/translation/translation-parameter";
 export { DialogHandler } from "./models/dialog/dialog-handler";
 export { DialogConfig } from "./components/dialogs/onto-dialog";
-export { AuthenticatedUser, Awaitable, License, OperationStatusSummary, ProductInfo, Repository, RepositoryReference, RepositorySizeInfo, SearchButtonConfig, SecurityConfig, ToastMessage } from "../../api/dist/ontotext-workbench-api.d";
+export { AuthenticatedUser, Awaitable, License, Notification, OperationStatusSummary, ProductInfo, Repository, RepositoryReference, RepositorySizeInfo, SearchButtonConfig, SecurityConfig } from "../../api/dist/ontotext-workbench-api.d";
 export { DropdownItem } from "./models/dropdown/dropdown-item";
 export { OntoTooltipPlacement } from "./components/onto-tooltip/models/onto-tooltip-placement";
 export { DropdownItemAlignment } from "./models/dropdown/dropdown-item-alignment";
@@ -215,10 +215,10 @@ export namespace Components {
      */
     interface OntoTestContext {
         /**
-          * Adds a toast notification to the application.
-          * @param toast - The ToastMessage object containing the notification details   such as message content, type, and display options.
+          * Adds a notification to the application.
+          * @param notification - The object containing the notification details such as message content, type, and display options.
          */
-        "addToastr": (toast: ToastMessage) => Promise<void>;
+        "addNotification": (notification: Notification) => Promise<void>;
         /**
           * Changes the application's language by updating the language bundle.  This method uses the LanguageContextService to update the language bundle based on the provided language code. It retrieves the corresponding bundle from the predefined bundles object and updates the context.
           * @param language - The language code (e.g., 'en' for English, 'fr' for French)   representing the desired language to switch to.

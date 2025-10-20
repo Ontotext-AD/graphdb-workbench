@@ -7,8 +7,8 @@ import {
   EventService,
   NamespaceMap,
   NamespacesContextService,
-  navigateTo,
-  OntoToastrService, ResourceSearchStorageService,
+  ResourceSearchStorageService,
+  notify,
   SearchButton,
   SearchButtonConfig,
   ServiceProvider,
@@ -16,7 +16,7 @@ import {
   Suggestion,
   SuggestionSelectedPayload,
   SuggestionType,
-  UriUtil
+  UriUtil, warningNotificationBuilder, errorNotificationBuilder
 } from '@ontotext/workbench-api';
 import {TranslationService} from '../../services/translation.service';
 import {HtmlUtil} from '../../utils/html-util';
@@ -36,7 +36,6 @@ export class OntoSearchResourceInput {
   private readonly autocompleteContextService = ServiceProvider.get(AutocompleteContextService);
   private readonly autocompleteStorageService = ServiceProvider.get(AutocompleteStorageService);
   private readonly resourceSearchStorageService = ServiceProvider.get(ResourceSearchStorageService);
-  private readonly toastrService = ServiceProvider.get(OntoToastrService);
   private readonly eventService = ServiceProvider.get(EventService);
   private readonly namespaceContextService = ServiceProvider.get(NamespacesContextService);
 
@@ -213,11 +212,8 @@ export class OntoSearchResourceInput {
     if (this.inputValue.length > 0 && !this.isAutocompleteEnabled && !this.autocompleteWarningShown) {
       this.autocompleteWarningShown = true;
       const message = TranslationService.translate('rdf_search.toasts.autocomplete_is_off');
-      this.toastrService.warning(`<a class="no-underline" style="font-weight: 500">${message}</a>`,
-        {
-          onClick: navigateTo('autocomplete'),
-          removeOnClick: true
-        });
+      notify(warningNotificationBuilder(`<a href="autocomplete" class="no-underline" style="font-weight: 500">${message}</a>`)
+        .getNotification());
     }
   }
 
@@ -333,12 +329,14 @@ export class OntoSearchResourceInput {
   private validateAndSearch(suggestion: Suggestion) {
     if (!this.skipValidation) {
       if (!suggestion.getValue()) {
-        this.toastrService.error(TranslationService.translate('rdf_search.toasts.empty_input'));
+        notify(errorNotificationBuilder(TranslationService.translate('rdf_search.toasts.empty_input'))
+          .getNotification());
         return;
       }
 
       if (!UriUtil.isValidUri(this.getSuggestionValue(suggestion))) {
-        this.toastrService.error(TranslationService.translate('rdf_search.toasts.invalid_uri'));
+        notify(errorNotificationBuilder(TranslationService.translate('rdf_search.toasts.invalid_uri'))
+          .getNotification());
         return;
       }
     }

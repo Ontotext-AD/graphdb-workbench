@@ -5,6 +5,7 @@ const assertToastMessage = (toastClass, toastIconClass) => {
     .first()
     .should('have.class', toastClass)
     .and('contain', 'This is a toast message')
+    .and('contain', 'Title of toast message')
     .find('i')
     .should('have.class', toastIconClass);
 }

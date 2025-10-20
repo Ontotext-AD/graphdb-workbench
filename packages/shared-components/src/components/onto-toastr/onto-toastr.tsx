@@ -1,13 +1,16 @@
-import {Component, h, Listen, State} from '@stencil/core';
+import {Component, h, State} from '@stencil/core';
 import {
-  ToastMessage,
-  ToastType,
-  ToastMessageList,
-  CREATE_TOAST_EVENT,
-  ToastrConfig,
+  NotificationService,
+  service,
+  SubscriptionList,
   WindowService
 } from '@ontotext/workbench-api';
 import {sanitizeHTML} from '../../utils/html-utils';
+import {ToastType} from '../../models/toastr/toast-type';
+import {ToastMessageList} from '../../models/toastr/toast-message-list';
+import {ToastrConfig} from '../../models/toastr/toastr-config';
+import {ToastMessage} from '../../models/toastr/toast-message';
+import {toToastMessage} from './mappers/onto-toastr.mapper';
 
 const toastTypeToIconMap = {
   [ToastType.INFO]: 'fa-circle-info',
@@ -40,16 +43,22 @@ export class OntoToastr {
   /** Configuration options, such as toast timeout */
   private readonly config = ToastrConfig.getDefaultConfig();
 
-  /**
-   * Listen for toast creation events
-   *
-   * @param event - Custom event containing the toast message to be displayed
-   */
-  // TODO Fix jest tests are failing- usage variables in stencil decorators is enabled since 4.3.0
-  // see https://github.com/stenciljs/core/issues/2924
-  @Listen(CREATE_TOAST_EVENT, {target: 'body'})
-  handleToastCreate(event: CustomEvent<ToastMessage>) {
-    this.addToast(event.detail);
+  private readonly notificationService = service(NotificationService);
+
+  private readonly subscriptions: SubscriptionList = new SubscriptionList();
+
+  connectedCallback(): void {
+    this.subscriptions.add(this.notificationService.onNotificationAdded(() => {
+      const toastMessages = this.notificationService.dequeueAll()
+        .map((notification) => toToastMessage(notification));
+      for (const message of toastMessages) {
+        this.addToast(message);
+      }
+    }));
+  }
+
+  disconnectedCallback(): void {
+    this.subscriptions.unsubscribeAll();
   }
 
   render() {
@@ -59,11 +68,17 @@ export class OntoToastr {
         {this.toasts?.getItems().map((toast) => (
           <div class={`onto-toast ${toast.type}`} key={toast.id}
             onMouseEnter={this.onToastMouseEnter(toast)}
-            onMouseLeave={this.onToastMouseLeave(toast)}>
+            onMouseLeave={this.onToastMouseLeave(toast)}
+            onClick={this.handleToastClick(toast)} onKeyUp={this.handleKeyUp(toast)}>
             <i class={`fa-regular ${toastTypeToIconMap[toast.type]}`}></i>
-            <span onClick={this.handleToastClick(toast)}
-              class="toast-message"
-              innerHTML={sanitizeHTML(toast.message)}></span>
+            <span>
+              <div class='toast-title'
+                innerHTML={sanitizeHTML(toast.title)}>
+              </div>
+              <div class='toast-message'
+                innerHTML={sanitizeHTML(toast.message)}>
+              </div>
+            </span>
           </div>
         ))}
       </section>
@@ -144,6 +159,14 @@ export class OntoToastr {
       if (toast.config?.removeOnClick) {
         this.toasts.remove(toast);
         this.clearToastTimeout(toast);
+      }
+    };
+  }
+
+  private handleKeyUp(toast: ToastMessage) {
+    return (event: KeyboardEvent) => {
+      if (event.key === 'Enter') {
+        this.handleToastClick(toast);
       }
     };
   }

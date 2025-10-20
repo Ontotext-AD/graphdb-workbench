@@ -1,5 +1,5 @@
 import {ToastMessage} from './toast-message';
-import {ModelList} from '../common';
+import {ModelList} from '@ontotext/workbench-api';
 
 /**
  * Represents a collection of toast messages.
