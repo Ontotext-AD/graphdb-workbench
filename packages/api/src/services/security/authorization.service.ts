@@ -33,6 +33,24 @@ export class AuthorizationService implements Service {
   }
 
   /**
+   * Overrides the default (admin) user, when no security is enabled.
+   * This is done by setting graphdb.workbench.default.auth=true.
+   *
+   * When a user does this, he will get a repository manager user instead of the admin. He has the ability to override
+   * the user's app settings and authorities.
+   */
+  initializeOverrideAuth(): void {
+    const config = this.getSecurityConfig();
+    if (!config?.isEnabled() && config?.hasOverrideAuth()) {
+      const overrideAuthUser = new AuthenticatedUser();
+      overrideAuthUser.username = 'overrideauth';
+      overrideAuthUser.authorities = config.overrideAuth.authorities;
+      overrideAuthUser.appSettings = config.overrideAuth.appSettings ?? {};
+      this.securityContextService.updateAuthenticatedUser(overrideAuthUser);
+    }
+  }
+
+  /**
    * Checks if the current user has an admin role.
    * @returns {boolean} True if the user has an admin role, false otherwise.
    */
@@ -53,7 +71,7 @@ export class AuthorizationService implements Service {
     const config = this.getSecurityConfig();
     const user = this.getAuthenticatedUser();
 
-    if (!role || !config?.enabled) {
+    if (!role || (!config?.isEnabled() && !config?.hasOverrideAuth())) {
       return true;
     }
 
@@ -108,7 +126,7 @@ export class AuthorizationService implements Service {
     const config = this.getSecurityConfig();
     const user = this.getAuthenticatedUser();
 
-    if (config?.enabled) {
+    if (config?.isEnabled() || config?.hasOverrideAuth()) {
       if (!user) {
         return false;
       }
