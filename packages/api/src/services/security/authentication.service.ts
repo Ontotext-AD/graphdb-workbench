@@ -34,8 +34,12 @@ export class AuthenticationService implements Service {
     this.authStrategy = this.authStrategyResolver.resolveStrategy(securityConfig);
     return this.authStrategy.initialize().then((isLoggedIn) => {
       this.isUserLoggedIn = isLoggedIn;
-      if (!isLoggedIn && this.authorizationService.hasFreeAccess()) {
-        this.authorizationService.initializeFreeAccess();
+      if (!isLoggedIn) {
+        if (this.authorizationService.hasFreeAccess()) {
+          this.authorizationService.initializeFreeAccess();
+        } else if (securityConfig.hasOverrideAuth()) {
+          this.authorizationService.initializeOverrideAuth();
+        }
       }
 
       if (isLoginPage() && ((isLoggedIn || this.authorizationService.hasFreeAccess()) && !this.isExternalUser())) {
