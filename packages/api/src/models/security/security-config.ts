@@ -44,4 +44,8 @@ export class SecurityConfig extends Model<SecurityConfig> {
   getFreeAccessAuthSettings() {
     return this.freeAccess;
   }
+
+  hasOverrideAuth() {
+    return this.overrideAuth?.enabled ?? false;
+  }
 }
