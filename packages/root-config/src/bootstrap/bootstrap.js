@@ -13,10 +13,6 @@ import {start} from 'single-spa';
 import {defineCustomElements} from '../../../shared-components/loader';
 import {registerInterceptors} from './interceptors/interceptors-registration';
 
-const bootstrapPromises = [
-  ...autoCompleteBootstrap,
-];
-
 const logger = LoggerProvider.logger;
 
 const settleAllPromises = (bootstrapPromises) => {
@@ -37,15 +33,21 @@ const executePromises = (bootstrapFns) => {
  */
 const loadEssentials = () => {
   return Promise.all([
+    // Interceptors should be registered first to ensure all requests are intercepted before any backend calls are made.
     registerInterceptors(),
     securityBootstrap.loadSecurityConfig(),
-    executePromises([...licenseBootstrap, ...pluginsBootstrap, ...productInfoBootstrap, ...languageBootstrap])
+    executePromises([
+      ...licenseBootstrap,
+      ...pluginsBootstrap,
+      ...productInfoBootstrap,
+      ...languageBootstrap
+    ])
   ]);
 };
 
 const loadApplicationData = () => {
   return settleAllPromises([...repositoryBootstrap])
-    .then(() => settleAllPromises(bootstrapPromises))
+    .then(() => settleAllPromises([...autoCompleteBootstrap]))
     .then((results) => {
       const rejected = results.filter(r => r.status === 'rejected');
 

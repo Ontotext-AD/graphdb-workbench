@@ -9,6 +9,10 @@ import {RenderingMode} from "../models/ontotext-yasgui/rendering-mode";
 import {DISABLE_YASQE_BUTTONS_CONFIGURATION} from "../core/directives/yasgui-component/yasgui-component-directive.util";
 import * as jsonld from 'jsonld';
 import {ExportSettingsCtrl} from "../core/components/export-settings-modal/controller";
+import {
+    SecurityContextService,
+    service,
+} from '@ontotext/workbench-api';
 
 const modules = [
     'ngCookies',
@@ -60,6 +64,7 @@ function ExploreCtrl(
     $translate,
     $q,
     ExploreRestService) {
+    const securityContextService = service(SecurityContextService);
 
     $scope.ContextTypes = ContextTypes;
     $scope.contextTypes = ContextType.getAllType();
@@ -297,8 +302,9 @@ function ExploreCtrl(
     // Private functions
     // =========================
     const initComponent = () => {
-        Promise.all([$jwtAuth.getPrincipal(), $repositories.getPrefixes($repositories.getActiveRepository())])
-            .then(([principal, usedPrefixesResponse]) => {
+        const principal = securityContextService.getAuthenticatedUser();
+        $repositories.getPrefixes($repositories.getActiveRepository())
+            .then((usedPrefixesResponse) => {
                 initResourceInfo();
                 setInferAndSameAs(principal);
                 usedPrefixes = usedPrefixesResponse;

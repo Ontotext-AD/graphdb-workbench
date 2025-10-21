@@ -171,7 +171,6 @@ function RegisterLicenseCtrl($scope, $location, $uibModal, toastr, $window, $jwt
             });
     };
 
-
     // pops a modal dialog which asks you if your expected license details are correct
     // and sends license to GraphDB upon confirmation
     function confirmWantedNewLicenseDetails(license, licenseCode) {

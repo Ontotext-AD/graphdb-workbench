@@ -15,7 +15,8 @@ export class SecurityConfig extends Model<SecurityConfig> {
   overrideAuth: AuthSettings;
   openIdEnabled?: boolean;
   freeAccessActive?: boolean;
-  hasExternalAuthUser?: boolean;
+  // If the user comes from an external authentication system
+  hasExternalAuth?: boolean;
   openidSecurityConfig?: OpenidSecurityConfig;
 
   constructor(config: Partial<SecurityConfig & {methodSettings: {openid: Partial<OpenidSecurityConfig>}}>) {
@@ -27,7 +28,7 @@ export class SecurityConfig extends Model<SecurityConfig> {
     this.overrideAuth = MapperProvider.get(AuthSettingsMapper).mapToModel(config.overrideAuth);
     this.openIdEnabled = config.openIdEnabled;
     this.freeAccessActive = config.freeAccess?.enabled;
-    this.hasExternalAuthUser = config.hasExternalAuthUser;
+    this.hasExternalAuth = config.hasExternalAuth;
     if (config.methodSettings?.openid) {
       this.openidSecurityConfig = new OpenidSecurityConfig(config.methodSettings?.openid);
     }
