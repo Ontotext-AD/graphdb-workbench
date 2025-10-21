@@ -1,4 +1,9 @@
 import {CookiePolicyModalController} from "./cookie-policy-modal-controller";
+import {
+    AuthenticationService,
+    SecurityContextService,
+    service
+} from "@ontotext/workbench-api";
 
 const modules = [];
 
@@ -17,6 +22,8 @@ function cookieConsent($jwtAuth, $uibModal, $translate, toastr, TrackingService)
             // Private variables
             // =========================
             let cookieConsent = undefined;
+            const securityContextService = service(SecurityContextService);
+            const authenticationService = service(AuthenticationService);
 
             // =========================
             // Public variables
@@ -63,7 +70,8 @@ function cookieConsent($jwtAuth, $uibModal, $translate, toastr, TrackingService)
                     });
             };
 
-            const securityInit = (event, securityEnabled, userLoggedIn) => {
+            const onUserChanged = () => {
+                const userLoggedIn = authenticationService.isLoggedIn();
                 if (userLoggedIn) {
                     init();
                 } else {
@@ -74,10 +82,10 @@ function cookieConsent($jwtAuth, $uibModal, $translate, toastr, TrackingService)
             // =========================
             // Subscriptions
             // =========================
-            const securityInitListener = $scope.$on('securityInit', securityInit);
+            const onUserChangedSubscription = securityContextService.onAuthenticatedUserChanged(onUserChanged);
 
             $scope.$on('$destroy', () => {
-                securityInitListener();
+                onUserChangedSubscription();
             });
 
             // =========================

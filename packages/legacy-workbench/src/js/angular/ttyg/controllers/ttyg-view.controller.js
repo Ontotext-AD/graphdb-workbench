@@ -24,6 +24,7 @@ import {ContinueChatRun} from "../../models/ttyg/chat-answer";
 import {ChatMessageModel} from "../../models/ttyg/chat-message";
 import {
     AuthorizationService,
+    SecurityContextService,
     service,
 } from '@ontotext/workbench-api';
 
@@ -85,6 +86,7 @@ function TTYGViewCtrl(
     // =========================
 
     const authorizationService = service(AuthorizationService);
+    const securityContextService = service(SecurityContextService);
     const subscriptions = [];
 
     const labels = {
@@ -917,7 +919,7 @@ function TTYGViewCtrl(
         TTYGContextService.subscribe(TTYGEventName.GO_TO_CONNECTORS_VIEW, onGoToConnectorsView),
         TTYGContextService.subscribe(TTYGEventName.GO_TO_SPARQL_EDITOR, onGoToSparqlEditorView),
         $rootScope.$on('$translateChangeSuccess', updateLabels),
-        $rootScope.$on('securityInit', updateCanModifyAgent),
+        securityContextService.onAuthenticatedUserChanged(updateCanModifyAgent),
     );
     $scope.$on('$destroy', cleanUp);
 

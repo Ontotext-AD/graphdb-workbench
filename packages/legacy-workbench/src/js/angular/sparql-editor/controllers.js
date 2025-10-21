@@ -15,8 +15,16 @@ import {VIEW_SPARQL_EDITOR} from "../models/sparql/constants";
 import {CancelAbortingQuery} from "../models/sparql/cancel-aborting-query";
 import {QueryMode} from "../models/ontotext-yasgui/query-mode";
 import 'angular/core/services/event-emitter-service';
-import {navigateTo, LanguageContextService, ServiceProvider, EventService, EventName, RepositoryContextService} from "@ontotext/workbench-api";
 import {LoggerProvider} from "../core/services/logger-provider";
+import {
+    navigateTo,
+    LanguageContextService,
+    ServiceProvider,
+    EventService,
+    EventName,
+    SecurityContextService,
+    service,
+} from "@ontotext/workbench-api";
 
 const modules = [
     'ui.bootstrap',
@@ -38,7 +46,6 @@ SparqlEditorCtrl.$inject = [
     '$q',
     '$location',
     '$languageService',
-    '$jwtAuth',
     '$repositories',
     '$uibModal',
     'toastr',
@@ -57,7 +64,6 @@ function SparqlEditorCtrl($rootScope,
                           $q,
                           $location,
                           $languageService,
-                          $jwtAuth,
                           $repositories,
                           $uibModal,
                           toastr,
@@ -70,11 +76,13 @@ function SparqlEditorCtrl($rootScope,
                           EventEmitterService,
                           LocalStorageAdapter,
                           LSKeys) {
+    const securityContextService = service(SecurityContextService);
+
     this.repository = '';
 
     const QUERY_EDITOR_ID = '#query-editor';
+    let activeRepository = $repositories.getActiveRepository();
     let isOntopRepo = $repositories.isActiveRepoOntopType();
-    const repositoryContextService = ServiceProvider.get(RepositoryContextService);
 
     /**
      * @type {OntotextYasguiConfig}
@@ -113,7 +121,7 @@ function SparqlEditorCtrl($rootScope,
     };
 
     $scope.getActiveRepositoryNoError = () => {
-        return repositoryContextService.getSelectedRepository()?.id;
+        return activeRepository;
     };
 
     // =========================
@@ -447,9 +455,9 @@ function SparqlEditorCtrl($rootScope,
                 return;
             }
         }
-        const activeRepository = repositoryContextService.getSelectedRepository()?.id;
-        $q.all([$jwtAuth.getPrincipal(), $repositories.getPrefixes(activeRepository)])
-            .then(([principal, usedPrefixes]) => {
+        const principal = securityContextService.getAuthenticatedUser();
+        $q.when($repositories.getPrefixes(activeRepository))
+            .then((usedPrefixes) => {
                 $scope.prefixes = usedPrefixes;
                 setInferAndSameAs(principal);
                 // check is there is a saved query or query url parameter and init the editor
@@ -465,10 +473,10 @@ function SparqlEditorCtrl($rootScope,
     const subscriptions = [];
 
     const repositoryChangedHandler = (object) => {
-        const activeRepository = repositoryContextService.getSelectedRepository()?.id;
-        if (!activeRepository) {
+        if (!object) {
             return;
         }
+        activeRepository = $repositories.getActiveRepository();
         isOntopRepo = $repositories.isActiveRepoOntopType(object);
         if (LocalStorageAdapter.get(LSKeys.SPARQL_LAST_REPO) !== activeRepository) {
             init(true);
@@ -568,7 +576,6 @@ function SparqlEditorCtrl($rootScope,
         // In the main controller, a listener has been registered to listen to that event and refresh the page outside of the Angular scope.
         // Reloading the page triggers the destruction of the component and persistence of the active repository. The reloading of the page is out of the Angular scope, so the "activeRepository"
         // holds the real repository when the YASGUI is created. If we use $$repositories.getActiveRepository(), the new value will be fetched, which in this case will be incorrect.
-        const activeRepository = repositoryContextService.getSelectedRepository()?.id;
         LocalStorageAdapter.set(LSKeys.SPARQL_LAST_REPO, activeRepository);
     };
 
