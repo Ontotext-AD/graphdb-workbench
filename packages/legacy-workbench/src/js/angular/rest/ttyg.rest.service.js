@@ -235,7 +235,6 @@ function TTYGRestService($http) {
         return $http.post(`${AGENTS_ENDPOINT}/explain`, data);
     };
 
-
     return {
         createChat,
         getConversation,

@@ -86,8 +86,16 @@ export class TTYGStubs extends Stubs {
         }).as('get-agent-list');
     }
 
+    static getSimilarityIndexesForRepo(repositoryId, fixture = '/ttyg/agent/get-similarity-indexes.json', delay = 0) {
+        cy.intercept('GET', `rest/similarity/${repositoryId}/indexes`, {
+            fixture: fixture,
+            statusCode: 200,
+            delay: delay
+        }).as('get-similarity-indexes');
+    }
+
     static stubAgentListWithIncompatibleGet(delay = 0) {
-        this.stubAgentListGet('/ttyg/agent/get-agent-list-with-incompatible-agents.json');
+        this.stubAgentListGet('/ttyg/agent/get-agent-list-with-incompatible-agents.json', delay);
     }
 
     static stubAgentGet(fixture = '/ttyg/agent/get-agent.json', delay = 0) {

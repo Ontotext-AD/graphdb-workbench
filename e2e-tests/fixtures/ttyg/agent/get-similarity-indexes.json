@@ -1,0 +1,13 @@
+{
+    "opensearch:otkg-vector-new": [
+        "docText1"
+    ],
+    "similarity": [
+        "test",
+        "test-copy"
+    ],
+    "elasticsearch:otkg-vector": [
+        "docText1",
+        "docText2"
+    ]
+}

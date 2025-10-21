@@ -227,7 +227,7 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
     }
 
     static clickOnSimilaritySearchIndexMissingHelp() {
-        this.getSimilaritySearchIndexMissingHelp().find('a').click();
+        this.getSimilaritySearchIndexMissingHelp().find('a').eq(0).click();
     }
 
     static getSimilarityIndexFormGroup() {
@@ -235,7 +235,11 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
     }
 
     static getSimilarityIndexField() {
-        return this.getSimilarityIndexFormGroup().find('select');
+        return this.getSimilarityIndexFormGroup().find('#connectorInstances');
+    }
+
+    static getSimilarityIndexSelectedOption() {
+        return this.getSimilarityIndexField().find('option:selected');
     }
 
     static selectSimilarityIndex(index) {
@@ -244,6 +248,14 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
 
     static verifySimilarityIndexSelected(similarityIndex) {
         this.getSimilarityIndexField().find('option:selected').should('have.text', similarityIndex);
+    }
+
+    static getSimilarityIndexVectorFieldsField() {
+        return this.getSimilarityIndexFormGroup().find('#vectorFieldsSelect .multiselect-button');
+    }
+
+    static getSimilarityIndexSelectedVectorFieldsFieldsCount() {
+        return this.getSimilarityIndexVectorFieldsField().find('.multiselect-count');
     }
 
     static getSimilarityIndexThresholdFormGroup() {
