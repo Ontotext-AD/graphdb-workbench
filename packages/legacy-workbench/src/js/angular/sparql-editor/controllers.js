@@ -15,8 +15,16 @@ import {VIEW_SPARQL_EDITOR} from "../models/sparql/constants";
 import {CancelAbortingQuery} from "../models/sparql/cancel-aborting-query";
 import {QueryMode} from "../models/ontotext-yasgui/query-mode";
 import 'angular/core/services/event-emitter-service';
-import {navigateTo, LanguageContextService, ServiceProvider, EventService, EventName} from "@ontotext/workbench-api";
 import {LoggerProvider} from "../core/services/logger-provider";
+import {
+    navigateTo,
+    LanguageContextService,
+    ServiceProvider,
+    EventService,
+    EventName,
+    SecurityContextService,
+    service,
+} from "@ontotext/workbench-api";
 
 const modules = [
     'ui.bootstrap',
@@ -38,7 +46,6 @@ SparqlEditorCtrl.$inject = [
     '$q',
     '$location',
     '$languageService',
-    '$jwtAuth',
     '$repositories',
     '$uibModal',
     'toastr',
@@ -57,7 +64,6 @@ function SparqlEditorCtrl($rootScope,
                           $q,
                           $location,
                           $languageService,
-                          $jwtAuth,
                           $repositories,
                           $uibModal,
                           toastr,
@@ -70,6 +76,8 @@ function SparqlEditorCtrl($rootScope,
                           EventEmitterService,
                           LocalStorageAdapter,
                           LSKeys) {
+    const securityContextService = service(SecurityContextService);
+
     this.repository = '';
 
     const QUERY_EDITOR_ID = '#query-editor';
@@ -447,8 +455,9 @@ function SparqlEditorCtrl($rootScope,
                 return;
             }
         }
-        $q.all([$jwtAuth.getPrincipal(), $repositories.getPrefixes(activeRepository)])
-            .then(([principal, usedPrefixes]) => {
+        const principal = securityContextService.getAuthenticatedUser();
+        $q.when($repositories.getPrefixes(activeRepository))
+            .then((usedPrefixes) => {
                 $scope.prefixes = usedPrefixes;
                 setInferAndSameAs(principal);
                 // check is there is a saved query or query url parameter and init the editor
