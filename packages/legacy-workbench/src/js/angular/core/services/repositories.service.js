@@ -18,6 +18,8 @@ import {
     MapperProvider,
     RepositoryListMapper,
     AuthorizationService,
+    AuthenticationService,
+    SecurityContextService,
 } from "@ontotext/workbench-api";
 
 const modules = [
@@ -44,6 +46,8 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
         this.locationsShouldReload = true;
 
         const authorizationService = service(AuthorizationService);
+        const securityContextService = service(SecurityContextService);
+        const authenticationService = service(AuthenticationService);
 
         const that = this;
 
@@ -152,6 +156,7 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
         };
 
         this.init = function(successCallback, errorCallback, quick) {
+            console.log('%creposervice init', 'background: yellow',);
             this.loading = true;
             service(RepositoryLocationContextService).updateIsLoading(true);
             if (!quick) {
@@ -498,9 +503,9 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
             }
         };
 
-        $rootScope.$on('securityInit', function(scope, securityEnabled, userLoggedIn, freeAccess) {
+        securityContextService.onSecurityConfigChanged((securityConfig) => {
             locationsRequestPromise = null;
-            if (!securityEnabled || userLoggedIn || freeAccess) {
+            if (!securityConfig.enabled || authenticationService.isLoggedIn() || securityConfig.freeAccessActive) {
                 // This has to happen in a separate cycle because otherwise some properties in init() are undefined
                 $timeout(function() {
                     that.init();
@@ -508,7 +513,18 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
             }
         });
 
-        $rootScope.$on('reloadLocations', function() {
+        // $rootScope.$on('securityInit', function (scope, securityEnabled, userLoggedIn, freeAccess) {
+        //     locationsRequestPromise = null;
+        //     console.log('%conSecurityInit', 'background: orange', securityEnabled, userLoggedIn, freeAccess);
+        //     if (!securityEnabled || userLoggedIn || freeAccess) {
+        //         // This has to happen in a separate cycle because otherwise some properties in init() are undefined
+        //         $timeout(function () {
+        //             that.init();
+        //         });
+        //     }
+        // });
+
+        $rootScope.$on('reloadLocations', function () {
             // the event is emitted when cluster is created/deleted
             that.locationsShouldReload = true;
             that.getLocations()
