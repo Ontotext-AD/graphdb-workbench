@@ -9,6 +9,7 @@ import {
     AppSettings,
     AuthorityList,
     AuthorizationService,
+    SecurityContextService,
     AuthenticationService,
     AuthSettingsMapper,
     GrantedAuthoritiesUiModelMapper,
@@ -673,8 +674,8 @@ securityModule.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window
         // eslint-disable-next-line no-invalid-this
         angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope, passwordPlaceholder: 'security.new.password'}));
         const usersService = service(UsersService);
-
         const authorizationService = service(AuthorizationService);
+        const securityContextService = service(SecurityContextService);
 
         $scope.mode = 'edit';
         $scope.saveButtonText = $translate.instant('common.save.btn');
@@ -751,11 +752,12 @@ securityModule.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window
                     $timeout.cancel(timer);
                 });
                 // if we update the settings of the currently logged user, update the principal
-                $jwtAuth.getPrincipal().then((principal) => {
-                    if ($scope.user.username === principal.username) {
-                        principal.appSettings = $scope.user.appSettings;
-                    }
-                });
+                const principal = securityContextService.getAuthenticatedUser();
+                if ($scope.user.username === principal.username) {
+                    // TODO: Discuss what's the point in updating the principal's appSettings here?!
+                    // principal.appSettings = $scope.user.appSettings;
+                    principal.setAppSettings(new AppSettings($scope.user.appSettings));
+                }
             }).catch((data) => {
                 const msg = getError(data);
                 $scope.loader = false;
