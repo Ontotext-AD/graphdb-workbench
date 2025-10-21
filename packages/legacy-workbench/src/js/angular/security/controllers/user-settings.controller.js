@@ -1,8 +1,17 @@
 import 'angular/core/services/security.service';
 import {GRAPHQL, READ_REPO, WRITE_REPO} from '../services/constants';
 import {UserType} from 'angular/utils/user-utils';
-import {navigate, NavigationContextService, SecurityService, AuthenticationService, SecurityContextService, service, User, LicenseService} from '@ontotext/workbench-api';
-import {CookiePolicyModalController} from "../../core/directives/cookie-policy/cookie-policy-modal-controller";
+import {
+    navigate,
+    NavigationContextService,
+    SecurityService,
+    AuthenticationService,
+    SecurityContextService,
+    LicenseService,
+    service,
+    User,
+} from '@ontotext/workbench-api';
+import {CookiePolicyModalController} from '../../core/directives/cookie-policy/cookie-policy-modal-controller';
 
 angular
     .module('graphdb.framework.security.controllers.user-settings', [
@@ -92,16 +101,7 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
         navigate(previousRoute ?? './');
     };
 
-    $scope.getPrincipal = function() {
-        return $jwtAuth.getPrincipal()
-            .then((principal) => {
-                $scope.currentUserData = principal.toUser();
-                $scope.redirectAdmin();
-                initUserData();
-            });
-    };
-
-    $scope.updateCurrentUserData = function() {
+    $scope.updateCurrentUserData = function () {
         authenticationService.getCurrentUser()
             .then((authenticatedUser) => securityContextService.updateAuthenticatedUser(authenticatedUser));
     };
@@ -230,6 +230,13 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
         $scope.customRoles = $scope.currentUserData.authorities.getCustomRoles();
     };
 
+    const processUser = () => {
+        const principal = securityContextService.getAuthenticatedUser();
+        $scope.currentUserData = principal.toUser();
+        $scope.redirectAdmin();
+        initUserData();
+    };
+
     // =========================
     // Subscriptions
     // =========================
@@ -250,7 +257,7 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
                 theme: 'light',
             };
         }
-        $scope.getPrincipal();
+        processUser();
         $scope.setThemeMode();
         showCookiePolicyLink();
     };

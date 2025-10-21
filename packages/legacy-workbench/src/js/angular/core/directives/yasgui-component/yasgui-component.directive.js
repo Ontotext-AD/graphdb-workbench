@@ -2,7 +2,7 @@ import 'angular/core/services/translation.service';
 import 'angular/sparql-editor/share-query-link.service';
 import {
     queryPayloadFromEvent,
-    savedQueriesResponseMapper
+    savedQueriesResponseMapper,
 } from "../../../rest/mappers/saved-query-mapper";
 import {isFunction, merge} from "lodash";
 import {saveAs} from 'lib/FileSaver-patch';
@@ -18,6 +18,10 @@ import {KeyboardShortcutName} from "../../../models/ontotext-yasgui/keyboard-sho
 import {YasguiPersistenceMigrationService} from "./yasgui-persistence-migration.service";
 import {ExportSettingsCtrl} from "../../components/export-settings-modal/controller";
 import {FileUtils} from "../../../utils/file-utils";
+import {
+    SecurityContextService,
+    service,
+} from '@ontotext/workbench-api';
 
 const modules = [
     'graphdb.framework.core.services.translation-service',
@@ -34,7 +38,6 @@ yasguiComponentDirective.$inject = [
     '$languageService',
     '$uibModal',
     'AuthTokenService',
-    '$jwtAuth',
     '$interval',
     'toastr',
     'TranslationService',
@@ -43,7 +46,7 @@ yasguiComponentDirective.$inject = [
     'MonitoringRestService',
     'SparqlRestService',
     'ShareQueryLinkService',
-    'ModalService'
+    'ModalService',
 ];
 
 /**
@@ -71,7 +74,6 @@ function yasguiComponentDirective(
     $languageService,
     $uibModal,
     AuthTokenService,
-    $jwtAuth,
     $interval,
     toastr,
     TranslationService,
@@ -80,18 +82,19 @@ function yasguiComponentDirective(
     MonitoringRestService,
     SparqlRestService,
     ShareQueryLinkService,
-    ModalService
+    ModalService,
 ) {
-
     return {
         restrict: 'E',
         templateUrl: 'js/angular/core/directives/yasgui-component/templates/yasgui-component.html',
         scope: {
             yasguiConfig: '=',
             afterInit: '&',
-            queryChanged: '&'
+            queryChanged: '&',
         },
         link: ($scope, element, attrs) => {
+            const securityContextService = service(SecurityContextService);
+
             $scope.classToApply = attrs.class || '';
             const downloadAsPluginNameToEventHandler = new Map();
             const outputHandlers = $scope.yasguiConfig && $scope.yasguiConfig.outputHandlers ? new Map($scope.yasguiConfig.outputHandlers) : new Map();
@@ -193,16 +196,17 @@ function yasguiComponentDirective(
             };
 
             /**
-             * The event is fired when saved queries should be loaded in order to be displayed to the user.
+             * The event is fired when saved queries should be loaded to be displayed to the user.
              */
             $scope.loadSavedQueries = () => {
                 $scope.savedQueryConfig = {
-                    savedQueries: []
+                    savedQueries: [],
                 };
-                $q.all([$jwtAuth.getPrincipal(), SparqlRestService.getSavedQueries()])
-                    .then(([principal, savedQueries]) => {
+                const principal = securityContextService.getAuthenticatedUser();
+                $q.when(SparqlRestService.getSavedQueries())
+                    .then((savedQueries) => {
                         $scope.savedQueryConfig = {
-                            savedQueries: savedQueriesResponseMapper(savedQueries, principal.username)
+                            savedQueries: savedQueriesResponseMapper(savedQueries, principal.username),
                         };
                     })
                     .catch((err) => {

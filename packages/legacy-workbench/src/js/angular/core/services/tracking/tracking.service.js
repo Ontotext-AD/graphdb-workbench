@@ -5,10 +5,10 @@ import 'angular/core/directives/cookie-policy/cookie-consent.directive';
 import {CookieConsent} from "../../../models/cookie-policy/cookie-consent";
 import {
     SecurityService,
+    AuthenticationService,
     AuthorizationService,
     service,
     CookieConsent as CookieConsentAPI,
-    AuthenticationService,
     SecurityContextService,
     LicenseService,
     LicenseContextService,
@@ -22,7 +22,7 @@ const modules = [
 ];
 
 angular.module('graphdb.framework.core.services.trackingService', modules)
-    .factory('TrackingService', ['$window', '$jwtAuth', 'InstallationCookieService', 'GoogleAnalyticsCookieService', 'LocalStorageAdapter', 'LSKeys',
+    .factory('TrackingService', ['$window', 'InstallationCookieService', 'GoogleAnalyticsCookieService', 'LocalStorageAdapter', 'LSKeys',
         TrackingService]);
 
 /**
@@ -30,19 +30,20 @@ angular.module('graphdb.framework.core.services.trackingService', modules)
  * Handles the initialization, updating, and cleanup of tracking cookies and scripts.
  *
  * @param {Object} $window - Angular wrapper for the browser's window object, used for environment checks.
- * @param {Object} $jwtAuth - Service for user authentication and data retrieval.
  * @param {Object} InstallationCookieService - Service for managing installation cookies.
  * @param {Object} GoogleAnalyticsCookieService - Service for managing Google Analytics cookies.
  * @param {Object} LocalStorageAdapter - Service for interfacing with local storage.
  * @param {Object} LSKeys - Constants for local storage keys.
  * @constructor
  */
-function TrackingService($window, $jwtAuth, InstallationCookieService, GoogleAnalyticsCookieService, LocalStorageAdapter, LSKeys) {
+function TrackingService($window, InstallationCookieService, GoogleAnalyticsCookieService, LocalStorageAdapter, LSKeys) {
     // =========================
     // Private variables
     // =========================
     const securityService = service(SecurityService);
+    const authenticationService = service(AuthenticationService);
     const authorizationService = service(AuthorizationService);
+    const securityContextService = service(SecurityContextService);
     const licenseService = service(LicenseService);
     const licenseContextService = service(LicenseContextService);
 
@@ -98,49 +99,52 @@ function TrackingService($window, $jwtAuth, InstallationCookieService, GoogleAna
      *   @return {Promise<CookieConsent>} A promise resolving to the user's cookie consent preferences.
      */
     const getCookieConsent = () => {
-        return $jwtAuth.getPrincipal()
-            .then((principal) => {
-                // No username => use local storage
-                if (!principal || !principal.username) {
-                    if (authorizationService.hasFreeAccess()) {
-                        const localConsent = LocalStorageAdapter.get(LSKeys.COOKIE_CONSENT);
-                        if (localConsent) {
-                            return CookieConsent.fromJSON(localConsent);
-                        }
-                        return CookieConsent.NOT_ACCEPTED_WITH_TRACKING;
-                    }
-                    return CookieConsent.ACCEPTED_NO_TRACKING;
-                }
+        const principal = securityContextService.getAuthenticatedUser();
 
-                if (!principal.appSettings || !principal.appSettings.COOKIE_CONSENT) {
-                    return CookieConsent.NOT_ACCEPTED_WITH_TRACKING;
+        // No username => use local storage
+        if (!principal || !principal.username) {
+            if (authorizationService.hasFreeAccess()) {
+                const localConsent = LocalStorageAdapter.get(LSKeys.COOKIE_CONSENT);
+                if (localConsent) {
+                    return Promise.resolve(CookieConsent.fromJSON(localConsent));
                 }
+                return Promise.resolve(CookieConsent.NOT_ACCEPTED_WITH_TRACKING);
+            }
+            return Promise.resolve(CookieConsent.ACCEPTED_NO_TRACKING);
+        }
 
-                return CookieConsent.fromJSON(principal.appSettings.COOKIE_CONSENT);
-            });
+        if (!principal.appSettings || !principal.appSettings.COOKIE_CONSENT) {
+            return Promise.resolve(CookieConsent.NOT_ACCEPTED_WITH_TRACKING);
+        }
+
+        return Promise.resolve(CookieConsent.fromJSON(principal.appSettings.COOKIE_CONSENT));
     };
 
     /**
      * Updates cookie consent (local or server) and then re-init.
      * @param {CookieConsent} consent - An instance of CookieConsent with updated preferences.
+     * @return {Promise<void>} A promise that resolves when the update and re-application of tracking consent is complete.
      */
     const updateCookieConsent = (consent) => {
-        return $jwtAuth.getPrincipal()
-            .then((data) => {
-                const username = data.username;
-                if (!username) {
-                    LocalStorageAdapter.set(LSKeys.COOKIE_CONSENT, consent.toJSON());
-                } else {
-                    const user = data.toUser();
-                    const appSettings = user.appSettings;
-                    appSettings.COOKIE_CONSENT = new CookieConsentAPI(consent.toJSON());
-                    return securityService.updateAuthenticatedUser(user);
-                }
-            })
+        const principal = securityContextService.getAuthenticatedUser();
+        const username = principal && principal.username;
+
+        if (!username) {
+            LocalStorageAdapter.set(LSKeys.COOKIE_CONSENT, consent.toJSON());
+            return Promise.resolve().finally(() => applyTrackingConsent());
+        }
+
+        const user = principal.toUser();
+        const appSettings = user.appSettings || {};
+        appSettings.COOKIE_CONSENT = new CookieConsentAPI(consent.toJSON());
+
+        return securityService.updateAuthenticatedUser(user)
             .then(() => {
+                return authenticationService.getCurrentUser();
+            })
+            .then((authenticatedUser) => {
                 // Update the authenticated user in the security context
-                authenticationService.getCurrentUser()
-                    .then((authenticatedUser) => securityContextService.updateAuthenticatedUser(authenticatedUser));
+                return securityContextService.updateAuthenticatedUser(authenticatedUser);
             })
             .finally(() => applyTrackingConsent());
     };
@@ -160,6 +164,6 @@ function TrackingService($window, $jwtAuth, InstallationCookieService, GoogleAna
         applyTrackingConsent,
         getCookieConsent,
         updateCookieConsent,
-        isTrackingAllowed
+        isTrackingAllowed,
     };
 }

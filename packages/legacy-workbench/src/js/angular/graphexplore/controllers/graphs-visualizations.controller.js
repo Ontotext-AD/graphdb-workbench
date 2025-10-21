@@ -9,7 +9,12 @@ import {NUMBER_PATTERN} from "../../repositories/repository.constants";
 import {removeSpecialChars} from "../../utils/string-utils";
 import {NamespacesListModel} from "../../models/namespaces/namespaces-list";
 import {HtmlUtil} from "../../utils/html-util";
-import {RepositoryContextService, service, LicenseContextService} from "@ontotext/workbench-api";
+import {
+    RepositoryContextService,
+    SecurityContextService,
+    LicenseContextService,
+    service,
+} from "@ontotext/workbench-api";
 
 const modules = [
     'ui.scroll.jqlite',
@@ -79,6 +84,8 @@ function GraphsVisualizationsCtrl(
     WorkbenchContextService,
     RDF4JRepositoriesService,
 ) {
+    const securityContextService = service(SecurityContextService);
+
     // =========================
     // Public fields
     // =========================
@@ -428,10 +435,6 @@ function GraphsVisualizationsCtrl(
     // =========================
     // Private functions
     // =========================
-
-    /*const init = () => {
-        // TODO: move all initialization logic here
-    };*/
 
     const pushHistory = (searchParams, state) => {
         if ($scope.embedded) {
@@ -822,9 +825,6 @@ function GraphsVisualizationsCtrl(
             return current;
         },
     };
-
-    // Using $q.when to proper set values in view
-    $q.when($jwtAuth.getPrincipal()).then((principal) => initSettings(principal));
 
     $scope.showInfoPanel = false;
 
@@ -1232,8 +1232,6 @@ function GraphsVisualizationsCtrl(
         }
     }
 
-    initForRepository();
-
     const multiClickDelay = 500; // max delay between clicks for multiple click events
 
     const nodeLabelRectScaleX = 1.75;
@@ -1274,22 +1272,6 @@ function GraphsVisualizationsCtrl(
     const svg = d3.select(".main-container .graph-visualization").append("svg")
         .attr("viewBox", "0 0 " + width + " " + height)
         .attr("preserveAspectRatio", "xMidYMid meet");
-
-    // building rectangular so we can bind zoom and drag effects
-    svg.append("rect")
-        .attr("width", width * 10)
-        .attr("height", height * 10)
-        .attr("x", -(width * 10 - width) / 2)
-        .attr("y", -(height * 10 - height) / 2)
-        .style("fill", "none")
-        .style("pointer-events", "all")
-        .call(zoomLayout)
-        .on("click", function(event) {
-            event.stopPropagation();
-            removeMenuIfVisible();
-            // Clicking outside the graph stops the layout
-            force.stop();
-        });
 
     let showNodeTipAndIconsTimer = 0;
     let removeIconsTimer = 0;
@@ -2950,7 +2932,6 @@ function GraphsVisualizationsCtrl(
             });
     };
 
-
     $scope.loadSavedGraph = function(graphToLoad, noHistory) {
         if (graphToLoad.owner) {
             // Own saved graph
@@ -3054,6 +3035,36 @@ function GraphsVisualizationsCtrl(
     $scope.getLiteralFromPropValue = function(value) {
         return value.substring(value.indexOf(':') + 1);
     };
+
+    let backgroundRectCreated = false;
+
+    // initialization logic follows below
+    const init = () => {
+        // create background rect once
+        if (!backgroundRectCreated) {
+            // building rectangular so we can bind zoom and drag effects
+            svg.append("rect")
+                .attr("width", width * 10)
+                .attr("height", height * 10)
+                .attr("x", -(width * 10 - width) / 2)
+                .attr("y", -(height * 10 - height) / 2)
+                .style("fill", "none")
+                .style("pointer-events", "all")
+                .call(zoomLayout)
+                .on("click", function(event) {
+                    event.stopPropagation();
+                    removeMenuIfVisible();
+                    // Clicking outside the graph stops the layout
+                    force.stop();
+                });
+            backgroundRectCreated = true;
+        }
+
+        const principal = securityContextService.getAuthenticatedUser();
+        initSettings(principal);
+        initForRepository();
+    };
+    init();
 }
 
 SaveGraphModalCtrl.$inject = ['$scope', '$uibModalInstance', 'data', '$translate'];
