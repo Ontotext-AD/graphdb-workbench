@@ -1,5 +1,6 @@
 <link href="css/ttyg/agent-settings-modal.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 <link href="css/lib/ng-tags-input/ng-tags-input.min.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
+<link href="css/multiselect-search.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 
 <div class="modal-header">
     <button type="button" class="close" ng-click="close()"></button>
@@ -146,8 +147,12 @@
                         <a class="btn btn-link panel-toggle-link"
                            aria-expanded="false" aria-controls="{{extractionMethod.method + '_method_content'}}"
                            ng-click="onExtractionMethodPanelToggle(extractionMethod)">
-                            <span class="mr-1"
+                            <span class="mr-1" ng-if="extractionMethod.method !== extractionMethods.SIMILARITY"
                                   uib-popover="{{'ttyg.agent.create_agent_modal.form.' + extractionMethod.method + '.tooltip' | translate}}"
+                                  popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.' + extractionMethod.method + '.label' | translate}}</span>
+                            <span class="mr-1" ng-if="extractionMethod.method === extractionMethods.SIMILARITY"
+                                  uib-popover-template="'js/angular/ttyg/templates/modal/similarity-extraction-method-tooltip.html'"
+                                  popover-popup-close-delay="800"
                                   popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.' + extractionMethod.method + '.label' | translate}}</span>
                             <i class="fa fa-chevron-down toggle-icon"
                                ng-class="{'expanded': extractionMethod.expanded}">
@@ -253,8 +258,7 @@
 
                         <!-- Similarity method settings -->
 
-                        <div
-                            ng-if="extractionMethod.expanded && extractionMethod.method === extractionMethods.SIMILARITY"
+                        <div ng-if="extractionMethod.expanded && extractionMethod.method === extractionMethods.SIMILARITY"
                             ng-class="{'has-error': agentSettingsForm.$error.missingIndex || agentSettingsForm.repositoryId.$invalid}"
                             class="extraction-method-options">
                             <button ng-if="agentFormModel.repositoryId" class="btn btn-link btn-sm pull-right"
@@ -267,61 +271,95 @@
                                  ng-if="agentSettingsForm.repositoryId.$invalid">
                                 {{'ttyg.agent.create_agent_modal.form.missing_repository_id' | translate}}
                             </div>
-                            <div ng-if="agentFormModel.repositoryId && !similarityIndexes.length" class="no-similarity-index-message">
-                                {{'ttyg.agent.create_agent_modal.form.similarity_index.no_similarity_index.message_1' |
+                            <div ng-if="agentFormModel.repositoryId && !hasConnectorData()" class="no-similarity-index-message">
+                                <div>{{'ttyg.agent.create_agent_modal.form.similarity_index.no_similarity_index.message_1' |
                                 translate}}
-                                <a href="" ng-click="goToCreateSimilarityView($event)">
-                                    {{'ttyg.agent.create_agent_modal.form.similarity_index.no_similarity_index.message_2'
-                                    | translate}}
-                                </a>
-                                {{'ttyg.agent.create_agent_modal.form.similarity_index.no_similarity_index.message_3' |
-                                translate}}.
+                                    <a href="" ng-click="goToCreateSimilarityView($event)">
+                                        {{'ttyg.agent.create_agent_modal.form.similarity_index.no_similarity_index.link_text_here_1' | translate}}
+                                    </a>
+                                    {{'ttyg.agent.create_agent_modal.form.similarity_index.no_similarity_index.message_2' |
+                                    translate}}
+                                    <a href="" ng-click="goToConnectorsView($event)">
+                                        {{'ttyg.agent.create_agent_modal.form.similarity_index.no_similarity_index.link_text_here_2' | translate}}
+                                    </a>
+                                </div>
+                                <div>{{'ttyg.agent.create_agent_modal.form.similarity_index.no_similarity_index.message_3' | translate}}</div>
+                                <div>
+                                    <a href="{{documentationUrlForSimilarity}}" target="_blank">{{'ttyg.agent.create_agent_modal.form.similarity_index.no_similarity_index.message_4' | translate}}</a>
+                                    <i class="fa fa-arrow-up-right-from-square"></i>
+                                </div>
                             </div>
-                            <div ng-show="similarityIndexes.length">
+                            <div ng-show="hasConnectorData()">
                                 <div class="form-group similarity-index">
-                                    <label for="similarityIndex"
-                                           uib-popover="{{'ttyg.agent.create_agent_modal.form.similarity_index.tooltip' | translate}}"
-                                           popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.similarity_index.label'
-                                        | translate}}</label>
-                                    <span ng-if="extractionMethodLoaderFlags.similarity_search" onto-loader-fancy
-                                          size="16"></span>
-                                    <select class="form-control" id="similarityIndex" name="similarityIndex" guide-selector="similarity-index-select"
-                                            ng-required="extractionMethod.selected"
-                                            ng-if="!extractionMethodLoaderFlags.similarity_search"
-                                            ng-model="extractionMethod.similarityIndex"
-                                            ng-options="similarityIndex.value as similarityIndex.label for similarityIndex in similarityIndexes">
-                                    </select>
-                                    <div class="alert alert-danger"
-                                         ng-if="extractionMethod.similarityIndex.$touched && extractionMethod.similarityIndex.$invalid">
-                                        {{'required.field' | translate}}
+                                    <div class="similarity-layout"
+                                         ng-class="{'one-col': !shouldShowVectorFields(extractionMethod)}">
+                                        <div class="left-col">
+                                            <div class="connector-instances-group">
+                                                <label for="connectorInstances"
+                                                       uib-popover="{{'ttyg.agent.create_agent_modal.form.similarity_connector.tooltip' | translate}}"
+                                                       popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.similarity_connector.label' | translate}}</label>
+                                                <span ng-if="extractionMethodLoaderFlags.similarity_search"
+                                                      onto-loader-fancy
+                                                      size="16"></span>
+                                                <select class="form-control"
+                                                        id="connectorInstances"
+                                                        name="connectorInstances"
+                                                        guide-selector="similarity-connector-select"
+                                                        ng-required="extractionMethod.selected"
+                                                        ng-if="!extractionMethodLoaderFlags.similarity_search"
+                                                        ng-model="extractionMethod.similarityIndex"
+                                                        ng-change="onSimilarityIndexChange(extractionMethod)"
+                                                        ng-options="option.value as option.label group by option.group for option in similarityOptionsGrouped">
+                                                </select>
+                                                <div class="alert alert-danger"
+                                                     ng-if="extractionMethod.similarityIndex.$touched && extractionMethod.similarityIndex.$invalid">
+                                                    {{'required.field' | translate}}
+                                                </div>
+                                            </div>
+                                            <div class="form-group similarity-index-threshold">
+                                                <label for="similarityIndexThreshold"
+                                                       uib-popover="{{'ttyg.agent.create_agent_modal.form.similarity_threshold.tooltip' | translate}}"
+                                                       popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.similarity_threshold.label'
+                                                | translate}}</label>
+                                                <input type="text" class="form-control" id="similarityIndexThreshold"
+                                                       name="similarityIndexThreshold" readonly
+                                                       ng-model="extractionMethod.similarityIndexThreshold.value">
+                                                <input id="similarityIndexThresholdSlider"
+                                                       name="similarityIndexThreshold"
+                                                       type="range" ng-required="extractionMethod.selected"
+                                                       min="{{extractionMethod.similarityIndexThreshold.minValue}}"
+                                                       max="{{extractionMethod.similarityIndexThreshold.maxValue}}"
+                                                       step="0.1"
+                                                       ng-model="extractionMethod.similarityIndexThreshold.value"/>
+                                            </div>
+                                            <div class="form-group similarity-max-triples">
+                                                <label
+                                                    for="{{extractionMethods.SIMILARITY + '_maxNumberOfTriplesPerCall'}}"
+                                                    uib-popover="{{'ttyg.agent.create_agent_modal.form.similarity_search_max_number_of_triples_per_call.tooltip' | translate}}"
+                                                    popover-trigger="mouseenter">
+                                                    {{'ttyg.agent.create_agent_modal.form.similarity_search_max_number_of_triples_per_call.label'
+                                                | translate}}</label>
+                                                <input type="number" class="form-control"
+                                                       id="{{extractionMethods.SIMILARITY + '_maxNumberOfTriplesPerCall'}}"
+                                                       name="maxNumberOfTriplesPerCall" min="0"
+                                                       ng-model="extractionMethod.maxNumberOfTriplesPerCall"
+                                                       placeholder="{{'ttyg.agent.create_agent_modal.form.similarity_search_max_number_of_triples_per_call.placeholder' | translate}}">
+                                            </div>
+                                        </div>
+                                        <div class="right-col">
+                                            <div class="vector-fields-group"
+                                                 ng-if="shouldShowVectorFields(extractionMethod)">
+                                                <label for="vectorFieldsSelect">{{'ttyg.agent.create_agent_modal.form.vector_fields_in_connector.label' | translate}}</label>
+                                                <multi-select-dropdown id="vectorFieldsSelect"
+                                                    class="form-control"
+                                                    items="vectorFields"
+                                                    label-keys="vectorFieldsMultiselectLabels"
+                                                    on-change="onVectorFieldsChange(selected, extractionMethod)"
+                                                    placeholder="{{'ttyg.agent.create_agent_modal.form.vector_fields_in_connector.search_placeholder' | translate}}">
+                                                </multi-select-dropdown>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group similarity-index-threshold">
-                                    <label for="similarityIndexThreshold"
-                                           uib-popover="{{'ttyg.agent.create_agent_modal.form.similarity_threshold.tooltip' | translate}}"
-                                           popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.similarity_threshold.label'
-                                        | translate}}</label>
-                                    <input type="text" class="form-control" id="similarityIndexThreshold"
-                                           name="similarityIndexThreshold" readonly
-                                           ng-model="extractionMethod.similarityIndexThreshold.value">
-                                    <input id="similarityIndexThresholdSlider" name="similarityIndexThreshold"
-                                           type="range" ng-required="extractionMethod.selected"
-                                           min="{{extractionMethod.similarityIndexThreshold.minValue}}"
-                                           max="{{extractionMethod.similarityIndexThreshold.maxValue}}"
-                                           step="0.1"
-                                           ng-model="extractionMethod.similarityIndexThreshold.value"/>
-                                </div>
-                                <div class="form-group similarity-max-triples">
-                                    <label for="{{extractionMethods.SIMILARITY + '_maxNumberOfTriplesPerCall'}}"
-                                           uib-popover="{{'ttyg.agent.create_agent_modal.form.similarity_search_max_number_of_triples_per_call.tooltip' | translate}}"
-                                           popover-trigger="mouseenter">
-                                        {{'ttyg.agent.create_agent_modal.form.similarity_search_max_number_of_triples_per_call.label'
-                                        | translate}}</label>
-                                    <input type="number" class="form-control"
-                                           id="{{extractionMethods.SIMILARITY + '_maxNumberOfTriplesPerCall'}}"
-                                           name="maxNumberOfTriplesPerCall" min="0"
-                                           ng-model="extractionMethod.maxNumberOfTriplesPerCall"
-                                           placeholder="{{'ttyg.agent.create_agent_modal.form.similarity_search_max_number_of_triples_per_call.placeholder' | translate}}">
                                 </div>
                             </div>
                         </div>

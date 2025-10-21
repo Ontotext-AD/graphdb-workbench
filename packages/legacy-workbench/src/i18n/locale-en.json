@@ -534,7 +534,8 @@
                     },
                     "similarity_search": {
                         "label": "Similarity search",
-                        "tooltip": "Answers questions by using Similarity search. Performs well on open-ended questions but not so well on providing aggregations."
+                        "tooltip": "Answers questions by using Similarity index or Elasticsearch/OpenSearch connectors. Performs well on open-ended questions but not so well on providing aggregations.",
+                        "link_text": "Learn more about the different similarity methods in the GraphDB documentation."
                     },
                     "similarity_search_max_number_of_triples_per_call": {
                         "label": "Max number of results (triples) per call",
@@ -546,15 +547,34 @@
                         "tooltip": "The text similarity index to use for similarity search queries.",
                         "loading_indexes": "Loading similarity indexes...",
                         "no_similarity_index": {
-                            "message_1": "You must",
-                            "message_2": "create a similarity index",
-                            "message_3": "to use this method"
+                            "message_1": "To use this method, set up an Similarity index ",
+                            "message_2": " OR Elasticsearch connector ",
+                            "link_text_here_1": "here",
+                            "link_text_here_2": "here.",
+                            "message_3": "\nTo set up this method, use either the Similarity Index or the Elasticsearch/OpenSearch connectors.",
+                            "message_4": "\nLearn more about the different similarity methods in the GraphDB documentation."
                         },
                         "btn": {
                             "reload": {
                                 "tooltip": "Refresh the similarity indexes"
                             }
                         }
+                    },
+                    "similarity_connector": {
+                        "label": "Similarity instances",
+                        "tooltip": "Only ElasticSearch/OpenSearch instances containing vector fields are listed below."
+                    },
+                    "vector_fields_in_connector": {
+                        "label": "Vector fields in connector",
+                        "search_placeholder": "Select fields",
+                        "select_all": "All",
+                        "selected_count": "{{count}} selected",
+                        "no_matches": "No matches"
+                    },
+                    "similarity_instance_type_label": {
+                        "similarity": "Similarity index (manually updated)",
+                        "opensearch": "OpenSearch connector (auto updated)",
+                        "elasticsearch": "ElasticSearch connector (auto updated)"
                     },
                     "similarity_threshold": {
                         "label": "Similarity score threshold",

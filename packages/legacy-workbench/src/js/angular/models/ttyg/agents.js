@@ -277,6 +277,18 @@ export class ExtractionMethodModel {
          * @private
          */
         this._retrievalConnectorInstance = data.retrievalConnectorInstance;
+        /**
+         * The connector vector fields used for the extraction method.
+         * @type {string[]|[]}
+         * @private
+         */
+        this._connectorFields = data.connectorFields || [];
+        /**
+         * The connector type used for the extraction method, e.g., elasticsearch, opensearch.
+         * @type {string|null}
+         * @private
+         */
+        this._connectorType = data.connectorType || null;
     }
 
     get method() {
@@ -349,6 +361,22 @@ export class ExtractionMethodModel {
 
     set retrievalConnectorInstance(value) {
         this._retrievalConnectorInstance = value;
+    }
+
+    get connectorFields() {
+        return this._connectorFields;
+    }
+
+    set connectorFields(value) {
+        this._connectorFields = value;
+    }
+
+    get connectorType() {
+        return this._connectorType;
+    }
+
+    set connectorType(value) {
+        this._connectorType = value;
     }
 }
 
@@ -480,12 +508,12 @@ export const ExtractionMethod = {
     FTS_SEARCH: 'fts_search',
     SPARQL: 'sparql_search',
     SIMILARITY: 'similarity_search',
-    RETRIEVAL: 'retrieval_search'
+    RETRIEVAL: 'retrieval_search',
 };
 
 export const AdditionalExtractionMethod = {
     IRI_DISCOVERY_SEARCH: 'iri_discovery_search',
-    AUTOCOMPLETE_IRI_DISCOVERY_SEARCH: 'autocomplete_iri_discovery_search'
+    AUTOCOMPLETE_IRI_DISCOVERY_SEARCH: 'autocomplete_iri_discovery_search',
 };
 
 /**
@@ -554,5 +582,5 @@ export const AgentCompatibility = {
      * This may occur when the agent was created using a newer GraphDB version
      * than the one currently running.
      */
-    'INCOMPATIBLE': 'INCOMPATIBLE'
+    'INCOMPATIBLE': 'INCOMPATIBLE',
 };

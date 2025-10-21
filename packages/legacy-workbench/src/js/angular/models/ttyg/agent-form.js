@@ -1,6 +1,20 @@
 import {NumericRangeModel, TextFieldModel} from '../form-fields';
 import {AdditionalExtractionMethod, ExtractionMethod} from './agents';
 
+const splitConnectorSelection = (value) => {
+    if (!value || typeof value !== 'string') {
+        return {connector: null, index: null};
+    }
+    const i = value.indexOf(':');
+    if (i === -1) {
+        return {connector: null, index: value.trim()};
+    }
+    return {
+        connector: value.slice(0, i).trim(),
+        index: value.slice(i + 1).trim(),
+    };
+};
+
 export class AgentFormModel {
     constructor(data) {
         /**
@@ -76,26 +90,28 @@ export class AgentFormModel {
                                                                  method: ExtractionMethod.SPARQL,
                                                                  ontologyGraph: 'http://example.com/swgraph',
                                                                  sparqlQuery: new TextFieldModel({value: 'select ?s ?p ?o where {?s ?p ?o .}', minLength: 1, maxLength: 2380}),
-                                                                 selected: false
+                                                                 selected: false,
                                                              }));
         extractionMethods.push(new ExtractionMethodFormModel({
                                                                  method: ExtractionMethod.FTS_SEARCH,
                                                                  maxNumberOfTriplesPerCall: null,
-                                                                 selected: false
+                                                                 selected: false,
                                                              }));
         extractionMethods.push(new ExtractionMethodFormModel({
                                                                  method: ExtractionMethod.SIMILARITY,
                                                                  similarityIndex: null,
                                                                  similarityIndexThreshold: new NumericRangeModel({value: 0.6, minValue: 0, maxValue: 1, step: 0.1}),
                                                                  maxNumberOfTriplesPerCall: null,
-                                                                 selected: false
+                                                                 selected: false,
+                                                                 connectorType: null,
+                                                                 connectorFields: [],
                                                              }));
         extractionMethods.push(new ExtractionMethodFormModel({
                                                                  method: ExtractionMethod.RETRIEVAL,
                                                                  retrievalConnectorInstance: null,
                                                                  maxNumberOfTriplesPerCall: null,
                                                                  queryTemplate: new TextFieldModel({value: '{"query": "string"}', minLength: 1, maxLength: 2380}),
-                                                                 selected: false
+                                                                 selected: false,
                                                              }));
         return new ExtractionMethodsFormModel(extractionMethods);
     }
@@ -128,7 +144,7 @@ export class AgentFormModel {
             seed: this._seed,
             assistantsInstructions: this._instructions.toPayload(),
             assistantExtractionMethods: this._assistantExtractionMethods.toPayload(),
-            additionalExtractionMethods: this._additionalExtractionMethods.toPayload()
+            additionalExtractionMethods: this._additionalExtractionMethods.toPayload(),
         };
     }
 
@@ -357,6 +373,18 @@ export class ExtractionMethodFormModel {
          * @private
          */
         this._retrievalConnectorInstance = data.retrievalConnectorInstance;
+        /**
+         * The type of the connector used (if selected) in the similarity search extraction method.
+         * @type {string}
+         * @private
+         */
+        this._connectorType = data.connectorType;
+        /**
+         * The fields of the connector used (if selected) in the similarity search extraction method.
+         * @type {string[]}
+         * @private
+         */
+        this._connectorFields = data.connectorFields || [];
 
         this._expanded = data.expanded !== undefined ? data.expanded : false;
     }
@@ -386,11 +414,36 @@ export class ExtractionMethodFormModel {
             payload.maxNumberOfTriplesPerCall = this._maxNumberOfTriplesPerCall;
         }
         // Similarity search method
-        if (this._similarityIndex) {
-            payload.similarityIndex = this._similarityIndex;
+        let combined;
+        if (this._connectorType && this._connectorType.includes(':')) {
+            combined = this._connectorType;
+        } else if (this._similarityIndex && this._similarityIndex.includes(':')) {
+            combined = this._similarityIndex;
+        }
+        if (combined) {
+            const {connector, index} = splitConnectorSelection(combined);
+            if (connector) {
+                payload.connectorType = connector;
+            }
+            if (index) {
+                payload.similarityIndex = index;
+            }
+        } else {
+            if (this._connectorType) {
+                payload.connectorType = this._connectorType;
+            }
+            if (this._similarityIndex) {
+                payload.similarityIndex = this._similarityIndex;
+            }
         }
         if (this._similarityIndexThreshold && this._similarityIndexThreshold.value) {
             payload.similarityIndexThreshold = parseFloat(this._similarityIndexThreshold.value);
+        }
+        // The connectorFields property is only applicable for similarity search method
+        if (this._method === ExtractionMethod.SIMILARITY) {
+            if (this._connectorFields) {
+                payload.connectorFields = this._connectorFields;
+            }
         }
         // Retrieval method
         if (this._queryTemplate && this._queryTemplate.value) {
@@ -490,6 +543,22 @@ export class ExtractionMethodFormModel {
         this._retrievalConnectorInstance = value;
     }
 
+    get connectorType() {
+        return this._connectorType;
+    }
+
+    set connectorType(value) {
+        this._connectorType = value;
+    }
+
+    get connectorFields() {
+        return this._connectorFields;
+    }
+
+    set connectorFields(value) {
+        this._connectorFields = value;
+    }
+
     get expanded() {
         return this._expanded;
     }
@@ -529,7 +598,7 @@ export class AdditionalExtractionMethodsFormModel {
      */
     setAdditionalExtractionMethod(additionalExtractionMethod) {
         if (Array.isArray(additionalExtractionMethod)) {
-            additionalExtractionMethod.forEach(additionalExtractionMethod => {
+            additionalExtractionMethod.forEach((additionalExtractionMethod) => {
                 const existingMethod = this.findAdditionalExtractionMethod(additionalExtractionMethod._method);
                 if (existingMethod) {
                     existingMethod._selected = additionalExtractionMethod._selected;
@@ -638,7 +707,7 @@ export class AgentInstructionsFormModel {
     toPayload() {
         return {
             systemInstruction: this._systemInstruction,
-            userInstruction: this._userInstruction
+            userInstruction: this._userInstruction,
         };
     }
 

@@ -25,9 +25,10 @@
         },
         {
             "method": "similarity_search",
-            "similarityIndex": "similarity-index",
+            "similarityIndex": null,
             "similarityIndexThreshold": 0.6,
-            "maxNumberOfTriplesPerCall": 0
+            "maxNumberOfTriplesPerCall": 0,
+            "connectorType": "similarity"
         },
         {
             "method": "retrieval_search",
@@ -39,6 +40,10 @@
     "additionalExtractionMethods": [
         {
             "method": "iri_discovery_search"
+        },
+        {
+            "method": "autocomplete_iri_discovery_search",
+            "limit": 0
         }
     ]
 }

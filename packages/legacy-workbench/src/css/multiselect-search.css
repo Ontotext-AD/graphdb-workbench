@@ -1,0 +1,123 @@
+.multiselect {
+    position: relative;
+    display: inline-block;
+    font-size: 14px;
+    width: 100%;
+    border-radius: 0;
+}
+
+.multiselect-button {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .5rem;
+    padding: .5rem .75rem;
+    border: none;
+    background: #fff;
+    cursor: pointer;
+}
+.multiselect-button:focus {
+    outline: 2px solid #5b9dd9;
+    outline-offset: 2px;
+}
+
+.multiselect-menu {
+    position: absolute;
+    z-index: 1000;
+    top: calc(100% + 2px);
+    left: 0;
+    right: 0;
+    background: #fff;
+    border: 1px solid #dcdcdc;
+    box-shadow: 0 8px 24px rgba(0,0,0,.12);
+    max-height: 320px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.multiselect-search {
+    border: 0;
+    border-bottom: 1px solid #eee;
+    padding: .6rem .75rem;
+    outline: none;
+    width: 100%;
+}
+
+.multiselect-search-wrapper {
+    position: relative;
+}
+
+.multiselect-search-icon {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+.multiselect-button .button-placeholder {
+    font-size: 16px;
+    color: #55595c;
+}
+
+.multiselect-row:hover {
+    background: #f5f7fb;
+}
+.multiselect-row--selectall {
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.multiselect-list {
+    overflow: auto;
+}
+.multiselect-empty {
+    padding: .75rem;
+    color: #777;
+    font-style: italic;
+}
+
+.multiselect-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: .5rem .75rem;
+    cursor: pointer;
+}
+.multiselect-row .multiselect-label-wrapper {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #55595c;
+    cursor: pointer;
+}
+
+.multiselect-row .multiselect-label {
+    display: flex;
+    align-items: center;
+}
+
+.multiselect-checkbox-input {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    accent-color: var(--primary-color);
+}
+
+.multiselect-count {
+    color: #6b7280;
+    font-size: 12px;
+}
+
+.multiselect-button .multiselect-caret {
+    display: inline-block;
+    width: 0.5em;
+    height: 0.5em;
+    border-right: 2px solid #55595c;
+    border-bottom: 2px solid #55595c;
+    transform: rotate(45deg);
+    margin-left: 0.35rem;
+    vertical-align: middle;
+}

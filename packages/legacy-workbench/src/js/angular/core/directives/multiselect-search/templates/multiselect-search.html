@@ -1,0 +1,54 @@
+<div class="multiselect" ng-keydown="onKeydownMenu($event)">
+  <button type="button"
+          class="multiselect-button"
+          aria-haspopup="listbox"
+          aria-expanded="{{open}}"
+          ng-click="toggleOpen($event)">
+    <span class="button-placeholder">{{placeholder}}</span>
+    <span class="multiselect-count" ng-if="selectedCount()">{{labelKeys.selected_count | translate: {count: selectedCount()} }}</span>
+    <span class="multiselect-caret" aria-hidden="true"></span>
+  </button>
+
+  <div class="multiselect-menu" ng-if="open">
+      <div class="multiselect-search-wrapper">
+          <input type="text"
+                 class="multiselect-search"
+                 ng-model="search.query"
+                 ng-click="$event.stopPropagation()"
+                 aria-label="Filter options" />
+          <span class="multiselect-search-icon" aria-hidden="true">
+            <i class="fa fa-search"></i>
+          </span>
+      </div>
+
+    <div class="multiselect-row multiselect-row--selectall">
+      <label class="multiselect-label-wrapper m-0">
+          <input type="checkbox"
+             class="multiselect-checkbox-input"
+             ng-checked="allFilteredSelected()"
+             ng-click="$event.stopPropagation(); toggleSelectAll($event)"
+             ng-attr-aria-checked="{{someFilteredSelected() && !allFilteredSelected() ? 'mixed' : (allFilteredSelected() ? 'true' : 'false')}}">
+          <span class="multiselect-label">
+            {{labelKeys.select_all | translate}}
+          </span>
+      </label>
+    </div>
+
+    <div class="multiselect-list" role="listbox" aria-multiselectable="true">
+      <div class="multiselect-empty" ng-if="!visibleItems.length">{{labelKeys.no_matches | translate}}</div>
+
+      <div class="multiselect-row"
+           ng-repeat="item in visibleItems track by item.id">
+          <label class="multiselect-label-wrapper m-0">
+            <input type="checkbox"
+                   class="multiselect-checkbox-input"
+                   ng-model="item.selected"
+                   ng-change="emitChange()"
+                   ng-click="$event.stopPropagation()"
+                   aria-label="{{::item.label}}">
+            <span class="multiselect-label">{{::item.label}}</span>
+          </label>
+      </div>
+    </div>
+  </div>
+</div>

@@ -7,16 +7,16 @@ SimilarityRestService.$inject = ['$http', '$repositories'];
 const SIMILARITY_ENDPOINT = 'rest/similarity';
 
 function SimilarityRestService($http) {
-
     return {
         getIndexes,
+        getSimilarityIndexesWithVectorFields,
         getSearchQueries,
         rebuildIndex,
         deleteIndex,
         createIndex,
         getSamples,
         getQuery,
-        saveSearchQuery
+        saveSearchQuery,
     };
 
     /**
@@ -32,11 +32,27 @@ function SimilarityRestService($http) {
             return $http.get(SIMILARITY_ENDPOINT, {
                 headers: {
                     'X-GraphDB-Repository': repositoryId,
-                    'X-GraphDB-Repository-Location': repositoryLocation
-                }
+                    'X-GraphDB-Repository-Location': repositoryLocation,
+                },
             });
         }
         return $http.get(SIMILARITY_ENDPOINT);
+    }
+
+    /**
+     * Fetches the similarity indexes with vector fields for a given repository.
+     * @param {string} repositoryId - The repository for which to fetch similarity indexes.
+     * @return {Promise<Record<string, string[]>>} The similarity indexes for the specified repository in format
+     * <pre>
+     * {
+     *   "elasticsearch:otkg-vector": ["docText1", "docText2"],
+     *   "elasticsearch:otkg-vector-new": ["docText1"],
+     *   "similarity": ["test", "test1"]
+     * }
+     * </pre>
+     */
+    function getSimilarityIndexesWithVectorFields(repositoryId) {
+        return $http.get(`${SIMILARITY_ENDPOINT}/${repositoryId}/indexes`);
     }
 
     function getSamples() {
@@ -62,9 +78,9 @@ function SimilarityRestService($http) {
                     type,
                     analyzer,
                     searchQuery,
-                    analogicalQuery
-                }
-            }
+                    analogicalQuery,
+                },
+            },
         );
     }
 
@@ -87,8 +103,8 @@ function SimilarityRestService($http) {
                     infer: data.queryInference,
                     sameAs: data.querySameAs,
                     type: data.viewType,
-                    analyzer: data.indexAnalyzer
-                }
+                    analyzer: data.indexAnalyzer,
+                },
             });
     }
 
@@ -96,7 +112,7 @@ function SimilarityRestService($http) {
         return $http({
             method: 'put',
             url: 'rest/similarity/search-query',
-            data
+            data,
         });
     }
 }

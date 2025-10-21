@@ -2,11 +2,11 @@ import {TTYGViewSteps} from "../../steps/ttyg/ttyg-view-steps";
 import {TTYGStubs} from "../../stubs/ttyg/ttyg-stubs";
 import {RepositoriesStubs} from "../../stubs/repositories/repositories-stubs";
 import {TtygAgentSettingsModalSteps} from "../../steps/ttyg/ttyg-agent-settings-modal.steps";
-import {SimilarityIndexStubs} from "../../stubs/similarity-index-stubs";
 import {ConnectorStubs} from "../../stubs/connector-stubs";
 import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
 import {RepositoriesStub} from "../../stubs/repositories-stub";
 import {AlertDialogSteps} from "../../steps/alert-dialog-steps";
+import {ApplicationSteps} from '../../steps/application-steps.js';
 
 describe('TTYG create new agent', () => {
     const repositoryId = 'starwars';
@@ -68,10 +68,12 @@ describe('TTYG create new agent', () => {
         // enable SPARQL extraction method and disable it again to check the error message for the extraction methods
         TtygAgentSettingsModalSteps.enableSparqlExtractionMethod();
         // The component here is the bootstrap collapse component, so we need to wait for the animation to finish, otherwise the test might fail randomly
+        // eslint-disable-next-line cypress/no-unnecessary-waiting
         cy.wait(1000);
         TtygAgentSettingsModalSteps.getSparqlExtractionMethodPanel().should('be.visible');
         TtygAgentSettingsModalSteps.disableSparqlExtractionMethod();
         // The component here is the bootstrap collapse component, so we need to wait for the animation to finish, otherwise the test might fail randomly
+        // eslint-disable-next-line cypress/no-unnecessary-waiting
         cy.wait(1000);
         TtygAgentSettingsModalSteps.getSparqlExtractionMethodPanel().should('not.exist');
         TtygAgentSettingsModalSteps.getSaveAgentButton().should('be.disabled');
@@ -143,6 +145,7 @@ describe('TTYG create new agent', () => {
         TtygAgentSettingsModalSteps.saveAgent();
         TtygAgentSettingsModalSteps.getCreatingAgentLoader().should('be.visible');
         cy.wait('@create-agent').then((interception) => {
+            // eslint-disable-next-line no-undef
             assert.deepEqual(interception.request.body, {
                 "id": "id",
                 "name": "Test Agent",
@@ -251,7 +254,7 @@ describe('TTYG create new agent', () => {
     }, () => {
         TTYGStubs.stubChatsListGetNoResults();
         TTYGStubs.stubAgentListGet('/ttyg/agent/get-agent-list-0.json');
-        SimilarityIndexStubs.stubGetSimilarityIndexes('/similarity/get-similarity-indexes-0.json');
+        TTYGStubs.getSimilarityIndexesForRepo();
         // Given I have opened the ttyg page
         TTYGViewSteps.visit();
         cy.wait('@get-all-repositories');
@@ -274,7 +277,7 @@ describe('TTYG create new agent', () => {
     }, () => {
         TTYGStubs.stubChatsListGetNoResults();
         TTYGStubs.stubAgentListGet('/ttyg/agent/get-agent-list-0.json');
-        SimilarityIndexStubs.stubGetSimilarityIndexes();
+        TTYGStubs.getSimilarityIndexesForRepo(repositoryId);
         // Given I have opened the ttyg page
         TTYGViewSteps.visit();
         cy.wait('@get-all-repositories');
@@ -286,8 +289,10 @@ describe('TTYG create new agent', () => {
         TtygAgentSettingsModalSteps.selectRepository(repositoryId);
         // And I enable the similarity search extraction method
         TtygAgentSettingsModalSteps.enableSimilaritySearchMethodPanel();
-        // Then I expect similarity index to be selected
-        TtygAgentSettingsModalSteps.getSimilarityIndexField().should('have.value', '0');
+        // Then I expect the first similarity search index instance to be selected
+        TtygAgentSettingsModalSteps.getSimilarityIndexSelectedOption().should('have.text', 'otkg-vector-new');
+        // And I expect that all vector fields from that instance should be selected
+        TtygAgentSettingsModalSteps.getSimilarityIndexSelectedVectorFieldsFieldsCount().should('contain', '1 selected');
         // Then agent save button should be enabled
         TtygAgentSettingsModalSteps.getSaveAgentButton().should('be.enabled');
         // When I set the similarity index threshold
@@ -297,6 +302,7 @@ describe('TTYG create new agent', () => {
         TtygAgentSettingsModalSteps.getSimilarityIndexMaxTriplesField().should('have.value', '');
         TtygAgentSettingsModalSteps.setSimilarityIndexMaxTriples('100');
         // When I save the agent
+        // !!! This stub is not for agent with similarity search method, but it's ok for this test !!!
         TTYGStubs.stubAgentCreate();
         TTYGStubs.stubAgentListGet('/ttyg/agent/get-agent-list-new-agent.json');
         TtygAgentSettingsModalSteps.saveAgent();
@@ -432,7 +438,7 @@ describe('TTYG create new agent', () => {
         TTYGStubs.stubChatsListGetNoResults();
         TTYGStubs.stubAgentListGet('/ttyg/agent/get-agent-list-0.json');
         ConnectorStubs.stubGetConnectors();
-        SimilarityIndexStubs.stubTTYGSimilarityIndexes();
+        TTYGStubs.getSimilarityIndexesForRepo(repositoryId );
         // Given I have opened the ttyg page
         TTYGViewSteps.visit();
         cy.wait('@get-all-repositories');
@@ -444,16 +450,21 @@ describe('TTYG create new agent', () => {
 
         // When I open Similarity index name panel
         TtygAgentSettingsModalSteps.enableSimilaritySearchMethodPanel();
+        cy.wait('@get-similarity-indexes');
         // Then I expect to see the first index selected.
-        TtygAgentSettingsModalSteps.verifySimilarityIndexSelected('similarity_index_starwars_one');
+        TtygAgentSettingsModalSteps.verifySimilarityIndexSelected('otkg-vector-new');
 
         // When I select another repository that have similarity connectors
+        TTYGStubs.getSimilarityIndexesForRepo('biomarkers', '/ttyg/agent/get-similarity-indexes-for-another-repo.json');
         TtygAgentSettingsModalSteps.selectRepository('biomarkers');
+        cy.wait('@get-similarity-indexes');
         // Then I expect to see the first similarity index from new repository selected.
-        TtygAgentSettingsModalSteps.verifySimilarityIndexSelected('similarity_index_biomarkers_one');
+        TtygAgentSettingsModalSteps.verifySimilarityIndexSelected('biomarkers-vector');
 
         // When I select a repository that not have similarity indexes
         TtygAgentSettingsModalSteps.selectRepository('ttyg-repo-1725518186812');
+        // Then I expect an error message to be open for similarity search index missing
+        ApplicationSteps.getErrorNotifications().should('be.visible');
         // Then I expect help message to be open
         TtygAgentSettingsModalSteps.getSimilaritySearchIndexMissingHelp().should('be.visible');
 
@@ -522,7 +533,7 @@ describe('TTYG create new agent', () => {
         // When I open agent settings dialog and make all steps so the create button became enabled.
         TTYGStubs.stubChatsListGetNoResults();
         TTYGStubs.stubAgentListGet('/ttyg/agent/get-agent-list-0.json');
-        SimilarityIndexStubs.stubGetSimilarityIndexes('/similarity/get-similarity-indexes-0.json');
+        TTYGStubs.getSimilarityIndexesForRepo();
         TTYGViewSteps.visit();
         cy.wait('@get-all-repositories');
         TTYGViewSteps.createFirstAgent();

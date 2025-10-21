@@ -331,6 +331,11 @@ module.exports = (webpackConfigEnv, argv) => {
                       to: 'js/angular/core/directives/multiselect-dropdown/templates',
                       transform: replaceVersion
                     },
+                  {
+                    from: 'packages/legacy-workbench/src/js/angular/core/directives/multiselect-search/templates',
+                    to: 'js/angular/core/directives/multiselect-search/templates',
+                    transform: replaceVersion
+                  },
                     {
                         from: 'packages/legacy-workbench/src/js/angular/templates',
                         to: 'js/angular/templates'

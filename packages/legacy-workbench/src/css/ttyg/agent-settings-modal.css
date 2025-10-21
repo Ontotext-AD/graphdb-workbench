@@ -167,9 +167,17 @@
 }
 
 .agent-settings-modal .agent-settings-form #fts_search_maxNumberOfTriplesPerCall,
-.agent-settings-modal .agent-settings-form #similarity_search_maxNumberOfTriplesPerCall,
 .agent-settings-modal .agent-settings-form #retrieval_search_maxNumberOfTriplesPerCall {
     width: 30%
+}
+
+.agent-settings-form .similarity-index {
+    display: flex;
+    gap: 1rem;
+}
+
+.agent-settings-form .similarity-index .no-similarity-index-message > div {
+    margin-top: 5px;
 }
 
 .agent-settings-modal .agent-settings-form input[type="range"] {
@@ -239,4 +247,33 @@
 
 .extraction-method-options .input-field-group .autocomplete-predicate-tags tags-input .host {
     margin-top: 0;
+}
+
+.agent-settings-modal .agent-settings-form multi-select-dropdown {
+    display: block;
+    width: 100%;
+    height: calc(2.5rem - 2px);
+    padding: 0;
+}
+
+/* Not always a reliable way to target optgroup text. Might not work in some browsers */
+.agent-settings-modal .agent-settings-form select#connectorInstances optgroup {
+  color: #64748B;
+}
+
+.agent-settings-modal .agent-settings-form .similarity-index .similarity-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    align-items: start;
+}
+.agent-settings-modal .agent-settings-form .similarity-index .similarity-layout.one-col {
+    grid-template-columns: 1fr;
+}
+.agent-settings-modal .agent-settings-form .similarity-index .similarity-layout .left-col > .form-group,
+.agent-settings-modal .agent-settings-form .similarity-index .similarity-layout .left-col > .connector-instances-group {
+    margin-bottom: 1rem;
+}
+.agent-settings-modal .agent-settings-form .similarity-index .similarity-layout .right-col {
+    align-self: start;
 }
