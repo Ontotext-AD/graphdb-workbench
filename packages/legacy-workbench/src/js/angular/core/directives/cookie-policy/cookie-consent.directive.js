@@ -83,7 +83,6 @@ function cookieConsent($jwtAuth, $uibModal, $translate, toastr, TrackingService)
             // Subscriptions
             // =========================
             const onUserChangedSubscription = securityContextService.onAuthenticatedUserChanged(onUserChanged);
-            // const securityInitListener = $scope.$on('securityInit', securityInit);
 
             $scope.$on('$destroy', () => {
                 onUserChangedSubscription();
