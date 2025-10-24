@@ -28,6 +28,10 @@ class TestAuthStrategy implements AuthStrategy {
   logout(): Promise<void> {
     return Promise.resolve();
   }
+
+  isExternal(): boolean {
+    return false;
+  }
 }
 
 const getSecurityConfig = (securityEnabled: boolean) => {
@@ -191,9 +195,12 @@ describe('AuthenticationService', () => {
   });
 
   describe('isExternalUser', () => {
-    test('should return false when user is not logged in', () => {
+    test('should return false when user is not logged in', async () => {
       // Given, I have a user that is not logged in
       const config = getSecurityConfig(true);
+      testAuthStrategy = new TestAuthStrategy();
+      jest.spyOn(ServiceProvider.get(AuthStrategyResolver), 'resolveStrategy').mockReturnValue(testAuthStrategy);
+      await authService.setAuthenticationStrategy(config);
       service(SecurityContextService).updateSecurityConfig(config);
       // When, I check if user is external
       expect(authService.isExternalUser()).toBe(false);
@@ -214,6 +221,7 @@ describe('AuthenticationService', () => {
     test('should return true when user is logged in without a token', async () => {
       // Given, I have a user logged in without a token (external auth)
       testAuthStrategy = new TestAuthStrategy();
+      jest.spyOn(testAuthStrategy, 'isExternal').mockReturnValue(true);
       jest.spyOn(ServiceProvider.get(AuthStrategyResolver), 'resolveStrategy').mockReturnValue(testAuthStrategy);
       const config = getSecurityConfig(true);
       await authService.setAuthenticationStrategy(config);

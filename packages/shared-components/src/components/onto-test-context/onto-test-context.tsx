@@ -91,9 +91,11 @@ export class OntoTestContext {
    */
   @Method()
   setAuthenticatedUser(user: AuthenticatedUser): Promise<void> {
-    ServiceProvider.get(SecurityContextService).updateAuthenticatedUser(
-      MapperProvider.get(AuthenticatedUserMapper).mapToModel(user)
-    );
+    // Don't map if undefined is passed. This allows to clear the user in context
+    const userModel = user
+      ? MapperProvider.get(AuthenticatedUserMapper).mapToModel(user)
+      : undefined;
+    ServiceProvider.get(SecurityContextService).updateAuthenticatedUser(userModel);
     ServiceProvider.get(AuthenticationStorageService).setAuthToken('token');
     return Promise.resolve();
   }

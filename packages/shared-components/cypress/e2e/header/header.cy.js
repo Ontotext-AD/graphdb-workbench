@@ -103,6 +103,10 @@ describe('Header', () => {
       // When, I am logged in
       HeaderSteps.setAuthenticatedUser();
 
+      // And, I toggle the security to update the auth strategy
+      HeaderSteps.disableSecurity();
+      HeaderSteps.enableSecurity();
+
       // Then, I expect to see the user menu in the header, because I am both logged in and security is enabled
       UserMenuSteps.getUserMenu().should('be.visible');
 
@@ -171,6 +175,32 @@ describe('Header', () => {
         .and('have.text', 'john.doe');
       // And not to see the login button
       HeaderSteps.getLoginButton().should('not.exist');
+    });
+  });
+
+  describe('External User', () => {
+    it('Should show user menu for external authenticated user', () => {
+      // Given, I visit the header page
+      HeaderSteps.visit();
+      // When, I enable security
+      HeaderSteps.enableSecurity();
+
+      // Then the header should not be visible, as there is no authenticated user
+      HeaderSteps.getHeader().should('not.be.visible');
+
+      // When, I set an external authenticated user
+      // A user is considered external, when there is a user in the context and no GDB, or openId token in the store
+      HeaderSteps.setAuthenticatedUser();
+
+      // And, I toggle the security to update the auth strategy
+      HeaderSteps.disableSecurity();
+      HeaderSteps.enableSecurity();
+
+      // Then, I expect to see the header
+      HeaderSteps.getHeader().should('be.visible');
+
+      // And I expect to see the user menu in the header, because I am both logged in and security is enabled
+      UserMenuSteps.getUserMenu().should('be.visible');
     });
   });
 });

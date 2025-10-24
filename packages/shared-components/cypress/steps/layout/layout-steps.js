@@ -1,4 +1,4 @@
-import {BaseSteps} from "../base-steps";
+import {BaseSteps} from '../base-steps';
 
 export class LayoutSteps extends BaseSteps {
   static visit() {
@@ -32,11 +32,16 @@ export class LayoutSteps extends BaseSteps {
   static enableSecurity() {
     return cy.get('#enable-security').click();
   }
+
   static enableSecurityUserLoggedIn() {
     return cy.get('#enable-security-user-logged-in').click();
   }
 
   static disableSecurity() {
     return cy.get('#disable-security').click();
+  }
+
+  static resetAuthUser() {
+    return cy.get('#reset-auth-user').click();
   }
 }

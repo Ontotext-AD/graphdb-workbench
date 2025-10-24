@@ -8,8 +8,8 @@ import {AuthStrategy} from '../../models/security/authentication';
 import {AuthStrategyResolver} from './auth-strategy-resolver';
 import {Login} from '../../models/events/auth/login';
 import {isLoginPage, navigate} from '../utils';
-import {AuthenticationStorageService} from './authentication-storage.service';
 import {AuthorizationService} from './authorization.service';
+import {MissingAuthStrategyError} from './errors/missing-auth-strategy-error';
 
 /**
  * Service responsible for handling authentication operations and managing auth strategies.
@@ -20,7 +20,6 @@ import {AuthorizationService} from './authorization.service';
 export class AuthenticationService implements Service {
   private readonly eventService = service(EventService);
   private readonly authStrategyResolver = service(AuthStrategyResolver);
-  private readonly authenticationStorageService = service(AuthenticationStorageService);
   private readonly authorizationService = service(AuthorizationService);
   private readonly securityContextService = service(SecurityContextService);
   private authStrategy: AuthStrategy | undefined;
@@ -39,7 +38,7 @@ export class AuthenticationService implements Service {
         this.authorizationService.initializeFreeAccess();
       }
 
-      if (isLoginPage() && (isLoggedIn || this.authorizationService.hasFreeAccess())) {
+      if (isLoginPage() && ((isLoggedIn || this.authorizationService.hasFreeAccess()) && !this.isExternalUser())) {
         navigate('/');
         this.eventService.emit(new Login());
       } else if (isLoginPage() && !isLoggedIn) {
@@ -76,6 +75,8 @@ export class AuthenticationService implements Service {
       .then((authUser) => {
         this.isUserLoggedIn = true;
         this.securityContextService.updateAuthenticatedUser(authUser);
+        // The previous strategy might have been external, which is why we need to update it
+        this.updateStrategy();
         this.eventService.emit(new Login());
       });
   }
@@ -120,7 +121,7 @@ export class AuthenticationService implements Service {
    */
   isAuthenticated() {
     if (!this.authStrategy) {
-      throw new Error('Authentication strategy not set');
+      throw new MissingAuthStrategyError();
     }
     return !this.isSecurityEnabled() || this.authStrategy.isAuthenticated() || this.isExternalUser();
   }
@@ -129,16 +130,13 @@ export class AuthenticationService implements Service {
    * Checks if the current user is an external user (e.g., authenticated via Kerberos or X.509).
    * An external user is defined as a logged-in user without a local auth token when security is enabled.
    *
-   * @returns {boolean} True if the user is external, false otherwise.
+   * @returns {boolean} True if the user is external, false otherwise. Defaults to false if no auth strategy is set.
    */
   isExternalUser(): boolean {
-    const authenticatedUser = service(SecurityContextService).getAuthenticatedUser();
-    if (!this.isLoggedIn()) {
-      // If not logged in, cannot be external
-      return false;
+    if (!this.authStrategy) {
+      throw new MissingAuthStrategyError();
     }
-    const token = this.authenticationStorageService.getAuthToken().getValue();
-    return !!(this.isSecurityEnabled() && authenticatedUser && !token);
+    return this.authStrategy.isExternal();
   }
 
   /**
@@ -156,5 +154,12 @@ export class AuthenticationService implements Service {
    */
   private getSecurityConfig(): SecurityConfig | undefined {
     return service(SecurityContextService).getSecurityConfig();
+  }
+
+  private updateStrategy(): void {
+    const securityConfig = this.getSecurityConfig();
+    if (securityConfig) {
+      this.authStrategy = this.authStrategyResolver.resolveStrategy(securityConfig);
+    }
   }
 }
