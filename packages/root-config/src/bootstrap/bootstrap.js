@@ -41,8 +41,8 @@ const executePromises = (bootstrapFns) => {
  */
 const loadEssentials = () => {
   return Promise.all([
-    executePromises([...pluginsBootstrap, ...productInfoBootstrap, ...languageBootstrap]),
-    securityBootstrap.loadSecurityConfig()
+    securityBootstrap.loadSecurityConfig(),
+    executePromises([...pluginsBootstrap, ...productInfoBootstrap, ...languageBootstrap])
   ]);
 };
 
