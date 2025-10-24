@@ -3,10 +3,8 @@ import 'angular/core/services/openid-auth.service.js';
 import 'angular/core/services/security.service';
 import {UserRole} from 'angular/utils/user-utils';
 import {
-    AuthenticatedUserMapper,
     AuthenticationService,
     AuthorizationService,
-    MapperProvider,
     OntoToastrService,
     RepositoryStorageService,
     SecurityContextService,
@@ -110,11 +108,6 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 return ServiceProvider.get(RepositoryStorageService).getRepositoryReference();
             };
 
-            const isGDBorOpenIDToken = function() {
-                const token = AuthTokenService.getAuthToken();
-                return token && (token.startsWith('GDB') || that.openIDEnabled && token.startsWith('Bearer'));
-            };
-
             /**
              * Determines the currently authenticated user from the backend's point-of-view
              * by sending a request to the dedicated API endpoint using the current authentication
@@ -125,30 +118,8 @@ angular.module('graphdb.framework.core.services.jwtauth', [
              * @param {boolean} justLoggedIn Indicates that the user just logged in.
              */
             this.getAuthenticatedUserFromBackend = function(noFreeAccessFallback, justLoggedIn) {
-                if (isGDBorOpenIDToken()) {
-                    return;
-                }
-
-                // FIXME: Remove after verification that it is not needed for Kerberos or X509 authentication
-                SecurityService.getAuthenticatedUser().then(function(data) {
-                    securityContextService.updateAuthenticatedUser(
-                        MapperProvider.get(AuthenticatedUserMapper).mapToModel(data),
-                    );
-                    // There is no previous authentication but we got a principal via
-                    // an external authentication mechanism (e.g. Kerberos)
-                    that.externalAuthUser = true;
-                    that.broadcastSecurityInit();
-                }).catch(function() {
-                    if (noFreeAccessFallback || !authorizationService.hasFreeAccess()) {
-                        $rootScope.redirectToLogin(false, justLoggedIn);
-                    } else {
-                        that.securityInitialized = true;
-                        if (!that.hasExplicitAuthentication()) {
-                            that.clearAuthentication();
-                            // console.log('free access fallback');
-                        }
-                    }
-                });
+                const authenticationService = service(AuthenticationService);
+                that.externalAuthUser = authenticationService.isExternalUser();
             };
 
             this.initSecurity = function() {

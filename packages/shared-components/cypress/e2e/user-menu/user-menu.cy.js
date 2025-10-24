@@ -20,8 +20,10 @@ describe('User Menu', () => {
         cy.wrap($item).should('have.text', dropdownOptions[index]);
       });
 
-    // When, I am logged in as external user
-    UserMenuSteps.setExternalUser();
+    // When, I update the security config so the auth strategy is resolved
+    // At this point we have an authenticated user, without tokens,
+    // so he will be considered externally authenticated
+    UserMenuSteps.updateSecurityConfig();
 
     // When, I click on the menu
     UserMenuSteps.openUserMenu();
