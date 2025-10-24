@@ -36,4 +36,9 @@ export class AuthenticationStorageService extends LocalStorageService {
   clearAuthToken(): void {
     this.remove(this.jwtKey);
   }
+
+  isGDBorOpenIDToken(): boolean {
+    const token = this.getAuthToken().getValue();
+    return !!(token && (token.startsWith('GDB') || token.startsWith('Bearer')));
+  }
 }

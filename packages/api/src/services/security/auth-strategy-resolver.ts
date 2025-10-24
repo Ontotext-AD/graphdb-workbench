@@ -4,6 +4,10 @@ import {Service} from '../../providers/service/service';
 import {NoSecurityProvider} from './auth-providers/no-security-provider';
 import {OpenidAuthProvider} from './auth-providers/openid-auth-provider';
 import {GdbTokenAuthProvider} from './auth-providers/gdb-token-auth-provider';
+import {service} from '../../providers';
+import {AuthenticationStorageService} from './authentication-storage.service';
+import {ExternalStrategy} from './auth-providers/external-strategy';
+import {SecurityContextService} from './security-context.service';
 
 /**
  * Resolves the appropriate authentication strategy based on security configuration.
@@ -15,6 +19,9 @@ import {GdbTokenAuthProvider} from './auth-providers/gdb-token-auth-provider';
  * - GdbTokenAuthProvider for standard GraphDB token authentication
  */
 export class AuthStrategyResolver implements Service {
+  private readonly securityContextService = service(SecurityContextService);
+  private readonly authStorageService = service(AuthenticationStorageService);
+
   /**
    * Resolves and returns the appropriate authentication strategy.
    *
@@ -28,8 +35,12 @@ export class AuthStrategyResolver implements Service {
 
     if (securityConfig.openIdEnabled) {
       return new OpenidAuthProvider();
-    } else {
-      return new GdbTokenAuthProvider();
     }
+
+    const user = this.securityContextService.getAuthenticatedUser();
+    // If we have a user, without an openID or GDB token, we assume it's an external auth
+    return (user && !this.authStorageService.isGDBorOpenIDToken())
+      ? new ExternalStrategy()
+      : new GdbTokenAuthProvider();
   }
 }

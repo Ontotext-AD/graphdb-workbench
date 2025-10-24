@@ -7,7 +7,6 @@ import {ResponseMock} from '../../../http/test/response-mock';
 import {LoggerProvider} from '../../../logging/logger-provider';
 import {ProviderResponseMocks} from './provider-response-mocks';
 import {AuthenticatedUser, SecurityConfig} from '../../../../models/security';
-import {MissingTokenInHeader} from '../../errors/missing-token-in-header';
 
 describe('GdbTokenAuthProvider', () => {
   let provider: GdbTokenAuthProvider;
@@ -105,46 +104,6 @@ describe('GdbTokenAuthProvider', () => {
         expect(getAuthenticatedUserSpy).toHaveBeenCalled();
         expect(updateAuthenticatedUserSpy).not.toHaveBeenCalled();
       });
-    });
-  });
-
-  describe('login', () => {
-    let updateAuthenticatedUserSpy: jest.SpyInstance;
-    let setAuthTokenSpy: jest.SpyInstance;
-    let loginGdbTokenSpy: jest.SpyInstance;
-
-    const loginData = {username: 'testUser', password: '1234'};
-
-    beforeEach(() => {
-      updateAuthenticatedUserSpy = jest.spyOn(ServiceProvider.get(SecurityContextService), 'updateAuthenticatedUser');
-      setAuthTokenSpy = jest.spyOn(ServiceProvider.get(AuthenticationStorageService), 'setAuthToken');
-      loginGdbTokenSpy = jest.spyOn(ServiceProvider.get(SecurityService), 'loginGdbToken');
-    });
-
-    it('should login, set token, update user', async () => {
-      TestUtil.mockResponse(new ResponseMock('rest/login').setResponse(ProviderResponseMocks.loginResponse).setHeaders(new Headers({authorization: 'GDB someToken'})));
-
-      const result = await provider.login(loginData);
-      expect(result).toBeTruthy();
-
-      expect(loginGdbTokenSpy).toHaveBeenCalledWith(loginData.username, loginData.password);
-      expect(setAuthTokenSpy).toHaveBeenCalledWith('GDB someToken');
-      expect(updateAuthenticatedUserSpy).not.toHaveBeenCalled();
-    });
-
-    it('should throw if user mapping fails', async () => {
-      TestUtil.mockResponse(new ResponseMock('rest/login').setResponse('errorLogin').setSetThrowOnJson(true));
-
-      await expect(provider.login(loginData)).rejects.toThrow('Failed to map user from response');
-      expect(loggerErrorSpy).toHaveBeenCalledWith('Could not map user from response', expect.any(Error));
-    });
-
-    it('should not set token/user if auth header or user is missing', async () => {
-      TestUtil.mockResponse(new ResponseMock('rest/login').setResponse(ProviderResponseMocks.loginResponse));
-
-      await expect(provider.login(loginData)).rejects.toThrow(MissingTokenInHeader);
-      expect(setAuthTokenSpy).not.toHaveBeenCalled();
-      expect(updateAuthenticatedUserSpy).not.toHaveBeenCalled();
     });
   });
 

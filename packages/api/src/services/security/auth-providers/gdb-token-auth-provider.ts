@@ -1,22 +1,10 @@
-import {MapperProvider, service} from '../../../providers';
-import {AuthenticatedUserMapper, AuthenticationService, AuthenticationStorageService, SecurityContextService, SecurityService} from '../../../services/security';
-import {LoggerProvider} from '../../logging/logger-provider';
+import {service} from '../../../providers';
+import {SecurityContextService} from '../../../services/security';
 import {getCurrentRoute} from '../../utils';
-import {AuthStrategy} from '../../../models/security/authentication';
 import {AuthStrategyType} from '../../../models/security/authentication';
-import {AuthenticatedUser} from '../../../models/security';
-import {MissingTokenInHeader} from '../errors/missing-token-in-header';
+import {BaseGdbLoginStrategy} from './base-gdb-login-strategy';
 
-type LoginData = {
-  username: string;
-  password: string;
-}
-
-export class GdbTokenAuthProvider implements AuthStrategy {
-  private readonly logger = LoggerProvider.logger;
-  private readonly securityService = service(SecurityService);
-  private readonly authStorageService = service(AuthenticationStorageService);
-  private readonly authenticationService = service(AuthenticationService);
+export class GdbTokenAuthProvider extends BaseGdbLoginStrategy {
   private readonly securityContextService = service(SecurityContextService);
 
   type = AuthStrategyType.GDB_TOKEN;
@@ -52,35 +40,6 @@ export class GdbTokenAuthProvider implements AuthStrategy {
   }
 
   /**
-   * Attempts to log in using the provided username and password.
-   * On success, stores the authentication token and updates the authenticated user in the security context.
-   * Logs and throws an error if the user cannot be mapped from the response.
-   * @param {LoginData} loginData - The login credentials (username and password).
-   * @returns {Promise<void>} A promise that resolves when login is complete.
-   */
-  async login(loginData: LoginData): Promise<AuthenticatedUser> {
-    const {username, password} = loginData;
-    const response = await this.securityService.loginGdbToken(username, password);
-
-    const authHeader = this.getAuthenticationHeader(response);
-    let authUser;
-
-    try {
-      authUser = await this.getUserFromResponse(response);
-    } catch (e) {
-      this.logger.error('Could not map user from response', e);
-      throw new Error('Failed to map user from response');
-    }
-
-    if (authHeader) {
-      this.authStorageService.setAuthToken(authHeader);
-    } else {
-      throw new MissingTokenInHeader();
-    }
-    return authUser;
-  }
-
-  /**
    * Logs out the current user by clearing the authentication token.
    * @returns {Promise<void>} A promise that resolves when logout is complete.
    */
@@ -99,16 +58,15 @@ export class GdbTokenAuthProvider implements AuthStrategy {
     return token !== null;
   }
 
+  /**
+   * Indicates that this strategy is not for external users.
+   * @returns false, as this strategy is not for external authentication.
+   */
+  isExternal(): boolean {
+    return false;
+  }
+
   private isCurrentRouteLogin(): boolean {
     return getCurrentRoute() === 'login';
-  }
-
-  private getAuthenticationHeader(response: Response): string | null {
-    return response.headers.get('authorization');
-  }
-
-  private async getUserFromResponse(response: Response): Promise<AuthenticatedUser> {
-    const responseData = await response.json();
-    return MapperProvider.get(AuthenticatedUserMapper).mapToModel(responseData);
   }
 }

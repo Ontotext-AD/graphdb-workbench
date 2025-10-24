@@ -16,9 +16,9 @@ export enum AuthStrategyType {
   OPENID = 'OPENID',
 
   /**
-   * Authentication using Kerberos protocol.
+   * Authentication using external protocol e.g. Kerberos, X.509.
    */
-  KERBEROS = 'KERBEROS',
+  EXTERNAL = 'EXTERNAL',
 
   /**
    * No authentication; open access.

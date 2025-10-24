@@ -52,4 +52,12 @@ export class NoSecurityProvider implements AuthStrategy {
     const authenticatedUser = this.securityContextService.getAuthenticatedUser();
     return !!authenticatedUser;
   }
+
+  /**
+   * Indicates that this strategy is not for external users.
+   * @returns false, as this strategy is not for external authentication.
+   */
+  isExternal(): boolean {
+    return false;
+  }
 }

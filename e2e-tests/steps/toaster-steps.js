@@ -17,6 +17,10 @@ export class ToasterSteps {
             .and('contain', successMessage);
     }
 
+    static getToasterMessage() {
+        return ToasterSteps.getToast().find('.toast-message')
+    }
+
     static verifyWarning(warningMessage) {
         return ToasterSteps.getToast()
             .find('.toast-warning')

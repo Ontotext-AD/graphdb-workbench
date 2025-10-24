@@ -13,8 +13,8 @@ export class UserMenuSteps extends BaseSteps {
     return this.getUserMenu().find('.onto-user-menu-dropdown');
   }
 
-  static setExternalUser() {
-    cy.get('#set-external-user').click();
+  static updateSecurityConfig() {
+    cy.get('#update-security-config').click();
   }
 
   static openUserMenu() {

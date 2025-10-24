@@ -316,7 +316,7 @@ export class OntoHeader {
       isAuthenticated = false;
     }
     const isFreeAccessEnabled = this.securityConfig?.freeAccess?.enabled;
-    this.showLoginButton = (isSecurityEnabled && isFreeAccessEnabled && !isLoggedIn) || (this.currentRoute === 'login');
+    this.showLoginButton = isSecurityEnabled && isFreeAccessEnabled && !isLoggedIn && this.currentRoute !== 'login';
     this.showUserMenu = isSecurityEnabled && isAuthenticated && isLoggedIn;
     this.shouldShowSearch = this.shouldShowRdfSearch();
   }

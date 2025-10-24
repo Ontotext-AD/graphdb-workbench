@@ -2,20 +2,14 @@ const userMenu = document.querySelector('onto-user-menu');
 
 userMenu.user = {
   username: 'john.doe'
-}
+};
 
 userMenu.securityConfig = {
   hasExternalAuthUser: false
-}
+};
 
-const setExternalUser = () => {
-  userMenu.user = {
-    ...userMenu.user,
-    external: true,
-    userLoggedIn: true
-  }
-
-  userMenu.securityConfig = {
-    hasExternalAuthUser: true
-  }
-}
+// eslint-disable-next-line no-unused-vars
+const updateSecurityConfig = () => {
+  // update security config to trigger strategy resolve
+  setSecurityConfig({...userMenu.securityConfig});
+};

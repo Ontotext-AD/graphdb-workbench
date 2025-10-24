@@ -16,6 +16,7 @@ describe('User and Access', () => {
     const ROLE_CUSTOM_ADMIN = "#roleAdmin";
     const DEFAULT_ADMIN_PASSWORD = "root";
 
+    // eslint-disable-next-line no-undef
     context('', () => {
         const user = "user";
 
@@ -145,10 +146,11 @@ describe('User and Access', () => {
             // When I toggle Free Access OFF
             UserAndAccessSteps.toggleFreeAccess();
             // Then I should see a success message
-            ToasterSteps.verifySuccess('Free access has been disabled.');
+            ToasterSteps.getToast().should('exist');
+            ToasterSteps.getToasterMessage().should('contain', 'Free access has been disabled.');
         });
     })
-
+    // eslint-disable-next-line no-undef
     context('GraphQL only', () => {
         let repositoryId1;
         let repositoryId2;
@@ -468,6 +470,7 @@ describe('User and Access', () => {
 
     function runChecks(checks = {}) {
         Object.entries(checks).forEach(([selector, assertions]) => {
+            // eslint-disable-next-line cypress/no-assigning-return-values
             let chain = cy.get(selector);
 
             // assertions is an array, e.g. ["exist", ["contain.text", "Hello"], "be.visible"]
