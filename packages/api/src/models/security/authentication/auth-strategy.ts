@@ -38,4 +38,9 @@ export interface AuthStrategy {
    * @returns True if a user is authenticated, false otherwise.
    */
   isAuthenticated(): boolean;
+
+  /**
+   * Checks if the authenticated user is external
+   */
+  isExternal(): boolean;
 }
