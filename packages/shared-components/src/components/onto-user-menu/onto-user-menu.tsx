@@ -4,7 +4,7 @@ import {
   AuthenticationService,
   navigateTo,
   SecurityConfig,
-  ServiceProvider
+  service
 } from '@ontotext/workbench-api';
 
 /**
@@ -16,6 +16,7 @@ import {
   styleUrl: 'onto-user-menu.scss'
 })
 export class OntoUserMenu {
+  private readonly authenticationService = service(AuthenticationService);
   /** Whether the dropdown menu is open or closed */
   @State() private isOpen: boolean;
 
@@ -48,7 +49,7 @@ export class OntoUserMenu {
             <section class='onto-user-menu-dropdown'>
               <translate-label onClick={navigateTo('settings')}
                 labelKey={'user_menu.my_settings'}></translate-label>
-              {!this.securityConfig?.hasExternalAuthUser ?
+              {!this.authenticationService.isExternalUser() ?
                 <translate-label onClick={this.logout}
                   labelKey={'user_menu.logout'}></translate-label> : ''}
             </section> : ''}
@@ -61,7 +62,7 @@ export class OntoUserMenu {
   * Log out the current user.
   */
   private readonly logout = (): void => {
-    ServiceProvider.get(AuthenticationService).logout();
+    this.authenticationService.logout();
   };
 
   /**

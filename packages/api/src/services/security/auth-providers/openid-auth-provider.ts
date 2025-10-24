@@ -111,6 +111,14 @@ export class OpenidAuthProvider implements AuthStrategy {
     return !this.authenticationService.isSecurityEnabled() || token !== null;
   }
 
+  /**
+   * Indicates that this strategy is not for external users.
+   * @returns false, as this strategy is not for external authentication.
+   */
+  isExternal(): boolean {
+    return false;
+  }
+
   // Private helper methods for better organization and testability
 
   /**
