@@ -554,6 +554,38 @@ body { margin: 0; }
       const result = await purger.purgeUnusedVariables();
 
       expect(result).toEqual({
+        missedCSSVariables: [],
+        totalVariables: 5,
+        usedVariables: 4, // --used-var, --safe-var, --dependent-var, --dependency-var
+        removedVariables: 1, // --unused-var
+        outputFilePath: path.resolve('test-output.css'),
+      });
+
+      expect(mockFs.writeFileSync).toHaveBeenCalled();
+      const writtenContent = mockFs.writeFileSync.mock.calls[0][1];
+      expect(writtenContent).toContain('--used-var: red;');
+      expect(writtenContent).toContain('--safe-var: green;');
+      expect(writtenContent).toContain('--dependency-var: purple;');
+      expect(writtenContent).toContain('--dependent-var: var(--dependency-var);');
+      expect(writtenContent).not.toContain('--unused-var: blue;');
+    });
+
+    it('should not complete full purge operation successfully', async () => {
+      const originalReadFileSync = mockFs.readFileSync.getMockImplementation();
+
+      mockFs.readFileSync.mockImplementation((filePath) => {
+        if (filePath.includes('file1.css')) {
+          return 'color: var(--used-var); background-color: var(--undeclared-css-variable);';
+        } else if (filePath.includes('file2.js')) {
+          return 'element.style.setProperty("--dependent-var", "value");element.style.setProperty("--undeclared-css-variable-2", "value")';
+        }
+        return originalReadFileSync(filePath);
+      });
+
+      const result = await purger.purgeUnusedVariables();
+
+      expect(result).toEqual({
+        missedCSSVariables: ['--undeclared-css-variable', '--undeclared-css-variable-2'],
         totalVariables: 5,
         usedVariables: 4, // --used-var, --safe-var, --dependent-var, --dependency-var
         removedVariables: 1, // --unused-var
