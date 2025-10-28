@@ -32,7 +32,7 @@
 <button id="set-marvel-repo" onclick="setMarvelRepo()">set Marvel repo</button>
 <button id="set-is-loading" onclick="updateIsLoadingActiveRepositoryLocation(true)">set active location loading</button>
 <button id="set-is-not-loading" onclick="updateIsLoadingActiveRepositoryLocation(false)">set active location not loading</button>
-<button id="activate-free-access" onclick="setSecurityConfig({enabled: true, freeAccess:{enabled: true}}); setAuthUser(undefined)">activate free access</button>
+<button id="activate-free-access" onclick="setSecurityConfig({enabled: true, freeAccess:{enabled: true}}); setAuthUser()">activate free access</button>
 <button id="deactivate-free-access" onclick="setSecurityConfig({enabled: false, freeAccess:{enabled: false}})">deactivate free access</button>
 <button id="activate-free-access-and-be-logged-in" onclick="setAuthUser(undefined);
                                                             setSecurityConfig({enabled: true, freeAccess:{enabled: true}, userLoggedIn: true});

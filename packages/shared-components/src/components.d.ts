@@ -7,7 +7,7 @@
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { DialogHandler } from "./models/dialog/dialog-handler";
 import { DialogConfig } from "./components/dialogs/onto-dialog";
-import { AuthenticatedUser, Awaitable, License, OperationStatusSummary, ProductInfo, Repository, RepositoryReference, RepositorySizeInfo, SearchButtonConfig, SecurityConfig, ToastMessage } from "../../api/dist/ontotext-workbench-api.d";
+import { AuthenticatedUser, Awaitable, License, OperationStatusSummary, ProductInfo, Repository, RepositoryReference, RepositorySizeInfo, SearchButtonConfig, SecurityConfig, ToastMessage, User } from "../../api/dist/ontotext-workbench-api.d";
 import { DropdownItem } from "./models/dropdown/dropdown-item";
 import { OntoTooltipPlacement } from "./components/onto-tooltip/models/onto-tooltip-placement";
 import { DropdownItemAlignment } from "./models/dropdown/dropdown-item-alignment";
@@ -17,7 +17,7 @@ import { ToggleEventPayload } from "./models/toggle-switch/toggle-event-payload"
 import { TranslationParameter } from "./models/translation/translation-parameter";
 export { DialogHandler } from "./models/dialog/dialog-handler";
 export { DialogConfig } from "./components/dialogs/onto-dialog";
-export { AuthenticatedUser, Awaitable, License, OperationStatusSummary, ProductInfo, Repository, RepositoryReference, RepositorySizeInfo, SearchButtonConfig, SecurityConfig, ToastMessage } from "../../api/dist/ontotext-workbench-api.d";
+export { AuthenticatedUser, Awaitable, License, OperationStatusSummary, ProductInfo, Repository, RepositoryReference, RepositorySizeInfo, SearchButtonConfig, SecurityConfig, ToastMessage, User } from "../../api/dist/ontotext-workbench-api.d";
 export { DropdownItem } from "./models/dropdown/dropdown-item";
 export { OntoTooltipPlacement } from "./components/onto-tooltip/models/onto-tooltip-placement";
 export { DropdownItemAlignment } from "./models/dropdown/dropdown-item-alignment";
@@ -246,7 +246,7 @@ export namespace Components {
           * @param user - The AuthenticatedUser object containing the user's authentication information.
           * @returns A Promise that resolves when the authenticated user has been successfully updated
          */
-        "setAuthenticatedUser": (user: AuthenticatedUser) => Promise<void>;
+        "setAuthenticatedUser": (user: User) => Promise<void>;
         /**
           * Sets the autocomplete status in the context.
           * @param enabled whether autocomplete is enabled or disabled.

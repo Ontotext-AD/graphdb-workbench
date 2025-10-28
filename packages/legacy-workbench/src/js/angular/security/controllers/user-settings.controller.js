@@ -1,10 +1,8 @@
 import 'angular/core/services/security.service';
-import {GRAPHQL, READ_REPO, WRITE_REPO} from "../services/constants";
+import {GRAPHQL, READ_REPO, WRITE_REPO} from '../services/constants';
 import {UserType} from 'angular/utils/user-utils';
-import {parseAuthorities} from "../services/authorities-util";
-import {UpdateUserPayload} from "../../models/security/security";
-import {navigate, ServiceProvider, NavigationContextService} from "@ontotext/workbench-api";
-import {CookiePolicyModalController} from "../../core/directives/cookie-policy/cookie-policy-modal-controller";
+import {navigate, NavigationContextService, SecurityService, AuthenticationService, SecurityContextService, service, User} from '@ontotext/workbench-api';
+import {CookiePolicyModalController} from '../../core/directives/cookie-policy/cookie-policy-modal-controller';
 
 angular
     .module('graphdb.framework.security.controllers.user-settings', [
@@ -20,7 +18,6 @@ UserSettingsController.$inject = [
     '$jwtAuth',
     '$rootScope',
     '$controller',
-    'SecurityService',
     'ModalService',
     '$translate',
     'ThemeService',
@@ -31,12 +28,15 @@ UserSettingsController.$inject = [
     'TrackingService'
 ];
 
-function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $rootScope, $controller, SecurityService, ModalService, $translate, ThemeService, WorkbenchSettingsStorageService, $q, $uibModal, $licenseService, TrackingService) {
+function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $rootScope, $controller, ModalService, $translate, ThemeService, WorkbenchSettingsStorageService, $q, $uibModal, $licenseService, TrackingService) {
     angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope, passwordPlaceholder: 'security.new.password'}));
 
     // =========================
     // Private variables
     // =========================
+    const securityService = service(SecurityService);
+    const authenticationService = service(AuthenticationService);
+    const securityContextService = service(SecurityContextService);
 
     /**
      * A timer task that will redirect back to the previous page after the user has been updated.
@@ -93,23 +93,22 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
     };
 
     $scope.goBack = function () {
-        const previousRoute = ServiceProvider.get(NavigationContextService).getPreviousRoute();
+        const previousRoute = service(NavigationContextService).getPreviousRoute();
         navigate(previousRoute || '/');
     };
 
     $scope.getPrincipal = function () {
         return $jwtAuth.getPrincipal()
             .then((principal) => {
-                $scope.currentUserData = _.cloneDeep(principal);
+                $scope.currentUserData = principal.toUser();
                 $scope.redirectAdmin();
                 initUserData();
             });
     };
 
     $scope.updateCurrentUserData = function () {
-        // Using $q.when to proper set values in view
-        $q.when($jwtAuth.getPrincipal())
-            .then((principal) => _.assign(principal, $scope.userData));
+        authenticationService.getCurrentUser()
+            .then((authenticatedUser) => securityContextService.updateAuthenticatedUser(authenticatedUser));
     };
 
     $scope.redirectAdmin = function () {
@@ -134,12 +133,12 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
 
     $scope.updateUserHttp = function () {
         $scope.loader = true;
-        const payload = new UpdateUserPayload({
+        const user = new User({
             username: $scope.user.username,
-            password: ($scope.noPassword) ? '' : $scope.user.password || undefined,
+            password: $scope.noPassword ? '' : $scope.user.password || undefined,
             appSettings: $scope.user.appSettings
         });
-        SecurityService.updateUserData(payload)
+        securityService.updateAuthenticatedUser(user)
             .then(() => {
                 toastr.success($translate.instant('security.user.updated', {name: $scope.user.username}));
                 $scope.updateCurrentUserData();
@@ -231,20 +230,18 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
 
     const initUserData = function () {
         // Copy needed so that Cancel would work correctly, need to call updateCurrentUserData on OK
-        $scope.userData = _.cloneDeep($scope.currentUserData);
-        $scope.user = {username: $scope.userData.username};
+        $scope.user = {username: $scope.currentUserData.username};
         $scope.user.password = '';
         $scope.user.confirmpassword = '';
-        $scope.user.external = $scope.userData.external;
-        $scope.user.appSettings = $scope.userData.appSettings;
+        $scope.user.external = $scope.currentUserData.external;
+        $scope.user.appSettings = $scope.currentUserData.appSettings;
         // For backward compatibility
         if ($scope.user.appSettings['DEFAULT_VIS_GRAPH_SCHEMA'] === undefined) {
             $scope.user.appSettings['DEFAULT_VIS_GRAPH_SCHEMA'] = true;
         }
-        const pa = parseAuthorities($scope.userData.grantedAuthoritiesUiModel);
-        $scope.userType = pa.userType;
-        $scope.grantedAuthorities = pa.grantedAuthorities;
-        $scope.customRoles = pa.customRoles;
+        $scope.userType = $scope.currentUserData.getUserType();
+        $scope.grantedAuthorities = $scope.currentUserData.authorities.toUIModel();
+        $scope.customRoles = $scope.currentUserData.authorities.getCustomRoles();
     };
 
     // =========================

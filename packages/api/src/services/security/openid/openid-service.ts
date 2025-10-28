@@ -7,7 +7,6 @@ import {OpenidSecurityConfig} from '../../../models/security';
 import {OpenIdUrlBuilder} from './openid-url-builder';
 import {OpenIdAuthFlowHandler} from './openid-auth-flow-handler';
 import {OpenIdTokenRefreshManager} from './openid-token-refresh-manager';
-import {AuthFlowParams, OpenIdAuthFlowType, OpenIdTokens} from '../../../models/security/authentication';
 import {OpenidStorageService} from './openid-storage.service';
 import {OpenidTokenUtils} from './openid-token-utils';
 import {OpenIdUtils} from './openid-utils';
@@ -18,6 +17,7 @@ import {OpenIdError} from '../errors/openid/openid-error';
 import {WindowService} from '../../window';
 import {MissingOpenidConfiguration} from '../errors/openid/missing-openid-configuration';
 import {getOrigin} from '../../utils';
+import {AuthFlowParams, OpenIdAuthFlowType, OpenIdTokens} from '../../../models/security/authentication/openid-auth-flow-models';
 
 /**
  * Service responsible for managing OpenID Connect authentication flows, token management,

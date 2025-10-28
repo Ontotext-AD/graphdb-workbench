@@ -21,6 +21,10 @@ class TestAuthStrategy implements AuthStrategy {
     return true;
   }
 
+  fetchAuthenticatedUser(): Promise<AuthenticatedUser> {
+    return Promise.resolve(new AuthenticatedUser());
+  }
+
   login(): Promise<AuthenticatedUser> {
     return Promise.resolve(new AuthenticatedUser());
   }

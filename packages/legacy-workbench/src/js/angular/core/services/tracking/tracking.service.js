@@ -7,15 +7,18 @@ import {
     SecurityService,
     AuthorizationService,
     service,
+    CookieConsent as CookieConsentAPI,
+    AuthenticationService,
+    SecurityContextService,
 } from '@ontotext/workbench-api';
 
 const modules = [
     'graphdb.framework.core.services.cookieService',
     'graphdb.framework.core.services.installationCookieService',
     'graphdb.framework.core.services.googleAnalyticsCookieService',
-    'graphdb.framework.core.directives.cookie-consent'
-
+    'graphdb.framework.core.directives.cookie-consent',
 ];
+
 angular.module('graphdb.framework.core.services.trackingService', modules)
     .factory('TrackingService', ['$window', '$jwtAuth', '$licenseService', 'InstallationCookieService', 'GoogleAnalyticsCookieService', 'LocalStorageAdapter', 'LSKeys',
         TrackingService]);
@@ -34,8 +37,12 @@ angular.module('graphdb.framework.core.services.trackingService', modules)
  * @constructor
  */
 function TrackingService($window, $jwtAuth, $licenseService, InstallationCookieService, GoogleAnalyticsCookieService, LocalStorageAdapter, LSKeys) {
-
+    // =========================
+    // Private variables
+    // =========================
     const securityService = service(SecurityService);
+    const authenticationService = service(AuthenticationService);
+    const securityContextService = service(SecurityContextService);
     const authorizationService = service(AuthorizationService);
 
     /**
@@ -59,7 +66,7 @@ function TrackingService($window, $jwtAuth, $licenseService, InstallationCookieS
         } else {
             return getCookieConsent()
                 .then((cookieConsent) => {
-                    if (!cookieConsent.getPolicyAccepted()) {
+                    if (cookieConsent.hasChanged() && !cookieConsent.getPolicyAccepted()) {
                         cleanUpTracking();
                         return;
                     }
@@ -123,11 +130,16 @@ function TrackingService($window, $jwtAuth, $licenseService, InstallationCookieS
                 if (!username) {
                     LocalStorageAdapter.set(LSKeys.COOKIE_CONSENT, consent.toJSON());
                 } else {
-                    const appSettings = data.appSettings;
-                    appSettings.COOKIE_CONSENT = consent.toJSON();
-                    // TODO: Check if this payload is correct for updating user data with SecurityService
-                    return securityService.updateUserData({ appSettings, username });
+                    const user = data.toUser();
+                    const appSettings = user.appSettings;
+                    appSettings.COOKIE_CONSENT = new CookieConsentAPI(consent.toJSON());
+                    return securityService.updateAuthenticatedUser(user);
                 }
+            })
+            .then(() => {
+                // Update the authenticated user in the security context
+                authenticationService.getCurrentUser()
+                    .then((authenticatedUser) => securityContextService.updateAuthenticatedUser(authenticatedUser));
             })
             .finally(() => applyTrackingConsent());
     };

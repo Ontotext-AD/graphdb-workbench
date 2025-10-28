@@ -3,7 +3,7 @@ export class ResponseMock {
   private _response: unknown = undefined;
   private _status = 200;
   private _message = '';
-  private _headers?: unknown = undefined;
+  private _headers?: Headers = undefined;
   private _shouldThrowOnJson = false;
 
   constructor(url: string) {
@@ -40,11 +40,11 @@ export class ResponseMock {
     return this._message;
   }
 
-  getHeaders(): unknown {
+  getHeaders(): Headers | undefined {
     return this._headers;
   }
 
-  setHeaders(headers: unknown) {
+  setHeaders(headers: Headers) {
     this._headers = headers;
     return this;
   }

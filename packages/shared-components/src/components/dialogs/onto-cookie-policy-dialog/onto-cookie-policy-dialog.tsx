@@ -2,7 +2,7 @@ import {Component, h, Listen, Prop} from '@stencil/core';
 import {DialogHandler} from '../../../models/dialog/dialog-handler';
 import {OntoDialog} from '../../../models/dialog/onto-dialog';
 import {TranslationService} from '../../../services/translation.service';
-import {SecurityContextService, ServiceProvider, CookieConsent, SecurityService} from '@ontotext/workbench-api';
+import {SecurityContextService, ServiceProvider, CookieConsent, SecurityService, AppSettings} from '@ontotext/workbench-api';
 import {ToggleEventPayload} from '../../../models/toggle-switch/toggle-event-payload';
 import {LoggerProvider} from '../../../services/logger-provider';
 
@@ -27,7 +27,7 @@ export class OntoCookiePolicyDialog implements OntoDialog {
   @Listen('toggleChanged')
   toggleChanged(event: CustomEvent<ToggleEventPayload>) {
     this.setUserCookieConsent(this.updateCookieConsent(event.detail));
-    this.securityService.updateUserData(this.user)
+    this.securityService.updateAuthenticatedUser(this.user.toUser())
       .catch(this.logger.error);
   }
 
@@ -134,7 +134,7 @@ export class OntoCookiePolicyDialog implements OntoDialog {
 
   private setUserCookieConsent(cookieConsent: CookieConsent) {
     if (!this.user.appSettings) {
-      this.user.appSettings = {};
+      this.user.appSettings = new AppSettings();
     }
     this.user.appSettings.COOKIE_CONSENT = cookieConsent;
   }

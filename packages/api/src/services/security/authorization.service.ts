@@ -29,7 +29,7 @@ export class AuthorizationService implements Service {
     if (config?.isEnabled() && config?.isFreeAccessEnabled()) {
       const freeAccessUser = new AuthenticatedUser()
         .setAuthorities(config.freeAccess.authorities)
-        .setAppSettings(config.freeAccess.appSettings ?? {});
+        .setAppSettings(config.freeAccess.appSettings);
       this.securityContextService.updateAuthenticatedUser(freeAccessUser);
     }
   }
@@ -46,8 +46,8 @@ export class AuthorizationService implements Service {
     if (!config?.isEnabled() && config?.hasOverrideAuth()) {
       const overrideAuthUser = new AuthenticatedUser();
       overrideAuthUser.username = 'overrideauth';
-      overrideAuthUser.authorities = config.overrideAuth.authorities;
-      overrideAuthUser.appSettings = config.overrideAuth.appSettings ?? {};
+      overrideAuthUser.setAuthorities(config.overrideAuth.authorities);
+      overrideAuthUser.setAppSettings(config.overrideAuth.appSettings);
       this.securityContextService.updateAuthenticatedUser(overrideAuthUser);
     }
   }
@@ -108,7 +108,7 @@ export class AuthorizationService implements Service {
     const config = this.getSecurityConfig();
     const user = this.getAuthenticatedUser();
 
-    if (config?.enabled) {
+    if (config?.isEnabled()) {
       if (!user) {
         return false;
       }
