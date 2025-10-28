@@ -10,6 +10,7 @@ import {RoutingService} from '../../routing/routing.service';
 import {RepositoryStorageService} from '../../repository';
 import {SecurityConfigTestUtil} from '../../utils/test/security-config-test-util';
 import {AuthSettings} from '../../../models/security/auth-settings';
+import {AppSettings} from '../../../models/users/app-settings';
 
 const getSecurityConfig = (securityEnabled: boolean, freeAccessEnabled: boolean, overrideAuth = false) => {
   return SecurityConfigTestUtil.createSecurityConfig(
@@ -374,7 +375,7 @@ describe('AuthorizationService', () => {
       // Given, I have security and free access enabled
       const config = SecurityConfigTestUtil.createSecurityConfig({
         enabled: true,
-        freeAccess: new AuthSettings({enabled: true, authorities: [Authority.ROLE_USER] as unknown as AuthorityList, appSettings: {setting1: 'value1'}})
+        freeAccess: new AuthSettings({enabled: true, authorities: [Authority.ROLE_USER] as unknown as AuthorityList, appSettings: new AppSettings()})
       });
       securityContextService.updateSecurityConfig(config);
 
@@ -384,7 +385,13 @@ describe('AuthorizationService', () => {
       // Then, I expect the authenticated user to be set with free access authorities and app settings
       const authenticatedUser = securityContextService.getAuthenticatedUser();
       expect(authenticatedUser).toBeDefined();
-      expect(authenticatedUser?.appSettings).toEqual({setting1: 'value1'});
+      expect(authenticatedUser?.appSettings).toEqual({
+        DEFAULT_INFERENCE: true,
+        DEFAULT_SAMEAS: true,
+        DEFAULT_VIS_GRAPH_SCHEMA: true,
+        EXECUTE_COUNT: true,
+        IGNORE_SHARED_QUERIES: false
+      });
     });
 
     test('should not initialize free access user when security is disabled', () => {

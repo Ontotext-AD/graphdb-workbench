@@ -19,10 +19,10 @@ export class CookieService implements Service {
    * @returns {Promise<void>} - A promise that resolves when the request to the backend has passed.
    */
   acceptCookiePolicy(): Promise<void> {
-    const user = this.setAcceptedCookiePolicy();
-    return ServiceProvider.get(SecurityService).updateUserData(user)
+    const authenticatedUser = this.setAcceptedCookiePolicy();
+    return ServiceProvider.get(SecurityService).updateAuthenticatedUser(authenticatedUser.toUser())
       .then(() => {
-        this.eventEmitter.emit({NAME: COOKIE_CONSENT_CHANGED_EVENT, payload: user.appSettings.COOKIE_CONSENT as CookieConsent});
+        this.eventEmitter.emit({NAME: COOKIE_CONSENT_CHANGED_EVENT, payload: authenticatedUser.appSettings.COOKIE_CONSENT as CookieConsent});
       });
   }
 

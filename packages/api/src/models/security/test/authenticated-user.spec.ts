@@ -1,26 +1,27 @@
 import {AuthenticatedUser} from '../authenticated-user';
-import {AuthorityList} from '../authority-list';
-import {Authority} from '../authority';
+import {AuthorityList} from '../authorization/authority-list';
+import {Authority} from '../authorization/authority';
+import {AppSettings} from '../../users/app-settings';
 
 describe('AuthenticatedUser', () => {
-  const sample = {
+  const sampleAuthenticatedUser = {
     external: false,
     username: 'admin',
     password: 'secret',
-    authorities: ['ROLE_USER', 'ROLE_ADMIN'],
+    authorities: new AuthorityList(['ROLE_USER', 'ROLE_ADMIN']),
     appSettings: { key: 'value' },
   };
 
   it('should map authorities and grantedAuthoritiesUiModel using mappers', () => {
-    const user = new AuthenticatedUser(sample as never);
+    const user = new AuthenticatedUser(sampleAuthenticatedUser as never);
 
-    expect(user.username).toBe(sample.username);
-    expect(user.password).toBe(sample.password);
-    expect(user.external).toBe(sample.external);
+    expect(user.username).toBe(sampleAuthenticatedUser.username);
+    expect(user.password).toBe(sampleAuthenticatedUser.password);
+    expect(user.external).toBe(sampleAuthenticatedUser.external);
     expect(user.authorities).toBeInstanceOf(AuthorityList);
     expect(user.grantedAuthoritiesUiModel).toBeInstanceOf(AuthorityList);
-    expect(user.authorities.getItems()).toEqual(sample.authorities);
-    expect(user.appSettings).toEqual(sample.appSettings);
+    expect(user.authorities.getItems()).toEqual(sampleAuthenticatedUser.authorities.getItems());
+    expect(user.appSettings).toEqual(sampleAuthenticatedUser.appSettings);
   });
 
   it('should default values when no data provided', () => {
@@ -31,7 +32,7 @@ describe('AuthenticatedUser', () => {
     expect(user.password).toBe('');
     expect(user.authorities.getItems()).toEqual([]);
     expect(user.grantedAuthoritiesUiModel.getItems()).toEqual([]);
-    expect(user.appSettings).toEqual({});
+    expect(user.appSettings).toEqual(new AppSettings());
   });
 
   it('should map complex authorities to UI model correctly', () => {
@@ -39,12 +40,12 @@ describe('AuthenticatedUser', () => {
       username: 'user1',
       password: 'pass1',
       external: true,
-      authorities: [`${Authority.READ_REPO_PREFIX}RepoA${Authority.SUFFIX_DELIMITER}${Authority.GRAPHQL}`, Authority.ROLE_USER],
+      authorities: new AuthorityList([`${Authority.READ_REPO_PREFIX}RepoA${Authority.SUFFIX_DELIMITER}${Authority.GRAPHQL}`, Authority.ROLE_USER]),
       appSettings: { foo: 'bar' },
     };
     const user = new AuthenticatedUser(data as never);
 
-    expect(user.authorities.getItems()).toEqual(data.authorities);
+    expect(user.authorities.getItems()).toEqual(data.authorities.getItems());
     expect(user.grantedAuthoritiesUiModel.getItems()).toContain(`${Authority.GRAPHQL_PREFIX}RepoA`);
     expect(user.grantedAuthoritiesUiModel.getItems()).toContain(Authority.ROLE_USER);
   });

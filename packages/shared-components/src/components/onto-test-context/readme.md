@@ -94,15 +94,15 @@ Type: `Promise<void>`
 
 
 
-### `setAuthenticatedUser(user: AuthenticatedUser) => Promise<void>`
+### `setAuthenticatedUser(user: User) => Promise<void>`
 
 Sets the authenticated user in the application context.
 
 #### Parameters
 
-| Name   | Type                | Description                                                                      |
-| ------ | ------------------- | -------------------------------------------------------------------------------- |
-| `user` | `AuthenticatedUser` | - The AuthenticatedUser object containing the user's authentication information. |
+| Name   | Type   | Description                                                                      |
+| ------ | ------ | -------------------------------------------------------------------------------- |
+| `user` | `User` | - The AuthenticatedUser object containing the user's authentication information. |
 
 #### Returns
 

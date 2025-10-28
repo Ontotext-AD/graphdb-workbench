@@ -1,11 +1,11 @@
 import {AuthorityList} from '../../../../models/security';
-import {BackendAuthoritiesMapper} from '../backend-authorities-mapper';
+import {GraphdbAuthoritiesModelMapper} from '../graphdb-authorities-model-mapper';
 
 describe('BackendAuthoritiesMapper', () => {
-  let mapper: BackendAuthoritiesMapper;
+  let mapper: GraphdbAuthoritiesModelMapper;
 
   beforeEach(() => {
-    mapper = new BackendAuthoritiesMapper();
+    mapper = new GraphdbAuthoritiesModelMapper();
   });
 
   test('should return empty array when no authorities provided', () => {
