@@ -3,6 +3,7 @@ import {Mapper} from '../../../providers/mapper/mapper';
 import {AuthSettingsResponseModel} from '../../../models/security/response-models/auth-settings-response-model';
 import {MapperProvider} from '../../../providers';
 import {AuthorityListMapper} from './authority-list.mapper';
+import {AppSettings} from '../../../models/users/app-settings';
 
 /**
  * Mapper class for converting partial AuthSettings objects to complete AuthSettings models.
@@ -16,7 +17,7 @@ export class AuthSettingsMapper extends Mapper<AuthSettings> {
    */
   mapToModel(data: Partial<AuthSettingsResponseModel>): AuthSettings {
     const authSettings = new AuthSettings({});
-    authSettings.appSettings = data.appSettings;
+    authSettings.appSettings = new AppSettings(data.appSettings);
     authSettings.authorities = MapperProvider.get(AuthorityListMapper).mapToModel(data.authorities);
     authSettings.enabled = data.enabled;
     return authSettings;

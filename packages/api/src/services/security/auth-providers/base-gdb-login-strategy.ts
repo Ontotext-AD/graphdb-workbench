@@ -30,6 +30,15 @@ export abstract class BaseGdbLoginStrategy implements AuthStrategy {
   abstract isExternal(): boolean;
 
   /**
+   * Fetches the currently authenticated user using the security service.
+   *
+   * @returns A promise that resolves to the authenticated user.
+   */
+  fetchAuthenticatedUser(): Promise<AuthenticatedUser> {
+    return this.securityService.getAuthenticatedUser();
+  }
+
+  /**
    * Attempts to log in using the provided username and password.
    * On success, stores the authentication token and updates the authenticated user in the security context.
    * Logs and throws an error if the user cannot be mapped from the response.

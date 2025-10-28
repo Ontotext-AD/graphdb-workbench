@@ -76,6 +76,15 @@ export class OpenidAuthProvider implements AuthStrategy {
   }
 
   /**
+   * Fetches the currently authenticated user.
+   *
+   * @returns A promise that resolves to the authenticated user.
+   */
+  fetchAuthenticatedUser(): Promise<AuthenticatedUser> {
+    return this.securityService.getAuthenticatedUser();
+  }
+
+  /**
    * Starts the OpenID Connect login flow.
    * @returns Promise that resolves when login flow is initiated
    * @throws Error if configuration is missing or flow type is unknown
@@ -173,7 +182,7 @@ export class OpenidAuthProvider implements AuthStrategy {
    * @private
    */
   private async loadAndSetAuthenticatedUser(): Promise<void> {
-    const authenticatedUser = await this.securityService.getAuthenticatedUser();
+    const authenticatedUser = await this.fetchAuthenticatedUser();
     if (authenticatedUser) {
       this.securityContextService.updateAuthenticatedUser(authenticatedUser);
     }
