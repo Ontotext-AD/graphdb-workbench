@@ -41,8 +41,7 @@ function verifyResult(result) {
 
     // Exit with code 1 if at least one --gw- variable is missing
     if (gWCSSVariables.length > 0) {
-      // TODO: Re-enable error throwing once all missing variables are fixed
-      // throw new Error('There are css variables that are not declared');
+      throw new Error('There are css variables that are not declared');
     }
   }
 }

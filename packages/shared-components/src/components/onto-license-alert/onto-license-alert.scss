@@ -4,13 +4,13 @@
 
 .onto-license-alert {
   animation: fade-button 2s infinite;
-  --fade-color: var(--gw-danger-light);
+  --fade-color: var(--gw-error-light);
   border: 1px solid transparent !important;
 
   &:hover {
     text-decoration: none;
-    background-color: var(--gw-danger-light) !important;
-    border-color: var(--gw-danger-light) !important;
+    background-color: var(--gw-error-light) !important;
+    border-color: var(--gw-error-light) !important;
 
     & span {
       transform: scale(1.2);

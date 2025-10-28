@@ -1792,7 +1792,7 @@ input[name=namespace] {
 
 .btn-fade-danger {
     animation: fade-button 2s infinite;
-    --fade-color: var(--gw-danger-light);
+    --fade-color: var(--gw-error-light);
 }
 
 .btn-fade-warning:hover, .btn-fade-danger:hover {
