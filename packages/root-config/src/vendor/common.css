@@ -330,7 +330,7 @@ h3 [class^=icon-] {
 }
 
 .text-tertiary {
-    color: var(--gw-tertiary-dark) !important;
+    color: var(--gw-tertiary-base) !important;
 }
 
 .text-danger {
