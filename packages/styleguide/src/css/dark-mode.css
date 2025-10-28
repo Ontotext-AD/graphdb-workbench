@@ -29,6 +29,7 @@
   --gw-main-gray-0-0-1: rgba(255, 255, 255, 0.1);
   --gw-additional-red-200: #f9e7e7;
   --gw-additional-red-300: #f4d2d2;
+  --gw-additional-red-400: #e9a5a5;
   --gw-additional-red-800: #8f2424;
   --gw-additional-yellow-200: #f6f3ea;
   --gw-additional-yellow-300: #eee9d8;
@@ -54,6 +55,7 @@
   --gw-warning-700: var(--gw-additional-yellow-300);
   --gw-warning-800: var(--gw-additional-yellow-200);
   --gw-danger-200: var(--gw-additional-red-800);
+  --gw-danger-600: var(--gw-additional-red-400);
   --gw-danger-700: var(--gw-additional-red-300);
   --gw-danger-800: var(--gw-additional-red-200);
   --gw-info-100: var(--gw-main-blue-900);
@@ -112,6 +114,7 @@
   --gw-muted-color: var(--gw-neutral-600);
   --gw-error-base: var(--gw-danger-700);
   --gw-error-lighter: var(--gw-danger-200);
+  --gw-error-light: var(--gw-danger-600);
   --gw-error-dark: var(--gw-danger-800);
   --gw-contrast-text: var(--gw-neutral-0);
   --gw-highlight-background: var(--gw-secondary-200);
@@ -135,6 +138,7 @@
   --gw-border-color-primary: var(--gw-primary-base);
   --gw-overlay-modal-border-color: var(--gw-default-border-color);
   --gw-button-primary-background: var(--gw-primary-base);
+  --gw-button-primary-link-hover-color: var(--gw-primary-dark);
   --gw-button-secondary-hover-color: var(--gw-secondary-base);
   --gw-button-secondary-active-color: var(--gw-secondary-light);
   --gw-button-secondary-color: var(--gw-secondary-base);
@@ -165,12 +169,16 @@
   --gw-message-info-color: var(--gw-info-dark);
   --gw-message-success-background: var(--gw-success-lighter);
   --gw-message-success-color: var(--gw-success-dark);
+  --gw-message-warning-background: var(--gw-warning-lighter);
+  --gw-message-warning-border-color: var(--gw-warning-lighter);
+  --gw-message-warning-color: var(--gw-warning-dark);
   --gw-message-error-background: var(--gw-error-lighter);
   --gw-message-error-border-color: var(--gw-error-lighter);
   --gw-message-error-color: var(--gw-error-dark);
   --gw-tag-success-color: var(--gw-success-base);
   --gw-tag-info-color: var(--gw-info-dark);
   --gw-tag-warning-color: var(--gw-warning-base);
+  --gw-tag-danger-background: var(--gw-error-lighter);
   --gw-tag-danger-color: var(--gw-error-base);
   --gw-editor-content-background: var(--gw-default-background);
   --gw-fieldset-background: var(--gw-default-background);

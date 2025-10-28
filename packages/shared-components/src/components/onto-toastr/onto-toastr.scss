@@ -33,7 +33,7 @@
     }
 
     &.warning {
-      background-color: var(--gw-toast-warning-background, #A92B0A);
+      background-color: var(--gw-toast-warn-background, #A92B0A);
     }
 
     &.success {
@@ -41,7 +41,7 @@
     }
 
     &.error {
-      background-color: var(--gw-toast-danger-background, #B71C1C);
+      background-color: var(--gw-toast-error-background, #B71C1C);
     }
 
     &.info {
