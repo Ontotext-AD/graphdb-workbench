@@ -110,13 +110,13 @@ yasgui-component .yasgui .tabsList .tab {
     padding: 0.46em !important;
     color: var(--gw-tabs-tab-color) !important;
     background-color: var(--gw-tabs-tab-background) !important;
-    border-color: var(--gw-tabs-tab-border-color) !important;
+    border-color: var(--gw-tabs-tab-border-color) var(--gw-tabs-tab-border-color) transparent !important;
 }
 
 yasgui-component .yasgui .tabsList .tab:hover {
     color: var(--gw-tabs-tab-hover-color) !important;
     background-color: var(--gw-tabs-tab-hover-background) !important;
-    border-color: var(--gw-tabs-tab-hover-border-color) !important;
+    border-color: var(--gw-tabs-tab-hover-border-color) var(--gw-tabs-tab-hover-border-color) transparent !important;
 }
 
 yasgui-component .yasgui .tabsList .tab.active {

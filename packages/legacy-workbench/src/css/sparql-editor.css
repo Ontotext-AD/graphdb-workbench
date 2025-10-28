@@ -50,3 +50,13 @@
 .sparql-editor-view #query-editor .yasgui-toolbar .btn-selected {
     color: #fff;
 }
+
+
+.ontotext-yasgui-tooltip .tippy-box {
+    background-color: var(--gw-tooltip-background);
+    color: var(--gw-tooltip-color);
+}
+
+.ontotext-yasgui-tooltip .tippy-box .tippy-arrow {
+    color: var(--gw-tooltip-background);
+}
