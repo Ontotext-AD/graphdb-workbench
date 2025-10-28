@@ -1,6 +1,6 @@
 import {Service} from '../../providers/service/service';
 import {SecurityRestService} from './security-rest.service';
-import {MapperProvider, ServiceProvider} from '../../providers';
+import {MapperProvider, service} from '../../providers';
 import {AuthenticatedUser, SecurityConfig} from '../../models/security';
 import {SecurityContextService} from './security-context.service';
 import {SecurityConfigMapper} from './mappers/security-config.mapper';
@@ -8,27 +8,28 @@ import {AuthenticatedUserMapper} from './mappers/authenticated-user.mapper';
 import {AuthSettingsMapper} from './mappers/auth-settings.mapper';
 import {AuthSettings} from '../../models/security/auth-settings';
 import {AuthSettingsRequestModel} from '../../models/security/response-models/auth-settings-request-model';
-import {BackendAuthoritiesMapper} from './mappers/backend-authorities-mapper';
+import {GraphdbAuthoritiesModelMapper} from './mappers/graphdb-authorities-model-mapper';
+import {UsersService} from '../users';
+import {User} from '../../models/users/user';
 
 /**
  * Service class for handling security-related operations.
  */
 export class SecurityService implements Service {
-  private readonly securityRestService: SecurityRestService = ServiceProvider.get(SecurityRestService);
-  private readonly securityContextService: SecurityContextService = ServiceProvider.get(SecurityContextService);
+  private readonly securityRestService = service(SecurityRestService);
+  private readonly securityContextService = service(SecurityContextService);
+  private readonly usersService = service(UsersService);
 
   /**
-   * Updates the data of an authenticated user.
+   * Updates the data of the authenticated user.
    *
-   * Updates the authenticated user's data in the backend using the provided user object and updates the
-   * context with the updated user data.
+   * Updates the authenticated user's data in the backend using the provided {@link User}
    *
-   * @param user - The authenticated user object containing the updated data.
+   * @param user - The User object containing the updated data.
    * @returns A Promise that resolves when the user data has been successfully updated.
    */
-  updateUserData(user: AuthenticatedUser): Promise<void> {
-    return this.securityRestService.updateUserData(user)
-      .then(() => this.securityContextService.updateAuthenticatedUser(user));
+  updateAuthenticatedUser(user: User): Promise<void> {
+    return this.usersService.updateCurrentUser(user);
   }
 
   /**
@@ -67,13 +68,18 @@ export class SecurityService implements Service {
    * @returns A Promise that resolves when the free access settings have been successfully updated.
    */
   setFreeAccess(enabled: boolean, freeAccess?: AuthSettings): Promise<void> {
-    const mapper = MapperProvider.get(BackendAuthoritiesMapper);
+    const mapper = MapperProvider.get(GraphdbAuthoritiesModelMapper);
     const freeAccessData: AuthSettingsRequestModel = {
       enabled: enabled
     };
     if (enabled) {
+      if (!freeAccess) {
+        throw new Error('Free access settings must be provided when enabling free access');
+      }
       freeAccessData.authorities = mapper.mapToModel(freeAccess?.authorities);
-      freeAccessData.appSettings = freeAccess?.appSettings;
+      freeAccessData.appSettings = {
+        ...freeAccess?.appSettings
+      } as Record<string, unknown>;
     }
 
     return this.securityRestService.setFreeAccess(freeAccessData)
@@ -102,9 +108,9 @@ export class SecurityService implements Service {
    *
    * @returns A Promise that resolves with the mapped `AuthenticatedUser` instance representing the admin user.
    */
-  getAdminUser(): Promise<AuthenticatedUser> {
-    return this.securityRestService.getAdminUser()
-      .then((response) => MapperProvider.get(AuthenticatedUserMapper).mapToModel(response));
+  getAuthenticatedAdminUser(): Promise<AuthenticatedUser> {
+    return this.usersService.getAdminUser()
+      .then((adminUser) => AuthenticatedUser.fromUser(adminUser));
   }
 
   /**

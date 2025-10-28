@@ -1,4 +1,4 @@
-import {Authority} from '../../../models/security/authority';
+import {Authority} from '../../../models/security/authorization/authority';
 
 export interface RepoAuthority {
   prefix: Authority;

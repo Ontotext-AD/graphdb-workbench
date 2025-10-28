@@ -1,6 +1,6 @@
 import {hextob64u, KJUR} from 'jsrsasign';
-import {AuthFlowParams} from '../../../models/security/authentication';
 import {WindowService} from '../../window';
+import {AuthFlowParams} from '../../../models/security/authentication/openid-auth-flow-models';
 
 export type OpenIdQueryParams = {
   access_token: string | null;

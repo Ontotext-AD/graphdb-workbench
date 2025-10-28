@@ -1,4 +1,4 @@
-import {AuthorityList} from '../../../models/security/authority-list';
+import {AuthorityList} from '../../../models/security/authorization/authority-list';
 import {Mapper} from '../../../providers/mapper/mapper';
 
 /**

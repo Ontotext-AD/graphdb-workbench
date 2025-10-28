@@ -2,6 +2,7 @@ import {AuthSettings} from '../../../../models/security/auth-settings';
 import {AuthSettingsMapper} from '../auth-settings.mapper';
 import {AuthSettingsResponseModel} from '../../../../models/security/response-models/auth-settings-response-model';
 import {AuthorityList} from '../../../../models/security';
+import {AppSettings} from '../../../../models/users/app-settings';
 
 describe('AuthSettingsMapper', () => {
   test('should map raw data to AuthSettings model', () => {
@@ -28,7 +29,7 @@ describe('AuthSettingsMapper', () => {
     const expected = new AuthSettings({});
     expected.enabled = rawAuthSettings.enabled;
     expected.authorities = new AuthorityList(rawAuthSettings.authorities);
-    expected.appSettings = rawAuthSettings.appSettings;
+    expected.appSettings = new AppSettings(rawAuthSettings.appSettings);
 
     // Then I expect the AuthSettings model to have the same properties as the raw data
     expect(authSettings).toEqual(expected);

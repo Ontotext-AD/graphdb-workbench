@@ -24,10 +24,14 @@ export class TestUtil {
       const matchingMock = responseMocks.find((mock) => mock.getUrl() === url);
       if (matchingMock) {
         TestUtil.requestsMap.set(url, request);
+        const headers = matchingMock.getHeaders() ?? new Headers();
+        if (!headers.has('Content-Type')) {
+          headers.set('Content-Type', 'application/json');
+        }
         return Promise.resolve({
           ok: matchingMock.getStatus() >= 200 && matchingMock.getStatus() < 300,
           status: matchingMock.getStatus(),
-          headers: matchingMock.getHeaders() || { get: (name: string) => name === 'Content-Type' ? 'application/json' : undefined },
+          headers,
           json: async () => matchingMock.getShouldThrowOnJson() ? Promise.reject(new Error('JSON error')) : Promise.resolve(matchingMock.getResponse()),
           text: async () => matchingMock.getMessage(),
         } as Response);

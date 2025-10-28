@@ -1,20 +1,18 @@
 import HomeSteps from '../../steps/home-steps';
-import {EnvironmentStubs} from "../../stubs/environment-stubs";
-import {SecurityStubs} from "../../stubs/security-stubs";
-import {SettingsSteps} from "../../steps/setup/settings-steps";
-import {LicenseStubs} from "../../stubs/license-stubs";
+import {SecurityStubs} from '../../stubs/security-stubs';
+import {SettingsSteps} from '../../steps/setup/settings-steps';
+import {LicenseStubs} from '../../stubs/license-stubs';
 
 Cypress.env('set_default_user_data', false);
 
-
 describe('Cookie policy', () => {
     beforeEach(() => {
-        cy.setDefaultUserData(false);
+        cy.setCookieConsent(undefined);
         cy.viewport(1280, 1000);
         LicenseStubs.stubFreeLicense();
     });
 
-    afterEach(() => cy.setDefaultUserData());
+    afterEach(() => cy.setCookieConsent(true));
 
     context('should show', () => {
         it('Should show consent popup to user', () => {
@@ -71,13 +69,15 @@ describe('Cookie policy', () => {
         });
 
         it('Should set cookies for tracking when accepted', () => {
+            cy.intercept('PATCH', `/rest/security/users/admin`).as('updateUser');
             HomeSteps.visitInProdMode();
-            SecurityStubs.stubUpdateUserData('admin');
 
             // When I click Agree button
             HomeSteps.clickAgreeButton();
 
             // I expect to save cookie consent in user settings
+            // There are two requests one from the new shared component and one in the legacy
+            cy.wait('@updateUser');
             cy.wait('@updateUser');
 
             // Check if the GA tracking script is set correctly in the head

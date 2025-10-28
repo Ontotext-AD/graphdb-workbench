@@ -5,17 +5,20 @@ import 'angular/core/services/security.service';
 import {UserRole, UserType} from 'angular/utils/user-utils';
 import 'angular/security/directives/custom-prefix-tags-input.directive';
 import {GRAPHQL, GRAPHQL_PREFIX, READ_REPO, READ_REPO_PREFIX, SYSTEM_REPO, WRITE_REPO, WRITE_REPO_PREFIX} from './services/constants';
-import {createUniqueKey, parseAuthorities} from './services/authorities-util';
 import {
+    AppSettings,
+    AuthorityList,
     AuthorizationService,
     AuthenticationService,
     AuthSettingsMapper,
-    MapperProvider,
     GrantedAuthoritiesUiModelMapper,
+    MapperProvider,
     OntoToastrService,
-    SecurityContextService,
+    RepositoryService,
     SecurityService as SecurityServiceAPI,
     service,
+    User,
+    UsersService,
 } from '@ontotext/workbench-api';
 
 const modules = [
@@ -36,6 +39,11 @@ securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$windo
         const authenticationService = service(AuthenticationService);
         const securityServiceAPI = service(SecurityServiceAPI);
         const toastrService = service(OntoToastrService);
+        const usersService = service(UsersService);
+        const repositoryService = service(RepositoryService);
+
+        // UI view-model
+        $scope.usersData = [];
 
         $scope.loader = true;
         $scope.securityEnabled = function() {
@@ -51,16 +59,16 @@ securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$windo
             return authorizationService.hasFreeAccess();
         };
         $scope.getUsers = () => {
-            return SecurityService.getUsers()
+            return usersService.getUsers()
                 .then(function(data) {
-                    $scope.users = data;
-                    for (let i = 0; i < $scope.users.length; i++) {
-                        const pa = parseAuthorities($scope.users[i].grantedAuthoritiesUiModel);
-                        $scope.users[i].userType = pa.userType;
-                        $scope.users[i].userTypeDescription = pa.userTypeDescription;
-                        $scope.users[i].repositories = pa.repositories;
-                        $scope.users[i].customRoles = pa.customRoles;
-                    }
+                    $scope.usersData = data.map((user) => ({
+                        username: user.username,
+                        dateCreated: user.dateCreated,
+                        userType: user.getUserType(),
+                        userTypeDescription: user.getUserTypeDescription(),
+                        repositories: user.authorities.getRepositoriesPermissions(),
+                        customRoles: user.authorities.getCustomRoles(),
+                    }));
                     $scope.loader = false;
                 }).catch(function(data) {
                     const msg = getError(data);
@@ -114,11 +122,11 @@ securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$windo
                         toastrService.success($translate.instant(translateKey, {status: $translate.instant('enabled.status')}));
                     })
                     .catch((err) => {
-                        if (!err.data) {
+                        if (err === 'cancel') {
                             // Check if modal was dismissed by user
                             return;
                         }
-                        toastrService.error(err.data, $translate.instant('common.error'));
+                        toastrService.error(err.data ?? err, $translate.instant('common.error'));
                     });
             } else {
                 // disable
@@ -148,7 +156,7 @@ securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$windo
                                 };
                                 // We might have old (no longer existing) repositories so we have to check that
                                 const repoIds = _.mapKeys($scope.getRepositories(), function(r) {
-                                    return createUniqueKey(r);
+                                    return repositoryService.getLocationSpecificId(r);
                                 });
                                 _.each(authorities, function(a) {
                                     // indexOf works in IE 11, startsWith doesn't
@@ -195,7 +203,7 @@ securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$windo
                 warning: true,
             }).result.then(function() {
                 $scope.loader = true;
-                SecurityService.deleteUser(username)
+                usersService.deleteUser(username)
                     .then(() => $scope.getUsers())
                     .catch((data) => {
                         const msg = getError(data);
@@ -213,6 +221,8 @@ securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$windo
 
 securityModule.controller('DefaultAuthoritiesCtrl', ['$scope', '$http', '$uibModalInstance', 'data', '$rootScope',
     function($scope, $http, $uibModalInstance, data, $rootScope) {
+        const repositoryService = service(RepositoryService);
+
         $scope.grantedAuthorities = data.defaultAuthorities();
         $scope.appSettings = data.appSettings;
 
@@ -257,13 +267,14 @@ securityModule.controller('DefaultAuthoritiesCtrl', ['$scope', '$http', '$uibMod
         };
 
         $scope.createUniqueKey = function(repository) {
-            return createUniqueKey(repository);
+            return repositoryService.getLocationSpecificId(repository);
         };
     }]);
 
 securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 'toastr', '$window', '$timeout', '$location', '$jwtAuth', '$translate', 'passwordPlaceholder',
-    function ($rootScope, $scope, $http, toastr, $window, $timeout, $location, $jwtAuth, $translate, passwordPlaceholder) {
+    function($rootScope, $scope, $http, toastr, $window, $timeout, $location, $jwtAuth, $translate, passwordPlaceholder) {
         const authorizationService = service(AuthorizationService);
+        const repositoryService = service(RepositoryService);
 
         $rootScope.$on('$translateChangeSuccess', function () {
             $scope.passwordPlaceholder = $translate.instant(passwordPlaceholder);
@@ -338,7 +349,7 @@ securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 't
         };
 
         $scope.hasReadPermission = function(repository) {
-            const uniqueKey = createUniqueKey(repository);
+            const uniqueKey = repositoryService.getLocationSpecificId(repository);
             return $scope.userType === UserType.ADMIN
                 || $scope.userType === UserType.REPO_MANAGER
                 || repository.id !== SYSTEM_REPO && ($scope.grantedAuthorities.READ_REPO['*']
@@ -348,7 +359,7 @@ securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 't
         };
 
         $scope.hasWritePermission = function(repoOrWildCard) {
-            const uniqueKey = createUniqueKey(repoOrWildCard);
+            const uniqueKey = repositoryService.getLocationSpecificId(repoOrWildCard);
             return $scope.userType === UserType.ADMIN
                 || $scope.userType === UserType.REPO_MANAGER
                 || repoOrWildCard.id !== SYSTEM_REPO && $scope.grantedAuthorities.WRITE_REPO['*']
@@ -356,7 +367,7 @@ securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 't
         };
 
         $scope.hasGraphqlPermission = function(repository) {
-            const uniqueKey = createUniqueKey(repository);
+            const uniqueKey = repositoryService.getLocationSpecificId(repository);
             return repository.id !== SYSTEM_REPO && $scope.grantedAuthorities.GRAPHQL['*']
                 || $scope.grantedAuthorities.GRAPHQL[uniqueKey];
         };
@@ -400,7 +411,7 @@ securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 't
 
             let uniqueKey;
             if (repoOrWildCard !== null && typeof repoOrWildCard === 'object') {
-                uniqueKey = $scope.createUniqueKey(repoOrWildCard);
+                uniqueKey = repositoryService.getLocationSpecificId(repoOrWildCard);
             } else {
                 uniqueKey = repoOrWildCard;
             }
@@ -415,7 +426,7 @@ securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 't
 
 
         $scope.createUniqueKey = function(repository) {
-            return createUniqueKey(repository);
+            return repositoryService.getLocationSpecificId(repository);
         };
 
         $scope.userType = UserType.USER;
@@ -539,6 +550,7 @@ securityModule.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window'
     function($scope, $http, toastr, $window, $timeout, $location, $jwtAuth, $controller, SecurityService, ModalService, $translate) {
         // eslint-disable-next-line no-invalid-this
         angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope, passwordPlaceholder: 'security.password.placeholder'}));
+        const usersService = service(UsersService);
 
         $scope.mode = 'add';
         $scope.saveButtonText = $translate.instant('common.create.btn');
@@ -583,25 +595,37 @@ securityModule.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window'
 
         $scope.createUserHttp = function() {
             $scope.loader = true;
-            SecurityService.createUser({
+            const user = new User({
                 username: $scope.user.username,
-                pass: $scope.user.password,
-                appSettings: $scope.user.appSettings,
-                grantedAuthorities: $scope.user.grantedAuthorities,
-            }).then(() => {
-                toastr.success($translate.instant('security.user.created', {name: $scope.user.username}));
-                const timer = $timeout(function() {
-                    $scope.loader = false;
-                    $window.history.back();
-                }, 2000);
-                $scope.$on('$destroy', function() {
-                    $timeout.cancel(timer);
-                });
-            }).catch((data) => {
-                const msg = getError(data);
-                $scope.loader = false;
-                toastr.error(msg, $translate.instant('common.error'));
+                password: $scope.user.password,
+                appSettings: new AppSettings($scope.user.appSettings),
+                authorities: new AuthorityList($scope.user.grantedAuthorities),
             });
+            usersService.createUser(user)
+                .then(() => {
+                    toastr.success($translate.instant('security.user.created', {name: $scope.user.username}));
+                    const timer = $timeout(function() {
+                        $scope.loader = false;
+                        $window.history.back();
+                    }, 2000);
+                    $scope.$on('$destroy', function() {
+                        $timeout.cancel(timer);
+                    });
+                })
+                .catch(async (data) => {
+                    let msg;
+                    if (data instanceof Response) {
+                        try {
+                            msg = await data.text();
+                        } catch {
+                            // ignore
+                        }
+                    } else {
+                        msg = getError(data);
+                    }
+                    $scope.loader = false;
+                    toastr.error(msg, $translate.instant('common.error'));
+                });
         };
 
         $scope.createUser = function() {
@@ -648,6 +672,7 @@ securityModule.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window
     function($scope, $http, toastr, $window, $routeParams, $timeout, $location, $jwtAuth, $controller, SecurityService, ModalService, $translate) {
         // eslint-disable-next-line no-invalid-this
         angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope, passwordPlaceholder: 'security.new.password'}));
+        const usersService = service(UsersService);
 
         const authorizationService = service(AuthorizationService);
 
@@ -677,18 +702,15 @@ securityModule.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window
             $location.url('settings');
         }
         $scope.getUserData = function() {
-            SecurityService.getUser($scope.params.userId).then(function(data) {
-                $scope.userData = data;
-                $scope.user = {username: $scope.userData.username};
+            usersService.getUser($scope.params.userId).then(function(data) {
+                $scope.user = {username: data.username};
                 $scope.user.password = '';
                 $scope.user.confirmpassword = '';
-                $scope.user.external = $scope.userData.external;
+                $scope.user.external = data.external;
                 $scope.user.appSettings = data.appSettings || defaultUserSettings;
-                $scope.userType = UserType.USER;
-                const pa = parseAuthorities(data.grantedAuthoritiesUiModel);
-                $scope.userType = pa.userType;
-                $scope.grantedAuthorities = pa.grantedAuthorities;
-                $scope.customRoles = pa.customRoles;
+                $scope.userType = data.getUserType();
+                $scope.grantedAuthorities = data.authorities.toUIModel();
+                $scope.customRoles = data.authorities.getCustomRoles();
             }).catch(function(data) {
                 const msg = getError(data);
                 toastr.error(msg, $translate.instant('common.error'));
@@ -713,12 +735,13 @@ securityModule.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window
 
         $scope.updateUserHttp = function() {
             $scope.loader = true;
-            SecurityService.updateUser({
+            const user = new User({
                 username: $scope.user.username,
-                pass: ($scope.noPassword) ? '' : $scope.user.password || undefined,
-                appSettings: $scope.user.appSettings,
-                grantedAuthorities: $scope.user.grantedAuthorities,
-            }).then(() => {
+                password: $scope.noPassword ? '' : $scope.user.password || undefined,
+                appSettings: new AppSettings($scope.user.appSettings),
+                authorities: new AuthorityList($scope.user.grantedAuthorities),
+            });
+            usersService.updateUser(user).then(() => {
                 toastr.success($translate.instant('security.user.updated', {name: $scope.user.username}));
                 const timer = $timeout(function() {
                     $scope.loader = false;

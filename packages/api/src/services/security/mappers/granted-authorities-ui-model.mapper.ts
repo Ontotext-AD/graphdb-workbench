@@ -1,6 +1,6 @@
-import {AuthorityList} from '../../../models/security/authority-list';
+import {AuthorityList} from '../../../models/security/authorization/authority-list';
 import {Mapper} from '../../../providers/mapper/mapper';
-import {Authority} from '../../../models/security/authority';
+import {Authority} from '../../../models/security/authorization/authority';
 import {AuthoritiesUtil} from '../utils/authorities-util';
 
 /**
@@ -18,8 +18,12 @@ export class GrantedAuthoritiesUiModelMapper extends Mapper<AuthorityList> {
    * @returns An AuthorityList containing unique authority codes, including derived GraphQL UI authorities.
    */
   mapToModel(data: string[] | AuthorityList): AuthorityList {
+    if (!data) {
+      return new AuthorityList();
+    }
+
     const result: string[] = [];
-    const authorities = data instanceof AuthorityList? data.getItems() : data ?? [];
+    const authorities = (data instanceof AuthorityList ? data.getItems() : data) ?? [];
     for (const auth of authorities) {
       if (this.handleRepoGraphQL(auth, result)) {
         continue;

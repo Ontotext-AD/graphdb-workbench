@@ -1,6 +1,6 @@
 import {OpenidTokenUtils} from '../openid-token-utils';
 import {OpenidSecurityConfig, SecurityConfig} from '../../../../models/security';
-import {TokenType} from '../../../../models/security/authentication';
+import {TokenType} from '../../../../models/security/authentication/openid-token-type';
 import {service} from '../../../../providers';
 import {OpenidStorageService} from '../openid-storage.service';
 import {SecurityContextService} from '../../security-context.service';

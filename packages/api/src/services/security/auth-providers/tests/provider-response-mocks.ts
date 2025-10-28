@@ -1,3 +1,5 @@
+import {UserResponse} from '../../../../models/users/response-models/user-response';
+
 export const ProviderResponseMocks = {
   authenticatedUserResponse: {
     username: 'testUser',
@@ -32,8 +34,9 @@ export const ProviderResponseMocks = {
       DEFAULT_VIS_GRAPH_SCHEMA: true
     },
     dateCreated: 1754309863184,
-    gptThreads: []
-  },
+    gptThreads: [],
+    external: false
+  } as UserResponse,
 
   loginResponse: {
     username: 'admin',
@@ -54,5 +57,43 @@ export const ProviderResponseMocks = {
       DEFAULT_VIS_GRAPH_SCHEMA: true
     },
     external: false
+  },
+
+  securityConfig: {
+    freeAccess: {
+      enabled: false,
+      authorities: [
+        'READ_REPO_configurations@http://localhost:7202'
+      ],
+      appSettings: {
+        DEFAULT_INFERENCE: true,
+        DEFAULT_VIS_GRAPH_SCHEMA: true,
+        DEFAULT_SAMEAS: true,
+        IGNORE_SHARED_QUERIES: false,
+        EXECUTE_COUNT: true,
+        COOKIE_CONSENT: 'false'
+      }
+    },
+    overrideAuth: {
+      enabled: false,
+      authorities: [
+        'ROLE_REPO_MANAGER',
+        'ROLE_MONITORING',
+        'ROLE_USER'
+      ],
+      appSettings: {
+        DEFAULT_INFERENCE: true,
+        DEFAULT_VIS_GRAPH_SCHEMA: true,
+        DEFAULT_SAMEAS: true,
+        IGNORE_SHARED_QUERIES: false,
+        EXECUTE_COUNT: true
+      }
+    },
+    methodSettings: {},
+    passwordLoginEnabled: true,
+    hasExternalAuth: false,
+    authImplementation: 'Local',
+    openIdEnabled: false,
+    enabled: false
   }
 };

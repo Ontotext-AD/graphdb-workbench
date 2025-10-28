@@ -1,8 +1,7 @@
 import {service} from '../../../providers';
 import {SecurityContextService, SecurityService} from '../../../services/security';
 import {LoggerProvider} from '../../logging/logger-provider';
-import {AuthStrategy} from '../../../models/security/authentication';
-import {AuthStrategyType} from '../../../models/security/authentication';
+import {AuthStrategy, AuthStrategyType} from '../../../models/security/authentication';
 import {AuthenticatedUser} from '../../../models/security';
 
 export class NoSecurityProvider implements AuthStrategy {
@@ -18,7 +17,7 @@ export class NoSecurityProvider implements AuthStrategy {
    * @returns Promise resolving to true if user is logged in
    * */
   initialize(): Promise<boolean> {
-    return this.securityService.getAdminUser()
+    return this.fetchAuthenticatedUser()
       .then((authenticatedUser) => {
         this.securityContextService.updateAuthenticatedUser(authenticatedUser);
         return true;
@@ -30,10 +29,19 @@ export class NoSecurityProvider implements AuthStrategy {
   }
 
   /**
+   * Fetches the admin user as Authenticated user.
+   *
+   * @returns A promise that resolves to the authenticated admin user.
+   */
+  fetchAuthenticatedUser(): Promise<AuthenticatedUser> {
+    return this.securityService.getAuthenticatedAdminUser();
+  }
+
+  /**
    * Logs in a user. In the NoSecurityProvider, this method does nothing and resolves immediately.
    */
   login(): Promise<AuthenticatedUser> {
-    return this.securityService.getAdminUser();
+    return this.fetchAuthenticatedUser();
   }
 
   /**

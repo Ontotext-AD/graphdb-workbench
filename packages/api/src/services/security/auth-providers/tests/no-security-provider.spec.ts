@@ -22,7 +22,7 @@ describe('NoSecurityProvider', () => {
     it('should fetch the admin user and update the context', async () => {
       TestUtil.mockResponse(new ResponseMock('rest/security/users/admin').setResponse(ProviderResponseMocks.adminUserResponse));
 
-      const getAdminUserSpy = jest.spyOn(ServiceProvider.get(SecurityService), 'getAdminUser');
+      const getAdminUserSpy = jest.spyOn(ServiceProvider.get(SecurityService), 'getAuthenticatedAdminUser');
       const updateAuthenticatedUserSpy = jest.spyOn(ServiceProvider.get(SecurityContextService), 'updateAuthenticatedUser');
 
       await provider.initialize();

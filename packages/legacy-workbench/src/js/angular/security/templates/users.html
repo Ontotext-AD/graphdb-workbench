@@ -48,7 +48,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr ng-repeat="user in users | orderBy: 'username'">
+			<tr ng-repeat="user in usersData | orderBy: 'username'">
 				<td class="username"><span>{{user.username}}</span></td>
 				<td ng-if="!hasExternalAuth()" class="user-type">{{user.userTypeDescription}}</td>
 				<td ng-if="!hasExternalAuth()" class="repository-rights">

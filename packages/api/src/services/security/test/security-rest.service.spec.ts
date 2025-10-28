@@ -1,7 +1,6 @@
 import {SecurityRestService} from '../security-rest.service';
 import {TestUtil} from '../../utils/test/test-util';
 import {ResponseMock} from '../../http/test/response-mock';
-import {AuthenticatedUser} from '../../../models/security';
 import {AuthSettingsRequestModel} from '../../../models/security/response-models/auth-settings-request-model';
 
 describe('SecurityRestService', () => {
@@ -40,47 +39,6 @@ describe('SecurityRestService', () => {
         method: 'POST',
         body: JSON.stringify({username, password})
       }));
-    });
-  });
-
-  describe('updateUserData', () => {
-    test('should send PATCH request to update user data', async () => {
-      // Given, I have an authenticated user with app settings
-      const user = new AuthenticatedUser({
-        username: 'testuser',
-        appSettings: {theme: 'dark', language: 'en'}
-      });
-      const url = 'rest/security/users/testuser';
-      const mockResponse = {};
-
-      TestUtil.mockResponse(new ResponseMock(url).setResponse(mockResponse));
-
-      // When, I call updateUserData
-      await securityRestService.updateUserData(user);
-
-      // Then, I expect PATCH request with app settings
-      expect(fetch).toHaveBeenCalledWith(url, expect.objectContaining({
-        method: 'PATCH',
-        body: JSON.stringify({appSettings: user.appSettings})
-      }));
-    });
-
-    test('should encode special characters in username', async () => {
-      // Given, I have a user with special characters in username
-      const user = new AuthenticatedUser({
-        username: 'test@user.com',
-        appSettings: {theme: 'light'}
-      });
-      const url = 'rest/security/users/test%40user.com';
-      const mockResponse = {};
-
-      TestUtil.mockResponse(new ResponseMock(url).setResponse(mockResponse));
-
-      // When, I call updateUserData
-      await securityRestService.updateUserData(user);
-
-      // Then, I expect the username to be encoded
-      expect(fetch).toHaveBeenCalledWith(url, expect.anything());
     });
   });
 

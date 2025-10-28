@@ -3,6 +3,7 @@ import {SecurityContextService} from '../../../services/security';
 import {getCurrentRoute} from '../../utils';
 import {AuthStrategyType} from '../../../models/security/authentication';
 import {BaseGdbLoginStrategy} from './base-gdb-login-strategy';
+import {AuthenticatedUser} from '../../../models/security';
 
 export class GdbTokenAuthProvider extends BaseGdbLoginStrategy {
   private readonly securityContextService = service(SecurityContextService);
@@ -26,7 +27,7 @@ export class GdbTokenAuthProvider extends BaseGdbLoginStrategy {
       return Promise.resolve(isAuthValid);
     }
 
-    return this.securityService.getAuthenticatedUser()
+    return this.fetchAuthenticatedUser()
       .then((authenticatedUser) => {
         if (authenticatedUser) {
           this.securityContextService.updateAuthenticatedUser(authenticatedUser);
@@ -37,6 +38,15 @@ export class GdbTokenAuthProvider extends BaseGdbLoginStrategy {
         this.logger.error('Could not load authenticated user', error);
         return false;
       });
+  }
+
+  /**
+   * Fetches the currently authenticated user using the security service.
+   *
+   * @returns A promise that resolves to the authenticated user.
+   */
+  fetchAuthenticatedUser(): Promise<AuthenticatedUser> {
+    return this.securityService.getAuthenticatedUser();
   }
 
   /**

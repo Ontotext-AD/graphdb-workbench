@@ -1,4 +1,4 @@
-import { AuthorityList } from '../authority-list';
+import { AuthorityList } from '../authorization/authority-list';
 
 describe('AuthorityList', () => {
   describe('hasAuthority', () => {

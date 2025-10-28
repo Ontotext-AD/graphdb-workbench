@@ -142,7 +142,7 @@ describe('User and Access', () => {
             UserAndAccessSteps.getFreeAccessSwitchInput().should('be.checked');
             // And I should see a success message
             ToasterSteps.verifySuccess('Free access has been enabled.');
-            ToasterSteps.getToast().should('not.exist');
+            ToasterSteps.getToast().should('not.exist')
             UserAndAccessSteps.getUsersTable().should('be.visible');
             // When I toggle Free Access OFF
             UserAndAccessSteps.toggleFreeAccess();

@@ -1,39 +1,53 @@
 import {TestUtil} from '../../utils/test/test-util';
 import {ResponseMock} from '../../http/test/response-mock';
-import {AuthenticatedUser} from '../../../models/security';
 import {CookieService} from '../cookie.service';
-import {ServiceProvider} from '../../../providers';
-import {SecurityContextService} from '../../security';
-import {CookieConsent} from '../../../models/cookie';
+import {service} from '../../../providers';
+import {AuthenticationService} from '../../security';
+import {SecurityConfigTestUtil} from '../../utils/test/security-config-test-util';
+import {AuthenticatedUserResponse} from '../../../models/security/response-models/authenticated-user-response';
 
 describe('CookiesService', () => {
   let cookiesService: CookieService;
+  let mockAuthenticatedUser: AuthenticatedUserResponse;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     cookiesService = new CookieService();
-  });
-
-  test('should accept the cookie policy', async () => {
-    // Given, I have a mocked authenticated user
-    const mockAuthenticatedUser = new AuthenticatedUser({
+    mockAuthenticatedUser = {
       username: 'testuser',
+      password: '',
+      external: false,
+      authorities: ['ROLE_ADMIN'],
       appSettings: {
         COOKIE_CONSENT: {
           policyAccepted: false,
-          statistics: true,
+          statistic: true,
           thirdParty: false,
           updatedAt: 1738753714185
         }
       }
-    });
-    ServiceProvider.get(SecurityContextService).updateAuthenticatedUser(mockAuthenticatedUser);
-    TestUtil.mockResponse(new ResponseMock(`rest/security/users/${mockAuthenticatedUser.username}`).setResponse({}));
+    } as AuthenticatedUserResponse;
 
+    // Given, I have a mocked authenticated user
+    TestUtil.mockResponses([
+      new ResponseMock('rest/security/authenticated-user').setResponse(mockAuthenticatedUser),
+      new ResponseMock(`rest/security/users/${mockAuthenticatedUser.username}`).setResponse({}),
+      new ResponseMock('rest/login').setResponse(mockAuthenticatedUser).setHeaders(new Headers({authorization: 'GDB someToken'}))
+    ]);
+
+    const securityConfig = SecurityConfigTestUtil.createSecurityConfig({enabled: true});
+    await service(AuthenticationService).setAuthenticationStrategy(securityConfig);
+    await service(AuthenticationService).login(mockAuthenticatedUser.username, 'password');
+  });
+
+  afterEach(() => {
+    TestUtil.restoreAllMocks();
+  });
+
+  test('should accept the cookie policy', async () => {
     // When I call the acceptCookiePolicy method
     await cookiesService.acceptCookiePolicy();
-
-    // Then, the user's cookie consent should be updated
-    const updatedUser = ServiceProvider.get(SecurityContextService).getAuthenticatedUser();
-    expect(new CookieConsent(updatedUser?.appSettings?.COOKIE_CONSENT as CookieConsent)?.policyAccepted).toEqual(true);
+    const updateUserRequest = TestUtil.getRequest(`rest/security/users/${mockAuthenticatedUser.username}`);
+    const requestBody = JSON.parse(updateUserRequest!.body as string);
+    expect(requestBody.appSettings.COOKIE_CONSENT.policyAccepted).toEqual(true);
   });
 });

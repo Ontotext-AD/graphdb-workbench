@@ -1,5 +1,5 @@
 import {Service} from '../../providers/service/service';
-import {SecurityConfig} from '../../models/security';
+import {AuthenticatedUser, SecurityConfig} from '../../models/security';
 import {service} from '../../providers';
 import {EventService} from '../event-service';
 import {Logout} from '../../models/events';
@@ -9,7 +9,7 @@ import {AuthStrategyResolver} from './auth-strategy-resolver';
 import {Login} from '../../models/events/auth/login';
 import {isLoginPage, navigate} from '../utils';
 import {AuthorizationService} from './authorization.service';
-import {MissingAuthStrategyError} from './errors/missing-auth-strategy-error';
+import {AuthenticationStrategyNotSet} from './errors/authentication-strategy-not-set';
 
 /**
  * Service responsible for handling authentication operations and managing auth strategies.
@@ -61,6 +61,13 @@ export class AuthenticationService implements Service {
     return !!this.authStrategy;
   }
 
+  getCurrentUser(): Promise<AuthenticatedUser> {
+    if (!this.authStrategy) {
+      throw new AuthenticationStrategyNotSet();
+    }
+    return this.authStrategy.fetchAuthenticatedUser();
+  }
+
   /**
    * Authenticates the user with username and password.
    *
@@ -73,7 +80,7 @@ export class AuthenticationService implements Service {
    */
   login(username: string, password: string): Promise<void> {
     if (!this.authStrategy) {
-      throw new Error('Authentication strategy not set');
+      throw new AuthenticationStrategyNotSet();
     }
     return this.authStrategy.login({username, password})
       .then((authUser) => {
@@ -91,7 +98,7 @@ export class AuthenticationService implements Service {
    */
   logout(): Promise<void> {
     if (!this.authStrategy) {
-      throw new Error('Authentication strategy not set');
+      throw new AuthenticationStrategyNotSet();
     }
     return this.authStrategy.logout()
       .then(() => {
@@ -125,7 +132,7 @@ export class AuthenticationService implements Service {
    */
   isAuthenticated(): boolean {
     if (!this.authStrategy) {
-      throw new MissingAuthStrategyError();
+      throw new AuthenticationStrategyNotSet();
     }
     return !this.isSecurityEnabled() || this.authStrategy.isAuthenticated() || this.isExternalUser();
   }
@@ -138,7 +145,7 @@ export class AuthenticationService implements Service {
    */
   isExternalUser(): boolean {
     if (!this.authStrategy) {
-      throw new MissingAuthStrategyError();
+      throw new AuthenticationStrategyNotSet();
     }
     return this.authStrategy.isExternal();
   }
