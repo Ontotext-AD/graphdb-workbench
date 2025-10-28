@@ -2,6 +2,7 @@ import {HttpService} from '../http/http.service';
 import {AuthenticatedUser, SecurityConfig} from '../../models/security';
 import {AuthSettingsResponseModel} from '../../models/security';
 import {AuthSettingsRequestModel} from '../../models/security/response-models/auth-settings-request-model';
+import {AuthenticatedUserResponse} from '../../models/security/response-models/authenticated-user-response';
 
 /**
  * Service class for handling security-related REST operations.
@@ -26,20 +27,6 @@ export class SecurityRestService extends HttpService {
   }
 
   /**
-   * Updates the application settings for a specific user.
-   *
-   * @param user - The authenticated user whose data needs to be updated.
-   * @returns A Promise that resolves when the update is successful, or rejects if there's an error.
-   */
-  updateUserData(user: AuthenticatedUser): Promise<void> {
-    return this.patch<void>(`${this.SECURITY_ENDPOINT}/users/${this.encodeURIComponentStrict(user.username)}`,
-      {
-        appSettings: user.appSettings,
-      }
-    );
-  }
-
-  /**
    * Retrieves the full security configuration from the backend.
    *
    * Sends a GET request to fetch the application's security-related configuration, including roles, permissions,
@@ -60,7 +47,7 @@ export class SecurityRestService extends HttpService {
    * @returns A Promise that resolves with the AuthenticatedUser object containing
    *          the user's details such as username, roles, and application settings.
    */
-  getAuthenticatedUser(): Promise<AuthenticatedUser> {
+  getAuthenticatedUser(): Promise<AuthenticatedUserResponse> {
     return this.get(`${this.SECURITY_ENDPOINT}/authenticated-user`);
   }
 

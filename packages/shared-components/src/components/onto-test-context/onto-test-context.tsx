@@ -1,7 +1,6 @@
 import {Component, Method} from '@stencil/core';
 import {
   EventService,
-  AuthenticatedUser,
   AuthenticatedUserMapper,
   LanguageContextService,
   License,
@@ -25,7 +24,7 @@ import {
   RepositoryReference,
   notify,
   Notification, service, OntoToastrService,
-  AuthenticationService, AuthenticationStorageService
+  AuthenticationService, AuthenticationStorageService, User
 } from '@ontotext/workbench-api';
 import en from '../../assets/i18n/en.json';
 import fr from '../../assets/i18n/fr.json';
@@ -93,7 +92,7 @@ export class OntoTestContext {
    * @returns A Promise that resolves when the authenticated user has been successfully updated
    */
   @Method()
-  setAuthenticatedUser(user: AuthenticatedUser): Promise<void> {
+  setAuthenticatedUser(user: User): Promise<void> {
     // Don't map if undefined is passed. This allows to clear the user in context
     const userModel = user
       ? MapperProvider.get(AuthenticatedUserMapper).mapToModel(user)

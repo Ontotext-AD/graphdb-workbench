@@ -20,6 +20,7 @@ export * from './models/plugins';
 export * from './models/configuration';
 export * from './models/notification';
 export * from './models/translation';
+export * from './models/users';
 
 // Export enums for external usages.
 export * from './models/url';
@@ -51,6 +52,7 @@ export * from './services/plugins';
 export * from './services/configuration';
 export * from './services/logging';
 export * from './services/notification';
+export * from './services/users';
 
 // Export utils for external usages.
 export * from './services/utils';

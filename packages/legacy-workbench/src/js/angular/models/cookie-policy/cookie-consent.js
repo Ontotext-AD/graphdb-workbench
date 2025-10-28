@@ -75,6 +75,10 @@ export class CookieConsent {
         this.updatedAt = Date.now();
     }
 
+    hasChanged() {
+        return this.policyAccepted !== undefined;
+    }
+
     getPolicyAccepted() {
         return this.policyAccepted;
     }

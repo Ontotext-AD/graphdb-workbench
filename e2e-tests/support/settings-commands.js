@@ -18,3 +18,19 @@ Cypress.Commands.add('setDefaultUserData', (cookieConsent = true) => {
         cy.waitUntil(() => response && response.status === 200); // 201 Created
     });
 });
+
+Cypress.Commands.add('setCookieConsent', (cookieConsent) => {
+    const defaultUserSettings = {
+        'COOKIE_CONSENT': cookieConsent
+    };
+    cy.request({
+        method: 'PATCH',
+        url: `rest/security/users/${encodeURIComponent('admin')}`,
+        body: {
+            "appSettings": defaultUserSettings,
+            'password': 'root'
+        }
+    }).then((response) => {
+        cy.waitUntil(() => response && response.status === 200); // 201 Created
+    });
+});

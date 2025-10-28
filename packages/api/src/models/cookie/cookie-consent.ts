@@ -14,10 +14,14 @@ export class CookieConsent {
   /** Epoch timestamp of last update in seconds. */
   updatedAt?: number;
 
-  constructor(data?: CookieConsent) {
-    this.policyAccepted = data?.policyAccepted;
-    this.statistic = data?.statistic;
-    this.thirdParty = data?.thirdParty;
-    this.updatedAt = data?.updatedAt;
+  constructor(data?: boolean | Partial<CookieConsent>) {
+    if (typeof data === 'boolean') {
+      this.policyAccepted = data;
+    } else {
+      this.policyAccepted = data?.policyAccepted;
+      this.statistic = data?.statistic;
+      this.thirdParty = data?.thirdParty;
+      this.updatedAt = data?.updatedAt;
+    }
   }
 }

@@ -2,15 +2,14 @@ import {service} from '../../../providers';
 import {OpenidSecurityConfig} from '../../../models/security';
 import {LoggerProvider} from '../../logging/logger-provider';
 import {getOrigin} from '../../utils';
-import {AuthFlowParams, OpenIdAuthFlowType} from '../../../models/security/authentication';
 import {OpenidStorageService} from './openid-storage.service';
 import {OpenidTokenUtils} from './openid-token-utils';
 import {OpenIdUtils} from './openid-utils';
-import {OntoToastrService} from '../../toastr';
 import {GeneratorUtils} from '../../utils/generator-utils';
 import {OpenIdError} from '../errors/openid/openid-error';
 import {InvalidOpenidAuthFlow} from '../errors/openid/invalid-openid-auth-flow';
 import {MissingAuthorizationCode} from '../errors/openid/missing-authorization-code';
+import {AuthFlowParams, OpenIdAuthFlowType} from '../../../models/security/authentication/openid-auth-flow-models';
 
 export type ExchangeTokensCallback = (code: string, redirectUrl: string, codeVerifier?: string | null) => Promise<void>;
 
@@ -22,7 +21,6 @@ export class OpenIdAuthFlowHandler {
   private readonly logger = LoggerProvider.logger;
   private readonly tokenUtils = service(OpenidTokenUtils);
   private readonly openidStorageService = service(OpenidStorageService);
-  private readonly toasterService = service(OntoToastrService);
 
   /**
    * Handles authorization code flow for both PKCE and non-PKCE variants.

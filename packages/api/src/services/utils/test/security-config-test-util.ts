@@ -1,7 +1,8 @@
 import {OpenidSecurityConfig, SecurityConfig} from '../../../models/security';
 
 export class SecurityConfigTestUtil {
-  static createSecurityConfig(securityConfigOverrides?: Partial<SecurityConfig>, openidConfig?: OpenidSecurityConfig): SecurityConfig {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  static createSecurityConfig(securityConfigOverrides?: any, openidConfig?: OpenidSecurityConfig): SecurityConfig {
     const config = {
       enabled: false,
       freeAccess: {},
