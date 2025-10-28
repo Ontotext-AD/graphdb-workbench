@@ -4,94 +4,16 @@ angular
 
 SecurityRestService.$inject = ['$http'];
 
-// eslint-disable-next-line no-unused-vars
-const LOGIN_ENDPOINT = 'rest/login';
 const SECURITY_ENDPOINT = 'rest/security';
-const SECURITY_USER_ENDPOINT = `${SECURITY_ENDPOINT}/users`;
-const SECURITY_AUTHENTICATED_ENDPOINT = `${SECURITY_ENDPOINT}/authenticated-user`;
-// eslint-disable-next-line no-unused-vars
-const SECURITY_FREE_ACCESS_ENDPOINT = `${SECURITY_ENDPOINT}/free-access`;
 const ROLES_ENDPOINT = 'rest/roles';
 
 function SecurityRestService($http) {
     return {
-        getUser,
-        getAdminUser,
-        getUsers,
-        createUser,
-        updateUser,
-        updateUserData,
-        deleteUser,
         getSecurityConfig,
         toggleSecurity,
         getRoles,
         getRolesMapping,
-        getAuthenticatedUser,
     };
-
-
-    function getUser(username) {
-        return $http.get(`${SECURITY_USER_ENDPOINT}/${fixedEncodeURIComponent(username)}`);
-    }
-
-    function getAuthenticatedUser() {
-        return $http.get(`${SECURITY_AUTHENTICATED_ENDPOINT}`, {
-            noCancelOnRouteChange: true,
-        });
-    }
-
-    function getAdminUser() {
-        return $http.get(`${SECURITY_USER_ENDPOINT}/admin`);
-    }
-
-    function getUsers() {
-        return $http.get(SECURITY_USER_ENDPOINT);
-    }
-
-    function createUser(data) {
-        return $http({
-            method: 'POST',
-            url: `${SECURITY_USER_ENDPOINT}/${fixedEncodeURIComponent(data.username)}`,
-            data: {
-                password: data.pass,
-                appSettings: data.appSettings,
-                grantedAuthorities: data.grantedAuthorities,
-            },
-        });
-    }
-
-    function updateUser(data) {
-        return $http({
-            method: 'PUT',
-            url: `${SECURITY_USER_ENDPOINT}/${fixedEncodeURIComponent(data.username)}`,
-            data: {
-                password: data.pass,
-                appSettings: data.appSettings,
-                grantedAuthorities: data.grantedAuthorities,
-            },
-        });
-    }
-
-    /**
-     * Updates the user data in the backend.
-     * @param {UpdateUserPayload} data - The user data to be updated.
-     * @return {Promise<*>}
-     */
-    function updateUserData(data) {
-        return $http({
-            method: 'PATCH',
-            url: `${SECURITY_USER_ENDPOINT}/${fixedEncodeURIComponent(data.username)}`,
-            data: {
-                password: data.password,
-                appSettings: data.appSettings,
-            },
-        });
-    }
-
-    function deleteUser(username) {
-        return $http.delete(`${SECURITY_USER_ENDPOINT}/${fixedEncodeURIComponent(username)}`);
-    }
-
     function getSecurityConfig() {
         return $http.get(`${SECURITY_ENDPOINT}/all`);
     }
@@ -106,17 +28,5 @@ function SecurityRestService($http) {
 
     function getRolesMapping(params) {
         return $http.get(`${ROLES_ENDPOINT}/mapping`, {params});
-    }
-
-    /**
-     * Path string variable can contain characters which encodeURIComponent() can have problems encoding.
-     * These characters are replaced in this method.
-     * @param str - a component of URI
-     * @returns {string} The provided string encoded as a URI component.
-     */
-    function fixedEncodeURIComponent(str) {
-        return encodeURIComponent(str).replace(/[!'()*]/g, function(c) {
-            return '%' + c.charCodeAt(0).toString(16);
-        });
     }
 }

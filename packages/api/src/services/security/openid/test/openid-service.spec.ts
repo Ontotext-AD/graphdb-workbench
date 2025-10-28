@@ -8,7 +8,7 @@ import {EventService} from '../../../event-service';
 import {WindowService} from '../../../window';
 import {service} from '../../../../providers';
 import {OpenidSecurityConfig, SecurityConfig} from '../../../../models/security';
-import {OpenIdAuthFlowType, OpenIdTokens} from '../../../../models/security/authentication';
+import {OpenIdAuthFlowType, OpenIdTokens} from '../../../../models/security/authentication/openid-auth-flow-models';
 import {Logout} from '../../../../models/events';
 import {MissingOpenidConfiguration} from '../../errors/openid/missing-openid-configuration';
 import {ResponseMock} from '../../../http/test/response-mock';

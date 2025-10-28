@@ -18,6 +18,7 @@ export * from './models/single-spa';
 export * from './models/app-lifecycle';
 export * from './models/plugins';
 export * from './models/configuration';
+export * from './models/users';
 
 // Export enums for external usages.
 export * from './models/url';
@@ -48,6 +49,7 @@ export * from './services/window';
 export * from './services/plugins';
 export * from './services/configuration';
 export * from './services/logging';
+export * from './services/users';
 
 // Export utils for external usages.
 export * from './services/utils';

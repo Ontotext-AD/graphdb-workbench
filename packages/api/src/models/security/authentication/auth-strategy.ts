@@ -21,6 +21,12 @@ export interface AuthStrategy {
   initialize(): Promise<boolean>;
 
   /**
+   * Fetches the currently authenticated user. Different strategies may have different ways of retrieving this information.
+   * @returns A promise that resolves to the authenticated user.
+   */
+  fetchAuthenticatedUser(): Promise<AuthenticatedUser>;
+
+  /**
    * Authenticates a user with the provided login data.
    * @param loginData - The data required for authentication (varies by strategy).
    * @returns A promise that resolves to the authenticated user.

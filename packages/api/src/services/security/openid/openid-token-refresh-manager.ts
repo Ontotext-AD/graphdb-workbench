@@ -3,7 +3,7 @@ import {LoggerProvider} from '../../logging/logger-provider';
 import {OpenidStorageService} from './openid-storage.service';
 import {OpenidTokenUtils} from './openid-token-utils';
 import {WindowService} from '../../window';
-import {RefreshTokenConfiguration} from '../../../models/security/authentication';
+import {RefreshTokenConfiguration} from '../../../models/security/authentication/openid-refresh-token-configuration';
 
 /**
  * Manages automatic refresh of OpenID Connect tokens before they expire.
