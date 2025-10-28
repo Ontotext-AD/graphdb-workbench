@@ -97,7 +97,7 @@
 }
 
 .graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table .status-failed {
-    color: var(--gw-danger-base);
+    color: var(--gw-error-base);
 }
 
 .graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table .status-success {

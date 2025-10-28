@@ -225,8 +225,8 @@ input::placeholder {
 }
 
 .acl-tag-deny {
-    background-color: var(--gw-danger-lighter);
-    color: var(--gw-danger-dark);
+    background-color: var(--gw-tag-danger-background);
+    color: var(--gw-tag-danger-color);
 }
 
 .acl-tag-read {

@@ -183,7 +183,7 @@ h1 .btn {
 }
 
 .btn-link, .btn-link a {
-    color: var(--gw-button-link-color);
+    color: var(--gw-button-primary-color);
     padding: .5em .8em;
 }
 
@@ -192,7 +192,7 @@ h1 .btn {
     text-decoration-style: dotted;
     text-decoration-thickness: var(--link-decoration-thickness);
     text-underline-offset: var(--link-underline-offset);
-    color: var(--gw-button-link-hover-color);
+    color: var(--gw-button-primary-link-hover-color);
 }
 
 .btn-link-only-icons {
@@ -204,7 +204,7 @@ h1 .btn {
 }
 
 .btn-link:focus, .btn-link:hover, .btn-link.secondary:hover {
-    color: var(--gw-button-link-hover-color);
+    color: var(--gw-button-primary-link-hover-color);
 }
 
 .btn-link.disabled:focus, .btn-link.disabled:hover, .btn-link.disabled.secondary:hover {
@@ -342,7 +342,7 @@ h3 [class^=icon-] {
 }
 
 .text-warning {
-    color: var(--gw-message-warn-color) !important;
+    color: var(--gw-message-warning-color) !important;
 }
 
 .text-info {
@@ -360,9 +360,9 @@ h3 [class^=icon-] {
 }
 
 .alert-warning {
-    color: var(--gw-message-warn-color);
-    background-color: var(--gw-message-warn-background);
-    border-color: var(--gw-message-warn-border-color);
+    color: var(--gw-message-warning-color);
+    background-color: var(--gw-message-warning-background);
+    border-color: var(--gw-message-warning-border-color);
 }
 
 .alert-info {

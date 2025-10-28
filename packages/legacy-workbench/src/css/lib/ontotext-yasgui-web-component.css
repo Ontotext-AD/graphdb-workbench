@@ -243,7 +243,7 @@ yasgui-component .saved-queries-container {
 }
 
 yasgui-component .saved-queries-container .saved-query-actions .saved-query-action {
-    color: var(--gw-button-link-color) !important;
+    color: var(--gw-button-primary-color) !important;
     background-color: var(--gw-tooltip-background) !important;
 }
 
@@ -412,7 +412,7 @@ yasgui-component .yasr .yasr_btnGroup .yasr_btn.selected {
 }
 
 yasgui-component .yasr .error-response-plugin {
-    background-color: var(--gw-danger-lighter) !important;
+    background-color: var(--gw-error-lighter) !important;
 }
 
 yasgui-component .yasr .extended-boolean-plugin > * {
@@ -420,7 +420,7 @@ yasgui-component .yasr .extended-boolean-plugin > * {
 }
 
 yasgui-component .yasr .extended-boolean-plugin .response-error {
-    background-color: var(--gw-danger-lighter) !important;
+    background-color: var(--gw-error-lighter) !important;
 }
 
 yasgui-component .yasr .extended-boolean-plugin .response-success {
