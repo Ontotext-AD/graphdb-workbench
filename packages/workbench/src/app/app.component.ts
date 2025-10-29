@@ -33,7 +33,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private subscribeToRoutingEvents() {
     this.subscriptions.add(
       service(EventService).subscribe(EventName.NAVIGATION_END, () => {
-        this.router.navigateByUrl(getCurrentRoute());
+        this.router.navigate([getCurrentRoute()], {queryParamsHandling: 'preserve'});
       })
     );
   }
