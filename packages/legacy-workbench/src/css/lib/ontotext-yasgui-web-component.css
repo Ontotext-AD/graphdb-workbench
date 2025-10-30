@@ -244,13 +244,23 @@ yasgui-component .yasr-toolbar .pivot-table-download-as-button {
 }
 
 yasgui-component .saved-queries-container {
-    color: var(--gw-tooltip-color) !important;
-    background-color: var(--gw-tooltip-background) !important;
+    color: var(--gw-dialog-color) !important;
+    background-color: var(--gw-dialog-background) !important;
+    border-color: var(--gw-dialog-border-color);
+    -webkit-box-shadow: var(--gw-dialog-shadow-1-offset-x) var(--gw-dialog-shadow-1-offset-y) var(--gw-dialog-shadow-1-blur) var(--gw-dialog-shadow-1-spread) var(--gw-dialog-shadow-1-color);
+    box-shadow: var(--gw-dialog-shadow-1-offset-x) var(--gw-dialog-shadow-1-offset-y) var(--gw-dialog-shadow-1-blur) var(--gw-dialog-shadow-1-spread) var(--gw-dialog-shadow-1-color);
+}
+yasgui-component .saved-queries-container .arrow:before {
+    border-left-color: var(--gw-dialog-border-color);
+}
+
+yasgui-component .saved-queries-container .arrow:after {
+    border-left-color: var(--gw-dialog-background);
 }
 
 yasgui-component .saved-queries-container .saved-query-actions .saved-query-action {
-    color: var(--gw-button-primary-color) !important;
-    background-color: var(--gw-tooltip-background) !important;
+    color: var(--gw-button-primary-link-color) !important;
+    background-color: var(--gw-dialog-background) !important;
 }
 
 /*
@@ -259,6 +269,7 @@ yasgui-component .saved-queries-container .saved-query-actions .saved-query-acti
 .dialog {
     color: var(--gw-dialog-color) !important;
     background-color: var(--gw-dialog-background) !important;
+    -webkit-box-shadow: var(--gw-dialog-shadow-1-offset-x) var(--gw-dialog-shadow-1-offset-y) var(--gw-dialog-shadow-1-blur) var(--gw-dialog-shadow-1-spread) var(--gw-dialog-shadow-1-color);
     box-shadow: var(--gw-dialog-shadow-1-offset-x) var(--gw-dialog-shadow-1-offset-y) var(--gw-dialog-shadow-1-blur) var(--gw-dialog-shadow-1-spread) var(--gw-dialog-shadow-1-color);
 }
 
@@ -349,6 +360,11 @@ yasgui-component .yasr .yasr_header .yasr_response_chip {
 
 yasgui-component .yasr .yasr_header {
     background-color: var(--gw-info-lighter) !important;
+}
+
+yasgui-component .ontotext-yasgui .yasr .yasr_header .tableControls .tableFilter {
+    background-color: var(--gw-form-field-background);
+    color: var(--gw-form-field-color);
 }
 
 yasgui-component .yasr .yasr_results .CodeMirror {
