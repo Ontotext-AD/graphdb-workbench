@@ -32,7 +32,7 @@ main menu height*/
 }
 
 .navbar-component li a {
-  color: var(--gw-navigation-menuitem-icon-color);
+  color: var(--gw-sidenav-menuitem-icon-color);
   text-decoration: none;
 }
 
@@ -48,7 +48,7 @@ main menu height*/
 .navbar-component a:not([href]):not([tabindex]),
 .navbar-component a:not([href]):not([tabindex]):focus,
 .navbar-component a:not([href]):not([tabindex]):hover {
-  color: var(--gw-navigation-menuitem-icon-color);
+  color: var(--gw-sidenav-menuitem-icon-color);
 }
 
 .navbar-component a.sub-menu-link:not([href]):hover .menu-item,
@@ -59,7 +59,6 @@ main menu height*/
 
 .navbar-component li .menu-element-root:hover,
 .navbar-component .sub-menu li:hover {
-  background-color: rgba(0, 0, 0, .1);
   // Overriding !important in _anchor.scss
   text-decoration-line: none !important;
 }
@@ -74,7 +73,7 @@ main menu height*/
 }
 
 .navbar-component .menu-element {
-  background-color: var(--gw-navigation-menuitem-background);
+  background-color: var(--gw-sidenav-menuitem-background);
   position: relative;
 }
 
@@ -88,7 +87,7 @@ main menu height*/
   -o-transition: all 0.18s ease-out; /* Opera 10.5+ */
   -webkit-transition: all 0.18s ease-out; /* Saf3.2+, Chrome */
   transition: all 0.18s ease-out;
-  color: var(--gw-navigation-menuitem-color);
+  color: var(--gw-sidenav-menuitem-color);
   cursor: pointer;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -100,7 +99,7 @@ main menu height*/
   width: 2.5rem;
   vertical-align: middle;
   text-align: center;
-  color: var(--gw-navigation-menuitem-icon-color);
+  color: var(--gw-sidenav-menuitem-icon-color);
   transform: scale(0.9);
   display: inline-block;
   -moz-transition: all 0.18s ease-out; /* FF4+ */
@@ -116,12 +115,12 @@ main menu height*/
 
 .navbar-component .menu-element-root.active,
 .navbar-component .menu-element-root.active:hover {
-  background-color: var(--gw-navigation-submenuitem-active-background);
-  color: var(--gw-navigation-menuitem-active-color);
+  background-color: var(--gw-sidenav-submenuitem-active-background);
+  color: var(--gw-sidenav-menuitem-active-color);
 }
 
 .navbar-component .active .menu-item-icon {
-  color: var(--gw-navigation-menuitem-active-icon-color);
+  color: var(--gw-sidenav-menuitem-active-icon-color);
   transform: scale(1.1);
 }
 
@@ -130,7 +129,7 @@ main menu height*/
 }
 
 .navbar-component .brand {
-  background-color: var(--logo-background-color);
+  background-color: var(--gw-sidenav-logo-background);
 }
 
 .navbar-component .brand a {
@@ -139,27 +138,9 @@ main menu height*/
   z-index: 5;
 }
 
-.navbar-component .product-version {
-  line-height: normal;
-  color: rgba(255, 255, 255, .8);
-  text-transform: uppercase;
-  font-size: 0.625rem;
-  display: block;
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  padding: 0.2em 0.5em;
-  border-color: rgba(255, 255, 255, .2);
-  border-style: solid;
-  border-top-width: 1px;
-  border-left-width: 1px;
-  border-bottom-width: 0;
-  border-right-width: 0;
-}
-
 .navbar-component .menu-element.open,
 .navbar-component.collapsed .menu-element:hover {
-  background-color: var(--gw-navigation-submenuitem-highlight-background);
+  background-color: var(--gw-sidenav-submenuitem-highlight-background);
 }
 
 .navbar-component .sub-menu {
@@ -178,13 +159,13 @@ main menu height*/
 }
 
 .navbar-component .sub-menu li.active a {
-  background-color: var(--gw-navigation-submenuitem-active-background);
+  background-color: var(--gw-sidenav-submenuitem-active-background);
   font-weight: 500;
-  color: var(--gw-navigation-submenuitem-active-color);
+  color: var(--gw-sidenav-submenuitem-active-color);
 }
 
 .navbar-component .sub-menu li a {
-  color: var(--gw-navigation-submenuitem-color);
+  color: var(--gw-sidenav-submenuitem-color);
 }
 
 .navbar-component .menu-element.open ul li {
@@ -215,17 +196,18 @@ main menu height*/
   position: absolute;
   top: 0;
   right: 0;
-  color: #fff;
+  color: var(--gw-sidenav-collapsebutton-color);
   font-size: 0.8em;
   line-height: 1.5;
   padding: 0 0.3em;
-  background-color: rgba(255, 255, 255, .1);
+  background-color: var(--gw-sidenav-collapsebutton-background);
   z-index: 10;
   cursor: pointer;
 }
 
 .toggle-menu:hover {
-  background-color: var(--gw-primary-base);
+  color: var(--gw-sidenav-collapsebutton-hover-color);
+  background-color: var(--gw-sidenav-collapsebutton-hover-background);
 }
 
 .toggle-menu [class^="icon-"] {
@@ -260,7 +242,7 @@ main menu height*/
   position: absolute;
   top: 0;
   left: 4.375rem;
-  background-color: var(--gw-navigation-submenuitem-highlight-background);
+  background-color: var(--gw-sidenav-submenuitem-highlight-background);
   width: 15rem;
 }
 
@@ -294,7 +276,7 @@ main menu height*/
   text-overflow: ellipsis;
   overflow: hidden;
   padding: 0.5em 0.8rem 0.2em 0;
-  color: var(--gw-navigation-submenuitem-color);
+  color: var(--gw-sidenav-submenuitem-color);
   margin-left: 0.8rem;
   margin-bottom: 0.5em;
 }
@@ -314,10 +296,6 @@ main menu height*/
 
 .navbar-component.collapsed .brand a {
   padding: 0.4rem;
-}
-
-.navbar-component.collapsed .product-version {
-  display: none;
 }
 
 .navbar-component.collapsed .small-logo, .navbar-component .big-logo {

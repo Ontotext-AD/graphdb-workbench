@@ -10,9 +10,6 @@
 /*-------------------------------------------------------------
 	Colors used in multiple places
 -------------------------------------------------------------*/
-    /*--logo-color: var(--gw-primary-lighter);*/
-    --logo-background-color: var(--gw-secondary-dark);
-    --logo-text-color: var(--gw-secondary-contrast-color);
     --autocomplete-background: var(--gw-tertiary-lighter);
     --autocomplete-background-selected: var(--gw-tertiary-light);
     --autocomplete-match: var(--gw-secondary-base);

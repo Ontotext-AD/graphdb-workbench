@@ -1018,6 +1018,10 @@ li.remote {
     border-color: var(--gw-form-field-border-color);
 }
 
+.form-control[readonly] {
+    background-color: var(--gw-form-field-read-only-background);
+}
+
 .form-control:focus,
 .form-control-lg:focus {
     color: var(--gw-form-field-color);
@@ -1698,6 +1702,16 @@ input[name=namespace] {
     Custom tags-input styling, overrides some
     of the styles from ng-tags-input.min.css
 -------------------------------------------------------------*/
+tags-input[disabled] .tags {
+    color: var(--gw-form-field-disabled-color);
+    background-color: var(--gw-form-field-disabled-background) !important;
+}
+
+tags-input[disabled] .tags .input {
+    color: var(--gw-form-field-disabled-color);
+    background-color: var(--gw-form-field-disabled-background) !important;
+}
+
 .wb-tags-input .tags {
     background-color: var(--gw-form-field-background);
     border: 1px solid var(--gw-form-field-border-color);
@@ -1711,11 +1725,6 @@ input[name=namespace] {
     -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #cbeeea;
     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #cbeeea;
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #cbeeea;
-}
-
-.wb-tags-input .tags .input {
-    background-color: inherit;
-    color: inherit;
 }
 
 .wb-tags-input .tags .tag-item {
