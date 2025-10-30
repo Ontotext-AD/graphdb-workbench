@@ -1496,10 +1496,6 @@ yasgui-component .confirm-button {
     background-color: var(--gw-primary-base) !important;
 }
 
-yasgui-component .yasr a {
-    color: var(--gw-secondary-base) !important;
-}
-
 yasgui-component .yasr .dataTable a {
     font-size: 16px;
 }
