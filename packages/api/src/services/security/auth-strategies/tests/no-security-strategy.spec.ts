@@ -1,4 +1,4 @@
-import {NoSecurityProvider} from '../no-security-provider';
+import {NoSecurityStrategy} from '../no-security-strategy';
 import {TestUtil} from '../../../../services/utils/test/test-util';
 import {ResponseMock} from '../../../../services/http/test/response-mock';
 import {ServiceProvider} from '../../../../providers';
@@ -7,7 +7,7 @@ import {ProviderResponseMocks} from './provider-response-mocks';
 import {AuthenticatedUser} from '../../../../models/security';
 
 describe('NoSecurityProvider', () => {
-  let provider: NoSecurityProvider;
+  let strategy: NoSecurityStrategy;
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -15,7 +15,7 @@ describe('NoSecurityProvider', () => {
 
     ServiceProvider.get(SecurityContextService).updateAuthenticatedUser(undefined as unknown as AuthenticatedUser);
 
-    provider = new NoSecurityProvider();
+    strategy = new NoSecurityStrategy();
   });
 
   describe('initialize', () => {
@@ -25,7 +25,7 @@ describe('NoSecurityProvider', () => {
       const getAdminUserSpy = jest.spyOn(ServiceProvider.get(SecurityService), 'getAuthenticatedAdminUser');
       const updateAuthenticatedUserSpy = jest.spyOn(ServiceProvider.get(SecurityContextService), 'updateAuthenticatedUser');
 
-      await provider.initialize();
+      await strategy.initialize();
       expect(getAdminUserSpy).toHaveBeenCalled();
       expect(updateAuthenticatedUserSpy).toHaveBeenCalled();
     });
@@ -33,13 +33,13 @@ describe('NoSecurityProvider', () => {
 
   describe('login', () => {
     it('should resolve', async () => {
-      await expect(provider.login()).resolves.toBeTruthy();
+      await expect(strategy.login()).resolves.toBeTruthy();
     });
   });
 
   describe('logout', () => {
     it('should resolve immediately', async () => {
-      await expect(provider.logout()).resolves.toBeUndefined();
+      await expect(strategy.logout()).resolves.toBeUndefined();
     });
   });
 
@@ -47,12 +47,12 @@ describe('NoSecurityProvider', () => {
     it('should return true if there is an authenticated user', async () => {
       TestUtil.mockResponse(new ResponseMock('rest/security/users/admin').setResponse(ProviderResponseMocks.adminUserResponse));
 
-      await provider.initialize();
-      expect(provider.isAuthenticated()).toBe(true);
+      await strategy.initialize();
+      expect(strategy.isAuthenticated()).toBe(true);
     });
 
     it('should return false if there is no authenticated user', () => {
-      expect(provider.isAuthenticated()).toBe(false);
+      expect(strategy.isAuthenticated()).toBe(false);
     });
   });
 });

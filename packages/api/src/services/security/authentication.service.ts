@@ -139,9 +139,10 @@ export class AuthenticationService implements Service {
 
   /**
    * Checks if the current user is an external user (e.g., authenticated via Kerberos or X.509).
-   * An external user is defined as a logged-in user without a local auth token when security is enabled.
+   * Each strategy is responsible for providing the external status of the {@link AuthenticatedUser}
    *
-   * @returns {boolean} True if the user is external, false otherwise. Defaults to false if no auth strategy is set.
+   * @returns {boolean} True if the user is external, false otherwise.
+   * @Throws {@link MissingAuthStrategyError}.if no strategy is set, when calling this method
    */
   isExternalUser(): boolean {
     if (!this.authStrategy) {

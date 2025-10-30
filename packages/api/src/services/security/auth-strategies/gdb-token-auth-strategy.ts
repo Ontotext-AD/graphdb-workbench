@@ -5,13 +5,13 @@ import {AuthStrategyType} from '../../../models/security/authentication';
 import {BaseGdbLoginStrategy} from './base-gdb-login-strategy';
 import {AuthenticatedUser} from '../../../models/security';
 
-export class GdbTokenAuthProvider extends BaseGdbLoginStrategy {
+export class GdbTokenAuthStrategy extends BaseGdbLoginStrategy {
   private readonly securityContextService = service(SecurityContextService);
 
   type = AuthStrategyType.GDB_TOKEN;
 
   /**
-   * Initializes the authentication provider. If the current route is 'login', resolves immediately.
+   * Initializes the authentication strategy. If the current route is 'login', resolves immediately.
    * Otherwise, attempts to load the authenticated user and update the security context.
    * Logs an error if the user cannot be loaded.
    * @returns Promise resolving to true if user is logged in

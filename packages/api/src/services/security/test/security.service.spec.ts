@@ -13,7 +13,7 @@ import {AppSettings} from '../../../models/users/app-settings';
 import {AuthenticatedUserResponse} from '../../../models/security/response-models/authenticated-user-response';
 import {UsersService} from '../../users';
 import {AuthenticationService} from '../authentication.service';
-import {ProviderResponseMocks} from '../auth-providers/tests/provider-response-mocks';
+import {ProviderResponseMocks} from '../auth-strategies/tests/provider-response-mocks';
 import {UserResponseMapper} from '../../users/user-response.mapper';
 import {CookieConsent} from '../../../models/cookie';
 
