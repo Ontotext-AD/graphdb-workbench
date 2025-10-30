@@ -40,18 +40,19 @@ yasgui-component .yasgui-toolbar .btn-orientation {
 yasgui-component .yasqe .CodeMirror {
     font-family: var(--mono-font) !important;
     font-size: 16px;
-    border-color: #ddd !important;
     background-color: var(--gw-editor-content-background) !important;
     color: var(--gw-editor-content-color) !important;
 }
 
 yasgui-component .yasqe .CodeMirror-gutters {
-    color: var(--gw-editor-content-color) !important;
-    background-color: var(--gw-editor-content-background) !important;
+    color: var(--gw-editor-toolbar-numbers-color);
+    background-color: var(--gw-editor-toolbar-numbers-background);
 }
 
-yasgui-component .yasqe .CodeMirror-cursor {
-    border-left-color: var(--gw-editor-content-color) !important;
+.yasgui-host-element .yasgui .CodeMirror,
+yasgui-component .yasqe .CodeMirror-cursor,
+yasgui-component .yasqe .CodeMirror-gutters {
+    border-color: var(--gw-editor-toolbar-border-color);
 }
 
 /* Unset the font-family so that it can inherit from workbench */
@@ -137,8 +138,7 @@ yasgui-component .yasgui .tabsList .tab {
     font-weight: 400;
 }
 
-yasgui-component .yasgui .tabsList .tab .closeTab,
-yasgui-component .yasgui .tabsList .addTab {
+yasgui-component .yasgui .tabsList .tab .closeTab {
     color: inherit !important;
 }
 
@@ -147,9 +147,15 @@ yasgui-component .yasgui .tabsList .addTab .icon-plus {
     font-size: 1.225em !important;
 }
 
+yasgui-component .yasgui .tabsList .addTab {
+    color: var(--gw-button-secondary-color);
+    background-color: var(--gw-tabs-tab-background);
+    border-color: var(--gw-tabs-tab-border-color) var(--gw-tabs-tab-border-color) transparent;
+}
+
 yasgui-component .yasgui .tabsList .tab .closeTab:hover,
 yasgui-component .yasgui .tabsList .addTab:hover {
-    color: var(--gw-primary-dark) !important;
+    color: var(--gw-button-primary-link-hover-color) !important;
 }
 
 .yasgui-host-element .yasgui .tabsList .create-tab-tab {

@@ -98,6 +98,7 @@
   --gw-neutral-darker: var(--gw-neutral-900);
   --gw-form-field-disabled-color: var(--gw-neutral-600);
   --gw-form-field-placeholder-color: var(--gw-neutral-500);
+  --gw-list-option-focus-background: var(--gw-neutral-100);
   --gw-navigation-item-icon-color: var(--gw-neutral-400);
   --gw-overlay-modal-background: var(--gw-neutral-0);
   --gw-button-secondary-background: var(--gw-neutral-100);
@@ -141,6 +142,12 @@
   --gw-form-field-icon-color: var(--gw-neutral-light);
   --gw-form-field-color: var(--gw-neutral-dark);
   --gw-border-color-primary: var(--gw-primary-base);
+  --gw-navigation-submenuitem-color: var(--gw-secondary-base);
+  --gw-navigation-submenuitem-highlight-background: var(--gw-highlight-background);
+  --gw-navigation-submenuitem-active-background: var(--gw-primary-base);
+  --gw-navigation-menuitem-icon-color: var(--gw-primary-base);
+  --gw-navigation-menuitem-background: var(--gw-neutral-lighter);
+  --gw-navigation-menuitem-color: var(--gw-secondary-base);
   --gw-overlay-modal-border-color: var(--gw-default-border-color);
   --gw-button-primary-background: var(--gw-primary-base);
   --gw-button-primary-link-hover-color: var(--gw-primary-dark);
@@ -163,6 +170,7 @@
   --gw-highlight-color: var(--gw-primary-base);
   --gw-text-color: var(--gw-neutral-darker);
   --gw-text-muted-color: var(--gw-muted-color);
+  --gw-default-muted-color: var(--gw-muted-color);
   --gw-default-color: var(--gw-neutral-darker);
   --gw-help-lighter: var(--gw-neutral-lighter);
   --gw-help-dark: var(--gw-neutral-dark);
@@ -181,6 +189,8 @@
   --gw-tag-warning-color: var(--gw-warning-base);
   --gw-tag-danger-background: var(--gw-error-lighter);
   --gw-tag-danger-color: var(--gw-error-base);
+  --gw-editor-toolbar-border-color: var(--gw-default-border-color);
+  --gw-editor-toolbar-numbers-background: var(--gw-list-option-focus-background);
   --gw-editor-content-background: var(--gw-default-background);
   --gw-fieldset-background: var(--gw-default-background);
   --gw-tabs-tablist-border-color: var(--gw-default-border-color);
@@ -204,6 +214,9 @@
   --gw-toast-warn-background: var(--gw-warning-base);
   --gw-toast-error-background: var(--gw-error-base);
   --gw-list-option-color: var(--gw-text-color);
+  --gw-navigation-submenuitem-active-color: var(--gw-primary-contrast-color);
+  --gw-navigation-menuitem-active-icon-color: var(--gw-primary-contrast-color);
+  --gw-navigation-menuitem-active-color: var(--gw-primary-contrast-color);
   --gw-overlay-modal-color: var(--gw-text-color);
   --gw-button-primary-hover-background: var(--gw-primary-hover-color);
   --gw-button-primary-hover-border-color: var(--gw-primary-hover-color);
@@ -220,6 +233,7 @@
   --gw-message-help-border-color: var(--gw-help-lighter);
   --gw-message-help-color: var(--gw-help-dark);
   --gw-tag-success-color: var(--gw-success-base);
+  --gw-editor-toolbar-numbers-color: var(--gw-default-muted-color);
   --gw-editor-content-color: var(--gw-default-color);
   --gw-inputgroup-addon-background: var(--gw-form-field-background);
   --gw-inputgroup-addon-color: var(--gw-form-field-icon-color);
