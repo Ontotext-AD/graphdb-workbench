@@ -58,7 +58,7 @@
     padding: 0;
     color: var(--gw-dialog-color);
     border: 1px solid var(--gw-dialog-border-color);
-    box-shadow: 1px 3px 6px var(--gw-dialog-shadow-1-color);
+    box-shadow: var(--gw-dialog-shadow-1-offset-x) var(--gw-dialog-shadow-1-offset-y) var(--gw-dialog-shadow-1-blur) var(--gw-dialog-shadow-1-spread) var(--gw-dialog-shadow-1-color);
 
     .repository-tooltip-title {
       font-size: 1rem;

@@ -36,6 +36,7 @@
   --gw-additional-yellow-800: #68592c;
   --gw-sidenav-logo-background: #002b4f;
   --gw-panel-header-background: rgba(0, 0, 0, 0);
+  --gw-datatable-header-border-width: 1px;
   --gw-dialog-shadow-1-blur: 25px;
   --gw-dialog-shadow-1-spread: -5px;
   --gw-dialog-shadow-1-offset-x: 0;
@@ -156,6 +157,7 @@
   --gw-sidenav-collapsebutton-color: var(--gw-neutral-light);
   --gw-overlay-modal-border-color: var(--gw-default-border-color);
   --gw-button-primary-background: var(--gw-primary-base);
+  --gw-button-primary-link-color: var(--gw-primary-base);
   --gw-button-primary-link-hover-color: var(--gw-primary-dark);
   --gw-button-secondary-hover-color: var(--gw-secondary-base);
   --gw-button-secondary-active-color: var(--gw-secondary-light);
