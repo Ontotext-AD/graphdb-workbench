@@ -20,13 +20,13 @@ const ERRORS = {
 } as const;
 
 /**
- * OpenID Connect authentication provider implementation.
+ * OpenID Connect authentication strategy implementation.
  *
  * Handles OpenID Connect authentication flows including authorization code,
  * authorization code without PKCE, and implicit flows. Manages the complete
  * authentication lifecycle from initialization through login and logout.
  */
-export class OpenidAuthProvider implements AuthStrategy {
+export class OpenidAuthStrategy implements AuthStrategy {
   private readonly logger = LoggerProvider.logger;
   private readonly securityService = service(SecurityService);
   private readonly authenticationStorageService = service(AuthenticationStorageService);
@@ -41,14 +41,14 @@ export class OpenidAuthProvider implements AuthStrategy {
   private openIdSecurityConfig: OpenidSecurityConfig | undefined;
 
   /**
-   * Creates a new OpenIdAuthProvider and sets up configuration listeners.
+   * Creates a new OpenIdAuthStrategy and sets up configuration listeners.
    */
   constructor() {
     this.setupConfigurationListener();
   }
 
   /**
-   * Initializes the OpenID authentication provider.
+   * Initializes the OpenID authentication strategy.
    * @returns Promise resolving to true if user is logged in
    * @throws Error if configuration is missing or initialization fails
    */
