@@ -1,8 +1,8 @@
 import {AuthStrategyResolver} from '../auth-strategy-resolver';
 import {OpenidSecurityConfig, SecurityConfig} from '../../../models/security';
-import {NoSecurityProvider} from '../auth-providers/no-security-provider';
-import {GdbTokenAuthProvider} from '../auth-providers/gdb-token-auth-provider';
-import {OpenidAuthProvider} from '../auth-providers/openid-auth-provider';
+import {NoSecurityStrategy} from '../auth-strategies/no-security-strategy';
+import {GdbTokenAuthStrategy} from '../auth-strategies/gdb-token-auth-strategy';
+import {OpenidAuthStrategy} from '../auth-strategies/openid-auth-strategy';
 import {service} from '../../../providers';
 import {SecurityContextService} from '../security-context.service';
 
@@ -44,25 +44,25 @@ describe('AuthStrategyResolver', () => {
     securityContextService.updateSecurityConfig(undefined as unknown as SecurityConfig);
   });
 
-  it('should return NoSecurityProvider when security is disabled', () => {
+  it('should return NoSecurityStrategy when security is disabled', () => {
     const config = getDisabledSecurityConfig();
     securityContextService.updateSecurityConfig(config);
     const strategy = resolver.resolveStrategy(config);
-    expect(strategy).toBeInstanceOf(NoSecurityProvider);
+    expect(strategy).toBeInstanceOf(NoSecurityStrategy);
   });
 
-  it('should return GdbTokenAuthProvider when security is enabled and openId is disabled', () => {
+  it('should return GdbTokenAuthStrategy when security is enabled and openId is disabled', () => {
     const config = getEnabledSecurityConfig();
     securityContextService.updateSecurityConfig(config);
     const strategy = resolver.resolveStrategy(config);
-    expect(strategy).toBeInstanceOf(GdbTokenAuthProvider);
+    expect(strategy).toBeInstanceOf(GdbTokenAuthStrategy);
   });
 
-  it('should return OpenidAuthProvider when both security and openId are enabled (current behavior)', () => {
+  it('should return OpenidAuthStrategy when both security and openId are enabled (current behavior)', () => {
     const config = getOpenIdEnabledSecurityConfig();
     securityContextService.updateSecurityConfig(config);
     const strategy = resolver.resolveStrategy(config);
-    expect(strategy).toBeInstanceOf(OpenidAuthProvider);
+    expect(strategy).toBeInstanceOf(OpenidAuthStrategy);
   });
 });
 ;
