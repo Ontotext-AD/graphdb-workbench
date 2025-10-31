@@ -195,12 +195,12 @@
                         <div class="float-xs-left d-inline-block ml-1 mb-1">
                             {{'capabilities' | translate}}
                             <div class="data-value d-block">
-                                <div ng-if="getLicense().licenseCapabilities.length !== 0">
-                                    <div ng-repeat="capability in getLicense().licenseCapabilities">
+                                <div ng-if="getLicense().licenseCapabilities.getItems().length !== 0">
+                                    <div ng-repeat="capability in getLicense().licenseCapabilities.getItems()">
                                         <div>{{capability}}</div>
                                     </div>
                                 </div>
-                                <div ng-if="getLicense().licenseCapabilities.length === 0">
+                                <div ng-if="getLicense().licenseCapabilities.getItems().length === 0">
                                     <div>{{'none' | translate}}</div>
                                 </div>
                             </div>

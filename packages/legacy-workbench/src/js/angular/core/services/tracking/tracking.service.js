@@ -10,6 +10,8 @@ import {
     CookieConsent as CookieConsentAPI,
     AuthenticationService,
     SecurityContextService,
+    LicenseService,
+    LicenseContextService,
 } from '@ontotext/workbench-api';
 
 const modules = [
@@ -20,7 +22,7 @@ const modules = [
 ];
 
 angular.module('graphdb.framework.core.services.trackingService', modules)
-    .factory('TrackingService', ['$window', '$jwtAuth', '$licenseService', 'InstallationCookieService', 'GoogleAnalyticsCookieService', 'LocalStorageAdapter', 'LSKeys',
+    .factory('TrackingService', ['$window', '$jwtAuth', 'InstallationCookieService', 'GoogleAnalyticsCookieService', 'LocalStorageAdapter', 'LSKeys',
         TrackingService]);
 
 /**
@@ -29,28 +31,27 @@ angular.module('graphdb.framework.core.services.trackingService', modules)
  *
  * @param {Object} $window - Angular wrapper for the browser's window object, used for environment checks.
  * @param {Object} $jwtAuth - Service for user authentication and data retrieval.
- * @param {Object} $licenseService - Service for checking license type and status.
  * @param {Object} InstallationCookieService - Service for managing installation cookies.
  * @param {Object} GoogleAnalyticsCookieService - Service for managing Google Analytics cookies.
  * @param {Object} LocalStorageAdapter - Service for interfacing with local storage.
  * @param {Object} LSKeys - Constants for local storage keys.
  * @constructor
  */
-function TrackingService($window, $jwtAuth, $licenseService, InstallationCookieService, GoogleAnalyticsCookieService, LocalStorageAdapter, LSKeys) {
+function TrackingService($window, $jwtAuth, InstallationCookieService, GoogleAnalyticsCookieService, LocalStorageAdapter, LSKeys) {
     // =========================
     // Private variables
     // =========================
     const securityService = service(SecurityService);
-    const authenticationService = service(AuthenticationService);
-    const securityContextService = service(SecurityContextService);
     const authorizationService = service(AuthorizationService);
+    const licenseService = service(LicenseService);
+    const licenseContextService = service(LicenseContextService);
 
     /**
      * Determines if tracking is allowed based on license and product type.
      * @return {boolean} A boolean indicating if tracking is allowed.
      */
     const isTrackingAllowed = () => {
-        const isTrackableLicense = $licenseService.isTrackableLicense();
+        const isTrackableLicense = licenseService.isTrackableLicense();
         const isProduction = !$window.wbDevMode;
         return isTrackableLicense && isProduction;
     };
@@ -72,7 +73,7 @@ function TrackingService($window, $jwtAuth, $licenseService, InstallationCookieS
                     }
 
                     if (cookieConsent.getStatisticConsent()) {
-                        const installationId = $licenseService.license().installationId || '';
+                        const installationId = licenseContextService.getLicenseSnapshot().installationId || '';
                         InstallationCookieService.setIfAbsent(installationId);
                     } else {
                         InstallationCookieService.remove();

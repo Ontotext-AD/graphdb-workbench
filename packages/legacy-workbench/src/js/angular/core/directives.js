@@ -1,6 +1,6 @@
 import 'angular/utils/local-storage-adapter';
 import {decodeHTML} from "../../../app";
-import {ServiceProvider, ResourceSearchStorageService, Suggestion} from '@ontotext/workbench-api';
+import {service, LicenseContextService, ResourceSearchStorageService, Suggestion} from '@ontotext/workbench-api';
 
 angular
     .module('graphdb.framework.core.directives', [
@@ -320,7 +320,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             const SEARCH_INPUT_FIELD = element.find('.view-res-input');
             $scope.textButtonLabel = $scope.textButton || 'query.editor.table.btn';
             $scope.visualButtonLabel = $scope.visualButton || 'query.editor.visual.btn';
-            const resourceSearchStorage = ServiceProvider.get(ResourceSearchStorageService);
+            const resourceSearchStorage = service(ResourceSearchStorageService);
 
             // use a global var to keep old uri in order to change it when a new one appears
             let expandedUri;
@@ -794,8 +794,8 @@ function keyboardShortcutsDirective($document) {
         }
     }
 }
-inactivePluginDirective.$inject = ['toastr', 'RDF4JRepositoriesRestService', 'ModalService', '$repositories', '$licenseService', '$translate'];
-function inactivePluginDirective(toastr, RDF4JRepositoriesRestService, ModalService, $repositories, $licenseService, $translate) {
+inactivePluginDirective.$inject = ['toastr', 'RDF4JRepositoriesRestService', 'ModalService', '$repositories', '$translate'];
+function inactivePluginDirective(toastr, RDF4JRepositoriesRestService, ModalService, $repositories, $translate) {
     return {
         restrict: 'E',
         transclude: true,
@@ -811,12 +811,20 @@ function inactivePluginDirective(toastr, RDF4JRepositoriesRestService, ModalServ
     };
 
     function linkFunc($scope) {
+        // =========================
+        // Private variables
+        // =========================
+        const licenseContextService = service(LicenseContextService);
+
+        // =========================
+        // Public variables
+        // =========================
         $scope.pluginIsActive = true;
 
         function checkPluginIsActive() {
             // Should not check if plugin is active if no valid license is set,
             // or there isn't active repository, or repository is of type ontop or fedx
-            if (!$licenseService.isLicenseValid() ||
+            if (!licenseContextService.getLicenseSnapshot().valid ||
                 !$repositories.getActiveRepository() ||
                 $repositories.isActiveRepoOntopType() ||
                 $repositories.isActiveRepoFedXType()) {
