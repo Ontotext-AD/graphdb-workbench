@@ -13,7 +13,7 @@ import {
     DISABLE_YASQE_BUTTONS_CONFIGURATION,
     YasguiComponentDirectiveUtil,
 } from '../core/directives/yasgui-component/yasgui-component-directive.util';
-import {RepositoryContextService, ServiceProvider} from '@ontotext/workbench-api';
+import {RepositoryContextService, service, LicenseContextService} from '@ontotext/workbench-api';
 import {LoggerProvider} from '../core/services/logger-provider';
 
 const modules = [
@@ -32,9 +32,17 @@ angular.module('graphdb.framework.sparql-template.controllers', modules, [
     .controller('SparqlTemplatesCtrl', SparqlTemplatesCtrl)
     .controller('SparqlTemplateCreateCtrl', SparqlTemplateCreateCtrl);
 
-SparqlTemplatesCtrl.$inject = ['$scope', '$repositories', 'SparqlTemplatesRestService', 'toastr', 'ModalService', '$licenseService', '$translate'];
+SparqlTemplatesCtrl.$inject = ['$scope', '$repositories', 'SparqlTemplatesRestService', 'toastr', 'ModalService', '$translate'];
 
-function SparqlTemplatesCtrl($scope, $repositories, SparqlTemplatesRestService, toastr, ModalService, $licenseService, $translate) {
+function SparqlTemplatesCtrl($scope, $repositories, SparqlTemplatesRestService, toastr, ModalService, $translate) {
+    // =========================
+    // Private variables
+    // =========================
+    const licenseContextService = service(LicenseContextService);
+
+    // =========================
+    // Public variables
+    // =========================
     $scope.pluginName = 'sparql-template';
 
     // =========================
@@ -47,7 +55,7 @@ function SparqlTemplatesCtrl($scope, $repositories, SparqlTemplatesRestService, 
     $scope.getSparqlTemplates = function() {
         // Only do this if there is an active repo that isn't an Ontop repo.
         // Ontop repos doesn't support update operations.
-        if ($licenseService.isLicenseValid() &&
+        if (licenseContextService.getLicenseSnapshot().valid &&
             $repositories.getActiveRepository()
             && !$repositories.isActiveRepoOntopType()
             && !$repositories.isActiveRepoFedXType()) {
@@ -88,7 +96,7 @@ function SparqlTemplatesCtrl($scope, $repositories, SparqlTemplatesRestService, 
 
     const subscriptions = [];
 
-    const repositoryContextService = ServiceProvider.get(RepositoryContextService);
+    const repositoryContextService = service(RepositoryContextService);
     const repositoryChangeSubscription = repositoryContextService.onSelectedRepositoryChanged(() => $scope.getSparqlTemplates());
 
     subscriptions.push(repositoryChangeSubscription);
@@ -508,7 +516,7 @@ function SparqlTemplateCreateCtrl(
     // Subscriptions
     // =========================
     const subscriptions = [];
-    const repositoryContextService = ServiceProvider.get(RepositoryContextService);
+    const repositoryContextService = service(RepositoryContextService);
     const repositoryChangeSubscription = repositoryContextService.onSelectedRepositoryChanged(repositoryChangedHandler, repositoryWillChangeHandler);
 
     subscriptions.push(repositoryChangeSubscription);

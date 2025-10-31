@@ -2,7 +2,7 @@ import 'angular/rest/autocomplete.rest.service';
 import {mapNamespacesResponse} from "../rest/mappers/namespaces-mapper";
 import {decodeHTML} from "../../../app";
 import 'angular/core/directives/validate-url.directive';
-import {AutocompleteContextService, ServiceProvider} from "@ontotext/workbench-api";
+import {AutocompleteContextService, LicenseContextService, service} from "@ontotext/workbench-api";
 
 const modules = [
     'toastr',
@@ -20,7 +20,6 @@ AutocompleteCtrl.$inject = [
     '$interval',
     'toastr',
     '$repositories',
-    '$licenseService',
     '$uibModal',
     '$timeout',
     'RDF4JRepositoriesRestService',
@@ -34,7 +33,6 @@ function AutocompleteCtrl(
     $interval,
     toastr,
     $repositories,
-    $licenseService,
     $uibModal,
     $timeout,
     RDF4JRepositoriesRestService,
@@ -43,6 +41,10 @@ function AutocompleteCtrl(
     $translate,
     WorkbenchContextService) {
 
+    // =========================
+    // Private variables
+    // =========================
+    const licenseContextService = service(LicenseContextService);
     let timer;
 
     function cancelTimer() {
@@ -204,11 +206,15 @@ function AutocompleteCtrl(
         cancelTimer();
     });
 
+    const canEnableAutocomplete = () => {
+        return licenseContextService.getLicenseSnapshot().valid &&
+            $repositories.getActiveRepository() &&
+            !$repositories.isActiveRepoOntopType() &&
+            !$repositories.isActiveRepoFedXType();
+    };
+
     const init = function() {
-        if (!$licenseService.isLicenseValid() ||
-            !$repositories.getActiveRepository() ||
-            $repositories.isActiveRepoOntopType() ||
-            $repositories.isActiveRepoFedXType()) {
+        if (!canEnableAutocomplete()) {
             return;
         }
         $scope.checkForPlugin();
@@ -320,10 +326,7 @@ function AutocompleteCtrl(
 
     $scope.$on('repositoryIsSet', function () {
         cancelTimer();
-        if (!$licenseService.isLicenseValid() ||
-            !$repositories.getActiveRepository() ||
-            $repositories.isActiveRepoOntopType() ||
-            $repositories.isActiveRepoFedXType()) {
+        if (!canEnableAutocomplete()) {
             return;
         }
         $scope.checkForPlugin();

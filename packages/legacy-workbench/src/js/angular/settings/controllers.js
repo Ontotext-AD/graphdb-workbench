@@ -2,7 +2,12 @@ import 'angular/core/services';
 import 'angular/core/services/jwt-auth.service';
 import {
     AuthorizationService,
+    LicenseService,
+    LicenseContextService,
     service,
+    RoutingUtil,
+    NavigationContextService,
+    navigate,
 } from '@ontotext/workbench-api';
 
 angular
@@ -10,7 +15,7 @@ angular
         'ngCookies',
         'ui.bootstrap',
         'graphdb.framework.core.services.jwtauth',
-        'toastr'
+        'toastr',
     ])
     .controller('ActiveLocationSettingsCtrl', ActiveLocationSettingsCtrl)
     .controller('ValidateLicenseModalCtrl', ValidateLicenseModalCtrl)
@@ -27,10 +32,10 @@ function ActiveLocationSettingsCtrl($scope, toastr, $uibModalInstance, LicenseRe
 
     function getSettings() {
         $scope.loader = true;
-        LicenseRestService.getStatistics().then(function (response) {
+        LicenseRestService.getStatistics().then(function(response) {
             $scope.settings.statistics = response.data === 'true';
             $scope.supportsStatistics = true;
-        }, function (response) {
+        }, function(response) {
             if (response.status === 404) {
                 $scope.supportsStatistics = false;
             } else {
@@ -42,109 +47,129 @@ function ActiveLocationSettingsCtrl($scope, toastr, $uibModalInstance, LicenseRe
 
     $scope.getSettings();
 
-    $scope.setSettings = function () {
+    $scope.setSettings = function() {
         $scope.loader = true;
-        LicenseRestService.toggleStatistics($scope.settings.statistics).then(function () {
+        LicenseRestService.toggleStatistics($scope.settings.statistics).then(function() {
             $uibModalInstance.close();
             toastr.success($translate.instant('saving.settings.success'));
-        }, function (response) {
+        }, function(response) {
             const msg = getError(response.data);
             toastr.error(msg, $translate.instant('saving.settings.error'));
         });
     };
 
-    $scope.submitForm = function () {
+    $scope.submitForm = function() {
         $scope.setSettings();
     };
 
-    $scope.cancel = function () {
+    $scope.cancel = function() {
         $uibModalInstance.dismiss('cancel');
     };
 }
 
-LicenseCtrl.$inject = ['$scope', 'LicenseRestService', '$licenseService', 'toastr', '$rootScope', 'ModalService', '$translate', 'TrackingService'];
+LicenseCtrl.$inject = ['$scope', 'toastr', '$rootScope', 'ModalService', '$translate', 'TrackingService'];
 
-function LicenseCtrl($scope, LicenseRestService, $licenseService, toastr, $rootScope, ModalService, $translate, TrackingService) {
+function LicenseCtrl($scope, toastr, $rootScope, ModalService, $translate, TrackingService) {
+    // =========================
+    // Private variables
+    // =========================
+    const licenseService = service(LicenseService);
+    const licenseContextService = service(LicenseContextService);
 
-    $scope.loadingLicense = function() {
-        return $licenseService.loadingLicense();
-    };
+    // =========================
+    // Public variables
+    // =========================
+    $scope.isLicenseHardcoded = true;
 
-    // TODO - Check if redundant call and remove
-    $licenseService.checkLicenseStatus();
-
-    $scope.removeLicense = function () {
+    $scope.removeLicense = function() {
         ModalService.openSimpleModal({
             title: $translate.instant('confirm.operation'),
-            message: $translate.instant("remove.license.warning.msg"),
-            warning: true
+            message: $translate.instant('remove.license.warning.msg'),
+            warning: true,
         }).result
-            .then(function () {
-                LicenseRestService.unregisterLicense()
-                    .success(function () {
-                        $licenseService.checkLicenseStatus()
-                            .then(() => TrackingService.applyTrackingConsent())
-                            .catch((error) => {
-                                const msg = getError(error.data, error.status);
-                                toastr.error(msg, $translate.instant('common.error'));
-                            });
-                    });
+            .then(() => licenseService.unregisterLicense())
+            .then(() => licenseService.updateLicenseStatus())
+            .then(() => TrackingService.applyTrackingConsent())
+            .catch((error) => {
+                const msg = getError(error.data, error.status);
+                toastr.error(msg, $translate.instant('common.error'));
             });
     };
+
+    const onIsLicenseHardcodedUpdated = (isLicenseHardcoded) => $scope.isLicenseHardcoded = isLicenseHardcoded;
+    const isLicenseHardcodedUpdatedSubscription = licenseContextService.onIsLicenseHardcodedChanged(onIsLicenseHardcodedUpdated);
+
+    $scope.$on('$destroy', () => {
+        isLicenseHardcodedUpdatedSubscription?.();
+    });
 }
 
-RegisterLicenseCtrl.$inject = ['$scope', 'LicenseRestService', '$location', '$uibModal', 'toastr', '$window', '$jwtAuth', '$translate'];
+RegisterLicenseCtrl.$inject = ['$scope', '$location', '$uibModal', 'toastr', '$window', '$jwtAuth', '$translate'];
 
-function RegisterLicenseCtrl($scope, LicenseRestService, $location, $uibModal, toastr, $window, $jwtAuth, $translate) {
+function RegisterLicenseCtrl($scope, $location, $uibModal, toastr, $window, $jwtAuth, $translate) {
+    // =========================
+    // Private variables
+    // =========================
     const authorizationService = service(AuthorizationService);
+    const licenseService = service(LicenseService);
 
-    $scope.$on('securityInit', function () {
+    // =========================
+    // Public variables
+    // =========================
+    $scope.isLicenseHardcodedValue = true;
+
+    const validateAdminOrRedirect = () => {
         if (!authorizationService.isAdmin()) {
-            $location.path('/license');
+            RoutingUtil.navigate('/license');
         }
-    });
+    };
 
-    $scope.sendLicenseToValidateAndActivate = sendLicenseToValidateAndActivate;
+    validateAdminOrRedirect();
+
+    $scope.validateLicenseCode = (licenseCode) => {
+        validateAndActivateLicense(licenseCode);
+    };
 
     const textAreaSel = $('.license-textarea');
 
     // watch for uploaded license file
-    $scope.$watch('currentFile', function () {
+    $scope.$watch('currentFile', function() {
         if ($scope.currentFile) {
             const file = $scope.currentFile;
-            LicenseRestService.extractFromLicenseFile(file)
-                .success(function (licenseCode) {
-                    sendLicenseToValidateAndActivate(licenseCode);
-                }).error(function () {
+            licenseService.extractFromLicenseFile(file)
+                .then((licenseCode) => {
+                    validateAndActivateLicense(licenseCode);
+                })
+                .catch((() => {
                     toastr.error($translate.instant('could.not.upload.file.error'));
-                });
+                }));
         }
     });
 
-    $scope.getBackToPreviousPage = function () {
+    $scope.getBackToPreviousPage = function() {
         $window.history.back();
     };
 
     // send license code for validation and activation
-    function sendLicenseToValidateAndActivate(licenseCode) {
-        LicenseRestService.sendLicenseToValidate(licenseCode)
-            .success(function (validatedLicense) {
-                if (validatedLicense.present) {
+    const validateAndActivateLicense = (licenseCode) => {
+        licenseService.validateLicense(licenseCode)
+            .then((license) => {
+                if (license.present) {
                     // write code to textarea
                     textAreaSel.val(licenseCode);
                     // pop dialog for license details confirmation
-                    confirmWantedNewLicenseDetails(validatedLicense, licenseCode);
+                    confirmWantedNewLicenseDetails(license, licenseCode);
                 } else {
                     // clear textarea on invalid license
                     textAreaSel.val('');
                     // show error
-                    toastr.error(validatedLicense.message);
+                    toastr.error(license.message);
                 }
             })
-            .error(function () {
+            .catch(() => {
                 toastr.error($translate.instant('invalid.license'));
             });
-    }
+    };
 
 
     // pops a modal dialog which asks you if your expected license details are correct
@@ -155,13 +180,13 @@ function RegisterLicenseCtrl($scope, LicenseRestService, $location, $uibModal, t
             controller: 'ValidateLicenseModalCtrl',
             size: 'lg',
             resolve: {
-                license: function () {
+                license: function() {
                     return license;
-                }
-            }
+                },
+            },
         });
 
-        modalInstance.result.then(function () {
+        modalInstance.result.then(function() {
             registerLicense(licenseCode);
         });
     }
@@ -176,11 +201,14 @@ function RegisterLicenseCtrl($scope, LicenseRestService, $location, $uibModal, t
             // replacing whitespace makes this work on Safari too,
             // whereas other browser happily ignore the whitespace
             const decodedLicense = atob(licenseCode.replace(/\s/g, ''));
-            LicenseRestService.registerLicense(decodedLicense)
-                .success(function () {
-                    $window.history.back();
-                }).error(function (error) {
-                    toastr.error(error, $translate.instant('license.register.error'));
+            licenseService.registerLicense(decodedLicense)
+                .then(() => {
+                    const previousRoute = service(NavigationContextService).getPreviousRoute();
+                    navigate(previousRoute ?? './');
+                })
+                .catch((error) => {
+                    const msg = getError(error);
+                    toastr.error(msg, $translate.instant('license.register.error'));
                 });
         } else {
             toastr.error($translate.instant('no.license.code.error'));
@@ -208,7 +236,7 @@ LoaderSamplesCtrl.$inject = ['$scope'];
 
 function LoaderSamplesCtrl($scope) {
     $scope.loader = true;
-    $scope.setLoader = function (loader) {
+    $scope.setLoader = function(loader) {
         $scope.loader = loader;
     };
 }
