@@ -24,7 +24,7 @@
     <rdf-resource-search ng-if="showRdfResourceSearch() && !hasGraphqlRightsOverCurrentRepo()" on-open="onRdfResourceSearch()"></rdf-resource-search>
 
     <!-- Invalid/expired license notification -->
-    <div ng-if="!getLicense().valid && showLicense()">
+    <div ng-if="!getLicense().valid">
         <a class="btn btn-fade-danger no-icon" ng-href="license"
              gdb-tooltip="{{getLicense().message}}" tooltip-placement="bottom">
             <span class="icon-warning"></span> {{'no.valid.license.warning' | translate}}

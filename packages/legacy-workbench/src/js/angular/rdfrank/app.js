@@ -5,6 +5,7 @@ import 'angular/rest/rdfrank.rest.service';
 import 'ng-tags-input/build/ng-tags-input.min';
 import {mapNamespacesResponse} from "../rest/mappers/namespaces-mapper";
 import {decodeHTML} from "../../../app";
+import {service, LicenseContextService} from '@ontotext/workbench-api';
 
 const rdfRankApp = angular.module('graphdb.framework.rdfrank', [
     'ngRoute',
@@ -13,9 +14,12 @@ const rdfRankApp = angular.module('graphdb.framework.rdfrank', [
     'graphdb.framework.rest.rdfrank.service'
 ]);
 
-rdfRankApp.controller('RDFRankCtrl', ['$scope', '$rootScope', '$interval', 'toastr', '$repositories', '$licenseService', '$timeout', 'ClassInstanceDetailsService', 'UriUtils', 'RDF4JRepositoriesRestService', 'RdfRankRestService', '$translate',
-    function ($scope, $rootScope, $interval, toastr, $repositories, $licenseService, $timeout, ClassInstanceDetailsService, UriUtils, RDF4JRepositoriesRestService, RdfRankRestService, $translate) {
-
+rdfRankApp.controller('RDFRankCtrl', ['$scope', '$rootScope', '$interval', 'toastr', '$repositories', '$timeout', 'ClassInstanceDetailsService', 'UriUtils', 'RDF4JRepositoriesRestService', 'RdfRankRestService', '$translate',
+    function ($scope, $rootScope, $interval, toastr, $repositories, $timeout, ClassInstanceDetailsService, UriUtils, RDF4JRepositoriesRestService, RdfRankRestService, $translate) {
+        // =========================
+        // Private variables
+        // =========================
+        const licenseContextService = service(LicenseContextService);
         let timer;
 
         function cancelTimer() {
@@ -189,7 +193,7 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$rootScope', '$interval', 'toas
 
         $scope.$on('repositoryIsSet', function () {
             cancelTimer();
-            if (!$licenseService.isLicenseValid() ||
+            if (!licenseContextService.getLicenseSnapshot().valid ||
                 !$repositories.getActiveRepository() ||
                     $repositories.isActiveRepoOntopType() ||
                         $repositories.isActiveRepoFedXType()) {
@@ -295,7 +299,7 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$rootScope', '$interval', 'toas
         });
 
         const init = function () {
-            if (!$licenseService.isLicenseValid() ||
+            if (!licenseContextService.getLicenseSnapshot().valid ||
                 !$repositories.getActiveRepository() ||
                     $repositories.isActiveRepoOntopType() ||
                         $repositories.isActiveRepoFedXType()) {
