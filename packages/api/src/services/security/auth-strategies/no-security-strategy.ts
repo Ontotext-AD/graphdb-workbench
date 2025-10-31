@@ -5,7 +5,7 @@ import {AuthStrategy} from '../../../models/security/authentication';
 import {AuthStrategyType} from '../../../models/security/authentication';
 import {AuthenticatedUser} from '../../../models/security';
 
-export class NoSecurityProvider implements AuthStrategy {
+export class NoSecurityStrategy implements AuthStrategy {
   private readonly logger = LoggerProvider.logger;
   private readonly securityService = service(SecurityService);
   private readonly securityContextService = service(SecurityContextService);
@@ -13,7 +13,7 @@ export class NoSecurityProvider implements AuthStrategy {
   type = AuthStrategyType.NO_SECURITY;
 
   /**
-   * Initializes the NoSecurityProvider and loads the admin user.
+   * Initializes the NoSecurityStrategy and loads the admin user.
    *
    * @returns Promise resolving to true if user is logged in
    * */
@@ -30,14 +30,14 @@ export class NoSecurityProvider implements AuthStrategy {
   }
 
   /**
-   * Logs in a user. In the NoSecurityProvider, this method does nothing and resolves immediately.
+   * Logs in a user. In the NoSecurityStrategy, this method does nothing and resolves immediately.
    */
   login(): Promise<AuthenticatedUser> {
     return this.securityService.getAdminUser();
   }
 
   /**
-   * Logs out the current user. In the NoSecurityProvider, this method does nothing and resolves immediately.
+   * Logs out the current user. In the NoSecurityStrategy, this method does nothing and resolves immediately.
    */
   logout(): Promise<void> {
     return Promise.resolve();

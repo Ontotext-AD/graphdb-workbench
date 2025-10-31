@@ -1,5 +1,5 @@
 import {TestUtil} from '../../../utils/test/test-util';
-import {GdbTokenAuthProvider} from '../gdb-token-auth-provider';
+import {GdbTokenAuthStrategy} from '../gdb-token-auth-strategy';
 import {AuthenticationStorageService, SecurityContextService, SecurityService} from '../../../../services/security';
 import {ServiceProvider} from '../../../../providers';
 import {WindowService} from '../../../window';
@@ -8,8 +8,8 @@ import {LoggerProvider} from '../../../logging/logger-provider';
 import {ProviderResponseMocks} from './provider-response-mocks';
 import {AuthenticatedUser, SecurityConfig} from '../../../../models/security';
 
-describe('GdbTokenAuthProvider', () => {
-  let provider: GdbTokenAuthProvider;
+describe('GdbTokenAuthStrategy', () => {
+  let strategy : GdbTokenAuthStrategy;
   let loggerErrorSpy: jest.SpyInstance;
   let authenticationStorageService: AuthenticationStorageService;
 
@@ -25,7 +25,7 @@ describe('GdbTokenAuthProvider', () => {
     authenticationStorageService = ServiceProvider.get(AuthenticationStorageService);
     authenticationStorageService.clearAuthToken();
 
-    provider = new GdbTokenAuthProvider();
+    strategy = new GdbTokenAuthStrategy();
   });
 
   describe('initialize', () => {
@@ -48,7 +48,7 @@ describe('GdbTokenAuthProvider', () => {
           PluginRegistry: {get: jest.fn(() => [])}
         } as unknown as Window);
 
-        await expect(provider.initialize()).resolves.toEqual(false);
+        await expect(strategy.initialize()).resolves.toEqual(false);
         expect(getAuthenticatedUserSpy).not.toHaveBeenCalled();
       });
 
@@ -60,7 +60,7 @@ describe('GdbTokenAuthProvider', () => {
           PluginRegistry: {get: jest.fn(() => [])}
         } as unknown as Window);
 
-        await expect(provider.initialize()).resolves.toEqual(false);
+        await expect(strategy.initialize()).resolves.toEqual(false);
         expect(getAuthenticatedUserSpy).not.toHaveBeenCalled();
       });
 
@@ -73,7 +73,7 @@ describe('GdbTokenAuthProvider', () => {
           PluginRegistry: {get: jest.fn(() => [])}
         } as unknown as Window);
 
-        await provider.initialize();
+        await strategy.initialize();
         expect(getAuthenticatedUserSpy).toHaveBeenCalled();
         expect(updateAuthenticatedUserSpy).toHaveBeenCalled();
       });
@@ -98,7 +98,7 @@ describe('GdbTokenAuthProvider', () => {
           PluginRegistry: {get: jest.fn(() => [])}
         } as unknown as Window);
 
-        await provider.initialize();
+        await strategy.initialize();
         expect(loggerErrorSpy).toHaveBeenCalledWith('Could not load authenticated user', expect.anything());
 
         expect(getAuthenticatedUserSpy).toHaveBeenCalled();
@@ -110,7 +110,7 @@ describe('GdbTokenAuthProvider', () => {
   describe('logout', () => {
     it('should clear the auth token', async () => {
       const clearAuthTokenSpy = jest.spyOn(ServiceProvider.get(AuthenticationStorageService), 'clearAuthToken');
-      await provider.logout();
+      await strategy.logout();
       expect(clearAuthTokenSpy).toHaveBeenCalled();
     });
   });
@@ -126,12 +126,12 @@ describe('GdbTokenAuthProvider', () => {
     it('should return true if token exists', async () => {
       TestUtil.mockResponse(new ResponseMock('rest/login').setResponse(ProviderResponseMocks.loginResponse).setHeaders(new Headers({authorization: 'GDB someToken'})));
 
-      await provider.login({username: 'testUser', password: '1234'});
-      expect(provider.isAuthenticated()).toBe(true);
+      await strategy.login({username: 'testUser', password: '1234'});
+      expect(strategy.isAuthenticated()).toBe(true);
     });
 
     it('should return false if token is null', () => {
-      expect(provider.isAuthenticated()).toBe(false);
+      expect(strategy.isAuthenticated()).toBe(false);
     });
   });
 });
