@@ -1,9 +1,5 @@
 import 'angular/core/services';
 import 'angular/core/services/jwt-auth.service';
-import {
-    AuthorizationService,
-    service,
-} from '@ontotext/workbench-api';
 
 angular
     .module('graphdb.framework.settings.controllers', [
@@ -96,13 +92,6 @@ function LicenseCtrl($scope, LicenseRestService, $licenseService, toastr, $rootS
 RegisterLicenseCtrl.$inject = ['$scope', 'LicenseRestService', '$location', '$uibModal', 'toastr', '$window', '$jwtAuth', '$translate'];
 
 function RegisterLicenseCtrl($scope, LicenseRestService, $location, $uibModal, toastr, $window, $jwtAuth, $translate) {
-    const authorizationService = service(AuthorizationService);
-
-    $scope.$on('securityInit', function () {
-        if (!authorizationService.isAdmin()) {
-            $location.path('/license');
-        }
-    });
 
     $scope.sendLicenseToValidateAndActivate = sendLicenseToValidateAndActivate;
 
@@ -145,7 +134,6 @@ function RegisterLicenseCtrl($scope, LicenseRestService, $location, $uibModal, t
                 toastr.error($translate.instant('invalid.license'));
             });
     }
-
 
     // pops a modal dialog which asks you if your expected license details are correct
     // and sends license to GraphDB upon confirmation

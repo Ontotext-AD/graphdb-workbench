@@ -20,7 +20,7 @@ const modules = [
 ];
 
 angular.module('graphdb.framework.core.services.trackingService', modules)
-    .factory('TrackingService', ['$window', '$jwtAuth', '$licenseService', 'InstallationCookieService', 'GoogleAnalyticsCookieService', 'LocalStorageAdapter', 'LSKeys',
+    .factory('TrackingService', ['$window', '$licenseService', 'InstallationCookieService', 'GoogleAnalyticsCookieService', 'LocalStorageAdapter', 'LSKeys',
         TrackingService]);
 
 /**
@@ -28,7 +28,6 @@ angular.module('graphdb.framework.core.services.trackingService', modules)
  * Handles the initialization, updating, and cleanup of tracking cookies and scripts.
  *
  * @param {Object} $window - Angular wrapper for the browser's window object, used for environment checks.
- * @param {Object} $jwtAuth - Service for user authentication and data retrieval.
  * @param {Object} $licenseService - Service for checking license type and status.
  * @param {Object} InstallationCookieService - Service for managing installation cookies.
  * @param {Object} GoogleAnalyticsCookieService - Service for managing Google Analytics cookies.
@@ -36,7 +35,7 @@ angular.module('graphdb.framework.core.services.trackingService', modules)
  * @param {Object} LSKeys - Constants for local storage keys.
  * @constructor
  */
-function TrackingService($window, $jwtAuth, $licenseService, InstallationCookieService, GoogleAnalyticsCookieService, LocalStorageAdapter, LSKeys) {
+function TrackingService($window, $licenseService, InstallationCookieService, GoogleAnalyticsCookieService, LocalStorageAdapter, LSKeys) {
     // =========================
     // Private variables
     // =========================
@@ -97,49 +96,56 @@ function TrackingService($window, $jwtAuth, $licenseService, InstallationCookieS
      *   @return {Promise<CookieConsent>} A promise resolving to the user's cookie consent preferences.
      */
     const getCookieConsent = () => {
-        return $jwtAuth.getPrincipal()
-            .then((principal) => {
-                // No username => use local storage
-                if (!principal || !principal.username) {
-                    if (authorizationService.hasFreeAccess()) {
-                        const localConsent = LocalStorageAdapter.get(LSKeys.COOKIE_CONSENT);
-                        if (localConsent) {
-                            return CookieConsent.fromJSON(localConsent);
-                        }
-                        return CookieConsent.NOT_ACCEPTED_WITH_TRACKING;
+        try {
+            const principal = authorizationService.getAuthenticatedUser();
+
+            // No username => use local storage
+            if (!principal || !principal.username) {
+                if (authorizationService.hasFreeAccess()) {
+                    const localConsent = LocalStorageAdapter.get(LSKeys.COOKIE_CONSENT);
+                    if (localConsent) {
+                        return Promise.resolve(CookieConsent.fromJSON(localConsent));
                     }
-                    return CookieConsent.ACCEPTED_NO_TRACKING;
+                    return Promise.resolve(CookieConsent.NOT_ACCEPTED_WITH_TRACKING);
                 }
+                return Promise.resolve(CookieConsent.ACCEPTED_NO_TRACKING);
+            }
 
-                if (!principal.appSettings || !principal.appSettings.COOKIE_CONSENT) {
-                    return CookieConsent.NOT_ACCEPTED_WITH_TRACKING;
-                }
+            if (!principal.appSettings || !principal.appSettings.COOKIE_CONSENT) {
+                return Promise.resolve(CookieConsent.NOT_ACCEPTED_WITH_TRACKING);
+            }
 
-                return CookieConsent.fromJSON(principal.appSettings.COOKIE_CONSENT);
-            });
+            return Promise.resolve(CookieConsent.fromJSON(principal.appSettings.COOKIE_CONSENT));
+        } catch (error) {
+            return Promise.reject(error);
+        }
     };
 
     /**
      * Updates cookie consent (local or server) and then re-init.
      * @param {CookieConsent} consent - An instance of CookieConsent with updated preferences.
+     * @return {Promise<void>} A promise that resolves when the update and re-application of tracking consent is complete.
      */
     const updateCookieConsent = (consent) => {
-        return $jwtAuth.getPrincipal()
-            .then((data) => {
-                const username = data.username;
-                if (!username) {
-                    LocalStorageAdapter.set(LSKeys.COOKIE_CONSENT, consent.toJSON());
-                } else {
-                    const user = data.toUser();
-                    const appSettings = user.appSettings;
-                    appSettings.COOKIE_CONSENT = new CookieConsentAPI(consent.toJSON());
-                    return securityService.updateAuthenticatedUser(user);
-                }
-            })
+        const principal = authorizationService.getAuthenticatedUser();
+        const username = principal && principal.username;
+
+        if (!username) {
+            LocalStorageAdapter.set(LSKeys.COOKIE_CONSENT, consent.toJSON());
+            return Promise.resolve().finally(() => applyTrackingConsent());
+        }
+
+        const user = principal.toUser();
+        const appSettings = user.appSettings || {};
+        appSettings.COOKIE_CONSENT = new CookieConsentAPI(consent.toJSON());
+
+        return securityService.updateAuthenticatedUser(user)
             .then(() => {
+                return authenticationService.getCurrentUser();
+            })
+            .then((authenticatedUser) => {
                 // Update the authenticated user in the security context
-                authenticationService.getCurrentUser()
-                    .then((authenticatedUser) => securityContextService.updateAuthenticatedUser(authenticatedUser));
+                return securityContextService.updateAuthenticatedUser(authenticatedUser);
             })
             .finally(() => applyTrackingConsent());
     };
@@ -159,6 +165,6 @@ function TrackingService($window, $jwtAuth, $licenseService, InstallationCookieS
         applyTrackingConsent,
         getCookieConsent,
         updateCookieConsent,
-        isTrackingAllowed
+        isTrackingAllowed,
     };
 }

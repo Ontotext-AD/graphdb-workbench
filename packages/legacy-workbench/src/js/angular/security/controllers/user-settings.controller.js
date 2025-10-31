@@ -1,7 +1,16 @@
 import 'angular/core/services/security.service';
 import {GRAPHQL, READ_REPO, WRITE_REPO} from '../services/constants';
 import {UserType} from 'angular/utils/user-utils';
-import {navigate, NavigationContextService, SecurityService, AuthenticationService, SecurityContextService, service, User} from '@ontotext/workbench-api';
+import {
+    navigate,
+    NavigationContextService,
+    SecurityService,
+    AuthenticationService,
+    AuthorizationService,
+    SecurityContextService,
+    service,
+    User,
+} from '@ontotext/workbench-api';
 import {CookiePolicyModalController} from '../../core/directives/cookie-policy/cookie-policy-modal-controller';
 
 angular
@@ -36,6 +45,7 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
     // =========================
     const securityService = service(SecurityService);
     const authenticationService = service(AuthenticationService);
+    const authorizationService = service(AuthorizationService);
     const securityContextService = service(SecurityContextService);
 
     /**
@@ -95,15 +105,6 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
     $scope.goBack = function () {
         const previousRoute = service(NavigationContextService).getPreviousRoute();
         navigate(previousRoute || '/');
-    };
-
-    $scope.getPrincipal = function () {
-        return $jwtAuth.getPrincipal()
-            .then((principal) => {
-                $scope.currentUserData = principal.toUser();
-                $scope.redirectAdmin();
-                initUserData();
-            });
     };
 
     $scope.updateCurrentUserData = function () {
@@ -244,11 +245,18 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
         $scope.customRoles = $scope.currentUserData.authorities.getCustomRoles();
     };
 
+    const processUser = () => {
+        const principal = authorizationService.getAuthenticatedUser();
+        $scope.currentUserData = principal.toUser();
+        $scope.redirectAdmin();
+        initUserData();
+    };
+
     // =========================
     // Subscriptions
     // =========================
 
-    $scope.$on('$destroy', function () {
+    $scope.$on('$destroy', function() {
         const workbenchSettings = WorkbenchSettingsStorageService.getWorkbenchSettings();
         ThemeService.toggleThemeMode(workbenchSettings.mode);
         ThemeService.applyTheme(workbenchSettings.theme);
@@ -262,10 +270,10 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
     const initView = () => {
         if (!$scope.workbenchSettings) {
             $scope.workbenchSettings = {
-                theme: 'light'
+                theme: 'light',
             };
         }
-        $scope.getPrincipal();
+        processUser();
         $scope.setThemeMode();
         showCookiePolicyLink();
     };

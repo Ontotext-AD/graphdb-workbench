@@ -107,7 +107,6 @@ function homeCtrl($scope,
                   WorkbenchContextService,
                   RDF4JRepositoriesService,
                   toastr) {
-
     // =========================
     // Private variables
     // =========================
@@ -227,7 +226,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     const updatePermissions = () => {
         const securityContextService = ServiceProvider.get(SecurityContextService);
         const restrictedPages = securityContextService.getRestrictedPages();
-        const authorizationService = ServiceProvider.get(AuthorizationService);
         const user = authorizationService.getAuthenticatedUser();
 
         const isAdministratorUser = authorizationService.isAdmin();
@@ -625,12 +623,8 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     };
 
     function setPrincipal() {
-        // Using $q.when to proper set values in view
-        return $q.when($jwtAuth.getPrincipal())
-            .then((principal) => {
-                $scope.principal = principal;
-                $scope.isIgnoreSharedQueries = principal && principal.appSettings.IGNORE_SHARED_QUERIES;
-            });
+        $scope.principal = authorizationService.getAuthenticatedUser();
+        $scope.isIgnoreSharedQueries = $scope.principal && $scope.principal.appSettings.IGNORE_SHARED_QUERIES;
     }
 
     const onLoginSubscription = ServiceProvider.get(EventService).subscribe(EventName.LOGIN, () => {
@@ -643,8 +637,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     });
 
     function logout() {
-        const authorizationService = ServiceProvider.get(AuthorizationService);
-
         if (authorizationService.hasFreeAccess()) {
             // if it's free access check if we still can access the current repo
             // if not, a new default repo will be set or the current repo will be unset
@@ -1002,16 +994,15 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
                 $rootScope.redirectToLogin();
             }
         } else {
-            setPrincipal()
-                .then(() => {
-                    // Update Restricted Pages permissions on securityInit
-                    updatePermissions();
+            setPrincipal();
+            // Update Restricted Pages permissions on securityInit
+            updatePermissions();
+            // Added timeout because, when the 'securityInit' event is fired after user logged-in.
+            // The authentication headers are still not set correctly when a request that loads saved queries is called
+            // and the $unauthorizedInterceptor rejects the request.
+            // There are many places where setTimeout is used, see $jwtAuth#authenticate and $jwtAuth#setAuthHeaders.
+            setTimeout(() => $scope.getSavedQueries(), 500);
 
-                    // Added timeout because, when the 'securityInit' event is fired after user logged-in.
-                    // The authentication headers are still not set correctly when a request that loads saved queries is called and the $unauthorizedInterceptor rejects the request.
-                    // There are many places where setTimeout is used, see $jwtAuth#authenticate and $jwtAuth#setAuthHeaders.
-                    setTimeout(() => $scope.getSavedQueries(), 500);
-                });
             $licenseService.checkLicenseStatus()
                 .then(() => {
                     $scope.licenseIsSet = true;
