@@ -128,35 +128,25 @@ function TrackingService($window, InstallationCookieService, GoogleAnalyticsCook
      * @return {Promise<void>} A promise that resolves when the update and re-application of tracking consent is complete.
      */
     const updateCookieConsent = (consent) => {
-        // const principal = authorizationService.getAuthenticatedUser();
-        // const username = principal && principal.username;
-        //
-        // if (!username) {
-        //     LocalStorageAdapter.set(LSKeys.COOKIE_CONSENT, consent.toJSON());
-        //     return Promise.resolve().finally(() => applyTrackingConsent());
-        // }
-        //
-        // const appSettings = principal.appSettings || {};
-        // appSettings.COOKIE_CONSENT = consent.toJSON();
-        // // TODO: Check if this payload is correct for updating user data with SecurityService
-        // return securityService.updateUserData({appSettings, username})
-        //     .finally(() => applyTrackingConsent());
-        return $jwtAuth.getPrincipal()
-            .then((data) => {
-                const username = data.username;
-                if (!username) {
-                    LocalStorageAdapter.set(LSKeys.COOKIE_CONSENT, consent.toJSON());
-                } else {
-                    const user = data.toUser();
-                    const appSettings = user.appSettings;
-                    appSettings.COOKIE_CONSENT = new CookieConsentAPI(consent.toJSON());
-                    return securityService.updateAuthenticatedUser(user);
-                }
-            })
+        const principal = authorizationService.getAuthenticatedUser();
+        const username = principal && principal.username;
+
+        if (!username) {
+            LocalStorageAdapter.set(LSKeys.COOKIE_CONSENT, consent.toJSON());
+            return Promise.resolve().finally(() => applyTrackingConsent());
+        }
+
+        const user = principal.toUser();
+        const appSettings = user.appSettings || {};
+        appSettings.COOKIE_CONSENT = new CookieConsentAPI(consent.toJSON());
+
+        return securityService.updateAuthenticatedUser(user)
             .then(() => {
+                return authenticationService.getCurrentUser();
+            })
+            .then((authenticatedUser) => {
                 // Update the authenticated user in the security context
-                authenticationService.getCurrentUser()
-                    .then((authenticatedUser) => securityContextService.updateAuthenticatedUser(authenticatedUser));
+                return securityContextService.updateAuthenticatedUser(authenticatedUser);
             })
             .finally(() => applyTrackingConsent());
     };
