@@ -16,22 +16,4 @@ angular.module('graphdb.framework.settings', [
     'graphdb.framework.core.interceptors.unauthorized',
     'graphdb.framework.core.interceptors.authentication',
     'graphdb.framework.core.services.jwtauth'
-])
-    .config(config)
-    .run(run);
-
-config.$inject = ['$httpProvider', '$routeProvider'];
-
-function config($httpProvider) {
-    $httpProvider.interceptors.push('$authenticationInterceptor');
-}
-
-run.$inject = ['$rootScope', '$location', '$licenseService'];
-
-function run($rootScope, $location, $licenseService) {
-    $rootScope.$on('$locationChangeStart', function () {
-        if ($licenseService.isLicenseHardcoded() && $location.url() === '/license/register') {
-            $location.path('license');
-        }
-    });
-}
+]);

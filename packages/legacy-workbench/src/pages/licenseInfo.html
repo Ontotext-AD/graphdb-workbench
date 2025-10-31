@@ -5,9 +5,7 @@
     <page-info-tooltip></page-info-tooltip>
 </h1>
 
-<div class="ot-loader ot-main-loader" onto-loader size="100" ng-show="loadingLicense()"></div>
-
-<div class="license-container" data-test="license-info-page" ng-show="!loadingLicense()">
+<div class="license-container" data-test="license-info-page">
     <div class="card">
         <h4 ng-if="isLicensePresent()" class="card-header" data-test="valid-license-title">GraphDB {{getProductType() | titlecase}} {{'edition' | translate}}</h4>
         <h4 ng-if="!isLicensePresent()" class="card-header" data-test="no-license-title">{{'no.license' | translate}}</h4>
@@ -40,12 +38,12 @@
                 <div class="d-inline-block mb-1">
                     {{'capabilities' | translate}}
                     <div class="data-value d-block">
-                        <div ng-if="getLicense().licenseCapabilities.length !== 0">
-                            <div ng-repeat="capability in getLicense().licenseCapabilities">
+                        <div ng-if="getLicense().licenseCapabilities.getItems().length !== 0">
+                            <div ng-repeat="capability in getLicense().licenseCapabilities.getItems()">
                                 <div>{{capability}}</div>
                             </div>
                         </div>
-                        <div ng-if="getLicense().licenseCapabilities.length === 0">
+                        <div ng-if="getLicense().licenseCapabilities.getItems().length === 0">
                             <div>{{'none' | translate}}</div>
                         </div>
                     </div>
@@ -53,13 +51,13 @@
                 <div class="text-muted">{{getLicense().typeOfUse}}</div>
             </div>
             <div class="text-right">
-                <button ng-click="removeLicense()" ng-if="!isLicenseHardcoded() && isAdmin()"
+                <button ng-click="removeLicense()" ng-if="!isLicenseHardcoded && isAdmin()"
                         ng-disabled="!isLicensePresent()"
                         class="btn btn-secondary revert-to-free-license-btn"
                         data-test="remove-license-button">
                     {{'remove.license' | translate}}
                 </button>
-                <a href="license/register" ng-if="!isLicenseHardcoded() && isAdmin()"
+                <a href="license/register" ng-if="!isLicenseHardcoded && isAdmin()"
                    class="btn btn-primary set-new-license-link"
                    data-test="set-new-license-link">
                     {{'core.errors.set.new.license.warning.msg' | translate}}
@@ -71,7 +69,7 @@
 
 <div class="alert alert-warning license-hardcoded-alert-message"
      data-test="license-hardcoded-alert-message"
-     ng-if="isLicenseHardcoded() && isAdmin()">
+     ng-if="isLicenseHardcoded && isAdmin()">
     {{'license.cannot.be.changed.from.wb.warning' | translate}}
 </div>
 

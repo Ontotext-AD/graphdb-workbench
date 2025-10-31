@@ -1,7 +1,7 @@
-import { Model } from '../common/model';
-import { CapabilityList } from './capability-list';
-import { CapabilityListMapper } from '../../services/license/mappers/capability-list.mapper';
-import { MapperProvider } from '../../providers';
+import {Model} from '../common/model';
+import {CapabilityList} from './capability-list';
+import {Product} from './product';
+import {ProductType} from './product-type';
 
 /**
  * Represents a Graph DB license.
@@ -9,12 +9,12 @@ import { MapperProvider } from '../../providers';
  * Inherits copy functionality from {@link Model} and contains various properties of a GraphDB license.
  */
 export class License extends Model<License> {
-  private _expiryDate?: number;
-  private _latestPublicationDate?: number;
+  private _expiryDate?: Date;
+  private _latestPublicationDate?: Date;
   private _licensee?: string;
   private _maxCpuCores?: number;
-  private _product?: string;
-  private _productType?: string;
+  private _product?: Product;
+  private _productType?: ProductType;
   private _licenseCapabilities?: CapabilityList;
   private _version?: string;
   private _installationId?: string;
@@ -30,37 +30,37 @@ export class License extends Model<License> {
    * @param data - Partial data to initialize the License object. This can include any of the properties
    * defined in the License class. Default values are applied for some properties if not provided.
    */
-  constructor(data: Partial<License>) {
+  constructor(data?: Partial<License>) {
     super();
-    this.expiryDate = data.expiryDate;
-    this.latestPublicationDate = data.latestPublicationDate;
-    this.licensee = data.licensee || '';
-    this.maxCpuCores = data.maxCpuCores;
-    this.product = data.product || '';
-    this.productType = data.productType || '';
-    this.licenseCapabilities = MapperProvider.get(CapabilityListMapper).mapToModel(data.licenseCapabilities);
-    this.version = data.version || '';
-    this.installationId = data.installationId || '';
-    this.valid = data.valid;
-    this.typeOfUse = data.typeOfUse || '';
-    this.message = data.message || '';
-    this.present = data.present || false;
-    this.usageRestriction = data.usageRestriction || '';
+    this.expiryDate = data?.expiryDate;
+    this.latestPublicationDate = data?.latestPublicationDate;
+    this.licensee = data?.licensee || '';
+    this.maxCpuCores = data?.maxCpuCores;
+    this.product = data?.product;
+    this.productType = data?.productType;
+    this.licenseCapabilities = data?.licenseCapabilities;
+    this.version = data?.version || '';
+    this.installationId = data?.installationId || '';
+    this.valid = data?.valid;
+    this.typeOfUse = data?.typeOfUse || '';
+    this.message = data?.message || '';
+    this.present = data?.present || false;
+    this.usageRestriction = data?.usageRestriction || '';
   }
 
-  get expiryDate(): number | undefined {
+  get expiryDate(): Date | undefined {
     return this._expiryDate;
   }
 
-  set expiryDate(value: number | undefined) {
+  set expiryDate(value: Date | undefined) {
     this._expiryDate = value;
   }
 
-  get latestPublicationDate(): number | undefined {
+  get latestPublicationDate(): Date | undefined {
     return this._latestPublicationDate;
   }
 
-  set latestPublicationDate(value: number | undefined) {
+  set latestPublicationDate(value: Date | undefined) {
     this._latestPublicationDate = value;
   }
 
@@ -80,19 +80,19 @@ export class License extends Model<License> {
     this._maxCpuCores = value;
   }
 
-  get product(): string | undefined {
+  get product(): Product | undefined {
     return this._product;
   }
 
-  set product(value: string | undefined) {
+  set product(value: Product | undefined) {
     this._product = value;
   }
 
-  get productType(): string | undefined {
+  get productType(): ProductType | undefined {
     return this._productType;
   }
 
-  set productType(value: string | undefined) {
+  set productType(value: ProductType | undefined) {
     this._productType = value;
   }
 

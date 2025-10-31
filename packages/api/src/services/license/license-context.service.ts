@@ -6,10 +6,12 @@ import {LifecycleHooks} from '../../providers/service/lifecycle-hooks';
 
 type LicenseContextFields = {
   readonly GRAPHDB_LICENSE: string;
+  readonly IS_LICENSE_HARDCODED: string;
 }
 
 type LicenseContextFieldParams = {
   readonly GRAPHDB_LICENSE: License;
+  readonly IS_LICENSE_HARDCODED: boolean;
 };
 
 /**
@@ -18,6 +20,7 @@ type LicenseContextFieldParams = {
  */
 export class LicenseContextService extends ContextService<LicenseContextFields> implements DeriveContextServiceContract<LicenseContextFields, LicenseContextFieldParams>, LifecycleHooks {
   readonly GRAPHDB_LICENSE = 'graphDbLicense';
+  readonly IS_LICENSE_HARDCODED = 'isLicenseHardcoded';
 
   /**
    * Updates the license information in the context.
@@ -43,7 +46,34 @@ export class LicenseContextService extends ContextService<LicenseContextFields> 
    *
    * @return the license information or undefined, if there is no license.
    */
-  getLicense(): License | undefined {
+  getLicenseSnapshot(): License | undefined {
     return this.getContextPropertyValue(this.GRAPHDB_LICENSE);
+  }
+
+  /**
+   * Updates whether the license is hardcoded in the context.
+   * @param isLicenseHardcoded
+   */
+  updateIsLicenseHardcoded(isLicenseHardcoded: boolean | undefined): void {
+    this.updateContextProperty(this.IS_LICENSE_HARDCODED, !!isLicenseHardcoded);
+  }
+
+  /**
+   * Subscribes to changes in the hardcoded license status.
+   *
+   * @param callbackFn - A callback function that will be called when the hardcoded license status changes.
+   * @returns A function that, when called, will unsubscribe from the hardcoded license status changes.
+   */
+  onIsLicenseHardcodedChanged(callbackFn: ValueChangeCallback<boolean | undefined>): () => void {
+    return this.subscribe(this.IS_LICENSE_HARDCODED, callbackFn);
+  }
+
+  /**
+   * Retrieves whether the license is hardcoded from the context.
+   *
+   * @return true if the license is hardcoded, false otherwise, or undefined if not set.
+   */
+  isLicenseHardcodedSnapshot(): boolean | undefined {
+    return this.getContextPropertyValue(this.IS_LICENSE_HARDCODED);
   }
 }

@@ -4,13 +4,11 @@ import 'angular/rest/sparql.rest.service';
 import 'angular/rest/autocomplete.rest.service';
 import 'angular/rest/plugins.rest.service';
 import 'angular/rest/monitoring.rest.service';
-import 'angular/rest/license.rest.service';
 import 'angular/rest/repositories.rest.service';
 import 'ng-file-upload/dist/ng-file-upload.min';
 import 'ng-file-upload/dist/ng-file-upload-shim.min';
 import 'angular/core/services/jwt-auth.service';
 import 'angular/core/services/repositories.service';
-import 'angular/core/services/license.service';
 import 'angular/core/services/tracking/tracking.service';
 import 'angular/core/services/workbench-context.service';
 import 'angular/core/services/rdf4j-repositories.service';
@@ -19,15 +17,15 @@ import 'angular/utils/local-storage-adapter';
 import 'angular/utils/workbench-settings-storage-service';
 import 'angular/utils/uri-utils';
 import 'angular/core/services/autocomplete.service';
-import {decodeHTML} from "../../app";
+import {decodeHTML} from '../../app';
 import './guides/guides.service';
 import './guides/directives';
 import {GUIDE_PAUSE} from './guides/tour-lib-services/shepherd.service';
 import 'angular-pageslide-directive/dist/angular-pageslide-directive';
 import 'angularjs-slider/dist/rzslider.min';
-import {debounce} from "lodash";
-import {DocumentationUrlResolver} from "./utils/documentation-url-resolver";
-import {NamespacesListModel} from "./models/namespaces/namespaces-list";
+import {debounce} from 'lodash';
+import {DocumentationUrlResolver} from './utils/documentation-url-resolver';
+import {NamespacesListModel} from './models/namespaces/namespaces-list';
 import {
     ApplicationLifecycleContextService,
     AuthorizationService,
@@ -37,20 +35,20 @@ import {
     EventName,
     EventService,
     RepositoryContextService,
+    LicenseContextService,
+    LicenseService,
     RepositoryService,
-    ServiceProvider,
+    service,
     SecurityContextService,
     OntoToastrService,
-    service,
-} from "@ontotext/workbench-api";
-import {EventConstants} from "./utils/event-constants";
-import {CookieConsent} from "./models/cookie-policy/cookie-consent";
+} from '@ontotext/workbench-api';
+import {EventConstants} from './utils/event-constants';
+import {CookieConsent} from './models/cookie-policy/cookie-consent';
 
 angular
     .module('graphdb.workbench.se.controllers', [
         'graphdb.framework.core.services.jwtauth',
         'graphdb.framework.core.services.repositories',
-        'graphdb.framework.core.services.licenseService',
         'graphdb.framework.core.services.trackingService',
         'graphdb.framework.core.services.theme-service',
         'ngCookies',
@@ -58,7 +56,6 @@ angular
         'graphdb.framework.core',
         'graphdb.framework.core.controllers',
         'graphdb.framework.core.directives',
-        'graphdb.framework.rest.license.service',
         'graphdb.framework.rest.autocomplete.service',
         'graphdb.framework.rest.repositories.service',
         'graphdb.framework.rest.sparql.service',
@@ -85,28 +82,24 @@ homeCtrl.$inject = ['$scope',
     '$http',
     '$repositories',
     '$jwtAuth',
-    '$licenseService',
     '$translate',
     'AutocompleteRestService',
-    'LicenseRestService',
     'RepositoriesRestService',
     'WorkbenchContextService',
     'RDF4JRepositoriesService',
     'toastr'];
 
 function homeCtrl($scope,
-                  $rootScope,
-                  $http,
-                  $repositories,
-                  $jwtAuth,
-                  $licenseService,
-                  $translate,
-                  AutocompleteRestService,
-                  LicenseRestService,
-                  RepositoriesRestService,
-                  WorkbenchContextService,
-                  RDF4JRepositoriesService,
-                  toastr) {
+    $rootScope,
+    $http,
+    $repositories,
+    $jwtAuth,
+    $translate,
+    AutocompleteRestService,
+    RepositoriesRestService,
+    WorkbenchContextService,
+    RDF4JRepositoriesService,
+    toastr) {
 
     // =========================
     // Private variables
@@ -123,14 +116,14 @@ function homeCtrl($scope,
     // Public functions
     // =========================
     $scope.getActiveRepositorySize = () => {
-        const repo = ServiceProvider.get(RepositoryContextService).getSelectedRepository();
+        const repo = service(RepositoryContextService).getSelectedRepository();
 
         if (!repo) {
             return;
         }
         $scope.activeRepositorySizeError = undefined;
 
-        ServiceProvider.get(RepositoryService).getRepositorySizeInfo(repo)
+        service(RepositoryService).getRepositorySizeInfo(repo)
             .then(function(repositorySizeInfo) {
                 $scope.activeRepositorySize = repositorySizeInfo;
             })
@@ -173,7 +166,7 @@ function homeCtrl($scope,
         $scope.isAutocompleteEnabled = autocompleteEnabled;
     };
 
-    subscriptions.push(ServiceProvider.get(RepositoryContextService).onSelectedRepositoryChanged(onSelectedRepositoryUpdated));
+    subscriptions.push(service(RepositoryContextService).onSelectedRepositoryChanged(onSelectedRepositoryUpdated));
     subscriptions.push(WorkbenchContextService.onAutocompleteEnabledUpdated(onAutocompleteEnabledUpdated));
 
     $scope.$on('$destroy', () => subscriptions.forEach((subscription) => subscription()));
@@ -193,18 +186,27 @@ function homeCtrl($scope,
     });
 }
 
-mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', '$location', '$repositories', '$licenseService', '$rootScope',
-    'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'LicenseRestService', 'RepositoriesRestService',
+mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', '$location', '$repositories', '$rootScope',
+    'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'RepositoriesRestService',
     'MonitoringRestService', 'SparqlRestService', '$sce', 'LocalStorageAdapter', 'LSKeys', '$translate', 'UriUtils', '$q', 'GuidesService', '$route', '$window', 'AuthTokenService', 'TrackingService',
     'WorkbenchContextService', 'AutocompleteService'];
 
-function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories, $licenseService, $rootScope,
-                  productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService, RepositoriesRestService,
-                  MonitoringRestService, SparqlRestService, $sce, LocalStorageAdapter, LSKeys, $translate, UriUtils, $q, GuidesService, $route, $window, AuthTokenService, TrackingService,
-                  WorkbenchContextService, AutocompleteService) {
+function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories, $rootScope,
+    productInfo, $timeout, ModalService, $interval, $filter, RepositoriesRestService,
+    MonitoringRestService, SparqlRestService, $sce, LocalStorageAdapter, LSKeys, $translate, UriUtils, $q, GuidesService, $route, $window, AuthTokenService, TrackingService,
+    WorkbenchContextService, AutocompleteService) {
+    // =========================
+    // Private variables
+    // =========================
+
     const toastrService = service(OntoToastrService);
+    const licenseService = service(LicenseService);
     const authorizationService = service(AuthorizationService);
     const authenticationService = service(AuthenticationService);
+
+    // =========================
+    // Public variables
+    // =========================
 
     $scope.descr = $translate.instant('main.gdb.description');
     $scope.documentation = '';
@@ -225,9 +227,9 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
 
     // Update page permissions based on menu item role
     const updatePermissions = () => {
-        const securityContextService = ServiceProvider.get(SecurityContextService);
+        const securityContextService = service(SecurityContextService);
         const restrictedPages = securityContextService.getRestrictedPages();
-        const authorizationService = ServiceProvider.get(AuthorizationService);
+        const authorizationService = service(AuthorizationService);
         const user = authorizationService.getAuthenticatedUser();
 
         const isAdministratorUser = authorizationService.isAdmin();
@@ -314,12 +316,12 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         }
     });
 
-    $scope.$on("$routeChangeSuccess", function($event, current, previous) {
+    $scope.$on('$routeChangeSuccess', function($event, current, previous) {
         $scope.clicked = false;
         $scope.hideRdfResourceSearch = false;
         if (previous) {
             // Recheck license status on navigation within the workbench (security is already inited)
-            $licenseService.checkLicenseStatus()
+            licenseService.updateLicenseStatus()
                 .then(() => TrackingService.applyTrackingConsent())
                 .catch((error) => {
                     const msg = getError(error.data, error.status);
@@ -339,6 +341,12 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     };
 
     const cookieConsentChangedSubscription = subscribeToCookieConsentChanged();
+
+    const onLicenseUpdated = (license) => {
+        $scope.license = license;
+    };
+
+    const licenseUpdatedSubscription = service(LicenseContextService).onLicenseChanged(onLicenseUpdated);
 
     $scope.resumeGuide = function() {
         $rootScope.$broadcast('guideResume');
@@ -392,11 +400,11 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         return $repositories.getLocationFromUri(location);
     };
 
-    $scope.$on("$locationChangeSuccess", function() {
+    $scope.$on('$locationChangeSuccess', function() {
         $scope.showFooter = true;
     });
 
-    $scope.$on("repositoryIsSet", function() {
+    $scope.$on('repositoryIsSet', function() {
         $scope.setRestricted();
         LocalStorageAdapter.clearClassHieararchyState();
     });
@@ -411,8 +419,8 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
 
     $scope.select = function(index, event, clicked) {
         if ($('.main-menu').hasClass('collapsed')) {
-            if (!$(event.target).parents(".menu-element").children('.menu-element-root').hasClass('active')) {
-                if (!$(event.target).parents(".menu-element").hasClass('open') && clicked) {
+            if (!$(event.target).parents('.menu-element').children('.menu-element-root').hasClass('active')) {
+                if (!$(event.target).parents('.menu-element').hasClass('open') && clicked) {
                     $scope.clicked = true;
                 } else {
                     $scope.clicked = !clicked;
@@ -427,13 +435,13 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
                 $scope.clicked = !clicked;
             }
         } else {
-            if (!$(event.target).parents(".menu-element").hasClass('open') && clicked) {
+            if (!$(event.target).parents('.menu-element').hasClass('open') && clicked) {
                 $scope.clicked = true;
             } else {
                 $scope.clicked = !clicked;
             }
-            if ($(event.target).parent(".menu-element").find(".sub-menu").length !== 0) {
-                if ($(event.target).parents(".menu-element").children('.menu-element-root').hasClass('active')) {
+            if ($(event.target).parent('.menu-element').find('.sub-menu').length !== 0) {
+                if ($(event.target).parents('.menu-element').children('.menu-element-root').hasClass('active')) {
                     $('.sub-menu li.active').parents('.menu-element').children('.menu-element-root').removeClass('active');
                 } else {
                     $('.sub-menu li.active').parents('.menu-element').children('.menu-element-root').addClass('active');
@@ -445,7 +453,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
                 }
             } else {
                 $timeout(function() {
-                    $(event.target).parents(".menu-element").children('.menu-element-root').addClass('active');
+                    $(event.target).parents('.menu-element').children('.menu-element-root').addClass('active');
                 }, 50);
                 $scope.selected = index;
             }
@@ -453,7 +461,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     };
 
     $('body').bind('click', function(e) {
-        if (!$(e.target).parents(".main-menu").length && $('.main-menu').hasClass('collapsed')) {
+        if (!$(e.target).parents('.main-menu').length && $('.main-menu').hasClass('collapsed')) {
             $scope.clicked = false;
             $scope.selected = -1;
         }
@@ -573,11 +581,11 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     };
 
     $scope.isLicensePresent = function() {
-        return $licenseService.isLicensePresent();
+        return !!$scope.license?.present;
     };
 
     $scope.isLicenseValid = function() {
-        return $licenseService.isLicenseValid();
+        return !!$scope.license?.valid;
     };
 
     /**
@@ -598,7 +606,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     $scope.setRestricted = function() {
         if ($scope.attrs) {
             $scope.isRestricted =
-                $scope.attrs.hasOwnProperty('license') && !$licenseService.isLicenseValid() ||
+                $scope.attrs.hasOwnProperty('license') && !$scope.license?.valid ||
                 $scope.attrs.hasOwnProperty('write') && $scope.isSecurityEnabled() && !$scope.canWriteActiveRepo() ||
                 $scope.attrs.hasOwnProperty('ontop') && $scope.isActiveRepoOntopType() ||
                 $scope.attrs.hasOwnProperty('fedx') && $scope.isActiveRepoFedXType();
@@ -633,17 +641,17 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
             });
     }
 
-    const onLoginSubscription = ServiceProvider.get(EventService).subscribe(EventName.LOGIN, () => {
+    const onLoginSubscription = service(EventService).subscribe(EventName.LOGIN, () => {
         $jwtAuth.initSecurity();
     });
-    const onLogoutSubscription = ServiceProvider.get(EventService).subscribe(EventName.LOGOUT, () => logout());
+    const onLogoutSubscription = service(EventService).subscribe(EventName.LOGOUT, () => logout());
 
-    ServiceProvider.get(EventService).subscribe(EventConstants.RDF_SEARCH_ICON_CLICKED, () => {
+    service(EventService).subscribe(EventConstants.RDF_SEARCH_ICON_CLICKED, () => {
         $rootScope.$broadcast('rdfResourceSearchExpanded');
     });
 
     function logout() {
-        const authorizationService = ServiceProvider.get(AuthorizationService);
+        const authorizationService = service(AuthorizationService);
 
         if (authorizationService.hasFreeAccess()) {
             // if it's free access check if we still can access the current repo
@@ -676,7 +684,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
 
     const localStoreChangeHandler = (localStoreEvent) => {
         if (authEvents.includes(localStoreEvent.key)) {
-            const newAuthenticationState = ServiceProvider.get(AuthenticationStorageService).isAuthenticated();
+            const newAuthenticationState = service(AuthenticationStorageService).isAuthenticated();
             $jwtAuth.updateReturnUrl();
             if (isAuthenticated !== newAuthenticationState) {
                 isAuthenticated = newAuthenticationState;
@@ -694,7 +702,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     };
 
     $scope.isAdmin = function() {
-        return $scope.hasRole(UserRole.ROLE_ADMIN);
+        return authorizationService.isAdmin();
     };
 
     $scope.isUser = function() {
@@ -824,36 +832,36 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         }
         $scope.tutorialInfo = [
             {
-                "title": $translate.instant("main.info.title.welcome.page"),
-                "info": '<p>' + decodeHTML($translate.instant('main.info.welcome.page')) + '</p>'
+                'title': $translate.instant('main.info.title.welcome.page'),
+                'info': '<p>' + decodeHTML($translate.instant('main.info.welcome.page')) + '</p>'
                     + '<p>' + decodeHTML($translate.instant('main.info.welcome.page.guides')) + '</p>'
                     + '<p>' + decodeHTML($translate.instant('main.info.welcome.page.footer')) + '</p>',
             },
             {
-                "title": $translate.instant('main.info.title.create.repo.page'),
-                "info": decodeHTML($translate.instant('main.info.create.repo.page', {link: "<a href=\"https://graphdb.ontotext.com/documentation/" + productInfo.productShortVersion + "/configuring-a-repository.html\" target=\"_blank\">"})),
+                'title': $translate.instant('main.info.title.create.repo.page'),
+                'info': decodeHTML($translate.instant('main.info.create.repo.page', {link: '<a href="https://graphdb.ontotext.com/documentation/' + productInfo.productShortVersion + '/configuring-a-repository.html" target="_blank">'})),
             },
             {
-                "title": $translate.instant('main.info.title.load.sample.dataset'),
-                "info": $translate.instant('main.info.load.sample.dataset'),
+                'title': $translate.instant('main.info.title.load.sample.dataset'),
+                'info': $translate.instant('main.info.load.sample.dataset'),
             },
             {
-                "title": $translate.instant('main.info.title.run.sparql.query'),
-                "info": decodeHTML($translate.instant('main.info.run.sparql.query')),
+                'title': $translate.instant('main.info.title.run.sparql.query'),
+                'info': decodeHTML($translate.instant('main.info.run.sparql.query')),
             },
             {
-                "title": $translate.instant('menu.rest.api.label'),
-                "info": decodeHTML($translate.instant('main.info.rest.api')),
+                'title': $translate.instant('menu.rest.api.label'),
+                'info': decodeHTML($translate.instant('main.info.rest.api')),
             },
         ];
         $scope.activePage = 0;
-        $(".pages-wrapper .page-slide").css("opacity", 100);
-        const widthOfParentElm = $(".main-container")[0].offsetWidth + 200;
+        $('.pages-wrapper .page-slide').css('opacity', 100);
+        const widthOfParentElm = $('.main-container')[0].offsetWidth + 200;
         $timeout(function() {
-            const $pageSlider = $(".pages-wrapper .page-slide");
-            $pageSlider.css("left", widthOfParentElm + "px");
-            $($pageSlider[$scope.activePage]).css("left", 0 + "px");
-            $($(".btn-toolbar.pull-right .btn-group .btn")[0]).focus();
+            const $pageSlider = $('.pages-wrapper .page-slide');
+            $pageSlider.css('left', widthOfParentElm + 'px');
+            $($pageSlider[$scope.activePage]).css('left', 0 + 'px');
+            $($('.btn-toolbar.pull-right .btn-group .btn')[0]).focus();
         }, 50);
     };
 
@@ -872,27 +880,27 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
 
     function setMenuCollapsed(menuCollapsed) {
         if (menuCollapsed) {
-            $(":root").addClass("menu-collapsed");
+            $(':root').addClass('menu-collapsed');
         } else {
-            $(":root").removeClass("menu-collapsed");
+            $(':root').removeClass('menu-collapsed');
         }
     }
 
     function collapsedMenuLogicOnInit() {
         if ($(window).width() <= 720) {
-            $('.container-fluid.main-container').addClass("expanded");
+            $('.container-fluid.main-container').addClass('expanded');
             setMenuCollapsed(true);
             $('.main-menu').addClass('collapsed');
             $('.main-menu .icon-caret-left').toggleClass('icon-caret-left').toggleClass('icon-caret-right');
             $('.toggle-menu').hide();
         } else if ($(window).width() > 720 && LocalStorageAdapter.get(LSKeys.MENU_STATE) === 'collapsedMenu') {
-            $('.container-fluid.main-container').addClass("expanded");
+            $('.container-fluid.main-container').addClass('expanded');
             setMenuCollapsed(true);
             $('.main-menu').addClass('collapsed');
             $('.toggle-menu').show();
             $('.main-menu .icon-caret-left').toggleClass('icon-caret-left').toggleClass('icon-caret-right');
         } else {
-            $('.container-fluid.main-container').removeClass("expanded");
+            $('.container-fluid.main-container').removeClass('expanded');
             setMenuCollapsed(false);
             $('.main-menu').removeClass('collapsed');
             $('.toggle-menu').show();
@@ -903,7 +911,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     function collapseMenuLogicOnResize() {
         if (angular.isDefined($scope.menuState)) {
             if ($(window).width() <= 720) {
-                $('.container-fluid.main-container').addClass("expanded");
+                $('.container-fluid.main-container').addClass('expanded');
                 setMenuCollapsed(true);
                 $('.main-menu').addClass('collapsed');
                 $('.toggle-menu').hide();
@@ -911,7 +919,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
             } else if ($(window).width() > 720 && $scope.menuState) {
                 $('.toggle-menu').show();
             } else {
-                $('.container-fluid.main-container').removeClass("expanded");
+                $('.container-fluid.main-container').removeClass('expanded');
                 setMenuCollapsed(false);
                 $('.main-menu').removeClass('collapsed');
                 $('.toggle-menu').show();
@@ -923,11 +931,11 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     }
 
     $scope.slideToPage = function(index) {
-        const widthOfParentElm = $(".main-container")[0].offsetWidth;
-        const $pageSlider = $(".pages-wrapper .page-slide");
-        $pageSlider.css("opacity", "0").delay(200).css("left", widthOfParentElm + "px");
+        const widthOfParentElm = $('.main-container')[0].offsetWidth;
+        const $pageSlider = $('.pages-wrapper .page-slide');
+        $pageSlider.css('opacity', '0').delay(200).css('left', widthOfParentElm + 'px');
         $scope.activePage = index;
-        $($pageSlider[$scope.activePage]).css("opacity", "100").css("left", 0 + "px");
+        $($pageSlider[$scope.activePage]).css('opacity', '100').css('left', 0 + 'px');
     };
 
     $scope.slideNext = function() {
@@ -936,7 +944,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
             nextPageIndex = 0;
         }
         $scope.slideToPage(nextPageIndex);
-        $($(".btn-toolbar.pull-right .btn-group .btn")[$scope.activePage]).focus();
+        $($('.btn-toolbar.pull-right .btn-group .btn')[$scope.activePage]).focus();
     };
 
     $scope.toggleNavigation = function() {
@@ -951,23 +959,23 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
                 $scope.clicked = false;
                 $scope.selected = -1;
             }
-            $('.container-fluid.main-container').addClass("expanded");
+            $('.container-fluid.main-container').addClass('expanded');
             setMenuCollapsed(true);
-            $mainMenu.addClass("collapsed");
+            $mainMenu.addClass('collapsed');
             $('.main-menu .icon-caret-left').toggleClass('icon-caret-left').toggleClass('icon-caret-right');
             $('.main-menu.collapsed .menu-element.clicked').removeClass('clicked');
-            $rootScope.$broadcast("onToggleNavWidth", true);
+            $rootScope.$broadcast('onToggleNavWidth', true);
         } else {
             if (!$activeSubmenu.parents('.menu-element').hasClass('open')) {
                 $activeSubmenu.parents('.menu-element').children('.menu-element-root').addClass('active');
             } else {
                 $activeSubmenu.parents('.menu-element').children('.menu-element-root').removeClass('active');
             }
-            $('.container-fluid.main-container').removeClass("expanded");
+            $('.container-fluid.main-container').removeClass('expanded');
             setMenuCollapsed(false);
-            $mainMenu.removeClass("collapsed");
+            $mainMenu.removeClass('collapsed');
             $('.main-menu .icon-caret-right').toggleClass('icon-caret-right').toggleClass('icon-caret-left');
-            $rootScope.$broadcast("onToggleNavWidth", false);
+            $rootScope.$broadcast('onToggleNavWidth', false);
         }
     };
 
@@ -979,11 +987,11 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
             LocalStorageAdapter.set(LSKeys.MENU_STATE, 'expandedMenu');
         }
         if ($scope.tutorialState && $location.path() === '/') {
-            const withOfParentElm = $(".pages-wrapper")[0].offsetWidth + 200;
+            const withOfParentElm = $('.pages-wrapper')[0].offsetWidth + 200;
             $timeout(function() {
-                const $pageSlider = $(".pages-wrapper .page-slide");
-                $pageSlider.css("left", withOfParentElm + "px");
-                $($pageSlider[$scope.activePage]).css("left", 0 + "px");
+                const $pageSlider = $('.pages-wrapper .page-slide');
+                $pageSlider.css('left', withOfParentElm + 'px');
+                $($pageSlider[$scope.activePage]).css('left', 0 + 'px');
             }, 50);
         }
     });
@@ -1012,7 +1020,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
                     // There are many places where setTimeout is used, see $jwtAuth#authenticate and $jwtAuth#setAuthHeaders.
                     setTimeout(() => $scope.getSavedQueries(), 500);
                 });
-            $licenseService.checkLicenseStatus()
+            licenseService.updateLicenseStatus()
                 .then(() => {
                     $scope.licenseIsSet = true;
                     TrackingService.applyTrackingConsent();
@@ -1039,15 +1047,15 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     };
 
     $scope.getProductType = function() {
-        return $licenseService.productType();
+        return $scope.license?.productType;
     };
 
     $scope.isEnterprise = function() {
-        return $scope.getProductType() === "enterprise";
+        return $scope.getProductType() === 'enterprise';
     };
 
     $scope.isFreeEdition = function() {
-        return $scope.getProductType() === "free";
+        return $scope.getProductType() === 'free';
     };
 
     $scope.checkEdition = function(editions) {
@@ -1057,20 +1065,18 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         return _.indexOf(editions, $scope.getProductType()) >= 0;
     };
 
-    $scope.showLicense = function() {
-        return $licenseService.showLicense();
-    };
-
     $scope.getLicense = function() {
-        return $licenseService.license();
+        return $scope.license;
     };
 
     $scope.getLicenseErrorMsg = function() {
-        return $licenseService.licenseErrorMsg();
-    };
+        const NO_LICENSE_MSG = 'No license was set';
 
-    $scope.isLicenseHardcoded = function() {
-        return $licenseService.isLicenseHardcoded();
+        if (!$scope.license?.present && $scope.license?.message === NO_LICENSE_MSG) {
+            return $translate.instant('no.license.set.msg');
+        } else {
+            return $translate.instant('error.license', {message: $scope.license?.message});
+        }
     };
 
     $scope.getHumanReadableSeconds = function(s, preciseSeconds) {
@@ -1090,18 +1096,18 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         } else {
             seconds = _.round(s % 60, 0);
         }
-        let message = "";
+        let message = '';
         if (days) {
-            message += days + "d ";
+            message += days + 'd ';
         }
         if (days || hours) {
-            message += hours + "h ";
+            message += hours + 'h ';
         }
         if (days || hours || minutes) {
-            message += minutes + "m ";
+            message += minutes + 'm ';
         }
-        message += seconds + "s";
-        return message.replace(/( 0[a-z])+$/, "");
+        message += seconds + 's';
+        return message.replace(/( 0[a-z])+$/, '');
     };
 
     $scope.getHumanReadableTimestamp = function(time) {
@@ -1116,18 +1122,18 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
             const dTime = new Date(time);
             if (dNow.getYear() === dTime.getYear() && dNow.getMonth() === dTime.getMonth() && dNow.getDate() === dTime.getDate()) {
                 // today
-                return $filter('date')(time, "'" + $translate.instant('timestamp.today.at') + "' HH:mm");
+                return $filter('date')(time, '\'' + $translate.instant('timestamp.today.at') + '\' HH:mm');
             } else if (delta < 86400) {
                 // yesterday
-                return $filter('date')(time, "'" + $translate.instant('timestamp.yesterday.at') + "' HH:mm");
+                return $filter('date')(time, '\'' + $translate.instant('timestamp.yesterday.at') + '\' HH:mm');
             }
         }
 
-        return $filter('date')(time, ("'" + $translate.instant('timestamp.on') + "' yyyy-MM-dd '" + $translate.instant('timestamp.at') + "' HH:mm"));
+        return $filter('date')(time, ('\'' + $translate.instant('timestamp.on') + '\' yyyy-MM-dd \'' + $translate.instant('timestamp.at') + '\' HH:mm'));
     };
 
     const updateAutocompleteStatus = () => {
-        if ($repositories.isActiveRepoFedXType() || !$licenseService.isLicenseValid() || !authorizationService.canReadRepo($repositories.getActiveRepositoryObject())) {
+        if ($repositories.isActiveRepoFedXType() || !$scope.license?.valid || !authorizationService.canReadRepo($repositories.getActiveRepositoryObject())) {
             WorkbenchContextService.setAutocompleteEnabled(false);
             LocalStorageAdapter.set(LSKeys.AUTOCOMPLETE_ENABLED, false);
             return;
@@ -1149,7 +1155,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         }
         updateAutocompleteStatus();
     };
-    $rootScope.$on("repositoryIsSet", onRepositoryChanged);
+    $rootScope.$on('repositoryIsSet', onRepositoryChanged);
 
     /**
      * Add a listener for the browser's local store change event. This event will be fired in all tabs of the current domain
@@ -1164,11 +1170,11 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     // properties.
     let onSelectedRepositoryChangedSubscription;
     // subscribe to repository changes, once we are certain they are loaded
-    const onAppDataLoaded = ServiceProvider.get(ApplicationLifecycleContextService).onApplicationDataStateChanged((dataLoaded) => {
+    const onAppDataLoaded = service(ApplicationLifecycleContextService).onApplicationDataStateChanged((dataLoaded) => {
         if (dataLoaded) {
             // unsubscribe of any previous subscription
             onSelectedRepositoryChangedSubscription?.();
-            onSelectedRepositoryChangedSubscription = ServiceProvider.get(RepositoryContextService)
+            onSelectedRepositoryChangedSubscription = service(RepositoryContextService)
                 .onSelectedRepositoryChanged((repository) => {
                     $repositories.onRepositorySet(repository);
                 });
@@ -1185,6 +1191,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     $scope.$on('$destroy', () => {
         onSelectedRepositoryChangedSubscription?.();
         cookieConsentChangedSubscription?.();
+        licenseUpdatedSubscription?.();
         onAppDataLoaded?.();
         onLogoutSubscription?.();
         onLoginSubscription?.();
@@ -1221,8 +1228,8 @@ function uxTestCtrl($scope, $repositories, toastr, ModalService) {
     $scope.myColor = $scope.colors[2];
 
     $scope.specialValue = {
-        "id": "12345",
-        "value": "green",
+        'id': '12345',
+        'value': 'green',
     };
 
     $scope.checkedItem = {name: 'black', shade: 'dark'};

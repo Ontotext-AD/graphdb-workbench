@@ -79,6 +79,39 @@ export class HttpService {
   }
 
   /**
+   * Uploads a file using an HTTP POST request with multipart/form-data.
+   *
+   * @param url          The URL to send the request to.
+   * @param file         The file to upload.
+   * @param fieldName    (Optional) The name of the form field for the file. Defaults to 'file'.
+   * @param additionalData (Optional) Additional form fields to include in the upload.
+   * @param headers      (Optional) An object containing additional request headers as key-value pairs.
+   * @returns A Promise that resolves to the response data of type `T`.
+   */
+  uploadFile<T>(
+    url: string,
+    file: File | Blob,
+    fieldName = 'file',
+    headers?: Record<string, string>,
+    additionalData?: Record<string, string | Blob>,
+  ): Promise<T> {
+    const formData = new FormData();
+    formData.append(fieldName, file, file instanceof File ? file.name : undefined);
+
+    if (additionalData) {
+      Object.entries(additionalData).forEach(([key, value]) => {
+        formData.append(key, value);
+      });
+    }
+
+    // Don't set Content-Type header - browser will set it automatically with boundary
+    const uploadHeaders = {...headers};
+    delete uploadHeaders['Content-Type'];
+
+    return this.request<T>(url, 'POST', {body: formData, headers: uploadHeaders});
+  }
+
+  /**
    * Performs an HTTP PATCH request.
    *
    * @param url     The URL to send the request to.
@@ -122,7 +155,7 @@ export class HttpService {
           return Promise.reject(response);
         }
         const isJson = this.hasValidJson(response);
-        return (isJson ? response.json() : Promise.resolve());
+        return (isJson ? response.json() : response.text()) as Promise<T>;
       })
       .finally(() => this.eventEmitter.emit({NAME: HTTP_REQUEST_DONE_EVENT, payload: undefined}));
   }
@@ -130,17 +163,29 @@ export class HttpService {
   private getRequestConfig(url: string, options: HttpOptions): HttpRequestConfig {
     const queryString = this.buildQueryParams(options.params);
     const fullUrl = `${url}${queryString ? `?${queryString}` : ''}`;
-    const headers = {
+
+    // Don't set Content-Type for FormData - browser will set it automatically with boundary
+    const isFormData = options.body instanceof FormData;
+    const headers: Record<string, string> = {
       Accept: 'application/json, text/plain, */*',
-      ...options.headers,
-      'Content-Type': options.headers?.['Content-Type'] ? options.headers['Content-Type'] : 'application/json'
+      ...options.headers
     };
+
+    if (!isFormData) {
+      headers['Content-Type'] = options.headers?.['Content-Type'] ?? 'application/json';
+    }
+
     return {fullUrl, headers};
   }
 
   private formatBody(headers: Record<string, string | undefined>, body: unknown): BodyInit | null {
     if (!body) {
       return null;
+    }
+
+    // FormData should be sent as-is
+    if (body instanceof FormData) {
+      return body;
     }
 
     if (headers['Content-Type']?.includes('application/json')) {
@@ -198,10 +243,13 @@ export class HttpService {
           return Promise.reject(response);
         }
         const isJson = this.hasValidJson(response);
+        // FIXME: If it is not JSON, it resolve void, but it might be text
         const json = isJson ? response.json() : Promise.resolve();
+        const text = !isJson ? response.text() : Promise.resolve();
 
         return Object.assign(response, {
-          json: (): Promise<T> => Promise.resolve(json as T)
+          json: (): Promise<T> => Promise.resolve(json as T),
+          text: (): Promise<T> => Promise.resolve(text as T)
         });
       })
       .finally(() => {

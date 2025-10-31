@@ -9,7 +9,7 @@ import {NUMBER_PATTERN} from "../../repositories/repository.constants";
 import {removeSpecialChars} from "../../utils/string-utils";
 import {NamespacesListModel} from "../../models/namespaces/namespaces-list";
 import {HtmlUtil} from "../../utils/html-util";
-import {RepositoryContextService, ServiceProvider} from "@ontotext/workbench-api";
+import {RepositoryContextService, service, LicenseContextService} from "@ontotext/workbench-api";
 
 const modules = [
     'ui.scroll.jqlite',
@@ -34,7 +34,6 @@ GraphsVisualizationsCtrl.$inject = [
     "$scope",
     "$rootScope",
     "$repositories",
-    "$licenseService",
     "toastr",
     "$timeout",
     "ClassInstanceDetailsService",
@@ -60,7 +59,6 @@ function GraphsVisualizationsCtrl(
     $scope,
     $rootScope,
     $repositories,
-    $licenseService,
     toastr,
     $timeout,
     ClassInstanceDetailsService,
@@ -354,7 +352,7 @@ function GraphsVisualizationsCtrl(
     }));
 
     subscriptions.push(WorkbenchContextService.onAutocompleteEnabledUpdated(onAutocompleteEnabledUpdated));
-    subscriptions.push(ServiceProvider.get(RepositoryContextService).onSelectedRepositoryChanged(onSelectedRepositoryUpdated));
+    subscriptions.push(service(RepositoryContextService).onSelectedRepositoryChanged(onSelectedRepositoryUpdated));
 
     subscriptions.push($scope.$on('repositoryIsSet', function(event, args) {
         const payload = args || {newRepo: false};
@@ -1214,7 +1212,7 @@ function GraphsVisualizationsCtrl(
     };
 
     $scope.isLicenseValid = function() {
-        return $licenseService.isLicenseValid();
+        return service(LicenseContextService).getLicenseSnapshot().valid;
     };
 
     // This method may be called twice - once by us explicitly and once by the repositoryInit event.

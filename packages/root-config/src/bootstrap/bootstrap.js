@@ -14,7 +14,6 @@ import {defineCustomElements} from '../../../shared-components/loader';
 import {registerInterceptors} from './interceptors/interceptors-registration';
 
 const bootstrapPromises = [
-  ...licenseBootstrap,
   ...autoCompleteBootstrap,
 ];
 
@@ -40,7 +39,7 @@ const loadEssentials = () => {
   return Promise.all([
     registerInterceptors(),
     securityBootstrap.loadSecurityConfig(),
-    executePromises([...pluginsBootstrap, ...productInfoBootstrap, ...languageBootstrap])
+    executePromises([...licenseBootstrap, ...pluginsBootstrap, ...productInfoBootstrap, ...languageBootstrap])
   ]);
 };
 
