@@ -1,5 +1,6 @@
 import 'angular/utils/local-storage-adapter';
 import {NumberUtils} from "../../utils/number-utils";
+import {service, LicenseContextService} from "@ontotext/workbench-api";
 
 const modules = [
     'pageslide-directive',
@@ -21,10 +22,12 @@ angular
     .module('graphdb.framework.graphexplore.controllers.class', modules)
     .controller('RdfClassHierarchyCtlr', RdfClassHierarchyCtlr);
 
-RdfClassHierarchyCtlr.$inject = ["$scope", "$rootScope", "$location", "$repositories", "$licenseService", "$window", "toastr", "GraphDataRestService", "UiScrollService", "RdfsLabelCommentService", "$timeout", "ModalService", "bowser", "LocalStorageAdapter", "LSKeys", "RDF4JRepositoriesRestService", "$translate"];
+RdfClassHierarchyCtlr.$inject = ["$scope", "$rootScope", "$location", "$repositories", "$window", "toastr", "GraphDataRestService", "UiScrollService", "RdfsLabelCommentService", "$timeout", "ModalService", "bowser", "LocalStorageAdapter", "LSKeys", "RDF4JRepositoriesRestService", "$translate"];
 
-function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $licenseService, $window, toastr, GraphDataRestService, UiScrollService, RdfsLabelCommentService, $timeout, ModalService, bowser, LocalStorageAdapter, LSKeys, RDF4JRepositoriesRestService, $translate) {
-
+function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $window, toastr, GraphDataRestService, UiScrollService, RdfsLabelCommentService, $timeout, ModalService, bowser, LocalStorageAdapter, LSKeys, RDF4JRepositoriesRestService, $translate) {
+    // =========================
+    // Private variables
+    // =========================
     /**
      * Defines the maximum number of graphs to be loaded in the view.
      *
@@ -32,6 +35,11 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
      * This constant limits the number of graphs that will be loaded to ensure smooth rendering.
      */
     const MAX_LOADED_GRAPHS = 1000;
+    const licenseContextService = service(LicenseContextService);
+
+    // =========================
+    // Public variables
+    // =========================
     $scope.hasMoreGraphs = false;
     $scope.classHierarchyData = {};
     $scope.instancesObj = {};
@@ -480,7 +488,7 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
 
     let currentActiveRepository = $repositories.getActiveRepository();
     function onRepositoryIsSet() {
-        if (!$licenseService.isLicenseValid()) {
+        if (!licenseContextService.getLicenseSnapshot().valid) {
             return;
         }
         if (currentActiveRepository === $repositories.getActiveRepository()) {
@@ -526,7 +534,7 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
     };
 
     $scope.isLicenseValid = function () {
-        return $licenseService.isLicenseValid();
+        return licenseContextService.getLicenseSnapshot().valid;
     };
 
 

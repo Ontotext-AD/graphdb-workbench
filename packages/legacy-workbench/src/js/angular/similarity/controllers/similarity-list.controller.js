@@ -9,7 +9,7 @@ import {mapIndexesResponseToSimilarityIndex} from "../../rest/mappers/similarity
 import {SimilaritySearch} from "../../models/similarity/similarity-search";
 import {RenderingMode} from "../../models/ontotext-yasgui/rendering-mode";
 import {NamespacesListModel} from "../../models/namespaces/namespaces-list";
-import {RepositoryContextService, ServiceProvider} from "@ontotext/workbench-api";
+import {RepositoryContextService, service, LicenseContextService} from "@ontotext/workbench-api";
 
 const modules = ['graphdb.core.services.workbench-context', 'graphdb.framework.core.services.rdf4j.repositories'];
 angular
@@ -21,7 +21,6 @@ SimilarityCtrl.$inject = [
     '$interval',
     'toastr',
     '$repositories',
-    '$licenseService',
     '$location',
     'ModalService',
     '$uibModal',
@@ -40,7 +39,6 @@ function SimilarityCtrl(
     $interval,
     toastr,
     $repositories,
-    $licenseService,
     $location,
     ModalService,
     $uibModal,
@@ -58,6 +56,8 @@ function SimilarityCtrl(
     const acceptContent = 'application/x-sparqlstar-results+json, application/sparql-results+json;q=0.9, */*;q=0.8';
     const PREFIX_INSTANCE = PREFIX + 'instance/';
     const ANY_PREDICATE = PREFIX_PREDICATION + 'any';
+    const licenseContextService = service(LicenseContextService);
+
     $scope.pluginName = 'similarity';
     $scope.pluginIsActive = true;
 
@@ -289,7 +289,7 @@ function SimilarityCtrl(
             $scope.activeRepository = activeRepository;
             $scope.isGraphDBRepository = checkIsGraphDBRepository();
             if ($scope.isGraphDBRepository) {
-                if ($licenseService.isLicenseValid()) {
+                if (licenseContextService.getLicenseSnapshot().valid) {
                     $scope.reloadSimilarityIndexes();
                 }
                 loadSearchQueries();
@@ -365,7 +365,7 @@ function SimilarityCtrl(
     };
 
     subscriptions.push(WorkbenchContextService.onAutocompleteEnabledUpdated(onAutocompleteEnabledUpdated));
-    subscriptions.push(ServiceProvider.get(RepositoryContextService).onSelectedRepositoryChanged(onSelectedRepositoryUpdated));
+    subscriptions.push(service(RepositoryContextService).onSelectedRepositoryChanged(onSelectedRepositoryUpdated));
 
     const searchTypeChangeHandler = () => {
         $scope.empty = true;
