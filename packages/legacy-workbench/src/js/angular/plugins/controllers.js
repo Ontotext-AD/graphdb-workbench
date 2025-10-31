@@ -1,4 +1,5 @@
 import 'angular/rest/plugins.rest.service';
+import {service, LicenseContextService} from '@ontotext/workbench-api';
 
 const modules = [
     'graphdb.framework.rest.plugins.service'
@@ -8,15 +9,18 @@ angular
     .module('graphdb.framework.plugins.controllers', modules)
     .controller('PluginsCtrl', PluginsCtrl);
 
-PluginsCtrl.$inject = ['$scope', '$interval', 'toastr', '$repositories', '$licenseService', '$timeout', 'PluginsRestService', '$translate'];
+PluginsCtrl.$inject = ['$scope', '$interval', 'toastr', '$repositories', '$timeout', 'PluginsRestService', '$translate'];
 
-function PluginsCtrl($scope, $interval, toastr, $repositories, $licenseService, $timeout, PluginsRestService, $translate) {
-
+function PluginsCtrl($scope, $interval, toastr, $repositories, $timeout, PluginsRestService, $translate) {
+    // =========================
+    // Private variables
+    // =========================
+    const licenseContextService = service(LicenseContextService);
     let timer;
 
     const init = function () {
         $scope.clear();
-        if (!$licenseService.isLicenseValid() ||
+        if (!licenseContextService.getLicenseSnapshot().valid ||
             !$repositories.getActiveRepository() ||
             $repositories.isActiveRepoOntopType() ||
             $repositories.isActiveRepoFedXType()) {

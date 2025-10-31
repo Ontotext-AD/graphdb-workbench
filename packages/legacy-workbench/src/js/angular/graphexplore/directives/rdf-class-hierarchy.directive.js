@@ -16,9 +16,9 @@ angular
     .constant("ROOT_OBJ_NAME", "RDF Class Hierarchy")
     .directive('rdfClassHierarchy', classHierarchyDirective);
 
-classHierarchyDirective.$inject = ['$rootScope', '$location', 'GraphDataRestService', '$window', '$timeout', '$repositories', '$licenseService', 'toastr', 'ZOOM_DURATION', 'ROOT_OBJ_NAME', 'LocalStorageAdapter', 'LSKeys', '$translate'];
+classHierarchyDirective.$inject = ['$rootScope', '$location', 'GraphDataRestService', '$window', '$timeout', '$repositories', 'toastr', 'ZOOM_DURATION', 'ROOT_OBJ_NAME', 'LocalStorageAdapter', 'LSKeys', '$translate'];
 
-function classHierarchyDirective($rootScope, $location, GraphDataRestService, $window, $timeout, $repositories, $licenseService, toastr, ZOOM_DURATION, ROOT_OBJ_NAME, LocalStorageAdapter, LSKeys, $translate) {
+function classHierarchyDirective($rootScope, $location, GraphDataRestService, $window, $timeout, $repositories, toastr, ZOOM_DURATION, ROOT_OBJ_NAME, LocalStorageAdapter, LSKeys, $translate) {
     return {
         restrict: 'AE',
         template: '<div id="classChart"></div>',

@@ -14,7 +14,6 @@ import {defineCustomElements} from '../../../shared-components/loader';
 import {registerInterceptors} from './interceptors/interceptors-registration';
 
 const bootstrapPromises = [
-  ...licenseBootstrap,
   ...autoCompleteBootstrap,
 ];
 
@@ -37,7 +36,7 @@ const executePromises = (bootstrapFns) => {
  * Executes all promises, which are essential to be loaded prior to bootstrapping the workbench.
  */
 const loadEssentials = () => {
-  const essentialLoaders = executePromises([...pluginsBootstrap, ...productInfoBootstrap, ...languageBootstrap]);
+  const essentialLoaders = executePromises([...licenseBootstrap, ...pluginsBootstrap, ...productInfoBootstrap, ...languageBootstrap]);
   return Promise.all([
     // Await each bootstrap promise, not the array itself, otherwise promises wouldn't be awaited at all.
     ...essentialLoaders,

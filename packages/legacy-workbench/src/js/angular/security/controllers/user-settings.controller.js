@@ -1,8 +1,8 @@
 import 'angular/core/services/security.service';
 import {GRAPHQL, READ_REPO, WRITE_REPO} from '../services/constants';
 import {UserType} from 'angular/utils/user-utils';
-import {navigate, NavigationContextService, SecurityService, AuthenticationService, SecurityContextService, service, User} from '@ontotext/workbench-api';
-import {CookiePolicyModalController} from '../../core/directives/cookie-policy/cookie-policy-modal-controller';
+import {navigate, NavigationContextService, SecurityService, AuthenticationService, SecurityContextService, service, User, LicenseService} from '@ontotext/workbench-api';
+import {CookiePolicyModalController} from "../../core/directives/cookie-policy/cookie-policy-modal-controller";
 
 angular
     .module('graphdb.framework.security.controllers.user-settings', [
@@ -24,11 +24,10 @@ UserSettingsController.$inject = [
     'WorkbenchSettingsStorageService',
     '$q',
     '$uibModal',
-    '$licenseService',
     'TrackingService',
 ];
 
-function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $rootScope, $controller, ModalService, $translate, ThemeService, WorkbenchSettingsStorageService, $q, $uibModal, $licenseService, TrackingService) {
+function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $rootScope, $controller, ModalService, $translate, ThemeService, WorkbenchSettingsStorageService, $q, $uibModal, TrackingService) {
     angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope, passwordPlaceholder: 'security.new.password'}));
 
     // =========================
@@ -37,6 +36,7 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
     const securityService = service(SecurityService);
     const authenticationService = service(AuthenticationService);
     const securityContextService = service(SecurityContextService);
+    const licenseService = service(LicenseService);
 
     /**
      * A timer task that will redirect back to the previous page after the user has been updated.
@@ -89,7 +89,7 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
 
     $scope.goBack = function() {
         const previousRoute = service(NavigationContextService).getPreviousRoute();
-        navigate(previousRoute || '/');
+        navigate(previousRoute ?? './');
     };
 
     $scope.getPrincipal = function() {
@@ -202,7 +202,7 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
     // =========================
 
      const showCookiePolicyLink = () => {
-        $licenseService.checkLicenseStatus().then(() => {
+         licenseService.updateLicenseStatus().then(() => {
             $scope.showCookiePolicyLink = TrackingService.isTrackingAllowed();
         });
     };

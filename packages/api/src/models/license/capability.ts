@@ -8,4 +8,5 @@ export enum Capability {
   OPENSEARCH_CONNECTOR = 'OpenSearch connector',
   KAFKA_CONNECTOR = 'Kafka connector',
   CLUSTER = 'Cluster',
+  GRAPHQL_EXTENDED = 'GraphQL extended support',
 }
