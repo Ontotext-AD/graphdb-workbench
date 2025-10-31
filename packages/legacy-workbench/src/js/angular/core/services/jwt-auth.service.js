@@ -207,19 +207,6 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 return (token !== null && token !== undefined) || this.externalAuthUser;
             };
 
-            // Returns a promise of the principal object if already fetched or a promise which resolves after security initialization
-            this.getPrincipal = function() {
-                const authenticatedUser = authorizationService.getAuthenticatedUser();
-                if (authenticatedUser) {
-                    return Promise.resolve(authenticatedUser);
-                }
-                const deferred = $q.defer();
-                $rootScope.$on('securityInit', () => {
-                    deferred.resolve(authenticatedUser);
-                });
-                return deferred.promise;
-            };
-
             this.clearAuthenticationInternal = function() {
                 // this.principal = this.freeAccessPrincipal;
                 AuthTokenService.clearAuthToken();
