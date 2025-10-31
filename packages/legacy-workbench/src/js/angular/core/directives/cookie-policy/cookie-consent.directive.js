@@ -6,9 +6,9 @@ angular
     .module('graphdb.framework.core.directives.cookie-consent', modules)
     .directive('cookieConsent', cookieConsent);
 
-cookieConsent.$inject = ['$jwtAuth', '$uibModal', '$licenseService', '$translate', 'toastr', 'TrackingService'];
+cookieConsent.$inject = ['$jwtAuth', '$uibModal', '$translate', 'toastr', 'TrackingService'];
 
-function cookieConsent($jwtAuth, $uibModal, $licenseService, $translate, toastr, TrackingService) {
+function cookieConsent($jwtAuth, $uibModal, $translate, toastr, TrackingService) {
     return {
         restrict: 'E',
         templateUrl: 'js/angular/core/templates/cookie-policy/cookie-consent.html',
