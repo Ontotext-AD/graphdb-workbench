@@ -190,7 +190,7 @@ describe('HttpService', () => {
     expect(result2).toEqual(responseBody);
   });
 
-  test('should not return json, when response is not json', async () => {
+  test('should return string, when response is not json', async () => {
     const responseBody = 'Not JSON';
     const url = 'http://localhost:8080';
     TestUtil.mockResponse(
@@ -201,6 +201,6 @@ describe('HttpService', () => {
 
     const result = await httpService.get(url);
 
-    expect(result).toBeUndefined();
+    expect(typeof result === 'string').toEqual(true);
   });
 });

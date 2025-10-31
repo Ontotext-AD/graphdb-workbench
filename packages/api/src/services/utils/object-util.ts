@@ -95,12 +95,20 @@ export class ObjectUtil {
    * Creates a deep copy of the given object.
    *
    * This method recursively copies all properties and values of the object,
-   * handling different types such as primitives, arrays, and plain objects.
+   * handling different types such as primitives, arrays, plain objects, and built-in types.
    * It ensures that the copied object does not share references with the original object,
    * meaning that all nested structures are also copied independently.
    *
+   * Special handling:
+   * - Objects with a `copy()` method will use that method for cloning
+   * - Date objects are cloned preserving their time value
+   * - RegExp objects are cloned with their pattern and flags
+   * - Map and Set objects are deeply cloned with their contents
+   * - Arrays are deeply cloned with all elements
+   * - Plain objects are recursively cloned
+   *
    * @param obj - The object to be deeply copied. Can be any type, including primitives,
-   *              arrays, or objects.
+   *              arrays, objects, or built-in types.
    * @returns A deep copy of the object. If the input is a primitive, null, undefined,
    *          or a function, the original value is returned as-is.
    */
@@ -110,12 +118,66 @@ export class ObjectUtil {
       return obj;
     }
 
-    // Handle arrays separately to ensure deep copy of elements
+    // Check if object has a custom copy method
+    if (ObjectUtil.hasCopyMethod(obj)) {
+      return (obj as { copy: () => unknown }).copy();
+    }
+
+    // Try to handle built-in types (including arrays)
+    const builtInCopy = ObjectUtil.copyBuiltInType(obj);
+    if (builtInCopy !== null) {
+      return builtInCopy;
+    }
+
+    // Handle plain objects or objects with a prototype
+    return ObjectUtil.copyPlainObject(obj);
+  }
+
+  /**
+   * Attempts to copy built-in types like Array, Date, RegExp, Map, and Set.
+   * @param obj - The object to copy.
+   * @returns A copy of the object if it's a built-in type, or null if it's not a recognized built-in type.
+   */
+  private static copyBuiltInType(obj: unknown): unknown | null {
+    // Handle arrays
     if (Array.isArray(obj)) {
       return obj.map(item => ObjectUtil.deepCopy(item));
     }
 
-    // Handle plain objects or objects with a prototype
+    // Handle Date objects
+    if (obj instanceof Date) {
+      return new Date(obj.getTime());
+    }
+
+    // Handle RegExp objects
+    if (obj instanceof RegExp) {
+      return new RegExp(obj.source, obj.flags);
+    }
+
+    // Handle Map objects
+    if (obj instanceof Map) {
+      return new Map(
+        Array.from(obj.entries()).map(([key, value]) => [
+          ObjectUtil.deepCopy(key),
+          ObjectUtil.deepCopy(value)
+        ])
+      );
+    }
+
+    // Handle Set objects
+    if (obj instanceof Set) {
+      return new Set(Array.from(obj.values()).map(value => ObjectUtil.deepCopy(value)));
+    }
+
+    return null;
+  }
+
+  /**
+   * Creates a deep copy of a plain object.
+   * @param obj - The object to copy.
+   * @returns A deep copy of the object.
+   */
+  private static copyPlainObject(obj: object): Record<string, unknown> {
     const result: Record<string, unknown> = Object.create(Object.getPrototypeOf(obj));
 
     // Recursively copy each key-value pair

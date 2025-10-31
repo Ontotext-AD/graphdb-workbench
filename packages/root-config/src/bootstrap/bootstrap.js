@@ -17,7 +17,6 @@ import {
 import {start} from 'single-spa';
 import {defineCustomElements} from '../../../shared-components/loader';
 const bootstrapPromises = [
-  ...licenseBootstrap,
   ...autoCompleteBootstrap,
 ];
 
@@ -42,7 +41,7 @@ const executePromises = (bootstrapFns) => {
 const loadEssentials = () => {
   return Promise.all([
     securityBootstrap.loadSecurityConfig(),
-    executePromises([...pluginsBootstrap, ...productInfoBootstrap, ...languageBootstrap])
+    executePromises([...licenseBootstrap, ...pluginsBootstrap, ...productInfoBootstrap, ...languageBootstrap])
   ]);
 };
 
