@@ -12,6 +12,7 @@ import {
   AuthenticatedUserMapper,
   OpenidConfigMapper,
   AuthenticationStorageService,
+  AuthorityList,
 } from "@ontotext/workbench-api";
 import {LoggerProvider} from "./logger-provider";
 
@@ -419,7 +420,8 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 if ($route.current.allowAuthorities.length > 0) {
                     const auth = resolveAuthorities($route.current.allowAuthorities);
                     // Check if any of the allowed authorities match one of the principal's authorities
-                    return auth.some((allowAuth) => this.principal.authorities.indexOf(allowAuth) > -1);
+                    return auth.some((allowAuth) => this.principal.authorities.indexOf(allowAuth) > -1)
+                         || auth.some((allowAuth) => new AuthorityList(this.principal.authorities).hasWildcardAuthority(allowAuth));
                 }
                 // If none of the above conditions apply, return true by default
                 return true;
@@ -529,7 +531,8 @@ angular.module('graphdb.framework.core.services.jwtauth', [
 
                 return (
                     this.principal.authorities?.indexOf(overCurrentRepo) > -1 ||
-                    this.principal.authorities?.indexOf(overAllRepos) > -1
+                    this.principal.authorities?.indexOf(overAllRepos) > -1 ||
+                    new AuthorityList(this.principal.authorities).hasWildcardAuthority(overCurrentRepo)
                 );
             };
 
@@ -562,7 +565,8 @@ angular.module('graphdb.framework.core.services.jwtauth', [
 
                 return (
                     this.principal.authorities.indexOf(overCurrentRepoGraphql) > -1 ||
-                    this.principal.authorities.indexOf(overAllReposGraphql) > -1
+                    this.principal.authorities.indexOf(overAllReposGraphql) > -1 ||
+                    new AuthorityList(this.principal.authorities).hasWildcardAuthority(overCurrentRepoGraphql, true)
                 );
             };
 
