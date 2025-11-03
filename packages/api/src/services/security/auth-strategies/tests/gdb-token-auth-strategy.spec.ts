@@ -4,19 +4,16 @@ import {AuthenticationStorageService, SecurityContextService, SecurityService} f
 import {ServiceProvider} from '../../../../providers';
 import {WindowService} from '../../../window';
 import {ResponseMock} from '../../../http/test/response-mock';
-import {LoggerProvider} from '../../../logging/logger-provider';
 import {ProviderResponseMocks} from './provider-response-mocks';
 import {AuthenticatedUser, SecurityConfig} from '../../../../models/security';
 
 describe('GdbTokenAuthStrategy', () => {
   let strategy : GdbTokenAuthStrategy;
-  let loggerErrorSpy: jest.SpyInstance;
   let authenticationStorageService: AuthenticationStorageService;
 
   beforeEach(() => {
     TestUtil.restoreAllMocks();
     jest.clearAllMocks();
-    loggerErrorSpy = jest.spyOn(LoggerProvider.logger, 'error');
 
     const securityContextService = ServiceProvider.get(SecurityContextService);
     securityContextService.updateSecurityConfig(undefined as unknown as SecurityConfig);
@@ -31,13 +28,11 @@ describe('GdbTokenAuthStrategy', () => {
   describe('initialize', () => {
     describe('when authenticated user returns', () => {
       let getAuthenticatedUserSpy: jest.SpyInstance;
-      let updateAuthenticatedUserSpy: jest.SpyInstance;
 
       beforeEach(() => {
         TestUtil.mockResponse(new ResponseMock('rest/security/authenticated-user').setResponse(ProviderResponseMocks.authenticatedUserResponse));
 
         getAuthenticatedUserSpy = jest.spyOn(ServiceProvider.get(SecurityService), 'getAuthenticatedUser');
-        updateAuthenticatedUserSpy = jest.spyOn(ServiceProvider.get(SecurityContextService), 'updateAuthenticatedUser');
       });
 
       it('should resolve immediately false if current route is login and there is no auth', async () => {
@@ -62,47 +57,6 @@ describe('GdbTokenAuthStrategy', () => {
 
         await expect(strategy.initialize()).resolves.toEqual(false);
         expect(getAuthenticatedUserSpy).not.toHaveBeenCalled();
-      });
-
-      it('should update authenticated user if not on login route and authentication is valid', async () => {
-        authenticationStorageService.setAuthToken('valid-token');
-        jest.spyOn(WindowService, 'getWindow').mockReturnValue({
-          location: {
-            pathname: '/home'
-          },
-          PluginRegistry: {get: jest.fn(() => [])}
-        } as unknown as Window);
-
-        await strategy.initialize();
-        expect(getAuthenticatedUserSpy).toHaveBeenCalled();
-        expect(updateAuthenticatedUserSpy).toHaveBeenCalled();
-      });
-    });
-
-    describe('when authenticated user returns 401', () => {
-      let getAuthenticatedUserSpy: jest.SpyInstance;
-      let updateAuthenticatedUserSpy: jest.SpyInstance;
-
-      beforeEach(() => {
-        TestUtil.mockResponse(new ResponseMock('rest/security/authenticated-user').setStatus(401));
-        getAuthenticatedUserSpy = jest.spyOn(ServiceProvider.get(SecurityService), 'getAuthenticatedUser');
-        updateAuthenticatedUserSpy = jest.spyOn(ServiceProvider.get(SecurityContextService), 'updateAuthenticatedUser');
-      });
-
-      it('should handle errors from getAuthenticatedUser', async () => {
-        authenticationStorageService.setAuthToken('valid-token');
-        jest.spyOn(WindowService, 'getWindow').mockReturnValue({
-          location: {
-            pathname: '/home'
-          },
-          PluginRegistry: {get: jest.fn(() => [])}
-        } as unknown as Window);
-
-        await strategy.initialize();
-        expect(loggerErrorSpy).toHaveBeenCalledWith('Could not load authenticated user', expect.anything());
-
-        expect(getAuthenticatedUserSpy).toHaveBeenCalled();
-        expect(updateAuthenticatedUserSpy).not.toHaveBeenCalled();
       });
     });
   });

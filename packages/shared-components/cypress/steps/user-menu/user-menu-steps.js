@@ -1,4 +1,4 @@
-import {BaseSteps} from "../base-steps";
+import {BaseSteps} from '../base-steps';
 
 export class UserMenuSteps extends BaseSteps {
   static visit() {
@@ -13,7 +13,7 @@ export class UserMenuSteps extends BaseSteps {
     return this.getUserMenu().find('.onto-user-menu-dropdown');
   }
 
-  static updateSecurityConfig() {
+  static setExternalUser() {
     cy.get('#update-security-config').click();
   }
 
