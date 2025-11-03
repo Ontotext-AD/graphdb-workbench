@@ -405,7 +405,26 @@ h3 [class^=icon-] {
     position: absolute;
     left: 0.6em;
     top: 0.6em;
-    color: #0000008F;
+}
+
+.alert-info:before {
+    color: var(--gw-message-info-color);
+}
+
+.alert-warning:before {
+    color: var(--gw-message-warning-color);
+}
+
+.alert-help:before {
+    color: var(--gw-message-help-color);
+}
+
+.alert-danger:before {
+    color: var(--gw-message-error-color);
+}
+
+.alert-success:before {
+    color: var(--gw-message-success-color);
 }
 
 .alert-info:before {

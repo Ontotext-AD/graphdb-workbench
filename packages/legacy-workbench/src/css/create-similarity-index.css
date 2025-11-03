@@ -20,3 +20,8 @@ yasgui-component .CodeMirror {
     position: relative;
     bottom: -3px
 }
+
+
+code {
+    background-color: var(--gw-body-background);
+}

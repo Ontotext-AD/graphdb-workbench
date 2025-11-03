@@ -18,8 +18,7 @@ html, body {
     position: sticky;
     bottom: 35px;
     padding: .5em;
-    /* opaque version of the color-warning-light */
-    background-color: #F8F0EE;
+    background-color: var(--gw-message-info-background);
 }
 
 .acl-management-view .acl-actions .message {
