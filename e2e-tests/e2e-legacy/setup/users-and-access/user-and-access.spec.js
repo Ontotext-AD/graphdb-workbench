@@ -30,6 +30,7 @@ describe('User and Access', () => {
             cy.loginAsAdmin().then(()=> {
                 cy.deleteUser(user, true);
                 cy.switchOffSecurity(true);
+                cy.switchOffFreeAccess(false);
             });
         });
 

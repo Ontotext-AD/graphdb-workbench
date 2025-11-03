@@ -122,6 +122,8 @@ describe('User Management – Creation, Validation, Permissions & Deletion', () 
             UserAndAccessSteps.confirmUserCreate();
             UserAndAccessSteps.toggleSecurity();
 
+            LoginSteps.visitLoginPage();
+
             LoginSteps.loginWithUser(rwUsername, testPassword);
             MainMenuSteps.clickOnSparqlMenu();
 
@@ -162,6 +164,8 @@ describe('User Management – Creation, Validation, Permissions & Deletion', () 
             UserAndAccessSteps.getWriteAccessForRepo(repositoryId).should('not.be.checked');
             UserAndAccessSteps.confirmUserCreate();
             UserAndAccessSteps.toggleSecurity();
+
+            LoginSteps.visitLoginPage();
 
             LoginSteps.loginWithUser(roUsername, testPassword);
             MainMenuSteps.clickOnSparqlMenu();

@@ -108,7 +108,7 @@ export class AuthenticationService implements Service {
     if (!authStrategy) {
       throw new AuthenticationStrategyNotSet();
     }
-    return !this.isSecurityEnabled() || authStrategy.isAuthenticated() || this.isExternalUser();
+    return authStrategy.isAuthenticated();
   }
 
   /**

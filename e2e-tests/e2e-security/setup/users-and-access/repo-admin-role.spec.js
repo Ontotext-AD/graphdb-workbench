@@ -39,6 +39,7 @@ describe('Repository Admin – Permissions and Access Control', () => {
     });
 
     it('Repository admin has correct access and restrictions', () => {
+        LoginSteps.visitLoginPage();
         LoginSteps.loginWithUser(repoAdminUsername, password);
 
         // SPARQL – read access

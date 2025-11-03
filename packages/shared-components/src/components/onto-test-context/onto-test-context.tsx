@@ -25,7 +25,7 @@ import {
   notify,
   Notification, service, OntoToastrService,
   AuthenticationService, AuthenticationStorageService, User, AuthStrategyResolver,
-  service
+  AuthorizationService,
 } from '@ontotext/workbench-api';
 import en from '../../assets/i18n/en.json';
 import fr from '../../assets/i18n/fr.json';
@@ -257,9 +257,21 @@ export class OntoTestContext {
    */
   private setAuthStrategy(securityConfig: SecurityConfig): void {
     const authenticationStorageService = ServiceProvider.get(AuthenticationStorageService);
+    const securityContextService = ServiceProvider.get(SecurityContextService);
+    const authorizationService = ServiceProvider.get(AuthorizationService);
     authenticationStorageService.clearAuthToken();
     const authStrategyResolver = service(AuthStrategyResolver);
-    authStrategyResolver.resolveStrategy(securityConfig);
+    const authStrategy = authStrategyResolver.resolveStrategy(securityConfig);
+    authStrategy.initialize().then((isLoggedIn) => {
+      securityContextService.updateIsLoggedIn(isLoggedIn);
+      if (!isLoggedIn) {
+        if (authorizationService.hasFreeAccess()) {
+          authorizationService.initializeFreeAccess();
+        } else if (securityConfig.hasOverrideAuth()) {
+          authorizationService.initializeOverrideAuth();
+        }
+      }
+    });
   }
 
   /**

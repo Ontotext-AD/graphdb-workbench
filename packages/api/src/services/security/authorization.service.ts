@@ -1,6 +1,6 @@
 import {Service} from '../../providers/service/service';
 import {AuthenticatedUser, Authority, Rights, SecurityConfig} from '../../models/security';
-import {ServiceProvider, service} from '../../providers';
+import {service} from '../../providers';
 import {SecurityContextService} from './security-context.service';
 import {Repository} from '../../models/repositories';
 import {RepositoryContextService, RepositoryService, RepositoryStorageService} from '../repository';
@@ -225,7 +225,7 @@ export class AuthorizationService implements Service {
       return true;
     }
 
-    const activeRoute = ServiceProvider.get(RoutingService).getActiveRoute();
+    const activeRoute = service(RoutingService).getActiveRoute();
     // If there is no current active route, return false – access cannot be determined
     if (!activeRoute) {
       return false;
@@ -237,7 +237,7 @@ export class AuthorizationService implements Service {
     }
 
     // If there is no selected repository, there are no auth restrictions
-    if (!ServiceProvider.get(RepositoryStorageService).getRepositoryReference()?.id) {
+    if (!service(RepositoryStorageService).getRepositoryReference()?.id) {
       return true;
     }
 
@@ -262,7 +262,7 @@ export class AuthorizationService implements Service {
     }
 
     // Get the selected repository's ID from the current context.
-    const repo = ServiceProvider.get(RepositoryStorageService).getRepositoryReference();
+    const repo = service(RepositoryStorageService).getRepositoryReference();
     // If there is no selected repository ID, return the original authorities list.
     if (!repo?.id) {
       return authoritiesList;
@@ -278,11 +278,11 @@ export class AuthorizationService implements Service {
   }
 
   private getSecurityConfig(): SecurityConfig | undefined {
-    return ServiceProvider.get(SecurityContextService).getSecurityConfig();
+    return service(SecurityContextService).getSecurityConfig();
   }
 
   private getAuthenticatedUser(): AuthenticatedUser | undefined {
-    return ServiceProvider.get(SecurityContextService).getAuthenticatedUser();
+    return service(SecurityContextService).getAuthenticatedUser();
   }
 
   private hasBaseRights(action: string, repo: Repository): boolean {

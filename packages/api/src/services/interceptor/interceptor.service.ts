@@ -1,5 +1,4 @@
 import {HttpRequest} from '../../models/http/http-request';
-import {RESPONSE_INTERCEPTORS, REQUEST_INTERCEPTORS} from '../../interceptor/interceptors';
 import {HttpInterceptor} from '../../models/interceptor/http-interceptor';
 import {ModelList} from '../../models/common';
 
@@ -9,17 +8,6 @@ import {ModelList} from '../../models/common';
 export class InterceptorService {
   private preProcessors = new ModelList<HttpInterceptor<HttpRequest>>();
   private postProcessors = new ModelList<HttpInterceptor<Response>>();
-
-  /**
-   * Initializes a new instance of the InterceptorService class.
-   * This constructor sets up the default pre-processors and post-processors, defined in
-   * {@link RESPONSE_INTERCEPTORS} and {@link REQUEST_INTERCEPTORS} lists.
-   * It sorts the interceptors based on their priority using the sortInterceptors method.
-   */
-  constructor() {
-    this.registerRequestInterceptors(REQUEST_INTERCEPTORS);
-    this.registerResponseInterceptors(RESPONSE_INTERCEPTORS);
-  }
 
   /**
    * Chains all interceptors, which {@link HttpInterceptor#shouldPreProcess should pre-process} the request.

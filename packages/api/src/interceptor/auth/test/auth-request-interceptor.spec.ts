@@ -1,14 +1,14 @@
 import {AuthRequestInterceptor} from '../auth-request-interceptor';
-import {ServiceProvider} from '../../../providers/service/service.provider';
 import {AuthenticationStorageService} from '../../../services/security/authentication-storage.service';
 import {RepositoryStorageService} from '../../../services/repository/repository-storage.service';
 import {StorageData} from '../../../models/storage';
 import {Repository} from '../../../models/repositories';
+import {service} from '../../../providers';
 
 describe('AuthHttpInterceptor', () => {
   let authHttpInterceptor: AuthRequestInterceptor;
-  const authStorage = ServiceProvider.get(AuthenticationStorageService);
-  const repositoryStorage = ServiceProvider.get(RepositoryStorageService);
+  const authStorage = service(AuthenticationStorageService);
+  const repositoryStorage = service(RepositoryStorageService);
 
   beforeEach(() => {
     authHttpInterceptor = new AuthRequestInterceptor();
