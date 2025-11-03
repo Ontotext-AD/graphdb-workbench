@@ -20,7 +20,8 @@ import {
   RepositoryLocationContextService,
   AutocompleteContextService,
   NamespacesContextService,
-  NamespaceMap, RepositoryReference, AuthenticationService, AuthenticationStorageService, User
+  NamespaceMap, RepositoryReference, AuthenticationService, AuthenticationStorageService, User, AuthStrategyResolver,
+  service
 } from '@ontotext/workbench-api';
 import en from '../../assets/i18n/en.json';
 import fr from '../../assets/i18n/fr.json';
@@ -241,8 +242,8 @@ export class OntoTestContext {
   private setAuthStrategy(securityConfig: SecurityConfig): void {
     const authenticationStorageService = ServiceProvider.get(AuthenticationStorageService);
     authenticationStorageService.clearAuthToken();
-    const authService = ServiceProvider.get(AuthenticationService);
-    authService.setAuthenticationStrategy(securityConfig);
+    const authStrategyResolver = service(AuthStrategyResolver);
+    authStrategyResolver.resolveStrategy(securityConfig);
   }
 
   /**
