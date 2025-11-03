@@ -101,10 +101,15 @@ yasgui-component .custom-button:disabled:hover, yasgui-component .custom-button:
 }
 
 yasgui-component .yasqe_queryButton {
-    background-color: var(--gw-primary-base) !important;
     font-family: var(--main-font);
     font-weight: 400;
     height: 38px !important;
+}
+
+yasgui-component .yasqe_queryButton,
+yasgui-component .yasqe_querySplitWrapper .yasqe_querySplitToggle {
+    color: var(--gw-button-primary-color) !important;
+    background-color: var(--gw-button-primary-background) !important;
 }
 
 yasgui-component .yasgui .tabsList .tab {
@@ -148,7 +153,7 @@ yasgui-component .yasgui .tabsList .addTab .icon-plus {
 }
 
 yasgui-component .yasgui .tabsList .addTab {
-    color: var(--gw-button-secondary-color);
+    color: var(--gw-button-secondary-color) !important;
     background-color: var(--gw-tabs-tab-background);
     border-color: var(--gw-tabs-tab-border-color) var(--gw-tabs-tab-border-color) transparent;
 }
@@ -227,20 +232,22 @@ yasgui-component .yasr-toolbar .explore-visual-graph-button {
     gap: 5px;
     border: none;
     outline: none;
-    color: #fff;
-    background-color: var(--gw-primary-base);
+    color: var(--gw-button-primary-color) !important;
+    background-color: var(--gw-button-primary-background) !important;
     padding-left: 16px;
     padding-right: 16px;
 }
 
 yasgui-component .yasr-toolbar .explore-visual-graph-button:hover {
     cursor: pointer;
-    background-color: var(--gw-primary-dark) !important;
+    color: var(--gw-button-primary-hover-color) !important;
+    background-color: var(--gw-button-primary-hover-background) !important;
 }
 
 yasgui-component .yasr-toolbar .chart-download-as-button,
 yasgui-component .yasr-toolbar .pivot-table-download-as-button {
-    background-color: var(--gw-primary-base) !important;
+    color: var(--gw-button-primary-color) !important;
+    background-color: var(--gw-button-primary-background) !important;
 }
 
 yasgui-component .saved-queries-container {
@@ -580,13 +587,20 @@ yasgui-component .abort-button:hover {
     background-color: var(--gw-primary-dark) !important;
 }
 
-yasgui-component .page-button.selected-page {
-    background-color: var(--gw-primary-base) !important;
-    color: #fff !important;
+yasgui-component .yasr .ontotext-pagination .page-button.selected-page {
+    color: var(--gw-paginator-nav-button-selected-color);
+    background-color: var(--gw-paginator-nav-button-selected-background);
 }
 
-yasgui-component .page-selector {
-    color: var(--gw-secondary-base) !important;
+yasgui-component .yasr .ontotext-pagination .page-selector {
+    color: var(--gw-paginator-nav-button-color);
+    background-color: var(--gw-paginator-nav-button-background);
+}
+
+yasgui-component .yasr .ontotext-pagination .page-button.selected-page:hover,
+yasgui-component .yasr .ontotext-pagination .page-selector:hover {
+    color: var(--gw-paginator-nav-button-hover-color);
+    background-color: var(--gw-paginator-nav-button-hover-background);
 }
 
 .keyboard-shortcuts-dialog-wrapper {

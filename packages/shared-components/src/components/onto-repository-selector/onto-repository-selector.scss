@@ -54,6 +54,38 @@
 .tippy-box[data-theme="light-border"] {
   border-radius: 0;
 
+  &.tippy-box[data-placement*=left] > .tippy-arrow:before {
+    border-left-color: var(--gw-dialog-background);
+  }
+
+  &.tippy-box[data-placement*=left]>.tippy-arrow:after {
+    border-left-color: var(--gw-dialog-border-color);
+  }
+
+  &.tippy-box[data-placement*=top] > .tippy-arrow:before {
+    border-top-color: var(--gw-dialog-background);
+  }
+
+  &.tippy-box[data-placement*=top]>.tippy-arrow:after {
+    border-top-color: var(--gw-dialog-border-color);
+  }
+
+  &.tippy-box[data-placement*=right] > .tippy-arrow:before {
+    border-right-color: var(--gw-dialog-background);
+  }
+
+  &.tippy-box[data-placement*=right]>.tippy-arrow:after {
+    border-right-color: var(--gw-dialog-border-color);
+  }
+
+  &.tippy-box[data-placement*=bottom] > .tippy-arrow:before {
+    border-bottom-color: var(--gw-dialog-background);
+  }
+
+  &.tippy-box[data-placement*=bottom]>.tippy-arrow:after {
+    border-bottom-color: var(--gw-dialog-border-color);
+  }
+
   .tippy-content {
     padding: 0;
     color: var(--gw-dialog-color);

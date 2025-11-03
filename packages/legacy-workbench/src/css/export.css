@@ -32,11 +32,6 @@
 .ot-owlim-ctrl .pagination > li > a {
 	border-radius: 0;
 }
-.ot-owlim-ctrl .pagination > .active > a {
-    background-color: #EBEBEB;
-    border-color: #EBEBEB;
-    color: var(--gw-secondary-base);
-}
 
 .ot-page-size .dropdown-menu {
 	min-width: 50px;

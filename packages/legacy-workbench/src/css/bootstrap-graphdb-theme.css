@@ -780,6 +780,7 @@ code {
 
 .popover-title {
     border-radius: 0;
+    background-color: var(--gw-dialog-background);
 }
 
 /* popover arrows from bootstrap 3 (needed because of angular bootstrap controls which use the old markup) */
@@ -1424,30 +1425,21 @@ ul.nav.navbar-right.pagination li.disabled a {
 }
 
 /*-------------------------------------------------------------
-	Paggination - Sparql view
+	Paggination
 -------------------------------------------------------------*/
-
-#yasr ul.nav.navbar-right.pagination {
-    float: right;
-    margin-top: 10px;
+.pagination > li > a {
+    color: var(--gw-paginator-nav-button-color);
+    background-color: var(--gw-paginator-nav-button-background);
 }
 
-#yasr ul.nav.navbar-right.pagination li {
-    padding: 2px 5px;
+.pagination > .active > a {
+    color: var(--gw-paginator-nav-button-selected-color);
+    background-color: var(--gw-paginator-nav-button-selected-background);
 }
 
-#yasr ul.nav.navbar-right.pagination li.active {
-    background-color: var(--gw-primary-base);
-    border-color: var(--gw-primary-base);
-}
-
-#yasr ul.nav.navbar-right.pagination li.active a {
-    color: #fff;
-}
-
-#yasr ul.nav.navbar-right.pagination li.disabled a {
-    color: rgba(0, 0, 0, 0.5) !important;
-    pointer-events: none;
+.pagination > li > a:hover {
+    color: var(--gw-paginator-nav-button-hover-color);
+    background-color: var(--gw-paginator-nav-button-hover-background);
 }
 
 @media (max-width: 1439px) {
@@ -1492,10 +1484,6 @@ yasgui-component .btn-orientation {
 
 yasgui-component .custom-button {
     color: var(--gw-primary-base) !important;
-}
-
-yasgui-component .yasqe_queryButton {
-    background-color: var(--gw-primary-base) !important;
 }
 
 yasgui-component .ontotext-dropdown-button,
@@ -1725,6 +1713,11 @@ tags-input[disabled] .tags .input {
     background-color: var(--gw-form-field-disabled-background) !important;
 }
 
+tags-input .tags .input {
+    color: var(--gw-form-field-color);
+    background-color: var(--gw-form-field-background);
+}
+
 .wb-tags-input .tags {
     background-color: var(--gw-form-field-background);
     border: 1px solid var(--gw-form-field-border-color);
@@ -1780,19 +1773,23 @@ tags-input[disabled] .tags .input {
 }
 
 .tag-danger {
-    background-color: var(--gw-tag-danger-color) !important;
+    color: var(--gw-tag-danger-color) !important;
+    background-color: var(--gw-tag-danger-background) !important;
 }
 
 .tag-success {
-    background-color: var(--gw-tag-success-color) !important;
+    color: var(--gw-tag-success-color) !important;
+    background-color: var(--gw-tag-success-background) !important;
 }
 
 .tag-warning {
-    background-color: var(--gw-tag-warning-color) !important;
+    color: var(--gw-tag-warning-color) !important;
+    background-color: var(--gw-tag-warning-background) !important;
 }
 
 .tag-info {
-    background-color: var(--gw-tag-info-color) !important;
+    color: var(--gw-tag-info-color) !important;
+    background-color: var(--gw-tag-info-background) !important;
 }
 
 .rzslider .rz-pointer {

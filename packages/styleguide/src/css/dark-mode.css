@@ -37,7 +37,7 @@
   --gw-additional-yellow-700: #816e37;
   --gw-sidenav-logo-background: #002b4f;
   --gw-panel-header-background: rgba(0, 0, 0, 0);
-  --gw-datatable-header-border-width: 1px;
+  --gw-paginator-nav-button-background: rgba(0, 0, 0, 0);
   --gw-dialog-shadow-1-blur: 25px;
   --gw-dialog-shadow-1-spread: -5px;
   --gw-dialog-shadow-1-offset-x: 0;
@@ -194,8 +194,11 @@
   --gw-message-error-background: var(--gw-error-lighter);
   --gw-message-error-border-color: var(--gw-error-lighter);
   --gw-message-error-color: var(--gw-error-dark);
+  --gw-tag-success-background: var(--gw-success-lighter);
   --gw-tag-success-color: var(--gw-success-base);
+  --gw-tag-info-background: var(--gw-info-lighter);
   --gw-tag-info-color: var(--gw-info-dark);
+  --gw-tag-warning-background: var(--gw-warning-lighter);
   --gw-tag-warning-color: var(--gw-warning-base);
   --gw-tag-danger-background: var(--gw-error-lighter);
   --gw-tag-danger-color: var(--gw-error-base);
@@ -214,6 +217,9 @@
   --gw-tabs-tab-background: var(--gw-neutral-lighter);
   --gw-dialog-background: var(--gw-overlay-modal-background);
   --gw-panelmenu-item-icon-color: var(--gw-sidenav-item-icon-color);
+  --gw-paginator-background: var(--gw-default-background);
+  --gw-paginator-nav-button-hover-background: var(--gw-hover-background);
+  --gw-paginator-nav-button-selected-background: var(--gw-highlight-background);
   --gw-datatable-header-background: var(--gw-default-background);
   --gw-datatable-row-background: var(--gw-default-background);
   --gw-datatable-row-hover-background: var(--gw-hover-background);
@@ -249,6 +255,10 @@
   --gw-tabs-tab-active-color: var(--gw-body-color);
   --gw-tabs-tab-hover-color: var(--gw-text-color);
   --gw-dialog-border-color: var(--gw-overlay-modal-border-color);
+  --gw-paginator-color: var(--gw-default-color);
+  --gw-paginator-nav-button-hover-color: var(--gw-default-muted-color);
+  --gw-paginator-nav-button-selected-color: var(--gw-highlight-color);
+  --gw-paginator-nav-button-color: var(--gw-text-muted-color);
   --gw-datatable-header-color: var(--gw-default-color);
   --gw-datatable-header-cell-border-color: var(--gw-datatable-border-color);
   --gw-datatable-row-selected-color: var(--gw-highlight-color);
