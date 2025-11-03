@@ -16,6 +16,7 @@ import {AuthenticationService} from '../authentication.service';
 import {ProviderResponseMocks} from '../auth-strategies/tests/provider-response-mocks';
 import {UserResponseMapper} from '../../users/user-response.mapper';
 import {CookieConsent} from '../../../models/cookie';
+import {AuthStrategyResolver} from '../auth-strategy-resolver';
 
 describe('SecurityService', () => {
   let securityService: SecurityService;
@@ -55,7 +56,7 @@ describe('SecurityService', () => {
     ]);
 
     const securityConfig = SecurityConfigTestUtil.createSecurityConfig({enabled: true});
-    await service(AuthenticationService).setAuthenticationStrategy(securityConfig);
+    service(AuthStrategyResolver).resolveStrategy(securityConfig);
     await service(AuthenticationService).login(mockAuthenticatedUser.username, 'password');
 
     // And I create a mock authenticated user with updated app settings
@@ -172,7 +173,7 @@ describe('SecurityService', () => {
       ]);
 
       const securityConfig = SecurityConfigTestUtil.createSecurityConfig({enabled: true});
-      await service(AuthenticationService).setAuthenticationStrategy(securityConfig);
+      service(AuthStrategyResolver).resolveStrategy(securityConfig);
 
       const loginGdbTokenResponse = jest.spyOn(service(SecurityRestService), 'loginGdbToken');
 
