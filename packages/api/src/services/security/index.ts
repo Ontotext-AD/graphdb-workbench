@@ -9,3 +9,4 @@ export {SecurityContextService} from './security-context.service';
 export {GrantedAuthoritiesUiModelMapper} from './mappers/granted-authorities-ui-model.mapper';
 export {AuthorizationService} from './authorization.service';
 export {AuthSettingsMapper} from './mappers/auth-settings.mapper';
+export {AuthStrategyResolver} from './auth-strategy-resolver';
