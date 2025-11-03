@@ -26,27 +26,8 @@ export class AuthRequestInterceptor extends HttpInterceptor<HttpRequest> {
    */
   process(request: HttpRequest): Promise<HttpRequest> {
     request.headers = request.headers || {};
-    request.headers['X-Requested-With'] = 'XMLHttpRequest';
+    this.populateHeaders(request.headers);
 
-    const authToken = this.authStorage.getAuthToken().getValue();
-    if (authToken) {
-      request.headers.Authorization = authToken;
-    }
-
-    // There are requests that need to be sent to a repository different from the currently selected one.
-    // For example, in the TTYG functionality, when creating or editing an agent, there is a check to see
-    // if the autocomplete is enabled for the selected agent repository.
-    // So we first check if repository headers are provided before setting them in local storage.
-    if (!request.headers['X-GraphDB-Repository']) {
-      const repositoryReference = this.repositoryStorageService.getRepositoryReference();
-      if (repositoryReference?.id) {
-        request.headers['X-GraphDB-Repository'] = repositoryReference.id;
-      }
-
-      if (repositoryReference?.location) {
-        request.headers['X-GraphDB-Repository-Location'] = repositoryReference.location;
-      }
-    }
     return Promise.resolve(request);
   }
 
@@ -55,6 +36,32 @@ export class AuthRequestInterceptor extends HttpInterceptor<HttpRequest> {
     // (e.g., token retrieval or OpenID key discovery).
     // see https://github.com/Ontotext-AD/graphdb-workbench/blob/2.8/src/js/angular/core/interceptors/authentication.interceptor.js#L12
     return !this.isOpenIdUrl(request.url);
+  }
+
+  populateHeaders(headers: Record<string, unknown>): void {
+    // Angular doesn't send this header by default, and we need it to detect XHR requests
+    // so that we don't advertise Basic auth with them.
+    headers['X-Requested-With'] = 'XMLHttpRequest';
+
+    const authToken = this.authStorage.getAuthToken().getValue();
+    if (authToken) {
+      headers.Authorization = authToken;
+    }
+
+    // There are requests that need to be sent to a repository different from the currently selected one.
+    // For example, in the TTYG functionality, when creating or editing an agent, there is a check to see
+    // if the autocomplete is enabled for the selected agent repository.
+    // So we first check if repository headers are provided before setting them in local storage.
+    if (!headers['X-GraphDB-Repository']) {
+      const repositoryReference = this.repositoryStorageService.getRepositoryReference();
+      if (repositoryReference?.id) {
+        headers['X-GraphDB-Repository'] = repositoryReference.id;
+      }
+
+      if (repositoryReference?.location) {
+        headers['X-GraphDB-Repository-Location'] = repositoryReference.location;
+      }
+    }
   }
 
   private isOpenIdUrl(requestUrl: string): boolean {
