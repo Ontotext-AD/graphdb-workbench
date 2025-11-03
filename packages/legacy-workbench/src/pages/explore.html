@@ -10,8 +10,7 @@
         </div>
         <h1>
             <a href="{{resourceInfo.details.uri}}" gdb-tooltip="{{resourceInfo.details.uri}}">
-                {{resourceInfo.details.label ? resourceInfo.details.label : getLocalName(resourceInfo.details.uri)}}
-            </a>
+                {{resourceInfo.details.label ? resourceInfo.details.label : getLocalName(resourceInfo.details.uri)}}</a>
 
             <a gdb-tooltip="{{'edit.resource.label' | translate}}" href="resource/edit?uri={{resourceInfo.details.encodeURI}}"
                ng-if="canWriteActiveRepo(true)"

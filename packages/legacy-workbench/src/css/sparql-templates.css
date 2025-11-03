@@ -10,3 +10,7 @@ yasgui-component .CodeMirror {
     max-width: none;
     white-space: nowrap;
 }
+
+.sparql-templates-list .card-block .create-sparql-template .create-sql-table-configuration {
+    padding-right: 4px;
+}
