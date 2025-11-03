@@ -1,12 +1,10 @@
 import 'angular/core/services';
 import 'angular/core/services/openid-auth.service.js';
 import 'angular/core/services/security.service';
-import {UserRole} from 'angular/utils/user-utils';
 import {
     AuthenticationService,
     AuthorizationService,
     OntoToastrService,
-    RepositoryStorageService,
     SecurityContextService,
     service,
     ServiceProvider,
@@ -26,7 +24,6 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             const authorizationService = service(AuthorizationService);
             const authenticationService = service(AuthenticationService);
             const securityContextService = ServiceProvider.get(SecurityContextService);
-            const repositoryStorageService = service(RepositoryStorageService);
 
             $rootScope.hasPermission = function() {
                 const path = $location.path();
@@ -104,14 +101,6 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             const that = this;
 
             /**
-             * Gets the currently active repository from the RepositoryStorageService.
-             * @returns {RepositoryReference}
-             */
-            const getActiveRepositoryObjectFromStorage = function() {
-                return repositoryStorageService.getRepositoryReference();
-            };
-
-            /**
              * Determines the currently authenticated user from the backend's point-of-view
              * by sending a request to the dedicated API endpoint using the current authentication
              * header. If GraphDB cannot recognize the authentication, this method will fallback
@@ -159,12 +148,6 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 });
             };
 
-            this.reinitializeSecurity = function() {
-                if (!this.securityInitialized) {
-                    this.initSecurity();
-                }
-            };
-
             this.hasExternalAuth = function() {
                 return this.externalAuth;
             };
@@ -208,7 +191,6 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             };
 
             this.clearAuthenticationInternal = function() {
-                // this.principal = this.freeAccessPrincipal;
                 AuthTokenService.clearAuthToken();
             };
 
@@ -220,58 +202,9 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             this.hasPermission = function() {
             };
 
-            // Function to resolve a list of authority strings by replacing the "{repoId}" placeholder
-            // with both the specific repository ID and a wildcard for all repositories.
-            // eslint-disable-next-line no-unused-vars
-            const resolveAuthorities = (authoritiesList) => {
-                // If no authorities list is provided, return undefined.
-                if (!authoritiesList) {
-                    return;
-                }
-
-                // Get the selected repository's ID from the current context.
-                const repo = getActiveRepositoryObjectFromStorage();
-                // If there is no selected repository ID, return the original authorities list.
-                if (!repo) {
-                    return authoritiesList;
-                }
-
-                // Replace the "{repoId}" placeholder with the actual repository ID for specific access.
-                const authListForCurrentRepo = authoritiesList.map((authority) => authority.replace('{repoId}', repo.id));
-                // Replace the "{repoId}" placeholder with a wildcard '*' to denote access to any repository.
-                const authListForAllRepos = authoritiesList.map((authority) => authority.replace('{repoId}', '*'));
-
-                // Combine both lists into a single array and return.
-                return [...authListForCurrentRepo, ...authListForAllRepos];
-            };
-
-            this.hasRoleMonitor = function() {
-                return authorizationService.hasRole(UserRole.ROLE_MONITORING);
-            };
-
-            this.hasAdminRole = function() {
-                return authorizationService.isAdmin() || authorizationService.isRepoManager();
-            };
-
             this.hasBaseRights = function(action, repo) {
                 const authorizationService = service(AuthorizationService);
                 return authorizationService.hasBaseRights(action, repo);
-                // FIXME: Keep for reference
-                // const repoId = repo.location ? `${repo.id}@${repo.location}` : repo.id;
-                // const overCurrentRepo = `${action}_REPO_${repoId}`;
-                // const overAllRepos = `${action}_REPO_*`;
-                //
-                // return (
-                //     this.principal.authorities.indexOf(overCurrentRepo) > -1 ||
-                //     this.principal.authorities.indexOf(overAllRepos) > -1
-                // );
-            };
-
-            this.hasGraphqlWriteRights = function(repo) {
-                if (!repo || repo.id === '') {
-                    return false;
-                }
-                return this.hasGraphqlAuthority('WRITE', repo);
             };
 
             this.hasGraphqlAuthority = function(action, repo) {
