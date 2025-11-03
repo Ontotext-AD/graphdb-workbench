@@ -27,17 +27,8 @@ export class GdbTokenAuthStrategy extends BaseGdbLoginStrategy {
       return Promise.resolve(isAuthValid);
     }
 
-    return this.fetchAuthenticatedUser()
-      .then((authenticatedUser) => {
-        if (authenticatedUser) {
-          this.securityContextService.updateAuthenticatedUser(authenticatedUser);
-        }
-        return true;
-      })
-      .catch((error) => {
-        this.logger.error('Could not load authenticated user', error);
-        return false;
-      });
+    // This strategy presumes enabled security. In this case the authenticated user is retrieved upon bootstrap
+    return Promise.resolve(!!this.securityContextService.getAuthenticatedUser());
   }
 
   /**

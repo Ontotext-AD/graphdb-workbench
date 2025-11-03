@@ -4,10 +4,9 @@ import {service} from '../../providers';
 import {EventService} from '../event-service';
 import {Logout} from '../../models/events';
 import {SecurityContextService} from './security-context.service';
-import {AuthStrategy} from '../../models/security/authentication';
 import {AuthStrategyResolver} from './auth-strategy-resolver';
 import {Login} from '../../models/events/auth/login';
-import {isLoginPage, navigate} from '../utils';
+import {navigate} from '../utils';
 import {AuthorizationService} from './authorization.service';
 import {AuthenticationStrategyNotSet} from './errors/authentication-strategy-not-set';
 
@@ -22,50 +21,21 @@ export class AuthenticationService implements Service {
   private readonly authStrategyResolver = service(AuthStrategyResolver);
   private readonly authorizationService = service(AuthorizationService);
   private readonly securityContextService = service(SecurityContextService);
-  private authStrategy: AuthStrategy | undefined;
-  private isUserLoggedIn = false;
-
-  /**
-   * Sets and initializes the authentication strategy based on security configuration.
-   * @param securityConfig Configuration determining which auth strategy to use
-   * @returns Promise that resolves when strategy is initialized
-   */
-  setAuthenticationStrategy(securityConfig: SecurityConfig): Promise<void> {
-    this.authStrategy = this.authStrategyResolver.resolveStrategy(securityConfig);
-    return this.authStrategy.initialize().then((isLoggedIn) => {
-      this.isUserLoggedIn = isLoggedIn;
-      if (!isLoggedIn) {
-        if (this.authorizationService.hasFreeAccess()) {
-          this.authorizationService.initializeFreeAccess();
-        } else if (securityConfig.hasOverrideAuth()) {
-          this.authorizationService.initializeOverrideAuth();
-        }
-      }
-
-      if (isLoginPage() && ((isLoggedIn || this.authorizationService.hasFreeAccess()) && !this.isExternalUser())) {
-        navigate('/');
-        this.eventService.emit(new Login());
-      } else if (isLoginPage() && !isLoggedIn) {
-        // stay on login page
-      } else if (this.authorizationService.hasFreeAccess() || isLoggedIn) {
-        this.eventService.emit(new Login());
-      }
-    });
-  }
 
   /**
    * Checks if an authentication strategy has been configured.
    * @returns True if strategy is set
    */
   isAuthenticationStrategySet(): boolean {
-    return !!this.authStrategy;
+    return !!this.authStrategyResolver.getAuthStrategy();
   }
 
   getCurrentUser(): Promise<AuthenticatedUser> {
-    if (!this.authStrategy) {
+    const authStrategy = this.authStrategyResolver.getAuthStrategy();
+    if (!authStrategy) {
       throw new AuthenticationStrategyNotSet();
     }
-    return this.authStrategy.fetchAuthenticatedUser();
+    return authStrategy.fetchAuthenticatedUser();
   }
 
   /**
@@ -79,12 +49,13 @@ export class AuthenticationService implements Service {
    * @returns A Promise that resolves to the authenticated `AuthenticatedUser` model.
    */
   login(username: string, password: string): Promise<void> {
-    if (!this.authStrategy) {
+    const authStrategy = this.authStrategyResolver.getAuthStrategy();
+    if (!authStrategy) {
       throw new AuthenticationStrategyNotSet();
     }
-    return this.authStrategy.login({username, password})
+    return authStrategy.login({username, password})
       .then((authUser) => {
-        this.isUserLoggedIn = true;
+        this.securityContextService.updateIsLoggedIn(true);
         this.securityContextService.updateAuthenticatedUser(authUser);
         // The previous strategy might have been external, which is why we need to update it
         this.updateStrategy();
@@ -97,17 +68,18 @@ export class AuthenticationService implements Service {
    * Updates security context for logout request.
    */
   logout(): Promise<void> {
-    if (!this.authStrategy) {
+    const authStrategy = this.authStrategyResolver.getAuthStrategy();
+    if (!authStrategy) {
       throw new AuthenticationStrategyNotSet();
     }
-    return this.authStrategy.logout()
+    return authStrategy.logout()
       .then(() => {
-        this.isUserLoggedIn = false;
+        this.securityContextService.updateIsLoggedIn(false);
         if (this.authorizationService.hasFreeAccess()) {
           this.authorizationService.initializeFreeAccess();
           this.eventService.emit(new Login());
         } else {
-          navigate('/login');
+          navigate('login');
           this.eventService.emit(new Logout());
         }
       });
@@ -118,8 +90,9 @@ export class AuthenticationService implements Service {
    * @returns {boolean} True if the user is authenticated, false otherwise.
    */
   isLoggedIn(): boolean {
+    const isUserLoggedIn = this.securityContextService.getIsLoggedIn() ?? false;
     const authenticatedUser = service(SecurityContextService).getAuthenticatedUser();
-    return this.isSecurityEnabled() && this.isUserLoggedIn && !!authenticatedUser;
+    return this.isSecurityEnabled() && isUserLoggedIn && !!authenticatedUser;
   }
 
   /**
@@ -131,10 +104,11 @@ export class AuthenticationService implements Service {
    * @returns True if the user is authenticated, false otherwise.
    */
   isAuthenticated(): boolean {
-    if (!this.authStrategy) {
+    const authStrategy = this.authStrategyResolver.getAuthStrategy();
+    if (!authStrategy) {
       throw new AuthenticationStrategyNotSet();
     }
-    return !this.isSecurityEnabled() || this.authStrategy.isAuthenticated() || this.isExternalUser();
+    return !this.isSecurityEnabled() || authStrategy.isAuthenticated() || this.isExternalUser();
   }
 
   /**
@@ -142,13 +116,14 @@ export class AuthenticationService implements Service {
    * Each strategy is responsible for providing the external status of the {@link AuthenticatedUser}
    *
    * @returns {boolean} True if the user is external, false otherwise.
-   * @Throws {@link MissingAuthStrategyError}.if no strategy is set, when calling this method
+   * @Throws {@link AuthenticationStrategyNotSet}.if no strategy is set, when calling this method
    */
   isExternalUser(): boolean {
-    if (!this.authStrategy) {
+    const authStrategy = this.authStrategyResolver.getAuthStrategy();
+    if (!authStrategy) {
       throw new AuthenticationStrategyNotSet();
     }
-    return this.authStrategy.isExternal();
+    return authStrategy.isExternal();
   }
 
   /**
@@ -171,7 +146,7 @@ export class AuthenticationService implements Service {
   private updateStrategy(): void {
     const securityConfig = this.getSecurityConfig();
     if (securityConfig) {
-      this.authStrategy = this.authStrategyResolver.resolveStrategy(securityConfig);
+      this.authStrategyResolver.resolveStrategy(securityConfig);
     }
   }
 }

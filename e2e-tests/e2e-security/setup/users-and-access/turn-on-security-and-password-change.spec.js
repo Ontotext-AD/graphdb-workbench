@@ -66,7 +66,7 @@ describe('Turn on Security', () => {
     // Attempt login with new password
     LoginSteps.visitLoginPage();
     LoginSteps.loginWithUser('admin', newPassword);
-    UserAndAccessSteps.visit();
+    MainMenuSteps.clickOnUsersAndAccess();
     // Open edit page for admin user
     UserAndAccessSteps.openEditUserPage('admin');
     newPassword = 'root';

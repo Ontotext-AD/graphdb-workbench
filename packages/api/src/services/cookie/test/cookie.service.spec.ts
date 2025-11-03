@@ -2,7 +2,7 @@ import {TestUtil} from '../../utils/test/test-util';
 import {ResponseMock} from '../../http/test/response-mock';
 import {CookieService} from '../cookie.service';
 import {service} from '../../../providers';
-import {AuthenticationService} from '../../security';
+import {AuthenticationService, AuthStrategyResolver} from '../../security';
 import {SecurityConfigTestUtil} from '../../utils/test/security-config-test-util';
 import {AuthenticatedUserResponse} from '../../../models/security/response-models/authenticated-user-response';
 
@@ -35,7 +35,7 @@ describe('CookiesService', () => {
     ]);
 
     const securityConfig = SecurityConfigTestUtil.createSecurityConfig({enabled: true});
-    await service(AuthenticationService).setAuthenticationStrategy(securityConfig);
+    service(AuthStrategyResolver).resolveStrategy(securityConfig);
     await service(AuthenticationService).login(mockAuthenticatedUser.username, 'password');
   });
 

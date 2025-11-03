@@ -10,6 +10,7 @@ type SecurityContextFields = {
   readonly AUTHENTICATED_USER: string;
   readonly AUTH_TOKEN: string;
   readonly JSON_WEB_KEYS_SET: string;
+  readonly IS_LOGGED_IN: string;
 }
 
 type SecurityContextFieldParams = {
@@ -18,6 +19,7 @@ type SecurityContextFieldParams = {
   readonly AUTHENTICATED_USER: AuthenticatedUser;
   readonly AUTH_TOKEN: string;
   readonly JSON_WEB_KEYS_SET: Record<string, JsonWebKey & { kid: string }>;
+  readonly IS_LOGGED_IN: boolean;
 }
 
 /**
@@ -29,6 +31,7 @@ export class SecurityContextService extends ContextService<SecurityContextFields
   readonly AUTHENTICATED_USER = 'authenticatedUser';
   readonly AUTH_TOKEN = 'jwt';
   readonly JSON_WEB_KEYS_SET = 'jsonWebKeysSet';
+  readonly IS_LOGGED_IN = 'isLoggedIn';
 
   /**
    * Retrieves the restricted pages for the user.
@@ -132,11 +135,39 @@ export class SecurityContextService extends ContextService<SecurityContextFields
     return this.getContextPropertyValue(this.AUTHENTICATED_USER);
   }
 
+  /**
+   * Updates the JSON Web Keys Set (JWKS) in the security context.
+   *
+   * @param jsonWebKeysSet - A record of JSON Web Keys keyed by their key ID (kid).
+   */
   updateJsonWebKeysSet(jsonWebKeysSet: Record<string, JsonWebKey & { kid: string }>): void {
     this.updateContextProperty(this.JSON_WEB_KEYS_SET, jsonWebKeysSet);
   }
 
+  /**
+   * Retrieves the JSON Web Keys Set (JWKS) from the security context.
+   *
+   * @returns A record of JSON Web Keys keyed by key ID (kid), or undefined if no keys are available.
+   */
   getJsonWebKeysSet(): Record<string, JsonWebKey & { kid: string }> | undefined {
     return this.getContextPropertyValue(this.JSON_WEB_KEYS_SET);
+  }
+
+  /**
+   * Updates the logged-in status of the user in the context.
+   *
+   * @param isLoggedIn - A boolean indicating whether the user is logged in.
+   */
+  updateIsLoggedIn(isLoggedIn: boolean): void {
+    this.updateContextProperty(this.IS_LOGGED_IN, isLoggedIn);
+  }
+
+  /**
+   * Retrieves the logged-in status of the user from the context.
+   *
+   * @returns A boolean indicating whether the user is logged in, or undefined if not set.
+   */
+  getIsLoggedIn(): boolean | undefined {
+    return this.getContextPropertyValue(this.IS_LOGGED_IN);
   }
 }

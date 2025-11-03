@@ -9,7 +9,8 @@ userMenu.securityConfig = {
 };
 
 // eslint-disable-next-line no-unused-vars
-const updateSecurityConfig = () => {
-  // update security config to trigger strategy resolve
+const setExternalUser = () => {
+  // Setting a user and not having a token will result in an external user auth strategy
+  setAuthUser({...userMenu.user});
   setSecurityConfig({...userMenu.securityConfig});
 };

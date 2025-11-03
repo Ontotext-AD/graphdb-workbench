@@ -21,14 +21,29 @@ import {SecurityContextService} from './security-context.service';
 export class AuthStrategyResolver implements Service {
   private readonly securityContextService = service(SecurityContextService);
   private readonly authStorageService = service(AuthenticationStorageService);
+  private authStrategy: AuthStrategy | undefined;
 
   /**
-   * Resolves and returns the appropriate authentication strategy.
+   * Resolves and returns the appropriate authentication strategy. Sets the internal state strategy for future use.
    *
    * @param securityConfig The current security configuration
    * @returns The authentication strategy instance to use
    */
   resolveStrategy(securityConfig: SecurityConfig): AuthStrategy {
+    this.authStrategy = this._resolveStrategy(securityConfig);
+    return this.authStrategy;
+  }
+
+  /**
+   * Gets the currently resolved authentication strategy.
+   *
+   * @returns The currently resolved authentication strategy, or undefined if not yet resolved
+   */
+  getAuthStrategy(): AuthStrategy | undefined {
+    return this.authStrategy;
+  }
+
+  private _resolveStrategy(securityConfig: SecurityConfig): AuthStrategy {
     if (!securityConfig.isEnabled()) {
       return new NoSecurityStrategy();
     }

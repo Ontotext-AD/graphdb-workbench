@@ -23,7 +23,7 @@
         "watch:shared": "nodemon --watch packages/shared-components/src --ext js,html,tsx,ts,scss --exec \"npm run build:shared\"",
         "start-workbench-api": "cd packages/api && npm run start",
         "start-workbench": "cd packages/workbench && npm run start",
-        "start-root": "nodemon --watch packages/root-config/src --watch packages/shared-components/src --ext js,ts,html,css --exec \"webpack serve --port 9000 --open --host 0.0.0.0 --env BUILD_MODE=development --config webpack.config.dev.js\"",
+        "start-root": "nodemon --watch packages/root-config/src --watch packages/shared-components/src --ext js,ts,html,css --exec \"webpack serve --port 9000 --host 0.0.0.0 --env BUILD_MODE=development --config webpack.config.dev.js\"",
         "license-report-root-config": "npx license-checker --production --json --customPath license-checker/license-checker-format.json --start packages/root-config -out packages/root-config/dist/license-checker.json",
         "license-report-api": "npx license-checker --production --json --customPath license-checker/license-checker-format.json --start packages/api --out packages/api/dist/license-checker.json",
         "license-report-legacy-workbench": "npx license-checker --production --json --customPath license-checker/license-checker-format.json --start packages/legacy-workbench --out packages/legacy-workbench/dist/license-checker.json",

@@ -124,4 +124,17 @@ describe('SecurityContextService', () => {
     // Then I expect the callback function not to be called.
     expect(onAuthenticatedUserChangedCallBackFunction).not.toHaveBeenCalled();
   });
+
+  test('should update isLoggedIn', () => {
+    expect(securityContextService.getIsLoggedIn()).toBeUndefined();
+
+    // Given, I have a new isLoggedIn value
+    const isLoggedIn = true;
+
+    // When, I update the isLoggedIn value
+    securityContextService.updateIsLoggedIn(isLoggedIn);
+
+    // Then I expect the callback function to be called with the passed isLoggedIn value.
+    expect(securityContextService.getIsLoggedIn()).toBe(isLoggedIn);
+  });
 });
