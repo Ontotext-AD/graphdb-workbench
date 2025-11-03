@@ -9,11 +9,11 @@
     &.closed {
       .onto-dropdown-button {
         background-color: var(--gw-button-secondary-background);
-        color: var(var(--gw-button-secondary-background));
+        color: var(--gw-button-secondary-background);
 
         &:hover {
           background-color: var(--gw-button-secondary-hover-background);
-          color: var(var(--gw-button-secondary-hover-background));
+          color: var(--gw-button-secondary-hover-color);
         }
       }
     }

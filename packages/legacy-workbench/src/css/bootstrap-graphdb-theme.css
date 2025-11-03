@@ -400,14 +400,16 @@ ul.style-arrow li:before {
 	Modals
 -------------------------------------------------------------*/
 .modal-content {
-    border-radius: 0;
-    border: none;
+    border-radius: var(--gw-dialog-border-radius);
+    border: 1px solid var(--gw-dialog-border-color);
     max-height: 90vh;
     flex-direction: column;
     justify-content: space-between;
     display: flex;
     color: var(--gw-dialog-color);
     background-color: var(--gw-dialog-background);
+    -webkit-box-shadow: var(--gw-dialog-shadow-1-offset-x) var(--gw-dialog-shadow-1-offset-y) var(--gw-dialog-shadow-1-blur) var(--gw-dialog-shadow-1-spread) var(--gw-dialog-shadow-1-color);
+    box-shadow: var(--gw-dialog-shadow-1-offset-x) var(--gw-dialog-shadow-1-offset-y) var(--gw-dialog-shadow-1-blur) var(--gw-dialog-shadow-1-spread) var(--gw-dialog-shadow-1-color);
 }
 
 .modal-content .modal-header {
@@ -483,6 +485,7 @@ code {
     padding-top: 0.1rem;
     padding-bottom: 0.1rem;
     color: inherit;
+    background-color: inherit;
 }
 .d-flex {
     display: -webkit-box;
@@ -933,40 +936,28 @@ code {
 /*-------------------------------------------------------------
 	List groups
 -------------------------------------------------------------*/
-.list-group-item-action {
-    color: var(--gw-secondary-base) !important;
+.list-group {
+    color: var(--gw-listbox-color);
+    background-color: var(--gw-listbox-background);
 }
 
-.list-group-item-action:focus, .list-group-item-action:hover {
-    background-color: var(--gw-highlight-focus-background);
+.list-group .list-group-item {
+    color: var(--gw-listbox-option-color);
+    background-color: var(--gw-listbox-option-group-background);
+}
+
+.list-group .list-group-item:hover {
+    color: var(--gw-listbox-option-focus-color);
+    background-color: var(--gw-listbox-option-focus-background);
 }
 
 .list-group-item pre {
     margin-bottom: 0;
 }
 
-.list-group-item .help-label {
-    float: right;
-    margin-top: 0.7em;
-    font-weight: 400;
-    color: var(--gw-primary-base);
-    cursor: pointer;
-    display: none;
-}
-
-.list-group-item:hover .help-label {
-    display: inline-block;
-}
-
 .list-group.limit-height {
     max-height: 300px;
     overflow-y: auto;
-}
-
-.list-group-item samp.query-name {
-    font-family: inherit;
-    font-weight: bolder;
-    font-size: 1.25rem;
 }
 
 .list-group-item samp, .ellipsis-block {
@@ -995,7 +986,8 @@ code {
     border-right: 1px solid #ddd;
 }
 
-.card > .list-group.two-columns:first-child .list-group-item:first-child, .card > .list-group.two-columns:last-child .list-group-item:last-child {
+.card > .list-group.two-columns:first-child .list-group-item:first-child,
+.card > .list-group.two-columns:last-child .list-group-item:last-child {
     border-radius: 0;
 }
 
@@ -1475,15 +1467,6 @@ yasgui-component .custom-button {
     color: var(--gw-primary-base) !important;
 }
 
-yasgui-component .ontotext-dropdown-button,
-yasgui-component .ontotext-dropdown-menu-item {
-    background-color: var(--gw-primary-base) !important;
-}
-yasgui-component .ontotext-dropdown-button.icon-caret-down-after:after,
-yasgui-component .ontotext-dropdown-button.icon-caret-up-after:after {
-    color: #fff !important;
-}
-
 yasgui-component .ok-button,
 yasgui-component .primary-button,
 yasgui-component .confirm-button {
@@ -1759,6 +1742,11 @@ tags-input .tags .input {
 
 .repo-info-home div {
     align-self: center;
+}
+
+.tag-default {
+    color: var(--gw-tag-default-color) !important;
+    background-color: var(--gw-tag-default-background) !important;
 }
 
 .tag-danger {

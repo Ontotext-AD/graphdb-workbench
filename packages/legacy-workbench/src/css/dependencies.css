@@ -29,14 +29,16 @@ div.tooltip {
 }
 
 .dependencies-tooltip {
-    background: rgb(240, 240, 240);
-    border:1pt solid #e8e3e3;
+    color: var(--gw-dialog-color);
+    background-color: var(--gw-dialog-background);
+    box-shadow: var(--gw-dialog-shadow-1-offset-x) var(--gw-dialog-shadow-1-offset-y) var(--gw-dialog-shadow-1-blur) var(--gw-dialog-shadow-1-spread) var(--gw-dialog-shadow-1-color);
+    border: 1pt solid var(--gw-dialog-border-color);
     padding: 15px;
     padding-top: 0;
 }
 
 .dependencies-tooltip > .row:first-child{
-    border:1pt solid #e8e3e3;
+    border: 1pt solid var(--gw-dialog-border-color);
 }
 
 .dependencies-tooltip > .row {
@@ -120,18 +122,18 @@ div.tooltip {
 }
 
 .rdf-list li > div.active {
-    border-bottom: 0.5pt solid #ffffff !important;
-    border-left: 1pt solid #ffffff !important;
-    border-top: 0.5pt solid #ffffff !important;
-    border-right: 1pt solid #ffffff !important;
-    background-color: var(--gw-tertiary-lighter) !important;
+    border-bottom: 0.5pt solid var(--gw-listbox-background) !important;
+    border-left: 1pt solid var(--gw-listbox-background) !important;
+    border-top: 0.5pt solid var(--gw-listbox-background) !important;
+    border-right: 1pt solid var(--gw-listbox-background) !important;
+    background-color: var(--gw-listbox-option-selected-background) !important;
 }
 
 .rdf-list > li > div:first-child {
-    border-bottom: 0.5pt solid #e8e3e3;
-    border-left:1pt solid #e8e3e3;
-    border-right:1pt solid #e8e3e3;
-    border-top:0.5pt solid #e8e3e3;
+    border-bottom: 0.5pt solid var(--gw-listbox-border-color);
+    border-left:1pt solid var(--gw-listbox-border-color);
+    border-right:1pt solid var(--gw-listbox-border-color);
+    border-top:0.5pt solid var(--gw-listbox-border-color);
 }
 
 .rdf-list li {
@@ -140,11 +142,11 @@ div.tooltip {
 }
 
 #wb-dependencies-classInClasses li .even-row:not(.active)  {
-    background-color: #f8f7f7;
+    background-color: var(--gw-listbox-option-striped-background);
 }
 
 #wb-dependencies-classInClasses li .odd-row:not(.active)  {
-    background-color: #ffffff;
+    background-color: var(--gw-listbox-background);
 }
 
 .rdf-list li div {
