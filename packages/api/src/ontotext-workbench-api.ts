@@ -21,6 +21,7 @@ export * from './models/configuration';
 export * from './models/notification';
 export * from './models/translation';
 export * from './models/users';
+export * from './models/interceptor';
 
 // Export enums for external usages.
 export * from './models/url';
@@ -53,6 +54,10 @@ export * from './services/configuration';
 export * from './services/logging';
 export * from './services/notification';
 export * from './services/users';
+export * from './services/interceptor/interceptor.service';
+
+// Export interceptors for external usages.
+export * from './interceptor';
 
 // Export utils for external usages.
 export * from './services/utils';

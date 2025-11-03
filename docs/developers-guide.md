@@ -815,17 +815,20 @@ class MyResponseInterceptor extends HttpInterceptor<Response> {
 
 2. Register the interceptor
 You can register the interceptor in two ways. The first is to add it to the relevant interceptor list,
-which is in [interceptors.ts](/packages/api/src/interceptor/interceptors.ts)
+which is in [interceptors-registration.js](/packages/root-config/src/bootstrap/interceptors/interceptors-registration.js), which will add it on application bootstrap.
 Example:
 ```typescript
-export const REQUEST_INTERCEPTORS = new ModelList<HttpInterceptor<HttpRequest>>([
+/**
+ * An array of HTTP request interceptors to be used in the application.
+ */
+const REQUEST_INTERCEPTORS = new HttpInterceptorList([
   new MyRequestInterceptor()
 ]);
 
 /**
  * An array of HTTP response interceptors to be used in the application.
  */
-export const RESPONSE_INTERCEPTORS = new ModelList<HttpInterceptor<Response>> ([
+const RESPONSE_INTERCEPTORS = new HttpInterceptorList([
   new MyResponseInterceptor()
 ]);
 ```
@@ -838,8 +841,8 @@ Example:
 import {ServiceProvider} from './service.provider';
 
 const interceptorService = ServiceProvider.get(InterceptorService);
-interceptorService.registerRequestInterceptors(new ModelList([new MyRequestInterceptor()]));
-interceptorService.registerResponseInterceptors(new ModelList([new MyResponseInterceptor()]));
+interceptorService.registerRequestInterceptors(new HttpInterceptorList([new MyRequestInterceptor()]));
+interceptorService.registerResponseInterceptors(new HttpInterceptorList([new MyResponseInterceptor()]));
 ```
 
 ## Internationalization (i18n) Guide for the Application

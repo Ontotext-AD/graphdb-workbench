@@ -8,14 +8,11 @@ import {pluginsBootstrap} from './plugins/plugins-bootstrap';
 import {configurationsBootstrap} from './configuration/configuration-bootstrap';
 import {LoggerProvider} from '../services/logger-provider';
 
-import {
-  ServiceProvider,
-  SecurityContextService,
-  ApplicationLifecycleContextService,
-  LifecycleState
-} from '@ontotext/workbench-api';
+import {ApplicationLifecycleContextService, LifecycleState, SecurityContextService, ServiceProvider} from '@ontotext/workbench-api';
 import {start} from 'single-spa';
 import {defineCustomElements} from '../../../shared-components/loader';
+import {registerInterceptors} from './interceptors/interceptors-registration';
+
 const bootstrapPromises = [
   ...licenseBootstrap,
   ...autoCompleteBootstrap,
@@ -44,6 +41,7 @@ const loadEssentials = () => {
   return Promise.all([
     // Await each bootstrap promise, not the array itself, otherwise promises wouldn't be awaited at all.
     ...essentialLoaders,
+    registerInterceptors(),
     securityBootstrap.loadSecurityConfig()
   ]);
 };

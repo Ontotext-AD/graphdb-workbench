@@ -6,8 +6,9 @@
             return getError(data.data, status, limit);
         }
 
+        const responseStatus = status ?? data?.status;
         //To use in future - if we add status code
-        if (status && status === 403) {
+        if (responseStatus === 403) {
             return 'Access is restricted';
         }
         if (data) {
