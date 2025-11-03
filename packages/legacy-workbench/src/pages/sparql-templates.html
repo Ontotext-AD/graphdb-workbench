@@ -1,3 +1,5 @@
+<link href="css/sparql-templates.css?v=[AIV]{version}[/AIV]" rel="stylesheet">
+
 <div class="container-fluid" data-test="sparql-templates-page">
     <h1>
         {{title}}
@@ -20,7 +22,7 @@
                    ng-if="canWriteActiveRepo()"
                    data-test="create-sparql-template-link"
                    class="btn btn-link pull-right create-sparql-template">
-                    <span class="icon-plus create-sql-table-configuration"></span> {{'create.new.sparql.template' | translate}}
+                    <span class="icon-plus create-sql-table-configuration"></span>{{'create.new.sparql.template' | translate}}
                 </a>
                 <h3 class="mb-0"><span class="collapsible-heading" data-toggle="collapse"
                                        data-target="#configurations-table"><em class="icon-caret-down text-muted"></em> {{'existing.sparql.templates' | translate}}</span>
