@@ -357,15 +357,16 @@ function GraphsVisualizationsCtrl(
     subscriptions.push(ServiceProvider.get(RepositoryContextService).onSelectedRepositoryChanged(onSelectedRepositoryUpdated));
 
     subscriptions.push($scope.$on('repositoryIsSet', function(event, args) {
+        const payload = args || {newRepo: false};
         // New repo set from dropdown, clear init state
-        if (args.newRepo) {
+        if (payload.newRepo) {
             $scope.hasInitedRepository = false;
         }
 
-        initForRepository(args.newRepo);
+        initForRepository(!!payload.newRepo);
 
         // New repo set from dropdown, clear state and go to home page
-        if (args.newRepo) {
+        if (payload.newRepo) {
             resetState();
             // Quick-n-dirty way to get rid of the existing vis
             $('.graph-visualization svg').empty();
