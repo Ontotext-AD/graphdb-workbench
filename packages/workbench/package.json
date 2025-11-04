@@ -23,7 +23,7 @@
     "@angular/platform-browser": "^20.1.4",
     "@angular/platform-browser-dynamic": "^20.1.4",
     "@angular/router": "^20.1.4",
-    "@jsverse/transloco": "^7.6.1",
+    "@jsverse/transloco": "^8.1.0",
     "rxjs": "~7.8.2",
     "single-spa": "^6.0.3",
     "single-spa-angular": "^9.2.0",
