@@ -291,8 +291,8 @@ describe('TTYG create new agent', () => {
         TtygAgentSettingsModalSteps.enableSimilaritySearchMethodPanel();
         // Then I expect the first similarity search index instance to be selected
         TtygAgentSettingsModalSteps.getSimilarityIndexSelectedOption().should('have.text', 'otkg-vector-new');
-        // And I expect that all vector fields from that instance should be selected
-        TtygAgentSettingsModalSteps.getSimilarityIndexSelectedVectorFieldsFieldsCount().should('contain', '1 selected');
+        // And I expect that no vector fields from that instance should be selected
+        TtygAgentSettingsModalSteps.getSimilarityIndexSelectedVectorFieldsValue().should('contain', 'Select field');
         // Then agent save button should be enabled
         TtygAgentSettingsModalSteps.getSaveAgentButton().should('be.enabled');
         // When I set the similarity index threshold

@@ -564,11 +564,8 @@
                         "tooltip": "Seules les instances Elasticsearch/OpenSearch contenant des champs vectoriels sont répertoriées ci-dessous."
                     },
                     "vector_fields_in_connector": {
-                        "label": "Champs vectoriels du connecteur",
-                        "search_placeholder": "Sélectionner des champs",
-                        "select_all": "Tout",
-                        "selected_count": "{{count}} sélectionné(s)",
-                        "no_matches": "Aucun résultat"
+                        "label": "Champ vectoriel",
+                        "search_placeholder": "Sélectionner des champs"
                     },
                     "similarity_instance_type_label": {
                         "similarity": "Indice de similarité (mis à jour manuellement)",

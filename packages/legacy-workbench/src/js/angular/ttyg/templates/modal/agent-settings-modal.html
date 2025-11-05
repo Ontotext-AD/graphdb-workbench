@@ -271,7 +271,13 @@
                                  ng-if="agentSettingsForm.repositoryId.$invalid">
                                 {{'ttyg.agent.create_agent_modal.form.missing_repository_id' | translate}}
                             </div>
-                            <div ng-if="agentFormModel.repositoryId && !hasConnectorData()" class="no-similarity-index-message">
+                            <!-- loader while fetching connector data -->
+                            <div class="form-group" ng-if="extractionMethodLoaderFlags[extractionMethod.method]">
+                                <span onto-loader-fancy size="16"></span>
+                            </div>
+                            <!-- empty state shown only after loading finishes -->
+                            <div ng-if="agentFormModel.repositoryId && !extractionMethodLoaderFlags[extractionMethod.method] && !hasConnectorData()"
+                                 class="no-similarity-index-message">
                                 <div>{{'ttyg.agent.create_agent_modal.form.similarity_index.no_similarity_index.message_1' |
                                 translate}}
                                     <a href="" ng-click="goToCreateSimilarityView($event)">
@@ -289,7 +295,8 @@
                                     <i class="fa fa-arrow-up-right-from-square"></i>
                                 </div>
                             </div>
-                            <div ng-show="hasConnectorData()">
+                            <!-- content visible only after loading finishes and data is present -->
+                            <div ng-if="!extractionMethodLoaderFlags[extractionMethod.method] && hasConnectorData()">
                                 <div class="form-group similarity-index">
                                     <div class="similarity-layout"
                                          ng-class="{'one-col': !shouldShowVectorFields(extractionMethod)}">
@@ -298,15 +305,11 @@
                                                 <label for="connectorInstances"
                                                        uib-popover="{{'ttyg.agent.create_agent_modal.form.similarity_connector.tooltip' | translate}}"
                                                        popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.similarity_connector.label' | translate}}</label>
-                                                <span ng-if="extractionMethodLoaderFlags.similarity_search"
-                                                      onto-loader-fancy
-                                                      size="16"></span>
                                                 <select class="form-control"
                                                         id="connectorInstances"
                                                         name="connectorInstances"
                                                         guide-selector="similarity-connector-select"
                                                         ng-required="extractionMethod.selected"
-                                                        ng-if="!extractionMethodLoaderFlags.similarity_search"
                                                         ng-model="extractionMethod.similarityIndex"
                                                         ng-change="onSimilarityIndexChange(extractionMethod)"
                                                         ng-options="option.value as option.label group by option.group for option in similarityOptionsGrouped">
@@ -350,13 +353,15 @@
                                             <div class="vector-fields-group"
                                                  ng-if="shouldShowVectorFields(extractionMethod)">
                                                 <label for="vectorFieldsSelect">{{'ttyg.agent.create_agent_modal.form.vector_fields_in_connector.label' | translate}}</label>
-                                                <multi-select-dropdown id="vectorFieldsSelect"
-                                                    class="form-control"
-                                                    items="vectorFields"
-                                                    label-keys="vectorFieldsMultiselectLabels"
-                                                    on-change="onVectorFieldsChange(selected, extractionMethod)"
-                                                    placeholder="{{'ttyg.agent.create_agent_modal.form.vector_fields_in_connector.search_placeholder' | translate}}">
-                                                </multi-select-dropdown>
+                                                <select id="vectorFieldsSelect"
+                                                        class="form-control"
+                                                        ng-model="extractionMethod.selectedConnectorField"
+                                                        ng-options="opt as opt for opt in vectorFields track by opt"
+                                                        ng-change="onVectorFieldsChange(extractionMethod)">
+                                                    <option value="" disabled>
+                                                        {{'ttyg.agent.create_agent_modal.form.vector_fields_in_connector.search_placeholder' | translate}}
+                                                    </option>
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
