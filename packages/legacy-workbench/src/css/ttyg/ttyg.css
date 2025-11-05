@@ -51,6 +51,7 @@ common sidebar and slidepanel styles
     top: var(--toolbar-height) !important;
     color: var(--gw-panel-color);
     background-color: var(--gw-panel-background);
+    border: 1px solid var(--gw-panel-border-color);
     -webkit-box-shadow: var(--gw-dialog-shadow-1-offset-x) var(--gw-dialog-shadow-1-offset-y) var(--gw-dialog-shadow-1-blur) var(--gw-dialog-shadow-1-spread) var(--gw-dialog-shadow-1-color);
     box-shadow: var(--gw-dialog-shadow-1-offset-x) var(--gw-dialog-shadow-1-offset-y) var(--gw-dialog-shadow-1-blur) var(--gw-dialog-shadow-1-spread) var(--gw-dialog-shadow-1-color);
 }

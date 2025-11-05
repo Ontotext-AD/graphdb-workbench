@@ -57,11 +57,12 @@
       border: 1px solid transparent;
       padding: .5rem 1rem;
       font-size: 1rem;
-      color: var(--gw-secondary-base, #003663);
+      color: var(--gw-button-secondary-color);
+      background-color: var(--gw-button-secondary-background);
 
       &.selected {
-        background-color: var(--gw-primary-base, #9e2b0a);
-        color: white;
+        background-color: var(--gw-button-primary-background);
+        color: var(--gw-button-primary-color);
       }
 
       &:focus {
@@ -69,8 +70,8 @@
       }
 
       &:hover:not(.selected) {
-        background-color: #d4d4d4;
-        border-color: #d4d4d4;
+        background-color: var(--gw-button-secondary-hover-background);
+        border-color: var(--gw-button-secondary-hover-color);
       }
     }
   }

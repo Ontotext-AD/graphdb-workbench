@@ -32,7 +32,6 @@ main menu height*/
 }
 
 .navbar-component li a {
-  color: var(--gw-sidenav-menuitem-icon-color);
   text-decoration: none;
 }
 
@@ -43,12 +42,6 @@ main menu height*/
 
 .navbar-component .sub-menu-item a.sub-menu-link:not([href]) translate-label.menu-item {
   padding-right: 3.5px;
-}
-
-.navbar-component a:not([href]):not([tabindex]),
-.navbar-component a:not([href]):not([tabindex]):focus,
-.navbar-component a:not([href]):not([tabindex]):hover {
-  color: var(--gw-sidenav-menuitem-icon-color);
 }
 
 .navbar-component a.sub-menu-link:not([href]):hover .menu-item,
@@ -73,7 +66,6 @@ main menu height*/
 }
 
 .navbar-component .menu-element {
-  background-color: var(--gw-sidenav-menuitem-background);
   position: relative;
 }
 
@@ -87,7 +79,6 @@ main menu height*/
   -o-transition: all 0.18s ease-out; /* Opera 10.5+ */
   -webkit-transition: all 0.18s ease-out; /* Saf3.2+, Chrome */
   transition: all 0.18s ease-out;
-  color: var(--gw-sidenav-menuitem-color);
   cursor: pointer;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -99,7 +90,6 @@ main menu height*/
   width: 2.5rem;
   vertical-align: middle;
   text-align: center;
-  color: var(--gw-sidenav-menuitem-icon-color);
   transform: scale(0.9);
   display: inline-block;
   -moz-transition: all 0.18s ease-out; /* FF4+ */
@@ -113,14 +103,7 @@ main menu height*/
   pointer-events: none;
 }
 
-.navbar-component .menu-element-root.active,
-.navbar-component .menu-element-root.active:hover {
-  background-color: var(--gw-sidenav-submenuitem-active-background);
-  color: var(--gw-sidenav-menuitem-active-color);
-}
-
 .navbar-component .active .menu-item-icon {
-  color: var(--gw-sidenav-menuitem-active-icon-color);
   transform: scale(1.1);
 }
 
@@ -128,19 +111,10 @@ main menu height*/
   font-size: 1.1rem;
 }
 
-.navbar-component .brand {
-  background-color: var(--gw-sidenav-logo-background);
-}
-
 .navbar-component .brand a {
   display: block;
   position: relative;
   z-index: 5;
-}
-
-.navbar-component .menu-element.open,
-.navbar-component.collapsed .menu-element:hover {
-  background-color: var(--gw-sidenav-submenuitem-highlight-background);
 }
 
 .navbar-component .sub-menu {
@@ -156,13 +130,10 @@ main menu height*/
 .navbar-component .sub-menu li a {
   padding: 0.5em 0.8em;
   display: block;
-  color: var(--gw-sidenav-submenuitem-color);
 }
 
 .navbar-component .sub-menu li.active a {
-  background-color: var(--gw-sidenav-submenuitem-active-background);
   font-weight: 500;
-  color: var(--gw-sidenav-submenuitem-active-color);
 }
 
 .navbar-component .menu-element.open ul li {
@@ -188,47 +159,6 @@ main menu height*/
   transform: rotate(180deg);
 }
 
-.toggle-menu {
-  display: block;
-  position: absolute;
-  top: 0;
-  right: 0;
-  color: var(--gw-sidenav-collapsebutton-color);
-  font-size: 0.8em;
-  line-height: 1.5;
-  padding: 0 0.3em;
-  background-color: var(--gw-sidenav-collapsebutton-background);
-  z-index: 10;
-  cursor: pointer;
-}
-
-.toggle-menu:hover {
-  color: var(--gw-sidenav-collapsebutton-hover-color);
-  background-color: var(--gw-sidenav-collapsebutton-hover-background);
-}
-
-.toggle-menu [class^="icon-"] {
-  -moz-transition: all 0.2s ease-in; /* FF4+ */
-  -o-transition: all 0.2s ease-in; /* Opera 10.5+ */
-  -webkit-transition: all 0.2s ease-in; /* Saf3.2+, Chrome */
-  transition: all 0.2s ease-in;
-  display: inline-block;
-}
-
-.toggle-menu:hover [class^="icon-"] {
-  transform: scale(1.1);
-}
-
-.small-logo {
-  width: 50px;
-  height: 50px;
-}
-
-.big-logo {
-  width: 180px;
-  height: 50px;
-}
-
 .navbar-component.collapsed {
   width: 4.375rem;
   overflow: visible;
@@ -239,7 +169,6 @@ main menu height*/
   position: absolute;
   top: 0;
   left: 4.375rem;
-  background-color: var(--gw-sidenav-submenuitem-highlight-background);
   width: 15rem;
 }
 
@@ -273,13 +202,8 @@ main menu height*/
   text-overflow: ellipsis;
   overflow: hidden;
   padding: 0.5em 0.8rem 0.2em 0;
-  color: var(--gw-sidenav-submenuitem-color);
   margin-left: 0.8rem;
   margin-bottom: 0.5em;
-}
-
-.navbar-component .sub-menu li.submenu-title:hover {
-  background-color: transparent;
 }
 
 .navbar-component.collapsed .menu-element.open .sub-menu.align-bottom {
@@ -301,4 +225,102 @@ main menu height*/
 
 .navbar-component .small-logo, .navbar-component.collapsed .big-logo {
   display: none;
+}
+
+/* ---------------- Logo ---------------- */
+.navbar-component .brand {
+  background-color: var(--gw-sidenav-logo-background);
+}
+
+.small-logo {
+  width: 50px;
+  height: 50px;
+}
+
+.big-logo {
+  width: 180px;
+  height: 50px;
+}
+
+/* ---------------- Sidenav Toggle ---------------- */
+.toggle-menu {
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 0.8em;
+  line-height: 1.5;
+  padding: 0 0.3em;
+  z-index: 10;
+  cursor: pointer;
+  background-color: var(--gw-sidenav-collapsebutton-background);
+  color: var(--gw-sidenav-collapsebutton-color);
+}
+
+.toggle-menu:hover {
+  color: var(--gw-sidenav-collapsebutton-hover-color);
+  background-color: var(--gw-sidenav-collapsebutton-hover-background);
+}
+
+.toggle-menu [class^="icon-"] {
+  transition: all 0.2s ease-in; /* Cross-browser transitions */
+  display: inline-block;
+}
+
+.toggle-menu:hover [class^="icon-"] {
+  transform: scale(1.1);
+}
+
+/* ---------------- Top-Level Menus ---------------- */
+.navbar-component .menu-element .menu-element-root {
+  background-color: var(--gw-sidenav-item-background);
+  color: var(--gw-sidenav-item-color);
+}
+
+.navbar-component .menu-element .menu-element-root:hover {
+  background-color: var(--gw-sidenav-item-hover-background);
+  color: var(--gw-sidenav-item-hover-color);
+}
+
+.navbar-component .menu-element .menu-element-root .menu-item-icon {
+  color: var(--gw-sidenav-item-icon-color);
+}
+
+.navbar-component .menu-element .menu-element-root .menu-item-icon:hover {
+  color: var(--gw-sidenav-item-hover-icon-color);
+}
+
+/* ---------------- Open Menus (with Submenus) ---------------- */
+.navbar-component .menu-element.open .menu-element-root {
+  background-color: var(--gw-sidenav-item-selected-background);
+  color: var(--gw-sidenav-item-selected-color);
+}
+
+/* ---------------- Active Menu ---------------- */
+.navbar-component .menu-element .menu-element-root.active {
+  background-color: var(--gw-sidenav-item-active-background);
+  color: var(--gw-sidenav-item-active-color);
+}
+
+.navbar-component .menu-element .menu-element-root.active .menu-item-icon {
+  color: var(--gw-sidenav-item-active-icon-color);
+}
+
+/* ---------------- Submenu ---------------- */
+.navbar-component .menu-element .sub-menu-item,
+.navbar-component .menu-element .sub-menu {
+  background-color: var(--gw-sidenav-submenuitem-background);
+  color: var(--gw-sidenav-submenuitem-color);
+}
+
+.navbar-component .menu-element .sub-menu-item:hover {
+  background-color: var(--gw-sidenav-submenuitem-hover-background);
+  color: var(--gw-sidenav-submenuitem-hover-color);
+}
+
+/* ---------------- Active Submenu ---------------- */
+.navbar-component .menu-element .sub-menu-item.active,
+.navbar-component .menu-element .sub-menu-item.active .sub-menu-link {
+  background-color: var(--gw-sidenav-submenuitem-active-background);
+  color: var(--gw-sidenav-submenuitem-active-color);
 }
