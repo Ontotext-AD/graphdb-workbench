@@ -565,11 +565,8 @@
                         "tooltip": "Only ElasticSearch/OpenSearch instances containing vector fields are listed below."
                     },
                     "vector_fields_in_connector": {
-                        "label": "Vector fields in connector",
-                        "search_placeholder": "Select fields",
-                        "select_all": "All",
-                        "selected_count": "{{count}} selected",
-                        "no_matches": "No matches"
+                        "label": "Vector field",
+                        "search_placeholder": "Select fields"
                     },
                     "similarity_instance_type_label": {
                         "similarity": "Similarity index (manually updated)",

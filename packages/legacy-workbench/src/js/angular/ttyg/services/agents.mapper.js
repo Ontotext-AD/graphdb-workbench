@@ -101,6 +101,7 @@ const extractionMethodsFormMapper = (agentFormModel, operation, defaultData, dat
             }),
             connectorType: extractionMethod.connectorType,
             connectorFields: extractionMethod.connectorFields,
+            selectedConnectorField: extractionMethod.connectorFields[0],
             similarityIndex: extractionMethod.similarityIndex,
             similarityIndexThreshold: extractionMethod.similarityIndexThreshold && new NumericRangeModel({
                 value: extractionMethod.similarityIndexThreshold,

@@ -251,11 +251,11 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
     }
 
     static getSimilarityIndexVectorFieldsField() {
-        return this.getSimilarityIndexFormGroup().find('#vectorFieldsSelect .multiselect-button');
+        return this.getSimilarityIndexFormGroup().find('select#vectorFieldsSelect');
     }
 
-    static getSimilarityIndexSelectedVectorFieldsFieldsCount() {
-        return this.getSimilarityIndexVectorFieldsField().find('.multiselect-count');
+    static getSimilarityIndexSelectedVectorFieldsValue() {
+        return this.getSimilarityIndexVectorFieldsField().find('option:selected');
     }
 
     static getSimilarityIndexThresholdFormGroup() {

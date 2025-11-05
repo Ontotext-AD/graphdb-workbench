@@ -196,21 +196,10 @@ function AgentSettingsModalController(
     $scope.showContextSize = ($scope.agentFormModel.contextSize !== null);
 
     /**
-     * The model for the vector fields multiselect dropdown (Similarity search method).
+     * The model for the vector fields select dropdown (Similarity search method).
      * @type {string[]}
      */
     $scope.vectorFields = [];
-
-    /**
-     * The label keys for the vector fields multiselect dropdown.
-     * @type {{select_all: string, search_placeholder: string, selected_count: string, no_matches: string}}
-     */
-    $scope.vectorFieldsMultiselectLabels = {
-        "select_all": "ttyg.agent.create_agent_modal.form.vector_fields_in_connector.select_all",
-        "search_placeholder": "ttyg.agent.create_agent_modal.form.vector_fields_in_connector.search_placeholder",
-        "selected_count": " ttyg.agent.create_agent_modal.form.vector_fields_in_connector.selected_count",
-        "no_matches": "ttyg.agent.create_agent_modal.form.vector_fields_in_connector.no_matches",
-    };
 
     $scope.documentationUrlForSimilarity = DocumentationUrlResolver.getDocumentationUrl(productInfo.productShortVersion, 'talk-to-graph.html#prerequisites-and-configuration');
 
@@ -352,7 +341,7 @@ function AgentSettingsModalController(
         if (clearIndexSelection) {
             similaritySearchExtractionMethod.similarityIndex = null;
         }
-        handleSimilaritySearchExtractionMethodPanelToggle(similaritySearchExtractionMethod);
+        handleSimilaritySearchExtractionMethodPanelToggle(similaritySearchExtractionMethod, true);
     };
 
     /**
@@ -536,15 +525,60 @@ function AgentSettingsModalController(
         });
     };
 
-    $scope.onVectorFieldsChange = function(selected, extractionMethod) {
-        extractionMethod.connectorFields = (selected || []).map((i) => i.label);
+    $scope.onVectorFieldsChange = function(extractionMethod) {
+        extractionMethod.connectorFields = extractionMethod.selectedConnectorField ? [extractionMethod.selectedConnectorField] : [];
+    };
+
+    $scope.hasConnectorData = () => {
+        return !!($scope.connectorMap && Object.keys($scope.connectorMap).length);
+    };
+
+    $scope.shouldShowVectorFields = (extractionMethod) => {
+        const connectorType = extractionMethod && (extractionMethod.connectorType || extractionMethod.similarityIndex);
+        const {provider, type} = splitProviderType(connectorType);
+        if (!isVectorProvider(provider)) {
+                return false;
+            }
+        // Only show when there are actual vector fields for the selected provider/type
+        if (Array.isArray($scope.vectorFields)) {
+            return $scope.vectorFields.length > 0;
+        }
+        const map = $scope.connectorMap || {};
+        const fields = (map[provider] && map[provider][type]) ? map[provider][type] : [];
+        return Array.isArray(fields) && fields.length > 0;
     };
 
     /**
-     * Updates the vector fields in the multiselect dropdown based on the selected extraction method.
+     * Handles the change event for the similarity index select menu. This is needed to update the connector fields.
      * @param extractionMethod
      */
-    $scope.updateVectorFields = (extractionMethod) => {
+    $scope.onSimilarityIndexChange = (extractionMethod) => {
+        const similarityIndex = extractionMethod && extractionMethod.similarityIndex;
+        // The user needs to select a vector field again.
+        extractionMethod.selectedConnectorField = undefined;
+        extractionMethod.connectorFields = [];
+        if (!similarityIndex) {
+            extractionMethod.connectorType = null;
+            $scope.vectorFields = [];
+            return;
+        }
+
+        const {provider, type} = splitProviderType(similarityIndex);
+        extractionMethod.connectorType = provider;
+
+        const map = $scope.connectorMap || {};
+        $scope.vectorFields = (map[provider] && map[provider][type]) ? map[provider][type] : [];
+    };
+
+    // =========================
+    // Private functions
+    // =========================
+
+    /**
+     * Updates the vector fields in the select dropdown based on the selected extraction method.
+     * @param extractionMethod
+     */
+    const updateVectorFields = (extractionMethod) => {
         const source = extractionMethod.similarityIndex;
         const {provider, type} = splitProviderType(source);
 
@@ -554,44 +588,8 @@ function AgentSettingsModalController(
         }
 
         const map = $scope.connectorMap || {};
-        const fields = (map[provider] && map[provider][type]) ? map[provider][type] : [];
-        const selected = new Set(extractionMethod.connectorFields || []);
-        $scope.vectorFields = fields.map((name) => ({id: name, label: name, selected: selected.has(name)}));
+        $scope.vectorFields = (map[provider] && map[provider][type]) ? map[provider][type] : [];
     };
-
-    $scope.hasConnectorData = () => {
-        return !!($scope.connectorMap && Object.keys($scope.connectorMap).length);
-    };
-
-    $scope.shouldShowVectorFields = (extractionMethod) => {
-        const connectorType = extractionMethod && (extractionMethod.connectorType || extractionMethod.similarityIndex);
-        const {provider} = splitProviderType(connectorType);
-        return isVectorProvider(provider);
-    };
-
-    /**
-     * Handles the change event for the similarity index select menu. This is needed to update the connector fields.
-     * @param extractionMethod
-     */
-    $scope.onSimilarityIndexChange = (extractionMethod) => {
-        const similarityIndex = extractionMethod && extractionMethod.similarityIndex;
-        if (!similarityIndex) {
-            extractionMethod.connectorType = null;
-            extractionMethod.connectorFields = [];
-            return;
-        }
-        const index = similarityIndex.indexOf(':');
-        const connector = index === -1 ? similarityIndex : similarityIndex.substring(0, index);
-        const type = index === -1 ? similarityIndex : similarityIndex.substring(index + 1);
-        extractionMethod.connectorType = connector;
-        const map = $scope.connectorMap || {};
-        extractionMethod.connectorFields = (map[connector] && map[connector][type]) ? map[connector][type] : [];
-        $scope.updateVectorFields(extractionMethod);
-    };
-
-    // =========================
-    // Private functions
-    // =========================
 
     /**
      * Resolves the hint message for the agent model property.
@@ -731,7 +729,7 @@ function AgentSettingsModalController(
         });
     };
 
-    const handleSimilaritySearchExtractionMethodPanelToggle = (extractionMethod) => {
+    const handleSimilaritySearchExtractionMethodPanelToggle = (extractionMethod, clearSelectedVectorField = false) => {
         if (!extractionMethod.selected) {
             // clear the validation status if method is deselected.
             $scope.agentSettingsForm.$setValidity('missingIndex', true);
@@ -749,21 +747,23 @@ function AgentSettingsModalController(
             return;
         }
         if (extractionMethod.expanded) {
+            $scope.extractionMethodLoaderFlags[extractionMethod.method] = true;
             const selectedRepositoryInfo = getSelectedRepositoryInfo();
             SimilarityService.getSimilarityIndexesWithVectorFields(selectedRepositoryInfo.repositoryId)
                 .then((connectorMap) => {
-                    $scope.agentSettingsForm.$setValidity('missingIndex', !extractionMethod.selected || !!connectorMap);
+                    $scope.connectorMap = connectorMap;
                     const indexes = buildSelectMenuOptions(connectorMap);
                     // if no indexes are found, selection (connectorsMap) will be cleaned and the info message will be
                     // shown to the user again
                     updateSelectedSimilarityIndex(indexes, extractionMethod);
-                    $scope.connectorMap = connectorMap;
+                    updateVectorFields(extractionMethod);
                     buildSimilarityIndexSelectOptions(connectorMap);
-                    $scope.extractionMethodLoaderFlags[extractionMethod.method] = true;
-                    $scope.updateVectorFields(extractionMethod);
+                    $scope.agentSettingsForm.$setValidity('missingIndex', !extractionMethod.selected || $scope.hasConnectorData());
                     // Initially, when there is no selection, the first index is selected, and we need to trigger the
                     // onSimilarityIndexChange to set the connector fields.
-                    $scope.onSimilarityIndexChange(extractionMethod);
+                    if (clearSelectedVectorField || (extractionMethod.connectorFields && extractionMethod.connectorFields.length === 0)) {
+                        $scope.onSimilarityIndexChange(extractionMethod);
+                    }
                 })
                 .catch((error) => {
                     $scope.connectorMap = null;

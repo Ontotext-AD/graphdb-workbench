@@ -386,6 +386,12 @@ export class ExtractionMethodFormModel {
          */
         this._connectorFields = data.connectorFields || [];
 
+        /**
+         * The selected connector field in the similarity search extraction method. NOT used in payload.
+         * @type {string}
+         */
+        this._selectedConnectorField = data.selectedConnectorField || '';
+
         this._expanded = data.expanded !== undefined ? data.expanded : false;
     }
 
@@ -557,6 +563,14 @@ export class ExtractionMethodFormModel {
 
     set connectorFields(value) {
         this._connectorFields = value;
+    }
+
+    get selectedConnectorField() {
+        return this._selectedConnectorField;
+    }
+
+    set selectedConnectorField(value) {
+        this._selectedConnectorField = value;
     }
 
     get expanded() {
