@@ -94,7 +94,7 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
 
     $scope.goBack = function () {
         const previousRoute = service(NavigationContextService).getPreviousRoute();
-        navigate(previousRoute ?? '');
+        navigate(previousRoute ?? './');
     };
 
     $scope.getPrincipal = function () {
