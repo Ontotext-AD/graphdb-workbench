@@ -8,14 +8,11 @@ import {pluginsBootstrap} from './plugins/plugins-bootstrap';
 import {configurationsBootstrap} from './configuration/configuration-bootstrap';
 import {LoggerProvider} from '../services/logger-provider';
 
-import {
-  ServiceProvider,
-  SecurityContextService,
-  ApplicationLifecycleContextService,
-  LifecycleState
-} from '@ontotext/workbench-api';
+import {ApplicationLifecycleContextService, LifecycleState, SecurityContextService, ServiceProvider} from '@ontotext/workbench-api';
 import {start} from 'single-spa';
 import {defineCustomElements} from '../../../shared-components/loader';
+import {registerInterceptors} from './interceptors/interceptors-registration';
+
 const bootstrapPromises = [
   ...autoCompleteBootstrap,
 ];
@@ -40,6 +37,7 @@ const executePromises = (bootstrapFns) => {
  */
 const loadEssentials = () => {
   return Promise.all([
+    registerInterceptors(),
     securityBootstrap.loadSecurityConfig(),
     executePromises([...licenseBootstrap, ...pluginsBootstrap, ...productInfoBootstrap, ...languageBootstrap])
   ]);

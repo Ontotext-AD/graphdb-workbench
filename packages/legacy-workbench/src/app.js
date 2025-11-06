@@ -193,8 +193,7 @@ const moduleDefinition = function(productInfo, translations) {
             //     });
             // });
 
-            // Disable uauthorizedInterceptor because limitations are implemented with different logic
-            // $httpProvider.interceptors.push('$unauthorizedInterceptor');
+            $httpProvider.interceptors.push('$unauthorizedInterceptor');
             $httpProvider.interceptors.push('$authenticationInterceptor');
 
             // Hack the template request provider to add a version parameter to templates that
