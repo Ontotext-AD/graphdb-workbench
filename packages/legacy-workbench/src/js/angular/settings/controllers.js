@@ -120,7 +120,7 @@ function RegisterLicenseCtrl($scope, $location, $uibModal, toastr, $window, $jwt
 
     const validateAdminOrRedirect = () => {
         if (!authorizationService.isAdmin()) {
-            RoutingUtil.navigate('/license');
+            RoutingUtil.navigate('license');
         }
     };
 
