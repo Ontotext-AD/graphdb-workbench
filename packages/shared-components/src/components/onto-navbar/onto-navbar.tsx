@@ -21,7 +21,7 @@ import {
   navigateTo, ProductInfo, ProductInfoContextService,
   navigate,
   ServiceProvider,
-  SubscriptionList,
+  SubscriptionList, openInNewTab
 } from '@ontotext/workbench-api';
 
 const labelKeys = {
@@ -112,7 +112,11 @@ export class OntoNavbar {
 
     // Skip navigation when the selected item is a parent menu because it has no associated navigation.
     if (!menuItem.hasSubmenus()) {
-      navigate(menuItem.href);
+      if (event.ctrlKey) {
+        openInNewTab(menuItem.href);
+      } else {
+        navigate(menuItem.href);
+      }
     }
 
     if (menuItem.children.length) {
