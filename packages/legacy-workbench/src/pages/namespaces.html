@@ -115,9 +115,10 @@
                 </td>
                 <td class="actions-bar"><!--ng-show="!rowform.$visible && canWriteActiveRepo()"-->
                     <button class="btn btn-link edit-namespace-btn" ng-click="rowform.$show()"
+                            ng-disabled="!canWriteActiveRepo()"
                             gdb-tooltip="{{'edit.namespace' | translate}}"><span class="icon-edit"></span></button>
                     <button class="btn btn-link secondary delete-namespace-btn" ng-click="removeNamespace(namespace)"
-                            ng-disabled="{{!canWriteActiveRepo()}}" gdb-tooltip="{{'delete.namespace' | translate}}"
+                            ng-disabled="!canWriteActiveRepo()" gdb-tooltip="{{'delete.namespace' | translate}}"
                             data-cy="{{'delete-pref_' + namespace.prefix}}">
                         <span class="icon-trash"></span></button>
                 </td>
