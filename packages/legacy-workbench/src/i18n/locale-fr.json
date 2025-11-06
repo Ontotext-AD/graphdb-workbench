@@ -3342,6 +3342,7 @@
     "guide.step_plugin.similarity-search-method.enable-toggle": "Cliquez sur la case à cocher pour activer la méthode de recherche par similarité.",
     "guide.step_plugin.similarity-search-method.disable-toggle": "Cliquez sur le bouton pour désactiver la méthode de recherche par similarité.",
     "guide.step_plugin.similarity-search-method.select-index": "Sélectionner l'index à utiliser pour la recherche de similarité.",
+    "guide.step_plugin.similarity-view-created-index": "Dans le tableau <b>Index existants</b>, vous pouvez maintenant voir le <b>SpellSimIndex</b> qui est l'index de similarité que nous avons créé avec la requête précédente.",
     "guide.step_plugin.iri-discovery-search.enable-toggle": "Cliquez sur le bouton pour activer la recherche textuelle complète dans les libellés pour la découverte d'IRI. Cette méthode aide le modèle à découvrir les IRI pour une requête incomplète particulière lorsqu'il ne peut pas répondre aux questions générales sur le jeu de données par lui-même.",
     "guide.step_plugin.iri-discovery-search.disable-toggle": "Cliquez sur le bouton pour désactiver la recherche textuelle complète dans les libellés pour la découverte d'IRI.",
     "guide.step_plugin.select-ttyg-agent.info.title": "Sélectionnez votre agent",

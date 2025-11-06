@@ -87,6 +87,24 @@ PluginRegistry.add('guide.step', [
         },
     },
     {
+        guideBlockName: 'similarity-view-created-index',
+        getSteps: (options, services) => {
+            const GuideUtils = services.GuideUtils;
+            return [
+                {
+                    guideBlockName: 'focus-element',
+                    options: {
+                        content: options.content || 'guide.step_plugin.similarity-view-created-index',
+                        class: 'view-created-index',
+                        ...(options.title ?? {title: CREATE_SIMILARITY_INDEX_DEFAULT}),
+                        ...options,
+                        elementSelector: GuideUtils.getGuideElementSelector(`similarity-index-name-${options.rowIndex || 0}`),
+                    },
+                },
+            ];
+        },
+    },
+    {
         guideBlockName: 'create-similarity-index',
         getSteps: (options, services) => {
             const GuideUtils = services.GuideUtils;
