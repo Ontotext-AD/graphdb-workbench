@@ -10,10 +10,10 @@ import {
 import {sanitizeHTML} from '../../utils/html-utils';
 
 const toastTypeToIconMap = {
-  [ToastType.INFO]: 'fa-circle-info',
-  [ToastType.SUCCESS]: 'fa-circle-check',
-  [ToastType.WARNING]: 'fa-message-lines',
-  [ToastType.ERROR]: 'fa-triangle-exclamation',
+  [ToastType.INFO]: 'ri-information-2-fill',
+  [ToastType.SUCCESS]: 'ri-checkbox-circle-line',
+  [ToastType.WARNING]: 'ri-message-line',
+  [ToastType.ERROR]: 'ri-alert-line',
 };
 
 /**
@@ -60,7 +60,7 @@ export class OntoToastr {
           <div class={`onto-toast ${toast.type}`} key={toast.id}
             onMouseEnter={this.onToastMouseEnter(toast)}
             onMouseLeave={this.onToastMouseLeave(toast)}>
-            <i class={`fa-regular ${toastTypeToIconMap[toast.type]}`}></i>
+            <i class={`${toastTypeToIconMap[toast.type]}`}></i>
             <span onClick={this.handleToastClick(toast)}
               class="toast-message"
               innerHTML={sanitizeHTML(toast.message)}></span>

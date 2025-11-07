@@ -52,10 +52,10 @@ const getShaclOptionsClass = function() {
     if (optionsModule) {
         const isAriaExpanded = optionsModule.getAttribute('aria-expanded');
         if (isAriaExpanded && isAriaExpanded === 'true') {
-            return 'fa fa-angle-down';
+            return 'ri-arrow-down-s-line';
         }
     }
-    return 'fa fa-angle-right';
+    return 'ri-arrow-right-s-line';
 };
 
 const numberParamToErrorKey = {

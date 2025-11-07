@@ -27,12 +27,12 @@
             <div class="actions">
                 <button class="btn btn-primary create-endpoint-btn" ng-click="startCreateEndpointWizard()"
                         gdb-tooltip="{{'graphql.endpoints_management.toolbar.create_endpoint.tooltip' | translate}}">
-                    <span class="fa-kit fa-gdb-graphql"></span>&nbsp;
+                    <span class="icon-graphql"></span>&nbsp;
                     <span>{{'graphql.endpoints_management.toolbar.create_endpoint.label' | translate}}</span>
                 </button>
                 <button class="btn btn-secondary import-schema-definition-btn ml-1" ng-click="importSchema()"
                         gdb-tooltip="{{'graphql.endpoints_management.toolbar.import_schema.tooltip' | translate}}">
-                    <span class="fa fa-upload"></span>&nbsp;
+                    <span class="ri-upload-2-line"></span>&nbsp;
                     <span>{{'graphql.endpoints_management.toolbar.import_schema.label' | translate}}</span>
                 </button>
             </div>
@@ -101,8 +101,8 @@
             <tr ng-repeat-start="endpoint in endpointsInfoList.endpoints track by endpoint.endpointId">
                 <td class="toggle-row">
                     <a href="#" ng-click="toggleRow($event, $index)">
-                        <i class="fa fa-chevron-right" ng-if="expandedRow !== $index"></i>
-                        <i class="fa fa-chevron-down" ng-if="expandedRow === $index"></i>
+                        <i class="ri-arrow-right-s-line" ng-if="expandedRow !== $index"></i>
+                        <i class="ri-arrow-down-s-line" ng-if="expandedRow === $index"></i>
                     </a>
                 </td>
                 <td class="status-cell">
@@ -111,7 +111,7 @@
                        gdb-tooltip="{{'graphql.endpoints_management.table.actions.view_report.tooltip' | translate}}"
                        class="endpoint-report-link btn btn-link">
                         <i ng-if="!endpoint.createdSuccessfully" class="fa-regular fa-circle-xmark status-failed"></i>
-                        <i ng-if="endpoint.createdSuccessfully" class="fa-regular fa-circle-check status-success"></i>
+                        <i ng-if="endpoint.createdSuccessfully" class="ri-checkbox-circle-line status-success"></i>
                     </a>
                 </td>
                 <td>
@@ -147,23 +147,23 @@
                                 data-toggle="dropdown" aria-expanded="false"
                                 ng-if="true"
                                 ng-disabled="false">
-                            <i class="fa fa-ellipsis"></i>
+                            <i class="ri-more-line"></i>
                         </button>
                         <div class="dropdown-menu dropdown-menu-right endpoint-actions-menu">
                             <button class="dropdown-item export-schema-btn" type="button"
                                     ng-click="onExportSchema(endpoint)">
-                                <i class="fa fa-arrow-down-to-line"></i>&nbsp;
+                                <i class="ri-download-2-line"></i>&nbsp;
                                 <span>{{'graphql.endpoints_management.table.actions.export_schema.label' | translate}}</span>
                             </button>
                             <button class="dropdown-item configure-endpoint-btn" type="button"
                                     ng-click="onConfigureEndpoint(endpoint)">
-                                <i class="fa fa-gear"></i>&nbsp;
+                                <i class="ri-settings-3-line"></i>&nbsp;
                                 <span>{{'graphql.endpoints_management.table.actions.configure_endpoint.label' | translate}}</span>
                             </button>
                             <div class="dropdown-divider"></div>
                             <button class="dropdown-item delete-endpoint-btn" type="button"
                                     ng-click="onDeleteEndpoint(endpoint)">
-                                <i class="fa fa-trash-can"></i>&nbsp;
+                                <i class="ri-delete-bin-6-line"></i>&nbsp;
                                 <span>{{'graphql.endpoints_management.table.actions.delete_endpoint.label' | translate}}</span>
                             </button>
                         </div>

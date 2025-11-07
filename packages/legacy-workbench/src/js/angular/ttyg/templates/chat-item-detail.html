@@ -12,7 +12,7 @@
         <div class="assistant">
             <div ng-if="!answer.isTerminalState" class="assistant-icon alert-help"
                  gdb-tooltip="{{'ttyg.chat_panel.labels.agent_name' | translate : { agentName: agentNameByIdMap[chatItemDetail.agentId], date: getHumanReadableQuestionTimestamp(chatItemDetail.question.timestamp), time: (chatItemDetail.question.timestamp | date:'HH:mm') } }}">
-                <i class="fa fa-lg fa-message-bot"></i>
+                <i class="ri-lg ri-robot-2-line"></i>
             </div>
             <div class="assistant-message" ng-if="answer.status !== 'completed'">
                 <markdown-content class="answer" ng-class="{'italic': answer.isTerminalState}" content="{{answer.message}}" options="markdownContentOptions"></markdown-content>
@@ -21,7 +21,7 @@
                             ng-click="regenerateQuestion()"
                             ng-disabled="disabled"
                             gdb-tooltip="{{'ttyg.chat_panel.btn.regenerate.tooltip' | translate}}">
-                        <i class="fa fa-arrows-rotate"></i>
+                        <i class="ri-refresh-line"></i>
                     </button>
                     <copy-to-clipboard tooltip-text="ttyg.chat_panel.btn.copy_answer.tooltip"
                                        text-to-copy="{{answer.message}}"></copy-to-clipboard>
@@ -32,14 +32,14 @@
                          popover-class="token-usage-info"
                          popover-placement="bottom-right"
                          popover-trigger="mouseenter">
-                        <i class="fa fa-coin-blank"></i>
+                        <i class="ri-coin-line"></i>
                     </button>
                     <button class="btn btn-link btn-link-only-icons btn-sm explain-response-btn" guide-selector="explain-response-btn"
                             ng-click="explainResponse(answer.id)"
                             ng-disabled="disabled && !explainResponseModel[answer.id]"
                             gdb-tooltip="{{'ttyg.chat_panel.btn.explain_response.tooltip' | translate}}">
-                        <i class="fa fa-wand-magic-sparkles"></i>
-                        <i class="fa fa-chevron-up toggle-explain-response-icon"
+                        <i class="ri-sparkling-line"></i>
+                        <i class="ri-arrow-up-s-line toggle-explain-response-icon"
                            ng-class="{expanded: explainResponseModel[answer.id] && explainResponseModel[answer.id].expanded}"></i>
                     </button>
                 </div>

@@ -28,7 +28,7 @@ export class OntoSearchIcon {
     return (
       <i tooltip-content={this.tooltipLabel}
         tooltip-placement={OntoTooltipPlacement.BOTTOM}
-        class="onto-search-icon fa-light fa-magnifying-glass"></i>
+        class="onto-search-icon ri-search-line"></i>
     );
   }
 

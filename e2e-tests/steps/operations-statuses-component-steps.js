@@ -15,15 +15,15 @@ export class OperationsStatusesComponentSteps {
     }
 
     static getQueriesOperationStatusHeaderElement() {
-        return OperationsStatusesComponentSteps.getOperationStatusHeader('.fa-arrow-right-arrow-left');
+        return OperationsStatusesComponentSteps.getOperationStatusHeader('.ri-arrow-left-right-line');
     }
 
     static getBackupAndRestoreOperationStatusHeaderElement() {
-        return OperationsStatusesComponentSteps.getOperationStatusHeader('.fa-archive');
+        return OperationsStatusesComponentSteps.getOperationStatusHeader('.ri-archive-line');
     }
 
     static getClusterOperationStatusHeaderElement() {
-        return OperationsStatusesComponentSteps.getOperationStatusHeader('.fa-sitemap');
+        return OperationsStatusesComponentSteps.getOperationStatusHeader('.ri-organization-chart');
     }
 
     static getOperationStatuses() {

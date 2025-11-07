@@ -7,7 +7,7 @@ PluginRegistry.add('route', [
         'controller': 'GraphqlEndpointManagementViewCtrl',
         'title': 'menu.graphql-endpoint-management.label',
         'helpInfo': 'graphql.endpoints_management.helpInfo',
-        'documentationUrl': 'graphql.html'
+        'documentationUrl': 'graphql.html',
     },
     {
         'url': '/graphql/endpoint/create',
@@ -17,7 +17,7 @@ PluginRegistry.add('route', [
         'controller': 'CreateGraphqlEndpointViewCtrl',
         'title': 'menu.create-graphql-endpoint.label',
         'helpInfo': 'graphql.create_endpoint.helpInfo',
-        'documentationUrl': 'graphql.html'
+        'documentationUrl': 'graphql.html',
     },
     {
         'url': '/graphql/playground',
@@ -27,8 +27,8 @@ PluginRegistry.add('route', [
         'controller': 'GraphqlPlaygroundViewCtrl',
         'title': 'menu.graphql-playground.label',
         'helpInfo': 'graphql.playground.helpInfo',
-        'documentationUrl': 'graphql.html'
-    }
+        'documentationUrl': 'graphql.html',
+    },
 ]);
 
 PluginRegistry.add('main.menu', {
@@ -39,7 +39,7 @@ PluginRegistry.add('main.menu', {
             href: '#',
             order: 2.5,
             role: 'IS_AUTHENTICATED_FULLY',
-            icon: "fa-kit fa-gdb-graphql"
+            icon: "icon-graphql",
         },
         {
             label: 'Endpoint Management',
@@ -51,9 +51,9 @@ PluginRegistry.add('main.menu', {
             children: [
                 {
                     href: 'graphql/endpoint/create',
-                    children: []
-                }
-            ]
+                    children: [],
+                },
+            ],
         },
         {
             label: 'GraphQL Playground',
@@ -61,6 +61,6 @@ PluginRegistry.add('main.menu', {
             href: 'graphql/playground',
             order: 15,
             role: 'IS_AUTHENTICATED_FULLY',
-            parent: 'GraphQL'
-        }]
+            parent: 'GraphQL',
+        }],
 });

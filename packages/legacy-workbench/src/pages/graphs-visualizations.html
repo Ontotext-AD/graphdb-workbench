@@ -223,7 +223,7 @@
             <li ng-repeat='predicate in predicates track by $index' class="item clearfix break-word-alt">
                 <div role="{{predicate.partOfTriple ? 'button' : ''}}"
                      ng-click="clickLink(predicate)">
-                    <em class="{{predicate.partOfTriple ? 'fa fa-long-arrow-right triple-pred' : ''}}"></em>
+                    <em class="{{predicate.partOfTriple ? 'ri-arrow-right-long-line triple-pred' : ''}}"></em>
                     <span id="{{predicate.linkId + predicate.nodeIndex}}">{{splitPredicate(predicate.value)}}</span>
                 </div>
             </li>

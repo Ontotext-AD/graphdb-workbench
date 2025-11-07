@@ -10,6 +10,12 @@
     position: relative;
 }
 
+.graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table .toggle-row a,
+.graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table .toggle-row a:hover,
+.graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table .toggle-row a:focus {
+    text-decoration: none !important;
+}
+
 .graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table .toggle-col {
     /* fixed width to prevent expanding and shrinking of the first column when a row is expanded/collapsed  */
     width: 40px;

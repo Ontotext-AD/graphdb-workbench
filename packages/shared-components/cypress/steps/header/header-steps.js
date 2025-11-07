@@ -26,7 +26,7 @@ export class HeaderSteps extends BaseSteps {
   }
 
   static getSearchIcon() {
-    return this.getSearch().find('.fa-magnifying-glass');
+    return this.getSearch().find('.ri-search-line');
   }
 
   static clickSearchIcon() {

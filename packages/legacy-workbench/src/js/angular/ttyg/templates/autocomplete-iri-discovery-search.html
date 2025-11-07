@@ -12,7 +12,7 @@
                                 <span class="mr-1"
                                       uib-popover="{{'ttyg.agent.create_agent_modal.form.additional_query_methods.method.' + extractionMethod.method + '.tooltip' | translate}}"
                                       popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.additional_query_methods.method.' + extractionMethod.method + '.label' | translate}}</span>
-            <i class="fa fa-chevron-down toggle-icon"
+            <i class="ri-arrow-down-s-line toggle-icon"
                ng-class="{'expanded': extractionMethod.expanded}">
             </i>
         </a>
@@ -28,7 +28,7 @@
                        ng-click="checkAutocompleteIndexEnabled(extractionMethod)"
                        ng-disabled="disabled"
                        gdb-tooltip="{{'ttyg.agent.create_agent_modal.form.additional_query_methods.method.autocomplete_iri_discovery_search.btn.reload.tooltip' | translate}}">
-                   <i class="fa fa-arrows-rotate"></i>
+                   <i class="ri-refresh-line"></i>
                </button>
                <div class="alert alert-danger missing-repositoryid-error mb-0"
                     ng-if="!agentFormModel.repositoryId">

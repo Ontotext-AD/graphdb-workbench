@@ -12,15 +12,6 @@
     font-style: normal;
 }
 
-.fa, .fa-regular, .fa-light, .fa-thin {
-    /*
-    General fix for FontAwesome icons being somewhat larger than our icons font.
-    font-size-adjust has other ways to do this (ex-height N) but that doesn't work well
-    with this font in Firefox. This magic value works identically in all browsers.
-    */
-    font-size-adjust: ch-width 0.52;
-}
-
 .pull-right {
     float: right
 }
@@ -29,7 +20,9 @@
     float: left
 }
 
-[class^="icon-"], [class*=" icon-"], .icon-any, .fa-d3 {
+[class^="icon-"], [class*=" icon-"],
+[class^="ri-"], [class*=" ri-"],
+.icon-any {
     speak: none;
     font-style: normal;
     font-variant: normal;
@@ -42,7 +35,7 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
-[class^="icon-"], [class*=" icon-"], .icon-any, .fa-d3:not(.fa-solid) {
+[class^="icon-"], [class*=" icon-"], .icon-any {
     font-weight: normal;
 }
 
@@ -51,9 +44,15 @@
     font-family: 'icomoon', sans-serif !important;
 }
 
-.fa-d3 {
-    /* use !important to prevent issues with browser extensions that change fonts */
-    font-family: 'Font Awesome 6 Pro', sans-serif !important;
+.remixicon {
+  font-family: 'remixicon', sans-serif !important;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-graphql:before {
+  content: "\e963";
 }
 
 .icon-arrow-up-off:before {

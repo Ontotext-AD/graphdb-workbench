@@ -165,7 +165,7 @@ export class OntoDropdown {
           <span class='button-name'>
             {this.dropdownButtonName ?? this.translate(this.dropdownButtonNameLabelKey)}
           </span>
-          <i class={`fa-light fa-angle-down ${this.open ? 'fa-rotate-180' : ''}`}></i>
+          <i class={`ri-arrow-down-s-line ${this.open ? 'rotate-180' : ''}`}></i>
         </button>
 
         <div

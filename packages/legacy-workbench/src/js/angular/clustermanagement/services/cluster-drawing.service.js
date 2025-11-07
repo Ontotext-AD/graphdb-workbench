@@ -33,8 +33,8 @@ const linkStateStyle = {
 };
 
 const font = {
-    FONT_AWESOME: 'FONT_AWESOME',
-    ICOMOON: 'ICOMOON'
+    REMIXICON: 'REMIXICON',
+    ICOMOON: 'ICOMOON',
 };
 
 const shortMessageLimit = 40;
@@ -181,7 +181,7 @@ function updateNodesIcon(nodes) {
             const iconType = hasRecoveryState(d) ? getNodeInfoIconType(d) : getNodeIconType(d);
             d3.select(this)
                 .classed('icon-any', iconType.font === font.ICOMOON)
-                .classed('fa-d3', iconType.font === font.FONT_AWESOME)
+                .classed('remixicon', iconType.font === font.REMIXICON)
                 .text(iconType.icon);
         });
 }
@@ -191,13 +191,13 @@ function hasRecoveryState(node) {
 }
 
 const iconMap = {
-    [RecoveryState.SEARCHING_FOR_NODE]: {icon: '\uf29c', font: font.FONT_AWESOME},
-    [RecoveryState.WAITING_FOR_SNAPSHOT]: {icon: '\uf017', font: font.FONT_AWESOME},
-    [RecoveryState.RECEIVING_SNAPSHOT]: {icon: '\uf0ed', font: font.FONT_AWESOME},
-    [RecoveryState.APPLYING_SNAPSHOT]: {icon: '\uf050', font: font.FONT_AWESOME},
-    [RecoveryState.BUILDING_SNAPSHOT]: {icon: '\uf187', font: font.FONT_AWESOME},
-    [RecoveryState.SENDING_SNAPSHOT]: {icon: '\uf0ee', font: font.FONT_AWESOME},
-    [RecoveryState.RECOVERY_OPERATION_FAILURE_WARNING]: {icon: '\ue920', font: font.ICOMOON}
+    [RecoveryState.SEARCHING_FOR_NODE]: {icon: '\uf045', font: font.REMIXICON}, //ri-question-line
+    [RecoveryState.WAITING_FOR_SNAPSHOT]: {icon: '\uf20f', font: font.REMIXICON}, //ri-time-line
+    [RecoveryState.RECEIVING_SNAPSHOT]: {icon: '\uec54', font: font.REMIXICON}, //ri-download-2-line
+    [RecoveryState.APPLYING_SNAPSHOT]: {icon: '\uec30', font: font.REMIXICON}, //ri-device-recover-line
+    [RecoveryState.BUILDING_SNAPSHOT]: {icon: '\uf3a7', font: font.REMIXICON}, //ri-archive-2-line
+    [RecoveryState.SENDING_SNAPSHOT]: {icon: '\uf24a', font: font.REMIXICON}, //ri-upload-2-line
+    [RecoveryState.RECOVERY_OPERATION_FAILURE_WARNING]: {icon: '\ue920', font: font.ICOMOON},
 };
 
 const nodeStateIcons = {

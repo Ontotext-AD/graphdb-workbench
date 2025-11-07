@@ -141,10 +141,10 @@ function dependenciesChordDirective($repositories, GraphDataRestService) {
 
                 GraphDataRestService.getPredicates(sourceClass, destinationClass, scope.selectedGraph && scope.selectedGraph.contextID.uri)
                     .success(function (predicatesData) {
-                        const directionIcon = " <i class='fa fa-exchange'></i> ";
+                        const directionIcon = " <i class='ri-arrow-left-right-line'></i> ";
                         const header = "<div class='row'>" + sourceClass + directionIcon + destinationClass + "</div>";
                         const predicatesList = _.map(predicatesData.slice(0, 10), function (p) {
-                            const icon = " <i class='fa fa-long-arrow-" + (p.direction === "out" ? "right" : "left") + "'></i>";
+                            const icon = " <i class='ri-arrow-" + (p.direction === "out" ? "right" : "left") + "-long-line'></i>";
                             return "<div class='row'>" + p.predicate + " : " + p.weight + icon + " </div>";
                         }).join("");
 

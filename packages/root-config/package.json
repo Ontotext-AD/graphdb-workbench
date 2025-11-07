@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "regenerator-runtime": "^0.14.1",
+    "remixicon": "^4.7.0",
     "single-spa": "^6.0.3",
     "single-spa-layout": "^3.0.0"
   }

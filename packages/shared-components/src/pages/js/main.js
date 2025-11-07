@@ -132,7 +132,7 @@ menuItems = [
         "href": "#",
         "order": 6,
         "role": "IS_AUTHENTICATED_FULLY",
-        "icon": "fa fa-flask",
+        "icon": "ri-flask-line",
         "guideSelector": "menu-lab",
         "shouldShow": true
       },

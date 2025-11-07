@@ -1,7 +1,6 @@
 .onto-rdf-search {
   display: flex;
   align-items: center;
-  line-height: .75;
   font-size: 1.4em;
   height: auto;
 
@@ -51,7 +50,7 @@
     color: var(--gw-primary-base);
     transition: all 0.15s ease-out;
 
-    &.fa-magnifying-glass, &.close-btn {
+    &.ri-search-line, &.close-btn {
       padding: .5rem .8rem;
     }
 

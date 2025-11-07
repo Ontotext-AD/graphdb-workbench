@@ -48,53 +48,53 @@ const CLUSTER_MANAGEMENT_CONSTANTS = (function () {
         return [
             {
                 labelKey: 'node_state_candidate',
-                classes: 'icon-any',
-                icon: '\ue914'
+                classes: 'remixicon',
+                icon: '\ueb81', //ri-checkbox-circle-line
             }, {
                 labelKey: 'node_state_no_cluster',
-                classes: 'close',
-                icon: 'X'
+                classes: 'remixicon',
+                icon: '\ueb99', //ri-close-line
             }, {
                 labelKey: 'link_state_out_of_sync',
-                classes: 'icon-any',
-                icon: '\ue920'
+                classes: 'remixicon',
+                icon: '\uea21', //ri-alert-line
             }, {
                 labelKey: 'node_state_no_connection',
-                classes: 'icon-any',
-                icon: '\ue931'
+                classes: 'remixicon',
+                icon: '\ueeb1', //ri-link-unlink
             }, {
                 labelKey: 'node_state_read_only',
-                classes: 'icon-any',
-                icon: '\ue95c'
+                classes: 'remixicon',
+                icon: '\uece2', //ri-file-forbid-line
             }, {
                 labelKey: 'node_state_restricted',
-                classes: 'icon-any',
-                icon: '\ue933'
+                classes: 'remixicon',
+                icon: '\uee71', //ri-key-line
             }, {
                 labelKey: 'recovery_state.searching_for_node',
-                classes: 'fa-d3',
-                icon: '\uf29c'
+                classes: 'remixicon',
+                icon: '\uf045', //ri-question-line
             }, {
                 labelKey: 'recovery_state.waiting_for_snapshot',
-                classes: 'fa-d3',
-                icon: '\uf017'
+                classes: 'remixicon',
+                icon: '\uf20f', //ri-time-line
             }, {
                 labelKey: 'recovery_state.building_snapshot',
-                classes: 'fa-d3 fa-solid',
-                icon: '\uf187'
+                classes: 'remixicon',
+                icon: '\uf3a7', //ri-archive-2-line
             }, {
                 labelKey: 'recovery_state.sending_snapshot',
-                classes: 'fa-d3 fa-solid',
-                icon: '\uf0ee'
+                classes: 'remixicon',
+                icon: '\uf24a', //ri-upload-2-line
             }, {
                 labelKey: 'recovery_state.receiving_snapshot',
-                classes: 'fa-d3 fa-solid',
-                icon: '\uf0ed'
+                classes: 'remixicon',
+                icon: '\uec54', //ri-download-2-line
             }, {
                 labelKey: 'recovery_state.applying_snapshot',
-                classes: 'fa-d3 fa-solid',
-                icon: '\uf050'
-            }
+                classes: 'remixicon',
+                icon: '\uec30', //ri-device-recover-line
+            },
         ];
     };
 

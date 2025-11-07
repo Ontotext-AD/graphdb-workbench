@@ -13,8 +13,8 @@
             <div ng-class="{
             'icon-import': OPERATION_GROUP_TYPE.IMPORT_OPERATION === operationGroup.type,
             'icon-exchange': OPERATION_GROUP_TYPE.QUERIES_OPERATION === operationGroup.type,
-            'fa fa-archive': OPERATION_GROUP_TYPE.BACKUP_AND_RESTORE_OPERATION === operationGroup.type,
-            'fa fa-sitemap': OPERATION_GROUP_TYPE.CLUSTER_OPERATION === operationGroup.type,
+            'ri-archive-line': OPERATION_GROUP_TYPE.BACKUP_AND_RESTORE_OPERATION === operationGroup.type,
+            'ri-organization-chart': OPERATION_GROUP_TYPE.CLUSTER_OPERATION === operationGroup.type,
             'status-critical': OPERATION_STATUS.CRITICAL === operationGroup.status,
             'status-information': OPERATION_STATUS.INFORMATION === operationGroup.status,
             'status-warning': OPERATION_STATUS.WARNING === operationGroup.status}">
@@ -38,8 +38,8 @@
                         <div ng-class="{
                        'icon-import': OPERATION_TYPE.IMPORTS === operationStatus.type,
                        'icon-exchange': OPERATION_TYPE.QUERIES === operationStatus.type || OPERATION_TYPE.UPDATES === operationStatus.type,
-                       'fa fa-archive': OPERATION_TYPE.BACKUP_RESTORE === operationStatus.type,
-                       'fa fa-sitemap': OPERATION_TYPE.CLUSTER_STATUS === operationStatus.type}">
+                       'ri-archive-line': OPERATION_TYPE.BACKUP_RESTORE === operationStatus.type,
+                       'ri-organization-chart': OPERATION_TYPE.CLUSTER_STATUS === operationStatus.type}">
                         </div>
                     </div>
                     <div class="col-sm-8 operation-status-label">

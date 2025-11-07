@@ -177,7 +177,7 @@ function ClusterNodesConfigurationComponent($translate, $timeout, productInfo, t
             /**
              * Determines the CSS class for the advanced options button based on its expanded state.
              *
-             * @return {string} - Returns 'fa fa-angle-down' if the 'advancedOptions' element is expanded, otherwise 'fa fa-angle-right'.
+             * @return {string} - Returns 'ri-arrow-down-s-line' if the 'advancedOptions' element is expanded, otherwise 'ri-arrow-right-s-line'.
              */
             $scope.getAdvancedOptionsClass = () => {
                 const optionsModule = document.getElementById('advancedOptions');
@@ -185,10 +185,10 @@ function ClusterNodesConfigurationComponent($translate, $timeout, productInfo, t
                 if (optionsModule) {
                     const isAriaExpanded = optionsModule.getAttribute('aria-expanded');
                     if (isAriaExpanded && isAriaExpanded === 'true') {
-                        return 'fa fa-angle-down';
+                        return 'ri-arrow-down-s-line';
                     }
                 }
-                return 'fa fa-angle-right';
+                return 'ri-arrow-right-s-line';
             };
 
             /**

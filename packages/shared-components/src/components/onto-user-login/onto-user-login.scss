@@ -30,7 +30,7 @@
       background-color: #d4d4d4;
       border-color: #d4d4d4;
 
-      & .fa-user {
+      & .ri-user-fill {
         transform: scale(1.2);
       }
     }
@@ -46,7 +46,7 @@
       font-size: 1.2em;
       transition: 0.15s ease-out;
 
-      &.fa-angle-down {
+      &.ri-arrow-down-s-line {
         color: rgba(0, 0, 0, .35);
         font-size: 1.1em;
         transition: all 0.2s ease-in;
