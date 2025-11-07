@@ -1,9 +1,4 @@
-import './vendor/font-awesome/solid.min.css';
-import './vendor/font-awesome/regular.min.css';
-import './vendor/font-awesome/custom-icons.min.css';
-import './vendor/font-awesome/fontawesome.min.css';
-import './vendor/font-awesome/sharp-regular.min.css';
-import './vendor/font-awesome/light.min.css';
+import 'remixicon/fonts/remixicon.css';
 import './vendor/common.css';
 import './vendor/variables.css';
 import './vendor/fonts.css';

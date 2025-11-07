@@ -270,7 +270,7 @@
                                 <tbody>
                                     <div>
                                         <tr ng-repeat="repository in getReadableRepositories() | orderBy: ['location', 'id']">
-                                            <td class="repository-name">{{repository.id}}<small><em ng-if="(hasGraphqlPermission(repository) || hasGraphqlPermission('*')) && (hasReadPermission(repository) || hasReadPermission('*') || hasWritePermission(repository) || hasWritePermission('*'))" class="fa-kit fa-gdb-graphql graphql-icon text-info" gdb-tooltip="{{'security.tooltip.graphql' | translate}}"></em> &middot; {{repository.location ? repository.location : 'repo.local' | translate}}</small></td>
+                                            <td class="repository-name">{{repository.id}}<small><em ng-if="(hasGraphqlPermission(repository) || hasGraphqlPermission('*')) && (hasReadPermission(repository) || hasReadPermission('*') || hasWritePermission(repository) || hasWritePermission('*'))" class="icon-graphql graphql-icon text-info" gdb-tooltip="{{'security.tooltip.graphql' | translate}}"></em> &middot; {{repository.location ? repository.location : 'repo.local' | translate}}</small></td>
                                             <td class="text-xs-center read-rights">
                                                 <span ng-click="setGrantedAuthorities()">
                                                     <input class="read" type="checkbox" ng-model="grantedAuthorities.READ_REPO[createUniqueKey(repository)]"  ng-checked="hasReadPermission(repository)" ng-disabled="readCheckDisabled(repository)">

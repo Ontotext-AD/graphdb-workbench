@@ -7,9 +7,9 @@ import {
 } from '@ontotext/workbench-api';
 
 const operationGroupToIcon = {
-  [OperationGroup.BACKUP]: 'fa-regular fa-archive',
-  [OperationGroup.QUERY]: 'fa-regular fa-arrow-right-arrow-left',
-  [OperationGroup.CLUSTER]: 'fa-regular fa-sitemap',
+  [OperationGroup.BACKUP]: 'ri-archive-line',
+  [OperationGroup.QUERY]: 'ri-arrow-left-right-line',
+  [OperationGroup.CLUSTER]: 'ri-organization-chart',
   // TODO: change import icon to font awesome one, when available
   [OperationGroup.IMPORT]: 'icon-import'
 };
@@ -68,7 +68,7 @@ export class OntoOperationsNotification {
               }
             </section>
           ))}
-          <i class={`fa-light fa-angle-down ${this.isOpen ? 'fa-rotate-180' : ''}`}></i>
+          <i class={`ri-arrow-down-s-line ${this.isOpen ? 'rotate-180' : ''}`}></i>
         </button>
         {this.isOpen &&
             <ul class="operations-dropdown">

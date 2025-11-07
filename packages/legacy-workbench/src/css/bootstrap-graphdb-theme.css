@@ -1092,7 +1092,6 @@ input.ng-invalid.ng-touched, .ng-submitted input.ng-invalid {
 
 fieldset {
     color: var(--gw-fieldset-color);
-    background-color: var(--gw-fieldset-background);
 }
 
 /*-------------------------------------------------------------

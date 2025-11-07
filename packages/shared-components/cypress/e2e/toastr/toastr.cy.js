@@ -19,28 +19,28 @@ describe('OntoToastr', () => {
 
     // Then I expect a success toast to be displayed
     ToastrSteps.getVisibleToasts().should('have.length', 1);
-    assertToastMessage('success', 'fa-circle-check');
+    assertToastMessage('success', 'ri-checkbox-circle-line');
 
     // When I click on the info toast button
     ToastrSteps.clickInfoToastButton();
 
     // Then I expect an info toast to be displayed
     ToastrSteps.getVisibleToasts().should('have.length', 2);
-    assertToastMessage('info', 'fa-circle-info');
+    assertToastMessage('info', 'ri-information-2-fill');
 
     // When I click on the warning toast button
     ToastrSteps.clickWarningToastButton();
 
     // Then I expect a warning toast to be displayed
     ToastrSteps.getVisibleToasts().should('have.length', 3);
-    assertToastMessage('warning', 'fa-message-lines');
+    assertToastMessage('warning', 'ri-message-line');
 
     // When I click on the error toast button
     ToastrSteps.clickErrorToastButton();
 
     // Then I expect an error toast to be displayed
     ToastrSteps.getVisibleToasts().should('have.length', 4);
-    assertToastMessage('error', 'fa-triangle-exclamation');
+    assertToastMessage('error', 'ri-alert-line');
 
     // And messages should disappear after 5 seconds
     ToastrSteps.getVisibleToasts().should('have.length', 0);

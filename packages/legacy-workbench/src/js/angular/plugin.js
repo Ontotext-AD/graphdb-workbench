@@ -38,7 +38,7 @@ PluginRegistry.add('main.menu', {
                 href: '#',
                 order: 6,
                 role: 'ROLE_USER',
-                icon: "fa fa-flask",
+                icon: "ri-flask-line",
                 guideSelector: 'menu-lab',
                 testSelector: 'menu-lab',
                 children: []

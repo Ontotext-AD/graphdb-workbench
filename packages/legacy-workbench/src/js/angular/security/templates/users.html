@@ -57,7 +57,7 @@
                         <em class="icon-eye text-tertiary" ng-if="rights.read && !rights.write" gdb-tooltip="{{'security.has.read.access' | translate}}"></em>
                         <em class="icon-edit text-tertiary" ng-if="rights.write" gdb-tooltip="{{'security.has.write.access' | translate}}"></em>
                         {{repo}}
-                        <em class="fa-kit fa-gdb-graphql text-info" ng-if="rights.graphql" gdb-tooltip="{{rights.write ? 'security.has.mutation_rights' : 'security.no.mutation_rights' | translate}}"></em>
+                        <em class="icon-graphql text-info" ng-if="rights.graphql" gdb-tooltip="{{rights.write ? 'security.has.mutation_rights' : 'security.no.mutation_rights' | translate}}"></em>
 
 
 

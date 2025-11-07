@@ -40,9 +40,9 @@ export class OntoUserMenu {
       <section class='onto-user-menu'>
         <div class='dropdown-toggle-wrapper' onClick={this.toggleDropdown}>
           <button class={`${this.isOpen ? 'open' : ''}`}>
-            <i class='fa-solid fa-user'></i>
+            <i class='ri-user-line ri-lg'></i>
             <span class='username'>{this.user.username}</span>
-            <i class={`fa-light fa-angle-down ${this.isOpen ? 'fa-rotate-180' : ''}`}></i>
+            <i class={`ri-arrow-down-s-line ${this.isOpen ? 'rotate-180' : ''}`}></i>
           </button>
           {this.isOpen ?
             <section class='onto-user-menu-dropdown'>

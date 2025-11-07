@@ -23,7 +23,7 @@
       background-color: var(--gw-button-secondary-hover-background);
       color: var(--gw-button-secondary-hover-color);
 
-      & .fa-user {
+      & .ri-user-line {
         transform: scale(1.2);
       }
     }
@@ -37,12 +37,12 @@
       background-color: var(--gw-primary-base);
       border-color: var(--gw-primary-base);
 
-      & .fa-user {
+      & .ri-user-line {
         color: var(--icon-on-primary-color, #ffffffcc);
       }
 
       &:hover {
-        .fa-user {
+        .ri-user-line {
           transform: scale(1.2);
         }
       }
@@ -54,11 +54,9 @@
 
     i {
       color: var(--gw-primary-base);
-      line-height: .75;
-      font-size: 1.2em;
       transition: 0.15s ease-out;
 
-      &.fa-angle-down {
+      &.ri-arrow-down-s-line {
         color: rgba(0, 0, 0, .35);
         font-size: 1.1em;
         transition: all 0.2s ease-in;

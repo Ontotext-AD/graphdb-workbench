@@ -126,7 +126,7 @@ export class OntoSearchResourceInput {
               <i onClick={this.clearInput}
                 tooltip-content={TranslationService.translate('rdf_search.tooltips.clear')}
                 tooltip-placement={OntoTooltipPlacement.BOTTOM}
-                class="fa-light fa-xmark clear-input"></i> : ''
+                class="ri-close-line clear-input"></i> : ''
             }
           </span>
           {this.buttonConfig?.getButtons().getItems().map((button) => (

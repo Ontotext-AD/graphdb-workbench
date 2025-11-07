@@ -53,7 +53,7 @@
                     <button class="btn btn-primary ask-button" guide-selector="question-ask" ng-if="!showCancelButton"
                             ng-disabled="!chatItem.question.message || !selectedAgent || selectedAgent.isDeleted || waitingForLastMessage || loadingChat || cancelling"
                             ng-click="ask()">
-                        <i class="fa fa-arrow-up"></i>
+                        <i class="ri-arrow-up-line"></i>
                     </button>
                     <button class="btn btn-secondary cancel-ask-button" ng-if="showCancelButton" ng-click="cancelPendingQuestion()"
                             gdb-tooltip="{{'ttyg.chat_panel.btn.stop_generation.tooltip' | translate}}">

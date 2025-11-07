@@ -195,7 +195,11 @@ h1 .btn {
     color: var(--gw-button-primary-link-hover-color);
 }
 
-.btn-link-only-icons {
+.btn-link-only-icons,
+.btn-link[href]:has([class^="ri"]),
+.btn-link[href]:has([class*=" ri"]),
+.btn-link[href]:has([class^="ri"]):hover,
+.btn-link[href]:has([class*=" ri"]):hover {
     text-decoration: none !important;
 }
 
@@ -230,7 +234,9 @@ h1 .btn {
 }
 
 /* button icons */
-.btn [class^="icon-"], .btn .fa {
+.btn [class^="icon-"],
+.btn [class^="ri"],
+.btn [class*=" ri"] {
     -moz-transition: transform 0.15s ease-out; /* FF4+ */
     -o-transition: transform 0.15s ease-out; /* Opera 10.5+ */
     -webkit-transition: transform 0.15s ease-out; /* Saf3.2+, Chrome */
@@ -238,7 +244,8 @@ h1 .btn {
 }
 
 .btn [class^="icon-"],
-.btn .fa {
+.btn [class^="ri"],
+.btn [class*=" ri"] {
     line-height: 0.75;
     font-size: 1.4em;
     display: inline-block;
@@ -246,7 +253,8 @@ h1 .btn {
 }
 
 .btn.btn-inline [class^="icon-"],
-.btn.btn-inline .fa {
+.btn.btn-inline [class^="ri"],
+.btn.btn-inline [class*=" ri"] {
     font-size: inherit;
     line-height: inherit;
     vertical-align: inherit;
@@ -258,14 +266,14 @@ h1 .btn {
 }
 
 .btn:hover [class^="icon-"],
-.btn:hover .fa,
-.btn:hover .fa-kit {
+.btn:hover [class^="ri"],
+.btn:hover [class*=" ri"] {
     transform: scale(1.2);
 }
 
 .btn.disabled:hover [class^="icon-"],
-.btn.disabled:hover .fa,
-.btn.disabled:hover .fa-kit {
+.btn.disabled:hover [class^="ri"],
+.btn.disabled:hover [class*=" ri"] {
     transform: scale(1);
 }
 
@@ -490,4 +498,12 @@ h3 [class^=icon-] {
 
 .padding-bottom-8 {
     padding-bottom: 8rem;
+}
+
+/*-------------------------------------------------------------
+	Utilities
+-------------------------------------------------------------*/
+.rotate-180 {
+  -webkit-transform: rotate(180deg);
+  transform: rotate(180deg);
 }

@@ -74,7 +74,7 @@ export class OntoRdfSearch {
             tooltip-content={TranslationService.translate('rdf_search.tooltips.close_search_area')}
             tooltip-placement={OntoTooltipPlacement.BOTTOM}
             data-test='onto-rdf-resource-search-close-btn'
-            class="fa-light fa-xmark-large close-btn"></i>
+            class="ri-close-line close-btn"></i>
           <onto-search-resource-input buttonConfig={this.buttonConfig}
             preserveSearch={true}
             isHidden={!this.isOpen}

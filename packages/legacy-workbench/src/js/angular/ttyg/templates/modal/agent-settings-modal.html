@@ -29,7 +29,7 @@
                     ng-if="operation !== AGENT_OPERATION.CREATE"
                     uib-popover="{{'ttyg.agent.create_agent_modal.form.external_config.tooltip' | translate}}"
                     popover-trigger="mouseenter">
-                <i class="fa-regular fa-plug-circle-plus"></i>
+                <i class="ri-plug-line"></i>
                 {{'ttyg.agent.create_agent_modal.form.external_config.label' | translate}}
             </button>
         </div>
@@ -70,7 +70,7 @@
                             class="btn btn-link btn-sm reset-context-size-btn"
                             ng-click="onRestoreDefaultContextSize()"
                             gdb-tooltip="{{'ttyg.agent.create_agent_modal.form.context_size.restore_default_btn.tooltip' | translate}}">
-                        <i class="fa fa-arrow-rotate-left"></i>
+                        <i class="ri-reset-left-line"></i>
                     </button>
                     <div class="input-with-unit">
                         <input type="number" id="contextSize" name="contextSize"
@@ -92,7 +92,7 @@
                 <label for="temperature">
                     <span uib-popover="{{'ttyg.agent.create_agent_modal.form.temperature.tooltip' | translate}}"
                           popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.temperature.label' | translate}}</span>
-                    <i class="fa fa-triangle-exclamation text-warning high-temperature-warning"
+                    <i class="ri-alert-line text-warning high-temperature-warning"
                        ng-if="showHighTemperatureWarning"
                        uib-popover="{{'ttyg.agent.create_agent_modal.form.temperature.high_temperature_warning' | translate}}"
                        popover-trigger="mouseenter"></i>
@@ -154,7 +154,7 @@
                                   uib-popover-template="'js/angular/ttyg/templates/modal/similarity-extraction-method-tooltip.html'"
                                   popover-popup-close-delay="800"
                                   popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.' + extractionMethod.method + '.label' | translate}}</span>
-                            <i class="fa fa-chevron-down toggle-icon"
+                            <i class="ri-arrow-down-s-line toggle-icon"
                                ng-class="{'expanded': extractionMethod.expanded}">
                             </i>
                         </a>
@@ -231,7 +231,7 @@
                             <button ng-if="agentFormModel.repositoryId" class="btn btn-link btn-sm pull-right"
                                     ng-click="checkIfFTSEnabled()"
                                     gdb-tooltip="{{'ttyg.agent.create_agent_modal.form.fts_search.btn.reload.tooltip' | translate}}">
-                                <i class="fa fa-arrows-rotate"></i>
+                                <i class="ri-refresh-line"></i>
                             </button>
                             <div class="alert alert-danger missing-repositoryid-error mb-0"
                                  ng-if="agentSettingsForm.repositoryId.$invalid">
@@ -265,7 +265,7 @@
                                     ng-click="updateSimilaritySearchPanel()"
                                     ng-disabled="disabled"
                                     gdb-tooltip="{{'ttyg.agent.create_agent_modal.form.similarity_index.btn.reload.tooltip' | translate}}">
-                                <i class="fa fa-arrows-rotate"></i>
+                                <i class="ri-refresh-line"></i>
                             </button>
                             <div class="alert alert-danger missing-repositoryid-error mb-0"
                                  ng-if="agentSettingsForm.repositoryId.$invalid">
@@ -292,7 +292,7 @@
                                 <div>{{'ttyg.agent.create_agent_modal.form.similarity_index.no_similarity_index.message_3' | translate}}</div>
                                 <div>
                                     <a href="{{documentationUrlForSimilarity}}" target="_blank">{{'ttyg.agent.create_agent_modal.form.similarity_index.no_similarity_index.message_4' | translate}}</a>
-                                    <i class="fa fa-arrow-up-right-from-square"></i>
+                                    <i class="ri-external-link-line"></i>
                                 </div>
                             </div>
                             <!-- content visible only after loading finishes and data is present -->
@@ -379,7 +379,7 @@
                                     ng-click="updateRetrievalConnectorPanel()"
                                     ng-disabled="disabled"
                                     gdb-tooltip="{{'ttyg.agent.create_agent_modal.form.retrieval_search.btn.reload.tooltip' | translate}}">
-                                <i class="fa fa-arrows-rotate"></i>
+                                <i class="ri-refresh-line"></i>
                             </button>
                             <div class="alert alert-danger missing-repositoryid-error mb-0"
                                  ng-if="agentSettingsForm.repositoryId.$invalid">
@@ -483,7 +483,7 @@
                     <button class="btn btn-link btn-sm create-chat-btn"
                             ng-click="onRestoreDefaultUserInstructions()"
                             gdb-tooltip="{{'ttyg.agent.create_agent_modal.form.user_instruction.btn.restore_default.tooltip' | translate}}">
-                        <i class="fa fa-arrow-rotate-left"></i>
+                        <i class="ri-reset-left-line"></i>
                     </button>
                 </div>
             </div>
@@ -510,7 +510,7 @@
                         <span
                             uib-popover="{{'ttyg.agent.create_agent_modal.form.system_instruction.tooltip' | translate}}"
                             popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.system_instruction.label' | translate}}</span>
-                        <i class="fa fa-triangle-exclamation text-warning overriding-system-instructions-warning"
+                        <i class="ri-alert-line text-warning overriding-system-instructions-warning"
                            ng-if="showSystemInstructionWarning"
                            uib-popover="{{'ttyg.agent.create_agent_modal.form.system_instruction.overriding_system_instruction_warning.body' | translate}}"
                            popover-trigger="mouseenter"></i>
@@ -522,7 +522,7 @@
                         <button class="btn btn-link btn-sm create-chat-btn"
                                 ng-click="onRestoreDefaultSystemInstructions()"
                                 gdb-tooltip="{{'ttyg.agent.create_agent_modal.form.system_instruction.btn.restore_default.tooltip' | translate}}">
-                            <i class="fa fa-arrow-rotate-left"></i>
+                            <i class="ri-reset-left-line"></i>
                         </button>
                     </div>
                 </div>

@@ -294,7 +294,7 @@ export class UserAndAccessSteps {
     }
 
     static findGraphqlIconAlias(repoLineAlias) {
-        return cy.get(repoLineAlias).find('.fa-gdb-graphql');
+        return cy.get(repoLineAlias).find('.icon-graphql');
     }
 
     static openEditUserPage(username) {

@@ -36,7 +36,7 @@
 
             <div class="generation-report-list">
                 <div ng-repeat="endpointReport in generationReport.reports" class="endpoint-report">
-                    <i ng-if="endpointReport.createdSuccessfully" class="fa-regular fa-circle-check status-success"></i>
+                    <i ng-if="endpointReport.createdSuccessfully" class="ri-checkbox-circle-line status-success"></i>
                     <i ng-if="!endpointReport.createdSuccessfully" class="fa-regular fa-circle-xmark status-failed"></i>
                     <a href="#" ng-if="endpointReport.createdSuccessfully"
                        gdb-tooltip="{{'graphql.create_endpoint.wizard_steps.generate_endpoint.overview.for_shapes.explore_in_playground_link_tooltip' | translate}}"

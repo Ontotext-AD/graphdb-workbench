@@ -139,20 +139,20 @@
                             </div>
                             <div class="related-arrow col-sm-1 col-md-1" gdb-tooltip="{{'related.classes.label' | translate}}"
                                  ng-click="showClass(class)">
-                                <em class="fa fa-exchange pointer related-classes"
+                                <em class="ri-arrow-left-right-line pointer related-classes"
                                     ng-show="class.inConnectionsSum > 0 && class.outConnectionsSum > 0"></em>
-                                <em class="fa fa-long-arrow-left related-classes"
+                                <em class="ri-arrow-left-long-line related-classes"
                                     ng-show="class.inConnectionsSum > 0 && class.outConnectionsSum == 0"></em>
-                                <em class="fa fa-long-arrow-right related-classes"
+                                <em class="ri-arrow-right-long-line related-classes"
                                     ng-show="class.inConnectionsSum == 0 && class.outConnectionsSum > 0 "></em>
                             </div>
                         </div>
                         <div class="plusminus col-sm-1 col-md-1">
                             <div ng-show="!isClassByNameShown(class.name)" ng-click="addClass(class)" gdb-tooltip="{{'add.class.label' | translate}}">
-                                <em class="fa fa-plus" role="button"></em>
+                                <em class="ri-add-line" role="button"></em>
                             </div>
                             <div ng-show="isClassByNameShown(class.name)" ng-click="removeClass(class)" gdb-tooltip="{{'remove.class.label' | translate}}">
-                                <em class="fa fa-minus-circle" role="button"></em>
+                                <em class="ri-indeterminate-circle-line" role="button"></em>
                             </div>
                         </div>
                     </li>
@@ -163,7 +163,7 @@
                     {{classToShow.name}}
                 </div>
                 <div class="back-to-dependencies-list">
-                    <a href="#" ng-click="classToShow = undefined"><em class="fa fa-arrow-left"></em> {{'back.to.main.class.table' | translate}}</a>
+                    <a href="#" ng-click="classToShow = undefined"><em class="ri-arrow-left-line"></em> {{'back.to.main.class.table' | translate}}</a>
                 </div>
                 <div class="row direction-filter-header">
                     <div class="col-sm-6">{{'class.label' | translate}}</div>
@@ -181,20 +181,20 @@
                                 connection.inWeight + connection.outWeight | humanize}}
                             </div>
                             <div class="related-arrow col-sm-1 col-md-1">
-                                <em class="fa fa-exchange"
+                                <em class="ri-arrow-left-right-line"
                                    ng-show="connection.inWeight > 0 && connection.outWeight > 0"></em>
-                                <em class="fa fa-long-arrow-left"
+                                <em class="ri-arrow-left-long-line"
                                    ng-show="connection.inWeight > 0 && connection.outWeight == 0"></em>
-                                <em class="fa fa-long-arrow-right"
+                                <em class="ri-arrow-right-long-line"
                                    ng-show="connection.inWeight == 0 && connection.outWeight > 0 "></em>
                             </div>
                         </div>
                         <div class="plusminus col-sm-1 col-md-1">
                             <div ng-show="!isClassByNameShown(connection.dependencyClass)" ng-click="addClassByName(connection.dependencyClass)" gdb-tooltip="{{'add.class.label' | translate}}">
-                                <em class="fa fa-plus" role="button"></em>
+                                <em class="ri-add-line" role="button"></em>
                             </div>
                             <div ng-show="isClassByNameShown(connection.dependencyClass)" ng-click="removeClassByName(connection.dependencyClass)" gdb-tooltip="{{'remove.class.label' | translate}}">
-                                <em class="fa fa-minus-circle" role="button"></em>
+                                <em class="ri-indeterminate-circle-line" role="button"></em>
                             </div>
                         </div>
                     </li>
