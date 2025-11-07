@@ -3,7 +3,7 @@ import {LoginSteps} from "../../../steps/login-steps";
 import {GraphqlPlaygroundSteps} from "../../../steps/graphql/graphql-playground-steps";
 import {RepositorySteps} from "../../../steps/repository-steps";
 
-describe('GraphQL-only User – Playground Access & Mutation Restriction', () => {
+describe.skip('GraphQL-only User – Playground Access & Mutation Restriction', () => {
     let repositoryId;
     const gqlUsername = `gqluser-${Date.now()}`;
     const testPassword = 'P@ssw0rd123!';

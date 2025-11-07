@@ -80,6 +80,59 @@ pipeline {
             }
         }
 
+        stage('Security Cypress Test') {
+            steps {
+                script {
+                    withKsm(application: [[
+                        credentialsId: 'ksm-jenkins',
+                        secrets: [
+                            [
+                                destination: 'file',
+                                filePath: 'graphdb.license',
+                                notation: 'keeper://AByA4tIDmeN7RmqnQYGY0A/file/graphdb.license'
+                            ]
+                        ]
+                    ]]) {
+                        sh 'pwd'
+                        sh 'cp graphdb.license ./e2e-tests/fixtures/'
+                        archiveArtifacts allowEmptyArchive: true, artifacts: 'graphdb.license'
+
+                        sh "ls -lh ./e2e-tests/fixtures/"
+                        dockerCompose.buildCmd(
+                            composeFile: env.DOCKER_COMPOSE_FILE,
+                            options: ["--force-rm"]
+                        )
+
+                        def caughtError = false
+                        catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+                            try {
+                                dockerCompose.upCmd(
+                                    environment: getUserUidGidPair() + [CYPRESS_script: 'cy:run-security'],
+                                    composeFile: env.DOCKER_COMPOSE_FILE,
+                                    options: ["--abort-on-container-exit", "--exit-code-from cypress"]
+                                )
+                            } catch (e) {
+                                caughtError = true
+                            }
+                        }
+
+                        if (caughtError) {
+                            echo "Security tests failed — archiving Cypress artifacts."
+                            archiveArtifacts allowEmptyArchive: true, artifacts: 'e2e-tests/report/screenshots/**/*.png, e2e-tests/report/videos/**/*.mp4, e2e-tests/cypress/logs/*.log, e2e-tests/logs/cypress-logs/**/*.txt'
+                            error("Security Cypress tests failed, job failed.")
+                        }
+
+                        echo "Security tests passed — skipping video artifacts."
+                        dockerCompose.downCmd(
+                            composeFile: env.DOCKER_COMPOSE_FILE,
+                            options: ['--volumes', '--remove-orphans', '--rmi', 'local'],
+                            ignoreErrors: true
+                        )
+                    }
+                }
+            }
+        }
+
         stage('Shared-components Cypress Test') {
             steps {
                 dir('packages/shared-components') {

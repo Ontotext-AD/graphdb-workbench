@@ -43,7 +43,7 @@ services:
       retries: 5
 
   cypress:
-    image: cypress/included:14.5.0
+    image: cypress/included:14.5.1
     depends_on:
       - workbench
     environment:
@@ -58,7 +58,7 @@ services:
       - ./e2e-tests:/e2e
       # Uncomment this if using a graphical interface for Cypress
       # - /tmp/.X11-unix:/tmp/.X11-unix
-    entrypoint: ["cypress", "run", "--config-file", "cypress-legacy.config.js"]
+    entrypoint: ["sh", "-c", "npm run ${CYPRESS_script:-cy:run-legacy}"]
     networks:
       - single-spa-network
 
