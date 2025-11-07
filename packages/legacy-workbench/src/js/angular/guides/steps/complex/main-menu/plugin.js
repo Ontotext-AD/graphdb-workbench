@@ -196,6 +196,9 @@ PluginRegistry.add('guide.step', [
                             return Promise.resolve();
                         },
                         ...options,
+                        // We might want to click menu + submenu, without intro message. If we configure a skipPoint
+                        // then it will be added to both steps
+                        skipPoint: false,
                     },
                 });
             }

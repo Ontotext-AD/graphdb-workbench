@@ -1,3 +1,5 @@
+<link href="css/jdbc-create.css?v=[AIV]{version}[/AIV]" rel="stylesheet">
+
 <div class="container-fluid" data-test="jdbc-page">
     <h1>
         {{title}}
@@ -12,7 +14,7 @@
                    ng-if="canWriteActiveRepo()"
                    data-test="create-sql-table-configuration"
                    class="btn btn-link pull-right">
-                    <span class="icon-plus create-sql-table-configuration"></span> {{'jdbc.create.new.configuration' | translate}}
+                    <span class="icon-plus create-sql-table-configuration"></span>{{'jdbc.create.new.configuration' | translate}}
                 </a>
                 <h3 class="mb-0"><span class="collapsible-heading" data-toggle="collapse"
                                        data-target="#configurations-table"><em class="icon-caret-down text-muted"></em> {{'jdbc.sql.configurations.list' | translate}}</span>

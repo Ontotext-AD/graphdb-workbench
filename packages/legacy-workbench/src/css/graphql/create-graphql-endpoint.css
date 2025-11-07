@@ -7,6 +7,10 @@
     min-height: calc(100vh - var(--status-bar-height));
 }
 
+.page-content:has(.create-graphql-endpoint-view) {
+    display: block;
+}
+
 .main-container {
     flex: 1;
     overflow-y: auto;

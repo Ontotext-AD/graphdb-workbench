@@ -25,7 +25,7 @@
 		<div class="card-block">
 			<div class="clearfix">
 				<a ng-href="similarity/index/create" ng-if="canEditRepo" class="btn btn-link pull-right" data-test="create-similarity-index-btn" guide-selector="create-similarity-index">
-					<span class="icon-plus create-similarity-index"></span> {{'view.create.similarity.index.title' | translate}}
+					<span class="icon-plus create-similarity-index"></span>{{'view.create.similarity.index.title' | translate}}
 				</a>
 				<h3 class="mb-0"><span class="collapsible-heading" data-toggle="collapse" data-target="#indexes-table"><em class="icon-caret-down text-muted"></em> {{'existing.indexes' | translate}}</span></h3>
 				<div class="mt-1" ng-if="selectedSimilarityIndex === undefined">{{'select.existing.similarity.index' | translate}}</div>
@@ -38,7 +38,7 @@
 					<tr ng-repeat="similarityIndex in similarityIndexes track by similarityIndex.name"
                         class="index-row"
 						ng-class="{'table-info text-secondary':similarityIndex.name == selectedSimilarityIndex.name}">
-						<td>
+						<td guide-selector="similarity-index-name-{{$index}}">
                             <a class="lead index-name" ng-href="{{(similarityIndex.isBuiltStatus() || similarityIndex.isRebuildingStatus() || similarityIndex.isOutdatedStatus()) ? '#' : ''}}" ng-click="goToSimilarityIndex(similarityIndex)">{{similarityIndex.name}}</a>
 						</td>
 						<td>
@@ -286,7 +286,7 @@
 
 
 			<div class="yasr-container pt-1" ng-if="lastSearch">
-                <yasgui-component ng-if="!isLoading" id="query-editor" yasgui-config="yasguiConfig""></yasgui-component>
+                <yasgui-component ng-if="!isLoading" id="query-editor" yasgui-config="yasguiConfig"></yasgui-component>
                 <loader-component ng-if="isLoading"></loader-component>
 			</div>
 		</div>

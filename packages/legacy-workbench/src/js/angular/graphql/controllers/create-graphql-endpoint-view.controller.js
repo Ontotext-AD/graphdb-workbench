@@ -92,6 +92,9 @@ function CreateGraphqlEndpointViewCtrl($scope, $location, $repositories, $transl
             },
             () => {
                 $scope.previousSelectedSourceRepository = $scope.selectedSourceRepository;
+                // store the new selection explicitly because the old value will be there until the change handler
+                // exits
+                $scope.selectedSourceRepository = selectedRepository;
                 GraphqlContextService.updateSourceRepository(selectedRepository.value);
                 // Recreate the endpoint configuration and the wizard as the new source repository may have different data.
                 GraphqlContextService.createEndpointConfig();
@@ -133,7 +136,8 @@ function CreateGraphqlEndpointViewCtrl($scope, $location, $repositories, $transl
      */
     const generateEndpointFromGraphqlShapes = (endpointConfiguration) => {
         $scope.generatingEndpoint = true;
-        const endpointCreateRequest = endpointConfiguration.toCreateEndpointFromShapesRequest($scope.selectedSourceRepository.value);
+        const endpointCreateRequest =
+            endpointConfiguration.toCreateEndpointFromShapesRequest(GraphqlContextService.getSourceRepository());
         let generationReport;
         return GraphqlService.generateEndpointFromGraphqlShapes($repositories.getActiveRepository(), endpointCreateRequest)
             .then((endpointGenerationReportList) => {
@@ -155,7 +159,8 @@ function CreateGraphqlEndpointViewCtrl($scope, $location, $repositories, $transl
      */
     const generateEndpointFromOntologies = (endpointConfiguration) => {
         $scope.generatingEndpoint = true;
-        const endpointCreateRequest = endpointConfiguration.toCreateEndpointFromOwlRequest($scope.selectedSourceRepository.value);
+        const endpointCreateRequest =
+            endpointConfiguration.toCreateEndpointFromOwlRequest(GraphqlContextService.getSourceRepository());
         let generationReport;
         return GraphqlService.generateEndpointFromOwl($repositories.getActiveRepository(), endpointCreateRequest)
             .then((endpointGenerationReport) => {

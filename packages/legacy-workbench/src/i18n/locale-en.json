@@ -2189,7 +2189,7 @@
                 "file_import_options_info_1": "Explore other file import options - ",
                 "file_import_options_info_2": "import and the ",
                 "server_files_link": "Server files",
-                "api_link": "GraphDB REST API."
+                "api_link": "GraphDB REST API"
             }
         },
         "import_resource_tree": {
@@ -3344,6 +3344,7 @@
     "guide.step_plugin.similarity-search-method.enable-toggle": "Click on the toggle to enable Similarity search query method.",
     "guide.step_plugin.similarity-search-method.disable-toggle": "Click on the toggle to disable Similarity search query method.",
     "guide.step_plugin.similarity-search-method.select-index": "Select the index to use for Similarity search.",
+    "guide.step_plugin.similarity-view-created-index": "In the <b>Existing Indexes</b> table, you can now see the <b>SpellSimIndex</b> which is the similarity index we created with the previous query.",
     "guide.step_plugin.iri-discovery-search.enable-toggle": "Click on the toggle to enable Full-text search in labels for IRI discovery. This method helps the model discover the IRIs for a particular incomplete query when it cannot answer general questions about the dataset on its own.",
     "guide.step_plugin.iri-discovery-search.disable-toggle": "Click on the toggle to disable Full-text search in labels for IRI discovery.",
     "guide.step_plugin.select-ttyg-agent.info.title": "Select your agent",

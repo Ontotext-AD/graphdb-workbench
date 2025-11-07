@@ -20,3 +20,7 @@ yasgui-component .CodeMirror {
     position: relative;
     bottom: -3px
 }
+
+.card .card-block .btn-link .hidden-lg-down {
+    padding-left: 4px;
+}

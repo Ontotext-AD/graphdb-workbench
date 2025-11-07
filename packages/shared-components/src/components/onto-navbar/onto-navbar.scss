@@ -111,10 +111,6 @@ main menu height*/
   pointer-events: none;
 }
 
-.navbar-component .menu-element-root .menu-item {
-  pointer-events: none;
-}
-
 .navbar-component .menu-element-root.active,
 .navbar-component .menu-element-root.active:hover {
   background-color: var(--primary-color);
