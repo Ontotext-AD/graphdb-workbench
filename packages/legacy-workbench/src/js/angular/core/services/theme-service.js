@@ -6,15 +6,15 @@ angular
 
 ThemeService.$inject = ['WorkbenchSettingsStorageService'];
 
-const DARK_MODE = 'dark';
+export const DARK_MODE = 'dark';
 
-function ThemeService(workbenchSettingsStorageService) {
+function ThemeService(WorkbenchSettingsStorageService) {
     /**
      * Applies the dark theme mode if it's saved in the local storage with the workbench settings. Otherwise the dark
      * mode is not applied.
      */
     const applyDarkThemeMode = () => {
-        const workbenchSettings = workbenchSettingsStorageService.getWorkbenchSettings();
+        const workbenchSettings = WorkbenchSettingsStorageService.getWorkbenchSettings();
         if (workbenchSettings.mode === DARK_MODE) {
             const rootElement = document.querySelector(':root');
             rootElement.classList.add(DARK_MODE);
@@ -34,9 +34,14 @@ function ThemeService(workbenchSettingsStorageService) {
         }
     };
 
+    const getAppliedTheme = () => {
+        return WorkbenchSettingsStorageService.getWorkbenchSettings().mode;
+    };
+
     return {
         applyDarkThemeMode,
         toggleThemeMode,
+        getAppliedTheme,
     };
 }
 

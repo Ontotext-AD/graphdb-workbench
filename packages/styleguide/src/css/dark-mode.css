@@ -12,6 +12,7 @@
   --gw-main-blue-300: #b6d1e7;
   --gw-main-blue-400: #90b9da;
   --gw-main-blue-500: #3e83bb;
+  --gw-main-blue-700: #003663;
   --gw-main-blue-800: #002b4f;
   --gw-main-blue-900: #001c33;
   --gw-main-teal-200: #d9f2f0;
@@ -47,6 +48,8 @@
   --gw-dialog-shadow-1-spread: -5px;
   --gw-dialog-shadow-1-offset-x: 0;
   --gw-dialog-shadow-1-offset-y: 20px;
+  --gw-additional-blue-500: var(--gw-main-blue-500);
+  --gw-additional-blue-700: var(--gw-main-blue-700);
   --gw-primary-200: var(--gw-main-orange-800);
   --gw-primary-600: var(--gw-main-orange-400);
   --gw-primary-700: var(--gw-main-orange-300);
@@ -68,6 +71,7 @@
   --gw-danger-700: var(--gw-additional-red-300);
   --gw-danger-800: var(--gw-additional-red-200);
   --gw-info-100: var(--gw-main-blue-900);
+  --gw-info-200: var(--gw-main-blue-800);
   --gw-info-500: var(--gw-main-blue-500);
   --gw-info-600: var(--gw-main-blue-400);
   --gw-info-700: var(--gw-main-blue-300);
@@ -152,6 +156,7 @@
   --gw-datatable-row-striped-background: var(--gw-neutral-100);
   --gw-toast-success-close-button-focus-ring-color: var(--gw-success-600);
   --gw-toast-error-close-button-focus-ring-color: var(--gw-danger-600);
+  --gw-swagger-get-background: var(--gw-info-200);
   --gw-dialog-shadow-1-color: var(--gw-neutral-shadow);
   --gw-primary-contrast-color: var(--gw-contrast-text);
   --gw-primary-hover-color: var(--gw-primary-dark);
@@ -268,6 +273,7 @@
   --gw-toast-error-background: var(--gw-error-base);
   --gw-toast-error-border-color: var(--gw-error-base);
   --gw-toast-error-color: var(--gw-contrast-text);
+  --gw-swagger-border-color: var(--gw-default-border-color);
   --gw-list-option-selected-focus-background: var(--gw-highlight-focus-background);
   --gw-list-option-selected-focus-color: var(--gw-highlight-focus-color);
   --gw-list-option-selected-color: var(--gw-text-color);
@@ -281,6 +287,10 @@
   --gw-button-primary-hover-color: var(--gw-primary-contrast-color);
   --gw-button-primary-border-color: var(--gw-border-color-primary);
   --gw-button-primary-color: var(--gw-primary-contrast-color);
+  --gw-inputtext-background: var(--gw-form-field-background);
+  --gw-inputtext-disabled-background: var(--gw-form-field-disabled-background);
+  --gw-inputtext-border-color: var(--gw-form-field-border-color);
+  --gw-inputtext-color: var(--gw-form-field-color);
   --gw-panel-color: var(--gw-default-color);
   --gw-panel-header-color: var(--gw-heading-default-color);
   --gw-autocomplete-background: var(--gw-form-field-background);

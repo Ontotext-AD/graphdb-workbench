@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link href='assets/style-themes/light-mode.css?v=<%= buildVersion %>' rel='stylesheet' type='text/css'/>
+    <link href='assets/style-themes/dark-mode.css?v=<%= buildVersion %>' rel='stylesheet' type='text/css'/>
     <!--
       SANITIZE TRAILING SLASH FROM PATHNAME BEFORE SPA BOOTSTRAP
       This inline script executes immediately upon page load,
@@ -64,8 +66,7 @@
                     "@ontotext/workbench-api": "http://localhost:9003/ontotext-workbench-api.js?v=<%= buildVersion %>",
                     "@ontotext/root-config": "/<%= mainBundle %>?v=<%= buildVersion %>",
                     "@ontotext/legacy-workbench": "/<%= legacyWorkbenchBundle %>?v=<%= buildVersion %>",
-                    "@ontotext/workbench": "http://localhost:9002/workbenchApp.js?v=<%= buildVersion %>",
-                    "@ontotext/styleguide": "/<%= styleguideBundle %>?v=<%= buildVersion %>"
+                    "@ontotext/workbench": "http://localhost:9002/workbenchApp.js?v=<%= buildVersion %>"
                 }
             }
         </script>
@@ -77,8 +78,7 @@
                     "@ontotext/workbench-api": "./<%= apiBundle %>?v=<%= buildVersion %>",
                     "@ontotext/root-config": "./<%= mainBundle %>",
                     "@ontotext/legacy-workbench": "./<%= legacyWorkbenchBundle %>",
-                    "@ontotext/workbench": "./<%= workbenchAppBundle %>?v=<%= buildVersion %>",
-                    "@ontotext/styleguide": "/<%= styleguideBundle %>?v=<%= buildVersion %>"
+                    "@ontotext/workbench": "./<%= workbenchAppBundle %>?v=<%= buildVersion %>"
                 }
             }
         </script>
@@ -107,7 +107,6 @@
 <script>
     window.importMapInjector.initPromise.then(() => {
       import('@ontotext/root-config');
-      import('@ontotext/styleguide');
     });
 </script>
 <import-map-overrides-full show-when-local-storage="devtools" dev-libs></import-map-overrides-full>

@@ -1,6 +1,12 @@
+html {
+    scrollbar-color: var(--gw-virtualscroller-loader-mask-color) var(--gw-virtualscroller-loader-mask-background);
+}
+
 body {
     font-family: var(--main-font);
     font-weight: var(--main-font-weight);
+    color: var(--gw-body-color);
+    background-color: var(--gw-body-background);
 }
 
 code, pre, kbd, samp, textarea {
@@ -14,11 +20,12 @@ code, pre, kbd, samp, textarea {
 .swagger-ui .info .title {
     font-size: 20px;
     font-family: var(--main-font);
-    color: #000000;
+    color: var(--gw-body-color);
 }
 
 .swagger-section {
-    background-color: #FFFFFF;
+    color: var(--gw-body-color);
+    background-color: var(--gw-body-background);
 }
 
 .swagger-ui .wrapper {
@@ -58,7 +65,7 @@ code, pre, kbd, samp, textarea {
 }
 
 .swagger-ui .opblock-tag a span {
-    color: #000000;
+    color: var(--gw-body-color);
 }
 
 .swagger-ui .opblock-tag {
@@ -83,7 +90,7 @@ code, pre, kbd, samp, textarea {
 }
 
 .swagger-section .swagger-ui-wrap h3, p, a {
-    color: #999999 !important;
+    color: var(--gw-main-gray-300) !important;
     padding: 2px !important;
 }
 
@@ -125,16 +132,16 @@ code, pre, kbd, samp, textarea {
 /* COLORS */
 
 .swagger-ui .opblock.opblock-get {
-    background-color: #E7F0F7;
-    border: 1px solid #C3D9EC;
+    background-color: var(--gw-swagger-get-background);
+    border: 1px solid var(--gw-swagger-border-color);
 }
 
 .swagger-ui .opblock.opblock-get .opblock-summary {
-    border-color: #0F6AB4;
+    border-color: var(--gw-additional-blue-700);
 }
 
 .swagger-ui .opblock.opblock-get .opblock-summary-method {
-    background: #0F6AB4;
+    background: var(--gw-additional-blue-500);
 }
 
 .swagger-ui .opblock.opblock-patch {
@@ -174,17 +181,37 @@ code, pre, kbd, samp, textarea {
     background-color: #C5862B;
 }
 
-.opblock-summary-path a {
-    color: #000000 !important;
-}
-
-.swagger-section .swagger-ui-wrap pre code>span {
-    color: #000000 !important;
-}
 
 .swagger-section .swagger-ui-wrap pre {
     background-color: #FCF6DB !important;
-    color: #000000 !important;
     border: 1px solid #E5E0C6 !important;
     padding: 10px !important;
+}
+
+.swagger-ui .opblock .opblock-summary-description {
+    color: var(--gw-main-gray-400);
+}
+
+.swagger-ui .opblock .opblock-section-header {
+    background-color: var(--gw-info-700);
+}
+
+.swagger-ui input[type=email], .swagger-ui input[type=file], .swagger-ui input[type=password], .swagger-ui input[type=search], .swagger-ui input[type=text] {
+    color: var(--gw-inputtext-color);
+    background-color: var(--gw-inputtext-background);
+    border: 1px solid var(--gw-inputtext-border-color);
+}
+
+.swagger-ui input[disabled], .swagger-ui select[disabled], .swagger-ui textarea[disabled] {
+    background-color: var(--gw-inputtext-disabled-background);
+}
+
+.swagger-ui textarea {
+
+}
+
+.swagger-ui .parameter__name,
+.swagger-ui .parameter__type,
+.swagger-section .swagger-ui-wrap table thead tr th{
+    color: var(--gw-body-color);
 }

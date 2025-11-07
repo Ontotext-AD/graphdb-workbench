@@ -1,16 +1,22 @@
-const { merge } = require('webpack-merge');
-const singleSpaDefaults = require('webpack-config-single-spa');
+const path = require('path');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
-module.exports = (webpackConfigEnv, argv) => {
-  const defaultConfig = singleSpaDefaults({
-    orgName: 'ontotext',
-    projectName: 'styleguide',
-    webpackConfigEnv,
-    argv,
-    outputSystemJS: false,
-  });
-
-  return merge(defaultConfig, {
-    // modify the webpack config however you'd like to by adding to this object
-  });
+module.exports = {
+  mode: 'production',
+  entry: {},
+  output: {
+    path: path.resolve(__dirname, 'dist', 'style-themes'),
+    filename: '[name].js',
+    clean: true,
+  },
+  plugins: [
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: path.resolve(__dirname, 'src', 'css'),
+          to: path.resolve(__dirname, 'dist', 'style-themes')
+        },
+      ],
+    }),
+  ],
 };
