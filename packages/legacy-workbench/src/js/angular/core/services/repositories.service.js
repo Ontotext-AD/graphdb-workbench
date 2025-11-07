@@ -13,7 +13,7 @@ import {SelectMenuOptionsModel} from "../../models/form-fields";
 import {
     RepositoryStorageService,
     RepositoryContextService,
-    ServiceProvider,
+    service,
     RepositoryLocationContextService,
     MapperProvider,
     RepositoryListMapper,
@@ -43,13 +43,10 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
         this.locationsShouldReload = true;
 
         const that = this;
-        const ONTOP_REPOSITORY_LABEL = 'graphdb:OntopRepository';
-        const FEDX_REPOSITORY_LABEL = 'graphdb:FedXRepository';
-
 
         const loadingDone = function(err, locationError) {
             that.loading = false;
-            ServiceProvider.get(RepositoryLocationContextService).updateIsLoading(false);
+            service(RepositoryLocationContextService).updateIsLoading(false);
             if (err) {
                 // reset location data
                 that.location = {};
@@ -153,7 +150,7 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
 
         this.init = function(successCallback, errorCallback, quick) {
             this.loading = true;
-            ServiceProvider.get(RepositoryLocationContextService).updateIsLoading(true);
+            service(RepositoryLocationContextService).updateIsLoading(true);
             if (!quick) {
                 this.locationsShouldReload = true;
             }
@@ -325,11 +322,11 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
         };
 
         this.getActiveRepositoryObjectFromStorage = function() {
-            return ServiceProvider.get(RepositoryStorageService).getRepositoryReference();
+            return service(RepositoryStorageService).getRepositoryReference();
         };
 
         this.getActiveRepository = function() {
-            return ServiceProvider.get(RepositoryStorageService).getRepositoryReference().id;
+            return service(RepositoryStorageService).getRepositoryReference().id;
         };
 
         this.getActiveRepositoryObject = function() {
@@ -347,40 +344,16 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
             return repository.id === 'SYSTEM';
         };
 
-        this.isActiveRepoOntopType = function(repo) {
-            const that = this;
-            if (!repo) {
-                repo = that.getActiveRepositoryObject();
-            }
-            let activeRepo;
-            if (repo) {
-                activeRepo = that.repositories.get(repo.location).find((current) => current.id === repo.id);
-                if (activeRepo) {
-                    return activeRepo.sesameType === ONTOP_REPOSITORY_LABEL;
-                }
-            }
-
-            // On F5 or refresh of page active repo first is undefined,
-            // so return the following check to ensure that repositories will
-            // be loaded first repo type will be evaluated properly afterwards
-            return typeof activeRepo === "undefined";
+        this.isActiveRepoOntopType = function() {
+            return service(RepositoryContextService)
+                .getSelectedRepository()
+                ?.isOntop() ?? false;
         };
 
         this.isActiveRepoFedXType = function() {
-            const that = this;
-            const repo = that.getActiveRepositoryObject();
-            let activeRepo;
-            if (repo) {
-                activeRepo = that.repositories.get(repo.location).find((current) => current.id === repo.id);
-                if (activeRepo) {
-                    return activeRepo.sesameType === FEDX_REPOSITORY_LABEL;
-                }
-            }
-
-            // On F5 or refresh of page active repo first is undefined,
-            // so return the following check to ensure that repositories will
-            // be loaded first repo type will be evaluated properly afterwards
-            return typeof activeRepo === "undefined";
+            return service(RepositoryContextService)
+                .getSelectedRepository()
+                ?.isFedx() ?? false;
         };
 
         this.getLocationFromUri = function(locationUri) {
@@ -397,7 +370,7 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
             const eventData = {oldRepository: this.repository, newRepository: repo, cancel: false};
             eventEmitterService.emit('repositoryWillChangeEvent', eventData, (eventData) => {
                 if (!eventData.cancel) {
-                    const repositoryContextService = ServiceProvider.get(RepositoryContextService);
+                    const repositoryContextService = service(RepositoryContextService);
                     // if the current repo is unreadable by the currently logged in user (or free access user)
                     // we unset the repository
                     if (!repo || (!$jwtAuth.canReadRepo(repo) && !$jwtAuth.hasGraphqlReadRights(repo))) {
@@ -555,7 +528,7 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
                 }, {});
 
                 const repos = rm.mapToModel(groupedByLocation);
-                ServiceProvider.get(RepositoryContextService).updateRepositoryList(repos);
+                service(RepositoryContextService).updateRepositoryList(repos);
             }
         });
     }]);
