@@ -183,8 +183,7 @@ code, pre, kbd, samp, textarea {
 
 
 .swagger-section .swagger-ui-wrap pre {
-    background-color: #FCF6DB !important;
-    border: 1px solid #E5E0C6 !important;
+    border: none;
     padding: 10px !important;
 }
 
@@ -196,6 +195,21 @@ code, pre, kbd, samp, textarea {
     background-color: var(--gw-info-700);
 }
 
+.swagger-ui select {
+    background-color: var(--gw-body-background);
+    color: var(--gw-body-color);
+}
+
+.swagger-section .swagger-ui-wrap pre code {
+    background-color: var(--gw-editor-content-background);
+    color: var(--gw-editor-content-color);
+    border: none;
+}
+
+.swagger-ui .opblock-body pre.microlight {
+    border: none;
+}
+
 .swagger-ui input[type=email], .swagger-ui input[type=file], .swagger-ui input[type=password], .swagger-ui input[type=search], .swagger-ui input[type=text] {
     color: var(--gw-inputtext-color);
     background-color: var(--gw-inputtext-background);
@@ -203,15 +217,22 @@ code, pre, kbd, samp, textarea {
 }
 
 .swagger-ui input[disabled], .swagger-ui select[disabled], .swagger-ui textarea[disabled] {
-    background-color: var(--gw-inputtext-disabled-background);
+    background-color: var(--gw-textarea-disabled-background);
+    color: var(--gw-textarea-disabled-color);
 }
 
 .swagger-ui textarea {
-
+    background-color: var(--gw-textarea-background);
+    color: var(--gw-textarea-color);
 }
 
 .swagger-ui .parameter__name,
 .swagger-ui .parameter__type,
+.swagger-ui .response-col_status,
+.swagger-ui table thead tr td,
+.swagger-ui .tab li button.tablinks,
+.swagger-ui .response-control-examples__title,
+.swagger-ui .response-control-media-type__title,
 .swagger-section .swagger-ui-wrap table thead tr th{
     color: var(--gw-body-color);
 }

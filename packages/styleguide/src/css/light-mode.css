@@ -233,6 +233,7 @@
   --gw-editor-toolbar-border-color: var(--gw-default-border-color);
   --gw-editor-toolbar-numbers-background: var(--gw-list-option-focus-background);
   --gw-editor-content-background: var(--gw-default-background);
+  --gw-textarea-disabled-color: var(--gw-form-field-disabled-color);
   --gw-listbox-option-focus-background: var(--gw-list-option-focus-background);
   --gw-fieldset-background: var(--gw-default-background);
   --gw-tabs-tablist-border-color: var(--gw-default-border-color);
@@ -283,7 +284,6 @@
   --gw-button-primary-color: var(--gw-primary-contrast-color);
   --gw-default-success-light-background: var(--gw-success-lighter);
   --gw-inputtext-background: var(--gw-form-field-background);
-  --gw-inputtext-disabled-background: var(--gw-form-field-disabled-background);
   --gw-inputtext-border-color: var(--gw-form-field-border-color);
   --gw-inputtext-color: var(--gw-form-field-color);
   --gw-panel-color: var(--gw-default-color);
@@ -300,6 +300,9 @@
   --gw-editor-content-color: var(--gw-default-color);
   --gw-inputgroup-addon-background: var(--gw-form-field-background);
   --gw-inputgroup-addon-color: var(--gw-form-field-icon-color);
+  --gw-textarea-background: var(--gw-form-field-background);
+  --gw-textarea-disabled-background: var(--gw-form-field-disabled-background);
+  --gw-textarea-color: var(--gw-form-field-color);
   --gw-listbox-background: var(--gw-form-field-background);
   --gw-listbox-border-color: var(--gw-form-field-border-color);
   --gw-listbox-color: var(--gw-form-field-color);
