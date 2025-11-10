@@ -41,6 +41,17 @@ export class UnauthenticatedInterceptor extends HttpInterceptor<Response> {
   }
 
   shouldRedirectToLogin(url: string): boolean {
-    return url.indexOf('rest/security/authenticated-user') < 0 && !this.authenticationService.isExternalUser();
+    let isExternalAuth: boolean;
+    try {
+      isExternalAuth = this.authenticationService.isExternalUser();
+    }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    catch (_e) {
+      // If there is an invalid token during bootstrap, the auth strategy might not have been
+      // resolved yet and will throw an error.
+      // In this case return false, to navigate to the login page and do a clean reload.
+      isExternalAuth = false;
+    }
+    return !url.includes('rest/security/authenticated-user') && !isExternalAuth;
   }
 }
