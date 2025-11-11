@@ -29,10 +29,10 @@ const SINGLE_SPA_GLOBAL_KEY = 'singleSpa';
 // to properly resolve the urls for the dynamic imports. Otherwise it wouldn't be
 // able to load the modules.
 const appModules = {
-  '@ontotext/legacy-workbench': () => import('@ontotext/legacy-workbench'),
+  '@ontotext/legacy-workbench': () => import(/* webpackIgnore: true */ '@ontotext/legacy-workbench'),
   '@ontotext/workbench-api': () => import('@ontotext/workbench-api'),
   '@ontotext/root-config': () => import('@ontotext/root-config'),
-  '@ontotext/workbench': () => import('@ontotext/workbench')
+  '@ontotext/workbench': () => import(/* webpackIgnore: true */ '@ontotext/workbench')
 };
 
 function showSplashScreen(show) {

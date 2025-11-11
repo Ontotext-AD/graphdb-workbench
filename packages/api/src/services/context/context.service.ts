@@ -103,6 +103,35 @@ export abstract class ContextService<TFields extends Record<string, unknown>> im
   }
 
   /**
+   * Override the default implementation to provide specific deserialization classes. There is functionality which
+   * updates contexts after properties in the storage have been updated. Not all are strings. Therefore, we need to provide
+   * the deserialization classes. Each context service can override this method to provide its own deserialization classes
+   * if needed. If nothing is provided, the default behavior is to return undefined, which will result in a string value
+   *
+   * @returns A map of property names to their corresponding deserialization classes. Defaults to undefined, if not
+   * overridden.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  protected getDeserializedContext(): Record<string, new(data: any) => unknown> | undefined {
+    return undefined;
+  }
+
+  /**
+   * This method is used to deserialize the value of a property. It checks if the property is defined in the deserialized context.
+   * If it is, it creates an instance of the corresponding deserialization class and returns the deserialized value.
+   * If the property is not defined in the deserialized context, it returns the original value as is.
+   * @param propertyKey the property key, which points to the constructor
+   * @param value the string value to deserialize
+   */
+  public deserializeProperty(propertyKey: string, value: string): unknown {
+    const Constructor = this.getDeserializedContext()?.[propertyKey];
+    if (!Constructor) {
+      return value;
+    }
+    return new Constructor(JSON.parse(value));
+  }
+
+  /**
    * Subscribes globally to all fields defined in TFields.
    */
   public subscribeAll<T>(
@@ -124,7 +153,7 @@ export abstract class ContextService<TFields extends Record<string, unknown>> im
     }
     return (): void => unsubscribeFns.unsubscribeAll();
   }
-  
+
   /**
    * Retrieves the names of all context fields defined in the service,
    * which will be used to register change subscriptions.
@@ -156,7 +185,7 @@ export abstract class ContextService<TFields extends Record<string, unknown>> im
   protected getContextFields(): string[] {
     return Object.values(this).filter((value): value is string => typeof value === 'string');
   }
-  
+
   /**
    * Retrieves the value context for a specific property or creates a new context if it doesn't exist.
    *
