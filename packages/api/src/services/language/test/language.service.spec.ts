@@ -59,14 +59,15 @@ describe('LanguageService', () => {
 
   test('Should retrieve the language, mapped to a TranslationBundle object', async () => {
     // Given, I have a mocked language
-    const mockBundle = { hello: 'World' } as TranslationBundle;
+    const mockBundle = { hello: 'World', language: 'en' } as TranslationBundle;
     TestUtil.mockResponse(new ResponseMock('assets/i18n/en.json').setResponse(mockBundle));
 
     // When I call the getLanguage method
     const result = await languageService.getLanguage('en');
 
     const expectedTranslationBundle = {
-      hello: 'World'
+      hello: 'World',
+      language: 'en'
     };
 
     // Then, I should get a TranslationBundle object, with default property values

@@ -109,9 +109,11 @@ class MergeI18nPlugin {
   emitAssets(mergedBundles, compilation) {
     Object.entries(mergedBundles).forEach(([language, data]) => {
       const outputPath = path.join(this.outputDirectory, `${language}.json`);
+      // Attach the language code to every emitted bundle (ensure it can't be overridden by data keys)
+      const bundleWithLanguage = { ...data, language };
       compilation.emitAsset(
         outputPath,
-        new RawSource(JSON.stringify(data, null, 2))
+        new RawSource(JSON.stringify(bundleWithLanguage, null, 2))
       );
       console.log(`Wrote I18n bundle for language '${language}' to: ${outputPath}`);
     });

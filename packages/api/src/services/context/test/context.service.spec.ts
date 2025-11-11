@@ -171,6 +171,39 @@ describe('ContextService', () => {
     expect(callSequence).toEqual(['main', 'after']);
   });
 
+  describe('ContextService.deserializeProperty', () => {
+    it('should return the raw string when no deserialization mapping is provided', () => {
+      const svc = new TestContextService();
+      const raw = '"plain-string"';
+      const result = svc.deserializeProperty('unknownKey', raw);
+      expect(result).toBe(raw);
+    });
+
+    it('should create an instance of the mapped class using parsed JSON', () => {
+      const svc = new TestContextServiceWithDeserialize();
+      const payload = { foo: 'bar', n: 5 };
+      const raw = JSON.stringify(payload);
+
+      const result = svc.deserializeProperty('testProperty', raw);
+
+      expect(result).toBeInstanceOf(DummyDto);
+      const dto = result as DummyDto;
+      expect(dto.data).toEqual(payload);
+    });
+
+    it('should throw when JSON is invalid for a mapped key', () => {
+      const svc = new TestContextServiceWithDeserialize();
+      // string values shouldn't be parsed as JSON
+      expect(() => svc.deserializeProperty('testProperty', 'not-json')).toThrow();
+    });
+
+    it('should return the raw string for non-mapped key even if it looks like JSON', () => {
+      const svc = new TestContextService();
+      const raw = '{"looks":"like json"}';
+      const result = svc.deserializeProperty('nonMapped', raw);
+      expect(result).toBe(raw);
+    });
+  });
 });
 
 type TestContextFields = {
@@ -204,5 +237,22 @@ class TestContextService extends ContextService<TestContextFields> implements De
     afterChangeCallback?: (value?: T) => void
   ): () => void {
     return this.subscribe(propertyName, callback, beforeChangeValidationPromise, afterChangeCallback);
+  }
+}
+
+// Helper DTO and test service to cover deserializeProperty
+class DummyDto {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  constructor(public data: any) {}
+}
+
+class TestContextServiceWithDeserialize extends ContextService<TestContextFields> implements DeriveContextServiceContract<TestContextFields, TestContextFieldParams> {
+  readonly TEST_PROPERTY = 'testProperty';
+  updateTestProperty: (value: string) => void = () => undefined;
+
+  protected getDeserializedContext(): Record<string, (storageValue: string) => unknown> | undefined {
+    return {
+      [this.TEST_PROPERTY]: (raw: string) => new DummyDto(JSON.parse(raw))
+    };
   }
 }

@@ -20,6 +20,8 @@ Cypress.Commands.add('createRepository', (options = {}) => {
 });
 
 Cypress.Commands.add('deleteRepository', (id, secured = false) => {
+    // unset the repository before delete to avoid missing repo errors
+    unsetRepository();
     // Note: Going through /rest/repositories because it would not fail if the repo is missing
     const url = REPOSITORIES_URL + '/' + id;
 
@@ -94,6 +96,8 @@ Cypress.Commands.add('getNamespaces', (id) => {
     });
 });
 
+Cypress.Commands.add('unsetRepository', () => unsetRepository())
+
 const toggleAutocomplete = (repositoryId, enable) => {
     cy.request({
         method: 'POST',
@@ -117,3 +121,8 @@ const waitAutocomplete = function (repositoryId) {
             }
         }).then((response) => response.status === 200 && (response.body === 'READY' || response.body === 'NONE')));
 };
+
+const unsetRepository = () => {
+    cy.removeLocalStorage(PRESET_REPO);
+    cy.log('Unset repository');
+}

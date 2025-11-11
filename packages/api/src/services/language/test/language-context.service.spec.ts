@@ -70,7 +70,7 @@ describe('LanguageContextService', () => {
 
   test('updateLanguageBundle should update language bundle and notify subscribers', () => {
     // Given I have a new translation bundle
-    const newBundle: TranslationBundle = {key: 'value'} as TranslationBundle;
+    const newBundle: TranslationBundle = {key: 'value', language: 'en'} as TranslationBundle;
     const updateContextPropertySpy = jest.spyOn(languageContextService, 'updateContextProperty');
 
     // When the language bundle is updated
@@ -83,7 +83,7 @@ describe('LanguageContextService', () => {
   test('should call the "onLanguageBundleChangedCallbackFunction" when the language bundle changes.', () => {
     //Given, I have a new translation bundle
     const onLanguageBundleChangedCallbackFunction = jest.fn();
-    const newBundle: TranslationBundle = {key: 'value'} as TranslationBundle;
+    const newBundle: TranslationBundle = {key: 'value', language: 'en'} as TranslationBundle;
 
     // When I register a callback function for language bundle changes,
     languageContextService.onLanguageBundleChanged(onLanguageBundleChangedCallbackFunction);
@@ -96,7 +96,7 @@ describe('LanguageContextService', () => {
 
   test('updateDefaultBundle should update default bundle and notify subscribers', () => {
     // Given I have a new translation bundle
-    const newBundle: TranslationBundle = {key: 'value'} as TranslationBundle;
+    const newBundle: TranslationBundle = {key: 'value', language: 'en'} as TranslationBundle;
     const updateContextPropertySpy = jest.spyOn(languageContextService, 'updateContextProperty');
 
     // When the default bundle is updated
@@ -108,7 +108,7 @@ describe('LanguageContextService', () => {
 
   test('should return the default bundle when getDefaultBundle is called', () => {
     // Given I have a default translation bundle
-    const defaultBundle: TranslationBundle = {key: 'value'} as TranslationBundle;
+    const defaultBundle: TranslationBundle = {key: 'value', language: 'en'} as TranslationBundle;
     languageContextService.updateDefaultBundle(defaultBundle);
 
     // When I call getDefaultBundle

@@ -103,6 +103,45 @@ export abstract class ContextService<TFields extends Record<string, unknown>> im
   }
 
   /**
+   * Provides deserializers for context properties that are persisted as strings.
+   *
+   * When a context value is restored from storage, it is initially a raw string. If a property requires
+   * transformation back to a richer type (e.g., parsing JSON into a DTO), expose a deserializer function
+   * for that property here. The base implementation will look up the function by property key and invoke it
+   * with the raw string value.
+   *
+   * If a property key is not present in this map, the raw string value is returned as-is.
+   *
+   * @returns A map of property names to deserializer functions in the form `(storageValue: string) => unknown`.
+   *          Return `undefined` or omit a key to indicate that the raw string should be used without conversion.
+   */
+  protected getDeserializedContext(): Record<string, (storageValue: string) => unknown> | undefined {
+    return undefined;
+  }
+
+  /**
+   * Deserializes a stored string value for a given property if a deserializer is provided.
+   *
+   * Looks up the `propertyKey` in {@link getDeserializedContext}. If a deserializer function is registered,
+   * it will be invoked with the raw string `value` and its result will be returned. If there is no
+   * deserializer for the key, the original string `value` is returned unchanged.
+   *
+   * @param propertyKey The property key used to look up a deserializer function.
+   * @param value The raw string value retrieved from storage.
+   * @returns The deserialized value produced by the mapped function, or the original string if no mapping exists.
+   */
+  public deserializeProperty(propertyKey: string, value: string): unknown {
+    // This should be moved in a storage service.
+    // We should have a mechanism to deserialize local storage values before they are used and in a central place.
+    // Consider a unified model for storage values and have one central storage service.
+    const constructorFunction = this.getDeserializedContext()?.[propertyKey];
+    if (!constructorFunction) {
+      return value;
+    }
+    return constructorFunction(value);
+  }
+
+  /**
    * Subscribes globally to all fields defined in TFields.
    */
   public subscribeAll<T>(
@@ -124,7 +163,7 @@ export abstract class ContextService<TFields extends Record<string, unknown>> im
     }
     return (): void => unsubscribeFns.unsubscribeAll();
   }
-  
+
   /**
    * Retrieves the names of all context fields defined in the service,
    * which will be used to register change subscriptions.
@@ -156,7 +195,7 @@ export abstract class ContextService<TFields extends Record<string, unknown>> im
   protected getContextFields(): string[] {
     return Object.values(this).filter((value): value is string => typeof value === 'string');
   }
-  
+
   /**
    * Retrieves the value context for a specific property or creates a new context if it doesn't exist.
    *
