@@ -95,6 +95,16 @@ export class RepositoryContextService extends ContextService<RepositoryContextFi
     return this.subscribe(this.REPOSITORY_LIST, callbackFunction);
   }
 
+  protected override getDeserializedContext() {
+    return {
+      [this.SELECTED_REPOSITORY]: this.deserializeRepository
+    };
+  }
+
+  private readonly deserializeRepository = (repository: string): Repository => {
+    return new Repository(JSON.parse(repository));
+  };
+
   /**
    * Finds and returns a repository matching the given repository reference.
    *

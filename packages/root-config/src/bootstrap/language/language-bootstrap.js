@@ -22,34 +22,32 @@ const loadLanguageConfig = () => {
   const languageService = ServiceProvider.get(LanguageService);
   const languageContextService = ServiceProvider.get(LanguageContextService);
   const storedLanguage = ServiceProvider.get(LanguageStorageService).get(languageContextService.SELECTED_LANGUAGE);
-  let isStoredAndDefaultLangEqual = false;
   return languageService.getLanguageConfiguration()
     .then((config) => {
       if (config) {
         languageContextService.setLanguageConfig(config);
-        isStoredAndDefaultLangEqual = storedLanguage && storedLanguage.value === config.defaultLanguage;
-        if (!isStoredAndDefaultLangEqual) {
-          // Update the selected language to the local store one
-          languageContextService.updateSelectedLanguage(storedLanguage.value);
-        }
+        const languageToSet = storedLanguage?.value ?? config.defaultLanguage;
+        languageContextService.updateSelectedLanguage(languageToSet);
         return languageService.getLanguage(config.defaultLanguage);
       }
     })
     .then((defaultBundle) => {
       if (defaultBundle) {
         languageContextService.updateDefaultBundle(defaultBundle);
-        if (isStoredAndDefaultLangEqual) {
-          languageContextService.updateLanguageBundle(defaultBundle);
-        }
+        // Set the default bundle as current initially.
+        // If another one is selected, it will be updated in onLanguageChange
+        languageContextService.updateLanguageBundle(defaultBundle);
       }
     })
-    .catch((error) => logger.error('Could not load language configuration', error));
+    .catch((error) => logger.error('Could not load language configuration', error))
+    .finally(() => onLanguageChange());
 };
 
 const onLanguageChange = () => {
   const languageContextService = ServiceProvider.get(LanguageContextService);
   languageContextService.onSelectedLanguageChanged((language) => {
-    if (language) {
+    const currentBundleLanguage = languageContextService.getLanguageBundle()?.language;
+    if (language && currentBundleLanguage !== language) {
       ServiceProvider.get(LanguageService).getLanguage(language)
         .then((bundle) => {
           if (bundle) {
@@ -62,4 +60,4 @@ const onLanguageChange = () => {
   return Promise.resolve();
 };
 
-export const languageBootstrap = [loadLanguageConfig, onLanguageChange];
+export const languageBootstrap = [loadLanguageConfig];

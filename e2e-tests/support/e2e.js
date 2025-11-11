@@ -37,6 +37,9 @@ installLogsCollector();
 
 // We don't want any tests to hit real Google
 beforeEach(() => {
+    // Ensure no pre-set repository leaks between specs
+    cy.unsetRepository();
+
     LicenseStubs.stubGoogleCalls();
     // This env variable is set globally in the cypress.config.js and
     // can be changed from within the spec files if needed like this

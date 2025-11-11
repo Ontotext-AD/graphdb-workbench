@@ -79,6 +79,15 @@ export class LanguageContextService extends ContextService<LanguageContextFields
   }
 
   /**
+   * Retrieves the current language bundle from the context.
+   *
+   * @returns {TranslationBundle | undefined} The current language bundle, or undefined if no bundle is set.
+   */
+  getLanguageBundle(): TranslationBundle | undefined {
+    return this.getContextPropertyValue(this.LANGUAGE_BUNDLE);
+  }
+
+  /**
    * Updates the default language bundle in the context.
    *
    * This method sets a new default translation bundle for the application.
