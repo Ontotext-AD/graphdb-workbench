@@ -563,7 +563,6 @@ export class AgentListFilterModel {
         this._selected = value;
     }
 }
-
 /**
  * Represents the compatibility status of an agent with the current version of the GraphDB.
  *
