@@ -511,7 +511,7 @@
                     },
                     "fts_search_max_number_of_triples_per_call": {
                         "label": "Nombre maximum de résultats (triples) par appel",
-                        "tooltip": "Limitez le nombre maximal de triplets renvoyés par la recherche en texte intégral. La valeur par défaut est automatique et déterminée au moment de l'exécution. En cas de doute, laissez la valeur par défaut.",
+                        "tooltip": "Limitez le nombre maximal de triplets renvoyés par la recherche en texte intégral. Laissez vide ou mettez 0 pour aucune limite (la valeur par défaut sera déterminée automatiquement).",
                         "placeholder": "Valeur automatique"
                     },
                     "sparql_search": {
@@ -538,7 +538,7 @@
                     },
                     "similarity_search_max_number_of_triples_per_call": {
                         "label": "Nombre maximal de résultats (triples) par appel",
-                        "tooltip": "Limitez le nombre maximal de triples renvoyés par la recherche de similarité. La valeur par défaut est automatique et déterminée au moment de l'exécution. En cas de doute, laissez la valeur par défaut.",
+                        "tooltip": "Limitez le nombre maximal de triples renvoyés par la recherche de similarité. Laissez vide ou mettez 0 pour aucune limite (la valeur par défaut sera déterminée automatiquement).",
                         "placeholder": "Valeur automatique"
                     },
                     "similarity_index": {
@@ -600,7 +600,7 @@
                     },
                     "retrieval_search_max_number_of_triples_per_call": {
                         "label": "Nombre maximum de résultats (triples) par appel",
-                        "tooltip": "Limitez le nombre maximal de fragments de texte renvoyés par le connecteur de ChatGPT Retrieval. La valeur par défaut est automatique et déterminée au moment de l'exécution. En cas de doute, laissez la valeur par défaut.",
+                        "tooltip": "Limitez le nombre maximal de fragments de texte renvoyés par le connecteur de ChatGPT Retrieval. Laissez vide ou mettez 0 pour aucune limite (la valeur par défaut sera déterminée automatiquement).",
                         "placeholder": "Valeur automatique"
                     },
                     "system_instruction": {
@@ -659,7 +659,7 @@
                         "autocomplete_max_number_of_results_per_call": {
                             "label": "Nombre maximum de résultats (IRI) par appel",
                             "placeholder": "Valeur automatique",
-                            "tooltip": "Limiter le nombre maximum d'IRI. La valeur par défaut est automatique et déterminée au moment de l'exécution. En cas de doute, laissez la valeur par défaut."
+                            "tooltip": "Limiter le nombre maximum d'IRI. Laissez vide ou mettez 0 pour aucune limite (la valeur par défaut sera déterminée automatiquement)."
                         },
                         "autocomplete_search_predicates": {
                             "label": "Rechercher des prédicats",
