@@ -3,7 +3,9 @@
  * https://jestjs.io/docs/configuration
  */
 
-import type {Config} from 'jest';
+import type { Config } from 'jest';
+import { pathsToModuleNameMapper } from 'ts-jest';
+import { compilerOptions } from './tsconfig.spec.json';
 
 const config: Config = {
   // All imported modules in your tests should be mocked automatically
@@ -25,7 +27,7 @@ const config: Config = {
   // collectCoverageFrom: undefined,
 
   // The directory where Jest should output its coverage files
-  coverageDirectory: "coverage",
+  coverageDirectory: 'coverage',
 
   // An array of regexp pattern strings used to skip coverage collection
   // coveragePathIgnorePatterns: [
@@ -33,7 +35,7 @@ const config: Config = {
   // ],
 
   // Indicates which provider should be used to instrument code for coverage
-  coverageProvider: "v8",
+  coverageProvider: 'v8',
 
   // A list of reporter names that Jest uses when writing coverage reports
   // coverageReporters: [
@@ -91,8 +93,8 @@ const config: Config = {
 
   // A map from regular expressions to module names or to arrays of module names that allow to stub out resources with a single module
   moduleNameMapper: {
-    '^@ontotext/workbench-api$': '<rootDir>/../api/dist/ontotext-workbench-api.d.ts',
-    '^@ontotext/security-module$': '<rootDir>/../security-module/dist/ontotext-security-module.d.ts',
+    '^@ontotext/workbench-api$': '<rootDir>/../api/dist/ontotext-workbench-api.js',
+    ...pathsToModuleNameMapper(compilerOptions.paths || {}, { prefix: '<rootDir>/' }),
   },
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
@@ -105,7 +107,7 @@ const config: Config = {
   // notifyMode: "failure-change",
 
   // A preset that is used as a base for Jest's configuration
-  // preset: 'jest-preset-angular',
+  preset: 'jest-preset-angular',
 
   // Run tests from one or more projects
   // projects: undefined,
@@ -149,7 +151,7 @@ const config: Config = {
   // snapshotSerializers: [],
 
   // The test environment that will be used for testing
-  testEnvironment: "jsdom",
+  testEnvironment: 'jsdom',
 
   // Options that will be passed to the testEnvironment
   // testEnvironmentOptions: {},
@@ -179,19 +181,23 @@ const config: Config = {
 
   // A map from regular expressions to paths to transformers
   transform: {
-    '^.+\\.tsx?$': [
+    '^.+\\.(ts|mjs|js|html)$': [
       'ts-jest',
       {
-        allowSyntheticDefaultImports: true,
+        tsconfig: 'tsconfig.spec.json',
+        useESM: true,
       },
     ],
-    '^.+\\.(js|mjs)$': 'babel-jest',
   },
+  extensionsToTreatAsEsm: ['.ts'],
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
   // transformIgnorePatterns: [
   //   "/node_modules/",
   // ],
+  transformIgnorePatterns: [
+    'node_modules/(?!(?:@angular|rxjs|@ontotext/workbench-api|@jsverse)/)',
+  ],
 
   // An array of regexp pattern strings that are matched against all modules before the module loader will automatically return a mock for them
   // unmockedModulePathPatterns: undefined,
