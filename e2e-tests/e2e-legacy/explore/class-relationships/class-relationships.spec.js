@@ -43,7 +43,7 @@ describe('Class relations screen validation', () => {
         });
         // Diagram should be visible and showing 10 classes
         ClassRelationshipsSteps.getDependenciesDiagram().should('be.visible').within(() => {
-            cy.get('.group').should('have.length', 10);
+                cy.get('.group').should('have.length', 10);
         });
     });
 

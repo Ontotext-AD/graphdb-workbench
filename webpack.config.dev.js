@@ -31,7 +31,7 @@ module.exports = (env, argv) => merge(commonConfig(env, argv), {
         directory: path.join(__dirname, 'dist/')
       },
       {
-        directory: path.join(__dirname, 'plugins'),
+        directory: path.join(__dirname, 'wb-plugins'),
         publicPath: '/plugins',
         watch: true
       }

@@ -740,6 +740,7 @@ describe('AuthorizationService', () => {
       expect(authorizationService.hasGqlRights(repository)).toBe(false);
     });
   });
+
   describe('Override Auth', () => {
     test('should initialize default when no user is logged in and override auth is enabled', async () => {
       const username = 'overrideauth';
@@ -761,6 +762,56 @@ describe('AuthorizationService', () => {
       securityContextService.updateSecurityConfig(disabledSecurityConfig);
       authorizationService.initializeOverrideAuth();
       expect(securityContextService.getAuthenticatedUser()).toBeUndefined();
+    });
+  });
+
+  describe('wildcard permissions', () => {
+    test('should calculate wildcard read and write rights', () => {
+      // Given, I have a user with wildcard read permissions for EMSPGM- repositories
+      const regularUser = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
+        {authorities: [Authority.ROLE_USER, 'READ_REPO_EMSPGM-*' as Authority]} as unknown as AuthenticatedUser
+      );
+      securityContextService.updateAuthenticatedUser(regularUser);
+      const securityConfig = getSecurityConfig(true, false);
+      securityContextService.updateSecurityConfig(securityConfig);
+
+      // Then, I should have read rights for all EMSPGM-repositories
+      expect(authorizationService.canReadRepo(new Repository({id: 'EMSPGM-'}))).toBe(true);
+      expect(authorizationService.canReadRepo(new Repository({id: 'EMSPGM-1'}))).toBe(true);
+      expect(authorizationService.canReadRepo(new Repository({id: 'EMSPGM-2'}))).toBe(true);
+      expect(authorizationService.canReadRepo(new Repository({id: 'EMSPGM-3'}))).toBe(true);
+
+      // Missing the - at the end. Not a complete match so should not have read rights
+      expect(authorizationService.canReadRepo(new Repository({id: 'EMSPGM'}))).toBe(false);
+      // No write rights for EMSPGM- repositories
+      expect(authorizationService.canWriteRepo(new Repository({id: 'EMSPGM-1-'}))).toBe(false);
+    });
+
+    test('should calculate wildcard read and write GQL rights', () => {
+      // Given, I have a user with wildcard read permissions for EMSPGM-*:GRAPHQL repositories
+      const regularUser = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
+        {authorities: [Authority.ROLE_USER, 'READ_REPO_EMSPGM-*:GRAPHQL' as Authority]} as unknown as AuthenticatedUser
+      );
+      securityContextService.updateAuthenticatedUser(regularUser);
+      const securityConfig = getSecurityConfig(true, false);
+      securityContextService.updateSecurityConfig(securityConfig);
+
+      // Then, I should have read rights for all EMSPGM-*:GRAPHQL repositories
+      expect(authorizationService.canReadGqlRepo(new Repository({id: 'EMSPGM-'}))).toBe(true);
+      expect(authorizationService.canReadGqlRepo(new Repository({id: 'EMSPGM-1'}))).toBe(true);
+
+      // Not a complete match
+      expect(authorizationService.canReadGqlRepo(new Repository({id: 'EMSPGM'}))).toBe(false);
+      // No write permissions
+      expect(authorizationService.canWriteGqlRepo(new Repository({id: 'EMSPGM'}))).toBe(false);
+    });
+
+    test('canReadRepo should return true, when there is no security configuration', () => {
+      // Given, no security configuration
+      // When, I check if a repository can be read
+      const repository = new Repository({id: 'testRepoId', location: 'testLocation' });
+      // Then, it should return true
+      expect(authorizationService.canReadRepo(repository)).toBe(true);
     });
   });
 });
