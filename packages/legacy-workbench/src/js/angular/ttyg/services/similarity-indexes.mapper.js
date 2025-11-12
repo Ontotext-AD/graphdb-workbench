@@ -1,68 +1,62 @@
-import {SimilarityInstanceType} from '../../models/similarity/similarity-instance-type';
-
 /**
- * Maps backend response like
- * { "elasticsearch:otkg-vector": ["a"], "similarity": ["x"] }
- * into
- * { elasticsearch: { "otkg-vector": ["a"] }, similarity: "x": [] }
+ * Maps backend response into:
+ * { [connectorType: string]: { [similarityIndex: string]: string[] } }
  *
  * Example:
- * <pre>
  * const resp = {
- *   "elasticsearch:otkg-vector": ["docText1", "docText2"],
- *   "elasticsearch:otkg-vector-new": ["docText1"],
- *   "similarity": ["test", "test1"]
+ *   elasticsearch: [
+ *     { similarityIndex: "acme_index", connectorFields: ["text", "text3"] },
+ *     { similarityIndex: "acme_index1", connectorFields: ["text", "text3"] }
+ *   ],
+ *   similarity: [
+ *     { similarityIndex: "test_index" },
+ *     { similarityIndex: "newTest" }
+ *   ]
  * };
  *
- * mapConnectorResponse(resp);
+ * similarityIndexesMapper(resp);
+ * =>
  * {
  *   elasticsearch: {
- *     "otkg-vector": ["docText1","docText2"],
- *     "otkg-vector-new": ["docText1"]
+ *     acme_index: ["text", "text3"],
+ *     acme_index1: ["text", "text3"]
  *   },
- *   similarity: ["test","test1"],
+ *   similarity: {
+ *     test_index: [],
+ *     newTest: []
+ *   }
  * }
- * </pre>
  */
 export const similarityIndexesMapper = (resp) => {
-    if (!resp) {
+    if (!resp || typeof resp !== 'object') {
         return {};
     }
 
     const connectorMap = {};
-
-    Object.entries(resp).forEach(([key, value]) => {
-        const firstColonIndex = key.indexOf(':');
-
-        if (firstColonIndex === -1) {
-            const connector = key;
-            if (!connectorMap[connector]) {
-                connectorMap[connector] = {};
-            }
-
-            if (connector === SimilarityInstanceType.SIMILARITY) {
-                const items = Array.isArray(value) ? value : [];
-                items
-                    .filter(Boolean)
-                    .forEach((name) => {
-                        connectorMap[connector][name] = [];
-                    });
-            } else {
-                // Fallback for other no-colon connectors
-                connectorMap[connector][connector] = Array.isArray(value) ? value : [];
-            }
+    Object.entries(resp).forEach(([connectorType, items]) => {
+        if (!Array.isArray(items)) {
             return;
         }
 
-        const [connector, type] = key.split(':');
-
-        if (!connectorMap[connector]) {
-            connectorMap[connector] = {};
+        if (!connectorMap[connectorType]) {
+            connectorMap[connectorType] = {};
         }
 
-        connectorMap[connector][type] = Array.isArray(value) ? value : [];
+        items.forEach((item) => {
+            if (!item || !item.similarityIndex) {
+                return;
+            }
+
+            const name = item.similarityIndex;
+            const fields = Array.isArray(item.connectorFields)
+                ? item.connectorFields.filter(Boolean)
+                : [];
+
+            connectorMap[connectorType][name] = fields;
+        });
     });
 
     return connectorMap;
 };
+
 
