@@ -503,6 +503,7 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
             }
         };
 
+        // FIXME: Consider scenario: enable security -> login -> logout -> login again -> page is not loaded
         securityContextService.onSecurityConfigChanged((securityConfig) => {
             locationsRequestPromise = null;
             if (!securityConfig.enabled || authenticationService.isLoggedIn() || securityConfig.freeAccessActive) {
