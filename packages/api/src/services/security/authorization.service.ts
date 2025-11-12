@@ -249,7 +249,8 @@ export class AuthorizationService implements Service {
 
     if (activeRoute.allowAuthorities.length) {
       const resolvedAuthorities = this.resolveAuthorities(activeRoute.allowAuthorities);
-      return resolvedAuthorities.some(allowAuth => authenticatedUser.authorities.hasAuthority(allowAuth as Authority));
+      return resolvedAuthorities.some(allowAuth => authenticatedUser.authorities.hasAuthority(allowAuth as Authority))
+        || resolvedAuthorities.some(allowAuth => authenticatedUser.authorities.hasWildcardAuthority(allowAuth as Authority));
     }
 
     return true;
@@ -294,7 +295,8 @@ export class AuthorizationService implements Service {
 
     return !!(
       user?.authorities.hasAuthority(overCurrentRepo as Authority) ||
-      user?.authorities.hasAuthority(overAllRepos as Authority)
+      user?.authorities.hasAuthority(overAllRepos as Authority) ||
+      user?.authorities.hasWildcardAuthority(overCurrentRepo)
     );
   }
 
@@ -311,7 +313,8 @@ export class AuthorizationService implements Service {
 
     return (
       user.authorities.hasAuthority(overCurrentRepoGraphql as Authority) ||
-      user.authorities.hasAuthority(overAllReposGraphql as Authority)
+      user.authorities.hasAuthority(overAllReposGraphql as Authority) ||
+      user.authorities.hasWildcardAuthority(overCurrentRepoGraphql, true)
     );
   }
 

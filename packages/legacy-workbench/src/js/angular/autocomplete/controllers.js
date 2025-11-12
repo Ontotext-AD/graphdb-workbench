@@ -245,7 +245,7 @@ function AutocompleteCtrl(
             .success(function () {
                 refreshEnabledStatus();
                 refreshIndexStatus();
-                ServiceProvider.get(AutocompleteContextService).updateAutocompleteEnabled(newValue);
+                service(AutocompleteContextService).updateAutocompleteEnabled(newValue);
             }).error(function (data) {
             toastr.error(getError(data));
         }).finally(function () {
