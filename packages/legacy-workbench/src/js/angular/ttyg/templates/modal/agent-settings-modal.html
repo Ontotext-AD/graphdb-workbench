@@ -310,9 +310,10 @@
                                                         name="connectorInstances"
                                                         guide-selector="similarity-connector-select"
                                                         ng-required="extractionMethod.selected"
-                                                        ng-model="extractionMethod.similarityIndex"
+                                                        ng-model="extractionMethod.similarityIndexOption"
                                                         ng-change="onSimilarityIndexChange(extractionMethod)"
-                                                        ng-options="option.value as option.label group by option.group for option in similarityOptionsGrouped">
+                                                        ng-options="option as option.label
+                                                        group by option.group for option in similarityOptionsGrouped">
                                                 </select>
                                                 <div class="alert alert-danger"
                                                      ng-if="extractionMethod.similarityIndex.$touched && extractionMethod.similarityIndex.$invalid">
