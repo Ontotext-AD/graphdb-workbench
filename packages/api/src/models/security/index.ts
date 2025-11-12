@@ -7,3 +7,4 @@ export * from './restricted-pages';
 export * from './openid-security-config';
 export * from './rights';
 export * from './response-models';
+export * from './auth-settings';

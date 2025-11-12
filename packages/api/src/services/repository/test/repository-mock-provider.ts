@@ -16,7 +16,7 @@ export class RepositoryMockProvider {
       readable: true,
       sesameType: 'sesameType',
       state: RepositoryState.INACTIVE,
-      type: RepositoryType.FEDEX,
+      type: RepositoryType.FEDX,
       unsupported: false,
       uri: 'uri',
       writable: true,
