@@ -21,7 +21,7 @@ test_package() {
 
 # Test packages
 #test_package "legacy-workbench"
-#test_package "workbench"
+test_package "workbench"
 test_package "api"
 test_package "shared-components"
 test_package "root-config"

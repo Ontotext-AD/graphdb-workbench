@@ -1,7 +1,7 @@
-/* To learn more about this file see: https://angular.io/config/tsconfig. */
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
+    "resolveJsonModule": true,
     "outDir": "./out-tsc/spec",
     "types": [
       "jest"
@@ -9,7 +9,7 @@
     "paths": {
       "@ontotext/workbench-api": ["../api/dist/ontotext-workbench-api.d.ts"],
       "@ontotext/security-module": ["../security-module/dist/ontotext-security-module.d.ts"]
-    },
+    }
   },
   "include": [
     "src/**/*.spec.ts",
