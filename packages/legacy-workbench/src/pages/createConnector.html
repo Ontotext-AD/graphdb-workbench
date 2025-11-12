@@ -61,6 +61,9 @@
                                             <div ng-if="child.__type == 'String'">
                                                 <input type="text" class="form-control" placeholder="{{child.__hint}}" ng-model="values[option.__name][fieldIndex][child.__name]" ng-required="child.__required" uib-popover="{{child.__description}}" popover-trigger="focus" popover-placement="bottom">
                                             </div>
+                                            <div ng-if="child.__type == 'JsonString'">
+                                                <input type="text" class="form-control" placeholder="{{child.__hint}}" ng-model="values[option.__name][fieldIndex][child.__name]" ng-required="child.__required" uib-popover="{{child.__description}}" popover-trigger="focus" popover-placement="bottom">
+                                            </div>
                                             <div ng-if="child.__type == 'BigString'">
                                                 <textarea type="text" class="form-control" placeholder="{{child.__hint}}" ng-model="values[option.__name][fieldIndex][child.__name]" ng-required="child.__required" uib-popover="{{child.__description}}" popover-trigger="focus" popover-placement="bottom"></textarea>
                                             </div>
