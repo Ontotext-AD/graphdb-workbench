@@ -1,4 +1,5 @@
 import {NumberUtils} from "../../utils/number-utils";
+import {service, RepositoryContextService} from '@ontotext/workbench-api'
 
 import {select} from 'd3';
 
@@ -57,6 +58,7 @@ function humanize(number) {
 DependenciesChordCtrl.$inject = ['$scope', '$rootScope', '$repositories', 'toastr', '$timeout', 'GraphDataRestService', 'UiScrollService', 'ModalService', 'LocalStorageAdapter', 'RDF4JRepositoriesRestService', '$translate'];
 
 function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeout, GraphDataRestService, UiScrollService, ModalService, LocalStorageAdapter, RDF4JRepositoriesRestService, $translate) {
+    const repositoryContextService = service(RepositoryContextService);
 
     let timer = null;
 
@@ -69,7 +71,7 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
     const MAX_LOADED_GRAPHS = 1000;
     $scope.hasMoreGraphs = false;
 
-    $scope.status = !$repositories.getActiveRepository() ? STATUS.NO_REPO : STATUS.WAIT;
+    $scope.status = repositoryContextService.getSelectedRepository()?.id ? STATUS.WAIT : STATUS.NO_REPO;
 
     $scope.graphsDropdownToggled = (isOpen) => {
         if ($scope.hasMoreGraphs && isOpen) {
@@ -85,7 +87,7 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
     const initView = function () {
         // Try to load one more file than the maximum limit.
         // This allows us to check if there is at least one additional file beyond the set max limit.
-        RDF4JRepositoriesRestService.resolveGraphs($repositories.getActiveRepository(), MAX_LOADED_GRAPHS + 1)
+        RDF4JRepositoriesRestService.resolveGraphs(repositoryContextService.getSelectedRepository()?.id, MAX_LOADED_GRAPHS + 1)
             .success(function (graphsInRepo) {
                 $scope.graphsInRepo = graphsInRepo.results.bindings;
                 // Determines if there are more files than the specified limit.
@@ -107,11 +109,11 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
     };
 
     const setSelectedGraphFromCache = function () {
-        const selGraphFromCache = LocalStorageAdapter.get(`dependencies-selectedGraph-${$repositories.getActiveRepository()}`);
+        const selGraphFromCache = LocalStorageAdapter.get(`dependencies-selectedGraph-${repositoryContextService.getSelectedRepository()?.id}`);
         if (selGraphFromCache !== null && $scope.graphsInRepo.some(graph => graph.contextID.uri === selGraphFromCache.contextID.uri)) {
             selectedGraph = selGraphFromCache;
         } else {
-            LocalStorageAdapter.set(`dependencies-selectedGraph-${$repositories.getActiveRepository()}`, selectedGraph);
+            LocalStorageAdapter.set(`dependencies-selectedGraph-${repositoryContextService.getSelectedRepository()?.id}`, selectedGraph);
         }
     };
 
@@ -240,8 +242,8 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
     });
 
     $scope.$watch('direction', function () {
-        if (!$repositories.getActiveRepository() ||
-                $scope.isSystemRepository() || $repositories.isActiveRepoFedXType()) {
+        const activeRepository = repositoryContextService.getSelectedRepository();
+        if (!activeRepository || $scope.isSystemRepository() || activeRepository.isFedx()) {
             return;
         }
         initView();
@@ -249,6 +251,7 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
 
     $scope.$on('$destroy', function () {
         $timeout.cancel(timer);
+        repositoryChangedSubscription();
     });
 
     $scope.isLoading = function () {
@@ -321,7 +324,7 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
     };
 
     $scope.isSystemRepository = function () {
-        return $repositories.getActiveRepository() === 'SYSTEM';
+        return repositoryContextService.getSelectedRepository()?.id === 'SYSTEM';
     };
 
     function onRepositoryIsSet() {
@@ -330,26 +333,21 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
         $scope.classQuery.query = '';
         $scope.repositoryError = null;
         selectedGraph = allGraphs;
-        if (!$repositories.getActiveRepository() || $repositories.isActiveRepoFedXType()) {
+        const activeRepository = repositoryContextService.getSelectedRepository();
+        if (!activeRepository || activeRepository.isFedx()) {
             $scope.status = STATUS.NO_REPO;
             return;
         }
         initView();
     }
 
-    const repoIsSetListener = $scope.$on('repositoryIsSet', onRepositoryIsSet);
 
-    window.addEventListener('beforeunload', removeRepoIsSetListener);
-
-    function removeRepoIsSetListener() {
-        repoIsSetListener();
-        window.removeEventListener('beforeunload', removeRepoIsSetListener);
-    }
+    const repositoryChangedSubscription = repositoryContextService.onSelectedRepositoryChanged((repository) => onRepositoryIsSet(repository));
 
     $scope.selectGraph = function (graph) {
         selectedGraph = graph;
         getRelationshipsStatus(true);
-        LocalStorageAdapter.set(`dependencies-selectedGraph-${$repositories.getActiveRepository()}`, selectedGraph);
+        LocalStorageAdapter.set(`dependencies-selectedGraph-${repositoryContextService.getSelectedRepository()?.id}`, selectedGraph);
     };
 
     $scope.getSelectedGraphValue = function () {
