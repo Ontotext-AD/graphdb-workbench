@@ -18,7 +18,6 @@ import {
     MapperProvider,
     RepositoryListMapper,
     AuthorizationService,
-    service
 } from "@ontotext/workbench-api";
 
 const modules = [

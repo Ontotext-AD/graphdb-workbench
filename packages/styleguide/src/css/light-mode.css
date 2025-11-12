@@ -182,6 +182,7 @@
   --gw-sidenav-collapsebutton-color: var(--gw-neutral-light);
   --gw-overlay-modal-border-color: var(--gw-default-border-color);
   --gw-button-primary-background: var(--gw-primary-base);
+  --gw-button-primary-focus-ring-color: var(--gw-primary-base);
   --gw-button-primary-link-color: var(--gw-primary-base);
   --gw-button-primary-link-hover-color: var(--gw-primary-dark);
   --gw-button-secondary-hover-color: var(--gw-secondary-base);
