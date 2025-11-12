@@ -1,6 +1,8 @@
 {
-    "opensearch:biomarkers-vector": [
-        "docText1",
-        "docText2"
+    "opensearch": [
+        {
+            "similarityIndex": "biomarkers-vector",
+            "connectorFields": ["docText1", "docText2"]
+        }
     ]
 }
