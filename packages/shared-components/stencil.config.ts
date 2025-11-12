@@ -1,5 +1,8 @@
 import { Config } from '@stencil/core';
-import {sass} from '@stencil/sass';
+import { sass } from '@stencil/sass';
+import { postcss } from '@stencil-community/postcss';
+// @ts-ignore
+import autoprefixer from 'autoprefixer';
 
 const path = `${__dirname}/src/pages/fake-server.js`;
 
@@ -44,6 +47,11 @@ export const config: Config = {
   },
   plugins: [
     sass(),
+    postcss({
+      plugins: [
+        autoprefixer()
+      ]
+    })
   ],
   devServer: {
     requestListenerPath: path
