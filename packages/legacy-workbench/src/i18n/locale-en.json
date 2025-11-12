@@ -512,7 +512,7 @@
                     },
                     "fts_search_max_number_of_triples_per_call": {
                         "label": "Max number of results (triples) per call",
-                        "tooltip": "Limit the maximum number of triples returned by Full-text search. The default value is automatic and determined at runtime. If not sure, leave the default value.",
+                        "tooltip": "Limit the maximum number of triples returned by Full-text search. Leave empty or set to 0 for no limit (the system will determine the default).",
                         "placeholder": "Automatic value"
                     },
                     "sparql_search": {
@@ -539,7 +539,7 @@
                     },
                     "similarity_search_max_number_of_triples_per_call": {
                         "label": "Max number of results (triples) per call",
-                        "tooltip": "Limit the maximum number of triples returned by Similarity search. The default value is automatic and determined at runtime. If not sure, leave the default value.",
+                        "tooltip": "Limit the maximum number of triples returned by Similarity search. Leave empty or set to 0 for no limit (the system will determine the default).",
                         "placeholder": "Automatic value"
                     },
                     "similarity_index": {
@@ -601,7 +601,7 @@
                     },
                     "retrieval_search_max_number_of_triples_per_call": {
                         "label": "Max number of results (chunks) per call",
-                        "tooltip": "Limit the maximum number of text chunks returned by the ChatGPT Retrieval Connector. The default value is automatic and determined at runtime. If not sure, leave the default value.",
+                        "tooltip": "Limit the maximum number of text chunks returned by the ChatGPT Retrieval Connector. Leave empty or set to 0 for no limit (the system will determine the default).",
                         "placeholder": "Automatic value"
                     },
                     "system_instruction": {
@@ -660,7 +660,7 @@
                         "autocomplete_max_number_of_results_per_call": {
                             "label": "Max number of results (IRIs) per call",
                             "placeholder": "Automatic value",
-                            "tooltip": "Limit the maximum number of IRIs. The default value is automatic and determined at runtime. If not sure, leave the default value."
+                            "tooltip": "Limit the maximum number of IRIs. Leave empty or set to 0 for no limit (the system will determine the default)."
                         },
                         "autocomplete_search_predicates": {
                             "label": "Search predicates",
