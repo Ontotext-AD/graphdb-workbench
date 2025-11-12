@@ -13,13 +13,13 @@ import {SelectMenuOptionsModel} from "../../models/form-fields";
 import {
     RepositoryStorageService,
     RepositoryContextService,
-    service,
     RepositoryLocationContextService,
     MapperProvider,
     RepositoryListMapper,
     AuthorizationService,
     AuthenticationService,
     SecurityContextService,
+    service,
 } from "@ontotext/workbench-api";
 
 const modules = [

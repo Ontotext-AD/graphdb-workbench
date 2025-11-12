@@ -203,7 +203,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     const licenseService = service(LicenseService);
     const authorizationService = service(AuthorizationService);
     const authenticationService = service(AuthenticationService);
-    const securityContextService = ServiceProvider.get(SecurityContextService);
+    const securityContextService = service(SecurityContextService);
 
     // =========================
     // Public variables
