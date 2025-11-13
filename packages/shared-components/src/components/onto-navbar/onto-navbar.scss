@@ -279,37 +279,37 @@ main menu height*/
 
 /* ---------------- Top-Level Menus ---------------- */
 .navbar-component .menu-element .menu-element-root {
-  background-color: var(--gw-sidenav-item-background);
-  color: var(--gw-sidenav-item-color);
+  background-color: var(--gw-sidenav-menuitem-background);
+  color: var(--gw-sidenav-menuitem-color);
 }
 
 .navbar-component .menu-element .menu-element-root:hover {
-  background-color: var(--gw-sidenav-item-hover-background);
-  color: var(--gw-sidenav-item-hover-color);
+  background-color: var(--gw-sidenav-menuitem-hover-background);
+  color: var(--gw-sidenav-menuitem-hover-color);
 }
 
 .navbar-component .menu-element .menu-element-root .menu-item-icon {
-  color: var(--gw-sidenav-item-icon-color);
+  color: var(--gw-sidenav-menuitem-icon-color);
 }
 
 .navbar-component .menu-element .menu-element-root .menu-item-icon:hover {
-  color: var(--gw-sidenav-item-hover-icon-color);
+  color: var(--gw-sidenav-menuitem-hover-icon-color);
 }
 
 /* ---------------- Open Menus (with Submenus) ---------------- */
 .navbar-component .menu-element.open .menu-element-root {
-  background-color: var(--gw-sidenav-item-selected-background);
-  color: var(--gw-sidenav-item-selected-color);
+  background-color: var(--gw-sidenav-menuitem-selected-background);
+  color: var(--gw-sidenav-menuitem-selected-color);
 }
 
 /* ---------------- Active Menu ---------------- */
 .navbar-component .menu-element .menu-element-root.active {
-  background-color: var(--gw-sidenav-item-active-background);
-  color: var(--gw-sidenav-item-active-color);
+  background-color: var(--gw-sidenav-menuitem-active-background);
+  color: var(--gw-sidenav-menuitem-active-color);
 }
 
 .navbar-component .menu-element .menu-element-root.active .menu-item-icon {
-  color: var(--gw-sidenav-item-active-icon-color);
+  color: var(--gw-sidenav-menuitem-active-icon-color);
 }
 
 /* ---------------- Submenu ---------------- */

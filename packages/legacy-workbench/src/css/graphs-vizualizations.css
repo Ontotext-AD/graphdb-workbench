@@ -58,7 +58,7 @@
     position: relative;
     top: -3em;
     z-index: 10;
-    background-color: rgba(2552, 255, 255, 0.75);
+    background-color: var(--gw-panel-background);
     width: max-content;
     margin-left: auto;
 }

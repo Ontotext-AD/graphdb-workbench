@@ -1,5 +1,6 @@
 .btn-primary.shepherd-button:hover {
-    background-color: #d0460d;
+    background-color: var(--gw-button-primary-hover-background);
+    color: var(--gw-button-primary-hover-color);
 }
 
 .btn-primary.shepherd-button[disabled]{
@@ -7,8 +8,8 @@
 }
 
 .btn-secondary.shepherd-button:hover {
-    background-color: var(--gw-highlight-background);
-    color: #003663;
+    background-color: var(--gw-button-secondary-hover-background);
+    color: var(--gw-button-secondary-hover-color);
 }
 
 .shepherd-element {
@@ -33,6 +34,7 @@
     min-height: 90px;
     margin-top: 10px;
     overflow-wrap: break-word;
+    color: var(--gw-dialog-color);
 }
 
 .shepherd-text ol, .shepherd-text ul {
@@ -50,13 +52,39 @@
     white-space: pre-wrap;
 }
 
+.shepherd-has-title .shepherd-content {
+    background-color: var(--gw-dialog-background);
+    color: var(--gw-dialog-color);
+    border: 1px solid var(--gw-dialog-border-color);
+}
+
 .shepherd-has-title .shepherd-content .shepherd-header {
     padding-top: 0.5em;
     padding-bottom: 0.5em;
+    background-color: var(--gw-dialog-background);
+    color: inherit;
+    border-bottom: 1px solid var(--gw-dialog-border-color);
+}
+
+.shepherd-has-title .shepherd-content .shepherd-title {
+    color: inherit;
+}
+
+.shepherd-has-title .shepherd-content .shepherd-cancel-icon {
+    color: var(--gw-dialog-color) !important;
+}
+
+.shepherd-has-title .shepherd-content .shepherd-cancel-icon:hover {
+    color: var(--gw-button-primary-background) !important;
 }
 
 .shepherd-footer {
     padding-bottom: 0.5em;
+}
+
+.shepherd-arrow:before {
+    background-color: var(--gw-dialog-background) !important;
+    border: 1px solid var(--gw-dialog-border-color) !important;
 }
 
 /*

@@ -341,6 +341,13 @@ yasgui-component .saved-queries-container .saved-query-actions .saved-query-acti
     border-color: var(--gw-button-secondary-hover-border-color) !important;
 }
 
+.dialog .dialog-footer {
+    border-top-color: var(--gw-dialog-border-color) !important;
+}
+
+/*
+    Keyboard shortcuts dialog specific styles
+*/
 .keyboard-shortcuts-dialog-wrapper .dialog .dialog-header .close-button {
     color: var(--gw-button-secondary-color);
     background-color: var(--gw-button-secondary-background);
@@ -351,8 +358,13 @@ yasgui-component .saved-queries-container .saved-query-actions .saved-query-acti
     color: var(--gw-button-primary-link-hover-color) !important;
 }
 
-.dialog .dialog-footer {
-    border-top-color: var(--gw-dialog-border-color) !important;
+.keyboard-shortcuts-content .keyboard-shortcut-description-item-description {
+    color: var(--gw-message-info-color) !important;
+}
+
+.keyboard-shortcuts-content kbd {
+    color: var(--gw-tag-info-color) !important;
+    background-color: var(--gw-tag-info-background) !important;
 }
 
 /*
@@ -449,16 +461,17 @@ yasgui-component .yasr .yasr_results .CodeMirror {
     background-color: var(--gw-editor-content-background) !important;
 }
 
+yasgui-component .yasr .yasr_results .CodeMirror.overflow:before {
+    background: unset;
+}
+
 yasgui-component .yasr .yasr_results .CodeMirror-gutters {
     color: var(--gw-editor-content-color) !important;
     background-color: var(--gw-editor-content-background) !important;
 }
 
 yasgui-component .yasr .yasr_results .overlay_content {
-    /* TODO change this*/
-    /*TODO: override these*/
-    background: #fff;
-    background: linear-gradient(90deg, transparent, #fff 5%, #fff 95%, transparent);
+    background: unset;
 }
 
 yasgui-component .yasr .yasr_results .yasr_btn.overlay_btn,
