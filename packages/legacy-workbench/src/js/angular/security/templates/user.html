@@ -48,14 +48,14 @@
 						<h3>{{'view.login.title' | translate}}</h3>
 						<div class="form-group" ng-class="{'has-danger': usernameError}">
 							<div class="input-group">
-								<span class="input-group-addon" gdb-tooltip="{{'security.table.username' | translate}}"><i class="fa-solid fa-user text-muted"></i></span>
+								<span class="input-group-addon" gdb-tooltip="{{'security.table.username' | translate}}"><i class="ri-user-line ri-xl text-muted"></i></span>
 								<input id="wb-user-username" placeholder="{{'security.table.username' | translate}}" name="username" class="form-control form-control-lg" type="text" ng-model="user.username" ng-readonly="mode !== 'add'">
 							</div>
 							<div ng-show="usernameError" class="form-control-feedback">{{usernameError}}</div>
 						</div>
 						<div class="form-group" ng-class="{'has-danger': passwordError}">
 							<div class="input-group">
-								<span class="input-group-addon" gdb-tooltip="{{'security.password.placeholder' | translate}}"><em class="icon-lock icon-2x text-muted"></em></span>
+								<span class="input-group-addon" gdb-tooltip="{{'security.password.placeholder' | translate}}"><em class="ri-lock-line ri-xl text-muted"></em></span>
 								<input id="wb-user-password" placeholder="{{passwordPlaceholder | translate}}" name="password" class="form-control form-control-lg" type="password"	ng-model="user.password" ng-hide="user.external || hasExternalAuthUser()" ng-readonly="noPassword">
 								<span ng-show="user.external || hasExternalAuthUser()">{{'security.auth.from.external.module' | translate}}</span>
 							</div>
@@ -63,7 +63,7 @@
 						</div>
 						<div class="form-group" ng-class="{'has-danger': confirmPasswordError}" ng-hide="user.external || hasExternalAuthUser()">
 							<div class="input-group">
-								<span class="input-group-addon" gdb-tooltip="{{'security.password.confirm' | translate}}"><em class="icon-lock icon-2x text-muted"></em></span>
+								<span class="input-group-addon" gdb-tooltip="{{'security.password.confirm' | translate}}"><em class="ri-lock-line ri-xl text-muted"></em></span>
 								<input id="wb-user-confirmpassword" placeholder="{{'security.password.confirm' | translate}}" name="password_confirm" class="form-control form-control-lg" type="password" ng-model="user.confirmpassword" ng-readonly="noPassword">
 							</div>
 							<div ng-show="confirmPasswordError" class="form-control-feedback">{{confirmPasswordError}}</div>

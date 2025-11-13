@@ -137,14 +137,10 @@ footer.footer .container-fluid.main-container p {
     color: var(--gw-primary-base);
 }
 
-.dropdown-toggle {
-}
-
 .dropdown-toggle::after {
     font-family: 'icomoon', sans-serif !important;
     content: "\e921";
     display: inline-block;
-    color: var(--gw-panelmenu-item-icon-color);
     width: auto;
     height: auto;
     border: none;

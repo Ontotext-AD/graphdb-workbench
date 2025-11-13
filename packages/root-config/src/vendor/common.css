@@ -204,7 +204,7 @@ h1 .btn {
 }
 
 .btn-link.secondary {
-    color: rgba(0, 0, 0, .66);
+    color: var(--gw-message-help-color);
 }
 
 .btn-link:focus, .btn-link:hover, .btn-link.secondary:hover {
@@ -220,8 +220,8 @@ h1 .btn {
 }
 
 .btn-link.active, .btn-link:hover.active, .btn-link:focus.active, .btn-link:active.active {
-    background-color: var(--gw-primary-dark);
-    color: #fff;
+    background-color: var(--gw-button-primary-hover-background);
+    color: var(--gw-button-primary-hover-color);
 }
 
 .btn-link-text {
