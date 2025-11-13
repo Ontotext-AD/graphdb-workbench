@@ -754,7 +754,6 @@ securityModule.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window
                 if ($scope.user.username === principal.username) {
                     // TODO: Discuss what's the point in updating the principal's appSettings here?!
                     // principal.appSettings = $scope.user.appSettings;
-                    console.log('%cupdate it', 'background: red', $scope.user.appSettings, principal.appSettings);
                     principal.setAppSettings(new AppSettings($scope.user.appSettings));
                 }
             }).catch((data) => {

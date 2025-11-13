@@ -110,7 +110,6 @@ angular.module('graphdb.framework.core.services.jwtauth', [
              * @param {boolean} justLoggedIn Indicates that the user just logged in.
              */
             this.getAuthenticatedUserFromBackend = function(noFreeAccessFallback, justLoggedIn) {
-                const authenticationService = service(AuthenticationService);
                 that.externalAuthUser = authenticationService.isExternalUser();
             };
 
@@ -128,22 +127,10 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                         that.openIDConfig = res.data.methodSettings.openid;
 
                         that.getAuthenticatedUserFromBackend();
-                        that.broadcastSecurityInit(that.securityEnabled, that.hasExplicitAuthentication());
                     } else {
                         AuthTokenService.clearAuthToken();
                         const overrideAuthData = res.data.overrideAuth;
                         that.hasOverrideAuth = overrideAuthData.enabled;
-                        if (that.hasOverrideAuth) {
-                            // TODO: When security is disabled, there is an option to set a default user authorities through configuration and use it instead of admin
-                            // that.principal = {
-                            //     username: 'overrideauth',
-                            //     authorities: overrideAuthData.authorities,
-                            //     appSettings: overrideAuthData.appSettings,
-                            // };
-                            that.broadcastSecurityInit(that.securityEnabled, true, that.hasOverrideAuth);
-                        } else {
-                            that.broadcastSecurityInit(that.securityEnabled, true, that.hasOverrideAuth);
-                        }
                     }
                 });
             };
@@ -196,7 +183,6 @@ angular.module('graphdb.framework.core.services.jwtauth', [
 
             this.clearAuthentication = function() {
                 this.clearAuthenticationInternal();
-                this.broadcastSecurityInit();
             };
 
             this.hasPermission = function() {
@@ -209,13 +195,6 @@ angular.module('graphdb.framework.core.services.jwtauth', [
 
             this.hasGraphqlAuthority = function(action, repo) {
                 return authorizationService.canWriteGqlRepo(repo);
-            };
-
-            this.broadcastSecurityInit = (securityEnabled, userLoggedIn) => {
-                const isSecurityEnabled = authenticationService.isSecurityEnabled();
-                const isUserLoggedIn = authenticationService.isLoggedIn();
-                const isFreeAccessEnabled = authorizationService.hasFreeAccess();
-                $rootScope.$broadcast('securityInit', isSecurityEnabled, isUserLoggedIn, isFreeAccessEnabled);
             };
 
             this.initSecurity();

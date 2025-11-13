@@ -456,7 +456,6 @@ function SparqlEditorCtrl($rootScope,
             }
         }
         const principal = authorizationService.getAuthenticatedUser();
-        console.log('%cprincipal', 'background: red', principal);
         $q.when($repositories.getPrefixes(activeRepository))
             .then((usedPrefixes) => {
                 $scope.prefixes = usedPrefixes;
