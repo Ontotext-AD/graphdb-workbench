@@ -88,8 +88,8 @@ $hover-color: #d4d4d4;
         text-decoration: none;
         width: auto;
         gap: 0.5em;
-        background-color: #EBEBEB;
-        border-color: #EBEBEB;
+        background-color: var(--gw-button-secondary-background);
+        border-color: var(--gw-button-secondary-border-color);
 
         & i {
           width: 8.33%
@@ -124,8 +124,8 @@ $hover-color: #d4d4d4;
 
         &:hover {
           text-decoration: none;
-          background-color: $hover-color;
-          border-color: $hover-color;
+          background-color: var(--gw-button-secondary-hover-background);
+          border-color: var(--gw-button-secondary-hover-border-color);
 
           & i {
             transform: scale(1.2);

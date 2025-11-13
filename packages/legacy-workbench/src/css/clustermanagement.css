@@ -3,7 +3,7 @@
 }
 
 .cluster-view svg {
-    background-color: #FFF;
+    background-color: var(--gw-panel-background);
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -16,12 +16,12 @@
 }
 
 .cluster-zone {
-    stroke: var(--gw-neutral-base);
+    stroke: var(--gw-panel-color);
     fill: transparent;
 }
 
 .cluster-zone.no-cluster {
-    stroke: black;
+    stroke: var(--gw-panel-color);
     fill: transparent;
     transition: fill 0.2s, stroke 0.2s;
 }
@@ -35,6 +35,11 @@
     fill: var(--gw-hover-background) !important;
     height: 120%;
     width: 120%;
+}
+
+#no-cluster-zone #no-cluster-label,
+#no-cluster-zone #create-cluster-label {
+    fill: var(--gw-panel-color);
 }
 
 .settings-icon {
@@ -92,6 +97,20 @@
     font-weight: 400;
     color: black;
 }
+
+.cluster-legend-group .legend-background {
+    fill: var(--gw-button-secondary-background);
+}
+
+.cluster-legend-group .legend-title {
+    fill: var(--gw-button-secondary-color);
+}
+
+.cluster-legend-group .links-statuses,
+.cluster-legend-group .sync-status {
+    fill: var(--gw-button-secondary-color);
+}
+
 
 .legend-group .label-wrapper {
     overflow: visible;

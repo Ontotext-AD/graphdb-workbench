@@ -275,6 +275,7 @@
   --gw-button-primary-hover-color: var(--gw-primary-contrast-color);
   --gw-button-primary-border-color: var(--gw-border-color-primary);
   --gw-button-primary-color: var(--gw-primary-contrast-color);
+  --gw-button-secondary-link-color: var(--gw-primary-contrast-color);
   --gw-default-success-light-background: var(--gw-success-lighter);
   --gw-panel-color: var(--gw-default-color);
   --gw-panel-header-color: var(--gw-heading-default-color);
@@ -299,7 +300,6 @@
   --gw-tabs-tab-active-color: var(--gw-body-color);
   --gw-tabs-tab-hover-color: var(--gw-text-color);
   --gw-dialog-border-color: var(--gw-overlay-modal-border-color);
-  --gw-panelmenu-item-icon-color: var(--gw-sidenav-item-icon-color);
   --gw-paginator-nav-button-hover-color: var(--gw-default-muted-color);
   --gw-paginator-nav-button-selected-color: var(--gw-highlight-color);
   --gw-paginator-nav-button-color: var(--gw-text-muted-color);
