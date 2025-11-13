@@ -62,9 +62,6 @@
     "jest-stencil-runner": "^0.0.6",
     "puppeteer": "^24.11.0",
     "sonarqube-scanner": "^3.3.0",
-    "stylelint": "^16.23.1",
-    "stylelint-config-standard-scss": "^15.0.1",
-    "stylelint-scss": "^6.12.1",
     "ts-jest": "^29.4.0"
   },
   "dependencies": {
