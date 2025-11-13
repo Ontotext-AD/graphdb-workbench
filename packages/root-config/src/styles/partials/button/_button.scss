@@ -30,7 +30,7 @@
 .onto-btn-primary {
   background-color: var(--gw-button-primary-background);
   border-color: var(--gw-button-primary-border-color);
-  color: #FFF;
+  color: var(--gw-button-primary-color);
 
   &:hover {
     background-color: var(--gw-button-primary-hover-background);
