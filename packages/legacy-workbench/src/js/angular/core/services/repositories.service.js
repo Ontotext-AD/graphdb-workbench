@@ -156,7 +156,6 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
         };
 
         this.init = function(successCallback, errorCallback, quick) {
-            console.log('%creposervice init', 'background: yellow',);
             this.loading = true;
             service(RepositoryLocationContextService).updateIsLoading(true);
             if (!quick) {
@@ -503,29 +502,25 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
             }
         };
 
-        // FIXME: Consider scenario: enable security -> login -> logout -> login again -> page is not loaded
-        securityContextService.onSecurityConfigChanged((securityConfig) => {
+        const onAuthChanged = (isAuthenticated, isLoggedIn, hasFreeAccess) => {
             locationsRequestPromise = null;
-            if (!securityConfig.enabled || authenticationService.isLoggedIn() || securityConfig.freeAccessActive) {
+            if (!isAuthenticated || isLoggedIn || hasFreeAccess) {
                 // This has to happen in a separate cycle because otherwise some properties in init() are undefined
                 $timeout(function() {
                     that.init();
                 });
             }
+        };
+
+        securityContextService.onSecurityConfigChanged((securityConfig) => {
+            onAuthChanged(securityConfig.enabled, authenticationService.isLoggedIn(), securityConfig.freeAccessActive);
         });
 
-        // $rootScope.$on('securityInit', function (scope, securityEnabled, userLoggedIn, freeAccess) {
-        //     locationsRequestPromise = null;
-        //     console.log('%conSecurityInit', 'background: orange', securityEnabled, userLoggedIn, freeAccess);
-        //     if (!securityEnabled || userLoggedIn || freeAccess) {
-        //         // This has to happen in a separate cycle because otherwise some properties in init() are undefined
-        //         $timeout(function () {
-        //             that.init();
-        //         });
-        //     }
-        // });
+        securityContextService.onAuthenticatedUserChanged(() => {
+            onAuthChanged(authenticationService.isAuthenticated(), authenticationService.isLoggedIn(), authorizationService.hasFreeAccess());
+        });
 
-        $rootScope.$on('reloadLocations', function () {
+        $rootScope.$on('reloadLocations', function() {
             // the event is emitted when cluster is created/deleted
             that.locationsShouldReload = true;
             that.getLocations()
