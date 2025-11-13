@@ -63,7 +63,7 @@ graphql-playground {
 }
 
 .graphql-playground-view #graphiql .graphiql-container {
-    border: 1px solid #ddd;
+    border: 1px solid var(--gw-editor-toolbar-border-color);
 }
 
 .graphql-playground-view #graphiql .graphiql-container .graphiql-sidebar {
@@ -172,7 +172,7 @@ graphql-playground {
 
 .graphql-playground-view #graphiql .graphiql-sessions .graphiql-editors,
 .graphql-playground-view #graphiql .graphiql-sessions .graphiql-response {
-    border: 1px solid #ddd;
+    border: 1px solid var(--gw-editor-toolbar-border-color);
     border-bottom: none;
     box-shadow: none;
 }
@@ -183,11 +183,11 @@ graphql-playground {
 
 .graphql-playground-view #graphiql .graphiql-sessions .graphiql-editors .graphiql-query-editor {
     padding: 0;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid var(--gw-editor-toolbar-border-color);
 }
 
 .graphql-playground-view #graphiql .graphiql-sessions .graphiql-editors .CodeMirror-gutters {
-    border-right: 1px solid #ddd;
+    border-right: 1px solid var(--gw-editor-toolbar-border-color);
     background-color: var(--gw-panel-background);
 }
 
@@ -244,8 +244,12 @@ graphql-playground {
     border-color: var(--gw-tabs-tab-hover-border-color) !important;
 }
 
+.graphql-playground-view #graphiql .graphiql-editor-tools .graphiql-toggle-editor-tools svg {
+    color: var(--gw-button-secondary-link-color);
+}
+
 .graphql-playground-view #graphiql .graphiql-editor-tools .graphiql-toggle-editor-tools:hover svg {
-    color: var(--gw-primary-base);
+    color: var(--gw-button-primary-link-hover-color);
 }
 
 /* =============================================== */
@@ -257,17 +261,17 @@ graphql-playground {
 }
 
 .graphql-playground-view #graphiql .graphiql-history .graphiql-button {
-    background-color: var(--default-btn-bgcolor);
-    border-color: var(--default-btn-bgcolor);
-    color: var(--gw-secondary-base);
+    background-color: var(--gw-button-secondary-background);
+    color: var(--gw-button-secondary-color);
+    border-color: var(--gw-button-secondary-border-color);
     font-weight: 400;
     transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
 .graphql-playground-view #graphiql .graphiql-history .graphiql-button:hover {
-    background-color: var(--default-btn-focus-bgcolor);
-    border-color: var(--default-btn-focus-bgcolor);
-    color: var(--default-btn-focus-color);
+    background-color: var(--gw-button-secondary-hover-background);
+    color: var(--gw-button-secondary-hover-color);
+    border-color: var(--gw-button-secondary-hover-border-color);
 }
 
 .graphql-playground-view #graphiql .graphiql-history .graphiql-history-header {
@@ -287,11 +291,12 @@ graphql-playground {
 }
 
 .graphql-playground-view #graphiql .graphiql-history .graphiql-history-item.editable {
-    background-color: #fff;
+    background-color: var(--gw-form-field-background);
 }
 
 .graphql-playground-view #graphiql .graphiql-history .graphiql-history-item.editable input {
-    border: 1px solid var(--gw-secondary-light);
+    color: var(--gw-form-field-color);
+    border: 1px solid var(--gw-form-field-border-color);
     font-weight: 300;
 }
 
@@ -306,8 +311,7 @@ graphql-playground {
 }
 
 .graphql-playground-view #graphiql .graphiql-history .graphiql-history-item.editable button:nth-of-type(2) {
-    /* using the color for .btn-link.secondary */
-    color: rgba(0, 0, 0, .66);
+    color: var(--gw-button-secondary-color);
 }
 
 .graphql-playground-view #graphiql .graphiql-history .graphiql-history-item.editable button:nth-of-type(2):active {
@@ -331,6 +335,17 @@ div[data-radix-popper-content-wrapper] * {
 
 .graphql-playground-view #graphiql .graphiql-doc-explorer .graphiql-doc-explorer-header {
     color: var(--base-text-color);
+}
+
+.graphql-playground-view #graphiql .graphiql-doc-explorer .graphiql-doc-explorer-search-input {
+    background-color: var(--gw-form-field-background);
+    color: var(--gw-form-field-color);
+    border: 1px solid var(--gw-form-field-border-color);
+}
+
+.graphql-playground-view #graphiql .graphiql-doc-explorer .graphiql-doc-explorer-search-input input,
+.graphql-playground-view #graphiql .graphiql-doc-explorer .graphiql-doc-explorer-search-input input::placeholder {
+    color: var(--gw-form-field-color);
 }
 
 /* =============================================== */
@@ -378,7 +393,8 @@ div[data-radix-popper-content-wrapper] * {
 /*     Button overrides     */
 /* =========================*/
 .graphql-playground-view #graphiql .docExplorerWrap .toolbar-button {
-    background-color: var(--base-background-hover-color);
+    background-color: var(--gw-button-secondary-background);
+    color: var(--gw-button-secondary-color);
     border: none;
     outline: none;
     cursor: pointer;

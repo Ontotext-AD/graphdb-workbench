@@ -73,7 +73,6 @@ function clusterLegend($rootScope, ClusterViewContextService, $translate, $docum
                     .append('text')
                     .classed('links-statuses', true)
                     .style('font-weight', CLUSTER_MANAGEMENT_CONSTANTS.LEGEND_ITEM_FONT_WEIGHT)
-                    .style('fill', CLUSTER_MANAGEMENT_CONSTANTS.LEGEND_ITEM_COLOR)
                     .attr('x', CLUSTER_MANAGEMENT_CONSTANTS.PADDING_LEFT + CLUSTER_MANAGEMENT_CONSTANTS.SVG_NODE_WIDTH)
                     .attr('y', LABEL_Y_POSITION)
                     .text(function (d) {
@@ -108,7 +107,6 @@ function clusterLegend($rootScope, ClusterViewContextService, $translate, $docum
                 syncStatusesGroups
                     .append('text')
                     .style('font-weight', CLUSTER_MANAGEMENT_CONSTANTS.LEGEND_ITEM_FONT_WEIGHT)
-                    .style('fill', CLUSTER_MANAGEMENT_CONSTANTS.LEGEND_ITEM_COLOR)
                     .text(function (d) {
                         return translateAndSubscribe(this, 'cluster_management.cluster_graphical_view.' + d.labelKey);
                     })
@@ -157,7 +155,6 @@ function clusterLegend($rootScope, ClusterViewContextService, $translate, $docum
                     .style('font-size', CLUSTER_MANAGEMENT_CONSTANTS.LEGEND_ITEM_FONT_SIZE)
                     .style('line-height', CLUSTER_MANAGEMENT_CONSTANTS.LEGEND_ITEM_LINE_HEIGHT)
                     .style('font-weight', CLUSTER_MANAGEMENT_CONSTANTS.LEGEND_ITEM_FONT_WEIGHT)
-                    .style('fill', CLUSTER_MANAGEMENT_CONSTANTS.LEGEND_ITEM_COLOR)
                     .text(function (d) {
                         return translateAndSubscribe(this, 'cluster_management.cluster_graphical_view.' + d.linkTypeKey);
                     })
@@ -180,8 +177,7 @@ function clusterLegend($rootScope, ClusterViewContextService, $translate, $docum
 
             const createLegendBackground = () => {
                 legendGroup.append('rect')
-                    .attr('class', 'legend-background')
-                    .attr('fill', '#EEEEEE');
+                    .attr('class', 'legend-background');
             };
 
             const updateLegendDimensions = () => {
@@ -226,7 +222,6 @@ function clusterLegend($rootScope, ClusterViewContextService, $translate, $docum
                     .style('font-size', CLUSTER_MANAGEMENT_CONSTANTS.TITLE_FONT_SIZE)
                     .style('font-weight', CLUSTER_MANAGEMENT_CONSTANTS.TITLE_FONT_WEIGHT)
                     .style('line-height', CLUSTER_MANAGEMENT_CONSTANTS.TITLE_LINE_HEIGHT)
-                    .style('fill', CLUSTER_MANAGEMENT_CONSTANTS.TITLE_COLOR)
                     .text(function () {
                         return translateAndSubscribe(this, labelKey);
                     })

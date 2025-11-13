@@ -336,7 +336,7 @@ span.label {
 }
 
 .text-btn {
-    color: #000000;
+    color: var(--gw-body-color);
     background: none;
     border: none;
     margin: 0;
