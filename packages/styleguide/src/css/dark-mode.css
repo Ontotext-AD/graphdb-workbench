@@ -311,7 +311,6 @@
   --gw-datatable-body-cell-border-color: var(--gw-datatable-border-color);
   --gw-virtualscroller-loader-mask-color: var(--gw-text-muted-color);
   --gw-toast-success-color: var(--gw-primary-contrast-color);
-  --gw-swagger-color: var(--gw-body-color);
   --gw-autocomplete-option-color: var(--gw-list-option-color);
   --gw-listbox-option-selected-focus-background: var(--gw-list-option-selected-focus-background);
   --gw-listbox-option-selected-focus-color: var(--gw-list-option-selected-focus-color);
