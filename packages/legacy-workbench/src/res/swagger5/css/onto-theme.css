@@ -14,11 +14,12 @@ code, pre, kbd, samp, textarea {
 .swagger-ui .info .title {
     font-size: 20px;
     font-family: var(--main-font);
-    color: #000000;
+    color: var(--gw-body-color);
 }
 
 .swagger-section {
-    background-color: #FFFFFF;
+    background-color: var(--gw-body-background);
+    color: var(--gw-body-color);
 }
 
 .swagger-ui .wrapper {
@@ -31,6 +32,11 @@ code, pre, kbd, samp, textarea {
 .swagger-ui .opblock-tag small {
     font-size: 1em;
     padding: 0;
+    color: var(--gw-body-color) !important;
+}
+
+.swagger-ui .opblock-tag small p {
+    color: var(--gw-secondary-base) !important;
 }
 
 .swagger-ui .opblock-tag > a::after {
@@ -58,7 +64,7 @@ code, pre, kbd, samp, textarea {
 }
 
 .swagger-ui .opblock-tag a span {
-    color: #000000;
+    color: var(--gw-body-color);
 }
 
 .swagger-ui .opblock-tag {
@@ -83,7 +89,7 @@ code, pre, kbd, samp, textarea {
 }
 
 .swagger-section .swagger-ui-wrap h3, p, a {
-    color: #999999 !important;
+    color: var(--gw-secondary-base) !important;
     padding: 2px !important;
 }
 
@@ -187,4 +193,8 @@ code, pre, kbd, samp, textarea {
     color: #000000 !important;
     border: 1px solid #E5E0C6 !important;
     padding: 10px !important;
+}
+
+.swagger-ui .expand-methods svg, .swagger-ui .expand-operation svg {
+    fill: var(--gw-body-color);
 }

@@ -312,6 +312,7 @@
   --gw-toast-success-background: var(--gw-success-base);
   --gw-toast-success-border-color: var(--gw-success-base);
   --gw-toast-success-color: var(--gw-primary-contrast-color);
+  --gw-swagger-color: var(--gw-body-color);
   --gw-autocomplete-option-color: var(--gw-list-option-color);
   --gw-message-success-border-color: var(--gw-default-success-light-background);
   --gw-listbox-option-selected-focus-background: var(--gw-list-option-selected-focus-background);

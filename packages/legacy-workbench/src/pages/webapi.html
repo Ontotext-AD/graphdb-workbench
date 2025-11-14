@@ -11,3 +11,26 @@
         title="{{'webapi.title' | translate}}"
         data-test="rest-api-content"
         src="res/swagger5/index.html" style="width: 100%; height: 90vh; border: none"></iframe>
+
+<script>
+    (function() {
+        const iframe = document.getElementById('webapi_frame');
+
+        function copyCSSVariables() {
+            const rootStyles = getComputedStyle(document.documentElement);
+            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+            const iframeRoot = iframeDoc.documentElement;
+
+            // Copy all CSS custom properties starting with --gw-
+            for (let i = 0; i < rootStyles.length; i++) {
+                const prop = rootStyles[i];
+                if (prop.startsWith('--gw-')) {
+                    const value = rootStyles.getPropertyValue(prop);
+                    iframeRoot.style.setProperty(prop, value);
+                }
+            }
+        }
+
+        iframe.addEventListener('load', copyCSSVariables);
+    })();
+</script>
