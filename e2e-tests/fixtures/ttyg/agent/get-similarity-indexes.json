@@ -1,13 +1,22 @@
 {
-    "opensearch:otkg-vector-new": [
-        "docText1"
+    "opensearch": [
+        {
+            "similarityIndex": "otkg-vector-new",
+            "connectorFields": ["docText1"]
+        }
+    ],
+    "elasticsearch": [
+        {
+            "similarityIndex": "otkg-vector",
+            "connectorFields": ["docText1", "docText2"]
+        }
     ],
     "similarity": [
-        "test",
-        "test-copy"
-    ],
-    "elasticsearch:otkg-vector": [
-        "docText1",
-        "docText2"
+        {
+            "similarityIndex": "test"
+        },
+        {
+            "similarityIndex": "test_copy"
+        }
     ]
 }

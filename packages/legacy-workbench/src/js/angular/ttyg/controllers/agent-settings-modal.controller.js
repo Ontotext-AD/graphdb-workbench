@@ -534,17 +534,27 @@ function AgentSettingsModalController(
     };
 
     $scope.shouldShowVectorFields = (extractionMethod) => {
-        const connectorType = extractionMethod && (extractionMethod.connectorType || extractionMethod.similarityIndex);
-        const {provider, type} = splitProviderType(connectorType);
+        if (!extractionMethod) {
+            return false;
+        }
+
+        const provider = extractionMethod.connectorType;
+        const indexName = extractionMethod.similarityIndex;
+
         if (!isVectorProvider(provider)) {
-                return false;
-            }
-        // Only show when there are actual vector fields for the selected provider/type
+            return false;
+        }
+
         if (Array.isArray($scope.vectorFields)) {
             return $scope.vectorFields.length > 0;
         }
+
         const map = $scope.connectorMap || {};
-        const fields = (map[provider] && map[provider][type]) ? map[provider][type] : [];
+        const fields =
+            (map[provider] && map[provider][indexName])
+                ? map[provider][indexName]
+                : [];
+
         return Array.isArray(fields) && fields.length > 0;
     };
 
@@ -553,21 +563,26 @@ function AgentSettingsModalController(
      * @param extractionMethod
      */
     $scope.onSimilarityIndexChange = (extractionMethod) => {
-        const similarityIndex = extractionMethod && extractionMethod.similarityIndex;
+        const option = extractionMethod && extractionMethod.similarityIndexOption;
         // The user needs to select a vector field again.
         extractionMethod.selectedConnectorField = undefined;
         extractionMethod.connectorFields = [];
-        if (!similarityIndex) {
+
+        if (!option) {
             extractionMethod.connectorType = null;
+            extractionMethod.similarityIndex = '';
             $scope.vectorFields = [];
             return;
         }
 
-        const {provider, type} = splitProviderType(similarityIndex);
-        extractionMethod.connectorType = provider;
+        extractionMethod.connectorType = option.provider;
+        extractionMethod.similarityIndex = option.value;
 
         const map = $scope.connectorMap || {};
-        $scope.vectorFields = (map[provider] && map[provider][type]) ? map[provider][type] : [];
+        $scope.vectorFields =
+            (map[option.provider] && map[option.provider][option.value])
+                ? map[option.provider][option.value]
+                : [];
     };
 
     // =========================
@@ -579,8 +594,8 @@ function AgentSettingsModalController(
      * @param extractionMethod
      */
     const updateVectorFields = (extractionMethod) => {
-        const source = extractionMethod.similarityIndex;
-        const {provider, type} = splitProviderType(source);
+        const provider = extractionMethod.connectorType;
+        const indexName = extractionMethod.similarityIndex;
 
         if (!isVectorProvider(provider)) {
             $scope.vectorFields = [];
@@ -588,7 +603,9 @@ function AgentSettingsModalController(
         }
 
         const map = $scope.connectorMap || {};
-        $scope.vectorFields = (map[provider] && map[provider][type]) ? map[provider][type] : [];
+        $scope.vectorFields = (map[provider] && map[provider][indexName])
+                ? map[provider][indexName]
+                : [];
     };
 
     /**
@@ -700,15 +717,6 @@ function AgentSettingsModalController(
     };
 
     const isVectorProvider = (p) => p === SimilarityInstanceType.OPENSEARCH || p === SimilarityInstanceType.ELASTICSEARCH;
-    const splitProviderType = (value) => {
-        if (!value || typeof value !== 'string') {
-            return {provider: null, type: null};
-        }
-        const i = value.indexOf(':');
-        return i === -1
-            ? {provider: value.trim(), type: value.trim()}
-            : {provider: value.slice(0, i).trim(), type: value.slice(i + 1).trim()};
-    };
 
     /**
      * Creates grouped options for ng-options with optgroups.
@@ -722,7 +730,7 @@ function AgentSettingsModalController(
                 $scope.similarityOptionsGrouped.push({
                     provider,
                     label: typeName,
-                    value: `${provider}:${typeName}`,
+                    value: typeName,
                     group: groupLabel,
                 });
             });
@@ -735,11 +743,12 @@ function AgentSettingsModalController(
             $scope.agentSettingsForm.$setValidity('missingIndex', true);
         }
         if (extractionMethod.selected) {
-            // Check if the connector instances select is pristine (unchanged)
-            const connectorField = $scope.agentSettingsForm.connectorInstances;
-            const isConnectorPristine = connectorField && connectorField.$pristine;
+            // Check if the connector instances select is pristine (unchanged). Treat the field as pristine until it exists.
+            // Because it's loaded with ng-if, on first pass through here, it won't exist yet, so we treat it as pristine.
+            const connectorField = $scope.agentSettingsForm && $scope.agentSettingsForm.connectorInstances;
+            const isConnectorPristine = connectorField ? connectorField.$pristine : true;
             // Don't reload the indexes and override the user selection if the connector instances field is pristine
-            if (!isConnectorPristine && $scope.connectorMap) {
+            if ($scope.connectorMap && !isConnectorPristine) {
                 return;
             }
         }
@@ -755,9 +764,10 @@ function AgentSettingsModalController(
                     const indexes = buildSelectMenuOptions(connectorMap);
                     // if no indexes are found, selection (connectorsMap) will be cleaned and the info message will be
                     // shown to the user again
+                    buildSimilarityIndexSelectOptions(connectorMap);
                     updateSelectedSimilarityIndex(indexes, extractionMethod);
                     updateVectorFields(extractionMethod);
-                    buildSimilarityIndexSelectOptions(connectorMap);
+
                     $scope.agentSettingsForm.$setValidity('missingIndex', !extractionMethod.selected || $scope.hasConnectorData());
                     // Initially, when there is no selection, the first index is selected, and we need to trigger the
                     // onSimilarityIndexChange to set the connector fields.
@@ -783,19 +793,32 @@ function AgentSettingsModalController(
      * @param {Object} extractionMethod - The extraction method object containing the currently selected similarity index.
      */
     const updateSelectedSimilarityIndex = (indexes, extractionMethod) => {
-        if (indexes.length === 0) {
-            // If no similarity indexes are available, clear the similarity index.
+        if (!indexes.length) {
+            extractionMethod.connectorType = '';
             extractionMethod.similarityIndex = '';
+            extractionMethod.similarityIndexOption = null;
             return;
         }
 
-        const selectedIndex = indexes.find((index) => (index.data.connectorType + ':' + index.value) === (extractionMethod.connectorType + ':' + extractionMethod.similarityIndex));
-        if (selectedIndex) {
-            extractionMethod.similarityIndex = selectedIndex.data.connectorType + ':' + selectedIndex.value;
-        } else {
-            // If the selected index is not found in the current list, default to the first index.
-            extractionMethod.similarityIndex = indexes[0].data.connectorType + ':' + indexes[0].value;
-        }
+        const currentType = extractionMethod.connectorType;
+        const currentName = extractionMethod.similarityIndex;
+
+        // Find previously selected index or default to the first one
+        const selectedIndex = indexes.find((index) =>
+            index.data.connectorType === currentType &&
+            index.value === currentName,
+        ) || indexes[0];
+
+        extractionMethod.connectorType = selectedIndex.data.connectorType;
+        extractionMethod.similarityIndex = selectedIndex.value;
+
+        const options = $scope.similarityOptionsGrouped || [];
+        const opt = options.find((option) =>
+            option.provider === extractionMethod.connectorType &&
+            option.value === extractionMethod.similarityIndex,
+        );
+
+        extractionMethod.similarityIndexOption = opt || null;
     };
 
     const buildSelectMenuOptions = (data) => {
