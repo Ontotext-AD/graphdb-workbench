@@ -13,11 +13,13 @@ import {SelectMenuOptionsModel} from "../../models/form-fields";
 import {
     RepositoryStorageService,
     RepositoryContextService,
-    service,
     RepositoryLocationContextService,
     MapperProvider,
     RepositoryListMapper,
     AuthorizationService,
+    AuthenticationService,
+    SecurityContextService,
+    service,
 } from "@ontotext/workbench-api";
 
 const modules = [
@@ -44,6 +46,8 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
         this.locationsShouldReload = true;
 
         const authorizationService = service(AuthorizationService);
+        const securityContextService = service(SecurityContextService);
+        const authenticationService = service(AuthenticationService);
 
         const that = this;
 
@@ -498,14 +502,22 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
             }
         };
 
-        $rootScope.$on('securityInit', function(scope, securityEnabled, userLoggedIn, freeAccess) {
+        const onAuthChanged = (isAuthenticated, isLoggedIn, hasFreeAccess) => {
             locationsRequestPromise = null;
-            if (!securityEnabled || userLoggedIn || freeAccess) {
+            if (!isAuthenticated || isLoggedIn || hasFreeAccess) {
                 // This has to happen in a separate cycle because otherwise some properties in init() are undefined
                 $timeout(function() {
                     that.init();
                 });
             }
+        };
+
+        securityContextService.onSecurityConfigChanged((securityConfig) => {
+            onAuthChanged(securityConfig.enabled, authenticationService.isLoggedIn(), securityConfig.freeAccessActive);
+        });
+
+        securityContextService.onAuthenticatedUserChanged(() => {
+            onAuthChanged(authenticationService.isAuthenticated(), authenticationService.isLoggedIn(), authorizationService.hasFreeAccess());
         });
 
         $rootScope.$on('reloadLocations', function() {

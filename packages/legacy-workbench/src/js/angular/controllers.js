@@ -203,6 +203,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     const licenseService = service(LicenseService);
     const authorizationService = service(AuthorizationService);
     const authenticationService = service(AuthenticationService);
+    const securityContextService = service(SecurityContextService);
 
     // =========================
     // Public variables
@@ -633,12 +634,8 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     };
 
     function setPrincipal() {
-        // Using $q.when to proper set values in view
-        return $q.when($jwtAuth.getPrincipal())
-            .then((principal) => {
-                $scope.principal = principal;
-                $scope.isIgnoreSharedQueries = principal && principal.appSettings.IGNORE_SHARED_QUERIES;
-            });
+        $scope.principal = authorizationService.getAuthenticatedUser();
+        $scope.isIgnoreSharedQueries = $scope.principal && $scope.principal.appSettings.IGNORE_SHARED_QUERIES;
     }
 
     const onLoginSubscription = service(EventService).subscribe(EventName.LOGIN, () => {
@@ -1000,30 +997,26 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         $scope.getSavedQueries();
     }
 
-    $scope.$on('securityInit', function(scope, securityEnabled, userLoggedIn, freeAccess) {
-        $scope.securityEnabled = securityEnabled;
-        $scope.userLoggedIn = userLoggedIn;
+    securityContextService.onSecurityConfigChanged((securityConfig) => {
+        $scope.securityEnabled = securityConfig.enabled;
+        $scope.userLoggedIn = authenticationService.isLoggedIn();
 
         // Handles all cases of pages accessible without being logged and without having free access ON
-        if (securityEnabled && !userLoggedIn && !freeAccess) {
+        if ($scope.securityEnabled && !$scope.userLoggedIn && !securityConfig.freeAccessActive) {
             if ($location.path() !== '/login') {
                 $rootScope.redirectToLogin();
             }
         } else {
-            setPrincipal()
-                .then(() => {
-                    // Update Restricted Pages permissions on securityInit
-                    updatePermissions();
+            setPrincipal();
+            // Update Restricted Pages permissions on securityInit
+            updatePermissions();
 
-                    // Added timeout because, when the 'securityInit' event is fired after user logged-in.
-                    // The authentication headers are still not set correctly when a request that loads saved queries is called and the $unauthorizedInterceptor rejects the request.
-                    // There are many places where setTimeout is used, see $jwtAuth#authenticate and $jwtAuth#setAuthHeaders.
-                    setTimeout(() => $scope.getSavedQueries(), 500);
-                });
+            $scope.getSavedQueries();
+
             licenseService.updateLicenseStatus()
                 .then(() => {
                     $scope.licenseIsSet = true;
-                    TrackingService.applyTrackingConsent();
+                    return TrackingService.applyTrackingConsent();
                 })
                 .catch((error) => {
                     $scope.licenseIsSet = false;
