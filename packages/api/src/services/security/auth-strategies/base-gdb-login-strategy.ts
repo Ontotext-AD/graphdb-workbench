@@ -7,7 +7,7 @@ import {AuthenticatedUserMapper} from '../mappers/authenticated-user.mapper';
 import {SecurityService} from '../security.service';
 import {LoggerProvider} from '../../logging/logger-provider';
 import {AuthenticationStorageService} from '../authentication-storage.service';
-import {ResponseMappingError} from '../errors/response-mapping-error';
+import {HttpResponse} from '../../../models/http';
 
 /**
  * Abstract base class for GDB login strategies.
@@ -48,16 +48,8 @@ export abstract class BaseGdbLoginStrategy implements AuthStrategy {
   async login(loginData: LoginData): Promise<AuthenticatedUser> {
     const {username, password} = loginData;
     const response = await this.securityService.loginGdbToken(username, password);
-
     const authHeader = this.getAuthenticationHeader(response);
-    let authUser;
-
-    try {
-      authUser = await this.getUserFromResponse(response);
-    } catch (e) {
-      this.logger.error('Could not map user from response', e);
-      throw new ResponseMappingError('Failed to map user from response');
-    }
+    const authUser = MapperProvider.get(AuthenticatedUserMapper).mapToModel(response.data);
 
     if (authHeader) {
       this.authStorageService.setAuthToken(authHeader);
@@ -67,12 +59,7 @@ export abstract class BaseGdbLoginStrategy implements AuthStrategy {
     return authUser;
   };
 
-  private getAuthenticationHeader(response: Response): string | null {
-    return response.headers.get('authorization');
-  }
-
-  private async getUserFromResponse(response: Response): Promise<AuthenticatedUser> {
-    const responseData = await response.json();
-    return MapperProvider.get(AuthenticatedUserMapper).mapToModel(responseData);
+  private getAuthenticationHeader(response: HttpResponse): string | null {
+    return response.headers['authorization'];
   }
 }

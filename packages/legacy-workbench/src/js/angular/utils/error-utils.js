@@ -1,9 +1,9 @@
 (function(window) {
     // Expose it in the global scope as it is used throughout the whole application.
     window.getError = function(data, status, limit) {
-        if (angular.isObject(data) && data.status && data.data) {
+        if (angular.isObject(data) && data?.status && data?.data) {
             // called with the result object instead of its data property
-            return getError(data.data, status, limit);
+            return getError(data.data, data.status, limit);
         }
 
         const responseStatus = status ?? data?.status;

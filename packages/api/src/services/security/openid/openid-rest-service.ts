@@ -12,7 +12,7 @@ export class OpenIdRestService extends HttpService {
    * Fetches the JSON Web Key Set (JWKS) from the OpenID provider.
    */
   getJSONWebKeySet(): Promise<{ keys: { kid: string }[] }> {
-    return this.get<{ keys: { kid: string }[] }>(this.getJWKSEndpoint(), undefined, this.getDomainHeader());
+    return this.get<{ keys: { kid: string }[] }>(this.getJWKSEndpoint(), {headers: this.getDomainHeaders()});
   }
 
   /**
@@ -25,11 +25,11 @@ export class OpenIdRestService extends HttpService {
       client_id: this.getClientId(),
       refresh_token: refreshToken
     };
-    const headers = {...this.getDomainHeader(), 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'};
+    const headers = {...this.getDomainHeaders(), 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'};
 
     const body = this.transformURLEncodedRequest(params);
 
-    return this.post<OpenIdTokens>(this.getTokensEndpoint(), body, headers);
+    return this.post<OpenIdTokens>(this.getTokensEndpoint(), {body, headers});
   }
 
   /**
@@ -50,11 +50,11 @@ export class OpenIdRestService extends HttpService {
       params['code_verifier'] = codeVerifier;
     }
 
-    const headers: Record<string, string> = {...this.getDomainHeader(), ...{'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'}};
+    const headers: Record<string, string> = {...this.getDomainHeaders(), ...{'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'}};
 
     const body = this.transformURLEncodedRequest(params);
 
-    return this.post<OpenIdTokens>(this.getTokensEndpoint(), body, headers);
+    return this.post<OpenIdTokens>(this.getTokensEndpoint(), {body, headers});
   }
 
   /**
@@ -99,10 +99,10 @@ export class OpenIdRestService extends HttpService {
     }
   }
 
-  private getDomainHeader(): Record<string, string> {
+  private getDomainHeaders(): Record<string, string> {
     const openIdSecurityConfig = this.securityContextService.getSecurityConfig()?.openidSecurityConfig;
     if (openIdSecurityConfig?.oracleDomain) {
-      return { [this.OAUTH_IDENTITY_DOMAIN_NAME_HEADER]: openIdSecurityConfig.oracleDomain };
+      return {[this.OAUTH_IDENTITY_DOMAIN_NAME_HEADER]: openIdSecurityConfig.oracleDomain};
     }
     return {};
   }

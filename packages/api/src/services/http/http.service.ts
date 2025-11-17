@@ -1,11 +1,7 @@
-import {HttpOptions} from '../../models/http/http-options';
+import {HttpErrorResponse, HttpOptions, HttpOptionsBodyResponse, HttpOptionsHttpResponse, HttpOptionsTypedResponse, HttpRequest, HttpRequestConfig, HttpResponse} from '../../models/http';
 import {InterceptorService} from '../interceptor/interceptor.service';
-import {HttpRequest} from '../../models/http/http-request';
 import {ServiceProvider} from '../../providers';
 import {EventEmitter} from '../../emitters/event.emitter';
-import {HttpRequestConfig} from '../../models/http/http-request-config';
-
-const JSON_CONTENT_TYPES = ['application/json', 'application/sparql-results+json'];
 
 export const HTTP_REQUEST_DONE_EVENT = 'http-request-done-event';
 
@@ -20,62 +16,175 @@ export class HttpService {
    * Performs an HTTP GET request.
    *
    * @param url     The URL to send the request to.
-   * @param params  (Optional) An object containing query parameters as key-value pairs.
-   * @param headers (Optional) An object containing request headers as key-value pairs.
+   * @param options (Optional) An object containing the request options.
    * @returns A Promise that resolves to the response data of type `T`.
    */
-  get<T>(url: string, params?: Record<string, string | number>, headers?: Record<string, string>): Promise<T> {
-    return this.request<T>(url, 'GET', {params, headers})
-      .then((response) => {
-        return response;
-      });
+  get<T>(url: string, options?: HttpOptions): Promise<T>
+
+  /**
+   * Performs an HTTP GET request.
+   *
+   * @param url     The URL to send the request to.
+   * @param options (Optional) An object containing the request options.
+   * @returns A Promise that resolves to the response data of type `T`.
+   */
+  get<T>(url: string, options?: HttpOptionsBodyResponse): Promise<T>
+
+  /**
+   * Performs an HTTP GET request.
+   *
+   * @param url     The URL to send the request to.
+   * @param options (Optional) An object containing the request options.
+   * @returns A Promise that resolves to HttpResponse<T> with the response data, status, and headers.
+   */
+  get<T>(url: string, options?: HttpOptionsHttpResponse): Promise<HttpResponse<T>>
+
+  get<T>(url: string, options?: HttpOptionsTypedResponse): Promise<HttpResponse<T> | T> {
+    const {params, headers, responseType = 'body'} = options ?? {};
+    if (responseType === 'response') {
+      return this.request<T>(url, 'GET', {params, headers}, 'response');
+    }
+    return this.request<T>(url, 'GET', {params, headers}, 'body');
   }
 
   /**
    * Performs an HTTP POST request.
    *
    * @param url     The URL to send the request to.
-   * @param body    (Optional) The body of the request.
-   * @param headers (Optional) An object containing request headers as key-value pairs.
+   * @param options (Optional) An object containing the request options.
    * @returns A Promise that resolves to the response data of type `T`.
    */
-  post<T>(url: string, body?: unknown, headers?: Record<string, string>): Promise<T> {
-    return this.request<T>(url, 'POST', {body, headers});
-  }
+  post<T>(url: string, options?: HttpOptions): Promise<T>
 
   /**
-   * Performs an HTTP POST request and returns full HttpResponse (body of type `T`, status, headers).
+   * Performs an HTTP POST request.
    *
    * @param url     The URL to send the request to.
-   * @param body    (Optional) The body of the request.
-   * @param headers (Optional) An object containing request headers as key-value pairs.
-   * @returns A Promise that resolves to the full HttpResponse (body of type `T`, status, headers).
+   * @param options (Optional) An object containing the request options.
+   * @returns A Promise that resolves to the response data of type `T`.
    */
-  public postFull<T>(url: string, body?: unknown, headers?: Record<string, string>): Promise<Response> {
-    return this.requestFull<T>(url, 'POST', {body, headers});
+  post<T>(url: string, options?: HttpOptionsBodyResponse): Promise<T>
+
+  /**
+   * Performs an HTTP POST request.
+   *
+   * @param url     The URL to send the request to.
+   * @param options (Optional) An object containing the request options.
+   * @returns A Promise that resolves to HttpResponse<T> with the response data, status, and headers.
+   */
+  post<T>(url: string, options?: HttpOptionsHttpResponse): Promise<HttpResponse<T>>
+
+  post<T>(url: string, options?: HttpOptionsTypedResponse): Promise<HttpResponse<T> | T> {
+    const {body, headers, responseType = 'body'} = options ?? {};
+    if (responseType === 'response') {
+      return this.request<T>(url, 'POST', {body, headers}, 'response');
+    }
+    return this.request<T>(url, 'POST', {body, headers}, 'body');
   }
 
   /**
    * Performs an HTTP PUT request.
    *
    * @param url     The URL to send the request to.
-   * @param body    (Optional) The body of the request.
-   * @param headers (Optional) An object containing request headers as key-value pairs.
+   * @param options (Optional) An object containing the request options.
    * @returns A Promise that resolves to the response data of type `T`.
    */
-  put<T>(url: string, body?: unknown, headers?: Record<string, string>): Promise<T> {
-    return this.request<T>(url, 'PUT', {body, headers});
+  put<T>(url: string, options?: HttpOptions): Promise<T>
+
+  /**
+   * Performs an HTTP PUT request.
+   *
+   * @param url     The URL to send the request to.
+   * @param options (Optional) An object containing the request options.
+   * @returns A Promise that resolves to the response data of type `T`.
+   */
+  put<T>(url: string, options?: HttpOptionsBodyResponse): Promise<T>
+
+  /**
+   * Performs an HTTP PUT request.
+   *
+   * @param url     The URL to send the request to.
+   * @param options (Optional) An object containing the request options.
+   * @returns A Promise that resolves to HttpResponse<T> with the response data, status, and headers.
+   */
+  put<T>(url: string, options?: HttpOptionsHttpResponse): Promise<HttpResponse<T>>
+
+  put<T>(url: string, options?: HttpOptionsTypedResponse): Promise<HttpResponse<T> | T> {
+    const {body, headers, responseType = 'body'} = options ?? {};
+    if (responseType === 'response') {
+      return this.request<T>(url, 'PUT', {body, headers}, 'response');
+    }
+    return this.request<T>(url, 'PUT', {body, headers}, 'body');
+  }
+
+  /**
+   * Performs an HTTP PUT request.
+   *
+   * @param url     The URL to send the request to.
+   * @param options (Optional) An object containing the request options.
+   * @returns A Promise that resolves to the response data of type `T`.
+   */
+  patch<T>(url: string, options?: HttpOptions): Promise<T>
+
+  /**
+   * Performs an HTTP PUT request.
+   *
+   * @param url     The URL to send the request to.
+   * @param options (Optional) An object containing the request options.
+   * @returns A Promise that resolves to the response data of type `T`.
+   */
+  patch<T>(url: string, options?: HttpOptionsBodyResponse): Promise<T>
+
+  /**
+   * Performs an HTTP PUT request.
+   *
+   * @param url     The URL to send the request to.
+   * @param options (Optional) An object containing the request options.
+   * @returns A Promise that resolves to HttpResponse<T> with the response data, status, and headers.
+   */
+  patch<T>(url: string, options?: HttpOptionsHttpResponse): Promise<HttpResponse<T>>
+
+  patch<T>(url: string, options?: HttpOptionsTypedResponse): Promise<HttpResponse<T> | T> {
+    const {body, headers, responseType = 'body'} = options ?? {};
+    if (responseType === 'response') {
+      return this.request<T>(url, 'PATCH', {body, headers}, 'response');
+    }
+    return this.request<T>(url, 'PATCH', {body, headers}, 'body');
   }
 
   /**
    * Performs an HTTP DELETE request.
    *
    * @param url     The URL to send the request to.
-   * @param headers (Optional) An object containing request headers as key-value pairs.
+   * @param options (Optional) An object containing the request options.
    * @returns A Promise that resolves to the response data of type `T`.
    */
-  delete<T>(url: string, headers?: Record<string, string>): Promise<T> {
-    return this.request<T>(url, 'DELETE', {headers});
+  delete<T>(url: string, options?: HttpOptions): Promise<T>
+
+  /**
+   * Performs an HTTP DELETE request.
+   *
+   * @param url     The URL to send the request to.
+   * @param options (Optional) An object containing the request options.
+   * @returns A Promise that resolves to the response data of type `T`.
+   */
+  delete<T>(url: string, options?: HttpOptionsBodyResponse): Promise<T>
+
+  /**
+   * Performs an HTTP DELETE request.
+   *
+   * @param url     The URL to send the request to.
+   * @param options (Optional) An object containing the request options.
+   * @returns A Promise that resolves to HttpResponse<T> with the response data, status, and headers.
+   */
+  delete<T>(url: string, options?: HttpOptionsHttpResponse): Promise<HttpResponse<T>>
+
+  delete<T>(url: string, options?: HttpOptionsTypedResponse): Promise<HttpResponse<T> | T> {
+    const {headers, responseType = 'body'} = options ?? {};
+    if (responseType === 'response') {
+      return this.request<T>(url, 'DELETE', {headers}, 'response');
+    }
+    return this.request<T>(url, 'DELETE', {headers}, 'body');
   }
 
   /**
@@ -86,15 +195,15 @@ export class HttpService {
    * @param fieldName    (Optional) The name of the form field for the file. Defaults to 'file'.
    * @param additionalData (Optional) Additional form fields to include in the upload.
    * @param headers      (Optional) An object containing additional request headers as key-value pairs.
-   * @returns A Promise that resolves to the response data of type `T`.
+   * @returns A Promise that resolves to HttpResponse<T> with the response data, status, and headers.
    */
   uploadFile<T>(
     url: string,
     file: File | Blob,
     fieldName = 'file',
     headers?: Record<string, string>,
-    additionalData?: Record<string, string | Blob>,
-  ): Promise<T> {
+    additionalData?: Record<string, string | Blob>
+  ): Promise<HttpResponse<T>> {
     const formData = new FormData();
     formData.append(fieldName, file, file instanceof File ? file.name : undefined);
 
@@ -108,19 +217,7 @@ export class HttpService {
     const uploadHeaders = {...headers};
     delete uploadHeaders['Content-Type'];
 
-    return this.request<T>(url, 'POST', {body: formData, headers: uploadHeaders});
-  }
-
-  /**
-   * Performs an HTTP PATCH request.
-   *
-   * @param url     The URL to send the request to.
-   * @param body    (Optional) The body of the request.
-   * @param headers (Optional) An object containing request headers as key-value pairs.
-   * @returns A Promise that resolves to the response data of type `T`.
-   */
-  patch<T>(url: string, body?: unknown, headers?: Record<string, string>): Promise<T> {
-    return this.request<T>(url, 'PATCH', {body, headers});
+    return this.post<T>(url, {body: formData, headers: uploadHeaders, responseType: 'response'});
   }
 
   /**
@@ -140,24 +237,87 @@ export class HttpService {
    *
    * @param url     The URL to send the request to.
    * @param method  The HTTP method to use (GET, POST, PUT, DELETE).
-   * @param options (Optional) An object containing the request options, including:
+   * @param options (Optional) An object containing the request options.
    *                 - `params`: Query parameters as key-value pairs.
    *                 - `headers`: Request headers as key-value pairs.
    *                 - `body`: The request body.
-   * @returns A Promise that resolves with the response data of type T, or is rejected with an error if the request fails.
+   * @returns A Promise that resolves with HttpResponse<T>, or is rejected with HttpErrorResponse if the request fails.
    */
-  private request<T>(url: string, method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH', options: HttpOptions = {}): Promise<T> {
+  private request<T>(url: string, method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH', options: HttpOptions = {}, responseType: 'response' | 'body' = 'response'): Promise<HttpResponse<T> | T> {
     const {fullUrl, headers} = this.getRequestConfig(url, options);
+    const requestConfig = new HttpRequest({url: fullUrl, method, headers, body: options.body});
+    let originalResponse: Response;
 
-    return this.executeRequest(new HttpRequest({url: fullUrl, method, headers, body: options.body}))
-      .then((response) => {
+    return this.executeRequest(requestConfig)
+      .then(async (response) => {
+        originalResponse = response;
         if (!response.ok) {
-          return Promise.reject(response);
+          // Extract error data if available
+          const data = await this.getDataFromResponse<T>(responseType, response);
+          const errorResponse = new HttpErrorResponse({
+            status: response.status,
+            statusText: response.statusText,
+            headers: this.extractHeaders(response),
+            config: requestConfig,
+            originalResponse: response,
+            data
+          });
+
+          return Promise.reject(errorResponse);
         }
-        const isJson = this.hasValidJson(response);
-        return (isJson ? response.json() : response.text()) as Promise<T>;
+        const data = await this.getDataFromResponse<T>(responseType, response);
+
+        if (responseType === 'body') {
+          return data as T;
+        }
+
+        return new HttpResponse<T>({
+          status: response.status,
+          statusText: response.statusText,
+          headers: this.extractHeaders(response),
+          config: requestConfig,
+          originalResponse: response,
+          data
+        });
+      })
+      .catch((error) => {
+        // If it's already an HttpErrorResponse, just rethrow it
+        if (error instanceof HttpErrorResponse) {
+          return Promise.reject(error);
+        }
+
+        originalResponse ??= error;
+
+        // The error is not from the HTTP fetch, but from internal logic
+        const errorResponse = new HttpErrorResponse({
+          status: originalResponse.status,
+          statusText: originalResponse.statusText,
+          headers: this.extractHeaders(originalResponse),
+          config: requestConfig,
+          originalResponse: originalResponse,
+          data: null
+        });
+        if (error?.message) {
+          errorResponse.message = error.message;
+        }
+
+        return Promise.reject(errorResponse);
       })
       .finally(() => this.eventEmitter.emit({NAME: HTTP_REQUEST_DONE_EVENT, payload: undefined}));
+  }
+
+  private async getDataFromResponse<T>(responseType: 'response' | 'body' | 'string', response: Response): Promise<string | T | null> {
+    let data: T | string | null = null;
+
+    data = await response.text();
+    if (!responseType || responseType === 'body' || responseType === 'response') {
+      try {
+        data = JSON.parse(data) as T;
+      } catch {
+        // not JSON
+      }
+    }
+    return data;
   }
 
   private getRequestConfig(url: string, options: HttpOptions): HttpRequestConfig {
@@ -206,55 +366,16 @@ export class HttpService {
           headers: request.headers as HeadersInit,
           body
         });
-      }
-      )
+      })
       .then((response) => this.interceptorService.postProcess(response));
   }
 
-  private hasValidJson(response: Response) {
-    const responseContentType = response.headers.get('Content-Type');
-    if (!responseContentType) {
-      return false;
-    }
-    return JSON_CONTENT_TYPES.some((contentType) => responseContentType.includes(contentType));
-  }
-
-  /**
-   * Performs an HTTP request with the specified method and options.
-   *
-   * @param url     The URL to send the request to.
-   * @param method  The HTTP method to use (GET, POST, PUT, DELETE).
-   * @param options (Optional) An object containing the request options, including:
-   *                 - `params`: Query parameters as key-value pairs.
-   *                 - `headers`: Request headers as key-value pairs.
-   *                 - `body`: The request body.
-   * @returns A Promise that resolves with the full HttpResponse (body of type `T`, status, headers), or is rejected with an error if the request fails.
-   */
-  private requestFull<T>(
-    url: string,
-    method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH',
-    options: HttpOptions = {}
-  ): Promise<Response> {
-    const {fullUrl, headers} = this.getRequestConfig(url, options);
-
-    return this.executeRequest(new HttpRequest({url: fullUrl, method, headers, body: options.body}))
-      .then((response) => {
-        if (!response.ok) {
-          return Promise.reject(response);
-        }
-        const isJson = this.hasValidJson(response);
-        // FIXME: If it is not JSON, it resolve void, but it might be text
-        const json = isJson ? response.json() : Promise.resolve();
-        const text = !isJson ? response.text() : Promise.resolve();
-
-        return Object.assign(response, {
-          json: (): Promise<T> => Promise.resolve(json as T),
-          text: (): Promise<T> => Promise.resolve(text as T)
-        });
-      })
-      .finally(() => {
-        this.eventEmitter.emit({NAME: HTTP_REQUEST_DONE_EVENT, payload: undefined});
-      });
+  private extractHeaders(response: Response): Record<string, string> {
+    const headers: Record<string, string> = {};
+    response.headers.forEach((value, key) => {
+      headers[key] = value;
+    });
+    return headers;
   }
 
   /**
