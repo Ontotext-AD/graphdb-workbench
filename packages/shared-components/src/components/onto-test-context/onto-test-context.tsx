@@ -21,7 +21,10 @@ import {
   RepositoryLocationContextService,
   AutocompleteContextService,
   NamespacesContextService,
-  NamespaceMap, RepositoryReference
+  NamespaceMap,
+  RepositoryReference,
+  notify,
+  Notification, service, OntoToastrService
 } from '@ontotext/workbench-api';
 import en from '../../assets/i18n/en.json';
 import fr from '../../assets/i18n/fr.json';
@@ -170,6 +173,18 @@ export class OntoTestContext {
   @Method()
   addToastr(toast: ToastMessage): Promise<void> {
     this.eventEmitter.emit({NAME: CREATE_TOAST_EVENT, payload: new ToastMessage(toast.type, toast.message)});
+    return Promise.resolve();
+  }
+
+  /**
+   * Adds a notification to the application.
+   * @param notification - The Notification object containing the notification details.
+   */
+  @Method()
+  addNotification(notification: Notification): Promise<void> {
+    // create the toastr service, which starts listening for notifications
+    service(OntoToastrService);
+    notify(notification);
     return Promise.resolve();
   }
 

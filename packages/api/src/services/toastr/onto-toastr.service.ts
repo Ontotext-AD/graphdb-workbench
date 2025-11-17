@@ -4,12 +4,22 @@ import {ToastType} from '../../models/toastr/toast-type';
 import {CREATE_TOAST_EVENT} from '../../models/toastr/toastr-constants';
 import {EventEmitter} from '../../emitters/event.emitter';
 import {ToastConfig} from '../../models/toastr/toast-config';
+import {service} from '../../providers';
+import {NotificationService} from '../notification/notification.service';
+import {Notification} from '../../models/notification/notification';
+import {OntoToastrMapper} from './mappers/onto-toastr.mapper';
+import {NotificationParam} from '../../models/notification/notification-param';
 
 /**
  * Service for displaying toast notifications in the application.
  */
 export class OntoToastrService implements Service {
   private readonly eventEmitter = new EventEmitter<ToastMessage>();
+  private readonly notificationService = service(NotificationService);
+
+  constructor() {
+    this.subscribeToNotificationEvents();
+  }
 
   /**
    * Displays an error toast notification.
@@ -53,5 +63,14 @@ export class OntoToastrService implements Service {
 
   private createToastElement(message: string, type: ToastType, config?: ToastConfig): void {
     this.eventEmitter.emit({NAME: CREATE_TOAST_EVENT, payload: new ToastMessage(type, message, config)});
+  }
+
+  private subscribeToNotificationEvents(): void {
+    this.notificationService.onNotificationAdded((notification: Notification) => {
+      if (notification.parameters?.[NotificationParam.SHOULD_TOAST]) {
+        const toast = OntoToastrMapper.fromNotification(notification);
+        this.createToastElement(toast.message, toast.type, toast.config);
+      }
+    });
   }
 }

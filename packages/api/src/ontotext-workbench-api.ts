@@ -18,6 +18,8 @@ export * from './models/single-spa';
 export * from './models/app-lifecycle';
 export * from './models/plugins';
 export * from './models/configuration';
+export * from './models/notification';
+export * from './models/translation';
 
 // Export providers for external usages.
 export * from './providers';
@@ -45,6 +47,7 @@ export * from './services/window';
 export * from './services/plugins';
 export * from './services/configuration';
 export * from './services/logging';
+export * from './services/notification';
 
 // Export utils for external usages.
 export * from './services/utils';

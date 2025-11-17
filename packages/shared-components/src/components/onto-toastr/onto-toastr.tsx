@@ -8,6 +8,7 @@ import {
   WindowService
 } from '@ontotext/workbench-api';
 import {sanitizeHTML} from '../../utils/html-utils';
+import {TranslationService} from '../../services/translation.service';
 
 const toastTypeToIconMap = {
   [ToastType.INFO]: 'ri-information-2-fill',
@@ -59,11 +60,19 @@ export class OntoToastr {
         {this.toasts?.getItems().map((toast) => (
           <div class={`onto-toast ${toast.type}`} key={toast.id}
             onMouseEnter={this.onToastMouseEnter(toast)}
-            onMouseLeave={this.onToastMouseLeave(toast)}>
+            onMouseLeave={this.onToastMouseLeave(toast)}
+            onClick={this.handleToastClick(toast)}
+            onKeyUp={this.handleKeyUp(toast)}>
             <i class={`${toastTypeToIconMap[toast.type]}`}></i>
-            <span onClick={this.handleToastClick(toast)}
-              class="toast-message"
-              innerHTML={sanitizeHTML(toast.message)}></span>
+            <span>
+              {toast.config?.title ?
+                <div class="toast-title"
+                  innerHTML={sanitizeHTML(TranslationService.translate(toast.config.title, toast.config?.translationParams))}>
+                </div> : ''}
+              <div class="toast-message"
+                innerHTML={sanitizeHTML(TranslationService.translate(toast.message, toast.config?.translationParams))}>
+              </div>
+            </span>
           </div>
         ))}
       </section>
@@ -144,6 +153,14 @@ export class OntoToastr {
       if (toast.config?.removeOnClick) {
         this.toasts.remove(toast);
         this.clearToastTimeout(toast);
+      }
+    };
+  }
+
+  private handleKeyUp(toast: ToastMessage) {
+    return (event: KeyboardEvent) => {
+      if (event.key === 'Enter') {
+        this.handleToastClick(toast);
       }
     };
   }

@@ -1,5 +1,5 @@
 import {Component, Host, h, Prop, State} from '@stencil/core';
-import {TranslationParameter} from '../../models/translation/translation-parameter';
+import {TranslationParameter} from '@ontotext/workbench-api';
 import {TranslationService} from '../../services/translation.service';
 
 /**

@@ -1,14 +1,11 @@
 import {ToastType} from './toast-type';
-import {GeneratorUtils} from '../../services/utils/generator-utils';
 import {ToastConfig} from './toast-config';
+import {IdModel} from '../common/id-model';
 
 /**
  * Represents a toast notification message with type, content, and configuration.
  */
-export class ToastMessage {
-  /** Unique identifier for the toast message */
-  id: string;
-
+export class ToastMessage extends IdModel<ToastMessage>{
   /** The type of toast message (e.g., 'success', 'error', 'warning', 'info') */
   type: ToastType;
 
@@ -19,7 +16,7 @@ export class ToastMessage {
   config?: ToastConfig;
 
   constructor(type: ToastType, message: string, config?: ToastConfig) {
-    this.id = GeneratorUtils.uuid();
+    super();
     this.type = type;
     this.message = message;
     this.config = config;

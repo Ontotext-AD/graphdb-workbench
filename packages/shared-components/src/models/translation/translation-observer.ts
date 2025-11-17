@@ -1,4 +1,4 @@
-import {TranslationParameter} from './translation-parameter';
+import {TranslationParameter} from '@ontotext/workbench-api';
 
 /**
  * A callback function which is called when the translation is ready.
