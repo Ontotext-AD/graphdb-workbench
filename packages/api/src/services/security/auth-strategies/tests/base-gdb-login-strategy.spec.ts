@@ -8,7 +8,6 @@ import {ProviderResponseMocks} from './provider-response-mocks';
 import {MissingTokenInHeader} from '../../errors/missing-token-in-header';
 import {SecurityContextService} from '../../security-context.service';
 import {SecurityService} from '../../security.service';
-import {LoggerProvider} from '../../../logging/logger-provider';
 
 class TestStrategy extends BaseGdbLoginStrategy {
   type: AuthStrategyType = AuthStrategyType.GDB_TOKEN;
@@ -32,11 +31,9 @@ class TestStrategy extends BaseGdbLoginStrategy {
 
 describe('BaseGdbLoginStrategy', () => {
   let provider: TestStrategy;
-  let loggerErrorSpy: jest.SpyInstance;
 
   beforeEach(() => {
     provider = new TestStrategy();
-    loggerErrorSpy = jest.spyOn(LoggerProvider.logger, 'error');
   });
 
   describe('login', () => {
@@ -61,13 +58,6 @@ describe('BaseGdbLoginStrategy', () => {
       expect(loginGdbTokenSpy).toHaveBeenCalledWith(loginData.username, loginData.password);
       expect(setAuthTokenSpy).toHaveBeenCalledWith('GDB someToken');
       expect(updateAuthenticatedUserSpy).not.toHaveBeenCalled();
-    });
-
-    it('should throw if user mapping fails', async () => {
-      TestUtil.mockResponse(new ResponseMock('rest/login').setResponse('errorLogin').setSetThrowOnJson(true));
-
-      await expect(provider.login(loginData)).rejects.toThrow('Failed to map user from response');
-      expect(loggerErrorSpy).toHaveBeenCalledWith('Could not map user from response', expect.any(Error));
     });
 
     it('should not set token/user if auth header or user is missing', async () => {

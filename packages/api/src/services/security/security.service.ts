@@ -11,6 +11,8 @@ import {AuthSettingsRequestModel} from '../../models/security/response-models/au
 import {GraphdbAuthoritiesModelMapper} from './mappers/graphdb-authorities-model-mapper';
 import {UsersService} from '../users';
 import {User} from '../../models/users/user';
+import {HttpResponse} from '../../models/http';
+import {AuthenticatedUserResponse} from '../../models/security/response-models/authenticated-user-response';
 
 /**
  * Service class for handling security-related operations.
@@ -141,7 +143,7 @@ export class SecurityService implements Service {
    * @param password - The password of the user.
    * @returns A Promise that resolves to the authenticated `AuthenticatedUser` model.
    */
-  loginGdbToken(username: string, password: string): Promise<Response> {
+  loginGdbToken(username: string, password: string): Promise<HttpResponse<AuthenticatedUserResponse>> {
     return this.securityRestService.loginGdbToken(username, password);
   }
 }
