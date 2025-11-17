@@ -34,7 +34,7 @@ const modules = [
 const securityModule = angular.module('graphdb.framework.security.controllers', modules);
 
 securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$window', '$jwtAuth', '$timeout', 'ModalService', 'SecurityService', '$translate',
-    function ($scope, $uibModal, toastr, $window, $jwtAuth, $timeout, ModalService, SecurityService, $translate) {
+    function($scope, $uibModal, toastr, $window, $jwtAuth, $timeout, ModalService, SecurityService, $translate) {
         const authorizationService = service(AuthorizationService);
         const authenticationService = service(AuthenticationService);
         const securityServiceAPI = service(SecurityServiceAPI);
@@ -276,10 +276,10 @@ securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 't
         const authorizationService = service(AuthorizationService);
         const repositoryService = service(RepositoryService);
 
-        $rootScope.$on('$translateChangeSuccess', function () {
+        $rootScope.$on('$translateChangeSuccess', function() {
             $scope.passwordPlaceholder = $translate.instant(passwordPlaceholder);
         });
-        $scope.isAdmin = function () {
+        $scope.isAdmin = function() {
             return authorizationService.hasRole(UserRole.ROLE_ADMIN);
         };
         $scope.hasExternalAuth = function() {
@@ -423,7 +423,6 @@ securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 't
 
             return !(hasReadWildcard || hasWriteWildcard || hasReadForRepo || hasWriteForRepo);
         };
-
 
         $scope.createUniqueKey = function(repository) {
             return repositoryService.getLocationSpecificId(repository);
@@ -613,16 +612,7 @@ securityModule.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window'
                     });
                 })
                 .catch(async (data) => {
-                    let msg;
-                    if (data instanceof Response) {
-                        try {
-                            msg = await data.text();
-                        } catch {
-                            // ignore
-                        }
-                    } else {
-                        msg = getError(data);
-                    }
+                    const msg = getError(data);
                     $scope.loader = false;
                     toastr.error(msg, $translate.instant('common.error'));
                 });
