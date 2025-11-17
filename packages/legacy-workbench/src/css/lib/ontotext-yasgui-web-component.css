@@ -199,6 +199,34 @@ yasgui-component .yasgui .tabsList .addTab:hover {
     border-color: var(--gw-tabs-tab-active-border-color) var(--gw-tabs-tab-active-border-color) transparent !important;
 }
 
+yasgui-component .yasgui .tabsList .tab .editable-text-field {
+    color: var(--gw-form-field-color) !important;
+    background-color: var(--gw-form-field-background) !important;
+    border-color: var(--gw-form-field-border-color) !important;
+}
+
+yasgui-component .editable-text-field-wrapper .save-btn {
+    color: var(--gw-button-primary-color) !important;
+    background-color: var(--gw-button-primary-background) !important;
+}
+
+yasgui-component .editable-text-field-wrapper .save-btn:hover {
+    color: var(--gw-button-primary-hover-color) !important;
+    background-color: var(--gw-button-primary-hover-background) !important;
+}
+
+yasgui-component .editable-text-field-wrapper .cancel-btn {
+    color: var(--gw-button-secondary-color);
+    background-color: var(--gw-button-secondary-background);
+    border-color: var(--gw-button-secondary-border-color);
+}
+
+yasgui-component .editable-text-field-wrapper .cancel-btn:hover {
+    color: var(--gw-button-secondary-hover-color);
+    background-color: var(--gw-button-secondary-hover-background);
+    border-color: var(--gw-button-secondary-hover-border-color);
+}
+
 yasgui-component .editable-text-field-wrapper .save-btn,
 yasgui-component .editable-text-field-wrapper .save-btn:hover {
     background-color: var(--gw-primary-base);
@@ -688,6 +716,47 @@ yasgui-component .yasr .ontotext-pagination .page-button.selected-page:hover,
 yasgui-component .yasr .ontotext-pagination .page-selector:hover {
     color: var(--gw-paginator-nav-button-hover-color);
     background-color: var(--gw-paginator-nav-button-hover-background);
+}
+
+yasgui-component .yasr .pivot-table-plugin select {
+    color: var(--gw-body-color);
+    background-color: var(--gw-body-background);
+}
+
+yasgui-component .yasr .pivot-table-plugin .pvtUi .pvtTable .pvtAxisLabel,
+yasgui-component .yasr .pivot-table-plugin .pvtUi .pvtTable .pvtTotalLabel {
+    color: var(--gw-datatable-header-color);
+    background-color: var(--gw-datatable-header-background);
+    border-color: var(--gw-datatable-header-cell-border-color);
+}
+
+yasgui-component .yasr table.pvtTable tbody tr td,
+yasgui-component .yasr .pivot-table-plugin .pvtUi .pvtTable .pvtRowLabel {
+    color: var(--gw-datatable-row-color);
+    background-color: var(--gw-datatable-row-background);
+}
+
+yasgui-component .yasr .pivot-table-plugin .pvtFilterBox {
+    color: var(--gw-dialog-color);
+    background-color: var(--gw-dialog-background);
+    border-color: var(--gw-dialog-border-color);
+}
+
+yasgui-component .yasr .pivot-table-plugin .pvtFilterBox button {
+    color: var(--gw-button-secondary-color);
+    background-color: var(--gw-dialog-background);
+    border-color: var(--gw-button-secondary-border-color);
+}
+
+yasgui-component .yasr .pivot-table-plugin .pvtFilterBox button:hover {
+    background-color: var(--gw-button-secondary-hover-background);
+    cursor: pointer;
+}
+
+yasgui-component .yasr .pivot-table-plugin .pvtFilterBox .pvtSearch {
+    color: var(--gw-form-field-color);
+    background-color: var(--gw-form-field-background);
+    border-color: var(--gw-form-field-border-color);
 }
 
 .keyboard-shortcuts-dialog-wrapper {
