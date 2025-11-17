@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <base href="/pages/notification/"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0"/>
+  <title>Stencil Component Starter</title>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "@ontotext/workbench-api": "/resources/ontotext-workbench-api.js"
+      }
+    }
+  </script>
+
+  <script type="module" src="/build/shared-components.esm.js"></script>
+  <script nomodule src="/build/shared-components.js"></script>
+  <script src="./main.js" defer></script>
+  <script src="../js/main.js" defer></script>
+  <link rel="stylesheet" href="../css/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/remixicon.css">
+</head>
+<body>
+<button id="success-notification" onclick="addNotificationMessage('success')">Add success notification</button>
+<button id="info-notification" onclick="addNotificationMessage('info')">Add info notification</button>
+<button id="warning-notification" onclick="addNotificationMessage('warning')">Add warning notification</button>
+<button id="error-notification" onclick="addNotificationMessage('error')">Add error notification</button>
+<onto-toastr></onto-toastr>
+</body>
+</html>
