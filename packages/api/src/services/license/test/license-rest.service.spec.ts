@@ -52,7 +52,7 @@ describe('LicenseRestService', () => {
     test('should send GET request to check if license is hardcoded', async () => {
       // Given, I have a hardcoded status response
       const url = 'rest/graphdb-settings/license/hardcoded';
-      const mockResponse = 'true';
+      const mockResponse = true;
 
       TestUtil.mockResponse(new ResponseMock(url).setResponse(mockResponse));
 
@@ -69,7 +69,7 @@ describe('LicenseRestService', () => {
     test('should return false when license is not hardcoded', async () => {
       // Given, I have a hardcoded status response indicating false
       const url = 'rest/graphdb-settings/license/hardcoded';
-      const mockResponse = 'false';
+      const mockResponse = false;
 
       TestUtil.mockResponse(new ResponseMock(url).setResponse(mockResponse));
 
@@ -77,7 +77,7 @@ describe('LicenseRestService', () => {
       const result = await licenseRestService.getIsLicenseHardcoded();
 
       // Then, I expect false to be returned
-      expect(result).toEqual('false');
+      expect(result).toEqual(false);
     });
   });
 

@@ -6,6 +6,7 @@ import {HttpRequest} from '../../../models/http/http-request';
 import {ServiceProvider} from '../../../providers';
 import {InterceptorService} from '../../interceptor/interceptor.service';
 import {ModelList} from '../../../models/common';
+import {HttpErrorResponse} from '../../../models/http';
 
 class PreInterceptor extends HttpInterceptor<HttpRequest> {
   shouldProcess(): boolean {
@@ -20,7 +21,12 @@ class PreInterceptor extends HttpInterceptor<HttpRequest> {
 
 class PostInterceptor extends HttpInterceptor<Response> {
   process(response: Response): Promise<Response> {
-    return Promise.resolve({...response, json: () => 'interceptedResponseBody' } as unknown as Response);
+    // Return a modified response that will return the intercepted text
+    return Promise.resolve({
+      ...response,
+      text: async () => '"interceptedResponseBody"',
+      json: async () => 'interceptedResponseBody'
+    } as unknown as Response);
   }
 
   shouldProcess(): boolean {
@@ -36,16 +42,22 @@ describe('HttpService', () => {
     httpService = new HttpService();
   });
 
+  afterEach(() => {
+    TestUtil.restoreAllMocks();
+  });
+
   test('request should throw exception if BE throws an error', async () => {
     const url = 'http://localhost:8080';
     TestUtil.mockResponse(new ResponseMock(url).setStatus(404).setMessage('Error message from server'));
 
-    await expect(httpService.get(url)).rejects.toEqual(expect.objectContaining({
-      status: 404,
-      ok: false,
-      text: expect.any(Function),
-      json: expect.any(Function)
-    }));
+    try {
+      await httpService.get(url);
+      fail('Should have thrown an error');
+    } catch (error) {
+      expect(error).toBeInstanceOf(HttpErrorResponse);
+      expect((error as HttpErrorResponse).status).toBe(404);
+      expect((error as HttpErrorResponse).statusText).toBe('');
+    }
   });
 
   test('get should return a response', async () => {
@@ -71,7 +83,7 @@ describe('HttpService', () => {
     const url = 'http://localhost:8080';
     TestUtil.mockResponse(new ResponseMock(url).setResponse(response));
 
-    const result = await httpService.post(url, { name: 'Test' });
+    const result = await httpService.post(url, {body: { name: 'Test' }});
 
     expect(result).toEqual(response);
     expect(fetch).toHaveBeenCalledWith(url, {
@@ -89,7 +101,7 @@ describe('HttpService', () => {
     const url = 'http://localhost:8080';
     TestUtil.mockResponse(new ResponseMock(url).setResponse(response));
 
-    const result = await httpService.put(url, { name: 'Updated' });
+    const result = await httpService.put(url, {body: { name: 'Updated' }});
 
     expect(result).toEqual(response);
     expect(fetch).toHaveBeenCalledWith(url, {
@@ -125,7 +137,7 @@ describe('HttpService', () => {
     const url = 'http://localhost:8080';
     TestUtil.mockResponse(new ResponseMock(url).setResponse(response));
 
-    const result = await httpService.patch(url, { name: 'Updated' });
+    const result = await httpService.patch(url, {body: { name: 'Updated' }});
 
     expect(result).toEqual(response);
     expect(fetch).toHaveBeenCalledWith(url, {

@@ -40,3 +40,27 @@ export interface HttpOptions {
    */
   params?: Record<string, string | number>;
 }
+
+/**
+ * Extended to include a typed responseType property.
+ * @inheritDoc
+ */
+export interface HttpOptionsTypedResponse extends HttpOptions {
+  responseType?: 'body' | 'response';
+}
+
+/**
+ * Specify that the `responseType` is 'body'.
+ * @inheritDoc
+ */
+export interface HttpOptionsBodyResponse extends HttpOptionsTypedResponse {
+  responseType: 'body';
+}
+
+/**
+ * Specify that the `responseType` is 'response'.
+ * @inheritDoc
+ */
+export interface HttpOptionsHttpResponse extends HttpOptionsTypedResponse {
+  responseType: 'response';
+}
