@@ -1,14 +1,19 @@
 import {ConfigurationService} from '../configuration.service';
 import {ServiceProvider} from '../../../providers';
 import {ConfigurationContextService} from '../configuration-context.service';
-import {HttpService} from '../../http/http.service';
 import {MissingApplicationConfigurationError} from '../missing-application-configuration-error';
+import {TestUtil} from '../../utils/test/test-util';
+import {ResponseMock} from '../../http/test/response-mock';
 
 describe('ConfigurationService', () => {
   let configurationService: ConfigurationService;
 
   beforeEach(() => {
     configurationService = new ConfigurationService();
+  });
+
+  afterEach(() => {
+    TestUtil.restoreAllMocks();
   });
 
   it('should retrieve application configuration from configured file', async () => {
@@ -18,11 +23,11 @@ describe('ConfigurationService', () => {
     const applicationConfig = {
       pluginsManifestPath: 'plugins/plugins-manifest.json'
     };
-    jest.spyOn(HttpService.prototype, 'get')
-      // Mock the environment JSON response
-      .mockImplementationOnce(() => Promise.resolve(envJson))
-      // Mock the application configuration response
-      .mockImplementationOnce(() => Promise.resolve(applicationConfig));
+
+    TestUtil.mockResponses([
+      new ResponseMock('assets/env.json').setResponse(envJson).setStatus(200),
+      new ResponseMock('assets/dev.configuration.json').setResponse(applicationConfig).setStatus(200)
+    ]);
 
     const config = await configurationService.getConfiguration();
 
@@ -36,11 +41,14 @@ describe('ConfigurationService', () => {
   });
 
   it('should handle missing env.json and fallback to default configuration', async () => {
-    jest.spyOn(HttpService.prototype, 'get')
-      // Mock the environment JSON response to throw an error
-      .mockImplementationOnce(() => Promise.reject(new Error('env.json not found')))
-      // Mock the default application configuration response
-      .mockImplementationOnce(() => Promise.resolve({ pluginsManifestPath: 'default-plugins/plugins-manifest.json' }));
+    const applicationConfig = {
+      pluginsManifestPath: 'default-plugins/plugins-manifest.json'
+    };
+
+    TestUtil.mockResponses([
+      new ResponseMock('assets/env.json').setStatus(404),
+      new ResponseMock('assets/configuration.default.json').setResponse(applicationConfig).setStatus(200)
+    ]);
 
     const config = await configurationService.getConfiguration();
 
@@ -50,11 +58,14 @@ describe('ConfigurationService', () => {
   });
 
   it('should throw an error if configuration file cannot be downloaded', async () => {
-    jest.spyOn(HttpService.prototype, 'get')
-      // Mock the environment JSON response
-      .mockImplementationOnce(() => Promise.resolve({ configUrl: 'assets/nonexistent.configuration.json' }))
-      // Mock the configuration file download to throw an error
-      .mockImplementationOnce(() => Promise.reject(new Error('Configuration file not found')));
+    const envJson = {
+      configUrl: 'assets/nonexistent.configuration.json'
+    };
+
+    TestUtil.mockResponses([
+      new ResponseMock('assets/env.json').setResponse(envJson).setStatus(200),
+      new ResponseMock('assets/nonexistent.configuration.json').setStatus(404)
+    ]);
 
     // Expect the service to throw a MissingApplicationConfigurationError
     await expect(configurationService.getConfiguration()).rejects.toThrow(MissingApplicationConfigurationError);

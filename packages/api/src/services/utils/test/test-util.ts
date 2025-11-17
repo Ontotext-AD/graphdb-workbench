@@ -31,16 +31,29 @@ export class TestUtil {
         return Promise.resolve({
           ok: matchingMock.getStatus() >= 200 && matchingMock.getStatus() < 300,
           status: matchingMock.getStatus(),
+          statusText: '',
           headers,
           json: async () => matchingMock.getShouldThrowOnJson() ? Promise.reject(new Error('JSON error')) : Promise.resolve(matchingMock.getResponse()),
-          text: async () => matchingMock.getMessage(),
+          text: async () => {
+            // If message is explicitly set, use it; otherwise JSON stringify the response
+            const message = matchingMock.getMessage();
+            if (message) {
+              return message;
+            }
+            const response = matchingMock.getResponse();
+            return typeof response === 'string' ? response : JSON.stringify(response);
+          },
         } as Response);
       }
 
       // Return a default 404 response if no matching mock found
+      const notFoundHeaders = new Headers();
+      notFoundHeaders.set('Content-Type', 'application/json');
       return Promise.resolve({
         ok: false,
         status: 404,
+        statusText: 'Not Found',
+        headers: notFoundHeaders,
         json: async () => ({message: 'Not Found'}),
         text: async () => 'Not Found',
       } as Response);

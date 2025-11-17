@@ -15,15 +15,15 @@ export class UsersRestService extends HttpService {
   }
 
   createUser(username: string, userRequest: UserRequest): Promise<void> {
-    return this.post(`${this.SECURITY_USER_ENDPOINT}/${this.encodeURIComponentStrict(username)}`, userRequest);
+    return this.post(`${this.SECURITY_USER_ENDPOINT}/${this.encodeURIComponentStrict(username)}`, {body: userRequest});
   }
 
   updateUser(username: string, userRequest: UserRequest): Promise<void> {
-    return this.put(`${this.SECURITY_USER_ENDPOINT}/${this.encodeURIComponentStrict(username)}`, userRequest);
+    return this.put(`${this.SECURITY_USER_ENDPOINT}/${this.encodeURIComponentStrict(username)}`, {body: userRequest});
   }
 
   updateCurrentUser(username: string, userRequest: UserRequest): Promise<void> {
-    return this.patch(`${this.SECURITY_USER_ENDPOINT}/${this.encodeURIComponentStrict(username)}`, userRequest);
+    return this.patch(`${this.SECURITY_USER_ENDPOINT}/${this.encodeURIComponentStrict(username)}`, {body: userRequest});
   }
 
   deleteUser(username: string): Promise<void> {

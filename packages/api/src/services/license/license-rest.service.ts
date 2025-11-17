@@ -29,7 +29,7 @@ export class LicenseRestService extends HttpService {
    *
    * @returns A Promise that resolves to a string indicating whether the license is hardcoded.
    */
-  getIsLicenseHardcoded(): Promise<string> {
+  getIsLicenseHardcoded(): Promise<boolean> {
     return this.get(`${this.LICENSE_ENDPOINT}/hardcoded`);
   }
 
@@ -52,7 +52,7 @@ export class LicenseRestService extends HttpService {
       'Content-Type': 'application/octet-stream'
     };
 
-    return this.post(this.LICENSE_ENDPOINT, array, headers);
+    return this.post(this.LICENSE_ENDPOINT, {body: array, headers});
   }
 
   /**
@@ -77,7 +77,8 @@ export class LicenseRestService extends HttpService {
    * @returns A Promise that resolves to a string containing the extracted license information in base64 format.
    */
   extractFromLicenseFile(file: File): Promise<string> {
-    return this.uploadFile(`${this.LICENSE_INFO_ENDPOINT}/to-base-64`, file, undefined, {'Accept': 'text/plain'});
+    return this.uploadFile(`${this.LICENSE_INFO_ENDPOINT}/to-base-64`, file, undefined, {'Accept': 'text/plain'})
+      .then((response) => response.data as string);
   }
 
   // send license to be validated and parsed before activation
@@ -94,6 +95,6 @@ export class LicenseRestService extends HttpService {
     const headers = {
       'Content-Type': 'text/plain'
     };
-    return this.post(`${this.LICENSE_INFO_ENDPOINT}/validate`, licenseCode, headers);
+    return this.post(`${this.LICENSE_INFO_ENDPOINT}/validate`, {body: licenseCode, headers});
   }
 }

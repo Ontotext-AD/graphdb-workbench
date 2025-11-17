@@ -1,8 +1,8 @@
 import {HttpService} from '../http/http.service';
-import {AuthenticatedUser, SecurityConfig} from '../../models/security';
-import {AuthSettingsResponseModel} from '../../models/security';
+import {AuthenticatedUser, AuthSettingsResponseModel, SecurityConfig} from '../../models/security';
 import {AuthSettingsRequestModel} from '../../models/security/response-models/auth-settings-request-model';
 import {AuthenticatedUserResponse} from '../../models/security/response-models/authenticated-user-response';
+import {HttpResponse} from '../../models/http';
 
 /**
  * Service class for handling security-related REST operations.
@@ -22,8 +22,8 @@ export class SecurityRestService extends HttpService {
    * @param password - The user's password.
    * @returns A Promise resolving to an HttpResponse containing the AuthenticatedUser data on success.
    */
-  loginGdbToken(username: string, password: string): Promise<Response> {
-    return this.postFull(this.LOGIN_ENDPOINT, {username, password});
+  loginGdbToken(username: string, password: string): Promise<HttpResponse<AuthenticatedUserResponse>> {
+    return this.post(this.LOGIN_ENDPOINT, {body: {username, password}, responseType: 'response'});
   }
 
   /**
@@ -84,6 +84,6 @@ export class SecurityRestService extends HttpService {
    * @returns A Promise that resolves with the AuthSettingsResponseModel after updating the settings.
    */
   setFreeAccess(freeAccessData: AuthSettingsRequestModel): Promise<AuthSettingsResponseModel> {
-    return this.post(this.SECURITY_FREE_ACCESS_ENDPOINT, freeAccessData);
+    return this.post(this.SECURITY_FREE_ACCESS_ENDPOINT, {body: freeAccessData});
   }
 }

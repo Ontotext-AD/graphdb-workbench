@@ -4,6 +4,8 @@ import {OpenIdTokens} from '../../../../models/security/authentication/openid-au
 import {MissingOpenidConfiguration} from '../../errors/openid/missing-openid-configuration';
 import {service} from '../../../../providers';
 import {OpenidSecurityConfig, SecurityConfig} from '../../../../models/security';
+import {TestUtil} from '../../../utils/test/test-util';
+import {ResponseMock} from '../../../http/test/response-mock';
 
 describe('OpenIdRestService', () => {
   let openIdRestService: OpenIdRestService;
@@ -12,9 +14,10 @@ describe('OpenIdRestService', () => {
   const mockOpenIdConfig = (overrides: Partial<OpenidSecurityConfig> = {}): OpenidSecurityConfig => {
     return new OpenidSecurityConfig({
       clientId: 'test-client-id',
-      openIdKeysUri: 'https://auth.example.com/keys',
-      openIdTokenUrl: 'https://auth.example.com/token',
+      oidcJwksUri: 'https://auth.example.com/keys',
+      oidcTokenEndpoint: 'https://auth.example.com/token',
       oracleDomain: 'test-domain',
+      proxyOidc: false,
       ...overrides
     });
   };
@@ -37,6 +40,7 @@ describe('OpenIdRestService', () => {
 
   afterEach(() => {
     jest.restoreAllMocks();
+    TestUtil.restoreAllMocks();
     securityContextService.updateSecurityConfig(undefined as unknown as SecurityConfig);
   });
 
@@ -53,23 +57,20 @@ describe('OpenIdRestService', () => {
         ]
       };
 
-      // Mock the global fetch directly
-      global.fetch = jest.fn().mockResolvedValue({
-        ok: true,
-        status: 200,
-        headers: { get: (name: string) => name === 'Content-Type' ? 'application/json' : undefined },
-        json: async () => mockJWKS,
-        text: async () => JSON.stringify(mockJWKS),
-      } as Response);
+      TestUtil.mockResponse(
+        new ResponseMock(config.openIdKeysUri!)
+          .setResponse(mockJWKS)
+          .setStatus(200)
+      );
 
       const result = await openIdRestService.getJSONWebKeySet();
 
       expect(result).toEqual(mockJWKS);
-      expect(fetch).toHaveBeenCalled();
 
       // Verify the headers include Oracle domain
-      const fetchCall = (fetch as jest.Mock).mock.calls[0];
-      expect(fetchCall[1].headers['X-OAuth-Identity-Domain-Name']).toBe('test-domain');
+      const request = TestUtil.getRequest(config.openIdKeysUri!);
+      expect(request?.headers).toBeDefined();
+      expect((request?.headers as Record<string, string>)['X-OAuth-Identity-Domain-Name']).toBe('test-domain');
     });
 
     it('should include Oracle domain header when oracleDomain is configured', async () => {
@@ -79,18 +80,17 @@ describe('OpenIdRestService', () => {
 
       const mockJWKS = { keys: [{ kid: 'key-1' }] };
 
-      global.fetch = jest.fn().mockResolvedValue({
-        ok: true,
-        status: 200,
-        headers: { get: (name: string) => name === 'Content-Type' ? 'application/json' : undefined },
-        json: async () => mockJWKS,
-      } as Response);
+      TestUtil.mockResponse(
+        new ResponseMock(config.openIdKeysUri!)
+          .setResponse(mockJWKS)
+          .setStatus(200)
+      );
 
       await openIdRestService.getJSONWebKeySet();
 
-      expect(fetch).toHaveBeenCalled();
-      const fetchCall = (fetch as jest.Mock).mock.calls[0];
-      expect(fetchCall[1].headers['X-OAuth-Identity-Domain-Name']).toBe('my-oracle-domain');
+      const request = TestUtil.getRequest(config.openIdKeysUri!);
+      expect(request?.headers).toBeDefined();
+      expect((request?.headers as Record<string, string>)['X-OAuth-Identity-Domain-Name']).toBe('my-oracle-domain');
     });
 
     it('should not include Oracle domain header when oracleDomain is not configured', async () => {
@@ -100,18 +100,17 @@ describe('OpenIdRestService', () => {
 
       const mockJWKS = { keys: [{ kid: 'key-1' }] };
 
-      global.fetch = jest.fn().mockResolvedValue({
-        ok: true,
-        status: 200,
-        headers: { get: (name: string) => name === 'Content-Type' ? 'application/json' : undefined },
-        json: async () => mockJWKS,
-      } as Response);
+      TestUtil.mockResponse(
+        new ResponseMock(config.openIdKeysUri!)
+          .setResponse(mockJWKS)
+          .setStatus(200)
+      );
 
       await openIdRestService.getJSONWebKeySet();
 
-      expect(fetch).toHaveBeenCalled();
-      const fetchCall = (fetch as jest.Mock).mock.calls[0];
-      expect(fetchCall[1].headers['X-OAuth-Identity-Domain-Name']).toBeUndefined();
+      const request = TestUtil.getRequest(config.openIdKeysUri!);
+      expect(request?.headers).toBeDefined();
+      expect((request?.headers as Record<string, string>)['X-OAuth-Identity-Domain-Name']).toBeUndefined();
     });
 
     it('should throw MissingOpenidConfiguration when config is missing', () => {
@@ -134,24 +133,22 @@ describe('OpenIdRestService', () => {
         refresh_token: 'new-refresh-token'
       };
 
-      global.fetch = jest.fn().mockResolvedValue({
-        ok: true,
-        status: 200,
-        headers: { get: (name: string) => name === 'Content-Type' ? 'application/json' : undefined },
-        json: async () => mockTokens,
-      } as Response);
+      TestUtil.mockResponse(
+        new ResponseMock(config.openIdTokenUrl!)
+          .setResponse(mockTokens)
+          .setStatus(200)
+      );
 
       const result = await openIdRestService.refreshToken(refreshToken);
 
       expect(result).toEqual(mockTokens);
-      expect(fetch).toHaveBeenCalled();
 
       // Verify the request parameters
-      const fetchCall = (fetch as jest.Mock).mock.calls[0];
-      expect(fetchCall[1].method).toBe('POST');
-      expect(fetchCall[1].headers['Content-Type']).toBe('application/x-www-form-urlencoded; charset=utf-8');
+      const request = TestUtil.getRequest(config.openIdTokenUrl!);
+      expect(request?.method).toBe('POST');
+      expect((request?.headers as Record<string, string>)['Content-Type']).toBe('application/x-www-form-urlencoded; charset=utf-8');
 
-      const body = fetchCall[1].body as URLSearchParams;
+      const body = request?.body as URLSearchParams;
       expect(body.get('grant_type')).toBe('refresh_token');
       expect(body.get('client_id')).toBe('test-client-id');
       expect(body.get('refresh_token')).toBe(refreshToken);
@@ -164,18 +161,17 @@ describe('OpenIdRestService', () => {
 
       const mockTokens: OpenIdTokens = { access_token: 'token' };
 
-      global.fetch = jest.fn().mockResolvedValue({
-        ok: true,
-        status: 200,
-        headers: { get: (name: string) => name === 'Content-Type' ? 'application/json' : undefined },
-        json: async () => mockTokens,
-      } as Response);
+      TestUtil.mockResponse(
+        new ResponseMock(config.openIdTokenUrl!)
+          .setResponse(mockTokens)
+          .setStatus(200)
+      );
 
       await openIdRestService.refreshToken('test-token');
 
-      expect(fetch).toHaveBeenCalled();
-      const fetchCall = (fetch as jest.Mock).mock.calls[0];
-      expect(fetchCall[1].headers['X-OAuth-Identity-Domain-Name']).toBe('my-oracle-domain');
+      const request = TestUtil.getRequest(config.openIdTokenUrl!);
+      expect(request?.headers).toBeDefined();
+      expect((request?.headers as Record<string, string>)['X-OAuth-Identity-Domain-Name']).toBe('my-oracle-domain');
     });
 
     it('should throw MissingOpenidConfiguration when config is missing', () => {
@@ -199,24 +195,22 @@ describe('OpenIdRestService', () => {
         refresh_token: 'refresh-token'
       };
 
-      global.fetch = jest.fn().mockResolvedValue({
-        ok: true,
-        status: 200,
-        headers: { get: (name: string) => name === 'Content-Type' ? 'application/json' : undefined },
-        json: async () => mockTokens,
-      } as Response);
+      TestUtil.mockResponse(
+        new ResponseMock(config.openIdTokenUrl!)
+          .setResponse(mockTokens)
+          .setStatus(200)
+      );
 
       const result = await openIdRestService.getTokens(redirectUrl, code);
 
       expect(result).toEqual(mockTokens);
-      expect(fetch).toHaveBeenCalled();
 
       // Verify the request parameters
-      const fetchCall = (fetch as jest.Mock).mock.calls[0];
-      expect(fetchCall[1].method).toBe('POST');
-      expect(fetchCall[1].headers['Content-Type']).toBe('application/x-www-form-urlencoded; charset=utf-8');
+      const request = TestUtil.getRequest(config.openIdTokenUrl!);
+      expect(request?.method).toBe('POST');
+      expect((request?.headers as Record<string, string>)['Content-Type']).toBe('application/x-www-form-urlencoded; charset=utf-8');
 
-      const body = fetchCall[1].body as URLSearchParams;
+      const body = request?.body as URLSearchParams;
       expect(body.get('grant_type')).toBe('authorization_code');
       expect(body.get('client_id')).toBe('test-client-id');
       expect(body.get('redirect_uri')).toBe(redirectUrl);
@@ -234,20 +228,19 @@ describe('OpenIdRestService', () => {
       const codeVerifier = 'code-verifier-456';
       const mockTokens: OpenIdTokens = { access_token: 'token' };
 
-      global.fetch = jest.fn().mockResolvedValue({
-        ok: true,
-        status: 200,
-        headers: { get: (name: string) => name === 'Content-Type' ? 'application/json' : undefined },
-        json: async () => mockTokens,
-      } as Response);
+      TestUtil.mockResponse(
+        new ResponseMock(config.openIdTokenUrl!)
+          .setResponse(mockTokens)
+          .setStatus(200)
+      );
 
       const result = await openIdRestService.getTokens(redirectUrl, code, codeVerifier);
 
       expect(result).toEqual(mockTokens);
 
       // Verify the body contains code_verifier
-      const fetchCall = (fetch as jest.Mock).mock.calls[0];
-      const body = fetchCall[1].body as URLSearchParams;
+      const request = TestUtil.getRequest(config.openIdTokenUrl!);
+      const body = request?.body as URLSearchParams;
       expect(body.get('code_verifier')).toBe(codeVerifier);
     });
 
@@ -258,17 +251,16 @@ describe('OpenIdRestService', () => {
 
       const mockTokens: OpenIdTokens = { access_token: 'token' };
 
-      global.fetch = jest.fn().mockResolvedValue({
-        ok: true,
-        status: 200,
-        headers: { get: (name: string) => name === 'Content-Type' ? 'application/json' : undefined },
-        json: async () => mockTokens,
-      } as Response);
+      TestUtil.mockResponse(
+        new ResponseMock(config.openIdTokenUrl!)
+          .setResponse(mockTokens)
+          .setStatus(200)
+      );
 
       await openIdRestService.getTokens('https://app.example.com/callback', 'code', null);
 
-      const fetchCall = (fetch as jest.Mock).mock.calls[0];
-      const body = fetchCall[1].body as URLSearchParams;
+      const request = TestUtil.getRequest(config.openIdTokenUrl!);
+      const body = request?.body as URLSearchParams;
       expect(body.get('code_verifier')).toBeNull();
     });
 
@@ -279,17 +271,16 @@ describe('OpenIdRestService', () => {
 
       const mockTokens: OpenIdTokens = { access_token: 'token' };
 
-      global.fetch = jest.fn().mockResolvedValue({
-        ok: true,
-        status: 200,
-        headers: { get: (name: string) => name === 'Content-Type' ? 'application/json' : undefined },
-        json: async () => mockTokens,
-      } as Response);
+      TestUtil.mockResponse(
+        new ResponseMock(config.openIdTokenUrl!)
+          .setResponse(mockTokens)
+          .setStatus(200)
+      );
 
       await openIdRestService.getTokens('https://app.example.com/callback', 'code', undefined);
 
-      const fetchCall = (fetch as jest.Mock).mock.calls[0];
-      const body = fetchCall[1].body as URLSearchParams;
+      const request = TestUtil.getRequest(config.openIdTokenUrl!);
+      const body = request?.body as URLSearchParams;
       expect(body.get('code_verifier')).toBeNull();
     });
 
@@ -300,18 +291,17 @@ describe('OpenIdRestService', () => {
 
       const mockTokens: OpenIdTokens = { access_token: 'token' };
 
-      global.fetch = jest.fn().mockResolvedValue({
-        ok: true,
-        status: 200,
-        headers: { get: (name: string) => name === 'Content-Type' ? 'application/json' : undefined },
-        json: async () => mockTokens,
-      } as Response);
+      TestUtil.mockResponse(
+        new ResponseMock(config.openIdTokenUrl!)
+          .setResponse(mockTokens)
+          .setStatus(200)
+      );
 
       await openIdRestService.getTokens('https://app.example.com/callback', 'code');
 
-      expect(fetch).toHaveBeenCalled();
-      const fetchCall = (fetch as jest.Mock).mock.calls[0];
-      expect(fetchCall[1].headers['X-OAuth-Identity-Domain-Name']).toBe('my-oracle-domain');
+      const request = TestUtil.getRequest(config.openIdTokenUrl!);
+      expect(request?.headers).toBeDefined();
+      expect((request?.headers as Record<string, string>)['X-OAuth-Identity-Domain-Name']).toBe('my-oracle-domain');
     });
 
     it('should throw MissingOpenidConfiguration when config is missing', () => {

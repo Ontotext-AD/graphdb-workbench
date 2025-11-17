@@ -79,9 +79,8 @@ export class LicenseService implements Service {
    *
    * @returns {Promise<boolean>} A Promise that resolves to true if the license is hardcoded, false otherwise.
    */
-  async getIsLicenseHardcoded(): Promise<boolean> {
-    const response = await this.licenseRestService.getIsLicenseHardcoded();
-    return response === 'true';
+  getIsLicenseHardcoded(): Promise<boolean> {
+    return this.licenseRestService.getIsLicenseHardcoded();
   }
 
   /**

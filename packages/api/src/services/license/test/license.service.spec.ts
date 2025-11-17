@@ -1,10 +1,12 @@
 import {LicenseService} from '../license.service';
-import {CapabilityList, License} from '../../../models/license';
+import {Capability, CapabilityList, License} from '../../../models/license';
 import {TestUtil} from '../../utils/test/test-util';
 import {ResponseMock} from '../../http/test/response-mock';
 import {LicenseContextService} from '../license-context.service';
 import {ProductType} from '../../../models/license/product-type';
 import {service} from '../../../providers';
+import {LicenseResponse} from '../../../models/license/response-models/license-response';
+import {Product} from '../../../models/license/product';
 
 describe('LicenseService', () => {
   let licenseService: LicenseService;
@@ -15,7 +17,22 @@ describe('LicenseService', () => {
 
   test('should retrieve the license, mapped to a License object', async () => {
     // Given, I have a mocked license
-    const mockLicense = new License({licensee: 'Test Company', expiryDate: new Date(1672531200000)});
+    const mockLicense: LicenseResponse= {
+      licensee: 'Test Company',
+      expiryDate: 1672531200000,
+      latestPublicationDate: 1672531200000,
+      maxCpuCores: 4,
+      product: 'GRAPHDB_LITE',
+      productType: 'sandbox',
+      licenseCapabilities: ['Cluster'],
+      version: '',
+      installationId: '',
+      valid: true,
+      typeOfUse: '',
+      message: '',
+      present: false,
+      usageRestriction: ''
+    };
     TestUtil.mockResponse(new ResponseMock('rest/graphdb-settings/license').setResponse(mockLicense));
 
     // When I call the getLicense method
@@ -24,11 +41,20 @@ describe('LicenseService', () => {
     const expectedLicense = new License({
       licensee: 'Test Company',
       expiryDate: new Date(1672531200000),
-      licenseCapabilities: new CapabilityList([]),
+      latestPublicationDate: new Date(1672531200000),
+      maxCpuCores: 4,
+      product: Product.GRAPHDB_LITE,
+      productType: ProductType.SANDBOX,
+      valid: true,
+      present: false,
+      typeOfUse: '',
+      message: '',
+      usageRestriction: '',
+      licenseCapabilities: new CapabilityList([Capability.CLUSTER]),
     });
 
     // Then, I should get a License object, with default property values
-    expect(result).toEqual(new License(expectedLicense));
+    expect(result).toMatchObject(expectedLicense);
   });
 
   test('should return a true for a trackable license', () => {
@@ -82,12 +108,22 @@ describe('LicenseService', () => {
 
   test('should update license status with hardcoded flag and license info', async () => {
     // Given, I have mocked responses for hardcoded check and license retrieval
-    const mockLicense = new License({
+    const mockLicense: LicenseResponse= {
       licensee: 'Test Company',
-      expiryDate: new Date(1672531200000),
-      productType: ProductType.ENTERPRISE,
-      present: true
-    });
+      expiryDate: 1672531200000,
+      latestPublicationDate: 1672531200000,
+      maxCpuCores: 4,
+      product: 'GRAPHDB_LITE',
+      productType: 'enterprise',
+      licenseCapabilities: ['Cluster'],
+      version: '',
+      installationId: '',
+      valid: true,
+      typeOfUse: '',
+      message: '',
+      present: false,
+      usageRestriction: ''
+    };
     TestUtil.mockResponses([
       new ResponseMock('rest/graphdb-settings/license/hardcoded').setResponse('true'),
       new ResponseMock('rest/graphdb-settings/license').setResponse(mockLicense)
@@ -109,11 +145,22 @@ describe('LicenseService', () => {
   test('should register a license with the provided license code', async () => {
     // Given, I have a license code and a mocked response
     const licenseCode = 'test-license-code-base64';
-    const mockLicense = new License({
+    const mockLicense: LicenseResponse= {
       licensee: 'Registered Company',
-      expiryDate: new Date(1704067200000),
-      productType: ProductType.ENTERPRISE
-    });
+      expiryDate: 1672531200000,
+      latestPublicationDate: 1672531200000,
+      maxCpuCores: 4,
+      product: 'GRAPHDB_LITE',
+      productType: 'enterprise',
+      licenseCapabilities: ['Cluster'],
+      version: '',
+      installationId: '',
+      valid: true,
+      typeOfUse: '',
+      message: '',
+      present: false,
+      usageRestriction: ''
+    };
     TestUtil.mockResponse(new ResponseMock('rest/graphdb-settings/license').setResponse(mockLicense));
 
     // When I call the registerLicense method
@@ -169,12 +216,22 @@ describe('LicenseService', () => {
   test('should validate a license code', async () => {
     // Given, I have a license code to validate and a mocked response
     const licenseCode = 'license-code-to-validate';
-    const mockLicense = new License({
+    const mockLicense: LicenseResponse= {
       licensee: 'Validated Company',
-      expiryDate: new Date(1735689600000),
-      productType: ProductType.ENTERPRISE,
-      valid: true
-    });
+      expiryDate: 1672531200000,
+      latestPublicationDate: 1672531200000,
+      maxCpuCores: 4,
+      product: 'GRAPHDB_LITE',
+      productType: 'enterprise',
+      licenseCapabilities: ['Cluster'],
+      version: '',
+      installationId: '',
+      valid: true,
+      typeOfUse: '',
+      message: '',
+      present: false,
+      usageRestriction: ''
+    };
     TestUtil.mockResponse(new ResponseMock('rest/info/license/validate').setResponse(mockLicense));
 
     // When I call the validateLicense method
