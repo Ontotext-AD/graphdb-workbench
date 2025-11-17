@@ -118,6 +118,8 @@
   --gw-sidenav-menuitem-selected-background: var(--gw-neutral-200);
   --gw-sidenav-submenuitem-background: var(--gw-neutral-200);
   --gw-sidenav-submenuitem-hover-background: var(--gw-neutral-300);
+  --gw-sidenav-collapsebutton-background: var(--gw-neutral-shadow);
+  --gw-sidenav-collapsebutton-color: var(--gw-neutral-400);
   --gw-overlay-modal-border-radius: var(--gw-defaul-border-radius);
   --gw-overlay-modal-background: var(--gw-neutral-0);
   --gw-button-secondary-background: var(--gw-neutral-100);
@@ -176,10 +178,8 @@
   --gw-sidenav-submenuitem-color: var(--gw-secondary-base);
   --gw-sidenav-submenuitem-hover-color: var(--gw-secondary-base);
   --gw-sidenav-submenuitem-active-background: var(--gw-primary-base);
-  --gw-sidenav-collapsebutton-background: var(--gw-secondary-dark);
   --gw-sidenav-collapsebutton-hover-background: var(--gw-secondary-base);
   --gw-sidenav-collapsebutton-hover-color: var(--gw-neutral-lighter);
-  --gw-sidenav-collapsebutton-color: var(--gw-neutral-light);
   --gw-overlay-modal-border-color: var(--gw-default-border-color);
   --gw-button-primary-background: var(--gw-primary-base);
   --gw-button-primary-link-color: var(--gw-primary-base);
