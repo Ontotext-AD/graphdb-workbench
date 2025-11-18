@@ -17,13 +17,14 @@ export class GrantedAuthoritiesUiModelMapper extends Mapper<AuthorityList> {
    *               May include suffix-delimited entries for repository GraphQL rights.
    * @returns An AuthorityList containing unique authority codes, including derived GraphQL UI authorities.
    */
-  mapToModel(data: string[] | AuthorityList): AuthorityList {
+  mapToModel(data?: string[] | AuthorityList): AuthorityList {
     if (!data) {
       return new AuthorityList();
     }
 
     const result: string[] = [];
-    const authorities = (data instanceof AuthorityList ? data.getItems() : data) ?? [];
+    const authorities = data instanceof AuthorityList ? data.getItems() : data;
+
     for (const auth of authorities) {
       if (this.handleRepoGraphQL(auth, result)) {
         continue;

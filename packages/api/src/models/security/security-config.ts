@@ -1,8 +1,7 @@
 import {Model} from '../common';
 import {AuthSettings} from './auth-settings';
-import {AuthSettingsMapper} from '../../services/security/mappers/auth-settings.mapper';
-import {MapperProvider} from '../../providers';
 import {OpenidSecurityConfig} from './openid-security-config';
+import {SecurityConfigInit} from './security-config-response';
 
 /**
  * Represents the security configuration for the application.
@@ -19,19 +18,17 @@ export class SecurityConfig extends Model<SecurityConfig> {
   hasExternalAuth?: boolean;
   openidSecurityConfig?: OpenidSecurityConfig;
 
-  constructor(config: Partial<SecurityConfig & {methodSettings: {openid: Partial<OpenidSecurityConfig>}}>) {
+  constructor(config: SecurityConfigInit = {}) {
     super();
     this.authImplementation = config.authImplementation;
     this.enabled = config.enabled;
     this.passwordLoginEnabled = config.passwordLoginEnabled;
-    this.freeAccess = MapperProvider.get(AuthSettingsMapper).mapToModel(config.freeAccess);
-    this.overrideAuth = MapperProvider.get(AuthSettingsMapper).mapToModel(config.overrideAuth);
+    this.freeAccess = config.freeAccess ?? new AuthSettings({});
+    this.overrideAuth = config.overrideAuth ?? new AuthSettings({});
     this.openIdEnabled = config.openIdEnabled;
-    this.freeAccessActive = config.freeAccess?.enabled;
+    this.freeAccessActive = config.freeAccessActive;
     this.hasExternalAuth = config.hasExternalAuth;
-    if (config.methodSettings?.openid) {
-      this.openidSecurityConfig = new OpenidSecurityConfig(config.methodSettings?.openid);
-    }
+    this.openidSecurityConfig = config.openidSecurityConfig;
   }
 
   isEnabled() {

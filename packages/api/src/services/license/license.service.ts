@@ -1,5 +1,5 @@
 import {LicenseRestService} from './license-rest.service';
-import {MapperProvider, service} from '../../providers';
+import {service} from '../../providers';
 import {License} from '../../models/license';
 import {LicenseResponseMapper} from './mappers/license-response-mapper';
 import {Service} from '../../providers/service/service';
@@ -12,7 +12,7 @@ import {ProductType} from '../../models/license/product-type';
 export class LicenseService implements Service {
   private readonly licenseRestService = service(LicenseRestService);
   private readonly licenseContextService = service(LicenseContextService);
-  private readonly licenseMapper = MapperProvider.get(LicenseResponseMapper);
+  private readonly licenseMapper = new LicenseResponseMapper();
   private readonly trackableProductTypes = [ProductType.FREE, ProductType.SANDBOX];
   private readonly trackableTypesOfUse = ['evaluation', 'this is an evaluation license'];
 

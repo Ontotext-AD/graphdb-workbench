@@ -1,6 +1,8 @@
 import {Model} from '../common';
 import {SuggestionList} from './suggestion-list';
-import {AutocompleteSearchResultResponse} from './api/autocomplete-search-result-response';
+import {
+  AutocompleteSearchResultInit
+} from './api/autocomplete-search-result-response';
 import {Suggestion} from './suggestion';
 
 /**
@@ -10,9 +12,9 @@ export class AutocompleteSearchResult extends Model<AutocompleteSearchResult> {
   /** The list of suggestions associated with this search result. */
   private _suggestions!: SuggestionList;
 
-  constructor(searchResult: AutocompleteSearchResultResponse) {
+  constructor(data: AutocompleteSearchResultInit) {
     super();
-    this.setSuggestions(searchResult.suggestionList);
+    this._suggestions = data.suggestionList;
   }
 
   getSuggestions(): SuggestionList {

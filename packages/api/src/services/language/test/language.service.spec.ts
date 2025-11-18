@@ -1,9 +1,11 @@
 import {LanguageService} from '../language.service';
 import {ServiceProvider} from '../../../providers';
-import {LanguageConfig, TranslationBundle} from '../../../models/language';
+import {AvailableLanguagesList, LanguageConfig, TranslationBundle} from '../../../models/language';
 import {TestUtil} from '../../utils/test/test-util';
 import {ResponseMock} from '../../http/test/response-mock';
 import {LanguageContextService} from '../language-context.service';
+import {LanguageConfigResponse, LanguageConfigMapper} from '../mappers/language-config-mapper';
+import {AvailableLanguage} from '../../../models/language/available-language';
 
 describe('LanguageService', () => {
   let languageService: LanguageService;
@@ -19,14 +21,20 @@ describe('LanguageService', () => {
 
   test('Should return supported languages from the configuration', () => {
     // Given, I have a language configuration stored in the storage service with supported languages.
-    const availableLanguages = [{key: 'de', name: 'German'}, {key: 'es', name: 'Spanish'}];
-    const languageConfig = {
-      defaultLanguage: 'en',
-      availableLanguages
-    } as unknown as LanguageConfig;
-    ServiceProvider.get(LanguageContextService).setLanguageConfig(new LanguageConfig(languageConfig));
+    const availableLanguages = [
+      { key: 'de', name: 'German' },
+      { key: 'es', name: 'Spanish' },
+    ];
 
-    // When, I call getSupportedLanguages in a newly created instance of LanguageService
+    const dto: LanguageConfigResponse = {
+      defaultLanguage: 'en',
+      availableLanguages,
+    };
+
+    const mappedConfig = new LanguageConfigMapper().mapToModel(dto);
+    ServiceProvider.get(LanguageContextService).setLanguageConfig(mappedConfig);
+
+    // When I call getSupportedLanguages in a newly created instance of LanguageService
     // to ensure it gets the languages from the mock configuration.
     const result = new LanguageService().getSupportedLanguages();
 
@@ -76,7 +84,7 @@ describe('LanguageService', () => {
 
   test('Should retrieve the language configuration', async () => {
     // Given, I have a mocked language configuration
-    const mockLanguageConfig = {
+    const mockLanguageConfig: LanguageConfigResponse = {
       defaultLanguage: 'en',
       availableLanguages: [
         {
@@ -84,13 +92,22 @@ describe('LanguageService', () => {
           name: 'English'
         }
       ]
-    } as unknown as LanguageConfig;
+    };
     TestUtil.mockResponse(new ResponseMock('assets/i18n/language-config.json').setResponse(mockLanguageConfig));
 
     // When I call the getLanguageConfiguration method
     const result = await languageService.getLanguageConfiguration();
 
-    // Then, I should get a LanguageConfig object, with default property values
-    expect(result).toEqual(new LanguageConfig(mockLanguageConfig));
+    // Then I build the expected model
+    const expected = new LanguageConfig({
+      defaultLanguage: 'en',
+      availableLanguages: new AvailableLanguagesList([
+        new AvailableLanguage({ key: 'en', name: 'English' }),
+      ]),
+    } as LanguageConfig);
+
+    // Then, I should get a LanguageConfig object with mapped values
+    expect(result).toBeInstanceOf(LanguageConfig);
+    expect(result).toEqual(expected);
   });
 });

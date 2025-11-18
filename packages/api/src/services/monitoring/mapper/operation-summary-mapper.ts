@@ -1,21 +1,33 @@
 import {Mapper} from '../../../providers/mapper/mapper';
 import {OperationStatusSummary} from '../../../models/monitoring/operation-status-summary';
-import {MapperProvider} from '../../../providers';
 import {OperationListMapper} from './operation-list.mapper';
+import {
+  OperationResponse,
+  OperationStatusSummaryResponse
+} from '../../../models/monitoring';
 
 /**
  * Mapper class for converting OperationStatusSummaryResponse to OperationStatusSummary.
  */
 export class OperationSummaryMapper extends Mapper<OperationStatusSummary> {
+  private readonly operationListMapper = new OperationListMapper();
+
   /**
    * Maps the OperationStatusSummary data from the backend to an OperationStatusSummary model.
-   * @param {OperationStatusSummary} data - The response data to be mapped.
+   * @param {OperationStatusSummaryResponse | OperationStatusSummary} data - The response data to be mapped.
    * @returns {OperationStatusSummary} A new instance of OperationStatusSummary created from the input data.
    */
-  mapToModel(data: OperationStatusSummary): OperationStatusSummary {
+  mapToModel(data: OperationStatusSummaryResponse | OperationStatusSummary): OperationStatusSummary {
+    if (data instanceof OperationStatusSummary) {
+      return data;
+    }
+
+    const allRunningResponses: OperationResponse[] = data.allRunningOperations ?? [];
+    const allRunningOperations = this.operationListMapper.mapToModel(allRunningResponses);
+
     return new OperationStatusSummary({
       status: data.status,
-      allRunningOperations: MapperProvider.get(OperationListMapper).mapToModel(data.allRunningOperations || [])
-    } as OperationStatusSummary);
+      allRunningOperations,
+    });
   }
 }

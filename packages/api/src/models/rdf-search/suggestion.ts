@@ -1,6 +1,6 @@
 import {Model} from '../common';
 import {SuggestionType} from './suggestion-type';
-import {SuggestionResponse} from './api/suggestion-response';
+import {SuggestionInit} from './api/suggestion-response';
 
 /**
  * Represents a suggestion in the RDF search functionality.
@@ -29,12 +29,24 @@ export class Suggestion extends Model<Suggestion> {
   /** Whether the suggestion has been selected. When clicked, the suggestion will be selected */
   private _selected?: boolean;
 
-  constructor(data: SuggestionResponse) {
+  constructor(data: SuggestionInit) {
     super();
-    this.setId(data.id);
-    this.setType(data.type);
-    this.setValue(data.value);
-    this.setDescription(data.description);
+
+    if (data.id !== null) {
+      this.setId(data.id);
+    }
+
+    if (data.type !== null) {
+      this.setType(data.type);
+    }
+
+    if (data.value !== null) {
+      this.setValue(data.value);
+    }
+
+    if (data.description !== null) {
+      this.setDescription(data.description);
+    }
   }
 
   getId(): number | undefined {

@@ -6,3 +6,6 @@ export {OperationGroupSummary} from './operation-group-summary';
 export {OperationGroup} from './operation-group';
 export {OperationType} from './operation-type';
 export {OperationGroupSummaryList} from './operation-group-summary-list';
+export type {OperationGroupSummaryResponse} from './operation-group-summary-response';
+export type {OperationResponse, OperationStatusSummaryResponse} from './operation-status-summary-response';
+export type {OperationInit} from './operation-init';

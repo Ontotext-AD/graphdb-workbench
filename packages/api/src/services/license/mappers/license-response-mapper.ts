@@ -1,7 +1,6 @@
 import { Mapper } from '../../../providers/mapper/mapper';
-import { License } from '../../../models/license';
+import {Capability, License} from '../../../models/license';
 import {LicenseResponse} from '../../../models/license/response-models/license-response';
-import {MapperProvider} from '../../../providers';
 import {CapabilityListMapper} from './capability-list.mapper';
 import {toProduct} from '../../../models/license/product';
 import {toProductType} from '../../../models/license/product-type';
@@ -18,23 +17,27 @@ export class LicenseResponseMapper extends Mapper<License> {
    * @returns {License} - A new License instance
    */
   mapToModel(response: LicenseResponse): License {
-    const license = new License();
+    const licenseCapabilities = new CapabilityListMapper().mapToModel(
+      (response.licenseCapabilities ?? []).map(c => c as Capability)
+    );
 
-    license.expiryDate = response?.expiryDate ? new Date(response.expiryDate) : undefined;
-    license.latestPublicationDate = response?.latestPublicationDate ? new Date(response.latestPublicationDate) : undefined;
-    license.licensee = response?.licensee || '';
-    license.maxCpuCores = response?.maxCpuCores;
-    license.product = toProduct(response?.product);
-    license.productType = toProductType(response?.productType);
-    license.licenseCapabilities = MapperProvider.get(CapabilityListMapper).mapToModel(response?.licenseCapabilities);
-    license.version = response?.version || '';
-    license.installationId = response?.installationId || '';
-    license.valid = response?.valid;
-    license.typeOfUse = response?.typeOfUse || '';
-    license.message = response?.message || '';
-    license.present = response?.present || false;
-    license.usageRestriction = response?.usageRestriction || '';
-
-    return license;
+    return new License({
+      expiryDate: response.expiryDate ? new Date(response.expiryDate) : undefined,
+      latestPublicationDate: response.latestPublicationDate
+        ? new Date(response.latestPublicationDate)
+        : undefined,
+      licensee: response.licensee || '',
+      maxCpuCores: response.maxCpuCores,
+      product: toProduct(response.product),
+      productType: toProductType(response.productType),
+      licenseCapabilities,
+      version: response.version || '',
+      installationId: response.installationId || '',
+      valid: response.valid,
+      typeOfUse: response.typeOfUse || '',
+      message: response.message || '',
+      present: response.present || false,
+      usageRestriction: response.usageRestriction || '',
+    });
   }
 }

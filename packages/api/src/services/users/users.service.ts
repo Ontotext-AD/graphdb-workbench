@@ -1,5 +1,5 @@
 import {Service} from '../../providers/service/service';
-import {MapperProvider, service} from '../../providers';
+import {service} from '../../providers';
 import {User} from '../../models/users/user';
 import {UsersRestService} from './users-rest.service';
 import {UserResponseMapper} from './user-response.mapper';
@@ -8,8 +8,8 @@ import {UserRequestMapper} from './user-request.mapper';
 export class UsersService implements Service {
   static readonly ADMIN_USERNAME = 'admin';
   private readonly usersRestService  = service(UsersRestService);
-  private readonly userResponseMapper = MapperProvider.get(UserResponseMapper);
-  private readonly userRequestMapper = MapperProvider.get(UserRequestMapper);
+  private readonly userResponseMapper = new UserResponseMapper();
+  private readonly userRequestMapper = new UserRequestMapper();
 
   /**
    * Retrieves a user by username from the backend.

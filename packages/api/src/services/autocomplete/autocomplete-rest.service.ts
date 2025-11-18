@@ -1,5 +1,5 @@
-import {AutocompleteSearchResult} from '../../models/rdf-search/autocomplete-search-result';
 import {HttpService} from '../http/http.service';
+import {AutocompleteSearchResultResponse} from '../../models/rdf-search/api/autocomplete-search-result-response';
 
 /**
  * Service for handling autocomplete REST operations.
@@ -11,10 +11,10 @@ export class AutocompleteRestService extends HttpService {
    * Performs an autocomplete search based on the provided search term.
    *
    * @param searchTerm - The string to use for autocomplete search.
-   * @returns A Promise that resolves to an AutocompleteSearchResult object containing search suggestions.
+   * @returns A Promise that resolves to an AutocompleteSearchResultResponse object containing search suggestions.
    */
-  search(searchTerm: string): Promise<AutocompleteSearchResult> {
-    return this.get(`${this.autocompleteRestPrefix}/query?q=${searchTerm}`);
+  search(searchTerm: string): Promise<AutocompleteSearchResultResponse> {
+    return this.get<AutocompleteSearchResultResponse>(`${this.autocompleteRestPrefix}/query?q=${searchTerm}`);
   }
 
   /**
@@ -23,6 +23,6 @@ export class AutocompleteRestService extends HttpService {
    * @returns A Promise that resolves to a boolean indicating whether autocomplete is enabled.
    */
   enabled(): Promise<boolean> {
-    return this.get(`${this.autocompleteRestPrefix}/enabled`);
+    return this.get<boolean>(`${this.autocompleteRestPrefix}/enabled`);
   }
 }

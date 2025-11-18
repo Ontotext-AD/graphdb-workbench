@@ -2,8 +2,8 @@ import {MonitoringService} from '../monitoring.service';
 import {TestUtil} from '../../utils/test/test-util';
 import {ResponseMock} from '../../http/test/response-mock';
 import {OperationStatusSummary} from '../../../models/monitoring';
-import {MapperProvider} from '../../../providers';
 import {OperationSummaryMapper} from '../mapper/operation-summary-mapper';
+import {OperationStatusSummaryResponse} from '../../../models/monitoring/operation-status-summary-response';
 
 describe('MonitoringService', () => {
   let monitoringService: MonitoringService;
@@ -22,7 +22,7 @@ describe('MonitoringService', () => {
         {value: 'CREATE_BACKUP_IN_PROGRESS', status: 'WARNING', type: 'backupAndRestore'},
         {value: 'UNAVAILABLE_NODES', status: 'WARNING', type: 'clusterHealth'}
       ]
-    } as unknown as OperationStatusSummary;
+    } as unknown as OperationStatusSummaryResponse;
     TestUtil.mockResponse(new ResponseMock('rest/monitor/repository/123/operations').setResponse(mockOperationsJson));
 
     // When I call the getOperations method
@@ -30,6 +30,6 @@ describe('MonitoringService', () => {
 
     // Then, I should get a OperationStatusSummary instance, with mapped property values
     expect(result).toBeInstanceOf(OperationStatusSummary);
-    expect(result).toEqual(MapperProvider.get(OperationSummaryMapper).mapToModel(mockOperationsJson));
+    expect(result).toEqual(new OperationSummaryMapper().mapToModel(mockOperationsJson));
   });
 });

@@ -14,10 +14,10 @@ export class OperationStatusSummary extends Model<OperationStatusSummary> {
   status: OperationStatus;
   allRunningOperations: OperationList;
 
-  constructor(operationStatusSummary: OperationStatusSummary) {
+  constructor(data: Partial<OperationStatusSummary>) {
     super();
-    this.status = operationStatusSummary.status || OperationStatus.INFORMATION;
-    this.allRunningOperations = operationStatusSummary.allRunningOperations;
+    this.status = data.status ?? OperationStatus.INFORMATION;
+    this.allRunningOperations = data.allRunningOperations ?? new OperationList([]);
   }
 
   /**

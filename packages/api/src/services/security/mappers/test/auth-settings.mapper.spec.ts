@@ -1,6 +1,6 @@
 import {AuthSettings} from '../../../../models/security/auth-settings';
 import {AuthSettingsMapper} from '../auth-settings.mapper';
-import {AuthSettingsResponseModel} from '../../../../models/security/response-models/auth-settings-response-model';
+import {AuthSettingsResponse} from '../../../../models/security/response-models/auth-settings-response';
 import {AuthorityList} from '../../../../models/security';
 import {AppSettings} from '../../../../models/users/app-settings';
 
@@ -21,7 +21,7 @@ describe('AuthSettingsMapper', () => {
         IGNORE_SHARED_QUERIES: false,
         EXECUTE_COUNT: false
       }
-    } as AuthSettingsResponseModel;
+    } as AuthSettingsResponse;
 
     // When I map the raw data to an AuthSettings model
     const authSettings = new AuthSettingsMapper().mapToModel(rawAuthSettings);

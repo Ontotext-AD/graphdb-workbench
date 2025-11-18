@@ -2,7 +2,7 @@ import {AuthStrategy, AuthStrategyType} from '../../../models/security/authentic
 import {AuthenticatedUser} from '../../../models/security';
 import {MissingTokenInHeader} from '../errors/missing-token-in-header';
 import {LoginData} from '../../../models/security/authentication/login-data';
-import {MapperProvider, service} from '../../../providers';
+import {service} from '../../../providers';
 import {AuthenticatedUserMapper} from '../mappers/authenticated-user.mapper';
 import {SecurityService} from '../security.service';
 import {LoggerProvider} from '../../logging/logger-provider';
@@ -49,7 +49,10 @@ export abstract class BaseGdbLoginStrategy implements AuthStrategy {
     const {username, password} = loginData;
     const response = await this.securityService.loginGdbToken(username, password);
     const authHeader = this.getAuthenticationHeader(response);
-    const authUser = MapperProvider.get(AuthenticatedUserMapper).mapToModel(response.data);
+    if (!response.data || typeof response.data === 'string') {
+      throw new Error('Invalid authenticated user response from backend');
+    }
+    const authUser = new AuthenticatedUserMapper().mapToModel(response.data);
 
     if (authHeader) {
       this.authStorageService.setAuthToken(authHeader);

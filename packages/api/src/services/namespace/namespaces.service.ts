@@ -2,13 +2,13 @@ import {Service} from '../../providers/service/service';
 import {NamespaceMap} from '../../models/repositories';
 import {NamespaceMapMapper} from '../repository/mappers/namespace-map.mapper';
 import {NamespacesRestService} from './namespaces-rest.service';
-import {MapperProvider, ServiceProvider} from '../../providers';
+import {ServiceProvider} from '../../providers';
 
 /**
  * Service for interacting with RDF4J repositories.
  */
 export class NamespacesService implements Service {
-  private namespaceMapper = MapperProvider.get(NamespaceMapMapper);
+  private namespaceMapper = new NamespaceMapMapper();
   private readonly namespacesRestService = ServiceProvider.get(NamespacesRestService);
 
   /**

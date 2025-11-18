@@ -12,12 +12,22 @@ export class NamespaceMapMapper extends Mapper<NamespaceMap> {
    * @param data - The raw namespace response data from the API containing bindings with prefix and namespace values
    * @returns A NamespaceMap containing a mapping between prefixes and their corresponding URIs.
    */
-  mapToModel(data: NamespacesResponse): NamespaceMap {
-    const namespaces = data?.results.bindings || [];
-    return new NamespaceMap(namespaces.reduce((acc, binding) => {
-      const prefix = binding.prefix.value;
-      acc[prefix] = binding.namespace.value;
+  mapToModel(data: NamespacesResponse | NamespaceMap): NamespaceMap {
+    if (data instanceof NamespaceMap) {
+      return data;
+    }
+
+    const bindings = data.results?.bindings ?? [];
+
+    const map = bindings.reduce<Record<string, string>>((acc, binding) => {
+      const prefix = binding.prefix?.value;
+      const ns = binding.namespace?.value;
+      if (prefix && ns) {
+        acc[prefix] = ns;
+      }
       return acc;
-    }, {} as Record<string, string>));
+    }, {});
+
+    return new NamespaceMap(map);
   }
 }

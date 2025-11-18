@@ -14,7 +14,6 @@ import {
     RepositoryStorageService,
     RepositoryContextService,
     RepositoryLocationContextService,
-    MapperProvider,
     RepositoryListMapper,
     AuthorizationService,
     AuthenticationService,
@@ -534,7 +533,7 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
             return JSON.stringify(currentRepos);
         }, (newVal, oldVal) => {
             if (newVal !== oldVal) {
-                const rm = MapperProvider.get(RepositoryListMapper);
+                const rm = new RepositoryListMapper();
                 const groupedByLocation = JSON.parse(newVal).reduce((acc, repo) => {
                     const loc = repo.location || '';
                     if (!acc[loc]) {

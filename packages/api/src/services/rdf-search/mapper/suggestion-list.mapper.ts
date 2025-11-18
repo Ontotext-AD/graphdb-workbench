@@ -2,7 +2,7 @@ import {SuggestionList} from '../../../models/rdf-search/suggestion-list';
 import {Mapper} from '../../../providers/mapper/mapper';
 import {Suggestion} from '../../../models/rdf-search/suggestion';
 import {GeneratorUtils} from '../../utils/generator-utils';
-import {SuggestionResponse} from '../../../models/rdf-search/api/suggestion-response';
+import {SuggestionResponse} from '../../../models/rdf-search';
 
 /**
  * Mapper class for converting an array of Suggestion objects to a SuggestionList model.
@@ -15,9 +15,17 @@ export class SuggestionListMapper extends Mapper<SuggestionList> {
    * @returns A new SuggestionList instance containing the provided Suggestion objects.
    */
   mapToModel(data: SuggestionResponse[]): SuggestionList {
-    return new SuggestionList(data.map(suggestion => new Suggestion({
-      ...suggestion,
-      id: GeneratorUtils.hashCode(`${suggestion.type}-${suggestion.value}-${suggestion.description}`)
-    })));
+    const suggestions = data.map(suggestion =>
+      new Suggestion({
+        id: suggestion.id ?? GeneratorUtils.hashCode(
+          `${suggestion.type}-${suggestion.value}-${suggestion.description}`
+        ),
+        type: suggestion.type,
+        value: suggestion.value,
+        description: suggestion.description,
+      })
+    );
+
+    return new SuggestionList(suggestions);
   }
 }

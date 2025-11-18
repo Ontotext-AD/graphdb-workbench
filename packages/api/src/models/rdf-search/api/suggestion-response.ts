@@ -14,3 +14,10 @@ export interface SuggestionResponse {
   /** Unique identifier for the suggestion. */
   id?: number;
 }
+
+export interface SuggestionInit {
+  id?: number;
+  type: SuggestionType;
+  value: string;
+  description?: string;
+}

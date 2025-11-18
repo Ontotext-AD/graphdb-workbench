@@ -2,7 +2,7 @@ import {RepositoryLocationRestService} from './repository-location-rest.service'
 import {RepositoryLocation} from '../../models/repository-location';
 import {RepositoryLocationMapper} from './mappers/repository-location.mapper';
 import {Service} from '../../providers/service/service';
-import {MapperProvider, ServiceProvider} from '../../providers';
+import {ServiceProvider} from '../../providers';
 import {Mapper} from '../../providers/mapper/mapper';
 
 /**
@@ -15,7 +15,7 @@ export class RepositoryLocationService implements Service {
 
   constructor() {
     this.locationRestService = ServiceProvider.get(RepositoryLocationRestService);
-    this.repositoryLocationMapper = MapperProvider.get(RepositoryLocationMapper);
+    this.repositoryLocationMapper = new RepositoryLocationMapper();
   }
 
   /**
