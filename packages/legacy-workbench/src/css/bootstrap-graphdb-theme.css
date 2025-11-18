@@ -579,7 +579,7 @@ code {
 }
 
 .tag-primary {
-    background-color: var(--gw-secondary-base);
+    background-color: var(--gw-tag-primary-background);
 }
 
 .tag-inverse {
@@ -1188,14 +1188,15 @@ input.switch:empty ~ label {
     -ms-user-select: none;
     user-select: none;
     margin: 0.05em 0.6em -0.05em 0;
+    vertical-align: text-bottom;
 }
 
 input.switch:empty ~ label:before {
     display: block;
     content: ' ';
     width: 2.2em;
-    height: 0.8em;
-    background-color: rgba(181, 181, 181, 0.5);
+    height: 1.25em;
+    background-color: var(--gw-toggleswitch-background);
     border-radius: 10em;
     -moz-transition: all 100ms ease-in; /* FF4+ */
     -o-transition: all 100ms ease-in; /* Opera 10.5+ */
@@ -1206,12 +1207,13 @@ input.switch:empty ~ label:before {
 input.switch:empty ~ label:after {
     position: absolute;
     display: block;
-    top: -0.2em;
-    left: -0.3em;
+    top: 0.1em;
+    left: 0.1em;
     content: ' ';
-    width: 1.25em;
-    height: 1.25em;
-    background-color: #888888;
+    width: 1.05em;
+    height: 1.05em;
+    background-color: var(--gw-toggleswitch-handle-background);
+    border: 1px solid var(--gw-toggleswitch-background);
     border-radius: 50%;
     -moz-transition: all 100ms ease-in; /* FF4+ */
     -o-transition: all 100ms ease-in; /* Opera 10.5+ */
@@ -1220,12 +1222,13 @@ input.switch:empty ~ label:after {
 }
 
 input.switch:checked ~ label:before {
-    background-color: var(--gw-secondary-light);
+    background-color: var(--gw-toggleswitch-checked-background);
 }
 
 input.switch:checked ~ label:after {
-    left: 1.3em;
-    background-color: var(--gw-secondary-base);
+    left: 1.05em;
+    background-color: var(--gw-toggleswitch-handle-checked-background);
+    border: 1px solid var(--gw-toggleswitch-checked-background);
 }
 
 .card.active input.switch:checked ~ label:before {
