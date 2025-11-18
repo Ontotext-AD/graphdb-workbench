@@ -1,6 +1,5 @@
 import {Model} from '../common';
 import {AuthorityList} from './authorization/authority-list';
-import {MapperProvider} from '../../providers';
 import {AppSettings} from '../users/app-settings';
 import {User} from '../users/user';
 import {GrantedAuthoritiesUiModelMapper} from '../../services/security/mappers/granted-authorities-ui-model.mapper';
@@ -50,13 +49,13 @@ export class AuthenticatedUser extends Model<AuthenticatedUser> {
     this.password = data?.password ?? '';
     // TODO: Fix this BS. The admin user has `grantedAuthorities` insted of authorities as other users
     this.authorities = data?.authorities ?? new AuthorityList();
-    this.grantedAuthoritiesUiModel = MapperProvider.get(GrantedAuthoritiesUiModelMapper).mapToModel(data?.authorities);
+    this.grantedAuthoritiesUiModel = new GrantedAuthoritiesUiModelMapper().mapToModel(data?.authorities);
     this.appSettings = data?.appSettings ?? new AppSettings();
   }
 
   setAuthorities(authorityList: AuthorityList = new AuthorityList()) {
     this.authorities = authorityList;
-    this.grantedAuthoritiesUiModel = MapperProvider.get(GrantedAuthoritiesUiModelMapper).mapToModel(authorityList.getItems());
+    this.grantedAuthoritiesUiModel = new GrantedAuthoritiesUiModelMapper().mapToModel(authorityList.getItems());
     return this;
   }
 

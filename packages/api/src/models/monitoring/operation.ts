@@ -2,6 +2,7 @@ import {Model} from '../common';
 import {OperationStatus} from './operation-status';
 import {OperationType} from './operation-type';
 import {OperationGroup} from './operation-group';
+import {OperationResponse} from './operation-status-summary-response';
 
 /** Not all operations have counts as values */
 const OPERATIONS_WITH_COUNT = [OperationType.QUERIES, OperationType.UPDATES, OperationType.IMPORT];
@@ -37,7 +38,7 @@ export class Operation extends Model<Operation> {
   href: string;
   labelKey: string;
 
-  constructor(operation: Operation) {
+  constructor(operation: Operation | OperationResponse) {
     super();
     this.id = `${operation.status}-${operation.type}-${operation.value}`;
     this.value = operation.value;
@@ -49,11 +50,11 @@ export class Operation extends Model<Operation> {
     this.labelKey = this.getLabelKey(operation);
   }
 
-  private getCount(operation: Operation) {
+  private getCount(operation: Operation | OperationResponse) {
     return OPERATIONS_WITH_COUNT.includes(operation.type) ? parseInt(operation.value, 10) : 0;
   }
 
-  private getLabelKey(operation: Operation) {
+  private getLabelKey(operation: Operation | OperationResponse) {
     return OPERATIONS_WITH_COUNT.includes(operation.type) ? operation.type : operation.value;
   }
 }

@@ -2,6 +2,7 @@ import {Mapper} from '../../../providers/mapper/mapper';
 import {OperationList} from '../../../models/monitoring/operation-list';
 import {Operation} from '../../../models/monitoring/operation';
 import {OperationType} from '../../../models/monitoring/operation-type';
+import {OperationResponse} from '../../../models/monitoring/operation-status-summary-response';
 
 const OPERATION_TYPE_SORT_ORDER = {
   [OperationType.CLUSTER_HEALTH]: 0,
@@ -22,7 +23,7 @@ export class OperationListMapper extends Mapper<OperationList> {
    * @param data - An array of Operation objects to be mapped into an OperationList.
    * @returns A new OperationList instance containing the provided operations.
    */
-  mapToModel(data: Operation[]): OperationList {
+  mapToModel(data: OperationResponse[]): OperationList {
     return new OperationList(
       data
         .map((operation) => new Operation(operation))

@@ -6,7 +6,6 @@ import {
   License,
   LicenseContextService,
   NavigationEnd,
-  MapperProvider,
   ProductInfo,
   ProductInfoContextService,
   RepositoryContextService,
@@ -96,7 +95,7 @@ export class OntoTestContext {
   setAuthenticatedUser(user: User): Promise<void> {
     // Don't map if undefined is passed. This allows to clear the user in context
     const userModel = user
-      ? MapperProvider.get(AuthenticatedUserMapper).mapToModel(user)
+      ? new AuthenticatedUserMapper().mapToModel(user)
       : undefined;
     ServiceProvider.get(SecurityContextService).updateAuthenticatedUser(userModel);
     ServiceProvider.get(AuthenticationStorageService).setAuthToken('token');
