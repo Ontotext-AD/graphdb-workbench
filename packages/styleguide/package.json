@@ -23,7 +23,7 @@
     "cross-env": "^10.0.0",
     "eslint": "^9.34.0",
     "eslint-config-important-stuff": "^1.1.0",
-    "glob": "^11.0.3",
+    "glob": "^11.1.0",
     "jest": "^30.1.0",
     "jest-cli": "^30.1.0",
     "jest-environment-jsdom": "^30.1.0",
