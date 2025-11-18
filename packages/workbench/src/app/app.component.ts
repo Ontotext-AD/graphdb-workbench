@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ActivatedRoute, Router, RouterLink, RouterOutlet} from '@angular/router';
+import {Router, RouterLink, RouterOutlet} from '@angular/router';
 import {EventName, EventService, getCurrentRoute, service} from '@ontotext/workbench-api';
 import {Subscription} from 'rxjs';
 
@@ -13,10 +13,8 @@ import {Subscription} from 'rxjs';
   ]
 })
 export class AppComponent implements OnInit, OnDestroy {
+  private readonly router = service(Router);
   private readonly subscriptions = new Subscription();
-
-  constructor(private readonly router: Router, private readonly route: ActivatedRoute) {
-  }
 
   ngOnInit(): void {
     this.subscribeToRoutingEvents();
