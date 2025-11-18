@@ -144,6 +144,9 @@
   --gw-hover-background: var(--gw-neutral-200);
   --gw-default-border-color: var(--gw-neutral-300);
   --gw-default-background: var(--gw-neutral-0);
+  --gw-toggleswitch-handle-background: var(--gw-neutral-0);
+  --gw-toggleswitch-handle-checked-background: var(--gw-neutral-0);
+  --gw-toggleswitch-background: var(--gw-neutral-300);
   --gw-tag-default-background: var(--gw-neutral-200);
   --gw-listbox-option-striped-background: var(--gw-neutral-100);
   --gw-tabs-tab-hover-background: var(--gw-neutral-200);
@@ -210,6 +213,7 @@
   --gw-help-dark: var(--gw-neutral-dark);
   --gw-panel-background: var(--gw-default-background);
   --gw-panel-border-color: var(--gw-default-border-color);
+  --gw-toggleswitch-checked-background: var(--gw-primary-base);
   --gw-message-info-background: var(--gw-info-lighter);
   --gw-message-info-border-color: var(--gw-info-lighter);
   --gw-message-info-color: var(--gw-info-dark);
@@ -219,6 +223,7 @@
   --gw-message-error-background: var(--gw-error-lighter);
   --gw-message-error-border-color: var(--gw-error-lighter);
   --gw-message-error-color: var(--gw-error-dark);
+  --gw-tag-primary-background: var(--gw-primary-base);
   --gw-tag-info-background: var(--gw-info-lighter);
   --gw-tag-info-color: var(--gw-info-base);
   --gw-tag-warning-background: var(--gw-warning-lighter);
@@ -312,7 +317,6 @@
   --gw-toast-success-background: var(--gw-success-base);
   --gw-toast-success-border-color: var(--gw-success-base);
   --gw-toast-success-color: var(--gw-primary-contrast-color);
-  --gw-swagger-color: var(--gw-body-color);
   --gw-autocomplete-option-color: var(--gw-list-option-color);
   --gw-message-success-border-color: var(--gw-default-success-light-background);
   --gw-listbox-option-selected-focus-background: var(--gw-list-option-selected-focus-background);

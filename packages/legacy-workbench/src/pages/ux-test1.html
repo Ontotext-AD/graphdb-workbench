@@ -311,10 +311,31 @@
                 <br/>
                 <h3>Toggle and slider</h3>
                 <div>
-                    <span gdb-tooltip="Toggle" tooltip-placement="top" class="switch">
-                        <input id="toggle" type="checkbox" class="switch" ng-checked="true"/>
-                        <label for="toggle"></label>
-                    </span>
+                    <table border="1" cellpadding="10" cellspacing="0">
+                        <tr>
+                            <td>legacy</td>
+                            <td>
+                                <div>
+                                    <span gdb-tooltip="Toggle" tooltip-placement="top" class="switch">
+                                        <input id="toggle" type="checkbox" class="switch" ng-checked="true"/>
+                                        <label for="toggle"></label>
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Default attributes: [checked=false], no label</td>
+                            <td><onto-toggle-switch></onto-toggle-switch></td>
+                        </tr>
+                        <tr>
+                            <td>checked: true, label-key</td>
+                            <td><onto-toggle-switch checked="true" label-key="checked"></onto-toggle-switch></td>
+                        </tr>
+                        <tr>
+                            <td>checked: false, label-key</td>
+                            <td><onto-toggle-switch checked="false" label-key="unchecked"></onto-toggle-switch></td>
+                        </tr>
+                    </table>
                 </div>
                 <br/>
                 <div class="class-cnt-slider animate-show">
