@@ -6,7 +6,6 @@ import {
   RepositoryStorageService,
   RepositoryContextService,
   ServiceProvider,
-  MapperProvider,
   SecurityContextService,
   SecurityConfigMapper,
   AuthenticatedUserMapper,
@@ -104,7 +103,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             this.getAuthenticatedUserFromBackend = function(noFreeAccessFallback, justLoggedIn) {
                 SecurityService.getAuthenticatedUser().then(function(data) {
                     ServiceProvider.get(SecurityContextService).updateAuthenticatedUser(
-                      MapperProvider.get(AuthenticatedUserMapper).mapToModel(data),
+                      new AuthenticatedUserMapper().mapToModel(data),
                     );
                     const token = AuthTokenService.getAuthToken();
                     if (token && token.startsWith('GDB')) {
@@ -576,13 +575,11 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 $rootScope.$broadcast('securityInit', securityEnabled, userLoggedIn, freeAccess);
 
                 const securityContextService = ServiceProvider.get(SecurityContextService);
-                const openIdConfigMapper = MapperProvider.get(OpenidConfigMapper);
-                const openIdConfigModel = openIdConfigMapper.mapToModel(AuthTokenService.OPENID_CONFIG);
+                const openIdConfigModel = new OpenidConfigMapper().mapToModel(AuthTokenService.OPENID_CONFIG);
                 securityContextService.updateOpenIdConfig(openIdConfigModel);
 
                 this.getPrincipal().then((data) => {
-                    const userMapper = MapperProvider.get(AuthenticatedUserMapper);
-                    const authenticatedUser = userMapper.mapToModel(data);
+                    const authenticatedUser = new AuthenticatedUserMapper().mapToModel(data);
                     securityContextService.updateAuthenticatedUser(authenticatedUser);
                 });
 
@@ -610,6 +607,6 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                     freeAccessActive: freeAccess,
                 };
                 ServiceProvider.get(AuthenticationStorageService).setAuthenticated(this.isAuthenticated());
-                ServiceProvider.get(SecurityContextService).updateSecurityConfig(MapperProvider.get(SecurityConfigMapper).mapToModel(config));
+                ServiceProvider.get(SecurityContextService).updateSecurityConfig(new SecurityConfigMapper().mapToModel(config));
             };
         }]);

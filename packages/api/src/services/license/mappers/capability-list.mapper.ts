@@ -9,11 +9,14 @@ import { Capability } from '../../../models/license';
 export class CapabilityListMapper extends Mapper<CapabilityList> {
   /**
    * Maps an array of Capability objects to a CapabilityList model.
-   * 
+   *
    * @param data - An array of Capability objects to be mapped.
    * @returns A new CapabilityList instance containing the provided Capability objects.
    */
-  mapToModel(data: Capability[]): CapabilityList {
-    return new CapabilityList(data);
+  mapToModel(data?: Capability[] | CapabilityList): CapabilityList {
+    if (data instanceof CapabilityList) {
+      return data;
+    }
+    return new CapabilityList(data ?? []);
   }
 }

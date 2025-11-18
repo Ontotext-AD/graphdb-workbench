@@ -1,6 +1,5 @@
 import {AutocompleteSearchResult} from '../../../models/rdf-search/autocomplete-search-result';
 import {Mapper} from '../../../providers/mapper/mapper';
-import {MapperProvider} from '../../../providers';
 import {SuggestionListMapper} from '../../rdf-search/mapper/suggestion-list.mapper';
 import {AutocompleteSearchResultResponse} from '../../../models/rdf-search/api/autocomplete-search-result-response';
 
@@ -18,7 +17,7 @@ export class AutocompleteSearchResultMapper extends Mapper<AutocompleteSearchRes
     return new AutocompleteSearchResult(
       {
         ...data,
-        suggestionList: MapperProvider.get(SuggestionListMapper).mapToModel(data.suggestions)
+        suggestionList: new SuggestionListMapper().mapToModel(data.suggestions)
       });
   }
 }

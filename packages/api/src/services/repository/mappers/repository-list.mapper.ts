@@ -1,7 +1,6 @@
 import { Mapper } from '../../../providers/mapper/mapper';
 import { Repository, RepositoryList } from '../../../models/repositories';
 import { RepositoryMapper } from './repository.mapper';
-import { MapperProvider } from '../../../providers';
 
 /**
  * Maps server response data to a {@link RepositoryList} model.
@@ -10,12 +9,7 @@ import { MapperProvider } from '../../../providers';
  * instances wrapped in a {@link RepositoryList}.
  */
 export class RepositoryListMapper extends Mapper<RepositoryList> {
-  private repositoryMapper: Mapper<Repository>;
-
-  constructor() {
-    super();
-    this.repositoryMapper = MapperProvider.get(RepositoryMapper);
-  }
+  private readonly repositoryMapper: Mapper<Repository> = new RepositoryMapper();
 
   /**
    * Maps the raw data to an instance of the {@link RepositoryList} model.

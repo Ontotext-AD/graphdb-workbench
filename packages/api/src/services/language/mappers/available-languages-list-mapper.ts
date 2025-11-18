@@ -12,7 +12,10 @@ export class AvailableLanguagesListMapper extends Mapper<AvailableLanguagesList>
    * @param data - An array of AvailableLanguage objects to be mapped.
    * @returns A new AvailableLanguagesList instance containing the provided AvailableLanguage objects.
    */
-  mapToModel(data: AvailableLanguage[]): AvailableLanguagesList {
-    return new AvailableLanguagesList(data);
+  mapToModel(data?: AvailableLanguage[] | AvailableLanguagesList): AvailableLanguagesList {
+    if (data instanceof AvailableLanguagesList) {
+      return data;
+    }
+    return new AvailableLanguagesList(data ?? []);
   }
 }

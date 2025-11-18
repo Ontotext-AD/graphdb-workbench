@@ -2,7 +2,7 @@ import {Service} from '../../providers/service/service';
 import {RepositoryRestService} from './repository-rest.service';
 import {Repository, RepositoryList} from '../../models/repositories';
 import {RepositoryListMapper} from './mappers/repository-list.mapper';
-import {MapperProvider, ServiceProvider} from '../../providers';
+import {ServiceProvider} from '../../providers';
 import {RepositorySizeInfo} from '../../models/repositories';
 import {RepositorySizeInfoMapper} from './mappers/repository-size-info.mapper';
 import {Mapper} from '../../providers/mapper/mapper';
@@ -19,8 +19,8 @@ export class RepositoryService implements Service {
 
   constructor() {
     this.repositoryRestService = ServiceProvider.get(RepositoryRestService);
-    this.repositoryListMapper = MapperProvider.get(RepositoryListMapper);
-    this.repositorySizeInfoMapper = MapperProvider.get(RepositorySizeInfoMapper);
+    this.repositoryListMapper = new RepositoryListMapper();
+    this.repositorySizeInfoMapper = new RepositorySizeInfoMapper();
   }
 
   /**

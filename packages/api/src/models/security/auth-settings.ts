@@ -1,7 +1,6 @@
 import {Model} from '../common';
 import {AppSettings} from './app-settings';
 import {AuthorityList} from './authority-list';
-import {MapperProvider} from '../../providers';
 import {AuthorityListMapper} from '../../services/security/mappers/authority-list.mapper';
 
 /**
@@ -15,7 +14,7 @@ export class AuthSettings extends Model<AuthSettings> {
   constructor(data: Partial<AuthSettings>) {
     super();
     this.appSettings = data.appSettings;
-    this.authorities = MapperProvider.get(AuthorityListMapper).mapToModel(data.authorities);
+    this.authorities = new AuthorityListMapper().mapToModel(data.authorities);
     this.enabled = data.enabled;
   }
 }

@@ -1,6 +1,5 @@
 import { AvailableLanguagesList } from './available-languages-list';
 import { Model } from '../common';
-import { MapperProvider } from '../../providers';
 import { AvailableLanguagesListMapper } from '../../services/language/mappers/available-languages-list-mapper';
 
 /**
@@ -14,6 +13,6 @@ export class LanguageConfig extends Model<LanguageConfig>  {
   constructor(data: LanguageConfig) {
     super();
     this.defaultLanguage = data.defaultLanguage;
-    this.availableLanguages = MapperProvider.get(AvailableLanguagesListMapper).mapToModel(data.availableLanguages);
+    this.availableLanguages = new AvailableLanguagesListMapper().mapToModel(data.availableLanguages);
   }
 }

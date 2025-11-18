@@ -3,7 +3,7 @@ import {
   OperationGroup,
   OperationStatus,
   OperationStatusSummary,
-  OperationGroupSummaryList, MapperProvider, OperationGroupSummaryListMapper, navigateTo
+  OperationGroupSummaryList, OperationGroupSummaryListMapper, navigateTo
 } from '@ontotext/workbench-api';
 
 const operationGroupToIcon = {
@@ -49,8 +49,7 @@ export class OntoOperationsNotification {
   }
 
   render() {
-    this.operationGroups = MapperProvider
-      .get(OperationGroupSummaryListMapper)
+    this.operationGroups = new OperationGroupSummaryListMapper()
       .mapToModel(this.activeOperations.toOperationsGroupSummary());
 
     return (

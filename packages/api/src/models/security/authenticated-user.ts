@@ -1,6 +1,5 @@
 import {Model} from '../common';
 import {AuthorityList} from './authority-list';
-import {MapperProvider} from '../../providers';
 import {AuthorityListMapper} from '../../services/security/mappers/authority-list.mapper';
 import {AppSettings} from './app-settings';
 
@@ -19,7 +18,7 @@ export class AuthenticatedUser extends Model<AuthenticatedUser> {
     this.external = data?.external ?? false;
     this.username = data?.username ?? '';
     this.password = data?.password ?? '';
-    this.authorities = MapperProvider.get(AuthorityListMapper).mapToModel(data?.authorities);
+    this.authorities = new AuthorityListMapper().mapToModel(data?.authorities);
     this.appSettings = data?.appSettings ?? {};
   }
 }
