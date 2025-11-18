@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+<head>
+  <base href="/pages/cookie-consent/"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0" />
+  <title>Stencil Component Starter</title>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "@ontotext/workbench-api": "/resources/ontotext-workbench-api.js"
+      }
+    }
+  </script>
+
+  <script type="module" src="/build/shared-components.esm.js"></script>
+  <script nomodule src="/build/shared-components.js"></script>
+  <script src="../js/main.js" defer></script>
+  <script src="./main.js" defer></script>
+  <link rel="stylesheet" href="../css/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/remixicon.css">
+</head>
+<body>
+<table border="1" cellpadding="10" cellspacing="0">
+  <tr>
+    <td>Default attributes: [checked=false], no label</td>
+    <td><onto-toggle-switch></onto-toggle-switch></td>
+  </tr>
+  <tr>
+    <td>checked: true, label-key</td>
+    <td><onto-toggle-switch checked="true" label-key="checked"></onto-toggle-switch></td>
+  </tr>
+  <tr>
+    <td>checked: false, label-key</td>
+    <td><onto-toggle-switch checked="false" label-key="unchecked"></onto-toggle-switch></td>
+  </tr>
+</table>
+
+<br/>
+
+
+<onto-tooltip></onto-tooltip>
+</body>
+</html>
