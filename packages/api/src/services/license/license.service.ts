@@ -10,7 +10,7 @@ import {LicenseContextService} from './license-context.service';
  */
 export class LicenseService implements Service {
   private readonly licenseRestService: LicenseRestService = ServiceProvider.get(LicenseRestService);
-  private readonly licenseMapper: LicenseMapper = ServiceProvider.get(LicenseMapper);
+  private readonly licenseMapper: LicenseMapper = new LicenseMapper();
   private readonly trackableProductTypes = ['free', 'sandbox'];
   private readonly trackableTypesOfUse = ['evaluation', 'this is an evaluation license'];
 

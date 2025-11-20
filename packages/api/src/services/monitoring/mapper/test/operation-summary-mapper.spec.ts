@@ -4,6 +4,7 @@ import {
   OperationStatusSummary,
   OperationType
 } from '../../../../models/monitoring';
+import {OperationStatusSummaryResponse} from '../../../../models/monitoring/operation-status-summary-response';
 
 describe('OperationSummaryMapper', () => {
   let mapper: OperationSummaryMapper;
@@ -14,7 +15,7 @@ describe('OperationSummaryMapper', () => {
 
   test('should correctly map a OperationStatusSummary object', () => {
     // Given, I have a operationSummary JSON object.
-    const operationStatusSummary = {
+    const operationStatusSummary: OperationStatusSummaryResponse = {
       status: OperationStatus.WARNING,
       allRunningOperations: [
         {
@@ -28,7 +29,7 @@ describe('OperationSummaryMapper', () => {
           value: 'BACKUP_IN_PROGRESS',
         }
       ]
-    } as unknown as OperationStatusSummary;
+    };
 
     // When, I map the object to a OperationSummary.
     const result = mapper.mapToModel(operationStatusSummary);

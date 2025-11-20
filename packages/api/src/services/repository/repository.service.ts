@@ -2,10 +2,11 @@ import {Service} from '../../providers/service/service';
 import {RepositoryRestService} from './repository-rest.service';
 import {Repository, RepositoryList} from '../../models/repositories';
 import {RepositoryListMapper} from './mappers/repository-list.mapper';
-import {MapperProvider, ServiceProvider} from '../../providers';
+import {ServiceProvider} from '../../providers';
 import {RepositorySizeInfo} from '../../models/repositories';
 import {RepositorySizeInfoMapper} from './mappers/repository-size-info.mapper';
 import {Mapper} from '../../providers/mapper/mapper';
+import {RepositoryListResponse} from '../../models/repositories/repository-response';
 
 /**
  * The RepositoryService class is responsible for fetching repository-related data from the backend
@@ -13,15 +14,9 @@ import {Mapper} from '../../providers/mapper/mapper';
  */
 export class RepositoryService implements Service {
   private readonly GRAPHQL_REPO_AUTHORITY = 'GRAPHQL';
-  private repositoryRestService: RepositoryRestService;
-  private repositoryListMapper: Mapper<RepositoryList>;
-  private repositorySizeInfoMapper: Mapper<RepositorySizeInfo>;
-
-  constructor() {
-    this.repositoryRestService = ServiceProvider.get(RepositoryRestService);
-    this.repositoryListMapper = MapperProvider.get(RepositoryListMapper);
-    this.repositorySizeInfoMapper = MapperProvider.get(RepositorySizeInfoMapper);
-  }
+  private readonly repositoryRestService: RepositoryRestService = ServiceProvider.get(RepositoryRestService);
+  private readonly repositoryListMapper: Mapper<RepositoryList> = new RepositoryListMapper();
+  private readonly repositorySizeInfoMapper: Mapper<RepositorySizeInfo> = new RepositorySizeInfoMapper();
 
   /**
    * Retrieves the list of repositories.
@@ -31,7 +26,7 @@ export class RepositoryService implements Service {
   getRepositories(): Promise<RepositoryList> {
     return this.repositoryRestService
       .getRepositories()
-      .then((response) => {
+      .then((response: RepositoryListResponse) => {
         return this.repositoryListMapper.mapToModel(response);
       });
   }

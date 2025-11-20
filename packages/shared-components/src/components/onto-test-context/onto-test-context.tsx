@@ -7,7 +7,6 @@ import {
   License,
   LicenseContextService,
   NavigationEnd,
-  MapperProvider,
   ProductInfo,
   ProductInfoContextService,
   RepositoryContextService,
@@ -93,7 +92,7 @@ export class OntoTestContext {
   @Method()
   setAuthenticatedUser(user: AuthenticatedUser): Promise<void> {
     ServiceProvider.get(SecurityContextService).updateAuthenticatedUser(
-      MapperProvider.get(AuthenticatedUserMapper).mapToModel(user)
+      new AuthenticatedUserMapper().mapToModel(user)
     );
     return Promise.resolve();
   }

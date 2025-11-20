@@ -1,6 +1,6 @@
 import {Service} from '../../providers/service/service';
 import {SecurityRestService} from './security-rest.service';
-import {MapperProvider, ServiceProvider} from '../../providers';
+import {ServiceProvider} from '../../providers';
 import {AuthenticatedUser, SecurityConfig} from '../../models/security';
 import {SecurityContextService} from './security-context.service';
 import {SecurityConfigMapper} from './mappers/security-config.mapper';
@@ -35,7 +35,7 @@ export class SecurityService implements Service {
    * @returns A Promise that resolves with the mapped `SecurityConfig` instance.
    */
   getSecurityConfig(): Promise<SecurityConfig> {
-    return this.securityRestService.getSecurityConfig().then((response) => MapperProvider.get(SecurityConfigMapper).mapToModel(response));
+    return this.securityRestService.getSecurityConfig().then((response) => new SecurityConfigMapper().mapToModel(response));
   }
 
   /**
@@ -48,6 +48,6 @@ export class SecurityService implements Service {
    */
   getAuthenticatedUser(): Promise<AuthenticatedUser> {
     return this.securityRestService.getAuthenticatedUser()
-      .then((response) => MapperProvider.get(AuthenticatedUserMapper).mapToModel(response));
+      .then((response) => new AuthenticatedUserMapper().mapToModel(response));
   }
 }
