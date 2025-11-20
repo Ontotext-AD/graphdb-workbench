@@ -565,6 +565,30 @@ export class AgentListFilterModel {
 }
 
 /**
+ * Model representing a similarity index option for selection in the agent form.
+ */
+export class SimilarityIndexOption {
+    constructor(data) {
+        /**
+         * @type {string}
+         */
+        this.provider = data.provider;
+        /**
+         * @type {string}
+         */
+        this.label = data.label;
+        /**
+         * @type {string}
+         */
+        this.value = data.value;
+        /**
+         * @type {string}
+         */
+        this.group = data.group;
+    }
+}
+
+/**
  * Represents the compatibility status of an agent with the current version of the GraphDB.
  *
  * Compatibility is determined based on the versions of the agent and the GraphDB application.

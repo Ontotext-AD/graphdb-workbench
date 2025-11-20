@@ -394,10 +394,10 @@ export class ExtractionMethodFormModel {
 
         /**
          * The selected connector instance and type option in the similarity search extraction method. NOT used in payload.
-         * @type {null}
+         * @type {SimilarityIndexOption|undefined}
          * @private
          */
-        this._similarityIndexOption = null;
+        this._similarityIndexOption = undefined;
 
         this._expanded = data.expanded !== undefined ? data.expanded : false;
     }
