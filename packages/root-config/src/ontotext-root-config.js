@@ -17,7 +17,6 @@ import {
   NavigationStart,
   getBasePath
 } from '@ontotext/workbench-api';
-import {LoggerProvider} from './services/logger-provider';
 import microfrontendLayout from './microfrontend-layout.json';
 import './styles/onto-stylesheet.scss';
 import './onto-vendor';
@@ -25,7 +24,6 @@ import './styles/main.scss';
 import './styles/css/charteditor-custom.css';
 
 const SINGLE_SPA_GLOBAL_KEY = 'singleSpa';
-const logger = LoggerProvider.logger;
 
 // This is a so-called context map which is needed by webpack in order to be able
 // to properly resolve the urls for the dynamic imports. Otherwise it wouldn't be
@@ -73,7 +71,7 @@ function loadAppByName(name) {
   ensureGlobalNavigate();
 
   if (!name) {
-    logger.error('Empty application name requested.');
+    console.error('Empty application name requested.');
     return Promise.resolve(undefined);
   }
 
@@ -81,11 +79,11 @@ function loadAppByName(name) {
   if (!hasNamespace) {
     const loader = appModules[name];
     if (!loader) {
-      logger.error(`No loader found for module: ${name}`);
+      console.error(`No loader found for module: ${name}`);
       return Promise.resolve(undefined);
     }
     return loader().catch((e) => {
-      logger.error(`Failed to load module: ${name}`, e);
+      console.error(`Failed to load module: ${name}`, e);
     });
   }
 
@@ -93,19 +91,19 @@ function loadAppByName(name) {
   const [rootName, exportName] = name.split('.', 2);
   const rootLoader = appModules[rootName];
   if (!rootLoader) {
-    logger.error(`No root loader found for namespaced module: ${name}`);
+    console.error(`No root loader found for namespaced module: ${name}`);
     return Promise.resolve(undefined);
   }
   return rootLoader()
     .then((mod) => {
       const exported = mod?.[exportName];
       if (!exported) {
-        logger.error(`Export "${exportName}" missing in module "${rootName}"`);
+        console.error(`Export "${exportName}" missing in module "${rootName}"`);
       }
       return exported;
     })
     .catch((e) => {
-      logger.error(`Failed to load namespaced module: ${name}`, e);
+      console.error(`Failed to load namespaced module: ${name}`, e);
     });
 }
 
@@ -126,9 +124,9 @@ function initSingleSpa() {
   registerSingleSpaRouterListeners();
 
   addErrorHandler((err) => {
-    logger.error(err);
-    logger.error(err.appOrParcelName);
-    logger.error(getAppStatus(err.appOrParcelName));
+    console.error(err);
+    console.error(err.appOrParcelName);
+    console.error(getAppStatus(err.appOrParcelName));
   });
 }
 
@@ -137,10 +135,9 @@ async function start() {
     showSplashScreen(true);
     initSingleSpa();
     await bootstrapWorkbench();
-  } catch (error) {
-    logger.error('Error during workbench bootstrap', error);
-  } finally {
     showSplashScreen(false);
+  } catch (error) {
+    console.error('Error during workbench bootstrap', error);
   }
 }
 
