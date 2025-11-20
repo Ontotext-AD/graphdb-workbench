@@ -7,7 +7,11 @@ import {OperationType} from './operation-type';
 export interface OperationResponse {
   type: OperationType;
   status: OperationStatus;
-  value: string;
+  value?: string;
+  id?: string;
+  href?: string;
+  group?: string;
+  count?: number;
 }
 
 /**

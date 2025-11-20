@@ -1,6 +1,5 @@
 import { Model } from '../common/model';
 import { CapabilityList } from './capability-list';
-import { CapabilityListMapper } from '../../services/license/mappers/capability-list.mapper';
 
 /**
  * Represents a Graph DB license.
@@ -37,7 +36,7 @@ export class License extends Model<License> {
     this.maxCpuCores = data.maxCpuCores;
     this.product = data.product || '';
     this.productType = data.productType || '';
-    this.licenseCapabilities = new CapabilityListMapper().mapToModel(data.licenseCapabilities);
+    this.licenseCapabilities = data.licenseCapabilities;
     this.version = data.version || '';
     this.installationId = data.installationId || '';
     this.valid = data.valid;
