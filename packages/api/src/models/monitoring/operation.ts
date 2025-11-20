@@ -38,23 +38,28 @@ export class Operation extends Model<Operation> {
   href: string;
   labelKey: string;
 
-  constructor(operation: Operation | OperationResponse) {
+  constructor(dto: OperationResponse) {
     super();
-    this.id = `${operation.status}-${operation.type}-${operation.value}`;
-    this.value = operation.value;
-    this.status = operation.status;
-    this.type = operation.type;
-    this.count = this.getCount(operation);
-    this.group = OPERATION_TYPE_TO_GROUP[operation.type];
-    this.href = OPERATION_TYPE_TO_HREF[operation.type];
-    this.labelKey = this.getLabelKey(operation);
+    const value = dto.value ?? '';
+    this.status = dto.status;
+    this.type = dto.type;
+    this.value = value;
+    this.id = dto.id ?? `${this.status}-${this.type}-${value}`;
+    this.group = (dto.group as OperationGroup) ?? OPERATION_TYPE_TO_GROUP[this.type];
+    this.href = dto.href ?? OPERATION_TYPE_TO_HREF[this.type];
+    this.count = this.computeCount(value);
+    this.labelKey = this.computeLabelKey(value);
   }
 
-  private getCount(operation: Operation | OperationResponse) {
-    return OPERATIONS_WITH_COUNT.includes(operation.type) ? parseInt(operation.value, 10) : 0;
+  private computeCount(value: string) {
+    if (!OPERATIONS_WITH_COUNT.includes(this.type)) {
+      return 0;
+    }
+    const parsed = parseInt(value, 10);
+    return Number.isNaN(parsed) ? 0 : parsed;
   }
 
-  private getLabelKey(operation: Operation | OperationResponse) {
-    return OPERATIONS_WITH_COUNT.includes(operation.type) ? operation.type : operation.value;
+  private computeLabelKey(value: string) {
+    return OPERATIONS_WITH_COUNT.includes(this.type) ? this.type : value;
   }
 }
