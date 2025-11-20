@@ -1,5 +1,5 @@
 import {decodeHTML} from "../../../../app";
-import {AdditionalExtractionMethod, ExtractionMethod} from "../../models/ttyg/agents";
+import {AdditionalExtractionMethod, ExtractionMethod, SimilarityIndexOption} from "../../models/ttyg/agents";
 import 'angular/core/services/similarity.service';
 import 'angular/core/services/connectors.service';
 import 'angular/core/services/ttyg.service';
@@ -360,6 +360,10 @@ function AgentSettingsModalController(
         handleRetrievalConnectorExtractionMethodPanelToggle(retrievalExtractionExtractionMethod);
     };
 
+    /**
+     * Checks if the Full-Text Search (FTS) index is enabled for the selected repository.
+     * Sets form validation state based on whether FTS is enabled and required.
+     */
     $scope.checkIfFTSEnabled = () => {
         if (!$scope.agentFormModel.repositoryId) {
             $scope.agentSettingsForm.$setValidity('FTSDisabled', false);
@@ -514,6 +518,10 @@ function AgentSettingsModalController(
         });
     };
 
+    /**
+     * Populates autocomplete suggestions for the given input text.
+     * @param {Event} event - The input event containing the search text.
+     */
     $scope.getSuggestions = (event) => {
         const inputText = event.target.value;
         AutocompleteRestService.getAutocompleteSuggestions(inputText)
@@ -525,14 +533,28 @@ function AgentSettingsModalController(
         });
     };
 
+    /**
+     * Handles the change event for the vector fields select dropdown.
+     * Updates the connector fields based on the selected vector field.
+     * @param {ExtractionMethodFormModel} extractionMethod - The extraction method being updated.
+     */
     $scope.onVectorFieldsChange = function(extractionMethod) {
         extractionMethod.connectorFields = extractionMethod.selectedConnectorField ? [extractionMethod.selectedConnectorField] : [];
     };
 
+    /**
+     * Determines whether there is connector data available for the similarity search extraction method.
+     * @returns {boolean} True if connector data exists, false otherwise.
+     */
     $scope.hasConnectorData = () => {
         return !!($scope.connectorMap && Object.keys($scope.connectorMap).length);
     };
 
+    /**
+     * Determines whether the vector fields select dropdown should be shown for the similarity search extraction method.
+     * @param {ExtractionMethodFormModel} extractionMethod - The extraction method to check.
+     * @returns {boolean} True if vector fields dropdown should be shown, false otherwise.
+     */
     $scope.shouldShowVectorFields = (extractionMethod) => {
         if (!extractionMethod) {
             return false;
@@ -549,18 +571,15 @@ function AgentSettingsModalController(
             return $scope.vectorFields.length > 0;
         }
 
-        const map = $scope.connectorMap || {};
-        const fields =
-            (map[provider] && map[provider][indexName])
-                ? map[provider][indexName]
-                : [];
+        const fields = getVectorFieldsFromMap(provider, indexName);
 
         return Array.isArray(fields) && fields.length > 0;
     };
 
     /**
-     * Handles the change event for the similarity index select menu. This is needed to update the connector fields.
-     * @param extractionMethod
+     * Handles the change event for the similarity index select menu.
+     * Updates the connector type, similarity index, and refreshes available vector fields.
+     * @param {ExtractionMethodFormModel} extractionMethod - The extraction method being updated.
      */
     $scope.onSimilarityIndexChange = (extractionMethod) => {
         const option = extractionMethod && extractionMethod.similarityIndexOption;
@@ -578,16 +597,25 @@ function AgentSettingsModalController(
         extractionMethod.connectorType = option.provider;
         extractionMethod.similarityIndex = option.value;
 
-        const map = $scope.connectorMap || {};
-        $scope.vectorFields =
-            (map[option.provider] && map[option.provider][option.value])
-                ? map[option.provider][option.value]
-                : [];
+        $scope.vectorFields = getVectorFieldsFromMap(option.provider, option.value);
     };
 
     // =========================
     // Private functions
     // =========================
+
+    /**
+     * Gets vector fields from the connector map for a given provider and index name.
+     * @param {string} provider - The provider type.
+     * @param {string} indexName - The index name.
+     * @returns {Array} The vector fields array, or an empty array if not found.
+     */
+    const getVectorFieldsFromMap = (provider, indexName) => {
+        const map = $scope.connectorMap || {};
+        return (map[provider] && map[provider][indexName])
+            ? map[provider][indexName]
+            : [];
+    };
 
     /**
      * Updates the vector fields in the select dropdown based on the selected extraction method.
@@ -602,10 +630,7 @@ function AgentSettingsModalController(
             return;
         }
 
-        const map = $scope.connectorMap || {};
-        $scope.vectorFields = (map[provider] && map[provider][indexName])
-                ? map[provider][indexName]
-                : [];
+        $scope.vectorFields = getVectorFieldsFromMap(provider, indexName);
     };
 
     /**
@@ -727,12 +752,12 @@ function AgentSettingsModalController(
         Object.entries(connectorMap).forEach(([provider, types]) => {
             const groupLabel = $translate.instant(`ttyg.agent.create_agent_modal.form.similarity_instance_type_label.${provider}`);
             Object.keys(types || {}).forEach((typeName) => {
-                $scope.similarityOptionsGrouped.push({
+                $scope.similarityOptionsGrouped.push(new SimilarityIndexOption({
                     provider,
                     label: typeName,
                     value: typeName,
                     group: groupLabel,
-                });
+                }));
             });
         });
     };
@@ -796,7 +821,7 @@ function AgentSettingsModalController(
         if (!indexes.length) {
             extractionMethod.connectorType = '';
             extractionMethod.similarityIndex = '';
-            extractionMethod.similarityIndexOption = null;
+            extractionMethod.similarityIndexOption = undefined;
             return;
         }
 
@@ -804,10 +829,11 @@ function AgentSettingsModalController(
         const currentName = extractionMethod.similarityIndex;
 
         // Find previously selected index or default to the first one
-        const selectedIndex = indexes.find((index) =>
+        const matchedIndex = indexes.find((index) =>
             index.data.connectorType === currentType &&
             index.value === currentName,
-        ) || indexes[0];
+        );
+        const selectedIndex = matchedIndex || indexes[0];
 
         extractionMethod.connectorType = selectedIndex.data.connectorType;
         extractionMethod.similarityIndex = selectedIndex.value;
@@ -818,7 +844,7 @@ function AgentSettingsModalController(
             option.value === extractionMethod.similarityIndex,
         );
 
-        extractionMethod.similarityIndexOption = opt || null;
+        extractionMethod.similarityIndexOption = opt || undefined;
     };
 
     const buildSelectMenuOptions = (data) => {
