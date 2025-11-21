@@ -28,8 +28,9 @@ export class LocalStorageSubscriptionHandlerService implements Service {
     }
 
     const handler = this.resolveHandler(namespace, contextPropertyKey);
-    if (handler) {
-      handler.updateContextProperty(contextPropertyKey, event.newValue);
+    if (handler && event.newValue !== null) {
+      const newValue = handler.deserializeProperty(contextPropertyKey, event.newValue);
+      handler.updateContextProperty(contextPropertyKey, newValue);
     }
   }
 

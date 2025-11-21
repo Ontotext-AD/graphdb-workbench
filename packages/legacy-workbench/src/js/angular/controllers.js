@@ -122,7 +122,7 @@ function homeCtrl($scope,
                 $scope.activeRepositorySize = repositorySizeInfo;
             })
             .catch(function(e) {
-                $scope.activeRepositorySizeError = e.data.message;
+                $scope.activeRepositorySizeError = e.data?.message;
             });
     };
 

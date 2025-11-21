@@ -194,10 +194,6 @@ module.exports = (webpackConfigEnv, argv) => {
                         to: 'css/lib/angular-xeditable/xeditable.min.css'
                     },
                     {
-                        from: 'packages/legacy-workbench/src/js/lib/bootstrap/bootstrap.min.css',
-                        to: 'js/lib/bootstrap/bootstrap.min.css'
-                    },
-                    {
                         from: 'packages/legacy-workbench/src/css',
                         to: 'css'
                     },
