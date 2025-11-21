@@ -67,7 +67,7 @@
 }
 
 .dynamic-form-container .dynamic-form .form-inline input[type="checkbox"] {
-    width: auto;
+    width: 1em;
     align-self: center;
     justify-self: start;
 }
