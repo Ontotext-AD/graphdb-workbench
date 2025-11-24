@@ -17,7 +17,7 @@ export class AuthSettings extends Model<AuthSettings> {
     if (data.authorities instanceof AuthorityList) {
       this.authorities = data.authorities;
     } else {
-      this.authorities = new AuthorityListMapper().mapToModel(data.authorities);
+      this.authorities = data.authorities;
     }
     this.enabled = data.enabled;
   }

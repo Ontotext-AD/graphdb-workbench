@@ -2,7 +2,7 @@ import {Model} from '../common';
 import {OperationStatus} from './operation-status';
 import {OperationType} from './operation-type';
 import {OperationGroup} from './operation-group';
-import {OperationResponse} from './operation-status-summary-response';
+import {OperationInit} from './operation-init';
 
 /** Not all operations have counts as values */
 const OPERATIONS_WITH_COUNT = [OperationType.QUERIES, OperationType.UPDATES, OperationType.IMPORT];
@@ -38,28 +38,28 @@ export class Operation extends Model<Operation> {
   href: string;
   labelKey: string;
 
-  constructor(dto: OperationResponse) {
+  constructor(operation: OperationInit) {
     super();
-    const value = dto.value ?? '';
-    this.status = dto.status;
-    this.type = dto.type;
+    const value = operation?.value ?? '';
+    this.status = operation?.status;
+    this.type = operation.type;
     this.value = value;
-    this.id = dto.id ?? `${this.status}-${this.type}-${value}`;
-    this.group = (dto.group as OperationGroup) ?? OPERATION_TYPE_TO_GROUP[this.type];
-    this.href = dto.href ?? OPERATION_TYPE_TO_HREF[this.type];
-    this.count = this.computeCount(value);
-    this.labelKey = this.computeLabelKey(value);
+    this.id = operation?.id ?? `${this.status}-${this.type}-${value}`;
+    this.group = (operation?.group as OperationGroup) ?? OPERATION_TYPE_TO_GROUP[this.type];
+    this.href = operation?.href ?? OPERATION_TYPE_TO_HREF[this.type];
+    this.count = this.getCount(value);
+    this.labelKey = this.getLabelKey(value);
   }
 
-  private computeCount(value: string) {
-    if (!OPERATIONS_WITH_COUNT.includes(this.type)) {
-      return 0;
-    }
-    const parsed = parseInt(value, 10);
-    return Number.isNaN(parsed) ? 0 : parsed;
+  private getCount(value: string): number {
+    return OPERATIONS_WITH_COUNT.includes(this.type)
+      ? parseInt(value, 10)
+      : 0;
   }
 
-  private computeLabelKey(value: string) {
-    return OPERATIONS_WITH_COUNT.includes(this.type) ? this.type : value;
+  private getLabelKey(value: string): string {
+    return OPERATIONS_WITH_COUNT.includes(this.type)
+      ? this.type
+      : value;
   }
 }
