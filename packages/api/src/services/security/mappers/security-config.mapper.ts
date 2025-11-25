@@ -21,11 +21,11 @@ export class SecurityConfigMapper extends Mapper<SecurityConfig> {
     }
 
     const freeAccess = this.authSettingsMapper.mapToModel(
-      data.freeAccess ?? { authorities: [] }
+      data.freeAccess ?? {}
     );
 
     const overrideAuth = this.authSettingsMapper.mapToModel(
-      data.overrideAuth ?? { authorities: [] }
+      data.overrideAuth ?? {}
     );
 
     const init: SecurityConfigInit = {

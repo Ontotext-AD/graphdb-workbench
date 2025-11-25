@@ -11,6 +11,8 @@ export interface SecurityConfigDto {
   userLoggedIn?: boolean;
   freeAccessActive?: boolean;
   hasExternalAuthUser?: boolean;
+
+  [key: string]: unknown;
 }
 
 export interface SecurityConfigInit {

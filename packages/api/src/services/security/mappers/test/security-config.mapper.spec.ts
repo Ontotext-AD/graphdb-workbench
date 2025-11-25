@@ -1,12 +1,13 @@
 import {SecurityConfig} from '../../../../models/security';
 import {SecurityConfigMapper} from '../security-config.mapper';
-import {SecurityConfigDto} from '../../../../models/security/security-config-dto';
+import {SecurityConfigDto, SecurityConfigInit} from '../../../../models/security/security-config-dto';
 import {AuthSettings} from '../../../../models/security/auth-settings';
+import {AuthSettingsMapper} from '../auth-settings.mapper';
 
 describe('SecurityConfigMapper', () => {
   test('should map raw data to SecurityConfig model', () => {
     // Given I have a raw security config object
-    const newSecurityConfig = {
+    const newSecurityConfig: SecurityConfigDto = {
       freeAccess: {},
       overrideAuth: {},
       appSettings: {},
@@ -16,15 +17,28 @@ describe('SecurityConfigMapper', () => {
       hasExternalAuthUser: false,
       authImplementation: 'Local',
       openIdEnabled: false,
-    } as unknown as SecurityConfig;
+    };
 
     // When I map the raw data to a SecurityConfig model
     const mappedSecurityConfig = new SecurityConfigMapper().mapToModel(newSecurityConfig);
+    const authSettingsMapper = new AuthSettingsMapper();
+    const expected = new SecurityConfig({
+      authImplementation: 'Local',
+      enabled: undefined,
+      passwordLoginEnabled: true,
+      freeAccess: authSettingsMapper.mapToModel({}),
+      overrideAuth: authSettingsMapper.mapToModel({}),
+      openIdEnabled: false,
+      userLoggedIn: undefined,
+      freeAccessActive: undefined,
+      hasExternalAuthUser: false,
+    } as SecurityConfigInit);
 
+    expect(mappedSecurityConfig).toEqual(expected);
     // Then I expect the mapped model to be an instance of SecurityConfig
     expect(mappedSecurityConfig).toBeInstanceOf(SecurityConfig);
-    // And the mapped model should have the same properties as the raw data
-    expect(mappedSecurityConfig).toEqual(new SecurityConfig(newSecurityConfig));
+    expect(mappedSecurityConfig.freeAccess).toBeInstanceOf(AuthSettings);
+    expect(mappedSecurityConfig.overrideAuth).toBeInstanceOf(AuthSettings);
   });
 
   test('should map raw security config to model', () => {
