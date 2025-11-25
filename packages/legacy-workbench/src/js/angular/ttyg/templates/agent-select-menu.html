@@ -1,7 +1,7 @@
 <link href="css/ttyg/agent-select-menu.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 
 <div class="btn-group agent-select-menu" uib-dropdown guide-selector="select-agent-dropdown">
-    <button type="button" class="btn dropdown-toggle-btn" uib-dropdown-toggle guide-selector="select-agent-dropdown-toggle"
+    <button type="button" class="btn btn-outline-primary dropdown-toggle-btn" uib-dropdown-toggle guide-selector="select-agent-dropdown-toggle"
             ng-attr-title="{{selectedAgent && !selectedAgent.isDeleted ? (selectedAgent.name + ' &middot; ' + selectedAgent.repositoryId) : null}}">
         <span ng-if="!selectedAgent">{{'ttyg.agent.agent_select_menu.no_selection_label' | translate}}</span>
         <div ng-if="selectedAgent && !selectedAgent.isDeleted" class="selected-agent-option">

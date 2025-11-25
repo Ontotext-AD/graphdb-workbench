@@ -9,7 +9,7 @@
     align-items: center;
     overflow-x: hidden;
     background-color: var(--base-background-color);
-    border-color: var(--gw-neutral-base);
+    border-color: var(--gw-select-border-color);
     color: inherit;
     font-weight: unset;
 }
@@ -18,22 +18,25 @@
     max-height: 50vh;
     overflow-y: auto;
     width: auto;
-    background-color: var(--base-background-color);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     max-width: 30vw;
+    border: 1px solid var(--gw-select-border-color);
+    background-color: var(--gw-select-background);
+    color: var(--gw-select-dropdown-color);
 }
 
 .agent-select-menu .dropdown-menu li {
+    color: var(--gw-select-option-color);
     white-space: nowrap;
     padding-top: 4px;
     padding-bottom: 4px;
     padding-right: 15px;
-    background-color: var(--base-background-color);
 }
 
 .agent-select-menu .dropdown-menu li.selected,
 .agent-select-menu .dropdown-menu li:hover {
-    background-color: #f0f0f0;
+    background-color: var(--gw-list-option-selected-background);
+    color: var(--gw-list-option-selected-color);
 }
 
 .agent-select-menu .incompatible-agent .agent-option,
