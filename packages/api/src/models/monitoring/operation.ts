@@ -52,9 +52,12 @@ export class Operation extends Model<Operation> {
   }
 
   private getCount(value: string): number {
-    return OPERATIONS_WITH_COUNT.includes(this.type)
-      ? parseInt(value, 10)
-      : 0;
+    if (!OPERATIONS_WITH_COUNT.includes(this.type)) {
+      return 0;
+    }
+
+    const parsed = Number.parseInt(value, 10);
+    return Number.isNaN(parsed) ? 0 : parsed;
   }
 
   private getLabelKey(value: string): string {

@@ -1,5 +1,5 @@
 export interface RepositorySizeInfoResponse {
-  inferred?: number | string;
-  explicit?: number | string;
-  total?: number | string;
+  inferred?: number;
+  explicit?: number;
+  total?: number;
 }

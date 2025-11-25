@@ -14,11 +14,15 @@ export function toObjectStrict<T extends object>(
   if (!isNonNullObject(value)) {
     throw new Error('Expected object');
   }
+
+  const obj = value as Record<string, unknown>;
+
   for (const k of requiredKeys) {
-    if ((value as Record<string, unknown>)[k as string] === undefined) {
+    if (obj[k as string] === undefined) {
       throw new Error(`Missing required key: ${String(k)}`);
     }
   }
+
   return value as T;
 }
 

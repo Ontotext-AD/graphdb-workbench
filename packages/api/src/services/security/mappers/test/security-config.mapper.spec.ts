@@ -1,6 +1,5 @@
-import {SecurityConfig} from '../../../../models/security';
+import {SecurityConfig, SecurityConfigDto, SecurityConfigInit} from '../../../../models/security';
 import {SecurityConfigMapper} from '../security-config.mapper';
-import {SecurityConfigDto, SecurityConfigInit} from '../../../../models/security/security-config-dto';
 import {AuthSettings} from '../../../../models/security/auth-settings';
 import {AuthSettingsMapper} from '../auth-settings.mapper';
 

@@ -1,7 +1,8 @@
 import { CapabilityList } from '../../../models/license';
 import { Mapper } from '../../../providers/mapper/mapper';
 import { Capability } from '../../../models/license';
-import { ensureArray } from '../../../providers/mapper/guards';
+
+export type CapabilityDto = Capability;
 
 /**
  * Mapper class for converting an array of Capability objects to a CapabilityList model.
@@ -14,11 +15,11 @@ export class CapabilityListMapper extends Mapper<CapabilityList> {
    * @param data - An array of Capability objects to be mapped.
    * @returns A new CapabilityList instance containing the provided Capability objects.
    */
-  mapToModel(data: unknown): CapabilityList {
+  mapToModel(data: CapabilityList | CapabilityDto[]): CapabilityList {
     if (data instanceof CapabilityList) {
       return data;
     }
-    const capabilities = ensureArray<Capability>(data);
-    return new CapabilityList(capabilities);
+
+    return new CapabilityList(data);
   }
 }

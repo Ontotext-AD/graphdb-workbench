@@ -1,6 +1,6 @@
 import { ProductInfo } from '../../../models/product-info';
 import { Mapper } from '../../../providers/mapper/mapper';
-import {toObject} from '../../../providers/mapper/guards';
+import {ProductInfoDto} from '../../../models/product-info/product-info-dto';
 
 /**
  * Mapper class for ProductInfo objects.
@@ -15,15 +15,15 @@ export class ProductInfoMapper extends Mapper<ProductInfo> {
    * This method takes partial ProductInfo data and creates a new ProductInfo
    * instance, ensuring that all necessary properties are properly initialized.
    *
-   * @param {unknown} data - Partial data of ProductInfo. This can include any subset of
+   * @param {ProductInfo | ProductInfoDto} data - Partial data of ProductInfo.
+   * This can include any subset of
    *               ProductInfo properties.
    * @returns A new instance of ProductInfo populated with the provided data.
    */
-  mapToModel(data: unknown): ProductInfo {
+  mapToModel(data: ProductInfo | ProductInfoDto): ProductInfo {
     if (data instanceof ProductInfo) {
       return data;
     }
-    const src = toObject<ProductInfo>(data);
-    return new ProductInfo(src);
+    return new ProductInfo(data);
   }
 }

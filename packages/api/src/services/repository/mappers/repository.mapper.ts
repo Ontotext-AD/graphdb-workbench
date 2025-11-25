@@ -1,7 +1,6 @@
 import {Repository, RepositoryState, RepositoryType} from '../../../models/repositories';
 import { Mapper } from '../../../providers/mapper/mapper';
 import {RepositoryResponse} from '../../../models/repositories/repository-response';
-import { toObject } from '../../../providers/mapper/guards';
 
 /**
  * Maps a repository API response object to the domain `Repository` model.
@@ -12,27 +11,27 @@ export class RepositoryMapper extends Mapper<Repository> {
   /**
    * Maps the raw data to an instance of the {@link Repository} model.
    *
-   * @param {unknown} data - The raw data to be transformed into a Repository model.
+   * @param {Repository | RepositoryResponse} data - The raw data to be transformed into a Repository model.
    * @returns {Repository} - A new Repository instance.
    */
-  mapToModel(data: unknown): Repository {
+  mapToModel(data: Repository | RepositoryResponse): Repository {
     if (data instanceof Repository) {
       return data;
     }
-    const src = toObject<RepositoryResponse>(data);
+
     return new Repository({
-      id: src.id ?? '',
-      title: src.title ?? '',
-      uri: src.uri ?? '',
-      externalUrl: src.externalUrl ?? '',
-      location: src.location ?? '',
-      sesameType: src.sesameType,
-      type: src.type as RepositoryType | undefined,
-      state: src.state as RepositoryState | undefined,
-      local: src.local,
-      readable: src.readable,
-      writable: src.writable,
-      unsupported: src.unsupported
+      id: data.id,
+      title: data.title ?? '',
+      uri: data.uri,
+      externalUrl: data.externalUrl ?? '',
+      location: data.location ?? '',
+      sesameType: data.sesameType,
+      type: data.type as RepositoryType | undefined,
+      state: data.state as RepositoryState | undefined,
+      local: data.local,
+      readable: data.readable,
+      writable: data.writable,
+      unsupported: data.unsupported
     });
   }
 }
