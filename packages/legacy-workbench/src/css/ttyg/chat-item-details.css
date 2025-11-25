@@ -127,14 +127,15 @@
 }
 
 .chat-detail .explain-response .label {
-    color: #1E293B;
     font-weight: 400;
 }
 
 .chat-detail .explain-response .explain-call .header {
     display: flex;
     justify-content: space-between;
-    background-color: #F3F3F3;
+    background-color: var(--gw-panel-header-background);
+    color: var(--gw-panel-header-color);
+    border: 1px solid var(--gw-panel-border-color);
     padding: 0.25rem 0.25rem;
 }
 
@@ -144,6 +145,10 @@
 
 .chat-detail .explain-response .explain-call .query {
     padding: 1rem 1rem 0 1rem;
+}
+
+.chat-detail .explain-response .explain-call .query pre {
+    color: var(--gw-panel-color);
 }
 
 .chat-detail .explain-response .error-message {
@@ -177,11 +182,13 @@
 
 .token-usage-info {
     max-width: 500px;
-    color: var(--text-color);
+    color: var(--gw-dialog-color);
+    background-color: var(--gw-dialog-background);
     font-size: 1rem;
     line-height: 1.7em;
     margin-top: -1.4em;
     margin-left: 0.7em;
+    box-shadow: var(--gw-dialog-shadow-1-offset-x) var(--gw-dialog-shadow-1-offset-y) var(--gw-dialog-shadow-1-blur) var(--gw-dialog-shadow-1-spread) var(--gw-dialog-shadow-1-color);
 }
 
 .token-usage-info .description {
