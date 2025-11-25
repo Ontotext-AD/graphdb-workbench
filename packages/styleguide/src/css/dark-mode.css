@@ -293,6 +293,9 @@
   --gw-message-help-background: var(--gw-help-lighter);
   --gw-message-help-border-color: var(--gw-help-lighter);
   --gw-message-help-color: var(--gw-help-dark);
+  --gw-select-background: var(--gw-form-field-background);
+  --gw-select-border-color: var(--gw-form-field-border-color);
+  --gw-select-dropdown-color: var(--gw-form-field-icon-color);
   --gw-editor-toolbar-numbers-color: var(--gw-default-muted-color);
   --gw-editor-content-color: var(--gw-default-color);
   --gw-inputgroup-addon-background: var(--gw-form-field-background);
@@ -317,6 +320,7 @@
   --gw-virtualscroller-loader-mask-color: var(--gw-text-muted-color);
   --gw-toast-success-color: var(--gw-primary-contrast-color);
   --gw-autocomplete-option-color: var(--gw-list-option-color);
+  --gw-select-option-color: var(--gw-list-option-color);
   --gw-listbox-option-selected-focus-background: var(--gw-list-option-selected-focus-background);
   --gw-listbox-option-selected-focus-color: var(--gw-list-option-selected-focus-color);
   --gw-listbox-option-selected-color: var(--gw-list-option-selected-color);
