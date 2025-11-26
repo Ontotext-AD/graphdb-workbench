@@ -7,18 +7,13 @@ export function toObject<T extends object>(value: unknown): Partial<T> {
 }
 
 // Strict: validates presence of required keys, returns full T or throws.
-export function toObjectStrict<T extends object>(
-  value: unknown,
-  requiredKeys: (keyof T)[]
-): T {
+export function toObjectStrict<T extends object>(value: unknown, requiredKeys: (keyof T)[]): T {
   if (!isNonNullObject(value)) {
     throw new Error('Expected object');
   }
 
-  const obj = value as Record<string, unknown>;
-
   for (const k of requiredKeys) {
-    if (obj[k as string] === undefined) {
+    if (value[k as string] === undefined) {
       throw new Error(`Missing required key: ${String(k)}`);
     }
   }
@@ -27,10 +22,7 @@ export function toObjectStrict<T extends object>(
 }
 
 // narrow Partial<T> to T after key checks.
-export function assertComplete<T extends object>(
-  src: Partial<T>,
-  requiredKeys: (keyof T)[]
-): T {
+export function assertComplete<T extends object>(src: Partial<T>, requiredKeys: (keyof T)[]): T {
   for (const k of requiredKeys) {
     if (src[k] === undefined) {
       throw new Error(`Incomplete object; missing ${String(k)}`);
