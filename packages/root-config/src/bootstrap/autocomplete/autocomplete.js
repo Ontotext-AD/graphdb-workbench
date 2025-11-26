@@ -1,31 +1,44 @@
 import {
-  ServiceProvider,
+  service,
   AutocompleteService,
   AutocompleteContextService,
   RepositoryContextService,
   AuthenticationService
 } from '@ontotext/workbench-api';
+import {LoggerProvider} from '../../services/logger-provider';
+
+const logger = LoggerProvider.logger;
+let unsubscribeFn;
 
 /**
- * Check if autocomplete is enabled, when loading(reloading) the application.
- * Gets the current autocomplete status from the backend and updates the context with the value.
- * If there is no selected repository, the request will not be made.
+ * Sets up (or re-sets) the repository selection listener and
+ * synchronizes the enablement of autocomplete for the currently selected repository.
+ * If already subscribed, it unsubscribes before creating a new subscription.
+ *
+ * @returns {Promise<void>} Resolved immediately after (re)configuration, since no waiting is needed.
  */
-const isAutocompleteEnabled = () => {
-  const authenticationService = ServiceProvider.get(AuthenticationService);
-  return new Promise((resolve, reject) => {
-    ServiceProvider.get(RepositoryContextService).onSelectedRepositoryChanged((selectedRepository) => {
-      if (!selectedRepository?.id || !authenticationService.canReadRepo(selectedRepository)) {
-        ServiceProvider.get(AutocompleteContextService).updateAutocompleteEnabled(false);
-        return resolve();
-      }
-      ServiceProvider.get(AutocompleteService).isAutocompleteEnabled()
+const setupAutocompleteSubscription = () => {
+  if (unsubscribeFn) {
+    unsubscribeFn();
+  }
+  const autocompleteContextService = service(AutocompleteContextService);
+  const authenticationService = service(AuthenticationService);
+
+  unsubscribeFn = service(RepositoryContextService).onSelectedRepositoryChanged((selectedRepository) => {
+    if (!selectedRepository?.id || !authenticationService.canReadRepo(selectedRepository)) {
+      autocompleteContextService.updateAutocompleteEnabled(false);
+    } else {
+      service(AutocompleteService).isAutocompleteEnabled()
         .then((enabled) => {
-          ServiceProvider.get(AutocompleteContextService).updateAutocompleteEnabled(enabled);
-          resolve();
-        }).catch(reject);
-    });
+          autocompleteContextService.updateAutocompleteEnabled(enabled);
+        })
+        .catch((error) => {
+          autocompleteContextService.updateAutocompleteEnabled(false);
+          logger.error('Could not load autocomplete status', error);
+        });
+    }
   });
+  return Promise.resolve();
 };
 
-export const autoCompleteBootstrap = [isAutocompleteEnabled];
+export const autoCompleteBootstrap = [setupAutocompleteSubscription];
