@@ -1,4 +1,4 @@
-import {SecurityConfig, SecurityConfigDto, SecurityConfigInit} from '../../../../models/security';
+import {SecurityConfig, SecurityConfigResponse, SecurityConfigInit} from '../../../../models/security';
 import {SecurityConfigMapper} from '../security-config.mapper';
 import {AuthSettings} from '../../../../models/security/auth-settings';
 import {AuthSettingsMapper} from '../auth-settings.mapper';
@@ -6,7 +6,7 @@ import {AuthSettingsMapper} from '../auth-settings.mapper';
 describe('SecurityConfigMapper', () => {
   test('should map raw data to SecurityConfig model', () => {
     // Given I have a raw security config object
-    const newSecurityConfig: SecurityConfigDto = {
+    const newSecurityConfig: SecurityConfigResponse = {
       freeAccess: {},
       overrideAuth: {},
       appSettings: {},
@@ -41,7 +41,7 @@ describe('SecurityConfigMapper', () => {
   });
 
   test('should map raw security config to model', () => {
-    const raw: SecurityConfigDto = {
+    const raw: SecurityConfigResponse = {
       authImplementation: 'BASIC',
       enabled: true,
       passwordLoginEnabled: false,

@@ -4,7 +4,7 @@ import {AvailableLanguagesList, LanguageConfig, TranslationBundle} from '../../.
 import {TestUtil} from '../../utils/test/test-util';
 import {ResponseMock} from '../../http/test/response-mock';
 import {LanguageContextService} from '../language-context.service';
-import {LanguageConfigDto, LanguageConfigMapper} from '../mappers/language-config-mapper';
+import {LanguageConfigResponse, LanguageConfigMapper} from '../mappers/language-config-mapper';
 import {AvailableLanguage} from '../../../models/language/available-language';
 
 describe('LanguageService', () => {
@@ -26,7 +26,7 @@ describe('LanguageService', () => {
       { key: 'es', name: 'Spanish' },
     ];
 
-    const dto: LanguageConfigDto = {
+    const dto: LanguageConfigResponse = {
       defaultLanguage: 'en',
       availableLanguages,
     };
@@ -83,7 +83,7 @@ describe('LanguageService', () => {
 
   test('Should retrieve the language configuration', async () => {
     // Given, I have a mocked language configuration
-    const mockLanguageConfig: LanguageConfigDto = {
+    const mockLanguageConfig: LanguageConfigResponse = {
       defaultLanguage: 'en',
       availableLanguages: [
         {

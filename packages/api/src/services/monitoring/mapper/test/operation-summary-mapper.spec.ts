@@ -4,7 +4,7 @@ import {
   OperationStatusSummary,
   OperationType
 } from '../../../../models/monitoring';
-import {OperationStatusSummaryResponse} from '../../../../models/monitoring/operation-status-summary-response';
+import {OperationStatusSummaryResponse} from '../../../../models/monitoring';
 
 describe('OperationSummaryMapper', () => {
   let mapper: OperationSummaryMapper;

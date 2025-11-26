@@ -1,5 +1,5 @@
-export interface ProductInfoDto {
-  Workbench?: string;// backend uppercase
+export interface ProductInfoResponse {
+  Workbench?: string; // backend uppercase
   productType?: string;
   productVersion?: string;
   sesame?: string;

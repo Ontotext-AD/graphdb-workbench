@@ -1,6 +1,6 @@
 import {SecurityConfig} from '../../../models/security/security-config';
 import {Mapper} from '../../../providers/mapper/mapper';
-import {SecurityConfigDto, SecurityConfigInit} from '../../../models/security/security-config-dto';
+import {SecurityConfigResponse, SecurityConfigInit} from '../../../models/security/security-config-response';
 import {AuthSettingsMapper} from './auth-settings.mapper';
 
 /**
@@ -15,7 +15,7 @@ export class SecurityConfigMapper extends Mapper<SecurityConfig> {
    * @param {unknown} data - The raw data to be transformed into a model.
    * @returns {SecurityConfig} - A new SecurityConfig instance.
    */
-  mapToModel(data: SecurityConfigDto | SecurityConfig): SecurityConfig {
+  mapToModel(data: SecurityConfigResponse | SecurityConfig): SecurityConfig {
     if (data instanceof SecurityConfig) {
       return data;
     }

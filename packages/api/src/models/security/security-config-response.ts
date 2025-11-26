@@ -1,12 +1,12 @@
-import {AuthSettingsDto} from './auth-settings-dto';
+import {AuthSettingsResponse} from './auth-settings-response';
 import {AuthSettings} from './auth-settings';
 
-export interface SecurityConfigDto {
+export interface SecurityConfigResponse {
   authImplementation?: string;
   enabled?: boolean;
   passwordLoginEnabled?: boolean;
-  freeAccess?: AuthSettingsDto;
-  overrideAuth?: AuthSettingsDto;
+  freeAccess?: AuthSettingsResponse;
+  overrideAuth?: AuthSettingsResponse;
   openIdEnabled?: boolean;
   userLoggedIn?: boolean;
   freeAccessActive?: boolean;

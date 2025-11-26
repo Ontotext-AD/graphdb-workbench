@@ -4,7 +4,7 @@ import {OperationListMapper} from './operation-list.mapper';
 import {
   OperationResponse,
   OperationStatusSummaryResponse
-} from '../../../models/monitoring/operation-status-summary-response';
+} from '../../../models/monitoring';
 
 /**
  * Mapper class for converting OperationStatusSummaryResponse to OperationStatusSummary.
@@ -23,10 +23,11 @@ export class OperationSummaryMapper extends Mapper<OperationStatusSummary> {
     }
 
     const allRunningResponses: OperationResponse[] = data.allRunningOperations ?? [];
+    const allRunningOperations = this.operationListMapper.mapToModel(allRunningResponses);
 
     return new OperationStatusSummary({
       status: data.status,
-      allRunningOperations: this.operationListMapper.mapToModel(allRunningResponses)
-    } as OperationStatusSummary);
+      allRunningOperations,
+    });
   }
 }

@@ -2,12 +2,12 @@ import {LanguageConfig} from '../../../models/language';
 import { Mapper } from '../../../providers/mapper/mapper';
 import {AvailableLanguagesListMapper} from './available-languages-list-mapper';
 
-export interface LanguageConfigDto {
+export interface LanguageConfigResponse {
   defaultLanguage: string;
-  availableLanguages: AvailableLanguageDto[];
+  availableLanguages: AvailableLanguageResponse[];
 }
 
-export interface AvailableLanguageDto {
+export interface AvailableLanguageResponse {
   key: string;
   name: string;
 }
@@ -23,16 +23,14 @@ export class LanguageConfigMapper extends Mapper<LanguageConfig> {
    * @param data - The LanguageConfig data to be mapped.
    * @returns A new LanguageConfig instance created from the input data.
    */
-  mapToModel(data: LanguageConfigDto | LanguageConfig): LanguageConfig {
-    if (data instanceof LanguageConfig) {
-      return data;
-    }
-
-    const availableLanguages = this.availableLanguagesListMapper.mapToModel(data.availableLanguages);
+  mapToModel(data: LanguageConfigResponse): LanguageConfig {
+    const availableLanguages = this.availableLanguagesListMapper.mapToModel(
+      data.availableLanguages
+    );
 
     return new LanguageConfig({
       defaultLanguage: data.defaultLanguage,
       availableLanguages
-    } as LanguageConfig);
+    });
   }
 }

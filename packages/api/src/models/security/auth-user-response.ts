@@ -2,7 +2,7 @@ import {Authority} from './authority';
 import {AuthorityList} from './authority-list';
 import {AppSettings} from './app-settings';
 
-export interface AuthenticatedUserDto {
+export interface AuthenticatedUserResponse {
   external?: boolean;
   username?: string;
   password?: string;

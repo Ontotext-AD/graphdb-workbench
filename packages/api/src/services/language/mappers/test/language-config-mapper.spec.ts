@@ -1,4 +1,4 @@
-import {LanguageConfigDto, LanguageConfigMapper} from '../language-config-mapper';
+import {LanguageConfigResponse, LanguageConfigMapper} from '../language-config-mapper';
 import {AvailableLanguagesList, LanguageConfig} from '../../../../models/language';
 import {AvailableLanguage} from '../../../../models/language/available-language';
 
@@ -10,7 +10,7 @@ describe('LanguageConfigMapper', () => {
   });
 
   test('should create a new LanguageConfig instance', () => {
-    const inputData: LanguageConfigDto = {
+    const inputData: LanguageConfigResponse = {
       defaultLanguage: 'en',
       availableLanguages: [
         { key: 'en', name: 'English' },

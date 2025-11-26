@@ -1,7 +1,7 @@
 import {RepositoryLocationType} from './repository-location-type';
 import {AuthenticationType} from '../security';
 
-export interface RepositoryLocationDto {
+export interface RepositoryLocationResponse {
   uri?: string;
   label?: string;
   username?: string;

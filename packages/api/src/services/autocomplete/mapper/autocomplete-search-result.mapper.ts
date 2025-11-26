@@ -18,7 +18,6 @@ export class AutocompleteSearchResultMapper extends Mapper<AutocompleteSearchRes
     const suggestionList = this.suggestionListMapper.mapToModel(data.suggestions);
 
     return new AutocompleteSearchResult({
-      ...data,
       suggestionList
     });
   }

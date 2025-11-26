@@ -6,12 +6,11 @@ import { Model } from '../common';
  */
 export class LanguageConfig extends Model<LanguageConfig>  {
   defaultLanguage: string;
-
   availableLanguages: AvailableLanguagesList;
 
-  constructor(data: LanguageConfig) {
+  constructor(data: Partial<LanguageConfig>) {
     super();
-    this.defaultLanguage = data.defaultLanguage;
-    this.availableLanguages = data.availableLanguages;
+    this.defaultLanguage = data.defaultLanguage ?? '';
+    this.availableLanguages = data.availableLanguages!;
   }
 }

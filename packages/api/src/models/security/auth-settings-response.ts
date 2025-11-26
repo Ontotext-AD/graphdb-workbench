@@ -2,7 +2,7 @@ import {Authority} from './authority';
 import {AppSettings} from './app-settings';
 import {AuthorityList} from './authority-list';
 
-export interface AuthSettingsDto {
+export interface AuthSettingsResponse {
   appSettings?: AppSettings;
   authorities?: Authority[] | AuthorityList;
   enabled?: boolean;

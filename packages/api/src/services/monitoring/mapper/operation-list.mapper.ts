@@ -1,9 +1,10 @@
 import {Mapper} from '../../../providers/mapper/mapper';
-import {OperationList} from '../../../models/monitoring/operation-list';
-import {Operation} from '../../../models/monitoring/operation';
-import {OperationType} from '../../../models/monitoring/operation-type';
-import {OperationResponse} from '../../../models/monitoring/operation-status-summary-response';
-import {OperationInit} from '../../../models/monitoring/operation-init';
+import {OperationList} from '../../../models/monitoring';
+import {Operation} from '../../../models/monitoring';
+import {OperationType} from '../../../models/monitoring';
+import {OperationResponse} from '../../../models/monitoring';
+import {OperationInit} from '../../../models/monitoring';
+import {OperationGroup} from '../../../models/monitoring';
 
 const OPERATION_TYPE_SORT_ORDER = {
   [OperationType.CLUSTER_HEALTH]: 0,
@@ -22,36 +23,25 @@ export class OperationListMapper extends Mapper<OperationList> {
    * Sorts the operations by their type before mapping them to the OperationList model.
    *
    * @param data - An array of Operation objects to be mapped into an OperationList.
-   *  * Accepts:
-   * - OperationList - returned as-is
-   * - Operation[] - wrapped in an OperationList
-   * - OperationResponse[] - mapped to Operation instances
    * @returns A new OperationList instance containing the provided operations.
    */
-  mapToModel(data: OperationResponse[] | Operation[] | OperationList): OperationList {
-    if (data instanceof OperationList) {
-      return data;
-    }
-
-    const items = Array.isArray(data) ? data : [];
-
-    const operations = items
+  mapToModel(data: OperationResponse[]): OperationList {
+    const operations = data
       .map(item => {
-        if (item instanceof Operation) {
-          return item;
-        }
-
         const init: OperationInit = {
           type: item.type,
           status: item.status,
           value: item.value,
           id: item.id,
           href: item.href,
+          group: item.group as OperationGroup | undefined,
         };
 
         return new Operation(init);
       })
-      .sort((a, b) => OPERATION_TYPE_SORT_ORDER[a.type] - OPERATION_TYPE_SORT_ORDER[b.type]);
+      .sort(
+        (a, b) => OPERATION_TYPE_SORT_ORDER[a.type] - OPERATION_TYPE_SORT_ORDER[b.type]
+      );
 
     return new OperationList(operations);
   }
