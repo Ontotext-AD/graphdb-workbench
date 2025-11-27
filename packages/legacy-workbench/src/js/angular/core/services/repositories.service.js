@@ -17,6 +17,9 @@ import {
     RepositoryLocationContextService,
     MapperProvider,
     RepositoryListMapper,
+    BroadcastService,
+    BroadcastMessage,
+    MessageType,
 } from "@ontotext/workbench-api";
 
 const modules = [
@@ -429,6 +432,7 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
             return RepositoriesRestService.deleteRepository(repo)
                 .success(function() {
                     that.init();
+                    service(BroadcastService).sendMessage(new BroadcastMessage(MessageType.REPOSITORIES_UPDATED));
                 }).error(function(data) {
                     const msg = getError(data);
                     toastr.error(msg, $translate.instant('common.error'));

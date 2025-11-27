@@ -37,8 +37,10 @@ import {
     EventService,
     RepositoryContextService,
     RepositoryService,
-    ServiceProvider,
+    service,
     SecurityContextService,
+    BroadcastService,
+    MessageType,
 } from "@ontotext/workbench-api";
 import {EventConstants} from "./utils/event-constants";
 import {CookieConsent} from "./models/cookie-policy/cookie-consent";
@@ -110,14 +112,14 @@ function homeCtrl($scope,
     // Public functions
     // =========================
     $scope.getActiveRepositorySize = () => {
-        const repo = ServiceProvider.get(RepositoryContextService).getSelectedRepository();
+        const repo = service(RepositoryContextService).getSelectedRepository();
 
         if (!repo) {
             return;
         }
         $scope.activeRepositorySizeError = undefined;
 
-        ServiceProvider.get(RepositoryService).getRepositorySizeInfo(repo)
+        service(RepositoryService).getRepositorySizeInfo(repo)
             .then(function(repositorySizeInfo) {
                 $scope.activeRepositorySize = repositorySizeInfo;
             })
@@ -138,7 +140,7 @@ function homeCtrl($scope,
     const subscriptions = [];
 
     const onSelectedRepositoryUpdated = (repository) => {
-        const authService = ServiceProvider.get(AuthenticationService);
+        const authService = service(AuthenticationService);
         const hasGqlRights = authService.hasGqlRights(repository);
 
         // Don't call API, if no repo ID, or with GQL read-only or write rights
@@ -161,7 +163,7 @@ function homeCtrl($scope,
         $scope.isAutocompleteEnabled = autocompleteEnabled;
     };
 
-    subscriptions.push(ServiceProvider.get(RepositoryContextService).onSelectedRepositoryChanged(onSelectedRepositoryUpdated));
+    subscriptions.push(service(RepositoryContextService).onSelectedRepositoryChanged(onSelectedRepositoryUpdated));
     subscriptions.push(WorkbenchContextService.onAutocompleteEnabledUpdated(onAutocompleteEnabledUpdated));
 
     $scope.$on('$destroy', () => subscriptions.forEach((subscription) => subscription()));
@@ -209,7 +211,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
 
     // Update page permissions based on menu item role
     const updatePermissions = () => {
-        const securityContextService = ServiceProvider.get(SecurityContextService);
+        const securityContextService = service(SecurityContextService);
         const restrictedPages = securityContextService.getRestrictedPages();
 
         const isAdministratorUser = $jwtAuth.isAdmin();
@@ -616,9 +618,9 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
             });
     }
 
-    ServiceProvider.get(EventService).subscribe(EventName.LOGOUT, () => logout());
+    service(EventService).subscribe(EventName.LOGOUT, () => logout());
 
-    ServiceProvider.get(EventService).subscribe(EventConstants.RDF_SEARCH_ICON_CLICKED, () => {
+    service(EventService).subscribe(EventConstants.RDF_SEARCH_ICON_CLICKED, () => {
         $rootScope.$broadcast('rdfResourceSearchExpanded');
     });
 
@@ -658,7 +660,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
 
     const localStoreChangeHandler = (localStoreEvent) => {
         if (authEvents.includes(localStoreEvent.key)) {
-            const newAuthenticationState = ServiceProvider.get(AuthenticationStorageService).isAuthenticated();
+            const newAuthenticationState = service(AuthenticationStorageService).isAuthenticated();
             $jwtAuth.updateReturnUrl();
             if (isAuthenticated !== newAuthenticationState) {
                 isAuthenticated = newAuthenticationState;
@@ -1150,11 +1152,11 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     // properties.
     let onSelectedRepositoryChangedSubscription;
     // subscribe to repository changes, once we are certain they are loaded
-    const onAppDataLoaded = ServiceProvider.get(ApplicationLifecycleContextService).onApplicationDataStateChanged((dataLoaded) => {
+    const onAppDataLoaded = service(ApplicationLifecycleContextService).onApplicationDataStateChanged((dataLoaded) => {
         if (dataLoaded) {
             // unsubscribe of any previous subscription
             onSelectedRepositoryChangedSubscription?.();
-            onSelectedRepositoryChangedSubscription = ServiceProvider.get(RepositoryContextService)
+            onSelectedRepositoryChangedSubscription = service(RepositoryContextService)
                 .onSelectedRepositoryChanged((repository) => {
                     $repositories.onRepositorySet(repository);
                 });
@@ -1168,9 +1170,16 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
             });
     };
 
+    const broadcastUnsubscribe = service(BroadcastService).onMessageReceived((message) => {
+        if (message.type === MessageType.REPOSITORIES_UPDATED) {
+            $repositories.init();
+        }
+    });
+
     $scope.$on('$destroy', () => {
         onSelectedRepositoryChangedSubscription?.();
         cookieConsentChangedSubscription?.();
+        broadcastUnsubscribe?.();
         onAppDataLoaded();
         document.removeEventListener('click', closeActiveRepoPopoverEventHandler);
         window.removeEventListener('storage', localStoreChangeHandler);
