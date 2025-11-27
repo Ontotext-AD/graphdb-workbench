@@ -7,6 +7,7 @@ import {
 import {decodeHTML} from "../../../app";
 import './controllers/manage-remote-location-dialog.controller';
 import {RemoteLocationType} from "../models/repository/remote-location.model";
+import {service, BroadcastService, MessageType, BroadcastMessage} from '@ontotext/workbench-api';
 
 const ENTITY_INDEX_SIZE_MIN = 10000;
 
@@ -667,6 +668,7 @@ function AddRepositoryCtrl($rootScope, $scope, toastr, $repositories, $location,
         RepositoriesRestService.createRepository($scope.repositoryInfo)
             .then(function() {
                 toastr.success($translate.instant('created.repo.success.msg', {repoId: $scope.repositoryInfo.id}));
+                service(BroadcastService).sendMessage(new BroadcastMessage(MessageType.REPOSITORIES_UPDATED));
                 return $repositories.init();
             })
             .then(() => $scope.goBackToPreviousLocation())
