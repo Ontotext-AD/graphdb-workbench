@@ -29,7 +29,7 @@ import {convertToHumanReadable} from "./js/angular/utils/size-util";
 import {DocumentationUrlResolver} from "./js/angular/utils/documentation-url-resolver";
 import {NumberUtils} from "./js/angular/utils/number-utils";
 import {HtmlUtil} from "./js/angular/utils/html-util";
-import {ServiceProvider, LanguageContextService} from "@ontotext/workbench-api";
+import {service, ServiceProvider, LanguageContextService, ThemeService} from "@ontotext/workbench-api";
 import {LoggerProvider} from "./js/angular/core/services/logger-provider";
 
 // $translate.instant converts <b> from strings to &lt;b&gt
@@ -218,8 +218,8 @@ const moduleDefinition = function(productInfo, translations) {
     workbench.constant('productInfo', productInfo);
 
     // we need to inject $jwtAuth here in order to init the service before everything else
-    workbench.run(['$rootScope', '$route', 'toastr', '$sce', '$translate', '$languageService', 'ThemeService', 'WorkbenchSettingsStorageService', 'LSKeys', 'GuidesService',
-        function($rootScope, $route, toastr, $sce, $translate, $languageService, ThemeService, WorkbenchSettingsStorageService, LSKeys, GuidesService) {
+    workbench.run(['$rootScope', '$route', 'toastr', '$sce', '$translate', '$languageService', 'GuidesService',
+        function($rootScope, $route, toastr, $sce, $translate, $languageService, GuidesService) {
             const routeChangeUnsubscribe = $rootScope.$on('$routeChangeSuccess', function() {
                 updateTitleAndHelpInfo();
 
@@ -248,7 +248,7 @@ const moduleDefinition = function(productInfo, translations) {
             }
 
             // Check if theme is set in local storage workbench settings and apply
-            ThemeService.applyDarkThemeMode();
+            service(ThemeService).applyDarkMode();
 
             GuidesService.init();
 

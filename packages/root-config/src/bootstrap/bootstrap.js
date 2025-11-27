@@ -8,7 +8,13 @@ import {pluginsBootstrap} from './plugins/plugins-bootstrap';
 import {configurationsBootstrap} from './configuration/configuration-bootstrap';
 import {LoggerProvider} from '../services/logger-provider';
 
-import {ApplicationLifecycleContextService, LifecycleState, SecurityContextService, ServiceProvider} from '@ontotext/workbench-api';
+import {
+  service,
+  SecurityContextService,
+  ApplicationLifecycleContextService,
+  ApplicationSettingsStorageService,
+  LifecycleState,
+} from '@ontotext/workbench-api';
 import {start} from 'single-spa';
 import {defineCustomElements} from '../../../shared-components/loader';
 import {registerInterceptors} from './interceptors/interceptors-registration';
@@ -53,7 +59,7 @@ const loadApplicationData = () => {
       } else {
         logger.info('Application data loaded');
         //  Notify listeners, all data has been loaded successfully and is available.
-        ServiceProvider.get(ApplicationLifecycleContextService).updateApplicationDataState(LifecycleState.DATA_LOADED);
+        service(ApplicationLifecycleContextService).updateApplicationDataState(LifecycleState.DATA_LOADED);
       }
     });
 };
@@ -63,12 +69,17 @@ const loadApplicationConfigurations = () => {
 };
 
 const subscribeToAuthenticatedUserChange = () => {
-  const securityContextService = ServiceProvider.get(SecurityContextService);
+  const securityContextService = service(SecurityContextService);
   securityContextService.onAuthenticatedUserChanged((authenticatedUser) => {
     if (authenticatedUser) {
       loadApplicationData();
     }
   });
+};
+
+const migrateApplicationSettings = () => {
+  const applicationSettingsStorageService = service(ApplicationSettingsStorageService);
+  applicationSettingsStorageService.migrate();
 };
 
 /**
@@ -77,6 +88,9 @@ const subscribeToAuthenticatedUserChange = () => {
  * subscriptions for config changes and authenticated user changes.
  */
 export const bootstrapWorkbench = () => {
+  migrateApplicationSettings();
+
+  // Start by loading application configurations
   return loadApplicationConfigurations()
     .then(loadEssentials)
     .catch((error) => {

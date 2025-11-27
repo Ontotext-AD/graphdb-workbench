@@ -23,13 +23,12 @@ angular
         'RDF_SEARCH_EXPANDED_URI': 'rdf-search.search-expanded-uri',
         'RDF_RESOURCE_DESCRIPTION': 'rdf-search.resource-description',
         'PREFERRED_LANG': 'preferred-language',
-        'WORKBENCH_SETTINGS': 'workbench-settings',
         'JSONLD_EXPORT_SETTINGS': 'jsonld-export-settings',
         'IMPORT_VIEW': 'import-view',
         'SPARQL_LAST_REPO': 'sparql-last-repo',
         'TTYG': 'ttyg',
         'COOKIE_CONSENT': 'cookie-consent',
-        'GUIDES_AUTOSTART': 'guides-autostart'
+        'GUIDES_AUTOSTART': 'guides-autostart',
     });
 
 LocalStorageAdapter.$inject = ['localStorageService', 'LSKeys'];
@@ -43,7 +42,7 @@ function LocalStorageAdapter(localStorageService, LSKeys) {
         clearAll,
 
         // class hierarchy related
-        clearClassHieararchyState
+        clearClassHieararchyState,
     };
 
     function get(key) {

@@ -34,10 +34,32 @@ export abstract class LocalStorageService implements Persistence {
   /**
    * Returns the value of the given key from the localStorage.
    * @param key The key to get the value for. Every key must be prefixed with {@link StorageKey.GLOBAL_NAMESPACE}.
+   * @return The value of the key wrapped in a StorageData object.
    */
   get(key: string): StorageData {
     const value = this.getStorage().getItem(this.getPrefixedKey(key));
     return new StorageData(value);
+  }
+
+  /**
+   * Returns the value of the given key from the localStorage parsed as JSON.
+   *
+   * This method is generally only for migration purposes because it does not try to prefix the provided key.
+   *
+   * @param key The key to get the value for.
+   * @return The parsed JSON value of the key, or null if the key does not exist or parsing fails.
+   */
+  getAsJson<T>(key: string): T | null {
+    const value = this.getStorage().getItem(key);
+    if (value) {
+      try {
+        return JSON.parse(value) as T;
+      } catch (e) {
+        console.error(`Error parsing JSON from localStorage for key ${key}:`, e);
+        return null;
+      }
+    }
+    return null;
   }
 
   /**
