@@ -12,6 +12,9 @@ import {
     AuthenticationStorageService,
     AuthorizationService,
     GuidesService,
+    BroadcastService,
+    MessageType,
+    BroadcastMessage,
 } from '@ontotext/workbench-api';
 import {DocumentationUrlResolver} from "../utils/documentation-url-resolver";
 
@@ -537,6 +540,8 @@ AddRepositoryCtrl.$inject = ['$rootScope', '$scope', 'toastr', '$repositories', 
     'RepositoriesRestService', '$translate', 'productInfo'];
 
 function AddRepositoryCtrl($rootScope, $scope, toastr, $repositories, $location, $timeout, Upload, $routeParams, RepositoriesRestService, $translate, productInfo) {
+    const broadcastService = service(BroadcastService);
+
     $scope.rulesets = STATIC_RULESETS.slice();
     $scope.repositoryTypes = REPOSITORY_TYPES;
     $scope.params = $routeParams;
@@ -708,7 +713,10 @@ function AddRepositoryCtrl($rootScope, $scope, toastr, $repositories, $location,
                 toastr.success($translate.instant('created.repo.success.msg', {repoId: $scope.repositoryInfo.id}));
                 return $repositories.init();
             })
-            .then(() => $scope.goBackToPreviousLocation())
+            .then(() => {
+                $scope.goBackToPreviousLocation();
+                broadcastService.sendMessage(new BroadcastMessage(MessageType.REPOSITORIES_UPDATED));
+            })
             .catch(function(error) {
                 const msg = getError(error.data);
                 toastr.error(msg, $translate.instant('common.error'));
@@ -810,6 +818,7 @@ function EditRepositoryCtrl($rootScope, $scope, $routeParams, toastr, $repositor
     // =========================
 
     const authorizationService = service(AuthorizationService);
+    const broadcastService = service(BroadcastService);
 
     // =========================
     // Public variables
@@ -934,7 +943,10 @@ function EditRepositoryCtrl($rootScope, $scope, $routeParams, toastr, $repositor
         RepositoriesRestService.editRepository($scope.repositoryInfo.saveId, $scope.repositoryInfo)
             .success(function() {
                 toastr.success($translate.instant('edit.repo.success.msg', {saveId: $scope.repositoryInfo.saveId}));
-                $repositories.init().finally(() => $scope.goBackToPreviousLocation());
+                $repositories.init().finally(() => {
+                    $scope.goBackToPreviousLocation();
+                    broadcastService.sendMessage(new BroadcastMessage(MessageType.REPOSITORIES_UPDATED));
+                });
                 if ($scope.repositoryInfo.saveId === $scope.repositoryInfo.id && $scope.repositoryInfo.restartRequested) {
                     $repositories.restartRepository($scope.repositoryInfo);
                 }

@@ -19,6 +19,9 @@ import {
     AuthenticationService,
     SecurityContextService,
     service,
+    BroadcastService,
+    BroadcastMessage,
+    MessageType,
 } from "@ontotext/workbench-api";
 
 const modules = [
@@ -47,6 +50,7 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
         const authorizationService = service(AuthorizationService);
         const securityContextService = service(SecurityContextService);
         const authenticationService = service(AuthenticationService);
+        const broadcastService = service(BroadcastService);
 
         const that = this;
 
@@ -427,6 +431,8 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
                         that.setRepository('');
                     }
                     that.init();
+                    // Deleting a location removes its repositories from the list
+                    broadcastService.sendMessage(new BroadcastMessage(MessageType.REPOSITORIES_UPDATED));
                 }).error(function(data) {
                 const msg = getError(data);
                 toastr.error(msg, $translate.instant('common.error'));
@@ -437,6 +443,7 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
             return RepositoriesRestService.deleteRepository(repo)
                 .success(function() {
                     that.init();
+                    broadcastService.sendMessage(new BroadcastMessage(MessageType.REPOSITORIES_UPDATED));
                 }).error(function(data) {
                     const msg = getError(data);
                     toastr.error(msg, $translate.instant('common.error'));
