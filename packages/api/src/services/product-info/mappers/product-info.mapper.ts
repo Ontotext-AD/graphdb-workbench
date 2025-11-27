@@ -1,6 +1,5 @@
-import { ProductInfo } from '../../../models/product-info';
+import { ProductInfo, ProductInfoResponse } from '../../../models/product-info';
 import { Mapper } from '../../../providers/mapper/mapper';
-import {ProductInfoResponse} from '../../../models/product-info';
 
 /**
  * Mapper class for ProductInfo objects.

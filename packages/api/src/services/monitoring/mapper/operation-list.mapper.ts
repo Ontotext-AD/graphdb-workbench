@@ -1,10 +1,12 @@
 import {Mapper} from '../../../providers/mapper/mapper';
-import {OperationList} from '../../../models/monitoring';
-import {Operation} from '../../../models/monitoring';
-import {OperationType} from '../../../models/monitoring';
-import {OperationResponse} from '../../../models/monitoring';
-import {OperationInit} from '../../../models/monitoring';
-import {OperationGroup} from '../../../models/monitoring';
+import {
+  OperationList,
+  Operation,
+  OperationType,
+  OperationResponse,
+  OperationInit,
+  OperationGroup
+} from '../../../models/monitoring';
 
 const OPERATION_TYPE_SORT_ORDER = {
   [OperationType.CLUSTER_HEALTH]: 0,

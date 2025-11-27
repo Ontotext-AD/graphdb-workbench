@@ -1,7 +1,6 @@
 import {OperationGroupSummaryList} from '../../../models/monitoring/operation-group-summary-list';
-import {OperationGroupSummary} from '../../../models/monitoring';
+import {OperationGroupSummary, OperationGroupSummaryResponse} from '../../../models/monitoring';
 import {Mapper} from '../../../providers/mapper/mapper';
-import {OperationGroupSummaryResponse} from '../../../models/monitoring';
 
 /**
  * Mapper class for converting an array of OperationGroupSummary objects to an OperationGroupSummaryList model.

@@ -2,9 +2,9 @@ import {OperationSummaryMapper} from '../operation-summary-mapper';
 import {
   OperationStatus,
   OperationStatusSummary,
-  OperationType
+  OperationType,
+  OperationStatusSummaryResponse
 } from '../../../../models/monitoring';
-import {OperationStatusSummaryResponse} from '../../../../models/monitoring';
 
 describe('OperationSummaryMapper', () => {
   let mapper: OperationSummaryMapper;
