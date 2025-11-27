@@ -14,11 +14,7 @@ export class RepositoryMapper extends Mapper<Repository> {
    * @param {Repository | RepositoryResponse} data - The raw data to be transformed into a Repository model.
    * @returns {Repository} - A new Repository instance.
    */
-  mapToModel(data: Repository | RepositoryResponse): Repository {
-    if (data instanceof Repository) {
-      return data;
-    }
-
+  mapToModel(data: RepositoryResponse): Repository {
     return new Repository({
       id: data.id,
       title: data.title ?? '',

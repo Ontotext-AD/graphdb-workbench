@@ -13,11 +13,19 @@ export class RepositoryLocationMapper extends Mapper<RepositoryLocation> {
    * @param {RepositoryLocationResponse | RepositoryLocation} data - The raw data to be transformed into a RepositoryLocation model.
    * @returns {RepositoryLocation} - A new Repository instance.
    */
-  mapToModel(data: RepositoryLocationResponse | RepositoryLocation): RepositoryLocation {
-    if (data instanceof RepositoryLocation) {
-      return data;
-    }
-
-    return new RepositoryLocation(data);
+  mapToModel(data: RepositoryLocationResponse): RepositoryLocation {
+    return new RepositoryLocation({
+      uri: data.uri ?? '',
+      label: data.label ?? '',
+      username: data.username ?? '',
+      password: data.password ?? '',
+      authType: data.authType,
+      locationType: data.locationType,
+      active: data.active,
+      local: data.local,
+      system: data.system,
+      errorMsg: data.errorMsg ?? '',
+      defaultRepository: data.defaultRepository ?? '',
+    });
   }
 }

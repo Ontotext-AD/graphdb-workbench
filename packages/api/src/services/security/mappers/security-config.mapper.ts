@@ -2,6 +2,7 @@ import {SecurityConfig} from '../../../models/security/security-config';
 import {Mapper} from '../../../providers/mapper/mapper';
 import {SecurityConfigResponse, SecurityConfigInit} from '../../../models/security/security-config-response';
 import {AuthSettingsMapper} from './auth-settings.mapper';
+import {OpenidSecurityConfig} from '../../../models/security';
 
 /**
  * Mapper class for converting partial SecurityConfig objects to complete SecurityConfig models.
@@ -15,18 +16,13 @@ export class SecurityConfigMapper extends Mapper<SecurityConfig> {
    * @param {unknown} data - The raw data to be transformed into a model.
    * @returns {SecurityConfig} - A new SecurityConfig instance.
    */
-  mapToModel(data: SecurityConfigResponse | SecurityConfig): SecurityConfig {
-    if (data instanceof SecurityConfig) {
-      return data;
-    }
+  mapToModel(data: SecurityConfigResponse): SecurityConfig {
+    const freeAccess = this.authSettingsMapper.mapToModel(data.freeAccess ?? {});
+    const overrideAuth = this.authSettingsMapper.mapToModel(data.overrideAuth ?? {});
 
-    const freeAccess = this.authSettingsMapper.mapToModel(
-      data.freeAccess ?? {}
-    );
-
-    const overrideAuth = this.authSettingsMapper.mapToModel(
-      data.overrideAuth ?? {}
-    );
+    const openidSecurityConfig = data.methodSettings?.openid
+      ? new OpenidSecurityConfig(data.methodSettings.openid)
+      : undefined;
 
     const init: SecurityConfigInit = {
       authImplementation: data.authImplementation,
@@ -35,9 +31,10 @@ export class SecurityConfigMapper extends Mapper<SecurityConfig> {
       freeAccess,
       overrideAuth,
       openIdEnabled: data.openIdEnabled,
-      userLoggedIn: data.userLoggedIn,
-      freeAccessActive: data.freeAccessActive,
-      hasExternalAuthUser: data.hasExternalAuthUser,
+      freeAccessActive:
+        data.freeAccessActive ?? data.freeAccess?.enabled,
+      hasExternalAuth: data.hasExternalAuth,
+      openidSecurityConfig,
     };
 
     return new SecurityConfig(init);

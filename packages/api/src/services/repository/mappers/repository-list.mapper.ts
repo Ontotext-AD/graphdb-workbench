@@ -15,15 +15,11 @@ export class RepositoryListMapper extends Mapper<RepositoryList> {
   /**
    * Maps the raw data to an instance of the {@link RepositoryList} model.
    *
-   * @param {RepositoryListResponse | RepositoryList} data - The raw server response containing repositories grouped by location URLs.
+   * @param {RepositoryListResponse} data - The raw server response containing repositories grouped by location URLs.
    *               The structure is a record where keys are location URLs and values are arrays of repository data.
    * @returns A {@link RepositoryList} model containing all repositories as a flat list.
    */
-  mapToModel(data?: RepositoryListResponse | RepositoryList): RepositoryList {
-    if (data instanceof RepositoryList) {
-      return data;
-    }
-
+  mapToModel(data?: RepositoryListResponse): RepositoryList {
     if (!data) {
       return new RepositoryList();
     }

@@ -10,11 +10,7 @@ export class RepositorySizeInfoMapper extends Mapper<RepositorySizeInfo> {
    * @param {RepositorySizeInfoResponse} data - The raw data to be transformed into a RepositorySizeInfo model.
    * @returns {RepositorySizeInfo} - A new RepositorySizeInfo instance.
    */
-  mapToModel(data: RepositorySizeInfo | RepositorySizeInfoResponse): RepositorySizeInfo {
-    if (data instanceof RepositorySizeInfo) {
-      return data;
-    }
-
+  mapToModel(data: RepositorySizeInfoResponse): RepositorySizeInfo {
     const init: Partial<RepositorySizeInfo> = {
       inferred: data.inferred,
       explicit: data.explicit,

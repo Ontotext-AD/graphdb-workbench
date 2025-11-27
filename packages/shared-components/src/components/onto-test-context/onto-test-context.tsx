@@ -1,7 +1,6 @@
 import {Component, Method} from '@stencil/core';
 import {
   EventService,
-  AuthenticatedUserMapper,
   LanguageContextService,
   License,
   LicenseContextService,
@@ -24,7 +23,8 @@ import {
   notify,
   Notification, service, OntoToastrService,
   AuthenticationService, AuthenticationStorageService, User, AuthStrategyResolver,
-  AuthorizationService,
+  AuthorizationService, AuthenticatedUser, SecurityConfigInit,
+  AuthSettings,
 } from '@ontotext/workbench-api';
 import en from '../../assets/i18n/en.json';
 import fr from '../../assets/i18n/fr.json';
@@ -95,7 +95,7 @@ export class OntoTestContext {
   setAuthenticatedUser(user: User): Promise<void> {
     // Don't map if undefined is passed. This allows to clear the user in context
     const userModel = user
-      ? new AuthenticatedUserMapper().mapToModel(user)
+      ? AuthenticatedUser.fromUser(user)
       : undefined;
     ServiceProvider.get(SecurityContextService).updateAuthenticatedUser(userModel);
     ServiceProvider.get(AuthenticationStorageService).setAuthToken('token');
@@ -282,16 +282,15 @@ export class OntoTestContext {
    * @param overrides
    * @private
    */
-  private createSecurityConfig(overrides?: Partial<SecurityConfig>): SecurityConfig {
-    const config = {
+  private createSecurityConfig(overrides?: SecurityConfigInit): SecurityConfig {
+    const config: SecurityConfigInit = {
       enabled: true,
-      userLoggedIn: false,
       passwordLoginEnabled: false,
       openIdEnabled: false,
-      freeAccess: {},
-      overrideAuth: {},
+      freeAccess: new AuthSettings({}),
+      overrideAuth: new AuthSettings({}),
       ...overrides
-    } as SecurityConfig;
+    };
     return new SecurityConfig(config);
   }
 }

@@ -1,6 +1,6 @@
 import {AuthSettings} from '../../../models/security/auth-settings';
 import {Mapper} from '../../../providers/mapper/mapper';
-import {AuthSettingsResponseModel} from '../../../models/security/response-models/auth-settings-response-model';
+import {AuthSettingsResponse} from '../../../models/security/response-models/auth-settings-response';
 import {AuthorityListMapper} from './authority-list.mapper';
 import {AppSettings} from '../../../models/users/app-settings';
 
@@ -15,11 +15,14 @@ export class AuthSettingsMapper extends Mapper<AuthSettings> {
    * @param data - Partial data of AuthSettings to be mapped.
    * @returns A new instance of AuthSettings.
    */
-  mapToModel(data: Partial<AuthSettingsResponseModel>): AuthSettings {
-    const authSettings = new AuthSettings({});
-    authSettings.appSettings = new AppSettings(data.appSettings);
-    authSettings.authorities = this.authorityListMapper.mapToModel(data.authorities);
-    authSettings.enabled = data.enabled;
-    return authSettings;
+  mapToModel(data: Partial<AuthSettingsResponse> = {}): AuthSettings {
+    const appSettings = new AppSettings(data.appSettings);
+    const authorities = this.authorityListMapper.mapToModel(data.authorities ?? []);
+
+    return new AuthSettings({
+      appSettings,
+      authorities,
+      enabled: data.enabled,
+    });
   }
 }

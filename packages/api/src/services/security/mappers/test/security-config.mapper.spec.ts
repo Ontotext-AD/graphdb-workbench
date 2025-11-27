@@ -1,4 +1,4 @@
-import {SecurityConfig, SecurityConfigResponse, SecurityConfigInit} from '../../../../models/security';
+import {SecurityConfig, SecurityConfigResponse} from '../../../../models/security';
 import {SecurityConfigMapper} from '../security-config.mapper';
 import {AuthSettings} from '../../../../models/security/auth-settings';
 import {AuthSettingsMapper} from '../auth-settings.mapper';
@@ -7,13 +7,19 @@ describe('SecurityConfigMapper', () => {
   test('should map raw data to SecurityConfig model', () => {
     // Given I have a raw security config object
     const newSecurityConfig: SecurityConfigResponse = {
-      freeAccess: {},
-      overrideAuth: {},
-      appSettings: {},
+      freeAccess: {
+        enabled: false,
+        authorities: [],
+        appSettings: {},
+      },
+      overrideAuth: {
+        enabled: false,
+        authorities: [],
+        appSettings: {},
+      },
       methodSettings: {},
       passwordLoginEnabled: true,
       hasExternalAuth: false,
-      hasExternalAuthUser: false,
       authImplementation: 'Local',
       openIdEnabled: false,
     };
@@ -25,13 +31,20 @@ describe('SecurityConfigMapper', () => {
       authImplementation: 'Local',
       enabled: undefined,
       passwordLoginEnabled: true,
-      freeAccess: authSettingsMapper.mapToModel({}),
-      overrideAuth: authSettingsMapper.mapToModel({}),
+      freeAccess: authSettingsMapper.mapToModel({
+        enabled: false,
+        authorities: [],
+        appSettings: {},
+      }),
+      overrideAuth: authSettingsMapper.mapToModel({
+        enabled: false,
+        authorities: [],
+        appSettings: {},
+      }),
       openIdEnabled: false,
-      userLoggedIn: undefined,
-      freeAccessActive: undefined,
-      hasExternalAuthUser: false,
-    } as SecurityConfigInit);
+      freeAccessActive: false,
+      hasExternalAuth: false,
+    });
 
     expect(mappedSecurityConfig).toEqual(expected);
     // Then I expect the mapped model to be an instance of SecurityConfig
@@ -45,8 +58,16 @@ describe('SecurityConfigMapper', () => {
       authImplementation: 'BASIC',
       enabled: true,
       passwordLoginEnabled: false,
-      freeAccess: { enabled: true },
-      overrideAuth: { enabled: false },
+      freeAccess: {
+        enabled: true,
+        authorities: [],
+        appSettings: {},
+      },
+      overrideAuth: {
+        enabled: false,
+        authorities: [],
+        appSettings: {},
+      },
     };
 
     const mapper = new SecurityConfigMapper();

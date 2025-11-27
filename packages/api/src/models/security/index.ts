@@ -9,5 +9,4 @@ export * from './rights';
 export * from './response-models';
 export * from './auth-settings';
 export type * from './security-config-response';
-export type * from './auth-settings-response';
-export type * from './auth-user-response';
+export type * from './auth-user-init';
