@@ -36,6 +36,7 @@ export * from './models/http';
 
 // Export enums for external usages.
 export * from './models/url';
+export * from './models/broadcast';
 
 // Export providers for external usages.
 export * from './providers';
@@ -82,6 +83,7 @@ export * from './services/domain/graph-config';
 
 // Export interceptors for external usages.
 export * from './interceptor';
+export * from './services/broadcast';
 
 // Export utils for external usages.
 export * from './services/utils';

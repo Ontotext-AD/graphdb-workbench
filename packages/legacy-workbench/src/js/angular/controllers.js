@@ -43,6 +43,8 @@ import {
     service,
     ShepherdService,
     WindowService,
+    BroadcastService,
+    MessageType,
 } from '@ontotext/workbench-api';
 import {EventConstants} from './utils/event-constants';
 import {CookieConsent} from './models/cookie-policy/cookie-consent';
@@ -1137,6 +1139,12 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     const licenseUpdatedSubscription = service(LicenseContextService).onLicenseChanged(onLicenseUpdated);
     const cookieConsentChangedSubscription = subscribeToCookieConsentChanged();
 
+    const broadcastUnsubscribe = service(BroadcastService).subscribeToMessages((message) => {
+        if (message.type === MessageType.REPOSITORIES_UPDATED) {
+            $repositories.init();
+        }
+    });
+
     // TODO: The $destroy hook is not called in the workbench unmounting process, so these subscriptions are not cleaned up.
     $scope.$on('$destroy', () => {
         onSelectedRepositoryChangedSubscription?.();
@@ -1146,6 +1154,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         onAppDataLoaded?.();
         onLogoutSubscription?.();
         onLoginSubscription?.();
+        broadcastUnsubscribe?.();
         securityConfigChangedSubscription?.();
         document.removeEventListener('click', closeActiveRepoPopoverEventHandler);
         window.removeEventListener('storage', localStoreChangeHandler);
