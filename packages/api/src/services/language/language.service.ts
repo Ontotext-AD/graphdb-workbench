@@ -1,6 +1,6 @@
 import {Service} from '../../providers/service/service';
 import {TranslationBundle} from '../../models/language';
-import {MapperProvider, ServiceProvider} from '../../providers';
+import {ServiceProvider} from '../../providers';
 import {LanguageConfig} from '../../models/language';
 import {LanguageRestService} from './language-rest.service';
 import {LanguageConfigMapper} from './mappers/language-config-mapper';
@@ -47,7 +47,7 @@ export class LanguageService implements Service {
    */
   getLanguageConfiguration(): Promise<LanguageConfig> {
     return this.languageRestService.getLanguageConfiguration()
-      .then(config => MapperProvider.get(LanguageConfigMapper).mapToModel(config));
+      .then(config => new LanguageConfigMapper().mapToModel(config));
   }
 
   /**

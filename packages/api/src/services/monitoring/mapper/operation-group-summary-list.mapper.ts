@@ -1,5 +1,5 @@
 import {OperationGroupSummaryList} from '../../../models/monitoring/operation-group-summary-list';
-import {OperationGroupSummary} from '../../../models/monitoring';
+import {OperationGroupSummary, OperationGroupSummaryResponse} from '../../../models/monitoring';
 import {Mapper} from '../../../providers/mapper/mapper';
 
 /**
@@ -12,7 +12,15 @@ export class OperationGroupSummaryListMapper extends Mapper<OperationGroupSummar
    * @param data - An array of OperationGroupSummary objects to be mapped.
    * @returns A new OperationGroupSummaryList instance containing the provided data.
    */
-  mapToModel(data: OperationGroupSummary[]): OperationGroupSummaryList {
-    return new OperationGroupSummaryList(data);
+  mapToModel(data: OperationGroupSummaryResponse[]): OperationGroupSummaryList {
+    const summaries = data.map(item =>
+      new OperationGroupSummary({
+        group: item.group,
+        totalOperations: item.totalOperations,
+        status: item.status,
+      })
+    );
+
+    return new OperationGroupSummaryList(summaries);
   }
 }

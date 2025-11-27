@@ -7,9 +7,9 @@ export class AvailableLanguage extends Model<AvailableLanguage> {
   key: string;
   name: string;
 
-  constructor(data: AvailableLanguage) {
+  constructor(data: Partial<AvailableLanguage>) {
     super();
-    this.key = data.key;
-    this.name = data.name;
+    this.key = data.key ?? '';
+    this.name = data.name ?? '';
   }
 }
