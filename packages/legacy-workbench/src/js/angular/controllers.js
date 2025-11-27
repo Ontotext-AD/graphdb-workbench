@@ -1,5 +1,4 @@
 import 'angular/core/services';
-import 'angular/core/services/theme-service';
 import 'angular/rest/sparql.rest.service';
 import 'angular/rest/autocomplete.rest.service';
 import 'angular/rest/plugins.rest.service';
@@ -14,7 +13,6 @@ import 'angular/core/services/workbench-context.service';
 import 'angular/core/services/rdf4j-repositories.service';
 import {UserRole} from 'angular/utils/user-utils';
 import 'angular/utils/local-storage-adapter';
-import 'angular/utils/workbench-settings-storage-service';
 import 'angular/utils/uri-utils';
 import 'angular/core/services/autocomplete.service';
 import {decodeHTML} from '../../app';
@@ -50,7 +48,6 @@ angular
         'graphdb.framework.core.services.jwtauth',
         'graphdb.framework.core.services.repositories',
         'graphdb.framework.core.services.trackingService',
-        'graphdb.framework.core.services.theme-service',
         'ngCookies',
         'ngFileUpload',
         'graphdb.framework.core',
@@ -62,7 +59,6 @@ angular
         'graphdb.framework.rest.plugins.service',
         'graphdb.framework.rest.monitoring.service',
         'graphdb.framework.utils.localstorageadapter',
-        'graphdb.framework.utils.workbenchsettingsstorageservice',
         'graphdb.framework.core.services.autocomplete',
         'graphdb.framework.utils.uriutils',
         'graphdb.framework.guides.directives',

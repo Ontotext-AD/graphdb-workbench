@@ -3,6 +3,8 @@ import {GRAPHQL, READ_REPO, WRITE_REPO} from '../services/constants';
 import {UserType} from 'angular/utils/user-utils';
 import {
     navigate,
+    ThemeService,
+    ApplicationSettingsStorageService,
     NavigationContextService,
     SecurityService,
     AuthenticationService,
@@ -29,14 +31,12 @@ UserSettingsController.$inject = [
     '$controller',
     'ModalService',
     '$translate',
-    'ThemeService',
-    'WorkbenchSettingsStorageService',
     '$q',
     '$uibModal',
     'TrackingService',
 ];
 
-function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $rootScope, $controller, ModalService, $translate, ThemeService, WorkbenchSettingsStorageService, $q, $uibModal, TrackingService) {
+function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $rootScope, $controller, ModalService, $translate, $q, $uibModal, TrackingService) {
     angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope, passwordPlaceholder: 'security.new.password'}));
 
     // =========================
@@ -46,6 +46,10 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
     const authenticationService = service(AuthenticationService);
     const securityContextService = service(SecurityContextService);
     const licenseService = service(LicenseService);
+
+    const applicationSettingsStorageService = service(ApplicationSettingsStorageService);
+    const navigationContextService = service(NavigationContextService);
+    const themeService = service(ThemeService);
 
     /**
      * A timer task that will redirect back to the previous page after the user has been updated.
@@ -60,10 +64,10 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
     $scope.mode = 'settings';
     $scope.showWorkbenchSettings = true;
     /**
-     * @type {WorkbenchSettingsModel}
+     * @type {ApplicationSettings}
      */
-    $scope.workbenchSettings = WorkbenchSettingsStorageService.getWorkbenchSettings();
-    $scope.selectedThemeMode = $scope.workbenchSettings.mode;
+    $scope.workbenchSettings = applicationSettingsStorageService.getApplicationSettings();
+    $scope.selectedThemeMode = $scope.workbenchSettings.themeMode;
     $scope.saveButtonText = $translate.instant('common.save.btn');
     $scope.pageTitle = $translate.instant('view.settings.title');
     $scope.passwordPlaceholder = $translate.instant('security.new.password');
@@ -97,11 +101,11 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
     };
 
     $scope.goBack = function() {
-        const previousRoute = service(NavigationContextService).getPreviousRoute();
+        const previousRoute = navigationContextService.getPreviousRoute();
         navigate(previousRoute ?? './');
     };
 
-    $scope.updateCurrentUserData = function () {
+    $scope.updateCurrentUserData = function() {
         authenticationService.getCurrentUser()
             .then((authenticatedUser) => securityContextService.updateAuthenticatedUser(authenticatedUser));
     };
@@ -137,8 +141,8 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
             .then(() => {
                 toastr.success($translate.instant('security.user.updated', {name: $scope.user.username}));
                 $scope.updateCurrentUserData();
-                ThemeService.toggleThemeMode($scope.selectedThemeMode);
-                WorkbenchSettingsStorageService.saveWorkbenchSettings($scope.workbenchSettings);
+                themeService.setThemeMode($scope.selectedThemeMode);
+                applicationSettingsStorageService.setApplicationSettings($scope.workbenchSettings);
                 goBackToPreviousView();
             }).catch((data) => {
                 const msg = getError(data);
@@ -161,7 +165,7 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
     };
 
     $scope.setThemeMode = function() {
-        $scope.selectedThemeMode = $scope.workbenchSettings.mode;
+        $scope.selectedThemeMode = $scope.workbenchSettings.themeMode;
     };
 
     $scope.showCookiePolicy = ($event) => {
@@ -242,8 +246,8 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
     // =========================
 
     $scope.$on('$destroy', function() {
-        const workbenchSettings = WorkbenchSettingsStorageService.getWorkbenchSettings();
-        ThemeService.toggleThemeMode(workbenchSettings.mode);
+        const themeMode = applicationSettingsStorageService.getThemeMode();
+        themeService.setThemeMode(themeMode);
         $timeout.cancel(waitBeforeRedirectBack);
     });
 
@@ -252,11 +256,6 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
     // =========================
 
     const initView = () => {
-        if (!$scope.workbenchSettings) {
-            $scope.workbenchSettings = {
-                theme: 'light',
-            };
-        }
         processUser();
         $scope.setThemeMode();
         showCookiePolicyLink();

@@ -19,6 +19,7 @@ import {YasguiPersistenceMigrationService} from "./yasgui-persistence-migration.
 import {ExportSettingsCtrl} from "../../components/export-settings-modal/controller";
 import {FileUtils} from "../../../utils/file-utils";
 import {
+    ThemeService,
     SecurityContextService,
     service,
 } from '@ontotext/workbench-api';
@@ -46,7 +47,6 @@ yasguiComponentDirective.$inject = [
     'MonitoringRestService',
     'SparqlRestService',
     'ShareQueryLinkService',
-    'ThemeService',
 ];
 
 /**
@@ -82,7 +82,6 @@ function yasguiComponentDirective(
     MonitoringRestService,
     SparqlRestService,
     ShareQueryLinkService,
-    ThemeService,
 ) {
     return {
         restrict: 'E',
@@ -94,6 +93,7 @@ function yasguiComponentDirective(
         },
         link: ($scope, element, attrs) => {
             const securityContextService = service(SecurityContextService);
+            const themeService = service(ThemeService);
 
             $scope.classToApply = attrs.class || '';
             const downloadAsPluginNameToEventHandler = new Map();
@@ -428,7 +428,7 @@ function yasguiComponentDirective(
                     }
 
                     if (!config.themeName) {
-                        config.themeName = ThemeService.isDarkModeApplied() ? ThemeService.YASQE_DARK_THEME: null;
+                        config.themeName = themeService.isDarkModeApplied() ? ThemeService.YASQE_DARK_THEME : null;
                     }
 
                     $scope.ontotextYasguiConfig = config;
