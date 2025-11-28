@@ -42,6 +42,11 @@
     /* Sizing */
     --main-content-rl-padding: 2rem;
 
+    /*Logo colors*/
+    --logo-color: var(--gw-primary-light);
+    --logo-text-color: white;
+    --logo-background-color: var(--gw-secondary-dark);
+
     /* Notify browser that we support dark theme, makes checkboxes look better*/
     color-scheme: light dark;
 }
