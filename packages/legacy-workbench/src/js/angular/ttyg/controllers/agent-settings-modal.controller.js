@@ -1,5 +1,5 @@
 import {decodeHTML} from "../../../../app";
-import {AdditionalExtractionMethod, ExtractionMethod, SimilarityIndexOption} from "../../models/ttyg/agents";
+import {AdditionalExtractionMethod, ExtractionMethod} from "../../models/ttyg/agents";
 import 'angular/core/services/similarity.service';
 import 'angular/core/services/connectors.service';
 import 'angular/core/services/ttyg.service';
@@ -17,6 +17,14 @@ import {SelectMenuOptionsModel} from "../../models/form-fields";
 import {SimilarityInstanceType} from '../../models/similarity/similarity-instance-type';
 
 const logger = LoggerProvider.logger;
+/**
+ * @typedef {Object} SimilarityIndexOption
+ * @property {string} provider
+ * @property {string} label
+ * @property {string} value
+ * @property {string} group
+ */
+
 
 angular
     .module('graphdb.framework.ttyg.controllers.agent-settings-modal', [
@@ -748,16 +756,17 @@ function AgentSettingsModalController(
      * @param connectorMap - The connector map with similarity indexes.
      */
     const buildSimilarityIndexSelectOptions = (connectorMap) => {
+        /** @type {SimilarityIndexOption[]} */
         $scope.similarityOptionsGrouped = [];
         Object.entries(connectorMap).forEach(([provider, types]) => {
             const groupLabel = $translate.instant(`ttyg.agent.create_agent_modal.form.similarity_instance_type_label.${provider}`);
             Object.keys(types || {}).forEach((typeName) => {
-                $scope.similarityOptionsGrouped.push(new SimilarityIndexOption({
+                $scope.similarityOptionsGrouped.push({
                     provider,
                     label: typeName,
                     value: typeName,
                     group: groupLabel,
-                }));
+                });
             });
         });
     };
