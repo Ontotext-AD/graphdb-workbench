@@ -2,14 +2,13 @@ import {RepositoriesStubs} from "../../stubs/repositories/repositories-stubs";
 import {TTYGViewSteps} from "../../steps/ttyg/ttyg-view-steps";
 import {TTYGStubs} from "../../stubs/ttyg/ttyg-stubs";
 import {TtygAgentSettingsModalSteps} from "../../steps/ttyg/ttyg-agent-settings-modal.steps";
-import {RepositoriesStub} from "../../stubs/repositories-stub";
 
 describe('TTYG clone an agent', () => {
     const repositoryId = 'starwars';
 
     beforeEach(() => {
         RepositoriesStubs.stubRepositories(0, '/repositories/get-ttyg-repositories.json');
-        RepositoriesStub.stubBaseEndpoints(repositoryId);
+        RepositoriesStubs.stubBaseEndpoints(repositoryId);
         cy.presetRepository(repositoryId);
         TTYGStubs.stubAgentDefaultsGet();
     });

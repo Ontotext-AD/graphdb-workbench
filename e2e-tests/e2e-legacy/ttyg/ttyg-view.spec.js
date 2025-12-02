@@ -2,7 +2,6 @@ import {TTYGViewSteps} from "../../steps/ttyg/ttyg-view-steps";
 import {TTYGStubs} from "../../stubs/ttyg/ttyg-stubs";
 import {RepositoriesStubs} from "../../stubs/repositories/repositories-stubs";
 import {ApplicationSteps} from "../../steps/application-steps";
-import {RepositoriesStub} from "../../stubs/repositories-stub";
 
 // TODO: Fix me. Broken due to migration (Error: unknown)
 describe('TTYG view', () => {
@@ -11,7 +10,7 @@ describe('TTYG view', () => {
 
     beforeEach(() => {
         RepositoriesStubs.stubRepositories(0, '/repositories/get-ttyg-repositories.json');
-        RepositoriesStub.stubBaseEndpoints(repositoryId);
+        RepositoriesStubs.stubBaseEndpoints(repositoryId);
         cy.presetRepository(repositoryId);
     });
 

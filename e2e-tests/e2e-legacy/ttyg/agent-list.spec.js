@@ -1,13 +1,12 @@
 import {TTYGViewSteps} from "../../steps/ttyg/ttyg-view-steps";
 import {TTYGStubs} from "../../stubs/ttyg/ttyg-stubs";
 import {RepositoriesStubs} from "../../stubs/repositories/repositories-stubs";
-import {RepositoriesStub} from "../../stubs/repositories-stub";
 import {TtygAgentSettingsModalSteps} from "../../steps/ttyg/ttyg-agent-settings-modal.steps";
 
 describe('TTYG agent list', () => {
     beforeEach(() => {
         RepositoriesStubs.stubRepositories(0, '/repositories/get-ttyg-repositories.json');
-        RepositoriesStub.stubBaseEndpoints('starwars');
+        RepositoriesStubs.stubBaseEndpoints('starwars');
         cy.presetRepository('starwars');
     });
 

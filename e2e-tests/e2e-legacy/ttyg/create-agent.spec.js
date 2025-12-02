@@ -3,8 +3,7 @@ import {TTYGStubs} from "../../stubs/ttyg/ttyg-stubs";
 import {RepositoriesStubs} from "../../stubs/repositories/repositories-stubs";
 import {TtygAgentSettingsModalSteps} from "../../steps/ttyg/ttyg-agent-settings-modal.steps";
 import {ConnectorStubs} from "../../stubs/connector-stubs";
-import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
-import {RepositoriesStub} from "../../stubs/repositories-stub";
+import {ModalDialogSteps} from "../../steps/modal-dialog-steps"
 import {AlertDialogSteps} from "../../steps/alert-dialog-steps";
 import {ApplicationSteps} from '../../steps/application-steps.js';
 
@@ -13,7 +12,7 @@ describe('TTYG create new agent', () => {
 
     beforeEach(() => {
         RepositoriesStubs.stubRepositories(0, '/repositories/get-ttyg-repositories.json');
-        RepositoriesStub.stubBaseEndpoints(repositoryId);
+        RepositoriesStubs.stubBaseEndpoints(repositoryId);
         cy.presetRepository(repositoryId);
         TTYGStubs.stubAgentDefaultsGet();
     });

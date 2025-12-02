@@ -6,13 +6,12 @@ import {ApplicationSteps} from "../../steps/application-steps";
 import HomeSteps from "../../steps/home-steps";
 import {ChatPanelSteps} from "../../steps/ttyg/chat-panel-steps";
 import {AlertDialogSteps} from "../../steps/alert-dialog-steps";
-import {RepositoriesStub} from "../../stubs/repositories-stub";
 
 describe('TTYG chat list', () => {
 
     beforeEach(() => {
         RepositoriesStubs.stubRepositories(0, '/repositories/get-ttyg-repositories.json');
-        RepositoriesStub.stubBaseEndpoints('starwars');
+        RepositoriesStubs.stubBaseEndpoints('starwars');
         cy.presetRepository('starwars');
     });
 

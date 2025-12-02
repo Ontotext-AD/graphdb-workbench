@@ -1,5 +1,4 @@
 import {RepositoriesStubs} from "../../stubs/repositories/repositories-stubs";
-import {RepositoriesStub} from "../../stubs/repositories-stub";
 import {TTYGStubs} from "../../stubs/ttyg/ttyg-stubs";
 import {TTYGViewSteps} from "../../steps/ttyg/ttyg-view-steps";
 import {LoginSteps} from "../../steps/login-steps";
@@ -30,7 +29,7 @@ describe('TTYG permissions', () => {
     beforeEach(() => {
         SecurityStubs.spyOnAuthenticatedUser();
         RepositoriesStubs.stubRepositories(0, '/repositories/get-ttyg-repositories.json');
-        RepositoriesStub.stubBaseEndpoints(REPOSITORY_ID);
+        RepositoriesStubs.stubBaseEndpoints(REPOSITORY_ID);
     })
 
     after(() => {

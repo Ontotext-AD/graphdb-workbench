@@ -2,7 +2,6 @@ import {TTYGViewSteps} from "../../steps/ttyg/ttyg-view-steps";
 import {TTYGStubs} from "../../stubs/ttyg/ttyg-stubs";
 import {RepositoriesStubs} from "../../stubs/repositories/repositories-stubs";
 import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
-import {RepositoriesStub} from "../../stubs/repositories-stub";
 
 describe('TTYG agent select menu', () => {
 
@@ -10,7 +9,7 @@ describe('TTYG agent select menu', () => {
 
     beforeEach(() => {
         RepositoriesStubs.stubRepositories(0, '/repositories/get-ttyg-repositories.json');
-        RepositoriesStub.stubBaseEndpoints(repositoryId);
+        RepositoriesStubs.stubBaseEndpoints(repositoryId);
         cy.presetRepository(repositoryId);
         TTYGStubs.stubChatsListGetNoResults();
     });
