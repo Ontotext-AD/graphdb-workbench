@@ -3,14 +3,13 @@ import {TTYGStubs} from "../../stubs/ttyg/ttyg-stubs";
 import {TTYGViewSteps} from "../../steps/ttyg/ttyg-view-steps";
 import {ChatPanelSteps} from "../../steps/ttyg/chat-panel-steps";
 import {ApplicationSteps} from "../../steps/application-steps";
-import {RepositoriesStub} from "../../stubs/repositories-stub";
 
 describe('Ttyg ChatPanel', () => {
 
     beforeEach(() => {
         // Create an actual repository to prevent stubbing all background requests that are not related to the ttyg view
         RepositoriesStubs.stubRepositories(0, '/repositories/get-ttyg-repositories.json');
-        RepositoriesStub.stubBaseEndpoints('starwars');
+        RepositoriesStubs.stubBaseEndpoints('starwars');
         cy.presetRepository('starwars');
         TTYGStubs.stubChatsListGet();
         TTYGStubs.stubAgentListGet();

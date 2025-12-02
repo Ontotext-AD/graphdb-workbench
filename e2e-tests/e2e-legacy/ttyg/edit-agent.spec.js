@@ -3,7 +3,6 @@ import {TTYGViewSteps} from "../../steps/ttyg/ttyg-view-steps";
 import {TTYGStubs} from "../../stubs/ttyg/ttyg-stubs";
 import {TtygAgentSettingsModalSteps} from "../../steps/ttyg/ttyg-agent-settings-modal.steps";
 import {ToasterSteps} from "../../steps/toaster-steps";
-import {RepositoriesStub} from "../../stubs/repositories-stub";
 import {AutocompleteStubs} from "../../stubs/autocomplete/autocomplete-stubs";
 import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
 
@@ -12,7 +11,7 @@ describe('TTYG edit an agent', () => {
 
     beforeEach(() => {
         RepositoriesStubs.stubRepositories(0, '/repositories/get-ttyg-repositories.json');
-        RepositoriesStub.stubBaseEndpoints(repositoryId);
+        RepositoriesStubs.stubBaseEndpoints(repositoryId);
         cy.presetRepository(repositoryId);
         TTYGStubs.stubAgentDefaultsGet();
     });

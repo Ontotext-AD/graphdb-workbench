@@ -1,7 +1,7 @@
 import {SparqlEditorSteps} from "../../../steps/sparql-editor-steps";
 import {YasqeSteps} from "../../../steps/yasgui/yasqe-steps";
-import {RepositoriesStub} from "../../../stubs/repositories-stub";
 import {AutocompleteStubs} from "../../../stubs/autocomplete/autocomplete-stubs";
+import {RepositoriesStubs} from '../../../stubs/repositories/repositories-stubs.js';
 
 describe('Expand results over owl:sameAs', () => {
 
@@ -10,8 +10,8 @@ describe('Expand results over owl:sameAs', () => {
     beforeEach(() => {
         repositoryId = 'sparql-editor-' + Date.now();
         cy.presetRepository(repositoryId);
-        RepositoriesStub.stubOntopRepository(repositoryId);
-        RepositoriesStub.stubNameSpaces(repositoryId);
+        RepositoriesStubs.stubOntopRepository(repositoryId);
+        RepositoriesStubs.stubNameSpaces(repositoryId);
         AutocompleteStubs.stubAutocompleteEnabled(false);
     });
 
