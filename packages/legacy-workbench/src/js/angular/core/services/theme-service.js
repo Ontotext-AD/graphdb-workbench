@@ -9,6 +9,7 @@ ThemeService.$inject = ['WorkbenchSettingsStorageService'];
 const DARK_MODE = 'dark';
 
 function ThemeService(workbenchSettingsStorageService) {
+    const YASQE_DARK_THEME = 'moxer';
     /**
      * Applies the dark theme mode if it's saved in the local storage with the workbench settings. Otherwise the dark
      * mode is not applied.
@@ -34,9 +35,21 @@ function ThemeService(workbenchSettingsStorageService) {
         }
     };
 
+    /**
+     * Checks whether dark mode is currently applied on the document.
+     *
+     * @returns {boolean} `true` if the dark mode is applied, `false` otherwise.
+     */
+    const isDarkModeApplied = () => {
+        const rootElement = document.querySelector(':root');
+        return rootElement.classList.contains(DARK_MODE);
+    };
+
     return {
         applyDarkThemeMode,
         toggleThemeMode,
+        isDarkModeApplied,
+        YASQE_DARK_THEME,
     };
 }
 
