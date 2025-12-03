@@ -29,7 +29,6 @@ import './styles/main.scss';
 import './styles/css/charteditor-custom.css';
 import {WindowService} from '../../shared-components/api/src/services/window';
 
-
 const SINGLE_SPA_GLOBAL_KEY = 'singleSpa';
 
 // This is a so-called context map which is needed by webpack in order to be able
@@ -136,7 +135,6 @@ function initSingleSpa() {
     console.error(getAppStatus(err.appOrParcelName));
   });
 }
-
 
 const pluginRegistry = new PluginRegistry();
 pluginRegistry.registerExtensionPoint(new MainMenuExtensionPoint());
