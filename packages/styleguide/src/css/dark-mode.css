@@ -214,6 +214,7 @@
   --gw-panel-background: var(--gw-default-background);
   --gw-panel-border-color: var(--gw-default-border-color);
   --gw-toggleswitch-checked-background: var(--gw-primary-base);
+  --gw-autocomplete-option-focus-background: var(--gw-list-option-focus-background);
   --gw-message-info-background: var(--gw-info-lighter);
   --gw-message-info-border-color: var(--gw-info-lighter);
   --gw-message-info-color: var(--gw-info-dark);
@@ -236,7 +237,6 @@
   --gw-tag-danger-color: var(--gw-error-base);
   --gw-tag-default-color: var(--gw-neutral-dark);
   --gw-editor-toolbar-border-color: var(--gw-default-border-color);
-  --gw-editor-toolbar-numbers-background: var(--gw-list-option-focus-background);
   --gw-editor-content-background: var(--gw-default-background);
   --gw-listbox-option-focus-background: var(--gw-list-option-focus-background);
   --gw-tabs-tablist-border-color: var(--gw-default-border-color);
@@ -289,6 +289,9 @@
   --gw-panel-color: var(--gw-default-color);
   --gw-panel-header-color: var(--gw-heading-default-color);
   --gw-autocomplete-background: var(--gw-form-field-background);
+  --gw-autocomplete-color: var(--gw-form-field-color);
+  --gw-autocomplete-option-focus-color: var(--gw-list-option-focus-color);
+  --gw-autocomplete-option-selected-background: var(--gw-list-option-selected-background);
   --gw-message-success-border-color: var(--gw-default-success-light-background);
   --gw-message-help-background: var(--gw-help-lighter);
   --gw-message-help-border-color: var(--gw-help-lighter);
@@ -296,7 +299,6 @@
   --gw-select-background: var(--gw-form-field-background);
   --gw-select-border-color: var(--gw-form-field-border-color);
   --gw-select-dropdown-color: var(--gw-form-field-icon-color);
-  --gw-editor-toolbar-numbers-color: var(--gw-default-muted-color);
   --gw-editor-content-color: var(--gw-default-color);
   --gw-inputgroup-addon-background: var(--gw-form-field-background);
   --gw-inputgroup-addon-color: var(--gw-form-field-icon-color);
@@ -319,6 +321,7 @@
   --gw-datatable-body-cell-border-color: var(--gw-datatable-border-color);
   --gw-virtualscroller-loader-mask-color: var(--gw-text-muted-color);
   --gw-toast-success-color: var(--gw-primary-contrast-color);
+  --gw-autocomplete-option-selected-color: var(--gw-list-option-selected-color);
   --gw-autocomplete-option-color: var(--gw-list-option-color);
   --gw-select-option-color: var(--gw-list-option-color);
   --gw-listbox-option-selected-focus-background: var(--gw-list-option-selected-focus-background);
