@@ -49,46 +49,71 @@ yasgui-component .yasgui-toolbar .btn-orientation {
     background-color: transparent !important;
 }
 
+/*----------------------------------------*/
+/*     Overrides for the YASQE theme      */
+/*----------------------------------------*/
+.yasgui-host-element .yasgui .CodeMirror[class*="cm-s-"] {
+    border-color: var(--gw-tabs-tab-active-border-color);
+    background-color: #1C1C1C;
+}
+
+.CodeMirror[class*="cm-s-"] .CodeMirror-linenumber {
+    color: #777777;
+}
+
+yasgui-component .yasgui .yasqe .CodeMirror[class*="cm-s-"] .yasqe_buttons .custom-button,
+yasgui-component .yasqe .CodeMirror[class*="cm-s-"] .yasqe_buttons {
+    background-color: #1C1C1C !important;
+}
+
+.yasqe .CodeMirror[class*="cm-s-"] .notification {
+    color: var(--gw-button-secondary-color) !important;
+    background-color: var(--gw-button-secondary-background) !important;
+    border-color: var(--gw-button-secondary-border-color) !important;
+}
+
+.CodeMirror[class*="cm-s-"] .cm-matchhighlight {
+    background-color: #dbdeed;
+}
+
+/*----------------------------------------*/
+/*           Yasqe autocomplete            */
+/*----------------------------------------*/
+
+.CodeMirror-hints,
+.CodeMirror-hints .CodeMirror-hint {
+    color: var(--gw-autocomplete-color);
+    background-color: var(--gw-autocomplete-background);
+}
+
+.CodeMirror-hints .CodeMirror-hint-active {
+    color: var(--gw-autocomplete-option-selected-color);
+    background-color: var(--gw-autocomplete-option-selected-background);
+}
+
+.CodeMirror-hints .CodeMirror-hint:not(.CodeMirror-hint-active):hover {
+    color: var(--gw-autocomplete-option-focus-color);
+    background-color: var(--gw-autocomplete-option-focus-background);
+}
+
+.yasqe-autocomplete-hint {
+    color: var(--gw-autocomplete-color);
+    background-color: var(--gw-autocomplete-background);
+}
+
+.yasqe .resizeChip {
+    background-color: var(--gw-button-secondary-background) !important;
+    color: var(--gw-button-secondary-color) !important;
+}
+
 yasgui-component .yasqe .CodeMirror {
     font-family: var(--mono-font) !important;
     font-size: 16px;
-    background-color: var(--gw-editor-content-background) !important;
-    color: var(--gw-editor-content-color) !important;
-}
-
-yasgui-component .yasqe .CodeMirror-gutters {
-    color: var(--gw-editor-toolbar-numbers-color);
-    background-color: var(--gw-editor-toolbar-numbers-background);
-}
-
-.yasgui-host-element .yasgui .CodeMirror,
-yasgui-component .yasqe .CodeMirror-cursor,
-yasgui-component .yasqe .CodeMirror-gutters {
-    border-color: var(--gw-editor-toolbar-border-color);
-}
-
-/* Unset the font-family so that it can inherit from workbench */
-yasgui-component .CodeMirror-hints {
-    font-family: unset;
-}
-
-yasgui-component .CodeMirror-linenumber {
-    color: var(--gw-editor-content-color) !important;
-}
-
-yasgui-component li.CodeMirror-hint-active {
-    background: var(--autocomplete-background);
-    color: inherit;
-}
-
-yasgui-component .CodeMirror-hint b, .CodeMirror-hint-active b {
-    color: var(--autocomplete-match);
-    font-weight: 400;
 }
 
 yasgui-component .yasqe .yasqe_buttons {
     right: 21px;
-    background-color: var(--gw-editor-content-background) !important;
+    background-color: var(--gw-editor-content-background);
 }
 
 yasgui-component .tabPanel .yasqe  .yasqe-footer-buttons {

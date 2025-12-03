@@ -13,6 +13,10 @@ export class YasqeSteps {
         return YasqeSteps.getYasqe();
     }
 
+    static getCodeMirrorEl() {
+        return YasqeSteps.getEditor().find('.CodeMirror');
+    }
+
     static getCodeMirror() {
         return this.getEditor().find('.CodeMirror').then(($el) => {
             // @ts-ignore
@@ -109,12 +113,14 @@ export class YasqeSteps {
      * @return {Cypress.Chainable<unknown>}
      */
     static getQuery(delay = 0) {
+        // eslint-disable-next-line cypress/no-unnecessary-waiting
         return cy.wait(delay).then(() => this.getCodeMirror()).then((cm) => {
             return cm.getValue();
         });
     }
 
     static getActiveTabQuery(delay = 0) {
+        // eslint-disable-next-line cypress/no-unnecessary-waiting
         return cy.wait(delay).then(() => this.getActiveTabCodeMirror()).then((cm) => {
             return cm.getValue();
         });

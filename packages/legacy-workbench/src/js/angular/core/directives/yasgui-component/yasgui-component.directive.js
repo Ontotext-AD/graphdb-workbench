@@ -2,7 +2,7 @@ import 'angular/core/services/translation.service';
 import 'angular/sparql-editor/share-query-link.service';
 import {
     queryPayloadFromEvent,
-    savedQueriesResponseMapper
+    savedQueriesResponseMapper,
 } from "../../../rest/mappers/saved-query-mapper";
 import {isFunction, merge} from "lodash";
 import {saveAs} from 'lib/FileSaver-patch';
@@ -43,7 +43,7 @@ yasguiComponentDirective.$inject = [
     'MonitoringRestService',
     'SparqlRestService',
     'ShareQueryLinkService',
-    'ModalService'
+    'ThemeService',
 ];
 
 /**
@@ -80,16 +80,15 @@ function yasguiComponentDirective(
     MonitoringRestService,
     SparqlRestService,
     ShareQueryLinkService,
-    ModalService
+    ThemeService,
 ) {
-
     return {
         restrict: 'E',
         templateUrl: 'js/angular/core/directives/yasgui-component/templates/yasgui-component.html',
         scope: {
             yasguiConfig: '=',
             afterInit: '&',
-            queryChanged: '&'
+            queryChanged: '&',
         },
         link: ($scope, element, attrs) => {
             $scope.classToApply = attrs.class || '';
@@ -168,7 +167,7 @@ function yasguiComponentDirective(
             $scope.shareSavedQuery = (event) => {
                 const payload = queryPayloadFromEvent(event);
                 $scope.savedQueryConfig = {
-                    shareQueryLink: ShareQueryLinkService.createShareSavedQueryLink(payload.name, payload.owner)
+                    shareQueryLink: ShareQueryLinkService.createShareSavedQueryLink(payload.name, payload.owner),
                 };
             };
 
@@ -180,7 +179,7 @@ function yasguiComponentDirective(
             $scope.shareQuery = (event) => {
                 const payload = queryPayloadFromEvent(event);
                 $scope.savedQueryConfig = {
-                    shareQueryLink: ShareQueryLinkService.createShareQueryLink(payload)
+                    shareQueryLink: ShareQueryLinkService.createShareQueryLink(payload),
                 };
             };
 
@@ -197,12 +196,12 @@ function yasguiComponentDirective(
              */
             $scope.loadSavedQueries = () => {
                 $scope.savedQueryConfig = {
-                    savedQueries: []
+                    savedQueries: [],
                 };
                 $q.all([$jwtAuth.getPrincipal(), SparqlRestService.getSavedQueries()])
                     .then(([principal, savedQueries]) => {
                         $scope.savedQueryConfig = {
-                            savedQueries: savedQueriesResponseMapper(savedQueries, principal.username)
+                            savedQueries: savedQueriesResponseMapper(savedQueries, principal.username),
                         };
                     })
                     .catch((err) => {
@@ -322,12 +321,12 @@ function yasguiComponentDirective(
                     query: query,
                     infer: infer,
                     sameAs: sameAs,
-                    authToken: authToken
+                    authToken: authToken,
                 };
                 RDF4JRepositoriesRestService.downloadResultsAsFile($repositories.getActiveRepository(), queryParams, accept, link)
-                    .then(function ({data, filename}) {
+                    .then(function({data, filename}) {
                         saveAs(data, filename);
-                    }).catch(function (res) {
+                    }).catch(function(res) {
                         res.data.text()
                             .then((message) => {
                                 if (res.status === 431) {
@@ -355,13 +354,13 @@ function yasguiComponentDirective(
                         size: 'lg',
                         scope: $scope,
                         resolve: {
-                            format: function () {
+                            format: function() {
                                 return downloadAsEvent.contentType === "application/ld+json" ? 'JSON-LD' : 'NDJSON-LD';
-                            }
-                        }
+                            },
+                        },
                     });
 
-                    modalInstance.result.then(function (data) {
+                    modalInstance.result.then(function(data) {
                         const relValue = data.currentMode.name === 'framed' ? 'frame' : 'context';
                         const acceptHeader = accept + ';profile=' + data.currentMode.link;
                         const linkHeader = data.link ? `<${data.link}>; rel="http://www.w3.org/ns/json-ld#${relValue}"` : '';
@@ -391,12 +390,12 @@ function yasguiComponentDirective(
                             LocalNamesAutocompleter: (term) => {
                                 const canceler = $q.defer();
                                 return autocompleteLocalNames(term, canceler);
-                            }
+                            },
                         },
                         language: $languageService.getLanguage(),
                         i18n: TranslationService.getTranslations(),
                         getRepositoryStatementsCount: getRepositoryStatementsCount,
-                        onQueryAborted: onQueryAborted
+                        onQueryAborted: onQueryAborted,
                     };
 
                     angular.extend(config, getDefaultConfig(), $scope.yasguiConfig);
@@ -421,6 +420,10 @@ function yasguiComponentDirective(
 
                     if (YasguiPersistenceMigrationService.isMigrationNeeded()) {
                         YasguiPersistenceMigrationService.migrateYasguiPersistence($translate.instant('sparql.tab.directive.unnamed.tab.title'));
+                    }
+
+                    if (!config.themeName) {
+                        config.themeName = ThemeService.isDarkModeApplied() ? ThemeService.YASQE_DARK_THEME: null;
                     }
 
                     $scope.ontotextYasguiConfig = config;
@@ -465,7 +468,7 @@ function yasguiComponentDirective(
             };
 
             const addDirtyCheckHandlers = () => {
-                const waitOntotextInitialized = $interval(function () {
+                const waitOntotextInitialized = $interval(function() {
                     const ontotextYasguiElements = $scope.getOntotextYasguiElements();
                     if (ontotextYasguiElements) {
                         ontotextYasguiElements.on('paste.sparqlQuery', '.CodeMirror', codeMirrorPasteHandler);
@@ -490,7 +493,7 @@ function yasguiComponentDirective(
             };
 
             subscriptions.push(
-                $scope.$on('language-changed', function (event, args) {
+                $scope.$on('language-changed', function(event, args) {
                     $scope.language = args.locale;
                 }));
 
@@ -530,7 +533,7 @@ function yasguiComponentDirective(
                     if (body) {
                         const result = body.results.bindings[0];
                         const vars = body.head.vars;
-                        const bindingVar = Object.keys(result).find(function (b) {
+                        const bindingVar = Object.keys(result).find(function(b) {
                             return vars.indexOf(b) > -1 && !isNaN(result[b].value);
                         });
                         if (bindingVar.length > 0) {
@@ -553,7 +556,7 @@ function yasguiComponentDirective(
                     'X-GraphDB-Catch': `${pageSize}; throw`,
                     'X-GraphDB-Track-Alias': trackAlias,
                     'X-GraphDB-Repository-Location': $repositories.getActiveRepositoryObject().location,
-                    'X-Requested-With': 'XMLHttpRequest'
+                    'X-Requested-With': 'XMLHttpRequest',
                 };
 
                 const authToken = AuthTokenService.getAuthToken();
@@ -580,7 +583,7 @@ function yasguiComponentDirective(
                     headers: getHeaders,
                     pageSize: 1000,
                     maxPersistentResponseSize: 500000,
-                    showResultTabs: true
+                    showResultTabs: true,
                 };
             };
 
@@ -590,7 +593,7 @@ function yasguiComponentDirective(
                 toastr.error(msg, errorMessage);
                 $scope.savedQueryConfig = merge({}, $scope.savedQueryConfig, {
                     saveSuccess: false,
-                    errorMessage: [errorMessage]
+                    errorMessage: [errorMessage],
                 });
             };
 
@@ -605,13 +608,13 @@ function yasguiComponentDirective(
             const querySavedHandler = (successMessage) => {
                 toastr.success(successMessage);
                 $scope.savedQueryConfig = merge({}, $scope.savedQueryConfig, {
-                    saveSuccess: true
+                    saveSuccess: true,
                 });
             };
 
             const autocompleteLocalNames = (term, canceler) => {
                 return AutocompleteRestService.getAutocompleteSuggestions(term, canceler.promise)
-                    .then(function (results) {
+                    .then(function(results) {
                         canceler = null;
                         return results.data;
                     });
@@ -622,10 +625,10 @@ function yasguiComponentDirective(
                 // Here is an article that describes the problems AngularJS HttpPromise methods break promise chain {@link https://medium.com/@ExplosionPills/angularjs-httppromise-methods-break-promise-chain-950c85fa1fe7}
                 return RDF4JRepositoriesRestService.getRepositorySize($repositories.getActiveRepository())
                     .then((response) => parseInt(response.data))
-                    .catch(function (data) {
+                    .catch(function(data) {
                         const params = {
                             repo: $repositories.getActiveRepository(),
-                            error: getError(data)
+                            error: getError(data),
                         };
                         toastr.warning($translate.instant('query.editor.repo.size.error', params));
                     });
@@ -638,6 +641,6 @@ function yasguiComponentDirective(
                     return MonitoringRestService.deleteQuery(currentTrackAlias, repository);
                 }
             };
-        }
+        },
     };
 }
