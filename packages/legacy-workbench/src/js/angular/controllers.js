@@ -994,6 +994,12 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         $scope.getSavedQueries();
     }
 
+    securityContextService.onAuthenticatedUserChanged((authenticatedUser) => {
+        if (authenticatedUser) {
+            updatePermissions();
+        }
+    });
+
     securityContextService.onSecurityConfigChanged((securityConfig) => {
         $scope.securityEnabled = securityConfig.isEnabled();
         $scope.userLoggedIn = authenticationService.isLoggedIn();
