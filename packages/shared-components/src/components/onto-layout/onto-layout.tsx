@@ -6,6 +6,7 @@ import {
   AuthenticatedUser,
   AuthenticationService,
   Authority,
+  AuthorizationService,
   EventName,
   EventService,
   LocalStorageSubscriptionHandlerService,
@@ -15,14 +16,14 @@ import {
   SecurityContextService,
   ServiceProvider,
   SubscriptionList,
-  WindowService, AuthorizationService
+  WindowService
 } from '@ontotext/workbench-api';
 import {ExternalMenuItemModel} from '../onto-navbar/external-menu-model';
 
 @Component({
   tag: 'onto-layout',
   styleUrl: 'onto-layout.scss',
-  shadow: false,
+  shadow: false
 })
 export class OntoLayout {
   // ========================
@@ -95,8 +96,7 @@ export class OntoLayout {
         </header>
 
         <nav class="wb-navbar">
-          <onto-navbar ref={this.assignNavbarRef()}
-            navbar-collapsed={this.isLowResolution}></onto-navbar>
+          <onto-navbar ref={this.assignNavbarRef()} navbar-collapsed={this.isLowResolution}></onto-navbar>
         </nav>
 
         <div class="main-slot-wrapper">
@@ -164,58 +164,26 @@ export class OntoLayout {
     this.subscriptions.add(
       securityContextService.onAuthenticatedUserChanged((authenticatedUser) => {
         this.authenticatedUser = authenticatedUser;
-        // FIXME: Remove  the timeout when the security event handling is refactored
-        // Wait for events to settle everywhere before updating the visibility
-        setTimeout(() => {
-          this.updateVisibility();
-        }, 0);
-      })
-    );
-
-    this.subscriptions.add(
-      ServiceProvider.get(EventService).subscribe(EventName.LOGIN, () => {
-        // FIXME: Remove  the timeout when the security event handling is refactored
-        // Wait for events to settle everywhere before updating the visibility
-        setTimeout(() => {
-          this.setNavbarItemVisibility();
-          this.updateVisibility();
-        }, 0);
-      })
-    );
-
-    this.subscriptions.add(
-      ServiceProvider.get(EventService).subscribe(EventName.LOGOUT, () => {
-        // FIXME: Remove  the timeout when the security event handling is refactored
-        // Wait for events to settle everywhere before updating the visibility
-        setTimeout(() => {
-          this.setNavbarItemVisibility();
-          this.updateVisibility();
-        }, 0);
+        this.updateVisibility();
       })
     );
 
     this.subscriptions.add(
       securityContextService.onSecurityConfigChanged((securityConfig) => {
         this.securityConfig = securityConfig;
-        // FIXME: Remove  the timeout when the security event handling is refactored
-        // Wait for events to settle everywhere before updating the visibility
-        setTimeout(() => {
-          this.updateVisibility();
-        }, 0);
+        this.updateVisibility();
+      })
+    );
+
+    this.subscriptions.add(
+      ServiceProvider.get(EventService).subscribe(EventName.LOGIN, () => {
+        this.setNavbarItemVisibility();
+        this.updateVisibility();
       })
     );
 
     this.subscriptions.add(
       ServiceProvider.get(EventService).subscribe(EventName.LOGOUT, () => {
-        // FIXME: Remove  the timeout when the security event handling is refactored
-        // Wait for events to settle everywhere before updating the visibility
-        setTimeout(() => {
-          this.setNavbarItemVisibility();
-          this.updateVisibility();
-        }, 0);      })
-    );
-    this.subscriptions.add(
-      securityContextService.onAuthTokenChanged(()=>{
         this.setNavbarItemVisibility();
         this.updateVisibility();
       })

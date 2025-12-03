@@ -8,7 +8,6 @@ module.exports = [
   ...tseslint.config(
     {
       files: ['**/*.ts'],
-      // ignores: ['**/*.spec.ts'],
       extends: [
         ...tseslint.configs.recommended,
         ...tseslint.configs.stylistic,

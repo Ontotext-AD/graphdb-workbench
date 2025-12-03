@@ -342,7 +342,7 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
     }
 
 
-    const repositoryChangedSubscription = repositoryContextService.onSelectedRepositoryChanged((repository) => onRepositoryIsSet(repository));
+    const repositoryChangedSubscription = repositoryContextService.onSelectedRepositoryChanged(() => onRepositoryIsSet());
 
     $scope.selectGraph = function (graph) {
         selectedGraph = graph;
