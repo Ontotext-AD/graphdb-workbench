@@ -52,28 +52,33 @@ yasgui-component .yasgui-toolbar .btn-orientation {
 /*----------------------------------------*/
 /*     Overrides for the YASQE theme      */
 /*----------------------------------------*/
-.yasgui-host-element .yasgui .CodeMirror[class*="cm-s-"] {
+.yasgui-host-element .yasgui .CodeMirror[class*="cm-s-"]:not(.cm-s-default) {
     border-color: var(--gw-tabs-tab-active-border-color);
     background-color: #1C1C1C;
-}
 
-.CodeMirror[class*="cm-s-"] .CodeMirror-linenumber {
-    color: #777777;
-}
+    /* Line numbers */
+    .CodeMirror-linenumber {
+        color: #777777;
+    }
 
-yasgui-component .yasgui .yasqe .CodeMirror[class*="cm-s-"] .yasqe_buttons .custom-button,
-yasgui-component .yasqe .CodeMirror[class*="cm-s-"] .yasqe_buttons {
-    background-color: #1C1C1C !important;
-}
+    /* Match highlight */
+    .cm-matchhighlight {
+        background-color: #dbdeed;
+    }
 
-.yasqe .CodeMirror[class*="cm-s-"] .notification {
-    color: var(--gw-button-secondary-color) !important;
-    background-color: var(--gw-button-secondary-background) !important;
-    border-color: var(--gw-button-secondary-border-color) !important;
-}
+    .yasqe_buttons {
+        background-color: #1C1C1C !important;
 
-.CodeMirror[class*="cm-s-"] .cm-matchhighlight {
-    background-color: #dbdeed;
+        .custom-button {
+            background-color: #1C1C1C !important;
+        }
+    }
+
+    .notification {
+        color: var(--gw-button-secondary-color) !important;
+        background-color: var(--gw-button-secondary-background) !important;
+        border-color: var(--gw-button-secondary-border-color) !important;
+    }
 }
 
 /*----------------------------------------*/
