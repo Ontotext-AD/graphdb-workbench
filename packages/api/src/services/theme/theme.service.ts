@@ -1,7 +1,8 @@
 import {Service} from '../../providers/service/service';
 import {service} from '../../providers';
 import {ApplicationSettingsStorageService} from '../application-settings';
-import {ThemeMode} from '../../models/application-settings/application-settings';
+import {ThemeMode} from '../../models/application-settings';
+import {WindowService} from '../window';
 
 /**
  * Service to manage the theme of the application.
@@ -21,7 +22,7 @@ export class ThemeService implements Service {
   /**
    * Applies the theme based on the saved application settings.
    */
-  applyDarkMode(): void {
+  applyDarkModeIfEnabled(): void {
     const mode = this.isDarkModeEnabledInSettings() ? ThemeMode.dark : ThemeMode.light;
     this.setThemeMode(mode);
   }
@@ -41,6 +42,37 @@ export class ThemeService implements Service {
   }
 
   /**
+   * Applies the color scheme to the application based on system preferences and saved settings.
+   * If the user has not manually chosen a theme, the method applies the system's preferred color scheme (dark or light
+   * mode). If the user has previously set a theme in the application settings, that preference takes precedence and is
+   * applied instead.
+   */
+  applyColorScheme() {
+    const prefersDarkScheme = WindowService.matchMedia('(prefers-color-scheme: dark)').matches;
+    const initialTheme = prefersDarkScheme ? ThemeMode.dark : ThemeMode.light;
+    // Only set initial theme if user has NOT manually chosen a theme
+    if (this.isThemeModeSet()) {
+      // Check if the theme is set in local storage workbench settings and apply
+      this.applyDarkModeIfEnabled();
+    } else {
+      this.setThemeMode(initialTheme);
+    }
+  }
+
+  /**
+   * Applies a new color scheme based on the user's preference.
+   * The theme will only be updated if the user has not manually chosen a theme.
+   * @param newTheme The new theme mode based on the user's preference.
+   */
+  applyNewColorScheme(newTheme: ThemeMode){
+    const isThemeModeSet = this.isThemeModeSet();
+    // Only auto-update if user has NOT manually chosen a theme
+    if (!isThemeModeSet) {
+      this.setThemeMode(newTheme);
+    }
+  };
+
+  /**
    * Checks whether dark mode is currently applied on the document.
    *
    * @returns `true` if the dark mode is applied, `false` otherwise.
@@ -57,9 +89,16 @@ export class ThemeService implements Service {
   /**
    * @returns `true` if dark mode is enabled in the saved settings.
    */
-  private isDarkModeEnabledInSettings(): boolean {
+  isDarkModeEnabledInSettings() {
     const settings = this.applicationSettingsStorageService.getApplicationSettings();
     return settings?.themeMode === ThemeMode.dark;
+  }
+
+  /**
+   * @returns `true` if the theme mode is set in the saved settings.
+   */
+  isThemeModeSet() {
+    return this.applicationSettingsStorageService.isThemeModePresent();
   }
 
   /**

@@ -33,4 +33,13 @@ export class WindowService implements Service {
   static getLocationHash(): string {
     return WindowService.getWindow().location.hash;
   }
+
+  /**
+   * Evaluates a media query and returns a MediaQueryList object representing the results of the query.
+   * @param query The media query string to evaluate.
+   * @returns A MediaQueryList object that can be used to check the results of the media query.
+   */
+  static matchMedia(query: string): MediaQueryList {
+    return WindowService.getWindow().matchMedia(query);
+  }
 }

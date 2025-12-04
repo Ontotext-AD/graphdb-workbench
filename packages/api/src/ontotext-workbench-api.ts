@@ -1,6 +1,7 @@
 // Anything exported from this file is importable by other in-browser modules.
 
 // Export models for external usages.
+export * from './models/application-settings';
 export * from './models/repositories';
 export * from './models/repository-location';
 export * from './models/events';

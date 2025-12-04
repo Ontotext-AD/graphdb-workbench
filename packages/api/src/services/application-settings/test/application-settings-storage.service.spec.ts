@@ -1,5 +1,5 @@
 import { ApplicationSettingsStorageService } from '../application-settings-storage.service';
-import { ApplicationSettings, LegacySettings, ThemeMode } from '../../../models/application-settings/application-settings';
+import { ApplicationSettings, LegacySettings, ThemeMode } from '../../../models/application-settings';
 import {createMockStorage, MutableStorage} from '../../utils/test/local-storage-mock';
 
 const APPLICATION_SETTINGS_KEY = 'ontotext.gdb.application.settings';
@@ -93,5 +93,29 @@ describe('ApplicationSettingsStorageService', () => {
     service.set('custom-key', 'val');
 
     expect(storage.getItem('ontotext.gdb.application.custom-key')).toBe('val');
+  });
+
+  it('should return true when theme mode is present in settings', () => {
+    const payload: Partial<ApplicationSettings> = { themeMode: ThemeMode.dark };
+    storage.setItem(APPLICATION_SETTINGS_KEY, JSON.stringify(payload));
+
+    const result = service.isThemeModePresent();
+
+    expect(result).toBe(true);
+  });
+
+  it('should return true when theme mode is not explicitly set but defaults are applied', () => {
+    const payload: Partial<ApplicationSettings> = { theme: 'blue' };
+    storage.setItem(APPLICATION_SETTINGS_KEY, JSON.stringify(payload));
+
+    const result = service.isThemeModePresent();
+
+    expect(result).toBe(true);
+  });
+
+  it('should return false when no settings are stored', () => {
+    const result = service.isThemeModePresent();
+
+    expect(result).toBe(false);
   });
 });

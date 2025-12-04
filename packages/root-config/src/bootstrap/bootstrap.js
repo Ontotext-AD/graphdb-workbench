@@ -5,6 +5,7 @@ import {autoCompleteBootstrap} from './autocomplete/autocomplete';
 import {securityBootstrap} from './security/security-bootstrap';
 import {repositoryBootstrap} from './repository/repository-bootstrap';
 import {pluginsBootstrap} from './plugins/plugins-bootstrap';
+import {bootstrapTheme} from './theme/theme-bootstrap';
 import {configurationsBootstrap} from './configuration/configuration-bootstrap';
 import {LoggerProvider} from '../services/logger-provider';
 
@@ -77,6 +78,9 @@ const subscribeToAuthenticatedUserChange = () => {
   });
 };
 
+/**
+ * Migrates application settings stored in localStorage to the new format if needed.
+ */
 const migrateApplicationSettings = () => {
   const applicationSettingsStorageService = service(ApplicationSettingsStorageService);
   applicationSettingsStorageService.migrate();
@@ -88,7 +92,10 @@ const migrateApplicationSettings = () => {
  * subscriptions for config changes and authenticated user changes.
  */
 export const bootstrapWorkbench = () => {
+  // LocalStorage data migration steps.
   migrateApplicationSettings();
+  // Initialize theme service and apply the preferred theme.
+  bootstrapTheme();
 
   // Start by loading application configurations
   return loadApplicationConfigurations()
