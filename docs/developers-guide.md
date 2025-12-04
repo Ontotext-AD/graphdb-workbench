@@ -3,7 +3,7 @@
 ## Table of Contents
 - [Context API](#stateful-context-services-and-context-api-implementation-in-graphdb-workbench)
 - [Persistence API and Local Storage Implementation in GraphDB Workbench](#persistence-api-and-local-storage-implementation-in-graphdb-workbench)
-- [Font awesome icons](#font-awesome-icons)
+- [Icons](#icons)
 - [Extending the GraphDB Workbench](#extending-the-graphdb-workbench)
   - [Plugin system](#plugin-system)
     - [What is the plugin system and how a developer can use it?](#what-is-the-plugin-system-and-how-a-developer-can-use-it)
@@ -314,38 +314,13 @@ The `Persistence` API and its local storage implementation provide a robust fram
 the GraphDB Workbench application. By adhering to the namespace conventions and leveraging the `LocalStorageService` as
 a base class, developers can efficiently implement and maintain storage-related functionality.
 
-## Font awesome icons
-
-The font kit used in the project is our own and is a custom PRO set. Below are the steps for manually updating and managing the fontawesome iconset:
-
 ---
 
-### Updating the Font Kit
-If there is an update to the custom PRO font kit:
+## Icons
 
-1. Log in to [fontawesome.com](https://fontawesome.com) using our organization account.
-2. Navigate to the custom kit in our profile and download the latest version.
-3. Extract the downloaded files.
-4. Replace the relevant files in the following directory of the project:
-```angular2html
-src/js/lib/awesome_me/css
-```
-Make sure you copy all necessary CSS, fonts, and any other related files.
-
-5. Commit the updated files to the repository.
-
----
-
-### Customizations
-If any icons or configurations within the PRO set are changed:
-
-1. Update the custom kit on [fontawesome.com](https://fontawesome.com).
-2. Download the updated kit.
-3. Follow the steps above to manually replace the files in:
-```angular2html
-src/js/lib/awesome_me/css
-```
-4. Test the changes locally to ensure the updated icons are working correctly.
+There are two icon sets used in the project:
+* Remix icons https://remixicon.com/
+* Icomoon icons which is a precompiled version which includes our own custom icons that are missing in the Remix icons set. Information how the iconset can be updated and recompiled can be found here https://github.com/Ontotext-AD/ontotext-ui-guidelines/tree/master/ontotext-icon-pack
 
 ---
 
