@@ -29,7 +29,7 @@ import {convertToHumanReadable} from "./js/angular/utils/size-util";
 import {DocumentationUrlResolver} from "./js/angular/utils/documentation-url-resolver";
 import {NumberUtils} from "./js/angular/utils/number-utils";
 import {HtmlUtil} from "./js/angular/utils/html-util";
-import {service, ServiceProvider, LanguageContextService, ThemeService} from "@ontotext/workbench-api";
+import {ServiceProvider, LanguageContextService} from "@ontotext/workbench-api";
 import {LoggerProvider} from "./js/angular/core/services/logger-provider";
 
 // $translate.instant converts <b> from strings to &lt;b&gt
@@ -246,9 +246,6 @@ const moduleDefinition = function(productInfo, translations) {
                 $rootScope.title = decodeHTML($translate.instant($route.current.title));
                 $rootScope.documentationUrl = DocumentationUrlResolver.getDocumentationUrl(productInfo.productShortVersion, $route.current.documentationUrl);
             }
-
-            // Check if theme is set in local storage workbench settings and apply
-            service(ThemeService).applyDarkMode();
 
             GuidesService.init();
 

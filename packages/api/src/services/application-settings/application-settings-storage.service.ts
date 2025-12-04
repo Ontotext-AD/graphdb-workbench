@@ -60,6 +60,7 @@ export class ApplicationSettingsStorageService extends LocalStorageService {
 
   /**
    * Retrieves the application settings from the local storage.
+   * This method always returns an instance of `ApplicationSettings`, providing default values if no settings are found.
    * @returns The application settings.
    */
   getApplicationSettings(): ApplicationSettings {
@@ -77,5 +78,19 @@ export class ApplicationSettingsStorageService extends LocalStorageService {
   getThemeMode(): ThemeMode {
     const settings = this.getApplicationSettings();
     return settings.themeMode;
+  }
+
+  /**
+   * Checks whether the theme mode is present in the application settings persisted in local storage.
+   * This method doesn't use the `getApplicationSettings` to avoid returning default values.
+   * @returns `true` if the theme mode is present, `false` otherwise.
+   */
+  isThemeModePresent(): boolean {
+    const settingsData = this.get(this.SETTINGS).getAsJson() as ApplicationSettings;
+    if (settingsData) {
+      const settings = new ApplicationSettings(settingsData);
+      return settings.themeMode !== undefined;
+    }
+    return false;
   }
 }
