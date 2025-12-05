@@ -2281,7 +2281,7 @@ function GraphsVisualizationsCtrl(
             });
 
             this.copyURIIcon = d3.select('.menu-events').append("g")
-                .attr("class", "icon-link")
+                .attr("class", "ri-links-line")
                 .attr("name", "link")
                 .attr("transform", function() {
                     return getPositionAndAngle(angle, node);

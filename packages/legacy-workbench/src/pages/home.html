@@ -74,7 +74,7 @@
                     <h6>{{getActiveRepositoryObject().location ? getActiveRepositoryObject().location : 'Local'}}</h6>
                     <div class="actions-bar pull-right">
                         <button type="button" gdb-tooltip="{{'copy.repo.url' | translate}}" class="btn btn-link"
-                                ng-click="copyToClipboard(getActiveRepositoryObject().externalUrl)"><span class="icon-link"></span>
+                                ng-click="copyToClipboard(getActiveRepositoryObject().externalUrl)"><span class="ri-links-line"></span>
                         </button>
                         <button type="button" ng-click="goToEditRepo(getActiveRepositoryObject())" class="btn btn-link" gdb-tooltip="{{'repoTooltips.editRepository' | translate}}"
                                 ng-if="canManageRepositories() && getActiveRepositoryObject().type !== 'system'">

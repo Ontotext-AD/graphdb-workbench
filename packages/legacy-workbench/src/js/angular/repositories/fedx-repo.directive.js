@@ -180,7 +180,7 @@ function fedxRepoDirective($uibModal, RepositoriesRestService, toastr, $translat
             } else if (member.store === NATIVE_STORE) {
                 return 'ri-alert-line';
             } else {
-                return 'icon-link';
+                return 'ri-links-line';
             }
         }
 

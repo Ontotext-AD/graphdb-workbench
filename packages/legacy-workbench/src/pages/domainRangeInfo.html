@@ -64,7 +64,7 @@
                         {{sourceTargetObjectNodeName}}
                     </a>
                     <button ng-show="sourceTargetObjectNodeName.indexOf('Literal') == -1" class="btn btn-link btn-sm p-0" title="{{'copy.to.clipboard.modal.ok.btn' | translate}}" ng-click="copyToClipboard(sourceTargetObjectNodeUri)">
-                        <span class="icon-link"></span>
+                        <span class="ri-links-line"></span>
                     </button>
                 </h3>
 
@@ -96,7 +96,7 @@
                         <li ui-scroll='item in datasource' class="item clearfix break-word-alt" adapter="adapterContainer.adapter" padding='li'>
                             <a class="uri pull-left" href="resource?uri={{item.absUri}}">{{item.resolvedUri}}</a>
                             <button class="btn btn-link btn-sm p-0 hovered-item" title="{{'copy.to.clipboard.modal.ok.btn' | translate}}" ng-click="copyToClipboard(item.absUriNonEncoded)">
-                                <span class="icon-link"></span>
+                                <span class="ri-links-line"></span>
                             </button>
                             <svg class="pull-right" ng-switch on="item.isImplicit" height="7" width="240">
                                 <path ng-switch-when="true" class="property-type-list-item-legend"
