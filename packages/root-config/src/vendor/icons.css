@@ -234,9 +234,9 @@
     content: "\e908";
 }
 
-.icon-save:before {
-    content: "\e909";
-}
+/*.icon-save:before {*/
+/*    content: "\e909";*/
+/*}*/
 
 .icon-tag:before {
     content: "\e90a";
