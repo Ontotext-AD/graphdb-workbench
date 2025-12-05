@@ -318,9 +318,9 @@
     content: "\e920";
 }
 
-.icon-caret-down:before {
-    content: "\e921";
-}
+/*.icon-caret-down:before {*/
+/*    content: "\e921";*/
+/*}*/
 
 .icon-close:before {
     content: "\e922";
