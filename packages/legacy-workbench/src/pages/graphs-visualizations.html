@@ -140,7 +140,7 @@
                                     <samp class="text-muted small text-overflow d-block" ng-if="config.startMode == 'node'">{{config.startIRI}}</samp>
                                 </td>
                                 <td class="text-xs-right" ng-if="isUser() && config.owner === principal.username">
-                                    <a ng-href="graphs-visualizations/config/save/{{config.id}}" class="btn btn-link btn-edit-config" gdb-tooltip="{{'visual.edit.config' | translate}}"><span class="icon-edit"></span></a>
+                                    <a ng-href="graphs-visualizations/config/save/{{config.id}}" class="btn btn-link btn-edit-config" gdb-tooltip="{{'visual.edit.config' | translate}}"><span class="ri-edit-line"></span></a>
                                     <button type="button" ng-click="deleteConfig(config)" class="btn btn-link delete-config" gdb-tooltip="{{'visual.delete.config' | translate}}" data-cy="delete-graph-config"><span class="ri-delete-bin-6-line"></span></button>
                                 </td>
                             </tr>
@@ -173,7 +173,7 @@
                                             ng-if="isUser() && graph.owner === principal.username"
                                             gdb-tooltip="{{'visual.rename.graph' | translate}}"
                                             ng-click="renameSavedGraph(graph)" data-cy="rename-saved-graph">
-                                        <span class="icon-edit"></span>
+                                        <span class="ri-edit-line"></span>
                                     </button>
                                     <button class="btn btn-link"
                                             ng-if="isUser() && graph.owner === principal.username"

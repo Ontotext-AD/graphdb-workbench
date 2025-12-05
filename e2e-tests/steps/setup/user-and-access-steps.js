@@ -290,7 +290,7 @@ export class UserAndAccessSteps {
     }
 
     static findWriteIconAlias(repoLineAlias) {
-        return cy.get(repoLineAlias).find('.icon-edit');
+        return cy.get(repoLineAlias).find('.ri-edit-line');
     }
 
     static findGraphqlIconAlias(repoLineAlias) {

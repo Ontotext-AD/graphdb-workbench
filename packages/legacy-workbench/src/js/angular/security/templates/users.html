@@ -55,7 +55,7 @@
 					<div ng-show="user.userType === 'user'" ng-repeat="(repo, rights) in user.repositories track by $index">
 
                         <em class="icon-eye text-tertiary" ng-if="rights.read && !rights.write" gdb-tooltip="{{'security.has.read.access' | translate}}"></em>
-                        <em class="icon-edit text-tertiary" ng-if="rights.write" gdb-tooltip="{{'security.has.write.access' | translate}}"></em>
+                        <em class="ri-edit-line text-tertiary" ng-if="rights.write" gdb-tooltip="{{'security.has.write.access' | translate}}"></em>
                         {{repo}}
                         <em class="icon-graphql text-info" ng-if="rights.graphql" gdb-tooltip="{{rights.write ? 'security.has.mutation_rights' : 'security.no.mutation_rights' | translate}}"></em>
 
@@ -75,7 +75,7 @@
 				<td class="actions-bar">
 					<span>
 						<a class="btn btn-link edit-user-btn" href="user/{{encodeURIComponent(user.username)}}">
-                            <em class="icon-edit" gdb-tooltip="{{'security.edit.user.tooltip' | translate}}"></em>
+                            <em class="ri-edit-line" gdb-tooltip="{{'security.edit.user.tooltip' | translate}}"></em>
                         </a>
 						<a class="btn btn-link secondary delete-user-btn" ng-if="user.username != 'admin'" ng-show="!hasExternalAuth()" href ng-click="removeUser(user.username)">
                             <em class="ri-delete-bin-6-line" gdb-tooltip="{{'security.delete.user.tooltip' | translate}}"></em>
