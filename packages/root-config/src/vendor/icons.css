@@ -422,9 +422,9 @@
     content: "\e960";
 }
 
-.icon-translation:before {
-    content: "\e961";
-}
+/*.icon-translation:before {*/
+/*    content: "\e961";*/
+/*}*/
 
 .icon-follower:before {
     content: "\e962";

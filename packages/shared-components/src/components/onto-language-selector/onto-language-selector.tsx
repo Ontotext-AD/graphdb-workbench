@@ -51,7 +51,7 @@ export class OntoLanguageSelector {
           dropdownButtonTooltipLabelKey={this.currentLanguage ? 'language_selector.toggle_menu.tooltip' : 'language_selector.toggle_menu.label'}
           dropdownAlignment={this.dropdownAlignment ?? DropdownItemAlignment.RIGHT}
           dropdownTooltipTrigger={'mouseenter focus'}
-          iconClass='icon-translation'
+          iconClass='ri-translate-2'
           items={this.items}
           auto-close>
         </onto-dropdown>
