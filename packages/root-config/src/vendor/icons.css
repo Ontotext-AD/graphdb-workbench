@@ -398,9 +398,9 @@
     content: "\e95a";
 }
 
-.icon-export:before {
-    content: "\e95b";
-}
+/*.icon-export:before {*/
+/*    content: "\e95b";*/
+/*}*/
 
 .icon-readonly:before {
     content: "\e95c";
