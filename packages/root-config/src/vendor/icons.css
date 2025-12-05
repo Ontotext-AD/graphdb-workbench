@@ -286,9 +286,9 @@
     content: "\e918";
 }
 
-.icon-upload:before {
-    content: "\e919";
-}
+/*.icon-upload:before {*/
+/*    content: "\e919";*/
+/*}*/
 
 .icon-caret-left:before {
     content: "\e91a";

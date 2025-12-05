@@ -15,7 +15,7 @@ serverImportResourceTypeToIconMapping.set(ImportResourceType.FILE, 'icon-file');
 
 export const userImportResourceTypeToIconMapping = new Map();
 userImportResourceTypeToIconMapping.set(ImportResourceType.DIRECTORY, 'icon-folder');
-userImportResourceTypeToIconMapping.set(ImportResourceType.FILE, 'icon-upload');
+userImportResourceTypeToIconMapping.set(ImportResourceType.FILE, 'ri-upload-2-line');
 userImportResourceTypeToIconMapping.set(ImportResourceType.URL, 'icon-link');
 userImportResourceTypeToIconMapping.set(ImportResourceType.TEXT, 'icon-sparql');
 
