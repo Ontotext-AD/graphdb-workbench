@@ -113,9 +113,9 @@
     content: "\e947";
 }
 
-.icon-play:before {
-    content: "\e941";
-}
+/*.icon-play:before {*/
+/*    content: "\e941";*/
+/*}*/
 
 .icon-email:before {
     content: "\e93e";
