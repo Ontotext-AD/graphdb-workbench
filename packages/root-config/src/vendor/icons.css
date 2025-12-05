@@ -218,9 +218,9 @@
     content: "\e903";
 }
 
-.icon-exchange:before {
-    content: "\e904";
-}
+/*.icon-exchange:before {*/
+/*    content: "\e904";*/
+/*}*/
 
 .icon-columns:before {
     content: "\e905";
