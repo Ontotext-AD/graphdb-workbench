@@ -633,7 +633,7 @@ menuItems = [
         labelKey: 'menu.help.label',
         href: '#',
         order: 8,
-        icon: 'icon-help',
+        icon: 'ri-question-line',
         guideSelector: 'menu-help',
         shouldShow: true
       },

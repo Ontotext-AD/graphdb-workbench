@@ -26,7 +26,7 @@ PluginRegistry.add('main.menu', {
             labelKey: 'menu.help.label',
             href: '#',
             order: 8,
-            icon: 'icon-help',
+            icon: 'ri-question-line',
             guideSelector: 'menu-help',
             testSelector: 'menu-help',
             children: []

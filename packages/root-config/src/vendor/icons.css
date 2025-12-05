@@ -350,9 +350,9 @@
     content: "\e928";
 }
 
-.icon-help:before {
-    content: "\e929";
-}
+/*.icon-help:before {*/
+/*    content: "\e929";*/
+/*}*/
 
 .icon-monitoring:before {
     content: "\e92a";
