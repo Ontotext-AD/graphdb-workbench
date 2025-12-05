@@ -32,7 +32,7 @@
     margin: 8px 0 24px 8px;
 }
 
-.agent-settings-modal .agent-settings-form .llm-model .page-info-icon .icon-info {
+.agent-settings-modal .agent-settings-form .llm-model .page-info-icon .ri-information-2-line {
     vertical-align: baseline;
     font-size: 1rem;
     color: var(--gw-primary-dark);
@@ -77,7 +77,7 @@
     float: right;
 }
 
-.agent-settings-modal .agent-settings-form .context-size .reset-context-size-btn .icon-info {
+.agent-settings-modal .agent-settings-form .context-size .reset-context-size-btn .ri-information-2-line {
     color: var(--gw-primary-dark);
 }
 

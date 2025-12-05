@@ -49,7 +49,7 @@
                 <span class="tag tag-warning" ng-show="currentRankStatus == rdfStatus.OUTDATED"><em class="icon-warning icon-lg"></em> {{'outdated.status' | translate}}</span>
 				<span class="tag tag-warning" ng-show="currentRankStatus == rdfStatus.CONFIG_CHANGED"><em class="icon-warning icon-lg"></em> {{'configuration.changed.warning' | translate}}</span>
                 <span class="tag tag-warning" ng-show="currentRankStatus == rdfStatus.CANCELED"><em class="icon-warning icon-lg"></em> {{'computation.canceled.warning' | translate}}</span>
-                <span class="tag tag-warning" ng-show="currentRankStatus == rdfStatus.EMPTY"><em class="icon-info icon-lg"></em> {{'rdfrank.not.build.yet.warning' | translate}}</span>
+                <span class="tag tag-warning" ng-show="currentRankStatus == rdfStatus.EMPTY"><em class="ri-information-2-line icon-lg"></em> {{'rdfrank.not.build.yet.warning' | translate}}</span>
 
 				<p class="pull-right">
 					<button ng-disabled="currentRankStatus == rdfStatus.COMPUTING"

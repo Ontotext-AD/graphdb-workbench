@@ -3312,7 +3312,7 @@
     "guide.step_plugin.enable-autocomplete.error": "The autocomplete index is not enabled!",
     "guide.step_plugin.welcome.title": "Welcome to {{translatedGuideName}}",
     "guide.step_plugin.welcome.content": "Throughout the guide you will see boxes like this one that will provide instructions on what to do.<p>The icon in the top left corner is a hint too:<ul><li>{{infoIconHint}}</li><li>{{mouseIconHint}}</li><li>{{inputIconHint}}</li></ul></p>",
-    "guide.step_plugin.welcome.info-icon-hint": "<span class='icon icon-1-5x icon-info'></span> means the box provides information.",
+    "guide.step_plugin.welcome.info-icon-hint": "<span class='icon icon-1-5x ri-information-2-line'></span> means the box provides information.",
     "guide.step_plugin.welcome.mouse-icon-hint": "<span class='icon icon-1-5x icon-focus'></span> asks you to do something with the mouse.",
     "guide.step_plugin.welcome.input-icon-hint": "<span class='icon icon-1-5x icon-edit'></span> tells you to type or paste something.",
     "guide.step_plugin.welcome-what.title": "What is {{translatedGuideName}}?",

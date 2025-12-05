@@ -330,9 +330,9 @@
     content: "\e923";
 }
 
-.icon-info:before {
-    content: "\e924";
-}
+/*.icon-info:before {*/
+/*    content: "\e924";*/
+/*}*/
 
 .icon-link:before {
     content: "\e925";
