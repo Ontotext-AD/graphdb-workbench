@@ -254,9 +254,9 @@
     content: "\e90e";
 }
 
-.icon-pin:before {
-    content: "\e90f";
-}
+/*.icon-pin:before {*/
+/*    content: "\e90f";*/
+/*}*/
 
 .icon-zoom-in:before {
     content: "\e911";

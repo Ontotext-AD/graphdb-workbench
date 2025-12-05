@@ -1307,7 +1307,7 @@ function GraphsVisualizationsCtrl(
 
                 if (d.fixed) {
                     // add pin icon if pinned down
-                    html += '<i class="icon-pin"></i>&nbsp;&nbsp;';
+                    html += '<i class="ri-pushpin-line"></i>&nbsp;&nbsp;';
                 }
 
                 if (d.types.length > 0) {
