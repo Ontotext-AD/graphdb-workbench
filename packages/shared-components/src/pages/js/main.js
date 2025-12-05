@@ -661,7 +661,7 @@ menuItems = [
         labelKey: 'menu.documentation.label',
         order: 2,
         parent: 'Help',
-        icon: 'icon-external',
+        icon: 'ri-external-link-line',
         guideSelector: 'sub-menu-documentation',
         shouldShow: true
       },
@@ -670,7 +670,7 @@ menuItems = [
         labelKey: 'menu.tutorials.label',
         order: 3,
         parent: 'Help',
-        icon: 'icon-external',
+        icon: 'ri-external-link-line',
         guideSelector: 'sub-menu-developer-hub',
         shouldShow: true
       },
@@ -679,7 +679,7 @@ menuItems = [
         labelKey: 'menu.support.label',
         order: 4,
         parent: 'Help',
-        icon: 'icon-external',
+        icon: 'ri-external-link-line',
         guideSelector: 'sub-menu-support',
         shouldShow: true
       }

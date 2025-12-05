@@ -796,7 +796,7 @@
                 "no_agents": "No agents found for the selected filter.",
                 "help_1": "{{'ttyg.helpInfo'|translate|trustAsHtml}}",
                 "help_2": "{{'ttyg.help.how.content2'|translate|trustAsHtml}}",
-                "help_config": "To use <b>Talk to Your Graph</b>, GraphDB must first be configured to work with LLM API. Please ensure that the necessary LLM API type, url and key are in place before starting. For detailed setup instructions, refer to the <a href=\"{{talkToGraphDocumentationLink}}\" target=\"_blank\" rel=\"noopener\">documentation<i class=\"icon-external\"></i></a> or contact your administrator.",
+                "help_config": "To use <b>Talk to Your Graph</b>, GraphDB must first be configured to work with LLM API. Please ensure that the necessary LLM API type, url and key are in place before starting. For detailed setup instructions, refer to the <a href=\"{{talkToGraphDocumentationLink}}\" target=\"_blank\" rel=\"noopener\">documentation<i class=\"ri-external-link-line\"></i></a> or contact your administrator.",
                 "token_prop_warn1": "To enable this feature, set the config property",
                 "token_prop_warn2": "to your GPT token in",
                 "token_prop_warn3": "file.",

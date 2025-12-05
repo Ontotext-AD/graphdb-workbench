@@ -274,9 +274,9 @@
     content: "\e915";
 }
 
-.icon-external:before {
-    content: "\e916";
-}
+/*.icon-external:before {*/
+/*    content: "\e916";*/
+/*}*/
 
 .icon-lock:before {
     content: "\e917";

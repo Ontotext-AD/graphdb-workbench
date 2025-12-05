@@ -795,7 +795,7 @@
                 "no_agents": "Aucun agent n'est configuré pour le moment.",
                 "help_1": "{{'ttyg.helpInfo'|translate|trustAsHtml}}",
                 "help_2": "{{'ttyg.help.how.content2'|translate|trustAsHtml}}",
-                "help_config": "Pour utiliser <b>Parlez à votre graphe</b>, GraphDB doit d'abord être configuré pour fonctionner avec l'API LLM. Veuillez vous assurer que le type d'API LLM requis, l'URL et la clé sont bien en place avant de commencer. Pour des instructions détaillées sur la configuration, consultez la <a href=\"{{talkToGraphDocumentationLink}}\" target=\"_blank\" rel=\"noopener\">documentation<i class=\"icon-external\"></i></a> ou contactez votre administrateur.",
+                "help_config": "Pour utiliser <b>Parlez à votre graphe</b>, GraphDB doit d'abord être configuré pour fonctionner avec l'API LLM. Veuillez vous assurer que le type d'API LLM requis, l'URL et la clé sont bien en place avant de commencer. Pour des instructions détaillées sur la configuration, consultez la <a href=\"{{talkToGraphDocumentationLink}}\" target=\"_blank\" rel=\"noopener\">documentation<i class=\"ri-external-link-line\"></i></a> ou contactez votre administrateur.",
                 "token_prop_warn1": "Pour activer cette fonctionnalité, définissez la propriété de configuration",
                 "token_prop_warn2": "à votre jeton GPT dans le fichier",
                 "token_prop_warn3": ".",
