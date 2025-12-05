@@ -42,7 +42,7 @@
             attrs.iconCollapse = 'ri-indeterminate-circle-line glyphicon glyphicon-minus ri-subtract-line';
           }
           if (attrs.iconLeaf == null) {
-            attrs.iconLeaf = 'icon-file  glyphicon glyphicon-file  ri-file-line';
+            attrs.iconLeaf = 'ri-file-line  glyphicon glyphicon-file  ri-file-line';
           }
           if (attrs.expandLevel == null) {
             attrs.expandLevel = '3';

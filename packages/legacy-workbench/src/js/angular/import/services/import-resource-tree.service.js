@@ -11,7 +11,7 @@ const MAX_MESSAGE_LENGTH = 150;
 
 export const serverImportResourceTypeToIconMapping = new Map();
 serverImportResourceTypeToIconMapping.set(ImportResourceType.DIRECTORY, 'ri-folder-3-line');
-serverImportResourceTypeToIconMapping.set(ImportResourceType.FILE, 'icon-file');
+serverImportResourceTypeToIconMapping.set(ImportResourceType.FILE, 'ri-file-line');
 
 export const userImportResourceTypeToIconMapping = new Map();
 userImportResourceTypeToIconMapping.set(ImportResourceType.DIRECTORY, 'ri-folder-3-line');

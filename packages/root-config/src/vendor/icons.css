@@ -242,9 +242,9 @@
     content: "\e90a";
 }
 
-.icon-file:before {
-    content: "\e90c";
-}
+/*.icon-file:before {*/
+/*    content: "\e90c";*/
+/*}*/
 
 /*.icon-folder:before {*/
 /*    content: "\e90d";*/
