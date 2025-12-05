@@ -34,7 +34,7 @@
             <div class="lead mb-1" id="toggleIndex">
 				<span class="rdf-rank-status"
 					  data-test="rdf-rank-status-label">{{'rdfrank.for.repo.label' | translate}} <strong>{{getActiveRepository()}}</strong> {{'is.with.status.label' | translate}}</span>
-                <span class="tag tag-success" ng-show="currentRankStatus.indexOf('COMPUTED') == 0"><em class="icon-check icon-lg"></em> {{'computed.status' | translate}}</span>
+                <span class="tag tag-success" ng-show="currentRankStatus.indexOf('COMPUTED') == 0"><em class="ri-checkbox-circle-line icon-lg"></em> {{'computed.status' | translate}}</span>
 
                 <span ng-show="currentRankStatus == 'COMPUTING'">
                     <span class="tag tag-info">
