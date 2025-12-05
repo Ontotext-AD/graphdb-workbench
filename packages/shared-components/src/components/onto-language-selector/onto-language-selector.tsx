@@ -50,7 +50,6 @@ export class OntoLanguageSelector {
           dropdownButtonName={this.currentLanguage ?? undefined}
           dropdownButtonTooltipLabelKey={this.currentLanguage ? 'language_selector.toggle_menu.tooltip' : 'language_selector.toggle_menu.label'}
           dropdownAlignment={this.dropdownAlignment ?? DropdownItemAlignment.RIGHT}
-          dropdownTooltipTrigger={'mouseenter focus'}
           iconClass='icon-translation'
           items={this.items}
           auto-close>
@@ -85,8 +84,7 @@ export class OntoLanguageSelector {
         .setTooltipLabelKey(`language_selector.language.${locale}.tooltip.` + (this.currentLanguage === locale ? 'selected' : 'not_selected'))
         .setIconClass(iconClass)
         .setCssClass(locale)
-        .setValue(locale)
-        .setDropdownTooltipTrigger('mouseenter focus');
+        .setValue(locale);
     });
   }
 }
