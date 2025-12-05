@@ -117,7 +117,7 @@
                 <div ng-show="isFreeAccessEnabled() || isUser()" class="card mb-2">
                     <div class="card-block graph-configurations" ng-init="getGraphConfigs()">
                         <div class="clearfix">
-                            <a  ng-if="isUser()" ng-href="graphs-visualizations/config/save" class="btn btn-link pull-right create-graph-config"><span class="icon-plus"></span> {{'visual.create.graph.config' | translate}}</a>
+                            <a  ng-if="isUser()" ng-href="graphs-visualizations/config/save" class="btn btn-link pull-right create-graph-config"><span class="ri-add-circle-line"></span> {{'visual.create.graph.config' | translate}}</a>
                             <h3>{{'visual.advanced.graph.config' | translate}}</h3>
                             <p>{{'visual.advanced.graph.config.info' | translate}}</p>
                         </div>
@@ -246,7 +246,7 @@
                                ng-change="validateLinksLimit()">
                         <button type="button" class="btn btn-link px-0" ng-disabled="settings['linksLimit'] > 999"
                                 ng-click="changeLimit(1)">
-                            <span class="icon-plus"></span>
+                            <span class="ri-add-circle-line"></span>
                         </button>
                         <span style="margin-top: 5px" ng-if="invalidLimit"
                               class="idError alert alert-danger"

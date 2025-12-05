@@ -36,7 +36,7 @@
             return void 0;
           };
           if (attrs.iconExpand == null) {
-            attrs.iconExpand = 'icon-plus  glyphicon glyphicon-plus  ri-add-line';
+            attrs.iconExpand = 'ri-add-circle-line  glyphicon glyphicon-plus  ri-add-line';
           }
           if (attrs.iconCollapse == null) {
             attrs.iconCollapse = 'icon-minus glyphicon glyphicon-minus ri-subtract-line';

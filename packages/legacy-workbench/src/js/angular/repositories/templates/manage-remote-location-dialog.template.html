@@ -133,7 +133,7 @@
     </button>
     <button type="submit" ng-click="ok();" class="btn btn-primary attach-location" form="remoteLocationForm"
             ng-disabled="remoteLocationForm.$pristine || remoteLocationForm.$invalid">
-        <span ng-if="!isEdit" class="icon-plus"></span>
+        <span ng-if="!isEdit" class="ri-add-circle-line"></span>
         {{(isEdit ? 'common.save.btn' : 'common.attach') | translate}}
     </button>
 </div>

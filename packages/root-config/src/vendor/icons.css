@@ -342,9 +342,9 @@
     content: "\e926";
 }
 
-.icon-plus:before {
-    content: "\e927";
-}
+/*.icon-plus:before {*/
+/*    content: "\e927";*/
+/*}*/
 
 .icon-data:before {
     content: "\e928";
