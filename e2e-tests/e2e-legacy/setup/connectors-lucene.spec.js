@@ -48,7 +48,7 @@ describe('Setup / Connectors - Lucene', () => {
         verifyConnectorExists(luceneConnectorName);
         //copy connector
         getConnectorInstance(0)
-            .find('.icon-copy')
+            .find('.ri-file-copy-line')
             .should('be.visible')
             .click()
             .then(() => {
@@ -60,7 +60,7 @@ describe('Setup / Connectors - Lucene', () => {
                 verifyConnectorExists(luceneConnectorName + '-copy');
                 //delete connector copy
                 getConnectorInstance(1)
-                    .find('.icon-trash')
+                    .find('.ri-delete-bin-6-line')
                     .should('be.visible')
                     .click();
                 getConfirmConnectorDeletebutton()

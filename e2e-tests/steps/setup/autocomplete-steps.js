@@ -104,6 +104,6 @@ export class AutocompleteSteps extends BaseSteps {
     }
 
     static editLabelOnRow(rowIndex) {
-        this.getTableRows().eq(rowIndex).find('.actions-bar .icon-edit').click();
+        this.getTableRows().eq(rowIndex).find('.actions-bar .ri-edit-line').click();
     }
 }

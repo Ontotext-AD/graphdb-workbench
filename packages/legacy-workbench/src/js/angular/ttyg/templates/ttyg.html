@@ -69,7 +69,7 @@
                             ng-click="onOpenAgentSettings()"
                             ng-disabled="!canModifyAgent"
                             gdb-tooltip="{{ (canModifyAgent ? 'ttyg.agent.btn.edit_agent.tooltip' : 'ttyg.agent.btn.edit_agent.tooltip_disabled') | translate}}">
-                        <i class="icon-settings"></i>
+                        <i class="ri-settings-3-line"></i>
                     </button>
                 </div>
 
@@ -91,7 +91,7 @@
                         ng-click="onToggleHelp()"
                         ng-disabled="false"
                         gdb-tooltip="{{'ttyg.help.btn.show_help.tooltip' | translate}}">
-                    <i class="icon-help"></i>
+                    <i class="ri-question-line"></i>
                 </button>
                 <button class="btn btn-link btn-sm create-agent-btn"
                         ng-disabled="!canModifyAgent"
@@ -99,7 +99,7 @@
                         ng-disabled="false"
                         gdb-tooltip="{{ (canModifyAgent ? 'ttyg.agent.btn.create_agent.tooltip' : 'ttyg.agent.btn.create_agent.tooltip_disabled') | translate}}"
                         guide-selector="create-agent-btn">
-                    <i class="icon-plus"></i>
+                    <i class="ri-add-circle-line"></i>
                 </button>
                 <button class="btn btn-link btn-sm toggle-agents-sidebar-btn"
                         ng-if="!showAgents"
@@ -113,7 +113,7 @@
                         ng-click="toggleAgentsListSidebar()"
                         ng-disabled="false"
                         gdb-tooltip="{{'ttyg.agent.btn.close_sidebar' + '.tooltip' | translate}}">
-                    <i class="icon-close"></i>
+                    <i class="ri-close-line"></i>
                 </button>
             </div>
 

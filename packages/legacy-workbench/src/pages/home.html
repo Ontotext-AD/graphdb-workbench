@@ -74,20 +74,20 @@
                     <h6>{{getActiveRepositoryObject().location ? getActiveRepositoryObject().location : 'Local'}}</h6>
                     <div class="actions-bar pull-right">
                         <button type="button" gdb-tooltip="{{'copy.repo.url' | translate}}" class="btn btn-link"
-                                ng-click="copyToClipboard(getActiveRepositoryObject().externalUrl)"><span class="icon-link"></span>
+                                ng-click="copyToClipboard(getActiveRepositoryObject().externalUrl)"><span class="ri-links-line"></span>
                         </button>
                         <button type="button" ng-click="goToEditRepo(getActiveRepositoryObject())" class="btn btn-link" gdb-tooltip="{{'repoTooltips.editRepository' | translate}}"
                                 ng-if="canManageRepositories() && getActiveRepositoryObject().type !== 'system'">
-                            <span class="icon-edit"></span>
+                            <span class="ri-edit-line"></span>
                         </button>
                         <span ng-show="getDegradedReason()">
-                            <em class="icon-warning icon-lg text-warning"
+                            <em class="ri-alert-line icon-lg text-warning"
                                 gdb-tooltip="{{getDegradedReason()}} {{'not.supported.repo.edit.label' | translate}}"
                                 tooltip-placement="top"></em>
                         </span>
                         <button type="button" gdb-tooltip="{{'refresh.repo.info' | translate}}" class="btn btn-link"
                                 ng-if="activeRepositorySize && !activeRepositorySizeError"
-                                ng-click="getActiveRepositorySize()"><span class="icon-reload"></span>
+                                ng-click="getActiveRepositorySize()"><span class="ri-reset-right-line"></span>
                         </button>
                     </div>
                     <h3 class="card-title ellipsis-block repo-info-home">
@@ -153,7 +153,7 @@
                 <div>
                     <ul class="list-group limit-height clearfix {{sampleQueries.length <= 4 ? 'one-column' : 'two-columns'}} saved-queries" ng-show="sampleQueries">
                         <li ng-repeat="query in sampleQueries" ng-hide="isIgnoreSharedQueries && query.owner != null && query.shared" class="list-group-item list-group-item-action">
-                            <span class="help-label execute-saved-query" ng-click="goToSparqlEditor(query)">{{'common.execute' | translate}} <span class="icon-caret-right"></span></span>
+                            <span class="help-label execute-saved-query" ng-click="goToSparqlEditor(query)">{{'common.execute' | translate}} <span class="ri-arrow-right-s-line"></span></span>
                             <samp class="query-name">{{query.name}}</samp>
                             <samp class="text-muted small">{{query.body}}</samp>
                         </li>

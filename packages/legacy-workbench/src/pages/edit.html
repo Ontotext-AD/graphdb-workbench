@@ -11,7 +11,7 @@
             <a href="{{details.uri}}" gdb-tooltip="{{details.uri}}">
                 {{details.label ? details.label : getLocalName(details.uri)}}
             </a>
-            <a class="btn btn-link" gdb-tooltip="{{'common.cancel.btn' | translate}}" href="resource?uri={{details.encodeURI}}"><em class="icon-close"></em></a>
+            <a class="btn btn-link" gdb-tooltip="{{'common.cancel.btn' | translate}}" href="resource?uri={{details.encodeURI}}"><em class="ri-close-line"></em></a>
         </h1>
 
         <p ng-show="{{details.comment}}" data-escape="false">{{details.comment}}</p>
@@ -118,7 +118,7 @@
                     <td style="vertical-align: top;" class="text-nowrap">
                         <form name="newRowForm" novalidate ng-submit="addStatement()">
                             <button type="submit" class="btn btn-link px-0" ng-form="newRowForm">
-                                <em class="icon-check"></em>
+                                <em class="ri-checkbox-circle-line"></em>
                             </button>
                         </form>
                     </td>
@@ -164,19 +164,19 @@
                               shown="inserted == statement">
                             <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-link px-0"
                                     gdb-tooltip="{{'common.save.btn' | translate}}">
-                                <em class="icon-check"></em>
+                                <em class="ri-checkbox-circle-line"></em>
                             </button>
                             <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()"
                                     class="btn btn-link px-0 secondary" gdb-tooltip="{{'common.cancel.btn' | translate}}">
-                                <em class="icon-close"></em>
+                                <em class="ri-close-line"></em>
                             </button>
                         </form>
                         <div class="buttons" ng-show="!rowform.$visible">
                             <button class="btn btn-link px-0" ng-click="rowform.$show()">
-                                <em class="icon-edit"></em>
+                                <em class="ri-edit-line"></em>
                             </button>
                             <button class="btn btn-link px-0 secondary" ng-click="removeStatement($index)">
-                                <em class="icon-trash"></em>
+                                <em class="ri-delete-bin-6-line"></em>
                             </button>
                         </div>
                     </td>

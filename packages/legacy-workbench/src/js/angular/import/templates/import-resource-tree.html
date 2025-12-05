@@ -37,7 +37,7 @@
                      popover-trigger="mouseenter"
                      popover-placement="top">
                     <button type="button" class="btn btn-primary batch-import-btn" ng-click="importAll(false)">
-                        <span class="icon-import"></span>
+                        <span class="ri-download-2-line"></span>
                         {{'common.import' | translate}}
                     </button>
                     <button type="button" class="btn btn-primary dropdown-toggle-split dropdown-toggle"
@@ -76,18 +76,18 @@
                 <button class="btn btn-secondary show-all-resources-btn"
                         ng-click="filterByTypeChanged(TYPE_FILTER_OPTIONS.ALL)"
                         ng-class="{'active': TYPE_FILTER_OPTIONS.ALL === filterByType}">
-                    <em class="icon-file"></em>
-                    <em class="icon-folder"></em>
+                    <em class="ri-file-line"></em>
+                    <em class="ri-folder-3-line"></em>
                 </button>
                 <button class="btn btn-secondary show-only-folders-btn"
                         ng-click="filterByTypeChanged(TYPE_FILTER_OPTIONS.DIRECTORY)"
                         ng-class="{'active': TYPE_FILTER_OPTIONS.DIRECTORY === filterByType}">
-                    <em class="icon-folder"></em>
+                    <em class="ri-folder-3-line"></em>
                 </button>
                 <button class="btn btn-secondary show-only-files-btn"
                         ng-click="filterByTypeChanged(TYPE_FILTER_OPTIONS.FILE)"
                         ng-class="{'active': TYPE_FILTER_OPTIONS.FILE === filterByType}">
-                    <em class="icon-file"></em>
+                    <em class="ri-file-line"></em>
                 </button>
             </div>
 
@@ -194,14 +194,14 @@
                             ng-if="resource.canResetStatus"
                             ng-disabled="hasSelection"
                             gdb-tooltip="{{'import.reset.status' | translate}}">
-                        <span class="icon-close"></span>
+                        <span class="ri-close-line"></span>
                     </button>
                     <button ng-if="canRemoveResource && resource.importResource.status !== ImportResourceStatus.UPLOADING && resource.importResource.status !== ImportResourceStatus.UPLOADED && resource.importResource.status !== ImportResourceStatus.UPLOAD_ERROR"
                             class="btn btn-link btn-sm secondary import-resource-action-remove-btn"
                             ng-disabled="hasSelection"
                             ng-click="removeResource(resource)"
                             gdb-tooltip="{{'import.remove.btn' | translate}}">
-                        <em class="icon-trash"></em>
+                        <em class="ri-delete-bin-6-line"></em>
                     </button>
                     <button class="btn btn-primary btn-sm import-resource-action-import-btn"
                             ng-if="resource.isImportable"
@@ -209,14 +209,14 @@
                             ng-disabled="hasSelection"
                             guide-selector="import-file-{{resource.name}}"
                             gdb-tooltip="{{'import.import.btn' | translate}}">
-                        <span class="icon-import"></span>
+                        <span class="ri-download-2-line"></span>
                     </button>
                     <button class="btn btn-sm"
                             ng-click="stopImport(resource)"
                             ng-disabled="resource.importResource.status === ImportResourceStatus.INTERRUPTING"
                             ng-if="resource.hasOngoingImport"
                             gdb-tooltip="{{'import.import_resource_tree.action.interrupt_import' | translate}}">
-                        <span class="icon-close"></span>
+                        <span class="ri-close-line"></span>
                         {{'import.import_resource_tree.action.abort' | translate}}
                     </button>
                 </div>

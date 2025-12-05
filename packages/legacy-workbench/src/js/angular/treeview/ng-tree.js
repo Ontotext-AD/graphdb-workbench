@@ -36,13 +36,13 @@
             return void 0;
           };
           if (attrs.iconExpand == null) {
-            attrs.iconExpand = 'icon-plus  glyphicon glyphicon-plus  ri-add-line';
+            attrs.iconExpand = 'ri-add-circle-line  glyphicon glyphicon-plus  ri-add-line';
           }
           if (attrs.iconCollapse == null) {
-            attrs.iconCollapse = 'icon-minus glyphicon glyphicon-minus ri-subtract-line';
+            attrs.iconCollapse = 'ri-indeterminate-circle-line glyphicon glyphicon-minus ri-subtract-line';
           }
           if (attrs.iconLeaf == null) {
-            attrs.iconLeaf = 'icon-file  glyphicon glyphicon-file  ri-file-line';
+            attrs.iconLeaf = 'ri-file-line  glyphicon glyphicon-file  ri-file-line';
           }
           if (attrs.expandLevel == null) {
             attrs.expandLevel = '3';
@@ -512,10 +512,10 @@ function createTemplate(){
 						  		"<i ng-if=\"row.branch.children.length>0\" ng-class=\"row.tree_icon\" ng-click=\"expandClose(row.branch); $event.stopPropagation()\" class=\"indented tree-icon\" style=\"vertical-align: 2px;\"></i>"+
 						  		"<i ng-if=\"row.branch.children.length<1\" class=\"indented tree-icon ng-scope icon-plus  glyphicon glyphicon-plus ri-add-line\" style=\"color:transparent;\"></i>"+
 						  		"<span ng-if=\"row.branch.showCheckboxes=='true' && row.branch.checkboxStatus=='1' && row.level > 2 \" class='indented bootstrap-checkbox' data-checkbox-id=\"{{row.branch.id}}\" ng-click=\"checkBoxClicked(row); $event.stopPropagation()\"></span>"+
-						  		"<span ng-if=\"row.branch.showCheckboxes=='true' && row.branch.checkboxStatus=='2' && row.level > 2 \" class='indented bootstrap-checkbox selectedNode' data-checkbox-id=\"{{row.branch.id}}\" ng-click=\"checkBoxClicked(row); $event.stopPropagation()\"><i class=\"icon-stop\"></i></span>"+
+						  		"<span ng-if=\"row.branch.showCheckboxes=='true' && row.branch.checkboxStatus=='2' && row.level > 2 \" class='indented bootstrap-checkbox selectedNode' data-checkbox-id=\"{{row.branch.id}}\" ng-click=\"checkBoxClicked(row); $event.stopPropagation()\"><i class=\"ri-stop-circle-line\"></i></span>"+
 						  		"<span ng-if=\"row.branch.showCheckboxes=='true' && row.branch.checkboxStatus=='3' && row.level > 2 \" class='indented bootstrap-checkbox selectedNode' data-checkbox-id=\"{{row.branch.id}}\" ng-click=\"checkBoxClicked(row); $event.stopPropagation()\"><i class=\"icon-ok\"></i></span>"+
 						  		"<span ng-if=\"row.branch.showCheckboxes=='true' && row.branch.checkboxStatus=='1' && row.level < 3 \" class='indented bootstrap-checkbox disabledCheckBox' data-checkbox-id=\"{{row.branch.id}}\"></span>"+
-						  		"<span ng-if=\"row.branch.showCheckboxes=='true' && row.branch.checkboxStatus=='2' && row.level < 3 \" class='indented bootstrap-checkbox disabledCheckBox selectedNode' data-checkbox-id=\"{{row.branch.id}}\"><i class=\"icon-stop\"></i></span>"+
+						  		"<span ng-if=\"row.branch.showCheckboxes=='true' && row.branch.checkboxStatus=='2' && row.level < 3 \" class='indented bootstrap-checkbox disabledCheckBox selectedNode' data-checkbox-id=\"{{row.branch.id}}\"><i class=\"ri-stop-circle-line\"></i></span>"+
 						  		"<span ng-if=\"row.branch.showCheckboxes=='true' && row.branch.checkboxStatus=='3' && row.level < 3 \" class='indented bootstrap-checkbox disabledCheckBox selectedNode' data-checkbox-id=\"{{row.branch.id}}\"><i class=\"icon-ok\"></i></span>"+
 					  		"</div>"+
 					  		"<div ng-if=\"row.branch.checkboxStatus =='1'\" ng-class=\"'div-level-' + {{ row.level }}\" class=\"indented tree-label\">{{ row.branch.id }} - {{ row.label }} </div>"+

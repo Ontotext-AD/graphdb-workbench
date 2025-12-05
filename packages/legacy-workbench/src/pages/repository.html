@@ -40,7 +40,7 @@
                             <a class="btn btn-link ot-edit-input" ng-click="editRepositoryId()"
                                ng-if="!canEditRepoId && editRepoPage"
                                gdb-tooltip="{{'edit.repo.id.tooltip' | translate}}" tooltip-placement="right">
-                                <span class="icon-edit"></span>
+                                <span class="ri-edit-line"></span>
                             </a>
                             <input name="id" id="id" class="form-control" ng-disabled="!canEditRepoId && editRepoPage"
                                    placeholder="{{'required.field' | translate}}" type="text" ng-model="repositoryInfo.id"
@@ -80,7 +80,7 @@
                         <div class="form-group row indented-div">
                             <label for="ruleset" class="col-xs-12 col-md-3 col-lg-2 col-form-label">
                                 {{repositoryInfo.params.ruleset.label}}
-                                <div class="ruleset-warning icon-warning icon-2x"
+                                <div class="ruleset-warning ri-alert-line ri-2x"
                                     ng-if="rulesetWarning()"
                                     gdb-tooltip="{{rulesetWarning()}}"
                                     tooltip-placement="top"></div>

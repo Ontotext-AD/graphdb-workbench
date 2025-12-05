@@ -178,9 +178,9 @@ function fedxRepoDirective($uibModal, RepositoriesRestService, toastr, $translat
             if (member.repoType) {
                 return 'icon-repo-' + member.repoType;
             } else if (member.store === NATIVE_STORE) {
-                return 'icon-warning';
+                return 'ri-alert-line';
             } else {
-                return 'icon-link';
+                return 'ri-links-line';
             }
         }
 

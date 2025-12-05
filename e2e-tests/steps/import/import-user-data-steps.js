@@ -174,6 +174,6 @@ export class ImportUserDataSteps extends ImportSteps {
     }
 
     static getDeleteImportEntryButton() {
-        return cy.get('.icon-trash');
+        return cy.get('.ri-delete-bin-6-line');
     }
 }

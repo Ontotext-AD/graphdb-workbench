@@ -102,7 +102,7 @@ describe('Repositories', () => {
         // Check the repo is present in the list of repos and we are not yet connected to it
         RepositorySteps.getRepositoryFromList(repositoryId)
             .should('be.visible')
-            .find('.icon-connection-off')
+            .find('.ri-link-unlink')
             .should('be.visible');
 
         // Verify it's configuration can be downloaded

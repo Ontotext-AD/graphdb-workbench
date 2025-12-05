@@ -179,7 +179,7 @@ function GraphsVisualizationsCtrl(
 
     $scope.toggleMoreInfo = (ev) => {
         angular.element(ev.currentTarget).parent().next().toggle(200);
-        angular.element(ev.currentTarget).children('span').toggleClass("icon-caret-down").toggleClass("icon-caret-up");
+        angular.element(ev.currentTarget).children('span').toggleClass("ri-arrow-down-s-line").toggleClass("ri-arrow-up-s-line");
     };
 
     $scope.copyToClipboard = (uri) => {
@@ -1307,7 +1307,7 @@ function GraphsVisualizationsCtrl(
 
                 if (d.fixed) {
                     // add pin icon if pinned down
-                    html += '<i class="icon-pin"></i>&nbsp;&nbsp;';
+                    html += '<i class="ri-pushpin-line"></i>&nbsp;&nbsp;';
                 }
 
                 if (d.types.length > 0) {
@@ -2281,7 +2281,7 @@ function GraphsVisualizationsCtrl(
             });
 
             this.copyURIIcon = d3.select('.menu-events').append("g")
-                .attr("class", "icon-link")
+                .attr("class", "ri-links-line")
                 .attr("name", "link")
                 .attr("transform", function() {
                     return getPositionAndAngle(angle, node);

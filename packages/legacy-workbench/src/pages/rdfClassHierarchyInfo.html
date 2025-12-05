@@ -52,20 +52,20 @@
 		gdb-tooltip="{{'focus.diagram.tooltip' | translate}}"
 		tooltip-placement="bottom"
 		ng-click="focusOnRoot()">
-		<em class="icon-zoom-out icon-2x"></em>
+		<em class="ri-zoom-out-line ri-2x"></em>
 	</button>
 
 	<button class="btn btn-link p-0 reload-diagram-btn"
 		gdb-tooltip="{{'reload.diagram.tooltip' | translate}}"
 		tooltip-placement="bottom"
 		ng-click="confirmReloadClassHierarchy()">
-		<em class="icon-reload icon-2x"></em>
+		<em class="ri-reset-right-line ri-2x"></em>
 	</button>
 
 	<a href class="btn btn-link p-0" id="download-svg"
 		gdb-tooltip="{{'export.diagram.tooltip' | translate}}"
 		tooltip-placement="bottom">
-		<em class="icon-export icon-2x"></em>
+		<em class="ri-upload-2-line ri-2x"></em>
 	</a>
 
 </div>
@@ -95,7 +95,7 @@
 				  popover-trigger="mouseenter"
 				  popover-placement="bottom-right"
 				  popover-append-to-body="true">
-				<span class="icon-info text-tertiary"></span>
+				<span class="ri-information-2-line text-tertiary"></span>
 			</span>
 		</p>
         <rzslider id="rzslider"
@@ -110,7 +110,7 @@
 						gdb-tooltip="{{'reload.diagram.tooltip' | translate}}"
 						tooltip-placement="bottom"
 						ng-click="confirmReloadClassHierarchy()">
-					<em class="icon-reload icon-2x"></em>
+					<em class="ri-reset-right-line ri-2x"></em>
 				</button>
 			</p>
 			<p>{{hierarchyError}}</p>
@@ -154,7 +154,7 @@
 					<button class="btn btn-link btn-sm px-0 hovered-item"
 						ng-click="copyToClipboard(selectedClass.data.fullName)"
 						title="{{'copy.to.clipboard.modal.ok.btn' | translate}}">
-						<span class="icon-link"></span>
+						<span class="ri-links-line"></span>
 					</button>
 				</h3>
 				<p>
@@ -211,7 +211,7 @@
 											<button class="btn btn-link btn-sm p-0 hovered-item pull-right"
 												title="{{'copy.to.clipboard.modal.ok.btn' | translate}}"
 												ng-click="copyToClipboard(item.absUriNonEncoded)">
-												<span class="icon-link"></span>
+												<span class="ri-links-line"></span>
 											</button>
 											<a class="uri" href="resource?{{item.type}}={{item.absUri}}">{{item.resolvedUri}}</a>
 										</td>

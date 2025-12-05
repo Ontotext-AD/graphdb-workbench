@@ -10,13 +10,13 @@ const MAX_MESSAGE_LENGTH = 150;
 
 
 export const serverImportResourceTypeToIconMapping = new Map();
-serverImportResourceTypeToIconMapping.set(ImportResourceType.DIRECTORY, 'icon-folder');
-serverImportResourceTypeToIconMapping.set(ImportResourceType.FILE, 'icon-file');
+serverImportResourceTypeToIconMapping.set(ImportResourceType.DIRECTORY, 'ri-folder-3-line');
+serverImportResourceTypeToIconMapping.set(ImportResourceType.FILE, 'ri-file-line');
 
 export const userImportResourceTypeToIconMapping = new Map();
-userImportResourceTypeToIconMapping.set(ImportResourceType.DIRECTORY, 'icon-folder');
-userImportResourceTypeToIconMapping.set(ImportResourceType.FILE, 'icon-upload');
-userImportResourceTypeToIconMapping.set(ImportResourceType.URL, 'icon-link');
+userImportResourceTypeToIconMapping.set(ImportResourceType.DIRECTORY, 'ri-folder-3-line');
+userImportResourceTypeToIconMapping.set(ImportResourceType.FILE, 'ri-upload-2-line');
+userImportResourceTypeToIconMapping.set(ImportResourceType.URL, 'ri-links-line');
 userImportResourceTypeToIconMapping.set(ImportResourceType.TEXT, 'icon-sparql');
 
 export class ImportResourceTreeService {
