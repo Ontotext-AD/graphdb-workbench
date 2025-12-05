@@ -71,7 +71,7 @@ export class RepositorySteps {
     }
 
     static getRepositoryConnectionOnBtn(id) {
-        return RepositorySteps.getRepositoryFromList(id).find('.icon-connection-on');
+        return RepositorySteps.getRepositoryFromList(id).find('.ri-link');
     }
 
     static clickRepositoryIcon(repositoryId, selector) {
