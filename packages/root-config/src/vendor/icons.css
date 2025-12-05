@@ -198,9 +198,9 @@
     content: "\e933";
 }
 
-.icon-comment:before {
-    content: "\e930";
-}
+/*.icon-comment:before {*/
+/*    content: "\e930";*/
+/*}*/
 
 .icon-arrow-down:before {
     content: "\e900";
