@@ -302,9 +302,9 @@
 /*    content: "\e91c";*/
 /*}*/
 
-.icon-minus:before {
-    content: "\e91d";
-}
+/*.icon-minus:before {*/
+/*    content: "\e91d";*/
+/*}*/
 
 .icon-reload:before {
     content: "\e91e";
