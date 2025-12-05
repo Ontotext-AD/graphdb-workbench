@@ -179,7 +179,7 @@ function GraphsVisualizationsCtrl(
 
     $scope.toggleMoreInfo = (ev) => {
         angular.element(ev.currentTarget).parent().next().toggle(200);
-        angular.element(ev.currentTarget).children('span').toggleClass("ri-arrow-down-s-line").toggleClass("icon-caret-up");
+        angular.element(ev.currentTarget).children('span').toggleClass("ri-arrow-down-s-line").toggleClass("ri-arrow-up-s-line");
     };
 
     $scope.copyToClipboard = (uri) => {
