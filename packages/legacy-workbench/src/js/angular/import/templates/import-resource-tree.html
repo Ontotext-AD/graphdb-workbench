@@ -194,7 +194,7 @@
                             ng-if="resource.canResetStatus"
                             ng-disabled="hasSelection"
                             gdb-tooltip="{{'import.reset.status' | translate}}">
-                        <span class="icon-close"></span>
+                        <span class="ri-close-line"></span>
                     </button>
                     <button ng-if="canRemoveResource && resource.importResource.status !== ImportResourceStatus.UPLOADING && resource.importResource.status !== ImportResourceStatus.UPLOADED && resource.importResource.status !== ImportResourceStatus.UPLOAD_ERROR"
                             class="btn btn-link btn-sm secondary import-resource-action-remove-btn"
@@ -216,7 +216,7 @@
                             ng-disabled="resource.importResource.status === ImportResourceStatus.INTERRUPTING"
                             ng-if="resource.hasOngoingImport"
                             gdb-tooltip="{{'import.import_resource_tree.action.interrupt_import' | translate}}">
-                        <span class="icon-close"></span>
+                        <span class="ri-close-line"></span>
                         {{'import.import_resource_tree.action.abort' | translate}}
                     </button>
                 </div>
