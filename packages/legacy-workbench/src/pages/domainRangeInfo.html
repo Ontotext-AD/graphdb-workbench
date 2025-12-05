@@ -10,7 +10,7 @@
           uib-popover-template="'js/angular/templates/titlePopoverTemplate.html'"
           popover-trigger="mouseenter"
           popover-placement="bottom-right"
-          popover-append-to-body="true"><span class="icon-info text-tertiary"></span></span>
+          popover-append-to-body="true"><span class="ri-information-2-line text-tertiary"></span></span>
 </h1>
 
 <div class="explore">
@@ -20,7 +20,7 @@
                 ng-click="goToClassHierarchyView()"
                 gdb-tooltip="{{'back.to.class.hierarchy.label' | translate}}"
                 tooltip-placement="bottom">
-            <em class="icon-arrow-left icon-2x"></em>
+            <em class="ri-arrow-left-circle-line ri-2x"></em>
         </button>
 
         <button class="btn btn-link p-0 compact-mode-toggle" type="button"
@@ -34,7 +34,7 @@
         <a id="download-svg" href class="btn btn-link p-0"
            gdb-tooltip="{{'export.diagram.tooltip' | translate}}"
            tooltip-placement="bottom">
-			<em class="icon-export icon-2x"></em>
+			<em class="ri-upload-2-line ri-2x"></em>
 		</a>
     </div>
     <div class='explore_results'>
@@ -64,7 +64,7 @@
                         {{sourceTargetObjectNodeName}}
                     </a>
                     <button ng-show="sourceTargetObjectNodeName.indexOf('Literal') == -1" class="btn btn-link btn-sm p-0" title="{{'copy.to.clipboard.modal.ok.btn' | translate}}" ng-click="copyToClipboard(sourceTargetObjectNodeUri)">
-                        <span class="icon-link"></span>
+                        <span class="ri-links-line"></span>
                     </button>
                 </h3>
 
@@ -96,7 +96,7 @@
                         <li ui-scroll='item in datasource' class="item clearfix break-word-alt" adapter="adapterContainer.adapter" padding='li'>
                             <a class="uri pull-left" href="resource?uri={{item.absUri}}">{{item.resolvedUri}}</a>
                             <button class="btn btn-link btn-sm p-0 hovered-item" title="{{'copy.to.clipboard.modal.ok.btn' | translate}}" ng-click="copyToClipboard(item.absUriNonEncoded)">
-                                <span class="icon-link"></span>
+                                <span class="ri-links-line"></span>
                             </button>
                             <svg class="pull-right" ng-switch on="item.isImplicit" height="7" width="240">
                                 <path ng-switch-when="true" class="property-type-list-item-legend"

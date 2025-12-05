@@ -25,9 +25,9 @@
 		<div class="card-block">
 			<div class="clearfix">
 				<a ng-href="similarity/index/create" ng-if="canEditRepo" class="btn btn-link pull-right" data-test="create-similarity-index-btn" guide-selector="create-similarity-index">
-					<span class="icon-plus create-similarity-index"></span>{{'view.create.similarity.index.title' | translate}}
+					<span class="ri-add-circle-line create-similarity-index"></span>{{'view.create.similarity.index.title' | translate}}
 				</a>
-				<h3 class="mb-0"><span class="collapsible-heading" data-toggle="collapse" data-target="#indexes-table"><em class="icon-caret-down text-muted"></em> {{'existing.indexes' | translate}}</span></h3>
+				<h3 class="mb-0"><span class="collapsible-heading" data-toggle="collapse" data-target="#indexes-table"><em class="ri-arrow-down-s-line text-muted"></em> {{'existing.indexes' | translate}}</span></h3>
 				<div class="mt-1" ng-if="selectedSimilarityIndex === undefined">{{'select.existing.similarity.index' | translate}}</div>
 			</div>
 			<div class="no-indexes" ng-if="similarityIndexes.length == 0"><em>{{'no.indexes' | translate}}</em></div>
@@ -53,7 +53,7 @@
 							<span class="text-muted mr-2" ng-if="similarityIndex.isInterruptedStatus()" gdb-tooltip="{{'index.building.interrupted.tooltip' | translate}}">{{'interrupted.status' | translate}}</span>
 							<span class="text-muted mr-2" ng-if="similarityIndex.isObsoleteStatus()" gdb-tooltip="{{'index.obsolete.tooltip' | translate}}">{{'obsolete.status' | translate}}</span>
 							<span class="btn btn-link similarity-index-building-loader" ng-if="similarityIndex.isBuildingStatus() || similarityIndex.isRebuildingStatus() || similarityIndex.isCreatingStatus()">
-          				        <em class="icon-reload loader"></em>
+          				        <em class="ri-reset-left-line loader"></em>
       				        </span>
 
 							<span class="btn btn-link view-sparql-query-btn" ng-click="viewCreateQuery(similarityIndex)"
@@ -67,7 +67,7 @@
                                         ng-if="canEditRepo && !similarityIndex.isBuildingStatus() && !similarityIndex.isRebuildingStatus() && !similarityIndex.isCreatingStatus()"
                                         ng-click="editSimilarityIndex(similarityIndex)"
                                         gdb-tooltip="{{similarityIndex.isPredicationType() ? 'edit.search.analogical.query.title' : 'edit.search.query.title' | translate}}">
-                                    <span class="icon-edit"></span>
+                                    <span class="ri-edit-line"></span>
                                 </button>
                             </span>
 
@@ -75,14 +75,14 @@
                                     ng-if="similarityIndex.selectQuery && (similarityIndex.isTextType() || similarityIndex.isPredicationType() || similarityIndex.isTextLiteralType())"
                                     ng-click="cloneSimilataryIndex(similarityIndex)"
                                     gdb-tooltip="{{'create.index.from.existing.tooltip' | translate}}">
-                                <span class="icon-copy"></span>
+                                <span class="ri-file-copy-line"></span>
                             </button>
 
 							<button type="button" ng-if="canEditRepo && !similarityIndex.isBuildingStatus() && !similarityIndex.isRebuildingStatus() && !similarityIndex.isCreatingStatus() && (similarityIndex.isTextType() || similarityIndex.isPredicationType() || similarityIndex.isTextLiteralType())" ng-disabled="!similarityIndex.selectQuery"
 									ng-click="rebuildIndex(similarityIndex)" class="btn btn-link reload-index-btn" gdb-tooltip="{{'rebuild.index.tooltip' | translate}}"><span
-									class="icon-reload similarity-index-icon-reload"></span></button>
+									class="ri-reset-right-line similarity-index-icon-reload"></span></button>
 							<button type="button" ng-if="canEditRepo && !similarityIndex.isBuildingStatus() && !similarityIndex.isRebuildingStatus() && !similarityIndex.isCreatingStatus()" ng-click="deleteSimilarityIndex(similarityIndex)"
-									class="btn btn-link delete-index-btn" gdb-tooltip="{{'delete.index.tooltip' | translate}}"><span class="icon-trash"></span>
+									class="btn btn-link delete-index-btn" gdb-tooltip="{{'delete.index.tooltip' | translate}}"><span class="ri-delete-bin-6-line"></span>
 							</button>
 						</td>
 
@@ -241,9 +241,9 @@
 				</div>
 			</div>
 
-			<button ng-if="selectedSimilarityIndex.isTextType()" class="btn btn-link btn-sm mt-1 px-0 collapsed" data-toggle="collapse" data-target="#search-type">{{'search.options' | translate}} <span class="icon-caret-up"></span></button>
+			<button ng-if="selectedSimilarityIndex.isTextType()" class="btn btn-link btn-sm mt-1 px-0 collapsed" data-toggle="collapse" data-target="#search-type">{{'search.options' | translate}} <span class="ri-arrow-up-s-line"></span></button>
 
-			<button ng-if="selectedSimilarityIndex.isPredicationType()" class="btn btn-link btn-sm mt-1 px-0 collapsed" data-toggle="collapse" data-target="#search-type-predication">{{'search.options' | translate}} <span class="icon-caret-up"></span></button>
+			<button ng-if="selectedSimilarityIndex.isPredicationType()" class="btn btn-link btn-sm mt-1 px-0 collapsed" data-toggle="collapse" data-target="#search-type-predication">{{'search.options' | translate}} <span class="ri-arrow-up-s-line"></span></button>
 
 			<div id="search-type" class="mt-1 collapse" ng-show="selectedSimilarityIndex.isTextType()">
 				<label for="indexParameters" class="col-form-label"><strong>{{'semantic.vectors.search.parameters.label' | translate}}</strong></label>

@@ -48,7 +48,7 @@
 					<h5>
 						{{'server.report' | translate}}
 						<button type="button" ng-click="isHelpVisible = !isHelpVisible" class="btn btn-link server-report-help-btn">
-							<span class="icon-help"></span>
+							<span class="ri-question-line"></span>
 						</button>
 					</h5>
 
@@ -66,8 +66,8 @@
 
 					<div class="lead report-status">
 						<span class="report-none" ng-show="status === 'NONE'">{{'no.prev.server.report.found' | translate}}</span>
-						<span class="report-in-progress" ng-show="status === 'IN_PROGRESS'"><em class="icon-reload loader"></em> {{'server.report.generation.in.progress' | translate}}</span>
-						<span class="report-error" ng-show="status === 'ERROR'"><em class="icon-warning"></em> {{'common.error' | translate}}: {{errorMessage}}</span>
+						<span class="report-in-progress" ng-show="status === 'IN_PROGRESS'"><em class="ri-reset-left-line loader"></em> {{'server.report.generation.in.progress' | translate}}</span>
+						<span class="report-error" ng-show="status === 'ERROR'"><em class="ri-alert-line"></em> {{'common.error' | translate}}: {{errorMessage}}</span>
 						<span class="report-ready" ng-show="status === 'READY'">{{'last.server.report.timestamp' | translate}} {{timestamp | date:"'on' yyyy-MM-dd 'at' HH:mm"}}</span>
 					</div>
 
@@ -82,7 +82,7 @@
 									ng-disabled="status === 'IN_PROGRESS'"
 									data-test="new-report-btn"
 									gdb-tooltip="{{'new.server.report.tooltip' | translate}}">
-								<em class="icon-monitoring"></em>
+								<em class="ri-heart-pulse-line"></em>
 								{{'new.server.report' | translate}}
 							</button>
 							<button class="btn btn-primary download-report-btn"
@@ -90,7 +90,7 @@
 									ng-disabled="status === 'IN_PROGRESS' || !(timestamp > 0)"
 									data-test="download-report-btn"
 									gdb-tooltip="{{'download.server.report.tooltip' | translate}}">
-								<em class="icon-download"></em>
+								<em class="ri-download-2-line"></em>
 								{{'common.download' | translate}}
 							</button>
 						</div>

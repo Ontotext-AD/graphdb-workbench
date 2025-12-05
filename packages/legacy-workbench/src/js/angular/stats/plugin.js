@@ -26,7 +26,7 @@ PluginRegistry.add('main.menu', {
             labelKey: 'menu.help.label',
             href: '#',
             order: 8,
-            icon: 'icon-help',
+            icon: 'ri-question-line',
             guideSelector: 'menu-help',
             testSelector: 'menu-help',
             children: []
@@ -53,7 +53,7 @@ PluginRegistry.add('main.menu', {
             labelKey: 'menu.documentation.label',
             order: 2,
             parent: 'Help',
-            icon: 'icon-external',
+            icon: 'ri-external-link-line',
             documentationHref: 'index.html',
             hrefFun: function (productInfo, urlResolver) {
                 return urlResolver(productInfo.productShortVersion, 'index.html');
@@ -64,7 +64,7 @@ PluginRegistry.add('main.menu', {
             labelKey: 'menu.tutorials.label',
             order: 3,
             parent: 'Help',
-            icon: 'icon-external',
+            icon: 'ri-external-link-line',
             documentationHref: 'tutorials.html',
             hrefFun: function (productInfo, urlResolver) {
                 return urlResolver(productInfo.productShortVersion, 'tutorials.html');
@@ -75,7 +75,7 @@ PluginRegistry.add('main.menu', {
             labelKey: 'menu.support.label',
             order: 4,
             parent: 'Help',
-            icon: 'icon-external',
+            icon: 'ri-external-link-line',
             documentationHref: 'support.html',
             hrefFun: function (productInfo, urlResolver) {
                 return urlResolver(productInfo.productShortVersion, 'support.html');

@@ -152,7 +152,7 @@
 				<div class="card" id="workbench-settings" ng-if="showWorkbenchSettings">
 					<div class="card-block">
 						<h3>{{'security.workbench.settings.title' | translate}}
-							<em class="icon-info text-tertiary small" gdb-tooltip="{{'security.workbench.settings.theme.tooltip' | translate}}"></em></h3>
+							<em class="ri-information-2-line text-tertiary small" gdb-tooltip="{{'security.workbench.settings.theme.tooltip' | translate}}"></em></h3>
 						<div>
                             <div class="form-group">
                                 <label class="col-lg-2">{{'security.workbench.settings.theme.mode.label' | translate}}</label>
@@ -240,13 +240,13 @@
                                 <thead>
                                     <tr>
                                         <th id="repositoryIdColumn" class="repository-column auth-column">{{'security.repository.title' | translate}}</th>
-                                        <th id="readRightsColumn" class="text-xs-center read-column auth-column"><span class="auth-column-label">{{'security.label.read' | translate}}</span><em class="icon-eye icon-lg" gdb-tooltip="{{'security.tooltip.read' | translate}}"></em></th>
-                                        <th id="writeRightColumn" class="text-xs-center write-column auth-column"><span class="auth-column-label">{{'security.label.write' | translate}}</span><em class="icon-edit icon-lg" gdb-tooltip="{{'security.tooltip.write' | translate}}"></em></th>
+                                        <th id="readRightsColumn" class="text-xs-center read-column auth-column"><span class="auth-column-label">{{'security.label.read' | translate}}</span><em class="ri-eye-line icon-lg" gdb-tooltip="{{'security.tooltip.read' | translate}}"></em></th>
+                                        <th id="writeRightColumn" class="text-xs-center write-column auth-column"><span class="auth-column-label">{{'security.label.write' | translate}}</span><em class="ri-edit-line icon-lg" gdb-tooltip="{{'security.tooltip.write' | translate}}"></em></th>
                                         <th id="graphql" class="text-xs-center auth-column graphql-column"><span class="auth-column-label">{{'security.label.graphql' | translate}}</span></th>
                                     </tr>
                                     <tr>
                                         <th>{{'security.any.data.repo' | translate}}
-                                            <em class="icon-info text-tertiary" gdb-tooltip="{{'security.data.repos' | translate}}"></em>
+                                            <em class="ri-information-2-line text-tertiary" gdb-tooltip="{{'security.data.repos' | translate}}"></em>
                                         </th>
                                         <th class="text-xs-center">
                                             <span ng-click="setGrantedAuthorities()">

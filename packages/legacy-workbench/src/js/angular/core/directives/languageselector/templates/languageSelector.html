@@ -4,7 +4,7 @@
             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
             tooltip-placement="left"
             gdb-tooltip="{{ 'current.language.tooltip' | translate }}: {{selectedLang.name}}">
-        <span class="icon-translation icon-1-5x"></span>
+        <span class="ri-translate-2 icon-1-5x"></span>
         {{selectedLang.key}}
     </button>
     <ul class="dropdown-menu dropdown-menu-right pre-scrollable" aria-labelledby="languageGroupDrop">
@@ -12,7 +12,7 @@
             tooltip-placement="left"
             gdb-tooltip="{{ getLanguageTooltip(language) }}">
             <a class="dropdown-item" id="lang-select-{{language.key}}" ng-if="!isLoadingLocation() && hasActiveLocation()" ng-click="changeLanguage(language)">
-                <i ng-style="{'visibility':language.key !== selectedLang.key ? 'hidden' : 'visible'}" class="icon-tick"></i>
+                <i ng-style="{'visibility':language.key !== selectedLang.key ? 'hidden' : 'visible'}" class="ri-check-line"></i>
                 <span class="multiline-text">
                     {{language.key}} &middot; {{language.name}}
                 </span>

@@ -15,7 +15,7 @@ PluginRegistry.add('main.menu', {
                 href: '#',
                 order: 5,
                 role: 'IS_AUTHENTICATED_FULLY',
-                icon: "icon-settings",
+                icon: "ri-settings-3-line",
                 guideSelector: 'menu-setup',
                 testSelector: 'menu-setup',
                 children: []
@@ -27,7 +27,7 @@ PluginRegistry.add('main.menu', {
                 order: 3,
                 // Changed to role user as now users can monitor their own queries
                 role: 'ROLE_USER',
-                icon: 'icon-monitoring',
+                icon: 'ri-heart-pulse-line',
                 guideSelector: 'menu-monitor',
                 testSelector: 'menu-monitoring',
                 children: []

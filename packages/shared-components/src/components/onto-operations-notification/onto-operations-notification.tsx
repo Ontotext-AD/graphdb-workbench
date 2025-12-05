@@ -10,8 +10,7 @@ const operationGroupToIcon = {
   [OperationGroup.BACKUP]: 'ri-archive-line',
   [OperationGroup.QUERY]: 'ri-arrow-left-right-line',
   [OperationGroup.CLUSTER]: 'ri-organization-chart',
-  // TODO: change import icon to font awesome one, when available
-  [OperationGroup.IMPORT]: 'icon-import'
+  [OperationGroup.IMPORT]: 'ri-download-2-line'
 };
 
 const operationStatusToWarningClass = {

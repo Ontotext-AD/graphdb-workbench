@@ -6,7 +6,7 @@
           uib-popover-template="'js/angular/templates/titlePopoverTemplate.html'"
           popover-trigger="mouseenter"
           popover-placement="bottom-right"
-          popover-append-to-body="true"><span class="icon-info text-tertiary"></span></span>
+          popover-append-to-body="true"><span class="ri-information-2-line text-tertiary"></span></span>
 </h1>
 
 <div class="card mb-2">
@@ -37,7 +37,7 @@
 
 <div>
     <button ng-show="page != 1" type="button" class="btn btn-link pull-right" ng-click="toggleHelp()">
-        <span class="icon-help" uib-popover="{{'toggle.help' | translate}}"
+        <span class="ri-question-line" uib-popover="{{'toggle.help' | translate}}"
               popover-placement="top"
               popover-trigger="mouseenter">
         </span>
@@ -264,12 +264,12 @@
         <button href ng-show="page > 1" ng-click="goToPreviousPage()" class="btn btn-lg btn-secondary btn-previous-page"
                 uib-popover="{{'previous.config.step' | translate}}"
                 popover-placement="top"
-                popover-trigger="mouseenter"><span class="icon-arrow-left"></span> {{'previous.btn' | translate}}
+                popover-trigger="mouseenter"><span class="ri-arrow-left-circle-line"></span> {{'previous.btn' | translate}}
         </button>
         <button href ng-show="page < totalPages" ng-click="goToNextPage()" class="btn btn-lg btn-secondary btn-next-page"
                 uib-popover="{{'next.config.step' | translate}}"
                 popover-placement="top"
-                popover-trigger="mouseenter"> {{'next.btn' | translate}} <span class="icon-arrow-right"></span>
+                popover-trigger="mouseenter"> {{'next.btn' | translate}} <span class="ri-arrow-right-circle-line"></span>
         </button>
         <button class="btn btn-lg btn-secondary btn-preview-query-results" ng-click="showPreview()"
                 ng-hide="viewMode == 'editor' || (page == 1 && newConfig.startMode != 'query')"

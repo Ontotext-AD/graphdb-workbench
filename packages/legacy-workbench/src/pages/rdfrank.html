@@ -34,22 +34,22 @@
             <div class="lead mb-1" id="toggleIndex">
 				<span class="rdf-rank-status"
 					  data-test="rdf-rank-status-label">{{'rdfrank.for.repo.label' | translate}} <strong>{{getActiveRepository()}}</strong> {{'is.with.status.label' | translate}}</span>
-                <span class="tag tag-success" ng-show="currentRankStatus.indexOf('COMPUTED') == 0"><em class="icon-check icon-lg"></em> {{'computed.status' | translate}}</span>
+                <span class="tag tag-success" ng-show="currentRankStatus.indexOf('COMPUTED') == 0"><em class="ri-checkbox-circle-line icon-lg"></em> {{'computed.status' | translate}}</span>
 
                 <span ng-show="currentRankStatus == 'COMPUTING'">
                     <span class="tag tag-info">
-                        <span class="icon-reload icon-lg loader"></span>
+                        <span class="ri-reset-left-line icon-lg loader"></span>
                         {{'computing.loader.msg' | translate}}
                     </span>
                     <button class="btn btn-link btn-sm" ng-click="interruptComputation()"
-                            gdb-tooltip="{{'interrupt.indexing.tooltip' | translate}}"><span class="icon-close"></span></button>
+                            gdb-tooltip="{{'interrupt.indexing.tooltip' | translate}}"><span class="ri-close-line"></span></button>
                 </span>
 
-                <span class="tag tag-danger" ng-show="currentRankStatus.indexOf(rdfStatus.ERROR) == 0"><em class="icon-warning icon-lg"></em> {{currentRankStatus}}</span>
-                <span class="tag tag-warning" ng-show="currentRankStatus == rdfStatus.OUTDATED"><em class="icon-warning icon-lg"></em> {{'outdated.status' | translate}}</span>
-				<span class="tag tag-warning" ng-show="currentRankStatus == rdfStatus.CONFIG_CHANGED"><em class="icon-warning icon-lg"></em> {{'configuration.changed.warning' | translate}}</span>
-                <span class="tag tag-warning" ng-show="currentRankStatus == rdfStatus.CANCELED"><em class="icon-warning icon-lg"></em> {{'computation.canceled.warning' | translate}}</span>
-                <span class="tag tag-warning" ng-show="currentRankStatus == rdfStatus.EMPTY"><em class="icon-info icon-lg"></em> {{'rdfrank.not.build.yet.warning' | translate}}</span>
+                <span class="tag tag-danger" ng-show="currentRankStatus.indexOf(rdfStatus.ERROR) == 0"><em class="ri-alert-line icon-lg"></em> {{currentRankStatus}}</span>
+                <span class="tag tag-warning" ng-show="currentRankStatus == rdfStatus.OUTDATED"><em class="ri-alert-line icon-lg"></em> {{'outdated.status' | translate}}</span>
+				<span class="tag tag-warning" ng-show="currentRankStatus == rdfStatus.CONFIG_CHANGED"><em class="ri-alert-line icon-lg"></em> {{'configuration.changed.warning' | translate}}</span>
+                <span class="tag tag-warning" ng-show="currentRankStatus == rdfStatus.CANCELED"><em class="ri-alert-line icon-lg"></em> {{'computation.canceled.warning' | translate}}</span>
+                <span class="tag tag-warning" ng-show="currentRankStatus == rdfStatus.EMPTY"><em class="ri-information-2-line icon-lg"></em> {{'rdfrank.not.build.yet.warning' | translate}}</span>
 
 				<p class="pull-right">
 					<button ng-disabled="currentRankStatus == rdfStatus.COMPUTING"

@@ -117,7 +117,7 @@ html, body {
     align-items: center;
 }
 
-.acl-management-view .acl-rules .role-cell .icon-warning {
+.acl-management-view .acl-rules .role-cell .ri-alert-line {
     margin-left: 3px;
 }
 

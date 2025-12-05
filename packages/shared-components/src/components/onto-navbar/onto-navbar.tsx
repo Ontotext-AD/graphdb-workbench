@@ -362,7 +362,7 @@ export class OntoNavbar {
             <span class="toggle-menu" title={
               this.isCollapsed ? this.labels[labelKeys.EXPAND] : this.labels[labelKeys.COLLAPSE]
             } onClick={this.toggleNavbarHandler()}>
-              <em class={this.isCollapsed ? 'icon-caret-right' : 'icon-caret-left'}></em>
+              <em class={this.isCollapsed ? 'ri-arrow-right-s-line' : 'ri-arrow-left-s-line'}></em>
             </span>
             <a class="menu-element-root home-page" onClick={navigateTo('./')}>
               <svg class="big-logo">

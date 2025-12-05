@@ -41,20 +41,20 @@
                 </span>
 				<span ng-show="autocompleteEnabled" class="autocomplete-status" guide-selector="autocompleteStatus">
 					{{'with.status' | translate}}
-					<span class="tag tag-success" ng-show="indexStatus.indexOf('READY') == 0"><em class="icon-check icon-lg"></em> {{'ready.label' | translate}}</span>
+					<span class="tag tag-success" ng-show="indexStatus.indexOf('READY') == 0"><em class="ri-checkbox-circle-line icon-lg"></em> {{'ready.label' | translate}}</span>
 
 					<span ng-show="indexStatus == 'BUILDING'">
 						<span class="tag tag-info">
-							<span class="icon-reload icon-lg loader"></span>
+							<span class="ri-reset-left-line icon-lg loader"></span>
 							{{'building.label' | translate}}
 						</span>
 						<button class="btn btn-link btn-sm" ng-click="interruptIndexing()"
-								gdb-tooltip="{{'interrupt.indexing' | translate}}"><span class="icon-close"></span></button>
+								gdb-tooltip="{{'interrupt.indexing' | translate}}"><span class="ri-close-line"></span></button>
 					</span>
 
-					<span class="tag tag-danger" ng-show="indexStatus.indexOf('ERROR') == 0"><em class="icon-warning icon-lg"></em> {{indexStatus}}</span>
-					<span class="tag tag-warning" ng-show="indexStatus == 'CANCELED'"><em class="icon-warning icon-lg"></em> {{'index.building.cancelled' | translate}}</span>
-					<span class="tag tag-warning" ng-show="indexStatus == 'NONE'"><em class="icon-info icon-lg"></em> {{'index.not.built.yet' | translate}}</span>
+					<span class="tag tag-danger" ng-show="indexStatus.indexOf('ERROR') == 0"><em class="ri-alert-line icon-lg"></em> {{indexStatus}}</span>
+					<span class="tag tag-warning" ng-show="indexStatus == 'CANCELED'"><em class="ri-alert-line icon-lg"></em> {{'index.building.cancelled' | translate}}</span>
+					<span class="tag tag-warning" ng-show="indexStatus == 'NONE'"><em class="ri-information-2-line icon-lg"></em> {{'index.not.built.yet' | translate}}</span>
 				</span>
 
 
@@ -71,7 +71,7 @@
 			<button id="wb-autocomplete-addLabel" type="submit" ng-click="addLabel()"
 					ng-disabled="indexStatus == 'BUILDING'" class="btn btn-sm btn-primary pull-right"
 					gdb-tooltip="{{'add.label.config' | translate}}">
-				<span class="icon-plus"></span>
+				<span class="ri-add-circle-line"></span>
 				{{'add.label' | translate}}
 			</button>
 
@@ -114,10 +114,10 @@
 
 					<td class="actions-bar">
 						<button class="btn btn-link" ng-click="editLabel(label)"
-								gdb-tooltip="{{'edit.label.languages' | translate}}"><span class="icon-edit"></span></button>
+								gdb-tooltip="{{'edit.label.languages' | translate}}"><span class="ri-edit-line"></span></button>
 						<button class="btn btn-link secondary" ng-click="removeLabel(label)"
 								gdb-tooltip="{{'delete.label.config' | translate}}">
-							<span class="icon-trash"></span>
+							<span class="ri-delete-bin-6-line"></span>
 						</button>
 					</td>
 				</tr>

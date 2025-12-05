@@ -39,9 +39,11 @@
     font-weight: normal;
 }
 
-[class^="icon-"], [class*=" icon-"], .icon-any {
-    /* use !important to prevent issues with browser extensions that change fonts */
-    font-family: 'icomoon', sans-serif !important;
+[class^="icon-"]:not([class^="ri-"]):not([class*=" ri-"]),
+[class*=" icon-"]:not([class^="ri-"]):not([class*=" ri-"]),
+.icon-any:not([class^="ri-"]):not([class*=" ri-"]) {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'icomoon', sans-serif !important;
 }
 
 .remixicon {
@@ -71,17 +73,17 @@
     content: "\e94c";
 }
 
-.icon-focus:before {
-    content: "\e94d";
-}
+/*.icon-focus:before {*/
+/*    content: "\e94d";*/
+/*}*/
 
-.icon-rotate-left:before {
-    content: "\e94e";
-}
+/*.icon-rotate-left:before {*/
+/*    content: "\e94e";*/
+/*}*/
 
-.icon-rotate-right:before {
-    content: "\e94f";
-}
+/*.icon-rotate-right:before {*/
+/*    content: "\e94f";*/
+/*}*/
 
 .icon-info-alt:before {
     content: "\e950";
@@ -111,9 +113,9 @@
     content: "\e947";
 }
 
-.icon-play:before {
-    content: "\e941";
-}
+/*.icon-play:before {*/
+/*    content: "\e941";*/
+/*}*/
 
 .icon-email:before {
     content: "\e93e";
@@ -176,49 +178,49 @@
     content: "\e93d";
 }
 
-.icon-copy:before {
-    content: "\e934";
-}
+/*.icon-copy:before {*/
+/*    content: "\e934";*/
+/*}*/
 
-.icon-eye:before {
-    content: "\e935";
-}
+/*.icon-eye:before {*/
+/*    content: "\e935";*/
+/*}*/
 
-.icon-connection-off:before {
-    content: "\e931";
-}
+/*.icon-connection-off:before {*/
+/*    content: "\e931";*/
+/*}*/
 
-.icon-connection-on:before {
-    content: "\e932";
-}
+/*.icon-connection-on:before {*/
+/*    content: "\e932";*/
+/*}*/
 
-.icon-key:before {
-    content: "\e933";
-}
+/*.icon-key:before {*/
+/*    content: "\e933";*/
+/*}*/
 
-.icon-comment:before {
-    content: "\e930";
-}
+/*.icon-comment:before {*/
+/*    content: "\e930";*/
+/*}*/
 
 .icon-arrow-down:before {
     content: "\e900";
 }
 
-.icon-arrow-left:before {
-    content: "\e901";
-}
+/*.icon-arrow-left:before {*/
+/*    content: "\e901";*/
+/*}*/
 
-.icon-arrow-right:before {
-    content: "\e902";
-}
+/*.icon-arrow-right:before {*/
+/*    content: "\e902";*/
+/*}*/
 
-.icon-arrow-up:before {
-    content: "\e903";
-}
+/*.icon-arrow-up:before {*/
+/*    content: "\e903";*/
+/*}*/
 
-.icon-exchange:before {
-    content: "\e904";
-}
+/*.icon-exchange:before {*/
+/*    content: "\e904";*/
+/*}*/
 
 .icon-columns:before {
     content: "\e905";
@@ -232,133 +234,133 @@
     content: "\e908";
 }
 
-.icon-save:before {
-    content: "\e909";
-}
+/*.icon-save:before {*/
+/*    content: "\e909";*/
+/*}*/
 
-.icon-tag:before {
-    content: "\e90a";
-}
+/*.icon-tag:before {*/
+/*    content: "\e90a";*/
+/*}*/
 
-.icon-file:before {
-    content: "\e90c";
-}
+/*.icon-file:before {*/
+/*    content: "\e90c";*/
+/*}*/
 
-.icon-folder:before {
-    content: "\e90d";
-}
+/*.icon-folder:before {*/
+/*    content: "\e90d";*/
+/*}*/
 
 .icon-heartbeat:before {
     content: "\e90e";
 }
 
-.icon-pin:before {
-    content: "\e90f";
-}
+/*.icon-pin:before {*/
+/*    content: "\e90f";*/
+/*}*/
 
 .icon-zoom-in:before {
     content: "\e911";
 }
 
-.icon-zoom-out:before {
-    content: "\e912";
-}
+/*.icon-zoom-out:before {*/
+/*    content: "\e912";*/
+/*}*/
 
-.icon-check:before {
-    content: "\e914";
-}
+/*.icon-check:before {*/
+/*    content: "\e914";*/
+/*}*/
 
-.icon-download:before {
-    content: "\e915";
-}
+/*.icon-download:before {*/
+/*    content: "\e915";*/
+/*}*/
 
-.icon-external:before {
-    content: "\e916";
-}
+/*.icon-external:before {*/
+/*    content: "\e916";*/
+/*}*/
 
 .icon-lock:before {
     content: "\e917";
 }
 
-.icon-search:before {
-    content: "\e918";
-}
+/*.icon-search:before {*/
+/*    content: "\e918";*/
+/*}*/
 
-.icon-upload:before {
-    content: "\e919";
-}
+/*.icon-upload:before {*/
+/*    content: "\e919";*/
+/*}*/
 
-.icon-caret-left:before {
-    content: "\e91a";
-}
+/*.icon-caret-left:before {*/
+/*    content: "\e91a";*/
+/*}*/
 
-.icon-caret-right:before {
-    content: "\e91b";
-}
+/*.icon-caret-right:before {*/
+/*    content: "\e91b";*/
+/*}*/
 
-.icon-caret-up:before {
-    content: "\e91c";
-}
+/*.icon-caret-up:before {*/
+/*    content: "\e91c";*/
+/*}*/
 
-.icon-minus:before {
-    content: "\e91d";
-}
+/*.icon-minus:before {*/
+/*    content: "\e91d";*/
+/*}*/
 
-.icon-reload:before {
-    content: "\e91e";
-}
+/*.icon-reload:before {*/
+/*    content: "\e91e";*/
+/*}*/
 
-.icon-trash:before {
-    content: "\e91f";
-}
+/*.icon-trash:before {*/
+/*    content: "\e91f";*/
+/*}*/
 
-.icon-warning:before {
-    content: "\e920";
-}
+/*.icon-warning:before {*/
+/*    content: "\e920";*/
+/*}*/
 
-.icon-caret-down:before {
-    content: "\e921";
-}
+/*.icon-caret-down:before {*/
+/*    content: "\e921";*/
+/*}*/
 
-.icon-close:before {
-    content: "\e922";
-}
+/*.icon-close:before {*/
+/*    content: "\e922";*/
+/*}*/
 
-.icon-edit:before {
-    content: "\e923";
-}
+/*.icon-edit:before {*/
+/*    content: "\e923";*/
+/*}*/
 
-.icon-info:before {
-    content: "\e924";
-}
+/*.icon-info:before {*/
+/*    content: "\e924";*/
+/*}*/
 
-.icon-link:before {
-    content: "\e925";
-}
+/*.icon-link:before {*/
+/*    content: "\e925";*/
+/*}*/
 
 .icon-more:before {
     content: "\e926";
 }
 
-.icon-plus:before {
-    content: "\e927";
-}
+/*.icon-plus:before {*/
+/*    content: "\e927";*/
+/*}*/
 
 .icon-data:before {
     content: "\e928";
 }
 
-.icon-help:before {
-    content: "\e929";
-}
+/*.icon-help:before {*/
+/*    content: "\e929";*/
+/*}*/
 
-.icon-monitoring:before {
-    content: "\e92a";
-}
+/*.icon-monitoring:before {*/
+/*    content: "\e92a";*/
+/*}*/
 
-.icon-settings:before {
-    content: "\e92b";
-}
+/*.icon-settings:before {*/
+/*    content: "\e92b";*/
+/*}*/
 
 .icon-sparql:before {
     content: "\e92c";
@@ -368,9 +370,9 @@
     content: "\e92e";
 }
 
-.icon-import:before {
-    content: "\e92f";
-}
+/*.icon-import:before {*/
+/*    content: "\e92f";*/
+/*}*/
 
 .icon-hbars:before {
     content: "\e953";
@@ -380,9 +382,9 @@
     content: "\e954";
 }
 
-.icon-tick:before {
-    content: "\e956";
-}
+/*.icon-tick:before {*/
+/*    content: "\e956";*/
+/*}*/
 
 .icon-repo-ontop-alt:before {
     content: "\e958";
@@ -396,9 +398,9 @@
     content: "\e95a";
 }
 
-.icon-export:before {
-    content: "\e95b";
-}
+/*.icon-export:before {*/
+/*    content: "\e95b";*/
+/*}*/
 
 .icon-readonly:before {
     content: "\e95c";
@@ -420,16 +422,16 @@
     content: "\e960";
 }
 
-.icon-translation:before {
-    content: "\e961";
-}
+/*.icon-translation:before {*/
+/*    content: "\e961";*/
+/*}*/
 
 .icon-follower:before {
     content: "\e962";
 }
-.icon-exclamation:before {
-    content: "\e955";
-}
+/*.icon-exclamation:before {*/
+/*    content: "\e955";*/
+/*}*/
 /*
 [class^="icon-"]:before, [class*=" icon-"]:before {
 	display: inline-block;

@@ -142,6 +142,14 @@ yasgui-component .custom-button:disabled:hover, yasgui-component .custom-button:
     color: #818a91 !important;
 }
 
+/* Make our custom icons bolder to match the remixicons look */
+yasgui-component .custom-button.icon-inferred-on,
+yasgui-component .custom-button.icon-same-as-on,
+yasgui-component .custom-button.icon-inferred-off,
+yasgui-component .custom-button.icon-same-as-off {
+    font-weight: 600;
+}
+
 yasgui-component .yasqe_queryButton {
     font-family: var(--main-font);
     font-weight: 400;
@@ -207,9 +215,10 @@ yasgui-component .yasgui .tabsList .tab .closeTab {
     color: inherit !important;
 }
 
-yasgui-component .yasgui .tabsList .tab .closeTab .icon-close,
-yasgui-component .yasgui .tabsList .addTab .icon-plus {
+yasgui-component .yasgui .tabsList .tab .closeTab .ri-close-line,
+yasgui-component .yasgui .tabsList .addTab .ri-add-circle-line {
     font-size: 1.225em !important;
+    font-weight: 100;
 }
 
 yasgui-component .yasgui .tabsList .addTab {
@@ -289,14 +298,14 @@ yasgui-component .ontotext-download-as .ontotext-dropdown-button .button-name {
 
 yasgui-component .ontotext-dropdown-button:hover,
 yasgui-component .ontotext-dropdown-menu .ontotext-dropdown-menu-item:hover,
-yasgui-component .ontotext-dropdown-button.icon-caret-down-after:hover:after,
-yasgui-component .ontotext-dropdown-button.icon-caret-up-after:hover:after {
+yasgui-component .ontotext-dropdown-button.ri-arrow-down-s-line:hover:after,
+yasgui-component .ontotext-dropdown-button.ri-arrow-up-s-line:hover:after {
     background-color: var(--gw-button-primary-hover-background) !important;
     color: var(--gw-button-primary-hover-color);
 }
 
-yasgui-component .ontotext-dropdown-button.icon-caret-down-after:after,
-yasgui-component .ontotext-dropdown-button.icon-caret-up-after:after {
+yasgui-component .ontotext-dropdown-button.ri-arrow-down-s-line:after,
+yasgui-component .ontotext-dropdown-button.ri-arrow-up-s-line:after {
     background-color: var(--gw-button-primary-background) !important;
     color: var(--gw-button-primary-color);
 }
