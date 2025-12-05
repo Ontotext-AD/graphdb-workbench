@@ -358,9 +358,9 @@
     content: "\e92a";
 }
 
-.icon-settings:before {
-    content: "\e92b";
-}
+/*.icon-settings:before {*/
+/*    content: "\e92b";*/
+/*}*/
 
 .icon-sparql:before {
     content: "\e92c";

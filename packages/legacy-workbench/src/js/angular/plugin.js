@@ -15,7 +15,7 @@ PluginRegistry.add('main.menu', {
                 href: '#',
                 order: 5,
                 role: 'IS_AUTHENTICATED_FULLY',
-                icon: "icon-settings",
+                icon: "ri-settings-3-line",
                 guideSelector: 'menu-setup',
                 testSelector: 'menu-setup',
                 children: []

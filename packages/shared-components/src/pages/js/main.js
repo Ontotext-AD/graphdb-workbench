@@ -89,7 +89,7 @@ menuItems = [
         href: '#',
         order: 5,
         role: 'IS_AUTHENTICATED_FULLY',
-        icon: 'icon-settings',
+        icon: 'ri-settings-3-line',
         guideSelector: 'menu-setup',
         shouldShow: true
       },
@@ -113,7 +113,7 @@ menuItems = [
         href: '#',
         order: 5,
         role: 'IS_AUTHENTICATED_FULLY',
-        icon: 'icon-settings',
+        icon: 'ri-settings-3-line',
         guideSelector: 'menu-setup',
         shouldShow: true
       },
@@ -226,7 +226,7 @@ menuItems = [
         href: '#',
         order: 5,
         role: 'IS_AUTHENTICATED_FULLY',
-        icon: 'icon-settings',
+        icon: 'ri-settings-3-line',
         guideSelector: 'menu-setup',
         shouldShow: true
       },
@@ -327,7 +327,7 @@ menuItems = [
         href: '#',
         order: 5,
         role: 'IS_AUTHENTICATED_FULLY',
-        icon: 'icon-settings',
+        icon: 'ri-settings-3-line',
         guideSelector: 'menu-setup',
         shouldShow: true
       },
@@ -351,7 +351,7 @@ menuItems = [
         href: '#',
         order: 5,
         role: 'IS_AUTHENTICATED_FULLY',
-        icon: 'icon-settings',
+        icon: 'ri-settings-3-line',
         guideSelector: 'menu-setup',
         shouldShow: true
       },
@@ -374,7 +374,7 @@ menuItems = [
         href: '#',
         order: 5,
         role: 'IS_AUTHENTICATED_FULLY',
-        icon: 'icon-settings',
+        icon: 'ri-settings-3-line',
         guideSelector: 'menu-setup',
         shouldShow: true
       },
@@ -421,7 +421,7 @@ menuItems = [
         href: '#',
         order: 5,
         role: 'IS_AUTHENTICATED_FULLY',
-        icon: 'icon-settings',
+        icon: 'ri-settings-3-line',
         guideSelector: 'menu-setup',
         shouldShow: true
       },
@@ -445,7 +445,7 @@ menuItems = [
         href: '#',
         order: 5,
         role: 'IS_AUTHENTICATED_FULLY',
-        icon: 'icon-settings',
+        icon: 'ri-settings-3-line',
         guideSelector: 'menu-setup',
         shouldShow: true
       },
@@ -500,7 +500,7 @@ menuItems = [
         href: '#',
         order: 5,
         role: 'IS_AUTHENTICATED_FULLY',
-        icon: 'icon-settings',
+        icon: 'ri-settings-3-line',
         guideSelector: 'menu-setup',
         shouldShow: true
       },
@@ -555,7 +555,7 @@ menuItems = [
         href: '#',
         order: 5,
         role: 'IS_AUTHENTICATED_FULLY',
-        icon: 'icon-settings',
+        icon: 'ri-settings-3-line',
         guideSelector: 'sub-menu-setup',
         shouldShow: true
       },
@@ -600,7 +600,7 @@ menuItems = [
         href: '#',
         order: 5,
         role: 'IS_AUTHENTICATED_FULLY',
-        icon: 'icon-settings',
+        icon: 'ri-settings-3-line',
         guideSelector: 'menu-setup',
         shouldShow: true
       },
@@ -624,7 +624,7 @@ menuItems = [
         href: '#',
         order: 7,
         role: 'IS_AUTHENTICATED_FULLY',
-        icon: 'icon-settings',
+        icon: 'ri-settings-3-line',
         guideSelector: 'menu-setup',
         shouldShow: true
       },
