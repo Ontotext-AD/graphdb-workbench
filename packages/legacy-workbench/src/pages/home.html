@@ -153,7 +153,7 @@
                 <div>
                     <ul class="list-group limit-height clearfix {{sampleQueries.length <= 4 ? 'one-column' : 'two-columns'}} saved-queries" ng-show="sampleQueries">
                         <li ng-repeat="query in sampleQueries" ng-hide="isIgnoreSharedQueries && query.owner != null && query.shared" class="list-group-item list-group-item-action">
-                            <span class="help-label execute-saved-query" ng-click="goToSparqlEditor(query)">{{'common.execute' | translate}} <span class="icon-caret-right"></span></span>
+                            <span class="help-label execute-saved-query" ng-click="goToSparqlEditor(query)">{{'common.execute' | translate}} <span class="ri-arrow-right-s-line"></span></span>
                             <samp class="query-name">{{query.name}}</samp>
                             <samp class="text-muted small">{{query.body}}</samp>
                         </li>
