@@ -186,9 +186,9 @@
     content: "\e935";
 }
 
-.icon-connection-off:before {
-    content: "\e931";
-}
+/*.icon-connection-off:before {*/
+/*    content: "\e931";*/
+/*}*/
 
 .icon-connection-on:before {
     content: "\e932";

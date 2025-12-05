@@ -63,7 +63,7 @@ export class RepositorySteps {
     }
 
     static getRepositoryConnectionOffBtn(id) {
-        return RepositorySteps.getRepositoryFromList(id).find('.icon-connection-off');
+        return RepositorySteps.getRepositoryFromList(id).find('.ri-link-unlink');
     }
 
     static clickRepositoryConnectionOffBtn(id) {
