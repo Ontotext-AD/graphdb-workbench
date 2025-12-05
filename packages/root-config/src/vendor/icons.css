@@ -81,9 +81,9 @@
     content: "\e94e";
 }
 
-.icon-rotate-right:before {
-    content: "\e94f";
-}
+/*.icon-rotate-right:before {*/
+/*    content: "\e94f";*/
+/*}*/
 
 .icon-info-alt:before {
     content: "\e950";
