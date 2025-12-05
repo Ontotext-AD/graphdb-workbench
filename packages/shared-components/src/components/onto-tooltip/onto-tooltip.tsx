@@ -1,5 +1,6 @@
 import {Component, h, Host, Listen} from '@stencil/core';
 import {TooltipUtil} from '../../utils/tooltip-util';
+import {HTMLElementWithTooltip, HTMLTooltipElement} from './models/html-element-with-tooltip';
 
 @Component({
   tag: 'onto-tooltip',
@@ -18,15 +19,24 @@ export class OntoTooltip {
   @Listen('mouseover', {target: 'document'})
   onMouseover(event: MouseEvent): void {
     const target = TooltipUtil.getTooltipTarget(event.target as HTMLElement);
-    if (!target) {
-      return;
+    if (target) {
+      this.handleTooltipTargetShow(target);
     }
 
-    const tooltipInstance = TooltipUtil.getOrCreateTooltipInstance(target);
+    const tooltip = TooltipUtil.getTooltip(event.target as HTMLElement);
+    if (tooltip) {
+      this.handleTooltipShow(tooltip);
+    }
+  }
+
+  private handleTooltipShow(tooltip: HTMLTooltipElement): void {
+    const tooltipTarget = tooltip.tooltipTarget;
+    this.handleTooltipTargetShow(tooltipTarget);
+  }
+
+  private handleTooltipTargetShow(tooltipTarget: HTMLElementWithTooltip): void {
+    const tooltipInstance = TooltipUtil.getOrCreateTooltipInstance(tooltipTarget);
     tooltipInstance.show();
-    target.hideTooltip = () => {
-      tooltipInstance.hide();
-    };
   }
 
   /**
@@ -37,16 +47,29 @@ export class OntoTooltip {
   @Listen('mouseout', { target: 'document' })
   onMouseout(event: MouseEvent): void {
     const target = TooltipUtil.getTooltipTarget(event.target as HTMLElement);
-    if (!target) {
-      return;
+    if (target) {
+      this.handleTooltipTargetHide(target, event.relatedTarget as HTMLElement);
     }
-    const relatedTarget = event.relatedTarget as HTMLElement;
 
+    const tooltip = TooltipUtil.getTooltip(event.target as HTMLElement);
+    if (tooltip) {
+      this.handleTooltipHide(tooltip, event.relatedTarget as HTMLElement);
+    }
+  }
+
+  private handleTooltipHide(tooltip: HTMLTooltipElement, relatedTarget: HTMLElement): void {
+    const tooltipTarget = tooltip.tooltipTarget;
+    if (!relatedTarget || !tooltip.contains(relatedTarget)) {
+      this.handleTooltipTargetHide(tooltipTarget, relatedTarget);
+    }
+  }
+
+  private handleTooltipTargetHide(tooltipTarget: HTMLElementWithTooltip, relatedTarget?: HTMLElement): void {
     // Ensure the mouse is completely outside the target and its children
-    if (!relatedTarget || !target.contains(relatedTarget)) {
-      const tooltipInstance = TooltipUtil.getTooltipInstance(target);
-      if (tooltipInstance && tooltipInstance.props.trigger === 'manual') {
-        TooltipUtil.destroyTooltip(target);
+    if (!relatedTarget || !tooltipTarget.contains(relatedTarget)) {
+      const tooltipInstance = TooltipUtil.getTooltipInstance(tooltipTarget);
+      if (tooltipInstance) {
+        TooltipUtil.destroyTooltip(tooltipTarget);
       }
     }
   }
@@ -94,7 +117,7 @@ export class OntoTooltip {
     if (node instanceof HTMLElement) {
       const tooltipInstance = TooltipUtil.getTooltipInstance(node);
       if (tooltipInstance) {
-        TooltipUtil.destroyTooltip(node);
+        TooltipUtil.destroyTooltip(node as HTMLElementWithTooltip);
         return true;
       }
       node.childNodes.forEach(this.removeTooltipFromNode);

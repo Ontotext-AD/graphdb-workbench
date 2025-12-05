@@ -80,11 +80,6 @@ export namespace Components {
          */
         "dropdownButtonTooltipLabelKey": string;
         /**
-          * Specifies the events that trigger the dropdown button tooltip to appear. Multiple event names should be separated by spaces.
-          * @default 'manual'
-         */
-        "dropdownTooltipTrigger": string;
-        /**
           * Icon class for the main dropdown button.
           * @default ''
          */
@@ -694,11 +689,6 @@ declare namespace LocalJSX {
           * The translation label key for the dropdown button tooltip. It will be used if {@link OntoDropdown#dropdownButtonTooltip } is not present.
          */
         "dropdownButtonTooltipLabelKey"?: string;
-        /**
-          * Specifies the events that trigger the dropdown button tooltip to appear. Multiple event names should be separated by spaces.
-          * @default 'manual'
-         */
-        "dropdownTooltipTrigger"?: string;
         /**
           * Icon class for the main dropdown button.
           * @default ''

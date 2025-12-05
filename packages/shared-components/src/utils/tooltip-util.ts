@@ -1,43 +1,43 @@
 import {OntoTooltipConfiguration} from '../components/onto-tooltip/models/onto-tooltip-configuration';
-import tippy, {Instance} from 'tippy.js';
+import {TooltipInstance} from './tooltip-instance';
 import {OntoTooltipPlacement} from '../components/onto-tooltip/models/onto-tooltip-placement';
-import {HTMLElementWithTooltip} from '../components/onto-tooltip/models/html-element-with-tooltip';
+import {HTMLElementWithTooltip, HTMLTooltipElement} from '../components/onto-tooltip/models/html-element-with-tooltip';
 
 export class TooltipUtil {
   private static readonly ATTR_CONTENT = 'tooltip-content';
   private static readonly ATTR_THEME = 'tooltip-theme';
   private static readonly ATTR_PLACEMENT = 'tooltip-placement';
-  private static readonly ATTR_TRIGGER = 'tooltip-trigger';
   private static readonly ATTR_APPEND_TO = 'tooltip-append-to';
   private static readonly TOOLTIP_CLASS = 'onto-tooltip';
 
   /**
-   * Returns the Tippy instance associated with an element, if it exists.
+   * Returns the TooltipInstance associated with an element, if it exists.
    */
-  static getTooltipInstance(element: HTMLElement): Instance | undefined {
-    // @ts-expect-error TS2339: Property _tippy does not exist on type HTMLElement
-    return element._tippy;
+  static getTooltipInstance(element: HTMLElement): TooltipInstance | undefined {
+    return element['_tooltipInstance'];
   }
 
   /**
-   * Creates a new Tippy tooltip instance on the given element using
+   * Creates a new TooltipInstance on the given element using
    * the OntoTooltipConfiguration.
    *
    * @param target - The HTMLElement to attach the tooltip to.
-   * @returns The newly created Tippy Instance.
+   * @returns The newly created TooltipInstance.
    */
-  static createTooltip(target: HTMLElement): Instance {
+  static createTooltip(target: HTMLElement): TooltipInstance {
     target.classList.add(TooltipUtil.TOOLTIP_CLASS);
-    return tippy(target, TooltipUtil.getConfig(target));
+    const instance = new TooltipInstance(target as HTMLElementWithTooltip, TooltipUtil.getConfig(target));
+    target['_tooltipInstance'] = instance;
+    return instance;
   }
 
   /**
-   * Returns an existing Tippy instance or creates a new one if not present.
+   * Returns an existing TooltipInstance or creates a new one if not present.
    *
    * @param target - The HTMLElement to find or attach the tooltip to.
-   * @returns The existing or newly created Tippy Instance.
+   * @returns The existing or newly created TooltipInstance.
    */
-  static getOrCreateTooltipInstance(target: HTMLElement): Instance {
+  static getOrCreateTooltipInstance(target: HTMLElement): TooltipInstance {
     const existing = TooltipUtil.getTooltipInstance(target);
     if (existing) {
       return existing;
@@ -50,12 +50,11 @@ export class TooltipUtil {
       .setContent(element.getAttribute(TooltipUtil.ATTR_CONTENT))
       .setTheme(element.getAttribute(TooltipUtil.ATTR_THEME))
       .setPlacement(element.getAttribute(TooltipUtil.ATTR_PLACEMENT) as OntoTooltipPlacement)
-      .setTrigger(element.getAttribute(TooltipUtil.ATTR_TRIGGER))
       .setAppendTo(element.getAttribute(TooltipUtil.ATTR_APPEND_TO));
   }
 
   /**
-   * Updates the content of an existing Tippy tooltip, if present.
+   * Updates the content of an existing TooltipInstance, if present.
    * Does nothing if tooltip does not exist or content is empty.
    */
   static updateTooltipContent(target: HTMLElement, content: string): void {
@@ -66,11 +65,11 @@ export class TooltipUtil {
   }
 
   /**
-   * Destroys the Tippy tooltip on the given element, if present.
+   * Destroys the TooltipInstance on the given element, if present.
    */
-  static destroyTooltip(target: HTMLElement): void {
+  static destroyTooltip(target: HTMLElementWithTooltip): void {
     const tip = TooltipUtil.getTooltipInstance(target);
-    if (target.classList.contains(TooltipUtil.TOOLTIP_CLASS) && tip && !tip.state?.isDestroyed) {
+    if (target.classList.contains(TooltipUtil.TOOLTIP_CLASS) && tip) {
       tip.destroy();
     }
   }
@@ -86,6 +85,13 @@ export class TooltipUtil {
     while (element && !element.getAttribute(TooltipUtil.ATTR_CONTENT)) {
       element = element.parentElement;
     }
-    return element;
+    return element as HTMLElementWithTooltip | null;
+  }
+
+  static getTooltip(element: HTMLElement): HTMLTooltipElement | null {
+    while (element && !element.classList.contains('tooltip-box')) {
+      element = element.parentElement;
+    }
+    return element as HTMLTooltipElement;
   }
 }
