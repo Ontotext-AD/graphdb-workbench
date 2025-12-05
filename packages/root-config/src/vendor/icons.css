@@ -370,9 +370,9 @@
     content: "\e92e";
 }
 
-.icon-import:before {
-    content: "\e92f";
-}
+/*.icon-import:before {*/
+/*    content: "\e92f";*/
+/*}*/
 
 .icon-hbars:before {
     content: "\e953";

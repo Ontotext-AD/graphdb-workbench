@@ -313,7 +313,7 @@ menuItems = [
         href: 'import',
         order: 0,
         role: 'IS_AUTHENTICATED_FULLY',
-        icon: 'icon-import',
+        icon: 'ri-download-2-line',
         guideSelector: 'menu-import',
         shouldShow: true
       }
