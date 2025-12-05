@@ -382,9 +382,9 @@
     content: "\e954";
 }
 
-.icon-tick:before {
-    content: "\e956";
-}
+/*.icon-tick:before {*/
+/*    content: "\e956";*/
+/*}*/
 
 .icon-repo-ontop-alt:before {
     content: "\e958";

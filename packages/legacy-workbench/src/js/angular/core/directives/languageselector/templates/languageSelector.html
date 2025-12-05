@@ -12,7 +12,7 @@
             tooltip-placement="left"
             gdb-tooltip="{{ getLanguageTooltip(language) }}">
             <a class="dropdown-item" id="lang-select-{{language.key}}" ng-if="!isLoadingLocation() && hasActiveLocation()" ng-click="changeLanguage(language)">
-                <i ng-style="{'visibility':language.key !== selectedLang.key ? 'hidden' : 'visible'}" class="icon-tick"></i>
+                <i ng-style="{'visibility':language.key !== selectedLang.key ? 'hidden' : 'visible'}" class="ri-check-line"></i>
                 <span class="multiline-text">
                     {{language.key}} &middot; {{language.name}}
                 </span>
