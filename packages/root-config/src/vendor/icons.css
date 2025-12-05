@@ -246,9 +246,9 @@
     content: "\e90c";
 }
 
-.icon-folder:before {
-    content: "\e90d";
-}
+/*.icon-folder:before {*/
+/*    content: "\e90d";*/
+/*}*/
 
 .icon-heartbeat:before {
     content: "\e90e";
