@@ -262,9 +262,9 @@
     content: "\e911";
 }
 
-.icon-zoom-out:before {
-    content: "\e912";
-}
+/*.icon-zoom-out:before {*/
+/*    content: "\e912";*/
+/*}*/
 
 .icon-check:before {
     content: "\e914";
