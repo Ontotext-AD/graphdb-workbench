@@ -52,8 +52,8 @@
 								gdb-tooltip="{{'interrupt.indexing' | translate}}"><span class="icon-close"></span></button>
 					</span>
 
-					<span class="tag tag-danger" ng-show="indexStatus.indexOf('ERROR') == 0"><em class="icon-warning icon-lg"></em> {{indexStatus}}</span>
-					<span class="tag tag-warning" ng-show="indexStatus == 'CANCELED'"><em class="icon-warning icon-lg"></em> {{'index.building.cancelled' | translate}}</span>
+					<span class="tag tag-danger" ng-show="indexStatus.indexOf('ERROR') == 0"><em class="ri-alert-line icon-lg"></em> {{indexStatus}}</span>
+					<span class="tag tag-warning" ng-show="indexStatus == 'CANCELED'"><em class="ri-alert-line icon-lg"></em> {{'index.building.cancelled' | translate}}</span>
 					<span class="tag tag-warning" ng-show="indexStatus == 'NONE'"><em class="ri-information-2-line icon-lg"></em> {{'index.not.built.yet' | translate}}</span>
 				</span>
 

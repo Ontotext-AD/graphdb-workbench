@@ -67,7 +67,7 @@
 					<div class="lead report-status">
 						<span class="report-none" ng-show="status === 'NONE'">{{'no.prev.server.report.found' | translate}}</span>
 						<span class="report-in-progress" ng-show="status === 'IN_PROGRESS'"><em class="ri-reset-right-line loader"></em> {{'server.report.generation.in.progress' | translate}}</span>
-						<span class="report-error" ng-show="status === 'ERROR'"><em class="icon-warning"></em> {{'common.error' | translate}}: {{errorMessage}}</span>
+						<span class="report-error" ng-show="status === 'ERROR'"><em class="ri-alert-line"></em> {{'common.error' | translate}}: {{errorMessage}}</span>
 						<span class="report-ready" ng-show="status === 'READY'">{{'last.server.report.timestamp' | translate}} {{timestamp | date:"'on' yyyy-MM-dd 'at' HH:mm"}}</span>
 					</div>
 

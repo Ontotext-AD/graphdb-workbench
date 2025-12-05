@@ -32,7 +32,7 @@
         </div>
     </div>
     <span ng-if="resource.importResource.status === ImportResourceStatus.ERROR || resource.importResource.status === ImportResourceStatus.UPLOAD_ERROR" class="text-danger error-message">
-        <em class="icon-warning"></em>
+        <em class="ri-alert-line"></em>
         <button ng-if="resource.shortenedMessage"
                 class="btn btn-link"
                 ng-click="showMessage(resource)">

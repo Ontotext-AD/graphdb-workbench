@@ -21,7 +21,7 @@ export class OntoLicenseAlert {
     return (
       <Host tooltip-content={this.license?.message} tooltip-placement={OntoTooltipPlacement.BOTTOM} data-test='onto-license-alert'>
         <button class="onto-license-alert onto-btn" onClick={navigateTo('license')}>
-          <span class="icon-warning"></span>
+          <span class="ri-alert-line"></span>
           <translate-label labelKey={'license_alert.label'}></translate-label>
         </button>
       </Host>
