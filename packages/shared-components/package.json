@@ -65,7 +65,7 @@
     "ts-jest": "^29.4.5"
   },
   "dependencies": {
-    "single-spa": "^6.0.3",
-    "tippy.js": "^6.3.7"
+    "@floating-ui/dom": "^1.7.4",
+    "single-spa": "^6.0.3"
   }
 }
