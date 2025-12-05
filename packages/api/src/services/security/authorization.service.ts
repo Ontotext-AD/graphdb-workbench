@@ -1,10 +1,12 @@
 import {Service} from '../../providers/service/service';
-import {AuthenticatedUser, Authority, Rights, SecurityConfig} from '../../models/security';
+import {AuthenticatedUser, Authority, AuthorityList, Rights, SecurityConfig} from '../../models/security';
 import {service} from '../../providers';
 import {SecurityContextService} from './security-context.service';
 import {Repository} from '../../models/repositories';
 import {RepositoryContextService, RepositoryService, RepositoryStorageService} from '../repository';
 import {RoutingService} from '../routing/routing.service';
+import {GrantedAuthoritiesUiModelMapper} from './mappers/granted-authorities-ui-model.mapper';
+import {AppSettings} from '../../models/users';
 
 /**
  * Service responsible for handling authorization-related operations.
@@ -27,9 +29,18 @@ export class AuthorizationService implements Service {
   initializeFreeAccess(): void {
     const config = this.getSecurityConfig();
     if (config?.isEnabled() && config?.isFreeAccessEnabled()) {
-      const freeAccessUser = new AuthenticatedUser()
-        .setAuthorities(config.freeAccess.authorities)
-        .setAppSettings(config.freeAccess.appSettings);
+      const authorities = config.freeAccess.authorities ?? new AuthorityList();
+      const grantedAuthoritiesUiModel =
+        new GrantedAuthoritiesUiModelMapper().mapToModel(authorities.getItems());
+      const appSettings = config.freeAccess.appSettings ?? new AppSettings();
+
+      const freeAccessUser = new AuthenticatedUser({
+        authorities,
+        grantedAuthoritiesUiModel,
+        appSettings,
+        external: false,
+      });
+
       this.securityContextService.updateAuthenticatedUser(freeAccessUser);
     }
   }
@@ -44,10 +55,19 @@ export class AuthorizationService implements Service {
   initializeOverrideAuth(): void {
     const config = this.getSecurityConfig();
     if (!config?.isEnabled() && config?.hasOverrideAuth()) {
-      const overrideAuthUser = new AuthenticatedUser();
-      overrideAuthUser.username = 'overrideauth';
-      overrideAuthUser.setAuthorities(config.overrideAuth.authorities);
-      overrideAuthUser.setAppSettings(config.overrideAuth.appSettings);
+      const authorities = config.overrideAuth.authorities ?? new AuthorityList();
+      const grantedAuthoritiesUiModel =
+        new GrantedAuthoritiesUiModelMapper().mapToModel(authorities.getItems());
+      const appSettings = config.overrideAuth.appSettings ?? new AppSettings();
+
+      const overrideAuthUser = new AuthenticatedUser({
+        username: 'overrideauth',
+        authorities,
+        grantedAuthoritiesUiModel,
+        appSettings,
+        external: false,
+      });
+
       this.securityContextService.updateAuthenticatedUser(overrideAuthUser);
     }
   }

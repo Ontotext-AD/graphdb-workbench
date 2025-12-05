@@ -3,7 +3,8 @@ import {SuggestionList} from '../suggestion-list';
 
 export interface AutocompleteSearchResultResponse {
   suggestions: SuggestionResponse[];
+}
 
-  // internal
+export interface AutocompleteSearchResultInit {
   suggestionList: SuggestionList;
 }
