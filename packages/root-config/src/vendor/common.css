@@ -260,7 +260,9 @@ h1 .btn {
     vertical-align: inherit;
 }
 
-.btn .icon-lg[class^="icon-"] {
+.btn .icon-lg[class^="icon-"],
+.btn .icon-lg[class^="ri"],
+.btn .icon-lg[class*=" ri"] {
     font-size: 2em;
     margin-right: 0.3em;
 }

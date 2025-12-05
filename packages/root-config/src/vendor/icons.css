@@ -39,9 +39,11 @@
     font-weight: normal;
 }
 
-[class^="icon-"], [class*=" icon-"], .icon-any {
-    /* use !important to prevent issues with browser extensions that change fonts */
-    font-family: 'icomoon', sans-serif !important;
+[class^="icon-"]:not([class^="ri-"]):not([class*=" ri-"]),
+[class*=" icon-"]:not([class^="ri-"]):not([class*=" ri-"]),
+.icon-any:not([class^="ri-"]):not([class*=" ri-"]) {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'icomoon', sans-serif !important;
 }
 
 .remixicon {
