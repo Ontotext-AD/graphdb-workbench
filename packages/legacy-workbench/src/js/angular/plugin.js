@@ -27,7 +27,7 @@ PluginRegistry.add('main.menu', {
                 order: 3,
                 // Changed to role user as now users can monitor their own queries
                 role: 'ROLE_USER',
-                icon: 'icon-monitoring',
+                icon: 'ri-heart-pulse-line',
                 guideSelector: 'menu-monitor',
                 testSelector: 'menu-monitoring',
                 children: []

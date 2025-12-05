@@ -398,7 +398,7 @@ menuItems = [
         href: '#',
         order: 3,
         role: 'ROLE_USER',
-        icon: 'icon-monitoring',
+        icon: 'ri-heart-pulse-line',
         guideSelector: 'menu-monitor',
         shouldShow: true
       },
@@ -476,7 +476,7 @@ menuItems = [
         href: '#',
         order: 3,
         role: 'ROLE_USER',
-        icon: 'icon-monitoring',
+        icon: 'ri-heart-pulse-line',
         guideSelector: 'menu-monitor',
         shouldShow: true
       },
