@@ -310,9 +310,9 @@
 /*    content: "\e91e";*/
 /*}*/
 
-.icon-trash:before {
-    content: "\e91f";
-}
+/*.icon-trash:before {*/
+/*    content: "\e91f";*/
+/*}*/
 
 .icon-warning:before {
     content: "\e920";

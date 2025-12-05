@@ -73,7 +73,7 @@
                     </label>
                     <button type="button" class="btn btn-link btn-sm secondary p-0 delete-namespaces-btn" ng-click="deleteSelected()"
                             ng-disabled="!canWriteActiveRepo() || !haveSelected"
-                            gdb-tooltip="{{'delete.selected' | translate}}" data-cy="delete-several-prefixes"><span class="icon-trash"></span></button>
+                            gdb-tooltip="{{'delete.selected' | translate}}" data-cy="delete-several-prefixes"><span class="ri-delete-bin-6-line"></span></button>
                 </th>
                 <th id="prefixColumn" style="width: 20%">{{'prefix.label' | translate}}</th>
                 <th id="uriColumn">{{'iri.label' | translate}}</th>
@@ -120,7 +120,7 @@
                     <button class="btn btn-link secondary delete-namespace-btn" ng-click="removeNamespace(namespace)"
                             ng-disabled="!canWriteActiveRepo()" gdb-tooltip="{{'delete.namespace' | translate}}"
                             data-cy="{{'delete-pref_' + namespace.prefix}}">
-                        <span class="icon-trash"></span></button>
+                        <span class="ri-delete-bin-6-line"></span></button>
                 </td>
             </tr>
             </tbody>
