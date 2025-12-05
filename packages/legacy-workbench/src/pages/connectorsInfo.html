@@ -16,7 +16,7 @@
                     ng-click="getConnectors()"
                     data-test="reload-all-connectors"
                     gdb-tooltip="{{'reload.all.connector.info' | translate}}" tooltip-placement="left">
-                <em class="icon-reload"></em>
+                <em class="ri-reset-right-line"></em>
             </button>
         </div>
         <div create-progress ng-show="beingBuiltConnector.inline && beingBuiltConnector.percentDone > 0"></div>
@@ -38,7 +38,7 @@
 									<button class="btn btn-link p-0" type="button"
 										    ng-click="repair(exist, connector)"
                                             gdb-tooltip="{{'repair.connector' | translate}} {{exist.name}}">
-										<em class="icon-reload"></em>
+										<em class="ri-reset-right-line"></em>
 									</button>
 									<button class="btn btn-link secondary p-0" type="button"
 										    ng-click="delete(exist, connector)"

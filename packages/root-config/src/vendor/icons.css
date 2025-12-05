@@ -306,9 +306,9 @@
 /*    content: "\e91d";*/
 /*}*/
 
-.icon-reload:before {
-    content: "\e91e";
-}
+/*.icon-reload:before {*/
+/*    content: "\e91e";*/
+/*}*/
 
 .icon-trash:before {
     content: "\e91f";

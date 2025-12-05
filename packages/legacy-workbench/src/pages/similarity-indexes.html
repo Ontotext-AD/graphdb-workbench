@@ -53,7 +53,7 @@
 							<span class="text-muted mr-2" ng-if="similarityIndex.isInterruptedStatus()" gdb-tooltip="{{'index.building.interrupted.tooltip' | translate}}">{{'interrupted.status' | translate}}</span>
 							<span class="text-muted mr-2" ng-if="similarityIndex.isObsoleteStatus()" gdb-tooltip="{{'index.obsolete.tooltip' | translate}}">{{'obsolete.status' | translate}}</span>
 							<span class="btn btn-link similarity-index-building-loader" ng-if="similarityIndex.isBuildingStatus() || similarityIndex.isRebuildingStatus() || similarityIndex.isCreatingStatus()">
-          				        <em class="icon-reload loader"></em>
+          				        <em class="ri-reset-right-line loader"></em>
       				        </span>
 
 							<span class="btn btn-link view-sparql-query-btn" ng-click="viewCreateQuery(similarityIndex)"
@@ -80,7 +80,7 @@
 
 							<button type="button" ng-if="canEditRepo && !similarityIndex.isBuildingStatus() && !similarityIndex.isRebuildingStatus() && !similarityIndex.isCreatingStatus() && (similarityIndex.isTextType() || similarityIndex.isPredicationType() || similarityIndex.isTextLiteralType())" ng-disabled="!similarityIndex.selectQuery"
 									ng-click="rebuildIndex(similarityIndex)" class="btn btn-link reload-index-btn" gdb-tooltip="{{'rebuild.index.tooltip' | translate}}"><span
-									class="icon-reload similarity-index-icon-reload"></span></button>
+									class="ri-reset-right-line similarity-index-icon-reload"></span></button>
 							<button type="button" ng-if="canEditRepo && !similarityIndex.isBuildingStatus() && !similarityIndex.isRebuildingStatus() && !similarityIndex.isCreatingStatus()" ng-click="deleteSimilarityIndex(similarityIndex)"
 									class="btn btn-link delete-index-btn" gdb-tooltip="{{'delete.index.tooltip' | translate}}"><span class="icon-trash"></span>
 							</button>
