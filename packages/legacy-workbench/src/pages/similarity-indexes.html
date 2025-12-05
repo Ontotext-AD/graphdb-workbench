@@ -75,7 +75,7 @@
                                     ng-if="similarityIndex.selectQuery && (similarityIndex.isTextType() || similarityIndex.isPredicationType() || similarityIndex.isTextLiteralType())"
                                     ng-click="cloneSimilataryIndex(similarityIndex)"
                                     gdb-tooltip="{{'create.index.from.existing.tooltip' | translate}}">
-                                <span class="icon-copy"></span>
+                                <span class="ri-file-copy-line"></span>
                             </button>
 
 							<button type="button" ng-if="canEditRepo && !similarityIndex.isBuildingStatus() && !similarityIndex.isRebuildingStatus() && !similarityIndex.isCreatingStatus() && (similarityIndex.isTextType() || similarityIndex.isPredicationType() || similarityIndex.isTextLiteralType())" ng-disabled="!similarityIndex.selectQuery"

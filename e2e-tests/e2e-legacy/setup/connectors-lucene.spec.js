@@ -48,7 +48,7 @@ describe('Setup / Connectors - Lucene', () => {
         verifyConnectorExists(luceneConnectorName);
         //copy connector
         getConnectorInstance(0)
-            .find('.icon-copy')
+            .find('.ri-file-copy-line')
             .should('be.visible')
             .click()
             .then(() => {
