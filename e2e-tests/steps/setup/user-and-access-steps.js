@@ -286,7 +286,7 @@ export class UserAndAccessSteps {
     }
 
     static findReadIconAlias(repoLineAlias) {
-        return cy.get(repoLineAlias).find('.icon-eye');
+        return cy.get(repoLineAlias).find('.ri-eye-line');
     }
 
     static findWriteIconAlias(repoLineAlias) {

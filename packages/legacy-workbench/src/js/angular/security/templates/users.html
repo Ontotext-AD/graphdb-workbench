@@ -54,7 +54,7 @@
 				<td ng-if="!hasExternalAuth()" class="repository-rights">
 					<div ng-show="user.userType === 'user'" ng-repeat="(repo, rights) in user.repositories track by $index">
 
-                        <em class="icon-eye text-tertiary" ng-if="rights.read && !rights.write" gdb-tooltip="{{'security.has.read.access' | translate}}"></em>
+                        <em class="ri-eye-line text-tertiary" ng-if="rights.read && !rights.write" gdb-tooltip="{{'security.has.read.access' | translate}}"></em>
                         <em class="ri-edit-line text-tertiary" ng-if="rights.write" gdb-tooltip="{{'security.has.write.access' | translate}}"></em>
                         {{repo}}
                         <em class="icon-graphql text-info" ng-if="rights.graphql" gdb-tooltip="{{rights.write ? 'security.has.mutation_rights' : 'security.no.mutation_rights' | translate}}"></em>

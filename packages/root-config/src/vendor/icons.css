@@ -182,9 +182,9 @@
     content: "\e934";
 }
 
-.icon-eye:before {
-    content: "\e935";
-}
+/*.icon-eye:before {*/
+/*    content: "\e935";*/
+/*}*/
 
 /*.icon-connection-off:before {*/
 /*    content: "\e931";*/
@@ -194,9 +194,9 @@
 /*    content: "\e932";*/
 /*}*/
 
-.icon-key:before {
-    content: "\e933";
-}
+/*.icon-key:before {*/
+/*    content: "\e933";*/
+/*}*/
 
 /*.icon-comment:before {*/
 /*    content: "\e930";*/
