@@ -73,9 +73,9 @@
     content: "\e94c";
 }
 
-.icon-focus:before {
-    content: "\e94d";
-}
+/*.icon-focus:before {*/
+/*    content: "\e94d";*/
+/*}*/
 
 .icon-rotate-left:before {
     content: "\e94e";
