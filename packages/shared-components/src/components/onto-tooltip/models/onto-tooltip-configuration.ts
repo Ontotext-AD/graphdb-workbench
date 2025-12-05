@@ -1,7 +1,7 @@
 import {OntoTooltipPlacement} from './onto-tooltip-placement';
 
 /**
- * Holds all tooltip configurations related to tippy.js properties.
+ * Holds all tooltip configurations for the Floating UI implementation.
  */
 export class OntoTooltipConfiguration {
 
@@ -27,10 +27,6 @@ export class OntoTooltipConfiguration {
    * The content of the tooltip.
    */
   content: string;
-  /**
-   * Determines the events that cause the tooltip to show. Multiple event names are separated by spaces.
-   */
-  trigger = 'manual';
 
   /**
    * The preferred placement of the tooltip. Note that Popper's flip modifier can change this to the opposite placement if it has more space.
@@ -43,7 +39,7 @@ export class OntoTooltipConfiguration {
   allowHTML = true;
 
   /**
-   * Determines the theme of the tooltip element.Themes are created by including a class on the tippy-box element as part of a selector in the form .tippy-box[data-theme~='onto-tooltip']
+   * Determines the theme of the tooltip element. Themes are created by including a class on the tooltip-box element as part of a selector in the form .tooltip-box[data-theme~='onto-tooltip']
    */
   theme = 'onto-tooltip';
 
@@ -64,11 +60,6 @@ export class OntoTooltipConfiguration {
 
   setContent(content: string): OntoTooltipConfiguration {
     this.content = content;
-    return this;
-  }
-
-  setTrigger(trigger: string): OntoTooltipConfiguration {
-    this.trigger = trigger || 'manual';
     return this;
   }
 

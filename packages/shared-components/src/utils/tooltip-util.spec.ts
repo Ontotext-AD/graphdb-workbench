@@ -1,35 +1,44 @@
+// Mock TooltipInstance before imports
+import {HTMLElementWithTooltip} from '../components/onto-tooltip/models/html-element-with-tooltip';
+
+const mockConstructor = jest.fn();
+jest.mock('./tooltip-instance', () => ({
+  TooltipInstance: jest.fn().mockImplementation((...args) => mockConstructor(...args))
+}));
+
 import {TooltipUtil} from './tooltip-util';
-import * as tippyModule from 'tippy.js';
 import {newSpecPage, SpecPage} from 'jest-stencil-runner';
 
+// Create mock instance factory
+const createMockInstance = () => ({
+  show: jest.fn(),
+  hide: jest.fn(),
+  destroy: jest.fn(),
+  setContent: jest.fn(),
+  state: {isVisible: false, isDestroyed: false},
+  props: {trigger: 'manual'}
+});
+
 describe('TooltipUtil', () => {
-  let element: HTMLElement;
+  let element: HTMLElementWithTooltip;
   let page: SpecPage;
-  let tippySpy;
+  let mockInstance;
 
   beforeEach(async () => {
     page = await newSpecPage({
       components: [],
       html: '<button>Click me</button>',
     });
-    element = page.body.querySelector('button');
+    element = page.body.querySelector('button') as unknown as HTMLElementWithTooltip;
 
-    tippySpy = jest.spyOn(tippyModule, 'default')
-      // @ts-expect-error Type Instance<Props> is missing the following properties from type Instance<Props>[]: length, pop, push, concat, and 28 more.
-      .mockImplementation((t) => {
-        const tippyInstance: tippyModule.Instance = {
-          destroy: jest.fn(),
-          setContent: jest.fn()
-        } as unknown as tippyModule.Instance;
-        // @ts-expect-error TS2339: Property _tippy does not exist on type HTMLElement
-        t._tippy = tippyInstance;
-        return tippyInstance;
-      });
+    // Create a fresh mock instance for each test
+    mockInstance = createMockInstance();
+    mockConstructor.mockReturnValue(mockInstance);
   });
 
   afterEach(() => {
     page.body.innerHTML = '';
-    jest.resetAllMocks();
+    jest.clearAllMocks();
   });
 
   describe('getTooltipInstance', () => {
@@ -44,21 +53,18 @@ describe('TooltipUtil', () => {
   });
 
   describe('createTooltip', () => {
-    it('should call tippy.js with config from element attributes', () => {
+    it('should create TooltipInstance with config from element attributes', () => {
       element.setAttribute('tooltip-content', 'test');
       element.setAttribute('tooltip-theme', 'dark');
       element.setAttribute('tooltip-placement', 'top');
-      element.setAttribute('tooltip-trigger', 'click');
       element.setAttribute('tooltip-append-to', 'body');
 
       TooltipUtil.createTooltip(element);
 
-      expect(tippySpy).toHaveBeenCalledWith(element, expect.objectContaining({
+      expect(mockConstructor).toHaveBeenCalledWith(element, expect.objectContaining({
         content: 'test',
         theme: 'dark',
         placement: 'top',
-        trigger: 'click',
-        appendTo: expect.anything(),
       }));
       expect(element.classList.contains('onto-tooltip')).toBeTruthy();
     });
@@ -77,7 +83,7 @@ describe('TooltipUtil', () => {
       expect(instance).toBeFalsy();
       instance = TooltipUtil.getOrCreateTooltipInstance(element);
       expect(instance).toBeTruthy();
-      expect(tippySpy).toHaveBeenCalled();
+      expect(mockConstructor).toHaveBeenCalled();
     });
   });
 
@@ -103,18 +109,21 @@ describe('TooltipUtil', () => {
   describe('destroyTooltip', () => {
     it('should not destroy tooltip if instance exists, but not created by util method', () => {
       const destroy = jest.fn();
-      const instance = {destroy} as unknown as tippyModule.Instance;
-      // @ts-expect-error TS2339: Property _tippy does not exist on type HTMLElement
-      element._tippy = instance;
+      const instance = {
+        destroy,
+        state: {isDestroyed: false}
+      };
+      // @ts-expect-error TS2339: Property _tooltipInstance does not exist on type HTMLElement
+      element._tooltipInstance = instance;
 
       TooltipUtil.destroyTooltip(element);
       expect(destroy).not.toHaveBeenCalled();
     });
 
     it('should destroy tooltip if instance exists when created by util method', () => {
-      const instance = TooltipUtil.getOrCreateTooltipInstance(element);
+      TooltipUtil.getOrCreateTooltipInstance(element);
       TooltipUtil.destroyTooltip(element);
-      expect(instance.destroy).toHaveBeenCalled();
+      expect(mockInstance.destroy).toHaveBeenCalled();
     });
 
     it('should not throw if no instance exists', () => {

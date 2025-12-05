@@ -3,9 +3,7 @@
 }
 
 .onto-repository-selector {
-
   .onto-dropdown {
-
     &.closed {
       .onto-dropdown-button {
         background-color: var(--gw-button-secondary-background);
@@ -51,46 +49,20 @@
   }
 }
 
-.tippy-box[data-theme="light-border"] {
-  border-radius: 0;
+.tooltip-box[data-theme="light-border"] {
+  color: var(--gw-dialog-color);
+  background-color: var(--gw-dialog-background);
+  border: 1px solid var(--gw-dialog-border-color);
+  box-shadow: var(--gw-dialog-shadow-1-offset-x) var(--gw-dialog-shadow-1-offset-y) var(--gw-dialog-shadow-1-blur) var(--gw-dialog-shadow-1-spread) var(--gw-dialog-shadow-1-color);
+  max-width: 350px;
 
-  &.tippy-box[data-placement*=left] > .tippy-arrow:before {
-    border-left-color: var(--gw-dialog-background);
-  }
-
-  &.tippy-box[data-placement*=left]>.tippy-arrow:after {
-    border-left-color: var(--gw-dialog-border-color);
-  }
-
-  &.tippy-box[data-placement*=top] > .tippy-arrow:before {
-    border-top-color: var(--gw-dialog-background);
-  }
-
-  &.tippy-box[data-placement*=top]>.tippy-arrow:after {
-    border-top-color: var(--gw-dialog-border-color);
-  }
-
-  &.tippy-box[data-placement*=right] > .tippy-arrow:before {
-    border-right-color: var(--gw-dialog-background);
-  }
-
-  &.tippy-box[data-placement*=right]>.tippy-arrow:after {
-    border-right-color: var(--gw-dialog-border-color);
-  }
-
-  &.tippy-box[data-placement*=bottom] > .tippy-arrow:before {
-    border-bottom-color: var(--gw-dialog-background);
-  }
-
-  &.tippy-box[data-placement*=bottom]>.tippy-arrow:after {
-    border-bottom-color: var(--gw-dialog-border-color);
-  }
-
-  .tippy-content {
-    padding: 0;
-    color: var(--gw-dialog-color);
+  .tooltip-arrow::before {
     border: 1px solid var(--gw-dialog-border-color);
-    box-shadow: var(--gw-dialog-shadow-1-offset-x) var(--gw-dialog-shadow-1-offset-y) var(--gw-dialog-shadow-1-blur) var(--gw-dialog-shadow-1-spread) var(--gw-dialog-shadow-1-color);
+    background-color: var(--gw-dialog-background);
+  }
+
+  .tooltip-content {
+    padding: 0;
 
     .repository-tooltip-title {
       font-size: 1rem;
@@ -100,7 +72,7 @@
       border-bottom: var(--gw-dialog-border-color) 1px solid;
 
       .value {
-        word-wrap: break-word;
+        overflow-wrap: break-word;
       }
     }
 

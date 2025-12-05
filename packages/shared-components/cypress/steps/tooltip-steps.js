@@ -7,7 +7,7 @@ export class TooltipSteps extends BaseSteps {
   }
 
   static getTooltip(theme = 'onto-tooltip') {
-    return cy.get(`.tippy-box[data-theme="${theme}"]`);
+    return cy.get(`.tooltip-box[data-theme="${theme}"]`);
   }
 
   static getElementWithPlainTextTooltip() {
@@ -31,7 +31,7 @@ export class TooltipSteps extends BaseSteps {
   }
 
   static getTooltipContent() {
-    return TooltipSteps.getTooltip().find('.tippy-content');
+    return TooltipSteps.getTooltip().find('.tooltip-content');
   }
 
   static getElementWithBottomTooltip() {
