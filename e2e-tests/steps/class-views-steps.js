@@ -115,7 +115,7 @@ class ClassViewsSteps {
     }
 
     static getReturnButton() {
-        return cy.get('.icon-arrow-left');
+        return cy.get('.ri-arrow-left-circle-line');
     }
 
     static goBack() {
@@ -131,7 +131,7 @@ class ClassViewsSteps {
     }
 
     static searchForClass() {
-        return cy.get('.toolbar-holder .icon-search').click();
+        return cy.get('.toolbar-holder .search-icon').click();
     }
 
     static getSearchInput() {

@@ -27,6 +27,8 @@ export const config: Config = {
         {src: 'assets'},
         {src: '../../root-config/node_modules/remixicon/fonts/remixicon.css', dest: 'pages/css/remixicon.css'},
         {src: '../../root-config/node_modules/remixicon/fonts', dest: 'pages/css'},
+        {src: '../../root-config/src/vendor/icons.css', dest: 'pages/css/icons.css'},
+        {src: '../../root-config/src/styles/fonts', dest: 'pages/styles/fonts'},
         {src: '../../api/dist/ontotext-workbench-api.js', dest: 'resources/ontotext-workbench-api.js'},
       ]
     },

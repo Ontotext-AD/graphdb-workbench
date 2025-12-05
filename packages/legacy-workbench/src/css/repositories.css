@@ -378,7 +378,7 @@ span.label {
     color:var(--gw-secondary-base)
 }
 
-.icon-import.active {
+.ri-download-2-line.active {
     color:var(--gw-tertiary-base)
 }
 .checkbox-param-include-inferred {

@@ -22,10 +22,10 @@
                    ng-if="canWriteActiveRepo()"
                    data-test="create-sparql-template-link"
                    class="btn btn-link pull-right create-sparql-template">
-                    <span class="icon-plus create-sql-table-configuration"></span>{{'create.new.sparql.template' | translate}}
+                    <span class="ri-add-circle-line create-sql-table-configuration"></span>{{'create.new.sparql.template' | translate}}
                 </a>
                 <h3 class="mb-0"><span class="collapsible-heading" data-toggle="collapse"
-                                       data-target="#configurations-table"><em class="icon-caret-down text-muted"></em> {{'existing.sparql.templates' | translate}}</span>
+                                       data-target="#configurations-table"><em class="ri-arrow-down-s-line text-muted"></em> {{'existing.sparql.templates' | translate}}</span>
                 </h3>
             </div>
 
@@ -46,12 +46,12 @@
                                     <a class="btn btn-link edit-query-btn"
                                        ng-if="canWriteActiveRepo()" href="sparql-template/create?templateID={{templateID}}"
                                        gdb-tooltip="{{'edit.sparql.template.tooltip' | translate}}">
-                                        <em class="icon-edit"></em>
+                                        <em class="ri-edit-line"></em>
                                     </a>
                                 </span>
                             <button type="button" ng-if="canWriteActiveRepo()" ng-click="deleteTemplate(templateID)"
                                     class="btn btn-link delete-configuration-btn" gdb-tooltip="{{'delete.sparql.template.tooltip' | translate}}"><span
-                                class="icon-trash"></span>
+                                class="ri-delete-bin-6-line"></span>
                             </button>
                         </td>
                     </tr>

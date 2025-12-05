@@ -27,13 +27,13 @@
     <div ng-if="!getLicense().valid">
         <a class="btn btn-fade-danger no-icon" ng-href="license"
              gdb-tooltip="{{getLicense().message}}" tooltip-placement="bottom">
-            <span class="icon-warning"></span> {{'no.valid.license.warning' | translate}}
+            <span class="ri-alert-line"></span> {{'no.valid.license.warning' | translate}}
         </a>
     </div>
 
     <!-- Guide pause/resume -->
     <div id="guideResume" class="btn-group" role="group" ng-if="guidePaused" gdb-tooltip="{{'guide.button.guide-resume' | translate}}" tooltip-placement="bottom">
-        <a class="btn btn-secondary" ng-click="resumeGuide()"><span class="icon-play"></span> {{'guide.button.guide-paused' | translate}}</a>
+        <a class="btn btn-secondary" ng-click="resumeGuide()"><span class="ri-play-circle-line"></span> {{'guide.button.guide-paused' | translate}}</a>
     </div>
 
     <!-- Monitoring overview and monitoring details dropdown -->
@@ -81,7 +81,7 @@
     <div class="btn-group" role="group" ng-if="isSecurityEnabled() && isUserLoggedIn()">
         <button id="btnGroupDrop2" type="button" class="btn btn-secondary dropdown-toggle"
                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <span class="icon-user"></span>
+            <span class="ri-user-line"></span>
             {{principal.username}}
         </button>
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="btnUserGroup">
@@ -93,7 +93,7 @@
     <!-- Login button -->
     <div ng-if="isSecurityEnabled() && !isUserLoggedIn() && !isCurrentPath('login')">
         <a class="btn btn-secondary" href="./login" ng-href="./login">
-            <span class="icon-arrow-right"></span> {{'view.login.title' | translate}}
+            <span class="ri-arrow-right-circle-line"></span> {{'view.login.title' | translate}}
         </a>
     </div>
 

@@ -13,11 +13,11 @@
                 <a ng-href="jdbc/configuration/create"
                    ng-if="canWriteActiveRepo()"
                    data-test="create-sql-table-configuration"
-                   class="btn btn-link pull-right">
-                    <span class="icon-plus create-sql-table-configuration"></span>{{'jdbc.create.new.configuration' | translate}}
+                   class="btn btn-link pull-right d-flex">
+                    <span class="ri-add-circle-line create-sql-table-configuration"></span>{{'jdbc.create.new.configuration' | translate}}
                 </a>
                 <h3 class="mb-0"><span class="collapsible-heading" data-toggle="collapse"
-                                       data-target="#configurations-table"><em class="icon-caret-down text-muted"></em> {{'jdbc.sql.configurations.list' | translate}}</span>
+                                       data-target="#configurations-table"><em class="ri-arrow-down-s-line text-muted"></em> {{'jdbc.sql.configurations.list' | translate}}</span>
                 </h3>
             </div>
 
@@ -38,12 +38,12 @@
                                     <a class="btn btn-link edit-query-btn"
                                        ng-if="canWriteActiveRepo()" href="jdbc/configuration/create?name={{index}}"
                                        gdb-tooltip="{{'jdbc.edit.configuration' | translate}}">
-                                        <em class="icon-edit"></em>
+                                        <em class="ri-edit-line"></em>
                                     </a>
                                 </span>
                             <button type="button" ng-if="canWriteActiveRepo()" ng-click="deleteConfiguration(index)"
                                     class="btn btn-link delete-configuration-btn" gdb-tooltip="{{'jdbc.delete.configuration' | translate}}"><span
-                                class="icon-trash"></span>
+                                class="ri-delete-bin-6-line"></span>
                             </button>
                         </td>
                     </tr>

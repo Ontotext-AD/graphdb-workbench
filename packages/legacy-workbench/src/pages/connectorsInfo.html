@@ -16,7 +16,7 @@
                     ng-click="getConnectors()"
                     data-test="reload-all-connectors"
                     gdb-tooltip="{{'reload.all.connector.info' | translate}}" tooltip-placement="left">
-                <em class="icon-reload"></em>
+                <em class="ri-reset-right-line"></em>
             </button>
         </div>
         <div create-progress ng-show="beingBuiltConnector.inline && beingBuiltConnector.percentDone > 0"></div>
@@ -33,17 +33,17 @@
 									<button class="btn btn-link p-0" type="button"
 										    ng-click="copyConnector(connector, exist)"
                                             gdb-tooltip="{{'copy.connector' | translate}} {{exist.name}}">
-										<em class="icon-copy"></em>
+										<em class="ri-file-copy-line"></em>
 									</button>
 									<button class="btn btn-link p-0" type="button"
 										    ng-click="repair(exist, connector)"
                                             gdb-tooltip="{{'repair.connector' | translate}} {{exist.name}}">
-										<em class="icon-reload"></em>
+										<em class="ri-reset-right-line"></em>
 									</button>
 									<button class="btn btn-link secondary p-0" type="button"
 										    ng-click="delete(exist, connector)"
                                             gdb-tooltip="{{'delete.connector' | translate}} {{exist.name}}">
-										<em class="icon-trash"></em>
+										<em class="ri-delete-bin-6-line"></em>
                                     </button>
 								</div>
                                 <h5 class="mb-0" guide-selector="{{exist.name}}-connector-toggle-button">
@@ -180,7 +180,7 @@
                 <section>
                     <button class="btn btn-primary new-connector-btn"
                             ng-click="newConnector(connector)"
-                            data-test="connector-{{connector.key.replace(' ', '-') | lowercase}}"><em class="icon-plus"></em>
+                            data-test="connector-{{connector.key.replace(' ', '-') | lowercase}}"><em class="ri-add-circle-line"></em>
                         {{'new.sentence.start' | translate}} {{connector.key}} {{'connector.label' | translate}}
                     </button>
                 </section>

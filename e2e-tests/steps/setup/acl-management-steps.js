@@ -70,7 +70,7 @@ export class AclManagementSteps {
     }
 
     static getActiveTabDirtyIcon() {
-        return this.getActiveTab().find('.icon-exclamation');
+        return this.getActiveTab().find('.scope-dirty');
     }
 
     static addRuleInBeginning() {
@@ -174,7 +174,7 @@ export class AclManagementSteps {
     }
 
     static getWarningIcon(index) {
-        return this.getSavedRoleField(index).get('.icon-warning');
+        return this.getSavedRoleField(index).get('.ri-alert-line');
     }
 
     static getWarningIconTooltipText(index) {

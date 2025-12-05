@@ -102,7 +102,7 @@
         </div>
         <div class="col-xs-12 col-md-4" ng-if="!selectedDriver.classAvailable">
             <div ng-if="!isGenericDriver">
-                <em class="icon-warning icon-2x" gdb-tooltip="{{'repoTooltips.ontop.driverClassWarning' | translate}}"
+                <em class="ri-alert-line ri-lg" gdb-tooltip="{{'repoTooltips.ontop.driverClassWarning' | translate}}"
                     tooltip-placement="top"></em>
                 <a class="uri" ng-if="selectedDriver.downloadDriverUrl"
                    href="{{selectedDriver.downloadDriverUrl}}"
@@ -112,7 +112,7 @@
             </div>
 
             <div ng-if="isGenericDriver && !formData.connectionInformation.driverClass">
-                <em class="icon-warning icon-2x" gdb-tooltip="{{'repoTooltips.ontop.driverClassWarning' | translate}}"
+                <em class="ri-alert-line ri-lg" gdb-tooltip="{{'repoTooltips.ontop.driverClassWarning' | translate}}"
                     tooltip-placement="top"></em>
                 <span>{{'ontop.repo.missing.jdbc.driver' | translate}}</span>
             </div>
@@ -185,7 +185,7 @@
                ng-click="editFile(ontopFileInfo)"
                gdb-tooltip="{{'edit.file.content' | translate}}"
                tooltip-placement="right">
-                <span class="icon-edit"></span>
+                <span class="ri-edit-line"></span>
             </a>
             <input class="form-control" id="{{ontopFileInfo.type}}" ng-readonly="true"
                    placeholder="{{ontopFileInfo.required ? ('required.field' | translate) : ''}}"

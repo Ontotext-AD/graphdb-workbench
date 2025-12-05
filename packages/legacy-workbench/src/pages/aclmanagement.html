@@ -15,27 +15,27 @@
                 <button ng-click="addRule(activeTabScope, 0)" ng-disabled="editedRuleIndex !== undefined"
                         class="btn btn-primary add-first-rule-btn"
                         gdb-tooltip="{{'acl_management.rulestable.actions.add_rule_first' | translate}}">
-                    <em class="icon-plus"></em>{{'acl_management.rulestable.actions.create_rule' | translate}}
+                    <em class="ri-add-circle-line"></em>{{'acl_management.rulestable.actions.create_rule' | translate}}
                 </button>
             </div>
             <ul class="nav nav-tabs acl-tabs">
                 <li class="statement-tab nav-item">
                     <a href="#" class="nav-link"
                           ng-click="switchTab($event, ACL_SCOPE.STATEMENT)"
-                          ng-class="{'active': activeTabScope === ACL_SCOPE.STATEMENT, 'disabled': editedRuleIndex !== undefined}"><span>{{'acl_management.rulestable.tab.statement' | translate}}</span><i class="text-primary icon-exclamation" ng-if="dirtyScope.has(ACL_SCOPE.STATEMENT)"></i></a>
+                          ng-class="{'active': activeTabScope === ACL_SCOPE.STATEMENT, 'disabled': editedRuleIndex !== undefined}"><span>{{'acl_management.rulestable.tab.statement' | translate}}</span><i class="scope-dirty text-primary ri-error-warning-line" ng-if="dirtyScope.has(ACL_SCOPE.STATEMENT)"></i></a>
                 </li>
                 <li class="clear-graph-tab nav-item">
                     <a href="#" class="nav-link"
                           ng-click="switchTab($event, ACL_SCOPE.CLEAR_GRAPH)"
-                          ng-class="{'active': activeTabScope === ACL_SCOPE.CLEAR_GRAPH, 'disabled': editedRuleIndex !== undefined}"><span>{{'acl_management.rulestable.tab.clear_graph' | translate}}</span><i class="text-primary icon-exclamation" ng-if="dirtyScope.has(ACL_SCOPE.CLEAR_GRAPH)"></i></a>
+                          ng-class="{'active': activeTabScope === ACL_SCOPE.CLEAR_GRAPH, 'disabled': editedRuleIndex !== undefined}"><span>{{'acl_management.rulestable.tab.clear_graph' | translate}}</span><i class="scope-dirty text-primary ri-error-warning-line" ng-if="dirtyScope.has(ACL_SCOPE.CLEAR_GRAPH)"></i></a>
                 </li>
                 <li class="plugin-tab nav-item">
                     <a href="#" class="nav-link" ng-click="switchTab($event, ACL_SCOPE.PLUGIN)"
-                          ng-class="{'active': activeTabScope === ACL_SCOPE.PLUGIN, 'disabled': editedRuleIndex !== undefined}"><span>{{'acl_management.rulestable.tab.plugin' | translate}}</span><i class="text-primary icon-exclamation" ng-if="dirtyScope.has(ACL_SCOPE.PLUGIN)"></i></a>
+                          ng-class="{'active': activeTabScope === ACL_SCOPE.PLUGIN, 'disabled': editedRuleIndex !== undefined}"><span>{{'acl_management.rulestable.tab.plugin' | translate}}</span><i class="scope-dirty text-primary ri-error-warning-line" ng-if="dirtyScope.has(ACL_SCOPE.PLUGIN)"></i></a>
                 </li>
                 <li class="system-tab nav-item">
                     <a href="#" class="nav-link" ng-click="switchTab($event, ACL_SCOPE.SYSTEM)"
-                          ng-class="{'active': activeTabScope === ACL_SCOPE.SYSTEM, 'disabled': editedRuleIndex !== undefined}"><span>{{'acl_management.rulestable.tab.system' | translate}}</span><i class="text-primary icon-exclamation" ng-if="dirtyScope.has(ACL_SCOPE.SYSTEM)"></i></a>
+                          ng-class="{'active': activeTabScope === ACL_SCOPE.SYSTEM, 'disabled': editedRuleIndex !== undefined}"><span>{{'acl_management.rulestable.tab.system' | translate}}</span><i class="scope-dirty text-primary ri-error-warning-line" ng-if="dirtyScope.has(ACL_SCOPE.SYSTEM)"></i></a>
                 </li>
             </ul>
             <div ng-if="loading" onto-loader-new size="100" style="height: 75vh; display: flex;"></div>
@@ -99,7 +99,7 @@
                                     </td>
                                     <td class="policy-cell data">
                                         <span class="acl-tag" ng-class="{'acl-tag-allow': rule.policy === 'allow','acl-tag-deny': rule.policy === 'deny'}">
-                                            <em ng-class="{'icon-tick': rule.policy === 'allow','ri-forbid-line': rule.policy === 'deny'}"></em>
+                                            <em ng-class="{'ri-check-line': rule.policy === 'allow','ri-forbid-line': rule.policy === 'deny'}"></em>
                                             {{rule.policy}}
                                         </span>
                                     </td>
@@ -109,14 +109,14 @@
                                             {{rule.roleWithoutCustomPrefix}}
                                         </span>
                                         <em ng-if="rule.warnForPrefix"
-                                            class="icon-warning"
+                                            class="ri-alert-line"
                                             gdb-tooltip="{{'acl_management.rulestable.custom_prefix_warning.text' | translate}}"
                                             tooltip-placement="right">
                                         </em>
                                     </td>
                                     <td class="operation-cell data">
                                          <span class="acl-tag" ng-class="{'wildcard-cell': rule.operation === '*', 'acl-tag-read': rule.operation === 'read','acl-tag-write': rule.operation === 'write'}">
-                                             <em ng-class="{'icon-eye': rule.operation === 'read', 'icon-edit': rule.operation === 'write'}"></em>
+                                             <em ng-class="{'ri-eye-line': rule.operation === 'read', 'ri-edit-line': rule.operation === 'write'}"></em>
                                              {{rule.operation}}
                                          </span>
                                     </td>
@@ -128,15 +128,15 @@
                                         <div ng-if="editedRuleIndex === undefined" class="crud-actions-group">
                                             <button ng-click="editRule(activeTabScope, $index)" class="btn btn-link edit-rule-btn"
                                                     gdb-tooltip="{{'acl_management.rulestable.actions.edit_rule' | translate}}">
-                                                <em class="icon-edit"></em>
+                                                <em class="ri-edit-line"></em>
                                             </button>
                                             <button ng-click="addRule(activeTabScope, $index + 1)" class="btn btn-link add-rule-btn"
                                                     gdb-tooltip="{{'acl_management.rulestable.actions.add_rule_next' | translate}}">
-                                                <em class="icon-plus"></em>
+                                                <em class="ri-add-circle-line"></em>
                                             </button>
                                             <button ng-click="deleteRule(activeTabScope, $index)" class="btn btn-link delete-rule-btn secondary"
                                                     gdb-tooltip="{{'acl_management.rulestable.actions.delete_rule' | translate}}">
-                                                <em class="icon-trash"></em>
+                                                <em class="ri-delete-bin-6-line"></em>
                                             </button>
                                         </div>
                                     </td>
@@ -166,7 +166,7 @@
                                                       placeholder="{{'acl_management.rulestable.field_placeholders.role' | translate}}">
                                             </textarea>
                                             <em ng-if="ruleData.role.$warning && hasCustomPrefix || rule.warnForPrefix"
-                                                class="icon-warning"
+                                                class="ri-alert-line"
                                                 gdb-tooltip="{{'acl_management.rulestable.custom_prefix_warning.text' | translate}}"
                                                 tooltip-placement="right"></em>
                                         </div>
@@ -254,13 +254,13 @@
                                             <button ng-click="cancelEditing(activeTabScope, $index)"
                                                     class="btn btn-link cancel-rule-editing-btn secondary"
                                                     gdb-tooltip="{{'acl_management.rulestable.actions.cancel_rule_editing' | translate}}">
-                                                <em class="icon-close"></em>
+                                                <em class="ri-close-line"></em>
                                             </button>
                                             <button ng-click="saveRule(activeTabScope)"
                                                     class="btn btn-link save-rule-btn"
                                                     ng-disabled="!ruleData.$valid"
                                                     gdb-tooltip="{{ruleData.$valid ? 'acl_management.rulestable.actions.apply_rule' : 'acl_management.rulestable.messages.invalid_form' | translate}}">
-                                                <em class="icon-check"></em>
+                                                <em class="ri-checkbox-circle-line"></em>
                                             </button>
                                         </div>
                                     </td>
@@ -317,7 +317,7 @@
                                     </td>
                                     <td class="policy-cell data">
                                         <span class="acl-tag" ng-class="{'acl-tag-allow': rule.policy === 'allow','acl-tag-deny': rule.policy === 'deny'}">
-                                            <em ng-class="{'icon-tick': rule.policy === 'allow','ri-forbid-line': rule.policy === 'deny'}"></em>
+                                            <em ng-class="{'ri-check-line': rule.policy === 'allow','ri-forbid-line': rule.policy === 'deny'}"></em>
                                             {{rule.policy}}
                                         </span>
                                     </td>
@@ -326,7 +326,7 @@
                                             {{rule.roleWithoutCustomPrefix}}
                                         </span>
                                         <em ng-if="rule.warnForPrefix"
-                                            class="icon-warning"
+                                            class="ri-alert-line"
                                             gdb-tooltip="{{'acl_management.rulestable.custom_prefix_warning.text' | translate}}"
                                             tooltip-placement="right">
                                         </em>
@@ -339,15 +339,15 @@
                                         <div ng-if="editedRuleIndex === undefined" class="crud-actions-group">
                                             <button ng-click="editRule(activeTabScope, $index)" class="btn btn-link edit-rule-btn"
                                                     gdb-tooltip="{{'acl_management.rulestable.actions.edit_rule' | translate}}">
-                                                <em class="icon-edit"></em>
+                                                <em class="ri-edit-line"></em>
                                             </button>
                                             <button ng-click="addRule(activeTabScope, $index + 1)" class="btn btn-link add-rule-btn"
                                                     gdb-tooltip="{{'acl_management.rulestable.actions.add_rule_next' | translate}}">
-                                                <em class="icon-plus"></em>
+                                                <em class="ri-add-circle-line"></em>
                                             </button>
                                             <button ng-click="deleteRule(activeTabScope, $index)" class="btn btn-link delete-rule-btn secondary"
                                                     gdb-tooltip="{{'acl_management.rulestable.actions.delete_rule' | translate}}">
-                                                <em class="icon-trash"></em>
+                                                <em class="ri-delete-bin-6-line"></em>
                                             </button>
                                         </div>
                                     </td>
@@ -376,7 +376,7 @@
                                                       placeholder="{{'acl_management.rulestable.field_placeholders.role' | translate}}">
                                             </textarea>
                                             <em ng-if="ruleData.role.$warning && hasCustomPrefix || rule.warnForPrefix"
-                                                class="icon-warning"
+                                                class="ri-alert-line"
                                                 gdb-tooltip="{{'acl_management.rulestable.custom_prefix_warning.text' | translate}}"
                                                 tooltip-placement="right">
                                             </em>
@@ -412,13 +412,13 @@
                                             <button ng-click="cancelEditing(activeTabScope, $index)"
                                                     class="btn btn-link cancel-rule-editing-btn secondary"
                                                     gdb-tooltip="{{'acl_management.rulestable.actions.cancel_rule_editing' | translate}}">
-                                                <em class="icon-close"></em>
+                                                <em class="ri-close-line"></em>
                                             </button>
                                             <button ng-click="saveRule(activeTabScope)"
                                                     class="btn btn-link save-rule-btn"
                                                     ng-disabled="!ruleData.$valid"
                                                     gdb-tooltip="{{ruleData.$valid ? 'acl_management.rulestable.actions.apply_rule' : 'acl_management.rulestable.messages.invalid_form' | translate}}">
-                                                <em class="icon-check"></em>
+                                                <em class="ri-checkbox-circle-line"></em>
                                             </button>
                                         </div>
                                     </td>
@@ -478,7 +478,7 @@
                                     </td>
                                     <td class="policy-cell data">
                                         <span class="acl-tag" ng-class="{'acl-tag-allow': rule.policy === 'allow','acl-tag-deny': rule.policy === 'deny'}">
-                                            <em ng-class="{'icon-tick': rule.policy === 'allow','ri-forbid-line': rule.policy === 'deny'}"></em>
+                                            <em ng-class="{'ri-check-line': rule.policy === 'allow','ri-forbid-line': rule.policy === 'deny'}"></em>
                                             {{rule.policy}}
                                         </span>
                                     </td>
@@ -487,14 +487,14 @@
                                             {{rule.roleWithoutCustomPrefix}}
                                         </span>
                                         <em ng-if="rule.warnForPrefix"
-                                                   class="icon-warning"
+                                                   class="ri-alert-line"
                                                    gdb-tooltip="{{'acl_management.rulestable.custom_prefix_warning.text' | translate}}"
                                                    tooltip-placement="right">
                                         </em>
                                     </td>
                                     <td class="operation-cell data">
                                          <span class="acl-tag" ng-class="{'wildcard-cell': rule.operation === '*', 'acl-tag-read': rule.operation === 'read','acl-tag-write': rule.operation === 'write'}">
-                                             <em ng-class="{'icon-eye': rule.operation === 'read', 'icon-edit': rule.operation === 'write'}"></em>
+                                             <em ng-class="{'ri-eye-line': rule.operation === 'read', 'ri-edit-line': rule.operation === 'write'}"></em>
                                              {{rule.operation}}
                                          </span>
                                     </td>
@@ -506,15 +506,15 @@
                                         <div ng-if="editedRuleIndex === undefined" class="crud-actions-group">
                                             <button ng-click="editRule(activeTabScope, $index)" class="btn btn-link edit-rule-btn"
                                                     gdb-tooltip="{{'acl_management.rulestable.actions.edit_rule' | translate}}">
-                                                <em class="icon-edit"></em>
+                                                <em class="ri-edit-line"></em>
                                             </button>
                                             <button ng-click="addRule(activeTabScope, $index + 1)" class="btn btn-link add-rule-btn"
                                                     gdb-tooltip="{{'acl_management.rulestable.actions.add_rule_next' | translate}}">
-                                                <em class="icon-plus"></em>
+                                                <em class="ri-add-circle-line"></em>
                                             </button>
                                             <button ng-click="deleteRule(activeTabScope, $index)" class="btn btn-link delete-rule-btn secondary"
                                                     gdb-tooltip="{{'acl_management.rulestable.actions.delete_rule' | translate}}">
-                                                <em class="icon-trash"></em>
+                                                <em class="ri-delete-bin-6-line"></em>
                                             </button>
                                         </div>
                                     </td>
@@ -543,7 +543,7 @@
                                                       placeholder="{{'acl_management.rulestable.field_placeholders.role' | translate}}">
                                             </textarea>
                                             <em ng-if="ruleData.role.$warning && hasCustomPrefix || rule.warnForPrefix"
-                                                class="icon-warning"
+                                                class="ri-alert-line"
                                                 gdb-tooltip="{{'acl_management.rulestable.custom_prefix_warning.text' | translate}}"
                                                 tooltip-placement="right">
                                             </em>
@@ -583,13 +583,13 @@
                                             <button ng-click="cancelEditing(activeTabScope, $index)"
                                                     class="btn btn-link cancel-rule-editing-btn secondary"
                                                     gdb-tooltip="{{'acl_management.rulestable.actions.cancel_rule_editing' | translate}}">
-                                                <em class="icon-close"></em>
+                                                <em class="ri-close-line"></em>
                                             </button>
                                             <button ng-click="saveRule(activeTabScope)"
                                                     class="btn btn-link save-rule-btn"
                                                     ng-disabled="!ruleData.$valid"
                                                     gdb-tooltip="{{ruleData.$valid ? 'acl_management.rulestable.actions.apply_rule' : 'acl_management.rulestable.messages.invalid_form' | translate}}">
-                                                <em class="icon-check"></em>
+                                                <em class="ri-checkbox-circle-line"></em>
                                             </button>
                                         </div>
                                     </td>
@@ -646,7 +646,7 @@
                                     </td>
                                     <td class="policy-cell data">
                                         <span class="acl-tag" ng-class="{'acl-tag-allow': rule.policy === 'allow','acl-tag-deny': rule.policy === 'deny'}">
-                                            <em ng-class="{'icon-tick': rule.policy === 'allow','ri-forbid-line': rule.policy === 'deny'}"></em>
+                                            <em ng-class="{'ri-check-line': rule.policy === 'allow','ri-forbid-line': rule.policy === 'deny'}"></em>
                                             {{rule.policy}}
                                         </span>
                                     </td>
@@ -655,14 +655,14 @@
                                             {{rule.roleWithoutCustomPrefix}}
                                         </span>
                                         <em ng-if="rule.warnForPrefix"
-                                            class="icon-warning"
+                                            class="ri-alert-line"
                                             gdb-tooltip="{{'acl_management.rulestable.custom_prefix_warning.text' | translate}}"
                                             tooltip-placement="right">
                                         </em>
                                     </td>
                                     <td class="operation-cell data">
                                          <span class="acl-tag" ng-class="{'wildcard-cell': rule.operation === '*', 'acl-tag-read': rule.operation === 'read','acl-tag-write': rule.operation === 'write'}">
-                                             <em ng-class="{'icon-eye': rule.operation === 'read', 'icon-edit': rule.operation === 'write'}"></em>
+                                             <em ng-class="{'ri-eye-line': rule.operation === 'read', 'ri-edit-line': rule.operation === 'write'}"></em>
                                              {{rule.operation}}
                                          </span>
                                     </td>
@@ -671,15 +671,15 @@
                                         <div ng-if="editedRuleIndex === undefined" class="crud-actions-group">
                                             <button ng-click="editRule(activeTabScope, $index)" class="btn btn-link edit-rule-btn"
                                                     gdb-tooltip="{{'acl_management.rulestable.actions.edit_rule' | translate}}">
-                                                <em class="icon-edit"></em>
+                                                <em class="ri-edit-line"></em>
                                             </button>
                                             <button ng-click="addRule(activeTabScope, $index + 1)" class="btn btn-link add-rule-btn"
                                                     gdb-tooltip="{{'acl_management.rulestable.actions.add_rule_next' | translate}}">
-                                                <em class="icon-plus"></em>
+                                                <em class="ri-add-circle-line"></em>
                                             </button>
                                             <button ng-click="deleteRule(activeTabScope, $index)" class="btn btn-link delete-rule-btn secondary"
                                                     gdb-tooltip="{{'acl_management.rulestable.actions.delete_rule' | translate}}">
-                                                <em class="icon-trash"></em>
+                                                <em class="ri-delete-bin-6-line"></em>
                                             </button>
                                         </div>
                                     </td>
@@ -708,7 +708,7 @@
                                                       placeholder="{{'acl_management.rulestable.field_placeholders.role' | translate}}">
                                             </textarea>
                                             <em ng-if="ruleData.role.$warning && hasCustomPrefix || rule.warnForPrefix"
-                                                class="icon-warning"
+                                                class="ri-alert-line"
                                                 gdb-tooltip="{{'acl_management.rulestable.custom_prefix_warning.text' | translate}}"
                                                 tooltip-placement="right">
                                             </em>
@@ -736,13 +736,13 @@
                                             <button ng-click="cancelEditing(activeTabScope, $index)"
                                                     class="btn btn-link cancel-rule-editing-btn secondary"
                                                     gdb-tooltip="{{'acl_management.rulestable.actions.cancel_rule_editing' | translate}}">
-                                                <em class="icon-close"></em>
+                                                <em class="ri-close-line"></em>
                                             </button>
                                             <button ng-click="saveRule(activeTabScope)"
                                                     class="btn btn-link save-rule-btn"
                                                     ng-disabled="!ruleData.$valid"
                                                     gdb-tooltip="{{ruleData.$valid ? 'acl_management.rulestable.actions.apply_rule' : 'acl_management.rulestable.messages.invalid_form' | translate}}">
-                                                <em class="icon-check"></em>
+                                                <em class="ri-checkbox-circle-line"></em>
                                             </button>
                                         </div>
                                     </td>

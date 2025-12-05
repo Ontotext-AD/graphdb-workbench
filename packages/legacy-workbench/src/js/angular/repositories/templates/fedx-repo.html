@@ -11,24 +11,24 @@
                             <em ng-class="getMemberIcon(member)" class="fedx-repo-member-icon"></em>
                             {{resolveName(member)}}
                         </span>
-                        <span class="icon-warning" ng-if="!checkIfRepoExist(member)" gdb-tooltip="{{'repoTooltips.fedx.repositoryNotExistWarning' | translate}}"> </span>
+                        <span class="ri-alert-line" ng-if="!checkIfRepoExist(member)" gdb-tooltip="{{'repoTooltips.fedx.repositoryNotExistWarning' | translate}}"> </span>
                     </div>
                     <div class="actions">
                         <button class="btn btn-link p-0 edit-repository-btn" type="button">
-                                <span id="{{member.repositoryName}}-icon-edit" class="icon-edit"
+                                <span id="{{member.repositoryName}}-icon-edit" class="ri-edit-line"
                                       ng-click="editFedXRepository(member)"
                                       ng-if="member.store !== 'NativeStore'"
                                       gdb-tooltip="{{'repoTooltips.editRepository' | translate}}"></span>
                         </button>
                         <button class="btn btn-link p-0 secondary" type="button">
                                 <span id="{{member.repositoryName}}-icon-close" ng-click="removeMember(member)"
-                                      class="icon-close"
+                                      class="ri-close-line"
                                       gdb-tooltip="{{'repoTooltips.fedx.removeMember' | translate}}"></span>
                         </button>
                         <button class="btn btn-link p-0 secondary">
                                 <span id="{{member.repositoryName}}-icon-writable"
                                       ng-click="setWritableRepo(member)"
-                                      class="icon-import{{getActiveClass(member)}}"
+                                      class="ri-download-2-line{{getActiveClass(member)}}"
                                       gdb-tooltip="{{'repoTooltips.fedx.setAsWritable' | translate}}"></span>
                         </button>
                     </div>
@@ -55,7 +55,7 @@
                 </div>
             </div>
             <button type="button" id="addFedXRepository" ng-click="addRemoteMember()" class="btn btn-primary">
-                <span class="icon-plus"></span>
+                <span class="ri-add-circle-line"></span>
                 {{'fedx.repo.add.remote' | translate}}
             </button>
         </div>

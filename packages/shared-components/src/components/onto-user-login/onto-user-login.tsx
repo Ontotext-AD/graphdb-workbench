@@ -11,7 +11,7 @@ export class OntoUserLogin {
     return (
       <section class="onto-user-login">
         <button onClick={navigateTo('login')}>
-          <i class="icon-arrow-right"></i>
+          <i class="ri-arrow-right-circle-line"></i>
           <translate-label
             class="user-login-label"
             labelKey="user_menu.login"

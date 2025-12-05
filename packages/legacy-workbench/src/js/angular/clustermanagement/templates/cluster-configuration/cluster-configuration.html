@@ -8,17 +8,17 @@
         <li class="properties-tab nav-item">
             <a href class="nav-link"
                ng-click="switchTab($event, CONFIGURATION_TABS.PROPERTIES)"
-               ng-class="{'active': activeTab === CONFIGURATION_TABS.PROPERTIES}"><span>{{'cluster_management.cluster_configuration_properties.label' | translate}}</span><i class="text-primary icon-exclamation" ng-if="dirtyScope.has(ACL_SCOPE.STATEMENT)"></i></a>
+               ng-class="{'active': activeTab === CONFIGURATION_TABS.PROPERTIES}"><span>{{'cluster_management.cluster_configuration_properties.label' | translate}}</span><i class="text-primary ri-error-warning-line" ng-if="dirtyScope.has(ACL_SCOPE.STATEMENT)"></i></a>
         </li>
         <li class="clear-graph-tab nav-item">
             <a href class="nav-link"
                ng-click="switchTab($event, CONFIGURATION_TABS.NODES)"
-               ng-class="{'active': activeTab === CONFIGURATION_TABS.NODES}"><span>{{'cluster_management.cluster_configuration_nodes.label' | translate}}</span><i class="text-primary icon-exclamation" ng-if="dirtyScope.has(ACL_SCOPE.CLEAR_GRAPH)"></i></a>
+               ng-class="{'active': activeTab === CONFIGURATION_TABS.NODES}"><span>{{'cluster_management.cluster_configuration_nodes.label' | translate}}</span><i class="text-primary ri-error-warning-line" ng-if="dirtyScope.has(ACL_SCOPE.CLEAR_GRAPH)"></i></a>
         </li>
         <li class="clear-graph-tab nav-item">
             <a href class="nav-link"
                ng-click="switchTab($event, CONFIGURATION_TABS.MULTI_REGION)"
-               ng-class="{'active': activeTab === CONFIGURATION_TABS.MULTI_REGION}"><span>{{'cluster_management.cluster_configuration_multi_region.label' | translate}}</span><i class="text-primary icon-exclamation" ng-if="dirtyScope.has(ACL_SCOPE.CLEAR_GRAPH)"></i></a>
+               ng-class="{'active': activeTab === CONFIGURATION_TABS.MULTI_REGION}"><span>{{'cluster_management.cluster_configuration_multi_region.label' | translate}}</span><i class="text-primary ri-error-warning-line" ng-if="dirtyScope.has(ACL_SCOPE.CLEAR_GRAPH)"></i></a>
         </li>
     </ul>
 

@@ -10,7 +10,7 @@ export class OntoPermissionBanner {
     return (
       <Host class="permission-banner">
         <p class="permission-banner-content onto-alert onto-alert-danger">
-          <div class="icon-warning"></div>
+          <div class="ri-alert-line"></div>
           <div class="label-container">
             <translate-label labelKey={'permission_banner.no_access_error'}></translate-label>
             <translate-label labelKey={'permission_banner.change_menu_or_user_warning'}></translate-label>

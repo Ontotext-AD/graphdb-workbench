@@ -89,7 +89,7 @@ menuItems = [
         href: '#',
         order: 5,
         role: 'IS_AUTHENTICATED_FULLY',
-        icon: 'icon-settings',
+        icon: 'ri-settings-3-line',
         guideSelector: 'menu-setup',
         shouldShow: true
       },
@@ -113,7 +113,7 @@ menuItems = [
         href: '#',
         order: 5,
         role: 'IS_AUTHENTICATED_FULLY',
-        icon: 'icon-settings',
+        icon: 'ri-settings-3-line',
         guideSelector: 'menu-setup',
         shouldShow: true
       },
@@ -226,7 +226,7 @@ menuItems = [
         href: '#',
         order: 5,
         role: 'IS_AUTHENTICATED_FULLY',
-        icon: 'icon-settings',
+        icon: 'ri-settings-3-line',
         guideSelector: 'menu-setup',
         shouldShow: true
       },
@@ -313,7 +313,7 @@ menuItems = [
         href: 'import',
         order: 0,
         role: 'IS_AUTHENTICATED_FULLY',
-        icon: 'icon-import',
+        icon: 'ri-download-2-line',
         guideSelector: 'menu-import',
         shouldShow: true
       }
@@ -327,7 +327,7 @@ menuItems = [
         href: '#',
         order: 5,
         role: 'IS_AUTHENTICATED_FULLY',
-        icon: 'icon-settings',
+        icon: 'ri-settings-3-line',
         guideSelector: 'menu-setup',
         shouldShow: true
       },
@@ -351,7 +351,7 @@ menuItems = [
         href: '#',
         order: 5,
         role: 'IS_AUTHENTICATED_FULLY',
-        icon: 'icon-settings',
+        icon: 'ri-settings-3-line',
         guideSelector: 'menu-setup',
         shouldShow: true
       },
@@ -374,7 +374,7 @@ menuItems = [
         href: '#',
         order: 5,
         role: 'IS_AUTHENTICATED_FULLY',
-        icon: 'icon-settings',
+        icon: 'ri-settings-3-line',
         guideSelector: 'menu-setup',
         shouldShow: true
       },
@@ -398,7 +398,7 @@ menuItems = [
         href: '#',
         order: 3,
         role: 'ROLE_USER',
-        icon: 'icon-monitoring',
+        icon: 'ri-heart-pulse-line',
         guideSelector: 'menu-monitor',
         shouldShow: true
       },
@@ -421,7 +421,7 @@ menuItems = [
         href: '#',
         order: 5,
         role: 'IS_AUTHENTICATED_FULLY',
-        icon: 'icon-settings',
+        icon: 'ri-settings-3-line',
         guideSelector: 'menu-setup',
         shouldShow: true
       },
@@ -445,7 +445,7 @@ menuItems = [
         href: '#',
         order: 5,
         role: 'IS_AUTHENTICATED_FULLY',
-        icon: 'icon-settings',
+        icon: 'ri-settings-3-line',
         guideSelector: 'menu-setup',
         shouldShow: true
       },
@@ -476,7 +476,7 @@ menuItems = [
         href: '#',
         order: 3,
         role: 'ROLE_USER',
-        icon: 'icon-monitoring',
+        icon: 'ri-heart-pulse-line',
         guideSelector: 'menu-monitor',
         shouldShow: true
       },
@@ -500,7 +500,7 @@ menuItems = [
         href: '#',
         order: 5,
         role: 'IS_AUTHENTICATED_FULLY',
-        icon: 'icon-settings',
+        icon: 'ri-settings-3-line',
         guideSelector: 'menu-setup',
         shouldShow: true
       },
@@ -555,7 +555,7 @@ menuItems = [
         href: '#',
         order: 5,
         role: 'IS_AUTHENTICATED_FULLY',
-        icon: 'icon-settings',
+        icon: 'ri-settings-3-line',
         guideSelector: 'sub-menu-setup',
         shouldShow: true
       },
@@ -600,7 +600,7 @@ menuItems = [
         href: '#',
         order: 5,
         role: 'IS_AUTHENTICATED_FULLY',
-        icon: 'icon-settings',
+        icon: 'ri-settings-3-line',
         guideSelector: 'menu-setup',
         shouldShow: true
       },
@@ -624,7 +624,7 @@ menuItems = [
         href: '#',
         order: 7,
         role: 'IS_AUTHENTICATED_FULLY',
-        icon: 'icon-settings',
+        icon: 'ri-settings-3-line',
         guideSelector: 'menu-setup',
         shouldShow: true
       },
@@ -633,7 +633,7 @@ menuItems = [
         labelKey: 'menu.help.label',
         href: '#',
         order: 8,
-        icon: 'icon-help',
+        icon: 'ri-question-line',
         guideSelector: 'menu-help',
         shouldShow: true
       },
@@ -661,7 +661,7 @@ menuItems = [
         labelKey: 'menu.documentation.label',
         order: 2,
         parent: 'Help',
-        icon: 'icon-external',
+        icon: 'ri-external-link-line',
         guideSelector: 'sub-menu-documentation',
         shouldShow: true
       },
@@ -670,7 +670,7 @@ menuItems = [
         labelKey: 'menu.tutorials.label',
         order: 3,
         parent: 'Help',
-        icon: 'icon-external',
+        icon: 'ri-external-link-line',
         guideSelector: 'sub-menu-developer-hub',
         shouldShow: true
       },
@@ -679,7 +679,7 @@ menuItems = [
         labelKey: 'menu.support.label',
         order: 4,
         parent: 'Help',
-        icon: 'icon-external',
+        icon: 'ri-external-link-line',
         guideSelector: 'sub-menu-support',
         shouldShow: true
       }

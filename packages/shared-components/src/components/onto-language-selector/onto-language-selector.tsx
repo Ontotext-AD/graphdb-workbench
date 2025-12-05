@@ -51,7 +51,7 @@ export class OntoLanguageSelector {
           dropdownButtonTooltipLabelKey={this.currentLanguage ? 'language_selector.toggle_menu.tooltip' : 'language_selector.toggle_menu.label'}
           dropdownAlignment={this.dropdownAlignment ?? DropdownItemAlignment.RIGHT}
           dropdownTooltipTrigger={'mouseenter focus'}
-          iconClass='icon-translation'
+          iconClass='ri-translate-2'
           items={this.items}
           auto-close>
         </onto-dropdown>
@@ -79,7 +79,7 @@ export class OntoLanguageSelector {
 
   private getLanguageDropdownOptions(): DropdownItem<string>[] {
     return this.languageService.getSupportedLanguages().map((locale) => {
-      const iconClass = this.currentLanguage === locale ? 'icon-tick' : '';
+      const iconClass = this.currentLanguage === locale ? 'ri-check-line' : '';
       return new DropdownItem<string>()
         .setNameLabelKey(`language_selector.language.${locale}.label`)
         .setTooltipLabelKey(`language_selector.language.${locale}.tooltip.` + (this.currentLanguage === locale ? 'selected' : 'not_selected'))

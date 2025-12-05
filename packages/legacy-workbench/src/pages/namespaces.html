@@ -29,7 +29,7 @@
                 <button id="wb-namespaces-addNamespace" type="submit" ng-click="addNamespace()"
                         class="btn btn-primary add-namespace"
                         gdb-tooltip="{{'add.namespace.label' | translate}}">
-                    <span class="icon-plus"></span>
+                    <span class="ri-add-circle-line"></span>
                     {{'add.namespace.label' | translate}}
                 </button>
             </form>
@@ -73,7 +73,7 @@
                     </label>
                     <button type="button" class="btn btn-link btn-sm secondary p-0 delete-namespaces-btn" ng-click="deleteSelected()"
                             ng-disabled="!canWriteActiveRepo() || !haveSelected"
-                            gdb-tooltip="{{'delete.selected' | translate}}" data-cy="delete-several-prefixes"><span class="icon-trash"></span></button>
+                            gdb-tooltip="{{'delete.selected' | translate}}" data-cy="delete-several-prefixes"><span class="ri-delete-bin-6-line"></span></button>
                 </th>
                 <th id="prefixColumn" style="width: 20%">{{'prefix.label' | translate}}</th>
                 <th id="uriColumn">{{'iri.label' | translate}}</th>
@@ -107,20 +107,20 @@
                           ng-show="rowform.$visible" class="d-inline-block"
                           shown="inserted === namespace">
                         <button type="submit" class="btn btn-primary" ng-disabled="rowform.$waiting"
-                                gdb-tooltip="{{'common.save.btn' | translate}}"><span class="icon-save"></span></button>
+                                gdb-tooltip="{{'common.save.btn' | translate}}"><span class="ri-save-line"></span></button>
                         <button type="button" class="btn btn-secondary" ng-disabled="rowform.$waiting"
                                 ng-click="rowform.$cancel()" gdb-tooltip="{{'common.cancel.btn' | translate}}"><span
-                                class="icon-close"></span></button>
+                                class="ri-close-line"></span></button>
                     </form>
                 </td>
                 <td class="actions-bar"><!--ng-show="!rowform.$visible && canWriteActiveRepo()"-->
                     <button class="btn btn-link edit-namespace-btn" ng-click="rowform.$show()"
                             ng-disabled="!canWriteActiveRepo()"
-                            gdb-tooltip="{{'edit.namespace' | translate}}"><span class="icon-edit"></span></button>
+                            gdb-tooltip="{{'edit.namespace' | translate}}"><span class="ri-edit-line"></span></button>
                     <button class="btn btn-link secondary delete-namespace-btn" ng-click="removeNamespace(namespace)"
                             ng-disabled="!canWriteActiveRepo()" gdb-tooltip="{{'delete.namespace' | translate}}"
                             data-cy="{{'delete-pref_' + namespace.prefix}}">
-                        <span class="icon-trash"></span></button>
+                        <span class="ri-delete-bin-6-line"></span></button>
                 </td>
             </tr>
             </tbody>

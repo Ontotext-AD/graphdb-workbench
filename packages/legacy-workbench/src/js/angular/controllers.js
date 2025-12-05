@@ -881,20 +881,20 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
             $('.container-fluid.main-container').addClass('expanded');
             setMenuCollapsed(true);
             $('.main-menu').addClass('collapsed');
-            $('.main-menu .icon-caret-left').toggleClass('icon-caret-left').toggleClass('icon-caret-right');
+            $('.main-menu .ri-arrow-left-s-line').toggleClass('ri-arrow-left-s-line').toggleClass('ri-arrow-right-s-line');
             $('.toggle-menu').hide();
         } else if ($(window).width() > 720 && LocalStorageAdapter.get(LSKeys.MENU_STATE) === 'collapsedMenu') {
             $('.container-fluid.main-container').addClass('expanded');
             setMenuCollapsed(true);
             $('.main-menu').addClass('collapsed');
             $('.toggle-menu').show();
-            $('.main-menu .icon-caret-left').toggleClass('icon-caret-left').toggleClass('icon-caret-right');
+            $('.main-menu .ri-arrow-left-s-line').toggleClass('ri-arrow-left-s-line').toggleClass('ri-arrow-right-s-line');
         } else {
             $('.container-fluid.main-container').removeClass('expanded');
             setMenuCollapsed(false);
             $('.main-menu').removeClass('collapsed');
             $('.toggle-menu').show();
-            $('.main-menu .icon-caret-right').toggleClass('icon-caret-right').toggleClass('icon-caret-left');
+            $('.main-menu .ri-arrow-right-s-line').toggleClass('ri-arrow-right-s-line').toggleClass('ri-arrow-left-s-line');
         }
     }
 
@@ -905,7 +905,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
                 setMenuCollapsed(true);
                 $('.main-menu').addClass('collapsed');
                 $('.toggle-menu').hide();
-                $('.main-menu .icon-caret-left').toggleClass('icon-caret-left').toggleClass('icon-caret-right');
+                $('.main-menu .ri-arrow-left-s-line').toggleClass('ri-arrow-left-s-line').toggleClass('ri-arrow-right-s-line');
             } else if ($(window).width() > 720 && $scope.menuState) {
                 $('.toggle-menu').show();
             } else {
@@ -913,7 +913,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
                 setMenuCollapsed(false);
                 $('.main-menu').removeClass('collapsed');
                 $('.toggle-menu').show();
-                $('.main-menu .icon-caret-right').toggleClass('icon-caret-right').toggleClass('icon-caret-left');
+                $('.main-menu .ri-arrow-right-s-line').toggleClass('ri-arrow-right-s-line').toggleClass('ri-arrow-left-s-line');
             }
         } else {
             collapsedMenuLogicOnInit();
@@ -952,7 +952,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
             $('.container-fluid.main-container').addClass('expanded');
             setMenuCollapsed(true);
             $mainMenu.addClass('collapsed');
-            $('.main-menu .icon-caret-left').toggleClass('icon-caret-left').toggleClass('icon-caret-right');
+            $('.main-menu .ri-arrow-left-s-line').toggleClass('ri-arrow-left-s-line').toggleClass('ri-arrow-right-s-line');
             $('.main-menu.collapsed .menu-element.clicked').removeClass('clicked');
             $rootScope.$broadcast('onToggleNavWidth', true);
         } else {
@@ -964,7 +964,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
             $('.container-fluid.main-container').removeClass('expanded');
             setMenuCollapsed(false);
             $mainMenu.removeClass('collapsed');
-            $('.main-menu .icon-caret-right').toggleClass('icon-caret-right').toggleClass('icon-caret-left');
+            $('.main-menu .ri-arrow-right-s-line').toggleClass('ri-arrow-right-s-line').toggleClass('ri-arrow-left-s-line');
             $rootScope.$broadcast('onToggleNavWidth', false);
         }
     };
