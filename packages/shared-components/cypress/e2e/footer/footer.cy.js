@@ -1,4 +1,4 @@
-import {FooterSteps} from "../../steps/footer/footer-steps";
+import {FooterSteps} from '../../steps/footer/footer-steps';
 
 describe('Footer', () => {
   it('Should render footer', () => {
@@ -20,7 +20,7 @@ describe('Footer', () => {
 
     // And the 'All rights reserved' label should be present and visible and
     FooterSteps.getAllRightsReservedElement()
-      .should('be.visible')
+      .should('be.visible');
 
     // And the GraphDB link should be present and valid
     FooterSteps.getGraphDBLink()
@@ -56,7 +56,7 @@ describe('Footer', () => {
     FooterSteps.getCookieConsentComponent().should('be.visible');
 
     // When, I add the user consent
-    FooterSteps.setAcceptedUser()
+    FooterSteps.setAcceptedUser();
 
     // Then, I expect the cookie consent component to disappear
     FooterSteps.getCookieConsentComponent().should('not.exist');
@@ -72,7 +72,7 @@ describe('Footer', () => {
     FooterSteps.setPaidLicense();
     FooterSteps.setProdMode();
     // Set accepted and then unaccepted, otherwise the context subscription will not trigger
-    FooterSteps.setAcceptedUser()
+    FooterSteps.setAcceptedUser();
     FooterSteps.setNotAcceptedUser();
 
     // Then, I expect the cookie consent component to not be visible, because tracking
@@ -83,6 +83,8 @@ describe('Footer', () => {
   it('Should hide cookie policy, when it is accepted', () => {
     // Given, I visit the footer page
     FooterSteps.visit();
+
+    FooterSteps.getFooter().should('be.visible');
 
     // When, I have set a free license, prod mode and a user, who hasn't accepted the cookie policy
     FooterSteps.setFreeLicense();
