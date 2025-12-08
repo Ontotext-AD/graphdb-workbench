@@ -9,7 +9,7 @@ import {
   AuthorizationService,
   EventName,
   EventService,
-  LocalStorageSubscriptionHandlerService,
+  LocalStorageSubscriptionHandlerService, navigate,
   NavigationContextService,
   NavigationEndPayload,
   SecurityConfig,
@@ -186,6 +186,7 @@ export class OntoLayout {
       ServiceProvider.get(EventService).subscribe(EventName.LOGOUT, () => {
         this.setNavbarItemVisibility();
         this.updateVisibility();
+        navigate('login');
       })
     );
   }

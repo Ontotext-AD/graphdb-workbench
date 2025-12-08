@@ -6,10 +6,11 @@ import {getOrigin} from '../../utils';
 import {AuthStrategy, AuthStrategyType, OpenIdAuthFlowType} from '../../../models/security/authentication';
 import {OpenidTokenUtils} from '../openid/openid-token-utils';
 import {AuthenticatedUser, OpenidSecurityConfig} from '../../../models/security';
-import {OntoToastrService} from '../../toastr';
 import {GeneratorUtils} from '../../utils/generator-utils';
 import {MissingOpenidConfiguration} from '../errors/openid/missing-openid-configuration';
 import {InvalidOpenidAuthFlow} from '../errors/openid/invalid-openid-auth-flow';
+import {notify} from '../../notification';
+import {Notification, NotificationParam} from '../../../models/notification';
 
 // Constants for better maintainability
 const ERRORS = {
@@ -35,7 +36,6 @@ export class OpenidAuthStrategy implements AuthStrategy {
   private readonly openIdService = service(OpenIdService);
   private readonly openidStorageService = service(OpenidStorageService);
   private readonly tokenUtils = service(OpenidTokenUtils);
-  private readonly toasterService = service(OntoToastrService);
 
   type = AuthStrategyType.OPENID;
   private openIdSecurityConfig: OpenidSecurityConfig | undefined;
@@ -229,10 +229,14 @@ export class OpenidAuthStrategy implements AuthStrategy {
     case OpenIdAuthFlowType.IMPLICIT:
       this.openIdService.setupImplicitFlow(state, returnToUrl);
       break;
-    default:
+    default: {
       this.logger.debug(`OpenID: Invalid OpenID authentication flow: ${authFlow}`);
-      // TODO: Show toaster with error message `openid.auth.unknown.flow: ${authFlow}` when GDB-13200 is done
+      const notification = Notification.error('openid.errors.unknown_flow')
+        .withTitle('openid.errors.title')
+        .withParameters({authFlow, [NotificationParam.SHOULD_TOAST]: true});
+      notify(notification);
       throw new InvalidOpenidAuthFlow(authFlow);
+    }
     }
   }
 }
