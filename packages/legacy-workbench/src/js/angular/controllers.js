@@ -1007,8 +1007,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
             }
         } else {
             setPrincipal();
-            // Update Restricted Pages permissions on securityInit
-            updatePermissions();
 
             $scope.getSavedQueries();
 

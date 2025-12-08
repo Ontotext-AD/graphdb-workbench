@@ -18,6 +18,9 @@ import {WindowService} from '../../window';
 import {MissingOpenidConfiguration} from '../errors/openid/missing-openid-configuration';
 import {getOrigin} from '../../utils';
 import {AuthFlowParams, OpenIdAuthFlowType, OpenIdTokens} from '../../../models/security/authentication/openid-auth-flow-models';
+import {Notification, NotificationParam} from '../../../models/notification';
+import {notify} from '../../notification';
+import {HttpErrorResponse} from '../../../models/http';
 
 /**
  * Service responsible for managing OpenID Connect authentication flows, token management,
@@ -77,7 +80,17 @@ export class OpenIdService implements Service {
       await this.setupTokensRefresh();
     } catch (error) {
       this.logger.debug('OpenID: could not refresh tokens', error);
-      // TODO: Show toaster with error message `openid.auth.cannot.refresh.token.msg` when GDB-13200 is done
+
+      let errorMessage = 'unknown error';
+      if (error instanceof HttpErrorResponse) {
+        errorMessage = error.data?.error_description ?? 'unknown error';
+      }
+
+      const notification = Notification.error('openid.errors.cannot_refresh_token')
+        .withTitle('openid.errors.title')
+        .withParameters({error: errorMessage, [NotificationParam.SHOULD_TOAST]: true});
+      notify(notification);
+
       this.softLogout();
       service(EventService).emit(new Logout());
     }
@@ -255,7 +268,12 @@ export class OpenIdService implements Service {
       await this.setupTokensRefresh();
     } catch (e) {
       this.logger.error('OpenID: Cannot retrieve token after login', {error: e});
-      // TODO: Show toaster with error message `openid.auth.cannot.retrieve.token.msg` when GDB-13200 is done
+
+      const notification = Notification.error('openid.errors.cannot_retrieve_token')
+        .withTitle('openid.errors.title')
+        .withParameters({error: e instanceof Error ? e.message : String(e), [NotificationParam.SHOULD_TOAST]: true});
+      notify(notification);
+
       throw new OpenIdError('Cannot retrieve token after login');
     }
   }

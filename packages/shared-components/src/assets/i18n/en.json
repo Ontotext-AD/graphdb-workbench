@@ -69,7 +69,7 @@
         "label": "fr &middot; Français",
         "tooltip": {
           "selected": "Current language",
-          "not_selected":"Changer la langue en Français"
+          "not_selected": "Changer la langue en Français"
         }
       }
     }
@@ -186,6 +186,15 @@
       "autocomplete_is_off": "Autocomplete is OFF<br>Go to Setup -> Autocomplete",
       "empty_input": "Please fill the input field!",
       "invalid_uri": "Invalid IRI"
+    }
+  },
+  "openid": {
+    "errors": {
+      "title": "OpenID Authentication Failed",
+      "unknown_flow": "Unknown auth flow: {{authFlow}}",
+      "invalid_pkce_state": "Invalid pkce_state",
+      "cannot_retrieve_token": "Cannot retrieve token after login: {{error}}",
+      "cannot_refresh_token": "Could not refresh OpenID token: {{error}}"
     }
   }
 }

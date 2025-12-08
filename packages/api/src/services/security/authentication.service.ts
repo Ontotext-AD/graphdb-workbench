@@ -9,6 +9,7 @@ import {Login} from '../../models/events/auth/login';
 import {navigate} from '../utils';
 import {AuthorizationService} from './authorization.service';
 import {AuthenticationStrategyNotSet} from './errors/authentication-strategy-not-set';
+import {AuthStrategy} from '../../models/security/authentication';
 
 /**
  * Service responsible for handling authentication operations and managing auth strategies.
@@ -31,10 +32,7 @@ export class AuthenticationService implements Service {
   }
 
   getCurrentUser(): Promise<AuthenticatedUser> {
-    const authStrategy = this.authStrategyResolver.getAuthStrategy();
-    if (!authStrategy) {
-      throw new AuthenticationStrategyNotSet();
-    }
+    const authStrategy = this.getAuthenticationStrategy();
     return authStrategy.fetchAuthenticatedUser();
   }
 
@@ -49,10 +47,7 @@ export class AuthenticationService implements Service {
    * @returns A Promise that resolves to the authenticated `AuthenticatedUser` model.
    */
   login(username: string, password: string): Promise<void> {
-    const authStrategy = this.authStrategyResolver.getAuthStrategy();
-    if (!authStrategy) {
-      throw new AuthenticationStrategyNotSet();
-    }
+    const authStrategy = this.getAuthenticationStrategy();
     return authStrategy.login({username, password})
       .then((authUser) => {
         this.securityContextService.updateIsLoggedIn(true);
@@ -68,10 +63,7 @@ export class AuthenticationService implements Service {
    * Updates security context for logout request.
    */
   logout(): Promise<void> {
-    const authStrategy = this.authStrategyResolver.getAuthStrategy();
-    if (!authStrategy) {
-      throw new AuthenticationStrategyNotSet();
-    }
+    const authStrategy = this.getAuthenticationStrategy();
     return authStrategy.logout()
       .then(() => {
         this.securityContextService.updateIsLoggedIn(false);
@@ -104,10 +96,7 @@ export class AuthenticationService implements Service {
    * @returns True if the user is authenticated, false otherwise.
    */
   isAuthenticated(): boolean {
-    const authStrategy = this.authStrategyResolver.getAuthStrategy();
-    if (!authStrategy) {
-      throw new AuthenticationStrategyNotSet();
-    }
+    const authStrategy = this.getAuthenticationStrategy();
     return authStrategy.isAuthenticated();
   }
 
@@ -119,10 +108,7 @@ export class AuthenticationService implements Service {
    * @Throws {@link AuthenticationStrategyNotSet}.if no strategy is set, when calling this method
    */
   isExternalUser(): boolean {
-    const authStrategy = this.authStrategyResolver.getAuthStrategy();
-    if (!authStrategy) {
-      throw new AuthenticationStrategyNotSet();
-    }
+    const authStrategy = this.getAuthenticationStrategy();
     return authStrategy.isExternal();
   }
 
@@ -148,5 +134,13 @@ export class AuthenticationService implements Service {
     if (securityConfig) {
       this.authStrategyResolver.resolveStrategy(securityConfig);
     }
+  }
+
+  private getAuthenticationStrategy(): AuthStrategy {
+    const authStrategy = this.authStrategyResolver.getAuthStrategy();
+    if (!authStrategy) {
+      throw new AuthenticationStrategyNotSet();
+    }
+    return authStrategy;
   }
 }

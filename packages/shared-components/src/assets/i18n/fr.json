@@ -187,5 +187,14 @@
       "empty_input": "S'il vous plaît remplir le champ de saisie!",
       "invalid_uri": "IRI non valide"
     }
+  },
+  "openid": {
+    "errors": {
+      "title": "Échec de l'authentification OpenID",
+      "unknown_flow": "Flux d'authentification inconnu: {{authFlow}}",
+      "invalid_pkce_state": "État PKCE invalide",
+      "cannot_retrieve_token": "Impossible de récupérer le jeton après la connexion: {{error}}",
+      "cannot_refresh_token": "Impossible de rafraîchir le jeton OpenID: {{error}}"
+    }
   }
 }

@@ -10,6 +10,8 @@ import {OpenIdError} from '../errors/openid/openid-error';
 import {InvalidOpenidAuthFlow} from '../errors/openid/invalid-openid-auth-flow';
 import {MissingAuthorizationCode} from '../errors/openid/missing-authorization-code';
 import {AuthFlowParams, OpenIdAuthFlowType} from '../../../models/security/authentication/openid-auth-flow-models';
+import {Notification, NotificationParam} from '../../../models/notification';
+import {notify} from '../../notification';
 
 export type ExchangeTokensCallback = (code: string, redirectUrl: string, codeVerifier?: string | null) => Promise<void>;
 
@@ -105,7 +107,12 @@ export class OpenIdAuthFlowHandler {
     const storedState = this.openidStorageService.getPkceState().getValue();
     if (storedState !== params.state) {
       this.logger.debug(`OpenID: PKCE state mismatch ${storedState} != ${params.state}`);
-      // TODO: Show toaster with error message `openid.auth.invalid.pkce.state` when GDB-13200 is done
+
+      const notification = Notification.error('openid.errors.invalid_pkce_state')
+        .withTitle('openid.errors.title')
+        .withParameters({[NotificationParam.SHOULD_TOAST]: true});
+      notify(notification);
+
       throw new OpenIdError(`PKCE state mismatch ${storedState} != ${params.state}`);
     }
 
