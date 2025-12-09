@@ -116,7 +116,7 @@
     background-color: var(--gw-tooltip-background);
     border-radius: 0;
 
-    .tippy-arrow {
+    .tooltip-arrow {
         color: var(--gw-tooltip-background);
     }
 }

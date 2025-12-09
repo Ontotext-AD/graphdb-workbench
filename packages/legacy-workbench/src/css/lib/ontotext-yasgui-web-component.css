@@ -874,3 +874,28 @@ yasgui-component .yasr .pivot-table-plugin .pvtFilterBox .pvtSearch {
         padding-left: 10px !important;
     }
 }
+
+.ontotext-yasgui-tooltip .tooltip-box {
+    background-color: var(--gw-tooltip-background);
+    color: var(--gw-tooltip-color);
+}
+
+.ontotext-yasgui-tooltip .tooltip-arrow {
+    color: var(--gw-tooltip-background);
+}
+
+.ontotext-yasgui-tooltip[data-placement^=top] .tooltip-arrow::before {
+    border-top-color: var(--gw-tooltip-background);
+}
+
+.ontotext-yasgui-tooltip[data-placement^=left] .tooltip-arrow::before {
+    border-left-color: var(--gw-tooltip-background);
+}
+
+.ontotext-yasgui-tooltip[data-placement^=right] .tooltip-arrow::before {
+    border-right-color: var(--gw-tooltip-background);
+}
+
+.ontotext-yasgui-tooltip[data-placement^=bottom] .tooltip-arrow::before {
+    border-bottom-color: var(--gw-tooltip-background);
+}
