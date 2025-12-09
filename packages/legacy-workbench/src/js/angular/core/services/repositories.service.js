@@ -14,8 +14,7 @@ import {
     RepositoryStorageService,
     RepositoryContextService,
     RepositoryLocationContextService,
-    MapperProvider,
-    RepositoryListMapper,
+    mapRepositoryListResponseToModel,
     AuthorizationService,
     AuthenticationService,
     SecurityContextService,
@@ -534,7 +533,6 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
             return JSON.stringify(currentRepos);
         }, (newVal, oldVal) => {
             if (newVal !== oldVal) {
-                const rm = MapperProvider.get(RepositoryListMapper);
                 const groupedByLocation = JSON.parse(newVal).reduce((acc, repo) => {
                     const loc = repo.location || '';
                     if (!acc[loc]) {
@@ -544,7 +542,7 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
                     return acc;
                 }, {});
 
-                const repos = rm.mapToModel(groupedByLocation);
+                const repos = mapRepositoryListResponseToModel(groupedByLocation);
                 service(RepositoryContextService).updateRepositoryList(repos);
             }
         });

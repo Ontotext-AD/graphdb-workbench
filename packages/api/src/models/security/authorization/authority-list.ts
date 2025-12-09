@@ -1,12 +1,15 @@
 import {ModelList} from '../../common';
-import {MapperProvider} from '../../../providers';
 import {Authority} from './authority';
-import {GraphdbAuthoritiesModelMapper} from '../../../services/security/mappers/graphdb-authorities-model-mapper';
 import {GraphdbAuthoritiesModel} from './graphdb-authorities-model';
 import {AuthoritiesUiModel} from './authorities-ui-model';
 import {RepositoriesPermissions} from './repositories-permissions';
-import {GrantedAuthoritiesUiModelMapper} from '../../../services/security/mappers/granted-authorities-ui-model.mapper';
 import {AuthoritiesUtil} from '../../../services/security/utils/authorities-util';
+import {
+  mapGraphdbAuthoritiesResponseToModel
+} from '../../../services/security/mappers/graphdb-authorities-model-mapper';
+import {
+  mapGrantedAuthoritiesResponseToModel
+} from '../../../services/security/mappers/granted-authorities-ui-model.mapper';
 
 /**
  * Represents a list of authorities in an authenticated user.
@@ -82,7 +85,7 @@ export class AuthorityList extends ModelList<string> {
       [Authority.GRAPHQL]: {}
     };
 
-    const uiModel = MapperProvider.get(GrantedAuthoritiesUiModelMapper).mapToModel(this.getItems());
+    const uiModel = mapGrantedAuthoritiesResponseToModel(this.getItems());
     const auths = uiModel.getItems();
     auths.forEach(role => {
       if (role.startsWith(Authority.READ_REPO_PREFIX) || role.startsWith(Authority.WRITE_REPO_PREFIX) || role.startsWith(Authority.GRAPHQL_PREFIX)) {
@@ -108,7 +111,7 @@ export class AuthorityList extends ModelList<string> {
    * @returns A GraphdbAuthoritiesModel representing the authorities in GraphDB format.
    */
   toGraphdbAuthoritiesModel(): GraphdbAuthoritiesModel {
-    return MapperProvider.get(GraphdbAuthoritiesModelMapper).mapToModel(this);
+    return mapGraphdbAuthoritiesResponseToModel(this);
   };
 
   /**

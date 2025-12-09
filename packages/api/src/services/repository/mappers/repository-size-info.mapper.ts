@@ -1,14 +1,6 @@
-import {Mapper} from '../../../providers/mapper/mapper';
 import {RepositorySizeInfo} from '../../../models/repositories';
+import {MapperFn} from '../../../providers/mapper/mapper-fn';
 
-export class RepositorySizeInfoMapper extends Mapper<RepositorySizeInfo> {
-
-  /**
-   * Maps the raw data to an instance of the {@link RepositorySizeInfo} model.
-   *
-   * @returns {RepositorySizeInfo} - A new RepositorySizeInfo instance.
-   */
-  mapToModel(data: Partial<RepositorySizeInfo>): RepositorySizeInfo {
-    return new RepositorySizeInfo(data);
-  }
-}
+export const mapRepositorySizeInfoResponseToModel: MapperFn<Partial<RepositorySizeInfo>, RepositorySizeInfo> = (data) => {
+  return new RepositorySizeInfo(data);
+};

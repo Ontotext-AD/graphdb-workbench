@@ -20,6 +20,7 @@ describe('UsersService', () => {
 
   describe('getUser', () => {
     it('should fetch and map a user by username', async () => {
+      const now = Date.now();
       const mockResponse: UserResponse = {
         username: 'alice',
         password: '',
@@ -29,8 +30,8 @@ describe('UsersService', () => {
           DEFAULT_SAMEAS: false,
           EXECUTE_COUNT: true,
         },
-        dateCreated: Date.now(),
-        gptThreads: ['thread-1'],
+        dateCreated: now,
+        gptThreads: ['thread-1', 'thread-2'],
         external: false,
       };
 
@@ -48,8 +49,10 @@ describe('UsersService', () => {
       expect(user.authorities.getItems()).toEqual(['ROLE_USER', 'READ_REPO_repo1']);
       expect(user.appSettings).toBeInstanceOf(AppSettings);
       expect(user.appSettings.DEFAULT_INFERENCE).toBe(true);
-      expect(user.gptThreads).toEqual(['thread-1']);
+      expect(user.gptThreads).toEqual(['thread-1', 'thread-2']);
       expect(user.external).toBe(false);
+      expect(user.dateCreated).toBeInstanceOf(Date);
+      expect(user.dateCreated!.getTime()).toBe(now);
     });
   });
 

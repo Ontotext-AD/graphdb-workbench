@@ -1,11 +1,9 @@
 import {Service} from '../../providers/service/service';
 import {RepositoryRestService} from './repository-rest.service';
-import {Repository, RepositoryList} from '../../models/repositories';
-import {RepositoryListMapper} from './mappers/repository-list.mapper';
-import {MapperProvider, ServiceProvider} from '../../providers';
-import {RepositorySizeInfo} from '../../models/repositories';
-import {RepositorySizeInfoMapper} from './mappers/repository-size-info.mapper';
-import {Mapper} from '../../providers/mapper/mapper';
+import {Repository, RepositoryList, RepositorySizeInfo} from '../../models/repositories';
+import {ServiceProvider} from '../../providers';
+import {mapRepositorySizeInfoResponseToModel} from './mappers/repository-size-info.mapper';
+import {mapRepositoryListResponseToModel} from './mappers/repository-list.mapper';
 
 /**
  * The RepositoryService class is responsible for fetching repository-related data from the backend
@@ -14,13 +12,9 @@ import {Mapper} from '../../providers/mapper/mapper';
 export class RepositoryService implements Service {
   private readonly GRAPHQL_REPO_AUTHORITY = 'GRAPHQL';
   private repositoryRestService: RepositoryRestService;
-  private repositoryListMapper: Mapper<RepositoryList>;
-  private repositorySizeInfoMapper: Mapper<RepositorySizeInfo>;
 
   constructor() {
     this.repositoryRestService = ServiceProvider.get(RepositoryRestService);
-    this.repositoryListMapper = MapperProvider.get(RepositoryListMapper);
-    this.repositorySizeInfoMapper = MapperProvider.get(RepositorySizeInfoMapper);
   }
 
   /**
@@ -32,7 +26,7 @@ export class RepositoryService implements Service {
     return this.repositoryRestService
       .getRepositories()
       .then((response) => {
-        return this.repositoryListMapper.mapToModel(response);
+        return mapRepositoryListResponseToModel(response);
       });
   }
 
@@ -44,7 +38,7 @@ export class RepositoryService implements Service {
    */
   getRepositorySizeInfo(repository: Repository): Promise<RepositorySizeInfo> {
     return this.repositoryRestService.getRepositorySizeInfo(repository)
-      .then(this.repositorySizeInfoMapper.mapToModel);
+      .then(mapRepositorySizeInfoResponseToModel);
   }
 
   isSystemRepository(repository: Repository): boolean {

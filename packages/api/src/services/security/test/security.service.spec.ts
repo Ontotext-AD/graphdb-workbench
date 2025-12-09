@@ -5,8 +5,6 @@ import {ResponseMock} from '../../http/test/response-mock';
 import {service, ServiceProvider} from '../../../providers';
 import {SecurityContextService} from '../security-context.service';
 import {SecurityRestService} from '../security-rest.service';
-import {AuthenticatedUserMapper} from '../mappers/authenticated-user.mapper';
-import {AuthSettingsMapper} from '../mappers/auth-settings.mapper';
 import {AuthSettings} from '../../../models/security/auth-settings';
 import {SecurityConfigTestUtil} from '../../utils/test/security-config-test-util';
 import {AppSettings} from '../../../models/users/app-settings';
@@ -14,9 +12,11 @@ import {AuthenticatedUserResponse} from '../../../models/security/response-model
 import {UsersService} from '../../users';
 import {AuthenticationService} from '../authentication.service';
 import {ProviderResponseMocks} from '../auth-strategies/tests/provider-response-mocks';
-import {UserResponseMapper} from '../../users/user-response.mapper';
 import {CookieConsent} from '../../../models/cookie';
 import {AuthStrategyResolver} from '../auth-strategy-resolver';
+import {mapAuthenticatedUserResponseToModel} from '../mappers/authenticated-user.mapper';
+import {mapAuthSettingsResponseToModel} from '../mappers/auth-settings.mapper';
+import {mapUserResponseToModel} from '../../users/user-response.mapper';
 
 describe('SecurityService', () => {
   let securityService: SecurityService;
@@ -115,7 +115,7 @@ describe('SecurityService', () => {
         new ResponseMock('rest/security/authenticated-user').setResponse(mockAuthenticatedUser)
       ]);
 
-      const mappedUser = new AuthenticatedUserMapper().mapToModel(mockAuthenticatedUser);
+      const mappedUser = mapAuthenticatedUserResponseToModel(mockAuthenticatedUser);
 
       const result = await securityService.getAuthenticatedUser();
       expect(getAuthenticatedUserSpy).toHaveBeenCalled();
@@ -127,7 +127,7 @@ describe('SecurityService', () => {
     it('should fetch and map admin user', async () => {
       TestUtil.mockResponse(new ResponseMock('rest/security/users/admin').setResponse(ProviderResponseMocks.adminUserResponse));
       const getAdminUserSpy = jest.spyOn(service(UsersService), 'getAdminUser');
-      const mappedAdminUser = new UserResponseMapper().mapToModel(ProviderResponseMocks.adminUserResponse);
+      const mappedAdminUser = mapUserResponseToModel(ProviderResponseMocks.adminUserResponse);
 
       const result = await securityService.getAuthenticatedAdminUser();
       expect(getAdminUserSpy).toHaveBeenCalled();
@@ -197,7 +197,7 @@ describe('SecurityService', () => {
           COOKIE_CONSENT: true
         }
       };
-      const mappedFreeAccess = new AuthSettingsMapper().mapToModel(rawFreeAccess);
+      const mappedFreeAccess = mapAuthSettingsResponseToModel(rawFreeAccess);
 
       TestUtil.mockResponses([
         new ResponseMock('rest/security/free-access').setResponse(rawFreeAccess)

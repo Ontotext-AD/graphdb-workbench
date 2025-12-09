@@ -1,7 +1,7 @@
 import {LicenseRestService} from './license-rest.service';
-import {MapperProvider, service} from '../../providers';
+import {service} from '../../providers';
 import {License} from '../../models/license';
-import {LicenseResponseMapper} from './mappers/license-response-mapper';
+import {mapLicenseResponseToModel} from './mappers/license-response-mapper';
 import {Service} from '../../providers/service/service';
 import {LicenseContextService} from './license-context.service';
 import {ProductType} from '../../models/license/product-type';
@@ -12,7 +12,6 @@ import {ProductType} from '../../models/license/product-type';
 export class LicenseService implements Service {
   private readonly licenseRestService = service(LicenseRestService);
   private readonly licenseContextService = service(LicenseContextService);
-  private readonly licenseMapper = MapperProvider.get(LicenseResponseMapper);
   private readonly trackableProductTypes = [ProductType.FREE, ProductType.SANDBOX];
   private readonly trackableTypesOfUse = ['evaluation', 'this is an evaluation license'];
 
@@ -34,7 +33,7 @@ export class LicenseService implements Service {
    */
   async getLicense(): Promise<License> {
     const response = await this.licenseRestService.getLicense();
-    return this.licenseMapper.mapToModel(response);
+    return mapLicenseResponseToModel(response);
   }
 
   /**
@@ -48,7 +47,7 @@ export class LicenseService implements Service {
    */
   registerLicense(licenseCode: string): Promise<License> {
     return this.licenseRestService.registerLicense(licenseCode)
-      .then((response) => this.licenseMapper.mapToModel(response));
+      .then((response) => mapLicenseResponseToModel(response));
   }
 
   /**
@@ -94,7 +93,7 @@ export class LicenseService implements Service {
    */
   validateLicense(licenseCode: string): Promise<License> {
     return this.licenseRestService.validateLicense(licenseCode)
-      .then((response) => this.licenseMapper.mapToModel(response));
+      .then((response) => mapLicenseResponseToModel(response));
   }
 
   /**

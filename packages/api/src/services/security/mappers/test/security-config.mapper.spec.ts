@@ -1,5 +1,5 @@
 import {SecurityConfig} from '../../../../models/security';
-import {SecurityConfigMapper} from '../security-config.mapper';
+import {mapSecurityConfigResponseToModel} from '../security-config.mapper';
 
 describe('SecurityConfigMapper', () => {
   test('should map raw data to SecurityConfig model', () => {
@@ -17,7 +17,7 @@ describe('SecurityConfigMapper', () => {
     } as unknown as SecurityConfig;
 
     // When I map the raw data to a SecurityConfig model
-    const mappedSecurityConfig = new SecurityConfigMapper().mapToModel(newSecurityConfig);
+    const mappedSecurityConfig = mapSecurityConfigResponseToModel(newSecurityConfig);
 
     // Then I expect the mapped model to be an instance of SecurityConfig
     expect(mappedSecurityConfig).toBeInstanceOf(SecurityConfig);

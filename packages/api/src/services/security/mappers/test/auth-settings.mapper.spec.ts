@@ -1,8 +1,8 @@
 import {AuthSettings} from '../../../../models/security/auth-settings';
-import {AuthSettingsMapper} from '../auth-settings.mapper';
 import {AuthSettingsResponseModel} from '../../../../models/security/response-models/auth-settings-response-model';
 import {AuthorityList} from '../../../../models/security';
 import {AppSettings} from '../../../../models/users/app-settings';
+import {mapAuthSettingsResponseToModel} from '../auth-settings.mapper';
 
 describe('AuthSettingsMapper', () => {
   test('should map raw data to AuthSettings model', () => {
@@ -24,7 +24,7 @@ describe('AuthSettingsMapper', () => {
     } as AuthSettingsResponseModel;
 
     // When I map the raw data to an AuthSettings model
-    const authSettings = new AuthSettingsMapper().mapToModel(rawAuthSettings);
+    const authSettings = mapAuthSettingsResponseToModel(rawAuthSettings);
 
     const expected = new AuthSettings({});
     expected.enabled = rawAuthSettings.enabled;

@@ -1,13 +1,7 @@
-import {OperationListMapper} from '../operation-list.mapper';
 import {Operation, OperationList, OperationStatus, OperationType} from '../../../../models/monitoring';
+import {mapOperationListResponseToModel} from '../operation-list.mapper';
 
 describe('OperationListMapper', () => {
-  let mapper: OperationListMapper;
-
-  beforeEach(() => {
-    mapper = new OperationListMapper();
-  });
-
   test('should correctly map an array of Operation objects', () => {
     // Given, I have an array of Operation objects.
     const operations = [
@@ -24,7 +18,7 @@ describe('OperationListMapper', () => {
     ];
 
     // When, I map the array to an OperationList.
-    const result = mapper.mapToModel(operations);
+    const result = mapOperationListResponseToModel(operations);
 
     // Then, I should get an OperationList containing the same data.
     expect(result).toBeInstanceOf(OperationList);

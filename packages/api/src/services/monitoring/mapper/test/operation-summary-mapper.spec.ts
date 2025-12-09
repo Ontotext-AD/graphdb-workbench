@@ -1,17 +1,11 @@
-import {OperationSummaryMapper} from '../operation-summary-mapper';
 import {
   OperationStatus,
   OperationStatusSummary,
   OperationType
 } from '../../../../models/monitoring';
+import {mapOperationSummaryResponseToModel} from '../operation-summary-mapper';
 
 describe('OperationSummaryMapper', () => {
-  let mapper: OperationSummaryMapper;
-
-  beforeEach(() => {
-    mapper = new OperationSummaryMapper();
-  });
-
   test('should correctly map a OperationStatusSummary object', () => {
     // Given, I have a operationSummary JSON object.
     const operationStatusSummary = {
@@ -31,7 +25,7 @@ describe('OperationSummaryMapper', () => {
     } as unknown as OperationStatusSummary;
 
     // When, I map the object to a OperationSummary.
-    const result = mapper.mapToModel(operationStatusSummary);
+    const result = mapOperationSummaryResponseToModel(operationStatusSummary);
 
     // Then, I should get the same object.
     expect(result).toBeInstanceOf(OperationStatusSummary);

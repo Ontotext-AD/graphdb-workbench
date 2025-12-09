@@ -1,18 +1,18 @@
 import {Service} from '../../providers/service/service';
 import {SecurityRestService} from './security-rest.service';
-import {MapperProvider, service} from '../../providers';
+import {service} from '../../providers';
 import {AuthenticatedUser, SecurityConfig} from '../../models/security';
 import {SecurityContextService} from './security-context.service';
-import {SecurityConfigMapper} from './mappers/security-config.mapper';
-import {AuthenticatedUserMapper} from './mappers/authenticated-user.mapper';
-import {AuthSettingsMapper} from './mappers/auth-settings.mapper';
 import {AuthSettings} from '../../models/security/auth-settings';
 import {AuthSettingsRequestModel} from '../../models/security/response-models/auth-settings-request-model';
-import {GraphdbAuthoritiesModelMapper} from './mappers/graphdb-authorities-model-mapper';
 import {UsersService} from '../users';
 import {User} from '../../models/users/user';
 import {HttpResponse} from '../../models/http';
 import {AuthenticatedUserResponse} from '../../models/security/response-models/authenticated-user-response';
+import {mapAuthenticatedUserResponseToModel} from './mappers/authenticated-user.mapper';
+import {mapAuthSettingsResponseToModel} from './mappers/auth-settings.mapper';
+import {mapSecurityConfigResponseToModel} from './mappers/security-config.mapper';
+import {mapGraphdbAuthoritiesResponseToModel} from './mappers/graphdb-authorities-model-mapper';
 
 /**
  * Service class for handling security-related operations.
@@ -42,7 +42,7 @@ export class SecurityService implements Service {
    * @returns A Promise that resolves with the mapped `SecurityConfig` instance.
    */
   getSecurityConfig(): Promise<SecurityConfig> {
-    return this.securityRestService.getSecurityConfig().then((response) => MapperProvider.get(SecurityConfigMapper).mapToModel(response));
+    return this.securityRestService.getSecurityConfig().then((response) => mapSecurityConfigResponseToModel(response));
   }
 
   /**
@@ -55,7 +55,7 @@ export class SecurityService implements Service {
   getFreeAccess(): Promise<AuthSettings> {
     return this.securityRestService.getFreeAccess()
       .then(function (response) {
-        return MapperProvider.get(AuthSettingsMapper).mapToModel(response);
+        return mapAuthSettingsResponseToModel(response);
       });
   }
 
@@ -70,7 +70,6 @@ export class SecurityService implements Service {
    * @returns A Promise that resolves when the free access settings have been successfully updated.
    */
   setFreeAccess(enabled: boolean, freeAccess?: AuthSettings): Promise<void> {
-    const mapper = MapperProvider.get(GraphdbAuthoritiesModelMapper);
     const freeAccessData: AuthSettingsRequestModel = {
       enabled: enabled
     };
@@ -78,7 +77,7 @@ export class SecurityService implements Service {
       if (!freeAccess) {
         throw new Error('Free access settings must be provided when enabling free access');
       }
-      freeAccessData.authorities = mapper.mapToModel(freeAccess?.authorities);
+      freeAccessData.authorities = mapGraphdbAuthoritiesResponseToModel(freeAccess?.authorities);
       freeAccessData.appSettings = {
         ...freeAccess?.appSettings
       } as Record<string, unknown>;
@@ -99,7 +98,7 @@ export class SecurityService implements Service {
    */
   getAuthenticatedUser(): Promise<AuthenticatedUser> {
     return this.securityRestService.getAuthenticatedUser()
-      .then((response) => MapperProvider.get(AuthenticatedUserMapper).mapToModel(response));
+      .then((response) => mapAuthenticatedUserResponseToModel(response));
   }
 
   /**
