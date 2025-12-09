@@ -1,8 +1,8 @@
 import {Service} from '../../providers/service/service';
 import {OperationStatusSummary} from '../../models/monitoring/operation-status-summary';
-import {MapperProvider, ServiceProvider} from '../../providers';
+import {ServiceProvider} from '../../providers';
 import {MonitoringRestService} from './monitoring-rest.service';
-import {OperationSummaryMapper} from './mapper/operation-summary-mapper';
+import {mapOperationSummaryResponseToModel} from './mapper/operation-summary-mapper';
 
 /**
  * Service class for handling operations-related functionality.
@@ -16,6 +16,6 @@ export class MonitoringService implements Service {
    */
   getOperations(repositoryId: string): Promise<OperationStatusSummary> {
     return ServiceProvider.get(MonitoringRestService).getOperations(repositoryId)
-      .then((operations) => MapperProvider.get(OperationSummaryMapper).mapToModel(operations));
+      .then((operations) => mapOperationSummaryResponseToModel(operations));
   }
 }

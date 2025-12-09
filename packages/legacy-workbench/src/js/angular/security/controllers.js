@@ -11,9 +11,8 @@ import {
     AuthorizationService,
     SecurityContextService,
     AuthenticationService,
-    AuthSettingsMapper,
-    GrantedAuthoritiesUiModelMapper,
-    MapperProvider,
+    mapAuthSettingsResponseToModel,
+    mapGrantedAuthoritiesResponseToModel,
     OntoToastrService,
     RepositoryService,
     SecurityService as SecurityServiceAPI,
@@ -107,7 +106,7 @@ securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$windo
                 // enable and configure or only configure
                 securityServiceAPI.getFreeAccess()
                     .then((freeAccessAuthSettings) => {
-                        const authorities = MapperProvider.get(GrantedAuthoritiesUiModelMapper).mapToModel(freeAccessAuthSettings.authorities).getItems();
+                        const authorities = mapGrantedAuthoritiesResponseToModel(freeAccessAuthSettings.authorities).getItems();
                         const appSettings = freeAccessAuthSettings.appSettings ?? {
                             'DEFAULT_SAMEAS': true,
                             'DEFAULT_INFERENCE': true,
@@ -185,7 +184,7 @@ securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$windo
             return modalInstance.result.then(function(data) {
                 authorities = data.authorities;
                 appSettings = data.appSettings;
-                return MapperProvider.get(AuthSettingsMapper).mapToModel({
+                return mapAuthSettingsResponseToModel({
                     enabled: updateFreeAccess || !authorizationService.hasFreeAccess(),
                     appSettings,
                     authorities,

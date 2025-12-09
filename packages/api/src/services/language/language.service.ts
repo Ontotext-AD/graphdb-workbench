@@ -1,10 +1,10 @@
 import {Service} from '../../providers/service/service';
 import {TranslationBundle} from '../../models/language';
-import {MapperProvider, ServiceProvider} from '../../providers';
+import {ServiceProvider} from '../../providers';
 import {LanguageConfig} from '../../models/language';
 import {LanguageRestService} from './language-rest.service';
-import {LanguageConfigMapper} from './mappers/language-config-mapper';
 import {LanguageContextService} from './language-context.service';
+import {mapLanguageConfigResponseToModel} from './mappers/language-config-mapper';
 
 /**
  * The LanguageService class is responsible for fetching language-related data from the backend
@@ -47,7 +47,7 @@ export class LanguageService implements Service {
    */
   getLanguageConfiguration(): Promise<LanguageConfig> {
     return this.languageRestService.getLanguageConfiguration()
-      .then(config => MapperProvider.get(LanguageConfigMapper).mapToModel(config));
+      .then(config => mapLanguageConfigResponseToModel(config));
   }
 
   /**

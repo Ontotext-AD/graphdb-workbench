@@ -3,8 +3,8 @@ import {ServiceProvider} from '../../providers';
 import {PluginsRestService} from './plugins-rest.service';
 import {PluginsManifest, PluginModule} from '../../models/plugins';
 import {WindowService} from '../window';
-import {PluginsManifestMapper} from './mapper/plugins-manifest.mapper';
 import {LoggerProvider} from '../logging/logger-provider';
+import {mapPluginsManifestResponseToModel} from './mapper/plugins-manifest.mapper';
 
 /**
  * Service responsible for managing plugins in the application.
@@ -12,12 +12,10 @@ import {LoggerProvider} from '../logging/logger-provider';
  */
 export class PluginsService implements Service {
   private readonly pluginsRestService: PluginsRestService;
-  private readonly pluginsManifestMapper: PluginsManifestMapper;
   private readonly logger = LoggerProvider.logger;
 
   constructor() {
     this.pluginsRestService = ServiceProvider.get(PluginsRestService);
-    this.pluginsManifestMapper = new PluginsManifestMapper();
   }
 
   /**
@@ -27,7 +25,7 @@ export class PluginsService implements Service {
    */
   async getPluginsManifest(): Promise<PluginsManifest> {
     const response = await this.pluginsRestService.getPluginsManifest();
-    return this.pluginsManifestMapper.mapToModel(response);
+    return mapPluginsManifestResponseToModel(response);
   }
 
   /**

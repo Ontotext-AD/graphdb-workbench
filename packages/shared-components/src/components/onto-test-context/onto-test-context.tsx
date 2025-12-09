@@ -1,12 +1,10 @@
 import {Component, Method} from '@stencil/core';
 import {
   EventService,
-  AuthenticatedUserMapper,
   LanguageContextService,
   License,
   LicenseContextService,
   NavigationEnd,
-  MapperProvider,
   ProductInfo,
   ProductInfoContextService,
   RepositoryContextService,
@@ -25,7 +23,7 @@ import {
   notify,
   Notification, service, OntoToastrService,
   AuthenticationService, AuthenticationStorageService, User, AuthStrategyResolver,
-  AuthorizationService,
+  AuthorizationService, AuthenticatedUserResponse, mapAuthenticatedUserResponseToModel,
 } from '@ontotext/workbench-api';
 import en from '../../assets/i18n/en.json';
 import fr from '../../assets/i18n/fr.json';
@@ -96,7 +94,7 @@ export class OntoTestContext {
   setAuthenticatedUser(user: User): Promise<void> {
     // Don't map if undefined is passed. This allows to clear the user in context
     const userModel = user
-      ? MapperProvider.get(AuthenticatedUserMapper).mapToModel(user)
+      ? mapAuthenticatedUserResponseToModel(user as unknown as AuthenticatedUserResponse)
       : undefined;
     ServiceProvider.get(SecurityContextService).updateAuthenticatedUser(userModel);
     ServiceProvider.get(AuthenticationStorageService).setAuthToken('token');

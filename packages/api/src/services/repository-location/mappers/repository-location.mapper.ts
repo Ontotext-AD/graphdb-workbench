@@ -1,18 +1,9 @@
 import {RepositoryLocation} from '../../../models/repository-location';
-import {Mapper} from '../../../providers/mapper/mapper';
+import {MapperFn} from '../../../providers/mapper/mapper-fn';
 
 /**
  * A class containing functions to map various server responses to specific repository location models.
  */
-export class RepositoryLocationMapper extends Mapper<RepositoryLocation> {
-
-  /**
-   * Maps the raw data to an instance of the {@link RepositoryLocation} model.
-   *
-   * @param {Partial<RepositoryLocation>} data - The raw data to be transformed into a RepositoryLocation model.
-   * @returns {RepositoryLocation} - A new Repository instance.
-   */
-  mapToModel(data: Partial<RepositoryLocation>): RepositoryLocation {
-    return new RepositoryLocation(data);
-  }
-}
+export const mapRepositoryLocationResponseToModel: MapperFn<Partial<RepositoryLocation>, RepositoryLocation> = (data) => {
+  return new RepositoryLocation(data);
+};

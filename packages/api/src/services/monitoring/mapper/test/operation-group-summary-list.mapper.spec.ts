@@ -1,13 +1,7 @@
 import {OperationGroupSummary, OperationGroupSummaryList} from '../../../../models/monitoring';
-import {OperationGroupSummaryListMapper} from '../operation-group-summary-list.mapper';
+import {mapOperationGroupSummaryListResponseToModel} from '../operation-group-summary-list.mapper';
 
 describe('OperationGroupSummaryListMapper', () => {
-  let mapper: OperationGroupSummaryListMapper;
-
-  beforeEach(() => {
-    mapper = new OperationGroupSummaryListMapper();
-  });
-
   test('should correctly map an array of OperationGroupSummary objects', () => {
     // Given, I have an array of OperationGroupSummary objects.
     const operationGroupSummaries = [
@@ -24,7 +18,7 @@ describe('OperationGroupSummaryListMapper', () => {
     ];
 
     // When, I map the array to an OperationGroupSummaryList.
-    const result = mapper.mapToModel(operationGroupSummaries);
+    const result = mapOperationGroupSummaryListResponseToModel(operationGroupSummaries);
 
     // Then, I should get an OperationGroupSummaryList containing the same data.
     expect(result).toBeInstanceOf(OperationGroupSummaryList);

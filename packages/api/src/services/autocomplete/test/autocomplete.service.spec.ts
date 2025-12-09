@@ -37,6 +37,8 @@ describe('Autocomplete service', () => {
     // Then, I expect the result to be an instance of AutocompleteSearchResult
     expect(result).toBeInstanceOf(AutocompleteSearchResult);
     // And, it should contain the expected suggestions
-    expect(result.getSuggestions()).toEqual(new SuggestionList(mockSearchResult.suggestions.map((suggestion) => new Suggestion(suggestion))));
+    const expectedSuggestions = mockSearchResult.suggestions.map((suggestion) => new Suggestion(suggestion));
+    const expected = new SuggestionList(expectedSuggestions);
+    expect(result.getSuggestions()).toEqual(expected);
   });
 });

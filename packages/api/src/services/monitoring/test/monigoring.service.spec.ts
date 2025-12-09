@@ -2,8 +2,7 @@ import {MonitoringService} from '../monitoring.service';
 import {TestUtil} from '../../utils/test/test-util';
 import {ResponseMock} from '../../http/test/response-mock';
 import {OperationStatusSummary} from '../../../models/monitoring';
-import {MapperProvider} from '../../../providers';
-import {OperationSummaryMapper} from '../mapper/operation-summary-mapper';
+import {mapOperationSummaryResponseToModel} from '../mapper/operation-summary-mapper';
 
 describe('MonitoringService', () => {
   let monitoringService: MonitoringService;
@@ -30,6 +29,6 @@ describe('MonitoringService', () => {
 
     // Then, I should get a OperationStatusSummary instance, with mapped property values
     expect(result).toBeInstanceOf(OperationStatusSummary);
-    expect(result).toEqual(MapperProvider.get(OperationSummaryMapper).mapToModel(mockOperationsJson));
+    expect(result).toEqual(mapOperationSummaryResponseToModel(mockOperationsJson));
   });
 });

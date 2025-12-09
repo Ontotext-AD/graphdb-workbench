@@ -1,15 +1,13 @@
 import {Service} from '../../providers/service/service';
-import {MapperProvider, service} from '../../providers';
+import {service} from '../../providers';
 import {User} from '../../models/users/user';
 import {UsersRestService} from './users-rest.service';
-import {UserResponseMapper} from './user-response.mapper';
-import {UserRequestMapper} from './user-request.mapper';
+import {mapUserModelToRequest} from './user-request.mapper';
+import {mapUserResponseToModel} from './user-response.mapper';
 
 export class UsersService implements Service {
   static readonly ADMIN_USERNAME = 'admin';
   private readonly usersRestService  = service(UsersRestService);
-  private readonly userResponseMapper = MapperProvider.get(UserResponseMapper);
-  private readonly userRequestMapper = MapperProvider.get(UserRequestMapper);
 
   /**
    * Retrieves a user by username from the backend.
@@ -20,7 +18,7 @@ export class UsersService implements Service {
    */
   getUser(username: string): Promise<User> {
     return this.usersRestService.getUser(username)
-      .then((response) => this.userResponseMapper.mapToModel(response));
+      .then((response) => mapUserResponseToModel(response));
   }
 
   /**
@@ -32,7 +30,7 @@ export class UsersService implements Service {
   getUsers(): Promise<User[]> {
     return this.usersRestService.getUsers()
       .then((response) => {
-        return response.map((user) => this.userResponseMapper.mapToModel(user));
+        return response.map((user) => mapUserResponseToModel(user));
       });
   }
 
@@ -44,7 +42,7 @@ export class UsersService implements Service {
    */
   getAdminUser(): Promise<User> {
     return this.usersRestService.getUser(UsersService.ADMIN_USERNAME)
-      .then((response) => this.userResponseMapper.mapToModel(response));
+      .then((response) => mapUserResponseToModel(response));
   }
 
   /**
@@ -53,7 +51,7 @@ export class UsersService implements Service {
    * @param user
    */
   createUser(user: User): Promise<void> {
-    const userRequest = this.userRequestMapper.mapToModel(user);
+    const userRequest = mapUserModelToRequest(user);
     return this.usersRestService.createUser(user.username, userRequest);
   }
 
@@ -63,7 +61,7 @@ export class UsersService implements Service {
    * @param user
    */
   updateUser(user: User): Promise<void> {
-    const userRequest = this.userRequestMapper.mapToModel(user);
+    const userRequest = mapUserModelToRequest(user);
     return this.usersRestService.updateUser(user.username, userRequest);
   }
 
@@ -76,7 +74,7 @@ export class UsersService implements Service {
   }
 
   updateCurrentUser(user: User): Promise<void> {
-    const userRequest = this.userRequestMapper.mapToModel(user);
+    const userRequest = mapUserModelToRequest(user);
     return this.usersRestService.updateCurrentUser(user.username, userRequest);
   }
 }

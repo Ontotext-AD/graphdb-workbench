@@ -1,19 +1,13 @@
 import {AuthorityList} from '../../../../models/security';
-import {GraphdbAuthoritiesModelMapper} from '../graphdb-authorities-model-mapper';
+import {mapGraphdbAuthoritiesResponseToModel} from '../graphdb-authorities-model-mapper';
 
 describe('BackendAuthoritiesMapper', () => {
-  let mapper: GraphdbAuthoritiesModelMapper;
-
-  beforeEach(() => {
-    mapper = new GraphdbAuthoritiesModelMapper();
-  });
-
   test('should return empty array when no authorities provided', () => {
     // Given an empty authority list
     const authorityList = new AuthorityList([]);
 
     // When mapping to backend authorities
-    const result = mapper.mapToModel(authorityList);
+    const result = mapGraphdbAuthoritiesResponseToModel(authorityList);
 
     // Then the result should be empty
     expect(result).toEqual([]);
@@ -24,7 +18,7 @@ describe('BackendAuthoritiesMapper', () => {
     const authorityList = new AuthorityList(['READ_REPO_repo1']);
 
     // When mapping to backend authorities
-    const result = mapper.mapToModel(authorityList);
+    const result = mapGraphdbAuthoritiesResponseToModel(authorityList);
 
     // Then the result should contain the read authority
     expect(result).toEqual(['READ_REPO_repo1']);
@@ -35,7 +29,7 @@ describe('BackendAuthoritiesMapper', () => {
     const authorityList = new AuthorityList(['WRITE_REPO_repo1']);
 
     // When mapping to backend authorities
-    const result = mapper.mapToModel(authorityList);
+    const result = mapGraphdbAuthoritiesResponseToModel(authorityList);
 
     // Then the result should contain both write and read authorities
     expect(result).toContain('WRITE_REPO_repo1');
@@ -48,7 +42,7 @@ describe('BackendAuthoritiesMapper', () => {
     const authorityList = new AuthorityList(['READ_REPO_repo1', 'WRITE_REPO_repo1']);
 
     // When mapping to backend authorities
-    const result = mapper.mapToModel(authorityList);
+    const result = mapGraphdbAuthoritiesResponseToModel(authorityList);
 
     // Then the result should contain both write and read authorities
     expect(result).toContain('WRITE_REPO_repo1');
@@ -61,7 +55,7 @@ describe('BackendAuthoritiesMapper', () => {
     const authorityList = new AuthorityList(['GRAPHQL_repo1', 'READ_REPO_repo1']);
 
     // When mapping to backend authorities
-    const result = mapper.mapToModel(authorityList);
+    const result = mapGraphdbAuthoritiesResponseToModel(authorityList);
 
     // Then the result should contain read authority with GraphQL suffix
     expect(result).toEqual(['READ_REPO_repo1:GRAPHQL']);
@@ -72,7 +66,7 @@ describe('BackendAuthoritiesMapper', () => {
     const authorityList = new AuthorityList(['GRAPHQL_repo1', 'WRITE_REPO_repo1']);
 
     // When mapping to backend authorities
-    const result = mapper.mapToModel(authorityList);
+    const result = mapGraphdbAuthoritiesResponseToModel(authorityList);
 
     // Then the result should contain write and read authorities with GraphQL suffix
     expect(result).toContain('WRITE_REPO_repo1:GRAPHQL');
@@ -88,7 +82,7 @@ describe('BackendAuthoritiesMapper', () => {
     ]);
 
     // When mapping to backend authorities
-    const result = mapper.mapToModel(authorityList);
+    const result = mapGraphdbAuthoritiesResponseToModel(authorityList);
 
     // Then the result should contain authorities for all repositories
     expect(result).toContain('READ_REPO_repo1');
@@ -106,7 +100,7 @@ describe('BackendAuthoritiesMapper', () => {
     ]);
 
     // When mapping to backend authorities
-    const result = mapper.mapToModel(authorityList);
+    const result = mapGraphdbAuthoritiesResponseToModel(authorityList);
 
     // Then custom authorities should be preserved
     expect(result).toContain('ROLE_ADMIN');
@@ -120,7 +114,7 @@ describe('BackendAuthoritiesMapper', () => {
     const authorityList = new AuthorityList(['READ_REPO_*']);
 
     // When mapping to backend authorities
-    const result = mapper.mapToModel(authorityList);
+    const result = mapGraphdbAuthoritiesResponseToModel(authorityList);
 
     // Then the result should contain the wildcard read authority
     expect(result).toEqual(['READ_REPO_*']);
@@ -131,7 +125,7 @@ describe('BackendAuthoritiesMapper', () => {
     const authorityList = new AuthorityList(['WRITE_REPO_*']);
 
     // When mapping to backend authorities
-    const result = mapper.mapToModel(authorityList);
+    const result = mapGraphdbAuthoritiesResponseToModel(authorityList);
 
     // Then the result should contain wildcard write and read authorities
     expect(result).toContain('WRITE_REPO_*');
@@ -147,7 +141,7 @@ describe('BackendAuthoritiesMapper', () => {
     ]);
 
     // When mapping to backend authorities
-    const result = mapper.mapToModel(authorityList);
+    const result = mapGraphdbAuthoritiesResponseToModel(authorityList);
 
     // Then specific repository should have write and read, and wildcard read should exist
     expect(result).toContain('READ_REPO_*');
@@ -164,7 +158,7 @@ describe('BackendAuthoritiesMapper', () => {
     ]);
 
     // When mapping to backend authorities
-    const result = mapper.mapToModel(authorityList);
+    const result = mapGraphdbAuthoritiesResponseToModel(authorityList);
 
     // Then wildcard write applies to repo1 (write implies read), and wildcard authorities are included
     expect(result).toContain('WRITE_REPO_*');
@@ -181,7 +175,7 @@ describe('BackendAuthoritiesMapper', () => {
     ]);
 
     // When mapping to backend authorities
-    const result = mapper.mapToModel(authorityList);
+    const result = mapGraphdbAuthoritiesResponseToModel(authorityList);
 
     // Then specific repository should have read with GraphQL suffix (wildcard GraphQL applies to it)
     expect(result).toContain('READ_REPO_repo1:GRAPHQL');
@@ -196,7 +190,7 @@ describe('BackendAuthoritiesMapper', () => {
     ]);
 
     // When mapping to backend authorities
-    const result = mapper.mapToModel(authorityList);
+    const result = mapGraphdbAuthoritiesResponseToModel(authorityList);
 
     // Then specific repository should have write and read with GraphQL suffix, and wildcard should have write and read
     expect(result).toContain('WRITE_REPO_repo1:GRAPHQL');
@@ -217,7 +211,7 @@ describe('BackendAuthoritiesMapper', () => {
     ]);
 
     // When mapping to backend authorities
-    const result = mapper.mapToModel(authorityList);
+    const result = mapGraphdbAuthoritiesResponseToModel(authorityList);
 
     // Then all authorities should be correctly mapped
     expect(result).toContain('ROLE_ADMIN');
@@ -237,7 +231,7 @@ describe('BackendAuthoritiesMapper', () => {
     ]);
 
     // When mapping to backend authorities
-    const result = mapper.mapToModel(authorityList);
+    const result = mapGraphdbAuthoritiesResponseToModel(authorityList);
 
     // Then wildcard authorities should have GraphQL suffix
     expect(result).toContain('WRITE_REPO_*:GRAPHQL');
@@ -254,7 +248,7 @@ describe('BackendAuthoritiesMapper', () => {
     ]);
 
     // When mapping to backend authorities
-    const result = mapper.mapToModel(authorityList);
+    const result = mapGraphdbAuthoritiesResponseToModel(authorityList);
 
     // Then wildcard GraphQL applies to all repositories
     expect(result).toContain('READ_REPO_repo1:GRAPHQL');

@@ -1,14 +1,13 @@
-import { Service } from '../../providers/service/service';
-import { service } from '../../providers';
-import { ProductInfo } from '../../models/product-info';
-import { ProductInfoMapper } from './mappers/product-info.mapper';
-import { ProductInfoRestService } from './product-info-rest.service';
+import {Service} from '../../providers/service/service';
+import {service} from '../../providers';
+import {ProductInfo} from '../../models/product-info';
+import {ProductInfoRestService} from './product-info-rest.service';
+import {mapProductInfoResponseToModel} from './mappers/product-info.mapper';
 
 /**
  * Service responsible for retrieving and managing product information.
  */
 export class ProductInfoService implements Service {
-  private readonly productInfoMapper: ProductInfoMapper = service(ProductInfoMapper);
   private readonly productInfoService: ProductInfoRestService = service(ProductInfoRestService);
 
   /**
@@ -22,6 +21,6 @@ export class ProductInfoService implements Service {
    */
   async getProductInfoLocal(): Promise<ProductInfo> {
     const response = await this.productInfoService.getProductInfoLocal();
-    return this.productInfoMapper.mapToModel(response);
+    return mapProductInfoResponseToModel(response);
   }
 }
