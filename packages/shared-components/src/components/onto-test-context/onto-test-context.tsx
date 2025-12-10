@@ -1,12 +1,10 @@
 import {Component, Method} from '@stencil/core';
 import {
   EventService,
-  AuthenticatedUserMapper,
   LanguageContextService,
   License,
   LicenseContextService,
   NavigationEnd,
-  MapperProvider,
   ProductInfo,
   ProductInfoContextService,
   RepositoryContextService,
@@ -25,7 +23,8 @@ import {
   notify,
   Notification, service, OntoToastrService,
   AuthenticationService, AuthenticationStorageService, User, AuthStrategyResolver,
-  AuthorizationService,
+  AuthorizationService, AuthenticatedUser, SecurityConfigInit,
+  AuthSettings, AuthorityList, GrantedAuthoritiesUiModelMapper, AppSettings,
 } from '@ontotext/workbench-api';
 import en from '../../assets/i18n/en.json';
 import fr from '../../assets/i18n/fr.json';
@@ -94,11 +93,42 @@ export class OntoTestContext {
    */
   @Method()
   setAuthenticatedUser(user: User): Promise<void> {
+    const securityContextService = ServiceProvider.get(SecurityContextService);
+
     // Don't map if undefined is passed. This allows to clear the user in context
-    const userModel = user
-      ? MapperProvider.get(AuthenticatedUserMapper).mapToModel(user)
-      : undefined;
-    ServiceProvider.get(SecurityContextService).updateAuthenticatedUser(userModel);
+    let userModel: AuthenticatedUser | undefined;
+
+    if (user) {
+      // Normalise authorities: already AuthorityList in User, but guard just in case
+      const authorities =
+        user.authorities instanceof AuthorityList
+          ? user.authorities
+          : new AuthorityList(user.authorities as unknown as string[] ?? []);
+
+      // Build the UI model like the response mapper does
+      const grantedAuthoritiesUiModel =
+        new GrantedAuthoritiesUiModelMapper().mapToModel(
+          authorities.getItems()
+        );
+
+      const appSettings =
+        user.appSettings instanceof AppSettings
+          ? user.appSettings
+          : new AppSettings(user.appSettings as unknown as Record<string, unknown> ?? {});
+
+      userModel = new AuthenticatedUser({
+        username: user.username,
+        password: user.password,
+        external: user.external,
+        authorities,
+        grantedAuthoritiesUiModel,
+        appSettings,
+      });
+    } else {
+      userModel = undefined;
+    }
+
+    securityContextService.updateAuthenticatedUser(userModel);
     ServiceProvider.get(AuthenticationStorageService).setAuthToken('token');
     return Promise.resolve();
   }
@@ -283,16 +313,15 @@ export class OntoTestContext {
    * @param overrides
    * @private
    */
-  private createSecurityConfig(overrides?: Partial<SecurityConfig>): SecurityConfig {
-    const config = {
+  private createSecurityConfig(overrides?: SecurityConfigInit): SecurityConfig {
+    const config: SecurityConfigInit = {
       enabled: true,
-      userLoggedIn: false,
       passwordLoginEnabled: false,
       openIdEnabled: false,
-      freeAccess: {},
-      overrideAuth: {},
+      freeAccess: new AuthSettings({}),
+      overrideAuth: new AuthSettings({}),
       ...overrides
-    } as SecurityConfig;
+    };
     return new SecurityConfig(config);
   }
 }

@@ -1,5 +1,5 @@
 import {SecurityService} from '../security.service';
-import {AuthenticatedUser, AuthorityList, SecurityConfig} from '../../../models/security';
+import {AuthenticatedUser, AuthorityList, SecurityConfig, SecurityConfigResponse} from '../../../models/security';
 import {TestUtil} from '../../utils/test/test-util';
 import {ResponseMock} from '../../http/test/response-mock';
 import {service, ServiceProvider} from '../../../providers';
@@ -17,6 +17,7 @@ import {ProviderResponseMocks} from '../auth-strategies/tests/provider-response-
 import {UserResponseMapper} from '../../users/user-response.mapper';
 import {CookieConsent} from '../../../models/cookie';
 import {AuthStrategyResolver} from '../auth-strategy-resolver';
+import {SecurityConfigMapper} from '../mappers/security-config.mapper';
 
 describe('SecurityService', () => {
   let securityService: SecurityService;
@@ -85,7 +86,9 @@ describe('SecurityService', () => {
         new ResponseMock('rest/security/all').setResponse(ProviderResponseMocks.securityConfig)
       ]);
 
-      const mappedConfig = SecurityConfigTestUtil.createSecurityConfig(ProviderResponseMocks.securityConfig);
+      const mappedConfig = new SecurityConfigMapper().mapToModel(
+        ProviderResponseMocks.securityConfig as SecurityConfigResponse
+      );
 
       const result = await securityService.getSecurityConfig();
       expect(result).toEqual(mappedConfig);

@@ -2,7 +2,7 @@ import {AuthorizationService} from '../authorization.service';
 import {SecurityContextService} from '../security-context.service';
 import {AuthenticatedUser, Authority, AuthorityList} from '../../../models/security';
 import {Repository} from '../../../models/repositories';
-import {MapperProvider, ServiceProvider} from '../../../providers';
+import {ServiceProvider} from '../../../providers';
 import {AuthenticatedUserMapper} from '../mappers/authenticated-user.mapper';
 import {WindowService} from '../../window';
 import {RouteItemModel} from '../../../models/routing/route-item-model';
@@ -11,6 +11,7 @@ import {RepositoryStorageService} from '../../repository';
 import {SecurityConfigTestUtil} from '../../utils/test/security-config-test-util';
 import {AuthSettings} from '../../../models/security/auth-settings';
 import {AppSettings} from '../../../models/users/app-settings';
+import {AuthenticatedUserResponse} from '../../../models/security/response-models/authenticated-user-response';
 
 const getSecurityConfig = (securityEnabled: boolean, freeAccessEnabled: boolean, overrideAuth = false) => {
   return SecurityConfigTestUtil.createSecurityConfig(
@@ -20,6 +21,19 @@ const getSecurityConfig = (securityEnabled: boolean, freeAccessEnabled: boolean,
       overrideAuth: new AuthSettings({enabled: overrideAuth, authorities: new AuthorityList()} )
     }
   );
+};
+
+const makeAuthenticatedUserResponse = (
+  overrides: Partial<AuthenticatedUserResponse> = {}
+): AuthenticatedUserResponse => {
+  return {
+    external: false,
+    username: 'test-user',
+    password: '',
+    authorities: [],
+    appSettings: {},
+    ...overrides,
+  };
 };
 
 describe('AuthorizationService', () => {
@@ -66,8 +80,8 @@ describe('AuthorizationService', () => {
     test('hasRole should return true if the user has the specified role/disabled security/free access', () => {
       // Given, I have a user with the role
       const userRole = 'ROLE_USER' as Authority;
-      const userWithRole = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
-        {external: false, authorities: [userRole]} as unknown as AuthenticatedUser
+      const userWithRole = new AuthenticatedUserMapper().mapToModel(
+        makeAuthenticatedUserResponse({ authorities: [userRole] })
       );
       securityContextService.updateAuthenticatedUser(userWithRole);
 
@@ -95,8 +109,8 @@ describe('AuthorizationService', () => {
 
       // When, I have 'IS_AUTHENTICATED_FULLY' authority
       // Then, I expect, to have the role
-      const userWithIsAuthenticatedFullyAuthority = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
-        {external: false, authorities: []} as unknown as AuthenticatedUser
+      const userWithIsAuthenticatedFullyAuthority = new AuthenticatedUserMapper().mapToModel(
+        makeAuthenticatedUserResponse({ authorities: [] })
       );
       securityContextService.updateAuthenticatedUser(userWithIsAuthenticatedFullyAuthority);
 
@@ -106,9 +120,15 @@ describe('AuthorizationService', () => {
     test('hasRole should return false if the user does not have the specified role/free access', () => {
       // Given, I have a user with the role
       const userRole = 'ROLE_USER' as Authority;
-      const userWithRole = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
-        {external: false, authorities: [userRole]} as unknown as AuthenticatedUser
-      );
+      const userResponse: AuthenticatedUserResponse = {
+        username: 'test-user',
+        password: '',           // not relevant for this test
+        authorities: [userRole],
+        appSettings: {},        // not relevant for this test
+        external: false,
+      };
+
+      const userWithRole = new AuthenticatedUserMapper().mapToModel(userResponse);
       securityContextService.updateAuthenticatedUser(userWithRole);
 
       // And, I have a security config with disabled free access
@@ -150,8 +170,8 @@ describe('AuthorizationService', () => {
       securityContextService.updateSecurityConfig(getSecurityConfig(true, false));
 
       // And, I have a user with ROLE_ADMIN authority
-      const adminUser = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
-        {external: false, authorities: [Authority.ROLE_ADMIN]} as unknown as AuthenticatedUser
+      const adminUser = new AuthenticatedUserMapper().mapToModel(
+        makeAuthenticatedUserResponse({ authorities: [Authority.ROLE_ADMIN] })
       );
       securityContextService.updateAuthenticatedUser(adminUser);
 
@@ -172,8 +192,8 @@ describe('AuthorizationService', () => {
       securityContextService.updateSecurityConfig(getSecurityConfig(true, false));
 
       // And, I have a user with ROLE_REPO_MANAGER authority
-      const repoManagerUser = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
-        {external: false, authorities: [Authority.ROLE_REPO_MANAGER]} as unknown as AuthenticatedUser
+      const repoManagerUser = new AuthenticatedUserMapper().mapToModel(
+        makeAuthenticatedUserResponse({ authorities: [Authority.ROLE_REPO_MANAGER] })
       );
       securityContextService.updateAuthenticatedUser(repoManagerUser);
 
@@ -194,8 +214,8 @@ describe('AuthorizationService', () => {
       securityContextService.updateSecurityConfig(getSecurityConfig(true, false));
 
       // And, I have a user with ROLE_USER authority
-      const user = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
-        {external: false, authorities: [Authority.ROLE_USER]} as unknown as AuthenticatedUser
+      const user = new AuthenticatedUserMapper().mapToModel(
+        makeAuthenticatedUserResponse({ authorities: [Authority.ROLE_USER] })
       );
       securityContextService.updateAuthenticatedUser(user);
 
@@ -230,8 +250,8 @@ describe('AuthorizationService', () => {
       // And, I have a regular user with specific READ rights for a repository
       const repositoryId = 'testRepo';
       const readRepoAuthority = `READ_REPO_${repositoryId}` as Authority;
-      const regularUser = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
-        {external: false, authorities: [Authority.ROLE_USER, readRepoAuthority]} as unknown as AuthenticatedUser
+      const regularUser = new AuthenticatedUserMapper().mapToModel(
+        makeAuthenticatedUserResponse({ authorities: [Authority.ROLE_USER, readRepoAuthority] })
       );
       securityContextService.updateAuthenticatedUser(regularUser);
 
@@ -253,8 +273,8 @@ describe('AuthorizationService', () => {
 
       // And, I have a regular user without specific READ rights for the repository
       const repositoryId = 'testRepo';
-      const regularUser = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
-        {external: false, authorities: [Authority.ROLE_USER]} as unknown as AuthenticatedUser
+      const regularUser = new AuthenticatedUserMapper().mapToModel(
+        makeAuthenticatedUserResponse({ authorities: [Authority.ROLE_USER] })
       );
       securityContextService.updateAuthenticatedUser(regularUser);
 
@@ -277,8 +297,8 @@ describe('AuthorizationService', () => {
 
       // And, I have a regular user with specific READ rights for the repository with location
       const readRepoWithLocationAuthority = `READ_REPO_${repositoryId}@${location}` as Authority;
-      const userWithSpecificLocationRights = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
-        {external: false, authorities: [Authority.ROLE_USER, readRepoWithLocationAuthority]} as unknown as AuthenticatedUser
+      const userWithSpecificLocationRights = new AuthenticatedUserMapper().mapToModel(
+        makeAuthenticatedUserResponse({ authorities: [Authority.ROLE_USER, readRepoWithLocationAuthority] })
       );
       securityContextService.updateAuthenticatedUser(userWithSpecificLocationRights);
 
@@ -287,8 +307,8 @@ describe('AuthorizationService', () => {
       expect(authorizationService.canReadRepo(repository)).toBe(true);
 
       // And when I have a user with wildcard read rights
-      const userWithWildcardRights = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
-        {external: false, authorities: [Authority.ROLE_USER, 'READ_REPO_*' as Authority]} as unknown as AuthenticatedUser
+      const userWithWildcardRights = new AuthenticatedUserMapper().mapToModel(
+        makeAuthenticatedUserResponse({ authorities: [Authority.ROLE_USER, 'READ_REPO_*' as Authority] })
       );
       securityContextService.updateAuthenticatedUser(userWithWildcardRights);
 
@@ -301,8 +321,8 @@ describe('AuthorizationService', () => {
     test('hasAuthority should return true for admin users', () => {
       // Given, I have a user with admin authority
       const adminAuthority = Authority.ROLE_ADMIN;
-      const userWithAdminAuthority = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
-        {external: false, authorities: [adminAuthority]} as unknown as AuthenticatedUser
+      const userWithAdminAuthority = new AuthenticatedUserMapper().mapToModel(
+        makeAuthenticatedUserResponse({ authorities: [adminAuthority] })
       );
 
       securityContextService.updateAuthenticatedUser(userWithAdminAuthority);
@@ -320,8 +340,8 @@ describe('AuthorizationService', () => {
         },
         PluginRegistry: {get: jest.fn(() => [])}
       } as unknown as Window);
-      const regularUser = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
-        {external: false, authorities: [Authority.ROLE_USER]} as unknown as AuthenticatedUser
+      const regularUser = new AuthenticatedUserMapper().mapToModel(
+        makeAuthenticatedUserResponse({ authorities: [Authority.ROLE_USER] })
       );
       securityContextService.updateAuthenticatedUser(regularUser);
 
@@ -334,8 +354,8 @@ describe('AuthorizationService', () => {
 
     test('should calculate authority of user', () => {
       // Given, I have a user without read permissions for all repositories
-      const regularUser = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
-        {authorities: [Authority.ROLE_USER]} as unknown as AuthenticatedUser
+      const regularUser = new AuthenticatedUserMapper().mapToModel(
+        makeAuthenticatedUserResponse({ authorities: [Authority.ROLE_USER] })
       );
       securityContextService.updateAuthenticatedUser(regularUser);
       securityContextService.updateSecurityConfig(getSecurityConfig(true, false));
@@ -375,7 +395,11 @@ describe('AuthorizationService', () => {
       // Given, I have security and free access enabled
       const config = SecurityConfigTestUtil.createSecurityConfig({
         enabled: true,
-        freeAccess: new AuthSettings({enabled: true, authorities: [Authority.ROLE_USER] as unknown as AuthorityList, appSettings: new AppSettings()})
+        freeAccess: new AuthSettings({
+          enabled: true,
+          authorities: new AuthorityList([Authority.ROLE_USER]),
+          appSettings: new AppSettings(),
+        })
       });
       securityContextService.updateSecurityConfig(config);
 
@@ -424,8 +448,8 @@ describe('AuthorizationService', () => {
   describe('isAdmin', () => {
     test('should return true when user has ROLE_ADMIN', () => {
       // Given, I have a user with admin role
-      const adminUser = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
-        {external: false, authorities: [Authority.ROLE_ADMIN]} as unknown as AuthenticatedUser
+      const adminUser = new AuthenticatedUserMapper().mapToModel(
+        makeAuthenticatedUserResponse({ authorities: [Authority.ROLE_ADMIN] })
       );
       securityContextService.updateAuthenticatedUser(adminUser);
       securityContextService.updateSecurityConfig(getSecurityConfig(true, false));
@@ -437,8 +461,8 @@ describe('AuthorizationService', () => {
 
     test('should return false when user does not have ROLE_ADMIN', () => {
       // Given, I have a regular user without admin role
-      const regularUser = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
-        {external: false, authorities: [Authority.ROLE_USER]} as unknown as AuthenticatedUser
+      const regularUser = new AuthenticatedUserMapper().mapToModel(
+        makeAuthenticatedUserResponse({ authorities: [Authority.ROLE_USER] })
       );
       securityContextService.updateAuthenticatedUser(regularUser);
       securityContextService.updateSecurityConfig(getSecurityConfig(true, false));
@@ -452,8 +476,8 @@ describe('AuthorizationService', () => {
   describe('isRepoManager', () => {
     test('should return true when user has ROLE_REPO_MANAGER', () => {
       // Given, I have a user with repo manager role
-      const repoManagerUser = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
-        {external: false, authorities: [Authority.ROLE_REPO_MANAGER]} as unknown as AuthenticatedUser
+      const repoManagerUser = new AuthenticatedUserMapper().mapToModel(
+        makeAuthenticatedUserResponse({ authorities: [Authority.ROLE_REPO_MANAGER] })
       );
       securityContextService.updateAuthenticatedUser(repoManagerUser);
       securityContextService.updateSecurityConfig(getSecurityConfig(true, false));
@@ -465,8 +489,8 @@ describe('AuthorizationService', () => {
 
     test('should return false when user does not have ROLE_REPO_MANAGER', () => {
       // Given, I have a regular user without repo manager role
-      const regularUser = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
-        {external: false, authorities: [Authority.ROLE_USER]} as unknown as AuthenticatedUser
+      const regularUser = new AuthenticatedUserMapper().mapToModel(
+        makeAuthenticatedUserResponse({ authorities: [Authority.ROLE_USER] })
       );
       securityContextService.updateAuthenticatedUser(regularUser);
       securityContextService.updateSecurityConfig(getSecurityConfig(true, false));
@@ -515,8 +539,8 @@ describe('AuthorizationService', () => {
 
     test('should return true when user has ROLE_ADMIN', () => {
       // Given, I have admin user
-      const adminUser = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
-        {external: false, authorities: [Authority.ROLE_ADMIN]} as unknown as AuthenticatedUser
+      const adminUser = new AuthenticatedUserMapper().mapToModel(
+        makeAuthenticatedUserResponse({ authorities: [Authority.ROLE_ADMIN] })
       );
       securityContextService.updateAuthenticatedUser(adminUser);
       securityContextService.updateSecurityConfig(getSecurityConfig(true, false));
@@ -529,8 +553,8 @@ describe('AuthorizationService', () => {
 
     test('should return true when user has ROLE_REPO_MANAGER', () => {
       // Given, I have repo manager user
-      const repoManagerUser = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
-        {external: false, authorities: [Authority.ROLE_REPO_MANAGER]} as unknown as AuthenticatedUser
+      const repoManagerUser = new AuthenticatedUserMapper().mapToModel(
+        makeAuthenticatedUserResponse({ authorities: [Authority.ROLE_REPO_MANAGER] })
       );
       securityContextService.updateAuthenticatedUser(repoManagerUser);
       securityContextService.updateSecurityConfig(getSecurityConfig(true, false));
@@ -543,8 +567,8 @@ describe('AuthorizationService', () => {
 
     test('should return false when user tries to write to SYSTEM repository', () => {
       // Given, I have regular user and SYSTEM repository
-      const regularUser = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
-        {external: false, authorities: [Authority.ROLE_USER]} as unknown as AuthenticatedUser
+      const regularUser = new AuthenticatedUserMapper().mapToModel(
+        makeAuthenticatedUserResponse({ authorities: [Authority.ROLE_USER] })
       );
       securityContextService.updateAuthenticatedUser(regularUser);
       securityContextService.updateSecurityConfig(getSecurityConfig(true, false));
@@ -559,8 +583,8 @@ describe('AuthorizationService', () => {
       // Given, I have user with write rights for specific repository
       const repositoryId = 'testRepo';
       const writeRepoAuthority = `WRITE_REPO_${repositoryId}` as Authority;
-      const userWithWriteRights = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
-        {external: false, authorities: [Authority.ROLE_USER, writeRepoAuthority]} as unknown as AuthenticatedUser
+      const userWithWriteRights = new AuthenticatedUserMapper().mapToModel(
+        makeAuthenticatedUserResponse({ authorities: [Authority.ROLE_USER, writeRepoAuthority] })
       );
       securityContextService.updateAuthenticatedUser(userWithWriteRights);
       securityContextService.updateSecurityConfig(getSecurityConfig(true, false));
@@ -573,8 +597,8 @@ describe('AuthorizationService', () => {
 
     test('should return false when user does not have WRITE rights on repository', () => {
       // Given, I have user without write rights for repository
-      const regularUser = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
-        {external: false, authorities: [Authority.ROLE_USER]} as unknown as AuthenticatedUser
+      const regularUser = new AuthenticatedUserMapper().mapToModel(
+        makeAuthenticatedUserResponse({ authorities: [Authority.ROLE_USER] })
       );
       securityContextService.updateAuthenticatedUser(regularUser);
       securityContextService.updateSecurityConfig(getSecurityConfig(true, false));
@@ -615,8 +639,8 @@ describe('AuthorizationService', () => {
       // Given, I have user with GraphQL read rights for specific repository
       const repositoryId = 'testRepo';
       const readGqlAuthority = `READ_REPO_${repositoryId}:GRAPHQL` as Authority;
-      const userWithGqlReadRights = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
-        {external: false, authorities: [Authority.ROLE_USER, readGqlAuthority]} as unknown as AuthenticatedUser
+      const userWithGqlReadRights = new AuthenticatedUserMapper().mapToModel(
+        makeAuthenticatedUserResponse({ authorities: [Authority.ROLE_USER, readGqlAuthority] })
       );
       securityContextService.updateAuthenticatedUser(userWithGqlReadRights);
       const repository = {id: repositoryId} as Repository;
@@ -629,8 +653,8 @@ describe('AuthorizationService', () => {
     test('should return true when user has wildcard GraphQL READ rights', () => {
       // Given, I have user with wildcard GraphQL read rights
       const wildcardGqlAuthority = 'READ_REPO_*:GRAPHQL' as Authority;
-      const userWithWildcardRights = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
-        {external: false, authorities: [Authority.ROLE_USER, wildcardGqlAuthority]} as unknown as AuthenticatedUser
+      const userWithWildcardRights = new AuthenticatedUserMapper().mapToModel(
+        makeAuthenticatedUserResponse({ authorities: [Authority.ROLE_USER, wildcardGqlAuthority] })
       );
       securityContextService.updateAuthenticatedUser(userWithWildcardRights);
       const repository = {id: 'testRepo'} as Repository;
@@ -670,8 +694,8 @@ describe('AuthorizationService', () => {
       // Given, I have user with GraphQL write rights for specific repository
       const repositoryId = 'testRepo';
       const writeGqlAuthority = `WRITE_REPO_${repositoryId}:GRAPHQL` as Authority;
-      const userWithGqlWriteRights = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
-        {external: false, authorities: [Authority.ROLE_USER, writeGqlAuthority]} as unknown as AuthenticatedUser
+      const userWithGqlWriteRights = new AuthenticatedUserMapper().mapToModel(
+        makeAuthenticatedUserResponse({ authorities: [Authority.ROLE_USER, writeGqlAuthority] })
       );
       securityContextService.updateAuthenticatedUser(userWithGqlWriteRights);
       const repository = {id: repositoryId} as Repository;
@@ -684,8 +708,8 @@ describe('AuthorizationService', () => {
     test('should return true when user has wildcard GraphQL WRITE rights', () => {
       // Given, I have user with wildcard GraphQL write rights
       const wildcardGqlAuthority = 'WRITE_REPO_*:GRAPHQL' as Authority;
-      const userWithWildcardRights = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
-        {external: false, authorities: [Authority.ROLE_USER, wildcardGqlAuthority]} as unknown as AuthenticatedUser
+      const userWithWildcardRights = new AuthenticatedUserMapper().mapToModel(
+        makeAuthenticatedUserResponse({ authorities: [Authority.ROLE_USER, wildcardGqlAuthority] })
       );
       securityContextService.updateAuthenticatedUser(userWithWildcardRights);
       const repository = {id: 'testRepo'} as Repository;
@@ -701,8 +725,8 @@ describe('AuthorizationService', () => {
       // Given, I have user with GraphQL read rights
       const repositoryId = 'testRepo';
       const readGqlAuthority = `READ_REPO_${repositoryId}:GRAPHQL` as Authority;
-      const userWithGqlReadRights = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
-        {external: false, authorities: [Authority.ROLE_USER, readGqlAuthority]} as unknown as AuthenticatedUser
+      const userWithGqlReadRights = new AuthenticatedUserMapper().mapToModel(
+        makeAuthenticatedUserResponse({ authorities: [Authority.ROLE_USER, readGqlAuthority] })
       );
       securityContextService.updateAuthenticatedUser(userWithGqlReadRights);
       const repository = {id: repositoryId} as Repository;
@@ -716,8 +740,8 @@ describe('AuthorizationService', () => {
       // Given, I have user with GraphQL write rights
       const repositoryId = 'testRepo';
       const writeGqlAuthority = `WRITE_REPO_${repositoryId}:GRAPHQL` as Authority;
-      const userWithGqlWriteRights = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
-        {external: false, authorities: [Authority.ROLE_USER, writeGqlAuthority]} as unknown as AuthenticatedUser
+      const userWithGqlWriteRights = new AuthenticatedUserMapper().mapToModel(
+        makeAuthenticatedUserResponse({ authorities: [Authority.ROLE_USER, writeGqlAuthority] })
       );
       securityContextService.updateAuthenticatedUser(userWithGqlWriteRights);
       const repository = {id: repositoryId} as Repository;
@@ -729,8 +753,8 @@ describe('AuthorizationService', () => {
 
     test('should return false when user has no GraphQL rights', () => {
       // Given, I have user without GraphQL rights
-      const regularUser = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
-        {external: false, authorities: [Authority.ROLE_USER]} as unknown as AuthenticatedUser
+      const regularUser = new AuthenticatedUserMapper().mapToModel(
+        makeAuthenticatedUserResponse({ authorities: [Authority.ROLE_USER] })
       );
       securityContextService.updateAuthenticatedUser(regularUser);
       const repository = {id: 'testRepo'} as Repository;
@@ -768,8 +792,8 @@ describe('AuthorizationService', () => {
   describe('wildcard permissions', () => {
     test('should calculate wildcard read and write rights', () => {
       // Given, I have a user with wildcard read permissions for EMSPGM- repositories
-      const regularUser = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
-        {authorities: [Authority.ROLE_USER, 'READ_REPO_EMSPGM-*' as Authority]} as unknown as AuthenticatedUser
+      const regularUser = new AuthenticatedUserMapper().mapToModel(
+        makeAuthenticatedUserResponse({ authorities: [Authority.ROLE_USER, 'READ_REPO_EMSPGM-*' as Authority] })
       );
       securityContextService.updateAuthenticatedUser(regularUser);
       const securityConfig = getSecurityConfig(true, false);
@@ -789,8 +813,8 @@ describe('AuthorizationService', () => {
 
     test('should calculate wildcard read and write GQL rights', () => {
       // Given, I have a user with wildcard read permissions for EMSPGM-*:GRAPHQL repositories
-      const regularUser = MapperProvider.get(AuthenticatedUserMapper).mapToModel(
-        {authorities: [Authority.ROLE_USER, 'READ_REPO_EMSPGM-*:GRAPHQL' as Authority]} as unknown as AuthenticatedUser
+      const regularUser = new AuthenticatedUserMapper().mapToModel(
+        makeAuthenticatedUserResponse({ authorities: [Authority.ROLE_USER, 'READ_REPO_EMSPGM-*:GRAPHQL' as Authority] })
       );
       securityContextService.updateAuthenticatedUser(regularUser);
       const securityConfig = getSecurityConfig(true, false);

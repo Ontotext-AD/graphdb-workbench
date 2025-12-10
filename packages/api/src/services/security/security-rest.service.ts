@@ -1,5 +1,5 @@
 import {HttpService} from '../http/http.service';
-import {AuthenticatedUser, AuthSettingsResponseModel, SecurityConfig} from '../../models/security';
+import {AuthenticatedUser, AuthSettingsResponse, SecurityConfigResponse} from '../../models/security';
 import {AuthSettingsRequestModel} from '../../models/security/response-models/auth-settings-request-model';
 import {AuthenticatedUserResponse} from '../../models/security/response-models/authenticated-user-response';
 import {HttpResponse} from '../../models/http';
@@ -34,7 +34,7 @@ export class SecurityRestService extends HttpService {
    *
    * @returns A Promise that resolves with the SecurityConfig object.
    */
-  getSecurityConfig(): Promise<SecurityConfig> {
+  getSecurityConfig(): Promise<SecurityConfigResponse> {
     return this.get(`${this.SECURITY_ENDPOINT}/all`);
   }
 
@@ -71,7 +71,7 @@ export class SecurityRestService extends HttpService {
    * @returns A Promise that resolves with the AuthSettingsResponseModel containing
    *          the free access settings.
    */
-  getFreeAccess(): Promise<AuthSettingsResponseModel> {
+  getFreeAccess(): Promise<AuthSettingsResponse> {
     return this.get(this.SECURITY_FREE_ACCESS_ENDPOINT);
   }
 
@@ -83,7 +83,7 @@ export class SecurityRestService extends HttpService {
    * @param freeAccessData - An AuthSettingsRequestModel object containing the new free access settings.
    * @returns A Promise that resolves with the AuthSettingsResponseModel after updating the settings.
    */
-  setFreeAccess(freeAccessData: AuthSettingsRequestModel): Promise<AuthSettingsResponseModel> {
+  setFreeAccess(freeAccessData: AuthSettingsRequestModel): Promise<AuthSettingsResponse> {
     return this.post(this.SECURITY_FREE_ACCESS_ENDPOINT, {body: freeAccessData});
   }
 }

@@ -11,11 +11,11 @@ export class OperationGroupSummary extends Model<OperationGroupSummary> {
   status: OperationStatus;
   id: string;
 
-  constructor(data: OperationGroupSummary) {
+  constructor(data: Partial<OperationGroupSummary>) {
     super();
     this.id = `${data.group}-${data.status}-${data.totalOperations}`;
-    this.group = data.group;
-    this.totalOperations = data.totalOperations;
-    this.status = data.status;
+    this.group = data.group!;
+    this.totalOperations = data.totalOperations ?? 0;
+    this.status = data.status!;
   }
 }

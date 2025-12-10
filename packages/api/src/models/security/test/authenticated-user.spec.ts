@@ -2,6 +2,8 @@ import {AuthenticatedUser} from '../authenticated-user';
 import {AuthorityList} from '../authorization/authority-list';
 import {Authority} from '../authorization/authority';
 import {AppSettings} from '../../users/app-settings';
+import {AuthenticatedUserResponse} from '../response-models/authenticated-user-response';
+import {AuthenticatedUserMapper} from '../../../services/security';
 
 describe('AuthenticatedUser', () => {
   const sampleAuthenticatedUser = {
@@ -36,17 +38,26 @@ describe('AuthenticatedUser', () => {
   });
 
   it('should map complex authorities to UI model correctly', () => {
-    const data = {
+    const data: AuthenticatedUserResponse = {
       username: 'user1',
       password: 'pass1',
       external: true,
-      authorities: new AuthorityList([`${Authority.READ_REPO_PREFIX}RepoA${Authority.SUFFIX_DELIMITER}${Authority.GRAPHQL}`, Authority.ROLE_USER]),
-      appSettings: { foo: 'bar' },
+      authorities: [
+        `${Authority.READ_REPO_PREFIX}RepoA${Authority.SUFFIX_DELIMITER}${Authority.GRAPHQL}`,
+        Authority.ROLE_USER,
+      ],
+      appSettings: {},
     };
-    const user = new AuthenticatedUser(data as never);
 
-    expect(user.authorities.getItems()).toEqual(data.authorities.getItems());
-    expect(user.grantedAuthoritiesUiModel.getItems()).toContain(`${Authority.GRAPHQL_PREFIX}RepoA`);
-    expect(user.grantedAuthoritiesUiModel.getItems()).toContain(Authority.ROLE_USER);
+    const mapper = new AuthenticatedUserMapper();
+    const user = mapper.mapToModel(data);
+
+    expect(user.authorities.getItems()).toEqual(data.authorities);
+    expect(user.grantedAuthoritiesUiModel.getItems()).toContain(
+      `${Authority.GRAPHQL_PREFIX}RepoA`,
+    );
+    expect(user.grantedAuthoritiesUiModel.getItems()).toContain(
+      Authority.ROLE_USER,
+    );
   });
 });

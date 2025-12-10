@@ -2,6 +2,7 @@ import {Model} from '../common';
 import {OperationStatus} from './operation-status';
 import {OperationType} from './operation-type';
 import {OperationGroup} from './operation-group';
+import {OperationInit} from './operation-init';
 
 /** Not all operations have counts as values */
 const OPERATIONS_WITH_COUNT = [OperationType.QUERIES, OperationType.UPDATES, OperationType.IMPORT];
@@ -37,23 +38,31 @@ export class Operation extends Model<Operation> {
   href: string;
   labelKey: string;
 
-  constructor(operation: Operation) {
+  constructor(operation: OperationInit) {
     super();
-    this.id = `${operation.status}-${operation.type}-${operation.value}`;
-    this.value = operation.value;
-    this.status = operation.status;
+    const value = operation?.value ?? '';
+    this.status = operation?.status;
     this.type = operation.type;
-    this.count = this.getCount(operation);
-    this.group = OPERATION_TYPE_TO_GROUP[operation.type];
-    this.href = OPERATION_TYPE_TO_HREF[operation.type];
-    this.labelKey = this.getLabelKey(operation);
+    this.value = value;
+    this.id = operation?.id ?? `${this.status}-${this.type}-${value}`;
+    this.group = (operation?.group as OperationGroup) ?? OPERATION_TYPE_TO_GROUP[this.type];
+    this.href = operation?.href ?? OPERATION_TYPE_TO_HREF[this.type];
+    this.count = this.getCount(value);
+    this.labelKey = this.getLabelKey(value);
   }
 
-  private getCount(operation: Operation) {
-    return OPERATIONS_WITH_COUNT.includes(operation.type) ? parseInt(operation.value, 10) : 0;
+  private getCount(value: string): number {
+    if (!OPERATIONS_WITH_COUNT.includes(this.type)) {
+      return 0;
+    }
+
+    const parsed = Number.parseInt(value, 10);
+    return Number.isNaN(parsed) ? 0 : parsed;
   }
 
-  private getLabelKey(operation: Operation) {
-    return OPERATIONS_WITH_COUNT.includes(operation.type) ? operation.type : operation.value;
+  private getLabelKey(value: string): string {
+    return OPERATIONS_WITH_COUNT.includes(this.type)
+      ? this.type
+      : value;
   }
 }

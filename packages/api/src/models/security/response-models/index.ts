@@ -1,1 +1,1 @@
-export * from './auth-settings-response-model';
+export * from './auth-settings-response';
