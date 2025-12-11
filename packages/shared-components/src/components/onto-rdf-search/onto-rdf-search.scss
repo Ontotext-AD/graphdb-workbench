@@ -18,13 +18,15 @@
     -webkit-transition: top 0.3s ease-in, opacity 0.5s ease;
     transition: top 0.3s ease-in, opacity 0.5s ease;
 
-    box-shadow: 0 3px 6px rgba(0,0,0,.1);
     border-radius: 0;
     margin-bottom: 1em;
     padding: 1.6rem;
-    border: 1px solid rgba(0,0,0,.125);
+
     color: var(--gw-dialog-color);
     background-color: var(--gw-dialog-background);
+    border: 1px solid var(--gw-dialog-border-color);
+    box-shadow: var(--gw-dialog-shadow-1-offset-x) var(--gw-dialog-shadow-1-offset-y) var(--gw-dialog-shadow-1-blur) var(--gw-dialog-shadow-1-spread) var(--gw-dialog-shadow-1-color);
+
 
     &.visible {
       top: 40px;

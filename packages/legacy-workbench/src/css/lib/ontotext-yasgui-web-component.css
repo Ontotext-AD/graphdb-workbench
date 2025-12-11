@@ -84,11 +84,21 @@ yasgui-component .yasgui-toolbar .btn-orientation {
 /*----------------------------------------*/
 /*           Yasqe autocomplete            */
 /*----------------------------------------*/
+.CodeMirror-hints {
+    border: 1px solid var(--gw-autocomplete-border-color);
+    box-shadow: var(--gw-autocomplete-shadow-offset-x) var(--gw-autocomplete-shadow-offset-y) var(--gw-autocomplete-shadow-blur) var(--gw-autocomplete-shadow-spread) var(--gw-autocomplete-shadow-color);
+}
 
 .CodeMirror-hints,
 .CodeMirror-hints .CodeMirror-hint {
+    font-family: inherit;
     color: var(--gw-autocomplete-color);
     background-color: var(--gw-autocomplete-background);
+
+    b {
+        color: var(--gw-autocomplete-dropdown-match-color);
+        font-weight: bolder;
+    }
 }
 
 .CodeMirror-hints .CodeMirror-hint-active {

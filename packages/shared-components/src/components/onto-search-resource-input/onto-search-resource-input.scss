@@ -89,22 +89,24 @@
     & p {
       font-size: 1.1rem;
       line-height: 1.5;
-      color: var(--gw-autocomplete-option-color);
+      color: var(--gw-autocomplete-color);
       background-color: var(--gw-autocomplete-background);
       margin-bottom: 0;
       padding: 5px 25px;
       cursor: pointer;
 
       & b {
-        color: var(--gw-secondary-base, #003663);
+        color: var(--gw-autocomplete-dropdown-match-color);
       }
 
       &.selected {
-        background-color: var(--autocomplete-background-selected, #02A99A);
+        color: var(--gw-autocomplete-option-selected-color);
+        background-color: var(--gw-autocomplete-option-selected-background);
       }
 
       &.hovered:not(.selected), &:hover:not(.selected) {
-        background-color: var(--autocomplete-background, #02a98f4d);
+        color: var(--gw-autocomplete-option-focus-color);
+        background-color: var(--gw-autocomplete-option-focus-background);
       }
     }
   }

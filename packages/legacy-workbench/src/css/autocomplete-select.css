@@ -30,7 +30,7 @@
 
 .autocomplete-select-wrapper .autocomplete-results-wrapper div p b,
 .autocomplete-select-wrapper .autocomplete-results-wrapper div.active p b {
-    color: var(--autocomplete-match);
+    color: var(--gw-autocomplete-dropdown-match-color);
 }
 
 .autocomplete-select-wrapper .autocomplete-results-wrapper div p {

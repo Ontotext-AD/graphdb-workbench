@@ -1,5 +1,5 @@
 b {
-    color: var(--autocomplete-match);
+    color: var(--gw-autocomplete-dropdown-match-color);
 }
 .angucomplete-dropdown {
     overflow-y: auto;

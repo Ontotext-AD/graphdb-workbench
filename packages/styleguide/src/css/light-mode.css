@@ -41,6 +41,10 @@
   --gw-sidenav-logo-background: #002b4f;
   --gw-panel-header-background: rgba(0, 0, 0, 0);
   --gw-paginator-nav-button-background: rgba(0, 0, 0, 0);
+  --gw-autocomplete-shadow-blur: 2px;
+  --gw-autocomplete-shadow-spread: 0;
+  --gw-autocomplete-shadow-offset-x: 0;
+  --gw-autocomplete-shadow-offset-y: 1px;
   --gw-dialog-shadow-1-blur: 25px;
   --gw-dialog-shadow-1-spread: -5px;
   --gw-dialog-shadow-1-offset-x: 0;
@@ -84,7 +88,7 @@
   --gw-tertiary-lighter: var(--gw-main-teal-200);
   --gw-tertiary-light: var(--gw-main-teal-600);
   --gw-tertiary-dark: var(--gw-main-teal-800);
-  --gw-defaul-border-radius: var(--gw-border-radius-none);
+  --gw-default-border-radius: var(--gw-border-radius-none);
   --gw-listbox-option-group-background: var(--gw-list-option-group-background);
   --gw-primary-base: var(--gw-primary-700);
   --gw-primary-lighter: var(--gw-primary-200);
@@ -113,6 +117,8 @@
   --gw-form-field-disabled-color: var(--gw-neutral-600);
   --gw-form-field-filled-background: var(--gw-neutral-100);
   --gw-form-field-placeholder-color: var(--gw-neutral-500);
+  --gw-default-border-color: var(--gw-neutral-300);
+  --gw-default-background: var(--gw-neutral-0);
   --gw-list-option-focus-background: var(--gw-neutral-100);
   --gw-sidenav-menuitem-hover-background: var(--gw-neutral-200);
   --gw-sidenav-menuitem-selected-background: var(--gw-neutral-200);
@@ -120,7 +126,7 @@
   --gw-sidenav-submenuitem-hover-background: var(--gw-neutral-300);
   --gw-sidenav-collapsebutton-background: var(--gw-neutral-shadow);
   --gw-sidenav-collapsebutton-color: var(--gw-neutral-400);
-  --gw-overlay-modal-border-radius: var(--gw-defaul-border-radius);
+  --gw-overlay-modal-border-radius: var(--gw-default-border-radius);
   --gw-overlay-modal-background: var(--gw-neutral-0);
   --gw-button-secondary-background: var(--gw-neutral-100);
   --gw-button-secondary-hover-background: var(--gw-neutral-200);
@@ -142,8 +148,6 @@
   --gw-highlight-background: var(--gw-secondary-200);
   --gw-hover-color: var(--gw-neutral-800);
   --gw-hover-background: var(--gw-neutral-200);
-  --gw-default-border-color: var(--gw-neutral-300);
-  --gw-default-background: var(--gw-neutral-0);
   --gw-toggleswitch-handle-background: var(--gw-neutral-0);
   --gw-toggleswitch-handle-checked-background: var(--gw-neutral-0);
   --gw-toggleswitch-background: var(--gw-neutral-300);
@@ -155,6 +159,7 @@
   --gw-tooltip-color: var(--gw-neutral-0);
   --gw-datatable-row-striped-background: var(--gw-neutral-100);
   --gw-toast-error-close-button-focus-ring-color: var(--gw-danger-600);
+  --gw-autocomplete-shadow-color: var(--gw-neutral-shadow);
   --gw-dialog-shadow-1-color: var(--gw-neutral-shadow);
   --gw-primary-contrast-color: var(--gw-contrast-text);
   --gw-primary-hover-color: var(--gw-primary-dark);
@@ -169,6 +174,8 @@
   --gw-form-field-icon-color: var(--gw-neutral-light);
   --gw-form-field-color: var(--gw-neutral-dark);
   --gw-border-color-primary: var(--gw-primary-base);
+  --gw-default-muted-color: var(--gw-muted-color);
+  --gw-default-color: var(--gw-neutral-darker);
   --gw-list-option-focus-color: var(--gw-hover-color);
   --gw-list-option-selected-background: var(--gw-highlight-background);
   --gw-sidenav-menuitem-icon-color: var(--gw-primary-base);
@@ -208,14 +215,13 @@
   --gw-highlight-color: var(--gw-primary-base);
   --gw-text-color: var(--gw-neutral-darker);
   --gw-text-muted-color: var(--gw-muted-color);
-  --gw-default-muted-color: var(--gw-muted-color);
-  --gw-default-color: var(--gw-neutral-darker);
   --gw-help-lighter: var(--gw-neutral-lighter);
   --gw-help-dark: var(--gw-neutral-dark);
   --gw-panel-background: var(--gw-default-background);
   --gw-panel-border-color: var(--gw-default-border-color);
   --gw-toggleswitch-checked-background: var(--gw-primary-base);
   --gw-autocomplete-option-focus-background: var(--gw-list-option-focus-background);
+  --gw-autocomplete-dropdown-match-color: var(--gw-secondary-base);
   --gw-message-info-background: var(--gw-info-lighter);
   --gw-message-info-border-color: var(--gw-info-lighter);
   --gw-message-info-color: var(--gw-info-dark);
@@ -268,6 +274,7 @@
   --gw-toast-error-background: var(--gw-error-base);
   --gw-toast-error-border-color: var(--gw-error-base);
   --gw-toast-error-color: var(--gw-contrast-text);
+  --gw-default-success-light-background: var(--gw-success-lighter);
   --gw-list-option-selected-focus-background: var(--gw-highlight-focus-background);
   --gw-list-option-selected-focus-color: var(--gw-highlight-focus-color);
   --gw-list-option-selected-color: var(--gw-text-color);
@@ -282,10 +289,10 @@
   --gw-button-primary-border-color: var(--gw-border-color-primary);
   --gw-button-primary-color: var(--gw-primary-contrast-color);
   --gw-button-secondary-link-color: var(--gw-primary-contrast-color);
-  --gw-default-success-light-background: var(--gw-success-lighter);
   --gw-panel-color: var(--gw-default-color);
   --gw-panel-header-color: var(--gw-heading-default-color);
   --gw-autocomplete-background: var(--gw-form-field-background);
+  --gw-autocomplete-border-color: var(--gw-form-field-border-color);
   --gw-autocomplete-color: var(--gw-form-field-color);
   --gw-autocomplete-option-focus-color: var(--gw-list-option-focus-color);
   --gw-autocomplete-option-selected-background: var(--gw-list-option-selected-background);
@@ -324,7 +331,6 @@
   --gw-toast-success-border-color: var(--gw-success-base);
   --gw-toast-success-color: var(--gw-primary-contrast-color);
   --gw-autocomplete-option-selected-color: var(--gw-list-option-selected-color);
-  --gw-autocomplete-option-color: var(--gw-list-option-color);
   --gw-message-success-border-color: var(--gw-default-success-light-background);
   --gw-select-option-color: var(--gw-list-option-color);
   --gw-listbox-option-selected-focus-background: var(--gw-list-option-selected-focus-background);
