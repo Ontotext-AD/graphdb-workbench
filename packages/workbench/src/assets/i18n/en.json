@@ -15,6 +15,11 @@
       "auth_token_expired": "Your authentication token has expired. Please login again.",
       "wrong_credentials": "Wrong credentials!"
     }
+  },
+  "not_found_page": {
+    "warning": "404 That’s an error!",
+    "url_not_found_msg": "The requested URL was not found on this server. That’s all I know.",
+    "back_to_home": "Back Home"
   }
 }
 
