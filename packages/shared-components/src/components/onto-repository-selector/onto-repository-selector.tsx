@@ -1,10 +1,5 @@
-import {Component, Host, h, State, Prop, Watch} from '@stencil/core';
-import {
-  Repository,
-  ServiceProvider,
-  RepositoryContextService,
-  UriUtil, RepositorySizeInfo
-} from '@ontotext/workbench-api';
+import {Component, h, Host, Prop, State, Watch} from '@stencil/core';
+import {Repository, RepositoryContextService, RepositorySizeInfo, service, UriUtil} from '@ontotext/workbench-api';
 import {DropdownItem} from '../../models/dropdown/dropdown-item';
 import {DropdownItemAlignment} from '../../models/dropdown/dropdown-item-alignment';
 import {RepositorySelection} from './repository-selection';
@@ -14,7 +9,7 @@ import {OntoTooltipPlacement} from '../onto-tooltip/models/onto-tooltip-placemen
 @Component({
   tag: 'onto-repository-selector',
   styleUrl: 'onto-repository-selector.scss',
-  shadow: false,
+  shadow: false
 })
 /**
  * A StencilJS component that renders a repository selector dropdown. This component fetches the list of repositories
@@ -31,7 +26,7 @@ import {OntoTooltipPlacement} from '../onto-tooltip/models/onto-tooltip-placemen
  *           </onto-repository-selector>
  */
 export class OntoRepositorySelector {
-  private readonly repositoryContextService = ServiceProvider.get(RepositoryContextService);
+  private readonly repositoryContextService = service(RepositoryContextService);
   private readonly subscriptions: (() => void)[] = [];
 
   /**
@@ -53,6 +48,11 @@ export class OntoRepositorySelector {
    * Formatter for numeric values in tooltips.
    */
   @Prop() totalTripletsFormatter: Intl.NumberFormat;
+
+  /**
+   * Formatter for numeric values with fraction in tooltips.
+   */
+  @Prop() expansionRatioFormatter: Intl.NumberFormat;
 
   /**
    * Determines whether the current user has write access to the repository.
@@ -115,15 +115,15 @@ export class OntoRepositorySelector {
     return (
       <Host>
         <onto-dropdown
-          class='onto-repository-selector'
+          class="onto-repository-selector"
           data-test={'onto-repository-selector'}
           onValueChanged={this.onValueChanged()}
           dropdownButtonName={repositorySelection}
           dropdownButtonTooltip={this.createTooltipFunctionForRepository(this.currentRepository)}
-          {...(this.currentRepository ? { 'dropdownButtonGuideSelector': `repository-id-${this.currentRepository.id}` } : {})}
+          {...(this.currentRepository ? {'dropdownButtonGuideSelector': `repository-id-${this.currentRepository.id}`} : {})}
           dropdownAlignment={DropdownItemAlignment.RIGHT}
           tooltipPlacement={this.tooltipAlignment}
-          tooltipTheme='light-border'
+          tooltipTheme="light-border"
           items={this.dropdownItems}
           auto-close>
         </onto-dropdown>
@@ -224,7 +224,7 @@ export class OntoRepositorySelector {
     if (repositorySizeInfo.total >= 0) {
       let value = '-';
       if (repositorySizeInfo.explicit > 0) {
-        value = this.totalTripletsFormatter.format(repositorySizeInfo.total / repositorySizeInfo.explicit);
+        value = this.expansionRatioFormatter.format(repositorySizeInfo.total / repositorySizeInfo.explicit);
       }
 
       html += `
