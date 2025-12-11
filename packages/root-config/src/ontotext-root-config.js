@@ -2,7 +2,7 @@ import {
   registerApplication,
   addErrorHandler,
   getAppStatus,
-  navigateToUrl
+  navigateToUrl,
 } from 'single-spa';
 import {
   constructApplications,
@@ -15,13 +15,13 @@ import {
   EventService,
   NavigationEnd,
   NavigationStart,
-  getBasePath
+  getBasePath,
 } from '@ontotext/workbench-api';
-import microfrontendLayout from './microfrontend-layout.json';
 import './styles/onto-stylesheet.scss';
 import './onto-vendor';
 import './styles/main.scss';
 import './styles/css/charteditor-custom.css';
+import {RouteProvider} from './services/route-provider';
 
 const SINGLE_SPA_GLOBAL_KEY = 'singleSpa';
 
@@ -32,7 +32,7 @@ const appModules = {
   '@ontotext/legacy-workbench': () => import(/* webpackIgnore: true */ '@ontotext/legacy-workbench'),
   '@ontotext/workbench-api': () => import('@ontotext/workbench-api'),
   '@ontotext/root-config': () => import('@ontotext/root-config'),
-  '@ontotext/workbench': () => import(/* webpackIgnore: true */ '@ontotext/workbench')
+  '@ontotext/workbench': () => import(/* webpackIgnore: true */ '@ontotext/workbench'),
 };
 
 function showSplashScreen(show) {
@@ -108,9 +108,8 @@ function loadAppByName(name) {
 }
 
 function initSingleSpa() {
-  // Makes the single spa router aware of reverse proxy context
-  microfrontendLayout.base = getBasePath();
-  const routes = constructRoutes(microfrontendLayout);
+  const layout = RouteProvider.getRoutesConfiguration(getBasePath());
+  const routes = constructRoutes(layout);
   const applications = constructApplications({
     routes,
     loadApp({name}) {
