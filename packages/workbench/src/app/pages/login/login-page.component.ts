@@ -46,8 +46,8 @@ export class LoginPageComponent implements OnInit {
 
   private handleQueryParams(): void {
     const params = this.route.snapshot.queryParamMap;
-    const raw = params.get(UrlPathParams.RETURN_URL) ?? '/';
-    this.returnUrl = decodeURIComponent(raw);
+    const rawReturnUrl = params.get(UrlPathParams.RETURN_URL) ?? '/';
+    this.returnUrl = decodeURIComponent(rawReturnUrl);
 
     if (params.has(UrlPathParams.NO_ACCESS)) {
       this.toastrService.error(
