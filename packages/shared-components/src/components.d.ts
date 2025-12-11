@@ -161,6 +161,10 @@ export namespace Components {
          */
         "currentRepository": Repository;
         /**
+          * Formatter for numeric values with fraction in tooltips.
+         */
+        "expansionRatioFormatter": Intl.NumberFormat;
+        /**
           * The list of repositories to show in the dropdown.
          */
         "items": DropdownItem<Repository>[];
@@ -778,6 +782,10 @@ declare namespace LocalJSX {
           * The currently selected repository.
          */
         "currentRepository"?: Repository;
+        /**
+          * Formatter for numeric values with fraction in tooltips.
+         */
+        "expansionRatioFormatter"?: Intl.NumberFormat;
         /**
           * The list of repositories to show in the dropdown.
          */

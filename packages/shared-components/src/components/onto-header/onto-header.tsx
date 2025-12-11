@@ -89,6 +89,7 @@ export class OntoHeader {
   private pollingInterval: number;
   private repositoryItems: DropdownItem<Repository>[] = [];
   private totalTripletsFormatter: Intl.NumberFormat;
+  private expansionRatioFormatter: Intl.NumberFormat;
   /** Array of subscription cleanup functions */
   private readonly subscriptions: SubscriptionList = new SubscriptionList();
   private skipUpdateActiveOperationsTimes = 0;
@@ -104,6 +105,7 @@ export class OntoHeader {
   connectedCallback() {
     this.currentRepository = this.repositoryContextService.getSelectedRepository();
     this.setupTotalRepositoryFormater();
+    this.setupExpansionRatioFormater();
     this.subscribeToEvents();
     this.currentRoute = getCurrentRoute();
     this.startOperationPolling();
@@ -136,6 +138,7 @@ export class OntoHeader {
             items={this.repositoryItems}
             repositorySizeInfoFetcher={this.repositorySizeInfoFetcher}
             totalTripletsFormatter={this.totalTripletsFormatter}
+            expansionRatioFormatter={this.expansionRatioFormatter}
             canWriteRepo={this.canWriteRepo}>
           </onto-repository-selector>
           {this.showUserMenu && this.user ? <onto-user-menu user={this.user} securityConfig={this.securityConfig}></onto-user-menu> : ''}
@@ -239,7 +242,10 @@ export class OntoHeader {
   private subscribeToLanguageChanged(): void {
     this.subscriptions.add(
       ServiceProvider.get(LanguageContextService)
-        .onSelectedLanguageChanged((language) => this.setupTotalRepositoryFormater(language)));
+        .onSelectedLanguageChanged((language) => {
+          this.setupTotalRepositoryFormater(language);
+          this.setupExpansionRatioFormater(language);
+        }));
   }
 
   // ========================
@@ -390,6 +396,17 @@ export class OntoHeader {
       style: 'decimal',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0
+    });
+  }
+
+  private setupExpansionRatioFormater(language?: string): void {
+    if (!language) {
+      language = this.languageService.getDefaultLanguage();
+    }
+    this.expansionRatioFormatter = new Intl.NumberFormat(language, {
+      style: 'decimal',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
     });
   }
 }
