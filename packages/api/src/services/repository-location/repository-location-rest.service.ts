@@ -1,8 +1,8 @@
-import {RepositoryLocation} from '../../models/repository-location';
 import {HttpService} from '../http/http.service';
+import {RepositoryLocationResponse} from './response/repository-location-response';
 
 export class RepositoryLocationRestService extends HttpService {
-  getActiveRepositoryLocation(): Promise<RepositoryLocation> {
-    return this.get('rest/locations/active');
+  getActiveRepositoryLocation(): Promise<RepositoryLocationResponse> {
+    return this.get<RepositoryLocationResponse>('rest/locations/active');
   }
 }

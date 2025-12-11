@@ -1,8 +1,8 @@
 import {Service} from '../../providers/service/service';
-import {NamespaceMap} from '../../models/repositories';
 import {NamespacesRestService} from './namespaces-rest.service';
 import {ServiceProvider} from '../../providers';
-import {mapNamespaceResponseToModel} from '../repository/mappers/namespace-map.mapper';
+import {mapNamespaceResponseToModel} from './mappers/namespace-map.mapper';
+import {NamespaceMap} from '../../models/namespace';
 
 /**
  * Service for interacting with RDF4J repositories.

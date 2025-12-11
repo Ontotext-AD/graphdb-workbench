@@ -1,9 +1,9 @@
 import {Service} from '../../providers/service/service';
-import {AutocompleteSearchResult} from '../../models/rdf-search/autocomplete-search-result';
+import {AutocompleteSearchResult} from '../../models/rdf-search';
 import {ServiceProvider} from '../../providers';
 import {AutocompleteRestService} from './autocomplete-rest.service';
 import {mapAutocompleteSearchResultResponseToModel} from './mapper/autocomplete-search-result.mapper';
-import {AutocompleteSearchResultResponse} from '../../models/rdf-search/api/autocomplete-search-result-response';
+import {AutocompleteSearchResultResponse} from './response/autocomplete-search-result-response';
 
 /**
  * Service responsible for handling autocomplete functionality in the RDF search.
@@ -19,7 +19,7 @@ export class AutocompleteService implements Service {
    */
   search(searchTerm: string): Promise<AutocompleteSearchResult> {
     return ServiceProvider.get(AutocompleteRestService).search(searchTerm)
-      .then((searchResult: AutocompleteSearchResultResponse) => mapAutocompleteSearchResultResponseToModel(searchResult));
+      .then((autocompleteResponse: AutocompleteSearchResultResponse) => mapAutocompleteSearchResultResponseToModel(autocompleteResponse));
   }
 
   /**

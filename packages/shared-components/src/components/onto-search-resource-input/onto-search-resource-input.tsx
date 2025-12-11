@@ -137,7 +137,7 @@ export class OntoSearchResourceInput {
         </div>
         <span class="hint">{TranslationService.translate('rdf_search.labels.hint')}</span>
         <section class="autocomplete-results-wrapper" data-test='onto-autocomplete-results'>
-          {this.searchResult?.getSuggestions().getItems().map((suggestion) => (
+          {this.searchResult?.suggestions.getItems().map((suggestion) => (
             <p key={suggestion.getId()}
               onClick={this.onSuggestionClick(suggestion)}
               data-test='onto-autocomplete-suggestion'
@@ -300,11 +300,17 @@ export class OntoSearchResourceInput {
   }
 
   private onArrowUp(event: KeyboardEvent) {
+    if (!this.searchResult) {
+      return;
+    }
     this.searchResult = this.searchResult.hoverPreviousSuggestion();
     this.displaySuggestion(event);
   }
 
   private onArrowDown(event: KeyboardEvent) {
+    if (!this.searchResult) {
+      return;
+    }
     this.searchResult = this.searchResult.hoverNextSuggestion();
     this.displaySuggestion(event);
   }

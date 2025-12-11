@@ -16,7 +16,7 @@ import {CookieConsent} from '../../../models/cookie';
 import {AuthStrategyResolver} from '../auth-strategy-resolver';
 import {mapAuthenticatedUserResponseToModel} from '../mappers/authenticated-user.mapper';
 import {mapAuthSettingsResponseToModel} from '../mappers/auth-settings.mapper';
-import {mapUserResponseToModel} from '../../users/user-response.mapper';
+import {mapUserResponseToModel} from '../../users/mappers/user-response.mapper';
 
 describe('SecurityService', () => {
   let securityService: SecurityService;

@@ -1,9 +1,8 @@
-import {User} from '../../models/users/user';
-import {UserResponse} from '../../models/users/response-models/user-response';
-import {AuthorityList} from '../../models/security';
-import {AppSettings} from '../../models/users/app-settings';
-import {CookieConsent} from '../../models/cookie';
-import {MapperFn} from '../../providers/mapper/mapper-fn';
+import {AppSettings, User} from '../../../models/users';
+import {UserResponse} from '../response/user-response';
+import {AuthorityList} from '../../../models/security';
+import {CookieConsent} from '../../../models/cookie';
+import {MapperFn} from '../../../providers/mapper/mapper-fn';
 
 export const mapUserResponseToModel: MapperFn<UserResponse, User> = (data) => {
   return new User({

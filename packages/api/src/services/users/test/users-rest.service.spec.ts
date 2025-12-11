@@ -1,8 +1,8 @@
 import {UsersRestService} from '../users-rest.service';
 import {TestUtil} from '../../utils/test/test-util';
 import {ResponseMock} from '../../http/test/response-mock';
-import {UserResponse} from '../../../models/users/response-models/user-response';
-import {UserRequest} from '../../../models/users/response-models/user-request';
+import {UserResponse} from '../response/user-response';
+import {UserRequest} from '../response/user-request';
 
 describe('UsersRestService', () => {
   let service: UsersRestService;

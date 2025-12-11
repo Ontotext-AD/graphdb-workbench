@@ -1,7 +1,7 @@
 import {NamespacesService} from '../namespaces.service';
-import {NamespaceMap} from '../../../models/repositories';
 import {TestUtil} from '../../utils/test/test-util';
 import {ResponseMock} from '../../http/test/response-mock';
+import {NamespaceMap} from '../../../models/namespace';
 
 describe('Namespaces Service', () => {
   let namespacesService: NamespacesService;

@@ -4,7 +4,7 @@ import {ResponseMock} from '../../http/test/response-mock';
 import {User} from '../../../models/users/user';
 import {AuthorityList, Authority} from '../../../models/security';
 import {AppSettings} from '../../../models/users/app-settings';
-import {UserResponse} from '../../../models/users/response-models/user-response';
+import {UserResponse} from '../response/user-response';
 
 describe('UsersService', () => {
   let service: UsersService;

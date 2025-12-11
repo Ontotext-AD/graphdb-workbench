@@ -1,8 +1,8 @@
 import {ContextService} from '../context';
-import {NamespaceMap} from '../../models/repositories';
 import {DeriveContextServiceContract} from '../../models/context/update-context-method';
 import {ValueChangeCallback} from '../../models/context/value-change-callback';
 import {LifecycleHooks} from '../../providers/service/lifecycle-hooks';
+import {NamespaceMap} from '../../models/namespace';
 
 type NamespacesContextFields = {
   readonly NAMESPACES: string;

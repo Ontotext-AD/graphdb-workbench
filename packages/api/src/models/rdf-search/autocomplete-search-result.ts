@@ -1,6 +1,5 @@
 import {Model} from '../common';
 import {SuggestionList} from './suggestion-list';
-import {AutocompleteSearchResultResponse} from './api/autocomplete-search-result-response';
 import {Suggestion} from './suggestion';
 
 /**
@@ -8,26 +7,21 @@ import {Suggestion} from './suggestion';
  */
 export class AutocompleteSearchResult extends Model<AutocompleteSearchResult> {
   /** The list of suggestions associated with this search result. */
-  private _suggestions!: SuggestionList;
+  suggestions: SuggestionList;
 
-  constructor(searchResult: AutocompleteSearchResultResponse) {
+  constructor(data: SuggestionList) {
     super();
-    this.setSuggestions(searchResult.suggestionList);
-  }
-
-  getSuggestions(): SuggestionList {
-    return this._suggestions;
-  }
-
-  setSuggestions(suggestions: SuggestionList) {
-    this._suggestions = suggestions;
+    this.suggestions = data;
   }
 
   /**
    * Sets the hovered state of the first suggestion to true, if present.
    */
   hoverFirstSuggestion() {
-    return this.hoverSuggestion(this.getSuggestions().getItems()[0]);
+    const firstSuggestion = this.suggestions.getFirstItem();
+    if (firstSuggestion) {
+      return this.hoverSuggestion(firstSuggestion);
+    }
   }
 
   /**
@@ -62,7 +56,7 @@ export class AutocompleteSearchResult extends Model<AutocompleteSearchResult> {
    * @return The selected suggestion, or undefined if no suggestion is selected.
    */
   getHoveredSuggestion(): Suggestion | undefined {
-    return this.getSuggestions().getItems().find((suggestion) => suggestion.isHovered());
+    return this.suggestions.findHoveredSuggestion();
   }
 
   /**
@@ -71,10 +65,10 @@ export class AutocompleteSearchResult extends Model<AutocompleteSearchResult> {
    * no action is taken.
    */
   hoverPreviousSuggestion() {
-    const currentIndex = this.getSuggestions().getItems().findIndex((suggestion) => suggestion.isHovered());
+    const currentIndex = this.suggestions.getHoveredSuggestionIndex();
     if (currentIndex > 0) {
       this.clearHoveredState();
-      this.getSuggestions().getItems()[currentIndex - 1].setHovered(true);
+      this.suggestions.setHoveredStateAtIndex(currentIndex - 1, true);
     }
     return this.copy();
   }
@@ -85,10 +79,10 @@ export class AutocompleteSearchResult extends Model<AutocompleteSearchResult> {
    * no action is taken.
    */
   hoverNextSuggestion() {
-    const currentIndex = this.getSuggestions().getItems().findIndex((suggestion) => suggestion.isHovered());
-    if (currentIndex < this.getSuggestions().getItems().length - 1) {
+    const currentIndex = this.suggestions.getHoveredSuggestionIndex();
+    if (currentIndex < this.suggestions.size() - 1) {
       this.clearHoveredState();
-      this.getSuggestions().getItems()[currentIndex + 1].setHovered(true);
+      this.suggestions.setHoveredStateAtIndex(currentIndex + 1, true);
     }
     return this.copy();
   }
@@ -97,22 +91,27 @@ export class AutocompleteSearchResult extends Model<AutocompleteSearchResult> {
    * Clears the selected state of all suggestions.
    */
   clearSuggestions() {
-    this.setSuggestions(new SuggestionList());
+    this.suggestions = new SuggestionList();
     return this.copy();
   }
 
+  /**
+   * Finds a suggestion by its value.
+   * @param value - The value of the suggestion to find.
+   * @returns The suggestion with the specified value, or undefined if not found.
+   */
   getByValue(value: string): Suggestion | undefined {
-    return this.getSuggestions().getItems().find((suggestion) => suggestion.getValue() === value);
+    return this.suggestions.findSuggestionByValue(value);
   }
 
   private clearSelectedState() {
-    this.getSuggestions().getItems().forEach((suggestion) => suggestion.setSelected(false));
+    this.suggestions.deselectAllSuggestions();
   }
 
   /**
    * Sets the hovered state of all suggestions to false.
    */
   private clearHoveredState() {
-    this.getSuggestions().getItems().forEach((suggestion) => suggestion.setHovered(false));
+    this.suggestions.unhoverAllSuggestions();
   }
 }
