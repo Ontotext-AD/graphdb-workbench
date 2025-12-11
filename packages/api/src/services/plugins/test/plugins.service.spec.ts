@@ -1,11 +1,11 @@
 import { PluginsService } from '../plugins.service';
 import {TestUtil} from '../../utils/test/test-util';
 import {ResponseMock} from '../../http/test/response-mock';
-import {PluginsManifestResponse} from '../../../models/plugins';
 import {ServiceProvider} from '../../../providers';
 import {ConfigurationContextService} from '../../configuration/configuration-context.service';
 import {LoggerType} from '../../../models/logging/logger-type';
 import {LogLevel} from '../../../models/logging/log-level';
+import {PluginsManifestResponse} from '../response/plugins-manifest-response';
 
 describe('PluginsService', () => {
   let pluginsService: PluginsService;
