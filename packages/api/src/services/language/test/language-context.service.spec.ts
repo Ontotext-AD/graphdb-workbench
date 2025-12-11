@@ -2,7 +2,8 @@ import {LanguageContextService} from '../language-context.service';
 import {LanguageStorageService} from '../language-storage.service';
 import {ServiceProvider} from '../../../providers';
 import {LanguageService} from '../language.service';
-import {LanguageConfig, TranslationBundle} from '../../../models/language';
+import {TranslationBundle} from '../../../models/language';
+import {createlanguageConfig} from './language-test-util';
 
 describe('LanguageContextService', () => {
   let languageContextService: LanguageContextService;
@@ -120,14 +121,13 @@ describe('LanguageContextService', () => {
 
   test('should return the language configuration when getLanguageConfig is called', () => {
     // Given I have a language configuration
-    const languageConfig: LanguageConfig = {defaultLanguage: 'en', availableLanguages: ['en', 'fr']} as unknown as LanguageConfig;
-    languageContextService.setLanguageConfig(new LanguageConfig(languageConfig));
+    languageContextService.setLanguageConfig(createlanguageConfig());
 
     // When I call getLanguageConfig
     const returnedConfig = languageContextService.getLanguageConfig();
 
     // Then I expect the returned config to be the language configuration
-    expect(returnedConfig).toEqual(new LanguageConfig(languageConfig));
+    expect(returnedConfig).toEqual(createlanguageConfig());
   });
 
   test('should get the selected language when getSelectedLanguage is called', async () => {

@@ -1,19 +1,20 @@
-import { AvailableLanguagesList } from './available-languages-list';
-import { Model } from '../common';
-import {mapAvailableLanguagesListToModel} from '../../services/language/mappers/available-languages-list-mapper';
-import {AvailableLanguage} from './available-language';
+import {AvailableLanguagesList} from './available-languages-list';
+import {Model} from '../common';
+
+export const DEFAULT_LANGUAGE = 'en';
+
+export const SUPPORTED_LANGUAGES = ['en', 'fr'];
 
 /**
  * Represents the configuration for language settings in the application.
  */
-export class LanguageConfig extends Model<LanguageConfig>  {
-  defaultLanguage: string;
+export class LanguageConfig extends Model<LanguageConfig> {
+  readonly defaultLanguage: string;
+  readonly availableLanguages: AvailableLanguagesList;
 
-  availableLanguages: AvailableLanguagesList;
-
-  constructor(data: LanguageConfig) {
+  constructor(props: Partial<LanguageConfig>) {
     super();
-    this.defaultLanguage = data.defaultLanguage;
-    this.availableLanguages = mapAvailableLanguagesListToModel(data.availableLanguages as unknown as AvailableLanguage[]);
+    this.defaultLanguage = props.defaultLanguage || DEFAULT_LANGUAGE;
+    this.availableLanguages = props.availableLanguages || new AvailableLanguagesList();
   }
 }

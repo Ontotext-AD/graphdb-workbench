@@ -5,6 +5,7 @@ import {LanguageConfig} from '../../models/language';
 import {LanguageRestService} from './language-rest.service';
 import {LanguageContextService} from './language-context.service';
 import {mapLanguageConfigResponseToModel} from './mappers/language-config-mapper';
+import {DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES} from '../../models/language/language-config';
 
 /**
  * The LanguageService class is responsible for fetching language-related data from the backend
@@ -25,7 +26,7 @@ export class LanguageService implements Service {
    */
   getSupportedLanguages(): string[] {
     const languageConfig = this.languageContextService.getLanguageConfig();
-    return languageConfig ? languageConfig.availableLanguages.getLanguageCodes() : ['en', 'fr'];
+    return languageConfig ? languageConfig.availableLanguages.getLanguageCodes() : SUPPORTED_LANGUAGES;
   }
 
   /**
@@ -61,6 +62,6 @@ export class LanguageService implements Service {
    */
   getDefaultLanguage(): string {
     const languageConfig = this.languageContextService.getLanguageConfig();
-    return languageConfig ? languageConfig.defaultLanguage : 'en';
+    return languageConfig ? languageConfig.defaultLanguage : DEFAULT_LANGUAGE;
   }
 }
