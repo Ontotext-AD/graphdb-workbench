@@ -4,11 +4,9 @@ import {AvailableLanguage} from './available-language';
  * Represents a list of available languages.
  */
 export class AvailableLanguagesList {
-  languages: AvailableLanguage[];
-
-  constructor(languages: AvailableLanguage[]) {
-    this.languages = languages;
-  }
+  constructor(
+    readonly languages: AvailableLanguage[] = []
+  ) {}
 
   /**
    * Retrieves an array of language codes from the available languages.

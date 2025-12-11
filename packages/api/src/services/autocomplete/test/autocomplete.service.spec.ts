@@ -39,6 +39,6 @@ describe('Autocomplete service', () => {
     // And, it should contain the expected suggestions
     const expectedSuggestions = mockSearchResult.suggestions.map((suggestion) => new Suggestion(suggestion));
     const expected = new SuggestionList(expectedSuggestions);
-    expect(result.getSuggestions()).toEqual(expected);
+    expect(result.suggestions).toEqual(expected);
   });
 });

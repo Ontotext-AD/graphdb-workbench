@@ -1,5 +1,5 @@
 import {HttpService} from '../http/http.service';
-import {LicenseResponse} from '../../models/license/response-models/license-response';
+import {LicenseResponse} from './response/license-response';
 
 /**
  * Service class for handling REST API calls related to license operations.

@@ -1,4 +1,4 @@
-import { ModelList } from '../model-list';
+import {ModelList} from '../model-list';
 
 describe('ModelList', () => {
   let modelList: TestModelList;
@@ -11,49 +11,106 @@ describe('ModelList', () => {
     ]);
   });
 
-  test('getItems should return all items', () => {
-    const items = modelList.getItems();
+  describe('size', () => {
+    test('should return the correct number of items', () => {
+      expect(modelList.size()).toBe(3);
+    });
 
-    expect(items).toHaveLength(3);
-    expect(items[0].name).toBe('Item 1');
+    test('should return 0 for empty list', () => {
+      const emptyList = new TestModelList();
+      expect(emptyList.size()).toBe(0);
+    });
   });
 
-  test('sort should sort items by id', () => {
-    modelList.sort((a, b) => b.id - a.id);
+  describe('getItems', () => {
+    test('should return all items', () => {
+      const items = modelList.getItems();
 
-    const items = modelList.getItems();
+      expect(items).toHaveLength(3);
+      expect(items[0].name).toBe('Item 1');
+    });
 
-    expect(items[0].id).toBe(3);
-    expect(items[2].id).toBe(1);
+    test('should return empty array for empty list', () => {
+      const emptyList = new TestModelList();
+      const items = emptyList.getItems();
+
+      expect(items).toHaveLength(0);
+    });
   });
 
-  test('filter should filter items by name', () => {
-    const filteredItems = modelList.filter(item => item.name === 'Item 2');
+  describe('getFirstItem', () => {
+    test('should return the first item', () => {
+      const firstItem = modelList.getFirstItem();
 
-    expect(filteredItems).toHaveLength(1);
-    expect(filteredItems[0].name).toBe('Item 2');
+      expect(firstItem).toBeDefined();
+      expect(firstItem?.name).toBe('Item 1');
+    });
+
+    test('should return undefined for empty list', () => {
+      const emptyList = new TestModelList();
+      const firstItem = emptyList.getFirstItem();
+
+      expect(firstItem).toBeUndefined();
+    });
   });
 
-  test('find should find an item by id', () => {
-    const item = modelList.find(item => item.id === 2);
+  describe('sort', () => {
+    test('should sort items by id', () => {
+      modelList.sort((a, b) => b.id - a.id);
 
-    expect(item).toBeDefined();
-    expect(item?.name).toBe('Item 2');
+      const items = modelList.getItems();
+
+      expect(items[0].id).toBe(3);
+      expect(items[2].id).toBe(1);
+    });
   });
 
-  test('isEmpty should return true if no items', () => {
-    const emptyList = new TestModelList();
+  describe('filter', () => {
+    test('should filter items by name', () => {
+      const filteredItems = modelList.filter(item => item.name === 'Item 2');
 
-    expect(emptyList.isEmpty()).toBe(true);
+      expect(filteredItems).toHaveLength(1);
+      expect(filteredItems[0].name).toBe('Item 2');
+    });
+
+    test('should return empty array if no items match', () => {
+      const filteredItems = modelList.filter(item => item.name === 'Nonexistent Item');
+
+      expect(filteredItems).toHaveLength(0);
+    });
   });
 
-  test('isEmpty should return false if there are items', () => {
-    expect(modelList.isEmpty()).toBe(false);
+  describe('find', () => {
+    test('should find an item by id', () => {
+      const item = modelList.find(item => item.id === 2);
+
+      expect(item).toBeDefined();
+      expect(item?.name).toBe('Item 2');
+    });
+
+    test('should return undefined if item not found', () => {
+      const item = modelList.find(item => item.id === 999);
+
+      expect(item).toBeUndefined();
+    });
+  });
+
+  describe('isEmpty', () => {
+    test('should return true if no items', () => {
+      const emptyList = new TestModelList();
+
+      expect(emptyList.isEmpty()).toBe(true);
+    });
+
+    test('should return false if there are items', () => {
+      expect(modelList.isEmpty()).toBe(false);
+    });
   });
 });
 
 class TestModel {
-  constructor(public id: number, public location: string, public name: string) {}
+  constructor(public id: number, public location: string, public name: string) {
+  }
 }
 
 class TestModelList extends ModelList<TestModel> {

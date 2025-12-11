@@ -1,5 +1,5 @@
 import {HttpService} from '../http/http.service';
-import {NamespacesResponse} from '../../models/repositories/namespace/api/namespaces-response';
+import {NamespacesResponse} from './response/namespaces-response';
 
 /**
  * Service for interacting with the RDF4J repository REST API.

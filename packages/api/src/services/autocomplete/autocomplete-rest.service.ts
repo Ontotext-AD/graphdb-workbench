@@ -1,5 +1,5 @@
 import {HttpService} from '../http/http.service';
-import {AutocompleteSearchResultResponse} from '../../models/rdf-search/api/autocomplete-search-result-response';
+import {AutocompleteSearchResultResponse} from './response/autocomplete-search-result-response';
 
 /**
  * Service for handling autocomplete REST operations.

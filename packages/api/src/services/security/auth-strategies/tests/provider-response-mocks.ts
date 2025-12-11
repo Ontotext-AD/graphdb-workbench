@@ -1,4 +1,4 @@
-import {UserResponse} from '../../../../models/users/response-models/user-response';
+import {UserResponse} from '../../../users/response/user-response';
 
 export const ProviderResponseMocks = {
   authenticatedUserResponse: {

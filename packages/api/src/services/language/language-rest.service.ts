@@ -1,5 +1,6 @@
-import { HttpService } from '../http/http.service';
-import { LanguageConfig, TranslationBundle } from '../../models/language';
+import {HttpService} from '../http/http.service';
+import {TranslationBundle} from '../../models/language';
+import {LanguageConfigResponse} from './response/language-config-response';
 
 /**
  * Service for handling language-related REST operations.
@@ -20,9 +21,9 @@ export class LanguageRestService extends HttpService {
   /**
    * Fetches the language configuration for the application.
    *
-   * @returns A Promise that resolves to a {@link LanguageConfig} object containing the language configuration settings.
+   * @returns A Promise that resolves to a {@link LanguageConfigResponse} object containing the language configuration settings.
    */
-  getLanguageConfiguration(): Promise<LanguageConfig> {
-    return this.get<LanguageConfig>(`${this.I18N_ENDPOINT}/language-config.json`);
+  getLanguageConfiguration(): Promise<LanguageConfigResponse> {
+    return this.get<LanguageConfigResponse>(`${this.I18N_ENDPOINT}/language-config.json`);
   }
 }

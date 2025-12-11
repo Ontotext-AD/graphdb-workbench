@@ -1,15 +1,18 @@
-import {AutocompleteSearchResult} from '../../../models/rdf-search/autocomplete-search-result';
-import {AutocompleteSearchResultResponse} from '../../../models/rdf-search/api/autocomplete-search-result-response';
-import {mapSuggestionListResponseToModel} from '../../rdf-search/mapper/suggestion-list.mapper';
+import {AutocompleteSearchResult, Suggestion, SuggestionList, SuggestionType} from '../../../models/rdf-search';
+import {AutocompleteSearchResultResponse} from '../response/autocomplete-search-result-response';
 import {MapperFn} from '../../../providers/mapper/mapper-fn';
+import {GeneratorUtils} from '../../utils/generator-utils';
+import {toEnum} from '../../utils';
 
 /**
- * Mapper class for AutocompleteSearchResult objects.
+ * Mapper for AutocompleteSearchResult objects.
  */
 export const mapAutocompleteSearchResultResponseToModel: MapperFn<AutocompleteSearchResultResponse, AutocompleteSearchResult> = (data) => {
-  return new AutocompleteSearchResult(
-    {
-      ...data,
-      suggestionList: mapSuggestionListResponseToModel(data.suggestions)
-    });
+  const suggestions = data.suggestions.map(suggestion => new Suggestion({
+    id: GeneratorUtils.hashCode(`${suggestion.type}-${suggestion.value}-${suggestion.description}`),
+    type: toEnum(SuggestionType, suggestion.type),
+    value: suggestion.value,
+    description: suggestion.description,
+  }));
+  return new AutocompleteSearchResult(new SuggestionList(suggestions));
 };

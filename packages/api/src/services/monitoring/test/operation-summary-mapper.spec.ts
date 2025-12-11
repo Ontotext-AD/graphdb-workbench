@@ -1,35 +1,18 @@
-import {
-  OperationStatus,
-  OperationStatusSummary,
-  OperationType
-} from '../../../../models/monitoring';
-import {mapOperationSummaryResponseToModel} from '../operation-summary-mapper';
+import {OperationStatus, OperationStatusSummary, OperationType} from '../../../models/monitoring';
+import {mapOperationSummaryResponseToModel} from '../mapper/operation-summary-mapper';
+import {createOperationStatusSummaryResponse} from './operation-response-test-util';
 
 describe('OperationSummaryMapper', () => {
-  test('should correctly map a OperationStatusSummary object', () => {
+  test('should correctly map a OperationStatusSummaryResponse object', () => {
     // Given, I have a operationSummary JSON object.
-    const operationStatusSummary = {
-      status: OperationStatus.WARNING,
-      allRunningOperations: [
-        {
-          type: OperationType.CLUSTER_HEALTH,
-          status: OperationStatus.WARNING,
-          value: 'UNAVAILABLE_NODES',
-        },
-        {
-          type: OperationType.BACKUP_AND_RESTORE,
-          status: OperationStatus.INFORMATION,
-          value: 'BACKUP_IN_PROGRESS',
-        }
-      ]
-    } as unknown as OperationStatusSummary;
+    const operationStatusSummaryResponse = createOperationStatusSummaryResponse();
 
     // When, I map the object to a OperationSummary.
-    const result = mapOperationSummaryResponseToModel(operationStatusSummary);
+    const result = mapOperationSummaryResponseToModel(operationStatusSummaryResponse);
 
     // Then, I should get the same object.
     expect(result).toBeInstanceOf(OperationStatusSummary);
-    expect(result.status).toEqual(operationStatusSummary.status);
+    expect(result.status).toEqual(operationStatusSummaryResponse.status);
     expect(result.allRunningOperations.getItems()[0]).toEqual({
       count: 0,
       group: 'CLUSTER',

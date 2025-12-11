@@ -1,9 +1,10 @@
 import {HttpService} from '../http/http.service';
-import {PluginModule, PluginsManifest, PluginsManifestResponse} from '../../models/plugins';
+import {PluginModule, PluginsManifest} from '../../models/plugins';
 import {getOrigin} from '../utils';
 import {service} from '../../providers';
 import {ConfigurationContextService} from '../configuration/configuration-context.service';
 import {LoggerProvider} from '../logging/logger-provider';
+import {PluginsManifestResponse} from './response/plugins-manifest-response';
 
 /**
  * Service responsible for handling REST operations related to plugins.

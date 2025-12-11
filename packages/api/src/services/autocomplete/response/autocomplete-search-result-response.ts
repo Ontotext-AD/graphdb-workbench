@@ -1,9 +1,8 @@
 import {SuggestionResponse} from './suggestion-response';
-import {SuggestionList} from '../suggestion-list';
 
 export interface AutocompleteSearchResultResponse {
+  /**
+   * The list of suggestions returned from the autocomplete search.
+   */
   suggestions: SuggestionResponse[];
-
-  // internal
-  suggestionList: SuggestionList;
 }

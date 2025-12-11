@@ -26,8 +26,31 @@ export class ModelList<T> extends Model<T> {
     this.items = items;
   }
 
+  /**
+   * Returns the number of items in the list.
+   *
+   * @returns The count of items in the list.
+   */
+  size(): number {
+    return this.items.length;
+  }
+
+  /**
+   * Retrieves all items in the list.
+   *
+   * @returns An array containing all items in the list.
+   */
   getItems(): T[] {
     return this.items;
+  }
+
+  /**
+   * Retrieves the first item in the list.
+   *
+   * @returns The first item in the list, or `undefined` if the list is empty.
+   */
+  getFirstItem(): T | undefined {
+    return this.items[0];
   }
 
   /**

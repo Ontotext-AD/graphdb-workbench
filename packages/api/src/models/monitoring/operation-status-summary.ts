@@ -3,6 +3,7 @@ import {OperationStatus, STATUS_ORDER} from './operation-status';
 import {OperationList} from './operation-list';
 import {OperationGroup} from './operation-group';
 import {OperationGroupSummary} from './operation-group-summary';
+import {OperationGroupSummaryList} from './operation-group-summary-list';
 
 /**
  * Model of the summary of operation statuses.
@@ -14,9 +15,12 @@ export class OperationStatusSummary extends Model<OperationStatusSummary> {
   status: OperationStatus;
   allRunningOperations: OperationList;
 
-  constructor(operationStatusSummary: OperationStatusSummary) {
+  constructor(operationStatusSummary: {
+    status: OperationStatus;
+    allRunningOperations: OperationList;
+  }) {
     super();
-    this.status = operationStatusSummary.status || OperationStatus.INFORMATION;
+    this.status = operationStatusSummary.status;
     this.allRunningOperations = operationStatusSummary.allRunningOperations;
   }
 
@@ -48,5 +52,14 @@ export class OperationStatusSummary extends Model<OperationStatusSummary> {
     });
 
     return Array.from(groupToOperationSummary.values());
+  }
+
+  /**
+   * Converts the operation status summary into a list of operation group summaries.
+   *
+   * @returns A list of operation group summaries.
+   */
+  toOperationGroupSummaryList(): OperationGroupSummaryList {
+    return new OperationGroupSummaryList(this.toOperationsGroupSummary());
   }
 }

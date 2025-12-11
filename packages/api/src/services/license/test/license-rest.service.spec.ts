@@ -1,7 +1,7 @@
 import {LicenseRestService} from '../license-rest.service';
 import {TestUtil} from '../../utils/test/test-util';
 import {ResponseMock} from '../../http/test/response-mock';
-import {LicenseResponse} from '../../../models/license/response-models/license-response';
+import {LicenseResponse} from '../response/license-response';
 
 describe('LicenseRestService', () => {
   let licenseRestService: LicenseRestService;

@@ -1,6 +1,6 @@
 import {AuthenticationType} from '../security';
 import {RepositoryLocationType} from './repository-location-type';
-import {Model} from '../common/model';
+import {Model} from '../common';
 
 /**
  * Holds location information about a repository ({@link RepositoryType}) instance.

@@ -1,9 +1,9 @@
 import {Service} from '../../providers/service/service';
 import {service} from '../../providers';
-import {User} from '../../models/users/user';
+import {User} from '../../models/users';
 import {UsersRestService} from './users-rest.service';
-import {mapUserModelToRequest} from './user-request.mapper';
-import {mapUserResponseToModel} from './user-response.mapper';
+import {mapUserModelToRequest} from './mappers/user-request.mapper';
+import {mapUserResponseToModel} from './mappers/user-response.mapper';
 
 export class UsersService implements Service {
   static readonly ADMIN_USERNAME = 'admin';
@@ -73,6 +73,11 @@ export class UsersService implements Service {
     return this.usersRestService.deleteUser(username);
   }
 
+  /**
+   * Updates the current user's information in the backend.
+   * The user data is mapped to the appropriate request format before sending.
+   * @param user - The current user to update.
+   */
   updateCurrentUser(user: User): Promise<void> {
     const userRequest = mapUserModelToRequest(user);
     return this.usersRestService.updateCurrentUser(user.username, userRequest);

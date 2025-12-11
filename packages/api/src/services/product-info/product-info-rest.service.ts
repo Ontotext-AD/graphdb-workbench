@@ -1,5 +1,5 @@
-import { ProductInfo } from '../../models/product-info';
-import { HttpService } from '../http/http.service';
+import {HttpService} from '../http/http.service';
+import {ProductInfoResponse} from './response/product-info-response';
 
 /**
  * Service for product information REST calls.
@@ -16,7 +16,7 @@ export class ProductInfoRestService extends HttpService {
    *
    * @returns A Promise that resolves to a ProductInfo object containing the local version information.
    */
-  getProductInfoLocal(): Promise<ProductInfo> {
-    return this.get<ProductInfo>(`${this.VERSION_URL}?local=1`);
+  getProductInfoLocal(): Promise<ProductInfoResponse> {
+    return this.get<ProductInfoResponse>(`${this.VERSION_URL}?local=1`);
   }
 }

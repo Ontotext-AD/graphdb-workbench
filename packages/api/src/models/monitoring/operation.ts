@@ -37,23 +37,27 @@ export class Operation extends Model<Operation> {
   href: string;
   labelKey: string;
 
-  constructor(operation: Operation) {
+  constructor(operation: {
+    value: string;
+    status: OperationStatus;
+    type: OperationType;
+  }) {
     super();
-    this.id = `${operation.status}-${operation.type}-${operation.value}`;
     this.value = operation.value;
     this.status = operation.status;
     this.type = operation.type;
-    this.count = this.getCount(operation);
-    this.group = OPERATION_TYPE_TO_GROUP[operation.type];
-    this.href = OPERATION_TYPE_TO_HREF[operation.type];
-    this.labelKey = this.getLabelKey(operation);
+    this.id = `${operation.status}-${operation.type}-${operation.value}`;
+    this.count = this.getCount(this.type, this.value);
+    this.group = OPERATION_TYPE_TO_GROUP[this.type];
+    this.href = OPERATION_TYPE_TO_HREF[this.type];
+    this.labelKey = this.getLabelKey(this.type, this.value);
   }
 
-  private getCount(operation: Operation) {
-    return OPERATIONS_WITH_COUNT.includes(operation.type) ? parseInt(operation.value, 10) : 0;
+  private getCount(type: OperationType, value: string) {
+    return OPERATIONS_WITH_COUNT.includes(type) ? parseInt(value, 10) : 0;
   }
 
-  private getLabelKey(operation: Operation) {
-    return OPERATIONS_WITH_COUNT.includes(operation.type) ? operation.type : operation.value;
+  private getLabelKey(type: OperationType, value: string) {
+    return OPERATIONS_WITH_COUNT.includes(type) ? type : value;
   }
 }
