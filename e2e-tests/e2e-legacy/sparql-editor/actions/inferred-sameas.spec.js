@@ -20,14 +20,14 @@ describe('Expand results over owl:sameAs', () => {
         SparqlEditorSteps.visitSparqlEditorPage();
 
         // Then I expect sameAs button to be on.
-        YasqeSteps.getExpandResultsOverSameAsButtonTooltip().should('have.attr', 'data-tooltip', 'Expand results over owl:sameAs: ON');
+        YasqeSteps.getExpandResultsOverSameAsButtonTooltip().should('have.attr', 'yasgui-data-tooltip', 'Expand results over owl:sameAs: ON');
         YasqeSteps.getExpandResultsOverSameAsButton().should('have.class', 'icon-same-as-on');
 
         // When I click on inferred button
         YasqeSteps.getExpandResultsOverSameAsButton().click({force: true});
 
         // Then I expect sameAs button to not be toggled.
-        YasqeSteps.getExpandResultsOverSameAsButtonTooltip().should('have.attr', 'data-tooltip', 'Expand results over owl:sameAs: ON');
+        YasqeSteps.getExpandResultsOverSameAsButtonTooltip().should('have.attr', 'yasgui-data-tooltip', 'Expand results over owl:sameAs: ON');
         YasqeSteps.getExpandResultsOverSameAsButton().should('have.class', 'icon-same-as-on');
     });
 
@@ -36,14 +36,14 @@ describe('Expand results over owl:sameAs', () => {
         SparqlEditorSteps.visitSparqlEditorPage();
 
         // Then I expect inferred button to be on.
-        YasqeSteps.getActionButtonTooltip(3).should('have.attr', 'data-tooltip', 'Include inferred data in results: ON');
+        YasqeSteps.getActionButtonTooltip(3).should('have.attr', 'yasgui-data-tooltip', 'Include inferred data in results: ON');
         YasqeSteps.getActionButton(3).should('have.class', 'icon-inferred-on');
 
         // When I click on inferred button
         YasqeSteps.getActionButton(3).click({force: true});
 
         // Then I expect inferred button to not be toggled.
-        YasqeSteps.getActionButtonTooltip(3).should('have.attr', 'data-tooltip', 'Include inferred data in results: ON');
+        YasqeSteps.getActionButtonTooltip(3).should('have.attr', 'yasgui-data-tooltip', 'Include inferred data in results: ON');
         YasqeSteps.getActionButton(3).should('have.class', 'icon-inferred-on');
     });
 });

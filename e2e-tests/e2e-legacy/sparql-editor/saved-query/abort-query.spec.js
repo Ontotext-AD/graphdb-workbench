@@ -39,7 +39,7 @@ describe('Abort query', () => {
         YasqeSteps.hoverOverAbortQueryButton();
 
         // Then I expect to see tooltip that describes what happen if click on it.
-        cy.get('div[data-tippy-root]').contains('Click to abort query');
+       YasguiSteps.getTooltipRoot().contains('Click to abort query');
 
         // When I click on the button.
         YasqeSteps.getAbortQueryButton().realClick();
