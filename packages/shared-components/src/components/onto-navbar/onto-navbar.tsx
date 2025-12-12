@@ -10,7 +10,6 @@ import {
   State,
   Watch
 } from '@stencil/core';
-import {ExternalMenuModel} from './external-menu-model';
 import {NavbarToggledEvent} from './navbar-toggled-event';
 import {NavbarService} from './navbar-service';
 import {NavbarItemModel, NavbarModel} from './navbar-model';
@@ -21,7 +20,8 @@ import {
   navigateTo, ProductInfo, ProductInfoContextService,
   navigate,
   ServiceProvider,
-  SubscriptionList, openInNewTab
+  SubscriptionList, openInNewTab,
+  ExternalMenuModel
 } from '@ontotext/workbench-api';
 
 const labelKeys = {

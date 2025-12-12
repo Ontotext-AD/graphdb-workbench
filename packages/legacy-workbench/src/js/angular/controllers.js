@@ -221,31 +221,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         return !$scope.hideRdfResourceSearch && !!$scope.getActiveRepository() && $scope.hasActiveLocation() && (!$scope.isLoadingLocation() || $scope.isLoadingLocation() && $location.url() === '/repository');
     };
 
-    // Update page permissions based on menu item role
-    const updatePermissions = () => {
-        const securityContextService = service(SecurityContextService);
-        const restrictedPages = securityContextService.getRestrictedPages();
-        const user = securityContextService.getAuthenticatedUser();
-        const isAdministratorUser = authorizationService.isAdmin();
-
-        const routes = PluginRegistry.get('route');
-        const menuItems = PluginRegistry.get('main.menu');
-
-        angular.forEach(routes, function(route) {
-            const menuItem = menuItems.flatMap((mi) => mi.items)
-                .filter((menuItem) => menuItem.role?.includes('ROLE_'))
-                .find((menuItem) => route.url.includes(menuItem.href));
-
-            if (!menuItem) {
-                return;
-            }
-
-            const isAccessToPageRestricted = !isAdministratorUser && !user.authorities.hasAuthority(menuItem.role);
-            restrictedPages.setPageRestriction(route.url, isAccessToPageRestricted);
-        });
-        securityContextService.updateRestrictedPages(restrictedPages);
-    };
-
     const startGuide = (guideId) => {
         // Check to see if $translate service is ready with the language before starting the guide as the steps are translated ahead on time. Will retry 20 times (1 second).
         const timer = $interval(function() {
@@ -989,12 +964,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     if ($jwtAuth.securityInitialized) {
         $scope.getSavedQueries();
     }
-
-    securityContextService.onAuthenticatedUserChanged((authenticatedUser) => {
-        if (authenticatedUser) {
-            updatePermissions();
-        }
-    });
 
     securityContextService.onSecurityConfigChanged((securityConfig) => {
         $scope.securityEnabled = securityConfig.isEnabled();

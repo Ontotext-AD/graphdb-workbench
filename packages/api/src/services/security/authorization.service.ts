@@ -5,6 +5,9 @@ import {SecurityContextService} from './security-context.service';
 import {Repository} from '../../models/repositories';
 import {RepositoryContextService, RepositoryService, RepositoryStorageService} from '../repository';
 import {RoutingService} from '../routing/routing.service';
+import {WindowService} from '../window';
+import {ExtensionPoint, ExternalMenuModel} from '../../models/plugins';
+import {ExternalRouteModel} from '../../models/plugins/extension-models/external-route-item-model';
 
 /**
  * Service responsible for handling authorization-related operations.
@@ -255,6 +258,34 @@ export class AuthorizationService implements Service {
 
     return true;
   }
+
+  /**
+   * Updates the permissions for restricted pages based on the current user's roles and authorities.
+   */
+  updatePermissions() {
+    const restrictedPages = this.securityContextService.getRestrictedPages();
+    const user = this.securityContextService.getAuthenticatedUser();
+
+    const isAdministratorUser = this.isAdmin();
+
+    const routes = WindowService.getWindow().PluginRegistry.get<ExternalRouteModel>(ExtensionPoint.ROUTE);
+    const menuItems = WindowService.getWindow().PluginRegistry.get<ExternalMenuModel>(ExtensionPoint.MAIN_MENU);
+
+    routes.forEach((route) => {
+      const menuItem = menuItems.flatMap((mi) => mi.items)
+        .filter((menuItem) => menuItem.role?.startsWith('ROLE_'))
+        .find((menuItem) => route.url.includes(menuItem.href));
+
+      if (!menuItem) {
+        return;
+      }
+
+      const isAccessToPageRestricted = !isAdministratorUser && !user?.authorities.hasAuthority(menuItem.role ?? '');
+      restrictedPages.setPageRestriction(route.url, isAccessToPageRestricted);
+    });
+
+    this.securityContextService.updateRestrictedPages(restrictedPages);
+  };
 
   private resolveAuthorities(authoritiesList?: string[]) {
     // If no authorities list is provided, return empty array.

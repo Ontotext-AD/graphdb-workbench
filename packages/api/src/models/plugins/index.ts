@@ -5,3 +5,5 @@ export * from './plugins-manifest';
 export * from './extension-point';
 export * from './plugins-manifest-response';
 export * from './plugin-definition-list';
+export * from './extension-models/external-menu-model';
+export * from './extension-models/external-route-item-model';

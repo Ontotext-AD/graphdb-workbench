@@ -12,6 +12,7 @@ import {LoggerProvider} from '../services/logger-provider';
 import {
   service,
   SecurityContextService,
+  AuthorizationService,
   ApplicationLifecycleContextService,
   ApplicationSettingsStorageService,
   LifecycleState,
@@ -71,9 +72,11 @@ const loadApplicationConfigurations = () => {
 
 const subscribeToAuthenticatedUserChange = () => {
   const securityContextService = service(SecurityContextService);
+  const authorizationService = service(AuthorizationService);
   securityContextService.onAuthenticatedUserChanged((authenticatedUser) => {
     if (authenticatedUser) {
       loadApplicationData();
+      authorizationService.updatePermissions();
     }
   });
 };

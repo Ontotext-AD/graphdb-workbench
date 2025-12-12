@@ -1,6 +1,5 @@
-import {ExternalMenuItemModel, ExternalMenuModel} from './external-menu-model';
 import {NavbarItemModel, NavbarModel} from './navbar-model';
-import {ProductInfo, UriUtil} from '@ontotext/workbench-api';
+import {ProductInfo, UriUtil, ExternalMenuItemModel, ExternalMenuModel} from '@ontotext/workbench-api';
 import {LoggerProvider} from '../../services/logger-provider';
 
 const logger = LoggerProvider.logger;
