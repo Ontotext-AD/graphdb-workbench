@@ -1,6 +1,4 @@
 import {ObjectUtil} from '../object-util';
-import {Repository} from '../../../models/repositories';
-import {RepositoryLocation} from '../../../models/repository-location';
 
 describe('ObjectUtil', () => {
 
@@ -25,7 +23,7 @@ describe('ObjectUtil', () => {
   });
 
   test('deepEqual should return false if objects have different constructors', () => {
-    expect(ObjectUtil.deepEqual(new Repository(), new RepositoryLocation())).toBeFalsy();
+    expect(ObjectUtil.deepEqual(new TestClass('a', 1), new AnotherTestClass('b'))).toBeFalsy();
   });
 
   test('deepEqual should return false if objects have arrays with different lengths', () => {
@@ -638,3 +636,21 @@ describe('ObjectUtil', () => {
     expect(ObjectUtil.isNullOrUndefined(false)).toBeFalsy();
   });
 });
+
+class TestClass {
+  prop1: string;
+  prop2: number;
+
+  constructor(prop1: string, prop2: number) {
+    this.prop1 = prop1;
+    this.prop2 = prop2;
+  }
+}
+
+class AnotherTestClass {
+  propA: string;
+
+  constructor(propA: string) {
+    this.propA = propA;
+  }
+}
