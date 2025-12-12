@@ -9,7 +9,9 @@ import {
   AuthorizationService,
   EventName,
   EventService,
-  LocalStorageSubscriptionHandlerService, navigate,
+  ExternalMenuItemModel,
+  LocalStorageSubscriptionHandlerService,
+  navigate,
   NavigationContextService,
   NavigationEndPayload,
   SecurityConfig,
@@ -18,7 +20,6 @@ import {
   SubscriptionList,
   WindowService
 } from '@ontotext/workbench-api';
-import {ExternalMenuItemModel} from '../onto-navbar/external-menu-model';
 
 @Component({
   tag: 'onto-layout',

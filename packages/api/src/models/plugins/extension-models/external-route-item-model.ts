@@ -12,4 +12,4 @@ export interface ExternalRouteItemModel {
   allowAuthorities?: string[];
 }
 
-export type RouteModel = ExternalRouteItemModel[];
+export type ExternalRouteModel = ExternalRouteItemModel[];

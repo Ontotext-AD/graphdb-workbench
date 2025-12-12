@@ -1,6 +1,5 @@
-import {ExternalMenuModel} from '../external-menu-model';
 import {NavbarItemModel, NavbarModel} from '../navbar-model';
-import {ProductInfo, LoggerService} from '@ontotext/workbench-api';
+import {ProductInfo, LoggerService, ExternalMenuModel} from '@ontotext/workbench-api';
 import {LoggerProvider} from '../../../services/logger-provider';
 jest.spyOn(LoggerProvider, 'logger', 'get').mockReturnValue({
   loggers: jest.fn()

@@ -3,6 +3,7 @@ import {
   SecurityService,
   AuthStrategyResolver,
   AuthorizationService,
+  WindowService,
   service,
   isLoginPage,
   navigate,
@@ -18,7 +19,7 @@ export const loadSecurityConfig = () => {
     .then((securityConfig) => {
       const securityContextService = service(SecurityContextService);
       securityContextService.updateSecurityConfig(securityConfig);
-      return subscribeToAuthenticatedUserChange();
+      return subscribeToSecurityConfigChange();
     })
     .catch((error) => {
       logger.error('Could not load security config', error);
@@ -26,7 +27,7 @@ export const loadSecurityConfig = () => {
     });
 };
 
-const subscribeToAuthenticatedUserChange = () => {
+const subscribeToSecurityConfigChange = () => {
   const securityContextService = service(SecurityContextService);
   const securityService = service(SecurityService);
   return new Promise((resolve) => {
@@ -72,7 +73,10 @@ const resolveNavigation = () => {
   const isLoggedIn = service(SecurityContextService).getIsLoggedIn();
 
   if (isLoginPage() && ((isLoggedIn || authorizationService.hasFreeAccess()) && !authStrategy.isExternal())) {
-    navigate('./');
+    const params = new URLSearchParams(WindowService.getLocationQueryParams());
+    const returnUrl = params.get('r') ?? './';
+
+    navigate(returnUrl);
     eventService.emit(new Login());
   } else if (isLoginPage() && !isLoggedIn) {
     // stay on login page
