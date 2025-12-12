@@ -38,7 +38,7 @@ export class SecurityContextService extends ContextService<SecurityContextFields
    *
    * @return a map with restricted pages.
    */
-  getRestrictedPages(): RestrictedPages | undefined {
+  getRestrictedPages(): RestrictedPages {
     return this.getContextPropertyValue(this.RESTRICTED_PAGES) || new RestrictedPages();
   }
 

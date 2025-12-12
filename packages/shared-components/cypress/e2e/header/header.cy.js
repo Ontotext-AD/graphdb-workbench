@@ -159,7 +159,7 @@ describe('Header', () => {
       // When, I click it
       HeaderSteps.clickLoginButton();
       // Then, I should still not see the search
-      BaseSteps.getRedirectUrl().should('have.text', 'redirect to login')
+      BaseSteps.getRedirectUrl().should('have.text', 'redirect to login?r=pages%252Fheader%252Findex.html')
 
       // When I deactivate free access
       HeaderSteps.deactivateFreeAccess();

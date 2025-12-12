@@ -5,7 +5,7 @@ import {ModelList} from '../../models/common';
 import {Service} from '../../providers/service/service';
 import {WindowService} from '../window';
 import {ExtensionPoint} from '../../models/plugins/extension-point';
-import {RouteModel} from '../../models/routing/external-route-item-model';
+import {ExternalRouteModel} from '../../models/plugins/extension-models/external-route-item-model';
 
 /**
  * Service responsible for handling application routing functionality.
@@ -15,7 +15,7 @@ import {RouteModel} from '../../models/routing/external-route-item-model';
  * It works with the application's route configuration obtained from the PluginRegistry.
  */
 export class RoutingService implements Service {
-  private readonly routeConfig = WindowService.getWindow().PluginRegistry.get<RouteModel>(ExtensionPoint.ROUTE);
+  private readonly routeConfig = WindowService.getWindow().PluginRegistry.get<ExternalRouteModel>(ExtensionPoint.ROUTE);
 
   /**
    * Finds and returns the active route based on the provided path.
