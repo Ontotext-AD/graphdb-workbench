@@ -1,4 +1,4 @@
-import {ExternalRouteItemModel} from './external-route-item-model';
+import {ExternalRouteItemModel} from '../plugins/extension-models/external-route-item-model';
 
 /**
  * Represents a route plugin item in the application's routing system.
