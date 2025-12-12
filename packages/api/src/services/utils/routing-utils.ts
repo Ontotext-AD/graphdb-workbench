@@ -21,6 +21,12 @@ export function navigateTo(url: string): (event: Event) => void {
  * @param url - The target URL to which the page should be redirected.
  */
 export function navigate(url: string) {
+  if (url.startsWith('.')) {
+    url = url.slice(1);
+  }
+  if (url.startsWith('/') && !url.startsWith(getBasePath())) {
+    url = getBasePath().slice(0, -1) + url;
+  }
   WindowService.getWindow().singleSpa.navigateToUrl(url);
 }
 

@@ -2,7 +2,7 @@ import {service} from '../../../providers';
 import {AuthenticationService, AuthenticationStorageService, OpenidStorageService, SecurityContextService, SecurityService} from '../../../services/security';
 import {LoggerProvider} from '../../logging/logger-provider';
 import {OpenIdService} from '../openid/openid-service';
-import {getOrigin} from '../../utils';
+import {getOrigin, navigate} from '../../utils';
 import {AuthStrategy, AuthStrategyType, OpenIdAuthFlowType} from '../../../models/security/authentication';
 import {OpenidTokenUtils} from '../openid/openid-token-utils';
 import {AuthenticatedUser, OpenidSecurityConfig} from '../../../models/security';
@@ -66,7 +66,7 @@ export class OpenidAuthStrategy implements AuthStrategy {
       this.openidStorageService.clearReturnUrl();
 
       if (isLoggedIn && returnToUrl) {
-        window.singleSpa.navigateToUrl(returnToUrl);
+        navigate(returnToUrl);
       }
       return isLoggedIn;
     } catch (error) {

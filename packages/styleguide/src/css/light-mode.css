@@ -40,6 +40,8 @@
   --gw-list-option-group-background: rgba(0, 0, 0, 0);
   --gw-sidenav-logo-background: #002b4f;
   --gw-panel-header-background: rgba(0, 0, 0, 0);
+  --gw-tooltip-max-width: 12.5rem;
+  --gw-tooltip-padding: 0.5rem 0.75rem;
   --gw-paginator-nav-button-background: rgba(0, 0, 0, 0);
   --gw-autocomplete-shadow-blur: 2px;
   --gw-autocomplete-shadow-spread: 0;
@@ -126,6 +128,7 @@
   --gw-sidenav-submenuitem-hover-background: var(--gw-neutral-300);
   --gw-sidenav-collapsebutton-background: var(--gw-neutral-shadow);
   --gw-sidenav-collapsebutton-color: var(--gw-neutral-400);
+  --gw-overlay-popover-border-radius: var(--gw-default-border-radius);
   --gw-overlay-modal-border-radius: var(--gw-default-border-radius);
   --gw-overlay-modal-background: var(--gw-neutral-0);
   --gw-button-secondary-background: var(--gw-neutral-100);
@@ -253,6 +256,7 @@
   --gw-tabs-tab-background: var(--gw-neutral-lighter);
   --gw-dialog-background: var(--gw-overlay-modal-background);
   --gw-dialog-border-radius: var(--gw-overlay-modal-border-radius);
+  --gw-tooltip-border-radius: var(--gw-overlay-popover-border-radius);
   --gw-paginator-nav-button-hover-background: var(--gw-hover-background);
   --gw-paginator-nav-button-selected-background: var(--gw-highlight-background);
   --gw-datatable-header-background: var(--gw-default-background);
