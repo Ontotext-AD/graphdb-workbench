@@ -5,7 +5,7 @@ import {ResponseMock} from '../../http/test/response-mock';
 import {LicenseContextService} from '../license-context.service';
 import {ProductType} from '../../../models/license/product-type';
 import {service} from '../../../providers';
-import {LicenseResponse} from '../../../models/license/response-models/license-response';
+import {LicenseResponse} from '../response/license-response';
 import {Product} from '../../../models/license/product';
 
 describe('LicenseService', () => {

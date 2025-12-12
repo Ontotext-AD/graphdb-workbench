@@ -1,6 +1,6 @@
 import {HttpService} from '../http/http.service';
-import {UserResponse} from '../../models/users/response-models/user-response';
-import {UserRequest} from '../../models/users/response-models/user-request';
+import {UserResponse} from './response/user-response';
+import {UserRequest} from './response/user-request';
 
 export class UsersRestService extends HttpService {
   private readonly SECURITY_ENDPOINT = 'rest/security';

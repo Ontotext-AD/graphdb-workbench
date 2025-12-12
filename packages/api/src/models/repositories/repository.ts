@@ -24,21 +24,21 @@ export class Repository extends Model<Repository> implements RepositoryReference
   unsupported: boolean | undefined;
   isNew?: boolean;
 
-  constructor(data?: Partial<Repository>) {
+  constructor(data: Partial<Repository>) {
     super();
-    this.id = data?.id || '';
-    this.title = data?.title || '';
-    this.type = data?.type;
-    this.sesameType = data?.sesameType;
-    this.uri = data?.uri || '';
-    this.externalUrl = data?.externalUrl || '';
-    this.location = data?.location || '';
-    this.state = data?.state;
-    this.local = data?.local;
-    this.readable = data?.readable;
-    this.writable = data?.writable;
-    this.unsupported = data?.unsupported;
-    this.isNew = data?.isNew;
+    this.id = data.id || '';
+    this.title = data.title || '';
+    this.type = data.type;
+    this.sesameType = data.sesameType;
+    this.uri = data.uri || '';
+    this.externalUrl = data.externalUrl || '';
+    this.location = data.location || '';
+    this.state = data.state;
+    this.local = data.local;
+    this.readable = data.readable;
+    this.writable = data.writable;
+    this.unsupported = data.unsupported;
+    this.isNew = data.isNew;
   }
 
   /**

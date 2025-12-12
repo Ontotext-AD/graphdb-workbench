@@ -8,8 +8,9 @@ import {MapperFn} from '../../../providers/mapper/mapper-fn';
  * Mapper class for converting an array of Suggestion objects to a SuggestionList model.
  */
 export const mapSuggestionListResponseToModel: MapperFn<SuggestionResponse[], SuggestionList> = (data) => {
-  return new SuggestionList(data.map(suggestion => new Suggestion({
+  const suggestions = data.map(suggestion => new Suggestion({
     ...suggestion,
     id: GeneratorUtils.hashCode(`${suggestion.type}-${suggestion.value}-${suggestion.description}`)
-  })));
+  }));
+  return new SuggestionList(suggestions);
 };

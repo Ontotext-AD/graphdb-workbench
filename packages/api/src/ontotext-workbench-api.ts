@@ -4,6 +4,7 @@
 export * from './models/application-settings';
 export * from './models/repositories';
 export * from './models/repository-location';
+export * from './models/namespace';
 export * from './models/events';
 export * from './models/security';
 export * from './models/license';
