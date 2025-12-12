@@ -1,5 +1,5 @@
 import {NamespacesContextService} from '../namespaces-context.service';
-import {NamespaceMap} from '../../../models/repositories';
+import {NamespaceMap} from '../../../models/namespace';
 
 describe('Namespaces Context Service', () => {
   let service: NamespacesContextService;
