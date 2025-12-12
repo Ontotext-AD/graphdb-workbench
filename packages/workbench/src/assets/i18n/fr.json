@@ -15,5 +15,10 @@
       "auth_token_expired": "Votre jeton d’authentification a expiré. Veuillez vous reconnecter.",
       "wrong_credentials": "Identifiants incorrects!"
     }
+  },
+  "not_found_page": {
+    "warning": "404. C'est une erreur!",
+    "url_not_found_msg": "L'URL demandée n'a pas été trouvée sur ce serveur. C'est tout ce que je sais.",
+    "back_to_home": "Retour à la page d'accueil"
   }
 }
