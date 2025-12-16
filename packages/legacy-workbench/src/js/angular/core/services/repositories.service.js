@@ -157,6 +157,7 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
         };
 
         this.init = function(successCallback, errorCallback, quick) {
+            console.log('%cinit repositories service', 'background: lightgreen',);
             this.loading = true;
             service(RepositoryLocationContextService).updateIsLoading(true);
             if (!quick) {
