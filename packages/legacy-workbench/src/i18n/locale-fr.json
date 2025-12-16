@@ -1360,6 +1360,11 @@
             "data.send.to.msg": "Les données sont envoyées toutes les 24 heures par HTTP à un point de terminaison dédié à l'adresse suivante",
             "data.encryption.msg": "Les données sont cryptées avec une clé RSA de 2048 bits.",
             "save.settings.btn": "Sauvegarder les paramètres"
+        },
+        "url_param": {
+            "invalid_repo": "Le dépôt \"{{repositoryId}}\" spécifié dans l'URL n'existe pas. Veuillez sélectionner un dépôt existant.",
+            "invalid_repo_continue": "Le dépôt \"{{repositoryId}}\" spécifié dans l’URL n’existe pas. Vous pouvez continuer avec le dépôt actuel \"{{currentRepositoryId}}\" ou sélectionner un autre dépôt.",
+            "change_active_repo": "Le dépôt actif sera remplacé par \"{{repositoryId}}\". Voulez-vous continuer?"
         }
     },
     "config.name.label": "Nom de configuration",

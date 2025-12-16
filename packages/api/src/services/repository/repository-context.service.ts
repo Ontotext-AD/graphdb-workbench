@@ -2,7 +2,7 @@ import {ContextService} from '../context';
 import {Repository, RepositoryList, RepositoryReference} from '../../models/repositories';
 import {ValueChangeCallback} from '../../models/context/value-change-callback';
 import {DeriveContextServiceContract} from '../../models/context/update-context-method';
-import {ServiceProvider} from '../../providers';
+import {service} from '../../providers';
 import {RepositoryStorageService} from './repository-storage.service';
 import {BeforeChangeValidationPromise} from '../../models/context/before-change-validation-promise';
 import {LifecycleHooks} from '../../providers/service/lifecycle-hooks';
@@ -29,11 +29,10 @@ export class RepositoryContextService extends ContextService<RepositoryContextFi
    *
    * @param [repositoryReference] - The new repository to set as selected. Optional.
    */
-  updateSelectedRepository(repositoryReference?: RepositoryReference): void {
-    const storageService = ServiceProvider.get(RepositoryStorageService);
+  updateSelectedRepository(repositoryReference?: RepositoryReference): Promise<void> {
+    const storageService = service(RepositoryStorageService);
     const selectedRepository = this.findRepository(repositoryReference);
-
-    this.validatePropertyChange(this.SELECTED_REPOSITORY, selectedRepository)
+    return this.validatePropertyChange(this.SELECTED_REPOSITORY, selectedRepository)
       .then((canChange) => {
         if (canChange) {
           if (selectedRepository) {
@@ -116,5 +115,14 @@ export class RepositoryContextService extends ContextService<RepositoryContextFi
       return undefined;
     }
     return this.getRepositoryList().findRepository(repositoryReference.id, repositoryReference.location);
+  }
+
+  /**
+   * Checks if a repository exists in the current repository list based on the provided reference.
+   * @param repositoryReference - The reference of the repository to check.
+   * @returns True if the repository exists; otherwise, false.
+   */
+  repositoryExists(repositoryReference: RepositoryReference): boolean {
+    return this.findRepository(repositoryReference) !== undefined;
   }
 }

@@ -3,5 +3,8 @@ export * from './event-name';
 export * from './navigation/navigation-end';
 export * from './navigation/navigation-end-payload';
 export * from './navigation/navigation-start';
+export * from './navigation/navigation-start-payload';
+export * from './app-lifecycle/application-mounted';
+export * from './app-lifecycle/application-unmounted';
 export * from './auth/logout';
 export * from './auth/login';

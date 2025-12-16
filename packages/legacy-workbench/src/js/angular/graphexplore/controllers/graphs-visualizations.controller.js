@@ -13,6 +13,7 @@ import {
     RepositoryContextService,
     SecurityContextService,
     LicenseContextService,
+    REPOSITORY_ID_PARAM,
     service,
 } from "@ontotext/workbench-api";
 
@@ -85,6 +86,7 @@ function GraphsVisualizationsCtrl(
     RDF4JRepositoriesService,
 ) {
     const securityContextService = service(SecurityContextService);
+    const repositoryContextService = service(RepositoryContextService);
     // Multiplier to calculate the height of the labels element based on the font size.
     // Based on this, we display different numbers of rows. Currently, this results in 3 rows of text
     const heightMultiplier = 4.2;
@@ -160,7 +162,9 @@ function GraphsVisualizationsCtrl(
 
     $scope.goToHome = () => {
         resetState();
-        $location.url("graphs-visualizations");
+        // When closing the visualization screen, remove the config parameter from the URL. Leave other search params intact.
+        const {config, ...searchParams} = $location.search();
+        $location.path('/graphs-visualizations').search(searchParams);
     };
 
     $scope.shouldShowSettings = () => {
@@ -317,7 +321,11 @@ function GraphsVisualizationsCtrl(
     };
 
     $scope.goToGraphConfig = (config) => {
-        pushHistory({config: config.id}, {config: config});
+        const searchParams = {
+            config: config.id,
+            [REPOSITORY_ID_PARAM]: repositoryContextService.getSelectedRepository().id,
+        };
+        pushHistory(searchParams, {config: config});
         resetState();
         loadGraphConfig(config);
     };
@@ -363,7 +371,7 @@ function GraphsVisualizationsCtrl(
     }));
 
     subscriptions.push(WorkbenchContextService.onAutocompleteEnabledUpdated(onAutocompleteEnabledUpdated));
-    subscriptions.push(service(RepositoryContextService).onSelectedRepositoryChanged(onSelectedRepositoryUpdated));
+    subscriptions.push(repositoryContextService.onSelectedRepositoryChanged(onSelectedRepositoryUpdated));
 
     subscriptions.push($scope.$on('repositoryIsSet', function(event, args) {
         const payload = args || {newRepo: false};
@@ -444,8 +452,8 @@ function GraphsVisualizationsCtrl(
         if ($scope.embedded) {
             searchParams.embedded = true;
         }
-        state.skipOnPopState = true;
         $location.search(searchParams);
+        state.skipOnPopState = true;
         $location.state(state);
     };
 
@@ -2816,6 +2824,7 @@ function GraphsVisualizationsCtrl(
                 searchParams.config = $scope.configLoaded.id;
             }
             searchParams.uri = uri;
+            searchParams[REPOSITORY_ID_PARAM] = repositoryContextService.getSelectedRepository().id;
             pushHistory(searchParams, {uri: uri, config: $scope.configLoaded});
         }
         $scope.$broadcast("onRootNodeChange", uri);
@@ -2957,14 +2966,18 @@ function GraphsVisualizationsCtrl(
             $scope.configLoaded = $scope.defaultGraphConfig;
         }
 
-        $location.url("?saved=" + graphToLoad.id);
+        // Preserve existing query params and only set/override `saved`
+        const currentSearch = $location.search();
+        const newSearch = {...currentSearch, saved: graphToLoad.id};
+        $location.search('saved', graphToLoad.id);
         graph.restoreState(JSON.parse(graphToLoad.data));
         if (!noHistory) {
-            pushHistory({saved: graphToLoad.id}, {savedGraph: graphToLoad});
+            pushHistory(newSearch, {savedGraph: graphToLoad});
         }
     };
 
     $scope.copyToClipboardSavedGraph = function(savedGraph) {
+        // TODO: Not sure we must add the repositoryId param here.
         const url = [location.protocol, '//', location.host, location.pathname, '?saved=', savedGraph.id].join('');
         $scope.copyToClipboard(url);
     };

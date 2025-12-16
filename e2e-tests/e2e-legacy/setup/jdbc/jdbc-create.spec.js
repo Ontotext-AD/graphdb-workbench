@@ -324,6 +324,6 @@ function createVerifyConfirmationDialogOptions() {
     return new VerifyConfirmationDialogOptions()
         .setChangePageFunction(() => MainMenuSteps.clickOnMenuImport())
         .setConfirmationMessage('You have unsaved changes. Are you sure that you want to exit?')
-        .setVerifyCurrentUrl(() => cy.url().should('eq', `${Cypress.config('baseUrl')}/jdbc/configuration/create`))
-        .setVerifyRedirectedUrl(() => cy.url().should('eq', `${Cypress.config('baseUrl')}/import#user`));
+        .setVerifyCurrentUrl(() => cy.url().should('include', `${Cypress.config('baseUrl')}/jdbc/configuration/create`))
+        .setVerifyRedirectedUrl(() => cy.url().should('include', '/import').and('include', '#user'));
 }

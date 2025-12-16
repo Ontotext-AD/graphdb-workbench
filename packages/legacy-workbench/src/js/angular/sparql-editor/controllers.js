@@ -24,6 +24,7 @@ import {
     EventName,
     SecurityContextService,
     service,
+    REPOSITORY_ID_PARAM,
 } from "@ontotext/workbench-api";
 
 const modules = [
@@ -238,7 +239,11 @@ function SparqlEditorCtrl($rootScope,
 
     const clearUrlParameters = () => {
         internallyReloaded = true;
-        $location.search({});
+        const currentParams = $location.search();
+        // Keep only the repositoryId parameter (if any). This will prevent router event from being triggered again and
+        // reinitializing the repositoryId param this adding a new history entry.
+        const repositoryId = currentParams[REPOSITORY_ID_PARAM];
+        $location.search(repositoryId ? {repositoryId} : {});
         // Replace current URL without adding a new history entry
         $location.replace();
     };

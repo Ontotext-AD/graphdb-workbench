@@ -187,7 +187,7 @@ describe('Ontop repositories', () => {
         // The Ontop repository should be created
         RepositorySteps.visit();
         // The repository list should contain the new repository, which can be activated
-        RepositorySteps.clickRepositoryConnectionOffBtn(repositoryId);
+        RepositorySteps.activateRepository(repositoryId);
         // When the repository is restarted
         RepositorySteps.restartRepository(repositoryId);
         ModalDialogSteps.getDialogBody().should('contain', repositoryId);

@@ -128,11 +128,11 @@
 								</label>
 							</td>
                             <td ng-if="graph.contextID.uri && isShacl(graph.contextID.uri)">
-                                <a ng-href="resource?uri={{graph.contextID.uri}}&role=context"
+                                <a ng-href="{{graph.contextID.href}}"
                                    title="{{graph.contextID.value}}">{{'shacl.shape.graph.tooltip' | translate}} ({{graph.contextID.value}})</a>
                             </td>
                             <td data-test="graph-is-not-shaql" ng-if="graph.contextID.uri && !isShacl(graph.contextID.uri)" >
-                                <a ng-href="resource?uri={{graph.contextID.uri}}&role=context" title="{{graph.contextID.value}}">{{graph.contextID.value | translate}}</a>
+                                <a ng-href="{{graph.contextID.href}}" title="{{graph.contextID.value}}">{{graph.contextID.value | translate}}</a>
 							</td>
 							<td ng-if="!graph.contextID.uri">
 								{{graph.contextID.value}}

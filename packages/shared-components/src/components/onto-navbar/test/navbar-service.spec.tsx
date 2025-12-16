@@ -86,13 +86,13 @@ describe('NavbarService', () => {
         sesame: '',
         connectors: ''
       } as ProductInfo;
-      const navbarModel = NavbarService.map(mockExternalMenuModel, mockProductInfo);
+      const navbarModel = NavbarService.map(mockExternalMenuModel, mockProductInfo, 'test-repo', 'repositoryId');
       expect(navbarModel).toBeInstanceOf(NavbarModel);
       const actual = new NavbarModel();
       const importItem = new NavbarItemModel({
         label: 'Import',
         labelKey: 'common.import',
-        href: 'import',
+        href: 'import?repositoryId=test-repo',
         order: 0,
         role: 'IS_AUTHENTICATED_FULLY',
         icon: 'icon-import',
@@ -119,7 +119,7 @@ describe('NavbarService', () => {
         new NavbarItemModel({
           label: 'Class hierarchy',
           labelKey: 'menu.class.hierarchy.label',
-          href: 'hierarchy',
+          href: 'hierarchy?repositoryId=test-repo',
           order: 1,
           parent: 'Explore',
           guideSelector: 'menu-class-hierarchy',
@@ -131,7 +131,7 @@ describe('NavbarService', () => {
         new NavbarItemModel({
           label: 'Class relationships',
           labelKey: 'menu.class.relationships.label',
-          href: 'relationships',
+          href: 'relationships?repositoryId=test-repo',
           order: 2,
           parent: 'Explore',
           guideSelector: 'sub-menu-class-relationships',
@@ -143,7 +143,7 @@ describe('NavbarService', () => {
         new NavbarItemModel({
           label: 'Visual graph',
           labelKey: 'visual.graph.label',
-          href: 'graphs-visualizations',
+          href: 'graphs-visualizations?repositoryId=test-repo',
           order: 5,
           parent: 'Explore',
           children: [],

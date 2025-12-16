@@ -596,7 +596,7 @@ function JdbcCreateCtrl(
                 removeAllListeners();
                 const baseLen = $location.absUrl().length - $location.url().length;
                 const path = newPath.substring(baseLen);
-                $location.path(path);
+                $location.url(path);
             };
             openConfirmDialog(title, message, onConfirm);
         } else {

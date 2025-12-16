@@ -1361,6 +1361,11 @@
             "data.send.to.msg": "The data is sent every 24 hours over HTTP to a dedicated endpoint at",
             "data.encryption.msg": "The data is encrypted with a 2048-bit RSA key.",
             "save.settings.btn": "Save settings"
+        },
+        "url_param": {
+            "invalid_repo": "The repository \"{{repositoryId}}\" specified in the URL does not exist. Please select an existing repository.",
+            "invalid_repo_continue": "The repository \"{{repositoryId}}\" specified in the URL does not exist. You can continue with the current repository \"{{currentRepositoryId}}\" or select another repository.",
+            "change_active_repo": "Active repository will be changed to \"{{repositoryId}}\". Do you want to proceed?"
         }
     },
     "config.name.label": "Config name",

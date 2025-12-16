@@ -364,7 +364,7 @@ module.exports = (webpackConfigEnv, argv) => {
             rules: [
                 {
                   test: /\.js$/,
-                  exclude: [/node_modules/, /~$/],
+                  exclude: /node_modules/,
                   use: {
                     loader: 'babel-loader'
                   }
@@ -376,7 +376,6 @@ module.exports = (webpackConfigEnv, argv) => {
                 },
                 {
                     test: /\.(js|html)$/,
-                    exclude: /~$/,
                     loader: 'string-replace-loader',
                     options: {
                         search: /\[AIV\]{version}\[\/AIV\]/g,

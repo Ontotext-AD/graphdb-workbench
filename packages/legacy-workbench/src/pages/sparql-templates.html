@@ -35,21 +35,21 @@
                      ng-if="sparqlTemplateIds.length == 0"><em>{{'no.sparql.templates.defined' | translate}}</em></div>
                 <table class="table table-hover mb-0" aria-describedby="SPARQL templates">
                     <tbody>
-                    <tr ng-repeat="templateID in sparqlTemplateIds track by $index"
+                    <tr ng-repeat="template in sparqlTemplateIds track by $index"
                         class="configuration-row">
                         <td>
-                            <a class="lead configuration-name" ng-href="sparql-template/create?templateID={{templateID}}">{{templateID}}</a>
+                            <a class="lead configuration-name" ng-href="{{template.href}}">{{template.id}}</a>
                         </td>
 
                         <td class="text-xs-right">
                             <span class="actions-bar hovered-item">
                                     <a class="btn btn-link edit-query-btn"
-                                       ng-if="canWriteActiveRepo()" href="sparql-template/create?templateID={{templateID}}"
+                                       ng-if="canWriteActiveRepo()" ng-href="{{template.href}}"
                                        gdb-tooltip="{{'edit.sparql.template.tooltip' | translate}}">
                                         <em class="ri-edit-line"></em>
                                     </a>
                                 </span>
-                            <button type="button" ng-if="canWriteActiveRepo()" ng-click="deleteTemplate(templateID)"
+                            <button type="button" ng-if="canWriteActiveRepo()" ng-click="deleteTemplate(template.id)"
                                     class="btn btn-link delete-configuration-btn" gdb-tooltip="{{'delete.sparql.template.tooltip' | translate}}"><span
                                 class="ri-delete-bin-6-line"></span>
                             </button>

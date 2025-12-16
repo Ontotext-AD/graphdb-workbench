@@ -603,16 +603,15 @@ securityModule.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window'
                     toastr.success($translate.instant('security.user.created', {name: $scope.user.username}));
                     const timer = $timeout(function() {
                         $scope.loader = false;
-                        $window.history.back();
+                        $location.path('/users');
                     }, 2000);
                     $scope.$on('$destroy', function() {
                         $timeout.cancel(timer);
                     });
                 })
                 .catch(async (data) => {
-                    const msg = getError(data);
                     $scope.loader = false;
-                    toastr.error(msg, $translate.instant('common.error'));
+                    toastr.error(getError(data), $translate.instant('common.error'));
                 });
         };
 
