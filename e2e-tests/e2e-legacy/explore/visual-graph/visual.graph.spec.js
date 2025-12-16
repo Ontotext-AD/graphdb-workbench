@@ -84,7 +84,7 @@ describe('Visual graph screen validation', () => {
             VisualGraphSteps.verifyPageLoaded();
             VisualGraphSteps.searchForResourceAndOpen(VALID_RESOURCE, VALID_RESOURCE);
             // Verify redirection to existing visual graph
-            cy.url().should('match', /USRegion$/);
+            cy.url().should('include', 'USRegion');
         });
 
         it('Test default graph state', () => {

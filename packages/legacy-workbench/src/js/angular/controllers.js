@@ -34,9 +34,11 @@ import {
     LicenseContextService,
     LicenseService,
     RepositoryService,
+    REPOSITORY_ID_PARAM,
     service,
     SecurityContextService,
     OntoToastrService,
+    WindowService,
 } from '@ontotext/workbench-api';
 import {EventConstants} from './utils/event-constants';
 import {CookieConsent} from './models/cookie-policy/cookie-consent';
@@ -74,6 +76,7 @@ angular
 homeCtrl.$inject = ['$scope',
     '$rootScope',
     '$http',
+    '$location',
     '$repositories',
     '$jwtAuth',
     '$translate',
@@ -86,6 +89,7 @@ homeCtrl.$inject = ['$scope',
 function homeCtrl($scope,
     $rootScope,
     $http,
+    $location,
     $repositories,
     $jwtAuth,
     $translate,
@@ -99,6 +103,7 @@ function homeCtrl($scope,
     // =========================
     const authenticationService = service(AuthenticationService);
     const authorizationService = service(AuthorizationService);
+    const repositoryContextService = service(RepositoryContextService);
 
     // =========================
     // Public variables
@@ -108,8 +113,17 @@ function homeCtrl($scope,
     // =========================
     // Public functions
     // =========================
+
+    $scope.goToSparqlEditor = function(query) {
+        $location.path('/sparql').search({savedQueryName: query.name, owner: query.owner, execute: true});
+    };
+
+    $scope.goToEditRepo = function(repository) {
+        $location.path(`repository/edit/${repository.id}`).search({previous: 'home', location: repository.location});
+    };
+
     $scope.getActiveRepositorySize = () => {
-        const repo = service(RepositoryContextService).getSelectedRepository();
+        const repo = repositoryContextService.getSelectedRepository();
 
         if (!repo) {
             return;
@@ -159,7 +173,7 @@ function homeCtrl($scope,
         $scope.isAutocompleteEnabled = autocompleteEnabled;
     };
 
-    subscriptions.push(service(RepositoryContextService).onSelectedRepositoryChanged(onSelectedRepositoryUpdated));
+    subscriptions.push(repositoryContextService.onSelectedRepositoryChanged(onSelectedRepositoryUpdated));
     subscriptions.push(WorkbenchContextService.onAutocompleteEnabledUpdated(onAutocompleteEnabledUpdated));
 
     $scope.$on('$destroy', () => subscriptions.forEach((subscription) => subscription()));
@@ -197,7 +211,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     const authorizationService = service(AuthorizationService);
     const authenticationService = service(AuthenticationService);
     const securityContextService = service(SecurityContextService);
-
+    const repositoryContextService = service(RepositoryContextService);
     /**
      * When the timeout finishes, the popover will open.
      */
@@ -237,20 +251,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     // Public functions
     // =========================
 
-    $scope.showRdfResourceSearch = () => {
-        return !$scope.hideRdfResourceSearch && !!$scope.getActiveRepository() && $scope.hasActiveLocation() && (!$scope.isLoadingLocation() || $scope.isLoadingLocation() && $location.url() === '/repository');
-    };
-
-    $scope.onRdfResourceSearch = () => {
-        if (isHomePage()) {
-            $scope.hideRdfResourceSearch = true;
-            $('#search-resource-input-home input').focus();
-            toastrService.info(decodeHTML($translate.instant('search.resource.current.page.msg')), $translate.instant('search.resources.msg'), {
-                allowHtml: true,
-            });
-        }
-    };
-
     $scope.showLabel = function(item) {
         return item.children ? true : !$scope.menuCollapsed;
     };
@@ -258,15 +258,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     //Copy to clipboard popover options
     $scope.copyToClipboard = function(uri) {
         ModalService.openCopyToClipboardModal(uri);
-    };
-
-    $scope.goToAddRepo = function() {
-        const returnTo = $location.url();
-        $location.path('repository/create').search({previous: returnTo});
-    };
-
-    $scope.goToEditRepo = function(repository) {
-        $location.path(`repository/edit/${repository.id}`).search({previous: 'home', location: repository.location});
     };
 
     $scope.getLocationFromUri = function(location) {
@@ -278,20 +269,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     };
 
     $scope.resolveUrl = (productVersion, endpointPath) => DocumentationUrlResolver.getDocumentationUrl(productVersion, endpointPath);
-
-    $scope.isCurrentPath = function(path) {
-        return $location.path() === '/' + path;
-    };
-
-    $scope.isCurrentSubmenuChildPath = function(submenu) {
-        if (submenu.children.length !== 0) {
-            return submenu.children.some(function(child) {
-                return $scope.isCurrentPath(child.href);
-            });
-        }
-
-        return false;
-    };
 
     $scope.isSecurityEnabled = function() {
         return authenticationService.isSecurityEnabled();
@@ -529,10 +506,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
             });
     };
 
-    $scope.goToSparqlEditor = function(query) {
-        $location.path('/sparql').search({savedQueryName: query.name, owner: query.owner, execute: true});
-    };
-
     $scope.declineTutorial = function() {
         LocalStorageAdapter.set(LSKeys.TUTORIAL_STATE, 1);
         $scope.tutorialState = false;
@@ -544,7 +517,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     };
 
     $scope.initTutorial = function() {
-        if (!$scope.tutorialState && $location.path() !== '/') {
+        if (!$scope.tutorialState && !isHomePage()) {
             return;
         }
         $scope.tutorialInfo = [
@@ -721,6 +694,10 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         return $location.url() === '/';
     };
 
+    const isLoginPage = () => {
+        return $location.url().startsWith('/login');
+    };
+
     const setYears = function() {
         const date = new Date();
         $scope.currentYear = date.getFullYear();
@@ -780,7 +757,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
 
         // Handles all cases of pages accessible without being logged and without having free access ON
         if ($scope.securityEnabled && !$scope.userLoggedIn && !securityConfig.isFreeAccessEnabled()) {
-            if ($location.path() !== '/login') {
+            if (!isLoginPage()) {
                 $rootScope.redirectToLogin();
             }
         } else {
@@ -835,11 +812,124 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         if (dataLoaded) {
             // unsubscribe of any previous subscription
             onSelectedRepositoryChangedSubscription?.();
-            onSelectedRepositoryChangedSubscription = service(RepositoryContextService)
-                .onSelectedRepositoryChanged((repository) => {
-                    $repositories.onRepositorySet(repository);
-                });
+            onSelectedRepositoryChangedSubscription =
+                repositoryContextService.onSelectedRepositoryChanged(onSelectedRepositoryUpdated);
         }
+    };
+
+    const confirmRepositoryChange = (currentRepositoryId, newRepositoryId) => {
+        ModalService.openConfirmationModal({
+                title: $translate.instant('common.confirm'),
+                message: $translate.instant('repository.url_param.change_active_repo', {repositoryId: newRepositoryId}),
+                confirmButtonKey: $translate.instant('common.confirm'),
+            },
+            () => {
+                repositoryContextService.updateSelectedRepository({
+                    id: newRepositoryId,
+                    location: '',
+                });
+            },
+            () => {
+                // on cancel, revert the URL to the current repository
+                $location.search(REPOSITORY_ID_PARAM, currentRepositoryId);
+            });
+    };
+
+    let isFirstRepoChangeEvent = true;
+
+    const onSelectedRepositoryUpdated = (repository) => {
+        // skip the first event which is triggered on bootstrap
+        if (!isFirstRepoChangeEvent) {
+            // On repository change, update the url param accordingly, but
+            // avoid infinite loop by checking if the param is already set to the desired value.
+            // And skip the first event which is triggered on bootstrap.
+            if (repository) {
+                const searchParams = new URLSearchParams(WindowService.getLocationQueryParams());
+                const urlRepositoryParam = searchParams.get(REPOSITORY_ID_PARAM);
+                if (urlRepositoryParam !== repository.id) {
+                    $location.search(REPOSITORY_ID_PARAM, repository.id).replace();
+                }
+            }
+        }
+        isFirstRepoChangeEvent = false;
+        // Notify the $repositories service about the repository change so it can update its state
+        $repositories.onRepositorySet(repository);
+    };
+
+    // 1. active repo no, repo in url no -> no action - just show repo selector
+    // 2. active repo no, repo in url yes, url repo exists -> set active repo same as the url
+    // 3. active repo no, repo in url yes, url repo missing -> show warning, keep url
+    // 4. active repo yes, repo in url no -> update url
+    // 5. active repo yes, repo in url yes, url repo exists -> show confirmation, update active repo
+    // 6. active repo yes, repo in url yes, url repo missing-> show warning, keep the active repo
+    const onRouteChangeStart = (event) => {
+        const repositoryIdParam = $location.search()[REPOSITORY_ID_PARAM];
+        const selectedRepository = repositoryContextService.getSelectedRepository();
+
+        const repositoryExists = repositoryIdParam
+            ? repositoryContextService.repositoryExists({id: repositoryIdParam, location: ''})
+            : false;
+
+        const isSameRepository = !!selectedRepository && repositoryIdParam === selectedRepository.id;
+
+        // --- no selected repository ---
+
+        if (!selectedRepository) {
+            // 1. active repo no, repo in url no -> no action - just show repo selector
+            if (!repositoryIdParam) {
+                return;
+            }
+
+            // 2. active repo no, repo in url yes, url repo exists -> set active repo same as the url
+            if (repositoryExists) {
+                repositoryContextService.updateSelectedRepository({
+                    id: repositoryIdParam,
+                    location: '',
+                });
+                return;
+            }
+
+            // 3. active repo no, repo in url yes, url repo missing -> show warning, keep url
+            ModalService.openModalAlert({
+                title: $translate.instant('common.warning'),
+                message: $translate.instant('repository.url_param.invalid_repo', {repositoryId: repositoryIdParam}),
+            }).result;
+
+            return;
+        }
+
+        // --- selected repository is present ---
+
+        // 4. active repo yes, repo in url no -> update url
+        if (!repositoryIdParam) {
+            // The timeout is needed to ensure the location change happens after the current digest cycle
+            $timeout(() => {
+                $location.search(REPOSITORY_ID_PARAM, selectedRepository.id).replace();
+            });
+            return;
+        }
+
+        // 5. active repo yes, repo in url yes, same repo -> do nothing
+        if (isSameRepository && repositoryExists) {
+            return;
+        }
+
+        // 6. active repo yes, repo in url yes, url repo exists and is different -> confirm change
+        if (repositoryExists) {
+            confirmRepositoryChange(selectedRepository.id, repositoryIdParam);
+            return;
+        }
+
+        // 7. active repo yes, repo in url yes, url repo missing -> warning, keep active repo and fix URL
+        ModalService.openModalAlert({
+            title: $translate.instant('common.warning'),
+            message: $translate.instant('repository.url_param.invalid_repo_continue', {repositoryId: repositoryIdParam, currentRepositoryId: selectedRepository.id}),
+        }).result.then(() => {
+            // The timeout is needed to ensure the location change happens after the current digest cycle
+            $timeout(() => {
+                $location.search(REPOSITORY_ID_PARAM, selectedRepository.id).replace();
+            });
+        });
     };
 
     // =========================
@@ -865,6 +955,14 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
                     const msg = getError(error.data, error.status);
                     toastrService.error(msg, $translate.instant('common.error'));
                 });
+        }
+    });
+
+    $scope.$on('$routeUpdate', function() {
+        const repositoryIdParam = $location.search()[REPOSITORY_ID_PARAM];
+        const selectedRepository = repositoryContextService.getSelectedRepository();
+        if (selectedRepository && repositoryIdParam !== selectedRepository.id) {
+            $location.search(REPOSITORY_ID_PARAM, selectedRepository.id).replace();
         }
     });
 
@@ -898,8 +996,18 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         $scope.initTutorial();
     });
 
-    $scope.$on('$locationChangeSuccess', function() {
-        $scope.showFooter = true;
+    let routeChangeStartSubscription = undefined;
+    const subscribeToRouteChangeStart = () => {
+        routeChangeStartSubscription = $rootScope.$on('$routeChangeStart', onRouteChangeStart);
+    };
+    subscribeToRouteChangeStart();
+
+    service(EventService).subscribe(EventName.APPLICATION_MOUNTED, (payload) => {
+        subscribeToRouteChangeStart();
+    });
+
+    service(EventService).subscribe(EventName.APPLICATION_UNMOUNTED, (payload) => {
+        routeChangeStartSubscription?.();
     });
 
     $scope.$on('repositoryIsSet', function() {
@@ -935,6 +1043,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     const licenseUpdatedSubscription = service(LicenseContextService).onLicenseChanged(onLicenseUpdated);
     const cookieConsentChangedSubscription = subscribeToCookieConsentChanged();
 
+    // TODO: The $destroy hook is not called in the workbench unmounting process, so these subscriptions are not cleaned up.
     $scope.$on('$destroy', () => {
         onSelectedRepositoryChangedSubscription?.();
         cookieConsentChangedSubscription?.();
@@ -956,7 +1065,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         setYears();
 
         $(window).resize(function() {
-            if ($scope.tutorialState && $location.path() === '/') {
+            if ($scope.tutorialState && isHomePage()) {
                 $scope.initTutorial();
             }
         });

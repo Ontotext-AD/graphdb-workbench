@@ -677,7 +677,8 @@ menuItems = [
         parent: 'Help',
         icon: 'ri-external-link-line',
         guideSelector: 'sub-menu-documentation',
-        shouldShow: true
+        shouldShow: true,
+        href: 'https://graphdb.ontotext.com/documentation/master/index.html',
       },
       {
         label: 'Tutorials',
@@ -686,7 +687,8 @@ menuItems = [
         parent: 'Help',
         icon: 'ri-external-link-line',
         guideSelector: 'sub-menu-developer-hub',
-        shouldShow: true
+        shouldShow: true,
+        href: 'https://graphdb.ontotext.com/documentation/master/tutorials.html',
       },
       {
         label: 'Support',
@@ -695,7 +697,8 @@ menuItems = [
         parent: 'Help',
         icon: 'ri-external-link-line',
         guideSelector: 'sub-menu-support',
-        shouldShow: true
+        shouldShow: true,
+        href: 'https://graphdb.ontotext.com/documentation/master/support.html',
       }
     ]
   }

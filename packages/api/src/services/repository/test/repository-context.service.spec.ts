@@ -91,6 +91,91 @@ describe('RepositoryContextService', () => {
     expect(updateContextPropertySpy).toHaveBeenCalledWith(repositoryContextService.SELECTED_REPOSITORY, undefined);
   });
 
+  describe('repositoryExists', () => {
+    test('Should return true when repository exists in the repository list.', () => {
+      // Given a repository list with a specific repository
+      const repository = createRepositoryInstance('repo-one', 'http://example.com:7300');
+      const repositories = new RepositoryList([repository]);
+      repositoryContextService.updateRepositoryList(repositories);
+
+      // When checking if the repository exists
+      const exists = repositoryContextService.repositoryExists(repository.toRepositoryReference());
+
+      // Then it should return true
+      expect(exists).toBe(true);
+    });
+
+    test('Should return false when repository does not exist in the repository list.', () => {
+      // Given a repository list with one repository
+      const repository = createRepositoryInstance('repo-one', 'http://example.com:7300');
+      const repositories = new RepositoryList([repository]);
+      repositoryContextService.updateRepositoryList(repositories);
+
+      // When checking if a different repository exists
+      const nonExistentRepo = createRepositoryInstance('repo-two', 'http://example.com:7300');
+      const exists = repositoryContextService.repositoryExists(nonExistentRepo.toRepositoryReference());
+
+      // Then it should return false
+      expect(exists).toBe(false);
+    });
+
+    test('Should return false when repository list is empty.', () => {
+      // Given an empty repository list
+      const repositories = new RepositoryList([]);
+      repositoryContextService.updateRepositoryList(repositories);
+
+      // When checking if a repository exists
+      const repository = createRepositoryInstance('repo-one', 'http://example.com:7300');
+      const exists = repositoryContextService.repositoryExists(repository.toRepositoryReference());
+
+      // Then it should return false
+      expect(exists).toBe(false);
+    });
+
+    test('Should return false when repository has different location.', () => {
+      // Given a repository list with a repository at a specific location
+      const repository = createRepositoryInstance('repo-one', 'http://example.com:7300');
+      const repositories = new RepositoryList([repository]);
+      repositoryContextService.updateRepositoryList(repositories);
+
+      // When checking if the same repository ID exists at a different location
+      const sameIdDifferentLocation = createRepositoryInstance('repo-one', 'http://different.com:7300');
+      const exists = repositoryContextService.repositoryExists(sameIdDifferentLocation.toRepositoryReference());
+
+      // Then it should return false
+      expect(exists).toBe(false);
+    });
+
+    test('Should return true when repository exists among multiple repositories.', () => {
+      // Given a repository list with multiple repositories
+      const repo1 = createRepositoryInstance('repo-one', 'http://example.com:7300');
+      const repo2 = createRepositoryInstance('repo-two', 'http://example.com:7300');
+      const repo3 = createRepositoryInstance('repo-three', 'http://example.com:7300');
+      const repositories = new RepositoryList([repo1, repo2, repo3]);
+      repositoryContextService.updateRepositoryList(repositories);
+
+      // When checking if the second repository exists
+      const exists = repositoryContextService.repositoryExists(repo2.toRepositoryReference());
+
+      // Then it should return true
+      expect(exists).toBe(true);
+    });
+
+    test('Should return true when checking repository with matching id and location.', () => {
+      // Given a repository list
+      const repository = createRepositoryInstance('my-repo', 'http://localhost:7200');
+      const repositories = new RepositoryList([repository]);
+      repositoryContextService.updateRepositoryList(repositories);
+
+      // When checking with a reference that has the same id and location
+      const repositoryReference = repository.toRepositoryReference();
+      const exists = repositoryContextService.repositoryExists(repositoryReference);
+
+      // Then it should return true
+      expect(exists).toBe(true);
+    });
+  });
+
   function createRepositoryInstance(id: string, location = 'http://example.com:7300') {
     return new Repository({id, location} as Repository);
   }

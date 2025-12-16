@@ -90,7 +90,7 @@ export class NavbarModel {
    */
   closeAll(): void {
     this.walk((item) => {
-      item.open = false;
+      this.setOpen(item, false);
     });
   }
 
@@ -151,7 +151,7 @@ export class NavbarModel {
       if (this.hasSelectedSubmenu(opened)) {
         this.selectItem(opened);
       }
-      opened.open = false;
+      this.setOpen(opened, false);
     }
   }
 
@@ -161,7 +161,7 @@ export class NavbarModel {
    */
   open(item: NavbarItemModel): void {
     this.walk((item) => {
-      item.open = false;
+      this.setOpen(item, false);
     });
     this.openItemAndParent(item);
   }
@@ -170,7 +170,7 @@ export class NavbarModel {
     if (item.parentModel) {
       this.openItemAndParent(item.parentModel);
     }
-    item.open = true;
+    this.setOpen(item, true);
   }
 
   /**
@@ -181,9 +181,18 @@ export class NavbarModel {
     const parent = currentItem.parent;
     this.walk((item) => {
       if (item.label !== parent) {
-        item.open = false;
+        this.setOpen(item, false);
       }
     });
+  }
+
+  /**
+   * Sets the open state of a menu item.
+   * @param item The menu item to be updated.
+   * @param open The open state to be set.
+   */
+  setOpen(item: NavbarItemModel, open: boolean): void {
+    item.open = open;
   }
 
   /**
@@ -256,7 +265,11 @@ export class NavbarModel {
       if (item.href?.includes('*')) {
         path = this.getWildcardPath(selectedMenu, item.href);
       }
-      if (item.href === path) {
+      // Remove query parameters from href before comparison because we have added them dynamically earlier.
+      const separatorIndex = item.href.search(/[?]/);
+      // If no separator is found, use the full length of the href.
+      const cleanHref = separatorIndex === -1 ? item.href : item.href.substring(0, separatorIndex);
+      if (path === cleanHref) {
         if (item.hasParent) {
           this.open(item);
         }

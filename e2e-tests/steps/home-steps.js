@@ -34,6 +34,10 @@ class HomeSteps extends BaseSteps {
         return cy.get('.ot-loader-new-content').should('not.exist');
     }
 
+    static visitWithRepositoryInUrl(repositoryId) {
+        cy.visit(`/?repositoryId=${repositoryId}`);
+    }
+
     static getLayout() {
         return cy.get('.wb-layout');
     }

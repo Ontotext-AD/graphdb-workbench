@@ -106,9 +106,9 @@ function ontoLoader($timeout) {
     };
 }
 
-coreErrors.$inject = ['$timeout'];
+coreErrors.$inject = ['$timeout', '$location'];
 
-function coreErrors($timeout) {
+function coreErrors($timeout, $location) {
     return {
         restrict: 'EA',
         transclude: true,
@@ -130,6 +130,11 @@ function coreErrors($timeout) {
             let previousElement;
 
             scope.showRemoteLocations = false;
+
+            scope.goToAddRepo = function() {
+                const returnTo = $location.url();
+                $location.path('repository/create').search({previous: returnTo});
+            };
 
             scope.toggleShowRemoteLocations = () => {
                 scope.showRemoteLocations = !scope.showRemoteLocations;

@@ -1,4 +1,5 @@
 import {RouteConstants} from "../utils/route-constants";
+import {WindowService} from '@ontotext/workbench-api';
 
 angular
     .module('graphdb.framework.sparql-editor.share-query.service', [])
@@ -7,28 +8,29 @@ angular
 function ShareQueryLinkService() {
     return {
         createShareSavedQueryLink,
-        createShareQueryLink
+        createShareQueryLink,
     };
 
     function createShareSavedQueryLink(savedQueryName, owner) {
-        let url = `${getBaseUrl()}?${RouteConstants.savedQueryName}=${encodeURIComponent(savedQueryName)}`;
-        if (owner != null) {
-            url += `&${RouteConstants.savedQueryOwner}=${encodeURIComponent(owner)}`;
+        const url = new URL(WindowService.getLocationHref());
+
+        url.searchParams.set(RouteConstants.savedQueryName, savedQueryName);
+        if (owner) {
+            url.searchParams.set(RouteConstants.savedQueryOwner, owner);
         }
-        return url;
+
+        return url.toString();
     }
 
     function createShareQueryLink(queryData) {
-        return getBaseUrl() + '?' + $.param({
-            name: queryData.name,
-            query: queryData.body,
-            // TODO: pass these from the component as well
-            infer: queryData.inference || true,
-            sameAs: queryData.sameAs || true
-        });
-    }
+        const url = new URL(WindowService.getLocationHref());
 
-    function getBaseUrl() {
-        return [location.protocol, '//', location.host, location.pathname].join('');
+        url.searchParams.set('name', queryData.name);
+        url.searchParams.set('query', queryData.body);
+        // TODO: pass these from the component as well
+        url.searchParams.set('infer', queryData.inference || true);
+        url.searchParams.set('sameAs', queryData.sameAs || true);
+
+        return url.toString();
     }
 }

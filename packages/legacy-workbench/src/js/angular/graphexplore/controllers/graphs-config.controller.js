@@ -576,7 +576,8 @@ function GraphConfigCtrl(
                 unsubscribeListeners();
                 const baseLen = $location.absUrl().length - $location.url().length;
                 const path = newPath.substring(baseLen);
-                $location.path(path);
+                // Use $location.url to properly change the path because the newPath can contain search params and hash
+                $location.url(path);
             };
             openConfirmDialog(title, message, onConfirm);
         } else {

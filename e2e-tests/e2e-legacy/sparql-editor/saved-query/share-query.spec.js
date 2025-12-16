@@ -37,7 +37,10 @@ describe('Share saved queries', () => {
         // Then I expect that share query dialog will be opened
         ShareSavedQueryDialog.getDialog().should('be.visible');
         ShareSavedQueryDialog.getShareLink().then((shareLink) => {
-            expect(shareLink).to.have.string(`/sparql?savedQueryName=${encodeURIComponent(savedQueryName)}`);
+            const url = new URL(shareLink);
+            expect(url.pathname).to.equal('/sparql');
+            expect(url.searchParams.get('repositoryId')).to.equal(repositoryId);
+            expect(url.searchParams.get('savedQueryName')).to.equal(savedQueryName);
         });
         // When I click copy button
         ShareSavedQueryDialog.copyLink();

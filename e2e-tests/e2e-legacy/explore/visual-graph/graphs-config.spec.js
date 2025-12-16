@@ -189,7 +189,7 @@ describe('Graphs config', () => {
         // When I click on cancel
         VisualGraphSteps.cancelSaveConfig();
         // Then I expect to be redirected to configs list view
-        cy.url().should('eq', Cypress.config('baseUrl') + '/graphs-visualizations');
+        cy.url().should('include', Cypress.config('baseUrl') + '/graphs-visualizations');
     });
 
     it('Should not allow config creation without a name', () => {
@@ -349,7 +349,7 @@ describe('Graphs config', () => {
         // When I click cancel without changing the query
         VisualGraphSteps.cancelSaveConfig();
         // Then I expect to be redirected to configs list without confirmation
-        cy.url().should('eq', Cypress.config('baseUrl') + '/graphs-visualizations');
+        cy.url().should('include', Cypress.config('baseUrl') + '/graphs-visualizations');
         // And I open it for edit
         VisualGraphSteps.editConfig(graphConfigName);
         checkEditorWithQuery(QUERY_START);
@@ -372,7 +372,7 @@ describe('Graphs config', () => {
         ModalDialogSteps.clickOnConfirmButton();
         // Then I expect to be redirected to configs list page
         ModalDialogSteps.getDialog().should('not.exist');
-        cy.url().should('eq', Cypress.config('baseUrl') + '/graphs-visualizations');
+        cy.url().should('include', Cypress.config('baseUrl') + '/graphs-visualizations');
     });
 
     it('Should prevent leaving with confirmation when expand query is changed', () => {
@@ -454,7 +454,7 @@ function saveGraphConfig(graphConfigName) {
     // Then I expect a success notification
     ApplicationSteps.getSuccessNotifications().should('be.visible');
     // And I should be redirected to configs list view
-    cy.url().should('eq', Cypress.config('baseUrl') + '/graphs-visualizations');
+    cy.url().should('include', Cypress.config('baseUrl') + '/graphs-visualizations');
     // And the new config should be present in the list
     VisualGraphSteps.getGraphConfig(graphConfigName).should('be.visible');
 }

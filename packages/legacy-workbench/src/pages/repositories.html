@@ -67,7 +67,7 @@
                                 <tbody>
                                 <tr class="repository"
                                     ng-repeat="repository in getRepositoriesFromLocation(location.uri) | orderBy: ['type === \'system\'', 'location', 'id'] track by repository.hash"
-                                    ng-class="{'table-info text-secondary': isRepoActive(repository)}"
+                                    ng-class="{'table-info text-secondary active': isRepoActive(repository)}"
                                     data-test="repository-{{repository.id}}"
                                     guide-selector="repository-{{repository.id}}">
                                     <td class="select-repository-button-wrapper" data-test="select-repository-button-wrapper" guide-selector="select-repository-button-wrapper">

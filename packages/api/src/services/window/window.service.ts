@@ -22,6 +22,10 @@ export class WindowService implements Service {
     return WindowService.getWindow().crypto;
   }
 
+  static getLocationHref(): string {
+    return WindowService.getWindow().location.href;
+  }
+
   static setLocationHref(href: string): void {
     WindowService.getWindow().location.href = href;
   }

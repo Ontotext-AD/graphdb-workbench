@@ -1,4 +1,12 @@
-import {ContextSubscriptionManager, HTTP_REQUEST_DONE_EVENT, ServiceProvider} from "@ontotext/workbench-api";
+import {
+    ContextSubscriptionManager,
+    HTTP_REQUEST_DONE_EVENT,
+    ServiceProvider,
+    service,
+    EventService,
+    ApplicationMounted,
+    ApplicationUnmounted,
+} from "@ontotext/workbench-api";
 import {LoggerProvider} from "./js/angular/core/services/logger-provider";
 
 const logger = LoggerProvider.logger;
@@ -98,6 +106,11 @@ function mount(opts, mountedInstances, props = {}) {
 
         if (angularJsElement) {
             domElement.appendChild(angularJsElement);
+            // Fire the mounted event when re-attaching the existing element.
+            // This is needed for cases where the angularjs app is kept in the DOM between mounts because
+            // single-spa's app-change and before-app-change are somewhat unreliable for our needs.
+            // We can use this to re-subscribe to events or do other necessary work when the app is re-mounted.
+            service(EventService).emit(new ApplicationMounted());
             return;
         }
 
@@ -164,6 +177,10 @@ function unmount(opts, mountedInstances, props = {}) {
             opts.subscriptions = [];
         }
 
+        // Emit the unmounted event so that any necessary cleanup can be done by the application.
+        // For example, unsubscribing from specific events in the AngularJS app which usually are not unsubscribed
+        // when the AngularJS app is just removed from the DOM.
+        service(EventService).emit(new ApplicationUnmounted());
         resolve();
     });
 }

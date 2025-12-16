@@ -28,7 +28,7 @@ describe('Import server files', () => {
         // When I switch to the server files tab
         ImportUserDataSteps.openServerFilesTab();
         // Then Server files tab should be active
-        cy.url().should('include', '/import#server');
+        cy.url().should('include', '/import').and('include', '#server');
         ImportServerFilesSteps.getActiveTab().should('have.text', 'Server files');
         ImportServerFilesSteps.getResourcesTable().should('be.visible');
     });
@@ -37,7 +37,7 @@ describe('Import server files', () => {
         // When I visit the import page through a direct link to the server files tab
         cy.visit('/import#server');
         // Then Server files tab should be active
-        cy.url().should('include', '/import#server');
+        cy.url().should('include', '/import').and('include', '#server');
         ImportServerFilesSteps.getActiveTab().should('have.text', 'Server files');
         ImportServerFilesSteps.getResourcesTable().should('be.visible');
     });

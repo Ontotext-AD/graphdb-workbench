@@ -7,7 +7,12 @@ import {saveAs} from 'lib/FileSaver-patch';
 import {decodeHTML} from "../../../app";
 import {cloneDeep} from "lodash";
 import {ExportSettingsCtrl} from "../core/components/export-settings-modal/controller";
-import {service, AuthenticationStorageService} from '@ontotext/workbench-api';
+import {
+    service,
+    RepositoryContextService,
+    AuthenticationStorageService,
+    REPOSITORY_ID_PARAM,
+} from '@ontotext/workbench-api';
 
 const modules = [
     'ngCookies',
@@ -95,6 +100,12 @@ exportCtrl.controller('ExportCtrl',
                                 value: 'import.default.graph',
                             },
                         });
+                        // Assemble repository ID param for resource links.
+                        const selectedRepository = service(RepositoryContextService).getSelectedRepository();
+                        let repositoryIdParam = '';
+                        if (selectedRepository) {
+                            repositoryIdParam = `&${REPOSITORY_ID_PARAM}=${selectedRepository.id}`;
+                        }
                         $scope.graphsByValue = {};
                         Object.keys(data.results.bindings).forEach(function(key) {
                             const binding = data.results.bindings[key];
@@ -111,6 +122,7 @@ exportCtrl.controller('ExportCtrl',
                                 binding.contextID.exportUri = encodeURIComponent('<' + binding.contextID.value + '>');
                                 binding.contextID.longName = 'named graph ' + binding.contextID.value;
                             }
+                            binding.contextID.href = `resource?uri=${binding.contextID.uri}&role=context${repositoryIdParam}`;
                             $scope.graphsByValue[binding.contextID.value] = binding.contextID;
                         });
                         $scope.graphs = data.results.bindings;
