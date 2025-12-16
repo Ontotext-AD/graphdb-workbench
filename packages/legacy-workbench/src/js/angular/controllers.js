@@ -197,7 +197,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     const authorizationService = service(AuthorizationService);
     const authenticationService = service(AuthenticationService);
     const securityContextService = service(SecurityContextService);
-
+    const repositoryContextService = service(RepositoryContextService);
     /**
      * When the timeout finishes, the popover will open.
      */
@@ -842,6 +842,105 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         }
     };
 
+    const confirmRepositoryChange = (currentRepositoryId, newRepositoryId) => {
+        ModalService.openConfirmationModal({
+                title: $translate.instant('common.confirm'),
+                message: `Active repository will be changed to [${newRepositoryId}]. Do you want to proceed?`,
+                confirmButtonKey: 'ttyg.chat_panel.btn.proceed.label',
+            },
+            () => {
+                repositoryContextService.updateSelectedRepository({
+                    id: newRepositoryId,
+                    location: '',
+                });
+            },
+            () => {
+                // on cancel, revert the URL to the current repository
+                $timeout(() => {
+                    $location.search('repositoryId', currentRepositoryId);
+                });
+            });
+    };
+
+    const onLocationChangeSuccess1 = (event, newUrl) => {
+        // find if the newUrl contains parameter repositoryId
+        const url = new URL(newUrl, window.location.origin);
+        const repositoryIdParam = url.searchParams.get('repositoryId');
+        const selectedRepository = repositoryContextService.getSelectedRepository();
+        const repositoryExists = repositoryContextService.repositoryExists({id: repositoryIdParam, location: ''});
+        const isSameRepository = repositoryIdParam === selectedRepository.id;
+        // Change current repository with new existing repository from the URL
+        if (selectedRepository && repositoryExists && !isSameRepository) {
+            // Ask for confirmation before changing the current repository.
+            // This can happen when the user manually changes the URL or uses browser history to navigate.
+            // If the user rejects the change, set the URL back to the current repository.
+            confirmRepositoryChange(selectedRepository.id, repositoryIdParam);
+        } else if (selectedRepository && repositoryExists && isSameRepository) {
+            // do nothing, same repository in the URL and selected
+        } else if (!selectedRepository && repositoryExists) {
+            // set active repository if there is none selected and repository from the URL exists
+            repositoryContextService.updateSelectedRepository({
+                id: repositoryIdParam,
+                location: '',
+            });
+        } else {
+            // no repository in the URL, update the URL with the current active repository
+            if (selectedRepository) {
+                // Update the URL with the current active repository in the next digest cycle to avoid
+                // $locationChangeSuccess loop issues.
+                $timeout(() => {
+                    $location.search('repositoryId', selectedRepository.id);
+                });
+            }
+        }
+    };
+
+    const onLocationChangeSuccess = (event, newUrl) => {
+        const url = new URL(newUrl, window.location.origin);
+        const repositoryIdParam = url.searchParams.get('repositoryId');
+
+        const selectedRepository = repositoryContextService.getSelectedRepository();
+        const selectedRepositoryId = selectedRepository?.id;
+
+        // If no repositoryId in URL, just ensure URL reflects current selection (if any)
+        if (!repositoryIdParam) {
+            if (selectedRepositoryId) {
+                $timeout(() => {
+                    $location.search('repositoryId', selectedRepositoryId);
+                });
+            }
+            return;
+        }
+
+        const targetRepository = {id: repositoryIdParam, location: ''};
+        const repositoryExists = repositoryContextService.repositoryExists(targetRepository);
+        const isSameRepository = repositoryIdParam === selectedRepositoryId;
+
+        // If repository from URL does not exist, normalize URL to current selection (if any)
+        if (!repositoryExists) {
+            if (selectedRepositoryId) {
+                $timeout(() => {
+                    $location.search('repositoryId', selectedRepositoryId);
+                });
+            }
+            return;
+        }
+
+        // If there is already a selected repository and it's different from the one in URL, confirm change
+        if (selectedRepositoryId && !isSameRepository) {
+            confirmRepositoryChange(selectedRepositoryId, repositoryIdParam);
+            return;
+        }
+
+        // If no selected repository but the one in URL exists, select it
+        if (!selectedRepositoryId && repositoryExists) {
+            repositoryContextService.updateSelectedRepository(targetRepository);
+            return;
+        }
+
+        // If same repository in URL and selected, do nothing
+    };
+
     // =========================
     // Subscriptions and event handlers
     // =========================
@@ -898,9 +997,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         $scope.initTutorial();
     });
 
-    $scope.$on('$locationChangeSuccess', function() {
-        $scope.showFooter = true;
-    });
+    $scope.$on('$locationChangeSuccess', onLocationChangeSuccess);
 
     $scope.$on('repositoryIsSet', function() {
         $scope.setRestricted();
