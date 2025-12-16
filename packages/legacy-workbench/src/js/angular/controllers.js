@@ -21,7 +21,6 @@ import './guides/directives';
 import {GUIDE_PAUSE} from './guides/tour-lib-services/shepherd.service';
 import 'angular-pageslide-directive/dist/angular-pageslide-directive';
 import 'angularjs-slider/dist/rzslider.min';
-import {debounce} from 'lodash';
 import {DocumentationUrlResolver} from './utils/documentation-url-resolver';
 import {NamespacesListModel} from './models/namespaces/namespaces-list';
 import {
@@ -199,11 +198,31 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     const authorizationService = service(AuthorizationService);
     const authenticationService = service(AuthenticationService);
     const securityContextService = service(SecurityContextService);
+    /**
+     * Initialized as 'undefined' to guarantee that when the 'localStoreChangeHandler' function is called for the first time, it will be processed properly.
+     * If we set it to "false" and when the $jwtAuth.isAuthenticated() is called for first time it can return "false" as example, then the page will not
+     * be reloaded or redirected to the login page.
+     * @type {undefined | boolean}
+     */
+    let isAuthenticated = undefined;
+    const authEvents = [AuthTokenService.AUTH_STORAGE_NAME, AuthTokenService.AUTHENTICATED_STORAGE_NAME];
+    /**
+     * When the timeout finishes, the popover will open.
+     */
+    let popoverTimer;
+    // Selected repository ID change event is fired when the user changes the repository from the dropdown or by
+    // selecting a repository from the repository list page. This triggers the event in the current tab and also stores
+    // the new repository ID in the local storage. Local storage change event is handled by a central handler
+    // LocalStorageSubscriptionHandlerService in the api module which triggers the change for the respective context
+    // properties.
+    let onSelectedRepositoryChangedSubscription;
 
     // =========================
     // Public variables
     // =========================
 
+    $scope.popoverTemplate = 'js/angular/templates/repositorySize.html';
+    $scope.securityEnabled = true;
     $scope.descr = $translate.instant('main.gdb.description');
     $scope.documentation = '';
     $scope.menu = $menuItems;
@@ -215,20 +234,19 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     $scope.guidePaused = 'true' === LocalStorageAdapter.get(GUIDE_PAUSE);
     $scope.startGuideAfterSecurityInit = true;
     $scope.licenseIsSet = false;
-
     $scope.hideRdfResourceSearch = false;
+    $scope.graphdbVersion = $scope.engineVersion = productInfo.productVersion;
+    $scope.workbenchVersion = productInfo.Workbench;
+    $scope.connectorsVersion = productInfo.connectors;
+    $scope.sesameVersion = productInfo.sesame;
+    $scope.isActiveRepoPopoverOpen = false;
+
+    // =========================
+    // Public functions
+    // =========================
+
     $scope.showRdfResourceSearch = () => {
         return !$scope.hideRdfResourceSearch && !!$scope.getActiveRepository() && $scope.hasActiveLocation() && (!$scope.isLoadingLocation() || $scope.isLoadingLocation() && $location.url() === '/repository');
-    };
-
-    const startGuide = (guideId) => {
-        // Check to see if $translate service is ready with the language before starting the guide as the steps are translated ahead on time. Will retry 20 times (1 second).
-        const timer = $interval(function() {
-            if ($translate.use()) {
-                GuidesService.autoStartGuide(guideId);
-                $interval.cancel(timer);
-            }
-        }, 50, 20);
     };
 
     $scope.onRdfResourceSearch = () => {
@@ -241,115 +259,9 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         }
     };
 
-    const isHomePage = () => {
-        return $location.url() === '/';
-    };
-
-    $scope.isMenuCollapsedOnLoad = function() {
-        return $('.main-menu').hasClass('collapsed');
-    };
-
-    $scope.checkMenu = debounce(function() {
-        const collapsed = $scope.isMenuCollapsedOnLoad();
-        if ($scope.menuCollapsed !== collapsed) {
-            $scope.menuCollapsed = collapsed;
-        }
-    }, 0, {trailing: true});
-
-    const deregisterMenuWatcher = $scope.$watch(function() {
-        return $scope.isMenuCollapsedOnLoad();
-    }, function(newValue, oldValue) {
-        if (newValue !== oldValue || typeof newValue === 'undefined') {
-            // Trigger debounced check on both collapse and expand
-            $scope.checkMenu();
-        }
-    });
-
     $scope.showLabel = function(item) {
         return item.children ? true : !$scope.menuCollapsed;
     };
-
-    const setYears = function() {
-        const date = new Date();
-        $scope.currentYear = date.getFullYear();
-        $scope.previousYear = 2002; // Peio says this is 2002 or 2003, in other words the year of the earliest file.
-    };
-
-    setYears();
-
-    $('#repositorySelectDropdown').on('hide.bs.dropdown', function(e) {
-        if (GuidesService.isActive()) {
-            if ($('#repositorySelectDropdown.autoCloseOff').length > 0) {
-                e.preventDefault();
-            }
-        }
-    });
-
-    $scope.$on('$routeChangeSuccess', function($event, current, previous) {
-        $scope.clicked = false;
-        $scope.hideRdfResourceSearch = false;
-        if (previous) {
-            // Recheck license status on navigation within the workbench (security is already inited)
-            licenseService.updateLicenseStatus()
-                .then(() => TrackingService.applyTrackingConsent())
-                .catch((error) => {
-                    const msg = getError(error.data, error.status);
-                    toastrService.error(msg, $translate.instant('common.error'));
-                });
-        }
-    });
-
-    function updateCookieConsentHandler(consentChangedEvent) {
-        const consent = CookieConsent.fromJSON(consentChangedEvent.detail);
-        TrackingService.updateCookieConsent(consent);
-    }
-
-    const subscribeToCookieConsentChanged = () => {
-        document.body.addEventListener(COOKIE_CONSENT_CHANGED_EVENT, updateCookieConsentHandler);
-        return () => document.body.removeEventListener(COOKIE_CONSENT_CHANGED_EVENT, updateCookieConsentHandler);
-    };
-
-    const cookieConsentChangedSubscription = subscribeToCookieConsentChanged();
-
-    const onLicenseUpdated = (license) => {
-        $scope.license = license;
-    };
-
-    const licenseUpdatedSubscription = service(LicenseContextService).onLicenseChanged(onLicenseUpdated);
-
-    $scope.resumeGuide = function() {
-        $rootScope.$broadcast('guideResume');
-    };
-
-    $rootScope.$on('guideReset', function() {
-        $scope.guidePaused = false;
-        $rootScope.guidePaused = false;
-    });
-
-    $rootScope.$on('guideStarted', function() {
-        $scope.guidePaused = false;
-        $rootScope.guidePaused = false;
-    });
-
-    $rootScope.$on('guidePaused', function() {
-        $scope.guidePaused = true;
-        $rootScope.guidePaused = true;
-    });
-
-    $rootScope.$on('$translateChangeSuccess', function() {
-        $scope.menu.forEach(function(menu) {
-            menu.label = $translate.instant(menu.labelKey);
-            if (menu.children) {
-                menu.children.forEach(function(child) {
-                    child.label = $translate.instant(child.labelKey);
-                });
-            }
-        });
-
-        $rootScope.helpInfo = $sce.trustAsHtml(decodeHTML($translate.instant($rootScope.helpInfo)));
-        $rootScope.title = decodeHTML($translate.instant($rootScope.title));
-        $scope.initTutorial();
-    });
 
     //Copy to clipboard popover options
     $scope.copyToClipboard = function(uri) {
@@ -369,72 +281,9 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         return $repositories.getLocationFromUri(location);
     };
 
-    $scope.$on('$locationChangeSuccess', function() {
-        $scope.showFooter = true;
-    });
-
-    $scope.$on('repositoryIsSet', function() {
-        $scope.setRestricted();
-        LocalStorageAdapter.clearClassHieararchyState();
-    });
-
-    $scope.graphdbVersion =
-        $scope.engineVersion = productInfo.productVersion;
-    $scope.workbenchVersion = productInfo.Workbench;
-
-    $scope.connectorsVersion = productInfo.connectors;
-
-    $scope.sesameVersion = productInfo.sesame;
-
-    $scope.select = function(index, event, clicked) {
-        if ($('.main-menu').hasClass('collapsed')) {
-            if (!$(event.target).parents('.menu-element').children('.menu-element-root').hasClass('active')) {
-                if (!$(event.target).parents('.menu-element').hasClass('open') && clicked) {
-                    $scope.clicked = true;
-                } else {
-                    $scope.clicked = !clicked;
-                }
-                if ($scope.selected === index) {
-                    $scope.selected = -1;
-                } else {
-                    $scope.selected = index;
-                }
-            } else {
-                $scope.selected = index;
-                $scope.clicked = !clicked;
-            }
-        } else {
-            if (!$(event.target).parents('.menu-element').hasClass('open') && clicked) {
-                $scope.clicked = true;
-            } else {
-                $scope.clicked = !clicked;
-            }
-            if ($(event.target).parent('.menu-element').find('.sub-menu').length !== 0) {
-                if ($(event.target).parents('.menu-element').children('.menu-element-root').hasClass('active')) {
-                    $('.sub-menu li.active').parents('.menu-element').children('.menu-element-root').removeClass('active');
-                } else {
-                    $('.sub-menu li.active').parents('.menu-element').children('.menu-element-root').addClass('active');
-                }
-                if ($scope.selected === index) {
-                    $scope.selected = -1;
-                } else {
-                    $scope.selected = index;
-                }
-            } else {
-                $timeout(function() {
-                    $(event.target).parents('.menu-element').children('.menu-element-root').addClass('active');
-                }, 50);
-                $scope.selected = index;
-            }
-        }
+    $scope.resumeGuide = function() {
+        $rootScope.$broadcast('guideResume');
     };
-
-    $('body').bind('click', function(e) {
-        if (!$(e.target).parents('.main-menu').length && $('.main-menu').hasClass('collapsed')) {
-            $scope.clicked = false;
-            $scope.selected = -1;
-        }
-    });
 
     $scope.resolveUrl = (productVersion, endpointPath) => DocumentationUrlResolver.getDocumentationUrl(productVersion, endpointPath);
 
@@ -452,29 +301,18 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         return false;
     };
 
-    if ($location.path() === '/') {
-        $scope.selected = -1;
-    } else {
-        $timeout(function() {
-            const route = $location.path().replace('/', '');
-            const elem = $('a[href^="' + route + '"]');
-            $scope.selected = elem.closest('.menu-element').index() - 1;
-        }, 200);
-        $scope.isCurrentPath($location.path());
-    }
-
-    $scope.popoverTemplate = 'js/angular/templates/repositorySize.html';
-
-    $scope.securityEnabled = true;
     $scope.isSecurityEnabled = function() {
         return authenticationService.isSecurityEnabled();
     };
+
     $scope.isFreeAccessEnabled = function() {
         return authorizationService.hasFreeAccess();
     };
+
     $scope.hasExternalAuthUser = function() {
         return authenticationService.isExternalUser();
     };
+
     $scope.isDefaultAuthEnabled = function() {
         return $jwtAuth.isDefaultAuthEnabled();
     };
@@ -601,69 +439,8 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         $repositories.setRepository(repository);
     };
 
-    function setPrincipal() {
-        $scope.principal = securityContextService.getAuthenticatedUser();
-        $scope.isIgnoreSharedQueries = $scope.principal && $scope.principal.appSettings.IGNORE_SHARED_QUERIES;
-    }
-
-    const onLoginSubscription = service(EventService).subscribe(EventName.LOGIN, () => {
-        $jwtAuth.initSecurity();
-    });
-    const onLogoutSubscription = service(EventService).subscribe(EventName.LOGOUT, () => logout());
-
-    service(EventService).subscribe(EventConstants.RDF_SEARCH_ICON_CLICKED, () => {
-        $rootScope.$broadcast('rdfResourceSearchExpanded');
-    });
-
-    function logout() {
-        const authorizationService = service(AuthorizationService);
-
-        if (authorizationService.hasFreeAccess()) {
-            // if it's free access check if we still can access the current repo
-            // if not, a new default repo will be set or the current repo will be unset
-            $repositories.resetActiveRepository();
-        }
-        // clearAuthentication() triggers broadcast of `securityInit` which triggers $rootScope.redirectToLogin()
-        $jwtAuth.clearAuthentication();
-        toastrService.success($translate.instant('sign.out.success'));
-    }
-
     $scope.showMainManuAndStatusBar = () => {
         return authenticationService.isAuthenticated() || $scope.isSecurityEnabled() && $scope.isFreeAccessEnabled();
-    };
-
-    const reloadPageOutsideAngularScope = () => {
-        setTimeout(() => {
-            $window.location.reload();
-        }, 0);
-    };
-
-    /**
-     * Initialized as 'undefined' to guarantee that when the 'localStoreChangeHandler' function is called for the first time, it will be processed properly.
-     * If we set it to "false" and when the $jwtAuth.isAuthenticated() is called for first time it can return "false" as example, then the page will not
-     * be reloaded or redirected to the login page.
-     * @type {undefined | boolean}
-     */
-    let isAuthenticated = undefined;
-    const authEvents = [AuthTokenService.AUTH_STORAGE_NAME, AuthTokenService.AUTHENTICATED_STORAGE_NAME];
-
-    const localStoreChangeHandler = (localStoreEvent) => {
-        if (authEvents.includes(localStoreEvent.key)) {
-            const newAuthenticationState = service(AuthenticationStorageService).isAuthenticated();
-            $jwtAuth.updateReturnUrl();
-            if (isAuthenticated !== newAuthenticationState) {
-                isAuthenticated = newAuthenticationState;
-                if (isAuthenticated) {
-                    $location.url($rootScope.returnToUrl || '/');
-                    $route.reload();
-                    reloadPageOutsideAngularScope();
-                } else {
-                    $rootScope.redirectToLogin();
-                }
-            }
-        } else if ('ls.' + LSKeys.AUTOCOMPLETE_ENABLED === localStoreEvent.key) {
-            WorkbenchContextService.setAutocompleteEnabled(localStoreEvent.newValue === 'true');
-        }
     };
 
     $scope.isAdmin = function() {
@@ -721,12 +498,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         }
     };
 
-    $scope.isActiveRepoPopoverOpen = false;
-    /**
-     * When the timeout finishes, the popover will open.
-     */
-    let popoverTimer;
-
     $scope.openActiveRepoPopover = function() {
         if ($scope.getActiveRepository()) {
             $scope.cancelPopoverOpen();
@@ -746,17 +517,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     $scope.closeActiveRepoPopover = function() {
         $scope.isActiveRepoPopoverOpen = false;
     };
-
-    const closeActiveRepoPopoverEventHandler = function(event) {
-        const popoverElement = document.querySelector('.popover');
-        if ($scope.isActiveRepoPopoverOpen && popoverElement && !popoverElement.contains(event.target)) {
-            $timeout(function() {
-                $scope.isActiveRepoPopoverOpen = false;
-            }, 0);
-        }
-    };
-
-    document.addEventListener('click', closeActiveRepoPopoverEventHandler);
 
     $scope.getDegradedReason = function() {
         return $repositories.getDegradedReason();
@@ -834,67 +594,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         return $sce.trustAsHtml(page.info);
     };
 
-    collapsedMenuLogicOnInit();
-
-    $(window).resize(function() {
-        collapseMenuLogicOnResize();
-        if ($scope.tutorialState && $location.path() === '/') {
-            $scope.initTutorial();
-        }
-    });
-
-    function setMenuCollapsed(menuCollapsed) {
-        if (menuCollapsed) {
-            $(':root').addClass('menu-collapsed');
-        } else {
-            $(':root').removeClass('menu-collapsed');
-        }
-    }
-
-    function collapsedMenuLogicOnInit() {
-        if ($(window).width() <= 720) {
-            $('.container-fluid.main-container').addClass('expanded');
-            setMenuCollapsed(true);
-            $('.main-menu').addClass('collapsed');
-            $('.main-menu .ri-arrow-left-s-line').toggleClass('ri-arrow-left-s-line').toggleClass('ri-arrow-right-s-line');
-            $('.toggle-menu').hide();
-        } else if ($(window).width() > 720 && LocalStorageAdapter.get(LSKeys.MENU_STATE) === 'collapsedMenu') {
-            $('.container-fluid.main-container').addClass('expanded');
-            setMenuCollapsed(true);
-            $('.main-menu').addClass('collapsed');
-            $('.toggle-menu').show();
-            $('.main-menu .ri-arrow-left-s-line').toggleClass('ri-arrow-left-s-line').toggleClass('ri-arrow-right-s-line');
-        } else {
-            $('.container-fluid.main-container').removeClass('expanded');
-            setMenuCollapsed(false);
-            $('.main-menu').removeClass('collapsed');
-            $('.toggle-menu').show();
-            $('.main-menu .ri-arrow-right-s-line').toggleClass('ri-arrow-right-s-line').toggleClass('ri-arrow-left-s-line');
-        }
-    }
-
-    function collapseMenuLogicOnResize() {
-        if (angular.isDefined($scope.menuState)) {
-            if ($(window).width() <= 720) {
-                $('.container-fluid.main-container').addClass('expanded');
-                setMenuCollapsed(true);
-                $('.main-menu').addClass('collapsed');
-                $('.toggle-menu').hide();
-                $('.main-menu .ri-arrow-left-s-line').toggleClass('ri-arrow-left-s-line').toggleClass('ri-arrow-right-s-line');
-            } else if ($(window).width() > 720 && $scope.menuState) {
-                $('.toggle-menu').show();
-            } else {
-                $('.container-fluid.main-container').removeClass('expanded');
-                setMenuCollapsed(false);
-                $('.main-menu').removeClass('collapsed');
-                $('.toggle-menu').show();
-                $('.main-menu .ri-arrow-right-s-line').toggleClass('ri-arrow-right-s-line').toggleClass('ri-arrow-left-s-line');
-            }
-        } else {
-            collapsedMenuLogicOnInit();
-        }
-    }
-
     $scope.slideToPage = function(index) {
         const widthOfParentElm = $('.main-container')[0].offsetWidth;
         const $pageSlider = $('.pages-wrapper .page-slide');
@@ -911,92 +610,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         $scope.slideToPage(nextPageIndex);
         $($('.btn-toolbar.pull-right .btn-group .btn')[$scope.activePage]).focus();
     };
-
-    $scope.toggleNavigation = function() {
-        const $mainMenu = $('.main-menu');
-        const $activeSubmenu = $('.sub-menu li.active');
-        if (!$mainMenu.hasClass('collapsed')) {
-            $activeSubmenu.parents('.menu-element').children('.menu-element-root').addClass('active');
-
-            const $menuElement = $('.menu-element');
-            if ($menuElement.hasClass('open')) {
-                $menuElement.removeClass('open');
-                $scope.clicked = false;
-                $scope.selected = -1;
-            }
-            $('.container-fluid.main-container').addClass('expanded');
-            setMenuCollapsed(true);
-            $mainMenu.addClass('collapsed');
-            $('.main-menu .ri-arrow-left-s-line').toggleClass('ri-arrow-left-s-line').toggleClass('ri-arrow-right-s-line');
-            $('.main-menu.collapsed .menu-element.clicked').removeClass('clicked');
-            $rootScope.$broadcast('onToggleNavWidth', true);
-        } else {
-            if (!$activeSubmenu.parents('.menu-element').hasClass('open')) {
-                $activeSubmenu.parents('.menu-element').children('.menu-element-root').addClass('active');
-            } else {
-                $activeSubmenu.parents('.menu-element').children('.menu-element-root').removeClass('active');
-            }
-            $('.container-fluid.main-container').removeClass('expanded');
-            setMenuCollapsed(false);
-            $mainMenu.removeClass('collapsed');
-            $('.main-menu .ri-arrow-right-s-line').toggleClass('ri-arrow-right-s-line').toggleClass('ri-arrow-left-s-line');
-            $rootScope.$broadcast('onToggleNavWidth', false);
-        }
-    };
-
-    $scope.$on('onToggleNavWidth', function(e, isCollapsed) {
-        $scope.menuState = isCollapsed;
-        if (isCollapsed) {
-            LocalStorageAdapter.set(LSKeys.MENU_STATE, 'collapsedMenu');
-        } else {
-            LocalStorageAdapter.set(LSKeys.MENU_STATE, 'expandedMenu');
-        }
-        if ($scope.tutorialState && $location.path() === '/') {
-            const withOfParentElm = $('.pages-wrapper')[0].offsetWidth + 200;
-            $timeout(function() {
-                const $pageSlider = $('.pages-wrapper .page-slide');
-                $pageSlider.css('left', withOfParentElm + 'px');
-                $($pageSlider[$scope.activePage]).css('left', 0 + 'px');
-            }, 50);
-        }
-    });
-
-    if ($jwtAuth.securityInitialized) {
-        $scope.getSavedQueries();
-    }
-
-    securityContextService.onSecurityConfigChanged((securityConfig) => {
-        $scope.securityEnabled = securityConfig.isEnabled();
-        $scope.userLoggedIn = authenticationService.isLoggedIn();
-
-        // Handles all cases of pages accessible without being logged and without having free access ON
-        if ($scope.securityEnabled && !$scope.userLoggedIn && !securityConfig.isFreeAccessEnabled()) {
-            if ($location.path() !== '/login') {
-                $rootScope.redirectToLogin();
-            }
-        } else {
-            setPrincipal();
-
-            $scope.getSavedQueries();
-
-            licenseService.updateLicenseStatus()
-                .then(() => {
-                    $scope.licenseIsSet = true;
-                    return TrackingService.applyTrackingConsent();
-                })
-                .catch((error) => {
-                    $scope.licenseIsSet = false;
-                    const msg = getError(error.data, error.status);
-                    toastrService.error(msg, $translate.instant('common.error'));
-                });
-
-            const queryParams = $location.search();
-            if (authorizationService.isRepoManager() && $scope.startGuideAfterSecurityInit && queryParams.autostartGuide) {
-                startGuide(queryParams.autostartGuide);
-                $scope.startGuideAfterSecurityInit = false;
-            }
-        }
-    });
 
     $scope.isTrackingAllowed = function() {
         if (!$scope.licenseIsSet) {
@@ -1091,6 +704,136 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         return $filter('date')(time, ('\'' + $translate.instant('timestamp.on') + '\' yyyy-MM-dd \'' + $translate.instant('timestamp.at') + '\' HH:mm'));
     };
 
+    $scope.downloadGuidesFile = (resourcePath, resourceFile) => {
+        GuidesService.downloadGuidesFile(resourcePath, resourceFile)
+            .catch(() => {
+                toastrService.error($translate.instant('guide.step_plugin.download-guide-resource.download.message.failure', {resourceFile}));
+            });
+    };
+
+    // =========================
+    // Private functions
+    // =========================
+
+    const startGuide = (guideId) => {
+        // Check to see if $translate service is ready with the language before starting the guide as the steps are translated ahead on time. Will retry 20 times (1 second).
+        const timer = $interval(function() {
+            if ($translate.use()) {
+                GuidesService.autoStartGuide(guideId);
+                $interval.cancel(timer);
+            }
+        }, 50, 20);
+    };
+
+    const isHomePage = () => {
+        return $location.url() === '/';
+    };
+
+    const setYears = function() {
+        const date = new Date();
+        $scope.currentYear = date.getFullYear();
+        $scope.previousYear = 2002; // Peio says this is 2002 or 2003, in other words the year of the earliest file.
+    };
+
+    function updateCookieConsentHandler(consentChangedEvent) {
+        const consent = CookieConsent.fromJSON(consentChangedEvent.detail);
+        TrackingService.updateCookieConsent(consent);
+    }
+
+    const subscribeToCookieConsentChanged = () => {
+        document.body.addEventListener(COOKIE_CONSENT_CHANGED_EVENT, updateCookieConsentHandler);
+        return () => document.body.removeEventListener(COOKIE_CONSENT_CHANGED_EVENT, updateCookieConsentHandler);
+    };
+
+    const onLicenseUpdated = (license) => {
+        $scope.license = license;
+    };
+
+    function setPrincipal() {
+        $scope.principal = securityContextService.getAuthenticatedUser();
+        $scope.isIgnoreSharedQueries = $scope.principal && $scope.principal.appSettings.IGNORE_SHARED_QUERIES;
+    }
+
+    function logout() {
+        const authorizationService = service(AuthorizationService);
+
+        if (authorizationService.hasFreeAccess()) {
+            // if it's free access check if we still can access the current repo
+            // if not, a new default repo will be set or the current repo will be unset
+            $repositories.resetActiveRepository();
+        }
+        // clearAuthentication() triggers broadcast of `securityInit` which triggers $rootScope.redirectToLogin()
+        $jwtAuth.clearAuthentication();
+        toastrService.success($translate.instant('sign.out.success'));
+    }
+
+    const reloadPageOutsideAngularScope = () => {
+        setTimeout(() => {
+            $window.location.reload();
+        }, 0);
+    };
+
+    const closeActiveRepoPopoverEventHandler = function(event) {
+        const popoverElement = document.querySelector('.popover');
+        if ($scope.isActiveRepoPopoverOpen && popoverElement && !popoverElement.contains(event.target)) {
+            $timeout(function() {
+                $scope.isActiveRepoPopoverOpen = false;
+            }, 0);
+        }
+    };
+
+    const localStoreChangeHandler = (localStoreEvent) => {
+        if (authEvents.includes(localStoreEvent.key)) {
+            const newAuthenticationState = service(AuthenticationStorageService).isAuthenticated();
+            $jwtAuth.updateReturnUrl();
+            if (isAuthenticated !== newAuthenticationState) {
+                isAuthenticated = newAuthenticationState;
+                if (isAuthenticated) {
+                    $location.url($rootScope.returnToUrl || '/');
+                    $route.reload();
+                    reloadPageOutsideAngularScope();
+                } else {
+                    $rootScope.redirectToLogin();
+                }
+            }
+        } else if ('ls.' + LSKeys.AUTOCOMPLETE_ENABLED === localStoreEvent.key) {
+            WorkbenchContextService.setAutocompleteEnabled(localStoreEvent.newValue === 'true');
+        }
+    };
+
+    const securityConfigChangedHandler = (securityConfig) => {
+        $scope.securityEnabled = securityConfig.isEnabled();
+        $scope.userLoggedIn = authenticationService.isLoggedIn();
+
+        // Handles all cases of pages accessible without being logged and without having free access ON
+        if ($scope.securityEnabled && !$scope.userLoggedIn && !securityConfig.isFreeAccessEnabled()) {
+            if ($location.path() !== '/login') {
+                $rootScope.redirectToLogin();
+            }
+        } else {
+            setPrincipal();
+
+            $scope.getSavedQueries();
+
+            licenseService.updateLicenseStatus()
+                .then(() => {
+                    $scope.licenseIsSet = true;
+                    return TrackingService.applyTrackingConsent();
+                })
+                .catch((error) => {
+                    $scope.licenseIsSet = false;
+                    const msg = getError(error.data, error.status);
+                    toastrService.error(msg, $translate.instant('common.error'));
+                });
+
+            const queryParams = $location.search();
+            if (authorizationService.isRepoManager() && $scope.startGuideAfterSecurityInit && queryParams.autostartGuide) {
+                startGuide(queryParams.autostartGuide);
+                $scope.startGuideAfterSecurityInit = false;
+            }
+        }
+    };
+
     const updateAutocompleteStatus = () => {
         if ($repositories.isActiveRepoFedXType() || !$scope.license?.valid || !authorizationService.canReadRepo($repositories.getActiveRepositoryObject())) {
             WorkbenchContextService.setAutocompleteEnabled(false);
@@ -1114,22 +857,8 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         }
         updateAutocompleteStatus();
     };
-    $rootScope.$on('repositoryIsSet', onRepositoryChanged);
 
-    /**
-     * Add a listener for the browser's local store change event. This event will be fired in all tabs of the current domain
-     * EXPECT FOR THE ONE where the local store changed.
-     */
-    window.addEventListener('storage', localStoreChangeHandler);
-
-    // Selected repository ID change event is fired when the user changes the repository from the dropdown or by
-    // selecting a repository from the repository list page. This triggers the event in the current tab and also stores
-    // the new repository ID in the local storage. Local storage change event is handled by a central handler
-    // LocalStorageSubscriptionHandlerService in the api module which triggers the change for the respective context
-    // properties.
-    let onSelectedRepositoryChangedSubscription;
-    // subscribe to repository changes, once we are certain they are loaded
-    const onAppDataLoaded = service(ApplicationLifecycleContextService).onApplicationDataStateChanged((dataLoaded) => {
+    const onApplicationDataStateChangedHandler = (dataLoaded) => {
         if (dataLoaded) {
             // unsubscribe of any previous subscription
             onSelectedRepositoryChangedSubscription?.();
@@ -1138,14 +867,100 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
                     $repositories.onRepositorySet(repository);
                 });
         }
+    };
+
+    // =========================
+    // Subscriptions and event handlers
+    // =========================
+
+    $('#repositorySelectDropdown').on('hide.bs.dropdown', function(e) {
+        if (GuidesService.isActive()) {
+            if ($('#repositorySelectDropdown.autoCloseOff').length > 0) {
+                e.preventDefault();
+            }
+        }
     });
 
-    $scope.downloadGuidesFile = (resourcePath, resourceFile) => {
-        GuidesService.downloadGuidesFile(resourcePath, resourceFile)
-            .catch((error) => {
-                toastrService.error($translate.instant('guide.step_plugin.download-guide-resource.download.message.failure', {resourceFile}));
-            });
-    };
+    $scope.$on('$routeChangeSuccess', function($event, current, previous) {
+        $scope.clicked = false;
+        $scope.hideRdfResourceSearch = false;
+        if (previous) {
+            // Recheck license status on navigation within the workbench (security is already inited)
+            licenseService.updateLicenseStatus()
+                .then(() => TrackingService.applyTrackingConsent())
+                .catch((error) => {
+                    const msg = getError(error.data, error.status);
+                    toastrService.error(msg, $translate.instant('common.error'));
+                });
+        }
+    });
+
+    $rootScope.$on('guideReset', function() {
+        $scope.guidePaused = false;
+        $rootScope.guidePaused = false;
+    });
+
+    $rootScope.$on('guideStarted', function() {
+        $scope.guidePaused = false;
+        $rootScope.guidePaused = false;
+    });
+
+    $rootScope.$on('guidePaused', function() {
+        $scope.guidePaused = true;
+        $rootScope.guidePaused = true;
+    });
+
+    $rootScope.$on('$translateChangeSuccess', function() {
+        $scope.menu.forEach(function(menu) {
+            menu.label = $translate.instant(menu.labelKey);
+            if (menu.children) {
+                menu.children.forEach(function(child) {
+                    child.label = $translate.instant(child.labelKey);
+                });
+            }
+        });
+
+        $rootScope.helpInfo = $sce.trustAsHtml(decodeHTML($translate.instant($rootScope.helpInfo)));
+        $rootScope.title = decodeHTML($translate.instant($rootScope.title));
+        $scope.initTutorial();
+    });
+
+    $scope.$on('$locationChangeSuccess', function() {
+        $scope.showFooter = true;
+    });
+
+    $scope.$on('repositoryIsSet', function() {
+        $scope.setRestricted();
+        LocalStorageAdapter.clearClassHieararchyState();
+    });
+
+    const onLoginSubscription = service(EventService).subscribe(EventName.LOGIN, () => {
+        $jwtAuth.initSecurity();
+    });
+
+    const onLogoutSubscription = service(EventService).subscribe(EventName.LOGOUT, () => logout());
+
+    service(EventService).subscribe(EventConstants.RDF_SEARCH_ICON_CLICKED, () => {
+        $rootScope.$broadcast('rdfResourceSearchExpanded');
+    });
+
+    document.addEventListener('click', closeActiveRepoPopoverEventHandler);
+
+    const securityConfigChangedSubscription = securityContextService.onSecurityConfigChanged(securityConfigChangedHandler);
+
+    $rootScope.$on('repositoryIsSet', onRepositoryChanged);
+
+    /**
+     * Add a listener for the browser's local store change event. This event will be fired in all tabs of the current domain
+     * EXPECT FOR THE ONE where the local store changed.
+     */
+    window.addEventListener('storage', localStoreChangeHandler);
+
+    const onAppDataLoaded = service(ApplicationLifecycleContextService).onApplicationDataStateChanged(onApplicationDataStateChangedHandler);
+
+    // subscribe to repository changes, once we are certain they are loaded
+    const licenseUpdatedSubscription = service(LicenseContextService).onLicenseChanged(onLicenseUpdated);
+    const cookieConsentChangedSubscription = subscribeToCookieConsentChanged();
 
     $scope.$on('$destroy', () => {
         onSelectedRepositoryChangedSubscription?.();
@@ -1154,14 +969,31 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         onAppDataLoaded?.();
         onLogoutSubscription?.();
         onLoginSubscription?.();
+        securityConfigChangedSubscription?.();
         document.removeEventListener('click', closeActiveRepoPopoverEventHandler);
         window.removeEventListener('storage', localStoreChangeHandler);
         $scope.cancelPopoverOpen();
-        deregisterMenuWatcher();
-        if ($scope.checkMenu) {
-            $timeout.cancel($scope.checkMenu);
-        }
     });
+
+    // =========================
+    // Initialization
+    // =========================
+
+    const initialize = () => {
+        setYears();
+
+        $(window).resize(function() {
+            if ($scope.tutorialState && $location.path() === '/') {
+                $scope.initTutorial();
+            }
+        });
+
+        if ($jwtAuth.securityInitialized) {
+            $scope.getSavedQueries();
+        }
+    };
+
+    initialize();
 }
 
 repositorySizeCtrl.$inject = ['$scope', '$http', 'RepositoriesRestService'];
