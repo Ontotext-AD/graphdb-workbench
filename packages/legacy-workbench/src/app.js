@@ -169,10 +169,6 @@ const moduleDefinition = function(productInfo, translations) {
                 });
             });
 
-            $routeProvider.otherwise({
-                templateUrl: 'pages/not_found.html',
-            });
-
             // use the HTML5 History API
             $locationProvider.html5Mode(true);
 
