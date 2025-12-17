@@ -15,7 +15,6 @@ import {
   AuthorizationService,
   ApplicationLifecycleContextService,
   ApplicationSettingsStorageService,
-  RepositoryContextService,
   LifecycleState,
 } from '@ontotext/workbench-api';
 import {start} from 'single-spa';
@@ -53,18 +52,6 @@ const loadEssentials = () => {
 
 const loadApplicationData = () => {
   return settleAllPromises([...repositoryBootstrap])
-    .then(() => {
-      const repositoryContextService = service(RepositoryContextService);
-      repositoryContextService.onSelectedRepositoryChanged((repository) => {
-        if (!repository) {
-          return;
-        }
-        const searchParams = new URLSearchParams(window.location.search);
-        searchParams.set('repositoryId', repository.id);
-        const newUrl = `${window.location.pathname}?${searchParams.toString()}${window.location.hash}`;
-        window.history.pushState({}, '', newUrl);
-      });
-    })
     .then(() => settleAllPromises([...autoCompleteBootstrap]))
     .then((results) => {
       const rejected = results.filter(r => r.status === 'rejected');
