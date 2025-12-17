@@ -3,6 +3,15 @@ export class ModalDialogSteps {
         return cy.get(cssClass);
     }
 
+    /**
+     * Get the modal alert element. Modal alerts is also a modal dialog, but it has a modal-alert class on the main div
+     * which is parent of modal-dialog.
+     * @returns {Cypress.Chainable<JQuery<HTMLElement>>}
+     */
+    static getModalAlert() {
+        return cy.get('.modal-alert');
+    }
+
     static getDialogHeader() {
         return ModalDialogSteps.getDialog().find('.modal-header');
     }
