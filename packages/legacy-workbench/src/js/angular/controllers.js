@@ -866,7 +866,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         if (dataLoaded) {
             // unsubscribe of any previous subscription
             onSelectedRepositoryChangedSubscription?.();
-            console.log('%cre-subscribe', 'background: pink',);
             onSelectedRepositoryChangedSubscription =
                 repositoryContextService.onSelectedRepositoryChanged(onSelectedRepositoryUpdated);
         }
@@ -892,26 +891,45 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
             });
     };
 
+    let isFirstRepoChangeEvent = true;
+
+    const onSelectedRepositoryUpdated = (repository) => {
+        // skip the first event which is triggered on bootstrap
+        if (!isFirstRepoChangeEvent) {
+            // On repository change, update the url param accordingly, but
+            // avoid infinite loop by checking if the param is already set to the desired value.
+            // And skip the first event which is triggered on bootstrap.
+            if (repository) {
+                const searchParams = new URLSearchParams(window.location.search);
+                const urlRepositoryParam = searchParams.get(REPOSITORY_ID_PARAM);
+                if (urlRepositoryParam !== repository.id) {
+                    $location.search(REPOSITORY_ID_PARAM, repository.id).replace();
+                }
+            }
+        }
+        isFirstRepoChangeEvent = false;
+        // Notify the $repositories service about the repository change so it can update its state
+        $repositories.onRepositorySet(repository);
+    };
+
     // 1. active repo no, repo in url no -> no action - just show repo selector
     // 2. active repo no, repo in url yes, url repo exists -> set active repo same as the url
     // 3. active repo no, repo in url yes, url repo missing -> show warning, keep url
     // 4. active repo yes, repo in url no -> update url
     // 5. active repo yes, repo in url yes, url repo exists -> show confirmation, update active repo
     // 6. active repo yes, repo in url yes, url repo missing-> show warning, keep the active repo
-    const onLocationChangeSuccess = (event, newUrl) => {
-        console.log('%cloc change', 'background: yellow',);
-        // find if the newUrl contains parameter repositoryId
-        const url = new URL(newUrl, window.location.origin);
-        const repositoryIdParam = url.searchParams.get('repositoryId');
+    const onRouteChangeStart = (event) => {
+        const repositoryIdParam = $location.search()[REPOSITORY_ID_PARAM];
         const selectedRepository = repositoryContextService.getSelectedRepository();
         const repositoryExists = repositoryContextService.repositoryExists({id: repositoryIdParam, location: ''});
         const isSameRepository = selectedRepository && repositoryIdParam === selectedRepository.id;
+        console.log('%conRouteChangeStart', 'background: purple', selectedRepository && selectedRepository.id, repositoryIdParam);
         // Change current repository with new existing repository from the URL
         if (selectedRepository) {
             if (!repositoryIdParam) {
                 console.log('%c000', 'background: yellow',);
                 $timeout(() => {
-                    $location.search(REPOSITORY_ID_PARAM, selectedRepository.id);
+                    $location.search(REPOSITORY_ID_PARAM, selectedRepository.id).replace();
                 });
             } else if (repositoryExists && !isSameRepository) {
                 console.log('%c111', 'background: yellow',);
@@ -930,7 +948,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
                 }).result
                     .then(function() {
                         $timeout(() => {
-                            $location.search(REPOSITORY_ID_PARAM, selectedRepository.id);
+                            $location.search(REPOSITORY_ID_PARAM, selectedRepository.id).replace();
                             console.log('%cupdated repo', 'background: red',);
                         });
                     });
@@ -959,32 +977,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         } else {
             console.log('%c666', 'background: yellow',);
         }
-    };
-
-    let isFirstRepoChangeEvent = true;
-
-    const onSelectedRepositoryUpdated = (repository) => {
-        console.log('%c1 repo changed', 'background: red', repository && repository.id);
-        // skip the first event which is triggered on bootstrap
-        if (!isFirstRepoChangeEvent) {
-            console.log('%c2 repo change', 'background: yellow', repository && repository.id);
-            // On repository change, update the url param accordingly, but
-            // avoid infinite loop by checking if the param is already set to the desired value.
-            // And skip the first event which is triggered on bootstrap.
-            if (repository) {
-                const searchParams = new URLSearchParams(window.location.search);
-                const urlRepositoryParam = searchParams.get(REPOSITORY_ID_PARAM);
-                if (urlRepositoryParam !== repository.id) {
-                    searchParams.set(REPOSITORY_ID_PARAM, repository.id);
-                    const newUrl = `${window.location.pathname}?${searchParams.toString()}${window.location.hash}`;
-                    console.log('%crepo change event: update url', 'background: yellow', urlRepositoryParam, repository.id, newUrl);
-                    window.history.pushState({}, '', newUrl);
-                }
-            }
-        }
-        isFirstRepoChangeEvent = false;
-        // Notify the $repositories service about the repository change so it can update its state
-        $repositories.onRepositorySet(repository);
     };
 
     // =========================
@@ -1043,7 +1035,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         $scope.initTutorial();
     });
 
-    $scope.$on('$locationChangeSuccess', onLocationChangeSuccess);
+    $rootScope.$on('$routeChangeStart', onRouteChangeStart);
 
     $scope.$on('repositoryIsSet', function() {
         $scope.setRestricted();
