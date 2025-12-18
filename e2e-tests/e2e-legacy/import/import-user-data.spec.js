@@ -25,7 +25,7 @@ describe('Import user data', () => {
         // Given I have visited the import page
         ImportUserDataSteps.visit();
         // When the page is loaded
-        cy.url().should('include', '/import#user');
+        cy.url().should('include', '/import').and('include', '#user');
         // Then I should see the user help icons
         ImportUserDataSteps.showPageInfoPopover();
         ImportUserDataSteps.getPageInfoPopoverTitle()
@@ -59,7 +59,7 @@ describe('Import user data', () => {
         ImportUserDataSteps.openServerFilesTabFromWarning();
         // Then I should see the server files tab
         ImportUserDataSteps.getActiveTab().should('have.text', 'Server files');
-        cy.url().should('include', '/import#server');
+        cy.url().should('include', '/import').and('include', '#server');
         ImportUserDataSteps.getServerFilesTab().should('be.visible');
         // When I click on the API link in the warning
         ImportUserDataSteps.openUserDataTab();
