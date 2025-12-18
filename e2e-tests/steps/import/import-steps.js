@@ -55,7 +55,7 @@ class ImportSteps {
     }
 
     static verifyUserImportUrl() {
-        cy.url().should('include', '/import#user');
+        cy.url().should('include', '/import').and('include', '#user');
     }
 
     static visitServerImport(repository) {
