@@ -49,6 +49,10 @@ export class RepositorySteps {
         return cy.get('#wb-repositories-repositoryInGetRepositories');
     }
 
+    static getActiveRepositoryRow() {
+        return this.getRepositoriesList().find('.repository.active');
+    }
+
     static getRepositoryFromList(repository) {
         RepositorySteps.waitLoader();
         return RepositorySteps.getRepositoriesList()
@@ -66,7 +70,7 @@ export class RepositorySteps {
         return RepositorySteps.getRepositoryFromList(id).find('.ri-link-unlink');
     }
 
-    static clickRepositoryConnectionOffBtn(id) {
+    static activateRepository(id) {
         RepositorySteps.getRepositoryConnectionOffBtn(id).click();
     }
 
