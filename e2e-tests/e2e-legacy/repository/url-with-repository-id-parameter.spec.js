@@ -1,10 +1,46 @@
 import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
 import HomeSteps from '../../steps/home-steps.js';
 import {RepositoryErrorsWidgetSteps} from '../../steps/widgets/repository-errors-widget-steps.js';
+import {RepositorySteps} from '../../steps/repository-steps.js';
+import {RepositorySelectorSteps} from '../../steps/repository-selector-steps.js';
 
-describe('Repository ID in application url on bootstrap', () => {
+describe('URL with Repository ID parameter', () => {
     let repositoryId;
     let secondRepositoryId;
+
+    describe('When repository is changed', () => {
+        beforeEach(() => {
+            repositoryId = 'repository-in-url-' + Date.now();
+            cy.createRepository({id: repositoryId});
+            secondRepositoryId = 'second-repository-in-url-' + Date.now();
+            cy.createRepository({id: secondRepositoryId});
+            cy.presetRepository(repositoryId);
+        })
+
+        afterEach(() => {
+            cy.deleteRepository(repositoryId);
+            cy.deleteRepository(secondRepositoryId);
+        });
+
+        it('should update URL', () => {
+            RepositorySteps.visit();
+            RepositorySteps.getActiveRepositoryRow().should('contain', repositoryId);
+            RepositorySelectorSteps.getSelectedRepository().should('contain', repositoryId);
+            cy.url().should('include', 'repositoryId=' + repositoryId);
+
+            RepositorySelectorSteps.selectRepository(secondRepositoryId);
+
+            RepositorySteps.getActiveRepositoryRow().should('contain', secondRepositoryId);
+            RepositorySelectorSteps.getSelectedRepository().should('contain', secondRepositoryId);
+            cy.url().should('include', 'repositoryId=' + secondRepositoryId);
+
+            RepositorySteps.activateRepository(repositoryId);
+
+            RepositorySteps.getActiveRepositoryRow().should('contain', repositoryId);
+            RepositorySelectorSteps.getSelectedRepository().should('contain', repositoryId);
+            cy.url().should('include', 'repositoryId=' + repositoryId);
+        });
+    });
 
     describe('When there is no active repository and no repository in URL', () => {
         // 1. active repo no, repo in url no -> no action - just show repo selector
