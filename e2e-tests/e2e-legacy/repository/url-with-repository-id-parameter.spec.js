@@ -48,7 +48,7 @@ describe('URL with Repository ID parameter', () => {
             HomeSteps.visit();
             RepositoryErrorsWidgetSteps.getWidget().should('be.visible');
             cy.url().should('not.include', 'repositoryId=');
-            HomeSteps.getSelectedRepository().should('contain', 'Choose repository');
+            HomeSteps.getSelectedRepository().should('contain', 'No accessible repositories');
             // no modal dialog should be shown
             ModalDialogSteps.getDialog().should('not.exist');
         })
