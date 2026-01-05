@@ -20,6 +20,7 @@ const loadRepositories = () => {
       // Initializing the repository context service with the selected repository.
       const repositoryReference = ServiceProvider.get(RepositoryStorageService).getRepositoryReference();
       repositoryContextService.updateSelectedRepository(repositoryReference);
+      console.log('%cloadRepositories', 'background: tan', repositories, repositoryReference);
     })
     .catch((error) => {
       logger.error('Could not load repositories', error);

@@ -894,7 +894,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         const selectedRepository = repositoryContextService.getSelectedRepository();
         const repositoryExists = repositoryContextService.repositoryExists({id: repositoryIdParam, location: ''});
         const isSameRepository = selectedRepository && repositoryIdParam === selectedRepository.id;
-        console.log('%conRouteChangeStart', 'background: purple', selectedRepository && selectedRepository.id, repositoryIdParam);
+        console.log('%conRouteChangeStart', 'background: tan', {selectedRepository: selectedRepository && selectedRepository.id, repositoryIdParam, repositoryExists});
         // Change current repository with new existing repository from the URL
         if (selectedRepository) {
             if (!repositoryIdParam) {
@@ -962,6 +962,14 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         }
     });
 
+    // TODO: remove this and see why the destroy hook doesn't work when I enable the security and being redirected to the login page
+    const locationChangeSubscription = $rootScope.$on('$locationChangeStart', (event, newUrl) => {
+        if (newUrl.includes('/login')) {
+            console.log('%cNavigating to login, cleanup', 'background: red');
+            routeChangeStartSubscription?.();
+        }
+    });
+
     $scope.$on('$routeChangeSuccess', function($event, current, previous) {
         $scope.clicked = false;
         $scope.hideRdfResourceSearch = false;
@@ -1006,7 +1014,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         $scope.initTutorial();
     });
 
-    $rootScope.$on('$routeChangeStart', onRouteChangeStart);
+    const routeChangeStartSubscription = $rootScope.$on('$routeChangeStart', onRouteChangeStart);
 
     $scope.$on('repositoryIsSet', function() {
         $scope.setRestricted();
@@ -1048,6 +1056,8 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         onAppDataLoaded?.();
         onLogoutSubscription?.();
         onLoginSubscription?.();
+        console.log('%cunsubscribe', 'background: red',);
+        routeChangeStartSubscription?.();
         securityConfigChangedSubscription?.();
         document.removeEventListener('click', closeActiveRepoPopoverEventHandler);
         window.removeEventListener('storage', localStoreChangeHandler);
