@@ -5,6 +5,7 @@ import {QueryStubs} from "../../../stubs/yasgui/query-stubs";
 import {DEFAULT_QUERY, SavedQuery} from "../../../steps/yasgui/saved-query";
 import {SavedQueriesDialog} from "../../../steps/yasgui/saved-queries-dialog";
 import {ShareSavedQueryDialog} from "../../../steps/yasgui/share-saved-query-dialog";
+import {SaveQueryDialog} from "../../../steps/yasgui/save-query-dialog.js";
 
 
 describe('Share saved queries', () => {
@@ -75,6 +76,31 @@ describe('Share saved queries', () => {
             // YasguiSteps.getTabs().should('have.length', 2);
             // YasguiSteps.getCurrentTab().should('contain', savedQueryName);
             // YasguiSteps.getTabQuery(0).should('contain', DEFAULT_QUERY);
+        });
+    });
+
+    it('should send correct payload when saving a shared query', () => {
+        const savedQueryName = SavedQuery.generateQueryName();
+        const queryBody = 'select *';
+        QueryStubs.interceptSavedQueryCreation();
+
+        YasguiSteps.createSavedQuery();
+        SaveQueryDialog.clearQueryNameField();
+        SaveQueryDialog.writeQueryName(savedQueryName);
+        SaveQueryDialog.clearQueryField();
+        SaveQueryDialog.writeQuery(queryBody);
+        SaveQueryDialog.getIsPublicField().should('not.be.checked');
+        SaveQueryDialog.toggleIsPublic();
+
+        SaveQueryDialog.saveQuery();
+
+        cy.wait('@saveQuery').then(({request, response}) => {
+            expect(request.body).to.deep.equal({
+                name: savedQueryName,
+                body: queryBody,
+                shared: true
+            });
+            expect(response.statusCode).to.eq(201);
         });
     });
 });

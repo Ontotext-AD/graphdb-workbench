@@ -447,12 +447,15 @@ yasgui-component .saved-queries-container .saved-query-actions .saved-query-acti
 /*
     Forms in the dialog
 */
-.dialog .form-field input,
-.dialog .form-field select,
-.dialog .form-field textarea {
+.dialog .form-field :is(input:not([type="checkbox"]), select, textarea) {
     color: var(--gw-form-field-color) !important;
     background-color: var(--gw-form-field-background) !important;
     border-color: var(--gw-form-field-border-color) !important;
+}
+
+.dialog .form-field input[type="checkbox"]:checked {
+    background-color: var(--gw-primary-base);
+    border-color: var(--gw-primary-base);
 }
 
 .dialog .form-field input[type=text]:focus,

@@ -85,7 +85,7 @@ export class QueryStubs {
         }).as(`query-${page}_${offset}_${limit}_${returnResult}`);
     }
 
-    static stubTotalQueryCount(repositoryId, totalElements, resultType, delay = 0) {
+    static stubTotalQueryCount(repositoryId, totalElements, resultType) {
         const result = QueryStubs.createEmptyResponse(resultType);
         result.results.bindings = [QueryStubs.createTotalResultsCount(resultType, totalElements)];
         cy.intercept(`/repositories/${repositoryId}`, (req) => {
@@ -220,6 +220,10 @@ export class QueryStubs {
                 value: `${totalElement}`
             }
         };
+    }
+
+    static interceptSavedQueryCreation() {
+        cy.intercept('POST', '/rest/sparql/saved-queries').as('saveQuery');
     }
 }
 
