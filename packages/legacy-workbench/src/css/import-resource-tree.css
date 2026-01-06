@@ -123,6 +123,7 @@
     border: none;
     padding: .25em .25em;
     margin: 0 .25em;
+    background-color: transparent;
 }
 
 .import-resource-tree .import-resource-table .cell-actions .import-resource-action-import-btn .ri-download-2-line {
@@ -182,9 +183,9 @@
 }
 
 .import-resource-tree .import-resource-tree-filter .btn-secondary.active {
-    color: var(--gw-button-primary-hover-color);
-    border-color: var(--gw-button-primary-hover-border-color);
-    background-color: var(--gw-button-primary-hover-background);
+    color: var(--gw-togglebutton-checked-color);
+    border-color: var(--gw-togglebutton-checked-border-color);
+    background-color: var(--gw-togglebutton-checked-background);
 }
 
 .import-resource-tree .import-resource-type-filter {
