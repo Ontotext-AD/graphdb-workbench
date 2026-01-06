@@ -170,6 +170,7 @@ graphql-playground {
                     .graphiql-tab-active {
                         background-color: var(--gw-tabs-tab-active-background) !important;
                         border-color: var(--gw-tabs-tab-active-border-color);
+                        border-bottom-color: transparent;
 
                         .graphiql-tab-button {
                             color: var(--gw-tabs-tab-active-color);

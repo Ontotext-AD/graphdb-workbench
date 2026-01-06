@@ -127,56 +127,6 @@ h1 .btn {
     border-color: var(--gw-button-secondary-active-border-color);
 }
 
-.btn-info {
-    color: var(--gw-button-info-color);
-    background-color: var(--gw-button-info-background);
-    border-color: var(--gw-button-info-border-color);
-}
-
-.btn-info.active, .btn-info.focus, .btn-info:hover, .btn-info:focus, .btn-info:active, .btn-info.active.focus,
-.btn-info.active:focus, .btn-info.active:hover, .btn-info:active.focus, .btn-info:active:focus, .btn-info:active:hover, .open > .btn-info.dropdown-toggle.focus, .open > .btn-info.dropdown-toggle:focus, .open > .btn-info.dropdown-toggle:hover,
-.btn-info.disabled:hover, .btn-info:disabled:hover {
-    color: var(--gw-button-info-hover-color);
-    background-color: var(--gw-button-info-hover-background);
-    border-color: var(--gw-button-info-hover-border-color);
-}
-
-/* outline buttons */
-.btn-outline-primary {
-    color: var(--gw-button-outlined-primary-color);
-    background-color: var(--gw-button-outlined-primary-background);
-    border-color: var(--gw-button-outlined-primary-border-color);
-}
-
-.btn-outline-primary:hover,
-.btn-outline-primary.focus, .btn-outline-primary:focus, .btn-outline-primary.active, .btn-outline-primary:active, .open > .btn-outline-primary.dropdown-toggle,
-.btn-outline-primary.active.focus, .btn-outline-primary.active:focus, .btn-outline-primary.active:hover, .btn-outline-primary:active.focus, .btn-outline-primary:active:focus, .btn-outline-primary:active:hover, .open > .btn-outline-primary.dropdown-toggle.focus, .open > .btn-outline-primary.dropdown-toggle:focus, .open > .btn-outline-primary.dropdown-toggle:hover {
-    color: var(--gw-button-outlined-primary-color);
-    background-color: var(--gw-button-outlined-primary-hover-background);
-    border-color: var(--gw-button-outlined-primary-border-color);
-}
-
-.btn-outline-secondary {
-    background-image: none;
-    color: var(--gw-button-outlined-secondary-color);
-    background-color: transparent;
-    border-color: var(--gw-button-outlined-secondary-border-color);
-}
-
-.btn-outline-secondary:hover,
-.btn-outline-secondary.focus, .btn-outline-secondary:focus, .btn-outline-secondary.active, .btn-outline-secondary:active,
-.btn-outline-secondary.active.focus, .btn-outline-secondary.active:focus, .btn-outline-secondary:active.focus, .btn-outline-secondary:active:focus, .btn-outline-secondary:active:hover, .open > .btn-outline-secondary.dropdown-toggle.focus, .open > .btn-outline-secondary.dropdown-toggle:focus, .open > .btn-outline-secondary.dropdown-toggle:hover {
-    color: var(--gw-button-outlined-secondary-color);
-    background-color: var(--gw-button-outlined-secondary-hover-background);
-    border-color: var(--gw-button-outlined-secondary-color);
-}
-
-.btn-outline-secondary.active:hover {
-    color: var(--gw-button-outlined-secondary-color);
-    background-color: var(--gw-button-outlined-secondary-hover-background);
-    border-color: var(--gw-button-outlined-secondary-color);
-}
-
 .btn-group-lg > .btn, .btn-lg {
     padding: .75em 1.2em;
     font-size: 1.125em;
