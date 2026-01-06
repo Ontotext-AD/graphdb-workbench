@@ -1,8 +1,10 @@
 <div id="{{extractionMethod.method + '_method_heading'}}" class="extraction-method-heading"
-     ng-class="{'selected': extractionMethod.selected}">
+     ng-class="{'selected': extractionMethod.selected}"
+     guide-selector="autocomplete-iri-discovery">
     <div class="mr-0 extraction-method-toggle">
         <input type="checkbox" id="{{extractionMethod.method + '_checkbox'}}"
                name="{{extractionMethod}}" class="switch"
+               guide-selector="autocomplete-iri-discovery-input"
                ng-click="toggleAdditionalExtractionMethod(extractionMethod, $event)"
                ng-model="extractionMethod.selected"/>
         <label for="{{extractionMethod.method + '_checkbox'}}"></label>
@@ -50,6 +52,7 @@
                        </label>
                        <input type="number" class="form-control" ng-disabled="!extractionMethod.selected"
                               id="{{extractionMethod.method + '_maxNumberOfResultsPerCall'}}"
+                              guide-selector="autocomplete-max-iris-input"
                               name="maxNumberOfResultsPerCall" min="0"
                               ng-model="extractionMethod.maxNumberOfResultsPerCall"
                               placeholder="{{'ttyg.agent.create_agent_modal.form.additional_query_methods.autocomplete_max_number_of_results_per_call.placeholder' | translate}}">
