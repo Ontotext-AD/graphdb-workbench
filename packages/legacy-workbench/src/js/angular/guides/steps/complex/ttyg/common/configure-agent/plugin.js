@@ -242,4 +242,56 @@ PluginRegistry.add('guide.step', [
             return steps;
         },
     },
+    {
+        guideBlockName: 'configure-autocomplete-iri-discovery',
+        getSteps: function(options, pluginService) {
+            const GuideUtils = pluginService.GuideUtils;
+            const toggleSelector = GuideUtils.getGuideElementSelector('autocomplete-iri-discovery-input');
+            const shouldToggleOff = options.disable;
+
+            const content = shouldToggleOff
+                ? 'guide.step_plugin.autocomplete.iri-discovery.disable-toggle'
+                : 'guide.step_plugin.autocomplete.iri-discovery.enable-toggle';
+
+            return {
+                guideBlockName: 'toggle-element',
+                options: {
+                    content,
+                    class: 'toggle-autocomplete-iri-discovery',
+                    ...(options.title ?? {title: TTYG_DEFAULT_TITLE}),
+                    ...options,
+                    url: 'ttyg',
+                    elementSelector: GuideUtils.getGuideElementSelector('autocomplete-iri-discovery'),
+                    toggleableElementSelector: toggleSelector,
+                    onNextValidate: () => {
+                        const isEnabled = GuideUtils.isChecked(toggleSelector);
+                        return Promise.resolve(shouldToggleOff ? !isEnabled : isEnabled);
+                    },
+                },
+            };
+        },
+    },
+    {
+        guideBlockName: 'set-max-iris-per-call',
+        getSteps: (options, services) => {
+            const GuideUtils = services.GuideUtils;
+            const maxIrisPerCall = options.maxIrisPerCall ?? 10;
+            const maxIrisInputSelector = GuideUtils.getGuideElementSelector('autocomplete-max-iris-input');
+
+            return {
+                guideBlockName: 'input-element',
+                options: {
+                    content: 'guide.step_plugin.ttyg.set-max-iris-per-call',
+                    ...(options.title ?? {title: TTYG_DEFAULT_TITLE}),
+                    class: 'set-max-iris-per-call',
+                    ...options,
+                    url: 'ttyg',
+                    elementSelector: maxIrisInputSelector,
+                    onNextValidate: () => {
+                        return Promise.resolve(GuideUtils.validateTextInput(maxIrisInputSelector, maxIrisPerCall, false));
+                    },
+                },
+            };
+        },
+    },
 ]);
