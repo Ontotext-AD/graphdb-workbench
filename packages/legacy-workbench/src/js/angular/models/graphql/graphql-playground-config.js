@@ -25,6 +25,11 @@ export class GraphqlPlaygroundConfig {
          * The default query that will be used when a new tab is added.
          */
         this._defaultQuery = data.defaultQuery;
+
+        /**
+         * The theme name for the Graphql playground editors.
+         */
+        this._editorsThemeName = data.editorsThemeName;
     }
 
     get endpoint() {
@@ -57,5 +62,13 @@ export class GraphqlPlaygroundConfig {
 
     set defaultQuery(value) {
         this._defaultQuery = value;
+    }
+
+    get editorsThemeName() {
+        return this._editorsThemeName;
+    }
+
+    set editorsThemeName(value) {
+        this._editorsThemeName = value;
     }
 }

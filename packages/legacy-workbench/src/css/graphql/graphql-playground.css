@@ -10,8 +10,7 @@ html, body {
 
 .graphiql-dialog,
 .graphql-playground-view #graphiql .graphiql-container,
-.graphql-playground-view #graphiql .graphiql-container .graphiql-editors,
-.graphiql-container .CodeMirror {
+.graphql-playground-view #graphiql .graphiql-container .graphiql-editors {
     background-color: var(--gw-editor-content-background);
 }
 
@@ -52,204 +51,353 @@ graphql-playground {
     width: 300px;
 }
 
+:root.dark .graphql-playground-view #graphiql .graphiql-container .graphiql-editors {
+    background: #1C1C1C;
+}
 /* =============================================== */
 /*   overrides for graphql-playground component    */
 /* =============================================== */
+.graphql-playground-view #graphiql {
+    & * {
+        border-radius: 0;
+        font-size: 1rem !important;
+        font-family: var(--main-font);
+    }
 
-.graphql-playground-view #graphiql * {
-    border-radius: 0;
-    font-size: 1rem !important;
-    font-family: var(--main-font);
-}
+    .graphiql-container {
+        border: 1px solid var(--gw-editor-toolbar-border-color);
+        .graphiql-sidebar {
+            padding: 0;
+            width: unset;
 
-.graphql-playground-view #graphiql .graphiql-container {
-    border: 1px solid var(--gw-editor-toolbar-border-color);
-}
+            button {
+                color: var(--gw-primary-base);
+                transition: all 0.15s ease-out;
 
-.graphql-playground-view #graphiql .graphiql-container .graphiql-sidebar {
-    padding-top: 0;
-    padding-bottom: 0;
-}
+                /* Hide the settings button */
+                &[data-value="settings"] {
+                    display: none;
+                }
 
-.graphql-playground-view #graphiql .graphiql-sidebar button {
-    color: var(--gw-primary-base);
-    transition: all 0.15s ease-out;
-}
+                &:focus {
+                    outline: none;
+                }
 
-.graphql-playground-view #graphiql .graphiql-sidebar button:hover {
-    transform: scale(1.2);
-    background-color: transparent;
-}
+                &:active {
+                    background-color: transparent;
+                }
 
-.graphql-playground-view #graphiql .graphiql-sidebar button:active {
-    background-color: #fff;
-}
-.graphql-playground-view #graphiql .graphiql-sidebar button:focus {
-    outline: none;
-}
+                &:hover {
+                    transform: scale(1.2);
+                    background-color: transparent;
+                }
+            }
+        }
 
-/* Hide the settings button */
-.graphql-playground-view #graphiql .graphiql-sidebar button[data-value="settings"] {
-    display: none;
-}
+        .graphiql-sessions {
+            margin-top: 0;
+            margin-bottom: 4px;
+            margin-right: 4px;
+            background-color: var(--gw-body-background);
 
-.graphql-playground-view #graphiql .graphiql-sessions .graphiql-session-header .graphiql-tabs {
-    margin-bottom: 0;
-    padding: 0;
-    font-size: 1rem;
-}
+            /* Hide the graphql logo */
+            .graphiql-logo {
+                display: none;
+            }
 
-.graphql-playground-view #graphiql .graphiql-tabs button {
-    transition: all 0.15s ease-out;
-}
+            /* ================================== */
+            /*   overrides for graphql headers    */
+            /* ================================== */
 
-.graphql-playground-view #graphiql .graphiql-tab > button.graphiql-tab-close {
-    visibility: visible;
-}
+            .graphiql-session-header {
+                height: unset;
+                justify-content: start;
+                padding: 0.25em 0;
+                font-weight: 400;
+                transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+                color: var(--gw-tabs-tab-color) !important;
 
-.graphql-playground-view #graphiql .graphiql-tabs button:focus {
-    outline: none;
-}
+                .graphiql-tabs {
+                    margin-bottom: 0;
+                    padding: 0;
+                    font-size: 1rem;
+                    flex-wrap: wrap;
+                    gap: 0.2em;
+                    overflow-x: unset;
 
-.graphql-playground-view #graphiql .graphiql-tabs button:hover {
-    background-color: var(--base-background-hover-color);
-}
+                    .graphiql-tab {
+                        border: solid 1px var(--gw-tabs-tab-border-color);
+                        background-color: var(--gw-tabs-tab-background) !important;
+                        color: var(--gw-tabs-tab-color) !important;
+                        margin-left: 0;
+                        padding: 0.4em;
 
-.graphql-playground-view #graphiql .graphiql-tabs .graphiql-tab {
-    color: var(--gw-tabs-tab-color) !important;
-    background-color: var(--gw-tabs-tab-background) !important;
-    border-width: 1px;
-    border-style: solid;
-    border-color: var(--gw-tabs-tab-border-color) !important;
-}
+                        &:hover {
+                            color: var(--gw-tabs-tab-hover-color) !important;
+                            background-color: var(--gw-tabs-tab-hover-background) !important;
+                            border-color: var(--gw-tabs-tab-hover-border-color) var(--gw-tabs-tab-hover-border-color) transparent;
+                        }
 
-.graphql-playground-view #graphiql .graphiql-tabs .graphiql-tab.graphiql-tab-active {
-    color: var(--gw-tabs-tab-active-color) !important;
-    background-color: var(--gw-tabs-tab-active-background) !important;
-    border-color: var(--gw-tabs-tab-active-border-color) var(--gw-tabs-tab-active-border-color) transparent !important;
-}
+                        .graphiql-tab-button {
+                            padding: 0;
+                            outline: none;
+                            transition: all 0.15s ease-out;
 
-.graphql-playground-view #graphiql .graphiql-tabs .graphiql-tab-button {
-    padding: 4px 8px;
-    color: var(--base-text-color);
-}
+                            &:hover {
+                                background-color: inherit;
+                            }
+                        }
 
-.graphql-playground-view #graphiql .graphiql-sessions {
-    margin-top: 0;
-    margin-right: 0 !important;
-    margin-bottom: 0;
-}
+                        .graphiql-tab-close {
+                            outline: none;
+                            visibility: visible;
+                            padding-left: 10px;
 
-.graphql-playground-view #graphiql .graphiql-tabs > :not(:first-child) {
-    margin-left: .2em;
-}
+                            svg {
+                                width: 0.7em;
+                                height: 0.7em;
+                                stroke-width: 2;
+                            }
 
-.graphql-playground-view #graphiql .graphiql-sessions .graphiql-session-header .graphiql-tab-add {
-    padding: 8px;
-    background-color: var(--base-background-hover-color);
-}
+                            &:hover {
+                                color: var(--gw-button-primary-link-hover-color);
+                                transform: scale(1.2);
+                                transition: transform 0.15s ease-out;
+                            }
+                        }
+                    }
 
-.graphql-playground-view #graphiql .graphiql-sessions .graphiql-session-header .graphiql-tab-add:hover svg,
-.graphql-playground-view #graphiql .graphiql-sessions .graphiql-session-header .graphiql-tab-close:hover {
-    background-color: transparent;
-    color: var(--gw-primary-base);
-}
+                    .graphiql-tab-active {
+                        background-color: var(--gw-tabs-tab-active-background) !important;
+                        border-color: var(--gw-tabs-tab-active-border-color);
 
-/* Hide the graphql logo */
-.graphql-playground-view #graphiql .graphiql-sessions .graphiql-logo {
-    display: none;
-}
+                        .graphiql-tab-button {
+                            color: var(--gw-tabs-tab-active-color);
+                        }
 
-.graphql-playground-view #graphiql .graphiql-sessions .graphiql-session-header {
-    height: unset;
-    color: inherit;
-    justify-content: start;
-}
+                        .graphiql-tab-close {
+                            color: var(--gw-tabs-tab-active-color);
 
-.graphql-playground-view #graphiql .graphiql-sessions .graphiql-session {
-    padding: 0;
-}
+                            &:hover {
+                                color: var(--gw-button-primary-link-hover-color);
+                                transform: scale(1.2);
+                                transition: transform 0.15s ease-out;
+                            }
+                        }
+                    }
+                }
 
-.graphql-playground-view #graphiql .graphiql-sessions .graphiql-editors,
-.graphql-playground-view #graphiql .graphiql-sessions .graphiql-response {
-    border: 1px solid var(--gw-editor-toolbar-border-color);
-    border-bottom: none;
-    box-shadow: none;
-}
+                .graphiql-tab-add {
+                    margin-left: 0;
+                    padding: 9px 9px;
+                    background-color: var(--base-background-hover-color);
 
-.graphql-playground-view #graphiql .graphiql-sessions .graphiql-response {
-    border-right: none;
-}
+                    svg {
+                        color: var(--gw-button-secondary-color);
+                    }
 
-.graphql-playground-view #graphiql .graphiql-sessions .graphiql-editors .graphiql-query-editor {
-    padding: 0;
-    border-bottom: 1px solid var(--gw-editor-toolbar-border-color);
-}
+                    &:hover {
+                        svg {
+                            transform: scale(1.2);
+                            transition: transform 0.15s ease-out;
+                        }
+                    }
+                }
 
-.graphql-playground-view #graphiql .graphiql-sessions .graphiql-editors .CodeMirror-gutters {
-    border-right: 1px solid var(--gw-editor-toolbar-border-color);
-    background-color: var(--gw-panel-background);
-}
+                .graphiql-tab-add:focus {
+                    outline: none;
+                }
 
-.graphql-playground-view #graphiql .graphiql-sessions .graphiql-editors .CodeMirror-gutter-wrapper * {
-    color: var(--gw-panel-color);
-    font-weight: 300;
-}
+                .graphiql-tab-add:hover svg,
+                .graphiql-tab-close:hover {
+                    background-color: transparent;
+                    color: var(--gw-button-primary-link-hover-color);
+                }
+            }
 
-/* When there is a single opened tab in the editor the create tab button moves in the most right */
-.graphql-playground-view #graphiql .graphiql-sessions .graphiql-editors.full-height {
-    margin-top: 0;
-}
+            .graphiql-session {
+                padding: 0;
+                /* ==================================== */
+                /*   overrides for graphql query editor */
+                /* ==================================== */
 
-.graphql-playground-view #graphiql .graphiql-sessions .graphiql-editors .graphiql-toolbar {
-    margin: .5em;
-}
+                .graphiql-query-editor {
+                    padding: 0;
+                    border: solid 1px var(--gw-tabs-tab-active-border-color);
+                }
 
-.graphql-playground-view #graphiql .graphiql-sessions .graphiql-editors .graphiql-toolbar button {
-    transition: all 0.15s ease-out;
-}
+                /* ============================================= */
+                /*   overrides for graphql-playground editors    */
+                /* ============================================= */
+                .graphiql-editors {
+                    box-shadow: none;
+                    /* When there is a single opened tab in the editor the create tab button moves in the most right */
+                    &.full-height {
+                        margin-top: 0;
+                    }
 
-.graphql-playground-view #graphiql .graphiql-sessions .graphiql-editors .graphiql-toolbar button:hover {
-    transform: scale(1.2);
-    background-color: transparent;
-}
+                    .graphiql-query-editor {
+                        .graphiql-toolbar {
+                            margin: .5em;
 
-.graphql-playground-view #graphiql .graphiql-sessions .graphiql-editors .graphiql-toolbar button:focus {
-    outline: none;
-}
+                            button {
+                                transition: all 0.15s ease-out;
 
-.graphql-playground-view #graphiql .graphiql-sessions .graphiql-editors .graphiql-toolbar button.graphiql-execute-button {
-    background-color: var(--gw-primary-base);
-}
+                                &:hover {
+                                    transform: scale(1.2);
+                                    background-color: transparent;
+                                }
 
-.graphql-playground-view #graphiql .graphiql-sessions .graphiql-editors .graphiql-toolbar .graphiql-toolbar-icon {
-    color: var(--gw-primary-base);
-}
+                                &:focus {
+                                    outline: none;
+                                }
 
-.graphql-playground-view #graphiql .graphiql-editor-tools {
-    padding: 0;
-}
+                                &.graphiql-execute-button {
+                                    background-color: var(--gw-primary-base);
+                                }
 
-.graphql-playground-view #graphiql .graphiql-editor-tools button {
-    font-weight: 400;
-    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-    color: var(--gw-tabs-tab-color) !important;
-    background-color: var(--gw-tabs-tab-background) !important;
-    border-color: var(--gw-tabs-tab-border-color) !important;
-}
+                                .graphiql-toolbar-icon {
+                                    color: var(--gw-primary-base);
+                                }
+                            }
+                        }
+                    }
 
-.graphql-playground-view #graphiql .graphiql-editor-tools button:hover {
-    color: var(--gw-tabs-tab-hover-color) !important;
-    background-color: var(--gw-tabs-tab-hover-background) !important;
-    border-color: var(--gw-tabs-tab-hover-border-color) !important;
-}
+                    /* ====================================================== */
+                    /*   overrides for tabs Variables, Headers ... editors    */
+                    /* ====================================================== */
 
-.graphql-playground-view #graphiql .graphiql-editor-tools .graphiql-toggle-editor-tools svg {
-    color: var(--gw-button-secondary-link-color);
-}
+                    .graphiql-editor-tools {
+                        padding: 0.25em 0 0;
+                        font-weight: 400;
+                        transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+                        color: var(--gw-tabs-tab-color) !important;
+                        column-gap: 0;
+                        z-index: 100;
 
-.graphql-playground-view #graphiql .graphiql-editor-tools .graphiql-toggle-editor-tools:hover svg {
-    color: var(--gw-button-primary-link-hover-color);
+                        button {
+                            color: var(--gw-tabs-tab-color);
+                            border: solid 1px var(--gw-tabs-tab-border-color);
+                            background-color: var(--gw-tabs-tab-background) !important;
+
+                            &.graphiql-toggle-editor-tools {
+                                svg {
+                                    color: var(--gw-button-secondary-color);
+                                }
+
+                                &:hover {
+                                    svg {
+                                        color: var(--gw-button-primary-link-hover-color);
+                                    }
+                                }
+                            }
+
+                            &.active {
+                                color: var(--gw-tabs-tab-active-color) !important;
+                                background-color: var(--gw-tabs-tab-active-background) !important;
+                                border-color: var(--gw-tabs-tab-active-border-color) var(--gw-tabs-tab-active-border-color) transparent !important;
+                            }
+
+                            &:not(.graphiql-toggle-editor-tools) {
+                                border-bottom-color: var(--gw-tabs-tab-active-border-color);
+                                margin-bottom: -1px;
+                                margin-right: 0.2em;
+                            }
+
+                            &:hover {
+                                color: var(--gw-tabs-tab-hover-color) !important;
+                                background-color: var(--gw-tabs-tab-hover-background) !important;
+                                border-color: var(--gw-tabs-tab-hover-border-color) var(--gw-tabs-tab-hover-border-color) transparent;
+                            }
+                        }
+                    }
+
+                    /* =============================================== */
+                    /*   overrides for Code mirror Variables, Headers ... editors     */
+                    /* =============================================== */
+
+                    .graphiql-editor-tool {
+                        padding: 0;
+                        border: solid 1px var(--gw-tabs-tab-active-border-color);
+                    }
+                }
+
+                /* ===================================================== */
+                /*   overrides for graphql-playground Response editor    */
+                /* ===================================================== */
+                .graphiql-response {
+                    border: 1px solid var(--gw-editor-toolbar-border-color);
+                    box-shadow: none;
+                }
+
+                /* ================================================ */
+                /*   overrides CodeMirror styles for light theme    */
+                /* ================================================ */
+                .CodeMirror {
+                    background-color: var(--gw-editor-content-background);
+                    .CodeMirror-gutter-wrapper {
+                        & * {
+                            color: #999;
+                        }
+                        font-weight: 300;
+                        .CodeMirror-linenumber {
+                            min-width: 20px;
+                            white-space: nowrap;
+                        }
+                    }
+
+                    .CodeMirror-gutters {
+                        white-space: nowrap;
+                    }
+
+                    &.cm-s-graphiql .CodeMirror-gutters {
+                        background-color: #f7f7f7;
+                    }
+                }
+
+                .CodeMirror[class*="cm-s-"]:not(.cm-s-graphiql) {
+                    border-color: var(--gw-tabs-tab-active-border-color);
+                    background-color: #1C1C1C;
+                }
+
+                .CodeMirror-hints {
+                    border: 1px solid var(--gw-autocomplete-border-color);
+                    box-shadow: var(--gw-autocomplete-shadow-offset-x) var(--gw-autocomplete-shadow-offset-y) var(--gw-autocomplete-shadow-blur) var(--gw-autocomplete-shadow-spread) var(--gw-autocomplete-shadow-color);
+
+                    .CodeMirror-hint {
+                        font-family: inherit;
+                        color: var(--gw-autocomplete-color);
+                        background-color: var(--gw-autocomplete-background);
+                        margin: 0;
+
+                        b {
+                            color: var(--gw-autocomplete-dropdown-match-color);
+                            font-weight: bolder;
+                        }
+
+                        &.CodeMirror-hint-active {
+                            color: var(--gw-autocomplete-option-selected-color);
+                            background-color: var(--gw-autocomplete-option-selected-background);
+                        }
+
+                        &:not(.CodeMirror-hint-active):hover {
+                            color: var(--gw-autocomplete-option-focus-color);
+                            background-color: var(--gw-autocomplete-option-focus-background);
+                        }
+                    }
+                }
+
+                li.CodeMirror-hint-active {
+                    background: var(--autocomplete-background);
+                    color: inherit;
+                }
+
+                .CodeMirror-lint-tooltip {
+                    color: var(--gw-primary-base);
+                }
+            }
+        }
+    }
 }
 
 /* =============================================== */
@@ -451,19 +599,6 @@ div[data-radix-popper-content-wrapper] * {
 .graphql-playground-view #graphiql .docExplorerWrap select option {
     background-color: var(--html-background) !important;
     color: var(--gw-neutral-base) !important;
-}
-
-/* =============================================== */
-/*   overrides for codemirror                      */
-/* =============================================== */
-
-.graphql-playground-view #graphiql li.CodeMirror-hint-active {
-    background: var(--autocomplete-background);
-    color: inherit;
-}
-
-.graphql-playground-view #graphiql .CodeMirror-lint-tooltip {
-    color: var(--gw-primary-base);
 }
 
 /* ================================================ */

@@ -15,9 +15,9 @@ export class ThemeService implements Service {
   private readonly darkClass = ThemeMode.dark;
 
   /**
-   * YASQE theme for dark mode.
+   * Code editors theme name used in dark mode.
    */
-  static readonly YASQE_DARK_THEME = 'moxer';
+  static readonly CODE_EDITOR_DARK_THEME = 'moxer';
 
   /**
    * Applies the theme based on the saved application settings.
