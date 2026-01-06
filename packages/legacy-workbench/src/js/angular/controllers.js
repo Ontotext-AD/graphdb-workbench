@@ -962,14 +962,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         }
     });
 
-    // TODO: remove this and see why the destroy hook doesn't work when I enable the security and being redirected to the login page
-    const locationChangeSubscription = $rootScope.$on('$locationChangeStart', (event, newUrl) => {
-        if (newUrl.includes('/login')) {
-            console.log('%cNavigating to login, cleanup', 'background: red');
-            routeChangeStartSubscription?.();
-        }
-    });
-
     $scope.$on('$routeChangeSuccess', function($event, current, previous) {
         $scope.clicked = false;
         $scope.hideRdfResourceSearch = false;
@@ -1014,7 +1006,21 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         $scope.initTutorial();
     });
 
-    const routeChangeStartSubscription = $rootScope.$on('$routeChangeStart', onRouteChangeStart);
+    let routeChangeStartSubscription = undefined;
+    const subscribeToRouteChangeStart = () => {
+        routeChangeStartSubscription = $rootScope.$on('$routeChangeStart', onRouteChangeStart);
+    };
+    subscribeToRouteChangeStart();
+
+    service(EventService).subscribe(EventName.APPLICATION_MOUNTED, (payload) => {
+        console.log('%cAPPLICATION_MOUNTED', 'background: gray');
+        subscribeToRouteChangeStart();
+    });
+
+    service(EventService).subscribe(EventName.APPLICATION_UNMOUNTED, (payload) => {
+        console.log('%cAPPLICATION_UNMOUNTED', 'background: gray');
+        routeChangeStartSubscription?.();
+    });
 
     $scope.$on('repositoryIsSet', function() {
         $scope.setRestricted();
@@ -1056,8 +1062,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         onAppDataLoaded?.();
         onLogoutSubscription?.();
         onLoginSubscription?.();
-        console.log('%cunsubscribe', 'background: red',);
-        routeChangeStartSubscription?.();
         securityConfigChangedSubscription?.();
         document.removeEventListener('click', closeActiveRepoPopoverEventHandler);
         window.removeEventListener('storage', localStoreChangeHandler);

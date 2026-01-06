@@ -11,4 +11,6 @@ export const EventName = {
   LOGIN: 'login',
   LOGOUT: 'logout',
   APP_DATA_LOADED: 'applicationDataLoaded',
+  APPLICATION_MOUNTED: 'applicationMounted',
+  APPLICATION_UNMOUNTED: 'applicationUnmounted',
 };
