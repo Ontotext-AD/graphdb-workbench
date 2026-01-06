@@ -428,7 +428,7 @@ function yasguiComponentDirective(
                     }
 
                     if (!config.themeName) {
-                        config.themeName = themeService.isDarkModeApplied() ? ThemeService.YASQE_DARK_THEME : null;
+                        config.themeName = themeService.isDarkModeApplied() ? ThemeService.CODE_EDITOR_DARK_THEME : null;
                     }
 
                     $scope.ontotextYasguiConfig = config;

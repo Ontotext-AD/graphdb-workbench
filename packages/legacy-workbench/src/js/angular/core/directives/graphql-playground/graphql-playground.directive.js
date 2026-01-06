@@ -1,4 +1,8 @@
 import {GraphQLPlaygroundComponent} from "../../../models/graphql/graphql-playground-component";
+import {
+    service,
+    ThemeService,
+} from '@ontotext/workbench-api';
 
 const modules = [];
 angular
@@ -36,9 +40,10 @@ function graphqlPlaygroundDirective($repositories, $translate, MonitoringRestSer
         restrict: 'E',
         templateUrl: 'js/angular/core/directives/graphql-playground/templates/graphql-playground.html',
         scope: {
-            configuration: '='
+            configuration: '=',
         },
         link: ($scope, element, attrs) => {
+            const themeService = service(ThemeService);
             // =========================
             // Public function
             // =========================
@@ -67,9 +72,17 @@ function graphqlPlaygroundDirective($repositories, $translate, MonitoringRestSer
             // =========================
             // Private function
             // =========================
+            const init = () => {
+                if (!$scope.configuration.editorsThemeName) {
+                    $scope.configuration.editorsThemeName = themeService.isDarkModeApplied() ? ThemeService.CODE_EDITOR_DARK_THEME : undefined;
+                }
+            };
+
             const getGraphQLPlaygroundElements = () => {
                 return element.find('graphql-playground-component');
             };
-        }
+
+            init();
+        },
     };
 }

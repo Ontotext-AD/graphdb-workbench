@@ -75,7 +75,7 @@
         "ng-file-upload": "^12.2.13",
         "ng-tags-input": "^3.2.0",
         "oclazyload": "^1.1.0",
-        "ontotext-graphql-playground-component": "^0.0.8",
+        "ontotext-graphql-playground-component": "^0.0.9",
         "ontotext-yasgui-web-component": "1.5.1",
         "single-spa-angularjs": "^4.3.1"
     },
