@@ -106,11 +106,11 @@
                     </a>
                 </td>
                 <td class="status-cell">
-                    <a href="#" ng-if="endpoint.errors > 0 || endpoint.warnings > 0"
+                    <a href="#"
                        ng-click="onShowEndpointReport(endpoint)"
                        gdb-tooltip="{{'graphql.endpoints_management.table.actions.view_report.tooltip' | translate}}"
                        class="endpoint-report-link btn btn-link">
-                        <i ng-if="!endpoint.createdSuccessfully" class="fa-regular fa-circle-xmark status-failed"></i>
+                        <i ng-if="!endpoint.createdSuccessfully" class="ri-close-circle-line status-failed"></i>
                         <i ng-if="endpoint.createdSuccessfully" class="ri-checkbox-circle-line status-success"></i>
                     </a>
                 </td>
