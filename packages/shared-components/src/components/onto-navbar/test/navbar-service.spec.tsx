@@ -86,7 +86,7 @@ describe('NavbarService', () => {
         sesame: '',
         connectors: ''
       } as ProductInfo;
-      const navbarModel = NavbarService.map(mockExternalMenuModel, mockProductInfo);
+      const navbarModel = NavbarService.map(mockExternalMenuModel, mockProductInfo, 'test-repo');
       expect(navbarModel).toBeInstanceOf(NavbarModel);
       const actual = new NavbarModel();
       const importItem = new NavbarItemModel({

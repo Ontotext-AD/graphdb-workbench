@@ -1,16 +1,27 @@
 import {NavbarItemModel, NavbarModel} from './navbar-model';
-import {ProductInfo, UriUtil, ExternalMenuItemModel, ExternalMenuModel} from '@ontotext/workbench-api';
+import {ProductInfo, UriUtil, ExternalMenuItemModel, ExternalMenuModel, REPOSITORY_ID_PARAM} from '@ontotext/workbench-api';
 import {LoggerProvider} from '../../services/logger-provider';
 
 const logger = LoggerProvider.logger;
 
 export class NavbarService {
 
-  static map(navbarPlugins: ExternalMenuModel, productInfo: ProductInfo): NavbarModel {
+  static map(navbarPlugins: ExternalMenuModel, productInfo: ProductInfo, currentRepositoryId: string): NavbarModel {
     const navbarModel = new NavbarModel();
     NavbarService.setTopLevelMenuItems(navbarPlugins, navbarModel, productInfo);
     NavbarService.setSubmenuItems(navbarPlugins, navbarModel, productInfo);
+    NavbarService.addRepositoryIdToTopLevelItems(navbarModel, currentRepositoryId);
     return navbarModel.sorted();
+  }
+
+  // Add repositoryId param to href for each item what has no parent and has no children
+  static addRepositoryIdToTopLevelItems(navbarModel: NavbarModel, currentRepositoryId: string) {
+    navbarModel.items.forEach((item) => {
+      const hasChildren = item.children && item.children.length > 0;
+      if (!hasChildren) {
+        item.href = `${item.href}?${REPOSITORY_ID_PARAM}=${currentRepositoryId}`;
+      }
+    });
   }
 
   private static setTopLevelMenuItems(navbarPlugins: ExternalMenuModel, navbarModel: NavbarModel, productInfo: ProductInfo) {

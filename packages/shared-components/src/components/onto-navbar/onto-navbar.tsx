@@ -20,8 +20,11 @@ import {
   navigateTo, ProductInfo, ProductInfoContextService,
   navigate,
   ServiceProvider,
+  service,
+  Repository,
   SubscriptionList, openInNewTab,
-  ExternalMenuModel
+  ExternalMenuModel,
+  RepositoryContextService,
 } from '@ontotext/workbench-api';
 
 const labelKeys = {
@@ -36,7 +39,8 @@ const labelKeys = {
   shadow: false,
 })
 export class OntoNavbar {
-  private readonly productInfoContextService = ServiceProvider.get(ProductInfoContextService);
+  private readonly productInfoContextService = service(ProductInfoContextService);
+  private readonly repositoryContextService = service(RepositoryContextService);
   private readonly subscriptions = new SubscriptionList();
   private readonly resizeHandler = () => this.adjustAllSubmenus(this.hostElement);
   private readonly SUBMENU_VERTICAL_MARGIN = 8;
@@ -56,6 +60,8 @@ export class OntoNavbar {
    * window, the navbar should remain collapsed.
    */
   private isCollapsedByUser = false;
+
+  private isFirstRepositoryChange = true;
 
   @Element() hostElement: HTMLOntoNavbarElement;
 
@@ -101,7 +107,10 @@ export class OntoNavbar {
   @Event() navbarToggled: EventEmitter<NavbarToggledEvent>;
 
   private init(menuItems: ExternalMenuModel): void {
-    const internalModel = NavbarService.map(menuItems || [], this.productInfo);
+    const selectedRepository = this.repositoryContextService.getSelectedRepository();
+    console.log('%cselectedReposiotry', 'background: orange', selectedRepository);
+    const internalModel = NavbarService.map(menuItems || [], this.productInfo, selectedRepository?.id);
+    console.log('%cmenumodel', 'background: orange', internalModel);
     internalModel.initSelected(getCurrentRoute());
     this.menuModel = internalModel;
   }
@@ -330,6 +339,7 @@ export class OntoNavbar {
   connectedCallback() {
     this.subscribeToNavigationEnd();
     this.subscribeToProductInfoChanges();
+    this.subscribeToRepositoryChange();
     // subscribe to language change events for each label
     this.onTranslate(labelKeys.EXPAND);
     this.onTranslate(labelKeys.COLLAPSE);
@@ -345,6 +355,7 @@ export class OntoNavbar {
 
   private handleSelectMenuItem(item: NavbarItemModel) {
     return (event: MouseEvent) => {
+      console.log('%cselect', 'background: pink', item);
       this.select(event, item);
     };
   }
@@ -433,6 +444,19 @@ export class OntoNavbar {
   private subscribeToProductInfoChanges() {
     this.subscriptions.add(
       this.productInfoContextService.onProductInfoChanged((productInfo: ProductInfo) => this.productInfo = productInfo)
+    );
+  }
+
+  private subscribeToRepositoryChange() {
+    this.subscriptions.add(
+      this.repositoryContextService.onSelectedRepositoryChanged((repository: Repository) => {
+        console.log('%crepository changed', 'background: lightblue', repository);
+        if (this.isFirstRepositoryChange) {
+          this.isFirstRepositoryChange = false;
+          return;
+        }
+        this.init(this.menuItems);
+      })
     );
   }
 }
