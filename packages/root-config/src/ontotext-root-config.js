@@ -22,6 +22,8 @@ import './onto-vendor';
 import './styles/main.scss';
 import './styles/css/charteditor-custom.css';
 import {RouteProvider} from './services/route-provider';
+import {getWorkbenchRoutes} from './services/workbench-routes-provider';
+import {getLegacyRoutes} from './services/legacy-routes-provider';
 
 const SINGLE_SPA_GLOBAL_KEY = 'singleSpa';
 
@@ -108,7 +110,9 @@ function loadAppByName(name) {
 }
 
 function initSingleSpa() {
-  const layout = RouteProvider.getRoutesConfiguration(getBasePath());
+  const legacyRoutes = getLegacyRoutes();
+  const workbenchRoutes = getWorkbenchRoutes();
+  const layout = RouteProvider.getRoutesConfiguration(getBasePath(), legacyRoutes, workbenchRoutes);
   const routes = constructRoutes(layout);
   const applications = constructApplications({
     routes,
