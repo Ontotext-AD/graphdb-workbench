@@ -27,7 +27,6 @@ import {
     ApplicationLifecycleContextService,
     AuthorizationService,
     AuthenticationService,
-    AuthenticationStorageService,
     COOKIE_CONSENT_CHANGED_EVENT,
     EventName,
     EventService,
@@ -198,14 +197,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     const authorizationService = service(AuthorizationService);
     const authenticationService = service(AuthenticationService);
     const securityContextService = service(SecurityContextService);
-    /**
-     * Initialized as 'undefined' to guarantee that when the 'localStoreChangeHandler' function is called for the first time, it will be processed properly.
-     * If we set it to "false" and when the $jwtAuth.isAuthenticated() is called for first time it can return "false" as example, then the page will not
-     * be reloaded or redirected to the login page.
-     * @type {undefined | boolean}
-     */
-    let isAuthenticated = undefined;
-    const authEvents = [AuthTokenService.AUTH_STORAGE_NAME, AuthTokenService.AUTHENTICATED_STORAGE_NAME];
+
     /**
      * When the timeout finishes, the popover will open.
      */
@@ -767,12 +759,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         toastrService.success($translate.instant('sign.out.success'));
     }
 
-    const reloadPageOutsideAngularScope = () => {
-        setTimeout(() => {
-            $window.location.reload();
-        }, 0);
-    };
-
     const closeActiveRepoPopoverEventHandler = function(event) {
         const popoverElement = document.querySelector('.popover');
         if ($scope.isActiveRepoPopoverOpen && popoverElement && !popoverElement.contains(event.target)) {
@@ -783,20 +769,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     };
 
     const localStoreChangeHandler = (localStoreEvent) => {
-        if (authEvents.includes(localStoreEvent.key)) {
-            const newAuthenticationState = service(AuthenticationStorageService).isAuthenticated();
-            $jwtAuth.updateReturnUrl();
-            if (isAuthenticated !== newAuthenticationState) {
-                isAuthenticated = newAuthenticationState;
-                if (isAuthenticated) {
-                    $location.url($rootScope.returnToUrl || '/');
-                    $route.reload();
-                    reloadPageOutsideAngularScope();
-                } else {
-                    $rootScope.redirectToLogin();
-                }
-            }
-        } else if ('ls.' + LSKeys.AUTOCOMPLETE_ENABLED === localStoreEvent.key) {
+        if ('ls.' + LSKeys.AUTOCOMPLETE_ENABLED === localStoreEvent.key) {
             WorkbenchContextService.setAutocompleteEnabled(localStoreEvent.newValue === 'true');
         }
     };

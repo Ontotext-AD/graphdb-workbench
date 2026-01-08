@@ -10,6 +10,7 @@ import {navigate} from '../utils';
 import {AuthorizationService} from './authorization.service';
 import {AuthenticationStrategyNotSet} from './errors/authentication-strategy-not-set';
 import {AuthStrategy} from '../../models/security/authentication';
+import {AuthenticationStorageService} from './authentication-storage.service';
 
 /**
  * Service responsible for handling authentication operations and managing auth strategies.
@@ -22,6 +23,7 @@ export class AuthenticationService implements Service {
   private readonly authStrategyResolver = service(AuthStrategyResolver);
   private readonly authorizationService = service(AuthorizationService);
   private readonly securityContextService = service(SecurityContextService);
+  private readonly authenticationStorageService = service(AuthenticationStorageService);
 
   /**
    * Checks if an authentication strategy has been configured.
@@ -64,6 +66,7 @@ export class AuthenticationService implements Service {
    */
   logout(): Promise<void> {
     const authStrategy = this.getAuthenticationStrategy();
+    this.authenticationStorageService.setAuthenticated(false);
     return authStrategy.logout()
       .then(() => {
         this.securityContextService.updateIsLoggedIn(false);
