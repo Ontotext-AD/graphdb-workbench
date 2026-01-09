@@ -899,9 +899,9 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         if (selectedRepository) {
             if (!repositoryIdParam) {
                 console.log('%c000', 'background: yellow',);
-                $timeout(() => {
-                    $location.search(REPOSITORY_ID_PARAM, selectedRepository.id).replace();
-                });
+                // $timeout(() => {
+                $location.search(REPOSITORY_ID_PARAM, selectedRepository.id).replace();
+                // });
             } else if (repositoryExists && !isSameRepository) {
                 console.log('%c111', 'background: yellow',);
                 // Ask for confirmation before changing the current repository.
@@ -976,6 +976,15 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         }
     });
 
+    $scope.$on('$routeUpdate', function() {
+        const repositoryIdParam = $location.search()[REPOSITORY_ID_PARAM];
+        const selectedRepository = repositoryContextService.getSelectedRepository();
+        console.log('%c$routeUpdate', 'background: lightgray', {selectedRepository: selectedRepository && selectedRepository.id, repositoryIdParam});
+        if (selectedRepository && repositoryIdParam !== selectedRepository.id) {
+            $location.search(REPOSITORY_ID_PARAM, selectedRepository.id).replace();
+        }
+    });
+
     $rootScope.$on('guideReset', function() {
         $scope.guidePaused = false;
         $rootScope.guidePaused = false;
@@ -1013,12 +1022,10 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     subscribeToRouteChangeStart();
 
     service(EventService).subscribe(EventName.APPLICATION_MOUNTED, (payload) => {
-        console.log('%cAPPLICATION_MOUNTED', 'background: gray');
         subscribeToRouteChangeStart();
     });
 
     service(EventService).subscribe(EventName.APPLICATION_UNMOUNTED, (payload) => {
-        console.log('%cAPPLICATION_UNMOUNTED', 'background: gray');
         routeChangeStartSubscription?.();
     });
 

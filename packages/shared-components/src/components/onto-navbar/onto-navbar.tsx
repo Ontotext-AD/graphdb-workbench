@@ -450,7 +450,6 @@ export class OntoNavbar {
   private subscribeToRepositoryChange() {
     this.subscriptions.add(
       this.repositoryContextService.onSelectedRepositoryChanged((repository: Repository) => {
-        console.log('%crepository changed', 'background: lightblue', repository);
         if (this.isFirstRepositoryChange) {
           this.isFirstRepositoryChange = false;
           return;
