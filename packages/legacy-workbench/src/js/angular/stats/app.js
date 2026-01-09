@@ -1,29 +1,31 @@
 import 'angular/core/services';
 import {
     AuthenticationService,
+    AuthenticationStorageService,
     service,
 } from '@ontotext/workbench-api';
 
 const adminInfoApp = angular.module('graphdb.framework.stats', ['toastr']);
 
-adminInfoApp.controller('AdminInfoCtrl', ['$scope', '$http', 'toastr', '$timeout', '$jwtAuth', '$translate', 'AuthTokenService',
-    function ($scope, $http, toastr, $timeout, $jwtAuth, $translate, AuthTokenService) {
+adminInfoApp.controller('AdminInfoCtrl', ['$scope', '$http', 'toastr', '$timeout', '$jwtAuth', '$translate',
+    function($scope, $http, toastr, $timeout, $jwtAuth, $translate) {
         const authenticationService = service(AuthenticationService);
+        const authenticationStorageService = service(AuthenticationStorageService);
 
         $http.get('rest/info/data')
-            .success(function (data) {
+            .success(function(data) {
                 $scope.info = data;
             })
-            .error(function (data) {
+            .error(function(data) {
                 const msg = getError(data);
                 toastr.error(msg, $translate.instant('common.error'));
             });
 
 
         //NONE, IN_PROGRESS, READY
-        $scope.getReportStatus = function () {
+        $scope.getReportStatus = function() {
             $http.get('rest/report/status')
-                .success(function (data) {
+                .success(function(data) {
                     const statusElements = data.split('|', 3);
                     $scope.status = statusElements[0];
                     $scope.timestamp = statusElements[1];
@@ -33,7 +35,7 @@ adminInfoApp.controller('AdminInfoCtrl', ['$scope', '$http', 'toastr', '$timeout
                         $timeout($scope.getReportStatus, 3000);
                     }
                 })
-                .error(function (data) {
+                .error(function(data) {
                     const msg = getError(data);
                     toastr.error(msg, $translate.instant('common.error'));
                 });
@@ -41,22 +43,22 @@ adminInfoApp.controller('AdminInfoCtrl', ['$scope', '$http', 'toastr', '$timeout
 
         $scope.getReportStatus();
 
-        $scope.getReport = function () {
+        $scope.getReport = function() {
             let url = 'rest/report';
             if (authenticationService.isAuthenticated()) {
-                url = url + '?authToken=' + encodeURIComponent(AuthTokenService.getAuthToken());
+                url = url + '?authToken=' + encodeURIComponent(authenticationStorageService.getAuthToken().getValue());
             }
 
             window.open(url);
         };
 
-        $scope.makeReport = function () {
+        $scope.makeReport = function() {
             $http.post('rest/report')
-                .success(function () {
+                .success(function() {
                     $scope.status = 'IN_PROGRESS';
                     $timeout($scope.getReportStatus, 2000);
                 })
-                .error(function (data) {
+                .error(function(data) {
                     const msg = getError(data);
                     toastr.error(msg, $translate.instant('common.error'));
                 });

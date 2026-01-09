@@ -7,6 +7,7 @@ import {
 import {decodeHTML} from "../../../app";
 import './controllers/manage-remote-location-dialog.controller';
 import {RemoteLocationType} from "../models/repository/remote-location.model";
+import {service, AuthenticationStorageService} from '@ontotext/workbench-api';
 
 const ENTITY_INDEX_SIZE_MIN = 10000;
 
@@ -122,10 +123,10 @@ angular.module('graphdb.framework.repositories.controllers', modules)
     .controller('EditRepositoryFileCtrl', EditRepositoryFileCtrl)
     .controller('UploadRepositoryConfigCtrl', UploadRepositoryConfigCtrl);
 
-LocationsAndRepositoriesCtrl.$inject = ['$scope', '$rootScope', '$uibModal', 'toastr', '$repositories', 'ModalService', 'AuthTokenService', 'LocationsRestService',
+LocationsAndRepositoriesCtrl.$inject = ['$scope', '$rootScope', '$uibModal', 'toastr', '$repositories', 'ModalService', 'LocationsRestService',
     'LocalStorageAdapter', '$interval', '$translate', '$q', 'GuidesService'];
 
-function LocationsAndRepositoriesCtrl($scope, $rootScope, $uibModal, toastr, $repositories, ModalService, AuthTokenService, LocationsRestService,
+function LocationsAndRepositoriesCtrl($scope, $rootScope, $uibModal, toastr, $repositories, ModalService, LocationsRestService, // NOSONAR
     LocalStorageAdapter, $interval, $translate, $q, GuidesService) {
     $scope.RemoteLocationType = RemoteLocationType;
     $scope.loader = true;
@@ -343,7 +344,7 @@ function LocationsAndRepositoriesCtrl($scope, $rootScope, $uibModal, toastr, $re
     $scope.getRepositoryDownloadLink = function(repository) {
         let url = `rest/repositories/${repository.id}${(repository.type === REPOSITORY_TYPES.ontop ? '/download-zip'
             : '/download-ttl')}?location=${repository.location}`;
-        const token = AuthTokenService.getAuthToken();
+        const token = service(AuthenticationStorageService).getAuthToken().getValue();
         if (token) {
             url = `${url}&authToken=${encodeURIComponent(token)}`;
         }

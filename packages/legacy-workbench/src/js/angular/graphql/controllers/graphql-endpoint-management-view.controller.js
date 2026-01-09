@@ -21,9 +21,9 @@ angular
     .module('graphdb.framework.graphql.controllers.graphql-endpoint-management-view', modules)
     .controller('GraphqlEndpointManagementViewCtrl', GraphqlEndpointManagementViewCtrl);
 
-GraphqlEndpointManagementViewCtrl.$inject = ['$scope', '$location', '$interval', '$repositories', '$uibModal', 'ModalService', 'toastr', '$translate', 'GraphqlService', 'GraphqlContextService', 'AuthTokenService'];
+GraphqlEndpointManagementViewCtrl.$inject = ['$scope', '$location', '$interval', '$repositories', '$uibModal', 'ModalService', 'toastr', '$translate', 'GraphqlService', 'GraphqlContextService'];
 
-function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $repositories, $uibModal, ModalService, toastr, $translate, GraphqlService, GraphqlContextService, AuthTokenService) {
+function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $repositories, $uibModal, ModalService, toastr, $translate, GraphqlService, GraphqlContextService) { // NOSONAR
     // =========================
     // Private variables
     // =========================

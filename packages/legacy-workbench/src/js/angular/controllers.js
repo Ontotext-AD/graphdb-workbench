@@ -181,12 +181,12 @@ function homeCtrl($scope,
 
 mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', '$location', '$repositories', '$rootScope',
     'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'RepositoriesRestService',
-    'MonitoringRestService', 'SparqlRestService', '$sce', 'LocalStorageAdapter', 'LSKeys', '$translate', 'UriUtils', '$q', 'GuidesService', '$route', '$window', 'AuthTokenService', 'TrackingService',
+    'MonitoringRestService', 'SparqlRestService', '$sce', 'LocalStorageAdapter', 'LSKeys', '$translate', 'UriUtils', '$q', 'GuidesService', '$route', '$window', 'TrackingService',
     'WorkbenchContextService', 'AutocompleteService'];
 
 function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories, $rootScope,
     productInfo, $timeout, ModalService, $interval, $filter, RepositoriesRestService,
-    MonitoringRestService, SparqlRestService, $sce, LocalStorageAdapter, LSKeys, $translate, UriUtils, $q, GuidesService, $route, $window, AuthTokenService, TrackingService,
+    MonitoringRestService, SparqlRestService, $sce, LocalStorageAdapter, LSKeys, $translate, UriUtils, $q, GuidesService, $route, $window, TrackingService,
     WorkbenchContextService, AutocompleteService) {
     // =========================
     // Private variables

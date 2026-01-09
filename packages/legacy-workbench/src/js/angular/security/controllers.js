@@ -1,6 +1,5 @@
 import 'angular/core/services';
 import 'angular/core/services/jwt-auth.service';
-import 'angular/core/services/openid-auth.service';
 import 'angular/core/services/security.service';
 import {UserRole, UserType} from 'angular/utils/user-utils';
 import 'angular/security/directives/custom-prefix-tags-input.directive';
@@ -25,7 +24,6 @@ const modules = [
     'ngCookies',
     'ui.bootstrap',
     'graphdb.framework.core.services.jwtauth',
-    'graphdb.framework.core.services.openIDService',
     'graphdb.framework.core.services.security-service',
     'toastr',
     'ngTagsInput',
