@@ -21,10 +21,10 @@ import {
   navigate,
   ServiceProvider,
   service,
-  Repository,
   SubscriptionList, openInNewTab,
   ExternalMenuModel,
   RepositoryContextService,
+  REPOSITORY_ID_PARAM
 } from '@ontotext/workbench-api';
 
 const labelKeys = {
@@ -108,9 +108,7 @@ export class OntoNavbar {
 
   private init(menuItems: ExternalMenuModel): void {
     const selectedRepository = this.repositoryContextService.getSelectedRepository();
-    console.log('%cselectedReposiotry', 'background: orange', selectedRepository);
-    const internalModel = NavbarService.map(menuItems || [], this.productInfo, selectedRepository?.id);
-    console.log('%cmenumodel', 'background: orange', internalModel);
+    const internalModel = NavbarService.map(menuItems || [], this.productInfo, selectedRepository?.id, REPOSITORY_ID_PARAM);
     internalModel.initSelected(getCurrentRoute());
     this.menuModel = internalModel;
   }
@@ -355,7 +353,6 @@ export class OntoNavbar {
 
   private handleSelectMenuItem(item: NavbarItemModel) {
     return (event: MouseEvent) => {
-      console.log('%cselect', 'background: pink', item);
       this.select(event, item);
     };
   }
@@ -449,7 +446,7 @@ export class OntoNavbar {
 
   private subscribeToRepositoryChange() {
     this.subscriptions.add(
-      this.repositoryContextService.onSelectedRepositoryChanged((repository: Repository) => {
+      this.repositoryContextService.onSelectedRepositoryChanged(() => {
         if (this.isFirstRepositoryChange) {
           this.isFirstRepositoryChange = false;
           return;
