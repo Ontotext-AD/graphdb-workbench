@@ -1,4 +1,4 @@
-import {LocalStorageService} from '../storage';
+import {LocalStorageService} from '../storage/local-storage.service';
 
 export class UserPermissionStorageService extends LocalStorageService {
   readonly NAMESPACE = 'auth';

@@ -8,7 +8,8 @@ import {
   isLoginPage,
   navigate,
   EventService,
-  Login
+  Login,
+  AuthenticationStorageService
 } from '@ontotext/workbench-api';
 import {LoggerProvider} from '../../services/logger-provider';
 
@@ -52,8 +53,10 @@ const initSecurity = () => {
   const securityConfig = securityContextService.getSecurityConfig();
   const authStrategy = service(AuthStrategyResolver).resolveStrategy(securityConfig);
   const authorizationService = service(AuthorizationService);
+  const authStorageService = service(AuthenticationStorageService);
 
   return authStrategy.initialize().then((isLoggedIn) => {
+    authStorageService.setAuthenticated(authStrategy.isAuthenticated());
     securityContextService.updateIsLoggedIn(isLoggedIn);
     if (!isLoggedIn) {
       if (authorizationService.hasFreeAccess()) {

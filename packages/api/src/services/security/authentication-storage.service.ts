@@ -1,12 +1,12 @@
-import {LocalStorageService} from '../storage';
+import {LocalStorageService} from '../storage/local-storage.service';
 import {StorageData} from '../../models/storage';
 
 /**
  * A service for managing authentication-related local storage operations.
  */
 export class AuthenticationStorageService extends LocalStorageService {
-  private readonly jwtKey = 'jwt';
-  private readonly authenticatedKey = 'authenticated';
+  readonly jwtKey = 'jwt';
+  readonly authenticatedKey = 'authenticated';
   readonly NAMESPACE = 'auth';
 
   set(key: string, value: string) {
@@ -30,6 +30,7 @@ export class AuthenticationStorageService extends LocalStorageService {
   }
 
   setAuthToken(value: string): void {
+    this.setAuthenticated(true);
     this.set(this.jwtKey, value);
   }
 

@@ -4,7 +4,7 @@ import {debounce} from '../../utils/function-utils';
 import {WINDOW_WIDTH_FOR_COLLAPSED_NAVBAR} from '../../models/constants';
 import {
   AuthenticatedUser,
-  AuthenticationService,
+  AuthenticationService, AuthenticationStorageService,
   Authority,
   AuthorizationService,
   EventName,
@@ -15,8 +15,8 @@ import {
   NavigationContextService,
   NavigationEndPayload,
   SecurityConfig,
-  SecurityContextService,
-  ServiceProvider,
+  SecurityContextService, service,
+  ServiceProvider, StorageKey,
   SubscriptionList,
   WindowService
 } from '@ontotext/workbench-api';
@@ -33,6 +33,11 @@ export class OntoLayout {
   private readonly authenticationService = ServiceProvider.get(AuthenticationService);
   private readonly authorizationService = ServiceProvider.get(AuthorizationService);
   private readonly navigationContextService = ServiceProvider.get(NavigationContextService);
+  private readonly authStorageService = service(AuthenticationStorageService);
+
+  private readonly fullJwtKey = `${StorageKey.GLOBAL_NAMESPACE}.${this.authStorageService.NAMESPACE}.${this.authStorageService.jwtKey}`;
+  private readonly fullAuthenticatedKey = `${StorageKey.GLOBAL_NAMESPACE}.${this.authStorageService.NAMESPACE}.${this.authStorageService.authenticatedKey}`;
+  private readonly authEvents = [this.fullJwtKey, this.fullAuthenticatedKey];
 
   // ========================
   // DOM Refs
@@ -152,9 +157,26 @@ export class OntoLayout {
     }
   }
 
-  private handleStorageChange(event: StorageEvent) {
+  private readonly handleStorageChange = (event: StorageEvent) => {
     const service = ServiceProvider.get(LocalStorageSubscriptionHandlerService);
     service.handleStorageChange(event);
+    this.handleAuthChange(event.key);
+  };
+
+  private handleAuthChange(changedKey: string | null) {
+    if (!changedKey) {
+      return;
+    }
+
+    if (this.authEvents.includes(changedKey)) {
+      const authenticated = this.authStorageService.isAuthenticated();
+      if (authenticated) {
+        navigate(this.navigationContextService.getPreviousRoute() ?? './');
+      } else {
+        navigate('login');
+      }
+      WindowService.getWindow().location.reload();
+    }
   }
 
   // ========================
