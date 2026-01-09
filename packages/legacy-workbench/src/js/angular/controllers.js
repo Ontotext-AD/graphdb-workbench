@@ -1062,6 +1062,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     const licenseUpdatedSubscription = service(LicenseContextService).onLicenseChanged(onLicenseUpdated);
     const cookieConsentChangedSubscription = subscribeToCookieConsentChanged();
 
+    // TODO: The $destroy hook is not called in the workbench unmounting process, so these subscriptions are not cleaned up.
     $scope.$on('$destroy', () => {
         onSelectedRepositoryChangedSubscription?.();
         cookieConsentChangedSubscription?.();

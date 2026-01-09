@@ -18,7 +18,9 @@ export class NavbarService {
     const navbarModel = new NavbarModel();
     NavbarService.setTopLevelMenuItems(navbarPlugins, navbarModel, productInfo);
     NavbarService.setSubmenuItems(navbarPlugins, navbarModel, productInfo);
-    NavbarService.addRepositoryIdToHrefAttributes(navbarModel, currentRepositoryId, repositoryIdParamName);
+    if (currentRepositoryId) {
+      NavbarService.addRepositoryIdToHrefAttributes(navbarModel, currentRepositoryId, repositoryIdParamName);
+    }
     return navbarModel.sorted();
   }
 
