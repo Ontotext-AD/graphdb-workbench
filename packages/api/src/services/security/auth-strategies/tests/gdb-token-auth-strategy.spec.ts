@@ -17,7 +17,6 @@ describe('GdbTokenAuthStrategy', () => {
 
     const securityContextService = ServiceProvider.get(SecurityContextService);
     securityContextService.updateSecurityConfig(undefined as unknown as SecurityConfig);
-    securityContextService.updateAuthToken(undefined as unknown as string);
     securityContextService.updateAuthenticatedUser(undefined as unknown as AuthenticatedUser);
     authenticationStorageService = ServiceProvider.get(AuthenticationStorageService);
     authenticationStorageService.clearAuthToken();

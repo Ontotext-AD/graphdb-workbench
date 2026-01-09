@@ -1,29 +1,28 @@
 import 'angular/core/services';
-import 'angular/core/services/openid-auth.service.js';
 import 'angular/core/services/security.service';
 import {
     AuthenticationService,
+    AuthenticationStorageService,
     AuthorizationService,
     OntoToastrService,
     SecurityContextService,
     service,
-    ServiceProvider,
 } from '@ontotext/workbench-api';
 
 angular.module('graphdb.framework.core.services.jwtauth', [
     'toastr',
     'graphdb.framework.core.services.security-service',
-    'graphdb.framework.core.services.openIDService',
 ])
-    .service('$jwtAuth', ['$http', '$location', '$rootScope', 'SecurityService', '$translate', '$q', '$route', 'AuthTokenService',
+    .service('$jwtAuth', ['$http', '$location', '$rootScope', 'SecurityService', '$translate', '$q', '$route',
         /* eslint-disable no-invalid-this */
-        function($http, $location, $rootScope, SecurityService, $translate, $q, $route, AuthTokenService) {
+        function($http, $location, $rootScope, SecurityService, $translate, $q, $route) {
             const jwtAuth = this;
 
             const toastrService = service(OntoToastrService);
             const authorizationService = service(AuthorizationService);
             const authenticationService = service(AuthenticationService);
-            const securityContextService = ServiceProvider.get(SecurityContextService);
+            const securityContextService = service(SecurityContextService);
+            const authStorageService = service(AuthenticationStorageService);
 
             $rootScope.hasPermission = function() {
                 const path = $location.path();
@@ -95,7 +94,6 @@ angular.module('graphdb.framework.core.services.jwtauth', [
 
             this.securityEnabled = true;
             this.hasOverrideAuth = false;
-            this.externalAuthUser = false;
             this.securityInitialized = false;
 
             const that = this;
@@ -128,7 +126,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
 
                         that.getAuthenticatedUserFromBackend();
                     } else {
-                        AuthTokenService.clearAuthToken();
+                        authStorageService.clearAuthToken();
                         const overrideAuthData = res.data.overrideAuth;
                         that.hasOverrideAuth = overrideAuthData.enabled;
                     }
@@ -152,7 +150,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             };
 
             this.authTokenIsType = function(type) {
-                const token = AuthTokenService.getAuthToken();
+                const token = authStorageService.getAuthToken().getValue();
                 return token && token.startsWith(type);
             };
 
@@ -161,7 +159,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                     return SecurityService.toggleSecurity(enabled)
                         .then(function() {
                             toastrService.success($translate.instant('jwt.auth.security.status', {status: ($translate.instant(enabled ? 'enabled.status' : 'disabled.status'))}));
-                            AuthTokenService.clearAuthToken();
+                            authStorageService.clearAuthToken();
                             that.initSecurity();
                             that.securityEnabled = enabled;
                         })
@@ -172,13 +170,8 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 return Promise.resolve();
             };
 
-            this.hasExplicitAuthentication = function() {
-                const token = AuthTokenService.getAuthToken();
-                return (token !== null && token !== undefined) || this.externalAuthUser;
-            };
-
             this.clearAuthenticationInternal = function() {
-                AuthTokenService.clearAuthToken();
+                authStorageService.clearAuthToken();
             };
 
             this.clearAuthentication = function() {

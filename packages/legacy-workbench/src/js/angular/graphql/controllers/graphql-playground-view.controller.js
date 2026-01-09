@@ -2,28 +2,28 @@ import {GraphqlPlaygroundConfig} from '../../models/graphql/graphql-playground-c
 import '../../core/services/graphql.service';
 import 'angular/core/directives/graphql-playground/graphql-playground.directive';
 import {
-    GraphqlPlaygroundDirectiveUtil
+    GraphqlPlaygroundDirectiveUtil,
 } from "../../core/directives/graphql-playground/graphql-playground-directive.util";
+import {service, AuthenticationStorageService} from '@ontotext/workbench-api';
 
 const modules = [
     'graphdb.framework.core.services.graphql-service',
-    'graphdb.framework.core.directives.graphql-playground'
+    'graphdb.framework.core.directives.graphql-playground',
 ];
 
 angular
     .module('graphdb.framework.graphql.controllers.graphql-playground-view', modules)
     .controller('GraphqlPlaygroundViewCtrl', GraphqlPlaygroundViewCtrl);
 
-GraphqlPlaygroundViewCtrl.$inject = ['$scope', '$location', '$repositories', '$languageService', 'toastr', 'GraphqlService', 'GraphqlContextService', 'AuthTokenService'];
+GraphqlPlaygroundViewCtrl.$inject = ['$scope', '$location', '$repositories', '$languageService', 'toastr', 'GraphqlService', 'GraphqlContextService'];
 
-function GraphqlPlaygroundViewCtrl($scope, $location, $repositories, $languageService, toastr, GraphqlService, GraphqlContextService, AuthTokenService) {
-
+function GraphqlPlaygroundViewCtrl($scope, $location, $repositories, $languageService, toastr, GraphqlService, GraphqlContextService) {
     // =========================
     // Private variables
     // =========================
 
     const subscriptions = [];
-
+    const authStorageService = service(AuthenticationStorageService);
     // =========================
     // Public variables
     // =========================
@@ -84,12 +84,12 @@ function GraphqlPlaygroundViewCtrl($scope, $location, $repositories, $languageSe
      * @return {GraphqlPlaygroundConfig} - The configuration object.
      */
     const buildConfig = (endpoint) => {
-        let endpointUrl = endpoint.replace(/^\//, '');
+        const endpointUrl = endpoint.replace(/^\//, '');
         const config = {
             endpoint: endpointUrl,
             headers: getHeaders,
             selectedLanguage: $languageService.getLanguage(),
-            defaultQuery: 'query Object {\n  object(limit: 100) {\n    id\n  }\n}'
+            defaultQuery: 'query Object {\n  object(limit: 100) {\n    id\n  }\n}',
         };
         return new GraphqlPlaygroundConfig(config);
     };
@@ -99,13 +99,13 @@ function GraphqlPlaygroundViewCtrl($scope, $location, $repositories, $languageSe
         const trackAlias = `graphql-playground-query-${performance.now()}-${Date.now()}`;
         const headers = {
             'X-GraphDB-Track-Alias': trackAlias,
-        }
-        const authToken = AuthTokenService.getAuthToken();
+        };
+        const authToken = authStorageService.getAuthToken().getValue();
         if (authToken) {
             headers['Authorization'] = authToken;
         }
         return headers;
-    }
+    };
 
     /**
      * Finds the default endpoint from the list of endpoints.
@@ -226,8 +226,8 @@ function GraphqlPlaygroundViewCtrl($scope, $location, $repositories, $languageSe
         GraphqlPlaygroundDirectiveUtil.getGraphqlPlaygroundComponentAsync("#graphql-playground")
             .then((graphqlPlayground) => {
                 graphqlPlayground.setLanguage(args.locale);
-            })
-    }
+            });
+    };
 
     /**
      * Resets the scope variables. This is used to clear the view when there are no GraphQL endpoints for example
