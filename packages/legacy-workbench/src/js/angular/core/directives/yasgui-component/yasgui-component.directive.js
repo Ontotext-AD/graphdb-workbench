@@ -22,6 +22,7 @@ import {
     ThemeService,
     SecurityContextService,
     service,
+    AuthenticationStorageService,
 } from '@ontotext/workbench-api';
 
 const modules = [
@@ -38,7 +39,6 @@ yasguiComponentDirective.$inject = [
     '$location',
     '$languageService',
     '$uibModal',
-    'AuthTokenService',
     '$interval',
     'toastr',
     'TranslationService',
@@ -73,7 +73,6 @@ function yasguiComponentDirective(
     $location,
     $languageService,
     $uibModal,
-    AuthTokenService,
     $interval,
     toastr,
     TranslationService,
@@ -94,6 +93,7 @@ function yasguiComponentDirective(
         link: ($scope, element, attrs) => {
             const securityContextService = service(SecurityContextService);
             const themeService = service(ThemeService);
+            const authStorageService = service(AuthenticationStorageService);
 
             $scope.classToApply = attrs.class || '';
             const downloadAsPluginNameToEventHandler = new Map();
@@ -350,7 +350,7 @@ function yasguiComponentDirective(
                 const infer = downloadAsEvent.infer;
                 const sameAs = downloadAsEvent.sameAs;
                 const accept = downloadAsEvent.contentType;
-                const authToken = AuthTokenService.getAuthToken() || '';
+                const authToken = authStorageService.getAuthToken().getValue() || '';
 
                 if (downloadAsEvent.contentType === "application/ld+json" || downloadAsEvent.contentType === "application/x-ld+ndjson") {
                     const modalInstance = $uibModal.open({
@@ -564,7 +564,7 @@ function yasguiComponentDirective(
                     'X-Requested-With': 'XMLHttpRequest',
                 };
 
-                const authToken = AuthTokenService.getAuthToken();
+                const authToken = authStorageService.getAuthToken().getValue();
                 if (authToken) {
                     headers['Authorization'] = authToken;
                 }
