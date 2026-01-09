@@ -15,6 +15,7 @@ import {
 } from '../core/directives/yasgui-component/yasgui-component-directive.util';
 import {RepositoryContextService, service, LicenseContextService} from '@ontotext/workbench-api';
 import {LoggerProvider} from '../core/services/logger-provider';
+import {sparqlTemplateMapper} from '../rest/mappers/sparql-template-mapper';
 
 const modules = [
     'ui.bootstrap',
@@ -59,12 +60,13 @@ function SparqlTemplatesCtrl($scope, $repositories, SparqlTemplatesRestService, 
             $repositories.getActiveRepository()
             && !$repositories.isActiveRepoOntopType()
             && !$repositories.isActiveRepoFedXType()) {
-            SparqlTemplatesRestService.getSparqlTemplates($repositories.getActiveRepository()).success(function(data) {
-                $scope.sparqlTemplateIds = data;
-            }).error(function(data) {
-                const msg = getError(data);
-                toastr.error(msg, $translate.instant('sparql.template.get.templates.error'));
-            });
+            SparqlTemplatesRestService.getSparqlTemplates($repositories.getActiveRepository())
+                .success(function(data) {
+                    $scope.sparqlTemplateIds = sparqlTemplateMapper(data);
+                }).error(function(data) {
+                    const msg = getError(data);
+                    toastr.error(msg, $translate.instant('sparql.template.get.templates.error'));
+                });
         } else {
             $scope.sparqlTemplateIds = [];
         }

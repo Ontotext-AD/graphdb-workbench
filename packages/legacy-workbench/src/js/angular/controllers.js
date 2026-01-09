@@ -34,6 +34,7 @@ import {
     LicenseContextService,
     LicenseService,
     RepositoryService,
+    REPOSITORY_ID_PARAM,
     service,
     SecurityContextService,
     OntoToastrService,
@@ -99,6 +100,7 @@ function homeCtrl($scope,
     // =========================
     const authenticationService = service(AuthenticationService);
     const authorizationService = service(AuthorizationService);
+    const repositoryContextService = service(RepositoryContextService);
 
     // =========================
     // Public variables
@@ -109,7 +111,7 @@ function homeCtrl($scope,
     // Public functions
     // =========================
     $scope.getActiveRepositorySize = () => {
-        const repo = service(RepositoryContextService).getSelectedRepository();
+        const repo = repositoryContextService.getSelectedRepository();
 
         if (!repo) {
             return;
@@ -159,7 +161,7 @@ function homeCtrl($scope,
         $scope.isAutocompleteEnabled = autocompleteEnabled;
     };
 
-    subscriptions.push(service(RepositoryContextService).onSelectedRepositoryChanged(onSelectedRepositoryUpdated));
+    subscriptions.push(repositoryContextService.onSelectedRepositoryChanged(onSelectedRepositoryUpdated));
     subscriptions.push(WorkbenchContextService.onAutocompleteEnabledUpdated(onAutocompleteEnabledUpdated));
 
     $scope.$on('$destroy', () => subscriptions.forEach((subscription) => subscription()));
@@ -197,7 +199,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     const authorizationService = service(AuthorizationService);
     const authenticationService = service(AuthenticationService);
     const securityContextService = service(SecurityContextService);
-
+    const repositoryContextService = service(RepositoryContextService);
     /**
      * When the timeout finishes, the popover will open.
      */
@@ -835,10 +837,116 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         if (dataLoaded) {
             // unsubscribe of any previous subscription
             onSelectedRepositoryChangedSubscription?.();
-            onSelectedRepositoryChangedSubscription = service(RepositoryContextService)
-                .onSelectedRepositoryChanged((repository) => {
-                    $repositories.onRepositorySet(repository);
+            onSelectedRepositoryChangedSubscription =
+                repositoryContextService.onSelectedRepositoryChanged(onSelectedRepositoryUpdated);
+        }
+    };
+
+    const confirmRepositoryChange = (currentRepositoryId, newRepositoryId) => {
+        ModalService.openConfirmationModal({
+                title: $translate.instant('common.confirm'),
+                message: `Active repository will be changed to [${newRepositoryId}]. Do you want to proceed?`,
+                confirmButtonKey: 'ttyg.chat_panel.btn.proceed.label',
+            },
+            () => {
+                repositoryContextService.updateSelectedRepository({
+                    id: newRepositoryId,
+                    location: '',
                 });
+            },
+            () => {
+                // on cancel, revert the URL to the current repository
+                $timeout(() => {
+                    $location.search('repositoryId', currentRepositoryId);
+                });
+            });
+    };
+
+    let isFirstRepoChangeEvent = true;
+
+    const onSelectedRepositoryUpdated = (repository) => {
+        // skip the first event which is triggered on bootstrap
+        if (!isFirstRepoChangeEvent) {
+            // On repository change, update the url param accordingly, but
+            // avoid infinite loop by checking if the param is already set to the desired value.
+            // And skip the first event which is triggered on bootstrap.
+            if (repository) {
+                const searchParams = new URLSearchParams(window.location.search);
+                const urlRepositoryParam = searchParams.get(REPOSITORY_ID_PARAM);
+                if (urlRepositoryParam !== repository.id) {
+                    $location.search(REPOSITORY_ID_PARAM, repository.id).replace();
+                }
+            }
+        }
+        isFirstRepoChangeEvent = false;
+        // Notify the $repositories service about the repository change so it can update its state
+        $repositories.onRepositorySet(repository);
+    };
+
+    // 1. active repo no, repo in url no -> no action - just show repo selector
+    // 2. active repo no, repo in url yes, url repo exists -> set active repo same as the url
+    // 3. active repo no, repo in url yes, url repo missing -> show warning, keep url
+    // 4. active repo yes, repo in url no -> update url
+    // 5. active repo yes, repo in url yes, url repo exists -> show confirmation, update active repo
+    // 6. active repo yes, repo in url yes, url repo missing-> show warning, keep the active repo
+    const onRouteChangeStart = (event) => {
+        const repositoryIdParam = $location.search()[REPOSITORY_ID_PARAM];
+        const selectedRepository = repositoryContextService.getSelectedRepository();
+        const repositoryExists = repositoryContextService.repositoryExists({id: repositoryIdParam, location: ''});
+        const isSameRepository = selectedRepository && repositoryIdParam === selectedRepository.id;
+        console.log('%conRouteChangeStart', 'background: tan', {selectedRepository: selectedRepository && selectedRepository.id, repositoryIdParam, repositoryExists});
+        // Change current repository with new existing repository from the URL
+        if (selectedRepository) {
+            if (!repositoryIdParam) {
+                console.log('%c000', 'background: yellow',);
+                // $timeout(() => {
+                $location.search(REPOSITORY_ID_PARAM, selectedRepository.id).replace();
+                // });
+            } else if (repositoryExists && !isSameRepository) {
+                console.log('%c111', 'background: yellow',);
+                // Ask for confirmation before changing the current repository.
+                // This can happen when the user manually changes the URL or uses browser history to navigate.
+                // If the user rejects the change, set the URL back to the current repository.
+                confirmRepositoryChange(selectedRepository.id, repositoryIdParam);
+            } else if (repositoryExists && isSameRepository) {
+                console.log('%c222', 'background: yellow',);
+                // do nothing, same repository in the URL and selected
+            } else if (!repositoryExists) {
+                console.log('%c222.5', 'background: yellow',);
+                ModalService.openModalAlert({
+                    title: 'Warning',
+                    message: `Repository [${repositoryIdParam}] does not exist. Continuing with the current repository [${selectedRepository.id}].`,
+                }).result
+                    .then(function() {
+                        $timeout(() => {
+                            $location.search(REPOSITORY_ID_PARAM, selectedRepository.id).replace();
+                            console.log('%cupdated repo', 'background: red',);
+                        });
+                    });
+            }
+        } else if (!selectedRepository) {
+            if (!repositoryIdParam) {
+                console.log('%c333', 'background: yellow',);
+            } else if (repositoryExists) {
+                console.log('%c444', 'background: yellow',);
+                // set active repository if there is none selected and repository from the URL exists
+                repositoryContextService.updateSelectedRepository({
+                    id: repositoryIdParam,
+                    location: '',
+                });
+            } else {
+                console.log('%c555', 'background: yellow',);
+                // 3. active repo no, repo in url yes, url repo missing -> show warning, keep url
+                ModalService.openModalAlert({
+                    title: 'Warning',
+                    message: `Repository [${repositoryIdParam}] does not exist. Please select an existing repository.`,
+                }).result
+                    .then(function() {
+                        console.log('%cclosed', 'background: red',);
+                    });
+            }
+        } else {
+            console.log('%c666', 'background: yellow',);
         }
     };
 
@@ -865,6 +973,15 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
                     const msg = getError(error.data, error.status);
                     toastrService.error(msg, $translate.instant('common.error'));
                 });
+        }
+    });
+
+    $scope.$on('$routeUpdate', function() {
+        const repositoryIdParam = $location.search()[REPOSITORY_ID_PARAM];
+        const selectedRepository = repositoryContextService.getSelectedRepository();
+        console.log('%c$routeUpdate', 'background: lightgray', {selectedRepository: selectedRepository && selectedRepository.id, repositoryIdParam});
+        if (selectedRepository && repositoryIdParam !== selectedRepository.id) {
+            $location.search(REPOSITORY_ID_PARAM, selectedRepository.id).replace();
         }
     });
 
@@ -898,8 +1015,18 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         $scope.initTutorial();
     });
 
-    $scope.$on('$locationChangeSuccess', function() {
-        $scope.showFooter = true;
+    let routeChangeStartSubscription = undefined;
+    const subscribeToRouteChangeStart = () => {
+        routeChangeStartSubscription = $rootScope.$on('$routeChangeStart', onRouteChangeStart);
+    };
+    subscribeToRouteChangeStart();
+
+    service(EventService).subscribe(EventName.APPLICATION_MOUNTED, (payload) => {
+        subscribeToRouteChangeStart();
+    });
+
+    service(EventService).subscribe(EventName.APPLICATION_UNMOUNTED, (payload) => {
+        routeChangeStartSubscription?.();
     });
 
     $scope.$on('repositoryIsSet', function() {
@@ -935,6 +1062,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     const licenseUpdatedSubscription = service(LicenseContextService).onLicenseChanged(onLicenseUpdated);
     const cookieConsentChangedSubscription = subscribeToCookieConsentChanged();
 
+    // TODO: The $destroy hook is not called in the workbench unmounting process, so these subscriptions are not cleaned up.
     $scope.$on('$destroy', () => {
         onSelectedRepositoryChangedSubscription?.();
         cookieConsentChangedSubscription?.();

@@ -13,6 +13,7 @@ import {
     RepositoryContextService,
     SecurityContextService,
     LicenseContextService,
+    REPOSITORY_ID_PARAM,
     service,
 } from "@ontotext/workbench-api";
 
@@ -85,6 +86,7 @@ function GraphsVisualizationsCtrl(
     RDF4JRepositoriesService,
 ) {
     const securityContextService = service(SecurityContextService);
+    const repositoryContextService = service(RepositoryContextService);
 
     // =========================
     // Public fields
@@ -156,7 +158,9 @@ function GraphsVisualizationsCtrl(
 
     $scope.goToHome = () => {
         resetState();
-        $location.url("graphs-visualizations");
+        // When closing the visualization screen, remove the config parameter from the URL. Leave other search params intact.
+        const {config, ...searchParams} = $location.search();
+        $location.path('/graphs-visualizations').search(searchParams);
     };
 
     $scope.shouldShowSettings = () => {
@@ -313,7 +317,11 @@ function GraphsVisualizationsCtrl(
     };
 
     $scope.goToGraphConfig = (config) => {
-        pushHistory({config: config.id}, {config: config});
+        const searchParams = {
+            config: config.id,
+            [REPOSITORY_ID_PARAM]: repositoryContextService.getSelectedRepository().id,
+        };
+        pushHistory(searchParams, {config: config});
         resetState();
         loadGraphConfig(config);
     };
@@ -359,7 +367,7 @@ function GraphsVisualizationsCtrl(
     }));
 
     subscriptions.push(WorkbenchContextService.onAutocompleteEnabledUpdated(onAutocompleteEnabledUpdated));
-    subscriptions.push(service(RepositoryContextService).onSelectedRepositoryChanged(onSelectedRepositoryUpdated));
+    subscriptions.push(repositoryContextService.onSelectedRepositoryChanged(onSelectedRepositoryUpdated));
 
     subscriptions.push($scope.$on('repositoryIsSet', function(event, args) {
         const payload = args || {newRepo: false};
@@ -440,8 +448,8 @@ function GraphsVisualizationsCtrl(
         if ($scope.embedded) {
             searchParams.embedded = true;
         }
-        state.skipOnPopState = true;
         $location.search(searchParams);
+        state.skipOnPopState = true;
         $location.state(state);
     };
 
