@@ -108,7 +108,7 @@
     display: block;
 }
 
-.agent-list-component .deleting-agent-loader {
+.agent-list-component .deleting-agent-loader .ot-loader-new-content{
     display: flex;
     align-items: center;
     width: 100%;

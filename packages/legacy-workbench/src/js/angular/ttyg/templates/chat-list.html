@@ -48,7 +48,7 @@
                     </div>
 
                     <div class="deleting-chat-loader" ng-if="deletingChat && deletingChat.chatId === chat.id && deletingChat.inProgress"
-                         onto-loader-fancy message="{{'ttyg.chat.deleting_chat' | translate}}"
+                         onto-loader auto-font-size="false" message-text="{{'ttyg.chat.deleting_chat' | translate}}"
                          size="25"></div>
                 </li>
             </ul>

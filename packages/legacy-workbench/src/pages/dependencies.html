@@ -85,7 +85,7 @@
     <div class="dep-status" ng-show="status == 'IN_PROGRESS'">
         {{'dependencies.calculation.in.progress.warning' | translate}}
     </div>
-    <div class="ot-loader ot-main-loader" onto-loader size="100" ng-show="isLoading() && status != 'NO_REPO'"></div>
+    <div onto-loader size="100" ng-show="isLoading() && status != 'NO_REPO'"></div>
     <div class="row deps-sidebar" ng-show="!isLoading() && allNotFilteredClasses.length > 0">
         <div class="col-sm-5 col-lg-4" guide-selector="class-list-wrapper">
             <div ng-show="!classToShow">

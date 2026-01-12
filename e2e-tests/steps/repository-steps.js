@@ -59,7 +59,7 @@ export class RepositorySteps {
     }
 
     static waitLoader() {
-        cy.get('.ot-loader').should('not.be.visible');
+        cy.get('.ot-loader-new-content').should('not.be.visible');
     }
 
     static getRepositoryConnectionOffBtn(id) {

@@ -1,6 +1,6 @@
 <link href="css/cluster-nodes-configuration.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 
-<div onto-loader-new ng-if="loader" class="create-cluster-loader" message="getLoaderMessage" size="100"></div>
+<div onto-loader ng-if="loader" class="create-cluster-loader" message="getLoaderMessage" size="100"></div>
 <div class="add-node-wrapper pull-right mb-1">
     <button ng-click="addNode()" ng-disabled="editedNodeIndex !== undefined"
             class="btn btn-primary add-node-btn"

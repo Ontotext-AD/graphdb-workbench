@@ -9,7 +9,7 @@
     </span>
 </div>
 <div class="modal-body graphql-endpoint-configuration-modal-body">
-    <div class="graphql-endpoint-configuration-loader" onto-loader-new hide-message="true"
+    <div class="graphql-endpoint-configuration-loader" onto-loader hide-message="true"
          size="100" ng-show="loadingEndpointConfigurationSettings"></div>
 
     <dynamic-form ng-if="!loadingEndpointConfigurationSettings" form-model="endpointConfigurationSettings.settings"
@@ -26,7 +26,6 @@
             ng-disabled="!endpointConfigurationSettingsValid || savingEndpointSettings || formCtrl.$pristine"
             ng-click="ok()" type="submit">
         <span>{{'save.changes.label' | translate}}</span>
-        <span class="saving-endpoint-settings" ng-if="savingEndpointSettings" onto-loader-fancy hide-message="true"
-              size="15"></span>
+        <span class="saving-endpoint-settings" ng-if="savingEndpointSettings" onto-loader size="15"></span>
     </button>
 </div>

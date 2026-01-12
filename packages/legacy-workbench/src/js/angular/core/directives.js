@@ -8,8 +8,6 @@ angular
         'graphdb.framework.utils.localstorageadapter'
     ])
     .directive('ontoLoader', ontoLoader)
-    .directive('ontoLoaderFancy', ontoLoaderFancy)
-    .directive('ontoLoaderNew', ontoLoaderNew)
     .directive('coreErrors', coreErrors)
     .directive('eatClick', eatClick)
     .directive('multiRequired', multiRequired)
@@ -19,48 +17,9 @@ angular
     .directive('autoGrow', autoGrowDirective)
     .directive('captureHeight', captureHeightDirective);
 
-ontoLoader.$inject = [];
+ontoLoader.$inject = ['$timeout'];
 
-function ontoLoader() {
-    return {
-        template: function (elem, attr) {
-            return '<object width="' + attr.size + '" height="' + attr.size + '" data="js/angular/templates/loader/ot-loader.svg?v=[AIV]{version}[/AIV]">{{\'common.loading\' | translate}}</object>';
-        }
-    };
-}
-
-ontoLoaderFancy.$inject = [];
-
-/**
- * Directive for the fancy loader.
- *
- * Accepts the following attributes:
- * - size: the size of the loader (width and height)
- * - message: the message to display below the loader
- * - hideMessage: if set to true, the message will not be displayed
- *
- * @return {{template: (function(*, *): string)}}
- */
-function ontoLoaderFancy() {
-    return {
-        template: function (elem, attr) {
-            let message = '';
-            if (attr.hideMessage) {
-                message = '';
-            } else {
-                message = attr.message ? `<div>${attr.message}</div>` : `<div>{{'common.loading' | translate}}<div>`;
-            }
-            return `
-                <object width="${attr.size}" height="${attr.size}" data="js/angular/templates/loader/ot-loader.svg?v=[AIV]{version}[/AIV]"></object>
-                ${message}
-            `;
-        }
-    };
-}
-
-ontoLoaderNew.$inject = ['$timeout'];
-
-function ontoLoaderNew($timeout) {
+function ontoLoader($timeout) {
     const restartTimeout = function ($timeout, scope) {
         scope.timer = undefined;
         scope.currentMessage = scope.getMessage();
@@ -80,15 +39,18 @@ function ontoLoaderNew($timeout) {
         scope: {
             size: '@',
             trigger: '@',
+            messageText: '@',
+            autoFontSize: '@',
             messageAttr: '=*message',
             timeoutAttr: '=*timeout',
             ngShow: '=',
             ngHide: '='
         },
         link: function (scope) {
+            scope.fontSize = scope.autoFontSize === 'true' ? `font-size: ${scope.size / 4}px` : '';
             scope.message = scope.messageAttr;
             scope.getMessage = function () {
-                return scope.message[scope.index];
+                return scope.messageText ?? scope.message[scope.index];
             };
             if (scope.message === undefined) {
                 scope.message = [''];
@@ -135,7 +97,7 @@ function ontoLoaderNew($timeout) {
         },
         template: '<div class="ot-loader-new-content" guide-selector="loader-spinner">'
         + '<img width="{{size}}" height="{{size}}" src="js/angular/templates/loader/ot-loader.svg?v=[AIV]{version}[/AIV]"/>'
-        + '<div style="font-size: {{size/4}}px">{{currentMessage}}<div>'
+        + '<div style="{{fontSize}}">{{currentMessage}}<div>'
         + '</div>'
     };
 }

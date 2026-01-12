@@ -293,10 +293,11 @@ span.label {
     margin-right: 10px
 }
 
-.spinner-container.ot-loader {
+.spinner-container {
     display: inline-block;
     margin-left: -4px;
-    margin-bottom: -3px
+    margin-bottom: -3px;
+    margin-top: 0;
 }
 
 .ot-repository-id {
@@ -309,7 +310,7 @@ span.label {
     top: 5px
 }
 
-#ot-loader {
+.main-loader {
     margin: 200px auto;
     display: block
 }

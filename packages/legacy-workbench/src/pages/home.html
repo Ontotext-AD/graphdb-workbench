@@ -1,5 +1,5 @@
 <link href="css/home.css?v=[AIV]{version}[/AIV]" rel="stylesheet">
-<div class="ot-loader ot-loader-home" onto-loader-fancy size="100" ng-show="isLoadingLocation()"></div>
+<div class="ot-loader ot-loader-home" onto-loader size="100" auto-font-size="false" message-text="{{'common.loading' | translate}}" ng-show="isLoadingLocation()"></div>
 <div id="wb-home" class="content-wrapper" ng-hide="isLoadingLocation()" ng-cloak>
     <div class="alert alert-danger" role="alert" ng-hide="isLicenseValid()">
         <strong>{{getLicenseErrorMsg()}}</strong>

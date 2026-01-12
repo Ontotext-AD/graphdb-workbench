@@ -8,7 +8,7 @@
 
     <div core-errors></div>
 
-    <div onto-loader-new
+    <div onto-loader
          ng-show="loadingEndpointsInfo"
          class="graphql-endpoint-management-page-loader"
          size="100">
@@ -93,7 +93,7 @@
 
             <tr ng-if="operationInProgress" class="overlay-row">
                 <td colspan="9">
-                    <div class="endpoint-operation-progress" onto-loader-fancy size="100" hide-message="true"></div>
+                    <div class="endpoint-operation-progress" onto-loader size="100"></div>
                 </td>
             </tr>
 

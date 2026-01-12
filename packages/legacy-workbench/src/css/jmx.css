@@ -1,7 +1,7 @@
 .nvtooltip h3{
 	font-size: 20px !important;
 }
-#ot-loader {
+.main-loader {
 	margin: 200px auto;
 	display: block;
 }

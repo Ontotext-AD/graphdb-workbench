@@ -277,3 +277,8 @@
 .agent-settings-modal .agent-settings-form .similarity-index .similarity-layout .right-col {
     align-self: start;
 }
+
+.agent-settings-modal .saving-agent-loader {
+    display: inline-block;
+    vertical-align: middle;
+}
