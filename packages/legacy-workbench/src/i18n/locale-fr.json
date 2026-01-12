@@ -3011,6 +3011,7 @@
     "visual.delete.graph": "Supprimer le graphique",
     "visual.collapse.sidepanel": "Réduire le panneau latéral",
     "sidepanel.graph.settings": "Paramètres du graphique",
+    "sidepanel.truncate.node.labels": "Tronquer les étiquettes de nœuds longues",
     "sidepanel.limit.links.tooltip": "Limiter le nombre de liens quand souvent ils sont trop nombreux",
     "sidepanel.maximum.links": "Nombre maximal de liens à afficher",
     "visual.search.instance.placeholder": "Recherche des propriétés de l'instance",

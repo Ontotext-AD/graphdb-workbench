@@ -2,6 +2,8 @@ import { LicenseStubs } from "../../../stubs/license-stubs";
 import { VisualGraphSteps } from "../../../steps/visual-graph-steps";
 import { HtmlUtil } from "../../../utils/html-util";
 
+const LONG_LABEL = 'A looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong label for Node Four'
+
 /**
  * RDF snippet with the necessary data to test all possible label scenarios:
  * 1. (ex:node1) Node with a plain text label;
@@ -19,7 +21,7 @@ const RDF_SNIPPETS_WITH_NODE_LABELS_DATA =
     'ex:node1 rdfs:label "Node One" .\n' +
     'ex:node2 rdfs:label "Node<br>Two" .\n' +
     'ex:node3 rdfs:label "Node\\nThree" .\n' +
-    'ex:node4 rdfs:label "A longer label for Node Four" .\n' +
+    `ex:node4 rdfs:label "${LONG_LABEL}" .\n` +
     '\n' +
     '# Relationships Between Nodes\n' +
     'ex:node1 ex:connectedTo ex:node2 .\n' +
@@ -60,9 +62,19 @@ describe("Node Basics", () => {
         VisualGraphSteps.getNodeLabel('http://example.com/node3').should('have.html', 'Node<br>Three');
 
         // The label of ex:node4 to be displayed with a long label (no truncation).
-        VisualGraphSteps.getNodeLabel('http://example.com/node4').should('have.html', 'A longer label for Node Four');
+        VisualGraphSteps.getNodeLabel('http://example.com/node4').should('have.html', LONG_LABEL);
 
         // The label of ex:node4 should be truncated with ellipsis because it has a long label.
         HtmlUtil.verifyEllipsis(VisualGraphSteps.getNodeLabel('http://example.com/node4'));
+
+        // When: I disable the "Truncate long labels" setting.
+        VisualGraphSteps.openVisualGraphSettings();
+        VisualGraphSteps.getTruncateLabelsCheckbox().should('be.checked');
+        VisualGraphSteps.toggleTruncateLabelsCheckbox();
+        VisualGraphSteps.getTruncateLabelsCheckbox().should('not.be.checked');
+        VisualGraphSteps.saveSettings();
+
+        // Then, I expect to see a full non-truncated label for ex:node4.
+        HtmlUtil.verifyNoEllipsis(VisualGraphSteps.getNodeLabel('http://example.com/node4'));
     });
 });
