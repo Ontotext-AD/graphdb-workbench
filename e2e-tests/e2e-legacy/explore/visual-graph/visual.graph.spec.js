@@ -1,7 +1,9 @@
-import {VisualGraphSteps} from "../../../steps/visual-graph-steps";
-import {ApplicationSteps} from "../../../steps/application-steps";
-import {LicenseStubs} from "../../../stubs/license-stubs";
-import {AutocompleteStubs} from "../../../stubs/autocomplete/autocomplete-stubs";
+import {VisualGraphSteps} from '../../../steps/visual-graph-steps';
+import {ApplicationSteps} from '../../../steps/application-steps';
+import {LicenseStubs} from '../../../stubs/license-stubs';
+import {AutocompleteStubs} from '../../../stubs/autocomplete/autocomplete-stubs';
+import {MainMenuSteps} from '../../../steps/main-menu-steps.js';
+import HomeSteps from '../../../steps/home-steps.js';
 
 const FILE_TO_IMPORT = 'wine.rdf';
 const VALID_RESOURCE = 'USRegion';
@@ -22,6 +24,16 @@ describe('Visual graph screen validation', () => {
     afterEach(() => {
         cy.clearLocalStorage('ls.graphs-viz');
         cy.deleteRepository(repositoryId);
+    });
+
+    context('Embedded', () => {
+        it('Should not show main manu, header and footer in embedded mode', () => {
+            cy.visit('/graphs-visualizations?uri=http:%2F%2Fwww.w3.org%2FTR%2F2003%2FPR-owl-guide-20031209%2Fwine%23Chardonnay&embedded')
+            VisualGraphSteps.verifyPageLoaded();
+            MainMenuSteps.getMainMenu().should('not.exist');
+            HomeSteps.getPageFooter().should('not.exist');
+            HomeSteps.getPageHeader().should('not.exist');
+        });
     });
 
     context('When autocomplete is disabled', () => {
@@ -57,8 +69,8 @@ describe('Visual graph screen validation', () => {
         it('Test search for a valid resource', {
             retries: {
                 openMode: 0,
-                runMode: 1
-            }
+                runMode: 1,
+            },
         }, () => {
             AutocompleteStubs.spyAutocompleteStatus();
             VisualGraphSteps.visit();
@@ -125,7 +137,7 @@ describe('Visual graph screen validation', () => {
                 // Verify that the default settings are as follows:
                 // Maximum links to show: 20
                 VisualGraphSteps.getLinksNumberField().and('have.value', '20');
-               // Update default 20
+                // Update default 20
                 VisualGraphSteps.updateLinksLimitField('1001')
                     .then(() => {
                         // Try to put invalid value such as 1001
@@ -207,8 +219,8 @@ describe('Visual graph screen validation', () => {
             VisualGraphSteps.getNodes().and('have.length', 4);
             // Click once on node different than parent one with the mouse
             cy.get('.node-wrapper circle').eq(1)
-            // The wait is needed because mouseover event will result in
-            // pop-up of menu icons only if nodes are not moving
+                // The wait is needed because mouseover event will result in
+                // pop-up of menu icons only if nodes are not moving
                 .should('be.visible').wait(5000)
                 .trigger('mouseover', {force: true});
             // Select remove function
@@ -233,7 +245,7 @@ describe('Visual graph screen validation', () => {
             cy.get('.incontext-search-rdf-resource input').should('be.visible');
         });
 
-      it('Test expand collapsed node which has connections with double click', () => {
+        it('Test expand collapsed node which has connections with double click', () => {
             VisualGraphSteps.openUSRegionUri();
             VisualGraphSteps.toggleInferredStatements(false);
 
