@@ -1,3 +1,7 @@
+.rdf-info-side-panel.visual-graph.embedded {
+    top: 0 !important;
+}
+
 .node {
     stroke: #fff;
     stroke-width: 1.5px;

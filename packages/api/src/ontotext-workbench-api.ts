@@ -59,6 +59,7 @@ export * from './services/logging';
 export * from './services/notification';
 export * from './services/users';
 export * from './services/interceptor/interceptor.service';
+export * from './services/runtime-configuration';
 
 // Export interceptors for external usages.
 export * from './interceptor';
