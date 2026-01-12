@@ -20,6 +20,7 @@ import {
 import {start} from 'single-spa';
 import {defineCustomElements} from '../../../shared-components/loader';
 import {registerInterceptors} from './interceptors/interceptors-registration';
+import {runtimeConfigurationBootstrap} from './runtime-configuration/runtime-configuration';
 
 const logger = LoggerProvider.logger;
 
@@ -46,6 +47,7 @@ const loadEssentials = () => {
     registerInterceptors(),
     // Await each bootstrap promise, not the array itself, otherwise promises wouldn't be awaited at all.
     ...essentialLoaders,
+    runtimeConfigurationBootstrap(),
     securityBootstrap.loadSecurityConfig()
   ]);
 };

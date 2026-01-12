@@ -4,7 +4,7 @@ import {debounce} from '../../utils/function-utils';
 import {WINDOW_WIDTH_FOR_COLLAPSED_NAVBAR} from '../../models/constants';
 import {
   AuthenticatedUser,
-  AuthenticationService, AuthenticationStorageService,
+  AuthenticationService, AuthenticationStorageService, RuntimeConfigurationContextService,
   Authority,
   AuthorizationService,
   EventName,
@@ -34,6 +34,7 @@ export class OntoLayout {
   private readonly authorizationService = ServiceProvider.get(AuthorizationService);
   private readonly navigationContextService = ServiceProvider.get(NavigationContextService);
   private readonly authStorageService = service(AuthenticationStorageService);
+  private readonly runtimeConfigurationContextService = service(RuntimeConfigurationContextService);
 
   private readonly fullJwtKey = `${StorageKey.GLOBAL_NAMESPACE}.${this.authStorageService.NAMESPACE}.${this.authStorageService.jwtKey}`;
   private readonly fullAuthenticatedKey = `${StorageKey.GLOBAL_NAMESPACE}.${this.authStorageService.NAMESPACE}.${this.authStorageService.authenticatedKey}`;
@@ -53,6 +54,7 @@ export class OntoLayout {
   @State() securityConfig: SecurityConfig;
   @State() isLowResolution = false;
   @State() showHeader = this.isAuthenticatedFully();
+  @State() private isEmbedded = false;
 
   // ========================
   // Private
@@ -80,6 +82,7 @@ export class OntoLayout {
     this.subscribeToSecurityChanges();
     this.updateVisibility();
     this.subscribeToNavigationEnd();
+    this.subscribeToRuntimeConfigurationChanges();
   }
 
   /**
@@ -92,26 +95,33 @@ export class OntoLayout {
 
   render() {
     return (
-      <Host class="wb-layout">
+      <Host class={{
+        'wb-layout': true,
+        'is-embedded': this.isEmbedded
+      }}>
         {/* Default slot is explicitly defined to be able to hide the main content in the user permission check */}
         <div class="default-slot-wrapper">
           <slot name="default"></slot>
         </div>
-        <header class="wb-header">
-          {this.showHeader && <onto-header></onto-header>}
-        </header>
-
-        <nav class="wb-navbar">
-          <onto-navbar ref={this.assignNavbarRef()} navbar-collapsed={this.isLowResolution}></onto-navbar>
-        </nav>
-
+        {!this.isEmbedded &&
+          <header class="wb-header">
+            {this.showHeader && <onto-header></onto-header>}
+          </header>
+        }
+        {!this.isEmbedded &&
+          <nav class="wb-navbar">
+            <onto-navbar ref={this.assignNavbarRef()} navbar-collapsed={this.isLowResolution}></onto-navbar>
+          </nav>
+        }
         <div class="main-slot-wrapper">
           <slot name="main"></slot>
         </div>
 
-        <footer class="wb-footer">
-          <onto-footer></onto-footer>
-        </footer>
+        {!this.isEmbedded &&
+          <footer class="wb-footer">
+            <onto-footer></onto-footer>
+          </footer>
+        }
         <onto-tooltip></onto-tooltip>
         <onto-toastr></onto-toastr>
       </Host>
@@ -214,6 +224,14 @@ export class OntoLayout {
     );
   }
 
+  private subscribeToRuntimeConfigurationChanges() {
+    this.subscriptions.add(
+      this.runtimeConfigurationContextService.onRuntimeConfigurationChanged((config) => {
+        this.isEmbedded = config?.isEmbedded ?? false;
+      })
+    );
+  }
+
   private updateVisibility() {
     if (!this.authenticationService.isSecurityEnabled()) {
       this.showHeader = true;
@@ -236,6 +254,9 @@ export class OntoLayout {
   private assignNavbarRef() {
     return (navbar: HTMLOntoNavbarElement) => {
       this.navbarRef = navbar;
+      if (!this.navbarRef) {
+        return;
+      }
       this.navbarRef.menuItems = WindowService.getWindow().PluginRegistry.get('main.menu');
       this.setNavbarItemVisibility();
     };
