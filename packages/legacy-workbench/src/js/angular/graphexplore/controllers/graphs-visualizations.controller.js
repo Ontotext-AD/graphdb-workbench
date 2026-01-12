@@ -85,6 +85,9 @@ function GraphsVisualizationsCtrl(
     RDF4JRepositoriesService,
 ) {
     const securityContextService = service(SecurityContextService);
+    // Multiplier to calculate the height of the labels element based on the font size.
+    // Based on this, we display different numbers of rows. Currently, this results in 3 rows of text
+    const heightMultiplier = 4.2;
 
     // =========================
     // Public fields
@@ -114,6 +117,7 @@ function GraphsVisualizationsCtrl(
         linksLimit: 20,
         includeInferred: true,
         sameAsState: true,
+        truncateNodeLabels: true,
         languages: ['en'],
         showLinksText: true,
         preferredTypes: [],
@@ -482,7 +486,7 @@ function GraphsVisualizationsCtrl(
             // TODO: get language and set it on the label html tag
         })
             .attr("height", function(d) {
-                return d.fontSize * 3;
+                return d.fontSize * heightMultiplier;
             })
             // if this was kosher we would use xhtml:body here but if we do that angular (or the browser)
             // goes crazy and resizes/messes up other unrelated elements. div seems to work too.
@@ -1781,6 +1785,7 @@ function GraphsVisualizationsCtrl(
 
         const nodeLabels = container.selectAll(".node-wrapper").append("foreignObject")
             .style("pointer-events", "none")
+            .classed('truncated-label', $scope.saveSettings.truncateNodeLabels)
             .attr("width", function(d) {
                 return d.size * 2 * nodeLabelRectScaleX;
             });
@@ -1839,9 +1844,9 @@ function GraphsVisualizationsCtrl(
             nodeLabels.attr("x", function(d) {
                 return d.x - (d.size * nodeLabelRectScaleX);
             }).attr("y", function(d) {
-                // the height of the nodeLabel box is 3 times the fontSize computed by updateNodeLabels
+                // the height of the nodeLabel box is `heightMultiplier` times the fontSize computed by updateNodeLabels
                 // and we want to offset it so that its middle matches the centre of the circle, hence divided by 2
-                return d.y - 3 * d.fontSize / 2;
+                return d.y - heightMultiplier * d.fontSize / 2;
             });
 
             // Update position of shrinking pin animation (if any)

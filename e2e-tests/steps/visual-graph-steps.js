@@ -1,7 +1,9 @@
+import {BaseSteps} from "./base-steps.js";
+
 const VIEW_URL = '/graphs-visualizations';
 const VALID_RESOURCE = 'USRegion';
 
-export class VisualGraphSteps {
+export class VisualGraphSteps extends BaseSteps {
 
     static visit() {
         cy.visit(VIEW_URL);
@@ -38,9 +40,9 @@ export class VisualGraphSteps {
     }
 
     static updateGraphConfiguration(namedGraph) {
-        cy.get('[data-cy="save-or-update-graph"]').click()
-            .get('[id="wb-graphviz-savegraph-name"]').type(namedGraph)
-            .get('[id="wb-graphviz-savegraph-submit"]').should('be.visible').click();
+        cy.get('[data-cy="save-or-update-graph"]').click();
+        cy.get('[id="wb-graphviz-savegraph-name"]').type(namedGraph);
+        cy.get('[id="wb-graphviz-savegraph-submit"]').should('be.visible').click();
         cy.get('.toast').contains('Saved graph ' + namedGraph + ' was saved');
     }
 
@@ -188,7 +190,8 @@ export class VisualGraphSteps {
     }
 
     static getSaveSettingsButton() {
-        return cy.get('.save-settings-btn').scrollIntoView().should('be.visible');
+        cy.get('.save-settings-btn').scrollIntoView();
+        return cy.get('.save-settings-btn').should('be.visible');
     }
 
     static saveSettings() {
@@ -196,7 +199,8 @@ export class VisualGraphSteps {
     }
 
     static getResetSettingsButton() {
-        return cy.get('.reset-settings').scrollIntoView().should('be.visible');
+        cy.get('.reset-settings').scrollIntoView();
+        return cy.get('.reset-settings').should('be.visible');
     }
 
     static resetSettings() {
@@ -216,7 +220,8 @@ export class VisualGraphSteps {
     }
 
     static getPreferredTypesField() {
-        return cy.get('.preferred-types input').scrollIntoView().should('be.visible');
+        cy.get('.preferred-types input').scrollIntoView();
+        return cy.get('.preferred-types input').should('be.visible');
     }
     static getShowPreferredTypesOnlyCheckbox() {
         return cy.get('.show-preferred-types-only').should('be.visible');
@@ -324,6 +329,14 @@ export class VisualGraphSteps {
             .should('be.visible').click();
     }
 
+    static getTruncateLabelsCheckbox() {
+        return this.getByTestId('truncate-node-labels-checkbox');
+    }
+
+    static toggleTruncateLabelsCheckbox() {
+        return this.getTruncateLabelsCheckbox().click();
+    }
+
     static openVisualGraphHome() {
         cy.get('.toolbar-holder').should('be.visible')
             .find('.return-home-btn').should('be.visible').click();
@@ -410,7 +423,8 @@ export class VisualGraphSteps {
     }
 
     static selectStartNode(uri, index) {
-        cy.get('.graph-config-wizard-body .view-res-input').type(uri)
+        cy.get('.graph-config-wizard-body .view-res-input').type(uri);
+        cy.get('.graph-config-wizard-body .view-res-input')
             .closest('.start-node-selector')
             .find('#auto-complete-results-wrapper .result-item').eq(index).click();
     }

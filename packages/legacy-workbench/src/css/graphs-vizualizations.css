@@ -126,20 +126,25 @@
     z-index: 10;
 }
 
+g > foreignObject {
+    align-content: center;
+    overflow: visible;
+}
 
-.node-label-body {
-    height: 3em;
-    display: flex;
-    font-weight: 300;
+.truncated-label {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
     overflow: hidden;
 }
 
+.node-label-body {
+    font-weight: 300;
+}
+
 .node-label-body div {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    word-break: break-all;
     margin: auto;
-    max-height: 3em;
     text-align: center;
 }
 

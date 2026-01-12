@@ -3013,6 +3013,7 @@
     "visual.delete.graph": "Delete graph",
     "visual.collapse.sidepanel": "Collapse sidepanel",
     "sidepanel.graph.settings": "Graph settings",
+    "sidepanel.truncate.node.labels": "Truncate node labels",
     "sidepanel.limit.links.tooltip": "Limit the number of links when often they are too many",
     "sidepanel.maximum.links": "Maximum links to show",
     "visual.search.instance.placeholder": "Search instance properties",
