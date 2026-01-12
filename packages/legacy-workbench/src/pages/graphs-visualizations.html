@@ -201,7 +201,7 @@
      style="height: 75vh; display: flex;">
 </div>
 <pageslide
-        ps-class="rdf-info-side-panel node-info predicate-info"
+        ps-class="rdf-info-side-panel node-info predicate-info visual-graph"
         ps-open="showInfoPanel"
         onopen="onopen"
         onclose="onclose"
@@ -209,7 +209,7 @@
         ps-click-outside="false"
         ps-custom-height="calc(100vh - 55px)"
         ps-size="80vw"
-        ng-class="{'rdf-info-side-panel-expanded': pageslideExpanded}">
+        ng-class="{'rdf-info-side-panel-expanded': pageslideExpanded, embedded: embedded}">
     <div class="rdf-side-panel-content break-word-alt p-1 pt-2">
         <span class="toggle-sidepanel" title="{{'visual.collapse.sidepanel' | translate}}" ng-click="toggleSidePanel()">
             <em ng-class="pageslideExpanded ? 'ri-arrow-right-s-line' : 'ri-arrow-left-s-line'"></em>

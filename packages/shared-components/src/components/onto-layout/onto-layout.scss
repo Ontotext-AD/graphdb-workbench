@@ -2,19 +2,39 @@
   display: block;
   height: 100%;
 }
+
 .wb-layout {
   display: grid;
-  grid-template-columns: 15rem minmax(200px, 1fr);
-  grid-template-rows: auto 1fr auto;
-  grid-template-areas:
-        "nav header"
-        "nav main"
-        "nav footer";
+  grid-template: "nav header" auto "nav main" 1fr "nav footer" auto / 15rem minmax(200px, 1fr);
   min-height: 100vh;
   margin: 0;
 
+  &.is-embedded {
+    grid-template-columns: 1fr; /* Change to a single column */
+    grid-template-areas:
+      "header"
+      "main"
+      "footer";
+    padding-top: 1rem;
+  }
+
   &.expanded {
     grid-template-columns: 4.375rem 1fr;
+  }
+
+  main .main-container {
+    /* This is a temporary solution to properly align the main container next to the sidebar until a proper layout is in place. */
+    margin-left: 0;
+  }
+
+  .default-slot-wrapper {
+    display: none;
+  }
+
+  .wb-header {
+    position: sticky;
+    top: 0;
+    z-index: 999;
   }
 
   nav {
@@ -29,22 +49,7 @@
     grid-area: main;
   }
 
-  main .main-container {
-    /* This is a temporary solution to properly align the main container next to the sidebar until a proper layout is in place. */
-    margin-left: 0;
-  }
-
-  .default-slot-wrapper {
-    display: none;
-  }
-
   footer {
     grid-area: footer;
   }
-}
-
-.wb-header {
-  position: sticky;
-  top: 0;
-  z-index: 999;
 }
