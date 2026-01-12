@@ -27,3 +27,8 @@
     z-index: 1050;
     pointer-events: all;
 }
+
+.graphql-endpoint-configuration-modal .saving-endpoint-settings {
+    display: inline-block;
+    vertical-align: middle;
+}

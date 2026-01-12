@@ -238,7 +238,7 @@ class HomeSteps extends BaseSteps {
     }
 
     static verifyAutocompleteResourceLink(uri) {
-        cy.get('#results-loader.ot-loader').should('not.exist');
+        cy.get('#results-loader.ot-loader-new-content').should('not.exist');
         cy.get('.resource-info').should('be.visible').and('contain', uri);
     }
 

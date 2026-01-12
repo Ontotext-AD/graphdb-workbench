@@ -1,4 +1,4 @@
-<div onto-loader-new ng-if="loadingData" class="schema-sources-loader" size="100"></div>
+<div onto-loader ng-if="loadingData" class="schema-sources-loader" size="100"></div>
 
 <!-- Using ng-show instead of ng-if here and down below because of the endpointParamsForm for which we need angular to
  bind the form controller to the scope immediately. Otherwise, we have to do gimmicks with timeout or intervals in order
@@ -84,7 +84,7 @@
                             {{'graphql.create_endpoint.wizard_steps.select_schema_sources.shacl_shapes.form.vocabulary_prefix.placeholder' | translate}}
                         </option>
                     </select>
-                    <div class="loading-prefixes" ng-if="loadingPrefixes" onto-loader-new size="25"></div>
+                    <div class="loading-prefixes" ng-if="loadingPrefixes" onto-loader size="25"></div>
                 </div>
                 <div class="alert alert-danger"
                      ng-if="endpointParamsForm.vocabularyPrefix.$touched && endpointParamsForm.vocabularyPrefix.$invalid">

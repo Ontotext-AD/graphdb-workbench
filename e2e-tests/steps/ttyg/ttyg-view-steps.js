@@ -42,7 +42,7 @@ export class TTYGViewSteps extends BaseSteps {
     }
 
     static getChatListLoadingIndicator() {
-        return this.getChatsSidebar().find('[onto-loader-fancy]');
+        return this.getChatsSidebar().find('[onto-loader]');
     }
 
     static getChatsPanel() {

@@ -88,7 +88,7 @@
             </div>
 
             <div class="deleting-agent-loader" ng-if="deletingAgent.agentId === agent.id && deletingAgent.inProgress"
-                 onto-loader-fancy message="{{'ttyg.agent.deleting_agent' | translate}}"
+                 onto-loader auto-font-size="false" message-text="{{'ttyg.agent.deleting_agent' | translate}}"
                  size="25"></div>
         </div>
     </div>

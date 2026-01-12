@@ -2,7 +2,7 @@
 
 <div class="chat-panel h-100" ng-class="!chat && !askingChatItem ? 'no-content' : ''">
 
-    <div class="chat-loading" ng-if="loadingChat" onto-loader-new size="40"></div>
+    <div class="chat-loading" ng-if="loadingChat" onto-loader size="40"></div>
 
     <div class="chat-details" ng-class="{'hidden': !chat}" ng-if="!loadingChat && (!chat.chatHistory.isEmpty() || askingChatItem)" guide-selector="chat-details">
         <div ng-repeat="chatItemDetail in chat.chatHistory.items" guide-selector="chat-item">

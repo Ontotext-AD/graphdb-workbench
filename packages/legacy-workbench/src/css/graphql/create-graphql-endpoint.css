@@ -190,7 +190,12 @@
 
 .generate-endpoint-view .generate-endpoint-container .generation-progress {
     display: flex;
+}
+
+.generate-endpoint-view .generate-endpoint-container .generation-progress .ot-loader-new-content{
+    display: flex;
     align-items: start;
+    margin: unset;
 }
 
 .generate-endpoint-view .generate-endpoint-container .generation-report {

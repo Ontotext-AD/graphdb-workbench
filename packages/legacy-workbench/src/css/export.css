@@ -45,7 +45,7 @@
 }
 
 /* =================== Loader =========================== */
-#ot-loader {
+.main-loader {
 	margin: 200px auto;
 	display: block;
 }

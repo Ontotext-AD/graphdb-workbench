@@ -8,7 +8,7 @@ export class AutocompleteSteps extends BaseSteps {
 
     static waitUntilAutocompletePageIsLoaded() {
         // No active loader
-        cy.get('.ot-loader').should('not.exist');
+        cy.get('.ot-loader-new-content').should('not.exist');
 
         // Repository is active
         cy.get('.repository-errors').should('not.be.visible');

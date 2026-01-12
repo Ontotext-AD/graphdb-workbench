@@ -69,7 +69,7 @@ describe('My Settings', () => {
                 //return to My Settings to revert the changes
                 visitSettingsView();
                 // Wait for loader to disappear
-                cy.get('.ot-loader').should('not.be.visible');
+                cy.get('.ot-loader-new-content').should('not.be.visible');
 
                 turnOnLabelBtn('#sameas-on');
                 turnOnLabelBtn('#inference-on');
@@ -123,7 +123,7 @@ describe('My Settings', () => {
         //return to My Settings to revert the changes
         visitSettingsView();
         // Wait for loader to disappear
-        cy.get('.ot-loader').should('not.be.visible');
+        cy.get('.ot-loader-new-content').should('not.be.visible');
         clickLabelBtn('#schema-on')
             .then(() => {
                 cy.waitUntil(() => {

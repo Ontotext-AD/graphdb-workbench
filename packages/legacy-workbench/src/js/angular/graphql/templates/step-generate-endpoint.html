@@ -26,9 +26,9 @@
             </div>
         </div>
 
-        <div class="generation-progress my-3" ng-if="generatingEndpoint && !generationReport" onto-loader-fancy
-             size="25"
-             message="{{'graphql.create_endpoint.wizard_steps.generate_endpoint.messages.generation_progress' | translate}}"></div>
+        <div class="generation-progress my-3" ng-if="generatingEndpoint && !generationReport" onto-loader
+             size="25" auto-font-size="false"
+             message-text="{{'graphql.create_endpoint.wizard_steps.generate_endpoint.messages.generation_progress' | translate}}"></div>
 
         <div ng-if="!generatingEndpoint && generationReport" class="generation-report">
             <h5 class="mt-2">

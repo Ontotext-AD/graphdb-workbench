@@ -17,7 +17,7 @@ export class NamespaceSteps extends BaseSteps {
 
     static waitUntilPageIsLoaded() {
         // No active loader
-        cy.get('.ot-loader').should('not.be.visible');
+        cy.get('.ot-loader-new-content').should('not.be.visible');
 
         this.getAddNamespaceForm().should('be.visible');
     }
