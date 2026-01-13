@@ -47,7 +47,9 @@ function ontoLoader($timeout) {
             ngHide: '='
         },
         link: function (scope) {
-            scope.fontSize = scope.autoFontSize !== 'false' ? `font-size: ${scope.size / 4}px` : '';
+            // Default is enabled. Only an explicit auto-font-size="false" disables it.
+            const isAutoFontSizeDisabled = `${scope.autoFontSize}`.toLowerCase() === 'false';
+            scope.fontSize = isAutoFontSizeDisabled ? '' : `font-size: ${scope.size / 4}px`;
             scope.message = scope.messageAttr;
             scope.getMessage = function () {
                 return scope.messageText ?? scope.message[scope.index];
