@@ -11,7 +11,7 @@ export class RdfRankSteps extends BaseSteps {
 
     static waitUntilRdfRankPageIsLoaded() {
         // No active loader
-        cy.get('ot-loader-new-content').should('not.exist');
+        cy.get('.ot-loader-new-content').should('not.exist');
 
         // Repository is active
         cy.get('.repository-errors').should('not.be.visible');

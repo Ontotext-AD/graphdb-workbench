@@ -22,7 +22,7 @@ export class UserAndAccessSteps {
     }
 
     static getSplashLoader() {
-        return cy.get('ot-loader-new-content');
+        return cy.get('.ot-loader-new-content');
     }
 
     static getCreateNewUserButton() {

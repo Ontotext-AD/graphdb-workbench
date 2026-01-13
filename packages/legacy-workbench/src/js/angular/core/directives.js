@@ -47,7 +47,7 @@ function ontoLoader($timeout) {
             ngHide: '='
         },
         link: function (scope) {
-            scope.fontSize = scope.autoFontSize === 'true' ? `font-size: ${scope.size / 4}px` : '';
+            scope.fontSize = scope.autoFontSize !== 'false' ? `font-size: ${scope.size / 4}px` : '';
             scope.message = scope.messageAttr;
             scope.getMessage = function () {
                 return scope.messageText ?? scope.message[scope.index];
@@ -97,7 +97,7 @@ function ontoLoader($timeout) {
         },
         template: '<div class="ot-loader-new-content" guide-selector="loader-spinner">'
         + '<img width="{{size}}" height="{{size}}" src="js/angular/templates/loader/ot-loader.svg?v=[AIV]{version}[/AIV]"/>'
-        + '<div style="{{fontSize}}">{{currentMessage}}<div>'
+        + '<div style="{{fontSize}}">{{currentMessage}}</div>'
         + '</div>'
     };
 }

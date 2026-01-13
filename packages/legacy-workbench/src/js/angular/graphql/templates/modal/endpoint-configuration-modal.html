@@ -9,8 +9,8 @@
     </span>
 </div>
 <div class="modal-body graphql-endpoint-configuration-modal-body">
-    <div class="graphql-endpoint-configuration-loader" onto-loader hide-message="true"
-         size="100" ng-show="loadingEndpointConfigurationSettings"></div>
+    <div class="graphql-endpoint-configuration-loader" onto-loader size="100"
+         ng-show="loadingEndpointConfigurationSettings"></div>
 
     <dynamic-form ng-if="!loadingEndpointConfigurationSettings" form-model="endpointConfigurationSettings.settings"
                   on-validity-change="handleValidityChange(valid)" show-all-fields="showAdvancedSettings"
