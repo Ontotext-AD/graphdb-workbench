@@ -38,7 +38,7 @@
                      popover-trigger="mouseenter"
                      popover-placement="top">
                     <button type="button" class="btn btn-primary batch-import-btn" ng-click="importAll(false)">
-                        <span class="ri-download-2-line"></span>
+                        <span class="icon-import"></span>
                         {{'common.import' | translate}}
                     </button>
                     <button type="button" class="btn btn-primary dropdown-toggle-split dropdown-toggle"
@@ -210,7 +210,7 @@
                             ng-disabled="hasSelection"
                             guide-selector="import-file-{{resource.name}}"
                             gdb-tooltip="{{'import.import.btn' | translate}}">
-                        <span class="ri-download-2-line"></span>
+                        <span class="icon-import"></span>
                     </button>
                     <button class="btn btn-sm"
                             ng-click="stopImport(resource)"

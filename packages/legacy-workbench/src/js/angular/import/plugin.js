@@ -20,7 +20,7 @@ PluginRegistry.add('main.menu', {
             href: 'import',
             order: 0,
             role: 'IS_AUTHENTICATED_FULLY',
-            icon: 'ri-download-2-line',
+            icon: 'icon-import',
             guideSelector: 'menu-import',
             children: []
         }
