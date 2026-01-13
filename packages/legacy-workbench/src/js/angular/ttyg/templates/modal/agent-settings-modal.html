@@ -273,7 +273,7 @@
                             </div>
                             <!-- loader while fetching connector data -->
                             <div class="form-group" ng-if="extractionMethodLoaderFlags[extractionMethod.method]">
-                                <span onto-loader size="16" auto-font-size="false" message-text="{{'common.loading' | translate}}" ></span>
+                                <span onto-loader size="16" auto-font-size="false" message-text="{{'common.loading' | translate}}"></span>
                             </div>
                             <!-- empty state shown only after loading finishes -->
                             <div ng-if="agentFormModel.repositoryId && !extractionMethodLoaderFlags[extractionMethod.method] && !hasConnectorData()"
@@ -402,7 +402,7 @@
                                            uib-popover="{{'ttyg.agent.create_agent_modal.form.connector_id.tooltip' | translate}}"
                                            popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.connector_id.label'
                                         | translate}}</label>
-                                    <span ng-if="extractionMethodLoaderFlags.retrieval_search" onto-loader auto-font-size="false" message-text="{{'common.loading' | translate}}"  size="16"></span>
+                                    <span ng-if="extractionMethodLoaderFlags.retrieval_search" onto-loader auto-font-size="false" message-text="{{'common.loading' | translate}}" size="16"></span>
                                     <select class="form-control" id="retrievalConnectorInstance"
                                             name="retrievalConnectorInstance"
                                             ng-required="extractionMethod.selected"
