@@ -21,3 +21,4 @@
 - [ ] MR name
 - [ ] MR Description
 - [ ] Tests
+- [ ] Browser support verified
