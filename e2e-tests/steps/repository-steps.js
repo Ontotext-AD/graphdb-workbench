@@ -1,6 +1,7 @@
 import {REPOSITORIES_URL} from "../support/repository-commands";
+import {BaseSteps} from "./base-steps.js";
 
-export class RepositorySteps {
+export class RepositorySteps extends BaseSteps {
 
     static visit() {
         cy.intercept('/rest/locations').as('getLocations');
@@ -25,15 +26,15 @@ export class RepositorySteps {
     }
 
     static getRepositoriesDropdown() {
-        return cy.getByTestId('onto-repository-selector')
-            .scrollIntoView()
-            .should('be.visible');
+        cy.getByTestId('onto-repository-selector')
+            .scrollIntoView();
+        return cy.getByTestId('onto-repository-selector').should('be.visible');
     }
 
     static getRepositorySelection() {
-        return cy.getByTestId('repository-selection')
-            .scrollIntoView()
-            .should('be.visible');
+        cy.getByTestId('repository-selection')
+            .scrollIntoView();
+        return cy.getByTestId('repository-selection').should('be.visible');
     }
 
     static verifyRepositoryIsSelected(repositoryId) {
@@ -56,6 +57,14 @@ export class RepositorySteps {
             .contains(repository)
             // Return the whole repo row
             .closest('.repository');
+    }
+
+    static getConnectRepositoryButtons(repoId) {
+        return cy.getByTestId(`repository-${repoId}`).find('td').first();
+    }
+
+    static clickConnectRepositoryButton(repositoryId) {
+        this.getConnectRepositoryButtons(repositoryId).click();
     }
 
     static waitLoader() {
@@ -126,6 +135,10 @@ export class RepositorySteps {
        return RepositorySteps.getRepositoryTypeButton('gdb');
     }
 
+    static clickGDBRepositoryTypeButton() {
+        RepositorySteps.getGDBRepositoryTypeButton().click();
+    }
+
     static getRepositoryCreateForm() {
         return cy.get('#newRepoForm').should('be.visible');
     }
@@ -164,6 +177,17 @@ export class RepositorySteps {
 
     static editRepositoryId() {
         this.getRepositoryIdEditElement().click();
+    }
+
+    static getGDBIdInput() {
+        return cy.getByTestId('gdb-repo-id-input');
+    }
+
+    static typeRepoId(id) {
+        return this.getGDBIdInput()
+            // https://github.com/cypress-io/cypress/issues/18747
+            .type(id, {force: true})
+            .should('have.value', id);
     }
 
     static typeRepositoryTitle(title) {
@@ -207,13 +231,21 @@ export class RepositorySteps {
         RepositorySteps.waitLoader();
     }
 
-    static selectRepoFromDropdown(repositoryId) {
-        RepositorySteps.getRepositoriesDropdown().click();
-        RepositorySteps.getRepositoriesInDropdown()
+    static clickRepositoriesDropdown() {
+        this.getRepositoriesDropdown().click();
+    }
+
+    static selectRepositoryFromDropdown(repositoryId) {
+        this.getRepositoriesInDropdown()
             .should('be.visible')
             .contains(repositoryId)
             .first()
             .click();
+    }
+
+    static selectRepoFromDropdown(repositoryId) {
+        this.clickRepositoriesDropdown();
+        this.selectRepositoryFromDropdown(repositoryId);
     }
 
     static getSHACLRepositoryCheckbox() {

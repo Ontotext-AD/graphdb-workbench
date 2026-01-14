@@ -42,7 +42,7 @@
                                gdb-tooltip="{{'edit.repo.id.tooltip' | translate}}" tooltip-placement="right">
                                 <span class="ri-edit-line"></span>
                             </a>
-                            <input name="id" id="id" class="form-control" ng-disabled="!canEditRepoId && editRepoPage"
+                            <input name="id" id="id" data-test="gdb-repo-id-input" class="form-control" ng-disabled="!canEditRepoId && editRepoPage"
                                    placeholder="{{'required.field' | translate}}" type="text" ng-model="repositoryInfo.id"
                                    required ng-attr-autofocus="{{ autofocusId }}" guide-selector="graphDBRepositoryIdInput">
                             <div style="margin-top: 5px" ng-show="isInvalidRepoName" class="idError alert alert-danger">
