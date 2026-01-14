@@ -2,16 +2,30 @@
   display: block;
 }
 
-.header-component > * {
-  height: 100%;
-}
-
 .header-component {
   display: flex;
-  justify-content: flex-end;
-  align-items: stretch;
   gap: 0.25em;
-  margin-right: 2em;
+  padding: .3em 1em;
   font-size: 1.1em;
-  padding-bottom: .5rem;
+  background-color: var(--gw-topnav-background);
+
+  .left-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: auto;
+  }
+
+  .right-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .3em;
+  }
+
+  .big-logo {
+    width: 180px;
+    height: 50px;
+    cursor: pointer;
+  }
 }

@@ -12,6 +12,7 @@ import {
 import {bootstrapWorkbench} from './bootstrap/bootstrap';
 import {
   service,
+  ConfigurationContextService,
   EventService,
   NavigationEnd,
   NavigationStart,
@@ -133,12 +134,29 @@ function initSingleSpa() {
   });
 }
 
+function setupFavicon() {
+  const iconPath = service(ConfigurationContextService).getApplicationConfiguration().applicationFaviconPath;
+
+  const faviconLink = document.createElement('link');
+  faviconLink.rel = 'icon';
+  faviconLink.type = 'image/png';
+  faviconLink.href = iconPath;
+  document.head.appendChild(faviconLink);
+
+  // Set apple touch icon
+  const appleTouchLink = document.createElement('link');
+  appleTouchLink.rel = 'apple-touch-icon-precomposed';
+  appleTouchLink.href = iconPath;
+  document.head.appendChild(appleTouchLink);
+}
+
 async function start() {
   try {
     showSplashScreen(true);
     initSingleSpa();
     await bootstrapWorkbench();
     showSplashScreen(false);
+    setupFavicon();
   } catch (error) {
     console.error('Error during workbench bootstrap', error);
   }

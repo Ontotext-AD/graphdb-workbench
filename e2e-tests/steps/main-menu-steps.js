@@ -4,10 +4,6 @@ export class MainMenuSteps {
         return cy.get('onto-navbar');
     }
 
-    static openHomePage() {
-        MainMenuSteps.getMainMenu().find('.home-page').click();
-    }
-
     static getMenuButton(menuName) {
         return MainMenuSteps.getMainMenu().find('.menu-element').contains(menuName);
     }

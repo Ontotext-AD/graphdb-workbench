@@ -24,6 +24,20 @@
 <button id="disable-security" onclick="setSecurityConfig({enabled: false})">disable security</button>
 <button id="load-repositories" onclick="loadRepositories()">load repositories</button>
 <button id="set-marvel-repo" onclick="setMarvelRepo()">set Marvel repo</button>
-  <onto-header></onto-header>
+
+<div id="components-root"></div>
+
+<script>
+  window.addEventListener('DOMContentLoaded', async function () {
+    if (typeof initConfigurationContext === 'function') {
+      await Promise.resolve(initConfigurationContext());
+    }
+
+    const root = document.getElementById('components-root');
+    if (root) {
+      root.innerHTML = '<onto-header></onto-header>';
+    }
+  });
+</script>
 </body>
 </html>

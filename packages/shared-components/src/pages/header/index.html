@@ -37,7 +37,20 @@
                                                             setSecurityConfig({enabled: true, freeAccess:{enabled: true}, userLoggedIn: true});
                                                             login('john.smith', 'password')">activate free access and login
 </button>
-<onto-header></onto-header>
-<onto-tooltip></onto-tooltip>
+
+<div id="components-root"></div>
+
+<script>
+  window.addEventListener('DOMContentLoaded', async function () {
+    if (typeof initConfigurationContext === 'function') {
+      await Promise.resolve(initConfigurationContext());
+    }
+
+    const root = document.getElementById('components-root');
+    if (root) {
+      root.innerHTML = '<onto-header></onto-header><onto-tooltip></onto-tooltip>';
+    }
+  });
+</script>
 </body>
 </html>

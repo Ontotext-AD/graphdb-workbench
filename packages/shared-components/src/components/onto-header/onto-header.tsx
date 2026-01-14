@@ -8,6 +8,7 @@ import {
   RepositoryContextService,
   OperationStatusSummary,
   SecurityContextService,
+  ConfigurationContextService,
   AuthenticatedUser,
   SecurityConfig,
   FibonacciGenerator,
@@ -25,13 +26,17 @@ import {
   LanguageService,
   LanguageContextService,
   ObjectUtil,
-  getCurrentRoute, AuthenticationService, WindowService, AuthorizationService
+  getCurrentRoute, AuthenticationService, WindowService, AuthorizationService, navigateTo
 } from '@ontotext/workbench-api';
 import {TranslationService} from '../../services/translation.service';
 import {HtmlUtil} from '../../utils/html-util';
 import {DropdownItem} from '../../models/dropdown/dropdown-item';
 import {SelectorItemButton} from '../onto-repository-selector/selector-item';
 import {ResourceSearchConstants} from '../../models/resource-search/resource-search-constants';
+
+const labelKeys = {
+  LOGO_LINK: 'menu.logo.link.title'
+};
 
 /**
  * OntoHeader component for rendering the header of the application.
@@ -60,6 +65,7 @@ export class OntoHeader {
   private readonly authService = ServiceProvider.get(AuthenticationService);
   private readonly authorizationService = ServiceProvider.get(AuthorizationService);
   private readonly eventService = ServiceProvider.get(EventService);
+  private readonly configurationContextService = ServiceProvider.get(ConfigurationContextService);
 
   // ========================
   // State
@@ -94,6 +100,10 @@ export class OntoHeader {
   private readonly subscriptions: SubscriptionList = new SubscriptionList();
   private skipUpdateActiveOperationsTimes = 0;
 
+  private labels = {
+    [labelKeys.LOGO_LINK]: TranslationService.translate(labelKeys.LOGO_LINK)
+  };
+
   // ========================
   // Lifecycle methods
   // ========================
@@ -109,41 +119,52 @@ export class OntoHeader {
     this.subscribeToEvents();
     this.currentRoute = getCurrentRoute();
     this.startOperationPolling();
+    this.onTranslate(labelKeys.LOGO_LINK);
   }
 
   render() {
+    const logoPath = this.configurationContextService.getApplicationConfiguration().applicationLogoPath;
+
     return (
       <Host>
         <div class="header-component">
-          <onto-search-icon
-            class="rdf-search-button"
-            onClick={this.showViewResourceMessage}
-            data-test="onto-show-view-resource-message"
-            style={{display: this.shouldShowSearch && this.isHomePage ? 'block' : 'none'}}>
-          </onto-search-icon>
-          <onto-rdf-search
-            data-test="onto-open-rdf-search-button"
-            style={{display: this.shouldShowSearch && !this.isHomePage ? 'block' : 'none'}}>
-          </onto-rdf-search>
-          {this.activeOperations?.allRunningOperations.getItems().length
-            ? <onto-operations-notification activeOperations={this.activeOperations}>
-            </onto-operations-notification>
-            : ''
-          }
-          {this.license && !this.license?.valid ?
-            <onto-license-alert license={this.license}></onto-license-alert> : ''
-          }
-          <onto-repository-selector
-            currentRepository={this.currentRepository}
-            items={this.repositoryItems}
-            repositorySizeInfoFetcher={this.repositorySizeInfoFetcher}
-            totalTripletsFormatter={this.totalTripletsFormatter}
-            expansionRatioFormatter={this.expansionRatioFormatter}
-            canWriteRepo={this.canWriteRepo}>
-          </onto-repository-selector>
-          {this.showUserMenu && this.user ? <onto-user-menu user={this.user} securityConfig={this.securityConfig}></onto-user-menu> : ''}
-          {this.showLoginButton ? <onto-user-login></onto-user-login> : ''}
-          <onto-language-selector dropdown-alignment="right"></onto-language-selector>
+          <div class="left-section brand">
+            <a class="home-page" onClick={navigateTo('./')}>
+              <img src={logoPath} class="big-logo" alt={this.labels[labelKeys.LOGO_LINK]}/>
+            </a>
+          </div>
+          <div class="right-section">
+            <onto-search-icon
+              class="rdf-search-button"
+              onClick={this.showViewResourceMessage}
+              data-test="onto-show-view-resource-message"
+              style={{display: this.shouldShowSearch && this.isHomePage ? 'block' : 'none'}}>
+            </onto-search-icon>
+            <onto-rdf-search
+              data-test="onto-open-rdf-search-button"
+              style={{display: this.shouldShowSearch && !this.isHomePage ? 'block' : 'none'}}>
+            </onto-rdf-search>
+            {this.activeOperations?.allRunningOperations.getItems().length
+              ? <onto-operations-notification activeOperations={this.activeOperations}>
+              </onto-operations-notification>
+              : ''
+            }
+            {this.license && !this.license?.valid ?
+              <onto-license-alert license={this.license}></onto-license-alert> : ''
+            }
+            <onto-repository-selector
+              currentRepository={this.currentRepository}
+              items={this.repositoryItems}
+              repositorySizeInfoFetcher={this.repositorySizeInfoFetcher}
+              totalTripletsFormatter={this.totalTripletsFormatter}
+              expansionRatioFormatter={this.expansionRatioFormatter}
+              canWriteRepo={this.canWriteRepo}>
+            </onto-repository-selector>
+            <onto-language-selector dropdown-alignment="right"></onto-language-selector>
+            {this.showUserMenu && this.user ?
+              <onto-user-menu user={this.user} securityConfig={this.securityConfig}></onto-user-menu> : ''}
+            {this.showLoginButton ? <onto-user-login></onto-user-login> : ''}
+          </div>
         </div>
       </Host>
     );
@@ -245,6 +266,16 @@ export class OntoHeader {
         .onSelectedLanguageChanged((language) => {
           this.setupTotalRepositoryFormater(language);
           this.setupExpansionRatioFormater(language);
+        }));
+  }
+
+  private onTranslate(key: string): void {
+    this.subscriptions.add(
+      TranslationService.onTranslate(
+        key,
+        [],
+        (translation) => {
+          this.labels[key] = translation;
         }));
   }
 

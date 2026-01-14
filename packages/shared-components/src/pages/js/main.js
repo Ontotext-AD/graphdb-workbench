@@ -14,6 +14,10 @@ window.singleSpa = {
   }
 };
 
+const initConfigurationContext = (config = applicationConfiguration) => {
+  return testContext.initConfigurationContext(config);
+};
+
 // eslint-disable-next-line no-unused-vars
 const updateLicense = (license) => {
   testContext.updateLicense(license);
@@ -78,6 +82,16 @@ updateNamespaces = (rawNamespaces) => {
 
 window.PluginRegistry = {
   get: () => menuItems
+};
+
+const applicationConfiguration = {
+  'applicationLogoPath': 'assets/graphdb-logo.svg',
+  'applicationFaviconPath': 'assets/favicon.png',
+  'pluginsManifestPath': 'wb-plugins/plugins-manifest.json',
+  'loggerConfig': {
+    'minLogLevel': 'DEBUG',
+    'loggers': ['console']
+  }
 };
 
 menuItems = [

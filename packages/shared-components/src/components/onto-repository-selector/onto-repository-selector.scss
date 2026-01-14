@@ -6,8 +6,9 @@
   .onto-dropdown {
     &.closed {
       .onto-dropdown-button {
-        background-color: var(--gw-button-secondary-background);
+        background-color: transparent;
         color: var(--gw-button-secondary-background);
+        border: 1px solid var(--gw-button-secondary-border-color);
 
         &:hover {
           background-color: var(--gw-button-secondary-hover-background);

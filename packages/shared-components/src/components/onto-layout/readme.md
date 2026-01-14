@@ -28,17 +28,17 @@ graph TD;
   onto-header --> onto-operations-notification
   onto-header --> onto-license-alert
   onto-header --> onto-repository-selector
+  onto-header --> onto-language-selector
   onto-header --> onto-user-menu
   onto-header --> onto-user-login
-  onto-header --> onto-language-selector
   onto-rdf-search --> onto-search-resource-input
   onto-rdf-search --> onto-search-icon
   onto-operations-notification --> translate-label
   onto-license-alert --> translate-label
   onto-repository-selector --> onto-dropdown
+  onto-language-selector --> onto-dropdown
   onto-user-menu --> translate-label
   onto-user-login --> translate-label
-  onto-language-selector --> onto-dropdown
   onto-navbar --> translate-label
   onto-footer --> translate-label
   onto-footer --> onto-cookie-consent

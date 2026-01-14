@@ -10,6 +10,7 @@ import {
   RepositoryContextService,
   RepositoryService,
   SecurityContextService,
+  ConfigurationContextService,
   SecurityConfig,
   ServiceProvider,
   ToastMessage,
@@ -23,7 +24,7 @@ import {
   notify,
   Notification, service, OntoToastrService,
   AuthenticationService, AuthenticationStorageService, User, AuthStrategyResolver,
-  AuthorizationService, AuthenticatedUserResponse, mapAuthenticatedUserResponseToModel,
+  AuthorizationService, AuthenticatedUserResponse, mapAuthenticatedUserResponseToModel, Configuration,
 } from '@ontotext/workbench-api';
 import en from '../../assets/i18n/en.json';
 import fr from '../../assets/i18n/fr.json';
@@ -41,6 +42,20 @@ export class OntoTestContext {
   constructor() {
     this.onLanguageChanged();
     this.setSecurityConfig({enabled: false, freeAccess: {enabled: false}} as unknown as SecurityConfig);
+  }
+
+  /**
+   * Initializes the application configuration context.
+   *
+   * This method uses the ConfigurationContextService to update the application
+   * configuration and returns a resolved Promise once the operation is complete.
+   * @param configuration - The new Configuration object to be set.
+   * @returns A Promise that resolves when the configuration update is complete.
+   */
+  @Method()
+  initConfigurationContext(configuration: Configuration): Promise<void> {
+    ServiceProvider.get(ConfigurationContextService).updateApplicationConfiguration(configuration);
+    return Promise.resolve();
   }
 
   /**

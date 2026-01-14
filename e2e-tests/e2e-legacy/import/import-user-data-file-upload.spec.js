@@ -1,7 +1,7 @@
 import {ImportSettingsDialogSteps} from "../../steps/import/import-settings-dialog-steps";
-import {MainMenuSteps} from "../../steps/main-menu-steps";
 import {ImportUserDataSteps} from "../../steps/import/import-user-data-steps";
 import {FileOverwriteDialogSteps} from "../../steps/import/file-overwrite-dialog-steps";
+import {HeaderSteps} from '../../steps/header-steps.js';
 
 const bnodes = `_:node0 <http://purl.org/dc/elements/1.1/title> "A new book" ;
                     \t<http://purl.org/dc/elements/1.1/creator> "A.N.Other" .`;
@@ -148,7 +148,7 @@ describe('Import user data: File upload', () => {
         ImportUserDataSteps.getResources().should('have.length', 1);
         ImportUserDataSteps.checkUserDataUploadedResource(0, 'bnodes.ttl');
         // And the file should really be there
-        MainMenuSteps.openHomePage();
+        HeaderSteps.openHomePage();
         ImportUserDataSteps.visit();
         ImportUserDataSteps.getResources().should('have.length', 1);
     });
@@ -168,7 +168,7 @@ describe('Import user data: File upload', () => {
         ImportUserDataSteps.checkImportedResource(0, 'jsonld.jsonld');
         ImportUserDataSteps.checkImportedResource(1, 'bnodes.ttl');
         // And the files should really be there
-        MainMenuSteps.openHomePage();
+        HeaderSteps.openHomePage();
         ImportUserDataSteps.visit();
         ImportUserDataSteps.getResources().should('have.length', 2);
     });

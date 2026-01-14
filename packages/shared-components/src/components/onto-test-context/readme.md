@@ -80,6 +80,25 @@ Type: `Promise<void>`
 
 
 
+### `initConfigurationContext(configuration: Configuration) => Promise<void>`
+
+Initializes the application configuration context.
+
+This method uses the ConfigurationContextService to update the application
+configuration and returns a resolved Promise once the operation is complete.
+
+#### Parameters
+
+| Name            | Type            | Description                               |
+| --------------- | --------------- | ----------------------------------------- |
+| `configuration` | `Configuration` | - The new Configuration object to be set. |
+
+#### Returns
+
+Type: `Promise<void>`
+
+A Promise that resolves when the configuration update is complete.
+
 ### `loadRepositories() => Promise<void>`
 
 Loads the repositories in the application.

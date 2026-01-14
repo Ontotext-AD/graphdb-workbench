@@ -3,21 +3,14 @@ import {TestUtil} from '../../utils/test/test-util';
 import {ResponseMock} from '../../http/test/response-mock';
 import {ServiceProvider} from '../../../providers';
 import {ConfigurationContextService} from '../../configuration/configuration-context.service';
-import {LoggerType} from '../../../models/logging/logger-type';
-import {LogLevel} from '../../../models/logging/log-level';
 import {PluginsManifestResponse} from '../response/plugins-manifest-response';
+import {createDefaultConfiguration} from '../../configuration/test/configuration-provider';
 
 describe('PluginsService', () => {
   let pluginsService: PluginsService;
 
   beforeEach(() => {
-    ServiceProvider.get(ConfigurationContextService).updateApplicationConfiguration({
-      pluginsManifestPath: 'plugins/plugins-manifest.json',
-      loggerConfig: {
-        loggers: [LoggerType.CONSOLE],
-        minLogLevel: LogLevel.DEBUG
-      }
-    });
+    ServiceProvider.get(ConfigurationContextService).updateApplicationConfiguration(createDefaultConfiguration());
     pluginsService = new PluginsService();
   });
 
