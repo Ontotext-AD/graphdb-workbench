@@ -8,7 +8,8 @@
 
 .main-container {
     margin-left: 15rem;
-    padding: 0 var(--main-content-rl-padding) 3rem var(--main-content-rl-padding);
+    /* Top padding is set because the header is now visually present and colored so the content must be padded a bit. */
+    padding: 2rem var(--main-content-rl-padding) 3rem var(--main-content-rl-padding);
     /*max-width: 1600px; Removed because of the collapse of the menu*/
     /*-moz-transition: margin-left 0.2s ease-in;  !* FF4+ *!*/
     /*-o-transition: margin-left 0.2s ease-in;  !* Opera 10.5+ *!*/

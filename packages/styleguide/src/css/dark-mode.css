@@ -148,6 +148,7 @@
   --gw-hover-color: var(--gw-neutral-800);
   --gw-hover-background: var(--gw-neutral-200);
   --gw-default-border-color: var(--gw-neutral-300);
+  --gw-topnav-background: var(--gw-primary-100);
   --gw-toggleswitch-handle-background: var(--gw-neutral-0);
   --gw-toggleswitch-handle-hover-background: var(--gw-neutral-0);
   --gw-toggleswitch-handle-checked-background: var(--gw-neutral-0);

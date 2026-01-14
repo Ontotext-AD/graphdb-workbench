@@ -1,6 +1,6 @@
 import {Service} from '../../providers/service/service';
 import {Configuration} from '../../models/configuration';
-import {ServiceProvider} from '../../providers';
+import {service} from '../../providers';
 import {ConfigurationRestService} from './configuration-rest.service';
 import {ConfigurationContextService} from './configuration-context.service';
 
@@ -8,11 +8,8 @@ import {ConfigurationContextService} from './configuration-context.service';
  * Service responsible for managing the application configuration.
  */
 export class ConfigurationService implements Service {
-  private readonly configurationRestService: ConfigurationRestService;
-
-  constructor() {
-    this.configurationRestService = ServiceProvider.get(ConfigurationRestService);
-  }
+  private readonly configurationRestService: ConfigurationRestService = service(ConfigurationRestService);
+  private readonly configurationContextService: ConfigurationContextService = service(ConfigurationContextService);
 
   /**
    * Retrieves the application configuration by fetching it from the server.
@@ -23,7 +20,7 @@ export class ConfigurationService implements Service {
   async getConfiguration(): Promise<Configuration | undefined> {
     const config = await this.configurationRestService.getConfiguration();
     if (config) {
-      ServiceProvider.get(ConfigurationContextService).updateApplicationConfiguration(config);
+      this.configurationContextService.updateApplicationConfiguration(config);
     }
     return config;
   }

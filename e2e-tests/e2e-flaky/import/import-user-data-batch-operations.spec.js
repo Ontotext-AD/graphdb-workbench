@@ -1,7 +1,7 @@
 import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
 import {ImportSettingsDialogSteps} from "../../steps/import/import-settings-dialog-steps";
-import {MainMenuSteps} from "../../steps/main-menu-steps";
 import {ImportUserDataSteps} from "../../steps/import/import-user-data-steps";
+import {HeaderSteps} from '../../steps/header-steps.js';
 
 const bnodes = `_:node0 <http://purl.org/dc/elements/1.1/title> "A new book" ;
                     \t<http://purl.org/dc/elements/1.1/creator> "A.N.Other" .`;
@@ -146,7 +146,7 @@ describe('Import user data: Batch operations', {retries: {runMode: 2}}, () => {
         ModalDialogSteps.clickOnConfirmButton();
         // Then the files should be deleted
         ImportUserDataSteps.getResources().should('have.length', 0);
-        MainMenuSteps.openHomePage();
+        HeaderSteps.openHomePage();
         ImportUserDataSteps.visit();
         ImportUserDataSteps.getResources().should('have.length', 0);
     });

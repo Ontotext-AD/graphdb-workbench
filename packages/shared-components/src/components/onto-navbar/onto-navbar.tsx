@@ -16,8 +16,7 @@ import {NavbarItemModel, NavbarModel} from './navbar-model';
 import {TranslationService} from '../../services/translation.service';
 import {
   EventName,
-  EventService, getCurrentRoute, isHomePage,
-  navigateTo, ProductInfo, ProductInfoContextService,
+  EventService, getCurrentRoute, isHomePage, ProductInfo, ProductInfoContextService,
   navigate,
   ServiceProvider,
   SubscriptionList, openInNewTab,
@@ -27,7 +26,6 @@ import {
 const labelKeys = {
   EXPAND: 'menu.buttons.expand',
   COLLAPSE: 'menu.buttons.collapse',
-  LOGO_LINK: 'menu.logo.link.title'
 };
 
 @Component({
@@ -45,7 +43,6 @@ export class OntoNavbar {
   private labels = {
     [labelKeys.EXPAND]: TranslationService.translate(labelKeys.EXPAND),
     [labelKeys.COLLAPSE]:TranslationService.translate(labelKeys.COLLAPSE),
-    [labelKeys.LOGO_LINK]: TranslationService.translate(labelKeys.LOGO_LINK)
   };
 
   private productInfo: ProductInfo;
@@ -333,7 +330,6 @@ export class OntoNavbar {
     // subscribe to language change events for each label
     this.onTranslate(labelKeys.EXPAND);
     this.onTranslate(labelKeys.COLLAPSE);
-    this.onTranslate(labelKeys.LOGO_LINK);
 
     window.addEventListener('resize', this.resizeHandler);
   }
@@ -353,27 +349,15 @@ export class OntoNavbar {
     if (!this.menuModel) {
       return;
     }
-    const logoImg1 = 'assets/graphdb-logo.svg#Layer_1';
-    const logoImg2 = 'assets/graphdb-logo-sq.svg#Layer_1';
     return (
       <Host>
         <ul class="navbar-component">
-          <li class="brand">
+          <li class="navbar-toggle">
             <span class="toggle-menu" title={
               this.isCollapsed ? this.labels[labelKeys.EXPAND] : this.labels[labelKeys.COLLAPSE]
             } onClick={this.toggleNavbarHandler()}>
               <em class={this.isCollapsed ? 'ri-arrow-right-s-line' : 'ri-arrow-left-s-line'}></em>
             </span>
-            <a class="menu-element-root home-page" onClick={navigateTo('./')}>
-              <svg class="big-logo">
-                <desc>{this.labels[labelKeys.LOGO_LINK]}</desc>
-                <use href={logoImg1}></use>
-              </svg>
-              <svg class="small-logo">
-                <desc>{this.labels[labelKeys.LOGO_LINK]}</desc>
-                <use href={logoImg2}></use>
-              </svg>
-            </a>
           </li>
           {this.menuModel.items.map((item) => (
             <li key={item.labelKey} class={{'menu-element': true, 'open': item.open}}

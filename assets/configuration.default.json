@@ -1,4 +1,6 @@
 {
+  "applicationLogoPath": "assets/graphdb-logo.svg",
+  "applicationFaviconPath": "assets/favicon.png",
   "pluginsManifestPath": "wb-plugins/plugins-manifest.json",
   "loggerConfig": {
     "minLogLevel": "DEBUG",

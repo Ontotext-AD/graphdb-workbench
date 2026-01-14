@@ -30,6 +30,20 @@
     <button id="enable-security-user-logged-in" onclick="setSecurity(true, true)">enable security user logged in</button>
     <button id="disable-security" onclick="setSecurity(false, false)">disable security</button>
     <button id="reset-auth-user" onclick="setAuthUser(undefined)">reset auth user</button>
-    <onto-layout id="onto-layout"></onto-layout>
+
+    <div id="components-root"></div>
+
+    <script>
+      window.addEventListener('DOMContentLoaded', async function () {
+        if (typeof initConfigurationContext === 'function') {
+          await Promise.resolve(initConfigurationContext());
+        }
+
+        const root = document.getElementById('components-root');
+        if (root) {
+          root.innerHTML = '<onto-layout id="onto-layout"></onto-layout>';
+        }
+      });
+    </script>
 </body>
 </html>

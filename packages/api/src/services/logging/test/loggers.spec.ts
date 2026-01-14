@@ -1,8 +1,10 @@
 import {Loggers} from '../loggers';
 import {ServiceProvider} from '../../../providers';
 import {ConfigurationContextService} from '../../configuration/configuration-context.service';
-import {LoggerType} from '../../../models/logging/logger-type';
-import {LogLevel} from '../../../models/logging/log-level';
+import {
+  createConfigurationWithInfoMinLogLevel,
+  createDefaultConfiguration
+} from '../../configuration/test/configuration-provider';
 
 describe('Logging System Integration', () => {
   let consoleSpy: {
@@ -14,13 +16,7 @@ describe('Logging System Integration', () => {
 
   beforeEach(() => {
     Loggers['loggerInstances'].clear();
-    ServiceProvider.get(ConfigurationContextService).updateApplicationConfiguration({
-      pluginsManifestPath: 'plugins/plugins-manifest.json',
-      loggerConfig: {
-        loggers: [LoggerType.CONSOLE],
-        minLogLevel: LogLevel.DEBUG
-      }
-    });
+    ServiceProvider.get(ConfigurationContextService).updateApplicationConfiguration(createDefaultConfiguration());
     consoleSpy = {
       debug: jest.spyOn(console, 'debug').mockImplementation(),
       info: jest.spyOn(console, 'info').mockImplementation(),
@@ -45,13 +41,7 @@ describe('Logging System Integration', () => {
   });
 
   test('should hide debug logs in prod mode', () => {
-    ServiceProvider.get(ConfigurationContextService).updateApplicationConfiguration({
-      pluginsManifestPath: 'plugins/plugins-manifest.json',
-      loggerConfig: {
-        loggers: [LoggerType.CONSOLE],
-        minLogLevel: LogLevel.INFO
-      }
-    });
+    ServiceProvider.get(ConfigurationContextService).updateApplicationConfiguration(createConfigurationWithInfoMinLogLevel());
 
     const logger = Loggers.getLoggerInstance('root');
 
@@ -72,13 +62,7 @@ describe('Logging System Integration', () => {
   });
 
   test('should hide debug logs in production mode', () => {
-    ServiceProvider.get(ConfigurationContextService).updateApplicationConfiguration({
-      pluginsManifestPath: 'plugins/plugins-manifest.json',
-      loggerConfig: {
-        loggers: [LoggerType.CONSOLE],
-        minLogLevel: LogLevel.INFO
-      }
-    });
+    ServiceProvider.get(ConfigurationContextService).updateApplicationConfiguration(createConfigurationWithInfoMinLogLevel());
     Loggers.getLoggerInstance('api').debug('Production debug message');
     expect(consoleSpy.debug).not.toHaveBeenCalled();
   });

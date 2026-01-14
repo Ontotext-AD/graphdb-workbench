@@ -14,4 +14,14 @@ export interface Configuration {
    * Logging configuration
    */
   loggerConfig: LoggerConfig
+
+  /**
+   * The path to the application logo image.
+   */
+  applicationLogoPath: string;
+
+  /**
+   * The path to the application favicon image.
+   */
+  applicationFaviconPath: string;
 }

@@ -1,6 +1,5 @@
 import {ConfigurationContextService} from '../configuration-context.service';
-import {LoggerType} from '../../../models/logging/logger-type';
-import {LogLevel} from '../../../models/logging/log-level';
+import {createDefaultConfiguration} from './configuration-provider';
 
 describe('ConfigurationContextService', () => {
   let configurationContextService: ConfigurationContextService;
@@ -10,13 +9,7 @@ describe('ConfigurationContextService', () => {
   });
 
   test('Should update the application configuration in the context.', () => {
-    const newConfiguration = {
-      pluginsManifestPath: 'plugins/plugins-manifest.json',
-      loggerConfig: {
-        loggers: [LoggerType.CONSOLE],
-        minLogLevel: LogLevel.DEBUG
-      }
-    };
+    const newConfiguration = createDefaultConfiguration();
 
     // When I update the application configuration,
     configurationContextService.updateApplicationConfiguration(newConfiguration);

@@ -5,7 +5,10 @@
 
 .wb-layout {
   display: grid;
-  grid-template: "nav header" auto "nav main" 1fr "nav footer" auto / 15rem minmax(200px, 1fr);
+  grid-template:
+    "header header" auto
+    "nav main" 1fr
+    "nav footer" auto / 15rem minmax(200px, 1fr);
   min-height: 100vh;
   margin: 0;
 

@@ -13,7 +13,8 @@
   -o-transition: width 0.2s ease-in; /* Opera 10.5+ */
   -webkit-transition: width 0.2s ease-in; /* Saf3.2+, Chrome */
   transition: width 0.2s ease-in;
-  height: 100%;
+  /* Adjust height to leave space for header */
+  height: calc(100% - 60px);
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -211,34 +212,6 @@ main menu height*/
   display: none;
 }
 
-.navbar-component.collapsed .brand a {
-  padding: 0.4rem;
-}
-
-.navbar-component.collapsed .small-logo, .navbar-component .big-logo {
-  display: block;
-}
-
-.navbar-component .small-logo, .navbar-component.collapsed .big-logo {
-  display: none;
-}
-
-/* ---------------- Logo ---------------- */
-.navbar-component .brand {
-  // TODO: remove this when header is reimplemented
-  background-color: #002b4f;
-}
-
-.small-logo {
-  width: 50px;
-  height: 50px;
-}
-
-.big-logo {
-  width: 180px;
-  height: 50px;
-}
-
 /* ---------------- Sidenav Toggle ---------------- */
 .toggle-menu {
   display: block;
@@ -248,7 +221,7 @@ main menu height*/
   font-size: 0.8em;
   line-height: 1.5;
   padding: 0 0.3em;
-  z-index: 10;
+  z-index: 101;
   cursor: pointer;
   background-color: var(--gw-sidenav-togglebutton-background);
   color: var(--gw-sidenav-togglebutton-color);
