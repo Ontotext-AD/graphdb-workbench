@@ -406,6 +406,11 @@ ul.style-arrow li:before {
     background-color: var(--gw-dialog-background);
     -webkit-box-shadow: var(--gw-dialog-shadow-1-offset-x) var(--gw-dialog-shadow-1-offset-y) var(--gw-dialog-shadow-1-blur) var(--gw-dialog-shadow-1-spread) var(--gw-dialog-shadow-1-color);
     box-shadow: var(--gw-dialog-shadow-1-offset-x) var(--gw-dialog-shadow-1-offset-y) var(--gw-dialog-shadow-1-blur) var(--gw-dialog-shadow-1-spread) var(--gw-dialog-shadow-1-color);
+
+    & pre {
+        color: var(--gw-dialog-color);
+        background-color: var(--gw-dialog-background);
+    }
 }
 
 .modal-content .modal-header {
