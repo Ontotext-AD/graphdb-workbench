@@ -3,10 +3,12 @@ import {ContextService} from '../context';
 
 type NavigationContextFields = {
   readonly PREVIOUS_ROUTE: string;
+  readonly RETURN_URL: string;
 }
 
 type NavigationContextFieldParams = {
   readonly PREVIOUS_ROUTE: string;
+  readonly RETURN_URL: string;
 }
 
 /**
@@ -15,6 +17,7 @@ type NavigationContextFieldParams = {
 export class NavigationContextService extends ContextService<NavigationContextFields> implements DeriveContextServiceContract<NavigationContextFields, NavigationContextFieldParams> {
   /** Key used to store the previous route in the context */
   readonly PREVIOUS_ROUTE = 'previousRoute';
+  readonly RETURN_URL = 'returnUrl';
 
   /**
    * Updates the previous route in the navigation context.
@@ -40,5 +43,30 @@ export class NavigationContextService extends ContextService<NavigationContextFi
       previousRoute = previousRoute.slice(0, -1);
     }
     return previousRoute;
+  }
+
+  /**
+   * Updates the return URL in the navigation context.
+   *
+   * @param value - The return URL to store
+   */
+  updateReturnUrl(value: string): void {
+    this.updateContextProperty(this.RETURN_URL, value);
+  }
+
+  /**
+   * Retrieves the return URL from the navigation context.
+   *
+   * @returns The return URL or undefined if not set
+   */
+  getReturnUrl(): string | undefined {
+    return this.getContextPropertyValue<string>(this.RETURN_URL);
+  }
+
+  /**
+   * Clears the return URL from the navigation context.
+   */
+  clearReturnUrl() {
+    this.updateContextProperty(this.RETURN_URL, undefined);
   }
 }

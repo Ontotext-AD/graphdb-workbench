@@ -1,12 +1,11 @@
-import {UserAndAccessSteps} from "../../../steps/setup/user-and-access-steps";
-import {RepositoriesStubs} from "../../../stubs/repositories/repositories-stubs";
-import {RepositorySelectorSteps} from "../../../steps/repository-selector-steps";
-import {ModalDialogSteps} from "../../../steps/modal-dialog-steps";
-import {ToasterSteps} from "../../../steps/toaster-steps";
-import HomeSteps from "../../../steps/home-steps";
-import {LoginSteps} from "../../../steps/login-steps";
-import {MainMenuSteps} from "../../../steps/main-menu-steps";
-
+import {UserAndAccessSteps} from '../../../steps/setup/user-and-access-steps';
+import {RepositoriesStubs} from '../../../stubs/repositories/repositories-stubs';
+import {RepositorySelectorSteps} from '../../../steps/repository-selector-steps';
+import {ModalDialogSteps} from '../../../steps/modal-dialog-steps';
+import {ToasterSteps} from '../../../steps/toaster-steps';
+import HomeSteps from '../../../steps/home-steps';
+import {LoginSteps} from '../../../steps/login-steps';
+import {MainMenuSteps} from '../../../steps/main-menu-steps';
 
 describe('User and Access', () => {
 
@@ -150,6 +149,18 @@ describe('User and Access', () => {
             // Then I should see a success message
             ToasterSteps.getToast().should('exist');
             ToasterSteps.getToasterMessage().should('contain', 'Free access has been disabled.');
+        });
+
+        it('should redirect to previous page after logout and then login', () => {
+            UserAndAccessSteps.toggleSecurity();
+            LoginSteps.loginWithUser("admin", DEFAULT_ADMIN_PASSWORD);
+            MainMenuSteps.clickOnSparqlMenu();
+            cy.url().should('include', '/sparql');
+
+            LoginSteps.logout();
+            cy.url().should('include', '/login');
+            LoginSteps.loginWithUser("admin", DEFAULT_ADMIN_PASSWORD);
+            cy.url().should('include', '/sparql');
         });
     })
     // eslint-disable-next-line no-undef

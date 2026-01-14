@@ -2,7 +2,7 @@ import {Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {TranslocoPipe, TranslocoService} from '@jsverse/transloco';
-import {AuthenticationService, OpenidStorageService, OntoToastrService, SecurityService, service, UrlPathParams} from '@ontotext/workbench-api';
+import {AuthenticationService, OpenidStorageService, OntoToastrService, SecurityService, service, UrlPathParams, NavigationContextService} from '@ontotext/workbench-api';
 import {CommonModule} from '@angular/common';
 
 @Component({
@@ -22,6 +22,7 @@ export class LoginPageComponent implements OnInit {
   private readonly securityService = service(SecurityService);
   private readonly authenticationService = service(AuthenticationService);
   private readonly openidStorageService = service(OpenidStorageService);
+  private readonly navigationContextService = service(NavigationContextService);
 
   private readonly fb = inject(FormBuilder);
   private readonly route = inject(ActivatedRoute);
@@ -46,8 +47,8 @@ export class LoginPageComponent implements OnInit {
 
   private handleQueryParams(): void {
     const params = this.route.snapshot.queryParamMap;
-    const rawReturnUrl = params.get(UrlPathParams.RETURN_URL) ?? '/';
-    this.returnUrl = decodeURIComponent(rawReturnUrl);
+    const rawReturnUrl = params.get(UrlPathParams.RETURN_URL);
+    this.returnUrl = rawReturnUrl ? decodeURIComponent(rawReturnUrl) : this.navigationContextService.getReturnUrl() ?? '/';
 
     if (params.has(UrlPathParams.NO_ACCESS)) {
       this.toastrService.error(
@@ -77,6 +78,7 @@ export class LoginPageComponent implements OnInit {
     this.authenticationService.login(username, password)
       .then(() => {
         this.router.navigateByUrl(this.returnUrl);
+        this.navigationContextService.clearReturnUrl();
       })
       .catch((err) => {
         if (err.status === 401) {

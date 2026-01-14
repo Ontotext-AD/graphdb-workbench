@@ -6,11 +6,12 @@ import {Logout} from '../../models/events';
 import {SecurityContextService} from './security-context.service';
 import {AuthStrategyResolver} from './auth-strategy-resolver';
 import {Login} from '../../models/events/auth/login';
-import {navigate} from '../utils';
+import {getPathName, isLoginPage, navigate} from '../utils';
 import {AuthorizationService} from './authorization.service';
 import {AuthenticationStrategyNotSet} from './errors/authentication-strategy-not-set';
 import {AuthStrategy} from '../../models/security/authentication';
 import {AuthenticationStorageService} from './authentication-storage.service';
+import {NavigationContextService} from '../navigation';
 
 /**
  * Service responsible for handling authentication operations and managing auth strategies.
@@ -24,6 +25,7 @@ export class AuthenticationService implements Service {
   private readonly authorizationService = service(AuthorizationService);
   private readonly securityContextService = service(SecurityContextService);
   private readonly authenticationStorageService = service(AuthenticationStorageService);
+  private readonly navigationContextService = service(NavigationContextService);
 
   /**
    * Checks if an authentication strategy has been configured.
@@ -67,8 +69,12 @@ export class AuthenticationService implements Service {
   logout(): Promise<void> {
     const authStrategy = this.getAuthenticationStrategy();
     this.authenticationStorageService.setAuthenticated(false);
+    const returnUrl = getPathName();
     return authStrategy.logout()
       .then(() => {
+        if (!isLoginPage()) {
+          this.navigationContextService.updateReturnUrl(returnUrl);
+        }
         this.securityContextService.updateIsLoggedIn(false);
         if (this.authorizationService.hasFreeAccess()) {
           this.authorizationService.initializeFreeAccess();
