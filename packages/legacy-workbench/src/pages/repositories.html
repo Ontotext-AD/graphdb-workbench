@@ -68,8 +68,9 @@
                                 <tr class="repository"
                                     ng-repeat="repository in getRepositoriesFromLocation(location.uri) | orderBy: ['type === \'system\'', 'location', 'id'] track by repository.hash"
                                     ng-class="{'table-info text-secondary': isRepoActive(repository)}"
+                                    data-test="repository-{{repository.id}}"
                                     guide-selector="repository-{{repository.id}}">
-                                    <td class="select-repository-button-wrapper" guide-selector="select-repository-button-wrapper">
+                                    <td class="select-repository-button-wrapper" data-test="select-repository-button-wrapper" guide-selector="select-repository-button-wrapper">
                                         <span role="button" class="ri-link-unlink icon-lg text-secondary m-0"
                                               gdb-tooltip="{{'connect.repo' | translate}}" tooltip-placement="top"
                                               ng-click="setRepository(repository)"

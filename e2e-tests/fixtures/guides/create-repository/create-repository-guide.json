@@ -1,0 +1,27 @@
+[
+    {
+        "guideName": {
+            "en": "Create repository guide"
+        },
+        "options": {
+            "repositoryIdBase": "create-repo-test-id"
+        },
+        "steps": [
+            {
+                "guideBlockName": "create-repository",
+                "options": {
+                    "repositoryId": "${repositoryIdBase}"
+                }
+            },
+            {
+                "guideBlockName": "select-repository-dropdown"
+            },
+            {
+                "guideBlockName": "repositories-select-repository"
+            },
+            {
+                "guideBlockName": "guide-end"
+            }
+        ]
+    }
+]

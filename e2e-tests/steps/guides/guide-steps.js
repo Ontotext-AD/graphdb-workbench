@@ -14,7 +14,7 @@ export class GuideSteps extends BaseSteps {
     static runGuide(guideName) {
         cy.contains('td', guideName)
             .parent()
-            .within($tr => {
+            .within(() => {
                 cy.get('.btn').click();
             });
     }
@@ -29,6 +29,10 @@ export class GuideSteps extends BaseSteps {
 
     static assertPageNotInteractive() {
         cy.get('.shepherd-modal-is-visible');
+    }
+
+    static getModalOverlay() {
+        return cy.get('.shepherd-modal-overlay-container');
     }
 
     static assertWelcomePage(guideName) {

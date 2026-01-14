@@ -148,6 +148,10 @@ export class MainMenuSteps {
 
     static clickOnRepositories() {
         this.clickOnMenuSetup();
+        this.clickOnRepositoriesSubmenu();
+    }
+
+    static clickOnRepositoriesSubmenu() {
         this.getSubMenuButton('sub-menu-repositories').click();
     }
 
