@@ -292,7 +292,6 @@
   --gw-button-primary-hover-color: var(--gw-primary-contrast-color);
   --gw-button-primary-border-color: var(--gw-border-color-primary);
   --gw-button-primary-color: var(--gw-primary-contrast-color);
-  --gw-button-secondary-link-color: var(--gw-primary-contrast-color);
   --gw-panel-color: var(--gw-default-color);
   --gw-panel-header-color: var(--gw-heading-default-color);
   --gw-autocomplete-background: var(--gw-form-field-background);
