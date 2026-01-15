@@ -126,11 +126,6 @@
     z-index: 10;
 }
 
-g > foreignObject {
-    align-content: center;
-    overflow: visible;
-}
-
 .truncated-label {
     display: -webkit-box;
     -webkit-box-orient: vertical;
@@ -140,12 +135,10 @@ g > foreignObject {
 
 .node-label-body {
     font-weight: 300;
-}
-
-.node-label-body div {
     word-break: break-all;
-    margin: auto;
     text-align: center;
+    height: 100%;
+    align-content: center;
 }
 
 .node-wrapper .pinned {
