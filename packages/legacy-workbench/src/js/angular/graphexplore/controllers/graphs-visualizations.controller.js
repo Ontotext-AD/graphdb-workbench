@@ -492,10 +492,10 @@ function GraphsVisualizationsCtrl(
             // goes crazy and resizes/messes up other unrelated elements. div seems to work too.
             .append("xhtml:div")
             .attr("class", "node-label-body")
+            .classed("truncated-label", $scope.saveSettings.truncateNodeLabels)
             .style("font-size", function(d) {
                 return d.fontSize + 'px';
             })
-            .append('xhtml:div')
             .html(function(d) {
                 return HtmlUtil.getText(d.labels[0].label).replaceAll("\n", "<br>");
             });
@@ -1783,9 +1783,10 @@ function GraphsVisualizationsCtrl(
             .on("gdb-show-node-info", (event, d) => showNodeInfo(d))
             .call(drag);
 
+        const overflow = $scope.saveSettings.truncateNodeLabels ? 'hidden' : 'visible';
         const nodeLabels = container.selectAll(".node-wrapper").append("foreignObject")
             .style("pointer-events", "none")
-            .classed('truncated-label', $scope.saveSettings.truncateNodeLabels)
+            .style("overflow", overflow)
             .attr("width", function(d) {
                 return d.size * 2 * nodeLabelRectScaleX;
             });
