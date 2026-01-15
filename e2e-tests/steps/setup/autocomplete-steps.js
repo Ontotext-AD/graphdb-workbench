@@ -48,6 +48,10 @@ export class AutocompleteSteps extends BaseSteps {
         return this.getAutocompleteIndex().find('.autocomplete-switch');
     }
 
+    static enableToggleAutocomplete() {
+        this.getAutocompleteSwitch().click();
+    }
+
     static getAutocompleteStatus() {
         return this.getAutocompleteIndex().find('.autocomplete-status');
     }

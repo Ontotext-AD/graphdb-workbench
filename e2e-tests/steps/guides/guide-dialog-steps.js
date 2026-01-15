@@ -24,6 +24,10 @@ export class GuideDialogSteps {
         return GuideDialogSteps.getFooter().find('.shepherd-button').contains('Previous');
     }
 
+    static getCloseButton() {
+        return GuideDialogSteps.getFooter().find('.shepherd-button').contains('Close');
+    }
+
     static clickOnNextButton(forceVisible = false) {
         GuideDialogSteps.getNextButton().scrollIntoView().click({force: forceVisible});
     }
@@ -32,7 +36,19 @@ export class GuideDialogSteps {
         GuideDialogSteps.getPreviousButton().scrollIntoView().click({force: forceVisible});
     }
 
+    static clickOnCloseButton() {
+        GuideDialogSteps.getCloseButton().scrollIntoView().click();
+    }
+
     static assertDialogWithTitleIsVisible(text) {
         GuideDialogSteps.getHeader().contains(text);
+    }
+
+    static assertDialogWithContentIsVisible(text) {
+        GuideDialogSteps.getContent().contains(text);
+    }
+
+    static assertDialogIsClosed() {
+        GuideDialogSteps.getModalDialog().should('not.exist');
     }
 }
