@@ -45,7 +45,7 @@ export class GuideDialogSteps {
     }
 
     static assertDialogWithContentIsVisible(text) {
-        GuideDialogSteps.getContent().contains(text);
+        GuideDialogSteps.getContent().should('contain.text', text);
     }
 
     static assertDialogIsClosed() {

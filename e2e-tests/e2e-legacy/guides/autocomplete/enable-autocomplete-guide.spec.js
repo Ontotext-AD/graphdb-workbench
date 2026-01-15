@@ -4,11 +4,11 @@ import {MainMenuSteps} from '../../../steps/main-menu-steps.js';
 import {AutocompleteSteps} from '../../../steps/setup/autocomplete-steps.js';
 import {GuidesStubs} from '../../../stubs/guides/guides-stubs.js';
 
-describe('Enable autocomplete guide', () => {
+describe('Enable autocomplete guide steps', () => {
     let repositoryId;
 
     beforeEach(() => {
-        repositoryId = 'guides-' + Date.now();
+        repositoryId = 'enable-autocomplete-guide-' + Date.now();
         GuidesStubs.stubEnableAutocompleteGuide();
         cy.createRepository({id: repositoryId});
         cy.presetRepository(repositoryId);

@@ -3,9 +3,7 @@
         "guideName": {
             "en": "Create repository guide"
         },
-        "options": {
-            "repositoryIdBase": "create-repo-test-id"
-        },
+        "options": {},
         "steps": [
             {
                 "guideBlockName": "create-repository",
