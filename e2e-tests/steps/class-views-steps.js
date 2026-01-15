@@ -2,12 +2,13 @@
  * Reusable functions for interacting with graph dropdown on Class hierarchy and relationships pages.
  */
 import {ToasterSteps} from "./toaster-steps";
+import {BaseSteps} from './base-steps.js';
 
 export const GRAPH_FILE = 'graphdb-news-dataset.zip';
 export const ALL_GRAPHS = 'All graphs';
 export const NEWS_GRAPH = 'http://example.org/news';
 
-class ClassViewsSteps {
+class ClassViewsSteps extends BaseSteps {
     static visit() {
         cy.visit('/hierarchy');
         cy.window();
@@ -158,7 +159,7 @@ class ClassViewsSteps {
 
     static selectGraphFromDropDown(graph) {
         cy.get('#selectGraphDropdown .dropdown-item')
-            .each(($el, index, $list) => {
+            .each(($el) => {
                 if ($el.text().trim() === graph) {
                     cy.wrap($el).click();
                 }
@@ -200,6 +201,18 @@ class ClassViewsSteps {
 
     static getRDFClassHierarchy() {
         return this.getExploreResults().find('.rdf-class-hierarchy');
+    }
+
+    static getClassElement(className) {
+        return this.getByTestId(`class-${className}`)
+    }
+
+    static selectClassElement(className) {
+        this.getClassElement(className).click({force: true});
+    }
+
+    static clickInstanceCountLink() {
+        this.getByTestId('instances-count-link').click();
     }
 }
 

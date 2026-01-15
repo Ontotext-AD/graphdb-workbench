@@ -223,6 +223,9 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
                 .attr("class", function(d) {
                     return d.data.role;
                 })
+                .attr("data-test", function(d) {
+                    return "class-" + d.data.name;
+                })
                 .attr("guide-selector", function(d) {
                     return "class-" + d.data.name;
                 })

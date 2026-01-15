@@ -90,6 +90,10 @@ export class MainMenuSteps {
 
     static clickOnClassHierarchy() {
         this.clickOnExplore();
+        this.clickOnSubmenuClassHierarchy();
+    }
+
+    static clickOnSubmenuClassHierarchy() {
         this.getSubMenuButton('menu-class-hierarchy').click();
     }
 

@@ -1,0 +1,35 @@
+[
+    {
+        "guideName": {
+            "en": "Ontology Navigator with FIBO guide"
+        },
+        "steps": [
+            {
+                "guideBlockName": "class-hierarchy-instances",
+                "options": {
+                    "focusInstances": [{
+                        "instance": "https://swapi.co/resource/aleena/47",
+                        "message": "This is planet"
+                    }],
+                    "iri": "voc:Sentient",
+                    "followCountLink": true,
+                    "showExtraCommentSparql": "true"
+                }
+            },
+            {
+                "guideBlockName": "class-hierarchy",
+                "options": {
+                    "introExtraContent": "This is some extra content here",
+                    "zoomIris": [
+                        {
+                            "iri": "voc:Sentient",
+                            "postExtraContent": {
+                                "en": "Within <b>voc:Sentient</b> are subclasses like <b>voc:Human</b> (humanoids), <b>voc:Droid</b> (mechanical intelligences), <b>voc:Gungan</b> (the Gungan species), and <b>voc:Yodasspecies</b> (Yoda’s lineage), highlighting the diverse forms of sentient life."
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+]
