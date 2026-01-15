@@ -8,7 +8,7 @@ This resolves the problem described in more detail in the issue tracker: "https:
 
 /* Resets the default font-size for every tag in the yasgui */
 /* Omit the heading  tags */
-yasgui-component :not(h3,h4,sup) {
+yasgui-component :not(h3,h4,sup,.no-force-default-font) {
     font-size: 1rem !important;
 }
 
@@ -695,6 +695,17 @@ yasgui-component .yasr .dataTable .nonUri sup {
 
 yasgui-component .yasr #explainPlanQuery {
     font-family: var(--mono-font);
+    background-color:  var(--gw-panel-background);
+}
+
+yasgui-component .yasr .explain-plan-container {
+    background-color:  var(--gw-panel-background);
+    border: 1px solid var(--gw-dialog-border-color);
+}
+
+yasgui-component .yasr .yasr-header-replacement {
+    color: inherit;
+    font-size: 20px;
 }
 
 yasgui-component .yasr .loader-component {
@@ -824,6 +835,15 @@ yasgui-component .yasr .pivot-table-plugin .pvtFilterBox .pvtSearch {
     color: var(--gw-button-secondary-color) !important;
     background-color: var(--gw-button-secondary-background) !important;
     border-color: var(--gw-button-secondary-border-color) !important;
+}
+
+yasgui-component .yasr .explain-plan-copy-btn {
+    font-weight: 400;
+    color: var(--gw-button-secondary-color);
+    background-color: var(--gw-button-secondary-background);
+    border-color: var(--gw-button-secondary-border-color);
+    margin-right: 1px;
+    margin-top: 1px;
 }
 
 .hidden {
