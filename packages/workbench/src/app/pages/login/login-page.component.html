@@ -1,19 +1,24 @@
 <div class="login-form">
-  <div class="login-card">
-    <h1>{{ 'login.title' | transloco }}</h1>
+  <div class="login-card" [ngClass]="{'openid-login': isOpenIDEnabled()}">
+    <div class="application-logo">
+      <img [ngSrc]="logoPath" [width]="200" [height]="53" class="graphdb-logo" [alt]="'login.logo_alt' | transloco"/>
+    </div>
 
     @if (isGDBLoginEnabled()) {
+      <h2 class="login-title">{{ 'login.title' | transloco }}</h2>
+
       <form [formGroup]="loginForm" (ngSubmit)="login()" novalidate>
         @let hasWrongCredentials = loginForm.hasError('wrongCredentials');
 
         <div class="group" [ngClass]="{'has-error': hasWrongCredentials}">
+          <label for="username">{{ 'login.username' | transloco }}</label>
           <div class="input-wrapper">
             <span class="icon-wrapper">
-              <i class="ri-user-line ri-2x"></i>
+              <i class="ri-user-line"></i>
             </span>
-            <input
+            <input id="username"
               formControlName="username"
-              autocomplete
+              autocomplete="username"
               type="text"
               placeholder="{{ 'login.username_placeholder' | transloco }}"
               class="input-field"
@@ -23,13 +28,14 @@
         </div>
 
         <div class="group" [ngClass]="{'has-error': hasWrongCredentials}">
+          <label for="password">{{ 'login.password' | transloco }}</label>
           <div class="input-wrapper">
             <span class="icon-wrapper">
-              <i class="ri-lock-line ri-2x"></i>
+              <i class="ri-lock-line"></i>
             </span>
-            <input
+            <input id="password"
               formControlName="password"
-              autocomplete
+              autocomplete="current-password"
               type="password"
               placeholder="{{ 'login.password_placeholder' | transloco }}"
               class="input-field"
@@ -45,9 +51,11 @@
         </div>
       </form>
     } @else if (isOpenIDEnabled()) {
-      <button (click)="loginWithOpenID()" class="onto-btn onto-btn-primary onto-lg">
-        {{ 'login.sign_in_openid' | transloco }}
-      </button>
+      <div class="action">
+        <button (click)="loginWithOpenID()" class="onto-btn onto-btn-primary onto-lg">
+          {{ 'login.sign_in_openid' | transloco }}
+        </button>
+      </div>
     }
   </div>
 </div>

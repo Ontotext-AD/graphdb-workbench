@@ -2,8 +2,8 @@ import {Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {TranslocoPipe, TranslocoService} from '@jsverse/transloco';
-import {AuthenticationService, OpenidStorageService, OntoToastrService, SecurityService, service, UrlPathParams, NavigationContextService} from '@ontotext/workbench-api';
-import {CommonModule} from '@angular/common';
+import {AuthenticationService, OpenidStorageService, OntoToastrService, SecurityService, service, UrlPathParams, NavigationContextService, ConfigurationContextService} from '@ontotext/workbench-api';
+import {CommonModule, NgOptimizedImage} from '@angular/common';
 
 @Component({
   selector: 'app-login',
@@ -11,11 +11,13 @@ import {CommonModule} from '@angular/common';
   imports: [
     TranslocoPipe,
     ReactiveFormsModule,
-    CommonModule
+    CommonModule,
+    NgOptimizedImage
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './login-page.component.html',
-  styleUrl: './login-page.component.scss'
+  styleUrl: './login-page.component.scss',
+  host: { class: 'login-page-route' }
 })
 export class LoginPageComponent implements OnInit {
   private readonly toastrService = service(OntoToastrService);
@@ -23,6 +25,7 @@ export class LoginPageComponent implements OnInit {
   private readonly authenticationService = service(AuthenticationService);
   private readonly openidStorageService = service(OpenidStorageService);
   private readonly navigationContextService = service(NavigationContextService);
+  private readonly configurationContextService = service(ConfigurationContextService);
 
   private readonly fb = inject(FormBuilder);
   private readonly route = inject(ActivatedRoute);
@@ -32,6 +35,7 @@ export class LoginPageComponent implements OnInit {
   loginForm: FormGroup;
   error = false;
   returnUrl: string;
+  logoPath = this.configurationContextService.getApplicationConfiguration().applicationLogoPath;
 
   constructor() {
     this.loginForm = this.fb.group({

@@ -18,7 +18,7 @@ import {
   SecurityContextService, service,
   ServiceProvider, StorageKey,
   SubscriptionList,
-  WindowService
+  WindowService,
 } from '@ontotext/workbench-api';
 
 @Component({
@@ -54,6 +54,7 @@ export class OntoLayout {
   @State() securityConfig: SecurityConfig;
   @State() isLowResolution = false;
   @State() showHeader = this.isAuthenticatedFully();
+  @State() showNavbar = false;
   @State() private isEmbedded = false;
 
   // ========================
@@ -97,7 +98,8 @@ export class OntoLayout {
     return (
       <Host class={{
         'wb-layout': true,
-        'is-embedded': this.isEmbedded
+        'is-embedded': this.isEmbedded,
+        'hide-navbar': !this.showNavbar,
       }}>
         {/* Default slot is explicitly defined to be able to hide the main content in the user permission check */}
         <div class="default-slot-wrapper">
@@ -108,7 +110,7 @@ export class OntoLayout {
             {this.showHeader && <onto-header></onto-header>}
           </header>
         }
-        {!this.isEmbedded &&
+        {!this.isEmbedded && this.showNavbar &&
           <nav class="wb-navbar">
             <onto-navbar ref={this.assignNavbarRef()} navbar-collapsed={this.isLowResolution}></onto-navbar>
           </nav>
@@ -234,9 +236,11 @@ export class OntoLayout {
 
   private updateVisibility() {
     if (!this.authenticationService.isSecurityEnabled()) {
+      this.showNavbar = true;
       this.showHeader = true;
     } else {
       this.showHeader = this.authenticationService.isAuthenticated() || this.authorizationService.hasFreeAccess();
+      this.showNavbar = this.authenticationService.isAuthenticated() || this.authorizationService.hasFreeAccess();
     }
   }
 

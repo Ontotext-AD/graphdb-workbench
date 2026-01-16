@@ -2,6 +2,7 @@
   "new-view": "NewView fonctionne en français!",
   "login": {
     "title": "Connexion",
+    "logo_alt": "Logo GraphDB",
     "sign_in": "Se connecter",
     "username_mismatch": "Le mot de passe ou le nom d’utilisateur est incorrect!",
     "username": "Nom d’utilisateur",

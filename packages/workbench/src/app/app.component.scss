@@ -1,4 +1,11 @@
 .main-container {
+  height: 100vh;
   margin-left: 15rem;
   padding: 0 2rem 3rem;
+}
+
+:host:has(.login-page-route) .main-container {
+  padding-bottom: 0;
+  // Adjust height to account for the footer height
+  height: calc(100vh - 30px);
 }

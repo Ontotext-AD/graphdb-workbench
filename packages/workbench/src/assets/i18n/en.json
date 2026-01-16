@@ -2,13 +2,14 @@
   "new-view": "NewView Works in English!",
   "login":{
     "title": "Login",
-    "sign_in": "Sign in",
+    "logo_alt": "GraphDB Logo",
+    "sign_in": "Login",
     "username_mismatch": "Password or username did not match!",
     "username": "Username",
     "username_placeholder": "Your name",
     "password": "Password",
     "password_placeholder": "Your password",
-    "sign_in_openid": "Sign in with OpenID",
+    "sign_in_openid": "Login with OpenID",
     "error": "Login error",
     "errors": {
       "no_rights": "User has no access rights or configuration error.",
