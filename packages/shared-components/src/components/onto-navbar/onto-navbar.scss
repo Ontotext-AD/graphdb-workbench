@@ -103,12 +103,6 @@ main menu height*/
   pointer-events: none;
 }
 
-.navbar-component .menu-element-root.active,
-.navbar-component .menu-element-root.active:hover {
-  //background-color: var(--gw-sidenav-submenuitem-selected-background);
-  //color: #ffffff;
-}
-
 .navbar-component :not(.brand) .menu-element-root {
   font-size: 1.1rem;
 }

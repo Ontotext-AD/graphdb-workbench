@@ -149,7 +149,9 @@
   --gw-hover-background: var(--gw-neutral-200);
   --gw-default-border-color: var(--gw-neutral-300);
   --gw-toggleswitch-handle-background: var(--gw-neutral-0);
+  --gw-toggleswitch-handle-hover-background: var(--gw-neutral-0);
   --gw-toggleswitch-handle-checked-background: var(--gw-neutral-0);
+  --gw-toggleswitch-handle-checked-hover-background: var(--gw-neutral-0);
   --gw-tag-default-background: var(--gw-neutral-200);
   --gw-listbox-option-striped-background: var(--gw-neutral-100);
   --gw-tabs-tab-hover-background: var(--gw-neutral-200);
@@ -189,7 +191,6 @@
   --gw-sidenav-submenuitem-color: var(--gw-foreground-on-surface-default);
   --gw-sidenav-submenuitem-hover-background: var(--gw-background-highlighted);
   --gw-sidenav-submenuitem-hover-color: var(--gw-primary-base);
-  --gw-sidenav-submenuitem-selected-background: var(--gw-background-highlighted);
   --gw-sidenav-submenuitem-selected-color: var(--gw-primary-base);
   --gw-sidenav-submenuitem-open-background: var(--gw-background-highlighted);
   --gw-sidenav-background: var(--gw-background-surface);
@@ -291,6 +292,8 @@
   --gw-panel-background: var(--gw-default-background);
   --gw-panel-color: var(--gw-default-color);
   --gw-panel-header-color: var(--gw-heading-default-color);
+  --gw-toggleswitch-checked-hover-background: var(--gw-primary-hover-color);
+  --gw-toggleswitch-disabled-background: var(--gw-form-field-disabled-background);
   --gw-autocomplete-border-color: var(--gw-form-field-border-color);
   --gw-autocomplete-color: var(--gw-form-field-color);
   --gw-autocomplete-option-focus-color: var(--gw-list-option-focus-color);
