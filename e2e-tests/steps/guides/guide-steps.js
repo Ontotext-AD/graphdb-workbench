@@ -19,6 +19,14 @@ export class GuideSteps extends BaseSteps {
             });
     }
 
+    static runFirstGuide() {
+        cy.get('tbody tr')
+            .first()
+            .within(() => {
+                cy.get('.btn').click();
+            });
+    }
+
     static getElementByGuideSelector(selctor) {
         return cy.get(`[guide-selector="${selctor}"]`);
     }
@@ -282,6 +290,10 @@ export class GuideSteps extends BaseSteps {
     static verifyInitialState() {
         this.getGuidesPerPageBar().should('be.visible');
         this.getGuidesPaginator().should('exist');
+        this.verifyGuidesListExists('be.visible');
+    }
+
+    static verifyGuidesListExists() {
         this.getGuidesList().should('be.visible');
     }
 }

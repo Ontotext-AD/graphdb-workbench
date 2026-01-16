@@ -197,6 +197,10 @@ export class MainMenuSteps {
 
     static clickOnAutocomplete() {
         this.clickOnMenuSetup();
+        this.clickOnSubmenuAutocomplete();
+    }
+
+    static clickOnSubmenuAutocomplete() {
         this.getSubmenuAutocomplete().click();
     }
 

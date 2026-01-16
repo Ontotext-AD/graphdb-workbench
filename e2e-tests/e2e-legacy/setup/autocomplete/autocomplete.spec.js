@@ -51,7 +51,7 @@ describe('Autocomplete ', () => {
             .and('contain', 'http://www.w3.org/2000/01/rdf-schema#label');
 
         // Enable autocomplete and verify status is OK (possible slow operation)
-        AutocompleteSteps.getAutocompleteSwitch().click();
+        AutocompleteSteps.enableToggleAutocomplete();
         AutocompleteSteps.getAutocompleteHeader()
             .find('.tag-primary')
             .should('be.visible')

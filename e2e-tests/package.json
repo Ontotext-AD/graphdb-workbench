@@ -10,6 +10,7 @@
     "cy:open-legacy": "cypress open  --config-file cypress-legacy.config.js",
     "cy:open-security": "cypress open  --config-file cypress-security.config.js",
     "cy:open-flaky": "cypress open --config-file cypress-flaky.config.js",
+    "cy:guides": "cypress run --config-file cypress-legacy.config.js --spec \"e2e-legacy/guides/**/*.spec.js\" --browser chrome",
     "cy:run": "npm run cy:run-legacy && cypress run",
     "cy:run:partial": "cypress run --config-file cypress-legacy.config.js --spec \"e2e-legacy/**/jdbc-create.spec.js\" --browser chrome",
     "cy:run-legacy": "cypress run --config-file cypress-legacy.config.js --browser chrome",

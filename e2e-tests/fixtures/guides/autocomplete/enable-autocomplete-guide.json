@@ -1,0 +1,12 @@
+[
+    {
+        "guideName": {
+            "en": "Autocomplete guide"
+        },
+        "steps": [
+            {
+                "guideBlockName": "enable-autocomplete"
+            }
+        ]
+    }
+]
