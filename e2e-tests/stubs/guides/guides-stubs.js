@@ -11,6 +11,10 @@ export class GuidesStubs {
         GuidesStubs.stubWithFixture('../fixtures/guides/class-hierarchy/class-hierarchy-guide.json');
     }
 
+    static stubClassRelationsGuide() {
+        GuidesStubs.stubWithFixture('../fixtures/guides/class-relations/class-relations-guide.json');
+    }
+
     static stubWithFixture(fixturePath) {
         cy.intercept('/rest/guides', {fixture: fixturePath}).as('getGuides');
     }

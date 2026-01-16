@@ -1,0 +1,33 @@
+[
+    {
+        "guideName": {
+            "en": "Class relations guide"
+        },
+        "steps": [
+            {
+                "guideBlockName": "class-relationships",
+                "options": {
+                    "introExtraContent": "Some extra info"
+                }
+            },
+            {
+                "guideBlockName": "class-relationships-digram-thickness-intro"
+            },
+            {
+                "guideBlockName": "class-relationships-digram-predicates-intro"
+            },
+            {
+                "guideBlockName": "class-relationships-named-graph-selection"
+            },
+            {
+                "guideBlockName": "class-relationships-class-list-intro"
+            },
+            {
+                "guideBlockName": "class-relationships-class-list-background-intro"
+            },
+            {
+                "guideBlockName": "class-relationships-class-list-selection"
+            }
+        ]
+    }
+]
