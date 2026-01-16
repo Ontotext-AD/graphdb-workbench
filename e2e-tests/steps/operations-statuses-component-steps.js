@@ -11,7 +11,7 @@ export class OperationsStatusesComponentSteps {
     }
 
     static getImportOperationStatusHeaderElement() {
-        return OperationsStatusesComponentSteps.getOperationStatusHeader('.ri-download-2-line');
+        return OperationsStatusesComponentSteps.getOperationStatusHeader('.icon-import');
     }
 
     static getQueriesOperationStatusHeaderElement() {

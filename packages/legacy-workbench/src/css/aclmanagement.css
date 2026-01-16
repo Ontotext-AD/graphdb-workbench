@@ -254,7 +254,10 @@ input::placeholder {
 
 .nav-link.disabled:not(.active) {
     cursor: not-allowed;
-    background-color: #eee!important;
+    color: var(--gw-tabs-tab-disabled-color);
+    background-color: var(--gw-tabs-tab-disabled-background);
+    border: 1px solid var(--gw-tabs-tab-disabled-border-color);
+    border-bottom-color: var(--gw-tabs-tab-disabled-border-bottom-color);
 }
 
 .reorder-cell {

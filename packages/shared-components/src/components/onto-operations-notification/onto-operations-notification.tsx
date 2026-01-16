@@ -10,7 +10,7 @@ const operationGroupToIcon = {
   [OperationGroup.BACKUP]: 'ri-archive-line',
   [OperationGroup.QUERY]: 'ri-arrow-left-right-line',
   [OperationGroup.CLUSTER]: 'ri-organization-chart',
-  [OperationGroup.IMPORT]: 'ri-download-2-line'
+  [OperationGroup.IMPORT]: 'icon-import'
 };
 
 const operationStatusToWarningClass = {

@@ -11,7 +11,7 @@
             }">
         <div class="operation-status-header" ng-repeat="operationGroup in operationsSummary">
             <div ng-class="{
-            'ri-download-2-line': OPERATION_GROUP_TYPE.IMPORT_OPERATION === operationGroup.type,
+            'icon-import': OPERATION_GROUP_TYPE.IMPORT_OPERATION === operationGroup.type,
             'ri-arrow-left-right-line': OPERATION_GROUP_TYPE.QUERIES_OPERATION === operationGroup.type,
             'ri-archive-line': OPERATION_GROUP_TYPE.BACKUP_AND_RESTORE_OPERATION === operationGroup.type,
             'ri-organization-chart': OPERATION_GROUP_TYPE.CLUSTER_OPERATION === operationGroup.type,
@@ -36,7 +36,7 @@
                    }">
                     <div class="operation-icon col-sm-1" ng-style="noPadding">
                         <div ng-class="{
-                       'ri-download-2-line': OPERATION_TYPE.IMPORTS === operationStatus.type,
+                       'icon-import': OPERATION_TYPE.IMPORTS === operationStatus.type,
                        'ri-arrow-left-right-line': OPERATION_TYPE.QUERIES === operationStatus.type || OPERATION_TYPE.UPDATES === operationStatus.type,
                        'ri-archive-line': OPERATION_TYPE.BACKUP_RESTORE === operationStatus.type,
                        'ri-organization-chart': OPERATION_TYPE.CLUSTER_STATUS === operationStatus.type}">
