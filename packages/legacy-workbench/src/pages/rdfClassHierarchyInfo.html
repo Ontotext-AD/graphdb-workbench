@@ -176,6 +176,7 @@
 					<p ng-switch-when="1">
 						<a class="btn btn-link px-0"
 						   href=''
+                           data-test="instances-count-link"
 						   ng-click="goToResourceView()"
 						   guide-selector="instances-count">{{'view.instance.in.sparql.label' | translate}}
 						</a>
@@ -183,6 +184,7 @@
                     <p ng-switch-default>
 						<a class="btn btn-link px-0"
 						   href=''
+                           data-test="instances-count-link"
 						   ng-click="goToResourceView()"
 						   guide-selector="instances-count">{{'view.all.label' | translate}} {{selectedClass.data.instancesCount | number}} {{'instances.in.sparql' | translate}}
 						</a>
