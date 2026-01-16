@@ -6,6 +6,7 @@ import './settings-commands';
 import './visual-graph-commands';
 import './user-commands';
 import './security-command';
+import './connector-commands';
 import 'cypress-wait-until';
 
 /**
@@ -82,7 +83,7 @@ Cypress.Commands.add("form_request", (url, formData) => {
  *  @author Sava Savov sava.savov@ontotext.com
  */
 
-Cypress.Commands.add("hideToastContainer", (url, formData) => {
+Cypress.Commands.add("hideToastContainer", () => {
     cy.get('.toast-success')
         .then((toastContainer) => toastContainer && toastContainer.remove());
 });
