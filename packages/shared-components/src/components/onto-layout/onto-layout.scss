@@ -21,6 +21,14 @@
     padding-top: 1rem;
   }
 
+  &.hide-navbar {
+    grid-template-columns: 1fr; /* Change to a single column */
+    grid-template-areas:
+      "header"
+      "main"
+      "footer";
+  }
+
   &.expanded {
     grid-template-columns: 4.375rem 1fr;
   }
