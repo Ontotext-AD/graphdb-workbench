@@ -263,6 +263,10 @@ export class MainMenuSteps {
 
     static clickOnTTYG() {
         this.clickOnMenuLab();
+        this.clickOnTTYGSubmenu()
+    }
+
+    static clickOnTTYGSubmenu() {
         this.getSubMenuButton('sub-menu-ttyg').click();
     }
 

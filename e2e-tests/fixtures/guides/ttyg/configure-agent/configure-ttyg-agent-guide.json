@@ -1,0 +1,69 @@
+[
+    {
+        "guideName": {
+            "en": "TTYG-test-guide"
+        },
+        "steps": [
+            {
+                "guideBlockName": "create-ttyg-agent",
+                "options": {
+                    "name": true,
+                    "userInstructions": "When writing SPARQL queries, please do not bind inside the query select clause. Also add all prefix definitions when writing the query.",
+                    "model": "gpt-3.5-turbo",
+                    "methods": [
+                        {
+                            "guideBlockName": "configure-temperature",
+                            "options": {
+                                "temperature": 0.8
+                            }
+                        },
+                        {
+                            "guideBlockName": "configure-top-p",
+                            "options": {
+                                "topP": 0.9
+                            }
+                        },
+                        {
+                            "guideBlockName": "sparql-search-method",
+                            "options": {
+                                "disable": false,
+                                "ontologyGraph": "http://example.org/some/test/ontology"
+                            }
+                        },
+                        {
+                            "guideBlockName": "ttyg-sparql-click-add-namespaces"
+                        },
+                        {
+                            "guideBlockName": "fts-search-method"
+                        },
+                        {
+                            "guideBlockName": "set-max-triples-per-call",
+                            "options": {
+                                "maxTriplesPerCall": 100
+                            }
+                        },
+                        {
+                            "guideBlockName": "similarity-search-method"
+                        },
+                        {
+                            "guideBlockName": "configure-iri-discovery-search"
+                        },
+                        {
+                            "guideBlockName": "configure-autocomplete-iri-discovery"
+                        },
+                        {
+                            "guideBlockName": "set-max-iris-per-call",
+                            "options": {
+                                "maxIrisPerCall": 15
+                            }
+                        }
+
+                    ]
+                }
+            },
+            {
+                "guideBlockName": "ttyg-create-agent-save"
+            }
+        ]
+    }
+]
