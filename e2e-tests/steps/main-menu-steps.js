@@ -100,6 +100,10 @@ export class MainMenuSteps {
 
     static clickOnClassRelationships() {
         this.clickOnExplore();
+        this.clickOnSubmenuClassRelationships();
+    }
+
+    static clickOnSubmenuClassRelationships() {
         this.getSubMenuButton('sub-menu-class-relationships').click();
     }
 
