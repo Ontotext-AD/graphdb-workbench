@@ -379,7 +379,7 @@ span.label {
     color:var(--gw-secondary-base)
 }
 
-.ri-download-2-line.active {
+.icon-import.active {
     color:var(--gw-tertiary-base)
 }
 .checkbox-param-include-inferred {

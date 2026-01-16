@@ -117,9 +117,6 @@
         <div class="mb-2">
             <button class="btn btn-primary">Primary</button>
             <button class="btn btn-secondary">Secondary</button>
-            <button class="btn btn-info">Info</button>
-            <button class="btn btn-outline-primary">Primary outlined</button>
-            <button class="btn btn-outline-secondary">Secondary outlined</button>
             <button class="btn btn-link">Button link</button>
             <button class="btn btn-link active">Button link: active</button>
             <button class="btn btn-link secondary">Button link secondary</button>
@@ -245,7 +242,7 @@
                             gdb-tooltip="Tooltip">
                         <em class="ri-add-circle-line"></em>Button text
                     </button>
-                    <div class="btn btn-outline-primary btn-sm">
+                    <div class="btn btn-secondary btn-sm">
                         <div ngf-select ngf-multiple="false"
                              class="selectFiles pointer clearfix"
                              gdb-tooltip="Tooltip">
@@ -254,7 +251,7 @@
                         </div>
                     </div>
                     <div class="col-xs-12 col-md-6 col-lg-4 mb-1">
-                        <div class="btn btn-outline-primary btn-lg text-xs-left d-block"
+                        <div class="btn btn-secondary btn-lg text-xs-left d-block"
                              role="button"
                              uib-popover="Tooltip"
                              popover-trigger="mouseenter"
@@ -367,7 +364,7 @@
                   popover-placement="left-bottom"
                   uib-popover-template="popoverTemplate" popover-title="Title"
                   class="active-repository">
-                <em ng-class="'icon-repo-contour1'"></em>
+                <em ng-class="'icon-repo-graphdb'"></em>
                 Active Repo
             </span>
             </button>
@@ -387,7 +384,7 @@
         </div>
         <div class="btn-group" uib-dropdown>
             <button type="button" class="btn btn-primary dropdown-toggle" uib-dropdown-toggle>
-                <span class="ri-upload-2-line"></span>Export
+                <span class="icon-export"></span>Export
             </button>
             <ul class="dropdown-menu">
                 <li ng-repeat="format in formats" class="export-repo-format-{{format}}">
