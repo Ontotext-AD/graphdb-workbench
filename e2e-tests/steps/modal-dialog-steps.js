@@ -1,4 +1,6 @@
-export class ModalDialogSteps {
+import {BaseSteps} from "./base-steps.js";
+
+export class ModalDialogSteps extends BaseSteps {
     static getDialog(cssClass = '.modal-dialog') {
         return cy.get(cssClass);
     }

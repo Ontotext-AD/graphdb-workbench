@@ -25,7 +25,13 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
     }
 
     static typeAgentName(name) {
-        this.getAgentNameField().type(name);
+        this.getAgentNameField()
+            // https://github.com/cypress-io/cypress/issues/18747
+            .type(name, {force: true});
+    }
+
+    static getCodeToCopy() {
+        return cy.getByTestId('code-to-copy-element').invoke('text');
     }
 
     static clearAgentName() {
@@ -142,11 +148,15 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
     }
 
     static clearSparqlMethodOntologyGraphField() {
-        return this.getSparqlMethodOntologyGraphField().clear();
+        return this.getSparqlMethodOntologyGraphField()
+            // https://github.com/cypress-io/cypress/issues/18747
+            .clear({force: true});
     }
 
     static typeSparqlMethodOntologyGraphField(value) {
-        return this.getSparqlMethodOntologyGraphField().type(value);
+        return this.getSparqlMethodOntologyGraphField()
+            // https://github.com/cypress-io/cypress/issues/18747
+            .type(value, {force: true});
     }
 
     static selectSparqlMethodSparqlQuery() {
@@ -198,6 +208,14 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
 
     static getFtsSearchMaxTriplesFormGroup() {
         return this.getExtractionMethodPanel('fts_search').find('.max-triples');
+    }
+
+    static getFtsSearchMaxTriplesField() {
+        return this.getFtsSearchMaxTriplesFormGroup().find('input');
+    }
+
+    static setFtsSearchMaxTriples(value) {
+        this.getFtsSearchMaxTriplesField().invoke('val', value).trigger('input');
     }
 
     // Similarity search method
@@ -368,7 +386,9 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
     }
 
     static clearLLMModel() {
-        this.getLLMModelField().clear();
+        this.getLLMModelField()
+            // https://github.com/cypress-io/cypress/issues/18747
+            .clear({force: true});
         cy.realPress('Tab');
     }
 
@@ -377,7 +397,9 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
     }
 
     static typeLLMModel(value) {
-        return this.getLLMModelField().type(value);
+        return this.getLLMModelField()
+            // https://github.com/cypress-io/cypress/issues/18747
+            .type(value, {force: true});
     }
 
     static clickLLMModelField() {
@@ -504,7 +526,9 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
     }
 
     static setAutocompleteMaxResults(number) {
-        this.getAutocompleteMaxResults().type(number);
+        this.getAutocompleteMaxResults()
+            // https://github.com/cypress-io/cypress/issues/18747
+            .type(number, {force: true});
     }
 
     static toggleAutocompleteSearchPanel() {
@@ -560,11 +584,13 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
     }
 
     static clearUserInstructions() {
-        this.getUserInstructionsField().clear();
+        this.getUserInstructionsField().clear({force: true});
     }
 
     static typeUserInstructions(value) {
-        return this.getUserInstructionsField().type(value);
+        return this.getUserInstructionsField()
+            // https://github.com/cypress-io/cypress/issues/18747
+            .type(value, {force: true});
     }
 
     static toggleAdvancedSettings() {

@@ -253,6 +253,7 @@ PluginRegistry.add('guide.step', [
             const text = options.text;
             const code = document.createElement('code');
             code.innerText = text;
+            code.dataset.test = 'code-to-copy-element';
 
             const copy = document.createElement('button');
             const copyToInputQueryButtonClass = 'guide-copy-to-input-query-button';

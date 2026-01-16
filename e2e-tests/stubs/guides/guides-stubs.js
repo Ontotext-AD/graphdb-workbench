@@ -7,6 +7,10 @@ export class GuidesStubs {
         GuidesStubs.stubWithData(guidesArray);
     }
 
+    static stubCreateAndConfigureAgentGuide() {
+        GuidesStubs.stubWithFixture('../fixtures/guides/ttyg/configure-agent/configure-ttyg-agent-guide.json')
+    }
+
     static stubClassHierarchyGuide() {
         GuidesStubs.stubWithFixture('../fixtures/guides/class-hierarchy/class-hierarchy-guide.json');
     }

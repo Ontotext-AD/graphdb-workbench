@@ -29,4 +29,8 @@ export class SimilarityIndexStubs extends Stubs {
             }).as('get-ttyg-similarity-indexes');
         });
     }
+
+    static stubTTYGSimilarityInstances(fixture = '/similarity/get-ttyg-similarity-instances.json', delay = 0) {
+        this.stubQueryResponse('/rest/similarity/**/indexes', fixture, 'get-ttyg-similarity-instances', delay);
+    }
 }

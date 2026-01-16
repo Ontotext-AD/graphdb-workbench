@@ -198,6 +198,10 @@ export class TTYGViewSteps extends BaseSteps {
         return this.getAgentsSidebar().find('.create-agent-btn');
     }
 
+    static clickCreateAgentButton() {
+        this.getCreateAgentButton().click();
+    }
+
     static createFirstAgent() {
         this.getCreateFirstAgentButton().click();
     }
@@ -365,7 +369,7 @@ export class TTYGViewSteps extends BaseSteps {
         return this.getTtygView().find('.deliver-answer-btn');
     }
 
-    static clickOnHowDeliverAnswerButton(index) {
+    static clickOnHowDeliverAnswerButton() {
         this.getHowDeliverAnswerButton().click();
     }
 
