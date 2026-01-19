@@ -5,29 +5,39 @@ import * as d3 from 'd3';
 angular
     .module('graphdb.framework.graphexplore.directives.dependencies', [
         'graphdb.framework.graphexplore.controllers.dependencies',
-        'graphdb.framework.rest.graphexplore.data.service'
+        'graphdb.framework.rest.graphexplore.data.service',
     ])
     .directive('dependenciesChord', dependenciesChordDirective);
 
 dependenciesChordDirective.$inject = ['$repositories', 'GraphDataRestService'];
 
+/**
+ * Checks if all values of the returned matrix are zero
+ * @returns false if non zero value is found, true otherwise
+ */
+function isZeroMatrix(matrix) {
+    for (const arr of matrix) {
+        if (arr.some((item) => item !== 0)) {
+            return false;
+        }
+    }
+    return true;
+}
 function dependenciesChordDirective($repositories, GraphDataRestService) {
     return {
         restrict: 'A',
         template: '<div id="dependencies-chord"></div>',
         scope: {
-            dependenciesData: '='
+            dependenciesData: '=',
         },
-        link: linkFunc
+        link: linkFunc,
     };
-
     function linkFunc(scope) {
         // Used http://bost.ocks.org/mike/uberdata/
 
-        const drawChord = function (matrix, nodes) {
-
+        const drawChord = function(matrix, nodes) {
             // Don't try to draw chord for zero matrix
-            if (isZeroMatrix()) {
+            if (isZeroMatrix(matrix)) {
                 return;
             }
 
@@ -36,7 +46,7 @@ function dependenciesChordDirective($repositories, GraphDataRestService) {
             const tooltip = d3.select("body").append("div")
                 .attr("class", "tooltip")
                 .style("opacity", 0);
-            d3.select("body").on("click", function () {
+            d3.select("body").on("click", function() {
                 tooltip.style("opacity", 0);
             });
 
@@ -56,6 +66,8 @@ function dependenciesChordDirective($repositories, GraphDataRestService) {
 
             const path = d3.ribbon()
                 .radius(innerRadius);
+            const container = d3.select('#dependencies-chord');
+            container.select('svg').remove();
 
             const svg = d3.select("#dependencies-chord").append("svg")
                 .attr("viewBox", "0 0 " + width + " " + height)
@@ -80,34 +92,34 @@ function dependenciesChordDirective($repositories, GraphDataRestService) {
                 .on("mouseover", mouseover);
 
             // Add a mouseover title.
-            group.append("title").text(function (d, i) {
+            group.append("title").text(function(d, i) {
                 return nodes[i];
             });
 
             // Add the group arc.
             group.append("path")
-                .attr("id", function (d, i) {
+                .attr("id", function(d, i) {
                     return "group" + i;
                 })
                 .attr("d", arc)
-                .style("fill", function (d, i) {
+                .style("fill", function(d, i) {
                     return fill(i);
                 });
 
             group.append("text")
-                .each(function (d) {
+                .each(function(d) {
                     d.angle = (d.startAngle + d.endAngle) / 2;
                 })
                 .attr("dy", ".35em")
-                .attr("transform", function (d) {
+                .attr("transform", function(d) {
                     return "rotate(" + (d.angle * 180 / Math.PI - 90) + ")"
                         + "translate(" + (innerRadius + 26) + ")"
                         + (d.angle > Math.PI ? "rotate(180)" : "");
                 })
-                .style("text-anchor", function (d) {
+                .style("text-anchor", function(d) {
                     return d.angle > Math.PI ? "end" : null;
                 })
-                .text(function (d) {
+                .text(function(d) {
                     return nodes[d.index];
                 });
 
@@ -116,7 +128,7 @@ function dependenciesChordDirective($repositories, GraphDataRestService) {
                 .data(layout)
                 .enter().append("path")
                 .attr("class", "chord")
-                .style("fill", function (d) {
+                .style("fill", function(d) {
                     return fill(d.target.index);
                 })
                 .style("fill-opacity", ".67")
@@ -125,25 +137,27 @@ function dependenciesChordDirective($repositories, GraphDataRestService) {
                 .style("cursor", "pointer")
                 .attr("d", path);
 
-            chord.on("mouseover", function () {
+            chord.on("mouseover", function() {
+                // eslint-disable-next-line no-invalid-this
                 d3.select(this).style("fill-opacity", "1");
             });
 
-            chord.on("mouseout", function () {
+            chord.on("mouseout", function() {
+                // eslint-disable-next-line no-invalid-this
                 d3.select(this).style("fill-opacity", ".67");
             });
 
-            chord.on("click", function (event, d) {
+            chord.on("click", function(event, d) {
                 const sourceClass = nodes[d.source.index];
                 const destinationClass = nodes[d.target.index];
                 const px = event.pageX;
                 const py = event.pageY;
 
                 GraphDataRestService.getPredicates(sourceClass, destinationClass, scope.selectedGraph && scope.selectedGraph.contextID.uri)
-                    .success(function (predicatesData) {
+                    .success(function(predicatesData) {
                         const directionIcon = " <i class='ri-arrow-left-right-line'></i> ";
                         const header = "<div class='row'>" + sourceClass + directionIcon + destinationClass + "</div>";
-                        const predicatesList = _.map(predicatesData.slice(0, 10), function (p) {
+                        const predicatesList = _.map(predicatesData.slice(0, 10), function(p) {
                             const icon = " <i class='ri-arrow-" + (p.direction === "out" ? "right" : "left") + "-long-line'></i>";
                             return "<div class='row'>" + p.predicate + " : " + p.weight + icon + " </div>";
                         }).join("");
@@ -165,32 +179,15 @@ function dependenciesChordDirective($repositories, GraphDataRestService) {
 
             function mouseover() {
                 const nodes = group.nodes();
+                // eslint-disable-next-line no-invalid-this
                 const i = nodes.indexOf(this);
-                chord.classed("fade", function (p) {
+                chord.classed("fade", function(p) {
                     return p.source.index !== i
                         && p.target.index !== i;
                 });
             }
 
-            /**
-             *  Checks if all values of the returned matrix are zero
-             * @returns false if non zero value is found, true otherwise
-             */
-            function isZeroMatrix() {
-                let zeroMatrix = true;
-
-                for (const arr of matrix) {
-                    const nonZeroFound = arr.some(item => item !== 0);
-                    if (nonZeroFound) {
-                        zeroMatrix = false;
-                        break;
-                    }
-                }
-
-                return zeroMatrix;
-            }
-
-            d3.select("#circle").on("mouseleave", function () {
+            d3.select("#circle").on("mouseleave", function() {
                 svg.selectAll(".chord").classed("fade", false);
             });
 
@@ -202,9 +199,10 @@ function dependenciesChordDirective($repositories, GraphDataRestService) {
                 // convert selected html to base64
                 const imgSrc = SVG.Export.generateBase64ImageSource('.dependencies-chord svg');
                 // set the binary image and a name for the downloadable file on the export button
+                // eslint-disable-next-line no-invalid-this
                 d3.select(this).attrs({
                     href: imgSrc,
-                    download: "dependencies-" + $repositories.getActiveRepository() + ".svg"
+                    download: "dependencies-" + $repositories.getActiveRepository() + ".svg",
                 });
             }
 
@@ -212,12 +210,11 @@ function dependenciesChordDirective($repositories, GraphDataRestService) {
                 .on("mouseover", prepareForSVGImageExport);
         };
 
-        scope.$watch('dependenciesData', function () {
+        scope.$watch('dependenciesData', function() {
             if (scope.dependenciesData) {
                 const data = scope.dependenciesData;
                 drawChord(data.matrix, data.nodes, data.direction);
             }
         });
     }
-
 }
