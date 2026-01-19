@@ -1,0 +1,66 @@
+[
+    {
+        "guideName": {
+            "en": "Connectors Guide"
+        },
+        "options": {},
+        "steps": [
+            {
+                "guideBlockName": "connectors-intro"
+            },
+            {
+                "guideBlockName": "connectors-type-intro",
+                "options": {
+                    "connectorName": "Lucene"
+                }
+            },
+            {
+                "guideBlockName": "connectors-connector-intro",
+                "options": {
+                    "connectorName": "Lucene",
+                    "instanceName": "LuceneConnector"
+                }
+            },
+            {
+                "guideBlockName": "connectors-expand-connector",
+                "options": {
+                    "connectorName": "Lucene",
+                    "instanceName": "LuceneConnector"
+                }
+            },
+            {
+                "guideBlockName": "connectors-parameter-intro",
+                "options": {
+                    "connectorName": "Lucene",
+                    "instanceName": "LuceneConnector",
+                    "parameterName": "fields"
+                }
+            },
+            {
+                "guideBlockName": "connectors-array-subparameter-intro",
+                "options": {
+                    "connectorName": "Lucene",
+                    "instanceName": "LuceneConnector",
+                    "parameterName": "fields",
+                    "subparameterName": "fieldName"
+                }
+            },
+            {
+                "guideBlockName": "connectors-open-view-sparql-query-dialog",
+                "options": {
+                    "connectorName": "Lucene",
+                    "instanceName": "LuceneConnector"
+                }
+            },
+            {
+                "guideBlockName": "connectors-view-sparql-dialog-intro"
+            },
+            {
+                "guideBlockName": "connectors-close-view-sparql-query-dialog"
+            },
+            {
+                "guideBlockName": "guide-end"
+            }
+        ]
+    }
+]

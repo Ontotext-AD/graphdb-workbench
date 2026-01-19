@@ -1,0 +1,106 @@
+[
+    {
+        "guideName": {
+            "en": "Lucine connector Guide"
+        },
+        "options": {},
+        "steps": [
+            {
+                "guideBlockName": "connectors-lucene-type-intro"
+            },
+            {
+                "guideBlockName": "connectors-lucene",
+                "options": {
+                    "instanceName": "NamedIndividuals"
+                }
+            },
+            {
+                "guideBlockName": "connectors-expand-lucene",
+                "options": {
+                    "instanceName": "NamedIndividuals"
+                }
+            },
+            {
+                "guideBlockName": "connectors-lucene-fields-intro",
+                "options": {
+                    "instanceName": "NamedIndividuals"
+                }
+            },
+            {
+                "guideBlockName": "connectors-lucene-fields-field-name-intro",
+                "options": {
+                    "instanceName": "NamedIndividuals"
+                }
+            },
+            {
+                "guideBlockName": "connectors-lucene-fields-property-chain-intro",
+                "options": {
+                    "instanceName": "NamedIndividuals"
+                }
+            },
+            {
+                "guideBlockName": "connectors-lucene-fields-indexed-intro",
+                "options": {
+                    "instanceName": "NamedIndividuals"
+                }
+            },
+            {
+                "guideBlockName": "connectors-lucene-fields-stored-intro",
+                "options": {
+                    "instanceName": "NamedIndividuals"
+                }
+            },
+            {
+                "guideBlockName": "connectors-lucene-fields-analyzed-intro",
+                "options": {
+                    "instanceName": "NamedIndividuals"
+                }
+            },
+            {
+                "guideBlockName": "connectors-lucene-fields-multivalued-intro",
+                "options": {
+                    "instanceName": "NamedIndividuals"
+                }
+            },
+            {
+                "guideBlockName": "connectors-lucene-fields-facet-intro",
+                "options": {
+                    "instanceName": "NamedIndividuals"
+                }
+            },
+            {
+                "guideBlockName": "connectors-lucene-languages-intro",
+                "options": {
+                    "instanceName": "NamedIndividuals"
+                }
+            },
+            {
+                "guideBlockName": "connectors-lucene-types-intro",
+                "options": {
+                    "instanceName": "NamedIndividuals"
+                }
+            },
+            {
+                "guideBlockName": "connectors-lucene-open-view-sparql-query-dialog",
+                "options": {
+                    "instanceName": "NamedIndividuals"
+                }
+            },
+            {
+                "guideBlockName": "connectors-lucene-view-sparql-dialog-intro",
+                "options": {
+                    "instanceName": "NamedIndividuals"
+                }
+            },
+            {
+                "guideBlockName": "connectors-close-view-sparql-query-dialog",
+                "options": {
+                    "instanceName": "NamedIndividuals"
+                }
+            },
+            {
+                "guideBlockName": "guide-end"
+            }
+        ]
+    }
+]

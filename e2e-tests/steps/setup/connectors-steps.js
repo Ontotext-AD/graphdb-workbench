@@ -16,4 +16,17 @@ export class ConnectorsSteps extends BaseSteps {
     static getReloadAllButton() {
         return this.getConnectorsPage().getByTestId('reload-all-connectors');
     }
+
+    static expandConnector(connectorName, instanceName) {
+        this.getByTestId(`connector-name-${connectorName}`).getByTestId(`${instanceName}-connector-toggle-button`).find('a').click();
+    }
+
+    static viewSPARQLQuery(connectorName, instanceName) {
+        const connectorContent = this.getByTestId(`connector-name-${connectorName}`).getByTestId(`${instanceName}-connector-content`);
+        connectorContent.getByTestId('open-view-sparql-query-dialog').click();
+    }
+
+    static closeSPARQLQueryDialog() {
+        this.getByTestId('close-view-query-dialog').click();
+    }
 }

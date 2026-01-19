@@ -19,6 +19,14 @@ export class GuidesStubs {
         GuidesStubs.stubWithFixture('../fixtures/guides/class-relations/class-relations-guide.json');
     }
 
+    static stubConnectorsGuide() {
+        GuidesStubs.stubWithFixture('../fixtures/guides/connectors/connectors-guide.json');
+    }
+
+    static stubLuceneConnectorsGuide() {
+        GuidesStubs.stubWithFixture('../fixtures/guides/connectors/lucene-connector-guide.json');
+    }
+
     static stubWithFixture(fixturePath) {
         cy.intercept('/rest/guides', {fixture: fixturePath}).as('getGuides');
     }
