@@ -97,10 +97,12 @@ function ontoLoader($timeout) {
                 }
             });
         },
-        template: '<div class="ot-loader-new-content" guide-selector="loader-spinner">'
-        + '<img width="{{size}}" height="{{size}}" src="js/angular/templates/loader/ot-loader.svg?v=[AIV]{version}[/AIV]"/>'
-        + '<div style="{{fontSize}}">{{currentMessage}}</div>'
-        + '</div>'
+        template:
+            '<div class="ot-loader-new-content" guide-selector="loader-spinner" ' +
+            'ng-style="{ width: size + \'px\', height: size + \'px\' }">' +
+            '<ng-include src="\'js/angular/templates/loader/ot-loader.svg?v=[AIV]{version}[/AIV]\'"></ng-include>' +
+            '<div ng-style="{ fontSize: fontSize }">{{currentMessage}}</div>' +
+            '</div>'
     };
 }
 

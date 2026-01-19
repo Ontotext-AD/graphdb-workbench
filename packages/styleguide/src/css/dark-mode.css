@@ -8,6 +8,7 @@
   --gw-color-blue-300: #5c72ff;
   --gw-color-blue-400: #2e4aff;
   --gw-color-blue-800: #031577;
+  --gw-color-pink-400: #e6659b;
   --gw-color-teal-200: #d5f1ef;
   --gw-color-teal-300: #9fdfda;
   --gw-color-teal-400: #79d2cb;
@@ -88,6 +89,7 @@
   --gw-tertiary-600: var(--gw-color-teal-400);
   --gw-tertiary-700: var(--gw-color-teal-300);
   --gw-tertiary-800: var(--gw-color-teal-200);
+  --gw-accent-500: var(--gw-color-pink-400);
   --gw-defaul-border-radius: var(--gw-border-radius-sm);
   --gw-listbox-option-group-background: var(--gw-list-option-group-background);
   --gw-primary-base: var(--gw-primary-600);
@@ -123,6 +125,7 @@
   --gw-background-disabled: var(--gw-neutral-200);
   --gw-foreground-on-surface-default: var(--gw-neutral-900);
   --gw-foreground-on-surface-muted: var(--gw-neutral-500);
+  --gw-foreground-on-surface-accent: var(--gw-accent-500);
   --gw-foreground-on-brand: var(--gw-neutral-900);
   --gw-border-disabled: var(--gw-neutral-300);
   --gw-disabled-color: var(--gw-neutral-600);
@@ -278,6 +281,7 @@
   --gw-toast-error-background: var(--gw-error-base);
   --gw-toast-error-border-color: var(--gw-error-base);
   --gw-toast-error-color: var(--gw-contrast-text);
+  --gw-loader-color: var(--gw-foreground-on-surface-accent);
   --gw-form-field-background: var(--gw-default-background);
   --gw-list-option-selected-focus-background: var(--gw-highlight-focus-background);
   --gw-list-option-selected-focus-color: var(--gw-highlight-focus-color);
