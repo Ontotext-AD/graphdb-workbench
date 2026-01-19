@@ -35,6 +35,6 @@
     "webpack-merge": "^6.0.1"
   },
   "dependencies": {
-    "graphwise-styleguide": "1.0.0"
+    "graphwise-styleguide": "1.0.1"
   }
 }

@@ -1929,3 +1929,7 @@ tags-input .tags .input {
         border-color: #EBEBEB;
     }
 }
+
+.ot-loader-new-content circle {
+    fill: var(--gw-loader-color)
+}

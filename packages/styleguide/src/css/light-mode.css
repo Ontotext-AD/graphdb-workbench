@@ -8,6 +8,7 @@
   --gw-color-blue-500: #001eff;
   --gw-color-blue-600: #021dcf;
   --gw-color-blue-700: #021aa2;
+  --gw-color-pink-500: #df347b;
   --gw-color-teal-50: #f7fcfc;
   --gw-color-teal-100: #ecf9f8;
   --gw-color-teal-600: #26736c;
@@ -61,6 +62,7 @@
   --gw-secondary-500: var(--gw-color-steel-500);
   --gw-secondary-600: var(--gw-color-steel-600);
   --gw-secondary-800: var(--gw-color-steel-800);
+  --gw-accent-500: var(--gw-color-pink-500);
   --gw-warning-300: var(--gw-color-yellow-300);
   --gw-warning-600: var(--gw-color-yellow-600);
   --gw-warning-700: var(--gw-color-yellow-700);
@@ -121,6 +123,8 @@
   --gw-background-elevated: var(--gw-neutral-0);
   --gw-background-surface: var(--gw-neutral-50);
   --gw-background-disabled: var(--gw-neutral-200);
+  --gw-foreground-on-surface-brand: var(--gw-primary-500);
+  --gw-foreground-on-surface-accent: var(--gw-accent-500);
   --gw-foreground-on-surface-default: var(--gw-neutral-900);
   --gw-foreground-on-brand: var(--gw-neutral-0);
   --gw-border-disabled: var(--gw-neutral-300);
@@ -167,7 +171,6 @@
   --gw-success-base: var(--gw-success-600);
   --gw-success-lighter: var(--gw-success-200);
   --gw-success-dark: var(--gw-success-700);
-  --gw-foreground-on-surface-brand: var(--gw-primary-dark);
   --gw-foreground-on-surface-strong: var(--gw-primary-base);
   --gw-foreground-on-surface-muted: var(--gw-secondary-base);
   --gw-border-color-primary: var(--gw-primary-base);
@@ -181,6 +184,7 @@
   --gw-list-option-selected-background: var(--gw-highlight-background);
   --gw-sidenav-menuitem-icon-color: var(--gw-foreground-on-surface-default);
   --gw-sidenav-menuitem-hover-icon-color: var(--gw-primary-base);
+  --gw-sidenav-menuitem-hover-color: var(--gw-foreground-on-surface-brand);
   --gw-sidenav-menuitem-hover-background: var(--gw-background-highlighted);
   --gw-sidenav-menuitem-selected-icon-color: var(--gw-primary-base);
   --gw-sidenav-menuitem-selected-background: var(--gw-background-highlighted);
@@ -275,12 +279,12 @@
   --gw-toast-error-background: var(--gw-error-base);
   --gw-toast-error-border-color: var(--gw-error-base);
   --gw-toast-error-color: var(--gw-contrast-text);
+  --gw-loader-color: var(--gw-foreground-on-surface-accent);
   --gw-form-field-background: var(--gw-default-background);
   --gw-list-option-selected-focus-background: var(--gw-highlight-focus-background);
   --gw-list-option-selected-focus-color: var(--gw-highlight-focus-color);
   --gw-list-option-selected-color: var(--gw-text-color);
   --gw-list-option-color: var(--gw-text-color);
-  --gw-sidenav-menuitem-hover-color: var(--gw-foreground-on-surface-brand);
   --gw-sidenav-togglebutton-background: var(--gw-sidenav-background);
   --gw-sidenav-togglebutton-hover-color: var(--gw-foreground-on-surface-muted);
   --gw-sidenav-togglebutton-color: var(--gw-foreground-on-surface-muted);
