@@ -1,16 +1,56 @@
-@import '../../../node_modules/tippy.js/dist/tippy.css';
-@import '../../../node_modules/tippy.js/themes/light-border.css';
-
 :host {
   display: block;
 }
 
-.tippy-box[data-theme="onto-tooltip"] {
+// Base tooltip styles
+.tooltip-box {
+  width: max-content;
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.5;
+  max-width: var(--gw-tooltip-max-width);
+  pointer-events: auto;
   color: var(--gw-tooltip-color);
   background-color: var(--gw-tooltip-background);
-  border-radius: 0;
+  border-radius: var(--gw-tooltip-border-radius);
 
-  .tippy-arrow {
-    color: var(--gw-tooltip-background);
+  .tooltip-arrow {
+    width: 10px;
+    height: 10px;
+
+    &::before {
+      content: '';
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background-color: var(--gw-tooltip-background);
+      transform: rotate(45deg);
+    }
+
+    &[data-placement="top"]::before {
+      border-bottom-color: transparent;
+      border-right-color: transparent;
+    }
+
+    &[data-placement="bottom"]::before {
+      border-top-color: transparent;
+      border-left-color: transparent;
+    }
+
+    &[data-placement="right"]::before {
+      border-bottom-color: transparent;
+      border-left-color: transparent;
+    }
+
+    &[data-placement="left"]::before {
+      border-top-color: transparent;
+      border-right-color: transparent;
+    }
+  }
+
+  .tooltip-content {
+    position: relative;
+    z-index: 1;
+    padding: var(--gw-tooltip-padding);
   }
 }

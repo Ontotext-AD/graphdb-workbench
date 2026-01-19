@@ -30,7 +30,7 @@ export class RdfSearchSteps extends BaseSteps {
   }
 
   static getTooltip() {
-    return cy.get('[data-tippy-root]');
+    return cy.get('.tooltip-box');
   }
 
   static getSearchAreaButtons() {

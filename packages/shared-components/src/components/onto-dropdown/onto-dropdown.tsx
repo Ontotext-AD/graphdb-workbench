@@ -64,11 +64,6 @@ export class OntoDropdown {
   @Prop() dropdownButtonTooltipLabelKey: string;
 
   /**
-   * Specifies the events that trigger the dropdown button tooltip to appear. Multiple event names should be separated by spaces.
-   */
-  @Prop() dropdownTooltipTrigger = 'manual';
-
-  /**
    * Icon class for the main dropdown button.
    */
   @Prop() iconClass = '';
@@ -153,10 +148,9 @@ export class OntoDropdown {
     return (
       <div class={`onto-dropdown ${this.open ? 'open' : 'closed'}`}>
         <button class="onto-dropdown-button"
-          ref={(el) => this.dropdownButtonElement = el as HTMLElementWithTooltip}
+          ref={(el) => this.dropdownButtonElement = el as unknown as HTMLElementWithTooltip}
           {...(this.dropdownButtonGuideSelector ? { [this.GUIDE_SELECTOR_ATTR]: this.dropdownButtonGuideSelector } : {})}
           tooltip-placement={tooltipPlacement}
-          tooltip-trigger={this.dropdownTooltipTrigger}
           tooltip-content={this.buttonTooltipContent}
           {...(this.tooltipTheme ? {'tooltip-theme': this.tooltipTheme} : {})}
           onMouseEnter={this.setDropdownButtonTooltip()}
@@ -174,7 +168,6 @@ export class OntoDropdown {
             <button class={'onto-dropdown-menu-item ' + item.cssClass}
               {...(item.guideSelector ? { [this.GUIDE_SELECTOR_ATTR]: item.guideSelector } : {})}
               tooltip-placement={OntoTooltipPlacement.LEFT}
-              tooltip-trigger={item.dropdownTooltipTrigger}
               {...(this.tooltipTheme ? {'tooltip-theme': this.tooltipTheme} : {})}
               onMouseEnter={this.setDropdownItemTooltip(item)}
               onClick={this.itemClickHandler(item.value)}>
