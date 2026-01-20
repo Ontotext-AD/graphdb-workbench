@@ -50,14 +50,12 @@ export class ThemeService implements Service {
    * applied instead.
    */
   applyColorScheme() {
-    const prefersDarkScheme = WindowService.matchMedia('(prefers-color-scheme: dark)').matches;
-    const initialTheme = prefersDarkScheme ? ThemeMode.dark : ThemeMode.light;
     // Only set initial theme if user has NOT manually chosen a theme
     if (this.isThemeModeSet()) {
       // Check if the theme is set in local storage workbench settings and apply
       this.applyDarkModeIfEnabled();
     } else {
-      this.setThemeMode(initialTheme);
+      this.setThemeMode(this.getPreferredScheme());
     }
   }
 
@@ -101,6 +99,11 @@ export class ThemeService implements Service {
    */
   isThemeModeSet() {
     return this.applicationSettingsStorageService.isThemeModePresent();
+  }
+
+  private getPreferredScheme(): ThemeMode {
+    const prefersDarkScheme = WindowService.matchMedia('(prefers-color-scheme: dark)').matches;
+    return prefersDarkScheme ? ThemeMode.dark : ThemeMode.light;
   }
 
   /**

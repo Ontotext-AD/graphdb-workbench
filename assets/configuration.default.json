@@ -1,9 +1,13 @@
 {
-  "applicationLogoPath": "assets/graphdb-logo.svg",
+  "applicationLogoPaths": {
+    "light": "assets/graphdb-logo-light.svg",
+    "dark": "assets/graphdb-logo-dark.svg"
+  },
+  "applicationLogoPath": "assets/graphdb-logo-dark.svg",
   "applicationFaviconPath": "assets/favicon.png",
   "pluginsManifestPath": "wb-plugins/plugins-manifest.json",
   "loggerConfig": {
-    "minLogLevel": "DEBUG",
-    "loggers": ["console"]
+    "loggers": ["console"],
+    "minLogLevel": "DEBUG"
   }
 }

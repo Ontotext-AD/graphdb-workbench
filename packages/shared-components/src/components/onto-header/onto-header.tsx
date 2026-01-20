@@ -26,7 +26,12 @@ import {
   LanguageService,
   LanguageContextService,
   ObjectUtil,
-  getCurrentRoute, AuthenticationService, WindowService, AuthorizationService, navigateTo
+  getCurrentRoute,
+  AuthenticationService,
+  WindowService,
+  AuthorizationService,
+  navigateTo,
+  RuntimeConfigurationContextService
 } from '@ontotext/workbench-api';
 import {TranslationService} from '../../services/translation.service';
 import {HtmlUtil} from '../../utils/html-util';
@@ -51,6 +56,8 @@ export class OntoHeader {
   // ========================
   // Services
   // ========================
+  private readonly UPDATE_ACTIVE_OPERATION_TIME_INTERVAL = 2000;
+  private readonly fibonacciGenerator = new FibonacciGenerator();
   private readonly monitoringService = ServiceProvider.get(MonitoringService);
   private readonly repositoryContextService = ServiceProvider.get(RepositoryContextService);
   private readonly repositoryLocationContextService = ServiceProvider.get(RepositoryLocationContextService);
@@ -60,12 +67,11 @@ export class OntoHeader {
   private readonly namespacesService = ServiceProvider.get(NamespacesService);
   private readonly namespaceContextService = ServiceProvider.get(NamespacesContextService);
   private readonly languageService: LanguageService = ServiceProvider.get(LanguageService);
-  private readonly UPDATE_ACTIVE_OPERATION_TIME_INTERVAL = 2000;
-  private readonly fibonacciGenerator = new FibonacciGenerator();
   private readonly authService = ServiceProvider.get(AuthenticationService);
   private readonly authorizationService = ServiceProvider.get(AuthorizationService);
   private readonly eventService = ServiceProvider.get(EventService);
   private readonly configurationContextService = ServiceProvider.get(ConfigurationContextService);
+  private readonly runtimeConfigurationContextService = ServiceProvider.get(RuntimeConfigurationContextService);
 
   // ========================
   // State
@@ -87,6 +93,7 @@ export class OntoHeader {
   @State() private user: AuthenticatedUser;
   @State() private showUserMenu = false;
   @State() private showLoginButton = false;
+  @State() private applicationLogoPath: string;
 
   // ========================
   // Private
@@ -123,14 +130,12 @@ export class OntoHeader {
   }
 
   render() {
-    const logoPath = this.configurationContextService.getApplicationConfiguration().applicationLogoPath;
-
     return (
       <Host>
         <div class="header-component">
           <div class="left-section brand">
             <a class="home-page" onClick={navigateTo('./')}>
-              <img src={logoPath} class="big-logo" alt={this.labels[labelKeys.LOGO_LINK]}/>
+              <img src={this.applicationLogoPath} class="big-logo" alt={this.labels[labelKeys.LOGO_LINK]}/>
             </a>
           </div>
           <div class="right-section">
@@ -183,6 +188,15 @@ export class OntoHeader {
     this.subscribeToNavigationEnd();
     this.subscribeToLanguageChanged();
     this.subscribeToAuthenticatedUserChange();
+    this.subscribeToThemeModeChange();
+  }
+
+  private subscribeToThemeModeChange(): void {
+    this.subscriptions.add(
+      this.runtimeConfigurationContextService.onThemeModeChanged((themeMode) => {
+        this.applicationLogoPath = this.configurationContextService.getApplicationLogoPath(themeMode);
+      })
+    );
   }
 
   private subscribeToRepositoryListChanged(): () => void {

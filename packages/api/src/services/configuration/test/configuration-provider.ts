@@ -4,7 +4,11 @@ import {Configuration} from '../../../models/configuration';
 
 export const createDefaultConfiguration = (): Configuration => {
   return {
-    applicationLogoPath: 'assets/graphdb-logo.svg',
+    applicationLogoPaths: {
+      light: 'assets/graphdb-logo-light.svg',
+      dark: 'assets/graphdb-logo-dark.svg'
+    },
+    applicationLogoPath: 'assets/graphdb-logo-dark.svg',
     applicationFaviconPath: 'assets/favicon.png',
     pluginsManifestPath: 'plugins/plugins-manifest.json',
     loggerConfig: {
@@ -16,7 +20,11 @@ export const createDefaultConfiguration = (): Configuration => {
 
 export const createConfigurationWithInfoMinLogLevel = (): Configuration => {
   return {
-    applicationLogoPath: 'assets/graphdb-logo.svg',
+    applicationLogoPaths: {
+      light: 'assets/graphdb-logo-light.svg',
+      dark: 'assets/graphdb-logo-dark.svg'
+    },
+    applicationLogoPath: 'assets/graphdb-logo-dark.svg',
     applicationFaviconPath: 'assets/favicon.png',
     pluginsManifestPath: 'plugins/plugins-manifest.json',
     loggerConfig: {
