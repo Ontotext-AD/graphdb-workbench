@@ -165,13 +165,14 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
                 TTYGContextService.emit(TTYGEventName.ASK_QUESTION, chatItem);
             };
 
-            const setAskingState = (isAsking) => {
+            const setAskingState = (isAsking, chatId) => {
                 $scope.waitingForLastMessage = isAsking;
                 $scope.showCancelButton = isAsking;
+                TTYGContextService.emit(TTYGEventName.ASK_QUESTION_STATE_CHANGED, {isAsking, chatId});
             };
 
-            const onAskQuestionStarted = () => {
-                setAskingState(true);
+            const onAskQuestionStarted = (chatId) => {
+                setAskingState(true, chatId);
             };
 
             /**
@@ -200,8 +201,8 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
                 focusQuestionInput();
             };
 
-            const onLastMessageReceived = () => {
-                setAskingState(false);
+            const onLastMessageReceived = (chat) => {
+                setAskingState(false, chat.chatId);
             };
 
             /**
@@ -219,17 +220,17 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
                     // Skip the loading indication if it is a new chat that hasn't received an answer yet.
                     $scope.loadingChat = !chat.isNew();
                     $scope.chatItem = getEmptyChatItem();
-                    setAskingState(false);
+                    setAskingState(false, chat.id);
                     focusQuestionInput();
                 } else {
                     reset();
                 }
             };
 
-            const onQuestionFailure = () => {
+            const onQuestionFailure = (chatId) => {
                 $scope.chatItem = cloneDeep($scope.askingChatItem);
                 $scope.askingChatItem = undefined;
-                setAskingState(false);
+                setAskingState(false, chatId);
             };
 
             /**
