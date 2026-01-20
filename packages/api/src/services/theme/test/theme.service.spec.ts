@@ -1,8 +1,9 @@
 import { ThemeService } from '../theme.service';
 import { ApplicationSettingsStorageService } from '../../application-settings';
-import { ApplicationSettings, ThemeMode } from '../../../models/application-settings/application-settings';
+import { ApplicationSettings, ThemeMode } from '../../../models/application-settings';
 import { service } from '../../../providers';
 import {createMockStorage, MutableStorage} from '../../utils/test/local-storage-mock';
+import {RuntimeConfigurationContextService} from '../../runtime-configuration';
 
 jest.mock('../../../providers', () => ({
   service: jest.fn(),
@@ -13,6 +14,7 @@ const mockService = service as jest.MockedFunction<typeof service>;
 describe('ThemeService', () => {
   let themeService: ThemeService;
   let appSettingsService: ApplicationSettingsStorageService;
+  let runtimeConfigService: RuntimeConfigurationContextService;
   let mockRootElement: HTMLElement;
   let storage: MutableStorage;
 
@@ -22,7 +24,16 @@ describe('ThemeService', () => {
     appSettingsService = new ApplicationSettingsStorageService();
     jest.spyOn(ApplicationSettingsStorageService.prototype, 'getStorage').mockReturnValue(storage);
 
-    mockService.mockReturnValue(appSettingsService);
+    runtimeConfigService = new RuntimeConfigurationContextService();
+    mockService.mockImplementation((serviceClass) => {
+      if (serviceClass === ApplicationSettingsStorageService) {
+        return appSettingsService;
+      }
+      if (serviceClass === RuntimeConfigurationContextService) {
+        return runtimeConfigService;
+      }
+      throw new Error(`Unknown service class: ${serviceClass.name}`);
+    });
 
     mockRootElement = {
       classList: {

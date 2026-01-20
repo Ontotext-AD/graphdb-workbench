@@ -16,7 +16,13 @@ export interface Configuration {
   loggerConfig: LoggerConfig
 
   /**
-   * The path to the application logo image.
+   * The paths to the application logo images for different themes.
+   * The keys are theme names: "light" or "dark", and the values are the corresponding logo image paths.
+   */
+  applicationLogoPaths: Record<string, string>;
+
+  /**
+   * The path to the default application logo image.
    */
   applicationLogoPath: string;
 
