@@ -353,11 +353,11 @@ export class OntoNavbar {
       <Host>
         <ul class="navbar-component">
           <li class="navbar-toggle">
-            <span class="toggle-menu" title={
+            <a class="toggle-menu" title={
               this.isCollapsed ? this.labels[labelKeys.EXPAND] : this.labels[labelKeys.COLLAPSE]
             } onClick={this.toggleNavbarHandler()}>
               <em class={this.isCollapsed ? 'ri-arrow-right-s-line' : 'ri-arrow-left-s-line'}></em>
-            </span>
+            </a>
           </li>
           {this.menuModel.items.map((item) => (
             <li key={item.labelKey} class={{'menu-element': true, 'open': item.open}}
