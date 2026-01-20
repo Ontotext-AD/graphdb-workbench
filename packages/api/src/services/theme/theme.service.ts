@@ -3,13 +3,14 @@ import {service} from '../../providers';
 import {ApplicationSettingsStorageService} from '../application-settings';
 import {ThemeMode} from '../../models/application-settings';
 import {WindowService} from '../window';
+import {RuntimeConfigurationContextService} from '../runtime-configuration';
 
 /**
  * Service to manage the theme of the application.
  */
 export class ThemeService implements Service {
-  private readonly applicationSettingsStorageService: ApplicationSettingsStorageService =
-    service(ApplicationSettingsStorageService);
+  private readonly applicationSettingsStorageService = service(ApplicationSettingsStorageService);
+  private readonly runtimeConfigurationContextService = service(RuntimeConfigurationContextService);
 
   private readonly rootSelector = ':root';
   private readonly darkClass = ThemeMode.dark;
@@ -39,6 +40,7 @@ export class ThemeService implements Service {
 
     const isDark = mode === ThemeMode.dark;
     rootElement.classList.toggle(this.darkClass, isDark);
+    this.runtimeConfigurationContextService.updateThemeMode(isDark ? ThemeMode.dark : ThemeMode.light);
   }
 
   /**
