@@ -462,7 +462,7 @@ function TTYGViewCtrl(
             chatItem.chatId = conversationId;
             TTYGContextService.emit(TTYGEventName.ASK_QUESTION, chatItem);
         }).catch((error) => {
-                TTYGContextService.emit(TTYGEventName.CREATE_CHAT_FAILURE);
+                TTYGContextService.emit(TTYGEventName.CREATE_CHAT_FAILURE, chatItem.chatId);
                 toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
             });
     };
@@ -471,7 +471,7 @@ function TTYGViewCtrl(
      * @param {ChatItemModel} chatItem
      */
     const onAskQuestion = (chatItem) => {
-        TTYGContextService.emit(TTYGEventName.ASK_QUESTION_STARTING);
+        TTYGContextService.emit(TTYGEventName.ASK_QUESTION_STARTING, chatItem.chatId);
         // Reset the pending question cancellation promise to avoid interfering with the next question.
         // Currently, we can only ask a question for the selected chat, so it's safe to reset the promise here.
         pendingQuestionCancelingPromise = undefined;
@@ -489,9 +489,10 @@ function TTYGViewCtrl(
                     // just process the messages
                     updateChatAnswersFirstResponse(selectedChat, chatItem, chatAnswer);
                 }
+                TTYGContextService.emit(TTYGEventName.ASK_QUESTION_STATE_CHANGED, {isAsking: false, chatId: chatItem.chatId});
             })
             .catch((error) => {
-                TTYGContextService.emit(TTYGEventName.ASK_QUESTION_FAILURE);
+                TTYGContextService.emit(TTYGEventName.ASK_QUESTION_FAILURE, chatItem.chatId);
                 toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
             });
     };
@@ -511,7 +512,8 @@ function TTYGViewCtrl(
             })
             .catch((error) => {
                 // TODO failure event
-                TTYGContextService.emit(TTYGEventName.ASK_QUESTION_FAILURE);
+                TTYGContextService.emit(TTYGEventName.ASK_QUESTION_FAILURE, continueData.chatId);
+                toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
                 toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
             });
     };

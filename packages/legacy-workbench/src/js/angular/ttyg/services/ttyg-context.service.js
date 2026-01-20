@@ -7,7 +7,6 @@ angular
 TTYGContextService.$inject = ['EventEmitterService', 'TTYGService'];
 
 function TTYGContextService(EventEmitterService) {
-
     /**
      * The list of agents.
      * @type {AgentListModel}
@@ -125,7 +124,7 @@ function TTYGContextService(EventEmitterService) {
         addChat(newChat);
         selectChat(newChat);
         emit(TTYGEventName.CREATE_CHAT_SUCCESSFUL, newChat);
-    }
+    };
 
     /** Subscribes to the 'chatListUpdated' event.
      * @param {function} callback - The callback to be called when the event is fired.
@@ -402,7 +401,7 @@ function TTYGContextService(EventEmitterService) {
         toggleExplainResponse,
         getExplainResponse,
         addExplainResponseCache,
-        onExplainResponseCacheUpdated
+        onExplainResponseCacheUpdated,
     };
 }
 
@@ -583,4 +582,9 @@ export const TTYGEventName = {
     GO_TO_SPARQL_EDITOR: "openQueryInSparqlEditor",
 
     CAN_MODIFY_AGENT_UPDATED: "canModifyAgentUpdated",
+
+    /**
+     * This event will be emitted when there is a change in the state of the question being asked. (e.g., currently being sent)
+     */
+    ASK_QUESTION_STATE_CHANGED: "askQuestionStateChanged",
 };

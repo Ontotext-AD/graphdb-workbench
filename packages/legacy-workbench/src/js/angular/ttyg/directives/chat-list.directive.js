@@ -4,7 +4,7 @@ import {getHumanReadableTimestamp} from "../services/ttyg.utils";
 import {decodeHTML} from "../../../../app";
 
 const modules = [
-    'graphdb.framework.core.directives.inline-editable-text'
+    'graphdb.framework.core.directives.inline-editable-text',
 ];
 
 angular
@@ -18,7 +18,6 @@ function ChatListComponent(TTYGContextService, ModalService, $translate, $filter
         restrict: 'E',
         templateUrl: 'js/angular/ttyg/templates/chat-list.html',
         link: ($scope) => {
-
             // =========================
             // Public variables
             // =========================
@@ -128,17 +127,24 @@ function ChatListComponent(TTYGContextService, ModalService, $translate, $filter
 
             // =========================
             // Subscriptions
+            const onAskQuestionStateChanged = (payload) => {
+                const chats = TTYGContextService.getChats();
+                chats.setChatAsAsking(payload.chatId, payload.isAsking);
+                TTYGContextService.updateChats(chats);
+            };
+
             // =========================
-            const subscriptions = [];
+            const subscriptions = [
+                TTYGContextService.onSelectedChatChanged(onSelectedChatChanged),
+                TTYGContextService.onSelectedChatUpdated(onSelectedChatChanged),
+                TTYGContextService.onChatsListChanged(onChatsListChanged),
+                TTYGContextService.subscribe(TTYGEventName.DELETING_CHAT, onDeletingChat),
+                TTYGContextService.subscribe(TTYGEventName.ASK_QUESTION_STATE_CHANGED, onAskQuestionStateChanged),
+            ];
 
             const removeAllSubscribers = () => {
                 subscriptions.forEach((subscription) => subscription());
             };
-
-            subscriptions.push(TTYGContextService.onSelectedChatChanged(onSelectedChatChanged));
-            subscriptions.push(TTYGContextService.onSelectedChatUpdated(onSelectedChatChanged));
-            subscriptions.push(TTYGContextService.onChatsListChanged(onChatsListChanged));
-            subscriptions.push(TTYGContextService.subscribe(TTYGEventName.DELETING_CHAT, onDeletingChat));
 
             // Deregister the watcher when the scope/directive is destroyed
             $scope.$on('$destroy', removeAllSubscribers);
@@ -150,6 +156,6 @@ function ChatListComponent(TTYGContextService, ModalService, $translate, $filter
             function initialize() {
             }
             initialize();
-        }
+        },
     };
 }

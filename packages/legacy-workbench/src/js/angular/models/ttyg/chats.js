@@ -35,6 +35,7 @@ export class ChatModel {
         this._chatHistory = data.chatHistory || new ChatItemsListModel();
         this._new = data.new ?? false;
         this.hash = this.generateHash();
+        this._asking = data.asking ?? false;
     }
 
     isNew() {
@@ -80,6 +81,14 @@ export class ChatModel {
 
     set chatHistory(value) {
         this._chatHistory = value || new ChatItemsListModel();
+    }
+
+    isAsking() {
+        return this._asking;
+    }
+
+    set asking(value) {
+        this._asking = value;
     }
 
     /**
@@ -190,6 +199,16 @@ export class ChatsListModel {
         const chat = this._chats.find((chat) => chat.id === chatId);
         if (chat) {
             chat.new = false;
+        }
+    }
+
+    setChatAsAsking(chatId, asking) {
+        if (!chatId) {
+            return;
+        }
+        const chat = this._chats.find((chat) => chat.id === chatId);
+        if (chat) {
+            chat.asking = asking;
         }
     }
 
