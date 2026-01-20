@@ -9,14 +9,8 @@ PluginRegistry.add('route', [
         'title': 'view.system.information.title',
         'helpInfo': 'view.system.information.helpInfo',
         'documentationUrl': 'diagnosing-and-reporting-critical-errors.html#running-a-system-report',
-        'allowAuthorities': ['READ_REPO_{repoId}']
-    }, {
-        'url': '/webapi',
-        'templateUrl': 'pages/webapi.html',
-        'title': 'view.rest.api.documentation.title',
-        'helpInfo': 'view.rest.api.documentation.helpInfo',
-        'documentationUrl': 'using-the-graphdb-rest-api.html'
-    }
+        'allowAuthorities': ['READ_REPO_{repoId}'],
+    },
 ]);
 
 PluginRegistry.add('main.menu', {
@@ -29,7 +23,7 @@ PluginRegistry.add('main.menu', {
             icon: 'ri-question-line',
             guideSelector: 'menu-help',
             testSelector: 'menu-help',
-            children: []
+            children: [],
         }, {
             label: 'System information',
             labelKey: 'menu.system.information.label',
@@ -38,16 +32,7 @@ PluginRegistry.add('main.menu', {
             parent: 'Help',
             role: 'ROLE_ADMIN',
             guideSelector: 'sub-menu-system-information',
-            testSelector: 'sub-menu-system-information'
-        }, {
-            label: 'REST API',
-            labelKey: 'menu.rest.api.label',
-            href: 'webapi',
-            order: 1,
-            parent: 'Help',
-            guideSelector: 'sub-menu-rest-api',
-            testSelector: 'sub-menu-rest-api',
-            role: 'ROLE_USER',
+            testSelector: 'sub-menu-system-information',
         }, {
             label: 'Documentation',
             labelKey: 'menu.documentation.label',
@@ -55,10 +40,10 @@ PluginRegistry.add('main.menu', {
             parent: 'Help',
             icon: 'ri-external-link-line',
             documentationHref: 'index.html',
-            hrefFun: function (productInfo, urlResolver) {
+            hrefFun: function(productInfo, urlResolver) {
                 return urlResolver(productInfo.productShortVersion, 'index.html');
             },
-            guideSelector: 'sub-menu-documentation'
+            guideSelector: 'sub-menu-documentation',
         }, {
             label: 'Tutorials',
             labelKey: 'menu.tutorials.label',
@@ -66,10 +51,10 @@ PluginRegistry.add('main.menu', {
             parent: 'Help',
             icon: 'ri-external-link-line',
             documentationHref: 'tutorials.html',
-            hrefFun: function (productInfo, urlResolver) {
+            hrefFun: function(productInfo, urlResolver) {
                 return urlResolver(productInfo.productShortVersion, 'tutorials.html');
             },
-            guideSelector: 'sub-menu-developer-hub'
+            guideSelector: 'sub-menu-developer-hub',
         }, {
             label: 'Support',
             labelKey: 'menu.support.label',
@@ -77,10 +62,10 @@ PluginRegistry.add('main.menu', {
             parent: 'Help',
             icon: 'ri-external-link-line',
             documentationHref: 'support.html',
-            hrefFun: function (productInfo, urlResolver) {
+            hrefFun: function(productInfo, urlResolver) {
                 return urlResolver(productInfo.productShortVersion, 'support.html');
             },
-            guideSelector: 'sub-menu-support'
-        }
-    ]
+            guideSelector: 'sub-menu-support',
+        },
+    ],
 });
