@@ -17,17 +17,16 @@
 </div>
 <div class="content" ng-show="!isActiveRepoFedXType() && !repositoryError && isLicenseValid() && !isSystemRepository()" guide-selector="relationships-page">
     <div class="pull-right relations-toolbar" ng-show="status != 'NO_REPO' && status != 'N/A' && !isLoading()">
-        <div id="selectGraphDropdown" class="btn-group" role="group" ng-show="graphsInRepo.length > 2" guide-selector="graph-select-dropdown">
+        <div id="selectGraphDropdown" class="btn-group" role="group" ng-show="graphsInRepo.length > 2" guide-selector="graph-select-dropdown"
+             uib-dropdown
+             on-toggle="graphsDropdownToggled(open)">
             <button id="graphsBtnGroup" type="button" class="btn btn-lg btn-secondary"
-                    data-toggle="dropdown"
-                    uib-dropdown
-                    on-toggle="graphsDropdownToggled(open)"
-                    aria-expanded="false">
-                <a uib-dropdown-toggle>
-                    <span tooltip-placement="bottom" gdb-tooltip="{{'select.graph.label' | translate}}">
-                        {{getSelectedGraphValue() | translate}}
-                    </span>
-                </a>
+                    uib-dropdown-toggle>
+
+        <span tooltip-placement="bottom" gdb-tooltip="{{'select.graph.label' | translate}}">
+            {{getSelectedGraphValue() | translate}}
+        </span>
+
             </button>
             <ul class="dropdown-menu dropdown-menu-right pre-scrollable" aria-labelledby="dropdownMenuButton">
                 <li ng-repeat="graph in graphsInRepo" ng-if="graph.contextID.value !== getSelectedGraphValue()">

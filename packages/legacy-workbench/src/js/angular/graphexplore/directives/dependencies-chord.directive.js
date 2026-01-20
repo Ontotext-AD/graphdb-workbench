@@ -110,6 +110,7 @@ function dependenciesChordDirective($repositories, GraphDataRestService) {
                 .each(function(d) {
                     d.angle = (d.startAngle + d.endAngle) / 2;
                 })
+                .attr("class", "dependencies-chord-label")
                 .attr("dy", ".35em")
                 .attr("transform", function(d) {
                     return "rotate(" + (d.angle * 180 / Math.PI - 90) + ")"

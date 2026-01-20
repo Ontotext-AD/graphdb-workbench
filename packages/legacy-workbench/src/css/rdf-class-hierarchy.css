@@ -147,15 +147,6 @@
     border-top: 0;
 }
 
-#graphsBtnGroup[aria-expanded="false"] {
-    background-color: white;
-    border: none;
-}
-
-#graphsBtnGroup[aria-expanded="true"] {
-    color: #FFFFFF;
-}
-
 ::-webkit-scrollbar {
     display: none;
 }

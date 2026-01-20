@@ -208,6 +208,10 @@ body .row {
     width: 100%;
 }
 
+.dependencies-chord-label {
+    fill: var(--gw-body-color);
+}
+
 .related-arrow {
     padding-left: 0;
     padding-right: 0;
@@ -220,13 +224,4 @@ body .row {
 
 .deps-sidebar {
     font-size: 14px;
-}
-
-#graphsBtnGroup[aria-expanded="false"] {
-    background-color: white;
-    border: none;
-}
-
-#graphsBtnGroup[aria-expanded="true"] {
-    color: inherit;
 }
