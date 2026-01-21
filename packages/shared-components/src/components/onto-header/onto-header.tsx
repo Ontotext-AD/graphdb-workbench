@@ -218,8 +218,9 @@ export class OntoHeader {
 
   private subscribeToRepositoryChange() {
     this.subscriptions.add(
-      this.repositoryContextService.onSelectedRepositoryChanged((repository) => {
-        this.currentRepository = repository;
+      this.repositoryContextService.onSelectedRepositoryChanged((repositoryReference) => {
+        // The observer can receive a reference (having id and location), so we need to find the full repository object.
+        this.currentRepository = this.repositoryContextService.findRepository(repositoryReference);
         this.shouldShowSearch = this.shouldShowRdfSearch();
         this.loadNamespaces();
         this.updateRepositoryItems();
