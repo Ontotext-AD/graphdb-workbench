@@ -56,7 +56,7 @@
 						<div class="form-group" ng-class="{'has-danger': passwordError}">
 							<div class="input-group">
 								<span class="input-group-addon" gdb-tooltip="{{'security.password.placeholder' | translate}}"><em class="ri-lock-line ri-xl text-muted"></em></span>
-								<input id="wb-user-password" placeholder="{{passwordPlaceholder | translate}}" name="password" class="form-control form-control-lg" type="password"	ng-model="user.password" ng-hide="user.external || hasExternalAuthUser()" ng-readonly="noPassword">
+								<input id="wb-user-password" autocomplete="new-password" placeholder="{{passwordPlaceholder | translate}}" name="password" class="form-control form-control-lg" type="password"	ng-model="user.password" ng-hide="user.external || hasExternalAuthUser()" ng-readonly="noPassword">
 								<span ng-show="user.external || hasExternalAuthUser()">{{'security.auth.from.external.module' | translate}}</span>
 							</div>
 							<div ng-show="passwordError" class="form-control-feedback">{{passwordError}}</div>
