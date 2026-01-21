@@ -11,6 +11,7 @@ import {MissingOpenidConfiguration} from '../errors/openid/missing-openid-config
 import {InvalidOpenidAuthFlow} from '../errors/openid/invalid-openid-auth-flow';
 import {notify} from '../../notification';
 import {Notification, NotificationParam} from '../../../models/notification';
+import {UserHasNoAccess} from '../errors/openid/user-has-no-access';
 
 // Constants for better maintainability
 const ERRORS = {
@@ -172,8 +173,12 @@ export class OpenidAuthStrategy implements AuthStrategy {
     try {
       await this.loadAndSetAuthenticatedUser();
     } catch (error) {
-      this.logger.error(ERRORS.USER_LOAD_FAILED, error);
-      // Don't rethrow here as this is not critical for authentication success
+      this.logger.debug(ERRORS.USER_LOAD_FAILED, error);
+      const notification = Notification.error('openid.errors.user_no_access')
+        .withTitle('openid.errors.title')
+        .withParameters({[NotificationParam.SHOULD_TOAST]: true});
+      notify(notification);
+      throw new UserHasNoAccess();
     }
   }
 

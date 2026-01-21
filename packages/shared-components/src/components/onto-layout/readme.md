@@ -13,7 +13,6 @@
 - [onto-navbar](../onto-navbar)
 - [onto-footer](../onto-footer)
 - [onto-tooltip](../onto-tooltip)
-- [onto-toastr](../onto-toastr)
 
 ### Graph
 ```mermaid
@@ -22,7 +21,6 @@ graph TD;
   onto-layout --> onto-navbar
   onto-layout --> onto-footer
   onto-layout --> onto-tooltip
-  onto-layout --> onto-toastr
   onto-header --> onto-search-icon
   onto-header --> onto-rdf-search
   onto-header --> onto-operations-notification
