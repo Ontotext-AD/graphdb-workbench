@@ -194,7 +194,8 @@
       "unknown_flow": "Flux d'authentification inconnu: {{authFlow}}",
       "invalid_pkce_state": "État PKCE invalide",
       "cannot_retrieve_token": "Impossible de récupérer le jeton après la connexion: {{error}}",
-      "cannot_refresh_token": "Impossible de rafraîchir le jeton OpenID: {{error}}"
+      "cannot_refresh_token": "Impossible de rafraîchir le jeton OpenID: {{error}}",
+      "user_no_access": "L'utilisateur n'a pas accès à GraphDB"
     }
   }
 }

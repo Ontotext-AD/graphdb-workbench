@@ -125,7 +125,6 @@ export class OntoLayout {
           </footer>
         }
         <onto-tooltip></onto-tooltip>
-        <onto-toastr></onto-toastr>
       </Host>
     );
   }

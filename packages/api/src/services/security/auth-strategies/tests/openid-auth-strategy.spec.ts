@@ -211,7 +211,7 @@ describe('OpenidAuthProvider', () => {
       expect(window.singleSpa.navigateToUrl).not.toHaveBeenCalled();
     });
 
-    it('should handle error when loading authenticated user fails', async () => {
+    it('should return false when loading authenticated user fails', async () => {
       const openidConfig = createOpenIdConfig();
       setupSecurityConfig(openidConfig);
       jest.spyOn(openIdService, 'initializeOpenId').mockResolvedValue(true);
@@ -222,9 +222,9 @@ describe('OpenidAuthProvider', () => {
 
       const result = await strategy.initialize();
 
-      expect(result).toBe(true);
+      expect(result).toBe(false);
       expect(loggerErrorSpy).toHaveBeenCalledWith(
-        'Could not load authenticated user',
+        'Could not initialize OpenID authentication',
         expect.any(Error)
       );
       expect(updateAuthenticatedUserSpy).not.toHaveBeenCalled();
