@@ -361,7 +361,7 @@ export class OntoNavbar {
       <Host>
         <ul class="navbar-component">
           <li class="navbar-toggle">
-            <a class="toggle-menu" title={
+            <a class="toggle-menu no-underline" title={
               this.isCollapsed ? this.labels[labelKeys.EXPAND] : this.labels[labelKeys.COLLAPSE]
             } onClick={this.toggleNavbarHandler()}>
               <em class={this.isCollapsed ? 'ri-arrow-right-s-line' : 'ri-arrow-left-s-line'}></em>

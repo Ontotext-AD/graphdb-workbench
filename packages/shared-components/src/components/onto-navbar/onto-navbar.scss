@@ -125,7 +125,7 @@ main menu height*/
 }
 
 .navbar-component .sub-menu li a {
-  padding: 0.5em 0.8em;
+  padding: 0.2em 0.8em 0.5em 1.3em;
   display: block;
 }
 
@@ -137,9 +137,9 @@ main menu height*/
   display: block;
 }
 
-.navbar-component .menu-element ul:before, .rdf-list ul.datasource:before {
+.navbar-component .menu-element ul:before {
   font-family: 'icomoon', sans-serif !important;
-  content: "\e921";
+  content: "\e91b";
   display: block;
   font-size: 1.5em;
   position: absolute;
@@ -153,7 +153,7 @@ main menu height*/
 }
 
 .navbar-component .menu-element.open ul:before, .rdf-list ul.open.datasource:before {
-  transform: rotate(180deg);
+  transform: rotate(90deg);
 }
 
 .navbar-component.collapsed {
@@ -183,6 +183,10 @@ main menu height*/
   display: none;
 }
 
+.navbar-component.collapsed .menu-element.open .sub-menu-item .sub-menu-link {
+  background-color: var(--gw-sidenav-submenuitem-open-background);
+}
+
 .navbar-component.collapsed .menu-element-root {
   overflow: visible;
 }
@@ -198,9 +202,8 @@ main menu height*/
   font-weight: 500;
   text-overflow: ellipsis;
   overflow: hidden;
-  padding: 0.5em 0.8rem 0.2em 0;
-  margin-left: 0.8rem;
-  margin-bottom: 0.5em;
+  padding: 0.5em 0.8rem 0.7em 0.8rem;
+  background-color: var(--gw-sidenav-submenuitem-open-background);
 }
 
 .navbar-component.collapsed .menu-element.open .sub-menu.align-bottom {
@@ -214,14 +217,13 @@ main menu height*/
 
 /* ---------------- Sidenav Toggle ---------------- */
 .navbar-toggle {
-  padding: .6em 0;
+  padding: .3em 0;
 }
 
 .toggle-menu {
-  display: block;
-  position: absolute;
-  top: 0;
-  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
   font-size: 0.8em;
   line-height: 1.5;
   padding: 0 0.3em;
@@ -302,6 +304,7 @@ main menu height*/
 
 //* ---------------- Submenu ---------------- */
 .navbar-component .menu-element .sub-menu-item .menu-item {
+  background-color: var(--gw-sidenav-submenuitem-open-background);
   color: var(--gw-sidenav-submenuitem-color);
   font-weight: 400;
 }
