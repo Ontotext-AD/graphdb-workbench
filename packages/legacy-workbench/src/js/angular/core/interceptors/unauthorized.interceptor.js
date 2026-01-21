@@ -5,8 +5,8 @@ import {LoggerProvider} from '../services/logger-provider';
 const logger = LoggerProvider.logger;
 
 angular.module('graphdb.framework.core.interceptors.unauthorized', [])
-    .factory('$unauthorizedInterceptor', ['$q', '$rootScope', '$translate',
-        function($q, $rootScope, $translate) {
+    .factory('$unauthorizedInterceptor', ['$q', '$rootScope', '$translate', '$location',
+        function($q, $rootScope, $translate, $location) {
             const unauthenticatedInterceptor = new UnauthenticatedInterceptor();
             const unauthorizedInterceptor = new UnauthorizedInterceptor();
 

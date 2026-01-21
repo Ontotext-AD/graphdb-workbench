@@ -152,9 +152,10 @@ function homeCtrl($scope,
 
     const onSelectedRepositoryUpdated = (repository) => {
         const hasGqlRights = authorizationService.hasGqlRights(repository);
+        const hasReadRights = authorizationService.canReadRepo(repository);
 
         // Don't call API, if no repo ID, or with GQL read-only or write rights
-        if (!repository || hasGqlRights) {
+        if (!repository || !hasReadRights || hasGqlRights) {
             $scope.repositoryNamespaces = new NamespacesListModel();
             return;
         }
