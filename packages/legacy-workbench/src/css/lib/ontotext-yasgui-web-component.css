@@ -152,14 +152,6 @@ yasgui-component .custom-button:disabled:hover, yasgui-component .custom-button:
     color: #818a91 !important;
 }
 
-/* Make our custom icons bolder to match the remixicons look */
-yasgui-component .custom-button.icon-inferred-on,
-yasgui-component .custom-button.icon-same-as-on,
-yasgui-component .custom-button.icon-inferred-off,
-yasgui-component .custom-button.icon-same-as-off {
-    font-weight: 600;
-}
-
 yasgui-component .yasqe_queryButton {
     font-family: var(--main-font);
     font-weight: 400;

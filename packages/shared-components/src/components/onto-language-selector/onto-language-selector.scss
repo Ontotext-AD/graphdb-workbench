@@ -8,24 +8,38 @@ onto-language-selector {
   .onto-dropdown {
     height: 100%;
 
+    .onto-dropdown-button {
+      background-color: transparent;
+      color: var(--gw-button-tertiary-color);
+      border: 1px solid var(--gw-button-tertiary-border-color);
+
+      .button-icon {
+        color: var(--gw-button-tertiary-icon-color);
+      }
+    }
+
+    .onto-dropdown-button:hover {
+      background-color: var(--gw-button-tertiary-hover-background);
+      color: var(--gw-button-tertiary-hover-color);
+      border: 1px solid var(--gw-button-tertiary-hover-border-color);
+    }
+
+
     &.open {
+      color: var(--gw-button-tertiary-color);
+      background-color: var(--gw-button-tertiary-background);
+      border-color: var(--gw-button-tertiary-border-color);
+
       .onto-dropdown-button {
         height: fit-content;
       }
     }
 
     &.closed {
-
       .onto-dropdown-button {
-        background-color: transparent;
-
         .ri-translate-2 {
           font-size: 1.5em;
         }
-      }
-
-      .onto-dropdown-button:hover {
-        background-color: var(--gw-button-secondary-hover-background);
       }
     }
   }

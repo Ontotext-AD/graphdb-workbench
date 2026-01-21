@@ -10,18 +10,24 @@
     font-size: 1rem;
     text-align: center;
     user-select: none;
-    border: 1px solid transparent;
     padding: .4em 1rem;
     cursor: pointer;
     white-space: nowrap;
     place-items: center;
     transition: all 0.15s ease-out;
     background-color: transparent;
-    color: var(--gw-button-secondary-color);
+    color: var(--gw-button-tertiary-color);
+    border: 1px solid var(--gw-button-tertiary-border-color);
+
+    .ri-user-line,
+    .ri-arrow-down-s-line {
+      color: var(--gw-button-tertiary-icon-color);
+    }
 
     &:hover {
-      background-color: var(--gw-button-secondary-hover-background);
-      color: var(--gw-button-secondary-hover-color);
+      background-color: var(--gw-button-tertiary-hover-background);
+      color: var(--gw-button-tertiary-hover-color);
+      border: 1px solid var(--gw-button-tertiary-hover-border-color);
 
       & .ri-user-line {
         transform: scale(1.2);
@@ -33,15 +39,19 @@
     }
 
     &.open {
-      color: white;
-      background-color: var(--gw-primary-base);
-      border-color: var(--gw-primary-base);
+      color: var(--gw-button-primary-color);
+      background-color: var(--gw-button-primary-background);
 
-      & .ri-user-line {
-        color: var(--icon-on-primary-color, #ffffffcc);
+      .ri-user-line,
+      .ri-arrow-down-s-line {
+        color: var(--gw-button-primary-color);
       }
 
       &:hover {
+        color: var(--gw-button-primary-hover-color);
+        background-color: var(--gw-button-primary-hover-background);
+        border-color: var(--gw-button-primary-hover-border-color);
+
         .ri-user-line {
           transform: scale(1.2);
         }
@@ -53,18 +63,15 @@
     }
 
     i {
-      color: var(--gw-primary-base);
       transition: 0.15s ease-out;
-
       &.ri-arrow-down-s-line {
-        color: rgba(0, 0, 0, .35);
         font-size: 1.1em;
         transition: all 0.2s ease-in;
       }
     }
   }
 
-  & .onto-user-menu-dropdown {
+  .onto-user-menu-dropdown {
     position: absolute;
     z-index: 1000;
     display: flex;
@@ -75,18 +82,20 @@
     min-width: 7rem;
     font-size: 1rem;
     width: 100%;
-    color: var(--gw-primary-contrast-color);
-    background-color: var(--gw-primary-base);
+    color: var(--gw-button-primary-color);
+    background-color: var(--gw-button-primary-background);
 
-    & translate-label {
+    translate-label {
       padding: .4rem 1rem;
       user-select: none;
       white-space: nowrap;
       font-weight: 400;
 
-      &:hover, &:focus {
-        background-color: rgba(0, 0, 0, .1);
-      }
+      &:hover {
+          color: var(--gw-button-primary-hover-color);
+          background-color: var(--gw-button-primary-hover-background);
+          border-color: var(--gw-button-primary-hover-border-color);
+        }
     }
   }
 }

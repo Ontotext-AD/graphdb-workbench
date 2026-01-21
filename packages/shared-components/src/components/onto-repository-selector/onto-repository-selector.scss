@@ -5,15 +5,8 @@
 .onto-repository-selector {
   .onto-dropdown {
     &.closed {
-      .onto-dropdown-button {
+      .onto-dropdown-button:not(:hover) {
         background-color: transparent;
-        color: var(--gw-button-secondary-background);
-        border: 1px solid var(--gw-button-secondary-border-color);
-
-        &:hover {
-          background-color: var(--gw-button-secondary-hover-background);
-          color: var(--gw-button-secondary-hover-color);
-        }
       }
     }
   }
@@ -56,6 +49,7 @@
   border: 1px solid var(--gw-dialog-border-color);
   box-shadow: var(--gw-dialog-shadow-1-offset-x) var(--gw-dialog-shadow-1-offset-y) var(--gw-dialog-shadow-1-blur) var(--gw-dialog-shadow-1-spread) var(--gw-dialog-shadow-1-color);
   max-width: 350px;
+  opacity: 1 !important;
 
   .tooltip-arrow::before {
     border: 1px solid var(--gw-dialog-border-color);
