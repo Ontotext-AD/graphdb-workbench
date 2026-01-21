@@ -3,32 +3,30 @@
 }
 
 .onto-dropdown {
-
   position: relative;
   width: fit-content;
 
   &.closed {
-
     .onto-dropdown-menu {
       display: none;
-    }
-
-    .button-icon {
-      color: var(--gw-primary-base);
-    }
-
-    .button-name {
-      color: var(--gw-secondary-base);
     }
   }
 
   &.open {
-    background-color: var(--gw-primary-base);
-    color: #FFFFFF;
-    height: 2rem;
+    .onto-dropdown-button {
+      color: var(--gw-button-primary-color);
+      background-color: var(--gw-button-primary-background);
+      border-color: var(--gw-button-primary-border-color);
 
-    .button-icon {
-      color: var(--icon-on-primary-color);
+      .button-icon {
+        color: var(--gw-button-primary-icon-color);
+      }
+    }
+
+    .onto-dropdown-button:hover {
+      color: var(--gw-button-primary-hover-color);
+      background-color: var(--gw-button-primary-hover-background);
+      border-color: var(--gw-button-primary-hover-border-color);
     }
   }
 
@@ -41,20 +39,26 @@
     font-weight: 400;
     padding: 0.4em 1rem;
     line-height: 1.5;
-    border: 1px solid transparent;
     outline: none;
-    color: var(--gw-primary-contrast-color);
-    background-color: var(--gw-primary-base);
+    background-color: var(--gw-button-secondary-background);
+    border: 1px solid var(--gw-button-secondary-border-color);
+    color: var(--gw-button-secondary-color);
     transition: all 0.15s ease-out;
 
     .button-icon {
+      color: var(--gw-button-secondary-icon-color);
       font-size: 1.4em;
     }
 
     .ri-arrow-down-s-line {
-      color: rgba(0, 0, 0, 0.35);
       font-size: 1.1em;
       transition: all 0.2s ease-in;
+    }
+
+    &:hover {
+      background-color: var(--gw-button-secondary-hover-background);
+      border: 1px solid var(--gw-button-secondary-hover-border-color);
+      color: var(--gw-button-secondary-hover-color);
     }
   }
 
@@ -74,8 +78,8 @@
     font-size: 1rem;
     font-weight: 400;
     padding: .5em 1.2em;
-    color: var(--gw-primary-contrast-color);
-    background-color: var(--gw-primary-base);
+    color: var(--gw-button-primary-color);
+    background-color: var(--gw-button-primary-background);
     text-align: end;
     white-space: nowrap;
     border: none;
@@ -85,7 +89,13 @@
 
   .onto-dropdown-menu-item:hover {
     cursor: pointer;
-    background-color: var(--gw-primary-dark);
+    color: var(--gw-button-primary-hover-color);
+    background-color: var(--gw-button-primary-hover-background);
+    border-color: var(--gw-button-primary-hover-border-color);
+
+    .item-icon {
+      transform: scale(1.2);
+    }
   }
 
   .onto-dropdown-button:hover {

@@ -38,6 +38,7 @@
   --gw-color-yellow-600: #d5920b;
   --gw-color-yellow-700: #ae7709;
   --gw-color-yellow-800: #795306;
+  --gw-neutral-transparent: rgba(0, 0, 0, 0);
   --gw-list-option-group-background: rgba(0, 0, 0, 0);
   --gw-panel-header-background: rgba(0, 0, 0, 0);
   --gw-tooltip-max-width: 12.5rem;
@@ -91,6 +92,9 @@
   --gw-tertiary-700: var(--gw-color-teal-700);
   --gw-tertiary-800: var(--gw-color-teal-800);
   --gw-defaul-border-radius: var(--gw-border-radius-sm);
+  --gw-button-tertiary-background: var(--gw-neutral-transparent);
+  --gw-button-tertiary-hover-border-color: var(--gw-neutral-transparent);
+  --gw-button-tertiary-border-color: var(--gw-neutral-transparent);
   --gw-listbox-option-group-background: var(--gw-list-option-group-background);
   --gw-primary-base: var(--gw-primary-600);
   --gw-primary-lighter: var(--gw-primary-100);
@@ -139,6 +143,7 @@
   --gw-button-secondary-background: var(--gw-neutral-0);
   --gw-button-secondary-hover-background: var(--gw-neutral-100);
   --gw-button-secondary-active-background: var(--gw-neutral-0);
+  --gw-button-tertiary-hover-background: var(--gw-neutral-100);
   --gw-body-background: var(--gw-neutral-0);
   --gw-muted-background: var(--gw-neutral-200);
   --gw-muted-color: var(--gw-neutral-700);
@@ -203,6 +208,7 @@
   --gw-overlay-modal-border-color: var(--gw-default-border-color);
   --gw-button-primary-background: var(--gw-primary-base);
   --gw-button-primary-hover-color: var(--gw-foreground-on-brand);
+  --gw-button-primary-icon-color: var(--gw-foreground-on-brand);
   --gw-button-primary-color: var(--gw-foreground-on-brand);
   --gw-button-primary-focus-ring-color: var(--gw-primary-base);
   --gw-button-primary-link-color: var(--gw-primary-base);
@@ -213,6 +219,10 @@
   --gw-button-secondary-active-color: var(--gw-primary-dark);
   --gw-button-secondary-border-color: var(--gw-primary-base);
   --gw-button-secondary-color: var(--gw-primary-base);
+  --gw-button-secondary-icon-color: var(--gw-primary-base);
+  --gw-button-tertiary-hover-color: var(--gw-foreground-on-surface-default);
+  --gw-button-tertiary-color: var(--gw-primary-base);
+  --gw-button-tertiary-icon-color: var(--gw-secondary-base);
   --gw-heading-default-color: var(--gw-foreground-on-surface-default);
   --gw-body-color: var(--gw-neutral-darker);
   --gw-highlight-focus-background: var(--gw-primary-lighter);
