@@ -1,8 +1,18 @@
-import {Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit} from '@angular/core';
+import {Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnDestroy, OnInit, signal} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {TranslocoPipe, TranslocoService} from '@jsverse/transloco';
-import {AuthenticationService, OpenidStorageService, OntoToastrService, SecurityService, service, UrlPathParams, NavigationContextService, ConfigurationContextService} from '@ontotext/workbench-api';
+import {
+  AuthenticationService,
+  ConfigurationContextService,
+  NavigationContextService,
+  OntoToastrService,
+  OpenidStorageService,
+  RuntimeConfigurationContextService,
+  SecurityService,
+  service,
+  UrlPathParams
+} from '@ontotext/workbench-api';
 import {CommonModule, NgOptimizedImage} from '@angular/common';
 
 @Component({
@@ -17,25 +27,28 @@ import {CommonModule, NgOptimizedImage} from '@angular/common';
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './login-page.component.html',
   styleUrl: './login-page.component.scss',
-  host: { class: 'login-page-route' }
+  host: {class: 'login-page-route'}
 })
-export class LoginPageComponent implements OnInit {
+export class LoginPageComponent implements OnInit, OnDestroy {
   private readonly toastrService = service(OntoToastrService);
   private readonly securityService = service(SecurityService);
   private readonly authenticationService = service(AuthenticationService);
   private readonly openidStorageService = service(OpenidStorageService);
   private readonly navigationContextService = service(NavigationContextService);
   private readonly configurationContextService = service(ConfigurationContextService);
+  private readonly runtimeConfigurationContextService = service(RuntimeConfigurationContextService);
 
   private readonly fb = inject(FormBuilder);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly translocoService = inject(TranslocoService);
 
+  private readonly subscriptions = new Array<() => void>();
+
   loginForm: FormGroup;
   error = false;
   returnUrl: string;
-  logoPath = this.configurationContextService.getApplicationConfiguration().applicationLogoPath;
+  logoPath = signal(this.configurationContextService.getApplicationConfiguration().applicationLogoPath);
 
   constructor() {
     this.loginForm = this.fb.group({
@@ -47,6 +60,11 @@ export class LoginPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.handleQueryParams();
+    this.subscribeToThemeModeChange();
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((unsubscribe) => unsubscribe());
   }
 
   private handleQueryParams(): void {
@@ -102,5 +120,13 @@ export class LoginPageComponent implements OnInit {
   loginWithOpenID(): void {
     this.openidStorageService.setReturnUrl(this.returnUrl);
     this.login();
+  }
+
+  private subscribeToThemeModeChange(): void {
+    this.subscriptions.push(
+      this.runtimeConfigurationContextService.onThemeModeChanged((themeMode) => {
+        this.logoPath.set(this.configurationContextService.getApplicationLogoPath(themeMode));
+      })
+    );
   }
 }
