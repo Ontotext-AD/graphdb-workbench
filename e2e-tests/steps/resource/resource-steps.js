@@ -37,11 +37,11 @@ export class ResourceSteps {
     }
 
     static verifySameAsEnable() {
-        ResourceSteps.getSameAsButton().find('.icon-sameas-on').should('have.length', 1);
+        ResourceSteps.getSameAsButton().find('.icon-same-as-on').should('have.length', 1);
     }
 
     static verifySameAsDisable() {
-        ResourceSteps.getSameAsButton().find('.icon-sameas-off').should('have.length', 1);
+        ResourceSteps.getSameAsButton().find('.icon-same-as-off').should('have.length', 1);
     }
 
     static getShowBlankNodesButton() {

@@ -121,12 +121,12 @@
     content: "\e93e";
 }
 
-.icon-sameas-on:before {
-    content: "\e93f";
+.icon-same-as-on:before {
+    content: "\e940";
 }
 
-.icon-sameas-off:before {
-    content: "\e940";
+.icon-same-as-off:before {
+    content: "\e93f";
 }
 
 .icon-repo-contour1:before {
