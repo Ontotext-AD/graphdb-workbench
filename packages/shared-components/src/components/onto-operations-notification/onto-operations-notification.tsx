@@ -58,9 +58,9 @@ export class OntoOperationsNotification {
           {this.operationGroups.getItems().map((groupSummary) => (
             <section key={groupSummary.id} class="operation-status-header">
               <i
-                class={`${operationGroupToIcon[groupSummary.group]} ${operationStatusToWarningClass[groupSummary.status]}`}></i>
+                class={`operation-status-icon ${operationGroupToIcon[groupSummary.group]} ${operationStatusToWarningClass[groupSummary.status]}`}></i>
               {groupSummary.totalOperations
-                ? <sup class="running-operation-count tag-info">{groupSummary.totalOperations}</sup>
+                ? <sup class="running-operation-count">{groupSummary.totalOperations}</sup>
                 : ''
               }
             </section>

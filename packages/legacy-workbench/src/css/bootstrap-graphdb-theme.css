@@ -1917,16 +1917,16 @@ tags-input .tags .input {
 
 @keyframes fade-button {
     from {
-        background-color: #EBEBEB;
-        border-color: #EBEBEB;
+        background-color: transparent;
+        border-color: transparent;
     }
     50% {
         background-color: var(--fade-color);
         border-color: var(--fade-color);
     }
     to {
-        background-color: #EBEBEB;
-        border-color: #EBEBEB;
+        background-color: transparent;
+        border-color: transparent;
     }
 }
 

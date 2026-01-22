@@ -120,7 +120,6 @@
 }
 
 .import-resource-tree .import-resource-table .cell-actions .import-resource-action-import-btn {
-    border: none;
     padding: .25em .25em;
     margin: 0 .25em;
     background-color: transparent;
