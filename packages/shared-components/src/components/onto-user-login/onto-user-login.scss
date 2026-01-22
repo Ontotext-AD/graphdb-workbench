@@ -1,14 +1,11 @@
-:root {
-  --onto-user-login-color: var(--gw-secondary-base, var(--base-text-color));
-}
-
 .onto-user-login {
   position: relative;
   width: fit-content;
 
   button {
     display: flex;
-    color: var(--onto-user-login-color);
+    color: var(--gw-button-tertiary-color);
+    background-color: var(--gw-button-tertiary-background);
     flex-direction: row;
     line-height: 1.5;
     font-weight: 400;
@@ -27,8 +24,8 @@
     }
 
     &:hover {
-      background-color: #d4d4d4;
-      border-color: #d4d4d4;
+      color: var(--gw-button-tertiary-hover-color);
+      background-color: var(--gw-button-tertiary-hover-background);
 
       & .ri-user-fill {
         transform: scale(1.2);
