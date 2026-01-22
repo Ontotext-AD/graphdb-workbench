@@ -1,0 +1,36 @@
+[
+    {
+        "guideName": {
+            "en": "Create Similarity Index Guide"
+        },
+        "options": {},
+        "steps": [
+            {
+                "guideBlockName": "create-similarity-index"
+            },
+            {
+                "guideBlockName": "similarity-view-created-index",
+                "options": {
+                    "indexName": "new-similarity-index",
+                    "title": "Select by index name"
+                }
+            },
+            {
+                "guideBlockName": "similarity-view-created-index",
+                "options": {
+                    "rowIndex": 0,
+                    "title": "Select by row index 0 (first row)"
+                }
+            },
+            {
+                "guideBlockName": "similarity-view-created-index",
+                "options": {
+                    "title": "Select default index 0 (first row)"
+                }
+            },
+            {
+                "guideBlockName": "guide-end"
+            }
+        ]
+    }
+]

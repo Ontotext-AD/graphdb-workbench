@@ -35,10 +35,10 @@
 			<div class="collapse in mt-1" id="indexes-table" guide-selector="similarity-indexes-table">
 				<table class="table table-hover mb-0" aria-describedby="Similarity index table">
 					<tbody>
-					<tr ng-repeat="similarityIndex in similarityIndexes track by similarityIndex.name"
+					<tr ng-repeat="similarityIndex in similarityIndexes track by similarityIndex.name" guide-selector="similarity-index-row-{{$index}}"
                         class="index-row"
 						ng-class="{'table-info text-secondary':similarityIndex.name == selectedSimilarityIndex.name}">
-						<td guide-selector="similarity-index-name-{{$index}}">
+						<td guide-selector="similarity-index-name-{{similarityIndex.name}}">
                             <a class="lead index-name" ng-href="{{(similarityIndex.isBuiltStatus() || similarityIndex.isRebuildingStatus() || similarityIndex.isOutdatedStatus()) ? '#' : ''}}" ng-click="goToSimilarityIndex(similarityIndex)">{{similarityIndex.name}}</a>
 						</td>
 						<td>
