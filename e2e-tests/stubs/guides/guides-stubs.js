@@ -11,6 +11,10 @@ export class GuidesStubs {
         GuidesStubs.stubWithFixture('../fixtures/guides/ttyg/configure-agent/configure-ttyg-agent-guide.json');
     }
 
+    static stubTTYGConversationGuide() {
+        GuidesStubs.stubWithFixture('../fixtures/guides/ttyg/conversation/ttyg-conversation-guide.json');
+    }
+
     static stubClassHierarchyGuide() {
         GuidesStubs.stubWithFixture('../fixtures/guides/class-hierarchy/class-hierarchy-guide.json');
     }

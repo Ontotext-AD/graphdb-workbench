@@ -1,0 +1,26 @@
+[
+    {
+        "guideName": {
+            "en": "TTYG-conversation-test-guide"
+        },
+        "steps": [
+            {
+                "guideBlockName": "select-ttyg-agent"
+            },
+            {
+                "guideBlockName": "conversation-with-ttyg-agent",
+                "options": {
+                    "startNewConversation": true,
+                    "questions": [
+                        {
+                            "question": "Count all the web pages published in 2020? Provide five sample names.",
+                            "explain": true,
+                            "explainMore": true,
+                            "exploreSparql": true
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+]
