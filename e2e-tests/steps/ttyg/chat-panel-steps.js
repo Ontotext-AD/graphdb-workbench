@@ -1,4 +1,6 @@
-export class ChatPanelSteps {
+import {BaseSteps} from "../base-steps.js";
+
+export class ChatPanelSteps extends BaseSteps {
 
     static getChatPanel() {
         return cy.get('.chat-panel');
@@ -24,12 +26,28 @@ export class ChatPanelSteps {
         return ChatPanelSteps.getChatPanel().find('.question-input .contenteditable');
     }
 
+    static typeQuestion(question) {
+        ChatPanelSteps.getQuestionInputElement().type(question, {force: true});
+    }
+
+    static getQuestionLoader() {
+        return ChatPanelSteps.getByTestId('question-loader');
+    }
+
+    static waitForLoaderToDisappear() {
+        ChatPanelSteps.getQuestionLoader().should('not.exist');
+    }
+
     static getAskButtonElement() {
         return ChatPanelSteps.getChatPanel().find('.ask-button');
     }
 
     static askQuestion() {
         ChatPanelSteps.getAskButtonElement().scrollIntoView().click();
+    }
+
+    static askQuestionWithEnter() {
+        ChatPanelSteps.getQuestionInputElement().type('{enter}');
     }
 
     static getChatDetailQuestionElement(index = 0) {

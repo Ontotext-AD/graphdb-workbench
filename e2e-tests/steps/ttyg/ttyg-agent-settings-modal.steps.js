@@ -176,6 +176,14 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
         return this.getSparqlMethodSparqlQueryField().type(value, {parseSpecialCharSequences: false});
     }
 
+    static clickOpenQueryInSparqlEditor(index = 0) {
+        return this.getOpenQueryInSparqlEditorButton(index).click();
+    }
+
+    static getOpenQueryInSparqlEditorButton(index = 0) {
+        return this.getByTestId('open-in-sparql-editor-btn').eq(index);
+    }
+
     static getAddMissingNamespacesCheckbox() {
         return cy.get('#addMissingNamespaces');
     }

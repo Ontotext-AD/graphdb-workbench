@@ -53,7 +53,9 @@ function openInSparqlEditorDirective($repositories, $translate, ModalService, $w
                     font-size: 0.9em;
                 }
             </style>
-            <button class="btn btn-link btn-sm open-in-sparql-editor-btn" gdb-tooltip="{{'ttyg.chat_panel.btn.open_in_sparql_editor.tooltip' | translate}}" ng-click="onGoToSparqlEditorView()" guide-selector="open-in-sparql-editor-btn">
+            <button class="btn btn-link btn-sm open-in-sparql-editor-btn"
+                   data-test="open-in-sparql-editor-btn"
+                   gdb-tooltip="{{'ttyg.chat_panel.btn.open_in_sparql_editor.tooltip' | translate}}" ng-click="onGoToSparqlEditorView()" guide-selector="open-in-sparql-editor-btn">
                 <i class="ri-braces-line"></i>
             </button>
         `,
@@ -61,10 +63,9 @@ function openInSparqlEditorDirective($repositories, $translate, ModalService, $w
         scope: {
             query: '@',
             repositoryId: '@',
-            executeQuery: '@'
+            executeQuery: '@',
         },
-        link: function ($scope, element) {
-
+        link: function($scope, element) {
             // =========================
             // Public variables
             // =========================
@@ -90,12 +91,12 @@ function openInSparqlEditorDirective($repositories, $translate, ModalService, $w
                         {
                             title: $translate.instant('common.confirm'),
                             message: decodeHTML($translate.instant('ttyg.chat_panel.dialog.confirm_repository_change.body', {repositoryId: $scope.repositoryId})),
-                            confirmButtonKey: 'ttyg.chat_panel.btn.proceed.label'
+                            confirmButtonKey: 'ttyg.chat_panel.btn.proceed.label',
                         },
                         () => {
                             $repositories.setRepository($repositories.getRepository($scope.repositoryId));
                             openInSparqlEditorInNewTab($scope.query);
-                        }
+                        },
                     );
                 } else {
                     // No repository switch needed, just open the SPARQL editor
@@ -114,6 +115,6 @@ function openInSparqlEditorDirective($repositories, $translate, ModalService, $w
                 // Open the SPARQL editor in a new tab and execute the query
                 $window.open(`/sparql?query=${encodeURIComponent(query)}&execute=${execute}`, '_blank');
             };
-        }
+        },
     };
 }
