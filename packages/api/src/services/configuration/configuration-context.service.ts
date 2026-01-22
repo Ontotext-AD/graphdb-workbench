@@ -31,7 +31,7 @@ export class ConfigurationContextService extends ContextService<ConfigurationCon
    * @param theme The current theme mode.
    * @returns The path to the application logo.
    */
-  getApplicationLogoPath(theme: ThemeMode): string {
+  getApplicationLogoPath(theme: ThemeMode | undefined): string {
     const config = this.getApplicationConfiguration();
     const logoPaths = config.applicationLogoPaths;
     // For light theme, use dark logo and vice versa

@@ -1,7 +1,7 @@
 <div class="login-form">
   <div class="login-card" [ngClass]="{'openid-login': isOpenIDEnabled()}">
     <div class="application-logo">
-      <img [ngSrc]="logoPath" [width]="200" [height]="53" class="graphdb-logo" [alt]="'login.logo_alt' | transloco"/>
+      <img [ngSrc]="logoPath()" [width]="200" [height]="53" class="graphdb-logo" [alt]="'login.logo_alt' | transloco"/>
     </div>
 
     @if (isGDBLoginEnabled()) {
