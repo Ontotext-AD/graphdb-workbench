@@ -14,14 +14,11 @@
     z-index: 1;
     display: block;
     width: 60vw;
-
     -webkit-transition: top 0.3s ease-in, opacity 0.5s ease;
     transition: top 0.3s ease-in, opacity 0.5s ease;
-
     border-radius: 0;
     margin-bottom: 1em;
     padding: 1.6rem;
-
     color: var(--gw-dialog-color);
     background-color: var(--gw-dialog-background);
     border: 1px solid var(--gw-dialog-border-color);
@@ -49,7 +46,7 @@
 
   & i {
     cursor: pointer;
-    color: var(--gw-primary-base);
+    color: var(--gw-button-tertiary-icon-color);
     transition: all 0.15s ease-out;
 
     &.ri-search-line, &.close-btn {

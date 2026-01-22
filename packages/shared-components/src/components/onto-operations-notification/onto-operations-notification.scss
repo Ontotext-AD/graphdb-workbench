@@ -1,9 +1,8 @@
-$hover-color: #d4d4d4;
-
 .operations-statuses {
   position: relative;
+  background-color: transparent;
 
-  & .operations-statuses-dropdown-toggle {
+  .operations-statuses-dropdown-toggle {
     display: flex;
     font-weight: 400;
     line-height: 1.25;
@@ -12,16 +11,20 @@ $hover-color: #d4d4d4;
     vertical-align: middle;
     cursor: pointer;
     user-select: none;
-    border: 1px solid transparent;
+    background-color: transparent;
+    border: 1px solid var(--gw-button-tertiary-border-color);
+
     padding: .4rem 1rem;
     font-size: 1rem;
     gap: 0.75em;
     transition: all 0.15s ease-out;
 
-    &:hover {
-      background-color: $hover-color;
-      border-color: $hover-color;
+    .operation-status-icon,
+    .ri-arrow-down-s-line {
+      color: var(--gw-button-tertiary-icon-color);
+    }
 
+    &:hover {
       i:not(.ri-arrow-down-s-line) {
         transform: scale(1.2);
       }
@@ -31,54 +34,53 @@ $hover-color: #d4d4d4;
       outline: none;
     }
 
-    &.open {
-      background-color: #bbb !important;
-      border-color: #bbb !important;
-    }
-
-    & .operation-status-header {
+    .operation-status-header {
       display: flex;
-
-      & .running-operation-count {
-        color: white;
-        padding: 1px 2px;
-        line-height: 1;
-        align-self: center;
-        top: -1em;
-        font-size: 60%;
+      .running-operation-count {
+        line-height: 1.7;
+        display: inline;
+        min-width: 1rem;
+        height: 1rem;
+        padding: 0 6px;
+        background-color: var(--gw-badge-primary-background);
+        color: var(--gw-badge-primary-color);
+        font-size: 0.625rem;
+        font-weight: 600;
       }
     }
   }
 
-  & .operations-dropdown {
+  .operations-dropdown {
     position: absolute;
     right: 0;
     z-index: 1000;
-    border: none;
-    background-color: var(--gw-primary-base, #9e2b0a);
-    border-radius: 0;
+    background-color: var(--gw-contextmenu-background);
+    border: 1px solid var(--gw-contextmenu-border-color);
+    color: var(--gw-contextmenu-color);
     list-style: none;
     padding: 0;
-    -moz-transition: all 150ms ease-out; /* FF4+ */
-    -o-transition: all 150ms ease-out; /* Opera 10.5+ */
-    -webkit-transition: all 150ms ease-out; /* Saf3.2+, Chrome */
+    /* FF4+ */
+    -moz-transition: all 150ms ease-out;
+    /* Opera 10.5+ */
+    -o-transition: all 150ms ease-out;
+    /* Saf3.2+, Chrome */
+    -webkit-transition: all 150ms ease-out;
     transition: all 150ms ease-out;
 
-    & .operations-statuses-content {
+    .operations-statuses-content {
       display: flex;
       flex-direction: column;
-      background-color: #bbb;
       margin: 0;
 
-      & li:first-child {
+      li:first-child {
         margin-top: 5px;
       }
 
-      & li:last-child {
+      li:last-child {
         margin-bottom: 5px;
       }
 
-      & .operation-status-content {
+      .operation-status-content {
         display: flex;
         flex-direction: row;
         margin: 5px 10px;
@@ -88,34 +90,35 @@ $hover-color: #d4d4d4;
         text-decoration: none;
         width: auto;
         gap: 0.5em;
-        background-color: var(--gw-button-secondary-background);
-        border-color: var(--gw-button-secondary-border-color);
+        background-color: var(--gw-button-tertiary-background);
+        border: 1px solid var(--gw-button-tertiary-border-color);
+        color: var(--gw-button-tertiary-color);
 
-        & i {
+        i {
           width: 8.33%
         }
 
-        & .operation-number {
+        .operation-number {
           min-width: 50px;
           display: block;
 
-          & .operation-status-running-operation-count {
-            display: block;
-            width: 100%;
-            color: white;
-            border-radius: 2px;
-            padding: 3px 2px 2px;
-            text-align: center;
-            font-size: 75%;
-            background-color: var(--gw-info-dark, #004177) !important;
+          .operation-status-running-operation-count {
+            display: inline;
+            min-width: 1rem;
+            height: 1rem;
+            padding: 2px 6px;
+            background-color: var(--gw-badge-primary-background);
+            color: var(--gw-badge-primary-color);
+            font-size: 0.625rem;
+            font-weight: 600;
           }
         }
 
-        & .operation-status-content > * {
+        .operation-status-content > * {
           padding: 0;
         }
 
-        & .operation-status-label {
+        .operation-status-label {
           width: 66.66%;
           padding-left: 5px;
           line-height: 0;
@@ -124,10 +127,10 @@ $hover-color: #d4d4d4;
 
         &:hover {
           text-decoration: none;
-          background-color: var(--gw-button-secondary-hover-background);
-          border-color: var(--gw-button-secondary-hover-border-color);
+          color: var(--gw-button-tertiary-hover-color);
+          background-color: var(--gw-button-tertiary-hover-background);
 
-          & i {
+          i {
             transform: scale(1.2);
           }
         }
@@ -136,15 +139,15 @@ $hover-color: #d4d4d4;
   }
 
   .status-information {
-    color: var(--gw-message-info-color, #004177) !important;
+    color: var(--gw-message-info-color);
   }
 
   .status-warning {
-    color: var(--gw-message-warning-color, #7e2308) !important;
+    color: var(--gw-message-warning-color) !important;
   }
 
   .status-critical {
-    color: var(--gw-message-error-color, #a31425) !important;
+    color: var(--gw-message-error-color) !important;
   }
 
   i {
@@ -156,7 +159,6 @@ $hover-color: #d4d4d4;
     transition: transform 0.15s ease-out;
 
     &.ri-arrow-down-s-line {
-      color: rgba(0, 0, 0, .35);
       transition: all 0.2s ease-in;
     }
   }
