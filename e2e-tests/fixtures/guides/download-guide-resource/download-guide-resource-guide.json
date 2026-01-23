@@ -1,0 +1,25 @@
+[
+    {
+        "guideName": {
+            "en": "Download guide resource"
+        },
+        "steps": [
+            {
+                "guideBlockName": "download-guide-resource",
+                "options": {
+                    "resourcePath": "file-path",
+                    "resourceFile": "file.ttl"
+                }
+            },
+            {
+                "guideBlockName": "download-guide-resource",
+                "options": {
+                    "title": "Download guide resource - with repositoryId",
+                    "resourcePath": "file-path",
+                    "resourceFile": "file.ttl",
+                    "repositoryId": "test-repo"
+                }
+            }
+        ]
+    }
+]
