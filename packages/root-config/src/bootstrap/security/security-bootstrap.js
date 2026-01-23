@@ -20,32 +20,25 @@ export const loadSecurityConfig = () => {
     .then((securityConfig) => {
       const securityContextService = service(SecurityContextService);
       securityContextService.updateSecurityConfig(securityConfig);
-      return subscribeToSecurityConfigChange();
+      return loadAuthenticatedUser(securityConfig);
     })
     .catch((error) => {
-      logger.error('Could not load security config', error);
+      logger.error('Could not load security (config or authenticated user). Check the logs', error);
       throw error;
     });
 };
 
-const subscribeToSecurityConfigChange = () => {
+const loadAuthenticatedUser = (securityConfig) => {
   const securityContextService = service(SecurityContextService);
   const securityService = service(SecurityService);
-  return new Promise((resolve) => {
-    securityContextService.onSecurityConfigChanged((securityConfig) => {
-      if (securityConfig.isEnabled()) {
-        securityService.getAuthenticatedUser()
-          .then((authenticatedUser) => securityContextService.updateAuthenticatedUser(authenticatedUser))
-          .catch((error) => logger.error('Could not load authenticated user', error))
-          // Always resolve the promise, even if there was an error fetching the user
-          // Error here is a completely valid scenario and shouldn't stop the app from loading,
-          // but the app should wait until this process is finished before continuing
-          .finally(() => resolve(initSecurity()));
-      } else {
-        resolve(initSecurity());
-      }
-    });
-  });
+  if (securityConfig.isEnabled()) {
+    return securityService.getAuthenticatedUser()
+      .then((authenticatedUser) => securityContextService.updateAuthenticatedUser(authenticatedUser))
+      .catch((error) => logger.error('Could not load authenticated user', error))
+      .finally(() => initSecurity());
+  } else {
+    return initSecurity();
+  }
 };
 
 const initSecurity = () => {

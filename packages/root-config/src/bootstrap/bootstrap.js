@@ -23,6 +23,7 @@ import {registerInterceptors} from './interceptors/interceptors-registration';
 import {runtimeConfigurationBootstrap} from './runtime-configuration/runtime-configuration';
 
 const logger = LoggerProvider.logger;
+let isInitialBootstrap = true;
 
 const settleAllPromises = (bootstrapPromises) => {
   return Promise.allSettled(executePromises(bootstrapPromises));
@@ -53,6 +54,11 @@ const loadEssentials = () => {
 };
 
 const loadApplicationData = () => {
+  const authenticatedUser = service(SecurityContextService).getAuthenticatedUser();
+  if (!authenticatedUser) {
+    // no need to load repositories and subsequent data if we don't have a user
+    return Promise.resolve();
+  }
   return settleAllPromises([...repositoryBootstrap])
     .then(() => settleAllPromises([...autoCompleteBootstrap]))
     .then((results) => {
@@ -72,13 +78,22 @@ const loadApplicationConfigurations = () => {
   return configurationsBootstrap();
 };
 
+/**
+ * Subscribes to authenticated user changes and reloads application data when the user changes (e.g. login with different
+ * user). If a user is present, the permissions are updated. Since the initial bootstrap also loads application data,
+ * we skip the first authenticated user change event in order not to duplicate requests.
+ */
 const subscribeToAuthenticatedUserChange = () => {
   const securityContextService = service(SecurityContextService);
   const authorizationService = service(AuthorizationService);
   securityContextService.onAuthenticatedUserChanged((authenticatedUser) => {
     if (authenticatedUser) {
-      loadApplicationData();
       authorizationService.updatePermissions();
+      // Skip the initial load of data, since the bootstrap will load that. Handle only subsequent user changes.
+      if (!isInitialBootstrap) {
+        loadApplicationData();
+      }
+      isInitialBootstrap = false;
     }
   });
 };
@@ -111,6 +126,7 @@ export const bootstrapWorkbench = () => {
         throw error;
       }
     })
+    .then(loadApplicationData)
     .then(() => {
       subscribeToAuthenticatedUserChange();
       defineCustomElements();
