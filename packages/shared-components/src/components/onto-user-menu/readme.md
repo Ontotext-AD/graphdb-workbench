@@ -12,10 +12,10 @@ for navigating to settings and logging out.
 
 ## Properties
 
-| Property         | Attribute         | Description                  | Type                | Default     |
-| ---------------- | ----------------- | ---------------------------- | ------------------- | ----------- |
-| `securityConfig` | `security-config` | Current security config      | `SecurityConfig`    | `undefined` |
-| `user`           | `user`            | Currently authenticated user | `AuthenticatedUser` | `undefined` |
+| Property         | Attribute | Description                  | Type                | Default     |
+| ---------------- | --------- | ---------------------------- | ------------------- | ----------- |
+| `securityConfig` | --        | Current security config      | `SecurityConfig`    | `undefined` |
+| `user`           | --        | Currently authenticated user | `AuthenticatedUser` | `undefined` |
 
 
 ## Dependencies
