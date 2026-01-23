@@ -4,7 +4,12 @@ import 'angular/core/directives/graphql-playground/graphql-playground.directive'
 import {
     GraphqlPlaygroundDirectiveUtil,
 } from "../../core/directives/graphql-playground/graphql-playground-directive.util";
-import {service, AuthenticationStorageService} from '@ontotext/workbench-api';
+import {
+    service,
+    AuthenticationStorageService,
+    RuntimeConfigurationContextService,
+    ThemeService,
+} from '@ontotext/workbench-api';
 
 const modules = [
     'graphdb.framework.core.services.graphql-service',
@@ -22,8 +27,10 @@ function GraphqlPlaygroundViewCtrl($scope, $location, $repositories, $languageSe
     // Private variables
     // =========================
 
-    const subscriptions = [];
+    let subscriptions = [];
     const authStorageService = service(AuthenticationStorageService);
+    const runtimeConfigurationContextService = service(RuntimeConfigurationContextService);
+    const themeService = service(ThemeService);
     // =========================
     // Public variables
     // =========================
@@ -238,6 +245,20 @@ function GraphqlPlaygroundViewCtrl($scope, $location, $repositories, $languageSe
         $scope.configuration = undefined;
     };
 
+    const onThemeChanged = () => {
+        const hasGraphqlEndpoints = $scope.graphqlEndpoints && $scope.graphqlEndpoints.length;
+        // The GraphQL Playground is rendered only when at least one GraphQL endpoint exists.
+        // Therefore, we attempt to locate it and apply the theme only in that case.
+        if (hasGraphqlEndpoints) {
+            GraphqlPlaygroundDirectiveUtil.getGraphqlPlaygroundComponentAsync("#graphql-playground")
+                .then((graphqlPlayground) =>
+                    graphqlPlayground.setEditorsTheme(themeService.getCodeEditorThemeName()))
+                .catch((error) =>{
+                    console.error('Failed to locate the GraphQL Playground instance.', error);
+                });
+        }
+    };
+
     /**
      * Unsubscribes all watchers.
      */
@@ -249,8 +270,11 @@ function GraphqlPlaygroundViewCtrl($scope, $location, $repositories, $languageSe
     // Subscriptions
     // =========================
 
-    subscriptions.push($scope.$watch($scope.getActiveRepositoryObject, getActiveRepositoryObjectHandler));
-    subscriptions.push($scope.$on('language-changed', getLanguageChangeHandler));
+    subscriptions = [
+        $scope.$watch($scope.getActiveRepositoryObject, getActiveRepositoryObjectHandler),
+        $scope.$on('language-changed', getLanguageChangeHandler),
+        runtimeConfigurationContextService.onThemeModeChanged(onThemeChanged),
+    ];
     $scope.$on('$destroy', unsubscribeAll);
 
     // =========================

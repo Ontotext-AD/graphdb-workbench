@@ -74,7 +74,7 @@ function graphqlPlaygroundDirective($repositories, $translate, MonitoringRestSer
             // =========================
             const init = () => {
                 if (!$scope.configuration.editorsThemeName) {
-                    $scope.configuration.editorsThemeName = themeService.isDarkModeApplied() ? ThemeService.CODE_EDITOR_DARK_THEME : undefined;
+                    $scope.configuration.editorsThemeName = themeService.getCodeEditorThemeName();
                 }
             };
 
