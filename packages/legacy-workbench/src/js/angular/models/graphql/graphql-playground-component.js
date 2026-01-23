@@ -3,7 +3,6 @@
  * This class provides a clearer interface for all exposed methods of the GraphQL playground component.
  */
 export class GraphQLPlaygroundComponent {
-
     /**
      * Creates an instance of GraphQLPlaygroundComponent.
      * @param graphQLPlaygroundComponent - The underlying GraphQL Playground component instance.
@@ -19,5 +18,14 @@ export class GraphQLPlaygroundComponent {
      */
     setLanguage(language) {
         this.graphQLPlaygroundComponent.setLanguage(language);
+    }
+
+    /**
+     * Sets the theme for the GraphQL Playground editors.
+     *
+     * @param {string} editorsTheme
+     */
+    setEditorsTheme(editorsTheme) {
+        this.graphQLPlaygroundComponent.setEditorsTheme(editorsTheme);
     }
 }

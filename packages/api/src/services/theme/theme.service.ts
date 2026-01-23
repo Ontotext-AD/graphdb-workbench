@@ -101,6 +101,13 @@ export class ThemeService implements Service {
     return this.applicationSettingsStorageService.isThemeModePresent();
   }
 
+  /**
+   * @returns {string | undefined} the theme name to be used in the code editor.
+   */
+  getCodeEditorThemeName(): string | undefined  {
+    return this.isDarkModeApplied() ? ThemeService.CODE_EDITOR_DARK_THEME : undefined;
+  }
+
   private getPreferredScheme(): ThemeMode {
     const prefersDarkScheme = WindowService.matchMedia('(prefers-color-scheme: dark)').matches;
     return prefersDarkScheme ? ThemeMode.dark : ThemeMode.light;
