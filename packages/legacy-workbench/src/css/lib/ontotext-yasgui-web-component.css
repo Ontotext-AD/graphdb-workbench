@@ -697,6 +697,12 @@ yasgui-component .yasr #explainPlanQuery {
     font-family: var(--mono-font);
 }
 
+yasgui-component .yasr .loader-component {
+    svg circle {
+        fill: var(--gw-loader-color);
+    }
+}
+
 yasgui-component .yasr_response_chip {
     font-size: 16px;
     color: var(--gw-secondary-base) !important;
