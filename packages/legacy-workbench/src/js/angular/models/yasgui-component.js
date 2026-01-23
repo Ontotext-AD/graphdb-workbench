@@ -193,8 +193,10 @@ export class YasguiComponent {
      * @example
      * // Applying a custom theme (CSS must be loaded first)
      * setTheme("mytheme").then(() => console.log("Custom theme applied"));
+     *
+     * returns {Promise<void>}
      */
     setTheme(themeName) {
-        this.yasguiComponent.setTheme(themeName);
+        return this.yasguiComponent.setTheme(themeName);
     }
 }
