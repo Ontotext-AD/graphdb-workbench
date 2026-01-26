@@ -17,6 +17,9 @@ import {
   NavigationEnd,
   NavigationStart,
   getBasePath,
+  WindowService,
+  ApplicationChanged,
+  ApplicationBeforeChange
 } from '@ontotext/workbench-api';
 import './styles/onto-stylesheet.scss';
 import './onto-vendor';
@@ -70,14 +73,22 @@ function registerSingleSpaRouterListeners() {
   }
   window.__singleSpaRouterListenersRegistered = true;
 
-  window.addEventListener('single-spa:before-routing-event', (evt) => {
+  WindowService.getWindow().addEventListener('single-spa:before-routing-event', (evt) => {
     const d = evt.detail;
     service(EventService).emit(new NavigationStart(d.oldUrl, d.newUrl, d.cancelNavigation));
   });
 
-  window.addEventListener('single-spa:routing-event', (evt) => {
+  WindowService.getWindow().addEventListener('single-spa:routing-event', (evt) => {
     const d = evt.detail;
     service(EventService).emit(new NavigationEnd(d.oldUrl, d.newUrl));
+  });
+
+  WindowService.getWindow().addEventListener('single-spa:before-app-change', () => {
+    service(EventService).emit(new ApplicationBeforeChange());
+  });
+
+  WindowService.getWindow().addEventListener('single-spa:app-change', () => {
+    service(EventService).emit(new ApplicationChanged());
   });
 }
 

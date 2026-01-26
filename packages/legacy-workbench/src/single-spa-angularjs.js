@@ -147,7 +147,7 @@ function mount(opts, mountedInstances, props = {}) {
                 {strictDi: opts.strictDi},
             );
         } else {
-            props.initApplication()
+            return props.initApplication()
                 .then((instance) => {
                     mountedInstances.instance = instance;
                     mountedInstances.instance.get("$rootScope").singleSpaProps = props;

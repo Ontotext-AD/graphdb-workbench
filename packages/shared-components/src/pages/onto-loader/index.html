@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <base href="/pages/loader/"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0" />
+  <title>Onto Loader</title>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "@ontotext/workbench-api": "/resources/ontotext-workbench-api.js"
+      }
+    }
+  </script>
+
+  <script type="module" src="/build/shared-components.esm.js"></script>
+  <script nomodule src="/build/shared-components.js"></script>
+  <script src="../js/main.js" defer></script>
+  <link rel="stylesheet" href="../css/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/remixicon.css">
+</head>
+<body class="p-3">
+  <h3>Loader variations</h3>
+  <table class="table table-bordered w-auto">
+    <thead class="table-light">
+      <tr><th>Description</th><th>Example</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Default attributes</td>
+        <td><onto-loader data-test="loader-default"></onto-loader></td>
+      </tr>
+      <tr>
+        <td>Small size (50px) with message</td>
+        <td><onto-loader data-test="loader-small" size="50" message-text="Loading small data..."></onto-loader></td>
+      </tr>
+      <tr>
+        <td>Large size (150px) with message</td>
+        <td><onto-loader data-test="loader-large" size="150" message-text="Loading data..."></onto-loader></td>
+      </tr>
+    </tbody>
+  </table>
+</body>
+</html>

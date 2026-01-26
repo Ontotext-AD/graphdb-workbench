@@ -16,10 +16,11 @@ import {
   NavigationEndPayload,
   SecurityConfig,
   SecurityContextService, service,
-  ServiceProvider, StorageKey,
+  StorageKey,
   SubscriptionList,
-  WindowService,
+  WindowService
 } from '@ontotext/workbench-api';
+import {TranslationService} from '../../services/translation.service';
 
 @Component({
   tag: 'onto-layout',
@@ -30,11 +31,12 @@ export class OntoLayout {
   // ========================
   // Services
   // ========================
-  private readonly authenticationService = ServiceProvider.get(AuthenticationService);
-  private readonly authorizationService = ServiceProvider.get(AuthorizationService);
-  private readonly navigationContextService = ServiceProvider.get(NavigationContextService);
+  private readonly authenticationService = service(AuthenticationService);
+  private readonly authorizationService = service(AuthorizationService);
+  private readonly navigationContextService = service(NavigationContextService);
   private readonly authStorageService = service(AuthenticationStorageService);
   private readonly runtimeConfigurationContextService = service(RuntimeConfigurationContextService);
+  private readonly eventService = service(EventService);
 
   private readonly fullJwtKey = `${StorageKey.GLOBAL_NAMESPACE}.${this.authStorageService.NAMESPACE}.${this.authStorageService.jwtKey}`;
   private readonly fullAuthenticatedKey = `${StorageKey.GLOBAL_NAMESPACE}.${this.authStorageService.NAMESPACE}.${this.authStorageService.authenticatedKey}`;
@@ -56,6 +58,7 @@ export class OntoLayout {
   @State() showHeader = this.isAuthenticatedFully();
   @State() showNavbar = false;
   @State() private isEmbedded = false;
+  @State() private loading = false;
 
   // ========================
   // Private
@@ -84,6 +87,7 @@ export class OntoLayout {
     this.updateVisibility();
     this.subscribeToNavigationEnd();
     this.subscribeToRuntimeConfigurationChanges();
+    this.subscribeToApplicationChange();
   }
 
   /**
@@ -99,7 +103,7 @@ export class OntoLayout {
       <Host class={{
         'wb-layout': true,
         'is-embedded': this.isEmbedded,
-        'hide-navbar': !this.showNavbar,
+        'hide-navbar': !this.showNavbar
       }}>
         {/* Default slot is explicitly defined to be able to hide the main content in the user permission check */}
         <div class="default-slot-wrapper">
@@ -115,7 +119,9 @@ export class OntoLayout {
             <onto-navbar ref={this.assignNavbarRef()} navbar-collapsed={this.isLowResolution}></onto-navbar>
           </nav>
         }
-        <div class="main-slot-wrapper">
+
+        <div class={{'main-slot-wrapper': true, 'loading': this.loading}}>
+          {this.loading && <onto-loader size={96} messageText={TranslationService.translate('common.loading')}></onto-loader>}
           <slot name="main"></slot>
         </div>
 
@@ -169,8 +175,8 @@ export class OntoLayout {
   }
 
   private readonly handleStorageChange = (event: StorageEvent) => {
-    const service = ServiceProvider.get(LocalStorageSubscriptionHandlerService);
-    service.handleStorageChange(event);
+    const localStorageSubscriptionHandlerService = service(LocalStorageSubscriptionHandlerService);
+    localStorageSubscriptionHandlerService.handleStorageChange(event);
     this.handleAuthChange(event.key);
   };
 
@@ -194,7 +200,7 @@ export class OntoLayout {
   // Security & Permissions
   // ========================
   private subscribeToSecurityChanges() {
-    const securityContextService = ServiceProvider.get(SecurityContextService);
+    const securityContextService = service(SecurityContextService);
     this.subscriptions.add(
       securityContextService.onAuthenticatedUserChanged((authenticatedUser) => {
         this.authenticatedUser = authenticatedUser;
@@ -210,14 +216,14 @@ export class OntoLayout {
     );
 
     this.subscriptions.add(
-      ServiceProvider.get(EventService).subscribe(EventName.LOGIN, () => {
+      this.eventService.subscribe(EventName.LOGIN, () => {
         this.setNavbarItemVisibility();
         this.updateVisibility();
       })
     );
 
     this.subscriptions.add(
-      ServiceProvider.get(EventService).subscribe(EventName.LOGOUT, () => {
+      this.eventService.subscribe(EventName.LOGOUT, () => {
         this.setNavbarItemVisibility();
         this.updateVisibility();
         navigate('login');
@@ -286,8 +292,22 @@ export class OntoLayout {
 
   private subscribeToNavigationEnd() {
     this.subscriptions.add(
-      ServiceProvider.get(EventService).subscribe(EventName.NAVIGATION_END, (navigationEndPayload: NavigationEndPayload) => {
+      this.eventService.subscribe(EventName.NAVIGATION_END, (navigationEndPayload: NavigationEndPayload) => {
         this.navigationContextService.updatePreviousRoute(navigationEndPayload.oldUrl);
       }));
+  }
+
+  private subscribeToApplicationChange() {
+    this.subscriptions.add(
+      this.eventService.subscribe(EventName.APPLICATION_BEFORE_CHANGE, () => {
+        this.loading = true;
+      })
+    );
+
+    this.subscriptions.add(
+      this.eventService.subscribe(EventName.APPLICATION_CHANGED, () => {
+        this.loading = false;
+      })
+    );
   }
 }
