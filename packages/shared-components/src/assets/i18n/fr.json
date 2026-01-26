@@ -7,7 +7,8 @@
     "button": {
       "ok": "D'accord",
       "close": "Fermer"
-    }
+    },
+    "loading": "Chargement..."
   },
   "menu.rdf.label": "RDF",
   "menu.explore.label": "Explorez",

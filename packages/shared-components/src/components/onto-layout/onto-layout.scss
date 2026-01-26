@@ -38,6 +38,18 @@
     margin-left: 0;
   }
 
+  .main-slot-wrapper {
+    &.loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .page-content {
+        display: none;
+      }
+    }
+  }
+
   .default-slot-wrapper {
     display: none;
   }
