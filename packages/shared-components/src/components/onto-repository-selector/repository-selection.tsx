@@ -23,7 +23,7 @@ export const RepositorySelection: FunctionalComponent<RepositorySelectionProps> 
     <div class={className}
       data-test={'repository-selection'}>
       {/* TODO: add tooltip with repository info*/}
-      {repository && <i class={'button-icon icon-repo-' + repository.type}></i>}&nbsp;{repository?.id ?? defaultToggleButtonName}{location}
+      {repository && <i class={'button-icon icon-1-5x icon-repo-' + repository.type}></i>}&nbsp;{repository?.id ?? defaultToggleButtonName}{location}
     </div>
   );
 };
