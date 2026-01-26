@@ -6,8 +6,8 @@ import {
     EventService,
     ApplicationMounted,
     ApplicationUnmounted,
-} from "@ontotext/workbench-api";
-import {LoggerProvider} from "./js/angular/core/services/logger-provider";
+} from '@ontotext/workbench-api';
+import {LoggerProvider} from './js/angular/core/services/logger-provider';
 
 const logger = LoggerProvider.logger;
 let angularJsElement;
@@ -22,14 +22,14 @@ const defaultOpts = {
     uiRouter: false,
     ngRoute: false,
     preserveGlobal: false,
-    elementId: "__single_spa_angular_1",
+    elementId: '__single_spa_angular_1',
     strictDi: false,
     template: undefined,
     subscriptions: [],
 };
 
 export default function singleSpaAngularJS(userOpts) {
-    if (typeof userOpts !== "object") {
+    if (typeof userOpts !== 'object') {
         throw new Error(`single-spa-angularjs requires a configuration object`);
     }
 
@@ -62,16 +62,16 @@ function bootstrap(opts, mountedInstances, singleSpaProps) {
     return Promise.resolve().then(() => {
         let module;
         try {
-            module = opts.angular.module("single-spa-angularjs");
+            module = opts.angular.module('single-spa-angularjs');
         } catch (err) {
             // ignore - this means that the module doesn't exist
             logger.warn(err);
         }
         if (module) {
             module.config([
-                "$provide",
+                '$provide',
                 ($provide) => {
-                    $provide.value("singleSpaProps", singleSpaProps);
+                    $provide.value('singleSpaProps', singleSpaProps);
                 },
             ]);
         }
@@ -100,7 +100,8 @@ function mount(opts, mountedInstances, props = {}) {
         };
 
         const unsubscribeToAllContexts = ServiceProvider.get(ContextSubscriptionManager)
-            .subscribeToAllRegisteredContexts(() => {}, undefined, triggerDigest);
+            .subscribeToAllRegisteredContexts(() => {
+            }, undefined, triggerDigest);
         opts.subscriptions.push(unsubscribeToAllContexts);
         opts.subscriptions.push(subscribeToHttpRequests());
 
@@ -122,17 +123,17 @@ function mount(opts, mountedInstances, props = {}) {
         domElement.appendChild(bootstrapEl);
 
         if (opts.uiRouter) {
-            const uiViewEl = document.createElement("div");
+            const uiViewEl = document.createElement('div');
             uiViewEl.setAttribute(
-                "ui-view",
-                opts.uiRouter === true ? "" : opts.uiRouter,
+                'ui-view',
+                opts.uiRouter === true ? '' : opts.uiRouter,
             );
             bootstrapEl.appendChild(uiViewEl);
         }
 
         if (opts.ngRoute) {
-            const ngViewEl = document.createElement("div");
-            ngViewEl.setAttribute("ng-view", "");
+            const ngViewEl = document.createElement('div');
+            ngViewEl.setAttribute('ng-view', '');
             bootstrapEl.appendChild(ngViewEl);
         }
 
@@ -147,13 +148,13 @@ function mount(opts, mountedInstances, props = {}) {
                 {strictDi: opts.strictDi},
             );
         } else {
-            props.initApplication()
+            return props.initApplication()
                 .then((instance) => {
                     mountedInstances.instance = instance;
-                    mountedInstances.instance.get("$rootScope").singleSpaProps = props;
+                    mountedInstances.instance.get('$rootScope').singleSpaProps = props;
 
                     // https://github.com/single-spa/single-spa-angularjs/issues/51
-                    mountedInstances.instance.get("$rootScope").$apply();
+                    mountedInstances.instance.get('$rootScope').$apply();
                 });
         }
     });
@@ -209,7 +210,7 @@ function defaultDomElementGetter(props) {
     return function defaultDomEl() {
         let domElement = document.getElementById(htmlId);
         if (!domElement) {
-            domElement = document.createElement("div");
+            domElement = document.createElement('div');
             domElement.id = htmlId;
             document.body.appendChild(domElement);
         }
@@ -219,7 +220,7 @@ function defaultDomElementGetter(props) {
 }
 
 function getRootDomEl(domElementGetter, props) {
-    if (typeof domElementGetter !== "function") {
+    if (typeof domElementGetter !== 'function') {
         throw new Error(
             `single-spa-angularjs: the domElementGetter for angularjs application '${
                 props.appName || props.name
