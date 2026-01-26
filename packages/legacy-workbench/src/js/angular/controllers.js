@@ -815,6 +815,13 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
             onSelectedRepositoryChangedSubscription?.();
             onSelectedRepositoryChangedSubscription =
                 repositoryContextService.onSelectedRepositoryChanged(onSelectedRepositoryUpdated);
+
+            routeChangeStartSubscription?.();
+            // In some cases angularjs' routing event fires before data (repositories) has been loaded. Manually triggering
+            // the first onRouteChangeStart here ensures we have the loaded data. The downside is that onRouteChangeStart will run
+            // a second time from the subscription if the routing event comes later, which is minimal
+            onRouteChangeStart();
+            subscribeToRouteChangeStart();
         }
     };
 
@@ -1001,9 +1008,11 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     const subscribeToRouteChangeStart = () => {
         routeChangeStartSubscription = $rootScope.$on('$routeChangeStart', onRouteChangeStart);
     };
-    subscribeToRouteChangeStart();
 
     service(EventService).subscribe(EventName.APPLICATION_MOUNTED, (payload) => {
+        // Manually trigger onRouteChangeStart as mounting event appears to be triggered after the routing event
+        // in some cases, e.g. logout/login flow.
+        onRouteChangeStart();
         subscribeToRouteChangeStart();
     });
 
