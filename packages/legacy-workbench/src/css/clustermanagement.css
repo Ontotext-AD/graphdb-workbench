@@ -139,8 +139,12 @@ text.node-icon {
     font-size: 40px;
 }
 
+.id-host {
+    fill: var(--gw-tag-default-color);
+}
+
 .id-host-background, .node-info-background {
-    fill: #EEEEEE;
+    fill: var(--gw-tag-default-background);
 }
 
 text.node-icon {
@@ -196,7 +200,10 @@ div.nodetooltip {
     padding-left: 30px;
     font-size: 90%;
     text-align: left;
-    background: rgba(235, 235, 235, 0.9);
+    color: var(--gw-dialog-color);
+    background-color: var(--gw-dialog-background);
+    border-color: var(--gw-dialog-border-color);
+    box-shadow: var(--gw-dialog-shadow-1-offset-x) var(--gw-dialog-shadow-1-offset-y) var(--gw-dialog-shadow-1-blur) var(--gw-dialog-shadow-1-spread) var(--gw-dialog-shadow-1-color);
     width: 40%;
     max-width: 400px;
 }
@@ -211,12 +218,11 @@ div.nodetooltip {
 }
 
 .cluster-loader .ot-loader-new-content {
-    position: absolute;
     z-index: 100000;
     width: 100%;
     height: calc(100vh - 120px);
     padding-top: calc((100vh - 300px) / 2);
-    background-color: rgba(255, 255, 255, 0.66);
+    background-color: transparent;
 }
 
 .create-cluster-loader {
@@ -224,7 +230,7 @@ div.nodetooltip {
     margin: auto;
     display: flex;
     z-index: 100000;
-    background-color: rgba(255, 255, 255, 0.66);
+    background-color: transparent;
 
     top: 0;
     bottom: 0;
@@ -307,11 +313,13 @@ div.nodetooltip {
 }
 
 .autocomplete-dropdown {
+    background-color: var(--gw-autocomplete-background);
+    border: 1px solid var(--gw-autocomplete-border-color);
+    box-shadow: var(--gw-autocomplete-shadow-offset-x) var(--gw-autocomplete-shadow-offset-y) var(--gw-autocomplete-shadow-blur) var(--gw-autocomplete-shadow-spread) var(--gw-autocomplete-shadow-color);
+    color: var(--gw-autocomplete-color);
     list-style-type: none;
     margin: 0;
     padding: 0;
-    border: 1px solid #ccc;
-    background-color: white;
     max-height: 150px;
     overflow-y: auto;
     position: absolute;
@@ -325,7 +333,8 @@ div.nodetooltip {
 }
 
 .autocomplete-dropdown li:hover {
-    background-color: #f0f0f0;
+    color: var(--gw-autocomplete-option-focus-color);
+    background-color: var(--gw-autocomplete-option-focus-background);
 }
 
 .error-message {
@@ -340,32 +349,6 @@ div.nodetooltip {
 
 .alert-save.alert-warning:before {
     content: "\e920";
-}
-
-.autocomplete-container {
-    position: relative;
-}
-
-.autocomplete-dropdown {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    border: 1px solid #ccc;
-    background-color: white;
-    max-height: 150px;
-    overflow-y: auto;
-    position: absolute;
-    width: 100%;
-    z-index: 1000;
-}
-
-.autocomplete-dropdown li {
-    padding: 8px;
-    cursor: pointer;
-}
-
-.autocomplete-dropdown li:hover {
-    background-color: #f0f0f0;
 }
 
 .alert-save {
@@ -412,7 +395,7 @@ ul.nodes-list li a:hover {
 }
 
 .tag-input.ng-invalid.ng-dirty {
-    border-color: red;
+    border-color: var(--gw-tag-danger-color) !important;
 }
 
 .tag-input.ng-valid.ng-dirty {

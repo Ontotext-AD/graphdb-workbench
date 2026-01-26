@@ -444,6 +444,10 @@
     /*    vertical-align: -15%;*/
 }
 
+.icon-1-33x, .btn .icon-1-33x[class^="icon-"] {
+    font-size: 1.33em;
+}
+
 .icon-1-25x, .btn .icon-1-25x[class^="icon-"] {
     font-size: 1.25em;
 }
