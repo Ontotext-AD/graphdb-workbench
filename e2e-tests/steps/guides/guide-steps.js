@@ -296,4 +296,13 @@ export class GuideSteps extends BaseSteps {
     static verifyGuidesListExists() {
         this.getGuidesList().should('be.visible');
     }
+
+    static getDownloadResourceLink(guideRepositoryId) {
+        const downloadButtonClass = guideRepositoryId ? `.guide-${guideRepositoryId}-download-resource-link` : '.guide-download-resource-link';
+        return cy.get(downloadButtonClass);
+    }
+
+    static downloadResource(guideRepositoryId) {
+        GuideSteps.getDownloadResourceLink(guideRepositoryId).click();
+    }
 }

@@ -8,7 +8,7 @@ export class GuidesStubs {
     }
 
     static stubCreateAndConfigureAgentGuide() {
-        GuidesStubs.stubWithFixture('../fixtures/guides/ttyg/configure-agent/configure-ttyg-agent-guide.json')
+        GuidesStubs.stubWithFixture('../fixtures/guides/ttyg/configure-agent/configure-ttyg-agent-guide.json');
     }
 
     static stubClassHierarchyGuide() {
@@ -29,6 +29,16 @@ export class GuidesStubs {
 
     static stubCreateSimilarityIndexGuide() {
         GuidesStubs.stubWithFixture('../fixtures/guides/create-similarity-index/create-similarity-index-guide.json');
+    }
+
+    static stubDownloadGuideResourceGuide() {
+        GuidesStubs.stubWithFixture('../fixtures/guides/download-guide-resource/download-guide-resource-guide.json');
+    }
+
+    static stubDownloadResource(resourcePath, resourceFile) {
+        cy.intercept('GET', `/rest/guides/download/${resourcePath}/${resourceFile}`, {
+            fixture: `guides/download-resource.ttl`,
+        }).as('resource-download');;
     }
 
     static stubWithFixture(fixturePath) {

@@ -2,15 +2,15 @@ const createDownloadClickHandler = (resourcePath, resourceFile, services) => {
     return (event) => {
         event.preventDefault();
         services.GuidesService.downloadGuidesFile(resourcePath, resourceFile);
-    }
-}
+    };
+};
 
 PluginRegistry.add('guide.step', [
     {
         guideBlockName: 'download-guide-resource',
         getSteps: (options, services) => {
-            const downloadButtonClass = `guide-${options.repositoryId}-download-resource-link`;
-            let downloadResourceListener = createDownloadClickHandler(options.resourcePath, options.resourceFile, services);
+            const downloadButtonClass = options.repositoryId ? `guide-${options.repositoryId}-download-resource-link` : 'guide-download-resource-link';
+            const downloadResourceListener = createDownloadClickHandler(options.resourcePath, options.resourceFile, services);
             let stepHTMLElement;
             return {
                 guideBlockName: 'info-message',
@@ -28,9 +28,9 @@ PluginRegistry.add('guide.step', [
                         if (stepHTMLElement) {
                             stepHTMLElement.removeEventListener('click', downloadResourceListener);
                         }
-                    }
-                }, options)
+                    },
+                }, options),
             };
-        }
-    }]
+        },
+    }],
 );
