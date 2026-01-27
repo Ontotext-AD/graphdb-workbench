@@ -40,8 +40,19 @@ const appModules = {
 
 function showSplashScreen(show) {
   const splashScreenEl = document.getElementById('splash-screen');
-  if (splashScreenEl) {
-    splashScreenEl.style.display = show ? 'block' : 'none';
+  if (!splashScreenEl) {
+    return;
+  }
+  if (show) {
+    splashScreenEl.style.display = 'block';
+    splashScreenEl.classList.add('splash-screen-fadein');
+  } else {
+    splashScreenEl.classList.remove('splash-screen-fadein');
+    splashScreenEl.classList.add('splash-screen-fadeout');
+    setTimeout(() => {
+      splashScreenEl.style.display = 'none';
+      splashScreenEl.classList.remove('splash-screen-fadeout');
+    }, 300);
   }
 }
 
