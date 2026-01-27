@@ -1,4 +1,6 @@
-export class SimilarityIndexCreateSteps {
+import {BaseSteps} from '../base-steps.js';
+
+export class SimilarityIndexCreateSteps extends BaseSteps {
 
     static visit() {
         cy.visit('/similarity/index/create');
@@ -17,7 +19,7 @@ export class SimilarityIndexCreateSteps {
     }
 
     static getCreateButton() {
-        return cy.get('.create-similarity-index-btn');
+        return this.getByTestId('create-similarity-index-btn');
     }
 
     static create() {
@@ -33,7 +35,7 @@ export class SimilarityIndexCreateSteps {
     }
 
     static getSimilarityIndexNameInput() {
-        return cy.get('.similarity-index-name');
+        return this.getByTestId('similarity-index-name');
     }
 
     static typeSimilarityIndexName(similarityIndexName) {

@@ -1,4 +1,4 @@
-const CREATE_SIMILARITY_INDEX_DEFAULT = "guide.step-action.create-similarity-index";
+const CREATE_SIMILARITY_INDEX_DEFAULT = 'guide.step-action.create-similarity-index';
 
 PluginRegistry.add('guide.step', [
     {
@@ -62,8 +62,6 @@ PluginRegistry.add('guide.step', [
                         ...options,
                         url: 'similarity/index/create',
                         elementSelector: GuideUtils.getGuideElementSelector('create-similarity-index-btn'),
-                        onNextClick: () => {
-                        },
                     },
                 },
             ];
@@ -90,15 +88,24 @@ PluginRegistry.add('guide.step', [
         guideBlockName: 'similarity-view-created-index',
         getSteps: (options, services) => {
             const GuideUtils = services.GuideUtils;
+            const content = options.indexName ? 'guide.step_plugin.similarity-view-created-index' : 'guide.step_plugin.similarity-view-index';
+            let selector;
+            if (options.indexName) {
+                selector = GuideUtils.getGuideElementSelector(`similarity-index-name-${options.indexName}`);
+            } else {
+                selector = GuideUtils.getGuideElementSelector(`similarity-index-row-${options.rowIndex ?? 0}`, 'td:has(> .index-name)');
+            }
+
             return [
                 {
                     guideBlockName: 'focus-element',
                     options: {
-                        content: options.content || 'guide.step_plugin.similarity-view-created-index',
+                        url: 'similarity',
+                        content: options.content || content,
                         class: 'view-created-index',
                         ...(options.title ?? {title: CREATE_SIMILARITY_INDEX_DEFAULT}),
                         ...options,
-                        elementSelector: GuideUtils.getGuideElementSelector(`similarity-index-name-${options.rowIndex || 0}`),
+                        elementSelector: selector,
                     },
                 },
             ];

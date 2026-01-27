@@ -112,6 +112,10 @@ export class MainMenuSteps {
         this.getSubMenuButton('sub-menu-similarity').click();
     }
 
+    static clickOnSubmenuSimilarity() {
+        this.getSubMenuButton('sub-menu-similarity').click();
+    }
+
     // --------------------------
     // --     Monitoring menu  --
     // --------------------------

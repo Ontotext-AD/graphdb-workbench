@@ -27,6 +27,10 @@ export class GuidesStubs {
         GuidesStubs.stubWithFixture('../fixtures/guides/connectors/lucene-connector-guide.json');
     }
 
+    static stubCreateSimilarityIndexGuide() {
+        GuidesStubs.stubWithFixture('../fixtures/guides/create-similarity-index/create-similarity-index-guide.json');
+    }
+
     static stubWithFixture(fixturePath) {
         cy.intercept('/rest/guides', {fixture: fixturePath}).as('getGuides');
     }

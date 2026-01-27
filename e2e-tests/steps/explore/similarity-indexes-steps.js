@@ -51,4 +51,8 @@ export class SimilarityIndexesSteps extends BaseSteps{
     static getCreateButton() {
         return this.getExistingSimilarityIndexes().getByTestId('create-similarity-index-btn');
     }
+
+    static clickCreateButton() {
+        this.getCreateButton().click();
+    }
 }
