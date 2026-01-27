@@ -83,10 +83,6 @@
     right: 300px;
 }
 
-.slider-help-button {
-    color: rgb(16, 48, 86);
-}
-
 .slider-help-button:hover {
     text-decoration: none;
 }
