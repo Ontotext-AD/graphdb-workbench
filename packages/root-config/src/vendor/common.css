@@ -25,7 +25,7 @@ select {
 }
 
 a {
-    color: var(--gw-secondary-base);
+    color: var(--gw-link-regular-color);
 }
 
 /* General links on hover and actual links that lead to an external site */
@@ -37,7 +37,7 @@ a:hover, a:active, a[href^="http"], a[href^="http"]:hover, a[href^="http"]:activ
 }
 
 a:focus, a:hover {
-    color: var(--gw-secondary-light);
+    color: var(--gw-link-regular-hover-color);
 }
 
 .font-weight-bold {
