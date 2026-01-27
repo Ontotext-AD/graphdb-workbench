@@ -99,6 +99,17 @@
 
      <script src="resources/import-map-overrides.js?v=<%= buildVersion %>"></script>
      <script src="resources/import-map-injector.js?v=<%= buildVersion %>"></script>
+     <style>
+       /* Default light/dark background is hardcodded here because our variables are not present yet.  */
+       body {
+         background-color: hsla(220, 40%, 7%);
+       }
+       @media (prefers-color-scheme: light) {
+         body {
+           background-color: #ffffff;
+         }
+       }
+     </style>
 </head>
 <body>
 <noscript>
