@@ -321,6 +321,7 @@ function GraphsVisualizationsCtrl(
     };
 
     $scope.goToGraphConfig = (config) => {
+        console.log('%cgoto config', 'background: red', config);
         // If the graph config doesn't contain repositoryId, get the current selected repository.
         const repositoryId = config.repositoryId || repositoryContextService.getSelectedRepository().id;
         const searchParams = {
@@ -461,6 +462,7 @@ function GraphsVisualizationsCtrl(
 
     const resetState = () => {
         $scope.searchVisible = false;
+        console.log('%c4 nodeSelected', 'background: gray',);
         $scope.nodeSelected = false;
         $scope.configLoaded = null;
         $scope.queryResultsMode = false;
@@ -588,6 +590,7 @@ function GraphsVisualizationsCtrl(
                         includeInferred: settings['includeInferred'],
                         sameAsState: settings['sameAsState'],
                     }).then(function(response) {
+                        console.log('%c1 nodeSelected', 'background: gray',);
                         $scope.nodeSelected = true;
                         $scope.searchVisible = false;
                         if (response.data.types === null) {
@@ -614,6 +617,7 @@ function GraphsVisualizationsCtrl(
         if ($location.search().saved) {
             SavedGraphsRestService.getSavedGraph($location.search().saved)
                 .success(function(data) {
+                    console.log('%cloadSavedGraph', 'background: red', data);
                     $scope.loadSavedGraph(data);
                 })
                 .error(function(data) {
@@ -740,6 +744,7 @@ function GraphsVisualizationsCtrl(
     };
 
     const loadGraphConfig = (config) => {
+        console.log('%cloadGraphConfig', 'background: yellow', config);
         $scope.configLoaded = config;
         if (config.startMode === 'search') {
             $scope.searchVisible = true;
@@ -762,6 +767,7 @@ function GraphsVisualizationsCtrl(
 
     const loadGraphFromQueryParam = function() {
         // view graph config
+        console.log('%cloadGraphFromQueryParam', 'background: red',);
         if ($location.search().config) {
             loadConfigForId($location.search().config, initGraphFromQueryParam);
         } else if ($location.search().query || $location.search().uri) {
@@ -776,6 +782,7 @@ function GraphsVisualizationsCtrl(
     $window.onpopstate = function(event) {
         // Single spa triggers this event in some unwanted cases, for example, when displaying the Visual graph view.
         // By adding skipOnPopState we can skip the execution, whenever we don't need it
+        console.log('%conPopState', 'background: gray', event.state);
         if (event.state && event.state.skipOnPopState) {
           return;
         }
@@ -991,6 +998,7 @@ function GraphsVisualizationsCtrl(
                 return countLinks(n, links) === 0;
             });
             if (this.nodes.length === 0) {
+                console.log('%c5 nodeSelected', 'background: gray',);
                 $scope.nodeSelected = false;
             }
 
@@ -1135,6 +1143,7 @@ function GraphsVisualizationsCtrl(
         };
 
         this.restoreState = function(state) {
+            console.log('%c2 nodeSelected', 'background: gray',);
             $scope.nodeSelected = true;
             $scope.searchVisible = false;
 
@@ -1997,6 +2006,7 @@ function GraphsVisualizationsCtrl(
     }
 
     function initGraph(response) {
+        console.log('%c3 nodeSelected', 'background: gray',);
         $scope.nodeSelected = true;
         if (response.data.types === null) {
             response.data.types = "greyColor";
@@ -2006,11 +2016,13 @@ function GraphsVisualizationsCtrl(
     }
 
     function initGraphFromResponse(response) {
+        console.log('%cinitGraphFromResponse', 'background: pink', response);
         initGraph(response);
         renderGraphFromResponse(response);
     }
 
     function renderGraphFromResponse(response, d, isStartNode) {
+        console.log('%crenderGraphFromResponse', 'background: pink', response, d, isStartNode);
         let linksFound = response.data;
         // filter existing links
         linksFound = _.filter(linksFound, function(newLink) {
@@ -2969,6 +2981,7 @@ function GraphsVisualizationsCtrl(
             $scope.configLoaded = $scope.defaultGraphConfig;
         }
 
+        console.log('%cconfig must be set here', 'background: lightgreen', $scope.configLoaded);
         // Preserve existing query params and only set/override `saved`
         const currentSearch = $location.search();
         const newSearch = {...currentSearch, saved: graphToLoad.id};
@@ -3065,6 +3078,7 @@ function GraphsVisualizationsCtrl(
 
     // initialization logic follows below
     const init = () => {
+        console.log('%cinit ctrl', 'background: red',);
         // create background rect once
         if (!backgroundRectCreated) {
             // building rectangular so we can bind zoom and drag effects
