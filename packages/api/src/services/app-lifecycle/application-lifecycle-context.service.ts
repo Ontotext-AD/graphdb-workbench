@@ -39,4 +39,13 @@ export class ApplicationLifecycleContextService extends ContextService<Lifecycle
   onApplicationDataStateChanged(callbackFn: ValueChangeCallback<LifecycleState | undefined>): () => void {
     return this.subscribe(this.APPLICATION_DATA_STATE, callbackFn);
   }
+
+  /**
+   * Retrieves the current application data state from the context.
+   *
+   * @returns The current lifecycle state of the application data, or undefined if not set
+   */
+  getApplicationDataState(): LifecycleState | undefined {
+    return this.getContextPropertyValue(this.APPLICATION_DATA_STATE);
+  }
 }
