@@ -1,5 +1,5 @@
 import {LicenseService} from '../license.service';
-import {Capability, CapabilityList, License} from '../../../models/license';
+import {CapabilityList, License} from '../../../models/license';
 import {TestUtil} from '../../utils/test/test-util';
 import {ResponseMock} from '../../http/test/response-mock';
 import {LicenseContextService} from '../license-context.service';
@@ -24,7 +24,8 @@ describe('LicenseService', () => {
       maxCpuCores: 4,
       product: 'GRAPHDB_LITE',
       productType: 'sandbox',
-      licenseCapabilities: ['Cluster'],
+      // @ts-expect-error Testing handling of invalid data (undefined and null values)
+      licenseCapabilities: ['Cluster', undefined, null],
       version: '',
       installationId: '',
       valid: true,
@@ -50,7 +51,7 @@ describe('LicenseService', () => {
       typeOfUse: '',
       message: '',
       usageRestriction: '',
-      licenseCapabilities: new CapabilityList([Capability.CLUSTER]),
+      licenseCapabilities: new CapabilityList(['Cluster']),
     });
 
     // Then, I should get a License object, with default property values

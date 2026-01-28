@@ -1,18 +1,16 @@
-import { Capability } from './capability';
-import { ModelList } from '../common/model-list';
+import {ModelList} from '../common';
 
 /**
  * Represents a list of capabilities in the license model.
- * Extends the ModelList class, specialized for Capability connectors.
  */
-export class CapabilityList extends ModelList<Capability> {
+export class CapabilityList extends ModelList<string> {
   /**
    * Creates a new instance of CapabilityList.
    *
-   * @param capabilities - An array of Capability connectors to initialize the list.
+   * @param capabilities - An array of capability to initialize the list.
    *                       If not provided, an empty list will be created.
    */
-  constructor(capabilities: Capability[]) {
+  constructor(capabilities: string[]) {
     super(capabilities);
   }
 }

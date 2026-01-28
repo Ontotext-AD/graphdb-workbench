@@ -1,4 +1,4 @@
-import {Capability, CapabilityList, License} from '../../../models/license';
+import {CapabilityList, License} from '../../../models/license';
 import {LicenseResponse} from '../response/license-response';
 import {toProduct} from '../../../models/license/product';
 import {toProductType} from '../../../models/license/product-type';
@@ -29,16 +29,10 @@ export const mapLicenseResponseToModel: MapperFn<LicenseResponse, License> = (re
 };
 
 /**
- * Mapper for converting an array of Capability objects to a CapabilityList model.
+ * Mapper for converting an array of capabilities to a CapabilityList model.
  */
 function mapCapabilityListToModel(data: string[]): CapabilityList {
   const capabilities = (data ?? [])
-    .map(toCapability)
-    .filter((c): c is Capability => c !== undefined);
+    .filter((s): false | string => s?.trim());
   return new CapabilityList(capabilities);
-}
-
-function toCapability(value: string): Capability | undefined {
-  const match = Object.values(Capability).find((cap) => cap === value);
-  return match ?? undefined;
 }
