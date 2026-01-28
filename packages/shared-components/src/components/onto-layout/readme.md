@@ -11,6 +11,7 @@
 
 - [onto-header](../onto-header)
 - [onto-navbar](../onto-navbar)
+- [onto-loader](../onto-loader)
 - [onto-footer](../onto-footer)
 - [onto-tooltip](../onto-tooltip)
 
@@ -19,6 +20,7 @@
 graph TD;
   onto-layout --> onto-header
   onto-layout --> onto-navbar
+  onto-layout --> onto-loader
   onto-layout --> onto-footer
   onto-layout --> onto-tooltip
   onto-header --> onto-search-icon

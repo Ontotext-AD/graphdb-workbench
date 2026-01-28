@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, inject, OnDestroy, OnInit} from '@angular/core';
 import {Router, RouterOutlet} from '@angular/router';
 import {EventName, EventService, getCurrentRoute, service} from '@ontotext/workbench-api';
 import {Subscription} from 'rxjs';
@@ -12,7 +12,8 @@ import {Subscription} from 'rxjs';
   ]
 })
 export class AppComponent implements OnInit, OnDestroy {
-  private readonly router = service(Router);
+  private readonly router = inject(Router);
+  private readonly eventService = service(EventService);
   private readonly subscriptions = new Subscription();
 
   ngOnInit(): void {
@@ -29,7 +30,7 @@ export class AppComponent implements OnInit, OnDestroy {
    */
   private subscribeToRoutingEvents() {
     this.subscriptions.add(
-      service(EventService).subscribe(EventName.NAVIGATION_END, () => {
+      this.eventService.subscribe(EventName.NAVIGATION_END, () => {
         this.router.navigate([getCurrentRoute()], {queryParamsHandling: 'preserve'});
       })
     );
