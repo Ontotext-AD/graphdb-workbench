@@ -138,8 +138,9 @@ describe('Ttyg ChatPanel', () => {
 
         // When I click on first explain response button
         TTYGViewSteps.getExplainResponseButton(0).realHover();
-        // Then I expect to explain button to be visible.
+        // Then I expect to explain button to be visible and not disabled.
         TTYGViewSteps.getExplainResponseButton(0).should('be.visible');
+        TTYGViewSteps.getExplainResponseButton(0).should('not.be.disabled');
 
         // When I click on the button.
         TTYGStubs.stubExplainResponse();
@@ -217,6 +218,9 @@ describe('Ttyg ChatPanel', () => {
             expect(text.trim()).to.equal('Request cancelled by the user.');
         });
         ChatPanelSteps.getAssistantIcon(2).should('not.exist');
+        // And I expect the explain response button to be visible but disabled
+        TTYGViewSteps.getExplainResponseButton(2).should('be.visible');
+        TTYGViewSteps.getExplainResponseButton(2).should('be.disabled');
     });
 
     // Can't test this on CI
