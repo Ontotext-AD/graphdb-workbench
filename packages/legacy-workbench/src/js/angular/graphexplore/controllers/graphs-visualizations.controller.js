@@ -2859,6 +2859,7 @@ function GraphsVisualizationsCtrl(
             name: $scope.lastSavedGraphName,
             data: data,
             shared: $scope.shared,
+            repositoryId: repositoryContextService.getSelectedRepository().id,
         };
 
         if (graphToSave.id) {
@@ -2968,8 +2969,11 @@ function GraphsVisualizationsCtrl(
 
         // Preserve existing query params and only set/override `saved`
         const currentSearch = $location.search();
-        const newSearch = {...currentSearch, saved: graphToLoad.id};
-        $location.search('saved', graphToLoad.id);
+        const newSearch = {
+            ...currentSearch,
+            saved: graphToLoad.id,
+            [REPOSITORY_ID_PARAM]: repositoryContextService.getSelectedRepository().id,
+        };
         graph.restoreState(JSON.parse(graphToLoad.data));
         if (!noHistory) {
             pushHistory(newSearch, {savedGraph: graphToLoad});
@@ -2977,9 +2981,10 @@ function GraphsVisualizationsCtrl(
     };
 
     $scope.copyToClipboardSavedGraph = function(savedGraph) {
-        // TODO: Not sure we must add the repositoryId param here.
-        const url = [location.protocol, '//', location.host, location.pathname, '?saved=', savedGraph.id].join('');
-        $scope.copyToClipboard(url);
+        const url = new URL(window.location.href);
+        url.searchParams.set('saved', savedGraph.id);
+        url.searchParams.set(REPOSITORY_ID_PARAM, repositoryContextService.getSelectedRepository().id);
+        $scope.copyToClipboard(url.toString());
     };
 
     function deleteSavedGraphHttp(savedGraph) {
