@@ -234,6 +234,9 @@ export class ChartData {
                     },
                 },
             },
+            emphasis: {
+                disabled: true,
+            },
             grid: {
                 containLabel: true,
                 left: 40,
