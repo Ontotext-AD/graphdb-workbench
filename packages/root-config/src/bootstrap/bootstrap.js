@@ -86,11 +86,14 @@ const loadApplicationConfigurations = () => {
 const subscribeToAuthenticatedUserChange = () => {
   const securityContextService = service(SecurityContextService);
   const authorizationService = service(AuthorizationService);
+  const applicationLifecycleContextService = service(ApplicationLifecycleContextService);
   securityContextService.onAuthenticatedUserChanged((authenticatedUser) => {
     if (authenticatedUser) {
       authorizationService.updatePermissions();
-      // Skip the initial load of data, since the bootstrap will load that. Handle only subsequent user changes.
-      if (!isInitialBootstrap) {
+      // Load data if it's not the initial bootstrap or if the application data state is not loaded yet
+      // (when we are coming from the login page).
+      const isDataLoaded = applicationLifecycleContextService.getApplicationDataState() === LifecycleState.DATA_LOADED;
+      if (!isInitialBootstrap || !isDataLoaded) {
         loadApplicationData();
       }
       isInitialBootstrap = false;
