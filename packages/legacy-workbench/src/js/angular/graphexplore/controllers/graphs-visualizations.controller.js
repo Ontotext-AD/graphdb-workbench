@@ -321,9 +321,11 @@ function GraphsVisualizationsCtrl(
     };
 
     $scope.goToGraphConfig = (config) => {
+        // If the graph config doesn't contain repositoryId, get the current selected repository.
+        const repositoryId = config.repositoryId || repositoryContextService.getSelectedRepository().id;
         const searchParams = {
             config: config.id,
-            [REPOSITORY_ID_PARAM]: repositoryContextService.getSelectedRepository().id,
+            [REPOSITORY_ID_PARAM]: repositoryId,
         };
         pushHistory(searchParams, {config: config});
         resetState();
@@ -2824,7 +2826,7 @@ function GraphsVisualizationsCtrl(
                 searchParams.config = $scope.configLoaded.id;
             }
             searchParams.uri = uri;
-            searchParams[REPOSITORY_ID_PARAM] = repositoryContextService.getSelectedRepository().id;
+            searchParams[REPOSITORY_ID_PARAM] = $scope.configLoaded.repositoryId || repositoryContextService.getSelectedRepository().id;
             pushHistory(searchParams, {uri: uri, config: $scope.configLoaded});
         }
         $scope.$broadcast("onRootNodeChange", uri);
@@ -2980,7 +2982,9 @@ function GraphsVisualizationsCtrl(
     $scope.copyToClipboardSavedGraph = function(savedGraph) {
         const url = new URL(window.location.href);
         url.searchParams.set('saved', savedGraph.id);
-        url.searchParams.set(REPOSITORY_ID_PARAM, repositoryContextService.getSelectedRepository().id);
+        // If the repositoryId is not present in the saved graph config, we use the current one.
+        const repositoryId = savedGraph.repositoryId || repositoryContextService.getSelectedRepository().id;
+        url.searchParams.set(REPOSITORY_ID_PARAM, repositoryId);
         $scope.copyToClipboard(url.toString());
     };
 
