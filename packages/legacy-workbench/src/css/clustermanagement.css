@@ -103,12 +103,12 @@
 }
 
 .cluster-legend-group .legend-title {
-    fill: var(--gw-button-secondary-color);
+    fill: var(--gw-body-color);
 }
 
 .cluster-legend-group .links-statuses,
 .cluster-legend-group .sync-status {
-    fill: var(--gw-button-secondary-color);
+    fill: var(--gw-body-color);
 }
 
 
