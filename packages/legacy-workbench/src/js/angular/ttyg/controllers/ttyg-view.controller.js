@@ -720,7 +720,7 @@ function TTYGViewCtrl(
         // and any previous promise is no longer relevant.
         pendingQuestionCancelingPromise = undefined;
         // If the selected chat is a chat and does not need to be loaded from the server.
-        if (selectedChat) {
+        if (selectedChat && !selectedChat.isNew()) {
             TTYGService.getConversation(selectedChat.id)
                 .then((chat) => {
                     TTYGContextService.updateSelectedChat(chat);
@@ -735,6 +735,8 @@ function TTYGViewCtrl(
                         TTYGContextService.emit(TTYGEventName.LOAD_CHAT_FAILURE, selectedChat);
                     }
                 });
+        } else if (selectedChat) {
+            TTYGContextService.updateSelectedChat(selectedChat);
         }
     };
 
