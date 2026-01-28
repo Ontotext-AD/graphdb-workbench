@@ -246,8 +246,6 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
     // =========================
 
     $scope.$on('$destroy', function() {
-        const themeMode = applicationSettingsStorageService.getThemeMode();
-        themeService.setThemeMode(themeMode);
         $timeout.cancel(waitBeforeRedirectBack);
     });
 
