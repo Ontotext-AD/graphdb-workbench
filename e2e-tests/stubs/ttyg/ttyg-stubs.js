@@ -106,12 +106,10 @@ export class TTYGStubs extends Stubs {
         }).as('get-agent');
     }
 
-    static stubAgentListGetError() {
+    static stubAgentListGetError(error = 'Internal Server Error') {
         cy.intercept('GET', '/rest/chat/agents', {
             statusCode: 500,
-            response: {
-                error: 'Internal Server Error'
-            }
+            body: error
         }).as('get-agent-list-error');
     }
 
