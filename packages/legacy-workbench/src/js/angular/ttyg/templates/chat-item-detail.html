@@ -36,7 +36,7 @@
                     </button>
                     <button class="btn btn-link btn-link-only-icons btn-sm explain-response-btn" guide-selector="explain-response-btn"
                             ng-click="explainResponse(answer.id)"
-                            ng-disabled="disabled && !explainResponseModel[answer.id]"
+                            ng-disabled="answer.isTerminalState || (disabled && !explainResponseModel[answer.id])"
                             gdb-tooltip="{{'ttyg.chat_panel.btn.explain_response.tooltip' | translate}}">
                         <i class="ri-sparkling-line"></i>
                         <i class="ri-arrow-up-s-line toggle-explain-response-icon"
