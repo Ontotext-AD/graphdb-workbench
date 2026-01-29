@@ -192,6 +192,7 @@
   --gw-form-field-focus-border-color: var(--gw-secondary-light);
   --gw-form-field-disabled-background: var(--gw-muted-background);
   --gw-form-field-read-only-background: var(--gw-form-field-filled-background);
+  --gw-form-field-invalid-border-color: var(--gw-error-light);
   --gw-form-field-icon-color: var(--gw-foreground-on-surface-subtile);
   --gw-form-field-color: var(--gw-neutral-dark);
   --gw-list-option-focus-color: var(--gw-hover-color);
@@ -339,6 +340,7 @@
   --gw-button-secondary-color: var(--gw-foreground-on-surface-primary);
   --gw-button-secondary-icon-color: var(--gw-foreground-on-surface-primary);
   --gw-default-success-light-background: var(--gw-success-lighter);
+  --gw-inputtext-invalid-border-color: var(--gw-form-field-invalid-border-color);
   --gw-panel-background: var(--gw-default-background);
   --gw-panel-color: var(--gw-default-color);
   --gw-panel-header-color: var(--gw-heading-default-color);

@@ -10,13 +10,13 @@
       <form [formGroup]="loginForm" (ngSubmit)="login()" novalidate>
         @let hasWrongCredentials = loginForm.hasError('wrongCredentials');
 
-        <div class="group" [ngClass]="{'has-error': hasWrongCredentials}">
+        <div class="group">
           <label for="username">{{ 'login.username' | transloco }}</label>
           <div class="input-wrapper">
             <span class="icon-wrapper">
               <i class="ri-user-line"></i>
             </span>
-            <input id="username"
+            <input id="username" [ngClass]="{'has-error': hasWrongCredentials}"
               formControlName="username"
               autocomplete="username"
               type="text"
@@ -27,13 +27,13 @@
           </div>
         </div>
 
-        <div class="group" [ngClass]="{'has-error': hasWrongCredentials}">
+        <div class="group">
           <label for="password">{{ 'login.password' | transloco }}</label>
           <div class="input-wrapper">
             <span class="icon-wrapper">
               <i class="ri-lock-line"></i>
             </span>
-            <input id="password"
+            <input id="password" [ngClass]="{'has-error': hasWrongCredentials}"
               formControlName="password"
               autocomplete="current-password"
               type="password"

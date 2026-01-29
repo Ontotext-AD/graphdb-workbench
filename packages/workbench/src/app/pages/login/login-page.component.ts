@@ -95,7 +95,11 @@ export class LoginPageComponent implements OnInit, OnDestroy {
 
   login(): void {
     const {username, password} = this.loginForm.value;
-    this.loginForm.setErrors({wrongCredentials: false});
+    this.loginForm.setErrors(null);
+
+    if (this.isGDBLoginEnabled() && !this.isFormValid()) {
+      return;
+    }
 
     this.authenticationService.login(username, password)
       .then(() => {
@@ -106,11 +110,6 @@ export class LoginPageComponent implements OnInit, OnDestroy {
         if (err.status === 401) {
           this.toastrService.error(this.translocoService.translate('login.errors.wrong_credentials'), this.translocoService.translate('login.error'));
           this.loginForm.setErrors({wrongCredentials: true});
-          this.loginForm.reset();
-          Object.keys(this.loginForm.controls).forEach((key) => {
-            this.loginForm.controls[key].markAsTouched();
-          });
-          this.loginForm.updateValueAndValidity();
         } else {
           this.toastrService.error(err.message, err.status);
         }
@@ -128,5 +127,12 @@ export class LoginPageComponent implements OnInit, OnDestroy {
         this.logoPath.set(this.configurationContextService.getApplicationLogoPath(themeMode));
       })
     );
+  }
+
+  private isFormValid(touchFields = true): boolean {
+    if (touchFields) {
+      this.loginForm.markAllAsTouched();
+    }
+    return !this.loginForm.invalid;
   }
 }

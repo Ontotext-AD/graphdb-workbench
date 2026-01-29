@@ -1,6 +1,6 @@
 :root {
     --field-label-weight: 500;
-    --error-color: #FA787E;
+    --error-color: var(--gw-inputtext-invalid-border-color);
     --warning-color: #8a6d3b;
 }
 
