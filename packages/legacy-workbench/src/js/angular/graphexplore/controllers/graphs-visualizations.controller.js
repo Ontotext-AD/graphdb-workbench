@@ -296,6 +296,7 @@ function GraphsVisualizationsCtrl(
 
     $scope.easyGraphSearch = (iri) => {
         $scope.configLoaded = $scope.defaultGraphConfig;
+        console.log('%c3 set configLoaded', 'background: pink', $scope.configLoaded);
         $scope.openUri(iri);
     };
 
@@ -461,8 +462,8 @@ function GraphsVisualizationsCtrl(
     };
 
     const resetState = () => {
+        console.log('%c4 (resetState) set configLoaded', 'background: pink', {configLoaded: $scope.configLoaded, nodeSelected: $scope.nodeSelected});
         $scope.searchVisible = false;
-        console.log('%c4 nodeSelected', 'background: gray',);
         $scope.nodeSelected = false;
         $scope.configLoaded = null;
         $scope.queryResultsMode = false;
@@ -746,6 +747,7 @@ function GraphsVisualizationsCtrl(
     const loadGraphConfig = (config) => {
         console.log('%cloadGraphConfig', 'background: yellow', config);
         $scope.configLoaded = config;
+        console.log('%c5 set configLoaded', 'background: pink', $scope.configLoaded);
         if (config.startMode === 'search') {
             $scope.searchVisible = true;
         } else if (config.startMode === 'node' && config.startIRI) {
@@ -2969,6 +2971,7 @@ function GraphsVisualizationsCtrl(
             $scope.lastSavedGraphId = graphToLoad.id;
             $scope.shared = graphToLoad.shared;
             $scope.configLoaded = $scope.findConfigById(graphToLoad.config);
+            console.log('%c1 set configLoaded', 'background: pink', $scope.configLoaded);
         } else {
             // Someone else's saved graph
             $scope.lastSavedGraphName = null;
@@ -2979,9 +2982,9 @@ function GraphsVisualizationsCtrl(
         if (!$scope.configLoaded) {
             // Fallback to default config, either because config is gone or because graph isn't owned
             $scope.configLoaded = $scope.defaultGraphConfig;
+            console.log('%c2 set configLoaded', 'background: pink', $scope.configLoaded);
         }
 
-        console.log('%cconfig must be set here', 'background: lightgreen', $scope.configLoaded);
         // Preserve existing query params and only set/override `saved`
         const currentSearch = $location.search();
         const newSearch = {...currentSearch, saved: graphToLoad.id};

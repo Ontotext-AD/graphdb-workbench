@@ -873,16 +873,20 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
 
         const isSameRepository = !!selectedRepository && repositoryIdParam === selectedRepository.id;
 
+        console.log('%c routeChangeStart ', 'background: plum',);
+
         // --- no selected repository ---
 
         if (!selectedRepository) {
             // 1. active repo no, repo in url no -> no action - just show repo selector
             if (!repositoryIdParam) {
+                console.log('%c 1 ', 'background: plum',);
                 return;
             }
 
             // 2. active repo no, repo in url yes, url repo exists -> set active repo same as the url
             if (repositoryExists) {
+                console.log('%c 2 ', 'background: plum',);
                 repositoryContextService.updateSelectedRepository({
                     id: repositoryIdParam,
                     location: '',
@@ -891,6 +895,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
             }
 
             // 3. active repo no, repo in url yes, url repo missing -> show warning, keep url
+            console.log('%c 3 ', 'background: plum',);
             ModalService.openModalAlert({
                 title: $translate.instant('common.warning'),
                 message: $translate.instant('repository.url_param.invalid_repo', {repositoryId: repositoryIdParam}),
@@ -903,6 +908,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
 
         // 4. active repo yes, repo in url no -> update url
         if (!repositoryIdParam) {
+            console.log('%c 4 ', 'background: plum',);
             // The timeout is needed to ensure the location change happens after the current digest cycle
             $timeout(() => {
                 $location.search(REPOSITORY_ID_PARAM, selectedRepository.id).replace();
@@ -912,16 +918,19 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
 
         // 5. active repo yes, repo in url yes, same repo -> do nothing
         if (isSameRepository && repositoryExists) {
+            console.log('%c 5 ', 'background: plum',);
             return;
         }
 
         // 6. active repo yes, repo in url yes, url repo exists and is different -> confirm change
         if (repositoryExists) {
+            console.log('%c 6 ', 'background: plum',);
             confirmRepositoryChange(selectedRepository.id, repositoryIdParam);
             return;
         }
 
         // 7. active repo yes, repo in url yes, url repo missing -> warning, keep active repo and fix URL
+        console.log('%c 7 ', 'background: plum',);
         ModalService.openModalAlert({
             title: $translate.instant('common.warning'),
             message: $translate.instant('repository.url_param.invalid_repo_continue', {repositoryId: repositoryIdParam, currentRepositoryId: selectedRepository.id}),
