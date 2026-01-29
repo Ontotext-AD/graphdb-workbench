@@ -387,11 +387,12 @@ function SparqlEditorCtrl($rootScope,
     const getBeforeUpdateQueryHandler = () => (query, tabId) => {
         return ConnectorsRestService.checkConnector(query)
             .then((response) => {
-                if (!response.data.command) {
-                    return toNoCommandResponse();
-                }
                 if (!response.data.hasSupport) {
                     return toHasNotSupport(response);
+                }
+
+                if (!response.data.command) {
+                    return toNoCommandResponse();
                 }
 
                 if (ConnectorCommand.CREATE === response.data.command) {
