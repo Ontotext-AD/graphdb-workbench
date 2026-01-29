@@ -292,5 +292,9 @@
         </div>
     </div>
 
-    <loader-component ng-if="loadingControllerResources" message="{{ ('common.refreshing.namespaces' | translate) + '.' +('common.extra.message' | translate) }}"></loader-component>
+    <div onto-loader
+        ng-if="loadingControllerResources"
+         message-text="{{ ('common.refreshing.namespaces' | translate) + '.' +('common.extra.message' | translate) }}"
+        size="50">
+    </div>
 </div>
