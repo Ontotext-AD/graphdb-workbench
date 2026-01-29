@@ -6,11 +6,13 @@ import {TTYGViewSteps} from "../../../../steps/ttyg/ttyg-view-steps.js";
 import {ChatPanelSteps} from "../../../../steps/ttyg/chat-panel-steps.js";
 import {RepositoriesStubs} from "../../../../stubs/repositories/repositories-stubs.js";
 import {TtygAgentSettingsModalSteps} from "../../../../steps/ttyg/ttyg-agent-settings-modal.steps.js";
+import {BrowserStubs} from "../../../../stubs/browser-stubs.js";
 
 describe('ttyg-conversation-guide', () => {
     let repositoryId = 'starwars';
 
     beforeEach(() => {
+        BrowserStubs.stubWindowOpen();
         RepositoriesStubs.stubRepositories(0, '/repositories/get-ttyg-repositories.json');
         RepositoriesStubs.stubBaseEndpoints(repositoryId);
         cy.presetRepository(repositoryId);
