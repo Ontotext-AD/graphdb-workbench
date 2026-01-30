@@ -33,7 +33,7 @@
   --gw-color-grey-800: hsla(212, 28%, 14%);
   --gw-color-grey-900: hsla(220, 40%, 7%);
   --gw-color-grey-900-0-05: rgba(17, 24, 39, 0.05);
-  --gw-color-red-200: #f9e7e7;
+  --gw-color-red-300: #f4d2d2;
   --gw-color-red-400: #e9a5a5;
   --gw-color-red-500: #d65c5c;
   --gw-color-red-800: #8f2424;
@@ -75,7 +75,7 @@
   --gw-danger-200: var(--gw-color-red-800);
   --gw-danger-500: var(--gw-color-red-500);
   --gw-danger-600: var(--gw-color-red-400);
-  --gw-danger-800: var(--gw-color-red-200);
+  --gw-danger-700: var(--gw-color-red-300);
   --gw-info-100: var(--gw-color-steel-800);
   --gw-info-500: var(--gw-color-steel-400);
   --gw-info-600: var(--gw-color-steel-300);
@@ -156,10 +156,10 @@
   --gw-body-background: var(--gw-neutral-0);
   --gw-muted-background: var(--gw-neutral-200);
   --gw-muted-color: var(--gw-neutral-700);
-  --gw-error-base: var(--gw-danger-500);
+  --gw-error-base: var(--gw-danger-600);
   --gw-error-lighter: var(--gw-danger-200);
-  --gw-error-light: var(--gw-danger-600);
-  --gw-error-dark: var(--gw-danger-800);
+  --gw-error-light: var(--gw-danger-500);
+  --gw-error-dark: var(--gw-danger-700);
   --gw-contrast-text: var(--gw-neutral-50);
   --gw-highlight-background: var(--gw-secondary-100);
   --gw-hover-color: var(--gw-neutral-800);
@@ -312,6 +312,7 @@
   --gw-toast-info-border-color: var(--gw-info-base);
   --gw-toast-info-color: var(--gw-contrast-text);
   --gw-toast-info-close-button-focus-ring-color: var(--gw-info-light);
+  --gw-toast-success-color: var(--gw-contrast-text);
   --gw-toast-success-close-button-focus-ring-color: var(--gw-success-600);
   --gw-toast-warn-background: var(--gw-warning-base);
   --gw-toast-warn-border-color: var(--gw-warning-base);
@@ -323,7 +324,6 @@
   --gw-link-regular-color: var(--gw-secondary-light);
   --gw-link-regular-hover-color: var(--gw-secondary-base);
   --gw-loader-color: var(--gw-foreground-on-surface-accent);
-  --gw-success-text: var(--gw-success-dark);
   --gw-form-field-background: var(--gw-default-background);
   --gw-list-option-selected-focus-background: var(--gw-highlight-focus-background);
   --gw-list-option-selected-focus-color: var(--gw-highlight-focus-color);
@@ -403,5 +403,4 @@
   --gw-togglebutton-checked-background: var(--gw-button-primary-background);
   --gw-togglebutton-checked-border-color: var(--gw-button-secondary-border-color);
   --gw-dialog-color: var(--gw-overlay-modal-color);
-  --gw-toast-success-color: var(--gw-success-text);
 }
