@@ -9,24 +9,25 @@ import {MainMenuSteps} from '../../../steps/main-menu-steps';
 
 describe('User and Access', () => {
 
-    const PASSWORD = "password";
-    const ROLE_USER = "#roleUser";
-    const ROLE_REPO_MANAGER = "#roleRepoAdmin";
-    const ROLE_CUSTOM_ADMIN = "#roleAdmin";
-    const DEFAULT_ADMIN_PASSWORD = "root";
+    const PASSWORD = 'password';
+    const ROLE_USER = '#roleUser';
+    const ROLE_REPO_MANAGER = '#roleRepoAdmin';
+    const ROLE_CUSTOM_ADMIN = '#roleAdmin';
+    const DEFAULT_ADMIN_PASSWORD = 'root';
 
     // eslint-disable-next-line no-undef
     context('', () => {
-        const user = "user";
+        const user = 'user';
 
         beforeEach(() => {
             UserAndAccessSteps.visit();
             // Users table should be visible
             UserAndAccessSteps.getUsersTable().should('be.visible');
+            cy.switchOffSecurity(true);
         });
 
         afterEach(() => {
-            cy.loginAsAdmin().then(()=> {
+            cy.loginAsAdmin().then(() => {
                 cy.deleteUser(user, true);
                 cy.switchOffSecurity(true);
                 cy.switchOffFreeAccess(false);
@@ -126,7 +127,7 @@ describe('User and Access', () => {
             // When I enable security
             UserAndAccessSteps.toggleSecurity();
             // When I log in as an Admin
-            LoginSteps.loginWithUser("admin", DEFAULT_ADMIN_PASSWORD);
+            LoginSteps.loginWithUser('admin', DEFAULT_ADMIN_PASSWORD);
             // Then the page should load
             UserAndAccessSteps.getSplashLoader().should('not.be.visible');
             UserAndAccessSteps.getUsersTable().should('be.visible');
@@ -142,7 +143,7 @@ describe('User and Access', () => {
             UserAndAccessSteps.getFreeAccessSwitchInput().should('be.checked');
             // And I should see a success message
             ToasterSteps.verifySuccess('Free access has been enabled.');
-            ToasterSteps.getToast().should('not.exist')
+            ToasterSteps.getToast().should('not.exist');
             UserAndAccessSteps.getUsersTable().should('be.visible');
             // When I toggle Free Access OFF
             UserAndAccessSteps.toggleFreeAccess();
@@ -153,16 +154,27 @@ describe('User and Access', () => {
 
         it('should redirect to previous page after logout and then login', () => {
             UserAndAccessSteps.toggleSecurity();
-            LoginSteps.loginWithUser("admin", DEFAULT_ADMIN_PASSWORD);
+            LoginSteps.loginWithUser('admin', DEFAULT_ADMIN_PASSWORD);
             MainMenuSteps.clickOnSparqlMenu();
             cy.url().should('include', '/sparql');
 
             LoginSteps.logout();
             cy.url().should('include', '/login');
-            LoginSteps.loginWithUser("admin", DEFAULT_ADMIN_PASSWORD);
+            LoginSteps.loginWithUser('admin', DEFAULT_ADMIN_PASSWORD);
             cy.url().should('include', '/sparql');
         });
-    })
+
+        it('should redirect to correct return url when user is authenticated and on login page', () => {
+            UserAndAccessSteps.visit();
+            UserAndAccessSteps.toggleSecurity();
+            LoginSteps.loginWithUser('admin', DEFAULT_ADMIN_PASSWORD);
+            UserAndAccessSteps.getUsersTable().should('be.visible');
+
+            cy.visit('/login?r=%252Fsparql');
+            cy.reload();
+            UserAndAccessSteps.getUrl().should('include', '/sparql');
+        });
+    });
     // eslint-disable-next-line no-undef
     context('GraphQL only', () => {
         let repositoryId1;
@@ -302,7 +314,7 @@ describe('User and Access', () => {
             //enable security
             UserAndAccessSteps.toggleSecurity();
             //login with the admin
-            LoginSteps.loginWithUser("admin", DEFAULT_ADMIN_PASSWORD);
+            LoginSteps.loginWithUser('admin', DEFAULT_ADMIN_PASSWORD);
             // The Free Access toggle should be OFF
             UserAndAccessSteps.getFreeAccessSwitchInput().should('not.be.checked');
             // When I toggle Free Access ON
@@ -326,14 +338,14 @@ describe('User and Access', () => {
             //  I change the repository to this with GraphQL only rights
             RepositorySelectorSteps.selectRepository(repositoryId3);
             // Then I should have GraphQL only rights
-            FREE_ACCESS_MENU_ITEMS_WITHOUT_GRAPHQL.forEach(({path, expectedUrl,  checks, expectedTitle}) => {
+            FREE_ACCESS_MENU_ITEMS_WITHOUT_GRAPHQL.forEach(({path, expectedUrl, checks, expectedTitle}) => {
                 navigateMenuPath(path, expectedUrl, expectedTitle);
                 if (checks) {
                     runChecks(checks);
                 }
             });
             // Turn free access off
-            cy.loginAsAdmin().then(()=> {
+            cy.loginAsAdmin().then(() => {
                 cy.switchOffFreeAccess(true);
             });
         });
@@ -343,7 +355,7 @@ describe('User and Access', () => {
         if (repoName === '*') {
             UserAndAccessSteps.clickGraphqlAccessAny();
         } else {
-           UserAndAccessSteps.clickGraphqlAccessRepo(repoName);
+            UserAndAccessSteps.clickGraphqlAccessRepo(repoName);
         }
     }
 
@@ -371,7 +383,7 @@ describe('User and Access', () => {
         UserAndAccessSteps.selectRoleRadioButton(role);
         UserAndAccessSteps.getRoleRadioButton(role).should('be.checked');
 
-        if (role === "#roleUser") {
+        if (role === '#roleUser') {
             setRoles(opts);
             UserAndAccessSteps.confirmUserCreate();
         } else if (role === ROLE_CUSTOM_ADMIN && opts.noPassword) {
@@ -409,7 +421,7 @@ describe('User and Access', () => {
     function testForUser(name, isAdmin) {
         //enable security
         UserAndAccessSteps.toggleSecurity();
-        LoginSteps.visitLoginPageWithReturnUrl('/users')
+        LoginSteps.visitLoginPageWithReturnUrl('/users');
         //login new user
         LoginSteps.loginWithUser(name, PASSWORD);
         //verify permissions
@@ -425,7 +437,7 @@ describe('User and Access', () => {
     function assertUserAuths(username, {repo, read = false, write = false, graphql = false} = {}) {
         UserAndAccessSteps.findUserRowAlias(username, 'userRow');
 
-        if(!read && !write) {
+        if (!read && !write) {
             return UserAndAccessSteps.getRepoLine('@userRow', repo).should('not.exist');
         }
 
@@ -511,59 +523,59 @@ describe('User and Access', () => {
 
     const noAuthChecks = {
         'div[role="main]': [
-            'not.exist'
+            'not.exist',
         ],
         '.no-authority-panel .alert-warning': [
             'be.visible',
             ['contains.text', 'Some functionalities are not available because'],
-            ['contains.text', 'you do not have the required repository permissions.']
-        ]
-    }
+            ['contains.text', 'you do not have the required repository permissions.'],
+        ],
+    };
 
     const hasAuthChecks = {
         'div[role="main"]': [
             'exist',
-            'be.visible'
+            'be.visible',
         ],
         '.no-authority-panel .alert-warning': [
-            'not.exist'
-        ]
-    }
+            'not.exist',
+        ],
+    };
 
     const MENU_ITEMS_WITHOUT_GRAPHQL = [
         // 1) Import
         {
             path: ['Import'],
             expectedUrl: '/import',
-            checks: noAuthChecks
+            checks: noAuthChecks,
         },
 
         // 2) Explore
         {
             path: ['Explore', 'Graphs overview'],
             expectedUrl: '/graphs',
-            checks: noAuthChecks
+            checks: noAuthChecks,
         },
         {
             path: ['Explore', 'Class hierarchy'],
             expectedUrl: '/hierarchy',
-            checks: noAuthChecks
+            checks: noAuthChecks,
         },
         {
             path: ['Explore', 'Class relationships'],
             expectedUrl: '/relationships',
-            checks: noAuthChecks
+            checks: noAuthChecks,
         },
         {
             path: ['Explore', 'Visual graph'],
             expectedUrl: '/graphs-visualizations',
-            checks: noAuthChecks
+            checks: noAuthChecks,
         },
         {
             path: ['Explore', 'Similarity'],
             expectedTitle: 'Similarity indexes',
             expectedUrl: '/similarity',
-            checks: noAuthChecks
+            checks: noAuthChecks,
         },
 
         // 3) SPARQL
@@ -571,7 +583,7 @@ describe('User and Access', () => {
             path: ['SPARQL'],
             expectedTitle: 'SPARQL Query & Update',
             expectedUrl: '/sparql',
-            checks: noAuthChecks
+            checks: noAuthChecks,
         },
 
         // 4) GraphQL
@@ -581,7 +593,7 @@ describe('User and Access', () => {
             path: ['Monitor', 'Queries and Updates'],
             expectedUrl: '/monitor/queries',
             expectedTitle: 'Query and Update monitoring',
-            checks: noAuthChecks
+            checks: noAuthChecks,
         },
 
         // 6) Setup
@@ -589,58 +601,58 @@ describe('User and Access', () => {
             path: ['Setup', 'My Settings'],
             expectedUrl: '/settings',
             expectedTitle: 'Settings',
-            checks: hasAuthChecks
+            checks: hasAuthChecks,
         },
         {
             path: ['Setup', 'Connectors'],
             expectedUrl: '/connectors',
             expectedTitle: 'Connector management',
-            checks: noAuthChecks
+            checks: noAuthChecks,
         },
         {
             path: ['Setup', 'Cluster'],
             expectedUrl: '/cluster',
             expectedTitle: 'Cluster management',
-            checks: hasAuthChecks
+            checks: hasAuthChecks,
         },
         {
             path: ['Setup', 'Plugins'],
             expectedUrl: '/plugins',
-            checks: noAuthChecks
+            checks: noAuthChecks,
         },
         {
             path: ['Setup', 'Namespaces'],
             expectedUrl: '/namespaces',
-            checks: noAuthChecks
+            checks: noAuthChecks,
         },
         {
             path: ['Setup', 'Autocomplete'],
             expectedUrl: '/autocomplete',
             expectedTitle: 'Autocomplete index',
-            checks: noAuthChecks
+            checks: noAuthChecks,
         },
         {
             path: ['Setup', 'RDF Rank'],
             expectedUrl: '/rdfrank',
-            checks: noAuthChecks
+            checks: noAuthChecks,
         },
         {
             path: ['Setup', 'JDBC'],
             expectedUrl: '/jdbc',
             expectedTitle: 'JDBC configuration',
-            checks: noAuthChecks
+            checks: noAuthChecks,
         },
         {
             path: ['Setup', 'SPARQL Templates'],
             expectedUrl: '/sparql-templates',
-            checks: noAuthChecks
+            checks: noAuthChecks,
         },
 
         // 7) Lab
         {
             path: ['Lab', 'Talk to Your Graph'],
             expectedUrl: '/ttyg',
-            checks: noAuthChecks
+            checks: noAuthChecks,
         },
 
         // 8) Help
@@ -648,38 +660,38 @@ describe('User and Access', () => {
             path: ['Help', 'REST API'],
             expectedUrl: '/webapi',
             expectedTitle: 'REST API documentation',
-            checks: hasAuthChecks
-        }
+            checks: hasAuthChecks,
+        },
     ];
 
     const GRAPHQL_READ_MENU_ITEMS = [
         {
             path: ['GraphQL', 'GraphQL Playground'],
             expectedUrl: '/graphql/playground',
-            checks: hasAuthChecks
-        }
+            checks: hasAuthChecks,
+        },
     ];
     const GRAPHQL_REPO_MANAGER_MENU_ITEMS = [
         {
             path: ['GraphQL', 'Endpoint Management'],
             expectedUrl: '/graphql/endpoints',
-            checks: hasAuthChecks
+            checks: hasAuthChecks,
         },
         {
             path: ['GraphQL', 'GraphQL Playground'],
             expectedUrl: '/graphql/playground',
-            checks: hasAuthChecks
+            checks: hasAuthChecks,
         },
         {
             path: ['Monitor', 'Backup and Restore'],
             expectedUrl: '/monitor/backup-and-restore',
-            checks: hasAuthChecks
+            checks: hasAuthChecks,
         },
         {
             path: ['Help', 'Interactive guides'],
             expectedUrl: '/guides',
-            checks: hasAuthChecks
-        }
+            checks: hasAuthChecks,
+        },
     ];
 
     const FREE_ACCESS_MENU_ITEMS_WITHOUT_GRAPHQL = [
@@ -687,35 +699,35 @@ describe('User and Access', () => {
         {
             path: ['Import'],
             expectedUrl: '/import',
-            checks: noAuthChecks
+            checks: noAuthChecks,
         },
 
         // 2) Explore
         {
             path: ['Explore', 'Graphs overview'],
             expectedUrl: '/graphs',
-            checks: noAuthChecks
+            checks: noAuthChecks,
         },
         {
             path: ['Explore', 'Class hierarchy'],
             expectedUrl: '/hierarchy',
-            checks: noAuthChecks
+            checks: noAuthChecks,
         },
         {
             path: ['Explore', 'Class relationships'],
             expectedUrl: '/relationships',
-            checks: noAuthChecks
+            checks: noAuthChecks,
         },
         {
             path: ['Explore', 'Visual graph'],
             expectedUrl: '/graphs-visualizations',
-            checks: noAuthChecks
+            checks: noAuthChecks,
         },
         {
             path: ['Explore', 'Similarity'],
             expectedTitle: 'Similarity indexes',
             expectedUrl: '/similarity',
-            checks: noAuthChecks
+            checks: noAuthChecks,
         },
 
         // 3) SPARQL
@@ -723,48 +735,47 @@ describe('User and Access', () => {
             path: ['SPARQL'],
             expectedTitle: 'SPARQL Query & Update',
             expectedUrl: '/sparql',
-            checks: noAuthChecks
+            checks: noAuthChecks,
         },
-
 
         // 6) Setup
         {
             path: ['Setup', 'Connectors'],
             expectedUrl: '/connectors',
             expectedTitle: 'Connector management',
-            checks: noAuthChecks
+            checks: noAuthChecks,
         },
         {
             path: ['Setup', 'Plugins'],
             expectedUrl: '/plugins',
-            checks: noAuthChecks
+            checks: noAuthChecks,
         },
         {
             path: ['Setup', 'Namespaces'],
             expectedUrl: '/namespaces',
-            checks: noAuthChecks
+            checks: noAuthChecks,
         },
         {
             path: ['Setup', 'Autocomplete'],
             expectedUrl: '/autocomplete',
             expectedTitle: 'Autocomplete index',
-            checks: noAuthChecks
+            checks: noAuthChecks,
         },
         {
             path: ['Setup', 'RDF Rank'],
             expectedUrl: '/rdfrank',
-            checks: noAuthChecks
+            checks: noAuthChecks,
         },
         {
             path: ['Setup', 'JDBC'],
             expectedUrl: '/jdbc',
             expectedTitle: 'JDBC configuration',
-            checks: noAuthChecks
+            checks: noAuthChecks,
         },
         {
             path: ['Setup', 'SPARQL Templates'],
             expectedUrl: '/sparql-templates',
-            checks: noAuthChecks
+            checks: noAuthChecks,
         },
 
         // 7) Help
@@ -772,7 +783,7 @@ describe('User and Access', () => {
             path: ['Help', 'REST API'],
             expectedUrl: '/webapi',
             expectedTitle: 'REST API documentation',
-            checks: hasAuthChecks
-        }
+            checks: hasAuthChecks,
+        },
     ];
 });

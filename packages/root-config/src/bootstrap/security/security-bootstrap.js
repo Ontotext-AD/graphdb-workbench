@@ -70,7 +70,7 @@ const resolveNavigation = () => {
 
   if (isLoginPage() && ((isLoggedIn || authorizationService.hasFreeAccess()) && !authStrategy.isExternal())) {
     const params = new URLSearchParams(WindowService.getLocationQueryParams());
-    const returnUrl = params.get('r') ?? './';
+    const returnUrl = params.get('r') ? decodeURIComponent(params.get('r')) : './';
 
     navigate(returnUrl);
     eventService.emit(new Login());
