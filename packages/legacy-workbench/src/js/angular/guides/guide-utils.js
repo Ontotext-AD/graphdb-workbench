@@ -369,6 +369,20 @@ const GuideUtils = (function() {
         return value !== null && typeof value === 'object' && !Array.isArray(value);
     };
 
+    /**
+     * Scrolls the element identified by the given selector into view.
+     * Calls element.scrollIntoView with the given scroll options.
+     *
+     * @param elementSelector The selector of the element to scroll into view.
+     * @param scrollOptions Options for scrolling behavior.
+     */
+    const scrollIntoView = (elementSelector, scrollOptions) => {
+        const element = document.querySelector(elementSelector);
+        if (element) {
+            element.scrollIntoView(scrollOptions);
+        }
+    };
+
     const CSS_SELECTORS = {
         SPARQL_EDITOR_SELECTOR: '.tabPanel.active .yasqe .CodeMirror-code',
         SPARQL_RESULTS_SELECTOR: '.tabPanel.active .yasr_results',
@@ -411,6 +425,7 @@ const GuideUtils = (function() {
         defaultInitPreviousStep,
         getElementSelector,
         isObject,
+        scrollIntoView,
         CSS_SELECTORS,
         BUTTONS,
     };

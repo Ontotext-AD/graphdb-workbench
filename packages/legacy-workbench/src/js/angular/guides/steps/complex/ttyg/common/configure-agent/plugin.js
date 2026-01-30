@@ -63,6 +63,7 @@ PluginRegistry.add('guide.step', [
                 content = 'guide.step_plugin.iri-discovery-search.enable-toggle';
             }
 
+            const elementSelector = GuideUtils.getGuideElementSelector('iri-discovery-search');
             return {
                 guideBlockName: 'toggle-element',
                 options: {
@@ -72,12 +73,13 @@ PluginRegistry.add('guide.step', [
                     ...(options.mainAction ? {} : {title: TTYG_DEFAULT_TITLE}),
                     ...options,
                     url: 'ttyg',
-                    elementSelector: GuideUtils.getGuideElementSelector('iri-discovery-search'),
+                    elementSelector,
                     toggleableElementSelector: toggleSelector,
                     onNextValidate: () => {
                         const isEnabled = GuideUtils.isChecked(toggleSelector);
                         return Promise.resolve(shouldToggleOff ? !isEnabled : isEnabled);
                     },
+                    scrollToHandler: () => GuideUtils.scrollIntoView(elementSelector, {block: 'center'}),
                 },
             };
         },
