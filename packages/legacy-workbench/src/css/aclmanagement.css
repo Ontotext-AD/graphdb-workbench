@@ -296,7 +296,7 @@ tr.acl-rule.edit-rule-row .form-control:not(.select-rule){
 }
 
 input.ng-invalid.ng-touched, select.ng-invalid.ng-touched, textarea.ng-invalid.ng-touched, form.ng-submitted .ng-invalid, .autocomplete-editable.invalid {
-    border: 2px solid #FA787E;
+    border: 2px solid var(--gw-inputtext-invalid-border-color);
 }
 
 table td {
