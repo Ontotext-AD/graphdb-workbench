@@ -2987,8 +2987,12 @@ function GraphsVisualizationsCtrl(
 
         // Preserve existing query params and only set/override `saved`
         const currentSearch = $location.search();
-        const newSearch = {...currentSearch, saved: graphToLoad.id};
-        $location.search('saved', graphToLoad.id);
+        const newSearch = {
+            ...currentSearch,
+            saved: graphToLoad.id,
+            // Override repositoryId if present in saved graph, otherwise keep current.
+            [REPOSITORY_ID_PARAM]: graphToLoad.repositoryId || repositoryContextService.getSelectedRepository().id,
+        };
         graph.restoreState(JSON.parse(graphToLoad.data));
         if (!noHistory) {
             pushHistory(newSearch, {savedGraph: graphToLoad});
