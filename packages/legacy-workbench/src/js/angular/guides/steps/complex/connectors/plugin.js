@@ -173,6 +173,44 @@ PluginRegistry.add('guide.step', [
         },
     },
     {
+        guideBlockName: 'connectors-parameter-fields-remaining-fields-intro',
+        /**
+         * Options:
+         * - <b>connectorName</b>: string (required).
+         *   <ol>Possible values:
+         *    <li>Elasticsearch</li>
+         *    <li>OpenSearch</li>
+         *    <li>Solr</li>
+         *    <li>Lucene</li>
+         *    <li>Kafka</li>
+         *    <li>ChatGPT-Retrieval</li>
+         *   </ol>
+         * - <b>instanceName</b>: string (required) – the specific connector instance name for <code>connectorName</code>.
+         * - <b>parameterName</b>: string (required) – the specific creation parameter name for <code>instanceName</code>.
+         */
+        getSteps: (options, services) => {
+            const GuideUtils = services.GuideUtils;
+            const remainingFieldsSelector = GuideUtils.getGuideElementSelector('connector-remaining-fieldsets');
+            const connectorNameSelector = getConnectorNameSelector(options, services);
+            const connectorContentSelector = getConnectorContentSelector(options, services);
+            const parameterSelector = getConnectorParameterSelector(options, services);
+
+            return [{
+                guideBlockName: 'read-only-element',
+                options: {
+                    // If mainAction is set the title will be set automatically
+                    ...(options.mainAction ? {} : {title: CONNECTORS_DEFAULT_TITLE}),
+                    placement: 'top',
+                    class: 'connectors-remaining-fieldsets-intro',
+                    content: 'guide.step_plugin.connectors-parameter-fields-remaining-fields-intro.content',
+                    ...options,
+                    elementSelector: `${connectorNameSelector} ${connectorContentSelector} ${parameterSelector} ${remainingFieldsSelector}`,
+                    url: 'connectors',
+                },
+            }];
+        },
+    },
+    {
         guideBlockName: 'connectors-array-subparameter-intro',
         /**
          * Options:
