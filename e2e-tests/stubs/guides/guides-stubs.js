@@ -46,7 +46,15 @@ export class GuidesStubs {
     static stubDownloadResource(resourcePath, resourceFile) {
         cy.intercept('GET', `/rest/guides/download/${resourcePath}/${resourceFile}`, {
             fixture: `guides/download-resource.ttl`,
-        }).as('resource-download');;
+        }).as('resource-download');
+    }
+
+    static stubImportRDFFileGuide() {
+        GuidesStubs.stubWithFixture('../fixtures/guides/import-rdf-file/import-rdf-file-guide.json');
+    }
+
+    static stubConfirmDuplicatedRDFFileGuide() {
+        GuidesStubs.stubWithFixture('../fixtures/guides/import-rdf-file/confirm-duplicate-rdf-file-guide.json');
     }
 
     static stubWithFixture(fixturePath) {

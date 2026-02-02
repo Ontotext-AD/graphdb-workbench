@@ -1,0 +1,30 @@
+[
+    {
+        "guideName": {
+            "en": "Confirm duplicate RDF file"
+        },
+        "guideDescription": {
+            "en": "Test step for confirming a duplicated RDF file"
+        },
+        "steps": [
+            {
+                "guideBlockName": "import-upload-rdf-file",
+                "options": {
+                    "resourceFile": "starwars.ttl"
+                }
+            },
+            {
+                "guideBlockName": "import-click-on-import-button"
+            },
+            {
+                "guideBlockName": "import-rdf-file",
+                "options": {
+                    "resourceFile": "starwars.ttl"
+                }
+            },
+            {
+                "guideBlockName": "guide-end"
+            }
+        ]
+    }
+]

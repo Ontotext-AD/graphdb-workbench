@@ -43,6 +43,7 @@ PluginRegistry.add('guide.step', [
                                 } else {
                                     // Canceling the automatic uploading of files
                                     // because the guide rdf file is not selected.
+                                    GuideUtils.noNextErrorToast(toastr, $translate, $interpolate, 'guide.step_plugin.import_rdf_file.unexpected-file', options);
                                     eventData.cancel = true;
                                 }
                             }));
