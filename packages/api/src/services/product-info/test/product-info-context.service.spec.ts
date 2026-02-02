@@ -36,4 +36,11 @@ describe('ProductInfoContextService', () => {
     productInfoContextService.updateProductInfo(newProductInfo);
     expect(mockCallback).not.toHaveBeenCalled();
   });
+
+  it('should get product info synchronously', () => {
+    expect(productInfoContextService.getProductInfo()).toBeUndefined();
+    const productInfo = {workbench: '2.8.0', productVersion: '1.0.0'} as ProductInfo;
+    productInfoContextService.updateProductInfo(productInfo);
+    expect(productInfoContextService.getProductInfo()).toEqual(productInfo);
+  });
 });

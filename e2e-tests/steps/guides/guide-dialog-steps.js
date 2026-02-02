@@ -40,6 +40,11 @@ export class GuideDialogSteps {
         GuideDialogSteps.getCloseButton().scrollIntoView().click();
     }
 
+    static getContentLink() {
+        return GuideDialogSteps.getContent().find('a');
+    }
+
+
     static assertDialogWithTitleIsVisible(text) {
         GuideDialogSteps.getHeader().contains(text);
     }

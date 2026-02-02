@@ -126,6 +126,17 @@ describe('Connectors guide', () => {
             GuideDialogSteps.clickOnNextButton();
 
             GuideDialogSteps.assertDialogWithTitleIsVisible('Lucene connector');
+            GuideDialogSteps.assertDialogWithContentIsVisible('This lucene connector configuration contains multiple field mappings. They determine which values are searchable, filterable, or retrievable during query execution.');
+            GuideDialogSteps.clickOnNextButton();
+
+            GuideDialogSteps.assertDialogWithTitleIsVisible('Lucene connector');
+            GuideDialogSteps.assertDialogWithContentIsVisible('For more information please visit GraphDB documentation');
+            GuideDialogSteps.getContentLink()
+                .should('have.attr', 'href')
+                .and('include', 'my-custom-link.html');
+            GuideDialogSteps.clickOnNextButton();
+
+            GuideDialogSteps.assertDialogWithTitleIsVisible('Lucene connector');
             GuideDialogSteps.assertDialogWithContentIsVisible('The Languages option defines which RDF literal languages are mapped to the connector. You can provide a list of language ranges to include specific languages, or an empty range to include literals without a language tag.');
             GuideDialogSteps.clickOnNextButton();
 
