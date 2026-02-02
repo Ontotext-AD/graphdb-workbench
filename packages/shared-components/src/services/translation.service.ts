@@ -117,6 +117,9 @@ class TranslationServiceClassDefinition {
    * @returns The translation string if found, or `undefined` if the path does not exist.
    */
   private translateAsJsonObject(bundle: TranslationBundle, key: string): string {
+    if (!key) {
+      return;
+    }
     let path = key.split('.');
     return this.getTranslation(bundle, path);
   }

@@ -1,0 +1,21 @@
+[
+    {
+        "guideName": {
+            "en": "Import RDF file"
+        },
+        "guideDescription": {
+          "en": "Test steps for importing an RDF file"
+        },
+        "steps": [
+            {
+                "guideBlockName": "import-rdf-file",
+                "options": {
+                    "resourceFile": "starwars.ttl"
+                }
+            },
+            {
+                "guideBlockName": "guide-end"
+            }
+        ]
+    }
+]

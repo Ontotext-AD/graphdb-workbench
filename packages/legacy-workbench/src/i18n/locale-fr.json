@@ -3267,6 +3267,7 @@
     "guide.step_plugin.import_rdf_file.confirm_duplicate_files_dialog.content": "Cliquez sur le bouton <b>{{'common.yes.btn'|translate}}</b> pour remplacer le fichier existant.",
     "guide.step_plugin.import_rdf_file.import-settings.import.button.content": "Cliquez sur le bouton <b>{{'common.import'|translate}}</b>.",
     "guide.step_plugin.import_rdf_file.file-must-be-uploaded": "Téléchargez d'abord le fichier <b>{{resourceFile}}</b>",
+    "guide.step_plugin.import_rdf_file.unexpected-file": "Le fichier importé ne correspond pas à la ressource attendue. Veuillez importer <b>{{resourceFile}}</b>.",
     "guide.step_plugin.import_status_info.content": "Attendez la fin de l'importation.",
     "guide.step_plugin.enable-autocomplete.status_info.content": "Attendez que l'indexation soit terminée.",
     "guide.step_plugin.visual-graph-properties.title": "Propriétés du graphique visuel",
