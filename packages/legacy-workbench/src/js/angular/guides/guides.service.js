@@ -6,12 +6,15 @@ import {YasguiComponentDirectiveUtil} from "../core/directives/yasgui-component/
 import {FileUtils} from "../utils/file-utils";
 import {
     navigate,
-    getCurrentRoute
+    getCurrentRoute,
+    service,
+    UriUtil,
+    ProductInfoContextService,
 } from '@ontotext/workbench-api';
 
 const modules = [
     'graphdb.framework.guides.shepherd.services',
-    'graphdb.framework.rest.guides.service'
+    'graphdb.framework.rest.guides.service',
 ];
 
 angular
@@ -181,15 +184,28 @@ function GuidesService(
     $timeout,
     EventEmitterService,
     GuidesRestService) {
-
     this.guideResumeSubscription = undefined;
-    this.languageChangeSubscription = undefined;
-    this.guideCancelSubscription = undefined;
 
     this.init = () => {
         this._subscribeToGuideResumed();
         this._subscribeToGuideCancel();
         this._subscribeToGuidePause();
+    };
+
+    /**
+     * Resolves the documentation URL for the given endpoint.
+     * Gets the product info from the ProductInfoContextService and uses it to build the URL.
+     *
+     * @param endpoint - The endpoint to resolve the URL for.
+     * @returns {string} The resolved URL.
+     *
+     * @example
+     * const docUrl = UriUtil.resolveDocumentationUrl('10.0.0', 'sparql-endpoint');
+     * // Returns: 'https://graphdb.ontotext.com/documentation/10.0.0/sparql-endpoint'
+     */
+    this.resolveDocumentationUrl = (endpoint) => {
+        const productInfo = service(ProductInfoContextService).getProductInfo();
+        return UriUtil.resolveDocumentationUrl(productInfo.shortVersion, endpoint);
     };
 
     this.downloadGuidesFile = (resourcePath, resourceFile) => {
@@ -263,7 +279,7 @@ function GuidesService(
                 this.startGuide(selectedGuide, undefined, true);
             }
         });
-    }
+    };
 
     /**
      * Fetches list with all available guides.
@@ -475,8 +491,9 @@ function GuidesService(
             EventEmitterService,
             RoutingUtil: {
                 navigate,
-                getCurrentRoute
-            }
+                getCurrentRoute,
+            },
+            resolveDocumentationUrl: this.resolveDocumentationUrl,
         };
         let steps = [];
         if (angular.isArray(complexStep)) {

@@ -37,4 +37,13 @@ export class ProductInfoContextService extends ContextService<ProductInfoContext
   onProductInfoChanged(callbackFn: ValueChangeCallback<ProductInfo | undefined>): () => void {
     return this.subscribe(this.PRODUCT_INFO, callbackFn);
   }
+
+  /**
+   * Retrieves the product information from the context.
+   *
+   * @return the product information or undefined, if there is no product information.
+   */
+  getProductInfo(): ProductInfo | undefined {
+    return this.getContextPropertyValue(this.PRODUCT_INFO);
+  }
 }
