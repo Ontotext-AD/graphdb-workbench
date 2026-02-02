@@ -183,6 +183,28 @@ PluginRegistry.add('guide.step', [
         },
     },
     {
+        /**
+         * Shows a link to the documentation page.
+         * Resolves the GDB version and appends the documentation path to it
+         *
+         * @param {string} documentationPath - The path to the documentation page, e.g. <code>lucene-graphdb-connector.html</code>.
+         */
+        guideBlockName: 'show-documentation-link',
+
+        getSteps: (options, services) => {
+            // We might want to completely override the content, at which point we don't need to provide a documentation path
+            const documentationLink = options.documentationPath ? services.resolveDocumentationUrl(options.documentationPath) : '';
+            return [{
+                guideBlockName: 'info-message',
+                options: {
+                    content: 'guide.step_plugin.show-documentation-link.content',
+                    ...options,
+                    documentationLink,
+                },
+            }];
+        },
+    },
+    {
         // An element which is expected to be focused. It allows user interaction.
         guideBlockName: 'focus-element',
         getStep: (options, services) => {
