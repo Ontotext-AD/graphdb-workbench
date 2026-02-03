@@ -35,8 +35,9 @@ export class YasqeSteps {
         return YasqeSteps.getYasqe().find('.yasqe_queryButton');
     }
 
-    static executeQuery() {
-        this.getExecuteQueryButton().click();
+    static executeQuery(force = false) {
+        this.getExecuteQueryButton().click({force});
+        this.getExecuteQueryButton().trigger('mouseleave', {force: true});
         YasrSteps.getResponseInfo()
             .should('not.have.class', 'hidden')
             .should('not.have.class', 'empty')
@@ -95,7 +96,11 @@ export class YasqeSteps {
         return cy.waitUntil(() =>
             this.getEditor().find('.CodeMirror')
                 .then((codeMirrorEl) => {
-                    return codeMirrorEl && codeMirrorEl[0].CodeMirror.getValue().indexOf(query) !== -1;
+                    if(codeMirrorEl && codeMirrorEl[0].CodeMirror.getValue().indexOf(query) !== -1) {
+                        return true;
+                    } else {
+                        cy.fail('Query in editor is not as expected. Expected query:\n' + query + '\nActual query:\n' + codeMirrorEl[0].CodeMirror.getValue());
+                    }
                 }));
     }
 

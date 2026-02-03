@@ -19,12 +19,7 @@ describe('Visual graph button when user execute a CONSTRUCT query', () => {
         cy.deleteRepository(repositoryId);
     });
 
-    it('Should display a "Visual" graph button configured by user', {
-        retries: {
-            runMode: 1,
-            openMode: 0
-        }
-    }, () => {
+    it('Should display a "Visual" graph button configured by user', () => {
         // When I visit a page with "ontotext-yasgui-web-component" on it,
         // and select a CONSTRUCT query.
         YasqeSteps.executeQuery();
