@@ -102,7 +102,7 @@ function ontoLoader($timeout) {
             '<div ng-style="{display: \'block\', margin: \'0 auto\', width: size + \'px\', height: \'auto\' }">' +
                 '<ng-include src="\'js/angular/templates/loader/ot-loader.svg?v=[AIV]{version}[/AIV]\'"></ng-include>' +
             '</div>' +
-            '<div ng-style="{ fontSize: fontSize }">{{currentMessage}}</div>' +
+            '<div class="loader-message" ng-style="{ fontSize: fontSize }">{{currentMessage}}</div>' +
         '</div>',
     };
 }
