@@ -3,8 +3,10 @@ import {NavbarToggledEvent} from '../onto-navbar/navbar-toggled-event';
 import {debounce} from '../../utils/function-utils';
 import {WINDOW_WIDTH_FOR_COLLAPSED_NAVBAR} from '../../models/constants';
 import {
+  ApplicationLifecycleContextService,
   AuthenticatedUser,
-  AuthenticationService, AuthenticationStorageService, RuntimeConfigurationContextService,
+  AuthenticationService,
+  AuthenticationStorageService,
   Authority,
   AuthorizationService,
   EventName,
@@ -14,8 +16,10 @@ import {
   navigate,
   NavigationContextService,
   NavigationEndPayload,
+  RuntimeConfigurationContextService,
   SecurityConfig,
-  SecurityContextService, service,
+  SecurityContextService,
+  service,
   StorageKey,
   SubscriptionList,
   WindowService
@@ -37,6 +41,7 @@ export class OntoLayout {
   private readonly authStorageService = service(AuthenticationStorageService);
   private readonly runtimeConfigurationContextService = service(RuntimeConfigurationContextService);
   private readonly eventService = service(EventService);
+  private readonly applicationLifecycleContextService = service(ApplicationLifecycleContextService);
 
   private readonly fullJwtKey = `${StorageKey.GLOBAL_NAMESPACE}.${this.authStorageService.NAMESPACE}.${this.authStorageService.jwtKey}`;
   private readonly fullAuthenticatedKey = `${StorageKey.GLOBAL_NAMESPACE}.${this.authStorageService.NAMESPACE}.${this.authStorageService.authenticatedKey}`;
@@ -58,7 +63,7 @@ export class OntoLayout {
   @State() showHeader = this.isAuthenticatedFully();
   @State() showNavbar = false;
   @State() private isEmbedded = false;
-  @State() private loading = false;
+  @State() private loading = true;
 
   // ========================
   // Private
@@ -121,7 +126,9 @@ export class OntoLayout {
         }
 
         <div class={{'main-slot-wrapper': true, 'loading': this.loading}}>
-          {this.loading && <onto-loader size={96} messageText={TranslationService.translate('common.loading')}></onto-loader>}
+          {this.loading && <div class="loader-wrapper">
+            <onto-loader size={96} messageText={TranslationService.translate('common.loading')}></onto-loader>
+          </div>}
           <slot name="main"></slot>
         </div>
 
@@ -299,14 +306,17 @@ export class OntoLayout {
 
   private subscribeToApplicationChange() {
     this.subscriptions.add(
-      this.eventService.subscribe(EventName.APPLICATION_BEFORE_CHANGE, () => {
-        this.loading = true;
-      })
-    );
+      this.applicationLifecycleContextService.onApplicationStateBeforeChange((state) => {
+        if (state) {
+          this.loading = true;
+        }
+      }));
 
     this.subscriptions.add(
-      this.eventService.subscribe(EventName.APPLICATION_CHANGED, () => {
-        this.loading = false;
+      this.applicationLifecycleContextService.onApplicationStateChange((state) => {
+        if (state) {
+          this.loading = false;
+        }
       })
     );
   }
