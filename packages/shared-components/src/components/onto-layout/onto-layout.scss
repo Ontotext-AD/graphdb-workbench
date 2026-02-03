@@ -39,13 +39,19 @@
   }
 
   .main-slot-wrapper {
-    &.loading {
+    .loader-wrapper {
+      flex-grow: 1;
       display: flex;
       align-items: center;
       justify-content: center;
+    }
+
+    &.loading {
+      display: flex;
+      flex-direction: column;
 
       .page-content {
-        display: none;
+        visibility: hidden;
       }
     }
   }

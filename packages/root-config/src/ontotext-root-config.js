@@ -11,15 +11,14 @@ import {
 } from 'single-spa-layout';
 import {bootstrapWorkbench} from './bootstrap/bootstrap';
 import {
-  service,
+  ApplicationLifecycleContextService,
   ConfigurationContextService,
   EventService,
+  getBasePath,
   NavigationEnd,
   NavigationStart,
-  getBasePath,
+  service,
   WindowService,
-  ApplicationChanged,
-  ApplicationBeforeChange
 } from '@ontotext/workbench-api';
 import './styles/onto-stylesheet.scss';
 import './onto-vendor';
@@ -83,12 +82,12 @@ function registerSingleSpaRouterListeners() {
     service(EventService).emit(new NavigationEnd(d.oldUrl, d.newUrl));
   });
 
-  WindowService.getWindow().addEventListener('single-spa:before-app-change', () => {
-    service(EventService).emit(new ApplicationBeforeChange());
+  WindowService.getWindow().addEventListener('single-spa:before-app-change', (evt) => {
+    service(ApplicationLifecycleContextService).updateApplicationStateBeforeChange(evt.detail.newAppStatuses);
   });
 
-  WindowService.getWindow().addEventListener('single-spa:app-change', () => {
-    service(EventService).emit(new ApplicationChanged());
+  WindowService.getWindow().addEventListener('single-spa:app-change', (evt) => {
+    service(ApplicationLifecycleContextService).updateApplicationStateChange(evt.detail.newAppStatuses);
   });
 }
 
