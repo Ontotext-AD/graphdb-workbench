@@ -43,6 +43,10 @@ export class GuidesStubs {
         GuidesStubs.stubWithFixture('../fixtures/guides/download-guide-resource/download-guide-resource-guide.json');
     }
 
+    static stubExecuteSparqlQueryGuide() {
+        GuidesStubs.stubWithFixture('../fixtures/guides/execute-sparql-query/execute-sparql-query-guide.json');
+    }
+
     static stubDownloadResource(resourcePath, resourceFile) {
         cy.intercept('GET', `/rest/guides/download/${resourcePath}/${resourceFile}`, {
             fixture: `guides/download-resource.ttl`,
