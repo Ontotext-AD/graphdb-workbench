@@ -105,12 +105,13 @@ export class OntoNavbar {
 
   private init(menuItems: ExternalMenuModel): void {
     const selectedRepository = this.repositoryContextService.getSelectedRepository();
-    const internalModel = NavbarService.map(menuItems || [], this.productInfo, selectedRepository?.id, REPOSITORY_ID_PARAM);
+    const internalModel = NavbarService.map(menuItems || [], this.productInfo, selectedRepository?.getRepositoryIdentifier(), REPOSITORY_ID_PARAM);
     internalModel.initSelected(getCurrentRoute());
     this.menuModel = internalModel;
   }
 
   private select(event: MouseEvent, menuItem: NavbarItemModel) {
+    console.log('%cselected', 'background: pink', menuItem.href);
     event.preventDefault();
     this.clearAllOpenedSubmenuStyles();
 

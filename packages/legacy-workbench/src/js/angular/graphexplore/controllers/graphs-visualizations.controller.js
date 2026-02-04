@@ -323,8 +323,10 @@ function GraphsVisualizationsCtrl(
     $scope.goToGraphConfig = (config) => {
         const searchParams = {
             config: config.id,
-            [REPOSITORY_ID_PARAM]: repositoryContextService.getSelectedRepository().id,
+            // [REPOSITORY_ID_PARAM]: repositoryContextService.getSelectedRepository().id,
+            [REPOSITORY_ID_PARAM]: repositoryContextService.getSelectedRepository().getRepositoryIdentifier(),
         };
+        console.log('%cgotToGraphConfig', 'background: tan', config, searchParams);
         pushHistory(searchParams, {config: config});
         resetState();
         loadGraphConfig(config);
@@ -2824,7 +2826,7 @@ function GraphsVisualizationsCtrl(
                 searchParams.config = $scope.configLoaded.id;
             }
             searchParams.uri = uri;
-            searchParams[REPOSITORY_ID_PARAM] = repositoryContextService.getSelectedRepository().id;
+            searchParams[REPOSITORY_ID_PARAM] = repositoryContextService.getSelectedRepository().getRepositoryIdentifier();
             pushHistory(searchParams, {uri: uri, config: $scope.configLoaded});
         }
         $scope.$broadcast("onRootNodeChange", uri);
