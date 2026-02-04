@@ -15,9 +15,7 @@
   &.is-embedded {
     grid-template-columns: 1fr; /* Change to a single column */
     grid-template-areas:
-      "header"
-      "main"
-      "footer";
+      "main";
     padding-top: 1rem;
   }
 
