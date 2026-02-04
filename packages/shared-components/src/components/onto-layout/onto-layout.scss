@@ -22,11 +22,15 @@
   }
 
   &.hide-navbar {
-    grid-template-columns: 1fr; /* Change to a single column */
-    grid-template-areas:
-      "header"
-      "main"
-      "footer";
+    grid-template:
+    "header" auto
+    "main" 1fr
+    "footer" auto / 1fr;
+
+    /* Maintain single column even when expanded */
+    &.expanded {
+      grid-template-columns: 1fr;
+    }
   }
 
   &.expanded {
