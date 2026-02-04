@@ -165,6 +165,10 @@ export class AclManagementSteps {
         this.getRoleField(index).clear().type(value);
     }
 
+    static blurRole(index) {
+        this.getRoleField(index).blur();
+    }
+
     static getFieldError() {
         return cy.get('div.small');
     }
