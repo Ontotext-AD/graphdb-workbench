@@ -323,7 +323,6 @@ function GraphsVisualizationsCtrl(
     $scope.goToGraphConfig = (config) => {
         const searchParams = {
             config: config.id,
-            // [REPOSITORY_ID_PARAM]: repositoryContextService.getSelectedRepository().id,
             [REPOSITORY_ID_PARAM]: repositoryContextService.getSelectedRepository().getRepositoryIdentifier(),
         };
         console.log('%cgotToGraphConfig', 'background: tan', config, searchParams);
