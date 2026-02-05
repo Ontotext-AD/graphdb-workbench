@@ -1,11 +1,19 @@
-import {EventName, EventService, RuntimeConfigurationContextService, service} from '@ontotext/workbench-api';
+import {EventName, EventService, RuntimeConfigurationContextService, service, WindowService} from '@ontotext/workbench-api';
+
+const updateEmbeddedFlag = (queryString) => {
+  const runtimeConfig = service(RuntimeConfigurationContextService);
+  const queryParams = new URLSearchParams(queryString);
+  runtimeConfig.updateRuntimeConfiguration({isEmbedded: queryParams.has('embedded')});
+};
 
 export const runtimeConfigurationBootstrap = () => {
   const eventService = service(EventService);
+
+  // Initial update of embedded flag
+  updateEmbeddedFlag(WindowService.getLocationQueryParams());
+
   eventService.subscribe(EventName.NAVIGATION_END, (navigationEndPayload) => {
-    const runtimeConfig = service(RuntimeConfigurationContextService);
-    const queryParams = new URLSearchParams(new URL(navigationEndPayload.newUrl).search);
-    runtimeConfig.updateRuntimeConfiguration({isEmbedded: queryParams.has('embedded')});
+    updateEmbeddedFlag(new URL(navigationEndPayload.newUrl).search);
   });
   return Promise.resolve();
 };
