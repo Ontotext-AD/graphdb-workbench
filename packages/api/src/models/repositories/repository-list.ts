@@ -27,10 +27,11 @@ export class RepositoryList extends ModelList<Repository> {
    *
    * @param repositoryId - The unique ID of the repository to find.
    * @param location - The location associated with the repository.
+   * @param ignoringLocation - If true, the location will be ignored when searching for the repository. Defaults to false.
    * @returns The matching {@link Repository} if found, otherwise `undefined`.
    */
-  findRepository(repositoryId: string, location: string): Repository | undefined {
-    return super.find((repository) => repository.id === repositoryId && repository.location === location);
+  findRepository(repositoryId: string, location: string, ignoringLocation = false): Repository | undefined {
+    return super.find((repository) => repository.id === repositoryId && (ignoringLocation || repository.location === location));
   }
 
   /**

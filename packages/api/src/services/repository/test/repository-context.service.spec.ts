@@ -174,6 +174,79 @@ describe('RepositoryContextService', () => {
       // Then it should return true
       expect(exists).toBe(true);
     });
+
+    test('Should return true when ignoringLocation is true and repository ID matches but location differs.', () => {
+      // Given a repository list with a repository at a specific location
+      const repository = createRepositoryInstance('repo-one', 'http://example.com:7300');
+      const repositories = new RepositoryList([repository]);
+      repositoryContextService.updateRepositoryList(repositories);
+
+      // When checking if a repository with the same ID but different location exists with ignoringLocation = true
+      const sameIdDifferentLocation = createRepositoryInstance('repo-one', 'http://different.com:7300');
+      const exists = repositoryContextService.repositoryExists(sameIdDifferentLocation.toRepositoryReference(), true);
+
+      // Then it should return true
+      expect(exists).toBe(true);
+    });
+
+    test('Should return false when ignoringLocation is false and repository ID matches but location differs.', () => {
+      // Given a repository list with a repository at a specific location
+      const repository = createRepositoryInstance('repo-one', 'http://example.com:7300');
+      const repositories = new RepositoryList([repository]);
+      repositoryContextService.updateRepositoryList(repositories);
+
+      // When checking if a repository with the same ID but different location exists with ignoringLocation = false
+      const sameIdDifferentLocation = createRepositoryInstance('repo-one', 'http://different.com:7300');
+      const exists = repositoryContextService.repositoryExists(sameIdDifferentLocation.toRepositoryReference(), false);
+
+      // Then it should return false
+      expect(exists).toBe(false);
+    });
+
+    test('Should return true when ignoringLocation is true and repository exists among multiple repositories at different locations.', () => {
+      // Given a repository list with repositories at different locations
+      const repo1 = createRepositoryInstance('repo-one', 'http://location-a.com:7300');
+      const repo2 = createRepositoryInstance('repo-two', 'http://location-b.com:7300');
+      const repo3 = createRepositoryInstance('repo-three', 'http://location-c.com:7300');
+      const repositories = new RepositoryList([repo1, repo2, repo3]);
+      repositoryContextService.updateRepositoryList(repositories);
+
+      // When checking if a repository with matching ID but different location exists with ignoringLocation = true
+      const sameIdDifferentLocation = createRepositoryInstance('repo-two', 'http://different-location.com:7300');
+      const exists = repositoryContextService.repositoryExists(sameIdDifferentLocation.toRepositoryReference(), true);
+
+      // Then it should return true
+      expect(exists).toBe(true);
+    });
+
+    test('Should return false when ignoringLocation is true but repository ID does not exist.', () => {
+      // Given a repository list with repositories
+      const repo1 = createRepositoryInstance('repo-one', 'http://location-a.com:7300');
+      const repo2 = createRepositoryInstance('repo-two', 'http://location-b.com:7300');
+      const repositories = new RepositoryList([repo1, repo2]);
+      repositoryContextService.updateRepositoryList(repositories);
+
+      // When checking if a repository with non-existent ID exists with ignoringLocation = true
+      const nonExistentRepo = createRepositoryInstance('repo-three', 'http://location-a.com:7300');
+      const exists = repositoryContextService.repositoryExists(nonExistentRepo.toRepositoryReference(), true);
+
+      // Then it should return false
+      expect(exists).toBe(false);
+    });
+
+    test('Should use ignoringLocation = false as default when parameter is not provided.', () => {
+      // Given a repository list with a repository at a specific location
+      const repository = createRepositoryInstance('repo-one', 'http://example.com:7300');
+      const repositories = new RepositoryList([repository]);
+      repositoryContextService.updateRepositoryList(repositories);
+
+      // When checking if a repository with same ID but different location exists without providing ignoringLocation parameter
+      const sameIdDifferentLocation = createRepositoryInstance('repo-one', 'http://different.com:7300');
+      const exists = repositoryContextService.repositoryExists(sameIdDifferentLocation.toRepositoryReference());
+
+      // Then it should return false (default behavior is to consider location)
+      expect(exists).toBe(false);
+    });
   });
 
   function createRepositoryInstance(id: string, location = 'http://example.com:7300') {
