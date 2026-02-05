@@ -111,7 +111,6 @@ export class OntoNavbar {
   }
 
   private select(event: MouseEvent, menuItem: NavbarItemModel) {
-    console.log('%cselected', 'background: pink', menuItem.href);
     event.preventDefault();
     this.clearAllOpenedSubmenuStyles();
 
