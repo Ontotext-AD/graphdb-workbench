@@ -108,21 +108,23 @@ export class RepositoryContextService extends ContextService<RepositoryContextFi
    * Finds and returns a repository matching the given repository reference.
    *
    * @param {RepositoryReference} repositoryReference - The reference containing `id` and `location` to identify the repository.
+   * @param ignoringLocation - If true, the location will be ignored when searching for the repository. Defaults to false.
    * @returns {Repository | undefined} The matching repository if found; otherwise, undefined.
    */
-  findRepository(repositoryReference?: RepositoryReference): Repository | undefined {
+  findRepository(repositoryReference?: RepositoryReference, ignoringLocation = false): Repository | undefined {
     if (!repositoryReference) {
       return undefined;
     }
-    return this.getRepositoryList().findRepository(repositoryReference.id, repositoryReference.location);
+    return this.getRepositoryList().findRepository(repositoryReference.id, repositoryReference.location, ignoringLocation);
   }
 
   /**
    * Checks if a repository exists in the current repository list based on the provided reference.
    * @param repositoryReference - The reference of the repository to check.
+   * @param ignoringLocation - If true, the location will be ignored when checking for repository existence. Defaults to false.
    * @returns True if the repository exists; otherwise, false.
    */
-  repositoryExists(repositoryReference: RepositoryReference): boolean {
-    return this.findRepository(repositoryReference) !== undefined;
+  repositoryExists(repositoryReference: RepositoryReference, ignoringLocation = false): boolean {
+    return this.findRepository(repositoryReference, ignoringLocation) !== undefined;
   }
 }

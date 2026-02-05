@@ -1365,6 +1365,7 @@
         "url_param": {
             "invalid_repo": "The repository \"{{repositoryId}}\" specified in the URL does not exist. Please select an existing repository.",
             "invalid_repo_continue": "The repository \"{{repositoryId}}\" specified in the URL does not exist. You can continue with the current repository \"{{currentRepositoryId}}\" or select another repository.",
+            "remote_location_repo_continue": "The repository \"{{repositoryId}}\" specified in the URL does not exist in current location. You can continue with the current repository \"{{currentRepositoryId}}\" or select it from the menu.",
             "change_active_repo": "Active repository will be changed to \"{{repositoryId}}\". Do you want to proceed?"
         }
     },

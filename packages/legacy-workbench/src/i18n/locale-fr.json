@@ -1364,6 +1364,7 @@
         "url_param": {
             "invalid_repo": "Le dépôt \"{{repositoryId}}\" spécifié dans l'URL n'existe pas. Veuillez sélectionner un dépôt existant.",
             "invalid_repo_continue": "Le dépôt \"{{repositoryId}}\" spécifié dans l’URL n’existe pas. Vous pouvez continuer avec le dépôt actuel \"{{currentRepositoryId}}\" ou sélectionner un autre dépôt.",
+            "remote_location_repo_continue": "Le dépôt \"{{repositoryId}}\" spécifié dans l’URL n’existe pas à l’emplacement actuel. Vous pouvez continuer avec le dépôt actuel \"{{currentRepositoryId}}\" ou le sélectionner dans le menu.",
             "change_active_repo": "Le dépôt actif sera remplacé par \"{{repositoryId}}\". Voulez-vous continuer?"
         }
     },
