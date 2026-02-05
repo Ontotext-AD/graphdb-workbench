@@ -74,13 +74,21 @@ export class RepositoryService implements Service {
     if (!url) {
       return {location: '', id: ''};
     }
-    const regex = /^(https?:\/\/[^/]+)\/repositories\/([^/]+)/;
+    // Regex enforces: protocol://host/repositories/id with no trailing content
+    const regex = /^(https?:\/\/[^/]+)\/repositories\/([^/]+)$/;
     const match = url.match(regex);
 
     if (match) {
       return {location: match[1], id: match[2]};
     }
 
+    // If the URL starts with http:// or https:// but doesn't match the expected pattern,
+    // it's an invalid repository URL
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      return {location: '', id: ''};
+    }
+
+    // Otherwise, treat it as a simple repository ID
     return {location: '', id: url};
   }
 
