@@ -127,11 +127,14 @@ function JdbcCreateCtrl(
 
     // This flag is used to prevent triggering the repository change event listener on initial subscription.
     let initialRepoChangeTrigger = true;
+    let repositoryChangeDetected = false;
     let currentRepository;
 
     // =========================
     // Public functions
     // =========================
+
+    $scope.goToJdbcList = () => goToJdbcView();
 
     $scope.saveJdbcConfiguration = () => {
         $scope.saveOrUpdateExecuted = true;
@@ -551,6 +554,7 @@ function JdbcCreateCtrl(
     };
 
     const goToJdbcView = () => {
+        removeAllListeners();
         $location.url('/jdbc');
     };
 
@@ -588,6 +592,11 @@ function JdbcCreateCtrl(
     };
 
     const locationChangedHandler = ( eventPayload) => {
+        if (repositoryChangeDetected) {
+            repositoryChangeDetected = false;
+            return;
+        }
+
         if ($scope.isDirty) {
             eventPayload.cancelNavigation();
             const title = $translate.instant('common.confirm');
@@ -614,7 +623,6 @@ function JdbcCreateCtrl(
         window.removeEventListener('beforeunload', beforeunloadHandler);
         subscriptions.forEach((subscription) => subscription());
     };
-
     const repositoryChangedHandler = (repository) => {
         if (!repository) {
             return;
@@ -623,6 +631,7 @@ function JdbcCreateCtrl(
             initialRepoChangeTrigger = false;
             currentRepository = repository.id;
         } else if (repository.id !== currentRepository) {
+            repositoryChangeDetected = true;
             getOntotextYasgui().abortQuery().then(goToJdbcView);
         }
     };
