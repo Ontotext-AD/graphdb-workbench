@@ -213,6 +213,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     const authenticationService = service(AuthenticationService);
     const securityContextService = service(SecurityContextService);
     const repositoryContextService = service(RepositoryContextService);
+    const repositoryService = service(RepositoryService);
     /**
      * When the timeout finishes, the popover will open.
      */
@@ -818,21 +819,22 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         }
     };
 
-    const confirmRepositoryChange = (currentRepositoryId, newRepositoryId) => {
+    const confirmRepositoryChange = (currentRepository, newRepositoryId) => {
         ModalService.openConfirmationModal({
                 title: $translate.instant('common.confirm'),
                 message: $translate.instant('repository.url_param.change_active_repo', {repositoryId: newRepositoryId}),
                 confirmButtonKey: $translate.instant('common.confirm'),
             },
             () => {
+                const {location, id} = repositoryService.parseRepositoryUrl(newRepositoryId);
                 repositoryContextService.updateSelectedRepository({
-                    id: newRepositoryId,
-                    location: '',
+                    id: id,
+                    location: location,
                 });
             },
             () => {
                 // on cancel, revert the URL to the current repository
-                $location.search(REPOSITORY_ID_PARAM, currentRepositoryId);
+                $location.search(REPOSITORY_ID_PARAM, repositoryService.getRepositoryIdentifier(currentRepository));
             });
     };
 
@@ -847,8 +849,11 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
             if (repository) {
                 const searchParams = new URLSearchParams(WindowService.getLocationQueryParams());
                 const urlRepositoryParam = searchParams.get(REPOSITORY_ID_PARAM);
-                if (urlRepositoryParam !== repository.id) {
-                    $location.search(REPOSITORY_ID_PARAM, repository.id).replace();
+                const currentRepository = repositoryService.getRepositoryIdentifier(repository);
+                if (urlRepositoryParam !== currentRepository) {
+                    $location.search(REPOSITORY_ID_PARAM, (currentRepository));
+                    // use replace to avoid polluting the browser history
+                    $location.replace();
                 }
             }
         }
@@ -865,13 +870,14 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     // 6. active repo yes, repo in url yes, url repo missing-> show warning, keep the active repo
     const onRouteChangeStart = (event) => {
         const repositoryIdParam = $location.search()[REPOSITORY_ID_PARAM];
+        const {location, id} = repositoryService.parseRepositoryUrl(repositoryIdParam);
         const selectedRepository = repositoryContextService.getSelectedRepository();
 
         const repositoryExists = repositoryIdParam
-            ? repositoryContextService.repositoryExists({id: repositoryIdParam, location: ''})
+            ? repositoryContextService.repositoryExists({id: id, location: location})
             : false;
 
-        const isSameRepository = !!selectedRepository && repositoryIdParam === selectedRepository.id;
+        const isSameRepository = !!selectedRepository && repositoryIdParam === repositoryService.getRepositoryIdentifier(selectedRepository);
 
         // --- no selected repository ---
 
@@ -884,8 +890,8 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
             // 2. active repo no, repo in url yes, url repo exists -> set active repo same as the url
             if (repositoryExists) {
                 repositoryContextService.updateSelectedRepository({
-                    id: repositoryIdParam,
-                    location: '',
+                    id: id,
+                    location: location,
                 });
                 return;
             }
@@ -905,7 +911,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         if (!repositoryIdParam) {
             // The timeout is needed to ensure the location change happens after the current digest cycle
             $timeout(() => {
-                $location.search(REPOSITORY_ID_PARAM, selectedRepository.id).replace();
+                $location.search(REPOSITORY_ID_PARAM, repositoryService.getRepositoryIdentifier(selectedRepository)).replace();
             });
             return;
         }
@@ -917,7 +923,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
 
         // 6. active repo yes, repo in url yes, url repo exists and is different -> confirm change
         if (repositoryExists) {
-            confirmRepositoryChange(selectedRepository.id, repositoryIdParam);
+            confirmRepositoryChange(selectedRepository, repositoryIdParam);
             return;
         }
 
@@ -928,7 +934,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         }).result.then(() => {
             // The timeout is needed to ensure the location change happens after the current digest cycle
             $timeout(() => {
-                $location.search(REPOSITORY_ID_PARAM, selectedRepository.id).replace();
+                $location.search(REPOSITORY_ID_PARAM, selectedRepository.getRepositoryIdentifier()).replace();
             });
         });
     };
@@ -962,8 +968,8 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     $scope.$on('$routeUpdate', function() {
         const repositoryIdParam = $location.search()[REPOSITORY_ID_PARAM];
         const selectedRepository = repositoryContextService.getSelectedRepository();
-        if (selectedRepository && repositoryIdParam !== selectedRepository.id) {
-            $location.search(REPOSITORY_ID_PARAM, selectedRepository.id).replace();
+        if (selectedRepository && repositoryIdParam !== selectedRepository.getRepositoryIdentifier()) {
+            $location.search(REPOSITORY_ID_PARAM, repositoryService.getRepositoryIdentifier(selectedRepository)).replace();
         }
     });
 

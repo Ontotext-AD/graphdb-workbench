@@ -67,4 +67,8 @@ export class Repository extends Model<Repository> implements RepositoryReference
   isFedx(): boolean {
     return this.sesameType === FEDX_SESAME_TYPE;
   }
+
+  getRepositoryIdentifier(): string {
+    return this.location ? `${this.location}/repositories/${this.id}` : this.id;
+  }
 }

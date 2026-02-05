@@ -4,7 +4,8 @@ import 'angular/core/services/workbench-context.service';
 import {mapAclRulesResponse} from "../rest/mappers/aclmanagement-mapper";
 import {isEqual} from 'lodash';
 import {mapNamespacesResponse} from "../rest/mappers/namespaces-mapper";
-import {ACL_SCOPE, DEFAULT_CONTEXT_VALUES, DEFAULT_URI_VALUES, DEFAULT_CLEAR_GRAPH_CONTEXT_VALUES} from "./model";
+import {ACL_SCOPE, DEFAULT_CONTEXT_VALUES, DEFAULT_URI_VALUES, DEFAULT_CLEAR_GRAPH_CONTEXT_VALUES} from './model';
+import {service, EventService, EventName} from '@ontotext/workbench-api';
 
 const modules = [
     'graphdb.framework.rest.plugins.service',
@@ -464,12 +465,11 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
 
     /**
      * Handles location change and asks the user to confirm if there are unsaved changes in the model.
-     * @param {Object} event
-     * @param {string} newPath
+     * @param {Object} eventPayload - The event payload containing the new URL and a function to cancel the navigation.
      */
-    const locationChangedHandler = (event, newPath) => {
+    const locationChangedHandler = ( eventPayload) => {
         if ($scope.modelIsDirty) {
-            event.preventDefault();
+            eventPayload.cancelNavigation();
             ModalService.openSimpleModal({
                 title: $translate.instant('common.confirm'),
                 message: $translate.instant('acl_management.rulestable.messages.unsaved_changes_confirmation'),
@@ -477,7 +477,7 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
             }).result.then(function() {
                 unsubscribeListeners();
                 const baseLen = $location.absUrl().length - $location.url().length;
-                const path = newPath.substring(baseLen);
+                const path = eventPayload.newUrl.substring(baseLen);
                 $location.url(path);
             }, function() {});
         }
@@ -500,7 +500,7 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
             loadRules();
         }));
         // Watching for url changes
-        subscriptions.push($scope.$on('$locationChangeStart', locationChangedHandler));
+        subscriptions.push(service(EventService).subscribe(EventName.NAVIGATION_START, locationChangedHandler));
         // Watching for component destroy
         subscriptions.push($scope.$on('$destroy', unsubscribeListeners));
         // Listening for event fired when browser window is going to be closed

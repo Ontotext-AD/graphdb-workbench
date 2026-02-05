@@ -11,7 +11,7 @@ export const sparqlTemplateMapper = (data) => {
     const selectedRepository = service(RepositoryContextService).getSelectedRepository();
     let repositoryIdParam = '';
     if (selectedRepository) {
-        repositoryIdParam = `&${REPOSITORY_ID_PARAM}=${selectedRepository.id}`;
+        repositoryIdParam = `&${REPOSITORY_ID_PARAM}=${selectedRepository.getRepositoryIdentifier()}`;
     }
     return data.map((item) => ({
         id: item,

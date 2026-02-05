@@ -104,7 +104,7 @@ exportCtrl.controller('ExportCtrl',
                         const selectedRepository = service(RepositoryContextService).getSelectedRepository();
                         let repositoryIdParam = '';
                         if (selectedRepository) {
-                            repositoryIdParam = `&${REPOSITORY_ID_PARAM}=${selectedRepository.id}`;
+                            repositoryIdParam = `&${REPOSITORY_ID_PARAM}=${selectedRepository.getRepositoryIdentifier()}`;
                         }
                         $scope.graphsByValue = {};
                         Object.keys(data.results.bindings).forEach(function(key) {

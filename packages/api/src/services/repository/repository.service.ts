@@ -1,6 +1,6 @@
 import {Service} from '../../providers/service/service';
 import {RepositoryRestService} from './repository-rest.service';
-import {Repository, RepositoryList, RepositorySizeInfo} from '../../models/repositories';
+import {Repository, RepositoryList, RepositoryReference, RepositorySizeInfo} from '../../models/repositories';
 import {ServiceProvider} from '../../providers';
 import {mapRepositorySizeInfoResponseToModel} from './mappers/repository-size-info.mapper';
 import {mapRepositoryListResponseToModel} from './mappers/repository-list.mapper';
@@ -63,5 +63,41 @@ export class RepositoryService implements Service {
 
   getOverallRepoAuthority(action: string): string {
     return `${action}_REPO_*`;
+  }
+
+  /**
+   * Parses a repository URL to extract the location and ID.
+   * @param url The repository URL to parse.
+   * @returns An object containing the location and ID of the repository.
+   */
+  parseRepositoryUrl(url: string): RepositoryReference {
+    if (!url) {
+      return {location: '', id: ''};
+    }
+    // Regex enforces: protocol://host/repositories/id with no trailing content
+    const regex = /^(https?:\/\/[^/]+)\/repositories\/([^/]+)$/;
+    const match = url.match(regex);
+
+    if (match) {
+      return {location: match[1], id: match[2]};
+    }
+
+    // If the URL starts with http:// or https:// but doesn't match the expected pattern,
+    // it's an invalid repository URL
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      return {location: '', id: ''};
+    }
+
+    // Otherwise, treat it as a simple repository ID
+    return {location: '', id: url};
+  }
+
+  /**
+   * Generates a location-specific identifier for the given repository.
+   * @param repository The repository for which to generate the identifier.
+   * @returns The location-specific identifier as a string.
+   */
+  getRepositoryIdentifier(repository: Repository): string {
+    return repository.getRepositoryIdentifier();
   }
 }
