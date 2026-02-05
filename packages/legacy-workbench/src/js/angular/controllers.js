@@ -850,7 +850,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
                 const searchParams = new URLSearchParams(WindowService.getLocationQueryParams());
                 const urlRepositoryParam = searchParams.get(REPOSITORY_ID_PARAM);
                 const currentRepository = repositoryService.getRepositoryIdentifier(repository);
-                console.log('%conSelectedRepositoryUpdated', 'background: red', {urlRepositoryParam, currentRepository, repository});
                 if (urlRepositoryParam !== currentRepository) {
                     $location.search(REPOSITORY_ID_PARAM, (currentRepository));
                     // use replace to avoid polluting the browser history
@@ -877,7 +876,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         const repositoryExists = repositoryIdParam
             ? repositoryContextService.repositoryExists({id: id, location: location})
             : false;
-        console.log('%crepositoryExists', 'background: red', {repositoryExists, repositoryIdParam});
 
         const isSameRepository = !!selectedRepository && repositoryIdParam === repositoryService.getRepositoryIdentifier(selectedRepository);
 
@@ -970,7 +968,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     $scope.$on('$routeUpdate', function() {
         const repositoryIdParam = $location.search()[REPOSITORY_ID_PARAM];
         const selectedRepository = repositoryContextService.getSelectedRepository();
-        if (selectedRepository && repositoryIdParam !== selectedRepository.id) {
+        if (selectedRepository && repositoryIdParam !== selectedRepository.getRepositoryIdentifier()) {
             $location.search(REPOSITORY_ID_PARAM, repositoryService.getRepositoryIdentifier(selectedRepository)).replace();
         }
     });
