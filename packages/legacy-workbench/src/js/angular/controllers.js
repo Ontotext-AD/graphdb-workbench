@@ -934,7 +934,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         }).result.then(() => {
             // The timeout is needed to ensure the location change happens after the current digest cycle
             $timeout(() => {
-                $location.search(REPOSITORY_ID_PARAM, selectedRepository.id).replace();
+                $location.search(REPOSITORY_ID_PARAM, selectedRepository.getRepositoryIdentifier()).replace();
             });
         });
     };
