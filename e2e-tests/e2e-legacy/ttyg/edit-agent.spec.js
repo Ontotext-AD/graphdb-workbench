@@ -16,12 +16,7 @@ describe('TTYG edit an agent', () => {
         TTYGStubs.stubAgentDefaultsGet();
     });
 
-    it(' should be able to edit an agent.', {
-        retries: {
-            runMode: 1,
-            openMode: 0
-        }
-    }, () => {
+    it(' should be able to edit an agent.', () => {
         TTYGStubs.stubChatsListGet();
         TTYGStubs.stubAgentListGet();
         TTYGStubs.stubChatGet();
@@ -50,12 +45,7 @@ describe('TTYG edit an agent', () => {
     });
 
 
-    it('should be able to edit Autocomplete extraction method option', {
-        retries: {
-            runMode: 1,
-            openMode: 0
-        }
-    }, () => {
+    it('should be able to edit Autocomplete extraction method option', () => {
         TTYGStubs.stubAgentListGet('/ttyg/agent/get-agent-list-autocomplete-query.json');
         // Given I have opened the ttyg page
         TTYGViewSteps.visit();

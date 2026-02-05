@@ -30,12 +30,7 @@ describe('Show saved queries', () => {
         SavedQueriesDialog.getSavedQueries().should('have.length.gt', 0);
     });
 
-    it('Should be able to select a query from the list', {
-        retries: {
-            runMode: 1,
-            openMode: 0
-        }
-    }, () => {
+    it('Should be able to select a query from the list',() => {
         // Given I have opened the saved queries popup
         YasguiSteps.showSavedQueries();
         SavedQueriesDialog.getSavedQueriesPopup().should('be.visible');

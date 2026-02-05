@@ -323,12 +323,7 @@ describe('Resource view', () => {
     });
 
     context('Triple resource', () => {
-        it('should show triple resource', {
-            retries: {
-                runMode: 1,
-                openMode: 0
-            }
-        }, () => {
+        it('should show triple resource', () => {
             // When I visit resource view with triple resource.
             ResourceSteps.visit(`triple=${TRIPLE_RESOURCE}&role=subject`);
 

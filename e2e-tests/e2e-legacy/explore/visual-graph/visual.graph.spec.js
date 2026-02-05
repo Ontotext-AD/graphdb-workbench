@@ -28,7 +28,7 @@ describe('Visual graph screen validation', () => {
 
     context('Embedded', () => {
         it('Should not show main manu, header and footer in embedded mode', () => {
-            cy.visit('/graphs-visualizations?uri=http:%2F%2Fwww.w3.org%2FTR%2F2003%2FPR-owl-guide-20031209%2Fwine%23Chardonnay&embedded')
+            cy.visit('/graphs-visualizations?uri=http:%2F%2Fwww.w3.org%2FTR%2F2003%2FPR-owl-guide-20031209%2Fwine%23Chardonnay&embedded');
             VisualGraphSteps.verifyPageLoaded();
             MainMenuSteps.getMainMenu().should('not.exist');
             HomeSteps.getPageFooter().should('not.exist');
@@ -66,12 +66,7 @@ describe('Visual graph screen validation', () => {
             ApplicationSteps.getErrorNotifications().should('be.visible').and('contain', 'Invalid IRI');
         });
 
-        it('Test search for a valid resource', {
-            retries: {
-                openMode: 0,
-                runMode: 1,
-            },
-        }, () => {
+        it('Test search for a valid resource', () => {
             AutocompleteStubs.spyAutocompleteStatus();
             VisualGraphSteps.visit();
             // Verify autocomplete is ON, because sometimes in CI it is OFF and fails when searching for Resource
