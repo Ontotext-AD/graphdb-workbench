@@ -16,9 +16,11 @@ yasgui-component .CodeMirror {
 }
 
 .create-similarity-index-btn .saving-index-loader,
-.create-similarity-index-btn .save-query-btn {
+.save-query-btn .saving-index-loader {
     position: relative;
-    bottom: -3px
+    bottom: -3px;
+    display: inline-block;
+    vertical-align: middle;
 }
 
 .card .card-block .btn-link .hidden-lg-down {
