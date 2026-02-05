@@ -971,7 +971,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         const repositoryIdParam = $location.search()[REPOSITORY_ID_PARAM];
         const selectedRepository = repositoryContextService.getSelectedRepository();
         if (selectedRepository && repositoryIdParam !== selectedRepository.id) {
-            $location.search(REPOSITORY_ID_PARAM, selectedRepository.id).replace();
+            $location.search(REPOSITORY_ID_PARAM, repositoryService.getRepositoryIdentifier(selectedRepository)).replace();
         }
     });
 
