@@ -3,15 +3,15 @@ import 'angular/rest/monitoring.rest.service';
 import 'angular/utils/notifications';
 import 'angular/core/services';
 import 'angular/core/services/event-emitter-service';
-import {JdbcConfigurationInfo} from "../models/jdbc/jdbc-configuration-info";
-import {YasqeMode} from "../models/ontotext-yasgui/yasqe-mode";
-import {JdbcConfigurationError} from "../models/jdbc/jdbc-configuration-error";
-import {RenderingMode} from "../models/ontotext-yasgui/rendering-mode";
-import {toJDBCColumns, updateColumn} from "../models/jdbc/jdbc-column";
-import {DISABLE_YASQE_BUTTONS_CONFIGURATION, YasguiComponentDirectiveUtil} from "../core/directives/yasgui-component/yasgui-component-directive.util";
-import {decodeHTML} from "../../../app";
-import {RepositoryContextService, ServiceProvider} from "@ontotext/workbench-api";
-import {LoggerProvider} from "../core/services/logger-provider";
+import {JdbcConfigurationInfo} from '../models/jdbc/jdbc-configuration-info';
+import {YasqeMode} from '../models/ontotext-yasgui/yasqe-mode';
+import {JdbcConfigurationError} from '../models/jdbc/jdbc-configuration-error';
+import {RenderingMode} from '../models/ontotext-yasgui/rendering-mode';
+import {toJDBCColumns, updateColumn} from '../models/jdbc/jdbc-column';
+import {DISABLE_YASQE_BUTTONS_CONFIGURATION, YasguiComponentDirectiveUtil} from '../core/directives/yasgui-component/yasgui-component-directive.util';
+import {decodeHTML} from '../../../app';
+import {RepositoryContextService, service, EventService, EventName} from '@ontotext/workbench-api';
+import {LoggerProvider} from '../core/services/logger-provider';
 
 const modules = [
     'ui.bootstrap',
@@ -132,6 +132,8 @@ function JdbcCreateCtrl(
     // =========================
     // Public functions
     // =========================
+
+    $scope.goToJdbcList = () => goToJdbcView();
 
     $scope.saveJdbcConfiguration = () => {
         $scope.saveOrUpdateExecuted = true;
@@ -551,6 +553,7 @@ function JdbcCreateCtrl(
     };
 
     const goToJdbcView = () => {
+        removeAllListeners();
         $location.url('/jdbc');
     };
 
@@ -587,15 +590,15 @@ function JdbcCreateCtrl(
         });
     };
 
-    const locationChangedHandler = (event, newPath) => {
+    const locationChangedHandler = (eventPayload) => {
         if ($scope.isDirty) {
-            event.preventDefault();
+            eventPayload.cancelNavigation();
             const title = $translate.instant('common.confirm');
             const message = $translate.instant('jdbc.warning.unsaved.changes');
             const onConfirm = () => {
                 removeAllListeners();
                 const baseLen = $location.absUrl().length - $location.url().length;
-                const path = newPath.substring(baseLen);
+                const path = eventPayload.newUrl.substring(baseLen);
                 $location.url(path);
             };
             openConfirmDialog(title, message, onConfirm);
@@ -628,14 +631,10 @@ function JdbcCreateCtrl(
     };
 
     const activeRepositoryHandler = (activeRepo) => {
-        if (activeRepo) {
+        if (activeRepo && initialRepoInitialization) {
             $scope.canEditActiveRepo = $scope.canWriteActiveRepo();
-            if (initialRepoInitialization) {
-                loadOntotextYasgui();
-                initialRepoInitialization = false;
-            } else {
-                getOntotextYasgui().abortQuery().then(goToJdbcView);
-            }
+            loadOntotextYasgui();
+            initialRepoInitialization = false;
         }
     };
 
@@ -644,12 +643,12 @@ function JdbcCreateCtrl(
     // =========================
     const subscriptions = [];
 
-    const repositoryContextService = ServiceProvider.get(RepositoryContextService);
+    const repositoryContextService = service(RepositoryContextService);
     const repositoryChangeSubscription = repositoryContextService.onSelectedRepositoryChanged(repositoryChangedHandler, repositoryWillChangeHandler);
 
     subscriptions.push(repositoryChangeSubscription);
     subscriptions.push($rootScope.$on('$translateChangeSuccess', languageChangedHandler));
-    subscriptions.push($scope.$on('$locationChangeStart', locationChangedHandler));
+    subscriptions.push(service(EventService).subscribe(EventName.NAVIGATION_START, locationChangedHandler));
     subscriptions.push($scope.$on('$destroy', removeAllListeners));
     // Prevent go out of the current page? check
     window.addEventListener('beforeunload', beforeunloadHandler);
