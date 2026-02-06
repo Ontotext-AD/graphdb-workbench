@@ -57,6 +57,10 @@ export class GuidesStubs {
         GuidesStubs.stubWithFixture('../fixtures/guides/import-rdf-file/confirm-duplicate-rdf-file-guide.json');
     }
 
+    static stubRDFRankGuide() {
+        GuidesStubs.stubWithFixture('../fixtures/guides/rdf-rank/rdf-rank-guide.json');
+    }
+
     static stubWithFixture(fixturePath) {
         cy.intercept('/rest/guides', {fixture: fixturePath}).as('getGuides');
     }
