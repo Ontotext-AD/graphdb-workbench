@@ -60,13 +60,13 @@
 }
 
 .node.leader {
-    fill: var(--gw-primary-base);
-    stroke: var(--gw-primary-base);
+    fill: var(--gw-cluster-node-leader-background);
+    stroke: var(--gw-cluster-node-leader-background);
 }
 
 .node.follower {
-    fill: var(--gw-secondary-base);
-    stroke: var(--gw-secondary-base);
+    fill: var(--gw-cluster-node-follower-background);
+    stroke: var(--gw-cluster-node-follower-background);
 }
 
 .node.candidate {
@@ -75,8 +75,8 @@
 }
 
 .node.other {
-    fill: var(--gw-neutral-base);
-    stroke: var(--gw-neutral-base);
+    fill: var(--gw-cluster-node-outofsync-background);
+    stroke: var(--gw-cluster-node-outofsync-background);
 }
 
 #node-group.legend .node {
