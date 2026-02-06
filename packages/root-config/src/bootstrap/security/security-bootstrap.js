@@ -1,15 +1,16 @@
 import {
+  AuthenticationStorageService,
+  AuthorizationService,
+  AuthStrategyResolver,
+  EventService,
+  isLoginPage,
+  Login,
+  navigate,
   SecurityContextService,
   SecurityService,
-  AuthStrategyResolver,
-  AuthorizationService,
-  WindowService,
   service,
-  isLoginPage,
-  navigate,
-  EventService,
-  Login,
-  AuthenticationStorageService
+  WindowService,
+  UrlPathParams,
 } from '@ontotext/workbench-api';
 import {LoggerProvider} from '../../services/logger-provider';
 
@@ -69,15 +70,21 @@ const resolveNavigation = () => {
   const isLoggedIn = service(SecurityContextService).getIsLoggedIn();
 
   if (isLoginPage() && ((isLoggedIn || authorizationService.hasFreeAccess()) && !authStrategy.isExternal())) {
+    // On login page but already logged in, navigate to return url or home page
     const params = new URLSearchParams(WindowService.getLocationQueryParams());
     const returnUrl = params.get('r') ? decodeURIComponent(params.get('r')) : './';
 
     navigate(returnUrl);
     eventService.emit(new Login());
   } else if (isLoginPage() && !isLoggedIn) {
-    // stay on login page
+    // On login page but not logged in, do nothing and let the user log in
   } else if (authorizationService.hasFreeAccess() || isLoggedIn) {
+    // Not on login page and has access, do nothing and let the user see the page
     eventService.emit(new Login());
+  } else if (!authStrategy.isAuthenticated()) {
+    // Not on login page and not authenticated, navigate to login page with return url
+    const returnUrl = encodeURIComponent(WindowService.getLocationPathWithQueryParams());
+    navigate(`login?${UrlPathParams.RETURN_URL}=${returnUrl}`);
   }
 };
 

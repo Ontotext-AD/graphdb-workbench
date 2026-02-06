@@ -1,7 +1,15 @@
-Cypress.Commands.add('createUser', (options = {}) => {
+Cypress.Commands.add('createUser', (options = {}, secured = false) => {
+    let headers = {'Content-Type': 'application/json'};
+    if (secured) {
+        const authHeader = Cypress.env('adminToken');
+        headers = {...headers,
+            'Authorization': authHeader
+        }
+    }
     cy.request({
         method: 'POST',
         url: `/rest/security/users/${options.username}`,
+        headers,
         body: {
             "password": options.password || "root",
             "appSettings": {
@@ -12,9 +20,6 @@ Cypress.Commands.add('createUser', (options = {}) => {
                 "DEFAULT_VIS_GRAPH_SCHEMA": true
             },
             "grantedAuthorities": options.grantedAuthorities || ["ROLE_USER", "WRITE_REPO_*", "READ_REPO_*"]
-        },
-        headers: {
-            'Content-Type': 'application/json'
         }
     }).then((response) => {
         cy.waitUntil(() => response && response.status === 201); // 201 Created
