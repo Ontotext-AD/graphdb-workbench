@@ -11,6 +11,10 @@ export class GuideSteps extends BaseSteps {
         cy.visit('/guides');
     }
 
+    static autostartGuide(guideId) {
+        cy.visit(`/?autostartGuide=${guideId}`);
+    }
+
     static runGuide(guideName) {
         cy.contains('td', guideName)
             .parent()
@@ -33,6 +37,10 @@ export class GuideSteps extends BaseSteps {
 
     static assertIsElementInteractable(selector) {
         cy.get(selector).should('be.visible');
+    }
+
+    static getGuidesModal() {
+        return cy.get('.shepherd-modal-is-visible');
     }
 
     static assertPageNotInteractive() {
