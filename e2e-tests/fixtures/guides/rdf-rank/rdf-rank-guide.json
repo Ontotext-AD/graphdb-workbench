@@ -1,0 +1,18 @@
+[
+    {
+        "guideName": {
+            "en": "RDF Rank"
+        },
+        "guideDescription": {
+            "en": "Test RDF Rank"
+        },
+        "steps": [
+            {
+                "guideBlockName": "rdf-rank-compute-fill"
+            },
+            {
+                "guideBlockName": "guide-end"
+            }
+        ]
+    }
+]
