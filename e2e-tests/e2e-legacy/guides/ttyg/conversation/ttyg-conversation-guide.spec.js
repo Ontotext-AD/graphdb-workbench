@@ -32,7 +32,7 @@ describe('ttyg-conversation-guide', () => {
         cy.wait('@get-all-repositories');
         cy.wait('@get-chat');
     });
-
+Cypress._.times(10, () => {
     it('should select an agent and have a conversation', () => {
         GuideDialogSteps.assertDialogWithTitleIsVisible('Select an agent — 1/5');
         GuideDialogSteps.assertDialogWithContentIsVisible('To talk to your graph, you need to select an agent first');
@@ -84,4 +84,5 @@ describe('ttyg-conversation-guide', () => {
         GuideDialogSteps.assertDialogWithContentIsVisible(`Wait for the answer to be returned and explore it. When ready proceed by clicking next.`);
         GuideDialogSteps.clickOnCloseButton();
     });
+})
 })

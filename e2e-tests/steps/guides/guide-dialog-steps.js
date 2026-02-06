@@ -56,4 +56,8 @@ export class GuideDialogSteps {
     static assertDialogIsClosed() {
         GuideDialogSteps.getModalDialog().should('not.exist');
     }
+
+    static copyQueryToEditor() {
+        GuideDialogSteps.getModalDialog().find('.guide-copy-to-editor-query-button').click();
+    }
 }

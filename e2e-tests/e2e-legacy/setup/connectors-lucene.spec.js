@@ -33,14 +33,10 @@ describe('Setup / Connectors - Lucene', () => {
         getCreateLuceneConnectorPage()
             .should('contain', 'Create new Lucene Connector')
             .within(() => {
-                getConnectorNameField()
-                    .type(luceneConnectorName);
-                getFieldNameField()
-                    .type(fieldName, {force: true});
-                getPropertyChainField()
-                    .type(connectorPropertyChain, {force: true});
-                getUriTypes()
-                    .type(uriType);
+                typeConnectorName(luceneConnectorName);
+                typeFieldName(fieldName);
+                typePropertyChain(connectorPropertyChain);
+                typeUriTypes(uriType);
                 confirmCreateConnector();
             });
 
@@ -88,16 +84,36 @@ describe('Setup / Connectors - Lucene', () => {
         return cy.get('.connector-name-field input');
     }
 
+    function typeConnectorName(name) {
+        getConnectorNameField().type(name);
+        getConnectorNameField().blur();
+    }
+
     function getFieldNameField() {
         return cy.get('.child-property-fieldName input');
+    }
+
+    function typeFieldName(name) {
+        getFieldNameField().type(name);
+        getFieldNameField().blur();
     }
 
     function getPropertyChainField() {
         return cy.get('.child-property-propertyChain input');
     }
 
+    function typePropertyChain(chain) {
+        getPropertyChainField().type(chain);
+        getPropertyChainField().blur();
+    }
+
     function getUriTypes() {
         return cy.get('.property-types input');
+    }
+
+    function typeUriTypes(types) {
+        getUriTypes().type(types);
+        getUriTypes().blur();
     }
 
     function confirmCreateConnector() {

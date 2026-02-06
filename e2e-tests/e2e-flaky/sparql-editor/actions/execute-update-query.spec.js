@@ -22,12 +22,7 @@ describe('Execute of update query', () => {
         cy.deleteRepository(repositoryId);
     });
 
-    it('should display properly result message info when insert 2 statements', {
-        retries: {
-            runMode: 1,
-            openMode: 0
-        }
-    }, () => {
+    it('should display properly result message info when insert 2 statements', () => {
         // When I execute insert query which adds 2 results
         YasqeSteps.pasteQuery(
             'PREFIX : <http://bedrock/> ' +
@@ -56,12 +51,7 @@ describe('Execute of update query', () => {
         TablePluginSteps.getQueryResultInfo().contains('The number of statements did not change.');
     });
 
-    it('should display result message info which describes that two statements are removed', {
-        retries: {
-            runMode: 1,
-            openMode: 0
-        }
-    }, () => {
+    it('should display result message info which describes that two statements are removed', () => {
         // When I visit a page with "ontotext-yasgui-web-component" in it,
         // and selected repository has some inserted statements.
         YasqeSteps.pasteQuery(

@@ -61,12 +61,7 @@ describe('TTYG chat list', () => {
         TTYGViewSteps.getChatByDayGroups().should('have.length', 0);
     });
 
-    it('Should be able to edit an existing chat name by double click on the chat in the list', {
-        retries: {
-            runMode: 1,
-            openMode: 0
-        }
-    }, () => {
+    it('Should be able to edit an existing chat name by double click on the chat in the list', () => {
         TTYGStubs.stubChatsListGet();
         TTYGStubs.stubChatGet();
         TTYGStubs.stubAgentListGet();
@@ -90,12 +85,7 @@ describe('TTYG chat list', () => {
         TTYGViewSteps.getChatFromGroup(1, 0).should('contain', 'New chat name');
     });
 
-    it('Should be able to edit an existing chat name through the action menu', {
-        retries: {
-            runMode: 1,
-            openMode: 0
-        }
-    }, () => {
+    it('Should be able to edit an existing chat name through the action menu', () => {
         TTYGStubs.stubChatsListGet();
         TTYGStubs.stubChatGet();
         TTYGStubs.stubAgentListGet();

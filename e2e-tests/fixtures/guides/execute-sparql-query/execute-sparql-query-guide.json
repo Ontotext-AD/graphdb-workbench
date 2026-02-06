@@ -1,0 +1,54 @@
+[
+    {
+        "guideName": {
+            "en": "Execute SPARQL query Guide"
+        },
+        "steps": [
+            {
+                "guideBlockName": "execute-sparql-query",
+                "options": {
+                    "queries": [
+                        {
+                            "query": "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n select * where { \n\t?s rdfs:label ?o .\n} limit 3 ",
+                            "queryExtraContent": {
+                                "en": "Extra content for query."
+                            },
+                            "resultExtraContent": {
+                                "en": "Extra content for result."
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "guideBlockName": "sparql-explain-editor",
+                "options": {
+                    "extraContent": "Some extra explain content"
+                }
+            },
+            {
+                "guideBlockName": "sparql-results-click-on-iri",
+                "options": {
+                    "iri": "https://swapi.co/resource/planet/25",
+                    "iriLabel": "rdf:type"
+                }
+            },
+            {
+                "guideBlockName": "visualise-sparql-query",
+                "options": {
+                    "useMainMenuNavigation": true,
+                    "query": "PREFIX voc: <https://swapi.co/vocabulary/>\nPREFIX swapi: <https://swapi.co/resource/>\n\nCONSTRUCT {\n?film swapi:hasCharacter ?person .\n}\nWHERE {\n?film a voc:Film ;\nvoc:character ?person .\n}",
+                    "queryExtraContent": {
+                        "en": "The query constructs a graph of films and their characters from the Star Wars API."
+                    },
+                    "resultExtraContent": {
+                        "en": "The graph visualisation displays films as nodes connected to their respective characters."
+                    }
+                }
+            },
+            {
+                "guideBlockName": "guide-end"
+            }
+        ]
+    }
+]

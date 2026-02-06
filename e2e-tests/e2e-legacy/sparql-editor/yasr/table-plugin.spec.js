@@ -21,12 +21,7 @@ describe('Yasr Table plugin', () => {
 
     describe('Results formatting', () => {
 
-        it('Should format all resources as short uris when results are of type uri', {
-            retries: {
-                runMode: 1,
-                openMode: 0
-            }
-        }, () => {
+        it('Should format all resources as short uris when results are of type uri', () => {
             // When I execute a query which return results and results type is uri.
             QueryStubs.stubDefaultQueryResponse();
             YasqeSteps.executeQuery();

@@ -26,12 +26,7 @@ describe('SPARQL create template', () => {
         cy.deleteRepository(secondRepositoryId);
     });
 
-    it('should has error message described that query is invalid', {
-        retries: {
-            runMode: 1,
-            openMode: 0
-        }
-    }, () => {
+    it('should has error message described that query is invalid', () => {
         // When I visit 'Sparql create template' view,
         // and fill  valid template id.
         SparqlCreateUpdateSteps.typeTemplateId('http://test');
@@ -48,12 +43,7 @@ describe('SPARQL create template', () => {
     /**
      * TODO: Fix me. Broken due to migration (Repository selector changed)
      */
-    it.skip('should display confirm dialog I am updating a sparql template and change the repository', {
-        retries: {
-            runMode: 1,
-            openMode: 0
-        }
-    }, () => {
+    it.skip('should display confirm dialog I am updating a sparql template and change the repository', () => {
         // When I visit 'Sparql create template' view,
         // create a SPARQL template
         const templateId = 'http://' + Date.now();
@@ -119,12 +109,7 @@ describe('SPARQL create template', () => {
     /**
      * TODO: Fix me. Broken due to migration (Changes in main menu)
      */
-    it.skip('should confirm me before navigate when query is changed', {
-        retries: {
-            runMode: 1,
-            openMode: 0
-        }
-    }, () => {
+    it.skip('should confirm me before navigate when query is changed', () => {
         // When I visit 'Sparql create template' view,
         // and change the query in ontotext-yasgui editor.
         // When I fill non update query (select for example).

@@ -14,7 +14,7 @@ const jsonld = JSON.stringify({
     "ab:email": "richard491@hotmail.com"
 });
 
-describe('Import user data: Batch operations', {retries: {runMode: 2}}, () => {
+describe('Import user data: Batch operations', () => {
 
     let repositoryId;
     const testFiles = [

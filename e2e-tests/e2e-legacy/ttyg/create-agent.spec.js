@@ -17,12 +17,7 @@ describe('TTYG create new agent', () => {
         TTYGStubs.stubAgentDefaultsGet();
     });
 
-    it('Should be able to cancel the new agent creation on the no agents view', {
-        retries: {
-            runMode: 1,
-            openMode: 0
-        }
-    }, () => {
+    it('Should be able to cancel the new agent creation on the no agents view', () => {
         TTYGStubs.stubChatsListGetNoResults();
         TTYGStubs.stubAgentListGet('/ttyg/agent/get-agent-list-0.json');
         // Given I have opened the ttyg page
@@ -38,12 +33,7 @@ describe('TTYG create new agent', () => {
         TTYGViewSteps.getNoAgentsView().should('be.visible');
     });
 
-    it('Should be able to create a new agent with SPARQL extraction method on the no agents view', {
-        retries: {
-            runMode: 1,
-            openMode: 0
-        }
-    }, () => {
+    it('Should be able to create a new agent with SPARQL extraction method on the no agents view', () => {
         TTYGStubs.stubChatsListGetNoResults();
         TTYGStubs.stubAgentListGet('/ttyg/agent/get-agent-list-0.json', 1000);
         // Given I have opened the ttyg page
@@ -182,12 +172,7 @@ describe('TTYG create new agent', () => {
         TTYGViewSteps.getAgent(0).should('contain', 'Test Agent').and('contain', 'starwars');
     });
 
-    it('Should require FTS to be enabled for selected repository when creating agent with FTS extraction method', {
-        retries: {
-            runMode: 1,
-            openMode: 0
-        }
-    }, () => {
+    it('Should require FTS to be enabled for selected repository when creating agent with FTS extraction method', () => {
         RepositoriesStubs.stubGetRepositoryConfig(repositoryId, '/repositories/get-repository-config-starwars-disabled-fts.json');
         TTYGStubs.stubChatsListGetNoResults();
         TTYGStubs.stubAgentListGet('/ttyg/agent/get-agent-list-0.json');
@@ -204,12 +189,7 @@ describe('TTYG create new agent', () => {
         TtygAgentSettingsModalSteps.getFtsDisabledHelp().should('be.visible');
     });
 
-    it('Should be able to create agent with FTS extraction method', {
-        retries: {
-            runMode: 1,
-            openMode: 0
-        }
-    }, () => {
+    it('Should be able to create agent with FTS extraction method', () => {
         RepositoriesStubs.stubGetRepositoryConfig(repositoryId, '/repositories/get-repository-config-starwars-enabled-fts.json');
         TTYGStubs.stubChatsListGetNoResults();
         TTYGStubs.stubAgentListGet('/ttyg/agent/get-agent-list-0.json');
@@ -245,12 +225,7 @@ describe('TTYG create new agent', () => {
         TTYGViewSteps.getAgent(0).should('contain', 'Test Agent').and('contain', 'starwars');
     });
 
-    it('Should require similarity index in order to create agent with similarity search method', {
-        retries: {
-            runMode: 1,
-            openMode: 0
-        }
-    }, () => {
+    it('Should require similarity index in order to create agent with similarity search method', () => {
         TTYGStubs.stubChatsListGetNoResults();
         TTYGStubs.stubAgentListGet('/ttyg/agent/get-agent-list-0.json');
         TTYGStubs.getSimilarityIndexesForRepo();
@@ -268,12 +243,7 @@ describe('TTYG create new agent', () => {
         TtygAgentSettingsModalSteps.getSaveAgentButton().should('be.disabled');
     });
 
-    it('Should be able to configure and create agent with similarity index search method', {
-        retries: {
-            runMode: 1,
-            openMode: 0
-        }
-    }, () => {
+    it('Should be able to configure and create agent with similarity index search method', () => {
         TTYGStubs.stubChatsListGetNoResults();
         TTYGStubs.stubAgentListGet('/ttyg/agent/get-agent-list-0.json');
         TTYGStubs.getSimilarityIndexesForRepo(repositoryId);
@@ -316,12 +286,7 @@ describe('TTYG create new agent', () => {
         TTYGViewSteps.getAgent(0).should('contain', 'Test Agent').and('contain', 'starwars');
     });
 
-    it('Should require retrieval connector in order to create an agent with GPT retrieval connector method', {
-        retries: {
-            runMode: 1,
-            openMode: 0
-        }
-    }, () => {
+    it('Should require retrieval connector in order to create an agent with GPT retrieval connector method', () => {
         TTYGStubs.stubChatsListGetNoResults();
         TTYGStubs.stubAgentListGet('/ttyg/agent/get-agent-list-0.json');
         ConnectorStubs.stubGetConnectors();
@@ -343,12 +308,7 @@ describe('TTYG create new agent', () => {
         TtygAgentSettingsModalSteps.getSaveAgentButton().should('be.disabled');
     });
 
-    it('Should be able to configure and create an agent with retrieval connector method', {
-        retries: {
-            runMode: 1,
-            openMode: 0
-        }
-    }, () => {
+    it('Should be able to configure and create an agent with retrieval connector method', () => {
         TTYGStubs.stubChatsListGetNoResults();
         TTYGStubs.stubAgentListGet('/ttyg/agent/get-agent-list-0.json');
         ConnectorStubs.stubGetConnectors();
