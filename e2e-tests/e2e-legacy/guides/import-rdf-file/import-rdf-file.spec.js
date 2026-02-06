@@ -65,7 +65,7 @@ describe('Import RDF file', () => {
         GuideDialogSteps.assertDialogWithContentIsVisible('This guide has ended.');
     });
 
-    it.only('Should import an RDF file (Next flow)', () => {
+    it('Should import an RDF file (Next flow)', () => {
         // GIVEN: I start a guide that includes the Import RDF File step.
         GuideDialogSteps.assertDialogWithTitleIsVisible('Import file — 1/6');
         GuideDialogSteps.assertDialogWithContentIsVisible('The following steps show how to use the Import view to import data from a file.');
