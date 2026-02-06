@@ -42,6 +42,10 @@ export class WindowService implements Service {
     return WindowService.getWindow().location.pathname;
   }
 
+  static getLocationPathWithQueryParams(): string {
+    return WindowService.getLocationPathname() + WindowService.getLocationQueryParams();
+  }
+
   /**
    * Evaluates a media query and returns a MediaQueryList object representing the results of the query.
    * @param query The media query string to evaluate.

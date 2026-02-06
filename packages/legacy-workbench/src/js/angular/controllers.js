@@ -243,7 +243,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     $scope.embedded = $location.search().embedded;
     $scope.productInfo = productInfo;
     $scope.guidePaused = 'true' === LocalStorageAdapter.get(GUIDE_PAUSE);
-    $scope.startGuideAfterSecurityInit = true;
     $scope.licenseIsSet = false;
     $scope.hideRdfResourceSearch = false;
     $scope.graphdbVersion = $scope.engineVersion = productInfo.productVersion;
@@ -782,9 +781,9 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
                 });
 
             const queryParams = $location.search();
-            if (authorizationService.isRepoManager() && $scope.startGuideAfterSecurityInit && queryParams.autostartGuide) {
-                startGuide(queryParams.autostartGuide);
-                $scope.startGuideAfterSecurityInit = false;
+            const autoStartKey = Object.keys(queryParams).find((k) => k.toLowerCase() === 'autostartguide');
+            if (authorizationService.isRepoManager() && autoStartKey) {
+                startGuide(queryParams[autoStartKey]);
             }
         }
     };
