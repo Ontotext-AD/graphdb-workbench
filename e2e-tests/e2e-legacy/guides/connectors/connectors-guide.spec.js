@@ -80,7 +80,7 @@ describe('Connectors guide', () => {
             cy.wait('@getGuides');
             GuideSteps.runFirstGuide();
         });
-        it.only('Should test Lucene connector steps', () => {
+        it('Should test Lucene connector steps', () => {
             GuideDialogSteps.assertDialogWithTitleIsVisible('Lucene connector');
             GuideDialogSteps.assertDialogWithContentIsVisible('The Lucene Connector in GraphDB enables extremely fast keyword and faceted (aggregation) searches. Unlike traditional setups where indexing is handled externally, this connector stays automatically synchronized with your repository data, ensuring accurate and up-to-date search results at all times.');
             GuideDialogSteps.clickOnNextButton();
