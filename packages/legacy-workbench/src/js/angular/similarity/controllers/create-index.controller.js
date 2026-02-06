@@ -1,20 +1,23 @@
 import 'angular/utils/notifications';
 import 'angular/utils/local-storage-adapter';
 import 'angular/core/services/event-emitter-service';
-import {mapIndexesResponseToSimilarityIndex} from "../../rest/mappers/similarity-index-mapper";
+import {mapIndexesResponseToSimilarityIndex} from '../../rest/mappers/similarity-index-mapper';
 import {
-    DISABLE_YASQE_BUTTONS_CONFIGURATION, INFERRED_AND_SAME_AS_BUTTONS_CONFIGURATION, YasguiComponentDirectiveUtil, YasqeButtonName,
-} from "../../core/directives/yasgui-component/yasgui-component-directive.util";
-import {RenderingMode} from "../../models/ontotext-yasgui/rendering-mode";
-import {YasqeMode} from "../../models/ontotext-yasgui/yasqe-mode";
-import {SimilarityViewMode} from "../../models/similarity/similarity-view-mode";
-import {SimilarityQueryType} from "../../models/similarity/similarity-query-type";
-import {SimilarityIndexType} from "../../models/similarity/similarity-index-type";
-import {SimilarityIndexError} from "../../models/similarity/similarity-index-error";
-import {QueryType} from "../../models/ontotext-yasgui/query-type";
-import {SimilarityIndexInfo} from "../../models/similarity/similarity-index-info";
-import {RepositoryContextService, ServiceProvider} from "@ontotext/workbench-api";
-import {LoggerProvider} from "../../core/services/logger-provider";
+    DISABLE_YASQE_BUTTONS_CONFIGURATION,
+    INFERRED_AND_SAME_AS_BUTTONS_CONFIGURATION,
+    YasguiComponentDirectiveUtil,
+    YasqeButtonName,
+} from '../../core/directives/yasgui-component/yasgui-component-directive.util';
+import {RenderingMode} from '../../models/ontotext-yasgui/rendering-mode';
+import {YasqeMode} from '../../models/ontotext-yasgui/yasqe-mode';
+import {SimilarityViewMode} from '../../models/similarity/similarity-view-mode';
+import {SimilarityQueryType} from '../../models/similarity/similarity-query-type';
+import {SimilarityIndexType} from '../../models/similarity/similarity-index-type';
+import {SimilarityIndexError} from '../../models/similarity/similarity-index-error';
+import {QueryType} from '../../models/ontotext-yasgui/query-type';
+import {SimilarityIndexInfo} from '../../models/similarity/similarity-index-info';
+import {RepositoryContextService, service} from '@ontotext/workbench-api';
+import {LoggerProvider} from '../../core/services/logger-provider';
 
 angular
     .module('graphdb.framework.similarity.controllers.create', [
@@ -96,6 +99,11 @@ function CreateSimilarityIdxCtrl(
     // This flag is used to prevent triggering the repository change event listener on initial subscription.
     let initialRepoChangeTrigger = true;
     let currentRepository;
+    // This flag is used to prevent loading of the yasgui on consecutive repository change events after
+    // the first.
+    let initialRepoInitialization = true;
+    // This flag is used to prevent multiple triggers of the location change listener.
+    let locationChangeInProgress = false;
 
     // =========================
     // Public functions
@@ -165,7 +173,7 @@ function CreateSimilarityIdxCtrl(
             .then(validateSimilarityIndex)
             .then(validateSimilarityIndexNameExistence)
             .then((similarityIndexInfo) => createIndex(similarityIndexInfo.getSimilarityIndex()))
-            .then(() => goToSimilarityIndexesView())
+            .then(() => $scope.goToSimilarityIndexesView())
             .catch((error) => {
                 if (!(error instanceof SimilarityIndexError)) {
                     toastr.error(getError(error), $translate.instant('similarity.could.not.get.indexes.error'));
@@ -489,7 +497,6 @@ function CreateSimilarityIdxCtrl(
             similarityIndexInfo.setQuery(searchQuery, SimilarityQueryType.SEARCH);
         }
 
-
         const selectQuery = $location.search().selectQuery;
         if (selectQuery) {
             similarityIndexInfo.setQuery(selectQuery, SimilarityQueryType.DATA);
@@ -626,10 +633,8 @@ function CreateSimilarityIdxCtrl(
             });
     };
 
-    const goToSimilarityIndexesView = () => {
-        $timeout(() =>
-            $location.url('similarity')
-            , 100);
+    $scope.goToSimilarityIndexesView = () => {
+        $location.url('similarity');
     };
 
     const getOntotextYasgui = () => {
@@ -700,7 +705,6 @@ function CreateSimilarityIdxCtrl(
 
         return editSearchQuery ? SimilarityViewMode.EDIT : SimilarityViewMode.CLONE;
     };
-
 
     // =========================
     // Validation functions
@@ -872,11 +876,6 @@ function CreateSimilarityIdxCtrl(
     // =========================
     const repositoryWillChangeHandler = () => {
         return new Promise(function(resolve) {
-            if ($scope.isCreateViewMode() || $scope.isCloneViewMode()) {
-                resolve(true);
-                return;
-            }
-
             const onConfirm = () => {
                 isDirty = false;
                 resolve(true);
@@ -903,34 +902,50 @@ function CreateSimilarityIdxCtrl(
             initialRepoChangeTrigger = false;
             currentRepository = repository.id;
         } else if (repository.id !== currentRepository) {
-            goToSimilarityIndexesView();
+            $scope.goToSimilarityIndexesView();
         }
     };
 
-    const activeRepositoryHandler = () => {
-        // when repository is changed we have to switch yasgui back to editor mode
-        if ($scope.isYasrShown() && $scope.similarityIndexInfo.isDataQueryTypeSelected()) {
-            $scope.showEditor();
+    const activeRepositoryHandler = (activeRepo) => {
+        if (activeRepo && initialRepoInitialization) {
+            // when repository is changed we have to switch yasgui back to editor mode
+            if ($scope.isYasrShown() && $scope.similarityIndexInfo.isDataQueryTypeSelected()) {
+                $scope.showEditor();
+            }
+            $scope.canEditActiveRepo = $scope.canWriteActiveRepo();
+            const config = {...$scope.yasguiConfig, yasqeMode: $scope.canWriteActiveRepo()};
+            updateYasguiComponent(config);
+            initialRepoInitialization = false;
         }
-        $scope.canEditActiveRepo = $scope.canWriteActiveRepo();
-        const config = {...$scope.yasguiConfig, yasqeMode: $scope.canWriteActiveRepo()};
-        updateYasguiComponent(config);
     };
 
     const locationChangedHandler = (event, newPath) => {
+        if (locationChangeInProgress) {
+            event.preventDefault();
+            return;
+        }
+        locationChangeInProgress = true;
+
         if (isDirty) {
             event.preventDefault();
             const title = $translate.instant('common.confirm');
             const message = $translate.instant('similarity.warning.unsaved.changes');
+
+            const onCancel = () => {
+                locationChangeInProgress = false;
+            };
+
             const onConfirm = () => {
+                locationChangeInProgress = false;
                 removeAllListeners();
                 const baseLen = $location.absUrl().length - $location.url().length;
                 const path = newPath.substring(baseLen);
-                $location.path(path);
+                $location.url(path);
             };
-            openConfirmDialog(title, message, onConfirm);
+            openConfirmDialog(title, message, onConfirm, onCancel);
         } else {
             removeAllListeners();
+            locationChangeInProgress = false;
         }
     };
 
@@ -950,13 +965,13 @@ function CreateSimilarityIdxCtrl(
     // =========================
     const subscriptions = [];
 
-    const repositoryContextService = ServiceProvider.get(RepositoryContextService);
+    const repositoryContextService = service(RepositoryContextService);
     const repositoryChangeSubscription = repositoryContextService.onSelectedRepositoryChanged(repositoryChangedHandler, repositoryWillChangeHandler);
 
     subscriptions.push(repositoryChangeSubscription);
     subscriptions.push($scope.$on('$locationChangeStart', locationChangedHandler));
     subscriptions.push($scope.$on('$destroy', removeAllListeners));
-    // Prevent go out of the current page? check
+    // Prevent go out of the current page? check with page refresh (F5)
     window.addEventListener('beforeunload', beforeunloadHandler);
 
     viewMode = getViewMode();

@@ -244,12 +244,12 @@
 
                 <div class="clearfix">
                     <div class="pull-right">
-                        <a ng-href="similarity" class="btn btn-lg btn-secondary cancel-similarity-index-btn"
+                        <button ng-click="goToSimilarityIndexesView()" class="btn btn-lg btn-secondary cancel-similarity-index-btn"
                            uib-popover="{{getCloseBtnMsg()}}"
                            popover-placement="top"
                            popover-trigger="mouseenter">
                             {{'common.cancel.btn' | translate}}
-                        </a>
+                        </button>
                         <button ng-if="!isEditViewMode()" class="btn btn-lg btn-primary create-similarity-index-btn"
                                 ng-disabled="savingIndex" guide-selector="create-similarity-index-btn"
                                 data-test="create-similarity-index-btn"
