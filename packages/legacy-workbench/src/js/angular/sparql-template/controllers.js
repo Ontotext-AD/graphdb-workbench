@@ -13,7 +13,7 @@ import {
     DISABLE_YASQE_BUTTONS_CONFIGURATION,
     YasguiComponentDirectiveUtil,
 } from '../core/directives/yasgui-component/yasgui-component-directive.util';
-import {RepositoryContextService, service, LicenseContextService} from '@ontotext/workbench-api';
+import {RepositoryContextService, service, LicenseContextService, EventService, EventName} from '@ontotext/workbench-api';
 import {LoggerProvider} from '../core/services/logger-provider';
 import {sparqlTemplateMapper} from '../rest/mappers/sparql-template-mapper';
 
@@ -159,6 +159,8 @@ function SparqlTemplateCreateCtrl(
     // =========================
     // Public functions
     // =========================
+    $scope.goToSparqlTemplatesView = () => goToSparqlTemplatesView();
+
     $scope.saveTemplate = function() {
         $scope.saveOrUpdateExecuted = true;
 
@@ -394,6 +396,7 @@ function SparqlTemplateCreateCtrl(
     };
 
     const goToSparqlTemplatesView = () => {
+        removeAllListeners();
         $location.url('/sparql-templates');
     };
 
@@ -461,15 +464,15 @@ function SparqlTemplateCreateCtrl(
         subscriptions.forEach((subscription) => subscription());
     };
 
-    const locationChangedHandler = (event, newPath) => {
+    const locationChangedHandler = (eventPayload) => {
         if ($scope.isDirty) {
-            event.preventDefault();
+            eventPayload.cancelNavigation();
             const title = $translate.instant('common.confirm');
             const message = $translate.instant('common.unsaved.changes');
             const onConfirm = () => {
                 removeAllListeners();
                 const baseLen = $location.absUrl().length - $location.url().length;
-                const path = newPath.substring(baseLen);
+                const path = eventPayload.newUrl.substring(baseLen);
                 // Use url instead of path because the absolute url can contain search params or hash and path() threats
                 // the entire string as path only. This can lead to loosing search params or hash.
                 $location.url(path);
@@ -499,12 +502,10 @@ function SparqlTemplateCreateCtrl(
     };
 
     const activeRepositoryHandler = (activeRepo) => {
-        if (activeRepo) {
+        if (activeRepo && initialRepoInitialization) {
             $scope.canEditActiveRepo = $scope.canWriteActiveRepo();
-            if (initialRepoInitialization) {
-                loadOntotextYasgui();
-                initialRepoInitialization = false;
-            }
+            loadOntotextYasgui();
+            initialRepoInitialization = false;
         }
     };
 
@@ -526,7 +527,7 @@ function SparqlTemplateCreateCtrl(
     subscriptions.push(repositoryChangeSubscription);
     subscriptions.push($scope.$on('queryChanged', queryChangeHandler));
     subscriptions.push($rootScope.$on('$translateChangeSuccess', languageChangedHandler));
-    subscriptions.push($scope.$on('$locationChangeStart', locationChangedHandler));
+    subscriptions.push(service(EventService).subscribe(EventName.NAVIGATION_START, locationChangedHandler));
     subscriptions.push($scope.$on('$destroy', removeAllListeners));
     // Prevent go out of the current page? check
     window.addEventListener('beforeunload', beforeunloadHandler);
