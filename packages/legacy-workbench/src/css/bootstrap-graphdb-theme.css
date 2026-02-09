@@ -1145,9 +1145,14 @@ input[type="radio"]:checked::after {
     margin: 0.2em;
 }
 
-/*-------------------------------------------------------------
-	List groups
--------------------------------------------------------------*/
+input[type=checkbox]:checked:disabled {
+    background-color: var(--gw-checkbox-checked-disabled-background);
+    border-color: var(--gw-checkbox-checked-disabled-border-color);
+}
+
+    /*-------------------------------------------------------------
+        List groups
+    -------------------------------------------------------------*/
 
 .list-group-item:last-child,
 .list-group-item:first-child {
@@ -1486,8 +1491,8 @@ input.switch:checked ~ label:hover:after {
     .display-type-table-btn.active,
     .display-type-visual-btn.active {
         color: var(--gw-button-primary-hover-color);
-        background-color: var(--gw-button-primary-hover-background);
-        border-color: var(--gw-button-primary-hover-border-color);
+        background-color: var(--gw-button-primary-background);
+        border-color: var(--gw-button-primary-border-color);
     }
 }
 
