@@ -102,7 +102,7 @@ describe('Repositories', () => {
         // Check the repo is present in the list of repos and we are not yet connected to it
         RepositorySteps.getRepositoryFromList(repositoryId)
             .should('be.visible')
-            .find('.ri-link-unlink')
+            .find('.icon-connection-off')
             .should('be.visible');
 
         // Verify it's configuration can be downloaded
@@ -121,7 +121,10 @@ describe('Repositories', () => {
         cy.get('.onto-dropdown-menu-item')
             .contains(repositoryId)
             .first()
-            .scrollIntoView()
+            .scrollIntoView();
+        cy.get('.onto-dropdown-menu-item')
+            .contains(repositoryId)
+            .first()
             .click();
 
         // Should visualize the selected repo

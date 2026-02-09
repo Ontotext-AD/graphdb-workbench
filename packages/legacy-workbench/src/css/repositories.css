@@ -442,6 +442,14 @@ span.label {
     width: 25px;
 }
 
+.repository .inactive-repo {
+    color: var(--gw-foreground-on-surface-subtile);
+}
+
+.repository .active-repo {
+    color: var(--gw-success-base);
+}
+
 .location-item {
     padding: 2px;
     -webkit-user-select: none;

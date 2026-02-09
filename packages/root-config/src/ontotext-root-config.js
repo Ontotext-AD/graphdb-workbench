@@ -54,7 +54,7 @@ function showSplashScreen(show) {
     setTimeout(() => {
       splashScreenEl.style.display = 'none';
       splashScreenEl.classList.remove('splash-screen-fadeout');
-    }, 300);
+    }, 100);
   }
 }
 
