@@ -131,3 +131,10 @@
 .guide-dialog.shepherd-element.visual-graph-link-focus-guide-dialog {
     margin-top: -52px;
 }
+
+.guide-copy-to-input-query-button,
+.guide-copy-to-editor-query-button {
+    color: var(--gw-button-secondary-color);
+    background-color: var(--gw-shortcuts-secondary-button-background);
+    border-color: var(--gw-button-secondary-border-color);
+}

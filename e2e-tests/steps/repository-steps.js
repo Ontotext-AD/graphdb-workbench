@@ -76,7 +76,7 @@ export class RepositorySteps extends BaseSteps {
     }
 
     static getRepositoryConnectionOffBtn(id) {
-        return RepositorySteps.getRepositoryFromList(id).find('.ri-link-unlink');
+        return RepositorySteps.getRepositoryFromList(id).find('.icon-connection-off');
     }
 
     static activateRepository(id) {
@@ -84,7 +84,7 @@ export class RepositorySteps extends BaseSteps {
     }
 
     static getRepositoryConnectionOnBtn(id) {
-        return RepositorySteps.getRepositoryFromList(id).find('.ri-link');
+        return RepositorySteps.getRepositoryFromList(id).find('.icon-connection-on');
     }
 
     static clickRepositoryIcon(repositoryId, selector) {

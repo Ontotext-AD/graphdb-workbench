@@ -3,11 +3,11 @@
 -------------------------------------------------------------*/
 @font-face {
     font-family: 'icomoon';
-    src: url('../styles/fonts/icons.eot?z4jeba');
-    src: url('../styles/fonts/icons.eot?z4jeba#iefix') format('embedded-opentype'),
-    url('../styles/fonts/icons.ttf?z4jeba') format('truetype'),
-    url('../styles/fonts/icons.woff?z4jeba') format('woff'),
-    url('../styles/fonts/icons.svg?z4jeba#icons') format('svg');
+    src: url('../styles/fonts/icons.eot?7dlmeg');
+    src: url('../styles/fonts/icons.eot?7dlmeg#iefix') format('embedded-opentype'),
+    url('../styles/fonts/icons.ttf?7dlmeg') format('truetype'),
+    url('../styles/fonts/icons.woff?7dlmeg') format('woff'),
+    url('../styles/fonts/icons.svg?7dlmeg#icons') format('svg');
     font-weight: normal;
     font-style: normal;
 }
@@ -186,13 +186,13 @@
 /*    content: "\e935";*/
 /*}*/
 
-/*.icon-connection-off:before {*/
-/*    content: "\e931";*/
-/*}*/
+.icon-connection-off:before {
+    content: "\e931";
+}
 
-/*.icon-connection-on:before {*/
-/*    content: "\e932";*/
-/*}*/
+.icon-connection-on:before {
+    content: "\e932";
+}
 
 /*.icon-key:before {*/
 /*    content: "\e933";*/
