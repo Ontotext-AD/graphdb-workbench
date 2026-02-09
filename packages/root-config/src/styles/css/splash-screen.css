@@ -21,11 +21,11 @@
 }
 
 #splash-screen.splash-screen-fadein {
-  animation: fadeIn 0.3s ease-out forwards;
+  animation: fadeIn 0.1s ease-out forwards;
 }
 
 #splash-screen.splash-screen-fadeout {
-  animation: fadeOut 0.3s ease-out forwards;
+  animation: fadeOut 0.1s ease-out forwards;
 }
 
 @keyframes fadeIn {
