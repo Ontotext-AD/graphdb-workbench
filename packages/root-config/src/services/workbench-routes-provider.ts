@@ -1,5 +1,7 @@
-export function getWorkbenchRoutes() {
-  const routeDefinitions = [
+import {Route, RouteDefinition} from '../models/models';
+
+export function getWorkbenchRoutes(): Route[] {
+  const routeDefinitions: RouteDefinition[] = [
     {
       path: 'login',
       default: false,

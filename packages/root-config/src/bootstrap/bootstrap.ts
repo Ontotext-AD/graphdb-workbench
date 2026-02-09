@@ -25,7 +25,7 @@ import {runtimeConfigurationBootstrap} from './runtime-configuration/runtime-con
 const logger = LoggerProvider.logger;
 let isInitialBootstrap = true;
 
-const settleAllPromises = (bootstrapPromises) => {
+const settleAllPromises = <T>(bootstrapPromises: Array<() => Promise<T> | T>): Promise<PromiseSettledResult<T>[]> => {
   return Promise.allSettled(executePromises(bootstrapPromises));
 };
 
@@ -34,7 +34,7 @@ const settleAllPromises = (bootstrapPromises) => {
  * @param bootstrapFns the bootstrap functions to execute
  * @returns an array with all called promises
  */
-const executePromises = (bootstrapFns) => {
+const executePromises = <T>(bootstrapFns: Array<() => Promise<T> | T>): Array<Promise<T> | T> => {
   return bootstrapFns.map((bootstrapFn) => bootstrapFn());
 };
 
@@ -104,7 +104,7 @@ const subscribeToAuthenticatedUserChange = () => {
 /**
  * Migrates application settings stored in localStorage to the new format if needed.
  */
-const migrateApplicationSettings = () => {
+const migrateApplicationSettings = (): void => {
   const applicationSettingsStorageService = service(ApplicationSettingsStorageService);
   applicationSettingsStorageService.migrate();
 };
@@ -114,7 +114,7 @@ const migrateApplicationSettings = () => {
  * Loads language bundles and security configuration and then proceeds to load single spa and sets up
  * subscriptions for config changes and authenticated user changes.
  */
-export const bootstrapWorkbench = () => {
+export const bootstrapWorkbench = (): Promise<void> => {
   // LocalStorage data migration steps.
   migrateApplicationSettings();
   // Initialize theme service and apply the preferred theme.
@@ -123,7 +123,7 @@ export const bootstrapWorkbench = () => {
   // Start by loading application configurations
   return loadApplicationConfigurations()
     .then(loadEssentials)
-    .catch((error) => {
+    .catch((error: any) => {
       // Only throw error if it's not a 401 Unauthorized error, as it's expected when the user is not authenticated.
       if (error.status !== 401) {
         throw error;

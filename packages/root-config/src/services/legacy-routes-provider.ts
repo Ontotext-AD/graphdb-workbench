@@ -1,5 +1,12 @@
-export function getLegacyRoutes() {
-  const uniqueRoutes = new Map();
+import {Route} from '../models/models';
+
+declare const PluginRegistry: {
+  // eslint-disable-next-line no-unused-vars
+  get(key: string): Array<{ url: string; [key: string]: any }>;
+};
+
+export function getLegacyRoutes(): Route[] {
+  const uniqueRoutes = new Map<string, Route>();
 
   PluginRegistry.get('route').forEach((route) => {
     const slashIndex = route.url.indexOf('/', 1);

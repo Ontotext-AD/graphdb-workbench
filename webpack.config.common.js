@@ -62,7 +62,7 @@ module.exports = (webpackConfigEnv, argv) => {
 
     return merge(defaultConfig, {
         entry: {
-            main: './packages/root-config/src/ontotext-root-config.js',
+            main: './packages/root-config/src/ontotext-root-config.ts',
             legacyWorkbench: './packages/legacy-workbench/src/app.js',
             styleguide: './packages/styleguide/dist/ontotext-styleguide.js'
         },
@@ -80,7 +80,7 @@ module.exports = (webpackConfigEnv, argv) => {
                 './packages/root-config/src/js/',
                 './packages/root-config/node_modules'
             ],
-            extensions: ['.js']
+            extensions: ['.ts', '.tsx', '.js', '.jsx']
         },
         externals: ["@ontotext/workbench-api"],
         // modify the webpack config however you'd like to by adding to this object
@@ -362,6 +362,19 @@ module.exports = (webpackConfigEnv, argv) => {
         ],
         module: {
             rules: [
+                {
+                  test: /\.(ts|tsx)$/,
+                  exclude: /node_modules/,
+                  use: {
+                    loader: 'babel-loader',
+                    options: {
+                      presets: [
+                        '@babel/preset-env',
+                        '@babel/preset-typescript'
+                      ]
+                    }
+                  }
+                },
                 {
                   test: /\.js$/,
                   exclude: /node_modules/,

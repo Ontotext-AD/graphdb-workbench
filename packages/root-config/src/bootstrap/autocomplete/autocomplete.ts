@@ -8,7 +8,7 @@ import {
 import {LoggerProvider} from '../../services/logger-provider';
 
 const logger = LoggerProvider.logger;
-let unsubscribeFn;
+let unsubscribeFn: (() => void) | undefined;
 
 /**
  * Sets up (or re-sets) the repository selection listener and
@@ -17,7 +17,7 @@ let unsubscribeFn;
  *
  * @returns {Promise<void>} Resolved immediately after (re)configuration, since no waiting is needed.
  */
-const setupAutocompleteSubscription = () => {
+const setupAutocompleteSubscription = (): Promise<void> => {
   if (unsubscribeFn) {
     unsubscribeFn();
   }

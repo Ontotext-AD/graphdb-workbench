@@ -10,7 +10,7 @@ import {LoggerProvider} from '../../services/logger-provider';
 
 const logger = LoggerProvider.logger;
 
-const loadRepositories = () => {
+const loadRepositories = (): Promise<void> => {
   return ServiceProvider.get(RepositoryService).getRepositories()
     .then((repositories) => {
       const repositoryContextService = ServiceProvider.get(RepositoryContextService);
@@ -26,7 +26,7 @@ const loadRepositories = () => {
     });
 };
 
-const loadActiveRepositoryLocation = () => {
+const loadActiveRepositoryLocation = (): Promise<void> => {
   return ServiceProvider.get(RepositoryLocationService).getActiveRepositoryLocation()
     .then((repositoryLocation) => {
       ServiceProvider.get(RepositoryLocationContextService).updateActiveRepositoryLocation(repositoryLocation);
