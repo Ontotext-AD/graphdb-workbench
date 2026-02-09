@@ -11,6 +11,7 @@ import {
   service,
   WindowService,
   UrlPathParams,
+  SecurityConfig,
 } from '@ontotext/workbench-api';
 import {LoggerProvider} from '../../services/logger-provider';
 
@@ -29,7 +30,7 @@ export const loadSecurityConfig = () => {
     });
 };
 
-const loadAuthenticatedUser = (securityConfig) => {
+const loadAuthenticatedUser = (securityConfig: SecurityConfig): Promise<void> => {
   const securityContextService = service(SecurityContextService);
   const securityService = service(SecurityService);
   if (securityConfig.isEnabled()) {
@@ -42,7 +43,7 @@ const loadAuthenticatedUser = (securityConfig) => {
   }
 };
 
-const initSecurity = () => {
+const initSecurity = (): Promise<void> => {
   const securityContextService = service(SecurityContextService);
   const securityConfig = securityContextService.getSecurityConfig();
   const authStrategy = service(AuthStrategyResolver).resolveStrategy(securityConfig);
@@ -63,7 +64,7 @@ const initSecurity = () => {
   });
 };
 
-const resolveNavigation = () => {
+const resolveNavigation = (): void => {
   const eventService = service(EventService);
   const authorizationService = service(AuthorizationService);
   const authStrategy = service(AuthStrategyResolver).getAuthStrategy();
@@ -72,7 +73,8 @@ const resolveNavigation = () => {
   if (isLoginPage() && ((isLoggedIn || authorizationService.hasFreeAccess()) && !authStrategy.isExternal())) {
     // On login page but already logged in, navigate to return url or home page
     const params = new URLSearchParams(WindowService.getLocationQueryParams());
-    const returnUrl = params.get('r') ? decodeURIComponent(params.get('r')) : './';
+    const returnUrlParam = params.get('r');
+    const returnUrl = returnUrlParam ? decodeURIComponent(returnUrlParam) : './';
 
     navigate(returnUrl);
     eventService.emit(new Login());

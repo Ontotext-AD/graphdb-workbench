@@ -1,13 +1,18 @@
 /* eslint-disable no-undef */
-const path = require('path');
-const fs = require('fs');
-const os = require('os');
-const { spawnSync } = require('child_process');
+import * as path from 'path';
+import * as fs from 'fs';
+import * as os from 'os';
+import { spawnSync, SpawnSyncReturns } from 'child_process';
+
+interface Report {
+  reports: any;
+  conflictGroups: any;
+}
 
 describe('translation-report script', () => {
   const scriptPath = path.resolve(__dirname, '../scripts/validate-translations.js');
   const fixturesDir = path.resolve(__dirname, 'fixtures', 'packages');
-  let tmpDir = null;
+  let tmpDir: string | null = null;
 
   afterEach(() => {
     if (tmpDir !== null && fs.existsSync(tmpDir)) {
@@ -46,10 +51,10 @@ describe('translation-report script', () => {
     const report = readReport(tmp);
     // expecting a group for the two packages under "en"
     const groups = Object.values(report.conflictGroups.en);
-    expect(groups.some((group) => group.duplicatedKeys.includes('hello'))).toBe(true);
+    expect(groups.some((group: any) => group.duplicatedKeys.includes('hello'))).toBe(true);
   });
 
-  const run = (pkgs) => {
+  const run = (pkgs: string | string[]): { tmp: string; result: SpawnSyncReturns<string> } => {
     const names = Array.isArray(pkgs) ? pkgs : [pkgs];
     const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'i18n-'));
     tmpDir = tmp;
@@ -69,8 +74,9 @@ describe('translation-report script', () => {
   };
 
 
-  const readReport = (tmp) => {
+  const readReport = (tmp: string): Report => {
     const reportPath = path.join(tmp, 'translation-report.json');
     return JSON.parse(fs.readFileSync(reportPath, 'utf8'));
   };
 });
+

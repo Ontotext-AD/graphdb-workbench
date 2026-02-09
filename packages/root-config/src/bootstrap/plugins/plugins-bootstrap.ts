@@ -3,7 +3,7 @@ import {LoggerProvider} from '../../services/logger-provider';
 
 const logger = LoggerProvider.logger;
 
-const loadPlugins = () => {
+const loadPlugins = (): Promise<void> => {
   return ServiceProvider.get(PluginsService).loadPlugins()
     .catch((error) => {
       logger.error('Failed to load plugins:', error);

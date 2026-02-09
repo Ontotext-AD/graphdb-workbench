@@ -3,6 +3,7 @@ import {
   addErrorHandler,
   getAppStatus,
   navigateToUrl,
+  LifeCycles,
 } from 'single-spa';
 import {
   constructApplications,
@@ -27,20 +28,29 @@ import './styles/css/charteditor-custom.css';
 import {RouteProvider} from './services/route-provider';
 import {getWorkbenchRoutes} from './services/workbench-routes-provider';
 import {getLegacyRoutes} from './services/legacy-routes-provider';
+import {AppChangeEvent, AppModules, NavigationEvent, SingleSpaGlobal} from './models/models';
 
 const SINGLE_SPA_GLOBAL_KEY = 'singleSpa';
+
+declare global {
+  // eslint-disable-next-line no-unused-vars
+  interface Window {
+    [SINGLE_SPA_GLOBAL_KEY]?: SingleSpaGlobal;
+    __singleSpaRouterListenersRegistered?: boolean;
+  }
+}
 
 // This is a so-called context map which is needed by webpack in order to be able
 // to properly resolve the urls for the dynamic imports. Otherwise it wouldn't be
 // able to load the modules.
-const appModules = {
+const appModules: AppModules = {
   '@ontotext/legacy-workbench': () => import(/* webpackIgnore: true */ '@ontotext/legacy-workbench'),
   '@ontotext/workbench-api': () => import('@ontotext/workbench-api'),
   '@ontotext/root-config': () => import('@ontotext/root-config'),
   '@ontotext/workbench': () => import(/* webpackIgnore: true */ '@ontotext/workbench'),
 };
 
-function showSplashScreen(show) {
+function showSplashScreen(show: boolean): void {
   const splashScreenEl = document.getElementById('splash-screen');
   if (!splashScreenEl) {
     return;
@@ -58,40 +68,42 @@ function showSplashScreen(show) {
   }
 }
 
-function ensureGlobalNavigate() {
-  const globalObj = window[SINGLE_SPA_GLOBAL_KEY] || (window[SINGLE_SPA_GLOBAL_KEY] = {});
+function ensureGlobalNavigate(): void {
+  const globalObj: SingleSpaGlobal = window[SINGLE_SPA_GLOBAL_KEY] || (window[SINGLE_SPA_GLOBAL_KEY] = {});
   if (!globalObj.navigateToUrl) {
     globalObj.navigateToUrl = navigateToUrl;
   }
 }
 
-function registerSingleSpaRouterListeners() {
+function registerSingleSpaRouterListeners(): void {
   // Ensure we register the listeners only once
   if (window.__singleSpaRouterListenersRegistered) {
     return;
   }
   window.__singleSpaRouterListenersRegistered = true;
 
-  WindowService.getWindow().addEventListener('single-spa:before-routing-event', (evt) => {
-    const d = evt.detail;
+  WindowService.getWindow().addEventListener('single-spa:before-routing-event', (evt: Event) => {
+    const d = (evt as NavigationEvent).detail;
     service(EventService).emit(new NavigationStart(d.oldUrl, d.newUrl, d.cancelNavigation));
   });
 
-  WindowService.getWindow().addEventListener('single-spa:routing-event', (evt) => {
-    const d = evt.detail;
+  WindowService.getWindow().addEventListener('single-spa:routing-event', (evt: Event) => {
+    const d = (evt as NavigationEvent).detail;
     service(EventService).emit(new NavigationEnd(d.oldUrl, d.newUrl));
   });
 
-  WindowService.getWindow().addEventListener('single-spa:before-app-change', (evt) => {
-    service(ApplicationLifecycleContextService).updateApplicationStateBeforeChange(evt.detail.newAppStatuses);
+  WindowService.getWindow().addEventListener('single-spa:before-app-change', (evt: Event) => {
+    const d = (evt as AppChangeEvent).detail;
+    service(ApplicationLifecycleContextService).updateApplicationStateBeforeChange(d.newAppStatuses);
   });
 
-  WindowService.getWindow().addEventListener('single-spa:app-change', (evt) => {
-    service(ApplicationLifecycleContextService).updateApplicationStateChange(evt.detail.newAppStatuses);
+  WindowService.getWindow().addEventListener('single-spa:app-change', (evt: Event) => {
+    const d = (evt as AppChangeEvent).detail;
+    service(ApplicationLifecycleContextService).updateApplicationStateChange(d.newAppStatuses);
   });
 }
 
-function loadAppByName(name) {
+function loadAppByName(name: string): Promise<LifeCycles | undefined> {
   ensureGlobalNavigate();
 
   if (!name) {
@@ -108,6 +120,7 @@ function loadAppByName(name) {
     }
     return loader().catch((e) => {
       console.error(`Failed to load module: ${name}`, e);
+      return undefined;
     });
   }
 
@@ -128,18 +141,19 @@ function loadAppByName(name) {
     })
     .catch((e) => {
       console.error(`Failed to load namespaced module: ${name}`, e);
+      return undefined;
     });
 }
 
-function initSingleSpa() {
+function initSingleSpa(): void {
   const legacyRoutes = getLegacyRoutes();
   const workbenchRoutes = getWorkbenchRoutes();
   const layout = RouteProvider.getRoutesConfiguration(getBasePath(), legacyRoutes, workbenchRoutes);
   const routes = constructRoutes(layout);
   const applications = constructApplications({
     routes,
-    loadApp({name}) {
-      return loadAppByName(name);
+    loadApp({name}: {name: string}) {
+      return loadAppByName(name) as any;
     },
   });
 
@@ -148,14 +162,14 @@ function initSingleSpa() {
   layoutEngine.activate();
   registerSingleSpaRouterListeners();
 
-  addErrorHandler((err) => {
+  addErrorHandler((err: any) => {
     console.error(err);
     console.error(err.appOrParcelName);
     console.error(getAppStatus(err.appOrParcelName));
   });
 }
 
-function setupFavicon() {
+function setupFavicon(): void {
   const iconPath = service(ConfigurationContextService).getApplicationConfiguration().applicationFaviconPath;
 
   const faviconLink = document.createElement('link');
@@ -171,7 +185,7 @@ function setupFavicon() {
   document.head.appendChild(appleTouchLink);
 }
 
-async function start() {
+async function start(): Promise<void> {
   try {
     showSplashScreen(true);
     initSingleSpa();

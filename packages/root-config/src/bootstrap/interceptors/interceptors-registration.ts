@@ -1,4 +1,11 @@
-import {AuthRequestInterceptor, HttpInterceptorList, InterceptorService, service, UnauthenticatedInterceptor, UnauthorizedInterceptor} from '@ontotext/workbench-api';
+import {
+  AuthRequestInterceptor,
+  HttpInterceptorList,
+  InterceptorService,
+  service,
+  UnauthenticatedInterceptor,
+  UnauthorizedInterceptor
+} from '@ontotext/workbench-api';
 
 /**
  * An array of HTTP request interceptors to be used in the application.
@@ -15,7 +22,7 @@ const RESPONSE_INTERCEPTORS = [
   new UnauthorizedInterceptor(),
 ];
 
-export const registerInterceptors = () => {
+export const registerInterceptors = (): Promise<void> => {
   const interceptorsService = service(InterceptorService);
 
   interceptorsService.registerRequestInterceptors(new HttpInterceptorList(REQUEST_INTERCEPTORS));

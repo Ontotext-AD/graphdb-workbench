@@ -7,11 +7,15 @@ const {
   validate
 } = require('../scripts/validate-translations');
 
+interface ValueMap {
+  [key: string]: any;
+}
+
 describe('Utility functions', () => {
   describe('getAllKeys()', () => {
     test('flattens nested objects', () => {
       const obj = { a: { b: { c: 1 } }, d: 2 };
-      const values = {};
+      const values: ValueMap = {};
       const keys = getAllKeys(obj, values);
       expect(keys).toContain('a.b.c');
       expect(keys).toContain('d');
@@ -21,7 +25,7 @@ describe('Utility functions', () => {
 
     test('handles arrays as values (not recursing into them)', () => {
       const obj = { arr: [1, 2, 3] };
-      const values = {};
+      const values: ValueMap = {};
       const keys = getAllKeys(obj, values);
       expect(keys).toContain('arr');
       expect(values['arr']).toEqual([1, 2, 3]);
@@ -49,7 +53,7 @@ describe('Utility functions', () => {
 
     test('returns false when either string is empty or falsy', () => {
       expect(hasHtmlTagDifference('', '<b>x</b>')).toBe(false);
-      expect(hasHtmlTagDifference(null, '<b>x</b>')).toBe(false);
+      expect(hasHtmlTagDifference(null as any, '<b>x</b>')).toBe(false);
     });
   });
 
@@ -73,7 +77,7 @@ describe('Utility functions', () => {
     });
 
     test('returns false on falsy inputs', () => {
-      expect(hasPlaceholderDifference(null, '{{x}}')).toBe(false);
+      expect(hasPlaceholderDifference(null as any, '{{x}}')).toBe(false);
       expect(hasPlaceholderDifference('foo', '')).toBe(false);
     });
   });

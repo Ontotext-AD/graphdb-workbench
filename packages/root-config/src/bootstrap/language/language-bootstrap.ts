@@ -1,5 +1,5 @@
 import {
-  ServiceProvider,
+  service,
   LanguageStorageService,
   LanguageService,
   LanguageContextService
@@ -16,12 +16,12 @@ const logger = LoggerProvider.logger;
  * are different, the one from the local store is loaded. This way we ensure only one request for language
  * bundle is made upon initialization.
  *
- * @returns {Promise<void | void>} The resolved promise, when the config is loaded
+ * @returns The resolved promise, when the config is loaded
  */
-const loadLanguageConfig = () => {
-  const languageService = ServiceProvider.get(LanguageService);
-  const languageContextService = ServiceProvider.get(LanguageContextService);
-  const storedLanguage = ServiceProvider.get(LanguageStorageService).get(languageContextService.SELECTED_LANGUAGE);
+const loadLanguageConfig = (): Promise<void> => {
+  const languageService = service(LanguageService);
+  const languageContextService = service(LanguageContextService);
+  const storedLanguage = service(LanguageStorageService).get(languageContextService.SELECTED_LANGUAGE);
   return languageService.getLanguageConfiguration()
     .then((config) => {
       if (config) {
@@ -30,6 +30,7 @@ const loadLanguageConfig = () => {
         languageContextService.updateSelectedLanguage(languageToSet);
         return languageService.getLanguage(config.defaultLanguage);
       }
+      throw new Error('No language configuration found');
     })
     .then((defaultBundle) => {
       if (defaultBundle) {
@@ -43,12 +44,12 @@ const loadLanguageConfig = () => {
     .finally(() => onLanguageChange());
 };
 
-const onLanguageChange = () => {
-  const languageContextService = ServiceProvider.get(LanguageContextService);
+const onLanguageChange = (): Promise<void> => {
+  const languageContextService = service(LanguageContextService);
   languageContextService.onSelectedLanguageChanged((language) => {
     const currentBundleLanguage = languageContextService.getLanguageBundle()?.language;
     if (language && currentBundleLanguage !== language) {
-      ServiceProvider.get(LanguageService).getLanguage(language)
+      service(LanguageService).getLanguage(language)
         .then((bundle) => {
           if (bundle) {
             languageContextService.updateLanguageBundle(bundle);
