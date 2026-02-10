@@ -63,6 +63,10 @@ export class YasrSteps {
         this.getResultCell(rowNumber, cellNumber).realHover();
     }
 
+    static clickOnResource(rowNumber, cellNumber) {
+        this.getResultCell(rowNumber, cellNumber).find('.uri-link').click({force: true});
+    }
+
     static getCopyResourceLink(rowNumber, cellNumber) {
         return this.getResultCell(rowNumber, cellNumber)
             .realHover()

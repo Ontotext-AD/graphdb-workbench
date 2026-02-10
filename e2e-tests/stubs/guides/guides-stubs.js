@@ -61,6 +61,14 @@ export class GuidesStubs {
         GuidesStubs.stubWithFixture('../fixtures/guides/rdf-rank/rdf-rank-guide.json');
     }
 
+    static stubTableGraphExploreWithoutSubstepsGuide() {
+        GuidesStubs.stubWithFixture('../fixtures/guides/table-graph-explore/table-graph-explore-without-substeps.json');
+    }
+
+    static stubTableGraphExploreGuide() {
+        GuidesStubs.stubWithFixture('../fixtures/guides/table-graph-explore/table-graph-explore.json');
+    }
+
     static stubWithFixture(fixturePath) {
         cy.intercept('/rest/guides', {fixture: fixturePath}).as('getGuides');
     }
