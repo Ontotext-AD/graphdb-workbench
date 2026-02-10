@@ -22,4 +22,8 @@ export class BaseSteps {
   static getUrl() {
     return cy.url();
   }
+
+  static validateUrl(url) {
+    this.getUrl().should('include', url);
+  }
 }
