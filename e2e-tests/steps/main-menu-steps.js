@@ -95,6 +95,10 @@ export class MainMenuSteps {
 
     static clickOnVisualGraph() {
         this.clickOnExplore();
+        this.clickOnSubmenuVisualGraph();
+    }
+
+    static clickOnSubmenuVisualGraph() {
         this.getSubMenuButton('sub-menu-visual-graph').click();
     }
 
@@ -190,11 +194,19 @@ export class MainMenuSteps {
 
     static clickOnRDFRank() {
         this.clickOnMenuSetup();
+        this.clickOnSubmenuRDFRank();
+    }
+
+    static clickOnSubmenuRDFRank() {
         this.getSubMenuButton('sub-menu-rdf-rank').click();
     }
 
     static clickOnConnectors() {
         this.clickOnMenuSetup();
+        this.clickOnSubmenuConnectors();
+    }
+
+    static clickOnSubmenuConnectors() {
         this.getSubMenuButton('sub-menu-connectors').click();
     }
 
