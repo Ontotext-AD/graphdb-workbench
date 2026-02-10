@@ -1,0 +1,25 @@
+[
+    {
+        "guideName": {
+            "en": "Resources"
+        },
+        "guideDescription": {
+            "en": "Resources"
+        },
+        "steps": [
+            {
+                "guideBlockName": "sparql-editor-run-button"
+            },
+            {
+                "guideBlockName": "table-graph-explore",
+                "options": {
+                    "iri": "http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#madeFromGrape",
+                    "iriLabel": "wine#madeFromGrape"
+                }
+            },
+            {
+                "guideBlockName": "guide-end"
+            }
+        ]
+    }
+]
