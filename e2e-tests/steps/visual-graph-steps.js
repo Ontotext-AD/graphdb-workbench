@@ -148,6 +148,14 @@ export class VisualGraphSteps extends BaseSteps {
         return cy.get(`[id="${nodeId}"] circle`);
     }
 
+    static clickOnNode(nodeId) {
+        this.getCircleOfNodeByNodeId(nodeId).click();
+    }
+
+    static dblclickOnNode(nodeId) {
+        this.getCircleOfNodeByNodeId(nodeId).dblclick();
+    }
+
     static getLineBetweenNodesById(narrowId) {
         return cy.get(`[id="${narrowId}"] line`);
     }
@@ -157,11 +165,15 @@ export class VisualGraphSteps extends BaseSteps {
     }
 
     static getSidePanelCloseButton() {
-        return cy.get('');
+        return this.getSidePanelContent().find('.close');
     }
 
     static getSidePanelContent() {
         return cy.get('.rdf-side-panel-content');
+    }
+
+    static closeSidePanel() {
+        this.getSidePanelCloseButton().click();
     }
 
     // Visual graph settings form field access
@@ -427,6 +439,10 @@ export class VisualGraphSteps extends BaseSteps {
         cy.get('.graph-config-wizard-body .view-res-input')
             .closest('.start-node-selector')
             .find('#auto-complete-results-wrapper .result-item').eq(index).click();
+    }
+
+    static clickOnAutocompleteElement(elementText) {
+        cy.get('.result-item').contains(elementText).click();
     }
 
     static getSelectedStartNodeUri() {
