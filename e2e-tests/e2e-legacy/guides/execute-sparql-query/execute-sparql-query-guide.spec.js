@@ -4,6 +4,7 @@ import {MainMenuSteps} from '../../../steps/main-menu-steps.js';
 import {GuidesStubs} from '../../../stubs/guides/guides-stubs.js';
 import SparqlSteps from '../../../steps/sparql-steps.js';
 import {YasqeSteps} from '../../../steps/yasgui/yasqe-steps.js';
+import {YasrSteps} from '../../../steps/yasgui/yasr-steps.js';
 
 describe('Execute SPARQL query guide steps', () => {
     let repositoryId;
@@ -44,7 +45,7 @@ describe('Execute SPARQL query guide steps', () => {
 
         GuideDialogSteps.assertDialogWithTitleIsVisible('Execute SPARQL query — 4/5');
         GuideDialogSteps.assertDialogWithContentIsVisible('Click on the Run button.');
-        YasqeSteps.executeQuery(true);
+        YasqeSteps.forceExecuteQuery();
 
         GuideDialogSteps.assertDialogWithTitleIsVisible('Execute SPARQL query — 5/5');
         GuideDialogSteps.assertDialogWithContentIsVisible('The table shows the results from executing the query.');
@@ -57,7 +58,7 @@ describe('Execute SPARQL query guide steps', () => {
 
         GuideDialogSteps.assertDialogWithTitleIsVisible('SPARQL Query & Update');
         GuideDialogSteps.assertDialogWithContentIsVisible('Click on the rdf:type IRI to explore it.');
-        SparqlSteps.clickOnFirstIriFromResults('https://swapi.co/resource/planet/25');
+        YasrSteps.clickOnResource(0, 1);
         cy.url().should('include', '/resource?uri=https:%2F%2Fswapi.co%2Fresource%2Fplanet%2F25');
 
         GuideDialogSteps.assertDialogWithTitleIsVisible('Execute SPARQL query — 1/5');
@@ -77,7 +78,7 @@ describe('Execute SPARQL query guide steps', () => {
 
         GuideDialogSteps.assertDialogWithTitleIsVisible('SPARQL Query & Update — 4/5');
         GuideDialogSteps.assertDialogWithContentIsVisible('Click on the Run button.');
-        YasqeSteps.executeQuery(true);
+        YasqeSteps.forceExecuteQuery();
 
         GuideDialogSteps.assertDialogWithTitleIsVisible('SPARQL Query & Update — 5/5');
         GuideDialogSteps.assertDialogWithContentIsVisible('Click on the Visual button.');
