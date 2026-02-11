@@ -13,10 +13,18 @@ const GuideUtils = (function() {
      * @returns {boolean} `true` if the element is visible; otherwise, `false`.
      */
     const isElementVisible = (element) => {
-        if (!element) return false;
+        if (!element) {
+            return false;
+        }
 
         const style = window.getComputedStyle(element);
-        return style.display !== 'none' && style.visibility !== 'hidden' && style.opacity !== '0';
+        const rect = element.getBoundingClientRect();
+
+        return style.display !== 'none'
+            && style.visibility !== 'hidden'
+            && style.opacity !== '0'
+            && rect.width !== 0
+            && rect.height !== 0;
     };
 
     const clickOnElement = function(elementSelector) {

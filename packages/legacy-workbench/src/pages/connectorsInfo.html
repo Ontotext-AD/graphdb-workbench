@@ -5,12 +5,12 @@
     </h1>
     <div core-errors write ontop fedx license></div>
     <div onto-loader
-         ng-show="loader"
+         ng-if="loader"
          style="height: 60vh;"
          size="75"
          message="getLoaderMessage"
          timeout="[1]"></div>
-    <div ng-show="canWriteActiveRepo() && !loader && !isRestricted">
+    <div ng-if="canWriteActiveRepo() && !loader && !isRestricted">
         <div class="pull-right">
             <button class="btn btn-lg btn-link p-0" type="button"
                     ng-click="getConnectors()"
