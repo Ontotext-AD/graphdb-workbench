@@ -10,7 +10,7 @@ import {
 import {GraphsConfig, StartMode} from "../../models/graphs/graphs-config";
 import {mapGraphConfigSamplesToGraphConfigs} from "../../rest/mappers/graphs-config-mapper";
 import {NamespacesListModel} from "../../models/namespaces/namespaces-list";
-import {RepositoryContextService, ServiceProvider} from "@ontotext/workbench-api";
+import {RepositoryContextService, service} from "@ontotext/workbench-api";
 
 angular
     .module('graphdb.framework.graphexplore.controllers.graphviz.config', [
@@ -123,6 +123,11 @@ function GraphConfigCtrl(
             visible: false
         }
     ];
+    // This flag is used to prevent multiple triggers of the location change listener.
+    let locationChangeInProgress = false;
+    // This flag is used to prevent loading of the yasgui on consecutive repository change events after
+    // the first.
+    let initialRepoInitialization = true;
 
     // =========================
     // Public functions
@@ -465,21 +470,6 @@ function GraphConfigCtrl(
         $scope.isAutocompleteEnabled = autocompleteEnabled;
     };
 
-    const onSelectedRepositoryUpdated = (repository) => {
-        if (!repository) {
-            $scope.repositoryNamespaces = new NamespacesListModel();
-            return;
-        }
-        RDF4JRepositoriesService.getNamespaces(repository.id)
-            .then((repositoryNamespaces) => {
-                $scope.repositoryNamespaces = repositoryNamespaces;
-            })
-            .catch((error) => {
-                const msg = getError(error);
-                toastr.error(msg, $translate.instant('error.getting.namespaces.for.repo'));
-            });
-    };
-
     const validateQueryWithCallback = (successCallback, query, queryType, params, all, oneOf) => {
         if (!query) {
             successCallback();
@@ -568,21 +558,69 @@ function GraphConfigCtrl(
     };
 
     const locationChangedHandler = (event, newPath) => {
+        if (locationChangeInProgress) {
+            event.preventDefault();
+            return;
+        }
+        locationChangeInProgress = true;
+
         if ($scope.queryEditorIsDirty) {
             event.preventDefault();
             const title = $translate.instant('common.confirm');
             const message = $translate.instant('visual.config.warning.unsaved.changes');
+
+            const onCancel = () => {
+                locationChangeInProgress = false;
+            };
+
             const onConfirm = () => {
+                locationChangeInProgress = false;
                 unsubscribeListeners();
                 const baseLen = $location.absUrl().length - $location.url().length;
                 const path = newPath.substring(baseLen);
                 // Use $location.url to properly change the path because the newPath can contain search params and hash
                 $location.url(path);
             };
-            openConfirmDialog(title, message, onConfirm);
+            openConfirmDialog(title, message, onConfirm, onCancel);
         } else {
             unsubscribeListeners();
+            locationChangeInProgress = false;
         }
+    };
+
+    const repositoryChangedHandler = (repository) => {
+        if (!repository) {
+            $scope.repositoryNamespaces = new NamespacesListModel();
+            return;
+        }
+        RDF4JRepositoriesService.getNamespaces(repository.id)
+            .then((repositoryNamespaces) => {
+                $scope.repositoryNamespaces = repositoryNamespaces;
+            })
+            .catch((error) => {
+                const msg = getError(error);
+                toastr.error(msg, $translate.instant('error.getting.namespaces.for.repo'));
+            });
+    };
+
+    const repositoryWillChangeHandler = () => {
+        return new Promise(function(resolve) {
+            const onConfirm = () => {
+                $scope.queryEditorIsDirty = false;
+                resolve(true);
+            };
+
+            if ($scope.queryEditorIsDirty) {
+                const onCancel = () => {
+                    resolve(false);
+                };
+                const title = $translate.instant('common.confirm');
+                const message = $translate.instant('visual.config.warning.unsaved.changes');
+                openConfirmDialog(title, message, onConfirm, onCancel);
+            } else {
+                onConfirm();
+            }
+        });
     };
 
     const unsubscribeListeners = () => {
@@ -632,13 +670,16 @@ function GraphConfigCtrl(
         }
     };
 
-    const repositoryChangedHandler = () => {
-        // Switch yasgui to editor mode only if the start mode is query or not on the first  tab. Only in these cases
-        // the yasgui is visible.
-        if ($scope.newConfig.isStartMode(StartMode.QUERY) || $scope.page > 1) {
-            // this should be set to `yasr` in order to switch the buttons for preview and editor
-            $scope.viewMode = 'yasr';
-            abortQuery().then(switchToYasqe);
+    const activeRepositoryHandler = (activeRepo) => {
+        if (activeRepo && initialRepoInitialization) {
+            // Switch yasgui to editor mode only if the start mode is query or not on the first  tab. Only in these cases
+            // the yasgui is visible.
+            if ($scope.newConfig.isStartMode(StartMode.QUERY) || $scope.page > 1) {
+                // this should be set to `yasr` in order to switch the buttons for preview and editor
+                $scope.viewMode = 'yasr';
+                abortQuery().then(switchToYasqe);
+            }
+            initialRepoInitialization = false;
         }
     };
 
@@ -647,11 +688,14 @@ function GraphConfigCtrl(
     // =========================
 
     const subscriptions = [];
-    subscriptions.push(ServiceProvider.get(RepositoryContextService).onSelectedRepositoryChanged(onSelectedRepositoryUpdated));
+    const repositoryContextService = service(RepositoryContextService);
+    const repositoryChangeSubscription = repositoryContextService.onSelectedRepositoryChanged(repositoryChangedHandler, repositoryWillChangeHandler);
+    subscriptions.push(repositoryChangeSubscription);
+
     subscriptions.push(WorkbenchContextService.onAutocompleteEnabledUpdated(onAutocompleteEnabledUpdated));
     subscriptions.push($scope.$on('$locationChangeStart', locationChangedHandler));
     subscriptions.push($scope.$on('$destroy', unsubscribeListeners));
-    subscriptions.push($scope.$watch($scope.getActiveRepositoryObject, repositoryChangedHandler));
+    subscriptions.push($scope.$watch($scope.getActiveRepositoryObject, activeRepositoryHandler));
 
     subscriptions.push($rootScope.$on('$translateChangeSuccess', () => {
         translateTabsViewModel();

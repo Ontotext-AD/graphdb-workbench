@@ -1,10 +1,11 @@
 import 'angular/rest/plugins.rest.service';
 import 'angular/rest/aclmanagement.rest.service';
 import 'angular/core/services/workbench-context.service';
-import {mapAclRulesResponse} from "../rest/mappers/aclmanagement-mapper";
+import {mapAclRulesResponse} from '../rest/mappers/aclmanagement-mapper';
 import {isEqual} from 'lodash';
-import {mapNamespacesResponse} from "../rest/mappers/namespaces-mapper";
-import {ACL_SCOPE, DEFAULT_CONTEXT_VALUES, DEFAULT_URI_VALUES, DEFAULT_CLEAR_GRAPH_CONTEXT_VALUES} from "./model";
+import {mapNamespacesResponse} from '../rest/mappers/namespaces-mapper';
+import {ACL_SCOPE, DEFAULT_CLEAR_GRAPH_CONTEXT_VALUES, DEFAULT_CONTEXT_VALUES, DEFAULT_URI_VALUES} from './model';
+import {RepositoryContextService, service} from '@ontotext/workbench-api';
 
 const modules = [
     'graphdb.framework.rest.plugins.service',
@@ -24,6 +25,7 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
     //
     // Private fields
     //
+    const repositoryContextService = service(RepositoryContextService);
 
     /**
      * Holds a list of event handler subscriptions which to be cleaned up on page leave.
@@ -288,7 +290,6 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
             });
     };
 
-
     /**
      * Function to switch between tabs in the user interface.
      * If scope is dirty, the event is prevented.
@@ -407,7 +408,7 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
      * @param {string} scope
      */
     const setModelDirty = (scope) => {
-        const scopeIsDirty= !isEqual($scope.rulesModel.getRulesByScope(scope), $scope.rulesModelCopy.getRulesByScope(scope));
+        const scopeIsDirty = !isEqual($scope.rulesModel.getRulesByScope(scope), $scope.rulesModelCopy.getRulesByScope(scope));
         if (scopeIsDirty) {
             $scope.dirtyScope.add(scope);
         } else {
@@ -470,21 +471,61 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
     const locationChangedHandler = (event, newPath) => {
         if ($scope.modelIsDirty) {
             event.preventDefault();
-            ModalService.openSimpleModal({
-                title: $translate.instant('common.confirm'),
-                message: $translate.instant('acl_management.rulestable.messages.unsaved_changes_confirmation'),
-                warning: true,
-            }).result.then(function() {
+            const title = $translate.instant('common.confirm');
+            const message = $translate.instant('acl_management.rulestable.messages.unsaved_changes_confirmation');
+            const onConfirm = () => {
                 unsubscribeListeners();
                 const baseLen = $location.absUrl().length - $location.url().length;
                 const path = newPath.substring(baseLen);
                 $location.url(path);
-            }, function() {});
+            };
+            openConfirmDialog(title, message, onConfirm);
         }
     };
 
     const onAutocompleteEnabledUpdated = (autocompleteEnabled) => {
         $scope.isAutocompleteEnabled = autocompleteEnabled;
+    };
+
+    const repositoryChangedHandler = () => {
+        resetPageState();
+        loadRules();
+    };
+
+    const repositoryWillChangeHandler = () => {
+        return new Promise(function(resolve) {
+            if ($scope.modelIsDirty) {
+                const onConfirm = () => {
+                    resolve(true);
+                };
+
+                const onCancel = () => {
+                    resolve(false);
+                };
+
+                const title = $translate.instant('common.confirm');
+                const message = $translate.instant('acl_management.rulestable.messages.unsaved_changes_confirmation');
+                openConfirmDialog(title, message, onConfirm, onCancel);
+            } else {
+                resolve(true);
+            }
+        });
+    };
+
+    const openConfirmDialog = (title, message, onConfirm, onCancel) => {
+        ModalService.openSimpleModal({
+            title,
+            message,
+            warning: true,
+        }).result.then(function() {
+            if (angular.isFunction(onConfirm)) {
+                onConfirm();
+            }
+        }, function() {
+            if (angular.isFunction(onCancel)) {
+                onCancel();
+            }
+        });
     };
 
     /**
@@ -495,10 +536,8 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
         subscriptions.push(WorkbenchContextService.onAutocompleteEnabledUpdated(onAutocompleteEnabledUpdated));
 
         // Watching for repository changes and reload the rules, because they are stored per repository and reset page state.
-        subscriptions.push($scope.$watch(getActiveRepositoryId, () => {
-            resetPageState();
-            loadRules();
-        }));
+        const repositoryChangeSubscription = repositoryContextService.onSelectedRepositoryChanged(repositoryChangedHandler, repositoryWillChangeHandler);
+        subscriptions.push(repositoryChangeSubscription);
         // Watching for url changes
         subscriptions.push($scope.$on('$locationChangeStart', locationChangedHandler));
         // Watching for component destroy

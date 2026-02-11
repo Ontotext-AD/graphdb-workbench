@@ -9,17 +9,9 @@ import {DEFAULT_SPARQL_QUERY, SparqlTemplateInfo} from '../models/sparql-templat
 import {SparqlTemplateError} from '../models/sparql-template/sparql-template-error';
 import {YasqeMode} from '../models/ontotext-yasgui/yasqe-mode';
 import {RenderingMode} from '../models/ontotext-yasgui/rendering-mode';
-import {
-    DISABLE_YASQE_BUTTONS_CONFIGURATION,
-    YasguiComponentDirectiveUtil,
-} from '../core/directives/yasgui-component/yasgui-component-directive.util';
+import {DISABLE_YASQE_BUTTONS_CONFIGURATION, YasguiComponentDirectiveUtil} from '../core/directives/yasgui-component/yasgui-component-directive.util';
+import {LicenseContextService, RepositoryContextService, mapSparqlTemplatesResponseToModel, service} from '@ontotext/workbench-api';
 import {LoggerProvider} from '../core/services/logger-provider';
-import {
-    LicenseContextService,
-    RepositoryContextService,
-    mapSparqlTemplatesResponseToModel,
-    service,
-} from '@ontotext/workbench-api';
 
 const modules = [
     'ui.bootstrap',
@@ -75,9 +67,9 @@ function SparqlTemplatesCtrl($scope, $repositories, SparqlTemplatesRestService, 
                 .success(function(data) {
                     $scope.sparqlTemplateIds = mapSparqlTemplatesResponseToModel(data);
                 }).error(function(data) {
-                    const msg = getError(data);
-                    toastr.error(msg, $translate.instant('sparql.template.get.templates.error'));
-                });
+                const msg = getError(data);
+                toastr.error(msg, $translate.instant('sparql.template.get.templates.error'));
+            });
         } else {
             $scope.sparqlTemplateIds = {
                 items: [],
@@ -168,10 +160,14 @@ function SparqlTemplateCreateCtrl(
     // This flag is used to prevent triggering the repository change event listener on initial subscription.
     let initialRepoChangeTrigger = true;
     let currentRepository;
+    // This flag is used to prevent multiple triggers of the location change listener.
+    let locationChangeInProgress = false;
 
     // =========================
     // Public functions
     // =========================
+    $scope.goToSparqlTemplatesView = () => goToSparqlTemplatesView();
+
     $scope.saveTemplate = function() {
         $scope.saveOrUpdateExecuted = true;
 
@@ -410,7 +406,6 @@ function SparqlTemplateCreateCtrl(
         $location.url('/sparql-templates');
     };
 
-
     const setLoader = (isRunning, loaderMessage) => {
         $scope.queryIsRunning = isRunning;
         $scope.loaderMessage = $scope.queryIsRunning ? loaderMessage : '';
@@ -446,11 +441,6 @@ function SparqlTemplateCreateCtrl(
 
     const repositoryWillChangeHandler = () => {
         return new Promise(function(resolve) {
-            if ($scope.sparqlTemplateInfo.isNewTemplate) {
-                resolve(true);
-                return;
-            }
-
             const onConfirm = () => {
                 $scope.isDirty = false;
                 resolve(true);
@@ -475,11 +465,23 @@ function SparqlTemplateCreateCtrl(
     };
 
     const locationChangedHandler = (event, newPath) => {
+        if (locationChangeInProgress) {
+            event.preventDefault();
+            return;
+        }
+        locationChangeInProgress = true;
+
         if ($scope.isDirty) {
             event.preventDefault();
             const title = $translate.instant('common.confirm');
             const message = $translate.instant('common.unsaved.changes');
+
+            const onCancel = () => {
+                locationChangeInProgress = false;
+            };
+
             const onConfirm = () => {
+                locationChangeInProgress = false;
                 removeAllListeners();
                 const baseLen = $location.absUrl().length - $location.url().length;
                 const path = newPath.substring(baseLen);
@@ -487,9 +489,10 @@ function SparqlTemplateCreateCtrl(
                 // the entire string as path only. This can lead to loosing search params or hash.
                 $location.url(path);
             };
-            openConfirmDialog(title, message, onConfirm);
+            openConfirmDialog(title, message, onConfirm, onCancel);
         } else {
             removeAllListeners();
+            locationChangeInProgress = false;
         }
     };
 
@@ -512,12 +515,10 @@ function SparqlTemplateCreateCtrl(
     };
 
     const activeRepositoryHandler = (activeRepo) => {
-        if (activeRepo) {
+        if (activeRepo && initialRepoInitialization) {
             $scope.canEditActiveRepo = $scope.canWriteActiveRepo();
-            if (initialRepoInitialization) {
-                loadOntotextYasgui();
-                initialRepoInitialization = false;
-            }
+            loadOntotextYasgui();
+            initialRepoInitialization = false;
         }
     };
 
@@ -541,7 +542,7 @@ function SparqlTemplateCreateCtrl(
     subscriptions.push($rootScope.$on('$translateChangeSuccess', languageChangedHandler));
     subscriptions.push($scope.$on('$locationChangeStart', locationChangedHandler));
     subscriptions.push($scope.$on('$destroy', removeAllListeners));
-    // Prevent go out of the current page? check
+    // Prevent go out of the current page? check with page refresh (F5)
     window.addEventListener('beforeunload', beforeunloadHandler);
 
     /**

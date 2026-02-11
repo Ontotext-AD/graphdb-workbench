@@ -6,6 +6,7 @@ import {TTYGViewSteps} from "../../../../steps/ttyg/ttyg-view-steps.js";
 import {ChatPanelSteps} from "../../../../steps/ttyg/chat-panel-steps.js";
 import {RepositoriesStubs} from "../../../../stubs/repositories/repositories-stubs.js";
 import {TtygAgentSettingsModalSteps} from "../../../../steps/ttyg/ttyg-agent-settings-modal.steps.js";
+import {BrowserStubs} from '../../../../stubs/browser-stubs.js';
 
 describe('ttyg-conversation-guide', () => {
     let repositoryId = 'starwars';
@@ -23,6 +24,8 @@ describe('ttyg-conversation-guide', () => {
         TTYGStubs.stubExplainResponse('/ttyg/chats/explain-response-3.json');
 
         GuideSteps.visit();
+        BrowserStubs.stubWindowOpen();
+
         GuideSteps.verifyGuidesListExists();
 
         GuideSteps.runFirstGuide()
@@ -65,6 +68,7 @@ describe('ttyg-conversation-guide', () => {
         GuideDialogSteps.assertDialogWithTitleIsVisible('Ask the agent — 6/12');
         GuideDialogSteps.assertDialogWithContentIsVisible(`Explain the answer by clicking on the 'Explain response' button.`);
         TTYGViewSteps.clickOnExplainResponse(0);
+        cy.wait('@explain-response');
 
         GuideDialogSteps.assertDialogWithTitleIsVisible('Ask the agent — 7/12');
         GuideDialogSteps.assertDialogWithContentIsVisible(`Wait for the answer to be returned and explore it. When ready proceed by clicking next.`);
@@ -78,7 +82,8 @@ describe('ttyg-conversation-guide', () => {
         GuideDialogSteps.assertDialogWithTitleIsVisible('Ask the agent — 11/12');
         GuideDialogSteps.assertDialogWithContentIsVisible(`You can ask the agent how it derived the answer by clicking on the button`);
         TTYGViewSteps.clickOnHowDeliverAnswerButton();
-        cy.wait('@explain-response');
+        cy.wait('@create-chat')
+        cy.wait('@create-chat')
 
         GuideDialogSteps.assertDialogWithTitleIsVisible('Ask the agent — 12/12');
         GuideDialogSteps.assertDialogWithContentIsVisible(`Wait for the answer to be returned and explore it. When ready proceed by clicking next.`);

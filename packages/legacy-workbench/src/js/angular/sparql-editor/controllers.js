@@ -201,11 +201,13 @@ function SparqlEditorCtrl($rootScope,
     const initTabFromSavedQuery = (queryParams) => {
         const savedQueryName = queryParams[RouteConstants.savedQueryName];
         const savedQueryOwner = queryParams[RouteConstants.savedQueryOwner];
+        const isExecuteRequested = toBoolean(queryParams.execute);
+
         SparqlRestService.getSavedQuery(savedQueryName, savedQueryOwner).then((res) => {
             const savedQuery = savedQueryResponseMapper(res);
             openNewTab(savedQuery)
-                .then(autoExecuteQueryIfRequested)
-                .finally(clearUrlParameters);
+                .then(clearUrlParameters)
+                .then(() => autoExecuteQueryIfRequested(isExecuteRequested));
         }).catch((err) => {
             toastr.error($translate.instant('query.editor.missing.saved.query.data.error', {
                 savedQueryName: savedQueryName,
@@ -218,10 +220,11 @@ function SparqlEditorCtrl($rootScope,
         const queryName = queryParams[RouteConstants.name];
         const query = queryParams[RouteConstants.query];
         const queryOwner = queryParams[RouteConstants.owner];
+        const isExecuteRequested = toBoolean(queryParams.execute);
         const sharedQueryModel = buildQueryModel(query, queryName, queryOwner, true);
         openNewTab(sharedQueryModel)
-            .then(autoExecuteQueryIfRequested)
-            .finally(clearUrlParameters);
+            .then(clearUrlParameters)
+            .then(() => autoExecuteQueryIfRequested(isExecuteRequested));
     };
 
     /**
@@ -241,15 +244,14 @@ function SparqlEditorCtrl($rootScope,
         internallyReloaded = true;
         const currentParams = $location.search();
         // Keep only the repositoryId parameter (if any). This will prevent router event from being triggered again and
-        // reinitializing the repositoryId param this adding a new history entry.
+        // reinitializing the repositoryId param thus adding a new history entry.
         const repositoryId = currentParams[REPOSITORY_ID_PARAM];
         $location.search(repositoryId ? {repositoryId} : {});
         // Replace current URL without adding a new history entry
         $location.replace();
     };
 
-    const autoExecuteQueryIfRequested = () => {
-        const isRequested = toBoolean($location.search().execute);
+    const autoExecuteQueryIfRequested = (isRequested) => {
         if (isRequested) {
             return YasguiComponentDirectiveUtil.getOntotextYasguiElementAsync(QUERY_EDITOR_ID)
                 .then(getQueryMode)
