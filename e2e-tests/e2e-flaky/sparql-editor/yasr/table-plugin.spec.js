@@ -35,12 +35,7 @@ describe.skip('Yasr Table plugin', () => {
             YasrSteps.getCopyResourceLink(28, 2).should('be.visible');
         });
 
-        it('Should be able to copy a link', {
-            retries: {
-                runMode: 1,
-                openMode: 0
-            }
-        }, () => {
+        it('Should be able to copy a link', () => {
             // When I execute a query which returns results of type is uri.
             QueryStubs.stubDefaultQueryResponse();
             YasqeSteps.executeQuery();

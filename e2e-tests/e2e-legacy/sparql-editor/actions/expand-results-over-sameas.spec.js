@@ -71,7 +71,7 @@ describe('Expand results over owl:sameAs', () => {
         YasqeSteps.getActionButtonTooltip(4).should('have.attr', 'yasgui-data-tooltip', 'Expand results over owl:sameAs: ON');
     });
 
-    it('should not be enabled when infer is true and sameAs is false in user settings', {retries: {runMode: 2}},() => {
+    it('should not be enabled when infer is true and sameAs is false in user settings',() => {
         QueryStubs.stubInferAndSameAsDefaults(true, false);
 
         // When I visit a page with "ontotext-yasgui-web-component" in it.

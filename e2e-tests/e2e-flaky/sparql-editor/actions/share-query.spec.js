@@ -47,13 +47,7 @@ describe('Share query', () => {
         ApplicationSteps.getSuccessNotifications().should('be.visible');
     });
 
-    it('Should be able to open a share link in a new editor tab',
-        {
-            retries: {
-                runMode: 1,
-                openMode: 0
-            }
-        }, () => {
+    it('Should be able to open a share link in a new editor tab',() => {
         // Given I have opened the sparql editor
         YasguiSteps.getTabs().should('have.length', 1);
         // When I get the shareable link for current query
