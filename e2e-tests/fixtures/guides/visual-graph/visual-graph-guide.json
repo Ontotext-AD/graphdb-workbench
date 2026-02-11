@@ -1,0 +1,85 @@
+[
+    {
+        "guideName": {
+            "en": "Visual Graph"
+        },
+        "guideDescription": {
+            "en": "Test Visual Graph"
+        },
+        "steps": [
+            {
+                "guideBlockName": "visual-graph",
+                "options": {
+                    "easyGraphInputText": "wine",
+                    "iri": "http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#Wine",
+                    "iriLabel": "wine"
+                }
+            },
+            {
+                "guideBlockName": "visual-graph-node-focus",
+                "options": {
+                    "iri": "http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#Wine",
+                    "iriLabel": "wine"
+                }
+            },
+            {
+                "guideBlockName": "visual-graph-link-focus",
+                "options": {
+                    "fromIri": "http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#Wine",
+                    "fromIriLabel": "Wine",
+                    "toIri": "http://www.w3.org/TR/2003/PR-owl-guide-20031209/food#PotableLiquid",
+                    "toIriLabel": "Potable Liquid",
+                    "iriLabel": "type",
+                    "extraContent": {
+                        "en": "This tells us that one of the RDF types for <b>{{fromIriLabel}}</b> is <b>{{toIriLabel}}</b>."
+                    }
+                }
+            },
+            {
+                "guideBlockName": "visual-graph-properties",
+                "options": {
+                    "iri": "http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine",
+                    "iriLabel": "Wine",
+                    "focusProperties": [
+                        {
+                            "property": "types",
+                            "message": {
+                                "en": "We can see that <b>{{iriLabel}}</b> has a single type, <b>owl:Class</b>."
+                            }
+                        },
+                        {
+                            "property": "rdfs:label",
+                            "message": {
+                                "en": "This shows the label of <b>{{iriLabel}}</b>."
+                            }
+                        },
+                        {
+                            "property": "rdfs:label",
+                            "skipGenericMessage": true,
+                            "message": {
+                                "en": "This shows the label of <b>{{iriLabel}}</b>."
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "guideBlockName": "visual-graph-expand",
+                "options": {
+                    "iri": "http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#WhitehallLanePrimavera",
+                    "iriLabel": "Whitehall Lane Primavera"
+                }
+            },
+            {
+                "guideBlockName": "visual-graph-node-focus",
+                "options": {
+                    "iri": "http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#NapaRegion",
+                    "iriLabel": "Napa Region"
+                }
+            },
+            {
+                "guideBlockName": "guide-end"
+            }
+        ]
+    }
+]
