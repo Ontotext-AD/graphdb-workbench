@@ -228,14 +228,6 @@ class SparqlSteps {
     static clickOnShowLessExceptionMessage() {
         SparqlSteps.getShowLessExceptionMessage().click();
     }
-
-    static getIRIFromResults(iri) {
-        return cy.get('.yasr_results table tbody tr').find('td .uri-cell').find(`a[title="${iri}"]`);
-    }
-
-    static clickOnFirstIriFromResults(iri) {
-        this.getIRIFromResults(iri).first().click();
-    }
 }
 
 export default SparqlSteps;
