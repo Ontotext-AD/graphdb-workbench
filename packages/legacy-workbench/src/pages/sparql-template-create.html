@@ -58,13 +58,13 @@
     </div>
 
     <div class="pull-right">
-        <a ng-href="sparql-templates" class="btn btn-lg btn-secondary cancel-query-btn"
+        <button ng-click="goToSparqlTemplatesView()" class="btn btn-lg btn-secondary cancel-query-btn"
            uib-popover="{{'cancel.sparql.template.creation.tooltip' | translate}}"
            popover-placement="top"
            popover-trigger="mouseenter"
            ng-if="canEditActiveRepo">
             {{'common.cancel.btn' | translate}}
-        </a>
+        </button>
         <button class="btn btn-lg btn-primary save-query-btn" ng-click="saveTemplate()"
                 uib-popover="{{'save.sparql.template.tooltip' | translate}}"
                 popover-placement="top"

@@ -1,6 +1,6 @@
 import 'angular/utils/local-storage-adapter';
 import {NumberUtils} from "../../utils/number-utils";
-import {service, LicenseContextService} from "@ontotext/workbench-api";
+import {service, LicenseContextService, REPOSITORY_ID_PARAM} from "@ontotext/workbench-api";
 
 const modules = [
     'pageslide-directive',
@@ -182,7 +182,11 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $wi
     });
 
     $scope.goToResourceView = () => {
-        $location.path("sparql").search($scope.resourceViewInstancesUriParameters);
+        const currentParams = $location.search();
+        // Keep only the repositoryId parameter (if any). This will prevent router event from being triggered again and
+        // reinitializing the repositoryId param thus adding a new history entry.
+        const repositoryId = currentParams[REPOSITORY_ID_PARAM];
+        $location.path("sparql").search({repositoryId, ...$scope.resourceViewInstancesUriParameters});
     }
 
     function instancesFilterFunc(inst) {

@@ -196,12 +196,12 @@
     </div>
 
     <div class="pull-right">
-        <a ng-href="jdbc" class="btn btn-lg btn-secondary cancel-button"
+        <button ng-click="goToJdbcView()" class="btn btn-lg btn-secondary cancel-button"
            uib-popover="{{'jdbc.cancel.configuration' | translate}}"
            popover-placement="top"
            popover-trigger="mouseenter">
             {{ (canWriteActiveRepo ? 'common.cancel.btn' : 'common.close') | translate}}
-        </a>
+        </button>
         <button class="btn btn-lg btn-primary save-query-btn" ng-click="saveJdbcConfiguration()"
                 uib-popover="{{'jdbc.save.configuration' | translate}}"
                 popover-placement="top"
