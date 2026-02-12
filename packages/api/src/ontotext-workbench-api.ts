@@ -24,6 +24,7 @@ export * from './models/notification';
 export * from './models/translation';
 export * from './models/users';
 export * from './models/interceptor';
+export * from './models/sparql-templates';
 
 // Export enums for external usages.
 export * from './models/url';
@@ -60,6 +61,7 @@ export * from './services/notification';
 export * from './services/users';
 export * from './services/interceptor/interceptor.service';
 export * from './services/runtime-configuration';
+export * from './services/sparql-template';
 
 // Export interceptors for external usages.
 export * from './interceptor';
