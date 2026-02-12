@@ -154,6 +154,8 @@ function mount(opts, mountedInstances, props = {}) {
 
                     // https://github.com/single-spa/single-spa-angularjs/issues/51
                     mountedInstances.instance.get("$rootScope").$apply();
+
+                    service(EventService).emit(new ApplicationMounted());
                 });
         }
     });
