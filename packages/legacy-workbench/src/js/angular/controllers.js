@@ -227,6 +227,11 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     let isFirstRepoChangeEvent = true;
     // This variable is needed to avoid showing warnings about missing repository on the initial load of the application
     let isFirstUrlResolution = true;
+    // The subscription to route change start event.
+    let routeChangeStartSubscription = undefined;
+    // Flag to check if the application is already mounted, used to avoid showing warnings about missing repository on
+    // the initial load of the application.
+    let isApplicationMounted = false;
 
     // =========================
     // Public variables
@@ -1029,14 +1034,23 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         $scope.initTutorial();
     });
 
-    let routeChangeStartSubscription = undefined;
     const subscribeToRouteChangeStart = () => {
-        routeChangeStartSubscription = $rootScope.$on('$routeChangeStart', onRouteChangeStart);
+        if (routeChangeStartSubscription) {
+            routeChangeStartSubscription();
+        }
+        routeChangeStartSubscription = $rootScope.$on('$routeChangeStart', () => {
+            if (!isApplicationMounted) {
+                return;
+            }
+            onRouteChangeStart();
+        });
     };
     subscribeToRouteChangeStart();
 
     service(EventService).subscribe(EventName.APPLICATION_MOUNTED, (payload) => {
+        isApplicationMounted = true;
         subscribeToRouteChangeStart();
+        onRouteChangeStart();
     });
 
     service(EventService).subscribe(EventName.APPLICATION_UNMOUNTED, (payload) => {

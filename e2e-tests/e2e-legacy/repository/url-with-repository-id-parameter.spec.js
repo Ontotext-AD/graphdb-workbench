@@ -3,6 +3,8 @@ import HomeSteps from '../../steps/home-steps.js';
 import {RepositoryErrorsWidgetSteps} from '../../steps/widgets/repository-errors-widget-steps.js';
 import {RepositorySteps} from '../../steps/repository-steps.js';
 import {RepositorySelectorSteps} from '../../steps/repository-selector-steps.js';
+import {ErrorPageSteps} from '../../steps/error-page-steps.js';
+import {MainMenuSteps} from '../../steps/main-menu-steps.js';
 
 describe('URL with Repository ID parameter', () => {
     let repositoryId;
@@ -150,6 +152,29 @@ describe('URL with Repository ID parameter', () => {
             ModalDialogSteps.getModalAlert().should('not.exist');
             HomeSteps.getSelectedRepository().should('contain', repositoryId);
             cy.url().should('include', 'repositoryId=' + repositoryId);
+        });
+    });
+
+    describe('When navigating between legacy and new workbench', () => {
+        beforeEach(() => {
+            repositoryId = 'repository-in-url-' + Date.now();
+            cy.createRepository({id: repositoryId});
+            cy.presetRepository(repositoryId);
+        })
+
+        afterEach(() => {
+            cy.deleteRepository(repositoryId);
+        });
+
+        it('should preserve repositoryId parameter when navigating from 404 (new workbench) to legacy page', () => {
+            // Given I am on the 404 page which is in the new workbench
+            ErrorPageSteps.visit404();
+            ErrorPageSteps.get404Page().should('be.visible');
+            cy.url().should('not.include', 'repositoryId=');
+            // When I navigate to some legacy page
+            MainMenuSteps.clickOnSparqlMenu();
+            // Then repositoryId parameter should be preserved in the URL
+            cy.url().should('include', `repositoryId=${repositoryId}`);
         });
     });
 });
