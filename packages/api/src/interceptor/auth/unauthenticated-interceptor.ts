@@ -1,5 +1,5 @@
 import {HttpInterceptor} from '../../models/interceptor/http-interceptor';
-import {isLoginPage, navigate} from '../../services/utils';
+import {isLoginPage, navigateToLogin} from '../../services/utils';
 import {WindowService} from '../../services/window';
 import {service} from '../../providers';
 import {AuthenticationStorageService} from '../../services/security/authentication-storage.service';
@@ -27,7 +27,7 @@ export class UnauthenticatedInterceptor extends HttpInterceptor<Response> {
 
       this.authenticationStorageService.clearAuthToken();
       if (!isLoginPage()) {
-        navigate('login');
+        navigateToLogin();
         // There is scenario when 401 is thrown during bootstrap and
         // when user is logged the workbench is not properly loaded
         // For example if languages are not loaded.

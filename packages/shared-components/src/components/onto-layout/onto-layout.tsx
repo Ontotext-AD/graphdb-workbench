@@ -13,7 +13,7 @@ import {
   EventService,
   ExternalMenuItemModel,
   LocalStorageSubscriptionHandlerService,
-  navigate,
+  navigate, navigateToLogin,
   NavigationContextService,
   NavigationEndPayload,
   RuntimeConfigurationContextService,
@@ -197,7 +197,7 @@ export class OntoLayout {
       if (authenticated) {
         navigate(this.navigationContextService.getPreviousRoute() ?? './');
       } else {
-        navigate('login');
+        navigateToLogin();
       }
       WindowService.getWindow().location.reload();
     }
@@ -233,7 +233,6 @@ export class OntoLayout {
       this.eventService.subscribe(EventName.LOGOUT, () => {
         this.setNavbarItemVisibility();
         this.updateVisibility();
-        navigate('login');
       })
     );
   }

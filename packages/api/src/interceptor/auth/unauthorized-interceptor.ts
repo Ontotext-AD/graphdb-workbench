@@ -1,5 +1,5 @@
 import {HttpInterceptor} from '../../models/interceptor/http-interceptor';
-import {getPathName, navigate} from '../../services/utils';
+import {getPathName, navigateToLogin} from '../../services/utils';
 import {AuthenticationService} from '../../services/security/authentication.service';
 import {SecurityContextService} from '../../services/security/security-context.service';
 import {service} from '../../providers';
@@ -28,7 +28,7 @@ export class UnauthorizedInterceptor extends HttpInterceptor<Response> {
     this.updateRestrictionsForPage(path);
 
     if (this.shouldRedirectToLogin()) {
-      navigate('login');
+      navigateToLogin();
     }
 
     return Promise.reject(data);

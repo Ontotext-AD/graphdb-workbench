@@ -1,4 +1,5 @@
 import {WindowService} from '../window';
+import {UrlPathParams} from '../../models/url';
 
 /**
  * Redirects the current page to a specified URL using the single-spa framework.
@@ -28,6 +29,14 @@ export function navigate(url: string) {
     url = getBasePath().slice(0, -1) + url;
   }
   WindowService.getWindow().singleSpa.navigateToUrl(url);
+}
+
+/**
+ * Redirects the user to the login page, including a return URL parameter that indicates the current page.
+ */
+export function navigateToLogin() {
+  const returnUrl = encodeURIComponent(WindowService.getLocationPathWithQueryParams());
+  navigate(`login?${UrlPathParams.RETURN_URL}=${returnUrl}`);
 }
 
 /**
