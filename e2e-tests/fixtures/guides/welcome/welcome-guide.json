@@ -1,0 +1,18 @@
+[
+    {
+        "guideName": {
+            "en": "Welcome"
+        },
+        "guideDescription": {
+            "en": "Test welcome guide"
+        },
+        "steps": [
+            {
+                "guideBlockName": "welcome"
+            },
+            {
+                "guideBlockName": "guide-end"
+            }
+        ]
+    }
+]
