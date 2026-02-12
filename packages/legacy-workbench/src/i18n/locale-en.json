@@ -3196,6 +3196,7 @@
     "guides.confirm-cancel-modal.content": "Are you sure you want to exit the guide?<br><br>You can start it anytime from <b>Help > Interactive Guides</b>",
     "guides.confirm-cancel-modal.exit-button": "Exit",
     "guides.confirm-cancel-modal.dont-show-button": "Don't start automatically",
+    "guides.error.guide-not-found": "The requested guide could not be found.",
     "guide.button.guide-paused": "Guide paused",
     "guide.button.guide-resume": "Continue the guide",
     "guide.validate.no-next": "Cannot continue to next",

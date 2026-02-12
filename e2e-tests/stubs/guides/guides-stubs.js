@@ -70,12 +70,16 @@ export class GuidesStubs {
     }
 
     static stubTableGraphExploreWithoutSubstepsGuide() {
-        GuidesStubs.stubWithFixture('../fixtures/guides/table-graph-explore/table-graph-explore-without-substeps.json');
+        GuidesStubs.stubWithFixture('../fixtures/guides/table-graph-explore/table-graph-explore-without-substeps-guide.json');
     }
 
     static stubTableGraphExploreGuide() {
-        GuidesStubs.stubWithFixture('../fixtures/guides/table-graph-explore/table-graph-explore.json');
+        GuidesStubs.stubWithFixture('../fixtures/guides/table-graph-explore/table-graph-explore-guide.json');
     }
+    static stubWelcomGuide() {
+        GuidesStubs.stubWithFixture('../fixtures/guides/welcome/welcome-guide.json');
+    }
+
 
     static stubVisualGraphGuide() {
         GuidesStubs.stubWithFixture('../fixtures/guides/visual-graph/visual-graph-guide.json');

@@ -3194,6 +3194,7 @@
     "guides.confirm-cancel-modal.content": "Êtes-vous sûr de vouloir quitter le guide ?<br><br>Vous pouvez le lancer à tout moment à partir de <b>Aide > Guides interactifs</b>.",
     "guides.confirm-cancel-modal.exit-button": "Sortie",
     "guides.confirm-cancel-modal.dont-show-button": "Ne pas démarrer automatiquement",
+    "guides.error.guide-not-found": "Le guide demandé est introuvable.",
     "guide.button.guide-paused": "Guide en pause",
     "guide.button.guide-resume": "Continuer le guide",
     "guide.validate.no-next": "Impossible de passer au suivant",

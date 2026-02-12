@@ -227,7 +227,14 @@ function GuidesService(
      * @param {*} startStepId
      */
     this.startGuide = (guide, startStepId, isAutoStarted = false) => {
-        if (guide?.options?.repositoryIdBase) {
+        if (!guide) {
+            toastr.error($translate.instant('guides.error.guide-not-found'));
+            return;
+        }
+
+        guide.options = guide.options || {};
+
+        if (guide.options.repositoryIdBase) {
             // repositoryIdBase in the options can be used as a template to find a free repository ID.
             // For example, setting repositoryIdBase to 'myrepo' will find the first free ID from:
             // - myrepo
@@ -238,10 +245,10 @@ function GuidesService(
             for (let i = 2; repos.find((repo) => repo.id === guide.options.repositoryId); i++) {
                 guide.options.repositoryId = guide.options.repositoryIdBase + i;
             }
-
-            guide.options.translatedGuideName = GuideUtils.translateLocalMessage($translate, $interpolate, guide.guideName, {});
-            guide.options.translatedGuideDescription = GuideUtils.translateLocalMessage($translate, $interpolate, guide.guideDescription, {});
         }
+
+        guide.options.translatedGuideName = GuideUtils.translateLocalMessage($translate, $interpolate, guide.guideName, {});
+        guide.options.translatedGuideDescription = GuideUtils.translateLocalMessage($translate, $interpolate, guide.guideDescription, {});
 
         const stepsDescriptions = this._toStepsDescriptions(guide);
 
