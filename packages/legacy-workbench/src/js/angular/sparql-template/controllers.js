@@ -10,9 +10,13 @@ import {SparqlTemplateError} from '../models/sparql-template/sparql-template-err
 import {YasqeMode} from '../models/ontotext-yasgui/yasqe-mode';
 import {RenderingMode} from '../models/ontotext-yasgui/rendering-mode';
 import {DISABLE_YASQE_BUTTONS_CONFIGURATION, YasguiComponentDirectiveUtil} from '../core/directives/yasgui-component/yasgui-component-directive.util';
-import {LicenseContextService, RepositoryContextService, service} from '@ontotext/workbench-api';
 import {LoggerProvider} from '../core/services/logger-provider';
-import {sparqlTemplateMapper} from '../rest/mappers/sparql-template-mapper';
+import {
+    LicenseContextService,
+    RepositoryContextService,
+    mapSparqlTemplatesResponseToModel,
+    service,
+} from '@ontotext/workbench-api';
 
 const modules = [
     'ui.bootstrap',
@@ -42,6 +46,13 @@ function SparqlTemplatesCtrl($scope, $repositories, SparqlTemplatesRestService, 
     // Public variables
     // =========================
     $scope.pluginName = 'sparql-template';
+    /**
+     * Sparql templates model.
+     * @type {{items: *[]}}
+     */
+    $scope.sparqlTemplateIds = {
+        items: [],
+    };
 
     // =========================
     // Public functions
@@ -59,13 +70,15 @@ function SparqlTemplatesCtrl($scope, $repositories, SparqlTemplatesRestService, 
             && !$repositories.isActiveRepoFedXType()) {
             SparqlTemplatesRestService.getSparqlTemplates($repositories.getActiveRepository())
                 .success(function(data) {
-                    $scope.sparqlTemplateIds = sparqlTemplateMapper(data);
+                    $scope.sparqlTemplateIds = mapSparqlTemplatesResponseToModel(data);
                 }).error(function(data) {
                 const msg = getError(data);
                 toastr.error(msg, $translate.instant('sparql.template.get.templates.error'));
             });
         } else {
-            $scope.sparqlTemplateIds = [];
+            $scope.sparqlTemplateIds = {
+                items: [],
+            };
         }
     };
 
