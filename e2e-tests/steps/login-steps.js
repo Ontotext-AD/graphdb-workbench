@@ -18,6 +18,10 @@ export class LoginSteps {
         cy.visit(`/login?r=${returnURLEncoded}`);
     }
 
+    static getLoginPage() {
+        return cy.get('app-login');
+    }
+
     static navigateToLoginPage() {
         cy.get('onto-user-login').click();
     }
