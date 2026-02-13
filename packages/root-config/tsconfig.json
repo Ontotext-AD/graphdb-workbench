@@ -22,7 +22,7 @@
     "resolveJsonModule": true,
     "baseUrl": "./",
     "paths": {
-      "@ontotext/workbench-api": ["../api/src/ontotext-workbench-api.ts"]
+      "@ontotext/workbench-api": ["../api/src/ontotext-workbench-api.ts"],
     },
     "typeRoots": ["./node_modules/@types"],
     "noImplicitAny": false,

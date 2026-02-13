@@ -22,6 +22,7 @@ import {
 import {ExtensionPointAlreadyRegisteredError} from '../extension-point-already-registered-error';
 import {OrderedExtensionPoint} from '../../../models/plugins/extension-points/ordered/ordered-extension-point';
 import {DuplicatePluginOrderError} from '../duplicate-plugin-order-error';
+import {Configuration} from '../../../models/configuration';
 
 describe('PluginRegistry', () => {
   beforeEach(() => {
@@ -266,7 +267,7 @@ const initializeTest = () => {
       loggers: [LoggerType.CONSOLE],
       minLogLevel: LogLevel.DEBUG
     }
-  });
+  } as unknown as Configuration);
   const manifest: PluginsManifestResponse = {
     plugins: [{
       name: 'test-plugin',

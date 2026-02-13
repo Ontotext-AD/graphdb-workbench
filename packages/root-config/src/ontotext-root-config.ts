@@ -34,7 +34,6 @@ import {RouteProvider} from './services/route-provider';
 import {getWorkbenchRoutes} from './services/workbench-routes-provider';
 import {getLegacyRoutes} from './services/legacy-routes-provider';
 import {AppChangeEvent, AppModules, NavigationEvent, SingleSpaGlobal} from './models/models';
-import {WindowService} from '../../shared-components/api/src/services/window';
 
 const SINGLE_SPA_GLOBAL_KEY = 'singleSpa';
 
@@ -191,20 +190,18 @@ function setupFavicon(): void {
   document.head.appendChild(appleTouchLink);
 }
 
-async function start(): Promise<void> {
-
 const pluginRegistry = new PluginRegistry();
 pluginRegistry.registerExtensionPoint(new MainMenuExtensionPoint());
 pluginRegistry.registerExtensionPoint(new RouteExtensionPoint());
 pluginRegistry.registerExtensionPoint(new InteractiveGuideExtensionPoint());
 pluginRegistry.registerExtensionPoint(new ThemesExtensionPoint());
-WindowService.getWindow().PluginRegistry = pluginRegistry;
+WindowService.setPluginRegistry(pluginRegistry);
 
 async function start() {
   try {
     showSplashScreen(true);
-    initSingleSpa();
     await bootstrapWorkbench();
+    initSingleSpa();
     showSplashScreen(false);
     setupFavicon();
   } catch (error) {

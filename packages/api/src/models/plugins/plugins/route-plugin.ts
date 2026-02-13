@@ -1,4 +1,4 @@
-import {Plugin} from '../plugins/extension-models/plugin';
+import {Plugin} from './plugin';
 
 /**
  * Represents a route plugin item in the application's routing system.
