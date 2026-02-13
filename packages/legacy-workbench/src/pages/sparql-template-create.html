@@ -43,7 +43,11 @@
                     </div>
                 </div>
 
-                <yasgui-component id="query-editor" class="pt-1" yasgui-config="yasguiConfig"></yasgui-component>
+                <yasgui-component id="query-editor"
+                                  ng-if="yasguiConfig"
+                                  class="pt-1"
+                                  yasgui-config="yasguiConfig">
+                </yasgui-component>
 
                 <div ng-if="!sparqlTemplateInfo.isValidQuery"
                      class="idError alert alert-danger  invalid-query"

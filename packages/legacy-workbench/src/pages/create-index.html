@@ -219,7 +219,11 @@
 
                     <div class="row">
                         <div class="col-md-9">
-                            <yasgui-component id="query-editor" yasgui-config="yasguiConfig" query-changed="queryChanged()"></yasgui-component>
+                            <yasgui-component id="query-editor"
+                                              ng-if="yasguiConfig"
+                                              yasgui-config="yasguiConfig"
+                                              query-changed="queryChanged()">
+                            </yasgui-component>
 
                             <div ng-if="saveOrUpdateExecuted && hasQueryError()"
                                  class="idError alert alert-danger mt-1">

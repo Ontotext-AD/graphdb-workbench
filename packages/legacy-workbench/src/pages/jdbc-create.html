@@ -53,8 +53,12 @@
                     <!-- First tab -->
                     <div class="tab-pane" ng-show="activeTab === 1">
 
-                        <yasgui-component id="query-editor" class="pt-1" yasgui-config="yasguiConfig"
-                                          query-changed="setDirty()"></yasgui-component>
+                        <yasgui-component id="query-editor"
+                                          ng-if="yasguiConfig"
+                                          class="pt-1"
+                                          yasgui-config="yasguiConfig"
+                                          query-changed="setDirty()">
+                        </yasgui-component>
 
                         <div ng-if="!jdbcConfigurationInfo.isValidQuery"
                              class="idError alert alert-danger invalid-query"
