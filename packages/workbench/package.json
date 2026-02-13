@@ -24,6 +24,8 @@
     "@angular/platform-browser-dynamic": "^20.3.15",
     "@angular/router": "^20.3.15",
     "@jsverse/transloco": "^8.2.0",
+    "@primeuix/themes": "^2.0.3",
+    "primeng": "^20.4.0",
     "rxjs": "~7.8.2",
     "single-spa": "^6.0.3",
     "single-spa-angular": "^9.2.0",
