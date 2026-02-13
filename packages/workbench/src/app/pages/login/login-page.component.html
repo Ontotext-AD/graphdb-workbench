@@ -7,6 +7,28 @@
     @if (isGDBLoginEnabled()) {
       <h2 class="login-title">{{ 'login.title' | transloco }}</h2>
 
+      <hr>
+
+      <p-button label="Check" />
+      <p-button severity="secondary" label="Check" />
+      <p-button label="Success" severity="success" />
+      <p-button label="Info" severity="info" />
+      <p-button label="Warn" severity="warn" />
+      <p-button label="Help" severity="help" />
+      <p-button label="Danger" severity="danger" />
+      <p-button label="Contrast" severity="contrast" />
+
+      <div class="card flex justify-center gap-4 p-2">
+        <p-checkbox [(ngModel)]="checked" [binary]="true" />
+      </div>
+
+      <div class="card flex flex-col items-center gap-4 p-2">
+        <input pInputText [(ngModel)]="value1" type="text" pSize="small" placeholder="Small" /><br>
+        <input pInputText [(ngModel)]="value2" type="text" placeholder="Normal" /><br>
+        <input pInputText [(ngModel)]="value3" type="text" pSize="large" placeholder="Large" />
+      </div>
+
+      <hr>
       <form [formGroup]="loginForm" (ngSubmit)="login()" novalidate>
         @let hasWrongCredentials = loginForm.hasError('wrongCredentials');
 
