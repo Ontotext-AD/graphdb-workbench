@@ -1,5 +1,5 @@
 import {Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnDestroy, OnInit, signal} from '@angular/core';
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {FormBuilder, FormGroup, ReactiveFormsModule, FormsModule, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {TranslocoPipe, TranslocoService} from '@jsverse/transloco';
 import {
@@ -22,7 +22,8 @@ import {CommonModule, NgOptimizedImage} from '@angular/common';
     TranslocoPipe,
     ReactiveFormsModule,
     CommonModule,
-    NgOptimizedImage
+    NgOptimizedImage,
+    FormsModule,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './login-page.component.html',
@@ -44,7 +45,6 @@ export class LoginPageComponent implements OnInit, OnDestroy {
   private readonly translocoService = inject(TranslocoService);
 
   private readonly subscriptions = new Array<() => void>();
-
   loginForm: FormGroup;
   error = false;
   returnUrl: string;

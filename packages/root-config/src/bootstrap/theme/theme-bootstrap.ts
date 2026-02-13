@@ -3,7 +3,12 @@ import {
   ThemeService,
   ThemeMode,
   WindowService,
+  RuntimeConfigurationContextService,
 } from '@ontotext/workbench-api';
+
+const importThemeStylesheet = (theme: ThemeMode): void => {
+  import(`graphwise-styleguide/dist/variables-${theme}.css`);
+};
 
 /**
  * Handles changes in the user's color scheme preference.
@@ -12,6 +17,7 @@ import {
  */
 const colorSchemeChangeHandler = (e: MediaQueryListEvent): void => {
   const newTheme = e.matches ? ThemeMode.dark : ThemeMode.light;
+  importThemeStylesheet(newTheme);
   service(ThemeService).applyNewColorScheme(newTheme);
 };
 
@@ -23,9 +29,21 @@ const subscribeToColorSchemeChanges = (): void => {
   mediaQuery.addEventListener('change', colorSchemeChangeHandler);
 };
 
+const subscribeToThemeModeChanges = (): void => {
+  service(RuntimeConfigurationContextService).onThemeModeChanged((newThemeMode) => {
+    if (newThemeMode) {
+      importThemeStylesheet(newThemeMode);
+    }
+  });
+};
+
 export const bootstrapTheme = (): void => {
   // Apply a color scheme based on system preference changes
   subscribeToColorSchemeChanges();
+  subscribeToThemeModeChanges();
   // Apply an initial color scheme based on user preference or system setting
-  service(ThemeService).applyColorScheme();
+  const themeService = service(ThemeService);
+  const theme = themeService.getCurrentThemeMode();
+  importThemeStylesheet(theme);
+  themeService.applyColorScheme();
 };
