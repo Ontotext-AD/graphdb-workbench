@@ -18,10 +18,6 @@ pipeline {
         stage('Install') {
             steps {
                 script {
-                    if (!env.BRANCH_NAME && env.GIT_BRANCH) {
-                      env.BRANCH_NAME = env.GIT_BRANCH.replaceFirst(/^origin\//, '')
-                      echo "Derived BRANCH_NAME=${env.BRANCH_NAME} from GIT_BRANCH=${env.GIT_BRANCH}"
-                    }
                     sh 'echo "Registry from env: $NPM_CONFIG_REGISTRY"'
                     sh 'npm config get registry'
                     sh 'npm run install:ci'
