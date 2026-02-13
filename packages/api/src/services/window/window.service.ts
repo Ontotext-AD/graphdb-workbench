@@ -19,6 +19,10 @@ export class WindowService implements Service {
     return WindowService.getWindow().PluginRegistry;
   }
 
+  static setPluginRegistry(pluginRegistry: PluginRegistry): void {
+    this.getWindow().PluginRegistry = pluginRegistry;
+  }
+
   static getCrypto(): Crypto {
     return WindowService.getWindow().crypto;
   }

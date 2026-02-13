@@ -29,14 +29,6 @@ export class NavbarService {
     return navbarModel.sorted();
   }
 
-  private static setTopLevelMenuItems(navbarPlugins: MainMenuPlugin[], navbarModel: NavbarModel, productInfo: ProductInfo) {
-  /**
-   * Adds the current repositoryId as a query parameter to href attribute of each menu item which does not have children
-   * or documentationHref (external link).
-   * @param navbarModel The navbar model.
-   * @param currentRepositoryId The current repository id.
-   * @param repositoryIdParamName The name of the repository id query parameter.
-   */
   static addRepositoryIdToHrefAttributes(navbarModel: NavbarModel, currentRepositoryId: string, repositoryIdParamName: string) {
     navbarModel.items.forEach((item) => {
       const hasChildren = item.children && item.children.length > 0;
@@ -53,7 +45,14 @@ export class NavbarService {
     });
   }
 
-  private static setTopLevelMenuItems(navbarPlugins: ExternalMenuModel, navbarModel: NavbarModel, productInfo: ProductInfo) {
+  /**
+   * Adds the current repositoryId as a query parameter to href attribute of each menu item which does not have children
+   * or documentationHref (external link).
+   * @param navbarModel The navbar model.
+   * @param currentRepositoryId The current repository id.
+   * @param repositoryIdParamName The name of the repository id query parameter.
+   */
+  private static setTopLevelMenuItems(navbarPlugins: MainMenuPlugin[], navbarModel: NavbarModel, productInfo: ProductInfo) {
     navbarPlugins.forEach((menuPlugin) => {
       menuPlugin.items
         .filter((item) => !item.parent && item.shouldShow)
