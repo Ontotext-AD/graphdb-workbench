@@ -36,52 +36,50 @@ pipeline {
         stage('Workbench Cypress Test') {
             steps {
                 script {
-                    if (!scmUtil.isMaster()) {
-                        withKsm(application: [[
-                            credentialsId: 'ksm-jenkins',
-                            secrets: [
-                                [
-                                    destination: 'file',
-                                    filePath: 'graphdb.license',
-                                    notation: 'keeper://AByA4tIDmeN7RmqnQYGY0A/file/graphdb.license'
-                                ]
+                    withKsm(application: [[
+                        credentialsId: 'ksm-jenkins',
+                        secrets: [
+                            [
+                                destination: 'file',
+                                filePath: 'graphdb.license',
+                                notation: 'keeper://AByA4tIDmeN7RmqnQYGY0A/file/graphdb.license'
                             ]
-                        ]]) {
-                            sh 'cp graphdb.license ./e2e-tests/fixtures/'
-                            archiveArtifacts allowEmptyArchive: true, artifacts: 'graphdb.license'
+                        ]
+                    ]]) {
+                        sh 'cp graphdb.license ./e2e-tests/fixtures/'
+                        archiveArtifacts allowEmptyArchive: true, artifacts: 'graphdb.license'
 
-                            sh "ls -lh ./e2e-tests/fixtures/"
-                            dockerCompose.buildCmd(
-                                composeFile: env.DOCKER_COMPOSE_FILE,
-                                options: ["--force-rm"]
-                            )
+                        sh "ls -lh ./e2e-tests/fixtures/"
+                        dockerCompose.buildCmd(
+                            composeFile: env.DOCKER_COMPOSE_FILE,
+                            options: ["--force-rm"]
+                        )
 
-                            def caughtError = false
-                            catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
-                                try {
-                                    dockerCompose.upCmd(
-                                        environment: getUserUidGidPair(),
-                                        composeFile: env.DOCKER_COMPOSE_FILE,
-                                        options: ["--abort-on-container-exit", "--exit-code-from cypress"]
-                                    )
-                                } catch (e) {
-                                    caughtError = true
-                                }
+                        def caughtError = false
+                        catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+                            try {
+                                dockerCompose.upCmd(
+                                    environment: getUserUidGidPair(),
+                                    composeFile: env.DOCKER_COMPOSE_FILE,
+                                    options: ["--abort-on-container-exit", "--exit-code-from cypress"]
+                                )
+                            } catch (e) {
+                                caughtError = true
                             }
-
-                            if (caughtError) {
-                                echo "Tests failed — archiving Cypress video artifacts."
-                                archiveArtifacts allowEmptyArchive: true, artifacts: 'e2e-tests/report/screenshots/**/*.png, e2e-tests/report/videos/**/*.mp4, e2e-tests/cypress/logs/*.log'
-                                error("Cypress tests failed, job failed.")
-                            }
-
-                            echo "Tests passed — skipping video artifacts."
-                            dockerCompose.downCmd(
-                                composeFile: env.DOCKER_COMPOSE_FILE,
-                                options: ['--volumes', '--remove-orphans', '--rmi', 'local'],
-                                ignoreErrors: true
-                            )
                         }
+
+                        if (caughtError) {
+                            echo "Tests failed — archiving Cypress video artifacts."
+                            archiveArtifacts allowEmptyArchive: true, artifacts: 'e2e-tests/report/screenshots/**/*.png, e2e-tests/report/videos/**/*.mp4, e2e-tests/cypress/logs/*.log'
+                            error("Cypress tests failed, job failed.")
+                        }
+
+                        echo "Tests passed — skipping video artifacts."
+                        dockerCompose.downCmd(
+                            composeFile: env.DOCKER_COMPOSE_FILE,
+                            options: ['--volumes', '--remove-orphans', '--rmi', 'local'],
+                            ignoreErrors: true
+                        )
                     }
                 }
             }
