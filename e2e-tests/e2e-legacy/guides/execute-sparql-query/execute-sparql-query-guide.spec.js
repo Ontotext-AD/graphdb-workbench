@@ -60,6 +60,7 @@ describe('Execute SPARQL query guide steps', () => {
         GuideDialogSteps.assertDialogWithContentIsVisible('Click on the rdf:type IRI to explore it.');
         YasrSteps.clickOnResource(0, 1);
         cy.url().should('include', '/resource?uri=https:%2F%2Fswapi.co%2Fresource%2Fplanet%2F25');
+        YasrSteps.getResults().should('have.length', 10);
 
         GuideDialogSteps.assertDialogWithTitleIsVisible('Execute SPARQL query — 1/5');
         GuideDialogSteps.assertDialogWithContentIsVisible('The following steps show how to use the SPARQL Query & Update view to execute queries.');
