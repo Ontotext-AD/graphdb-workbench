@@ -29,6 +29,21 @@ export class ThemeService implements Service {
   }
 
   /**
+   * Determines the current theme mode to be applied in the application. The method checks if the user has manually set
+   * a theme mode in the application settings. If a theme mode is set, it returns that mode (dark or light). If no theme
+   * mode is set by the user, it falls back to the system's preferred color scheme, returning dark or light based on the
+   * user's system settings.
+   * @returns The current theme mode to be applied in the application.
+   */
+  getCurrentThemeMode(): ThemeMode {
+    const isThemeModeSet = this.isThemeModeSet();
+    if (isThemeModeSet) {
+      return this.isDarkModeEnabledInSettings() ? ThemeMode.dark : ThemeMode.light;
+    }
+    return this.getPreferredScheme();
+  }
+
+  /**
    * Explicitly sets the theme mode.
    * @param mode The desired theme mode.
    */

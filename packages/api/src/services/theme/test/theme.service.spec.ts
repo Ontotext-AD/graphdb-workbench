@@ -57,6 +57,50 @@ describe('ThemeService', () => {
     });
   });
 
+  describe('getCurrentThemeMode', () => {
+    it('returns dark mode when theme mode is set and dark mode is enabled in settings', () => {
+      appSettingsService.setApplicationSettings(new ApplicationSettings({ themeMode: ThemeMode.dark }));
+
+      const result = themeService.getCurrentThemeMode();
+
+      expect(result).toBe(ThemeMode.dark);
+    });
+
+    it('returns light mode when theme mode is set and dark mode is not enabled in settings', () => {
+      appSettingsService.setApplicationSettings(new ApplicationSettings({ themeMode: ThemeMode.light }));
+
+      const result = themeService.getCurrentThemeMode();
+
+      expect(result).toBe(ThemeMode.light);
+    });
+
+    it('returns dark mode from system preferences when theme mode is not set and system prefers dark', () => {
+      Object.defineProperty(window, 'matchMedia', {
+        writable: true,
+        value: jest.fn().mockImplementation(query => ({
+          matches: query === '(prefers-color-scheme: dark)',
+        })),
+      });
+
+      const result = themeService.getCurrentThemeMode();
+
+      expect(result).toBe(ThemeMode.dark);
+    });
+
+    it('returns light mode from system preferences when theme mode is not set and system prefers light', () => {
+      Object.defineProperty(window, 'matchMedia', {
+        writable: true,
+        value: jest.fn().mockImplementation(() => ({
+          matches: false,
+        })),
+      });
+
+      const result = themeService.getCurrentThemeMode();
+
+      expect(result).toBe(ThemeMode.light);
+    });
+  });
+
   describe('applyDarkModeIfEnabled', () => {
     it('applies dark mode when theme mode is dark', () => {
       appSettingsService.setApplicationSettings(new ApplicationSettings({ themeMode: ThemeMode.dark }));

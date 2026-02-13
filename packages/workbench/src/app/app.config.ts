@@ -6,6 +6,7 @@ import {routes} from './app.routes';
 import {bootstrapProviders} from './bootstrap/bootstrap';
 import {APP_BASE_HREF} from '@angular/common';
 import {getSingleSpaExtraProviders} from 'single-spa-angular';
+import { providePrimeNG } from 'primeng/config';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -13,6 +14,13 @@ export const appConfig: ApplicationConfig = {
     ...bootstrapProviders,
     provideZoneChangeDetection({eventCoalescing: true}),
     provideRouter(routes),
-    {provide: APP_BASE_HREF, useValue: getBasePath()}
+    {provide: APP_BASE_HREF, useValue: getBasePath()},
+    providePrimeNG({
+      theme: {
+        options: {
+          prefix: 'gw',
+        }
+      }
+    })
   ]
 };
