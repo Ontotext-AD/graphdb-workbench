@@ -24,7 +24,7 @@ export default defineConfig({
         },
         baseUrl: 'http://localhost:9000',
         specPattern: 'e2e-security/**/*.{js,jsx,ts,tsx}',
-        supportFile: 'support/e2e.js',
+        supportFile: 'support/e2e-security.js',
         reporter: "cypress-multi-reporters",
         reporterOptions: {
             configFile: 'cypress-reporter-config.json'
