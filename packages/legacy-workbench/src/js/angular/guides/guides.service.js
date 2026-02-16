@@ -527,6 +527,9 @@ function GuidesService(
             if (!step.title && step.mainAction) {
                 step.title = 'guide.step-action.' + step.mainAction;
             }
+            if (step.scrollOffset) {
+                step.scrollToHandler = () => GuideUtils.scrollToOffset(step.scrollOffset);
+            }
         });
         return steps;
     };
