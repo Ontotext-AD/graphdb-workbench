@@ -109,7 +109,7 @@
 .shepherd-code button {
     position: absolute;
     bottom: 5px;
-    right: 5px;
+    right: 20px;
 }
 
 .guide-dialog.shepherd-element[data-popper-placement="top"] {
