@@ -64,11 +64,13 @@ PluginRegistry.add('guide.step', [
          * Options:
          * - <b>instanceName</b>: string (required) – the specific instance name of the Lucene connector.
          */
-        getSteps: (options) => {
+        getSteps: (options, services) => {
+            const GuideUtils = services.GuideUtils;
             return [{
                 guideBlockName: 'connectors-parameter-intro',
                 options: {
                     content: 'guide.step_plugin.connectors-lucene-fields-intro.content',
+                    scrollOffset: GuideUtils.SCROLL_OFFSET.CENTER,
                     // If mainAction is set the title will be set automatically
                     ...(options.mainAction ? {} : {title: LUCENE_DEFAULT_TITLE}),
                     ...options,
