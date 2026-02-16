@@ -4,6 +4,7 @@ import {LoggerProvider} from "../core/services/logger-provider";
 
 const d3 = {select};
 const logger = LoggerProvider.logger;
+
 const GuideUtils = (function() {
     /**
      * Checks whether a given DOM element is visible in the document.
@@ -330,6 +331,20 @@ const GuideUtils = (function() {
         window.scrollTo(0, 0);
     };
 
+    /**
+     * Scrolls to the given offset.
+     * Can use the preset offsets SCROLL_OFFSET.START or SCROLL_OFFSET.CENTER, or directly provide a number.
+     *
+     * @param offsetTop the offset to scroll to. Can be a number or one of the SCROLL_OFFSET values ('start', 'center').
+     */
+    const scrollToOffset = (offsetTop) => {
+        const top = SCROLL_TO_MAP[offsetTop] ?? offsetTop;
+        window.scrollTo({
+            top,
+            behavior: 'smooth',
+        });
+    };
+
     const removeWhiteSpaces = (value) => {
         return value.replace(/\s+/g, '');
     };
@@ -395,6 +410,16 @@ const GuideUtils = (function() {
         SKIP_SECTION: 'skip.btn.section',
     };
 
+    const SCROLL_OFFSET = {
+        START: 'start',
+        CENTER: 'center',
+    };
+
+    const SCROLL_TO_MAP = {
+        [SCROLL_OFFSET.START]: 0,
+        [SCROLL_OFFSET.CENTER]: window.innerHeight / 2,
+    };
+
     return {
         waitFor,
         waitUntilHidden,
@@ -426,8 +451,10 @@ const GuideUtils = (function() {
         getElementSelector,
         isObject,
         scrollIntoView,
+        scrollToOffset,
         CSS_SELECTORS,
         BUTTONS,
+        SCROLL_OFFSET,
     };
 })();
 
