@@ -56,7 +56,7 @@ describe('OpenIdAuthFlowHandler', () => {
         expect(exchangeTokensCallback).toHaveBeenCalledTimes(1);
         expect(exchangeTokensCallback).toHaveBeenCalledWith(
           params.code,
-          expect.stringContaining('login'),
+          expect.stringContaining('http://localhost/'),
           expect.any(String)
         );
       });
@@ -95,7 +95,7 @@ describe('OpenIdAuthFlowHandler', () => {
         expect(exchangeTokensCallback).toHaveBeenCalledTimes(1);
         expect(exchangeTokensCallback).toHaveBeenCalledWith(
           params.code,
-          expect.stringContaining('login')
+          expect.stringContaining('http://localhost/')
         );
         // Should not pass code verifier for non-PKCE flow
         expect(exchangeTokensCallback).not.toHaveBeenCalledWith(
