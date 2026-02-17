@@ -1,4 +1,4 @@
-.cookie-consent-modal {
+.cookie-consent-banner {
   position: fixed;
   bottom: 0;
   left: 0;
@@ -8,15 +8,15 @@
   padding: 20px;
   z-index: 1050;
   width: 100%;
-}
 
-.cookie-consent-content {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  .cookie-consent-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
-  & button {
-    margin-left: 12px;
+    & button {
+      margin-left: 12px;
+    }
   }
 }
 
