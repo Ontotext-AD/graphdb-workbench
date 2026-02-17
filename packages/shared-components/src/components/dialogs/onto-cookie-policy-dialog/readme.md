@@ -5,11 +5,11 @@
 <!-- Auto Generated Below -->
 
 
-## Properties
+## Events
 
-| Property                     | Attribute | Description                                            | Type            | Default     |
-| ---------------------------- | --------- | ------------------------------------------------------ | --------------- | ----------- |
-| `dialogHandler` _(required)_ | --        | The dialog handler for managing the dialog's behavior. | `DialogHandler` | `undefined` |
+| Event         | Description                                                                               | Type                |
+| ------------- | ----------------------------------------------------------------------------------------- | ------------------- |
+| `closeDialog` | Event emitted when the dialog is closed, allowing parent components to react accordingly. | `CustomEvent<void>` |
 
 
 ## Dependencies

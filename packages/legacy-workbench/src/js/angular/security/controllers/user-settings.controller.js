@@ -13,7 +13,6 @@ import {
     service,
     User,
 } from '@ontotext/workbench-api';
-import {CookiePolicyModalController} from '../../core/directives/cookie-policy/cookie-policy-modal-controller';
 
 angular
     .module('graphdb.framework.security.controllers.user-settings', [
@@ -87,6 +86,11 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
      * @type {boolean}
      */
     $scope.showCookiePolicyLink = false;
+    /**
+     * Flag that controls the visibility of the cookie policy modal.
+     * @type {boolean}
+     */
+    $scope.showCookieConsentModal = false;
 
     // =========================
     // Public functions
@@ -168,37 +172,22 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
         $scope.selectedThemeMode = $scope.workbenchSettings.themeMode;
     };
 
+    /**
+     * Handler for the cookie policy modal close event, sets the flag to hide the modal.
+     */
+    $scope.onDialogClose = () => {
+        $scope.showCookieConsentModal = false;
+    };
+
+    /**
+     * Handler for the cookie policy link click event, sets the flag to show the modal.
+     * @param $event
+     */
     $scope.showCookiePolicy = ($event) => {
         // The button that triggers this handler is inside a form which has a submit property,
         // and we need to prevent that because it leads to a redirect to the home page.
         $event.preventDefault();
-
-        $uibModal.open({
-            templateUrl: 'js/angular/core/templates/cookie-policy/cookie-policy.html',
-            controller: CookiePolicyModalController,
-            backdrop: 'static',
-            keyboard: false,
-            windowClass: 'cookie-policy-modal',
-            resolve: {
-                data: () => {
-                    return TrackingService.getCookieConsent()
-                        .then((consent) => {
-                            return {
-                                cookieConsent: consent,
-                            };
-                        });
-                    },
-                },
-            })
-            // If the modal returns `shouldReload` as true, we reload the page.
-            // Reloading is crucial here due to potential memory leaks that arise from dynamically
-            // adding and removing Google Tag Manager (GTM) scripts based on the user's consent choice.
-            // See the comments within `CookiePolicyModalController`.
-            .result.then((shouldReload) => {
-            if (shouldReload) {
-                $window.location.reload();
-            }
-        });
+        $scope.showCookieConsentModal = true;
     };
 
     // =========================

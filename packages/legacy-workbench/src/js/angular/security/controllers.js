@@ -92,6 +92,7 @@ securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$windo
         };
 
         const setFreeAccess = function(enabled, authSettings) {
+            // TODO: check this what app settings are provided here and if cookie settings should be updated in the storage
             return securityServiceAPI.setFreeAccess(enabled, authSettings);
         };
 
