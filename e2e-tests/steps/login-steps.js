@@ -33,6 +33,7 @@ export class LoginSteps {
         cy.getByTestId('submit-btn').click();
     }
 
+    // TODO: Use the HeaderSteps.logout()
     static logout() {
         cy.get('onto-user-menu').click();
         cy.get('.onto-user-menu-dropdown')

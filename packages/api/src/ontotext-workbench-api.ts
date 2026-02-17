@@ -13,6 +13,7 @@ export * from './models/product-info';
 export * from './models/storage';
 export * from './models/language';
 export * from './models/cookie';
+export * from './models/tracking';
 export * from './models/monitoring';
 export * from './models/toastr';
 export * from './models/rdf-search';
@@ -46,6 +47,7 @@ export * from './services/storage';
 export * from './services/security';
 export * from './services/event-service';
 export * from './services/cookie';
+export * from './services/tracking';
 export * from './services/monitoring';
 export * from './services/toastr';
 export * from './services/autocomplete';
@@ -74,4 +76,4 @@ export * from './error';
 
 // Export constants for external usages.
 export {HTTP_REQUEST_DONE_EVENT} from './services/http/http.service';
-export {COOKIE_CONSENT_CHANGED_EVENT} from './services/cookie/cookie.service';
+export {COOKIE_CONSENT_CHANGED_EVENT} from './services/tracking/tracking.service';

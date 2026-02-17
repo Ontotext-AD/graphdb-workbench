@@ -26,7 +26,7 @@ export const ProviderResponseMocks = {
       'ROLE_ADMIN'
     ],
     appSettings: {
-      COOKIE_CONSENT: true,
+      COOKIE_CONSENT: undefined,
       DEFAULT_SAMEAS: true,
       DEFAULT_INFERENCE: true,
       EXECUTE_COUNT: true,
@@ -49,7 +49,7 @@ export const ProviderResponseMocks = {
       'ROLE_CLUSTER'
     ],
     appSettings: {
-      COOKIE_CONSENT: true,
+      COOKIE_CONSENT: undefined,
       DEFAULT_SAMEAS: true,
       DEFAULT_INFERENCE: true,
       EXECUTE_COUNT: true,
@@ -71,7 +71,7 @@ export const ProviderResponseMocks = {
         DEFAULT_SAMEAS: true,
         IGNORE_SHARED_QUERIES: false,
         EXECUTE_COUNT: true,
-        COOKIE_CONSENT: 'false'
+        COOKIE_CONSENT: undefined
       }
     },
     overrideAuth: {

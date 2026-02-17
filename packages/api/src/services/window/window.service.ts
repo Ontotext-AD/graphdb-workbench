@@ -15,6 +15,15 @@ export class WindowService implements Service {
     return window;
   }
 
+  /**
+   * Returns the document object associated with the current window. This method provides a way to access the document
+   * object while allowing for easier testing and mocking in unit tests, as it relies on the getWindow method to
+   * retrieve the window object.
+   */
+  static getDocument(): Document {
+    return WindowService.getWindow().document;
+  }
+
   static getPluginRegistry(): PluginRegistry {
     return WindowService.getWindow().PluginRegistry;
   }
