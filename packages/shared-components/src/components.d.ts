@@ -5,7 +5,6 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { DialogHandler } from "./models/dialog/dialog-handler";
 import { DialogConfig } from "./components/dialogs/onto-dialog";
 import { AuthenticatedUser, AuthenticatedUserResponse, Awaitable, Configuration, ExternalMenuModel, License, Notification, OperationStatusSummary, ProductInfo, Repository, RepositoryReference, RepositorySizeInfo, SearchButtonConfig, SecurityConfig, ToastMessage, TranslationParameter, User } from "../../api/dist/ontotext-workbench-api.d";
 import { DropdownItem } from "./models/dropdown/dropdown-item";
@@ -13,7 +12,6 @@ import { OntoTooltipPlacement } from "./components/onto-tooltip/models/onto-tool
 import { DropdownItemAlignment } from "./models/dropdown/dropdown-item-alignment";
 import { NavbarToggledEvent } from "./components/onto-navbar/navbar-toggled-event";
 import { ToggleEventPayload } from "./models/toggle-switch/toggle-event-payload";
-export { DialogHandler } from "./models/dialog/dialog-handler";
 export { DialogConfig } from "./components/dialogs/onto-dialog";
 export { AuthenticatedUser, AuthenticatedUserResponse, Awaitable, Configuration, ExternalMenuModel, License, Notification, OperationStatusSummary, ProductInfo, Repository, RepositoryReference, RepositorySizeInfo, SearchButtonConfig, SecurityConfig, ToastMessage, TranslationParameter, User } from "../../api/dist/ontotext-workbench-api.d";
 export { DropdownItem } from "./models/dropdown/dropdown-item";
@@ -30,10 +28,6 @@ export namespace Components {
     interface OntoCookieConsent {
     }
     interface OntoCookiePolicyDialog {
-        /**
-          * The dialog handler for managing the dialog's behavior.
-         */
-        "dialogHandler": DialogHandler;
     }
     interface OntoDialog {
         /**
@@ -378,6 +372,10 @@ export interface OntoCookieConsentCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLOntoCookieConsentElement;
 }
+export interface OntoCookiePolicyDialogCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLOntoCookiePolicyDialogElement;
+}
 export interface OntoDropdownCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLOntoDropdownElement;
@@ -413,7 +411,18 @@ declare global {
         prototype: HTMLOntoCookieConsentElement;
         new (): HTMLOntoCookieConsentElement;
     };
+    interface HTMLOntoCookiePolicyDialogElementEventMap {
+        "closeDialog": void;
+    }
     interface HTMLOntoCookiePolicyDialogElement extends Components.OntoCookiePolicyDialog, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLOntoCookiePolicyDialogElementEventMap>(type: K, listener: (this: HTMLOntoCookiePolicyDialogElement, ev: OntoCookiePolicyDialogCustomEvent<HTMLOntoCookiePolicyDialogElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLOntoCookiePolicyDialogElementEventMap>(type: K, listener: (this: HTMLOntoCookiePolicyDialogElement, ev: OntoCookiePolicyDialogCustomEvent<HTMLOntoCookiePolicyDialogElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLOntoCookiePolicyDialogElement: {
         prototype: HTMLOntoCookiePolicyDialogElement;
@@ -670,9 +679,9 @@ declare namespace LocalJSX {
     }
     interface OntoCookiePolicyDialog {
         /**
-          * The dialog handler for managing the dialog's behavior.
+          * Event emitted when the dialog is closed, allowing parent components to react accordingly.
          */
-        "dialogHandler": DialogHandler;
+        "onCloseDialog"?: (event: OntoCookiePolicyDialogCustomEvent<void>) => void;
     }
     interface OntoDialog {
         /**

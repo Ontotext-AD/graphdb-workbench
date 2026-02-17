@@ -313,26 +313,6 @@ class HomeSteps extends BaseSteps {
         return cy.get('#license-label-home');
     }
 
-    static getCookieConsentPopup() {
-        return cy.get('.cookie-consent-modal');
-    }
-
-    static getAgreeButton() {
-        return HomeSteps.getCookieConsentPopup().find('button');
-    }
-
-    static clickAgreeButton() {
-        return HomeSteps.getAgreeButton().click();
-    }
-
-    static getCookiePolicyLink() {
-        return cy.get('.cookie-consent-content a');
-    }
-
-    static clickCookiePolicyLink() {
-        return HomeSteps.getCookiePolicyLink().click();
-    }
-
     static getCookiePolicyModal() {
         return cy.get('.cookie-policy-modal');
     }

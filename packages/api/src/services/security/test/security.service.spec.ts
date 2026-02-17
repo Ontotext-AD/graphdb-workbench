@@ -12,7 +12,7 @@ import {AuthenticatedUserResponse} from '../../../models/security/response-model
 import {UsersService} from '../../users';
 import {AuthenticationService} from '../authentication.service';
 import {ProviderResponseMocks} from '../auth-strategies/tests/provider-response-mocks';
-import {CookieConsent} from '../../../models/cookie';
+import {CookieConsent} from '../../../models/tracking';
 import {AuthStrategyResolver} from '../auth-strategy-resolver';
 import {mapAuthenticatedUserResponseToModel} from '../mappers/authenticated-user.mapper';
 import {mapAuthSettingsResponseToModel} from '../mappers/auth-settings.mapper';
@@ -227,7 +227,7 @@ describe('SecurityService', () => {
           DEFAULT_SAMEAS: true,
           IGNORE_SHARED_QUERIES: false,
           EXECUTE_COUNT: true,
-          COOKIE_CONSENT: true
+          COOKIE_CONSENT: undefined
         })
       });
 
@@ -240,7 +240,7 @@ describe('SecurityService', () => {
           DEFAULT_SAMEAS: true,
           IGNORE_SHARED_QUERIES: false,
           EXECUTE_COUNT: true,
-          COOKIE_CONSENT: true
+          COOKIE_CONSENT: undefined
         }
       };
 

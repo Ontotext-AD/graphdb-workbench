@@ -1,4 +1,12 @@
-Cypress.Commands.add('setDefaultUserData', (cookieConsent = true) => {
+/**
+ * Sets the default user settings for the admin user, including cookie consent.
+ * @param {CookieConsent} cookieConsent - The value to set for cookie consent.
+ * - policyAccepted: boolean indicating whether the cookie policy has been accepted.
+ * - statistic: boolean indicating consent for statistical cookies.
+ * - thirdParty: boolean indicating consent for third-party cookies.
+ * - updatedAt: epoch timestamp of last update in seconds.
+ */
+Cypress.Commands.add('setDefaultUserData', (cookieConsent) => {
     const defaultUserSettings = {
         'COOKIE_CONSENT': cookieConsent,
         'DEFAULT_SAMEAS': true,
@@ -19,7 +27,15 @@ Cypress.Commands.add('setDefaultUserData', (cookieConsent = true) => {
     });
 });
 
-Cypress.Commands.add('setCookieConsent', (cookieConsent) => {
+/**
+ * Sets the cookie consent in user settings for the admin user.
+ * @param {CookieConsent} cookieConsent - The value to set for cookie consent.
+ * - policyAccepted: boolean indicating whether the cookie policy has been accepted.
+ * - statistic: boolean indicating consent for statistical cookies.
+ * - thirdParty: boolean indicating consent for third-party cookies.
+ * - updatedAt: epoch timestamp of last update in seconds.
+ */
+Cypress.Commands.add('setCookieConsent', (cookieConsent ) => {
     const defaultUserSettings = {
         'COOKIE_CONSENT': cookieConsent
     };

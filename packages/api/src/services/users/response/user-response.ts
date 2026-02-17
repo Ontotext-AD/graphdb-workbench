@@ -11,7 +11,7 @@ export interface UserResponse {
     DEFAULT_SAMEAS?: boolean;
     IGNORE_SHARED_QUERIES?: boolean;
     EXECUTE_COUNT?: boolean;
-    COOKIE_CONSENT?: boolean | {
+    COOKIE_CONSENT?: {
       policyAccepted: boolean;
       statistic: boolean;
       thirdParty: boolean;
