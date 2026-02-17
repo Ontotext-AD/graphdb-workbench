@@ -1,13 +1,13 @@
 import {Component, Host, h, State, Listen} from '@stencil/core';
 import {
   ProductInfo,
-  ServiceProvider,
+  service,
   SubscriptionList,
   ProductInfoContextService,
   LicenseService,
   SecurityContextService,
   CookieConsent,
-  CookieService, LicenseContextService, WindowService
+  CookieService, LicenseContextService, WindowService,
 } from '@ontotext/workbench-api';
 
 /**
@@ -33,9 +33,11 @@ export class OntoFooter {
   /** Current year for copyright display */
   private readonly currentYear = new Date().getFullYear();
 
-  private readonly securityContextService: SecurityContextService = ServiceProvider.get(SecurityContextService);
-  private readonly licenseContextService: LicenseContextService = ServiceProvider.get(LicenseContextService);
-  private readonly cookieService = ServiceProvider.get(CookieService);
+  private readonly productInfoContextService = service(ProductInfoContextService);
+  private readonly securityContextService = service(SecurityContextService);
+  private readonly licenseContextService = service(LicenseContextService);
+  private readonly cookieService = service(CookieService);
+  private readonly licenseService = service(LicenseService);
 
   @Listen('consentGiven')
   handleConsentGiven(): void {
@@ -66,6 +68,7 @@ export class OntoFooter {
     this.subscribeToProductInfoChange();
     this.subscribeToUserChange();
     this.subscribeToLicenseChange();
+    this.subscribeToUserLoginStatusChange();
   }
 
   disconnectedCallback(): void {
@@ -73,14 +76,14 @@ export class OntoFooter {
   }
 
   private subscribeToProductInfoChange() {
-    this.subscriptions.add(ServiceProvider.get(ProductInfoContextService)
-      .onProductInfoChanged(productInfo => {
+    this.subscriptions.add(this.productInfoContextService.onProductInfoChanged(
+      (productInfo) => {
         this.productInfo = productInfo;
       }));
   }
 
   private isTrackingAllowed(): boolean {
-    return ServiceProvider.get(LicenseService).isTrackableLicense() && !WindowService.getWindow().wbDevMode;
+    return this.licenseService.isTrackableLicense() && !WindowService.getWindow().wbDevMode;
   }
 
   private subscribeToUserChange(): void {
@@ -91,9 +94,26 @@ export class OntoFooter {
       }));
   }
 
+  private subscribeToUserLoginStatusChange(): void {
+    this.subscriptions.add(
+      this.securityContextService.onUserLoginStatusChanged(() => {
+        this.setCookieConsentVisibility();
+      }));
+  }
+
+  /**
+   * Determines whether the cookie consent banner should be shown based on the user's authentication status, license
+   * type, and cookie consent status.
+   * The banner is always shown if free access is enabled, or if the user is logged in, tracking is allowed, and the
+   * cookie consent policy has not been accepted.
+   */
   private setCookieConsentVisibility() {
     const user = this.securityContextService.getAuthenticatedUser();
-    this.shouldShowCookieConsent = this.isTrackingAllowed() && !new CookieConsent(user?.appSettings?.COOKIE_CONSENT).policyAccepted;
+    const isLoggedIn = this.securityContextService.getIsLoggedIn();
+    const isFreeAccessEnabled = this.securityContextService.getSecurityConfig()?.isFreeAccessEnabled();
+    this.shouldShowCookieConsent =
+      isFreeAccessEnabled
+      || isLoggedIn && this.isTrackingAllowed() && !new CookieConsent(user?.appSettings?.COOKIE_CONSENT).policyAccepted;
   }
 
   private subscribeToLicenseChange() {
