@@ -20,6 +20,10 @@ export class SecurityStubs {
         }).as('security-all');
     }
 
+    static spyOnUserUpdate(userName) {
+        cy.intercept('PATCH', `rest/security/users/${userName}`).as('updateUser');
+    }
+
     static stubUpdateUserData(userName) {
         cy.intercept('PATCH', `/rest/security/users/${userName}`, {
             statusCode: 200,

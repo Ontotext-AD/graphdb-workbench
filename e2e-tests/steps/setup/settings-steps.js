@@ -107,7 +107,7 @@ export class SettingsSteps {
     }
 
     static clickCookiePolicyLink() {
-        return SettingsSteps.getCookiePolicyButton().click();
+        return this.getCookiePolicyButton().click();
     }
 
     static getCookiePolicyModal() {
