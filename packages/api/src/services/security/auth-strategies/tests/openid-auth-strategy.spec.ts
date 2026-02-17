@@ -293,7 +293,7 @@ describe('OpenidAuthProvider', () => {
 
       expect(setupCodeFlowSpy).toHaveBeenCalledWith(
         expect.any(String),
-        'http://localhost:3000/login'
+        'http://localhost:3000/'
       );
       expect(setupCodeFlowSpy.mock.calls[0][0]).toHaveLength(56); // state length (28 * 2 hex chars)
 
@@ -315,7 +315,7 @@ describe('OpenidAuthProvider', () => {
 
       expect(setupCodeNoPkceFlowSpy).toHaveBeenCalledWith(
         expect.any(String),
-        'http://localhost:3000/login'
+        'http://localhost:3000/'
       );
       expect(setupCodeNoPkceFlowSpy.mock.calls[0][0]).toHaveLength(56);
     });
@@ -330,7 +330,7 @@ describe('OpenidAuthProvider', () => {
 
       expect(setupImplicitFlowSpy).toHaveBeenCalledWith(
         expect.any(String),
-        'http://localhost:3000/login'
+        'http://localhost:3000/'
       );
       expect(setupImplicitFlowSpy.mock.calls[0][0]).toHaveLength(56);
     });
