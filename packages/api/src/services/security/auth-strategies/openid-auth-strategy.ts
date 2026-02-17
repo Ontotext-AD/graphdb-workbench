@@ -211,8 +211,8 @@ export class OpenidAuthStrategy implements AuthStrategy {
    * @returns The return URL
    */
   private getReturnUrl(): string {
-    // Must return to /login to finish the workflow
-    return `${getOrigin()}login`;
+    // Must return to root to finish the workflow
+    return `${getOrigin()}`;
   }
 
   /**

@@ -38,7 +38,7 @@ export class OpenIdAuthFlowHandler {
       throw new MissingAuthorizationCode();
     }
 
-    const redirectUri = `${getOrigin()}login`;
+    const redirectUri = `${getOrigin()}`;
 
     if (config.authFlow === OpenIdAuthFlowType.CODE) {
       await this.handlePkceFlow(params, redirectUri, exchangeTokensCallback);
