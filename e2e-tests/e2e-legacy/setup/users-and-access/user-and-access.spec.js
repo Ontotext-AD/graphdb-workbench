@@ -6,6 +6,7 @@ import {ToasterSteps} from '../../../steps/toaster-steps';
 import HomeSteps from '../../../steps/home-steps';
 import {LoginSteps} from '../../../steps/login-steps';
 import {MainMenuSteps} from '../../../steps/main-menu-steps';
+import {SecurityStubs} from '../../../stubs/security-stubs.js';
 
 describe('User and Access', () => {
 
@@ -102,6 +103,41 @@ describe('User and Access', () => {
             UserAndAccessSteps.addTextToCustomRoleField('{backspace}');
             // Then the error should not be visible
             UserAndAccessSteps.getCustomRoleFieldError().should('not.be.visible');
+
+            // When I create the user with a valid custom role
+            UserAndAccessSteps.clickWriteAccessAny();
+            SecurityStubs.spyOnUserCreate()
+            UserAndAccessSteps.confirmUserCreate();
+            // Then the user should be created with that custom role
+            cy.wait('@create-user').its('request.body').then((body) => {
+                expect(body).to.deep.eq({
+                    "password": "password",
+                    "grantedAuthorities": [
+                        "ROLE_USER",
+                        "CUSTOM_AA",
+                        "WRITE_REPO_*",
+                        "READ_REPO_*"
+                    ],
+                    "appSettings": {
+                        "DEFAULT_VIS_GRAPH_SCHEMA": true,
+                        "DEFAULT_INFERENCE": true,
+                        "DEFAULT_SAMEAS": true,
+                        "IGNORE_SHARED_QUERIES": false,
+                        "EXECUTE_COUNT": true
+                    }
+                })
+            });
+
+            cy.url().should('include', '/users');
+            UserAndAccessSteps.findUserInTable(user).should('be.visible');
+            UserAndAccessSteps.getUserCustomRoles('@user')
+                .should('have.length', 1)
+                .eq(0).and('have.text', 'AA');
+            // And when I open the edit page for that user, the custom role should be visible in the field without the prefix
+            UserAndAccessSteps.openEditUserPage(user);
+            UserAndAccessSteps.getCustomRoleField().find('.tag-item span')
+                .should('have.length', 1)
+                .eq(0).and('have.text', 'AA');
         });
 
         it('Adding a role with a CUSTOM_ prefix shows a warning message', () => {
