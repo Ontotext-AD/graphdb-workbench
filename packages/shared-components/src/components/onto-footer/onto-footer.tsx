@@ -7,7 +7,7 @@ import {
   LicenseService,
   SecurityContextService,
   CookieConsent,
-  CookieService, LicenseContextService, WindowService,
+  TrackingService, LicenseContextService, WindowService,
 } from '@ontotext/workbench-api';
 
 /**
@@ -36,12 +36,12 @@ export class OntoFooter {
   private readonly productInfoContextService = service(ProductInfoContextService);
   private readonly securityContextService = service(SecurityContextService);
   private readonly licenseContextService = service(LicenseContextService);
-  private readonly cookieService = service(CookieService);
+  private readonly trackingService = service(TrackingService);
   private readonly licenseService = service(LicenseService);
 
   @Listen('consentGiven')
   handleConsentGiven(): void {
-    this.cookieService.acceptCookiePolicy()
+    this.trackingService.acceptCookiePolicy()
       .then(() => this.shouldShowCookieConsent = false);
   }
 
@@ -104,16 +104,21 @@ export class OntoFooter {
   /**
    * Determines whether the cookie consent banner should be shown based on the user's authentication status, license
    * type, and cookie consent status.
-   * The banner is always shown if free access is enabled, or if the user is logged in, tracking is allowed, and the
-   * cookie consent policy has not been accepted.
+   * The banner is shown if the user has not accepted the cookie policy and either has free access or is logged in,
+   * provided that tracking is allowed by the license. Otherwise, the banner is hidden.
    */
   private setCookieConsentVisibility() {
+    if (!this.isTrackingAllowed()) {
+      this.shouldShowCookieConsent = false;
+      return;
+    }
+
     const user = this.securityContextService.getAuthenticatedUser();
     const isLoggedIn = this.securityContextService.getIsLoggedIn();
     const isFreeAccessEnabled = this.securityContextService.getSecurityConfig()?.isFreeAccessEnabled();
-    this.shouldShowCookieConsent =
-      isFreeAccessEnabled
-      || isLoggedIn && this.isTrackingAllowed() && !new CookieConsent(user?.appSettings?.COOKIE_CONSENT).policyAccepted;
+    const isPolicyAccepted = new CookieConsent(user?.appSettings?.COOKIE_CONSENT).policyAccepted;
+
+    this.shouldShowCookieConsent = !isPolicyAccepted && (isFreeAccessEnabled || isLoggedIn);
   }
 
   private subscribeToLicenseChange() {
