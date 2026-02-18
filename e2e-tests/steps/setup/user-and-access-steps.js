@@ -105,6 +105,10 @@ export class UserAndAccessSteps {
             .closest('tr').as('user');
     }
 
+    static getUserCustomRoles(userRow) {
+        return cy.get(userRow).getByTestId('custom-roles').getByTestId('custom-role');
+    }
+
     static getUsernameField() {
         return cy.get('#wb-user-username');
     }
