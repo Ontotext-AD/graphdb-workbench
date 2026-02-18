@@ -10,6 +10,10 @@ export class SecurityStubs {
         }).as('security-get-admin');
     }
 
+    static spyOnUserCreate() {
+        cy.intercept('POST', 'rest/security/users/*').as('create-user');
+    }
+
     static stubInferAndSameAsDefaults() {
         cy.intercept('rest/security/all', (req) => {
             req.reply(SecurityStubs.getResponseSecurityEnabled());
