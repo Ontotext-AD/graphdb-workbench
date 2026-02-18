@@ -24,4 +24,44 @@ export class CookieConsent {
       this.updatedAt = data?.updatedAt;
     }
   }
+
+  /**
+   * Predefined default: policy not accepted, but statistic and third-party cookies are allowed.
+   * Equivalent to: new CookieConsent(undefined, true, true)
+   */
+  static NOT_ACCEPTED_WITH_TRACKING() {
+    return new CookieConsent({
+      policyAccepted: undefined,
+      statistic: true,
+      thirdParty: true
+    });
+  }
+
+  /**
+   * Predefined default: policy accepted, no statistic or third-party cookies allowed.
+   * Equivalent to: new CookieConsent(true, false, false)
+   */
+  static ACCEPTED_NO_TRACKING() {
+    return new CookieConsent({
+      policyAccepted: true,
+      statistic: false,
+      thirdParty: false
+    });
+  }
+
+  /**
+   * Creates a CookieConsent instance from a JSON object.
+   * If values are missing in the JSON object, they will remain undefined.
+   *
+   * @param json - The JSON object to initialize the CookieConsent instance.
+   * @return A new CookieConsent instance with values set from the JSON object.
+   */
+  static fromJSON(json: Partial<CookieConsent>): CookieConsent {
+    return new CookieConsent({
+      policyAccepted: json?.policyAccepted,
+      statistic: json?.statistic,
+      thirdParty: json?.thirdParty,
+      updatedAt: json?.updatedAt,
+    });
+  }
 }
