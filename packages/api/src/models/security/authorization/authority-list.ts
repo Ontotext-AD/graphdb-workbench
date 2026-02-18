@@ -66,11 +66,14 @@ export class AuthorityList extends ModelList<string> {
 
   /**
    * Gets a list of custom roles from the authority list.
+   * Removes the Authority.CUSTOM_PREFIX from the beginning of each custom role for display purposes.
    *
    * @returns An array of strings representing the custom roles.
    */
   getCustomRoles(): string[] {
-    return this.getItems().filter(role => role.indexOf(Authority.CUSTOM_PREFIX) === 0);
+    return this.getItems()
+      .filter(role => role.indexOf(Authority.CUSTOM_PREFIX) === 0)
+      .map(role => role.substring(Authority.CUSTOM_PREFIX.length));
   }
 
   /**
