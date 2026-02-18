@@ -109,8 +109,6 @@ function registerSingleSpaRouterListeners(): void {
 }
 
 function loadAppByName(name: string): Promise<LifeCycles | undefined> {
-  ensureGlobalNavigate();
-
   if (!name) {
     console.error('Empty application name requested.');
     return Promise.resolve(undefined);
@@ -199,6 +197,7 @@ WindowService.setPluginRegistry(pluginRegistry);
 
 async function start() {
   try {
+    ensureGlobalNavigate();
     showSplashScreen(true);
     await bootstrapWorkbench();
     initSingleSpa();
