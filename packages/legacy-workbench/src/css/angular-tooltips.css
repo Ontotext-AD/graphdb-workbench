@@ -27,7 +27,7 @@
 }
 
 .angular-tooltip.angular-tooltip-fade-in {
-  opacity: 0.9;
+  opacity: 1;
 }
 
 .angular-tooltip:after {

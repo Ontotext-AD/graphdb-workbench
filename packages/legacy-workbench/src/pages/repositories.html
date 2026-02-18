@@ -71,14 +71,14 @@
                                     data-test="repository-{{repository.id}}"
                                     guide-selector="repository-{{repository.id}}">
                                     <td class="select-repository-button-wrapper" data-test="select-repository-button-wrapper" guide-selector="select-repository-button-wrapper">
-                                        <span role="button" class="ri-link-unlink icon-lg text-secondary m-0"
+                                        <span role="button" class="icon-connection-off icon-1-5x inactive-repo m-0"
                                               gdb-tooltip="{{'connect.repo' | translate}}" tooltip-placement="top"
                                               ng-click="setRepository(repository)"
                                               ng-if="!isRepoActive(repository)"
                                               data-repository-id="{{repository}}"
                                               guide-selector="select-repository-button">
                                         </span>
-                                        <span role="button" class="ri-link icon-lg text-tertiary"
+                                        <span role="button" class="icon-connection-on icon-1-5x active-repo"
                                               gdb-tooltip="{{'connected.tooltip' | translate}}" tooltip-placement="top"
                                               ng-if="isRepoActive(repository)"
                                               guide-selector="select-repository-button">
@@ -217,13 +217,13 @@
                                         ng-repeat="repository in getRepositoriesFromLocation(location.uri) | orderBy: ['type === \'system\'', 'location', 'id'] track by repository.hash"
                                         ng-class="{'table-info text-secondary': isRepoActive(repository)}">
                                         <td width="25">
-                                            <span role="button" class="ri-link-unlink icon-lg text-secondary m-0"
+                                            <span role="button" class="icon-connection-off icon-lg text-secondary m-0"
                                                   gdb-tooltip="{{'connect.repo' | translate}}" tooltip-placement="top"
                                                   ng-click="setRepository(repository)"
                                                   ng-if="!isRepoActive(repository)"
                                                   data-repository-id="{{repository}}"
                                                   guide-selector="repository-{{repository.id}}-plug"></span>
-                                            <span role="button" class="ri-link icon-lg text-tertiary"
+                                            <span role="button" class="icon-connection-on icon-lg text-tertiary"
                                                   gdb-tooltip="{{'connected.tooltip' | translate}}" tooltip-placement="top"
                                                   ng-if="isRepoActive(repository)"></span>
                                         </td>

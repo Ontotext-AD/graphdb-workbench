@@ -44,9 +44,9 @@
 }
 
 .tooltip-box[data-theme="light-border"] {
-  color: var(--gw-dialog-color);
-  background-color: var(--gw-dialog-background);
-  border: 1px solid var(--gw-dialog-border-color);
+  color: var(--gw-dialog-color) !important;
+  background-color: var(--gw-dialog-background) !important;
+  border: 1px solid var(--gw-dialog-border-color) !important;
   box-shadow: var(--gw-dialog-shadow-1-offset-x) var(--gw-dialog-shadow-1-offset-y) var(--gw-dialog-shadow-1-blur) var(--gw-dialog-shadow-1-spread) var(--gw-dialog-shadow-1-color);
   max-width: 350px;
   opacity: 1 !important;

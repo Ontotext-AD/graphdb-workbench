@@ -131,6 +131,7 @@
   --gw-tertiary-lighter: var(--gw-tertiary-100);
   --gw-tertiary-light: var(--gw-tertiary-600);
   --gw-tertiary-dark: var(--gw-tertiary-800);
+  --gw-background-page: var(--gw-neutral-50);
   --gw-background-header: var(--gw-primary-50);
   --gw-background-raised: var(--gw-primary-50);
   --gw-background-highlighted: var(--gw-primary-200);
@@ -167,7 +168,7 @@
   --gw-highlight-background: var(--gw-secondary-100);
   --gw-hover-color: var(--gw-neutral-800);
   --gw-hover-background: var(--gw-neutral-200);
-  --gw-default-border-color: var(--gw-neutral-200);
+  --gw-default-border-color: var(--gw-neutral-300);
   --gw-toggleswitch-handle-background: var(--gw-neutral-0);
   --gw-toggleswitch-handle-hover-background: var(--gw-neutral-0);
   --gw-toggleswitch-handle-checked-background: var(--gw-neutral-0);
@@ -258,6 +259,8 @@
   --gw-panel-border-color: var(--gw-default-border-color);
   --gw-toggleswitch-checked-background: var(--gw-primary-base);
   --gw-toggleswitch-background: var(--gw-foreground-on-surface-disabled);
+  --gw-checkbox-checked-disabled-border-color: var(--gw-foreground-on-surface-secondary);
+  --gw-checkbox-checked-disabled-background: var(--gw-foreground-on-surface-secondary);
   --gw-autocomplete-option-focus-background: var(--gw-list-option-focus-background);
   --gw-badge-primary-background: var(--gw-primary-base);
   --gw-message-info-background: var(--gw-info-lighter);
@@ -321,6 +324,7 @@
   --gw-toast-error-background: var(--gw-error-base);
   --gw-toast-error-border-color: var(--gw-error-base);
   --gw-toast-error-color: var(--gw-contrast-text);
+  --gw-shortcuts-secondary-button-background: var(--gw-background-page);
   --gw-cluster-node-leader-background: var(--gw-foreground-on-surface-accent);
   --gw-cluster-node-outofsync-background: var(--gw-foreground-on-surface-disabled);
   --gw-link-regular-color: var(--gw-secondary-light);
