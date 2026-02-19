@@ -1,0 +1,98 @@
+[
+    {
+        "guideName": {
+            "en": "Main menu guide test"
+        },
+        "steps": [
+            {
+                "guideBlockName": "click-main-menu",
+                "options": {
+                    "menu": "import",
+                    "mainAction": "import-file",
+                    "showIntro": true
+                }
+            },
+            {
+                "guideBlockName": "click-main-menu",
+                "options": {
+                    "menu": "repositories",
+                    "mainAction": "create-repository",
+                    "showIntro": true
+                }
+            },
+            {
+                "guideBlockName": "click-main-menu",
+                "options": {
+                    "menu": "class-hierarchy",
+                    "mainAction": "class-hierarchy",
+                    "showIntro": true
+                }
+            },
+            {
+                "guideBlockName": "click-main-menu",
+                "options": {
+                    "menu": "class-relationships",
+                    "mainAction": "class-relationships",
+                    "showIntro": true
+                }
+            },
+            {
+                "guideBlockName": "click-main-menu",
+                "options": {
+                    "menu": "visual-graph",
+                    "mainAction": "visual-graph",
+                    "showIntro": true
+                }
+            },
+            {
+                "guideBlockName": "click-main-menu",
+                "options": {
+                    "menu": "similarity",
+                    "mainAction": "create-similarity-index",
+                    "showIntro": true
+                }
+            },
+            {
+                "guideBlockName": "click-main-menu",
+                "options": {
+                    "menu": "sparql",
+                    "mainAction": "execute-sparql-query",
+                    "showIntro": true
+                }
+            },
+            {
+                "guideBlockName": "click-main-menu",
+                "options": {
+                    "menu": "ttyg",
+                    "mainAction": "create-ttyg-agent",
+                    "showIntro": true
+                }
+            },
+            {
+                "guideBlockName": "click-main-menu",
+                "options": {
+                    "menu": "autocomplete",
+                    "mainAction": "enable-autocomplete",
+                    "showIntro": true
+                }
+            },
+            {
+                "guideBlockName": "click-main-menu",
+                "options": {
+                    "menu": "connectors",
+                    "title": "Connectors"
+                }
+            },
+            {
+                "guideBlockName": "click-main-menu",
+                "options": {
+                    "menu": "rdf-rank",
+                    "title": "RDF Rank"
+                }
+            },
+            {
+                "guideBlockName": "guide-end"
+            }
+        ]
+    }
+]

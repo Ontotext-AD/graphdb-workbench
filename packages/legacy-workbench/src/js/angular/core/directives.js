@@ -171,7 +171,7 @@ function coreErrors($timeout, $location) {
                     // Prevents hiding if we move the mouse over the popover
                     let el = event.relatedTarget;
                     while (el) {
-                        if (el.className.indexOf('popover') === 0) {
+                        if (el.className?.indexOf('popover') === 0) {
                             return;
                         }
                         el = el.parentElement;
