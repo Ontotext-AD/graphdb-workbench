@@ -228,10 +228,12 @@ PluginRegistry.add('guide.step', [
          * - <b>subparameterName</b>: string (required) – the specific creation subparameter name for <code>parameterName</code>.
          */
         getSteps: (options, services) => {
+            const GuideUtils = services.GuideUtils;
             const connectorNameSelector = getConnectorNameSelector(options, services);
             const connectorContentSelector = getConnectorContentSelector(options, services);
             const parameterSelector = getConnectorParameterSelector(options, services);
             const subparameterName = getConnectorSubparameterSelector(options, services);
+            const elementSelector = `${connectorNameSelector} ${connectorContentSelector} ${parameterSelector} ${subparameterName}`;
             return [{
                 guideBlockName: 'read-only-element',
                 options: {
@@ -241,7 +243,8 @@ PluginRegistry.add('guide.step', [
                     class: 'connectors-connector-intro',
                     content: 'guide.step_plugin.connectors-array-subparameter-intro.content',
                     ...options,
-                    elementSelector: `${connectorNameSelector} ${connectorContentSelector} ${parameterSelector} ${subparameterName}`,
+                    elementSelector,
+                    scrollToHandler: () => GuideUtils.scrollIntoView(elementSelector, {block: 'center', behavior: 'smooth'}),
                     url: 'connectors',
                 },
             }];
