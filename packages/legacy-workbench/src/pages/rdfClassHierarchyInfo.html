@@ -173,20 +173,18 @@
                     	{{'no.instances.for.selected.class.type' | translate}}
                     </p>
 					<p ng-switch-when="1">
-						<a class="btn btn-link px-0"
-						   href=''
+						<button class="btn btn-link px-0"
                            data-test="instances-count-link"
 						   ng-click="goToResourceView()"
 						   guide-selector="instances-count">{{'view.instance.in.sparql.label' | translate}}
-						</a>
+						</button>
 					</p>
                     <p ng-switch-default>
-						<a class="btn btn-link px-0"
-						   href=''
+						<button class="btn btn-link px-0"
                            data-test="instances-count-link"
 						   ng-click="goToResourceView()"
 						   guide-selector="instances-count">{{'view.all.label' | translate}} {{selectedClass.data.instancesCount | number}} {{'instances.in.sparql' | translate}}
-						</a>
+						</button>
 					</p>
                 </div>
 

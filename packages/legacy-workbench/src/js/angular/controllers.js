@@ -926,9 +926,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
             // 4. active repo yes, repo in url no -> update url
             if (!repositoryIdParam) {
                 // The timeout is needed to ensure the location change happens after the current digest cycle
-                $timeout(() => {
-                    setRepositoryIdParam(selectedRepository.id);
-                });
+                setRepositoryIdParam(selectedRepository.id);
                 return;
             }
 
