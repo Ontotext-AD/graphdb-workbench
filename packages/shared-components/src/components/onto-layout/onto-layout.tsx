@@ -11,7 +11,6 @@ import {
   AuthorizationService,
   EventName,
   EventService,
-  ExternalMenuItemModel,
   LocalStorageSubscriptionHandlerService,
   navigate,
   NavigationContextService,
@@ -22,7 +21,10 @@ import {
   service,
   StorageKey,
   SubscriptionList,
-  WindowService
+  WindowService,
+  MainMenuPlugin,
+  MainMenuItem,
+  MainMenuExtensionPoint
 } from '@ontotext/workbench-api';
 import {TranslationService} from '../../services/translation.service';
 
@@ -273,7 +275,7 @@ export class OntoLayout {
       if (!this.navbarRef) {
         return;
       }
-      this.navbarRef.menuItems = WindowService.getWindow().PluginRegistry.get('main.menu');
+      this.navbarRef.menuItems = WindowService.getPluginRegistry().get<MainMenuPlugin>(MainMenuExtensionPoint.NAME);
       this.setNavbarItemVisibility();
     };
   }
@@ -283,7 +285,7 @@ export class OntoLayout {
       return;
     }
     // recursively check for children and set their shouldShow property
-    const processItem = (item: ExternalMenuItemModel) => {
+    const processItem = (item: MainMenuItem) => {
       item.shouldShow = this.shouldShowMenu(item.role as Authority);
       if (item.children?.length) {
         item.children.forEach(processItem);

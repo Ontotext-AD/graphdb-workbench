@@ -50,8 +50,6 @@
 <!--                    base-uri 'self';">-->
     <meta name="importmap-type" use-injector />
 
-    <script src="plugin-registry.js?v=<%= buildVersion %>"></script>
-    <script src="plugins.js?v=<%= buildVersion %>"></script>
     <script type="application/javascript">
         window.wbDevMode = <%= devMode %>;
     </script>
@@ -117,7 +115,12 @@
 </noscript>
 <script>
     window.importMapInjector.initPromise.then(() => {
-      import('@ontotext/root-config');
+      import('@ontotext/root-config')
+      .then(() => {
+                const pluginScript = document.createElement('script');
+                  pluginScript.src = 'plugins.js?v=<%= buildVersion %>';
+                  document.body.appendChild(pluginScript);
+      });
       import('@ontotext/styleguide');
     });
 </script>

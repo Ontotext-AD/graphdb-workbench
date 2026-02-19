@@ -141,13 +141,9 @@ module.exports = (webpackConfigEnv, argv) => {
                       to: 'assets'
                     },
                     {
-                      from: 'wb-plugins',
-                      to: 'wb-plugins',
+                      from: 'node_modules/graphdb-workbench-plugins/dist',
+                      to: 'plugins',
                       noErrorOnMissing: true
-                    },
-                    {
-                        from: 'packages/legacy-workbench/src/js/angular/plugin-registry.js',
-                        to: 'plugin-registry.js'
                     },
                     {
                         from: 'packages/shared-components/src/assets',

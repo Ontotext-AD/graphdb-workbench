@@ -20,6 +20,11 @@ import {
   NavigationStart,
   service,
   WindowService,
+  PluginRegistry,
+  MainMenuExtensionPoint,
+  RouteExtensionPoint,
+  InteractiveGuideExtensionPoint,
+  ThemesExtensionPoint
 } from '@ontotext/workbench-api';
 import './styles/onto-stylesheet.scss';
 import './onto-vendor';
@@ -104,8 +109,6 @@ function registerSingleSpaRouterListeners(): void {
 }
 
 function loadAppByName(name: string): Promise<LifeCycles | undefined> {
-  ensureGlobalNavigate();
-
   if (!name) {
     console.error('Empty application name requested.');
     return Promise.resolve(undefined);
@@ -185,11 +188,19 @@ function setupFavicon(): void {
   document.head.appendChild(appleTouchLink);
 }
 
-async function start(): Promise<void> {
+const pluginRegistry = new PluginRegistry();
+pluginRegistry.registerExtensionPoint(new MainMenuExtensionPoint());
+pluginRegistry.registerExtensionPoint(new RouteExtensionPoint());
+pluginRegistry.registerExtensionPoint(new InteractiveGuideExtensionPoint());
+pluginRegistry.registerExtensionPoint(new ThemesExtensionPoint());
+WindowService.setPluginRegistry(pluginRegistry);
+
+async function start() {
   try {
+    ensureGlobalNavigate();
     showSplashScreen(true);
-    initSingleSpa();
     await bootstrapWorkbench();
+    initSingleSpa();
     showSplashScreen(false);
     setupFavicon();
   } catch (error) {

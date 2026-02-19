@@ -1,5 +1,5 @@
-import {PluginRegistry} from './src/models/plugin/plugin-registry';
-import {SingleSpa} from '@ontotext/workbench-api';
+import {PluginRegistry} from '../api/src/services/plugins';
+import {SingleSpa} from '../api/src/models/single-spa';
 
 declare global {
   interface Window {
@@ -9,4 +9,4 @@ declare global {
   }
 }
 
-export {}
+export {};

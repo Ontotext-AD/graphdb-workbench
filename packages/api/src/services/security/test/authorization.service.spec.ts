@@ -4,7 +4,6 @@ import {AuthenticatedUser, Authority, AuthorityList} from '../../../models/secur
 import {Repository} from '../../../models/repositories';
 import {ServiceProvider} from '../../../providers';
 import {WindowService} from '../../window';
-import {RouteItemModel} from '../../../models/routing/route-item-model';
 import {RoutingService} from '../../routing/routing.service';
 import {RepositoryStorageService} from '../../repository';
 import {SecurityConfigTestUtil} from '../../utils/test/security-config-test-util';
@@ -12,6 +11,7 @@ import {AuthSettings} from '../../../models/security/auth-settings';
 import {AppSettings} from '../../../models/users/app-settings';
 import {mapAuthenticatedUserResponseToModel} from '../mappers/authenticated-user.mapper';
 import {AuthenticatedUserResponse} from '../../../models/security/response-models/authenticated-user-response';
+import {RoutePlugin} from '../../../models/plugins';
 
 const getSecurityConfig = (securityEnabled: boolean, freeAccessEnabled: boolean, overrideAuth = false) => {
   return SecurityConfigTestUtil.createSecurityConfig(
@@ -341,7 +341,7 @@ describe('AuthorizationService', () => {
       securityContextService.updateAuthenticatedUser(regularUser);
       securityContextService.updateSecurityConfig(getSecurityConfig(true, false));
 
-      const activeRoute = new RouteItemModel({
+      const activeRoute = new RoutePlugin({
         url: '/aclmanagement',
         module: 'graphdb.framework.aclmanagement',
         path: 'aclmanagement/app',

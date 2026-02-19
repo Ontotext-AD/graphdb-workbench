@@ -1,5 +1,5 @@
 import {Service} from '../../providers/service/service';
-import {PluginRegistry} from '../../models/plugins';
+import {PluginRegistry} from '../plugins';
 import {getPathName} from '../utils';
 
 /**
@@ -17,6 +17,10 @@ export class WindowService implements Service {
 
   static getPluginRegistry(): PluginRegistry {
     return WindowService.getWindow().PluginRegistry;
+  }
+
+  static setPluginRegistry(pluginRegistry: PluginRegistry): void {
+    this.getWindow().PluginRegistry = pluginRegistry;
   }
 
   static getCrypto(): Crypto {
