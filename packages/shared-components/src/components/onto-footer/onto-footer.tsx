@@ -4,10 +4,10 @@ import {
   service,
   SubscriptionList,
   ProductInfoContextService,
-  LicenseService,
   SecurityContextService,
   CookieConsent,
-  TrackingService, LicenseContextService, WindowService,
+  TrackingService,
+  LicenseContextService,
 } from '@ontotext/workbench-api';
 
 /**
@@ -37,7 +37,6 @@ export class OntoFooter {
   private readonly securityContextService = service(SecurityContextService);
   private readonly licenseContextService = service(LicenseContextService);
   private readonly trackingService = service(TrackingService);
-  private readonly licenseService = service(LicenseService);
 
   @Listen('consentGiven')
   handleConsentGiven(): void {
@@ -82,10 +81,6 @@ export class OntoFooter {
       }));
   }
 
-  private isTrackingAllowed(): boolean {
-    return this.licenseService.isTrackableLicense() && !WindowService.getWindow().wbDevMode;
-  }
-
   private subscribeToUserChange(): void {
     // TODO: move to cookieService, when the authenticatedUser is available synchronously
     this.subscriptions.add(
@@ -108,7 +103,7 @@ export class OntoFooter {
    * provided that tracking is allowed by the license. Otherwise, the banner is hidden.
    */
   private setCookieConsentVisibility() {
-    if (!this.isTrackingAllowed()) {
+    if (!this.trackingService.isTrackingAllowed()) {
       this.shouldShowCookieConsent = false;
       return;
     }
@@ -118,7 +113,12 @@ export class OntoFooter {
     const isFreeAccessEnabled = this.securityContextService.getSecurityConfig()?.isFreeAccessEnabled();
     const isPolicyAccepted = new CookieConsent(user?.appSettings?.COOKIE_CONSENT).policyAccepted;
 
-    this.shouldShowCookieConsent = !isPolicyAccepted && (isFreeAccessEnabled || isLoggedIn);
+    const localConsent = this.trackingService.getCookieConsent();
+    if (localConsent) {
+      this.shouldShowCookieConsent = !localConsent.policyAccepted && (isFreeAccessEnabled || isLoggedIn);
+    } else {
+      this.shouldShowCookieConsent = !isPolicyAccepted && (isFreeAccessEnabled || isLoggedIn);
+    }
   }
 
   private subscribeToLicenseChange() {

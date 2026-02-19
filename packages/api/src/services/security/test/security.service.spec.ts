@@ -12,7 +12,7 @@ import {AuthenticatedUserResponse} from '../../../models/security/response-model
 import {UsersService} from '../../users';
 import {AuthenticationService} from '../authentication.service';
 import {ProviderResponseMocks} from '../auth-strategies/tests/provider-response-mocks';
-import {CookieConsent} from '../../../models/cookie';
+import {CookieConsent} from '../../../models/tracking';
 import {AuthStrategyResolver} from '../auth-strategy-resolver';
 import {mapAuthenticatedUserResponseToModel} from '../mappers/authenticated-user.mapper';
 import {mapAuthSettingsResponseToModel} from '../mappers/auth-settings.mapper';

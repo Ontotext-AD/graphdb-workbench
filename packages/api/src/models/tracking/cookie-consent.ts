@@ -26,8 +26,17 @@ export class CookieConsent {
   }
 
   /**
+   * Checks if the cookie consent status has been explicitly set by the user.
+   * @return true if the policyAccepted property is defined, false otherwise.
+   */
+  hasChanged() {
+    return this.policyAccepted !== undefined;
+  }
+
+  /**
    * Predefined default: policy not accepted, but statistic and third-party cookies are allowed.
    * Equivalent to: new CookieConsent(undefined, true, true)
+   * @return A new CookieConsent instance with policyAccepted undefined, statistic true, and thirdParty true.
    */
   static NOT_ACCEPTED_WITH_TRACKING() {
     return new CookieConsent({
@@ -40,6 +49,7 @@ export class CookieConsent {
   /**
    * Predefined default: policy accepted, no statistic or third-party cookies allowed.
    * Equivalent to: new CookieConsent(true, false, false)
+   * @return A new CookieConsent instance with policyAccepted true, statistic false, and thirdParty false.
    */
   static ACCEPTED_NO_TRACKING() {
     return new CookieConsent({

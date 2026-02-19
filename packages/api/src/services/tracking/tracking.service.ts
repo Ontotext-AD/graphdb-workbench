@@ -1,10 +1,14 @@
 import {Service} from '../../providers/service/service';
 import {AuthenticatedUser} from '../../models/security';
-import {CookieConsent} from '../../models/cookie';
+import {CookieConsent} from '../../models/tracking';
 import {service} from '../../providers';
 import {AuthenticationService, AuthorizationService, SecurityContextService, SecurityService} from '../security';
 import {EventEmitter} from '../../emitters/event.emitter';
 import {TrackingStorageService} from './tracking-storage.service';
+import {LicenseContextService, LicenseService} from '../license';
+import {WindowService} from '../window';
+import {InstallationCookieService} from './installation-cookie.service';
+import {GoogleAnalyticsCookieService} from './google-analytics-cookie.service';
 
 export const COOKIE_CONSENT_CHANGED_EVENT = 'cookie-consent-changed-event';
 
@@ -17,34 +21,114 @@ export class TrackingService implements Service {
   private readonly authenticationService = service(AuthenticationService);
   private readonly authorizationService = service(AuthorizationService);
   private readonly trackingStorageService = service(TrackingStorageService);
+  private readonly licenseService = service(LicenseService);
+  private readonly licenseContextService = service(LicenseContextService);
+  private readonly installationCookieService = service(InstallationCookieService);
+  private readonly googleAnalyticsCookieService = service(GoogleAnalyticsCookieService);
 
   private readonly eventEmitter = new EventEmitter<CookieConsent>();
 
   /**
+   * Determines whether tracking is allowed based on the current license and development mode.
+   *
+   * @return Returns `true` if tracking is allowed, otherwise returns `false`.
+   */
+  isTrackingAllowed(): boolean {
+    return this.licenseService.isTrackableLicense() && !WindowService.getWindow().wbDevMode;
+  }
+
+  /**
    * Accepts the cookie policy for the authenticated user.
    *
-   * @returns {Promise<void>} - A promise that resolves when the request to the backend has passed.
+   * @returns A promise that resolves when the request to the backend has passed.
    */
   acceptCookiePolicy(): Promise<void> {
     const authenticatedUser = this.setAcceptedCookiePolicy();
     const hasFreeAccess = this.authenticationService.isAuthenticated() || this.authorizationService.hasFreeAccess();
     if (hasFreeAccess) {
-      // TODO: don't update the user but store data in local storage as it was in the legacy tracking service
-      return this.getCookieConsent()
-        .then((consent) => {
-          if (consent) {
-            this.trackingStorageService.setCookieConsent(consent);
-          }
-        })
-        .finally(() => {
-          // TODO: remove the GTM scripts
-        });
+      // Don't update the user but store data in local storage because the user is not authenticated and the server will
+      // throw an error if we try to update the user without authentication.
+      const consent = this.getCookieConsent();
+      if (consent) {
+        this.trackingStorageService.setCookieConsent(consent);
+      }
+      return Promise.resolve().finally(() => this.applyTrackingConsent());
     }
     return this.securityService.updateAuthenticatedUser(authenticatedUser.toUser())
       .then(() => {
         this.eventEmitter.emit({NAME: COOKIE_CONSENT_CHANGED_EVENT, payload: authenticatedUser.appSettings.COOKIE_CONSENT as CookieConsent});
       });
   }
+
+  /**
+   * Retrieves the current cookie consent preferences for the user
+   *  - If principal has no username => read local storage.
+   *  - If none in local storage => return defaults.
+   *  - If principal has a username => read from principal.appSettings.
+   * @return The current cookie consent preferences for the user.
+   */
+  getCookieConsent(): CookieConsent {
+    const principal = this.securityContextService.getAuthenticatedUser();
+
+    // No username => use local storage
+    if (!principal || !principal.username) {
+      if (this.authorizationService.hasFreeAccess()) {
+        const localConsent = this.trackingStorageService.getCookieConsent();
+        if (localConsent) {
+          return localConsent;
+        }
+        return CookieConsent.NOT_ACCEPTED_WITH_TRACKING();
+      }
+      return CookieConsent.ACCEPTED_NO_TRACKING();
+    }
+
+    if (!principal.appSettings || !principal.appSettings.COOKIE_CONSENT) {
+      return CookieConsent.NOT_ACCEPTED_WITH_TRACKING();
+    }
+
+    // @ts-expect-error - we need to cast it to CookieConsent as it's stored as a plain object in the backend
+    return CookieConsent.fromJSON(principal.appSettings.COOKIE_CONSENT);
+  }
+
+  /**
+   * Checks if tracking is allowed and, if so, fetches the current user consent,
+   * then sets or removes tracking cookies accordingly.
+   */
+  applyTrackingConsent(){
+    if (!this.isTrackingAllowed()) {
+      this.cleanUpTracking();
+      return Promise.resolve();
+    } else {
+      const cookieConsent = this.getCookieConsent();
+      if (cookieConsent.hasChanged() && !cookieConsent.policyAccepted) {
+        this.cleanUpTracking();
+        return;
+      }
+
+      if (cookieConsent.statistic) {
+        const installationId = this.licenseContextService.getLicenseSnapshot()?.installationId || '';
+        this.installationCookieService.setIfAbsent(installationId);
+      } else {
+        this.installationCookieService.remove();
+      }
+
+      if (cookieConsent.thirdParty) {
+        this.googleAnalyticsCookieService.setIfAbsent();
+      } else {
+        this.googleAnalyticsCookieService.remove();
+      }
+    }
+  }
+
+  /**
+   * Removes all tracking-related cookies and scripts.
+   * This function is called when tracking is not allowed by the license
+   * or when the user has opted out of all tracking options.
+   */
+  cleanUpTracking () {
+    this.installationCookieService.remove();
+    this.googleAnalyticsCookieService.remove();
+  };
 
   private setAcceptedCookiePolicy(): AuthenticatedUser {
     const user = this.securityContextService.getAuthenticatedUser() || new AuthenticatedUser({});
@@ -60,35 +144,5 @@ export class TrackingService implements Service {
     cookieConsent.updatedAt = Date.now();
     user.appSettings.COOKIE_CONSENT = cookieConsent;
     return user;
-  }
-
-  /**
-   * Retrieves the current cookie consent preferences for the user
-   *  - If principal has no username => read local storage.
-   *  - If none in local storage => return defaults.
-   *  - If principal has a username => read from principal.appSettings.
-   *   @return A promise resolving to the user's cookie consent preferences.
-   */
-  getCookieConsent() {
-    const principal = this.securityContextService.getAuthenticatedUser();
-
-    // No username => use local storage
-    if (!principal || !principal.username) {
-      if (this.authorizationService.hasFreeAccess()) {
-        const localConsent = this.trackingStorageService.getCookieConsent();
-        if (localConsent) {
-          return Promise.resolve(localConsent);
-        }
-        return Promise.resolve(CookieConsent.NOT_ACCEPTED_WITH_TRACKING());
-      }
-      return Promise.resolve(CookieConsent.ACCEPTED_NO_TRACKING());
-    }
-
-    if (!principal.appSettings || !principal.appSettings.COOKIE_CONSENT) {
-      return Promise.resolve(CookieConsent.NOT_ACCEPTED_WITH_TRACKING());
-    }
-
-    // @ts-expect-error - COOKIE_CONSENT is typed as boolean | CookieConsent and we should see when it's boolean and handle it
-    return Promise.resolve(CookieConsent.fromJSON(principal.appSettings.COOKIE_CONSENT));
   }
 }

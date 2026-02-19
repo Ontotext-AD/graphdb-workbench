@@ -1,6 +1,6 @@
 import {LocalStorageService} from '../storage';
 import {LoggerProvider} from '../logging/logger-provider';
-import {CookieConsent} from '../../models/cookie';
+import {CookieConsent} from '../../models/tracking';
 
 export class TrackingStorageService extends LocalStorageService {
   readonly NAMESPACE = 'tracking';
@@ -14,7 +14,7 @@ export class TrackingStorageService extends LocalStorageService {
     this.storeValue(key, value);
   }
 
-  setCookieConsent(cookieConsent: CookieConsent): void {
+  setCookieConsent(cookieConsent: Partial<CookieConsent>): void {
     this.set(this.COOKIE_CONSENT, JSON.stringify(cookieConsent));
   }
 
@@ -23,11 +23,11 @@ export class TrackingStorageService extends LocalStorageService {
     // If it exists, migrate the data to the new key and remove the legacy key.
     const legacyData = this.getAsJson(this.LEGACY_COOKIE_CONSENT);
     if (legacyData) {
-      this.logger.error('Legacy cookie consent data found. Migrating to new key.', {legacyData});
+      this.logger.info('Legacy cookie consent data found. Migrating to new key.', {legacyData});
       this.setCookieConsent(legacyData);
       this.remove(this.LEGACY_COOKIE_CONSENT);
     }
-    const data = this.getAsJson(this.COOKIE_CONSENT) as CookieConsent;
+    const data = this.get(this.COOKIE_CONSENT).getAsJson()  as CookieConsent;
     if (data) {
       return new CookieConsent(data);
     }

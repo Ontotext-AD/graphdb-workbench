@@ -1,4 +1,4 @@
-import {CookieConsent} from '../cookie';
+import {CookieConsent} from '../tracking';
 
 /**
  * Represents application settings for a user.
