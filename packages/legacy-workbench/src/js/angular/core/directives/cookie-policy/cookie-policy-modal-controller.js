@@ -20,6 +20,8 @@ export function CookiePolicyModalController($scope, $translate, toastr, Tracking
     $scope.cookieConsent = data.cookieConsent;
     $scope.ConsentTypes = ConsentTypes;
 
+    console.log('%cold dialog', 'background: yellow', {consent: $scope.cookieConsent});
+
     // =========================
     // Public functions
     // =========================

@@ -1,13 +1,12 @@
 import {Component, Host, h, State, Listen} from '@stencil/core';
 import {
   ProductInfo,
-  ServiceProvider,
+  service,
   SubscriptionList,
   ProductInfoContextService,
-  LicenseService,
   SecurityContextService,
-  CookieConsent,
-  CookieService, LicenseContextService, WindowService
+  TrackingService,
+  LicenseContextService,
 } from '@ontotext/workbench-api';
 
 /**
@@ -33,13 +32,15 @@ export class OntoFooter {
   /** Current year for copyright display */
   private readonly currentYear = new Date().getFullYear();
 
-  private readonly securityContextService: SecurityContextService = ServiceProvider.get(SecurityContextService);
-  private readonly licenseContextService: LicenseContextService = ServiceProvider.get(LicenseContextService);
-  private readonly cookieService = ServiceProvider.get(CookieService);
+  private readonly productInfoContextService = service(ProductInfoContextService);
+  private readonly securityContextService = service(SecurityContextService);
+  private readonly licenseContextService = service(LicenseContextService);
+  private readonly trackingService = service(TrackingService);
 
   @Listen('consentGiven')
   handleConsentGiven(): void {
-    this.cookieService.acceptCookiePolicy()
+    console.log('%cconsentGiven', 'background: orange',);
+    this.trackingService.acceptCookiePolicy()
       .then(() => this.shouldShowCookieConsent = false);
   }
 
@@ -66,6 +67,7 @@ export class OntoFooter {
     this.subscribeToProductInfoChange();
     this.subscribeToUserChange();
     this.subscribeToLicenseChange();
+    this.subscribeToUserLoginStatusChange();
   }
 
   disconnectedCallback(): void {
@@ -73,14 +75,10 @@ export class OntoFooter {
   }
 
   private subscribeToProductInfoChange() {
-    this.subscriptions.add(ServiceProvider.get(ProductInfoContextService)
-      .onProductInfoChanged(productInfo => {
+    this.subscriptions.add(this.productInfoContextService.onProductInfoChanged(
+      (productInfo) => {
         this.productInfo = productInfo;
       }));
-  }
-
-  private isTrackingAllowed(): boolean {
-    return ServiceProvider.get(LicenseService).isTrackableLicense() && !WindowService.getWindow().wbDevMode;
   }
 
   private subscribeToUserChange(): void {
@@ -91,9 +89,37 @@ export class OntoFooter {
       }));
   }
 
+  private subscribeToUserLoginStatusChange(): void {
+    this.subscriptions.add(
+      this.securityContextService.onUserLoginStatusChanged(() => {
+        this.setCookieConsentVisibility();
+      }));
+  }
+
+  /**
+   * Determines whether the cookie consent banner should be shown based on the user's authentication status, license
+   * type, and cookie consent status.
+   * The banner is shown if the user has not accepted the cookie policy and either has free access or is logged in,
+   * provided that tracking is allowed by the license. Otherwise, the banner is hidden.
+   */
   private setCookieConsentVisibility() {
+    if (!this.trackingService.isTrackingAllowed()) {
+      this.shouldShowCookieConsent = false;
+      return;
+    }
+
     const user = this.securityContextService.getAuthenticatedUser();
-    this.shouldShowCookieConsent = this.isTrackingAllowed() && !new CookieConsent(user?.appSettings?.COOKIE_CONSENT).policyAccepted;
+    const isLoggedIn = this.securityContextService.getIsLoggedIn();
+    const isFreeAccessEnabled = this.securityContextService.getSecurityConfig()?.isFreeAccessEnabled() ?? false;
+    // TODO: check if we can use the consent directly from the user without creating a new CookieConsent object
+    const isPolicyAccepted = user?.getCookieConsent()?.policyAccepted ?? false;
+    const localConsent = this.trackingService.getCookieConsent();
+    console.log('%csetCookieConsentVisibility', 'background: tan', {isLoggedIn, isFreeAccessEnabled, isPolicyAccepted, localConsent, user});
+    if (localConsent) {
+      this.shouldShowCookieConsent = !localConsent.policyAccepted && (isFreeAccessEnabled || isLoggedIn);
+    } else {
+      this.shouldShowCookieConsent = !isPolicyAccepted && (isFreeAccessEnabled || isLoggedIn);
+    }
   }
 
   private subscribeToLicenseChange() {

@@ -139,4 +139,13 @@ export class SecurityContextService extends ContextService<SecurityContextFields
   getIsLoggedIn(): boolean | undefined {
     return this.getContextPropertyValue(this.IS_LOGGED_IN);
   }
+
+  /**
+   * Subscribes to changes in the user's logged-in status.
+   * @param callbackFunction - A function to be called when the user's logged-in status changes.
+   * @returns A function that, when called, unsubscribes from the logged-in status changes.
+   */
+  onUserLoginStatusChanged(callbackFunction: ValueChangeCallback<boolean | undefined>): () => void {
+    return this.subscribe(this.IS_LOGGED_IN, callbackFunction);
+  }
 }

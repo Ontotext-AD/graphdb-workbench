@@ -11,7 +11,7 @@ import {
   service,
   WindowService,
   UrlPathParams,
-  SecurityConfig,
+  SecurityConfig, TrackingService, CookieConsent,
 } from '@ontotext/workbench-api';
 import {LoggerProvider} from '../../services/logger-provider';
 
@@ -21,8 +21,30 @@ export const loadSecurityConfig = () => {
   return service(SecurityService).getSecurityConfig()
     .then((securityConfig) => {
       const securityContextService = service(SecurityContextService);
+      console.log('%cbootstrap get config', 'background: red', securityConfig);
       securityContextService.updateSecurityConfig(securityConfig);
       return loadAuthenticatedUser(securityConfig);
+    })
+    .then(() => {
+      const securityContextService = service(SecurityContextService);
+      const trackingService = service(TrackingService);
+      const isLoggedIn = securityContextService.getIsLoggedIn();
+      const isFreeAccessEnabled = securityContextService.getSecurityConfig()?.isFreeAccessEnabled() || false;
+      const securityEnabled = securityContextService.getSecurityConfig()?.isEnabled();
+      const user = securityContextService.getAuthenticatedUser();
+      const consent = trackingService.getCookieConsent();
+
+      // If security is OFF, the cookie consent might be saved in the user data on the server
+      // If security is ON
+      //  - If the user is logged in, the cookie consent is saved in the user data on the server
+      //  - If the user is not logged in, the cookie consent is saved in the local storage because the user is not authenticated
+      // If free access is enabled
+      //  - If the user is logged in, the cookie consent is saved in the user data on the server
+      //  - If the user is not logged in, the cookie consent is saved in the local storage because the user is not authenticated
+
+      // Here during the bootstrap we are interested in reading the cookie consent from the appropriate place and ensure
+      // that it is properly applied in the user settings and user is updated in the context.
+      console.log('%cbootstrap authenticatedUser', 'background: red', {isLoggedIn, isFreeAccessEnabled, securityEnabled, consent, user});
     })
     .catch((error) => {
       logger.error('Could not load security (config or authenticated user). Check the logs', error);

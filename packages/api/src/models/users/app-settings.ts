@@ -1,4 +1,4 @@
-import {CookieConsent} from '../cookie';
+import {CookieConsent} from '../tracking';
 
 /**
  * Represents application settings for a user.
@@ -9,7 +9,7 @@ export class AppSettings {
   DEFAULT_SAMEAS: boolean;
   IGNORE_SHARED_QUERIES: boolean;
   EXECUTE_COUNT: boolean;
-  COOKIE_CONSENT?: boolean | CookieConsent;
+  COOKIE_CONSENT?: CookieConsent;
 
   constructor(data?: Partial<AppSettings>) {
     this.DEFAULT_VIS_GRAPH_SCHEMA = data?.DEFAULT_VIS_GRAPH_SCHEMA ?? true;

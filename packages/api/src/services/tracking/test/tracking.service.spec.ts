@@ -1,17 +1,17 @@
 import {TestUtil} from '../../utils/test/test-util';
 import {ResponseMock} from '../../http/test/response-mock';
-import {CookieService} from '../cookie.service';
+import {TrackingService} from '../tracking.service';
 import {service} from '../../../providers';
 import {AuthenticationService, AuthStrategyResolver} from '../../security';
 import {SecurityConfigTestUtil} from '../../utils/test/security-config-test-util';
 import {AuthenticatedUserResponse} from '../../../models/security/response-models/authenticated-user-response';
 
-describe('CookiesService', () => {
-  let cookiesService: CookieService;
+describe('TrackingService', () => {
+  let trackingService: TrackingService;
   let mockAuthenticatedUser: AuthenticatedUserResponse;
 
   beforeEach(async () => {
-    cookiesService = new CookieService();
+    trackingService = new TrackingService();
     mockAuthenticatedUser = {
       username: 'testuser',
       password: '',
@@ -45,7 +45,7 @@ describe('CookiesService', () => {
 
   test('should accept the cookie policy', async () => {
     // When I call the acceptCookiePolicy method
-    await cookiesService.acceptCookiePolicy();
+    await trackingService.acceptCookiePolicy();
     const updateUserRequest = TestUtil.getRequest(`rest/security/users/${mockAuthenticatedUser.username}`);
     const requestBody = JSON.parse(updateUserRequest!.body as string);
     expect(requestBody.appSettings.COOKIE_CONSENT.policyAccepted).toEqual(true);

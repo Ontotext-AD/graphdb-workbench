@@ -1,1 +1,1 @@
-export {CookieConsent} from './cookie-consent';
+export * from './cookie-options';
