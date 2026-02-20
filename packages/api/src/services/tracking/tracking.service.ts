@@ -39,16 +39,25 @@ export class TrackingService implements Service {
 
   /**
    * Accepts the cookie policy for the authenticated user.
+   * Consent is persisted either on server or in local storage depending on the user's authentication status and free
+   * access settings.
+   * If the user is authenticated or security is OFF, the consent is stored in the backend.
+   * If the user is not authenticated and security is ON, regardless the free access status, the consent is stored in
+   * local storage.
    *
    * @returns A promise that resolves when the request to the backend has passed.
    */
   acceptCookiePolicy(): Promise<void> {
-    const authenticatedUser = this.setAcceptedCookiePolicy();
-    const hasFreeAccess = this.authenticationService.isAuthenticated() || this.authorizationService.hasFreeAccess();
-    if (hasFreeAccess) {
+    const authenticatedUser = this.securityContextService.getAuthenticatedUser() || new AuthenticatedUser({});
+    this.updateUserCookieConsent(authenticatedUser);
+    this.securityContextService.updateAuthenticatedUser(authenticatedUser);
+    const isLoggedIn = this.securityContextService.getIsLoggedIn();
+    const securityEnabled = this.securityContextService.getSecurityConfig()?.isEnabled();
+    const persistConsentInLocalStorage = securityEnabled && !isLoggedIn;
+    if (persistConsentInLocalStorage) {
       // Don't update the user but store data in local storage because the user is not authenticated and the server will
       // throw an error if we try to update the user without authentication.
-      const consent = this.getCookieConsent();
+      const consent = authenticatedUser.getCookieConsent();
       if (consent) {
         this.trackingStorageService.setCookieConsent(consent);
       }
@@ -86,7 +95,6 @@ export class TrackingService implements Service {
       return CookieConsent.NOT_ACCEPTED_WITH_TRACKING();
     }
 
-    // @ts-expect-error - we need to cast it to CookieConsent as it's stored as a plain object in the backend
     return CookieConsent.fromJSON(principal.appSettings.COOKIE_CONSENT);
   }
 
@@ -130,9 +138,7 @@ export class TrackingService implements Service {
     this.googleAnalyticsCookieService.remove();
   };
 
-  private setAcceptedCookiePolicy(): AuthenticatedUser {
-    const user = this.securityContextService.getAuthenticatedUser() || new AuthenticatedUser({});
-
+  private updateUserCookieConsent(user: AuthenticatedUser): void {
     let cookieConsent: CookieConsent;
     if (user.appSettings?.COOKIE_CONSENT) {
       cookieConsent = new CookieConsent(user.appSettings.COOKIE_CONSENT as CookieConsent);
@@ -143,6 +149,5 @@ export class TrackingService implements Service {
     cookieConsent.policyAccepted = true;
     cookieConsent.updatedAt = Date.now();
     user.appSettings.COOKIE_CONSENT = cookieConsent;
-    return user;
   }
 }

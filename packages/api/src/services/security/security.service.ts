@@ -85,7 +85,9 @@ export class SecurityService implements Service {
 
     return this.securityRestService.setFreeAccess(freeAccessData)
       .then(() => this.getSecurityConfig())
-      .then((securityConfig) => this.securityContextService.updateSecurityConfig(securityConfig));
+      .then((securityConfig) => {
+        this.securityContextService.updateSecurityConfig(securityConfig);
+      });
   }
 
   /**

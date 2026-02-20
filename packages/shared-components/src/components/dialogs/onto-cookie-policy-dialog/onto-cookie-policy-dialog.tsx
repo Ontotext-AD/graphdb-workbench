@@ -38,6 +38,7 @@ export class OntoCookiePolicyDialog implements OntoDialog {
       modalClass: 'cookie-policy-modal',
     };
     const cookieConsent = new CookieConsent(this.user?.appSettings?.COOKIE_CONSENT);
+    console.log('%cnew dialog', 'background: yellow', {cookieConsent, user: this.user});
 
     return (
       <onto-dialog config={config}>

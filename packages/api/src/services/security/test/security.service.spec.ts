@@ -227,7 +227,7 @@ describe('SecurityService', () => {
           DEFAULT_SAMEAS: true,
           IGNORE_SHARED_QUERIES: false,
           EXECUTE_COUNT: true,
-          COOKIE_CONSENT: true
+          COOKIE_CONSENT: undefined
         })
       });
 
@@ -240,7 +240,7 @@ describe('SecurityService', () => {
           DEFAULT_SAMEAS: true,
           IGNORE_SHARED_QUERIES: false,
           EXECUTE_COUNT: true,
-          COOKIE_CONSENT: true
+          COOKIE_CONSENT: undefined
         }
       };
 

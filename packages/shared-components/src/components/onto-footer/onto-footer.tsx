@@ -5,7 +5,6 @@ import {
   SubscriptionList,
   ProductInfoContextService,
   SecurityContextService,
-  CookieConsent,
   TrackingService,
   LicenseContextService,
 } from '@ontotext/workbench-api';
@@ -40,6 +39,7 @@ export class OntoFooter {
 
   @Listen('consentGiven')
   handleConsentGiven(): void {
+    console.log('%cconsentGiven', 'background: orange',);
     this.trackingService.acceptCookiePolicy()
       .then(() => this.shouldShowCookieConsent = false);
   }
@@ -110,10 +110,11 @@ export class OntoFooter {
 
     const user = this.securityContextService.getAuthenticatedUser();
     const isLoggedIn = this.securityContextService.getIsLoggedIn();
-    const isFreeAccessEnabled = this.securityContextService.getSecurityConfig()?.isFreeAccessEnabled();
-    const isPolicyAccepted = new CookieConsent(user?.appSettings?.COOKIE_CONSENT).policyAccepted;
-
+    const isFreeAccessEnabled = this.securityContextService.getSecurityConfig()?.isFreeAccessEnabled() ?? false;
+    // TODO: check if we can use the consent directly from the user without creating a new CookieConsent object
+    const isPolicyAccepted = user?.getCookieConsent()?.policyAccepted ?? false;
     const localConsent = this.trackingService.getCookieConsent();
+    console.log('%csetCookieConsentVisibility', 'background: tan', {isLoggedIn, isFreeAccessEnabled, isPolicyAccepted, localConsent, user});
     if (localConsent) {
       this.shouldShowCookieConsent = !localConsent.policyAccepted && (isFreeAccessEnabled || isLoggedIn);
     } else {
