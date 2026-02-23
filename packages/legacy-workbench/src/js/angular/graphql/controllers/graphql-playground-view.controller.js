@@ -97,6 +97,7 @@ function GraphqlPlaygroundViewCtrl($scope, $location, $repositories, $languageSe
             headers: getHeaders,
             selectedLanguage: $languageService.getLanguage(),
             defaultQuery: 'query Object {\n  object(limit: 100) {\n    id\n  }\n}',
+            editorsThemeName: themeService.getCodeEditorThemeName(),
         };
         return new GraphqlPlaygroundConfig(config);
     };
@@ -208,8 +209,7 @@ function GraphqlPlaygroundViewCtrl($scope, $location, $repositories, $languageSe
      * @param {SelectMenuOptionsModel} endpoint
      */
     const updateConfiguration = (endpoint) => {
-        const config = buildConfig(endpoint.value);
-        $scope.configuration = new GraphqlPlaygroundConfig(config);
+        $scope.configuration = buildConfig(endpoint.value);
     };
 
     /**
