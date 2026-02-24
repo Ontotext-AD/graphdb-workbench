@@ -1,14 +1,10 @@
 <div class="modal-header">
     <button type="button" class="close" ng-click="close()"></button>
+    <h3 class="modal-title">{{'import.import_error_dialog.title' | translate}}</h3>
 </div>
 
-<div class="modal-body">
-    <form>
-        <div class="form-group">
-            <textarea class="form-control message" rows="30" ng-model="message" readonly
-                      ng-maxlength="sizeLimit-1"></textarea>
-        </div>
-    </form>
+<div class="modal-body message">
+                {{message}}
 </div>
 
 <div class="modal-footer">
