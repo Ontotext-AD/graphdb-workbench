@@ -2135,6 +2135,9 @@
                 "label": "Format"
             }
         },
+        "import_error_dialog": {
+            "title": "Import error"
+        },
         "user_data": {
             "duplicates_confirmation": {
                 "title": "Confirm files overwrite",

@@ -159,6 +159,7 @@ describe('URL with Repository ID parameter', () => {
         beforeEach(() => {
             repositoryId = 'repository-in-url-' + Date.now();
             cy.createRepository({id: repositoryId});
+            cy.initializeRepository(repositoryId);
             cy.presetRepository(repositoryId);
         })
 

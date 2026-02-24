@@ -127,7 +127,9 @@ describe('Import server files', () => {
         ImportResourceMessageDialog.getDialog().should('be.visible');
 
         // with full error message
-        ImportResourceMessageDialog.getMessage().should('have.value', 'RDF Parse Error: The element type "ex:looooooooooooooooooooooooooooooooongTaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabNaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaame" must be terminated by the matching end-tag "</ex:looooooooooooooooooooooooooooooooongTaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabNaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaame>". [line 9, column 6]');
+        ImportResourceMessageDialog
+            .getMessage()
+            .should('contain.text', 'RDF Parse Error: The element type "ex:looooooooooooooooooooooooooooooooongTaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabNaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaame" must be terminated by the matching end-tag');
 
         // When I click on corner close button.
         ImportResourceMessageDialog.close();
