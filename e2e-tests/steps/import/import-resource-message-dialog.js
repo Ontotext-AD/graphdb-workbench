@@ -14,7 +14,7 @@ export class ImportResourceMessageDialog extends ModalDialogSteps {
     }
 
     static getMessage() {
-        return this.getDialogBody().find('.message');
+        return this.getDialogBody();
     }
 
     static getCopyToClipboard() {
