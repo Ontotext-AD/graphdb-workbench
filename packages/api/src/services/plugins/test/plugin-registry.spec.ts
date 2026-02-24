@@ -7,7 +7,9 @@ import {
   PluginModule,
   PluginsManifestResponse,
   Plugin,
-  GuidePlugin, ThemesExtensionPoint
+  GuidePlugin, ThemesExtensionPoint,
+  InteractiveGuideExtensionPoint,
+  MainMenuExtensionPoint
 } from '../../../models/plugins';
 import {PluginsRestService} from '../plugins-rest.service';
 import {ConfigurationContextService} from '../../configuration/configuration-context.service';
@@ -15,10 +17,6 @@ import {LoggerType} from '../../../models/logging/logger-type';
 import {LogLevel} from '../../../models/logging/log-level';
 import {TestUtil} from '../../utils/test/test-util';
 import {ResponseMock} from '../../http/test/response-mock';
-import {MainMenuExtensionPoint} from '../../../models/plugins';
-import {
-  InteractiveGuideExtensionPoint
-} from '../../../models/plugins';
 import {ExtensionPointAlreadyRegisteredError} from '../extension-point-already-registered-error';
 import {OrderedExtensionPoint} from '../../../models/plugins/extension-points/ordered/ordered-extension-point';
 import {DuplicatePluginOrderError} from '../duplicate-plugin-order-error';

@@ -1,5 +1,4 @@
-import {Plugin} from '../../models/plugins';
-import {ExtensionPoint} from '../../models/plugins';
+import {Plugin, ExtensionPoint} from '../../models/plugins';
 import {OrderedExtensionPoint} from '../../models/plugins/extension-points/ordered/ordered-extension-point';
 import {OrderedPlugin} from '../../models/plugins/plugins/ordered/ordered-plugin';
 import {ExtensionPointAlreadyRegisteredError} from './extension-point-already-registered-error';
@@ -82,7 +81,7 @@ export class PluginRegistry {
    * @returns The first plugin matching the predicate, or undefined if none is found.
    */
   findPlugin<T extends Plugin>(extensionPointName: string, predicate: (item: T) => boolean): T | undefined {
-    return this.get<T>(extensionPointName).find(predicate) as T | undefined;
+    return this.get<T>(extensionPointName).find(predicate);
   }
 
   /**
@@ -146,7 +145,7 @@ export class PluginRegistry {
     extensionPoint.removePluginByFieldIdName(plugin);
 
     if (extensionPoint instanceof OrderedExtensionPoint) {
-      this.processOrderedPlugin(plugin as OrderedPlugin, extensionPoint as OrderedExtensionPoint);
+      this.processOrderedPlugin(plugin as OrderedPlugin, extensionPoint);
     } else {
       extensionPoint.addPlugin(plugin);
     }

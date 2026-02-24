@@ -220,7 +220,7 @@ function GuidesService(
      *   (e.g., `{ username: "John" }`).
      * @returns {string} The translated string, or the key if no translation is available.
      */
-    this.translate = (translationBundle = {}, key, parameters = {}) => {
+    this.translate = (translationBundle, key, parameters = {}) => {
         let translation = translationBundle[this.currentLanguage]?.[key];
         if (!translation) {
             // Fallback to the default language
@@ -613,22 +613,17 @@ function GuidesService(
      * @private
      */
     this._subscribeToGuideResumed = () => {
-        // TODO: Check is this subscription needed. This is a service, so we don't have destroy
-        // Double subscriptions? If so check the other ones as well
-        if (!this.guideResumeSubscription) {
-            this.guideResumeSubscription = $rootScope.$on('guideResume', () => {
-                const currentGuideId = ShepherdService.getGuideId();
-                this.getGuides()
-                    .then((guides) => {
-                        const currentGuide = guides.find((guide) => guide.guideId === currentGuideId);
-                        const currentStepId = ShepherdService.getCurrentStepId();
-                        this.startGuide(currentGuide, currentStepId);
-                    });
-            });
-        }
+        $rootScope.$on('guideResume', () => {
+            const currentGuideId = ShepherdService.getGuideId();
+            this.getGuides()
+                .then((guides) => {
+                    const currentGuide = guides.find((guide) => guide.guideId === currentGuideId);
+                    const currentStepId = ShepherdService.getCurrentStepId();
+                    this.startGuide(currentGuide, currentStepId);
+                });
+        });
     };
 
-    // TODO: Check whether these are used
     this._subscribeToGuideCancel = () => {
         ShepherdService.subscribeToGuideCancel(() => $rootScope.$broadcast('guideReset'));
     };
