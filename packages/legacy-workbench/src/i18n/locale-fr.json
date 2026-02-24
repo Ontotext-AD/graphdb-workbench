@@ -2133,6 +2133,9 @@
                 "label": "Format"
             }
         },
+        "import_error_dialog": {
+            "title": "Erreur d'importation"
+        },
         "user_data": {
             "duplicates_confirmation": {
                 "title": "Confirmer l'écrasement des fichiers",

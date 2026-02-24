@@ -60,9 +60,14 @@
     border-bottom: 1px dotted var(--gw-secondary-base);
 }
 
+.import-resource-message-dialog .modal-content {
+    max-height: 75vh;
+    overflow-wrap: break-word;
+}
+
 .import-resource-message-dialog .message {
-    color: #000000;
-    font-size: 15px;
-    resize: none;
+    color: var(--gw-body-color);
+    background-color: var(--gw-error-lighter);
+    margin: 10px;
 }
 
