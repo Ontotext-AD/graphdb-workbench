@@ -94,6 +94,15 @@
 
 .agent-list-component .agent-item .btn-group .agent-actions-menu {
     margin-top: 4px;
+    width: 12rem;
+    right: 0;
+}
+
+@media (max-width: 1220px) {
+    .agent-list-component .agent-item .btn-group .agent-actions-menu {
+        width: 10rem;
+        font-size: 0.8rem;
+    }
 }
 
 .agent-list-component .agent-item .btn-group .dropdown-item span {
