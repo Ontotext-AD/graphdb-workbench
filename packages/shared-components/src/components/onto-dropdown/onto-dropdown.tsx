@@ -209,8 +209,18 @@ export class OntoDropdown {
   private readonly toggleButtonClickHandler = () => {
     TooltipUtil.destroyTooltip(this.dropdownButtonElement);
     this.buttonTooltipContent = '';
+    this.clearDropdownItemTooltips();
     this.toggleComponent();
   };
+
+  private clearDropdownItemTooltips(): void {
+    this.hostElement
+      .querySelectorAll<HTMLElement>('.onto-dropdown-menu-item')
+      .forEach((el) => {
+        TooltipUtil.destroyTooltip(el as HTMLElementWithTooltip);
+        el.setAttribute('tooltip-content', '');
+      });
+  }
 
   private itemClickHandler<T>(value: T) {
     return () => this.onSelect(value);
