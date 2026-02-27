@@ -10,9 +10,10 @@
   line-height: 1.5;
   max-width: var(--gw-tooltip-max-width);
   pointer-events: auto;
-  color: var(--gw-tooltip-color);
-  background-color: var(--gw-tooltip-background);
-  border-radius: var(--gw-tooltip-border-radius);
+  opacity: 1 !important;
+  color: var(--gw-tooltip-color) !important;
+  background-color: var(--gw-tooltip-background) !important;
+  border-radius: var(--gw-tooltip-border-radius) !important;
 
   .tooltip-arrow {
     width: 10px;

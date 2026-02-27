@@ -17,8 +17,8 @@ export default defineConfig({
     video: true,
     defaultCommandTimeout: 25000,
     numTestsKeptInMemory: 10,
-    viewportWidth: 1280,
-    viewportHeight: 720,
+    viewportWidth: 1600,
+    viewportHeight: 1200,
     e2e: {
         retries: {
             runMode: 2,

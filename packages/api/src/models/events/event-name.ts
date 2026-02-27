@@ -13,4 +13,6 @@ export const EventName = {
   APP_DATA_LOADED: 'applicationDataLoaded',
   APPLICATION_MOUNTED: 'applicationMounted',
   APPLICATION_UNMOUNTED: 'applicationUnmounted',
+  APPLICATION_CHANGED: 'applicationChanged',
+  APPLICATION_BEFORE_CHANGE: 'applicationBeforeChange'
 };

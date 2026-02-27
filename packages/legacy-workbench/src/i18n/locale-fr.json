@@ -1364,6 +1364,7 @@
         "url_param": {
             "invalid_repo": "Le dépôt \"{{repositoryId}}\" spécifié dans l'URL n'existe pas. Veuillez sélectionner un dépôt existant.",
             "invalid_repo_continue": "Le dépôt \"{{repositoryId}}\" spécifié dans l’URL n’existe pas. Vous pouvez continuer avec le dépôt actuel \"{{currentRepositoryId}}\" ou sélectionner un autre dépôt.",
+            "remote_location_repo_continue": "Le dépôt \"{{repositoryId}}\" spécifié dans l’URL n’existe pas à l’emplacement actuel. Vous pouvez continuer avec le dépôt actuel \"{{currentRepositoryId}}\" ou le sélectionner dans le menu.",
             "change_active_repo": "Le dépôt actif sera remplacé par \"{{repositoryId}}\". Voulez-vous continuer?"
         }
     },
@@ -2131,6 +2132,9 @@
             "import_format_menu": {
                 "label": "Format"
             }
+        },
+        "import_error_dialog": {
+            "title": "Erreur d'importation"
         },
         "user_data": {
             "duplicates_confirmation": {
@@ -3193,6 +3197,7 @@
     "guides.confirm-cancel-modal.content": "Êtes-vous sûr de vouloir quitter le guide ?<br><br>Vous pouvez le lancer à tout moment à partir de <b>Aide > Guides interactifs</b>.",
     "guides.confirm-cancel-modal.exit-button": "Sortie",
     "guides.confirm-cancel-modal.dont-show-button": "Ne pas démarrer automatiquement",
+    "guides.error.guide-not-found": "Le guide demandé est introuvable.",
     "guide.button.guide-paused": "Guide en pause",
     "guide.button.guide-resume": "Continuer le guide",
     "guide.validate.no-next": "Impossible de passer au suivant",
@@ -3267,6 +3272,7 @@
     "guide.step_plugin.import_rdf_file.confirm_duplicate_files_dialog.content": "Cliquez sur le bouton <b>{{'common.yes.btn'|translate}}</b> pour remplacer le fichier existant.",
     "guide.step_plugin.import_rdf_file.import-settings.import.button.content": "Cliquez sur le bouton <b>{{'common.import'|translate}}</b>.",
     "guide.step_plugin.import_rdf_file.file-must-be-uploaded": "Téléchargez d'abord le fichier <b>{{resourceFile}}</b>",
+    "guide.step_plugin.import_rdf_file.unexpected-file": "Le fichier importé ne correspond pas à la ressource attendue. Veuillez importer <b>{{resourceFile}}</b>.",
     "guide.step_plugin.import_status_info.content": "Attendez la fin de l'importation.",
     "guide.step_plugin.enable-autocomplete.status_info.content": "Attendez que l'indexation soit terminée.",
     "guide.step_plugin.visual-graph-properties.title": "Propriétés du graphique visuel",
@@ -3379,6 +3385,7 @@
     "guide.step_plugin.rdf-rank-compute-fill.content": "Cliquez sur <b>Calculer tout</b> pour lancer le calcul du RDF Rank.",
     "guide.step_plugin.connectors-connectors-intro.content": "Les connecteurs GraphDB vous permettent d'intégrer des composants et services externes avec les données de votre référentiel. Ils étendent les capacités de vos applications et restent automatiquement synchronisés avec les mises à jour du référentiel.",
     "guide.step_plugin.connectors-type-intro.content": "Les connecteurs GraphDB spécifiques offrent différentes possibilités de connexion.",
+    "guide.step_plugin.connectors-parameter-fields-remaining-fields-intro.content": "Cette configuration du connecteur Lucene contient plusieurs mappages de champs.",
     "guide.step_plugin.connectors-connector-intro.content": "Chaque section représente une seule instance de connecteur. Pour chaque instance, vous pouvez utiliser les boutons à droite pour la copier, la réparer ou la supprimer.",
     "guide.step_plugin.connectors-expand-connector.content": "Pour voir la configuration d'un connecteur, cliquez sur son nom. Cela développera les détails du connecteur.",
     "guide.step_plugin.connectors-parameter-intro.content": "Les paramètres de création pour luc:createConnector définissent comment une instance de connecteur est créée. Ils sont fournis dans un objet JSON avec les noms des paramètres comme clés. Certains paramètres sont obligatoires, d'autres optionnels, et les valeurs peuvent être des types simples, des listes ou des objets.",
@@ -3392,6 +3399,7 @@
     "guide.step_plugin.connectors-lucene-expand.content": "Cliquez sur <b>{{instanceName}}</b> pour afficher sa configuration.",
     "guide.step_plugin.connectors-lucene-fields-intro.content": "Les champs définissent exactement quelles parties de chaque entité seront synchronisées ainsi que les détails spécifiques du côté du connecteur. Le champ est la plus petite unité de synchronisation et il mappe une chaîne de propriétés de GraphDB vers un champ dans Lucene. Les champs sont spécifiés sous forme de liste d’objets champ. Au moins un objet champ est requis.",
     "guide.step_plugin.connectors-lucene-fields-field-name-intro.content": "Le <b>nom du champ</b> définit le mappage du côté du connecteur et est spécifié sous forme de chaîne. Il est également utilisé lors des requêtes pour référencer le champ.",
+    "guide.step_plugin.connectors-lucene-fields-remaining-fields-intro.content": "Cette configuration du connecteur Lucene contient plusieurs mappages de champs. Ils déterminent quelles valeurs sont recherchables, filtrables ou récupérables lors de l'exécution de la requête.",
     "guide.step_plugin.connectors-lucene-fields-field-name-transform-intro.content": "La <b>transformation du nom du champ</b> définit une transformation optionnelle du nom du champ.<ul><li><b>none</b> : le nom du champ est fourni via l’option fieldName.</li><li><b>predicate</b> : le nom du champ est égal à l’IRI complet du dernier prédicat de la chaîne. Par exemple, si le dernier prédicat est http://www.w3.org/2000/01/rdf-schema#label, le nom du champ sera également http://www.w3.org/2000/01/rdf-schema#label.</li><li><b>predicate.localName</b> : le nom du champ est dérivé du nom local de l’IRI du dernier prédicat de la chaîne. Par exemple, si le dernier prédicat est http://www.w3.org/2000/01/rdf-schema#comment, le nom du champ sera comment.</li></ul>",
     "guide.step_plugin.connectors-lucene-fields-property-chain-intro.content": "La <b>chaîne de propriétés</b> définit le mappage du côté GraphDB. Une chaîne de propriétés est une séquence de triplets où l’IRI de l’entité est le sujet du premier triplet, son objet est le sujet du suivant, et ainsi de suite. Une chaîne à un seul élément correspond à une propriété directe. Les chaînes de propriétés sont spécifiées comme une liste d’IRI, avec au moins un requis.",
     "guide.step_plugin.connectors-lucene-fields-default-value-intro.content": "La <b>valeur par défaut</b> définit la valeur à utiliser pour le champ lorsque la chaîne de propriétés n’a pas de valeurs correspondantes dans GraphDB. Elle peut être un littéral simple, un littéral avec datatype (préfixe xsd: pris en charge), un littéral avec balise de langue ou un IRI. Si elle n’est pas définie, il n’y a pas de valeur par défaut.",
@@ -3417,6 +3425,7 @@
     "guide.step_plugin.connectors-lucene-analyzer-intro.content": "Le paramètre <b>analyzer</b> spécifie un analyseur Lucene personnalisé. La valeur doit être le nom complet d’une classe étendant org.apache.lucene.analysis.Analyzer avec soit un constructeur par défaut, soit un constructeur acceptant un paramètre org.apache.lucene.util.Version.",
     "guide.step_plugin.connectors-lucene-open-view-sparql-query-dialog.content": "Cliquez sur <b>Voir la requête SPARQL</b> pour afficher la requête de création du connecteur Lucene.",
     "guide.step_plugin.connectors-lucene-view-sparql-dialog-intro.content": "La boîte de dialogue affiche la requête SPARQL utilisée pour créer le connecteur Lucene. Vous pouvez la copier pour l’exécuter manuellement ou l’intégrer dans des scripts d’automatisation.",
+    "guide.step_plugin.show-documentation-link.content": "Pour plus d'informations, veuillez visiter la <a href=\"{{documentationLink}}\" target=\"_blank\">documentation GraphDB</a>",
     "guide.confirm.cancel.message": "Êtes-vous sûr de vouloir arrêter le guide?",
     "guide.unexpected.error.message": "Le guide a été annulé en raison d'une erreur inattendue. Veuillez exécuter à nouveau le guide et si le problème persiste, contactez le support.",
     "guide.start.unexpected.error.message": "Le guide ne peut pas être démarré en raison d'une erreur inattendue. Veuillez réessayer d'exécuter le guide et si le problème persiste, contactez le support.",

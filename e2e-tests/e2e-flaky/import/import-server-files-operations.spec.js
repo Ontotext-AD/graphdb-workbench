@@ -1,7 +1,7 @@
 import {ImportServerFilesSteps} from "../../steps/import/import-server-files-steps";
 import {ImportSettingsDialogSteps} from "../../steps/import/import-settings-dialog-steps";
 
-describe('Import server files - Operations', {retries: {runMode: 2}}, () => {
+describe('Import server files - Operations', () => {
 
     let repositoryId;
 

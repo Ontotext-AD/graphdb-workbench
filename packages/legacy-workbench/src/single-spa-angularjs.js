@@ -147,13 +147,15 @@ function mount(opts, mountedInstances, props = {}) {
                 {strictDi: opts.strictDi},
             );
         } else {
-            props.initApplication()
+            return props.initApplication()
                 .then((instance) => {
                     mountedInstances.instance = instance;
                     mountedInstances.instance.get("$rootScope").singleSpaProps = props;
 
                     // https://github.com/single-spa/single-spa-angularjs/issues/51
                     mountedInstances.instance.get("$rootScope").$apply();
+
+                    service(EventService).emit(new ApplicationMounted());
                 });
         }
     });

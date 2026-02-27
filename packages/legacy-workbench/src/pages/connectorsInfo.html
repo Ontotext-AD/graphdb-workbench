@@ -5,12 +5,12 @@
     </h1>
     <div core-errors write ontop fedx license></div>
     <div onto-loader
-         ng-show="loader"
+         ng-if="loader"
          style="height: 60vh;"
          size="75"
          message="getLoaderMessage"
          timeout="[1]"></div>
-    <div ng-show="canWriteActiveRepo() && !loader && !isRestricted">
+    <div ng-if="canWriteActiveRepo() && !loader && !isRestricted">
         <div class="pull-right">
             <button class="btn btn-lg btn-link p-0" type="button"
                     ng-click="getConnectors()"
@@ -47,7 +47,7 @@
 										<em class="ri-delete-bin-6-line"></em>
                                     </button>
 								</div>
-                                <h5 class="mb-0" guide-selector="{{exist.name}}-connector-toggle-button" data-test="{{exist.name}}-connector-toggle-button"">
+                                <h5 class="mb-0" guide-selector="{{exist.name}}-connector-toggle-button" data-test="{{exist.name}}-connector-toggle-button">
                                     <a class="collapsed"
                                        data-toggle="collapse"
                                        data-parent="#accordion-{{keyForDom}}"
@@ -117,7 +117,9 @@
                                                 </div>
                                                 <div ng-if="option.__type == 'OptionArray'">
                                                     <fieldset class="form-group mb-1"
+                                                              ng-if="$index === 0"
                                                               ng-repeat="field in value track by $index"
+                                                              guide-selector="{{'connector-fieldset-' + $index}}"
                                                               ng-init="fieldIndex = $index">
                                                         <div class="alert alert-info no-icon">
                                                             <div class="form-group row"
@@ -161,6 +163,55 @@
                                                             </div>
                                                         </div>
                                                     </fieldset>
+                                                    <div guide-selector="connector-remaining-fieldsets" ng-if="value.length > 1">
+                                                        <fieldset class="form-group mb-1"
+                                                                  ng-if="$index > 0"
+                                                                  ng-repeat="field in value track by $index"
+                                                                  guide-selector="{{'connector-fieldset-' + $index}}"
+                                                                  ng-init="fieldIndex = $index">
+                                                            <div class="alert alert-info no-icon">
+                                                                <div class="form-group row"
+                                                                     ng-repeat="child in option.__childOptions | filter: { __type: '!Boolean' }: true"
+                                                                     guide-selector="{{child.__name}}-connector-subproperty">
+                                                                    <label class="col-xs-2 col-form-label">{{child.__label}}</label>
+                                                                    <div class="col-xs-10">
+                                                                        <input type="text" class="form-control"
+                                                                               ng-if="child.__type == 'String'"
+                                                                               ng-model="field[child.__name]" readonly>
+                                                                        <textarea class="form-control"
+                                                                                  ng-if="child.__type == 'BigString'"
+                                                                                  ng-model="field[child.__name]" readonly>
+                                                                        </textarea>
+                                                                        <div ng-if="child.__type == 'StringArray'"
+                                                                             ng-repeat="value in field[child.__name] track by $index">
+                                                                            <input type="text" class="form-control"
+                                                                                   ng-model="field[child.__name][$index]"
+                                                                                   readonly/>
+                                                                        </div>
+                                                                        <!-- Handles other types, e.g. OptionArray -->
+                                                                        <div ng-if="child.__type != 'String' && child.__type != 'StringArray' && child.__type != 'BigString'"
+                                                                             class="col-form-label">
+                                                                            <label ng-show="!field[child.__name]"><em>{{'no.value.set' | translate}}</em></label>
+                                                                            <pre class="form-control" ng-show="field[child.__name]">{{toPrettyJson(field[child.__name])}}</pre>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group row">
+                                                                    <div class="col-xs-2"></div>
+                                                                    <div class="col-xs-10">
+                                                                        <label class="form-check-inline" ng-repeat="child in option.__childOptions | filter: { __type: 'Boolean' }: true"
+                                                                               guide-selector="{{child.__name}}-connector-subproperty">
+                                                                            <input type="checkbox"
+                                                                                   class="form-check-input"
+                                                                                   ng-checked="field[child.__name] != null ? field[child.__name] : child.__defaultValue"
+                                                                                   disabled>
+                                                                            {{child.__label}}
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </fieldset>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>

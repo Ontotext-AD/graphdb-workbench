@@ -64,9 +64,9 @@
 
 					</div>
 					<div ng-show="user.userType !== 'user'">{{'security.unrestricted' | translate}}</div>
-                    <div>
-                        <span ng-repeat="role in user.customRoles">
-                            <span class="tag tag-primary" >{{ role }}</span>
+                    <div data-test="custom-roles">
+                        <span ng-repeat="role in user.customRoles" >
+                            <span class="tag tag-primary" data-test="custom-role">{{ role }}</span>
                             &nbsp;
                         </span>
                     </div>

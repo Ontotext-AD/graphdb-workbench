@@ -125,6 +125,18 @@ export namespace Components {
          */
         "license": License;
     }
+    interface OntoLoader {
+        /**
+          * Optional message text to display below the loader.
+          * @default ''
+         */
+        "messageText": string;
+        /**
+          * Size of the loader in pixels (width and height).
+          * @default 100
+         */
+        "size": number;
+    }
     interface OntoNavbar {
         /**
           * Configuration for the menu items model. This is the external model that is used to build the internal model.
@@ -475,6 +487,12 @@ declare global {
         prototype: HTMLOntoLicenseAlertElement;
         new (): HTMLOntoLicenseAlertElement;
     };
+    interface HTMLOntoLoaderElement extends Components.OntoLoader, HTMLStencilElement {
+    }
+    var HTMLOntoLoaderElement: {
+        prototype: HTMLOntoLoaderElement;
+        new (): HTMLOntoLoaderElement;
+    };
     interface HTMLOntoNavbarElementEventMap {
         "navbarToggled": NavbarToggledEvent;
     }
@@ -621,6 +639,7 @@ declare global {
         "onto-language-selector": HTMLOntoLanguageSelectorElement;
         "onto-layout": HTMLOntoLayoutElement;
         "onto-license-alert": HTMLOntoLicenseAlertElement;
+        "onto-loader": HTMLOntoLoaderElement;
         "onto-navbar": HTMLOntoNavbarElement;
         "onto-operations-notification": HTMLOntoOperationsNotificationElement;
         "onto-permission-banner": HTMLOntoPermissionBannerElement;
@@ -748,6 +767,18 @@ declare namespace LocalJSX {
           * The current license information
          */
         "license"?: License;
+    }
+    interface OntoLoader {
+        /**
+          * Optional message text to display below the loader.
+          * @default ''
+         */
+        "messageText"?: string;
+        /**
+          * Size of the loader in pixels (width and height).
+          * @default 100
+         */
+        "size"?: number;
     }
     interface OntoNavbar {
         /**
@@ -917,6 +948,7 @@ declare namespace LocalJSX {
         "onto-language-selector": OntoLanguageSelector;
         "onto-layout": OntoLayout;
         "onto-license-alert": OntoLicenseAlert;
+        "onto-loader": OntoLoader;
         "onto-navbar": OntoNavbar;
         "onto-operations-notification": OntoOperationsNotification;
         "onto-permission-banner": OntoPermissionBanner;
@@ -966,6 +998,7 @@ declare module "@stencil/core" {
             "onto-language-selector": LocalJSX.OntoLanguageSelector & JSXBase.HTMLAttributes<HTMLOntoLanguageSelectorElement>;
             "onto-layout": LocalJSX.OntoLayout & JSXBase.HTMLAttributes<HTMLOntoLayoutElement>;
             "onto-license-alert": LocalJSX.OntoLicenseAlert & JSXBase.HTMLAttributes<HTMLOntoLicenseAlertElement>;
+            "onto-loader": LocalJSX.OntoLoader & JSXBase.HTMLAttributes<HTMLOntoLoaderElement>;
             "onto-navbar": LocalJSX.OntoNavbar & JSXBase.HTMLAttributes<HTMLOntoNavbarElement>;
             "onto-operations-notification": LocalJSX.OntoOperationsNotification & JSXBase.HTMLAttributes<HTMLOntoOperationsNotificationElement>;
             "onto-permission-banner": LocalJSX.OntoPermissionBanner & JSXBase.HTMLAttributes<HTMLOntoPermissionBannerElement>;

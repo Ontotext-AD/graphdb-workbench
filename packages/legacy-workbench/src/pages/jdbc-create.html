@@ -53,8 +53,12 @@
                     <!-- First tab -->
                     <div class="tab-pane" ng-show="activeTab === 1">
 
-                        <yasgui-component id="query-editor" class="pt-1" yasgui-config="yasguiConfig"
-                                          query-changed="setDirty()"></yasgui-component>
+                        <yasgui-component id="query-editor"
+                                          ng-if="yasguiConfig"
+                                          class="pt-1"
+                                          yasgui-config="yasguiConfig"
+                                          query-changed="setDirty()">
+                        </yasgui-component>
 
                         <div ng-if="!jdbcConfigurationInfo.isValidQuery"
                              class="idError alert alert-danger invalid-query"
@@ -65,8 +69,11 @@
                              translate="jdbc.warning.invalid.query">
                         </div>
 
-                        <loader-component ng-if="isQueryRunning"
-                                          message="{{ 'jdbc.preview.first.rows' | translate: {name: jdbcConfigurationInfo.jdbcConfigurationName} }}"></loader-component>
+                        <div onto-loader
+                             ng-if="isQueryRunning"
+                             message-text="{{ 'jdbc.preview.first.rows' | translate: {name: jdbcConfigurationInfo.jdbcConfigurationName} }}"
+                             size="50">
+                        </div>
                     </div>
 
                     <!-- Second tab -->
@@ -193,12 +200,12 @@
     </div>
 
     <div class="pull-right">
-        <a ng-href="jdbc" class="btn btn-lg btn-secondary cancel-button"
+        <button ng-click="goToJdbcView()" class="btn btn-lg btn-secondary cancel-button"
            uib-popover="{{'jdbc.cancel.configuration' | translate}}"
            popover-placement="top"
            popover-trigger="mouseenter">
             {{ (canWriteActiveRepo ? 'common.cancel.btn' : 'common.close') | translate}}
-        </a>
+        </button>
         <button class="btn btn-lg btn-primary save-query-btn" ng-click="saveJdbcConfiguration()"
                 uib-popover="{{'jdbc.save.configuration' | translate}}"
                 popover-placement="top"
@@ -209,5 +216,8 @@
     </div>
 </div>
 
-<loader-component ng-if="loadingControllerResources"
-                  message="{{ ('common.refreshing.namespaces' | translate) + '.' +('common.extra.message' | translate) }}"></loader-component>
+<div onto-loader
+     ng-if="loadingControllerResources"
+     message-text="{{ ('common.refreshing.namespaces' | translate) + '.' +('common.extra.message' | translate) }}"
+     size="50">
+</div>

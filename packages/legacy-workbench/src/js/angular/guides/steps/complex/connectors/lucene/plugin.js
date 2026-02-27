@@ -64,17 +64,40 @@ PluginRegistry.add('guide.step', [
          * Options:
          * - <b>instanceName</b>: string (required) – the specific instance name of the Lucene connector.
          */
-        getSteps: (options) => {
+        getSteps: (options, services) => {
+            const GuideUtils = services.GuideUtils;
             return [{
                 guideBlockName: 'connectors-parameter-intro',
                 options: {
                     content: 'guide.step_plugin.connectors-lucene-fields-intro.content',
+                    scrollOffset: GuideUtils.SCROLL_OFFSET.CENTER,
                     // If mainAction is set the title will be set automatically
                     ...(options.mainAction ? {} : {title: LUCENE_DEFAULT_TITLE}),
                     ...options,
                     class: 'connectors-lucene-fields-intro',
                     connectorName: LUCENE_CONNECTOR_NAME,
                     parameterName: 'fields',
+                },
+            }];
+        },
+    },
+    {
+        guideBlockName: 'connectors-lucene-fields-remaining-fields-intro',
+        /**
+         * Options:
+         * - <b>instanceName</b>: string (required) – the specific instance name of the Lucene connector.
+         */
+        getSteps: (options) => {
+            return [{
+                guideBlockName: 'connectors-parameter-fields-remaining-fields-intro',
+                options: {
+                    content: 'guide.step_plugin.connectors-lucene-fields-remaining-fields-intro.content',
+                    // If mainAction is set the title will be set automatically
+                    ...(options.mainAction ? {} : {title: LUCENE_DEFAULT_TITLE}),
+                    ...options,
+                    class: 'connectors-lucene-fields-remaining-fields-intro',
+                    parameterName: 'fields',
+                    connectorName: LUCENE_CONNECTOR_NAME,
                 },
             }];
         },

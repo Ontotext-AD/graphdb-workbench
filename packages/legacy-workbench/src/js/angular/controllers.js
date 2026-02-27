@@ -223,6 +223,15 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     // LocalStorageSubscriptionHandlerService in the api module which triggers the change for the respective context
     // properties.
     let onSelectedRepositoryChangedSubscription;
+    // This variable is needed to avoid reacting to the repository change event triggered on bootstrap
+    let isFirstRepoChangeEvent = true;
+    // This variable is needed to avoid showing warnings about missing repository on the initial load of the application
+    let isFirstUrlResolution = true;
+    // The subscription to route change start event.
+    let routeChangeStartSubscription = undefined;
+    // Flag to check if the application is already mounted, used to avoid showing warnings about missing repository on
+    // the initial load of the application.
+    let isApplicationMounted = false;
 
     // =========================
     // Public variables
@@ -239,7 +248,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     $scope.embedded = $location.search().embedded;
     $scope.productInfo = productInfo;
     $scope.guidePaused = 'true' === LocalStorageAdapter.get(GUIDE_PAUSE);
-    $scope.startGuideAfterSecurityInit = true;
     $scope.licenseIsSet = false;
     $scope.hideRdfResourceSearch = false;
     $scope.graphdbVersion = $scope.engineVersion = productInfo.productVersion;
@@ -778,9 +786,9 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
                 });
 
             const queryParams = $location.search();
-            if (authorizationService.isRepoManager() && $scope.startGuideAfterSecurityInit && queryParams.autostartGuide) {
-                startGuide(queryParams.autostartGuide);
-                $scope.startGuideAfterSecurityInit = false;
+            const autoStartKey = Object.keys(queryParams).find((k) => k.toLowerCase() === 'autostartguide');
+            if (authorizationService.isRepoManager() && autoStartKey) {
+                startGuide(queryParams[autoStartKey]);
             }
         }
     };
@@ -818,6 +826,10 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         }
     };
 
+    const setRepositoryIdParam = (repositoryId) => {
+        $location.search(REPOSITORY_ID_PARAM, repositoryId).replace();
+    };
+
     const confirmRepositoryChange = (currentRepositoryId, newRepositoryId) => {
         ModalService.openConfirmationModal({
                 title: $translate.instant('common.confirm'),
@@ -832,11 +844,24 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
             },
             () => {
                 // on cancel, revert the URL to the current repository
-                $location.search(REPOSITORY_ID_PARAM, currentRepositoryId);
+                setRepositoryIdParam(currentRepositoryId);
             });
     };
 
-    let isFirstRepoChangeEvent = true;
+    const warnForMissingRepository = (repositoryIdParam, selectedRepository, messageKey) => {
+        ModalService.openModalAlert({
+            title: $translate.instant('common.warning'),
+            message: $translate.instant(messageKey, {
+                repositoryId: repositoryIdParam,
+                currentRepositoryId: selectedRepository.id,
+            }),
+        }).result.then(() => {
+            // The timeout is needed to ensure the location change happens after the current digest cycle
+            $timeout(() => {
+                setRepositoryIdParam(selectedRepository.id);
+            });
+        });
+    };
 
     const onSelectedRepositoryUpdated = (repository) => {
         // skip the first event which is triggered on bootstrap
@@ -848,7 +873,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
                 const searchParams = new URLSearchParams(WindowService.getLocationQueryParams());
                 const urlRepositoryParam = searchParams.get(REPOSITORY_ID_PARAM);
                 if (urlRepositoryParam !== repository.id) {
-                    $location.search(REPOSITORY_ID_PARAM, repository.id).replace();
+                    setRepositoryIdParam(repository.id);
                 }
             }
         }
@@ -867,70 +892,82 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         const repositoryIdParam = $location.search()[REPOSITORY_ID_PARAM];
         const selectedRepository = repositoryContextService.getSelectedRepository();
 
-        const repositoryExists = repositoryIdParam
-            ? repositoryContextService.repositoryExists({id: repositoryIdParam, location: ''})
-            : false;
+        // If repository exists in current or any location. The check validates by ID and location.
+        const repositoryByLocationExists = repositoryContextService.repositoryExists({id: repositoryIdParam, location: ''});
+        // If requested repository exists strictly by id and location in the system.
+        const repositoryExists = repositoryIdParam ? repositoryByLocationExists : false;
 
         const isSameRepository = !!selectedRepository && repositoryIdParam === selectedRepository.id;
 
-        // --- no selected repository ---
+        try {
+            // --- no selected repository ---
 
-        if (!selectedRepository) {
-            // 1. active repo no, repo in url no -> no action - just show repo selector
+            if (!selectedRepository) {
+                // 1. active repo no, repo in url no -> no action - just show repo selector
+                if (!repositoryIdParam) {
+                    return;
+                }
+
+                // 2. active repo no, repo in url yes, url repo exists -> set active repo same as the url
+                if (repositoryExists) {
+                    repositoryContextService.updateSelectedRepository({
+                        id: repositoryIdParam,
+                        location: '',
+                    });
+                    return;
+                }
+
+                // 3. active repo no, repo in url yes, url repo missing -> show warning, keep url
+                ModalService.openModalAlert({
+                    title: $translate.instant('common.warning'),
+                    message: $translate.instant('repository.url_param.invalid_repo', {repositoryId: repositoryIdParam}),
+                }).result;
+
+                return;
+            }
+
+            // --- selected repository is present ---
+
+            // 4. active repo yes, repo in url no -> update url
             if (!repositoryIdParam) {
+                // The timeout is needed to ensure the location change happens after the current digest cycle
+                setRepositoryIdParam(selectedRepository.id);
                 return;
             }
 
-            // 2. active repo no, repo in url yes, url repo exists -> set active repo same as the url
+            // 5. active repo yes, repo in url yes, same repo -> do nothing
+            if (isSameRepository && repositoryExists) {
+                return;
+            }
+
+            // 6. active repo yes, repo in url yes, url repo exists and is different -> confirm change
             if (repositoryExists) {
-                repositoryContextService.updateSelectedRepository({
-                    id: repositoryIdParam,
-                    location: '',
-                });
+                confirmRepositoryChange(selectedRepository.id, repositoryIdParam);
                 return;
             }
 
-            // 3. active repo no, repo in url yes, url repo missing -> show warning, keep url
-            ModalService.openModalAlert({
-                title: $translate.instant('common.warning'),
-                message: $translate.instant('repository.url_param.invalid_repo', {repositoryId: repositoryIdParam}),
-            }).result;
+            // 7. active repo yes, repo in url yes, url repo missing or on remote location -> keep active repo and fix URL
+            // - If the repository doesn't exist in any location, we can safely warn the user about that and fix the URL to
+            // point to the currently selected repository.
+            // - Otherwise, the repository might exist on a remote location, but we can't be sure about that, because we don't
+            // know the location of the repository specified in the URL. We warn the user that the repository might exist on
+            // a remote location and fix the URL to point to the currently selected repository.
 
-            return;
+            // If repository id exists in any location. This check would return true for multiple repositories with the same id on different locations.
+            const repositoryByIdExists = repositoryContextService.repositoryExists({
+                id: repositoryIdParam,
+                location: '',
+            }, true);
+            if (!repositoryByIdExists) {
+                warnForMissingRepository(repositoryIdParam, selectedRepository, 'repository.url_param.invalid_repo_continue');
+            } else {
+                if (isFirstUrlResolution) {
+                    warnForMissingRepository(repositoryIdParam, selectedRepository, 'repository.url_param.remote_location_repo_continue');
+                }
+            }
+        } finally {
+            isFirstUrlResolution = false;
         }
-
-        // --- selected repository is present ---
-
-        // 4. active repo yes, repo in url no -> update url
-        if (!repositoryIdParam) {
-            // The timeout is needed to ensure the location change happens after the current digest cycle
-            $timeout(() => {
-                $location.search(REPOSITORY_ID_PARAM, selectedRepository.id).replace();
-            });
-            return;
-        }
-
-        // 5. active repo yes, repo in url yes, same repo -> do nothing
-        if (isSameRepository && repositoryExists) {
-            return;
-        }
-
-        // 6. active repo yes, repo in url yes, url repo exists and is different -> confirm change
-        if (repositoryExists) {
-            confirmRepositoryChange(selectedRepository.id, repositoryIdParam);
-            return;
-        }
-
-        // 7. active repo yes, repo in url yes, url repo missing -> warning, keep active repo and fix URL
-        ModalService.openModalAlert({
-            title: $translate.instant('common.warning'),
-            message: $translate.instant('repository.url_param.invalid_repo_continue', {repositoryId: repositoryIdParam, currentRepositoryId: selectedRepository.id}),
-        }).result.then(() => {
-            // The timeout is needed to ensure the location change happens after the current digest cycle
-            $timeout(() => {
-                $location.search(REPOSITORY_ID_PARAM, selectedRepository.id).replace();
-            });
-        });
     };
 
     // =========================
@@ -997,14 +1034,23 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         $scope.initTutorial();
     });
 
-    let routeChangeStartSubscription = undefined;
     const subscribeToRouteChangeStart = () => {
-        routeChangeStartSubscription = $rootScope.$on('$routeChangeStart', onRouteChangeStart);
+        if (routeChangeStartSubscription) {
+            routeChangeStartSubscription();
+        }
+        routeChangeStartSubscription = $rootScope.$on('$routeChangeStart', () => {
+            if (!isApplicationMounted) {
+                return;
+            }
+            onRouteChangeStart();
+        });
     };
     subscribeToRouteChangeStart();
 
     service(EventService).subscribe(EventName.APPLICATION_MOUNTED, (payload) => {
+        isApplicationMounted = true;
         subscribeToRouteChangeStart();
+        onRouteChangeStart();
     });
 
     service(EventService).subscribe(EventName.APPLICATION_UNMOUNTED, (payload) => {

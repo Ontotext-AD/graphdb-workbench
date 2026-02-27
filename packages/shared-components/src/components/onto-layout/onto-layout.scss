@@ -15,18 +15,20 @@
   &.is-embedded {
     grid-template-columns: 1fr; /* Change to a single column */
     grid-template-areas:
-      "header"
-      "main"
-      "footer";
+      "main";
     padding-top: 1rem;
   }
 
   &.hide-navbar {
-    grid-template-columns: 1fr; /* Change to a single column */
-    grid-template-areas:
-      "header"
-      "main"
-      "footer";
+    grid-template:
+    "header" auto
+    "main" 1fr
+    "footer" auto / 1fr;
+
+    /* Maintain single column even when expanded */
+    &.expanded {
+      grid-template-columns: 1fr;
+    }
   }
 
   &.expanded {
@@ -36,6 +38,24 @@
   main .main-container {
     /* This is a temporary solution to properly align the main container next to the sidebar until a proper layout is in place. */
     margin-left: 0;
+  }
+
+  .main-slot-wrapper {
+    .loader-wrapper {
+      flex-grow: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    &.loading {
+      display: flex;
+      flex-direction: column;
+
+      .page-content {
+        visibility: hidden;
+      }
+    }
   }
 
   .default-slot-wrapper {

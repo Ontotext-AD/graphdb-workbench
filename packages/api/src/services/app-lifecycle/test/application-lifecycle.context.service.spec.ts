@@ -29,4 +29,10 @@ describe('Application lifecycle service', () => {
     service.updateApplicationDataState(LifecycleState.DATA_LOADED);
     expect(mockCallback).toHaveBeenCalledTimes(2);
   });
+
+  test('should get the current application data state', () => {
+    expect(service.getApplicationDataState()).toBeUndefined();
+    service.updateApplicationDataState(LifecycleState.DATA_LOADED);
+    expect(service.getApplicationDataState()).toBe(LifecycleState.DATA_LOADED);
+  });
 });

@@ -40,6 +40,11 @@ export class GuideDialogSteps {
         GuideDialogSteps.getCloseButton().scrollIntoView().click();
     }
 
+    static getContentLink() {
+        return GuideDialogSteps.getContent().find('a');
+    }
+
+
     static assertDialogWithTitleIsVisible(text) {
         GuideDialogSteps.getHeader().contains(text);
     }
@@ -50,5 +55,9 @@ export class GuideDialogSteps {
 
     static assertDialogIsClosed() {
         GuideDialogSteps.getModalDialog().should('not.exist');
+    }
+
+    static copyQueryToEditor() {
+        GuideDialogSteps.getModalDialog().find('.guide-copy-to-editor-query-button').click();
     }
 }

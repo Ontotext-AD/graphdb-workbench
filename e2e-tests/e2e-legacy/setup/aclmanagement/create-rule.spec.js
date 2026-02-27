@@ -260,6 +260,9 @@ describe('ACL Management: create rule', () => {
         // Then I expect the prefix warning to appear
         AclManagementSteps.getPrefixWarning(0).should('be.visible');
         AclManagementSteps.getPrefixWarning(0).should('contain.text', 'Custom roles should be entered without the "CUSTOM_" prefix in Workbench');
+        // When I blur the field, the warning should not be visible
+        AclManagementSteps.blurRole(0);
+        AclManagementSteps.getPrefixWarning(0).should('not.exist');
         // When I save the rule
         AclManagementSteps.saveRule(0);
         // Then the text should be how the user typed it

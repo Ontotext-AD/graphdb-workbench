@@ -62,7 +62,7 @@ export function isLoginPage(): boolean {
  * @returns {string} The pathname of the current URL, which represents the path segment that comes after the context (if any) and before the query string.
  */
 export function getPathName(): string {
-  return WindowService.getLocationPathname().substring(getBasePath().length - 1);
+  return WindowService.getWindow().location.pathname.substring(getBasePath().length - 1);
 }
 
 /**

@@ -39,18 +39,14 @@ describe('Yasr result pagination', () => {
             YasrSteps.getPagination().should('not.be.visible');
         });
 
-        it('should not be visible when results of query are less than configured page size', {
-            retries: {
-                runMode: 1,
-                openMode: 0
-            }
-        }, () => {
+        it('should not be visible when results of query are less than configured page size', () => {
             // When I visit a page with "ontotext-yasgui" component in it,
             // and execute a query which returns results less than page size.
             const queryDescription = new QueryStubDescription()
                 .setRepositoryId(repositoryId)
                 .setTotalElements(3);
             QueryStubs.stubQueryResults(queryDescription);
+            YasqeSteps.getExecuteQueryButton().should('be.visible');
             YasqeSteps.executeQuery();
 
             // Then I expect pagination to not be visible
@@ -61,6 +57,7 @@ describe('Yasr result pagination', () => {
                 .setRepositoryId(repositoryId)
                 .setTotalElements(1000);
             QueryStubs.stubQueryResults(queryDescription);
+            YasqeSteps.getExecuteQueryButton().should('be.visible');
             YasqeSteps.executeQuery();
 
             // Then I expect pagination to not be visible
@@ -110,12 +107,7 @@ describe('Yasr result pagination', () => {
             YasrSteps.getResultLink(0, 2).should('have.text', 'ontogen:page_2-row_1-column_2');
         });
 
-        it('should change page when clink on next or previous page button', {
-            retries: {
-                runMode: 1,
-                openMode: 0
-            }
-        }, () => {
+        it('should change page when clink on next or previous page button', () => {
             // When I visit a page with "ontotext-yasgui" component in it,
             // and execute a query which returns results more than page size.
             const queryDescription = new QueryStubDescription()
@@ -151,12 +143,7 @@ describe('Yasr result pagination', () => {
             YasrSteps.getResultLink(0, 2).should('have.text', 'ontogen:page_1-row_1-column_2');
         });
 
-        it('should should render pages in pager properly', {
-            retries: {
-                runMode: 1,
-                openMode: 1
-            }
-        }, () => {
+        it('should should render pages in pager properly', () => {
             // When I visit a page with "ontotext-yasgui" component in it,
             // and execute a query which results are on 6 pages.
             const queryDescription = new QueryStubDescription()

@@ -135,7 +135,10 @@
         </ul>
     </div>
 
-    <yasgui-component id="query-editor" yasgui-config="yasguiConfig"></yasgui-component>
+    <yasgui-component id="query-editor"
+                      ng-if="yasguiConfig"
+                      yasgui-config="yasguiConfig">
+    </yasgui-component>
 
-    <loader-component ng-if="isLoading"></loader-component>
+    <div onto-loader ng-if="isLoading" size="50"></div>
 </div>

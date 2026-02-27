@@ -69,6 +69,20 @@
                 }
             },
             {
+                "guideBlockName": "connectors-lucene-fields-remaining-fields-intro",
+                "options": {
+                    "instanceName": "NamedIndividuals"
+                }
+            },
+            {
+                "guideBlockName": "show-documentation-link",
+                "options": {
+                    "title": "Lucene connector",
+                    "url": "connectors",
+                    "documentationPath": "my-custom-link.html"
+                }
+            },
+            {
                 "guideBlockName": "connectors-lucene-languages-intro",
                 "options": {
                     "instanceName": "NamedIndividuals"

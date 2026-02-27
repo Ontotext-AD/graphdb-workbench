@@ -32,10 +32,10 @@
             <div class="collapse in mt-1" id="configurations-table">
                 <div class="no-indexes"
                      data-test="no-sparql-templates-message"
-                     ng-if="sparqlTemplateIds.length == 0"><em>{{'no.sparql.templates.defined' | translate}}</em></div>
+                     ng-if="!sparqlTemplateIds.items.length"><em>{{'no.sparql.templates.defined' | translate}}</em></div>
                 <table class="table table-hover mb-0" aria-describedby="SPARQL templates">
                     <tbody>
-                    <tr ng-repeat="template in sparqlTemplateIds track by $index"
+                    <tr ng-repeat="template in sparqlTemplateIds.items track by $index"
                         class="configuration-row">
                         <td>
                             <a class="lead configuration-name" ng-href="{{template.href}}">{{template.id}}</a>

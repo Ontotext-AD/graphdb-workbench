@@ -8,7 +8,15 @@ export class GuidesStubs {
     }
 
     static stubCreateAndConfigureAgentGuide() {
-        GuidesStubs.stubWithFixture('../fixtures/guides/ttyg/configure-agent/configure-ttyg-agent-guide.json')
+        GuidesStubs.stubWithFixture('../fixtures/guides/ttyg/configure-agent/configure-ttyg-agent-guide.json');
+    }
+
+    static stubTTYGConversationGuide() {
+        GuidesStubs.stubWithFixture('../fixtures/guides/ttyg/conversation/ttyg-conversation-guide.json');
+    }
+
+    static stubTTYGEditAgentGuide() {
+        GuidesStubs.stubWithFixture('../fixtures/guides/ttyg/edit-ttyg-agent/edit-ttyg-agent-guide.json');
     }
 
     static stubClassHierarchyGuide() {
@@ -29,6 +37,52 @@ export class GuidesStubs {
 
     static stubCreateSimilarityIndexGuide() {
         GuidesStubs.stubWithFixture('../fixtures/guides/create-similarity-index/create-similarity-index-guide.json');
+    }
+
+    static stubDownloadGuideResourceGuide() {
+        GuidesStubs.stubWithFixture('../fixtures/guides/download-guide-resource/download-guide-resource-guide.json');
+    }
+
+    static stubMainMenuGuide() {
+        GuidesStubs.stubWithFixture('../fixtures/guides/main-menu/main-menu-guide.json');
+    }
+
+    static stubExecuteSparqlQueryGuide() {
+        GuidesStubs.stubWithFixture('../fixtures/guides/execute-sparql-query/execute-sparql-query-guide.json');
+    }
+
+    static stubDownloadResource(resourcePath, resourceFile) {
+        cy.intercept('GET', `/rest/guides/download/${resourcePath}/${resourceFile}`, {
+            fixture: `guides/download-resource.ttl`,
+        }).as('resource-download');
+    }
+
+    static stubImportRDFFileGuide() {
+        GuidesStubs.stubWithFixture('../fixtures/guides/import-rdf-file/import-rdf-file-guide.json');
+    }
+
+    static stubConfirmDuplicatedRDFFileGuide() {
+        GuidesStubs.stubWithFixture('../fixtures/guides/import-rdf-file/confirm-duplicate-rdf-file-guide.json');
+    }
+
+    static stubRDFRankGuide() {
+        GuidesStubs.stubWithFixture('../fixtures/guides/rdf-rank/rdf-rank-guide.json');
+    }
+
+    static stubTableGraphExploreWithoutSubstepsGuide() {
+        GuidesStubs.stubWithFixture('../fixtures/guides/table-graph-explore/table-graph-explore-without-substeps-guide.json');
+    }
+
+    static stubTableGraphExploreGuide() {
+        GuidesStubs.stubWithFixture('../fixtures/guides/table-graph-explore/table-graph-explore-guide.json');
+    }
+    static stubWelcomGuide() {
+        GuidesStubs.stubWithFixture('../fixtures/guides/welcome/welcome-guide.json');
+    }
+
+
+    static stubVisualGraphGuide() {
+        GuidesStubs.stubWithFixture('../fixtures/guides/visual-graph/visual-graph-guide.json');
     }
 
     static stubWithFixture(fixturePath) {

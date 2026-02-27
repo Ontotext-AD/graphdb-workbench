@@ -2,6 +2,7 @@ import {MainMenuSteps} from "../../../steps/main-menu-steps";
 import {UserAndAccessSteps} from "../../../steps/setup/user-and-access-steps";
 import {LoginSteps} from "../../../steps/login-steps";
 import {ToasterSteps} from "../../../steps/toaster-steps";
+import {HeaderSteps} from '../../../steps/header-steps.js';
 
 describe('Turn on Security', () => {
 
@@ -15,15 +16,13 @@ describe('Turn on Security', () => {
         cy.switchOffSecurity(true);
     })
 
-  it('should enable security and show login screen with only Help accessible', () => {
+  it('should enable security and show login screen', () => {
     // Navigate to Users & Access
     UserAndAccessSteps.visit();
     // Verify we are redirected to login page
     cy.url().should('include', '/login');
-    MainMenuSteps.getMenuHelp().should('not.exist');
-    MainMenuSteps.getMenuExplore().should('not.exist');
-    MainMenuSteps.getMenuMonitoring().should('not.exist');
-    MainMenuSteps.getMenuSetup().should('not.exist');
+    HeaderSteps.getHeader().should('not.exist');
+    MainMenuSteps.getMainMenu().should('not.exist');
   });
 
   it('should reject wrong credentials and accept admin/root', () => {

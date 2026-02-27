@@ -13,6 +13,10 @@ export class UserAndAccessSteps {
         });
     }
 
+    static getUsersCatalogContainer() {
+        return cy.get('#wb-users');
+    }
+
     static getUrl() {
         return cy.url();
     }
@@ -103,6 +107,10 @@ export class UserAndAccessSteps {
     static findUserInTable(username) {
         return this.getUsersTable().find(`tbody .username:contains(${username})`)
             .closest('tr').as('user');
+    }
+
+    static getUserCustomRoles(userRow) {
+        return cy.get(userRow).getByTestId('custom-roles').getByTestId('custom-role');
     }
 
     static getUsernameField() {
@@ -359,15 +367,15 @@ export class UserAndAccessSteps {
     }
 
     static clickFreeWriteAccessRepo(repoName) {
-        const repoRow = cy.get('.repo-fields').contains(repoName).parent('.row');
-        repoRow.scrollIntoView();
-        repoRow.find('.write').realClick();
+        cy.get('.repo-fields').contains(repoName).parent('.row').as('row');
+        cy.get('@row').scrollIntoView();
+        cy.get('@row').find('.write').realClick();
     }
 
     static clickFreeGraphqlAccessRepo(repoName) {
-        const repoRow = cy.get('.repo-fields').contains(repoName).parent('.row');
-        repoRow.scrollIntoView();
-        repoRow.find('.graphql').realClick();
+        cy.get('.repo-fields').contains(repoName).parent('.row').as('row');
+        cy.get('@row').scrollIntoView();
+        cy.get('@row').find('.graphql').realClick();
     }
 
 }

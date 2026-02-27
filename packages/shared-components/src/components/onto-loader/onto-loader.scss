@@ -1,0 +1,21 @@
+:host {
+  display: block;
+
+  .onto-loader {
+    white-space: nowrap;
+    width: fit-content;
+
+    .loader-spinner {
+      margin-left: auto;
+      margin-right: auto;
+
+      circle {
+        fill: var(--gw-loader-color)
+      }
+    }
+
+    .loader-message {
+      text-align: center;
+    }
+  }
+}

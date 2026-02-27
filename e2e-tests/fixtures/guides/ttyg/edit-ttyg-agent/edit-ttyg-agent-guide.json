@@ -1,0 +1,22 @@
+[
+    {
+        "guideName": {
+            "en": "edit-ttyg-test-guide"
+        },
+        "steps": [
+            {
+                "guideBlockName": "edit-ttyg-agent",
+                "options": {
+                    "methods": [
+                        {
+                            "guideBlockName": "sparql-search-method",
+                            "options": {
+                                "ontologyGraph": "http://example.com"
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+]

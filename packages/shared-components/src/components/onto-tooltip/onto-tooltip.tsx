@@ -31,6 +31,9 @@ export class OntoTooltip {
 
   private handleTooltipShow(tooltip: HTMLTooltipElement): void {
     const tooltipTarget = tooltip.tooltipTarget;
+    if (!tooltipTarget) {
+      return;
+    }
     this.handleTooltipTargetShow(tooltipTarget);
   }
 
@@ -59,6 +62,9 @@ export class OntoTooltip {
 
   private handleTooltipHide(tooltip: HTMLTooltipElement, relatedTarget: HTMLElement): void {
     const tooltipTarget = tooltip.tooltipTarget;
+    if (!tooltipTarget) {
+      return;
+    }
     if (!relatedTarget || !tooltip.contains(relatedTarget)) {
       this.handleTooltipTargetHide(tooltipTarget, relatedTarget);
     }
@@ -66,7 +72,7 @@ export class OntoTooltip {
 
   private handleTooltipTargetHide(tooltipTarget: HTMLElementWithTooltip, relatedTarget?: HTMLElement): void {
     // Ensure the mouse is completely outside the target and its children
-    if (!relatedTarget || !tooltipTarget.contains(relatedTarget)) {
+    if (!relatedTarget || !tooltipTarget?.contains(relatedTarget)) {
       const tooltipInstance = TooltipUtil.getTooltipInstance(tooltipTarget);
       if (tooltipInstance) {
         TooltipUtil.destroyTooltip(tooltipTarget);

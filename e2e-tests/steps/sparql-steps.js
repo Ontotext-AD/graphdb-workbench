@@ -63,8 +63,12 @@ class SparqlSteps {
         this.getLoader().should('not.exist');
     }
 
+    static getActiveTabPanel() {
+        return cy.get('.tabPanel.active');
+    }
+
     static getRunQueryButton() {
-        return cy.get('#wb-sparql-runQuery');
+        return this.getActiveTabPanel().find('.yasqe_queryButton');
     }
 
     static getNoQueryRunInfo() {
@@ -122,6 +126,14 @@ class SparqlSteps {
 
     static getDownloadBtn() {
         return cy.get('#saveAsBtn');
+    }
+
+    static getVisualBtn() {
+        return this.getActiveTabPanel().find('.explore-visual-graph-button');
+    }
+
+    static visualizeConstructQuery() {
+        this.getVisualBtn().click();
     }
 
     static getEditorAndResultsBtn() {

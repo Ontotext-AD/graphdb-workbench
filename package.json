@@ -1,6 +1,6 @@
 {
     "name": "graphdb-workbench",
-    "version": "3.3.0-TR6",
+    "version": "3.3.0-RC1",
     "description": "The web application for GraphDB APIs",
     "engines": {
         "node": ">=22.17"
@@ -68,6 +68,7 @@
     "devDependencies": {
         "@babel/core": "^7.28.5",
         "@babel/preset-env": "^7.28.5",
+        "@babel/preset-typescript": "^7.28.5",
         "@babel/runtime": "^7.28.4",
         "babel-loader": "^10.0.0",
         "babel-plugin-istanbul": "^7.0.1",

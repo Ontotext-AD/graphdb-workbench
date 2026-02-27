@@ -80,7 +80,7 @@ describe('Connectors guide', () => {
             cy.wait('@getGuides');
             GuideSteps.runFirstGuide();
         });
-        it.only('Should test Lucene connector steps', () => {
+        it('Should test Lucene connector steps', () => {
             GuideDialogSteps.assertDialogWithTitleIsVisible('Lucene connector');
             GuideDialogSteps.assertDialogWithContentIsVisible('The Lucene Connector in GraphDB enables extremely fast keyword and faceted (aggregation) searches. Unlike traditional setups where indexing is handled externally, this connector stays automatically synchronized with your repository data, ensuring accurate and up-to-date search results at all times.');
             GuideDialogSteps.clickOnNextButton();
@@ -123,6 +123,17 @@ describe('Connectors guide', () => {
 
             GuideDialogSteps.assertDialogWithTitleIsVisible('Lucene connector');
             GuideDialogSteps.assertDialogWithContentIsVisible('The Facet option specifies whether the field is available for faceted searches in Lucene. Managed by the facet option (boolean, true by default).');
+            GuideDialogSteps.clickOnNextButton();
+
+            GuideDialogSteps.assertDialogWithTitleIsVisible('Lucene connector');
+            GuideDialogSteps.assertDialogWithContentIsVisible('This lucene connector configuration contains multiple field mappings. They determine which values are searchable, filterable, or retrievable during query execution.');
+            GuideDialogSteps.clickOnNextButton();
+
+            GuideDialogSteps.assertDialogWithTitleIsVisible('Lucene connector');
+            GuideDialogSteps.assertDialogWithContentIsVisible('For more information please visit GraphDB documentation');
+            GuideDialogSteps.getContentLink()
+                .should('have.attr', 'href')
+                .and('include', 'my-custom-link.html');
             GuideDialogSteps.clickOnNextButton();
 
             GuideDialogSteps.assertDialogWithTitleIsVisible('Lucene connector');

@@ -4,6 +4,7 @@ import {LoggerProvider} from "../core/services/logger-provider";
 
 const d3 = {select};
 const logger = LoggerProvider.logger;
+
 const GuideUtils = (function() {
     /**
      * Checks whether a given DOM element is visible in the document.
@@ -12,10 +13,18 @@ const GuideUtils = (function() {
      * @returns {boolean} `true` if the element is visible; otherwise, `false`.
      */
     const isElementVisible = (element) => {
-        if (!element) return false;
+        if (!element) {
+            return false;
+        }
 
         const style = window.getComputedStyle(element);
-        return style.display !== 'none' && style.visibility !== 'hidden' && style.opacity !== '0';
+        const rect = element.getBoundingClientRect();
+
+        return style.display !== 'none'
+            && style.visibility !== 'hidden'
+            && style.opacity !== '0'
+            && rect.width !== 0
+            && rect.height !== 0;
     };
 
     const clickOnElement = function(elementSelector) {
@@ -330,6 +339,20 @@ const GuideUtils = (function() {
         window.scrollTo(0, 0);
     };
 
+    /**
+     * Scrolls to the given offset.
+     * Can use the preset offsets SCROLL_OFFSET.START or SCROLL_OFFSET.CENTER, or directly provide a number.
+     *
+     * @param offsetTop the offset to scroll to. Can be a number or one of the SCROLL_OFFSET values ('start', 'center').
+     */
+    const scrollToOffset = (offsetTop) => {
+        const top = SCROLL_TO_MAP[offsetTop] ?? offsetTop;
+        window.scrollTo({
+            top,
+            behavior: 'smooth',
+        });
+    };
+
     const removeWhiteSpaces = (value) => {
         return value.replace(/\s+/g, '');
     };
@@ -369,6 +392,20 @@ const GuideUtils = (function() {
         return value !== null && typeof value === 'object' && !Array.isArray(value);
     };
 
+    /**
+     * Scrolls the element identified by the given selector into view.
+     * Calls element.scrollIntoView with the given scroll options.
+     *
+     * @param elementSelector The selector of the element to scroll into view.
+     * @param scrollOptions Options for scrolling behavior.
+     */
+    const scrollIntoView = (elementSelector, scrollOptions) => {
+        const element = document.querySelector(elementSelector);
+        if (element) {
+            element.scrollIntoView(scrollOptions);
+        }
+    };
+
     const CSS_SELECTORS = {
         SPARQL_EDITOR_SELECTOR: '.tabPanel.active .yasqe .CodeMirror-code',
         SPARQL_RESULTS_SELECTOR: '.tabPanel.active .yasr_results',
@@ -379,6 +416,16 @@ const GuideUtils = (function() {
 
     const BUTTONS = {
         SKIP_SECTION: 'skip.btn.section',
+    };
+
+    const SCROLL_OFFSET = {
+        START: 'start',
+        CENTER: 'center',
+    };
+
+    const SCROLL_TO_MAP = {
+        [SCROLL_OFFSET.START]: 0,
+        [SCROLL_OFFSET.CENTER]: window.innerHeight / 2,
     };
 
     return {
@@ -411,8 +458,11 @@ const GuideUtils = (function() {
         defaultInitPreviousStep,
         getElementSelector,
         isObject,
+        scrollIntoView,
+        scrollToOffset,
         CSS_SELECTORS,
         BUTTONS,
+        SCROLL_OFFSET,
     };
 })();
 

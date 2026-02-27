@@ -22,8 +22,10 @@ import {
     ThemeService,
     SecurityContextService,
     service,
+    RuntimeConfigurationContextService,
     AuthenticationStorageService,
 } from '@ontotext/workbench-api';
+import {LoggerProvider} from "../../services/logger-provider";
 
 const modules = [
     'graphdb.framework.core.services.translation-service',
@@ -94,6 +96,8 @@ function yasguiComponentDirective(
             const securityContextService = service(SecurityContextService);
             const themeService = service(ThemeService);
             const authStorageService = service(AuthenticationStorageService);
+            const runtimeConfigurationContextService = service(RuntimeConfigurationContextService);
+            const logger = LoggerProvider.logger;
 
             $scope.classToApply = attrs.class || '';
             const downloadAsPluginNameToEventHandler = new Map();
@@ -428,7 +432,7 @@ function yasguiComponentDirective(
                     }
 
                     if (!config.themeName) {
-                        config.themeName = themeService.isDarkModeApplied() ? ThemeService.CODE_EDITOR_DARK_THEME : null;
+                        config.themeName = themeService.getCodeEditorThemeName();
                     }
 
                     $scope.ontotextYasguiConfig = config;
@@ -447,8 +451,6 @@ function yasguiComponentDirective(
                         initialQueryValue = JSON.stringify(query);
                     });
             };
-
-            subscriptions.push($scope.$watch('yasguiConfig', init));
 
             const codeMirrorPasteHandler = () => {
                 let queryString;
@@ -497,10 +499,28 @@ function yasguiComponentDirective(
                 $scope.$emit('queryChanged', {dirty: initialQueryValue !== queryString});
             };
 
+            /**
+             * Handles application theme changes by applying the corresponding editor theme to the Ontotext YASGUI component.
+             */
+            const onThemeChanged = () => {
+                const ontotextYasguiElement = $scope.getOntotextYasguiElement();
+                if (ontotextYasguiElement) {
+                    ontotextYasguiElement.setTheme(themeService.getCodeEditorThemeName())
+                        .catch(() => {
+                            logger.error('Failed to apply the theme to Ontotext YASGUI.');
+                        });
+                }
+            };
+
+            const onLanguageChanged = (event, args) => {
+                $scope.language = args.locale;
+            };
+
             subscriptions.push(
-                $scope.$on('language-changed', function(event, args) {
-                    $scope.language = args.locale;
-                }));
+                $scope.$watch('yasguiConfig', init),
+                $scope.$on('language-changed', onLanguageChanged),
+                // Subscribe to theme changes to apply the new theme to the YASGUI editor.
+                runtimeConfigurationContextService.onThemeModeChanged(onThemeChanged));
 
             const removeAllSubscribers = () => {
                 subscriptions.forEach((subscription) => subscription());

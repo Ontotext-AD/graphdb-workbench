@@ -35,8 +35,29 @@ export class YasqeSteps {
         return YasqeSteps.getYasqe().find('.yasqe_queryButton');
     }
 
+    /**
+     * Clicks on the execute query button and hides the tooltip, which is sometimes overlapping the button and prevents
+     * it from being clicked.
+     * @param force - whether to force the click and mouseleave events. This is needed when testing a guide, because the
+     * shepherd's overlay is overlapping the button and prevents it from being clicked. In other scenarios, it is better
+     * not to force the click, because we want to make sure that the button is actually clickable by the user.
+     */
+    static clickExecuteQueryButtonAndHideTooltip(force = false) {
+        this.getExecuteQueryButton().click({force});
+        this.getExecuteQueryButton().trigger('mouseleave', {force: true});
+    }
+
     static executeQuery() {
-        this.getExecuteQueryButton().click();
+        this.clickExecuteQueryButtonAndHideTooltip();
+        YasrSteps.getResponseInfo()
+            .should('not.have.class', 'hidden')
+            .should('not.have.class', 'empty')
+            .should('be.visible');
+    }
+
+    // This step is needed when testing a guide. The shepherd's overlay is overlapping somehow the button.
+    static forceExecuteQuery() {
+        this.clickExecuteQueryButtonAndHideTooltip(true);
         YasrSteps.getResponseInfo()
             .should('not.have.class', 'hidden')
             .should('not.have.class', 'empty')
@@ -44,11 +65,11 @@ export class YasqeSteps {
     }
 
     static executeQueryWithoutWaiteResult() {
-        this.getExecuteQueryButton().click();
+        this.clickExecuteQueryButtonAndHideTooltip();
     }
 
     static executeErrorQuery() {
-        this.getExecuteQueryButton().click();
+        this.clickExecuteQueryButtonAndHideTooltip();
         // Wait a wile for the response information to be present.
         cy.get('.error-response-plugin').should('be.visible');
     }
@@ -95,7 +116,11 @@ export class YasqeSteps {
         return cy.waitUntil(() =>
             this.getEditor().find('.CodeMirror')
                 .then((codeMirrorEl) => {
-                    return codeMirrorEl && codeMirrorEl[0].CodeMirror.getValue().indexOf(query) !== -1;
+                    if (codeMirrorEl && codeMirrorEl[0].CodeMirror.getValue().indexOf(query) !== -1) {
+                        return true;
+                    } else {
+                        cy.fail('Query in editor is not as expected. Expected query:\n' + query + '\nActual query:\n' + codeMirrorEl[0].CodeMirror.getValue());
+                    }
                 }));
     }
 

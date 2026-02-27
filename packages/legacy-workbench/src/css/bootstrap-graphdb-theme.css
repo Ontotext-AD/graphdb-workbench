@@ -1145,9 +1145,14 @@ input[type="radio"]:checked::after {
     margin: 0.2em;
 }
 
-/*-------------------------------------------------------------
-	List groups
--------------------------------------------------------------*/
+input[type=checkbox]:checked:disabled {
+    background-color: var(--gw-checkbox-checked-disabled-background);
+    border-color: var(--gw-checkbox-checked-disabled-border-color);
+}
+
+    /*-------------------------------------------------------------
+        List groups
+    -------------------------------------------------------------*/
 
 .list-group-item:last-child,
 .list-group-item:first-child {
@@ -1202,7 +1207,7 @@ input.switch:empty ~ label:before {
     content: ' ';
     width: 2.2em;
     height: 1.25em;
-    background-color: var(--gw-toggleswitch-disabled-background);
+    background-color: var(--gw-toggleswitch-background);
     border-radius: 10em;
     -moz-transition: all 100ms ease-in; /* FF4+ */
     -o-transition: all 100ms ease-in; /* Opera 10.5+ */
@@ -1486,8 +1491,8 @@ input.switch:checked ~ label:hover:after {
     .display-type-table-btn.active,
     .display-type-visual-btn.active {
         color: var(--gw-button-primary-hover-color);
-        background-color: var(--gw-button-primary-hover-background);
-        border-color: var(--gw-button-primary-hover-border-color);
+        background-color: var(--gw-button-primary-background);
+        border-color: var(--gw-button-primary-border-color);
     }
 }
 
@@ -1887,11 +1892,33 @@ tags-input .tags .input {
 }
 
 .rzslider .rz-pointer {
-    background-color: var(--gw-secondary-base) !important;
+    background-color: var(--gw-slider-handle-focus-ring-color) !important;
+    outline: none !important;
+}
+
+.rzslider .rz-pointer:hover {
+    background-color: var(--gw-slider-handle-hover-background) !important;
+}
+
+.rzslider .rz-pointer:after {
+    background-color: var(--gw-slider-track-background) !important;
+}
+
+.rzslider .rz-pointer.rz-active:after {
+    background-color: var(--gw-slider-range-background) !important;
+}
+
+.rzslider .rz-bar {
+    background-color: var(--gw-slider-track-background) !important;
 }
 
 .rzslider .rz-selection {
-    background: var(--gw-secondary-base) !important;
+    background: var(--gw-slider-range-background) !important;
+}
+
+.rzslider .rz-bubble.rz-limit,
+.rzslider .rz-bubble {
+    color: var(--gw-slider-label-color) !important;
 }
 
 .login-form {
@@ -1902,12 +1929,12 @@ tags-input .tags .input {
 
 .btn-fade-warning {
     animation: fade-button 2s infinite;
-    --fade-color: var(--gw-warning-base);
+    --fade-color: var(--gw-warning-lighter);
 }
 
 .btn-fade-danger {
     animation: fade-button 2s infinite;
-    --fade-color: var(--gw-error-light);
+    --fade-color: var(--gw-error-lighter);
 }
 
 .btn-fade-warning:hover, .btn-fade-danger:hover {

@@ -219,8 +219,11 @@
 
         <div class="form-group row pt-2 mb-0" ng-hide="page == 1 && newConfig.startMode !== 'query'">
             <div class="col-md-9">
-                <yasgui-component id="query-editor" class="" yasgui-config="yasguiConfig"
-                                  query-changed="markDirty()"></yasgui-component>
+                <yasgui-component id="query-editor"
+                                  ng-if="yasguiConfig"
+                                  yasgui-config="yasguiConfig"
+                                  query-changed="markDirty()">
+                </yasgui-component>
             </div>
 
             <div class="sample-queries col-md-3">

@@ -2,13 +2,18 @@ import {ContextService} from '../context';
 import {DeriveContextServiceContract} from '../../models/context/update-context-method';
 import {ValueChangeCallback} from '../../models/context/value-change-callback';
 import {LifecycleState} from '../../models/app-lifecycle';
+import {ApplicationStateChange} from '../../models/app-lifecycle/application-state-change';
 
 type LifecycleDataContextFields = {
   readonly APPLICATION_DATA_STATE: string;
+  readonly APPLICATION_STATE_CHANGE: string;
+  readonly APPLICATION_STATE_BEFORE_CHANGE: string;
 }
 
 type LifecycleDataContextFieldParams = {
   readonly APPLICATION_DATA_STATE: LifecycleState;
+  readonly APPLICATION_STATE_CHANGE: ApplicationStateChange;
+  readonly APPLICATION_STATE_BEFORE_CHANGE: ApplicationStateChange;
 }
 
 /**
@@ -18,6 +23,8 @@ type LifecycleDataContextFieldParams = {
  */
 export class ApplicationLifecycleContextService extends ContextService<LifecycleDataContextFields> implements DeriveContextServiceContract<LifecycleDataContextFields, LifecycleDataContextFieldParams> {
   readonly APPLICATION_DATA_STATE = 'applicationDataLoaded';
+  readonly APPLICATION_STATE_CHANGE = 'applicationStateChange';
+  readonly APPLICATION_STATE_BEFORE_CHANGE = 'applicationStateBeforeChange';
 
   /**
    * Updates the application data state in the context.
@@ -38,5 +45,42 @@ export class ApplicationLifecycleContextService extends ContextService<Lifecycle
    */
   onApplicationDataStateChanged(callbackFn: ValueChangeCallback<LifecycleState | undefined>): () => void {
     return this.subscribe(this.APPLICATION_DATA_STATE, callbackFn);
+  }
+
+  /**
+   * Retrieves the current application data state from the context.
+   *
+   * @returns The current lifecycle state of the application data, or undefined if not set
+   */
+  getApplicationDataState(): LifecycleState | undefined {
+    return this.getContextPropertyValue(this.APPLICATION_DATA_STATE);
+  }
+
+  /**
+   * Set the application state change payload.
+   */
+  updateApplicationStateChange(stateChange: ApplicationStateChange): void {
+    this.updateContextProperty(this.APPLICATION_STATE_CHANGE, stateChange);
+  }
+
+  /**
+   * Subscribe to application state change events.
+   */
+  onApplicationStateChange(callbackFn: ValueChangeCallback<ApplicationStateChange | undefined>): () => void {
+    return this.subscribe(this.APPLICATION_STATE_CHANGE, callbackFn);
+  }
+
+  /**
+   * Set the application state before-change payload.
+   */
+  updateApplicationStateBeforeChange(stateChange: ApplicationStateChange): void {
+    this.updateContextProperty(this.APPLICATION_STATE_BEFORE_CHANGE, stateChange);
+  }
+
+  /**
+   * Subscribe to application state before-change events.
+   */
+  onApplicationStateBeforeChange(callbackFn: ValueChangeCallback<ApplicationStateChange | undefined>): () => void {
+    return this.subscribe(this.APPLICATION_STATE_BEFORE_CHANGE, callbackFn);
   }
 }

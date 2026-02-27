@@ -720,7 +720,7 @@ function ShepherdService($translate, LocalStorageAdapter, LSKeys, $interpolate, 
                                 onNextResult.catch(() => this._abortGuide(guide));
                             }
                         } else {
-                            if (nextStepDescription.forceReload || nextStepDescription.url && nextStepDescription.url !== currentStepDescription.url) {
+                            if (nextStepDescription.url && (nextStepDescription.forceReload || nextStepDescription.url !== currentStepDescription.url)) {
                                 navigate(nextStepDescription.url);
                             }
                             guide.next();

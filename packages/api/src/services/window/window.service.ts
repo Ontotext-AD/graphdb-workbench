@@ -1,5 +1,6 @@
 import {Service} from '../../providers/service/service';
 import {PluginRegistry} from '../../models/plugins';
+import {getPathName} from '../utils';
 
 /**
  * Service that provides access to browser window-related functionality.
@@ -38,8 +39,8 @@ export class WindowService implements Service {
     return WindowService.getWindow().location.hash;
   }
 
-  static getLocationPathname(): string {
-    return WindowService.getWindow().location.pathname;
+  static getLocationPathWithQueryParams(): string {
+    return getPathName() + WindowService.getLocationQueryParams();
   }
 
   /**

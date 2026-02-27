@@ -1,0 +1,12 @@
+{
+    "conversationId": "thread_new_created_chat",
+    "answerId": "msg_drDW9OTkPkY0oGoXSdPD5qEx",
+    "queryMethods": [
+        {
+            "name": "sparql_query",
+            "rawQuery": "SELECT ?character ?name ?height WHERE {\n  ?character a voc:Character;\n             rdfs:label ?name;\n             voc:height ?height.\n  FILTER(?name = \"Luke Skywalker\" || ?name = \"Leia Organa\")\n}",
+            "query": "SELECT ?character ?name ?height WHERE {\n  ?character a voc:Character;\n             rdfs:label ?name;\n             voc:height ?height.\n  FILTER(?name = \"Luke Skywalker\" || ?name = \"Leia Organa\")\n}",
+            "queryType": "sparql"
+        }
+    ]
+}
