@@ -2751,7 +2751,7 @@
     "main.info.load.sample.dataset": "GraphDB includes a sample dataset in the distribution under the directory examples/data/news. The dataset represents new articles semantically enriched with structured information from Wikipedia. To load the data go to Import > RDF and select the local files. ",
     "main.info.title.run.sparql.query": "Run a SPARQL query",
     "main.info.run.sparql.query": "You can find a list of sample SPARQL queries under examples/data/news/queries.txt demonstrating how to find interesting searches of news articles and the mentioned entities like: <br><ul><li>(1) Give me articles about persons born in New York</li><li>(2) Show me all occupations of every person in the news</li><li>(3) List me the members of a specific political party</li></ul>",
-    "main.info.rest.api": "GraphDB allows you to perform every operation also via a REST API or by using language specific RDF4J client application. To see the full list of supported functionality go to <a href=\"/webapi\">Help > REST API</a> or check the sample code under examples/developer-getting-started/<br>Have fun!",
+    "main.info.rest.api": "GraphDB allows you to perform every operation also via a REST API or by using language specific RDF4J client application. To see the full list of supported functionality go to <a href=\"webapi\">Help > REST API</a> or check the sample code under examples/developer-getting-started/<br>Have fun!",
     "timestamp.moments.ago": "moments ago",
     "timestamp.minutes.ago": "minutes ago",
     "timestamp.today.at": "today at",
