@@ -1,4 +1,4 @@
-import {Component, h, State, Host, Event, EventEmitter} from '@stencil/core';
+import {Component, h, State, Host, Event, EventEmitter, Listen} from '@stencil/core';
 import {DialogHandler} from '../../models/dialog/dialog-handler';
 
 /**
@@ -18,10 +18,10 @@ export class OntoCookieConsent implements DialogHandler {
   @Event() consentGiven: EventEmitter<void>;
 
   /**
-   * Closes the cookie policy dialog.
-   * This method is called when the dialog is closed.
+   * Listener for the closeDialog event emitted by the cookie policy dialog.
+   * Sets the showModal state to false to hide the dialog.
    */
-  // eslint-disable-next-line @stencil-community/own-methods-must-be-private
+  @Listen('closeDialog')
   onDialogClose() {
     this.showModal = false;
   }
@@ -29,7 +29,7 @@ export class OntoCookieConsent implements DialogHandler {
   render() {
     return (
       <Host>
-        <div class="cookie-consent-modal">
+        <div class="cookie-consent-banner">
           <section class="cookie-consent-content">
             <span>
               <translate-label labelKey={'cookie.cookie_consent'}></translate-label>
@@ -43,7 +43,7 @@ export class OntoCookieConsent implements DialogHandler {
           </section>
         </div>
         {
-          this.showModal && <onto-cookie-policy-dialog dialogHandler={this}></onto-cookie-policy-dialog>
+          this.showModal && <onto-cookie-policy-dialog></onto-cookie-policy-dialog>
         }
       </Host>
     );

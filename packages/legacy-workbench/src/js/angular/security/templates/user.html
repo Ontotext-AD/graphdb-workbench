@@ -302,6 +302,9 @@
 		</div>
 	</form>
 </div>
+<onto-cookie-policy-dialog ng-if="showCookieConsentModal"
+                           ng-custom-element
+                           ngce-on-close_dialog="onDialogClose($event)"></onto-cookie-policy-dialog>
 <div onto-loader size="50" ng-show="loader"></div>
 
 

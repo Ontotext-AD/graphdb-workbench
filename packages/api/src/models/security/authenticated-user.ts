@@ -5,6 +5,7 @@ import {User} from '../users/user';
 import {
   mapGrantedAuthoritiesResponseToModel
 } from '../../services/security/mappers/granted-authorities-ui-model.mapper';
+import {CookieConsent} from '../tracking';
 
 /**
  * Represents an authenticated user in the system
@@ -53,6 +54,10 @@ export class AuthenticatedUser extends Model<AuthenticatedUser> {
     this.authorities = data?.authorities ?? new AuthorityList();
     this.grantedAuthoritiesUiModel = mapGrantedAuthoritiesResponseToModel(data?.authorities ?? []);
     this.appSettings = data?.appSettings ?? new AppSettings();
+  }
+
+  getCookieConsent(): CookieConsent | undefined {
+    return this.appSettings.COOKIE_CONSENT;
   }
 
   setAuthorities(authorityList: AuthorityList = new AuthorityList()) {

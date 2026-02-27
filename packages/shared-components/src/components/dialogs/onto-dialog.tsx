@@ -46,7 +46,7 @@ export class OntoDialog {
             </main>
             <footer class="dialog-footer">
               <slot name="footer"/>
-              <button class="onto-btn onto-btn-primary"
+              <button class="onto-btn onto-btn-primary close-btn"
                 onClick={this.handleClose}
                 ref={(el) => (this.closeButton = el)}>
                 <translate-label labelKey={'common.button.close'}></translate-label>
