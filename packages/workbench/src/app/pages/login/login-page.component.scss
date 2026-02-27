@@ -77,8 +77,22 @@
         border-color: var(--gw-form-field-focus-border-color);
       }
 
+      /* hint UA to support appropriate autofill colors in dark mode */
+      color-scheme: light dark;
+
+      /* fix autofill background color in dark mode for WebKit browsers */
+      &:-webkit-autofill,
+      &:-webkit-autofill:focus,
+      &:-webkit-autofill:hover,
+      &:-webkit-autofill:active {
+        -webkit-text-fill-color: var(--gw-form-field-color);
+        box-shadow: 0 0 0 1000px var(--gw-form-field-background) inset;
+        caret-color: var(--gw-form-field-color);
+        transition: background-color 5000s ease-in-out 0s;
+      }
+
       &.ng-invalid.ng-touched {
-        border: 1px solid #FA787E;
+        border: 1px solid var(--gw-inputtext-invalid-border-color);
       }
 
       &.has-error {
