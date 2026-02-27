@@ -25,12 +25,15 @@ import 'angular/core/filters/bytes-filter';
 import 'angular/core/services/language.service';
 import {defineCustomElements as defineYasguiElements} from 'ontotext-yasgui-web-component/loader';
 import {defineCustomElements as defineGraphQlElements} from 'ontotext-graphql-playground-component/loader';
-import {convertToHumanReadable} from "./js/angular/utils/size-util";
 import {DocumentationUrlResolver} from "./js/angular/utils/documentation-url-resolver";
 import {NumberUtils} from "./js/angular/utils/number-utils";
 import {HtmlUtil} from "./js/angular/utils/html-util";
-import {ServiceProvider, LanguageContextService} from "@ontotext/workbench-api";
 import {LoggerProvider} from "./js/angular/core/services/logger-provider";
+import {
+    ServiceProvider,
+    LanguageContextService,
+    ByteUtils,
+} from "@ontotext/workbench-api";
 
 // $translate.instant converts <b> from strings to &lt;b&gt
 // and $sce.trustAsHtml could not recognise that this is valid html
@@ -279,7 +282,7 @@ const moduleDefinition = function(productInfo, translations) {
     });
 
     workbench.filter('prettyJSON', () => (json) => angular.toJson(json, true));
-    workbench.filter('humanReadableSize', () => (size) => convertToHumanReadable(size));
+    workbench.filter('humanReadableSize', () => (size) => ByteUtils.convertToHumanReadable(size));
     workbench.filter('trustAsHtml', ['$translate', '$sce', ($translate, $sce) => (message) => $sce.trustAsHtml(decodeHTML(message))]);
     workbench.filter('formatNumberToLocaleString', ['$translate', ($translate) => (number) => NumberUtils.formatNumberToLocaleString(number, $translate.use())]);
     workbench.filter('htmlAsText', () => (html) => HtmlUtil.getText(html));
