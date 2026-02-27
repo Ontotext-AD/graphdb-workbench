@@ -373,12 +373,15 @@ function AgentSettingsModalController(
      * Sets form validation state based on whether FTS is enabled and required.
      */
     $scope.checkIfFTSEnabled = () => {
+        const ftsSearchExtractionMethod = $scope.agentFormModel.assistantExtractionMethods.getFTSSearchExtractionMethod();
         if (!$scope.agentFormModel.repositoryId) {
             $scope.agentSettingsForm.$setValidity('FTSDisabled', false);
+            if (ftsSearchExtractionMethod.selected) {
+                ftsSearchExtractionMethod.expanded = true;
+            }
             return;
         }
 
-        const ftsSearchExtractionMethod = $scope.agentFormModel.assistantExtractionMethods.getFTSSearchExtractionMethod();
         if (!ftsSearchExtractionMethod.selected) {
             // clear the validation status if method is deselected.
             $scope.agentSettingsForm.$setValidity('FTSDisabled', true);
@@ -397,6 +400,9 @@ function AgentSettingsModalController(
             .finally(() => {
                 $scope.extractionMethodLoaderFlags[ExtractionMethod.FTS_SEARCH] = false;
                 $scope.agentSettingsForm.$setValidity('FTSDisabled', $scope.ftsEnabled);
+                if ($scope.agentSettingsForm.$error.FTSDisabled) {
+                    ftsSearchExtractionMethod.expanded = true;
+                }
             });
     };
 
@@ -432,8 +438,15 @@ function AgentSettingsModalController(
                 .find((extractionMethod) => extractionMethod.method === AdditionalExtractionMethod.AUTOCOMPLETE_IRI_DISCOVERY_SEARCH);
         }
         // If the method is not selected, we don't need to check the autocomplete index status.
-        // Also, if the repository id is not set, we can't check the autocomplete index status.
-        if (method && !method.selected || !$scope.agentFormModel.repositoryId) {
+        if (method && !method.selected) {
+            return;
+        }
+
+        // If the repository id is not set, we can't check the autocomplete index status.
+        if (!$scope.agentFormModel.repositoryId) {
+            if (method.selected) {
+                method.expanded = true;
+            }
             return;
         }
         const selectedRepositoryInfo = getSelectedRepositoryInfo();
@@ -445,7 +458,12 @@ function AgentSettingsModalController(
             .catch((error) => {
                 $scope.agentSettingsForm.$setValidity('autocompleteDisabled', false);
                 toastr.error(getError(error));
-            });
+            })
+            .finally(() => {
+            if ($scope.agentSettingsForm.$error.autocompleteDisabled) {
+                method.expanded = true;
+            }
+        });
     };
 
     /**
@@ -736,6 +754,12 @@ function AgentSettingsModalController(
         $scope.checkIfFTSEnabled();
     };
 
+    const handleSPARQLExtractionMethodPanelToggle = (extractionMethod) => {
+        if (extractionMethod.selected && !extractionMethod.sparqlOption) {
+            extractionMethod.expanded = true;
+        }
+    };
+
     /**
      * Returns the repository info model for the selected repository in the form.
      *
@@ -775,6 +799,7 @@ function AgentSettingsModalController(
         if (!extractionMethod.selected) {
             // clear the validation status if method is deselected.
             $scope.agentSettingsForm.$setValidity('missingIndex', true);
+            return;
         }
         if (extractionMethod.selected) {
             // Check if the connector instances select is pristine (unchanged). Treat the field as pristine until it exists.
@@ -787,37 +812,39 @@ function AgentSettingsModalController(
             }
         }
         if (!$scope.agentFormModel.repositoryId) {
+            extractionMethod.expanded = true;
             return;
         }
-        if (extractionMethod.expanded) {
-            $scope.extractionMethodLoaderFlags[extractionMethod.method] = true;
-            const selectedRepositoryInfo = getSelectedRepositoryInfo();
-            SimilarityService.getSimilarityIndexesWithVectorFields(selectedRepositoryInfo.repositoryId)
-                .then((connectorMap) => {
-                    $scope.connectorMap = connectorMap;
-                    const indexes = buildSelectMenuOptions(connectorMap);
-                    // if no indexes are found, selection (connectorsMap) will be cleaned and the info message will be
-                    // shown to the user again
-                    buildSimilarityIndexSelectOptions(connectorMap);
-                    updateSelectedSimilarityIndex(indexes, extractionMethod);
-                    updateVectorFields(extractionMethod);
+        $scope.extractionMethodLoaderFlags[extractionMethod.method] = true;
+        const selectedRepositoryInfo = getSelectedRepositoryInfo();
+        SimilarityService.getSimilarityIndexesWithVectorFields(selectedRepositoryInfo.repositoryId)
+            .then((connectorMap) => {
+                $scope.connectorMap = connectorMap;
+                const indexes = buildSelectMenuOptions(connectorMap);
+                // if no indexes are found, selection (connectorsMap) will be cleaned and the info message will be
+                // shown to the user again
+                buildSimilarityIndexSelectOptions(connectorMap);
+                updateSelectedSimilarityIndex(indexes, extractionMethod);
+                updateVectorFields(extractionMethod);
 
-                    $scope.agentSettingsForm.$setValidity('missingIndex', !extractionMethod.selected || $scope.hasConnectorData());
-                    // Initially, when there is no selection, the first index is selected, and we need to trigger the
-                    // onSimilarityIndexChange to set the connector fields.
-                    if (clearSelectedVectorField || (extractionMethod.connectorFields && extractionMethod.connectorFields.length === 0)) {
-                        $scope.onSimilarityIndexChange(extractionMethod);
-                    }
-                })
-                .catch((error) => {
-                    $scope.connectorMap = null;
-                    $scope.agentSettingsForm.$setValidity('missingIndex', false);
-                    logAndShowError(error, 'ttyg.agent.messages.error_similarity_indexes_loading');
-                })
-                .finally(() => {
-                    $scope.extractionMethodLoaderFlags[extractionMethod.method] = false;
-                });
-        }
+                $scope.agentSettingsForm.$setValidity('missingIndex', !extractionMethod.selected || $scope.hasConnectorData());
+                // Initially, when there is no selection, the first index is selected, and we need to trigger the
+                // onSimilarityIndexChange to set the connector fields.
+                if (clearSelectedVectorField || (extractionMethod.connectorFields && extractionMethod.connectorFields.length === 0)) {
+                    $scope.onSimilarityIndexChange(extractionMethod);
+                }
+            })
+            .catch((error) => {
+                $scope.connectorMap = null;
+                $scope.agentSettingsForm.$setValidity('missingIndex', false);
+                logAndShowError(error, 'ttyg.agent.messages.error_similarity_indexes_loading');
+            })
+            .finally(() => {
+                if ($scope.agentSettingsForm.$error.missingIndex) {
+                    extractionMethod.expanded = true;
+                }
+                $scope.extractionMethodLoaderFlags[extractionMethod.method] = false;
+            });
     };
 
     /**
@@ -875,32 +902,36 @@ function AgentSettingsModalController(
     };
 
     const handleRetrievalConnectorExtractionMethodPanelToggle = (extractionMethod) => {
-        if (!$scope.agentFormModel.repositoryId) {
-            return;
-        }
         if (!extractionMethod.selected) {
             // clear the validation status if method is deselected.
             $scope.agentSettingsForm.$setValidity('missingConnector', true);
+            return;
         }
 
-        if (extractionMethod.expanded) {
-            $scope.extractionMethodLoaderFlags[extractionMethod.method] = true;
-            const selectedRepositoryInfo = getSelectedRepositoryInfo();
-            ConnectorsService.getConnectorPrefixByName(CHAT_GPT_RETRIEVAL_CONNECTOR_NAME, selectedRepositoryInfo.repositoryId, selectedRepositoryInfo.repositoryLocation)
-                .then((prefix) => ConnectorsService.getConnectorsByTypeAsSelectMenuOptions(prefix, selectedRepositoryInfo.repositoryId, selectedRepositoryInfo.repositoryLocation))
-                .then((connectors) => {
-                    $scope.retrievalConnectors = connectors;
-                    $scope.agentSettingsForm.$setValidity('missingConnector', !extractionMethod.selected || !!(connectors && connectors.length));
-                    updateSelectedRetrievalConnector($scope.retrievalConnectors, extractionMethod);
-                })
-                .catch((error) => {
-                    $scope.agentSettingsForm.$setValidity('missingConnector', false);
-                    logAndShowError(error, 'ttyg.agent.messages.error_retrieval_connectors_loading');
-                })
-                .finally(() => {
-                    $scope.extractionMethodLoaderFlags[extractionMethod.method] = false;
-                });
+        if (!$scope.agentFormModel.repositoryId) {
+            extractionMethod.expanded = true;
+            return;
         }
+
+        $scope.extractionMethodLoaderFlags[extractionMethod.method] = true;
+        const selectedRepositoryInfo = getSelectedRepositoryInfo();
+        ConnectorsService.getConnectorPrefixByName(CHAT_GPT_RETRIEVAL_CONNECTOR_NAME, selectedRepositoryInfo.repositoryId, selectedRepositoryInfo.repositoryLocation)
+            .then((prefix) => ConnectorsService.getConnectorsByTypeAsSelectMenuOptions(prefix, selectedRepositoryInfo.repositoryId, selectedRepositoryInfo.repositoryLocation))
+            .then((connectors) => {
+                $scope.retrievalConnectors = connectors;
+                $scope.agentSettingsForm.$setValidity('missingConnector', !extractionMethod.selected || !!(connectors && connectors.length));
+                updateSelectedRetrievalConnector($scope.retrievalConnectors, extractionMethod);
+            })
+            .catch((error) => {
+                $scope.agentSettingsForm.$setValidity('missingConnector', false);
+                logAndShowError(error, 'ttyg.agent.messages.error_retrieval_connectors_loading');
+            })
+            .finally(() => {
+                if ($scope.agentSettingsForm.$error.missingConnector) {
+                    extractionMethod.expanded = true;
+                }
+                $scope.extractionMethodLoaderFlags[extractionMethod.method] = false;
+            });
     };
 
     /**
@@ -925,8 +956,7 @@ function AgentSettingsModalController(
 
     const extractionPanelToggleHandlers = {
         [ExtractionMethod.FTS_SEARCH]: (extractionMethod) => handleFTSExtractionMethodPanelToggle(extractionMethod),
-        [ExtractionMethod.SPARQL]: (extractionMethod) => {
-        },
+        [ExtractionMethod.SPARQL]: (extractionMethod) => handleSPARQLExtractionMethodPanelToggle(extractionMethod),
         [ExtractionMethod.SIMILARITY]: (extractionMethod) => handleSimilaritySearchExtractionMethodPanelToggle(extractionMethod),
         [ExtractionMethod.RETRIEVAL]: (extractionMethod) => handleRetrievalConnectorExtractionMethodPanelToggle(extractionMethod),
     };
@@ -994,6 +1024,9 @@ function AgentSettingsModalController(
         $uibModalInstance.rendered.then(() => {
             refreshSliderById('temperatureSlider', $scope.agentFormModel.temperature.value);
             refreshSliderById('topPSlider', $scope.agentFormModel.topP.value);
+            if ($scope.operation !== AGENT_OPERATION.CREATE) {
+                refreshValidations();
+            }
         });
     };
     init();
