@@ -163,6 +163,7 @@ function GraphsVisualizationsCtrl(
     $scope.goToHome = () => {
         resetState();
         // When closing the visualization screen, remove the config parameter from the URL. Leave other search params intact.
+        // eslint-disable-next-line no-unused-vars
         const {config, ...searchParams} = $location.search();
         $location.path('/graphs-visualizations').search(searchParams);
     };
@@ -438,6 +439,7 @@ function GraphsVisualizationsCtrl(
     const destroyHandler = () => {
         removeAllListeners();
         document.removeEventListener('keydown', handleKeyDown, true);
+
         window.onpopstate = null;
     };
 
@@ -504,6 +506,7 @@ function GraphsVisualizationsCtrl(
             .style("font-size", function(d) {
                 return d.fontSize + 'px';
             })
+            .append('xhtml:div')
             .html(function(d) {
                 return HtmlUtil.getText(d.labels[0].label).replaceAll("\n", "<br>");
             });
@@ -3076,9 +3079,15 @@ function GraphsVisualizationsCtrl(
                     // Clicking outside the graph stops the layout
                     force.stop();
                 });
+            const wheelHandler = (event) => {
+                // Safari intercepts wheel events before D3's zoom handler, preventing scroll-based zooming.
+                // Suppressing the default behavior on the svg ensures D3 receives and processes the event correctly.
+                event.preventDefault();
+            };
+            svg.node().addEventListener('wheel', wheelHandler, {passive: false});
+            subscriptions.push(() => svg.node().removeEventListener('wheel', wheelHandler));
             backgroundRectCreated = true;
         }
-
         const principal = securityContextService.getAuthenticatedUser();
         initSettings(principal);
         initForRepository();

@@ -131,6 +131,8 @@
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 3;
     overflow: hidden;
+    width: 60%;
+    margin: auto;
 }
 
 .node-label-body {
@@ -142,6 +144,21 @@
     color: var(--gw-body-color);
 }
 
+/* Safari misaligns text when the element has `display: -webkit-box`. Other browsers (Chrome, FF) require this value for line clamping,
+so the following styles target Safari exclusively to correct label positioning without sacrificing line clamping. */
+@supports (font: -apple-system-body) {
+    .node-label-body > div {
+        display: block;
+        height: 100%;
+        align-content: center;
+    }
+
+    .graph-visualization svg {
+        /* There is an issue, where overflowing text remains as a trail, whenever we drag or zoom the graph.
+        Force GPU compositing by promoting the SVG to its own compositor layer, which prevents the trail. */
+        transform: translate3d(0, 0, 0);
+    }
+}
 
 .link-wrapper {
     fill: var(--gw-body-color);

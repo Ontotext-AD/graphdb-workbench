@@ -133,7 +133,7 @@ export class VisualGraphSteps extends BaseSteps {
     }
 
     static getNodeLabel(nodeId) {
-        return this.getNode(nodeId).find('.node-label-body');
+        return this.getNode(nodeId).find('.node-label-body div');
     }
 
     static getPredicates() {
