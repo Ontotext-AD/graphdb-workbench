@@ -72,6 +72,21 @@
       color: var(--gw-form-field-color);
       background-color: var(--gw-form-field-background);
 
+      /* fix autofill background color in dark mode for FF */
+      color-scheme: dark;
+
+      /* fix autofill background color in dark mode for WebKit browsers */
+      &:-webkit-autofill,
+      &:-webkit-autofill:hover,
+      &:-webkit-autofill:focus,
+      &:-webkit-autofill:active {
+        -webkit-text-fill-color: var(--gw-form-field-color);
+        -webkit-box-shadow: 0 0 0 1000px var(--gw-form-field-background) inset;
+        box-shadow: 0 0 0 1000px var(--gw-form-field-background) inset;
+        caret-color: var(--gw-form-field-color);
+        transition: background-color 5000s ease-in-out 0s;
+      }
+
       &:focus {
         box-shadow: none;
         border-color: var(--gw-form-field-focus-border-color);
