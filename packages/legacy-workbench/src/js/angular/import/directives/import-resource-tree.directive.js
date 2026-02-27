@@ -5,24 +5,26 @@ import {SortingType} from "../../models/import/sorting-type";
 import {ImportResourceTreeElement} from "../../models/import/import-resource-tree-element";
 import {TABS} from "../services/import-context.service";
 import {ImportResourceTreeService} from "../services/import-resource-tree.service";
-import {convertToBytes} from "../../utils/size-util";
+import {
+    ByteUtils,
+} from "@ontotext/workbench-api";
 
 const TYPE_FILTER_OPTIONS = {
     'FILE': 'FILE',
     'DIRECTORY': 'DIRECTORY',
-    'ALL': 'ALL'
+    'ALL': 'ALL',
 };
 
 const STATUS_OPTIONS = {
     'ALL': 'ALL',
     'NONE': 'NONE',
     'IMPORTED': 'IMPORTED',
-    'NOT_IMPORTED': 'NOT_IMPORTED'
+    'NOT_IMPORTED': 'NOT_IMPORTED',
 };
 
 const modules = [
     'graphdb.framework.import.directives.import-resource-message',
-    'graphdb.framework.import.directives.import-resource-status-info'
+    'graphdb.framework.import.directives.import-resource-status-info',
 ];
 
 angular
@@ -55,10 +57,9 @@ function importResourceTreeDirective($timeout, ImportContextService) {
             onReset: '&',
             onRemove: '&',
             onStopImport: '&',
-            onEditResource: '&'
+            onEditResource: '&',
         },
         link: ($scope, element, attrs) => {
-
             // =========================
             // Public variables
             // =========================
@@ -237,8 +238,8 @@ function importResourceTreeDirective($timeout, ImportContextService) {
             const compareBySize = (acs) => (r1, r2) => {
                 // The format of size returned by the backend has changed, but we need to keep the old format for backward compatibility.
                 // Therefore, we convert the size to always be in bytes.
-                const r1Size = convertToBytes(r1.importResource.size);
-                const r2Size = convertToBytes(r2.importResource.size);
+                const r1Size = ByteUtils.convertToBytes(r1.importResource.size);
+                const r2Size = ByteUtils.convertToBytes(r2.importResource.size);
                 return acs ? r1Size - r2Size : r2Size - r1Size;
             };
 
@@ -335,6 +336,6 @@ function importResourceTreeDirective($timeout, ImportContextService) {
 
             // Deregister the watcher when the scope/directive is destroyed
             $scope.$on('$destroy', removeAllSubscribers);
-        }
+        },
     };
 }
