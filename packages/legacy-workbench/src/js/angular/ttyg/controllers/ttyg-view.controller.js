@@ -850,7 +850,7 @@ function TTYGViewCtrl(
     };
 
     const openInSparqlEditorInNewTab = (query) => {
-        $window.open(`/sparql?query=${encodeURIComponent(query)}&execute=true`, '_blank');
+        $window.open(`sparql?query=${encodeURIComponent(query)}&execute=true`, '_blank');
     };
 
     /**

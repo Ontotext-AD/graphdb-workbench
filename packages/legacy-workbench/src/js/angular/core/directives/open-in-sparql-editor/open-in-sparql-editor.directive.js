@@ -113,7 +113,7 @@ function openInSparqlEditorDirective($repositories, $translate, ModalService, $w
              */
             const openInSparqlEditorInNewTab = (query) => {
                 // Open the SPARQL editor in a new tab and execute the query
-                $window.open(`/sparql?query=${encodeURIComponent(query)}&execute=${execute}`, '_blank');
+                $window.open(`sparql?query=${encodeURIComponent(query)}&execute=${execute}`, '_blank');
             };
         },
     };
