@@ -1124,6 +1124,9 @@ input[type="checkbox"]:checked {
 
 input[type="radio"]:checked {
     border-color: var(--gw-primary-base);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 input[type="checkbox"]:checked::after {
@@ -1137,12 +1140,10 @@ input[type="checkbox"]:checked::after {
 
 input[type="radio"]:checked::after {
     content: "";
-    display: block;
-    width: 0.5em;
-    height: 0.5em;
+    width: 55%;
+    height: 55%;
     border-radius: 50%;
     background-color: var(--gw-primary-base);
-    margin: 0.2em;
 }
 
 input[type=checkbox]:checked:disabled {
