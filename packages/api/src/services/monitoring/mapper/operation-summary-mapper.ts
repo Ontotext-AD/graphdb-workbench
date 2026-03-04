@@ -21,7 +21,7 @@ const OPERATION_TYPE_SORT_ORDER = {
  * Mapper for converting OperationStatusSummaryResponse to OperationStatusSummary.
  */
 export const mapOperationSummaryResponseToModel: MapperFn<OperationStatusSummaryResponse, OperationStatusSummary> = (data) => {
-  if (!data) {
+  if (!data?.status || !data.allRunningOperations) {
     return new OperationStatusSummary({
       status: OperationStatus.INFORMATION,
       allRunningOperations: new OperationList([])

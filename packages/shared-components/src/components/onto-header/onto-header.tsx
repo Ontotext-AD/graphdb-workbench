@@ -38,6 +38,7 @@ import {HtmlUtil} from '../../utils/html-util';
 import {DropdownItem} from '../../models/dropdown/dropdown-item';
 import {SelectorItemButton} from '../onto-repository-selector/selector-item';
 import {ResourceSearchConstants} from '../../models/resource-search/resource-search-constants';
+import { LoggerProvider } from '../../services/logger-provider';
 
 const labelKeys = {
   LOGO_LINK: 'menu.logo.link.title'
@@ -72,6 +73,7 @@ export class OntoHeader {
   private readonly eventService = ServiceProvider.get(EventService);
   private readonly configurationContextService = ServiceProvider.get(ConfigurationContextService);
   private readonly runtimeConfigurationContextService = ServiceProvider.get(RuntimeConfigurationContextService);
+  private readonly logger = LoggerProvider.logger;
 
   // ========================
   // State
@@ -402,7 +404,8 @@ export class OntoHeader {
           this.fibonacciGenerator.reset();
           this.skipUpdateActiveOperationsTimes = 0;
         })
-        .catch(() => {
+        .catch((error) => {
+          this.logger.error('Error fetching active operations', error);
           this.activeOperations = undefined;
           this.skipUpdateActiveOperationsTimes = this.fibonacciGenerator.next();
         });
