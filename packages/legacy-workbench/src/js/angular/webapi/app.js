@@ -10,6 +10,11 @@ WebApiCtrl.$inject = ['$scope'];
 function WebApiCtrl($scope) {
     const runtimeConfigurationContextService = service(RuntimeConfigurationContextService);
 
+    const base = document.querySelector('base')?.getAttribute('href') || '/';
+    // strip trailing slash -> '/graphdb' or ''
+    const contextPath = base.replace(/\/$/, '');
+    $scope.webapiFrameSrc = `${contextPath}/res/swagger5/index.html?basePath=${encodeURIComponent(contextPath)}`;
+
     const subscriptions = [];
 
     const iframe = document.getElementById('webapi_frame');
