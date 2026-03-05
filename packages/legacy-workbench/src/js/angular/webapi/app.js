@@ -1,5 +1,5 @@
 import 'angular/core/services';
-import {RuntimeConfigurationContextService, service} from '@ontotext/workbench-api';
+import {RuntimeConfigurationContextService, service, getBasePath} from '@ontotext/workbench-api';
 
 angular
     .module('graphdb.framework.webapi', [])
@@ -9,6 +9,11 @@ WebApiCtrl.$inject = ['$scope'];
 
 function WebApiCtrl($scope) {
     const runtimeConfigurationContextService = service(RuntimeConfigurationContextService);
+
+    const base = getBasePath();
+    // strip trailing slash -> '/graphdb' or ''
+    const contextPath = base.replace(/\/$/, '');
+    $scope.webapiFrameSrc = `${contextPath}/res/swagger5/index.html?basePath=${encodeURIComponent(contextPath)}`;
 
     const subscriptions = [];
 
