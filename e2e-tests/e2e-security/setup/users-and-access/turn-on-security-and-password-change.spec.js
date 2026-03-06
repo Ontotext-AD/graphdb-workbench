@@ -77,8 +77,10 @@ describe('Turn on Security', () => {
   it('should show toaster when after logging out', () => {
       UserAndAccessSteps.visit();
       LoginSteps.loginWithUser('admin', 'root');
+      // Verify we are logged in
+      UserAndAccessSteps.getUsersCatalogContainer().should('be.visible');
       // Log out
-      LoginSteps.logout();
+      HeaderSteps.logout();
       cy.url().should('include', '/login');
       // Verify toaster message
       ToasterSteps.verifySuccess('Signed out');
