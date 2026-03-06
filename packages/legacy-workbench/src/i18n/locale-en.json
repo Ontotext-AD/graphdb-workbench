@@ -546,9 +546,12 @@
                         "tooltip": "The text similarity index to use for similarity search queries.",
                         "loading_indexes": "Loading similarity indexes...",
                         "no_similarity_index": {
-                            "message_1": "You must",
-                            "message_2": "create a similarity index",
-                            "message_3": "to use this method"
+                            "message_1": "To use this method, set up an Similarity index ",
+                            "message_2": " OR Elasticsearch connector ",
+                            "message_3": "\nTo set up this method, use either the Similarity Index or the Elasticsearch/OpenSearch connectors.",
+                            "message_4": "\nLearn more about the different similarity methods in the GraphDB documentation.",
+                            "link_text_here_1": "here",
+                            "link_text_here_2": "here."
                         },
                         "btn": {
                             "reload": {
