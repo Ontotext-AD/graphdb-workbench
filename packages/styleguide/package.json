@@ -1,6 +1,9 @@
 {
   "name": "@ontotext/styleguide",
   "scripts": {
+    "build:themes": "node src/css-purger/build-themes.js",
+    "purge-css": "node ./scripts/purge-css.js",
+    "prebuild:webpack": "npm run build:themes",
     "build": "rm -rf dist && npm run build:webpack",
     "build:webpack": "webpack --mode=production",
     "lint": "eslint --ext js,mjs,cjs",
