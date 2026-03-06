@@ -14,6 +14,14 @@ import {
   UrlPathParams
 } from '@ontotext/workbench-api';
 import {CommonModule, NgOptimizedImage} from '@angular/common';
+import {ButtonModule} from 'primeng/button';
+import {InputTextModule} from 'primeng/inputtext';
+import {FormsModule} from '@angular/forms';
+import {CheckboxModule} from 'primeng/checkbox';
+import {IconFieldModule} from 'primeng/iconfield';
+import {InputIconModule} from 'primeng/inputicon';
+import {SplitButtonModule} from 'primeng/splitbutton';
+import {ToolbarModule} from 'primeng/toolbar';
 
 @Component({
   selector: 'app-login',
@@ -22,7 +30,12 @@ import {CommonModule, NgOptimizedImage} from '@angular/common';
     TranslocoPipe,
     ReactiveFormsModule,
     CommonModule,
-    NgOptimizedImage
+    NgOptimizedImage,
+    ButtonModule,
+    InputTextModule,
+    FormsModule,
+    CheckboxModule,
+    ButtonModule, IconFieldModule, InputIconModule, SplitButtonModule, ToolbarModule, InputTextModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './login-page.component.html',
@@ -44,7 +57,10 @@ export class LoginPageComponent implements OnInit, OnDestroy {
   private readonly translocoService = inject(TranslocoService);
 
   private readonly subscriptions = new Array<() => void>();
-
+  value1: string | undefined;
+  value2: string | undefined;
+  value3: string | undefined;
+  checked = true;
   loginForm: FormGroup;
   error = false;
   returnUrl: string;
