@@ -1,0 +1,20 @@
+<hr>
+<div>Buttons:</div>
+<p-button label="Check" />
+<p-button severity="secondary" label="Check" />
+<p-button label="Success" severity="success" />
+<p-button label="Info" severity="info" />
+<p-button label="Warn" severity="warn" />
+<p-button label="Help" severity="help" />
+<p-button label="Danger" severity="danger" />
+<p-button label="Contrast" severity="contrast" />
+
+<hr>
+<div>Checkbox</div>
+  <p-checkbox [(ngModel)]="checked" [binary]="true" />
+
+<hr>
+<div>InputText</div>
+  <input pInputText [(ngModel)]="value1" type="text" pSize="small" placeholder="Small" /><br>
+  <input pInputText [(ngModel)]="value2" type="text" placeholder="Normal" /><br>
+  <input pInputText [(ngModel)]="value3" type="text" pSize="large" placeholder="Large" />
