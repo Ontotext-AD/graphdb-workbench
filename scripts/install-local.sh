@@ -25,7 +25,6 @@ install_package "packages/root-config"
 install_package "packages/workbench"
 install_package "packages/api"
 install_package "packages/shared-components"
-install_package "packages/styleguide"
 install_package "e2e-tests"
 
 echo ''
