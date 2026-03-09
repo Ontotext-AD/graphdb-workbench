@@ -12,6 +12,7 @@ describe('TTYG edit an agent', () => {
     beforeEach(() => {
         RepositoriesStubs.stubRepositories(0, '/repositories/get-ttyg-repositories.json');
         RepositoriesStubs.stubBaseEndpoints(repositoryId);
+        RepositoriesStubs.stubRepositoryModel(repositoryId);
         cy.presetRepository(repositoryId);
         TTYGStubs.stubAgentDefaultsGet();
     });
@@ -49,6 +50,22 @@ describe('TTYG edit an agent', () => {
         ToasterSteps.verifySuccess('The agent \'agent-1\' was saved successfully.');
     });
 
+    it('should not be able to edit an agent if an extraction method is selected but the precondition has failed', () => {
+        TTYGStubs.stubChatsListGet();
+        TTYGStubs.stubAgentListGet();
+        TTYGStubs.stubChatGet();
+        RepositoriesStubs.stubFtsSearchDisabled(repositoryId);
+        // GIVEN: I have opened the TTYG page
+        TTYGViewSteps.visit();
+        cy.wait('@get-chat-list');
+        cy.wait('@get-agent-list');
+        cy.wait('@get-chat');
+        // WHEN: I try to edit an agent that has the FTS extraction method enabled, but FTS is disabled in the repository
+        TTYGViewSteps.openAgentSettingsModalForAgent(0);
+
+        // THEN: The Save Agent button should be disabled
+        TtygAgentSettingsModalSteps.getSaveAgentButton().should('be.disabled');
+    });
 
     it('should be able to edit Autocomplete extraction method option', {
         retries: {

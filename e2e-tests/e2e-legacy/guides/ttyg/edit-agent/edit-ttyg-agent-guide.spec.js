@@ -46,6 +46,7 @@ describe('Edit TTYG agent guide', () => {
         TTYGStubs.stubAgentDefaultsGet();
         TTYGStubs.stubChatGet();
         TTYGStubs.stubAgentEdit();
+        RepositoriesStubs.stubRepositoryModel(repositoryId);
 
         GuideDialogSteps.assertDialogWithTitleIsVisible('Edit an agent — 1/18');
         GuideDialogSteps.assertDialogWithContentIsVisible('Click on the Lab menu.');

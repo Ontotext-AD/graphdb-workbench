@@ -17,6 +17,7 @@ describe('TTYG clone an agent', () => {
         TTYGStubs.stubAgentListGet();
         TTYGStubs.stubChatsListGet();
         TTYGStubs.stubChatGet();
+        RepositoriesStubs.stubRepositoryModel(repositoryId);
         // Given I have opened the ttyg page
         TTYGViewSteps.visit();
         cy.wait('@get-all-repositories');
@@ -45,6 +46,7 @@ describe('TTYG clone an agent', () => {
         TTYGStubs.stubAgentCreate();
         TtygAgentSettingsModalSteps.saveAgent();
         cy.wait('@create-agent').then((interception) => {
+            // eslint-disable-next-line no-undef
             assert.deepEqual(interception.request.body, {
                 "id": "asst_gAPcrHQQ9ZIxD5eXWH2BNFfo",
                 "name": "agent-11",
@@ -71,5 +73,25 @@ describe('TTYG clone an agent', () => {
                 ]
             });
         });
+    });
+
+    it('should not be able to clone an agent if an extraction method is selected but the precondition has failed', () => {
+        TTYGStubs.stubAgentListGet();
+        TTYGStubs.stubChatsListGet();
+        TTYGStubs.stubChatGet();
+        RepositoriesStubs.stubFtsSearchDisabled(repositoryId);
+
+        // GIVEN: I have opened the TTYG page
+        TTYGViewSteps.visit();
+        cy.wait('@get-all-repositories');
+        cy.wait('@get-agent-list');
+        cy.wait('@get-chat');
+
+        // WHEN: I try to clone an agent that has the FTS extraction method enabled, but FTS is disabled in the repository
+        TTYGViewSteps.expandAgentsSidebar();
+        TTYGViewSteps.triggerCloneAgentActionMenu(0);
+
+        // THEN: The Save Agent button should be disabled
+        TtygAgentSettingsModalSteps.getSaveAgentButton().should('be.disabled');
     });
 });
