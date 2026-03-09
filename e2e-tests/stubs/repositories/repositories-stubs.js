@@ -1,6 +1,7 @@
 import {Stubs} from '../stubs';
 import {REPOSITORIES_URL} from '../../support/repository-commands';
 import {GlobalOperationsStatusesStub} from '../global-operations-statuses-stub.js';
+import repoTemplate from "../../fixtures/repo-template.json";
 
 export class RepositoriesStubs extends Stubs {
     static stubRepositories(withDelay = 0, fixture = '/repositories/get-repositories.json') {
@@ -224,5 +225,26 @@ export class RepositoriesStubs extends Stubs {
         RepositoriesStubs.stubNameSpaces(repositoryId, namespaces);
         RepositoriesStubs.stubAutocomplete();
         GlobalOperationsStatusesStub.stubNoOperationsResponse('starwars');
+    }
+
+    static stubRepositoryModel(repositoryId, options = {}) {
+        const body = Cypress._.defaultsDeep(
+            { id: repositoryId, ...options },
+            repoTemplate
+        );
+        cy.intercept('GET', `/rest/repositories/${repositoryId}`, {
+            statusCode: 200,
+            body
+        }).as('repository-model');
+    }
+
+    static stubFtsSearchDisabled(repositoryId) {
+        RepositoriesStubs.stubRepositoryModel(repositoryId, {
+            params: {
+                enableFtsIndex: {
+                    value: 'false'
+                }
+            }
+        });
     }
 }
