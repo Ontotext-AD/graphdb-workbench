@@ -1,0 +1,20 @@
+<app-page-layout [title]="'sparql-editor.title' | transloco">
+
+  <span page-tooltip>
+    <app-page-info-tooltip></app-page-info-tooltip>
+  </span>
+
+  <div page-errors>
+    <p-message severity="error">Error Message</p-message>
+  </div>
+
+  <div>
+    <textarea id="query-editor" rows="10" style="width: 100%;">
+      SELECT ?s ?p ?o
+      WHERE {
+        ?s ?p ?o
+      }
+      LIMIT 25
+    </textarea>
+  </div>
+</app-page-layout>
