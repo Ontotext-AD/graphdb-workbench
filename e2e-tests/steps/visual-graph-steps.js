@@ -87,6 +87,30 @@ export class VisualGraphSteps extends BaseSteps {
         return cy.get('.autocomplete-toast a');
     }
 
+    static getRdfResourceSearchInput() {
+        return cy.getByTestId('rdf-resource-input');
+    }
+
+    static searchForRdfResource(resource) {
+        this.getRdfResourceSearchInput().type(resource, {force: true});
+    }
+
+    static shareVisualGraphWithOtherUsers() {
+        this.getShareGraphButton().click();
+    }
+
+    static getShareGraphButton() {
+        return cy.getByTestId('share-graph-config');
+    }
+
+    static selectConfig(configName) {
+        this.getConfigByName(configName).click();
+    }
+
+    static getConfigByName(name) {
+        return cy.getByTestId(`graph-config-${name}`);
+    }
+
     static getGraphVisualizationNodes() {
         return this.getGraphVisualizationPane().find('.node-wrapper');
     }
@@ -176,6 +200,16 @@ export class VisualGraphSteps extends BaseSteps {
         this.getSidePanelCloseButton().click();
     }
 
+    // Note the index is 1-based
+    static openConfigTab(tabIndex) {
+        return this.getConfigTab(tabIndex).click();
+    }
+
+    // Note the index is 1-based
+    static getConfigTab(tabIndex) {
+        return cy.getByTestId(`graph-config-tab-${tabIndex}`);
+    }
+
     // Visual graph settings form field access
 
     static openPredicatesTab() {
@@ -263,12 +297,32 @@ export class VisualGraphSteps extends BaseSteps {
         return cy.get('.create-graph-config').should('be.visible');
     }
 
+    static createCustomGraph() {
+        this.getCreateCustomGraphLink().click();
+    }
+
     static getGraphConfigName() {
         return cy.get('.graph-config-name').should('be.visible');
     }
 
     static typeGraphConfigName(name) {
-        this.getGraphConfigName().type(name);
+        this.getGraphConfigName().type(name, {force: true});
+    }
+
+    static typeGraphConfigDescription(description) {
+        return this.getGraphConfigDescription().type(description, {force: true});
+    }
+
+    static getGraphConfigDescription() {
+        return cy.get('.graph-config-description').should('be.visible');
+    }
+
+    static typeGraphConfigHint(hint) {
+        return this.getGraphConfigHint().type(hint, {force: true});
+    }
+
+    static getGraphConfigHint() {
+        return cy.get('.graph-config-example').should('be.visible');
     }
 
     static getSaveConfigButton() {

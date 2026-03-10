@@ -814,8 +814,8 @@ function GraphsVisualizationsCtrl(
     const INITIAL_CONTAINER_TRANSFORM = d3.zoomIdentity.translate(0, -70).scale(1);
 
     function zoomed(event) {
-        if (GuidesService.isActive()) {
-            // disable zooming if a guide is active.
+        if (!GuidesService.isScrollingAllowed()) {
+            // disable zooming if it is not explicitly allowed by the guide.
             return;
         }
         transformValues = event.transform;
