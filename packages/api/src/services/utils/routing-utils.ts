@@ -18,16 +18,17 @@ export function navigateTo(url: string): (event: Event) => void {
 /**
  * Navigates to the specified URL using the single-spa framework.
  * Suitable for in-code navigation. If you need to navigate from a view, use <code>navigateTo</code> instead.
- * @param url - The target URL to which the page should be redirected.
+ * @param targetUrl - The target URL to which the page should be redirected.
  */
-export function navigate(url: string) {
+export function navigate(targetUrl: string) {
+  let url = targetUrl;
   if (url.startsWith('.')) {
     url = url.slice(1);
   }
   if (url.startsWith('/') && !url.startsWith(getBasePath())) {
     url = getBasePath().slice(0, -1) + url;
   }
-  WindowService.getWindow().singleSpa.navigateToUrl(url);
+  WindowService.navigateSingleSpa(url);
 }
 
 /**
@@ -35,13 +36,13 @@ export function navigate(url: string) {
  * @param url - The URL to open in a new tab.
  */
 export function openInNewTab(url: string): void {
-  WindowService.getWindow().open(url, '_blank');
+  WindowService.openWindow(url, '_blank', 'noopener,noreferrer');
 }
 
 /**
  * Checks if the current page is the home page.
  *
- * @returns {boolean} Returns true if the current page is the home page, false otherwise.
+ * @returns Returns true if the current page is the home page, false otherwise.
  */
 export function isHomePage(): boolean {
   return getPathName() === '/';
@@ -50,7 +51,7 @@ export function isHomePage(): boolean {
 /**
  * Checks if the current page is the login page.
  *
- * @returns {boolean} Returns true if the current page is the login page, false otherwise.
+ * @returns Returns true if the current page is the login page, false otherwise.
  */
 export function isLoginPage(): boolean {
   return getPathName() === '/login';
@@ -59,19 +60,19 @@ export function isLoginPage(): boolean {
 /**
  * Retrieves the pathname portion of the current URL without the context prefix.
  *
- * @returns {string} The pathname of the current URL, which represents the path segment that comes after the context (if any) and before the query string.
+ * @returns The pathname of the current URL, which represents the path segment that comes after the context (if any) and before the query string.
  */
 export function getPathName(): string {
-  return WindowService.getWindow().location.pathname.substring(getBasePath().length - 1);
+  return WindowService.getLocationPathname().substring(getBasePath().length - 1);
 }
 
 /**
  * Retrieves the current URL including the context prefix, if present.
  *
- * @returns {string} The current URL including the context prefix.
+ * @returns The current URL including the context prefix.
  */
 export function getOrigin(): string {
-  return `${WindowService.getWindow().location.origin}${getBasePath()}`;
+  return `${WindowService.getLocationOrigin()}${getBasePath()}`;
 }
 
 /**
@@ -80,10 +81,10 @@ export function getOrigin(): string {
  * This is usually the base path under which the app is deployed, e.g. '/graphdb/'.
  * If no `<base>` tag is found, returns '/' by default.
  *
- * @returns {string} The context path as specified in the base href (always ending with a slash).
+ * @returns The context path as specified in the base href (always ending with a slash).
  */
 export function getBasePath(): string {
-  return document.querySelector('base')?.getAttribute('href') ?? '/';
+  return WindowService.getBaseHref();
 }
 
 /**
@@ -94,4 +95,13 @@ export function getBasePath(): string {
  */
 export function getCurrentRoute(): string {
   return getPathName().substring(1);
+}
+
+/**
+ * Retrieves the current URL path along with any query parameters.
+ *
+ * @returns The current URL path combined with its query parameters, if any.
+ */
+export function getLocationPathWithQueryParams(): string {
+  return getPathName() + WindowService.getLocationQueryParams();
 }

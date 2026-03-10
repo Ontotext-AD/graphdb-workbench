@@ -12,6 +12,7 @@ import {
   WindowService,
   UrlPathParams,
   SecurityConfig,
+  getLocationPathWithQueryParams,
 } from '@ontotext/workbench-api';
 import {LoggerProvider} from '../../services/logger-provider';
 
@@ -85,7 +86,7 @@ const resolveNavigation = (): void => {
     eventService.emit(new Login());
   } else if (!authStrategy.isAuthenticated()) {
     // Not on login page and not authenticated, navigate to login page with return url
-    const returnUrl = encodeURIComponent(WindowService.getLocationPathWithQueryParams());
+    const returnUrl = encodeURIComponent(getLocationPathWithQueryParams());
     navigate(`login?${UrlPathParams.RETURN_URL}=${returnUrl}`);
   }
 };

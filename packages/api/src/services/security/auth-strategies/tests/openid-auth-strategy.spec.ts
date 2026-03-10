@@ -80,26 +80,6 @@ describe('OpenidAuthProvider', () => {
     );
   };
 
-  /**
-   * Mocks window service for login tests.
-   */
-  const mockWindowService = () => {
-    jest.spyOn(WindowService, 'getWindow').mockReturnValue({
-      location: {
-        origin: 'http://localhost:3000',
-        pathname: '/home'
-      },
-      crypto: {
-        getRandomValues: jest.fn((array: Uint32Array) => {
-          for (let i = 0; i < array.length; i++) {
-            array[i] = Math.floor(Math.random() * 0xffffffff);
-          }
-          return array;
-        })
-      }
-    } as unknown as Window);
-  };
-
   beforeEach(() => {
     TestUtil.restoreAllMocks();
     jest.clearAllMocks();
@@ -286,7 +266,8 @@ describe('OpenidAuthProvider', () => {
     it('should initiate code flow with state and return URL for authorization code flow', async () => {
       const openidConfig = createOpenIdConfig({authFlow: OpenIdAuthFlowType.CODE});
       setupSecurityConfig(openidConfig);
-      mockWindowService();
+      jest.spyOn(WindowService, 'getBaseHref').mockReturnValue('/');
+      jest.spyOn(WindowService, 'getLocationOrigin').mockReturnValue('http://localhost:3000');
       const setupCodeFlowSpy = jest.spyOn(openIdService, 'setupCodeFlow');
 
       const promise = strategy.login();
@@ -308,7 +289,8 @@ describe('OpenidAuthProvider', () => {
     it('should initiate code flow without PKCE for CODE_NO_PKCE flow', () => {
       const openidConfig = createOpenIdConfig({authFlow: OpenIdAuthFlowType.CODE_NO_PKCE});
       setupSecurityConfig(openidConfig);
-      mockWindowService();
+      jest.spyOn(WindowService, 'getBaseHref').mockReturnValue('/');
+      jest.spyOn(WindowService, 'getLocationOrigin').mockReturnValue('http://localhost:3000');
       const setupCodeNoPkceFlowSpy = jest.spyOn(openIdService, 'setupCodeNoPkceFlow');
 
       strategy.login();
@@ -323,7 +305,8 @@ describe('OpenidAuthProvider', () => {
     it('should initiate implicit flow for IMPLICIT flow type', () => {
       const openidConfig = createOpenIdConfig({authFlow: OpenIdAuthFlowType.IMPLICIT});
       setupSecurityConfig(openidConfig);
-      mockWindowService();
+      jest.spyOn(WindowService, 'getBaseHref').mockReturnValue('/');
+      jest.spyOn(WindowService, 'getLocationOrigin').mockReturnValue('http://localhost:3000');
       const setupImplicitFlowSpy = jest.spyOn(openIdService, 'setupImplicitFlow');
 
       strategy.login();
@@ -338,8 +321,8 @@ describe('OpenidAuthProvider', () => {
     it('should throw InvalidOpenidAuthFlow error for unknown flow type', () => {
       const openidConfig = createOpenIdConfig({authFlow: 'unknown' as unknown as OpenIdAuthFlowType});
       setupSecurityConfig(openidConfig);
-      mockWindowService();
-
+      jest.spyOn(WindowService, 'getBaseHref').mockReturnValue('/');
+      jest.spyOn(WindowService, 'getLocationOrigin').mockReturnValue('http://localhost:3000');
       expect(() => strategy.login()).toThrow(InvalidOpenidAuthFlow);
       expect(loggerDebugSpy).toHaveBeenCalledWith(
         'OpenID: Invalid OpenID authentication flow: unknown'

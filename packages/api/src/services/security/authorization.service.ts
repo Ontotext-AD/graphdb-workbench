@@ -12,6 +12,7 @@ import {
   RouteExtensionPoint,
   RoutePlugin
 } from '../../models/plugins';
+import {getPathName} from '../utils';
 
 /**
  * Service responsible for handling authorization-related operations.
@@ -232,7 +233,7 @@ export class AuthorizationService implements Service {
       return true;
     }
 
-    const activeRoute = service(RoutingService).getActiveRoute();
+    const activeRoute = service(RoutingService).getActiveRoute(getPathName());
     // If there is no current active route, return false – access cannot be determined
     if (!activeRoute) {
       return false;
