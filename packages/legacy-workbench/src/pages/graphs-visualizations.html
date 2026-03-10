@@ -62,6 +62,7 @@
             <em class="ri-save-line ri-2x" ></em>
         </button>
         <button class="btn btn-link p-0"
+                guide-selector="graph-settings-button"
                 gdb-tooltip="{{'visual.graph.click.configure.view' | translate}}"
                 tooltip-placement="bottom"
                 ng-if="isUser()"
@@ -117,12 +118,15 @@
                 <div ng-show="isFreeAccessEnabled() || isUser()" class="card mb-2">
                     <div class="card-block graph-configurations" ng-init="getGraphConfigs()">
                         <div class="clearfix">
-                            <a  ng-if="isUser()" ng-href="graphs-visualizations/config/save" class="btn btn-link pull-right create-graph-config"><span class="ri-add-circle-line"></span> {{'visual.create.graph.config' | translate}}</a>
+                            <a  ng-if="isUser()"
+                                ng-href="graphs-visualizations/config/save"
+                                guide-selector="create-graph-config-btn"
+                                class="btn btn-link pull-right create-graph-config"><span class="ri-add-circle-line"></span> {{'visual.create.graph.config' | translate}}</a>
                             <h3>{{'visual.advanced.graph.config' | translate}}</h3>
                             <p>{{'visual.advanced.graph.config.info' | translate}}</p>
                         </div>
                         <div ng-show="graphConfigs.length == 0">{{'visual.no.configs' | translate}}</div>
-                        <table class="table table-hover mb-0 graph-configurations-list" aria-describedby="Graph configurations table">
+                        <table guide-selector="graph-config-table" class="table table-hover mb-0 graph-configurations-list" aria-describedby="Graph configurations table">
                             <tbody>
                             <tr ng-repeat="config in graphConfigs">
                                 <td width="20">
@@ -134,7 +138,7 @@
                                 </td>
                                 <td>
                                     <h5>
-                                        <a href ng-click="goToGraphConfig(config)" uib-popover={{config.description}} popover-trigger="mouseenter">{{config.name}}</a>
+                                        <a href ng-click="goToGraphConfig(config)" data-test="graph-config-{{config.name}}" uib-popover={{config.description}} popover-trigger="mouseenter">{{config.name}}</a>
                                     </h5>
                                     <samp class="text-muted small text-overflow d-block" ng-if="config.startMode == 'query'">{{config.startGraphQuery}}</samp>
                                     <samp class="text-muted small text-overflow d-block" ng-if="config.startMode == 'node'">{{config.startIRI}}</samp>
@@ -194,7 +198,7 @@
 
 <keyboard-shortcuts template-url="res/graphexplore/keyboard-shortcuts.html" ng-if="nodeSelected && !loading"></keyboard-shortcuts>
 
-<div class="graph-visualization" ng-hide="loading || !nodeSelected"></div>
+<div class="graph-visualization" guide-selector="graph-visualization" ng-hide="loading || !nodeSelected"></div>
 <div onto-loader
      ng-show="loading"
      size="100"
@@ -241,6 +245,7 @@
                             <span class="ri-indeterminate-circle-line"></span>
                         </button>
                         <input type="number" class="form-control input-number" size="20"
+                               guide-selector="graph-settings-links-limit"
                                ng-model="settings['linksLimit']"
                                min="0" max="1000" class="ng-pristine ng-valid ng-valid-number"
                                ng-change="validateLinksLimit()">
@@ -383,7 +388,9 @@
 
                 <div class="mt-1 text-right">
                     <button type="button" class="btn btn-secondary reset-settings" ng-click="resetSettings()">{{'common.reset' | translate}}</button>
-                    <button type="submit" class="btn btn-primary save-settings-btn" ng-click="updateSettings()">{{'common.save.btn' | translate}}</button>
+                    <button type="submit"
+                            guide-selector="graph-settings-save-button"
+                            class="btn btn-primary save-settings-btn" ng-click="updateSettings()">{{'common.save.btn' | translate}}</button>
                 </div>
 
                 <script type="text/ng-template" id="ignored-predicates-template">

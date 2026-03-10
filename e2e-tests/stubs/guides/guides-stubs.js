@@ -85,6 +85,10 @@ export class GuidesStubs {
         GuidesStubs.stubWithFixture('../fixtures/guides/visual-graph/visual-graph-guide.json');
     }
 
+    static stubVisualGraphConfigGuide() {
+        GuidesStubs.stubWithFixture('../fixtures/guides/visual-graph/visual-graph-config-guide.json');
+    }
+
     static stubWithFixture(fixturePath) {
         cy.intercept('/rest/guides', {fixture: fixturePath}).as('getGuides');
     }

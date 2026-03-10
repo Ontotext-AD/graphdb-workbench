@@ -402,6 +402,10 @@ function GuidesService(
         return ShepherdService.isActive();
     };
 
+    this.isScrollingAllowed = () => {
+        return ShepherdService.isScrollingAllowed();
+    };
+
     /**
      * Converts guide steps (array with complex steps) to array with core steps.
      * @param {*} guide - a guide description:

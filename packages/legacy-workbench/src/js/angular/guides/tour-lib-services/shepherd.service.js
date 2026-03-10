@@ -167,6 +167,11 @@ function ShepherdService($translate, LocalStorageAdapter, LSKeys, $interpolate, 
         return Shepherd.activeTour && !this.isPaused();
     };
 
+    this.isScrollingAllowed = () => {
+        const allowScroll = Shepherd.activeTour?.getCurrentStep()?.options?.allowScroll;
+        return !this.isActive() || allowScroll;
+    };
+
     this.isPaused = () => {
         return LocalStorageAdapter.get(GUIDE_PAUSE) === 'true';
     };
@@ -894,6 +899,7 @@ function ShepherdService($translate, LocalStorageAdapter, LSKeys, $interpolate, 
             initPreviousStep: stepDescription.initPreviousStep,
             forceReload: stepDescription.forceReload,
             isLastStep: !!stepDescription.lastStep,
+            allowScroll: stepDescription.allowScroll,
             when: {
                 show: this._getShowFunction(guide, stepDescription, onShow),
             },

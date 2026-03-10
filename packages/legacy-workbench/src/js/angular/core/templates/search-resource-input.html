@@ -2,6 +2,7 @@
 
 <div id="search-resource-box" class="input-group btn-group" ng-class="{'input-group-lg': !radioButtons}" style="white-space: nowrap">
     <input type="text" class="form-control view-res-input" placeholder="{{placeholder}}" ng-model="searchInput"
+           guide-selector="search-resource-input"
            data-test="rdf-resource-input"
            ng-change="onChange()"
            ng-keydown="onKeyDown($event)">

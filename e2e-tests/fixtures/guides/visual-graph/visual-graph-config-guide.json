@@ -1,0 +1,39 @@
+[
+    {
+        "guideName": {
+            "en": "Create visual graph config guide"
+        },
+        "steps": [
+            {
+                "guideBlockName": "visual-graph-config-create",
+                "options": {
+                    "configDescription": "my description",
+                    "configHint": "my hint",
+                    "shareConfig": true,
+                    "linkLimit": 200,
+                    "expandIri": "http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#WineGrape",
+                    "iriLabel": "WineGrape",
+                    "tabConfig": [
+                        {
+                            "tabName": "startingPoint",
+                            "startingPoint": "fixed",
+                            "searchTerm": "MerlotGrape",
+                            "iri": "http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#MerlotGrape"
+                        },
+                        {
+                            "tabName": "graphExpansion",
+                            "query": "construct {\n    ?node ?p ?o .\n    ?s ?p ?node .\n} where {\n    { ?node ?p ?o . }\n    union\n    { ?s ?p ?node . }\n}",
+                            "queryExtraContent": "The graph expansion query defines what happens when a node is expanded in the visual graph. Expanding a node loads additional resources connected to it and adds them to the graph as new nodes and edges.",
+                            "sampleQueryContent": "The <b>Sample queries</b> includes example graph expansion queries. <b>Unfiltered object properties</b> shows all object property connections of a node, while <b>Filtered object properties</b> shows only selected ones.",
+                            "includeInferredData": true,
+                            "expandResultsOverOwl": true
+                        }
+                    ]
+                }
+            },
+            {
+                "guideBlockName": "guide-end"
+            }
+        ]
+    }
+]
