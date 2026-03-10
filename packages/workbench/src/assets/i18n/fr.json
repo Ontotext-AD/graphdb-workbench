@@ -21,5 +21,8 @@
     "warning": "404. C'est une erreur!",
     "url_not_found_msg": "L'URL demandée n'a pas été trouvée sur ce serveur. C'est tout ce que je sais.",
     "back_to_home": "Retour à la page d'accueil"
+  },
+  "sparql-editor": {
+    "title": "Requête et mise à jour SPARQL"
   }
 }
