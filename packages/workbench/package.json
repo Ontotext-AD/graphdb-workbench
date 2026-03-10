@@ -26,6 +26,7 @@
     "@angular/router": "^20.3.15",
     "@jsverse/transloco": "^8.2.0",
     "@primeuix/themes": "^2.0.3",
+    "ontotext-yasgui-web-component": "^1.5.7",
     "primeng": "^20.4.0",
     "rxjs": "~7.8.2",
     "single-spa": "^6.0.3",

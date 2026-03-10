@@ -17,6 +17,7 @@ module.exports = (config, options) => {
   singleSpaWebpackConfig.output = {
     ...singleSpaWebpackConfig.output,
     filename: 'workbenchApp.js',
+    publicPath: 'auto',
   };
   // singleSpaWebpackConfig.devServer.client.overlay = false;
   // singleSpaWebpackConfig.devServer.liveReload = false;

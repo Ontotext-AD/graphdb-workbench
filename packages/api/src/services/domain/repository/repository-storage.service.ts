@@ -56,6 +56,16 @@ export class RepositoryStorageService extends LocalStorageService {
     this.remove(this.SELECTED_REPOSITORY);
   }
 
+  /**
+   * Retrieves the ID of the active repository from local storage.
+   *
+   * @returns {string | undefined} The ID of the active repository, or undefined if not found.
+   */
+  getActiveRepositoryId(): string | undefined {
+    const repositoryReference = this.getRepositoryReference();
+    return repositoryReference?.id;
+  }
+
   private serializeRepositoryReference(repositoryReference: RepositoryReference): string {
     return JSON.stringify(repositoryReference);
   }

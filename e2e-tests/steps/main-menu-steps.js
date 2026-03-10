@@ -16,6 +16,7 @@ export class MainMenuSteps {
         return MainMenuSteps.getMenuButton('Import');
     }
 
+    // TODO: temporary using more complex implementation until we have two SPARQL menu elements in the navbar
     static getMenuSparql() {
         return MainMenuSteps.getMenuButton('SPARQL');
     }
