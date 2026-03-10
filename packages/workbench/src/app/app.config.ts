@@ -1,5 +1,6 @@
 import {ApplicationConfig, provideZoneChangeDetection} from '@angular/core';
 import {provideRouter} from '@angular/router';
+import {provideAnimationsAsync} from '@angular/platform-browser/animations/async';
 import {getBasePath} from '@ontotext/workbench-api';
 
 import {routes} from './app.routes';
@@ -15,6 +16,7 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({eventCoalescing: true}),
     provideRouter(routes),
     {provide: APP_BASE_HREF, useValue: getBasePath()},
+    provideAnimationsAsync(),
     providePrimeNG({
       theme: {
         options: {

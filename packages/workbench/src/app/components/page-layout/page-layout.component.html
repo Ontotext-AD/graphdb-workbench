@@ -1,0 +1,12 @@
+<div class="page-view">
+  <h1 class="title-container">
+    <span class="page-title-label">{{ title() }}</span>
+    <ng-content select="[page-tooltip]"></ng-content>
+  </h1>
+
+  <div class="page-errors-container">
+    <ng-content select="[page-errors]"></ng-content>
+  </div>
+
+  <ng-content></ng-content>
+</div>
