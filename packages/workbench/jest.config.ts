@@ -196,7 +196,7 @@ const config: Config = {
   //   "/node_modules/",
   // ],
   transformIgnorePatterns: [
-    'node_modules/(?!(?:@angular|rxjs|@ontotext/workbench-api|@jsverse)/)',
+    'node_modules/(?!(?:@angular|rxjs|@ontotext/workbench-api|@jsverse|primeng|@primeuix|ontotext-yasgui-web-component)/)',
   ],
 
   // An array of regexp pattern strings that are matched against all modules before the module loader will automatically return a mock for them

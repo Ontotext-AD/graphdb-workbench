@@ -4,7 +4,7 @@ PluginRegistry.add('route', {
     'chunk': 'home',
     'path': 'controllers',
     'controller': 'homeCtrl',
-    'templateUrl': 'pages/home.html'
+    'templateUrl': 'pages/home.html',
 });
 
 PluginRegistry.add('main.menu', {
@@ -18,7 +18,7 @@ PluginRegistry.add('main.menu', {
                 icon: "ri-settings-3-line",
                 guideSelector: 'menu-setup',
                 testSelector: 'menu-setup',
-                children: []
+                children: [],
             },
             {
                 label: 'Monitor',
@@ -30,7 +30,7 @@ PluginRegistry.add('main.menu', {
                 icon: 'ri-heart-pulse-line',
                 guideSelector: 'menu-monitor',
                 testSelector: 'menu-monitoring',
-                children: []
+                children: [],
             },
             {
                 label: 'Lab',
@@ -41,8 +41,24 @@ PluginRegistry.add('main.menu', {
                 icon: "ri-flask-line",
                 guideSelector: 'menu-lab',
                 testSelector: 'menu-lab',
-                children: []
-            }
-        ]
-    }
+                children: [],
+            },
+        ],
+    },
+);
+PluginRegistry.add('main.menu', {
+        disabled: true,
+        items: [
+            {
+                label: 'New YASGUI',
+                labelKey: 'New YASGUI',
+                href: 'sparql-new',
+                order: 1.9,
+                role: 'IS_AUTHENTICATED_FULLY',
+                icon: "icon-sparql",
+                guideSelector: 'menu-new-yasgui',
+                children: [],
+            },
+        ],
+    },
 );

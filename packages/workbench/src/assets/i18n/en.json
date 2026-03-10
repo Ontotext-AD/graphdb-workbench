@@ -1,5 +1,4 @@
 {
-  "new-view": "NewView Works in English!",
   "login":{
     "title": "Login",
     "logo_alt": "GraphDB Logo",
@@ -21,6 +20,14 @@
     "warning": "404 That’s an error!",
     "url_not_found_msg": "The requested URL was not found on this server. That’s all I know.",
     "back_to_home": "Back Home"
+  },
+  "sparql-editor": {
+    "title": "SPARQL Query & Update",
+    "yasgui": {
+      "toolbar": {
+        "visual_graph_btn": "Visual"
+      }
+    }
   }
 }
 

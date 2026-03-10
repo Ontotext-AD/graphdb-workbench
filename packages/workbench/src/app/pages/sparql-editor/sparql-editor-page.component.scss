@@ -1,0 +1,60 @@
+:host {
+  --page-title-position: relative;
+  --page-title-margin-bottom: -35px;
+}
+
+[page-errors] {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+// TODO: these also needs to be exposed by the page layout and overridden by the page component
+.sparql-editor-page #sparql-query-update-title-label {
+  z-index: 1;
+}
+
+.sparql-editor-page #sparql-query-update-title-label .btn-link {
+  position: relative;
+  z-index: 100;
+}
+
+@media (max-width: 1200px) {
+  .sparql-editor-page #sparql-query-update-title-label {
+    margin-bottom: 0;
+  }
+}
+
+.sparql-editor-page div[core-errors] {
+  /* compensate for the negative margin on the title above */
+  margin-top: calc(47px + 0.5em);
+}
+
+.sparql-editor-page #query-editor .yasgui-host-element {
+  display: block;
+}
+
+.sparql-editor-page #query-editor .yasgui-host-element .ontotext-yasgui {
+  clear: both;
+  padding-top: 15px;
+}
+
+.sparql-editor-page #query-editor .yasgui-toolbar {
+  display: inline;
+  float: right;
+  font-size: 14px;
+  font-weight: 400;
+  position: relative;
+  z-index: 100;
+}
+
+.sparql-editor-page #query-editor .yasgui-toolbar .yasgui-btn {
+  height: 27px;
+  margin-right: 3px;
+  color: var(--gw-secondary-base);
+}
+
+.sparql-editor-page #query-editor .yasgui-toolbar .btn-selected {
+  color: #fff;
+}
+

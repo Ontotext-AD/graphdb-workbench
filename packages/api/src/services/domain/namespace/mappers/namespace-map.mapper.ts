@@ -1,6 +1,6 @@
 import {NamespaceMap} from '../../../../models/namespace';
-import {NamespacesResponse} from '../response/namespaces-response';
 import {MapperFn} from '../../../../providers/mapper/mapper-fn';
+import {NamespacesResponse} from '../../rdf4j';
 
 /**
  * Mapper class for converting namespace API responses to a model list of namespaces.

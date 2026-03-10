@@ -1,14 +1,14 @@
 import {Service} from '../../../providers/service/service';
-import {NamespacesRestService} from './namespaces-rest.service';
-import {ServiceProvider} from '../../../providers';
+import {service} from '../../../providers';
 import {mapNamespaceResponseToModel} from './mappers/namespace-map.mapper';
 import {NamespaceMap} from '../../../models/namespace';
+import {Rdf4jRestService} from '../rdf4j';
 
 /**
  * Service for interacting with RDF4J repositories.
  */
 export class NamespacesService implements Service {
-  private readonly namespacesRestService = ServiceProvider.get(NamespacesRestService);
+  private readonly rdf4jRestService = service(Rdf4jRestService);
 
   /**
    * Retrieves all prefixes, mapped to their respective URIs.
@@ -16,8 +16,8 @@ export class NamespacesService implements Service {
    * @param repositoryId The unique identifier of the repository for which to retrieve namespaces.
    * @returns A promise that resolves to a NamespaceMap containing prefixes mapped to their URIs.
    */
-  getNamespaces(repositoryId: string): Promise<NamespaceMap> {
-    return this.namespacesRestService.getNamespaces(repositoryId)
-      .then((response) => mapNamespaceResponseToModel(response));
+  async getNamespaces(repositoryId: string): Promise<NamespaceMap> {
+    const response = await this.rdf4jRestService.getNamespaces(repositoryId);
+    return mapNamespaceResponseToModel(response);
   }
 }

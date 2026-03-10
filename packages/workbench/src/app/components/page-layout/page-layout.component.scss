@@ -1,0 +1,14 @@
+.page-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+
+/**
+ * Expose CSS variables for page title position and margin, so that they can be overridden by page components if needed.
+ */
+.page-view .title-container {
+  position: var(--page-title-position);
+  margin-bottom: var(--page-title-margin-bottom);
+}

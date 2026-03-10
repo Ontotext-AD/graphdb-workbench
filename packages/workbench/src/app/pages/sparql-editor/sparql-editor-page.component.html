@@ -1,0 +1,19 @@
+<app-page-layout [title]="'sparql-editor.title' | transloco"
+  class="sparql-editor-page">
+
+  <span page-tooltip>
+    <app-page-info-tooltip></app-page-info-tooltip>
+  </span>
+
+  <div page-errors>
+<!--    <p-message severity="error">Error Message</p-message>-->
+  </div>
+
+  <div>
+    @if (yasguiConfig() && activeRepositoryReference) {
+      <app-yasgui-component-facade
+        id="query-editor"
+        [yasguiConfig]="yasguiConfig()"></app-yasgui-component-facade>
+    }
+  </div>
+</app-page-layout>
