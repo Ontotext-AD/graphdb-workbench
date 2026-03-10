@@ -1,6 +1,5 @@
 import {RouteRegexParamPair} from '../../models/routing/route-regex-param-pair';
 import {RoutePlugin} from '../../models/plugins';
-import {getPathName} from '../utils';
 import {ModelList} from '../../models/common';
 import {Service} from '../../providers/service/service';
 import {WindowService} from '../window';
@@ -22,11 +21,10 @@ export class RoutingService implements Service {
    * and returns the first matching route as a RouteItemModel.
    *
    * @param path - The URL path to match against registered routes.
-   *               Defaults to the current path from getPathName() if not provided.
    * @returns A RouteItemModel instance representing the matched route,
    *          or undefined if no matching route is found.
    */
-  getActiveRoute(path: string = getPathName()): RoutePlugin | undefined {
+  getActiveRoute(path: string): RoutePlugin | undefined {
     const activeRoute = this.routePlugins
       .find((route) => {
         const regex = this.routeToRegex(route.url).getRegex();

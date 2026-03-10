@@ -315,12 +315,8 @@ describe('AuthorizationService', () => {
 
     test('hasAuthority should return false if there are no active routes', () => {
       // Given, I have no active routes, a regular user and enabled security
-      jest.spyOn(WindowService, 'getWindow').mockReturnValue({
-        location: {
-          pathname: '/home'
-        },
-        PluginRegistry: {get: jest.fn(() => [])}
-      } as unknown as Window);
+      jest.spyOn(WindowService, 'getLocationPathname').mockReturnValue('/home');
+      jest.spyOn(WindowService, 'getBaseHref').mockReturnValue('/');
       const regularUser = mapAuthenticatedUserResponseToModel(
         {external: false, authorities: [Authority.ROLE_USER]} as unknown as AuthenticatedUserResponse
       );
@@ -335,6 +331,8 @@ describe('AuthorizationService', () => {
 
     test('should calculate authority of user', () => {
       // Given, I have a user without read permissions for all repositories
+      jest.spyOn(WindowService, 'getLocationPathname').mockReturnValue('/home');
+      jest.spyOn(WindowService, 'getBaseHref').mockReturnValue('/');
       const regularUser = mapAuthenticatedUserResponseToModel(
         {authorities: [Authority.ROLE_USER]} as unknown as AuthenticatedUserResponse
       );
