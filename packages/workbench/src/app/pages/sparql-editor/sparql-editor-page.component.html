@@ -1,6 +1,8 @@
 <app-page-layout [title]="'sparql-editor.title' | transloco">
 
-  <div page-tooltip>page tooltip</div>
+  <span page-tooltip>
+    <app-page-info-tooltip></app-page-info-tooltip>
+  </span>
 
   <div page-errors>
     <p-message severity="error">Error Message</p-message>
