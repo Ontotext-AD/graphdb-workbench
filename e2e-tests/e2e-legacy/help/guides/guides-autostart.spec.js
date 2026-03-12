@@ -14,6 +14,39 @@ describe('Guides autostart', () => {
             GuideSteps.assertPageNotInteractive();
             GuideDialogSteps.assertDialogWithTitleIsVisible(`Welcome to`);
         });
+
+        it('should not autostart the guide if it has been completed via autostart before', () => {
+            // Given, I visit the home page with autostart guide parameter in URL
+            GuideSteps.autostartGuide(guideName);
+            // Then, I should see the guide
+            GuideSteps.assertPageNotInteractive();
+            GuideDialogSteps.assertDialogWithTitleIsVisible(`Welcome to`);
+
+            // When, I finish the guide
+            GuideDialogSteps.clickOnNextButton();
+            GuideDialogSteps.clickOnNextButton();
+            // skip create repo
+            GuideDialogSteps.clickOnSkipButton();
+            // skip select repo
+            GuideDialogSteps.clickOnSkipButton();
+            // skip autocomplete
+            GuideDialogSteps.clickOnSkipButton();
+            // skip import
+            GuideDialogSteps.clickOnSkipButton();
+            // skip visual graph
+            GuideDialogSteps.clickOnSkipButton();
+            // skip sparql
+            GuideDialogSteps.clickOnSkipButton();
+            // close the dialog, completing the guide
+            GuideDialogSteps.clickOnCloseButton();
+
+            // Then, I should not see the guide anymore. A disabled flag should be set to true in the storage, when the
+            // guide is completed via autostart, preventing the guide from autostarting again.
+            GuideSteps.autostartGuide(guideName);
+            HomeSteps.getTutorialPanel().should('be.visible');
+            GuideSteps.getGuidesModal().should('not.exist');
+            GuideDialogSteps.getModalDialog().should('not.exist');
+        });
     });
 
     describe('With security enabled', () => {
@@ -26,7 +59,7 @@ describe('Guides autostart', () => {
             cy.switchOffSecurity(true);
         });
 
-        context('admin', () => {
+        describe('admin', () => {
             it('Should autostart guide with admin', () => {
                 // Given, I visit the home page with autostart guide parameter in URL
                 GuideSteps.autostartGuide(guideName);
@@ -38,7 +71,7 @@ describe('Guides autostart', () => {
             });
         });
 
-        context('repo manager', () => {
+        describe('repo manager', () => {
             beforeEach(() => {
                 cy.loginAsAdmin();
                 cy.createUser({
@@ -64,7 +97,7 @@ describe('Guides autostart', () => {
             });
         });
 
-        context('user', () => {
+        describe('user', () => {
             beforeEach(() => {
                 cy.loginAsAdmin();
                 cy.createUser({

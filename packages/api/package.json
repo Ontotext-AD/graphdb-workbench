@@ -45,5 +45,8 @@
     "@types/jsrsasign": "^10.5.15",
     "jsrsasign": "^11.1.0",
     "single-spa": "^6.0.3"
+  },
+  "peerDependencies": {
+    "shepherd.js": "^11.2.0"
   }
 }

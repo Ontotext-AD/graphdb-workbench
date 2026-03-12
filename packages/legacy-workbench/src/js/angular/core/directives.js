@@ -1,6 +1,6 @@
 import 'angular/utils/local-storage-adapter';
 import {decodeHTML} from "../../../app";
-import {service, LicenseContextService, ResourceSearchStorageService, Suggestion} from '@ontotext/workbench-api';
+import {service, LicenseContextService, ResourceSearchStorageService, Suggestion, GuidesService} from '@ontotext/workbench-api';
 
 angular
     .module('graphdb.framework.core.directives', [
@@ -257,9 +257,10 @@ function multiRequired() {
 
 const SEARCH_DISPLAY_TYPE = {table: 'table', visual: 'visual'};
 
-searchResourceInput.$inject = ['$location', 'toastr', 'ClassInstanceDetailsService', 'AutocompleteRestService', '$rootScope', '$q', '$sce', 'LocalStorageAdapter', 'LSKeys', '$repositories', '$translate', 'GuidesService'];
+searchResourceInput.$inject = ['$location', 'toastr', 'ClassInstanceDetailsService', 'AutocompleteRestService', '$rootScope', '$q', '$sce', 'LocalStorageAdapter', 'LSKeys', '$repositories', '$translate'];
 
-function searchResourceInput($location, toastr, ClassInstanceDetailsService, AutocompleteRestService, $rootScope, $q, $sce, LocalStorageAdapter, LSKeys, $repositories, $translate, GuidesService) {
+function searchResourceInput($location, toastr, ClassInstanceDetailsService, AutocompleteRestService, $rootScope, $q, $sce, LocalStorageAdapter, LSKeys, $repositories, $translate) { // NOSONAR
+    const guidesService = service(GuidesService);
     return {
         restrict: 'EA',
         scope: {
@@ -522,7 +523,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             $scope.onKeyDown = function(event) {
                 if (event.keyCode === 13) {
                     event.preventDefault();
-                    if (GuidesService.isActive()) {
+                    if (guidesService.isActive()) {
                         return;
                     }
                     if ($scope.uriValidation !== 'false') {

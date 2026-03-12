@@ -1,5 +1,6 @@
 import 'remixicon/fonts/remixicon.css';
 import 'shepherd.js/dist/css/shepherd.css';
+import './vendor/shepherd-custom.css';
 import './vendor/bootstrap.min.css';
 import './vendor/common.css';
 import './vendor/variables.css';

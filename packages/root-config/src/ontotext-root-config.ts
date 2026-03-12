@@ -26,8 +26,8 @@ import {
   InteractiveGuideExtensionPoint,
   ThemesExtensionPoint
 } from '@ontotext/workbench-api';
-import './styles/onto-stylesheet.scss';
 import './onto-vendor';
+import './styles/onto-stylesheet.scss';
 import './styles/main.scss';
 import './styles/css/charteditor-custom.css';
 import {RouteProvider} from './services/route-provider';

@@ -6,7 +6,8 @@
     "import": "Importer",
     "button": {
       "ok": "D'accord",
-      "close": "Fermer"
+      "close": "Fermer",
+      "cancel": "Annuler"
     },
     "loading": "Chargement..."
   },
@@ -187,6 +188,14 @@
       "autocomplete_is_off": "L'autocomplétion est désactivée<br>Aller à Configuration -> Autocomplétion",
       "empty_input": "S'il vous plaît remplir le champ de saisie!",
       "invalid_uri": "IRI non valide"
+    }
+  },
+  "guides": {
+    "confirm-cancel-modal": {
+      "title": "Quitter le guide?",
+      "subtitle": "Êtes-vous sûr de vouloir quitter le guide ?<br><br>Vous pouvez le lancer à tout moment à partir de <b>Aide > Guides interactifs</b>.",
+      "exit-button": "Sortie",
+      "dont-show-again": "Ne pas démarrer automatiquement"
     }
   },
   "openid": {

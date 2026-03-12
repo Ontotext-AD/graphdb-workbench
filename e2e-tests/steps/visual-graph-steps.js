@@ -177,7 +177,7 @@ export class VisualGraphSteps extends BaseSteps {
     }
 
     static dblclickOnNode(nodeId) {
-        this.getCircleOfNodeByNodeId(nodeId).dblclick();
+        this.getCircleOfNodeByNodeId(nodeId).trigger('dblclick');
     }
 
     static getLineBetweenNodesById(narrowId) {

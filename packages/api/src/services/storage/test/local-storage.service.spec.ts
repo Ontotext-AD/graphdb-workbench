@@ -1,4 +1,5 @@
 import { LocalStorageService } from '../local-storage.service';
+import {StorageMock} from '../../utils/test/local-storage-mock';
 
 describe('LocalStorageService', () => {
 
@@ -101,30 +102,3 @@ class TestStorageService extends LocalStorageService {
   }
 }
 
-class StorageMock  implements Storage {
-  private storage: Record<string, string> = {};
-
-  get length(): number {
-    return Object.keys(this.storage).length;
-  }
-
-  clear(): void {
-    this.storage = {};
-  }
-
-  getItem(key: string): string | null {
-    return this.storage[key] || null;
-  }
-
-  key(index: number): string | null {
-    return Object.keys(this.storage)[index] || null;
-  }
-
-  removeItem(key: string): void {
-    delete this.storage[key];
-  }
-
-  setItem(key: string, value: string): void {
-    this.storage[key] = value;
-  }
-}

@@ -29,13 +29,13 @@ Type: `Promise<void>`
 
 ### `addToastr(toast: ToastMessage) => Promise<void>`
 
-Adds a toast notification to the application.
+Opens a toast
 
 #### Parameters
 
-| Name    | Type           | Description                                                                                                         |
-| ------- | -------------- | ------------------------------------------------------------------------------------------------------------------- |
-| `toast` | `ToastMessage` | - The ToastMessage object containing the notification details   such as message content, type, and display options. |
+| Name    | Type           | Description       |
+| ------- | -------------- | ----------------- |
+| `toast` | `ToastMessage` | the toast to open |
 
 #### Returns
 
@@ -122,6 +122,22 @@ It returns a Promise that resolves when the login process is complete.
 | ---------- | -------- | ----------- |
 | `username` | `string` |             |
 | `password` | `string` |             |
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `openConfirmCancel(hasDontShowAgain: boolean) => Promise<void>`
+
+Opens the confirm cancel dialog.
+
+#### Parameters
+
+| Name               | Type      | Description                                                    |
+| ------------------ | --------- | -------------------------------------------------------------- |
+| `hasDontShowAgain` | `boolean` | - Whether to show the "Don't show again" button in the dialog. |
 
 #### Returns
 

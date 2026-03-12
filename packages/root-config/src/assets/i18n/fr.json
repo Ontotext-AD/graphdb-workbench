@@ -1,0 +1,17 @@
+{
+  "guide.back.to.guides.btn": "Retour aux guides",
+  "guide.common.close": "Fermer",
+  "guide.previous.btn": "Précédent",
+  "guide.next.btn": "Suivant",
+  "guide.pause.btn": "Pause",
+  "guide.start.unexpected.error.message": "Le guide ne peut pas être démarré en raison d'une erreur inattendue. Veuillez réessayer d'exécuter le guide et si le problème persiste, contactez le support.",
+  "guide.unexpected.error.message": "Le guide a été annulé en raison d'une erreur inattendue. Veuillez exécuter à nouveau le guide et si le problème persiste, contactez le support.",
+  "guide.total.progress": "Étape de guidage {{n}} sur {{nn}}",
+  "guide.total.progress.tooltip": "Ceci indique l'étape actuelle par rapport à l'ensemble du guide et le nombre total d'étapes dans le guide.",
+  "guide.block.progress": "{{n}}/{{nn}}",
+  "guide.block.progress.tooltip": "Ceci indique l'étape actuelle et le nombre total d'étapes dans l'action {{action}}.",
+  "guide.step-type.info": "Cette étape fournit des informations. Aucune action requise autre que de cliquer sur le bouton Suivant.",
+  "guide.step-type.mouse": "Cette étape attend une action de l'utilisateur avec la souris, généralement un clic sur quelque chose.",
+  "guide.step-type.input": "Cette étape attend une entrée de l'utilisateur, généralement en tapant ou en collant un morceau de texte.",
+  "guides.error.guide-not-found": "Le guide demandé est introuvable."
+}

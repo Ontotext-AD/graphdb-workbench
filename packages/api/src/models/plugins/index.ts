@@ -12,3 +12,5 @@ export * from './extension-points/main-menu-extension-point';
 export * from './extension-points/route-extension-point';
 export * from './extension-points/interactive-guide-extension-point';
 export * from './extension-points/themes-extension-point';
+export * from '../interactive-guide/interactive-guide';
+

@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
 import {TranslocoPipe} from '@jsverse/transloco';
+import {RouterLink} from '@angular/router';
 
 @Component({
   selector: 'app-not-found-page',
   standalone: true,
   imports: [
-    TranslocoPipe
+    TranslocoPipe,
+    RouterLink
   ],
   templateUrl: './not-found-page.component.html'
 })
