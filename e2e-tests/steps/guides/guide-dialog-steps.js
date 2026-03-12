@@ -29,7 +29,7 @@ export class GuideDialogSteps {
     }
 
     static clickOnNextButton(forceVisible = false) {
-        GuideDialogSteps.getNextButton().scrollIntoView().click({force: forceVisible});
+        return GuideDialogSteps.getNextButton().scrollIntoView().click({force: forceVisible});
     }
 
     static clickOnPreviousButton(forceVisible = false) {

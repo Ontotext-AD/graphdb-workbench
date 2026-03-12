@@ -1,5 +1,6 @@
 import { Plugin } from '../plugin';
 import { GuideStep } from './guide-step';
+import {GuideOptions} from './guide-options';
 
 /**
  * Represents a plugin that provides a step for interactive guide or tutorial.
@@ -15,16 +16,20 @@ export class GuidePlugin extends Plugin {
   /**
    * Returns a single guide step defined by this plugin.
    *
+   * @param options - Options passed to the step.
+   * @param services - Bridge services passed through the guide execution context.
    * @returns {GuideStep} The guide step associated with this plugin.
    */
-  getStep?: () => GuideStep;
+  getStep?: (options: GuideOptions, services: unknown) => GuideStep;
 
   /**
    * Returns all guide steps defined by this plugin.
    *
+   * @param options - Options passed to the step.
+   * @param services - Bridge services passed through the guide execution context.
    * @returns {GuideStep[]} A list of guide steps.
    */
-  getSteps?: () => GuideStep[];
+  getSteps?: (options: GuideOptions, services: unknown) => GuideStep[];
 
   constructor(guidePlugin: Partial<GuidePlugin>) {
     super(guidePlugin);
