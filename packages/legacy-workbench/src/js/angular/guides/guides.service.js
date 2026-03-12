@@ -395,6 +395,33 @@ function GuidesService(
     };
 
     /**
+     * Temporary passing of services, to the migrated GuidesService.
+     * Will be removed when the migration is done and all steps are converted to use services from the context.
+     */
+    this.getServices = () => {
+        return {
+            $translate,
+            $interpolate,
+            GuideUtils,
+            $rootScope,
+            toastr,
+            $route,
+            $timeout,
+            ShepherdService,
+            GuidesService: this,
+            $repositories,
+            YasguiComponentDirectiveUtil,
+            EventEmitterService,
+            translate: this.translate,
+            RoutingUtil: {
+                navigate,
+                getCurrentRoute,
+            },
+            resolveDocumentationUrl: this.resolveDocumentationUrl,
+        };
+    };
+
+    /**
      * Returns true if a guide is currently active (even if paused).
      * @return {boolean}
      */

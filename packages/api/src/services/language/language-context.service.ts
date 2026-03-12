@@ -115,13 +115,14 @@ export class LanguageContextService extends ContextService<LanguageContextFields
   }
 
   /**
-   * Retrieves the current language configuration from the context.
+   * Retrieves the current language configuration from the context. Language config
+   * should always be present as it is part of the essential data, which is loaded on application
+   * bootstrap
    *
-   * @returns {LanguageConfig | undefined} The current language configuration,
-   *          or undefined if no configuration has been set.
+   * @returns {LanguageConfig} The current language configuration.
    */
-  getLanguageConfig(): LanguageConfig | undefined {
-    return this.getContextPropertyValue(this.LANGUAGE_CONFIG);
+  getLanguageConfig(): LanguageConfig {
+    return this.getContextPropertyValue(this.LANGUAGE_CONFIG)!;
   }
 
   /**
@@ -142,5 +143,9 @@ export class LanguageContextService extends ContextService<LanguageContextFields
    */
   getSelectedLanguage(): string | undefined {
     return this.getContextPropertyValue(this.SELECTED_LANGUAGE);
+  }
+
+  getDefaultLanguage(): string {
+    return this.getLanguageConfig().defaultLanguage;
   }
 }

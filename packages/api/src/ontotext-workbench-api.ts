@@ -64,6 +64,7 @@ export * from './services/users';
 export * from './services/interceptor/interceptor.service';
 export * from './services/runtime-configuration';
 export * from './services/sparql-template';
+export * from './services/guides';
 
 // Export interceptors for external usages.
 export * from './interceptor';

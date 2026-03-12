@@ -171,6 +171,7 @@ describe('Visual Graph', () => {
     describe('Visual graph create config guide', () => {
         beforeEach(() => {
             cy.deleteGraphConfig('visual');
+            cy.intercept('rest/explore-graph/node?config=**').as('getNodes');
             GuidesStubs.stubVisualGraphConfigGuide();
             GuideSteps.visit();
             GuideSteps.verifyGuidesListExists();
@@ -256,6 +257,8 @@ describe('Visual Graph', () => {
             GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 19/24');
             GuideDialogSteps.assertDialogWithContentIsVisible('Click the visual graph you just created to open and explore it.');
             VisualGraphSteps.selectConfig('visual');
+
+            Cypress._.times(4, () => cy.wait('@getNodes'));
 
             GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 20/24');
             GuideDialogSteps.assertDialogWithContentIsVisible('Click on Graph settings.');
@@ -355,6 +358,8 @@ describe('Visual Graph', () => {
             GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 19/24');
             GuideDialogSteps.assertDialogWithContentIsVisible('Click the visual graph you just created to open and explore it.');
             VisualGraphSteps.selectConfig('visual');
+
+            Cypress._.times(4, () => cy.wait('@getNodes'));
 
             GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 20/24');
             GuideDialogSteps.assertDialogWithContentIsVisible('Click on Graph settings.');
