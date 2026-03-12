@@ -1,6 +1,6 @@
 import {Component, inject, OnDestroy, OnInit} from '@angular/core';
 import {Router, RouterOutlet} from '@angular/router';
-import {EventName, EventService, getCurrentRoute, service} from '@ontotext/workbench-api';
+import {EventName, EventService, getCurrentRoute, service, WindowService} from '@ontotext/workbench-api';
 import {Subscription} from 'rxjs';
 
 @Component({
@@ -31,7 +31,13 @@ export class AppComponent implements OnInit, OnDestroy {
   private subscribeToRoutingEvents() {
     this.subscriptions.add(
       this.eventService.subscribe(EventName.NAVIGATION_END, () => {
-        this.router.navigate([getCurrentRoute()], {queryParamsHandling: 'preserve'});
+        // The NAVIGATION_END handler should read query params from the browser URL directly, not rely on
+        // queryParamsHandling: 'preserve' which reads from Angular's current route state (still the old route during
+        // lazy-loading).
+        const queryParams = Object.fromEntries(
+          new URLSearchParams(WindowService.getLocationQueryParams())
+        );
+        this.router.navigate([getCurrentRoute()], {queryParams});
       })
     );
   }

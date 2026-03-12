@@ -9,6 +9,8 @@ import {BeforeUpdateQueryResult} from '../before-update-query-result';
 import {YasrToolbarPlugin} from '../yasr/yasr-toolbar-plugin';
 import {Prefixes} from '../../../../models/prefixes';
 import {TranslationBundles} from '../../../../models/translation-bundles';
+import {OutputHandlers} from '../output-handlers';
+import {Yasgui} from './yasgui';
 
 /**
  * Holds all configurations related with ontotext-yasgui-web-component.
@@ -59,7 +61,7 @@ export class OntotextYasguiConfig {
    * will use the endpoint stored in the persistence regardless if the configuration is changed.
    * If the endpoint is defined as a function, it will be called before each query execution.
    */
-  public endpoint: string | ((yasgui: unknown) => string);
+  public endpoint: string | ((yasgui: Yasgui) => string);
   /**
    * Key -> value translations as JSON. If the language is supported, then not needed to pass all label values.
    * If pass a new language then all label's values have to be present, otherwise they will be translated to the default
@@ -238,6 +240,10 @@ export class OntotextYasguiConfig {
    * A response of a sparql query as string. If the parameter is provided, the result will be visualized in YASR.
    */
   public sparqlResponse: string | undefined;
+  /**
+   * A map of output handlers which can be used to handle different types of SPARQL results.
+   */
+  outputHandlers: OutputHandlers | undefined;
 
   constructor() {
     this.render = RenderingMode.YASGUI;
@@ -283,5 +289,6 @@ export class OntotextYasguiConfig {
     this.yasrToolbarPlugins = undefined;
     this.getCellContent = () => '';
     this.sparqlResponse = undefined;
+    this.outputHandlers = undefined;
   }
 }

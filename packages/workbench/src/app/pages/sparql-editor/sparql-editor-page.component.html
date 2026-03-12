@@ -1,20 +1,19 @@
-<app-page-layout [title]="'sparql-editor.title' | transloco">
+<app-page-layout [title]="'sparql-editor.title' | transloco"
+  class="sparql-editor-page">
 
   <span page-tooltip>
     <app-page-info-tooltip></app-page-info-tooltip>
   </span>
 
   <div page-errors>
-    <p-message severity="error">Error Message</p-message>
+<!--    <p-message severity="error">Error Message</p-message>-->
   </div>
 
   <div>
-    <textarea id="query-editor" rows="10" style="width: 100%;">
-      SELECT ?s ?p ?o
-      WHERE {
-        ?s ?p ?o
-      }
-      LIMIT 25
-    </textarea>
+    @if (yasguiConfig() && activeRepositoryReference) {
+      <app-yasgui-component-facade
+        id="query-editor"
+        [yasguiConfig]="yasguiConfig()"></app-yasgui-component-facade>
+    }
   </div>
 </app-page-layout>

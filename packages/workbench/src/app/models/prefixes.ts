@@ -11,4 +11,5 @@
  *   }
  * </pre>
  */
+// TODO: use NamespaceMap instead of Prefixes and remove this type
 export type Prefixes = Record<string, string>;
