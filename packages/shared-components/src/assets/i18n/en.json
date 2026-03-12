@@ -6,7 +6,8 @@
     "import": "Import",
     "button": {
       "ok": "OK",
-      "close": "Close"
+      "close": "Close",
+      "cancel": "Cancel"
     },
     "loading": "Loading..."
   },
@@ -187,6 +188,14 @@
       "autocomplete_is_off": "Autocomplete is OFF<br>Go to Setup -> Autocomplete",
       "empty_input": "Please fill the input field!",
       "invalid_uri": "Invalid IRI"
+    }
+  },
+  "guides": {
+    "confirm-cancel-modal": {
+      "title": "Exit the guide?",
+      "subtitle": "Are you sure you want to exit the guide?<br><br>You can start it anytime from <b>Help > Interactive Guides</b>",
+      "exit-button": "Exit",
+      "dont-show-again": "Don't start automatically"
     }
   },
   "openid": {

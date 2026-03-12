@@ -1,0 +1,15 @@
+[
+    {
+        "guideName": {
+            "en": "Confirm cancel dialog"
+        },
+        "guideDescription": {
+            "en": "Confirm cancel dialog guide"
+        },
+        "steps": [
+            {
+                "guideBlockName": "welcome"
+            }
+        ]
+    }
+]

@@ -3,7 +3,7 @@ import {HtmlUtil} from '../../utils/html-util';
 
 export type DialogConfig = {
   dialogTitle: string;
-  onClose: (evt: MouseEvent | KeyboardEvent) => void;
+  onClose?: (evt: MouseEvent | KeyboardEvent) => void;
   modalClass?: string;
 }
 
@@ -13,7 +13,6 @@ export type DialogConfig = {
 })
 export class OntoDialog {
   private documentOverflow: string;
-  private closeButton: HTMLButtonElement;
 
   @Element() hostElement: HTMLElement;
 
@@ -25,7 +24,6 @@ export class OntoDialog {
   componentDidLoad(): void {
     this.documentOverflow = HtmlUtil.hideDocumentBodyOverflow();
     this.hostElement.addEventListener('keydown', this.preventLeavingDialog.bind(this));
-    this.closeButton.focus();
   }
 
   disconnectedCallback() {
@@ -40,17 +38,17 @@ export class OntoDialog {
           <dialog class="dialog">
             <header class="dialog-header">
               <h3 class="dialog-title">{this.config.dialogTitle}</h3>
+              {this.config.onClose && (
+                <button data-test={'close-dialog-btn'} class="close-btn onto-btn" onClick={this.handleClose}>
+                  <i class="ri-close-line ri-2x"></i>
+                </button>
+              )}
             </header>
             <main class="dialog-body">
               <slot name="body"/>
             </main>
             <footer class="dialog-footer">
               <slot name="footer"/>
-              <button class="onto-btn onto-btn-primary close-btn"
-                onClick={this.handleClose}
-                ref={(el) => (this.closeButton = el)}>
-                <translate-label labelKey={'common.button.close'}></translate-label>
-              </button>
             </footer>
           </dialog>
         </div>

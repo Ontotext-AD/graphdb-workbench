@@ -20,6 +20,8 @@ export { DropdownItemAlignment } from "./models/dropdown/dropdown-item-alignment
 export { NavbarToggledEvent } from "./components/onto-navbar/navbar-toggled-event";
 export { ToggleEventPayload } from "./models/toggle-switch/toggle-event-payload";
 export namespace Components {
+    interface OntoConfirmCancelDialog {
+    }
     /**
      * OntoCookieConsent component for handling cookie consent functionality.
      * This component displays a cookie consent modal and manages the visibility of a cookie policy dialog.
@@ -221,8 +223,8 @@ export namespace Components {
          */
         "addNotification": (notification: Notification) => Promise<void>;
         /**
-          * Adds a toast notification to the application.
-          * @param toast - The ToastMessage object containing the notification details   such as message content, type, and display options.
+          * Opens a toast
+          * @param toast the toast to open
          */
         "addToastr": (toast: ToastMessage) => Promise<void>;
         /**
@@ -253,6 +255,11 @@ export namespace Components {
           * @param password
          */
         "login": (username: string, password: string) => Promise<void>;
+        /**
+          * Opens the confirm cancel dialog.
+          * @param hasDontShowAgain - Whether to show the "Don't show again" button in the dialog.
+         */
+        "openConfirmCancel": (hasDontShowAgain: boolean) => Promise<void>;
         /**
           * Sets the authenticated user in the application context.
           * @param user - The AuthenticatedUser object containing the user's authentication information.
@@ -389,6 +396,12 @@ export interface OntoToggleSwitchCustomEvent<T> extends CustomEvent<T> {
     target: HTMLOntoToggleSwitchElement;
 }
 declare global {
+    interface HTMLOntoConfirmCancelDialogElement extends Components.OntoConfirmCancelDialog, HTMLStencilElement {
+    }
+    var HTMLOntoConfirmCancelDialogElement: {
+        prototype: HTMLOntoConfirmCancelDialogElement;
+        new (): HTMLOntoConfirmCancelDialogElement;
+    };
     interface HTMLOntoCookieConsentElementEventMap {
         "consentGiven": void;
     }
@@ -639,6 +652,7 @@ declare global {
         new (): HTMLTranslateLabelElement;
     };
     interface HTMLElementTagNameMap {
+        "onto-confirm-cancel-dialog": HTMLOntoConfirmCancelDialogElement;
         "onto-cookie-consent": HTMLOntoCookieConsentElement;
         "onto-cookie-policy-dialog": HTMLOntoCookiePolicyDialogElement;
         "onto-dialog": HTMLOntoDialogElement;
@@ -666,6 +680,8 @@ declare global {
     }
 }
 declare namespace LocalJSX {
+    interface OntoConfirmCancelDialog {
+    }
     /**
      * OntoCookieConsent component for handling cookie consent functionality.
      * This component displays a cookie consent modal and manages the visibility of a cookie policy dialog.
@@ -947,139 +963,102 @@ declare namespace LocalJSX {
          */
         "translationParameters"?: TranslationParameter[];
     }
-
-    interface OntoDropdownAttributes {
-        "dropdownButtonName": string;
-        "dropdownButtonNameLabelKey": string;
-        "dropdownButtonGuideSelector": string;
-        "dropdownButtonTooltip": string | Awaitable<string>;
-        "dropdownButtonTooltipLabelKey": string;
-        "iconClass": string;
-        "tooltipTheme": string;
-        "tooltipPlacement": OntoTooltipPlacement | ((isOpen: boolean) => OntoTooltipPlacement);
-        "dropdownAlignment": DropdownItemAlignment;
-        "autoClose": boolean;
-    }
-    interface OntoLanguageSelectorAttributes {
-        "dropdownAlignment": DropdownItemAlignment;
-    }
-    interface OntoLoaderAttributes {
-        "size": number;
-        "messageText": string;
-    }
-    interface OntoNavbarAttributes {
-        "navbarCollapsed": boolean;
-    }
-    interface OntoSearchResourceInputAttributes {
-        "context": string;
-        "skipValidation": boolean;
-        "preserveSearch": boolean;
-        "isHidden": boolean;
-    }
-    interface OntoToggleSwitchAttributes {
-        "checked": boolean;
-        "labelKey": string;
-        "tooltipTranslationKey": string;
-        "context": string;
-    }
-    interface TranslateLabelAttributes {
-        "labelKey": string;
-    }
-
     interface IntrinsicElements {
+        "onto-confirm-cancel-dialog": OntoConfirmCancelDialog;
         "onto-cookie-consent": OntoCookieConsent;
         "onto-cookie-policy-dialog": OntoCookiePolicyDialog;
         "onto-dialog": OntoDialog;
-        "onto-dropdown": Omit<OntoDropdown, keyof OntoDropdownAttributes> & { [K in keyof OntoDropdown & keyof OntoDropdownAttributes]?: OntoDropdown[K] } & { [K in keyof OntoDropdown & keyof OntoDropdownAttributes as `attr:${K}`]?: OntoDropdownAttributes[K] } & { [K in keyof OntoDropdown & keyof OntoDropdownAttributes as `prop:${K}`]?: OntoDropdown[K] };
+        "onto-dropdown": OntoDropdown;
         "onto-footer": OntoFooter;
         "onto-header": OntoHeader;
-        "onto-language-selector": Omit<OntoLanguageSelector, keyof OntoLanguageSelectorAttributes> & { [K in keyof OntoLanguageSelector & keyof OntoLanguageSelectorAttributes]?: OntoLanguageSelector[K] } & { [K in keyof OntoLanguageSelector & keyof OntoLanguageSelectorAttributes as `attr:${K}`]?: OntoLanguageSelectorAttributes[K] } & { [K in keyof OntoLanguageSelector & keyof OntoLanguageSelectorAttributes as `prop:${K}`]?: OntoLanguageSelector[K] };
+        "onto-language-selector": OntoLanguageSelector;
         "onto-layout": OntoLayout;
         "onto-license-alert": OntoLicenseAlert;
-        "onto-loader": Omit<OntoLoader, keyof OntoLoaderAttributes> & { [K in keyof OntoLoader & keyof OntoLoaderAttributes]?: OntoLoader[K] } & { [K in keyof OntoLoader & keyof OntoLoaderAttributes as `attr:${K}`]?: OntoLoaderAttributes[K] } & { [K in keyof OntoLoader & keyof OntoLoaderAttributes as `prop:${K}`]?: OntoLoader[K] };
-        "onto-navbar": Omit<OntoNavbar, keyof OntoNavbarAttributes> & { [K in keyof OntoNavbar & keyof OntoNavbarAttributes]?: OntoNavbar[K] } & { [K in keyof OntoNavbar & keyof OntoNavbarAttributes as `attr:${K}`]?: OntoNavbarAttributes[K] } & { [K in keyof OntoNavbar & keyof OntoNavbarAttributes as `prop:${K}`]?: OntoNavbar[K] };
+        "onto-loader": OntoLoader;
+        "onto-navbar": OntoNavbar;
         "onto-operations-notification": OntoOperationsNotification;
         "onto-permission-banner": OntoPermissionBanner;
         "onto-rdf-search": OntoRdfSearch;
         "onto-repository-selector": OntoRepositorySelector;
         "onto-search-icon": OntoSearchIcon;
-        "onto-search-resource-input": Omit<OntoSearchResourceInput, keyof OntoSearchResourceInputAttributes> & { [K in keyof OntoSearchResourceInput & keyof OntoSearchResourceInputAttributes]?: OntoSearchResourceInput[K] } & { [K in keyof OntoSearchResourceInput & keyof OntoSearchResourceInputAttributes as `attr:${K}`]?: OntoSearchResourceInputAttributes[K] } & { [K in keyof OntoSearchResourceInput & keyof OntoSearchResourceInputAttributes as `prop:${K}`]?: OntoSearchResourceInput[K] };
+        "onto-search-resource-input": OntoSearchResourceInput;
         "onto-test-context": OntoTestContext;
         "onto-toastr": OntoToastr;
-        "onto-toggle-switch": Omit<OntoToggleSwitch, keyof OntoToggleSwitchAttributes> & { [K in keyof OntoToggleSwitch & keyof OntoToggleSwitchAttributes]?: OntoToggleSwitch[K] } & { [K in keyof OntoToggleSwitch & keyof OntoToggleSwitchAttributes as `attr:${K}`]?: OntoToggleSwitchAttributes[K] } & { [K in keyof OntoToggleSwitch & keyof OntoToggleSwitchAttributes as `prop:${K}`]?: OntoToggleSwitch[K] };
+        "onto-toggle-switch": OntoToggleSwitch;
         "onto-tooltip": OntoTooltip;
         "onto-user-login": OntoUserLogin;
         "onto-user-menu": OntoUserMenu;
-        "translate-label": Omit<TranslateLabel, keyof TranslateLabelAttributes> & { [K in keyof TranslateLabel & keyof TranslateLabelAttributes]?: TranslateLabel[K] } & { [K in keyof TranslateLabel & keyof TranslateLabelAttributes as `attr:${K}`]?: TranslateLabelAttributes[K] } & { [K in keyof TranslateLabel & keyof TranslateLabelAttributes as `prop:${K}`]?: TranslateLabel[K] };
+        "translate-label": TranslateLabel;
     }
 }
 export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
+            "onto-confirm-cancel-dialog": LocalJSX.OntoConfirmCancelDialog & JSXBase.HTMLAttributes<HTMLOntoConfirmCancelDialogElement>;
             /**
              * OntoCookieConsent component for handling cookie consent functionality.
              * This component displays a cookie consent modal and manages the visibility of a cookie policy dialog.
              * @implements DialogHandler
              */
-            "onto-cookie-consent": LocalJSX.IntrinsicElements["onto-cookie-consent"] & JSXBase.HTMLAttributes<HTMLOntoCookieConsentElement>;
-            "onto-cookie-policy-dialog": LocalJSX.IntrinsicElements["onto-cookie-policy-dialog"] & JSXBase.HTMLAttributes<HTMLOntoCookiePolicyDialogElement>;
-            "onto-dialog": LocalJSX.IntrinsicElements["onto-dialog"] & JSXBase.HTMLAttributes<HTMLOntoDialogElement>;
+            "onto-cookie-consent": LocalJSX.OntoCookieConsent & JSXBase.HTMLAttributes<HTMLOntoCookieConsentElement>;
+            "onto-cookie-policy-dialog": LocalJSX.OntoCookiePolicyDialog & JSXBase.HTMLAttributes<HTMLOntoCookiePolicyDialogElement>;
+            "onto-dialog": LocalJSX.OntoDialog & JSXBase.HTMLAttributes<HTMLOntoDialogElement>;
             /**
              * A reusable dropdown component built using StencilJS. This component supports configurable labels, tooltips, icons,
              * and items, making it versatile for various use cases. It also integrates with a translation service to handle
              * internationalization.
              */
-            "onto-dropdown": LocalJSX.IntrinsicElements["onto-dropdown"] & JSXBase.HTMLAttributes<HTMLOntoDropdownElement>;
+            "onto-dropdown": LocalJSX.OntoDropdown & JSXBase.HTMLAttributes<HTMLOntoDropdownElement>;
             /**
              * OntoFooter component for rendering the footer of the application.
              * This component displays information about GraphDB, RDF4J, Connectors, and Workbench versions,
              * as well as copyright information.
              */
-            "onto-footer": LocalJSX.IntrinsicElements["onto-footer"] & JSXBase.HTMLAttributes<HTMLOntoFooterElement>;
+            "onto-footer": LocalJSX.OntoFooter & JSXBase.HTMLAttributes<HTMLOntoFooterElement>;
             /**
              * OntoHeader component for rendering the header of the application.
              * This component includes a search component, license alert (if applicable),
              * repository selector, and language selector.
              */
-            "onto-header": LocalJSX.IntrinsicElements["onto-header"] & JSXBase.HTMLAttributes<HTMLOntoHeaderElement>;
-            "onto-language-selector": LocalJSX.IntrinsicElements["onto-language-selector"] & JSXBase.HTMLAttributes<HTMLOntoLanguageSelectorElement>;
-            "onto-layout": LocalJSX.IntrinsicElements["onto-layout"] & JSXBase.HTMLAttributes<HTMLOntoLayoutElement>;
-            "onto-license-alert": LocalJSX.IntrinsicElements["onto-license-alert"] & JSXBase.HTMLAttributes<HTMLOntoLicenseAlertElement>;
-            "onto-loader": LocalJSX.IntrinsicElements["onto-loader"] & JSXBase.HTMLAttributes<HTMLOntoLoaderElement>;
-            "onto-navbar": LocalJSX.IntrinsicElements["onto-navbar"] & JSXBase.HTMLAttributes<HTMLOntoNavbarElement>;
-            "onto-operations-notification": LocalJSX.IntrinsicElements["onto-operations-notification"] & JSXBase.HTMLAttributes<HTMLOntoOperationsNotificationElement>;
-            "onto-permission-banner": LocalJSX.IntrinsicElements["onto-permission-banner"] & JSXBase.HTMLAttributes<HTMLOntoPermissionBannerElement>;
+            "onto-header": LocalJSX.OntoHeader & JSXBase.HTMLAttributes<HTMLOntoHeaderElement>;
+            "onto-language-selector": LocalJSX.OntoLanguageSelector & JSXBase.HTMLAttributes<HTMLOntoLanguageSelectorElement>;
+            "onto-layout": LocalJSX.OntoLayout & JSXBase.HTMLAttributes<HTMLOntoLayoutElement>;
+            "onto-license-alert": LocalJSX.OntoLicenseAlert & JSXBase.HTMLAttributes<HTMLOntoLicenseAlertElement>;
+            "onto-loader": LocalJSX.OntoLoader & JSXBase.HTMLAttributes<HTMLOntoLoaderElement>;
+            "onto-navbar": LocalJSX.OntoNavbar & JSXBase.HTMLAttributes<HTMLOntoNavbarElement>;
+            "onto-operations-notification": LocalJSX.OntoOperationsNotification & JSXBase.HTMLAttributes<HTMLOntoOperationsNotificationElement>;
+            "onto-permission-banner": LocalJSX.OntoPermissionBanner & JSXBase.HTMLAttributes<HTMLOntoPermissionBannerElement>;
             /**
              * OntoRdfSearch component for RDF resource search.
              * This component is responsible for showing/hiding the search menu in the header
              */
-            "onto-rdf-search": LocalJSX.IntrinsicElements["onto-rdf-search"] & JSXBase.HTMLAttributes<HTMLOntoRdfSearchElement>;
-            "onto-repository-selector": LocalJSX.IntrinsicElements["onto-repository-selector"] & JSXBase.HTMLAttributes<HTMLOntoRepositorySelectorElement>;
-            "onto-search-icon": LocalJSX.IntrinsicElements["onto-search-icon"] & JSXBase.HTMLAttributes<HTMLOntoSearchIconElement>;
+            "onto-rdf-search": LocalJSX.OntoRdfSearch & JSXBase.HTMLAttributes<HTMLOntoRdfSearchElement>;
+            "onto-repository-selector": LocalJSX.OntoRepositorySelector & JSXBase.HTMLAttributes<HTMLOntoRepositorySelectorElement>;
+            "onto-search-icon": LocalJSX.OntoSearchIcon & JSXBase.HTMLAttributes<HTMLOntoSearchIconElement>;
             /**
              * A component for rendering RDF search resource input with configurable buttons.
              * This component provides a text input for search queries and a set of configurable buttons.
              */
-            "onto-search-resource-input": LocalJSX.IntrinsicElements["onto-search-resource-input"] & JSXBase.HTMLAttributes<HTMLOntoSearchResourceInputElement>;
+            "onto-search-resource-input": LocalJSX.OntoSearchResourceInput & JSXBase.HTMLAttributes<HTMLOntoSearchResourceInputElement>;
             /**
              * A component for managing test context in the application. Used only for testing
              */
-            "onto-test-context": LocalJSX.IntrinsicElements["onto-test-context"] & JSXBase.HTMLAttributes<HTMLOntoTestContextElement>;
+            "onto-test-context": LocalJSX.OntoTestContext & JSXBase.HTMLAttributes<HTMLOntoTestContextElement>;
             /**
              * OntoToastr component for displaying toast notifications.
              * This component manages a list of toast messages and handles their display,
              * automatic removal after timeout, and user interactions like hover behavior.
              */
-            "onto-toastr": LocalJSX.IntrinsicElements["onto-toastr"] & JSXBase.HTMLAttributes<HTMLOntoToastrElement>;
-            "onto-toggle-switch": LocalJSX.IntrinsicElements["onto-toggle-switch"] & JSXBase.HTMLAttributes<HTMLOntoToggleSwitchElement>;
-            "onto-tooltip": LocalJSX.IntrinsicElements["onto-tooltip"] & JSXBase.HTMLAttributes<HTMLOntoTooltipElement>;
-            "onto-user-login": LocalJSX.IntrinsicElements["onto-user-login"] & JSXBase.HTMLAttributes<HTMLOntoUserLoginElement>;
+            "onto-toastr": LocalJSX.OntoToastr & JSXBase.HTMLAttributes<HTMLOntoToastrElement>;
+            "onto-toggle-switch": LocalJSX.OntoToggleSwitch & JSXBase.HTMLAttributes<HTMLOntoToggleSwitchElement>;
+            "onto-tooltip": LocalJSX.OntoTooltip & JSXBase.HTMLAttributes<HTMLOntoTooltipElement>;
+            "onto-user-login": LocalJSX.OntoUserLogin & JSXBase.HTMLAttributes<HTMLOntoUserLoginElement>;
             /**
              * This component displays the current user's name and provides options
              * for navigating to settings and logging out.
              */
-            "onto-user-menu": LocalJSX.IntrinsicElements["onto-user-menu"] & JSXBase.HTMLAttributes<HTMLOntoUserMenuElement>;
+            "onto-user-menu": LocalJSX.OntoUserMenu & JSXBase.HTMLAttributes<HTMLOntoUserMenuElement>;
             /**
              * The purpose of this component is to display translated literals in the DOM. A Stencil component re-renders when a prop or state changes,
              * but it may not re-render when the language changes. In such cases, this component should be used. It handles language change events
@@ -1090,7 +1069,7 @@ declare module "@stencil/core" {
              *    <translate-label labelKey="example.label></translate-label>
              * </code>
              */
-            "translate-label": LocalJSX.IntrinsicElements["translate-label"] & JSXBase.HTMLAttributes<HTMLTranslateLabelElement>;
+            "translate-label": LocalJSX.TranslateLabel & JSXBase.HTMLAttributes<HTMLTranslateLabelElement>;
         }
     }
 }

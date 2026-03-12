@@ -1,0 +1,47 @@
+.confirm-cancel-dialog {
+  & .dialog {
+    padding: 0;
+
+    & .dialog-header {
+      border-bottom: 1px solid var(--gw-dialog-border-color);
+
+      & .close-btn {
+        color: var(--gw-message-close-button-color);
+
+        &:hover, &:focus {
+          color: var(--gw-button-secondary-hover-color);
+          text-decoration: none;
+          cursor: pointer;
+          transform: scale(1.2);
+        }
+      }
+    }
+
+    & .dialog-body {
+      padding: 15px;
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+      font-size: 1.25rem;
+      font-weight: 300;
+    }
+
+    & .dialog-footer {
+      border-top: 1px solid var(--gw-dialog-border-color);
+      gap: 0.25rem;
+    }
+  }
+
+  & .dialog-overlay {
+    align-self: baseline;
+    background: none
+  }
+
+  @media (width >= 768px) {
+    .dialog {
+      width: 600px;
+      margin: 30px auto;
+    }
+  }
+}
+

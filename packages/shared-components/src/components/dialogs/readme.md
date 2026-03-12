@@ -7,25 +7,22 @@
 
 ## Properties
 
-| Property | Attribute | Description                          | Type                                                                                                 | Default     |
-| -------- | --------- | ------------------------------------ | ---------------------------------------------------------------------------------------------------- | ----------- |
-| `config` | --        | Configuration object for the dialog. | `{ dialogTitle: string; onClose: (evt: KeyboardEvent \| MouseEvent) => void; modalClass?: string; }` | `undefined` |
+| Property | Attribute | Description                          | Type                                                                                                  | Default     |
+| -------- | --------- | ------------------------------------ | ----------------------------------------------------------------------------------------------------- | ----------- |
+| `config` | `config`  | Configuration object for the dialog. | `{ dialogTitle: string; onClose?: (evt: KeyboardEvent \| MouseEvent) => void; modalClass?: string; }` | `undefined` |
 
 
 ## Dependencies
 
 ### Used by
 
+ - [onto-confirm-cancel-dialog](onto-confirm-cancel-dialog)
  - [onto-cookie-policy-dialog](onto-cookie-policy-dialog)
-
-### Depends on
-
-- [translate-label](../translate-label)
 
 ### Graph
 ```mermaid
 graph TD;
-  onto-dialog --> translate-label
+  onto-confirm-cancel-dialog --> onto-dialog
   onto-cookie-policy-dialog --> onto-dialog
   style onto-dialog fill:#f9f,stroke:#333,stroke-width:4px
 ```

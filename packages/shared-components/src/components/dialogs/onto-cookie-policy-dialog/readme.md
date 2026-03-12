@@ -30,7 +30,6 @@ graph TD;
   onto-cookie-policy-dialog --> onto-dialog
   onto-cookie-policy-dialog --> translate-label
   onto-cookie-policy-dialog --> onto-toggle-switch
-  onto-dialog --> translate-label
   onto-toggle-switch --> translate-label
   onto-cookie-consent --> onto-cookie-policy-dialog
   style onto-cookie-policy-dialog fill:#f9f,stroke:#333,stroke-width:4px

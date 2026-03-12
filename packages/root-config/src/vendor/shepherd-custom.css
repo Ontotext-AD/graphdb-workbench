@@ -1,13 +1,13 @@
-.btn-primary.shepherd-button:hover {
+.onto-btn-primary.shepherd-button:hover {
     background-color: var(--gw-button-primary-hover-background);
     color: var(--gw-button-primary-hover-color);
 }
 
-.btn-primary.shepherd-button[disabled]{
+.onto-btn-primary.shepherd-button[disabled]{
     opacity: 0.5;
 }
 
-.btn-secondary.shepherd-button:hover {
+.onto-btn-secondary.shepherd-button:hover {
     background-color: var(--gw-button-secondary-hover-background);
     color: var(--gw-button-secondary-hover-color);
 }
