@@ -1,3 +1,5 @@
+import {HttpHeaders} from './http-headers';
+
 /**
  * Represents the options that can be used for an HTTP request.
  */
@@ -15,7 +17,7 @@ export interface HttpOptions {
    * }
    * ```
    */
-  headers?: Record<string, string>;
+  headers?: HttpHeaders;
 
   /**
    * Optional body for the HTTP request.
