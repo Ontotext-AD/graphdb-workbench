@@ -45,7 +45,7 @@ PluginRegistry.add('main.menu', {
             },
             {
                 label: 'SPARQL new',
-                labelKey: 'menu.sparql.label',
+                labelKey: 'SPARQL new',
                 href: 'sparql-new',
                 order: 1.9,
                 role: 'IS_AUTHENTICATED_FULLY',
