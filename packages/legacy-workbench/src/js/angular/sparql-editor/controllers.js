@@ -25,6 +25,7 @@ import {
     SecurityContextService,
     service,
     REPOSITORY_ID_PARAM,
+    GuidesService,
 } from "@ontotext/workbench-api";
 
 const modules = [
@@ -53,7 +54,6 @@ SparqlEditorCtrl.$inject = [
     '$translate',
     'SparqlRestService',
     'ConnectorsRestService',
-    'GuidesService',
     'ModalService',
     'MonitoringRestService',
     'EventEmitterService',
@@ -71,13 +71,13 @@ function SparqlEditorCtrl($rootScope,
                           $translate,
                           SparqlRestService,
                           ConnectorsRestService,
-                          GuidesService,
                           ModalService,
                           MonitoringRestService,
                           EventEmitterService,
                           LocalStorageAdapter,
                           LSKeys) {
     const securityContextService = service(SecurityContextService);
+    const guidesService = service(GuidesService);
 
     this.repository = '';
 
@@ -159,7 +159,7 @@ function SparqlEditorCtrl($rootScope,
         } else if (queryParams.hasOwnProperty(RouteConstants.query)) {
             // init new tab from shared query link
             initTabFromSharedQuery(queryParams);
-        } else if (GuidesService.isActive()) {
+        } else if (guidesService.isActive()) {
             openNewTab();
         }
     };

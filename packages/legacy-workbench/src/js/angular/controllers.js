@@ -39,6 +39,7 @@ import {
     SecurityContextService,
     OntoToastrService,
     WindowService,
+    GuidesService as NewGuidesService,
 } from '@ontotext/workbench-api';
 import {EventConstants} from './utils/event-constants';
 import {CookieConsent} from './models/cookie-policy/cookie-consent';
@@ -209,6 +210,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
 
     const toastrService = service(OntoToastrService);
     const licenseService = service(LicenseService);
+    const guidesService = service(NewGuidesService);
     const authorizationService = service(AuthorizationService);
     const authenticationService = service(AuthenticationService);
     const securityContextService = service(SecurityContextService);
@@ -975,7 +977,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     // =========================
 
     $('#repositorySelectDropdown').on('hide.bs.dropdown', function(e) {
-        if (GuidesService.isActive()) {
+        if (guidesService.isActive()) {
             if ($('#repositorySelectDropdown.autoCloseOff').length > 0) {
                 e.preventDefault();
             }

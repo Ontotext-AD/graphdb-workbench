@@ -1,0 +1,60 @@
+[
+    {
+        "guideName": {
+            "en": "Navigate microfrontends"
+        },
+        "guideDescription": {
+            "en": "Navigate microfrontends"
+        },
+        "steps": [
+            {
+                "guideBlockName": "read-only-element",
+                "options": {
+                    "url": "404",
+                    "elementSelector": "[guide-selector=\"not-found-banner\"]",
+                    "title": "Navigation",
+                    "content": "This is a 404 page"
+                }
+            },
+            {
+                "guideBlockName": "clickable-element",
+                "options": {
+                    "url": "404",
+                    "elementSelector": "[guide-selector=\"go-back-home-btn\"]",
+                    "title": "Navigation",
+                    "disableNextFlow": true,
+                    "content": "This is the go back home button"
+                }
+            },
+            {
+                "guideBlockName": "clickable-element",
+                "options": {
+                    "elementSelector": "[guide-selector=\"tutorial-container\"]",
+                    "title": "Navigation",
+                    "content": "This is the home page"
+                }
+            },
+            {
+                "guideBlockName": "read-only-element",
+                "options": {
+                    "url": "new-view",
+                    "elementSelector": "[guide-selector=\"new-vew\"]",
+                    "title": "Navigation",
+                    "content": "This is the new view"
+                }
+            },
+            {
+                "guideBlockName": "read-only-element",
+                "options": {
+                    "url": "import",
+                    "elementSelector": "[guide-selector=\"uploadRdfFileButton\"]",
+                    "title": "Navigation",
+                    "content": "This is the import view"
+                }
+            },
+            {
+                "guideBlockName": "guide-end"
+            }
+        ]
+    }
+]

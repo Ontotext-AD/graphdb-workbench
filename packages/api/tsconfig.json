@@ -8,6 +8,7 @@
     "typeRoots": ["./node_modules/@types"],
     "target": "ESNext",
     "module": "commonjs",
+    "lib": ["dom", "ESNext"],
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
