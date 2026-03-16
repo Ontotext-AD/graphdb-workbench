@@ -1,5 +1,5 @@
 import {UnauthorizedInterceptor} from '../unauthorized-interceptor';
-import {AuthenticationService, SecurityContextService} from '../../../services/security';
+import {AuthenticationService, SecurityContextService} from '../../../services/domain/security';
 import {service} from '../../../providers';
 import {RestrictedPages} from '../../../models/security';
 import * as routingUtils from '../../../services/utils/routing-utils';

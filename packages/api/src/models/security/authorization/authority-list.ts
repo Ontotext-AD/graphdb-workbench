@@ -3,13 +3,13 @@ import {Authority} from './authority';
 import {GraphdbAuthoritiesModel} from './graphdb-authorities-model';
 import {AuthoritiesUiModel} from './authorities-ui-model';
 import {RepositoriesPermissions} from './repositories-permissions';
-import {AuthoritiesUtil} from '../../../services/security/utils/authorities-util';
+import {AuthoritiesUtil} from '../../../services/domain/security/utils/authorities-util';
 import {
   mapGraphdbAuthoritiesResponseToModel
-} from '../../../services/security/mappers/graphdb-authorities-model-mapper';
+} from '../../../services/domain/security/mappers/graphdb-authorities-model-mapper';
 import {
   mapGrantedAuthoritiesResponseToModel
-} from '../../../services/security/mappers/granted-authorities-ui-model.mapper';
+} from '../../../services/domain/security/mappers/granted-authorities-ui-model.mapper';
 
 /**
  * Represents a list of authorities in an authenticated user.

@@ -2,8 +2,8 @@ import {HttpInterceptor} from '../../models/interceptor/http-interceptor';
 import {isLoginPage, navigate} from '../../services/utils';
 import {WindowService} from '../../services/window';
 import {service} from '../../providers';
-import {AuthenticationStorageService} from '../../services/security/authentication-storage.service';
-import {AuthenticationService} from '../../services/security';
+import {AuthenticationStorageService} from '../../services/domain/security/authentication-storage.service';
+import {AuthenticationService} from '../../services/domain/security';
 
 /**
  * Interceptor that handles HTTP 401 Unauthorized responses.

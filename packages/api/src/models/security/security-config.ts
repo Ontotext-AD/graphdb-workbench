@@ -1,7 +1,7 @@
 import {Model} from '../common';
 import {AuthSettings} from './auth-settings';
 import {OpenidSecurityConfig} from './openid-security-config';
-import {mapAuthSettingsResponseToModel} from '../../services/security/mappers/auth-settings.mapper';
+import {mapAuthSettingsResponseToModel} from '../../services/domain/security/mappers/auth-settings.mapper';
 import {AuthSettingsResponseModel} from './response-models';
 
 /**

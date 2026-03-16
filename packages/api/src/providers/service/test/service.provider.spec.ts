@@ -1,5 +1,5 @@
 import {ServiceProvider} from '../service.provider';
-import {RepositoryService} from '../../../services/repository';
+import {RepositoryService} from '../../../services/domain/repository';
 import {Service} from '../service';
 import {LifecycleHooks} from '../lifecycle-hooks';
 

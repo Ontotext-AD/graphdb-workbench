@@ -4,7 +4,7 @@ import {AppSettings} from '../users/app-settings';
 import {User} from '../users/user';
 import {
   mapGrantedAuthoritiesResponseToModel
-} from '../../services/security/mappers/granted-authorities-ui-model.mapper';
+} from '../../services/domain/security/mappers/granted-authorities-ui-model.mapper';
 import {CookieConsent} from '../tracking';
 
 /**

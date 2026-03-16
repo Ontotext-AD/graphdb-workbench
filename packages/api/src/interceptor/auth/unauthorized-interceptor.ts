@@ -1,7 +1,7 @@
 import {HttpInterceptor} from '../../models/interceptor/http-interceptor';
 import {getPathName, navigate} from '../../services/utils';
-import {AuthenticationService} from '../../services/security/authentication.service';
-import {SecurityContextService} from '../../services/security/security-context.service';
+import {AuthenticationService} from '../../services/domain/security/authentication.service';
+import {SecurityContextService} from '../../services/domain/security/security-context.service';
 import {service} from '../../providers';
 import {LoggerProvider} from '../../services/logging/logger-provider';
 
