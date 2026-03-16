@@ -65,6 +65,7 @@ export * from './services/domain/users';
 export * from './services/interceptor/interceptor.service';
 export * from './services/runtime-configuration';
 export * from './services/domain/sparql-template';
+export * from './services/domain/rdf4j';
 
 // Export interceptors for external usages.
 export * from './interceptor';
