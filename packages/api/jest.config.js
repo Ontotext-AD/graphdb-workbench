@@ -5,6 +5,7 @@ module.exports = {
   },
   moduleNameMapper: {
     "\\.(css)$": "identity-obj-proxy",
+    "^@api/(.*)$": "<rootDir>/src/$1",
   },
 
   // Restores the original implementation of all spies created using jest.spyOn.

@@ -1,5 +1,5 @@
 import {UnauthenticatedInterceptor} from '../unauthenticated-interceptor';
-import {AuthenticationStorageService, AuthenticationService} from '../../../services/security';
+import {AuthenticationStorageService, AuthenticationService} from '../../../services/domain/security';
 import {service} from '../../../providers';
 import {WindowService} from '../../../services/window';
 import * as routingUtils from '../../../services/utils/routing-utils';

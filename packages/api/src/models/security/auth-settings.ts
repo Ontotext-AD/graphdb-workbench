@@ -1,7 +1,7 @@
 import {Model} from '../common';
 import {AppSettings} from '../users/app-settings';
 import {AuthorityList} from './authorization/authority-list';
-import {mapAuthorityListResponseToModel} from '../../services/security/mappers/authority-list.mapper';
+import {mapAuthorityListResponseToModel} from '../../services/domain/security/mappers/authority-list.mapper';
 
 /**
  * Represents an authentication setting.
