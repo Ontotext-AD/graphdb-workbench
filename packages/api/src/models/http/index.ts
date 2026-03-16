@@ -4,4 +4,5 @@ export * from './http-request-config';
 export * from './http-response-base';
 export * from './http-response';
 export * from './http-error-response';
+export * from './http-headers';
 
