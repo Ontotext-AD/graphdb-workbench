@@ -26,6 +26,7 @@ export * from './models/translation';
 export * from './models/users';
 export * from './models/interceptor';
 export * from './models/sparql-templates';
+export * from './models/http';
 
 // Export enums for external usages.
 export * from './models/url';
