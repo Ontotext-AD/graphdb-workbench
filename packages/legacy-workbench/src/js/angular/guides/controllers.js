@@ -2,7 +2,7 @@ import 'angular/guides/guides.service';
 import 'angular/core/directives/paginations';
 import {GuideUtils} from "./guide-utils";
 import {GuideLevel} from "./model/guides";
-import {service, GuidesService as NewGuidesService} from '@ontotext/workbench-api';
+import {service, GuidesService as NewGuidesService, InteractiveGuide} from '@ontotext/workbench-api';
 
 const modules = [
     'ui.bootstrap',
@@ -31,7 +31,7 @@ function GuidesCtrl($scope, $rootScope, GuidesService, $filter, $translate, $int
     // =========================
 
     $scope.startGuide = (guide) => {
-        service(NewGuidesService).startGuide(guide, GuidesService.getServices());
+        service(NewGuidesService).startGuide(new InteractiveGuide(guide), GuidesService.getServices());
     };
 
     $scope.changePagination = () => {

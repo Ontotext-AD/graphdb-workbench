@@ -28,6 +28,10 @@ export class GuideDialogSteps {
         return GuideDialogSteps.getFooter().find('.shepherd-button').contains('Close');
     }
 
+    static getSkipButton() {
+        return GuideDialogSteps.getFooter().find('.shepherd-button').contains('Skip');
+    }
+
     static clickOnNextButton(forceVisible = false) {
         return GuideDialogSteps.getNextButton().scrollIntoView().click({force: forceVisible});
     }
@@ -38,6 +42,10 @@ export class GuideDialogSteps {
 
     static clickOnCloseButton() {
         GuideDialogSteps.getCloseButton().scrollIntoView().click();
+    }
+
+    static clickOnSkipButton() {
+        GuideDialogSteps.getSkipButton().scrollIntoView().click();
     }
 
     static getContentLink() {

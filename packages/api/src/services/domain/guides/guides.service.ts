@@ -5,11 +5,11 @@ import {RepositoryContextService} from '../repository';
 import {OntoToastrService} from '../../toastr';
 import {ShepherdService} from './shepherd.service';
 import {InteractiveGuide} from '../../../models/plugins/plugins/interactive-guide/interactive-guide';
-import {InteractiveGuideResponse} from '../../../models/plugins/plugins/interactive-guide/interactive-guide-response';
 import {WindowService} from '../../window';
 import {GuidePlugin, InteractiveGuideExtensionPoint} from '../../../models/plugins';
 import {GuideApi} from './guide-api';
 import {GuideContextService} from './guide-context.service';
+import {GuidesRestService} from './guides-rest.service';
 
 export class GuidesService implements Service {
   private readonly shepherdService = service(ShepherdService);
@@ -17,6 +17,7 @@ export class GuidesService implements Service {
   private readonly repositoryContextService = service(RepositoryContextService);
   private readonly guideApi = service(GuideApi);
   private readonly guideContextService = service(GuideContextService);
+  private readonly guidesRestService = service(GuidesRestService);
 
   /**
    * Creates a guide and starts it from <code>startStepId</code> if provided. Starts from the beginning otherwise.
@@ -28,20 +29,19 @@ export class GuidesService implements Service {
    * 3. Converts complex steps to core steps;
    * 4. Starts or resumes the guide via ShepherdService.
    *
-   * @param guideResponse - The guide to start. at this point the guide is a simple JSON object, which needs to be converted to an InteractiveGuide instance.
+   * @param guide - The guide to start.
    * @param services the services passed to the steps
    * @param startStepId - The step ID to start from. If defined, the guide will be resumed from that step.
    * @param isAutoStarted - Whether the guide was automatically started.
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  startGuide(guideResponse: InteractiveGuideResponse | undefined, services: Record<string, any>, startStepId?: string, isAutoStarted = false): void {
+  startGuide(guide: InteractiveGuide | undefined, services: Record<string, any>, startStepId?: string, isAutoStarted = false): void {
     const bundle = service(LanguageContextService).getLanguageBundle();
-    if (!guideResponse) {
+    if (!guide) {
       this.toastrService.error(this.guideApi.translate(bundle, 'guides.error.guide-not-found'));
       return;
     }
 
-    const guide = new InteractiveGuide(guideResponse);
     const repositoryIdBase = guide.getRepositoryIdBase();
 
     if (repositoryIdBase) {
@@ -78,6 +78,50 @@ export class GuidesService implements Service {
     }
 
     this.guideContextService.updatePaused(false);
+  }
+
+  /**
+   * Fetches the list of all available guides and normalizes their IDs.
+   * If a guide has no ID, one is generated from the current timestamp and index.
+   * If a guide ID is a number, it is converted to a string.
+   *
+   * @returns A Promise that resolves to an array of {@link InteractiveGuideResponse} objects.
+   */
+  async getGuides(): Promise<InteractiveGuide[]> {
+    const guides = await this.guidesRestService.getGuides() ?? [];
+
+    return guides.map((guide, index) => {
+      if (guide.guideId === undefined) {
+        guide.guideId = String(Date.now() + index);
+      } else if (typeof guide.guideId === 'number') {
+        guide.guideId = String(guide.guideId);
+      }
+      return new InteractiveGuide(guide);
+    });
+  }
+
+  /**
+   * Automatically starts a guide by its ID.
+   * Fetches all guides, finds the one matching the given ID, and starts it.
+   * If the ID is a number, it is coerced to a string before matching.
+   *
+   * @param autoStartGuideId - The ID of the guide to auto-start.
+   * @param services - The services passed to the guide steps.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  autoStartGuide(autoStartGuideId: string | number, services: Record<string, any>): void {
+    if (!autoStartGuideId) {
+      return;
+    }
+
+    const guideId = String(autoStartGuideId);
+
+    this.getGuides().then((guides: InteractiveGuide[]) => {
+      const selectedGuide = guides.find((guide) => guide.getId() === guideId);
+      if (selectedGuide) {
+        this.startGuide(selectedGuide, services, undefined, true);
+      }
+    });
   }
 
   /**

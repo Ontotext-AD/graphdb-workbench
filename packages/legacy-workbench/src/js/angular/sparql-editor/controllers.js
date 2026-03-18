@@ -117,7 +117,7 @@ function SparqlEditorCtrl($rootScope,
                 [EventDataType.QUERY_EXECUTED, queryExecutedHandler],
                 [EventDataType.REQUEST_ABORTED, requestAbortedHandler],
             ]),
-            clearState: clearYasguiState !== undefined ? clearYasguiState : false,
+            clearState: clearYasguiState ?? false,
         };
     };
 

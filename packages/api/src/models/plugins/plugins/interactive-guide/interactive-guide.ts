@@ -16,13 +16,13 @@ import {ObjectUtil} from '../../../../services/utils';
 export class InteractiveGuide extends Model<InteractiveGuide>{
   private readonly guideId: string;
   private readonly guideName: string;
-  private readonly guideDescription: string;
+  private readonly guideDescription: Record<string, string> | string;
   private readonly options: StepOptions;
   private readonly steps: GuideStep[];
 
   constructor(data: InteractiveGuideResponse) {
     super();
-    this.guideId = data.guideId || '';
+    this.guideId = data.guideId ? String(data.guideId) : '';
     this.guideName = data.guideName || '';
     this.guideDescription = data.guideDescription || '';
     this.options = data.options ?? {};
@@ -37,7 +37,7 @@ export class InteractiveGuide extends Model<InteractiveGuide>{
     return this.guideName;
   }
 
-  getDescription(): string {
+  getDescription(): Record<string, string> | string {
     return this.guideDescription;
   }
 

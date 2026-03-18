@@ -29,7 +29,7 @@ export class GuideApi implements Service, GuideStepBridge {
    * @param parameters - Optional parameters to interpolate into the translation string.
    * @returns The translated string, or the key itself if no translation is found.
    */
-  translate(bundle: TranslationBundle | undefined, key: string | TranslationBundle, parameters: Record<string, string> = {}): string {
+  translate(bundle: TranslationBundle | undefined, key: string | Record<string, string>, parameters: Record<string, string> = {}): string {
     // If key is a per-language object (e.g. { en: '...', fr: '...' }), resolve the translation
     // directly from it using the current language, falling back to English.
     if (key && typeof key === 'object') {
@@ -39,7 +39,7 @@ export class GuideApi implements Service, GuideStepBridge {
         this.logger.warn(`Missing translation for language [${lang}] in message object`);
         return '';
       }
-      return this.sanitize(this.applyParameters(translation as string, parameters));
+      return this.sanitize(this.applyParameters(translation, parameters));
     }
 
     bundle ??= this.languageContextService.getLanguageBundle();

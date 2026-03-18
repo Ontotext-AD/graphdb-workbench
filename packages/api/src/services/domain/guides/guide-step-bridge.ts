@@ -16,7 +16,7 @@ export interface GuideStepBridge {
    * @param parameters - Optional parameters to interpolate into the translation string.
    * @returns The translated string, or the key itself if no translation is found.
    */
-  translate(bundle: TranslationBundle | undefined, key: string | TranslationBundle, parameters?: Record<string, string>): string;
+  translate(bundle: TranslationBundle | undefined, key: string | Record<string, string>, parameters?: Record<string, string>): string;
 
   /**
    * Decodes HTML entities in the translated string safely using DOMParser,
