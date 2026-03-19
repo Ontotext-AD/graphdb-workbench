@@ -7,9 +7,12 @@ import {LoggerProvider} from '../../logging/logger-provider';
 import {OntoToastrService} from '../../toastr';
 import {GuideApi} from './guide-api';
 import {GuideStorageService} from './guide-storage.service';
+import {DialogService} from '../../dialog/dialog.service';
+import {CancelDialogAction} from '../../../models/dialog/cancel-dialog-action';
 import {GuideStep} from '../../../models/plugins/plugins/interactive-guide/guide-step';
 import {navigate, getPathName} from '../../utils';
 import {StepOptions} from '../../../models/plugins/plugins/interactive-guide/step-options';
+import {ActiveTour} from '../../../models/plugins/plugins/interactive-guide/active-tour';
 
 const SMOOTH = 'smooth' as const;
 const NEAREST = 'nearest' as const;
@@ -34,8 +37,6 @@ export class ShepherdService implements Service {
   onPause: () => void = () => {};
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   onCancel: () => void = () => {};
-
-  // ── Public API ──────────────────────────────────────────────────────
 
   /**
    * Creates and starts a guide.
@@ -66,7 +67,7 @@ export class ShepherdService implements Service {
       return;
     }
 
-    const guide = this.createGuide(guideId);
+    const guide = this.createGuide(guideId) as ActiveTour;
     this.addGuideSteps(guide, stepsDescriptions);
     this.doStartGuide(guide, startStepId);
   }
@@ -154,7 +155,7 @@ export class ShepherdService implements Service {
     return new Shepherd.Tour({
       tourName: guideId,
       useModalOverlay: true,
-      confirmCancel: false,
+      confirmCancel: () => this.confirmGuideCancel(),
       defaultStepOptions: {
         classes: 'shadow-md bg-purple-dark',
         scrollTo: {
@@ -166,7 +167,7 @@ export class ShepherdService implements Service {
     });
   }
 
-  private addGuideSteps(guide: Tour, stepsDescriptions: GuideStep[]): void {
+  private addGuideSteps(guide: ActiveTour, stepsDescriptions: GuideStep[]): void {
     if (stepsDescriptions.length > 0) {
       guide.addStep(this.getFirstStep(guide, stepsDescriptions));
     }
@@ -232,12 +233,12 @@ export class ShepherdService implements Service {
     }
   }
 
-  private getFirstStep(guide: Tour, stepsDescriptions: GuideStep[]): Step.StepOptions {
+  private getFirstStep(guide: ActiveTour, stepsDescriptions: GuideStep[]): Step.StepOptions {
     const nextGuideStep = stepsDescriptions.length > 1 ? stepsDescriptions[1] : undefined;
     return this.toGuideStep(guide, undefined, stepsDescriptions[0], nextGuideStep);
   }
 
-  private getMiddleStep(guide: Tour, stepsDescriptions: GuideStep[], indexOfProcessedStep: number): Step.StepOptions {
+  private getMiddleStep(guide: ActiveTour, stepsDescriptions: GuideStep[], indexOfProcessedStep: number): Step.StepOptions {
     const currentStep = stepsDescriptions[indexOfProcessedStep];
     if (currentStep.lastStep) {
       return this.getLastStep(guide, currentStep);
@@ -245,7 +246,7 @@ export class ShepherdService implements Service {
     return this.toGuideStep(guide, stepsDescriptions[indexOfProcessedStep - 1], currentStep, stepsDescriptions[indexOfProcessedStep + 1]);
   }
 
-  private getLastStep(guide: Tour, lastGuideStep: GuideStep): Step.StepOptions {
+  private getLastStep(guide: ActiveTour, lastGuideStep: GuideStep): Step.StepOptions {
     const step = this.toGuideStep(guide, undefined, lastGuideStep);
     const buttons = step.buttons as Step.StepOptionsButton[];
     buttons.push(this.getBackToGuidesButton(guide), this.getCancelButton(guide));
@@ -253,7 +254,7 @@ export class ShepherdService implements Service {
   }
 
   private toGuideStep(
-    guide: Tour,
+    guide: ActiveTour,
     previousGuideStep: GuideStep | undefined,
     currentGuideStep: GuideStep,
     nextGuideStep?: GuideStep,
@@ -417,7 +418,7 @@ export class ShepherdService implements Service {
     return this.getButton(skipBtnLabel, () => this.skipSteps(guide), true);
   }
 
-  private getPreviousButton(guide: Tour): Step.StepOptionsButton {
+  private getPreviousButton(guide: ActiveTour): Step.StepOptionsButton {
     const text = this.guideApi.translate(undefined, 'previous.btn');
     const action = this.getPreviousButtonAction(guide);
     const prevButton = this.getButton(text, action);
@@ -426,7 +427,7 @@ export class ShepherdService implements Service {
   }
 
   private getNextButton(
-    guide: Tour,
+    guide: ActiveTour,
     currentGuideStep: GuideStep,
     nextGuideStep: GuideStep,
   ): Step.StepOptionsButton {
@@ -451,7 +452,7 @@ export class ShepherdService implements Service {
     };
   }
 
-  private getPreviousButtonAction(guide: Tour): () => void {
+  private getPreviousButtonAction(guide: ActiveTour): () => void {
     return () => {
       const nextStepId = this.guideStorage.getPreviousStepIdFromHistory();
       let nextStep: Step | undefined;
@@ -515,7 +516,7 @@ export class ShepherdService implements Service {
   }
 
   private getNextButtonAction(
-    guide: Tour,
+    guide: ActiveTour,
     currentGuideStep: GuideStep,
     nextGuideStep: GuideStep,
   ): () => void {
@@ -547,6 +548,33 @@ export class ShepherdService implements Service {
     this.completeGuide(guide);
   }
 
+  private async confirmGuideCancel(): Promise<boolean> {
+    const activeTour = Shepherd.activeTour as Tour;
+    const lastStep = activeTour.steps.at(-1);
+    const currentStep = activeTour.getCurrentStep();
+
+    if (lastStep && lastStep.id === currentStep?.id) {
+      this.completeGuide(activeTour);
+      return true;
+    }
+    activeTour.hide();
+
+    const action = await service(DialogService).confirmCancel(this.guideAutostarted ?? false);
+    if (action === CancelDialogAction.CANCEL) {
+      if (currentStep) {
+        activeTour.show(currentStep.id);
+      }
+      return false;
+    }
+    if (action === CancelDialogAction.DONT_SHOW_AGAIN) {
+      const guideName = (activeTour as unknown as { options: { tourName?: string } }).options.tourName;
+      if (guideName) {
+        this.guideStorage.disableAutostart(guideName);
+      }
+    }
+    return true;
+  }
+
   private completeGuide(guide: Tour): void {
     if (this.guideAutostarted) {
       const guideName = (guide as unknown as { options: { tourName?: string } }).options.tourName;
@@ -557,13 +585,13 @@ export class ShepherdService implements Service {
     guide.complete();
   }
 
-  private abortGuide(guide: Tour): void {
+  private abortGuide(guide: ActiveTour): void {
     this.toastrService.error(this.guideApi.translate(undefined, 'guide.unexpected.error.message'));
-    (guide as unknown as { options: StepOptions }).options.confirmCancel = false;
+    guide.options.confirmCancel = false;
     guide.cancel();
   }
 
-  private pauseGuide(guide: Tour): void {
+  private pauseGuide(guide: ActiveTour): void {
     guide.hide();
     const currentStep = guide.getCurrentStep();
     if (!currentStep) {
@@ -571,7 +599,7 @@ export class ShepherdService implements Service {
     }
     const step = this.getStepWhichCanBePaused(guide.steps, currentStep.id);
     if (step) {
-      const tourName = (step as unknown as { tour: { options: { tourName?: string } } }).tour?.options?.tourName;
+      const tourName = guide?.options?.tourName;
       if (tourName) {
         this.guideStorage.saveStep(tourName, step.options.id as string);
       }

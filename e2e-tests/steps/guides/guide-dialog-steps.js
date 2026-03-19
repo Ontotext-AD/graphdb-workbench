@@ -1,4 +1,6 @@
-export class GuideDialogSteps {
+import {BaseSteps} from "../base-steps.js";
+
+export class GuideDialogSteps extends BaseSteps {
 
     static getModalDialog() {
         return cy.get('.shepherd-content:visible');
@@ -6,6 +8,50 @@ export class GuideDialogSteps {
 
     static getHeader() {
         return GuideDialogSteps.getModalDialog().find('.shepherd-header');
+    }
+
+    static getCancelButton() {
+        return this.getHeader().find('.shepherd-cancel-icon');
+    }
+
+    static clickOnCancelButton() {
+        return this.getCancelButton().click();
+    }
+
+    static getConfirmCancelDialog() {
+        return this.getByTestId('onto-confirm-cancel-dialog');
+    }
+
+    static getConfirmCancelDialogCloseButton() {
+        return this.getByTestId('close-dialog-btn');
+    }
+
+    static clickOnConfirmCancelDialogCloseButton() {
+        return this.getConfirmCancelDialogCloseButton().click();
+    }
+
+    static getConfirmCancelDialogCancelButton() {
+        return this.getByTestId('cancel-btn');
+    }
+
+    static clickConfirmCancelDialogCancelButton() {
+        return this.getConfirmCancelDialogCancelButton().click();
+    }
+
+    static getConfirmCancelDialogDontShowAgainButton() {
+        return this.getByTestId('dont-show-again-btn');
+    }
+
+    static clickConfirmCancelDialogDontShowAgainButton() {
+        return this.getConfirmCancelDialogDontShowAgainButton().click();
+    }
+
+    static getConfirmCancelDialogExitButton() {
+        return this.getByTestId('exit-btn');
+    }
+
+    static clickConfirmCancelDialogExitButton() {
+        return this.getConfirmCancelDialogExitButton().click();
     }
 
     static getContent() {

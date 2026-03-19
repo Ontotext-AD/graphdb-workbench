@@ -37,3 +37,14 @@
     border-color: var(--gw-button-primary-hover-border-color);
   }
 }
+
+.onto-btn-secondary {
+  background-color: var(--gw-button-secondary-background);
+  border-color: var(--gw-button-secondary-border-color);
+  color: var(--gw-button-secondary-color);
+
+  &:hover {
+    background-color: var(--gw-button-secondary-hover-background);
+    border-color: var(--gw-button-secondary-hover-border-color);
+  }
+}

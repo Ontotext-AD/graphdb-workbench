@@ -18,12 +18,10 @@ const initConfigurationContext = (config = applicationConfiguration) => {
   return testContext.initConfigurationContext(config);
 };
 
-// eslint-disable-next-line no-unused-vars
 const updateLicense = (license) => {
   testContext.updateLicense(license);
 };
 
-// eslint-disable-next-line no-unused-vars
 const loadProductInfo = () => {
   testContext.updateProductInfo({
     workbench: '2.8.0',
@@ -41,43 +39,40 @@ const addToastr = (toastr) => {
   testContext.addToastr(toastr);
 };
 
-// eslint-disable-next-line no-unused-vars
 const loadRepositories = () => {
   testContext.loadRepositories();
 };
 
-// eslint-disable-next-line no-unused-vars
 const setAuthUser = (user) => {
   testContext.setAuthenticatedUser(user);
 };
 
-// eslint-disable-next-line no-unused-vars
 const login = (username, password) => {
   return testContext.login(username, password);
 };
 
-// eslint-disable-next-line no-unused-vars
 const setSecurityConfig = (config) => {
   testContext.setSecurityConfig(config);
 };
 
-// eslint-disable-next-line no-unused-vars
 const setMarvelRepo = () => {
   testContext.updateSelectedRepository({id: 'marvel', location: ''});
 };
 
-// eslint-disable-next-line no-unused-vars
 const updateIsLoadingActiveRepositoryLocation = (isLoading) => {
   testContext.updateIsLoadingActiveRepositoryLocation(isLoading);
 };
 
-// eslint-disable-next-line no-unused-vars
 const setAutocomplete = (enabled) => {
   testContext.setAutocomplete(enabled);
 };
 
 updateNamespaces = (rawNamespaces) => {
   testContext.updateNamespaces(rawNamespaces);
+};
+
+const openConfirmCancelDialog = (dontShowAgain) => {
+  testContext.openConfirmCancel(dontShowAgain);
 };
 
 window.PluginRegistry = {

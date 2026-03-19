@@ -16,6 +16,8 @@ import {
   ToastMessage,
   EventEmitter,
   CREATE_TOAST_EVENT,
+  CONFIRM_CANCEL_EVENT,
+  ConfirmCancelPayload,
   RepositoryLocationContextService,
   AutocompleteContextService,
   NamespacesContextService,
@@ -199,10 +201,22 @@ export class OntoTestContext {
   }
 
   /**
-   * Adds a toast notification to the application.
+   * Opens the confirm cancel dialog.
    *
-   * @param toast - The ToastMessage object containing the notification details
-   *                such as message content, type, and display options.
+   * @param hasDontShowAgain - Whether to show the "Don't show again" button in the dialog.
+   */
+  @Method()
+  openConfirmCancel(hasDontShowAgain: boolean): Promise<void> {
+    this.eventEmitter.emit({NAME: CONFIRM_CANCEL_EVENT, payload: new ConfirmCancelPayload(hasDontShowAgain, (action) => {
+      console.info('Dialog closed with action:', action);
+    })});
+    return Promise.resolve();
+  }
+
+  /**
+   * Opens a toast
+   *
+   * @param toast the toast to open
    */
   @Method()
   addToastr(toast: ToastMessage): Promise<void> {

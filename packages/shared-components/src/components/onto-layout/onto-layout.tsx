@@ -140,6 +140,7 @@ export class OntoLayout {
           </footer>
         }
         <onto-tooltip></onto-tooltip>
+        <onto-confirm-cancel-dialog></onto-confirm-cancel-dialog>
       </Host>
     );
   }

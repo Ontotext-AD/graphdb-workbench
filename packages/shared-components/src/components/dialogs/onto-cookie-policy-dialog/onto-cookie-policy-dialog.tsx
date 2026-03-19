@@ -30,6 +30,8 @@ export class OntoCookiePolicyDialog {
 
   private user: AuthenticatedUser;
   private cookieConsent: CookieConsent;
+  private closeButton: HTMLButtonElement;
+
   /**
    * Debounced version of the `toggleChanged` method to prevent rapid consecutive calls when the user toggles cookie
    * consent options multiple times in quick succession.
@@ -50,6 +52,10 @@ export class OntoCookiePolicyDialog {
     this.toggleChangedDebounced(event);
   }
 
+  componentDidLoad() {
+    this.closeButton.focus();
+  }
+
   private toggleChanged(event: CustomEvent<ToggleEventPayload>) {
     this.setUserCookieConsent(this.updateCookieConsent(event.detail));
     this.securityService.updateAuthenticatedUser(this.user.toUser())
@@ -66,7 +72,6 @@ export class OntoCookiePolicyDialog {
   render() {
     const config = {
       dialogTitle: TranslationService.translate('cookie.policy.title'),
-      onClose: () => this.closePolicyDialog(),
       modalClass: 'cookie-policy-modal',
     };
 
@@ -149,6 +154,13 @@ export class OntoCookiePolicyDialog {
             </span>
           </p>
         </div>
+        <div slot={'footer'}>
+          <button class="onto-btn onto-btn-primary close-btn"
+            onClick={this.closePolicyDialog}
+            ref={(el) => (this.closeButton = el)}>
+            <translate-label labelKey={'common.button.close'}></translate-label>
+          </button>
+        </div>
       </onto-dialog>
     );
   }
@@ -164,9 +176,9 @@ export class OntoCookiePolicyDialog {
    *  - This reload is necessary in cases where multiple third-party consent changes
    *    lead to duplicate and redundant tracking data being loaded.
    */
-  private closePolicyDialog() {
+  private readonly closePolicyDialog = () => {
     this.closeDialog.emit();
-  }
+  };
 
   private updateCookieConsent(payload: ToggleEventPayload): CookieConsent {
     // Context is either 'thirdParty' or 'statistic'

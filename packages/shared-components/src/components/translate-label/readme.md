@@ -28,9 +28,9 @@ Example of usage:
 
 ### Used by
 
+ - [onto-confirm-cancel-dialog](../dialogs/onto-confirm-cancel-dialog)
  - [onto-cookie-consent](../onto-cookie-consent)
  - [onto-cookie-policy-dialog](../dialogs/onto-cookie-policy-dialog)
- - [onto-dialog](../dialogs)
  - [onto-footer](../onto-footer)
  - [onto-license-alert](../onto-license-alert)
  - [onto-navbar](../onto-navbar)
@@ -43,9 +43,9 @@ Example of usage:
 ### Graph
 ```mermaid
 graph TD;
+  onto-confirm-cancel-dialog --> translate-label
   onto-cookie-consent --> translate-label
   onto-cookie-policy-dialog --> translate-label
-  onto-dialog --> translate-label
   onto-footer --> translate-label
   onto-license-alert --> translate-label
   onto-navbar --> translate-label
