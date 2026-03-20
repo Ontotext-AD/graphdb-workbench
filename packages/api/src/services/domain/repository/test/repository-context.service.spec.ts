@@ -248,6 +248,71 @@ describe('RepositoryContextService', () => {
       expect(exists).toBe(false);
     });
   });
+
+  describe('isActiveRepoOntopType', () => {
+    test('Should return false when no repository is selected.', () => {
+      // Given no selected repository
+      // When checking if the active repository is of Ontop type
+      const result = repositoryContextService.isActiveRepoOntopType();
+
+      // Then it should return false
+      expect(result).toBe(false);
+    });
+
+    test('Should return true when the selected repository is of Ontop type.', async () => {
+      // Given a repository list containing an Ontop repository
+      const ontopRepository = new Repository({id: 'ontop-repo', location: 'http://example.com:7300', sesameType: 'graphdb:OntopRepository'});
+      const repositories = new RepositoryList([ontopRepository]);
+      repositoryContextService.updateRepositoryList(repositories);
+
+      // When the Ontop repository is selected
+      await repositoryContextService.updateSelectedRepository(ontopRepository);
+
+      // Then isActiveRepoOntopType should return true
+      expect(repositoryContextService.isActiveRepoOntopType()).toBe(true);
+    });
+
+    test('Should return false when the selected repository is not of Ontop type.', async () => {
+      // Given a repository list containing a non-Ontop repository
+      const regularRepository = new Repository({id: 'regular-repo', location: 'http://example.com:7300', sesameType: 'graphdb:FreeSailRepository'});
+      const repositories = new RepositoryList([regularRepository]);
+      repositoryContextService.updateRepositoryList(repositories);
+
+      // When the non-Ontop repository is selected
+      await repositoryContextService.updateSelectedRepository(regularRepository);
+
+      // Then isActiveRepoOntopType should return false
+      expect(repositoryContextService.isActiveRepoOntopType()).toBe(false);
+    });
+
+    test('Should return false when the selected repository is of FedX type.', async () => {
+      // Given a repository list containing a FedX repository
+      const fedxRepository = new Repository({id: 'fedx-repo', location: 'http://example.com:7300', sesameType: 'graphdb:FedXRepository'});
+      const repositories = new RepositoryList([fedxRepository]);
+      repositoryContextService.updateRepositoryList(repositories);
+
+      // When the FedX repository is selected
+      await repositoryContextService.updateSelectedRepository(fedxRepository);
+
+      // Then isActiveRepoOntopType should return false
+      expect(repositoryContextService.isActiveRepoOntopType()).toBe(false);
+    });
+
+    test('Should return false after the selected repository is cleared.', async () => {
+      // Given an Ontop repository that was previously selected
+      const ontopRepository = new Repository({id: 'ontop-repo', location: 'http://example.com:7300', sesameType: 'graphdb:OntopRepository'});
+      const repositories = new RepositoryList([ontopRepository]);
+      repositoryContextService.updateRepositoryList(repositories);
+      await repositoryContextService.updateSelectedRepository(ontopRepository);
+      expect(repositoryContextService.isActiveRepoOntopType()).toBe(true);
+
+      // When the selected repository is cleared
+      await repositoryContextService.updateSelectedRepository(undefined);
+
+      // Then isActiveRepoOntopType should return false
+      expect(repositoryContextService.isActiveRepoOntopType()).toBe(false);
+    });
+  });
 });
 
 function createRepositoryInstance(id: string, location = 'http://example.com:7300') {

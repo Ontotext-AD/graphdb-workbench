@@ -127,4 +127,12 @@ export class RepositoryContextService extends ContextService<RepositoryContextFi
   repositoryExists(repositoryReference: RepositoryReference, ignoringLocation = false): boolean {
     return this.findRepository(repositoryReference, ignoringLocation) !== undefined;
   }
+
+  /**
+   * Checks if the currently active repository is of type Ontop.
+   * @returns True if the active repository is of type Ontop, false otherwise.
+   */
+  isActiveRepoOntopType() {
+    return this.getSelectedRepository()?.isOntop() ?? false;
+  }
 }
