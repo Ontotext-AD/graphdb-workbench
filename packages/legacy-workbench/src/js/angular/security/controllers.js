@@ -13,7 +13,7 @@ import {
     mapAuthSettingsResponseToModel,
     mapGrantedAuthoritiesResponseToModel,
     OntoToastrService,
-    RepositoryService,
+    RepositoryAuthorityService,
     SecurityService as SecurityServiceAPI,
     service,
     User,
@@ -38,7 +38,7 @@ securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$windo
         const securityServiceAPI = service(SecurityServiceAPI);
         const toastrService = service(OntoToastrService);
         const usersService = service(UsersService);
-        const repositoryService = service(RepositoryService);
+        const repositoryAuthorityService = service(RepositoryAuthorityService);
 
         // UI view-model
         $scope.usersData = [];
@@ -155,7 +155,7 @@ securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$windo
                                 };
                                 // We might have old (no longer existing) repositories so we have to check that
                                 const repoIds = _.mapKeys($scope.getRepositories(), function(r) {
-                                    return repositoryService.getLocationSpecificId(r);
+                                    return repositoryAuthorityService.getLocationSpecificId(r);
                                 });
                                 _.each(authorities, function(a) {
                                     // indexOf works in IE 11, startsWith doesn't
@@ -220,7 +220,7 @@ securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$windo
 
 securityModule.controller('DefaultAuthoritiesCtrl', ['$scope', '$http', '$uibModalInstance', 'data', '$rootScope',
     function($scope, $http, $uibModalInstance, data, $rootScope) {
-        const repositoryService = service(RepositoryService);
+        const repositoryAuthorityService = service(RepositoryAuthorityService);
 
         $scope.grantedAuthorities = data.defaultAuthorities();
         $scope.appSettings = data.appSettings;
@@ -266,14 +266,14 @@ securityModule.controller('DefaultAuthoritiesCtrl', ['$scope', '$http', '$uibMod
         };
 
         $scope.createUniqueKey = function(repository) {
-            return repositoryService.getLocationSpecificId(repository);
+            return repositoryAuthorityService.getLocationSpecificId(repository);
         };
     }]);
 
 securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 'toastr', '$window', '$timeout', '$location', '$jwtAuth', '$translate', 'passwordPlaceholder',
     function($rootScope, $scope, $http, toastr, $window, $timeout, $location, $jwtAuth, $translate, passwordPlaceholder) {
         const authorizationService = service(AuthorizationService);
-        const repositoryService = service(RepositoryService);
+        const repositoryAuthorityService = service(RepositoryAuthorityService);
 
         $rootScope.$on('$translateChangeSuccess', function() {
             $scope.passwordPlaceholder = $translate.instant(passwordPlaceholder);
@@ -348,7 +348,7 @@ securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 't
         };
 
         $scope.hasReadPermission = function(repository) {
-            const uniqueKey = repositoryService.getLocationSpecificId(repository);
+            const uniqueKey = repositoryAuthorityService.getLocationSpecificId(repository);
             return $scope.userType === UserType.ADMIN
                 || $scope.userType === UserType.REPO_MANAGER
                 || repository.id !== SYSTEM_REPO && ($scope.grantedAuthorities.READ_REPO['*']
@@ -358,7 +358,7 @@ securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 't
         };
 
         $scope.hasWritePermission = function(repoOrWildCard) {
-            const uniqueKey = repositoryService.getLocationSpecificId(repoOrWildCard);
+            const uniqueKey = repositoryAuthorityService.getLocationSpecificId(repoOrWildCard);
             return $scope.userType === UserType.ADMIN
                 || $scope.userType === UserType.REPO_MANAGER
                 || repoOrWildCard.id !== SYSTEM_REPO && $scope.grantedAuthorities.WRITE_REPO['*']
@@ -366,7 +366,7 @@ securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 't
         };
 
         $scope.hasGraphqlPermission = function(repository) {
-            const uniqueKey = repositoryService.getLocationSpecificId(repository);
+            const uniqueKey = repositoryAuthorityService.getLocationSpecificId(repository);
             return repository.id !== SYSTEM_REPO && $scope.grantedAuthorities.GRAPHQL['*']
                 || $scope.grantedAuthorities.GRAPHQL[uniqueKey];
         };
@@ -410,7 +410,7 @@ securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 't
 
             let uniqueKey;
             if (repoOrWildCard !== null && typeof repoOrWildCard === 'object') {
-                uniqueKey = repositoryService.getLocationSpecificId(repoOrWildCard);
+                uniqueKey = repositoryAuthorityService.getLocationSpecificId(repoOrWildCard);
             } else {
                 uniqueKey = repoOrWildCard;
             }
@@ -424,7 +424,7 @@ securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 't
         };
 
         $scope.createUniqueKey = function(repository) {
-            return repositoryService.getLocationSpecificId(repository);
+            return repositoryAuthorityService.getLocationSpecificId(repository);
         };
 
         $scope.userType = UserType.USER;
