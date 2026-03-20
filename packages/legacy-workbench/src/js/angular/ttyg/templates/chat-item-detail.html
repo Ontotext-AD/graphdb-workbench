@@ -72,7 +72,8 @@
                                         ng-if="queryMethod.queryType === ExplainQueryType.SPARQL"
                                         execute-query="{{!queryMethod.errorMessage}}"
                                         repository-id="{{repositoryId}}"
-                                        query="{{queryMethod.query}}">
+                                        query="{{queryMethod.query}}"
+                                        add-prefixes="true">
                                     </open-in-sparql-editor>
                                     <copy-to-clipboard tooltip-text="ttyg.chat_panel.btn.copy_{{ queryMethod.queryType }}.tooltip"
                                                        text-to-copy="{{queryMethod.query}}"></copy-to-clipboard>
