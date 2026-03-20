@@ -16,6 +16,8 @@ import {decodeHTML} from "../../../../../app";
  * @param {string} repositoryId The ID of the repository to be selected before opening the SPARQL editor.
  * @param {string} executeQuery Flag that determines whether the query should be executed upon opening the editor.
  *                              It accepts 'true' or 'false'. If 'true', the query will be automatically executed.
+ * @param {string} addPrefixes Flag that determines whether known prefixes should be added to the query before opening
+ *                              the editor.
  *
  * @example
  * <open-in-sparql-editor
@@ -36,9 +38,9 @@ angular
     .module('graphdb.framework.core.directives.open-in-sparql-editor', [])
     .directive('openInSparqlEditor', openInSparqlEditorDirective);
 
-openInSparqlEditorDirective.$inject = ['$repositories', '$translate', 'ModalService', '$window'];
+openInSparqlEditorDirective.$inject = ['$repositories', '$translate', 'ModalService', '$window', 'SparqlRestService'];
 
-function openInSparqlEditorDirective($repositories, $translate, ModalService, $window) {
+function openInSparqlEditorDirective($repositories, $translate, ModalService, $window, SparqlRestService) {
     return {
         // Note: the line-height of the element must match the line-height of the icon.
         // This defines a composite FontAwesome icon to match the style of the surrounding icons.
@@ -64,6 +66,7 @@ function openInSparqlEditorDirective($repositories, $translate, ModalService, $w
             query: '@',
             repositoryId: '@',
             executeQuery: '@',
+            addPrefixes: '@',
         },
         link: function($scope, element) {
             // =========================
@@ -75,6 +78,7 @@ function openInSparqlEditorDirective($repositories, $translate, ModalService, $w
             // Private functions
             // =========================
             const execute = $scope.executeQuery === 'true';
+            const autoAddPrefixes = $scope.addPrefixes === 'true';
 
             // =========================
             // Public functions
@@ -95,12 +99,12 @@ function openInSparqlEditorDirective($repositories, $translate, ModalService, $w
                         },
                         () => {
                             $repositories.setRepository($repositories.getRepository($scope.repositoryId));
-                            openInSparqlEditorInNewTab($scope.query);
+                            prepareAndOpenQuery($scope.query);
                         },
                     );
                 } else {
                     // No repository switch needed, just open the SPARQL editor
-                    openInSparqlEditorInNewTab($scope.query);
+                    prepareAndOpenQuery($scope.query);
                 }
             };
             // =========================
@@ -111,9 +115,32 @@ function openInSparqlEditorDirective($repositories, $translate, ModalService, $w
              * Opens SPARQL editor view with passed query and handles repository switch if necessary.
              * @param {string} query
              */
-            const openInSparqlEditorInNewTab = (query) => {
-                // Open the SPARQL editor in a new tab and execute the query
-                $window.open(`sparql?query=${encodeURIComponent(query)}&execute=${execute}`, '_blank');
+            const prepareAndOpenQuery = (query) => {
+                if (autoAddPrefixes) {
+                    // Open the tab NOW while the user-gesture is still active
+                    const newTab = $window.open('about:blank', '_blank');
+                    SparqlRestService.addKnownPrefixes(JSON.stringify(query))
+                        .then((response) => {
+                            const queryWithPrefixes = response.data;
+                            openInSparqlEditorInNewTab(queryWithPrefixes, newTab);
+                        })
+                        .catch(() => {
+                            // If there's an error adding prefixes, open the editor with the original query
+                            openInSparqlEditorInNewTab(query, newTab);
+                        });
+                } else {
+                    openInSparqlEditorInNewTab(query);
+                }
+            };
+
+            const openInSparqlEditorInNewTab = (query, existingTab) => {
+                const url = `sparql?query=${encodeURIComponent(query)}&execute=${execute}`;
+                if (existingTab) {
+                    // navigate the already-opened blank tab to the SPARQL editor with the query
+                    existingTab.location.href = url;
+                } else {
+                    $window.open(url, '_blank');
+                }
             };
         },
     };

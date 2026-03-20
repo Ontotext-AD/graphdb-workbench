@@ -3,6 +3,8 @@ import {TTYGStubs} from "../../stubs/ttyg/ttyg-stubs";
 import {TTYGViewSteps} from "../../steps/ttyg/ttyg-view-steps";
 import {ChatPanelSteps} from "../../steps/ttyg/chat-panel-steps";
 import {ApplicationSteps} from "../../steps/application-steps";
+import {TtygAgentSettingsModalSteps} from '../../steps/ttyg/ttyg-agent-settings-modal.steps.js';
+import {SparqlStubs} from '../../stubs/sparql-stubs.js';
 
 describe('Ttyg ChatPanel', () => {
 
@@ -147,6 +149,13 @@ describe('Ttyg ChatPanel', () => {
         TTYGViewSteps.clickOnExplainResponse(0);
         // Then I expect the hint message to not exist (it should only exist for the last 'Explain' response).
         TTYGViewSteps.getHowDeliverAnswerButton().should('not.exist');
+        // When I click on the open in sparql editor button for the explain response
+        SparqlStubs.spyAddKnownPrefixes();
+        TtygAgentSettingsModalSteps.clickOpenQueryInSparqlEditor(0);
+        // Then I expect a request for appending prefixes to be sent with the correct query.
+        cy.wait('@addKnownPrefixes').its('request.body').then((body) => {
+            expect(body).to.contain('SELECT ?name ?height WHERE {\n  ?character voc:height ?height;\n             rdfs:label ?name.\n  FILTER(?name = "Luke Skywalker" || ?name = "Leia Organa")\n}');
+        });
 
         // Then when I click on explain response button on the second answer
         TTYGStubs.stubExplainResponse('/ttyg/chats/explain-response-2.json');
