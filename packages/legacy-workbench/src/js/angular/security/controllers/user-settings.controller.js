@@ -203,7 +203,8 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
     const goBackToPreviousView = () => {
         waitBeforeRedirectBack = $timeout(function() {
             $scope.loader = false;
-            $window.history.back();
+            const previousRoute = navigationContextService.getPreviousRoute();
+            navigate(previousRoute ?? './');
         }, 2000);
     };
 
