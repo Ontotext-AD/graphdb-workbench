@@ -20,7 +20,6 @@ import {
   Rdf4jRepositoryService,
   RepositoryContextService,
   RepositoryReference,
-  RepositoryService,
   RepositoryStorageService,
   SecurityContextService,
   service,
@@ -54,12 +53,11 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
   private readonly rdfRepositoryService = service(Rdf4jRepositoryService);
   private readonly repositoryStorageService = service(RepositoryStorageService);
   private readonly repositoryContextService = service(RepositoryContextService);
-  private readonly repositoryService = service(RepositoryService);
   private readonly securityContextService = service(SecurityContextService);
   private readonly namespacesService = service(NamespacesService);
 
   private readonly subscriptions = new SubscriptionList();
-  private isOntopRepo = this.repositoryService.isActiveRepoOntopType();
+  private isOntopRepo = this.repositoryContextService.isActiveRepoOntopType();
   private inferUserSetting = false;
   private sameAsUserSetting = false;
   private prefixes?: NamespaceMap;
@@ -259,7 +257,7 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
           return;
         }
         this.activeRepositoryReference = repositoryReference;
-        this.isOntopRepo = this.repositoryService.isActiveRepoOntopType();
+        this.isOntopRepo = this.repositoryContextService.isActiveRepoOntopType();
         this.init();
         // const activeRepository = this.repositoryStorageService.getActiveRepositoryId();
         // if (LocalStorageAdapter.get(LSKeys.SPARQL_LAST_REPO) !== activeRepository) {

@@ -3,7 +3,11 @@ import {AuthenticatedUser, Authority, Rights, SecurityConfig} from '../../../mod
 import {service} from '../../../providers';
 import {SecurityContextService} from './security-context.service';
 import {Repository} from '../../../models/repositories';
-import {RepositoryContextService, RepositoryService, RepositoryStorageService} from '../repository';
+import {
+  RepositoryAuthorityService,
+  RepositoryContextService,
+  RepositoryStorageService
+} from '../repository';
 import {RoutingService} from '../../routing/routing.service';
 import {WindowService} from '../../window';
 import {
@@ -18,10 +22,10 @@ import {getPathName} from '../../utils';
  * Service responsible for handling authorization-related operations.
  */
 export class AuthorizationService implements Service {
-  private readonly repositoryService = service(RepositoryService);
   private readonly securityContextService = service(SecurityContextService);
   private readonly repositoryStorageService = service(RepositoryStorageService);
   private readonly repositoryContextService = service(RepositoryContextService);
+  private readonly repositoryAuthorityService = service(RepositoryAuthorityService);
 
   /**
    * Determines if free access is allowed based on the security configuration.
@@ -123,7 +127,7 @@ export class AuthorizationService implements Service {
       if (this.isAdminOrRepoManager()) {
         return true;
       }
-      if (this.repositoryService.isSystemRepository(repository)) {
+      if (this.repositoryAuthorityService.isSystemRepository(repository)) {
         return false;
       }
       return this.hasBaseRights(Rights.READ, repository);
@@ -154,7 +158,7 @@ export class AuthorizationService implements Service {
       if (this.isAdminOrRepoManager()) {
         return true;
       }
-      if (this.repositoryService.isSystemRepository(repository)) {
+      if (this.repositoryAuthorityService.isSystemRepository(repository)) {
         return false;
       }
       return this.hasBaseRights(Rights.WRITE, repository);
@@ -323,9 +327,9 @@ export class AuthorizationService implements Service {
   }
 
   private hasBaseRights(action: string, repo: Repository): boolean {
-    const repoId = this.repositoryService.getLocationSpecificId(repo);
-    const overCurrentRepo = this.repositoryService.getCurrentRepoAuthority(action, repoId);
-    const overAllRepos = this.repositoryService.getOverallRepoAuthority(action);
+    const repoId = this.repositoryAuthorityService.getLocationSpecificId(repo);
+    const overCurrentRepo = this.repositoryAuthorityService.getCurrentRepoAuthority(action, repoId);
+    const overAllRepos = this.repositoryAuthorityService.getOverallRepoAuthority(action);
 
     const user = this.getAuthenticatedUser();
 
@@ -343,9 +347,9 @@ export class AuthorizationService implements Service {
       return false;
     }
 
-    const repoId = this.repositoryService.getLocationSpecificId(repo);
-    const overCurrentRepoGraphql = this.repositoryService.getCurrentGqlRepoAuthority(action, repoId);
-    const overAllReposGraphql = this.repositoryService.getOverallGqlRepoAuthority(action);
+    const repoId = this.repositoryAuthorityService.getLocationSpecificId(repo);
+    const overCurrentRepoGraphql = this.repositoryAuthorityService.getCurrentGqlRepoAuthority(action, repoId);
+    const overAllReposGraphql = this.repositoryAuthorityService.getOverallGqlRepoAuthority(action);
 
     return (
       user.authorities.hasAuthority(overCurrentRepoGraphql as Authority) ||
