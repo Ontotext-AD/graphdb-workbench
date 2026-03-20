@@ -553,12 +553,7 @@ securityModule.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window'
         $scope.mode = 'add';
         $scope.saveButtonText = $translate.instant('common.create.btn');
         $scope.goBack = function() {
-            const timer = $timeout(function() {
-                $window.history.back();
-            }, 100);
-            $scope.$on('$destroy', function() {
-                $timeout.cancel(timer);
-            });
+            $location.url('users');
         };
         $scope.pageTitle = $translate.instant('view.create.user.title');
         $scope.passwordPlaceholder = $translate.instant('security.password.placeholder');
@@ -667,12 +662,7 @@ securityModule.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window
         $scope.mode = 'edit';
         $scope.saveButtonText = $translate.instant('common.save.btn');
         $scope.goBack = function() {
-            const timer = $timeout(function() {
-                $window.history.back();
-            }, 100);
-            $scope.$on('$destroy', function() {
-                $timeout.cancel(timer);
-            });
+            $location.url('users');
         };
         $scope.params = $routeParams;
         $scope.pageTitle = $translate.instant('view.edit.user.title', {userId: $scope.params.userId});
