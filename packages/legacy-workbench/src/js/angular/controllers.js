@@ -39,6 +39,7 @@ import {
     SecurityContextService,
     OntoToastrService,
     WindowService,
+    GuidesService as NewGuidesService,
 } from '@ontotext/workbench-api';
 import {EventConstants} from './utils/event-constants';
 import {CookieConsent} from './models/cookie-policy/cookie-consent';
@@ -209,6 +210,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
 
     const toastrService = service(OntoToastrService);
     const licenseService = service(LicenseService);
+    const newGuideService = service(NewGuidesService);
     const authorizationService = service(AuthorizationService);
     const authenticationService = service(AuthenticationService);
     const securityContextService = service(SecurityContextService);
@@ -693,7 +695,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         // Check to see if $translate service is ready with the language before starting the guide as the steps are translated ahead on time. Will retry 20 times (1 second).
         const timer = $interval(function() {
             if ($translate.use()) {
-                GuidesService.autoStartGuide(guideId);
+                newGuideService.autoStartGuide(guideId, GuidesService.getServices());
                 $interval.cancel(timer);
             }
         }, 50, 20);
@@ -975,7 +977,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     // =========================
 
     $('#repositorySelectDropdown').on('hide.bs.dropdown', function(e) {
-        if (GuidesService.isActive()) {
+        if (newGuideService.isActive()) {
             if ($('#repositorySelectDropdown.autoCloseOff').length > 0) {
                 e.preventDefault();
             }

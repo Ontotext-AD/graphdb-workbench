@@ -1,0 +1,17 @@
+{
+  "back.to.guides.btn": "Back to the guides",
+  "common.close": "Close",
+  "previous.btn": "Previous",
+  "next.btn": "Next",
+  "pause.btn": "Pause",
+  "guide.start.unexpected.error.message": "The guide cannot be started due to an unexpected error. Please try running the guide again and if the problem persists contact the support.",
+  "guide.unexpected.error.message": "The guide was cancelled due to an unexpected error. Please run the guide again and if the problem persists contact the support.",
+  "guide.total.progress": "Guide step {{n}} of {{nn}}",
+  "guide.total.progress.tooltip": "This indicates the current step relative to the entire guide and the total number of steps in the guide.",
+  "guide.block.progress": "{{n}}/{{nn}}",
+  "guide.block.progress.tooltip": "This indicates the current step and the total number of steps in the {{action}} action.",
+  "guide.step-type.info": "This step provides some information. No action required other than clicking the Next button.",
+  "guide.step-type.mouse": "This step expects user action with the mouse, typically clicking on something.",
+  "guide.step-type.input": "This step expects user input, typically typing or pasting a piece of text.",
+  "guides.error.guide-not-found": "The requested guide could not be found."
+}

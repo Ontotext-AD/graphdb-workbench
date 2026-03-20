@@ -16,6 +16,7 @@ export * from './models/cookie';
 export * from './models/tracking';
 export * from './models/monitoring';
 export * from './models/toastr';
+export * from './models/dialog';
 export * from './models/rdf-search';
 export * from './models/single-spa';
 export * from './models/app-lifecycle';
@@ -66,6 +67,8 @@ export * from './services/interceptor/interceptor.service';
 export * from './services/runtime-configuration';
 export * from './services/domain/sparql-template';
 export * from './services/domain/rdf4j';
+export * from './services/domain/guides';
+export * from './services/dialog';
 
 // Export interceptors for external usages.
 export * from './interceptor';

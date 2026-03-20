@@ -2,11 +2,12 @@ import 'angular/guides/guides.service';
 import 'angular/core/directives/paginations';
 import {GuideUtils} from "./guide-utils";
 import {GuideLevel} from "./model/guides";
+import {service, GuidesService as NewGuidesService, InteractiveGuide} from '@ontotext/workbench-api';
 
 const modules = [
     'ui.bootstrap',
     'graphdb.framework.guides.services',
-    'graphdb.framework.core.directives.paginations'
+    'graphdb.framework.core.directives.paginations',
 ];
 
 angular
@@ -16,7 +17,6 @@ angular
 GuidesCtrl.$inject = ['$scope', '$rootScope', 'GuidesService', '$filter', '$translate', '$interpolate'];
 
 function GuidesCtrl($scope, $rootScope, GuidesService, $filter, $translate, $interpolate) {
-
     // =========================
     // Public variables
     // =========================
@@ -31,7 +31,7 @@ function GuidesCtrl($scope, $rootScope, GuidesService, $filter, $translate, $int
     // =========================
 
     $scope.startGuide = (guide) => {
-        GuidesService.startGuide(guide);
+        service(NewGuidesService).startGuide(new InteractiveGuide(guide), GuidesService.getServices());
     };
 
     $scope.changePagination = () => {
@@ -40,7 +40,7 @@ function GuidesCtrl($scope, $rootScope, GuidesService, $filter, $translate, $int
         }
     };
 
-    $scope.changePageSize = function (size) {
+    $scope.changePageSize = function(size) {
         $scope.page = 1;
         if (size) {
             $scope.pageSize = size;

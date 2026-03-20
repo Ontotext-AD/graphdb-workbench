@@ -15,6 +15,7 @@ import {
     LicenseContextService,
     REPOSITORY_ID_PARAM,
     service,
+    GuidesService,
 } from "@ontotext/workbench-api";
 
 const modules = [
@@ -56,7 +57,6 @@ GraphsVisualizationsCtrl.$inject = [
     "GraphConfigRestService",
     "GraphDataRestService",
     "$translate",
-    "GuidesService",
     "WorkbenchContextService",
     'RDF4JRepositoriesService',
 ];
@@ -81,12 +81,12 @@ function GraphsVisualizationsCtrl(
     GraphConfigRestService,
     GraphDataRestService,
     $translate,
-    GuidesService,
     WorkbenchContextService,
     RDF4JRepositoriesService,
 ) {
     const securityContextService = service(SecurityContextService);
     const repositoryContextService = service(RepositoryContextService);
+    const guidesService = service(GuidesService);
     // Multiplier to calculate the height of the labels element based on the font size.
     // Based on this, we display different numbers of rows. Currently, this results in 3 rows of text
     const heightMultiplier = 4.2;
@@ -477,7 +477,7 @@ function GraphsVisualizationsCtrl(
     const getSettings = () => {
         // When a guide is active, we really want the default settings to make sure the user gets
         // the same as the author of the guide intended
-        return GuidesService.isActive() ? $scope.defaultSettings : $scope.saveSettings;
+        return guidesService.isActive() ? $scope.defaultSettings : $scope.saveSettings;
     };
 
     const updatePredicateLabels = () => {
@@ -814,7 +814,7 @@ function GraphsVisualizationsCtrl(
     const INITIAL_CONTAINER_TRANSFORM = d3.zoomIdentity.translate(0, -70).scale(1);
 
     function zoomed(event) {
-        if (!GuidesService.isScrollingAllowed()) {
+        if (!guidesService.isScrollingAllowed()) {
             // disable zooming if it is not explicitly allowed by the guide.
             return;
         }
@@ -1553,7 +1553,7 @@ function GraphsVisualizationsCtrl(
             hideTipForNode();
             $scope.showPredicates = false;
 
-            if (!GuidesService.isActive()) {
+            if (!guidesService.isActive()) {
                 $timeout.cancel(singleClickTimer);
                 // Show node info
                 singleClickTimer = $timeout(function() {
@@ -1720,7 +1720,7 @@ function GraphsVisualizationsCtrl(
 
 
         function dragstarted(event, d) {
-            if (GuidesService.isActive()) {
+            if (guidesService.isActive()) {
                 // disable dragging if a guide is active.
                 return;
             }
@@ -3040,7 +3040,7 @@ function GraphsVisualizationsCtrl(
 
     // event for capturing left and right arrows used for rotation
     $('body').on("keydown", function(event) {
-        if (GuidesService.isActive() || event.target.nodeName === 'input' || !$scope.nodeSelected) {
+        if (guidesService.isActive() || event.target.nodeName === 'input' || !$scope.nodeSelected) {
             // don't do anything when the target is an input field or no node is selected or a guide is active.
             return;
         }

@@ -14,6 +14,7 @@
 - [onto-loader](../onto-loader)
 - [onto-footer](../onto-footer)
 - [onto-tooltip](../onto-tooltip)
+- [onto-confirm-cancel-dialog](../dialogs/onto-confirm-cancel-dialog)
 
 ### Graph
 ```mermaid
@@ -23,6 +24,7 @@ graph TD;
   onto-layout --> onto-loader
   onto-layout --> onto-footer
   onto-layout --> onto-tooltip
+  onto-layout --> onto-confirm-cancel-dialog
   onto-header --> onto-search-icon
   onto-header --> onto-rdf-search
   onto-header --> onto-operations-notification
@@ -47,8 +49,9 @@ graph TD;
   onto-cookie-policy-dialog --> onto-dialog
   onto-cookie-policy-dialog --> translate-label
   onto-cookie-policy-dialog --> onto-toggle-switch
-  onto-dialog --> translate-label
   onto-toggle-switch --> translate-label
+  onto-confirm-cancel-dialog --> onto-dialog
+  onto-confirm-cancel-dialog --> translate-label
   style onto-layout fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

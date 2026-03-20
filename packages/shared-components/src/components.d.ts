@@ -20,6 +20,8 @@ export { DropdownItemAlignment } from "./models/dropdown/dropdown-item-alignment
 export { NavbarToggledEvent } from "./components/onto-navbar/navbar-toggled-event";
 export { ToggleEventPayload } from "./models/toggle-switch/toggle-event-payload";
 export namespace Components {
+    interface OntoConfirmCancelDialog {
+    }
     /**
      * OntoCookieConsent component for handling cookie consent functionality.
      * This component displays a cookie consent modal and manages the visibility of a cookie policy dialog.
@@ -221,8 +223,8 @@ export namespace Components {
          */
         "addNotification": (notification: Notification) => Promise<void>;
         /**
-          * Adds a toast notification to the application.
-          * @param toast - The ToastMessage object containing the notification details   such as message content, type, and display options.
+          * Opens a toast
+          * @param toast the toast to open
          */
         "addToastr": (toast: ToastMessage) => Promise<void>;
         /**
@@ -253,6 +255,11 @@ export namespace Components {
           * @param password
          */
         "login": (username: string, password: string) => Promise<void>;
+        /**
+          * Opens the confirm cancel dialog.
+          * @param hasDontShowAgain - Whether to show the "Don't show again" button in the dialog.
+         */
+        "openConfirmCancel": (hasDontShowAgain: boolean) => Promise<void>;
         /**
           * Sets the authenticated user in the application context.
           * @param user - The AuthenticatedUser object containing the user's authentication information.
@@ -389,6 +396,12 @@ export interface OntoToggleSwitchCustomEvent<T> extends CustomEvent<T> {
     target: HTMLOntoToggleSwitchElement;
 }
 declare global {
+    interface HTMLOntoConfirmCancelDialogElement extends Components.OntoConfirmCancelDialog, HTMLStencilElement {
+    }
+    var HTMLOntoConfirmCancelDialogElement: {
+        prototype: HTMLOntoConfirmCancelDialogElement;
+        new (): HTMLOntoConfirmCancelDialogElement;
+    };
     interface HTMLOntoCookieConsentElementEventMap {
         "consentGiven": void;
     }
@@ -639,6 +652,7 @@ declare global {
         new (): HTMLTranslateLabelElement;
     };
     interface HTMLElementTagNameMap {
+        "onto-confirm-cancel-dialog": HTMLOntoConfirmCancelDialogElement;
         "onto-cookie-consent": HTMLOntoCookieConsentElement;
         "onto-cookie-policy-dialog": HTMLOntoCookiePolicyDialogElement;
         "onto-dialog": HTMLOntoDialogElement;
@@ -666,6 +680,8 @@ declare global {
     }
 }
 declare namespace LocalJSX {
+    interface OntoConfirmCancelDialog {
+    }
     /**
      * OntoCookieConsent component for handling cookie consent functionality.
      * This component displays a cookie consent modal and manages the visibility of a cookie policy dialog.
@@ -987,6 +1003,7 @@ declare namespace LocalJSX {
     }
 
     interface IntrinsicElements {
+        "onto-confirm-cancel-dialog": OntoConfirmCancelDialog;
         "onto-cookie-consent": OntoCookieConsent;
         "onto-cookie-policy-dialog": OntoCookiePolicyDialog;
         "onto-dialog": OntoDialog;
@@ -1017,6 +1034,7 @@ export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
+            "onto-confirm-cancel-dialog": LocalJSX.IntrinsicElements["onto-confirm-cancel-dialog"] & JSXBase.HTMLAttributes<HTMLOntoConfirmCancelDialogElement>;
             /**
              * OntoCookieConsent component for handling cookie consent functionality.
              * This component displays a cookie consent modal and manages the visibility of a cookie policy dialog.

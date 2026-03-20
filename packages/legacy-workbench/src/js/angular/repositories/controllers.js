@@ -7,7 +7,7 @@ import {
 import {decodeHTML} from "../../../app";
 import './controllers/manage-remote-location-dialog.controller';
 import {RemoteLocationType} from "../models/repository/remote-location.model";
-import {service, AuthenticationStorageService} from '@ontotext/workbench-api';
+import {service, AuthenticationStorageService, GuidesService} from '@ontotext/workbench-api';
 
 const ENTITY_INDEX_SIZE_MIN = 10000;
 
@@ -124,10 +124,11 @@ angular.module('graphdb.framework.repositories.controllers', modules)
     .controller('UploadRepositoryConfigCtrl', UploadRepositoryConfigCtrl);
 
 LocationsAndRepositoriesCtrl.$inject = ['$scope', '$rootScope', '$uibModal', 'toastr', '$repositories', 'ModalService', 'LocationsRestService',
-    'LocalStorageAdapter', '$interval', '$translate', '$q', 'GuidesService'];
+    'LocalStorageAdapter', '$interval', '$translate', '$q'];
 
 function LocationsAndRepositoriesCtrl($scope, $rootScope, $uibModal, toastr, $repositories, ModalService, LocationsRestService, // NOSONAR
-    LocalStorageAdapter, $interval, $translate, $q, GuidesService) {
+    LocalStorageAdapter, $interval, $translate, $q) {
+    const guidesService = service(GuidesService);
     $scope.RemoteLocationType = RemoteLocationType;
     $scope.loader = true;
     /**
@@ -376,7 +377,7 @@ function LocationsAndRepositoriesCtrl($scope, $rootScope, $uibModal, toastr, $re
 
     getLocations();
     const timer = $interval(function() {
-        if (GuidesService.isActive() && !$rootScope.guidePaused) {
+        if (guidesService.isActive() && !$rootScope.guidePaused) {
             // Don't refresh list while a guide is active
             return;
         }
