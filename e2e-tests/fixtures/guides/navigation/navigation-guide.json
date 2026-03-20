@@ -37,10 +37,10 @@
             {
                 "guideBlockName": "read-only-element",
                 "options": {
-                    "url": "new-view",
-                    "elementSelector": "[guide-selector=\"new-vew\"]",
+                    "url": "sparql-new",
+                    "elementSelector": "[guide-selector=\"sparql-editor\"]",
                     "title": "Navigation",
-                    "content": "This is the new view"
+                    "content": "This is the new sparql view"
                 }
             },
             {

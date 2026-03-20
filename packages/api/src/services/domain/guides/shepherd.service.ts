@@ -445,7 +445,7 @@ export class ShepherdService implements Service {
   ): Step.StepOptionsButton {
     return {
       text,
-      classes: isSecondary ? 'btn btn-secondary' : 'btn btn-primary',
+      classes: isSecondary ? 'onto-btn onto-btn-secondary' : 'onto-btn onto-btn-primary',
       action: () => {
         action();
       },
