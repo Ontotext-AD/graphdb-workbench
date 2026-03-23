@@ -39,6 +39,7 @@ import {
     SecurityContextService,
     OntoToastrService,
     WindowService,
+    isHomePage,
 } from '@ontotext/workbench-api';
 import {EventConstants} from './utils/event-constants';
 import {CookieConsent} from './models/cookie-policy/cookie-consent';
@@ -697,10 +698,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
                 $interval.cancel(timer);
             }
         }, 50, 20);
-    };
-
-    const isHomePage = () => {
-        return $location.url() === '/';
     };
 
     const isLoginPage = () => {
