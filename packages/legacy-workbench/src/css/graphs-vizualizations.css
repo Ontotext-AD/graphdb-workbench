@@ -11,6 +11,14 @@
 .link {
     stroke: #999;
     stroke-opacity: .6;
+    stroke-width: 1px;
+    cursor: pointer;
+    transition: stroke-width 0.15s ease, stroke-opacity 0.15s ease;
+}
+
+.link-wrapper:hover .link {
+    stroke-width: 2px;
+    stroke-opacity: 1;
 }
 
 .node-wrapper {
@@ -162,6 +170,7 @@ so the following styles target Safari exclusively to correct label positioning w
 
 .link-wrapper {
     fill: var(--gw-body-color);
+    cursor: pointer;
 }
 
 .node-wrapper .pinned {
