@@ -10,12 +10,15 @@ import {removeSpecialChars} from "../../utils/string-utils";
 import {NamespacesListModel} from "../../models/namespaces/namespaces-list";
 import {HtmlUtil} from "../../utils/html-util";
 import {
+    ParentWindowMessageService,
     RepositoryContextService,
     SecurityContextService,
     LicenseContextService,
     REPOSITORY_ID_PARAM,
+    WindowService,
     service,
 } from "@ontotext/workbench-api";
+import {VISGRAPH_OPERATION, VISGRAPH_OPERATION_TYPE} from '../constants';
 
 const modules = [
     'ui.scroll.jqlite',
@@ -87,6 +90,7 @@ function GraphsVisualizationsCtrl(
 ) {
     const securityContextService = service(SecurityContextService);
     const repositoryContextService = service(RepositoryContextService);
+    const parentWindowMessageService = service(ParentWindowMessageService);
     // Multiplier to calculate the height of the labels element based on the font size.
     // Based on this, we display different numbers of rows. Currently, this results in 3 rows of text
     const heightMultiplier = 4.2;
@@ -105,7 +109,14 @@ function GraphsVisualizationsCtrl(
     $scope.searchVisible = false;
     $scope.nodeSelected = false;
     $scope.queryResultsMode = false;
+    // This is used to determine whether the view is embedded in another application. When embedded, we want to hide
+    // some elements and disable the "go to home" functionality, as it doesn't make sense in that context.
     $scope.embedded = $location.search().embedded;
+    // This is used to determine the specific action thet the external application wants to perform, for example, when
+    // node or edge is clicked, and the graph is embedded in the external application, the external application might
+    // want to handle the click in a specific way.
+    // Possible operation types are defined in VISGRAPH_OPERATION_TYPE.
+    $scope.visgraphOperation = $location.search().visgraphOperation;
     $scope.openedNodeInfoPanel = undefined;
     $scope.invalidLimit = false;
     $scope.INVALID_LINKS_MSG = $translate.instant('sidepanel.invalid.limit.links.msg');
@@ -453,6 +464,9 @@ function GraphsVisualizationsCtrl(
     const pushHistory = (searchParams, state) => {
         if ($scope.embedded) {
             searchParams.embedded = true;
+        }
+        if ($scope.visgraphOperation) {
+            searchParams.visgraphOperation = $scope.visgraphOperation;
         }
         $location.search(searchParams);
         state.skipOnPopState = true;
@@ -1494,7 +1508,6 @@ function GraphsVisualizationsCtrl(
             })
             .append("line")
             .attr("class", "link")
-            .style("stroke-width", 1)
             .style("fill", "transparent")
             .style("marker-end", function(d) {
                 const targetArrowId = createArrowMarkerUniqueID(d);
@@ -1948,6 +1961,18 @@ function GraphsVisualizationsCtrl(
         if (event.ctrlKey || event.metaKey) {
             hideNode(d);
             return false;
+        }
+
+        if ($scope.embedded && $scope.visgraphOperation === VISGRAPH_OPERATION.EXTERNAL_CLICK_HANDLER) {
+            parentWindowMessageService.postMessage({
+                type: VISGRAPH_OPERATION_TYPE.NODE_CLICK,
+                iri: d.iri,
+                labels: d.labels,
+                types: d.types,
+                rdfRank: d.rdfRank,
+                comment: d.comment,
+            }, WindowService.getReferer());
+            return true;
         }
 
         // If value of openedNodeInfoPanel is different than "undefined"
@@ -2686,6 +2711,15 @@ function GraphsVisualizationsCtrl(
     }
 
     function linkActions(event, d) {
+        if ($scope.embedded && $scope.visgraphOperation === VISGRAPH_OPERATION.EXTERNAL_CLICK_HANDLER) {
+            parentWindowMessageService.postMessage({
+                type: VISGRAPH_OPERATION_TYPE.EDGE_CLICK,
+                predicates: d.predicates,
+                source: d.source,
+                target: d.target,
+            }, WindowService.getReferer());
+        }
+
         revertElementsStyleToDefault();
         const linkId = convertLinkDataToLinkId(d);
         if (d.predicates.length === 1 && graph.tripleNodes.has(linkId)) {

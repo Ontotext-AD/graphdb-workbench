@@ -5,13 +5,43 @@ import {PluginRegistry} from '../plugins';
  * Service that provides access to browser window-related functionality.
  */
 export class WindowService implements Service {
-
   /**
    * Returns the current browser window object. The purpose of this encapsulation is to allow for
    * better testability and easier mocking of the window object in unit tests.
    */
   static getWindow(): Window {
     return window;
+  }
+
+  /**
+   * Returns the parent window object of the current window. This is useful for accessing properties and methods of the
+   * parent window, especially in cases where the current window is an iframe or a child window.
+   * @returns The parent window object of the current window, which can be used to access properties and methods of the
+   * parent window.
+   */
+  static getParentWindow(): Window {
+    return WindowService.getWindow().parent;
+  }
+
+  /**
+   * Returns the referer of the current document. The referer is the URL of the page that linked to the current page.
+   * @returns The referer of the current document, which is the URL of the page that linked to the current page.
+   * If the referer is not available or cannot be parsed, it returns the default value '*'.
+   */
+  static getReferer(): string {
+    let targetOrigin = '*';
+    if (WindowService.getDocument().referrer) {
+      try {
+        const url = new URL(WindowService.getDocument().referrer);
+        if (url.origin) {
+          targetOrigin = url.origin;
+        }
+      } catch (e) {
+        // If document.referrer is malformed, fall back to the default targetOrigin
+        console.warn(`Failed to parse document.referrer: ${WindowService.getDocument().referrer}. Using default targetOrigin '*'`, e);
+      }
+    }
+    return targetOrigin;
   }
 
   /**
