@@ -297,7 +297,20 @@ function SparqlEditorCtrl($rootScope,
                     sameAs: yasr.yasqe.getSameAs(),
                     inference: yasr.yasqe.getInfer(),
                 };
-                $location.path('graphs-visualizations').search(paramsToParse);
+                const navigate = function() {
+                    $location.path('graphs-visualizations').search(paramsToParse);
+                };
+                // This button is embedded in the Yasr toolbar, which is outside the Angular context, so we need to
+                // manually trigger the navigation inside the Angular context. Otherwise, the navigation will be
+                // triggered on the next digest cycle that might never happen. In our case there is a constant server
+                // polling that triggers the digest cycle, so the navigation will be triggered, but it can lead to a
+                // noticeable delay. By manually triggering the navigation inside the Angular context, we ensure that
+                // the navigation is triggered immediately.
+                if ($scope.$$phase || $rootScope.$$phase) {
+                    navigate();
+                } else {
+                    $scope.$apply(navigate);
+                }
             };
             exploreVisualButtonWrapperElement.appendChild(buttonName);
             return exploreVisualButtonWrapperElement;
