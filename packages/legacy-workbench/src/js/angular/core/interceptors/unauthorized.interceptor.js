@@ -1,5 +1,5 @@
 import 'angular/core/services';
-import {UnauthenticatedInterceptor, UnauthorizedInterceptor} from '@ontotext/workbench-api';
+import {UnauthenticatedInterceptor, UnauthorizedInterceptor, WindowService} from '@ontotext/workbench-api';
 import {LoggerProvider} from '../services/logger-provider';
 
 const logger = LoggerProvider.logger;
@@ -31,6 +31,7 @@ angular.module('graphdb.framework.core.interceptors.unauthorized', [])
                     if (redirect) {
                         return Promise.resolve($rootScope.redirectToLogin())
                             .then(() => {
+                                WindowService.getWindow().location.reload();
                                 return $q.reject(response);
                             });
                     } else {
