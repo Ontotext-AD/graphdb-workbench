@@ -48,7 +48,7 @@
   },
   "devDependencies": {
     "@stencil-community/eslint-plugin": "^0.10.0",
-    "@stencil/core": "^4.35.1",
+    "@stencil/core": "4.35.1",
     "@stencil/sass": "^3.2.3",
     "@types/jest": "^30.0.0",
     "@types/node": "^25.0.10",
