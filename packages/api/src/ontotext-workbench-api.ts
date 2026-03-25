@@ -28,7 +28,9 @@ export * from './models/users';
 export * from './models/interceptor';
 export * from './models/sparql-templates';
 export * from './models/http';
+export * from './models/sparql';
 export * from './models/interactive-guide';
+export * from './models/connector';
 
 // Export enums for external usages.
 export * from './models/url';
@@ -68,9 +70,11 @@ export * from './services/interceptor/interceptor.service';
 export * from './services/runtime-configuration';
 export * from './services/domain/sparql-template';
 export * from './services/domain/rdf4j';
+export * from './services/domain/sparql';
 export * from './services/ui';
 export * from './services/domain/guides';
 export * from './services/ui/dialog';
+export * from './services/domain/connector';
 
 // Export interceptors for external usages.
 export * from './interceptor';

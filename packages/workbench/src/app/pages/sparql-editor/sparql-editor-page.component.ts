@@ -1,7 +1,8 @@
 import {Component, inject, OnDestroy, OnInit, signal} from '@angular/core';
-import {PageLayoutComponent} from '../../components/page-layout/page-layout.component';
+import {ActivatedRoute, Params, Router} from '@angular/router';
 import {MessageModule} from 'primeng/message';
 import {TranslocoPipe, TranslocoService} from '@jsverse/transloco';
+import {PageLayoutComponent} from '../../components/page-layout/page-layout.component';
 import {PageInfoTooltipComponent} from '../../components/page-info-tooltip/page-info-tooltip.component';
 import {
   YasguiComponentFacadeComponent
@@ -17,19 +18,30 @@ import {
   AuthenticatedUser,
   NamespaceMap,
   NamespacesService,
-  Rdf4jRepositoryService,
+  Rdf4jRepositoryService, REPOSITORY_ID_PARAM,
   RepositoryContextService,
   RepositoryReference,
+  RepositoryService,
   RepositoryStorageService,
+  SavedQuery,
   SecurityContextService,
+  ConnectorsService,
   service,
+  SparqlService,
   SubscriptionList,
+  BeforeUpdateQueryResult,
+  OntoToastrService,
 } from '@ontotext/workbench-api';
 import {EventDataType} from '../../components/yasgui-component-facade/models/event/event-data-type';
 import {YasrToolbarPlugin} from '../../components/yasgui-component-facade/models/yasr/yasr-toolbar-plugin';
 import {Yasr} from '../../components/yasgui-component-facade/models/yasr/yasr';
 import {QueryType} from '../../components/yasgui-component-facade/models/yasqe/query-type';
-import {Router} from '@angular/router';
+
+import {SavedQueryParams, SharedQueryParams} from './sparql-editor-query-params';
+import {YasguiComponentUtil} from '../../components/yasgui-component-facade/yasgui-component-util';
+import {YasguiComponent} from '../../components/yasgui-component-facade/models/yasgui-component';
+import {ConnectorCommand} from '../../models/connectors/connector-command';
+import {mapSavedQueryToTabQueryModel} from './mappers/saved-query-to-tab-query-model.mapper';
 
 @Component({
   selector: 'app-sparql-editor-page',
@@ -46,26 +58,71 @@ import {Router} from '@angular/router';
 })
 export class SparqlEditorPageComponent implements OnInit, OnDestroy {
   private readonly logger = LoggerProvider.logger;
-
+  // Angular DI
   private readonly router = inject(Router);
+  private readonly activatedRoute = inject(ActivatedRoute);
   private readonly translocoService = inject(TranslocoService);
-
+  // API DI
   private readonly rdfRepositoryService = service(Rdf4jRepositoryService);
   private readonly repositoryStorageService = service(RepositoryStorageService);
   private readonly repositoryContextService = service(RepositoryContextService);
+  private readonly repositoryService = service(RepositoryService);
   private readonly securityContextService = service(SecurityContextService);
   private readonly namespacesService = service(NamespacesService);
-
+  private readonly sparqlService = service(SparqlService);
+  private readonly connectorsService = service(ConnectorsService);
+  private readonly ontoToastrService = service(OntoToastrService);
+  // Private variables
+  private readonly QUERY_EDITOR_ID = '#query-editor';
   private readonly subscriptions = new SubscriptionList();
   private isOntopRepo = this.repositoryContextService.isActiveRepoOntopType();
   private inferUserSetting = false;
   private sameAsUserSetting = false;
   private prefixes?: NamespaceMap;
+  private readonly exploreVisualGraphYasrToolbarElementBuilder: YasrToolbarPlugin = {
+    createElement: (yasr: Yasr) => {
+      const buttonName = document.createElement('span');
+      buttonName.classList.add('explore-visual-graph-button-name');
+      const exploreVisualButtonWrapperElement = document.createElement('button');
+      exploreVisualButtonWrapperElement.classList.add('explore-visual-graph-button', 'icon-data');
+      exploreVisualButtonWrapperElement.onclick = ()=> {
+        const paramsToParse = {
+          query: yasr.yasqe.getValue(),
+          sameAs: yasr.yasqe.getSameAs(),
+          inference: yasr.yasqe.getInfer(),
+        };
+        void this.router.navigate(['graphs-visualizations'], {
+          queryParams: paramsToParse
+        });
+      };
+      exploreVisualButtonWrapperElement.appendChild(buttonName);
+      return exploreVisualButtonWrapperElement;
+    },
+    updateElement: (element: HTMLElement, yasr: Yasr) => {
+      element.classList.add('hidden');
+      if (!yasr.hasResults()) {
+        return;
+      }
+      const queryType = yasr.yasqe.getQueryType();
+      if (QueryType.CONSTRUCT === queryType || QueryType.DESCRIBE === queryType) {
+        element.classList.remove('hidden');
+      }
+      element.querySelector<HTMLElement>('.explore-visual-graph-button-name')!.innerText =
+        this.translocoService.translate('sparql_editor.yasgui.toolbar.visual_graph_btn');
+    },
+    getOrder: () => {
+      return 2;
+    },
+    destroy() {
+      // No special cleanup is needed for this button, but the method must be implemented as part of the
+      // YasrToolbarPlugin interface
+    }
+  };
   private readonly tabIdToConnectorProgressModalMapping = new Map();
-
+  private internallyReloaded = false;
   activeRepositoryReference: RepositoryReference | undefined;
-
   yasguiConfig = signal<OntotextYasguiConfig | undefined>(undefined);
+  // savedQueryConfig = undefined;
 
   ngOnInit(): void {
     this.subscribeToRepositoryChanges();
@@ -82,7 +139,7 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
     config.infer = this.isOntopRepo || this.inferUserSetting;
     config.sameAs = this.isOntopRepo || this.sameAsUserSetting;
     config.yasrToolbarPlugins = [this.exploreVisualGraphYasrToolbarElementBuilder];
-    // config.beforeUpdateQuery = this.getBeforeUpdateQueryHandler();
+    config.beforeUpdateQuery = (query: string, tabId: string) => this.getBeforeUpdateQueryHandler(query, tabId);
     config.outputHandlers = new Map([
       [EventDataType.QUERY_EXECUTED, (eventData: unknown) => this.queryExecutedHandler(eventData as QueryExecutedEvent)],
       [EventDataType.REQUEST_ABORTED, (eventData: unknown) => this.requestAbortedHandler(eventData as RequestAbortedEvent)],
@@ -98,17 +155,114 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
    */
   initViewFromUrlParams(clearYasguiState = false) {
     this.updateConfig(clearYasguiState);
-    // const queryParams = $location.search();
-    // if (queryParams.hasOwnProperty(RouteConstants.savedQueryName)) {
-    //   // init new tab from shared saved query link
-    //   initTabFromSavedQuery(queryParams);
-    // } else if (queryParams.hasOwnProperty(RouteConstants.query)) {
-    //   // init new tab from shared query link
-    //   initTabFromSharedQuery(queryParams);
-    // } else if (GuidesService.isActive()) {
-    //   openNewTab();
+    const queryParams = this.activatedRoute.snapshot.queryParams;
+    if (queryParams.hasOwnProperty(SavedQueryParams.name)) {
+      // init new tab from shared saved query link
+      this.initTabFromSavedQuery(queryParams);
+    } else if (queryParams.hasOwnProperty(SharedQueryParams.query)) {
+      // init new tab from shared query link
+      // initTabFromSharedQuery(queryParams);
+    }
+    // TODO: uncomment when GuidesService is available in the api module
+    // else if (GuidesService.isActive()) {
+    // openNewTab();
     // }
-  };
+  }
+
+  private initTabFromSavedQuery(queryParams: Params) {
+    const savedQueryName = queryParams[SavedQueryParams.name];
+    const savedQueryOwner = queryParams[SavedQueryParams.owner];
+    const isExecuteRequested = queryParams['execute'] === 'true';
+    console.info('%cinit from params', 'background: tan', {queryParams, savedQueryName, savedQueryOwner, isExecuteRequested});
+    this.sparqlService.getSavedQuery(savedQueryName, savedQueryOwner)
+      .then((savedQueryList) => {
+        const savedQuery = savedQueryList.getFirstQuery();
+        return this.openNewTab(savedQuery);
+      })
+      .then(() => this.clearUrlParameters())
+      .then(() => this.autoExecuteQueryIfRequested(isExecuteRequested))
+      .catch((err) => {
+        this.ontoToastrService.error(
+          this.translocoService.translate('query.editor.missing.saved.query.data.error', { // TODO: add the label in bundle
+            savedQueryName: savedQueryName,
+            error: err instanceof Error ? err.message : String(err),
+          })
+        );
+      });
+  }
+
+  // const initTabFromSharedQuery = (queryParams) => {
+  //   const queryName = queryParams[RouteConstants.name];
+  //   const query = queryParams[RouteConstants.query];
+  //   const queryOwner = queryParams[RouteConstants.owner];
+  //   const isExecuteRequested = toBoolean(queryParams.execute);
+  //   const sharedQueryModel = buildQueryModel(query, queryName, queryOwner, true);
+  //   openNewTab(sharedQueryModel)
+  //     .then(clearUrlParameters)
+  //     .then(() => autoExecuteQueryIfRequested(isExecuteRequested));
+  // };
+
+  /**
+   * Opens a new tab in the editor and sets the provided SPARQL query in it. If the query is undefined, an empty tab
+   * with the default query will be opened.
+   * @param savedQuery - the query to be set in the new tab.
+   * @returns A promise that resolves when the new tab is opened and the query is set. The resolved value is the opened
+   * tab.
+   */
+  private async openNewTab(savedQuery: SavedQuery | undefined): Promise<void> {
+    const yasguiComponent = await YasguiComponentUtil.getOntotextYasguiElementAsync(this.QUERY_EDITOR_ID);
+    // Saved query can potentially be undefined that's why we skip the mapper. The yasgui component would deal with the
+    // undefined query, but we need to make sure that the mapper is not called with an undefined value.
+    const tabQueryModel = savedQuery && mapSavedQueryToTabQueryModel(savedQuery);
+    const tab = await yasguiComponent.openTab(tabQueryModel);
+    return YasguiComponentUtil.highlightTabName(tab);
+  }
+
+  private clearUrlParameters() {
+    this.internallyReloaded = true;
+    const currentParams = this.activatedRoute.snapshot.queryParams;
+    // Keep only the repositoryId parameter (if any). This will prevent router event from being triggered again and
+    // reinitializing the repositoryId param thus adding a new history entry.
+    const repositoryId = currentParams[REPOSITORY_ID_PARAM];
+    // Replace current URL without adding a new history entry
+    void this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: repositoryId ? {repositoryId} : {},
+      replaceUrl: true,
+    });
+  }
+
+  private async autoExecuteQueryIfRequested(isRequested: boolean) {
+    if (isRequested) {
+      const yasguiComponent = await YasguiComponentUtil.getOntotextYasguiElementAsync(this.QUERY_EDITOR_ID);
+      const result = await this.getQueryMode(yasguiComponent);
+      return this.confirmAndExecuteQuery(result);
+    }
+  }
+
+  private async getQueryMode(yasguiComponent: YasguiComponent) {
+    const queryMode = await yasguiComponent.getQueryMode() as QueryMode;
+    return {yasguiComponent, queryMode};
+  }
+
+  private confirmAndExecuteQuery({yasguiComponent, queryMode}: {yasguiComponent: YasguiComponent, queryMode: QueryMode}) {
+    if (queryMode !== QueryMode.UPDATE) {
+      return yasguiComponent.query();
+    }
+
+    return new Promise<void>((resolve) => {
+      // const title = this.translocoService.translate('confirm.execute');
+      // const message = decodeHTML(this.translocoService.translate('query.editor.automatically.execute.update.warning'));
+      const message = this.translocoService.translate('query.editor.automatically.execute.update.warning');
+      // ModalService.openConfirmation(title, message, () => resolve(yasguiComponent.query()), () => resolve());
+      const confirmed = confirm(message);
+      if (confirmed) {
+        resolve(yasguiComponent.query());
+      } else {
+        resolve();
+      }
+    });
+  }
 
   private getEndpoint(yasgui?: Yasgui) {
     const yasqe = this.getYasqe(yasgui);
@@ -171,84 +325,60 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
     }
   }
 
-  // private getBeforeUpdateQueryHandler() {
-  //   return (query: string, tabId: string): Promise<BeforeUpdateQueryResult> => {
-  //     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //     // @ts-expect-error
-  //     return Promise.resolve();
-  //   };
-  //   // return ConnectorsRestService.checkConnector(query)
-  //   //   .then((response) => {
-  //   //     if (!response.data.command) {
-  //   //       return toNoCommandResponse();
-  //   //     }
-  //   //     if (!response.data.hasSupport) {
-  //   //       return toHasNotSupport(response);
-  //   //     }
-  //   //
-  //   //     if (ConnectorCommand.CREATE === response.data.command) {
-  //   //       return toCreateCommandResponse(response, tabId);
-  //   //     }
-  //   //
-  //   //     if (ConnectorCommand.REPAIR === response.data.command) {
-  //   //       return toRepairCommandResponse(response, tabId);
-  //   //     }
-  //   //
-  //   //     if (ConnectorCommand.DROP === response.data.command) {
-  //   //       return toDropCommandResponse(response);
-  //   //     }
-  //   //   }).catch((error: unknown) => {
-  //   //     // For some reason we couldn't check if this is a connector update, so just catch the exception,
-  //   //     // to not stop the execution of query.
-  //   //     this.logger.error('Checking connector error: ', error);
-  //   //   });
-  // }
+  private async getBeforeUpdateQueryHandler(query: string, tabId: string) {
+    try {
+      const result = await this.connectorsService.checkConnector(query);
+      return this.showConnectorOperationProgressDialog(result, tabId);
+    } catch (error) {
+      // For some reason we couldn't check if this is a connector update, so just catch the exception,
+      // to not stop the execution of query.
+      this.logger.error('Checking connector error: ', error);
+      return undefined;
+    }
+  }
+
+  private showConnectorOperationProgressDialog(result: BeforeUpdateQueryResult, tabId?: string) {
+    console.info('tabId', tabId);
+    if (result.command === ConnectorCommand.CREATE) {
+      // const connectorProgressModal = createConnectorProgressDialog($translate.instant('externalsync.creating'), result.iri, response.data.name);
+      // tabIdToConnectorProgressModalMapping.set(tabId, connectorProgressModal);
+    } else if (result.command === ConnectorCommand.REPAIR) {
+      // const connectorProgressModal = createConnectorProgressDialog($translate.instant('externalsync.repairing'), response.data.iri, response.data.name);
+      // tabIdToConnectorProgressModalMapping.set(tabId, connectorProgressModal);
+    }
+    return result;
+  }
 
   private setInferAndSameAs(authenticatedUser: AuthenticatedUser | undefined) {
     this.inferUserSetting = authenticatedUser?.appSettings.DEFAULT_INFERENCE ?? false;
     this.sameAsUserSetting = authenticatedUser?.appSettings.DEFAULT_SAMEAS ?? false;
   }
 
-  private readonly exploreVisualGraphYasrToolbarElementBuilder: YasrToolbarPlugin = {
-    createElement: (yasr: Yasr) => {
-      const buttonName = document.createElement('span');
-      buttonName.classList.add('explore-visual-graph-button-name');
-      const exploreVisualButtonWrapperElement = document.createElement('button');
-      exploreVisualButtonWrapperElement.classList.add('explore-visual-graph-button', 'icon-data');
-      exploreVisualButtonWrapperElement.onclick = ()=> {
-        const paramsToParse = {
-          query: yasr.yasqe.getValue(),
-          sameAs: yasr.yasqe.getSameAs(),
-          inference: yasr.yasqe.getInfer(),
-        };
-        void this.router.navigate(['graphs-visualizations'], {
-          queryParams: paramsToParse
-        });
-      };
-      exploreVisualButtonWrapperElement.appendChild(buttonName);
-      return exploreVisualButtonWrapperElement;
-    },
-    updateElement: (element: HTMLElement, yasr: Yasr) => {
-      element.classList.add('hidden');
-      if (!yasr.hasResults()) {
-        return;
-      }
-
-      const queryType = yasr.yasqe.getQueryType();
-      if (QueryType.CONSTRUCT === queryType || QueryType.DESCRIBE === queryType) {
-        element.classList.remove('hidden');
-      }
-      element.querySelector<HTMLElement>('.explore-visual-graph-button-name')!.innerText =
-        this.translocoService.translate('sparql_editor.yasgui.toolbar.visual_graph_btn');
-    },
-    getOrder: () => {
-      return 2;
-    },
-    destroy() {
-      // No special cleanup is needed for this button, but the method must be implemented as part of the
-      // YasrToolbarPlugin interface
-    }
-  };
+  // const getExitPageConfirmMessage = (ongoingRequestsInfo) => {
+  //   let exitPageConfirmMessage = "view.sparql-editor.leave_page.run_queries.confirmation.";
+  //   if (!ongoingRequestsInfo || ongoingRequestsInfo.queriesCount < 1) {
+  //     exitPageConfirmMessage += "none_queries_";
+  //   } else if (ongoingRequestsInfo.queriesCount === 1) {
+  //     exitPageConfirmMessage += "one_query_";
+  //   } else {
+  //     exitPageConfirmMessage += "queries_";
+  //   }
+  //
+  //   if (!ongoingRequestsInfo.updatesCount || ongoingRequestsInfo.updatesCount === 0) {
+  //     exitPageConfirmMessage += "non_updates";
+  //   } else if (ongoingRequestsInfo.updatesCount === 1) {
+  //     exitPageConfirmMessage += "one_update";
+  //   } else {
+  //     exitPageConfirmMessage += "updates";
+  //   }
+  //
+  //   exitPageConfirmMessage += ".message";
+  //   const params = {
+  //     queriesCount: ongoingRequestsInfo.queriesCount,
+  //     updatesCount: ongoingRequestsInfo.updatesCount,
+  //   };
+  //   return $translate.instant(exitPageConfirmMessage, params);
+  // };
 
   private subscribeToRepositoryChanges() {
     this.subscriptions.add(
@@ -271,12 +401,32 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
   }
 
   private init() {
+    // This script check is required, because of the following scenario:
+    // I am in the SPARQL view;
+    // Then I go to a different view and change the language;
+    // Then I return to the SPARQL view. I will see that the Google chart and Pivot table will have their
+    // original scripts loaded still.
+    // THE FIX: Get all the scripts (if there are none, the correct language will be loaded). If there are
+    // scripts, and they don't match those, which are loaded already, the page needs to reload when opening
+    // the SPARQL view, otherwise the Google chart and Pivot table configs will be in the old language.
+    // const googleScripts = document.querySelectorAll(`script[src*="https://www.gstatic.com/"]`);
+    // if (googleScripts.length > 0) {
+    //   const currentLang = $languageService.getLanguage();
+    //   let searchTerm = 'module.js';
+    //   if ('en' !== currentLang) {
+    //     searchTerm = `module__${currentLang}.js`;
+    //   }
+    //   if (!Array.prototype.some.call(googleScripts, (script) => script.src.includes(searchTerm))) {
+    //     location.reload();
+    //     return;
+    //   }
+    // }
     const authenticatedUser = this.securityContextService.getAuthenticatedUser();
     this.namespacesService.getNamespaces(this.repositoryStorageService.getActiveRepositoryId()!)
       .then((prefixes) => {
         this.prefixes = prefixes;
         this.setInferAndSameAs(authenticatedUser);
-        this.updateConfig(true);
+        this.initViewFromUrlParams(true);
       })
       .catch((error) => {
         this.logger.error('Error fetching namespaces for the active repository: ', error);
@@ -290,4 +440,11 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subscriptions.unsubscribeAll();
   }
+
+  // TODO: Migrate event handlers
+  //repositoryChangedHandler
+  //beforeunloadHandler
+  //confirmIfHaveRunQuery
+  //locationChangeHandler
+  //...
 }

@@ -2,6 +2,7 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {provideNoopAnimations} from '@angular/platform-browser/animations';
 import {SparqlEditorPageComponent} from './sparql-editor-page.component';
 import {provideTranslocoForTesting} from '../../../testing-utils/transloco-utils';
+import {provideRouter} from '@angular/router';
 
 describe('SparqlEditorPageComponent', () => {
   let component: SparqlEditorPageComponent;
@@ -14,7 +15,8 @@ describe('SparqlEditorPageComponent', () => {
         provideTranslocoForTesting(),
       ],
       providers: [
-        provideNoopAnimations()
+        provideNoopAnimations(),
+        provideRouter([])
       ]
     })
       .compileComponents();
