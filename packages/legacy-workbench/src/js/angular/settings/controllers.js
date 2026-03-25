@@ -147,7 +147,8 @@ function RegisterLicenseCtrl($scope, $location, $uibModal, toastr, $window, $jwt
     });
 
     $scope.getBackToPreviousPage = function() {
-        $window.history.back();
+        const previousRoute = service(NavigationContextService).getPreviousRoute();
+        navigate(previousRoute ?? './');
     };
 
     // send license code for validation and activation
