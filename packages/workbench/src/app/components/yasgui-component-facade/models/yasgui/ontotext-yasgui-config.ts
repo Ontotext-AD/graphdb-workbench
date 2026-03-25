@@ -1,16 +1,15 @@
 import {RenderingMode} from './rendering-mode';
 import {YasguiOrientation} from './yasgui-orientation';
 import {YasguiQueryHttpMethod} from './yasgui-query-http-method';
-import {HttpHeaders} from '@ontotext/workbench-api';
 import {YasqeMode} from '../yasqe/yasqe-mode';
 import {YasqeActionButtonDefinition} from '../yasqe/yasqe-action-button-definition';
 import {YasrPluginName} from '../yasr/yasr-plugin-name';
-import {BeforeUpdateQueryResult} from '../before-update-query-result';
 import {YasrToolbarPlugin} from '../yasr/yasr-toolbar-plugin';
 import {Prefixes} from '../../../../models/prefixes';
 import {TranslationBundles} from '../../../../models/translation-bundles';
 import {OutputHandlers} from '../output-handlers';
 import {Yasgui} from './yasgui';
+import {BeforeUpdateQueryResult, HttpHeaders} from '@ontotext/workbench-api';
 
 /**
  * Holds all configurations related with ontotext-yasgui-web-component.
@@ -212,7 +211,7 @@ export class OntotextYasguiConfig {
    * This function will be called before the update query is executed. The client can abort execution of query for some
    * reason and can provide a message or label key for the abort reason.
    */
-  public beforeUpdateQuery: ((query: string, tabId: string) => Promise<BeforeUpdateQueryResult>) | undefined;
+  public beforeUpdateQuery: ((query: string, tabId: string) => Promise<void | BeforeUpdateQueryResult>) | undefined;
   /**
    * This function will be called before and after execution of an update query. Depends on results a corresponding
    * result message info will be generated.
