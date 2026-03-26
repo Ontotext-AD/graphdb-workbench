@@ -582,7 +582,7 @@ yasgui-component .yasr .yasr_btnGroup .yasr_btn.selected {
     border-color: var(--gw-tabs-tab-active-border-color) var(--gw-tabs-tab-active-border-color) transparent !important;
 }
 
-yasgui-component .yasr .yasr_btnGroup .yasr_btn:hover {
+yasgui-component .yasr .yasr_btnGroup .yasr_btn:not(.disabled):hover {
     color: var(--gw-tabs-tab-hover-color) !important;
     background-color: var(--gw-tabs-tab-hover-background) !important;
     fill: var(--gw-tabs-tab-hover-color) !important;
@@ -818,6 +818,12 @@ yasgui-component .yasr .pivot-table-plugin .pvtFilterBox .pvtSearch {
     color: var(--gw-form-field-color);
     background-color: var(--gw-form-field-background);
     border-color: var(--gw-form-field-border-color);
+}
+
+yasgui-component .yasr .yasr_fallback_info:not(:empty) {
+    border: 1px solid var(--gw-message-info-border-color);
+    color: var(--gw-message-info-color);
+    background-color: var(--gw-message-info-background);
 }
 
 .keyboard-shortcuts-dialog-wrapper {
