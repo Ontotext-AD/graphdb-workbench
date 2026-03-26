@@ -17,6 +17,7 @@ import {QueryMode} from "../models/ontotext-yasgui/query-mode";
 import 'angular/core/services/event-emitter-service';
 import {LoggerProvider} from "../core/services/logger-provider";
 import {
+    ParentWindowMessageService,
     navigateTo,
     LanguageContextService,
     ServiceProvider,
@@ -26,7 +27,9 @@ import {
     service,
     REPOSITORY_ID_PARAM,
     GuidesService,
+    WindowService,
 } from "@ontotext/workbench-api";
+import {YASGUI_OPERATION, YASGUI_OPERATION_TYPE} from "./constants";
 
 const modules = [
     'ui.bootstrap',
@@ -78,12 +81,21 @@ function SparqlEditorCtrl($rootScope,
                           LSKeys) {
     const securityContextService = service(SecurityContextService);
     const guidesService = service(GuidesService);
+    const parentWindowMessageService = service(ParentWindowMessageService);
 
     this.repository = '';
 
     const QUERY_EDITOR_ID = '#query-editor';
     let activeRepository = $repositories.getActiveRepository();
     let isOntopRepo = $repositories.isActiveRepoOntopType();
+    // This is used to determine whether the view is embedded in another application. When embedded, we want to hide
+    // some elements and disable the "go to home" functionality, as it doesn't make sense in that context.
+    $scope.embedded = $location.search().embedded;
+    // This is used to determine the specific action that the external application wants to perform, for example,
+    // when a feature is clicked in the Geo plugin and YASGUI is embedded in the external application, the external
+    // application might want to handle the click in a specific way.
+    // Possible operation types are defined in YASGUI_OPERATION_TYPE.
+    $scope.yasguiOperation = $location.search().yasguiOperation;
 
     /**
      * @type {OntotextYasguiConfig}
@@ -105,7 +117,7 @@ function SparqlEditorCtrl($rootScope,
      * @param {boolean} clearYasguiState if set to true, the Yasgui will reinitialize and clear all tab results. Queries will remain.
      */
     $scope.updateConfig = (clearYasguiState) => {
-        $scope.yasguiConfig = {
+        const yasguiConfig = {
             endpoint: getEndpoint,
             componentId: VIEW_SPARQL_EDITOR,
             prefixes: $scope.prefixes,
@@ -119,6 +131,15 @@ function SparqlEditorCtrl($rootScope,
             ]),
             clearState: clearYasguiState ?? false,
         };
+
+        if ($scope.embedded && $scope.yasguiOperation === YASGUI_OPERATION.EXTERNAL_CLICK_HANDLER) {
+            yasguiConfig.pluginsConfigurations = {
+                geo: {
+                    onFeatureClick: onFeatureClickHandler,
+                },
+            };
+        }
+        $scope.yasguiConfig = yasguiConfig;
     };
 
     $scope.getActiveRepositoryNoError = () => {
@@ -128,6 +149,22 @@ function SparqlEditorCtrl($rootScope,
     // =========================
     // Private functions
     // =========================
+    /**
+     * Callback function triggered when a user clicks on a feature in the geo plugin.
+     * Sends a message to the parent window using `ParentWindowMessageService`.
+     *
+     * @param {Object} featurePayload - The data of the clicked feature.
+     * @param {string} [featurePayload.id] - The unique ID of the feature (optional, depending on payload structure).
+     * @param {Object} [featurePayload.geometry] - Geometry properties of the feature (optional).
+     */
+    const onFeatureClickHandler = (featurePayload) => {
+        parentWindowMessageService.postMessage({
+            type: YASGUI_OPERATION_TYPE.FEATURE_CLICK,
+            featurePayload,
+        }, WindowService.getReferer());
+    };
+
+
     const getYasqe = (yasgui) => {
         const tab = yasgui.getTab();
         if (!tab) {
