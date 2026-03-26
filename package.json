@@ -1,6 +1,6 @@
 {
     "name": "graphdb-workbench",
-    "version": "3.4.0-dynamic-guides-test",
+    "version": "3.4.0-migrated-guide-services",
     "description": "The web application for GraphDB APIs",
     "engines": {
         "node": ">=22.17"
