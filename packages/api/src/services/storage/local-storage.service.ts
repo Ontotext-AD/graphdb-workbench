@@ -34,10 +34,12 @@ export abstract class LocalStorageService implements Persistence {
   /**
    * Returns the value of the given key from the localStorage.
    * @param key The key to get the value for. Every key must be prefixed with {@link StorageKey.GLOBAL_NAMESPACE}.
+   * @param usePrefixedKey Whether to prefix the key with the global and local namespaces before retrieving the value.
+   * Obtaining unprefixed keys is generally only for migration purposes.
    * @return The value of the key wrapped in a StorageData object.
    */
-  get(key: string): StorageData {
-    const value = this.getStorage().getItem(this.getPrefixedKey(key));
+  get(key: string, usePrefixedKey = true): StorageData {
+    const value = this.getStorage().getItem(usePrefixedKey ? this.getPrefixedKey(key) : key);
     return new StorageData(value);
   }
 
@@ -74,9 +76,10 @@ export abstract class LocalStorageService implements Persistence {
   /**
    * Removes the value for the given key from the localStorage.
    * @param key The key to remove the value for. Every key must be prefixed with {@link StorageKey.GLOBAL_NAMESPACE}.
+   * @param usePrefixedKey Whether to prefix the key with the global and local namespaces before removing the value.
    */
-  remove(key: string): void {
-    this.getStorage().removeItem(this.getPrefixedKey(key));
+  remove(key: string, usePrefixedKey = true): void {
+    this.getStorage().removeItem(usePrefixedKey ? this.getPrefixedKey(key) : key);
   }
 
   private getPrefixedKey(key: string): string {

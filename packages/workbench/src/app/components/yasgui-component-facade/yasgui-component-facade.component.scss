@@ -579,12 +579,18 @@ app-yasgui-component-facade .yasr .yasr_btnGroup .yasr_btn.selected {
   border-bottom: none;
 }
 
-app-yasgui-component-facade .yasr .yasr_btnGroup .yasr_btn:hover {
+app-yasgui-component-facade .yasr .yasr_btnGroup .yasr_btn:not(.disabled):hover {
   color: var(--gw-tabs-tab-hover-color) !important;
   background-color: var(--gw-tabs-tab-hover-background) !important;
   fill: var(--gw-tabs-tab-hover-color) !important;
   border-color: var(--gw-tabs-tab-hover-border-color) var(--gw-tabs-tab-hover-border-color) transparent !important;
   border-bottom-width: 1px !important;
+}
+
+app-yasgui-component-facade .yasr .yasr_fallback_info:not(:empty) {
+  border: 1px solid var(--gw-message-info-border-color);
+  color: var(--gw-message-info-color);
+  background-color: var(--gw-message-info-background);
 }
 
 app-yasgui-component-facade .yasr .error-response-plugin {

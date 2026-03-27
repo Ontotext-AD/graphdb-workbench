@@ -81,6 +81,8 @@ export abstract class ContextService<TFields extends Record<string, unknown>> im
    * @param beforeChangeValidationPromise Optional promise that can be used to validate the new value before it is set.
    *                                     If the promise resolves to false, the value change will be rejected.
    * @param afterChangeCallback - Optional function called **after** the main callback with the updated value.
+   * @param skipFirst - If true, the callback will not be called immediately with the current value, but only on
+   * subsequent changes. Default is false.
    *
    * @returns A function that can be called to unsubscribe from the property updates.
    *
@@ -89,9 +91,10 @@ export abstract class ContextService<TFields extends Record<string, unknown>> im
   protected subscribe<T>(propertyName: string,
     callbackFunction: ValueChangeCallback<T | undefined>,
     beforeChangeValidationPromise?: BeforeChangeValidationPromise<T>,
-    afterChangeCallback?: ValueChangeCallback<T | undefined>): () => void {
+    afterChangeCallback?: ValueChangeCallback<T | undefined>,
+    skipFirst = false): () => void {
 
-    if (callbackFunction) {
+    if (!skipFirst && callbackFunction) {
       // Call the callback immediately with the current value
       callbackFunction(this.getContextPropertyValue(propertyName));
     }
@@ -143,11 +146,26 @@ export abstract class ContextService<TFields extends Record<string, unknown>> im
 
   /**
    * Subscribes globally to all fields defined in TFields.
+   * @param callbackFunction The function to be called when any of the fields change. It receives the new value of the
+   * field as an argument.
+   * @param beforeChangeValidationPromise Optional promise that can be used to validate the new value before it is set.
+   * If the promise resolves to false, the value change will be rejected.
+   * @param afterChangeCallback Optional function called **after** the main callback with the updated value.
+   * @param skipFirst If true, the callback will not be called immediately with the current value, but only on
+   * subsequent changes. Default is false.
+   * @returns A function that can be called to unsubscribe from all field updates.
+   *
+   * **Note**: This method relies on the convention that all string-typed properties of the service class represent
+   * valid context fields. It iterates over these properties to register subscriptions. This design simplifies
+   * subscription management but may include unintended properties if the subclass defines additional string fields.
+   * Subclasses can override `getContextFields` to control which fields are included in this global subscription
+   * mechanism.
    */
   public subscribeAll<T>(
     callbackFunction: ValueChangeCallback<T | undefined>,
     beforeChangeValidationPromise?: BeforeChangeValidationPromise<T>,
-    afterChangeCallback?: ValueChangeCallback<T | undefined>
+    afterChangeCallback?: ValueChangeCallback<T | undefined>,
+    skipFirst = false
   ): Subscription {
     const unsubscribeFns: SubscriptionList = new SubscriptionList();
     // iterate through service-defined fields
@@ -157,7 +175,8 @@ export abstract class ContextService<TFields extends Record<string, unknown>> im
           key,
           callbackFunction,
           beforeChangeValidationPromise,
-          afterChangeCallback
+          afterChangeCallback,
+          skipFirst,
         )
       );
     }

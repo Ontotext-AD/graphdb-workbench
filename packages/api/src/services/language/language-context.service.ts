@@ -49,10 +49,17 @@ export class LanguageContextService extends ContextService<LanguageContextFields
    * @param beforeChangeValidationPromise - Optional. A promise that will be resolved before
    *        the language change is applied. This can be used to validate or prepare for the
    *        language change. If the promise is resolved with false or rejects, the language change will be canceled.
+   * @param skipFirstNotification - Optional. If true, the callback will not be called immediately with the current
+   *        value upon subscription. By default, this is false, meaning the callback will be called immediately with the
+   *        current value.
    * @returns A function to unsubscribe from updates.
    */
-  onSelectedLanguageChanged(callbackFunction: ValueChangeCallback<string | undefined>, beforeChangeValidationPromise?: BeforeChangeValidationPromise<string | undefined>): () => void {
-    return this.subscribe(this.SELECTED_LANGUAGE, callbackFunction, beforeChangeValidationPromise);
+  onSelectedLanguageChanged(
+    callbackFunction: ValueChangeCallback<string | undefined>,
+    beforeChangeValidationPromise?: BeforeChangeValidationPromise<string | undefined>,
+    skipFirstNotification = false
+  ): () => void {
+    return this.subscribe(this.SELECTED_LANGUAGE, callbackFunction, beforeChangeValidationPromise, undefined, skipFirstNotification);
   }
 
   /**

@@ -48,7 +48,7 @@ export class TrackingStorageService extends LocalStorageService {
     if (legacyData) {
       this.logger.info('Legacy cookie consent data found. Migrating to new key.', {legacyData});
       this.setCookieConsent(legacyData);
-      this.remove(this.LEGACY_COOKIE_CONSENT);
+      this.remove(this.LEGACY_COOKIE_CONSENT, false);
     }
   }
 }
