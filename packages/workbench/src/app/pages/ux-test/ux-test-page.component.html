@@ -18,3 +18,11 @@
   <input pInputText [(ngModel)]="value1" type="text" pSize="small" placeholder="Small" /><br>
   <input pInputText [(ngModel)]="value2" type="text" placeholder="Normal" /><br>
   <input pInputText [(ngModel)]="value3" type="text" pSize="large" placeholder="Large" />
+
+<hr>
+<div class="card flex justify-center gap-2">
+  <p-toast />
+  <p-confirmdialog />
+  <p-button (click)="confirm1($event)" label="Save" />
+  <p-button (click)="confirm1($event)" label="Delete" severity="danger" />
+</div>

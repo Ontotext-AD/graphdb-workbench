@@ -1,5 +1,6 @@
 import {Component, inject, OnDestroy, OnInit, signal} from '@angular/core';
 import {ActivatedRoute, Params, Router} from '@angular/router';
+import {ConfirmDialogModule} from 'primeng/confirmdialog';
 import {MessageModule} from 'primeng/message';
 import {TranslocoPipe, TranslocoService} from '@jsverse/transloco';
 import {PageLayoutComponent} from '../../components/page-layout/page-layout.component';
@@ -16,32 +17,47 @@ import {VIEW_SPARQL_EDITOR} from '../../components/yasgui-component-facade/model
 import {Yasgui} from '../../components/yasgui-component-facade/models/yasgui/yasgui';
 import {
   AuthenticatedUser,
+  BeforeUpdateQueryResult,
+  ConnectorsService,
+  EventName,
+  EventService,
+  LanguageContextService,
+  MonitoringService,
   NamespaceMap,
   NamespacesService,
-  Rdf4jRepositoryService, REPOSITORY_ID_PARAM,
+  navigateTo,
+  NavigationStartPayload,
+  OntoToastrService,
+  ParentWindowMessageService,
+  Rdf4jRepositoryService,
+  REPOSITORY_ID_PARAM,
   RepositoryContextService,
   RepositoryReference,
-  RepositoryService,
   RepositoryStorageService,
   SavedQuery,
   SecurityContextService,
-  ConnectorsService,
   service,
   SparqlService,
+  SparqlStorageService,
   SubscriptionList,
-  BeforeUpdateQueryResult,
-  OntoToastrService,
+  WindowService,
 } from '@ontotext/workbench-api';
 import {EventDataType} from '../../components/yasgui-component-facade/models/event/event-data-type';
 import {YasrToolbarPlugin} from '../../components/yasgui-component-facade/models/yasr/yasr-toolbar-plugin';
 import {Yasr} from '../../components/yasgui-component-facade/models/yasr/yasr';
 import {QueryType} from '../../components/yasgui-component-facade/models/yasqe/query-type';
-
-import {SavedQueryParams, SharedQueryParams} from './sparql-editor-query-params';
+import {SavedQueryParams, SharedQueryParams, YasguiQueryParams} from './sparql-editor-query-params';
 import {YasguiComponentUtil} from '../../components/yasgui-component-facade/yasgui-component-util';
 import {YasguiComponent} from '../../components/yasgui-component-facade/models/yasgui-component';
 import {ConnectorCommand} from '../../models/connectors/connector-command';
 import {mapSavedQueryToTabQueryModel} from './mappers/saved-query-to-tab-query-model.mapper';
+import {OngoingRequestsInfo} from '../../components/yasgui-component-facade/models/ongoing-requests-info';
+import {CancelAbortingQuery} from './error/cancel-abort-query';
+import {ConfirmationService} from 'primeng/api';
+import {YasguiOperation, YasguiOperationType} from './constants';
+import {
+  GeoPluginFeatureClickEvent
+} from '../../components/yasgui-component-facade/models/event/geo-plugin-feature-click-event';
 
 @Component({
   selector: 'app-sparql-editor-page',
@@ -52,27 +68,43 @@ import {mapSavedQueryToTabQueryModel} from './mappers/saved-query-to-tab-query-m
     PageLayoutComponent,
     PageInfoTooltipComponent,
     YasguiComponentFacadeComponent,
+    ConfirmDialogModule
   ],
+  providers: [ConfirmationService],
   templateUrl: './sparql-editor-page.component.html',
   styleUrl: './sparql-editor-page.component.scss',
 })
 export class SparqlEditorPageComponent implements OnInit, OnDestroy {
   private readonly logger = LoggerProvider.logger;
+
+  // ================================
   // Angular DI
+  // ================================
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly translocoService = inject(TranslocoService);
+  private readonly confirmationService = inject(ConfirmationService);
+
+  // ================================
   // API DI
+  // ================================
   private readonly rdfRepositoryService = service(Rdf4jRepositoryService);
   private readonly repositoryStorageService = service(RepositoryStorageService);
   private readonly repositoryContextService = service(RepositoryContextService);
-  private readonly repositoryService = service(RepositoryService);
   private readonly securityContextService = service(SecurityContextService);
   private readonly namespacesService = service(NamespacesService);
   private readonly sparqlService = service(SparqlService);
   private readonly connectorsService = service(ConnectorsService);
   private readonly ontoToastrService = service(OntoToastrService);
+  private readonly sparqlStorageService = service(SparqlStorageService);
+  private readonly parentWindowMessageService = service(ParentWindowMessageService);
+  private readonly languageContextService = service(LanguageContextService);
+  private readonly monitoringService = service(MonitoringService);
+  private readonly eventService = service(EventService);
+
+  // ================================
   // Private variables
+  // ================================
   private readonly QUERY_EDITOR_ID = '#query-editor';
   private readonly subscriptions = new SubscriptionList();
   private isOntopRepo = this.repositoryContextService.isActiveRepoOntopType();
@@ -120,18 +152,63 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
   };
   private readonly tabIdToConnectorProgressModalMapping = new Map();
   private internallyReloaded = false;
-  activeRepositoryReference: RepositoryReference | undefined;
+  private queriesAreCanceled = false;
+  // This is used to determine whether the view is embedded in another application. When embedded, we want to hide
+  // some elements and disable the "go to home" functionality, as it doesn't make sense in that context.
+  private embedded = false;
+  // This is used to determine the specific action that the external application wants to perform, for example,
+  // when a feature is clicked in the Geo plugin and YASGUI is embedded in the external application, the external
+  // application might want to handle the click in a specific way.
+  // Possible operation types are defined in YasguiOperationType.
+  private yasguiOperation: string | undefined = undefined;
+  private readonly boundBeforeunloadHandler = () => this.beforeunloadHandler();
+
+  // ================================
+  // Public variables
+  // ================================
   yasguiConfig = signal<OntotextYasguiConfig | undefined>(undefined);
+  activeRepositoryReference: RepositoryReference | undefined;
   // savedQueryConfig = undefined;
 
   ngOnInit(): void {
-    this.subscribeToRepositoryChanges();
+    this.subscribeHandlers();
+    window.addEventListener('beforeunload', this.boundBeforeunloadHandler);
+  }
+
+  private subscribeHandlers() {
+    this.subscriptions.addAll([
+      this.repositoryContextService.onSelectedRepositoryChanged((repositoryReference) => this.repositoryChangedHandler(repositoryReference)),
+      this.languageContextService.onSelectedLanguageChanged(() => this.onLanguageChange(), undefined, true),
+      this.eventService.subscribe(EventName.NAVIGATION_START, (eventPayload: NavigationStartPayload) => this.locationChangeHandler(eventPayload)),
+    ]);
+  }
+
+  private onLanguageChange() {
+    this.confirmationService.confirm({
+      message: this.translocoService.translate('sparql_editor.confirmation.on_language_change.message'),
+      header: this.translocoService.translate('sparql_editor.confirmation.on_language_change.title'),
+      acceptButtonProps: {
+        label: this.translocoService.translate('components.dialog.confirmation.confirm_btn'),
+        severity: 'primary',
+      },
+      rejectButtonProps: {
+        label: this.translocoService.translate('components.dialog.confirmation.cancel_btn'),
+        severity: 'secondary',
+      },
+      accept: () => {
+        // The page needs to be reloaded, because of the Google charts and Pivot table scripts. When the language is
+        // changed, the correct language for these components is loaded only on the page reload, but we can't be sure
+        // that the user will reload the page by themselves, so we need to do it programmatically. We can't just change
+        // the src of the existing script, because these components don't react to it, so we need to reload the whole page.
+        WindowService.reloadPage();
+      },
+    });
   }
 
   /**
    * Updates the Yasgui configuration
    */
-  updateConfig(clearYasguiState: boolean) {
+  private updateConfig(clearYasguiState: boolean) {
     const config = new OntotextYasguiConfig();
     config.componentId = VIEW_SPARQL_EDITOR;
     config.endpoint = this.getEndpoint.bind(this);
@@ -145,23 +222,37 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
       [EventDataType.REQUEST_ABORTED, (eventData: unknown) => this.requestAbortedHandler(eventData as RequestAbortedEvent)],
     ]);
     config.clearState = clearYasguiState;
+
+    if (this.embedded && this.yasguiOperation === YasguiOperation.EXTERNAL_CLICK_HANDLER) {
+      config.pluginsConfigurations = {
+        geo: {
+          onFeatureClick: (event: GeoPluginFeatureClickEvent) => this.onFeatureClickHandler(event),
+        },
+      };
+    }
+
     this.yasguiConfig.set(config);
   }
 
   /**
    * Initializes the editor from the URL parameters.
    * @param clearYasguiState if set to true, the Yasgui will reinitialize and clear all tab results. Queries will remain.
-   * The default is false.
    */
-  initViewFromUrlParams(clearYasguiState = false) {
-    this.updateConfig(clearYasguiState);
+  private initViewFromUrlParams(clearYasguiState = false) {
     const queryParams = this.activatedRoute.snapshot.queryParams;
+    if (queryParams.hasOwnProperty(YasguiQueryParams.EMBEDDED)) {
+      this.embedded = true;
+    }
+    if (queryParams.hasOwnProperty(YasguiQueryParams.YASGUI_OPERATION)) {
+      this.yasguiOperation = queryParams[YasguiQueryParams.YASGUI_OPERATION];
+    }
+    this.updateConfig(clearYasguiState);
     if (queryParams.hasOwnProperty(SavedQueryParams.name)) {
       // init new tab from shared saved query link
       this.initTabFromSavedQuery(queryParams);
     } else if (queryParams.hasOwnProperty(SharedQueryParams.query)) {
       // init new tab from shared query link
-      // initTabFromSharedQuery(queryParams);
+      this.initTabFromSharedQuery(queryParams);
     }
     // TODO: uncomment when GuidesService is available in the api module
     // else if (GuidesService.isActive()) {
@@ -172,8 +263,7 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
   private initTabFromSavedQuery(queryParams: Params) {
     const savedQueryName = queryParams[SavedQueryParams.name];
     const savedQueryOwner = queryParams[SavedQueryParams.owner];
-    const isExecuteRequested = queryParams['execute'] === 'true';
-    console.info('%cinit from params', 'background: tan', {queryParams, savedQueryName, savedQueryOwner, isExecuteRequested});
+    const isExecuteRequested = queryParams[YasguiQueryParams.EXECUTE] === 'true';
     this.sparqlService.getSavedQuery(savedQueryName, savedQueryOwner)
       .then((savedQueryList) => {
         const savedQuery = savedQueryList.getFirstQuery();
@@ -183,7 +273,7 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
       .then(() => this.autoExecuteQueryIfRequested(isExecuteRequested))
       .catch((err) => {
         this.ontoToastrService.error(
-          this.translocoService.translate('query.editor.missing.saved.query.data.error', { // TODO: add the label in bundle
+          this.translocoService.translate('sparql_editor.errors.saved_query_load_failed', {
             savedQueryName: savedQueryName,
             error: err instanceof Error ? err.message : String(err),
           })
@@ -191,16 +281,42 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
       });
   }
 
-  // const initTabFromSharedQuery = (queryParams) => {
-  //   const queryName = queryParams[RouteConstants.name];
-  //   const query = queryParams[RouteConstants.query];
-  //   const queryOwner = queryParams[RouteConstants.owner];
-  //   const isExecuteRequested = toBoolean(queryParams.execute);
-  //   const sharedQueryModel = buildQueryModel(query, queryName, queryOwner, true);
-  //   openNewTab(sharedQueryModel)
-  //     .then(clearUrlParameters)
-  //     .then(() => autoExecuteQueryIfRequested(isExecuteRequested));
-  // };
+  private initTabFromSharedQuery(queryParams: Params) {
+    const queryName = queryParams[SharedQueryParams.name];
+    const query = queryParams[SharedQueryParams.query];
+    const queryOwner = queryParams[SharedQueryParams.owner];
+    const isExecuteRequested = queryParams[SharedQueryParams.execute] === 'true';
+    const sharedQueryModel = new SavedQuery({
+      queryName: queryName,
+      query: query,
+      owner: queryOwner,
+      isPublic: true,
+      readonly: true,
+    });
+    this.openNewTab(sharedQueryModel)
+      .then(() => this.clearUrlParameters())
+      .then(() => this.autoExecuteQueryIfRequested(isExecuteRequested))
+      .catch((err) => {
+        this.ontoToastrService.error(
+          this.translocoService.translate('sparql_editor.errors.shared_query_load_failed', {
+            sharedQueryName: queryName,
+            error: err instanceof Error ? err.message : String(err),
+          })
+        );
+      });
+  };
+
+  /**
+   * Callback function triggered when a user clicks on a feature in the geo plugin.
+   * Sends a message to the parent window using `ParentWindowMessageService`.
+   * @param featurePayload - the payload containing information about the clicked feature, such as its properties and geometry.
+   */
+  private onFeatureClickHandler(featurePayload: GeoPluginFeatureClickEvent) {
+    this.parentWindowMessageService.postMessage({
+      type: YasguiOperationType.FEATURE_CLICK,
+      featurePayload,
+    }, WindowService.getReferer());
+  }
 
   /**
    * Opens a new tab in the editor and sets the provided SPARQL query in it. If the query is undefined, an empty tab
@@ -251,16 +367,22 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
     }
 
     return new Promise<void>((resolve) => {
-      // const title = this.translocoService.translate('confirm.execute');
-      // const message = decodeHTML(this.translocoService.translate('query.editor.automatically.execute.update.warning'));
-      const message = this.translocoService.translate('query.editor.automatically.execute.update.warning');
-      // ModalService.openConfirmation(title, message, () => resolve(yasguiComponent.query()), () => resolve());
-      const confirmed = confirm(message);
-      if (confirmed) {
-        resolve(yasguiComponent.query());
-      } else {
-        resolve();
-      }
+      this.confirmationService.confirm({
+        target: event!.target as EventTarget,
+        message: this.translocoService.translate('sparql_editor.confirmation.on_auto_execute_query.message'),
+        header: this.translocoService.translate('sparql_editor.confirmation.on_auto_execute_query.title'),
+        rejectButtonProps: {
+          label: this.translocoService.translate('components.dialog.confirmation.cancel_btn'),
+          severity: 'secondary',
+        },
+        acceptButtonProps: {
+          label: this.translocoService.translate('components.dialog.confirmation.confirm_btn'),
+          severity: 'primary'
+        },
+        accept: () => {
+          resolve(yasguiComponent.query());
+        },
+      });
     });
   }
 
@@ -304,10 +426,13 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
    */
   private requestAbortedHandler(requestAbortedEvent: RequestAbortedEvent) {
     if (requestAbortedEvent && QueryMode.UPDATE !== requestAbortedEvent.queryMode) {
-      const repository = requestAbortedEvent.getRepository();
+      const repositoryId = requestAbortedEvent.getRepository();
       const currentTrackAlias = requestAbortedEvent.getQueryTrackAlias();
-      if (repository && currentTrackAlias) {
-        // MonitoringRestService.deleteQuery(currentTrackAlias, repository);
+      if (repositoryId && currentTrackAlias) {
+        this.monitoringService.deleteQuery(currentTrackAlias, repositoryId)
+          .catch((error) => {
+            this.logger.error(`Failed to delete query with track alias ${currentTrackAlias} for repository ${repositoryId}:`, error);
+          });
       }
     }
   }
@@ -354,53 +479,143 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
     this.sameAsUserSetting = authenticatedUser?.appSettings.DEFAULT_SAMEAS ?? false;
   }
 
-  // const getExitPageConfirmMessage = (ongoingRequestsInfo) => {
-  //   let exitPageConfirmMessage = "view.sparql-editor.leave_page.run_queries.confirmation.";
-  //   if (!ongoingRequestsInfo || ongoingRequestsInfo.queriesCount < 1) {
-  //     exitPageConfirmMessage += "none_queries_";
-  //   } else if (ongoingRequestsInfo.queriesCount === 1) {
-  //     exitPageConfirmMessage += "one_query_";
-  //   } else {
-  //     exitPageConfirmMessage += "queries_";
-  //   }
-  //
-  //   if (!ongoingRequestsInfo.updatesCount || ongoingRequestsInfo.updatesCount === 0) {
-  //     exitPageConfirmMessage += "non_updates";
-  //   } else if (ongoingRequestsInfo.updatesCount === 1) {
-  //     exitPageConfirmMessage += "one_update";
-  //   } else {
-  //     exitPageConfirmMessage += "updates";
-  //   }
-  //
-  //   exitPageConfirmMessage += ".message";
-  //   const params = {
-  //     queriesCount: ongoingRequestsInfo.queriesCount,
-  //     updatesCount: ongoingRequestsInfo.updatesCount,
-  //   };
-  //   return $translate.instant(exitPageConfirmMessage, params);
-  // };
+  private getExitPageConfirmMessage(ongoingRequestsInfo: OngoingRequestsInfo){
+    let exitPageConfirmMessage = 'sparql_editor.confirmation.on_page_leave.';
+    if (!ongoingRequestsInfo || ongoingRequestsInfo.queriesCount < 1) {
+      exitPageConfirmMessage += 'none_queries_';
+    } else if (ongoingRequestsInfo.queriesCount === 1) {
+      exitPageConfirmMessage += 'one_query_';
+    } else {
+      exitPageConfirmMessage += 'queries_';
+    }
 
-  private subscribeToRepositoryChanges() {
-    this.subscriptions.add(
-      this.repositoryContextService.onSelectedRepositoryChanged((repositoryReference) => {
-        if (!repositoryReference) {
-          return;
-        }
-        this.activeRepositoryReference = repositoryReference;
-        this.isOntopRepo = this.repositoryContextService.isActiveRepoOntopType();
-        this.init();
-        // const activeRepository = this.repositoryStorageService.getActiveRepositoryId();
-        // if (LocalStorageAdapter.get(LSKeys.SPARQL_LAST_REPO) !== activeRepository) {
-        //   init(true);
-        //   persistLasstUsedRepository();
-        // } else {
-        //   init(false);
-        // }
-      })
-    );
+    if (!ongoingRequestsInfo.updatesCount || ongoingRequestsInfo.updatesCount === 0) {
+      exitPageConfirmMessage += 'non_updates';
+    } else if (ongoingRequestsInfo.updatesCount === 1) {
+      exitPageConfirmMessage += 'one_update';
+    } else {
+      exitPageConfirmMessage += 'updates';
+    }
+
+    const params = {
+      queriesCount: ongoingRequestsInfo.queriesCount,
+      updatesCount: ongoingRequestsInfo.updatesCount,
+    };
+    return this.translocoService.translate(exitPageConfirmMessage, params);
+  };
+
+  /**
+   * Persists the provided repository ID (which is the currently active repository) to local storage.
+   * @param repositoryId the ID of the repository to persist as the last used repository.
+   */
+  private persistLastUsedRepository(repositoryId: string) {
+    // The active repository is set when the controller is initialized and when the repository is changed.
+    // It holds the actual repository when the YASGUI is initialized. DON'T use runtime fetching of the actual repository here, because there is a scenario:
+    // 1. Open a tab with the SPARQL view open;
+    // 2. Open the SPARQL view in another tab and execute a query;
+    // 3. Switch to the repositories view and change the repository;
+    // 4. Switch back to the SPARQL view, and the YASR is not cleared.
+    // The problem occurs because of the second tab. When the repository is changed, its ID is persisted to local storage, which triggers the "storage" event to be fired.
+    // In the main controller, a listener has been registered to listen to that event and refresh the page outside of the Angular scope.
+    // Reloading the page triggers the destruction of the component and persistence of the active repository. The reloading of the page is out of the Angular scope, so the "activeRepository"
+    // holds the real repository when the YASGUI is created. If we use $$repositories.getActiveRepository(), the new value will be fetched, which in this case will be incorrect.
+    this.sparqlStorageService.setLastUsedRepository(repositoryId);
   }
 
-  private init() {
+  private repositoryChangedHandler(repositoryReference: RepositoryReference | undefined) {
+    if (!repositoryReference) {
+      return;
+    }
+    this.activeRepositoryReference = repositoryReference;
+    this.isOntopRepo = this.repositoryContextService.isActiveRepoOntopType();
+    const lastUsedRepositoryId = this.sparqlStorageService.getLastUsedRepository();
+    if (lastUsedRepositoryId === this.activeRepositoryReference.id) {
+      this.init(false);
+    } else {
+      this.init(true);
+      this.persistLastUsedRepository(this.activeRepositoryReference.id);
+    }
+  }
+
+  private beforeunloadHandler() {
+    const ontotextYasguiElement = YasguiComponentUtil.getOntotextYasguiElement(this.QUERY_EDITOR_ID);
+    if (!ontotextYasguiElement) {
+      return;
+    }
+    // If we set event.returnValue, the browser will prompt the user for confirmation to leave the page,
+    // but we don't have a way to handle the user's choice.
+    // Therefore, we can't take any action, so we simply proceed to abort all requests.
+    ontotextYasguiElement.abortAllRequests().then(() => {
+      // After all requests are aborted, we can allow the page to be unloaded without prompting the user for confirmation.
+    });
+  }
+
+  private readonly confirmIfHaveRunQuery = (ongoingRequestsInfo: OngoingRequestsInfo) => new Promise((resolve, reject) => {
+    if (!ongoingRequestsInfo || ongoingRequestsInfo.queriesCount < 1 && ongoingRequestsInfo.updatesCount < 1) {
+      resolve(false);
+      return;
+    }
+
+    this.confirmationService.confirm({
+      target: event!.target as EventTarget,
+      header: this.translocoService.translate('sparql_editor.confirmation.on_page_leave.title'),
+      message: this.getExitPageConfirmMessage(ongoingRequestsInfo),
+      rejectButtonProps: {
+        label: this.translocoService.translate('components.dialog.confirmation.cancel_btn'),
+        severity: 'secondary',
+      },
+      acceptButtonProps: {
+        label: this.translocoService.translate('components.dialog.confirmation.confirm_btn'),
+        severity: 'primary'
+      },
+
+      accept: () => {
+        resolve(true);
+      },
+      reject: () => {
+        reject(new CancelAbortingQuery());
+      }
+    });
+  });
+
+  locationChangeHandler(eventPayload: NavigationStartPayload) {
+    if (this.internallyReloaded) {
+      this.internallyReloaded = false;
+      return;
+    }
+    const ontotextYasguiElement = YasguiComponentUtil.getOntotextYasguiElement(this.QUERY_EDITOR_ID);
+    if (!ontotextYasguiElement || this.queriesAreCanceled) {
+      return;
+    }
+
+    const url = new URL(eventPayload.newUrl!);
+    const newUrl = url.pathname + url.search + url.hash;
+    eventPayload.cancelNavigation(undefined);
+    // First, we check if there are any ongoing requests initiated by the user.
+    // If the user has ongoing requests, we request confirmation to abort them.
+    // If the user confirms or there are no ongoing requests, we call the "abortAllRequests" method. This method will abort all requests.
+    ontotextYasguiElement
+      .getOngoingRequestsInfo()
+      .then((hasRunQuery) => this.confirmIfHaveRunQuery(hasRunQuery))
+      .then(() => ontotextYasguiElement.abortAllRequests())
+      .then(() => {
+        this.queriesAreCanceled = true;
+        navigateTo(newUrl)(eventPayload as unknown as Event);
+      })
+      .catch((error) => {
+        if (!(error instanceof CancelAbortingQuery)) {
+          this.logger.error(error);
+          this.queriesAreCanceled = true;
+          navigateTo(newUrl)(eventPayload as unknown as Event);
+        }
+      });
+  }
+
+  /**
+   * Initializes the SPARQL editor page.
+   * @param clearYasguiState
+   */
+  private init(clearYasguiState: boolean) {
     // This script check is required, because of the following scenario:
     // I am in the SPARQL view;
     // Then I go to a different view and change the language;
@@ -433,18 +648,13 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
         // Even if fetching namespaces fails, we should still initialize the editor with an empty prefix list
         this.prefixes = new NamespaceMap({});
         this.setInferAndSameAs(authenticatedUser);
-        this.updateConfig(true);
+        this.updateConfig(clearYasguiState);
+        this.initViewFromUrlParams(clearYasguiState);
       });
   }
 
   ngOnDestroy(): void {
     this.subscriptions.unsubscribeAll();
+    window.removeEventListener('beforeunload', this.boundBeforeunloadHandler);
   }
-
-  // TODO: Migrate event handlers
-  //repositoryChangedHandler
-  //beforeunloadHandler
-  //confirmIfHaveRunQuery
-  //locationChangeHandler
-  //...
 }

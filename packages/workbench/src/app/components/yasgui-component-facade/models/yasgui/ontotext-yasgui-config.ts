@@ -251,7 +251,7 @@ export class OntotextYasguiConfig {
     this.showResultTabs = true;
     this.showResultInfo = true;
     this.showToolbar = true;
-    this.showControlBar = true;
+    this.showControlBar = false;
     this.showQueryButton = true;
     this.showQueryLoader = true;
     this.endpoint = '';

@@ -16,4 +16,14 @@ export class MonitoringRestService extends HttpService {
   getOperations(repositoryId: string): Promise<OperationStatusSummaryResponse> {
     return this.get<OperationStatusSummaryResponse>(`${this.MONITORING_ENDPOINT}/repository/${repositoryId}/operations`);
   }
+
+  /**
+   * Deletes a specific query for a given repository.
+   * @param queryId - The unique identifier of the query to be deleted.
+   * @param repositoryId - The unique identifier of the repository from which to delete the query.
+   * @returns A Promise that resolves when the query has been successfully deleted.
+   */
+  deleteQuery(queryId: string, repositoryId: string) {
+    return this.delete(`${this.MONITORING_ENDPOINT}/repository/${repositoryId}/query?query=${encodeURIComponent(queryId)}`);
+  }
 }
