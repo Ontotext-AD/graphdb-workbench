@@ -1,6 +1,6 @@
 {
   "name": "graphdb-workbench-tests",
-  "version": "3.4.0-migrated-guide-services",
+  "version": "3.4.0-TR1-yasgui-geo-plugin",
   "description": "Cypress tests for GraphDB workbench",
   "type": "module",
   "scripts": {
