@@ -177,6 +177,18 @@ export class OntoLayout {
   // ========================
   private windowResizeHandler(): void {
     this.isLowResolution = WindowService.getWindow().innerWidth <= WINDOW_WIDTH_FOR_COLLAPSED_NAVBAR;
+    const navbar = document.querySelector<HTMLElement>('.navbar-component');
+
+    if (navbar) {
+      const cookieBanner = document.querySelector('.cookie-consent-banner');
+      const header = document.querySelector('.header-component');
+
+      const headerHeight = header?.getBoundingClientRect()?.height ?? 0;
+      const bannerHeight = cookieBanner?.getBoundingClientRect()?.height ?? 0;
+
+      navbar.style.height = `calc(100% - ${headerHeight}px - ${bannerHeight}px)`;
+    }
+
     if (!this.isLowResolution && !this.isNavbarCollapsed) {
       this.hostElement.classList.remove('expanded');
     } else {

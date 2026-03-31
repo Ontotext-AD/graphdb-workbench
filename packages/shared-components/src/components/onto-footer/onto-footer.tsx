@@ -7,6 +7,7 @@ import {
   SecurityContextService,
   TrackingService,
   LicenseContextService,
+  WindowService
 } from '@ontotext/workbench-api';
 
 /**
@@ -40,7 +41,11 @@ export class OntoFooter {
   @Listen('consentGiven')
   handleConsentGiven(): void {
     this.trackingService.acceptCookiePolicy()
-      .then(() => this.shouldShowCookieConsent = false);
+      .then(() => {
+        this.shouldShowCookieConsent = false;
+        // Trigger a resize event so the layout can recalculate the navbar height now that the cookie banner is removed.
+        WindowService.getWindow().dispatchEvent(new Event('resize'));
+      });
   }
 
   render() {
