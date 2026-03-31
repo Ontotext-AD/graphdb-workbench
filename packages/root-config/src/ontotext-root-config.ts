@@ -62,14 +62,8 @@ function showSplashScreen(show: boolean): void {
   }
   if (show) {
     splashScreenEl.style.display = 'block';
-    splashScreenEl.classList.add('splash-screen-fadein');
   } else {
-    splashScreenEl.classList.remove('splash-screen-fadein');
-    splashScreenEl.classList.add('splash-screen-fadeout');
-    setTimeout(() => {
-      splashScreenEl.style.display = 'none';
-      splashScreenEl.classList.remove('splash-screen-fadeout');
-    }, 100);
+    splashScreenEl.style.display = 'none';
   }
 }
 
