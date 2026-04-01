@@ -219,19 +219,82 @@
             <em ng-class="pageslideExpanded ? 'ri-arrow-right-s-line' : 'ri-arrow-left-s-line'"></em>
         </span>
         <button class="close mb-1 ml-1" ng-click="closeInfoPanel()" guide-selector="close-info-panel"></button>
-        <h3 class="hovered-parent" ng-if="showPredicates">
-            {{'predicates.label' | translate}}
-        </h3>
 
-        <ul class="rdf-list tab-content" ng-if="showPredicates">
-            <li ng-repeat='predicate in predicates track by $index' class="item clearfix break-word-alt">
-                <div role="{{predicate.partOfTriple ? 'button' : ''}}"
-                     ng-click="clickLink(predicate)">
-                    <em class="{{predicate.partOfTriple ? 'ri-arrow-right-long-line triple-pred' : ''}}"></em>
-                    <span id="{{predicate.linkId + predicate.nodeIndex}}">{{splitPredicate(predicate.value)}}</span>
+        <div ng-if="showPredicates" class="predicates-panel">
+            <h4 class="predicates-context">
+                <span gdb-tooltip="{{predicatesSource.iri}}" tooltip-placement="top"
+                        class="predicate-context-node text-truncate">
+                    {{predicatesSource.label}}
+                </span>
+                <em class="ri-arrow-right-long-line"></em>
+                <span gdb-tooltip="{{predicatesTarget.iri}}" tooltip-placement="top"
+                        class="predicate-context-node text-truncate">
+                    {{predicatesTarget.label}}
+                </span>
+            </h4>
+
+            <div class="predicates-filter mt-1">
+                <input type="text"
+                       class="form-control"
+                       placeholder="{{'visual.predicates_list.filter_placeholder' | translate}}"
+                       ng-model="predicateFilter.text"
+                       ng-change="filterPredicates()">
+            </div>
+
+            <div class="predicates">
+                <h5 class="predicates-count mt-1">{{predicates.length}} {{'predicates.label' | translate}}</h5>
+
+                <ul class="predicates-list forward">
+                    <li ng-repeat='predicate in predicates track by $index' class="item clearfix break-word-alt">
+                        <div class="predicate-side-panel-row"
+                             role="{{predicate.partOfTriple ? 'button' : ''}}"
+                             ng-click="clickLink(predicate)">
+                            <span class="ri-arrow-right-long-line"></span>
+                            <em class="{{predicate.partOfTriple ? 'ri-arrow-right-long-line triple-pred' : ''}}"></em>
+                            <span class="predicate-side-panel-label"
+                                  id="{{predicate.linkId + predicate.nodeIndex}}"
+                                  gdb-tooltip="{{predicate.rawIri}}"
+                                  tooltip-placement="top">{{splitPredicate(predicate.value)}}</span>
+                            <button class="btn btn-link btn-sm px-0 copy-btn"
+                                    ng-click="copyPredicateIri($event, predicate.rawIri)"
+                                    gdb-tooltip="{{'common.copy_to_clipboard.btn' | translate}}"
+                                    tooltip-placement="top"
+                                    aria-label="{{'common.copy_to_clipboard.btn' | translate}}">
+                                <em class="ri-file-copy-line"></em>
+                            </button>
+                        </div>
+                    </li>
+                </ul>
+
+                <!-- Reverse direction predicates -->
+
+                <div ng-if="reversePredicates.length > 0" class="mb-1 mt-2">
+                    <h5 class="predicates-count mt-1">{{reversePredicates.length}} {{'inverse.predicates.label' | translate}}</h5>
+
+                    <ul class="predicates-list reverse" ng-if="reversePredicates.length > 0">
+                        <li ng-repeat='predicate in reversePredicates track by $index' class="item clearfix break-word-alt">
+                            <div class="predicate-side-panel-row"
+                                 role="{{predicate.partOfTriple ? 'button' : ''}}"
+                                 ng-click="clickLink(predicate)">
+                                <span class="ri-arrow-left-long-line"></span>
+                                <em class="{{predicate.partOfTriple ? 'ri-arrow-right-long-line triple-pred' : ''}}"></em>
+                                <span class="predicate-side-panel-label"
+                                      id="{{predicate.linkId + predicate.nodeIndex}}"
+                                      gdb-tooltip="{{predicate.rawIri}}"
+                                      tooltip-placement="top">{{splitPredicate(predicate.value)}}</span>
+                                <button class="btn btn-link btn-sm px-0 copy-btn"
+                                        ng-click="copyPredicateIri($event, predicate.rawIri)"
+                                        gdb-tooltip="{{'common.copy_to_clipboard.btn' | translate}}"
+                                        tooltip-placement="top"
+                                        aria-label="{{'common.copy_to_clipboard.btn' | translate}}">
+                                    <em class="ri-file-copy-line"></em>
+                                </button>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
-            </li>
-        </ul>
+            </div>
+        </div>
 
         <div ng-if="showFilter" class="filter-sidepanel tab-content">
             <h4>{{'sidepanel.graph.settings' | translate}}</h4>
