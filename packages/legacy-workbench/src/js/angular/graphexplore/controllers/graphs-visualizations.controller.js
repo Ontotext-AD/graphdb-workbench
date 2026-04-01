@@ -1264,16 +1264,27 @@ function GraphsVisualizationsCtrl(
     const multiClickDelay = 500; // max delay between clicks for multiple click events
 
     const nodeLabelRectScaleX = 1.75;
+    const styles = getComputedStyle(document.documentElement);
+    const getPropertyStyleValue = (property) => styles.getPropertyValue(property).trim();
 
-    const color1 = d3.scaleLinear()
-        .domain([0, 9])
-        .range(["hsl(0, 100%, 75%)", "hsl(360, 90%, 82%)"])
-        .interpolate(d3.interpolateHslLong);
+    const interpolation1Colors = [
+        '--gw-vizgraph-node-color1-1',
+        '--gw-vizgraph-node-color2-1',
+        '--gw-vizgraph-node-color3-1'].map(getPropertyStyleValue);
+    const interpolation2Colors = [
+        '--gw-vizgraph-node-color1-2',
+        '--gw-vizgraph-node-color2-2',
+        '--gw-vizgraph-node-color3-2'].map(getPropertyStyleValue);
 
-    const color2 = d3.scaleLinear()
-        .domain([0, 9])
-        .range(["hsl(180, 50%, 75%)", "hsl(540, 40%, 82%)"])
-        .interpolate(d3.interpolateHslLong);
+    const color1 = d3.interpolateRgbBasis(interpolation1Colors);
+    const color2 = d3.interpolateRgbBasis(interpolation2Colors);
+
+
+    const getInterpolationIndex = (index) => {
+        // returns a value between 0 and 1 for color interpolation based on the index,
+        // with a non-linear distribution to give more distinct colors for the first 20 types
+        return (index + (index / 2.6)) % 1;
+    };
 
     $scope.getColor = function(type) {
         if (angular.isUndefined(type2color[type])) {
@@ -1283,11 +1294,11 @@ function GraphsVisualizationsCtrl(
 
         const index = type2color[type];
         if (index > 39) {
-            return "#c2c2c2";
+            return getPropertyStyleValue('--gw-vizgraph-node-color4');
         } else if (index % 2 === 0) {
-            return color1(index / 2);
+            return color1(getInterpolationIndex(index));
         } else {
-            return color2(index / 2);
+            return color2(getInterpolationIndex(index));
         }
     };
 
