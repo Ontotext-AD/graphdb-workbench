@@ -10,6 +10,7 @@ import {removeSpecialChars} from "../../utils/string-utils";
 import {NamespacesListModel} from "../../models/namespaces/namespaces-list";
 import {HtmlUtil} from "../../utils/html-util";
 import {
+    OntoToastrService,
     ParentWindowMessageService,
     RepositoryContextService,
     SecurityContextService,
@@ -91,11 +92,14 @@ function GraphsVisualizationsCtrl(
     const securityContextService = service(SecurityContextService);
     const repositoryContextService = service(RepositoryContextService);
     const parentWindowMessageService = service(ParentWindowMessageService);
+    const HIGHLIGHT_COLOR = 'var(--gw-focus-ring-color)';
     const guidesService = service(GuidesService);
+    const ontoToastrService = service(OntoToastrService);
     const runtimeConfigContextService = service(RuntimeConfigurationContextService);
     // Multiplier to calculate the height of the labels element based on the font size.
     // Based on this, we display different numbers of rows. Currently, this results in 3 rows of text
     const heightMultiplier = 4.2;
+    let openedLink;
 
     // =========================
     // Public fields
@@ -163,7 +167,13 @@ function GraphsVisualizationsCtrl(
 
     // TODO: check if this can be moved in the local scope and not in  the global one
     $rootScope.key = "";
-
+    // Variables to hold the filter predicate text.
+    // Reset the filter whenever new predicates are loaded
+    $scope.predicateFilter = {text: ''};
+    // All unfiltered predicates between two nodes. Used for restoring the full list of predicates when the filter is cleared.
+    $scope.allPredicates = [];
+    // All unfiltered reverse predicates between two nodes. Used for restoring the full list of reverse predicates when the filter is cleared.
+    $scope.allReversePredicates = [];
 
     // =========================
     // Public functions
@@ -179,6 +189,21 @@ function GraphsVisualizationsCtrl(
         // eslint-disable-next-line no-unused-vars
         const {config, ...searchParams} = $location.search();
         $location.path('/graphs-visualizations').search(searchParams);
+    };
+
+    $scope.filterPredicates = () =>{
+        const filter = ($scope.predicateFilter.text || '').toLowerCase();
+        if (filter) {
+            $scope.predicates = ($scope.allPredicates || []).filter((p)=> {
+                return $scope.splitPredicate(p.value).toLowerCase().includes(filter);
+            });
+            $scope.reversePredicates = ($scope.allReversePredicates || []).filter((p)=> {
+                return $scope.splitPredicate(p.value).toLowerCase().includes(filter);
+            });
+        } else {
+            $scope.predicates = $scope.allPredicates;
+            $scope.reversePredicates = $scope.allReversePredicates;
+        }
     };
 
     $scope.shouldShowSettings = () => {
@@ -234,6 +259,7 @@ function GraphsVisualizationsCtrl(
         $scope.showFilter = true;
         $scope.showNodeInfo = false;
         $scope.showPredicates = false;
+        $scope.reversePredicates = [];
         if (!$scope.saveSettings) {
             $scope.settings = _.cloneDeep($scope.defaultSettings);
         } else {
@@ -394,7 +420,6 @@ function GraphsVisualizationsCtrl(
     subscriptions.push(runtimeConfigContextService.onThemeModeChanged(onThemeModeChange, true));
     subscriptions.push(WorkbenchContextService.onAutocompleteEnabledUpdated(onAutocompleteEnabledUpdated));
     subscriptions.push(repositoryContextService.onSelectedRepositoryChanged(onSelectedRepositoryUpdated));
-
     subscriptions.push($scope.$on('repositoryIsSet', function(event, args) {
         const payload = args || {newRepo: false};
         // New repo set from dropdown, clear init state
@@ -453,6 +478,7 @@ function GraphsVisualizationsCtrl(
 
     document.addEventListener('keydown', handleKeyDown, true);
 
+
     const removeAllListeners = () => {
         subscriptions.forEach((subscription) => subscription());
     };
@@ -460,7 +486,6 @@ function GraphsVisualizationsCtrl(
     const destroyHandler = () => {
         removeAllListeners();
         document.removeEventListener('keydown', handleKeyDown, true);
-
         window.onpopstate = null;
     };
 
@@ -470,6 +495,11 @@ function GraphsVisualizationsCtrl(
     // =========================
     // Private functions
     // =========================
+
+    // Handles the case where the graph hasn't been rendered yet.
+    const getGraphContainer = () => {
+        return document.querySelector('.graph-visualization');
+    };
 
     const pushHistory = (searchParams, state) => {
         if ($scope.embedded) {
@@ -853,7 +883,6 @@ function GraphsVisualizationsCtrl(
     const width = 1000;
     const height = 1000;
     let tipElement;
-    let openedLink;
 
     // creating datasource for class properties data
     $scope.datasource = {
@@ -1100,6 +1129,7 @@ function GraphsVisualizationsCtrl(
                     "source": source,
                     "target": target,
                     "predicates": link.predicates,
+                    "rawPredicates": link.rawPredicates,
                 };
                 // make copy of links with triples in them
                 if (link.isTripleSource || link.isTripleTarget) {
@@ -1108,7 +1138,24 @@ function GraphsVisualizationsCtrl(
                     const linkId = `${sourceId}>${targetId}`;
                     if (graph.tripleLinksCopy.has(linkId)) {
                         const value = graph.tripleLinksCopy.get(linkId);
+                        // Capture length before pushing so we know how many head predicates
+                        // existed without a corresponding raw entry.
+                        const existingPredicateCount = value[0].predicates.length;
+
                         value[0].predicates.push(...matchedLink.predicates);
+
+                        // Keep rawPredicates index-aligned with predicates at all times.
+                        // If the head link never had rawPredicates, backfill nulls for its
+                        // existing predicates first (fixes Case B).
+                        if (!value[0].rawPredicates) {
+                            value[0].rawPredicates = new Array(existingPredicateCount).fill(null);
+                        }
+                        // If the incoming link has no rawPredicates, pad with nulls so the
+                        // arrays stay in sync.
+                        const incomingRaw = matchedLink.rawPredicates
+                            || new Array(matchedLink.predicates.length).fill(null);
+                        value[0].rawPredicates.push(...incomingRaw);
+
                         value.push(matchedLink);
                         graph.tripleLinksCopy.set(linkId, value);
                         return null;
@@ -1145,6 +1192,7 @@ function GraphsVisualizationsCtrl(
                     target: link.target.iri,
                     isTripleTarget: link.target.isTriple,
                     predicates: link.predicates,
+                    rawPredicates: link.rawPredicates,
                 };
             });
 
@@ -1378,63 +1426,6 @@ function GraphsVisualizationsCtrl(
                 return html;
             });
 
-        const numberOfPredLeft = function(d) {
-            return d.predicates.length - 10;
-        };
-
-        // This will create text that will appear in d3tip
-        const createTipText = function(d) {
-            let html = '';
-            html += _.join(_.map(d.predicates, function(p, index) {
-                if (index === 0) {
-                    return getShortPredicate(p);
-                    // If we have less than or ten predicates should show them with middle dot separated
-                } else if (index < 10) {
-                    return ' \u00B7 ' + getShortPredicate(p);
-                    // On eleventh predicate just append how many more predicates left to show to the user
-                } else if (index === 10) {
-                    const numOfPredLeft = numberOfPredLeft(d);
-                    // Show how many predicates left
-                    const textToShow = numOfPredLeft > 1 ? numOfPredLeft + ' predicates'
-                        : numOfPredLeft + ' predicate';
-                    return ' \u00B7 ' + $translate.instant('graphexplore.tip.text', {textToShow: textToShow});
-                }
-            }), '');
-
-            return html;
-        };
-
-        const calculateWidth = function(d) {
-            const text = createTipText(d);
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext("2d");
-            ctx.font = "13px Arial";
-
-            if (d.predicates.length < 10) {
-                return ctx.measureText(text).width;
-            } else {
-                return ctx.measureText(text).width / 2;
-            }
-        };
-
-        let tipPredicateElement;
-        let tipPredicateTimer;
-
-        const tipPredicates = d3tip()
-            .attr('class', 'd3-tip')
-            .customPosition(function(d) {
-                const bbox = tipPredicateElement.getBoundingClientRect();
-                const textWidth = calculateWidth(d);
-                return {
-                    top: (bbox.top - 30) + 'px',
-                    left: (bbox.left - 30) + 'px',
-                    width: textWidth + 'px',
-                };
-            })
-            .html(function(d) {
-                return createTipText(d);
-            });
-
         let tipTimer;
         // Shows the tooltip for a node but with a slight delay
         const showTipForNode = function(d, event) {
@@ -1466,26 +1457,6 @@ function GraphsVisualizationsCtrl(
         };
 
         svg.call(tip);
-
-        // Shows like tooltip list of predicates but with a slight delay
-        const showPredicateToolTip = function(event, d) {
-            $timeout.cancel(tipPredicateTimer);
-            const thisPredicateTipElement = tipPredicateElement = event.target;
-            $timeout(function() {
-                if (tipPredicateElement === thisPredicateTipElement && d.predicates.length > 1) {
-                    tipPredicates.show(d, tipPredicateElement);
-                }
-            }, 300);
-        };
-
-        // Hides the tooltip with predicates and resets some variables
-        const hidePredicateToolTip = function() {
-            $timeout.cancel(tipPredicateTimer);
-            tipPredicateElement = null;
-            tipPredicates.hide();
-        };
-
-        svg.call(tipPredicates);
 
         let link = svg.selectAll(".link");
         let node = svg.selectAll(".node");
@@ -1561,11 +1532,6 @@ function GraphsVisualizationsCtrl(
             .attr("dy", "-0.5em")
             .style("text-anchor", "middle")
             .style("display", getSettings()['showLinksText'] ? "" : "none")
-            .on("mouseover", function(event, d) {
-                event.stopPropagation();
-                showPredicateToolTip(event, d);
-            })
-            .on('mouseout', hidePredicateToolTip)
             .on("click", function(event, d) {
                 event.stopPropagation();
                 linkActions(event, d);
@@ -1977,6 +1943,7 @@ function GraphsVisualizationsCtrl(
 
     // expanding and collapsing of the nodes
     function clickedNode(d, element, event) {
+        revertElementsStyleToDefault();
         $scope.showInfoPanel = false;
         $scope.showPredicates = false;
         $scope.showNodeInfo = false;
@@ -2008,8 +1975,7 @@ function GraphsVisualizationsCtrl(
         // If value of openedNodeInfoPanel is different than "undefined"
         // we evaluate if clicked node value is the same and close it
         if (typeof $scope.openedNodeInfoPanel !== "undefined" && $scope.openedNodeInfoPanel === d) {
-            $scope.pageslideExpanded = false;
-            $scope.openedNodeInfoPanel = undefined;
+            $scope.closeInfoPanel();
             return false;
         }
 
@@ -2528,6 +2494,7 @@ function GraphsVisualizationsCtrl(
 
     function showNodeInfo(d) {
         force.stop();
+        openedLink = null;
         // Assign value of node, which info panel has been opened
         $scope.openedNodeInfoPanel = d;
         $scope.showNodeInfo = true;
@@ -2540,6 +2507,7 @@ function GraphsVisualizationsCtrl(
         $scope.resourceType = d.isTriple ? 'triple' : 'uri';
         $scope.encodedIri = d.isTriple ? encodeURIComponent(createTriple(d.iri)) : encodeURIComponent(d.iri);
         $scope.showInfoPanel = true;
+        highlightNode(d);
 
         $scope.rdfsLabel = d.labels[0].label;
         $scope.rdfsComment = d.comment;
@@ -2588,10 +2556,15 @@ function GraphsVisualizationsCtrl(
     };
 
     $scope.closeInfoPanel = function() {
+        revertElementsStyleToDefault();
         $scope.pageslideExpanded = false;
         $scope.openedNodeInfoPanel = undefined;
         $scope.predicates = [];
+        $scope.reversePredicates = [];
         openedLink = null;
+        $scope.predicateFilter.text = '';
+        $scope.allPredicates = [];
+        $scope.allReversePredicates = [];
         // o, angular, o, miracle
         $timeout(function() {
             $scope.showInfoPanel = false;
@@ -2599,10 +2572,11 @@ function GraphsVisualizationsCtrl(
     };
 
     function applyElementsStyleChanges(tripleNode) {
+        const container = getGraphContainer();
         updatePredicatesColor('predicate', 'var(--gw-primary-dark)', tripleNode);
         updatePredicatesColor('predicates', 'var(--gw-primary-dark)', tripleNode);
 
-        const links = document.getElementsByClassName('link');
+        const links = container?.getElementsByClassName('link');
         if (links) {
             _.each(links, function(link) {
                 const linkLink = link.__data__;
@@ -2613,7 +2587,7 @@ function GraphsVisualizationsCtrl(
             });
         }
 
-        const markers = document.getElementsByClassName('arrow-marker');
+        const markers = container?.getElementsByClassName('arrow-marker');
         if (markers) {
             _.each(markers, function(marker) {
                 const markerLink = marker.__data__;
@@ -2624,6 +2598,56 @@ function GraphsVisualizationsCtrl(
                     }
                 }
             });
+        }
+    }
+
+    /**
+     * Highlights the single clicked node circle.
+     */
+    function highlightNode(d) {
+        const wrapper = document.getElementById(d.iri);
+        const nodeEl = wrapper?.querySelector('.node');
+        if (nodeEl) {
+            nodeEl.style.stroke = HIGHLIGHT_COLOR;
+            nodeEl.style.strokeWidth = '3px';
+        }
+    }
+
+    /**
+     * Highlights the source node, target node, and link line(s) for the given
+     * link datum when the predicates side-panel opens.  Also highlights the
+     * reverse link when present (it is shown in the same panel).
+     */
+    function highlightLinkAndNodes(d) {
+        // Highlight the two endpoint nodes of the link.
+        [d.source, d.target].forEach(function(endpoint) {
+            const nodeEl = document.getElementById(endpoint.iri)?.querySelector('.node');
+            if (nodeEl) {
+                nodeEl.style.stroke = HIGHLIGHT_COLOR;
+                nodeEl.style.strokeWidth = '3px';
+            }
+        });
+
+        // Highlight the link — one getElementById + two child queries ──
+        const linkId = removeSpecialChars(convertLinkDataToLinkId(d));
+        const linkWrapper = document.getElementById(linkId);
+        if (linkWrapper) {
+            const linkEl = linkWrapper.querySelector('.link');
+            if (linkEl) {
+                linkEl.style.stroke = HIGHLIGHT_COLOR;
+                linkEl.style.strokeWidth = '2.5';
+            }
+
+            const predEl = linkWrapper.querySelector('.predicate, .predicates');
+            if (predEl) {
+                predEl.style.fill = HIGHLIGHT_COLOR;
+            }
+        }
+
+        // Highlight the arrow marker on the link, if present (not all links have markers, e.g. self-links)
+        const markerEl = document.getElementById(createArrowMarkerUniqueID(d));
+        if (markerEl) {
+            markerEl.style.stroke = HIGHLIGHT_COLOR;
         }
     }
 
@@ -2684,6 +2708,52 @@ function GraphsVisualizationsCtrl(
         }
     };
 
+    const showFeedback = () => {
+        ontoToastrService.success($translate.instant('common.messages.copied_to_clipboard'));
+    };
+
+    $scope.copyPredicateIri = function(event, iri) {
+        event.stopPropagation();
+
+        const fallback = function() {
+            const textarea = document.createElement('textarea');
+            textarea.value = iri;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+            } catch (e) {
+                /* not available */
+                console.warn('Copy to clipboard failed.', e);
+            }
+            textarea.remove();
+            showFeedback();
+        };
+
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(iri).then(showFeedback).catch(fallback);
+        } else {
+            fallback();
+        }
+    };
+
+    /**
+     * Returns true when the link's angle puts its label in "upside-down" territory
+     * (rawAngle outside [-90°, 90°]), meaning the arrow and label should be flipped.
+     * Uses the angle pre-computed by the tick when available to avoid redundant DOM reads.
+     */
+    function isLinkReversed(link) {
+        const rawAngle = (link._rawAngle === undefined)
+            ? Math.atan2(
+                getNodeY(link.target) - getNodeY(link.source),
+                getNodeX(link.target) - getNodeX(link.source),
+            ) * 180 / Math.PI
+            : link._rawAngle;
+        return rawAngle > 90 || rawAngle < -90;
+    }
+
     function getPredicateLabelWithArrow(d) {
         const base = d.predicateLabel || getPredicate(d);
         if (d.direction !== "double") {
@@ -2692,19 +2762,14 @@ function GraphsVisualizationsCtrl(
         // Reuse the angle pre-computed by the tick's .each() pass when available —
         // getNodeX/getNodeY may hit the DOM for triple nodes, so avoid redundant calls.
         // Falls back to computing only when called outside the tick (e.g. updatePredicatesColor).
-        const rawAngle = (d._rawAngle !== undefined)
-            ? d._rawAngle
-            : Math.atan2(
-            getNodeY(d.target) - getNodeY(d.source),
-            getNodeX(d.target) - getNodeX(d.source),
-        ) * 180 / Math.PI;
-        return (rawAngle > 90 || rawAngle < -90)
+        return isLinkReversed(d)
             ? '\u27F5  ' + base// ⟵ label
             : base + '  \u27F6';// label ⟶
     }
 
     function updatePredicatesColor(className, color, tripleNode) {
-        const preds = document.getElementsByClassName(className);
+        const container = getGraphContainer();
+        const preds = container?.getElementsByClassName(className);
 
         if (preds) {
             _.each(preds, function(pred) {
@@ -2730,31 +2795,40 @@ function GraphsVisualizationsCtrl(
     }
 
     function revertElementsStyleToDefault() {
+        const container = getGraphContainer();
         _.each($scope.predicates, function(pred) {
             const currEl = document.getElementById(pred.linkId + pred.nodeIndex);
             if (currEl) {
                 currEl.style.fontWeight = "normal";
             }
         });
-        const links = document.getElementsByClassName('link');
+        const links = container?.getElementsByClassName('link');
         if (links) {
             _.each(links, function(link) {
-                link.style.stroke = '#999';
-                link.style.strokeWidth = 1;
+                link.style.stroke = '';
+                link.style.strokeWidth = '';
             });
         }
         updatePredicatesColor('predicate', '');
         updatePredicatesColor('predicates', '');
 
-        const markers = document.getElementsByClassName('arrow-marker');
-
+        const markers = container?.getElementsByClassName('arrow-marker');
         if (markers) {
             _.each(markers, function(marker) {
-                marker.style.stroke = '#999';
+                marker.style.stroke = '';
                 // RefX for triple targets isn't changed because they are not affected by increasing of stroke-width
                 if (!marker.__data__.target.isTriple) {
                     marker.setAttribute("refX", "59");
                 }
+            });
+        }
+
+        // clear node highlight
+        const nodes = container?.getElementsByClassName('node');
+        if (nodes) {
+            _.each(nodes, function(node) {
+                node.style.stroke = '';
+                node.style.strokeWidth = '';
             });
         }
     }
@@ -2783,37 +2857,105 @@ function GraphsVisualizationsCtrl(
             }
             return;
         }
+
         openPredicates(d);
     }
 
     function openPredicates(d) {
         $scope.showNodeInfo = false;
-        // open predicates sidebar if they are more than one
-        $scope.showPredicates = d.predicates.length > 1;
         $scope.showFilter = false;
         $scope.showInfoPanel = false;
+        $scope.openedNodeInfoPanel = undefined;
+
+        // Find the reverse direction link (if any)
+        const reverseLink = graph.links.find(function(l) {
+            return l.source.iri === d.target.iri && l.target.iri === d.source.iri;
+        });
+        // Show panel if this direction has multiple predicates OR a reverse link exists
+        $scope.showPredicates = d.predicates.length > 1 || (!!reverseLink && reverseLink.predicates.length > 0);
 
         if (openedLink === d) {
             $scope.showNodeInfo = false;
             $scope.showInfoPanel = false;
             openedLink = null;
+            $scope.predicateFilter.text = '';
             return;
         }
 
         openedLink = d;
 
         if ($scope.showPredicates) {
+            // Build lookup: local name → full IRI.
+            // Server sends predicates (short) and rawPredicates (full) in independent orderings.
+            const rawByLocalName = new Map();
+            if (d.rawPredicates) {
+                d.rawPredicates.forEach(function(raw) {
+                    const localName = raw.split(/[/#]/).pop();
+                    if (!rawByLocalName.has(localName)) {
+                        rawByLocalName.set(localName, raw);
+                    }
+                });
+            }
+            // Compute direction once — same for every predicate on this link.
             $scope.predicates = _.map(d.predicates, function(p) {
                 const foundNodeIndex = getTripleNodeIndex(p, d);
                 const isPartOfTriple = foundNodeIndex > -1;
+                const pLocalName = p.split(/[/#]/).pop();
                 return {
                     value: getShortPredicate(p),
+                    rawIri: rawByLocalName.get(pLocalName) || p,
                     partOfTriple: isPartOfTriple,
                     linkId: isPartOfTriple ? convertLinkDataToLinkId(d) : '',
                     nodeIndex: foundNodeIndex,
                 };
             });
+
+            $scope.allPredicates = $scope.predicates;
+
+            // Reverse predicates
+            if (reverseLink) {
+                const reverseRawByLocalName = new Map();
+                if (reverseLink.rawPredicates) {
+                    reverseLink.rawPredicates.forEach(function(raw) {
+                        const localName = raw.split(/[/#]/).pop();
+                        if (!reverseRawByLocalName.has(localName)) {
+                            reverseRawByLocalName.set(localName, raw);
+                        }
+                    });
+                }
+
+                $scope.reversePredicates = _.map(reverseLink.predicates, function(p) {
+                    const foundNodeIndex = getTripleNodeIndex(p, reverseLink);
+                    const isPartOfTriple = foundNodeIndex > -1;
+                    const pLocalName = p.split(/[/#]/).pop();
+                    return {
+                        value: getShortPredicate(p),
+                        rawIri: reverseRawByLocalName.get(pLocalName) || p,
+                        partOfTriple: isPartOfTriple,
+                        linkId: isPartOfTriple ? convertLinkDataToLinkId(reverseLink) : '',
+                        nodeIndex: foundNodeIndex,
+                    };
+                });
+
+                $scope.allReversePredicates = $scope.reversePredicates;
+            } else {
+                $scope.reversePredicates = [];
+                $scope.allReversePredicates = [];
+            }
+
+            // reapply the filter automatically after new selection
+            $scope.filterPredicates();
+
+            const getNodeDisplayLabel = (node) =>
+                (node.labels?.length && node.labels[0].label)
+                    ? node.labels[0].label
+                    : $scope.replaceIRIWithPrefix(node.iri);
+
+            $scope.predicatesSource = {label: getNodeDisplayLabel(d.source), iri: d.source.iri};
+            $scope.predicatesTarget = {label: getNodeDisplayLabel(d.target), iri: d.target.iri};
             $scope.showInfoPanel = true;
+            // highlight both endpoint nodes and the links
+            highlightLinkAndNodes(d);
         }
     }
 
