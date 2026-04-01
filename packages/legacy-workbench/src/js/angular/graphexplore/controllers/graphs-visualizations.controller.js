@@ -1871,9 +1871,7 @@ function GraphsVisualizationsCtrl(
             predicate.filter(function(d) {
                 return d.direction === "double";
             }).text(function(d) {
-                return (d._rawAngle > 90 || d._rawAngle < -90)
-                    ? '\u27F5  ' + d.predicateLabel// ⟵ label
-                    : d.predicateLabel + '  \u27F6'; // label ⟶
+                return getPredicateLabelWithArrow(d);
             });
 
             // recalculate nodes attributes
@@ -2657,6 +2655,25 @@ function GraphsVisualizationsCtrl(
         }
     };
 
+    function getPredicateLabelWithArrow(d) {
+        const base = d.predicateLabel || getPredicate(d);
+        if (d.direction !== "double") {
+            return base;
+        }
+        // Reuse the angle pre-computed by the tick's .each() pass when available —
+        // getNodeX/getNodeY may hit the DOM for triple nodes, so avoid redundant calls.
+        // Falls back to computing only when called outside the tick (e.g. updatePredicatesColor).
+        const rawAngle = (d._rawAngle !== undefined)
+            ? d._rawAngle
+            : Math.atan2(
+            getNodeY(d.target) - getNodeY(d.source),
+            getNodeX(d.target) - getNodeX(d.source),
+        ) * 180 / Math.PI;
+        return (rawAngle > 90 || rawAngle < -90)
+            ? '\u27F5  ' + base// ⟵ label
+            : base + '  \u27F6';// label ⟶
+    }
+
     function updatePredicatesColor(className, color, tripleNode) {
         const preds = document.getElementsByClassName(className);
 
@@ -2677,7 +2694,7 @@ function GraphsVisualizationsCtrl(
                     }
                 } else {
                     pred.style.fill = color;
-                    pred.textContent = getPredicate(predLink);
+                    pred.textContent = getPredicateLabelWithArrow(predLink);
                 }
             });
         }
