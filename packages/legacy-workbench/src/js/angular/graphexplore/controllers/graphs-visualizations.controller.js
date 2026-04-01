@@ -1516,6 +1516,10 @@ function GraphsVisualizationsCtrl(
 
         const predicate = container.selectAll(".link-wrapper")
             .append("text")
+            .each(function(d) {
+                // computed once, and not on each tick
+                d.predicateLabel = getPredicate(d);
+            })
             .text(function(d) {
                 return getPredicate(d);
             })
@@ -1832,18 +1836,44 @@ function GraphsVisualizationsCtrl(
                 return getNodeY(d.target);
             });
 
-            // recalculate predicates attributes
-            predicate.attr("x", function(d) {
-                const sourceX = getNodeX(d.source);
-                const targetX = getNodeX(d.target);
-                return d.x = (sourceX + targetX) * 0.5;
-            }).attr("y", function(d) {
-                const sourceY = getNodeY(d.source);
-                const targetY = getNodeY(d.target);
-                return d.y = (sourceY + targetY) * 0.5;
-            }).attr("transform", function(d) {
-                const angle = findAngleBetweenNodes(d, d.direction);
-                return "rotate(" + angle + ", " + d.x + ", " + d.y + ")";
+            // Pre-compute per-datum geometry in a single pass — getNodeX/getNodeY may
+            // hit document.getElementById for triple nodes, so call each exactly once.
+            predicate.each(function(d) {
+                const sx = getNodeX(d.source);
+                const sy = getNodeY(d.source);
+                const tx = getNodeX(d.target);
+                const ty = getNodeY(d.target);
+                d.x = (sx + tx) * 0.5;
+                d.y = (sy + ty) * 0.5;
+                const raw = Math.atan2(ty - sy, tx - sx) * 180 / Math.PI;
+                d._rawAngle = raw;
+                // Normalize to [-90°, 90°] so labels are never upside-down (inlined from findAngleBetweenNodes)
+                d._normAngle = (raw <= 90 && raw >= -90) ? raw : (raw > 0 ? -1 : 1) * (180 - Math.abs(raw));
+            });
+
+            // set predicates attributes
+            predicate
+                .attr("x", function(d) {
+                    return d.x;
+                })
+                .attr("y", function(d) {
+                    return d.y;
+                })
+                .attr("dy", function(d) {
+                    if (d.direction !== "double") return "-0.5em";
+                    return (d._rawAngle > 90 || d._rawAngle < -90) ? "1.5em" : "-0.5em";
+                })
+                .attr("transform", function(d) {
+                    return `rotate(${d._normAngle}, ${d.x}, ${d.y})`;
+                });
+
+            // Only update text for bidirectional links — single-link labels never change.
+            predicate.filter(function(d) {
+                return d.direction === "double";
+            }).text(function(d) {
+                return (d._rawAngle > 90 || d._rawAngle < -90)
+                    ? '\u27F5  ' + d.predicateLabel// ⟵ label
+                    : d.predicateLabel + '  \u27F6'; // label ⟶
             });
 
             // recalculate nodes attributes
@@ -1901,11 +1931,6 @@ function GraphsVisualizationsCtrl(
                 const sourceId = removeSpecialChars(link.source.iri);
                 const targetId = removeSpecialChars(link.target.iri);
                 if (sourceId === target && targetId === source) {
-                    let twoWayLinkID = sourceId;
-                    twoWayLinkID += ">";
-                    twoWayLinkID += targetId;
-                    const textNode = document.createTextNode('  \u27F6');
-                    document.getElementById(twoWayLinkID).lastChild.appendChild(textNode);
                     link.direction = "double";
                 }
             });
@@ -1919,28 +1944,6 @@ function GraphsVisualizationsCtrl(
     function updateAlphaInScope() {
         // other code can use the value of d3alpha to determine when the force layout has settled
         $rootScope.d3alpha = force.alpha();
-    }
-
-    // find angle between pair of nodes so we can position predicates
-    function findAngleBetweenNodes(linkedNodes, direction) {
-        const p1 = {
-            x: getNodeX(linkedNodes.source),
-            y: getNodeY(linkedNodes.source),
-        };
-
-        const p2 = {
-            x: getNodeX(linkedNodes.target),
-            y: getNodeY(linkedNodes.target),
-        };
-        if (direction) {
-            return Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI;
-        } else {
-            const angleDeg = Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI;
-            if (angleDeg <= 90 && angleDeg >= -90) {
-                return angleDeg;
-            }
-            return (angleDeg > 0 ? -1 : 1) * (180 - Math.abs(angleDeg));
-        }
     }
 
     const menuEvents = new MenuEvents();
