@@ -29,7 +29,7 @@ import {
     GuidesService,
     WindowService,
 } from "@ontotext/workbench-api";
-import {YASGUI_OPERATION, YASGUI_OPERATION_TYPE} from "./constants";
+import {YASGUI_OPERATION, YASGUI_OPERATION_TYPE, YASR_PLUGIN_URL_TO_PLUGIN_NAME_MAPPING} from "./constants";
 
 const modules = [
     'ui.bootstrap',
@@ -96,7 +96,7 @@ function SparqlEditorCtrl($rootScope,
     // application might want to handle the click in a specific way.
     // Possible operation types are defined in YASGUI_OPERATION_TYPE.
     $scope.yasguiOperation = $location.search().yasguiOperation;
-
+    $scope.pluginName = YASR_PLUGIN_URL_TO_PLUGIN_NAME_MAPPING[$location.search().pluginName];
     /**
      * @type {OntotextYasguiConfig}
      */
@@ -124,19 +124,22 @@ function SparqlEditorCtrl($rootScope,
             infer: isOntopRepo || $scope.inferUserSetting,
             sameAs: isOntopRepo || $scope.sameAsUserSetting,
             yasrToolbarPlugins: [exploreVisualGraphYasrToolbarElementBuilder],
+            selectedPlugin: $scope.pluginName,
             beforeUpdateQuery: getBeforeUpdateQueryHandler(),
             outputHandlers: new Map([
                 [EventDataType.QUERY_EXECUTED, queryExecutedHandler],
                 [EventDataType.REQUEST_ABORTED, requestAbortedHandler],
             ]),
             clearState: clearYasguiState ?? false,
+            pluginsConfigurations: {
+                geo: getGeoPluginConfiguration(),
+            },
         };
 
-        if ($scope.embedded && $scope.yasguiOperation === YASGUI_OPERATION.EXTERNAL_CLICK_HANDLER) {
-            yasguiConfig.pluginsConfigurations = {
-                geo: {
-                    onFeatureClick: onFeatureClickHandler,
-                },
+        if ($scope.embedded) {
+            yasguiConfig.yasrFullscreen = {
+                defaultFullscreen: true,
+                allowEscape: false,
             };
         }
         $scope.yasguiConfig = yasguiConfig;
@@ -149,6 +152,27 @@ function SparqlEditorCtrl($rootScope,
     // =========================
     // Private functions
     // =========================
+    /**
+     * @returns {GeoPluginConfiguration} the configuration for the Geo plugin.
+     */
+    const getGeoPluginConfiguration = () => {
+        const geoPluginConfig = {
+            defaultGeoStyleOptions: {
+                weight: 3,
+                color: 'var(--graphwise-blue-color)',
+                opacity: 0.7,
+                fillColor: 'var(--graphwise-blue-color)',
+                fillOpacity: 0.2,
+            },
+        };
+
+        if ($scope.embedded && $scope.yasguiOperation === YASGUI_OPERATION.EXTERNAL_CLICK_HANDLER) {
+            geoPluginConfig.onFeatureClick = onFeatureClickHandler;
+        }
+        return geoPluginConfig;
+    };
+
+
     /**
      * Callback function triggered when a user clicks on a feature in the geo plugin.
      * Sends a message to the parent window using `ParentWindowMessageService`.
@@ -280,10 +304,15 @@ function SparqlEditorCtrl($rootScope,
     const clearUrlParameters = () => {
         internallyReloaded = true;
         const currentParams = $location.search();
-        // Keep only the repositoryId parameter (if any). This will prevent router event from being triggered again and
+        // Keep the repositoryId parameter (if any). This will prevent router event from being triggered again and
         // reinitializing the repositoryId param thus adding a new history entry.
         const repositoryId = currentParams[REPOSITORY_ID_PARAM];
-        $location.search(repositoryId ? {repositoryId} : {});
+        const searchTerm = repositoryId ? {repositoryId} : {};
+        // If the Workbench is in embedded mode, it should remain embedded.
+        if ($scope.embedded) {
+            searchTerm.embedded = true;
+        }
+        $location.search(searchTerm);
         // Replace current URL without adding a new history entry
         $location.replace();
     };
