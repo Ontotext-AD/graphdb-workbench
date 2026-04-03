@@ -10,6 +10,8 @@ import {removeSpecialChars} from "../../utils/string-utils";
 import {NamespacesListModel} from "../../models/namespaces/namespaces-list";
 import {HtmlUtil} from "../../utils/html-util";
 import {
+    OntoToastrService,
+    LanguageContextService,
     ParentWindowMessageService,
     RepositoryContextService,
     SecurityContextService,
@@ -91,9 +93,15 @@ function GraphsVisualizationsCtrl(
     const repositoryContextService = service(RepositoryContextService);
     const parentWindowMessageService = service(ParentWindowMessageService);
     const guidesService = service(GuidesService);
+    const languageContextService = service(LanguageContextService);
+    const ontoToastrService = service(OntoToastrService);
     // Multiplier to calculate the height of the labels element based on the font size.
     // Based on this, we display different numbers of rows. Currently, this results in 3 rows of text
     const heightMultiplier = 4.2;
+    // eslint-disable-next-line no-unused-vars
+    let showPredicatesPopoverFn = null;
+    let hidePredicatesPopoverFn = null;
+    let openedLink;
 
     // =========================
     // Public fields
@@ -173,6 +181,7 @@ function GraphsVisualizationsCtrl(
 
     $scope.goToHome = () => {
         resetState();
+        hidePredicatesListPopover();
         // When closing the visualization screen, remove the config parameter from the URL. Leave other search params intact.
         // eslint-disable-next-line no-unused-vars
         const {config, ...searchParams} = $location.search();
@@ -228,6 +237,7 @@ function GraphsVisualizationsCtrl(
     };
 
     $scope.showSettings = () => {
+        hidePredicatesListPopover();
         $scope.showInfoPanel = true;
         $scope.showFilter = true;
         $scope.showNodeInfo = false;
@@ -385,6 +395,11 @@ function GraphsVisualizationsCtrl(
     subscriptions.push(WorkbenchContextService.onAutocompleteEnabledUpdated(onAutocompleteEnabledUpdated));
     subscriptions.push(repositoryContextService.onSelectedRepositoryChanged(onSelectedRepositoryUpdated));
 
+    const onLanguageChanged = () => {
+        hidePredicatesListPopover();
+    };
+    subscriptions.push(languageContextService.onSelectedLanguageChanged(onLanguageChanged));
+
     subscriptions.push($scope.$on('repositoryIsSet', function(event, args) {
         const payload = args || {newRepo: false};
         // New repo set from dropdown, clear init state
@@ -443,6 +458,9 @@ function GraphsVisualizationsCtrl(
 
     document.addEventListener('keydown', handleKeyDown, true);
 
+    const handleResize = () => hidePredicatesListPopover();
+    window.addEventListener('resize', handleResize);
+
     const removeAllListeners = () => {
         subscriptions.forEach((subscription) => subscription());
     };
@@ -450,8 +468,9 @@ function GraphsVisualizationsCtrl(
     const destroyHandler = () => {
         removeAllListeners();
         document.removeEventListener('keydown', handleKeyDown, true);
-
+        window.removeEventListener('resize', handleResize);
         window.onpopstate = null;
+        hidePredicatesListPopover();
     };
 
     // Deregister the watcher when the scope/directive is destroyed
@@ -832,6 +851,8 @@ function GraphsVisualizationsCtrl(
             // disable zooming if it is not explicitly allowed by the guide.
             return;
         }
+        // Hide the predicates popover when the user starts dragging a node
+        hidePredicatesListPopover();
         transformValues = event.transform;
         container.attr("transform", transformValues);
     }
@@ -843,7 +864,6 @@ function GraphsVisualizationsCtrl(
     const width = 1000;
     const height = 1000;
     let tipElement;
-    let openedLink;
 
     // creating datasource for class properties data
     $scope.datasource = {
@@ -1090,6 +1110,7 @@ function GraphsVisualizationsCtrl(
                     "source": source,
                     "target": target,
                     "predicates": link.predicates,
+                    "rawPredicates": link.rawPredicates,
                 };
                 // make copy of links with triples in them
                 if (link.isTripleSource || link.isTripleTarget) {
@@ -1098,7 +1119,24 @@ function GraphsVisualizationsCtrl(
                     const linkId = `${sourceId}>${targetId}`;
                     if (graph.tripleLinksCopy.has(linkId)) {
                         const value = graph.tripleLinksCopy.get(linkId);
+                        // Capture length before pushing so we know how many head predicates
+                        // existed without a corresponding raw entry.
+                        const existingPredicateCount = value[0].predicates.length;
+
                         value[0].predicates.push(...matchedLink.predicates);
+
+                        // Keep rawPredicates index-aligned with predicates at all times.
+                        // If the head link never had rawPredicates, backfill nulls for its
+                        // existing predicates first (fixes Case B).
+                        if (!value[0].rawPredicates) {
+                            value[0].rawPredicates = new Array(existingPredicateCount).fill(null);
+                        }
+                        // If the incoming link has no rawPredicates, pad with nulls so the
+                        // arrays stay in sync.
+                        const incomingRaw = matchedLink.rawPredicates
+                            || new Array(matchedLink.predicates.length).fill(null);
+                        value[0].rawPredicates.push(...incomingRaw);
+
                         value.push(matchedLink);
                         graph.tripleLinksCopy.set(linkId, value);
                         return null;
@@ -1135,6 +1173,7 @@ function GraphsVisualizationsCtrl(
                     target: link.target.iri,
                     isTripleTarget: link.target.isTriple,
                     predicates: link.predicates,
+                    rawPredicates: link.rawPredicates,
                 };
             });
 
@@ -1302,6 +1341,65 @@ function GraphsVisualizationsCtrl(
         }
     };
 
+    const createPredicatesPopoverHtml = function(d) {
+        const copyBtnTitle = $translate.instant('common.copy_to_clipboard.btn');
+        const rawAngle = (d._rawAngle !== undefined)
+            ? d._rawAngle
+            : Math.atan2(
+            getNodeY(d.target) - getNodeY(d.source),
+            getNodeX(d.target) - getNodeX(d.source),
+        ) * 180 / Math.PI;
+        const isReversed = rawAngle > 90 || rawAngle < -90;
+
+        // The server sends predicates (short local names) and rawPredicates (full IRIs)
+        // in independent orderings, so rawPredicates[i] does not correspond to predicates[i].
+        // Build a lookup keyed by local name so each short label resolves to its full IRI.
+        const rawByLocalName = new Map();
+        if (d.rawPredicates) {
+            d.rawPredicates.forEach(function(raw) {
+                const localName = raw.split(/[/#]/).pop();
+                if (!rawByLocalName.has(localName)) {
+                    rawByLocalName.set(localName, raw);
+                }
+            });
+        }
+
+        const container = document.createElement('div');
+
+        d.predicates.forEach(function(p) {
+            const label = getShortPredicate(p);
+            // p is a short local name (e.g. 'rel112') or occasionally a full IRI.
+            // Extract its local name and resolve to the full IRI via the lookup.
+            const pLocalName = p.split(/[/#]/).pop();
+            const iri = rawByLocalName.get(pLocalName) || p;
+
+            const row = document.createElement('div');
+            row.className = 'predicates-popover-row';
+
+            const labelSpan = document.createElement('span');
+            labelSpan.className = 'predicates-popover-label';
+            // textContent assigns as plain text — no HTML interpretation, no XSS
+            labelSpan.textContent = isReversed ? '\u27F5\u00A0' + label : label + '\u00A0\u27F6';
+            labelSpan.dataset.tooltip = iri;
+
+            const btn = document.createElement('button');
+            btn.className = 'btn btn-link btn-sm copy-btn predicates-popover-copy-btn';
+            btn.dataset.label = iri;
+            btn.dataset.tooltip = copyBtnTitle;
+            btn.setAttribute('aria-label', copyBtnTitle);
+
+            const icon = document.createElement('i');
+            icon.className = 'ri-file-copy-line';
+            btn.appendChild(icon);
+
+            row.appendChild(labelSpan);
+            row.appendChild(btn);
+            container.appendChild(row);
+        });
+
+        return container.innerHTML;
+    };
+
     const forceX = d3.forceX(width / 2).strength(0.005);
     const forceY = d3.forceY(height / 2).strength(0.005);
 
@@ -1360,63 +1458,6 @@ function GraphsVisualizationsCtrl(
                 return html;
             });
 
-        const numberOfPredLeft = function(d) {
-            return d.predicates.length - 10;
-        };
-
-        // This will create text that will appear in d3tip
-        const createTipText = function(d) {
-            let html = '';
-            html += _.join(_.map(d.predicates, function(p, index) {
-                if (index === 0) {
-                    return getShortPredicate(p);
-                    // If we have less than or ten predicates should show them with middle dot separated
-                } else if (index < 10) {
-                    return ' \u00B7 ' + getShortPredicate(p);
-                    // On eleventh predicate just append how many more predicates left to show to the user
-                } else if (index === 10) {
-                    const numOfPredLeft = numberOfPredLeft(d);
-                    // Show how many predicates left
-                    const textToShow = numOfPredLeft > 1 ? numOfPredLeft + ' predicates'
-                        : numOfPredLeft + ' predicate';
-                    return ' \u00B7 ' + $translate.instant('graphexplore.tip.text', {textToShow: textToShow});
-                }
-            }), '');
-
-            return html;
-        };
-
-        const calculateWidth = function(d) {
-            const text = createTipText(d);
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext("2d");
-            ctx.font = "13px Arial";
-
-            if (d.predicates.length < 10) {
-                return ctx.measureText(text).width;
-            } else {
-                return ctx.measureText(text).width / 2;
-            }
-        };
-
-        let tipPredicateElement;
-        let tipPredicateTimer;
-
-        const tipPredicates = d3tip()
-            .attr('class', 'd3-tip')
-            .customPosition(function(d) {
-                const bbox = tipPredicateElement.getBoundingClientRect();
-                const textWidth = calculateWidth(d);
-                return {
-                    top: (bbox.top - 30) + 'px',
-                    left: (bbox.left - 30) + 'px',
-                    width: textWidth + 'px',
-                };
-            })
-            .html(function(d) {
-                return createTipText(d);
-            });
-
         let tipTimer;
         // Shows the tooltip for a node but with a slight delay
         const showTipForNode = function(d, event) {
@@ -1449,25 +1490,77 @@ function GraphsVisualizationsCtrl(
 
         svg.call(tip);
 
-        // Shows like tooltip list of predicates but with a slight delay
-        const showPredicateToolTip = function(event, d) {
-            $timeout.cancel(tipPredicateTimer);
-            const thisPredicateTipElement = tipPredicateElement = event.target;
-            $timeout(function() {
-                if (tipPredicateElement === thisPredicateTipElement && d.predicates.length > 1) {
-                    tipPredicates.show(d, tipPredicateElement);
-                }
-            }, 300);
-        };
+        let tipPredicatesPopoverElement;
+        const tipPredicatesPopover = d3tip()
+            .attr('class', 'd3-tip predicates-popover')
+            .customPosition(function() {
+                const bbox = tipPredicatesPopoverElement.getBoundingClientRect();
+                return {
+                    top: (bbox.top - 30) + 'px',
+                    left: (bbox.left - 30) + 'px',
+                };
+            })
+            .html(function(d) {
+                return createPredicatesPopoverHtml(d);
+            });
+        svg.call(tipPredicatesPopover);
 
-        // Hides the tooltip with predicates and resets some variables
-        const hidePredicateToolTip = function() {
-            $timeout.cancel(tipPredicateTimer);
-            tipPredicateElement = null;
-            tipPredicates.hide();
-        };
+        // Expose show/hide to outer scopes (linkActions, background click, node click)
+        // that don't have access to the tipPredicatesPopover local variable.
+        showPredicatesPopoverFn = function(d, element) {
+            tipPredicatesPopoverElement = element;
+            tipPredicatesPopover.show(d, element);
 
-        svg.call(tipPredicates);
+            // Attach copy handlers to every button in the now-visible popover
+            d3.selectAll('.predicates-popover .predicates-popover-copy-btn')
+                .on('click', function(event) {
+                    // don't trigger link/popover close
+                    event.stopPropagation();
+                    // eslint-disable-next-line no-invalid-this
+                    const btn = d3.select(this);
+                    // eslint-disable-next-line no-invalid-this
+                    const btnElement = this;
+                    const label = btn.attr('data-label');
+
+                    const showCopiedFeedback = function() {
+                        const tooltip = document.createElement('div');
+                        tooltip.className = 'copy-feedback-tooltip';
+                        tooltip.textContent = $translate.instant('common.messages.copied_to_clipboard');
+                        document.body.appendChild(tooltip);
+
+                        const rect = btnElement.getBoundingClientRect();
+                        tooltip.style.left = (rect.right + 8) + 'px';
+                        tooltip.style.top = (rect.top + rect.height / 2) + 'px';
+
+                        $timeout(function() {
+                            tooltip.classList.add('copy-feedback-tooltip-fade-out');
+                            $timeout(function() {
+                                if (tooltip.parentNode) {
+                                    tooltip.remove();
+                                }
+                            }, 300);
+                        }, 1000);
+                    };
+
+                    if (navigator.clipboard) {
+                        navigator.clipboard.writeText(label).then(showCopiedFeedback);
+                    } else {
+                        // Fallback for older browsers
+                        const textarea = document.createElement('textarea');
+                        textarea.value = label;
+                        textarea.style.position = 'fixed';
+                        textarea.style.opacity = '0';
+                        document.body.appendChild(textarea);
+                        textarea.select();
+                        document.execCommand('copy');
+                        textarea.remove();
+                        showCopiedFeedback();
+                    }
+                });
+        };
+        hidePredicatesPopoverFn = function() {
+            tipPredicatesPopover.hide();
+        };
 
         let link = svg.selectAll(".link");
         let node = svg.selectAll(".node");
@@ -1543,11 +1636,6 @@ function GraphsVisualizationsCtrl(
             .attr("dy", "-0.5em")
             .style("text-anchor", "middle")
             .style("display", getSettings()['showLinksText'] ? "" : "none")
-            .on("mouseover", function(event, d) {
-                event.stopPropagation();
-                showPredicateToolTip(event, d);
-            })
-            .on('mouseout', hidePredicateToolTip)
             .on("click", function(event, d) {
                 event.stopPropagation();
                 linkActions(event, d);
@@ -1566,6 +1654,8 @@ function GraphsVisualizationsCtrl(
             }
 
             const element = event.currentTarget;
+
+            hidePredicatesListPopover();
 
             if (singleClickTimer && clickTarget === element) {
                 $timeout.cancel(singleClickTimer);
@@ -1757,6 +1847,8 @@ function GraphsVisualizationsCtrl(
                 d.isBeingDragged = true;
                 d.beginDragging = true;
                 removeMenuIfVisible();
+                // Hide the predicates popover when the user starts dragging a node
+                hidePredicatesListPopover();
                 d3.select(event.currentTarget).classed("dragging", true);
                 force.alphaTarget(0.3).restart();
             }
@@ -2193,6 +2285,13 @@ function GraphsVisualizationsCtrl(
         if (angular.isDefined(menuEvents) && menuEvents.expandedState) {
             menuEvents.removeIcons();
         }
+    }
+
+    function hidePredicatesListPopover() {
+        if (hidePredicatesPopoverFn) {
+            hidePredicatesPopoverFn();
+        }
+        openedLink = null;
     }
 
     function MenuEvents() {
@@ -2666,6 +2765,37 @@ function GraphsVisualizationsCtrl(
         }
     };
 
+    $scope.copyPredicateIri = function(event, iri) {
+        event.stopPropagation();
+
+        const showFeedback = function() {
+            ontoToastrService.success($translate.instant('common.messages.copied_to_clipboard'));
+        };
+
+        const fallback = function() {
+            const textarea = document.createElement('textarea');
+            textarea.value = iri;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+            } catch (e) {
+                /* not available */
+                console.warn('Copy to clipboard failed.', e);
+            }
+            textarea.remove();
+            showFeedback();
+        };
+
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(iri).then(showFeedback).catch(fallback);
+        } else {
+            fallback();
+        }
+    };
+
     function getPredicateLabelWithArrow(d) {
         const base = d.predicateLabel || getPredicate(d);
         if (d.direction !== "double") {
@@ -2765,6 +2895,32 @@ function GraphsVisualizationsCtrl(
             }
             return;
         }
+
+        if (d.predicates.length > 1) {
+            hidePredicatesListPopover();
+            openPredicates(d);
+            return;
+        }
+
+        // if (d.predicates.length > 1) {
+        //     // capture before clearing
+        //     const wasOpen = openedLink === d;
+        //     hidePredicatesListPopover();
+        //     openedLink = null;
+        //     if (wasOpen) {
+        //         // second click on same label -> toggle close
+        //         return;
+        //     }
+        //     openedLink = d;
+        //     if (showPredicatesPopoverFn) {
+        //         showPredicatesPopoverFn(d, event.currentTarget);
+        //     }
+        //     return;
+        // }
+
+        hidePredicatesListPopover();
+        openedLink = null;
+
         openPredicates(d);
     }
 
@@ -2785,16 +2941,46 @@ function GraphsVisualizationsCtrl(
         openedLink = d;
 
         if ($scope.showPredicates) {
+            // Build lookup: local name → full IRI.
+            // Server sends predicates (short) and rawPredicates (full) in independent orderings.
+            const rawByLocalName = new Map();
+            if (d.rawPredicates) {
+                d.rawPredicates.forEach(function(raw) {
+                    const localName = raw.split(/[/#]/).pop();
+                    if (!rawByLocalName.has(localName)) {
+                        rawByLocalName.set(localName, raw);
+                    }
+                });
+            }
+            // Compute direction once — same for every predicate on this link.
+            // const rawAngle = (d._rawAngle !== undefined)
+            //     ? d._rawAngle
+            //     : Math.atan2(
+            //     getNodeY(d.target) - getNodeY(d.source),
+            //     getNodeX(d.target) - getNodeX(d.source),
+            // ) * 180 / Math.PI;
+            // const isReversed = rawAngle > 90 || rawAngle < -90;
+
             $scope.predicates = _.map(d.predicates, function(p) {
                 const foundNodeIndex = getTripleNodeIndex(p, d);
                 const isPartOfTriple = foundNodeIndex > -1;
+                const pLocalName = p.split(/[/#]/).pop();
                 return {
                     value: getShortPredicate(p),
+                    rawIri: rawByLocalName.get(pLocalName) || p,
+                    // isReversed: isReversed,
                     partOfTriple: isPartOfTriple,
                     linkId: isPartOfTriple ? convertLinkDataToLinkId(d) : '',
                     nodeIndex: foundNodeIndex,
                 };
             });
+            const getNodeDisplayLabel = (node) =>
+                (node.labels && node.labels.length && node.labels[0].label)
+                    ? node.labels[0].label
+                    : $scope.replaceIRIWithPrefix(node.iri);
+
+            $scope.predicatesSource = {label: getNodeDisplayLabel(d.source), iri: d.source.iri};
+            $scope.predicatesTarget = {label: getNodeDisplayLabel(d.target), iri: d.target.iri};
             $scope.showInfoPanel = true;
         }
     }
@@ -2862,6 +3048,7 @@ function GraphsVisualizationsCtrl(
 
     $scope.rotate = function(isLeft) {
         removeMenuIfVisible();
+        hidePredicatesListPopover();
 
         // compute common rotation math such as the angle, its sine and cosine and the pivot point
         const theta = (isLeft ? 1 : -1) * 10 * Math.PI / 180; // + rotates left, - rotates right
@@ -2921,6 +3108,7 @@ function GraphsVisualizationsCtrl(
     }
 
     $scope.saveOrUpdateGraph = function() {
+        hidePredicatesListPopover();
         const data = JSON.stringify(graph.copyState());
         const graphToSave = {
             id: $scope.lastSavedGraphId,
@@ -3084,6 +3272,7 @@ function GraphsVisualizationsCtrl(
 
     $scope.togglePinAllNodes = function() {
         removeMenuIfVisible();
+        hidePredicatesListPopover();
 
         const value = angular.isUndefined($scope.numberOfPinnedNodes) || $scope.numberOfPinnedNodes <= 0;
 
@@ -3141,6 +3330,7 @@ function GraphsVisualizationsCtrl(
                 .on("click", function(event) {
                     event.stopPropagation();
                     removeMenuIfVisible();
+                    hidePredicatesListPopover();
                     // Clicking outside the graph stops the layout
                     force.stop();
                 });

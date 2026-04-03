@@ -219,16 +219,41 @@
             <em ng-class="pageslideExpanded ? 'ri-arrow-right-s-line' : 'ri-arrow-left-s-line'"></em>
         </span>
         <button class="close mb-1 ml-1" ng-click="closeInfoPanel()" guide-selector="close-info-panel"></button>
-        <h3 class="hovered-parent" ng-if="showPredicates">
-            {{'predicates.label' | translate}}
-        </h3>
+<!--        <h3 class="hovered-parent" ng-if="showPredicates">-->
+<!--            {{'predicates.label' | translate}}-->
+<!--        </h3>-->
+        <div ng-if="showPredicates" class="predicates-context mb-1">
+            <strong gdb-tooltip="{{predicatesSource.iri}}" tooltip-placement="top"
+                  class="predicate-context-node text-truncate">
+                {{predicatesSource.label}}
+            </strong>
+            <em class="ri-arrow-right-long-line mx-1"></em>
+            <strong gdb-tooltip="{{predicatesTarget.iri}}" tooltip-placement="top"
+                  class="predicate-context-node text-truncate">
+                {{predicatesTarget.label}}
+            </strong>
+            <span class="pl-1">({{predicates.length}} {{'predicates.label' | translate}})</span>
+        </div>
 
         <ul class="rdf-list tab-content" ng-if="showPredicates">
             <li ng-repeat='predicate in predicates track by $index' class="item clearfix break-word-alt">
-                <div role="{{predicate.partOfTriple ? 'button' : ''}}"
+                <div class="predicate-side-panel-row"
+                     role="{{predicate.partOfTriple ? 'button' : ''}}"
                      ng-click="clickLink(predicate)">
                     <em class="{{predicate.partOfTriple ? 'ri-arrow-right-long-line triple-pred' : ''}}"></em>
-                    <span id="{{predicate.linkId + predicate.nodeIndex}}">{{splitPredicate(predicate.value)}}</span>
+                    <span class="predicate-side-panel-label"
+                          id="{{predicate.linkId + predicate.nodeIndex}}"
+                          gdb-tooltip="{{predicate.rawIri}}"
+                          tooltip-placement="top">{{splitPredicate(predicate.value)}}
+<!--                        <span ng-if="predicate.isReversed">&#x27F5;&nbsp;</span>{{splitPredicate(predicate.value)}}<span ng-if="!predicate.isReversed">&nbsp;&#x27F6;</span>-->
+                    </span>
+                    <button class="btn btn-link btn-sm px-0 copy-btn"
+                            ng-click="copyPredicateIri($event, predicate.rawIri)"
+                            gdb-tooltip="{{'common.copy_to_clipboard.btn' | translate}}"
+                            tooltip-placement="top"
+                            aria-label="{{'common.copy_to_clipboard.btn' | translate}}">
+                        <em class="ri-file-copy-line"></em>
+                    </button>
                 </div>
             </li>
         </ul>

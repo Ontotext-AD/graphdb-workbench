@@ -2578,6 +2578,7 @@
     "common.hide": "Hide",
     "common.learn_more_in_documentation": "Learn more in the GraphDB documentation",
     "common.unsaved.changes": "You have unsaved changes. Are you sure that you want to exit?",
+    "common.copy_to_clipboard.btn": "Copy to clipboard",
     "click.to": "Click to",
     "paginator.first.page.label": "First",
     "paginator.last.page.label": "Last",
