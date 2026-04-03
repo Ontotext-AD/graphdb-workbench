@@ -282,9 +282,9 @@ function GraphConfigCtrl(
             }
             $scope.queryEditorIsDirty = false;
             if ($scope.isUpdate) {
-                $scope.updateGraphConfig($scope.newConfig.toSavePayload());
+                $scope.updateGraphConfig($scope.newConfig.toSavePayload($repositories.getActiveRepository()));
             } else {
-                $scope.createGraphConfig($scope.newConfig.toSavePayload());
+                $scope.createGraphConfig($scope.newConfig.toSavePayload($repositories.getActiveRepository()));
             }
         });
     };
