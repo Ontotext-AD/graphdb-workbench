@@ -6,8 +6,8 @@ import {
   RuntimeConfigurationContextService,
 } from '@ontotext/workbench-api';
 
-const importThemeStylesheet = (theme: ThemeMode): void => {
-  import(`graphwise-styleguide/dist/variables-${theme}.css`);
+const importThemeStylesheet = (theme: ThemeMode): Promise<void> => {
+  return import(`graphwise-styleguide/dist/variables-${theme}.css`);
 };
 
 /**
@@ -17,8 +17,7 @@ const importThemeStylesheet = (theme: ThemeMode): void => {
  */
 const colorSchemeChangeHandler = (e: MediaQueryListEvent): void => {
   const newTheme = e.matches ? ThemeMode.dark : ThemeMode.light;
-  importThemeStylesheet(newTheme);
-  service(ThemeService).applyNewColorScheme(newTheme);
+  importThemeStylesheet(newTheme).then(() => service(ThemeService).applyNewColorScheme(newTheme));
 };
 
 /**
