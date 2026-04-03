@@ -18,6 +18,7 @@ import {
     WindowService,
     service,
     GuidesService,
+    RuntimeConfigurationContextService,
 } from "@ontotext/workbench-api";
 import {VISGRAPH_OPERATION, VISGRAPH_OPERATION_TYPE} from '../constants';
 
@@ -91,6 +92,7 @@ function GraphsVisualizationsCtrl(
     const repositoryContextService = service(RepositoryContextService);
     const parentWindowMessageService = service(ParentWindowMessageService);
     const guidesService = service(GuidesService);
+    const runtimeConfigContextService = service(RuntimeConfigurationContextService);
     // Multiplier to calculate the height of the labels element based on the font size.
     // Based on this, we display different numbers of rows. Currently, this results in 3 rows of text
     const heightMultiplier = 4.2;
@@ -380,6 +382,16 @@ function GraphsVisualizationsCtrl(
         $scope.INVALID_LINKS_MSG = $translate.instant('sidepanel.invalid.limit.links.msg');
         $scope.INVALID_LINKS_TOOLTIP = $translate.instant('sidepanel.invalid.limit.links.tooltip');
         $scope.propertiesSearchPlaceholder = $translate.instant("visual.search.instance.placeholder");
+    }));
+
+    subscriptions.push(runtimeConfigContextService.onThemeModeChanged((themeMode) => {
+        if (themeMode) {
+            // do it in the next tick to allow svg to render
+            setTimeout(() => {
+                resetColors();
+                draw();
+            });
+        }
     }));
 
     subscriptions.push(WorkbenchContextService.onAutocompleteEnabledUpdated(onAutocompleteEnabledUpdated));
@@ -1267,18 +1279,26 @@ function GraphsVisualizationsCtrl(
     const styles = getComputedStyle(document.documentElement);
     const getPropertyStyleValue = (property) => styles.getPropertyValue(property).trim();
 
-    const interpolation1Colors = [
-        '--gw-vizgraph-node-color1-1',
-        '--gw-vizgraph-node-color2-1',
-        '--gw-vizgraph-node-color3-1'].map(getPropertyStyleValue);
-    const interpolation2Colors = [
-        '--gw-vizgraph-node-color1-2',
-        '--gw-vizgraph-node-color2-2',
-        '--gw-vizgraph-node-color3-2'].map(getPropertyStyleValue);
+    let interpolation1Colors;
+    let interpolation2Colors;
 
-    const color1 = d3.interpolateRgbBasis(interpolation1Colors);
-    const color2 = d3.interpolateRgbBasis(interpolation2Colors);
+    let color1;
+    let color2;
 
+    const resetColors = () => {
+        interpolation1Colors = [
+            '--gw-vizgraph-node-color1-1',
+            '--gw-vizgraph-node-color2-1',
+            '--gw-vizgraph-node-color3-1'].map(getPropertyStyleValue);
+        interpolation2Colors = [
+            '--gw-vizgraph-node-color1-2',
+            '--gw-vizgraph-node-color2-2',
+            '--gw-vizgraph-node-color3-2'].map(getPropertyStyleValue);
+        type2color = {};
+        colorIndex = 0;
+        color1 = d3.interpolateRgbBasis(interpolation1Colors);
+        color2 = d3.interpolateRgbBasis(interpolation2Colors);
+    };
 
     const getInterpolationIndex = (index) => {
         // returns a value between 0 and 1 for color interpolation based on the index,
@@ -3156,6 +3176,7 @@ function GraphsVisualizationsCtrl(
         const principal = securityContextService.getAuthenticatedUser();
         initSettings(principal);
         initForRepository();
+        resetColors();
     };
     init();
 }
