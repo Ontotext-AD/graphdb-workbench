@@ -9,6 +9,9 @@ import {IconFieldModule} from 'primeng/iconfield';
 import {InputIconModule} from 'primeng/inputicon';
 import {SplitButtonModule} from 'primeng/splitbutton';
 import {ToolbarModule} from 'primeng/toolbar';
+import {ConfirmDialogModule} from 'primeng/confirmdialog';
+import {ToastModule} from 'primeng/toast';
+import {ConfirmationService, MessageService} from 'primeng/api';
 
 @Component({
   selector: 'app-ux-test',
@@ -24,12 +27,17 @@ import {ToolbarModule} from 'primeng/toolbar';
     InputIconModule,
     SplitButtonModule,
     ToolbarModule,
+    ConfirmDialogModule,
+    ToastModule,
   ],
+  providers: [ConfirmationService, MessageService],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './ux-test-page.component.html',
   host: {class: 'login-page-route'}
 })
 export class UxTestPageComponent implements OnDestroy {
+  private confirmationService = inject(ConfirmationService);
+  private messageService = inject(MessageService);
   private readonly fb = inject(FormBuilder);
 
   private readonly subscriptions = new SubscriptionList();
@@ -44,6 +52,29 @@ export class UxTestPageComponent implements OnDestroy {
     this.loginForm = this.fb.group({
       username: ['', Validators.required],
       password: ['', Validators.required]
+    });
+  }
+
+  confirm1(event: Event) {
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: 'Do you want to delete this record?',
+      header: 'Confirm',
+      rejectButtonProps: {
+        label: 'Cancel button',
+        severity: 'secondary',
+      },
+      acceptButtonProps: {
+        label: 'Delete button',
+        severity: 'primary'
+      },
+
+      accept: () => {
+        this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'Record deleted' });
+      },
+      reject: () => {
+        this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected' });
+      }
     });
   }
 

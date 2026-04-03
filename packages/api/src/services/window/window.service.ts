@@ -79,6 +79,13 @@ export class WindowService implements Service {
   }
 
   /**
+   * Reloads the current page. This method provides a way to programmatically trigger a page reload.
+   */
+  static reloadPage(): void {
+    WindowService.getWindow().location.reload();
+  }
+
+  /**
    * Returns the current URL of the browser window. This method provides a way to access the location.href property.
    * @returns The current URL of the browser window, which includes the protocol, hostname, port (if specified), path,
    * query parameters, and hash fragment.

@@ -5,7 +5,6 @@ import {LoggerProvider} from '../../logging/logger-provider';
 
 const TRACKING_COOKIE_CONSENT_KEY = 'ontotext.gdb.tracking.cookieConsent';
 const LEGACY_COOKIE_CONSENT_KEY = 'cookie-consent';
-const LEGACY_COOKIE_CONSENT_KEY_PREFIXED = 'ontotext.gdb.tracking.cookie-consent';
 
 describe('TrackingStorageService', () => {
   let service: TrackingStorageService;
@@ -100,7 +99,7 @@ describe('TrackingStorageService', () => {
       expect(result!.statistic).toBe(true);
       expect(result!.thirdParty).toBe(true);
       // Legacy key should be removed
-      expect(removeItemSpy).toHaveBeenCalledWith(LEGACY_COOKIE_CONSENT_KEY_PREFIXED);
+      expect(removeItemSpy).toHaveBeenCalledWith(LEGACY_COOKIE_CONSENT_KEY);
     });
 
     it('should log info message when migrating legacy cookie consent', () => {
@@ -135,7 +134,7 @@ describe('TrackingStorageService', () => {
       // The result should reflect the migrated legacy data (which overwrites) then the logic returns the new data
       // Actually the migration always runs and overwrites the new key with legacy data if legacy exists
       // Let's verify the migration happened (legacy key removed) and the returned value is based on what was migrated
-      expect(removeItemSpy).toHaveBeenCalledWith(LEGACY_COOKIE_CONSENT_KEY_PREFIXED);
+      expect(removeItemSpy).toHaveBeenCalledWith(LEGACY_COOKIE_CONSENT_KEY);
       expect(result).toBeInstanceOf(CookieConsent);
     });
 

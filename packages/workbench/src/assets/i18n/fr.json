@@ -1,4 +1,13 @@
 {
+  "components": {
+    "dialog": {
+      "confirmation": {
+        "title": "Confirmer",
+        "confirm_btn": "Oui",
+        "cancel_btn": "Annuler"
+      }
+    }
+  },
   "login": {
     "title": "Connexion",
     "logo_alt": "Logo GraphDB",
@@ -23,6 +32,34 @@
   },
   "sparql_editor": {
     "title": "Requête et mise à jour SPARQL",
+    "errors": {
+      "saved_query_load_failed": "Impossible de récupérer des données pour la requête sauvegardée : {{savedQueryName}}; {{error}}",
+      "shared_query_load_failed": "Impossible de récupérer des données pour la requête partagée : {{sharedQueryName}}; {{error}}"
+    },
+    "warnings": {
+    },
+    "confirmation": {
+      "on_auto_execute_query": {
+        "title": "Confirmer l'exécution",
+        "message": "Il s'agit d'une mise à jour et elle peut modifier les données du dépôt. <br>Êtes-vous sûr de vouloir l'exécuter automatiquement ?"
+      },
+      "on_language_change": {
+        "title": "Changer de langue",
+        "message": "Changer de langue rechargera la page. Êtes-vous sûr de vouloir continuer ?"
+      },
+      "on_page_leave": {
+        "title": "Confirmer la sortie",
+        "none_queries_non_updates": "Êtes-vous sûr de vouloir quitter ?",
+        "none_queries_one_update": "<div class=\"run_query_confirmation alert alert-warning\">Vous avez 1 mise à jour en cours.</div><div>Êtes-vous sûr de vouloir quitter ?</div>",
+        "none_queries_updates": "<div class=\"run_query_confirmation alert alert-warning\">Vous avez {{updatesCount}} mises à jour en cours.</div><div>Êtes-vous sûr de vouloir quitter ?</div>",
+        "one_query_non_updates": "<div class=\"run_query_confirmation alert alert-warning\">Vous avez 1 requête en cours, qui sera annulée.</div><div>Êtes-vous sûr de vouloir quitter ?</div>",
+        "one_query_one_update": "<div class=\"run_query_confirmation alert alert-warning\">Vous avez 1 requête et 1 mise à jour en cours. La requête sera annulée.</div><div>Êtes-vous sûr de vouloir quitter ?</div>",
+        "one_query_updates": "<div class=\"run_query_confirmation alert alert-warning\">Vous avez 1 requête et {{updatesCount}} mises à jour en cours. La requête sera annulée.</div><div>Êtes-vous sûr de vouloir quitter ?</div>",
+        "queries_non_updates": "<div class=\"run_query_confirmation alert alert-warning\">Vous avez {{queriesCount}} requêtes en cours. Les requêtes seront annulées.</div><div>Êtes-vous sûr de vouloir quitter ?</div>",
+        "queries_one_update": "<div class=\"run_query_confirmation alert alert-warning\">Vous avez {{queriesCount}} requêtes et 1 mise à jour en cours. Les requêtes seront annulées.</div><div>Êtes-vous sûr de vouloir quitter ?</div>",
+        "queries_updates": "<div class=\"run_query_confirmation alert alert-warning\">Vous avez {{queriesCount}} requêtes et {{updatesCount}} mises à jour en cours. Les requêtes seront annulées.</div><div>Êtes-vous sûr de vouloir quitter ?</div>"
+      }
+    },
     "yasgui": {
       "toolbar": {
         "visual_graph_btn": "Visuel"

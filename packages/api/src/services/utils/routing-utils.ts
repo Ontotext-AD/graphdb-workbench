@@ -8,7 +8,7 @@ import {WindowService} from '../window';
  */
 export function navigateTo(url: string): (event: Event) => void {
   return (event: Event): void => {
-    if (event) {
+    if (event?.preventDefault) {
       event.preventDefault();
     }
     navigate(url);

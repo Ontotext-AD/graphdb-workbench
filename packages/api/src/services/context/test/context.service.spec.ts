@@ -152,6 +152,89 @@ describe('ContextService', () => {
     expect(callBackFunction).toHaveBeenCalledTimes(1);
   });
 
+  describe('skipFirst parameter', () => {
+    test('when skipFirst is true, the callback should NOT be called immediately upon subscription', () => {
+      const propertyName = 'testProperty';
+      const callBackFunction = jest.fn();
+
+      // When subscribing with skipFirst = true
+      contextService.subscribeToProperty(propertyName, callBackFunction, undefined, undefined, true);
+
+      // Then the callback should not have been called immediately
+      expect(callBackFunction).not.toHaveBeenCalled();
+    });
+
+    test('when skipFirst is true, the callback should still be called on subsequent value changes', () => {
+      const propertyName = 'testProperty';
+      const value = {a: 1, b: [1, 2]};
+      const callBackFunction = jest.fn();
+
+      // Given subscribed with skipFirst = true
+      contextService.subscribeToProperty(propertyName, callBackFunction, undefined, undefined, true);
+      callBackFunction.mockClear();
+
+      // When the property is updated
+      contextService.updateProperty(propertyName, value);
+
+      // Then the callback should be called with the new value
+      expect(callBackFunction).toHaveBeenCalledTimes(1);
+      expect(callBackFunction).toHaveBeenCalledWith(value);
+    });
+
+    test('when skipFirst is false (default), the callback should be called immediately with the current value', () => {
+      const propertyName = 'testProperty';
+      const initialValue = {a: 42};
+      const callBackFunction = jest.fn();
+
+      contextService.updateProperty(propertyName, initialValue);
+
+      // When subscribing with skipFirst = false (default)
+      contextService.subscribeToProperty(propertyName, callBackFunction, undefined, undefined, false);
+
+      // Then the callback should have been called immediately with the current value
+      expect(callBackFunction).toHaveBeenCalledTimes(1);
+      expect(callBackFunction).toHaveBeenCalledWith(initialValue);
+    });
+
+    test('when skipFirst is true, afterChangeCallback should still be called immediately upon subscription', () => {
+      const propertyName = 'testProperty';
+      const initialValue = {a: 99};
+      const callBackFunction = jest.fn();
+      const afterCallback = jest.fn();
+
+      contextService.updateProperty(propertyName, initialValue);
+
+      // When subscribing with skipFirst = true but an afterChangeCallback provided
+      contextService.subscribeToProperty(propertyName, callBackFunction, undefined, afterCallback, true);
+
+      // Then the main callback should NOT be called immediately
+      expect(callBackFunction).not.toHaveBeenCalled();
+      // But afterChangeCallback should still be called immediately
+      expect(afterCallback).toHaveBeenCalledTimes(1);
+      expect(afterCallback).toHaveBeenCalledWith(initialValue);
+    });
+
+    test('when skipFirst is true, both callbacks should be called on subsequent value changes', () => {
+      const propertyName = 'testProperty';
+      const value = {a: 7};
+      const callSequence: string[] = [];
+
+      const mainCallback = jest.fn(() => callSequence.push('main'));
+      const afterCallback = jest.fn(() => callSequence.push('after'));
+
+      contextService.subscribeToProperty(propertyName, mainCallback, undefined, afterCallback, true);
+      callSequence.length = 0;
+
+      // When the property is updated
+      contextService.updateProperty(propertyName, value);
+
+      // Then both callbacks should be called in order
+      expect(mainCallback).toHaveBeenCalledWith(value);
+      expect(afterCallback).toHaveBeenCalledWith(value);
+      expect(callSequence).toEqual(['main', 'after']);
+    });
+  });
+
   test('ContextService should call afterChangeCallback after the main callback with the same value', () => {
     const valueOfTestProperty = {a: 1, b: [1, 2]};
     const propertyName = 'testProperty';
@@ -234,9 +317,10 @@ class TestContextService extends ContextService<TestContextFields> implements De
     propertyName: string,
     callback: (value?: T) => void,
     beforeChangeValidationPromise?: BeforeChangeValidationPromise<T>,
-    afterChangeCallback?: (value?: T) => void
+    afterChangeCallback?: (value?: T) => void,
+    skipFirst = false
   ): () => void {
-    return this.subscribe(propertyName, callback, beforeChangeValidationPromise, afterChangeCallback);
+    return this.subscribe(propertyName, callback, beforeChangeValidationPromise, afterChangeCallback, skipFirst);
   }
 }
 
