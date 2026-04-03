@@ -280,3 +280,17 @@ so the following styles target Safari exclusively to correct label positioning w
 .copy-feedback-tooltip-fade-out {
     opacity: 0;
 }
+
+.rdf-info-side-panel {
+
+    .predicate-side-panel-row {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .predicate-side-panel-label {
+        flex: 1;
+        overflow-wrap: anywhere;
+    }
+}

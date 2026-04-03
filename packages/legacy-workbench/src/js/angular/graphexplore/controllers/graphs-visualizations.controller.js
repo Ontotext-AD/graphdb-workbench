@@ -10,6 +10,7 @@ import {removeSpecialChars} from "../../utils/string-utils";
 import {NamespacesListModel} from "../../models/namespaces/namespaces-list";
 import {HtmlUtil} from "../../utils/html-util";
 import {
+    OntoToastrService,
     LanguageContextService,
     ParentWindowMessageService,
     RepositoryContextService,
@@ -93,9 +94,11 @@ function GraphsVisualizationsCtrl(
     const parentWindowMessageService = service(ParentWindowMessageService);
     const guidesService = service(GuidesService);
     const languageContextService = service(LanguageContextService);
+    const ontoToastrService = service(OntoToastrService);
     // Multiplier to calculate the height of the labels element based on the font size.
     // Based on this, we display different numbers of rows. Currently, this results in 3 rows of text
     const heightMultiplier = 4.2;
+    // eslint-disable-next-line no-unused-vars
     let showPredicatesPopoverFn = null;
     let hidePredicatesPopoverFn = null;
     let openedLink;
@@ -1526,8 +1529,8 @@ function GraphsVisualizationsCtrl(
                         document.body.appendChild(tooltip);
 
                         const rect = btnElement.getBoundingClientRect();
-                        tooltip.style.left = (rect.left + rect.width / 2) + 'px';
-                        tooltip.style.top = (rect.top - 6) + 'px';
+                        tooltip.style.left = (rect.right + 8) + 'px';
+                        tooltip.style.top = (rect.top + rect.height / 2) + 'px';
 
                         $timeout(function() {
                             tooltip.classList.add('copy-feedback-tooltip-fade-out');
@@ -2762,6 +2765,37 @@ function GraphsVisualizationsCtrl(
         }
     };
 
+    $scope.copyPredicateIri = function(event, iri) {
+        event.stopPropagation();
+
+        const showFeedback = function() {
+            ontoToastrService.success($translate.instant('common.messages.copied_to_clipboard'));
+        };
+
+        const fallback = function() {
+            const textarea = document.createElement('textarea');
+            textarea.value = iri;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+            } catch (e) {
+                /* not available */
+                console.warn('Copy to clipboard failed.', e);
+            }
+            textarea.remove();
+            showFeedback();
+        };
+
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(iri).then(showFeedback).catch(fallback);
+        } else {
+            fallback();
+        }
+    };
+
     function getPredicateLabelWithArrow(d) {
         const base = d.predicateLabel || getPredicate(d);
         if (d.direction !== "double") {
@@ -2863,20 +2897,26 @@ function GraphsVisualizationsCtrl(
         }
 
         if (d.predicates.length > 1) {
-            // capture before clearing
-            const wasOpen = openedLink === d;
             hidePredicatesListPopover();
-            openedLink = null;
-            if (wasOpen) {
-                // second click on same label -> toggle close
-                return;
-            }
-            openedLink = d;
-            if (showPredicatesPopoverFn) {
-                showPredicatesPopoverFn(d, event.currentTarget);
-            }
+            openPredicates(d);
             return;
         }
+
+        // if (d.predicates.length > 1) {
+        //     // capture before clearing
+        //     const wasOpen = openedLink === d;
+        //     hidePredicatesListPopover();
+        //     openedLink = null;
+        //     if (wasOpen) {
+        //         // second click on same label -> toggle close
+        //         return;
+        //     }
+        //     openedLink = d;
+        //     if (showPredicatesPopoverFn) {
+        //         showPredicatesPopoverFn(d, event.currentTarget);
+        //     }
+        //     return;
+        // }
 
         hidePredicatesListPopover();
         openedLink = null;
@@ -2901,16 +2941,46 @@ function GraphsVisualizationsCtrl(
         openedLink = d;
 
         if ($scope.showPredicates) {
+            // Build lookup: local name → full IRI.
+            // Server sends predicates (short) and rawPredicates (full) in independent orderings.
+            const rawByLocalName = new Map();
+            if (d.rawPredicates) {
+                d.rawPredicates.forEach(function(raw) {
+                    const localName = raw.split(/[/#]/).pop();
+                    if (!rawByLocalName.has(localName)) {
+                        rawByLocalName.set(localName, raw);
+                    }
+                });
+            }
+            // Compute direction once — same for every predicate on this link.
+            // const rawAngle = (d._rawAngle !== undefined)
+            //     ? d._rawAngle
+            //     : Math.atan2(
+            //     getNodeY(d.target) - getNodeY(d.source),
+            //     getNodeX(d.target) - getNodeX(d.source),
+            // ) * 180 / Math.PI;
+            // const isReversed = rawAngle > 90 || rawAngle < -90;
+
             $scope.predicates = _.map(d.predicates, function(p) {
                 const foundNodeIndex = getTripleNodeIndex(p, d);
                 const isPartOfTriple = foundNodeIndex > -1;
+                const pLocalName = p.split(/[/#]/).pop();
                 return {
                     value: getShortPredicate(p),
+                    rawIri: rawByLocalName.get(pLocalName) || p,
+                    // isReversed: isReversed,
                     partOfTriple: isPartOfTriple,
                     linkId: isPartOfTriple ? convertLinkDataToLinkId(d) : '',
                     nodeIndex: foundNodeIndex,
                 };
             });
+            const getNodeDisplayLabel = (node) =>
+                (node.labels && node.labels.length && node.labels[0].label)
+                    ? node.labels[0].label
+                    : $scope.replaceIRIWithPrefix(node.iri);
+
+            $scope.predicatesSource = {label: getNodeDisplayLabel(d.source), iri: d.source.iri};
+            $scope.predicatesTarget = {label: getNodeDisplayLabel(d.target), iri: d.target.iri};
             $scope.showInfoPanel = true;
         }
     }
