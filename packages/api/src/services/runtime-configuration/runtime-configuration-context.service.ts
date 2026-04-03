@@ -76,9 +76,10 @@ export class RuntimeConfigurationContextService extends ContextService<RuntimeCo
    * Registers the <code>callbackFunction</code> to be called whenever the theme mode changes.
    *
    * @param callbackFunction - The function to call when the theme mode changes.
+   * @param skipFirst - A flag instructing the service to skip the first callback call.
    * @returns A function to unsubscribe the callback
    */
-  onThemeModeChanged(callbackFunction: ValueChangeCallback<ThemeMode | undefined>): () => void {
-    return this.subscribe(this.THEME_MODE, callbackFunction);
+  onThemeModeChanged(callbackFunction: ValueChangeCallback<ThemeMode | undefined>, skipFirst = false): () => void {
+    return this.subscribe(this.THEME_MODE, callbackFunction, undefined, undefined, skipFirst);
   }
 }
