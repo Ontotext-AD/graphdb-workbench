@@ -1,4 +1,10 @@
 {
+  "common": {
+    "errors": {
+      "error": "Error",
+      "server_error": "Server error"
+    }
+  },
   "components": {
     "dialog": {
       "confirmation": {
@@ -38,9 +44,20 @@
     "helpInfo": "The SPARQL Query & Update view is a unified editor for queries and updates. Enter any SPARQL query or update and click Run to execute it. The view also allows you to save queries for future retrieval and execution in the SPARQL editor.",
     "errors": {
       "saved_query_load_failed": "Could not get data for saved query: {{savedQueryName}}; {{error}}",
-      "shared_query_load_failed": "Could not get data for shared query: {{sharedQueryName}}; {{error}}"
+      "shared_query_load_failed": "Could not get data for shared query: {{sharedQueryName}}; {{error}}",
+      "saved_queries_load_failed": "Error! Could not get saved queries",
+      "query_save_failed": "Error! Cannot create saved query",
+      "query_delete_failed": "Error! Cannot delete saved query",
+      "get_repo_size_error": "Could not get repository size for: {{repo}}; {{error}}",
+      "add_known_prefixes_failed": "Error! Could not add known prefixes"
     },
     "warnings": {
+    },
+    "success": {
+      "query_was_saved": "Query {{name}} was saved.",
+      "query_was_updated": "Query {{name}} was updated.",
+      "query_was_deleted": "Query {{savedQueryName}} was deleted.",
+      "url_was_copied": "URL copied successfully to clipboard."
     },
     "confirmation": {
       "on_auto_execute_query": {
@@ -65,6 +82,9 @@
       }
     },
     "yasgui": {
+      "tabs": {
+        "unnamed_tab_title": "Unnamed"
+      },
       "yasr": {
         "yasr_header": {
           "toolbar": {

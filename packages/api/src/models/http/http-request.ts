@@ -14,10 +14,14 @@ export class HttpRequest {
   /** The body of the request. Can be of any type or undefined. */
   body?: unknown;
 
+  /** An optional AbortSignal to allow cancellation of the request. */
+  signal?: AbortSignal;
+
   constructor(data: HttpRequest) {
     this.url = data.url;
     this.method = data.method;
     this.headers = {...data.headers};
     this.body = data.body;
+    this.signal = data.signal;
   }
 }

@@ -11,6 +11,7 @@ import {OutputHandlers} from '../output-handlers';
 import {Yasgui} from './yasgui';
 import {BeforeUpdateQueryResult, HttpHeaders} from '@ontotext/workbench-api';
 import {PluginConfigurations} from '../yasr/geo-plugin/plugin-configurations';
+import {KeyboardShortcutConfiguration} from './keyboard-shortcut-configuration';
 
 /**
  * Holds all configurations related with ontotext-yasgui-web-component.
@@ -34,7 +35,6 @@ export class OntotextYasguiConfig {
    * If the yasr tabs should be rendered or not.
    */
   public showResultTabs: boolean;
-
   /**
    * Flag that controls whether the button for toggling fullscreen mode in YASR should be displayed. By default, it is set to true.
    */
@@ -67,6 +67,12 @@ export class OntotextYasguiConfig {
    * If the endpoint is defined as a function, it will be called before each query execution.
    */
   public endpoint: string | ((yasgui: Yasgui) => string);
+  /**
+   * The language which will be used to fetch translation labels. The value have to be one of the supported language codes.
+   * If the language is not supported, then the default English language will be used.
+   * Default value is "en".
+   */
+  public language: string;
   /**
    * Key -> value translations as JSON. If the language is supported, then not needed to pass all label values.
    * If pass a new language then all label's values have to be present, otherwise they will be translated to the default
@@ -234,6 +240,7 @@ export class OntotextYasguiConfig {
   public yasrToolbarPlugins: YasrToolbarPlugin[] | undefined;
   /**
    * If this function is present, then it will be called on every one result cell.
+   * The default is `undefined` which means that the cell content will be rendered by the default yasr plugin.
    * @param binding - {Parser.BindingValue} binding value that will be shown into a cell.
    * @param prefixes - Object with uris and their corresponding prefixes.
    *
@@ -256,6 +263,17 @@ export class OntotextYasguiConfig {
    * Determines whether YASR should be rendered in fullscreen mode by default when the component is initialized.
    */
   public yasrFullscreen?: boolean;
+  /**
+   * An object that defines the configuration for keyboard shortcuts in the YASGUI component. Each key in the object
+   * corresponds to a specific keyboard shortcut, and the value is a boolean indicating whether that shortcut is enabled
+   * or disabled.
+   */
+  public keyboardShortcutConfiguration?: KeyboardShortcutConfiguration;
+  /**
+   * The name of the theme to be applied to the YASGUI component. The value should correspond to a valid theme name
+   * supported by YASGUI.
+   */
+  public themeName?: string;
 
   constructor() {
     this.render = RenderingMode.YASGUI;
@@ -269,6 +287,7 @@ export class OntotextYasguiConfig {
     this.showQueryButton = true;
     this.showQueryLoader = true;
     this.endpoint = '';
+    this.language = 'en';
     this.i18n = undefined;
     this.method = YasguiQueryHttpMethod.GET;
     this.headers = undefined;
@@ -305,5 +324,7 @@ export class OntotextYasguiConfig {
     this.outputHandlers = undefined;
     this.selectedPlugin = undefined;
     this.yasrFullscreen = false;
+    this.keyboardShortcutConfiguration = undefined;
+    this.themeName = undefined;
   }
 }

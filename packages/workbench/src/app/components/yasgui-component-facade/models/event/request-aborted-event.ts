@@ -1,27 +1,23 @@
-import {EventData} from './event-data';
-
-interface RequestAbortedEventRequest {
-  url: string;
-  header?: Record<string, string>;
-}
+import {OntotextYasguiEvent} from './ontotext-yasgui-event';
+import {RequestAbortedRequest} from '../request-aborted-request';
+import {EventDataType} from './event-data-type';
 
 /**
  * Model for event of type {@link EventDataType.REQUEST_ABORTED} emitted by "ontotext-yasgui-web-component".
  */
 export class RequestAbortedEvent {
-  type: string;
-  request: RequestAbortedEventRequest;
-  queryMode: string;
+  public type = EventDataType.REQUEST_ABORTED as const;
+  public request: RequestAbortedRequest;
+  public queryMode: string;
 
   /**
    * Constructs the model for {@link EventDataType.REQUEST_ABORTED} event.
    *
    * @param eventData - event emitted by "ontotext-yasgui-web-component".
    */
-  constructor(eventData: EventData) {
-    this.type = eventData.type;
-    this.request = eventData.payload.request;
-    this.queryMode = eventData.payload.queryMode;
+  constructor(eventData: OntotextYasguiEvent) {
+    this.request = eventData.detail.payload.requestAbortedRequest!;
+    this.queryMode = eventData.detail.payload.queryMode;
   }
 
   getQueryTrackAlias() {

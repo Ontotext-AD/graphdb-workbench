@@ -35,4 +35,45 @@ export class Rdf4jRestService extends HttpService {
   getNamespaces(repositoryId: string): Promise<NamespacesResponse> {
     return this.get(`${this.REPOSITORIES_ENDPOINT}/${repositoryId}/namespaces`);
   }
+
+  /**
+   * Downloads sparql results as a file in given format provided by the accept header parameter.
+   * @param repositoryId - The id of the repository.
+   * @param data - The data to be sent in the request body, typically containing the SPARQL query and any additional
+   * parameters.
+   * @param acceptHeader - The value for the 'Accept' header indicating the desired format of the response
+   * (e.g., 'application/sparql-results+json').
+   * @param linkHeader - The value for the 'Link' header, which may contain additional information about the request or
+   * response, such as pagination details or related resources.
+   * @returns A Promise that resolves to the HTTP response containing the file data as a Blob, along with the
+   * appropriate headers for file download. The response will include the file data and the filename extracted from the
+   * 'Content-Disposition' header if available.
+   * @throws An error if the HTTP request fails or if the response does not contain the expected file data.
+   */
+  downloadResultsAsFile(repositoryId: string, data: object, acceptHeader: string, linkHeader: string) {
+    const properties = Object.entries(data)
+      .filter(([, value]) => value !== undefined)
+      .map(([property, value]) => `${property}=${encodeURIComponent(value)}`);
+    const payloadString = properties.join('&');
+
+    return this.post(`${this.REPOSITORIES_ENDPOINT}/${repositoryId}`, {
+      responseType: 'blob',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
+        'Accept': acceptHeader,
+        'Link': linkHeader
+      },
+      body: payloadString,
+    });
+  }
+
+  /**
+   * Retrieves the size of the specified repository.
+   * @param repositoryId - The id of the repository.
+   * @returns A Promise that resolves to the size of the repository as a number.
+   * @throws An error if the HTTP request fails or if the response does not contain the expected size data.
+   */
+  getRepositorySize(repositoryId: string): Promise<number> {
+    return this.get(`${this.REPOSITORIES_ENDPOINT}/${repositoryId}/size`);
+  }
 }

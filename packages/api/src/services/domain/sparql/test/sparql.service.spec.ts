@@ -6,8 +6,11 @@ import {service} from '../../../../providers';
 import {TestUtil} from '../../../utils/test/test-util';
 import {ResponseMock} from '../../../http/test/response-mock';
 import {SavedQueryResponse} from '../response/saved-query-response';
+import {SaveQueryRequest} from '../request/save-query-request';
+import {HttpErrorResponse} from '../../../../models/http';
 
 const SAVED_QUERIES_ENDPOINT = 'rest/sparql/saved-queries';
+const ADD_KNOWN_PREFIXES_ENDPOINT = 'rest/sparql/add-known-prefixes';
 
 const savedQueryUrl = (name: string, owner?: string): string => {
   const params = new URLSearchParams({name});
@@ -203,6 +206,709 @@ describe('SparqlService', () => {
 
         // Then the request URL should contain both name and owner parameters
         expect(TestUtil.getRequest(savedQueryUrl('my-query', 'admin'))).toBeDefined();
+      });
+    });
+  });
+
+  describe('getSavedQueries', () => {
+    describe('response mapper – empty / falsy responses', () => {
+      test('should return an empty SavedQueryList when the API returns null', async () => {
+        // Given a null API response
+        TestUtil.mockResponse(new ResponseMock(SAVED_QUERIES_ENDPOINT).setResponse(null));
+
+        // When the service fetches all saved queries
+        const result = await sparqlService.getSavedQueries();
+
+        // Then an empty SavedQueryList should be returned
+        expect(result).toBeInstanceOf(SavedQueryList);
+        expect(result.getItems()).toHaveLength(0);
+      });
+
+      test('should return an empty SavedQueryList when the API returns an empty array', async () => {
+        // Given an empty array API response
+        TestUtil.mockResponse(new ResponseMock(SAVED_QUERIES_ENDPOINT).setResponse([]));
+
+        // When the service fetches all saved queries
+        const result = await sparqlService.getSavedQueries();
+
+        // Then an empty SavedQueryList should be returned
+        expect(result).toBeInstanceOf(SavedQueryList);
+        expect(result.getItems()).toHaveLength(0);
+      });
+    });
+
+    describe('response mapper – readonly flag based on ownership', () => {
+      test('should mark a query as not readonly when the current user is the owner', async () => {
+        // Given the current user is the owner of the query
+        securityContextService.updateAuthenticatedUser(new AuthenticatedUser({username: 'admin'}));
+        const response = [rawQuery({owner: 'admin'})];
+        TestUtil.mockResponse(new ResponseMock(SAVED_QUERIES_ENDPOINT).setResponse(response));
+
+        // When the service fetches all saved queries
+        const result = await sparqlService.getSavedQueries();
+        const query = result.getFirstQuery();
+
+        // Then the query should not be readonly
+        expect(query).toBeInstanceOf(SavedQuery);
+        expect(query!.readonly).toBe(false);
+      });
+
+      test('should mark a query as readonly when the current user is not the owner', async () => {
+        // Given the current user is different from the query owner
+        securityContextService.updateAuthenticatedUser(new AuthenticatedUser({username: 'guest'}));
+        const response = [rawQuery({owner: 'admin'})];
+        TestUtil.mockResponse(new ResponseMock(SAVED_QUERIES_ENDPOINT).setResponse(response));
+
+        // When the service fetches all saved queries
+        const result = await sparqlService.getSavedQueries();
+        const query = result.getFirstQuery();
+
+        // Then the query should be readonly
+        expect(query!.readonly).toBe(true);
+      });
+
+      test('should mark all queries as readonly when there is no authenticated user', async () => {
+        // Given no authenticated user is set
+        jest.spyOn(securityContextService, 'getAuthenticatedUser').mockReturnValue(undefined);
+        const response = [rawQuery({owner: 'admin'}), rawQuery({name: 'other-query', owner: 'editor'})];
+        TestUtil.mockResponse(new ResponseMock(SAVED_QUERIES_ENDPOINT).setResponse(response));
+
+        // When the service fetches all saved queries
+        const result = await sparqlService.getSavedQueries();
+
+        // Then all returned queries should be readonly
+        result.getItems().forEach((q) => {
+          expect(q.readonly).toBe(true);
+        });
+      });
+    });
+
+    describe('response mapper – field mapping', () => {
+      test('should correctly map all fields from the raw response to SavedQuery', async () => {
+        // Given a fully populated query response
+        securityContextService.updateAuthenticatedUser(new AuthenticatedUser({username: 'admin'}));
+        const raw = rawQuery({name: 'full-query', body: 'ASK { }', owner: 'admin', shared: true});
+        TestUtil.mockResponse(new ResponseMock(SAVED_QUERIES_ENDPOINT).setResponse([raw]));
+
+        // When the service fetches all saved queries
+        const result = await sparqlService.getSavedQueries();
+        const query = result.getFirstQuery()!;
+
+        // Then every field should be mapped correctly
+        expect(query.queryName).toBe('full-query');
+        expect(query.query).toBe('ASK { }');
+        expect(query.owner).toBe('admin');
+        expect(query.isPublic).toBe(true);
+        expect(query.readonly).toBe(false);
+      });
+
+      test('should set isPublic to false when shared is false', async () => {
+        // Given a private (non-shared) query
+        securityContextService.updateAuthenticatedUser(new AuthenticatedUser({username: 'admin'}));
+        const raw = rawQuery({shared: false});
+        TestUtil.mockResponse(new ResponseMock(SAVED_QUERIES_ENDPOINT).setResponse([raw]));
+
+        // When the service fetches all saved queries
+        const result = await sparqlService.getSavedQueries();
+
+        // Then isPublic should be false
+        expect(result.getFirstQuery()!.isPublic).toBe(false);
+      });
+
+      test('should set isPublic to true when shared is true', async () => {
+        // Given a public (shared) query
+        securityContextService.updateAuthenticatedUser(new AuthenticatedUser({username: 'admin'}));
+        const raw = rawQuery({shared: true});
+        TestUtil.mockResponse(new ResponseMock(SAVED_QUERIES_ENDPOINT).setResponse([raw]));
+
+        // When the service fetches all saved queries
+        const result = await sparqlService.getSavedQueries();
+
+        // Then isPublic should be true
+        expect(result.getFirstQuery()!.isPublic).toBe(true);
+      });
+    });
+
+    describe('response mapper – multiple queries', () => {
+      test('should map all queries in the response and apply correct readonly per owner', async () => {
+        // Given the current user is 'alice' and the response contains queries from two different owners
+        securityContextService.updateAuthenticatedUser(new AuthenticatedUser({username: 'alice'}));
+        const response = [
+          rawQuery({name: 'q1', owner: 'alice'}),
+          rawQuery({name: 'q2', owner: 'bob'}),
+          rawQuery({name: 'q3', owner: 'alice'}),
+        ];
+        TestUtil.mockResponse(new ResponseMock(SAVED_QUERIES_ENDPOINT).setResponse(response));
+
+        // When the service fetches all saved queries
+        const result = await sparqlService.getSavedQueries();
+
+        // Then the list should contain all three queries with correct readonly flags
+        expect(result).toBeInstanceOf(SavedQueryList);
+        expect(result.getItems()).toHaveLength(3);
+        expect(result.getItems()[0].readonly).toBe(false); // owned by alice
+        expect(result.getItems()[1].readonly).toBe(true);  // owned by bob
+        expect(result.getItems()[2].readonly).toBe(false); // owned by alice
+      });
+    });
+
+    describe('HTTP request construction', () => {
+      test('should send a request to the saved-queries endpoint with no query parameters', async () => {
+        // Given no query parameters are needed
+        securityContextService.updateAuthenticatedUser(new AuthenticatedUser({username: 'admin'}));
+        TestUtil.mockResponse(new ResponseMock(SAVED_QUERIES_ENDPOINT).setResponse([]));
+
+        // When the service fetches all saved queries
+        await sparqlService.getSavedQueries();
+
+        // Then the request URL should have no extra parameters
+        expect(TestUtil.getRequest(SAVED_QUERIES_ENDPOINT)).toBeDefined();
+      });
+    });
+  });
+
+  describe('saveQuery', () => {
+    const saveQueryPayload = (overrides: Partial<SaveQueryRequest> = {}): SaveQueryRequest => ({
+      name: 'my-query',
+      body: 'SELECT * WHERE { ?s ?p ?o }',
+      shared: false,
+      ...overrides,
+    });
+
+    describe('success scenarios', () => {
+      test('should resolve successfully when the API returns 200', async () => {
+        // Given a successful API response
+        TestUtil.mockResponse(new ResponseMock(SAVED_QUERIES_ENDPOINT).setStatus(200).setResponse(null));
+
+        // When saving the query
+        // Then it should resolve without throwing
+        await expect(sparqlService.saveQuery(saveQueryPayload())).resolves.not.toThrow();
+      });
+
+      test('should resolve when saving a public (shared) query', async () => {
+        // Given a public query payload
+        TestUtil.mockResponse(new ResponseMock(SAVED_QUERIES_ENDPOINT).setStatus(200).setResponse(null));
+
+        // When saving the public query
+        // Then it should resolve without throwing
+        await expect(sparqlService.saveQuery(saveQueryPayload({shared: true}))).resolves.not.toThrow();
+      });
+
+      test('should resolve when saving a private (non-shared) query', async () => {
+        // Given a private query payload
+        TestUtil.mockResponse(new ResponseMock(SAVED_QUERIES_ENDPOINT).setStatus(200).setResponse(null));
+
+        // When saving the private query
+        // Then it should resolve without throwing
+        await expect(sparqlService.saveQuery(saveQueryPayload({shared: false}))).resolves.not.toThrow();
+      });
+    });
+
+    describe('HTTP request construction', () => {
+      test('should send a POST request to the saved-queries endpoint', async () => {
+        // Given a valid query payload
+        TestUtil.mockResponse(new ResponseMock(SAVED_QUERIES_ENDPOINT).setStatus(200).setResponse(null));
+
+        // When saving the query
+        await sparqlService.saveQuery(saveQueryPayload());
+
+        // Then the request should be sent to the correct endpoint
+        expect(TestUtil.getRequest(SAVED_QUERIES_ENDPOINT)).toBeDefined();
+      });
+
+      test('should use the POST HTTP method', async () => {
+        // Given a valid query payload
+        TestUtil.mockResponse(new ResponseMock(SAVED_QUERIES_ENDPOINT).setStatus(200).setResponse(null));
+
+        // When saving the query
+        await sparqlService.saveQuery(saveQueryPayload());
+
+        // Then the request method should be POST
+        const request = TestUtil.getRequest(SAVED_QUERIES_ENDPOINT);
+        expect(request!.method).toBe('POST');
+      });
+
+      test('should serialize the payload as JSON in the request body', async () => {
+        // Given a fully specified query payload
+        const payload = saveQueryPayload({name: 'test-query', body: 'ASK { }', shared: true});
+        TestUtil.mockResponse(new ResponseMock(SAVED_QUERIES_ENDPOINT).setStatus(200).setResponse(null));
+
+        // When saving the query
+        await sparqlService.saveQuery(payload);
+
+        // Then the request body should be the JSON-serialized payload
+        const request = TestUtil.getRequest(SAVED_QUERIES_ENDPOINT);
+        expect(request!.body).toBe(JSON.stringify(payload));
+      });
+
+      test('should correctly include all fields (name, body, shared) in the serialized request body', async () => {
+        // Given a fully specified query payload
+        const payload: SaveQueryRequest = {name: 'full-query', body: 'DESCRIBE ?s', shared: true};
+        TestUtil.mockResponse(new ResponseMock(SAVED_QUERIES_ENDPOINT).setStatus(200).setResponse(null));
+
+        // When saving the query
+        await sparqlService.saveQuery(payload);
+
+        // Then all fields should be present in the parsed request body
+        const request = TestUtil.getRequest(SAVED_QUERIES_ENDPOINT);
+        const parsed = JSON.parse(request!.body as string);
+        expect(parsed.name).toBe('full-query');
+        expect(parsed.body).toBe('DESCRIBE ?s');
+        expect(parsed.shared).toBe(true);
+      });
+    });
+
+    describe('error propagation', () => {
+      test('should reject with an HttpErrorResponse on a 4xx response', async () => {
+        // Given a 400 API response
+        TestUtil.mockResponse(new ResponseMock(SAVED_QUERIES_ENDPOINT).setStatus(400).setMessage('Bad Request'));
+
+        // When saving the query
+        // Then it should reject with an HttpErrorResponse
+        await expect(sparqlService.saveQuery(saveQueryPayload())).rejects.toBeInstanceOf(HttpErrorResponse);
+      });
+
+      test('should include the 4xx status code in the rejected HttpErrorResponse', async () => {
+        // Given a 400 API response
+        TestUtil.mockResponse(new ResponseMock(SAVED_QUERIES_ENDPOINT).setStatus(400).setMessage('Bad Request'));
+
+        // When saving the query
+        try {
+          await sparqlService.saveQuery(saveQueryPayload());
+          fail('Should have thrown an error');
+        } catch (error) {
+          // Then the status should match the server response
+          expect((error as HttpErrorResponse).status).toBe(400);
+        }
+      });
+
+      test('should reject with an HttpErrorResponse on a 5xx response', async () => {
+        // Given a 500 API response
+        TestUtil.mockResponse(new ResponseMock(SAVED_QUERIES_ENDPOINT).setStatus(500).setMessage('Internal Server Error'));
+
+        // When saving the query
+        // Then it should reject with an HttpErrorResponse
+        await expect(sparqlService.saveQuery(saveQueryPayload())).rejects.toBeInstanceOf(HttpErrorResponse);
+      });
+
+      test('should include the 5xx status code in the rejected HttpErrorResponse', async () => {
+        // Given a 500 API response
+        TestUtil.mockResponse(new ResponseMock(SAVED_QUERIES_ENDPOINT).setStatus(500).setMessage('Internal Server Error'));
+
+        // When saving the query
+        try {
+          await sparqlService.saveQuery(saveQueryPayload());
+          fail('Should have thrown an error');
+        } catch (error) {
+          // Then the status should match the server response
+          expect((error as HttpErrorResponse).status).toBe(500);
+        }
+      });
+    });
+  });
+
+  describe('updateQuery', () => {
+    const updateQueryUrl = (oldQueryName: string): string => {
+      const params = new URLSearchParams({oldQueryName});
+      return `${SAVED_QUERIES_ENDPOINT}?${params.toString()}`;
+    };
+
+    const updateQueryPayload = (overrides: Partial<SaveQueryRequest> = {}): SaveQueryRequest => ({
+      name: 'my-query-updated',
+      body: 'SELECT * WHERE { ?s ?p ?o }',
+      shared: false,
+      ...overrides,
+    });
+
+    describe('success scenarios', () => {
+      test('should resolve successfully when the API returns 200', async () => {
+        // Given a successful API response
+        TestUtil.mockResponse(new ResponseMock(updateQueryUrl('my-query')).setStatus(200).setResponse(null));
+
+        // When updating the query
+        // Then it should resolve without throwing
+        await expect(sparqlService.updateQuery('my-query', updateQueryPayload())).resolves.not.toThrow();
+      });
+
+      test('should resolve when updating a query to be public (shared)', async () => {
+        // Given a successful API response and a public query payload
+        TestUtil.mockResponse(new ResponseMock(updateQueryUrl('my-query')).setStatus(200).setResponse(null));
+
+        // When updating the query with shared set to true
+        // Then it should resolve without throwing
+        await expect(sparqlService.updateQuery('my-query', updateQueryPayload({shared: true}))).resolves.not.toThrow();
+      });
+
+      test('should resolve when updating a query to be private (non-shared)', async () => {
+        // Given a successful API response and a private query payload
+        TestUtil.mockResponse(new ResponseMock(updateQueryUrl('my-query')).setStatus(200).setResponse(null));
+
+        // When updating the query with shared set to false
+        // Then it should resolve without throwing
+        await expect(sparqlService.updateQuery('my-query', updateQueryPayload({shared: false}))).resolves.not.toThrow();
+      });
+    });
+
+    describe('HTTP request construction', () => {
+      test('should send a request to the saved-queries endpoint with the oldQueryName query parameter', async () => {
+        // Given a valid update payload
+        TestUtil.mockResponse(new ResponseMock(updateQueryUrl('my-query')).setStatus(200).setResponse(null));
+
+        // When updating the query
+        await sparqlService.updateQuery('my-query', updateQueryPayload());
+
+        // Then the request URL should include the oldQueryName parameter
+        expect(TestUtil.getRequest(updateQueryUrl('my-query'))).toBeDefined();
+      });
+
+      test('should use the PUT HTTP method', async () => {
+        // Given a valid update payload
+        TestUtil.mockResponse(new ResponseMock(updateQueryUrl('my-query')).setStatus(200).setResponse(null));
+
+        // When updating the query
+        await sparqlService.updateQuery('my-query', updateQueryPayload());
+
+        // Then the request method should be PUT
+        const request = TestUtil.getRequest(updateQueryUrl('my-query'));
+        expect(request!.method).toBe('PUT');
+      });
+
+      test('should serialize the payload as JSON in the request body', async () => {
+        // Given a fully specified update payload
+        const payload = updateQueryPayload({name: 'new-name', body: 'ASK { }', shared: true});
+        TestUtil.mockResponse(new ResponseMock(updateQueryUrl('my-query')).setStatus(200).setResponse(null));
+
+        // When updating the query
+        await sparqlService.updateQuery('my-query', payload);
+
+        // Then the request body should be the JSON-serialized payload
+        const request = TestUtil.getRequest(updateQueryUrl('my-query'));
+        expect(request!.body).toBe(JSON.stringify(payload));
+      });
+
+      test('should correctly include all fields (name, body, shared) in the serialized request body', async () => {
+        // Given a fully specified update payload
+        const payload: SaveQueryRequest = {name: 'new-name', body: 'DESCRIBE ?s', shared: true};
+        TestUtil.mockResponse(new ResponseMock(updateQueryUrl('old-name')).setStatus(200).setResponse(null));
+
+        // When updating the query
+        await sparqlService.updateQuery('old-name', payload);
+
+        // Then all fields should be present in the parsed request body
+        const request = TestUtil.getRequest(updateQueryUrl('old-name'));
+        const parsed = JSON.parse(request!.body as string);
+        expect(parsed.name).toBe('new-name');
+        expect(parsed.body).toBe('DESCRIBE ?s');
+        expect(parsed.shared).toBe(true);
+      });
+
+      test('should encode the oldQueryName correctly in the URL when the name contains special characters', async () => {
+        // Given an old query name with spaces
+        const oldName = 'my query';
+        TestUtil.mockResponse(new ResponseMock(updateQueryUrl(oldName)).setStatus(200).setResponse(null));
+
+        // When updating the query
+        await sparqlService.updateQuery(oldName, updateQueryPayload());
+
+        // Then the URL should contain the correctly encoded oldQueryName
+        expect(TestUtil.getRequest(updateQueryUrl(oldName))).toBeDefined();
+      });
+    });
+
+    describe('error propagation', () => {
+      test('should reject with an HttpErrorResponse on a 4xx response', async () => {
+        // Given a 400 API response
+        TestUtil.mockResponse(new ResponseMock(updateQueryUrl('my-query')).setStatus(400).setMessage('Bad Request'));
+
+        // When updating the query
+        // Then it should reject with an HttpErrorResponse
+        await expect(sparqlService.updateQuery('my-query', updateQueryPayload())).rejects.toBeInstanceOf(HttpErrorResponse);
+      });
+
+      test('should include the 4xx status code in the rejected HttpErrorResponse', async () => {
+        // Given a 400 API response
+        TestUtil.mockResponse(new ResponseMock(updateQueryUrl('my-query')).setStatus(400).setMessage('Bad Request'));
+
+        // When updating the query
+        try {
+          await sparqlService.updateQuery('my-query', updateQueryPayload());
+          fail('Should have thrown an error');
+        } catch (error) {
+          // Then the status should match the server response
+          expect((error as HttpErrorResponse).status).toBe(400);
+        }
+      });
+
+      test('should reject with an HttpErrorResponse on a 5xx response', async () => {
+        // Given a 500 API response
+        TestUtil.mockResponse(new ResponseMock(updateQueryUrl('my-query')).setStatus(500).setMessage('Internal Server Error'));
+
+        // When updating the query
+        // Then it should reject with an HttpErrorResponse
+        await expect(sparqlService.updateQuery('my-query', updateQueryPayload())).rejects.toBeInstanceOf(HttpErrorResponse);
+      });
+
+      test('should include the 5xx status code in the rejected HttpErrorResponse', async () => {
+        // Given a 500 API response
+        TestUtil.mockResponse(new ResponseMock(updateQueryUrl('my-query')).setStatus(500).setMessage('Internal Server Error'));
+
+        // When updating the query
+        try {
+          await sparqlService.updateQuery('my-query', updateQueryPayload());
+          fail('Should have thrown an error');
+        } catch (error) {
+          // Then the status should match the server response
+          expect((error as HttpErrorResponse).status).toBe(500);
+        }
+      });
+    });
+  });
+
+  describe('deleteQuery', () => {
+    const deleteQueryUrl = (queryName: string): string => {
+      const params = new URLSearchParams({name: queryName});
+      return `${SAVED_QUERIES_ENDPOINT}?${params.toString()}`;
+    };
+
+    describe('success scenarios', () => {
+      test('should resolve successfully when the API returns 200', async () => {
+        // Given a successful API response
+        TestUtil.mockResponse(new ResponseMock(deleteQueryUrl('my-query')).setStatus(200).setResponse(null));
+
+        // When deleting the query
+        // Then it should resolve without throwing
+        await expect(sparqlService.deleteQuery('my-query')).resolves.not.toThrow();
+      });
+
+      test('should resolve when deleting a query with a different name', async () => {
+        // Given a successful API response for another query name
+        TestUtil.mockResponse(new ResponseMock(deleteQueryUrl('other-query')).setStatus(200).setResponse(null));
+
+        // When deleting the query
+        // Then it should resolve without throwing
+        await expect(sparqlService.deleteQuery('other-query')).resolves.not.toThrow();
+      });
+    });
+
+    describe('HTTP request construction', () => {
+      test('should send a request to the saved-queries endpoint with the name query parameter', async () => {
+        // Given a successful API response
+        TestUtil.mockResponse(new ResponseMock(deleteQueryUrl('my-query')).setStatus(200).setResponse(null));
+
+        // When deleting the query
+        await sparqlService.deleteQuery('my-query');
+
+        // Then the request URL should include the name parameter
+        expect(TestUtil.getRequest(deleteQueryUrl('my-query'))).toBeDefined();
+      });
+
+      test('should use the DELETE HTTP method', async () => {
+        // Given a successful API response
+        TestUtil.mockResponse(new ResponseMock(deleteQueryUrl('my-query')).setStatus(200).setResponse(null));
+
+        // When deleting the query
+        await sparqlService.deleteQuery('my-query');
+
+        // Then the request method should be DELETE
+        const request = TestUtil.getRequest(deleteQueryUrl('my-query'));
+        expect(request!.method).toBe('DELETE');
+      });
+
+      test('should send no request body', async () => {
+        // Given a successful API response
+        TestUtil.mockResponse(new ResponseMock(deleteQueryUrl('my-query')).setStatus(200).setResponse(null));
+
+        // When deleting the query
+        await sparqlService.deleteQuery('my-query');
+
+        // Then the request body should be absent
+        const request = TestUtil.getRequest(deleteQueryUrl('my-query'));
+        expect(request!.body).toBeNull();
+      });
+
+      test('should encode the query name correctly in the URL when the name contains special characters', async () => {
+        // Given a query name with spaces
+        const queryName = 'my query';
+        TestUtil.mockResponse(new ResponseMock(deleteQueryUrl(queryName)).setStatus(200).setResponse(null));
+
+        // When deleting the query
+        await sparqlService.deleteQuery(queryName);
+
+        // Then the URL should contain the correctly encoded name
+        expect(TestUtil.getRequest(deleteQueryUrl(queryName))).toBeDefined();
+      });
+    });
+
+    describe('error propagation', () => {
+      test('should reject with an HttpErrorResponse on a 4xx response', async () => {
+        // Given a 400 API response
+        TestUtil.mockResponse(new ResponseMock(deleteQueryUrl('my-query')).setStatus(400).setMessage('Bad Request'));
+
+        // When deleting the query
+        // Then it should reject with an HttpErrorResponse
+        await expect(sparqlService.deleteQuery('my-query')).rejects.toBeInstanceOf(HttpErrorResponse);
+      });
+
+      test('should include the 4xx status code in the rejected HttpErrorResponse', async () => {
+        // Given a 400 API response
+        TestUtil.mockResponse(new ResponseMock(deleteQueryUrl('my-query')).setStatus(400).setMessage('Bad Request'));
+
+        // When deleting the query
+        try {
+          await sparqlService.deleteQuery('my-query');
+          fail('Should have thrown an error');
+        } catch (error) {
+          // Then the status should match the server response
+          expect((error as HttpErrorResponse).status).toBe(400);
+        }
+      });
+
+      test('should reject with an HttpErrorResponse on a 5xx response', async () => {
+        // Given a 500 API response
+        TestUtil.mockResponse(new ResponseMock(deleteQueryUrl('my-query')).setStatus(500).setMessage('Internal Server Error'));
+
+        // When deleting the query
+        // Then it should reject with an HttpErrorResponse
+        await expect(sparqlService.deleteQuery('my-query')).rejects.toBeInstanceOf(HttpErrorResponse);
+      });
+
+      test('should include the 5xx status code in the rejected HttpErrorResponse', async () => {
+        // Given a 500 API response
+        TestUtil.mockResponse(new ResponseMock(deleteQueryUrl('my-query')).setStatus(500).setMessage('Internal Server Error'));
+
+        // When deleting the query
+        try {
+          await sparqlService.deleteQuery('my-query');
+          fail('Should have thrown an error');
+        } catch (error) {
+          // Then the status should match the server response
+          expect((error as HttpErrorResponse).status).toBe(500);
+        }
+      });
+    });
+  });
+
+  describe('addKnownPrefixes', () => {
+    describe('success scenarios', () => {
+      test('should resolve with the enriched query string returned by the API', async () => {
+        // Given the API returns a query with prefixes prepended
+        const enrichedQuery = 'PREFIX owl: <http://www.w3.org/2002/07/owl#>\nSELECT * WHERE { ?s ?p ?o }';
+        TestUtil.mockResponse(new ResponseMock(ADD_KNOWN_PREFIXES_ENDPOINT).setStatus(200).setResponse(enrichedQuery));
+
+        // When adding known prefixes to the query
+        const result = await sparqlService.addKnownPrefixes('SELECT * WHERE { ?s ?p ?o }');
+
+        // Then the result should be the enriched query
+        expect(result).toBe(enrichedQuery);
+      });
+
+      test('should resolve with the same query string when no new prefixes are added', async () => {
+        // Given the API returns the query unchanged
+        const query = 'PREFIX owl: <http://www.w3.org/2002/07/owl#>\nSELECT * WHERE { ?s ?p ?o }';
+        TestUtil.mockResponse(new ResponseMock(ADD_KNOWN_PREFIXES_ENDPOINT).setStatus(200).setResponse(query));
+
+        // When adding known prefixes to an already-prefixed query
+        const result = await sparqlService.addKnownPrefixes(query);
+
+        // Then the result should be identical to the input
+        expect(result).toBe(query);
+      });
+
+      test('should resolve with an empty string when the API returns an empty string', async () => {
+        // Given the API returns an empty string
+        TestUtil.mockResponse(new ResponseMock(ADD_KNOWN_PREFIXES_ENDPOINT).setStatus(200).setResponse(''));
+
+        // When adding known prefixes
+        const result = await sparqlService.addKnownPrefixes('');
+
+        // Then the result should be an empty string
+        expect(result).toBe('');
+      });
+    });
+
+    describe('HTTP request construction', () => {
+      test('should send a request to the add-known-prefixes endpoint', async () => {
+        // Given a valid SPARQL query
+        TestUtil.mockResponse(new ResponseMock(ADD_KNOWN_PREFIXES_ENDPOINT).setStatus(200).setResponse('SELECT * WHERE { ?s ?p ?o }'));
+
+        // When adding known prefixes
+        await sparqlService.addKnownPrefixes('SELECT * WHERE { ?s ?p ?o }');
+
+        // Then the request should be sent to the correct endpoint
+        expect(TestUtil.getRequest(ADD_KNOWN_PREFIXES_ENDPOINT)).toBeDefined();
+      });
+
+      test('should use the POST HTTP method', async () => {
+        // Given a valid SPARQL query
+        TestUtil.mockResponse(new ResponseMock(ADD_KNOWN_PREFIXES_ENDPOINT).setStatus(200).setResponse('SELECT * WHERE { ?s ?p ?o }'));
+
+        // When adding known prefixes
+        await sparqlService.addKnownPrefixes('SELECT * WHERE { ?s ?p ?o }');
+
+        // Then the request method should be POST
+        const request = TestUtil.getRequest(ADD_KNOWN_PREFIXES_ENDPOINT);
+        expect(request!.method).toBe('POST');
+      });
+
+      test('should send the query string as the request body', async () => {
+        // Given a specific SPARQL query
+        const query = 'SELECT * WHERE { ?s ?p ?o }';
+        TestUtil.mockResponse(new ResponseMock(ADD_KNOWN_PREFIXES_ENDPOINT).setStatus(200).setResponse(query));
+
+        // When adding known prefixes
+        await sparqlService.addKnownPrefixes(query);
+
+        // Then the request body should contain the query
+        const request = TestUtil.getRequest(ADD_KNOWN_PREFIXES_ENDPOINT);
+        expect(request!.body).toBe(JSON.stringify(query));
+      });
+    });
+
+    describe('error propagation', () => {
+      test('should reject with an HttpErrorResponse on a 4xx response', async () => {
+        // Given a 400 API response
+        TestUtil.mockResponse(new ResponseMock(ADD_KNOWN_PREFIXES_ENDPOINT).setStatus(400).setMessage('Bad Request'));
+
+        // When adding known prefixes
+        // Then it should reject with an HttpErrorResponse
+        await expect(sparqlService.addKnownPrefixes('SELECT * WHERE { ?s ?p ?o }')).rejects.toBeInstanceOf(HttpErrorResponse);
+      });
+
+      test('should include the 4xx status code in the rejected HttpErrorResponse', async () => {
+        // Given a 400 API response
+        TestUtil.mockResponse(new ResponseMock(ADD_KNOWN_PREFIXES_ENDPOINT).setStatus(400).setMessage('Bad Request'));
+
+        // When adding known prefixes
+        try {
+          await sparqlService.addKnownPrefixes('SELECT * WHERE { ?s ?p ?o }');
+          fail('Should have thrown an error');
+        } catch (error) {
+          // Then the status should match the server response
+          expect((error as HttpErrorResponse).status).toBe(400);
+        }
+      });
+
+      test('should reject with an HttpErrorResponse on a 5xx response', async () => {
+        // Given a 500 API response
+        TestUtil.mockResponse(new ResponseMock(ADD_KNOWN_PREFIXES_ENDPOINT).setStatus(500).setMessage('Internal Server Error'));
+
+        // When adding known prefixes
+        // Then it should reject with an HttpErrorResponse
+        await expect(sparqlService.addKnownPrefixes('SELECT * WHERE { ?s ?p ?o }')).rejects.toBeInstanceOf(HttpErrorResponse);
+      });
+
+      test('should include the 5xx status code in the rejected HttpErrorResponse', async () => {
+        // Given a 500 API response
+        TestUtil.mockResponse(new ResponseMock(ADD_KNOWN_PREFIXES_ENDPOINT).setStatus(500).setMessage('Internal Server Error'));
+
+        // When adding known prefixes
+        try {
+          await sparqlService.addKnownPrefixes('SELECT * WHERE { ?s ?p ?o }');
+          fail('Should have thrown an error');
+        } catch (error) {
+          // Then the status should match the server response
+          expect((error as HttpErrorResponse).status).toBe(500);
+        }
       });
     });
   });

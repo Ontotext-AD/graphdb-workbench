@@ -11,10 +11,16 @@ export class AutocompleteRestService extends HttpService {
    * Performs an autocomplete search based on the provided search term.
    *
    * @param searchTerm - The string to use for autocomplete search.
+   * @param signal - Optional AbortSignal to cancel the request if needed.
    * @returns A Promise that resolves to an AutocompleteSearchResult object containing search suggestions.
    */
-  search(searchTerm: string): Promise<AutocompleteSearchResultResponse> {
-    return this.get(`${this.autocompleteRestPrefix}/query?q=${searchTerm}`);
+  search(searchTerm: string, signal?: AbortSignal): Promise<AutocompleteSearchResultResponse> {
+    return this.get(`${this.autocompleteRestPrefix}/query`, {
+      params: {
+        q: searchTerm
+      },
+      signal,
+    });
   }
 
   /**
