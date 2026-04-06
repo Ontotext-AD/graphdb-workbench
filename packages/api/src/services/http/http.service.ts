@@ -1,4 +1,14 @@
-import {HttpErrorResponse, HttpOptions, HttpOptionsBodyResponse, HttpOptionsHttpResponse, HttpOptionsTypedResponse, HttpRequest, HttpRequestConfig, HttpResponse} from '../../models/http';
+import {
+  HttpErrorResponse,
+  HttpOptions, HttpOptionsBlobResponse,
+  HttpOptionsBodyResponse,
+  HttpOptionsHttpResponse,
+  HttpOptionsTypedResponse,
+  HttpRequest,
+  HttpRequestConfig,
+  HttpResponse,
+  SupportedResponseType
+} from '../../models/http';
 import {InterceptorService} from '../interceptor/interceptor.service';
 import {ServiceProvider} from '../../providers';
 import {EventEmitter} from '../../emitters/event.emitter';
@@ -23,6 +33,14 @@ export class HttpService {
 
   /**
    * Performs an HTTP GET request.
+   * @param url     The URL to send the request to.
+   * @param options (Optional) An object containing the request options.
+   * @returns A Promise that resolves to the response data as a Blob.
+   */
+  get(url: string, options?: HttpOptionsBlobResponse): Promise<HttpResponse<Blob>>
+
+  /**
+   * Performs an HTTP GET request.
    *
    * @param url     The URL to send the request to.
    * @param options (Optional) An object containing the request options.
@@ -39,10 +57,13 @@ export class HttpService {
    */
   get<T>(url: string, options?: HttpOptionsHttpResponse): Promise<HttpResponse<T>>
 
-  get<T>(url: string, options?: HttpOptionsTypedResponse): Promise<HttpResponse<T> | T> {
+  get<T>(url: string, options?: HttpOptionsTypedResponse): Promise<HttpResponse<T> | T | Blob> {
     const {params, headers, responseType = 'body'} = options ?? {};
     if (responseType === 'response') {
       return this.request<T>(url, 'GET', {params, headers}, 'response');
+    }
+    if (responseType === 'blob') {
+      return this.request<T>(url, 'GET', {params, headers}, 'blob');
     }
     return this.request<T>(url, 'GET', {params, headers}, 'body');
   }
@@ -55,6 +76,14 @@ export class HttpService {
    * @returns A Promise that resolves to the response data of type `T`.
    */
   post<T>(url: string, options?: HttpOptions): Promise<T>
+
+  /**
+   * Performs an HTTP POST request.
+   * @param url     The URL to send the request to.
+   * @param options (Optional) An object containing the request options.
+   * @returns A Promise that resolves to the response data as a Blob.
+   */
+  post(url: string, options?: HttpOptionsBlobResponse): Promise<HttpResponse<Blob>>
 
   /**
    * Performs an HTTP POST request.
@@ -74,10 +103,13 @@ export class HttpService {
    */
   post<T>(url: string, options?: HttpOptionsHttpResponse): Promise<HttpResponse<T>>
 
-  post<T>(url: string, options?: HttpOptionsTypedResponse): Promise<HttpResponse<T> | T> {
+  post<T>(url: string, options?: HttpOptionsTypedResponse): Promise<HttpResponse<T> | T | Blob> {
     const {body, headers, responseType = 'body'} = options ?? {};
     if (responseType === 'response') {
       return this.request<T>(url, 'POST', {body, headers}, 'response');
+    }
+    if (responseType === 'blob') {
+      return this.request<T>(url, 'POST', {body, headers}, 'blob');
     }
     return this.request<T>(url, 'POST', {body, headers}, 'body');
   }
@@ -109,12 +141,12 @@ export class HttpService {
    */
   put<T>(url: string, options?: HttpOptionsHttpResponse): Promise<HttpResponse<T>>
 
-  put<T>(url: string, options?: HttpOptionsTypedResponse): Promise<HttpResponse<T> | T> {
-    const {body, headers, responseType = 'body'} = options ?? {};
+  put<T>(url: string, options?: HttpOptionsTypedResponse): Promise<HttpResponse<T> | T | Blob> {
+    const {params, body, headers, responseType = 'body'} = options ?? {};
     if (responseType === 'response') {
-      return this.request<T>(url, 'PUT', {body, headers}, 'response');
+      return this.request<T>(url, 'PUT', {params, body, headers}, 'response');
     }
-    return this.request<T>(url, 'PUT', {body, headers}, 'body');
+    return this.request<T>(url, 'PUT', {params, body, headers}, 'body');
   }
 
   /**
@@ -144,12 +176,12 @@ export class HttpService {
    */
   patch<T>(url: string, options?: HttpOptionsHttpResponse): Promise<HttpResponse<T>>
 
-  patch<T>(url: string, options?: HttpOptionsTypedResponse): Promise<HttpResponse<T> | T> {
-    const {body, headers, responseType = 'body'} = options ?? {};
+  patch<T>(url: string, options?: HttpOptionsTypedResponse): Promise<HttpResponse<T> | T | Blob> {
+    const {params, body, headers, responseType = 'body'} = options ?? {};
     if (responseType === 'response') {
-      return this.request<T>(url, 'PATCH', {body, headers}, 'response');
+      return this.request<T>(url, 'PATCH', {params, body, headers}, 'response');
     }
-    return this.request<T>(url, 'PATCH', {body, headers}, 'body');
+    return this.request<T>(url, 'PATCH', {params, body, headers}, 'body');
   }
 
   /**
@@ -179,12 +211,12 @@ export class HttpService {
    */
   delete<T>(url: string, options?: HttpOptionsHttpResponse): Promise<HttpResponse<T>>
 
-  delete<T>(url: string, options?: HttpOptionsTypedResponse): Promise<HttpResponse<T> | T> {
-    const {headers, responseType = 'body'} = options ?? {};
+  delete<T>(url: string, options?: HttpOptionsTypedResponse): Promise<HttpResponse<T> | T | Blob> {
+    const {params, headers, responseType = 'body'} = options ?? {};
     if (responseType === 'response') {
-      return this.request<T>(url, 'DELETE', {headers}, 'response');
+      return this.request<T>(url, 'DELETE', {params, headers}, 'response');
     }
-    return this.request<T>(url, 'DELETE', {headers}, 'body');
+    return this.request<T>(url, 'DELETE', {params, headers}, 'body');
   }
 
   /**
@@ -243,29 +275,33 @@ export class HttpService {
    *                 - `body`: The request body.
    * @returns A Promise that resolves with HttpResponse<T>, or is rejected with HttpErrorResponse if the request fails.
    */
-  private request<T>(url: string, method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH', options: HttpOptions = {}, responseType: 'response' | 'body' = 'response'): Promise<HttpResponse<T> | T> {
+  private request<T>(url: string, method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH', options: HttpOptions = {}, responseType: SupportedResponseType = 'response'): Promise<HttpResponse<T> | T | Blob> {
     const {fullUrl, headers} = this.getRequestConfig(url, options);
     const requestConfig = new HttpRequest({url: fullUrl, method, headers, body: options.body});
     let originalResponse: Response;
 
     return this.executeRequest(requestConfig)
       .then(async (response) => {
+        // Store the original response unread, to allow consuming a blob from it if needed.
         originalResponse = response;
+        // And clone the response here to read
+        const responseToRead = response.clone();
+
         if (!response.ok) {
           // Extract error data if available
-          const data = await this.getDataFromResponse<T>(responseType, response);
+          const data = await this.getDataFromResponse<T>(responseType, responseToRead);
           const errorResponse = new HttpErrorResponse({
             status: response.status,
             statusText: response.statusText,
             headers: this.extractHeaders(response),
             config: requestConfig,
             originalResponse: response,
-            data
+            data: data as string | T | null
           });
 
           return Promise.reject(errorResponse);
         }
-        const data = await this.getDataFromResponse<T>(responseType, response);
+        const data = await this.getDataFromResponse<T>(responseType, responseToRead);
 
         if (responseType === 'body') {
           return data as T;
@@ -277,12 +313,17 @@ export class HttpService {
           headers: this.extractHeaders(response),
           config: requestConfig,
           originalResponse: response,
-          data
+          data: data as string | T | null
         });
       })
       .catch((error) => {
         // If it's already an HttpErrorResponse, just rethrow it
         if (error instanceof HttpErrorResponse) {
+          return Promise.reject(error);
+        }
+        // If the error is an AbortError then the request was canceled and we should reject with the original
+        // error to allow proper handling of cancellations.
+        if (error?.name === 'AbortError') {
           return Promise.reject(error);
         }
 
@@ -306,9 +347,12 @@ export class HttpService {
       .finally(() => this.eventEmitter.emit({NAME: HTTP_REQUEST_DONE_EVENT, payload: undefined}));
   }
 
-  private async getDataFromResponse<T>(responseType: 'response' | 'body' | 'string', response: Response): Promise<string | T | null> {
-    let data: T | string | null = null;
+  private async getDataFromResponse<T>(responseType: SupportedResponseType, response: Response): Promise<string | Blob | T | null> {
+    if (responseType === 'blob') {
+      return response.blob();
+    }
 
+    let data: T | string | null = null;
     data = await response.text();
     if (!responseType || responseType === 'body' || responseType === 'response') {
       try {
@@ -335,7 +379,7 @@ export class HttpService {
       headers['Content-Type'] = options.headers?.['Content-Type'] ?? 'application/json';
     }
 
-    return {fullUrl, headers};
+    return {fullUrl, headers, signal: options.signal};
   }
 
   private formatBody(headers: Record<string, string | undefined>, body: unknown): BodyInit | null {
@@ -364,7 +408,8 @@ export class HttpService {
         return fetch(request.url, {
           method: request.method,
           headers: request.headers as HeadersInit,
-          body
+          body,
+          signal: request.signal,
         });
       })
       .then((response) => this.interceptorService.postProcess(response));

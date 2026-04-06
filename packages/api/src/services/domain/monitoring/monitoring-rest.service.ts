@@ -24,6 +24,10 @@ export class MonitoringRestService extends HttpService {
    * @returns A Promise that resolves when the query has been successfully deleted.
    */
   deleteQuery(queryId: string, repositoryId: string) {
-    return this.delete(`${this.MONITORING_ENDPOINT}/repository/${repositoryId}/query?query=${encodeURIComponent(queryId)}`);
+    return this.delete(`${this.MONITORING_ENDPOINT}/repository/${repositoryId}/query`, {
+      params: {
+        query: encodeURIComponent(queryId)
+      }
+    });
   }
 }

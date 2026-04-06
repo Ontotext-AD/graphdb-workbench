@@ -28,7 +28,7 @@ export class TestUtil {
         if (!headers.has('Content-Type')) {
           headers.set('Content-Type', 'application/json');
         }
-        return Promise.resolve({
+        const mockResponseObj = {
           ok: matchingMock.getStatus() >= 200 && matchingMock.getStatus() < 300,
           status: matchingMock.getStatus(),
           statusText: '',
@@ -43,7 +43,10 @@ export class TestUtil {
             const response = matchingMock.getResponse();
             return typeof response === 'string' ? response : JSON.stringify(response);
           },
-        } as Response);
+          blob: async () => matchingMock.getBlob() ?? new Blob(),
+          clone() { return {...mockResponseObj}; },
+        } as unknown as Response;
+        return Promise.resolve(mockResponseObj);
       }
 
       // Return a default 404 response if no matching mock found
