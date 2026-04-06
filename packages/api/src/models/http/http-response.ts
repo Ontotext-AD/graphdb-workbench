@@ -1,6 +1,18 @@
 import {HttpResponseBase, HttpResponseBaseInit} from './http-response-base';
 
 /**
+ * A type that represents the possible results of an HTTP response, which can be an instance of HttpResponse, a raw data
+ * object, or a Blob.
+ */
+export type HttpResponseResult<T> = HttpResponse<T> | T | Blob;
+
+/**
+ * A type that represents the possible data returned by an HTTP response, which can be a string, an object of type T,
+ * or null.
+ */
+export type HttpResponseData<T> = string | T | null
+
+/**
  * Initialization parameters for HttpResponse.
  */
 export interface HttpResponseInit<T = unknown> extends HttpResponseBaseInit {

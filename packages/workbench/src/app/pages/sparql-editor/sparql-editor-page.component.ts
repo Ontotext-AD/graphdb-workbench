@@ -266,10 +266,10 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
     config.sameAs = this.isOntopRepo || this.sameAsUserSetting;
     config.yasrToolbarPlugins = this.embedded ? [] : [this.exploreVisualGraphYasrToolbarElementBuilder];
     config.beforeUpdateQuery = (query: string, tabId: string) => this.getBeforeUpdateQueryHandler(query, tabId);
-    config.outputHandlers = new Map([
-      [EventDataType.QUERY_EXECUTED, (eventData: unknown) => this.queryExecutedHandler(eventData as QueryExecutedEvent)],
-      [EventDataType.REQUEST_ABORTED, (eventData: unknown) => this.requestAbortedHandler(eventData as RequestAbortedEvent)],
-    ]);
+    config.outputHandlers = {
+      [EventDataType.QUERY_EXECUTED]: (event: QueryExecutedEvent) => this.queryExecutedHandler(event),
+      [EventDataType.REQUEST_ABORTED]: (event: RequestAbortedEvent) => this.requestAbortedHandler(event),
+    };
     config.clearState = clearYasguiState;
 
     config.selectedPlugin = this.selectedPlugin;
@@ -700,7 +700,11 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
 
   /**
    * Initializes the SPARQL editor page.
-   * @param clearYasguiState
+   *
+   * @param clearYasguiState if set to true, the Yasgui will reinitialize and clear tab results. Queries will remain.
+   * This should be set to true when the repository is changed, to prevent showing incorrect results, but it shouldn't
+   * be set to true when the language is changed, because the results will be correct, and the user might lose their
+   * results without a need.
    */
   private init(clearYasguiState: boolean) {
     // This script check is required, because of the following scenario:
@@ -728,7 +732,7 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
       .then((prefixes) => {
         this.prefixes = prefixes;
         this.setInferAndSameAs(authenticatedUser);
-        this.initViewFromUrlParams(true);
+        this.initViewFromUrlParams(clearYasguiState);
       })
       .catch((error) => {
         this.logger.error('Error fetching namespaces for the active repository: ', error);

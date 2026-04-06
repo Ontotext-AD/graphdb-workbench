@@ -1,4 +1,10 @@
 {
+  "common": {
+    "errors": {
+      "error": "Erreur",
+      "server_error": "Erreur du serveur"
+    }
+  },
   "components": {
     "dialog": {
       "confirmation": {
@@ -38,9 +44,20 @@
     "helpInfo": "La vue Requête et mise à jour SPARQL est un éditeur unifié pour les requêtes et les mises à jour. Entrez n'importe quelle requête ou mise à jour SPARQL et cliquez sur Exécuter pour l'exécuter. La vue vous permet également d'enregistrer des requêtes pour une récupération et une exécution futures dans l'éditeur SPARQL.",
     "errors": {
       "saved_query_load_failed": "Impossible de récupérer des données pour la requête sauvegardée : {{savedQueryName}}; {{error}}",
-      "shared_query_load_failed": "Impossible de récupérer des données pour la requête partagée : {{sharedQueryName}}; {{error}}"
+      "shared_query_load_failed": "Impossible de récupérer des données pour la requête partagée : {{sharedQueryName}}; {{error}}",
+      "saved_queries_load_failed": "Erreur! Impossible de récupérer les requêtes sauvegardées",
+      "query_save_failed": "Erreur! Impossible de créer la requête sauvegardée",
+      "query_delete_failed": "Erreur! Impossible de supprimer la requête sauvegardée",
+      "get_repo_size_error": "Impossible de récupérer la taille du dépôt pour : {{repo}}; {{error}}",
+      "add_known_prefixes_failed": "Erreur! Impossible d'ajouter les préfixes connus."
     },
     "warnings": {
+    },
+    "success": {
+      "query_was_saved": "La requête {{name}} a été sauvegardée.",
+      "query_was_updated": "La requête {{name}} a été mise à jour.",
+      "query_was_deleted": "La requête {{savedQueryName}} a été supprimée.",
+      "url_was_copied": "URL copiée avec succès dans le presse-papiers."
     },
     "confirmation": {
       "on_auto_execute_query": {
@@ -65,6 +82,9 @@
       }
     },
     "yasgui": {
+      "tabs": {
+        "unnamed_tab_title": "Anonyme"
+      },
       "yasr": {
         "yasr_header": {
           "toolbar": {

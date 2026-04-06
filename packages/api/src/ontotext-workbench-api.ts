@@ -32,6 +32,7 @@ export * from './models/sparql';
 export * from './models/interactive-guide';
 export * from './models/connector';
 export * from './models/graph-config';
+export * from './models/http';
 
 // Export enums for external usages.
 export * from './models/url';
