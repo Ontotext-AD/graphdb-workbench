@@ -24,4 +24,6 @@ export const YasguiQueryParams = {
   EMBEDDED: 'embedded',
   // Query parameter used to configure the concrete operation that should be performed on results click.
   YASGUI_OPERATION: 'yasguiOperation',
+  // Query parameter used to configure the plugin selected when initializing YASGUI.
+  PLUGIN_NAME: 'pluginName',
 } as const;

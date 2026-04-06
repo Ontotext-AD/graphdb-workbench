@@ -1,4 +1,6 @@
-export class YasrSteps {
+import {BaseSteps} from "../base-steps.js";
+
+export class YasrSteps extends BaseSteps {
     static getYasr() {
         return cy.get('.tabPanel.active .yasr');
     }
@@ -117,5 +119,25 @@ export class YasrSteps {
 
     static getNoResultsMessage() {
         return YasrSteps.getYasr().find('.alert-success');
+    }
+
+    static getPivotTablePlugin() {
+        return YasrSteps.getYasr().find('.pivot-table-plugin');
+    }
+
+    static getGoogleChartPlugin() {
+        return YasrSteps.getYasr().find('.google-visualization-table');
+    }
+
+    static getExtendedTablePlugin() {
+        return YasrSteps.getYasr().find('.dataTables_wrapper');
+    }
+
+    static getFullscreenButton() {
+        return cy.get('.yasr-fullscreen-button');
+    }
+
+    static toggleFullscreen() {
+        YasrSteps.getFullscreenButton().click();
     }
 }

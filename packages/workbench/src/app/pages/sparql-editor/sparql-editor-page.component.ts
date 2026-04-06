@@ -56,8 +56,17 @@ import {CancelAbortingQuery} from './error/cancel-abort-query';
 import {ConfirmationService} from 'primeng/api';
 import {YasguiOperation, YasguiOperationType} from './constants';
 import {
-  GeoPluginFeatureClickEvent
-} from '../../components/yasgui-component-facade/models/event/geo-plugin-feature-click-event';
+  GeoFeatureProperties
+} from '../../components/yasgui-component-facade/models/yasr/geo-plugin/geo-feature-properties';
+import {
+  GeoPluginConfiguration
+} from '../../components/yasgui-component-facade/models/yasr/geo-plugin/geo-plugin-configuration';
+import {
+  URL_PLUGIN_NAME_TO_PLUGIN_NAME_MAPPING,
+  URLPluginName
+} from '../../components/yasgui-component-facade/models/yasr/yasr-plugin-name';
+
+interface UrlParametersAfterClear { repositoryId?: string, embedded?: boolean }
 
 @Component({
   selector: 'app-sparql-editor-page',
@@ -156,11 +165,8 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
   // This is used to determine whether the view is embedded in another application. When embedded, we want to hide
   // some elements and disable the "go to home" functionality, as it doesn't make sense in that context.
   private embedded = false;
-  // This is used to determine the specific action that the external application wants to perform, for example,
-  // when a feature is clicked in the Geo plugin and YASGUI is embedded in the external application, the external
-  // application might want to handle the click in a specific way.
-  // Possible operation types are defined in YasguiOperationType.
-  private yasguiOperation: string | undefined = undefined;
+  private isExternalClickHandlerOperationEnabled = false;
+  private selectedPlugin?: string;
   private readonly boundBeforeunloadHandler = () => this.beforeunloadHandler();
 
   // ================================
@@ -223,12 +229,15 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
     ]);
     config.clearState = clearYasguiState;
 
-    if (this.embedded && this.yasguiOperation === YasguiOperation.EXTERNAL_CLICK_HANDLER) {
-      config.pluginsConfigurations = {
-        geo: {
-          onFeatureClick: (event: GeoPluginFeatureClickEvent) => this.onFeatureClickHandler(event),
-        },
-      };
+    config.selectedPlugin = this.selectedPlugin;
+
+    config.pluginsConfigurations = {
+      geo: this.getGeoPluginConfiguration(),
+    };
+
+    if (this.embedded) {
+      config.yasrFullscreen.defaultFullscreen = true;
+      config.yasrFullscreen.allowEscape = false;
     }
 
     this.yasguiConfig.set(config);
@@ -244,7 +253,20 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
       this.embedded = true;
     }
     if (queryParams.hasOwnProperty(YasguiQueryParams.YASGUI_OPERATION)) {
-      this.yasguiOperation = queryParams[YasguiQueryParams.YASGUI_OPERATION];
+      this.isExternalClickHandlerOperationEnabled = YasguiOperation.EXTERNAL_CLICK_HANDLER === queryParams[YasguiQueryParams.YASGUI_OPERATION];
+    } else {
+      this.isExternalClickHandlerOperationEnabled = false;
+    }
+
+    /**
+     * If the plugin URL parameter is missing or does not match any known mapping,
+     * `selectedPlugin` will remain undefined and YASGUI will fall back to the last selected plugin or default one.
+     */
+    if (queryParams.hasOwnProperty(YasguiQueryParams.PLUGIN_NAME)) {
+      const pluginName: URLPluginName | undefined = queryParams[YasguiQueryParams.PLUGIN_NAME];
+      if (pluginName) {
+        this.selectedPlugin = URL_PLUGIN_NAME_TO_PLUGIN_NAME_MAPPING[pluginName];
+      }
     }
     this.updateConfig(clearYasguiState);
     if (queryParams.hasOwnProperty(SavedQueryParams.name)) {
@@ -307,16 +329,32 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
   };
 
   /**
+   * Creates and configures the Geo plugin configuration.
+   *
+   * If the application is in embedded mode and the external click handler operation is enabled, a custom feature click handler is attached.
+   *
+   * @returns Configured {@link GeoPluginConfiguration} instance.
+   */
+  private getGeoPluginConfiguration(): GeoPluginConfiguration {
+    const geoPluginConfig = new GeoPluginConfiguration();
+    if (this.embedded && this.isExternalClickHandlerOperationEnabled) {
+      geoPluginConfig.onFeatureClick = this.onFeatureClickHandler.bind(this);
+    }
+    return geoPluginConfig;
+  };
+
+  /**
    * Callback function triggered when a user clicks on a feature in the geo plugin.
    * Sends a message to the parent window using `ParentWindowMessageService`.
-   * @param featurePayload - the payload containing information about the clicked feature, such as its properties and geometry.
+   *
+   * @param featurePayload - Feature properties excluding geospatial-specific fields.
    */
-  private onFeatureClickHandler(featurePayload: GeoPluginFeatureClickEvent) {
+  private onFeatureClickHandler(featurePayload: GeoFeatureProperties) {
     this.parentWindowMessageService.postMessage({
       type: YasguiOperationType.FEATURE_CLICK,
       featurePayload,
     }, WindowService.getReferer());
-  }
+  };
 
   /**
    * Opens a new tab in the editor and sets the provided SPARQL query in it. If the query is undefined, an empty tab
@@ -337,13 +375,19 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
   private clearUrlParameters() {
     this.internallyReloaded = true;
     const currentParams = this.activatedRoute.snapshot.queryParams;
-    // Keep only the repositoryId parameter (if any). This will prevent router event from being triggered again and
+    // Keep the repositoryId parameter (if any). This will prevent router event from being triggered again and
     // reinitializing the repositoryId param thus adding a new history entry.
     const repositoryId = currentParams[REPOSITORY_ID_PARAM];
+    const queryParams: UrlParametersAfterClear = repositoryId ? {repositoryId} : {};
+    // If the Workbench is in embedded mode, it should remain embedded.
+    if (this.embedded) {
+      queryParams.embedded = true;
+    }
+
     // Replace current URL without adding a new history entry
     void this.router.navigate([], {
       relativeTo: this.activatedRoute,
-      queryParams: repositoryId ? {repositoryId} : {},
+      queryParams,
       replaceUrl: true,
     });
   }
