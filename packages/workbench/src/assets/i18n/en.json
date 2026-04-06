@@ -34,7 +34,8 @@
     "title": "SPARQL Query & Update",
     "errors": {
       "saved_query_load_failed": "Could not get data for saved query: {{savedQueryName}}; {{error}}",
-      "shared_query_load_failed": "Could not get data for shared query: {{sharedQueryName}}; {{error}}"
+      "shared_query_load_failed": "Could not get data for shared query: {{sharedQueryName}}; {{error}}",
+      "saved_queries_load_failed": "Error! Could not get saved queries"
     },
     "warnings": {
     },

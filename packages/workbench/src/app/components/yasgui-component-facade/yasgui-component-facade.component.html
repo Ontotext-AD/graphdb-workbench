@@ -1,4 +1,6 @@
 <ontotext-yasgui
   class="{{cssClass()}}"
-  [config]="yasguiConfig()">
+  [config]="yasguiConfig()"
+  [savedQueryConfig]="savedQueryConfig"
+  (loadSavedQueries)="loadSavedQueries()">
 </ontotext-yasgui>

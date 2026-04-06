@@ -20,4 +20,13 @@ export class SparqlService implements Service {
     const response = await this.sparqlRestService.getSavedQuery(queryName, owner);
     return mapSavedQueryListResponseToModel(response);
   }
+
+  /**
+   * Retrieves all saved queries from the server.
+   * @returns A promise that resolves to the list with saved queries.
+   */
+  async getSavedQueries(): Promise<SavedQueryList> {
+    const response = await this.sparqlRestService.getSavedQueries();
+    return mapSavedQueryListResponseToModel(response);
+  }
 }

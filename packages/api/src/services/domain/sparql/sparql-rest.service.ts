@@ -22,4 +22,12 @@ export class SparqlRestService extends HttpService {
     }
     return this.get(`${SparqlRestService.SPARQL_ENDPOINT}/saved-queries`, {params});
   }
+
+  /**
+   * Retrieves saved queries list from the server.
+   * @returns A promise that resolves to an array of {@link SavedQueryListResponse} containing the saved queries.
+   */
+  async getSavedQueries(): Promise<SavedQueryListResponse> {
+    return this.get(`${SparqlRestService.SPARQL_ENDPOINT}/saved-queries`);
+  }
 }

@@ -206,5 +206,162 @@ describe('SparqlService', () => {
       });
     });
   });
+
+  describe('getSavedQueries', () => {
+    describe('response mapper – empty / falsy responses', () => {
+      test('should return an empty SavedQueryList when the API returns null', async () => {
+        // Given a null API response
+        TestUtil.mockResponse(new ResponseMock(SAVED_QUERIES_ENDPOINT).setResponse(null));
+
+        // When the service fetches all saved queries
+        const result = await sparqlService.getSavedQueries();
+
+        // Then an empty SavedQueryList should be returned
+        expect(result).toBeInstanceOf(SavedQueryList);
+        expect(result.getItems()).toHaveLength(0);
+      });
+
+      test('should return an empty SavedQueryList when the API returns an empty array', async () => {
+        // Given an empty array API response
+        TestUtil.mockResponse(new ResponseMock(SAVED_QUERIES_ENDPOINT).setResponse([]));
+
+        // When the service fetches all saved queries
+        const result = await sparqlService.getSavedQueries();
+
+        // Then an empty SavedQueryList should be returned
+        expect(result).toBeInstanceOf(SavedQueryList);
+        expect(result.getItems()).toHaveLength(0);
+      });
+    });
+
+    describe('response mapper – readonly flag based on ownership', () => {
+      test('should mark a query as not readonly when the current user is the owner', async () => {
+        // Given the current user is the owner of the query
+        securityContextService.updateAuthenticatedUser(new AuthenticatedUser({username: 'admin'}));
+        const response = [rawQuery({owner: 'admin'})];
+        TestUtil.mockResponse(new ResponseMock(SAVED_QUERIES_ENDPOINT).setResponse(response));
+
+        // When the service fetches all saved queries
+        const result = await sparqlService.getSavedQueries();
+        const query = result.getFirstQuery();
+
+        // Then the query should not be readonly
+        expect(query).toBeInstanceOf(SavedQuery);
+        expect(query!.readonly).toBe(false);
+      });
+
+      test('should mark a query as readonly when the current user is not the owner', async () => {
+        // Given the current user is different from the query owner
+        securityContextService.updateAuthenticatedUser(new AuthenticatedUser({username: 'guest'}));
+        const response = [rawQuery({owner: 'admin'})];
+        TestUtil.mockResponse(new ResponseMock(SAVED_QUERIES_ENDPOINT).setResponse(response));
+
+        // When the service fetches all saved queries
+        const result = await sparqlService.getSavedQueries();
+        const query = result.getFirstQuery();
+
+        // Then the query should be readonly
+        expect(query!.readonly).toBe(true);
+      });
+
+      test('should mark all queries as readonly when there is no authenticated user', async () => {
+        // Given no authenticated user is set
+        jest.spyOn(securityContextService, 'getAuthenticatedUser').mockReturnValue(undefined);
+        const response = [rawQuery({owner: 'admin'}), rawQuery({name: 'other-query', owner: 'editor'})];
+        TestUtil.mockResponse(new ResponseMock(SAVED_QUERIES_ENDPOINT).setResponse(response));
+
+        // When the service fetches all saved queries
+        const result = await sparqlService.getSavedQueries();
+
+        // Then all returned queries should be readonly
+        result.getItems().forEach((q) => {
+          expect(q.readonly).toBe(true);
+        });
+      });
+    });
+
+    describe('response mapper – field mapping', () => {
+      test('should correctly map all fields from the raw response to SavedQuery', async () => {
+        // Given a fully populated query response
+        securityContextService.updateAuthenticatedUser(new AuthenticatedUser({username: 'admin'}));
+        const raw = rawQuery({name: 'full-query', body: 'ASK { }', owner: 'admin', shared: true});
+        TestUtil.mockResponse(new ResponseMock(SAVED_QUERIES_ENDPOINT).setResponse([raw]));
+
+        // When the service fetches all saved queries
+        const result = await sparqlService.getSavedQueries();
+        const query = result.getFirstQuery()!;
+
+        // Then every field should be mapped correctly
+        expect(query.queryName).toBe('full-query');
+        expect(query.query).toBe('ASK { }');
+        expect(query.owner).toBe('admin');
+        expect(query.isPublic).toBe(true);
+        expect(query.readonly).toBe(false);
+      });
+
+      test('should set isPublic to false when shared is false', async () => {
+        // Given a private (non-shared) query
+        securityContextService.updateAuthenticatedUser(new AuthenticatedUser({username: 'admin'}));
+        const raw = rawQuery({shared: false});
+        TestUtil.mockResponse(new ResponseMock(SAVED_QUERIES_ENDPOINT).setResponse([raw]));
+
+        // When the service fetches all saved queries
+        const result = await sparqlService.getSavedQueries();
+
+        // Then isPublic should be false
+        expect(result.getFirstQuery()!.isPublic).toBe(false);
+      });
+
+      test('should set isPublic to true when shared is true', async () => {
+        // Given a public (shared) query
+        securityContextService.updateAuthenticatedUser(new AuthenticatedUser({username: 'admin'}));
+        const raw = rawQuery({shared: true});
+        TestUtil.mockResponse(new ResponseMock(SAVED_QUERIES_ENDPOINT).setResponse([raw]));
+
+        // When the service fetches all saved queries
+        const result = await sparqlService.getSavedQueries();
+
+        // Then isPublic should be true
+        expect(result.getFirstQuery()!.isPublic).toBe(true);
+      });
+    });
+
+    describe('response mapper – multiple queries', () => {
+      test('should map all queries in the response and apply correct readonly per owner', async () => {
+        // Given the current user is 'alice' and the response contains queries from two different owners
+        securityContextService.updateAuthenticatedUser(new AuthenticatedUser({username: 'alice'}));
+        const response = [
+          rawQuery({name: 'q1', owner: 'alice'}),
+          rawQuery({name: 'q2', owner: 'bob'}),
+          rawQuery({name: 'q3', owner: 'alice'}),
+        ];
+        TestUtil.mockResponse(new ResponseMock(SAVED_QUERIES_ENDPOINT).setResponse(response));
+
+        // When the service fetches all saved queries
+        const result = await sparqlService.getSavedQueries();
+
+        // Then the list should contain all three queries with correct readonly flags
+        expect(result).toBeInstanceOf(SavedQueryList);
+        expect(result.getItems()).toHaveLength(3);
+        expect(result.getItems()[0].readonly).toBe(false); // owned by alice
+        expect(result.getItems()[1].readonly).toBe(true);  // owned by bob
+        expect(result.getItems()[2].readonly).toBe(false); // owned by alice
+      });
+    });
+
+    describe('HTTP request construction', () => {
+      test('should send a request to the saved-queries endpoint with no query parameters', async () => {
+        // Given no query parameters are needed
+        securityContextService.updateAuthenticatedUser(new AuthenticatedUser({username: 'admin'}));
+        TestUtil.mockResponse(new ResponseMock(SAVED_QUERIES_ENDPOINT).setResponse([]));
+
+        // When the service fetches all saved queries
+        await sparqlService.getSavedQueries();
+
+        // Then the request URL should have no extra parameters
+        expect(TestUtil.getRequest(SAVED_QUERIES_ENDPOINT)).toBeDefined();
+      });
+    });
+  });
 });
 
