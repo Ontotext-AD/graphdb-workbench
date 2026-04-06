@@ -10,6 +10,8 @@ import {TranslationBundles} from '../../../../models/translation-bundles';
 import {OutputHandlers} from '../output-handlers';
 import {Yasgui} from './yasgui';
 import {BeforeUpdateQueryResult, HttpHeaders} from '@ontotext/workbench-api';
+import {PluginConfigurations} from '../yasr/geo-plugin/plugin-configurations';
+import {YasrFullscreenConfig} from '../yasr/yasr-fullscreen-config';
 
 /**
  * Holds all configurations related with ontotext-yasgui-web-component.
@@ -173,10 +175,9 @@ export class OntotextYasguiConfig {
    */
   public pluginOrder: YasrPluginName[];
   /**
-   * Map with configuration of given plugin. The key of map is the name of a plugin. The value is any object which
-   * fields are supported by the plugin configuration.
+   * An object containing the configuration for each plugin.
    */
-  public pluginsConfigurations: Partial<Record<YasrPluginName, unknown>> | undefined;
+  public pluginsConfigurations?: PluginConfigurations;
   /**
    * Defines pageSize of pagination.
    * Default value is 1000.
@@ -243,6 +244,14 @@ export class OntotextYasguiConfig {
    * A map of output handlers which can be used to handle different types of SPARQL results.
    */
   outputHandlers: OutputHandlers | undefined;
+  /**
+   * The plugin name to be selected for the active YASR instance. If not set, the persisted selection or the default plugin will be used.
+   */
+  public selectedPlugin?: string;
+  /**
+   * Configuration options for controlling YASR fullscreen behavior.
+   */
+  public yasrFullscreen: YasrFullscreenConfig;
 
   constructor() {
     this.render = RenderingMode.YASGUI;
@@ -289,5 +298,7 @@ export class OntotextYasguiConfig {
     this.getCellContent = () => '';
     this.sparqlResponse = undefined;
     this.outputHandlers = undefined;
+    this.selectedPlugin = undefined;
+    this.yasrFullscreen = new YasrFullscreenConfig();
   }
 }

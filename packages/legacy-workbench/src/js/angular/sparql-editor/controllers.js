@@ -29,7 +29,9 @@ import {
     GuidesService,
     WindowService,
 } from "@ontotext/workbench-api";
-import {YASGUI_OPERATION, YASGUI_OPERATION_TYPE} from "./constants";
+import {YASGUI_OPERATION, YASGUI_OPERATION_TYPE, URL_PLUGIN_NAME_TO_PLUGIN_NAME_MAPPING} from "./constants";
+import {GeoPluginConfiguration} from '../models/ontotext-yasgui/plugin-configuration';
+import {YasrFullscreenConfig} from '../models/ontotext-yasgui/yasr-fullscreen-config';
 
 const modules = [
     'ui.bootstrap',
@@ -91,12 +93,8 @@ function SparqlEditorCtrl($rootScope,
     // This is used to determine whether the view is embedded in another application. When embedded, we want to hide
     // some elements and disable the "go to home" functionality, as it doesn't make sense in that context.
     $scope.embedded = $location.search().embedded;
-    // This is used to determine the specific action that the external application wants to perform, for example,
-    // when a feature is clicked in the Geo plugin and YASGUI is embedded in the external application, the external
-    // application might want to handle the click in a specific way.
-    // Possible operation types are defined in YASGUI_OPERATION_TYPE.
-    $scope.yasguiOperation = $location.search().yasguiOperation;
-
+    $scope.isExternalClickHandlerOperationEnabled = YASGUI_OPERATION.EXTERNAL_CLICK_HANDLER === $location.search().yasguiOperation;
+    $scope.selectedPlugin = URL_PLUGIN_NAME_TO_PLUGIN_NAME_MAPPING[$location.search().pluginName];
     /**
      * @type {OntotextYasguiConfig}
      */
@@ -124,20 +122,23 @@ function SparqlEditorCtrl($rootScope,
             infer: isOntopRepo || $scope.inferUserSetting,
             sameAs: isOntopRepo || $scope.sameAsUserSetting,
             yasrToolbarPlugins: [exploreVisualGraphYasrToolbarElementBuilder],
+            selectedPlugin: $scope.selectedPlugin,
             beforeUpdateQuery: getBeforeUpdateQueryHandler(),
             outputHandlers: new Map([
                 [EventDataType.QUERY_EXECUTED, queryExecutedHandler],
                 [EventDataType.REQUEST_ABORTED, requestAbortedHandler],
             ]),
             clearState: clearYasguiState ?? false,
+            pluginsConfigurations: {
+                geo: getGeoPluginConfiguration(),
+            },
         };
 
-        if ($scope.embedded && $scope.yasguiOperation === YASGUI_OPERATION.EXTERNAL_CLICK_HANDLER) {
-            yasguiConfig.pluginsConfigurations = {
-                geo: {
-                    onFeatureClick: onFeatureClickHandler,
-                },
-            };
+        if ($scope.embedded) {
+            const yasrFullscreen = new YasrFullscreenConfig();
+            yasrFullscreen.defaultFullscreen = true;
+            yasrFullscreen.allowEscape = false;
+            yasguiConfig.yasrFullscreen = yasrFullscreen;
         }
         $scope.yasguiConfig = yasguiConfig;
     };
@@ -149,6 +150,21 @@ function SparqlEditorCtrl($rootScope,
     // =========================
     // Private functions
     // =========================
+    /**
+     * Callback function triggered when a user clicks on a feature in the geo plugin.
+     * Sends a message to the parent window using `ParentWindowMessageService`.
+     * @returns {GeoPluginConfiguration} the configuration for the Geo plugin.
+     */
+    const getGeoPluginConfiguration = () => {
+        const geoPluginConfig = new GeoPluginConfiguration();
+
+        if ($scope.embedded && $scope.isExternalClickHandlerOperationEnabled) {
+            geoPluginConfig.onFeatureClick = onFeatureClickHandler;
+        }
+        return geoPluginConfig;
+    };
+
+
     /**
      * Callback function triggered when a user clicks on a feature in the geo plugin.
      * Sends a message to the parent window using `ParentWindowMessageService`.
@@ -280,10 +296,15 @@ function SparqlEditorCtrl($rootScope,
     const clearUrlParameters = () => {
         internallyReloaded = true;
         const currentParams = $location.search();
-        // Keep only the repositoryId parameter (if any). This will prevent router event from being triggered again and
+        // Keep the repositoryId parameter (if any). This will prevent router event from being triggered again and
         // reinitializing the repositoryId param thus adding a new history entry.
         const repositoryId = currentParams[REPOSITORY_ID_PARAM];
-        $location.search(repositoryId ? {repositoryId} : {});
+        const searchTerm = repositoryId ? {repositoryId} : {};
+        // If the Workbench is in embedded mode, it should remain embedded.
+        if ($scope.embedded) {
+            searchTerm.embedded = true;
+        }
+        $location.search(searchTerm);
         // Replace current URL without adding a new history entry
         $location.replace();
     };

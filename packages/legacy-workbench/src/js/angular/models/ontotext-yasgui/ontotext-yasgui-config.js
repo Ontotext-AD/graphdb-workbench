@@ -9,7 +9,6 @@ import {YasrPluginName} from "./yasr-plugin-name";
  */
 export class OntotextYasguiConfig {
     constructor() {
-
         /**
          * Configure what part of the yasgui should be rendered.
          *
@@ -266,10 +265,12 @@ export class OntotextYasguiConfig {
         this.pluginOrder = [YasrPluginName.EXTENDED_TABLE, YasrPluginName.RAW_RESPONSE];
 
         /**
-         * Map with configuration of given plugin. The key of map is the name of a plugin. The value is any object which fields are supported by
-         * the plugin configuration.
+         * An object containing the configuration for each plugin.
          *
-         * @type {{[pluginName]: any}}
+         * - **Keys**: plugin names (e.g., `"geo"`)
+         * - **Values**: corresponding plugin configuration objects
+         *
+         * @type {{[pluginName]: PluginConfiguration} | undefined}
          */
         this.pluginsConfigurations = undefined;
 
@@ -360,5 +361,22 @@ export class OntotextYasguiConfig {
          * @type {string | undefined}
          */
         this.sparqlResponse = undefined;
+
+        /**
+         * The plugin name to be selected for the active YASR instance. If not set, the persisted selection or the default plugin will be used.
+         *
+         * @type {string | undefined}
+         */
+        this.selectedPlugin = undefined;
+
+        /**
+         * Configuration options for controlling YASR fullscreen behavior.
+         */
+        this.yasrFullscreen = {
+            // Determines whether YASR should be rendered in fullscreen mode by default when the YASGUI is initialized.
+            defaultFullscreen: false,
+            // Controls whether the Escape (ESC) key can be used to exit fullscreen mode.
+            allowEscape: true,
+        };
     }
 }

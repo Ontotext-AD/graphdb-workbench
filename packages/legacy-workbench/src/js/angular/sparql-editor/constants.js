@@ -16,3 +16,16 @@ export const YASGUI_OPERATION_TYPE = {
     FEATURE_CLICK: 'yasgui.click.feature',
 };
 
+/**
+ * Maps user-friendly plugin names to their corresponding internal YASR plugin IDs.
+ *
+ * This mapping allows users to select a plugin in a more intuitive way,
+ * without needing to know the exact internal ID of each plugin.
+ */
+export const URL_PLUGIN_NAME_TO_PLUGIN_NAME_MAPPING = {
+    table: 'extended_table',
+    rawResponse: 'extended_response',
+    geo: 'geo',
+    googleChart: 'charts',
+    pivotTable: 'pivot-table-plugin',
+};
