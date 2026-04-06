@@ -3,6 +3,7 @@ import {service} from '../../../providers';
 import {SparqlRestService} from './sparql-rest.service';
 import {mapSavedQueryListResponseToModel} from './mappers/saved-query-list.mapper';
 import {SavedQueryList} from '../../../models/sparql';
+import {SaveQueryRequest} from './request/save-query-request';
 
 /**
  * Service for handling SPARQL-related operations.
@@ -28,5 +29,14 @@ export class SparqlService implements Service {
   async getSavedQueries(): Promise<SavedQueryList> {
     const response = await this.sparqlRestService.getSavedQueries();
     return mapSavedQueryListResponseToModel(response);
+  }
+
+  /**
+   * Saves a sparql query.
+   * @param payload The save query request payload containing the query data to be saved.
+   * @returns A promise that resolves when the query is successfully saved, or rejects with an error if the operation fails.
+   */
+  saveQuery(payload: SaveQueryRequest): Promise<void> {
+    return this.sparqlRestService.saveQuery(payload);
   }
 }

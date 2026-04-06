@@ -6,8 +6,10 @@ import {
   SparqlService,
   service,
   OntoToastrService,
+  SaveQueryRequest,
 } from '@ontotext/workbench-api';
 import {TranslocoService} from '@jsverse/transloco';
+import {SaveQueryEvent} from './models/query/save-query-event';
 
 defineCustomElements();
 
@@ -28,29 +30,47 @@ defineCustomElements();
   }
 })
 export class YasguiComponentFacadeComponent {
-  yasguiConfig = input<OntotextYasguiConfig>();
-  cssClass = input<string>('');
-
+  // ===================================
+  // Angular injections
+  // ===================================
   private readonly translocoService = inject(TranslocoService);
 
+  // ===================================
+  // API module injections
+  // ===================================
   private readonly sparqlService = service(SparqlService);
   private readonly toastrService = service(OntoToastrService);
 
+  // ===================================
+  // Public variables
+  // ===================================
+  yasguiConfig = input<OntotextYasguiConfig>();
+  cssClass = input<string>('');
+
   afterInit: unknown;
   queryChanged: unknown;
-
   savedQueryConfig: SavedQueryConfig = {
-    savedQueries: []
+    savedQueries: [],
+    saveSuccess: false,
   };
 
+  // ===================================
+  // Private variables
+  // ===================================
+
+  // ===================================
+  // Yasgui component event handlers
+  // ===================================
+
   /**
-   * The event is fired when saved queries should be loaded to be displayed to the user.
+   * Event handler that tries to load all saved queries and update the config of the yasgui component with them.
    */
   async loadSavedQueries() {
     try {
       const savedQueries = await this.sparqlService.getSavedQueries();
       // Recreate the config to trigger the watcher in the yasgui component that checks the identity only.
       this.savedQueryConfig = {
+        ...this.savedQueryConfig,
         savedQueries: savedQueries.getItems()
       };
     } catch (err) {
@@ -59,5 +79,55 @@ export class YasguiComponentFacadeComponent {
         {title: this.translocoService.translate('sparql_editor.errors.saved_queries_load_failed'),}
       );
     }
-  };
+  }
+
+  /**
+   * Handles the createSavedQuery event emitted by the ontotext-yasgui. The event is fired when a saved query should
+   * be created.
+   * @param event The event payload containing the query data from which a saved query object should be
+   * created.
+   */
+  createSavedQuery(event: Event) {
+    const payload = this.queryPayloadFromEvent(event as unknown as SaveQueryEvent);
+    this.sparqlService.saveQuery(payload)
+      .then(() => this.queryCreatedHandler(payload))
+      .catch((err: unknown) => this.querySaveErrorHandler(err));
+  }
+
+  // ===================================
+  // Private methods
+  // ===================================
+
+  private querySavedHandler(successMessage: string) {
+    this.toastrService.success(successMessage);
+    this.savedQueryConfig = {
+      ...this.savedQueryConfig,
+      saveSuccess: true
+    };
+  }
+
+  private queryCreatedHandler(payload: SaveQueryRequest) {
+    return this.querySavedHandler(this.translocoService.translate('sparql_editor.success.query_was_saved', {name: payload.name}));
+  }
+
+  private querySaveErrorHandler(err: unknown) {
+    const errorMessage = this.translocoService.translate('sparql_editor.errors.query_save_failed');
+    this.toastrService.error(
+      err instanceof Error ? err.message : String(err),
+      {title: errorMessage}
+    );
+    this.savedQueryConfig = {
+      ...this.savedQueryConfig,
+      saveSuccess: false,
+      errorMessage: [errorMessage],
+    };
+  }
+
+  private queryPayloadFromEvent(event: SaveQueryEvent): SaveQueryRequest {
+    return {
+      name: event.detail.queryName,
+      body: event.detail.query,
+      shared: event.detail.isPublic
+    };
+  }
 }

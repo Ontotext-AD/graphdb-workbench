@@ -35,9 +35,13 @@
     "errors": {
       "saved_query_load_failed": "Impossible de récupérer des données pour la requête sauvegardée : {{savedQueryName}}; {{error}}",
       "shared_query_load_failed": "Impossible de récupérer des données pour la requête partagée : {{sharedQueryName}}; {{error}}",
-      "saved_queries_load_failed": "Erreur! Impossible de récupérer les requêtes sauvegardées"
+      "saved_queries_load_failed": "Erreur! Impossible de récupérer les requêtes sauvegardées",
+      "query_save_failed": "Erreur! Impossible de créer la requête sauvegardée"
     },
     "warnings": {
+    },
+    "success": {
+      "query_was_saved": "La requête {{name}} a été sauvegardée."
     },
     "confirmation": {
       "on_auto_execute_query": {

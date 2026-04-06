@@ -35,9 +35,13 @@
     "errors": {
       "saved_query_load_failed": "Could not get data for saved query: {{savedQueryName}}; {{error}}",
       "shared_query_load_failed": "Could not get data for shared query: {{sharedQueryName}}; {{error}}",
-      "saved_queries_load_failed": "Error! Could not get saved queries"
+      "saved_queries_load_failed": "Error! Could not get saved queries",
+      "query_save_failed": "Error! Cannot create saved query"
     },
     "warnings": {
+    },
+    "success": {
+      "query_was_saved": "Query {{name}} was saved."
     },
     "confirmation": {
       "on_auto_execute_query": {

@@ -6,6 +6,8 @@ import {service} from '../../../../providers';
 import {TestUtil} from '../../../utils/test/test-util';
 import {ResponseMock} from '../../../http/test/response-mock';
 import {SavedQueryResponse} from '../response/saved-query-response';
+import {SaveQueryRequest} from '../request/save-query-request';
+import {HttpErrorResponse} from '../../../../models/http';
 
 const SAVED_QUERIES_ENDPOINT = 'rest/sparql/saved-queries';
 
@@ -360,6 +362,146 @@ describe('SparqlService', () => {
 
         // Then the request URL should have no extra parameters
         expect(TestUtil.getRequest(SAVED_QUERIES_ENDPOINT)).toBeDefined();
+      });
+    });
+  });
+
+  describe('saveQuery', () => {
+    const saveQueryPayload = (overrides: Partial<SaveQueryRequest> = {}): SaveQueryRequest => ({
+      name: 'my-query',
+      body: 'SELECT * WHERE { ?s ?p ?o }',
+      shared: false,
+      ...overrides,
+    });
+
+    describe('success scenarios', () => {
+      test('should resolve successfully when the API returns 200', async () => {
+        // Given a successful API response
+        TestUtil.mockResponse(new ResponseMock(SAVED_QUERIES_ENDPOINT).setStatus(200).setResponse(null));
+
+        // When saving the query
+        // Then it should resolve without throwing
+        await expect(sparqlService.saveQuery(saveQueryPayload())).resolves.not.toThrow();
+      });
+
+      test('should resolve when saving a public (shared) query', async () => {
+        // Given a public query payload
+        TestUtil.mockResponse(new ResponseMock(SAVED_QUERIES_ENDPOINT).setStatus(200).setResponse(null));
+
+        // When saving the public query
+        // Then it should resolve without throwing
+        await expect(sparqlService.saveQuery(saveQueryPayload({shared: true}))).resolves.not.toThrow();
+      });
+
+      test('should resolve when saving a private (non-shared) query', async () => {
+        // Given a private query payload
+        TestUtil.mockResponse(new ResponseMock(SAVED_QUERIES_ENDPOINT).setStatus(200).setResponse(null));
+
+        // When saving the private query
+        // Then it should resolve without throwing
+        await expect(sparqlService.saveQuery(saveQueryPayload({shared: false}))).resolves.not.toThrow();
+      });
+    });
+
+    describe('HTTP request construction', () => {
+      test('should send a POST request to the saved-queries endpoint', async () => {
+        // Given a valid query payload
+        TestUtil.mockResponse(new ResponseMock(SAVED_QUERIES_ENDPOINT).setStatus(200).setResponse(null));
+
+        // When saving the query
+        await sparqlService.saveQuery(saveQueryPayload());
+
+        // Then the request should be sent to the correct endpoint
+        expect(TestUtil.getRequest(SAVED_QUERIES_ENDPOINT)).toBeDefined();
+      });
+
+      test('should use the POST HTTP method', async () => {
+        // Given a valid query payload
+        TestUtil.mockResponse(new ResponseMock(SAVED_QUERIES_ENDPOINT).setStatus(200).setResponse(null));
+
+        // When saving the query
+        await sparqlService.saveQuery(saveQueryPayload());
+
+        // Then the request method should be POST
+        const request = TestUtil.getRequest(SAVED_QUERIES_ENDPOINT);
+        expect(request!.method).toBe('POST');
+      });
+
+      test('should serialize the payload as JSON in the request body', async () => {
+        // Given a fully specified query payload
+        const payload = saveQueryPayload({name: 'test-query', body: 'ASK { }', shared: true});
+        TestUtil.mockResponse(new ResponseMock(SAVED_QUERIES_ENDPOINT).setStatus(200).setResponse(null));
+
+        // When saving the query
+        await sparqlService.saveQuery(payload);
+
+        // Then the request body should be the JSON-serialized payload
+        const request = TestUtil.getRequest(SAVED_QUERIES_ENDPOINT);
+        expect(request!.body).toBe(JSON.stringify(payload));
+      });
+
+      test('should correctly include all fields (name, body, shared) in the serialized request body', async () => {
+        // Given a fully specified query payload
+        const payload: SaveQueryRequest = {name: 'full-query', body: 'DESCRIBE ?s', shared: true};
+        TestUtil.mockResponse(new ResponseMock(SAVED_QUERIES_ENDPOINT).setStatus(200).setResponse(null));
+
+        // When saving the query
+        await sparqlService.saveQuery(payload);
+
+        // Then all fields should be present in the parsed request body
+        const request = TestUtil.getRequest(SAVED_QUERIES_ENDPOINT);
+        const parsed = JSON.parse(request!.body as string);
+        expect(parsed.name).toBe('full-query');
+        expect(parsed.body).toBe('DESCRIBE ?s');
+        expect(parsed.shared).toBe(true);
+      });
+    });
+
+    describe('error propagation', () => {
+      test('should reject with an HttpErrorResponse on a 4xx response', async () => {
+        // Given a 400 API response
+        TestUtil.mockResponse(new ResponseMock(SAVED_QUERIES_ENDPOINT).setStatus(400).setMessage('Bad Request'));
+
+        // When saving the query
+        // Then it should reject with an HttpErrorResponse
+        await expect(sparqlService.saveQuery(saveQueryPayload())).rejects.toBeInstanceOf(HttpErrorResponse);
+      });
+
+      test('should include the 4xx status code in the rejected HttpErrorResponse', async () => {
+        // Given a 400 API response
+        TestUtil.mockResponse(new ResponseMock(SAVED_QUERIES_ENDPOINT).setStatus(400).setMessage('Bad Request'));
+
+        // When saving the query
+        try {
+          await sparqlService.saveQuery(saveQueryPayload());
+          fail('Should have thrown an error');
+        } catch (error) {
+          // Then the status should match the server response
+          expect((error as HttpErrorResponse).status).toBe(400);
+        }
+      });
+
+      test('should reject with an HttpErrorResponse on a 5xx response', async () => {
+        // Given a 500 API response
+        TestUtil.mockResponse(new ResponseMock(SAVED_QUERIES_ENDPOINT).setStatus(500).setMessage('Internal Server Error'));
+
+        // When saving the query
+        // Then it should reject with an HttpErrorResponse
+        await expect(sparqlService.saveQuery(saveQueryPayload())).rejects.toBeInstanceOf(HttpErrorResponse);
+      });
+
+      test('should include the 5xx status code in the rejected HttpErrorResponse', async () => {
+        // Given a 500 API response
+        TestUtil.mockResponse(new ResponseMock(SAVED_QUERIES_ENDPOINT).setStatus(500).setMessage('Internal Server Error'));
+
+        // When saving the query
+        try {
+          await sparqlService.saveQuery(saveQueryPayload());
+          fail('Should have thrown an error');
+        } catch (error) {
+          // Then the status should match the server response
+          expect((error as HttpErrorResponse).status).toBe(500);
+        }
       });
     });
   });
