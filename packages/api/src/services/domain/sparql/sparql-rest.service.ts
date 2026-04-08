@@ -7,6 +7,7 @@ import {SaveQueryRequest} from './request/save-query-request';
  */
 export class SparqlRestService extends HttpService {
   static readonly SPARQL_ENDPOINT = 'rest/sparql';
+  static readonly SAVED_QUERIES_ENDPOINT = `${SparqlRestService.SPARQL_ENDPOINT}/saved-queries`;
 
   /**
    * Retrieves a saved SPARQL query by its name and owner.
@@ -21,7 +22,7 @@ export class SparqlRestService extends HttpService {
     if (owner) {
       params['owner'] = owner;
     }
-    return this.get(`${SparqlRestService.SPARQL_ENDPOINT}/saved-queries`, {params});
+    return this.get(SparqlRestService.SAVED_QUERIES_ENDPOINT, {params});
   }
 
   /**
@@ -29,7 +30,7 @@ export class SparqlRestService extends HttpService {
    * @returns A promise that resolves to an array of {@link SavedQueryListResponse} containing the saved queries.
    */
   async getSavedQueries(): Promise<SavedQueryListResponse> {
-    return this.get(`${SparqlRestService.SPARQL_ENDPOINT}/saved-queries`);
+    return this.get(SparqlRestService.SAVED_QUERIES_ENDPOINT);
   }
 
   /**
@@ -38,6 +39,21 @@ export class SparqlRestService extends HttpService {
    * @returns Promise that resolves when the query is successfully saved, or rejects with an error if the operation fails.
    */
   saveQuery(payload: SaveQueryRequest): Promise<void> {
-    return this.post(`${SparqlRestService.SPARQL_ENDPOINT}/saved-queries`, {body: payload});
+    return this.post(SparqlRestService.SAVED_QUERIES_ENDPOINT, {body: payload});
+  }
+
+  /**
+   * Update existing saved sparql query.
+   * @param oldQueryName The existing saved query name which should be updated.
+   * @param payload The update query request payload.
+   * @returns Promise that resolves when the query is successfully updated, or rejects with an error if the operation fails.
+   */
+  updateQuery(oldQueryName: string, payload: SaveQueryRequest): Promise<void> {
+    return this.put(SparqlRestService.SAVED_QUERIES_ENDPOINT, {
+      params: {
+        oldQueryName: oldQueryName
+      },
+      body: payload
+    });
   }
 }

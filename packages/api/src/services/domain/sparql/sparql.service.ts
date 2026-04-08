@@ -39,4 +39,14 @@ export class SparqlService implements Service {
   saveQuery(payload: SaveQueryRequest): Promise<void> {
     return this.sparqlRestService.saveQuery(payload);
   }
+
+  /**
+   * Updates existing saved sparql query.
+   * @param oldQueryName The existing saved query name which should be updated.
+   * @param payload The update query request payload.
+   * @returns Promise that resolves when the query is successfully updated, or rejects with an error if the operation fails.
+   */
+  updateQuery(oldQueryName: string, payload: SaveQueryRequest): Promise<void> {
+    return this.sparqlRestService.updateQuery(oldQueryName, payload);
+  }
 }
