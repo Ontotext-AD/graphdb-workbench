@@ -44,7 +44,8 @@
     "success": {
       "query_was_saved": "La requête {{name}} a été sauvegardée.",
       "query_was_updated": "La requête {{name}} a été mise à jour.",
-      "query_was_deleted": "La requête {{savedQueryName}} a été supprimée."
+      "query_was_deleted": "La requête {{savedQueryName}} a été supprimée.",
+      "url_was_copied": "URL copiée avec succès dans le presse-papiers."
     },
     "confirmation": {
       "on_auto_execute_query": {

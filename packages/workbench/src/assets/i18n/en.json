@@ -44,7 +44,8 @@
     "success": {
       "query_was_saved": "Query {{name}} was saved.",
       "query_was_updated": "Query {{name}} was updated.",
-      "query_was_deleted": "Query {{savedQueryName}} was deleted."
+      "query_was_deleted": "Query {{savedQueryName}} was deleted.",
+      "url_was_copied": "URL copied successfully to clipboard."
     },
     "confirmation": {
       "on_auto_execute_query": {

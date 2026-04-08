@@ -138,7 +138,7 @@ export class YasguiComponentFacadeComponent {
       ...this.savedQueryConfig,
       shareQueryLink: this.createShareQueryLink(payload),
     };
-  };
+  }
 
   /**
    * Handles the shareSavedQuery event emitted by the ontotext-yasgui. The event is fired when a saved query should
@@ -151,7 +151,15 @@ export class YasguiComponentFacadeComponent {
       ...this.savedQueryConfig,
       shareQueryLink: this.createShareSavedQueryLink(saveQueryEvent.detail.queryName, saveQueryEvent.detail.owner),
     };
-  };
+  }
+
+  /**
+   * Handles the queryShareLinkCopied event emitted by the ontotext-yasgui. The event is fired when a query share link
+   * is copied by the user.
+   */
+  queryShareLinkCopied() {
+    this.toastrService.success(this.translocoService.translate('sparql_editor.success.url_was_copied'));
+  }
 
   // ===================================
   // Private methods
