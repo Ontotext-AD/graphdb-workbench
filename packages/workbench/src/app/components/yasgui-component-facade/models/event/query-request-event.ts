@@ -1,20 +1,20 @@
 import {EventDataType} from './event-data-type';
-import {OntotextYasguiEvent} from './ontotext-yasgui-event';
 import {QueryRequest} from '../query-request';
+import {OntotextYasguiEvent} from './ontotext-yasgui-event';
 
 /**
- * Model for event of type {@link EventDataType.COUNT_QUERY} emitted by "ontotext-yasgui-web-component".
+ * Model for event of type {@link EventDataType.QUERY} emitted by "ontotext-yasgui-web-component".
  */
-export class CountQueryRequestEvent {
+export class QueryRequestEvent {
   public type: EventDataType;
   public query: string | undefined;
-  public queryMode: string | undefined;
+  public queryMode: string;
   public queryType: string | undefined;
   public pageSize: number | undefined;
   public request: QueryRequest;
 
   /**
-   * Constructs the model for {@link EventDataType.DOWNLOAD_AS} event.
+   * Constructs the model for {@link EventDataType.QUERY} event.
    *
    * @param eventData - event emitted by "ontotext-yasgui-web-component".
    */
@@ -31,11 +31,23 @@ export class CountQueryRequestEvent {
     this.request._data['pageSize'] = pageSize;
   }
 
+  getPageSize() {
+    return this.request._data['pageSize'] ? parseInt(this.request._data['pageSize']) : undefined;
+  }
+
   setPageNumber(pageNumber: string) {
     this.request._data['pageNumber'] = pageNumber;
   }
 
-  setCount(count: number) {
-    this.request._data['count'] = count;
+  getPageNumber() {
+    return this.request._data['pageNumber'] ? parseInt(this.request._data['pageNumber']) : undefined;
+  }
+
+  setOffset(offset: number) {
+    this.request._data['offset'] = offset;
+  }
+
+  setLimit(limit: number) {
+    this.request._data['limit'] = limit;
   }
 }

@@ -1,5 +1,5 @@
-import {EventData} from './event-data';
 import {EventDataType} from './event-data-type';
+import {OntotextYasguiEvent} from './ontotext-yasgui-event';
 
 /**
  * Model for event of type {@link EventDataType.DOWNLOAD_AS} emitted by "ontotext-yasgui-web-component".
@@ -15,9 +15,9 @@ export class DownloadAsEvent {
   /**
    * Constructs the model for {@link EventDataType.DOWNLOAD_AS} event.
    *
-   * @param {EventData} eventData - event emitted by "ontotext-yasgui-web-component".
+   * @param eventData - event emitted by "ontotext-yasgui-web-component".
    */
-  constructor(eventData: EventData) {
+  constructor(eventData: OntotextYasguiEvent) {
     this.type = eventData.type;
     this.contentType = eventData.payload.value;
     this.pluginName = eventData.payload.pluginName;

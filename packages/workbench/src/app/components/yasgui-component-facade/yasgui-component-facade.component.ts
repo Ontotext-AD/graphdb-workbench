@@ -18,6 +18,12 @@ import {EventDataType} from './models/event/event-data-type';
 import {DownloadAsEvent} from './models/event/download-as-event';
 import {NotificationMessageEvent} from './models/event/notification-message-event';
 import {CountQueryRequestEvent} from './models/event/count-query-request-event';
+import {OntotextYasguiEvent, YasguiOutputEvent} from './models/event/ontotext-yasgui-event';
+import {CountQueryResponseEvent} from './models/event/count-query-response-event';
+import {QueryRequestEvent} from './models/event/query-request-event';
+import {QueryExecutedEvent} from './models/event/query-executed-event';
+import {SaveQueryOpened} from './models/event/save-query-opened';
+import {RequestAbortedEvent} from './models/event/request-aborted-event';
 
 defineCustomElements();
 
@@ -167,8 +173,13 @@ export class YasguiComponentFacadeComponent {
     this.toastrService.success(this.translocoService.translate('sparql_editor.success.url_was_copied'));
   }
 
-  saveQueryOpened(saveQueryOpenedEvent) {
-    YasguiComponentUtil.highlightTabName(this.toYasguiOutputModel(saveQueryOpenedEvent).getTab());
+  /**
+   * Handles the saveQueryOpened event emitted by the ontotext-yasgui.
+   * @param event The event payload containing the data of the saved query.
+   */
+  saveQueryOpened(event: Event) {
+    const saveQueryOpenedEvent = this.toYasguiOutputModel(event) as SaveQueryOpened;
+    YasguiComponentUtil.highlightTabName(saveQueryOpenedEvent.getTab());
   };
 
   // ===================================
@@ -231,31 +242,31 @@ export class YasguiComponentFacadeComponent {
     return url.toString();
   }
 
-  private toEventData($event) {
-    return new EventData($event.detail.TYPE, $event.detail.payload);
+  private toEventData(event: OntotextYasguiEvent) {
+    return new EventData(event.detail.type, event.detail.payload);
   }
 
-  private toYasguiOutputModel(event) {
-    const eventData = this.toEventData($event);
+  private toYasguiOutputModel(event: Event): YasguiOutputEvent {
+    const eventData = event as unknown as OntotextYasguiEvent;
     switch (eventData.type) {
-      case EventDataType.DOWNLOAD_AS:
-        return new DownloadAsEvent(eventData);
-      case EventDataType.NOTIFICATION_MESSAGE:
-        return new NotificationMessageEvent(eventData);
-      case EventDataType.COUNT_QUERY:
-        return new CountQueryRequestEvent(eventData);
-      case EventDataType.COUNT_QUERY_RESPONSE:
-        return new CountQueryResponseEvent(eventData);
-      case EventDataType.QUERY:
-        return new QueryRequestEvent(eventData);
-      case EventDataType.QUERY_EXECUTED:
-        return new QueryExecutedEvent(eventData);
-      case EventDataType.SAVE_QUERY_OPENED:
-        return new SaveQueryOpened(eventData);
-      case EventDataType.REQUEST_ABORTED:
-        return new RequestAbortedEvent(eventData);
-      default:
-        return eventData;
+    case EventDataType.DOWNLOAD_AS:
+      return new DownloadAsEvent(eventData);
+    case EventDataType.NOTIFICATION_MESSAGE:
+      return new NotificationMessageEvent(eventData);
+    case EventDataType.COUNT_QUERY:
+      return new CountQueryRequestEvent(eventData);
+    case EventDataType.COUNT_QUERY_RESPONSE:
+      return new CountQueryResponseEvent(eventData);
+    case EventDataType.QUERY:
+      return new QueryRequestEvent(eventData);
+    case EventDataType.QUERY_EXECUTED:
+      return new QueryExecutedEvent(eventData);
+    case EventDataType.SAVE_QUERY_OPENED:
+      return new SaveQueryOpened(eventData);
+    case EventDataType.REQUEST_ABORTED:
+      return new RequestAbortedEvent(eventData);
+    default:
+      return eventData;
     }
-  };
+  }
 }

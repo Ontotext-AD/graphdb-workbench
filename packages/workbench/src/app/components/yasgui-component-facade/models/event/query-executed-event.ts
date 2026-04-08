@@ -1,4 +1,4 @@
-import {EventData} from './event-data';
+import {OntotextYasguiEvent} from './ontotext-yasgui-event';
 
 /**
  * Model for event of type {@link EventDataType.QUERY_EXECUTED} emitted by "ontotext-yasgui-web-component".
@@ -13,7 +13,7 @@ export class QueryExecutedEvent {
    *
    * @param eventData - event emitted by "ontotext-yasgui-web-component".
    */
-  constructor(eventData: EventData) {
+  constructor(eventData: OntotextYasguiEvent) {
     this.type = eventData.type;
     this.duration = eventData.payload.duration;
     this.tabId = eventData.payload.tabId;

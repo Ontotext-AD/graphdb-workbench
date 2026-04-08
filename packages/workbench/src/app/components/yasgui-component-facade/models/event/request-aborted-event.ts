@@ -1,16 +1,12 @@
-import {EventData} from './event-data';
-
-interface RequestAbortedEventRequest {
-  url: string;
-  header?: Record<string, string>;
-}
+import {OntotextYasguiEvent} from './ontotext-yasgui-event';
+import {RequestAbortedRequest} from '../request-aborted-request';
 
 /**
  * Model for event of type {@link EventDataType.REQUEST_ABORTED} emitted by "ontotext-yasgui-web-component".
  */
 export class RequestAbortedEvent {
   type: string;
-  request: RequestAbortedEventRequest;
+  request: RequestAbortedRequest;
   queryMode: string;
 
   /**
@@ -18,9 +14,9 @@ export class RequestAbortedEvent {
    *
    * @param eventData - event emitted by "ontotext-yasgui-web-component".
    */
-  constructor(eventData: EventData) {
+  constructor(eventData: OntotextYasguiEvent) {
     this.type = eventData.type;
-    this.request = eventData.payload.request;
+    this.request = eventData.payload.requestAbortedRequest!;
     this.queryMode = eventData.payload.queryMode;
   }
 
