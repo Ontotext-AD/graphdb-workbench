@@ -12,6 +12,12 @@ import {
 import {TranslocoService} from '@jsverse/transloco';
 import {SaveQueryEvent} from './models/query/save-query-event';
 import {SavedQueryParams} from '../../pages/sparql-editor/sparql-editor-query-params';
+import {YasguiComponentUtil} from './yasgui-component-util';
+import {EventData} from './models/event/event-data';
+import {EventDataType} from './models/event/event-data-type';
+import {DownloadAsEvent} from './models/event/download-as-event';
+import {NotificationMessageEvent} from './models/event/notification-message-event';
+import {CountQueryRequestEvent} from './models/event/count-query-request-event';
 
 defineCustomElements();
 
@@ -161,6 +167,10 @@ export class YasguiComponentFacadeComponent {
     this.toastrService.success(this.translocoService.translate('sparql_editor.success.url_was_copied'));
   }
 
+  saveQueryOpened(saveQueryOpenedEvent) {
+    YasguiComponentUtil.highlightTabName(this.toYasguiOutputModel(saveQueryOpenedEvent).getTab());
+  };
+
   // ===================================
   // Private methods
   // ===================================
@@ -220,4 +230,32 @@ export class YasguiComponentFacadeComponent {
     url.searchParams.set('sameAs', String(queryData.sameAs ?? true));
     return url.toString();
   }
+
+  private toEventData($event) {
+    return new EventData($event.detail.TYPE, $event.detail.payload);
+  }
+
+  private toYasguiOutputModel(event) {
+    const eventData = this.toEventData($event);
+    switch (eventData.type) {
+      case EventDataType.DOWNLOAD_AS:
+        return new DownloadAsEvent(eventData);
+      case EventDataType.NOTIFICATION_MESSAGE:
+        return new NotificationMessageEvent(eventData);
+      case EventDataType.COUNT_QUERY:
+        return new CountQueryRequestEvent(eventData);
+      case EventDataType.COUNT_QUERY_RESPONSE:
+        return new CountQueryResponseEvent(eventData);
+      case EventDataType.QUERY:
+        return new QueryRequestEvent(eventData);
+      case EventDataType.QUERY_EXECUTED:
+        return new QueryExecutedEvent(eventData);
+      case EventDataType.SAVE_QUERY_OPENED:
+        return new SaveQueryOpened(eventData);
+      case EventDataType.REQUEST_ABORTED:
+        return new RequestAbortedEvent(eventData);
+      default:
+        return eventData;
+    }
+  };
 }
