@@ -140,6 +140,19 @@ export class YasguiComponentFacadeComponent {
     };
   };
 
+  /**
+   * Handles the shareSavedQuery event emitted by the ontotext-yasgui. The event is fired when a saved query should
+   * be shared and is expected the share link to be created.
+   * @param event The event payload containing the saved query data from which the share link to be created.
+   */
+  shareSavedQuery(event: Event) {
+    const saveQueryEvent = event as unknown as SaveQueryEvent;
+    this.savedQueryConfig = {
+      ...this.savedQueryConfig,
+      shareQueryLink: this.createShareSavedQueryLink(saveQueryEvent.detail.queryName, saveQueryEvent.detail.owner),
+    };
+  };
+
   // ===================================
   // Private methods
   // ===================================
@@ -181,7 +194,7 @@ export class YasguiComponentFacadeComponent {
     };
   }
 
-  private createShareSavedQueryLink(savedQueryName: string, owner: string) {
+  private createShareSavedQueryLink(savedQueryName: string, owner?: string) {
     const url = new URL(WindowService.getLocationHref());
     url.searchParams.set(SavedQueryParams.name, savedQueryName);
     if (owner) {
