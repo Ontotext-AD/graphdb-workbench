@@ -41,7 +41,8 @@
     "warnings": {
     },
     "success": {
-      "query_was_saved": "La requête {{name}} a été sauvegardée."
+      "query_was_saved": "La requête {{name}} a été sauvegardée.",
+      "query_was_updated": "La requête {{name}} a été mise à jour."
     },
     "confirmation": {
       "on_auto_execute_query": {

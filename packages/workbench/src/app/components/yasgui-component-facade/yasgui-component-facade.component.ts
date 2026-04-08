@@ -94,6 +94,19 @@ export class YasguiComponentFacadeComponent {
       .catch((err: unknown) => this.querySaveErrorHandler(err));
   }
 
+  /**
+   * Handles the updateSavedQuery event emitted by the ontotext-yasgui. The event is fired when a saved query should
+   * be updated.
+   * @param event The event payload containing the saved query data which should be updated.
+   */
+  updateSavedQuery(event: Event) {
+    const saveQueryEvent = event as unknown as SaveQueryEvent;
+    const payload = this.queryPayloadFromEvent(saveQueryEvent);
+    this.sparqlService.updateQuery(saveQueryEvent.detail.originalQueryName!, payload)
+      .then(() => this.queryUpdatedHandler(payload))
+      .catch((err: unknown) => this.querySaveErrorHandler(err));
+  }
+
   // ===================================
   // Private methods
   // ===================================
@@ -109,6 +122,10 @@ export class YasguiComponentFacadeComponent {
   private queryCreatedHandler(payload: SaveQueryRequest) {
     return this.querySavedHandler(this.translocoService.translate('sparql_editor.success.query_was_saved', {name: payload.name}));
   }
+
+  private queryUpdatedHandler(payload: SaveQueryRequest) {
+    return this.querySavedHandler(this.translocoService.translate('sparql_editor.success.query_was_updated', {name: payload.name}));
+  };
 
   private querySaveErrorHandler(err: unknown) {
     const errorMessage = this.translocoService.translate('sparql_editor.errors.query_save_failed');

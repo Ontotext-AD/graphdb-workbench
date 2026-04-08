@@ -41,7 +41,8 @@
     "warnings": {
     },
     "success": {
-      "query_was_saved": "Query {{name}} was saved."
+      "query_was_saved": "Query {{name}} was saved.",
+      "query_was_updated": "Query {{name}} was updated."
     },
     "confirmation": {
       "on_auto_execute_query": {
