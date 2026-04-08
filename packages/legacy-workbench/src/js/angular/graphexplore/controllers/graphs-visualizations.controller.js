@@ -1368,10 +1368,11 @@ function GraphsVisualizationsCtrl(
         }
     };
 
-    const forceX = d3.forceX(width / 2).strength(0.005);
-    const forceY = d3.forceY(height / 2).strength(0.005);
+    const forceX = d3.forceX(width / 2).strength(0.03);
+    const forceY = d3.forceY(height / 2).strength(0.03);
 
     const force = d3.forceSimulation()
+        .velocityDecay(0.6)
         .force('x', forceX)
         .force('y', forceY);
 
@@ -1463,12 +1464,10 @@ function GraphsVisualizationsCtrl(
 
         const collisionForce = d3.forceCollide((d) => d.size + 5).strength(0.5);
         const chargeForce = d3.forceManyBody().strength(-300);
-        const centerForce = d3.forceCenter(width/2, height/2);
 
         force.nodes(graph.nodes)
             .force("charge", chargeForce)
             .force("collide", collisionForce)
-            .force("center", centerForce)
             .force("link", d3.forceLink(graph.links).distance(function(l) {
                 if (l.source.isTriple || l.target.isTriple) {
                     return 0;
