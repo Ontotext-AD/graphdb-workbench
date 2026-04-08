@@ -43,7 +43,7 @@ export class SparqlRestService extends HttpService {
   }
 
   /**
-   * Update existing saved sparql query.
+   * Updates existing saved sparql query.
    * @param oldQueryName The existing saved query name which should be updated.
    * @param payload The update query request payload.
    * @returns Promise that resolves when the query is successfully updated, or rejects with an error if the operation fails.
@@ -54,6 +54,19 @@ export class SparqlRestService extends HttpService {
         oldQueryName: oldQueryName
       },
       body: payload
+    });
+  }
+
+  /**
+   * Deletes a saved query by its name.
+   * @param queryName The saved query name to be deleted.
+   * @returns Promise that resolves when the query is successfully deleted, or rejects with an error if the operation fails.
+   */
+  deleteQuery(queryName: string): Promise<void> {
+    return this.delete(SparqlRestService.SAVED_QUERIES_ENDPOINT, {
+      params: {
+        name: queryName
+      }
     });
   }
 }

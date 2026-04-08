@@ -107,6 +107,24 @@ export class YasguiComponentFacadeComponent {
       .catch((err: unknown) => this.querySaveErrorHandler(err));
   }
 
+  /**
+   * Handles the deleteSavedQuery event emitted by the ontotext-yasgui. The event is fired when a saved query should
+   * be deleted.
+   * @param event The event payload containing the saved query data which should be deleted.
+   */
+  deleteSavedQuery(event: Event) {
+    const payload = this.queryPayloadFromEvent(event as unknown as SaveQueryEvent);
+    this.sparqlService.deleteQuery(payload.name)
+      .then(() => {
+        this.toastrService.success(this.translocoService.translate('sparql_editor.success.query_was_deleted', {savedQueryName: payload.name}));
+      }).catch((err) => {
+        this.toastrService.error(
+          err instanceof Error ? err.message : String(err),
+          {title: this.translocoService.translate(('sparql_editor.errors.query_delete_failed'))}
+        );
+      });
+  }
+
   // ===================================
   // Private methods
   // ===================================

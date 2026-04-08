@@ -49,4 +49,13 @@ export class SparqlService implements Service {
   updateQuery(oldQueryName: string, payload: SaveQueryRequest): Promise<void> {
     return this.sparqlRestService.updateQuery(oldQueryName, payload);
   }
+
+  /**
+   * Deletes a saved query by its name.
+   * @param queryName The name of the saved query to be deleted.
+   * @returns Promise that resolves when the query is successfully deleted, or rejects with an error if the operation fails.
+   */
+  deleteQuery(queryName: string): Promise<void> {
+    return this.sparqlRestService.deleteQuery(queryName);
+  }
 }

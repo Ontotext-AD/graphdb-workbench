@@ -36,13 +36,15 @@
       "saved_query_load_failed": "Could not get data for saved query: {{savedQueryName}}; {{error}}",
       "shared_query_load_failed": "Could not get data for shared query: {{sharedQueryName}}; {{error}}",
       "saved_queries_load_failed": "Error! Could not get saved queries",
-      "query_save_failed": "Error! Cannot create saved query"
+      "query_save_failed": "Error! Cannot create saved query",
+      "query_delete_failed": "Error! Cannot delete saved query"
     },
     "warnings": {
     },
     "success": {
       "query_was_saved": "Query {{name}} was saved.",
-      "query_was_updated": "Query {{name}} was updated."
+      "query_was_updated": "Query {{name}} was updated.",
+      "query_was_deleted": "Query {{savedQueryName}} was deleted."
     },
     "confirmation": {
       "on_auto_execute_query": {

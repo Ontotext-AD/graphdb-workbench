@@ -662,5 +662,129 @@ describe('SparqlService', () => {
       });
     });
   });
+
+  describe('deleteQuery', () => {
+    const deleteQueryUrl = (queryName: string): string => {
+      const params = new URLSearchParams({name: queryName});
+      return `${SAVED_QUERIES_ENDPOINT}?${params.toString()}`;
+    };
+
+    describe('success scenarios', () => {
+      test('should resolve successfully when the API returns 200', async () => {
+        // Given a successful API response
+        TestUtil.mockResponse(new ResponseMock(deleteQueryUrl('my-query')).setStatus(200).setResponse(null));
+
+        // When deleting the query
+        // Then it should resolve without throwing
+        await expect(sparqlService.deleteQuery('my-query')).resolves.not.toThrow();
+      });
+
+      test('should resolve when deleting a query with a different name', async () => {
+        // Given a successful API response for another query name
+        TestUtil.mockResponse(new ResponseMock(deleteQueryUrl('other-query')).setStatus(200).setResponse(null));
+
+        // When deleting the query
+        // Then it should resolve without throwing
+        await expect(sparqlService.deleteQuery('other-query')).resolves.not.toThrow();
+      });
+    });
+
+    describe('HTTP request construction', () => {
+      test('should send a request to the saved-queries endpoint with the name query parameter', async () => {
+        // Given a successful API response
+        TestUtil.mockResponse(new ResponseMock(deleteQueryUrl('my-query')).setStatus(200).setResponse(null));
+
+        // When deleting the query
+        await sparqlService.deleteQuery('my-query');
+
+        // Then the request URL should include the name parameter
+        expect(TestUtil.getRequest(deleteQueryUrl('my-query'))).toBeDefined();
+      });
+
+      test('should use the DELETE HTTP method', async () => {
+        // Given a successful API response
+        TestUtil.mockResponse(new ResponseMock(deleteQueryUrl('my-query')).setStatus(200).setResponse(null));
+
+        // When deleting the query
+        await sparqlService.deleteQuery('my-query');
+
+        // Then the request method should be DELETE
+        const request = TestUtil.getRequest(deleteQueryUrl('my-query'));
+        expect(request!.method).toBe('DELETE');
+      });
+
+      test('should send no request body', async () => {
+        // Given a successful API response
+        TestUtil.mockResponse(new ResponseMock(deleteQueryUrl('my-query')).setStatus(200).setResponse(null));
+
+        // When deleting the query
+        await sparqlService.deleteQuery('my-query');
+
+        // Then the request body should be absent
+        const request = TestUtil.getRequest(deleteQueryUrl('my-query'));
+        expect(request!.body).toBeNull();
+      });
+
+      test('should encode the query name correctly in the URL when the name contains special characters', async () => {
+        // Given a query name with spaces
+        const queryName = 'my query';
+        TestUtil.mockResponse(new ResponseMock(deleteQueryUrl(queryName)).setStatus(200).setResponse(null));
+
+        // When deleting the query
+        await sparqlService.deleteQuery(queryName);
+
+        // Then the URL should contain the correctly encoded name
+        expect(TestUtil.getRequest(deleteQueryUrl(queryName))).toBeDefined();
+      });
+    });
+
+    describe('error propagation', () => {
+      test('should reject with an HttpErrorResponse on a 4xx response', async () => {
+        // Given a 400 API response
+        TestUtil.mockResponse(new ResponseMock(deleteQueryUrl('my-query')).setStatus(400).setMessage('Bad Request'));
+
+        // When deleting the query
+        // Then it should reject with an HttpErrorResponse
+        await expect(sparqlService.deleteQuery('my-query')).rejects.toBeInstanceOf(HttpErrorResponse);
+      });
+
+      test('should include the 4xx status code in the rejected HttpErrorResponse', async () => {
+        // Given a 400 API response
+        TestUtil.mockResponse(new ResponseMock(deleteQueryUrl('my-query')).setStatus(400).setMessage('Bad Request'));
+
+        // When deleting the query
+        try {
+          await sparqlService.deleteQuery('my-query');
+          fail('Should have thrown an error');
+        } catch (error) {
+          // Then the status should match the server response
+          expect((error as HttpErrorResponse).status).toBe(400);
+        }
+      });
+
+      test('should reject with an HttpErrorResponse on a 5xx response', async () => {
+        // Given a 500 API response
+        TestUtil.mockResponse(new ResponseMock(deleteQueryUrl('my-query')).setStatus(500).setMessage('Internal Server Error'));
+
+        // When deleting the query
+        // Then it should reject with an HttpErrorResponse
+        await expect(sparqlService.deleteQuery('my-query')).rejects.toBeInstanceOf(HttpErrorResponse);
+      });
+
+      test('should include the 5xx status code in the rejected HttpErrorResponse', async () => {
+        // Given a 500 API response
+        TestUtil.mockResponse(new ResponseMock(deleteQueryUrl('my-query')).setStatus(500).setMessage('Internal Server Error'));
+
+        // When deleting the query
+        try {
+          await sparqlService.deleteQuery('my-query');
+          fail('Should have thrown an error');
+        } catch (error) {
+          // Then the status should match the server response
+          expect((error as HttpErrorResponse).status).toBe(500);
+        }
+      });
+    });
+  });
 });
 
