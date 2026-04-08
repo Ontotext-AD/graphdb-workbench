@@ -7,9 +7,11 @@ import {
   service,
   OntoToastrService,
   SaveQueryRequest,
+  WindowService,
 } from '@ontotext/workbench-api';
 import {TranslocoService} from '@jsverse/transloco';
 import {SaveQueryEvent} from './models/query/save-query-event';
+import {SavedQueryParams} from '../../pages/sparql-editor/sparql-editor-query-params';
 
 defineCustomElements();
 
@@ -125,6 +127,19 @@ export class YasguiComponentFacadeComponent {
       });
   }
 
+  /**
+   * Handles the shareQuery event emitted by the ontotext-yasgui. The event is fired when a query should be shared and
+   * is expected the share link to be created.
+   * @param event The event payload containing the query data from which the share link to be created.
+   */
+  shareQuery(event: Event) {
+    const payload = this.queryPayloadFromEvent(event as unknown as SaveQueryEvent);
+    this.savedQueryConfig = {
+      ...this.savedQueryConfig,
+      shareQueryLink: this.createShareQueryLink(payload),
+    };
+  };
+
   // ===================================
   // Private methods
   // ===================================
@@ -164,5 +179,24 @@ export class YasguiComponentFacadeComponent {
       body: event.detail.query,
       shared: event.detail.isPublic
     };
+  }
+
+  private createShareSavedQueryLink(savedQueryName: string, owner: string) {
+    const url = new URL(WindowService.getLocationHref());
+    url.searchParams.set(SavedQueryParams.name, savedQueryName);
+    if (owner) {
+      url.searchParams.set(SavedQueryParams.owner, owner);
+    }
+    return url.toString();
+  }
+
+  private createShareQueryLink(queryData: SaveQueryRequest) {
+    const url = new URL(WindowService.getLocationHref());
+    url.searchParams.set('name', queryData.name);
+    url.searchParams.set('query', queryData.body);
+    // TODO: pass these from the component as well,
+    url.searchParams.set('infer', String(queryData.inference ?? true));
+    url.searchParams.set('sameAs', String(queryData.sameAs ?? true));
+    return url.toString();
   }
 }

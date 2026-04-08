@@ -15,4 +15,8 @@ export interface SavedQueryConfig {
    * Error message to be displayed if any error occurs.
    */
   errorMessage?: string[];
+  /**
+   * The link to the query that can be shared with other users.
+   */
+  shareQueryLink?: string;
 }
