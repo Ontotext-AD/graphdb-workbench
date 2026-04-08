@@ -1,6 +1,6 @@
 {
     "name": "graphdb-workbench",
-    "version": "3.4.0-TR1-yasgui-geo-plugin",
+    "version": "3.4.0-TR2-yasgui-geo-plugin",
     "description": "The web application for GraphDB APIs",
     "engines": {
         "node": ">=22.17"
