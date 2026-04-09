@@ -865,7 +865,7 @@ function GraphsVisualizationsCtrl(
     // define zoom and drag behavior; keep this out of draw() to preserve state when nodes are added/removed
     const zoomLayout = d3.zoom().scaleExtent([0.1, 10]);
     let container;
-    const INITIAL_CONTAINER_TRANSFORM = d3.zoomIdentity.translate(0, -70).scale(1);
+    const INITIAL_CONTAINER_TRANSFORM = d3.zoomIdentity.translate(100, 50).scale(1);
 
     function zoomed(event) {
         if (!guidesService.isScrollingAllowed()) {
@@ -2870,8 +2870,8 @@ function GraphsVisualizationsCtrl(
         const reverseLink = graph.links.find(function(l) {
             return l.source.iri === d.target.iri && l.target.iri === d.source.iri;
         });
-        // Show panel if this direction has multiple predicates OR a reverse link exists
-        $scope.showPredicates = d.predicates.length > 1 || (!!reverseLink && reverseLink.predicates.length > 0);
+        // Show panel if this direction has predicates OR a reverse link exists
+        $scope.showPredicates = d.predicates.length >= 1 || (!!reverseLink && reverseLink.predicates.length > 0);
 
         if (openedLink === d) {
             $scope.showNodeInfo = false;

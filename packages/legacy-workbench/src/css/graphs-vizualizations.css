@@ -1,3 +1,11 @@
+.main-container {
+    padding-bottom: 5px;
+}
+
+.visual-graph-view {
+    position: relative;
+}
+
 .rdf-info-side-panel.visual-graph.embedded {
     top: 0 !important;
 }
@@ -53,12 +61,11 @@
 }
 
 .toolbar-holder {
-    position: relative;
-    top: -3em;
+    position: absolute;
+    top: 10px;
+    right: 0;
     z-index: 10;
     background-color: var(--gw-panel-background);
-    width: max-content;
-    margin-left: auto;
 }
 
 .rdf-list .node-info {
@@ -73,7 +80,8 @@
 }
 
 .graph-visualization {
-    height: calc(100vh - 190px);
+    /* 200px includes the application header, page heading/title, footer */
+    height: calc(100vh - 200px);
 }
 
 .graph-visualization svg {
@@ -87,6 +95,7 @@
 
 .predicate, .predicates {
     font-size: 90%;
+    cursor: pointer;
 }
 
 .predicates {
