@@ -1,4 +1,14 @@
 <ontotext-yasgui
   class="{{cssClass()}}"
-  [config]="yasguiConfig()">
+  [config]="yasguiConfig()"
+  [savedQueryConfig]="savedQueryConfig"
+  (loadSavedQueries)="loadSavedQueries()"
+  (createSavedQuery)="createSavedQuery($event)"
+  (updateSavedQuery)="updateSavedQuery($event)"
+  (deleteSavedQuery)="deleteSavedQuery($event)"
+  (shareQuery)="shareQuery($event)"
+  (shareSavedQuery)="shareSavedQuery($event)"
+  (queryShareLinkCopied)="queryShareLinkCopied()"
+  (saveQueryOpened)="saveQueryOpened($event)"
+  (output)="output($event)">
 </ontotext-yasgui>

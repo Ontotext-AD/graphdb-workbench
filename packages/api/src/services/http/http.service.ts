@@ -110,11 +110,11 @@ export class HttpService {
   put<T>(url: string, options?: HttpOptionsHttpResponse): Promise<HttpResponse<T>>
 
   put<T>(url: string, options?: HttpOptionsTypedResponse): Promise<HttpResponse<T> | T> {
-    const {body, headers, responseType = 'body'} = options ?? {};
+    const {params, body, headers, responseType = 'body'} = options ?? {};
     if (responseType === 'response') {
-      return this.request<T>(url, 'PUT', {body, headers}, 'response');
+      return this.request<T>(url, 'PUT', {params, body, headers}, 'response');
     }
-    return this.request<T>(url, 'PUT', {body, headers}, 'body');
+    return this.request<T>(url, 'PUT', {params, body, headers}, 'body');
   }
 
   /**
@@ -145,11 +145,11 @@ export class HttpService {
   patch<T>(url: string, options?: HttpOptionsHttpResponse): Promise<HttpResponse<T>>
 
   patch<T>(url: string, options?: HttpOptionsTypedResponse): Promise<HttpResponse<T> | T> {
-    const {body, headers, responseType = 'body'} = options ?? {};
+    const {params, body, headers, responseType = 'body'} = options ?? {};
     if (responseType === 'response') {
-      return this.request<T>(url, 'PATCH', {body, headers}, 'response');
+      return this.request<T>(url, 'PATCH', {params, body, headers}, 'response');
     }
-    return this.request<T>(url, 'PATCH', {body, headers}, 'body');
+    return this.request<T>(url, 'PATCH', {params, body, headers}, 'body');
   }
 
   /**
@@ -180,11 +180,11 @@ export class HttpService {
   delete<T>(url: string, options?: HttpOptionsHttpResponse): Promise<HttpResponse<T>>
 
   delete<T>(url: string, options?: HttpOptionsTypedResponse): Promise<HttpResponse<T> | T> {
-    const {headers, responseType = 'body'} = options ?? {};
+    const {params, headers, responseType = 'body'} = options ?? {};
     if (responseType === 'response') {
-      return this.request<T>(url, 'DELETE', {headers}, 'response');
+      return this.request<T>(url, 'DELETE', {params, headers}, 'response');
     }
-    return this.request<T>(url, 'DELETE', {headers}, 'body');
+    return this.request<T>(url, 'DELETE', {params, headers}, 'body');
   }
 
   /**
