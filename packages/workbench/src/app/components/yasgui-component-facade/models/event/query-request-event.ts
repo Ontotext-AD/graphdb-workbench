@@ -27,7 +27,7 @@ export class QueryRequestEvent {
     this.request = eventData.payload.request;
   }
 
-  setPageSize(pageSize: string) {
+  setPageSize(pageSize?: string) {
     this.request._data['pageSize'] = pageSize;
   }
 
@@ -35,7 +35,7 @@ export class QueryRequestEvent {
     return this.request._data['pageSize'] ? parseInt(this.request._data['pageSize']) : undefined;
   }
 
-  setPageNumber(pageNumber: string) {
+  setPageNumber(pageNumber?: string) {
     this.request._data['pageNumber'] = pageNumber;
   }
 

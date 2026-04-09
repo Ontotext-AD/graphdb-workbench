@@ -1,13 +1,14 @@
 import {OntotextYasguiEvent} from './ontotext-yasgui-event';
 import {RequestAbortedRequest} from '../request-aborted-request';
+import {EventDataType} from './event-data-type';
 
 /**
  * Model for event of type {@link EventDataType.REQUEST_ABORTED} emitted by "ontotext-yasgui-web-component".
  */
 export class RequestAbortedEvent {
-  type: string;
-  request: RequestAbortedRequest;
-  queryMode: string;
+  public type: EventDataType;
+  public request: RequestAbortedRequest;
+  public queryMode: string;
 
   /**
    * Constructs the model for {@link EventDataType.REQUEST_ABORTED} event.

@@ -1,4 +1,4 @@
-import {Component, CUSTOM_ELEMENTS_SCHEMA, inject, input, ViewEncapsulation} from '@angular/core';
+import {Component, computed, CUSTOM_ELEMENTS_SCHEMA, inject, input, OnInit, ViewEncapsulation} from '@angular/core';
 import {defineCustomElements} from 'ontotext-yasgui-web-component/loader';
 import {OntotextYasguiConfig} from './models/yasgui/ontotext-yasgui-config';
 import {SavedQueryConfig} from './models/query/saved-query-config';
@@ -43,7 +43,13 @@ defineCustomElements();
     '[class]': 'cssClass()'
   }
 })
-export class YasguiComponentFacadeComponent {
+export class YasguiComponentFacadeComponent implements OnInit {
+  // ===================================
+  // Inputs
+  // ===================================
+  yasguiConfig = input<OntotextYasguiConfig>();
+  cssClass = input<string>('');
+
   // ===================================
   // Angular injections
   // ===================================
@@ -58,9 +64,6 @@ export class YasguiComponentFacadeComponent {
   // ===================================
   // Public variables
   // ===================================
-  yasguiConfig = input<OntotextYasguiConfig>();
-  cssClass = input<string>('');
-
   afterInit: unknown;
   queryChanged: unknown;
   savedQueryConfig: SavedQueryConfig = {
@@ -71,6 +74,17 @@ export class YasguiComponentFacadeComponent {
   // ===================================
   // Private variables
   // ===================================
+  private readonly outputHandlers = computed(() => {
+    const config = this.yasguiConfig();
+    return config?.outputHandlers
+      ? new Map(config.outputHandlers)
+      : new Map<EventDataType, (eventData: unknown) => void>();
+  });
+
+  ngOnInit(): void {
+    const handlers = this.outputHandlers();
+    handlers.set(EventDataType.QUERY, this.queryHandler);
+  }
 
   // ===================================
   // Yasgui component event handlers
@@ -180,6 +194,40 @@ export class YasguiComponentFacadeComponent {
   saveQueryOpened(event: Event) {
     const saveQueryOpenedEvent = this.toYasguiOutputModel(event) as SaveQueryOpened;
     YasguiComponentUtil.highlightTabName(saveQueryOpenedEvent.getTab());
+  }
+
+  /**
+   * Handles the ontotext-yasgui component output events.
+   *
+   * @param event - the event fired from ontotext-yasgui component
+   */
+  output(event: Event) {
+    const yasguiOutputModel = this.toYasguiOutputModel(event);
+    const handlers = this.outputHandlers();
+    if (handlers.has(yasguiOutputModel.type)) {
+      // @ts-expect-error asdas
+      handlers.get(yasguiOutputModel.type)!(yasguiOutputModel);
+    }
+  }
+
+  // ===================================
+  // Yasgui component output handlers for events emitted via the generic output channel.
+  // ===================================
+
+  /**
+   * Handles the "query" event emitted by the ontotext-yasgui. The event is fired immediately before sending the
+   * request and the request object can be altered here, and it will be sent with these changes.
+   * @param queryRequest - the event payload containing the query and the request object.
+   */
+  private readonly queryHandler = (queryRequest: QueryRequestEvent) => {
+    const pageNumber = queryRequest.getPageNumber();
+    const pageSize = queryRequest.getPageSize();
+    if (pageSize && pageNumber) {
+      queryRequest.setOffset((pageNumber - 1) * (pageSize - 1));
+      queryRequest.setLimit(pageSize);
+    }
+    queryRequest.setPageNumber(undefined);
+    queryRequest.setPageSize(undefined);
   };
 
   // ===================================
@@ -200,7 +248,7 @@ export class YasguiComponentFacadeComponent {
 
   private queryUpdatedHandler(payload: SaveQueryRequest) {
     return this.querySavedHandler(this.translocoService.translate('sparql_editor.success.query_was_updated', {name: payload.name}));
-  };
+  }
 
   private querySaveErrorHandler(err: unknown) {
     const errorMessage = this.translocoService.translate('sparql_editor.errors.query_save_failed');
