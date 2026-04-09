@@ -223,10 +223,10 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
     config.sameAs = this.isOntopRepo || this.sameAsUserSetting;
     config.yasrToolbarPlugins = [this.exploreVisualGraphYasrToolbarElementBuilder];
     config.beforeUpdateQuery = (query: string, tabId: string) => this.getBeforeUpdateQueryHandler(query, tabId);
-    config.outputHandlers = new Map([
-      [EventDataType.QUERY_EXECUTED, (eventData: unknown) => this.queryExecutedHandler(eventData as QueryExecutedEvent)],
-      [EventDataType.REQUEST_ABORTED, (eventData: unknown) => this.requestAbortedHandler(eventData as RequestAbortedEvent)],
-    ]);
+    config.outputHandlers = {
+      [EventDataType.QUERY_EXECUTED]: (event: QueryExecutedEvent) => this.queryExecutedHandler(event),
+      [EventDataType.REQUEST_ABORTED]: (event: RequestAbortedEvent) => this.requestAbortedHandler(event),
+    };
     config.clearState = clearYasguiState;
 
     config.selectedPlugin = this.selectedPlugin;

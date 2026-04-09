@@ -3,11 +3,10 @@ import {OntotextYasguiEvent} from './ontotext-yasgui-event';
 import {EventDataType} from './event-data-type';
 
 export class SaveQueryOpened {
-  public type: EventDataType;
+  public type = EventDataType.SAVE_QUERY_OPENED as const;
   public tab: Tab;
 
   constructor(eventData: OntotextYasguiEvent) {
-    this.type = eventData.type;
     this.tab = eventData.detail.payload.tab!;
   }
 

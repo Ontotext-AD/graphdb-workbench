@@ -5,7 +5,7 @@ import {OntotextYasguiEvent} from './ontotext-yasgui-event';
  * Model for event of type {@link EventDataType.NOTIFICATION_MESSAGE} emitted by "ontotext-yasgui-web-component".
  */
 export class NotificationMessageEvent {
-  public type: EventDataType;
+  public type = EventDataType.NOTIFICATION_MESSAGE as const;
   public message: string | undefined;
   public code: string | undefined;
   public messageType: string | undefined;
@@ -13,12 +13,11 @@ export class NotificationMessageEvent {
   /**
    * Constructs the model for {@link EventDataType.NOTIFICATION_MESSAGE} event.
    *
-   * @param {EventData} eventData - event emitted by "ontotext-yasgui-web-component".
+   * @param eventData - event emitted by "ontotext-yasgui-web-component".
    */
   constructor(eventData: OntotextYasguiEvent) {
-    this.type = eventData.type;
-    this.message = eventData.payload.message;
-    this.code = eventData.payload.code;
-    this.messageType = eventData.payload.messageType;
+    this.message = eventData.detail.payload.message;
+    this.code = eventData.detail.payload.code;
+    this.messageType = eventData.detail.payload.messageType;
   }
 }

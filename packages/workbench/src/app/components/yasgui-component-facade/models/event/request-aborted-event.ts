@@ -6,7 +6,7 @@ import {EventDataType} from './event-data-type';
  * Model for event of type {@link EventDataType.REQUEST_ABORTED} emitted by "ontotext-yasgui-web-component".
  */
 export class RequestAbortedEvent {
-  public type: EventDataType;
+  public type = EventDataType.REQUEST_ABORTED as const;
   public request: RequestAbortedRequest;
   public queryMode: string;
 
@@ -16,9 +16,8 @@ export class RequestAbortedEvent {
    * @param eventData - event emitted by "ontotext-yasgui-web-component".
    */
   constructor(eventData: OntotextYasguiEvent) {
-    this.type = eventData.type;
-    this.request = eventData.payload.requestAbortedRequest!;
-    this.queryMode = eventData.payload.queryMode;
+    this.request = eventData.detail.payload.requestAbortedRequest!;
+    this.queryMode = eventData.detail.payload.queryMode;
   }
 
   getQueryTrackAlias() {

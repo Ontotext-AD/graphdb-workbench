@@ -24,6 +24,7 @@ import {QueryRequestEvent} from './models/event/query-request-event';
 import {QueryExecutedEvent} from './models/event/query-executed-event';
 import {SaveQueryOpened} from './models/event/save-query-opened';
 import {RequestAbortedEvent} from './models/event/request-aborted-event';
+import {OutputHandlers} from './models/output-handlers';
 
 defineCustomElements();
 
@@ -74,16 +75,20 @@ export class YasguiComponentFacadeComponent implements OnInit {
   // ===================================
   // Private variables
   // ===================================
-  private readonly outputHandlers = computed(() => {
+
+  /**
+   * A computed property that returns the handlers for the different events emitted by the yasgui component via the
+   * generic output event channel.
+   * The handlers are defined in this component and are passed to the yasgui component via the config. This allows to
+   * handle events emitted from the yasgui component in a centralized way.
+   */
+  private readonly outputHandlers = computed((): OutputHandlers => {
     const config = this.yasguiConfig();
-    return config?.outputHandlers
-      ? new Map(config.outputHandlers)
-      : new Map<EventDataType, (eventData: unknown) => void>();
+    return config?.outputHandlers ? {...config.outputHandlers} : {};
   });
 
   ngOnInit(): void {
-    const handlers = this.outputHandlers();
-    handlers.set(EventDataType.QUERY, this.queryHandler);
+    this.outputHandlers()[EventDataType.QUERY] = this.queryHandler;
   }
 
   // ===================================
@@ -202,11 +207,18 @@ export class YasguiComponentFacadeComponent implements OnInit {
    * @param event - the event fired from ontotext-yasgui component
    */
   output(event: Event) {
-    const yasguiOutputModel = this.toYasguiOutputModel(event);
+    const outputModel = this.toYasguiOutputModel(event);
     const handlers = this.outputHandlers();
-    if (handlers.has(yasguiOutputModel.type)) {
-      // @ts-expect-error asdas
-      handlers.get(yasguiOutputModel.type)!(yasguiOutputModel);
+    // TypeScript narrows 'outputModel' inside each case because of the literal 'type' field
+    switch (outputModel.type) {
+    case EventDataType.DOWNLOAD_AS:            handlers[outputModel.type]?.(outputModel); break;
+    case EventDataType.NOTIFICATION_MESSAGE:   handlers[outputModel.type]?.(outputModel); break;
+    case EventDataType.QUERY:                  handlers[outputModel.type]?.(outputModel); break;
+    case EventDataType.COUNT_QUERY:            handlers[outputModel.type]?.(outputModel); break;
+    case EventDataType.COUNT_QUERY_RESPONSE:   handlers[outputModel.type]?.(outputModel); break;
+    case EventDataType.REQUEST_ABORTED:        handlers[outputModel.type]?.(outputModel); break;
+    case EventDataType.QUERY_EXECUTED:         handlers[outputModel.type]?.(outputModel); break;
+    case EventDataType.SAVE_QUERY_OPENED:      handlers[outputModel.type]?.(outputModel); break;
     }
   }
 
@@ -217,6 +229,7 @@ export class YasguiComponentFacadeComponent implements OnInit {
   /**
    * Handles the "query" event emitted by the ontotext-yasgui. The event is fired immediately before sending the
    * request and the request object can be altered here, and it will be sent with these changes.
+   *
    * @param queryRequest - the event payload containing the query and the request object.
    */
   private readonly queryHandler = (queryRequest: QueryRequestEvent) => {
@@ -296,7 +309,7 @@ export class YasguiComponentFacadeComponent implements OnInit {
 
   private toYasguiOutputModel(event: Event): YasguiOutputEvent {
     const eventData = event as unknown as OntotextYasguiEvent;
-    switch (eventData.type) {
+    switch (eventData.detail.TYPE) {
     case EventDataType.DOWNLOAD_AS:
       return new DownloadAsEvent(eventData);
     case EventDataType.NOTIFICATION_MESSAGE:
@@ -314,7 +327,10 @@ export class YasguiComponentFacadeComponent implements OnInit {
     case EventDataType.REQUEST_ABORTED:
       return new RequestAbortedEvent(eventData);
     default:
-      return eventData;
+      // This branch should never be reached if EventDataType is exhaustive.
+      // The cast to never forces a compile error if a new enum value is added without a matching case.
+      const unhandled= eventData.detail.TYPE;
+      throw new Error(`Unhandled yasgui event type: ${unhandled}`);
     }
   }
 }

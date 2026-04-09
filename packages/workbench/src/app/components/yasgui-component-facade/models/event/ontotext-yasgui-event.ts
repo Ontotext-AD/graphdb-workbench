@@ -9,11 +9,17 @@ import {QueryExecutedEvent} from './query-executed-event';
 import {SaveQueryOpened} from './save-query-opened';
 import {RequestAbortedEvent} from './request-aborted-event';
 
+/**
+ * This interface represents a custom event emitted by the Yasgui component in the Ontotext Workbench application.
+ */
 export interface OntotextYasguiEvent extends CustomEvent {
   type: EventDataType;
   payload: EventPayload;
 }
 
+/**
+ * This type represents all possible events that can be emitted by the Yasgui component.
+ */
 export type YasguiOutputEvent =
   | DownloadAsEvent
   | NotificationMessageEvent
@@ -22,5 +28,4 @@ export type YasguiOutputEvent =
   | QueryRequestEvent
   | QueryExecutedEvent
   | SaveQueryOpened
-  | RequestAbortedEvent
-  | OntotextYasguiEvent;
+  | RequestAbortedEvent;

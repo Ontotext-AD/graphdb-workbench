@@ -6,7 +6,7 @@ import {OntotextYasguiEvent} from './ontotext-yasgui-event';
  * Model for event of type {@link EventDataType.QUERY} emitted by "ontotext-yasgui-web-component".
  */
 export class QueryRequestEvent {
-  public type: EventDataType;
+  public type = EventDataType.QUERY as const;
   public query: string | undefined;
   public queryMode: string;
   public queryType: string | undefined;
@@ -19,12 +19,11 @@ export class QueryRequestEvent {
    * @param eventData - event emitted by "ontotext-yasgui-web-component".
    */
   constructor(eventData: OntotextYasguiEvent) {
-    this.type = eventData.type;
-    this.query = eventData.payload.query;
-    this.queryMode = eventData.payload.queryMode;
-    this.queryType = eventData.payload.queryType;
-    this.pageSize = eventData.payload.pageSize;
-    this.request = eventData.payload.request;
+    this.query = eventData.detail.payload.query;
+    this.queryMode = eventData.detail.payload.queryMode;
+    this.queryType = eventData.detail.payload.queryType;
+    this.pageSize = eventData.detail.payload.pageSize;
+    this.request = eventData.detail.payload.request;
   }
 
   setPageSize(pageSize?: string) {

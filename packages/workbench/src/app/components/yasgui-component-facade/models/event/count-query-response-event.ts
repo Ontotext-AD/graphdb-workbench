@@ -6,7 +6,7 @@ import {OntotextYasguiEvent} from './ontotext-yasgui-event';
  * Model for event of type {@link EventDataType.COUNT_QUERY_RESPONSE} emitted by "ontotext-yasgui-web-component".
  */
 export class CountQueryResponseEvent {
-  public type: EventDataType;
+  public type = EventDataType.COUNT_QUERY_RESPONSE as const;
   public response: QueryResponse;
 
   /**
@@ -15,8 +15,7 @@ export class CountQueryResponseEvent {
    * @param eventData - event emitted by "ontotext-yasgui-web-component".
    */
   constructor(eventData: OntotextYasguiEvent) {
-    this.type = eventData.type;
-    this.response = eventData.payload.response ?? {} as QueryResponse;
+    this.response = eventData.detail.payload.response ?? {} as QueryResponse;
   }
 
   hasResponse() {
