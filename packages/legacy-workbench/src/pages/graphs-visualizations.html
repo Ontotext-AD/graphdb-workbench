@@ -3,7 +3,7 @@
 <link href="css/lib/ng-tags-input/ng-tags-input.min.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 <link href="js/lib/d3-tip/d3-tip.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 
-<div class="container-fluid visual-graph-view">
+<div class="visual-graph-view">
 
     <h1>
         {{title}}
@@ -255,7 +255,7 @@
                                   id="{{predicate.linkId + predicate.nodeIndex}}"
                                   gdb-tooltip="{{predicate.rawIri}}"
                                   tooltip-placement="top">{{splitPredicate(predicate.value)}}</span>
-                            <button class="btn btn-link btn-sm px-0 copy-btn"
+                            <button class="btn btn-link btn-sm px-0 mr-1 copy-btn"
                                     ng-click="copyPredicateIri($event, predicate.rawIri)"
                                     gdb-tooltip="{{'common.copy_to_clipboard.btn' | translate}}"
                                     tooltip-placement="top"
@@ -282,7 +282,7 @@
                                       id="{{predicate.linkId + predicate.nodeIndex}}"
                                       gdb-tooltip="{{predicate.rawIri}}"
                                       tooltip-placement="top">{{splitPredicate(predicate.value)}}</span>
-                                <button class="btn btn-link btn-sm px-0 copy-btn"
+                                <button class="btn btn-link btn-sm px-0 mr-1 copy-btn"
                                         ng-click="copyPredicateIri($event, predicate.rawIri)"
                                         gdb-tooltip="{{'common.copy_to_clipboard.btn' | translate}}"
                                         tooltip-placement="top"
