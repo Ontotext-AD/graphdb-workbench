@@ -89,6 +89,7 @@ export class YasguiComponentFacadeComponent implements OnInit {
 
   ngOnInit(): void {
     this.outputHandlers()[EventDataType.QUERY] = this.queryHandler;
+    this.outputHandlers()[EventDataType.COUNT_QUERY] = this.countQueryRequestHandler;
   }
 
   // ===================================
@@ -209,7 +210,6 @@ export class YasguiComponentFacadeComponent implements OnInit {
   output(event: Event) {
     const outputModel = this.toYasguiOutputModel(event);
     const handlers = this.outputHandlers();
-    // TypeScript narrows 'outputModel' inside each case because of the literal 'type' field
     switch (outputModel.type) {
     case EventDataType.DOWNLOAD_AS:            handlers[outputModel.type]?.(outputModel); break;
     case EventDataType.NOTIFICATION_MESSAGE:   handlers[outputModel.type]?.(outputModel); break;
@@ -241,6 +241,18 @@ export class YasguiComponentFacadeComponent implements OnInit {
     }
     queryRequest.setPageNumber(undefined);
     queryRequest.setPageSize(undefined);
+  };
+
+  /**
+   * Handles the "countQuery" event emitted by the ontotext-yasgui. The event is fired immediately before sending the
+   * count query request and the request object can be altered here, and it will be sent with these changes.
+   * @param countQueryRequest - the event payload containing the query and the request object.
+   */
+  private readonly countQueryRequestHandler = (countQueryRequest: CountQueryRequestEvent) => {
+    console.info('%ccount query req', 'background: tan', countQueryRequest);
+    countQueryRequest.setPageSize(undefined);
+    countQueryRequest.setPageNumber(undefined);
+    countQueryRequest.setCount(1);
   };
 
   // ===================================

@@ -26,11 +26,11 @@ export class CountQueryRequestEvent {
     this.request = eventData.detail.payload.request;
   }
 
-  setPageSize(pageSize: string) {
+  setPageSize(pageSize?: string) {
     this.request._data['pageSize'] = pageSize;
   }
 
-  setPageNumber(pageNumber: string) {
+  setPageNumber(pageNumber?: string) {
     this.request._data['pageNumber'] = pageNumber;
   }
 
