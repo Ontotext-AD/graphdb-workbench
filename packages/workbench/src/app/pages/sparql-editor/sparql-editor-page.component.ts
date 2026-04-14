@@ -26,6 +26,7 @@ import {
   NamespaceMap,
   NamespacesService,
   navigateTo,
+  openInNewTab,
   NavigationStartPayload,
   OntoToastrService,
   ParentWindowMessageService,
@@ -41,7 +42,13 @@ import {
   SparqlStorageService,
   SubscriptionList,
   WindowService,
+  GraphConfigService,
 } from '@ontotext/workbench-api';
+
+import {
+  GraphExploreEvent,
+} from '@ontotext/shared-components';
+
 import {EventDataType} from '../../components/yasgui-component-facade/models/event/event-data-type';
 import {YasrToolbarPlugin} from '../../components/yasgui-component-facade/models/yasr/yasr-toolbar-plugin';
 import {Yasr} from '../../components/yasgui-component-facade/models/yasr/yasr';
@@ -65,6 +72,8 @@ import {
   URL_PLUGIN_NAME_TO_PLUGIN_NAME_MAPPING,
   URLPluginName
 } from '../../components/yasgui-component-facade/models/yasr/yasr-plugin-name';
+import {ExploreVisualGraphElement} from './models/explore-visual-graph-element';
+import {GraphsVisualizationQueryParams} from './models/graphs-visualization-query-params';
 
 interface UrlParametersAfterClear { repositoryId?: string, embedded?: boolean }
 
@@ -93,6 +102,7 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly translocoService = inject(TranslocoService);
   private readonly confirmationService = inject(ConfirmationService);
+  private readonly graphConfigService = service(GraphConfigService);
 
   // ================================
   // API DI
@@ -122,22 +132,13 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
   private prefixes?: NamespaceMap;
   private readonly exploreVisualGraphYasrToolbarElementBuilder: YasrToolbarPlugin = {
     createElement: (yasr: Yasr) => {
-      const buttonName = document.createElement('span');
-      buttonName.classList.add('explore-visual-graph-button-name');
-      const exploreVisualButtonWrapperElement = document.createElement('button');
-      exploreVisualButtonWrapperElement.classList.add('explore-visual-graph-button', 'icon-data');
-      exploreVisualButtonWrapperElement.onclick = ()=> {
-        const paramsToParse = {
-          query: yasr.yasqe.getValue(),
-          sameAs: yasr.yasqe.getSameAs(),
-          inference: yasr.yasqe.getInfer(),
-        };
-        void this.router.navigate(['graphs-visualizations'], {
-          queryParams: paramsToParse
-        });
-      };
-      exploreVisualButtonWrapperElement.appendChild(buttonName);
-      return exploreVisualButtonWrapperElement;
+      const exploreVisualGraphButtonGroup: ExploreVisualGraphElement = document.createElement('onto-graph-explore-split-button');
+      exploreVisualGraphButtonGroup.classList.add('explore-visual-graph');
+      exploreVisualGraphButtonGroup.fetchGraphConfigs = () => this.graphConfigService.getGraphConfigs();
+      exploreVisualGraphButtonGroup.label = this.translocoService.translate('sparql_editor.yasgui.yasr.yasr_header.toolbar.btn.visual_graph_btn.label');
+      exploreVisualGraphButtonGroup._exploreVisualGraphHandler = this.getExploreVisualGraphHandler(yasr);
+      exploreVisualGraphButtonGroup.addEventListener('graphExplore', exploreVisualGraphButtonGroup._exploreVisualGraphHandler);
+      return exploreVisualGraphButtonGroup;
     },
     updateElement: (element: HTMLElement, yasr: Yasr) => {
       element.classList.add('hidden');
@@ -148,15 +149,15 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
       if (QueryType.CONSTRUCT === queryType || QueryType.DESCRIBE === queryType) {
         element.classList.remove('hidden');
       }
-      element.querySelector<HTMLElement>('.explore-visual-graph-button-name')!.innerText =
-        this.translocoService.translate('sparql_editor.yasgui.toolbar.visual_graph_btn');
     },
     getOrder: () => {
       return 2;
     },
-    destroy() {
-      // No special cleanup is needed for this button, but the method must be implemented as part of the
-      // YasrToolbarPlugin interface
+    destroy(element: ExploreVisualGraphElement) {
+      if (element._exploreVisualGraphHandler) {
+        element.removeEventListener('graphExplore', element._exploreVisualGraphHandler);
+      }
+      element.remove();
     }
   };
   private readonly tabIdToConnectorProgressModalMapping = new Map();
@@ -209,6 +210,51 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
         WindowService.reloadPage();
       },
     });
+  }
+
+  /**
+   * Navigates to the Graph Visualizations page.
+   *
+   * @param yasr - YASR result renderer instance containing the current query context.
+   * @param visGraphConfigId - Optional identifier of a saved graph visualization configuration.
+   */
+  private navigateToGraphsVisualizations(yasr: Yasr, visGraphConfigId?: string) {
+    const queryParams: GraphsVisualizationQueryParams = {
+      query: yasr.yasqe.getValue(),
+      sameAs: yasr.yasqe.getSameAs(),
+      inference: yasr.yasqe.getInfer(),
+    };
+
+    if (visGraphConfigId) {
+      queryParams.config = visGraphConfigId;
+    }
+    this.router.navigate(['graphs-visualizations'], {
+      queryParams
+    });
+  }
+
+  /**
+   * Builds an event handler for graph exploration actions emitted by the `onto-graph-explore-split-button` component.
+   *
+   * The handler interprets the event payload and routes the user accordingly:
+   * - `create` - opens graph visualizations in a new tab
+   * - `default` - navigates using the current query context
+   * - `select` (with config) - navigates with a specific graph configuration
+   *
+   * @param yasr - YASR result renderer instance used to derive query context.
+   * @returns Event handler function for `graphExplore` events.
+   */
+  private getExploreVisualGraphHandler(yasr: Yasr) {
+    return (event: CustomEvent<GraphExploreEvent>) => {
+      const payload: GraphExploreEvent = event.detail;
+      if('create' === payload.action) {
+        openInNewTab('graphs-visualizations');
+      } else if ('default' === payload.action) {
+        this.navigateToGraphsVisualizations(yasr);
+      } else if (payload.graphConfig) {
+        this.navigateToGraphsVisualizations(yasr, payload.graphConfig.id);
+      }
+    };
   }
 
   /**

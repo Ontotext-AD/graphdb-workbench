@@ -1,0 +1,40 @@
+[
+    {
+        "id": "de99fd5de7f94ef98f1875dff55fc1c9",
+        "name": "Graph Config 1",
+        "startMode": "query",
+        "owner": "admin",
+        "startQueryIncludeInferred": true,
+        "startQuerySameAs": true,
+        "startGraphQuery": "# CONSTRUCT or DESCRIBE query. The results will be rendered visually as a graph of triples.\nCONSTRUCT WHERE {\n\t?s ?p ?o\n} LIMIT 10",
+        "startIRI": null,
+        "startIRILabel": null,
+        "expandQuery": null,
+        "resourceQuery": null,
+        "predicateLabelQuery": null,
+        "resourcePropertiesQuery": null,
+        "shared": false,
+        "description": null,
+        "hint": null,
+        "repositoryId": "A_test"
+    },
+    {
+        "id": "94cab6579df445c68c454b2156013811",
+        "name": "Graph Config 1",
+        "startMode": "query",
+        "owner": "admin",
+        "startQueryIncludeInferred": true,
+        "startQuerySameAs": true,
+        "startGraphQuery": "# CONSTRUCT or DESCRIBE query. The results will be rendered visually as a graph of triples.\nCONSTRUCT WHERE {\n\t?s ?p ?o\n} LIMIT 10",
+        "startIRI": null,
+        "startIRILabel": null,
+        "expandQuery": null,
+        "resourceQuery": null,
+        "predicateLabelQuery": null,
+        "resourcePropertiesQuery": null,
+        "shared": false,
+        "description": null,
+        "hint": null,
+        "repositoryId": null
+    }
+]

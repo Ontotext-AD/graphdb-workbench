@@ -1926,7 +1926,7 @@
     "core.popover.get.url.current.query": "Get URL to current query",
     "core.require.inferred": "Requires 'Include Inferred'!",
     "query.editor.no.results.from.prev.run.warning": "No results from previous run. Click Run or press Ctrl/Cmd-Enter to execute the current query or update.",
-    "query.editor.visual.btn": "Visual",
+    "query.editor.visual.btn": "Visualize",
     "query.editor.table.btn": "Table",
     "query.editor.run.btn": "Run",
     "query.editor.query.took.msg": "Query took {{seconds}}, {{timestamp}}.",

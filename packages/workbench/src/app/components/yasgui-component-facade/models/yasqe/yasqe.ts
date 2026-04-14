@@ -7,4 +7,5 @@ export interface Yasqe {
   getValue(): string;
   getSameAs(): boolean;
   getInfer(): boolean;
+  getPageSize(): number;
 }

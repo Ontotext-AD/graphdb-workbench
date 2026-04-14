@@ -207,5 +207,20 @@
       "cannot_refresh_token": "Could not refresh OpenID token: {{error}}",
       "user_no_access": "User has no access to GraphDB"
     }
+  },
+  "graph_explore_split_button": {
+    "buttons": {
+      "explore_visual_graph": {
+        "tooltip": "Use default config"
+      },
+      "explore_visual_graph_dropdown": {
+        "tooltip": "Select config"
+      }
+    },
+    "messages": {
+      "missing_graph_configuration": "No advanced graph configuration.",
+      "create_graph_configuration": "Create one",
+      "create_graph_configuration_link": "here"
+    }
   }
 }

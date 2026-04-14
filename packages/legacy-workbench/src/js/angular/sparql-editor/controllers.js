@@ -19,11 +19,13 @@ import {LoggerProvider} from "../core/services/logger-provider";
 import {
     ParentWindowMessageService,
     navigateTo,
+    openInNewTab,
     LanguageContextService,
     ServiceProvider,
     EventService,
     EventName,
     SecurityContextService,
+    GraphConfigService,
     service,
     REPOSITORY_ID_PARAM,
     GuidesService,
@@ -84,6 +86,7 @@ function SparqlEditorCtrl($rootScope,
     const securityContextService = service(SecurityContextService);
     const guidesService = service(GuidesService);
     const parentWindowMessageService = service(ParentWindowMessageService);
+    const graphConfigService = service(GraphConfigService);
 
     this.repository = '';
 
@@ -342,36 +345,74 @@ function SparqlEditorCtrl($rootScope,
         $scope.sameAsUserSetting = principal?.appSettings.DEFAULT_SAMEAS;
     };
 
+    /**
+     * Navigates to the Graph Visualizations page.
+     *
+     * @param yasr - YASR result renderer instance containing the current query context.
+     * @param visGraphConfigId - Optional identifier of a saved graph visualization configuration.
+     */
+    const navigateToGraphsVisualizations = (yasr, visGraphConfigId) => {
+        const paramsToParse = {
+            query: yasr.yasqe.getValue(),
+            sameAs: yasr.yasqe.getSameAs(),
+            inference: yasr.yasqe.getInfer(),
+        };
+
+        if (visGraphConfigId) {
+            paramsToParse.config = visGraphConfigId;
+        }
+
+        const navigate = function() {
+            $location.path('graphs-visualizations').search(paramsToParse);
+        };
+        // This button is embedded in the Yasr toolbar, which is outside the Angular context, so we need to
+        // manually trigger the navigation inside the Angular context. Otherwise, the navigation will be
+        // triggered on the next digest cycle that might never happen. In our case there is a constant server
+        // polling that triggers the digest cycle, so the navigation will be triggered, but it can lead to a
+        // noticeable delay. By manually triggering the navigation inside the Angular context, we ensure that
+        // the navigation is triggered immediately.
+        if ($scope.$$phase || $rootScope.$$phase) {
+            navigate();
+        } else {
+            $scope.$apply(navigate);
+        }
+    };
+
+    /**
+     * Builds an event handler for graph exploration actions emitted by the `onto-graph-explore-split-button` component.
+     *
+     * The handler interprets the event payload and routes the user accordingly:
+     * - `create` - opens graph visualizations in a new tab
+     * - `default` - navigates using the current query context
+     * - `select` (with config) - navigates with a specific graph configuration
+     *
+     * @param yasr - YASR result renderer instance used to derive query context.
+     * @returns Event handler function for `graphExplore` events.
+     */
+    const getExploreVisualGraphHandler = (yasr) => {
+        return ({detail: payload}) => {
+            if ('create' === payload.action) {
+                openInNewTab('graphs-visualizations');
+            } else if ('default' === payload.action) {
+                navigateToGraphsVisualizations(yasr);
+            } else if (payload.graphConfig) {
+                navigateToGraphsVisualizations(yasr, payload.graphConfig.id);
+            }
+        };
+    };
+
+    /**
+     * Factory for the YASR toolbar element that provides graph exploration capabilities.
+     */
     const exploreVisualGraphYasrToolbarElementBuilder = {
         createElement: (yasr) => {
-            const buttonName = document.createElement('span');
-            buttonName.classList.add("explore-visual-graph-button-name");
-            const exploreVisualButtonWrapperElement = document.createElement('button');
-            exploreVisualButtonWrapperElement.classList.add("explore-visual-graph-button");
-            exploreVisualButtonWrapperElement.classList.add("icon-data");
-            exploreVisualButtonWrapperElement.onclick = function() {
-                const paramsToParse = {
-                    query: yasr.yasqe.getValue(),
-                    sameAs: yasr.yasqe.getSameAs(),
-                    inference: yasr.yasqe.getInfer(),
-                };
-                const navigate = function() {
-                    $location.path('graphs-visualizations').search(paramsToParse);
-                };
-                // This button is embedded in the Yasr toolbar, which is outside the Angular context, so we need to
-                // manually trigger the navigation inside the Angular context. Otherwise, the navigation will be
-                // triggered on the next digest cycle that might never happen. In our case there is a constant server
-                // polling that triggers the digest cycle, so the navigation will be triggered, but it can lead to a
-                // noticeable delay. By manually triggering the navigation inside the Angular context, we ensure that
-                // the navigation is triggered immediately.
-                if ($scope.$$phase || $rootScope.$$phase) {
-                    navigate();
-                } else {
-                    $scope.$apply(navigate);
-                }
-            };
-            exploreVisualButtonWrapperElement.appendChild(buttonName);
-            return exploreVisualButtonWrapperElement;
+            const exploreVisualGraphButtonGroup = document.createElement('onto-graph-explore-split-button');
+            exploreVisualGraphButtonGroup.classList.add('explore-visual-graph');
+            exploreVisualGraphButtonGroup.fetchGraphConfigs = () => graphConfigService.getGraphConfigs();
+            exploreVisualGraphButtonGroup.label = $translate.instant('query.editor.visual.btn');
+            exploreVisualGraphButtonGroup._exploreVisualGraphHandler = getExploreVisualGraphHandler(yasr);
+            exploreVisualGraphButtonGroup.addEventListener('graphExplore', exploreVisualGraphButtonGroup._exploreVisualGraphHandler);
+            return exploreVisualGraphButtonGroup;
         },
         updateElement: (element, yasr) => {
             element.classList.add('hidden');
@@ -383,10 +424,16 @@ function SparqlEditorCtrl($rootScope,
             if (QueryType.CONSTRUCT === queryType || QueryType.DESCRIBE === queryType) {
                 element.classList.remove('hidden');
             }
-            element.querySelector('.explore-visual-graph-button-name').innerText = $translate.instant("query.editor.visual.btn");
         },
         getOrder: () => {
             return 2;
+        },
+
+        destroy(element) {
+            if (element._exploreVisualGraphHandler) {
+                element.removeEventListener('graphExplore', element._exploreVisualGraphHandler);
+            }
+            element.remove();
         },
     };
 
