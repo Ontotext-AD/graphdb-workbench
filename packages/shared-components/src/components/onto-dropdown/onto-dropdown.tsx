@@ -104,6 +104,12 @@ export class OntoDropdown {
   @Event() valueChanged: EventEmitter;
 
   /**
+   * Event emitted when the dropdown opens or closes.
+   * The event detail is true when open and false when closed.
+   */
+  @Event() toggle: EventEmitter<boolean>;
+
+  /**
    * Listens for the Escape key keydown event globally.
    * Closes the dropdown menu if the Escape key is pressed.
    *
@@ -232,15 +238,18 @@ export class OntoDropdown {
 
   private onSelect<T>(value: T): void {
     this.open = false;
+    this.toggle.emit(this.open);
     this.valueChanged.emit(value);
   }
 
   private toggleComponent(): void {
     this.open = !this.open;
+    this.toggle.emit(this.open);
   }
 
   private closeMenu(): void {
     this.open = false;
+    this.toggle.emit(this.open);
   }
 
   private async getTooltipContent(tooltipFunction: () => Promise<string>): Promise<string> {

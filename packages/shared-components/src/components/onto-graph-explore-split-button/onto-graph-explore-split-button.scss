@@ -1,0 +1,65 @@
+.explore-visual-graph-button-group {
+  display: flex;
+  gap: 1px;
+  height: 100%;
+
+  .explore-visual-graph-button {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background-color: var(--gw-button-primary-background);
+    color: var(--gw-button-primary-color);
+    border: none;
+    outline: none;
+    padding-left: 1em;
+    padding-right: 1em;
+
+    &:hover {
+      background-color: var(--gw-button-primary-hover-background);
+      color: var(--gw-button-primary-hover-color);
+      cursor: pointer;
+    }
+  }
+
+  .dropdown-wrapper {
+    position: relative;
+  }
+
+  .explore-visual-graph-dropdown .onto-dropdown,
+  .explore-visual-graph-dropdown .onto-dropdown-button {
+    background-color: var(--gw-button-primary-background);
+    color: var(--gw-button-primary-color);
+    height: 100%;
+  }
+
+  .explore-visual-graph-dropdown .onto-dropdown-button {
+    background-color: var(--gw-button-primary-background);
+    color: var(--gw-button-primary-color);
+    gap: 0;
+    padding: 0 0.3em;
+
+    &:hover {
+      background-color: var(--gw-button-primary-hover-background);
+      color: var(--gw-button-primary-hover-color);
+    }
+  }
+
+  .no-configurations-message {
+    background-color: var(--gw-message-info-background);
+    border: 1px solid var(--gw-message-info-border-color);
+    box-shadow: 0 3px 6px rgb(0 0 0 / 10%);
+    color: var(--gw-message-info-color);
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 1px;
+    padding: 0.5em 0.8em;
+    position: absolute;
+    right: 0;
+    z-index: 1001;
+
+    .graph-create-link {
+      padding: 0;
+    }
+  }
+}

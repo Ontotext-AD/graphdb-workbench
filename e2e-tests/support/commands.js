@@ -8,6 +8,7 @@ import './user-commands';
 import './security-command';
 import './connector-commands';
 import 'cypress-wait-until';
+import './url-commands.js';
 
 /**
  * Loads fixtures from the given paths recursively and returns them as an array.

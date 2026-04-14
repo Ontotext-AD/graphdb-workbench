@@ -30,21 +30,24 @@ internationalization.
 
 ## Events
 
-| Event          | Description                                                                                                | Type               |
-| -------------- | ---------------------------------------------------------------------------------------------------------- | ------------------ |
-| `valueChanged` | Event emitted when a dropdown item is selected. The event payload contains the value of the selected item. | `CustomEvent<any>` |
+| Event          | Description                                                                                                | Type                   |
+| -------------- | ---------------------------------------------------------------------------------------------------------- | ---------------------- |
+| `toggle`       | Event emitted when the dropdown opens or closes. The event detail is true when open and false when closed. | `CustomEvent<boolean>` |
+| `valueChanged` | Event emitted when a dropdown item is selected. The event payload contains the value of the selected item. | `CustomEvent<any>`     |
 
 
 ## Dependencies
 
 ### Used by
 
+ - [onto-graph-explore-split-button](../onto-graph-explore-split-button)
  - [onto-language-selector](../onto-language-selector)
  - [onto-repository-selector](../onto-repository-selector)
 
 ### Graph
 ```mermaid
 graph TD;
+  onto-graph-explore-split-button --> onto-dropdown
   onto-language-selector --> onto-dropdown
   onto-repository-selector --> onto-dropdown
   style onto-dropdown fill:#f9f,stroke:#333,stroke-width:4px

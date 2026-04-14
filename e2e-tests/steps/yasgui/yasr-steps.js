@@ -109,8 +109,48 @@ export class YasrSteps extends BaseSteps {
         return YasrSteps.getYasr().find('.yasr-toolbar');
     }
 
-    static getVisualButton() {
-        return YasrSteps.getYasrToolbar().find('.explore-visual-graph-button');
+    static getGraphExploreSplitButton() {
+        return YasrSteps.getYasrToolbar().find('.explore-visual-graph');
+    }
+
+    static getVisualizeMainButton() {
+        return YasrSteps.getGraphExploreSplitButton().find('.explore-visual-graph-button');
+    }
+
+    static clickOnVisualizeMainButton() {
+        YasrSteps.getVisualizeMainButton().click();
+    }
+
+    static getDropdownToggleButton() {
+        return YasrSteps.getGraphExploreSplitButton().find('.onto-dropdown-button');
+    }
+
+    static toggleGraphConfigDropdown() {
+        YasrSteps.getDropdownToggleButton().click();
+    }
+
+    static getGraphConfigs() {
+        return YasrSteps.getGraphExploreSplitButton().find('.onto-dropdown-menu-item');
+    }
+
+    static getGraphConfig(index = 0) {
+        return YasrSteps.getGraphConfigs().eq(index);
+    }
+
+    static selectGraphConfig(index = 0) {
+        YasrSteps.getGraphConfig(index).click();
+    }
+
+    static getCreateGraphConfigLink() {
+        return YasrSteps.getGraphExploreSplitButton().find('.graph-create-link');
+    }
+
+    static clickCreateGraphConfigLink() {
+        YasrSteps.getCreateGraphConfigLink().click();
+    }
+
+    static getNoConfigurationsMessage() {
+        return YasrSteps.getGraphExploreSplitButton().find('.no-configurations-message');
     }
 
     static getNoDataElement() {

@@ -1924,7 +1924,7 @@
     "core.popover.get.url.current.query": "Obtenir l'URL de la requête en cours",
     "core.require.inferred": "Nécessite 'Inclure les données inférées' !",
     "query.editor.no.results.from.prev.run.warning": "Aucun résultat de l'exécution précédente. Cliquez sur Exécuter ou appuyez sur Ctrl/Cmd-Enter pour exécuter la requête ou la mise à jour en cours.",
-    "query.editor.visual.btn": "Visuel",
+    "query.editor.visual.btn": "Visualiser",
     "query.editor.table.btn": "Tableau",
     "query.editor.run.btn": "Exécuter",
     "query.editor.query.took.msg": "La requête a pris {{seconds}}, {{timestamp}}.",

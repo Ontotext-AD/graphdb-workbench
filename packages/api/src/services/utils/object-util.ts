@@ -1,3 +1,7 @@
+type DeepPartial<T> = {
+  [K in keyof T]?: T[K] extends object ? DeepPartial<T[K]> : T[K];
+};
+
 export class ObjectUtil {
 
   /**
@@ -205,4 +209,61 @@ export class ObjectUtil {
   static isNullOrUndefined = (obj: unknown): boolean => {
     return obj === null || obj === undefined;
   };
+
+  /**
+   * Merges an object with default values.
+   *
+   * For each property in `defaults`, if the value in `object` is `null` or `undefined`,
+   * the default value is used instead.
+   *
+   * Nested objects are merged recursively.
+   * Arrays and other non-plain values are treated as single values and are not merged.
+   *
+   * The returned object is a new object and does not share references with the inputs.
+   *
+   * @template T - The shape of the object being merged
+   * @param object - Source object whose values take precedence over defaults
+   * @param defaults - Default values applied when properties are missing or null
+   * @returns A new object containing the merged result
+   *
+   * @example
+   * ObjectUtil.mergeWithDefaults(
+   *   { a: 1 },
+   *   { a: 10, b: 20 }
+   * );
+   * // { a: 1, b: 20 }
+   */
+  static mergeWithDefaults<T>(object: T, defaults: DeepPartial<T>): T {
+    if (typeof object !== 'object' || object === null) {
+      return object;
+    }
+
+    // Deep copy to avoid any shared references
+    const result = ObjectUtil.deepCopy(object) as T;
+
+    (Object.keys(defaults) as (keyof T)[]).forEach((key) => {
+      const objValue = result[key];
+      const defaultValue = defaults[key];
+
+      if (ObjectUtil.isNullOrUndefined(objValue)) {
+        result[key] = ObjectUtil.deepCopy(defaultValue) as T[typeof key];
+      } else if (ObjectUtil.canRecursivelyMerge(objValue, defaultValue)) {
+        result[key] = ObjectUtil.mergeWithDefaults(objValue, defaultValue as DeepPartial<T[keyof T]>) as T[keyof T];
+      }
+    });
+    return result;
+  }
+
+  /**
+   * Determines whether two values can be recursively merged.
+   *
+   * Only plain objects (non-null, non-array values) are considered mergeable.
+   *
+   * @param a - First value to check
+   * @param b - Second value to check
+   * @returns True if both values are plain objects suitable for deep merging
+   */
+  private static canRecursivelyMerge(a: unknown, b: unknown): boolean {
+    return (typeof a === 'object' && a !== null && typeof b === 'object' && b !== null && !Array.isArray(a) && !Array.isArray(b));
+  }
 }
