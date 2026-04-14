@@ -85,7 +85,7 @@ export class OntotextYasguiConfig {
    *      ...
    *  };
    */
-  public headers: HttpHeaders | ((yasgui: unknown) => HttpHeaders) | undefined;
+  public headers: HttpHeaders | ((yasgui: Yasgui) => HttpHeaders | undefined) | undefined;
   /**
    * The value of "infer" parameter when a query is executed.
    * Default value is true.
@@ -235,7 +235,7 @@ export class OntotextYasguiConfig {
    *
    * @returns - html that will display in the cell.
    */
-  public getCellContent: (binding: unknown, prefixes: Prefixes) => string;
+  public getCellContent: ((binding: unknown, prefixes: Prefixes) => string) | undefined;
   /**
    * A response of a sparql query as string. If the parameter is provided, the result will be visualized in YASR.
    */
@@ -295,7 +295,7 @@ export class OntotextYasguiConfig {
     this.getRepositoryStatementsCount = undefined;
     this.onQueryAborted = undefined;
     this.yasrToolbarPlugins = undefined;
-    this.getCellContent = () => '';
+    this.getCellContent = undefined;
     this.sparqlResponse = undefined;
     this.outputHandlers = undefined;
     this.selectedPlugin = undefined;

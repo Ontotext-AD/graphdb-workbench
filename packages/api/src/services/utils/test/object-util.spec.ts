@@ -614,6 +614,95 @@ describe('ObjectUtil', () => {
     });
   });
 
+  describe('mergeWithDefaults', () => {
+
+    it('should return object when no defaults provided', () => {
+      const obj = { a: 1 };
+      const result = ObjectUtil.mergeWithDefaults(obj, {});
+      expect(result).toEqual({ a: 1 });
+    });
+
+    it('should apply default values for missing properties', () => {
+      const obj = { a: 1 };
+      const defaults = { a: 10, b: 20 };
+
+      const result = ObjectUtil.mergeWithDefaults(obj, defaults);
+
+      expect(result).toEqual({ a: 1, b: 20 });
+    });
+
+    it('should replace null and undefined values with defaults', () => {
+      const obj:{ a: number | null; b: number | undefined } = { a: null, b: undefined };
+      const defaults = { a: 10, b: 20 };
+
+      const result = ObjectUtil.mergeWithDefaults(obj, defaults);
+
+      expect(result).toEqual({ a: 10, b: 20 });
+    });
+
+    it('should merge nested objects recursively', () => {
+      const obj = { a: { x: 1 } };
+      const defaults = { a: { x: 10, y: 20 } };
+
+      const result = ObjectUtil.mergeWithDefaults(obj, defaults);
+
+      expect(result).toEqual({ a: { x: 1, y: 20 } });
+    });
+
+    it('should not merge arrays and keep object value', () => {
+      const obj = { items: [1, 2] };
+      const defaults = { items: [9, 9, 9] };
+
+      const result = ObjectUtil.mergeWithDefaults(obj, defaults);
+
+      expect(result).toEqual({ items: [1, 2] });
+    });
+
+    it('should use default array if object value is null', () => {
+      const obj: {items: number[] | null} = { items: null };
+      const defaults = { items: [9, 9] };
+
+      const result = ObjectUtil.mergeWithDefaults(obj, defaults);
+
+      expect(result).toEqual({ items: [9, 9] });
+    });
+
+    it('should not mutate the original object', () => {
+      const obj: {a: {x: number, y?: number}} = { a: { x: 1 } };
+      const defaults = { a: { y: 2 } };
+
+      const result = ObjectUtil.mergeWithDefaults(obj, defaults);
+
+      expect(result).not.toBe(obj);
+      expect(result.a).not.toBe(obj.a);
+    });
+
+    it('should not share references with defaults', () => {
+      const obj: {a?: {x: number}} = {};
+      const defaults = { a: { x: 1 } };
+      const result = ObjectUtil.mergeWithDefaults(obj, defaults);
+
+      expect(result.a).not.toBe(defaults.a);
+    });
+
+    it('should return primitive values as-is', () => {
+      expect(ObjectUtil.mergeWithDefaults(5 as unknown, { a: 1 })).toBe(5);
+      expect(ObjectUtil.mergeWithDefaults(null as unknown, { a: 1 })).toBe(null);
+    });
+
+    it('should handle deeply nested structures', () => {
+      const obj = { a: { b: { c: 1 } } };
+      const defaults = { a: { b: { c: 10, d: 20 } } };
+
+      const result = ObjectUtil.mergeWithDefaults(obj, defaults);
+
+      expect(result).toEqual({
+        a: { b: { c: 1, d: 20 } }
+      });
+    });
+
+  });
+
   test('isNullOrUndefined should return true for null values', () => {
     expect(ObjectUtil.isNullOrUndefined(null)).toBeTruthy();
   });

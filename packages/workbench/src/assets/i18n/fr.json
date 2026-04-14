@@ -61,8 +61,16 @@
       }
     },
     "yasgui": {
-      "toolbar": {
-        "visual_graph_btn": "Visuel"
+      "yasr": {
+        "yasr_header": {
+          "toolbar": {
+            "btn": {
+              "visual_graph_btn": {
+                "label": "Visualiser"
+              }
+            }
+          }
+        }
       }
     }
   }

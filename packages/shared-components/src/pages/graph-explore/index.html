@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0"/>
+    <title>Stencil Component Starter</title>
+
+    <script type="importmap">
+        {
+          "imports": {
+            "@ontotext/workbench-api": "/resources/ontotext-workbench-api.js"
+          }
+        }
+    </script>
+
+    <script type="module" src="/build/shared-components.esm.js"></script>
+    <script nomodule src="/build/shared-components.js"></script>
+    <script src="./main.js" defer></script>
+    <script src="../js/main.js" defer></script>
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/remixicon.css">
+    <style>
+      .explore-visual-graph-button-group {
+        margin-left: 300px;
+      }
+    </style>
+</head>
+<body>
+<button id="configureEmptyGraphConfigs" onclick="configureEmptyGraphConfigs()">Configure Empty Graph Configs</button>
+
+<onto-graph-explore-split-button
+  id="onto-graph-explore-split-button-id"
+  label="Graph Explore">
+</onto-graph-explore-split-button>
+
+<div id="event-console"></div>
+</body>
+</html>

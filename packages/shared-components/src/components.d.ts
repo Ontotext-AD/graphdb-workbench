@@ -6,17 +6,19 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { DialogConfig } from "./components/dialogs/onto-dialog";
-import { AuthenticatedUser, AuthenticatedUserResponse, Awaitable, Configuration, License, MainMenuPlugin, Notification, OperationStatusSummary, ProductInfo, Repository, RepositoryReference, RepositorySizeInfo, SearchButtonConfig, SecurityConfig, ToastMessage, TranslationParameter, User } from "../../api/dist/ontotext-workbench-api.d";
+import { AuthenticatedUser, AuthenticatedUserResponse, Awaitable, Configuration, GraphConfig, License, MainMenuPlugin, Notification, OperationStatusSummary, ProductInfo, Repository, RepositoryReference, RepositorySizeInfo, SearchButtonConfig, SecurityConfig, ToastMessage, TranslationParameter, User } from "../../api/dist/ontotext-workbench-api.d";
 import { DropdownItem } from "./models/dropdown/dropdown-item";
 import { OntoTooltipPlacement } from "./components/onto-tooltip/models/onto-tooltip-placement";
 import { DropdownItemAlignment } from "./models/dropdown/dropdown-item-alignment";
+import { GraphExploreEvent } from "./components/onto-graph-explore-split-button/models/graph-explore-types";
 import { NavbarToggledEvent } from "./components/onto-navbar/navbar-toggled-event";
 import { ToggleEventPayload } from "./models/toggle-switch/toggle-event-payload";
 export { DialogConfig } from "./components/dialogs/onto-dialog";
-export { AuthenticatedUser, AuthenticatedUserResponse, Awaitable, Configuration, License, MainMenuPlugin, Notification, OperationStatusSummary, ProductInfo, Repository, RepositoryReference, RepositorySizeInfo, SearchButtonConfig, SecurityConfig, ToastMessage, TranslationParameter, User } from "../../api/dist/ontotext-workbench-api.d";
+export { AuthenticatedUser, AuthenticatedUserResponse, Awaitable, Configuration, GraphConfig, License, MainMenuPlugin, Notification, OperationStatusSummary, ProductInfo, Repository, RepositoryReference, RepositorySizeInfo, SearchButtonConfig, SecurityConfig, ToastMessage, TranslationParameter, User } from "../../api/dist/ontotext-workbench-api.d";
 export { DropdownItem } from "./models/dropdown/dropdown-item";
 export { OntoTooltipPlacement } from "./components/onto-tooltip/models/onto-tooltip-placement";
 export { DropdownItemAlignment } from "./models/dropdown/dropdown-item-alignment";
+export { GraphExploreEvent } from "./components/onto-graph-explore-split-button/models/graph-explore-types";
 export { NavbarToggledEvent } from "./components/onto-navbar/navbar-toggled-event";
 export { ToggleEventPayload } from "./models/toggle-switch/toggle-event-payload";
 export namespace Components {
@@ -98,6 +100,21 @@ export namespace Components {
      * as well as copyright information.
      */
     interface OntoFooter {
+    }
+    /**
+     * Split button component for exploring graphs based on available configurations.
+     * The component loads graph configurations, presents them as dropdown items, and emits a {@link GraphExploreEvent}
+     * when the primary button is clicked or a specific configuration is selected.
+     */
+    interface OntoGraphExploreSplitButton {
+        /**
+          * Callback invoked when the dropdown is opened to fetch graph configurations.
+         */
+        "fetchGraphConfigs": () => Promise<GraphConfig[]>;
+        /**
+          * Label displayed on the primary action button.
+         */
+        "label": string;
     }
     /**
      * OntoHeader component for rendering the header of the application.
@@ -387,6 +404,10 @@ export interface OntoDropdownCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLOntoDropdownElement;
 }
+export interface OntoGraphExploreSplitButtonCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLOntoGraphExploreSplitButtonElement;
+}
 export interface OntoNavbarCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLOntoNavbarElement;
@@ -449,6 +470,7 @@ declare global {
     };
     interface HTMLOntoDropdownElementEventMap {
         "valueChanged": any;
+        "toggle": boolean;
     }
     /**
      * A reusable dropdown component built using StencilJS. This component supports configurable labels, tooltips, icons,
@@ -479,6 +501,28 @@ declare global {
     var HTMLOntoFooterElement: {
         prototype: HTMLOntoFooterElement;
         new (): HTMLOntoFooterElement;
+    };
+    interface HTMLOntoGraphExploreSplitButtonElementEventMap {
+        "graphExplore": GraphExploreEvent;
+    }
+    /**
+     * Split button component for exploring graphs based on available configurations.
+     * The component loads graph configurations, presents them as dropdown items, and emits a {@link GraphExploreEvent}
+     * when the primary button is clicked or a specific configuration is selected.
+     */
+    interface HTMLOntoGraphExploreSplitButtonElement extends Components.OntoGraphExploreSplitButton, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLOntoGraphExploreSplitButtonElementEventMap>(type: K, listener: (this: HTMLOntoGraphExploreSplitButtonElement, ev: OntoGraphExploreSplitButtonCustomEvent<HTMLOntoGraphExploreSplitButtonElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLOntoGraphExploreSplitButtonElementEventMap>(type: K, listener: (this: HTMLOntoGraphExploreSplitButtonElement, ev: OntoGraphExploreSplitButtonCustomEvent<HTMLOntoGraphExploreSplitButtonElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLOntoGraphExploreSplitButtonElement: {
+        prototype: HTMLOntoGraphExploreSplitButtonElement;
+        new (): HTMLOntoGraphExploreSplitButtonElement;
     };
     /**
      * OntoHeader component for rendering the header of the application.
@@ -658,6 +702,7 @@ declare global {
         "onto-dialog": HTMLOntoDialogElement;
         "onto-dropdown": HTMLOntoDropdownElement;
         "onto-footer": HTMLOntoFooterElement;
+        "onto-graph-explore-split-button": HTMLOntoGraphExploreSplitButtonElement;
         "onto-header": HTMLOntoHeaderElement;
         "onto-language-selector": HTMLOntoLanguageSelectorElement;
         "onto-layout": HTMLOntoLayoutElement;
@@ -751,6 +796,10 @@ declare namespace LocalJSX {
          */
         "items"?: DropdownItem<unknown>[];
         /**
+          * Event emitted when the dropdown opens or closes. The event detail is true when open and false when closed.
+         */
+        "onToggle"?: (event: OntoDropdownCustomEvent<boolean>) => void;
+        /**
           * Event emitted when a dropdown item is selected. The event payload contains the value of the selected item.
          */
         "onValueChanged"?: (event: OntoDropdownCustomEvent<any>) => void;
@@ -770,6 +819,25 @@ declare namespace LocalJSX {
      * as well as copyright information.
      */
     interface OntoFooter {
+    }
+    /**
+     * Split button component for exploring graphs based on available configurations.
+     * The component loads graph configurations, presents them as dropdown items, and emits a {@link GraphExploreEvent}
+     * when the primary button is clicked or a specific configuration is selected.
+     */
+    interface OntoGraphExploreSplitButton {
+        /**
+          * Callback invoked when the dropdown is opened to fetch graph configurations.
+         */
+        "fetchGraphConfigs"?: () => Promise<GraphConfig[]>;
+        /**
+          * Label displayed on the primary action button.
+         */
+        "label"?: string;
+        /**
+          * Emitted when the user triggers a graph exploration action.  - `action: 'default' - when the main button is clicked. - `action: 'select' - when a dropdown menu item is selected. - `action: 'create' - when the create graph link is clicked.  `graphConfig` is provided when a specific configuration is selected.
+         */
+        "onGraphExplore"?: (event: OntoGraphExploreSplitButtonCustomEvent<GraphExploreEvent>) => void;
     }
     /**
      * OntoHeader component for rendering the header of the application.
@@ -970,6 +1038,7 @@ declare namespace LocalJSX {
         "onto-dialog": OntoDialog;
         "onto-dropdown": OntoDropdown;
         "onto-footer": OntoFooter;
+        "onto-graph-explore-split-button": OntoGraphExploreSplitButton;
         "onto-header": OntoHeader;
         "onto-language-selector": OntoLanguageSelector;
         "onto-layout": OntoLayout;
@@ -1016,6 +1085,12 @@ declare module "@stencil/core" {
              * as well as copyright information.
              */
             "onto-footer": LocalJSX.OntoFooter & JSXBase.HTMLAttributes<HTMLOntoFooterElement>;
+            /**
+             * Split button component for exploring graphs based on available configurations.
+             * The component loads graph configurations, presents them as dropdown items, and emits a {@link GraphExploreEvent}
+             * when the primary button is clicked or a specific configuration is selected.
+             */
+            "onto-graph-explore-split-button": LocalJSX.OntoGraphExploreSplitButton & JSXBase.HTMLAttributes<HTMLOntoGraphExploreSplitButtonElement>;
             /**
              * OntoHeader component for rendering the header of the application.
              * This component includes a search component, license alert (if applicable),

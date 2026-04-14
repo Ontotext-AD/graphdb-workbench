@@ -328,24 +328,6 @@ app-yasgui-component-facade .yasr-toolbar .yasr-toolbar-element {
   height: 38px;
 }
 
-app-yasgui-component-facade .yasr-toolbar .explore-visual-graph-button {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  border: none;
-  outline: none;
-  color: var(--gw-button-primary-color) !important;
-  background-color: var(--gw-button-primary-background) !important;
-  padding-left: 16px;
-  padding-right: 16px;
-}
-
-app-yasgui-component-facade .yasr-toolbar .explore-visual-graph-button:hover {
-  cursor: pointer;
-  color: var(--gw-button-primary-hover-color) !important;
-  background-color: var(--gw-button-primary-hover-background) !important;
-}
-
 app-yasgui-component-facade .yasr-toolbar .chart-download-as-button,
 app-yasgui-component-facade .yasr-toolbar .pivot-table-download-as-button {
   color: var(--gw-button-primary-color) !important;
@@ -556,6 +538,13 @@ app-yasgui-component-facade .yasr .dataTable .triple-cell .triple-link {
 
 app-yasgui-component-facade .yasr .yasr_btnGroup {
   background-color: var(--gw-panel-background) !important;
+
+  /*
+   Remove overflow restriction on the YASR button group container. This allows dropdown menus
+   (for the "Open in Visual Graph" button) to fully expand outside the container, ensuring they are visible above
+   the results panel without being clipped.
+ */
+  overflow: unset;
 }
 
 app-yasgui-component-facade .yasr .yasr_btnGroup .yasr_btn {
