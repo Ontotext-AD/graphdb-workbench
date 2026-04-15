@@ -62,7 +62,7 @@
 
 .toolbar-holder {
     position: absolute;
-    top: 10px;
+    top: 4px;
     right: 0;
     z-index: 10;
     background-color: var(--gw-panel-background);
@@ -183,6 +183,23 @@ so the following styles target Safari exclusively to correct label positioning w
 
 .disable-visual-graph-node {
     pointer-events: none;
+}
+
+.link-limit-wrapper {
+    display: inline-flex;
+    margin-right: 1rem;
+    flex-direction: column;
+}
+
+.link-limit-error {
+    position: absolute;
+    top: 2rem;
+}
+
+.link-limit-wrapper .link-limit-input-wrapper {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
 }
 
 .rdf-info-side-panel {

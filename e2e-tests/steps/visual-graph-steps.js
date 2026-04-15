@@ -403,6 +403,10 @@ export class VisualGraphSteps extends BaseSteps {
         return this.getTruncateLabelsCheckbox().click();
     }
 
+    static getInvalidLinksMessage() {
+        return this.getByTestId('invalid-links-limit');
+    }
+
     static openVisualGraphHome() {
         cy.get('.toolbar-holder').should('be.visible')
             .find('.return-home-btn').should('be.visible').click();
