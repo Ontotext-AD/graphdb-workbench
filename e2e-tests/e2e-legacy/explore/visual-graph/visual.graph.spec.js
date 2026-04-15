@@ -26,7 +26,7 @@ describe('Visual graph screen validation', () => {
         cy.deleteRepository(repositoryId);
     });
 
-    context('Embedded', () => {
+    describe('Embedded', () => {
         it('Should not show main manu, header and footer in embedded mode', () => {
             cy.visit('/graphs-visualizations?uri=http:%2F%2Fwww.w3.org%2FTR%2F2003%2FPR-owl-guide-20031209%2Fwine%23Chardonnay&embedded');
             VisualGraphSteps.verifyPageLoaded();
@@ -36,7 +36,7 @@ describe('Visual graph screen validation', () => {
         });
     });
 
-    context('When autocomplete is disabled', () => {
+    describe('When autocomplete is disabled', () => {
         it('Test notification when autocomplete is disabled', () => {
             cy.visit('graphs-visualizations');
             cy.window();
@@ -50,7 +50,7 @@ describe('Visual graph screen validation', () => {
         });
     });
 
-    context('When autocomplete is enabled', () => {
+    describe('When autocomplete is enabled', () => {
         beforeEach(() => {
             cy.enableAutocomplete(repositoryId);
             //http://localhost:9000/graphs-visualizations?uri=http:%2F%2Fwww.w3.org%2FTR%2F2003%2FPR-owl-guide-20031209%2Fwine%23USRegion
@@ -84,12 +84,12 @@ describe('Visual graph screen validation', () => {
 
         it('Test default graph state', () => {
             VisualGraphSteps.openUSRegionUri();
-            VisualGraphSteps.openVisualGraphSettings();
+            // Verify that the default settings are as follows:
+            // Maximum links to show: 100
+            VisualGraphSteps.getLinksNumberField().and('have.value', '100');
 
+            VisualGraphSteps.openVisualGraphSettings();
             cy.get('.filter-sidepanel').as('sidepanel').should('be.visible').within(() => {
-                // Verify that the default settings are as follows:
-                // Maximum links to show: 20
-                VisualGraphSteps.getLinksNumberField().and('have.value', '20');
                 // Preferred lang: en
                 cy.get('.preferred-languages .tag-item').should('have.length', 1)
                     .and('contain', 'en');
@@ -126,32 +126,17 @@ describe('Visual graph screen validation', () => {
 
         it('Test invalid links limit should show error to user ', () => {
             VisualGraphSteps.openUSRegionUri();
-            VisualGraphSteps.openVisualGraphSettings();
-
-            cy.get('.filter-sidepanel').as('sidepanel').should('be.visible').within(() => {
-                // Verify that the default settings are as follows:
-                // Maximum links to show: 20
-                VisualGraphSteps.getLinksNumberField().and('have.value', '20');
-                // Update default 20
-                VisualGraphSteps.updateLinksLimitField('1001')
-                    .then(() => {
-                        // Try to put invalid value such as 1001
-                        cy.get('.idError')
-                            .should('be.visible')
-                            .and('contain.text', 'Invalid links limit');
-                    });
-                // Try to save the invalid value
-                VisualGraphSteps.getSaveSettingsButton().and('not.be.disabled')
-                    .click();
-                // Then reset to default settings
-                VisualGraphSteps.getResetSettingsButton().and('not.be.disabled')
-                    .click()
-                    .then(() => {
-                        VisualGraphSteps.getLinksNumberField().and('have.value', '20');
-                        cy.get('.idError')
-                            .should('not.exist');
-                    });
-            });
+            // Verify that the default settings are as follows:
+            // Maximum links to show: 100
+            VisualGraphSteps.getLinksNumberField().and('have.value', '100');
+            // Update default 100
+            VisualGraphSteps.updateLinksLimitField('1001')
+                .then(() => {
+                    // Try to put invalid value such as 1001
+                    cy.get('.idError')
+                        .should('be.visible')
+                        .and('contain.text', 'Enter a number up to 1000');
+                });
         });
 
         it('Test search for a valid resource with links', () => {
@@ -162,10 +147,10 @@ describe('Visual graph screen validation', () => {
             VisualGraphSteps.openVisualGraphHome();
             // Search for "USRegion" again
             VisualGraphSteps.searchForResourceAndOpen(VALID_RESOURCE, VALID_RESOURCE);
-            // Verify that 20 links (nodes) are displayed
-            VisualGraphSteps.getPredicates().should('have.length', 20);
+            // Verify that 36 links (nodes) are displayed
+            VisualGraphSteps.getPredicates().should('have.length', 36);
             // Verify that links are counted by nodes and not by triples (predicates)
-            VisualGraphSteps.getNodes().and('have.length', 21);
+            VisualGraphSteps.getNodes().and('have.length', 37);
         });
 
         it('Test collapse and expand a node', () => {
@@ -213,6 +198,7 @@ describe('Visual graph screen validation', () => {
             // Verify that before given node is removed there are 4 of them
             VisualGraphSteps.getNodes().and('have.length', 4);
             // Click once on node different than parent one with the mouse
+            // eslint-disable-next-line cypress/no-unnecessary-waiting
             cy.get('.node-wrapper circle').eq(1)
                 // The wait is needed because mouseover event will result in
                 // pop-up of menu icons only if nodes are not moving
@@ -311,20 +297,16 @@ describe('Visual graph screen validation', () => {
         it('Test maximum links to show', () => {
             VisualGraphSteps.openUSRegionUri();
 
-            // Verify that 20 links (nodes) are displayed
-            VisualGraphSteps.getPredicates().should('have.length', 20);
+            // Verify that 36 links (nodes) are displayed
+            VisualGraphSteps.getPredicates().should('have.length', 36);
 
-            VisualGraphSteps.openVisualGraphSettings();
             // Set maximum links to 2
             VisualGraphSteps.updateLinksLimitField('2');
-            VisualGraphSteps.saveSettings();
             // Verify that the diagram is updated
             VisualGraphSteps.getPredicates().should('have.length', 2);
 
-            VisualGraphSteps.openVisualGraphSettings();
             // Set maximum links to 100
             VisualGraphSteps.updateLinksLimitField('100');
-            VisualGraphSteps.saveSettings();
             // Verify that the diagram is updated
             VisualGraphSteps.getPredicates().should('have.length', 36);
         });
@@ -335,10 +317,10 @@ describe('Visual graph screen validation', () => {
             VisualGraphSteps.toggleInferredStatements(true);
 
             // Verify that many results are displayed
-            // Verify that 20 links (nodes) are displayed
-            VisualGraphSteps.getPredicates().should('have.length', 20);
+            // Verify that 36 links (nodes) are displayed
+            VisualGraphSteps.getPredicates().should('have.length', 36);
             // Verify that more than three nodes are displayed
-            VisualGraphSteps.getNodes().and('have.length', 21);
+            VisualGraphSteps.getNodes().and('have.length', 37);
 
             // Switch Include Inferred Statements off
             VisualGraphSteps.toggleInferredStatements(false);
@@ -434,9 +416,6 @@ describe('Visual graph screen validation', () => {
             // Modify the settings first
             VisualGraphSteps.openVisualGraphSettings();
             // Verify that the default settings are as follows:
-            // Maximum links to show: 20
-            VisualGraphSteps.updateLinksLimitField('10')
-                .should('have.value', '10');
             // Preferred lang: en
             cy.get('.preferred-languages .tag-item').should('have.length', 1)
                 .eq(0).should('contain', 'en');
@@ -477,8 +456,6 @@ describe('Visual graph screen validation', () => {
 
             VisualGraphSteps.openVisualGraphSettings();
             // Verify that the default settings are as follows:
-            // Maximum links to show: 20
-            VisualGraphSteps.getLinksNumberField().and('have.value', '20');
             // Preferred lang: en
             cy.get('.preferred-languages .tag-item').should('have.length', 1);
             // Include inferred: false

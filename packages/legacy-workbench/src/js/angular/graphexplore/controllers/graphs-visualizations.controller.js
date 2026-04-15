@@ -66,6 +66,9 @@ GraphsVisualizationsCtrl.$inject = [
     'RDF4JRepositoriesService',
 ];
 
+const MIN_LINKS_LIMIT = 1;
+const MAX_LINKS_LIMIT = 1000;
+
 function GraphsVisualizationsCtrl(
     $scope,
     $rootScope,
@@ -124,16 +127,21 @@ function GraphsVisualizationsCtrl(
     // Possible operation types are defined in VISGRAPH_OPERATION_TYPE.
     $scope.visgraphOperation = $location.search().visgraphOperation;
     $scope.openedNodeInfoPanel = undefined;
+    $scope.linksLimit = {
+        value: 100,
+        min: MIN_LINKS_LIMIT,
+        max: MAX_LINKS_LIMIT,
+        decreaseDisabled: false,
+        increaseDisabled: false,
+    };
     $scope.invalidLimit = false;
-    $scope.INVALID_LINKS_MSG = $translate.instant('sidepanel.invalid.limit.links.msg');
-    $scope.INVALID_LINKS_TOOLTIP = $translate.instant('sidepanel.invalid.limit.links.tooltip');
+    let linksLimitDebounceTimer = null;
     $scope.datasource = undefined;
     // adapter implementation for ui-scroll directive
     $scope.adapterContainer = {adapter: {remain: true}};
     // Flag to avoid calling repo init logic twice
     $scope.hasInitedRepository = false;
     $scope.defaultSettings = {
-        linksLimit: 20,
         includeInferred: true,
         sameAsState: true,
         truncateNodeLabels: true,
@@ -235,23 +243,52 @@ function GraphsVisualizationsCtrl(
 
     $scope.resetSettings = () => {
         $scope.settings = _.cloneDeep($scope.defaultSettings);
-        $scope.validateLinksLimit();
         renderSettings();
     };
 
-    $scope.changeLimit = (delta) => {
-        let linksLimit = $scope.settings.linksLimit + delta;
-        if (linksLimit < 1) {
-            linksLimit = 1;
+    const updateLinksLimitModel = (value) => {
+        if (value !== undefined) {
+            $scope.linksLimit.value = value;
         }
-        if (linksLimit > 1000) {
-            linksLimit = 1000;
-        }
-        $scope.settings.linksLimit = linksLimit;
+        $scope.linksLimit.decreaseDisabled = $scope.linksLimit.value <= MIN_LINKS_LIMIT;
+        $scope.linksLimit.increaseDisabled = $scope.linksLimit.value >= MAX_LINKS_LIMIT;
     };
 
-    $scope.validateLinksLimit = () => {
-        $scope.invalidLimit = !NUMBER_PATTERN.test($scope.settings.linksLimit);
+    $scope.changeLimit = (delta) => {
+        let linksLimit = $scope.linksLimit.value + delta;
+        if (linksLimit < MIN_LINKS_LIMIT) {
+            linksLimit = MIN_LINKS_LIMIT;
+        }
+        if (linksLimit > MAX_LINKS_LIMIT) {
+            linksLimit = MAX_LINKS_LIMIT;
+        }
+        updateLinksLimitModel(linksLimit);
+        $scope.updateLinksLimit();
+    };
+
+    $scope.updateLinksLimit = () => {
+        $scope.invalidLimit = !NUMBER_PATTERN.test($scope.linksLimit.value);
+        updateLinksLimitModel();
+        applyLinksLimit();
+    };
+
+    /**
+     * Debounced handler for links limit changes. Updates the URL parameter and reloads
+     * the graph 500ms after the last change, preventing excessive requests while typing
+     * or rapidly clicking the increment/decrement buttons.
+     */
+    const applyLinksLimit = () => {
+        if (linksLimitDebounceTimer) {
+            $timeout.cancel(linksLimitDebounceTimer);
+        }
+        linksLimitDebounceTimer = $timeout(() => {
+            if ($scope.invalidLimit) {
+                return;
+            }
+            $location.search('linksLimit', $scope.linksLimit.value);
+            $location.state({skipOnPopState: true});
+            reExpandNode();
+        }, 500);
     };
 
     $scope.showSettings = () => {
@@ -269,10 +306,6 @@ function GraphsVisualizationsCtrl(
     };
 
     $scope.updateSettings = () => {
-        if ($scope.invalidLimit) {
-            toastr.error($scope.INVALID_LINKS_TOOLTIP, $scope.INVALID_LINKS_MSG);
-            return;
-        }
         $scope.saveSettings = $scope.settings;
         $scope.saveSettings.languages = _.map($scope.saveSettings['languagesMap'], function(s) {
             return s['text'];
@@ -412,8 +445,6 @@ function GraphsVisualizationsCtrl(
     const subscriptions = [];
 
     subscriptions.push($rootScope.$on('$translateChangeSuccess', function() {
-        $scope.INVALID_LINKS_MSG = $translate.instant('sidepanel.invalid.limit.links.msg');
-        $scope.INVALID_LINKS_TOOLTIP = $translate.instant('sidepanel.invalid.limit.links.tooltip');
         $scope.propertiesSearchPlaceholder = $translate.instant("visual.search.instance.placeholder");
     }));
 
@@ -508,6 +539,7 @@ function GraphsVisualizationsCtrl(
         if ($scope.visgraphOperation) {
             searchParams.visgraphOperation = $scope.visgraphOperation;
         }
+        searchParams.linksLimit = $scope.linksLimit.value;
         $location.search(searchParams);
         state.skipOnPopState = true;
         $location.state(state);
@@ -565,6 +597,25 @@ function GraphsVisualizationsCtrl(
                 return HtmlUtil.getText(d.labels[0].label).replaceAll("\n", "<br>");
             });
     };
+
+    function configureLinkLimit() {
+        const linksLimitParam = $location.search().linksLimit;
+        if (!linksLimitParam) {
+            return;
+        }
+        const parsedLinkLimit = Number.parseInt(linksLimitParam, 10);
+        if (Number.isNaN(parsedLinkLimit) || parsedLinkLimit < MIN_LINKS_LIMIT || parsedLinkLimit > MAX_LINKS_LIMIT) {
+            // An invalid link limit was provided in the URL. Use the default value and update the url for consistency
+            toastr.error(
+                $translate.instant('visual.links.invalid.limit.tooltip', {MIN_LINKS_LIMIT, MAX_LINKS_LIMIT}),
+                $translate.instant('visual.links.invalid.limit.title'),
+            );
+            $location.search('linksLimit', $scope.linksLimit.value);
+            $location.state({skipOnPopState: true});
+            return;
+        }
+        updateLinksLimitModel(parsedLinkLimit);
+    }
 
     const initSettings = (principal) => {
         const settingsFromPrincipal = principal.appSettings;
@@ -685,7 +736,7 @@ function GraphsVisualizationsCtrl(
         $scope.loading = true;
         GraphDataRestService.updateGraph({
             query: queryString,
-            linksLimit: settings['linksLimit'],
+            linksLimit: $scope.linksLimit.value,
             languages: !$scope.shouldShowSettings() ? [] : settings['languages'],
             includeInferred: sendInferred,
             sameAsState: sendSameAs,
@@ -804,7 +855,7 @@ function GraphsVisualizationsCtrl(
             }, 0);
         } else if (config.startMode === 'query' && config.startGraphQuery) {
             $scope.loading = true;
-            GraphConfigRestService.loadGraphForConfig(config, config.startQueryIncludeInferred, getSettings()['linksLimit'], config.startQuerySameAs)
+            GraphConfigRestService.loadGraphForConfig(config, config.startQueryIncludeInferred, $scope.linksLimit.value, config.startQuerySameAs)
                 .then(function(response) {
                     // Node drawing will turn off loader
                     initGraphFromResponse(response);
@@ -1614,7 +1665,7 @@ function GraphsVisualizationsCtrl(
             const parent = Array.isArray(parentNode) ? parentNode[i] : parentNode;
 
             const shownLinks = graph.countLinks(d, graph.links);
-            if (shownLinks <= getSettings()['linksLimit']) {
+            if (shownLinks <= $scope.linksLimit.value) {
                 expandNode(d, false, parent);
             } else {
                 toastr.info($translate.instant('graphexplore.increase.limit'), $translate.instant('graphexplore.node.at.max'));
@@ -2150,7 +2201,7 @@ function GraphsVisualizationsCtrl(
         const settings = getSettings();
         const expandIri = d.iri;
         GraphDataRestService.getInstanceNodeLinks({
-            iri: expandIri, linksLimit: settings['linksLimit'],
+            iri: expandIri, linksLimit: $scope.linksLimit.value,
             includeInferred: settings['includeInferred'],
             config: $scope.configLoaded.id,
             preferredTypes: !$scope.shouldShowSettings() ? [] : settings['preferredTypes'],
@@ -3320,6 +3371,7 @@ function GraphsVisualizationsCtrl(
         }
         const principal = securityContextService.getAuthenticatedUser();
         initSettings(principal);
+        configureLinkLimit();
         initForRepository();
         resetColors();
     };

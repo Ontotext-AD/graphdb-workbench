@@ -18,6 +18,30 @@
     </div>
 
     <div class="toolbar-holder" ng-show="configLoaded && isLicenseValid() && getActiveRepository() && 'SYSTEM' !== getActiveRepository()">
+        <label for="links-limit-input" gdb-tooltip="{{'visual.links.limit.label.tooltip' | translate}}">{{'visual.links.maximum' |
+            translate}}</label>
+        <div class="link-limit-wrapper">
+            <div class="link-limit-input-wrapper">
+                <button type="button" class="btn btn-link px-0" ng-disabled="linksLimit.decreaseDisabled"
+                        ng-click="changeLimit(-1)">
+                    <i class="ri-indeterminate-circle-line"></i>
+                </button>
+                <input type="number" class="form-control input-number" size="100"
+                       id="links-limit-input"
+                       guide-selector="graph-settings-links-limit"
+                       ng-model="linksLimit.value"
+                       title="{{'visual.limit.links.tooltip' | translate: {min: linksLimit.min, max: linksLimit.max} }}"
+                       min="{{linksLimit.min}}" max="{{linksLimit.max}}" class="ng-pristine ng-valid ng-valid-number"
+                       ng-change="updateLinksLimit()">
+                <button type="button" class="btn btn-link px-0" ng-disabled="linksLimit.increaseDisabled"
+                        ng-click="changeLimit(1)">
+                    <i class="ri-add-circle-line"></i>
+                </button>
+            </div>
+            <span ng-if="invalidLimit"
+                  class="idError alert alert-danger mt-1 link-limit-error"
+                  data-test="invalid-links-limit">{{'visual.links.invalid.limit.msg' | translate: {MAX_LINKS_LIMIT: linksLimit.max} }}</span>
+        </div>
         <button ng-show="!queryResultsMode && !noGoHome" class="btn btn-link p-0 return-home-btn"
                 gdb-tooltip="{{'visual.graph.home.label' | translate}}"
                 tooltip-placement="bottom"
@@ -300,29 +324,6 @@
             <h4>{{'sidepanel.graph.settings' | translate}}</h4>
 
             <div>
-                <div class="form-group mb-2">
-                    <label gdb-tooltip="{{'sidepanel.limit.links.tooltip' | translate}}">{{'sidepanel.maximum.links' | translate}}</label>
-                    <div class="form-inline">
-                        <button type="button" class="btn btn-link px-0" ng-disabled="settings['linksLimit'] < 1"
-                                ng-click="changeLimit(-1)">
-                            <span class="ri-indeterminate-circle-line"></span>
-                        </button>
-                        <input type="number" class="form-control input-number" size="20"
-                               guide-selector="graph-settings-links-limit"
-                               ng-model="settings['linksLimit']"
-                               min="0" max="1000" class="ng-pristine ng-valid ng-valid-number"
-                               ng-change="validateLinksLimit()">
-                        <button type="button" class="btn btn-link px-0" ng-disabled="settings['linksLimit'] > 999"
-                                ng-click="changeLimit(1)">
-                            <span class="ri-add-circle-line"></span>
-                        </button>
-                        <span style="margin-top: 5px" ng-if="invalidLimit"
-                              class="idError alert alert-danger"
-                              gdb-tooltip="{{INVALID_LINKS_TOOLTIP}}">
-                            {{INVALID_LINKS_MSG}}
-                        </span>
-                    </div>
-                </div>
                 <div class="form-group mb-2" ng-show="shouldShowSettings()">
                     <label gdb-tooltip="{{'sidepanel.preferred.languages.for.node' | translate}}">{{'sidepanel.preferred.languages' | translate}}</label>
                     <div class="input-group preferred-languages">

@@ -180,104 +180,96 @@ describe('Visual Graph', () => {
         });
 
         it('Should create a visual graph config (User interaction)', () => {
-            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 1/24');
+            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 1/22');
             GuideDialogSteps.assertDialogWithContentIsVisible('Click on the Explore menu.');
             GuideDialogSteps.clickOnNextButton();
 
-            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 2/24');
+            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 2/22');
             GuideDialogSteps.assertDialogWithContentIsVisible('Click on the Visual graph menu.');
             GuideDialogSteps.clickOnNextButton();
 
-            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 3/24');
+            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 3/22');
             GuideDialogSteps.assertDialogWithContentIsVisible('Click on the create config button to Create graph config.');
             VisualGraphSteps.createCustomGraph();
 
-            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 4/24');
+            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 4/22');
             GuideDialogSteps.assertDialogWithContentIsVisible('Enter a name for your visual graph configuration.');
             VisualGraphSteps.typeGraphConfigName('visual');
             GuideDialogSteps.clickOnNextButton();
 
-            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 5/24');
+            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 5/22');
             GuideDialogSteps.assertDialogWithContentIsVisible('Enter a description: my description');
             VisualGraphSteps.typeGraphConfigDescription('my description');
             GuideDialogSteps.clickOnNextButton();
 
-            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 6/24');
+            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 6/22');
             GuideDialogSteps.assertDialogWithContentIsVisible('Copy and use the following IRI as the starting point for the visual graph: my hint');
             VisualGraphSteps.typeGraphConfigHint('my hint');
             GuideDialogSteps.clickOnNextButton();
 
-            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 7/24');
+            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 7/22');
             GuideDialogSteps.assertDialogWithContentIsVisible('Starting point defines how the visual graph begins when it is opened. It determines the first resource or set of results that will appear in the graph and from which the visualization starts.');
             GuideDialogSteps.clickOnNextButton();
 
-            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 9/24');
+            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 9/22');
             GuideDialogSteps.assertDialogWithContentIsVisible('Select Start with a fixed node to always start the visual graph from a specific resource.')
             VisualGraphSteps.selectStartMode('node');
 
-            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 10/24');
+            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 10/22');
             GuideDialogSteps.assertDialogWithContentIsVisible('Enter the following text: MerlotGrape');
             VisualGraphSteps.searchForRdfResource('MerlotGrape');
             GuideDialogSteps.clickOnNextButton();
 
-            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 11/24');
+            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 11/22');
             GuideDialogSteps.assertDialogWithContentIsVisible('Click on http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#MerlotGrape');
             VisualGraphSteps.clickOnAutocompleteElement('http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#MerlotGrape');
 
-            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 12/24');
+            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 12/22');
             GuideDialogSteps.assertDialogWithContentIsVisible('Click on the Graph expansion tab');
             VisualGraphSteps.openConfigTab(2);
 
-            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 13/24');
+            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 13/22');
             GuideDialogSteps.assertDialogWithContentIsVisible('Enter the following SPARQL query:');
             GuideDialogSteps.assertDialogWithContentIsVisible('The graph expansion query defines what happens when a node is expanded in the visual graph. Expanding a node loads additional resources connected to it and adds them to the graph as new nodes and edges.');
             GuideDialogSteps.copyQueryToEditor();
             GuideDialogSteps.clickOnNextButton();
 
-            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 14/24');
+            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 14/22');
             GuideDialogSteps.assertDialogWithContentIsVisible('Include inferred data in results includes inferred statements produced by reasoning in the query results. Clicking the toggle disables this behavior.');
             GuideDialogSteps.clickOnNextButton();
 
-            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 15/24');
+            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 15/22');
             GuideDialogSteps.assertDialogWithContentIsVisible('Expand results over owl sameAs includes equivalent resources connected with owl:sameAs in the query results. Clicking the toggle disables this behavior.');
             GuideDialogSteps.clickOnNextButton();
 
-            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 16/24');
+            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 16/22');
             GuideDialogSteps.assertDialogWithContentIsVisible('The Sample queries includes example graph expansion queries. Unfiltered object properties shows all object property connections of a node, while Filtered object properties shows only selected ones.');
             GuideDialogSteps.clickOnNextButton();
 
-            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 17/24');
+            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 17/22');
             GuideDialogSteps.assertDialogWithContentIsVisible('Check the Share visual graph with other users box to make the visual graph configuration available to other users in the repository.');
             VisualGraphSteps.shareVisualGraphWithOtherUsers();
 
-            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 18/24');
+            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 18/22');
             GuideDialogSteps.assertDialogWithContentIsVisible('Click to save the visual graph configuration.');
             VisualGraphSteps.saveConfig();
 
-            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 19/24');
+            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 19/22');
             GuideDialogSteps.assertDialogWithContentIsVisible('Click the visual graph you just created to open and explore it.');
             VisualGraphSteps.selectConfig('visual');
 
             Cypress._.times(4, () => cy.wait('@getNodes'));
 
-            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 20/24');
-            GuideDialogSteps.assertDialogWithContentIsVisible('Click on Graph settings.');
-            VisualGraphSteps.openVisualGraphSettings();
-
-            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 21/24');
+            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 20/22');
             GuideDialogSteps.assertDialogWithContentIsVisible('Enter 200 as the maximum number of links to show.');
             VisualGraphSteps.updateLinksLimitField(200);
             GuideDialogSteps.clickOnNextButton();
 
-            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 22/24');
-            GuideDialogSteps.assertDialogWithContentIsVisible('Click to save the graph settings.');
-            VisualGraphSteps.saveSettings();
-
-            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 23/24');
+            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 21/22');
             GuideDialogSteps.assertDialogWithContentIsVisible('Double click on WineGrape to expand the graph.');
             VisualGraphSteps.dblclickOnNode('http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#WineGrape')
 
-            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 24/24');
+            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 22/22');
             GuideDialogSteps.assertDialogWithContentIsVisible('Scrolling with the mouse wheel or two fingers on the touchpad zooms the visual graph in and out.');
             GuideDialogSteps.clickOnNextButton();
 
@@ -285,100 +277,92 @@ describe('Visual Graph', () => {
         });
 
         it('Should create a visual graph config (next flow)', () => {
-            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 1/24');
+            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 1/22');
             GuideDialogSteps.assertDialogWithContentIsVisible('Click on the Explore menu.');
             GuideDialogSteps.clickOnNextButton();
 
-            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 2/24');
+            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 2/22');
             GuideDialogSteps.assertDialogWithContentIsVisible('Click on the Visual graph menu.');
             GuideDialogSteps.clickOnNextButton();
 
-            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 3/24');
+            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 3/22');
             GuideDialogSteps.assertDialogWithContentIsVisible('Click on the create config button to Create graph config.');
             GuideDialogSteps.clickOnNextButton();
 
-            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 4/24');
+            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 4/22');
             GuideDialogSteps.assertDialogWithContentIsVisible('Enter a name for your visual graph configuration.');
             VisualGraphSteps.typeGraphConfigName('visual');
             GuideDialogSteps.clickOnNextButton();
 
-            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 5/24');
+            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 5/22');
             GuideDialogSteps.assertDialogWithContentIsVisible('Enter a description: my description');
             GuideDialogSteps.clickOnNextButton();
 
-            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 6/24');
+            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 6/22');
             GuideDialogSteps.assertDialogWithContentIsVisible('Copy and use the following IRI as the starting point for the visual graph: my hint');
             GuideDialogSteps.clickOnNextButton();
 
-            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 7/24');
+            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 7/22');
             GuideDialogSteps.assertDialogWithContentIsVisible('Starting point defines how the visual graph begins when it is opened. It determines the first resource or set of results that will appear in the graph and from which the visualization starts.');
             GuideDialogSteps.clickOnNextButton();
 
-            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 9/24');
+            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 9/22');
             GuideDialogSteps.assertDialogWithContentIsVisible('Select Start with a fixed node to always start the visual graph from a specific resource.')
             GuideDialogSteps.clickOnNextButton();
 
-            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 10/24');
+            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 10/22');
             GuideDialogSteps.assertDialogWithContentIsVisible('Enter the following text: MerlotGrape');
             GuideDialogSteps.clickOnNextButton();
 
-            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 11/24');
+            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 11/22');
             GuideDialogSteps.assertDialogWithContentIsVisible('Click on http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#MerlotGrape');
             GuideDialogSteps.clickOnNextButton();
 
-            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 12/24');
+            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 12/22');
             GuideDialogSteps.assertDialogWithContentIsVisible('Click on the Graph expansion tab');
             GuideDialogSteps.clickOnNextButton();
 
-            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 13/24');
+            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 13/22');
             GuideDialogSteps.assertDialogWithContentIsVisible('Enter the following SPARQL query:');
             GuideDialogSteps.assertDialogWithContentIsVisible('The graph expansion query defines what happens when a node is expanded in the visual graph. Expanding a node loads additional resources connected to it and adds them to the graph as new nodes and edges.');
             GuideDialogSteps.clickOnNextButton();
 
-            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 14/24');
+            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 14/22');
             GuideDialogSteps.assertDialogWithContentIsVisible('Include inferred data in results includes inferred statements produced by reasoning in the query results. Clicking the toggle disables this behavior.');
             GuideDialogSteps.clickOnNextButton();
 
-            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 15/24');
+            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 15/22');
             GuideDialogSteps.assertDialogWithContentIsVisible('Expand results over owl sameAs includes equivalent resources connected with owl:sameAs in the query results. Clicking the toggle disables this behavior.');
             GuideDialogSteps.clickOnNextButton();
 
-            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 16/24');
+            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 16/22');
             GuideDialogSteps.assertDialogWithContentIsVisible('The Sample queries includes example graph expansion queries. Unfiltered object properties shows all object property connections of a node, while Filtered object properties shows only selected ones.');
             GuideDialogSteps.clickOnNextButton();
 
-            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 17/24');
+            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 17/22');
             GuideDialogSteps.assertDialogWithContentIsVisible('Check the Share visual graph with other users box to make the visual graph configuration available to other users in the repository.');
             VisualGraphSteps.shareVisualGraphWithOtherUsers();
 
-            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 18/24');
+            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 18/22');
             GuideDialogSteps.assertDialogWithContentIsVisible('Click to save the visual graph configuration.');
             GuideDialogSteps.clickOnNextButton();
 
-            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 19/24');
+            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 19/22');
             GuideDialogSteps.assertDialogWithContentIsVisible('Click the visual graph you just created to open and explore it.');
             VisualGraphSteps.selectConfig('visual');
 
             Cypress._.times(4, () => cy.wait('@getNodes'));
 
-            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 20/24');
-            GuideDialogSteps.assertDialogWithContentIsVisible('Click on Graph settings.');
-            GuideDialogSteps.clickOnNextButton();
-
-            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 21/24');
+            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 20/22');
             GuideDialogSteps.assertDialogWithContentIsVisible('Enter 200 as the maximum number of links to show.');
             VisualGraphSteps.updateLinksLimitField(200);
             GuideDialogSteps.clickOnNextButton();
 
-            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 22/24');
-            GuideDialogSteps.assertDialogWithContentIsVisible('Click to save the graph settings.');
-            GuideDialogSteps.clickOnNextButton();
-
-            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 23/24');
+            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 21/22');
             GuideDialogSteps.assertDialogWithContentIsVisible('Double click on WineGrape to expand the graph.');
             GuideDialogSteps.clickOnNextButton();
 
-            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 24/24');
+            GuideDialogSteps.assertDialogWithTitleIsVisible('Visual graph explore — 22/22');
             GuideDialogSteps.assertDialogWithContentIsVisible('Scrolling with the mouse wheel or two fingers on the touchpad zooms the visual graph in and out.');
             GuideDialogSteps.clickOnNextButton();
 

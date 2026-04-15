@@ -112,7 +112,7 @@
     "resolutions": {},
     "dependencies": {
         "@single-spa/import-map-injector": "^2.0.2",
-        "graphdb-workbench-plugins": "^0.0.1-migration-TR1",
+        "graphdb-workbench-plugins": "^0.0.1-TR31",
         "import-map-overrides": "^6.1.0"
     }
 }
