@@ -1,101 +1,79 @@
-
-
 <div>
     <!-- massively taken from https://github.com/chieffancypants/angular-hotkeys -->
-    <button id="keyboardShortcuts" ng-click="toggleCheatSheet()" type="button" class="btn btn-sm btn-secondary">{{'graph.shortcuts.mouse.keyboard' | translate}}</button>
+    <button id="keyboardShortcuts" ng-click="toggleCheatSheet()" type="button" class="btn btn-sm btn-secondary">
+        {{'graph.shortcuts.mouse.keyboard' | translate}}
+    </button>
     <div class="hotkeys-container fade" ng-class="{in: shortcutsVisible}">
-        <div class="hotkeys">
-            <div class="close" ng-click="toggleCheatSheet()"></div>
-            <div class="mb-3">
-                <h3 class="text-xs-center">{{'graph.shortcuts.mouse.actions' | translate}}</h3>
-                <table>
-                    <tbody>
-                    <tr>
-                        <td class="hotkeys-keys">
+        <h4 class="hotkey-title">{{'graph.shortcuts.actions' | translate}}</h4>
+        <div class="hotkey-wrapper">
+            <div class="hotkeys">
+                <button class="ri-close-line" ng-click="toggleCheatSheet()"></button>
+                <div class="hotkey-section">
+                    <h3 class="section-title">{{'graph.shortcuts.mouse.actions' | translate}}</h3>
+                    <section>
+                        <div class="hotkey-item">
                             <kbd>{{'graph.shortcuts.single.click' | translate}}</kbd>
-                        </td>
-                        <td class="hotkeys-text">{{'graph.shortcuts.view.node.details' | translate}}</td>
-                    </tr>
-                    <tr>
-                        <td class="hotkeys-keys">
+                            <span class="hotkeys-text">{{'graph.shortcuts.view.node.details' | translate}}</span>
+                        </div>
+                        <div class="hotkey-item">
                             <kbd>{{'graph.shortcuts.double.click' | translate}}</kbd>
-                        </td>
-                        <td class="hotkeys-text">{{'graph.shortcuts.load.node.connections' | translate}}</td>
-                    </tr>
-                    <tr>
-                        <td class="hotkeys-keys">
-                            <kbd>Ctrl/Cmd-click</kbd>
-                        </td>
-                        <td class="hotkeys-text">{{'graph.shortcuts.remove.node.links' | translate}}</td>
-                    </tr>
-                    <tr>
-                        <td class="hotkeys-keys">
-                            <kbd>Ctrl/Cmd-Shift-click</kbd>
-                        </td>
-                        <td class="hotkeys-text">{{'graph.shortcuts.restart.view.with.node.at.center' | translate}}</td>
-                    </tr>
-                    <tr>
-                        <td class="hotkeys-keys">
+                            <span class="hotkeys-text">{{'graph.shortcuts.load.node.connections' | translate}}</span>
+                        </div>
+                        <div class="hotkey-item">
+                            <kbd>Ctrl|Cmd</kbd>
+                            <kbd>Click</kbd>
+                            <span class="hotkeys-text">{{'graph.shortcuts.remove.node.links' | translate}}</span>
+                        </div>
+                        <div class="hotkey-item">
+                            <kbd>Ctrl|Cmd</kbd>
+                            <kbd>Shift</kbd>
+                            <kbd>Click</kbd>
+                            <span class="hotkeys-text">{{'graph.shortcuts.restart.view.with.node.at.center' | translate}}</span>
+                        </div>
+                        <div class="hotkey-item">
                             <kbd>{{'graph.shortcuts.click.drag.node' | translate}}</kbd>
-                        </td>
-                        <td class="hotkeys-text">{{'graph.shortcuts.move.node.dragging' | translate}}</td>
-                    </tr>
-                    <tr>
-                        <td class="hotkeys-keys">
+                            <span class="hotkeys-text">{{'graph.shortcuts.move.node.dragging' | translate}}</span>
+                        </div>
+                        <div class="hotkey-item">
                             <kbd>{{'graph.shortcuts.right.click.node' | translate}}</kbd>
-                        </td>
-                        <td class="hotkeys-text">{{'graph.shortcuts.pin.unpin.node' | translate}}</td>
-                    </tr>
-                    <tr>
-                        <td class="hotkeys-keys">
+                            <span class="hotkeys-text">{{'graph.shortcuts.pin.unpin.node' | translate}}</span>
+                        </div>
+                        <div class="hotkey-item">
                             <kbd>{{'graph.shortcuts.click.drag.outside.node' | translate}}</kbd>
-                        </td>
-                        <td class="hotkeys-text">{{'graph.shortcuts.move.whole.graph' | translate}}</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="mb-3">
-            <h3 class="text-xs-center">{{'graph.shortcuts.touch.actions' | translate}}</h3>
-            <table>
-                <tbody>
-                <tr>
-                    <td class="hotkeys-keys">
-                        <kbd>{{'graph.shortcuts.tap' | translate}}</kbd>
-                    </td>
-                    <td class="hotkeys-text">{{'graph.shortcuts.view.node.details' | translate}}</td>
-                </tr>
-                <tr>
-                    <td class="hotkeys-keys">
-                        <kbd>{{'graph.shortcuts.tap.hold' | translate}}</kbd>
-                    </td>
-                    <td class="hotkeys-text">{{'graph.shortcuts.remove.node.links' | translate}}</td>
-                </tr>
-                <tr>
-                    <td class="hotkeys-keys">
-                        <kbd>{{'graph.shortcuts.tap.twice' | translate}}</kbd>
-                    </td>
-                    <td class="hotkeys-text">{{'graph.shortcuts.load.node.connections' | translate}}</td>
-                </tr>
-                </tbody>
-            </table>
-            </div>
-            <div class="mb-3">
-                <h3 class="text-xs-center">{{'graph.shortcuts.keyboard.actions' | translate}}</h3>
-                <table>
-                    <tr>
-                        <td class="hotkeys-keys">
-                            <kbd>{{'graph.shortcuts.left.arrow' | translate}}</kbd>
-                        </td>
-                        <td class="hotkeys-text">{{'graph.shortcuts.rotate.graph.left' | translate}}</td>
-                    </tr>
-                    <tr>
-                        <td class="hotkeys-keys">
-                            <kbd>{{'graph.shortcuts.right.arrow' | translate}}</kbd>
-                        </td>
-                        <td class="hotkeys-text">{{'graph.shortcuts.rotate.graph.right' | translate}}</td>
-                    </tr>
-                </table>
+                            <span class="hotkeys-text">{{'graph.shortcuts.move.whole.graph' | translate}}</span>
+                        </div>
+                    </section>
+                </div>
+                <div class="hotkey-section">
+                    <h3 class="section-title">{{'graph.shortcuts.touch.actions' | translate}}</h3>
+                    <section>
+                        <div class="hotkey-item">
+                            <kbd>{{'graph.shortcuts.tap' | translate}}</kbd>
+                            <span class="hotkeys-text">{{'graph.shortcuts.view.node.details' | translate}}</span>
+                        </div>
+                        <div class="hotkey-item">
+                            <kbd>{{'graph.shortcuts.tap.hold' | translate}}</kbd>
+                            <span class="hotkeys-text">{{'graph.shortcuts.remove.node.links' | translate}}</span>
+                        </div>
+                        <div class="hotkey-item">
+                            <kbd>{{'graph.shortcuts.tap.twice' | translate}}</kbd>
+                            <span class="hotkeys-text">{{'graph.shortcuts.load.node.connections' | translate}}</span>
+                        </div>
+                    </section>
+                </div>
+                <div class="hotkey-section">
+                    <h3 class="section-title">{{'graph.shortcuts.keyboard.actions' | translate}}</h3>
+                    <section>
+                        <div class="hotkey-item">
+                            <kbd><i class="ri-arrow-left-long-line"></i></kbd>
+                            <span class="hotkeys-text">{{'graph.shortcuts.rotate.graph.left' | translate}}</span>
+                        </div>
+                        <div class="hotkey-item">
+                            <kbd><i class="ri-arrow-right-long-line"></i></kbd>
+                            <span class="hotkeys-text">{{'graph.shortcuts.rotate.graph.right' | translate}}</span>
+                        </div>
+                    </section>
+                </div>
             </div>
         </div>
     </div>

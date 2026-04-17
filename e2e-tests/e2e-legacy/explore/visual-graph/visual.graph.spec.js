@@ -250,34 +250,34 @@ describe('Visual graph screen validation', () => {
         });
 
         it('Test verify mouse/keyboard actions', () => {
-            const mouseActions = 'Mouse actions\n                ' +
-                '\n                    \n                    \n                        \n                            ' +
-                'Single click\n                        \n                        ' +
-                'View node details and properties\n                    \n                    \n                        \n                            ' +
-                'Double click\n                        \n                        ' +
-                'Load node connections\n                    \n                    \n                        \n                            ' +
-                'Ctrl/Cmd-click\n                        \n                        ' +
-                'Removes a node and its links\n                    \n                    \n                        \n                            ' +
-                'Ctrl/Cmd-Shift-click\n                        \n                        ' +
-                'Restart the view with that node as a central one\n                    \n                    \n                        \n                            ' +
-                'Click and drag a node\n                        \n                        ' +
-                'Move a node by dragging it (will also pin down the node)\n                    \n                    \n                        \n                            ' +
-                'Right click a node\n                        \n                        ' +
-                'Pin down or unpin the node\n                    \n                    \n                        \n                            ' +
-                'Click and drag outside a node\n                        \n                        ' +
-                'Move the whole graph\n';
-            const touchActions = 'Touch actions\n            \n                \n                \n                    \n                        ' +
-                'Tap\n                    \n                    ' +
-                'View node details and properties\n                \n                \n                    \n                        ' +
-                'Tap and hold\n                    \n                    ' +
-                'Removes a node and its links\n                \n                \n                    \n                        ' +
-                'Tap twice\n                    \n                    ' +
-                'Load node connections\n';
-            const keyboardActions = 'Keyboard actions\n                \n                    \n                        \n                            ' +
-                'Left arrow\n                        \n                        ' +
-                'Rotate the graph to the left\n                    \n                    \n                        \n                            ' +
-                'Right arrow\n                        \n                        ' +
-                'Rotate the graph to the right\n';
+            const mouseActions = 'MOUSE ACTIONS\n                    \n                        \n                            ' +
+                'Single click\n                            ' +
+                'View node details and properties\n                        \n                        \n                            ' +
+                'Double click\n                            ' +
+                'Load node connections\n                        \n                        \n                            ' +
+                'Ctrl|Cmd\n                            ' +
+                'Click\n                            ' +
+                'Removes a node and its links\n                        \n                        \n                            ' +
+                'Ctrl|Cmd\n                            ' +
+                'Shift\n                            ' +
+                'Click\n                            ' +
+                'Restart the view with that node as a central one\n                        \n                        \n                            ' +
+                'Click and drag a node\n                            ' +
+                'Move a node by dragging it (will also pin down the node)\n                        \n                        \n                            ' +
+                'Right click a node\n                            ' +
+                'Pin down or unpin the node\n                        \n                        \n                            ' +
+                'Click and drag outside a node\n                            ' +
+                'Move the whole graph\n                        \n                    \n                \n                \n';
+            const touchActions = 'TOUCH ACTIONS\n                    \n                        \n                            ' +
+                'Tap\n                            ' +
+                'View node details and properties\n                        \n                        \n                            ' +
+                'Tap and hold\n                            ' +
+                'Removes a node and its links\n                        \n                        \n                            ' +
+                'Tap twice\n                            ' +
+                'Load node connections\n                        \n                    \n                \n                \n';
+            const keyboardActions = 'KEYBOARD ACTIONS\n                    \n                        \n                            \n                            ' +
+                'Rotate the graph to the left\n                        \n                        \n                            \n                            ' +
+                'Rotate the graph to the right\n                        \n                    \n                \n            \n        \n';
 
             VisualGraphSteps.openUSRegionUri();
             // Click on "mouse and keyboard actions" in the lower right corner of the screen
