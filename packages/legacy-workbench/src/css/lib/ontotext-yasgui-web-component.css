@@ -431,11 +431,6 @@ yasgui-component .saved-queries-container .saved-query-actions .saved-query-acti
     color: var(--gw-message-info-color) !important;
 }
 
-.keyboard-shortcuts-content kbd {
-    color: var(--gw-tag-info-color) !important;
-    background-color: var(--gw-tag-info-background) !important;
-}
-
 /*
     Forms in the dialog
 */
@@ -844,8 +839,31 @@ yasgui-component .yasr .yasr_fallback_info:not(:empty) {
     font-size: 90%;
 }
 
+.keyboard-shortcuts-dialog-wrapper .key {
+    border: none;
+}
+
 .keyboard-shortcuts-dialog-wrapper.resizeable-on {
     margin-top: -31px;
+}
+
+.keyboard-shortcut-description-item {
+    justify-content: flex-start !important;
+}
+
+.keyboard-shortcut-keys {
+    flex: 0 0 !important;
+    min-width: auto !important;
+}
+
+.keyboard-shortcuts-dialog-wrapper .keyboard-shortcut-section-title {
+    color: var(--gw-shortcuts-panel-heading-color);
+}
+
+.keyboard-shortcuts-content kbd {
+    color: var(--gw-shortcuts-panel-key-color) !important;
+    background-color: var(--gw-shortcuts-panel-key-background) !important;
+    border-color: var(--gw-shortcuts-panel-key-border-color) !important;
 }
 
 .keyboard-shortcuts-dialog-button {
