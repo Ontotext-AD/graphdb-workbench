@@ -42,7 +42,7 @@ pipeline {
 
         string(
             name: 'SLACK_CHANNEL',
-            defaultValue: '#graphdb-team',
+            defaultValue: '#frontend-notifications',
             description: 'Slack channel for notification (only used if checkbox above is selected)'
         )
     }
