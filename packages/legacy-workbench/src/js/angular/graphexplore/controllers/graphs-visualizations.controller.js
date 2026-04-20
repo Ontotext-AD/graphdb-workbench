@@ -2840,6 +2840,7 @@ function GraphsVisualizationsCtrl(
                 source: d.source,
                 target: d.target,
             }, WindowService.getReferer());
+            return;
         }
 
         revertElementsStyleToDefault();
@@ -2858,6 +2859,11 @@ function GraphsVisualizationsCtrl(
         }
 
         openPredicates(d);
+
+        // We need to manually trigger a digest because linkActions runs outside angular's digest cycle (it's triggered
+        // by a D3 .on("click") handler, not by angular), so scope changes like $scope.showPredicates, $scope.predicates,
+        // etc. don't render until the next digest happens.
+        $scope.$applyAsync();
     }
 
     function openPredicates(d) {
