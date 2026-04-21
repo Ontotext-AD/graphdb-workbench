@@ -287,7 +287,7 @@ function GraphsVisualizationsCtrl(
             }
             $location.search('linksLimit', $scope.linksLimit.value);
             $location.state({skipOnPopState: true});
-            reExpandNode();
+            reloadGraph();
         }, 500);
     };
 
@@ -304,6 +304,18 @@ function GraphsVisualizationsCtrl(
         }
         renderSettings();
     };
+
+    function reloadGraph() {
+        if ($scope.rootNodeIri) {
+            reExpandNode($scope.rootNodeIri);
+        } else if ($scope.queryResultsMode && $location.search().query) {
+            loadGraphForQuery($location.search().query,
+                $location.search().sameAs,
+                $location.search().inference);
+        } else if ($scope.configLoaded.startMode === 'query') {
+            loadGraphConfig($scope.configLoaded);
+        }
+    }
 
     $scope.updateSettings = () => {
         $scope.saveSettings = $scope.settings;
@@ -327,15 +339,7 @@ function GraphsVisualizationsCtrl(
 
         // TODO
         // reexpand root node
-        if ($scope.rootNodeIri) {
-            reExpandNode($scope.rootNodeIri);
-        } else if ($scope.queryResultsMode && $location.search().query) {
-            loadGraphForQuery($location.search().query,
-                $location.search().sameAs,
-                $location.search().inference);
-        } else if ($scope.configLoaded.startMode === 'query') {
-            loadGraphConfig($scope.configLoaded);
-        }
+        reloadGraph();
 
         updatePredicateLabels();
 
