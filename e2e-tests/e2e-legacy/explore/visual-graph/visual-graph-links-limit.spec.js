@@ -4,6 +4,7 @@ import {LicenseStubs} from '../../../stubs/license-stubs';
 import {ApplicationSteps} from '../../../steps/application-steps';
 import HomeSteps from '../../../steps/home-steps.js';
 import {BaseSteps} from "../../../steps/base-steps.js";
+import SparqlSteps from "../../../steps/sparql-steps.js";
 
 const FILE_TO_IMPORT = 'wine.rdf';
 const VALID_RESOURCE = 'USRegion';
@@ -80,6 +81,59 @@ describe('Visual graph linksLimit URL parameter', () => {
 
         // Then, I should see a warning message that the link limit is invalid
         VisualGraphSteps.getInvalidLinksMessage().should('be.visible').and('contain', 'Enter a number up to 1000');
+    });
+
+    describe('When the user has a custom graph config', () => {
+        const configName = 'linkLimitConfig';
+
+        it('should change link limit, when starting point is query', () => {
+            // Given, I visit the visual graph and create a config with query starting point
+            VisualGraphSteps.visit();
+            VisualGraphSteps.createCustomGraph();
+            VisualGraphSteps.typeGraphConfigName(configName);
+            VisualGraphSteps.selectStartMode('query');
+            VisualGraphSteps.selectPredefinedQuerySample(0);
+            VisualGraphSteps.saveConfig();
+            VisualGraphSteps.openGraphConfig(configName);
+
+            // Then, I expect to see 10 nodes before changing the limit
+            BaseSteps.getUrl().should('include', 'linksLimit=10');
+            VisualGraphSteps.getNodes().should('have.length', 10); // 10 nodes total, since we don't have a root node
+
+            // When, I update the link limit from the input field
+            VisualGraphSteps.updateLinksLimitField(5);
+
+            // Then I expect the URL to include the updated linksLimit in the URL
+            BaseSteps.getUrl().should('include', 'linksLimit=5');
+            // And, I expect to see the visual graph with the updated linksLimit
+            VisualGraphSteps.getNodes().should('have.length', 5); // 5 nodes total, since we don't have a root node
+        });
+
+        afterEach(() => {
+            cy.deleteGraphConfig(configName)
+        });
+    });
+
+    describe('When the user has opened a graph with construct query', () => {
+        it('should change link limit, when is graph is opened in queryResultsMode', () => {
+            // Given, I open a graph in queryResultsMode (after construct query in the SPARQL editor)
+            // And enter a construct query, so I can visualize the results in a graph
+            SparqlSteps.visit();
+            SparqlSteps.typeQuery(`CONSTRUCT WHERE {?s ?p ?o} LIMIT 10`);
+            SparqlSteps.executeQuery();
+            SparqlSteps.visualizeConstructQuery();
+
+            // Then, I expect to see 10 nodes before changing the limit
+            VisualGraphSteps.getNodes().should('have.length', 10); // 10 nodes total, since we don't have a root node
+
+            // When, I update the link limit from the input field
+            VisualGraphSteps.updateLinksLimitField(5);
+
+            // Then I expect the URL to include the updated linksLimit in the URL
+            BaseSteps.getUrl().should('include', 'linksLimit=5');
+            // And, I expect to see the visual graph with the updated linksLimit
+            VisualGraphSteps.getNodes().should('have.length', 5); // 5 nodes total, since we don't have a root node
+        });
     });
 });
 
