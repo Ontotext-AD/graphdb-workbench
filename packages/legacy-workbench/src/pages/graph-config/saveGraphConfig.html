@@ -9,30 +9,45 @@
           popover-append-to-body="true"><span class="ri-information-2-line text-tertiary"></span></span>
 </h1>
 
-<div class="card mb-2">
-    <div class="card-block" style="padding-top: 1rem">
-        <p class="lead">{{'config.name.label' | translate}}</p>
-        <div class="input-group input-group-lg">
-            <input required class="form-control graph-config-name" type="text"
-                   guide-selector="graph-config-name"
-                   placeholder="{{'graph.config.required' | translate}}" ng-model="newConfig.name">
+<div class="card mb-2 graph-config-meta-card">
+    <div class="card-block">
+        <div class="row graph-config-meta-row">
+            <div class="col-12 col-lg-6 graph-config-meta-left">
+                <div class="form-group">
+                    <label for="graphConfigName" class="d-block">{{'config.name.label' | translate}}*</label>
+                    <input id="graphConfigName" required class="form-control form-control-lg graph-config-name" type="text"
+                           guide-selector="graph-config-name"
+                           placeholder="{{'graph.config.required' | translate}}" ng-model="newConfig.name">
+                </div>
+                <div class="form-group">
+                    <label for="graphConfigHint" class="d-block">{{'hint.label' | translate}}</label>
+                    <input id="graphConfigHint" class="form-control form-control-lg graph-config-example" type="text"
+                           guide-selector="graph-config-hint"
+                           placeholder="{{'add.hint.prompt' | translate}}"
+                           ng-model="newConfig.hint">
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-6 graph-config-meta-right">
+                <div class="form-group">
+                    <label for="graphConfigDesc" class="d-block">{{'description.text' | translate}}</label>
+                    <textarea id="graphConfigDesc"
+                              class="form-control form-control-lg graph-config-description"
+                              guide-selector="graph-config-description"
+                              placeholder="{{'enter.description' | translate}}"
+                              ng-model="newConfig.description"></textarea>
+                </div>
+            </div>
         </div>
-        <br/>
-        <p>{{'description.text' | translate}}</p>
-        <div class="input-group input-group-lg">
-            <input class="form-control graph-config-description" type="text"
-                   guide-selector="graph-config-description"
-                   placeholder="{{'enter.description' | translate}}"
-                   ng-model="newConfig.description">
-        </div>
-        <div ng-if="newConfig.startMode === 'search'">
-            <br/>
-            <p>{{'hint.label' | translate}}</p>
-            <div class="input-group input-group-lg">
-                <input class="form-control graph-config-example" type="text"
-                       guide-selector="graph-config-hint"
-                       placeholder="{{'add.hint.prompt' | translate}}"
-                       ng-model="newConfig.hint">
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group ml-1 mb-0">
+                    <label for="share-graph-config" guide-selector="share-graph-config"
+                           gdb-tooltip="{{'visual.graph.other.users.see' | translate}}">
+                        <input id="share-graph-config" type="checkbox" ng-model="newConfig.shared" data-test="share-graph-config">
+                        {{'share.visual.graph' | translate}}
+                    </label>
+                </div>
             </div>
         </div>
     </div>
@@ -262,13 +277,6 @@
 </div>
 
 <div class="m-0 clearfix" style="padding-bottom: 2rem">
-    <div>
-        <label for="share-graph-config" guide-selector="share-graph-config"
-               gdb-tooltip="{{'visual.graph.other.users.see' | translate}}">
-            <input id="share-graph-config" type="checkbox" ng-model="newConfig.shared" data-test="share-graph-config">
-            {{'share.visual.graph' | translate}}
-        </label>
-    </div>
     <div class="pull-left">
         <button href ng-show="page > 1" ng-click="goToPreviousPage()" class="btn btn-lg btn-secondary btn-previous-page"
                 uib-popover="{{'previous.config.step' | translate}}"

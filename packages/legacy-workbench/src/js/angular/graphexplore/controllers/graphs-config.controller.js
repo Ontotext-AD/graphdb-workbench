@@ -5,7 +5,7 @@ import {YasqeMode} from "../../models/ontotext-yasgui/yasqe-mode";
 import {RenderingMode} from "../../models/ontotext-yasgui/rendering-mode";
 import {
     INFERRED_AND_SAME_AS_BUTTONS_CONFIGURATION,
-    YasguiComponentDirectiveUtil
+    YasguiComponentDirectiveUtil,
 } from "../../core/directives/yasgui-component/yasgui-component-directive.util";
 import {GraphsConfig, StartMode} from "../../models/graphs/graphs-config";
 import {mapGraphConfigSamplesToGraphConfigs} from "../../rest/mappers/graphs-config-mapper";
@@ -17,8 +17,7 @@ angular
         'graphdb.framework.utils.notifications',
         'graphdb.framework.utils.localstorageadapter',
         'graphdb.core.services.workbench-context',
-        'graphdb.framework.core.services.rdf4j.repositories'
-
+        'graphdb.framework.core.services.rdf4j.repositories',
     ])
     .controller('GraphConfigCtrl', GraphConfigCtrl);
 
@@ -39,7 +38,7 @@ GraphConfigCtrl.$inject = [
     '$translate',
     'ModalService',
     'WorkbenchContextService',
-    'RDF4JRepositoriesService'
+    'RDF4JRepositoriesService',
 ];
 
 function GraphConfigCtrl(
@@ -59,9 +58,8 @@ function GraphConfigCtrl(
     $translate,
     ModalService,
     WorkbenchContextService,
-    RDF4JRepositoriesService
+    RDF4JRepositoriesService,
 ) {
-
     // =========================
     // Public fields
     // =========================
@@ -88,7 +86,7 @@ function GraphConfigCtrl(
     $scope.samples = [];
     $scope.tabConfig = {
         inference: $scope.newConfig.startQueryIncludeInferred,
-        sameAs: $scope.newConfig.startQuerySameAs
+        sameAs: $scope.newConfig.startQuerySameAs,
     };
     /**
      * @type {boolean|undefined}
@@ -108,20 +106,21 @@ function GraphConfigCtrl(
     let selectedFixedNodeChanged;
     const configName = $routeParams.configName;
     const activeRepository = $repositories.getActiveRepository();
+    // eslint-disable-next-line no-unused-vars
     const DISABLE_YASQE_BUTTONS_CONFIGURATION = [
         {
             name: 'createSavedQuery',
-            visible: false
+            visible: false,
         }, {
             name: 'showSavedQueries',
-            visible: false
+            visible: false,
         }, {
             name: 'shareQuery',
-            visible: false
+            visible: false,
         }, {
             name: 'includeInferredStatements',
-            visible: false
-        }
+            visible: false,
+        },
     ];
     // This flag is used to prevent multiple triggers of the location change listener.
     let locationChangeInProgress = false;
@@ -201,10 +200,10 @@ function GraphConfigCtrl(
      */
     $scope.createGraphConfig = (payload) => {
         GraphConfigRestService.createGraphConfig(payload)
-            .success(async function () {
+            .success(async function() {
                 await Notifications.showToastMessageWithDelay('graphexplore.saved.new.config');
                 $location.url('graphs-visualizations');
-            }).error(function (data) {
+            }).error(function(data) {
                 toastr.error(getError(data), $translate.instant('graphexplore.error.could.not.create'));
             });
     };
@@ -214,10 +213,10 @@ function GraphConfigCtrl(
      */
     $scope.updateGraphConfig = (payload) => {
         GraphConfigRestService.updateGraphConfig(payload)
-            .success(async function () {
+            .success(async function() {
                 await Notifications.showToastMessageWithDelay('graphexplore.saved.config');
                 $location.url('graphs-visualizations');
-            }).error(function (data) {
+            }).error(function(data) {
                 toastr.error(getError(data), $translate.instant('graphexplore.error.could.not.save'));
             });
     };
@@ -296,7 +295,7 @@ function GraphConfigCtrl(
      */
     $scope.setQuery = async (query) => {
         const newQuery = query ? query : ' ';
-        const yasguiInstance = await getYasguiInstance()
+        const yasguiInstance = await getYasguiInstance();
         yasguiInstance.setQuery(newQuery);
         $scope.markDirty();
     };
@@ -317,7 +316,7 @@ function GraphConfigCtrl(
 
     $scope.showPreview = () => {
         $scope.viewMode = 'editor';
-        runQuery()
+        runQuery();
     };
 
     $scope.revertEditor = () => {
@@ -335,10 +334,10 @@ function GraphConfigCtrl(
      */
     const getYasguiInstance = () => {
         return YasguiComponentDirectiveUtil.getOntotextYasguiElementAsync('#query-editor');
-    }
+    };
 
     const runQuery = async (changePage, explain) => {
-        const yasguiInstance = await getYasguiInstance()
+        const yasguiInstance = await getYasguiInstance();
         const queryType = await yasguiInstance.getQueryType();
         if (explain && !(queryType === 'SELECT' || queryType === 'CONSTRUCT' || queryType === 'DESCRIBE')) {
             toastr.warning($translate.instant('query.editor.warning.msg'));
@@ -365,27 +364,28 @@ function GraphConfigCtrl(
     const executeYasqeQuery = async () => {
         const yasguiInstance = await getYasguiInstance();
         yasguiInstance.query(RenderingMode.YASR);
-    }
+    };
 
     const switchToYasqe = async () => {
-        const yasguiInstance = await getYasguiInstance()
+        const yasguiInstance = await getYasguiInstance();
         return yasguiInstance.changeRenderMode(RenderingMode.YASQE);
-    }
+    };
 
+    // eslint-disable-next-line no-unused-vars
     const switchToYasr = async () => {
-        const yasguiInstance = await getYasguiInstance()
+        const yasguiInstance = await getYasguiInstance();
         yasguiInstance.changeRenderMode(RenderingMode.YASR);
-    }
+    };
 
     const getYasqeQuery = async () => {
-        const yasguiInstance = await getYasguiInstance()
+        const yasguiInstance = await getYasguiInstance();
         return yasguiInstance.getQuery();
-    }
+    };
 
     const abortQuery = async () => {
-        const yasguiInstance = await getYasguiInstance()
+        const yasguiInstance = await getYasguiInstance();
         return yasguiInstance.abortQuery();
-    }
+    };
 
     const getNamespaces = () => {
         // Signals the namespaces are to be fetched => loader will be shown
@@ -393,16 +393,16 @@ function GraphConfigCtrl(
         $repositories.getPrefixes($repositories.getActiveRepository())
             .then((prefixes) => {
                 $scope.namespaces = prefixes;
-            }).catch(function (data) {
+            }).catch(function(data) {
             $scope.repositoryError = getError(data);
-        }).finally(function () {
+        }).finally(function() {
                 // Signals namespaces were fetched => loader will be hidden
                 setLoader(false);
             });
-    }
+    };
 
     const updateModel = async () => {
-        const yasguiInstance = await getYasguiInstance()
+        const yasguiInstance = await getYasguiInstance();
         /** @type string */
         let query = await yasguiInstance.getQuery();
         query = query.trim();
@@ -419,12 +419,12 @@ function GraphConfigCtrl(
             } else if (newConfig.isStartMode(StartMode.QUERY) && !newConfig.startGraphQuery) {
                 showInvalidMsg($translate.instant('graphexplore.provide.query'));
             } else if (newConfig.isStartMode(StartMode.QUERY)) {
-                validateQueryWithCallback(successCallback, newConfig.startGraphQuery, 'graph')
+                validateQueryWithCallback(successCallback, newConfig.startGraphQuery, 'graph');
             } else {
                 successCallback();
             }
         } else if ($scope.page === 2) {
-            validateQueryWithCallback(successCallback, newConfig.expandQuery, 'construct', ['node'])
+            validateQueryWithCallback(successCallback, newConfig.expandQuery, 'construct', ['node']);
         } else if ($scope.page === 3) {
             validateQueryWithCallback(successCallback, newConfig.resourceQuery, 'tuple', ['node'], [], ['type', 'label', 'comment', 'rank']);
         } else if ($scope.page === 4) {
@@ -436,7 +436,7 @@ function GraphConfigCtrl(
 
     const getGraphConfigSamples = () => {
         GraphConfigRestService.getGraphConfigSamples()
-            .success(function (data) {
+            .success(function(data) {
                 $scope.samples = mapGraphConfigSamplesToGraphConfigs(data)
                     .filter((graphConfig) => {
                         // Skip the currently edited config from samples and store it into a revert variable
@@ -447,7 +447,7 @@ function GraphConfigCtrl(
                             return false;
                         }
                     });
-            }).error(function (data) {
+            }).error(function(data) {
                 toastr.error(getError(data), $translate.instant('graphexplore.error.graph.configs'));
             });
     };
@@ -459,7 +459,7 @@ function GraphConfigCtrl(
     const updateEditor = () => {
         $scope.tabConfig.inference = $scope.newConfig.startQueryIncludeInferred;
         $scope.tabConfig.sameAs = $scope.newConfig.startQuerySameAs;
-        $scope.setQuery($scope.newConfig.getQueryType($scope.page))
+        $scope.setQuery($scope.newConfig.getQueryType($scope.page));
     };
 
     const showInvalidMsg = (message) => {
@@ -487,15 +487,15 @@ function GraphConfigCtrl(
         if (isBaseConfig()) {
             $scope.$broadcast('addStartFixedNodeAutomatically', {startIRI: $scope.newConfig.startIRI});
         }
-    }
+    };
 
     const isBaseConfig = () => {
         return $scope.page === 1 && $scope.newConfig.isStartMode(StartMode.NODE);
-    }
+    };
 
     const initForConfig = () => {
         getGraphConfigSamples();
-    }
+    };
 
     const getQueryEndpoint = () => {
         return `repositories/${$repositories.getActiveRepository()}`;
@@ -516,26 +516,26 @@ function GraphConfigCtrl(
         showYasqeResizer: false,
         yasqeMode: YasqeMode.READ,
         infer: $scope.newConfig.startQueryIncludeInferred,
-        sameAs: $scope.newConfig.startQuerySameAs
+        sameAs: $scope.newConfig.startQuerySameAs,
     };
 
     const initYasgui = (prefixes) => {
         // Wait until the active repository object is set, otherwise "canWriteActiveRepo()" may return a wrong result
         // and the "ontotext-yasgui" readOnly configuration may be incorrect.
-        const repoIsInitialized = $scope.$watch(function () {
+        const repoIsInitialized = $scope.$watch(function() {
             return $scope.getActiveRepositoryObject();
-        }, function (activeRepo) {
+        }, function(activeRepo) {
             if (activeRepo) {
                 $scope.canEditActiveRepo = $scope.canWriteActiveRepo();
                 const config = angular.extend({}, defaultYasguiConfig, {
                     prefixes: prefixes,
-                    yasqeMode: $scope.canWriteActiveRepo() ? YasqeMode.WRITE : YasqeMode.READ
+                    yasqeMode: $scope.canWriteActiveRepo() ? YasqeMode.WRITE : YasqeMode.READ,
                 });
                 $scope.yasguiConfig = config;
                 repoIsInitialized();
             }
         });
-    }
+    };
 
     const setLoader = (isRunning, progressMessage, extraMessage) => {
         $scope.queryIsRunning = isRunning;
@@ -545,12 +545,12 @@ function GraphConfigCtrl(
         ModalService.openSimpleModal({
             title,
             message,
-            warning: true
-        }).result.then(function () {
+            warning: true,
+        }).result.then(function() {
             if (angular.isFunction(onConfirm)) {
                 onConfirm();
             }
-        }, function () {
+        }, function() {
             if (angular.isFunction(onCancel)) {
                 onCancel();
             }
@@ -640,9 +640,9 @@ function GraphConfigCtrl(
             {page: 2, label: $translate.instant('graph.expansion'), type: 'expandQuery'},
             {page: 3, label: $translate.instant('node.basics'), type: 'resourceQuery'},
             {page: 4, label: $translate.instant('edge.basics'), type: 'predicateLabelQuery'},
-            {page: 5, label: $translate.instant('node.extra'), type: 'resourcePropertiesQuery'}
+            {page: 5, label: $translate.instant('node.extra'), type: 'resourcePropertiesQuery'},
         ];
-    }
+    };
 
     const initView = () => {
         translateTabsViewModel();
@@ -653,7 +653,7 @@ function GraphConfigCtrl(
         if (configName) {
             $scope.isUpdate = true;
             GraphConfigRestService.getConfig(configName)
-                .then(function (graphConfigModel) {
+                .then(function(graphConfigModel) {
                     $scope.newConfig = graphConfigModel;
                     initForConfig();
                 })

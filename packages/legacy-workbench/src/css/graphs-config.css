@@ -88,3 +88,39 @@ yasgui-component .CodeMirror {
 .small-caps {
     font-variant: all-small-caps;
 }
+
+.graph-config-meta-right {
+    margin-top: 1rem;
+
+    textarea {
+        min-height: 10rem;
+    }
+}
+
+@media (min-width: 992px) {
+    .graph-config-meta-row {
+        display: flex;
+    }
+
+    .graph-config-meta-left,
+    .graph-config-meta-right {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .graph-config-meta-right {
+        margin-top: 0;
+    }
+
+    .graph-config-meta-right .form-group {
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 auto;
+    }
+
+    .graph-config-meta-right textarea {
+        flex: 1 1 auto;
+        min-height: 0;
+        height: 100%;
+    }
+}
