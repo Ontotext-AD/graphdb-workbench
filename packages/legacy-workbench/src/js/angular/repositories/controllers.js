@@ -8,6 +8,7 @@ import {decodeHTML} from "../../../app";
 import './controllers/manage-remote-location-dialog.controller';
 import {RemoteLocationType} from "../models/repository/remote-location.model";
 import {service, AuthenticationStorageService, GuidesService} from '@ontotext/workbench-api';
+import {DocumentationUrlResolver} from "../utils/documentation-url-resolver";
 
 const ENTITY_INDEX_SIZE_MIN = 10000;
 
@@ -499,15 +500,16 @@ function ChooseRepositoryCtrl($scope, $location) {
 }
 
 AddRepositoryCtrl.$inject = ['$rootScope', '$scope', 'toastr', '$repositories', '$location', '$timeout', 'Upload', '$routeParams',
-    'RepositoriesRestService', '$translate'];
+    'RepositoriesRestService', '$translate', 'productInfo'];
 
-function AddRepositoryCtrl($rootScope, $scope, toastr, $repositories, $location, $timeout, Upload, $routeParams, RepositoriesRestService, $translate) {
+function AddRepositoryCtrl($rootScope, $scope, toastr, $repositories, $location, $timeout, Upload, $routeParams, RepositoriesRestService, $translate, productInfo) {
     $scope.rulesets = STATIC_RULESETS.slice();
     $scope.repositoryTypes = REPOSITORY_TYPES;
     $scope.params = $routeParams;
     $scope.repositoryType = $routeParams.repositoryType;
     $scope.enable = true;
     $scope.entityIndexSizeMin = ENTITY_INDEX_SIZE_MIN;
+    $scope.documentationUrlForStorageEncryption = DocumentationUrlResolver.getDocumentationUrl(productInfo.productShortVersion, 'creating-a-repository.html#using-workbench');
 
     $scope.loader = true;
     $scope.pageTitle = $translate.instant('view.create.repo.title');
