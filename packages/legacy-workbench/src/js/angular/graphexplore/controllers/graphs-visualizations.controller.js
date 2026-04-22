@@ -1,6 +1,7 @@
 import 'angular/core/services';
 import 'angular/core/services/workbench-context.service';
 import 'angular/core/services/rdf4j-repositories.service';
+import 'angular/core/directives/markdown-content/markdown-content';
 import D3 from 'lib/common/d3-utils.js';
 import d3tip from 'lib/d3-tip/d3-tip-patch';
 import * as d3 from 'd3';
@@ -32,6 +33,7 @@ const modules = [
     'graphdb.framework.utils.localstorageadapter',
     'graphdb.core.services.workbench-context',
     'graphdb.framework.core.services.rdf4j.repositories',
+    'graphdb.framework.core.directives.markdown-content',
 ];
 
 angular
@@ -103,6 +105,12 @@ function GraphsVisualizationsCtrl(
     // Based on this, we display different numbers of rows. Currently, this results in 3 rows of text
     const heightMultiplier = 4.2;
     let openedLink;
+    const MARKDOWN_DATATYPES = new Set([
+        'lt:http://www.ontotext.com/proton/protonsys#Markdown',
+        'lt:http://ns.ontowiki.net/SysOnt/Markdown',
+        'lt:https://www.w3.org/ns/iana/media-types/text/markdown#Resource',
+        'lt:http://www.w3.org/ns/iana/media-types/text/markdown#Resource',
+    ]);
 
     // =========================
     // Public fields
@@ -186,6 +194,16 @@ function GraphsVisualizationsCtrl(
     // =========================
     // Public functions
     // =========================
+
+    /**
+     * Checks if the given datatype is one of the supported markdown datatypes. This is used to determine whether the
+     * value should be rendered as markdown or not.
+     * @param type {string} The datatype to check, in the form of "lt:datatypeIRI"
+     * @returns {boolean} True if the datatype is a supported markdown datatype, false otherwise.
+     */
+    $scope.isMarkdownLiteral = function(type) {
+        return MARKDOWN_DATATYPES.has(type);
+    };
 
     // Handle pageslide directive callbacks which incidentally appeared to be present in the angular's
     // scope, so we need to define our's and pass them to pageslide, otherwise it throws an error.
@@ -490,15 +508,6 @@ function GraphsVisualizationsCtrl(
         current++;
     };
     subscriptions.push($rootScope.$watch(rootScopeGenericWatcher, rootScopeGenericChangeHandler));
-
-    const propertiesItemsChangeHandler = () => {
-        if (angular.isDefined($scope.propertiesObj.items) && $scope.propertiesObj.items.length > 0) {
-            $timeout(function() {
-                $scope.adapterContainer.adapter.reload();
-            }, 500);
-        }
-    };
-    subscriptions.push($scope.$watch('propertiesObj.items', propertiesItemsChangeHandler));
 
     // ========================= Save graph modal =========================
     let modalIsOpen = false;
@@ -2548,10 +2557,10 @@ function GraphsVisualizationsCtrl(
 
     function showNodeInfo(d) {
         force.stop();
+        const panelWasAlreadyOpen = $scope.showInfoPanel;
         openedLink = null;
         // Assign value of node, which info panel has been opened
         $scope.openedNodeInfoPanel = d;
-        $scope.showNodeInfo = true;
         $scope.showFilter = false;
         $scope.showPredicates = false;
         $scope.nodeLabels = d.labels;
@@ -2560,7 +2569,7 @@ function GraphsVisualizationsCtrl(
         $scope.nodeIri = d.iri;
         $scope.resourceType = d.isTriple ? 'triple' : 'uri';
         $scope.encodedIri = d.isTriple ? encodeURIComponent(createTriple(d.iri)) : encodeURIComponent(d.iri);
-        $scope.showInfoPanel = true;
+
         highlightNode(d);
 
         $scope.rdfsLabel = d.labels[0].label;
@@ -2581,25 +2590,33 @@ function GraphsVisualizationsCtrl(
             $scope.data = _.mapKeys(response.data, function(value, key) {
                 return $scope.replaceIRIWithPrefix(key);
             });
-            $scope.propertiesObj.items = [];
+
+            const items = [];
 
             _.forEach($scope.data, function(value, key) {
-                $scope.propertiesObj.items.push({key: key, value: value});
+                items.push({key: key, value: value});
             });
             $scope.nodeImage = undefined;
 
-            $scope.propertiesNotFiltered = $scope.propertiesObj.items;
+            $scope.propertiesNotFiltered = items;
 
-            const imageVal = _.find($scope.propertiesObj.items, function(o) {
+            const imageVal = _.find(items, function(o) {
                 return o.key === 'image';
             });
             if (imageVal) {
                 $scope.nodeImage = imageVal['value'][0].v;
             }
-            $scope.propertiesObj.items = _.reject($scope.propertiesObj.items, function(o) {
+            $scope.propertiesObj.items = _.reject(items, function(o) {
                 return o.key === 'image';
             });
             $scope.propertiesNotFiltered = $scope.propertiesObj.items;
+
+            $scope.showInfoPanel = true;
+            $scope.showNodeInfo = true;
+            if (panelWasAlreadyOpen) {
+                // ui-scroll doesn't re-init automatically when panel stays open
+                $timeout(() => $scope.adapterContainer.adapter.reload(), 500);
+            }
         }, function(response) {
             toastr.warning(getError(response.data), "Error");
         });

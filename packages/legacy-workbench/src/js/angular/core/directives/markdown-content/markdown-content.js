@@ -1,7 +1,7 @@
 import 'angular/core/services/markdown/markdown.service';
 
 const modules = [
-    'graphdb.framework.core.services.markdown-service'
+    'graphdb.framework.core.services.markdown-service',
 ];
 
 /**
@@ -34,10 +34,10 @@ function markdownContentDirective($compile, MarkdownService) {
         restrict: 'E',
         scope: {
             content: '@',
-            options: '='
+            options: '=',
+            trusted: '@',
         },
-        link: function ($scope, element) {
-
+        link: function($scope, element) {
             // =========================
             // Public variables
             // =========================
@@ -45,7 +45,7 @@ function markdownContentDirective($compile, MarkdownService) {
             /**
              * The rendered HTML content generated from the provided Markdown.
              *
-             * @type {string} markdownContent
+             * @type {string|undefined} markdownContent
              */
             $scope.markdownContent = undefined;
 
@@ -54,8 +54,16 @@ function markdownContentDirective($compile, MarkdownService) {
             // =========================
 
             const init = () => {
-                $scope.markdownContent = MarkdownService.renderMarkdown($scope.content, $scope.options);
-                compileMarkdownAnswerContents();
+                if (!$scope.content) {
+                    $scope.markdownContent = undefined;
+                    return;
+                }
+                if ($scope.trusted === 'true') {
+                    $scope.markdownContent = MarkdownService.renderMarkdown($scope.content, $scope.options);
+                    compileMarkdownAnswerContents();
+                } else {
+                    $scope.markdownContent = MarkdownService.renderMarkdown($scope.content, $scope.options, false);
+                }
             };
 
             /**
@@ -71,7 +79,13 @@ function markdownContentDirective($compile, MarkdownService) {
                 });
             };
 
+            $scope.$watch('content', (newVal, oldVal) => {
+                if (newVal !== oldVal) {
+                    init();
+                }
+            });
+
             init();
-        }
+        },
     };
 }

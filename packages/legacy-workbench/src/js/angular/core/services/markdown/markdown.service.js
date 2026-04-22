@@ -15,12 +15,12 @@ const logger = LoggerProvider.logger;
  * @param {$sce} $sce - AngularJS service for Strict Contextual Escaping.
  */
 angular
-    .module('graphdb.framework.core.services.markdown-service', [])
+    .module('graphdb.framework.core.services.markdown-service', ['ngSanitize'])
     .service('MarkdownService', MarkdownService);
 
-MarkdownService.$inject = ['$sce'];
+MarkdownService.$inject = ['$sce', '$sanitize'];
 
-function MarkdownService($sce) {
+function MarkdownService($sce, $sanitize) {
     const markdownInstance = markdownIt()
         .use(markdownCodeCopyPlugin)
         .use(markdownOpenInSparqlEditorPlugin, OPEN_IN_SPARQL_PLUGIN_OPTIONS);
@@ -44,15 +44,22 @@ function MarkdownService($sce) {
      * Renders Markdown text into HTML.
      * @function renderMarkdown
      * @param {string} text - The Markdown text to render.
+     * @param {Object} [config] - Optional custom configuration for Markdown rendering.
+     * @param {boolean} [trusted=true] - Indicates whether the rendered HTML should be treated as trusted. If false, the
+     * HTML will be sanitized to prevent potential security risks.
      * @return {string} The rendered HTML, or the original text in case of an error.
      */
-    const renderMarkdown = (text, config) => {
+    const renderMarkdown = (text, config, trusted = true) => {
         try {
-            return $sce.trustAsHtml(getMarkdown(config).render(text));
+            const html = getMarkdown(config).render(text);
+            return trusted
+                // trusted: skip sanitize (plugins may add custom HTML)
+                ? $sce.trustAsHtml(html)
+                // untrusted: sanitize before content that may have angular bindings
+                : $sce.trustAsHtml($sanitize(html));
         } catch (e) {
             logger.error('Error rendering markdown:', e);
-            // Return the original text in case of an error
-            return $sce.trustAsHtml(text);
+            return $sce.trustAsHtml(trusted ? text : $sanitize(text));
         }
     };
 
