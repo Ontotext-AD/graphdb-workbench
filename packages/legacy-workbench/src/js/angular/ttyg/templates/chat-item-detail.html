@@ -5,7 +5,8 @@
         <div class="question alert-help"
              gdb-tooltip="{{ 'ttyg.chat_panel.labels.question_asked' | translate : { date: getHumanReadableQuestionTimestamp(chatItemDetail.question.timestamp), time: (chatItemDetail.question.timestamp | date:'HH:mm') } }}">
             <markdown-content class="question-text"
-                              content="{{chatItemDetail.question.message}}"></markdown-content>
+                              content="{{chatItemDetail.question.message}}"
+                              trusted="true"></markdown-content>
         </div>
     </div>
     <div class="answers" ng-repeat="answer in chatItemDetail.answers">
@@ -15,7 +16,10 @@
                 <i class="ri-lg ri-robot-2-line"></i>
             </div>
             <div class="assistant-message" ng-if="answer.status !== 'completed'">
-                <markdown-content class="answer" ng-class="{'italic': answer.isTerminalState}" content="{{answer.message}}" options="markdownContentOptions"></markdown-content>
+                <markdown-content class="answer"
+                                  ng-class="{'italic': answer.isTerminalState}"
+                                  content="{{answer.message}}"
+                                  options="markdownContentOptions" trusted="true"></markdown-content>
                 <div class="actions" ng-class="{'hidden-actions': !explainResponseModel[answer.id].expanded && (!showActions || !$last)}">
                     <button class="btn btn-link btn-sm regenerate-question-btn"
                             ng-click="regenerateQuestion()"

@@ -196,6 +196,10 @@ export class VisualGraphSteps extends BaseSteps {
         return cy.get('.rdf-side-panel-content');
     }
 
+    static getPropertyByIndex(index) {
+        return this.getSidePanelContent().find('.rdf-list .datasource').eq(index);
+    }
+
     static closeSidePanel() {
         this.getSidePanelCloseButton().click();
     }

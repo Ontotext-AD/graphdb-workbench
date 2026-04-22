@@ -541,7 +541,8 @@
                         <div class="item clearfix break-word-alt small">{{item.key}}</div>
                         <div class="data-value">
                             <a ng-if="item.value[0].t === 'i'" href="#" ng-click="openIRI(item.value[0].v, $event)" ng-bind="item.value[0].v"></a>
-                            <span ng-if="item.value[0].t !== 'i'" ng-bind="item.value[0].v"></span>
+                            <span ng-if="item.value[0].t !== 'i' && !isMarkdownLiteral(item.value[0].t)" ng-bind="item.value[0].v"></span>
+                            <markdown-content ng-if="::isMarkdownLiteral(item.value[0].t)" content="{{::item.value[0].v}}"></markdown-content>
                             <span class="language-tag" ng-if="item.value[0].t !== 'lt:http://www.w3.org/2001/XMLSchema#string'" ng-bind="replaceIRIWithPrefix(getLiteralFromPropValue(item.value[0].t))"></span>
                             <button class="btn btn-link btn-sm" type="button"
                                     ng-if="item.value.length > 1"
@@ -555,7 +556,8 @@
                                   ng-repeat="value in item.value track by $index"
                                   ng-hide="$index == 0">
                                 <a ng-if="value.t === 'i'" href="#" ng-click="openIRI(value.v, $event)" ng-bind="value.v"></a>
-                                <span ng-if="value.t !== 'i'" ng-bind="value.v"></span>
+                                <span ng-if="value.t !== 'i' && !isMarkdownLiteral(value.t)" ng-bind="value.v"></span>
+                                <markdown-content ng-if="::isMarkdownLiteral(value.t)" content="{{::value.v}}"></markdown-content>
                                 <span class="language-tag" ng-if="value.t !== 'lt:http://www.w3.org/2001/XMLSchema#string'" ng-bind="replaceIRIWithPrefix(getLiteralFromPropValue(value.t))"></span>
 							</li>
                         </ul>
