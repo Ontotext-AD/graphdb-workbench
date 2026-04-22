@@ -123,6 +123,20 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
             };
 
             /**
+             * Determines whether the Ask button should be disabled based on the current state of the chat item,
+             * selected agent, and ongoing operations.
+             * @returns {boolean} True if the Ask button should be disabled, false otherwise.
+             */
+            $scope.isAskDisabled = () => {
+                return !!(!$scope.chatItem.question.message
+                    || !$scope.selectedAgent
+                    || $scope.selectedAgent.isDeleted
+                    || $scope.waitingForLastMessage
+                    || $scope.loadingChat
+                    || $scope.askingChatItem);
+            };
+
+            /**
              * Handles pressing the Enter key in the question input.
              * Will not trigger if `Shift` or `Ctrl` keys are pressed, or if Ask button is disabled.
              *
@@ -130,7 +144,10 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
              */
             $scope.onKeypressOnInput = ($event) => {
                 if (!$scope.askingChatItem && $event.key === 'Enter' && !$event.shiftKey && !$event.ctrlKey) {
-                    $scope.ask();
+                    if (!$scope.isAskDisabled()) {
+                        $event.preventDefault();
+                        $scope.ask();
+                    }
                 }
             };
 
