@@ -2972,6 +2972,12 @@ function GraphsVisualizationsCtrl(
 
             $scope.allPredicates = $scope.predicates;
 
+            // Reset scroll before the new list renders
+            const predicatesContainer = document.querySelector('.predicates-panel .predicates');
+            if (predicatesContainer) {
+                predicatesContainer.scrollTop = 0;
+            }
+
             // Reverse predicates
             if (reverseLink) {
                 const reverseRawByLocalName = new Map();
