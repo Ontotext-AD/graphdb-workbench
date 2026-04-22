@@ -16,6 +16,10 @@
     padding-right: 8px
 }
 
+.storage-encryption-alert {
+    width: fit-content;
+}
+
 .form fieldset div input {
     margin-left: 0
 }
