@@ -56,8 +56,13 @@
                             "options": {
                                 "maxIrisPerCall": 15
                             }
+                        },
+                        {
+                            "guideBlockName": "set-context-window-size",
+                            "options": {
+                                "contextSize": 4096
+                            }
                         }
-
                     ]
                 }
             },
