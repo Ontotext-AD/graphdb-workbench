@@ -16,8 +16,9 @@ describe('ProductInfoService', () => {
     // Note: the Workbench property in the response has an uppercase 'W'
     const mockProductInfo: ProductInfoResponse = {
       Workbench: '2.8.0',
-      productVersion: '1.0.0'
-    } as ProductInfo & { Workbench: string };
+      productVersion: '1.0.0',
+      Ontop: '5.3.0',
+    } as ProductInfoResponse;
     TestUtil.mockResponse(new ResponseMock('rest/info/version?local=1').setResponse(mockProductInfo));
 
     // When I call the getVersionLocal method
@@ -30,6 +31,7 @@ describe('ProductInfoService', () => {
       shortVersion: '1.0',
       sesame: '',
       connectors: '',
+      ontop: '5.3.0',
     };
 
     // Then, I should get a ProductInfo object, with default property values
@@ -41,7 +43,7 @@ describe('ProductInfoService', () => {
       Workbench: '1.0.0',
       productType: 'GraphDB',
       productVersion: '9.10.1-M3-RC1'
-    } as ProductInfo & { Workbench: string };
+    } as ProductInfoResponse;
     TestUtil.mockResponse(new ResponseMock('rest/info/version?local=1').setResponse(data));
 
     // When I call the getVersionLocal method
@@ -55,7 +57,7 @@ describe('ProductInfoService', () => {
       Workbench: '1.0.0',
       productType: 'GraphDB',
       productVersion: '9.10.1'
-    } as ProductInfo & { Workbench: string };
+    } as ProductInfoResponse;
     TestUtil.mockResponse(new ResponseMock('rest/info/version?local=1').setResponse(data));
     const result = await productInfoService.getProductInfoLocal();
 
@@ -74,8 +76,9 @@ describe('ProductInfoService', () => {
       productType: 'GraphDB',
       productVersion: '9.10.1',
       sesame: '3.6.0',
-      connectors: '5.0.0'
-    } as ProductInfo & { Workbench: string };
+      connectors: '5.0.0',
+      Ontop: '5.3.0',
+    } as ProductInfoResponse;
 
     TestUtil.mockResponse(new ResponseMock('rest/info/version?local=1').setResponse(data));
     const result = await productInfoService.getProductInfoLocal();

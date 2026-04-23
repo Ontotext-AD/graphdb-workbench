@@ -4,6 +4,7 @@ export class ProductInfo {
   productVersion: string;
   sesame: string;
   connectors: string;
+  ontop: string;
   // Computed property
   shortVersion?: string;
 
@@ -14,6 +15,7 @@ export class ProductInfo {
     this.sesame = data.sesame;
     this.connectors = data.connectors;
     this.shortVersion = this.resolveShortVersion(data);
+    this.ontop = data.ontop;
   }
 
   private resolveShortVersion(data: Partial<ProductInfo>) {

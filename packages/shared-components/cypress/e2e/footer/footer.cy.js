@@ -13,7 +13,7 @@ describe('Footer', () => {
 
     // Then, I expect the product information to be loaded and visible in the footer
     const currentYear = new Date().getFullYear();
-    const expectedFooterContent = `GraphDB 11.0-SNAPSHOT • RDF4J 4.3.15 • Connectors 16.2.13-RC2 • Workbench 2.8.0 • © 2002–${currentYear} Ontotext AD`;
+    const expectedFooterContent = `GraphDB 11.0-SNAPSHOT • RDF4J 4.3.15 • Connectors 16.2.13-RC2 • Ontop 5.3.0 • Workbench 2.8.0 • © 2002–${currentYear} Ontotext AD`;
     FooterSteps.getFooter()
       .invoke('text')
       .should('contain', expectedFooterContent);

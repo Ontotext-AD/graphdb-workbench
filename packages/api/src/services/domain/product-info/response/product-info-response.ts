@@ -5,4 +5,5 @@ export interface ProductInfoResponse {
   shortVersion?: string;
   sesame: string;
   connectors: string;
+  Ontop: string;
 }

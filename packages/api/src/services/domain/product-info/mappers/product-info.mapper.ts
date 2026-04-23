@@ -15,5 +15,6 @@ export const mapProductInfoResponseToModel: MapperFn<ProductInfoResponse, Produc
     productVersion: data.productVersion || '',
     sesame: data.sesame || '',
     connectors: data.connectors || '',
+    ontop: data.Ontop || '',
   });
 };
