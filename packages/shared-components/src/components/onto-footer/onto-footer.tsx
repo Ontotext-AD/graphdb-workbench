@@ -55,7 +55,7 @@ export class OntoFooter {
           <a href="http://graphdb.ontotext.com" target="_blank"
             rel="noopener noreferrer">GraphDB</a>&nbsp;{this.productInfo?.productVersion} &bull;&nbsp;<a
             href="http://rdf4j.org" target="_blank" rel="noopener noreferrer">RDF4J</a
-          >&nbsp;{this.productInfo?.sesame} &bull; Connectors {this.productInfo?.connectors} &bull; Workbench {this.productInfo?.workbench} &bull; &copy;
+          >&nbsp;{this.productInfo?.sesame} &bull; Connectors {this.productInfo?.connectors} &bull; Ontop {this.productInfo?.ontop} &bull; Workbench {this.productInfo?.workbench} &bull; &copy;
           2002&ndash;{this.currentYear}&nbsp;<a href="http://ontotext.com" target="_blank" rel="noopener noreferrer">Ontotext
           AD</a>.&nbsp;<translate-label labelKey={'footer.label.all_rights_reserved'}></translate-label>
         </div>

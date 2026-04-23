@@ -27,7 +27,8 @@ const loadProductInfo = () => {
     workbench: '2.8.0',
     sesame: '4.3.15',
     connectors: '16.2.13-RC2',
-    productVersion: '11.0-SNAPSHOT'
+    productVersion: '11.0-SNAPSHOT',
+    ontop: '5.3.0'
   });
 };
 
