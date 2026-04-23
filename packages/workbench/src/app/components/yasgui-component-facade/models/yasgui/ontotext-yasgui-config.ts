@@ -230,12 +230,13 @@ export class OntotextYasguiConfig {
   public yasrToolbarPlugins: YasrToolbarPlugin[] | undefined;
   /**
    * If this function is present, then it will be called on every one result cell.
+   * The default is `undefined` which means that the cell content will be rendered by the default yasr plugin.
    * @param binding - {Parser.BindingValue} binding value that will be shown into a cell.
    * @param prefixes - Object with uris and their corresponding prefixes.
    *
    * @returns - html that will display in the cell.
    */
-  public getCellContent: (binding: unknown, prefixes: Prefixes) => string;
+  public getCellContent: ((binding: unknown, prefixes: Prefixes) => string) | undefined;
   /**
    * A response of a sparql query as string. If the parameter is provided, the result will be visualized in YASR.
    */
@@ -295,7 +296,7 @@ export class OntotextYasguiConfig {
     this.getRepositoryStatementsCount = undefined;
     this.onQueryAborted = undefined;
     this.yasrToolbarPlugins = undefined;
-    this.getCellContent = () => '';
+    this.getCellContent = undefined;
     this.sparqlResponse = undefined;
     this.outputHandlers = undefined;
     this.selectedPlugin = undefined;
