@@ -425,7 +425,7 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
     }
 
     static clearContextSize() {
-        return this.getContextSizeField().focus().clear();
+        return this.getContextSizeField().clear();
     }
 
     static enterContextSize(input) {

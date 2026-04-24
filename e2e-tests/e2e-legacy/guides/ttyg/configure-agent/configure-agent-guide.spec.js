@@ -137,6 +137,7 @@ describe('ttyg configure agent guide', () => {
 
         GuideDialogSteps.assertDialogWithTitleIsVisible('Talk to Your Graph — 27/30');
         GuideDialogSteps.assertDialogWithContentIsVisible('Set Context Size to 4096 so the model can use the ontology and conversation history to answer correctly');
+        TtygAgentSettingsModalSteps.getContextSizeField().focus();
         TtygAgentSettingsModalSteps.clearContextSize();
         TtygAgentSettingsModalSteps.enterContextSize(4096);
         GuideDialogSteps.clickOnNextButton();
