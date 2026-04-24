@@ -9,4 +9,12 @@ a {
     text-decoration-thickness: var(--link-decoration-thickness) !important;
     text-underline-offset: var(--link-underline-offset) !important;
   }
+  // override the focus style coming from bootstrap targeting webkit engines
+  &:focus:not(:focus-visible) {
+    outline: none;
+  }
+  &:focus-visible {
+    outline: 2px solid var(--gw-focus-ring-color);
+    outline-offset: 2px;
+  }
 }
