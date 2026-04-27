@@ -9,7 +9,11 @@
     <div core-errors></div>
 
     <div class="acl-management-container" ng-if="getActiveRepository()">
-        <div class="acl-management-container">
+        <div ng-if="unexpectedFedexRepository" class="warnings unexpected-fedex-repository-warning">
+            <div class="alert alert-warning">{{'acl_management.warnings.unexpected_fedex_repository' | translate}}</div>
+        </div>
+
+        <div ng-if="!unexpectedFedexRepository" class="acl-management-content">
             <div class="pull-right">
                 <button ng-click="addRule(activeTabScope, 0)" ng-disabled="editedRuleIndex !== undefined"
                         class="btn btn-primary add-first-rule-btn"

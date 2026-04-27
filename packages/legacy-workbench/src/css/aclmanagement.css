@@ -10,7 +10,7 @@ html, body {
 
 .acl-management-view,
 .acl-management-view .acl-management-container,
-.acl-management-view .acl-management-container .acl-scope-tabs {
+.acl-management-view .acl-management-content .acl-scope-tabs {
     height: 100%;
 }
 

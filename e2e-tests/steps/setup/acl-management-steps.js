@@ -11,6 +11,18 @@ export class AclManagementSteps {
         return this.getPage().find('#acl-management-view-title');
     }
 
+    static getFedexWarningMessage() {
+        return this.getPage().find('.unexpected-fedex-repository-warning');
+    }
+
+    static getAclManagementContainer() {
+        return this.getPage().find('.acl-management-container');
+    }
+
+    static getAclManagementContent() {
+        return this.getPage().find('.acl-management-content');
+    }
+
     static getAclTable() {
         return this.getPage().find('.acl-rules');
     }
