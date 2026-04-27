@@ -277,6 +277,9 @@
             "duplicated_rules": "Every ACL rule should be unique.",
             "role_length_too_short": "Too short or not \"*\""
         },
+        "warnings": {
+            "unexpected_fedex_repository": "ACL rules cannot be loaded. Change the repository to a non-FedX repository and try again."
+        },
         "defaults": {
             "asterisk": "* - Any RDF value",
             "default": "default - The default graph",

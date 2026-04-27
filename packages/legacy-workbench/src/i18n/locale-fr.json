@@ -276,6 +276,9 @@
             "duplicated_rules": "Chaque règle ACL doit être unique.",
             "role_length_too_short": "Trop court ou pas \"*\""
         },
+        "warnings": {
+            "unexpected_fedex_repository": "Impossible de charger les règles ACL. Veuillez changer de référentiel et réessayer."
+        },
         "defaults": {
             "asterisk": "* - Toute valeur RDF",
             "default": "default - Le graphique par défaut",

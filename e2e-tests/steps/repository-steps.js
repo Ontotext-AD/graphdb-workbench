@@ -16,6 +16,14 @@ export class RepositorySteps extends BaseSteps {
         cy.visit(`repository/edit/${repositoryId}?location=`);
     }
 
+    static getRepositoryPage() {
+        return cy.get('#wb-repository');
+    }
+
+    static getRepositoriesPage() {
+        return cy.get('#wb-repositories');
+    }
+
     static getCreateRepositoryButton() {
         return cy.get('#wb-repositories-addRepositoryLink');
     }
@@ -133,6 +141,10 @@ export class RepositorySteps extends BaseSteps {
 
     static chooseRepositoryType(type) {
         RepositorySteps.getRepositoryTypeButton(type).click();
+    }
+
+    static createFedexRepositoryType() {
+        RepositorySteps.chooseRepositoryType('fedx');
     }
 
     static getGDBRepositoryTypeButton() {
@@ -353,5 +365,17 @@ export class RepositorySteps extends BaseSteps {
 
     static getEntityIndexSize() {
         return RepositorySteps.getRepositoryCreateForm().find('#entityIndexSize');
+    }
+
+    static getFedexMembersPanel() {
+        return this.getRepositoryPage().find('#fedx-members');
+    }
+
+    static selectFedexMember(repositoryId) {
+        this.getFedexMembersPanel()
+            .find('.form-local-repos')
+            .find('.location-item')
+            .contains(repositoryId)
+            .click();
     }
 }

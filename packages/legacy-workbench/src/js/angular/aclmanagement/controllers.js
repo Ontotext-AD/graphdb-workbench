@@ -143,6 +143,14 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
     // When the user clicks outside the input, this flag is used to signal that the CUSTOM_ prefix warning icon should appear and the warning text should disappear
     $scope.hasCustomPrefix = false;
 
+    /**
+     * Flag indicating that the currently selected repository is a Fedex repository, which is not expected in this view,
+     * because ACL is not supported for Fedex repositories. This flag is used to show a warning message and hide the ACL
+     * management UI.
+     * @type {boolean}
+     */
+    $scope.unexpectedFedexRepository = false;
+
     //
     // Public functions
     //
@@ -400,6 +408,7 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
         $scope.editedRuleScope = undefined;
         $scope.modelIsDirty = false;
         $scope.editedRuleCopy = undefined;
+        $scope.unexpectedFedexRepository = false;
         $scope.dirtyScope.clear();
     };
 
@@ -489,6 +498,12 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
 
     const repositoryChangedHandler = () => {
         resetPageState();
+        const selectedRepository = repositoryContextService.getSelectedRepository();
+        // ACL expects non-Fedex repository
+        if (selectedRepository?.isFedx()) {
+            $scope.unexpectedFedexRepository = true;
+            return;
+        }
         loadRules();
     };
 
