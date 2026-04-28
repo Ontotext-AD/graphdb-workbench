@@ -12,6 +12,7 @@ import 'angular/graphql/directives/configure-endpoint.directive';
 import 'angular/graphql/directives/generate-endpoint.directive';
 import {GraphqlEventName} from "../services/graphql-context.service";
 import {resolvePlaygroundUrlWithEndpoint} from "../services/endpoint-utils";
+import {RepositoryContextService, service} from '@ontotext/workbench-api';
 
 const modules = [
     'graphdb.framework.core.services.graphql-service',
@@ -31,6 +32,8 @@ function CreateGraphqlEndpointViewCtrl($scope, $location, $repositories, $transl
     // =========================
     // Private variables
     // =========================
+
+    const repositoryContextService = service(RepositoryContextService);
 
     const subscriptions = [];
 
@@ -75,6 +78,12 @@ function CreateGraphqlEndpointViewCtrl($scope, $location, $repositories, $transl
      * @type {boolean}
      */
     $scope.generatingEndpoint = false;
+
+    /**
+     * A flag indicating if the selected source repository is local. This allows to show a warning message in the UI.
+     * @type {boolean}
+     */
+    $scope.isSelectedRepositoryLocal = false;
 
     // =========================
     // Public methods
@@ -277,11 +286,15 @@ function CreateGraphqlEndpointViewCtrl($scope, $location, $repositories, $transl
         $scope.sourceRepositories = $repositories.getRepositoriesAsSelectMenuOptions(
             () => $repositories.getLocalReadableGraphdbRepositories(),
         );
-        const activeRepository = $repositories.getActiveRepository();
-        $scope.selectedSourceRepository = $scope.sourceRepositories
-            .find((repo) => repo.value === activeRepository);
-        GraphqlContextService.updateSourceRepository($scope.selectedSourceRepository.value);
-        $scope.previousSelectedSourceRepository = $scope.selectedSourceRepository;
+        const activeRepository = repositoryContextService.getSelectedRepository();
+        $scope.isSelectedRepositoryLocal = !!activeRepository?.local;
+        // Graphql endpoints can't be created on remote repositories.
+        if ($scope.isSelectedRepositoryLocal) {
+            $scope.selectedSourceRepository = $scope.sourceRepositories
+                .find((repo) => repo.value === activeRepository.id);
+            GraphqlContextService.updateSourceRepository($scope.selectedSourceRepository.value);
+            $scope.previousSelectedSourceRepository = $scope.selectedSourceRepository;
+        }
     };
 
     /**

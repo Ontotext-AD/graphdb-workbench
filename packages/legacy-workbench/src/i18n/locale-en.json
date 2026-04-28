@@ -1329,6 +1329,9 @@
                     "title": "Confirm source repository change",
                     "body": "Changing the source repository may affect your current setup and data. Are you sure you want to proceed?"
                 }
+            },
+            "warnings": {
+                "unexpected_remote_repository": "The active repository is located at a different remote location. Please select a repository from the current location."
             }
         }
     },

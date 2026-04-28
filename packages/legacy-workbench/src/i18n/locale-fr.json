@@ -1328,6 +1328,9 @@
                     "title": "Confirmer le changement de référentiel source",
                     "body": "La modification du référentiel source peut affecter votre configuration et vos données actuelles. Êtes-vous sûr de vouloir continuer?"
                 }
+            },
+            "warnings": {
+                "unexpected_remote_repository": "Le dépôt actif se trouve sur un autre emplacement distant. Veuillez sélectionner un dépôt à l'emplacement actuel."
             }
         }
     },
