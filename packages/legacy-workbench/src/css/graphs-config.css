@@ -124,3 +124,8 @@ yasgui-component .CodeMirror {
         height: 100%;
     }
 }
+
+.config-action-popover {
+    /* These popovers are a bit off vertically and nothing else really helped position them properly */
+    margin-top: -30px !important;
+}

@@ -276,8 +276,8 @@
     </div>
 </div>
 
-<div class="m-0 clearfix" style="padding-bottom: 2rem">
-    <div class="pull-left">
+<div class="m-0 d-flex justify-content-between align-items-start">
+    <div>
         <button href ng-show="page > 1" ng-click="goToPreviousPage()" class="btn btn-lg btn-secondary btn-previous-page"
                 uib-popover="{{'previous.config.step' | translate}}"
                 popover-placement="top"
@@ -310,9 +310,10 @@
             {{'revert.changes.btn' | translate}}
         </button>
     </div>
-    <div class="pull-right">
+    <div>
         <a ng-href="graphs-visualizations/" class="btn btn-lg btn-secondary btn-cancel-save-config"
            uib-popover="{{'closes.config.no.save' | translate}}"
+           popover-class="config-action-popover"
            popover-placement="top"
            popover-trigger="mouseenter">
             {{'common.cancel.btn' | translate}}
@@ -320,6 +321,7 @@
         <a href ng-click="saveGraphConfig()" class="btn btn-lg btn-primary btn-save-config"
            uib-popover="{{'closes.config.save' | translate}}"
            guide-selector="save-graph-config"
+           popover-class="config-action-popover"
            popover-placement="top"
            popover-trigger="mouseenter">
             {{'common.save.btn' | translate}}
