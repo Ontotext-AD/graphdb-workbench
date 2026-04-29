@@ -82,8 +82,10 @@
     min-width: 7rem;
     font-size: 1rem;
     width: 100%;
-    color: var(--gw-button-primary-color);
-    background-color: var(--gw-button-primary-background);
+    color: var(--gw-tieredmenu-color);
+    background-color: var(--gw-tieredmenu-background);
+    border: 1px solid var(--gw-tieredmenu-border-color);
+    box-shadow: var(--gw-tieredmenu-shadow-1-offset-x) var(--gw-tieredmenu-shadow-1-offset-y) var(--gw-tieredmenu-shadow-1-blur) var(--gw-tieredmenu-shadow-1-spread) var(--gw-tieredmenu-shadow-1-color);
 
     translate-label {
       padding: .4rem 1rem;
@@ -92,10 +94,9 @@
       font-weight: 400;
 
       &:hover {
-          color: var(--gw-button-primary-hover-color);
-          background-color: var(--gw-button-primary-hover-background);
-          border-color: var(--gw-button-primary-hover-border-color);
-        }
+        color: var(--gw-tieredmenu-item-focus-color);
+        background-color: var(--gw-tieredmenu-item-focus-background);
+      }
     }
   }
 }

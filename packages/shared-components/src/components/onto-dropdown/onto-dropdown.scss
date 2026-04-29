@@ -69,6 +69,10 @@
     overflow-y: auto;
     max-height: 340px;
     min-width: 100%;
+    color: var(--gw-tieredmenu-color);
+    background-color: var(--gw-tieredmenu-background);
+    border: 1px solid var(--gw-tieredmenu-border-color);
+    box-shadow: var(--gw-tieredmenu-shadow-1-offset-x) var(--gw-tieredmenu-shadow-1-offset-y) var(--gw-tieredmenu-shadow-1-blur) var(--gw-tieredmenu-shadow-1-spread) var(--gw-tieredmenu-shadow-1-color);
   }
 
   .onto-dropdown-menu-item {
@@ -77,8 +81,8 @@
     font-size: 1rem;
     font-weight: 400;
     padding: .5em 1.2em;
-    color: var(--gw-button-primary-color);
-    background-color: var(--gw-button-primary-background);
+    color: var(--gw-tieredmenu-item-color);
+    background-color: var(--gw-tieredmenu-background);
     text-align: left;
     white-space: nowrap;
     border: none;
@@ -88,9 +92,8 @@
 
   .onto-dropdown-menu-item:hover {
     cursor: pointer;
-    color: var(--gw-button-primary-hover-color);
-    background-color: var(--gw-button-primary-hover-background);
-    border-color: var(--gw-button-primary-hover-border-color);
+    color: var(--gw-tieredmenu-item-focus-color);
+    background-color: var(--gw-tieredmenu-item-focus-background);
 
     .item-icon {
       transform: scale(1.2);
