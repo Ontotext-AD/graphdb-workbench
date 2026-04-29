@@ -170,16 +170,20 @@ yasgui-component .yasqe_querySplitWrapper .yasqe_querySplitToggle:hover {
     background-color: var(--gw-button-primary-hover-background) !important;
 }
 
-yasgui-component  .ontotext-run-dropdown-menu,
-yasgui-component .ontotext-run-dropdown-menu-item {
-    color: var(--gw-button-primary-color) !important;
-    background-color: var(--gw-button-primary-background) !important;
+yasgui-component  .ontotext-run-dropdown-menu {
+    border: 1px solid var(--gw-tieredmenu-border-color);
+    box-shadow: var(--gw-tieredmenu-shadow-1-offset-x) var(--gw-tieredmenu-shadow-1-offset-y) var(--gw-tieredmenu-shadow-1-blur) var(--gw-tieredmenu-shadow-1-spread) var(--gw-tieredmenu-shadow-1-color);
     border-radius: 0;
 }
 
+yasgui-component .ontotext-run-dropdown-menu-item {
+    color: var(--gw-tieredmenu-color) !important;
+    background-color: var(--gw-tieredmenu-background) !important;
+}
+
 yasgui-component .ontotext-run-dropdown-menu-item:hover {
-    color: var(--gw-button-primary-hover-color) !important;
-    background-color: var(--gw-button-primary-hover-background) !important;
+    color: var(--gw-tieredmenu-item-focus-color) !important;
+    background-color: var(--gw-tieredmenu-item-focus-background) !important;
 }
 
 yasgui-component .yasgui .tabsList .tab {
@@ -285,12 +289,18 @@ yasgui-component .ontotext-dropdown-menu .ontotext-dropdown-menu-item {
 
 yasgui-component .ontotext-dropdown-button {
     height: 40px;
-}
-
-yasgui-component .ontotext-dropdown-button,
-yasgui-component .ontotext-dropdown-menu.open .ontotext-dropdown-menu-item {
     color: var(--gw-button-primary-color) !important;
     background-color: var(--gw-button-primary-background) !important;
+}
+
+yasgui-component .ontotext-dropdown-menu.open {
+    border: 1px solid var(--gw-tieredmenu-border-color) !important;
+    box-shadow: var(--gw-tieredmenu-shadow-1-offset-x) var(--gw-tieredmenu-shadow-1-offset-y) var(--gw-tieredmenu-shadow-1-blur) var(--gw-tieredmenu-shadow-1-spread) var(--gw-tieredmenu-shadow-1-color);
+}
+
+yasgui-component .ontotext-dropdown-menu.open .ontotext-dropdown-menu-item {
+    color: var(--gw-tieredmenu-item-color) !important;
+    background-color: var(--gw-tieredmenu-background) !important;
 }
 
 yasgui-component .ontotext-download-as .ontotext-dropdown-button .button-name {
@@ -298,8 +308,11 @@ yasgui-component .ontotext-download-as .ontotext-dropdown-button .button-name {
     font-weight: 400;
 }
 
+yasgui-component .ontotext-download-as .ontotext-dropdown-button {
+    height: 38px;
+}
+
 yasgui-component .ontotext-dropdown-button:hover,
-yasgui-component .ontotext-dropdown-menu .ontotext-dropdown-menu-item:hover,
 yasgui-component .ontotext-dropdown-button.ri-arrow-down-s-line:hover:after,
 yasgui-component .ontotext-dropdown-button.ri-arrow-up-s-line:hover:after {
     background-color: var(--gw-button-primary-hover-background) !important;
@@ -312,8 +325,9 @@ yasgui-component .ontotext-dropdown-button.ri-arrow-up-s-line:after {
     color: var(--gw-button-primary-color);
 }
 
-yasgui-component .ontotext-download-as .ontotext-dropdown-button {
-    height: 38px;
+yasgui-component .ontotext-dropdown-menu .ontotext-dropdown-menu-item:hover {
+    color: var(--gw-tieredmenu-item-focus-color) !important;
+    background-color: var(--gw-tieredmenu-item-focus-background) !important;
 }
 
 yasgui-component .yasr-toolbar {
