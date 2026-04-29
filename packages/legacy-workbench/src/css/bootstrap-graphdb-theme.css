@@ -448,13 +448,13 @@ ul.style-arrow li:before {
     font-size: 1.2rem;
     line-height: 2rem;
     height: 2rem;
-    background-color: #eee;
+    background-color: var(--gw-progressbar-background);
 }
 
 .progress-bar {
     height: 2rem;
-    color: #000;
-    background-color: var(--gw-tertiary-lighter);
+    color: var(--gw-progressbar-label-color);
+    background-color: var(--gw-progressbar-value-background);
     padding: 0 0.2em;
     text-align: center;
 }
@@ -464,7 +464,7 @@ ul.style-arrow li:before {
     width: 3em;
     height: 3em;
     margin: 0 0.5em 0 0;
-    background-color: #eee;
+    background-color: var(--gw-progressbar-background);
     border-radius: 0.2em;
     overflow: hidden;
     position: relative;
@@ -473,7 +473,8 @@ ul.style-arrow li:before {
 .progress-square .progress-bar {
     width: 100%;
     display: block;
-    background-color: var(--gw-secondary-base);
+    color: var(--gw-progressbar-label-color);
+    background-color: var(--gw-progressbar-value-background);
     position: absolute;
     bottom: 0;
 }
