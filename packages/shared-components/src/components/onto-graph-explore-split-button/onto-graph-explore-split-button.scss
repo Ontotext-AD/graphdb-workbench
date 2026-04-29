@@ -44,6 +44,13 @@
     }
   }
 
+  .explore-visual-graph-dropdown .onto-dropdown-menu-item {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 22.5rem
+  }
+
   .no-configurations-message {
     background-color: var(--gw-message-info-background);
     border: 1px solid var(--gw-message-info-border-color);

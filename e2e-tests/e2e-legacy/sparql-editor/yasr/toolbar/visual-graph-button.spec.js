@@ -75,8 +75,8 @@ describe('"Visualize" split button', () => {
 
         // WHEN: I open the dropdown.
         YasrSteps.toggleGraphConfigDropdown();
-        // THEN: I expect to see only 'search' graph configurations.
-        YasrSteps.getGraphConfigs().should('have.length', 2);
+        // THEN: I expect to see all graph configurations.
+        YasrSteps.getGraphConfigs().should('have.length', 3);
 
         // WHEN: I select a graph configuration
         YasrSteps.selectGraphConfig();

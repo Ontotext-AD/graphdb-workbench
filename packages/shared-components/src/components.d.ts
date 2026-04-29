@@ -81,6 +81,11 @@ export namespace Components {
          */
         "iconClass": string;
         /**
+          * Path or URL to the image used as icon for main dropdown button.
+          * @default ''
+         */
+        "iconImage": string;
+        /**
           * Array of dropdown options.
          */
         "items": DropdownItem<unknown>[];
@@ -791,6 +796,11 @@ declare namespace LocalJSX {
           * @default ''
          */
         "iconClass"?: string;
+        /**
+          * Path or URL to the image used as icon for main dropdown button.
+          * @default ''
+         */
+        "iconImage"?: string;
         /**
           * Array of dropdown options.
          */

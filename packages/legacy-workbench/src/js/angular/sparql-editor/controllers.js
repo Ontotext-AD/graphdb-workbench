@@ -34,7 +34,6 @@ import {
 import {YASGUI_OPERATION, YASGUI_OPERATION_TYPE, URL_PLUGIN_NAME_TO_PLUGIN_NAME_MAPPING} from "./constants";
 import {GeoPluginConfiguration} from '../models/ontotext-yasgui/plugin-configuration';
 import {YasrFullscreenConfig} from '../models/ontotext-yasgui/yasr-fullscreen-config';
-import {StartMode} from '../models/graphs/graphs-config';
 
 const modules = [
     'ui.bootstrap',
@@ -409,7 +408,7 @@ function SparqlEditorCtrl($rootScope,
         createElement: (yasr) => {
             const exploreVisualGraphButtonGroup = document.createElement('onto-graph-explore-split-button');
             exploreVisualGraphButtonGroup.classList.add('explore-visual-graph');
-            exploreVisualGraphButtonGroup.fetchGraphConfigs = () => graphConfigService.getGraphConfigs().then((graphConfigs) => graphConfigs.getByStartMode(StartMode.SEARCH));
+            exploreVisualGraphButtonGroup.fetchGraphConfigs = () => graphConfigService.getGraphConfigs().then((graphConfigs) => graphConfigs.getItems());
             exploreVisualGraphButtonGroup.label = $translate.instant('query.editor.visual.btn');
             exploreVisualGraphButtonGroup._exploreVisualGraphHandler = getExploreVisualGraphHandler(yasr);
             exploreVisualGraphButtonGroup.addEventListener('graphExplore', exploreVisualGraphButtonGroup._exploreVisualGraphHandler);

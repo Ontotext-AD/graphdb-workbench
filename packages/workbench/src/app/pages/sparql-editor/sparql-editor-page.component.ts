@@ -43,7 +43,6 @@ import {
   SubscriptionList,
   WindowService,
   GraphConfigService,
-  StartMode,
 } from '@ontotext/workbench-api';
 
 import {
@@ -135,7 +134,7 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
     createElement: (yasr: Yasr) => {
       const exploreVisualGraphButtonGroup: ExploreVisualGraphElement = document.createElement('onto-graph-explore-split-button');
       exploreVisualGraphButtonGroup.classList.add('explore-visual-graph');
-      exploreVisualGraphButtonGroup.fetchGraphConfigs = () => this.graphConfigService.getGraphConfigs().then((graphConfigs) => graphConfigs.getByStartMode(StartMode.SEARCH));
+      exploreVisualGraphButtonGroup.fetchGraphConfigs = () => this.graphConfigService.getGraphConfigs().then((graphConfigs) => graphConfigs.getItems());
       exploreVisualGraphButtonGroup.label = this.translocoService.translate('sparql_editor.yasgui.yasr.yasr_header.toolbar.btn.visual_graph_btn.label');
       exploreVisualGraphButtonGroup._exploreVisualGraphHandler = this.getExploreVisualGraphHandler(yasr);
       exploreVisualGraphButtonGroup.addEventListener('graphExplore', exploreVisualGraphButtonGroup._exploreVisualGraphHandler);
