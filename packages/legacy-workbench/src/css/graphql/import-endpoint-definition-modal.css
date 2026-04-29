@@ -1,5 +1,5 @@
 .import-endpoint-definition-modal .import-endpoint-definition-modal-body {
-    border: 1px solid #e5e5e5;
+    border: 1px solid var(--gw-dialog-border-color);
 }
 
 .import-endpoint-definition-modal .toolbar button i {
