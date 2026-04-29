@@ -880,7 +880,20 @@ function GraphsVisualizationsCtrl(
     };
 
     const loadGraphFromQueryParam = function() {
-        // view graph config
+        // The visual graph view can be accessed from two entry points:
+        //
+        // 1. "SPARQL Query & Update" view
+        //    - The "query" URL parameter is always provided.
+        //    - The query from this view is used as the graph expansion query.
+        //
+        // 2. "Resources" view
+        //    - The "uri" parameter value is used as the start node.
+        //    - The step for selecting a start node is skipped.
+        //
+        // The "config" URL parameter (configuration ID) is optional.
+        // If provided, the specified configuration is used, otherwise, the default configuration is applied.
+        //
+        // After the initial visualization is rendered, all subsequent node expansions follow the loaded configuration.
         if ($location.search().config) {
             loadConfigForId($location.search().config, initGraphFromQueryParam);
         } else if ($location.search().query || $location.search().uri) {

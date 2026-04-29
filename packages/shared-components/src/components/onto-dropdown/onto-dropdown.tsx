@@ -69,6 +69,11 @@ export class OntoDropdown {
   @Prop() iconClass = '';
 
   /**
+   * Path or URL to the image used as icon for main dropdown button.
+   */
+  @Prop() iconImage = '';
+
+  /**
    * Array of dropdown options.
    */
   @Prop() items: DropdownItem<unknown>[];
@@ -178,6 +183,7 @@ export class OntoDropdown {
               onMouseEnter={this.setDropdownItemTooltip(item)}
               onClick={this.itemClickHandler(item.value)}>
               {item.iconClass ? <span class={'onto-dropdown-option-icon ' + item.iconClass}></span> : ''}
+              {item.iconImage ? <img class='onto-dropdown-option-image-icon' src={item.iconImage} alt={item.name ?? this.translate(item.nameLabelKey)}></img> : '' }
               <span>{item.name ?? this.translate(item.nameLabelKey)}</span>
             </button>)}
         </div>

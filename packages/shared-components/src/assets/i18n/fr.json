@@ -214,7 +214,7 @@
         "tooltip": "Utiliser la configuration par défaut"
       },
       "explore_visual_graph_dropdown": {
-        "tooltip": "Sélectionner la configuration : type de point de départ uniquement"
+        "tooltip": "Sélectionner la configuration"
       }
     },
     "messages": {

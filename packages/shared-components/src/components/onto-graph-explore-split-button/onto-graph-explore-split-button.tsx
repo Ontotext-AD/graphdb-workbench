@@ -7,7 +7,13 @@ import {LoggerProvider} from '../../services/logger-provider';
 import {TranslationService} from '../../services/translation.service';
 import {OntoTooltipPlacement} from '../onto-tooltip/models/onto-tooltip-placement';
 
-import {GraphConfig} from '@ontotext/workbench-api';
+import {GraphConfig, StartMode} from '@ontotext/workbench-api';
+
+const START_MODE_IMAGE_MAP = {
+  [StartMode.NODE]: 'assets/images/node-icon_32X21.png',
+  [StartMode.QUERY]: 'assets/images/query-icon_32x21.png',
+  [StartMode.SEARCH]: 'assets/images/search-icon_32x21.png',
+};
 
 /**
  * Split button component for exploring graphs based on available configurations.
@@ -93,10 +99,14 @@ export class OntoGraphExploreSplitButton {
     if (typeof this.fetchGraphConfigs === 'function') {
       this.fetchGraphConfigs()
         .then((configs) => {
-          this.items = configs.map(config =>
-            new DropdownItem<GraphConfig>()
-              .setName(config.name)
-              .setValue(config));
+          this.items = [...configs]
+            .sort((a, b) => a.name.localeCompare(b.name))
+            .map(config =>
+              new DropdownItem<GraphConfig>()
+                .setTooltip(config.name)
+                .setName(config.name)
+                .setIconImage(START_MODE_IMAGE_MAP[config.startMode])
+                .setValue(config));
         })
         .catch((error) => {
           this.items = [];

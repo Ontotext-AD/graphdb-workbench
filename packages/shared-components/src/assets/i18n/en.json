@@ -214,7 +214,7 @@
         "tooltip": "Use default config"
       },
       "explore_visual_graph_dropdown": {
-        "tooltip": "Select config: starting point type only"
+        "tooltip": "Select config"
       }
     },
     "messages": {

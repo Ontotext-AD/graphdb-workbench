@@ -35,6 +35,11 @@ export class DropdownItem<T> {
   private _iconClass: string;
 
   /**
+   * Path or URL to the image used as icon an item of dropdown button.
+   */
+  private _iconImage: string;
+
+  /**
    * The value of dropdown item. It will be emitted when the item is selected.
    * @private
    */
@@ -51,12 +56,12 @@ export class DropdownItem<T> {
    * @private
    */
   private _guideSelector: string;
-  
+
   get name(): string {
     return this._name;
   }
 
-  setName(value: string): DropdownItem<T> {
+  setName(value: string): this {
     this._name = value;
     return this;
   }
@@ -65,7 +70,7 @@ export class DropdownItem<T> {
     return this._nameLabelKey;
   }
 
-  setNameLabelKey(value: string): DropdownItem<T> {
+  setNameLabelKey(value: string): this {
     this._nameLabelKey = value;
     return this;
   }
@@ -74,7 +79,7 @@ export class DropdownItem<T> {
     return this._tooltip;
   }
 
-  setTooltip(value: string | Awaitable<string>): DropdownItem<T> {
+  setTooltip(value: string | Awaitable<string>): this {
     this._tooltip = value;
     return this;
   }
@@ -83,7 +88,7 @@ export class DropdownItem<T> {
     return this._tooltipLabelKey;
   }
 
-  setTooltipLabelKey(value: string): DropdownItem<T> {
+  setTooltipLabelKey(value: string): this {
     this._tooltipLabelKey = value;
     return this;
   }
@@ -92,8 +97,17 @@ export class DropdownItem<T> {
     return this._iconClass;
   }
 
-  setIconClass(value: string): DropdownItem<T> {
+  setIconClass(value: string): this {
     this._iconClass = value;
+    return this;
+  }
+
+  get iconImage(): string {
+    return this._iconImage;
+  }
+
+  setIconImage(value: string): this {
+    this._iconImage = value;
     return this;
   }
 
@@ -101,7 +115,7 @@ export class DropdownItem<T> {
     return this._value;
   }
 
-  setValue(value: T): DropdownItem<T> {
+  setValue(value: T): this {
     this._value = value;
     return this;
   }
@@ -110,7 +124,7 @@ export class DropdownItem<T> {
     return this._dropdownTooltipTrigger;
   }
 
-  setDropdownTooltipTrigger(value: string) : DropdownItem<T> {
+  setDropdownTooltipTrigger(value: string) : this {
     this._dropdownTooltipTrigger = value;
     return this;
   }
@@ -119,15 +133,15 @@ export class DropdownItem<T> {
     return this._cssClass;
   }
 
-  setCssClass(value: string): DropdownItem<T> {
+  setCssClass(value: string): this {
     this._cssClass = value;
     return this;
   }
-  
+
   get guideSelector(): string {
     return this._guideSelector;
   }
-  
+
   setGuideSelector(value: string) {
     this._guideSelector = value;
     return this;

@@ -50,6 +50,7 @@
   }
 
   .tooltip-content {
+    overflow-wrap: anywhere;
     position: relative;
     z-index: 1;
     padding: var(--gw-tooltip-padding);
