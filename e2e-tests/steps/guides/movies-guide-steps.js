@@ -5,6 +5,7 @@ import {VisualGraphSteps} from "../visual-graph-steps";
 import {YasrSteps} from "../yasgui/yasr-steps";
 import {YasqeSteps} from "../yasgui/yasqe-steps";
 import {ResourceSteps} from "../resource/resource-steps";
+import {VisualGraphSplitButtonSteps} from '../visual-graph-split-button-steps.js';
 
 export class MoviesGuideSteps {
 
@@ -181,7 +182,7 @@ export class MoviesGuideSteps {
     static assertExploreRDFStep7() {
         GuideSteps.assertPageNotInteractive();
         GuideDialogSteps.assertDialogWithTitleIsVisible('Explore RDF as a table — 7/10');
-        ResourceSteps.getVisualGraphButton().should('be.visible');
+        VisualGraphSplitButtonSteps.getVisualizeMainButton().should('be.visible');
     }
 
     static assertExploreRDFStep8() {

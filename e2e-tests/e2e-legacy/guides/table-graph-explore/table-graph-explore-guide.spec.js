@@ -3,6 +3,7 @@ import {GuideSteps} from "../../../steps/guides/guide-steps.js";
 import {GuideDialogSteps} from "../../../steps/guides/guide-dialog-steps.js";
 import {YasrSteps} from "../../../steps/yasgui/yasr-steps.js";
 import {ResourceSteps} from "../../../steps/resource/resource-steps.js";
+import {VisualGraphSplitButtonSteps} from '../../../steps/visual-graph-split-button-steps.js';
 
 describe('Table Graph explore', () => {
     const FILE_TO_IMPORT = 'wine.rdf';
@@ -107,7 +108,7 @@ describe('Table Graph explore', () => {
 
             GuideDialogSteps.assertDialogWithTitleIsVisible('Explore RDF as a table — 6/8');
             GuideDialogSteps.assertDialogWithContentIsVisible('You can always explore the same data using the Visual graph view. Click on the Visual graph button to try it now.');
-            ResourceSteps.clickOnVisualGraphButton();
+            VisualGraphSplitButtonSteps.clickOnVisualizeMainButton();
 
             GuideDialogSteps.assertDialogWithTitleIsVisible('Explore RDF as a table — 7/8');
             GuideDialogSteps.assertDialogWithContentIsVisible('The graph shows connections between the start node, vin:WineGrape, and other nodes. Each arrow represents one or more connections (RDF statements).');

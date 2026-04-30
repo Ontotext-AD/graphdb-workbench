@@ -10,9 +10,12 @@ import {DISABLE_YASQE_BUTTONS_CONFIGURATION} from "../core/directives/yasgui-com
 import * as jsonld from 'jsonld';
 import {ExportSettingsCtrl} from "../core/components/export-settings-modal/controller";
 import {
+    GraphConfigService,
+    openInNewTab,
     SecurityContextService,
     service,
 } from '@ontotext/workbench-api';
+import {ObjectUtils} from '../utils/object-utils';
 
 const modules = [
     'ngCookies',
@@ -23,7 +26,7 @@ const modules = [
     'graphdb.framework.core.services.repositories',
     'graphdb.framework.explore.services',
     'graphdb.workbench.utils.filetypes',
-    'graphdb.framework.rest.explore.rest.service'
+    'graphdb.framework.rest.explore.rest.service',
 ];
 
 angular
@@ -65,6 +68,7 @@ function ExploreCtrl(
     $q,
     ExploreRestService) {
     const securityContextService = service(SecurityContextService);
+    const graphConfigService = service(GraphConfigService);
 
     $scope.ContextTypes = ContextTypes;
     $scope.contextTypes = ContextType.getAllType();
@@ -151,14 +155,26 @@ function ExploreCtrl(
         return $scope.resourceInfo.context !== null && $scope.resourceInfo.context === "http://rdf4j.org/schema/rdf4j#SHACLShapeGraph";
     };
 
-    $scope.goToGraphsViz = () => {
-        $location.path('graphs-visualizations').search('uri', $scope.resourceInfo.uri);
+    $scope.goToGraphsViz = ({detail: payload}) => {
+        if (payload.action === 'create') {
+            openInNewTab('graphs-visualizations');
+            return;
+        }
+
+        $location
+            .path('graphs-visualizations')
+            .search('uri', $scope.resourceInfo.uri)
+            .search('config', payload.graphConfig?.id);
+    };
+
+    $scope.fetchGraphConfigs = () => {
+        return () => graphConfigService.getGraphConfigs().then((graphConfigs) => graphConfigs.getItems());
     };
 
     // Get resource table
     $scope.exploreResource = () => {
         toggleOntoLoader(true);
-        if ($routeParams.context != null) {
+        if (ObjectUtils.isNullOrUndefined($routeParams.context)) {
             $scope.resourceInfo.context = $routeParams.context;
         }
         // Remember the role in the URL so the URL is stable and leads back to the same view
@@ -192,27 +208,27 @@ function ExploreCtrl(
             });
     };
 
-    $scope.openJSONLDExportSettings = function (format) {
+    $scope.openJSONLDExportSettings = function(format) {
         const modalInstance = $uibModal.open({
             templateUrl: 'js/angular/core/components/export-settings-modal/exportSettingsModal.html',
             controller: ExportSettingsCtrl,
             size: 'lg',
             scope: $scope,
             resolve: {
-                format: function () {
+                format: function() {
                     return format.name;
-                }
-            }
+                },
+            },
         });
 
-        modalInstance.result.then(function (data) {
+        modalInstance.result.then(function(data) {
             $scope.downloadJSONLDExport(format, data.link, data.currentMode);
         });
     };
 
-    $scope.downloadJSONLDExport = function (format, link, mode) {
+    $scope.downloadJSONLDExport = function(format, link, mode) {
         ExploreRestService.getGraph($scope.resourceInfo, format.type, link)
-            .then(async function (data) {
+            .then(async function(data) {
                 if (format.name === "JSON") {
                     data = JSON.stringify(data);
                 }
@@ -253,7 +269,7 @@ function ExploreCtrl(
                     const file = new Blob([data], {type: format.type});
                     saveAs(file, 'statements' + format.extension);
                 }
-            }).catch(function (data) {
+            }).catch(function(data) {
                 const msg = getError(data);
                 toastr.error(msg, $translate.instant('common.error'));
             });
@@ -322,7 +338,7 @@ function ExploreCtrl(
         $scope.resourceInfo = new ResourceInfo();
         initResourceReference($scope.resourceInfo);
 
-        if ($routeParams.context != null) {
+        if (ObjectUtils.isNullOrUndefined($routeParams.context)) {
             $scope.resourceInfo.context = $routeParams.context;
         }
 
@@ -353,7 +369,7 @@ function ExploreCtrl(
             maxPersistentResponseSize: 0,
             render: RenderingMode.YASR,
             showYasqeActionButtons: false,
-            yasqeActionButtons: DISABLE_YASQE_BUTTONS_CONFIGURATION
+            yasqeActionButtons: DISABLE_YASQE_BUTTONS_CONFIGURATION,
         };
     };
 
@@ -389,9 +405,9 @@ function ExploreCtrl(
 
     // Wait until the active repository object is set, otherwise "canWriteActiveRepo()" may return a wrong result and the "ontotext-yasgui"
     // readOnly configuration may be incorrect.
-    subscriptions.push($scope.$watch(function () {
+    subscriptions.push($scope.$watch(function() {
         return $scope.getActiveRepositoryObject();
-    }, function (activeRepo) {
+    }, function(activeRepo) {
         if (activeRepo) {
             initComponent();
         }
@@ -411,7 +427,7 @@ function FindResourceCtrl($scope, $http, $location, $repositories, $q, $timeout,
     $scope.autocompleteEnabled = false;
 
     if (angular.isDefined($routeParams.search)) {
-        $timeout(function () {
+        $timeout(function() {
             $('#resources_finder_value').val($routeParams.search);
             $('.search-button').click();
         }, 500);
@@ -419,7 +435,7 @@ function FindResourceCtrl($scope, $http, $location, $repositories, $q, $timeout,
 
     function checkAutocompleteStatus() {
         AutocompleteRestService.checkAutocompleteStatus()
-            .success(function (response) {
+            .success(function(response) {
                 if (!response) {
                     const warningMsg = decodeHTML($translate.instant('explore.autocomplete.warning.msg'));
                     toastr.warning('', `<div class="autocomplete-toast"><a href="autocomplete">${warningMsg}</a></div>`,
@@ -427,22 +443,22 @@ function FindResourceCtrl($scope, $http, $location, $repositories, $q, $timeout,
                 }
                 $scope.autocompleteEnabled = response;
             })
-            .error(function () {
+            .error(function() {
                 toastr.error($translate.instant('explore.error.autocomplete'));
             });
     }
 
     function getAllNamespacesForActiveRepository() {
         RDF4JRepositoriesRestService.getNamespaces($repositories.getActiveRepository())
-            .success(function (data) {
-                $scope.namespaces = data.results.bindings.map(function (e) {
+            .success(function(data) {
+                $scope.namespaces = data.results.bindings.map(function(e) {
                     return {
                         prefix: e.prefix.value,
-                        uri: e.namespace.value
+                        uri: e.namespace.value,
                     };
                 });
                 $scope.loader = false;
-            }).error(function (data) {
+            }).error(function(data) {
             const msg = getError(data);
             toastr.error(msg, $translate.instant('common.error'));
             $scope.loader = false;
@@ -475,7 +491,7 @@ function FindResourceCtrl($scope, $http, $location, $repositories, $q, $timeout,
     function submit(uri) {
         function setFormInvalid(isDirty) {
             // does not work yet
-            $timeout(function () {
+            $timeout(function() {
                 if ($scope.form) {
                     $scope.form.$dirty = isDirty;
                 }
@@ -530,7 +546,7 @@ function FindResourceCtrl($scope, $http, $location, $repositories, $q, $timeout,
         return promise;
     }
 
-    $scope.$on('repositoryIsSet', function () {
+    $scope.$on('repositoryIsSet', function() {
         checkAutocompleteStatus();
         getAllNamespacesForActiveRepository();
     });
@@ -554,13 +570,13 @@ function EditResourceCtrl($scope, $http, $location, toastr, $repositories, $uibM
         subject: $scope.uriParam,
         object: {
             type: 'uri',
-            datatype: ''
-        }
+            datatype: '',
+        },
     };
     $scope.newResource = false;
     $scope.datatypeOptions = StatementsService.getDatatypeOptions();
 
-    $scope.activeRepository = function () {
+    $scope.activeRepository = function() {
         return $repositories.getActiveRepository();
     };
 
@@ -575,45 +591,45 @@ function EditResourceCtrl($scope, $http, $location, toastr, $repositories, $uibM
 
     function getClassInstancesDetails() {
         RDF4JRepositoriesRestService.getNamespaces($scope.activeRepository())
-            .success(function (data) {
-                $scope.namespaces = data.results.bindings.map(function (e) {
+            .success(function(data) {
+                $scope.namespaces = data.results.bindings.map(function(e) {
                     return {
                         prefix: e.prefix.value,
-                        uri: e.namespace.value
+                        uri: e.namespace.value,
                     };
                 });
                 $scope.loader = false;
-            }).error(function (data) {
+            }).error(function(data) {
             const msg = getError(data);
             toastr.error(msg, $translate.instant('common.error'));
             $scope.loader = false;
         });
 
         ClassInstanceDetailsService.getDetails($scope.uriParam)
-            .success(function (data) {
+            .success(function(data) {
                 $scope.details = data;
                 $scope.details.encodeURI = encodeURIComponent($scope.details.uri);
-            }).error(function (data) {
+            }).error(function(data) {
             toastr.error($translate.instant('explore.error.resource.details', {data: getError(data)}));
         });
 
         ClassInstanceDetailsService.getGraph($scope.uriParam)
-            .then(function (res) {
+            .then(function(res) {
                 const statements = StatementsService.buildStatements(res, $scope.uriParam);
                 $scope.statements = statements;
                 $scope.newResource = !statements.length;
             });
     }
 
-    $scope.$watch(function () {
+    $scope.$watch(function() {
         return $repositories.getActiveRepository();
-    }, function () {
+    }, function() {
         if ($scope.activeRepository()) {
             $scope.getClassInstancesDetails();
         }
     });
 
-    $scope.validateUri = function (val) {
+    $scope.validateUri = function(val) {
         let check = true;
         const text = val ? val : '';
 
@@ -654,8 +670,8 @@ function EditResourceCtrl($scope, $http, $location, toastr, $repositories, $uibM
                 subject: $scope.uriParam,
                 object: {
                     type: 'uri',
-                    datatype: ''
-                }
+                    datatype: '',
+                },
             };
             $scope.newRowPredicate.$setPristine();
             $scope.newRowPredicate.$setUntouched();
@@ -691,10 +707,10 @@ function EditResourceCtrl($scope, $http, $location, toastr, $repositories, $uibM
             controller: 'ViewTrigCtrl',
             size: 'lg',
             resolve: {
-                data: function () {
+                data: function() {
                     return StatementsService.transformToTrig($scope.statements);
-                }
-            }
+                },
+            },
         });
     }
 
@@ -704,18 +720,18 @@ function EditResourceCtrl($scope, $http, $location, toastr, $repositories, $uibM
             method: method,
             url: 'rest/resource?uri=' + encodeURIComponent($scope.uriParam),
             headers: {
-                'Content-Type': 'application/x-trig'
+                'Content-Type': 'application/x-trig',
             },
-            data: StatementsService.transformToTrig($scope.statements)
-        }).success(function () {
+            data: StatementsService.transformToTrig($scope.statements),
+        }).success(function() {
             toastr.success($translate.instant('explore.resource.saved'));
-            const timer = $timeout(function () {
+            const timer = $timeout(function() {
                 $location.path('resource').search('uri', $scope.uriParam);
             }, 500);
-            $scope.$on("$destroy", function () {
+            $scope.$on("$destroy", function() {
                 $timeout.cancel(timer);
             });
-        }).error(function (data) {
+        }).error(function(data) {
             toastr.error(getError(data));
         });
     }
@@ -726,7 +742,7 @@ ViewTrigCtrl.$inject = ['$scope', '$uibModalInstance', 'data'];
 function ViewTrigCtrl($scope, $uibModalInstance, data) {
     $scope.trig = data;
 
-    $scope.cancel = function () {
+    $scope.cancel = function() {
         $uibModalInstance.dismiss('cancel');
     };
 }

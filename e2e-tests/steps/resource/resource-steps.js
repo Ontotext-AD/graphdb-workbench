@@ -61,14 +61,6 @@ export class ResourceSteps {
         cy.get('.download-options li').eq(option).click();
     }
 
-    static getVisualGraphButton() {
-        return cy.get('.visual-graph-btn');
-    }
-
-    static clickOnVisualGraphButton() {
-        ResourceSteps.getVisualGraphButton().click();
-    }
-
     static getEditResourceLink() {
         return cy.get('.edit-resource-link');
     }

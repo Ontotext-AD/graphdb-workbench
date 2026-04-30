@@ -5,6 +5,7 @@ import {ApplicationSteps} from '../../../steps/application-steps';
 import HomeSteps from '../../../steps/home-steps.js';
 import {BaseSteps} from "../../../steps/base-steps.js";
 import SparqlSteps from "../../../steps/sparql-steps.js";
+import {VisualGraphSplitButtonSteps} from '../../../steps/visual-graph-split-button-steps.js';
 
 const FILE_TO_IMPORT = 'wine.rdf';
 const VALID_RESOURCE = 'USRegion';
@@ -121,7 +122,7 @@ describe('Visual graph linksLimit URL parameter', () => {
             SparqlSteps.visit();
             SparqlSteps.typeQuery(`CONSTRUCT WHERE {?s ?p ?o} LIMIT 10`);
             SparqlSteps.executeQuery();
-            SparqlSteps.visualizeConstructQuery();
+            VisualGraphSplitButtonSteps.clickOnVisualizeMainButton();
 
             // Then, I expect to see 10 nodes before changing the limit
             VisualGraphSteps.getNodes().should('have.length', 10); // 10 nodes total, since we don't have a root node
