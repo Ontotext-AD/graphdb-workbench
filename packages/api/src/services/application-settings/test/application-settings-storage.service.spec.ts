@@ -104,13 +104,13 @@ describe('ApplicationSettingsStorageService', () => {
     expect(result).toBe(true);
   });
 
-  it('should return true when theme mode is not explicitly set but defaults are applied', () => {
+  it('should return false when theme mode is not explicitly set', () => {
     const payload: Partial<ApplicationSettings> = { theme: 'blue' };
     storage.setItem(APPLICATION_SETTINGS_KEY, JSON.stringify(payload));
 
     const result = service.isThemeModePresent();
 
-    expect(result).toBe(true);
+    expect(result).toBe(false);
   });
 
   it('should return false when no settings are stored', () => {

@@ -75,7 +75,7 @@ describe('ThemeService', () => {
     });
 
     it('returns dark mode from system preferences when theme mode is not set and system prefers dark', () => {
-      Object.defineProperty(window, 'matchMedia', {
+      Object.defineProperty(globalThis, 'matchMedia', {
         writable: true,
         value: jest.fn().mockImplementation(query => ({
           matches: query === '(prefers-color-scheme: dark)',
@@ -88,7 +88,7 @@ describe('ThemeService', () => {
     });
 
     it('returns light mode from system preferences when theme mode is not set and system prefers light', () => {
-      Object.defineProperty(window, 'matchMedia', {
+      Object.defineProperty(globalThis, 'matchMedia', {
         writable: true,
         value: jest.fn().mockImplementation(() => ({
           matches: false,
@@ -149,7 +149,7 @@ describe('ThemeService', () => {
 
   describe('applyColorScheme', () => {
     it('applies dark theme when user prefers dark scheme and theme mode is not set', () => {
-      Object.defineProperty(window, 'matchMedia', {
+      Object.defineProperty(globalThis, 'matchMedia', {
         writable: true,
         value: jest.fn().mockImplementation(query => ({
           matches: query === '(prefers-color-scheme: dark)',
@@ -162,7 +162,7 @@ describe('ThemeService', () => {
     });
 
     it('applies light theme when user prefers light scheme and theme mode is not set', () => {
-      Object.defineProperty(window, 'matchMedia', {
+      Object.defineProperty(globalThis, 'matchMedia', {
         writable: true,
         value: jest.fn().mockImplementation(() => ({
           matches: false,
@@ -176,7 +176,7 @@ describe('ThemeService', () => {
 
     it('applies saved settings when theme mode is already set', () => {
       appSettingsService.setApplicationSettings(new ApplicationSettings({ themeMode: ThemeMode.dark }));
-      Object.defineProperty(window, 'matchMedia', {
+      Object.defineProperty(globalThis, 'matchMedia', {
         writable: true,
         value: jest.fn().mockImplementation(() => ({
           matches: false,
@@ -186,6 +186,21 @@ describe('ThemeService', () => {
       themeService.applyColorScheme();
 
       expect(mockRootElement.classList.toggle).toHaveBeenCalledWith(ThemeMode.dark, true);
+    });
+
+    it('applies preferred scheme when stored mode is system without persisting', () => {
+      appSettingsService.setApplicationSettings(new ApplicationSettings({ themeMode: ThemeMode.system }));
+      Object.defineProperty(globalThis, 'matchMedia', {
+        writable: true,
+        value: jest.fn().mockImplementation(query => ({
+          matches: query === '(prefers-color-scheme: dark)',
+        })),
+      });
+
+      themeService.applyColorScheme();
+
+      expect(mockRootElement.classList.toggle).toHaveBeenCalledWith(ThemeMode.dark, true);
+      expect(appSettingsService.getApplicationSettings().themeMode).toBe(ThemeMode.system);
     });
   });
 
@@ -202,6 +217,26 @@ describe('ThemeService', () => {
       themeService.applyNewColorScheme(ThemeMode.dark);
 
       expect(mockRootElement.classList.toggle).not.toHaveBeenCalled();
+    });
+
+    it('always emits SYSTEM_THEME_MODE update regardless of stored mode', () => {
+      const updateSystemThemeModeSpy = jest.spyOn(runtimeConfigService, 'updateSystemThemeMode');
+      appSettingsService.setApplicationSettings(new ApplicationSettings({ themeMode: ThemeMode.light }));
+
+      themeService.applyNewColorScheme(ThemeMode.dark);
+
+      expect(updateSystemThemeModeSpy).toHaveBeenCalledWith(ThemeMode.dark);
+      expect(mockRootElement.classList.toggle).not.toHaveBeenCalled();
+    });
+
+    it('applies new theme and emits SYSTEM_THEME_MODE update when stored mode is system', () => {
+      const updateSystemThemeModeSpy = jest.spyOn(runtimeConfigService, 'updateSystemThemeMode');
+      appSettingsService.setApplicationSettings(new ApplicationSettings({ themeMode: ThemeMode.system }));
+
+      themeService.applyNewColorScheme(ThemeMode.dark);
+
+      expect(updateSystemThemeModeSpy).toHaveBeenCalledWith(ThemeMode.dark);
+      expect(mockRootElement.classList.toggle).toHaveBeenCalledWith(ThemeMode.dark, true);
     });
   });
 
@@ -240,6 +275,55 @@ describe('ThemeService', () => {
       const result = themeService.isDarkModeApplied();
 
       expect(result).toBe(false);
+    });
+  });
+
+  describe('getThemeModeOrSystem', () => {
+    it('returns the stored mode when dark is set', () => {
+      appSettingsService.setApplicationSettings(new ApplicationSettings({ themeMode: ThemeMode.dark }));
+
+      expect(themeService.getThemeModeOrSystem()).toBe(ThemeMode.dark);
+    });
+
+    it('returns the stored mode when light is set', () => {
+      appSettingsService.setApplicationSettings(new ApplicationSettings({ themeMode: ThemeMode.light }));
+
+      expect(themeService.getThemeModeOrSystem()).toBe(ThemeMode.light);
+    });
+
+    it('returns the stored mode when system is explicitly set', () => {
+      appSettingsService.setApplicationSettings(new ApplicationSettings({ themeMode: ThemeMode.system }));
+
+      expect(themeService.getThemeModeOrSystem()).toBe(ThemeMode.system);
+    });
+
+    it('returns system when no theme mode is stored', () => {
+      expect(themeService.getThemeModeOrSystem()).toBe(ThemeMode.system);
+    });
+  });
+
+  describe('isSystemThemeMode', () => {
+    it('returns true when stored theme mode is system', () => {
+      appSettingsService.setApplicationSettings(new ApplicationSettings({ themeMode: ThemeMode.system }));
+
+      expect(themeService.isSystemThemeMode()).toBe(true);
+    });
+
+    it('returns false when stored theme mode is light', () => {
+      appSettingsService.setApplicationSettings(new ApplicationSettings({ themeMode: ThemeMode.light }));
+
+      expect(themeService.isSystemThemeMode()).toBe(false);
+    });
+
+    it('returns false when stored theme mode is dark', () => {
+      appSettingsService.setApplicationSettings(new ApplicationSettings({ themeMode: ThemeMode.dark }));
+
+      expect(themeService.isSystemThemeMode()).toBe(false);
+    });
+
+    it('returns false when no theme mode is stored (falls back to system preference, never system)', () => {
+      // getThemeModeRaw() returns undefined → falls back to getPreferredScheme() which is dark or light
+      expect(themeService.isSystemThemeMode()).toBe(false);
     });
   });
 
