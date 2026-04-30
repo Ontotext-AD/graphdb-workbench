@@ -375,13 +375,8 @@ export class OntotextYasguiConfig {
         this.selectedPlugin = undefined;
 
         /**
-         * Configuration options for controlling YASR fullscreen behavior.
+         * Determines whether YASR should be rendered in fullscreen mode when the component is initialized.
          */
-        this.yasrFullscreen = {
-            // Determines whether YASR should be rendered in fullscreen mode by default when the YASGUI is initialized.
-            defaultFullscreen: false,
-            // Controls whether the Escape (ESC) key can be used to exit fullscreen mode.
-            allowEscape: true,
-        };
+        this.yasrFullscreen = false;
     }
 }

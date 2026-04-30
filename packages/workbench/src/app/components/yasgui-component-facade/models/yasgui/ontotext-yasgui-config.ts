@@ -11,7 +11,6 @@ import {OutputHandlers} from '../output-handlers';
 import {Yasgui} from './yasgui';
 import {BeforeUpdateQueryResult, HttpHeaders} from '@ontotext/workbench-api';
 import {PluginConfigurations} from '../yasr/geo-plugin/plugin-configurations';
-import {YasrFullscreenConfig} from '../yasr/yasr-fullscreen-config';
 
 /**
  * Holds all configurations related with ontotext-yasgui-web-component.
@@ -254,9 +253,9 @@ export class OntotextYasguiConfig {
    */
   public selectedPlugin?: string;
   /**
-   * Configuration options for controlling YASR fullscreen behavior.
+   * Determines whether YASR should be rendered in fullscreen mode by default when the component is initialized.
    */
-  public yasrFullscreen: YasrFullscreenConfig;
+  public yasrFullscreen?: boolean;
 
   constructor() {
     this.render = RenderingMode.YASGUI;
@@ -305,6 +304,6 @@ export class OntotextYasguiConfig {
     this.sparqlResponse = undefined;
     this.outputHandlers = undefined;
     this.selectedPlugin = undefined;
-    this.yasrFullscreen = new YasrFullscreenConfig();
+    this.yasrFullscreen = false;
   }
 }

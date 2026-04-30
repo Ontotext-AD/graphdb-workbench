@@ -1,12 +1,12 @@
 <link href="css/sparql-editor.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 
 <div class="sparql-editor-view">
-    <h1 id="title-container">
+    <h1 id="title-container" ng-if="!embedded">
         <span id="sparql-query-update-title-label">{{title}}</span>
         <page-info-tooltip></page-info-tooltip>
     </h1>
 
-    <div core-errors></div>
+    <div ng-if="!embedded" core-errors></div>
 
     <yasgui-component id="query-editor"
                       yasgui-config="yasguiConfig"
