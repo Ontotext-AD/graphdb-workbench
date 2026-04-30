@@ -626,6 +626,10 @@ yasgui-component .yasr .extended-boolean-plugin .response-success {
 }
 
 yasgui-component .yasr .google-visualization-table-table {
+    /* Override google chart's fixed inline height and apply with max-height constraint to prevent stretching the table
+    when there are few results but still maintain the scrollable table behavior for more results. */
+    height: auto !important;
+    max-height: 600px !important;
     color: var(--gw-datatable-row-color) !important;
     background: var(--gw-datatable-row-background) !important;
     border-color: var(--gw-datatable-border-color) !important;
