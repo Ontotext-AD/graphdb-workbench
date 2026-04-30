@@ -373,6 +373,7 @@ function JdbcCreateCtrl(
             showEditorTabs: false,
             showToolbar: false,
             showResultTabs: false,
+            showFullscreenButton: false,
             showQueryButton: false,
             showResultInfo: false,
             downloadAsOn: false,

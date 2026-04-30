@@ -344,6 +344,7 @@ function ExploreCtrl(
             showEditorTabs: false,
             showToolbar: false,
             showResultTabs: false,
+            showFullscreenButton: false,
             showResultInfo: true,
             downloadAsOn: false,
             showQueryButton: false,
