@@ -33,7 +33,6 @@ import {
 } from "@ontotext/workbench-api";
 import {YASGUI_OPERATION, YASGUI_OPERATION_TYPE, URL_PLUGIN_NAME_TO_PLUGIN_NAME_MAPPING} from "./constants";
 import {GeoPluginConfiguration} from '../models/ontotext-yasgui/plugin-configuration';
-import {YasrFullscreenConfig} from '../models/ontotext-yasgui/yasr-fullscreen-config';
 
 const modules = [
     'ui.bootstrap',
@@ -118,13 +117,14 @@ function SparqlEditorCtrl($rootScope,
      * @param {boolean} clearYasguiState if set to true, the Yasgui will reinitialize and clear all tab results. Queries will remain.
      */
     $scope.updateConfig = (clearYasguiState) => {
+        const yasrToolbarPlugins = $scope.embedded ? [] : [exploreVisualGraphYasrToolbarElementBuilder];
         const yasguiConfig = {
             endpoint: getEndpoint,
             componentId: VIEW_SPARQL_EDITOR,
             prefixes: $scope.prefixes,
             infer: isOntopRepo || $scope.inferUserSetting,
             sameAs: isOntopRepo || $scope.sameAsUserSetting,
-            yasrToolbarPlugins: [exploreVisualGraphYasrToolbarElementBuilder],
+            yasrToolbarPlugins,
             selectedPlugin: $scope.selectedPlugin,
             beforeUpdateQuery: getBeforeUpdateQueryHandler(),
             outputHandlers: new Map([
@@ -138,10 +138,8 @@ function SparqlEditorCtrl($rootScope,
         };
 
         if ($scope.embedded) {
-            const yasrFullscreen = new YasrFullscreenConfig();
-            yasrFullscreen.defaultFullscreen = true;
-            yasrFullscreen.allowEscape = false;
-            yasguiConfig.yasrFullscreen = yasrFullscreen;
+            yasguiConfig.yasrFullscreen = true;
+            yasguiConfig.downloadAsOn = false;
         }
         $scope.yasguiConfig = yasguiConfig;
     };

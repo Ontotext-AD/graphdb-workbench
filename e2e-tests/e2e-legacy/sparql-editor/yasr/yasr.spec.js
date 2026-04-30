@@ -19,7 +19,7 @@ describe('YASR', () => {
 
     it('should load YASR in fullscreen with plugin config from URL', () => {
         // WHEN: I visit SPARQL Query & Update page with url parameters: embedded and pluginName
-        SparqlEditorSteps.visitSparqlEditorPageAndWaitForEditor(getUrl(repositoryId, 'pivotTable', true));
+        SparqlEditorSteps.visitSparqlEditorPageAndWaitForResults(getUrl(repositoryId, 'pivotTable', true));
         // THEN: YASR is in fullscreen mode because the workbench is embedded.
         YasrSteps.getYasr().should('have.class', 'yasr-fullscreen');
         // AND: I expect the raw response plugin to be visible
@@ -31,14 +31,14 @@ describe('YASR', () => {
         YasrSteps.getYasr().should('have.class', 'yasr-fullscreen');
 
         // WHEN: I visit SPARQL Query & Update page with without embedded url parameter.
-        SparqlEditorSteps.visitSparqlEditorPageAndWaitForEditor(getUrl(repositoryId, 'googleChart'));
+        SparqlEditorSteps.visitSparqlEditorPageAndWaitForResults(getUrl(repositoryId, 'googleChart'));
         // THEN: I expect yasr to be in non-fullscreen mode
         YasrSteps.getYasr().should('not.have.class', 'yasr-fullscreen');
         // AND: I expect Google Chart plugin to be visible
         YasrSteps.getGoogleChartPlugin().should('be.visible');
 
         // WHEN: I visit SPARQL Query & Update page with without embedded and pluginName url parameters.
-        SparqlEditorSteps.visitSparqlEditorPageAndWaitForEditor(getUrl(repositoryId));
+        SparqlEditorSteps.visitSparqlEditorPageAndWaitForResults(getUrl(repositoryId));
         // THEN: I expect yasr to be in non-fullscreen mode
         YasrSteps.getYasr().should('not.have.class', 'yasr-fullscreen');
         // AND: I expect Google Chart plugin to be visible, because it was the last used plugin.
@@ -47,7 +47,7 @@ describe('YASR', () => {
         // WHEN: I visit SPARQL Query & Update page with without embedded and pluginName url parameters.
         // AND: There are no persisted yasr data.
         cy.clearLocalStorage('yagui__graphdb-workbench-sparql-editor');
-        SparqlEditorSteps.visitSparqlEditorPageAndWaitForEditor(getUrl(repositoryId));
+        SparqlEditorSteps.visitSparqlEditorPageAndWaitForResults(getUrl(repositoryId));
         // THEN: I expect yasr to be in non-fullscreen mode
         YasrSteps.getYasr().should('not.have.class', 'yasr-fullscreen');
         // AND: I expect the default plugin to be visible

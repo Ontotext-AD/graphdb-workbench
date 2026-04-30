@@ -267,7 +267,7 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
     config.prefixes = this.prefixes?.namespaces;
     config.infer = this.isOntopRepo || this.inferUserSetting;
     config.sameAs = this.isOntopRepo || this.sameAsUserSetting;
-    config.yasrToolbarPlugins = [this.exploreVisualGraphYasrToolbarElementBuilder];
+    config.yasrToolbarPlugins = this.embedded ? [] : [this.exploreVisualGraphYasrToolbarElementBuilder];
     config.beforeUpdateQuery = (query: string, tabId: string) => this.getBeforeUpdateQueryHandler(query, tabId);
     config.outputHandlers = new Map([
       [EventDataType.QUERY_EXECUTED, (eventData: unknown) => this.queryExecutedHandler(eventData as QueryExecutedEvent)],
@@ -282,8 +282,8 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
     };
 
     if (this.embedded) {
-      config.yasrFullscreen.defaultFullscreen = true;
-      config.yasrFullscreen.allowEscape = false;
+      config.yasrFullscreen = true;
+      config.downloadAsOn = false;
     }
 
     this.yasguiConfig.set(config);

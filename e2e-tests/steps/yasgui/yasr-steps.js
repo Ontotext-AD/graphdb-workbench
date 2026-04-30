@@ -5,6 +5,10 @@ export class YasrSteps extends BaseSteps {
         return cy.get('.tabPanel.active .yasr');
     }
 
+    static waitUntilResultsIsVisible() {
+        return cy.waitUntil(() => this.getYasr().should('be.visible'));
+    }
+
     static getResultHeader() {
         return cy.get('.yasr_header');
     }
