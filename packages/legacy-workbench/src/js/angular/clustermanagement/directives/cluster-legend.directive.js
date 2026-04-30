@@ -17,7 +17,6 @@ function clusterLegend($rootScope, ClusterViewContextService, $translate, $docum
         templateUrl: 'js/angular/clustermanagement/templates/cluster-legend.html',
         scope: {},
         link: ($scope) => {
-
             // =========================
             // Public variables
             // =========================
@@ -66,7 +65,7 @@ function clusterLegend($rootScope, ClusterViewContextService, $translate, $docum
                 CDS.updateNodes(legendNodesElements);
                 const LABEL_Y_POSITION = 3;
                 legendNodesElements
-                    .attr('transform', function (d, i) {
+                    .attr('transform', function(d, i) {
                         updateLegendDimensions();
                         return `translate(${CLUSTER_MANAGEMENT_CONSTANTS.LEGEND_ITEM_PADDING_LEFT}, ${legendHeight + CLUSTER_MANAGEMENT_CONSTANTS.LEGEND_ITEM_PADDING_TOP})`;
                     })
@@ -75,7 +74,8 @@ function clusterLegend($rootScope, ClusterViewContextService, $translate, $docum
                     .style('font-weight', CLUSTER_MANAGEMENT_CONSTANTS.LEGEND_ITEM_FONT_WEIGHT)
                     .attr('x', CLUSTER_MANAGEMENT_CONSTANTS.PADDING_LEFT + CLUSTER_MANAGEMENT_CONSTANTS.SVG_NODE_WIDTH)
                     .attr('y', LABEL_Y_POSITION)
-                    .text(function (d) {
+                    .text(function(d) {
+                        // eslint-disable-next-line no-invalid-this
                         return translateAndSubscribe(this, 'cluster_management.cluster_graphical_view.' + d.customText);
                     });
             };
@@ -94,12 +94,12 @@ function clusterLegend($rootScope, ClusterViewContextService, $translate, $docum
                     .append('text')
                     .attr('class', (d) => `sync-status ${d.classes}`)
                     .attr('x', CLUSTER_MANAGEMENT_CONSTANTS.LEGEND_ITEM_PADDING_LEFT - 10)
-                    .attr('y', function (d, index) {
+                    .attr('y', function(d, index) {
                         const rowTop = index * (20 + CLUSTER_MANAGEMENT_CONSTANTS.LEGEND_ITEM_PADDING_TOP) + legendHeight + CLUSTER_MANAGEMENT_CONSTANTS.LEGEND_ITEMS_PADDING_TOP;
                         rowY.set(index, rowTop);
                         return rowTop;
                     })
-                    .text(function (d) {
+                    .text(function(d) {
                         return d.icon;
                     });
 
@@ -107,11 +107,12 @@ function clusterLegend($rootScope, ClusterViewContextService, $translate, $docum
                 syncStatusesGroups
                     .append('text')
                     .style('font-weight', CLUSTER_MANAGEMENT_CONSTANTS.LEGEND_ITEM_FONT_WEIGHT)
-                    .text(function (d) {
+                    .text(function(d) {
+                        // eslint-disable-next-line no-invalid-this
                         return translateAndSubscribe(this, 'cluster_management.cluster_graphical_view.' + d.labelKey);
                     })
                     .attr('x', CLUSTER_MANAGEMENT_CONSTANTS.LEGEND_ITEM_PADDING_LEFT + CLUSTER_MANAGEMENT_CONSTANTS.LEGEND_ITEM_FONT_SIZE)
-                    .attr('y', function (d, index) {
+                    .attr('y', function(d, index) {
                         return rowY.get(index) - labelOffsetY;
                     })
                     .classed('links-statuses', true);
@@ -155,11 +156,12 @@ function clusterLegend($rootScope, ClusterViewContextService, $translate, $docum
                     .style('font-size', CLUSTER_MANAGEMENT_CONSTANTS.LEGEND_ITEM_FONT_SIZE)
                     .style('line-height', CLUSTER_MANAGEMENT_CONSTANTS.LEGEND_ITEM_LINE_HEIGHT)
                     .style('font-weight', CLUSTER_MANAGEMENT_CONSTANTS.LEGEND_ITEM_FONT_WEIGHT)
-                    .text(function (d) {
+                    .text(function(d) {
+                        // eslint-disable-next-line no-invalid-this
                         return translateAndSubscribe(this, 'cluster_management.cluster_graphical_view.' + d.linkTypeKey);
                     })
                     .attr('x', legendWidth/2 + CLUSTER_MANAGEMENT_CONSTANTS.LEGEND_ITEM_PADDING_LEFT)
-                    .attr('y', function (d, index) {
+                    .attr('y', function(d, index) {
                         return rowY.get(index) + 4;
                     })
                     .classed('links-statuses', true);
@@ -199,7 +201,8 @@ function clusterLegend($rootScope, ClusterViewContextService, $translate, $docum
             const getMaxWidthOfChildren = (parent) => {
                 let maxWidth = 0;
 
-                parent.selectAll(':not(.legend-background)').each(function () {
+                parent.selectAll(':not(.legend-background)').each(function() {
+                    // eslint-disable-next-line no-invalid-this
                     const bbox = this.getBBox();
                     maxWidth = Math.max(maxWidth, bbox.width);
                 });
@@ -222,7 +225,8 @@ function clusterLegend($rootScope, ClusterViewContextService, $translate, $docum
                     .style('font-size', CLUSTER_MANAGEMENT_CONSTANTS.TITLE_FONT_SIZE)
                     .style('font-weight', CLUSTER_MANAGEMENT_CONSTANTS.TITLE_FONT_WEIGHT)
                     .style('line-height', CLUSTER_MANAGEMENT_CONSTANTS.TITLE_LINE_HEIGHT)
-                    .text(function () {
+                    .text(function() {
+                        // eslint-disable-next-line no-invalid-this
                         return translateAndSubscribe(this, labelKey);
                     })
                     .attr('y', () => {
@@ -241,7 +245,7 @@ function clusterLegend($rootScope, ClusterViewContextService, $translate, $docum
             };
 
             const removeAllListeners = () => {
-                $document.off('keydown', closeDialog);
+                $document.off('keydown', onKeyDown);
                 subscriptions.forEach((subscription) => subscription());
             };
 
@@ -266,6 +270,6 @@ function clusterLegend($rootScope, ClusterViewContextService, $translate, $docum
             $scope.$on('$destroy', removeAllListeners);
 
             init();
-        }
+        },
     };
 }
