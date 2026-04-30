@@ -165,6 +165,9 @@ function clusterLegend($rootScope, ClusterViewContextService, $translate, $docum
                         return rowY.get(index) + 4;
                     })
                     .classed('links-statuses', true);
+
+                // Add icon on OUT_OF_SYNC legend link
+                CDS.updateLegendLinkIcons(linkStatesGroup, legendWidth);
             };
 
             /**
