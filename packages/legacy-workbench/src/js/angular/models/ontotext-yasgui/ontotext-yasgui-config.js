@@ -39,6 +39,11 @@ export class OntotextYasguiConfig {
         this.showResultTabs = true;
 
         /**
+         * Flag that controls whether the button for toggling fullscreen mode in YASR should be displayed. By default, it is set to true.
+         */
+        this.showFullscreenButton = true;
+
+        /**
          * If the result information header of YASR should be rendered or not.
          *
          * @type {boolean}

@@ -556,6 +556,7 @@ function CreateSimilarityIdxCtrl(
             showEditorTabs: false,
             showToolbar: false,
             showResultTabs: false,
+            showFullscreenButton: false,
             showYasqeActionButtons: false,
             showQueryButton: false,
             downloadAsOn: false,

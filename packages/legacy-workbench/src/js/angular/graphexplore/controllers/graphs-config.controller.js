@@ -506,6 +506,7 @@ function GraphConfigCtrl(
         showEditorTabs: false,
         showToolbar: false,
         showResultTabs: false,
+        showFullscreenButton: false,
         showYasqeActionButtons: false,
         yasqeActionButtons: INFERRED_AND_SAME_AS_BUTTONS_CONFIGURATION,
         showQueryButton: false,

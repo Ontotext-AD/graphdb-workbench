@@ -219,6 +219,7 @@ function SparqlTemplateCreateCtrl(
             showEditorTabs: false,
             showToolbar: false,
             showResultTabs: false,
+            showFullscreenButton: false,
             showYasqeActionButtons: false,
             showYasqeResizer: false,
             yasqeActionButtons: DISABLE_YASQE_BUTTONS_CONFIGURATION,
