@@ -3,8 +3,10 @@ import {GRAPHQL, READ_REPO, WRITE_REPO} from '../services/constants';
 import {UserType} from 'angular/utils/user-utils';
 import {
     navigate,
+    ThemeMode,
     ThemeService,
     ApplicationSettingsStorageService,
+    RuntimeConfigurationContextService,
     NavigationContextService,
     SecurityService,
     AuthenticationService,
@@ -49,6 +51,7 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
     const applicationSettingsStorageService = service(ApplicationSettingsStorageService);
     const navigationContextService = service(NavigationContextService);
     const themeService = service(ThemeService);
+    const runtimeConfigurationContextService = service(RuntimeConfigurationContextService);
 
     /**
      * A timer task that will redirect back to the previous page after the user has been updated.
@@ -62,11 +65,21 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
 
     $scope.mode = 'settings';
     $scope.showWorkbenchSettings = true;
+    $scope.currentSystemTheme = themeService.getPreferredScheme();
+    /**
+     * The list of available theme mode options shown in the dropdown.
+     * @type {{mode: ThemeMode, labelKey: string}[]}
+     */
+    $scope.themeModeOptions = [
+        {mode: ThemeMode.system, labelKey: 'security.workbench.settings.theme.mode.system'},
+        {mode: ThemeMode.light, labelKey: 'security.workbench.settings.theme.mode.light'},
+        {mode: ThemeMode.dark, labelKey: 'security.workbench.settings.theme.mode.dark'},
+    ];
     /**
      * @type {ApplicationSettings}
      */
     $scope.workbenchSettings = applicationSettingsStorageService.getApplicationSettings();
-    $scope.selectedThemeMode = $scope.workbenchSettings.themeMode;
+    $scope.themeChanged = false;
     $scope.saveButtonText = $translate.instant('common.save.btn');
     $scope.pageTitle = $translate.instant('view.settings.title');
     $scope.passwordPlaceholder = $translate.instant('security.new.password');
@@ -98,6 +111,10 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
 
     $scope.hasEditRestrictions = function() {
         return true;
+    };
+
+    $scope.onThemeChange = function() {
+        $scope.themeChanged = $scope.workbenchSettings.themeMode !== $scope.initialThemeMode;
     };
 
     $scope.isUser = function() {
@@ -145,8 +162,14 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
             .then(() => {
                 toastr.success($translate.instant('security.user.updated', {name: $scope.user.username}));
                 $scope.updateCurrentUserData();
-                themeService.setThemeMode($scope.selectedThemeMode);
                 applicationSettingsStorageService.setApplicationSettings($scope.workbenchSettings);
+                $scope.initialThemeMode = $scope.workbenchSettings.themeMode;
+                $scope.themeChanged = false;
+                if ($scope.workbenchSettings.isSystemMode()) {
+                    themeService.applyColorScheme();
+                } else {
+                    themeService.setThemeMode($scope.workbenchSettings.themeMode);
+                }
                 goBackToPreviousView();
             }).catch((data) => {
                 const msg = getError(data);
@@ -168,9 +191,6 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
         return $scope.validatePassword();
     };
 
-    $scope.setThemeMode = function() {
-        $scope.selectedThemeMode = $scope.workbenchSettings.themeMode;
-    };
 
     /**
      * Handler for the cookie policy modal close event, sets the flag to hide the modal.
@@ -231,12 +251,23 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
         initUserData();
     };
 
+    const onSystemThemeChanged = (theme) => {
+        if (theme) {
+            $scope.currentSystemTheme = theme;
+        }
+    };
+
+    const subscriptions = [
+        runtimeConfigurationContextService.onSystemThemeChanged(onSystemThemeChanged),
+    ];
+
     // =========================
     // Subscriptions
     // =========================
 
     $scope.$on('$destroy', function() {
         $timeout.cancel(waitBeforeRedirectBack);
+        subscriptions.forEach((unsubscribe) => unsubscribe());
     });
 
     // =========================
@@ -245,7 +276,8 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
 
     const initView = () => {
         processUser();
-        $scope.setThemeMode();
+        $scope.workbenchSettings.themeMode = themeService.getThemeModeOrSystem();
+        $scope.initialThemeMode = $scope.workbenchSettings.themeMode;
         showCookiePolicyLink();
     };
 

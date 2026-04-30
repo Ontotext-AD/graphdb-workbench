@@ -1,6 +1,7 @@
 export enum ThemeMode {
   'light' = 'light',
   'dark' = 'dark',
+  'system' = 'system',
 }
 
 /**
@@ -30,6 +31,15 @@ export class ApplicationSettings {
       this.theme = data.theme ?? this.theme;
       this.themeMode = data.themeMode ?? this.themeMode;
     }
+  }
+
+  /**
+   * Checks if the application theme is set to system mode.
+   *
+   * @returns true if the theme mode is set to system, false otherwise.
+   */
+  isSystemMode(): boolean {
+    return this.themeMode === ThemeMode.system;
   }
 
   toString(): string {

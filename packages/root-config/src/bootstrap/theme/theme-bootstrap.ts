@@ -1,10 +1,12 @@
 import {
-  service,
-  ThemeService,
-  ThemeMode,
-  WindowService,
   RuntimeConfigurationContextService,
+  service,
+  ThemeMode,
+  ThemeService,
+  WindowService
 } from '@ontotext/workbench-api';
+
+const IMPORTABLE_THEMES = new Set([ThemeMode.dark, ThemeMode.light]);
 
 const importThemeStylesheet = (theme: ThemeMode): Promise<void> => {
   return import(`graphwise-styleguide/dist/variables-${theme}.css`);
@@ -43,6 +45,8 @@ export const bootstrapTheme = (): void => {
   // Apply an initial color scheme based on user preference or system setting
   const themeService = service(ThemeService);
   const theme = themeService.getCurrentThemeMode();
-  importThemeStylesheet(theme);
+  if (IMPORTABLE_THEMES.has(theme)) {
+    importThemeStylesheet(theme);
+  }
   themeService.applyColorScheme();
 };

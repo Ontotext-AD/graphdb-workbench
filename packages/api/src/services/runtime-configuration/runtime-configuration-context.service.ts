@@ -10,11 +10,13 @@ export type RuntimeConfiguration = {
 type RuntimeConfigurationContextFields = {
   readonly RUNTIME_CONFIGURATION: string;
   readonly THEME_MODE: string;
+  readonly SYSTEM_THEME_MODE: string;
 }
 
 type RuntimeConfigurationContextFieldParams = {
   readonly RUNTIME_CONFIGURATION: RuntimeConfiguration;
   readonly THEME_MODE: ThemeMode;
+  readonly SYSTEM_THEME_MODE: ThemeMode;
 }
 
 /**
@@ -29,6 +31,11 @@ export class RuntimeConfigurationContextService extends ContextService<RuntimeCo
    * Key used to store the theme mode in the context
    */
   readonly THEME_MODE = 'themeMode';
+
+  /**
+   * Key to store the system theme mode in the context
+   */
+  readonly SYSTEM_THEME_MODE = 'systemThemeMode';
 
   /**
    * Updates the runtime configuration in the context.
@@ -81,5 +88,25 @@ export class RuntimeConfigurationContextService extends ContextService<RuntimeCo
    */
   onThemeModeChanged(callbackFunction: ValueChangeCallback<ThemeMode | undefined>, skipFirst = false): () => void {
     return this.subscribe(this.THEME_MODE, callbackFunction, undefined, undefined, skipFirst);
+  }
+
+  /**
+   * Updates the system theme mode.
+   *
+   * @param themeMode - The new theme mode to set
+   */
+  updateSystemThemeMode(themeMode: ThemeMode): void {
+    this.updateContextProperty(this.SYSTEM_THEME_MODE, themeMode);
+  }
+
+  /**
+   * Registers the <code>callbackFunction</code> to be called whenever the system theme mode changes.
+   *
+   * @param callbackFunction - The function to call when the system theme mode changes.
+   * @param skipFirst - A flag instructing the service to skip the first callback call.
+   * @returns A function to unsubscribe the callback
+   */
+  onSystemThemeChanged(callbackFunction: ValueChangeCallback<ThemeMode | undefined>, skipFirst = false): () => void {
+    return this.subscribe(this.SYSTEM_THEME_MODE, callbackFunction, undefined, undefined, skipFirst);
   }
 }

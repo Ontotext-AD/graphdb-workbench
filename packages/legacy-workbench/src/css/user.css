@@ -47,3 +47,18 @@
     padding-left: .25rem;
     padding-bottom: 0;
 }
+
+.theme-select-wrapper {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.theme-select-wrapper label {
+    margin-bottom: 0;
+}
+
+.theme-select-wrapper select {
+    flex: 0 1 30%;
+    min-width: 150px;
+}
