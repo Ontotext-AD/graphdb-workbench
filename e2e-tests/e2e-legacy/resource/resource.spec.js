@@ -7,10 +7,12 @@ import {YasqeSteps} from "../../steps/yasgui/yasqe-steps";
 import {YasrSteps} from "../../steps/yasgui/yasr-steps";
 import {YasguiSteps} from "../../steps/yasgui/yasgui-steps";
 import {JsonLdModalSteps} from "../../steps/json-ld-modal-steps";
+import {GraphConfigStubs} from '../../stubs/graph-config-stubs.js';
+import {VisualGraphSplitButtonSteps} from '../../steps/visual-graph-split-button-steps.js';
 
 const FILE_TO_IMPORT = 'resource-test-data.ttl';
-const SUBJECT_RESOURCE = 'http:%2F%2Fexample.com%2Fontology%23CustomerLoyalty';
-const SUBJECT_RESOURCE_SHORT_URI = 'http://example.com/ontology#CustomerLoyalty';
+const SUBJECT_RESOURCE_ENCODED = 'http:%2F%2Fexample.com%2Fontology%23CustomerLoyalty';
+const SUBJECT_RESOURCE = 'http://example.com/ontology#CustomerLoyalty';
 const PREDICATE_SOURCE = 'http:%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23subClassOf';
 const CONTEXT_EXPLICIT = 'http://www.ontotext.com/explicit';
 const OBJECT_RESOURCE = 'http:%2F%2Fexample.com%2Fontology%23Metric';
@@ -33,13 +35,13 @@ describe('Resource view', () => {
 
     it('should open resource view with active role tab depend on url role parameter', () => {
         ResourceSteps.getAllRoles().forEach((role) => {
-            ResourceSteps.visit(`uri=${SUBJECT_RESOURCE}&role=${role}`);
+            ResourceSteps.visit(`uri=${SUBJECT_RESOURCE_ENCODED}&role=${role}`);
             ResourceSteps.verifyActiveRoleTab(role);
         });
     });
 
     it('should open subject tab if role parameter is miss', () => {
-        ResourceSteps.visit(`uri=${SUBJECT_RESOURCE}&role=subject`);
+        ResourceSteps.visit(`uri=${SUBJECT_RESOURCE_ENCODED}&role=subject`);
         ResourceSteps.verifyActiveRoleTab('subject');
     });
 
@@ -62,15 +64,33 @@ describe('Resource view', () => {
         YasrSteps.getResults().should('have.length', 5);
     });
 
-    it('should navigate to visual graph view', () => {
+    it('should open graphs-visualizations view when click on main button', () => {
         // When I am on resource view and page loaded a resource.
-        ResourceSteps.visit(`uri=${SUBJECT_RESOURCE}&role=subject`);
+        ResourceSteps.visit(`uri=${SUBJECT_RESOURCE_ENCODED}&role=subject`);
 
         // When I click on "Visual graph" button.
-        ResourceSteps.clickOnVisualGraphButton();
+        VisualGraphSplitButtonSteps.clickOnVisualizeMainButton();
 
         // Then I expect to be redirected to explore graph view.
         VisualGraphSteps.verifyUrl();
+    });
+
+    it('should open graphs-visualizations view when select a graph configuration', () => {
+        // When I am on resource view and page loaded a resource.
+        ResourceSteps.visit(`uri=${SUBJECT_RESOURCE_ENCODED}&role=subject`);
+        GraphConfigStubs.stubGetGraphConfigs();
+
+        // WHEN: I open the dropdown.
+        VisualGraphSplitButtonSteps.toggleGraphConfigDropdown();
+        // THEN: I expect to see all graph configurations.
+        VisualGraphSplitButtonSteps.getGraphConfigs().should('have.length', 3);
+
+        // WHEN: I select a graph configuration
+        VisualGraphSplitButtonSteps.selectGraphConfig();
+        // THEN: I expect to be navigated to graphs-visualizations view.
+        cy.url().should('include', 'graphs-visualizations');
+        cy.getQueryParam('uri').should('include', SUBJECT_RESOURCE);
+        cy.getQueryParam('config').should('eq', 'de99fd5de7f94ef98f1875dff55fc1c9');
     });
 
     it('should displays results depends on explicit/implicit dropdown', () => {
@@ -175,11 +195,11 @@ describe('Resource view', () => {
         it('should list the triples of a resource used as subject', () => {
             // When I am on resource view,
             // and page loaded a resource that is used as subject,
-            ResourceSteps.visit(`uri=${SUBJECT_RESOURCE}&role=subject`);
+            ResourceSteps.visit(`uri=${SUBJECT_RESOURCE_ENCODED}&role=subject`);
 
             // Then I expect to see only one result because the resource has only one triplet as subject.
             YasrSteps.getResults().should('have.length', 1);
-            YasrSteps.getResultLink(0, 1).should('contain', SUBJECT_RESOURCE_SHORT_URI);
+            YasrSteps.getResultLink(0, 1).should('contain', SUBJECT_RESOURCE);
             YasrSteps.getResultLink(0, 2).should('contain', 'rdfs:subClassOf');
             YasrSteps.getResultLink(0, 3).should('contain', 'http://example.com/ontology#Metric');
             YasrSteps.getResultLink(0, 4).should('contain', CONTEXT_EXPLICIT);
@@ -196,7 +216,7 @@ describe('Resource view', () => {
             YasrSteps.getResults().should('have.length', 1);
             YasrSteps.getResultLink(0, 1).should('contain', 'http://example.com/resource/person/W6J1827/customerLoyalty');
             YasrSteps.getResultLink(0, 2).should('contain', 'rdf:type');
-            YasrSteps.getResultLink(0, 3).should('contain', SUBJECT_RESOURCE_SHORT_URI);
+            YasrSteps.getResultLink(0, 3).should('contain', SUBJECT_RESOURCE);
             YasrSteps.getResultLink(0, 4).should('contain', CONTEXT_EXPLICIT);
 
             // When I click on "context" tab.
@@ -211,14 +231,14 @@ describe('Resource view', () => {
             // Then I expect to see all triples of subject without mater of its role.
             YasrSteps.getResults().should('have.length', 2);
 
-            YasrSteps.getResultLink(0, 1).should('contain', SUBJECT_RESOURCE_SHORT_URI);
+            YasrSteps.getResultLink(0, 1).should('contain', SUBJECT_RESOURCE);
             YasrSteps.getResultLink(0, 2).should('contain', 'rdfs:subClassOf');
             YasrSteps.getResultLink(0, 3).should('contain', 'http://example.com/ontology#Metric');
             YasrSteps.getResultLink(0, 4).should('contain', CONTEXT_EXPLICIT);
 
             YasrSteps.getResultLink(1, 1).should('contain', 'http://example.com/resource/person/W6J1827/customerLoyalty');
             YasrSteps.getResultLink(1, 2).should('contain', 'rdf:type');
-            YasrSteps.getResultLink(1, 3).should('contain', SUBJECT_RESOURCE_SHORT_URI);
+            YasrSteps.getResultLink(1, 3).should('contain', SUBJECT_RESOURCE);
             YasrSteps.getResultLink(1, 4).should('contain', CONTEXT_EXPLICIT);
         });
 
@@ -364,7 +384,7 @@ describe('Resource view', () => {
     context('Download as', () => {
         it('should download as JSON-LD and then restore defaults', () => {
             // Given I am in the Resource view
-            ResourceSteps.visit(`uri=${SUBJECT_RESOURCE}&role=subject`);
+            ResourceSteps.visit(`uri=${SUBJECT_RESOURCE_ENCODED}&role=subject`);
             cy.window().then((win) => {
                 expect(win.jsonld).to.exist;
                 cy.stub(win.jsonld, 'compact').resolves({

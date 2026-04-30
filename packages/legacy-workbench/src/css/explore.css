@@ -1,3 +1,22 @@
+.explore-resource .action-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.explore-resource .action-header .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.2rem;
+    margin-top: 4px;
+}
+
+#inference-select,
+.explore-resource .action-header .actions .dropdown-toggle.download-as {
+    margin: 0;
+    height: 100%;
+}
+
 .opacity-hide {
     opacity: 0;
     display: none;

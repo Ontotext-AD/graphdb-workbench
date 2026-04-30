@@ -120,6 +120,7 @@ export class OntoGraphExploreSplitButton {
       <div class='explore-visual-graph-button-group'>
         <button class='explore-visual-graph-button icon-data'
           onClick={this.handleDefaultClick}
+          guide-selector='explore-visual'
           tooltip-content={TranslationService.translate('graph_explore_split_button.buttons.explore_visual_graph.tooltip')}
           tooltip-placement={OntoTooltipPlacement.TOP}>
           {this.label}

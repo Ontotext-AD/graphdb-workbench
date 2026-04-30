@@ -1,9 +1,9 @@
 import {SparqlEditorSteps} from '../../../../steps/sparql-editor-steps';
 import {YasqeSteps} from '../../../../steps/yasgui/yasqe-steps';
-import {YasrSteps} from '../../../../steps/yasgui/yasr-steps';
 import {QueryStubs} from '../../../../stubs/yasgui/query-stubs';
 import {GraphConfigStubs} from '../../../../stubs/graph-config-stubs.js';
 import {BrowserStubs} from '../../../../stubs/browser-stubs.js';
+import {VisualGraphSplitButtonSteps} from '../../../../steps/visual-graph-split-button-steps.js';
 
 describe('"Visualize" split button', () => {
     let repositoryId;
@@ -25,17 +25,17 @@ describe('"Visualize" split button', () => {
         // WHEN: I visit a page with 'ontotext-yasgui-web-component' on it, and execute select query.
         executeSelectQuery();
         // THEN: I expect the 'Visualize' button to not be visible.
-        YasrSteps.getVisualizeMainButton().should('not.be.visible');
+        VisualGraphSplitButtonSteps.getVisualizeMainButton().should('not.be.visible');
 
         // WHEN: I execute a CONSTRUCT query.
         executeConstructQuery();
         // THEN: I expect the 'Visualize' button to be visible.
-        YasrSteps.getVisualizeMainButton().should('be.visible');
+        VisualGraphSplitButtonSteps.getVisualizeMainButton().should('be.visible');
 
         // WHEN: I execute SELECT query again.
         executeSelectQuery();
         // THEN: I expect the 'Visualize' button to not be visible.
-        YasrSteps.getVisualizeMainButton().should('not.be.visible');
+        VisualGraphSplitButtonSteps.getVisualizeMainButton().should('not.be.visible');
     });
 
     it('should inform user that there no created graph configurations', () => {
@@ -45,13 +45,13 @@ describe('"Visualize" split button', () => {
         executeConstructQuery();
 
         // WHEN: I open the dropdown.
-        YasrSteps.toggleGraphConfigDropdown();
+        VisualGraphSplitButtonSteps.toggleGraphConfigDropdown();
         // THEN: I expect to see message that informs that there are no graph configurations.
-        YasrSteps.getNoConfigurationsMessage().should('contain.text', 'No advanced graph configuration.');
+        VisualGraphSplitButtonSteps.getNoConfigurationsMessage().should('contain.text', 'No advanced graph configuration.');
 
         // WHEN: I click on create link.
         BrowserStubs.stubWindowOpen();
-        YasrSteps.clickCreateGraphConfigLink();
+        VisualGraphSplitButtonSteps.clickCreateGraphConfigLink();
         // THEN: I expect to be navigated to graph configurations page.
         cy.get(BrowserStubs.WINDOW_OPEN_ALIAS()).should('have.been.calledWithMatch', 'graphs-visualizations', '_blank', 'noopener,noreferrer');
     });
@@ -61,7 +61,7 @@ describe('"Visualize" split button', () => {
         executeConstructQuery();
 
         // WHEN: I click on main button
-        YasrSteps.clickOnVisualizeMainButton();
+        VisualGraphSplitButtonSteps.clickOnVisualizeMainButton();
         // THEN: I expect to be navigated to graphs-visualizations view.
         cy.url().should('include', 'graphs-visualizations');
         cy.getQueryParam('query').should('include', 'PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>PREFIX onto: <http://www.ontotext.com/>CONSTRUCT {?source rdf:type ?destination .} WHERE {?bag rdf:type ?source .?flight rdf:type ?destination}');
@@ -74,12 +74,12 @@ describe('"Visualize" split button', () => {
         GraphConfigStubs.stubGetGraphConfigs();
 
         // WHEN: I open the dropdown.
-        YasrSteps.toggleGraphConfigDropdown();
+        VisualGraphSplitButtonSteps.toggleGraphConfigDropdown();
         // THEN: I expect to see all graph configurations.
-        YasrSteps.getGraphConfigs().should('have.length', 3);
+        VisualGraphSplitButtonSteps.getGraphConfigs().should('have.length', 3);
 
         // WHEN: I select a graph configuration
-        YasrSteps.selectGraphConfig();
+        VisualGraphSplitButtonSteps.selectGraphConfig();
         // THEN: I expect to be navigated to graphs-visualizations view.
         cy.url().should('include', 'graphs-visualizations');
         cy.getQueryParam('query').should('include', 'PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>PREFIX onto: <http://www.ontotext.com/>CONSTRUCT {?source rdf:type ?destination .} WHERE {?bag rdf:type ?source .?flight rdf:type ?destination}');
