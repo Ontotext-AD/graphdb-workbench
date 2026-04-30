@@ -196,6 +196,7 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                     const linksData = linksGroup.selectAll('.link').data(links, (link) => link.id);
                     CDS.createLinks(linksData);
                     CDS.updateLinks(linksData, nodes);
+                    CDS.updateLinkIcons(linksGroup, links, nodes);
                 }
 
                 function resizeClusterComponent() {

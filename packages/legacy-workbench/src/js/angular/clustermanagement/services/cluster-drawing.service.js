@@ -9,9 +9,9 @@ const d3 = {
 
 const clusterColors = {
     ontoOrange: 'var(--gw-primary-base)',
-    ontoBlue: 'var(--gw-secondary-base)',
+    ontoBlue: 'var(--gw-foreground-on-surface-primary)',
     ontoGreen: 'var(--gw-tertiary-base)',
-    ontoGrey: 'var(--gw-neutral-base)',
+    ontoGrey: 'var(--gw-neutral-light)',
 };
 
 const linkStateColors = {
@@ -38,6 +38,90 @@ const font = {
 };
 
 const shortMessageLimit = 40;
+
+function getLinkMidpoint(link, nodes) {
+    const source = nodes.find((node) => node.address === link.source);
+    const target = nodes.find((node) => node.address === link.target);
+    const deltaX = target.x - source.x;
+    const deltaY = target.y - source.y;
+    const dist = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+    const normX = deltaX / dist;
+    const normY = deltaY / dist;
+    const sourcePadding = 55;
+    const targetPadding = 55;
+    const sourceX = source.x + (sourcePadding * normX);
+    const sourceY = source.y + (sourcePadding * normY);
+    const targetX = target.x - (targetPadding * normX);
+    const targetY = target.y - (targetPadding * normY);
+    return {
+        x: (sourceX + targetX) / 2,
+        y: (sourceY + targetY) / 2,
+    };
+}
+
+function appendLinkIcon(parentGroup, iconType, iconCode, iconColor, iconSize) {
+    // Circle background so the icon is readable over the dashed line
+    parentGroup.append('circle')
+        .attr('r', 12)
+        .attr('fill', 'var(--gw-panel-background)');
+
+    parentGroup.append('text')
+        .attr('text-anchor', 'middle')
+        .attr('dominant-baseline', 'central')
+        .attr('class', iconType)
+        .attr('fill', iconColor)
+        .style('font-size', iconSize)
+        .text(iconCode);
+}
+
+function appendOutOfSyncLinkIcon(group, iconSize) {
+    appendLinkIcon(group, 'remixicon', '\uf064', 'var(--gw-foreground-on-surface-secondary)', iconSize);
+}
+
+export function updateLinkIcons(linksGroup, links, nodes) {
+    const outOfSyncLinks = links.filter((link) => link.status === LinkState.OUT_OF_SYNC);
+
+    const iconGroups = linksGroup.selectAll('.link-icon-group')
+        .data(outOfSyncLinks, (link) => link.id);
+
+    const entered = iconGroups.enter()
+        .append('g')
+        .classed('link-icon-group', true);
+
+    appendOutOfSyncLinkIcon(entered, '20px');
+
+    // Position both new and existing groups at the link midpoint
+    entered.merge(iconGroups)
+        .attr('transform', (link) => {
+            const {x, y} = getLinkMidpoint(link, nodes);
+            return `translate(${x}, ${y})`;
+        });
+
+    iconGroups.exit().remove();
+}
+
+export function updateLegendLinkIcons(linkStatesGroup, legendWidth) {
+    linkStatesGroup.selectAll('.link-icon-group').remove();
+
+    linkStatesGroup.each(function(d) {
+        if (d.status !== LinkState.OUT_OF_SYNC) {
+            return;
+        }
+        // eslint-disable-next-line no-invalid-this
+        const group = d3.select(this);
+        const path = group.select('path.link');
+        // Midpoint of the legend line: x is halfway along lineWidth, y is the line's y
+        const pathEl = path.node();
+        const totalLength = pathEl.getTotalLength();
+        const midPoint = pathEl.getPointAtLength(totalLength / 2);
+
+        const iconGroup = group.append('g')
+            .classed('link-icon-group', true)
+            .attr('transform', `translate(${midPoint.x}, ${midPoint.y})`);
+        // remixicon refresh-line
+        appendOutOfSyncLinkIcon(iconGroup, '18px');
+    });
+}
 
 export function createClusterSvgElement(element) {
     return d3.select(element)
@@ -416,7 +500,7 @@ export function addArrowHead(svg, config) {
         .attr("orient", "auto-start-reverse")
         .append("path")
         .attr("d", `M 0 0 L ${config.size * 2} ${config.size} L 0 ${config.size * 2} z`)
-        .style("fill", "var(--gw-secondary-base)");
+        .style("fill", clusterColors.ontoBlue);
 }
 
 export function setArrowLink(link, config) {
@@ -443,18 +527,13 @@ function getLinkCoordinates(link, nodes) {
     const dist = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
     const normX = deltaX / dist;
     const normY = deltaY / dist;
-    // Padding from node center point
     const sourcePadding = 55;
     const targetPadding = 55;
     const sourceX = source.x + (sourcePadding * normX);
     const sourceY = source.y + (sourcePadding * normY);
     const targetX = target.x - (targetPadding * normX);
     const targetY = target.y - (targetPadding * normY);
-    // Calculate midpoint
-    const midpointX = (sourceX + targetX) / 2;
-    const midpointY = (sourceY + targetY) / 2;
-    // In order to draw an arrowhead in the middle of a line, the line needs to be composed by
-    // two segments, otherwise the arrowhead won't show up.
+    const {x: midpointX, y: midpointY} = getLinkMidpoint(link, nodes);
     return 'M' + sourceX + ',' + sourceY + 'L' + midpointX + ',' + midpointY +
         'L' + targetX + ',' + targetY;
 }
