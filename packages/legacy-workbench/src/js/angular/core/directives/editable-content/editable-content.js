@@ -25,11 +25,10 @@ function editableContent() {
         scope: {
             ngModel: '=',
             ngDisabled: '=',
-            placeholder: '@'
+            placeholder: '@',
         },
         templateUrl: 'js/angular/core/templates/editable-content/editable-content.html',
         link: function(scope, element, attrs, ngModelCtrl) {
-
             // =========================
             // Private variables
             // =========================
@@ -92,7 +91,8 @@ function editableContent() {
 
                 range.insertNode(fragment);
                 selection.collapseToEnd();
-            }
+                updateModelValue();
+            };
 
             // =========================
             // Subscriptions
@@ -108,7 +108,7 @@ function editableContent() {
 
             scope.$on('$destroy', removeAllSubscribers);
             editableDiv.on('blur keyup change input', updateModelValue);
-            editableDiv.on('paste', pasteHandler)
-        }
+            editableDiv.on('paste', pasteHandler);
+        },
     };
 }
