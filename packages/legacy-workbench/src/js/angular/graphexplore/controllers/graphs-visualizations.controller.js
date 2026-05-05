@@ -614,6 +614,9 @@ function GraphsVisualizationsCtrl(
     function configureLinkLimit() {
         const linksLimitParam = $location.search().linksLimit;
         if (!linksLimitParam) {
+            $location.replace();
+            $location.search('linksLimit', $scope.linksLimit.value);
+            $location.state({skipOnPopState: true});
             return;
         }
         const parsedLinkLimit = Number.parseInt(linksLimitParam, 10);

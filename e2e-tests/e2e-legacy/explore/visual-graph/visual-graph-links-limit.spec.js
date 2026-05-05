@@ -125,6 +125,7 @@ describe('Visual graph linksLimit URL parameter', () => {
             VisualGraphSplitButtonSteps.clickOnVisualizeMainButton();
 
             // Then, I expect to see 10 nodes before changing the limit
+            BaseSteps.getUrl().should('include', 'linksLimit=10');
             VisualGraphSteps.getNodes().should('have.length', 10); // 10 nodes total, since we don't have a root node
 
             // When, I update the link limit from the input field
