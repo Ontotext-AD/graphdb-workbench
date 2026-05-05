@@ -1527,6 +1527,7 @@
     "index.name": "Nom d'index",
     "my.index.name.required": "Mon nom d'index (obligatoire)",
     "more.options.label": "plus d'options",
+    "fewer.options.label": "moins d'options",
     "semantic.vectors.index.params": "Vecteurs sémantiques créer des paramètres d'index",
     "see.full.label": "Voir la liste complète",
     "list.of.supported.params": "liste complète des paramètres supportés",

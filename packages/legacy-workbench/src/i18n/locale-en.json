@@ -1528,6 +1528,7 @@
     "index.name": "Index name",
     "my.index.name.required": "My index name (required)",
     "more.options.label": "more options",
+    "fewer.options.label": "fewer options",
     "semantic.vectors.index.params": "Semantic Vectors create index parameters",
     "see.full.label": "See the full",
     "list.of.supported.params": "list of supported parameters",
