@@ -78,6 +78,25 @@ Cypress.Commands.add('initializeRepository', (id) => {
         });
 });
 
+/**
+ * A command for deleting remote locations by URI. It sends a DELETE request to the appropriate endpoint and waits until
+ * the response is received.
+ *
+ * @param {string} uri - The URI of the remote location to be deleted.
+ */
+Cypress.Commands.add('deleteRemoteLocation', (uri) => {
+    cy.request({
+        method: 'DELETE',
+        url: '/rest/locations?uri=' + encodeURIComponent(uri),
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        failOnStatusCode: false
+    }).then((response) => {
+        cy.waitUntil(() => response);
+    });
+});
+
 Cypress.Commands.add('enableAutocomplete', (repositoryId) => {
     toggleAutocomplete(repositoryId, true);
 });

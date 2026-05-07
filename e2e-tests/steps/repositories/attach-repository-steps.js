@@ -1,5 +1,9 @@
 export class AttachRepositorySteps {
 
+    static getRemoteLocationSettingsForm() {
+        return cy.get('#remoteLocationForm');
+    }
+
     static getAttachRemoteLocationBtn() {
         return cy.get('#addAttachRemoteLocation');
     }
@@ -114,5 +118,17 @@ export class AttachRepositorySteps {
 
     static clearPassword() {
         AttachRepositorySteps.getPasswordInput().clear();
+    }
+
+    static getUnencryptedPasswordWarning() {
+        return this.getRemoteLocationSettingsForm().find('.unencrypted-password-warning');
+    }
+
+    static getBackwardCompatibilityWarning() {
+        return this.getRemoteLocationSettingsForm().find('.backward-compatibility-warning');
+    }
+
+    static encryptPassword() {
+        this.getRemoteLocationSettingsForm().find('#encryptPassword').check();
     }
 }

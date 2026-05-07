@@ -88,6 +88,19 @@
                 </div>
             </div>
             <div class="form-group row">
+                <div class="col-md-12">
+                    <div ng-if="!remoteLocation.encryptPassword"
+                         class="alert alert-warning unencrypted-password-warning">{{'manage.remote.location.dialog.graph_db.basic.warning.password_encryption' | translate}}</div>
+                    <label>
+                        <input id="encryptPassword" type="checkbox" ng-model="remoteLocation.encryptPassword"
+                               gdb-tooltip="{{'manage.remote.location.dialog.graph_db.basic.encrypt_password.tooltip' | translate}}"/>
+                        {{'manage.remote.location.dialog.graph_db.basic.encrypt_password.label' | translate}}
+                    </label>
+                    <div ng-if="remoteLocation.encryptPassword"
+                         class="alert alert-warning backward-compatibility-warning">{{'manage.remote.location.dialog.graph_db.basic.warning.password_encryption.compatibility' | translate}}</div>
+                </div>
+            </div>
+            <div class="form-group row">
                 <label for="username" class="col-md-4 col-form-label">
                     {{ (remoteLocation.isGraphDBLocation() ? 'manage.remote.location.dialog.graph_db.username.required.message' :
                     remoteLocation.isSparqlLocation() ? 'manage.remote.location.dialog.sparql.username.required.message' :
