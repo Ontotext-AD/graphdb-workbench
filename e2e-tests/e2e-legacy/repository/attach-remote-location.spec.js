@@ -2,13 +2,21 @@ import {RepositorySteps} from "../../steps/repository-steps";
 import {AttachRepositorySteps} from "../../steps/repositories/attach-repository-steps";
 import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
 import {RepositoriesStubs} from "../../stubs/repositories/repositories-stubs";
+import {RemoteLocationStubs} from '../../stubs/cluster/remote-location-stubs.js';
 
 describe('Attach remote location', () => {
+    let remoteLocationName;
+
+    beforeEach(() => {
+        remoteLocationName = 'http://location-' + Date.now();
+    });
+
+    afterEach(() => {
+        cy.deleteRemoteLocation(remoteLocationName);
+    })
 
     it('Should create and delete remote instance', () => {
-        cy.visit('/repository');
-        RepositorySteps.waitLoader();
-        RepositorySteps.waitUntilRepositoriesPageIsLoaded();
+        RepositorySteps.visit();
 
         // When I open the "Attach a remote instance" dialog.
         AttachRepositorySteps.openAttachRemoteLocationDialog();
@@ -114,12 +122,43 @@ describe('Attach remote location', () => {
         RepositorySteps.getSparqlOntopicTable().should('not.exist');
     });
 
+    it('should be able to create a remote location with encrypted password', () => {
+        // Given I have a running GDB instance and I am on the Repositories view
+        RepositorySteps.visit();
+        // When I start the location creation
+        AttachRepositorySteps.openAttachRemoteLocationDialog();
+        AttachRepositorySteps.enterURL(remoteLocationName);
+        // And I select basic auth type
+        AttachRepositorySteps.selectBasicRadioBtn();
+        // Then I expect to see a security warning
+        AttachRepositorySteps.getUnencryptedPasswordWarning().should('be.visible');
+        // And I should not see the warning for the backward compatibility issues when encrypting the password
+        AttachRepositorySteps.getBackwardCompatibilityWarning().should('not.exist');
+        // When I select to encrypt the password
+        AttachRepositorySteps.encryptPassword();
+        // Then I should see the backward compatibility warning
+        AttachRepositorySteps.getBackwardCompatibilityWarning().should('be.visible');
+        // And the unencrypted password warning should not be visible
+        AttachRepositorySteps.getUnencryptedPasswordWarning().should('not.exist');
+        // When I fill in username and password
+        AttachRepositorySteps.enterUsername('locationadmin');
+        AttachRepositorySteps.enterPassword('admin123');
+        // And I save the location
+        RemoteLocationStubs.spyRemoteLocationCreate();
+        AttachRepositorySteps.attachRemoteLocation();
+        // Then encrypt password flag should be sent
+        cy.wait('@add-remote-location')
+            .its('request.body')
+            .should('include', {
+                encryptPassword: true,
+                username: 'locationadmin'
+            });
+    });
+
     it('Should render different location types in separate tables: error, location with and without repositories', () => {
         RepositoriesStubs.stubRepositories();
         RepositoriesStubs.stubLocations();
-        cy.visit('/repository');
-        RepositorySteps.waitLoader();
-        RepositorySteps.waitUntilRepositoriesPageIsLoaded();
+        RepositorySteps.visit();
         cy.wait('@get-all-repositories');
 
         // When I open the Repositories view that contains all possible kind of locations.
@@ -137,9 +176,7 @@ describe('Attach remote location', () => {
     });
 
     it('Should be able to open edit remote location dialog', () => {
-        cy.visit('/repository');
-        RepositorySteps.waitLoader();
-        RepositorySteps.waitUntilRepositoriesPageIsLoaded();
+        RepositorySteps.visit();
 
         const locationId = 'http://local';
         addRemoteSPARQLLocation(locationId, 'username', 'password');
@@ -161,9 +198,7 @@ describe('Attach remote location', () => {
     });
 
     it('Should create and delete SPARQL endpoint instance', () => {
-        cy.visit('/repository');
-        RepositorySteps.waitLoader();
-        RepositorySteps.waitUntilRepositoriesPageIsLoaded();
+        RepositorySteps.visit();
 
         const locationId = 'http://endpoint/repo/ex';
         addRemoteSPARQLLocation(locationId, 'username', 'password');

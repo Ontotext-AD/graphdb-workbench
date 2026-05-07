@@ -4,6 +4,7 @@ export class RemoteLocationModel {
         this.label = data.label || '';
         this.username = data.username;
         this.password = data.password;
+        this.encryptPassword = data.encryptPassword !== undefined ? data.encryptPassword : false;
         this.authType = data.authType || 'none';
         this.active = data.active;
         this.local = data.local;
@@ -44,7 +45,7 @@ export class RemoteLocationModel {
 export const RemoteLocationType = {
     'GRAPH_DB': 'GDB',
     'ONTOPIC': 'ONTOPIC',
-    'SPARQL': 'SPARQL'
+    'SPARQL': 'SPARQL',
 };
 
 /**
@@ -53,5 +54,5 @@ export const RemoteLocationType = {
 export const RemoteLocationAuthType = {
     NONE: 'none',
     BASIC: 'basic',
-    SIGNATURE: 'signature'
+    SIGNATURE: 'signature',
 };
