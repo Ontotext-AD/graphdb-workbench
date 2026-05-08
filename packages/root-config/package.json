@@ -31,7 +31,7 @@
     "webpack-dev-server": "^5.2.2"
   },
   "dependencies": {
-    "graphwise-styleguide": "^1.0.9",
+    "graphwise-styleguide": "^1.2.0",
     "regenerator-runtime": "^0.14.1",
     "remixicon": "^4.7.0",
     "shepherd.js": "^11.2.0",
