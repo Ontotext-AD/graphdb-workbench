@@ -4,6 +4,7 @@ import 'angular/core/services/security.service';
 import {UserRole, UserType} from 'angular/utils/user-utils';
 import 'angular/security/directives/custom-prefix-tags-input.directive';
 import {GRAPHQL, GRAPHQL_PREFIX, READ_REPO, READ_REPO_PREFIX, SYSTEM_REPO, WRITE_REPO, WRITE_REPO_PREFIX} from './services/constants';
+import {DocumentationUrlResolver} from '../utils/documentation-url-resolver';
 import {
     AppSettings,
     AuthorityList,
@@ -18,6 +19,7 @@ import {
     service,
     User,
     UsersService,
+    LanguageContextService,
 } from '@ontotext/workbench-api';
 
 const modules = [
@@ -31,22 +33,47 @@ const modules = [
 
 const securityModule = angular.module('graphdb.framework.security.controllers', modules);
 
-securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$window', '$jwtAuth', '$timeout', 'ModalService', 'SecurityService', '$translate',
-    function($scope, $uibModal, toastr, $window, $jwtAuth, $timeout, ModalService, SecurityService, $translate) {
+securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$window', '$jwtAuth', '$timeout', 'ModalService', 'SecurityService', '$translate', 'productInfo',
+    function($scope, $uibModal, toastr, $window, $jwtAuth, $timeout, ModalService, SecurityService, $translate, productInfo) {
         const authorizationService = service(AuthorizationService);
         const authenticationService = service(AuthenticationService);
         const securityServiceAPI = service(SecurityServiceAPI);
         const toastrService = service(OntoToastrService);
         const usersService = service(UsersService);
         const repositoryAuthorityService = service(RepositoryAuthorityService);
+        const securityContextService = service(SecurityContextService);
+        const languageContextService = service(LanguageContextService);
 
         // UI view-model
         $scope.usersData = [];
 
         $scope.loader = true;
+        $scope.isSecurityToggleAllowed = securityContextService.getSecurityConfig()?.isSecurityToggleAllowed();
+        $scope.toggleState = {hovered: false};
+
+        const getSecurityToggleTooltip = () => {
+            const action = $scope.securityEnabled() ? $translate.instant('disable') : $translate.instant('enable');
+            return $translate.instant('security.toggle.tooltip', {action});
+        };
+
+        $scope.securityToggleNotAllowedDocUrl = DocumentationUrlResolver.getDocumentationUrl(productInfo.productShortVersion, 'security.html');
+
         $scope.securityEnabled = function() {
             return authenticationService.isSecurityEnabled();
         };
+
+        $scope.securityToggleTooltip = getSecurityToggleTooltip();
+
+        const subscribeToLanguageChange = () => {
+            return languageContextService.onSelectedLanguageChanged(() => {
+                $scope.securityToggleTooltip = getSecurityToggleTooltip();
+            });
+        };
+
+        const subscriptions = [
+            subscribeToLanguageChange(),
+        ];
+
         $scope.hasExternalAuth = function() {
             return $jwtAuth.hasExternalAuth();
         };
@@ -81,6 +108,9 @@ securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$windo
         });
 
         $scope.toggleSecurity = function() {
+            if (!$scope.isSecurityToggleAllowed) {
+                return;
+            }
             const isSecurityEnabled = authenticationService.isSecurityEnabled();
             $jwtAuth.toggleSecurity(!isSecurityEnabled)
                 .then(() => {
@@ -216,6 +246,10 @@ securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$windo
         $scope.encodeURIComponent = function(name) {
             return encodeURIComponent(name);
         };
+
+        $scope.$on('$destroy', function() {
+            subscriptions.forEach((unsubscribe) => unsubscribe());
+        });
     }]);
 
 securityModule.controller('DefaultAuthoritiesCtrl', ['$scope', '$http', '$uibModalInstance', 'data', '$rootScope',
