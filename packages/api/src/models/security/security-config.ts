@@ -18,6 +18,7 @@ export class SecurityConfig extends Model<SecurityConfig> {
   // If the user comes from an external authentication system
   hasExternalAuth?: boolean;
   openidSecurityConfig?: OpenidSecurityConfig;
+  allowSecurityToggle?: boolean;
 
   constructor(config: Partial<SecurityConfig & {methodSettings: {openid: Partial<OpenidSecurityConfig>}}>) {
     super();
@@ -29,6 +30,7 @@ export class SecurityConfig extends Model<SecurityConfig> {
     this.openIdEnabled = config.openIdEnabled;
     this.freeAccessActive = config.freeAccess?.enabled;
     this.hasExternalAuth = config.hasExternalAuth;
+    this.allowSecurityToggle = config.allowSecurityToggle;
     if (config.methodSettings?.openid) {
       this.openidSecurityConfig = new OpenidSecurityConfig(config.methodSettings?.openid);
     }
@@ -48,5 +50,15 @@ export class SecurityConfig extends Model<SecurityConfig> {
 
   hasOverrideAuth() {
     return this.overrideAuth?.enabled ?? false;
+  }
+
+  /**
+   * Checks if GDB allows security disabling. If true, security can be toggled.
+   * Otherwise, security cannot be toggled and is always enabled.
+   *
+   * @returns true if GDB allows toggling security, false otherwise
+   */
+  isSecurityToggleAllowed() {
+    return this.allowSecurityToggle ?? true;
   }
 }

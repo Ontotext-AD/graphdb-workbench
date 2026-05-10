@@ -7,9 +7,22 @@
 		<div class="pull-right">
 			<span id="toggle-security" class="mr-1">
 				<span class="security-switch-label">{{'security.is' | translate}} <span class="tag {{securityEnabled() ? 'tag-primary' : 'tag-default'}}">{{securityEnabled() ? 'common.on.btn' : 'common.off.btn' | translate}}</span></span>
-				<span gdb-tooltip="{{'click.to' | translate}} {{securityEnabled() ? 'disable' : 'enable' | translate}} {{'security.label' | translate}}" tooltip-placement="top" ng-click="toggleSecurity()" class="switch">
-					<input type="checkbox" class="switch" ng-checked="securityEnabled()"/>
-					<label for="toggle-security"></label>
+				<span class="switch" ng-mouseenter="toggleState.hovered = true" ng-mouseleave="toggleState.hovered = false" ng-click="toggleSecurity()">
+					<input type="checkbox" id="securityToggle" class="switch" ng-disabled="!isSecurityToggleAllowed" ng-checked="securityEnabled()"/>
+					<label ng-if="!isSecurityToggleAllowed"
+                           for="securityToggle"
+						   uib-popover-template="'js/angular/security/templates/security-toggle-not-allowed-popover.html'"
+                           popover-placement="bottom"
+                           popover-append-to-body="false"
+                           aria-label="{{'security.toggle.not.allowed' | translate}}"
+						   popover-trigger="none"
+                           popover-is-open="toggleState.hovered">
+					</label>
+					<label ng-if="isSecurityToggleAllowed"
+                           for="securityToggle"
+                           aria-label="{{securityToggleTooltip}}"
+						   gdb-tooltip="{{securityToggleTooltip}}" tooltip-placement="top">
+					</label>
 				</span>
 			</span>
 			<span ng-show="securityEnabled()" id="toggle-freeaccess">
