@@ -7,7 +7,8 @@ import {routes} from './app.routes';
 import {bootstrapProviders} from './bootstrap/bootstrap';
 import {APP_BASE_HREF} from '@angular/common';
 import {getSingleSpaExtraProviders} from 'single-spa-angular';
-import { providePrimeNG } from 'primeng/config';
+import {providePrimeNG} from 'primeng/config';
+import {DialogService} from 'primeng/dynamicdialog';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -24,6 +25,7 @@ export const appConfig: ApplicationConfig = {
           prefix: 'gw',
         }
       }
-    })
+    }),
+    DialogService
   ]
 };
