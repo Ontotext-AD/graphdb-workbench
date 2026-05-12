@@ -510,6 +510,7 @@ function AddRepositoryCtrl($rootScope, $scope, toastr, $repositories, $location,
     $scope.enable = true;
     $scope.entityIndexSizeMin = ENTITY_INDEX_SIZE_MIN;
     $scope.documentationUrlForStorageEncryption = DocumentationUrlResolver.getDocumentationUrl(productInfo.productShortVersion, 'creating-a-repository.html#using-workbench');
+    $scope.encryptInput = {hovered: false};
 
     $scope.loader = true;
     $scope.pageTitle = $translate.instant('view.create.repo.title');

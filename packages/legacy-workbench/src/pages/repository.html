@@ -65,14 +65,15 @@
                                        ng-model="repositoryInfo.params.readOnly.value"/>
                                 {{repositoryInfo.params.readOnly.label}}
                             </label>
-                            <label class="padding-label" for="storageEncryption">
+                            <label ng-mouseenter="encryptInput.hovered = true" ng-mouseleave="encryptInput.hovered = false"  class="padding-label" for="storageEncryption">
                                 <input id="storageEncryption" type="checkbox" ng-true-value="'true'" ng-false-value="'false'"
                                        ng-disabled="editRepoPage"
                                        ng-model="repositoryInfo.params.storageEncryption.value"/>
                                 <span ng-if="!editRepoPage"
                                       uib-popover-template="'js/angular/repositories/templates/storage-encryption-tooltip.html'"
-                                      popover-popup-close-delay="800"
-                                      popover-trigger="mouseenter">
+                                      popover-append-to-body="false"
+                                      popover-is-open="encryptInput.hovered"
+                                      popover-trigger="none">
                                     {{'repo.storageEncryption.label' | translate}}
                                 </span>
                                 <span ng-if="editRepoPage" gdb-tooltip="{{'repoTooltips.storageEncryption.edit' | translate}}">

@@ -1,9 +1,11 @@
-<span>
-    {{ 'ttyg.agent.create_agent_modal.form.' + extractionMethod.method + '.tooltip' | translate }}
-  </span>
-<div>
-    <a href="{{documentationUrlForSimilarity}}" target="_blank">
-        {{ 'ttyg.agent.create_agent_modal.form.similarity_search.link_text' | translate }}
-    </a>
-    <i class="ri-external-link-line"></i>
+<div ng-mouseenter="similarityInput.hovered = true" ng-mouseleave="similarityInput.hovered = false">
+    <span>
+        {{ 'ttyg.agent.create_agent_modal.form.' + extractionMethod.method + '.tooltip' | translate }}
+    </span>
+    <div>
+        <a href="{{documentationUrlForSimilarity}}" target="_blank">
+            {{ 'ttyg.agent.create_agent_modal.form.similarity_search.link_text' | translate }}
+        </a>
+        <i class="ri-external-link-line"></i>
+    </div>
 </div>

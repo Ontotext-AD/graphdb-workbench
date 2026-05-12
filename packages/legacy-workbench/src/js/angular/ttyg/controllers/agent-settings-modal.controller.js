@@ -103,6 +103,12 @@ function AgentSettingsModalController(
     // Public variables
     // =========================
 
+    /**
+     * Flag to control the popover visibility of the similarity input
+     * @type {{hovered: boolean}}
+     */
+    $scope.similarityInput = {hovered: false};
+
     $scope.AGENT_OPERATION = AGENT_OPERATION;
 
     /**

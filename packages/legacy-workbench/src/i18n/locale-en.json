@@ -537,7 +537,8 @@
                     },
                     "similarity_search": {
                         "label": "Similarity search",
-                        "tooltip": "Answers questions by using Similarity search. Performs well on open-ended questions but not so well on providing aggregations."
+                        "tooltip": "Answers questions by using Similarity search. Performs well on open-ended questions but not so well on providing aggregations.",
+                        "link_text": "Learn more about the different similarity methods in the GraphDB documentation."
                     },
                     "similarity_search_max_number_of_triples_per_call": {
                         "label": "Max number of results (triples) per call",
