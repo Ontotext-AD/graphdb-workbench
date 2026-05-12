@@ -8,6 +8,7 @@ export class Notification extends IdModel<Notification> {
 
   /**
    * The code representing the type of the notification.
+   * This code can be used to determine the content and behavior of the notification when displayed.
    */
   readonly code: string;
 
