@@ -536,7 +536,8 @@
                     },
                     "similarity_search": {
                         "label": "Recherche de similarité",
-                        "tooltip": "Répond aux questions en utilisant la recherche de similarité. Fonctionne bien sur les questions ouvertes, mais moins bien sur les agrégations."
+                        "tooltip": "Répond aux questions en utilisant la recherche de similarité. Fonctionne bien sur les questions ouvertes, mais moins bien sur les agrégations.",
+                        "link_text": "En savoir plus sur les différentes méthodes de similarité dans la documentation de GraphDB."
                     },
                     "similarity_search_max_number_of_triples_per_call": {
                         "label": "Nombre maximal de résultats (triples) par appel",

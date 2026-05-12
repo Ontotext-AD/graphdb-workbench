@@ -152,9 +152,11 @@
                                   uib-popover="{{'ttyg.agent.create_agent_modal.form.' + extractionMethod.method + '.tooltip' | translate}}"
                                   popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.' + extractionMethod.method + '.label' | translate}}</span>
                             <span class="mr-1" ng-if="extractionMethod.method === extractionMethods.SIMILARITY"
+                                  ng-mouseenter="similarityInput.hovered = true"
+                                  ng-mouseleave="similarityInput.hovered = false"
                                   uib-popover-template="'js/angular/ttyg/templates/modal/similarity-extraction-method-tooltip.html'"
-                                  popover-popup-close-delay="800"
-                                  popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.' + extractionMethod.method + '.label' | translate}}</span>
+                                  popover-is-open="similarityInput.hovered"
+                                  popover-trigger="none">{{'ttyg.agent.create_agent_modal.form.' + extractionMethod.method + '.label' | translate}}</span>
                             <i class="ri-arrow-down-s-line toggle-icon"
                                ng-class="{'expanded': extractionMethod.expanded}">
                             </i>
