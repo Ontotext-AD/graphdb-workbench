@@ -33,10 +33,30 @@ class MergeI18nPlugin {
 
             console.log(`I18n bundles successfully merged and output to ${this.outputDirectory}`);
           } catch (err) {
-            console.error(err);
+            compilation.errors.push(new webpack.WebpackError(err.message));
           }
         }
       );
+    });
+  }
+
+  deepMerge(target, source, filePath, keyPath = '') {
+    Object.entries(source).forEach(([key, value]) => {
+      const fullPath = keyPath ? `${keyPath}.${key}` : key;
+      if (key in target) {
+        if (typeof target[key] === 'object' && !Array.isArray(target[key]) &&
+          typeof value === 'object' && !Array.isArray(value)) {
+          // Both sides are objects — recurse
+          this.deepMerge(target[key], value, filePath, fullPath);
+        } else {
+          // Leaf-level conflict
+          throw new Error(
+            `Conflict detected for key '${fullPath}' in file: ${filePath}`
+          );
+        }
+      } else {
+        target[key] = value;
+      }
     });
   }
 
@@ -73,14 +93,7 @@ class MergeI18nPlugin {
             mergedBundles[language] = {};
           }
 
-          Object.entries(fileContent).forEach(([key, value]) => {
-            if (mergedBundles[language][key]) {
-              throw new Error(
-                `Conflict detected for key '${key}' in language '${language}' in file: ${filePath}`
-              );
-            }
-            mergedBundles[language][key] = value;
-          });
+          this.deepMerge(mergedBundles[language], fileContent, filePath);
         });
       } else {
         console.log(`${i18nPath} directory doesn't exist`);
