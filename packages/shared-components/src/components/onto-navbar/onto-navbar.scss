@@ -71,8 +71,9 @@ main menu height*/
 }
 
 .navbar-component .menu-element-root {
-  padding: 0.8em 2.5em 0.8em 0.8em;
-  display: block;
+  padding: 0.8em;
+  display: flex;
+  align-items: center;
   line-height: 2.5rem;
   position: relative;
   z-index: 100;
@@ -102,6 +103,18 @@ main menu height*/
 
 .navbar-component .menu-element-root .menu-item {
   pointer-events: none;
+}
+
+.navbar-component .chevron {
+  margin-left: auto;
+  font-size: 1rem;
+  transition: all 0.2s ease-in;
+  pointer-events: none;
+  color: var(--gw-sidenav-menuitem-icon-second-color);
+}
+
+.navbar-component .chevron.open {
+  transform: rotate(90deg);
 }
 
 .navbar-component :not(.brand) .menu-element-root {
@@ -135,25 +148,6 @@ main menu height*/
 
 .navbar-component .menu-element.open ul li {
   display: block;
-}
-
-.navbar-component .menu-element ul:before {
-  font-family: 'icomoon', sans-serif !important;
-  content: "\e91b";
-  display: block;
-  font-size: 1.5em;
-  position: absolute;
-  top: -3.3rem;
-  right: 1rem;
-  -moz-transition: all 0.2s ease-in; /* FF4+ */
-  -o-transition: all 0.2s ease-in; /* Opera 10.5+ */
-  -webkit-transition: all 0.2s ease-in; /* Saf3.2+, Chrome */
-  transition: all 0.2s ease-in;
-  pointer-events: none;
-}
-
-.navbar-component .menu-element.open ul:before, .rdf-list ul.open.datasource:before {
-  transform: rotate(90deg);
 }
 
 .navbar-component.collapsed {
@@ -224,7 +218,7 @@ main menu height*/
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  font-size: 0.8em;
+  font-size: 1em;
   line-height: 1.5;
   padding: 0 0.3em;
   z-index: 101;

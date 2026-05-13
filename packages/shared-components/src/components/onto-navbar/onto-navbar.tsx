@@ -364,7 +364,7 @@ export class OntoNavbar {
             <a class="toggle-menu no-underline" title={
               this.isCollapsed ? this.labels[labelKeys.EXPAND] : this.labels[labelKeys.COLLAPSE]
             } onClick={this.toggleNavbarHandler()}>
-              <em class={this.isCollapsed ? 'ri-arrow-right-s-line' : 'ri-arrow-left-s-line'}></em>
+              <i class={`chevron ${this.isCollapsed ? 'ri-arrow-right-s-line' : 'ri-arrow-left-s-line'}`}></i>
             </a>
           </li>
           {this.menuModel.items.map((item) => (
@@ -376,6 +376,7 @@ export class OntoNavbar {
                     onClick={this.handleSelectMenuItem(item)}>
                     <span class={`menu-item-icon ${item.icon}`}></span>&nbsp;
                     <translate-label class="menu-item" labelKey={item.labelKey}></translate-label>
+                    {!this.isCollapsed && <i class={`chevron ri-arrow-right-s-line ${item.open ? ' open' : ''}`}></i>}
                   </div>
                   <ul class="sub-menu">
                     <li key={item.labelKey} class="submenu-title">
