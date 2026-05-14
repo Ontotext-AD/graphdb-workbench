@@ -1,10 +1,14 @@
-<span>
+<section ng-mouseenter="encryptInput.hovered = true" ng-mouseleave="encryptInput.hovered = false"
+         ng-focus="encryptInput.hovered = true" ng-blur="encryptInput.hovered = false">
+    <span>
     {{ 'repoTooltips.storageEncryption.create.text' | translate }}
 </span>
-<section class="mt-1">
-    <a href="{{documentationUrlForStorageEncryption}}" target="_blank">
-        {{ 'repoTooltips.storageEncryption.create.link' | translate }}
-    </a>
-    <i class="ri-external-link-line"></i>
+    <section class="mt-1">
+        <a href="{{documentationUrlForStorageEncryption}}" target="_blank">
+            {{ 'repoTooltips.storageEncryption.create.link' | translate }}
+        </a>
+        <i class="ri-external-link-line"></i>
+    </section>
 </section>
+
 
