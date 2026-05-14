@@ -1,12 +1,6 @@
-<app-page-layout [title]="'sparql_editor.title' | transloco"
-  class="sparql-editor-page">
-
-  <span page-tooltip>
-    <app-page-info-tooltip></app-page-info-tooltip>
-  </span>
-
+<app-page-layout class="sparql-editor-page">
   <div page-errors>
-<!--    <p-message severity="error">Error Message</p-message>-->
+    <!--    <p-message severity="error">Error Message</p-message>-->
   </div>
 
   <div>
@@ -17,5 +11,5 @@
         [yasguiConfig]="yasguiConfig()"></app-yasgui-component-facade>
     }
   </div>
-  <p-confirmdialog />
+  <p-confirmdialog/>
 </app-page-layout>

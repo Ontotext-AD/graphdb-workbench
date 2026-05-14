@@ -1,8 +1,12 @@
 <div class="page-view">
   @if (!this.embedded()) {
     <h1 class="title-container">
-      <span class="page-title-label">{{ title() }}</span>
-      <ng-content select="[page-tooltip]"></ng-content>
+      <span class="page-title-label">{{ title() | transloco}}</span>
+      @if (helpInfo()) {
+        <app-page-info-tooltip [title]="title() | transloco"
+                               [helpInfo]="helpInfo() | transloco"
+                               [documentationLink]="documentationLink()"></app-page-info-tooltip>
+      }
     </h1>
 
     <div class="page-errors-container">

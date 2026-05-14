@@ -6,7 +6,7 @@ export class ProductInfo {
   connectors: string;
   ontop: string;
   // Computed property
-  shortVersion?: string;
+  shortVersion: string;
 
   constructor(data: Omit<ProductInfo, 'shortVersion'>) {
     this.workbench = data.workbench;

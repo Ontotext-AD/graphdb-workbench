@@ -1,3 +1,33 @@
-.page-info-icon {
-  //  do nothing for now
+:host {
+  display: flex;
+
+  .page-info-icon {
+    display: inline-flex;
+  }
+}
+
+
+/* stylelint-disable-next-line selector-pseudo-element-no-unknown */
+::ng-deep {
+  .page-info-icon-button {
+    .ri-icon {
+      font-size: 1.4em;
+    }
+  }
+
+  .page-info-tooltip {
+    margin-top: 0 !important;
+    max-width: 400px;
+
+    &::before, &::after {
+      content: unset !important;
+    }
+
+    .p-popover-content {
+      .help-info {
+        font-size: .875rem;
+        font-weight: 400;
+      }
+    }
+  }
 }
