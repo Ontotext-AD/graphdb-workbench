@@ -321,8 +321,8 @@ export class OntoLayout {
 
   private subscribeToApplicationChange() {
     this.subscriptions.add(
-      this.applicationLifecycleContextService.onApplicationStateBeforeChange((state) => {
-        if (state) {
+      this.applicationLifecycleContextService.onNavigationBeforeMountRouting((payload) => {
+        if (payload) {
           this.loading = true;
         }
       }));

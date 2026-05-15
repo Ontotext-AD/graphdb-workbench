@@ -3,17 +3,20 @@ import {DeriveContextServiceContract} from '../../models/context/update-context-
 import {ValueChangeCallback} from '../../models/context/value-change-callback';
 import {LifecycleState} from '../../models/app-lifecycle';
 import {ApplicationStateChange} from '../../models/app-lifecycle/application-state-change';
+import {NavigationStartPayload} from '../../models/events/navigation/navigation-start-payload';
 
 type LifecycleDataContextFields = {
   readonly APPLICATION_DATA_STATE: string;
   readonly APPLICATION_STATE_CHANGE: string;
   readonly APPLICATION_STATE_BEFORE_CHANGE: string;
+  readonly NAVIGATION_BEFORE_MOUNT_ROUTING: string;
 }
 
 type LifecycleDataContextFieldParams = {
   readonly APPLICATION_DATA_STATE: LifecycleState;
   readonly APPLICATION_STATE_CHANGE: ApplicationStateChange;
   readonly APPLICATION_STATE_BEFORE_CHANGE: ApplicationStateChange;
+  readonly NAVIGATION_BEFORE_MOUNT_ROUTING: NavigationStartPayload;
 }
 
 /**
@@ -25,6 +28,7 @@ export class ApplicationLifecycleContextService extends ContextService<Lifecycle
   readonly APPLICATION_DATA_STATE = 'applicationDataLoaded';
   readonly APPLICATION_STATE_CHANGE = 'applicationStateChange';
   readonly APPLICATION_STATE_BEFORE_CHANGE = 'applicationStateBeforeChange';
+  readonly NAVIGATION_BEFORE_MOUNT_ROUTING = 'navigationBeforeMountRouting';
 
   /**
    * Updates the application data state in the context.
@@ -82,5 +86,19 @@ export class ApplicationLifecycleContextService extends ContextService<Lifecycle
    */
   onApplicationStateBeforeChange(callbackFn: ValueChangeCallback<ApplicationStateChange | undefined>): () => void {
     return this.subscribe(this.APPLICATION_STATE_BEFORE_CHANGE, callbackFn);
+  }
+
+  /**
+   * Set the navigation before-change payload.
+   */
+  updateNavigationBeforeMountRouting(payload: NavigationStartPayload): void {
+    this.updateContextProperty(this.NAVIGATION_BEFORE_MOUNT_ROUTING, payload);
+  }
+
+  /**
+   * Subscribe to navigation before-change events.
+   */
+  onNavigationBeforeMountRouting(callbackFn: ValueChangeCallback<NavigationStartPayload | undefined>): () => void {
+    return this.subscribe(this.NAVIGATION_BEFORE_MOUNT_ROUTING, callbackFn);
   }
 }
