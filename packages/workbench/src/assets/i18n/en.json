@@ -3,6 +3,7 @@
     "dialog": {
       "confirmation": {
         "title": "Confirm",
+        "message": "You have unsaved changes. Are you sure you want to continue?",
         "confirm_btn": "Yes",
         "cancel_btn": "Cancel"
       }
