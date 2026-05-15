@@ -411,6 +411,10 @@ export class VisualGraphSteps extends BaseSteps {
         return this.getByTestId('invalid-links-limit');
     }
 
+    static getShownLimitMessage() {
+        return this.getByTestId('shown-links-limit');
+    }
+
     static openVisualGraphHome() {
         cy.get('.toolbar-holder').should('be.visible')
             .find('.return-home-btn').should('be.visible').click();

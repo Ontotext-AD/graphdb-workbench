@@ -3050,6 +3050,7 @@
     "visual.limit.links.tooltip": "Allowed range: {{min}}-{{max}}",
     "visual.links.limit.label.tooltip": "Limit the number of links when often they are too many",
     "visual.links.maximum": "Max links shown",
+    "visual.links.limit.shown": "Showing up to the limit. There may be more results – adjust the link limit above.",
     "visual.search.instance.placeholder": "Search instance properties",
     "visual.node.tooltip.no_types": "No types",
     "visual.links.invalid.limit.msg": "Enter a number up to {{MAX_LINKS_LIMIT}}",

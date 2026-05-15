@@ -39,8 +39,13 @@
                 </button>
             </div>
             <span ng-if="invalidLimit"
-                  class="idError alert alert-danger mt-1 link-limit-error"
+                  class="idError alert alert-danger mt-1 link-limit-message"
                   data-test="invalid-links-limit">{{'visual.links.invalid.limit.msg' | translate: {MAX_LINKS_LIMIT: linksLimit.max} }}</span>
+            <span ng-if="linksLimit.showingLimit && !invalidLimit"
+                  class="alert alert-warning mt-1 link-limit-message limit-shown"
+                  data-test="shown-links-limit">{{'visual.links.limit.shown' | translate }}
+                <button type="button" class="close ml-1" ng-click="linksLimit.showingLimit = false"></button>
+            </span>
         </div>
         <button ng-show="!queryResultsMode && !noGoHome" class="btn btn-link p-0 return-home-btn"
                 gdb-tooltip="{{'visual.graph.home.label' | translate}}"

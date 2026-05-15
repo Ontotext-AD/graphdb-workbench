@@ -141,6 +141,7 @@ function GraphsVisualizationsCtrl(
         max: MAX_LINKS_LIMIT,
         decreaseDisabled: false,
         increaseDisabled: false,
+        showingLimit: false,
     };
     $scope.invalidLimit = false;
     let linksLimitDebounceTimer = null;
@@ -2164,6 +2165,7 @@ function GraphsVisualizationsCtrl(
         const newNodes = _.reject(nodesFromLinks, function(n) {
             return _.some(existingNodes, n);
         });
+        $scope.linksLimit.showingLimit = newNodes.length === $scope.linksLimit.value;
 
         if (newNodes.length === 0) {
             // All nodes from links minus 1 gives number of connections

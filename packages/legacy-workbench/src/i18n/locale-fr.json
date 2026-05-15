@@ -3047,6 +3047,7 @@
     "sidepanel.truncate.node.labels": "Tronquer les étiquettes de nœuds longues",
     "visual.limit.links.tooltip": "Plage autorisée : {{min}}-{{max}}",
     "visual.links.limit.label.tooltip": "Limiter le nombre de liens quand souvent ils sont trop nombreux",
+    "visual.links.limit.shown": "Affichage jusqu'à la limite. Il peut y avoir plus de résultats – ajustez la limite de liens ci-dessus.",
     "visual.links.maximum": "Max. de liens affichés",
     "visual.search.instance.placeholder": "Recherche des propriétés de l'instance",
     "visual.node.tooltip.no_types": "Aucun type",

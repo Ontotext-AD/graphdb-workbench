@@ -191,15 +191,31 @@ so the following styles target Safari exclusively to correct label positioning w
     flex-direction: column;
 }
 
-.link-limit-error {
+.link-limit-message {
     position: absolute;
+    display: flex;
+    align-items: center;
     top: 2rem;
+}
+
+.link-limit-message.limit-shown {
+    left: 0;
+}
+
+.link-limit-message.limit-shown:before {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 .link-limit-wrapper .link-limit-input-wrapper {
     display: flex;
     flex-direction: row;
     gap: 0.5rem;
+}
+
+.link-limit-wrapper .link-limit-input-wrapper input {
+    max-width: 8rem;
 }
 
 .rdf-info-side-panel {
