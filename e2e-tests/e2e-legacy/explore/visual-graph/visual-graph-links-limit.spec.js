@@ -43,12 +43,14 @@ describe('Visual graph linksLimit URL parameter', () => {
 
         // Then, I expect to see the visual graph with the default linksLimit
         BaseSteps.getUrl().should('include', `linksLimit=${DEFAULT_LINKS_LIMIT}`);
-
+        // And the limit shown warning should not exist, since it is currently 100 (default) and we have less than that
+        VisualGraphSteps.getShownLimitMessage().should('not.exist');
 
         // When, I update the link limit from the input field
         VisualGraphSteps.updateLinksLimitField(5);
-
-        // Then I expect the URL to include the updated linksLimit in the URL
+        // Then I limit shown warning to exist,since we have more than 5 links
+        VisualGraphSteps.getShownLimitMessage().should('exist');
+        // And I expect the URL to include the updated linksLimit in the URL
         BaseSteps.getUrl().should('include', 'linksLimit=5');
         // And, I expect to see the visual graph with the updated linksLimit
         VisualGraphSteps.getNodes().should('have.length', 6); // 5 links plus the main node
@@ -98,11 +100,17 @@ describe('Visual graph linksLimit URL parameter', () => {
             VisualGraphSteps.openGraphConfig(configName);
 
             // Then, I expect to see 10 nodes before changing the limit
-            BaseSteps.getUrl().should('include', 'linksLimit=10');
+            BaseSteps.getUrl().should('include', 'linksLimit=100');
             VisualGraphSteps.getNodes().should('have.length', 10); // 10 nodes total, since we don't have a root node
+
+            // And the limit shown warning should not exist, since it is currently 100 (default) and we have a set ot 10 nodes
+            VisualGraphSteps.getShownLimitMessage().should('not.exist');
 
             // When, I update the link limit from the input field
             VisualGraphSteps.updateLinksLimitField(5);
+
+            // Then I limit shown warning to exist, since we have more than 5 links available
+            VisualGraphSteps.getShownLimitMessage().should('exist');
 
             // Then I expect the URL to include the updated linksLimit in the URL
             BaseSteps.getUrl().should('include', 'linksLimit=5');
@@ -125,8 +133,11 @@ describe('Visual graph linksLimit URL parameter', () => {
             VisualGraphSplitButtonSteps.clickOnVisualizeMainButton();
 
             // Then, I expect to see 10 nodes before changing the limit
-            BaseSteps.getUrl().should('include', 'linksLimit=10');
+            BaseSteps.getUrl().should('include', 'linksLimit=100');
             VisualGraphSteps.getNodes().should('have.length', 10); // 10 nodes total, since we don't have a root node
+
+            // And the limit shown warning should not exist, since it is currently 100 (default) and we have a set ot 10 nodes
+            VisualGraphSteps.getShownLimitMessage().should('not.exist');
 
             // When, I update the link limit from the input field
             VisualGraphSteps.updateLinksLimitField(5);
@@ -135,6 +146,20 @@ describe('Visual graph linksLimit URL parameter', () => {
             BaseSteps.getUrl().should('include', 'linksLimit=5');
             // And, I expect to see the visual graph with the updated linksLimit
             VisualGraphSteps.getNodes().should('have.length', 5); // 5 nodes total, since we don't have a root node
+
+            // And, the limit shown warning should appear as we are showing the limit
+            VisualGraphSteps.getShownLimitMessage().should('exist');
+
+            // When, I set the limit to the number of nodes from the query
+            VisualGraphSteps.updateLinksLimitField(10);
+
+            // Then I expect limit shown warning to exist
+            VisualGraphSteps.getShownLimitMessage().should('exist');
+
+            // When I set it to 1 more than the number of nodes from the query
+            VisualGraphSteps.updateLinksLimitField(11);
+            // Then I expect the limit shown warning to not exist
+            VisualGraphSteps.getShownLimitMessage().should('not.exist');
         });
     });
 });
