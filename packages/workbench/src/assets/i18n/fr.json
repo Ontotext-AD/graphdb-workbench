@@ -9,6 +9,7 @@
     "dialog": {
       "confirmation": {
         "title": "Confirmer",
+        "message": "Vous avez des modifications non enregistrées. Êtes-vous sûr de vouloir continuer ?",
         "confirm_btn": "Oui",
         "cancel_btn": "Annuler"
       }
