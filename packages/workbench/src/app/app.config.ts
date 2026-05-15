@@ -9,6 +9,7 @@ import {APP_BASE_HREF} from '@angular/common';
 import {getSingleSpaExtraProviders} from 'single-spa-angular';
 import {providePrimeNG} from 'primeng/config';
 import {DialogService} from 'primeng/dynamicdialog';
+import {ConfirmationService} from 'primeng/api';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -26,6 +27,7 @@ export const appConfig: ApplicationConfig = {
         }
       }
     }),
-    DialogService
+    DialogService,
+    ConfirmationService
   ]
 };

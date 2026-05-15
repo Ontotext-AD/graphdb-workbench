@@ -86,6 +86,11 @@ function registerSingleSpaRouterListeners(): void {
     service(EventService).emit(new NavigationStart(d.oldUrl, d.newUrl, d.cancelNavigation));
   });
 
+  WindowService.getWindow().addEventListener('single-spa:before-mount-routing-event', (evt: Event) => {
+    const d = (evt as NavigationEvent).detail;
+    service(ApplicationLifecycleContextService).updateNavigationBeforeMountRouting(d);
+  });
+
   WindowService.getWindow().addEventListener('single-spa:routing-event', (evt: Event) => {
     const d = (evt as NavigationEvent).detail;
     service(EventService).emit(new NavigationEnd(d.oldUrl, d.newUrl));

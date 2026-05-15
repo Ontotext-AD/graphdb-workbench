@@ -13,7 +13,7 @@ export class SubscriptionList extends ModelList<Subscription> {
   constructor(subscriptions?: Subscription[]) {
     super(subscriptions);
   }
-  
+
   /**
    * Adds a new subscription to the list.
    * @param subscription - The Subscription function to be added to the list.
@@ -21,7 +21,15 @@ export class SubscriptionList extends ModelList<Subscription> {
   add(subscription: Subscription): void {
     this.items.push(subscription);
   }
-  
+
+  /**
+   * Removes a subscription from the list.
+   * @param subscription - The Subscription function to be removed from the list.
+   */
+  remove(subscription: Subscription): void {
+    this.items = this.items.filter(sub => sub !== subscription);
+  }
+
   /**
    * Adds multiple subscriptions to the list.
    * @param subscriptions - An array of Subscription functions to be added.
@@ -29,7 +37,7 @@ export class SubscriptionList extends ModelList<Subscription> {
   addAll(subscriptions: Subscription[]): void {
     this.items.push(...subscriptions);
   }
-  
+
   /**
    * Calls all subscription functions in the list and then clears the list. Calling a subscription
    * function unsubscribes the subscription. This effectively unsubscribes all subscriptions

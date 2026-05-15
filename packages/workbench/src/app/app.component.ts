@@ -2,13 +2,15 @@ import {Component, inject, OnDestroy, OnInit} from '@angular/core';
 import {Router, RouterOutlet} from '@angular/router';
 import {EventName, EventService, getCurrentRoute, service, WindowService} from '@ontotext/workbench-api';
 import {Subscription} from 'rxjs';
+import {ConfirmDialogModule} from 'primeng/confirmdialog';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
   imports: [
-    RouterOutlet
+    RouterOutlet,
+    ConfirmDialogModule
   ]
 })
 export class AppComponent implements OnInit, OnDestroy {
