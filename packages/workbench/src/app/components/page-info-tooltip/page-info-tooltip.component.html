@@ -1,3 +1,29 @@
-<span class="btn btn-link page-info-icon">
-  <span class="ri-information-2-line text-tertiary"></span>
-</span>
+<p-button class="page-info-icon" icon="ri-icon ri-information-2-line"
+          [rounded]="true" [text]="true" styleClass="page-info-icon-button text-tertiary"
+          (focus)="show($event)"
+          (mouseover)="show($event)"
+          (mouseleave)="hide()"
+          (focusout)="hide()"/>
+
+<p-popover #popover styleClass="page-info-tooltip">
+  <ng-template #content>
+    <div class="help-info"
+         (mouseenter)="cancelHide()"
+         (mouseleave)="hide()"
+         (focusin)="cancelHide()"
+         (focusout)="hide()">
+      <h4>{{ title() }}</h4>
+      @if (helpInfo()) {
+        <div>
+          <p [innerHTML]="helpInfo()">
+          </p>
+        </div>
+      }
+      @if (documentationLink()) {
+        <div>
+          <a [href]="documentationLink()" target="_blank" rel="noopener">{{ 'components.page_info_tooltip.documentation_link' | transloco }}</a> <i class="ri-external-link-line"></i>
+        </div>
+      }
+    </div>
+  </ng-template>
+</p-popover>

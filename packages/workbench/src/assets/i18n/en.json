@@ -6,9 +6,12 @@
         "confirm_btn": "Yes",
         "cancel_btn": "Cancel"
       }
+    },
+    "page_info_tooltip": {
+      "documentation_link": "Learn more in the GraphDB documentation"
     }
   },
-  "login":{
+  "login": {
     "title": "Login",
     "logo_alt": "GraphDB Logo",
     "sign_in": "Login",
@@ -32,6 +35,7 @@
   },
   "sparql_editor": {
     "title": "SPARQL Query & Update",
+    "helpInfo": "The SPARQL Query & Update view is a unified editor for queries and updates. Enter any SPARQL query or update and click Run to execute it. The view also allows you to save queries for future retrieval and execution in the SPARQL editor.",
     "errors": {
       "saved_query_load_failed": "Could not get data for saved query: {{savedQueryName}}; {{error}}",
       "shared_query_load_failed": "Could not get data for shared query: {{sharedQueryName}}; {{error}}"

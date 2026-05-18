@@ -2,9 +2,8 @@ import {Component, inject, OnDestroy, OnInit, signal} from '@angular/core';
 import {ActivatedRoute, Params, Router} from '@angular/router';
 import {ConfirmDialogModule} from 'primeng/confirmdialog';
 import {MessageModule} from 'primeng/message';
-import {TranslocoPipe, TranslocoService} from '@jsverse/transloco';
+import {TranslocoService} from '@jsverse/transloco';
 import {PageLayoutComponent} from '../../components/page-layout/page-layout.component';
-import {PageInfoTooltipComponent} from '../../components/page-info-tooltip/page-info-tooltip.component';
 import {
   YasguiComponentFacadeComponent
 } from '../../components/yasgui-component-facade/yasgui-component-facade.component';
@@ -81,10 +80,8 @@ interface UrlParametersAfterClear { repositoryId?: string, embedded?: boolean }
   selector: 'app-sparql-editor-page',
   standalone: true,
   imports: [
-    TranslocoPipe,
     MessageModule,
     PageLayoutComponent,
-    PageInfoTooltipComponent,
     YasguiComponentFacadeComponent,
     ConfirmDialogModule
   ],

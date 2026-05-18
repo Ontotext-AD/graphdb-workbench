@@ -11,4 +11,7 @@
 .page-view .title-container {
   position: var(--page-title-position);
   margin-bottom: var(--page-title-margin-bottom);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }

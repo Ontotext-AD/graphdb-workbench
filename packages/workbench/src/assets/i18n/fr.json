@@ -6,6 +6,9 @@
         "confirm_btn": "Oui",
         "cancel_btn": "Annuler"
       }
+    },
+    "page_info_tooltip": {
+      "documentation_link": "Pour en savoir plus, consultez la documentation GraphDB"
     }
   },
   "login": {
@@ -32,6 +35,7 @@
   },
   "sparql_editor": {
     "title": "Requête et mise à jour SPARQL",
+    "helpInfo": "La vue Requête et mise à jour SPARQL est un éditeur unifié pour les requêtes et les mises à jour. Entrez n'importe quelle requête ou mise à jour SPARQL et cliquez sur Exécuter pour l'exécuter. La vue vous permet également d'enregistrer des requêtes pour une récupération et une exécution futures dans l'éditeur SPARQL.",
     "errors": {
       "saved_query_load_failed": "Impossible de récupérer des données pour la requête sauvegardée : {{savedQueryName}}; {{error}}",
       "shared_query_load_failed": "Impossible de récupérer des données pour la requête partagée : {{sharedQueryName}}; {{error}}"
