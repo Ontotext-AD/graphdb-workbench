@@ -41,14 +41,26 @@ export interface HttpOptions {
    * ```
    */
   params?: Record<string, string | number>;
+
+  /**
+   * Optional signal for aborting the HTTP request.
+   * This allows you to cancel the request if needed, for example, when a component is unmounted or when a new request
+   * is made before the previous one completes.
+   */
+  signal?: AbortSignal;
 }
+
+/**
+ * The type of response expected from an HTTP request, which determines how the response data will be processed.
+ */
+export type SupportedResponseType = 'body' | 'response' | 'blob' | 'string';
 
 /**
  * Extended to include a typed responseType property.
  * @inheritDoc
  */
 export interface HttpOptionsTypedResponse extends HttpOptions {
-  responseType?: 'body' | 'response';
+  responseType?: SupportedResponseType;
 }
 
 /**
@@ -65,4 +77,11 @@ export interface HttpOptionsBodyResponse extends HttpOptionsTypedResponse {
  */
 export interface HttpOptionsHttpResponse extends HttpOptionsTypedResponse {
   responseType: 'response';
+}
+
+/**
+ * Specify that the `responseType` is 'blob'.
+ */
+export interface HttpOptionsBlobResponse extends HttpOptionsTypedResponse {
+  responseType: 'blob';
 }

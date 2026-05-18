@@ -1,11 +1,11 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {NO_ERRORS_SCHEMA} from '@angular/core';
+import {YasguiComponentFacadeComponent} from './yasgui-component-facade.component';
+import {provideTranslocoForTesting} from '../../../testing-utils/transloco-utils';
 
 jest.mock('ontotext-yasgui-web-component/loader', () => ({
   defineCustomElements: jest.fn()
 }));
-
-import {YasguiComponentFacadeComponent} from './yasgui-component-facade.component';
 
 describe('YasguiComponentFacadeComponent', () => {
   let component: YasguiComponentFacadeComponent;
@@ -13,7 +13,10 @@ describe('YasguiComponentFacadeComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [YasguiComponentFacadeComponent],
+      imports: [
+        YasguiComponentFacadeComponent,
+        provideTranslocoForTesting()
+      ],
       schemas: [NO_ERRORS_SCHEMA]
     })
       .compileComponents();

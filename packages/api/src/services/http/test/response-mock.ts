@@ -1,6 +1,7 @@
 export class ResponseMock {
   private readonly _url: string;
   private _response: unknown = undefined;
+  private _blob?: Blob = undefined;
   private _status = 200;
   private _message = '';
   private _headers?: Headers = undefined;
@@ -20,6 +21,15 @@ export class ResponseMock {
   }
   getResponse(): unknown {
     return this._response;
+  }
+
+  setBlob(value: Blob) {
+    this._blob = value;
+    return this;
+  }
+
+  getBlob(): Blob | undefined {
+    return this._blob;
   }
 
   setStatus(value: number) {

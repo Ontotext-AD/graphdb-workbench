@@ -6,7 +6,7 @@ import {HttpRequest} from '../../../models/http/http-request';
 import {ServiceProvider} from '../../../providers';
 import {InterceptorService} from '../../interceptor/interceptor.service';
 import {ModelList} from '../../../models/common';
-import {HttpErrorResponse} from '../../../models/http';
+import {HttpErrorResponse, HttpResponse} from '../../../models/http';
 
 class PreInterceptor extends HttpInterceptor<HttpRequest> {
   shouldProcess(): boolean {
@@ -22,11 +22,13 @@ class PreInterceptor extends HttpInterceptor<HttpRequest> {
 class PostInterceptor extends HttpInterceptor<Response> {
   process(response: Response): Promise<Response> {
     // Return a modified response that will return the intercepted text
-    return Promise.resolve({
+    const modified = {
       ...response,
       text: async () => '"interceptedResponseBody"',
       json: async () => 'interceptedResponseBody'
-    } as unknown as Response);
+    } as unknown as Response;
+    (modified as unknown as Record<string, unknown>)['clone'] = () => ({...modified});
+    return Promise.resolve(modified);
   }
 
   shouldProcess(): boolean {
@@ -209,5 +211,82 @@ describe('HttpService', () => {
     const result = await httpService.get(url);
 
     expect(typeof result === 'string').toEqual(true);
+  });
+
+  test('get with responseType blob should return a Blob', async () => {
+    const blobContent = new Blob(['binary data'], {type: 'application/octet-stream'});
+    const url = 'http://localhost:8080';
+    TestUtil.mockResponse(
+      new ResponseMock(url)
+        .setBlob(blobContent)
+        .setHeaders(new Headers({'Content-Type': 'application/octet-stream'}))
+    );
+
+    const result = await httpService.get(url, {responseType: 'blob'});
+
+    expect(result).toBeInstanceOf(HttpResponse);
+    expect((result as HttpResponse<Blob>).data).toBeInstanceOf(Blob);
+    expect(fetch).toHaveBeenCalledWith(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json, text/plain, */*'
+      },
+      body: null,
+    });
+  });
+
+  test('post with responseType blob should return a Blob', async () => {
+    const blobContent = new Blob(['binary data'], {type: 'application/pdf'});
+    const url = 'http://localhost:8080';
+    TestUtil.mockResponse(
+      new ResponseMock(url)
+        .setBlob(blobContent)
+        .setHeaders(new Headers({'Content-Type': 'application/pdf'}))
+    );
+
+    const result = await httpService.post(url, {body: {param: 'value'}, responseType: 'blob'});
+
+    expect(result).toBeInstanceOf(HttpResponse);
+    expect((result as HttpResponse<Blob>).data).toBeInstanceOf(Blob);
+    expect(fetch).toHaveBeenCalledWith(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json, text/plain, */*'
+      },
+      body: JSON.stringify({param: 'value'}),
+    });
+  });
+
+  test('get with responseType blob should return the correct Blob content', async () => {
+    const blobData = 'some blob data';
+    const blobContent = new Blob([blobData], {type: 'text/plain'});
+    const url = 'http://localhost:8080';
+    TestUtil.mockResponse(
+      new ResponseMock(url)
+        .setBlob(blobContent)
+        .setHeaders(new Headers({'Content-Type': 'text/plain'}))
+    );
+
+    const result = await httpService.get(url, {responseType: 'blob'});
+
+    expect(result).toBeInstanceOf(HttpResponse);
+    const blobResult = (result as HttpResponse<Blob>).data as Blob;
+    expect(blobResult.size).toEqual(blobContent.size);
+    expect(blobResult.type).toEqual(blobContent.type);
+  });
+
+  test('get with responseType blob should throw HttpErrorResponse on server error', async () => {
+    const url = 'http://localhost:8080';
+    TestUtil.mockResponse(new ResponseMock(url).setStatus(500).setMessage('Internal Server Error'));
+
+    try {
+      await httpService.get(url, {responseType: 'blob'});
+      fail('Should have thrown an error');
+    } catch (error) {
+      expect(error).toBeInstanceOf(HttpErrorResponse);
+      expect((error as HttpErrorResponse).status).toBe(500);
+    }
   });
 });

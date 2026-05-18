@@ -1,9 +1,4 @@
-/**
- * A TranslationBundle is a simple key-value mapping where the key is a unique identifier for a specific text element in
- * the application (e.g., a tooltip, button label, etc.) and the value is the translated string for that element in a
- * particular language.
- */
-export type TranslationBundle = Record<string, string>;
+import type {TranslationBundle} from '@ontotext/workbench-api';
 
 /**
  * A collection of translation bundles, where each key is a language code (e.g., 'en', 'fr') and the value is a

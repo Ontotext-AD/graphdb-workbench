@@ -30,31 +30,22 @@
   margin-top: calc(47px + 0.5em);
 }
 
-.sparql-editor-page #query-editor .yasgui-host-element {
+:host ::ng-deep #query-editor .yasgui-host-element {
   display: block;
-}
 
-.sparql-editor-page #query-editor .yasgui-host-element .ontotext-yasgui {
-  clear: both;
-  padding-top: 15px;
-}
+  .ontotext-yasgui {
+    clear: both;
+    padding-top: 15px;
+  }
 
-.sparql-editor-page #query-editor .yasgui-toolbar {
-  display: inline;
-  float: right;
-  font-size: 14px;
-  font-weight: 400;
-  position: relative;
-  z-index: 100;
-}
-
-.sparql-editor-page #query-editor .yasgui-toolbar .yasgui-btn {
-  height: 27px;
-  margin-right: 3px;
-  color: var(--gw-secondary-base);
-}
-
-.sparql-editor-page #query-editor .yasgui-toolbar .btn-selected {
-  color: #fff;
+  .yasgui-toolbar {
+    display: inline;
+    float: right;
+    font-size: 14px;
+    font-weight: 400;
+    position: relative;
+    /* make sure the toolbar is above the title and error messages */
+    z-index: 100;
+  }
 }
 
