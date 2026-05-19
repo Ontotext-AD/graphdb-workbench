@@ -81,6 +81,20 @@
         "queries_updates": "<div class=\"run_query_confirmation alert alert-warning\">You have running {{queriesCount}} queries and {{updatesCount}} updates. The queries will be aborted.</div><div>Are you sure that you want to exit?</div>"
       }
     },
+    "connector_progress": {
+      "action": {
+        "creating": "Creating",
+        "repairing": "Repairing"
+      },
+      "title": "{{actionName}} connector {{connectorName}}...",
+      "connector_label": "connector",
+      "eta": "ETA",
+      "processed_entities": "Processed entities",
+      "processed_entities_value": "{{processed}} of {{estimated}} (estimated)",
+      "indexed_entities": "Indexed entities",
+      "speed": "Speed",
+      "speed_value": "{{speed}} entities/second"
+    },
     "yasgui": {
       "tabs": {
         "unnamed_tab_title": "Unnamed"

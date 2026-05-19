@@ -3,6 +3,7 @@ import {service} from '../../../providers';
 import {Rdf4jRestService} from './rdf4j-rest.service';
 import {HttpResponse} from '../../../models/http';
 import {UnexpectedRepositorySizeError} from './error/unexpected-repository-size-error';
+import {SparqlResultsResponse} from '../../../models/sparql';
 
 /**
  * Service for interacting with RDF4J repositories.
@@ -60,6 +61,16 @@ export class Rdf4jRepositoryService implements Service {
   async downloadResultsAsFile(repositoryId: string, data: object, acceptHeader: string, linkHeader: string) {
     const response = await this.rdf4jRestService.downloadResultsAsFile(repositoryId, data, acceptHeader, linkHeader);
     return await this.extractFileFromResponse(response);
+  }
+
+  /**
+   * Executes a SPARQL query against the specified repository.
+   * @param repositoryId - The ID of the repository to query.
+   * @param query - The SPARQL query string.
+   * @returns A promise resolving to the raw SPARQL results.
+   */
+  executeSparqlQuery(repositoryId: string, query: string): Promise<SparqlResultsResponse> {
+    return this.rdf4jRestService.executeSparqlQuery(repositoryId, query);
   }
 
   /**

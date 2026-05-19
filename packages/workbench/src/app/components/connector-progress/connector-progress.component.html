@@ -1,0 +1,37 @@
+<div>
+  @if (inline) {
+    <h4>
+      {{ (buildStatus().repair ? 'sparql_editor.connector_progress.action.repairing' : 'sparql_editor.connector_progress.action.creating') | transloco }} {{ 'sparql_editor.connector_progress.connector_label' | transloco }}
+      <strong>{{ connectorProgressData.connectorName }}</strong>...
+    </h4>
+  }
+
+  <p-progressbar
+    [value]="buildStatus().percentDone"
+  />
+
+  <dl class="connector-progress-stats">
+    <div class="connector-progress-row">
+      <dt>{{ 'sparql_editor.connector_progress.eta' | transloco }}</dt>
+      <dd>{{ eta() }}</dd>
+    </div>
+    <div class="connector-progress-row">
+      <dt>{{ 'sparql_editor.connector_progress.processed_entities' | transloco }}</dt>
+      <dd>{{
+          'sparql_editor.connector_progress.processed_entities_value' | transloco: {
+            processed: buildStatus().processedEntities,
+            estimated: buildStatus().estimatedEntities
+          }
+        }}
+      </dd>
+    </div>
+    <div class="connector-progress-row">
+      <dt>{{ 'sparql_editor.connector_progress.indexed_entities' | transloco }}</dt>
+      <dd>{{ buildStatus().indexedEntities}}</dd>
+    </div>
+    <div class="connector-progress-row">
+      <dt>{{ 'sparql_editor.connector_progress.speed' | transloco }}</dt>
+      <dd>{{ 'sparql_editor.connector_progress.speed_value' | transloco: {speed: buildStatus().entitiesPerSecond} }}</dd>
+    </div>
+  </dl>
+</div>

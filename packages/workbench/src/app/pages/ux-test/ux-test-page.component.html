@@ -21,6 +21,11 @@
   <input pInputText [(ngModel)]="value3" type="text" pSize="large" placeholder="Large" />
 
 <hr>
+<div>Progressbar</div>
+  <p-progressbar [value]="progressValue" [attr.aria-label]="'Loading progress'" />
+
+<hr>
+<div>Confirmation dialog</div>
 <div class="card flex justify-center gap-2">
   <p-toast />
   <p-confirmdialog />

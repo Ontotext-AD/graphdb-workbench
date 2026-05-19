@@ -24,6 +24,7 @@ export const mapConnectorResponseToModel: MapperFn<ConnectorResponse, BeforeUpda
     throw new UnknownConnectorCommandError(data.command);
   }
   result.iri = data.iri;
+  result.name = data.name;
   return result;
 };
 
