@@ -161,13 +161,14 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
   };
   private readonly tabIdToConnectorProgressModalMapping = new Map<string, DynamicDialogRef>();
   private internallyReloaded = false;
-  private queriesAreCanceled = false;
   // This is used to determine whether the view is embedded in another application. When embedded, we want to hide
   // some elements and disable the "go to home" functionality, as it doesn't make sense in that context.
   private embedded = false;
   private isExternalClickHandlerOperationEnabled = false;
   private selectedPlugin?: string;
   private readonly boundBeforeunloadHandler = () => this.beforeunloadHandler();
+  private initialRepositoryChange = true;
+  private skipLocationChangeHandler = false;
 
   // ================================
   // Public variables
@@ -183,23 +184,23 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
 
   private subscribeHandlers() {
     this.subscriptions.addAll([
-      this.repositoryContextService.onSelectedRepositoryChanged((repositoryReference) => this.repositoryChangedHandler(repositoryReference)),
-      this.languageContextService.onSelectedLanguageChanged(() => this.onLanguageChange(), undefined, true),
+      this.repositoryContextService.onSelectedRepositoryChanged((repositoryReference) => this.repositoryChangedHandler(repositoryReference), () => this.repositoryBeforeChangeHandler()),
+      this.languageContextService.onSelectedLanguageChanged(() => this.onLanguageChangeHandler(), () => this.onBeforeLanguageChange(), true),
       this.eventService.subscribe(EventName.NAVIGATION_START, (eventPayload: NavigationStartPayload) => this.locationChangeHandler(eventPayload)),
     ]);
   }
 
-  private onLanguageChange() {
-    this.confirmationProviderService.confirm({
-      message: this.translocoService.translate('sparql_editor.confirmation.on_language_change.message'),
-      header: this.translocoService.translate('sparql_editor.confirmation.on_language_change.title'),
-      acceptHandler: () => {
-        // The page needs to be reloaded, because of the Google charts and Pivot table scripts. When the language is
-        // changed, the correct language for these components is loaded only on the page reload, but we can't be sure
-        // that the user will reload the page by themselves, so we need to do it programmatically. We can't just change
-        // the src of the existing script, because these components don't react to it, so we need to reload the whole page.
-        WindowService.reloadPage();
-      }
+  private onLanguageChangeHandler() {
+    // The page needs to be reloaded, because of the Google charts and Pivot table scripts. When the language is
+    // changed, the correct language for these components is loaded only on the page reload, but we can't be sure
+    // that the user will reload the page by themselves, so we need to do it programmatically. We can't just change
+    // the src of the existing script, because these components don't react to it, so we need to reload the whole page.
+    WindowService.reloadPage();
+  }
+
+  private onBeforeLanguageChange() {
+    return new Promise<boolean>((resolve) => {
+      this.confirmAbortQueries('sparql_editor.confirmation.on_language_change', () => resolve(true), () => resolve(false), true);
     });
   }
 
@@ -568,20 +569,16 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
     this.sameAsUserSetting = authenticatedUser?.appSettings.DEFAULT_SAMEAS ?? false;
   }
 
-  private getExitPageConfirmMessage(ongoingRequestsInfo: OngoingRequestsInfo){
-    let exitPageConfirmMessage = 'sparql_editor.confirmation.on_page_leave.';
+  private getExitPageConfirmMessage(messageKey: string, ongoingRequestsInfo: OngoingRequestsInfo){
+    let exitPageConfirmMessage = `${messageKey}.`;
     if (!ongoingRequestsInfo || ongoingRequestsInfo.queriesCount < 1) {
       exitPageConfirmMessage += 'none_queries_';
-    } else if (ongoingRequestsInfo.queriesCount === 1) {
-      exitPageConfirmMessage += 'one_query_';
     } else {
       exitPageConfirmMessage += 'queries_';
     }
 
     if (!ongoingRequestsInfo.updatesCount || ongoingRequestsInfo.updatesCount === 0) {
       exitPageConfirmMessage += 'non_updates';
-    } else if (ongoingRequestsInfo.updatesCount === 1) {
-      exitPageConfirmMessage += 'one_update';
     } else {
       exitPageConfirmMessage += 'updates';
     }
@@ -611,6 +608,12 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
     this.sparqlStorageService.setLastUsedRepository(repositoryId);
   }
 
+  private repositoryBeforeChangeHandler(): Promise<boolean> {
+    return new Promise((resolve) => {
+      this.confirmAbortQueries('sparql_editor.confirmation.on_repository_change', () => resolve(true), () => resolve(false));
+    });
+  }
+
   private repositoryChangedHandler(repositoryReference: RepositoryReference | undefined) {
     if (!repositoryReference) {
       return;
@@ -618,6 +621,7 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
     this.activeRepositoryReference = repositoryReference;
     this.isOntopRepo = this.repositoryContextService.isActiveRepoOntopType();
     const lastUsedRepositoryId = this.sparqlStorageService.getLastUsedRepository();
+    this.skipLocationChangeHandler = !this.initialRepositoryChange;
     if (lastUsedRepositoryId === this.activeRepositoryReference.id) {
       this.init(false);
     } else {
@@ -639,54 +643,67 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
     });
   }
 
-  private readonly confirmIfHaveRunQuery = (ongoingRequestsInfo: OngoingRequestsInfo) => new Promise((resolve, reject) => {
-    if (!ongoingRequestsInfo || ongoingRequestsInfo.queriesCount < 1 && ongoingRequestsInfo.updatesCount < 1) {
-      resolve(false);
-      return;
-    }
-
-    this.confirmationProviderService.confirm({
-      header: this.translocoService.translate('sparql_editor.confirmation.on_page_leave.title'),
-      message: this.getExitPageConfirmMessage(ongoingRequestsInfo),
-      target: event!.target as EventTarget,
-      acceptHandler: () => {
-        resolve(true);
-      },
-      rejectHandler: () => {
-        reject(new CancelAbortingQuery());
+  private confirmIfHaveRunQuery(messageKey: string, ongoingRequestsInfo: OngoingRequestsInfo, alwaysShowConfirm = false): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      if (!alwaysShowConfirm && (!ongoingRequestsInfo || ongoingRequestsInfo.queriesCount < 1 && ongoingRequestsInfo.updatesCount < 1)) {
+        resolve(false);
+        return;
       }
+
+      this.confirmationProviderService.confirm({
+
+        header: this.translocoService.translate(`${messageKey}.title`),
+        message: this.getExitPageConfirmMessage(messageKey, ongoingRequestsInfo),
+        target: event!.target as EventTarget,
+        acceptHandler: () => {
+          resolve(true);
+        },
+        rejectHandler: () => {
+          reject(new CancelAbortingQuery());
+        }
+      });
     });
-  });
+  }
 
   locationChangeHandler(eventPayload: NavigationStartPayload) {
-    if (this.internallyReloaded) {
+    if (this.internallyReloaded || this.skipLocationChangeHandler) {
       this.internallyReloaded = false;
-      return;
-    }
-    const ontotextYasguiElement = YasguiComponentUtil.getOntotextYasguiElement(this.QUERY_EDITOR_ID);
-    if (!ontotextYasguiElement || this.queriesAreCanceled) {
+      this.skipLocationChangeHandler = false;
       return;
     }
 
     const url = new URL(eventPayload.newUrl!);
     const newUrl = url.pathname + url.search + url.hash;
-    eventPayload.cancelNavigation(undefined);
+    eventPayload.cancelNavigation(true);
+    const handler = () => {
+      this.skipLocationChangeHandler = true;
+      // Use setTimeout to ensure that the navigation is triggered after the current call stack is cleared.
+      setTimeout(() => {
+        navigateTo(newUrl)();
+      });
+    };
+    this.confirmAbortQueries('sparql_editor.confirmation.on_page_leave', handler, handler);
+  }
+
+  private confirmAbortQueries(messageKey: string, successCallback: () => void, errorCallback: () => void, alwaysShowConfirm = false) {
+    const ontotextYasguiElement = YasguiComponentUtil.getOntotextYasguiElement(this.QUERY_EDITOR_ID);
+    if (!ontotextYasguiElement) {
+      successCallback();
+      return;
+    }
+
     // First, we check if there are any ongoing requests initiated by the user.
     // If the user has ongoing requests, we request confirmation to abort them.
     // If the user confirms or there are no ongoing requests, we call the "abortAllRequests" method. This method will abort all requests.
     ontotextYasguiElement
       .getOngoingRequestsInfo()
-      .then((hasRunQuery) => this.confirmIfHaveRunQuery(hasRunQuery))
+      .then((hasRunQuery) => this.confirmIfHaveRunQuery(messageKey, hasRunQuery, alwaysShowConfirm))
       .then(() => ontotextYasguiElement.abortAllRequests())
-      .then(() => {
-        this.queriesAreCanceled = true;
-        navigateTo(newUrl)(eventPayload as unknown as Event);
-      })
+      .then(() => successCallback())
       .catch((error) => {
         if (!(error instanceof CancelAbortingQuery)) {
           this.logger.error(error);
-          this.queriesAreCanceled = true;
-          navigateTo(newUrl)(eventPayload as unknown as Event);
+          errorCallback();
         }
       });
   }
@@ -735,6 +752,7 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
         this.updateConfig(clearYasguiState);
         this.initViewFromUrlParams(clearYasguiState);
       });
+    this.initialRepositoryChange = false;
   }
 
   ngOnDestroy(): void {

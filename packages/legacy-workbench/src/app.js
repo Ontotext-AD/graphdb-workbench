@@ -257,7 +257,6 @@ const moduleDefinition = function(productInfo, translations) {
                 .onSelectedLanguageChanged((language) => {
                     $translate.use(language);
                     $languageService.setLanguage(language);
-                    $rootScope.$broadcast('language-changed', {locale: language});
                 });
 
             $rootScope.$on('$destroy', () => {

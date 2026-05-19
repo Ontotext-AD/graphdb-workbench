@@ -34,7 +34,8 @@ export class YasrSteps extends BaseSteps {
     }
 
     static getResults() {
-        return YasrSteps.getYasr().find('.yasr_results tbody').find('tr');
+        this.getYasrResultsContainer().should('not.have.class', 'rendering_result')
+        return this.getYasrResultsContainer().find('tbody').find('tr');
     }
 
     static getResultTableHeader() {
@@ -114,6 +115,7 @@ export class YasrSteps extends BaseSteps {
     }
 
     static getNoDataElement() {
+        this.getYasrResultsContainer().should('not.have.class', 'rendering_result')
         return cy.get('.dataTables_empty');
     }
 

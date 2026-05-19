@@ -1,21 +1,21 @@
 import {
     savedQueryResponseMapper, buildQueryModel,
-} from "../rest/mappers/saved-query-mapper";
-import {RouteConstants} from "../utils/route-constants";
+} from '../rest/mappers/saved-query-mapper';
+import {RouteConstants} from '../utils/route-constants';
 import 'angular/rest/connectors.rest.service';
 import 'angular/externalsync/controllers';
-import {YasguiComponentDirectiveUtil} from "../core/directives/yasgui-component/yasgui-component-directive.util";
-import {QueryType} from "../models/ontotext-yasgui/query-type";
-import {ConnectorCommand} from "../models/connectors/connector-command";
-import {BeforeUpdateQueryResult, BeforeUpdateQueryResultStatus} from "../models/ontotext-yasgui/before-update-query-result";
-import {EventDataType} from "../models/ontotext-yasgui/event-data-type";
-import {decodeHTML} from "../../../app";
-import {toBoolean} from "../utils/string-utils";
-import {VIEW_SPARQL_EDITOR} from "../models/sparql/constants";
-import {CancelAbortingQuery} from "../models/sparql/cancel-aborting-query";
-import {QueryMode} from "../models/ontotext-yasgui/query-mode";
+import {YasguiComponentDirectiveUtil} from '../core/directives/yasgui-component/yasgui-component-directive.util';
+import {QueryType} from '../models/ontotext-yasgui/query-type';
+import {ConnectorCommand} from '../models/connectors/connector-command';
+import {BeforeUpdateQueryResult, BeforeUpdateQueryResultStatus} from '../models/ontotext-yasgui/before-update-query-result';
+import {EventDataType} from '../models/ontotext-yasgui/event-data-type';
+import {decodeHTML} from '../../../app';
+import {toBoolean} from '../utils/string-utils';
+import {VIEW_SPARQL_EDITOR} from '../models/sparql/constants';
+import {CancelAbortingQuery} from '../models/sparql/cancel-aborting-query';
+import {QueryMode} from '../models/ontotext-yasgui/query-mode';
 import 'angular/core/services/event-emitter-service';
-import {LoggerProvider} from "../core/services/logger-provider";
+import {LoggerProvider} from '../core/services/logger-provider';
 import {
     ParentWindowMessageService,
     navigateTo,
@@ -27,11 +27,12 @@ import {
     SecurityContextService,
     GraphConfigService,
     service,
+    RepositoryContextService,
     REPOSITORY_ID_PARAM,
     GuidesService,
     WindowService,
-} from "@ontotext/workbench-api";
-import {YASGUI_OPERATION, YASGUI_OPERATION_TYPE, URL_PLUGIN_NAME_TO_PLUGIN_NAME_MAPPING} from "./constants";
+} from '@ontotext/workbench-api';
+import {YASGUI_OPERATION, YASGUI_OPERATION_TYPE, URL_PLUGIN_NAME_TO_PLUGIN_NAME_MAPPING} from './constants';
 import {GeoPluginConfiguration} from '../models/ontotext-yasgui/plugin-configuration';
 
 const modules = [
@@ -67,31 +68,35 @@ SparqlEditorCtrl.$inject = [
     'LSKeys'];
 
 function SparqlEditorCtrl($rootScope,
-                          $scope,
-                          $q,
-                          $location,
-                          $languageService,
-                          $repositories,
-                          $uibModal,
-                          toastr,
-                          $translate,
-                          SparqlRestService,
-                          ConnectorsRestService,
-                          ModalService,
-                          MonitoringRestService,
-                          EventEmitterService,
-                          LocalStorageAdapter,
-                          LSKeys) {
+    $scope,
+    $q,
+    $location,
+    $languageService,
+    $repositories,
+    $uibModal,
+    toastr,
+    $translate,
+    SparqlRestService,
+    ConnectorsRestService,
+    ModalService,
+    MonitoringRestService,
+    EventEmitterService,
+    LocalStorageAdapter,
+    LSKeys) {
     const securityContextService = service(SecurityContextService);
     const guidesService = service(GuidesService);
     const parentWindowMessageService = service(ParentWindowMessageService);
     const graphConfigService = service(GraphConfigService);
+    const languageContextService = ServiceProvider.get(LanguageContextService);
+    const repositoryContextService = service(RepositoryContextService);
 
     this.repository = '';
 
     const QUERY_EDITOR_ID = '#query-editor';
     let activeRepository = $repositories.getActiveRepository();
     let isOntopRepo = $repositories.isActiveRepoOntopType();
+    let initialRepositoryChange = true;
+    let skipLocationChangeHandler = false;
     // This is used to determine whether the view is embedded in another application. When embedded, we want to hide
     // some elements and disable the "go to home" functionality, as it doesn't make sense in that context.
     $scope.embedded = $location.search().embedded;
@@ -165,7 +170,6 @@ function SparqlEditorCtrl($rootScope,
         return geoPluginConfig;
     };
 
-
     /**
      * Callback function triggered when a user clicks on a feature in the geo plugin.
      * Sends a message to the parent window using `ParentWindowMessageService`.
@@ -180,7 +184,6 @@ function SparqlEditorCtrl($rootScope,
             featurePayload,
         }, WindowService.getReferer());
     };
-
 
     const getYasqe = (yasgui) => {
         const tab = yasgui.getTab();
@@ -466,7 +469,7 @@ function SparqlEditorCtrl($rootScope,
                 entitiesPerSecond: 0,
             },
             actionName,
-            eta: "-",
+            eta: '-',
             inline: false,
             iri,
             name: connectorName,
@@ -530,25 +533,25 @@ function SparqlEditorCtrl($rootScope,
             });
     };
 
-    const getExitPageConfirmMessage = (ongoingRequestsInfo) => {
-        let exitPageConfirmMessage = "view.sparql-editor.leave_page.run_queries.confirmation.";
+    const getExitPageConfirmMessage = (messageKey, ongoingRequestsInfo) => {
+        let exitPageConfirmMessage = `${messageKey}.`;
         if (!ongoingRequestsInfo || ongoingRequestsInfo.queriesCount < 1) {
-            exitPageConfirmMessage += "none_queries_";
+            exitPageConfirmMessage += 'none_queries_';
         } else if (ongoingRequestsInfo.queriesCount === 1) {
-            exitPageConfirmMessage += "one_query_";
+            exitPageConfirmMessage += 'one_query_';
         } else {
-            exitPageConfirmMessage += "queries_";
+            exitPageConfirmMessage += 'queries_';
         }
 
         if (!ongoingRequestsInfo.updatesCount || ongoingRequestsInfo.updatesCount === 0) {
-            exitPageConfirmMessage += "non_updates";
+            exitPageConfirmMessage += 'non_updates';
         } else if (ongoingRequestsInfo.updatesCount === 1) {
-            exitPageConfirmMessage += "one_update";
+            exitPageConfirmMessage += 'one_update';
         } else {
-            exitPageConfirmMessage += "updates";
+            exitPageConfirmMessage += 'updates';
         }
 
-        exitPageConfirmMessage += ".message";
+        exitPageConfirmMessage += '.message';
         const params = {
             queriesCount: ongoingRequestsInfo.queriesCount,
             updatesCount: ongoingRequestsInfo.updatesCount,
@@ -588,6 +591,7 @@ function SparqlEditorCtrl($rootScope,
             });
         // TODO: we should also watch for changes in namespaces
         // scope.$watch('namespaces', function () {});
+        initialRepositoryChange = false;
     };
 
     // =========================
@@ -595,12 +599,20 @@ function SparqlEditorCtrl($rootScope,
     // =========================
     const subscriptions = [];
 
+    const repositoryWillChangeHandler = () => {
+        return new Promise((resolve) => {
+            confirmAbortQueries('view.sparql-editor.repository_change.run_queries.confirmation', () => resolve(true), () => resolve(false));
+        });
+    };
+
     const repositoryChangedHandler = (object) => {
         if (!object) {
             return;
         }
+
         activeRepository = $repositories.getActiveRepository();
         isOntopRepo = $repositories.isActiveRepoOntopType(object);
+        skipLocationChangeHandler = !initialRepositoryChange;
         if (LocalStorageAdapter.get(LSKeys.SPARQL_LAST_REPO) !== activeRepository) {
             init(true);
             persistLasstUsedRepository();
@@ -617,19 +629,44 @@ function SparqlEditorCtrl($rootScope,
         // If we set event.returnValue, the browser will prompt the user for confirmation to leave the page,
         // but we don't have a way to handle the user's choice.
         // Therefore, we can't take any action, so we simply proceed to abort all requests.
-        ontotextYasguiElement.abortAllRequests().then(() => {});
+        ontotextYasguiElement.abortAllRequests().then(() => {
+        });
     };
-
     window.addEventListener('beforeunload', beforeunloadHandler);
 
-    const confirmIfHaveRunQuery = (ongoingRequestsInfo) => new Promise((resolve, reject) => {
-        if (!ongoingRequestsInfo || ongoingRequestsInfo.queriesCount < 1 && ongoingRequestsInfo.updatesCount < 1) {
+    // First, we check if there are any ongoing requests initiated by the user.
+    // If the user has ongoing requests, we request confirmation to abort them.
+    // If the user confirms or there are no ongoing requests, we call the "abortAllRequests" method. This method will abort all requests.
+    const confirmAbortQueries = (messageKey, successCallback, errorCallback, alwaysShowConfirm = false) => {
+        const ontotextYasguiElement = YasguiComponentDirectiveUtil.getOntotextYasguiElement(QUERY_EDITOR_ID);
+        if (!ontotextYasguiElement) {
+            successCallback();
+            return;
+        }
+
+        ontotextYasguiElement
+            .getOngoingRequestsInfo()
+            .then((hasRunQuery) => confirmAbortQueriesDialog(messageKey, hasRunQuery, alwaysShowConfirm))
+            .then(() => ontotextYasguiElement.abortAllRequests())
+            .then(() => {
+                successCallback();
+            })
+            .catch((error) => {
+                if (!(error instanceof CancelAbortingQuery)) {
+                    logger.error(error);
+                    errorCallback();
+                }
+            });
+    };
+
+    const confirmAbortQueriesDialog = (messageKey, ongoingRequestsInfo, alwaysShowConfirm = false) => new Promise((resolve, reject) => {
+        if (!alwaysShowConfirm && (!ongoingRequestsInfo || ongoingRequestsInfo.queriesCount < 1 && ongoingRequestsInfo.updatesCount < 1)) {
             resolve();
             return;
         }
 
         const title = $translate.instant('common.confirm');
-        const message = decodeHTML(getExitPageConfirmMessage(ongoingRequestsInfo));
+        const message = decodeHTML(getExitPageConfirmMessage(messageKey, ongoingRequestsInfo));
         ModalService.openSimpleModal({
             title,
             message,
@@ -640,38 +677,25 @@ function SparqlEditorCtrl($rootScope,
             reject(new CancelAbortingQuery());
         });
     });
-    let queriesAreCanceled = undefined;
+
     const locationChangeHandler = (eventPayload) => {
-        if (internallyReloaded) {
+        if (internallyReloaded || skipLocationChangeHandler) {
             internallyReloaded = false;
-            return;
-        }
-        const ontotextYasguiElement = YasguiComponentDirectiveUtil.getOntotextYasguiElement(QUERY_EDITOR_ID);
-        if (!ontotextYasguiElement || queriesAreCanceled) {
+            skipLocationChangeHandler = false;
             return;
         }
 
         const url = new URL(eventPayload.newUrl);
         const newUrl = url.pathname + url.search + url.hash;
         eventPayload.cancelNavigation();
-        // First, we check if there are any ongoing requests initiated by the user.
-        // If the user has ongoing requests, we request confirmation to abort them.
-        // If the user confirms or there are no ongoing requests, we call the "abortAllRequests" method. This method will abort all requests.
-        ontotextYasguiElement
-            .getOngoingRequestsInfo()
-            .then((hasRunQuery) => confirmIfHaveRunQuery(hasRunQuery))
-            .then(() => ontotextYasguiElement.abortAllRequests())
-            .then(() => {
-                queriesAreCanceled = true;
+        const handler = () => {
+            skipLocationChangeHandler = true;
+            // Use setTimeout to ensure that the navigation is triggered after the current call stack is cleared.
+            setTimeout(() => {
                 navigateTo(newUrl)();
-            })
-            .catch((error) => {
-                if (!(error instanceof CancelAbortingQuery)) {
-                    logger.error(error);
-                    queriesAreCanceled = true;
-                    navigateTo(newUrl)();
-                }
             });
+        };
+        confirmAbortQueries('view.sparql-editor.leave_page.run_queries.confirmation', handler, handler);
     };
 
     subscriptions.push(
@@ -702,40 +726,25 @@ function SparqlEditorCtrl($rootScope,
         LocalStorageAdapter.set(LSKeys.SPARQL_LAST_REPO, activeRepository);
     };
 
-    subscriptions.push(
-        $scope.$on('language-changed', function() {
-            location.reload();
-        }),
-    );
-
     const onLanguageChange = () => {
-        // Do nothing on language change
+        WindowService.reloadPage();
     };
 
     const showLanguageChangeConfirmation = () => {
         return new Promise((resolve) => {
-            ModalService.openSimpleModal({
-                title: $translate.instant('query.editor.language.change.warning.title'),
-                message: $translate.instant('query.editor.reload.page.warning'),
-                warning: true,
-            }).result.then(function() {
-                resolve(true);
-            }, function() {
-                resolve(false);
-            });
+            confirmAbortQueries('view.sparql-editor.language_change.run_queries.confirmation', () => resolve(true), () => resolve(false), true);
         });
     };
 
-    const languageContextService = ServiceProvider.get(LanguageContextService);
-    const onLanguageChangeSubscription = languageContextService.onSelectedLanguageChanged(onLanguageChange, showLanguageChangeConfirmation);
-
-    // Subscribe to language change and ask to reload the page
-    subscriptions.push(onLanguageChangeSubscription);
-
-    // Deregister the watcher when the scope/directive is destroyed
-    subscriptions.push($scope.$on('$destroy', finalizeAndDestroy));
+    subscriptions.push(
+        // Subscribe to language change and ask to reload the page
+        languageContextService.onSelectedLanguageChanged(onLanguageChange, showLanguageChangeConfirmation, true),
+        // Deregister the watcher when the scope/directive is destroyed
+        $scope.$on('$destroy', finalizeAndDestroy),
+    );
 
     // Wait until the active repository object is set, otherwise "canWriteActiveRepo()" may return a wrong result and the "ontotext-yasgui"
     // readOnly configuration may be incorrect.
-    subscriptions.push($scope.$watch($scope.getActiveRepositoryObject, repositoryChangedHandler));
+    const repositoryChangeSubscription = repositoryContextService.onSelectedRepositoryChanged(repositoryChangedHandler, repositoryWillChangeHandler);
+    subscriptions.push(repositoryChangeSubscription);
 }

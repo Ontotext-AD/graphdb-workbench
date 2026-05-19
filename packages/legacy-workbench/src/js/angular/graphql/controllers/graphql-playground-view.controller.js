@@ -6,6 +6,7 @@ import {
 } from "../../core/directives/graphql-playground/graphql-playground-directive.util";
 import {
     service,
+    LanguageContextService,
     AuthenticationStorageService,
     RuntimeConfigurationContextService,
     ThemeService,
@@ -33,6 +34,8 @@ function GraphqlPlaygroundViewCtrl($scope, $location, $repositories, $languageSe
     const runtimeConfigurationContextService = service(RuntimeConfigurationContextService);
     const themeService = service(ThemeService);
     const repositoryContextService = service(RepositoryContextService);
+    const languageContextService = service(LanguageContextService);
+
     // =========================
     // Public variables
     // =========================
@@ -242,18 +245,19 @@ function GraphqlPlaygroundViewCtrl($scope, $location, $repositories, $languageSe
     /**
      * Handles language change events and updates the GraphQL Playground component's language.
      *
-     * @param {Event} event - The event triggered by the language change.
-     * @param {Object} args - The arguments containing language details.
-     * @param {string} args.locale - The new locale to be set for the GraphQL Playground.
+     * @param {string} language - The new locale to be set for the GraphQL Playground.
      */
-    const getLanguageChangeHandler = (event, args) => {
+    const getLanguageChangeHandler = (language) => {
         const hasGraphqlEndpoints = $scope.graphqlEndpoints?.length;
         // The GraphQL Playground is rendered only when at least one GraphQL endpoint exists.
         // Therefore, we attempt to locate it and change language only in that case.
         if (hasGraphqlEndpoints) {
             GraphqlPlaygroundDirectiveUtil.getGraphqlPlaygroundComponentAsync("#graphql-playground")
                 .then((graphqlPlayground) => {
-                    graphqlPlayground.setLanguage(args.locale);
+                    graphqlPlayground.setLanguage(language);
+            })
+            .catch((error) =>{
+                // GraphQL Playground was not found, do nothing
                 });
         }
     };
@@ -294,7 +298,7 @@ function GraphqlPlaygroundViewCtrl($scope, $location, $repositories, $languageSe
 
     subscriptions = [
         repositoryContextService.onSelectedRepositoryChanged(getSelectedRepositoryChangeHandler),
-        $scope.$on('language-changed', getLanguageChangeHandler),
+        languageContextService.onSelectedLanguageChanged(getLanguageChangeHandler),
         runtimeConfigurationContextService.onThemeModeChanged(onThemeChanged),
     ];
     $scope.$on('$destroy', unsubscribeAll);
