@@ -6,6 +6,7 @@ export class BeforeUpdateQueryResult {
     public parameters?: unknown,
     public message?: string,
     public iri?: string,
+    public name?: string,
   ) {
   }
 }

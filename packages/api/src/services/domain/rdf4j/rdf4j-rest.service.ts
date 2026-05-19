@@ -1,5 +1,6 @@
 import {HttpService} from '../../http/http.service';
 import {NamespacesResponse} from './response/namespaces-response';
+import {SparqlResultsResponse} from '../../../models/sparql';
 
 /**
  * Service for interacting with the external RDF4J REST API.
@@ -75,5 +76,22 @@ export class Rdf4jRestService extends HttpService {
    */
   getRepositorySize(repositoryId: string): Promise<number> {
     return this.get(`${this.REPOSITORIES_ENDPOINT}/${repositoryId}/size`);
+  }
+
+  /**
+   * Executes a SPARQL SELECT query against the specified repository.
+   * @param repositoryId - The ID of the repository to query.
+   * @param query - The SPARQL SELECT query string.
+   * @returns A promise resolving to the raw SPARQL SELECT results.
+   */
+  executeSparqlQuery(repositoryId: string, query: string): Promise<SparqlResultsResponse> {
+    return this.post<SparqlResultsResponse>(`${this.REPOSITORIES_ENDPOINT}/${repositoryId}`, {
+      body: new URLSearchParams({query}),
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Accept': 'application/sparql-results+json',
+        'X-GraphDB-Local-Consistency': 'updating',
+      }
+    });
   }
 }

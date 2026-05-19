@@ -81,6 +81,20 @@
         "queries_updates": "<div class=\"run_query_confirmation alert alert-warning\">Vous avez {{queriesCount}} requêtes et {{updatesCount}} mises à jour en cours. Les requêtes seront annulées.</div><div>Êtes-vous sûr de vouloir quitter ?</div>"
       }
     },
+    "connector_progress": {
+      "action": {
+        "creating": "Création",
+        "repairing": "Réparation"
+      },
+      "title": "{{actionName}} du connecteur {{connectorName}}...",
+      "connector_label": "connecteur",
+      "eta": "ETA ",
+      "processed_entities": "Entités traitées",
+      "processed_entities_value": "{{processed}} sur {{estimated}} (estimé)",
+      "indexed_entities": "Entités indexées",
+      "speed": "Vitesse",
+      "speed_value": "{{speed}} entités/seconde"
+    },
     "yasgui": {
       "tabs": {
         "unnamed_tab_title": "Anonyme"

@@ -12,6 +12,7 @@ import {ToolbarModule} from 'primeng/toolbar';
 import {ConfirmDialogModule} from 'primeng/confirmdialog';
 import {ToastModule} from 'primeng/toast';
 import {ConfirmationService, MessageService} from 'primeng/api';
+import {ProgressBarModule} from 'primeng/progressbar';
 
 @Component({
   selector: 'app-ux-test',
@@ -29,6 +30,7 @@ import {ConfirmationService, MessageService} from 'primeng/api';
     ToolbarModule,
     ConfirmDialogModule,
     ToastModule,
+    ProgressBarModule,
   ],
   providers: [ConfirmationService, MessageService],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -45,6 +47,7 @@ export class UxTestPageComponent implements OnDestroy {
   value2: string | undefined;
   value3: string | undefined;
   checked = true;
+  progressValue = 40;
   loginForm: FormGroup;
   error = false;
 

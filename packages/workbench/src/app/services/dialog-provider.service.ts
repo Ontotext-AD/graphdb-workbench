@@ -29,6 +29,10 @@ export class DialogProviderService {
    * Opens a dialog for the given component and returns its close stream.
    */
   private openDialogWithComponent<DataType, ReturnType>(componentType: Type<unknown>, config: DialogOpenOptions<DataType>): Observable<ReturnType | undefined> {
+    return this.createDialogRef<DataType>(componentType, config).onClose.pipe(map((value) => value as ReturnType | undefined));
+  }
+
+  public createDialogRef<DataType>(componentType: Type<unknown>, config: DialogOpenOptions<DataType>): DynamicDialogRef {
     const dialogConfig: DynamicDialogConfig<DataType> = {
       data: config.data,
       showHeader: !!config.header,
@@ -42,7 +46,7 @@ export class DialogProviderService {
     };
     const dialogRef = this.dialogService.open(componentType, dialogConfig);
     this.assertDialogIsDefined(dialogRef);
-    return dialogRef.onClose.pipe(map((value) => value as ReturnType | undefined));
+    return dialogRef;
   }
 
   private assertDialogIsDefined(dialogRef: DynamicDialogRef | null): asserts dialogRef is NonNullable<DynamicDialogRef> {

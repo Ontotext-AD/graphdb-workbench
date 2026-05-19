@@ -60,6 +60,10 @@ import {mapSavedQueryToTabQueryModel} from './mappers/saved-query-to-tab-query-m
 import {OngoingRequestsInfo} from '../../components/yasgui-component-facade/models/ongoing-requests-info';
 import {CancelAbortingQuery} from './error/cancel-abort-query';
 import {ConfirmationService} from 'primeng/api';
+import {DialogProviderService} from '../../services/dialog-provider.service';
+import {DynamicDialogRef} from 'primeng/dynamicdialog';
+import {ConnectorProgressDialogComponent} from '../../components/connector-progress/connector-progress-dialog.component';
+import {ConnectorProgressData} from '../../components/connector-progress/connector-progress-data';
 import {YasguiOperation, YasguiOperationType} from './constants';
 import {
   GeoFeatureProperties
@@ -99,6 +103,7 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly translocoService = inject(TranslocoService);
   private readonly confirmationService = inject(ConfirmationService);
+  private readonly dialogProviderService = inject(DialogProviderService);
   private readonly graphConfigService = service(GraphConfigService);
 
   // ================================
@@ -157,7 +162,7 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
       element.remove();
     }
   };
-  private readonly tabIdToConnectorProgressModalMapping = new Map();
+  private readonly tabIdToConnectorProgressModalMapping = new Map<string, DynamicDialogRef>();
   private internallyReloaded = false;
   private queriesAreCanceled = false;
   // This is used to determine whether the view is embedded in another application. When embedded, we want to hide
@@ -530,9 +535,9 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
    * @param queryExecutedRequest - the event payload.
    */
   private queryExecutedHandler(queryExecutedRequest: QueryExecutedEvent){
-    const connectorProgressModal = this.tabIdToConnectorProgressModalMapping.get(queryExecutedRequest.tabId);
-    if (connectorProgressModal) {
-      connectorProgressModal.dismiss();
+    const connectorProgressDialogData = this.tabIdToConnectorProgressModalMapping.get(queryExecutedRequest.tabId);
+    if (connectorProgressDialogData) {
+      connectorProgressDialogData.close();
       this.tabIdToConnectorProgressModalMapping.delete(queryExecutedRequest.tabId);
     }
   }
@@ -550,15 +555,31 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
   }
 
   private showConnectorOperationProgressDialog(result: BeforeUpdateQueryResult, tabId?: string) {
-    console.info('tabId', tabId);
     if (result.command === ConnectorCommand.CREATE) {
-      // const connectorProgressModal = createConnectorProgressDialog($translate.instant('externalsync.creating'), result.iri, response.data.name);
-      // tabIdToConnectorProgressModalMapping.set(tabId, connectorProgressModal);
+      const dialogRef = this.createConnectorProgressDialog(
+        this.translocoService.translate('sparql_editor.connector_progress.action.creating'),
+        result.iri!,
+        result.name!
+      );
+      this.tabIdToConnectorProgressModalMapping.set(tabId!, dialogRef);
     } else if (result.command === ConnectorCommand.REPAIR) {
-      // const connectorProgressModal = createConnectorProgressDialog($translate.instant('externalsync.repairing'), response.data.iri, response.data.name);
-      // tabIdToConnectorProgressModalMapping.set(tabId, connectorProgressModal);
+      const dialogRef = this.createConnectorProgressDialog(
+        this.translocoService.translate('sparql_editor.connector_progress.action.repairing'),
+        result.iri!,
+        result.name!
+      );
+      this.tabIdToConnectorProgressModalMapping.set(tabId!, dialogRef);
     }
     return result;
+  }
+
+  private createConnectorProgressDialog(actionName: string, iri: string, connectorName: string): DynamicDialogRef {
+    const dialogData = new ConnectorProgressData(actionName, iri, connectorName);
+    return this.dialogProviderService.createDialogRef(ConnectorProgressDialogComponent, {
+      data: dialogData,
+      header: this.translocoService.translate('sparql_editor.connector_progress.title', {actionName, connectorName}),
+      closable: false,
+    });
   }
 
   private setInferAndSameAs(authenticatedUser: AuthenticatedUser | undefined) {

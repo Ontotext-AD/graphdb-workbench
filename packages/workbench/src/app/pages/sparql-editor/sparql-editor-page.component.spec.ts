@@ -3,6 +3,7 @@ import {provideNoopAnimations} from '@angular/platform-browser/animations';
 import {SparqlEditorPageComponent} from './sparql-editor-page.component';
 import {provideTranslocoForTesting} from '../../../testing-utils/transloco-utils';
 import {provideRouter} from '@angular/router';
+import {DialogService} from 'primeng/dynamicdialog';
 
 describe('SparqlEditorPageComponent', () => {
   let component: SparqlEditorPageComponent;
@@ -16,7 +17,8 @@ describe('SparqlEditorPageComponent', () => {
       ],
       providers: [
         provideNoopAnimations(),
-        provideRouter([])
+        provideRouter([]),
+        DialogService
       ]
     })
       .compileComponents();
