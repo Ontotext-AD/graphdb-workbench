@@ -9,7 +9,9 @@ import {
   ViewEncapsulation,
   ElementRef,
   HostListener,
-  signal, OnDestroy,
+  signal,
+  OnDestroy,
+  OnInit,
 } from '@angular/core';
 import {saveAs} from 'file-saver';
 import {defineCustomElements} from 'ontotext-yasgui-web-component/loader';
@@ -51,6 +53,7 @@ import {
   AutocompleteService,
   MonitoringService,
   ThemeService,
+  RuntimeConfigurationContextService, SubscriptionList,
 } from '@ontotext/workbench-api';
 import {YasguiComponent} from './models/yasgui-component';
 import {FileUtils} from '../../utils/file-utils';
@@ -61,6 +64,7 @@ import {KeyboardShortcutConfiguration, KeyboardShortcutName} from './models/yasg
 import {YasguiPersistenceMigrationService} from './service/yasgui-persistence-migration.service';
 import {OntotextYasguiElement} from './models/ontotext-yasgui-element';
 import {QueryChangedPayload} from './models/yasqe/query-changed-payload';
+import {LoggerProvider} from '../../services/logger-provider';
 
 defineCustomElements();
 
@@ -80,7 +84,9 @@ defineCustomElements();
     '[class]': 'cssClass()'
   }
 })
-export class YasguiComponentFacadeComponent implements OnDestroy {
+export class YasguiComponentFacadeComponent implements OnInit, OnDestroy {
+  private readonly logger = LoggerProvider.logger;
+
   @HostListener('click', ['$event'])
   preventHashNavigation(event: MouseEvent) {
     const target = event.target as HTMLElement;
@@ -152,10 +158,16 @@ export class YasguiComponentFacadeComponent implements OnDestroy {
     });
   }
 
+  ngOnInit(): void {
+    this.subscriptionList.add(
+      this.runtimeConfigurationContextService.onThemeModeChanged(this.onThemeChanged.bind(this))
+    );
+  }
+
   ngOnDestroy(): void {
     this.autocompleteAbortController?.abort();
     this.removeDirtyCheckHandlers();
-
+    this.subscriptionList.unsubscribeAll();
   }
 
   // ===================================
@@ -178,6 +190,7 @@ export class YasguiComponentFacadeComponent implements OnDestroy {
   private readonly autocompleteService = service(AutocompleteService);
   private readonly monitoringService = service(MonitoringService);
   private readonly themeService = service(ThemeService);
+  private readonly runtimeConfigurationContextService = service(RuntimeConfigurationContextService);
 
   // ===================================
   // Public variables
@@ -191,6 +204,8 @@ export class YasguiComponentFacadeComponent implements OnDestroy {
   // ===================================
   // Private variables
   // ===================================
+
+  private readonly subscriptionList = new SubscriptionList();
 
   /**
    * AbortController instance used for cancelling ongoing autocomplete requests when a new autocomplete request is made
@@ -455,6 +470,18 @@ export class YasguiComponentFacadeComponent implements OnDestroy {
   // ===================================
   // Private methods
   // ===================================
+
+  /**
+   * Handles application theme changes by applying the corresponding editor theme to the Ontotext YASGUI component.
+   */
+  private onThemeChanged(){
+    const ontotextYasguiComponent = this.getOntotextYasguiComponent();
+    const themeName = this.themeService.getCodeEditorThemeName() || 'default';
+    ontotextYasguiComponent.setTheme(themeName)
+      .catch((error) => {
+        this.logger.error(`Failed to apply the theme "${themeName}" to Sparql editor component.`, error);
+      });
+  }
 
   private removeDirtyCheckHandlers(): void {
     this.getOntotextYasguiElements().forEach((el) => {
