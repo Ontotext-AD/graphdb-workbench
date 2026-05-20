@@ -6,6 +6,7 @@ import {service} from '../../../providers';
 import {RepositoryStorageService} from './repository-storage.service';
 import {BeforeChangeValidationPromise} from '../../../models/context/before-change-validation-promise';
 import {LifecycleHooks} from '../../../providers/service/lifecycle-hooks';
+import {LoggerProvider} from '../../logging/logger-provider';
 
 type RepositoryContextFields = {
   readonly REPOSITORY_LIST: string;
@@ -23,6 +24,7 @@ type RepositoryContextFieldParams = {
 export class RepositoryContextService extends ContextService<RepositoryContextFields> implements DeriveContextServiceContract<RepositoryContextFields, RepositoryContextFieldParams>, LifecycleHooks {
   readonly SELECTED_REPOSITORY = 'selectedRepository';
   readonly REPOSITORY_LIST = 'repositoryList';
+  private readonly logger = LoggerProvider.logger;
 
   /**
    * Updates the selected repository and notifies subscribers about the change.
@@ -100,8 +102,21 @@ export class RepositoryContextService extends ContextService<RepositoryContextFi
     };
   }
 
-  private readonly deserializeRepository = (repository: string): Repository => {
-    return new Repository(JSON.parse(repository));
+  /**
+   * Deserializes a repository from the given string value. The value is expected to be a JSON string representing a RepositoryReference.
+   *
+   * This method is used to deserialize objects stored in localStorage.
+   *
+   * @param repository - The value retrieved from localStorage.
+   * @returns The repository from the repository list if found, otherwise `undefined`.
+   */
+  private readonly deserializeRepository = (repository: string): Repository | undefined => {
+    try {
+      return this.findRepository(JSON.parse(repository));
+    } catch (error) {
+      this.logger.error(`Failed to deserialize repository from: "${repository}"`, error);
+      return undefined;
+    }
   };
 
   /**

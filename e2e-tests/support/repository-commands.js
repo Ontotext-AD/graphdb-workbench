@@ -47,13 +47,13 @@ Cypress.Commands.add('deleteRepository', (id, secured = false) => {
     });
 });
 
-Cypress.Commands.add('presetRepository', (id) => {
-    cy.setLocalStorage(PRESET_REPO, JSON.stringify({id: id, location: ''}));
+Cypress.Commands.add('presetRepository', (id, location = '') => {
+    cy.setLocalStorage(PRESET_REPO, JSON.stringify({id: id, location}));
     cy.waitUntil(() =>
         cy.getLocalStorage(PRESET_REPO)
             .then((preset) => {
                 const presetRepo = JSON.parse(preset);
-                return presetRepo && presetRepo.id === id
+                return presetRepo && presetRepo.id === id && presetRepo.location === location;
             }));
     cy.log('Pre-set repository:', id);
 });

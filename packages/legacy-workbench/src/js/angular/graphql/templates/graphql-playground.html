@@ -25,7 +25,11 @@
          size="100">
     </div>
 
-    <div class="content" ng-if="initialized">
+    <div ng-if="!isSelectedRepositoryLocal" class="warnings unexpected-remote-repository-warning">
+        <div class="alert alert-warning">{{'graphql.playground.warnings.unexpected_remote_repository' | translate}}</div>
+    </div>
+
+    <div class="content" ng-if="isSelectedRepositoryLocal && initialized">
         <div class="no-endpoints-view" ng-show="!loadingEndpoints && configuration === undefined && !graphqlEndpoints.length">
             <div class="alert alert-warning">
                 <div ng-bind-html="'graphql.playground.message.no_schemas_in_repository' | translate | trustAsHtml"></div>

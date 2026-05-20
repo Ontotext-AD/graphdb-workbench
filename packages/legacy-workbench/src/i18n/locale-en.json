@@ -827,6 +827,9 @@
             },
             "endpoint_selector": {
                 "tooltip": "Active endpoints"
+            },
+            "warnings": {
+                "unexpected_remote_repository": "The active repository is in a remote location. Playground is only available for repositories in the current location."
             }
         },
         "endpoints_management": {
@@ -1089,6 +1092,9 @@
                         "success": "The endpoint generation report was deleted successfully."
                     }
                 }
+            },
+            "warnings": {
+                "unexpected_remote_repository": "The selected repository is in a remote location, and its endpoints aren’t accessible here. Select a repository from the current location."
             }
         },
         "create_endpoint": {
@@ -1332,7 +1338,7 @@
                 }
             },
             "warnings": {
-                "unexpected_remote_repository": "The active repository is located at a different remote location. Please select a repository from the current location."
+                "unexpected_remote_repository": "Endpoints can only be created for repositories in the current location. Select a local repository to continue."
             }
         }
     },

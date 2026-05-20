@@ -9,6 +9,7 @@ import {
     AuthenticationStorageService,
     RuntimeConfigurationContextService,
     ThemeService,
+    RepositoryContextService,
 } from '@ontotext/workbench-api';
 
 const modules = [
@@ -31,6 +32,7 @@ function GraphqlPlaygroundViewCtrl($scope, $location, $repositories, $languageSe
     const authStorageService = service(AuthenticationStorageService);
     const runtimeConfigurationContextService = service(RuntimeConfigurationContextService);
     const themeService = service(ThemeService);
+    const repositoryContextService = service(RepositoryContextService);
     // =========================
     // Public variables
     // =========================
@@ -61,6 +63,12 @@ function GraphqlPlaygroundViewCtrl($scope, $location, $repositories, $languageSe
      */
     $scope.configuration = undefined;
 
+    /**
+     * A flag indicating if the selected source repository is local. This allows showing a warning message in the UI.
+     * @type {boolean}
+     */
+    $scope.isSelectedRepositoryLocal = false;
+
     // =========================
     // Public methods
     // =========================
@@ -84,6 +92,11 @@ function GraphqlPlaygroundViewCtrl($scope, $location, $repositories, $languageSe
     // =========================
     // Private methods
     // =========================
+    const onInit = () => {
+        loadEndpoints().finally(() => {
+            $scope.initialized = true;
+        });
+    };
 
     /**
      * Builds the configuration object for the GraphQL Playground.
@@ -216,8 +229,12 @@ function GraphqlPlaygroundViewCtrl($scope, $location, $repositories, $languageSe
      * Handles the change of the active repository.
      * @param {object} repositoryObject
      */
-    const getActiveRepositoryObjectHandler = (repositoryObject) => {
-        if (repositoryObject) {
+    const getSelectedRepositoryChangeHandler = (repositoryObject) => {
+        if (!repositoryObject) {
+            return;
+        }
+        $scope.isSelectedRepositoryLocal = repositoryObject.local;
+        if ($scope.isSelectedRepositoryLocal) {
             onInit();
         }
     };
@@ -230,10 +247,15 @@ function GraphqlPlaygroundViewCtrl($scope, $location, $repositories, $languageSe
      * @param {string} args.locale - The new locale to be set for the GraphQL Playground.
      */
     const getLanguageChangeHandler = (event, args) => {
-        GraphqlPlaygroundDirectiveUtil.getGraphqlPlaygroundComponentAsync("#graphql-playground")
-            .then((graphqlPlayground) => {
-                graphqlPlayground.setLanguage(args.locale);
-            });
+        const hasGraphqlEndpoints = $scope.graphqlEndpoints?.length;
+        // The GraphQL Playground is rendered only when at least one GraphQL endpoint exists.
+        // Therefore, we attempt to locate it and change language only in that case.
+        if (hasGraphqlEndpoints) {
+            GraphqlPlaygroundDirectiveUtil.getGraphqlPlaygroundComponentAsync("#graphql-playground")
+                .then((graphqlPlayground) => {
+                    graphqlPlayground.setLanguage(args.locale);
+                });
+        }
     };
 
     /**
@@ -271,19 +293,9 @@ function GraphqlPlaygroundViewCtrl($scope, $location, $repositories, $languageSe
     // =========================
 
     subscriptions = [
-        $scope.$watch($scope.getActiveRepositoryObject, getActiveRepositoryObjectHandler),
+        repositoryContextService.onSelectedRepositoryChanged(getSelectedRepositoryChangeHandler),
         $scope.$on('language-changed', getLanguageChangeHandler),
         runtimeConfigurationContextService.onThemeModeChanged(onThemeChanged),
     ];
     $scope.$on('$destroy', unsubscribeAll);
-
-    // =========================
-    // Initialization
-    // =========================
-
-    const onInit = () => {
-        loadEndpoints().finally(() => {
-            $scope.initialized = true;
-        });
-    };
 }

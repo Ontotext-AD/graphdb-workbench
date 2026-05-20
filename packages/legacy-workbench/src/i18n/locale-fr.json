@@ -826,6 +826,9 @@
             },
             "endpoint_selector": {
                 "tooltip": "Interfaces actives"
+            },
+            "warnings": {
+                "unexpected_remote_repository": "Le dépôt actif se trouve dans un emplacement distant. Le Playground est uniquement disponible pour les dépôts situés dans l’emplacement actuel."
             }
         },
         "endpoints_management": {
@@ -1088,6 +1091,9 @@
                         "success": "Le rapport de génération du point de terminaison a été supprimé avec succès."
                     }
                 }
+            },
+            "warnings": {
+                "unexpected_remote_repository": "Le dépôt sélectionné se trouve dans un emplacement distant et ses endpoints ne sont pas accessibles ici. Sélectionnez un dépôt de l’emplacement actuel."
             }
         },
         "create_endpoint": {
@@ -1331,7 +1337,7 @@
                 }
             },
             "warnings": {
-                "unexpected_remote_repository": "Le dépôt actif se trouve sur un autre emplacement distant. Veuillez sélectionner un dépôt à l'emplacement actuel."
+                "unexpected_remote_repository": "Les endpoints ne peuvent être créés que pour les dépôts situés dans l’emplacement actuel. Sélectionnez un dépôt local pour continuer."
             }
         }
     },

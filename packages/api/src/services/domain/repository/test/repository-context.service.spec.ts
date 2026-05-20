@@ -313,6 +313,84 @@ describe('RepositoryContextService', () => {
       expect(repositoryContextService.isActiveRepoOntopType()).toBe(false);
     });
   });
+
+  describe('deserializeRepository', () => {
+    // deserializeRepository is a private method and is tested indirectly through deserializeProperty(), which delegates to it.
+    beforeEach(() => {
+      const repositories = new RepositoryList([
+        new Repository({id: 'remote-repo', location: 'http://example.com:7300', sesameType: 'graphdb:OntopRepository', local: false}),
+        new Repository({id: 'local-repo', location: '', sesameType: 'graphdb:SailRepository', local: true})
+      ]);
+      repositoryContextService.updateRepositoryList(repositories);
+    });
+
+    test('should return undefined when trying to deserialize a repository from an empty string', () => {
+      // GIVEN: A repository context service containing available repositories
+
+      // WHEN: I try to deserialize an empty string
+      const deserializedRepository = repositoryContextService.deserializeProperty('selectedRepository', '');
+      // THEN: I expect the deserialized repository to be undefined.
+      expect(deserializedRepository).toBeUndefined();
+    });
+
+    test('should return undefined when trying to deserialize a repository from an invalid JSON string', () => {
+      // GIVEN: A repository context service containing available repositories
+
+      // WHEN: I try to deserialize an invalid JSON string
+      const deserializedRepository = repositoryContextService.deserializeProperty('selectedRepository', 'wrongJsonString');
+      // THEN: I expect the deserialized repository to be undefined.
+      expect(deserializedRepository).toBeUndefined();
+    });
+
+    test('should return undefined when trying to deserialize a repository with a non-existent repository id', () => {
+      // GIVEN: A repository context service containing available repositories
+
+      // WHEN: I try to deserialize a non-existent repository
+      const deserializedRepository = repositoryContextService.deserializeProperty('selectedRepository', '{"id": "non-existent-repo", "location": ""}');
+      // THEN: I expect the deserialized repository to be undefined.
+      expect(deserializedRepository).toBeUndefined();
+    });
+
+    test('should return undefined when trying to deserialize a remote repository without a location', () => {
+      // GIVEN: A repository context service containing available repositories
+
+      // WHEN: I try to deserialize a remote repository without a location
+      const deserializedRepository = repositoryContextService.deserializeProperty('selectedRepository', '{"id": "remote-repo", "location": ""}');
+      // THEN: I expect the deserialized repository to be undefined.
+      expect(deserializedRepository).toBeUndefined();
+    });
+
+    test('should return undefined when trying to deserialize a local repository with a location', () => {
+      // GIVEN: A repository context service containing available repositories
+
+      // WHEN: I try to deserialize a local repository with a location
+      const deserializedRepository = repositoryContextService.deserializeProperty('selectedRepository', '{"id": "local-repo", "location": "http://example.com:7300"}');
+      // THEN: I expect the deserialized repository to be undefined.
+      expect(deserializedRepository).toBeUndefined();
+    });
+
+    test('should return a repository when trying to deserialize a remote repository', () => {
+      // GIVEN: A repository context service containing available repositories
+
+      // WHEN: I try to deserialize a remote repository
+      const deserializedRepository = repositoryContextService.deserializeProperty('selectedRepository', '{"id": "remote-repo", "location": "http://example.com:7300"}') as Repository;
+      // THEN: I expect the deserialized repository to be a populated repository instance.
+      expect(deserializedRepository).toBeInstanceOf(Repository);
+      expect(deserializedRepository.local).toBe(false);
+      expect(deserializedRepository.sesameType).toBe('graphdb:OntopRepository');
+    });
+
+    test('should return a repository when trying to deserialize a local repository', () => {
+      // GIVEN: A repository context service containing available repositories
+
+      // WHEN: I try to deserialize a local repository
+      const deserializedRepository = repositoryContextService.deserializeProperty('selectedRepository', '{"id": "local-repo", "location": ""}') as Repository;
+      // THEN: I expect the deserialized repository to be a populated repository instance.
+      expect(deserializedRepository).toBeInstanceOf(Repository);
+      expect(deserializedRepository.local).toBe(true);
+      expect(deserializedRepository.sesameType).toBe('graphdb:SailRepository');
+    });
+  });
 });
 
 function createRepositoryInstance(id: string, location = 'http://example.com:7300') {

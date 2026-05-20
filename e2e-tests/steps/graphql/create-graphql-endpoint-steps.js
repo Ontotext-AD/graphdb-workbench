@@ -7,6 +7,14 @@ export class CreateGraphqlEndpointSteps {
         return cy.get('.create-graphql-endpoint-view');
     }
 
+    static getPageContainer() {
+        return CreateGraphqlEndpointSteps.getView().find('.content');
+    }
+
+    static getRepositoryInRemoteLocation() {
+        return CreateGraphqlEndpointSteps.getView().find('.unexpected-remote-repository-warning');
+    }
+
     static getSourceRepositorySelector() {
         return this.getView().find('.source-repository-selector');
     }

@@ -10,6 +10,14 @@ export class GraphqlPlaygroundSteps {
         return cy.get('.graphql-playground-view');
     }
 
+    static getPageContainer() {
+        return GraphqlPlaygroundSteps.getView().find('.content');
+    }
+
+    static getRepositoryInRemoteLocation() {
+        return GraphqlPlaygroundSteps.getView().find('.unexpected-remote-repository-warning');
+    }
+
     static getNoSchemasAlert() {
         return this.getView().find('.no-endpoints-view');
     }
