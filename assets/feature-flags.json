@@ -1,0 +1,6 @@
+{
+  "enableGraphQL": true,
+  "enableTTYG": true,
+  "enableClusterManagement": false,
+  "newSparql": true
+}

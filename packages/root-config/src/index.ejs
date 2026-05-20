@@ -50,6 +50,9 @@
 <!--                    base-uri 'self';">-->
     <meta name="importmap-type" use-injector />
 
+    <script>
+      window.__FEATURE_FLAGS__ = <%= JSON.stringify(featureFlags) %>;
+    </script>
     <script type="application/javascript">
         window.wbDevMode = <%= devMode %>;
     </script>

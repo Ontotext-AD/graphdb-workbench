@@ -1,5 +1,8 @@
 import {Routes} from '@angular/router';
 import {documentationLinkResolve} from './services/route-data-resolver';
+import {environment} from '../environments/environment';
+
+
 
 export const routes: Routes = [
   {

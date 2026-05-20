@@ -41,6 +41,7 @@ export * from './models/url';
 export * from './providers';
 
 // Export services for external usages.
+export * from './services/feature-flags/feature-flags';
 export * from './services/context';
 export * from './services/application-settings';
 export * from './services/theme';

@@ -46,12 +46,13 @@ PluginRegistry.add('main.menu', {
         ],
     },
 );
+
 PluginRegistry.add('main.menu', {
-        disabled: true,
+        disabled: !__FEATURE_FLAGS__.newSparql,
         items: [
             {
-                label: 'New YASGUI',
-                labelKey: 'New YASGUI',
+                label: 'SPARQL',
+                labelKey: 'SPARQL',
                 href: 'sparql-new',
                 order: 1.9,
                 role: 'IS_AUTHENTICATED_FULLY',

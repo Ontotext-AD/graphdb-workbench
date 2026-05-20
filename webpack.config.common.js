@@ -9,6 +9,10 @@ const {MergeJsonPlugin} = require('./webpack/merge-json-plugin.js');
 const {MergeI18nPlugin} = require('./webpack/merge-i18n-plugin.js');
 const path = require("path");
 const fs = require('fs');
+// Load the feature flags JSON file for injection into index.ejs
+const featureFlags = JSON.parse(
+  fs.readFileSync(path.resolve(__dirname, 'assets/feature-flags.json'), 'utf8')
+);
 
 // The "string-replace-loader" replaces the version in all HTML and JS files except those copied by CopyPlugin.
 // This function must be used as the transform parameter of the plugin to replace the version.
@@ -101,7 +105,8 @@ module.exports = (webpackConfigEnv, argv) => {
                         microFrontEndsUrls: 'http://localhost:9002 http://localhost:9003 ws://localhost:9003 ws://localhost:9002',
                         externalCSSs: externalCSSs.join(' '),
                         externalJavaScripts: externalJavaScripts.join(' '),
-                        externalImages: externalImages.join(' ')
+                        externalImages: externalImages.join(' '),
+                        featureFlags,
                     };
                 },
                 chunks: ['main'],
