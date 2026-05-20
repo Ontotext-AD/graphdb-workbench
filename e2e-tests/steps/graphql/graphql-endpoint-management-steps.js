@@ -10,6 +10,14 @@ export class GraphqlEndpointManagementSteps {
         return cy.get('.graphql-endpoint-management-view');
     }
 
+    static getPageContainer() {
+        return GraphqlEndpointManagementSteps.getView().find('.endpoint-management-container');
+    }
+
+    static getRepositoryInRemoteLocation() {
+        return GraphqlEndpointManagementSteps.getView().find('.unexpected-remote-repository-warning');
+    }
+
     static getEndpointFilterField() {
         return this.getView().find('.endpoints-filter-field');
     }

@@ -14,7 +14,11 @@
          size="100">
     </div>
 
-    <div ng-if="getActiveRepository() && !loadingEndpointsInfo" class="endpoint-management-container">
+    <div ng-if="!isSelectedRepositoryLocal && getActiveRepository()" class="warnings unexpected-remote-repository-warning">
+        <div class="alert alert-warning">{{'graphql.endpoints_management.warnings.unexpected_remote_repository' | translate}}</div>
+    </div>
+
+    <div ng-if="isSelectedRepositoryLocal && getActiveRepository() && !loadingEndpointsInfo" class="endpoint-management-container">
 
         <div class="toolbar">
             <div class="endpoints-filter">

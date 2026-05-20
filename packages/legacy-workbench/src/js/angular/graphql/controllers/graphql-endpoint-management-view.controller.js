@@ -8,6 +8,7 @@ import {resolvePlaygroundUrlWithEndpoint} from "../services/endpoint-utils";
 import {saveAs} from 'lib/FileSaver-patch';
 import {GraphqlEndpointInfo} from "../../models/graphql/graphql-endpoints-info";
 import {LoggerProvider} from "../../core/services/logger-provider";
+import {RepositoryContextService, service} from '@ontotext/workbench-api';
 
 const logger = LoggerProvider.logger;
 const modules = [
@@ -28,6 +29,21 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
     // Private variables
     // =========================
 
+    /**
+     * Reference to import schema dialog instance.
+     */
+    let importSchemaDialog;
+
+    /**
+     * Reference to endpoint configuration dialog instance.
+     */
+    let endpointConfigurationDialog;
+
+    /**
+     * Reference to endpoint report dialog instance.
+     */
+    let endpointReportDialog;
+
     const subscriptions = [];
 
     /**
@@ -35,6 +51,7 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
      * @type {number}
      */
     const ENDPOINTS_INFO_POLLING_INTERVAL = 5000;
+    const repositoryContextService = service(RepositoryContextService);
 
     // =========================
     // Public variables
@@ -99,6 +116,12 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
      * @type {boolean}
      */
     $scope.changingEndpointActiveState = false;
+
+    /**
+     * A flag indicating if the selected source repository is local. This allows showing a warning message in the UI.
+     * @type {boolean}
+     */
+    $scope.isSelectedRepositoryLocal = false;
 
     // =========================
     // Public methods
@@ -220,7 +243,7 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
      * @returns {*} The modal instance.
      */
     $scope.importSchema = () => {
-        return $uibModal.open({
+        importSchemaDialog = $uibModal.open({
             templateUrl: 'js/angular/graphql/templates/modal/import-endpoint-definition-modal.html',
             controller: 'ImportEndpointDefinitionModalController',
             windowClass: 'import-endpoint-definition-modal',
@@ -234,7 +257,9 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
                     };
                 },
             },
-        }).result;
+        });
+        importSchemaDialog.result.finally(() => importSchemaDialog = null);
+        return importSchemaDialog.result;
     };
 
     /**
@@ -258,7 +283,7 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
      * @returns {*} The modal instance.
      */
     $scope.onConfigureEndpoint = (endpointConfiguration) => {
-        return $uibModal.open({
+        endpointConfigurationDialog = $uibModal.open({
             templateUrl: 'js/angular/graphql/templates/modal/endpoint-configuration-modal.html',
             controller: 'GraphqlEndpointConfigurationModalController',
             windowClass: 'graphql-endpoint-configuration-modal',
@@ -273,7 +298,9 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
                     };
                 },
             },
-        }).result;
+        });
+        endpointConfigurationDialog.result.finally(() => endpointConfigurationDialog = null);
+        return endpointConfigurationDialog.result;
     };
 
     /**
@@ -311,12 +338,46 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
     // Private methods
     // =========================
 
+    const onInit = () => {
+        loadEndpointsInfo(true)
+            .then(() => {
+                pollEndpointsInfo();
+            });
+    };
+
+    /**
+     * Closes all currently opened dialogs related to GraphQL endpoint management.
+     *
+     * Dialogs are repository-specific and must be closed when the active
+     * repository changes to avoid displaying stale or misleading information.
+     */
+    const closeDialogs = () => {
+        if (importSchemaDialog) {
+            importSchemaDialog.dismiss();
+        }
+        if (endpointConfigurationDialog) {
+            endpointConfigurationDialog.dismiss();
+        }
+        if (endpointReportDialog) {
+            endpointReportDialog.dismiss();
+        }
+    };
+
     /**
      * Handles the change of the active repository.
      * @param {object} repositoryObject
      */
-    const getActiveRepositoryObjectHandler = (repositoryObject) => {
-        if (repositoryObject) {
+    const getSelectedRepositoryChangeHandler = (repositoryObject) => {
+        if (!repositoryObject) {
+            return;
+        }
+        // Close any open dialogs before reloading repository-specific data. Dialogs are tied to the currently selected
+        // repository and should not remain open if the repository changes.
+        //
+        // This can occur when a dialog is open and the repository is changed from another browser tab.
+        closeDialogs();
+        $scope.isSelectedRepositoryLocal = repositoryObject.local;
+        if ($scope.isSelectedRepositoryLocal) {
             onInit();
         }
     };
@@ -327,7 +388,7 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
      * @returns {*}
      */
     const showReportModal = (endpointGenerationReport) => {
-        return $uibModal.open({
+        endpointReportDialog = $uibModal.open({
             templateUrl: 'js/angular/graphql/templates/modal/endpoint-generation-failure-result-modal.html',
             controller: 'EndpointGenerationResultFailureModalController',
             windowClass: 'endpoint-generation-failure-result-modal',
@@ -341,7 +402,9 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
                     };
                 },
             },
-        }).result;
+        });
+        endpointReportDialog.result.finally(() => endpointReportDialog = null);
+        return endpointReportDialog.result;
     };
 
     /**
@@ -463,6 +526,7 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
      * Unsubscribes all watchers.
      */
     const unsubscribeAll = () => {
+        closeDialogs();
         endpointsInfoPollingTimer && $interval.cancel(endpointsInfoPollingTimer);
         endpointsInfoPollingTimer = undefined;
         endpointsInfoLoader = undefined;
@@ -473,19 +537,10 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
     // Subscriptions
     // =========================
 
-    subscriptions.push(GraphqlContextService.subscribe(GraphqlEventName.START_CREATE_ENDPOINT_WIZARD, onStartCreateEndpointWizard));
-    subscriptions.push(GraphqlContextService.subscribe(GraphqlEventName.DELETE_ENDPOINT_REPORT, onDeleteEndpointReport));
-    subscriptions.push($scope.$watch($scope.getActiveRepositoryObject, getActiveRepositoryObjectHandler));
+    subscriptions.push(
+        GraphqlContextService.subscribe(GraphqlEventName.START_CREATE_ENDPOINT_WIZARD, onStartCreateEndpointWizard),
+        GraphqlContextService.subscribe(GraphqlEventName.DELETE_ENDPOINT_REPORT, onDeleteEndpointReport),
+        repositoryContextService.onSelectedRepositoryChanged(getSelectedRepositoryChangeHandler),
+    );
     $scope.$on('$destroy', unsubscribeAll);
-
-    // =========================
-    // Initialization
-    // =========================
-
-    const onInit = () => {
-        loadEndpointsInfo(true)
-            .then(() => {
-                pollEndpointsInfo();
-            });
-    };
 }
