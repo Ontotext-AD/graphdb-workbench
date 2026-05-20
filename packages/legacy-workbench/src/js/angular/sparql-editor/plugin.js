@@ -13,7 +13,8 @@ PluginRegistry.add('route', {
 });
 
 PluginRegistry.add('main.menu', {
-    'items': [
+    disabled: __FEATURE_FLAGS__.useNewSparql,
+    items: [
         {
             label: 'SPARQL',
             labelKey: 'menu.sparql.label',
