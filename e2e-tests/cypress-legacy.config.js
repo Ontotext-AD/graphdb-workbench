@@ -15,7 +15,7 @@ export default defineConfig({
     screenshotsFolder: 'report/screenshots',
     videosFolder: 'report/videos',
     video: true,
-    defaultCommandTimeout: 25000,
+    defaultCommandTimeout: 8000,
     numTestsKeptInMemory: 10,
     viewportWidth: 1600,
     viewportHeight: 1200,

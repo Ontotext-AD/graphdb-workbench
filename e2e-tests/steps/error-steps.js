@@ -9,7 +9,7 @@ export class ErrorSteps {
     }
 
     static getNoConnectedRepoMessage() {
-        return this.getRepositoryErrors().find('.alert.lead.alert-info');
+        return this.getRepositoryErrors().find('.alert.lead.alert-info, .no-active-repo-message');
     }
 
     static verifyNoConnectedRepoMessage() {

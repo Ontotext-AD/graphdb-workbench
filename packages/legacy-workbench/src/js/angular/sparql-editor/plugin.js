@@ -1,5 +1,5 @@
 PluginRegistry.add('route', {
-    'url': '/sparql',
+    'url': '/sparql-old',
     'module': 'graphdb.framework.sparql-editor',
     'path': 'sparql-editor/app',
     'chunk': 'sparql',
@@ -9,20 +9,21 @@ PluginRegistry.add('route', {
     'helpInfo': 'view.sparql-editor.helpInfo',
     'reloadOnSearch': false,
     'documentationUrl': 'sparql-queries.html',
-    'allowAuthorities': ['READ_REPO_{repoId}']
+    'allowAuthorities': ['READ_REPO_{repoId}'],
 });
 
-PluginRegistry.add('main.menu', {
-    'items': [
-        {
-            label: 'SPARQL',
-            labelKey: 'menu.sparql.label',
-            href: 'sparql',
-            order: 2,
-            role: 'IS_AUTHENTICATED_FULLY',
-            icon: "icon-sparql",
-            guideSelector: 'menu-sparql',
-            children: []
-        }
-    ]
-});
+// PluginRegistry.add('main.menu', {
+//     'disabled': true,
+//     'items': [
+//         {
+//             label: 'SPARQL',
+//             labelKey: 'menu.sparql.label',
+//             href: 'sparqlaaa',
+//             order: 2,
+//             role: 'IS_AUTHENTICATED_FULLY',
+//             icon: "icon-sparql",
+//             guideSelector: 'menu-sparql',
+//             children: [],
+//         },
+//     ],
+// });
