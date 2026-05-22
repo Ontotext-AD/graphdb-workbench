@@ -85,6 +85,28 @@ defineCustomElements();
   }
 })
 export class YasguiComponentFacadeComponent implements OnInit, OnDestroy {
+  // ===================================
+  // Angular injections
+  // ===================================
+  private readonly elementRef = inject(ElementRef);
+  private readonly translocoService = inject(TranslocoService);
+  private readonly yasguiPersistenceMigrationService = inject(YasguiPersistenceMigrationService);
+
+  // ===================================
+  // API module injections
+  // ===================================
+  private readonly sparqlService = service(SparqlService);
+  private readonly toastrService = service(OntoToastrService);
+  private readonly rdf4jRepositoryService = service(Rdf4jRepositoryService);
+  private readonly repositoryContextService = service(RepositoryContextService);
+  private readonly authenticationStorageService = service(AuthenticationStorageService);
+  private readonly languageContextService = service(LanguageContextService);
+  private readonly languageService = service(LanguageService);
+  private readonly autocompleteService = service(AutocompleteService);
+  private readonly monitoringService = service(MonitoringService);
+  private readonly themeService = service(ThemeService);
+  private readonly runtimeConfigurationContextService = service(RuntimeConfigurationContextService);
+
   private readonly logger = LoggerProvider.logger;
 
   @HostListener('click', ['$event'])
@@ -137,6 +159,12 @@ export class YasguiComponentFacadeComponent implements OnInit, OnDestroy {
    */
   config = signal<OntotextYasguiConfig | undefined>(undefined);
 
+  /**
+   * The currently selected language in the application. This is used to set the language of the ontotext-yasgui
+   * component and to update it when the selected language changes in the application.
+   */
+  language = signal<string | undefined>(this.languageContextService.getSelectedLanguage() || this.languageContextService.getDefaultLanguage());
+
   // ===================================
   // Outputs
   // ===================================
@@ -159,9 +187,10 @@ export class YasguiComponentFacadeComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.subscriptionList.add(
-      this.runtimeConfigurationContextService.onThemeModeChanged(this.onThemeChanged.bind(this))
-    );
+    this.subscriptionList.addAll([
+      this.runtimeConfigurationContextService.onThemeModeChanged(this.onThemeChanged.bind(this)),
+      this.languageContextService.onSelectedLanguageChanged(this.onLanguageChange.bind(this), undefined, true),
+    ]);
   }
 
   ngOnDestroy(): void {
@@ -169,28 +198,6 @@ export class YasguiComponentFacadeComponent implements OnInit, OnDestroy {
     this.removeDirtyCheckHandlers();
     this.subscriptionList.unsubscribeAll();
   }
-
-  // ===================================
-  // Angular injections
-  // ===================================
-  private readonly elementRef = inject(ElementRef);
-  private readonly translocoService = inject(TranslocoService);
-  private readonly yasguiPersistenceMigrationService = inject(YasguiPersistenceMigrationService);
-
-  // ===================================
-  // API module injections
-  // ===================================
-  private readonly sparqlService = service(SparqlService);
-  private readonly toastrService = service(OntoToastrService);
-  private readonly rdf4jRepositoryService = service(Rdf4jRepositoryService);
-  private readonly repositoryContextService = service(RepositoryContextService);
-  private readonly authenticationStorageService = service(AuthenticationStorageService);
-  private readonly languageContextService = service(LanguageContextService);
-  private readonly languageService = service(LanguageService);
-  private readonly autocompleteService = service(AutocompleteService);
-  private readonly monitoringService = service(MonitoringService);
-  private readonly themeService = service(ThemeService);
-  private readonly runtimeConfigurationContextService = service(RuntimeConfigurationContextService);
 
   // ===================================
   // Public variables
@@ -483,6 +490,10 @@ export class YasguiComponentFacadeComponent implements OnInit, OnDestroy {
       });
   }
 
+  private onLanguageChange(newLang: string | undefined) {
+    this.language.set(newLang ?? this.languageContextService.getDefaultLanguage());
+  }
+
   private removeDirtyCheckHandlers(): void {
     this.getOntotextYasguiElements().forEach((el) => {
       el.removeEventListener('paste', this.delegatedPasteHandler);
@@ -494,7 +505,7 @@ export class YasguiComponentFacadeComponent implements OnInit, OnDestroy {
     if (!yasguiConfig) {
       return;
     }
-    console.info('%cinit config', 'background: orange', yasguiConfig);
+
     const selectedRepository = this.repositoryContextService.getSelectedRepository();
     const isVirtualRepository = !!selectedRepository?.isOntop();
     // FIXME: This doesn't seem to do the same as in the legacy.
@@ -549,10 +560,8 @@ export class YasguiComponentFacadeComponent implements OnInit, OnDestroy {
       runtimeConfig.themeName = this.themeService.getCodeEditorThemeName();
     }
 
-    const actualConfig = ObjectUtil.mergeWithDefaults(
-      yasguiConfig,
-      { ...this.getDefaultConfig(), ...runtimeConfig }
-    );
+    const baseConfig = ObjectUtil.mergeWithDefaults(yasguiConfig, this.getDefaultConfig());
+    const actualConfig = ObjectUtil.mergeWithDefaults(runtimeConfig as OntotextYasguiConfig, baseConfig);
     this.config.set(actualConfig);
 
     this.addDirtyCheckHandlers();
@@ -560,8 +569,6 @@ export class YasguiComponentFacadeComponent implements OnInit, OnDestroy {
     this.setInitialQueryState().then(() => {
       this.afterInit()?.();
     });
-
-    console.info('%cconfig updated', 'background: tan', {runtimeConfig, actualConfig, config: this.config()});
   }
 
   private readonly setInitialQueryState = async () => {
