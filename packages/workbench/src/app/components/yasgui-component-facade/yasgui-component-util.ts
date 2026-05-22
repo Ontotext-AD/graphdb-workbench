@@ -66,7 +66,6 @@ export class YasguiComponentUtil {
           iteration -= waitTime;
           if (iteration < 0) {
             clearInterval(interval);
-            console.info('YASGUI component is not found', directiveSelector);
             reject(new Error('Element is not found: ' + directiveSelector));
           }
         }
