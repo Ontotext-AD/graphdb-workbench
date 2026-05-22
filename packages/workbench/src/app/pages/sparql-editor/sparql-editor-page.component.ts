@@ -1,6 +1,5 @@
 import {Component, inject, OnDestroy, OnInit, signal} from '@angular/core';
 import {ActivatedRoute, Params, Router} from '@angular/router';
-import {ConfirmDialogModule} from 'primeng/confirmdialog';
 import {MessageModule} from 'primeng/message';
 import {TranslocoService} from '@jsverse/transloco';
 import {PageLayoutComponent} from '../../components/page-layout/page-layout.component';
@@ -8,7 +7,7 @@ import {
   YasguiComponentFacadeComponent
 } from '../../components/yasgui-component-facade/yasgui-component-facade.component';
 import {OntotextYasguiConfig} from '../../components/yasgui-component-facade/models/yasgui/ontotext-yasgui-config';
-import {LoggerProvider} from '../../services/logger-provider';
+import {LoggerProvider} from '../../services/logger/logger-provider';
 import {QueryExecutedEvent} from '../../components/yasgui-component-facade/models/event/query-executed-event';
 import {RequestAbortedEvent} from '../../components/yasgui-component-facade/models/event/request-aborted-event';
 import {QueryMode} from '../../components/yasgui-component-facade/models/query-mode';
@@ -59,8 +58,7 @@ import {ConnectorCommand} from '../../models/connectors/connector-command';
 import {mapSavedQueryToTabQueryModel} from './mappers/saved-query-to-tab-query-model.mapper';
 import {OngoingRequestsInfo} from '../../components/yasgui-component-facade/models/ongoing-requests-info';
 import {CancelAbortingQuery} from './error/cancel-abort-query';
-import {ConfirmationService} from 'primeng/api';
-import {DialogProviderService} from '../../services/dialog-provider.service';
+import {DialogProviderService} from '../../services/dialog/dialog-provider.service';
 import {DynamicDialogRef} from 'primeng/dynamicdialog';
 import {ConnectorProgressDialogComponent} from '../../components/connector-progress/connector-progress-dialog.component';
 import {ConnectorProgressData} from '../../components/connector-progress/connector-progress-data';
@@ -77,6 +75,7 @@ import {
 } from '../../components/yasgui-component-facade/models/yasr/yasr-plugin-name';
 import {ExploreVisualGraphElement} from './models/explore-visual-graph-element';
 import {GraphsVisualizationQueryParams} from './models/graphs-visualization-query-params';
+import {ConfirmationProviderService} from '../../services/dialog/confirmation-provider.service';
 
 interface UrlParametersAfterClear { repositoryId?: string, embedded?: boolean }
 
@@ -87,9 +86,7 @@ interface UrlParametersAfterClear { repositoryId?: string, embedded?: boolean }
     MessageModule,
     PageLayoutComponent,
     YasguiComponentFacadeComponent,
-    ConfirmDialogModule
   ],
-  providers: [ConfirmationService],
   templateUrl: './sparql-editor-page.component.html',
   styleUrl: './sparql-editor-page.component.scss',
 })
@@ -102,9 +99,8 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly translocoService = inject(TranslocoService);
-  private readonly confirmationService = inject(ConfirmationService);
   private readonly dialogProviderService = inject(DialogProviderService);
-  private readonly graphConfigService = service(GraphConfigService);
+  private readonly confirmationProviderService = inject(ConfirmationProviderService);
 
   // ================================
   // API DI
@@ -122,6 +118,7 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
   private readonly languageContextService = service(LanguageContextService);
   private readonly monitoringService = service(MonitoringService);
   private readonly eventService = service(EventService);
+  private readonly graphConfigService = service(GraphConfigService);
 
   // ================================
   // Private variables
@@ -193,24 +190,16 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
   }
 
   private onLanguageChange() {
-    this.confirmationService.confirm({
+    this.confirmationProviderService.confirm({
       message: this.translocoService.translate('sparql_editor.confirmation.on_language_change.message'),
       header: this.translocoService.translate('sparql_editor.confirmation.on_language_change.title'),
-      acceptButtonProps: {
-        label: this.translocoService.translate('components.dialog.confirmation.confirm_btn'),
-        severity: 'primary',
-      },
-      rejectButtonProps: {
-        label: this.translocoService.translate('components.dialog.confirmation.cancel_btn'),
-        severity: 'secondary',
-      },
-      accept: () => {
+      acceptHandler: () => {
         // The page needs to be reloaded, because of the Google charts and Pivot table scripts. When the language is
         // changed, the correct language for these components is loaded only on the page reload, but we can't be sure
         // that the user will reload the page by themselves, so we need to do it programmatically. We can't just change
         // the src of the existing script, because these components don't react to it, so we need to reload the whole page.
         WindowService.reloadPage();
-      },
+      }
     });
   }
 
@@ -459,21 +448,13 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
     }
 
     return new Promise<void>((resolve) => {
-      this.confirmationService.confirm({
-        target: event!.target as EventTarget,
+      this.confirmationProviderService.confirm({
         message: this.translocoService.translate('sparql_editor.confirmation.on_auto_execute_query.message'),
         header: this.translocoService.translate('sparql_editor.confirmation.on_auto_execute_query.title'),
-        rejectButtonProps: {
-          label: this.translocoService.translate('components.dialog.confirmation.cancel_btn'),
-          severity: 'secondary',
-        },
-        acceptButtonProps: {
-          label: this.translocoService.translate('components.dialog.confirmation.confirm_btn'),
-          severity: 'primary'
-        },
-        accept: () => {
+        target: event!.target as EventTarget,
+        acceptHandler: () => {
           resolve(yasguiComponent.query());
-        },
+        }
       });
     });
   }
@@ -664,23 +645,14 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.confirmationService.confirm({
-      target: event!.target as EventTarget,
+    this.confirmationProviderService.confirm({
       header: this.translocoService.translate('sparql_editor.confirmation.on_page_leave.title'),
       message: this.getExitPageConfirmMessage(ongoingRequestsInfo),
-      rejectButtonProps: {
-        label: this.translocoService.translate('components.dialog.confirmation.cancel_btn'),
-        severity: 'secondary',
-      },
-      acceptButtonProps: {
-        label: this.translocoService.translate('components.dialog.confirmation.confirm_btn'),
-        severity: 'primary'
-      },
-
-      accept: () => {
+      target: event!.target as EventTarget,
+      acceptHandler: () => {
         resolve(true);
       },
-      reject: () => {
+      rejectHandler: () => {
         reject(new CancelAbortingQuery());
       }
     });

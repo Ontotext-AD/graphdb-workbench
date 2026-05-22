@@ -1,6 +1,6 @@
 import {NotificationParam, NotificationType, notify} from '@ontotext/workbench-api';
 import {NotificationProviderService} from './notification-provider.service';
-import {NotificationOptions} from '../models/notification-options';
+import {NotificationOptions} from '../../models/notification-options';
 
 jest.mock('@ontotext/workbench-api', () => ({
   ...jest.requireActual('@ontotext/workbench-api'),

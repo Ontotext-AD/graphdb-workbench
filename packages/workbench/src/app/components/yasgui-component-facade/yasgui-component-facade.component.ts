@@ -64,7 +64,7 @@ import {KeyboardShortcutConfiguration, KeyboardShortcutName} from './models/yasg
 import {YasguiPersistenceMigrationService} from './service/yasgui-persistence-migration.service';
 import {OntotextYasguiElement} from './models/ontotext-yasgui-element';
 import {QueryChangedPayload} from './models/yasqe/query-changed-payload';
-import {LoggerProvider} from '../../services/logger-provider';
+import {LoggerProvider} from '../../services/logger/logger-provider';
 
 defineCustomElements();
 
