@@ -3,7 +3,7 @@ import {TranslocoPipe} from '@jsverse/transloco';
 import {ProgressBar} from 'primeng/progressbar';
 import {ConnectorBuildStatus, ConnectorsService, DateUtil, RepositoryStorageService, service} from '@ontotext/workbench-api';
 import {ConnectorProgressData} from './connector-progress-data';
-import {LoggerProvider} from '../../services/logger-provider';
+import {LoggerProvider} from '../../services/logger/logger-provider';
 
 /**
  * Component that shows live build progress for a connector CREATE or REPAIR operation.

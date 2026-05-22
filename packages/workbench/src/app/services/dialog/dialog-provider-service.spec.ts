@@ -3,7 +3,7 @@ import {Component} from '@angular/core';
 import {DialogService, DynamicDialogConfig, DynamicDialogRef} from 'primeng/dynamicdialog';
 import {Subject} from 'rxjs';
 import {DialogProviderService} from './dialog-provider.service';
-import {DialogOpenOptions} from '../models/dialog-open-options';
+import {DialogOpenOptions} from '../../models/dialog-open-options';
 
 @Component({standalone: true, template: ''})
 class TestDialogComponent {}

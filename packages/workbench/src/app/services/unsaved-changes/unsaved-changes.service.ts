@@ -1,14 +1,14 @@
 import {inject, Injectable} from '@angular/core';
 import {
-  service,
-  EventService,
   EventName,
+  EventService,
   NavigationStartPayload,
+  service,
   Subscription,
   SubscriptionList
 } from '@ontotext/workbench-api';
-import {ConfirmationService} from 'primeng/api';
 import {TranslocoService} from '@jsverse/transloco';
+import {ConfirmationProviderService} from '../dialog/confirmation-provider.service';
 
 /**
  * Coordinates unsaved-changes detection across the application.
@@ -25,7 +25,7 @@ export class UnsavedChangesService {
   private readonly callbacks = new SubscriptionList();
   private readonly eventService = service(EventService);
   private readonly translocoService = inject(TranslocoService);
-  private readonly confirmationService = inject(ConfirmationService);
+  private readonly confirmationProviderService = inject(ConfirmationProviderService);
 
   constructor() {
     this.subscribeToNavigationStart();
@@ -58,21 +58,13 @@ export class UnsavedChangesService {
 
   private readonly confirmUnsavedChanges = () => {
     return new Promise<boolean>((resolve) => {
-      return this.confirmationService.confirm({
+      this.confirmationProviderService.confirm({
         header: this.translocoService.translate('components.dialog.confirmation.title'),
-        message: this.translocoService.translate('components.dialog.confirmation.message'),
-        acceptButtonProps: {
-          label: this.translocoService.translate('components.dialog.confirmation.confirm_btn'),
-          severity: 'primary'
-        },
-        rejectButtonProps: {
-          label: this.translocoService.translate('components.dialog.confirmation.cancel_btn'),
-          severity: 'secondary'
-        },
-        accept: () => {
+        message: this.translocoService.translate('components.dialog.unsaved_changes.confirmation.message'),
+        acceptHandler: () => {
           resolve(false);
         },
-        reject: () => {
+        rejectHandler: () => {
           resolve(true);
         }
       });

@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Notification, NotificationParam, notify} from '@ontotext/workbench-api';
-import {NotificationOptions} from '../models/notification-options';
+import {NotificationOptions} from '../../models/notification-options';
 
 /**
  * Angular service for displaying toast notifications.

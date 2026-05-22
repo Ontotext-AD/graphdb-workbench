@@ -1,7 +1,7 @@
 import {inject, Injectable, Type} from '@angular/core';
 import {DialogService, DynamicDialogConfig, DynamicDialogRef} from 'primeng/dynamicdialog';
 import {firstValueFrom, map, Observable} from 'rxjs';
-import {DialogOpenOptions} from '../models/dialog-open-options';
+import {DialogOpenOptions} from '../../models/dialog-open-options';
 
 /**
  * Service for opening application dialogs.
