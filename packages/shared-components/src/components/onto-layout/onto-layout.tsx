@@ -316,6 +316,7 @@ export class OntoLayout {
     this.subscriptions.add(
       this.eventService.subscribe(EventName.NAVIGATION_END, (navigationEndPayload: NavigationEndPayload) => {
         this.navigationContextService.updatePreviousRoute(navigationEndPayload.oldUrl);
+        this.loading = false;
       }));
   }
 
@@ -326,13 +327,5 @@ export class OntoLayout {
           this.loading = true;
         }
       }));
-
-    this.subscriptions.add(
-      this.applicationLifecycleContextService.onApplicationStateChange((state) => {
-        if (state) {
-          this.loading = false;
-        }
-      })
-    );
   }
 }

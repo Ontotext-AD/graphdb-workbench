@@ -87,23 +87,13 @@ function registerSingleSpaRouterListeners(): void {
   });
 
   WindowService.getWindow().addEventListener('single-spa:before-mount-routing-event', (evt: Event) => {
-    const d = (evt as NavigationEvent).detail;
+    const d = (evt as AppChangeEvent).detail;
     service(ApplicationLifecycleContextService).updateNavigationBeforeMountRouting(d);
   });
 
   WindowService.getWindow().addEventListener('single-spa:routing-event', (evt: Event) => {
     const d = (evt as NavigationEvent).detail;
     service(EventService).emit(new NavigationEnd(d.oldUrl, d.newUrl));
-  });
-
-  WindowService.getWindow().addEventListener('single-spa:before-app-change', (evt: Event) => {
-    const d = (evt as AppChangeEvent).detail;
-    service(ApplicationLifecycleContextService).updateApplicationStateBeforeChange(d.newAppStatuses);
-  });
-
-  WindowService.getWindow().addEventListener('single-spa:app-change', (evt: Event) => {
-    const d = (evt as AppChangeEvent).detail;
-    service(ApplicationLifecycleContextService).updateApplicationStateChange(d.newAppStatuses);
   });
 }
 
