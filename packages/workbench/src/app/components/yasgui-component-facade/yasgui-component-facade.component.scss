@@ -119,8 +119,6 @@ app-yasgui-component-facade .yasgui-toolbar .btn-orientation {
 
 app-yasgui-component-facade .yasqe .CodeMirror {
   font-family: var(--mono-font) !important;
-  font-size: 16px;
-  min-height: 330px;
 }
 
 app-yasgui-component-facade .yasqe .yasqe_buttons {
@@ -139,8 +137,9 @@ app-yasgui-component-facade .tabPanel .yasqe  .yasqe-footer-buttons .abort-butto
 }
 
 app-yasgui-component-facade .custom-button {
-  font-size: 2.5em !important;
-  height: 48px;
+  /* There is a generic font-size rule that overrides the font size of the YASGUI component, */
+  /* so we set it explicitly to match the intended size of the YASQE buttons. */
+  font-size: 1.5em !important;
   color: var(--gw-primary-base) !important;
   background-color: var(--gw-editor-content-background) !important;
 }

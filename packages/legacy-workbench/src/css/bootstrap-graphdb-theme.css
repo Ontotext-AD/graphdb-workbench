@@ -1621,10 +1621,6 @@ yasgui-component .yasr_plugin_control label .label {
     background-color: var(--gw-primary-base) !important;
 }
 
-.yasqe .CodeMirror {
-    min-height: 330px;
-}
-
 .nav-item.sparql-tab a.nav-link {
     max-width: 250px;
     padding-right: 20px;
