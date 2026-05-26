@@ -22,6 +22,7 @@ import {
     ThemeService,
     SecurityContextService,
     service,
+    LanguageContextService,
     RuntimeConfigurationContextService,
     AuthenticationStorageService,
 } from '@ontotext/workbench-api';
@@ -97,6 +98,7 @@ function yasguiComponentDirective(
             const themeService = service(ThemeService);
             const authStorageService = service(AuthenticationStorageService);
             const runtimeConfigurationContextService = service(RuntimeConfigurationContextService);
+            const languageContextService = service(LanguageContextService);
             const logger = LoggerProvider.logger;
 
             $scope.classToApply = attrs.class || '';
@@ -512,13 +514,13 @@ function yasguiComponentDirective(
                 }
             };
 
-            const onLanguageChanged = (event, args) => {
-                $scope.language = args.locale;
+            const onLanguageChanged = (language) => {
+                $scope.language = language;
             };
 
             subscriptions.push(
+                languageContextService.onSelectedLanguageChanged(onLanguageChanged),
                 $scope.$watch('yasguiConfig', init),
-                $scope.$on('language-changed', onLanguageChanged),
                 // Subscribe to theme changes to apply the new theme to the YASGUI editor.
                 runtimeConfigurationContextService.onThemeModeChanged(onThemeChanged));
 

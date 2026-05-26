@@ -69,21 +69,31 @@
         "title": "Confirmer l'exécution",
         "message": "Il s'agit d'une mise à jour et elle peut modifier les données du dépôt. <br>Êtes-vous sûr de vouloir l'exécuter automatiquement ?"
       },
+      "running_queries_warning": {
+        "queries_non_updates": "<div class=\"run_query_confirmation alert alert-warning\">Vous avez {queriesCount, plural, =0 {0 requête} one {1 requête} other {# requêtes}} en cours. {queriesCount, plural, =0 {} one {La requête sera annulée.} other {Les requêtes seront annulées.}}</div>",
+        "none_queries_updates": "<div class=\"run_query_confirmation alert alert-warning\">Vous avez {updatesCount, plural, =0 {0 mise à jour} one {1 mise à jour} other {# mises à jour}} en cours. Vous avez {updatesCount, plural, one {1 mise à jour} other {# mises à jour}} en cours.</div>",
+        "queries_updates": "<div class=\"run_query_confirmation alert alert-warning\">Vous avez {queriesCount, plural, =0 {0 requête} one {1 requête} other {# requêtes}} et {updatesCount, plural, =0 {0 mise à jour} one {1 mise à jour} other {# mises à jour}} en cours. {queriesCount, plural, one {La requête sera annulée.} other {Les requêtes seront annulées.}}</div>"
+      },
       "on_language_change": {
         "title": "Changer de langue",
-        "message": "Changer de langue rechargera la page. Êtes-vous sûr de vouloir continuer ?"
+        "none_queries_non_updates": "Changer de langue rechargera la page. Êtes-vous sûr de vouloir continuer ?",
+        "queries_non_updates": "{{sparql_editor.confirmation.running_queries_warning.queries_non_updates}}<div>Changer de langue rechargera la page. Êtes-vous sûr de vouloir continuer ?</div>",
+        "none_queries_updates": "{{sparql_editor.confirmation.running_queries_warning.none_queries_updates}}<div>Changer de langue rechargera la page. Êtes-vous sûr de vouloir continuer ?</div>",
+        "queries_updates": "{{sparql_editor.confirmation.running_queries_warning.queries_updates}}<div>Changer de langue rechargera la page. Êtes-vous sûr de vouloir continuer ?</div>"
       },
       "on_page_leave": {
         "title": "Confirmer la sortie",
         "none_queries_non_updates": "Êtes-vous sûr de vouloir quitter ?",
-        "none_queries_one_update": "<div class=\"run_query_confirmation alert alert-warning\">Vous avez 1 mise à jour en cours.</div><div>Êtes-vous sûr de vouloir quitter ?</div>",
-        "none_queries_updates": "<div class=\"run_query_confirmation alert alert-warning\">Vous avez {{updatesCount}} mises à jour en cours.</div><div>Êtes-vous sûr de vouloir quitter ?</div>",
-        "one_query_non_updates": "<div class=\"run_query_confirmation alert alert-warning\">Vous avez 1 requête en cours, qui sera annulée.</div><div>Êtes-vous sûr de vouloir quitter ?</div>",
-        "one_query_one_update": "<div class=\"run_query_confirmation alert alert-warning\">Vous avez 1 requête et 1 mise à jour en cours. La requête sera annulée.</div><div>Êtes-vous sûr de vouloir quitter ?</div>",
-        "one_query_updates": "<div class=\"run_query_confirmation alert alert-warning\">Vous avez 1 requête et {{updatesCount}} mises à jour en cours. La requête sera annulée.</div><div>Êtes-vous sûr de vouloir quitter ?</div>",
-        "queries_non_updates": "<div class=\"run_query_confirmation alert alert-warning\">Vous avez {{queriesCount}} requêtes en cours. Les requêtes seront annulées.</div><div>Êtes-vous sûr de vouloir quitter ?</div>",
-        "queries_one_update": "<div class=\"run_query_confirmation alert alert-warning\">Vous avez {{queriesCount}} requêtes et 1 mise à jour en cours. Les requêtes seront annulées.</div><div>Êtes-vous sûr de vouloir quitter ?</div>",
-        "queries_updates": "<div class=\"run_query_confirmation alert alert-warning\">Vous avez {{queriesCount}} requêtes et {{updatesCount}} mises à jour en cours. Les requêtes seront annulées.</div><div>Êtes-vous sûr de vouloir quitter ?</div>"
+        "queries_non_updates": "{{sparql_editor.confirmation.running_queries_warning.queries_non_updates}}<div>Êtes-vous sûr de vouloir quitter ?</div>",
+        "none_queries_updates": "{{sparql_editor.confirmation.running_queries_warning.none_queries_updates}}<div>Êtes-vous sûr de vouloir quitter ?</div>",
+        "queries_updates": "{{sparql_editor.confirmation.running_queries_warning.queries_updates}}<div>Êtes-vous sûr de vouloir quitter ?</div>"
+      },
+      "on_repository_change": {
+        "title": "Confirmer le changement de dépôt sélectionné",
+        "none_queries_non_updates": "Êtes-vous sûr de vouloir changer le dépôt sélectionné ?",
+        "queries_non_updates": "{{sparql_editor.confirmation.running_queries_warning.queries_non_updates}}<div>Êtes-vous sûr de vouloir changer le dépôt sélectionné ?</div>",
+        "none_queries_updates": "{{sparql_editor.confirmation.running_queries_warning.none_queries_updates}}<div>Êtes-vous sûr de vouloir changer le dépôt sélectionné ?</div>",
+        "queries_updates": "{{sparql_editor.confirmation.running_queries_warning.queries_updates}}<div>Êtes-vous sûr de vouloir changer le dépôt sélectionné ?</div>"
       }
     },
     "connector_progress": {

@@ -6,8 +6,8 @@ import {WindowService} from '../window';
  *
  * @param url - The target URL to which the page should be redirected.
  */
-export function navigateTo(url: string): (event: Event) => void {
-  return (event: Event): void => {
+export function navigateTo(url: string): (event?: Event) => void {
+  return (event?: Event): void => {
     if (event?.preventDefault) {
       event.preventDefault();
     }
