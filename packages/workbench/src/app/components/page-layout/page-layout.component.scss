@@ -3,15 +3,22 @@
   flex-direction: column;
   height: 100%;
   width: 100%;
-}
 
-/**
- * Expose CSS variables for page title position and margin, so that they can be overridden by page components if needed.
- */
-.page-view .title-container {
-  position: var(--page-title-position);
-  margin-bottom: var(--page-title-margin-bottom);
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  /**
+   * Expose CSS variables for page title position and margin, so that they can be overridden by page components if needed.
+   */
+  .title-container {
+    position: var(--page-title-position);
+    margin-bottom: var(--page-title-margin-bottom);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .page-banners {
+    display: block;
+
+    /* Compensate for the potential negative margin as the one coming from the sparql-editor page */
+    margin-top: calc(-1 * var(--page-title-margin-bottom, 0px));
+  }
 }

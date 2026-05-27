@@ -20,6 +20,9 @@
     },
     "page_info_tooltip": {
       "documentation_link": "Pour en savoir plus, consultez la documentation GraphDB"
+    },
+    "repository_banners": {
+      "no_active_repository": "Certaines fonctionnalités ne sont pas disponibles car vous n'êtes connecté à aucun dépôt."
     }
   },
   "login": {
