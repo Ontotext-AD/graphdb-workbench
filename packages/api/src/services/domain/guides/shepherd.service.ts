@@ -291,7 +291,7 @@ export class ShepherdService implements Service {
       };
     }
 
-    const title = this.guideApi.sanitize(this.guideApi.translate(undefined, guideStep.title || ''));
+    const title = this.guideApi.translate(undefined, guideStep.title || '');
 
     // Adds " — n/N" to titles if the step is part of a multistep process
     let extraTitle = '';

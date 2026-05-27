@@ -6,6 +6,7 @@ import {LoggerProvider} from '../../logging/logger-provider';
 import {GuideStepBridge} from './guide-step-bridge';
 import {WindowService} from '../../window';
 import {ScrollLocation} from '../../../models/interactive-guide/scroll-location';
+import {HtmlUtil} from '../../utils';
 
 /**
  * The bridge API between the guide step plugins and the application services.
@@ -40,7 +41,7 @@ export class GuideApi implements Service, GuideStepBridge {
         this.logger.warn(`Missing translation for language [${lang}] in message object`);
         return '';
       }
-      return this.sanitize(this.applyParameters(translation, parameters));
+      return HtmlUtil.sanitize(this.applyParameters(translation, parameters));
     }
 
     bundle ??= this.languageContextService.getLanguageBundle();
@@ -56,18 +57,7 @@ export class GuideApi implements Service, GuideStepBridge {
       return key;
     }
 
-    return this.sanitize(this.applyParameters(translation as string, parameters));
-  }
-
-  /**
-   * Decodes HTML entities in the translated string safely using DOMParser,
-   * preventing XSS when the result is appended to the DOM.
-   *
-   * @param html - The string to sanitize.
-   * @returns The decoded plain-text string.
-   */
-  sanitize(html: string): string {
-    return new DOMParser().parseFromString(html, 'text/html').body.innerText;
+    return HtmlUtil.sanitize(this.applyParameters(translation as string, parameters));
   }
 
   /**
