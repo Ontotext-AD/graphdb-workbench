@@ -66,12 +66,8 @@ yasgui-component .yasgui-toolbar .btn-orientation {
         background-color: #dbdeed;
     }
 
-    .yasqe_buttons {
+    .yasqe_buttons .custom-button {
         background-color: #1C1C1C !important;
-
-        .custom-button {
-            background-color: #1C1C1C !important;
-        }
     }
 
     .notification {
