@@ -9,8 +9,10 @@
       }
     </h1>
 
-    <div class="page-errors-container">
-      <ng-content select="[page-errors]"></ng-content>
+    <div class="page-banners">
+      @if (!selectedRepository()) {
+        <app-repository-required-banner></app-repository-required-banner>
+      }
     </div>
   }
 
