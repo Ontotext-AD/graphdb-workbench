@@ -20,15 +20,6 @@ export interface GuideStepBridge {
   translate(bundle: TranslationBundle | undefined, key: string | Record<string, string>, parameters?: Record<string, string>): string;
 
   /**
-   * Decodes HTML entities in the translated string safely using DOMParser,
-   * preventing XSS when the result is appended to the DOM.
-   *
-   * @param html - The string to sanitize.
-   * @returns The decoded plain-text string.
-   */
-  sanitize(html: string): string;
-
-  /**
    * Replaces placeholders in the translation string with the given parameters.
    * Example: 'Hello {{name}}' + { name: 'Alice' } → 'Hello Alice'
    *

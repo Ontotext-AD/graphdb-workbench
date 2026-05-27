@@ -47,6 +47,7 @@
     "single-spa": "^6.0.3"
   },
   "peerDependencies": {
-    "shepherd.js": "^11.2.0"
+    "shepherd.js": "^11.2.0",
+    "dompurify": "^3.4.7"
   }
 }

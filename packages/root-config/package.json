@@ -31,6 +31,7 @@
     "webpack-dev-server": "^5.2.2"
   },
   "dependencies": {
+    "dompurify": "^3.4.7",
     "graphwise-styleguide": "^1.2.1",
     "regenerator-runtime": "^0.14.1",
     "remixicon": "^4.7.0",

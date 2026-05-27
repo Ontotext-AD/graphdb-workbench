@@ -5,14 +5,6 @@ import {LoggerProvider} from '../../../logging/logger-provider';
 import {WindowService} from '../../../window';
 import {ScrollLocation} from '../../../../models/interactive-guide/scroll-location';
 
-// jsdom does not support DOMParser#body.innerText — mock it globally
-const mockDOMParserParse = jest.fn((html: string) => ({
-  body: {innerText: html},
-}));
-globalThis.DOMParser = jest.fn().mockImplementation(() => ({
-  parseFromString: mockDOMParserParse,
-}));
-
 describe('GuideApi', () => {
   let guideApi: GuideApi;
   const languageContextService = service(LanguageContextService);
@@ -86,29 +78,6 @@ describe('GuideApi', () => {
 
       expect(result).toBe('');
       expect(warnSpy).toHaveBeenCalledWith('Missing translation for language [de] in message object');
-    });
-  });
-
-  describe('sanitize', () => {
-    test('should pass the html string through DOMParser and return innerText', () => {
-      mockDOMParserParse.mockReturnValueOnce({body: {innerText: 'Hello & World'}});
-      expect(guideApi.sanitize('Hello &amp; World')).toBe('Hello & World');
-    });
-
-    test('should return plain text unchanged when DOMParser returns it as-is', () => {
-      mockDOMParserParse.mockReturnValueOnce({body: {innerText: 'Hello World'}});
-      expect(guideApi.sanitize('Hello World')).toBe('Hello World');
-    });
-
-    test('should return empty string when DOMParser returns empty innerText', () => {
-      mockDOMParserParse.mockReturnValueOnce({body: {innerText: ''}});
-      expect(guideApi.sanitize('')).toBe('');
-    });
-
-    test('should call DOMParser.parseFromString with text/html mime type', () => {
-      mockDOMParserParse.mockReturnValueOnce({body: {innerText: 'test'}});
-      guideApi.sanitize('<b>test</b>');
-      expect(mockDOMParserParse).toHaveBeenCalledWith('<b>test</b>', 'text/html');
     });
   });
 
