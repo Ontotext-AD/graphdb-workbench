@@ -1,0 +1,63 @@
+<div class="dialog-content">
+  <form class="export-settings-form">
+    <div class="form-row">
+      <label for="jsonldMode">
+        {{ 'components.dialog.download_settings.form.label' | transloco }}
+        <span class="info-icon"
+              [pTooltip]="'components.dialog.download_settings.form.info' | transloco"
+              tooltipEvent="both"
+              tooltipPosition="right">
+            <em class="icon ri-information-2-line"></em>
+          </span>
+      </label>
+      <div class="field-input">
+        <p-select
+          inputId="jsonldMode"
+          name="jsonldMode"
+          [(ngModel)]="currentMode"
+          [options]="JSONLDModeOptions"
+          styleClass="input"
+          appendTo="body"
+          (onChange)="clearLinkInput($event)"/>
+      </div>
+    </div>
+
+    @if (isFramedMode()) {
+      <div class="form-row">
+        <label for="jsonldFrame">
+          {{ 'components.dialog.download_settings.frame.link' | transloco }}
+          <span class="info-icon"
+                [pTooltip]="'components.dialog.download_settings.frame.info' | transloco"
+                tooltipEvent="both"
+                tooltipPosition="right">
+              <em class="icon ri-information-2-line"></em>
+            </span>
+        </label>
+        <div class="field-input">
+          <input pInputText id="jsonldFrame" name="jsonldFrame" type="text"
+                 [(ngModel)]="link"
+                 [placeholder]="'components.dialog.download_settings.frame.uri_placeholder' | transloco"/>
+        </div>
+      </div>
+    }
+
+    @if (isContextMode()) {
+      <div class="form-row">
+        <label for="jsonldContext">
+          {{ 'components.dialog.download_settings.context.link' | transloco }}
+          <span class="info-icon"
+                [pTooltip]="'components.dialog.download_settings.context.info' | transloco"
+                tooltipEvent="both"
+                tooltipPosition="right">
+              <em class="icon ri-information-2-line"></em>
+            </span>
+        </label>
+        <div class="field-input">
+          <input pInputText id="jsonldContext" name="jsonldContext" type="text"
+                 [(ngModel)]="link"
+                 [placeholder]="'components.dialog.download_settings.context.uri_placeholder' | transloco"/>
+        </div>
+      </div>
+    }
+  </form>
+</div>

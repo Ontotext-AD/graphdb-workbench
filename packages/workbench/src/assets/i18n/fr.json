@@ -20,6 +20,31 @@
         "confirmation": {
           "message": "Vous avez des modifications non enregistrées. Êtes-vous sûr de vouloir continuer?"
         }
+      },
+      "download_settings": {
+        "title": {
+          "json-ld": "Paramètres d'exportation : JSON-LD",
+          "ndjson-ld": "Paramètres d'exportation : NDJSON-LD"
+        },
+        "form": {
+          "label": "Formulaire JSON-LD",
+          "info": "Spécifie la forme du document JSON-LD"
+        },
+        "context": {
+          "link": "Contexte JSON-LD",
+          "info": "Spécifie le contexte JSON-LD externe en tant qu'URL. Seules les URL figurant sur la liste blanche peuvent être utilisées.",
+          "uri_placeholder": "http://example.com/context.jsonld"
+        },
+        "frame": {
+          "link": "Cadre JSON-LD",
+          "info": "Spécifie le document cadre JSON-LD en tant qu'URL. Seules les URL figurant sur la liste blanche peuvent être utilisées.",
+          "uri_placeholder": "http://example.com/frame.jsonld"
+        },
+        "actions": {
+          "export": "Exportation",
+          "cancel": "Annuler",
+          "restore_defaults": "Restaurer les valeurs par défaut"
+        }
       }
     },
     "page_info_tooltip": {

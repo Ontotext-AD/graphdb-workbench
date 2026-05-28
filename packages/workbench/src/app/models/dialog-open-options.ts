@@ -1,3 +1,5 @@
+import {Type} from '@angular/core';
+
 /**
  * Options used by `DialogProviderService` when opening a dialog.
  *
@@ -11,4 +13,6 @@ export interface DialogOpenOptions<DataType> {
   height?: string;
   closable?: boolean;
   modal?: boolean;
+  footer?: Type<unknown>;
+  modalClass?: string;
 }

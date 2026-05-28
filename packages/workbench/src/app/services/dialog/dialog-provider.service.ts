@@ -41,9 +41,14 @@ export class DialogProviderService {
       height: config.height,
       closable: config.closable ?? false,
       modal: config.modal ?? true,
-      styleClass: 'onto-dialog',
+      styleClass: `onto-dialog ${config.modalClass ?? ''}`,
       draggable: false
     };
+    if (config.footer) {
+      dialogConfig.templates = {
+        footer: config.footer
+      };
+    }
     const dialogRef = this.dialogService.open(componentType, dialogConfig);
     this.assertDialogIsDefined(dialogRef);
     return dialogRef;

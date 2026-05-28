@@ -1,0 +1,9 @@
+:host {
+  width: 100%;
+  display: flex;
+  gap: 0.5rem;
+
+  .spacer {
+    flex-grow: 1;
+  }
+}

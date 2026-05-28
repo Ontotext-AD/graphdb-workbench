@@ -1,6 +1,7 @@
 import {LocalStorageService} from '../storage';
 import {ApplicationSettings, LegacySettings, ThemeMode} from '../../models/application-settings/application-settings';
 import {LoggerProvider} from '../logging/logger-provider';
+import {JsonldExportSettings} from '../../models/application-settings/jsonld-export-settings';
 
 /**
  * Service to manage the storage of application settings in the local storage.
@@ -101,5 +102,16 @@ export class ApplicationSettingsStorageService extends LocalStorageService {
       return settingsData.themeMode !== undefined;
     }
     return false;
+  }
+
+  getJsonLDExportSettings(): JsonldExportSettings | undefined {
+    const settings = this.getApplicationSettings();
+    return settings.jsonLdExportSettings;
+  }
+
+  setJsonLDExportSettings(jsonLdExportSettings: JsonldExportSettings): void {
+    const settings = this.getApplicationSettings();
+    settings.jsonLdExportSettings = jsonLdExportSettings;
+    this.setApplicationSettings(settings);
   }
 }

@@ -1,5 +1,6 @@
 import { ApplicationSettingsStorageService } from '../application-settings-storage.service';
 import { ApplicationSettings, LegacySettings, ThemeMode } from '../../../models/application-settings';
+import { JsonldExportSettings } from '../../../models/application-settings/jsonld-export-settings';
 import {createMockStorage, MutableStorage} from '../../utils/test/local-storage-mock';
 
 const APPLICATION_SETTINGS_KEY = 'ontotext.gdb.application.settings';
@@ -117,5 +118,58 @@ describe('ApplicationSettingsStorageService', () => {
     const result = service.isThemeModePresent();
 
     expect(result).toBe(false);
+  });
+
+  it('should get raw theme mode without defaults when stored', () => {
+    const payload: Partial<ApplicationSettings> = { themeMode: ThemeMode.dark };
+    storage.setItem(APPLICATION_SETTINGS_KEY, JSON.stringify(payload));
+
+    const mode = service.getThemeModeRaw();
+
+    expect(mode).toBe(ThemeMode.dark);
+  });
+
+  it('should return undefined for raw theme mode when no settings are stored', () => {
+    const mode = service.getThemeModeRaw();
+
+    expect(mode).toBeUndefined();
+  });
+
+  it('should set JSON-LD export settings and persist them', () => {
+    const jsonLdExportSettings: JsonldExportSettings = { formLink: 'https://form', formName: 'MyForm', link: 'https://link' };
+
+    service.setJsonLDExportSettings(jsonLdExportSettings);
+
+    const stored = JSON.parse(storage.getItem(APPLICATION_SETTINGS_KEY)!) as ApplicationSettings;
+    expect(stored.jsonLdExportSettings).toEqual(jsonLdExportSettings);
+  });
+
+  it('should get JSON-LD export settings when stored', () => {
+    const jsonLdExportSettings: JsonldExportSettings = { formLink: 'https://form', formName: 'MyForm', link: 'https://link' };
+    const payload: Partial<ApplicationSettings> = { themeMode: ThemeMode.light, jsonLdExportSettings };
+    storage.setItem(APPLICATION_SETTINGS_KEY, JSON.stringify(payload));
+
+    const result = service.getJsonLDExportSettings();
+
+    expect(result).toEqual(jsonLdExportSettings);
+  });
+
+  it('should return undefined for JSON-LD export settings when not stored', () => {
+    const result = service.getJsonLDExportSettings();
+
+    expect(result).toBeUndefined();
+  });
+
+  it('should preserve existing settings when updating JSON-LD export settings', () => {
+    const existing: Partial<ApplicationSettings> = { themeMode: ThemeMode.dark, theme: 'custom' };
+    storage.setItem(APPLICATION_SETTINGS_KEY, JSON.stringify(existing));
+    const jsonLdExportSettings: JsonldExportSettings = { link: 'https://link' };
+
+    service.setJsonLDExportSettings(jsonLdExportSettings);
+
+    const stored = JSON.parse(storage.getItem(APPLICATION_SETTINGS_KEY)!) as ApplicationSettings;
+    expect(stored.themeMode).toBe(ThemeMode.dark);
+    expect(stored.theme).toBe('custom');
+    expect(stored.jsonLdExportSettings).toEqual(jsonLdExportSettings);
   });
 });

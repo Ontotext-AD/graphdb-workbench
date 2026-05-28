@@ -40,8 +40,8 @@ describe('LocalStorageSubscriptionHandlerService', () => {
     expect(mockContextService.updateContextProperty).toHaveBeenCalledWith('testProperty', 'newValue');
   });
 
-  test('should warn if namespace is missing in storage change event key', () => {
-    const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
+  test('should show debug message if namespace is missing in storage change event key', () => {
+    const consoleDebugSpy = jest.spyOn(console, 'debug').mockImplementation();
     const event = {
       key: `${StorageKey.GLOBAL_NAMESPACE}.propertyName`,
       newValue: 'newValue'
@@ -49,12 +49,12 @@ describe('LocalStorageSubscriptionHandlerService', () => {
 
     service.handleStorageChange(event);
 
-    expect(consoleWarnSpy).toHaveBeenCalledWith(expect.stringContaining('Namespace is required to resolve a context property change handler.'));
+    expect(consoleDebugSpy).toHaveBeenCalledWith(expect.stringContaining('Namespace is required to resolve a context property change handler.'));
   });
 
-  test('should warn if no context property change handler is found', () => {
+  test('should show debug message if no context property change handler is found', () => {
     jest.spyOn(ServiceProvider, 'getAllBySuperType').mockReturnValue([]);
-    const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
+    const consoleDebugSpy = jest.spyOn(console, 'debug').mockImplementation();
     const event = {
       key: `${StorageKey.GLOBAL_NAMESPACE}.namespace.propertyName`,
       newValue: 'newValue'
@@ -62,11 +62,11 @@ describe('LocalStorageSubscriptionHandlerService', () => {
 
     service.handleStorageChange(event);
 
-    expect(consoleWarnSpy).toHaveBeenCalledWith(expect.stringContaining('No context property change handler found for namespace: namespace and property: propertyName'));
+    expect(consoleDebugSpy).toHaveBeenCalledWith(expect.stringContaining('No context property change handler found for namespace: namespace and property: propertyName'));
   });
 
   test('should not trigger handler if event key is null', () => {
-    const consoleWarnMock = jest.spyOn(console, 'warn').mockImplementation(() => {
+    const consoleDebugMock = jest.spyOn(console, 'debug').mockImplementation(() => {
       // Do nothing
     });
     const event = {
@@ -78,7 +78,7 @@ describe('LocalStorageSubscriptionHandlerService', () => {
 
     expect(mockContextService.updateContextProperty).not.toHaveBeenCalled();
 
-    consoleWarnMock.mockRestore();
+    consoleDebugMock.mockRestore();
   });
 });
 

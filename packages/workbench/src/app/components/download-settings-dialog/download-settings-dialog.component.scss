@@ -1,0 +1,49 @@
+.dialog-content {
+  display: grid;
+  grid-template-rows: auto;
+  gap: 1rem;
+
+  .export-settings-form {
+    display: grid;
+    grid-template-rows: auto;
+    gap: 1rem;
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 250px 1fr;
+      gap: 1rem;
+      align-items: baseline;
+
+      .info-icon {
+        color: var(--gw-primary-base);
+        font-size: 1.4em;
+        cursor: pointer;
+
+        .icon {
+          transition: all 0.15s ease-out;
+        }
+
+        &:hover .icon {
+          transform: scale(1.2);
+        }
+      }
+
+      label {
+        width: 250px;
+      }
+
+      /* stylelint-disable-next-line selector-pseudo-element-no-unknown */
+      ::ng-deep.field-input input {
+        width: 100%;
+      }
+
+      @media (width <= 990px) {
+        grid-template-columns: 1fr;
+
+        label {
+          width: 100%;
+        }
+      }
+    }
+  }
+}

@@ -44,7 +44,7 @@ export class LocalStorageSubscriptionHandlerService implements Service {
    */
   private resolveHandler(namespace: string, propertyName: string): ContextService<Record<string, unknown>> | undefined {
     if (!namespace) {
-      this.logger.warn('Namespace is required to resolve a context property change handler.');
+      this.logger.debug('Namespace is required to resolve a context property change handler.');
       return;
     }
     const handler = ServiceProvider.getAllBySuperType(ContextService)
@@ -52,7 +52,7 @@ export class LocalStorageSubscriptionHandlerService implements Service {
         return service.canHandle(propertyName);
       });
     if (!handler) {
-      this.logger.warn(`No context property change handler found for namespace: ${namespace} and property: ${propertyName}`);
+      this.logger.debug(`No context property change handler found for namespace: ${namespace} and property: ${propertyName}`);
       return;
     }
     return handler;

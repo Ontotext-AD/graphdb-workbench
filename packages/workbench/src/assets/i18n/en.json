@@ -20,6 +20,31 @@
         "confirmation": {
           "message": "You have unsaved changes. Are you sure you want to continue?"
         }
+      },
+      "download_settings": {
+        "title": {
+          "json-ld": "Export settings: JSON-LD",
+          "ndjson-ld": "Export settings: NDJSON-LD"
+        },
+        "form": {
+          "label": "JSON-LD form",
+          "info": "Specifies the JSON-LD document form"
+        },
+        "context": {
+          "link": "JSON-LD Context",
+          "info": "Specifies external JSON-LD context as a URL. Only whitelisted URLs can be used.",
+          "uri_placeholder": "http://example.com/context.jsonld"
+        },
+        "frame": {
+          "link": "JSON-LD Frame",
+          "info": "Specifies JSON-LD frame document as a URL. Only whitelisted URLs can be used.",
+          "uri_placeholder": "http://example.com/frame.jsonld"
+        },
+        "actions": {
+          "export": "Export",
+          "cancel": "Cancel",
+          "restore_defaults": "Restore defaults"
+        }
       }
     },
     "page_info_tooltip": {
@@ -87,7 +112,7 @@
         "queries_non_updates": "{{sparql_editor.confirmation.running_queries_warning.queries_non_updates}}<div>Changing the language will reload the page. Are you sure you want to continue?</div>",
         "none_queries_updates": "{{sparql_editor.confirmation.running_queries_warning.none_queries_updates}}<div>Changing the language will reload the page. Are you sure you want to continue?</div>",
         "queries_updates": "{{sparql_editor.confirmation.running_queries_warning.queries_updates}}<div>Changing the language will reload the page. Are you sure you want to continue?</div>"
-        },
+      },
       "on_page_leave": {
         "title": "Confirm exit",
         "none_queries_non_updates": "Are you sure that you want to exit?",
