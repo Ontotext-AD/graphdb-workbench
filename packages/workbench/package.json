@@ -28,7 +28,7 @@
     "@jsverse/transloco-messageformat": "^8.3.0",
     "@primeuix/themes": "^2.0.3",
     "file-saver": "^2.0.5",
-    "ontotext-yasgui-web-component": "^1.6.0-SP12-TR2",
+    "ontotext-yasgui-web-component": "1.6.0-SP12-TR3",
     "primeng": "^20.4.0",
     "rxjs": "~7.8.2",
     "single-spa": "^6.0.3",
