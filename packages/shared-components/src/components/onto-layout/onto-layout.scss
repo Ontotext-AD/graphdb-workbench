@@ -41,20 +41,17 @@
     margin-left: 0;
   }
 
-  .main-slot-wrapper {
-    .loader-wrapper {
-      flex-grow: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+  main {
+    grid-area: main;
+  }
 
-    &.loading {
-      display: flex;
-      flex-direction: column;
+  &.loading {
+    main {
+      position: relative;
+      visibility: hidden;
 
-      .page-content {
-        visibility: hidden;
+      onto-loader {
+        visibility: visible;
       }
     }
   }
@@ -75,10 +72,6 @@
 
   header {
     grid-area: header;
-  }
-
-  main {
-    grid-area: main;
   }
 
   footer {

@@ -111,7 +111,8 @@ export class OntoLayout {
       <Host class={{
         'wb-layout': true,
         'is-embedded': this.isEmbedded,
-        'hide-navbar': !this.showNavbar
+        'hide-navbar': !this.showNavbar,
+        'loading': this.loading
       }}>
         {/* Default slot is explicitly defined to be able to hide the main content in the user permission check */}
         <div class="default-slot-wrapper">
@@ -128,20 +129,16 @@ export class OntoLayout {
           </nav>
         }
 
-        <div class={{'main-slot-wrapper': true, 'loading': this.loading}}>
-          {this.loading && <div class="loader-wrapper">
-            <onto-loader size={96} messageText={TranslationService.translate('common.loading')}></onto-loader>
-          </div>}
-          <slot name="main"></slot>
-        </div>
+        {this.loading &&
+          <onto-loader targetSelector={'main'} size={96} messageText={TranslationService.translate('common.loading')}></onto-loader>
+        }
+        <slot name="main"></slot>
 
         {!this.isEmbedded &&
           <footer class="wb-footer">
             <onto-footer></onto-footer>
           </footer>
         }
-        <onto-tooltip></onto-tooltip>
-        <onto-confirm-cancel-dialog></onto-confirm-cancel-dialog>
       </Host>
     );
   }
@@ -317,7 +314,10 @@ export class OntoLayout {
     this.subscriptions.add(
       this.eventService.subscribe(EventName.NAVIGATION_END, (navigationEndPayload: NavigationEndPayload) => {
         this.navigationContextService.updatePreviousRoute(navigationEndPayload.oldUrl);
-        this.loading = false;
+        // NAVIGATION_END appears to happen in the same tick as BeforeMountRouting, so the loader never gets shown
+        setTimeout(() => {
+          this.loading = false;
+        });
       }));
   }
 
