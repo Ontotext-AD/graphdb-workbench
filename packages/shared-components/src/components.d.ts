@@ -154,6 +154,11 @@ export namespace Components {
           * @default 100
          */
         "size": number;
+        /**
+          * CSS selector of a DOM element to attach the loader to as a centered overlay.
+          * @default ''
+         */
+        "targetSelector": string;
     }
     interface OntoNavbar {
         /**
@@ -882,6 +887,11 @@ declare namespace LocalJSX {
           * @default 100
          */
         "size"?: number;
+        /**
+          * CSS selector of a DOM element to attach the loader to as a centered overlay.
+          * @default ''
+         */
+        "targetSelector"?: string;
     }
     interface OntoNavbar {
         /**

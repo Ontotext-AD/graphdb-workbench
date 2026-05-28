@@ -7,10 +7,11 @@
 
 ## Properties
 
-| Property      | Attribute      | Description                                        | Type     | Default |
-| ------------- | -------------- | -------------------------------------------------- | -------- | ------- |
-| `messageText` | `message-text` | Optional message text to display below the loader. | `string` | `''`    |
-| `size`        | `size`         | Size of the loader in pixels (width and height).   | `number` | `100`   |
+| Property         | Attribute         | Description                                                                  | Type     | Default |
+| ---------------- | ----------------- | ---------------------------------------------------------------------------- | -------- | ------- |
+| `messageText`    | `message-text`    | Optional message text to display below the loader.                           | `string` | `''`    |
+| `size`           | `size`            | Size of the loader in pixels (width and height).                             | `number` | `100`   |
+| `targetSelector` | `target-selector` | CSS selector of a DOM element to attach the loader to as a centered overlay. | `string` | `''`    |
 
 
 ## Dependencies
