@@ -95,6 +95,7 @@ export class OntoLayout {
     this.subscribeToNavigationEnd();
     this.subscribeToRuntimeConfigurationChanges();
     this.subscribeToApplicationChange();
+    this.loading = false;
   }
 
   /**
