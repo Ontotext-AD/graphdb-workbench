@@ -1,5 +1,5 @@
 import {Repository, RepositoryList, RepositoryState, RepositoryType} from '../../../../models/repositories';
-import {MapperFn} from '../../../../providers/mapper/mapper-fn';
+import {MapperFn} from '../../../../providers';
 import {RepositoryListResponse} from '../response/repository-response';
 import {toEnum} from '../../../utils';
 

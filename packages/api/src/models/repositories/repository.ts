@@ -12,16 +12,17 @@ const FEDX_SESAME_TYPE = 'graphdb:FedXRepository';
 export class Repository extends Model<Repository> implements RepositoryReference {
   id: string;
   title: string;
-  type: RepositoryType | undefined;
-  sesameType: string | undefined;
+  type?: RepositoryType;
+  sesameType?: string;
   uri: string;
   externalUrl: string;
   location: string;
-  state: RepositoryState | undefined;
-  local: boolean | undefined;
-  readable: boolean | undefined;
-  writable: boolean | undefined;
-  unsupported: boolean | undefined;
+  state?: RepositoryState;
+  stateLowercase?: string;
+  local: boolean;
+  readable?: boolean;
+  writable?: boolean;
+  unsupported?: boolean;
   isNew?: boolean;
 
   constructor(data: Partial<Repository>) {
@@ -34,7 +35,8 @@ export class Repository extends Model<Repository> implements RepositoryReference
     this.externalUrl = data.externalUrl || '';
     this.location = data.location || '';
     this.state = data.state;
-    this.local = data.local;
+    this.stateLowercase = data.state ? data.state.toLowerCase() : undefined;
+    this.local = data.local ?? !/^http/i.test(this.location);
     this.readable = data.readable;
     this.writable = data.writable;
     this.unsupported = data.unsupported;

@@ -1,13 +1,13 @@
-import {Routes} from '@angular/router';
+import {WorkbenchRoute} from './workbench-route';
 import {documentationLinkResolve} from './services/route-data-resolver';
 
-export const routes: Routes = [
+export const routes: WorkbenchRoute[] = [
   {
     path: 'sparql-new',
     data: {
       title: 'sparql_editor.title',
       helpInfo: 'sparql_editor.helpInfo',
-      documentationUrl: 'sparql-queries.html'
+      documentationUrl: 'sparql-queries.html',
     },
     resolve: {documentationLink: documentationLinkResolve},
     loadComponent: () => import('./pages/sparql-editor/sparql-editor-page.component').then(m => m.SparqlEditorPageComponent)

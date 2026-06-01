@@ -60,4 +60,32 @@ describe('Repository', () => {
     expect(repository.isFedx()).toBe(false);
   });
 
+  describe('local', () => {
+    test('should keep the provided local value', () => {
+      expect(new Repository({location: 'http://remote:7200', local: true}).local).toBe(true);
+      expect(new Repository({location: '', local: false}).local).toBe(false);
+    });
+
+    test('should be true when not provided and the location is empty', () => {
+      expect(new Repository({id: 'repo'}).local).toBe(true);
+    });
+
+    test('should be true when not provided and the location is not an http(s) URL', () => {
+      expect(new Repository({location: 'local-location'}).local).toBe(true);
+    });
+
+    test('should be false when not provided and the location is an http URL', () => {
+      expect(new Repository({location: 'http://remote:7200'}).local).toBe(false);
+    });
+
+    test('should be false when not provided and the location is an https URL', () => {
+      expect(new Repository({location: 'https://remote:7200'}).local).toBe(false);
+    });
+
+    test('should be false when not provided and the location is an upper-case http(s) URL', () => {
+      expect(new Repository({location: 'HTTP://remote:7200'}).local).toBe(false);
+      expect(new Repository({location: 'HTTPS://remote:7200'}).local).toBe(false);
+    });
+  });
+
 });
