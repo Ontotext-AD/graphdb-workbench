@@ -1,1 +1,81 @@
-<p>repository-picker-list works!</p>
+<div class="repository-picker-list">
+  <div class="toolbar">
+    @if (vm().showFilters) {
+      <span class="filters">
+        <p-iconfield class="filter-input">
+          <input pInputText
+                 type="text"
+                 [placeholder]="'components.repository_picker_list.filter_placeholder' | transloco"
+                 [ngModel]="vm().filterQuery"
+                 (ngModelChange)="onFilterQueryChange($event)" />
+          <p-inputicon class="ri-search-line" />
+        </p-iconfield>
+        <p-select class="state-filter"
+                  [options]="vm().stateFilterOptions"
+                  [ngModel]="vm().stateFilter"
+                  (ngModelChange)="onStateFilterChange($event)"
+                  optionLabel="label"
+                  optionValue="value">
+          <ng-template #selectedItem let-option>
+            {{ option.label | transloco }}
+          </ng-template>
+          <ng-template #item let-option>
+            {{ option.label | transloco }}
+          </ng-template>
+        </p-select>
+      </span>
+    }
+
+    @if (vm().canCreateRepository) {
+      <p-button class="create-repository-btn"
+                [label]="'components.repository_picker_list.create_repository_btn.label' | transloco"
+                [icon]="'ri-add-circle-line'"
+                (click)="createRepository()">
+      </p-button>
+    }
+  </div>
+
+  @if (vm().showRepositoryList) {
+    <p-table [value]="vm().filteredRepositoryList" class="repository-list">
+      <ng-template #body let-repository>
+        <tr>
+          <td class="type-column">
+            <em [ngClass]="['type-icon', 'icon-lg', 'icon-repo-' + repository.type]"></em>
+          </td>
+          <td class="name-column">
+            <div>
+              <span class="repository-state"
+                    [pTooltip]="'components.repository_picker_list.state_filter.' + repository.stateLowercase | transloco"
+                    tooltipEvent="both"
+                    tooltipPosition="top">
+                @if (repository.state === RepositoryState.RUNNING) {
+                  <em [ngClass]="['ri-circle-fill', repository.stateLowercase]"></em>
+                } @else if (repository.state === RepositoryState.INACTIVE) {
+                  <em [ngClass]="['ri-circle-line', repository.stateLowercase]"></em>
+                } @else {
+                  <em [ngClass]="['ri-circle-line', 'transitioning']"></em>
+                }
+              </span>
+              <span class="repository-id">{{repository.id}}</span>
+            </div>
+            <div class="repository-description">
+              {{repository.title}}
+            </div>
+            <div class="repository-location">
+              <small>{{repository.location ?? 'components.repository_picker_list.location_local_label' | transloco}}</small>
+            </div>
+          </td>
+          <td class="actions-column">
+            @if (vm().canSelectRepository) {
+              <p-button class="select-repository-btn"
+                        severity="secondary"
+                        [label]="'components.repository_picker_list.select_repository_btn.label' | transloco"
+                        (click)="selectRepository(repository)">
+              </p-button>
+            }
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  }
+</div>

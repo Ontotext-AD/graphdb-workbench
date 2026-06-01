@@ -1,0 +1,18 @@
+<div class="page-restrictions">
+  @if (restrictions().length) {
+    <p-message [severity]="'info'" icon="ri-alert-line">
+      @for (reason of restrictions(); track reason.translationKey) {
+        <div>
+          {{ reason.translationKey | transloco: reason.translationParams }}
+          @if (reason.ctaKey) {
+            <a [routerLink]="reason.ctaLink">{{ reason.ctaKey | transloco }}</a>
+          }
+        </div>
+      }
+    </p-message>
+  }
+  @if (repositoryList() && !selectedRepository()) {
+    <app-repository-picker-list [isRestricted]="isRestricted()"></app-repository-picker-list>
+  }
+</div>
+
