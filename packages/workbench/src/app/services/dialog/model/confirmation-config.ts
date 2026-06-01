@@ -49,4 +49,12 @@ export interface ConfirmationConfig {
    * for what should happen when the user cancels the confirmation, such as closing the dialog or preventing navigation.
    */
   rejectHandler?: () => void;
+  /**
+   * An optional flag to indicate whether the reject (cancel) button should be hidden. If set to false, only the accept
+   * button will be displayed in the confirmation dialog, and the reject button will be completely removed from the UI.
+   * This can be useful in scenarios where a cancellation option is not applicable or desired, such as when confirming a
+   * non-destructive action or when you want to force the user to acknowledge a message without providing an option to
+   * cancel.
+   */
+  rejectVisible?: boolean;
 }

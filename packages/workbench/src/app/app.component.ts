@@ -1,8 +1,17 @@
 import {Component, inject, OnDestroy, OnInit} from '@angular/core';
 import {Router, RouterOutlet} from '@angular/router';
-import {EventName, EventService, getCurrentRoute, service, WindowService} from '@ontotext/workbench-api';
 import {Subscription} from 'rxjs';
 import {ConfirmDialogModule} from 'primeng/confirmdialog';
+import {RepositoryUrlSyncService} from './services/repository-url-sync.service';
+import {
+  EventName,
+  EventService,
+  getCurrentRoute,
+  Repository,
+  RepositoryContextService,
+  service,
+  WindowService
+} from '@ontotext/workbench-api';
 
 @Component({
   selector: 'app-root',
@@ -15,15 +24,32 @@ import {ConfirmDialogModule} from 'primeng/confirmdialog';
 })
 export class AppComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
+  private readonly repositoryUrlSyncService = inject(RepositoryUrlSyncService);
+  private readonly repositoryContextService = service(RepositoryContextService);
   private readonly eventService = service(EventService);
   private readonly subscriptions = new Subscription();
 
+  private isFirstRepoChangeEvent = true;
+
   ngOnInit(): void {
     this.subscribeToRoutingEvents();
+    this.subscriptions.add(
+      this.repositoryContextService.onSelectedRepositoryChanged((repo) => this.onSelectedRepositoryChangedHandler(repo))
+    );
   }
 
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
+  }
+
+  private onSelectedRepositoryChangedHandler(repo: Repository | undefined): void {
+    if (this.isFirstRepoChangeEvent) {
+      this.isFirstRepoChangeEvent = false;
+      return;
+    }
+    if (repo) {
+      this.repositoryUrlSyncService.onRepositoryChanged(repo.id);
+    }
   }
 
   /**
@@ -39,7 +65,10 @@ export class AppComponent implements OnInit, OnDestroy {
         const queryParams = Object.fromEntries(
           new URLSearchParams(WindowService.getLocationQueryParams())
         );
-        this.router.navigate([getCurrentRoute()], {queryParams});
+        this.router.navigate([getCurrentRoute()], {queryParams})
+          .then(() => {
+            this.repositoryUrlSyncService.syncRepositoryIdWithUrl();
+          });
       })
     );
   }

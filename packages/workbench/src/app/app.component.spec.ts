@@ -2,6 +2,7 @@ import {TestBed} from '@angular/core/testing';
 import {AppComponent} from './app.component';
 import {ActivatedRoute} from '@angular/router';
 import {ConfirmationService} from 'primeng/api';
+import {TranslocoService} from '@jsverse/transloco';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
@@ -9,6 +10,7 @@ describe('AppComponent', () => {
       imports: [AppComponent],
       providers: [
         ConfirmationService,
+        {provide: TranslocoService, useValue: {translate: (key: string) => key}},
         {
           provide: ActivatedRoute,
           useValue: {
