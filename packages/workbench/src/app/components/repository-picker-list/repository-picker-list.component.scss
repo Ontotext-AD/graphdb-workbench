@@ -1,0 +1,113 @@
+@use 'src/styles/variables' as *;
+
+.repository-picker-list {
+  color: var(--gw-panel-color);
+
+  .toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: .8em 0;
+    gap: .5em;
+
+    .filters {
+      display: flex;
+      gap: .4em;
+    }
+
+    .create-repository-btn {
+      margin-left: auto;
+    }
+  }
+
+  .repository-list {
+    width: 100%;
+    table-layout: fixed;
+    border: 1px solid var(--gw-datatable-border-color);
+
+    tr > td {
+      padding: .4em;
+    }
+
+    .info-column {
+      width: 4rem;
+    }
+
+    .actions-column {
+      width: 7rem;
+
+      .select-repository-btn {
+        visibility: hidden;
+      }
+    }
+
+    tr:hover {
+      background-color: var(--gw-datatable-row-hover-background);
+
+      .actions-column .select-repository-btn {
+        visibility: visible;
+      }
+    }
+
+    .type-column {
+      width: 2.5rem;
+      padding-right: 0 !important;
+      text-align: center;
+
+      .type-icon {
+        font-size: 1.2em;
+        color: var(--gw-button-primary-link-hover-color);
+      }
+    }
+
+    .name-column {
+      padding-left: 0 !important;
+      overflow: hidden;
+
+      // wrapper div for state icon + id
+      div:first-child {
+        display: flex;
+        align-items: baseline;
+        overflow: hidden;
+        min-width: 0;
+      }
+
+      .repository-description,
+      .repository-location {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .repository-id {
+        font-weight: 500;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        min-width: 0;
+        flex: 1;
+      }
+
+      .repository-location {
+        color: var(--gw-info-light);
+      }
+
+      .repository-state {
+        font-size: .8em;
+        margin-right: .5em;
+
+        .running {
+          color: var(--gw-button-success-background);
+        }
+
+        .inactive {
+          color: var(--gw-button-info-background);
+        }
+
+        .transitioning {
+          color: var(--gw-button-warn-background);
+        }
+      }
+    }
+  }
+}
