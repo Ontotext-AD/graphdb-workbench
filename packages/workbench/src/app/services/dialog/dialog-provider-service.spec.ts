@@ -120,7 +120,7 @@ describe('DialogProviderService', () => {
       void service.open(TestDialogComponent, {});
 
       const usedConfig: DynamicDialogConfig = mockDialogServiceOpen.mock.calls[0][1];
-      expect(usedConfig.styleClass).toBe('onto-dialog');
+      expect(usedConfig.styleClass).toContain('onto-dialog');
     });
 
     it('should always set draggable to false', () => {

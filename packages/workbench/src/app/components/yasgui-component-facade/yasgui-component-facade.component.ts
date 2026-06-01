@@ -20,7 +20,7 @@ import {SavedQueryConfig} from './models/query/saved-query-config';
 import {QueryMode} from './models/query-mode';
 import {QueryType} from './models/yasqe/query-type';
 import {Yasgui} from './models/yasgui/yasgui';
-import {TranslocoService} from '@jsverse/transloco';
+import {translate, TranslocoService} from '@jsverse/transloco';
 import {SaveQueryEvent} from './models/query/save-query-event';
 import {SavedQueryParams} from '../../pages/sparql-editor/sparql-editor-query-params';
 import {YasguiComponentUtil} from './yasgui-component-util';
@@ -54,6 +54,7 @@ import {
   MonitoringService,
   ThemeService,
   RuntimeConfigurationContextService, SubscriptionList,
+  JsonldExportSettings,
 } from '@ontotext/workbench-api';
 import {YasguiComponent} from './models/yasgui-component';
 import {FileUtils} from '../../utils/file-utils';
@@ -65,6 +66,9 @@ import {YasguiPersistenceMigrationService} from './service/yasgui-persistence-mi
 import {OntotextYasguiElement} from './models/ontotext-yasgui-element';
 import {QueryChangedPayload} from './models/yasqe/query-changed-payload';
 import {LoggerProvider} from '../../services/logger/logger-provider';
+import {DownloadSettingsDialogComponent} from '../download-settings-dialog/download-settings-dialog.component';
+import {DialogProviderService} from '../../services/dialog/dialog-provider.service';
+import {DownloadSettingsDialogFooterComponent} from '../download-settings-dialog/footer/download-settings-dialog-footer/download-settings-dialog-footer.component';
 
 defineCustomElements();
 
@@ -91,6 +95,7 @@ export class YasguiComponentFacadeComponent implements OnInit, OnDestroy {
   private readonly elementRef = inject(ElementRef);
   private readonly translocoService = inject(TranslocoService);
   private readonly yasguiPersistenceMigrationService = inject(YasguiPersistenceMigrationService);
+  private readonly dialogProviderService = inject(DialogProviderService);
 
   // ===================================
   // API module injections
@@ -749,24 +754,23 @@ export class YasguiComponentFacadeComponent implements OnInit, OnDestroy {
     const authToken = this.authenticationStorageService.getAuthToken().getValue()!;
 
     if (downloadAsEvent.contentType === 'application/ld+json' || downloadAsEvent.contentType === 'application/x-ld+ndjson') {
-      // TODO: Implement the modal. These types are used only in the resource view
-      // const modalInstance = $uibModal.open({
-      //   templateUrl: 'js/angular/core/components/export-settings-modal/exportSettingsModal.html',
-      //   controller: ExportSettingsCtrl,
-      //   size: 'lg',
-      //   scope: $scope,
-      //   resolve: {
-      //     format: function() {
-      //       return downloadAsEvent.contentType === "application/ld+json" ? 'JSON-LD' : 'NDJSON-LD';
-      //     },
-      //   },
-      // });
-      // modalInstance.result.then(function(data) {
-      //   const relValue = data.currentMode.name === 'framed' ? 'frame' : 'context';
-      //   const acceptHeader = accept + ';profile=' + data.currentMode.link;
-      //   const linkHeader = data.link ? `<${data.link}>; rel="http://www.w3.org/ns/json-ld#${relValue}"` : '';
-      //   downloadAs(query, infer, sameAs, authToken, acceptHeader, linkHeader);
-      // });
+      const format = downloadAsEvent.contentType === 'application/ld+json' ? 'json-ld' : 'ndjson-ld';
+
+      this.dialogProviderService.open<unknown, JsonldExportSettings>(DownloadSettingsDialogComponent, {
+        header: translate('components.dialog.download_settings.title.' + format),
+        closable: true,
+        footer: DownloadSettingsDialogFooterComponent,
+        modalClass: 'modal-content'
+      })
+        .then((data) => {
+          if (!data) {
+            return;
+          }
+          const relValue = data.formName === 'framed' ? 'frame' : 'context';
+          const acceptHeader = accept + ';profile=' + data.formLink;
+          const linkHeader = data.link ? `<${data.link}>; rel="http://www.w3.org/ns/json-ld#${relValue}"` : '';
+          this.downloadAs(query, infer, sameAs, authToken, acceptHeader, linkHeader);
+        });
     } else {
       this.downloadAs(query, infer, sameAs, authToken, accept, '');
     }

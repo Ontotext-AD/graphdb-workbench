@@ -1,0 +1,14 @@
+<p-button
+  class="restore-defaults"
+  [label]="'components.dialog.download_settings.actions.restore_defaults' | transloco"
+  [link]="true"
+  (onClick)="reset()"/>
+<div class="spacer"></div>
+<p-button
+  [label]="'components.dialog.download_settings.actions.cancel' | transloco"
+  severity="secondary"
+  (onClick)="cancel()"/>
+<p-button
+  id="exportJSONLD"
+  [label]="'components.dialog.download_settings.actions.export' | transloco"
+  (onClick)="exportJsonLD()"/>

@@ -1,3 +1,5 @@
+import {JsonldExportSettings} from './jsonld-export-settings';
+
 export enum ThemeMode {
   'light' = 'light',
   'dark' = 'dark',
@@ -26,10 +28,13 @@ export class ApplicationSettings {
    */
   themeMode: ThemeMode = ThemeMode.light;
 
+  jsonLdExportSettings?: JsonldExportSettings;
+
   constructor(data?: Partial<ApplicationSettings>) {
     if (data) {
       this.theme = data.theme ?? this.theme;
       this.themeMode = data.themeMode ?? this.themeMode;
+      this.jsonLdExportSettings = data.jsonLdExportSettings ?? this.jsonLdExportSettings;
     }
   }
 
