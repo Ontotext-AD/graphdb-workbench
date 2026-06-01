@@ -286,7 +286,7 @@ export class YasguiComponentFacadeComponent implements OnInit, OnDestroy {
     const payload = this.queryPayloadFromEvent(event as unknown as SaveQueryEvent);
     this.sparqlService.saveQuery(payload)
       .then(() => this.queryCreatedHandler(payload))
-      .catch((err: unknown) => this.querySaveErrorHandler(err));
+      .catch((err: HttpErrorResponse) => this.querySaveErrorHandler(err));
   }
 
   /**
@@ -299,7 +299,7 @@ export class YasguiComponentFacadeComponent implements OnInit, OnDestroy {
     const payload = this.queryPayloadFromEvent(saveQueryEvent);
     this.sparqlService.updateQuery(saveQueryEvent.detail.originalQueryName!, payload)
       .then(() => this.queryUpdatedHandler(payload))
-      .catch((err: unknown) => this.querySaveErrorHandler(err));
+      .catch((err: HttpErrorResponse) => this.querySaveErrorHandler(err));
   }
 
   /**
@@ -819,10 +819,10 @@ export class YasguiComponentFacadeComponent implements OnInit, OnDestroy {
     return this.querySavedHandler(this.translocoService.translate('sparql_editor.success.query_was_updated', {name: payload.name}));
   }
 
-  private querySaveErrorHandler(err: unknown) {
+  private querySaveErrorHandler(err: HttpErrorResponse) {
     const errorMessage = this.translocoService.translate('sparql_editor.errors.query_save_failed');
     this.toastrService.error(
-      err instanceof Error ? err.message : String(err),
+      err instanceof HttpErrorResponse ? String(err.data) : String(err),
       {title: errorMessage}
     );
     this.savedQueryConfig = {

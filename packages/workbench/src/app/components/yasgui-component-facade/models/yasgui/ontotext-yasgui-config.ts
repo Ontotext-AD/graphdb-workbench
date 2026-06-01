@@ -289,7 +289,7 @@ export class OntotextYasguiConfig {
     this.endpoint = '';
     this.language = 'en';
     this.i18n = undefined;
-    this.method = YasguiQueryHttpMethod.GET;
+    this.method = YasguiQueryHttpMethod.POST;
     this.headers = undefined;
     this.infer = undefined;
     this.immutableInfer = undefined;
