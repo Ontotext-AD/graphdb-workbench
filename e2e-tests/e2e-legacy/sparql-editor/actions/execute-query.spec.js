@@ -26,6 +26,7 @@ describe('Execute query', () => {
         cy.intercept('POST', `/repositories/${repositoryId}`).as('query');
         YasqeSteps.executeQuery();
         cy.wait('@query').then((interception) => {
+            expect(interception.request.method).to.equal('POST');
             const headers = interception.request.headers;
             expect(headers).to.have.property('x-graphdb-local-consistency');
             expect(headers).to.have.property('x-graphdb-repository-location');
@@ -35,6 +36,7 @@ describe('Execute query', () => {
         YasguiSteps.getTabs().should('have.length', 2);
         YasqeSteps.executeQuery();
         cy.wait('@query').then((interception) => {
+            expect(interception.request.method).to.equal('POST');
             const headers = interception.request.headers;
             expect(headers).to.have.property('x-graphdb-local-consistency');
             expect(headers).to.have.property('x-graphdb-repository-location');
