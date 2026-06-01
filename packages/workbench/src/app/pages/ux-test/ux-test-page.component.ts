@@ -13,6 +13,7 @@ import {ConfirmDialogModule} from 'primeng/confirmdialog';
 import {ToastModule} from 'primeng/toast';
 import {ConfirmationService, MessageService} from 'primeng/api';
 import {ProgressBarModule} from 'primeng/progressbar';
+import {Message} from 'primeng/message';
 
 @Component({
   selector: 'app-ux-test',
@@ -31,6 +32,7 @@ import {ProgressBarModule} from 'primeng/progressbar';
     ConfirmDialogModule,
     ToastModule,
     ProgressBarModule,
+    Message,
   ],
   providers: [ConfirmationService, MessageService],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

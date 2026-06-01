@@ -1,5 +1,5 @@
 <hr>
-<div>Buttons:</div>
+<h3>Buttons:</h3>
 <p-button label="Check" />
 <p-button severity="secondary" label="Check" />
 <p-button label="Success" severity="success" />
@@ -11,24 +11,47 @@
 <p-button severity="contrast" icon="ri-information-2-line" />
 
 <hr>
-<div>Checkbox</div>
+<h3>Checkbox</h3>
   <p-checkbox [(ngModel)]="checked" [binary]="true" />
 
 <hr>
-<div>InputText</div>
+<h3>InputText</h3>
   <input pInputText [(ngModel)]="value1" type="text" pSize="small" placeholder="Small" /><br>
   <input pInputText [(ngModel)]="value2" type="text" placeholder="Normal" /><br>
   <input pInputText [(ngModel)]="value3" type="text" pSize="large" placeholder="Large" />
 
 <hr>
-<div>Progressbar</div>
+<h3>Progressbar</h3>
   <p-progressbar [value]="progressValue" [attr.aria-label]="'Loading progress'" />
 
 <hr>
-<div>Confirmation dialog</div>
+<h3>Confirmation dialog</h3>
 <div class="card flex justify-center gap-2">
   <p-toast />
   <p-confirmdialog />
   <p-button (click)="confirm1($event)" label="Save" />
   <p-button (click)="confirm1($event)" label="Delete" severity="danger" />
 </div>
+
+<hr>
+<h3>Message</h3>
+<p-message severity="success" icon="ri-information-2-line" size="large">
+    Success message
+</p-message>
+<p-message severity="info" icon="ri-information-2-line" size="large">
+  Info message
+</p-message>
+<p-message severity="warn" icon="ri-information-2-line" size="large">
+  Warn message
+</p-message>
+<p-message severity="error" icon="ri-information-2-line" size="large">
+  Error message
+</p-message>
+<p-message severity="secondary" icon="ri-information-2-line" size="large">
+  Secondary message
+</p-message>
+<p-message severity="contrast" icon="ri-information-2-line" size="large">
+  Contrast message
+</p-message>
+
+<hr>

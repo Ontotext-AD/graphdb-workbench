@@ -1,6 +1,12 @@
 .p-button.p-button-link {
-  text-decoration-line: underline;
-  text-decoration-style: dotted;
-  text-decoration-thickness: var(--link-decoration-thickness);
-  text-underline-offset: var(--link-underline-offset);
+  color: var(--gw-button-primary-link-hover-color);
+
+  // Show the underline only below the label. If there is an icon in-front or after the link button, we don't want
+  // underline to be shown below the icon.
+  .p-button-label {
+    text-decoration-line: underline;
+    text-decoration-style: dotted;
+    text-decoration-thickness: var(--link-decoration-thickness);
+    text-underline-offset: var(--link-underline-offset);
+  }
 }
