@@ -2,7 +2,7 @@ import {Service} from '../../../providers/service/service';
 import {AuthenticatedUser, Authority, Rights, SecurityConfig} from '../../../models/security';
 import {service} from '../../../providers';
 import {SecurityContextService} from './security-context.service';
-import {Repository} from '../../../models/repositories';
+import {Repository, RepositoryList} from '../../../models/repositories';
 import {
   RepositoryAuthorityService,
   RepositoryContextService,
@@ -77,6 +77,9 @@ export class AuthorizationService implements Service {
    * @returns {boolean} True if the user has the repository manager role, false otherwise.
    */
   isRepoManager(): boolean {
+    // TODO the legacy is doing the following
+    //  return authorizationService.hasRole(UserRole.ROLE_REPO_MANAGER) && !$repositories.getDegradedReason();
+    // Check why we are not doing the same in the new implementation and if we need to add the degraded reason check back in
     return this.hasRole(Authority.ROLE_REPO_MANAGER);
   }
 
@@ -295,6 +298,46 @@ export class AuthorizationService implements Service {
 
     this.securityContextService.updateRestrictedPages(restrictedPages);
   };
+
+  /**
+   * Retrieves a list of repositories that the user has write access to.
+   *
+   * @returns {RepositoryList} A list of repositories that the user can write to.
+   */
+  getWritableRepositories(): RepositoryList {
+    return this.repositoryContextService.getRepositoryList().filterWithCallback(repository => this.canWriteRepo(repository));
+  }
+
+  /**
+   * Retrieves a list of repositories that the user has read access to, including those that are readable through
+   * GraphQL permissions.
+   *
+   * @returns {RepositoryList} A list of repositories that the user can read.
+   */
+  getReadableRepositories(): RepositoryList {
+    return this.repositoryContextService.getRepositoryList().filterWithCallback(repository =>
+      this.canReadRepo(repository) || this.canReadGqlRepo(repository)
+    );
+  }
+
+  /**
+   * Retrieves a list of repositories that the user has access to, based on the specified parameters.
+   * @param includeRemote - If true, includes remote repositories in the list; otherwise, only local repositories are included.
+   * @param isRestricted - If true, returns repositories that the user has write access to; if false, returns repositories that the user has read access to.
+   * @returns A list of repositories that the user has access to, filtered based on the provided parameters.
+   */
+  getAccessibleRepositories(includeRemote = false, isRestricted = true): RepositoryList {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    let remoteLocationsFilter = (_repo: Repository) => true;
+    if (!includeRemote) {
+      remoteLocationsFilter = (repo) => !!repo.local;
+    }
+    if (isRestricted) {
+      return new RepositoryList(this.getWritableRepositories().filter(remoteLocationsFilter));
+    } else {
+      return new RepositoryList(this.getReadableRepositories().filter(remoteLocationsFilter));
+    }
+  }
 
   private resolveAuthorities(authoritiesList?: string[]) {
     // If no authorities list is provided, return empty array.
