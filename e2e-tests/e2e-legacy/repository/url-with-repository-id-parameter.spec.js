@@ -171,7 +171,7 @@ describe('URL with Repository ID parameter', () => {
             // Given I am on the 404 page which is in the new workbench
             ErrorPageSteps.visit404();
             ErrorPageSteps.get404Page().should('be.visible');
-            cy.url().should('not.include', 'repositoryId=');
+            cy.url().should('include', `repositoryId=${repositoryId}`);
             // When I navigate to some legacy page
             MainMenuSteps.clickOnSparqlMenu();
             // Then repositoryId parameter should be preserved in the URL

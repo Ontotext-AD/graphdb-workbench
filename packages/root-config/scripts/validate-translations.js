@@ -86,7 +86,9 @@ const identicalTranslations = [
   "http://example.com/context.jsonld",
   "http://example.com/frame.jsonld",
   "http://my-hostname:7200",
-  "node-name:7300"
+  "node-name:7300",
+
+  "OK"
 ];
 
 // Unverified identical or TO DO translations - printed as warnings

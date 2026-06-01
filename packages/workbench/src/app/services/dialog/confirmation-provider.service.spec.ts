@@ -11,6 +11,7 @@ describe('ConfirmationProviderService', () => {
 
   const DEFAULT_CONFIRM_LABEL = 'Confirm';
   const DEFAULT_CANCEL_LABEL = 'Cancel';
+  const DEFAULT_OK_LABEL = 'OK';
 
   beforeEach(() => {
     mockConfirm = jest.fn();
@@ -18,6 +19,7 @@ describe('ConfirmationProviderService', () => {
       const translations: Record<string, string> = {
         'components.dialog.confirmation.confirm_btn': DEFAULT_CONFIRM_LABEL,
         'components.dialog.confirmation.cancel_btn': DEFAULT_CANCEL_LABEL,
+        'components.dialog.confirmation.ok_btn': DEFAULT_OK_LABEL,
       };
       return translations[key] ?? key;
     });
@@ -224,6 +226,84 @@ describe('ConfirmationProviderService', () => {
           expect.objectContaining({reject: undefined})
         );
       });
+    });
+  });
+
+  describe('#confirmOnly', () => {
+    const buildMinimalConfig = (overrides: Partial<ConfirmationConfig> = {}): ConfirmationConfig => ({
+      message: 'Something went wrong.',
+      header: 'Info',
+      acceptHandler: jest.fn(),
+      ...overrides,
+    });
+
+    it('should call ConfirmationService.confirm once', () => {
+      service.confirmOnly(buildMinimalConfig());
+
+      expect(mockConfirm).toHaveBeenCalledTimes(1);
+    });
+
+    it('should pass message and header to the underlying service', () => {
+      service.confirmOnly(buildMinimalConfig({message: 'Done!', header: 'Success'}));
+
+      expect(mockConfirm).toHaveBeenCalledWith(
+        expect.objectContaining({message: 'Done!', header: 'Success'})
+      );
+    });
+
+    it('should always set rejectVisible to false', () => {
+      service.confirmOnly(buildMinimalConfig({rejectVisible: true}));
+
+      expect(mockConfirm).toHaveBeenCalledWith(
+        expect.objectContaining({rejectVisible: false})
+      );
+    });
+
+    it('should use the translated "ok" label for the accept button', () => {
+      service.confirmOnly(buildMinimalConfig());
+
+      expect(mockConfirm).toHaveBeenCalledWith(
+        expect.objectContaining({
+          acceptButtonProps: expect.objectContaining({label: DEFAULT_OK_LABEL})
+        })
+      );
+    });
+
+    it('should override a custom acceptButton label with the "ok" translation', () => {
+      service.confirmOnly(buildMinimalConfig({acceptButton: {label: 'Custom label'}}));
+
+      expect(mockConfirm).toHaveBeenCalledWith(
+        expect.objectContaining({
+          acceptButtonProps: expect.objectContaining({label: DEFAULT_OK_LABEL})
+        })
+      );
+    });
+
+    it('should preserve acceptButton.type when provided', () => {
+      service.confirmOnly(buildMinimalConfig({acceptButton: {label: 'Ok', type: 'danger'}}));
+
+      expect(mockConfirm).toHaveBeenCalledWith(
+        expect.objectContaining({
+          acceptButtonProps: expect.objectContaining({severity: 'danger'})
+        })
+      );
+    });
+
+    it('should preserve acceptButton.styleClass when provided', () => {
+      service.confirmOnly(buildMinimalConfig({acceptButton: {label: 'Ok', type: 'primary', styleClass: 'my-ok-btn'}}));
+
+      expect(mockConfirm).toHaveBeenCalledWith(
+        expect.objectContaining({acceptButtonStyleClass: 'my-ok-btn'})
+      );
+    });
+
+    it('should pass the acceptHandler to the underlying service', () => {
+      const acceptHandler = jest.fn();
+      service.confirmOnly(buildMinimalConfig({acceptHandler}));
+
+      expect(mockConfirm).toHaveBeenCalledWith(
+        expect.objectContaining({accept: acceptHandler})
+      );
     });
   });
 });

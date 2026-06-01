@@ -35,6 +35,24 @@ export class ConfirmationProviderService {
       },
       accept: config.acceptHandler,
       reject: config.rejectHandler,
+      rejectVisible: config.rejectVisible ?? true,
     });
+  }
+
+  /**
+   * Displays a confirmation dialog with only an accept button, hiding the reject button. The reject button will be
+   * hidden in this dialog.
+   * @param config The configuration for the confirmation dialog.
+   */
+  confirmOnly(config: ConfirmationConfig) {
+    const resolvedConfig: ConfirmationConfig = {
+      ...config,
+      rejectVisible: false,
+      acceptButton: {
+        ...config.acceptButton ?? {},
+        label: this.translocoService.translate('components.dialog.confirmation.ok_btn'),
+      }
+    };
+    this.confirm(resolvedConfig);
   }
 }
