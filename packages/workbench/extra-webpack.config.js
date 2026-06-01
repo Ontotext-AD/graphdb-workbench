@@ -1,12 +1,27 @@
+const {resolve} = require('node:path');
 const singleSpaAngularWebpack = require('single-spa-angular/lib/webpack').default;
+
+function patchSassLoader(rules) {
+  if (!Array.isArray(rules)) return;
+  rules.forEach(rule => {
+    patchSassLoader(rule.rules);
+    patchSassLoader(rule.oneOf);
+    (rule.use || []).forEach(use => {
+      if (typeof use === 'object' && use.loader && use.loader.includes('sass-loader')) {
+        use.options = {
+          ...use.options,
+          sassOptions: {
+            silenceDeprecations: ['color-functions', 'global-builtin', 'import', 'if-function'],
+            loadPaths: [resolve(__dirname)]
+          }
+        };
+      }
+    });
+  });
+}
 
 module.exports = (config, options) => {
   const singleSpaWebpackConfig = singleSpaAngularWebpack(config, options);
-
-  // Ensure Zone.js is included
-  // singleSpaWebpackConfig.externals = singleSpaWebpackConfig.externals || {};
-  // delete singleSpaWebpackConfig.externals['zone.js'];
-  // Feel free to modify this webpack config however you'd like to
 
   singleSpaWebpackConfig.externals = [...singleSpaWebpackConfig.externals, "@ontotext/workbench-api"];
   singleSpaWebpackConfig.experiments.outputModule = true;
@@ -30,6 +45,7 @@ module.exports = (config, options) => {
   // singleSpaWebpackConfig.devServer.client.overlay = false;
   // singleSpaWebpackConfig.devServer.liveReload = false;
 
-  // console.log('=============', JSON.stringify(singleSpaWebpackConfig, null, 2));
+  patchSassLoader(singleSpaWebpackConfig.module.rules);
+
   return singleSpaWebpackConfig;
 };

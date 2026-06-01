@@ -1,2 +1,21 @@
 /* You can add global styles to this file, and also import other style files */
 @use "styles/primeng-overrides";
+
+app-root {
+  @import "../node_modules/bootstrap/scss/functions";
+  // Required Bootstrap imports
+  @import "../node_modules/bootstrap/scss/variables";
+  @import "../node_modules/bootstrap/scss/variables-dark";
+  @import "../node_modules/bootstrap/scss/maps";
+  @import "../node_modules/bootstrap/scss/mixins";
+  // Probably not needed and leaking properties to :root
+  //@import "../node_modules/bootstrap/scss/root";
+  // Optional components
+  @import "../node_modules/bootstrap/scss/utilities";
+  // Probably not needed as well
+  //@import "../node_modules/bootstrap/scss/reboot";
+  @import "../node_modules/bootstrap/scss/containers";
+  @import "../node_modules/bootstrap/scss/grid";
+  @import "../node_modules/bootstrap/scss/helpers";
+  @import "../node_modules/bootstrap/scss/utilities/api";
+}
