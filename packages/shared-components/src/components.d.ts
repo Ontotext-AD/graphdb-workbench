@@ -145,6 +145,11 @@ export namespace Components {
     }
     interface OntoLoader {
         /**
+          * Whether the loader is currently active and should be displayed.
+          * @default false
+         */
+        "loading": boolean;
+        /**
           * Optional message text to display below the loader.
           * @default ''
          */
@@ -877,6 +882,11 @@ declare namespace LocalJSX {
         "license"?: License;
     }
     interface OntoLoader {
+        /**
+          * Whether the loader is currently active and should be displayed.
+          * @default false
+         */
+        "loading"?: boolean;
         /**
           * Optional message text to display below the loader.
           * @default ''
