@@ -30,6 +30,5 @@ module.exports = (config, options) => {
   // singleSpaWebpackConfig.devServer.client.overlay = false;
   // singleSpaWebpackConfig.devServer.liveReload = false;
 
-  // console.log('=============', JSON.stringify(singleSpaWebpackConfig, null, 2));
   return singleSpaWebpackConfig;
 };

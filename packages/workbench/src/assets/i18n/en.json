@@ -50,8 +50,34 @@
     "page_info_tooltip": {
       "documentation_link": "Learn more in the GraphDB documentation"
     },
-    "repository_banners": {
-      "no_active_repository": "Some functionalities are not available because you are not connected to any repository."
+    "page_restrictions": {
+      "no_active_repository_select_one": "Some functionalities are not available because you are not connected to any repository. Select a repository below.",
+      "no_active_repository_select_or_create_one": "Some functionalities are not available because you are not connected to any repository. Select a repository below or create a new one.",
+      "no_accessible_repos_create_one": "There are no accessible repositories. You can create a new repository.",
+      "invalid_license": "Some functionalities are not available because your license is not valid.",
+      "set_new_license": "Set a new license",
+      "no_write_permission": "Some functionalities are not available because you have no write permission to the repository <strong>{{repositoryId}}</strong>.",
+      "read_only_ontop": "Some functionalities are not available because <strong>{{repositoryId}}</strong> is read-only Virtual Repository.",
+      "fedx_unsupported": "Some functionalities are not available because <strong>{{pageTitle}}</strong> view is not supported by FedX Repository.",
+      "no_accessible_writable_repos": "There are no accessible writable repositories."
+    },
+    "repository_picker_list": {
+      "hide_remote_locations_btn": {
+        "label": "Hide remote locations"
+      },
+      "create_repository_btn": {
+        "label": "Create new repository"
+      },
+      "select_repository_btn": {
+        "label": "Select"
+      },
+      "location_local_label": "Local",
+      "filter_placeholder": "Filter by name or title",
+      "state_filter": {
+        "all": "All repositories",
+        "running": "Running",
+        "inactive": "Inactive"
+      }
     }
   },
   "login": {

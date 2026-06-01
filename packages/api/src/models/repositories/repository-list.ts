@@ -22,6 +22,10 @@ export class RepositoryList extends ModelList<Repository> {
     super(repositories);
   }
 
+  filterWithCallback(filterCallback: (repository: Repository) => boolean): RepositoryList {
+    return new RepositoryList(super.filter(filterCallback));
+  }
+
   /**
    * Finds a repository in the list by its ID and location.
    *
