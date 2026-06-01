@@ -129,10 +129,10 @@ export class OntoLayout {
           </nav>
         }
 
-        {this.loading &&
-          <onto-loader targetSelector={'main'} size={96} messageText={TranslationService.translate('common.loading')}></onto-loader>
-        }
-        <slot name="main"></slot>
+        <slot name="main">
+          <onto-loader loading={this.loading} targetSelector={'main'} size={96}
+            messageText={TranslationService.translate('common.loading')}></onto-loader>
+        </slot>
 
         {!this.isEmbedded &&
           <footer class="wb-footer">

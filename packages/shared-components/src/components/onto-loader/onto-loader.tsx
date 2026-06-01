@@ -16,6 +16,11 @@ export class OntoLoader {
   @Prop() size = 100;
 
   /**
+   * Whether the loader is currently active and should be displayed.
+   */
+  @Prop() loading = false;
+
+  /**
    * Optional message text to display below the loader.
    */
   @Prop() messageText = '';
@@ -35,7 +40,7 @@ export class OntoLoader {
 
   render() {
     return (
-      <Host class={{[this.ATTACHED_CLASS]: !!this.targetSelector}}>
+      <Host class={{[this.ATTACHED_CLASS]: !!this.targetSelector, 'onto-loader-active': this.loading}}>
         <div class="onto-loader" guide-selector="onto-loader">
           <div class="loader-spinner" style={{'width': this.size + 'px', 'height': this.size + 'px'}} innerHTML={this.rawSvg}></div>
           {this.messageText && <div class="loader-message" style={{'font-size': (this.size / 4) + 'px'}}>{this.messageText}</div>}
