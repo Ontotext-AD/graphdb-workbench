@@ -87,8 +87,9 @@
         "test": {
           "builder": "@angular-builders/jest:run",
           "options": {
-            "configPath": "./jest.config.ts",
-            "tsConfig": "tsconfig.spec.json"
+            "config": "./jest.config.ts",
+            "tsConfig": "tsconfig.spec.json",
+            "zoneless": false
           }
         },
         "lint": {

@@ -19,6 +19,14 @@ module.exports = (config, options) => {
     filename: 'workbenchApp.js',
     publicPath: 'auto',
   };
+
+  singleSpaWebpackConfig.devServer = {
+    ...singleSpaWebpackConfig.devServer,
+    headers: {
+      ...(singleSpaWebpackConfig.devServer?.headers),
+      'Access-Control-Allow-Origin': '*',
+    },
+  };
   // singleSpaWebpackConfig.devServer.client.overlay = false;
   // singleSpaWebpackConfig.devServer.liveReload = false;
 

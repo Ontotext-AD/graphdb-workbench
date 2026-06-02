@@ -4,12 +4,16 @@
     "resolveJsonModule": true,
     "outDir": "./out-tsc/spec",
     "types": [
-      "jest"
+      "jest",
+      "node"
     ],
     "paths": {
       "@ontotext/workbench-api": ["../api/dist/ontotext-workbench-api.d.ts"],
       "@ontotext/shared-components": ["../shared-components/dist/types/index.d.ts"]
-    }
+    },
+    "module": "es2022",
+    "moduleResolution": "bundler",
+    "isolatedModules": true
   },
   "include": [
     "src/**/*.spec.ts",
