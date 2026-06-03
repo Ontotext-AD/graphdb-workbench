@@ -1,24 +1,27 @@
 import './../node_modules/zone.js';
 import {enableProdMode, NgZone} from '@angular/core';
 import {NavigationStart, Router} from '@angular/router';
-import {singleSpaAngular} from 'single-spa-angular';
+import {provideSingleSpaPlatform, singleSpaAngular} from 'single-spa-angular';
 
 import {environment} from './environments/environment';
-import {bootstrapApplication} from '@angular/platform-browser';
+import {bootstrapApplication, platformBrowser} from '@angular/platform-browser';
 import {AppComponent} from './app/app.component';
 import {appConfig} from './app/app.config';
+import {singleSpaProps} from './single-spa/single-spa-props';
 
 if (environment.production) {
   enableProdMode();
 }
 
 const lifecycles = singleSpaAngular({
-  bootstrapFunction: async () => {
+  bootstrapFunction: async (singleSpaProperties) => {
     try {
+      singleSpaProps.set(singleSpaProperties);
+      const platformRef = platformBrowser(provideSingleSpaPlatform());
       // bootstrapApplication initializes the standalone root component and its dependencies.
       // It returns a Promise that resolves with an ApplicationRef instance.
       // single-spa-angular requires this ApplicationRef to manage mounting and unmounting.
-      return await bootstrapApplication(AppComponent, appConfig);
+      return await bootstrapApplication(AppComponent, appConfig, {platformRef});
     } catch (error) {
       // Log the detailed error for debugging purposes.
       console.error('Failed to bootstrap the Angular application:', error);
@@ -31,7 +34,7 @@ const lifecycles = singleSpaAngular({
   template: '<app-root />',
   Router,
   NavigationStart,
-  NgZone,
+  NgZone
 });
 
 export const bootstrap = lifecycles.bootstrap;

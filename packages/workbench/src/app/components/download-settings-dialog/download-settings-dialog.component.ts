@@ -6,7 +6,6 @@ import {Select, SelectChangeEvent} from 'primeng/select';
 import {InputText} from 'primeng/inputtext';
 import {Tooltip} from 'primeng/tooltip';
 import {ApplicationSettingsStorageService, JsonldExportSettings, service} from '@ontotext/workbench-api';
-import {Button} from 'primeng/button';
 import {DownloadSettingsDialogData} from './models/download-settings-dialog-data';
 
 interface JSONLDModeOption {
@@ -29,7 +28,6 @@ enum JSONLDMode {
     Select,
     InputText,
     Tooltip,
-    Button
   ],
   templateUrl: './download-settings-dialog.component.html',
   styleUrl: './download-settings-dialog.component.scss'

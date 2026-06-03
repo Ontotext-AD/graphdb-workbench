@@ -6,7 +6,7 @@ import {getBasePath} from '@ontotext/workbench-api';
 import {routes} from './app.routes';
 import {bootstrapProviders} from './bootstrap/bootstrap';
 import {APP_BASE_HREF} from '@angular/common';
-import {getSingleSpaExtraProviders} from 'single-spa-angular';
+import {provideSingleSpaPlatform} from 'single-spa-angular';
 import {providePrimeNG} from 'primeng/config';
 import {DialogService} from 'primeng/dynamicdialog';
 import {ConfirmationService} from 'primeng/api';
@@ -14,7 +14,7 @@ import {provideTranslocoMessageformat} from '@jsverse/transloco-messageformat';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    ...getSingleSpaExtraProviders(),
+    ...provideSingleSpaPlatform(),
     ...bootstrapProviders,
     provideZoneChangeDetection({eventCoalescing: true}),
     provideRouter(routes),
