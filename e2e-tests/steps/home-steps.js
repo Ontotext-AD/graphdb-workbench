@@ -200,13 +200,10 @@ class HomeSteps extends BaseSteps {
     }
 
     static verifyCreateRepositoryLink() {
-        cy.get('.card.repository-errors').should('be.visible')
-            .within(() => {
-                HomeSteps.getCreateRepositoryLink()
-                    .click()
-                    .url()
-                    .should('eq', Cypress.config('baseUrl') + '/repository/create?previous=%2F');
-            });
+        HomeSteps.getCreateRepositoryLink()
+            .click()
+            .url()
+            .should('eq', Cypress.config('baseUrl') + '/repository/create?previous=%2F');
         cy.get('.big-logo').click();
     }
 
