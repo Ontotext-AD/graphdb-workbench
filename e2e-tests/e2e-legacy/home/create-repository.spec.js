@@ -1,10 +1,16 @@
 import HomeSteps from '../../steps/home-steps';
+import {RepositoriesStubs} from "../../stubs/repositories/repositories-stubs.js";
 
 describe('Create repository', () => {
 
     beforeEach(() => {
         cy.viewport(1280, 1000);
         HomeSteps.visitAndWaitLoader();
+        RepositoriesStubs.spyGetRepositories();
+        cy.wait('@getRepositories');
+        // Due to the ongoing migration, there are currently 2 requests to get repositories on init (one from the legacy and one from the new workbench).
+        // This will be removed once migration is complete (or at least the repository part of it)
+        cy.wait('@getRepositories');
     });
 
     it('Test create and select new repository via home page', () => {
