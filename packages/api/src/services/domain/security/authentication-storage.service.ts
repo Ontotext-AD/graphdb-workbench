@@ -39,7 +39,16 @@ export class AuthenticationStorageService extends LocalStorageService {
   }
 
   isGDBorOpenIDToken(): boolean {
+    return this.isGDBToken() || this.isOpenIDToken();
+  }
+
+  isGDBToken(): boolean {
     const token = this.getAuthToken().getValue();
-    return !!(token && (token.startsWith('GDB') || token.startsWith('Bearer')));
+    return !!(token?.startsWith('GDB'));
+  }
+
+  isOpenIDToken(): boolean {
+    const token = this.getAuthToken().getValue();
+    return !!(token?.startsWith('Bearer'));
   }
 }

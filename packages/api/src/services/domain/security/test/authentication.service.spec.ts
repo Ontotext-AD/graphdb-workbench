@@ -99,7 +99,7 @@ describe('AuthenticationService', () => {
 
     test('login should call authentication strategy login', () => {
       const testAuthStrategySpy = jest.spyOn(testAuthStrategy, 'login');
-      authService.login('username', 'password');
+      authService.login({username: 'username', password: 'password'});
       expect(testAuthStrategySpy).toHaveBeenCalled();
     });
 
@@ -134,8 +134,8 @@ describe('AuthenticationService', () => {
       expect(() => authService.isAuthenticated()).toThrow();
     });
 
-    test('login should throw if no authentication strategy is set', () => {
-      expect(() => authService.login('username', 'password')).toThrow();
+    test('login should throw if no authentication strategy is set', async () => {
+      await expect(authService.login({username: 'username', password: 'password'})).rejects.toThrow();
     });
 
     test('logout should throw if no authentication strategy is set', () => {
@@ -150,7 +150,8 @@ describe('AuthenticationService', () => {
       const config = getSecurityConfig(true);
       service(SecurityContextService).updateSecurityConfig(config);
       // Given, I have a security config with enabled security and user logged in
-      await authService.login('username', 'password');      // When, I check, user is logged in
+      await authService.login({username: 'username', password: 'password'});
+      // When, I check, user is logged in
       expect(authService.isLoggedIn()).toBe(true);
     });
 
@@ -229,7 +230,7 @@ describe('AuthenticationService', () => {
       testAuthStrategy = new TestAuthStrategy();
       jest.spyOn(service(AuthStrategyResolver), 'getAuthStrategy').mockReturnValue(testAuthStrategy);
       service(AuthenticationStorageService).set('jwt', 'test-token');
-      await authService.login('username', 'password');
+      await authService.login({username: 'username', password: 'password'});
       // When, I check if user is external
       expect(authService.isExternalUser()).toBe(false);
     });
@@ -239,7 +240,7 @@ describe('AuthenticationService', () => {
       testAuthStrategy = new TestAuthStrategy();
       jest.spyOn(testAuthStrategy, 'isExternal').mockReturnValue(true);
       jest.spyOn(service(AuthStrategyResolver), 'getAuthStrategy').mockReturnValue(testAuthStrategy);
-      await authService.login('username', 'password');
+      await authService.login({username: 'username', password: 'password'});
       // When, I check if user is external
       expect(authService.isExternalUser()).toBe(true);
     });
@@ -260,7 +261,7 @@ describe('AuthenticationService', () => {
       // Given, I have an external user (logged in without token)
       testAuthStrategy = new TestAuthStrategy();
       jest.spyOn(service(AuthStrategyResolver), 'getAuthStrategy').mockReturnValue(testAuthStrategy);
-      await authService.login('username', 'password');
+      await authService.login({username: 'username', password: 'password'});
       // When, I check if user is authenticated
       expect(authService.isAuthenticated()).toBe(true);
     });

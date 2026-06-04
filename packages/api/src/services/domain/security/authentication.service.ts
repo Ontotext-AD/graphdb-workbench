@@ -12,6 +12,8 @@ import {AuthenticationStrategyNotSet} from './errors/authentication-strategy-not
 import {AuthStrategy} from '../../../models/security/authentication';
 import {AuthenticationStorageService} from './authentication-storage.service';
 import {NavigationContextService} from '../../navigation';
+import {GdbTokenAuthStrategy} from './auth-strategies/gdb-token-auth-strategy';
+import {OpenidAuthStrategy} from './auth-strategies/openid-auth-strategy';
 
 /**
  * Service responsible for handling authentication operations and managing auth strategies.
@@ -46,20 +48,20 @@ export class AuthenticationService implements Service {
    * Stores the auth token (if returned), updates the security context
    * with the mapped user, and returns the authenticated user model.
    *
-   * @param username - The username of the user.
-   * @param password - The password of the user.
-   * @returns A Promise that resolves to the authenticated `AuthenticatedUser` model.
+   * @param loginData - The login credentials (username and password). Optional, as some strategies might not require it.
+   * @returns A promise that resolves when login is complete.
    */
-  login(username: string, password: string): Promise<void> {
+  async login(loginData?: unknown): Promise<void> {
+    if (loginData) {
+      this.authStrategyResolver.setStrategy(new GdbTokenAuthStrategy());
+    } else {
+      this.authStrategyResolver.setStrategy(new OpenidAuthStrategy());
+    }
     const authStrategy = this.getAuthenticationStrategy();
-    return authStrategy.login({username, password})
-      .then((authUser) => {
-        this.securityContextService.updateIsLoggedIn(true);
-        this.securityContextService.updateAuthenticatedUser(authUser);
-        // The previous strategy might have been external, which is why we need to update it
-        this.updateStrategy();
-        this.eventService.emit(new Login());
-      });
+    const authUser = await authStrategy.login(loginData);
+    this.securityContextService.updateIsLoggedIn(true);
+    this.securityContextService.updateAuthenticatedUser(authUser);
+    this.eventService.emit(new Login());
   }
 
   /**
@@ -136,13 +138,6 @@ export class AuthenticationService implements Service {
    */
   private getSecurityConfig(): SecurityConfig | undefined {
     return service(SecurityContextService).getSecurityConfig();
-  }
-
-  private updateStrategy(): void {
-    const securityConfig = this.getSecurityConfig();
-    if (securityConfig) {
-      this.authStrategyResolver.resolveStrategy(securityConfig);
-    }
   }
 
   private getAuthenticationStrategy(): AuthStrategy {

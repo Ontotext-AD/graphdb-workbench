@@ -5,6 +5,7 @@ import {
   Configuration,
   ConfigurationContextService,
   RuntimeConfigurationContextService,
+  SecurityService,
   ServiceProvider,
   ThemeMode
 } from '@ontotext/workbench-api';
@@ -31,6 +32,7 @@ describe('LoginPageComponent', () => {
   let fixture: ComponentFixture<LoginPageComponent>;
   let runtimeConfigurationContextService: RuntimeConfigurationContextService;
   let configurationContextService: ConfigurationContextService;
+  let securityService: SecurityService;
 
   const mockActivatedRoute = {
     snapshot: {
@@ -63,6 +65,7 @@ describe('LoginPageComponent', () => {
 
     // Get actual service instances
     runtimeConfigurationContextService = ServiceProvider.get(RuntimeConfigurationContextService);
+    securityService = ServiceProvider.get(SecurityService);
   });
 
   afterEach(() => {
@@ -190,6 +193,146 @@ describe('LoginPageComponent', () => {
         component.ngOnDestroy();
         component.ngOnDestroy();
       }).not.toThrow();
+    });
+  });
+
+  describe('view conditions', () => {
+    const getEl = <T extends HTMLElement>(selector: string): T | null =>
+      fixture.nativeElement.querySelector(selector);
+
+    describe('when GDB login is enabled', () => {
+      beforeEach(() => {
+        jest.spyOn(securityService, 'isPasswordLoginEnabled').mockReturnValue(true);
+        jest.spyOn(securityService, 'isOpenIDEnabled').mockReturnValue(false);
+        fixture.detectChanges();
+      });
+
+      it('should show the login title', () => {
+        expect(getEl('h2.login-title')).not.toBeNull();
+      });
+
+      it('should show the username input', () => {
+        expect(getEl('input[data-test="username-input"]')).not.toBeNull();
+      });
+
+      it('should show the password input', () => {
+        expect(getEl('input[data-test="password-input"]')).not.toBeNull();
+      });
+
+      it('should show the submit button', () => {
+        expect(getEl('button[data-test="submit-btn"]')).not.toBeNull();
+      });
+
+      it('should not show the OpenID button', () => {
+        const buttons: HTMLButtonElement[] = Array.from(fixture.nativeElement.querySelectorAll('button'));
+        const openIdButton = buttons.find((b) => b.textContent?.trim().includes('Login with OpenID'));
+        expect(openIdButton).toBeUndefined();
+      });
+
+      it('should not add openid-login class to the login card', () => {
+        expect(getEl('.login-card')?.classList.contains('openid-login')).toBe(false);
+      });
+    });
+
+    describe('when GDB login is disabled', () => {
+      beforeEach(() => {
+        jest.spyOn(securityService, 'isPasswordLoginEnabled').mockReturnValue(false);
+        jest.spyOn(securityService, 'isOpenIDEnabled').mockReturnValue(false);
+        fixture.detectChanges();
+      });
+
+      it('should not show the login title', () => {
+        expect(getEl('h2.login-title')).toBeNull();
+      });
+
+      it('should not show the username input', () => {
+        expect(getEl('input[data-test="username-input"]')).toBeNull();
+      });
+
+      it('should not show the password input', () => {
+        expect(getEl('input[data-test="password-input"]')).toBeNull();
+      });
+
+      it('should not show the submit button', () => {
+        expect(getEl('button[data-test="submit-btn"]')).toBeNull();
+      });
+    });
+
+    describe('when OpenID login is enabled', () => {
+      beforeEach(() => {
+        jest.spyOn(securityService, 'isPasswordLoginEnabled').mockReturnValue(false);
+        jest.spyOn(securityService, 'isOpenIDEnabled').mockReturnValue(true);
+        fixture.detectChanges();
+      });
+
+      it('should show the OpenID sign-in button', () => {
+        const buttons: NodeListOf<HTMLButtonElement> = fixture.nativeElement.querySelectorAll('button');
+        const openIdButton = Array.from(buttons).find((b) => b.textContent?.trim().includes('Login with OpenID'));
+        expect(openIdButton).toBeDefined();
+      });
+
+      it('should add openid-login class to the login card', () => {
+        expect(getEl('.login-card')?.classList.contains('openid-login')).toBe(true);
+      });
+
+      it('should not show GDB form fields', () => {
+        expect(getEl('input[data-test="username-input"]')).toBeNull();
+        expect(getEl('input[data-test="password-input"]')).toBeNull();
+        expect(getEl('button[data-test="submit-btn"]')).toBeNull();
+      });
+    });
+
+    describe('when both GDB and OpenID login are enabled', () => {
+      beforeEach(() => {
+        jest.spyOn(securityService, 'isPasswordLoginEnabled').mockReturnValue(true);
+        jest.spyOn(securityService, 'isOpenIDEnabled').mockReturnValue(true);
+        fixture.detectChanges();
+      });
+
+      it('should show both GDB form fields and the OpenID button', () => {
+        expect(getEl('input[data-test="username-input"]')).not.toBeNull();
+        expect(getEl('input[data-test="password-input"]')).not.toBeNull();
+        expect(getEl('button[data-test="submit-btn"]')).not.toBeNull();
+        const buttons: NodeListOf<HTMLButtonElement> = fixture.nativeElement.querySelectorAll('button');
+        const openIdButton = Array.from(buttons).find((b) => b.textContent?.trim().includes('Login with OpenID'));
+        expect(openIdButton).toBeDefined();
+      });
+
+      it('should add openid-login class to the login card', () => {
+        expect(getEl('.login-card')?.classList.contains('openid-login')).toBe(true);
+      });
+    });
+
+    describe('wrong credentials error state', () => {
+      beforeEach(() => {
+        jest.spyOn(securityService, 'isPasswordLoginEnabled').mockReturnValue(true);
+        jest.spyOn(securityService, 'isOpenIDEnabled').mockReturnValue(false);
+        fixture.detectChanges();
+      });
+
+      it('should not apply has-error class to inputs by default', () => {
+        expect(getEl('input[data-test="username-input"]')?.classList.contains('has-error')).toBe(false);
+        expect(getEl('input[data-test="password-input"]')?.classList.contains('has-error')).toBe(false);
+      });
+
+      it('should apply has-error class to inputs when wrongCredentials form error is set', () => {
+        component.loginForm.setErrors({wrongCredentials: true});
+        fixture.detectChanges();
+
+        expect(getEl('input[data-test="username-input"]')?.classList.contains('has-error')).toBe(true);
+        expect(getEl('input[data-test="password-input"]')?.classList.contains('has-error')).toBe(true);
+      });
+
+      it('should remove has-error class from inputs when wrongCredentials error is cleared', () => {
+        component.loginForm.setErrors({wrongCredentials: true});
+        fixture.detectChanges();
+
+        component.loginForm.setErrors(null);
+        fixture.detectChanges();
+
+        expect(getEl('input[data-test="username-input"]')?.classList.contains('has-error')).toBe(false);
+        expect(getEl('input[data-test="password-input"]')?.classList.contains('has-error')).toBe(false);
+      });
     });
   });
 });

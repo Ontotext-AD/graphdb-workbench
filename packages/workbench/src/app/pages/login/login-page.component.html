@@ -4,11 +4,10 @@
       <img [ngSrc]="logoPath()" [width]="200" [height]="53" class="graphdb-logo" [alt]="'login.logo_alt' | transloco"/>
     </div>
 
-    @if (isGDBLoginEnabled()) {
-      <h2 class="login-title">{{ 'login.title' | transloco }}</h2>
-
-      <form [formGroup]="loginForm" (ngSubmit)="login()" novalidate>
+    <form [formGroup]="loginForm" (ngSubmit)="login()" novalidate>
+      @if (isGDBLoginEnabled()) {
         @let hasWrongCredentials = loginForm.hasError('wrongCredentials');
+        <h2 class="login-title">{{ 'login.title' | transloco }}</h2>
 
         <div class="group">
           <label for="username">{{ 'login.username' | transloco }}</label>
@@ -17,12 +16,12 @@
               <i class="ri-user-line"></i>
             </span>
             <input id="username" [ngClass]="{'has-error': hasWrongCredentials}"
-              formControlName="username"
-              autocomplete="username"
-              type="text"
-              placeholder="{{ 'login.username_placeholder' | transloco }}"
-              class="input-field"
-              data-test="username-input"
+                   formControlName="username"
+                   autocomplete="username"
+                   type="text"
+                   placeholder="{{ 'login.username_placeholder' | transloco }}"
+                   class="input-field"
+                   data-test="username-input"
             />
           </div>
         </div>
@@ -34,28 +33,28 @@
               <i class="ri-lock-line"></i>
             </span>
             <input id="password" [ngClass]="{'has-error': hasWrongCredentials}"
-              formControlName="password"
-              autocomplete="current-password"
-              type="password"
-              placeholder="{{ 'login.password_placeholder' | transloco }}"
-              class="input-field"
-              data-test="password-input"
+                   formControlName="password"
+                   autocomplete="current-password"
+                   type="password"
+                   placeholder="{{ 'login.password_placeholder' | transloco }}"
+                   class="input-field"
+                   data-test="password-input"
             />
           </div>
         </div>
-
-        <div class="action">
+      }
+      <div class="actions">
+        @if (isGDBLoginEnabled()) {
           <button type="submit" class="onto-btn onto-btn-primary onto-lg" data-test="submit-btn">
             {{ 'login.sign_in' | transloco }}
           </button>
-        </div>
-      </form>
-    } @else if (isOpenIDEnabled()) {
-      <div class="action">
-        <button (click)="loginWithOpenID()" class="onto-btn onto-btn-primary onto-lg">
-          {{ 'login.sign_in_openid' | transloco }}
-        </button>
+        }
+        @if (isOpenIDEnabled()) {
+          <button type="button" (click)="login(true)" class="onto-btn onto-btn-primary onto-lg">
+            {{ 'login.sign_in_openid' | transloco }}
+          </button>
+        }
       </div>
-    }
+    </form>
   </div>
 </div>
