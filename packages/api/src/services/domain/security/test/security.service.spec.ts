@@ -57,7 +57,7 @@ describe('SecurityService', () => {
 
     const securityConfig = SecurityConfigTestUtil.createSecurityConfig({enabled: true});
     service(AuthStrategyResolver).resolveStrategy(securityConfig);
-    await service(AuthenticationService).login(mockAuthenticatedUser.username, 'password');
+    await service(AuthenticationService).login({username: mockAuthenticatedUser.username, password: 'password'});
 
     // And I create a mock authenticated user with updated app settings
     const updatedUser = new AuthenticatedUser({

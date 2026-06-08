@@ -17,6 +17,7 @@
     .login-title {
       text-align: center;
       margin-top: 2rem;
+      margin-bottom: 2rem;
     }
 
     .login-card {
@@ -101,12 +102,16 @@
     }
   }
 
-  .action {
+  .actions {
     display: flex;
-    justify-content: center;
-  }
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+    margin: 2rem auto 0;
+    width: fit-content;
 
-  .openid-login .action {
-    margin-top: 2rem;
+    button {
+      min-width: 160px;
+    }
   }
 }

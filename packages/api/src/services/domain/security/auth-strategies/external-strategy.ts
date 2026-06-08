@@ -1,10 +1,12 @@
-import {AuthStrategyType} from '../../../../models/security/authentication';
+import {AuthStrategy, AuthStrategyType} from '../../../../models/security/authentication';
 import {SecurityContextService} from '../security-context.service';
 import {service} from '../../../../providers';
-import {BaseGdbLoginStrategy} from './base-gdb-login-strategy';
 import {OperationNotSupported} from '../errors/operation-not-supported';
+import {AuthenticatedUser} from '../../../../models/security';
+import {SecurityService} from '../security.service';
 
-export class ExternalStrategy extends BaseGdbLoginStrategy {
+export class ExternalStrategy implements AuthStrategy {
+  private readonly securityService = service(SecurityService);
   private readonly securityContextService = service(SecurityContextService);
 
   type = AuthStrategyType.EXTERNAL;
@@ -23,6 +25,19 @@ export class ExternalStrategy extends BaseGdbLoginStrategy {
    */
   isAuthenticated(): boolean {
     return !!this.securityContextService.getAuthenticatedUser();
+  }
+
+  /**
+   * Fetches the currently authenticated user using the security service.
+   *
+   * @returns A promise that resolves to the authenticated user.
+   */
+  fetchAuthenticatedUser(): Promise<AuthenticatedUser> {
+    return this.securityService.getAuthenticatedUser();
+  }
+
+  login(): Promise<AuthenticatedUser> {
+    throw new OperationNotSupported();
   }
 
   /**

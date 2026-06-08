@@ -6,6 +6,7 @@ import {WindowService} from '../../../../window';
 import {ResponseMock} from '../../../../http/test/response-mock';
 import {ProviderResponseMocks} from './provider-response-mocks';
 import {AuthenticatedUser, SecurityConfig} from '../../../../../models/security';
+import {MissingTokenInHeader} from '../../errors/missing-token-in-header';
 
 describe('GdbTokenAuthStrategy', () => {
   let strategy : GdbTokenAuthStrategy;
@@ -65,6 +66,39 @@ describe('GdbTokenAuthStrategy', () => {
       const clearAuthTokenSpy = jest.spyOn(ServiceProvider.get(AuthenticationStorageService), 'clearAuthToken');
       await strategy.logout();
       expect(clearAuthTokenSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe('login', () => {
+    let updateAuthenticatedUserSpy: jest.SpyInstance;
+    let setAuthTokenSpy: jest.SpyInstance;
+    let loginGdbTokenSpy: jest.SpyInstance;
+
+    const loginData = {username: 'testUser', password: '1234'};
+
+    beforeEach(() => {
+      updateAuthenticatedUserSpy = jest.spyOn(ServiceProvider.get(SecurityContextService), 'updateAuthenticatedUser');
+      setAuthTokenSpy = jest.spyOn(ServiceProvider.get(AuthenticationStorageService), 'setAuthToken');
+      loginGdbTokenSpy = jest.spyOn(ServiceProvider.get(SecurityService), 'loginGdbToken');
+    });
+
+    it('should login, set token, update user', async () => {
+      TestUtil.mockResponse(new ResponseMock('rest/login').setResponse(ProviderResponseMocks.loginResponse).setHeaders(new Headers({authorization: 'GDB someToken'})));
+
+      const result = await strategy.login(loginData);
+      expect(result).toBeTruthy();
+
+      expect(loginGdbTokenSpy).toHaveBeenCalledWith(loginData.username, loginData.password);
+      expect(setAuthTokenSpy).toHaveBeenCalledWith('GDB someToken');
+      expect(updateAuthenticatedUserSpy).not.toHaveBeenCalled();
+    });
+
+    it('should not set token/user if auth header or user is missing', async () => {
+      TestUtil.mockResponse(new ResponseMock('rest/login').setResponse(ProviderResponseMocks.loginResponse));
+
+      await expect(strategy.login(loginData)).rejects.toThrow(MissingTokenInHeader);
+      expect(setAuthTokenSpy).not.toHaveBeenCalled();
+      expect(updateAuthenticatedUserSpy).not.toHaveBeenCalled();
     });
   });
 

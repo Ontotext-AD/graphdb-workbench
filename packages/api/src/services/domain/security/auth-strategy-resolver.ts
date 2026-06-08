@@ -30,8 +30,13 @@ export class AuthStrategyResolver implements Service {
    * @returns The authentication strategy instance to use
    */
   resolveStrategy(securityConfig: SecurityConfig): AuthStrategy {
-    this.authStrategy = this._resolveStrategy(securityConfig);
-    return this.authStrategy;
+    const strategy = this._resolveStrategy(securityConfig);
+    this.setStrategy(strategy);
+    return strategy;
+  }
+
+  setStrategy(strategy: AuthStrategy): void {
+    this.authStrategy = strategy;
   }
 
   /**
@@ -48,14 +53,24 @@ export class AuthStrategyResolver implements Service {
       return new NoSecurityStrategy();
     }
 
+    const user = this.securityContextService.getAuthenticatedUser();
+
+    if (user) {
+      if (this.authStorageService.isGDBToken()) {
+        return new GdbTokenAuthStrategy();
+      }
+
+      if (this.authStorageService.isOpenIDToken()) {
+        return new OpenidAuthStrategy();
+      }
+
+      return new ExternalStrategy();
+    }
+
     if (securityConfig.openIdEnabled) {
       return new OpenidAuthStrategy();
     }
 
-    const user = this.securityContextService.getAuthenticatedUser();
-    // If we have a user, without an openID or GDB token, we assume it's an external auth
-    return (user && !this.authStorageService.isGDBorOpenIDToken())
-      ? new ExternalStrategy()
-      : new GdbTokenAuthStrategy();
+    return new GdbTokenAuthStrategy();
   }
 }

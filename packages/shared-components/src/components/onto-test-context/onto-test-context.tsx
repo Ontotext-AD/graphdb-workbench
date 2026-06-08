@@ -143,7 +143,7 @@ export class OntoTestContext {
   @Method()
   login(username: string, password: string): Promise<void> {
     const authService = ServiceProvider.get(AuthenticationService);
-    return authService.login(username, password);
+    return authService.login({username, password});
   }
 
   /**

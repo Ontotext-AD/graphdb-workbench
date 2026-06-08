@@ -2,6 +2,7 @@ import {ExternalStrategy} from '../external-strategy';
 import {service} from '../../../../../providers';
 import {SecurityContextService} from '../../security-context.service';
 import {AuthenticatedUser} from '../../../../../models/security';
+import {OperationNotSupported} from '../../errors/operation-not-supported';
 
 describe('External strategy Auth Provider', () => {
   let strategy: ExternalStrategy;
@@ -20,5 +21,9 @@ describe('External strategy Auth Provider', () => {
     expect(strategy.isAuthenticated()).toEqual(false);
     securityContextService.updateAuthenticatedUser(new AuthenticatedUser());
     expect(strategy.isAuthenticated()).toEqual(true);
+  });
+
+  test('login should throw OperationNotSupported', () => {
+    expect(() => strategy.login()).toThrow(OperationNotSupported);
   });
 });
