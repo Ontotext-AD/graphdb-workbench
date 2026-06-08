@@ -1,11 +1,16 @@
 import {service} from '../../../../providers';
-import {SecurityContextService} from '../index';
+import {AuthenticationStorageService, mapAuthenticatedUserResponseToModel, SecurityContextService, SecurityService} from '../index';
 import {getCurrentRoute} from '../../../utils';
-import {AuthStrategyType} from '../../../../models/security/authentication';
-import {BaseGdbLoginStrategy} from './base-gdb-login-strategy';
-import {AuthenticatedUser} from '../../../../models/security';
+import {AuthStrategy, AuthStrategyType} from '../../../../models/security/authentication';
+import {AuthenticatedUser, AuthenticatedUserResponse} from '../../../../models/security';
+import {LoginData} from '../../../../models/security/authentication/login-data';
+import {MissingTokenInHeader} from '../errors/missing-token-in-header';
+import {HttpResponse} from '../../../../models/http';
+import {InvalidLoginData} from '../errors/invalid-login-data';
 
-export class GdbTokenAuthStrategy extends BaseGdbLoginStrategy {
+export class GdbTokenAuthStrategy implements AuthStrategy {
+  private readonly securityService = service(SecurityService);
+  private readonly authStorageService = service(AuthenticationStorageService);
   private readonly securityContextService = service(SecurityContextService);
 
   type = AuthStrategyType.GDB_TOKEN;
@@ -38,6 +43,39 @@ export class GdbTokenAuthStrategy extends BaseGdbLoginStrategy {
    */
   fetchAuthenticatedUser(): Promise<AuthenticatedUser> {
     return this.securityService.getAuthenticatedUser();
+  }
+
+  /**
+   * Attempts to log in using the provided username and password.
+   * On success, stores the authentication token and updates the authenticated user in the security context.
+   * Logs and throws an error if the user cannot be mapped from the response.
+   * @param {LoginData} loginData - The login credentials (username and password).
+   * @returns {Promise<void>} A promise that resolves when login is complete.
+   */
+  async login(loginData: LoginData): Promise<AuthenticatedUser> {
+    this.assertIsLoginData(loginData);
+
+    const {username, password} = loginData;
+    const response = await this.securityService.loginGdbToken(username, password);
+    const authHeader = this.getAuthenticationHeader(response);
+    const authUser = mapAuthenticatedUserResponseToModel(response.data as AuthenticatedUserResponse);
+
+    if (authHeader) {
+      this.authStorageService.setAuthToken(authHeader);
+    } else {
+      throw new MissingTokenInHeader();
+    }
+    return authUser;
+  };
+
+  private assertIsLoginData(value: unknown): asserts value is LoginData {
+    if (typeof value !== 'object' || value === null || !('username' in value) || !('password' in value)) {
+      throw new InvalidLoginData();
+    }
+  }
+
+  private getAuthenticationHeader(response: HttpResponse): string | null {
+    return response.headers['authorization'];
   }
 
   /**
