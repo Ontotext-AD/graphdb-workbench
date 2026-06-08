@@ -1,5 +1,5 @@
 import {Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnDestroy, OnInit, signal} from '@angular/core';
-import {FormBuilder, FormGroup, ReactiveFormsModule, FormsModule, Validators} from '@angular/forms';
+import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {TranslocoPipe, TranslocoService} from '@jsverse/transloco';
 import {
@@ -23,7 +23,7 @@ import {CommonModule, NgOptimizedImage} from '@angular/common';
     ReactiveFormsModule,
     CommonModule,
     NgOptimizedImage,
-    FormsModule,
+    FormsModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './login-page.component.html',
@@ -93,15 +93,19 @@ export class LoginPageComponent implements OnInit, OnDestroy {
     return this.securityService.isOpenIDEnabled();
   }
 
-  login(): void {
-    const {username, password} = this.loginForm.value;
+  login(withOpenId = false): void {
+    let loginData: unknown;
     this.loginForm.setErrors(null);
 
-    if (this.isGDBLoginEnabled() && !this.isFormValid()) {
+    if (withOpenId) {
+      this.openidStorageService.setReturnUrl(this.returnUrl);
+    } else if (this.isFormValid()) {
+      loginData = this.loginForm.value;
+    } else {
       return;
     }
 
-    this.authenticationService.login(username, password)
+    this.authenticationService.login(loginData)
       .then(() => {
         this.router.navigateByUrl(this.returnUrl);
         this.navigationContextService.clearReturnUrl();
@@ -114,11 +118,6 @@ export class LoginPageComponent implements OnInit, OnDestroy {
           this.toastrService.error(err.message, err.status);
         }
       });
-  }
-
-  loginWithOpenID(): void {
-    this.openidStorageService.setReturnUrl(this.returnUrl);
-    this.login();
   }
 
   private subscribeToThemeModeChange(): void {

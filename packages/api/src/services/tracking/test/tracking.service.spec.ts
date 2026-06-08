@@ -45,7 +45,7 @@ describe('TrackingService', () => {
 
     const securityConfig = SecurityConfigTestUtil.createSecurityConfig({enabled: true});
     service(AuthStrategyResolver).resolveStrategy(securityConfig);
-    await service(AuthenticationService).login(mockAuthenticatedUser.username, 'password');
+    await service(AuthenticationService).login({username: mockAuthenticatedUser.username, password: 'password'});
   });
 
   afterEach(() => {
@@ -69,7 +69,7 @@ describe('TrackingService', () => {
         new ResponseMock(`rest/security/users/${userWithNoConsent.username}`).setResponse({}),
         new ResponseMock('rest/login').setResponse(userWithNoConsent).setHeaders(new Headers({authorization: 'GDB someToken'}))
       ]);
-      await service(AuthenticationService).login(userWithNoConsent.username, 'password');
+      await service(AuthenticationService).login({username: userWithNoConsent.username, password: 'password'});
 
       // When I call acceptCookiePolicy
       await trackingService.acceptCookiePolicy();
@@ -141,7 +141,7 @@ describe('TrackingService', () => {
         new ResponseMock(`rest/security/users/${userWithNoConsent.username}`).setResponse({}),
         new ResponseMock('rest/login').setResponse(userWithNoConsent).setHeaders(new Headers({authorization: 'GDB someToken'}))
       ]);
-      await service(AuthenticationService).login(userWithNoConsent.username, 'password');
+      await service(AuthenticationService).login({username: userWithNoConsent.username, password: 'password'});
 
       // When I get the cookie consent
       const result = trackingService.getCookieConsent();
