@@ -1,6 +1,6 @@
 import {Service} from '../../../providers/service/service';
 import {RepositoryRestService} from './repository-rest.service';
-import {Repository, RepositoryList, RepositorySizeInfo} from '../../../models/repositories';
+import {Repository, RepositoryList, RepositoryReference, RepositorySizeInfo} from '../../../models/repositories';
 import {service} from '../../../providers';
 import {mapRepositorySizeInfoResponseToModel} from './mappers/repository-size-info.mapper';
 import {mapRepositoryListResponseToModel} from './mappers/repository-list.mapper';
@@ -34,5 +34,15 @@ export class RepositoryService implements Service {
   async getRepositorySizeInfo(repository: Repository): Promise<RepositorySizeInfo> {
     const data = await this.repositoryRestService.getRepositorySizeInfo(repository);
     return mapRepositorySizeInfoResponseToModel(data);
+  }
+
+  /**
+   * Deletes a repository from the specified location.
+   *
+   * @param repository The repository reference containing the repository identifier and location.
+   * @returns A promise that resolves when the repository has been successfully deleted
+   */
+  async  deleteRepository(repository: RepositoryReference): Promise<void> {
+    return await this.repositoryRestService.deleteRepository(repository);
   }
 }

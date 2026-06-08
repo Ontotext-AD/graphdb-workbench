@@ -1,5 +1,5 @@
 import {RepositoryService} from '../repository.service';
-import {Repository, RepositoryList, RepositorySizeInfo} from '../../../../models/repositories';
+import {Repository, RepositoryList, RepositoryReference, RepositorySizeInfo} from '../../../../models/repositories';
 import {TestUtil} from '../../../utils/test/test-util';
 import {RepositoryMockProvider} from './repository-mock-provider';
 import {ResponseMock} from '../../../http/test/response-mock';
@@ -43,5 +43,21 @@ describe('RepositoryService', () => {
     expect(repositorySizeInfo).toBeInstanceOf(RepositorySizeInfo);
     // with all repositories included.
     expect(repositorySizeInfo).toEqual(new RepositorySizeInfo(expectedResult));
+  });
+
+  it('deleteRepository should delete a repository using the provided repository id and location', async () => {
+    const repository: RepositoryReference = {
+      id: 'repo1',
+      location: 'local'
+    };
+    TestUtil.mockResponse(new ResponseMock(`rest/repositories/${repository.id}?location=${repository.location}`));
+
+    // WHEN: I call deleteRepository with a repository reference
+    await repositoryService.deleteRepository(repository);
+
+    // THEN: I expect a DELETE request to be made to the correct endpoint with the repository ID and location as query parameters
+    const request = TestUtil.getRequest(`rest/repositories/${repository.id}?location=${repository.location}`);
+    expect(request).toBeDefined();
+    expect(request?.method).toBe('DELETE');
   });
 });
