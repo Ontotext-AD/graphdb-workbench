@@ -28,4 +28,18 @@ export class RepositoryRestService extends HttpService {
       }
     });
   }
+
+  /**
+   * Schedules a restart of a repository at the specified location.
+   *
+   * @param repository The repository reference containing the repository identifier and location.
+   * @returns A promise that resolves when the restart operation has been successfully scheduled.
+   */
+  restartRepository(repository: RepositoryReference): Promise<void> {
+    return this.post(`${RepositoryRestService.REPOSITORIES_ENDPOINT}/${repository.id}/restart`, {
+      params: {
+        location: repository.location
+      }
+    });
+  }
 }

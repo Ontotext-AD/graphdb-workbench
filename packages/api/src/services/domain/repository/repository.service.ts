@@ -45,4 +45,14 @@ export class RepositoryService implements Service {
   async  deleteRepository(repository: RepositoryReference): Promise<void> {
     return await this.repositoryRestService.deleteRepository(repository);
   }
+
+  /**
+   * Schedules a restart of a repository at the specified location.
+   *
+   * @param repository The repository reference containing the repository identifier and location.
+   * @returns A promise that resolves when the restart operation has been successfully scheduled.
+   */
+  async restartRepository(repository: RepositoryReference): Promise<void> {
+    return this.repositoryRestService.restartRepository(repository);
+  }
 }

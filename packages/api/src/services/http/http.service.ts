@@ -105,14 +105,14 @@ export class HttpService {
   post<T>(url: string, options?: HttpOptionsHttpResponse): Promise<HttpResponse<T>>
 
   post<T>(url: string, options?: HttpOptionsTypedResponse): Promise<HttpResponseResult<T>> {
-    const {body, headers, responseType = 'body'} = options ?? {};
+    const {body, headers, responseType = 'body', params} = options ?? {};
     if (responseType === 'response') {
-      return this.request<T>(url, 'POST', {body, headers}, 'response');
+      return this.request<T>(url, 'POST', {body, headers, params}, 'response');
     }
     if (responseType === 'blob') {
-      return this.request<T>(url, 'POST', {body, headers}, 'blob');
+      return this.request<T>(url, 'POST', {body, headers, params}, 'blob');
     }
-    return this.request<T>(url, 'POST', {body, headers}, 'body');
+    return this.request<T>(url, 'POST', {body, headers, params}, 'body');
   }
 
   /**

@@ -60,4 +60,20 @@ describe('RepositoryService', () => {
     expect(request).toBeDefined();
     expect(request?.method).toBe('DELETE');
   });
+
+  it('restartRepository should restarting a repository using the provided repository id and location', async () => {
+    const repository: RepositoryReference = {
+      id: 'restart-repo-id',
+      location: 'local'
+    };
+    TestUtil.mockResponse(new ResponseMock(`rest/repositories/${repository.id}/restart?location=${repository.location}`));
+
+    // WHEN: I call restartRepository with a repository reference
+    await repositoryService.restartRepository(repository);
+
+    // THEN: I expect a POST request to be made to the correct endpoint with the repository ID and location as query parameters
+    const request = TestUtil.getRequest(`rest/repositories/${repository.id}/restart?location=${repository.location}`);
+    expect(request).toBeDefined();
+    expect(request?.method).toBe('POST');
+  });
 });
