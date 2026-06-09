@@ -3,10 +3,11 @@ import {LocationResponse} from './response/location-response';
 import {RepositoryReference} from '../../../models/repositories';
 
 export class LocationRestService extends HttpService {
-  static readonly BASE_URL = 'rest/locations/active';
+  static readonly BASE_URL = 'rest/locations';
+  static readonly ACTIVE_LOCATION_URL = LocationRestService.BASE_URL + '/active';
 
   getActiveLocation(): Promise<LocationResponse> {
-    return this.get<LocationResponse>(LocationRestService.BASE_URL);
+    return this.get<LocationResponse>(LocationRestService.ACTIVE_LOCATION_URL);
   }
 
   /**
@@ -16,9 +17,23 @@ export class LocationRestService extends HttpService {
    * @returns A promise that resolves when the default repository has been successfully updated.
    */
   setDefaultRepository(repository: RepositoryReference): Promise<void> {
-    return this.post(`${LocationRestService.BASE_URL}/default-repository`, {
+    return this.post(`${LocationRestService.ACTIVE_LOCATION_URL}/default-repository`, {
       body: {
         defaultRepository: repository.id
+      }
+    });
+  }
+
+  /**
+   * Deletes the specified location.
+   *
+   * @param uri The URI of the location to delete.
+   * @returns A promise that resolves when the location has been successfully deleted.
+   */
+  deleteLocation(uri: string): Promise<void> {
+    return this.delete(LocationRestService.BASE_URL, {
+      params: {
+        uri
       }
     });
   }

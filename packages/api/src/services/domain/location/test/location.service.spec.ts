@@ -43,4 +43,18 @@ describe('LocationService', () => {
     expect(request?.body).toEqual(`{\"defaultRepository\":\"${repository.id}\"}`);
 
   });
+
+  test('deleteLocation should call the API endpoint to delete a location', async () => {
+    const uri = 'repo-delete-location-uri';
+    TestUtil.mockResponse(new ResponseMock(`rest/locations?uri=${uri}`));
+
+    // WHEN: I call deleteLocation with a location uri
+    await locationService.deleteLocation(uri);
+
+    // THEN: I expect a POST request to be made to the correct endpoint with the location ur as query parameters
+    const request = TestUtil.getRequest(`rest/locations?uri=${uri}`);
+    expect(request).toBeDefined();
+    expect(request?.method).toBe('DELETE');
+
+  });
 });

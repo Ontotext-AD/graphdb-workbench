@@ -36,4 +36,14 @@ export class LocationService implements Service {
   async setDefaultRepository(repository: RepositoryReference): Promise<void> {
     return await this.locationRestService.setDefaultRepository(repository);
   }
+
+  /**
+   * Deletes the specified location.
+   *
+   * @param uri The URI of the location to delete.
+   * @returns A promise that resolves when the location has been successfully deleted.
+   */
+  async deleteLocation(uri: string): Promise<void> {
+    return this.locationRestService.deleteLocation(uri);
+  }
 }
