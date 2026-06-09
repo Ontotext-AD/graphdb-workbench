@@ -3,6 +3,7 @@ import {Location} from '../../../models/location';
 import {Service} from '../../../providers/service/service';
 import {ServiceProvider} from '../../../providers';
 import {mapLocationResponseToModel} from './mappers/location.mapper';
+import {RepositoryReference} from '../../../models/repositories';
 
 /**
  * The LocationService class is responsible for fetching location-related data from the backend
@@ -24,5 +25,15 @@ export class LocationService implements Service {
     return this.locationRestService
       .getActiveLocation()
       .then(mapLocationResponseToModel);
+  }
+
+  /**
+   * Sets the specified repository as the default repository for the currently active location.
+   *
+   * @param repository The repository to set as the default repository.
+   * @returns A promise that resolves when the default repository has been successfully updated.
+   */
+  async setDefaultRepository(repository: RepositoryReference): Promise<void> {
+    return await this.locationRestService.setDefaultRepository(repository);
   }
 }
