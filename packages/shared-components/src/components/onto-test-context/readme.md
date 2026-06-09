@@ -193,15 +193,15 @@ Type: `Promise<void>`
 
 A Promise that resolves when the security configuration has been successfully updated.
 
-### `updateIsLoadingActiveRepositoryLocation(isLoading: boolean) => Promise<void>`
+### `updateIsLoadingLocation(isLoading: boolean) => Promise<void>`
 
-Updates whether the active repository request is in a loading state.
+Updates whether the active location request is in a loading state.
 
 #### Parameters
 
-| Name        | Type      | Description                                                                                                                                                       |
-| ----------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `isLoading` | `boolean` | - A boolean value indicating whether the repository location is in a loading state.   True indicates request is in progress, false indicates loading is complete. |
+| Name        | Type      | Description                                                                                                                                            |
+| ----------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `isLoading` | `boolean` | - A boolean value indicating whether the location is in a loading state.   True indicates request is in progress, false indicates loading is complete. |
 
 #### Returns
 

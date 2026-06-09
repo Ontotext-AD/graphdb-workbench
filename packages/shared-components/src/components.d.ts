@@ -310,11 +310,11 @@ export namespace Components {
          */
         "setSecurityConfig": (securityConfig: SecurityConfig) => Promise<void>;
         /**
-          * Updates whether the active repository request is in a loading state.
-          * @param isLoading - A boolean value indicating whether the repository location is in a loading state.   True indicates request is in progress, false indicates loading is complete.
+          * Updates whether the active location request is in a loading state.
+          * @param isLoading - A boolean value indicating whether the location is in a loading state.   True indicates request is in progress, false indicates loading is complete.
           * @returns A Promise that resolves when the loading state update is complete.
          */
-        "updateIsLoadingActiveRepositoryLocation": (isLoading: boolean) => Promise<void>;
+        "updateIsLoadingLocation": (isLoading: boolean) => Promise<void>;
         /**
           * Updates the license information in the context.  This method uses the LicenseContextService to update the license and returns a resolved Promise once the operation is complete.
           * @param license - The new License object to be set.

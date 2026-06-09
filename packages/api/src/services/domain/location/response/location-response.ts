@@ -1,10 +1,10 @@
-export interface RepositoryLocationResponse {
+export interface LocationResponse {
   uri: string,
   label: string,
   username: string | null,
   password: string | null,
-  authType: string | null,
-  locationType: string | null,
+  authType: string,
+  locationType: string,
   defaultRepository: string | null
   active: boolean,
   local: boolean,

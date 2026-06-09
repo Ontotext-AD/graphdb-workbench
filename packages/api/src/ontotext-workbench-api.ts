@@ -3,7 +3,7 @@
 // Export models for external usages.
 export * from './models/application-settings';
 export * from './models/repositories';
-export * from './models/repository-location';
+export * from './models/location';
 export * from './models/namespace';
 export * from './models/events';
 export * from './models/security';
@@ -46,7 +46,7 @@ export * from './services/application-settings';
 export * from './services/theme';
 export * from './services/language';
 export * from './services/domain/repository';
-export * from './services/domain/repository-location';
+export * from './services/domain/location';
 export {EventEmitter} from './emitters/event.emitter';
 export * from './services/domain/license';
 export * from './services/domain/product-info';

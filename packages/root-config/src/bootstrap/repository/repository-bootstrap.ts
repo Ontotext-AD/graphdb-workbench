@@ -1,24 +1,24 @@
 import {
-  ServiceProvider,
+  service,
   RepositoryService,
   RepositoryContextService,
   RepositoryStorageService,
-  RepositoryLocationService,
-  RepositoryLocationContextService
+  LocationService,
+  LocationContextService
 } from '@ontotext/workbench-api';
 import {LoggerProvider} from '../../services/logger-provider';
 
 const logger = LoggerProvider.logger;
 
 const loadRepositories = (): Promise<void> => {
-  return ServiceProvider.get(RepositoryService).getRepositories()
+  return service(RepositoryService).getRepositories()
     .then((repositories) => {
-      const repositoryContextService = ServiceProvider.get(RepositoryContextService);
+      const repositoryContextService = service(RepositoryContextService);
       // Initializing the repository context service with all repositories.
       repositoryContextService.updateRepositoryList(repositories);
 
       // Initializing the repository context service with the selected repository.
-      const repositoryReference = ServiceProvider.get(RepositoryStorageService).getRepositoryReference();
+      const repositoryReference = service(RepositoryStorageService).getRepositoryReference();
       return repositoryContextService.updateSelectedRepository(repositoryReference);
     })
     .catch((error) => {
@@ -26,11 +26,11 @@ const loadRepositories = (): Promise<void> => {
     });
 };
 
-const loadActiveRepositoryLocation = (): Promise<void> => {
-  return ServiceProvider.get(RepositoryLocationService).getActiveRepositoryLocation()
-    .then((repositoryLocation) => {
-      ServiceProvider.get(RepositoryLocationContextService).updateActiveRepositoryLocation(repositoryLocation);
+const loadActiveLocation = (): Promise<void> => {
+  return service(LocationService).getActiveLocation()
+    .then((activeLocation) => {
+      service(LocationContextService).updateActiveLocation(activeLocation);
     });
 };
 
-export const repositoryBootstrap = [loadRepositories, loadActiveRepositoryLocation];
+export const repositoryBootstrap = [loadRepositories, loadActiveLocation];

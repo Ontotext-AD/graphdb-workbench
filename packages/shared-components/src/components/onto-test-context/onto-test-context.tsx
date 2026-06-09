@@ -18,7 +18,7 @@ import {
   CREATE_TOAST_EVENT,
   CONFIRM_CANCEL_EVENT,
   ConfirmCancelPayload,
-  RepositoryLocationContextService,
+  LocationContextService,
   AutocompleteContextService,
   NamespacesContextService,
   NamespaceMap,
@@ -188,15 +188,15 @@ export class OntoTestContext {
   }
 
   /**
-   * Updates whether the active repository request is in a loading state.
+   * Updates whether the active location request is in a loading state.
    *
-   * @param isLoading - A boolean value indicating whether the repository location is in a loading state.
+   * @param isLoading - A boolean value indicating whether the location is in a loading state.
    *                    True indicates request is in progress, false indicates loading is complete.
    * @returns A Promise that resolves when the loading state update is complete.
    */
   @Method()
-  updateIsLoadingActiveRepositoryLocation(isLoading: boolean): Promise<void> {
-    ServiceProvider.get(RepositoryLocationContextService).updateIsLoading(isLoading);
+  updateIsLoadingLocation(isLoading: boolean): Promise<void> {
+    ServiceProvider.get(LocationContextService).updateIsLoading(isLoading);
     return Promise.resolve();
   }
 

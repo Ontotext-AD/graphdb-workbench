@@ -60,8 +60,8 @@ const setMarvelRepo = () => {
   testContext.updateSelectedRepository({id: 'marvel', location: ''});
 };
 
-const updateIsLoadingActiveRepositoryLocation = (isLoading) => {
-  testContext.updateIsLoadingActiveRepositoryLocation(isLoading);
+const updateIsLoadingLocation = (isLoading) => {
+  testContext.updateIsLoadingLocation(isLoading);
 };
 
 const setAutocomplete = (enabled) => {

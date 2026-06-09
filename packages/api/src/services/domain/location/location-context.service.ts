@@ -1,44 +1,44 @@
 import {ContextService} from '../../context';
 import {ValueChangeCallback} from '../../../models/context/value-change-callback';
-import {RepositoryLocation} from '../../../models/repository-location';
+import {Location} from '../../../models/location';
 import {DeriveContextServiceContract} from '../../../models/context/update-context-method';
 import {LifecycleHooks} from '../../../providers/service/lifecycle-hooks';
 
-type RepositoryLocationContextFields = {
-  readonly ACTIVE_REPOSITORY_LOCATION: string;
+type LocationContextFields = {
+  readonly ACTIVE_LOCATION: string;
   readonly IS_LOADING: string;
 }
 
-type RepositoryLocationContextFieldParams = {
-  readonly ACTIVE_REPOSITORY_LOCATION: RepositoryLocation;
+type LocationContextFieldParams = {
+  readonly ACTIVE_LOCATION: Location;
   readonly IS_LOADING: boolean;
 };
 
 /**
- * The RepositoryLocationContextService class manages the application's repository location context.
+ * The LocationContextService class manages the application's location context.
  */
-export class RepositoryLocationContextService extends ContextService<RepositoryLocationContextFields> implements DeriveContextServiceContract<RepositoryLocationContextFields, RepositoryLocationContextFieldParams>, LifecycleHooks {
+export class LocationContextService extends ContextService<LocationContextFields> implements DeriveContextServiceContract<LocationContextFields, LocationContextFieldParams>, LifecycleHooks {
 
-  readonly ACTIVE_REPOSITORY_LOCATION = 'activeRepositoryLocation';
+  readonly ACTIVE_LOCATION = 'activeLocation';
   readonly IS_LOADING = 'isLoading';
 
   /**
-   * Updates the active repository location and notifies subscribers about the change.
+   * Updates the active location and notifies subscribers about the change.
    *
-   * @param repositoryLocation - The repository location to set as active.
+   * @param location - The location to set as active.
    */
-  updateActiveRepositoryLocation(repositoryLocation: RepositoryLocation): void {
-    this.updateContextProperty(this.ACTIVE_REPOSITORY_LOCATION, repositoryLocation);
+  updateActiveLocation(location: Location): void {
+    this.updateContextProperty(this.ACTIVE_LOCATION, location);
   }
 
   /**
    * Registers the <code>callbackFunction</code> to be called whenever the active location changes.
    *
-   * @param callbackFunction - The function to execute when the repository location changes.
+   * @param callbackFunction - The function to execute when the location changes.
    * @returns A function to unsubscribe from notifications.
    */
-  onActiveLocationChanged(callbackFunction: ValueChangeCallback<RepositoryLocation | undefined>): () => void {
-    return this.subscribe(this.ACTIVE_REPOSITORY_LOCATION, callbackFunction);
+  onActiveLocationChanged(callbackFunction: ValueChangeCallback<Location | undefined>): () => void {
+    return this.subscribe(this.ACTIVE_LOCATION, callbackFunction);
   }
 
   /**

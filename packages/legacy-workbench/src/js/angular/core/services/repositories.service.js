@@ -13,7 +13,7 @@ import {SelectMenuOptionsModel} from "../../models/form-fields";
 import {
     RepositoryStorageService,
     RepositoryContextService,
-    RepositoryLocationContextService,
+    LocationContextService,
     mapRepositoryListResponseToModel,
     AuthorizationService,
     AuthenticationService,
@@ -52,7 +52,7 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
 
         const loadingDone = function(err, locationError) {
             that.loading = false;
-            service(RepositoryLocationContextService).updateIsLoading(false);
+            service(LocationContextService).updateIsLoading(false);
             // If user is not logged in, do not show location loading errors
             const isLoggedIn = authenticationService.isLoggedIn();
             if (err && isLoggedIn) {
@@ -158,7 +158,7 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
 
         this.init = function(successCallback, errorCallback, quick) {
             this.loading = true;
-            service(RepositoryLocationContextService).updateIsLoading(true);
+            service(LocationContextService).updateIsLoading(true);
             if (!quick) {
                 this.locationsShouldReload = true;
             }

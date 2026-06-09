@@ -13,7 +13,7 @@ import {
   SecurityConfig,
   FibonacciGenerator,
   OntoToastrService,
-  RepositoryLocationContextService,
+  LocationContextService,
   EventService,
   EventName,
   getPathName,
@@ -61,7 +61,7 @@ export class OntoHeader {
   private readonly fibonacciGenerator = new FibonacciGenerator();
   private readonly monitoringService = ServiceProvider.get(MonitoringService);
   private readonly repositoryContextService = ServiceProvider.get(RepositoryContextService);
-  private readonly repositoryLocationContextService = ServiceProvider.get(RepositoryLocationContextService);
+  private readonly locationContextService = ServiceProvider.get(LocationContextService);
   private readonly repositoryService = ServiceProvider.get(RepositoryService);
   private readonly securityContextService = ServiceProvider.get(SecurityContextService);
   private readonly toastrService = ServiceProvider.get(OntoToastrService);
@@ -185,7 +185,7 @@ export class OntoHeader {
     this.subscribeToRepositoryListChanged();
     this.subscribeToLicenseChange();
     this.subscribeToRepositoryChange();
-    this.subscribeToActiveRepositoryLocationChange();
+    this.subscribeToActiveLocationChange();
     this.subscribeToActiveRepoLoadingChange();
     this.subscribeToNavigationEnd();
     this.subscribeToLanguageChanged();
@@ -247,9 +247,9 @@ export class OntoHeader {
     }));
   }
 
-  private subscribeToActiveRepositoryLocationChange() {
+  private subscribeToActiveLocationChange() {
     this.subscriptions.add(
-      this.repositoryLocationContextService.onActiveLocationChanged(() => {
+      this.locationContextService.onActiveLocationChanged(() => {
         this.shouldShowSearch = this.shouldShowRdfSearch();
       })
     );
@@ -257,7 +257,7 @@ export class OntoHeader {
 
   private subscribeToActiveRepoLoadingChange() {
     this.subscriptions.add(
-      this.repositoryLocationContextService.onIsLoadingChanged((isLoading) => {
+      this.locationContextService.onIsLoadingChanged((isLoading) => {
         this.isActiveLocationLoading = isLoading;
         this.shouldShowSearch = this.shouldShowRdfSearch();
       })

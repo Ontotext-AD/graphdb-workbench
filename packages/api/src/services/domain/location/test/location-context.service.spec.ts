@@ -1,24 +1,24 @@
-import {RepositoryLocationContextService} from '../repository-location-context.service';
-import {RepositoryLocation} from '../../../../models/repository-location';
+import {LocationContextService} from '../location-context.service';
+import {Location} from '../../../../models/location';
 
-describe('RepositoryLocationContextService', () => {
-  let repositoryLocationContextService: RepositoryLocationContextService;
+describe('LocationContextService', () => {
+  let locationContextService: LocationContextService;
 
   beforeEach(() => {
-    repositoryLocationContextService = new RepositoryLocationContextService();
+    locationContextService = new LocationContextService();
   });
 
   test('Should call the "onActiveLocationChangedCallbackFunction" when the active location changes.', () => {
     const onActiveLocationChangedCallbackFunction = jest.fn();
-    const newRepositoryLocation = createRepositoryLocation('repo-location-uri');
+    const newLocation = createLocation('location-uri');
 
     // When I register a callback function for active location changes,
-    repositoryLocationContextService.onActiveLocationChanged(onActiveLocationChangedCallbackFunction);
-    // and the active repository location is updated,
-    repositoryLocationContextService.updateActiveRepositoryLocation(newRepositoryLocation);
+    locationContextService.onActiveLocationChanged(onActiveLocationChangedCallbackFunction);
+    // and the active location is updated,
+    locationContextService.updateActiveLocation(newLocation);
 
-    // Then I expect the callback function to be called with the passed repository location.
-    expect(onActiveLocationChangedCallbackFunction).toHaveBeenLastCalledWith(newRepositoryLocation);
+    // Then I expect the callback function to be called with the passed location.
+    expect(onActiveLocationChangedCallbackFunction).toHaveBeenLastCalledWith(newLocation);
   });
 
   test('Should call the "onIsLoadingChangedCallbackFunction" when the loading state changes.', () => {
@@ -27,9 +27,9 @@ describe('RepositoryLocationContextService', () => {
     const isLoading = true;
 
     // When I register a callback function for loading state changes,
-    repositoryLocationContextService.onIsLoadingChanged(onIsLoadingChangedCallbackFunction);
+    locationContextService.onIsLoadingChanged(onIsLoadingChangedCallbackFunction);
     // and the loading state is updated,
-    repositoryLocationContextService.updateIsLoading(isLoading);
+    locationContextService.updateIsLoading(isLoading);
 
     // Then I expect the callback function to be called with the passed loading state.
     expect(onIsLoadingChangedCallbackFunction).toHaveBeenLastCalledWith(isLoading);
@@ -39,7 +39,7 @@ describe('RepositoryLocationContextService', () => {
     //Given, I have mocked the onIsLoadingChangedCallbackFunction
     const onIsLoadingChangedCallbackFunction = jest.fn();
     const isLoading = true;
-    const unsubscribeFunction = repositoryLocationContextService.onIsLoadingChanged(onIsLoadingChangedCallbackFunction);
+    const unsubscribeFunction = locationContextService.onIsLoadingChanged(onIsLoadingChangedCallbackFunction);
     // Clear the first callback call when the callback function is registered.
     onIsLoadingChangedCallbackFunction.mockClear();
 
@@ -47,11 +47,11 @@ describe('RepositoryLocationContextService', () => {
     unsubscribeFunction();
 
     // Then I expect the callback function not to be called, when I update the context.
-    repositoryLocationContextService.updateIsLoading(isLoading);
+    locationContextService.updateIsLoading(isLoading);
     expect(onIsLoadingChangedCallbackFunction).not.toHaveBeenCalled();
   });
 });
 
-function createRepositoryLocation(uri: string) {
-  return new RepositoryLocation({uri} as RepositoryLocation);
+function createLocation(uri: string) {
+  return new Location({uri} as Location);
 }
