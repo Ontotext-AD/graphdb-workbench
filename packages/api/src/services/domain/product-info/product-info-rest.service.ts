@@ -19,4 +19,18 @@ export class ProductInfoRestService extends HttpService {
   getProductInfoLocal(): Promise<ProductInfoResponse> {
     return this.get<ProductInfoResponse>(`${this.VERSION_URL}?local=1`);
   }
+
+  /**
+   * Retrieves the version information of the product for a specific location.
+   *
+   * @param locationUri - The URI of the location for which to fetch the product information.
+   * @returns A Promise that resolves to a ProductInfo object containing the version information of location with URI <code>locationUri</code>.
+   */
+  getProductInfo(locationUri: string): Promise<ProductInfoResponse> {
+    return this.get<ProductInfoResponse>(this.VERSION_URL, {
+      headers: {
+        'X-GraphDB-Repository-Location': locationUri
+      }
+    });
+  }
 }

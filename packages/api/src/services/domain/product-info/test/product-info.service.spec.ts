@@ -3,6 +3,8 @@ import {TestUtil} from '../../../utils/test/test-util';
 import {ResponseMock} from '../../../http/test/response-mock';
 import {ProductInfoService} from '../product-info.service';
 import {ProductInfoResponse} from '../response/product-info-response';
+import {LocationMockProvider} from '../../location/test/location-mock-provider';
+import {LocationList} from '../../../../models/location';
 
 describe('ProductInfoService', () => {
   let productInfoService: ProductInfoService;
@@ -90,5 +92,33 @@ describe('ProductInfoService', () => {
     expect(result.shortVersion).toBe('9.10');
     expect(result.sesame).toBe('3.6.0');
     expect(result.connectors).toBe('5.0.0');
+  });
+
+  describe('getProductInfo', async () => {
+    test('should return a version info for specified location', async () => {
+      // GIVEN: The version info endpoint returns a version information for specified location.
+      const productInfoResponse = {} as ProductInfoResponse;
+      TestUtil.mockResponse(new ResponseMock('rest/info/version').setResponse(productInfoResponse));
+      const locationURI = 'product-info-location-uri';
+
+      const expectedResults = new ProductInfo({
+        "productType": "enterprise",
+        "productVersion": "11.4-SNAPSHOT",
+        "connectors": "16.7.0-TR3",
+        "sesame": "5.2.2-jakarta",
+        "workbench": "3.3.0-RC3",
+        ontop: '5.3.0',
+      });
+
+      // WHEN: I call the getLocations method.
+      const locationList = await productInfoService.getProductInfo(locationURI);
+      // THEN: I expect a GET request to be sent to the locations endpoint.
+      const request = TestUtil.getRequest('rest/locations');
+      expect(request).toBeDefined();
+      expect(request?.method).toBe('GET');
+      // AND: I receive the list of available locations.
+      expect(locationList).toBeInstanceOf(LocationList);
+      expect(locationList).toEqual(expectedResults);
+    });
   });
 });

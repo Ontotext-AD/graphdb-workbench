@@ -11,6 +11,7 @@ import {md5HashGenerator} from "../../utils/hash-utils";
 import {RemoteLocationModel} from "../../models/repository/remote-location.model";
 import {SelectMenuOptionsModel} from "../../models/form-fields";
 import {
+    ProductInfoService,
     RepositoryService,
     RepositoryStorageService,
     RepositoryContextService,
@@ -52,6 +53,7 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
         const repositoryService = service(RepositoryService);
         const locationContextService = service(LocationContextService);
         const locationService = service(LocationService);
+        const productInfoService = service(ProductInfoService);
 
         const that = this;
 
@@ -95,6 +97,7 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
             }
         };
 
+        // Delete after init removed
         this.checkLocationsDegraded = function(quick) {
             this.locations.forEach((currentLocation) => {
                 // local locations are always fully supported
@@ -107,8 +110,8 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
                     }
                 }
 
-                LicenseRestService.getVersion(currentLocation.uri)
-                    .success(function(res) {
+                productInfoService.getProductInfo(currentLocation.uri)
+                    .then(function(res) {
                         if (typeof res === 'object') {
                             // New style, check version and product
                             if (res.productVersion !== productInfo.productVersion) {
@@ -121,8 +124,8 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
                                 {location: currentLocation.name});
                         }
                     })
-                    .error(function(error) {
-                        currentLocation.errorMsg = error;
+                    .catch(function(error) {
+                        currentLocation.errorMsg = error.data;
                         if (!quick) {
                             that.locationsShouldReload = true;
                         }

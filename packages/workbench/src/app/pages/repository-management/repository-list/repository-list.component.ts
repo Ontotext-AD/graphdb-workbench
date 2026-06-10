@@ -9,6 +9,7 @@ import {
   RepositoryReference,
   service,
   SubscriptionList,
+  ProductInfoService,
   RepositoryList,
   LocationList,
   navigate
@@ -35,6 +36,7 @@ export class RepositoryListComponent implements OnInit, OnDestroy {
   private readonly repositoryContextService = service(RepositoryContextService);
   private readonly locationContextService = service(LocationContextService);
   private readonly locationService = service(LocationService);
+  private readonly productInfoService = service(ProductInfoService);
 
   // ================================
   // Private variables
@@ -59,7 +61,9 @@ export class RepositoryListComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.subscriptions.addAll([
       this.repositoryContextService.onRepositoryListChanged((repositories) => this.repositories.set(repositories)),
-      this.locationContextService.onLocationsChanged((locations) => this.locations.set(locations))
+      this.locationContextService.onLocationsChanged((locations) => {
+        this.locations.set(locations);
+      })
     ]);
 
     timer(0, 3000)
@@ -67,7 +71,17 @@ export class RepositoryListComponent implements OnInit, OnDestroy {
       .subscribe(() => {
         this.refreshRepositories();
         this.refreshLocations();
+        this.refreshLocationVersion();
       });
+  }
+
+  refreshLocationVersion(): void {
+    this.locations()?.getItems().forEach((location) => {
+      this.productInfoService.getProductInfo(location.uri)
+        .then((productInfo) => {
+          console.log(productInfo);
+        });
+    });
   }
 
   ngOnDestroy(): void {

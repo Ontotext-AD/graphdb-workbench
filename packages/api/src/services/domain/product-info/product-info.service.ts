@@ -23,4 +23,15 @@ export class ProductInfoService implements Service {
     const response = await this.productInfoRestService.getProductInfoLocal();
     return mapProductInfoResponseToModel(response);
   }
+
+  /**
+   * Retrieves the version information of the product for a specific location.
+   *
+   * @param locationUri - The URI of the location for which to fetch the product information.
+   * @returns A Promise that resolves to a ProductInfo object containing the version information of location with URI <code>locationUri</code>.
+   */
+  async getProductInfo(locationUri: string): Promise<ProductInfo> {
+    const response = await this.productInfoRestService.getProductInfo(locationUri);
+    return mapProductInfoResponseToModel(response);
+  }
 }
