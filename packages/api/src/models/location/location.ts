@@ -1,6 +1,6 @@
-import {AuthenticationType} from '../security';
 import {LocationType} from './location-type';
 import {Model} from '../common';
+import {LocationAuthenticationType} from './location-authentication-type';
 
 /**
  * Holds information about a location instance.
@@ -29,7 +29,7 @@ export class Location extends Model<Location> {
   /**
    * Authentication type. This is related only for GraphDB remote instances.
    */
-  authType: AuthenticationType;
+  authType: LocationAuthenticationType;
 
   /**
    * Remote location type.

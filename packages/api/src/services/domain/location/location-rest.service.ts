@@ -1,5 +1,5 @@
 import {HttpService} from '../../http/http.service';
-import {LocationResponse} from './response/location-response';
+import {LocationListResponse, LocationResponse} from './response/location-response';
 import {RepositoryReference} from '../../../models/repositories';
 
 export class LocationRestService extends HttpService {
@@ -8,6 +8,18 @@ export class LocationRestService extends HttpService {
 
   getActiveLocation(): Promise<LocationResponse> {
     return this.get<LocationResponse>(LocationRestService.ACTIVE_LOCATION_URL);
+  }
+
+  /**
+   * Fetches all available locations.
+   *
+   * @param signal - Optional AbortSignal to cancel the request if needed.
+   * @returns A promise that resolves with the list of available locations.
+   */
+  getLocations(signal?: AbortSignal): Promise<LocationListResponse> {
+    return this.get(LocationRestService.BASE_URL, {
+      signal,
+    });
   }
 
   /**

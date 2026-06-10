@@ -1,5 +1,5 @@
 import {LocationService} from '../location.service';
-import {Location} from '../../../../models/location';
+import {Location, LocationList} from '../../../../models/location';
 import {LocationMockProvider} from './location-mock-provider';
 import {TestUtil} from '../../../utils/test/test-util';
 import {ResponseMock} from '../../../http/test/response-mock';
@@ -56,5 +56,77 @@ describe('LocationService', () => {
     expect(request).toBeDefined();
     expect(request?.method).toBe('DELETE');
 
+  });
+
+  describe('getLocations', () => {
+    test('getLocations should return a list of locations', async () => {
+      // GIVEN: The locations endpoint returns a list of locations.
+      const responseLocations = [
+        LocationMockProvider.provideRawLocation('first-location-uri'),
+        LocationMockProvider.provideRawLocation('second-location-uri')
+      ];
+      TestUtil.mockResponse(new ResponseMock('rest/locations').setResponse(responseLocations));
+
+      const expectedResults = new LocationList([
+        LocationMockProvider.provideLocation('first-location-uri'),
+        LocationMockProvider.provideLocation('second-location-uri')
+      ]);
+
+      // WHEN: I call the getLocations method.
+      const locationList = await locationService.getLocations();
+      // THEN: I expect a GET request to be sent to the locations endpoint.
+      const request = TestUtil.getRequest('rest/locations');
+      expect(request).toBeDefined();
+      expect(request?.method).toBe('GET');
+      // AND: I receive the list of available locations.
+      expect(locationList).toBeInstanceOf(LocationList);
+      expect(locationList).toEqual(expectedResults);
+    });
+
+    test('getLocations should accept an AbortSignal and complete without error', async () => {
+      // GIVEN: The locations endpoint returns a list of locations.
+      const responseLocations = [
+        LocationMockProvider.provideRawLocation('first-location-uri'),
+        LocationMockProvider.provideRawLocation('second-location-uri')
+      ];
+      TestUtil.mockResponse(new ResponseMock('rest/locations').setResponse(responseLocations));
+
+      const expectedResults = new LocationList([
+        LocationMockProvider.provideLocation('first-location-uri'),
+        LocationMockProvider.provideLocation('second-location-uri')
+      ]);
+
+      // WHEN: I call the getLocations method with abort signal.
+      const locationList = await locationService.getLocations(new AbortController().signal);
+      // THEN: I expect a GET request to be sent to the locations endpoint.
+      const request = TestUtil.getRequest('rest/locations');
+      expect(request).toBeDefined();
+      expect(request?.method).toBe('GET');
+      // AND: I receive the list of available locations.
+      expect(locationList).toBeInstanceOf(LocationList);
+      expect(locationList).toEqual(expectedResults);
+    });
+
+    test('getLocations should return an empty list when the result is undefined', async () => {
+      // GIVEN: The locations endpoint returns no data.
+      TestUtil.mockResponse(new ResponseMock('rest/locations').setResponse(undefined));
+
+      // WHEN: I call the getLocations method.
+      const locationList = await locationService.getLocations();
+      // THEN: I receive an empty location list
+      expect(locationList).toBeInstanceOf(LocationList);
+      expect(locationList.getItems().length).toEqual(0);
+    });
+
+    test('getLocations should return an empty list when the result is not an array', async () => {
+      // GIVEN: The locations endpoint returns an invalid response.
+      TestUtil.mockResponse(new ResponseMock('rest/locations').setResponse({}));
+
+      // WHEN: I call the getLocations method.
+      const locationList = await locationService.getLocations();
+      // THEN: I receive an empty location list
+      expect(locationList).toBeInstanceOf(LocationList);
+      expect(locationList.getItems().length).toEqual(0);
+    });
   });
 });

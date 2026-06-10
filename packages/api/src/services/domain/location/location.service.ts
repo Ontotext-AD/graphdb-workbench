@@ -2,8 +2,9 @@ import {LocationRestService} from './location-rest.service';
 import {Location} from '../../../models/location';
 import {Service} from '../../../providers/service/service';
 import {ServiceProvider} from '../../../providers';
-import {mapLocationResponseToModel} from './mappers/location.mapper';
+import {mapLocationListResponseToModel, mapLocationResponseToModel} from './mappers/location.mapper';
 import {RepositoryReference} from '../../../models/repositories';
+import {LocationList} from '../../../models/location/location-list';
 
 /**
  * The LocationService class is responsible for fetching location-related data from the backend
@@ -25,6 +26,18 @@ export class LocationService implements Service {
     return this.locationRestService
       .getActiveLocation()
       .then(mapLocationResponseToModel);
+  }
+
+  /**
+   * Fetches all available locations.
+   *
+   * @param signal - Optional AbortSignal to cancel the request if needed.
+   * @returns A promise that resolves with the list of available locations.
+   */
+  async getLocations(signal?: AbortSignal): Promise<LocationList> {
+    return this.locationRestService
+      .getLocations(signal)
+      .then(mapLocationListResponseToModel);
   }
 
   /**

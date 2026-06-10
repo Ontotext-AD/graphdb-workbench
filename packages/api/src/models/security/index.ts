@@ -1,4 +1,3 @@
-export * from './authentication-type';
 export * from './authenticated-user';
 export * from './security-config';
 export * from './authorization/authority';

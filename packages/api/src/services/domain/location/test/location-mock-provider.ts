@@ -1,5 +1,5 @@
-import {AuthenticationType} from '../../../../models/security';
 import {Location, LocationType} from '../../../../models/location';
+import {LocationAuthenticationType} from '../../../../models/location/location-authentication-type';
 
 export class LocationMockProvider {
   static provideLocation(uri: string) {
@@ -12,7 +12,7 @@ export class LocationMockProvider {
       label: '',
       username: '',
       password: '',
-      authType: AuthenticationType.NONE,
+      authType: LocationAuthenticationType.NONE,
       locationType: LocationType.GDB,
       active: true,
       local: true,

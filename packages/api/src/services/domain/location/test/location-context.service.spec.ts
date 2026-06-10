@@ -1,5 +1,5 @@
 import {LocationContextService} from '../location-context.service';
-import {Location} from '../../../../models/location';
+import {Location, LocationList} from '../../../../models/location';
 
 describe('LocationContextService', () => {
   let locationContextService: LocationContextService;
@@ -49,6 +49,42 @@ describe('LocationContextService', () => {
     // Then I expect the callback function not to be called, when I update the context.
     locationContextService.updateIsLoading(isLoading);
     expect(onIsLoadingChangedCallbackFunction).not.toHaveBeenCalled();
+  });
+
+  describe('locations field', () => {
+    test('Should call the onActiveLocationChanged callback when the active location changes.', () => {
+      // GIVEN: I have a registered callback function for locations changes.
+      const onLocationsChangedCallbackFunction = jest.fn();
+      locationContextService.onLocationsChanged(onLocationsChangedCallbackFunction);
+      const locations = new LocationList([
+        createLocation('locations-uri-one'),
+        createLocation('locations-uri-two'),
+      ]);
+
+      // WHEN: I update the locations field with a new array of locations,
+      locationContextService.updateLocations(locations);
+      // THEN: I expect the callback function to be called with the passed array of locations.
+      expect(onLocationsChangedCallbackFunction).toHaveBeenLastCalledWith(locations);
+    });
+
+    test('should not call the onLocationsChanged callback when callback is unsubscribed', () => {
+      // GIVEN: I have a registered callback function for locations changes.
+      const onLocationsChangedCallbackFunction = jest.fn();
+      const unsubscribe = locationContextService.onLocationsChanged(onLocationsChangedCallbackFunction);
+      // Clear the first callback call when the callback function is registered.
+      onLocationsChangedCallbackFunction.mockClear();
+      const locations = new LocationList([
+        createLocation('locations-uri-one'),
+        createLocation('locations-uri-two'),
+      ]);
+
+      // WHEN: I unsubscribe the callback function.
+      unsubscribe();
+      // AND: I update the locations field with a new array of locations,
+      locationContextService.updateLocations(locations);
+      // THEN: I expect the callback function to not have been called.
+      expect(onLocationsChangedCallbackFunction).not.toHaveBeenCalled();
+    });
   });
 });
 

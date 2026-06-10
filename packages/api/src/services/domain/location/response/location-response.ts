@@ -1,3 +1,5 @@
+export type LocationListResponse = LocationResponse[];
+
 export interface LocationResponse {
   uri: string,
   label: string,
