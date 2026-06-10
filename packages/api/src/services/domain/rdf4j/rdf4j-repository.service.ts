@@ -74,6 +74,25 @@ export class Rdf4jRepositoryService implements Service {
   }
 
   /**
+   * Executes a SPARQL query against the specified repository and returns the raw, unparsed
+   * {@link Response}.
+   *
+   * Delegates to {@link Rdf4jRestService.executeSparqlRequest} and unwraps
+   * {@link HttpResponse.originalResponse}. The caller chooses the response format via the `accept`
+   * argument (e.g. `application/sparql-results+json` for SELECT/ASK or `application/rdf+json;` for
+   * CONSTRUCT/DESCRIBE). Suits consumers that need the unparsed response, such as Reactodia.
+   *
+   * @param repositoryId - The ID of the repository to query.
+   * @param query - The SPARQL query string.
+   * @param accept - Value for the `Accept` header, selecting the response format.
+   * @returns A promise resolving to the raw {@link Response}.
+   */
+  async executeSparqlRequest(repositoryId: string, query: string, accept?: string): Promise<Response | undefined> {
+    const response = await this.rdf4jRestService.executeSparqlRequest(repositoryId, query, accept);
+    return response.originalResponse;
+  }
+
+  /**
    * Extracts the file data and filename from an HTTP response containing a Blob.
    *
    * @param response - The HTTP response object.

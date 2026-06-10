@@ -21,6 +21,10 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/ux-test/ux-test-page.component').then(m => m.UxTestPageComponent)
   },
   {
+    path: 'reactodia',
+    loadComponent: () => import('./pages/reactodia/reactodia-page.component').then(m => m.ReactodiaPageComponent)
+  },
+  {
     path: '**',
     loadComponent: () => import('./pages/not-found/not-found-page.component').then(m => m.NotFoundPageComponent)
   }
