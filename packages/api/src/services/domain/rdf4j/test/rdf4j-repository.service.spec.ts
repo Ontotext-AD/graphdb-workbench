@@ -3,6 +3,7 @@ import {Rdf4jRestService} from '../rdf4j-rest.service';
 import {ServiceProvider} from '../../../../providers';
 import {TestUtil} from '../../../utils/test/test-util';
 import {ResponseMock} from '../../../http/test/response-mock';
+import {HttpResponse} from '../../../../models/http';
 
 describe('Rdf4jRepositoryService', () => {
   let rdf4jRepositoryService: Rdf4jRepositoryService;
@@ -65,6 +66,26 @@ describe('Rdf4jRepositoryService', () => {
 
       // Then the REST service method should have been called with the repository ID
       expect(spy).toHaveBeenCalledWith(repositoryId);
+    });
+  });
+
+  describe('executeSparqlRequest', () => {
+    test('should delegate to Rdf4jRestService.executeSparqlRequest and return the originalResponse', async () => {
+      // Given a repository ID, query, accept header and a spy returning an HTTP response
+      const repositoryId = 'test-repo';
+      const query = 'SELECT * WHERE { ?s ?p ?o }';
+      const accept = 'application/rdf+json;';
+      const originalResponse = {ok: true} as Response;
+      const restService = ServiceProvider.get(Rdf4jRestService);
+      const spy = jest.spyOn(restService, 'executeSparqlRequest')
+        .mockResolvedValue({originalResponse} as HttpResponse);
+
+      // When I call executeSparqlRequest
+      const result = await rdf4jRepositoryService.executeSparqlRequest(repositoryId, query, accept);
+
+      // Then it should delegate with the same arguments and return the unwrapped originalResponse
+      expect(spy).toHaveBeenCalledWith(repositoryId, query, accept);
+      expect(result).toBe(originalResponse);
     });
   });
 
