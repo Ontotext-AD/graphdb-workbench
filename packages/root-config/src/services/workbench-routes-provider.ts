@@ -15,6 +15,10 @@ export function getWorkbenchRoutes(): Route[] {
       default: false,
     },
     {
+      path: 'repository-new',
+      default: false,
+    },
+    {
       default: true,
     },
   ];

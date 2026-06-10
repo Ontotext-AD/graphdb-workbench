@@ -3,6 +3,16 @@ import {documentationLinkResolve} from './services/route-data-resolver';
 
 export const routes: Routes = [
   {
+    path: 'repository-new',
+    data: {
+      title: 'repository-management.repository-list.title',
+      helpInfo: 'repository-management.repository-list.helpInfo',
+      documentationUrl: 'creating-a-repository.html'
+    },
+    resolve: {documentationLink: documentationLinkResolve},
+    loadComponent: () => import('./pages/repository-management/repository-list/repository-list.component').then(m => m.RepositoryListComponent)
+  },
+  {
     path: 'sparql-new',
     data: {
       title: 'sparql_editor.title',

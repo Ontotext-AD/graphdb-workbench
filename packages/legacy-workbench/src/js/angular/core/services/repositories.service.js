@@ -11,9 +11,11 @@ import {md5HashGenerator} from "../../utils/hash-utils";
 import {RemoteLocationModel} from "../../models/repository/remote-location.model";
 import {SelectMenuOptionsModel} from "../../models/form-fields";
 import {
+    RepositoryService,
     RepositoryStorageService,
     RepositoryContextService,
     LocationContextService,
+    LocationService,
     mapRepositoryListResponseToModel,
     AuthorizationService,
     AuthenticationService,
@@ -47,12 +49,15 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
         const authorizationService = service(AuthorizationService);
         const securityContextService = service(SecurityContextService);
         const authenticationService = service(AuthenticationService);
+        const repositoryService = service(RepositoryService);
+        const locationContextService = service(LocationContextService);
+        const locationService = service(LocationService);
 
         const that = this;
 
         const loadingDone = function(err, locationError) {
             that.loading = false;
-            service(LocationContextService).updateIsLoading(false);
+            locationContextService.updateIsLoading(false);
             // If user is not logged in, do not show location loading errors
             const isLoggedIn = authenticationService.isLoggedIn();
             if (err && isLoggedIn) {
@@ -158,7 +163,7 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
 
         this.init = function(successCallback, errorCallback, quick) {
             this.loading = true;
-            service(LocationContextService).updateIsLoading(true);
+            locationContextService.updateIsLoading(true);
             if (!quick) {
                 this.locationsShouldReload = true;
             }
@@ -221,9 +226,9 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
                 if (!locationsRequestPromise) {
                     this.locationsShouldReload = false;
                     this.locations = [this.location];
-                    locationsRequestPromise = LocationsRestService.getLocations(abortRequestPromise)
-                        .then((data) => {
-                            that.locations = data.data.map((location) => new RemoteLocationModel(location));
+                    locationsRequestPromise = locationService.getLocations(abortRequestPromise)
+                        .then((locations) => {
+                            that.locations = locations.getItems().map((location) => new RemoteLocationModel(location));
                             return this.locations;
                         })
                         .catch(function() {
@@ -406,20 +411,22 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
                 return;
             }
             const that = this;
-            LocationsRestService.setDefaultRepository(repo)
-                .success(function() {
+            // Extracted set default repository method in api module
+            locationService.setDefaultRepository({id: repo})
+                .then(function() {
                     // XXX maybe we should reload the active location but oh well
                     that.location.defaultRepository = repo;
                 })
-                .error(function(data) {
+                .catch(function(data) {
                     const msg = getError(data);
                     toastr.error(msg, $translate.instant('common.error'));
                 });
         };
 
         this.deleteLocation = function(uri) {
-            return LocationsRestService.deleteLocation(encodeURIComponent(uri))
-                .success(function() {
+            // Extracted delete location method in api module
+            return locationService.deleteLocation(uri)
+                .then(function() {
                     const activeRepo = that.getActiveRepositoryObject();
                     //Reload locations and repositories
                     if (activeRepo && activeRepo.location === uri) {
@@ -427,17 +434,18 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
                         that.setRepository('');
                     }
                     that.init();
-                }).error(function(data) {
+                }).catch(function(data) {
                 const msg = getError(data);
                 toastr.error(msg, $translate.instant('common.error'));
             });
         };
 
+        // Extracted delete repository method in api module
         this.deleteRepository = function(repo) {
-            return RepositoriesRestService.deleteRepository(repo)
-                .success(function() {
+            return repositoryService.deleteRepository(repo)
+                .then(function() {
                     that.init();
-                }).error(function(data) {
+                }).catch(function(data) {
                     const msg = getError(data);
                     toastr.error(msg, $translate.instant('common.error'));
                 })
@@ -449,13 +457,14 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
                 });
         };
 
+        // Extracted delete repository method in api module
         this.restartRepository = function(repository) {
-            return RepositoriesRestService.restartRepository(repository)
-                .success(function() {
+            return repositoryService.restartRepository(repository)
+                .then(function() {
                     toastr.success($translate.instant('repositories.service.restarting.repo', {repositoryId: repository.id}));
                     // This provides immediate visual feedback by updating the status
                     that.initQuick();
-                }).error(function(data) {
+                }).catch(function(data) {
                 const msg = getError(data);
                 toastr.error(msg, $translate.instant('common.error'));
             });

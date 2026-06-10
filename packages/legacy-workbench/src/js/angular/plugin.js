@@ -62,3 +62,21 @@ PluginRegistry.add('main.menu', {
         ],
     },
 );
+
+PluginRegistry.add('main.menu', {
+        disabled: false,
+        items: [
+            {
+                label: 'New Repositories',
+                labelKey: 'New Repositories',
+                href: 'repository-new',
+                order: 1.9,
+                role: 'ROLE_REPO_MANAGER',
+                parent: 'Setup',
+                children: [],
+                guideSelector: 'menu-new-repositories',
+                testSelector: 'menu-new-repositories',
+            },
+        ],
+    },
+);

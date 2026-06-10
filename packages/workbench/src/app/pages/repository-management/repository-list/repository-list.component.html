@@ -1,0 +1,31 @@
+<app-page-layout class="repository-list-page">
+  <div class="repository-list-content">
+
+    <div>selectedRepository: {{ selectedRepository()?.id }}</div>
+    <div><p-button (click)="createRepository()">Create Repository</p-button></div>
+
+    @for (repository of repositories()?.getItems(); track repository.id + '-' + repository.location) {
+      <div>
+        <span style="min-width: 300px; display: inline-block">{{repository.id}}-{{repository.location}}</span>
+        <div style="display: inline-flex; gap: 8px">
+          <p-button (click)="deleteRepository(repository)">Delete</p-button>
+          <p-button (click)="restartRepository(repository)">Restart</p-button>
+          <p-button (click)="setDefaultRepository(repository)">Set as default</p-button>
+        </div>
+      </div>
+    }
+
+    @for (location of locations()?.getItems(); track location.uri) {
+      <div>
+        <span style="min-width: 300px; display: inline-block">{{location.uri}}</span>
+        <div style="display: inline-flex; gap: 8px">
+          <p-button (click)="deleteLocation(location)">Delete location</p-button>
+        </div>
+      </div>
+    }
+
+
+
+    <p-button label="Check" />
+  </div>
+</app-page-layout>

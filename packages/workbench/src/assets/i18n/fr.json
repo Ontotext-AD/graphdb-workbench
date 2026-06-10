@@ -76,6 +76,12 @@
     "url_not_found_msg": "L'URL demandée n'a pas été trouvée sur ce serveur. C'est tout ce que je sais.",
     "back_to_home": "Retour à la page d'accueil"
   },
+  "repository-management": {
+    "repository-list": {
+      "title": "Dépôts",
+      "helpInfo": "La vue Dépôts est utilisée pour créer, modifier et supprimer des dépôts et des connexions à des instances GraphDB distantes (également appelées emplacements distants)."
+    }
+  },
   "sparql_editor": {
     "title": "Requête et mise à jour SPARQL",
     "helpInfo": "La vue Requête et mise à jour SPARQL est un éditeur unifié pour les requêtes et les mises à jour. Entrez n'importe quelle requête ou mise à jour SPARQL et cliquez sur Exécuter pour l'exécuter. La vue vous permet également d'enregistrer des requêtes pour une récupération et une exécution futures dans l'éditeur SPARQL.",
