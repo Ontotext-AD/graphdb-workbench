@@ -15,6 +15,10 @@ export function getWorkbenchRoutes(): Route[] {
       default: false,
     },
     {
+      path: 'reactodia',
+      default: false,
+    },
+    {
       default: true,
     },
   ];
