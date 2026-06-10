@@ -7,8 +7,16 @@ export class RepositoryRestService extends HttpService {
 
   static readonly REPOSITORIES_ENDPOINT = 'rest/repositories';
 
-  getRepositories(): Promise<RepositoryListResponse> {
-    return this.get(`${RepositoryRestService.REPOSITORIES_ENDPOINT}/all`);
+  /**
+   * Fetches all available repositories.
+   *
+   * @param signal - Optional AbortSignal to cancel the request if needed.
+   * @returns A promise that resolves with the list of available repositories.
+   */
+  getRepositories(signal?: AbortSignal): Promise<RepositoryListResponse> {
+    return this.get(`${RepositoryRestService.REPOSITORIES_ENDPOINT}/all`, {
+      signal,
+    });
   }
 
   getRepositorySizeInfo(repository: Repository): Promise<RepositorySizeInfoResponse> {

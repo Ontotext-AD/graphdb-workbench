@@ -18,10 +18,11 @@ export class RepositoryService implements Service {
   /**
    * Retrieves the list of repositories.
    *
+   * @param signal - Optional AbortSignal to cancel the request if needed.
    * @returns A promise that resolves to the list of repositories.
    */
-  async getRepositories(): Promise<RepositoryList> {
-    const response = await this.repositoryRestService.getRepositories();
+  async getRepositories(signal?: AbortSignal): Promise<RepositoryList> {
+    const response = await this.repositoryRestService.getRepositories(signal);
     return mapRepositoryListResponseToModel(response);
   }
 

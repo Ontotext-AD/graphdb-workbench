@@ -11,18 +11,62 @@ describe('RepositoryService', () => {
     repositoryService = new RepositoryService();
   });
 
-  test('getRepositories should return repositories', async () => {
-    const response = {'': [RepositoryMockProvider.provideRawRepository('repo-id')]};
-    TestUtil.mockResponse(new ResponseMock('rest/repositories/all').setResponse(response));
-    const expectedResult = {items: [RepositoryMockProvider.provideRepository('repo-id')]};
+  describe('getRepositories()', () => {
+    test('should return repositories', async () => {
+      // GIVEN: The repositories/all endpoint returns a list of locations.
+      const response = {'': [RepositoryMockProvider.provideRawRepository('repo-id')]};
+      TestUtil.mockResponse(new ResponseMock('rest/repositories/all').setResponse(response));
+      const expectedResult = new RepositoryList([RepositoryMockProvider.provideRepository('repo-id')]);
 
-    // When the service is called to fetch all repositories,
-    const repositories = await repositoryService.getRepositories();
+      // WHEN: I call getRepository method.
+      const repositoryList = await repositoryService.getRepositories();
+      // THEN: I expect a GET request to be sent to the repositories/all endpoint.
+      const request = TestUtil.getRequest('rest/repositories/all');
+      expect(request).toBeDefined();
+      expect(request?.method).toBe('GET');
+      // AND: I receive the list of available locations.
+      expect(repositoryList).toBeInstanceOf(RepositoryList);
+      expect(repositoryList).toEqual(expectedResult);
+    });
 
-    // Then I expect it to return an instance of RepositoryList,
-    expect(repositories).toBeInstanceOf(RepositoryList);
-    // with all repositories included.
-    expect(repositories).toEqual(expectedResult);
+    test('should accept an AbortSignal and complete without error', async () => {
+      // GIVEN: The repositories/all endpoint returns a list of locations.
+      const response = {'': [RepositoryMockProvider.provideRawRepository('repo-id')]};
+      TestUtil.mockResponse(new ResponseMock('rest/repositories/all').setResponse(response));
+      const expectedResult = new RepositoryList([RepositoryMockProvider.provideRepository('repo-id')]);
+
+      // WHEN: I call getRepository method with abort signal.
+      const repositoryList = await repositoryService.getRepositories(new AbortController().signal);
+      // THEN: I expect a GET request to be sent to the repositories/all endpoint.
+      const request = TestUtil.getRequest('rest/repositories/all');
+      expect(request).toBeDefined();
+      expect(request?.method).toBe('GET');
+      // AND: I receive the list of available locations.
+      expect(repositoryList).toBeInstanceOf(RepositoryList);
+      expect(repositoryList).toEqual(expectedResult);
+    });
+
+    test('should return an empty list when the result is undefined', async () => {
+      // GIVEN: The repositories/all endpoint returns no data.
+      TestUtil.mockResponse(new ResponseMock('rest/repositories/all').setResponse(undefined));
+
+      // WHEN: I call getRepository method with abort signal.
+      const repositoryList = await repositoryService.getRepositories();
+      // THEN: I receive an empty repository list
+      expect(repositoryList).toBeInstanceOf(RepositoryList);
+      expect(repositoryList.getItems().length).toEqual(0);
+    });
+
+    test('should return an empty list when the result is not an array', async () => {
+      // GIVEN: The repositories/all returns an invalid response.
+      TestUtil.mockResponse(new ResponseMock('rest/repositories/all').setResponse({}));
+
+      // WHEN: I call getRepository method with abort signal.
+      const repositoryList = await repositoryService.getRepositories();
+      // THEN: I receive an empty repository list
+      expect(repositoryList).toBeInstanceOf(RepositoryList);
+      expect(repositoryList.getItems().length).toEqual(0);
+    });
   });
 
   test('getRepositorySizeInfo should return an instance of RepositorySizeInfo', async () => {
