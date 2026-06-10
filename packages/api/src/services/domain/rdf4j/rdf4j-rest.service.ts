@@ -1,6 +1,7 @@
 import {HttpService} from '../../http/http.service';
 import {NamespacesResponse} from './response/namespaces-response';
 import {SparqlResultsResponse} from '../../../models/sparql';
+import {HttpResponse} from '../../../models/http';
 
 /**
  * Service for interacting with the external RDF4J REST API.
@@ -91,6 +92,32 @@ export class Rdf4jRestService extends HttpService {
         'Content-Type': 'application/x-www-form-urlencoded',
         'Accept': 'application/sparql-results+json',
         'X-GraphDB-Local-Consistency': 'updating',
+      }
+    });
+  }
+
+  /**
+   * Executes a SPARQL query against the specified repository and returns the full HTTP response
+   * with the body left unparsed.
+   *
+   * Unlike {@link executeSparqlQuery}, the caller chooses the response format via the `accept`
+   * option (e.g. `application/sparql-results+json` for SELECT/ASK or `application/rdf+json;` for
+   * CONSTRUCT/DESCRIBE) and reads the raw payload from {@link HttpResponse.originalResponse}.
+   * This suits consumers that need the unparsed response, such as Reactodia.
+   *
+   * @param repositoryId - The ID of the repository to query.
+   * @param query - The SPARQL query string.
+   * @param accept - Value for the `Accept` header, selecting the response format, e.g.
+   * `application/sparql-results+json` for SELECT/ASK or `application/rdf+json;` for CONSTRUCT/DESCRIBE.
+   * @returns A promise resolving to the HTTP response.
+   */
+  executeSparqlRequest(repositoryId: string, query: string, accept = 'application/sparql-results+json'): Promise<HttpResponse> {
+    return this.post(`${this.REPOSITORIES_ENDPOINT}/${repositoryId}`, {
+      responseType: 'response',
+      body: new URLSearchParams({query}),
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Accept': accept,
       }
     });
   }
