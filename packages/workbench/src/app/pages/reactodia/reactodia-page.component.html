@@ -1,0 +1,10 @@
+<app-page-layout class="sparql-editor-page">
+  <div>
+    @if (language() && currentRepository()) {
+      <app-reactodia-component-facade
+        [currentRepository]="currentRepository()"
+        [language]="language()">
+      </app-reactodia-component-facade>
+    }
+  </div>
+</app-page-layout>
