@@ -12,6 +12,7 @@ import { OntoTooltipPlacement } from "./components/onto-tooltip/models/onto-tool
 import { DropdownItemAlignment } from "./models/dropdown/dropdown-item-alignment";
 import { GraphExploreEvent } from "./components/onto-graph-explore-split-button/models/graph-explore-types";
 import { NavbarToggledEvent } from "./components/onto-navbar/navbar-toggled-event";
+import { SparqlQueryFunction } from "@reactodia/workspace";
 import { ToggleEventPayload } from "./models/toggle-switch/toggle-event-payload";
 export { DialogConfig } from "./components/dialogs/onto-dialog";
 export { AuthenticatedUser, AuthenticatedUserResponse, Awaitable, Configuration, GraphConfig, License, MainMenuPlugin, Notification, OperationStatusSummary, ProductInfo, Repository, RepositoryReference, RepositorySizeInfo, SearchButtonConfig, SecurityConfig, ToastMessage, TranslationParameter, User } from "../../api/dist/ontotext-workbench-api.d";
@@ -20,6 +21,7 @@ export { OntoTooltipPlacement } from "./components/onto-tooltip/models/onto-tool
 export { DropdownItemAlignment } from "./models/dropdown/dropdown-item-alignment";
 export { GraphExploreEvent } from "./components/onto-graph-explore-split-button/models/graph-explore-types";
 export { NavbarToggledEvent } from "./components/onto-navbar/navbar-toggled-event";
+export { SparqlQueryFunction } from "@reactodia/workspace";
 export { ToggleEventPayload } from "./models/toggle-switch/toggle-event-payload";
 export namespace Components {
     interface OntoConfirmCancelDialog {
@@ -188,6 +190,31 @@ export namespace Components {
      * This component is responsible for showing/hiding the search menu in the header
      */
     interface OntoRdfSearch {
+    }
+    /**
+     * A web component that renders a graph with the Reactodia workspace.
+     * The component is backed by a SPARQL endpoint but is endpoint-agnostic: the host passes
+     * the active repository's endpoint via `current-repository` and a `queryFunction` that
+     * performs the actual HTTP request. Reactodia fetches all node, link and type data lazily
+     * through them; the canvas starts empty and the user populates it via the search bar.
+     * This is a proof of concept; the component and its Reactodia wrapper are written so
+     * they can later be extracted into a standalone package and consumed here as an NPM
+     * dependency.
+     */
+    interface OntoReactodiaGraph {
+        /**
+          * The active repository id. Bound as a plain HTML attribute and surfaced to {@link queryFunction} as the request `url`; changing it re-points the graph at the new repository (and resets the canvas), which is how runtime repository changes are handled.
+         */
+        "currentRepository": string;
+        /**
+          * UI language code (e.g. `en`, `fr`) for the Reactodia interface and the initial graph-data labels. Defaults to English. Reactodia bakes the translation bundle into the workspace when it is constructed and never re-reads it, so switching languages requires rebuilding the React tree; the watcher below remounts on change.
+          * @default 'en'
+         */
+        "language": string;
+        /**
+          * HTTP transport for the SPARQL requests. A DOM property (not an attribute, since it is a function) set by the host so requests go through the host's HTTP layer (auth, interceptors) instead of a built-in `fetch`. Keeping it injectable preserves portability.
+         */
+        "queryFunction": SparqlQueryFunction;
     }
     interface OntoRepositorySelector {
         /**
@@ -613,6 +640,22 @@ declare global {
         prototype: HTMLOntoRdfSearchElement;
         new (): HTMLOntoRdfSearchElement;
     };
+    /**
+     * A web component that renders a graph with the Reactodia workspace.
+     * The component is backed by a SPARQL endpoint but is endpoint-agnostic: the host passes
+     * the active repository's endpoint via `current-repository` and a `queryFunction` that
+     * performs the actual HTTP request. Reactodia fetches all node, link and type data lazily
+     * through them; the canvas starts empty and the user populates it via the search bar.
+     * This is a proof of concept; the component and its Reactodia wrapper are written so
+     * they can later be extracted into a standalone package and consumed here as an NPM
+     * dependency.
+     */
+    interface HTMLOntoReactodiaGraphElement extends Components.OntoReactodiaGraph, HTMLStencilElement {
+    }
+    var HTMLOntoReactodiaGraphElement: {
+        prototype: HTMLOntoReactodiaGraphElement;
+        new (): HTMLOntoReactodiaGraphElement;
+    };
     interface HTMLOntoRepositorySelectorElement extends Components.OntoRepositorySelector, HTMLStencilElement {
     }
     var HTMLOntoRepositorySelectorElement: {
@@ -727,6 +770,7 @@ declare global {
         "onto-operations-notification": HTMLOntoOperationsNotificationElement;
         "onto-permission-banner": HTMLOntoPermissionBannerElement;
         "onto-rdf-search": HTMLOntoRdfSearchElement;
+        "onto-reactodia-graph": HTMLOntoReactodiaGraphElement;
         "onto-repository-selector": HTMLOntoRepositorySelectorElement;
         "onto-search-icon": HTMLOntoSearchIconElement;
         "onto-search-resource-input": HTMLOntoSearchResourceInputElement;
@@ -931,6 +975,31 @@ declare namespace LocalJSX {
      */
     interface OntoRdfSearch {
     }
+    /**
+     * A web component that renders a graph with the Reactodia workspace.
+     * The component is backed by a SPARQL endpoint but is endpoint-agnostic: the host passes
+     * the active repository's endpoint via `current-repository` and a `queryFunction` that
+     * performs the actual HTTP request. Reactodia fetches all node, link and type data lazily
+     * through them; the canvas starts empty and the user populates it via the search bar.
+     * This is a proof of concept; the component and its Reactodia wrapper are written so
+     * they can later be extracted into a standalone package and consumed here as an NPM
+     * dependency.
+     */
+    interface OntoReactodiaGraph {
+        /**
+          * The active repository id. Bound as a plain HTML attribute and surfaced to {@link queryFunction} as the request `url`; changing it re-points the graph at the new repository (and resets the canvas), which is how runtime repository changes are handled.
+         */
+        "currentRepository"?: string;
+        /**
+          * UI language code (e.g. `en`, `fr`) for the Reactodia interface and the initial graph-data labels. Defaults to English. Reactodia bakes the translation bundle into the workspace when it is constructed and never re-reads it, so switching languages requires rebuilding the React tree; the watcher below remounts on change.
+          * @default 'en'
+         */
+        "language"?: string;
+        /**
+          * HTTP transport for the SPARQL requests. A DOM property (not an attribute, since it is a function) set by the host so requests go through the host's HTTP layer (auth, interceptors) instead of a built-in `fetch`. Keeping it injectable preserves portability.
+         */
+        "queryFunction"?: SparqlQueryFunction;
+    }
     interface OntoRepositorySelector {
         /**
           * Determines whether the current user has write access to the repository.
@@ -1078,6 +1147,7 @@ declare namespace LocalJSX {
         "onto-operations-notification": OntoOperationsNotification;
         "onto-permission-banner": OntoPermissionBanner;
         "onto-rdf-search": OntoRdfSearch;
+        "onto-reactodia-graph": OntoReactodiaGraph;
         "onto-repository-selector": OntoRepositorySelector;
         "onto-search-icon": OntoSearchIcon;
         "onto-search-resource-input": OntoSearchResourceInput;
@@ -1139,6 +1209,17 @@ declare module "@stencil/core" {
              * This component is responsible for showing/hiding the search menu in the header
              */
             "onto-rdf-search": LocalJSX.OntoRdfSearch & JSXBase.HTMLAttributes<HTMLOntoRdfSearchElement>;
+            /**
+             * A web component that renders a graph with the Reactodia workspace.
+             * The component is backed by a SPARQL endpoint but is endpoint-agnostic: the host passes
+             * the active repository's endpoint via `current-repository` and a `queryFunction` that
+             * performs the actual HTTP request. Reactodia fetches all node, link and type data lazily
+             * through them; the canvas starts empty and the user populates it via the search bar.
+             * This is a proof of concept; the component and its Reactodia wrapper are written so
+             * they can later be extracted into a standalone package and consumed here as an NPM
+             * dependency.
+             */
+            "onto-reactodia-graph": LocalJSX.OntoReactodiaGraph & JSXBase.HTMLAttributes<HTMLOntoReactodiaGraphElement>;
             "onto-repository-selector": LocalJSX.OntoRepositorySelector & JSXBase.HTMLAttributes<HTMLOntoRepositorySelectorElement>;
             "onto-search-icon": LocalJSX.OntoSearchIcon & JSXBase.HTMLAttributes<HTMLOntoSearchIconElement>;
             /**
