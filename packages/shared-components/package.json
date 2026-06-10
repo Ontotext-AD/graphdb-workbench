@@ -47,11 +47,14 @@
     "sonar": "./sonar-run.sh"
   },
   "devDependencies": {
+    "@rdfjs/types": "^2.0.1",
     "@stencil-community/eslint-plugin": "^0.10.0",
     "@stencil/core": "4.35.1",
     "@stencil/sass": "^3.2.3",
     "@types/jest": "^30.0.0",
     "@types/node": "^25.0.10",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
     "@typescript-eslint/parser": "^8.47.0",
     "concurrently": "^9.2.1",
     "cypress": "^15.9.0",
@@ -61,11 +64,15 @@
     "jest-cli": "^30.2.0",
     "jest-stencil-runner": "^0.0.9",
     "puppeteer": "^24.30.0",
+    "rollup-plugin-node-polyfills": "^0.2.1",
     "sonarqube-scanner": "^3.3.0",
     "ts-jest": "^29.4.5"
   },
   "dependencies": {
     "@floating-ui/dom": "^1.7.4",
+    "@reactodia/workspace": "^0.34.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "single-spa": "^6.0.3"
   }
 }
