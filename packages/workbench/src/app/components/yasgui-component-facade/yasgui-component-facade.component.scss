@@ -941,6 +941,8 @@ app-yasgui-component-facade .hidden {
   }
 }
 
+.yasgui-floating-tooltip,
+.yasgui-floating-tooltip-arrow,
 .ontotext-yasgui-tooltip .tooltip-box {
   background-color: var(--gw-tooltip-background);
   color: var(--gw-tooltip-color);
