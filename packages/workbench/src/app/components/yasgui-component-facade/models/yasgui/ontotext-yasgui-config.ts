@@ -183,7 +183,7 @@ export class OntotextYasguiConfig {
    * The values of the array have to be {@link YasrPluginName} options.
    * For example: ["extended_table", "response"]
    */
-  public pluginOrder: YasrPluginName[];
+  public pluginOrder?: YasrPluginName[];
   /**
    * An object containing the configuration for each plugin.
    */
@@ -307,7 +307,7 @@ export class OntotextYasguiConfig {
     this.populateFromUrl = false;
     this.prefixes = undefined;
     this.defaultPlugin = YasrPluginName.EXTENDED_TABLE;
-    this.pluginOrder = [YasrPluginName.EXTENDED_TABLE, YasrPluginName.RAW_RESPONSE];
+    this.pluginOrder = undefined;
     this.pluginsConfigurations = undefined;
     this.pageSize = 1000;
     this.paginationOn = true;

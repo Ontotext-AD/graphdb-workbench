@@ -975,6 +975,8 @@ yasgui-component .yasr .explain-plan-copy-btn {
     }
 }
 
+.yasgui-floating-tooltip,
+.yasgui-floating-tooltip-arrow,
 .ontotext-yasgui-tooltip .tooltip-box {
     background-color: var(--gw-tooltip-background);
     color: var(--gw-tooltip-color);
