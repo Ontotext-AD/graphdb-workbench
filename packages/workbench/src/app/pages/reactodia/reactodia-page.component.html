@@ -1,5 +1,11 @@
-<onto-reactodia-graph
-  [currentRepository]="currentRepository()"
-  [queryFunction]="queryFunction"
-  [language]="language()">
-</onto-reactodia-graph>
+@if (currentRepository() && language()) {
+  <onto-reactodia-graph
+    [queryFunction]="queryFunction"
+    [currentRepository]="currentRepository()"
+    [language]="language()">
+  </onto-reactodia-graph>
+} @else {
+  <div>
+    <p>No repository selected. Please select a repository to view the Reactodia graph.</p>
+  </div>
+}
