@@ -61,6 +61,12 @@ export interface ReactodiaAppProps {
    * does not wipe their work. When omitted, the canvas starts empty.
    */
   initialDiagram?: SerializedDiagram;
+  /**
+   * Query preset for the SPARQL data provider. Lets the host supply user-edited settings
+   * (see the settings editor in `onto-reactodia-graph.tsx`); falls back to
+   * {@link defaultGraphDbSettings} when omitted.
+   */
+  providerSettings?: SparqlDataProviderSettings;
 }
 
 /**
@@ -71,15 +77,18 @@ export interface ReactodiaAppProps {
 let workspaceContext: WorkspaceContext | null = null;
 
 /**
- * Query preset for the SPARQL data provider.
+ * Default query preset for the SPARQL data provider.
  *
  * {@link OwlRdfsSettings} is the generic OWL/RDFS query preset and a sensible default
  * for a GraphDB repository. We extend it instead of using it verbatim so the class tree
  * also surfaces classes that are only referenced as instance types and so labels can come
  * from `schema:name`/`skos:prefLabel` in addition to `rdfs:label`. The extra prefixes are
  * appended to `defaultPrefix` because the stock preset only declares `rdfs`, `rdf` and `owl`.
+ *
+ * Exported so the host component can show the defaults in its settings editor and pass
+ * user-modified copies back via {@link ReactodiaAppProps.providerSettings}.
  */
-const graphDbSettings: SparqlDataProviderSettings = {
+export const defaultGraphDbSettings: SparqlDataProviderSettings = {
   ...OwlRdfsSettings,
   defaultPrefix: `${OwlRdfsSettings.defaultPrefix}
  PREFIX schema: <http://schema.org/>
@@ -107,15 +116,19 @@ const graphDbSettings: SparqlDataProviderSettings = {
 };
 
 /**
- * Builds a Reactodia {@link SparqlDataProvider} for the given endpoint using
- * {@link graphDbSettings}.
+ * Builds a Reactodia {@link SparqlDataProvider} for the given endpoint using the
+ * given query preset, defaulting to {@link defaultGraphDbSettings}.
  */
-function createDataProvider(currentRepository: string, queryFunction: SparqlQueryFunction): SparqlDataProvider {
+function createDataProvider(
+  currentRepository: string,
+  queryFunction: SparqlQueryFunction,
+  settings: SparqlDataProviderSettings = defaultGraphDbSettings
+): SparqlDataProvider {
   return new SparqlDataProvider({
     endpointUrl: currentRepository,
     queryMethod: 'POST',
     queryFunction,
-  }, graphDbSettings);
+  }, settings);
 }
 
 /**
@@ -129,12 +142,12 @@ function createDataProvider(currentRepository: string, queryFunction: SparqlQuer
  * data provider's lookup.
  */
 function ReactodiaApp(props: ReactodiaAppProps) {
-  const {currentRepository, queryFunction, language, initialDiagram} = props;
+  const {currentRepository, queryFunction, language, initialDiagram, providerSettings} = props;
 
   const {onMount} = useLoadedWorkspace(async ({context, signal}) => {
     workspaceContext = context;
     const {model} = context;
-    const dataProvider = createDataProvider(currentRepository, queryFunction);
+    const dataProvider = createDataProvider(currentRepository, queryFunction, providerSettings);
     // A language change remounts this component to rebuild the workspace with the new
     // translation bundle; restoring the exported diagram keeps the user's canvas intact.
     // This is done because there is no existing mechanism to re-translate the UI at runtime (not for the UI labels at least)
@@ -181,15 +194,16 @@ export function mountReactodia(container: HTMLElement, props: ReactodiaAppProps)
 }
 
 /**
- * Re-points the diagram at a new SPARQL endpoint by recreating it with a fresh
- * data provider. The canvas is reset to empty, matching the initial mount.
+ * Re-points the diagram at a new SPARQL endpoint or query preset by recreating it
+ * with a fresh data provider. The canvas is reset to empty, matching the initial mount.
  */
 export async function updateReactodia(props: ReactodiaAppProps): Promise<void> {
   if (!workspaceContext) {
     return;
   }
   const {model} = workspaceContext;
-  await model.createNewDiagram({dataProvider: createDataProvider(props.currentRepository, props.queryFunction)});
+  const dataProvider = createDataProvider(props.currentRepository, props.queryFunction, props.providerSettings);
+  await model.createNewDiagram({dataProvider});
 }
 
 /**

@@ -199,7 +199,8 @@ export namespace Components {
      * through them; the canvas starts empty and the user populates it via the search bar.
      * This is a proof of concept; the component and its Reactodia wrapper are written so
      * they can later be extracted into a standalone package and consumed here as an NPM
-     * dependency.
+     * dependency. A bare-bones settings panel above the graph allows editing the SPARQL
+     * data provider settings at runtime.
      */
     interface OntoReactodiaGraph {
         /**
@@ -648,7 +649,8 @@ declare global {
      * through them; the canvas starts empty and the user populates it via the search bar.
      * This is a proof of concept; the component and its Reactodia wrapper are written so
      * they can later be extracted into a standalone package and consumed here as an NPM
-     * dependency.
+     * dependency. A bare-bones settings panel above the graph allows editing the SPARQL
+     * data provider settings at runtime.
      */
     interface HTMLOntoReactodiaGraphElement extends Components.OntoReactodiaGraph, HTMLStencilElement {
     }
@@ -983,7 +985,8 @@ declare namespace LocalJSX {
      * through them; the canvas starts empty and the user populates it via the search bar.
      * This is a proof of concept; the component and its Reactodia wrapper are written so
      * they can later be extracted into a standalone package and consumed here as an NPM
-     * dependency.
+     * dependency. A bare-bones settings panel above the graph allows editing the SPARQL
+     * data provider settings at runtime.
      */
     interface OntoReactodiaGraph {
         /**
@@ -1217,7 +1220,8 @@ declare module "@stencil/core" {
              * through them; the canvas starts empty and the user populates it via the search bar.
              * This is a proof of concept; the component and its Reactodia wrapper are written so
              * they can later be extracted into a standalone package and consumed here as an NPM
-             * dependency.
+             * dependency. A bare-bones settings panel above the graph allows editing the SPARQL
+             * data provider settings at runtime.
              */
             "onto-reactodia-graph": LocalJSX.OntoReactodiaGraph & JSXBase.HTMLAttributes<HTMLOntoReactodiaGraphElement>;
             "onto-repository-selector": LocalJSX.OntoRepositorySelector & JSXBase.HTMLAttributes<HTMLOntoRepositorySelectorElement>;

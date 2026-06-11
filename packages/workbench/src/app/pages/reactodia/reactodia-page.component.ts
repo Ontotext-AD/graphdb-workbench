@@ -60,12 +60,9 @@ export class ReactodiaPageComponent implements OnInit, OnDestroy {
       );
 
   ngOnInit(): void {
-    this.currentRepository.set(this.repositoryContextService.getSelectedRepository()?.id ?? '');
     this.subscriptions.addAll([
       this.repositoryContextService.onSelectedRepositoryChanged((repository) => {
-        if (repository) {
-          this.currentRepository.set(repository.id);
-        }
+        this.currentRepository.set(repository?.id || '');
       }),
       this.languageContextService.onSelectedLanguageChanged((language) => {
         if (language) {

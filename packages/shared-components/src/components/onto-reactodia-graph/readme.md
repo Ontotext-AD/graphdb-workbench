@@ -16,7 +16,8 @@ through them; the canvas starts empty and the user populates it via the search b
 
 This is a proof of concept; the component and its Reactodia wrapper are written so
 they can later be extracted into a standalone package and consumed here as an NPM
-dependency.
+dependency. A bare-bones settings panel above the graph allows editing the SPARQL
+data provider settings at runtime.
 
 ## Properties
 

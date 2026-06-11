@@ -6,14 +6,54 @@
 // The host must have an explicit height or Reactodia's canvas collapses to 0px
 // and nothing is visible.
 onto-reactodia-graph {
-  display: block;
+  // Flex column so the settings button/panel stack above the graph and the
+  // graph container takes the remaining height.
+  display: flex;
+  flex-direction: column;
   width: 100%;
   height: 75vh;
+
+  .provider-settings-button {
+    width: fit-content;
+  }
+
+  // Bare-bones POC settings editor. Shown instead of the graph, so it takes its place.
+  // Only the fields scroll; the Apply/Cancel actions row stays always visible below.
+  .provider-settings {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+
+    // An explicit `display` beats the UA `[hidden] { display: none }` rule,
+    // so the hidden state must be restored by hand.
+    &[hidden] {
+      display: none;
+    }
+
+    .provider-settings-fields {
+      overflow: auto;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .provider-settings-actions {
+      margin-top: 20px;
+      flex-shrink: 0;
+    }
+
+    textarea {
+      display: block;
+      width: 100%;
+      font-family: monospace;
+    }
+  }
 
   .reactodia-container {
     position: relative;
     width: 100%;
-    height: 100%;
+    flex: 1;
+    min-height: 0;
   }
 
   // ---------------------------------------------------------------------------

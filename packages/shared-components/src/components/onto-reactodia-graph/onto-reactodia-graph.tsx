@@ -1,7 +1,29 @@
-import {Component, h, Host, Prop, Watch, Element} from '@stencil/core';
+import {Component, h, Host, Prop, State, Watch} from '@stencil/core';
 import {Root} from 'react-dom/client';
-import {SparqlQueryFunction, SerializedDiagram} from '@reactodia/workspace';
-import {exportReactodiaLayout, mountReactodia, unmountReactodia, updateReactodia} from './reactodia-app';
+import {SparqlQueryFunction, SerializedDiagram, SparqlDataProviderSettings} from '@reactodia/workspace';
+import {
+  defaultGraphDbSettings,
+  exportReactodiaLayout,
+  mountReactodia,
+  unmountReactodia,
+  updateReactodia,
+} from './reactodia-app';
+
+/**
+ * The string-valued provider settings (the SPARQL query/pattern templates) — the ones
+ * meaningfully editable in a textarea. The non-string settings keep their defaults.
+ * The values are trimmed because the defaults are authored as indented template literals
+ * and carry their surrounding code indentation; SPARQL is whitespace-insensitive.
+ */
+function stringSettings(settings: SparqlDataProviderSettings): Record<string, string> {
+  const result: Record<string, string> = {};
+  for (const [key, value] of Object.entries(settings)) {
+    if (typeof value === 'string') {
+      result[key] = value.trim();
+    }
+  }
+  return result;
+}
 
 /**
  * A web component that renders a graph with the Reactodia workspace.
@@ -13,7 +35,8 @@ import {exportReactodiaLayout, mountReactodia, unmountReactodia, updateReactodia
  *
  * This is a proof of concept; the component and its Reactodia wrapper are written so
  * they can later be extracted into a standalone package and consumed here as an NPM
- * dependency.
+ * dependency. A bare-bones settings panel above the graph allows editing the SPARQL
+ * data provider settings at runtime.
  */
 @Component({
   tag: 'onto-reactodia-graph',
@@ -42,7 +65,16 @@ export class OntoReactodiaGraph {
    */
   @Prop() language = 'en';
 
-  @Element() private readonly hostElement: HTMLElement;
+  @State() private settingsOpen = false;
+
+  /** Editable text per string setting; merged into real settings on Apply. */
+  @State() private settingsText: Record<string, string> = stringSettings(defaultGraphDbSettings);
+
+  /** The settings currently in effect on the data provider. */
+  private providerSettings: SparqlDataProviderSettings = defaultGraphDbSettings;
+
+  /** Dedicated mount point for the React tree, so it does not clash with Stencil's vdom. */
+  private graphContainer: HTMLElement;
 
   private reactRoot: Root;
 
@@ -73,8 +105,71 @@ export class OntoReactodiaGraph {
 
   render() {
     return (
-      <Host></Host>
+      <Host>
+        {/* The toggle button, the settings panel and the graph container are all kept in
+            the DOM and switched via `hidden`, both so only one of the settings/graph shows
+            at a time and so the React mount point is never moved by Stencil's diffing. */}
+        <button type="button" class="provider-settings-button" hidden={this.settingsOpen} onClick={() => (this.settingsOpen = true)}>
+          Provider settings
+        </button>
+        <div class="provider-settings" hidden={!this.settingsOpen}>
+          <a
+            href="https://reactodia.github.io/docs/api/workspace/interfaces/SparqlDataProviderSettings"
+            target="_blank"
+            rel="noopener noreferrer">
+            SparqlDataProviderSettings documentation
+          </a>
+          <div class="provider-settings-fields">
+            {Object.entries(stringSettings(defaultGraphDbSettings)).map(([key, defaultValue]) => (
+              <div key={key}>
+                <label>{key}</label>
+                <button
+                  type="button"
+                  onClick={() => (this.settingsText = {...this.settingsText, [key]: defaultValue})}>
+                  Reset to default
+                </button>
+                <textarea
+                  rows={4}
+                  spellcheck={false}
+                  value={this.settingsText[key]}
+                  onInput={(event) => (this.settingsText = {
+                    ...this.settingsText,
+                    [key]: (event.target as HTMLTextAreaElement).value,
+                  })}></textarea>
+              </div>
+            ))}
+          </div>
+          <div class="provider-settings-actions">
+            <button type="button" onClick={() => this.applySettings()}>Apply</button>
+            <button type="button" onClick={() => this.cancelSettings()}>Cancel</button>
+          </div>
+        </div>
+        <div class="reactodia-container" hidden={this.settingsOpen} ref={(el) => (this.graphContainer = el)}></div>
+      </Host>
     );
+  }
+
+  /**
+   * Merges the edited texts over the defaults and rebuilds the diagram with a fresh
+   * data provider (the settings are bound at provider construction), resetting the canvas.
+   * The data provider concatenates `defaultPrefix` directly with each query template, so
+   * the trailing newline removed by the display trim has to be restored or the prefix
+   * block and the query glue together on one line.
+   */
+  private applySettings(): void {
+    this.providerSettings = {
+      ...defaultGraphDbSettings,
+      ...this.settingsText,
+      defaultPrefix: `${this.settingsText.defaultPrefix}\n`,
+    };
+    this.settingsOpen = false;
+    this.renderGraph();
+  }
+
+  /** Closes the panel, discarding edits by reverting to the settings currently in effect. */
+  private cancelSettings(): void {
+    this.settingsText = stringSettings(this.providerSettings);
+    this.settingsOpen = false;
   }
 
   private renderGraph(initialDiagram?: SerializedDiagram): void {
@@ -86,7 +181,7 @@ export class OntoReactodiaGraph {
       throw new Error('queryFunction is required');
     }
 
-    if (!this.hostElement) {
+    if (!this.graphContainer) {
       return;
     }
 
@@ -95,12 +190,13 @@ export class OntoReactodiaGraph {
       queryFunction: this.queryFunction,
       language: this.language,
       initialDiagram,
+      providerSettings: this.providerSettings,
     };
 
     if (this.reactRoot && !initialDiagram) {
       void updateReactodia(props);
     } else {
-      this.reactRoot = mountReactodia(this.hostElement, props);
+      this.reactRoot = mountReactodia(this.graphContainer, props);
     }
   }
 }
