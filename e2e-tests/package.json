@@ -1,6 +1,6 @@
 {
   "name": "graphdb-workbench-tests",
-  "version": "3.5.0-reactodia-poc-TR2",
+  "version": "3.5.0-reactodia-poc-TR3",
   "description": "Cypress tests for GraphDB workbench",
   "type": "module",
   "scripts": {
