@@ -1,7 +1,6 @@
 import {Component, h, Host, Prop, Watch, Element} from '@stencil/core';
 import {Root} from 'react-dom/client';
-import {SparqlQueryFunction} from '@reactodia/workspace';
-import {SerializedDiagram} from '@reactodia/workspace';
+import {SparqlQueryFunction, SerializedDiagram} from '@reactodia/workspace';
 import {exportReactodiaLayout, mountReactodia, unmountReactodia, updateReactodia} from './reactodia-app';
 
 /**
@@ -48,7 +47,6 @@ export class OntoReactodiaGraph {
   private reactRoot: Root;
 
   @Watch('currentRepository')
-  @Watch('queryFunction')
   onInputChange(): void {
     this.renderGraph();
   }
