@@ -41,7 +41,10 @@
         "prepare": "husky",
         "instrument:legacy-workbench": "npx nyc instrument --in-place --compact false --source-map --produce-source-map packages/legacy-workbench/src/js/angular",
         "watch:plugins": "nodemon --watch ../graphdb-workbench-plugins/dist --ext js,json --exec \"npm run copy-plugins\"",
-        "dev:with-plugins": "concurrently \"npm run start\" \"npm run watch:plugins\""
+        "dev:with-plugins": "concurrently \"npm run start\" \"npm run watch:plugins\"",
+        "link:styleguide": "node scripts/link-styleguide.js",
+        "unlink:styleguide": "node scripts/unlink-styleguide.js",
+        "dev:styleguide": "npm run link:styleguide && npm run start"
     },
     "files": [
         "dist/"
