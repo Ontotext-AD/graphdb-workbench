@@ -1,29 +1,31 @@
 import {EventDataType} from './event-data-type';
-import {OntotextYasguiEvent} from './ontotext-yasgui-event';
 import {QueryRequest} from '../query-request';
+import {CountQueryRequestEventPayload} from './event-payload';
 
 /**
  * Model for event of type {@link EventDataType.COUNT_QUERY} emitted by "ontotext-yasgui-web-component".
  */
 export class CountQueryRequestEvent {
   public type = EventDataType.COUNT_QUERY as const;
-  public query: string | undefined;
-  public queryMode: string | undefined;
-  public queryType: string | undefined;
-  public pageSize: number | undefined;
+  public query: string;
+  public queryMode: string;
+  public queryType: string;
+  public pageSize: number;
   public request: QueryRequest;
 
   /**
    * Constructs the model for {@link EventDataType.DOWNLOAD_AS} event.
    *
-   * @param eventData - event emitted by "ontotext-yasgui-web-component".
+   * @param eventPayload - event payload emitted by "ontotext-yasgui-web-component" when coun query is executed.
+   * The count query is executed to retrieve the total number of results when the actual result set contains more
+   * results than those currently displayed in YASR.
    */
-  constructor(eventData: OntotextYasguiEvent) {
-    this.query = eventData.detail.payload.query;
-    this.queryMode = eventData.detail.payload.queryMode;
-    this.queryType = eventData.detail.payload.queryType;
-    this.pageSize = eventData.detail.payload.pageSize;
-    this.request = eventData.detail.payload.request;
+  constructor(eventPayload: CountQueryRequestEventPayload) {
+    this.query = eventPayload.query;
+    this.queryMode = eventPayload.queryMode;
+    this.queryType = eventPayload.queryType;
+    this.pageSize = eventPayload.pageSize;
+    this.request = eventPayload.request;
   }
 
   setPageSize(pageSize?: string) {

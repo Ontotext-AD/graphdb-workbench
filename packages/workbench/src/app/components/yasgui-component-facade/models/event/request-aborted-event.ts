@@ -1,6 +1,6 @@
-import {OntotextYasguiEvent} from './ontotext-yasgui-event';
 import {RequestAbortedRequest} from '../request-aborted-request';
 import {EventDataType} from './event-data-type';
+import {RequestAbortedEventPayload} from './event-payload';
 
 /**
  * Model for event of type {@link EventDataType.REQUEST_ABORTED} emitted by "ontotext-yasgui-web-component".
@@ -13,11 +13,11 @@ export class RequestAbortedEvent {
   /**
    * Constructs the model for {@link EventDataType.REQUEST_ABORTED} event.
    *
-   * @param eventData - event emitted by "ontotext-yasgui-web-component".
+   * @param eventPayload - event payload emitted by "ontotext-yasgui-web-component" when the Abort query button is clicked.
    */
-  constructor(eventData: OntotextYasguiEvent) {
-    this.request = eventData.detail.payload.requestAbortedRequest!;
-    this.queryMode = eventData.detail.payload.queryMode;
+  constructor(eventPayload: RequestAbortedEventPayload) {
+    this.request = eventPayload.request;
+    this.queryMode = eventPayload.queryMode;
   }
 
   getQueryTrackAlias() {

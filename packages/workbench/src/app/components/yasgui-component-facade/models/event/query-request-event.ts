@@ -1,29 +1,30 @@
 import {EventDataType} from './event-data-type';
 import {QueryRequest} from '../query-request';
-import {OntotextYasguiEvent} from './ontotext-yasgui-event';
+import {QueryRequestEventPayload} from './event-payload';
 
 /**
  * Model for event of type {@link EventDataType.QUERY} emitted by "ontotext-yasgui-web-component".
  */
 export class QueryRequestEvent {
   public type = EventDataType.QUERY as const;
-  public query: string | undefined;
+  public query: string;
   public queryMode: string;
-  public queryType: string | undefined;
-  public pageSize: number | undefined;
+  public queryType: string;
+  public pageSize: number;
   public request: QueryRequest;
 
   /**
    * Constructs the model for {@link EventDataType.QUERY} event.
    *
-   * @param eventData - event emitted by "ontotext-yasgui-web-component".
+   * @param eventPayload - event payload emitted by "ontotext-yasgui-web-component" when a qeury is executed.
+   * Holds the request, which must be updated with additional information such as the repository ID and location.
    */
-  constructor(eventData: OntotextYasguiEvent) {
-    this.query = eventData.detail.payload.query;
-    this.queryMode = eventData.detail.payload.queryMode;
-    this.queryType = eventData.detail.payload.queryType;
-    this.pageSize = eventData.detail.payload.pageSize;
-    this.request = eventData.detail.payload.request;
+  constructor(eventPayload: QueryRequestEventPayload) {
+    this.query = eventPayload.query;
+    this.queryMode = eventPayload.queryMode;
+    this.queryType = eventPayload.queryType;
+    this.pageSize = eventPayload.pageSize;
+    this.request = eventPayload.request;
   }
 
   setPageSize(pageSize?: string) {
