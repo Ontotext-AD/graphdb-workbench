@@ -1,9 +1,9 @@
 @if (currentRepository() && language()) {
-  <onto-reactodia-graph
+  <graphwise-reactodia
     [queryFunction]="queryFunction"
     [currentRepository]="currentRepository()"
     [language]="language()">
-  </onto-reactodia-graph>
+  </graphwise-reactodia>
 } @else {
   <div>
     <p>No repository selected. Please select a repository to view the Reactodia graph.</p>

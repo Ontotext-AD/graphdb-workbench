@@ -2,7 +2,6 @@ import {HttpService} from '../../http/http.service';
 import {NamespacesResponse} from './response/namespaces-response';
 import {SparqlResultsResponse} from '../../../models/sparql';
 import {HttpResponse} from '../../../models/http';
-import {SparqlRequestOptions} from './request/sparql-request-options';
 
 /**
  * Service for interacting with the external RDF4J REST API.
@@ -102,22 +101,23 @@ export class Rdf4jRestService extends HttpService {
    * with the body left unparsed.
    *
    * Unlike {@link executeSparqlQuery}, the caller chooses the response format via the `accept`
-   * option (e.g. `application/sparql-results+json` for SELECT/ASK or `text/turtle` for
+   * option (e.g. `application/sparql-results+json` for SELECT/ASK or `application/rdf+json;` for
    * CONSTRUCT/DESCRIBE) and reads the raw payload from {@link HttpResponse.originalResponse}.
-   * This suits consumers that need the unparsed response, such as the Reactodia graph provider.
+   * This suits consumers that need the unparsed response, such as Reactodia.
    *
    * @param repositoryId - The ID of the repository to query.
    * @param query - The SPARQL query string.
-   * @param options - Request options; `accept` sets the desired response format.
+   * @param accept - Value for the `Accept` header, selecting the response format, e.g.
+   * `application/sparql-results+json` for SELECT/ASK or `application/rdf+json;` for CONSTRUCT/DESCRIBE.
    * @returns A promise resolving to the HTTP response.
    */
-  executeSparqlRequest(repositoryId: string, query: string, options: SparqlRequestOptions = {}): Promise<HttpResponse<string>> {
-    return this.post<string>(`${this.REPOSITORIES_ENDPOINT}/${repositoryId}`, {
+  executeSparqlRequest(repositoryId: string, query: string, accept = 'application/sparql-results+json'): Promise<HttpResponse> {
+    return this.post(`${this.REPOSITORIES_ENDPOINT}/${repositoryId}`, {
       responseType: 'response',
       body: new URLSearchParams({query}),
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
-        'Accept': options.accept ?? 'application/sparql-results+json',
+        'Accept': accept,
       }
     });
   }

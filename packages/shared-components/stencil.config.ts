@@ -1,14 +1,10 @@
 import { Config } from '@stencil/core';
 import {sass} from '@stencil/sass';
-import nodePolyfills from 'rollup-plugin-node-polyfills';
 
 const path = `${__dirname}/src/pages/fake-server.js`;
 
 export const config: Config = {
   namespace: 'shared-components',
-  // Runs once before any component loads; shims the Node `process` global that
-  // Reactodia's transitive deps (n3 / readable-stream) expect. See src/global/app.ts.
-  globalScript: 'src/global/app.ts',
   sourceMap: false,
   outputTargets: [
     {
@@ -51,13 +47,6 @@ export const config: Config = {
   plugins: [
     sass(),
   ],
-  // Reactodia pulls in node-oriented RDF tooling (n3 / readable-stream) that
-  // references the "buffer" and "stream" builtins. Polyfill them for the browser bundle.
-  rollupPlugins: {
-    after: [
-      nodePolyfills(),
-    ],
-  },
   devServer: {
     requestListenerPath: path
   },

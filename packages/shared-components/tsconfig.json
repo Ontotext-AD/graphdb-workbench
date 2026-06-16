@@ -6,7 +6,6 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "resolveJsonModule": true,
-    "skipLibCheck": true,
     "lib": [
       "dom",
       "es2017"
@@ -15,9 +14,6 @@
     "paths": {
       "@ontotext/workbench-api": [
         "../api/dist/ontotext-workbench-api.d.ts"
-      ],
-      "@reactodia/workspace/layout-sync": [
-        "node_modules/@reactodia/workspace/dist/typings/layout-sync.d.ts"
       ]
     },
     "moduleResolution": "node",
