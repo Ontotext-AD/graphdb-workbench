@@ -1,6 +1,6 @@
 import {EventDataType} from './event-data-type';
 import {NumericHolder, QueryResponse, QueryResponseData, TextArrayResponse} from '../query-response';
-import {OntotextYasguiEvent} from './ontotext-yasgui-event';
+import {CountQueryResponseEventPayload} from './event-payload';
 
 /**
  * Model for event of type {@link EventDataType.COUNT_QUERY_RESPONSE} emitted by "ontotext-yasgui-web-component".
@@ -12,10 +12,11 @@ export class CountQueryResponseEvent {
   /**
    * Constructs the model for {@link EventDataType.COUNT_QUERY_RESPONSE} event.
    *
-   * @param eventData - event emitted by "ontotext-yasgui-web-component".
+   * @param eventPayload - event payload emitted by "ontotext-yasgui-web-component" when a count query has been exected.
+   * It holds the response of the count query, which must be processed to extract the total number of results.
    */
-  constructor(eventData: OntotextYasguiEvent) {
-    this.response = eventData.detail.payload.response ?? {} as QueryResponse;
+  constructor(eventPayload: CountQueryResponseEventPayload) {
+    this.response = eventPayload.response ?? {} as QueryResponse;
   }
 
   hasResponse() {

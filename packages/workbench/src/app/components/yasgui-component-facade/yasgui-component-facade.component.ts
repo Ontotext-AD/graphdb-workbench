@@ -69,6 +69,13 @@ import {LoggerProvider} from '../../services/logger/logger-provider';
 import {DownloadSettingsDialogComponent} from '../download-settings-dialog/download-settings-dialog.component';
 import {DialogProviderService} from '../../services/dialog/dialog-provider.service';
 import {DownloadSettingsDialogFooterComponent} from '../download-settings-dialog/footer/download-settings-dialog-footer/download-settings-dialog-footer.component';
+import {
+  CountQueryRequestEventPayload,
+  CountQueryResponseEventPayload, DownloadAsEventPayload, NotificationMessageEventPayload,
+  QueryExecutedEventPayload, QueryRequestEventPayload,
+  RequestAbortedEventPayload,
+  SaveQueryOpenedEventPayload
+} from './models/event/event-payload';
 
 defineCustomElements();
 
@@ -364,7 +371,7 @@ export class YasguiComponentFacadeComponent implements OnInit, OnDestroy {
    * @param event The event payload containing the data of the saved query.
    */
   saveQueryOpened(event: Event) {
-    const saveQueryOpenedEvent = this.toYasguiOutputModel(event) as SaveQueryOpened;
+    const saveQueryOpenedEvent = this.toYasguiOutputModel(event as OntotextYasguiEvent) as SaveQueryOpened;
     YasguiComponentUtil.highlightTabName(saveQueryOpenedEvent.getTab());
   }
 
@@ -374,7 +381,7 @@ export class YasguiComponentFacadeComponent implements OnInit, OnDestroy {
    * @param event - the event fired from ontotext-yasgui component
    */
   output(event: Event) {
-    const outputModel = this.toYasguiOutputModel(event);
+    const outputModel = this.toYasguiOutputModel(event as OntotextYasguiEvent);
     const handlers = this.outputHandlers();
     this.callOutputEventHandler(handlers, outputModel.type, outputModel);
   }
@@ -731,12 +738,12 @@ export class YasguiComponentFacadeComponent implements OnInit, OnDestroy {
       this.getOntotextYasguiComponent().getEmbeddedResultAsJson()
         .then((response) => {
           const content = JSON.stringify(response, null, '\t');
-          FileUtils.downloadAsFile(`${this.getFileTimePrefix()}_queryResults.json`, downloadAsEvent.contentType!, content);
+          FileUtils.downloadAsFile(`${this.getFileTimePrefix()}_queryResults.json`, downloadAsEvent.contentType, content);
         });
     } else if ('text/csv' === downloadAsEvent.contentType) {
       this.getOntotextYasguiComponent().getEmbeddedResultAsCSV()
         .then((response) => {
-          FileUtils.downloadAsFile(`${this.getFileTimePrefix()}_queryResults.csv`, downloadAsEvent.contentType!, response as string);
+          FileUtils.downloadAsFile(`${this.getFileTimePrefix()}_queryResults.csv`, downloadAsEvent.contentType, response as string);
         });
     }
   }
@@ -747,10 +754,10 @@ export class YasguiComponentFacadeComponent implements OnInit, OnDestroy {
    * and other necessary data for the download.
    */
   private downloadThroughServer(downloadAsEvent: DownloadAsEvent) {
-    const query = downloadAsEvent.query!;
-    const infer = downloadAsEvent.infer!;
-    const sameAs = downloadAsEvent.sameAs!;
-    const accept = downloadAsEvent.contentType!;
+    const query = downloadAsEvent.query;
+    const infer = downloadAsEvent.infer;
+    const sameAs = downloadAsEvent.sameAs;
+    const accept = downloadAsEvent.contentType;
     const authToken = this.authenticationStorageService.getAuthToken().getValue()!;
 
     if (downloadAsEvent.contentType === 'application/ld+json' || downloadAsEvent.contentType === 'application/x-ld+ndjson') {
@@ -863,29 +870,28 @@ export class YasguiComponentFacadeComponent implements OnInit, OnDestroy {
     return url.toString();
   }
 
-  private toYasguiOutputModel(event: Event): YasguiOutputEvent {
-    const eventData = event as unknown as OntotextYasguiEvent;
-    switch (eventData.detail.TYPE) {
+  private toYasguiOutputModel(event: OntotextYasguiEvent): YasguiOutputEvent {
+    switch (event.detail.TYPE) {
     case EventDataType.DOWNLOAD_AS:
-      return new DownloadAsEvent(eventData);
+      return new DownloadAsEvent(event.detail.payload as DownloadAsEventPayload);
     case EventDataType.NOTIFICATION_MESSAGE:
-      return new NotificationMessageEvent(eventData);
+      return new NotificationMessageEvent(event.detail.payload as NotificationMessageEventPayload);
     case EventDataType.COUNT_QUERY:
-      return new CountQueryRequestEvent(eventData);
+      return new CountQueryRequestEvent(event.detail.payload as CountQueryRequestEventPayload);
     case EventDataType.COUNT_QUERY_RESPONSE:
-      return new CountQueryResponseEvent(eventData);
+      return new CountQueryResponseEvent(event.detail.payload as CountQueryResponseEventPayload);
     case EventDataType.QUERY:
-      return new QueryRequestEvent(eventData);
+      return new QueryRequestEvent(event.detail.payload as QueryRequestEventPayload);
     case EventDataType.QUERY_EXECUTED:
-      return new QueryExecutedEvent(eventData);
+      return new QueryExecutedEvent(event.detail.payload as QueryExecutedEventPayload);
     case EventDataType.SAVE_QUERY_OPENED:
-      return new SaveQueryOpened(eventData);
+      return new SaveQueryOpened(event.detail.payload as SaveQueryOpenedEventPayload);
     case EventDataType.REQUEST_ABORTED:
-      return new RequestAbortedEvent(eventData);
+      return new RequestAbortedEvent(event.detail.payload as RequestAbortedEventPayload);
     default: {
       // This branch should never be reached if EventDataType is exhaustive.
       // The cast to never forces a compile error if a new enum value is added without a matching case.
-      const unhandled = eventData.detail.TYPE;
+      const unhandled = event.detail.TYPE;
       throw new Error(`Unhandled yasgui event type: ${unhandled}`);
     }
     }

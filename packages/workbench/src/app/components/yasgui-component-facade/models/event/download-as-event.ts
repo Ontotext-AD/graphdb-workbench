@@ -1,27 +1,27 @@
 import {EventDataType} from './event-data-type';
-import {OntotextYasguiEvent} from './ontotext-yasgui-event';
+import {DownloadAsEventPayload} from './event-payload';
 
 /**
  * Model for event of type {@link EventDataType.DOWNLOAD_AS} emitted by "ontotext-yasgui-web-component".
  */
 export class DownloadAsEvent {
   public readonly type = EventDataType.DOWNLOAD_AS as const;
-  public contentType: string | undefined;
-  public pluginName: string | undefined;
-  public query: string | undefined;
-  public infer: boolean | undefined;
-  public sameAs: boolean | undefined;
+  public contentType: string;
+  public pluginName: string;
+  public query: string;
+  public infer: boolean;
+  public sameAs: boolean;
 
   /**
    * Constructs the model for {@link EventDataType.DOWNLOAD_AS} event.
    *
-   * @param eventData - event emitted by "ontotext-yasgui-web-component".
+   * @param eventPayload - event payload emitted by "ontotext-yasgui-web-component" when the DownloadAs button is clicked.
    */
-  constructor(eventData: OntotextYasguiEvent) {
-    this.contentType = eventData.detail.payload.value;
-    this.pluginName = eventData.detail.payload.pluginName;
-    this.query = eventData.detail.payload.query;
-    this.infer = eventData.detail.payload.infer;
-    this.sameAs = eventData.detail.payload.sameAs;
+  constructor(eventPayload: DownloadAsEventPayload) {
+    this.contentType = eventPayload.value;
+    this.pluginName = eventPayload.pluginName;
+    this.query = eventPayload.query;
+    this.infer = eventPayload.infer;
+    this.sameAs = eventPayload.sameAs;
   }
 }

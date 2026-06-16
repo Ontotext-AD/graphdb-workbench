@@ -1,23 +1,23 @@
 import {EventDataType} from './event-data-type';
-import {OntotextYasguiEvent} from './ontotext-yasgui-event';
+import {NotificationMessageEventPayload} from './event-payload';
 
 /**
  * Model for event of type {@link EventDataType.NOTIFICATION_MESSAGE} emitted by "ontotext-yasgui-web-component".
  */
 export class NotificationMessageEvent {
   public type = EventDataType.NOTIFICATION_MESSAGE as const;
-  public message: string | undefined;
-  public code: string | undefined;
-  public messageType: string | undefined;
+  public message: string;
+  public code: string;
+  public messageType: string;
 
   /**
    * Constructs the model for {@link EventDataType.NOTIFICATION_MESSAGE} event.
    *
-   * @param eventData - event emitted by "ontotext-yasgui-web-component".
+   * @param eventPayload - event payload emitted by "ontotext-yasgui-web-component" when a notification message is need to be displayed.
    */
-  constructor(eventData: OntotextYasguiEvent) {
-    this.message = eventData.detail.payload.message;
-    this.code = eventData.detail.payload.code;
-    this.messageType = eventData.detail.payload.messageType;
+  constructor(eventPayload: NotificationMessageEventPayload) {
+    this.message = eventPayload.message;
+    this.code = eventPayload.code;
+    this.messageType = eventPayload.messageType;
   }
 }
