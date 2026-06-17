@@ -139,7 +139,7 @@ export class UriUtil {
    * const docUrl = UriUtil.resolveDocumentationUrl('10.0.0', 'sparql-endpoint');
    * // Returns: 'https://graphdb.ontotext.com/documentation/10.0.0/sparql-endpoint'
    */
-  static resolveDocumentationUrl(productVersion: string, endpointPath: string): string {
+  static resolveDocumentationUrl(productVersion?: string, endpointPath?: string): string {
     if (!productVersion || !endpointPath) {
       throw new Error('Product version and endpoint path are required for documentation URL resolution.');
     }

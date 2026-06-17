@@ -79,6 +79,32 @@ describe('GuideApi', () => {
       expect(result).toBe('');
       expect(warnSpy).toHaveBeenCalledWith('Missing translation for language [de] in message object');
     });
+
+    test('should apply parameters when key is a per-language object', () => {
+      const key = {language: 'test', 'en': 'Hello {{name}}'};
+      expect(guideApi.translate(undefined, key, {name: 'Alice'})).toBe('Hello Alice');
+    });
+
+    test('should resolve translation from a language-keyed nested bundle', () => {
+      const bundle = {language: 'root', en: {language: 'en', greeting: 'Hello'}};
+      expect(guideApi.translate(bundle, 'greeting')).toBe('Hello');
+    });
+
+    test('should fall back to the default context bundle when language bundle is not available', () => {
+      jest.spyOn(languageContextService, 'getDefaultBundle').mockReturnValue({language: 'en', 'default-only-key': 'Default only'});
+
+      expect(guideApi.translate(undefined, 'default-only-key')).toBe('Default only');
+    });
+
+    test('should warn with a styled message and return the key when no bundle is available at all', () => {
+      const warnSpy = jest.spyOn(logger, 'warn');
+      // beforeEach already mocks getLanguageBundle and getDefaultBundle to return undefined
+
+      const result = guideApi.translate(undefined, 'missing-key');
+
+      expect(result).toBe('missing-key');
+      expect(warnSpy).toHaveBeenCalledWith('Translation bundle is not provided for translation key: "missing-key"');
+    });
   });
 
   describe('applyParameters', () => {

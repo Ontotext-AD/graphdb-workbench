@@ -19,7 +19,7 @@ export interface GuideStep {
   scrollToHandler?: () => void;
   stepN?: number;
   stepsTotalN?: number;
-  content?: string;
+  content?: string | Record<string, string>;
   extraContent?: string;
   extraContentClass?: string;
   elementSelector?: string | (() => string);
@@ -31,7 +31,7 @@ export interface GuideStep {
   canBePaused?: boolean;
   forceReload?: boolean;
   skipPoint?: boolean;
-  skipButtonLabel?: string;
+  skipButtonLabel?: string | Record<string, string>;
   skipFromHistory?: boolean;
   disablePreviousFlow?: boolean;
   disableNextFlow?: boolean;

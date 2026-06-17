@@ -11,7 +11,7 @@
         "install:ci": "sh scripts/install.sh && sh scripts/postinstall.sh",
         "install:local": "sh scripts/install-local.sh && sh scripts/postinstall.sh",
         "prebuild": "npm run license-report-api && npm run license-report-root-config && npm run license-report-legacy-workbench && npm run license-report-shared-components && npm run license-report-workbench",
-        "build": "npm run build-dev",
+        "build": "sh scripts/build.sh",
         "postbuild": "webpack --env BUILD_MODE=production --config=webpack.config.prod.js",
         "build-dev": "sh scripts/build.sh",
         "postbuild-dev": "webpack --env BUILD_MODE=development --config=webpack.config.dev.js",
@@ -114,7 +114,7 @@
     "resolutions": {},
     "dependencies": {
         "@single-spa/import-map-injector": "^2.0.2",
-        "graphdb-workbench-plugins": "^0.0.1-TR33",
+        "graphdb-workbench-plugins": "^0.0.1-TR35",
         "import-map-overrides": "^6.1.0"
     }
 }
