@@ -12,7 +12,7 @@ import {OpenidTokenUtils} from './openid-token-utils';
 import {OpenIdUtils} from './openid-utils';
 import {AuthenticationStorageService} from '../authentication-storage.service';
 import {EventService} from '../../../event-service';
-import {Logout} from '../../../../models/events';
+import {LoggedOut} from '../../../../models/events/auth/logged-out';
 import {OpenIdError} from '../errors/openid/openid-error';
 import {WindowService} from '../../../window';
 import {MissingOpenidConfiguration} from '../errors/openid/missing-openid-configuration';
@@ -92,7 +92,7 @@ export class OpenIdService implements Service {
       notify(notification);
 
       this.softLogout();
-      service(EventService).emit(new Logout());
+      service(EventService).emit(new LoggedOut());
     }
   }
 

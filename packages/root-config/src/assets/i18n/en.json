@@ -13,5 +13,6 @@
   "guide.step-type.info": "This step provides some information. No action required other than clicking the Next button.",
   "guide.step-type.mouse": "This step expects user action with the mouse, typically clicking on something.",
   "guide.step-type.input": "This step expects user input, typically typing or pasting a piece of text.",
-  "guides.error.guide-not-found": "The requested guide could not be found."
+  "guides.error.guide-not-found": "The requested guide could not be found.",
+  "logout.success": "Signed out"
 }
