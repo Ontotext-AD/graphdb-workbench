@@ -431,6 +431,7 @@ npm run start
 - `webpack.config.dev.js`
 - `webpack.config.prod.js`
 
+## Definition of done for typical changes
 
 A change is usually complete when:
 
