@@ -73,6 +73,12 @@ export class YasguiComponentUtil {
     });
   };
 
+  static async setQuery(directiveSelector: string, query: string): Promise<YasguiComponent> {
+    const yasguiComponent = await YasguiComponentUtil.getOntotextYasguiElementAsync(directiveSelector);
+    await yasguiComponent.setQuery(query);
+    return yasguiComponent;
+  };
+
   // /**
   //  * Executes a <code>query</code>
   //  * @param {string} directiveSelector

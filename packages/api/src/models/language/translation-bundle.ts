@@ -1,4 +1,4 @@
 export type TranslationBundle = {
-  language: string;
-  [key: string]: string | TranslationBundle;
+  language: string | undefined;
+  [key: string]: string | TranslationBundle | undefined;
 }
