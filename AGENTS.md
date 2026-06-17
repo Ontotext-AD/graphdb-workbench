@@ -56,9 +56,36 @@ What this does at a high level:
 - starts `packages/workbench`
 - serves the root config on port `9000`
 
+Package dev ports:
+
+- root config: `9000`
+- `packages/workbench`: `9002`
+- `packages/api`: `9003`
+
 The dev server proxies requests to a GraphDB instance expected at:
 
 - `http://localhost:7200`
+
+#### Additional dev commands
+
+Develop with external plugins watched and hot-copied:
+
+```bash
+npm run dev:with-plugins
+```
+
+Develop with a locally linked `graphwise-styleguide` package:
+
+```bash
+npm run dev:styleguide
+```
+
+Link/unlink the styleguide package individually:
+
+```bash
+npm run link:styleguide
+npm run unlink:styleguide
+```
 
 ### Build
 
@@ -100,7 +127,7 @@ npm run test:coverage
 
 Refer to `e2e-tests/package.json` for Cypress-specific commands, such as:
 
-```bashbash
+```bash
 npm run cypress:open
 npm run cypress:run
 npm run cy:run:partial
@@ -118,6 +145,16 @@ Important implications:
 - Shared cross-package logic should generally go into `packages/api` or `packages/shared-components`, not duplicated locally.
 - Bootstrap/application wiring usually lives in `packages/root-config`.
 
+#### Package frameworks at a glance
+
+| Package | Framework |
+|---|---|
+| `packages/workbench` | Angular 21 (standalone components, signals) |
+| `packages/shared-components` | Stencil.js (compiled Web Components, TSX) |
+| `packages/legacy-workbench` | AngularJS |
+| `packages/api` | Framework-agnostic TypeScript |
+| `packages/root-config` | single-spa + TypeScript |
+
 ### API package import rule
 
 From `docs/developers-guide.md`:
@@ -127,6 +164,24 @@ Everything in the API package must be imported via:
 - `@ontotext/workbench-api`
 
 Do **not** import API package internals via relative or absolute filesystem paths across packages.
+
+### ServiceProvider and `service()` helper
+
+API services are singletons shared across all micro-frontends via `ServiceProvider`:
+
+```typescript
+import { ServiceProvider, RepositoryContextService } from '@ontotext/workbench-api';
+const repoService = ServiceProvider.get(RepositoryContextService);
+```
+
+A convenience alias `service()` is also exported:
+
+```typescript
+import { service, RepositoryContextService } from '@ontotext/workbench-api';
+const repoService = service(RepositoryContextService);
+```
+
+Use `ServiceProvider.get()` / `service()` for API-layer services in all packages (including Stencil components, root-config bootstrap code, and Angular components when Angular DI is unavailable). For Angular services injected through Angular's DI system (`@Injectable`), use `inject()` as normal.
 
 ### Legacy vs modern code
 
@@ -146,6 +201,43 @@ When implementing new pages or changing existing pages in `packages/workbench`:
 - prefer PrimeNG components over custom UI implementations where practical
 - follow existing PrimeNG usage patterns already present in the workbench codebase
 - only introduce custom controls when there is no suitable PrimeNG component or when the design/system integration clearly requires it
+
+All components in `packages/workbench` use the Angular **standalone component** pattern (`standalone: true`) and Angular **signals** for reactive state (`signal()`, `computed()`). Services are injected via `inject()` (Angular DI) or `service()` (for API-layer singletons). Do not use `NgModule` declarations.
+
+PrimeNG is configured with token prefix `gw` (see `packages/workbench/src/app/app.config.ts`), so generated CSS custom properties for PrimeNG tokens also use the `--gw-*` prefix.
+
+#### Dialogs (PrimeNG DynamicDialog)
+
+Use `DialogProviderService` (`packages/workbench/src/app/services/dialog/dialog-provider.service.ts`) to open dialogs imperatively. Do not call PrimeNG `DialogService` directly. The service wraps all dialogs with the `onto-dialog` CSS class.
+
+#### Permission-based rendering
+
+Use the `*appRestrictAccess` structural directive (`packages/workbench/src/app/directives/restrict-access.directive.ts`) to conditionally show or hide elements based on the authenticated user's rights:
+
+```html
+<div *appRestrictAccess="['isAdmin', 'canWriteActiveRepo']; else noAccess">...</div>
+<ng-template #noAccess>...</ng-template>
+```
+
+Available permissions are defined in the `ViewPermissions` enum in the same file.
+
+#### Unsaved changes
+
+Register unsaved-changes callbacks via `UnsavedChangesService.register(callback)` (`packages/workbench/src/app/services/unsaved-changes/unsaved-changes.service.ts`). The returned `Subscription` unregisters the callback when called.
+
+### Shared components (Stencil.js)
+
+`packages/shared-components` is a **Stencil.js** Web Component library. Components:
+
+- are implemented in `.tsx` files using JSX-based `render()` methods
+- use `@Component({ tag: 'onto-*' })` for custom element registration (all tags prefixed `onto-`)
+- use `@State()` for reactive internal state and `@Prop()` for inputs
+- consume API services exclusively via `ServiceProvider.get(ServiceClass)` (no Angular DI)
+- use `SubscriptionList` for managing subscription cleanup in `connectedCallback`/`disconnectedCallback`
+
+Example: `packages/shared-components/src/components/onto-header/onto-header.tsx`
+
+When adding new Stencil components, run `npm run generate` inside `packages/shared-components`.
 
 ### Design tokens and theming
 
@@ -193,7 +285,7 @@ Translations are merged from module-local `src/assets/i18n/*.json` files into bu
 
 When adding or changing translations:
 
-- keep translations under each package’s `src/assets/i18n`
+- keep translations under each package's `src/assets/i18n`
 - avoid duplicate keys across modules for the same language
 - run:
 
@@ -205,6 +297,26 @@ If translation validation fails, inspect the generated:
 
 - `translation-report.json`
 
+### Transloco in `packages/workbench`
+
+The modern Angular workbench uses `@jsverse/transloco` for runtime translations. Translation bundles are loaded from the API layer via `LanguageContextService` and fed to Transloco's `TranslocoService` at bootstrap (see `packages/workbench/src/app/bootstrap/transloco/transloco-bootstrap.ts`).
+
+In templates, use the `TranslocoPipe`:
+
+```html
+{{ 'some.key' | transloco }}
+```
+
+In unit tests, use the provided helper instead of configuring Transloco manually:
+
+```typescript
+import { provideTranslocoForTesting } from '../../../testing-utils/transloco-utils';
+// In TestBed.configureTestingModule:
+imports: [provideTranslocoForTesting()]
+```
+
+The `provideTranslocoForTesting()` function stubs Transloco with the preloaded English (`en.json`) bundle.
+
 ## HTTP interceptors
 
 The app supports request/response interceptor chains in the API layer.
@@ -212,7 +324,7 @@ The app supports request/response interceptor chains in the API layer.
 Relevant locations are documented in `docs/developers-guide.md`, especially around:
 
 - `packages/api/src/services/interceptor/...`
-- `packages/root-config/src/bootstrap/interceptors/interceptors-registration.js`
+- `packages/root-config/src/bootstrap/interceptors/interceptors-registration.ts`
 
 When adding request/response preprocessing behavior:
 
@@ -227,6 +339,20 @@ When adding logging:
 
 - use the shared logging abstractions instead of ad hoc `console.*` when appropriate
 - follow the logger service / logger type conventions documented in `docs/developers-guide.md`
+
+Each package defines a local `LoggerProvider` class that wraps `Loggers.getLoggerInstance(MODULE_NAME)` from `@ontotext/workbench-api`. Follow this pattern when adding logging to a package:
+
+```typescript
+import { Loggers } from '@ontotext/workbench-api';
+const MODULE_NAME = 'MyPackage';
+export class LoggerProvider {
+  static get logger() {
+    return Loggers.getLoggerInstance(MODULE_NAME);
+  }
+}
+```
+
+Examples: `packages/root-config/src/services/logger-provider.ts`, `packages/workbench/src/app/services/logger/logger-provider.ts`.
 
 ## Bundling/build notes
 
@@ -290,6 +416,7 @@ npm run start
 - Some documentation references older Node versions in CI docs, but the root `package.json` currently requires Node `>=22.17`. Prefer the root `package.json` as the source of truth for local development unless the task specifically concerns CI.
 - The dev environment expects GraphDB to be available locally, typically at `localhost:7200`.
 - The root dev server serves on port `9000`.
+- Pre-commit hooks (Husky + lint-staged) run ESLint and Stylelint on staged files automatically. If a commit is blocked by lint errors, run `npm run lint` to identify them. Each package has its own `eslint.config.js`; shared base configs are at `eslint.config.base.js` and `stylelint.config.base.cjs` in the repo root.
 
 ## Useful files
 
@@ -304,7 +431,6 @@ npm run start
 - `webpack.config.dev.js`
 - `webpack.config.prod.js`
 
-## Definition of done for typical changes
 
 A change is usually complete when:
 
