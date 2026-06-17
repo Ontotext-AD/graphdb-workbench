@@ -133,6 +133,10 @@ describe('Cookie policy', () => {
         cy.reload();
         // Then I expect the banner to be hidden
         CookieConsentBannerSteps.getCookieConsentBanner().should('not.exist');
+        // Wait for the page to be fully loaded.
+        // Cypress executes actions very quickly, and without this wait the logout subscribers may not be registered yet.
+        // As a result, the logout event is not handled correctly and the logout operation may fail.
+        SettingsSteps.getCookiePolicyButton().should('be.visible');
         // When I logout
         LoginSteps.logout();
         // Then I should see the login page

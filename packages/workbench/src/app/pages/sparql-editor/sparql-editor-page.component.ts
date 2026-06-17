@@ -23,9 +23,7 @@ import {
   MonitoringService,
   NamespaceMap,
   NamespacesService,
-  navigateTo,
   openInNewTab,
-  NavigationStartPayload,
   OntoToastrService,
   ParentWindowMessageService,
   Rdf4jRepositoryService,
@@ -57,7 +55,6 @@ import {YasguiComponent} from '../../components/yasgui-component-facade/models/y
 import {ConnectorCommand} from '../../models/connectors/connector-command';
 import {mapSavedQueryToTabQueryModel} from './mappers/saved-query-to-tab-query-model.mapper';
 import {OngoingRequestsInfo} from '../../components/yasgui-component-facade/models/ongoing-requests-info';
-import {CancelAbortingQuery} from './error/cancel-abort-query';
 import {DialogProviderService} from '../../services/dialog/dialog-provider.service';
 import {DynamicDialogRef} from 'primeng/dynamicdialog';
 import {ConnectorProgressDialogComponent} from '../../components/connector-progress/connector-progress-dialog.component';
@@ -167,8 +164,6 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
   private isExternalClickHandlerOperationEnabled = false;
   private selectedPlugin?: string;
   private readonly boundBeforeunloadHandler = () => this.beforeunloadHandler();
-  private initialRepositoryChange = true;
-  private skipLocationChangeHandler = false;
 
   // ================================
   // Public variables
@@ -180,28 +175,6 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.subscribeHandlers();
     window.addEventListener('beforeunload', this.boundBeforeunloadHandler);
-  }
-
-  private subscribeHandlers() {
-    this.subscriptions.addAll([
-      this.repositoryContextService.onSelectedRepositoryChanged((repositoryReference) => this.repositoryChangedHandler(repositoryReference), () => this.repositoryBeforeChangeHandler()),
-      this.languageContextService.onSelectedLanguageChanged(() => this.onLanguageChangeHandler(), () => this.onBeforeLanguageChange(), true),
-      this.eventService.subscribe(EventName.NAVIGATION_START, (eventPayload: NavigationStartPayload) => this.locationChangeHandler(eventPayload)),
-    ]);
-  }
-
-  private onLanguageChangeHandler() {
-    // The page needs to be reloaded, because of the Google charts and Pivot table scripts. When the language is
-    // changed, the correct language for these components is loaded only on the page reload, but we can't be sure
-    // that the user will reload the page by themselves, so we need to do it programmatically. We can't just change
-    // the src of the existing script, because these components don't react to it, so we need to reload the whole page.
-    WindowService.reloadPage();
-  }
-
-  private onBeforeLanguageChange() {
-    return new Promise<boolean>((resolve) => {
-      this.confirmAbortQueries('sparql_editor.confirmation.on_language_change', () => resolve(true), () => resolve(false), true);
-    });
   }
 
   /**
@@ -608,28 +581,6 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
     this.sparqlStorageService.setLastUsedRepository(repositoryId);
   }
 
-  private repositoryBeforeChangeHandler(): Promise<boolean> {
-    return new Promise((resolve) => {
-      this.confirmAbortQueries('sparql_editor.confirmation.on_repository_change', () => resolve(true), () => resolve(false));
-    });
-  }
-
-  private repositoryChangedHandler(repositoryReference: RepositoryReference | undefined) {
-    if (!repositoryReference) {
-      return;
-    }
-    this.activeRepositoryReference = repositoryReference;
-    this.isOntopRepo = this.repositoryContextService.isActiveRepoOntopType();
-    const lastUsedRepositoryId = this.sparqlStorageService.getLastUsedRepository();
-    this.skipLocationChangeHandler = !this.initialRepositoryChange;
-    if (lastUsedRepositoryId === this.activeRepositoryReference.id) {
-      this.init(false);
-    } else {
-      this.init(true);
-      this.persistLastUsedRepository(this.activeRepositoryReference.id);
-    }
-  }
-
   private beforeunloadHandler() {
     const ontotextYasguiElement = YasguiComponentUtil.getOntotextYasguiElement(this.QUERY_EDITOR_ID);
     if (!ontotextYasguiElement) {
@@ -641,71 +592,6 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
     ontotextYasguiElement.abortAllRequests().then(() => {
       // After all requests are aborted, we can allow the page to be unloaded without prompting the user for confirmation.
     });
-  }
-
-  private confirmIfHaveRunQuery(messageKey: string, ongoingRequestsInfo: OngoingRequestsInfo, alwaysShowConfirm = false): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-      if (!alwaysShowConfirm && (!ongoingRequestsInfo || ongoingRequestsInfo.queriesCount < 1 && ongoingRequestsInfo.updatesCount < 1)) {
-        resolve(false);
-        return;
-      }
-
-      this.confirmationProviderService.confirm({
-
-        header: this.translocoService.translate(`${messageKey}.title`),
-        message: this.getExitPageConfirmMessage(messageKey, ongoingRequestsInfo),
-        target: event!.target as EventTarget,
-        acceptHandler: () => {
-          resolve(true);
-        },
-        rejectHandler: () => {
-          reject(new CancelAbortingQuery());
-        }
-      });
-    });
-  }
-
-  locationChangeHandler(eventPayload: NavigationStartPayload) {
-    if (this.internallyReloaded || this.skipLocationChangeHandler) {
-      this.internallyReloaded = false;
-      this.skipLocationChangeHandler = false;
-      return;
-    }
-
-    const url = new URL(eventPayload.newUrl!);
-    const newUrl = url.pathname + url.search + url.hash;
-    eventPayload.cancelNavigation(true);
-    const handler = () => {
-      this.skipLocationChangeHandler = true;
-      // Use setTimeout to ensure that the navigation is triggered after the current call stack is cleared.
-      setTimeout(() => {
-        navigateTo(newUrl)();
-      });
-    };
-    this.confirmAbortQueries('sparql_editor.confirmation.on_page_leave', handler, handler);
-  }
-
-  private confirmAbortQueries(messageKey: string, successCallback: () => void, errorCallback: () => void, alwaysShowConfirm = false) {
-    const ontotextYasguiElement = YasguiComponentUtil.getOntotextYasguiElement(this.QUERY_EDITOR_ID);
-    if (!ontotextYasguiElement) {
-      successCallback();
-      return;
-    }
-
-    // First, we check if there are any ongoing requests initiated by the user.
-    // If the user has ongoing requests, we request confirmation to abort them.
-    // If the user confirms or there are no ongoing requests, we call the "abortAllRequests" method. This method will abort all requests.
-    ontotextYasguiElement
-      .getOngoingRequestsInfo()
-      .then((hasRunQuery) => this.confirmIfHaveRunQuery(messageKey, hasRunQuery, alwaysShowConfirm))
-      .then(() => ontotextYasguiElement.abortAllRequests())
-      .then(() => successCallback())
-      .catch((error) => {
-        if (!(error instanceof CancelAbortingQuery)) {
-          this.logger.error(error);
-          errorCallback();
-        }
-      });
   }
 
   /**
@@ -752,7 +638,157 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
         this.updateConfig(clearYasguiState);
         this.initViewFromUrlParams(clearYasguiState);
       });
-    this.initialRepositoryChange = false;
+  }
+
+  private subscribeHandlers() {
+    this.subscriptions.addAll([
+      this.repositoryContextService.onSelectedRepositoryChanged((repositoryReference) => this.repositoryChangedHandler(repositoryReference), () => this.shouldAllowRepositoryChanged()),
+      this.languageContextService.onSelectedLanguageChanged(() => this.onLanguageChangeHandler(), () => this.shouldAllowLanguageChanged(), true),
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      this.eventService.subscribe(EventName.NAVIGATION_START, () => ()=> {}, () => this.shouldCancelNavigationOnLocationChange()),
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      this.eventService.subscribe(EventName.LOGOUT, ()=> {}, () => this.shouldCancelNavigationOnLogout()),
+    ]);
+  }
+
+  /**
+   * Determines whether a repository change should be allowed to proceed.
+   *
+   * Prompts the user for confirmation before switching repositories. If the user confirms, any running queries are aborted
+   * and the repository change is allowed.
+   *
+   * If the user does not confirm, or if aborting the running queries fails, the repository change is not allowed.
+   *
+   * @returns A promise that resolves to
+   *    <code>true</code> if the repository changeshould be allowed, or
+   *    <code>false</code> otherwise.
+   */
+  private shouldAllowRepositoryChanged(): Promise<boolean> {
+    return new Promise<boolean>((resolveAllowRepositoryChange) => {
+      this.confirmAndAbortRunningQueries('sparql_editor.confirmation.on_repository_change', (confirmed) => resolveAllowRepositoryChange(confirmed), () => resolveAllowRepositoryChange(false));
+    });
+  }
+
+  private repositoryChangedHandler(repositoryReference: RepositoryReference | undefined) {
+    if (!repositoryReference) {
+      return;
+    }
+    this.activeRepositoryReference = repositoryReference;
+    this.isOntopRepo = this.repositoryContextService.isActiveRepoOntopType();
+    const lastUsedRepositoryId = this.sparqlStorageService.getLastUsedRepository();
+    if (lastUsedRepositoryId === this.activeRepositoryReference.id) {
+      this.init(false);
+    } else {
+      this.init(true);
+      this.persistLastUsedRepository(this.activeRepositoryReference.id);
+    }
+  }
+
+  /**
+   * Determines whether a language change should be allowed to proceed.
+   *
+   * Always prompts the user for confirmation before changing the language, regardless of whether there are running queries.
+   * If the user confirms, any running queries are aborted and the language change is allowed.
+   *
+   * If the user does not confirm, or aborting the running queries fails, the language change is not allowed.
+   *
+   * @returns A promise that resolves to <code>true</code> if the language change
+   * should be allowed, or <code>false</code> otherwise.
+   */
+  private shouldAllowLanguageChanged(): Promise<boolean> {
+    return new Promise<boolean>((resolveAllowLanguageChanged) => {
+      this.confirmAndAbortRunningQueries('sparql_editor.confirmation.on_language_change', (confirmed) => resolveAllowLanguageChanged(confirmed), () => resolveAllowLanguageChanged(false), true);
+    });
+  }
+
+  private onLanguageChangeHandler() {
+    // The page needs to be reloaded, because of the Google charts and Pivot table scripts. When the language is
+    // changed, the correct language for these components is loaded only on the page reload, but we can't be sure
+    // that the user will reload the page by themselves, so we need to do it programmatically. We can't just change
+    // the src of the existing script, because these components don't react to it, so we need to reload the whole page.
+    WindowService.reloadPage();
+  }
+
+  /**
+   * Determines whether navigation triggered by a location change should be canceled.
+   *
+   * If the navigation was triggered internally (a reload initiated by the application itself),
+   * it is always allowed to proceed and the internal-reload flags are reset.
+   *
+   * Otherwise, prompts the user for confirmation before leaving the page. If the user confirms,
+   * any running queries are aborted, navigation is allowed to proceed,
+   * and subsequent location-change handling is skipped.
+   * If the user does not confirm, or if aborting the running queries fails, navigation is canceled.
+   *
+   * @returns A promise that resolves to
+   *    <code>true</code> if navigation should be canceled, or
+   *    <code>false</code> if navigation may proceed.
+   */
+  private shouldCancelNavigationOnLocationChange(): Promise<boolean> {
+    if (this.internallyReloaded) {
+      this.internallyReloaded = false;
+      return Promise.resolve(false);
+    }
+
+    return new Promise<boolean>((resolveCancelNavigation) => {
+      this.confirmAndAbortRunningQueries('sparql_editor.confirmation.on_page_leave', (confirmed) => resolveCancelNavigation(!confirmed), () => resolveCancelNavigation(true));
+    });
+  };
+
+  /**
+   * Determines whether navigation away from the current page should be canceled, based on the user's confirmation
+   * and the outcome of aborting any running queries.
+   *
+   * Prompts the user for confirmation before leaving the page. If the user confirms, any running queries are aborted
+   * and navigation is allowed to proceed. If the user does not confirm, or if aborting the running queries fails,
+   * navigation is canceled.
+   *
+   * @returns A promise that resolves to
+   *    <code>true</code> if navigation should be canceled,or
+   *    <code>false</code> if the user confirmed and navigation may proceed.
+   */
+  private shouldCancelNavigationOnLogout(): Promise<boolean> {
+    return new Promise<boolean>((resolveCancelNavigation) => {
+      this.confirmAndAbortRunningQueries('sparql_editor.confirmation.on_page_leave', (confirmed) => resolveCancelNavigation(!confirmed), () => resolveCancelNavigation(true));
+    });
+  }
+
+  private confirmAndAbortRunningQueries(messageKey: string, onDecisionCallback: (confirm: boolean) => void, errorCallback: (error: Error) => void, alwaysShowConfirm = false) {
+    const ontotextYasguiElement = YasguiComponentUtil.getOntotextYasguiElement(this.QUERY_EDITOR_ID);
+    if (!ontotextYasguiElement) {
+      onDecisionCallback(true);
+      return;
+    }
+
+    // First, we check if there are any ongoing requests initiated by the user.
+    // If the user has ongoing requests, we request confirmation to abort them.
+    // If the user confirms or there are no ongoing requests, we call the "abortAllRequests" method. This method will abort all requests.
+    ontotextYasguiElement
+      .getOngoingRequestsInfo()
+      .then((hasRunQuery) => this.confirmIfHaveRunQueryNew(messageKey, hasRunQuery, alwaysShowConfirm))
+      .then((confirm) => confirm ? ontotextYasguiElement.abortAllRequests().then(() => confirm) : confirm)
+      .then((confirm) => onDecisionCallback(confirm))
+      .catch((error: Error) => errorCallback(error));
+  }
+
+  private confirmIfHaveRunQueryNew(messageKey: string, ongoingRequestsInfo: OngoingRequestsInfo, alwaysShowConfirm = false): Promise<boolean> {
+    return new Promise((resolve) => {
+      if (!alwaysShowConfirm && (!ongoingRequestsInfo || ongoingRequestsInfo.queriesCount < 1 && ongoingRequestsInfo.updatesCount < 1)) {
+        resolve(true);
+        return;
+      }
+
+      this.confirmationProviderService.confirm({
+        header: this.translocoService.translate(`${messageKey}.title`),
+        message: this.getExitPageConfirmMessage(messageKey, ongoingRequestsInfo),
+        target: event!.target as EventTarget,
+        acceptHandler: () => resolve(true),
+        rejectHandler: () => {
+          this.logger.warn('Cancel Aborting Query');
+          resolve(false);
+        }
+      });
+    });
   }
 
   ngOnDestroy(): void {

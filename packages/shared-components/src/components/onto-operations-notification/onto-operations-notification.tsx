@@ -3,7 +3,7 @@ import {
   OperationGroup,
   OperationStatus,
   OperationStatusSummary,
-  OperationGroupSummaryList, navigateTo
+  OperationGroupSummaryList,
 } from '@ontotext/workbench-api';
 
 const operationGroupToIcon = {
@@ -74,7 +74,7 @@ export class OntoOperationsNotification {
                   <li key={operation.id}>
                     <a class={`operation-status-content onto-btn no-underline ${operationStatusToWarningClass[operation.status]}`}
                       target="_blank"
-                      onClick={navigateTo(operation.href)}>
+                      href={operation.href}>
                       <i class={operationGroupToIcon[operation.group]}></i>
                       <span class="operation-status-label">
                         <translate-label

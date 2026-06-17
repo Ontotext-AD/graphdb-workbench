@@ -7,3 +7,4 @@ export {BuildUtil} from './build-util';
 export * from './enum-util';
 export {DateUtil} from './date-util';
 export {HtmlUtil} from './html-util';
+export {TranslationUtil} from './translation-util';

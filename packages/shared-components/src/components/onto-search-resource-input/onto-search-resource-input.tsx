@@ -241,7 +241,7 @@ export class OntoSearchResourceInput {
 
   private notifyRdfResourceSelected(suggestion: Suggestion) {
     this.searchResult = this.searchResult?.selectSuggestion(suggestion);
-    this.eventService.emit({
+    void this.eventService.emit({
       NAME: ResourceSearchConstants.SUGGESTION_SELECTED_EVENT,
       payload: new SuggestionSelectedPayload(suggestion, this.context)
     });
