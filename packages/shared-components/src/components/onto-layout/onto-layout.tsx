@@ -243,7 +243,7 @@ export class OntoLayout {
     );
 
     this.subscriptions.add(
-      this.eventService.subscribe(EventName.LOGOUT, () => {
+      this.eventService.subscribe(EventName.LOGGED_OUT, () => {
         this.setNavbarItemVisibility();
         this.updateVisibility();
         navigate('login');

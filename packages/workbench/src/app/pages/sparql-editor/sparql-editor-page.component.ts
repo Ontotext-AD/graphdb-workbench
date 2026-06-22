@@ -187,6 +187,8 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
       this.repositoryContextService.onSelectedRepositoryChanged((repositoryReference) => this.repositoryChangedHandler(repositoryReference), () => this.repositoryBeforeChangeHandler()),
       this.languageContextService.onSelectedLanguageChanged(() => this.onLanguageChangeHandler(), () => this.onBeforeLanguageChange(), true),
       this.eventService.subscribe(EventName.NAVIGATION_START, (eventPayload: NavigationStartPayload) => this.locationChangeHandler(eventPayload)),
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      this.eventService.subscribe(EventName.LOGOUT, ()=> {}, () => this.confirmLogout()),
     ]);
   }
 
@@ -707,6 +709,19 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
         }
       });
   }
+
+  /**
+   * Displays a confirmation dialog asking whether running queries should be aborted
+   * before the logout action is performed.
+   *
+   * @returns A promise that resolves to <code>true</code> if the user confirms the action,
+   * or <code>false</code> if the action is canceled.
+   */
+  private confirmLogout(): Promise<boolean> {
+    return new Promise<boolean>((resolve) => {
+      this.confirmAbortQueries('sparql_editor.confirmation.on_page_leave', () => resolve(false), () => resolve(true));
+    });
+  };
 
   /**
    * Initializes the SPARQL editor page.

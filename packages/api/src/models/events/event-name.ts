@@ -10,6 +10,7 @@ export const EventName = {
   NAVIGATION_START: 'navigationStart',
   LOGIN: 'login',
   LOGOUT: 'logout',
+  LOGGED_OUT: 'loggedOut',
   APP_DATA_LOADED: 'applicationDataLoaded',
   APPLICATION_MOUNTED: 'applicationMounted',
   APPLICATION_UNMOUNTED: 'applicationUnmounted',
