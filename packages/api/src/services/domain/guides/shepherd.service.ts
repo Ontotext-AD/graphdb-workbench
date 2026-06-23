@@ -13,6 +13,7 @@ import {GuideStep} from '../../../models/interactive-guide/guide-step';
 import {navigate, getPathName} from '../../utils';
 import {StepOptions} from '../../../models/interactive-guide/step-options';
 import {ActiveTour} from '../../../models/interactive-guide/active-tour';
+import {ApplicationLifecycleContextService} from '../../app-lifecycle';
 
 const SMOOTH = 'smooth' as const;
 const NEAREST = 'nearest' as const;
@@ -22,6 +23,24 @@ const NEAREST = 'nearest' as const;
  *
  * Manages the lifecycle of an interactive guide: creating, starting, pausing, resuming, navigating
  * between steps, and persisting state via {@link GuideStorageService}.
+ *
+ * <h3>Micro-frontend synchronisation</h3>
+ * The workbench runs multiple micro-frontends (AngularJS legacy, Angular) under single-spa.
+ * Each frontend owns its own service implementations (toastr, i18n, etc.) and must inject
+ * them into {@link GuideApi} when it mounts. The following protocol keeps guide steps in sync:
+ * <ol>
+ *   <li>{@code single-spa:before-app-change} fires → root-config calls
+ *       {@link ApplicationLifecycleContextService#updateApplicationsStateBeforeChange}, which sets
+ *       {@link waitForApplicationMount} to {@code true}.</li>
+ *   <li>The active micro-frontend also observes {@code onApplicationsStateBeforeChange}; if it is
+ *       the one being loaded it refreshes its services in {@link GuideApi}.</li>
+ *   <li>{@link getBeforeShowPromise} yields one event-loop tick and, if a swap is in progress,
+ *       parks the step resolver in {@link beforeShowResolver} instead of resolving immediately.</li>
+ *   <li>{@code single-spa:app-change} fires → root-config calls
+ *       {@link ApplicationLifecycleContextService#updateApplicationsState}, which sets
+ *       {@link waitForApplicationMount} to {@code false} and calls
+ *       {@link resolveBeforeShowPromise}, unblocking the pending step.</li>
+ * </ol>
  */
 export class ShepherdService implements Service {
   private readonly logger = LoggerProvider.logger;
@@ -32,11 +51,37 @@ export class ShepherdService implements Service {
   private guideCancelSubscription: unknown;
   private guideCompleteSubscription: unknown;
   private guideAutostarted: boolean | null = null;
+  // True while a single-spa frontend swap is in progress (between before-app-change and app-change).
+  private waitForApplicationMount = false;
+  // Parked resolve callback from getBeforeShowPromise(); called once the new frontend has mounted.
+  private beforeShowResolver?: () => void = undefined;
+
+  constructor() {
+    // These subscriptions implement the micro-frontend sync protocol described in the class JSDoc.
+    // They live for the lifetime of the service singleton so no teardown is needed.
+    service(ApplicationLifecycleContextService).onApplicationsStateChanged(() => {
+      this.waitForApplicationMount = false;
+      this.resolveBeforeShowPromise();
+    });
+
+    service(ApplicationLifecycleContextService).onApplicationsStateBeforeChange(() => {
+      this.waitForApplicationMount = true;
+    });
+  }
+
+  private resolveBeforeShowPromise(): void {
+    if (this.beforeShowResolver) {
+      this.beforeShowResolver();
+      delete this.beforeShowResolver;
+    }
+  }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  onPause: () => void = () => {};
+  onPause: () => void = () => {
+  };
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  onCancel: () => void = () => {};
+  onCancel: () => void = () => {
+  };
 
   /**
    * Creates and starts a guide.
@@ -291,7 +336,7 @@ export class ShepherdService implements Service {
       };
     }
 
-    const title = this.guideApi.translate(undefined, guideStep.title || '');
+    const title = this.getTranslatedString(guideStep.title ?? '');
 
     // Adds " — n/N" to titles if the step is part of a multistep process
     let extraTitle = '';
@@ -301,20 +346,18 @@ export class ShepherdService implements Service {
       progress.setAttribute('tooltip-placement', 'bottom');
       progress.innerText = this.guideApi.translate(undefined, 'guide.block.progress', {
         n: String((guideStep.stepN || 0) + 1),
-        nn: String(guideStep.stepsTotalN)
+        nn: String(guideStep.stepsTotalN),
       });
       extraTitle = '&nbsp;&mdash;&nbsp;' + progress.outerHTML;
     }
 
     const text = (): string => {
-      const content = this.toParagraph(this.guideApi.translate(undefined, guideStep.content || ''));
+      const content = this.toParagraph(this.getTranslatedString(guideStep.content ?? ''));
 
       let extraContent = '';
       if (guideStep.extraContent) {
-        extraContent = this.toParagraph(
-          this.guideApi.translate(undefined, guideStep.extraContent, guideStep as unknown as Record<string, string>),
-          guideStep.extraContentClass,
-        );
+        const extraContentString = this.getTranslatedString(guideStep.extraContent, guideStep as unknown as Record<string, string>);
+        extraContent = this.toParagraph(extraContentString, guideStep.extraContentClass,);
       }
       return content + extraContent;
     };
@@ -360,14 +403,41 @@ export class ShepherdService implements Service {
     return step;
   }
 
+  /**
+   * Returns a promise factory that gates each guide step on the active micro-frontend being fully
+   * mounted, so that {@link GuideApi} always holds valid service references before the step is shown.
+   *
+   * The promise defers via {@code setTimeout} (one event-loop tick) to let any synchronous
+   * lifecycle state changes settle before inspecting {@link waitForApplicationMount}:
+   * <ul>
+   *   <li>If a frontend swap is in progress ({@link waitForApplicationMount} is {@code true}),
+   *       the resolver is parked in {@link beforeShowResolver} and the promise remains pending
+   *       until {@link resolveBeforeShowPromise} is called after the new frontend has mounted.</li>
+   *   <li>If no swap is in progress, the promise resolves immediately in the same tick.</li>
+   * </ul>
+   *
+   * If the step defines its own {@link GuideStep.beforeShowPromise}, it is executed afterwards.
+   */
   private getBeforeShowPromise(
     guide: Tour,
     guideStep: GuideStep,
   ): (() => Promise<unknown>) | undefined {
-    if (typeof guideStep.beforeShowPromise === 'function') {
-      return () => guideStep.beforeShowPromise!(guide, guideStep);
-    }
-    return undefined;
+    return async () => {
+      await new Promise<void>((resolve) => {
+        setTimeout(() => {
+          if (this.waitForApplicationMount && !this.beforeShowResolver) {
+            this.beforeShowResolver = resolve;
+          } else if (!this.waitForApplicationMount) {
+            resolve();
+          }
+        });
+      });
+
+      if (typeof guideStep.beforeShowPromise === 'function') {
+        return await guideStep.beforeShowPromise(guide, guideStep);
+      }
+      return undefined;
+    };
   }
 
   private getShowFunction(
@@ -413,8 +483,8 @@ export class ShepherdService implements Service {
     return cancelButton;
   }
 
-  private getSkipButton(guide: Tour, message?: string): Step.StepOptionsButton {
-    const skipBtnLabel = this.guideApi.translate(undefined, message || '');
+  private getSkipButton(guide: Tour, message?: string | Record<string, string>): Step.StepOptionsButton {
+    const skipBtnLabel = this.getTranslatedString(message ?? '');
     return this.getButton(skipBtnLabel, () => this.skipSteps(guide), true);
   }
 
@@ -711,8 +781,8 @@ export class ShepherdService implements Service {
     progressText.innerText = this.guideApi.translate(undefined, 'guide.total.progress',
       {
         n: String(steps.indexOf(currentStep) + 1),
-        nn: String(steps.length)
-      }
+        nn: String(steps.length),
+      },
     );
     progressText.setAttribute('gdb-tooltip', this.guideApi.translate(undefined, 'guide.total.progress.tooltip'));
     progressText.setAttribute('tooltip-placement', 'left');
@@ -756,5 +826,12 @@ export class ShepherdService implements Service {
 
   private isDisableNextFlow(guideStep: GuideStep): boolean {
     return guideStep.disableNextFlow ?? false;
+  }
+
+  private getTranslatedString(message: string | Record<string, string>, parameters?: Record<string, string>): string {
+    if (typeof message === 'object') {
+      return this.guideApi.translate(undefined, message, parameters);
+    }
+    return message ?? '';
   }
 }

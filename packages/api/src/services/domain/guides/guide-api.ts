@@ -6,7 +6,8 @@ import {LoggerProvider} from '../../logging/logger-provider';
 import {GuideStepBridge} from './guide-step-bridge';
 import {WindowService} from '../../window';
 import {ScrollLocation} from '../../../models/interactive-guide/scroll-location';
-import {HtmlUtil} from '../../utils';
+import {getCurrentRoute, HtmlUtil, navigate, UriUtil} from '../../utils';
+import {ProductInfoContextService} from '../product-info';
 
 /**
  * The bridge API between the guide step plugins and the application services.
@@ -19,6 +20,29 @@ import {HtmlUtil} from '../../utils';
 export class GuideApi implements Service, GuideStepBridge {
   private readonly logger = LoggerProvider.logger;
   private readonly languageContextService = service(LanguageContextService);
+  private readonly productInfoContextService = service(ProductInfoContextService);
+
+  // These fields are injected by the active micro-frontend (Angular or AngularJS) at runtime.
+  // They cannot be typed here because the API package has no dependency on either framework.
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  GuideUtils: any;
+  YasguiComponentUtil: any;
+  toastr: any;
+  ShepherdService: any;
+  GuidesService: any;
+  EventEmitterService: any;
+
+  $repositories: any;
+  $translate: any;
+  $interpolate: any;
+  $rootScope: any;
+  $route: any;
+  $timeout: any;
+  /* eslint-enable @typescript-eslint/no-explicit-any */
+
+  RoutingUtil = this.getRoutingUtil();
+  resolveDocumentationUrl = this._resolveDocumentationUrl.bind(this);
+  translate = this._translate.bind(this);
 
   /**
    * Translates a key from the given translation bundle, falling back to the default bundle if the
@@ -31,33 +55,55 @@ export class GuideApi implements Service, GuideStepBridge {
    * @param parameters - Optional parameters to interpolate into the translation string.
    * @returns The translated string, or the key itself if no translation is found.
    */
-  translate(bundle: TranslationBundle | undefined, key: string | Record<string, string>, parameters: Record<string, string> = {}): string {
-    // If key is a per-language object (e.g. { en: '...', fr: '...' }), resolve the translation
-    // directly from it using the current language, falling back to English.
-    if (key && typeof key === 'object') {
-      const lang = this.languageContextService.getSelectedLanguage() ?? this.languageContextService.getDefaultLanguage();
-      const translation = key[lang];
-      if (!translation) {
-        this.logger.warn(`Missing translation for language [${lang}] in message object`);
-        return '';
+  _translate(bundle: TranslationBundle | undefined, key: string | Record<string, string>, parameters: Record<string, string> = {}): string {
+    const currentLanguage = this.languageContextService.getSelectedLanguage() ?? this.languageContextService.getDefaultLanguage();
+
+    if (typeof key === 'object') {
+      const translation = key[currentLanguage] ?? key[this.languageContextService.getDefaultLanguage()];
+      if (translation) {
+        return HtmlUtil.sanitize(this.applyParameters(translation, parameters));
       }
-      return HtmlUtil.sanitize(this.applyParameters(translation, parameters));
+      this.logger.warn(`Missing translation for language [${currentLanguage}] in message object`);
+      return '';
     }
 
-    bundle ??= this.languageContextService.getLanguageBundle();
-    let translation = bundle?.[key];
-
-    if (!translation) {
-      bundle = this.languageContextService.getDefaultBundle();
-      translation = bundle?.[key];
+    let languageBundle: TranslationBundle | undefined;
+    if (bundle) {
+      const byLanguage = bundle[currentLanguage];
+      languageBundle = (typeof byLanguage === 'object' ? byLanguage : undefined) ?? bundle;
+    } else {
+      languageBundle = this.languageContextService.getLanguageBundle() ?? this.languageContextService.getDefaultBundle();
     }
 
-    if (!translation) {
-      this.logger.warn(`Missing translation for [${key}] key`);
-      return key;
+    if (!languageBundle) {
+      this.logger.warn('Translation bundle is not provided for translation key: ' + JSON.stringify(key));
+      return key?.toString() ?? '';
     }
 
-    return HtmlUtil.sanitize(this.applyParameters(translation as string, parameters));
+    let translation = languageBundle[key];
+    if (!translation && bundle) {
+      // Fallback to the language service bundle when the provided bundle does not contain the key
+      translation = (this.languageContextService.getLanguageBundle() ?? this.languageContextService.getDefaultBundle())?.[key];
+    }
+
+    if (translation) {
+      return HtmlUtil.sanitize(this.applyParameters(translation as string, parameters));
+    }
+
+    this.logger.warn(`Missing translation for [${key}] key`);
+    return key?.toString();
+  }
+
+  private _resolveDocumentationUrl(endpoint: string): string {
+    const productInfo = this.productInfoContextService.getProductInfo();
+    return UriUtil.resolveDocumentationUrl(productInfo?.shortVersion, endpoint);
+  };
+
+  private getRoutingUtil() {
+    return {
+      navigate,
+      getCurrentRoute
+    };
   }
 
   /**

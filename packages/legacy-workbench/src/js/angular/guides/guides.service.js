@@ -9,6 +9,7 @@ import {
     getCurrentRoute,
     service,
     UriUtil,
+    GuideApi,
     ProductInfoContextService,
     LanguageContextService,
 } from '@ontotext/workbench-api';
@@ -399,26 +400,7 @@ function GuidesService(
      * Will be removed when the migration is done and all steps are converted to use services from the context.
      */
     this.getServices = () => {
-        return {
-            $translate,
-            $interpolate,
-            GuideUtils,
-            $rootScope,
-            toastr,
-            $route,
-            $timeout,
-            ShepherdService,
-            GuidesService: this,
-            $repositories,
-            YasguiComponentDirectiveUtil,
-            EventEmitterService,
-            translate: this.translate,
-            RoutingUtil: {
-                navigate,
-                getCurrentRoute,
-            },
-            resolveDocumentationUrl: this.resolveDocumentationUrl,
-        };
+        return service(GuideApi);
     };
 
     /**
