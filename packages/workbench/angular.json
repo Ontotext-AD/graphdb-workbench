@@ -38,7 +38,10 @@
             "customWebpackConfig": {
               "path": "extra-webpack.config.js",
               "libraryName": "workbench",
-              "libraryTarget": "module"
+              "libraryTarget": "module",
+              "mergeStrategies": {
+                "module.rules": "replace"
+              }
             }
           },
           "configurations": {
