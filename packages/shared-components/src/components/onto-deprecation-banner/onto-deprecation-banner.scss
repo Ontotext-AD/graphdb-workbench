@@ -1,0 +1,29 @@
+:host {
+  display: block;
+}
+
+.deprecation-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem;
+  background: #384252;
+  color: #FFF;
+
+  .banner-content {
+    flex: 1;
+    text-align: center;
+
+    .banner-message {
+      font-size: 1.2em;
+    }
+  }
+
+  .close-button {
+    border: none;
+    outline: 0;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+  }
+}

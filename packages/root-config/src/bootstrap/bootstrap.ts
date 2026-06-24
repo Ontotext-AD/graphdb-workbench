@@ -16,6 +16,7 @@ import {
   ApplicationLifecycleContextService,
   ApplicationSettingsStorageService,
   LifecycleState,
+  UserPreferencesService,
 } from '@ontotext/workbench-api';
 import {start} from 'single-spa';
 import {defineCustomElements} from '../../../shared-components/loader';
@@ -98,6 +99,8 @@ const subscribeToAuthenticatedUserChange = () => {
       }
       isInitialBootstrap = false;
     }
+    // Updates user preferences when the authenticated user changes.
+    service(UserPreferencesService).loadUserPreferences();
   });
 };
 

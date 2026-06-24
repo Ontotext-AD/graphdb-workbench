@@ -24,7 +24,9 @@ import {
   WindowService,
   MainMenuPlugin,
   MainMenuItem,
-  MainMenuExtensionPoint
+  MainMenuExtensionPoint,
+  UserPreferencesService,
+  UserPreferencesContextService
 } from '@ontotext/workbench-api';
 import {TranslationService} from '../../services/translation.service';
 
@@ -44,6 +46,8 @@ export class OntoLayout {
   private readonly runtimeConfigurationContextService = service(RuntimeConfigurationContextService);
   private readonly eventService = service(EventService);
   private readonly applicationLifecycleContextService = service(ApplicationLifecycleContextService);
+  private readonly userPreferencesService = service(UserPreferencesService);
+  private readonly userPreferencesContextService = service(UserPreferencesContextService);
 
   private readonly fullJwtKey = `${StorageKey.GLOBAL_NAMESPACE}.${this.authStorageService.NAMESPACE}.${this.authStorageService.jwtKey}`;
   private readonly fullAuthenticatedKey = `${StorageKey.GLOBAL_NAMESPACE}.${this.authStorageService.NAMESPACE}.${this.authStorageService.authenticatedKey}`;
@@ -66,6 +70,7 @@ export class OntoLayout {
   @State() showNavbar = false;
   @State() private isEmbedded = false;
   @State() private loading = true;
+  @State() private hideSolrDeprecationBanner = false;
 
   // ========================
   // Private
@@ -86,6 +91,7 @@ export class OntoLayout {
   }
 
   componentDidLoad() {
+    this.updateShowSolrDeprecationBanner();
     this.windowResizeHandler();
   }
 
@@ -94,6 +100,7 @@ export class OntoLayout {
     this.updateVisibility();
     this.subscribeToNavigationEnd();
     this.subscribeToRuntimeConfigurationChanges();
+    this.subscribeToUserPreferencesChange();
     this.loading = false;
     this.subscribeToBeforeMountRouting();
   }
@@ -118,10 +125,21 @@ export class OntoLayout {
         <div class="default-slot-wrapper">
           <slot name="default"></slot>
         </div>
-        {!this.isEmbedded &&
-          <header class="wb-header">
+        {!this.isEmbedded &&<div class="wb-header">
+          {!this.hideSolrDeprecationBanner &&
+            <onto-deprecation-banner class='onto-deprecation-banner' onCloseBanner={this.onSolrDeprecationBannerClosedHandler()}>
+              <span slot='header'>
+                <translate-label labelKey='deprecation-banner.solr.header'></translate-label>
+              </span>
+              <span slot='content'>
+                <translate-label labelKey='deprecation-banner.solr.content'></translate-label>
+              </span>
+            </onto-deprecation-banner>
+          }
+          <header>
             {this.showHeader && <onto-header></onto-header>}
           </header>
+        </div>
         }
         {!this.isEmbedded && this.showNavbar &&
           <nav class="wb-navbar">
@@ -168,6 +186,13 @@ export class OntoLayout {
   @Listen('resize', {target: 'window'})
   onResize() {
     this.windowResizeObserver();
+  }
+
+  private onSolrDeprecationBannerClosedHandler(): () => void {
+    return () => {
+      this.userPreferencesService.dismissSolrDeprecationBanner();
+      this.updateShowSolrDeprecationBanner();
+    };
   }
 
   // ========================
@@ -328,5 +353,16 @@ export class OntoLayout {
           this.loading = true;
         }
       }));
+  }
+
+  private subscribeToUserPreferencesChange() {
+    this.subscriptions.add(
+      this.userPreferencesContextService.onUserPreferencesChanged(() => {
+        this.updateShowSolrDeprecationBanner();
+      }));
+  }
+
+  private updateShowSolrDeprecationBanner(): void {
+    this.hideSolrDeprecationBanner = this.userPreferencesService.isSolrDeprecationBannerDismissed();
   }
 }
