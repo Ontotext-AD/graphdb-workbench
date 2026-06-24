@@ -74,6 +74,7 @@ export * from './services/domain/sparql-template';
 export * from './services/domain/rdf4j';
 export * from './services/domain/sparql';
 export * from './services/ui';
+export * from './services/user-preference';
 export * from './services/domain/guides';
 export * from './services/ui/dialog';
 export * from './services/domain/connector';
