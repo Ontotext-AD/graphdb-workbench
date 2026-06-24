@@ -1,6 +1,7 @@
 import {NavbarSteps} from "../../steps/navbar/navbar-steps";
 import {LayoutSteps} from "../../steps/layout/layout-steps";
 import {HeaderSteps} from "../../steps/header/header-steps";
+import {DeprecationSteps} from '../deprecation-banner/deprecation-steps';
 
 function assertSubmenuItems(menuIndex, expectedItems) {
   NavbarSteps.getSubmenuItems(menuIndex)
@@ -13,6 +14,8 @@ function assertSubmenuItems(menuIndex, expectedItems) {
 
 describe('Layout', () => {
   it('Should filter menu items, based on role', () => {
+    // Increase the viewport size because the Help menu becomes invisible and the test fails.
+    cy.viewport(1280, 1000);
     // Given I've visited the layout page and loaded menu items for the navbar
     LayoutSteps.visit();
     LayoutSteps.disableSecurity();
@@ -159,5 +162,27 @@ describe('Layout', () => {
     // Then I should see the header and navbar
     HeaderSteps.getHeader().should('exist');
     NavbarSteps.getRootMenuItems().should('have.length', 7);
-  })
+  });
+
+  it('should hide the Solr deprecation notice', () => {
+    // GIVEN: I have visited the layout page.
+    LayoutSteps.visit();
+
+    // THEN: I expect the Solr deprecation banner to be visible.
+    DeprecationSteps.getDeprecationBanner()
+      .should('be.visible')
+      .should('contain.text', 'Solr Connector Deprecation Notice');
+
+    // WHEN: I click the close button.
+    DeprecationSteps.closeBanner();
+    // THEN: I expect the Solr deprecation banner to not be visible.
+    DeprecationSteps.getDeprecationBanner().should('not.exist');
+
+    // WHEN: I refresh the page.
+    LayoutSteps.visit();
+    // THEN: I wait for the page to load.
+    HeaderSteps.getHeader().should('exist');
+    // AND: I expect the Solr deprecation banner to remain hidden, because the user choice is persisted.
+    DeprecationSteps.getDeprecationBanner().should('not.exist');
+  });
 });

@@ -24,7 +24,8 @@ import {
   WindowService,
   MainMenuPlugin,
   MainMenuItem,
-  MainMenuExtensionPoint
+  MainMenuExtensionPoint,
+  UserPreferencesStorageService
 } from '@ontotext/workbench-api';
 import {TranslationService} from '../../services/translation.service';
 
@@ -44,6 +45,7 @@ export class OntoLayout {
   private readonly runtimeConfigurationContextService = service(RuntimeConfigurationContextService);
   private readonly eventService = service(EventService);
   private readonly applicationLifecycleContextService = service(ApplicationLifecycleContextService);
+  private readonly userPreferencesStorageService = service(UserPreferencesStorageService);
 
   private readonly fullJwtKey = `${StorageKey.GLOBAL_NAMESPACE}.${this.authStorageService.NAMESPACE}.${this.authStorageService.jwtKey}`;
   private readonly fullAuthenticatedKey = `${StorageKey.GLOBAL_NAMESPACE}.${this.authStorageService.NAMESPACE}.${this.authStorageService.authenticatedKey}`;
@@ -66,6 +68,7 @@ export class OntoLayout {
   @State() showNavbar = false;
   @State() private isEmbedded = false;
   @State() private loading = true;
+  @State() private hideSolrDeprecationBanner = false;
 
   // ========================
   // Private
@@ -86,6 +89,7 @@ export class OntoLayout {
   }
 
   componentDidLoad() {
+    this.updateShowSolrDeprecationBanner();
     this.windowResizeHandler();
   }
 
@@ -118,6 +122,16 @@ export class OntoLayout {
         <div class="default-slot-wrapper">
           <slot name="default"></slot>
         </div>
+        {!this.hideSolrDeprecationBanner &&
+          <onto-deprecation-banner class='onto-deprecation-banner' onCloseBanner={this.onSolrDeprecationBannerClosedHandler()}>
+            <span slot='header'>
+              <translate-label labelKey='deprecation-banner.solr.header'></translate-label>
+            </span>
+            <span slot='content'>
+              <translate-label labelKey='deprecation-banner.solr.content'></translate-label>
+            </span>
+          </onto-deprecation-banner>
+        }
         {!this.isEmbedded &&
           <header class="wb-header">
             {this.showHeader && <onto-header></onto-header>}
@@ -168,6 +182,13 @@ export class OntoLayout {
   @Listen('resize', {target: 'window'})
   onResize() {
     this.windowResizeObserver();
+  }
+
+  private onSolrDeprecationBannerClosedHandler(): () => void {
+    return () => {
+      this.userPreferencesStorageService.dismissSolrDeprecationBanner();
+      this.updateShowSolrDeprecationBanner();
+    };
   }
 
   // ========================
@@ -328,5 +349,9 @@ export class OntoLayout {
           this.loading = true;
         }
       }));
+  }
+
+  private updateShowSolrDeprecationBanner(): void {
+    this.hideSolrDeprecationBanner = this.userPreferencesStorageService.isSolrDeprecationBannerDismissed();
   }
 }
