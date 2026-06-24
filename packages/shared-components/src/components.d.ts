@@ -33,6 +33,8 @@ export namespace Components {
     }
     interface OntoCookiePolicyDialog {
     }
+    interface OntoDeprecationBanner {
+    }
     interface OntoDialog {
         /**
           * Configuration object for the dialog.
@@ -415,6 +417,10 @@ export interface OntoCookiePolicyDialogCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLOntoCookiePolicyDialogElement;
 }
+export interface OntoDeprecationBannerCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLOntoDeprecationBannerElement;
+}
 export interface OntoDropdownCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLOntoDropdownElement;
@@ -476,6 +482,23 @@ declare global {
     var HTMLOntoCookiePolicyDialogElement: {
         prototype: HTMLOntoCookiePolicyDialogElement;
         new (): HTMLOntoCookiePolicyDialogElement;
+    };
+    interface HTMLOntoDeprecationBannerElementEventMap {
+        "closeBanner": void;
+    }
+    interface HTMLOntoDeprecationBannerElement extends Components.OntoDeprecationBanner, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLOntoDeprecationBannerElementEventMap>(type: K, listener: (this: HTMLOntoDeprecationBannerElement, ev: OntoDeprecationBannerCustomEvent<HTMLOntoDeprecationBannerElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLOntoDeprecationBannerElementEventMap>(type: K, listener: (this: HTMLOntoDeprecationBannerElement, ev: OntoDeprecationBannerCustomEvent<HTMLOntoDeprecationBannerElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLOntoDeprecationBannerElement: {
+        prototype: HTMLOntoDeprecationBannerElement;
+        new (): HTMLOntoDeprecationBannerElement;
     };
     interface HTMLOntoDialogElement extends Components.OntoDialog, HTMLStencilElement {
     }
@@ -714,6 +737,7 @@ declare global {
         "onto-confirm-cancel-dialog": HTMLOntoConfirmCancelDialogElement;
         "onto-cookie-consent": HTMLOntoCookieConsentElement;
         "onto-cookie-policy-dialog": HTMLOntoCookiePolicyDialogElement;
+        "onto-deprecation-banner": HTMLOntoDeprecationBannerElement;
         "onto-dialog": HTMLOntoDialogElement;
         "onto-dropdown": HTMLOntoDropdownElement;
         "onto-footer": HTMLOntoFooterElement;
@@ -758,6 +782,12 @@ declare namespace LocalJSX {
           * Event emitted when the dialog is closed, allowing parent components to react accordingly.
          */
         "onCloseDialog"?: (event: OntoCookiePolicyDialogCustomEvent<void>) => void;
+    }
+    interface OntoDeprecationBanner {
+        /**
+          * Emitted when the banner is closed.
+         */
+        "onCloseBanner"?: (event: OntoDeprecationBannerCustomEvent<void>) => void;
     }
     interface OntoDialog {
         /**
@@ -1065,6 +1095,7 @@ declare namespace LocalJSX {
         "onto-confirm-cancel-dialog": OntoConfirmCancelDialog;
         "onto-cookie-consent": OntoCookieConsent;
         "onto-cookie-policy-dialog": OntoCookiePolicyDialog;
+        "onto-deprecation-banner": OntoDeprecationBanner;
         "onto-dialog": OntoDialog;
         "onto-dropdown": OntoDropdown;
         "onto-footer": OntoFooter;
@@ -1102,6 +1133,7 @@ declare module "@stencil/core" {
              */
             "onto-cookie-consent": LocalJSX.OntoCookieConsent & JSXBase.HTMLAttributes<HTMLOntoCookieConsentElement>;
             "onto-cookie-policy-dialog": LocalJSX.OntoCookiePolicyDialog & JSXBase.HTMLAttributes<HTMLOntoCookiePolicyDialogElement>;
+            "onto-deprecation-banner": LocalJSX.OntoDeprecationBanner & JSXBase.HTMLAttributes<HTMLOntoDeprecationBannerElement>;
             "onto-dialog": LocalJSX.OntoDialog & JSXBase.HTMLAttributes<HTMLOntoDialogElement>;
             /**
              * A reusable dropdown component built using StencilJS. This component supports configurable labels, tooltips, icons,
