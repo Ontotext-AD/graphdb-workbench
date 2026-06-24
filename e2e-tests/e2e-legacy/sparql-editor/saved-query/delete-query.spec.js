@@ -1,10 +1,10 @@
 import {SparqlEditorSteps} from "../../../steps/sparql-editor-steps";
 import {YasguiSteps} from "../../../steps/yasgui/yasgui-steps";
-import {ApplicationSteps} from "../../../steps/application-steps";
 import {QueryStubs} from "../../../stubs/yasgui/query-stubs";
 import {SavedQuery} from "../../../steps/yasgui/saved-query";
 import {SavedQueriesDialog} from "../../../steps/yasgui/saved-queries-dialog";
 import {SaveQueryDialog} from "../../../steps/yasgui/save-query-dialog";
+import {OntoToastrSteps} from '../../../steps/onto-toastr-steps.js';
 
 describe('Delete saved queries', () => {
 
@@ -49,7 +49,7 @@ describe('Delete saved queries', () => {
         YasguiSteps.confirmDeleteOperation();
         // Then selected query should be deleted
         YasguiSteps.getDeleteQueryConfirmation().should('not.exist');
-        ApplicationSteps.getSuccessNotifications().should('be.visible');
+        OntoToastrSteps.getSuccessToast().should('be.visible');
         YasguiSteps.showSavedQueries();
         SavedQueriesDialog.getSavedQueries().should('not.contain.text', savedQueryName);
     });

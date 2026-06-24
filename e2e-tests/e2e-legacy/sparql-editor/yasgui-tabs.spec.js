@@ -91,15 +91,15 @@ describe('Yasgui tabs', () => {
 
     it('Should display information about ongoing requests if try to navigate to other page when there is a tab with ongoing request', () => {
         // When I execute a long-running query,
-        QueryStubs.stubLongRunningQuery(repositoryId);
         SparqlEditorSteps.visitSparqlEditorPage();
+        QueryStubs.stubLongRunningQuery(repositoryId);
         YasqeSteps.executeQueryWithoutWaiteResult();
         // and try to navigate to other page.
         MainMenuSteps.clickOnMenuImport();
 
         // Then I expect to see confirm dialog that explain me about ongoing query.
         ModalDialogSteps.getDialog().should('be.visible');
-        ModalDialogSteps.getDialogBody().contains('You have running 1 query, that will be aborted.');
+        ModalDialogSteps.getDialogBody().should('contain','You have running 1 query. The query will be aborted.');
     });
 });
 
