@@ -9,6 +9,8 @@
 
 ### Depends on
 
+- [onto-deprecation-banner](../onto-deprecation-banner)
+- [translate-label](../translate-label)
 - [onto-header](../onto-header)
 - [onto-navbar](../onto-navbar)
 - [onto-loader](../onto-loader)
@@ -17,6 +19,8 @@
 ### Graph
 ```mermaid
 graph TD;
+  onto-layout --> onto-deprecation-banner
+  onto-layout --> translate-label
   onto-layout --> onto-header
   onto-layout --> onto-navbar
   onto-layout --> onto-loader
