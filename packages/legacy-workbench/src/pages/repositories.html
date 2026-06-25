@@ -64,6 +64,12 @@
                         <div ng-if="getRepositoriesFromLocation(location.uri).length" class="mb-1">
                             <table id="wb-repositories-repositoryInGetRepositories"
                                    class="table table-hover table-striped" aria-describedby="Repositories table">
+                                <colgroup>
+                                    <col class="select-repository-button-column">
+                                    <col class="repository-info-column">
+                                    <col class="repository-actions-column">
+                                    <col class="default-repository-column">
+                                </colgroup>
                                 <tbody>
                                 <tr class="repository"
                                     ng-repeat="repository in getRepositoriesFromLocation(location.uri) | orderBy: ['type === \'system\'', 'location', 'id'] track by repository.hash"
@@ -85,19 +91,34 @@
                                         </span>
                                     </td>
                                     <td>
-                                        <div class="lead text-overflow" ng-mouseover="setPopoverRepo(repository)">
-                                            <span popover-popup-delay="500"
-                                                  popover-trigger="mouseenter" popover-placement="bottom-right"
+                                        <div class="lead repository-lead" ng-mouseover="setPopoverRepo(repository)" ng-focus="setPopoverRepo(repository)">
+                                            <span class="repository-popover"
+                                                  popover-popup-delay="500"
+                                                  popover-trigger="mouseenter"
+                                                  popover-placement="bottom-left"
                                                   uib-popover-template="popoverTemplate"
                                                   popover-title="{{'security.repository.title' | translate}} {{repository.id}}">
-                                                <span class="icon-lg" ng-class="'icon-repo-' + repository.type"></span>
-                                                <strong class="repository-id">{{repository.id}}</strong></span>
-                                            <span class="repository-status"> &middot; <span
-                                                class="text-secondary">{{repository.state}}</span></span>
-                                            <span ng-if="repository.title"><small> &middot; {{repository.title}}</small></span>
+                                                <div class="repository-info">
+                                                    <span class="icon-lg" ng-class="'icon-repo-' + repository.type"></span>
+
+                                                    <div class="repository-details">
+                                                        <div class="repository-main-info">
+                                                            <strong class="repository-id">{{repository.id}}</strong>
+                                                            <span class="repository-status">
+                                                                &middot;
+                                                                <span class="text-secondary">{{repository.state}}</span>
+                                                            </span>
+                                                        </div>
+
+                                                        <small class="repository-title" ng-if="repository.title">
+                                                            {{repository.title}}
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            </span>
                                         </div>
                                     </td>
-                                    <td width="150" class="text-nowrap repository-actions">
+                                    <td class="text-nowrap repository-actions">
                                         <button class="btn btn-link p-0"
                                                 ng-click="copyToClipboard(repository.externalUrl)"
                                                 gdb-tooltip="{{'copy.repo.url' | translate}}">
@@ -138,7 +159,7 @@
                                             </button>
                                         </span>
                                     </td>
-                                    <td width="50">
+                                    <td>
                                         <button class="btn btn-link p-0 pin-repository-btn"
                                                 ng-if="repository.type !== 'system' && location.active"
                                                 ng-click="toggleDefaultRepository(repository.id)"
@@ -212,6 +233,12 @@
                             <div ng-if="getRepositoriesFromLocation(location.uri).length" class="mb-1">
                                 <table id="wb-repositories-repositoryInRemoteGetRepositories"
                                        class="table table-hover table-striped" aria-describedby="Repositories table">
+                                    <colgroup>
+                                        <col class="select-repository-button-column">
+                                        <col class="repository-info-column">
+                                        <col class="repository-actions-column">
+                                        <col class="default-repository-column">
+                                    </colgroup>
                                     <tbody>
                                     <tr class="repository"
                                         ng-repeat="repository in getRepositoriesFromLocation(location.uri) | orderBy: ['type === \'system\'', 'location', 'id'] track by repository.hash"
@@ -228,19 +255,34 @@
                                                   ng-if="isRepoActive(repository)"></span>
                                         </td>
                                         <td>
-                                            <div class="lead text-overflow" ng-mouseover="setPopoverRepo(repository)">
-                                                <span popover-popup-delay="500"
-                                                      popover-trigger="mouseenter" popover-placement="bottom-right"
-                                                      uib-popover-template="popoverTemplate"
-                                                      popover-title="{{'security.repository.title' | translate}} {{repository.id}}">
+                                            <div class="lead repository-lead" ng-mouseover="setPopoverRepo(repository)" ng-focus="setPopoverRepo(repository)">
+                                            <span class="repository-popover"
+                                                  popover-popup-delay="500"
+                                                  popover-trigger="mouseenter"
+                                                  popover-placement="bottom-left"
+                                                  uib-popover-template="popoverTemplate"
+                                                  popover-title="{{'security.repository.title' | translate}} {{repository.id}}">
+                                                <div class="repository-info">
                                                     <span class="icon-lg" ng-class="'icon-repo-' + repository.type"></span>
-                                                    <strong class="repository-id">{{repository.id}}</strong></span>
-                                                <span class="repository-status"> &middot; <span
-                                                    class="text-secondary">{{repository.state}}</span></span>
-                                                <span ng-if="repository.title"><small> &middot; {{repository.title}}</small></span>
+
+                                                    <div class="repository-details">
+                                                        <div class="repository-main-info">
+                                                            <strong class="repository-id">{{repository.id}}</strong>
+                                                            <span class="repository-status">
+                                                                &middot;
+                                                                <span class="text-secondary">{{repository.state}}</span>
+                                                            </span>
+                                                        </div>
+
+                                                        <small class="repository-title" ng-if="repository.title">
+                                                            {{repository.title}}
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            </span>
                                             </div>
                                         </td>
-                                        <td width="150" class="text-nowrap repository-actions">
+                                        <td class="text-nowrap repository-actions">
                                             <button class="btn btn-link p-0"
                                                     ng-click="copyToClipboard(repository.externalUrl)"
                                                     gdb-tooltip="{{'copy.repo.url' | translate}}">
@@ -281,7 +323,7 @@
                                                 </button>
                                             </span>
                                         </td>
-                                        <td width="50">
+                                        <td>
                                             <button class="btn btn-link p-0 pin-repository-btn"
                                                     ng-if="repository.type !== 'system' && location.active"
                                                     ng-click="toggleDefaultRepository(repository.id)"
