@@ -98,8 +98,8 @@ export class OntoLayout {
     this.updateVisibility();
     this.subscribeToNavigationEnd();
     this.subscribeToRuntimeConfigurationChanges();
-    this.subscribeToApplicationChange();
     this.loading = false;
+    this.subscribeToBeforeMountRouting();
   }
 
   /**
@@ -342,7 +342,7 @@ export class OntoLayout {
       }));
   }
 
-  private subscribeToApplicationChange() {
+  private subscribeToBeforeMountRouting() {
     this.subscriptions.add(
       this.applicationLifecycleContextService.onNavigationBeforeMountRouting((payload) => {
         if (payload) {
