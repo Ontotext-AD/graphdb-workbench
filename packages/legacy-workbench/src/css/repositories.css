@@ -304,15 +304,6 @@ span.label {
     margin-top: 0;
 }
 
-.ot-repository-id {
-    max-width: 70% !important;
-    display: inline-block;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    position: relative;
-    top: 5px
-}
 
 .main-loader {
     margin: 200px auto;
@@ -442,8 +433,50 @@ span.label {
     flex-shrink: 0;
 }
 
-.repository .select-repository-button-wrapper {
+#wb-repositories-repositoryInGetRepositories,
+#wb-repositories-repositoryInRemoteGetRepositories {
+    table-layout: fixed;
+}
+
+.select-repository-button-column {
     width: 25px;
+}
+
+.repository-actions-column {
+    width: 150px;
+}
+
+.default-repository-column {
+    width: 50px;
+}
+
+.repository .repository-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.repository .repository-details {
+    flex: 1;
+    overflow: hidden;
+}
+
+.repository .repository-id,
+.repository .repository-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.repository .repository-id {
+    display: inline-block;
+    /* Reserve space for the repository status displayed next to the repository ID. */
+    max-width: calc(100% - 4em);
+    vertical-align: bottom;
+}
+
+.repository .repository-title {
+    display: block;
 }
 
 .repository .inactive-repo {
