@@ -6,7 +6,6 @@
 .wb-layout {
   display: grid;
   grid-template:
-    "deprecation-banner deprecation-banner" auto
     "header header" auto
     "nav main" 1fr
     "nav footer" auto / 15rem minmax(200px, 1fr);
@@ -27,7 +26,6 @@
 
   &.hide-navbar {
     grid-template:
-    "deprecation-banner" auto
     "header" auto
     "main" 1fr
     "footer" auto / 1fr;
@@ -59,6 +57,7 @@
   }
 
   .wb-header {
+    grid-area: header;
     position: sticky;
     top: 0;
     z-index: 999;
@@ -66,14 +65,6 @@
 
   nav {
     grid-area: nav;
-  }
-
-  .onto-deprecation-banner {
-    grid-area: deprecation-banner;
-  }
-
-  header {
-    grid-area: header;
   }
 
   footer {
