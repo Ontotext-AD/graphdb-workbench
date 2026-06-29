@@ -216,6 +216,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     const authenticationService = service(AuthenticationService);
     const securityContextService = service(SecurityContextService);
     const repositoryContextService = service(RepositoryContextService);
+    const eventService = service(EventService);
     /**
      * When the timeout finishes, the popover will open.
      */
@@ -1046,13 +1047,13 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     };
     subscribeToRouteChangeStart();
 
-    service(EventService).subscribe(EventName.APPLICATION_MOUNTED, (payload) => {
+    eventService.subscribe(EventName.APPLICATION_MOUNTED, (payload) => {
         isApplicationMounted = true;
         subscribeToRouteChangeStart();
         onRouteChangeStart();
     });
 
-    service(EventService).subscribe(EventName.APPLICATION_UNMOUNTED, (payload) => {
+    eventService.subscribe(EventName.APPLICATION_UNMOUNTED, (payload) => {
         routeChangeStartSubscription?.();
     });
 
@@ -1061,13 +1062,15 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         LocalStorageAdapter.clearClassHieararchyState();
     });
 
-    const onLoginSubscription = service(EventService).subscribe(EventName.LOGIN, () => {
+    const onLoginSubscription = eventService.subscribe(EventName.LOGIN, () => {
         $jwtAuth.initSecurity();
     });
 
-    const onLogoutSubscription = service(EventService).subscribe(EventName.LOGOUT, () => logout());
+    const onLogoutSubscription = eventService.subscribe(EventName.LOGOUT, () => authenticationService.logout());
 
-    service(EventService).subscribe(EventConstants.RDF_SEARCH_ICON_CLICKED, () => {
+    const onLoggedOutSubscription = eventService.subscribe(EventName.LOGGED_OUT, () => logout());
+
+    eventService.subscribe(EventConstants.RDF_SEARCH_ICON_CLICKED, () => {
         $rootScope.$broadcast('rdfResourceSearchExpanded');
     });
 
@@ -1096,6 +1099,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         licenseUpdatedSubscription?.();
         onAppDataLoaded?.();
         onLogoutSubscription?.();
+        onLoggedOutSubscription?.();
         onLoginSubscription?.();
         securityConfigChangedSubscription?.();
         document.removeEventListener('click', closeActiveRepoPopoverEventHandler);

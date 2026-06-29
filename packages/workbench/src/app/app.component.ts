@@ -4,6 +4,7 @@ import {Subscription} from 'rxjs';
 import {ConfirmDialogModule} from 'primeng/confirmdialog';
 import {RepositoryUrlSyncService} from './services/repository-url-sync.service';
 import {
+  AuthenticationService,
   EventName,
   EventService,
   getCurrentRoute,
@@ -27,6 +28,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private readonly repositoryUrlSyncService = inject(RepositoryUrlSyncService);
   private readonly repositoryContextService = service(RepositoryContextService);
   private readonly eventService = service(EventService);
+  private readonly authenticationService = service(AuthenticationService);
   private readonly subscriptions = new Subscription();
 
   private isFirstRepoChangeEvent = true;
@@ -34,8 +36,9 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.subscribeToRoutingEvents();
     this.subscriptions.add(
-      this.repositoryContextService.onSelectedRepositoryChanged((repo) => this.onSelectedRepositoryChangedHandler(repo))
+      this.repositoryContextService.onSelectedRepositoryChanged((repo) => this.onSelectedRepositoryChangedHandler(repo)),
     );
+    this.subscriptions.add(this.eventService.subscribe(EventName.LOGOUT, () => this.authenticationService.logout()));
   }
 
   ngOnDestroy(): void {

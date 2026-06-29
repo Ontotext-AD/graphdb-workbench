@@ -2,7 +2,7 @@ import {Service} from '../../../providers/service/service';
 import {AuthenticatedUser, SecurityConfig} from '../../../models/security';
 import {service} from '../../../providers';
 import {EventService} from '../../event-service';
-import {Logout} from '../../../models/events';
+import {LoggedOut} from '../../../models/events/auth/logged-out';
 import {SecurityContextService} from './security-context.service';
 import {AuthStrategyResolver} from './auth-strategy-resolver';
 import {Login} from '../../../models/events/auth/login';
@@ -83,7 +83,7 @@ export class AuthenticationService implements Service {
           this.eventService.emit(new Login());
         } else {
           navigate('login');
-          this.eventService.emit(new Logout());
+          this.eventService.emit(new LoggedOut());
         }
       });
   }

@@ -89,6 +89,7 @@ function SparqlEditorCtrl($rootScope,
     const graphConfigService = service(GraphConfigService);
     const languageContextService = ServiceProvider.get(LanguageContextService);
     const repositoryContextService = service(RepositoryContextService);
+    const eventService = service(EventService);
 
     this.repository = '';
 
@@ -659,6 +660,19 @@ function SparqlEditorCtrl($rootScope,
             });
     };
 
+    /**
+     * Displays a confirmation dialog asking whether running queries should be aborted
+     * before the logout action is performed.
+     *
+     * @returns A promise that resolves to <code>true</code> if the user confirms the action,
+     * or <code>false</code> if the action is canceled.
+     */
+    const confirmLogout = () => {
+        return new Promise((resolve) => {
+            confirmAbortQueries('view.sparql-editor.language_change.run_queries.confirmation', () => resolve(false), () => resolve(true));
+        });
+    };
+
     const confirmAbortQueriesDialog = (messageKey, ongoingRequestsInfo, alwaysShowConfirm = false) => new Promise((resolve, reject) => {
         if (!alwaysShowConfirm && (!ongoingRequestsInfo || ongoingRequestsInfo.queriesCount < 1 && ongoingRequestsInfo.updatesCount < 1)) {
             resolve();
@@ -699,7 +713,8 @@ function SparqlEditorCtrl($rootScope,
     };
 
     subscriptions.push(
-        ServiceProvider.get(EventService).subscribe(EventName.NAVIGATION_START, (eventPayload) => locationChangeHandler(eventPayload)),
+        eventService.subscribe(EventName.NAVIGATION_START, (eventPayload) => locationChangeHandler(eventPayload)),
+        eventService.subscribe(EventName.LOGOUT, () => {}, confirmLogout),
     );
 
     const removeAllListeners = () => {
