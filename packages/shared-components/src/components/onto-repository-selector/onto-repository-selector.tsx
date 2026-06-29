@@ -171,7 +171,13 @@ export class OntoRepositorySelector {
     <div class="repository-tooltip-title">
       <span class="label">${TranslationService.translate('repository-selector.tooltip.repository')}</span>
       <span class="value">${repository.id}</span>
-    </div>
+    </div>`;
+
+    if (repository.title) {
+      html += `<div class="repository-tooltip-description">${repository.title}</div>`;
+    }
+
+    html += `
     <div class="repository-tooltip-content">
       <div class="repository-tooltip-row">
         <div class="label">${TranslationService.translate('repository-selector.tooltip.location')}:</div>
