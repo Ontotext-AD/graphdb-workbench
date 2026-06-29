@@ -3,6 +3,16 @@
 }
 
 .onto-repository-selector {
+  .repository-selection {
+    max-width: 16rem;
+    display: flex;
+
+    .repository-id {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
   .onto-dropdown {
     &.closed {
       .onto-dropdown-button:not(:hover) {
@@ -22,12 +32,13 @@
 
     .item-label {
       line-height: 0.75em;
-      display: inline-block;
-      vertical-align: middle;
       text-align: left;
+      min-width: 0;
 
       .repository-id {
-        line-height: .75em;
+        line-height: 1.1em;
+        overflow-x: hidden;
+        text-overflow: ellipsis;
       }
 
       .repository-location {
@@ -62,18 +73,24 @@
     .repository-tooltip-title {
       font-size: 1rem;
       font-weight: 400;
-      padding: 8px 14px;
+      padding: 0.5rem 0.9rem 0.2rem;
       background-color: var(--gw-dialog-background);
-      border-bottom: var(--gw-dialog-border-color) 1px solid;
 
       .value {
         overflow-wrap: break-word;
       }
     }
 
+    .repository-tooltip-description {
+      padding-left: 1rem;
+      padding-right: 1rem;
+      font-size: 0.8rem;
+    }
+
     .repository-tooltip-content {
       background-color: var(--gw-dialog-background);
       padding: 1.5rem 0.5rem;
+      border-top: var(--gw-dialog-border-color) 1px solid;
       display: flex;
       flex-direction: column;
       gap: 0.8em;
