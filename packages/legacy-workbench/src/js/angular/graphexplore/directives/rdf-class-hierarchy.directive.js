@@ -485,7 +485,7 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
                 const focusHistoryId = $location.hash();
 
                 $window.onpopstate = function(event) {
-                    if (event.state) {
+                    if (event.state && !event.state.skipOnPopState) {
                         const focusHistoryId = event.state.id;
                         focusOnCurrentClass(focusHistoryId);
                     }
@@ -594,7 +594,9 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
                 }
 
                 if (d.data.id) {
-                    $window.history.replaceState({id: d.data.id}, "classHierarchyPage" + d.data.id, "hierarchy#" + d.data.id);
+                    // Set the `skipOnPopState` flag so the popstate handler ignores this history update,
+                    // preventing a recursive history state change triggered by the zoom operation.
+                    $window.history.replaceState({id: d.data.id, skipOnPopState: true}, "classHierarchyPage" + d.data.id, "hierarchy#" + d.data.id);
                 }
 
                 if (!d.children) {
