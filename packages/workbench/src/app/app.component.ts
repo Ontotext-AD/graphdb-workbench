@@ -4,14 +4,17 @@ import {Subscription} from 'rxjs';
 import {ConfirmDialogModule} from 'primeng/confirmdialog';
 import {RepositoryUrlSyncService} from './services/repository-url-sync.service';
 import {
+  ApplicationLifecycleContextService,
   EventName,
   EventService,
-  getCurrentRoute,
+  getCurrentRoute, GuideApi,
   Repository,
   RepositoryContextService,
   service,
-  WindowService
+  WindowService,
 } from '@ontotext/workbench-api';
+import {NotificationProviderService} from './services/notification/notification-provider.service';
+import {YasguiComponentUtil} from './components/yasgui-component-facade/yasgui-component-util';
 
 @Component({
   selector: 'app-root',
@@ -28,6 +31,8 @@ export class AppComponent implements OnInit, OnDestroy {
   private readonly repositoryContextService = service(RepositoryContextService);
   private readonly eventService = service(EventService);
   private readonly subscriptions = new Subscription();
+  private readonly appLifecyleService = service(ApplicationLifecycleContextService);
+  private readonly notificationProviderService = inject(NotificationProviderService);
 
   private isFirstRepoChangeEvent = true;
 
@@ -36,6 +41,28 @@ export class AppComponent implements OnInit, OnDestroy {
     this.subscriptions.add(
       this.repositoryContextService.onSelectedRepositoryChanged((repo) => this.onSelectedRepositoryChangedHandler(repo))
     );
+
+    // Part of the micro-frontend guide-sync protocol (see ShepherdService class JSDoc):
+    // detects when this frontend is the one being loaded so updateGuideServices can inject services.
+    const applicationsStateBeforeChangeSubscription = this.appLifecyleService.onApplicationsStateBeforeChange((applicationsState) => {
+      const isThisFELoading = applicationsState?.isNewAngularLoaded() ?? false;
+      if (isThisFELoading) {
+        this.updateGuideServices();
+      }
+    });
+    this.subscriptions.add(applicationsStateBeforeChangeSubscription);
+  }
+
+  /**
+   * Part of the micro-frontend guide-sync protocol (see ShepherdService class JSDoc).
+   *
+   * Injects Angular-specific services into {@link GuideApi} so they are ready before
+   * the pending guide step is shown. Called only when this frontend is the one being loaded.
+   */
+  private updateGuideServices() {
+    const guidesApi = service(GuideApi);
+    guidesApi.YasguiComponentUtil = YasguiComponentUtil;
+    guidesApi.toastr = this.notificationProviderService;
   }
 
   ngOnDestroy(): void {

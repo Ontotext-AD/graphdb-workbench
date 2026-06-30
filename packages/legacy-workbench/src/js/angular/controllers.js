@@ -25,25 +25,29 @@ import {DocumentationUrlResolver} from './utils/documentation-url-resolver';
 import {NamespacesListModel} from './models/namespaces/namespaces-list';
 import {
     ApplicationLifecycleContextService,
-    AuthorizationService,
     AuthenticationService,
+    AuthorizationService,
     COOKIE_CONSENT_CHANGED_EVENT,
     EventName,
     EventService,
-    RepositoryContextService,
+    GuideApi,
+    GuidesService as NewGuidesService,
+    isHomePage,
     LicenseContextService,
     LicenseService,
-    RepositoryService,
-    REPOSITORY_ID_PARAM,
-    service,
-    SecurityContextService,
     OntoToastrService,
+    REPOSITORY_ID_PARAM,
+    RepositoryContextService,
+    RepositoryService,
+    SecurityContextService,
+    service,
+    ShepherdService,
     WindowService,
-    isHomePage,
-    GuidesService as NewGuidesService,
 } from '@ontotext/workbench-api';
 import {EventConstants} from './utils/event-constants';
 import {CookieConsent} from './models/cookie-policy/cookie-consent';
+import {GuideUtils} from './guides/guide-utils';
+import {YasguiComponentDirectiveUtil} from './core/directives/yasgui-component/yasgui-component-directive.util';
 
 angular
     .module('graphdb.workbench.se.controllers', [
@@ -199,12 +203,12 @@ function homeCtrl($scope,
 mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', '$location', '$repositories', '$rootScope',
     'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'RepositoriesRestService',
     'MonitoringRestService', 'SparqlRestService', '$sce', 'LocalStorageAdapter', 'LSKeys', '$translate', 'UriUtils', '$q', 'GuidesService', '$route', '$window', 'TrackingService',
-    'WorkbenchContextService', 'AutocompleteService'];
+    'WorkbenchContextService', 'AutocompleteService', '$interpolate', 'toastr', 'EventEmitterService'];
 
 function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories, $rootScope,
     productInfo, $timeout, ModalService, $interval, $filter, RepositoriesRestService,
     MonitoringRestService, SparqlRestService, $sce, LocalStorageAdapter, LSKeys, $translate, UriUtils, $q, GuidesService, $route, $window, TrackingService,
-    WorkbenchContextService, AutocompleteService) {
+    WorkbenchContextService, AutocompleteService, $interpolate, toastr, EventEmitterService) {
     // =========================
     // Private variables
     // =========================
@@ -825,6 +829,40 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         }
     };
 
+    /**
+     * Part of the micro-frontend guide-sync protocol (see ShepherdService class JSDoc).
+     * Captures whether the legacy-workbench is the frontend being loaded in this transition.
+     */
+    const onApplicationsStateBeforeChangedHandler = (applicationsState) => {
+        const isThisFELoading = applicationsState?.isLegacyAngularLoaded() ?? false;
+        if (isThisFELoading) {
+            updateGuideServices();
+        }
+    };
+
+    /**
+     * Part of the micro-frontend guide-sync protocol (see ShepherdService class JSDoc).
+     *
+     * Injects all AngularJS-specific services into GuideApi so they are ready before
+     * the pending guide step is shown. Called only when this frontend is the one being loaded.
+     */
+    const updateGuideServices = () => {
+        const guidesApi = service(GuideApi);
+        guidesApi.GuideUtils = GuideUtils;
+        guidesApi.YasguiComponentUtil = YasguiComponentDirectiveUtil;
+        guidesApi.toastr = toastr;
+        guidesApi.ShepherdService = ShepherdService;
+        guidesApi.GuidesService = GuidesService;
+        guidesApi.EventEmitterService = EventEmitterService;
+
+        guidesApi.$repositories = $repositories;
+        guidesApi.$translate = $translate;
+        guidesApi.$interpolate = $interpolate;
+        guidesApi.$rootScope = $rootScope;
+        guidesApi.$route = $route;
+        guidesApi.$timeout = $timeout;
+    };
+
     const setRepositoryIdParam = (repositoryId) => {
         $location.search(REPOSITORY_ID_PARAM, repositoryId).replace();
     };
@@ -1083,6 +1121,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
      */
     window.addEventListener('storage', localStoreChangeHandler);
 
+    const onAppStateBeforeChangeSubscription = service(ApplicationLifecycleContextService).onApplicationsStateBeforeChange(onApplicationsStateBeforeChangedHandler);
     const onAppDataLoaded = service(ApplicationLifecycleContextService).onApplicationDataStateChanged(onApplicationDataStateChangedHandler);
 
     // subscribe to repository changes, once we are certain they are loaded
@@ -1094,6 +1133,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         onSelectedRepositoryChangedSubscription?.();
         cookieConsentChangedSubscription?.();
         licenseUpdatedSubscription?.();
+        onAppStateBeforeChangeSubscription?.();
         onAppDataLoaded?.();
         onLogoutSubscription?.();
         onLoginSubscription?.();

@@ -1,6 +1,7 @@
 import {
   navigateToUrl,
 } from 'single-spa';
+import { ApplicationNames, ApplicationMountState } from '@ontotext/workbench-api';
 
 export type AppModule = () => Promise<any>;
 
@@ -22,7 +23,7 @@ export interface NavigationEvent extends CustomEvent {
 
 export interface AppChangeEvent extends CustomEvent {
   detail: {
-    newAppStatuses: any;
+    newAppStatuses: Record<ApplicationNames, ApplicationMountState>;
   };
 }
 

@@ -24,7 +24,7 @@ import {
   MainMenuExtensionPoint,
   RouteExtensionPoint,
   InteractiveGuideExtensionPoint,
-  ThemesExtensionPoint
+  ThemesExtensionPoint, ApplicationsState,
 } from '@ontotext/workbench-api';
 import './onto-vendor';
 import './styles/onto-stylesheet.scss';
@@ -81,17 +81,38 @@ function registerSingleSpaRouterListeners(): void {
   }
   window.__singleSpaRouterListenersRegistered = true;
 
+  WindowService.getWindow().addEventListener('single-spa:before-app-change', (evt: any) => {
+    // 1st event emitted by SingleSpa, next is single-spa:before-routing-event
+    const d = (evt as AppChangeEvent).detail;
+    const applicationsState = new ApplicationsState(d.newAppStatuses);
+    const previousApplicationsState = service(ApplicationLifecycleContextService).getApplicationsState();
+    // Only propagate when the mounted set actually changes to avoid spurious guide-sync triggers.
+    if (!applicationsState.equals(previousApplicationsState)) {
+      service(ApplicationLifecycleContextService).updateApplicationsStateBeforeChange(applicationsState);
+    }
+  });
+
   WindowService.getWindow().addEventListener('single-spa:before-routing-event', (evt: Event) => {
+    // 2nd event emitted by SingleSpa, next is single-spa:before-mount-routing-event
     const d = (evt as NavigationEvent).detail;
     service(EventService).emit(new NavigationStart(d.oldUrl, d.newUrl, d.cancelNavigation));
   });
 
   WindowService.getWindow().addEventListener('single-spa:before-mount-routing-event', (evt: Event) => {
+    // 3rd event emitted by SingleSpa, next is single-spa:before-first-mount
     const d = (evt as AppChangeEvent).detail;
-    service(ApplicationLifecycleContextService).updateNavigationBeforeMountRouting(d);
+    service(ApplicationLifecycleContextService).updateNavigationBeforeMountRouting(new ApplicationsState(d.newAppStatuses));
+  });
+
+  WindowService.getWindow().addEventListener('single-spa:app-change', (evt: Event) => {
+    // 6th event emitted by SingleSpa — signals that all mounting/unmounting is complete.
+    // Resolves any guide step that was waiting for the new frontend to finish mounting.
+    const d = (evt as AppChangeEvent).detail;
+    service(ApplicationLifecycleContextService).updateApplicationsState(new ApplicationsState(d.newAppStatuses));
   });
 
   WindowService.getWindow().addEventListener('single-spa:routing-event', (evt: Event) => {
+    // 7th (last) event emitted by SingleSpa, previous is single-spa:app-change or single-spa:no-app-change
     const d = (evt as NavigationEvent).detail;
     service(EventService).emit(new NavigationEnd(d.oldUrl, d.newUrl));
   });
