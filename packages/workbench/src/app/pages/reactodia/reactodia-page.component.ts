@@ -1,5 +1,11 @@
-import {Component, OnDestroy, OnInit, signal} from '@angular/core';
-import {LanguageContextService, RepositoryContextService, service, SubscriptionList} from '@ontotext/workbench-api';
+import {Component, inject, OnDestroy, OnInit, signal} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
+import {
+  LanguageContextService,
+  RepositoryContextService,
+  service,
+  SubscriptionList
+} from '@ontotext/workbench-api';
 import {
   ReactodiaComponentFacadeComponent
 } from '../../components/reactodia-component-facade/reactodia-component-facade.component';
@@ -24,14 +30,20 @@ import {PageLayoutComponent} from '../../components/page-layout/page-layout.comp
 export class ReactodiaPageComponent implements OnInit, OnDestroy {
   private readonly repositoryContextService = service(RepositoryContextService);
   private readonly languageContextService = service(LanguageContextService);
+  private readonly activatedRoute = inject(ActivatedRoute);
 
   private readonly subscriptions = new SubscriptionList();
 
-  /** The active repository id; gates the banner vs. the Reactodia component. */
   readonly currentRepository = signal('');
   readonly language = signal(this.languageContextService.getSelectedLanguage());
+  readonly seedIris = signal<string[]>([]);
 
   ngOnInit(): void {
+    this.initSubscriptions();
+    this.initSeedFromQueryParams();
+  }
+
+  private initSubscriptions() {
     this.subscriptions.addAll([
       this.subscribeToRepositoryChanged(),
       this.subscribeToLanguageChanged()
@@ -54,5 +66,14 @@ export class ReactodiaPageComponent implements OnInit, OnDestroy {
     return this.repositoryContextService.onSelectedRepositoryChanged((repository) => {
       this.currentRepository.set(repository?.id || '');
     });
+  }
+
+  /**
+   * Reads the `uri` (start resource) query param and forwards it as the seed for the diagram. When
+   * no `uri` is provided (e.g. the page is opened directly), the diagram starts empty.
+   */
+  private initSeedFromQueryParams(): void {
+    const uri = this.activatedRoute.snapshot.queryParams['uri'];
+    this.seedIris.set(uri ? [uri] : []);
   }
 }
