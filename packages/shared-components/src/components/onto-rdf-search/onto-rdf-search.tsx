@@ -124,7 +124,16 @@ export class OntoRdfSearch {
             this.resourceSearchStorageService.setSelectedView(ResourceSearchConstants.VISUAL_VIEW);
           },
           false
-        )
+        ),
+        this.createSearchButton(
+          ResourceSearchConstants.REACTODIA_VIEW,
+          'rdf_search.buttons.reactodia',
+          () => {
+            this.redirectUrl = UriUtil.REACTODIA_URL;
+            this.resourceSearchStorageService.setSelectedView(ResourceSearchConstants.REACTODIA_VIEW);
+          },
+          false
+        ),
       ]
     });
   }
