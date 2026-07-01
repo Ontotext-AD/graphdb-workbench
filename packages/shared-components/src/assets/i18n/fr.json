@@ -178,7 +178,8 @@
     },
     "buttons": {
       "table": "Tableau",
-      "visual": "Visuel"
+      "visual": "VizGraph ",
+      "reactodia": "Reactodia "
     },
     "tooltips": {
       "close_search_area": "Fermer la recherche",

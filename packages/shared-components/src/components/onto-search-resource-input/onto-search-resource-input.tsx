@@ -132,7 +132,7 @@ export class OntoSearchResourceInput {
           {this.buttonConfig?.getButtons().getItems().map((button) => (
             <button key={button.label}
               onClick={this.handleButtonClick(button)}
-              class={`${button.selected ? 'selected' : ''}`}>{button.label}</button>
+              class={`onto-btn ${button.selected ? 'onto-btn-primary' : 'onto-btn-secondary'}`}>{button.label}</button>
           ))}
         </div>
         <span class="hint">{TranslationService.translate('rdf_search.labels.hint')}</span>

@@ -1492,7 +1492,8 @@ input.switch:checked ~ label:hover:after {
     }
 
     .display-type-table-btn.active,
-    .display-type-visual-btn.active {
+    .display-type-visual-btn.active,
+    .display-type-reactodia-btn.active {
         color: var(--gw-button-primary-hover-color);
         background-color: var(--gw-button-primary-background);
         border-color: var(--gw-button-primary-border-color);
