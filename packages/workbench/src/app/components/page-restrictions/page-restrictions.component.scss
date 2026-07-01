@@ -1,0 +1,7 @@
+.page-restrictions {
+  margin-top: 1em;
+
+  &:empty {
+    margin-top: 0;
+  }
+}
