@@ -167,6 +167,12 @@ function ExploreCtrl(
             .search('config', payload.graphConfig?.id);
     };
 
+    $scope.goToReactodia = () => {
+        $location
+            .path('reactodia')
+            .search('uri', $scope.resourceInfo.uri);
+    };
+
     $scope.fetchGraphConfigs = () => {
         return () => graphConfigService.getGraphConfigs().then((graphConfigs) => graphConfigs.getItems());
     };
