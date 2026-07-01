@@ -5,10 +5,11 @@ import {BuildUtil} from './build-util';
  */
 export class UriUtil {
   private static readonly ABS_URI_REGEX = /^<?(http|urn).*>?/;
-  static GRAPHS_VISUALIZATIONS_URL = 'graphs-visualizations';
-  static RESOURCE_URL = 'resource';
-  static BASE_DOCUMENTATION_URL = 'https://graphdb.ontotext.com/documentation/';
-  static LATEST_UNOFFICIAL_VERSION = 'master';
+  static readonly GRAPHS_VISUALIZATIONS_URL = 'graphs-visualizations';
+  static readonly RESOURCE_URL = 'resource';
+  static readonly REACTODIA_URL = 'reactodia';
+  static readonly BASE_DOCUMENTATION_URL = 'https://graphdb.ontotext.com/documentation/';
+  static readonly LATEST_UNOFFICIAL_VERSION = 'master';
 
   /**
    * Shortens an IRI (Internationalized Resource Identifier) by extracting the hostname and port.

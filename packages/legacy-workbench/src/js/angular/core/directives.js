@@ -255,7 +255,7 @@ function multiRequired() {
     };
 }
 
-const SEARCH_DISPLAY_TYPE = {table: 'table', visual: 'visual'};
+const SEARCH_DISPLAY_TYPE = {table: 'table', visual: 'visual', reactodia: 'reactodia'};
 
 searchResourceInput.$inject = ['$location', 'toastr', 'ClassInstanceDetailsService', 'AutocompleteRestService', '$rootScope', '$q', '$sce', 'LocalStorageAdapter', 'LSKeys', '$repositories', '$translate'];
 
@@ -292,6 +292,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             const SEARCH_INPUT_FIELD = element.find('.view-res-input');
             $scope.textButtonLabel = $scope.textButton || 'query.editor.table.btn';
             $scope.visualButtonLabel = $scope.visualButton || 'query.editor.visual.btn';
+            $scope.reactodiaButtonLabel = 'query.editor.reactodia.radio.btn';
             const resourceSearchStorage = service(ResourceSearchStorageService);
 
             // use a global var to keep old uri in order to change it when a new one appears
@@ -360,7 +361,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             const defaultTextCallback = function(params) {
                 const param = params.type || 'uri';
                 if ($scope.openInNewTab === 'true') {
-                    openInNewWindowTab(false, params);
+                    openInNewWindowTab('resource', params);
                 } else {
                     $location.path('resource').search(param, params.uri);
                 }
@@ -369,14 +370,22 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             const defaultVisualCallback = function(params) {
                 const param = params.type || 'uri';
                 if ($scope.openInNewTab === 'true') {
-                    openInNewWindowTab(true, params);
+                    openInNewWindowTab('graphs-visualizations', params);
                 } else {
                     $location.path('graphs-visualizations').search(param, params.uri);
                 }
             };
 
-            const openInNewWindowTab = function(visual, params) {
-                const view = visual ? 'graphs-visualizations' : 'resource';
+            const defaultReactodiaCallback = function(params) {
+                const param = params.type || 'uri';
+                if ($scope.openInNewTab === 'true') {
+                    openInNewWindowTab('reactodia', params);
+                } else {
+                    $location.path('reactodia').search(param, params.uri);
+                }
+            };
+
+            const openInNewWindowTab = function(view, params) {
                 window.open(`${view}?uri=${encodeURIComponent(params.uri)}`);
             };
 
@@ -387,6 +396,8 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             if (angular.isUndefined(attrs.$attr.visualCallback)) {
                 $scope.visualCallback = defaultVisualCallback;
             }
+
+            $scope.reactodiaCallback = defaultReactodiaCallback;
 
             if (attrs.$attr.textButton && !$scope.textButton) {
                 $scope.textCallback = $scope.visualCallback;
@@ -457,7 +468,9 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             };
 
             $scope.searchRdfResourceByEvent = function(uri, event) {
-                if ($scope.searchType === SEARCH_DISPLAY_TYPE.visual || event.ctrlKey || event.metaKey) {
+                if ($scope.searchType === SEARCH_DISPLAY_TYPE.reactodia) {
+                    $scope.searchRdfResource(uri, $scope.reactodiaCallback);
+                } else if ($scope.searchType === SEARCH_DISPLAY_TYPE.visual || event.ctrlKey || event.metaKey) {
                     $scope.searchRdfResource(uri, $scope.visualCallback);
                 } else {
                     $scope.searchRdfResource(uri, $scope.textCallback);
@@ -499,7 +512,9 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             };
 
             $scope.checkIfValidAndSearchEvent = function(event) {
-                if ($scope.searchType === SEARCH_DISPLAY_TYPE.visual || event.ctrlKey || event.metaKey) {
+                if ($scope.searchType === SEARCH_DISPLAY_TYPE.reactodia) {
+                    checkIfValidAndSearch($scope.reactodiaCallback);
+                } else if ($scope.searchType === SEARCH_DISPLAY_TYPE.visual || event.ctrlKey || event.metaKey) {
                     checkIfValidAndSearch($scope.visualCallback);
                 } else {
                     checkIfValidAndSearch($scope.textCallback);

@@ -1,6 +1,4 @@
 import {RdfSearchSteps} from "../../steps/rdf-search/rdf-search-steps";
-import {BaseSteps} from "../../steps/base-steps";
-import {NavbarSteps} from "../../steps/navbar/navbar-steps";
 
 describe('RDF Search', () => {
 
@@ -28,10 +26,10 @@ describe('RDF Search', () => {
     RdfSearchSteps.getSearchArea().should('be.visible');
     // And the search icon should not be visible
     RdfSearchSteps.getSearchIcon().should('not.exist');
-    // And I should see 2 radio buttons for Table and Visual display
-    const buttons = ['Table', 'Visual'];
+    // And I should see 3 radio buttons for Table and Visual display
+    const buttons = ['Table', 'VizGraph', 'Reactodia'];
     // And the Table button should be selected
-    const classes = ['selected', ''];
+    const classes = ['onto-btn-primary', 'onto-btn-secondary', 'onto-btn-secondary'];
     RdfSearchSteps.getSearchAreaButtons().each(($button, index) => {
       cy.wrap($button)
         .should('have.text', buttons[index])
