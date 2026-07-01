@@ -1,4 +1,4 @@
-import {Component, CUSTOM_ELEMENTS_SCHEMA, input} from '@angular/core';
+import {Component, computed, CUSTOM_ELEMENTS_SCHEMA, input} from '@angular/core';
 import {defineCustomElements} from 'graphwise-reactodia/loader';
 import {Rdf4jRepositoryService, service} from '@ontotext/workbench-api';
 import {LoggerProvider} from '../../services/logger/logger-provider';
@@ -39,6 +39,8 @@ export class ReactodiaComponentFacadeComponent {
   readonly currentRepository = input.required<string>();
   /** The selected UI language passed to the web component. */
   readonly language = input<string>();
+  /** The resource IRIs the diagram starts from (Reactodia's `seed`). */
+  readonly seedIris = input<string[]>([]);
 
   /**
    * Transport for Reactodia's SPARQL requests. Reactodia chooses the `Accept` per query
@@ -50,4 +52,9 @@ export class ReactodiaComponentFacadeComponent {
     this.rdf4jRepositoryService
       .executeSparqlRequest(params.url, params.body ?? '', params.headers['Accept'])
       .catch((error) => this.logger.error('Failed to execute query', error));
+
+  readonly config = computed(() => ({
+    queryFunction: this.queryFunction,
+    seedIris: this.seedIris()
+  }));
 }
