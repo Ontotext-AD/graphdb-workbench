@@ -147,4 +147,12 @@ export class ResourceSteps {
     static getDataTable() {
         return cy.get('.dataTable');
     }
+
+    static getVisualizeReactodiaButton() {
+        return cy.getByTestId('visualize-reactodia-button');
+    }
+
+    static clickOnVisualizeReactodiaButton() {
+        ResourceSteps.getVisualizeReactodiaButton().click();
+    }
 }

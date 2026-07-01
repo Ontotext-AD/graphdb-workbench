@@ -35,6 +35,13 @@
                 ng-click="changeSearchType(searchDisplayType.visual)">
             {{visualButtonLabel | translate}}
         </button>
+        <button class="btn btn-secondary display-type-reactodia-btn"
+                ng-model="searchType"
+                uib-btn-radio="searchDisplayType.reactodia"
+                data-test="display-reactodia-button"
+                ng-click="changeSearchType(searchDisplayType.reactodia)">
+            {{reactodiaButtonLabel | translate}}
+        </button>
     </span>
 </div>
 <span class="autocomplete-hint text-muted">{{'query.editor.autocomplete.hint' | translate}}</span>
