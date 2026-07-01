@@ -129,6 +129,13 @@
                 ngce-prop-fetch_graph_configs="fetchGraphConfigs"
                 ngce-on-graph_explore="goToGraphsViz($event)">
             </onto-graph-explore-split-button>
+            <button type="button"
+                    class="btn btn-sm btn-secondary"
+                    data-test="visualize-reactodia-button"
+                    ng-class="loading ? 'disabled' : ''"
+                    ng-click="goToReactodia()">
+                {{'query.editor.reactodia.btn' | translate}}
+            </button>
         </div>
     </div>
 

@@ -9,6 +9,7 @@ import {YasguiSteps} from "../../steps/yasgui/yasgui-steps";
 import {JsonLdModalSteps} from "../../steps/json-ld-modal-steps";
 import {GraphConfigStubs} from '../../stubs/graph-config-stubs.js';
 import {VisualGraphSplitButtonSteps} from '../../steps/visual-graph-split-button-steps.js';
+import {ReactodiaSteps} from '../../steps/reactodia-steps.js';
 
 const FILE_TO_IMPORT = 'resource-test-data.ttl';
 const SUBJECT_RESOURCE_ENCODED = 'http:%2F%2Fexample.com%2Fontology%23CustomerLoyalty';
@@ -75,6 +76,18 @@ describe('Resource view', () => {
         VisualGraphSteps.verifyUrl();
     });
 
+    it('should open reactodia view when click on the "Visualize Reactodia" button', () => {
+        // When I am on resource view and page loaded a resource.
+        ResourceSteps.visit(`uri=${SUBJECT_RESOURCE_ENCODED}`);
+
+        // When I click on "Visualize Reactodia" button.
+        ResourceSteps.clickOnVisualizeReactodiaButton();
+
+        // Then I expect to be redirected to the reactodia view with the resource as the start uri.
+        ReactodiaSteps.verifyUrl();
+        ReactodiaSteps.verifyStartResourceUri(SUBJECT_RESOURCE);
+    });
+
     it('should open graphs-visualizations view when select a graph configuration', () => {
         // When I am on resource view and page loaded a resource.
         ResourceSteps.visit(`uri=${SUBJECT_RESOURCE_ENCODED}&role=subject`);
@@ -120,7 +133,7 @@ describe('Resource view', () => {
         YasrSteps.getResults().should('have.length', 24);
     });
 
-    context('Same as', () => {
+    describe('Same as', () => {
 
         it('should display sameAs button when is enabled by user settings', () => {
             // When I am on resource view and page loaded a resource that has triplets in explicit and implicit context,
@@ -190,7 +203,7 @@ describe('Resource view', () => {
         });
     });
 
-    context('Role tabs', () => {
+    describe('Role tabs', () => {
 
         it('should list the triples of a resource used as subject', () => {
             // When I am on resource view,
@@ -342,7 +355,7 @@ describe('Resource view', () => {
         });
     });
 
-    context('Triple resource', () => {
+    describe('Triple resource', () => {
         it('should show triple resource', () => {
             // When I visit resource view with triple resource.
             ResourceSteps.visit(`triple=${TRIPLE_RESOURCE}&role=subject`);
@@ -381,7 +394,7 @@ describe('Resource view', () => {
         });
     });
 
-    context('Download as', () => {
+    describe('Download as', () => {
         it('should download as JSON-LD and then restore defaults', () => {
             // Given I am in the Resource view
             ResourceSteps.visit(`uri=${SUBJECT_RESOURCE_ENCODED}&role=subject`);
