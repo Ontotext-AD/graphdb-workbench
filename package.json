@@ -115,6 +115,7 @@
     "dependencies": {
         "@single-spa/import-map-injector": "^2.0.2",
         "graphdb-workbench-plugins": "^0.0.1-TR35",
+        "graphwise-reactodia": "^0.0.1-TR6",
         "import-map-overrides": "^6.1.0"
     }
 }
