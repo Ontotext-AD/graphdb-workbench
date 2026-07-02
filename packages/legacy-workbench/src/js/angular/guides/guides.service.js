@@ -410,7 +410,7 @@ function GuidesService(
             ShepherdService,
             GuidesService: this,
             $repositories,
-            YasguiComponentDirectiveUtil,
+            YasguiComponentUtil: YasguiComponentDirectiveUtil,
             EventEmitterService,
             translate: this.translate,
             RoutingUtil: {
