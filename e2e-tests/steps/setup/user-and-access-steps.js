@@ -169,8 +169,12 @@ export class UserAndAccessSteps {
         return cy.get('#user-repos');
     }
 
-    static clickWriteAccess() {
-        cy.get('.write').click();
+    static getRepositoryRightsLine(repoName) {
+        if (repoName === '*') {
+            return this.getRepositoryRightsList().find('.any-repo');
+        } else {
+            return this.getRepositoryRightsList().contains(repoName).parent('tr');
+        }
     }
 
     static getCustomRoleFieldError() {
@@ -186,7 +190,7 @@ export class UserAndAccessSteps {
     }
 
     static getRepositoryRightsError() {
-        return cy.get('#user-repos [ng-show="repositoryCheckError"].form-control-feedback');
+        return this.getRepositoryRightsList().find('[ng-show="repositoryCheckError"].form-control-feedback');
     }
 
     static getError() {
@@ -230,50 +234,14 @@ export class UserAndAccessSteps {
     }
 
     static clickGraphqlAccessAny() {
-        cy.get('#user-repos')
-            .contains('Any data repository')
-            .parent('tr')
+        this.getRepositoryRightsLine('*')
             .find('.graphql')
             .realClick();
     }
 
     static clickGraphqlAccessRepo(repoName) {
-        cy.get('#user-repos')
-            .contains(repoName)
-            .parent('tr')
+        this.getRepositoryRightsLine(repoName)
             .find('.graphql')
-            .realClick();
-    }
-
-    static clickReadAccessAny() {
-        cy.get('#user-repos')
-            .contains('Any data repository')
-            .parent('tr')
-            .find('.read')
-            .realClick();
-    }
-
-    static clickReadAccessRepo(repoName) {
-        cy.get('#user-repos')
-            .contains(repoName)
-            .parent('tr')
-            .find('.read')
-            .realClick();
-    }
-
-    static clickWriteAccessAny() {
-        cy.get('#user-repos')
-            .contains('Any data repository')
-            .parent('tr')
-            .find('.write')
-            .realClick();
-    }
-
-    static clickWriteAccessRepo(repoName) {
-        cy.get('#user-repos')
-            .contains(repoName)
-            .parent('tr')
-            .find('.write')
             .realClick();
     }
 
@@ -314,40 +282,94 @@ export class UserAndAccessSteps {
         cy.get('#wb-user-submit').click();
     }
 
+    static validateRightsForRepo(repoName, checkbox, expectedState) {
+        const {checked, disabled} = expectedState;
+        if (checked === true) {
+            checkbox.should('be.checked');
+        } else if (checked === false) {
+            checkbox.should('not.be.checked');
+        }
+        if (disabled === true) {
+            checkbox.should('be.disabled');
+        } else if (disabled === false) {
+            checkbox.should('not.be.disabled');
+        }
+    }
+
+    // ============= Read Access Toggles and Validations =============
+
     static getReadAccessForRepo(repoName) {
-        const matchText = (repoName === '*') ? 'Any data repository' : repoName;
-        return cy.get('#user-repos')
-            .contains(matchText)
-            .parent('tr')
+        return this.getRepositoryRightsLine(repoName)
             .find('.read')
+    }
+
+    static toggleReadAccessAny() {
+        UserAndAccessSteps.toggleReadAccessForRepo('*');
     }
 
     static toggleReadAccessForRepo(repoName) {
         return this.getReadAccessForRepo(repoName).realClick();
     }
 
+    static validateReadAccessForRepo(repoName, expectedState) {
+        const readAccessCheckbox = this.getReadAccessForRepo(repoName);
+        this.validateRightsForRepo(repoName, readAccessCheckbox, expectedState);
+    }
+
+    // ============= Write Access Toggles and Validations =============
+
     static getWriteAccessForRepo(repoName) {
-        const matchText = (repoName === '*') ? 'Any data repository' : repoName;
-        return cy.get('#user-repos')
-            .contains(matchText)
-            .parent('tr')
+        return this.getRepositoryRightsLine(repoName)
             .find('.write')
+    }
+
+    static toggleWriteAccessAny() {
+        UserAndAccessSteps.toggleWriteAccessForRepo('*');
     }
 
     static toggleWriteAccessForRepo(repoName) {
         return this.getWriteAccessForRepo(repoName).realClick();
     }
 
+    static validateWriteAccessForRepo(repoName, expectedState) {
+        const writeAccessCheckbox = this.getWriteAccessForRepo(repoName);
+        this.validateRightsForRepo(repoName, writeAccessCheckbox, expectedState);
+    }
+
+    // ============= Manange Repository Access Toggles and Validations =============
+
+    static getManageAccessRepoCheckbox(repoName) {
+        return this.getRepositoryRightsLine(repoName)
+            .find('.manage-repository');
+    }
+
+    static clickManageAccessRepo(repoName) {
+        UserAndAccessSteps.getManageAccessRepoCheckbox(repoName).realClick();
+    }
+
+    static toggleManageRepoForRepo(repoName) {
+        return this.clickManageAccessRepo(repoName);
+    }
+
+    static validateManageAccessForRepo(repoName, expectedState) {
+        const manageAccessCheckbox = this.getManageAccessRepoCheckbox(repoName);
+        this.validateRightsForRepo(repoName, manageAccessCheckbox, expectedState);
+    }
+
+    // ============= GraphQL Access Toggles and Validations =============
+
     static getGraphqlAccessForRepo(repoName) {
-        const matchText = (repoName === '*') ? 'Any data repository' : repoName;
-        return cy.get('#user-repos')
-            .contains(matchText)
-            .parent('tr')
+        return this.getRepositoryRightsLine(repoName)
             .find('.graphql')
     }
 
     static toggleGraphqlAccessForRepo(repoName) {
         return this.getGraphqlAccessForRepo(repoName).realClick();
+    }
+
+    static validateGraphqlAccessForRepo(repoName, expectedState) {
+        const graphqlAccessCheckbox = this.getGraphqlAccessForRepo(repoName);
+        this.validateRightsForRepo(repoName, graphqlAccessCheckbox, expectedState);
     }
 
     static clickMenuItem(label) {

@@ -14,15 +14,20 @@
     width: 15%;
 }
 
-.wb-user .write-column,
-.wb-user .write-rights,
-.wb-user .write-any {
-    border-right: 1px solid #eceeef;
+.wb-user .manage-repository-column {
+    width: 15%;
 }
 
 .wb-user .graphql-column {
     width: 15%;
 }
+
+.wb-user .graphql-column,
+.wb-user .graphql-rights,
+.wb-user .graphql-any {
+    border-left: 1px solid #eceeef;
+}
+
 .wb-user .table-fixed {
     table-layout: fixed;
     width: 100%;
