@@ -24,8 +24,8 @@ describe('Repository Admin – Permissions and Access Control', () => {
         UserAndAccessSteps.typeConfirmPasswordField(password);
         UserAndAccessSteps.selectRoleRadioButton('#roleRepoAdmin');
 
-        UserAndAccessSteps.getReadAccessForRepo('*').should('be.checked').and('be.disabled');
-        UserAndAccessSteps.getWriteAccessForRepo('*').should('be.checked').and('be.disabled');
+        UserAndAccessSteps.validateReadAccessForRepo('*', {checked: true, disabled: true});
+        UserAndAccessSteps.validateWriteAccessForRepo('*', {checked: true, disabled: true});
 
         UserAndAccessSteps.confirmUserCreate();
         UserAndAccessSteps.toggleSecurity();

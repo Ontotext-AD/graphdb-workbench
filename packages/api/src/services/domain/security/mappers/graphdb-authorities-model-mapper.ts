@@ -12,11 +12,11 @@ export const mapGraphdbAuthoritiesResponseToModel: MapperFn<AuthorityList, Graph
   }
 
   const customAuthorities: string[] = [];
-  const repoMap: Record<string, { read: boolean, write: boolean, graphql: boolean }> = {};
+  const repoMap: Record<string, { read: boolean, write: boolean, manage: boolean, graphql: boolean }> = {};
   // Helper to ensure a fresh entry for each repository.
   const getOrCreateRepo = (repoId: string) => {
     if (!repoMap[repoId]) {
-      repoMap[repoId] = {read: false, write: false, graphql: false};
+      repoMap[repoId] = {read: false, write: false, manage: false, graphql: false};
     }
     return repoMap[repoId];
   };
@@ -39,6 +39,8 @@ export const mapGraphdbAuthoritiesResponseToModel: MapperFn<AuthorityList, Graph
         if (repo === '*') {
           isWriteAll = true;
         }
+      } else if (prefix === Authority.MANAGE_REPO_PREFIX) {
+        entry.manage = true;
       } else if (prefix === Authority.GRAPHQL_PREFIX) {
         entry.graphql = true;
         if (repo === '*') {
@@ -53,24 +55,27 @@ export const mapGraphdbAuthoritiesResponseToModel: MapperFn<AuthorityList, Graph
   const graphDBAuthorities: string[] = [];
   Object.keys(repoMap).forEach((repoId) => {
     const perms = repoMap[repoId];
-    if (perms.graphql || isGraphqlAll) {
+    if (perms.manage) {
+      graphDBAuthorities.push(
+        `${Authority.MANAGE_REPO_PREFIX}${repoId}`,
+        `${Authority.WRITE_REPO_PREFIX}${repoId}`,
+        `${Authority.READ_REPO_PREFIX}${repoId}`);
+    } else if (perms.graphql || isGraphqlAll) {
       if (perms.write || isWriteAll) {
         graphDBAuthorities.push(
           `${Authority.WRITE_REPO_PREFIX}${repoId}${GRAPHQL_SUFFIX_WITH_DELIMITER}`,
-          `${Authority.READ_REPO_PREFIX}${repoId}${GRAPHQL_SUFFIX_WITH_DELIMITER}`
+          `${Authority.READ_REPO_PREFIX}${repoId}${GRAPHQL_SUFFIX_WITH_DELIMITER}`,
         );
       } else if (perms.read || isReadAll) {
         graphDBAuthorities.push(`${Authority.READ_REPO_PREFIX}${repoId}${GRAPHQL_SUFFIX_WITH_DELIMITER}`);
       }
-    } else {
-      if (perms.write) {
-        graphDBAuthorities.push(
-          `${Authority.WRITE_REPO_PREFIX}${repoId}`,
-          `${Authority.READ_REPO_PREFIX}${repoId}`
-        );
-      } else if (perms.read) {
-        graphDBAuthorities.push(`${Authority.READ_REPO_PREFIX}${repoId}`);
-      }
+    } else if (perms.write) {
+      graphDBAuthorities.push(
+        `${Authority.WRITE_REPO_PREFIX}${repoId}`,
+        `${Authority.READ_REPO_PREFIX}${repoId}`,
+      );
+    } else if (perms.read) {
+      graphDBAuthorities.push(`${Authority.READ_REPO_PREFIX}${repoId}`);
     }
   });
 

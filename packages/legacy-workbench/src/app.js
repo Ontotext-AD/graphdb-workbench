@@ -34,6 +34,7 @@ import {
     LanguageContextService,
     ByteUtils,
 } from "@ontotext/workbench-api";
+import 'ng-tags-input/build/ng-tags-input.min';
 
 // $translate.instant converts <b> from strings to &lt;b&gt
 // and $sce.trustAsHtml could not recognise that this is valid html
@@ -68,6 +69,7 @@ const modules = [
     'graphdb.framework.core.services.language-service',
     'graphdb.framework.core.filters.searchFilter',
     'graphdb.framework.core.filters.bytes',
+    'ngTagsInput',
 ];
 
 const providers = [
@@ -81,6 +83,7 @@ const providers = [
     '$templateRequestProvider',
     '$translateProvider',
     '$languageServiceProvider',
+    'tagsInputConfigProvider',
 ];
 
 const workbench = angular.module('graphdb.workbench', modules);
@@ -91,7 +94,9 @@ const moduleDefinition = function(productInfo, translations) {
 
     workbench.config([...providers,
         function($routeProvider, $locationProvider, $menuItemsProvider, toastrConfig, localStorageServiceProvider,
-                  $uibTooltipProvider, $httpProvider, $templateRequestProvider, $translateProvider, $languageServiceProvider) {
+                  $uibTooltipProvider, $httpProvider, $templateRequestProvider, $translateProvider, $languageServiceProvider, tagsInputConfigProvider) {
+            tagsInputConfigProvider.setActiveInterpolation('tagsInput', {placeholder: true});
+
             if (translations && Object.keys(translations).length > 0) {
                 // If translations data is provided, iterate over the object and register each language key
                 // and its corresponding translation data with $translateProvider.

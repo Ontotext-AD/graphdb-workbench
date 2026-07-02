@@ -38,8 +38,8 @@ describe('User Management – Creation, Validation, Permissions & Deletion', () 
         it('should show error when username is empty', () => {
             UserAndAccessSteps.typePassword(testPassword);
             UserAndAccessSteps.typeConfirmPasswordField(testPassword);
-            UserAndAccessSteps.clickReadAccessRepo(repositoryId);
-            UserAndAccessSteps.clickWriteAccessRepo(repositoryId);
+            UserAndAccessSteps.toggleReadAccessForRepo(repositoryId);
+            UserAndAccessSteps.toggleWriteAccessForRepo(repositoryId);
             UserAndAccessSteps.confirmUserCreate();
             UserAndAccessSteps.getUserFieldError('username').should('be.visible').and('contain.text', 'Enter username!');
         });
@@ -55,8 +55,8 @@ describe('User Management – Creation, Validation, Permissions & Deletion', () 
             UserAndAccessSteps.typeUsername(testUsername);
             UserAndAccessSteps.typePassword(testPassword);
             UserAndAccessSteps.typeConfirmPasswordField('Different123!');
-            UserAndAccessSteps.clickReadAccessRepo(repositoryId);
-            UserAndAccessSteps.clickWriteAccessRepo(repositoryId);
+            UserAndAccessSteps.toggleReadAccessForRepo(repositoryId);
+            UserAndAccessSteps.toggleWriteAccessForRepo(repositoryId);
             UserAndAccessSteps.confirmUserCreate();
             UserAndAccessSteps.getUserFieldError('confirmPassword').should('be.visible').and('contain.text', 'Confirm password!');
         });
@@ -65,8 +65,8 @@ describe('User Management – Creation, Validation, Permissions & Deletion', () 
             UserAndAccessSteps.typeUsername('user');
             UserAndAccessSteps.typePassword(testPassword);
             UserAndAccessSteps.typeConfirmPasswordField(testPassword);
-            UserAndAccessSteps.clickReadAccessRepo(repositoryId);
-            UserAndAccessSteps.clickWriteAccessRepo(repositoryId);
+            UserAndAccessSteps.toggleReadAccessForRepo(repositoryId);
+            UserAndAccessSteps.toggleWriteAccessForRepo(repositoryId);
             UserAndAccessSteps.confirmUserCreate();
 
             cy.url().should('include', '/users');
@@ -74,7 +74,7 @@ describe('User Management – Creation, Validation, Permissions & Deletion', () 
             UserAndAccessSteps.typeUsername('user');
             UserAndAccessSteps.typePassword(testPassword);
             UserAndAccessSteps.typeConfirmPasswordField(testPassword);
-            UserAndAccessSteps.clickWriteAccessRepo(repositoryId);
+            UserAndAccessSteps.toggleWriteAccessForRepo(repositoryId);
             UserAndAccessSteps.confirmUserCreate();
 
             // Using the toaster from the shared components which has different class names
@@ -96,8 +96,8 @@ describe('User Management – Creation, Validation, Permissions & Deletion', () 
             UserAndAccessSteps.typePassword(testPassword);
             UserAndAccessSteps.typeConfirmPasswordField(testPassword);
             UserAndAccessSteps.addTextToCustomRoleField('a');
-            UserAndAccessSteps.clickReadAccessRepo(repositoryId);
-            UserAndAccessSteps.clickWriteAccessRepo(repositoryId);
+            UserAndAccessSteps.toggleReadAccessForRepo(repositoryId);
+            UserAndAccessSteps.toggleWriteAccessForRepo(repositoryId);
             UserAndAccessSteps.getCustomRoleFieldError().should('be.visible').and('contain.text', 'Must be at least 2 symbols long');
         });
     });
@@ -116,9 +116,9 @@ describe('User Management – Creation, Validation, Permissions & Deletion', () 
             UserAndAccessSteps.typeUsername(rwUsername);
             UserAndAccessSteps.typePassword(testPassword);
             UserAndAccessSteps.typeConfirmPasswordField(testPassword);
-            UserAndAccessSteps.clickReadAccessRepo(repositoryId);
-            UserAndAccessSteps.clickWriteAccessRepo(repositoryId);
-            UserAndAccessSteps.getWriteAccessForRepo(repositoryId).should('be.checked');
+            UserAndAccessSteps.toggleReadAccessForRepo(repositoryId);
+            UserAndAccessSteps.toggleWriteAccessForRepo(repositoryId);
+            UserAndAccessSteps.validateWriteAccessForRepo(repositoryId, {checked: true});
             UserAndAccessSteps.confirmUserCreate();
             UserAndAccessSteps.toggleSecurity();
 
@@ -159,9 +159,9 @@ describe('User Management – Creation, Validation, Permissions & Deletion', () 
             UserAndAccessSteps.typeUsername(roUsername);
             UserAndAccessSteps.typePassword(testPassword);
             UserAndAccessSteps.typeConfirmPasswordField(testPassword);
-            UserAndAccessSteps.clickReadAccessRepo(repositoryId);
-            UserAndAccessSteps.getReadAccessForRepo(repositoryId).should('be.checked');
-            UserAndAccessSteps.getWriteAccessForRepo(repositoryId).should('not.be.checked');
+            UserAndAccessSteps.toggleReadAccessForRepo(repositoryId);
+            UserAndAccessSteps.validateReadAccessForRepo(repositoryId, {checked: true});
+            UserAndAccessSteps.validateWriteAccessForRepo(repositoryId, {checked: false});
             UserAndAccessSteps.confirmUserCreate();
             UserAndAccessSteps.toggleSecurity();
 
