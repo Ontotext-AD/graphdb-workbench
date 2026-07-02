@@ -189,11 +189,7 @@ securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$windo
                                 });
                                 _.each(authorities, function(a) {
                                     // indexOf works in IE 11, startsWith doesn't
-                                    if (a.indexOf(MANAGE_REPO_PREFIX) === 0) {
-                                        if (repoIds.hasOwnProperty(a.substr(11))) {
-                                            defaultAuthorities[MANAGE_REPO][a.substr(11)] = true;
-                                        }
-                                    } else if (a.indexOf(WRITE_REPO_PREFIX) === 0) {
+                                    if (a.indexOf(WRITE_REPO_PREFIX) === 0) {
                                         if (repoIds.hasOwnProperty(a.substr(11))) {
                                             defaultAuthorities[WRITE_REPO][a.substr(11)] = true;
                                         }
@@ -367,7 +363,6 @@ securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 't
                 pushAuthority(UserRole.ROLE_REPO_MANAGER);
             } else {
                 pushAuthority(UserRole.ROLE_USER);
-
                 for (const index in $scope.grantedAuthorities.MANAGE_REPO) {
                     if ($scope.grantedAuthorities.MANAGE_REPO[index]) {
                         $scope.repositoryCheckError = false;
@@ -388,7 +383,7 @@ securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 't
                     }
                 }
                 for (const index in $scope.grantedAuthorities.GRAPHQL) {
-                    if ($scope.grantedAuthorities.GRAPHQL[index]) {
+                    if ($scope.grantedAuthorities.GRAPHQL[index] && $scope.grantedAuthorities.READ_REPO[index]) {
                         pushAuthority(GRAPHQL_PREFIX + index);
                     }
                 }
@@ -437,9 +432,12 @@ securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 't
 
         $scope.hasGraphqlPermission = function(repository) {
             const uniqueKey = repositoryAuthorityService.getLocationSpecificId(repository);
-            return $scope.hasManageRepositoryPermission(repository)
-                || repository.id !== SYSTEM_REPO && $scope.grantedAuthorities.GRAPHQL['*']
-                || $scope.grantedAuthorities.GRAPHQL[uniqueKey];
+            const isManageRepoUser = $scope.hasManageRepositoryPermission(repository);
+            const hasGraphQlPermissions = $scope.grantedAuthorities.GRAPHQL['*'] || $scope.grantedAuthorities.GRAPHQL[uniqueKey];
+            const hasReadWritePermissions = $scope.hasReadPermission(repository);
+            const isSystemRepo = repository.id === SYSTEM_REPO;
+
+            return !isManageRepoUser && (!isSystemRepo && hasGraphQlPermissions && hasReadWritePermissions);
         };
 
         $scope.readCheckDisabled = function(repoOrWildCard) {
@@ -482,11 +480,16 @@ securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 't
                 return true;
             }
 
-            if (repoOrWildCard !== '*' && $scope.grantedAuthorities.GRAPHQL['*']) {
+            const hasReadWildcard = $scope.grantedAuthorities.READ_REPO['*'];
+            const hasWriteWildcard = $scope.grantedAuthorities.WRITE_REPO['*'];
+            const hasGraphqlWildcard = $scope.grantedAuthorities.GRAPHQL['*'];
+
+
+            if (repoOrWildCard !== '*' && hasGraphqlWildcard) {
                 return true;
             }
 
-            if (repoOrWildCard === '*' && $scope.grantedAuthorities.GRAPHQL['*']) {
+            if (repoOrWildCard === '*' && hasGraphqlWildcard && hasReadWildcard) {
                 return false;
             }
 
@@ -497,8 +500,6 @@ securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 't
                 uniqueKey = repoOrWildCard;
             }
 
-            const hasReadWildcard = $scope.grantedAuthorities.READ_REPO['*'];
-            const hasWriteWildcard = $scope.grantedAuthorities.WRITE_REPO['*'];
             const hasReadForRepo = $scope.grantedAuthorities.READ_REPO[uniqueKey];
             const hasWriteForRepo = $scope.grantedAuthorities.WRITE_REPO[uniqueKey];
 

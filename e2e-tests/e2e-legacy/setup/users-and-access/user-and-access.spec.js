@@ -21,10 +21,16 @@ describe('User and Access', () => {
         const user = 'user';
         let repoName;
 
-        beforeEach(() => {
+        before(() => {
             repoName = 'user-access-repo1-' + Date.now();
             cy.createRepository({id: repoName});
+        })
 
+        after(() => {
+            cy.deleteRepository(repoName, true);
+        })
+
+        beforeEach(() => {
             UserAndAccessSteps.visit();
             // Users table should be visible
             UserAndAccessSteps.getUsersTable().should('be.visible');
@@ -34,7 +40,6 @@ describe('User and Access', () => {
         afterEach(() => {
             cy.loginAsAdmin().then(() => {
                 cy.deleteUser(user, true);
-                cy.deleteRepository(repoName, true);
                 cy.switchOffSecurity(true);
                 cy.switchOffFreeAccess(false);
             });
@@ -218,15 +223,35 @@ describe('User and Access', () => {
 
         // Skipped until image with GDB implementation is available
         it.skip('should create user with manage repo rights for specific repo', () => {
+            SecurityStubs.spyOnUserCreate();
             UserAndAccessSteps.getUsersCatalogContainer().should('be.visible');
             createUser(user, PASSWORD, ROLE_USER, {manage: true, repoName: repoName});
+            // Then the user should be created with that custom role
+            cy.wait('@create-user').its('request.body').then((body) => {
+                expect(body).to.deep.eq({
+                    "password": "password",
+                    "grantedAuthorities": [
+                        "ROLE_USER",
+                        `MANAGE_REPO_${repoName}`,
+                        `WRITE_REPO_${repoName}`,
+                        `READ_REPO_${repoName}`
+                    ],
+                    "appSettings": {
+                        "DEFAULT_VIS_GRAPH_SCHEMA": true,
+                        "DEFAULT_INFERENCE": true,
+                        "DEFAULT_SAMEAS": true,
+                        "IGNORE_SHARED_QUERIES": false,
+                        "EXECUTE_COUNT": true
+                    }
+                });
+            });
             UserAndAccessSteps.getUsersCatalogContainer().should('be.visible');
             // TODO: Uncomment when catalog rights are amended
             // assertUserAuthsInCatalog(user, {repo: repoName, read: true, graphql: true});
 
             UserAndAccessSteps.openEditUserPage(user);
             UserAndAccessSteps.getRepositoryRightsList().should('be.visible');
-            verifyCheckedUserAuth(repoName, {read: true, write: true, manage: true, graphql: true});
+            verifyCheckedUserAuth(repoName, {read: true, write: true, manage: true, graphql: false});
             verifyDisabledUserAuth(repoName, {read: true, write: true, manage: false, graphql: true});
         });
     });
@@ -235,17 +260,19 @@ describe('User and Access', () => {
     context('Verify access states', () => {
         let repoName;
 
-        beforeEach(() => {
+        before(() => {
             repoName = 'user-access-repo1-' + Date.now();
             cy.createRepository({id: repoName});
-
-            UserAndAccessSteps.visit();
-            // Users table should be visible
-            UserAndAccessSteps.getUsersTable().should('be.visible');
             cy.switchOffSecurity(true);
         });
 
-        afterEach(() => {
+        beforeEach(() => {
+            UserAndAccessSteps.visit();
+            // Users table should be visible
+            UserAndAccessSteps.getUsersTable().should('be.visible');
+        })
+
+        after(() => {
             cy.loginAsAdmin().then(() => {
                 cy.deleteRepository(repoName, true);
                 cy.switchOffFreeAccess(true);
@@ -266,10 +293,10 @@ describe('User and Access', () => {
             it('admin', () => {
                 UserAndAccessSteps.clickCreateNewUserButton();
                 UserAndAccessSteps.selectRoleRadioButton(ROLE_CUSTOM_ADMIN);
-                verifyCheckedUserAuth('*', {read: true, write: true, manage: true, graphql: true});
+                verifyCheckedUserAuth('*', {read: true, write: true, manage: true, graphql: false});
                 verifyDisabledUserAuth('*', {read: true, write: true, manage: true, graphql: true});
 
-                verifyCheckedUserAuth(repoName, {read: true, write: true, manage: true, graphql: true});
+                verifyCheckedUserAuth(repoName, {read: true, write: true, manage: true, graphql: false});
                 verifyDisabledUserAuth(repoName, {read: true, write: true, manage: true, graphql: true});
             });
 
@@ -277,10 +304,10 @@ describe('User and Access', () => {
                 UserAndAccessSteps.clickCreateNewUserButton();
                 UserAndAccessSteps.selectRoleRadioButton(ROLE_REPO_MANAGER);
 
-                verifyCheckedUserAuth('*', {read: true, write: true, manage: true, graphql: true});
+                verifyCheckedUserAuth('*', {read: true, write: true, manage: true, graphql: false});
                 verifyDisabledUserAuth('*', {read: true, write: true, manage: true, graphql: true});
 
-                verifyCheckedUserAuth(repoName, {read: true, write: true, manage: true, graphql: true});
+                verifyCheckedUserAuth(repoName, {read: true, write: true, manage: true, graphql: false});
                 verifyDisabledUserAuth(repoName, {read: true, write: true, manage: true, graphql: true});
             });
         })
@@ -304,7 +331,7 @@ describe('User and Access', () => {
             it('manage', () => {
                 UserAndAccessSteps.clickCreateNewUserButton();
                 setRoles({manage: true, repoName});
-                verifyCheckedUserAuth(repoName, {read: true, write: true, manage: true, graphql: true});
+                verifyCheckedUserAuth(repoName, {read: true, write: true, manage: true, graphql: false});
                 verifyDisabledUserAuth(repoName, {read: true, write: true, manage: false, graphql: true});
             });
 
