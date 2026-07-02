@@ -19,8 +19,12 @@ describe('User and Access', () => {
     // eslint-disable-next-line no-undef
     context('', () => {
         const user = 'user';
+        let repoName;
 
         beforeEach(() => {
+            repoName = 'user-access-repo1-' + Date.now();
+            cy.createRepository({id: repoName});
+
             UserAndAccessSteps.visit();
             // Users table should be visible
             UserAndAccessSteps.getUsersTable().should('be.visible');
@@ -30,6 +34,7 @@ describe('User and Access', () => {
         afterEach(() => {
             cy.loginAsAdmin().then(() => {
                 cy.deleteUser(user, true);
+                cy.deleteRepository(repoName, true);
                 cy.switchOffSecurity(true);
                 cy.switchOffFreeAccess(false);
             });
@@ -82,7 +87,7 @@ describe('User and Access', () => {
             UserAndAccessSteps.selectRoleRadioButton(ROLE_USER);
             // And add a custom role of 1 letter
             UserAndAccessSteps.addTextToCustomRoleField('A');
-            clickWriteAccessForRepo('*');
+            UserAndAccessSteps.toggleWriteAccessAny();
 
             // Then the 'create' button should be disabled
             UserAndAccessSteps.getConfirmUserCreateButton().should('be.disabled');
@@ -105,27 +110,27 @@ describe('User and Access', () => {
             UserAndAccessSteps.getCustomRoleFieldError().should('not.be.visible');
 
             // When I create the user with a valid custom role
-            UserAndAccessSteps.clickWriteAccessAny();
-            SecurityStubs.spyOnUserCreate()
+            UserAndAccessSteps.toggleWriteAccessAny();
+            SecurityStubs.spyOnUserCreate();
             UserAndAccessSteps.confirmUserCreate();
             // Then the user should be created with that custom role
             cy.wait('@create-user').its('request.body').then((body) => {
                 expect(body).to.deep.eq({
-                    "password": "password",
-                    "grantedAuthorities": [
-                        "ROLE_USER",
-                        "CUSTOM_AA",
-                        "WRITE_REPO_*",
-                        "READ_REPO_*"
+                    'password': 'password',
+                    'grantedAuthorities': [
+                        'ROLE_USER',
+                        'CUSTOM_AA',
+                        'WRITE_REPO_*',
+                        'READ_REPO_*',
                     ],
-                    "appSettings": {
-                        "DEFAULT_VIS_GRAPH_SCHEMA": true,
-                        "DEFAULT_INFERENCE": true,
-                        "DEFAULT_SAMEAS": true,
-                        "IGNORE_SHARED_QUERIES": false,
-                        "EXECUTE_COUNT": true
-                    }
-                })
+                    'appSettings': {
+                        'DEFAULT_VIS_GRAPH_SCHEMA': true,
+                        'DEFAULT_INFERENCE': true,
+                        'DEFAULT_SAMEAS': true,
+                        'IGNORE_SHARED_QUERIES': false,
+                        'EXECUTE_COUNT': true,
+                    },
+                });
             });
 
             cy.url().should('include', '/users');
@@ -210,7 +215,160 @@ describe('User and Access', () => {
             cy.reload();
             UserAndAccessSteps.getUrl().should('include', '/sparql');
         });
+
+        // Skipped until image with GDB implementation is available
+        it.skip('should create user with manage repo rights for specific repo', () => {
+            UserAndAccessSteps.getUsersCatalogContainer().should('be.visible');
+            createUser(user, PASSWORD, ROLE_USER, {manage: true, repoName: repoName});
+            UserAndAccessSteps.getUsersCatalogContainer().should('be.visible');
+            // TODO: Uncomment when catalog rights are amended
+            // assertUserAuthsInCatalog(user, {repo: repoName, read: true, graphql: true});
+
+            UserAndAccessSteps.openEditUserPage(user);
+            UserAndAccessSteps.getRepositoryRightsList().should('be.visible');
+            verifyCheckedUserAuth(repoName, {read: true, write: true, manage: true, graphql: true});
+            verifyDisabledUserAuth(repoName, {read: true, write: true, manage: false, graphql: true});
+        });
     });
+
+    // eslint-disable-next-line no-undef
+    context('Verify access states', () => {
+        let repoName;
+
+        beforeEach(() => {
+            repoName = 'user-access-repo1-' + Date.now();
+            cy.createRepository({id: repoName});
+
+            UserAndAccessSteps.visit();
+            // Users table should be visible
+            UserAndAccessSteps.getUsersTable().should('be.visible');
+            cy.switchOffSecurity(true);
+        });
+
+        afterEach(() => {
+            cy.loginAsAdmin().then(() => {
+                cy.deleteRepository(repoName, true);
+                cy.switchOffFreeAccess(true);
+                cy.switchOffSecurity(true);
+            });
+        });
+
+        it('initial state', () => {
+            UserAndAccessSteps.clickCreateNewUserButton();
+            verifyCheckedUserAuth('*', {read: false, write: false, manage: false, graphql: false});
+            verifyDisabledUserAuth('*', {read: false, write: false, manage: true, graphql: true});
+            verifyCheckedUserAuth(repoName, {read: false, write: false, manage: false, graphql: false});
+            verifyDisabledUserAuth(repoName, {read: false, write: false, manage: false, graphql: true});
+        })
+
+        // eslint-disable-next-line no-undef
+        context('for non user roles', () => {
+            it('admin', () => {
+                UserAndAccessSteps.clickCreateNewUserButton();
+                UserAndAccessSteps.selectRoleRadioButton(ROLE_CUSTOM_ADMIN);
+                verifyCheckedUserAuth('*', {read: true, write: true, manage: true, graphql: true});
+                verifyDisabledUserAuth('*', {read: true, write: true, manage: true, graphql: true});
+
+                verifyCheckedUserAuth(repoName, {read: true, write: true, manage: true, graphql: true});
+                verifyDisabledUserAuth(repoName, {read: true, write: true, manage: true, graphql: true});
+            });
+
+            it('repository manager', () => {
+                UserAndAccessSteps.clickCreateNewUserButton();
+                UserAndAccessSteps.selectRoleRadioButton(ROLE_REPO_MANAGER);
+
+                verifyCheckedUserAuth('*', {read: true, write: true, manage: true, graphql: true});
+                verifyDisabledUserAuth('*', {read: true, write: true, manage: true, graphql: true});
+
+                verifyCheckedUserAuth(repoName, {read: true, write: true, manage: true, graphql: true});
+                verifyDisabledUserAuth(repoName, {read: true, write: true, manage: true, graphql: true});
+            });
+        })
+
+        // eslint-disable-next-line no-undef
+        context('for specific repo', () => {
+            it('read', () => {
+                UserAndAccessSteps.clickCreateNewUserButton();
+                setRoles({read: true, repoName});
+                verifyCheckedUserAuth(repoName, {read: true, write: false, manage: false, graphql: false});
+                verifyDisabledUserAuth(repoName, {read: false, write: false, manage: false, graphql: false});
+            });
+
+            it('write', () => {
+                UserAndAccessSteps.clickCreateNewUserButton();
+                setRoles({readWrite: true, repoName});
+                verifyCheckedUserAuth(repoName, {read: true, write: true, manage: false, graphql: false});
+                verifyDisabledUserAuth(repoName, {read: true, write: false, manage: false, graphql: false});
+            });
+
+            it('manage', () => {
+                UserAndAccessSteps.clickCreateNewUserButton();
+                setRoles({manage: true, repoName});
+                verifyCheckedUserAuth(repoName, {read: true, write: true, manage: true, graphql: true});
+                verifyDisabledUserAuth(repoName, {read: true, write: true, manage: false, graphql: true});
+            });
+
+            it('graphql with read', () => {
+                UserAndAccessSteps.clickCreateNewUserButton();
+                setRoles({read: true, graphql: true, repoName});
+                verifyCheckedUserAuth(repoName, {read: true, write: false, manage: false, graphql: true});
+                verifyDisabledUserAuth(repoName, {read: false, write: false, manage: false, graphql: false});
+            });
+
+            it('graphql with write', () => {
+                UserAndAccessSteps.clickCreateNewUserButton();
+                setRoles({readWrite: true, graphql: true, repoName});
+                verifyCheckedUserAuth(repoName, {read: true, write: true, manage: false, graphql: true});
+                verifyDisabledUserAuth(repoName, {read: true, write: false, manage: false, graphql: false});
+            });
+        });
+
+        // eslint-disable-next-line no-undef
+        context('for any repo', () => {
+            let anyRepo = '*';
+
+            it('read', () => {
+                UserAndAccessSteps.clickCreateNewUserButton();
+                setRoles({read: true, anyRepo});
+                verifyCheckedUserAuth(anyRepo, {read: true, write: false, manage: false, graphql: false});
+                verifyDisabledUserAuth(anyRepo, {read: false, write: false, manage: true, graphql: false});
+
+                verifyCheckedUserAuth(repoName, {read: true, write: false, manage: false, graphql: false});
+                verifyDisabledUserAuth(repoName, {read: true, write: false, manage: false, graphql: false});
+            });
+
+            it('write', () => {
+                UserAndAccessSteps.clickCreateNewUserButton();
+                setRoles({readWrite: true, anyRepo});
+                verifyCheckedUserAuth(anyRepo, {read: true, write: true, manage: false, graphql: false});
+                verifyDisabledUserAuth(anyRepo, {read: true, write: false, manage: true, graphql: false});
+
+                verifyCheckedUserAuth(repoName, {read: true, write: true, manage: false, graphql: false});
+                verifyDisabledUserAuth(repoName, {read: true, write: true, manage: false, graphql: false});
+            });
+
+            it('graphql with read', () => {
+                UserAndAccessSteps.clickCreateNewUserButton();
+                setRoles({read: true, graphql: true, anyRepo});
+                verifyCheckedUserAuth(anyRepo, {read: true, write: false, manage: false, graphql: true});
+                verifyDisabledUserAuth(anyRepo, {read: false, write: false, manage: true, graphql: false});
+
+                verifyCheckedUserAuth(repoName, {read: true, write: false, manage: false, graphql: true});
+                verifyDisabledUserAuth(repoName, {read: true, write: false, manage: false, graphql: true});
+            });
+
+            it('graphql with write', () => {
+                UserAndAccessSteps.clickCreateNewUserButton();
+                setRoles({readWrite: true, graphql: true, anyRepo});
+                verifyCheckedUserAuth(anyRepo, {read: true, write: true, manage: false, graphql: true});
+                verifyDisabledUserAuth(anyRepo, {read: true, write: false, manage: true, graphql: false});
+
+                verifyCheckedUserAuth(repoName, {read: true, write: true, manage: false, graphql: true});
+                verifyDisabledUserAuth(repoName, {read: true, write: true, manage: false, graphql: true});
+            });
+        });
+    });
+
     // eslint-disable-next-line no-undef
     context('GraphQL only', () => {
         let repositoryId1;
@@ -256,28 +414,28 @@ describe('User and Access', () => {
             // WHEN I create a user with read + GraphQL for repository #2
             createUser(graphqlUser, PASSWORD, ROLE_USER, {read: true, graphql: true, repoName: repositoryId2});
             // THEN the user should have read + GraphQL on that repo
-            assertUserAuths(graphqlUser, {repo: repositoryId2, read: true, graphql: true});
+            assertUserAuthsInCatalog(graphqlUser, {repo: repositoryId2, read: true, graphql: true});
             // WHEN I open the edit page for that user
             UserAndAccessSteps.openEditUserPage(graphqlUser);
             // THEN for repository #1, the GraphQL checkbox should be disabled initially
-            UserAndAccessSteps.getGraphqlAccessForRepo(repositoryId1).should('be.disabled');
+            UserAndAccessSteps.validateGraphqlAccessForRepo(repositoryId1, {disabled: true});
             // WHEN I enable "read" for repository #1
             editUserAuths({repo: repositoryId1, read: true});
             // THEN GraphQL for repository #1 should become enabled
-            UserAndAccessSteps.getGraphqlAccessForRepo(repositoryId1).should('be.enabled');
+            UserAndAccessSteps.validateGraphqlAccessForRepo(repositoryId1, {disabled: false});
             // WHEN I enable GraphQL and read
             editUserAuths({repo: repositoryId1, graphql: true});
             editUserAuths({repo: repositoryId1, read: true});
             // THEN GraphQL should be checked and disabled
-            UserAndAccessSteps.getGraphqlAccessForRepo(repositoryId1).should('be.checked').and('be.disabled');
+            UserAndAccessSteps.validateGraphqlAccessForRepo(repositoryId1, {checked: true, disabled: true});
             // THEN for repository #3, GraphQL should be disabled initially
-            UserAndAccessSteps.getGraphqlAccessForRepo(repositoryId3).should('be.disabled');
+            UserAndAccessSteps.validateGraphqlAccessForRepo(repositoryId3, {disabled: true});
             // WHEN I enable "write" for repository #3
             editUserAuths({repo: repositoryId3, write: true});
             // THEN GraphQL for repository #3 should become enabled
-            UserAndAccessSteps.getGraphqlAccessForRepo(repositoryId3).should('be.enabled');
+            UserAndAccessSteps.validateGraphqlAccessForRepo(repositoryId3, {disabled: false});
             // And I expect "read" to be checked and disabled
-            UserAndAccessSteps.getReadAccessForRepo(repositoryId3).should('be.checked').and('be.disabled');
+            UserAndAccessSteps.validateReadAccessForRepo(repositoryId3, {checked: true, disabled: true});
             // I enable GraphQL for repository #3
             editUserAuths({repo: repositoryId3, graphql: true});
 
@@ -287,9 +445,9 @@ describe('User and Access', () => {
             //  - repo #1 has no read/write/graphql
             //  - repo #2 has read + graphql
             //  - repo #3 has write + graphql (and read was auto-checked but disabled)
-            assertUserAuths(graphqlUser, {repo: repositoryId1, read: false, write: false, graphql: false});
-            assertUserAuths(graphqlUser, {repo: repositoryId2, read: true, write: false, graphql: true});
-            assertUserAuths(graphqlUser, {repo: repositoryId3, read: false, write: true, graphql: true});
+            assertUserAuthsInCatalog(graphqlUser, {repo: repositoryId1, read: false, write: false, graphql: false});
+            assertUserAuthsInCatalog(graphqlUser, {repo: repositoryId2, read: true, write: false, graphql: true});
+            assertUserAuthsInCatalog(graphqlUser, {repo: repositoryId3, read: false, write: true, graphql: true});
         });
 
         // TODO remove skipped flag from all tests after merge of https://github.com/Ontotext-AD/graphdb-workbench/pull/2042
@@ -395,22 +553,6 @@ describe('User and Access', () => {
         }
     }
 
-    function clickReadAccessForRepo(repoName) {
-        if (repoName === '*') {
-            UserAndAccessSteps.clickReadAccessAny();
-        } else {
-            UserAndAccessSteps.clickReadAccessRepo(repoName);
-        }
-    }
-
-    function clickWriteAccessForRepo(repoName) {
-        if (repoName === '*') {
-            UserAndAccessSteps.clickWriteAccessAny();
-        } else {
-            UserAndAccessSteps.clickWriteAccessRepo(repoName);
-        }
-    }
-
     function createUser(username, password, role, opts = {}) {
         UserAndAccessSteps.clickCreateNewUserButton();
         UserAndAccessSteps.typeUsername(username);
@@ -421,8 +563,9 @@ describe('User and Access', () => {
 
         if (role === '#roleUser') {
             setRoles(opts);
-            UserAndAccessSteps.confirmUserCreate();
-        } else if (role === ROLE_CUSTOM_ADMIN && opts.noPassword) {
+        }
+
+        if (role === ROLE_CUSTOM_ADMIN && opts.noPassword) {
             UserAndAccessSteps.getNoPasswordCheckbox().check()
                 .then(() => {
                     UserAndAccessSteps.getNoPasswordCheckbox()
@@ -442,12 +585,15 @@ describe('User and Access', () => {
     }
 
     function setRoles(opts = {}) {
-        const {read = false, readWrite = false, graphql = false, repoName = '*'} = opts;
+        const {read = false, readWrite = false, graphql = false, manage = false, repoName = '*'} = opts;
+        if (manage) {
+            UserAndAccessSteps.toggleManageRepoForRepo(repoName);
+        }
         if (read) {
-            clickReadAccessForRepo(repoName);
+            UserAndAccessSteps.toggleReadAccessForRepo(repoName);
         }
         if (readWrite) {
-            clickWriteAccessForRepo(repoName);
+            UserAndAccessSteps.toggleWriteAccessForRepo(repoName);
         }
         if (graphql) {
             clickGraphqlAccessForRepo(repoName);
@@ -470,7 +616,7 @@ describe('User and Access', () => {
         }
     }
 
-    function assertUserAuths(username, {repo, read = false, write = false, graphql = false} = {}) {
+    function assertUserAuthsInCatalog(username, {repo, read = false, write = false, graphql = false} = {}) {
         UserAndAccessSteps.findUserRowAlias(username, 'userRow');
 
         if (!read && !write) {
@@ -499,7 +645,7 @@ describe('User and Access', () => {
         }
     }
 
-    function editUserAuths({repo, read = false, write = false, graphql = false} = {}) {
+    function editUserAuths({repo, read = false, write = false, graphql = false, manage = false} = {}) {
         if (read === true) {
             UserAndAccessSteps.toggleReadAccessForRepo(repo);
         }
@@ -511,6 +657,24 @@ describe('User and Access', () => {
         if (graphql === true) {
             UserAndAccessSteps.toggleGraphqlAccessForRepo(repo);
         }
+
+        if (manage === true) {
+            UserAndAccessSteps.toggleManageRepoForRepo(repo);
+        }
+    }
+
+    function verifyCheckedUserAuth(repo, {read = false, write = false, graphql = false, manage = false} = {}) {
+        UserAndAccessSteps.validateReadAccessForRepo(repo, {checked: read});
+        UserAndAccessSteps.validateWriteAccessForRepo(repo, {checked: write});
+        UserAndAccessSteps.validateGraphqlAccessForRepo(repo, {checked: graphql});
+        UserAndAccessSteps.validateManageAccessForRepo(repo, {checked: manage});
+    }
+
+    function verifyDisabledUserAuth(repo, {read = false, write = false, graphql = false, manage = false} = {}) {
+        UserAndAccessSteps.validateReadAccessForRepo(repo, {disabled: read});
+        UserAndAccessSteps.validateWriteAccessForRepo(repo, {disabled: write});
+        UserAndAccessSteps.validateGraphqlAccessForRepo(repo, {disabled: graphql});
+        UserAndAccessSteps.validateManageAccessForRepo(repo, {disabled: manage});
     }
 
     function navigateMenuPath(pathArray, expectedUrl, expectedTitle) {

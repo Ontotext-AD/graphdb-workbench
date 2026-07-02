@@ -51,7 +51,7 @@ describe('GraphQL-only User – Playground Access & Mutation Restriction', () =>
         UserAndAccessSteps.typeUsername(gqlUsername);
         UserAndAccessSteps.typePassword(testPassword);
         UserAndAccessSteps.typeConfirmPasswordField(testPassword);
-        UserAndAccessSteps.clickReadAccessRepo(repositoryId);
+        UserAndAccessSteps.toggleReadAccessForRepo(repositoryId);
         UserAndAccessSteps.clickGraphqlAccessRepo(repositoryId);
         UserAndAccessSteps.confirmUserCreate();
 
@@ -88,8 +88,8 @@ describe('GraphQL-only User – Playground Access & Mutation Restriction', () =>
         UserAndAccessSteps.typeUsername(gqlUsername);
         UserAndAccessSteps.typePassword(testPassword);
         UserAndAccessSteps.typeConfirmPasswordField(testPassword);
-        UserAndAccessSteps.clickReadAccessRepo(repositoryId);
-        UserAndAccessSteps.clickWriteAccessRepo(repositoryId);
+        UserAndAccessSteps.toggleReadAccessForRepo(repositoryId);
+        UserAndAccessSteps.toggleWriteAccessForRepo(repositoryId);
         UserAndAccessSteps.clickGraphqlAccessRepo(repositoryId);
         UserAndAccessSteps.confirmUserCreate();
 
