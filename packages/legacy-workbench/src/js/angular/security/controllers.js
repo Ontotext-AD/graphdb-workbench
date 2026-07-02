@@ -272,14 +272,6 @@ securityModule.controller('DefaultAuthoritiesCtrl', ['$scope', '$http', '$uibMod
         $scope.ok = function() {
             const auth = [];
             $scope.repositoryCheckError = true;
-            for (const index in $scope.grantedAuthorities.MANAGE_REPO) {
-                if ($scope.grantedAuthorities.MANAGE_REPO[index]) {
-                    auth.push(MANAGE_REPO_PREFIX + index);
-                    auth.push(WRITE_REPO_PREFIX + index);
-                    auth.push(READ_REPO_PREFIX + index);
-                    $scope.repositoryCheckError = false;
-                }
-            }
             for (const index in $scope.grantedAuthorities.WRITE_REPO) {
                 if ($scope.grantedAuthorities.WRITE_REPO[index]) {
                     auth.push(WRITE_REPO_PREFIX + index);
@@ -448,8 +440,6 @@ securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 't
 
         $scope.writeCheckDisabled = function(repoOrWildCard) {
             return $scope.hasManageRepositoryPermission(repoOrWildCard)
-                || $scope.userType === UserType.ADMIN
-                || $scope.userType === UserType.REPO_MANAGER
                 || repoOrWildCard.id !== SYSTEM_REPO && repoOrWildCard !== '*' && $scope.grantedAuthorities.WRITE_REPO['*']
                 || $scope.hasEditRestrictions();
         };
@@ -468,10 +458,6 @@ securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 't
          * @returns {boolean} true if disabled, false if enabled
          */
         $scope.graphqlCheckDisabled = function(repoOrWildCard) {
-            if ($scope.userType === UserType.ADMIN || $scope.userType === UserType.REPO_MANAGER) {
-                return true;
-            }
-
             if ($scope.hasManageRepositoryPermission(repoOrWildCard)) {
                 return true;
             }
