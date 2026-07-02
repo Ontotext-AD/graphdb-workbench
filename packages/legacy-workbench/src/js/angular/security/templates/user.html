@@ -239,9 +239,10 @@
                                         <th id="repositoryIdColumn" class="repository-column auth-column">{{'security.repository.title' | translate}}</th>
                                         <th id="readRightsColumn" class="text-xs-center read-column auth-column"><span class="auth-column-label">{{'security.label.read' | translate}}</span><em class="ri-eye-line icon-lg" gdb-tooltip="{{'security.tooltip.read' | translate}}"></em></th>
                                         <th id="writeRightColumn" class="text-xs-center write-column auth-column"><span class="auth-column-label">{{'security.label.write' | translate}}</span><em class="ri-edit-line icon-lg" gdb-tooltip="{{'security.tooltip.write' | translate}}"></em></th>
+                                        <th id="manageRepositoryColumn" class="text-xs-center manage-repository-column auth-column"><span class="auth-column-label">{{'security.label.manage_repository' | translate}}</span><em class="ri-folder-settings-line icon-lg" gdb-tooltip="{{'security.tooltip.manage_repository' | translate}}"></em></th>
                                         <th id="graphql" class="text-xs-center auth-column graphql-column"><span class="auth-column-label">{{'security.label.graphql' | translate}}</span></th>
                                     </tr>
-                                    <tr>
+                                    <tr class="any-repo">
                                         <th>{{'security.any.data.repo' | translate}}
                                             <em class="ri-information-2-line text-tertiary" gdb-tooltip="{{'security.data.repos' | translate}}"></em>
                                         </th>
@@ -256,7 +257,13 @@
                                             </span>
                                         </th>
 
-                                        <th class="text-xs-center">
+                                        <th class="text-xs-center manage-repository-any">
+                                            <span>
+                                                <input class="manage-repository" type="checkbox" ng-checked="hasManageRepositoryPermission('*')" ng-disabled="true">
+                                            </span>
+                                        </th>
+
+                                        <th class="text-xs-center graphql-any">
                                             <span ng-click="setGrantedAuthorities()">
                                                 <input class="graphql" type="checkbox" ng-model="grantedAuthorities.GRAPHQL['*']" ng-checked="hasGraphqlPermission('*')" ng-disabled="graphqlCheckDisabled('*')">
                                             </span>
@@ -267,7 +274,7 @@
                                 <tbody>
                                     <div>
                                         <tr ng-repeat="repository in getReadableRepositories() | orderBy: ['location', 'id']">
-                                            <td class="repository-name">{{repository.id}}<small><em ng-if="(hasGraphqlPermission(repository) || hasGraphqlPermission('*')) && (hasReadPermission(repository) || hasReadPermission('*') || hasWritePermission(repository) || hasWritePermission('*'))" class="icon-graphql graphql-icon text-info" gdb-tooltip="{{'security.tooltip.graphql' | translate}}"></em> &middot; {{repository.location ? repository.location : 'repo.local' | translate}}</small></td>
+                                            <td class="repository-name">{{repository.id}}<small><em ng-if="isGraphQlOnlyRight(repository)" class="icon-graphql graphql-icon text-info" gdb-tooltip="{{'security.tooltip.graphql' | translate}}"></em> &middot; {{repository.location ? repository.location : 'repo.local' | translate}}</small></td>
                                             <td class="text-xs-center read-rights">
                                                 <span ng-click="setGrantedAuthorities()">
                                                     <input class="read" type="checkbox" ng-model="grantedAuthorities.READ_REPO[createUniqueKey(repository)]"  ng-checked="hasReadPermission(repository)" ng-disabled="readCheckDisabled(repository)">
@@ -278,6 +285,13 @@
                                                     <input class="write" type="checkbox" ng-model="grantedAuthorities.WRITE_REPO[createUniqueKey(repository)]" ng-checked="hasWritePermission(repository)" ng-disabled="writeCheckDisabled(repository)">
                                                 </span>
                                             </td>
+
+                                            <td class="text-xs-center manage-repository-rights">
+                                                <span ng-click="setGrantedAuthorities()">
+                                                    <input class="manage-repository" type="checkbox" ng-model="grantedAuthorities.MANAGE_REPO[createUniqueKey(repository)]" ng-checked="hasManageRepositoryPermission(repository)" ng-disabled="manageRepoCheckDisabled(repository)">
+                                                </span>
+                                            </td>
+
                                             <td class="text-xs-center graphql-rights">
                                                 <span ng-click="setGrantedAuthorities()">
                                                     <input class="graphql" type="checkbox" ng-model="grantedAuthorities.GRAPHQL[createUniqueKey(repository)]" ng-checked="hasGraphqlPermission(repository)" ng-disabled="graphqlCheckDisabled(repository)">
