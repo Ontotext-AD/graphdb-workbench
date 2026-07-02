@@ -8,5 +8,6 @@ import {Authority} from './authority';
 export type AuthoritiesUiModel = {
   [Authority.READ_REPO]: Record<string, boolean>,
   [Authority.WRITE_REPO]: Record<string, boolean>,
+  [Authority.MANAGE_REPO]: Record<string, boolean>,
   [Authority.GRAPHQL]: Record<string, boolean>
 }

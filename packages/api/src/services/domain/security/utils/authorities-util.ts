@@ -21,6 +21,9 @@ export class AuthoritiesUtil {
     if (role.startsWith(Authority.WRITE_REPO_PREFIX)) {
       return {prefix: Authority.WRITE_REPO_PREFIX, repo: role.substring(Authority.WRITE_REPO_PREFIX.length)};
     }
+    if (role.startsWith(Authority.MANAGE_REPO_PREFIX)) {
+      return {prefix: Authority.MANAGE_REPO_PREFIX, repo: role.substring(Authority.MANAGE_REPO_PREFIX.length)};
+    }
     if (role.startsWith(Authority.GRAPHQL_PREFIX)) {
       return {prefix: Authority.GRAPHQL_PREFIX, repo: role.substring(Authority.GRAPHQL_PREFIX.length)};
     }

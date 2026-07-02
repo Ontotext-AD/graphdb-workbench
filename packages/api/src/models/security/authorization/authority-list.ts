@@ -85,17 +85,20 @@ export class AuthorityList extends ModelList<string> {
     const grantedAuthorities: AuthoritiesUiModel = {
       [Authority.READ_REPO]: {},
       [Authority.WRITE_REPO]: {},
+      [Authority.MANAGE_REPO]: {},
       [Authority.GRAPHQL]: {}
     };
 
     const uiModel = mapGrantedAuthoritiesResponseToModel(this.getItems());
     const auths = uiModel.getItems();
     auths.forEach(role => {
-      if (role.startsWith(Authority.READ_REPO_PREFIX) || role.startsWith(Authority.WRITE_REPO_PREFIX) || role.startsWith(Authority.GRAPHQL_PREFIX)) {
+      if (role.startsWith(Authority.READ_REPO_PREFIX) || role.startsWith(Authority.WRITE_REPO_PREFIX) || role.startsWith(Authority.MANAGE_REPO_PREFIX) || role.startsWith(Authority.GRAPHQL_PREFIX)) {
         const repoData = AuthoritiesUtil.getRepoFromAuthority(role);
         if (repoData) {
           const {prefix, repo} = repoData;
-          if (prefix === Authority.READ_REPO_PREFIX) {
+          if (prefix === Authority.MANAGE_REPO_PREFIX) {
+            grantedAuthorities[Authority.MANAGE_REPO][repo] = true;
+          } else if (prefix === Authority.READ_REPO_PREFIX) {
             grantedAuthorities[Authority.READ_REPO][repo] = true;
           } else if (prefix === Authority.WRITE_REPO_PREFIX) {
             grantedAuthorities[Authority.WRITE_REPO][repo] = true;
