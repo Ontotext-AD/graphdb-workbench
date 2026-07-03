@@ -2,7 +2,7 @@ import {Service} from '../../../providers/service/service';
 import {AuthenticatedUser, Authority, Rights, SecurityConfig} from '../../../models/security';
 import {service} from '../../../providers';
 import {SecurityContextService} from './security-context.service';
-import {Repository} from '../../../models/repositories';
+import {getRepositoryIdWithLocation, Repository, RepositoryReference} from '../../../models/repositories';
 import {
   RepositoryAuthorityService,
   RepositoryContextService,
@@ -81,6 +81,15 @@ export class AuthorizationService implements Service {
   }
 
   /**
+   * Checks whether the current user has repository-specific management permissions for at least one repository.
+   *
+   * @returns {boolean} `true` if the user can manage at least one repository; otherwise `false`.
+   */
+  isManageRepoUser(): boolean {
+    return this.hasRole(Authority.ROLE_MANAGE_REPO);
+  }
+
+  /**
    * Checks if the user has a specific role based on the provided authority, configuration, and user details.
    * @param {Authority} role - The authority role to check.
    * @returns {boolean} True if the user has the specified role, false otherwise.
@@ -124,7 +133,7 @@ export class AuthorizationService implements Service {
       if (!user) {
         return false;
       }
-      if (this.isAdminOrRepoManager()) {
+      if (this.isAdminOrRepoManager() || this.canManageRepo(repository)) {
         return true;
       }
       if (this.repositoryAuthorityService.isSystemRepository(repository)) {
@@ -155,7 +164,7 @@ export class AuthorizationService implements Service {
       if (!user) {
         return false;
       }
-      if (this.isAdminOrRepoManager()) {
+      if (this.isAdminOrRepoManager() || this.canManageRepo(repository)) {
         return true;
       }
       if (this.repositoryAuthorityService.isSystemRepository(repository)) {
@@ -165,6 +174,26 @@ export class AuthorizationService implements Service {
     }
 
     return true;
+  }
+
+  /**
+   * Checks whether the current user can manage the specified repository.
+   *
+   * @param {RepositoryReference} repository The repository to check.
+   * @returns {boolean} `true` if the user is a repository manager or can manage at least one repository, otherwise `false`.
+   */
+  canManageRepo(repository: RepositoryReference): boolean {
+    if (this.isAdminOrRepoManager()) {
+      return true;
+    }
+
+    const config = this.getSecurityConfig();
+    if (!config?.isEnabled() && !config?.hasOverrideAuth()) {
+      return true;
+    }
+
+    const manageRepoAuthority = Authority.MANAGE_REPO_PREFIX + getRepositoryIdWithLocation(repository);
+    return !!this.getAuthenticatedUser()?.authorities.find((authority) => authority === manageRepoAuthority);
   }
 
   /**
@@ -310,7 +339,7 @@ export class AuthorizationService implements Service {
     }
 
     // Replace the "{repoId}" placeholder with the actual repository ID for specific access.
-    const authListForCurrentRepo = authoritiesList.map(authority => authority.replace('{repoId}', repo.id));
+    const authListForCurrentRepo = authoritiesList.map(authority => authority.replace('{repoId}', getRepositoryIdWithLocation(repo)));
     // Replace the "{repoId}" placeholder with a wildcard '*' to denote access to any repository.
     const authListForAllRepos = authoritiesList.map(authority => authority.replace('{repoId}', '*'));
 
