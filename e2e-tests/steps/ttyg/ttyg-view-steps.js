@@ -1,8 +1,10 @@
 import {BaseSteps} from "../base-steps";
+import {DeprecationSteps} from '../deprecation-banner/deprecation-banner-steps.js';
 
 export class TTYGViewSteps extends BaseSteps {
     static visit() {
         cy.visit('/ttyg');
+        DeprecationSteps.closeBanner();
     }
 
     static getTtygView() {
@@ -243,6 +245,7 @@ export class TTYGViewSteps extends BaseSteps {
     }
 
     static getOpenAgentActionsButton(index) {
+        this.getAgent(index).scrollIntoView();
         return this.getAgent(index).realHover().find('.open-agent-actions-btn');
     }
 
