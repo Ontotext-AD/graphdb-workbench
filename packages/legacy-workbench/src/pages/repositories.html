@@ -28,13 +28,15 @@
                         </div>
                         <div ng-if="location.local" class="actions-bar-inline pull-right">
                             <button
+                                ng-if="isRepoManager()"
                                 gdb-tooltip="{{'repos.edit.common.settings' | translate}}"
                                 tooltip-placement="top"
                                 class="btn btn-link px-0"
                                 ng-click="openActiveLocationSettings()">
                                 <span class="ri-settings-3-line"></span>
                             </button>
-                            <a class="btn btn-link px-0 pull-right" href="license"
+                            <a ng-if="isAdmin()"
+                               class="btn btn-link px-0 pull-right" href="license"
                                gdb-tooltip="{{'repos.view.update.licenses' | translate}}"
                                tooltip-placement="top">
                                 <span class="ri-key-line"></span>
@@ -119,17 +121,18 @@
                                         </div>
                                     </td>
                                     <td class="text-nowrap repository-actions">
-                                        <button class="btn btn-link p-0"
-                                                ng-click="copyToClipboard(repository.externalUrl)"
-                                                gdb-tooltip="{{'copy.repo.url' | translate}}">
-                                            <span class="ri-links-line"></span>
-                                        </button>
-                                        <span ng-if="location.degradedReason">
+                                        <div ng-if="canManageRepo(repository)">
+                                            <button class="btn btn-link p-0"
+                                                    ng-click="copyToClipboard(repository.externalUrl)"
+                                                    gdb-tooltip="{{'copy.repo.url' | translate}}">
+                                                <span class="ri-links-line"></span>
+                                            </button>
+                                            <span ng-if="location.degradedReason">
                                             <em class="ri-alert-line icon-lg text-warning"
                                                 gdb-tooltip="{{location.degradedReason}}{{'repo.not.supported.delete.or.edit' | translate}}"
                                                 tooltip-placement="top"></em>
                                         </span>
-                                        <span ng-if="repository.type !== 'system' && !location.degradedReason">
+                                            <span ng-if="repository.type !== 'system' && !location.degradedReason">
                                             <a class="btn btn-link p-0 edit-repository-btn"
                                                href="repository/edit/{{repository.id}}?location={{repository.location}}"
                                                gdb-tooltip="{{'repoTooltips.editRepository' | translate}}"
@@ -151,6 +154,7 @@
                                                     <span class="ri-reset-right-line"></span>
                                             </button>
                                             <button class="btn btn-link p-0 secondary delete-repository-btn"
+                                                    ng-if="isRepoManager()"
                                                     type="button"
                                                     gdb-tooltip="{{'delete.repo' | translate}}"
                                                     tooltip-placement="top"
@@ -158,10 +162,11 @@
                                                 <em class="ri-delete-bin-6-line"></em>
                                             </button>
                                         </span>
+                                        </div>
                                     </td>
                                     <td>
                                         <button class="btn btn-link p-0 pin-repository-btn"
-                                                ng-if="repository.type !== 'system' && location.active"
+                                                ng-if="repository.type !== 'system' && location.active && isRepoManager(repository)"
                                                 ng-click="toggleDefaultRepository(repository.id)"
                                                 ng-class="getDefaultRepository() === repository.id && location.active ? 'active' : ''"
                                                 gdb-tooltip="{{'set.as.default.repo' | translate}}">
@@ -197,13 +202,15 @@
                             </div>
                             <div ng-if="location.local" class="actions-bar-inline pull-right">
                                 <button
+                                    ng-if="isRepoManager()"
                                     gdb-tooltip="{{'repos.edit.common.settings' | translate}}"
                                     tooltip-placement="top"
                                     class="btn btn-link px-0"
                                     ng-click="openActiveLocationSettings()">
                                     <span class="ri-settings-3-line"></span>
                                 </button>
-                                <a class="btn btn-link px-0 pull-right" href="license"
+                                <a ng-if="isAdmin()"
+                                   class="btn btn-link px-0 pull-right" href="license"
                                    gdb-tooltip="{{'repos.view.update.licenses' | translate}}"
                                    tooltip-placement="top">
                                     <span class="ri-key-line"></span>
@@ -283,17 +290,18 @@
                                             </div>
                                         </td>
                                         <td class="text-nowrap repository-actions">
-                                            <button class="btn btn-link p-0"
-                                                    ng-click="copyToClipboard(repository.externalUrl)"
-                                                    gdb-tooltip="{{'copy.repo.url' | translate}}">
-                                                <span class="ri-links-line"></span>
-                                            </button>
-                                            <span ng-if="location.degradedReason">
+                                            <div ng-if="canManageRepo(repository)">
+                                                <button class="btn btn-link p-0"
+                                                        ng-click="copyToClipboard(repository.externalUrl)"
+                                                        gdb-tooltip="{{'copy.repo.url' | translate}}">
+                                                    <span class="ri-links-line"></span>
+                                                </button>
+                                                <span ng-if="location.degradedReason">
                                                 <em class="ri-alert-line icon-lg text-warning"
                                                     gdb-tooltip="{{location.degradedReason}}{{'repo.not.supported.delete.or.edit' | translate}}"
                                                     tooltip-placement="top"></em>
                                             </span>
-                                            <span ng-if="repository.type !== 'system' && !location.degradedReason">
+                                                <span ng-if="repository.type !== 'system' && !location.degradedReason">
                                                 <a class="btn btn-link p-0 edit-repository-btn"
                                                    href="repository/edit/{{repository.id}}?location={{repository.location}}"
                                                    gdb-tooltip="{{'repoTooltips.editRepository' | translate}}"
@@ -315,6 +323,7 @@
                                                         <span class="ri-reset-right-line"></span>
                                                 </button>
                                                 <button class="btn btn-link p-0 secondary delete-repository-btn"
+                                                        ng-if="isRepoManager()"
                                                         type="button"
                                                         gdb-tooltip="{{'delete.repo' | translate}}"
                                                         tooltip-placement="top"
@@ -322,10 +331,11 @@
                                                     <em class="ri-delete-bin-6-line"></em>
                                                 </button>
                                             </span>
+                                            </div>
                                         </td>
                                         <td>
                                             <button class="btn btn-link p-0 pin-repository-btn"
-                                                    ng-if="repository.type !== 'system' && location.active"
+                                                    ng-if="repository.type !== 'system' && location.active && isRepoManager(repository)"
                                                     ng-click="toggleDefaultRepository(repository.id)"
                                                     ng-class="getDefaultRepository() === repository.id && location.active ? 'active' : ''"
                                                     gdb-tooltip="{{'set.as.default.repo' | translate}}">
@@ -343,7 +353,7 @@
         </table>
     </div>
     <!-- Remote Ontopic and SPARQL instances -->
-    <div ng-if="hasAnyRemoteLocation(false, [RemoteLocationType.SPARQL, RemoteLocationType.ONTOPIC])" class="mb-1 ontopic-instances">
+    <div ng-if="isRepoManager() && hasAnyRemoteLocation(false, [RemoteLocationType.SPARQL, RemoteLocationType.ONTOPIC])" class="mb-1 ontopic-instances">
         <h4 class="remote-location-type-title">{{'repositories.location.sparql.instances' | translate}}</h4>
         <table id="wb-repositories-ontopic-sparql-repositoryInGetRepositories"
                class="table table-hover table-striped" aria-describedby="Repositories table">
@@ -398,7 +408,7 @@
         </table>
     </div>
 
-    <div class="btns-all" ng-if="getLocationError()">
+    <div class="btns-all" ng-if="isRepoManager()">
         <div class="btn-group" uib-dropdown>
             <a id="wb-repositories-addRepositoryLink" class="btn btn-primary" ng-href="repository/create" guide-selector="createRepository"><span
                 class="ri-add-circle-line"></span> {{'repository.create.btn' | translate}}</a>
