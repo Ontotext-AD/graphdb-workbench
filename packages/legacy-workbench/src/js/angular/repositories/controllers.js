@@ -7,7 +7,12 @@ import {
 import {decodeHTML} from "../../../app";
 import './controllers/manage-remote-location-dialog.controller';
 import {RemoteLocationType} from "../models/repository/remote-location.model";
-import {service, AuthenticationStorageService, GuidesService} from '@ontotext/workbench-api';
+import {
+    service,
+    AuthenticationStorageService,
+    AuthorizationService,
+    GuidesService,
+} from '@ontotext/workbench-api';
 import {DocumentationUrlResolver} from "../utils/documentation-url-resolver";
 
 const ENTITY_INDEX_SIZE_MIN = 10000;
@@ -130,6 +135,7 @@ LocationsAndRepositoriesCtrl.$inject = ['$scope', '$rootScope', '$uibModal', 'to
 function LocationsAndRepositoriesCtrl($scope, $rootScope, $uibModal, toastr, $repositories, ModalService, LocationsRestService, // NOSONAR
     LocalStorageAdapter, $interval, $translate, $q) {
     const guidesService = service(GuidesService);
+    const authorizationService = service(AuthorizationService);
     $scope.RemoteLocationType = RemoteLocationType;
     $scope.loader = true;
     /**
@@ -160,7 +166,15 @@ function LocationsAndRepositoriesCtrl($scope, $rootScope, $uibModal, toastr, $re
             }
             return locationTypeCheck && location.local === local;
         });
-        return remoteLocationModel;
+
+        // Repository managers can access all locations.
+        if ($scope.isRepoManager()) {
+            return remoteLocationModel;
+        }
+
+        // Users without the repository manager role can access only locations where they have
+        // repository-specific management permission for at least one repository.
+        return remoteLocationModel.filter((location) => $scope.getRepositoriesFromLocation(location.uri)?.length > 0);
     };
 
     $scope.hasAnyRemoteLocation = (local, locationTypes) => {
@@ -407,8 +421,28 @@ function LocationsAndRepositoriesCtrl($scope, $rootScope, $uibModal, toastr, $re
         });
     }
 
+    /**
+     * Returns the repositories available in the specified location that the current user is allowed to access.
+     *
+     * @param {string} locationId The identifier of the location.
+     * @returns {Array<Repository>} The repositories visible to the current user in the specified location.
+     */
     $scope.getRepositoriesFromLocation = function(locationId) {
-        return $repositories.getRepositoriesFromLocation(locationId);
+        const repositoriesFromLocation = $repositories.getRepositoriesFromLocation(locationId) || [];
+
+        if ($scope.isRepoManager()) {
+            return repositoriesFromLocation;
+        }
+
+        return repositoriesFromLocation.filter((repo) => authorizationService.canReadRepo(repo));
+    };
+
+    $scope.isRepoManager = () => {
+        return authorizationService.isRepoManager();
+    };
+
+    $scope.canManageRepo = (repo) => {
+        return authorizationService.canManageRepo(repo);
     };
 }
 
