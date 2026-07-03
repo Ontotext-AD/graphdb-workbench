@@ -26,6 +26,10 @@
   font-size: .875rem;
 }
 
+.angular-tooltip span {
+    overflow-wrap: anywhere;
+}
+
 .angular-tooltip.angular-tooltip-fade-in {
   opacity: 1;
 }
