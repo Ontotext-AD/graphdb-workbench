@@ -145,8 +145,8 @@ describe('TTYG edit an agent', () => {
 
     it('should show Context size if not openai-assistants API', () => {
         // Open TTYG page and select first agent
-        TTYGViewSteps.visit();
         TTYGStubs.stubForApiType('default');
+        TTYGViewSteps.visit();
         cy.wait('@get-agent-list');
         TTYGViewSteps.openAgentSettingsModalForAgent(0);
 
@@ -168,8 +168,8 @@ describe('TTYG edit an agent', () => {
 
     it('should NOT show Context size if openai-assistants API', () => {
         // Open TTYG page and select first agent
-        TTYGViewSteps.visit();
         TTYGStubs.stubForApiType('assistants');
+        TTYGViewSteps.visit();
         cy.wait('@get-agent-list');
         TTYGViewSteps.openAgentSettingsModalForAgent(0);
         // Then I should see the Context size field
