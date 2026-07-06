@@ -13,8 +13,7 @@ const PASSWORD = 'root';
 const ENABLED = true;
 const DISABLED = false;
 
-// FIXME: There is a problem with the loader not hiding. Problem is reproducable on GDB build on branch 11.4 (commit 0ebd95d6) with 3.4.1-RC1
-describe.skip('TTYG permissions', () => {
+describe('TTYG permissions', () => {
 
     before(() => {
         cy.loginAsAdmin();

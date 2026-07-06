@@ -101,7 +101,11 @@ export class OntoLayout {
     this.subscribeToNavigationEnd();
     this.subscribeToRuntimeConfigurationChanges();
     this.subscribeToUserPreferencesChange();
-    this.loading = false;
+    setTimeout(() => {
+      // Must be in timeout, because the order of events and component loading is not guaranteed, and on
+      // slow networks the loader might not be hidden if the navigation end event is fired before the component is loaded.
+      this.loading = false;
+    });
     this.subscribeToBeforeMountRouting();
   }
 
