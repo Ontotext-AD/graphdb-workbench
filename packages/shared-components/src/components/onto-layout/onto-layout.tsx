@@ -101,8 +101,8 @@ export class OntoLayout {
     this.subscribeToNavigationEnd();
     this.subscribeToRuntimeConfigurationChanges();
     this.subscribeToUserPreferencesChange();
-    this.loading = false;
     this.subscribeToBeforeMountRouting();
+    this.loading = false;
   }
 
   /**
