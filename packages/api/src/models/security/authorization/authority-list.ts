@@ -135,7 +135,9 @@ export class AuthorityList extends ModelList<string> {
           permissions.write = true;
         } else if (prefix === Authority.MANAGE_REPO_PREFIX) {
           permissions.manage = true;
-        } else if (prefix === Authority.GRAPHQL_PREFIX) {
+        }
+
+        if (repo.split(':')[1] === Authority.GRAPHQL && !permissions.manage) {
           permissions.graphql = true;
         }
         repositories[repo] = permissions;

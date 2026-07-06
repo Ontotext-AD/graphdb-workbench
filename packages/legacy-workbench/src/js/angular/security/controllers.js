@@ -345,7 +345,6 @@ securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 't
             }
 
             $scope.user.grantedAuthorities = [];
-
             $scope.repositoryCheckError = true;
             if ($scope.userType === UserType.ADMIN) {
                 $scope.repositoryCheckError = false;
@@ -375,8 +374,12 @@ securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 't
                     }
                 }
                 for (const index in $scope.grantedAuthorities.GRAPHQL) {
-                    if ($scope.grantedAuthorities.GRAPHQL[index] && ($scope.grantedAuthorities.READ_REPO[index] || $scope.grantedAuthorities.READ_REPO['*'])) {
-                        pushAuthority(GRAPHQL_PREFIX + index);
+                    if ($scope.grantedAuthorities.GRAPHQL[index]) {
+                        const hasReadPermission = $scope.grantedAuthorities.READ_REPO[index] || $scope.grantedAuthorities.READ_REPO['*'];
+                        const hasWritePermission = $scope.grantedAuthorities.WRITE_REPO[index] || $scope.grantedAuthorities.WRITE_REPO['*'];
+                        if (hasReadPermission || hasWritePermission) {
+                                pushAuthority(GRAPHQL_PREFIX + index);
+                            }
                     }
                 }
             }

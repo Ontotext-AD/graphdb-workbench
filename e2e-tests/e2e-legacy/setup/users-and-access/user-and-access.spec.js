@@ -16,19 +16,23 @@ describe('User and Access', () => {
     const ROLE_CUSTOM_ADMIN = '#roleAdmin';
     const DEFAULT_ADMIN_PASSWORD = 'root';
 
-    // eslint-disable-next-line no-undef
-    context('', () => {
+    context('User and access management', () => {
         const user = 'user';
         let repoName;
 
         before(() => {
             repoName = 'user-access-repo1-' + Date.now();
             cy.createRepository({id: repoName});
-        })
+            SecurityStubs.spyOnUserGet();
+        });
 
         after(() => {
+            cy.loginAsAdmin().then(() => {
+                cy.switchOffSecurity(true);
+                cy.switchOffFreeAccess(false);
+            });
             cy.deleteRepository(repoName, true);
-        })
+        });
 
         beforeEach(() => {
             UserAndAccessSteps.visit();
@@ -45,218 +49,226 @@ describe('User and Access', () => {
             });
         });
 
-        it('Initial state', () => {
-            // Create new user button should be visible
-            UserAndAccessSteps.getCreateNewUserButton().should('be.visible');
-            // Security should be disabled
-            UserAndAccessSteps.getSecuritySwitchLabel().should('be.visible').and('contain', 'Security is OFF');
-            UserAndAccessSteps.getSecurityCheckbox().should('not.be.checked');
-            // Only admin user should be created by default
-            UserAndAccessSteps.getTableRow().should('have.length', 1);
-            UserAndAccessSteps.findUserInTable('admin');
-            UserAndAccessSteps.getUserType().should('be.visible').and('contain', 'Administrator');
-            // The admin should have unrestricted rights
-            UserAndAccessSteps.getRepositoryRights().should('be.visible').and('contain', 'Unrestricted');
-            // And can be edited
-            UserAndAccessSteps.getEditUserButton().should('be.visible').and('not.be.disabled');
-            // And cannot be deleted
-            UserAndAccessSteps.getDeleteUserButton().should('not.exist');
-            // Date created should be visible
-            UserAndAccessSteps.getDateCreated().should('be.visible');
+        context('Initial state', () => {
+            it('Initial state', () => {
+                // Create new user button should be visible
+                UserAndAccessSteps.getCreateNewUserButton().should('be.visible');
+                // Security should be disabled
+                UserAndAccessSteps.getSecuritySwitchLabel().should('be.visible').and('contain', 'Security is OFF');
+                UserAndAccessSteps.getSecurityCheckbox().should('not.be.checked');
+                // Only admin user should be created by default
+                UserAndAccessSteps.getTableRow().should('have.length', 1);
+                UserAndAccessSteps.findUserInTable('admin');
+                UserAndAccessSteps.getUserType().should('be.visible').and('contain', 'Administrator');
+                // The admin should have unrestricted rights
+                UserAndAccessSteps.getRepositoryRights().should('be.visible').and('contain', 'Unrestricted');
+                // And can be edited
+                UserAndAccessSteps.getEditUserButton().should('be.visible').and('not.be.disabled');
+                // And cannot be deleted
+                UserAndAccessSteps.getDeleteUserButton().should('not.exist');
+                // Date created should be visible
+                UserAndAccessSteps.getDateCreated().should('be.visible');
+            });
         });
 
-        it('Create user', () => {
-            //create a normal read/write user
-            createUser(user, PASSWORD, ROLE_USER, {readWrite: true});
-            testForUser(user, false);
-        });
-
-        it('Create repo-manager', () => {
-            //create a repo-manager
-            createUser(user, PASSWORD, ROLE_REPO_MANAGER);
-            testForUser(user, false);
-        });
-
-        it('Create second admin', () => {
-            //create a custom admin
-            createUser(user, PASSWORD, ROLE_CUSTOM_ADMIN);
-            testForUser(user, true);
-        });
-
-        it('Create user with custom role', () => {
-            // When I create a read/write user
-            UserAndAccessSteps.clickCreateNewUserButton();
-            UserAndAccessSteps.typeUsername(user);
-            UserAndAccessSteps.typePassword(PASSWORD);
-            UserAndAccessSteps.typeConfirmPasswordField(PASSWORD);
-            UserAndAccessSteps.selectRoleRadioButton(ROLE_USER);
-            // And add a custom role of 1 letter
-            UserAndAccessSteps.addTextToCustomRoleField('A');
-            UserAndAccessSteps.toggleWriteAccessAny();
-
-            // Then the 'create' button should be disabled
-            UserAndAccessSteps.getConfirmUserCreateButton().should('be.disabled');
-            // And the field should show an error
-            UserAndAccessSteps.getCustomRoleFieldError().should('contain.text', 'Must be at least 2 symbols long');
-            // When I add more text to the custom role tag
-            UserAndAccessSteps.addTextToCustomRoleField('A{enter}');
-            // Then the 'create' button should be enabled
-            UserAndAccessSteps.getConfirmUserCreateButton().should('be.enabled');
-            // And the field error should not exist
-            UserAndAccessSteps.getCustomRoleFieldError().should('not.be.visible');
-
-            // When I type an invalid tag
-            UserAndAccessSteps.addTextToCustomRoleField('B{enter}');
-            // And the field shows an error
-            UserAndAccessSteps.getCustomRoleFieldError().should('contain.text', 'Must be at least 2 symbols long');
-            // When I delete the invalid text
-            UserAndAccessSteps.addTextToCustomRoleField('{backspace}');
-            // Then the error should not be visible
-            UserAndAccessSteps.getCustomRoleFieldError().should('not.be.visible');
-
-            // When I create the user with a valid custom role
-            UserAndAccessSteps.toggleWriteAccessAny();
-            SecurityStubs.spyOnUserCreate();
-            UserAndAccessSteps.confirmUserCreate();
-            // Then the user should be created with that custom role
-            cy.wait('@create-user').its('request.body').then((body) => {
-                expect(body).to.deep.eq({
-                    'password': 'password',
-                    'grantedAuthorities': [
-                        'ROLE_USER',
-                        'CUSTOM_AA',
-                        'WRITE_REPO_*',
-                        'READ_REPO_*',
-                    ],
-                    'appSettings': {
-                        'DEFAULT_VIS_GRAPH_SCHEMA': true,
-                        'DEFAULT_INFERENCE': true,
-                        'DEFAULT_SAMEAS': true,
-                        'IGNORE_SHARED_QUERIES': false,
-                        'EXECUTE_COUNT': true,
-                    },
-                });
+        context('User creation', () => {
+            it('Create user', () => {
+                //create a normal read/write user
+                createUser(user, PASSWORD, ROLE_USER, {readWrite: true});
+                testForUser(user, false);
             });
 
-            cy.url().should('include', '/users');
-            UserAndAccessSteps.findUserInTable(user).should('be.visible');
-            UserAndAccessSteps.getUserCustomRoles('@user')
-                .should('have.length', 1)
-                .eq(0).and('have.text', 'AA');
-            // And when I open the edit page for that user, the custom role should be visible in the field without the prefix
-            UserAndAccessSteps.openEditUserPage(user);
-            UserAndAccessSteps.getCustomRoleField().find('.tag-item span')
-                .should('have.length', 1)
-                .eq(0).and('have.text', 'AA');
-        });
-
-        it('Adding a role with a CUSTOM_ prefix shows a warning message', () => {
-            // When I create a user
-            UserAndAccessSteps.clickCreateNewUserButton();
-            // And I add a custom role tag with prefix CUSTOM_
-            UserAndAccessSteps.addTextToCustomRoleField('CUSTOM_USER{Enter}');
-            // There should be a warning text
-            UserAndAccessSteps.getPrefixWarning(0).should('contain', 'Custom roles should be entered without the "CUSTOM_" prefix in Workbench');
-        });
-
-        it('Warn users when setting no password when creating new user admin', () => {
-            UserAndAccessSteps.getUsersTable().should('be.visible');
-            createUser(user, PASSWORD, ROLE_CUSTOM_ADMIN, {noPassword: true});
-            UserAndAccessSteps.getUsersTable().should('be.visible');
-            UserAndAccessSteps.getSplashLoader().should('not.be.visible');
-        });
-
-        it('should toggle free access after Admin has logged in', () => {
-            // Given I have available repositories to allow Free Access for
-            RepositoriesStubs.stubRepositories();
-            RepositoriesStubs.stubFreeAccess();
-            // When I enable security
-            UserAndAccessSteps.toggleSecurity();
-            // When I log in as an Admin
-            LoginSteps.loginWithUser('admin', DEFAULT_ADMIN_PASSWORD);
-            // Then the page should load
-            UserAndAccessSteps.getSplashLoader().should('not.be.visible');
-            UserAndAccessSteps.getUsersTable().should('be.visible');
-            // The Free Access toggle should be OFF
-            UserAndAccessSteps.getFreeAccessSwitchInput().should('not.be.checked');
-            // When I toggle Free Access ON
-            UserAndAccessSteps.toggleFreeAccess();
-            // And I allow free access to a repository
-            ModalDialogSteps.getDialog().should('be.visible');
-            // Then I click OK in the modal
-            ModalDialogSteps.clickOKButton();
-            // Then the toggle button should be ON
-            UserAndAccessSteps.getFreeAccessSwitchInput().should('be.checked');
-            // And I should see a success message
-            ToasterSteps.verifySuccess('Free access has been enabled.');
-            ToasterSteps.getToast().should('not.exist');
-            UserAndAccessSteps.getUsersTable().should('be.visible');
-            // When I toggle Free Access OFF
-            UserAndAccessSteps.toggleFreeAccess();
-            // Then I should see a success message
-            ToasterSteps.getToast().should('exist');
-            ToasterSteps.getToasterMessage().should('contain', 'Free access has been disabled.');
-        });
-
-        it('should redirect to previous page after logout and then login', () => {
-            UserAndAccessSteps.toggleSecurity();
-            LoginSteps.loginWithUser('admin', DEFAULT_ADMIN_PASSWORD);
-            MainMenuSteps.clickOnSparqlMenu();
-            cy.url().should('include', '/sparql');
-
-            LoginSteps.logout();
-            cy.url().should('include', '/login');
-            LoginSteps.loginWithUser('admin', DEFAULT_ADMIN_PASSWORD);
-            cy.url().should('include', '/sparql');
-        });
-
-        it('should redirect to correct return url when user is authenticated and on login page', () => {
-            UserAndAccessSteps.visit();
-            UserAndAccessSteps.toggleSecurity();
-            LoginSteps.loginWithUser('admin', DEFAULT_ADMIN_PASSWORD);
-            UserAndAccessSteps.getUsersTable().should('be.visible');
-
-            cy.visit('/login?r=%252Fsparql');
-            cy.reload();
-            UserAndAccessSteps.getUrl().should('include', '/sparql');
-        });
-
-        // Skipped until image with GDB implementation is available
-        it.skip('should create user with manage repo rights for specific repo', () => {
-            SecurityStubs.spyOnUserCreate();
-            UserAndAccessSteps.getUsersCatalogContainer().should('be.visible');
-            createUser(user, PASSWORD, ROLE_USER, {manage: true, repoName: repoName});
-            // Then the user should be created with that custom role
-            cy.wait('@create-user').its('request.body').then((body) => {
-                expect(body).to.deep.eq({
-                    "password": "password",
-                    "grantedAuthorities": [
-                        "ROLE_USER",
-                        `MANAGE_REPO_${repoName}`,
-                        `WRITE_REPO_${repoName}`,
-                        `READ_REPO_${repoName}`
-                    ],
-                    "appSettings": {
-                        "DEFAULT_VIS_GRAPH_SCHEMA": true,
-                        "DEFAULT_INFERENCE": true,
-                        "DEFAULT_SAMEAS": true,
-                        "IGNORE_SHARED_QUERIES": false,
-                        "EXECUTE_COUNT": true
-                    }
-                });
+            it('Create repo-manager', () => {
+                //create a repo-manager
+                createUser(user, PASSWORD, ROLE_REPO_MANAGER);
+                testForUser(user, false);
             });
-            UserAndAccessSteps.getUsersCatalogContainer().should('be.visible');
-            // TODO: Uncomment when catalog rights are amended
-            // assertUserAuthsInCatalog(user, {repo: repoName, read: true, graphql: true});
 
-            UserAndAccessSteps.openEditUserPage(user);
-            UserAndAccessSteps.getRepositoryRightsList().should('be.visible');
-            verifyCheckedUserAuth(repoName, {read: true, write: true, manage: true, graphql: false});
-            verifyDisabledUserAuth(repoName, {read: true, write: true, manage: false, graphql: true});
+            it('Create second admin', () => {
+                //create a custom admin
+                createUser(user, PASSWORD, ROLE_CUSTOM_ADMIN);
+                testForUser(user, true);
+            });
+
+            it('Create user with custom role', () => {
+                // When I create a read/write user
+                UserAndAccessSteps.clickCreateNewUserButton();
+                UserAndAccessSteps.typeUsername(user);
+                UserAndAccessSteps.typePassword(PASSWORD);
+                UserAndAccessSteps.typeConfirmPasswordField(PASSWORD);
+                UserAndAccessSteps.selectRoleRadioButton(ROLE_USER);
+                // And add a custom role of 1 letter
+                UserAndAccessSteps.addTextToCustomRoleField('A');
+                UserAndAccessSteps.toggleWriteAccessAny();
+
+                // Then the 'create' button should be disabled
+                UserAndAccessSteps.getConfirmUserCreateButton().should('be.disabled');
+                // And the field should show an error
+                UserAndAccessSteps.getCustomRoleFieldError().should('contain.text', 'Must be at least 2 symbols long');
+                // When I add more text to the custom role tag
+                UserAndAccessSteps.addTextToCustomRoleField('A{enter}');
+                // Then the 'create' button should be enabled
+                UserAndAccessSteps.getConfirmUserCreateButton().should('be.enabled');
+                // And the field error should not exist
+                UserAndAccessSteps.getCustomRoleFieldError().should('not.be.visible');
+
+                // When I type an invalid tag
+                UserAndAccessSteps.addTextToCustomRoleField('B{enter}');
+                // And the field shows an error
+                UserAndAccessSteps.getCustomRoleFieldError().should('contain.text', 'Must be at least 2 symbols long');
+                // When I delete the invalid text
+                UserAndAccessSteps.addTextToCustomRoleField('{backspace}');
+                // Then the error should not be visible
+                UserAndAccessSteps.getCustomRoleFieldError().should('not.be.visible');
+
+                // When I create the user with a valid custom role
+                UserAndAccessSteps.toggleWriteAccessAny();
+                SecurityStubs.spyOnUserCreate();
+                UserAndAccessSteps.confirmUserCreate();
+                // Then the user should be created with that custom role
+                cy.wait('@create-user').its('request.body').then((body) => {
+                    expect(body).to.deep.eq({
+                        'password': 'password',
+                        'grantedAuthorities': [
+                            'ROLE_USER',
+                            'CUSTOM_AA',
+                            'WRITE_REPO_*',
+                            'READ_REPO_*',
+                        ],
+                        'appSettings': {
+                            'DEFAULT_VIS_GRAPH_SCHEMA': true,
+                            'DEFAULT_INFERENCE': true,
+                            'DEFAULT_SAMEAS': true,
+                            'IGNORE_SHARED_QUERIES': false,
+                            'EXECUTE_COUNT': true,
+                        },
+                    });
+                });
+
+                cy.url().should('include', '/users');
+                UserAndAccessSteps.findUserInTable(user).should('be.visible');
+                UserAndAccessSteps.getUserCustomRoles('@user')
+                    .should('have.length', 1)
+                    .eq(0).and('have.text', 'AA');
+                // And when I open the edit page for that user, the custom role should be visible in the field without the prefix
+                UserAndAccessSteps.openEditUserPage(user);
+                cy.wait('@get-user');
+                UserAndAccessSteps.getCustomRoleField().find('.tag-item span')
+                    .should('have.length', 1)
+                    .eq(0).and('have.text', 'AA');
+            });
+
+            it('Adding a role with a CUSTOM_ prefix shows a warning message', () => {
+                // When I create a user
+                UserAndAccessSteps.clickCreateNewUserButton();
+                // And I add a custom role tag with prefix CUSTOM_
+                UserAndAccessSteps.addTextToCustomRoleField('CUSTOM_USER{Enter}');
+                // There should be a warning text
+                UserAndAccessSteps.getPrefixWarning(0).should('contain', 'Custom roles should be entered without the "CUSTOM_" prefix in Workbench');
+            });
+
+            it('Warn users when setting no password when creating new user admin', () => {
+                UserAndAccessSteps.getUsersTable().should('be.visible');
+                createUser(user, PASSWORD, ROLE_CUSTOM_ADMIN, {noPassword: true});
+                UserAndAccessSteps.getUsersTable().should('be.visible');
+                UserAndAccessSteps.getSplashLoader().should('not.be.visible');
+            });
+
+            // Skipped until image with GDB implementation is available
+            it.skip('should create user with manage repo rights for specific repo', () => {
+                SecurityStubs.spyOnUserCreate();
+                UserAndAccessSteps.getUsersCatalogContainer().should('be.visible');
+                createUser(user, PASSWORD, ROLE_USER, {manage: true, repoName: repoName});
+                // Then the user should be created with that custom role
+                cy.wait('@create-user').its('request.body').then((body) => {
+                    expect(body).to.deep.eq({
+                        'password': 'password',
+                        'grantedAuthorities': [
+                            'ROLE_USER',
+                            `MANAGE_REPO_${repoName}`,
+                            `WRITE_REPO_${repoName}`,
+                            `READ_REPO_${repoName}`,
+                        ],
+                        'appSettings': {
+                            'DEFAULT_VIS_GRAPH_SCHEMA': true,
+                            'DEFAULT_INFERENCE': true,
+                            'DEFAULT_SAMEAS': true,
+                            'IGNORE_SHARED_QUERIES': false,
+                            'EXECUTE_COUNT': true,
+                        },
+                    });
+                });
+                UserAndAccessSteps.getUsersCatalogContainer().should('be.visible');
+                assertUserAuthsInCatalog(user, {repo: repoName, read: false, manage: true, graphql: false});
+
+                UserAndAccessSteps.openEditUserPage(user);
+                cy.wait('@get-user');
+                UserAndAccessSteps.getRepositoryRightsList().should('be.visible');
+                verifyCheckedUserAuth(repoName, {read: true, write: true, manage: true, graphql: false});
+                verifyDisabledUserAuth(repoName, {read: true, write: true, manage: false, graphql: true});
+            });
+        });
+
+        context('Free access', () => {
+            it('should toggle free access after Admin has logged in', () => {
+                // Given I have available repositories to allow Free Access for
+                RepositoriesStubs.stubRepositories();
+                RepositoriesStubs.stubFreeAccess();
+                // When I enable security
+                UserAndAccessSteps.toggleSecurity();
+                // When I log in as an Admin
+                LoginSteps.loginWithUser('admin', DEFAULT_ADMIN_PASSWORD);
+                // Then the page should load
+                UserAndAccessSteps.getSplashLoader().should('not.be.visible');
+                UserAndAccessSteps.getUsersTable().should('be.visible');
+                // The Free Access toggle should be OFF
+                UserAndAccessSteps.getFreeAccessSwitchInput().should('not.be.checked');
+                // When I toggle Free Access ON
+                UserAndAccessSteps.toggleFreeAccess();
+                // And I allow free access to a repository
+                ModalDialogSteps.getDialog().should('be.visible');
+                // Then I click OK in the modal
+                ModalDialogSteps.clickOKButton();
+                // Then the toggle button should be ON
+                UserAndAccessSteps.getFreeAccessSwitchInput().should('be.checked');
+                // And I should see a success message
+                ToasterSteps.verifySuccess('Free access has been enabled.');
+                ToasterSteps.getToast().should('not.exist');
+                UserAndAccessSteps.getUsersTable().should('be.visible');
+                // When I toggle Free Access OFF
+                UserAndAccessSteps.toggleFreeAccess();
+                // Then I should see a success message
+                ToasterSteps.getToast().should('exist');
+                ToasterSteps.getToasterMessage().should('contain', 'Free access has been disabled.');
+            });
+        });
+
+        context('Login / return URL redirects', () => {
+            it('should redirect to previous page after logout and then login', () => {
+                UserAndAccessSteps.toggleSecurity();
+                LoginSteps.loginWithUser('admin', DEFAULT_ADMIN_PASSWORD);
+                MainMenuSteps.clickOnSparqlMenu();
+                cy.url().should('include', '/sparql');
+
+                LoginSteps.logout();
+                cy.url().should('include', '/login');
+                LoginSteps.loginWithUser('admin', DEFAULT_ADMIN_PASSWORD);
+                cy.url().should('include', '/sparql');
+            });
+
+            it('should redirect to correct return url when user is authenticated and on login page', () => {
+                UserAndAccessSteps.visit();
+                UserAndAccessSteps.toggleSecurity();
+                LoginSteps.loginWithUser('admin', DEFAULT_ADMIN_PASSWORD);
+                UserAndAccessSteps.getUsersTable().should('be.visible');
+
+                cy.visit('/login?r=%252Fsparql');
+                cy.reload();
+                UserAndAccessSteps.getUrl().should('include', '/sparql');
+            });
         });
     });
 
-    // eslint-disable-next-line no-undef
     context('Verify access states', () => {
         let repoName;
 
@@ -264,13 +276,14 @@ describe('User and Access', () => {
             repoName = 'user-access-repo1-' + Date.now();
             cy.createRepository({id: repoName});
             cy.switchOffSecurity(true);
+            SecurityStubs.spyOnUserGet();
         });
 
         beforeEach(() => {
             UserAndAccessSteps.visit();
             // Users table should be visible
             UserAndAccessSteps.getUsersTable().should('be.visible');
-        })
+        });
 
         after(() => {
             cy.loginAsAdmin().then(() => {
@@ -286,9 +299,8 @@ describe('User and Access', () => {
             verifyDisabledUserAuth('*', {read: false, write: false, manage: true, graphql: true});
             verifyCheckedUserAuth(repoName, {read: false, write: false, manage: false, graphql: false});
             verifyDisabledUserAuth(repoName, {read: false, write: false, manage: false, graphql: true});
-        })
+        });
 
-        // eslint-disable-next-line no-undef
         context('for non user roles', () => {
             it('admin', () => {
                 UserAndAccessSteps.clickCreateNewUserButton();
@@ -310,9 +322,8 @@ describe('User and Access', () => {
                 verifyCheckedUserAuth(repoName, {read: true, write: true, manage: true, graphql: false});
                 verifyDisabledUserAuth(repoName, {read: true, write: true, manage: true, graphql: true});
             });
-        })
+        });
 
-        // eslint-disable-next-line no-undef
         context('for specific repo', () => {
             it('read', () => {
                 UserAndAccessSteps.clickCreateNewUserButton();
@@ -350,7 +361,6 @@ describe('User and Access', () => {
             });
         });
 
-        // eslint-disable-next-line no-undef
         context('for any repo', () => {
             let anyRepo = '*';
 
@@ -396,15 +406,13 @@ describe('User and Access', () => {
         });
     });
 
-    // eslint-disable-next-line no-undef
-    context('GraphQL only', () => {
+    context('GraphQL access', () => {
         let repositoryId1;
         let repositoryId2;
         let repositoryId3;
         const graphqlUser = 'graphqlUser';
 
         beforeEach(() => {
-            cy.viewport(1280, 1000);
             RepositoriesStubs.spyGetRepositories();
             repositoryId1 = 'user-access-repo1-' + Date.now();
             repositoryId2 = 'user-access-repo2-' + Date.now();
@@ -416,6 +424,7 @@ describe('User and Access', () => {
             UserAndAccessSteps.visit();
             // Users table should be visible
             UserAndAccessSteps.getUsersTable().should('be.visible');
+            SecurityStubs.spyOnUserGet();
         });
 
         afterEach(() => {
@@ -430,144 +439,164 @@ describe('User and Access', () => {
 
         });
 
-        it('Create user with GraphQL-only access', () => {
-            cy.wait('@getRepositories');
-            createUser(graphqlUser, PASSWORD, ROLE_USER, {read: true, graphql: true, repoName: repositoryId2});
-        });
+        context('GraphQL checkbox behavior', () => {
+            it('Create user with GraphQL-only access', () => {
+                cy.wait('@getRepositories');
+                createUser(graphqlUser, PASSWORD, ROLE_USER, {read: true, graphql: true, repoName: repositoryId2});
+            });
 
-        // Fails for unknown reason only in CI
-        it.skip('Can create user with different auth combinations', () => {
-            cy.wait('@getRepositories');
-            // WHEN I create a user with read + GraphQL for repository #2
-            createUser(graphqlUser, PASSWORD, ROLE_USER, {read: true, graphql: true, repoName: repositoryId2});
-            // THEN the user should have read + GraphQL on that repo
-            assertUserAuthsInCatalog(graphqlUser, {repo: repositoryId2, read: true, graphql: true});
-            // WHEN I open the edit page for that user
-            UserAndAccessSteps.openEditUserPage(graphqlUser);
-            // THEN for repository #1, the GraphQL checkbox should be disabled initially
-            UserAndAccessSteps.validateGraphqlAccessForRepo(repositoryId1, {disabled: true});
-            // WHEN I enable "read" for repository #1
-            editUserAuths({repo: repositoryId1, read: true});
-            // THEN GraphQL for repository #1 should become enabled
-            UserAndAccessSteps.validateGraphqlAccessForRepo(repositoryId1, {disabled: false});
-            // WHEN I enable GraphQL and read
-            editUserAuths({repo: repositoryId1, graphql: true});
-            editUserAuths({repo: repositoryId1, read: true});
-            // THEN GraphQL should be checked and disabled
-            UserAndAccessSteps.validateGraphqlAccessForRepo(repositoryId1, {checked: true, disabled: true});
-            // THEN for repository #3, GraphQL should be disabled initially
-            UserAndAccessSteps.validateGraphqlAccessForRepo(repositoryId3, {disabled: true});
-            // WHEN I enable "write" for repository #3
-            editUserAuths({repo: repositoryId3, write: true});
-            // THEN GraphQL for repository #3 should become enabled
-            UserAndAccessSteps.validateGraphqlAccessForRepo(repositoryId3, {disabled: false});
-            // And I expect "read" to be checked and disabled
-            UserAndAccessSteps.validateReadAccessForRepo(repositoryId3, {checked: true, disabled: true});
-            // I enable GraphQL for repository #3
-            editUserAuths({repo: repositoryId3, graphql: true});
+            // Fails for unknown reason only in CI
+            it('Can create user with different auth combinations', () => {
+                cy.wait('@getRepositories');
+                cy.wait('@getRepositories');
+                UserAndAccessSteps.getUsersCatalogContainer().should('be.visible');
+                // WHEN I create a user with read + GraphQL for repository #2
+                createUser(graphqlUser, PASSWORD, ROLE_USER, {read: true, graphql: true, repoName: repositoryId2});
+                // THEN the user should have read + GraphQL on that repo
+                assertUserAuthsInCatalog(graphqlUser, {repo: repositoryId2, read: true, graphql: true});
+                // WHEN I open the edit page for that user
+                UserAndAccessSteps.openEditUserPage(graphqlUser);
+                cy.wait('@get-user');
+                // THEN for repository #1, the GraphQL checkbox should be disabled initially
+                UserAndAccessSteps.validateGraphqlAccessForRepo(repositoryId1, {disabled: true});
+                // WHEN I enable "read" for repository #1
+                setUserAuths({repo: repositoryId1, read: true});
+                // THEN GraphQL for repository #1 should become enabled
+                UserAndAccessSteps.validateGraphqlAccessForRepo(repositoryId1, {disabled: false});
+                // WHEN I enable GraphQL with read
+                setUserAuths({repo: repositoryId1, graphql: true});
+                // THEN GraphQL should be checked and enabled
+                UserAndAccessSteps.validateGraphqlAccessForRepo(repositoryId1, {checked: true, disabled: false});
+                // THEN for repository #3, GraphQL should be disabled initially
+                UserAndAccessSteps.validateGraphqlAccessForRepo(repositoryId3, {disabled: true});
+                // WHEN I enable "write" for repository #3
+                setUserAuths({repo: repositoryId3, write: true});
+                // THEN GraphQL for repository #3 should become enabled
+                UserAndAccessSteps.validateGraphqlAccessForRepo(repositoryId3, {disabled: false});
+                // And I expect "read" to be checked and disabled
+                UserAndAccessSteps.validateReadAccessForRepo(repositoryId3, {checked: true, disabled: true});
+                // I enable GraphQL for repository #3
+                setUserAuths({repo: repositoryId3, graphql: true});
+                // THEN GraphQL should be checked and enabled
+                UserAndAccessSteps.validateGraphqlAccessForRepo(repositoryId1, {checked: true, disabled: false});
+                // When I remove "read" for repository #2
+                UserAndAccessSteps.toggleReadAccessForRepo(repositoryId2);
+                // THEN I expect "graphql" to be unchecked and disabled for repository #2
+                UserAndAccessSteps.validateGraphqlAccessForRepo(repositoryId2, {checked: false, disabled: true});
 
-            // WHEN I confirm the user edit
-            UserAndAccessSteps.confirmUserEdit();
-            // THEN verify the final rights:
-            //  - repo #1 has no read/write/graphql
-            //  - repo #2 has read + graphql
-            //  - repo #3 has write + graphql (and read was auto-checked but disabled)
-            assertUserAuthsInCatalog(graphqlUser, {repo: repositoryId1, read: false, write: false, graphql: false});
-            assertUserAuthsInCatalog(graphqlUser, {repo: repositoryId2, read: true, write: false, graphql: true});
-            assertUserAuthsInCatalog(graphqlUser, {repo: repositoryId3, read: false, write: true, graphql: true});
-        });
-
-        // TODO remove skipped flag from all tests after merge of https://github.com/Ontotext-AD/graphdb-workbench/pull/2042
-        it.skip('Should have access to 5 pages when have graphql only rights', () => {
-            cy.wait('@getRepositories');
-            // WHEN I create a user with read + GraphQL for repository #2
-            createUser(graphqlUser, PASSWORD, ROLE_USER, {readWrite: true, graphql: true, repoName: repositoryId1});
-            //enable security
-            UserAndAccessSteps.toggleSecurity();
-            //login new user
-            LoginSteps.loginWithUser(graphqlUser, PASSWORD);
-            RepositorySelectorSteps.selectRepository(repositoryId1);
-
-            MENU_ITEMS_WITHOUT_GRAPHQL.forEach(({path, expectedUrl, checks, expectedTitle}) => {
-                navigateMenuPath(path, expectedUrl, expectedTitle);
-                if (checks) {
-                    runChecks(checks);
-                }
+                // WHEN I confirm the user edit
+                UserAndAccessSteps.confirmUserEdit();
+                // THEN verify the final rights:
+                //  - repo #1 has no read/write/graphql
+                //  - repo #2 has read + graphql
+                //  - repo #3 has write + graphql (and read was auto-checked but disabled)
+                assertUserAuthsInCatalog(graphqlUser, {repo: repositoryId1, read: true, write: false, graphql: true});
+                assertUserAuthsInCatalog(graphqlUser, {repo: repositoryId2, read: false, write: false, graphql: false});
+                assertUserAuthsInCatalog(graphqlUser, {repo: repositoryId3, read: false, write: true, graphql: true});
             });
         });
 
-        it.skip('Should not have access endpoints management when have read graphql only rights', () => {
-            cy.wait('@getRepositories');
-            // WHEN I create a user with read + GraphQL for repository #2
-            createUser(graphqlUser, PASSWORD, ROLE_USER, {read: true, graphql: true, repoName: repositoryId1});
-            //enable security
-            UserAndAccessSteps.toggleSecurity();
-            //login new user
-            LoginSteps.loginWithUser(graphqlUser, PASSWORD);
-            RepositorySelectorSteps.selectRepository(repositoryId1);
+        context('Menu navigation based on permissions', () => {
+            it('Should have access to 5 pages when have graphql only rights', () => {
+                cy.wait('@getRepositories');
+                cy.wait('@getRepositories');
+                // WHEN I create a user with read + GraphQL for repository #2
+                createUser(graphqlUser, PASSWORD, ROLE_USER, {readWrite: true, graphql: true, repoName: repositoryId1});
+                //enable security
+                UserAndAccessSteps.toggleSecurity();
+                //login new user
+                LoginSteps.loginWithUser(graphqlUser, PASSWORD);
+                cy.wait('@getRepositories');
+                cy.wait('@getRepositories');
 
-            GRAPHQL_READ_MENU_ITEMS.forEach(({path, expectedUrl, checks, expectedTitle}) => {
-                navigateMenuPath(path, expectedUrl, expectedTitle);
-                if (checks) {
-                    runChecks(checks);
-                }
+                MENU_ITEMS_WITHOUT_GRAPHQL.forEach(({path, expectedUrl, checks, expectedTitle}) => {
+                    navigateMenuPath(path, expectedUrl, expectedTitle);
+                    if (checks) {
+                        runChecks(checks);
+                    }
+                    navigateMenuPath(['Import'], '/import', 'Import');
+                });
             });
-        });
 
-        it.skip('Should have all access to endpoints management when have REPO_MANAGER role', () => {
-            cy.wait('@getRepositories');
-            createUser(graphqlUser, PASSWORD, ROLE_REPO_MANAGER);
-            //enable security
-            UserAndAccessSteps.toggleSecurity();
-            HomeSteps.visit();
-            //login new user
-            LoginSteps.loginWithUser(graphqlUser, PASSWORD);
-            GRAPHQL_REPO_MANAGER_MENU_ITEMS.forEach(({path, expectedUrl, checks, expectedTitle}) => {
-                navigateMenuPath(path, expectedUrl, expectedTitle);
-                if (checks) {
-                    runChecks(checks);
-                }
+            it('Should not have access endpoints management when have read graphql only rights', () => {
+                cy.wait('@getRepositories');
+                cy.wait('@getRepositories');
+                // WHEN I create a user with read + GraphQL for repository #2
+                createUser(graphqlUser, PASSWORD, ROLE_USER, {read: true, graphql: true, repoName: repositoryId1});
+                //enable security
+                UserAndAccessSteps.toggleSecurity();
+                //login new user
+                LoginSteps.loginWithUser(graphqlUser, PASSWORD);
+                cy.wait('@getRepositories');
+                cy.wait('@getRepositories');
+                // RepositorySelectorSteps.selectRepository(repositoryId1);
+
+                GRAPHQL_READ_MENU_ITEMS.forEach(({path, expectedUrl, checks, expectedTitle}) => {
+                    navigateMenuPath(path, expectedUrl, expectedTitle);
+                    if (checks) {
+                        runChecks(checks);
+                    }
+                    navigateMenuPath(['Import'], '/import', 'Import');
+                });
             });
-        });
-
-        it.skip('Can have Free Access and GraphQL working together', () => {
-            cy.wait('@getRepositories');
-            //enable security
-            UserAndAccessSteps.toggleSecurity();
-            //login with the admin
-            LoginSteps.loginWithUser('admin', DEFAULT_ADMIN_PASSWORD);
-            // The Free Access toggle should be OFF
-            UserAndAccessSteps.getFreeAccessSwitchInput().should('not.be.checked');
-            // When I toggle Free Access ON
-            UserAndAccessSteps.toggleFreeAccess();
-            // Then I set repo auths
-            UserAndAccessSteps.clickFreeReadAccessRepo(repositoryId1);
-            UserAndAccessSteps.clickFreeWriteAccessRepo(repositoryId2);
-            UserAndAccessSteps.clickFreeWriteAccessRepo(repositoryId3);
-            UserAndAccessSteps.clickFreeGraphqlAccessRepo(repositoryId3);
-            // Then I click OK in the modal
-            ModalDialogSteps.clickOKButton();
-            // Then the toggle button should be ON
-            UserAndAccessSteps.getFreeAccessSwitchInput().should('be.checked');
-            // And I should see a success message
-            ToasterSteps.verifySuccess('Free access has been enabled.');
-            UserAndAccessSteps.getUsersTable().should('be.visible');
-
-            // Then I logout
-            LoginSteps.logout();
-            HomeSteps.visit();
-            //  I change the repository to this with GraphQL only rights
-            RepositorySelectorSteps.selectRepository(repositoryId3);
-            // Then I should have GraphQL only rights
-            FREE_ACCESS_MENU_ITEMS_WITHOUT_GRAPHQL.forEach(({path, expectedUrl, checks, expectedTitle}) => {
-                navigateMenuPath(path, expectedUrl, expectedTitle);
-                if (checks) {
-                    runChecks(checks);
-                }
+            it('Should have all access to endpoints management when have REPO_MANAGER role', () => {
+                cy.wait('@getRepositories');
+                cy.wait('@getRepositories');
+                createUser(graphqlUser, PASSWORD, ROLE_REPO_MANAGER);
+                //enable security
+                UserAndAccessSteps.toggleSecurity();
+                HomeSteps.visitAndWaitLoader();
+                //login new user
+                LoginSteps.loginWithUser(graphqlUser, PASSWORD);
+                cy.wait('@getRepositories');
+                cy.wait('@getRepositories');
+                GRAPHQL_REPO_MANAGER_MENU_ITEMS.forEach(({path, expectedUrl, checks, expectedTitle}) => {
+                    navigateMenuPath(path, expectedUrl, expectedTitle);
+                    if (checks) {
+                        runChecks(checks);
+                    }
+                    navigateMenuPath(['Import'], '/import', 'Import');
+                });
             });
-            // Turn free access off
-            cy.loginAsAdmin().then(() => {
-                cy.switchOffFreeAccess(true);
+            it('Can have Free Access and GraphQL working together', () => {
+                cy.wait('@getRepositories');
+                cy.wait('@getRepositories');
+                //enable security
+                UserAndAccessSteps.toggleSecurity();
+                //login with the admin
+                LoginSteps.loginWithUser('admin', DEFAULT_ADMIN_PASSWORD);
+                cy.wait('@getRepositories');
+                cy.wait('@getRepositories');
+                // The Free Access toggle should be OFF
+                UserAndAccessSteps.getFreeAccessSwitchInput().should('not.be.checked');
+                // When I toggle Free Access ON
+                UserAndAccessSteps.toggleFreeAccess();
+                // Then I set repo auths
+                UserAndAccessSteps.clickFreeReadAccessRepo(repositoryId1);
+                UserAndAccessSteps.clickFreeWriteAccessRepo(repositoryId2);
+                UserAndAccessSteps.clickFreeWriteAccessRepo(repositoryId3);
+                UserAndAccessSteps.clickFreeGraphqlAccessRepo(repositoryId3);
+                // Then I click OK in the modal
+                ModalDialogSteps.clickOKButton();
+                // Then the toggle button should be ON
+                UserAndAccessSteps.getFreeAccessSwitchInput().should('be.checked');
+                // And I should see a success message
+                ToasterSteps.verifySuccess('Free access has been enabled.');
+                UserAndAccessSteps.getUsersTable().should('be.visible');
+
+                // Then I logout
+                LoginSteps.logout();
+                HomeSteps.visit();
+                //  I change the repository to this with GraphQL only rights
+                RepositorySelectorSteps.selectRepository(repositoryId3);
+                // Then I should have GraphQL only rights
+                FREE_ACCESS_MENU_ITEMS_WITHOUT_GRAPHQL.forEach(({path, expectedUrl, checks, expectedTitle}) => {
+                    navigateMenuPath(path, expectedUrl, expectedTitle);
+                    if (checks) {
+                        runChecks(checks);
+                    }
+                    navigateMenuPath(['Import'], '/import', 'Import');
+                });
             });
         });
     });
@@ -582,6 +611,8 @@ describe('User and Access', () => {
 
     function createUser(username, password, role, opts = {}) {
         UserAndAccessSteps.clickCreateNewUserButton();
+        cy.url().should('include', '/user/create');
+        UserAndAccessSteps.getUsernameField().should('be.visible').and('be.enabled').and('not.be.disabled');
         UserAndAccessSteps.typeUsername(username);
         UserAndAccessSteps.typePassword(password);
         UserAndAccessSteps.typeConfirmPasswordField(password);
@@ -643,10 +674,10 @@ describe('User and Access', () => {
         }
     }
 
-    function assertUserAuthsInCatalog(username, {repo, read = false, write = false, graphql = false} = {}) {
+    function assertUserAuthsInCatalog(username, {repo, read = false, write = false, manage = false, graphql = false} = {}) {
         UserAndAccessSteps.findUserRowAlias(username, 'userRow');
 
-        if (!read && !write) {
+        if (!read && !write && !manage) {
             return UserAndAccessSteps.getRepoLine('@userRow', repo).should('not.exist');
         }
 
@@ -665,6 +696,12 @@ describe('User and Access', () => {
             UserAndAccessSteps.findWriteIconAlias('@repoLine').should('not.exist');
         }
 
+        if (manage) {
+            UserAndAccessSteps.findManageIconAlias('@repoLine').should('be.visible');
+        } else {
+            UserAndAccessSteps.findManageIconAlias('@repoLine').should('not.exist');
+        }
+
         if (graphql) {
             UserAndAccessSteps.findGraphqlIconAlias('@repoLine').should('exist');
         } else {
@@ -672,21 +709,25 @@ describe('User and Access', () => {
         }
     }
 
-    function editUserAuths({repo, read = false, write = false, graphql = false, manage = false} = {}) {
+    function setUserAuths({repo, read = false, write = false, graphql = false, manage = false} = {}) {
         if (read === true) {
             UserAndAccessSteps.toggleReadAccessForRepo(repo);
+            UserAndAccessSteps.validateReadAccessForRepo(repo, {checked: read});
         }
 
         if (write === true) {
             UserAndAccessSteps.toggleWriteAccessForRepo(repo);
+            UserAndAccessSteps.validateWriteAccessForRepo(repo, {checked: write});
         }
 
         if (graphql === true) {
             UserAndAccessSteps.toggleGraphqlAccessForRepo(repo);
+            UserAndAccessSteps.validateGraphqlAccessForRepo(repo, {checked: graphql});
         }
 
         if (manage === true) {
             UserAndAccessSteps.toggleManageRepoForRepo(repo);
+            UserAndAccessSteps.validateManageAccessForRepo(repo, {checked: manage});
         }
     }
 
@@ -749,9 +790,6 @@ describe('User and Access', () => {
     }
 
     const noAuthChecks = {
-        'div[role="main]': [
-            'not.exist',
-        ],
         '.no-authority-panel .alert-warning': [
             'be.visible',
             ['contains.text', 'Some functionalities are not available because'],
@@ -760,10 +798,6 @@ describe('User and Access', () => {
     };
 
     const hasAuthChecks = {
-        'div[role="main"]': [
-            'exist',
-            'be.visible',
-        ],
         '.no-authority-panel .alert-warning': [
             'not.exist',
         ],
@@ -1003,14 +1037,6 @@ describe('User and Access', () => {
             path: ['Setup', 'SPARQL Templates'],
             expectedUrl: '/sparql-templates',
             checks: noAuthChecks,
-        },
-
-        // 7) Help
-        {
-            path: ['Help', 'REST API'],
-            expectedUrl: '/webapi',
-            expectedTitle: 'REST API documentation',
-            checks: hasAuthChecks,
         },
     ];
 });
