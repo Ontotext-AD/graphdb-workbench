@@ -7,6 +7,10 @@ describe('TTYG agent select menu', () => {
 
     const repositoryId = 'starwars';
 
+    before(() => {
+        cy.clearLocalStorage('ls.ttyg');
+    });
+
     beforeEach(() => {
         RepositoriesStubs.stubRepositories(0, '/repositories/get-ttyg-repositories.json');
         RepositoriesStubs.stubBaseEndpoints(repositoryId);
@@ -91,6 +95,7 @@ describe('TTYG agent select menu', () => {
         TTYGViewSteps.triggerDeleteAgentActionMenu(0);
         ModalDialogSteps.confirm();
         ModalDialogSteps.getDialog().should('not.exist');
+        cy.wait('@delete-agent');
         // TODO: the agents list filter brakes after deleting an agent!!!
         TTYGViewSteps.selectAllAgentsFilter();
         TTYGViewSteps.getAgents().should('have.length', 3);
