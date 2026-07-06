@@ -18,7 +18,7 @@
     "cy:run-legacy:coverage": "cypress run --config-file cypress-legacy.config.js --browser chrome",
     "cy:run-flaky": "cypress run --config-file cypress-flaky.config.js --browser chrome",
     "test": "npm run cy:run-legacy",
-    "test:core": "cypress run --config-file cypress-core.config.js --browser chrome",
+    "test:core": "cypress run --config-file cypress-core.config.js",
     "lint": "eslint '**/*.{js,mjs,cjs}'"
   },
   "author": {
