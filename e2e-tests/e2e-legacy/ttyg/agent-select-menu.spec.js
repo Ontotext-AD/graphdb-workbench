@@ -7,7 +7,7 @@ describe('TTYG agent select menu', () => {
 
     const repositoryId = 'starwars';
 
-    before(() => {
+    beforeEach(() => {
         cy.clearLocalStorage('ls.ttyg');
     });
 
