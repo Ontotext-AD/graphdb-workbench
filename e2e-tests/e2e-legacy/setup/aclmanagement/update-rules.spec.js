@@ -18,7 +18,7 @@ describe('ACL Management: update rules', () => {
         cy.enableAutocomplete(repositoryId);
         AclManagementSteps.importRules(repositoryId);
         AclManagementSteps.visit();
-        ApplicationSteps.geLoader().should('not.exist');
+        ApplicationSteps.getLoader().should('not.exist');
         // ensure rules are rendered
         AclManagementSteps.getAclRules().should('have.length.gt', 0);
     });
@@ -51,7 +51,7 @@ describe('ACL Management: update rules', () => {
         ModalDialogSteps.clickOnConfirmButton();
         // And I save the ACL list
         AclManagementSteps.saveAcl();
-        ApplicationSteps.geLoader().should('not.exist');
+        ApplicationSteps.getLoader().should('not.exist');
         // Then I expect the ACL to be saved
         ApplicationSteps.getSuccessNotifications().should('be.visible');
         AclManagementSteps.getAclRules().should('have.length', 5);

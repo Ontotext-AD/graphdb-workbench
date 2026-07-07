@@ -23,7 +23,6 @@ describe('User and Access', () => {
         before(() => {
             repoName = 'user-access-repo1-' + Date.now();
             cy.createRepository({id: repoName});
-            SecurityStubs.spyOnUserGet();
         });
 
         after(() => {
@@ -35,6 +34,7 @@ describe('User and Access', () => {
         });
 
         beforeEach(() => {
+            SecurityStubs.spyOnUserGet();
             UserAndAccessSteps.visit();
             // Users table should be visible
             UserAndAccessSteps.getUsersTable().should('be.visible');
@@ -511,6 +511,7 @@ describe('User and Access', () => {
 
                 MENU_ITEMS_WITHOUT_GRAPHQL.forEach(({path, expectedUrl, checks, expectedTitle}) => {
                     navigateMenuPath(path, expectedUrl, expectedTitle);
+
                     if (checks) {
                         runChecks(checks);
                     }
@@ -539,6 +540,7 @@ describe('User and Access', () => {
                     navigateMenuPath(['Import'], '/import', 'Import');
                 });
             });
+
             it('Should have all access to endpoints management when have REPO_MANAGER role', () => {
                 cy.wait('@getRepositories');
                 cy.wait('@getRepositories');
@@ -558,6 +560,7 @@ describe('User and Access', () => {
                     navigateMenuPath(['Import'], '/import', 'Import');
                 });
             });
+
             it('Can have Free Access and GraphQL working together', () => {
                 cy.wait('@getRepositories');
                 cy.wait('@getRepositories');
@@ -601,14 +604,6 @@ describe('User and Access', () => {
         });
     });
 
-    function clickGraphqlAccessForRepo(repoName) {
-        if (repoName === '*') {
-            UserAndAccessSteps.clickGraphqlAccessAny();
-        } else {
-            UserAndAccessSteps.clickGraphqlAccessRepo(repoName);
-        }
-    }
-
     function createUser(username, password, role, opts = {}) {
         UserAndAccessSteps.clickCreateNewUserButton();
         cy.url().should('include', '/user/create');
@@ -644,18 +639,7 @@ describe('User and Access', () => {
 
     function setRoles(opts = {}) {
         const {read = false, readWrite = false, graphql = false, manage = false, repoName = '*'} = opts;
-        if (manage) {
-            UserAndAccessSteps.toggleManageRepoForRepo(repoName);
-        }
-        if (read) {
-            UserAndAccessSteps.toggleReadAccessForRepo(repoName);
-        }
-        if (readWrite) {
-            UserAndAccessSteps.toggleWriteAccessForRepo(repoName);
-        }
-        if (graphql) {
-            clickGraphqlAccessForRepo(repoName);
-        }
+        setUserAuths({repo: repoName, read, write: readWrite, graphql, manage});
     }
 
     function testForUser(name, isAdmin) {
@@ -749,6 +733,9 @@ describe('User and Access', () => {
         pathArray.forEach((label, index) => {
             if (index === 0) {
                 MainMenuSteps.clickOnMenu(label);
+                if (pathArray.length > 1) {
+                    MainMenuSteps.getSubmenuFor(label).scrollIntoView().should('be.visible');
+                }
             } else {
                 MainMenuSteps.clickOnSubMenu(label);
                 const title = expectedTitle ? expectedTitle : label;
