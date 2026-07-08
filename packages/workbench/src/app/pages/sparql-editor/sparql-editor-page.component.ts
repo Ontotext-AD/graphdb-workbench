@@ -159,6 +159,32 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
       element.remove();
     }
   };
+  private readonly exploreReactodiaYasrToolbarElementBuilder: YasrToolbarPlugin = {
+    createElement: (yasr: Yasr) => {
+      const exploreReactodiaButton = document.createElement('button');
+      exploreReactodiaButton.type = 'button';
+      exploreReactodiaButton.classList.add('onto-btn', 'onto-btn-primary', 'explore-reactodia');
+      exploreReactodiaButton.textContent = this.translocoService.translate('sparql_editor.yasgui.yasr.yasr_header.toolbar.btn.reactodia_btn.label');
+      exploreReactodiaButton.addEventListener('click', () => this.navigateToReactodia(yasr));
+      return exploreReactodiaButton;
+    },
+    updateElement: (element: HTMLElement, yasr: Yasr) => {
+      element.classList.add('hidden');
+      if (!yasr.hasResults()) {
+        return;
+      }
+      const queryType = yasr.yasqe.getQueryType();
+      if (QueryType.CONSTRUCT === queryType || QueryType.DESCRIBE === queryType) {
+        element.classList.remove('hidden');
+      }
+    },
+    getOrder: () => {
+      return 3;
+    },
+    destroy(element: HTMLElement) {
+      element.remove();
+    }
+  };
   private readonly tabIdToConnectorProgressModalMapping = new Map<string, DynamicDialogRef>();
   private internallyReloaded = false;
   // This is used to determine whether the view is embedded in another application. When embedded, we want to hide
@@ -226,6 +252,21 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Navigates to the Reactodia visualization page, passing the current query.
+   *
+   * @param yasr - YASR result renderer instance containing the current query context.
+   */
+  private navigateToReactodia(yasr: Yasr) {
+    this.router.navigate(['reactodia'], {
+      queryParams: {
+        query: yasr.yasqe.getValue(),
+        sameAs: yasr.yasqe.getSameAs(),
+        inference: yasr.yasqe.getInfer(),
+      }
+    });
+  }
+
+  /**
    * Builds an event handler for graph exploration actions emitted by the `onto-graph-explore-split-button` component.
    *
    * The handler interprets the event payload and routes the user accordingly:
@@ -259,7 +300,7 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
     config.prefixes = this.prefixes?.namespaces;
     config.infer = this.isOntopRepo || this.inferUserSetting;
     config.sameAs = this.isOntopRepo || this.sameAsUserSetting;
-    config.yasrToolbarPlugins = this.embedded ? [] : [this.exploreVisualGraphYasrToolbarElementBuilder];
+    config.yasrToolbarPlugins = this.embedded ? [] : [this.exploreVisualGraphYasrToolbarElementBuilder, this.exploreReactodiaYasrToolbarElementBuilder];
     config.beforeUpdateQuery = (query: string, tabId: string) => this.getBeforeUpdateQueryHandler(query, tabId);
     config.outputHandlers = {
       [EventDataType.QUERY_EXECUTED]: (event: QueryExecutedEvent) => this.queryExecutedHandler(event),
