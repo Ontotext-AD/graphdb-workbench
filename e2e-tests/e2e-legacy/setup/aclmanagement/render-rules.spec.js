@@ -17,7 +17,7 @@ describe('ACL Management: render rules', () => {
             cy.presetRepository(repositoryId);
             cy.initializeRepository(repositoryId);
             AclManagementSteps.visit();
-            ApplicationSteps.geLoader().should('not.exist');
+            ApplicationSteps.getLoader().should('not.exist');
         });
 
         it('Should render empty ACL rules table', () => {

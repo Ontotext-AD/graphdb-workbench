@@ -28,7 +28,7 @@ export class ApplicationSteps {
         cy.get('onto-navbar .menu-element').eq(0).click();
     }
 
-    static geLoader() {
+    static getLoader() {
         return cy.get('.ot-loader-new-content');
     }
 

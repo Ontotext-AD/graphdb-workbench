@@ -53,7 +53,11 @@ export class MainMenuSteps {
 
     static clickOnMenu(menuName) {
         // Forced it because some element as "Explore" for example has CSS pointer-events: none
-        MainMenuSteps.getMenuButton(menuName).click({force: true});
+        MainMenuSteps.getMenuButton(menuName).realClick();
+    }
+
+    static getSubmenuFor(menuName) {
+        return MainMenuSteps.getMainMenu().contains('.menu-element', menuName).find('.sub-menu');
     }
 
     static clickOnSubmenuTriggerElement(menuName) {
