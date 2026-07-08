@@ -1,10 +1,11 @@
 <app-page-layout class="sparql-editor-page">
   <div>
-    @if (language() && currentRepository()) {
+    @if (language() && currentRepository() && !loading()) {
       <app-reactodia-component-facade
         [currentRepository]="currentRepository()"
         [language]="language()"
-        [seedIris]="seedIris()">
+        [seedIris]="seedIris()"
+        [seedGraph]="seedGraph()">
       </app-reactodia-component-facade>
     }
   </div>

@@ -1,4 +1,5 @@
 import {WindowService} from '../window';
+import {ObjectUtil} from './object-util';
 
 /**
  * Redirects the current page to a specified URL using the single-spa framework.
@@ -19,16 +20,37 @@ export function navigateTo(url: string): (event?: Event) => void {
  * Navigates to the specified URL using the single-spa framework.
  * Suitable for in-code navigation. If you need to navigate from a view, use <code>navigateTo</code> instead.
  * @param targetUrl - The target URL to which the page should be redirected.
+ * @param queryParams - Optional query parameters to append to the URL. Nullish values are skipped.
  */
-export function navigate(targetUrl: string) {
+export function navigate(targetUrl: string, queryParams?: Record<string, unknown>) {
   let url = targetUrl;
-  if (url.startsWith('.')) {
-    url = url.slice(1);
-  }
   if (url.startsWith('/') && !url.startsWith(getBasePath())) {
     url = getBasePath().slice(0, -1) + url;
   }
-  WindowService.navigateSingleSpa(url);
+  WindowService.navigateSingleSpa(buildUrl(url, queryParams));
+}
+
+/**
+ * Appends query parameters to a URL. Nullish values are skipped and remaining values are stringified.
+ * Existing query parameters are preserved and merged (a duplicate key is overwritten with the new value),
+ * and any URL fragment (<code>#hash</code>) is kept at the end where it belongs.
+ *
+ * @param url - The base URL to append the query parameters to.
+ * @param queryParams - The query parameters to append.
+ * @returns The URL with the query parameters appended, as an absolute URL.
+ */
+export function buildUrl(url: string, queryParams?: Record<string, unknown>): string {
+  const parsedUrl = new URL(url, getOrigin());
+
+  if (queryParams) {
+    Object.entries(queryParams).forEach(([key, value]) => {
+      if (!ObjectUtil.isNullOrUndefined(value)) {
+        parsedUrl.searchParams.set(key, String(value));
+      }
+    });
+  }
+
+  return parsedUrl.toString();
 }
 
 /**
