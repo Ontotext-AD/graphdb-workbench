@@ -60,7 +60,8 @@ describe('AuthenticationService', () => {
       get: jest.fn()
     },
     location: {
-      pathname: '/home'
+      pathname: '/home',
+      origin: 'http://localhost'
     },
     getLocationPathname: jest.fn(),
     singleSpa: {
@@ -74,6 +75,7 @@ describe('AuthenticationService', () => {
     securityContextService.updateSecurityConfig(securityConfig);
     securityContextService.updateIsLoggedIn(false);
     jest.spyOn(WindowService, 'getWindow').mockReturnValue(windowMock);
+    jest.spyOn(WindowService, 'getBaseHref').mockReturnValue('/');
     jest.spyOn(service(AuthStrategyResolver), 'getAuthStrategy').mockReturnValue(undefined);
 
     authService = new AuthenticationService();

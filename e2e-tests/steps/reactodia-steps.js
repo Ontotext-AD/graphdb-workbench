@@ -8,6 +8,10 @@ export class ReactodiaSteps extends BaseSteps {
         cy.visit(`${VIEW_URL}${uri ? ('?uri=' + uri) : ''}`);
     }
 
+    static visitWithQuery(query, {inference = false, sameAs = false} = {}) {
+        cy.visit(`${VIEW_URL}?query=${encodeURIComponent(query)}&inference=${inference}&sameAs=${sameAs}`);
+    }
+
     static verifyUrl() {
         this.validateUrl(`${Cypress.config('baseUrl')}${VIEW_URL}`);
     }
@@ -26,10 +30,6 @@ export class ReactodiaSteps extends BaseSteps {
 
     static getCanvas() {
         return ReactodiaSteps.getComponent().find('.reactodia-canvas');
-    }
-
-    static getSearchInput() {
-        return ReactodiaSteps.getComponent().find('.reactodia-unified-search__search-input');
     }
 
     static getElements() {

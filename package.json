@@ -1,6 +1,6 @@
 {
     "name": "graphdb-workbench",
-    "version": "3.4.0-RC1",
+    "version": "3.5.0-reactodia-resource-construct-TR1",
     "description": "The web application for GraphDB APIs",
     "engines": {
         "node": ">=22.17"
@@ -115,7 +115,7 @@
     "dependencies": {
         "@single-spa/import-map-injector": "^2.0.2",
         "graphdb-workbench-plugins": "~1.0.0",
-        "graphwise-reactodia": "^0.0.1-TR6",
+        "graphwise-reactodia": "^0.0.1-TR7",
         "import-map-overrides": "^6.1.0"
     }
 }
