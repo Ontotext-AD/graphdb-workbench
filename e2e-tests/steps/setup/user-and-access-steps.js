@@ -269,6 +269,10 @@ export class UserAndAccessSteps {
         return cy.get(repoLineAlias).find('.ri-edit-line');
     }
 
+    static findManageIconAlias(repoLineAlias) {
+        return cy.get(repoLineAlias).find('.ri-folder-settings-line');
+    }
+
     static findGraphqlIconAlias(repoLineAlias) {
         return cy.get(repoLineAlias).find('.icon-graphql');
     }
@@ -276,6 +280,8 @@ export class UserAndAccessSteps {
     static openEditUserPage(username) {
         this.findUserInTable(username); // sets @user
         cy.get('@user').find('.edit-user-btn').click();
+        cy.url().should('include', `/user/${username}`);
+        UserAndAccessSteps.getUsernameField().should('be.visible');
     }
 
     static confirmUserEdit() {

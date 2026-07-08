@@ -16,7 +16,7 @@ describe('ACL Management: rule scopes', () => {
         cy.initializeRepository(repositoryId);
         cy.enableAutocomplete(repositoryId);
         AclManagementSteps.visit();
-        ApplicationSteps.geLoader().should('not.exist');
+        ApplicationSteps.getLoader().should('not.exist');
     });
 
 
@@ -171,7 +171,7 @@ describe('ACL Management: rule scopes', () => {
             expect(interception.request.body).to.deep.eq(expectedPayload);
         });
 
-        ApplicationSteps.geLoader().should('not.exist');
+        ApplicationSteps.getLoader().should('not.exist');
         // Then I expect the ACL to be saved
         ApplicationSteps.getSuccessNotifications().should('be.visible');
 
