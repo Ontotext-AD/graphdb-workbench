@@ -1,6 +1,6 @@
 import {Component, computed, CUSTOM_ELEMENTS_SCHEMA, input} from '@angular/core';
 import {defineCustomElements} from 'graphwise-reactodia/loader';
-import {Rdf4jRepositoryService, service} from '@ontotext/workbench-api';
+import {GraphExploreLink, Rdf4jRepositoryService, service} from '@ontotext/workbench-api';
 import {LoggerProvider} from '../../services/logger/logger-provider';
 
 /**
@@ -41,6 +41,12 @@ export class ReactodiaComponentFacadeComponent {
   readonly language = input<string>();
   /** The resource IRIs the diagram starts from (Reactodia's `seed`). */
   readonly seedIris = input<string[]>([]);
+  /**
+   * Pre-resolved edges to place on the canvas (Reactodia's `seedGraph`). Used for query-driven
+   * graphs (e.g. CONSTRUCT results) whose links are not persisted in the repository and therefore
+   * cannot be resolved lazily from the SPARQL endpoint.
+   */
+  readonly seedGraph = input<GraphExploreLink[]>([]);
 
   /**
    * Transport for Reactodia's SPARQL requests. Reactodia chooses the `Accept` per query
@@ -55,6 +61,7 @@ export class ReactodiaComponentFacadeComponent {
 
   readonly config = computed(() => ({
     queryFunction: this.queryFunction,
-    seedIris: this.seedIris()
+    seedIris: this.seedIris(),
+    seedGraph: this.seedGraph()
   }));
 }
