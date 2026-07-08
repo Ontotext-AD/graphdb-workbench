@@ -19,7 +19,7 @@ describe('ACL Management: create rule', () => {
         cy.enableAutocomplete(repositoryId);
         AclManagementSteps.importRules(repositoryId);
         AclManagementSteps.visit();
-        ApplicationSteps.geLoader().should('not.exist');
+        ApplicationSteps.getLoader().should('not.exist');
         // ensure rules are rendered
         AclManagementSteps.getAclRules().should('have.length.gt', 0);
     });

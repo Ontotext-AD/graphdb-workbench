@@ -64,7 +64,7 @@ describe('JDBC configuration', () => {
         JdbcCreateSteps.clickOnPreviewButton();
 
         // Then I expect to see loader,
-        ApplicationSteps.geLoader().should('contain', 'Preview of first 100 rows of table');
+        ApplicationSteps.getLoader().should('contain', 'Preview of first 100 rows of table');
         // and see the generated preview.
         YasrSteps.getResults().should('be.visible');
     });
