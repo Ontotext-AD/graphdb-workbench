@@ -4,12 +4,8 @@ import {GraphdbAuthoritiesModel} from './graphdb-authorities-model';
 import {AuthoritiesUiModel} from './authorities-ui-model';
 import {RepositoriesPermissions} from './repositories-permissions';
 import {AuthoritiesUtil} from '../../../services/domain/security/utils/authorities-util';
-import {
-  mapGraphdbAuthoritiesResponseToModel
-} from '../../../services/domain/security/mappers/graphdb-authorities-model-mapper';
-import {
-  mapGrantedAuthoritiesResponseToModel
-} from '../../../services/domain/security/mappers/granted-authorities-ui-model.mapper';
+import {mapGraphdbAuthoritiesResponseToModel} from '../../../services/domain/security/mappers/graphdb-authorities-model-mapper';
+import {mapGrantedAuthoritiesResponseToModel} from '../../../services/domain/security/mappers/granted-authorities-ui-model.mapper';
 
 /**
  * Represents a list of authorities in an authenticated user.
@@ -132,12 +128,16 @@ export class AuthorityList extends ModelList<string> {
       const repoData = AuthoritiesUtil.getRepoFromAuthority(authority);
       if (repoData) {
         const {prefix, repo} = repoData;
-        const permissions = repositories[repo] ?? {read: false, write: false, graphql: false};
+        const permissions = repositories[repo] ?? {read: false, write: false, manage:false, graphql: false};
         if (prefix === Authority.READ_REPO_PREFIX) {
           permissions.read = true;
         } else if (prefix === Authority.WRITE_REPO_PREFIX) {
           permissions.write = true;
-        } else if (prefix === Authority.GRAPHQL_PREFIX) {
+        } else if (prefix === Authority.MANAGE_REPO_PREFIX) {
+          permissions.manage = true;
+        }
+
+        if (repo.split(':')[1] === Authority.GRAPHQL && !permissions.manage) {
           permissions.graphql = true;
         }
         repositories[repo] = permissions;
