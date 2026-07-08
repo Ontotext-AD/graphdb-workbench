@@ -32,6 +32,7 @@ export * from './models/sparql';
 export * from './models/interactive-guide';
 export * from './models/connector';
 export * from './models/graph-config';
+export * from './models/graph-explore';
 export * from './models/http';
 
 // Export enums for external usages.
@@ -79,6 +80,7 @@ export * from './services/domain/guides';
 export * from './services/ui/dialog';
 export * from './services/domain/connector';
 export * from './services/domain/graph-config';
+export * from './services/domain/graph-explore';
 
 // Export interceptors for external usages.
 export * from './interceptor';

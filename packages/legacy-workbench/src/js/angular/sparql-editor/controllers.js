@@ -122,7 +122,7 @@ function SparqlEditorCtrl($rootScope,
      * @param {boolean} clearYasguiState if set to true, the Yasgui will reinitialize and clear all tab results. Queries will remain.
      */
     $scope.updateConfig = (clearYasguiState) => {
-        const yasrToolbarPlugins = $scope.embedded ? [] : [exploreVisualGraphYasrToolbarElementBuilder];
+        const yasrToolbarPlugins = $scope.embedded ? [] : [exploreVisualGraphYasrToolbarElementBuilder, exploreReactodiaYasrToolbarElementBuilder];
         const yasguiConfig = {
             endpoint: getEndpoint,
             componentId: VIEW_SPARQL_EDITOR,
@@ -380,6 +380,31 @@ function SparqlEditorCtrl($rootScope,
     };
 
     /**
+     * Navigates to the Reactodia visualization page, passing the current query.
+     *
+     * @param yasr - YASR result renderer instance containing the current query context.
+     */
+    const navigateToReactodia = (yasr) => {
+        const paramsToParse = {
+            query: yasr.yasqe.getValue(),
+            sameAs: yasr.yasqe.getSameAs(),
+            inference: yasr.yasqe.getInfer(),
+        };
+
+        const navigate = function() {
+            $location.path('reactodia').search(paramsToParse);
+        };
+        // This button is embedded in the Yasr toolbar, which is outside the Angular context, so we need to
+        // manually trigger the navigation inside the Angular context. See the note in
+        // "navigateToGraphsVisualizations" for more details.
+        if ($scope.$$phase || $rootScope.$$phase) {
+            navigate();
+        } else {
+            $scope.$apply(navigate);
+        }
+    };
+
+    /**
      * Builds an event handler for graph exploration actions emitted by the `onto-graph-explore-split-button` component.
      *
      * The handler interprets the event payload and routes the user accordingly:
@@ -434,6 +459,38 @@ function SparqlEditorCtrl($rootScope,
             if (element._exploreVisualGraphHandler) {
                 element.removeEventListener('graphExplore', element._exploreVisualGraphHandler);
             }
+            element.remove();
+        },
+    };
+
+    /**
+     * Factory for the YASR toolbar element that opens the current query in Reactodia.
+     */
+    const exploreReactodiaYasrToolbarElementBuilder = {
+        createElement: (yasr) => {
+            const exploreReactodiaButton = document.createElement('button');
+            exploreReactodiaButton.type = 'button';
+            exploreReactodiaButton.classList.add('btn', 'btn-primary', 'explore-reactodia');
+            exploreReactodiaButton.textContent = $translate.instant('query.editor.reactodia.btn');
+            exploreReactodiaButton.addEventListener('click', () => navigateToReactodia(yasr));
+            return exploreReactodiaButton;
+        },
+        updateElement: (element, yasr) => {
+            element.classList.add('hidden');
+            if (!yasr.hasResults()) {
+                return;
+            }
+            const queryType = yasr.yasqe.getQueryType();
+
+            if (QueryType.CONSTRUCT === queryType || QueryType.DESCRIBE === queryType) {
+                element.classList.remove('hidden');
+            }
+        },
+        getOrder: () => {
+            return 3;
+        },
+
+        destroy(element) {
             element.remove();
         },
     };
