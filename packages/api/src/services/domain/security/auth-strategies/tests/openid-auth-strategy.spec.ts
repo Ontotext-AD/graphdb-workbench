@@ -177,7 +177,7 @@ describe('OpenidAuthProvider', () => {
 
       await strategy.initialize();
 
-      expect(window.singleSpa.navigateToUrl).toHaveBeenCalledWith('/repositories');
+      expect(window.singleSpa.navigateToUrl).toHaveBeenCalledWith('http://localhost/repositories');
       expect(openidStorageService.getReturnUrl().getValue()).toBeNull();
     });
 

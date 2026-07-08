@@ -18,7 +18,7 @@ import 'angular/core/services/event-emitter-service';
 import {LoggerProvider} from '../core/services/logger-provider';
 import {
     ParentWindowMessageService,
-    navigateTo,
+    navigate,
     openInNewTab,
     LanguageContextService,
     ServiceProvider,
@@ -50,7 +50,6 @@ angular
     .controller('SparqlEditorCtrl', SparqlEditorCtrl);
 
 SparqlEditorCtrl.$inject = [
-    '$rootScope',
     '$scope',
     '$q',
     '$location',
@@ -67,8 +66,7 @@ SparqlEditorCtrl.$inject = [
     'LocalStorageAdapter',
     'LSKeys'];
 
-function SparqlEditorCtrl($rootScope,
-    $scope,
+function SparqlEditorCtrl($scope,
     $q,
     $location,
     $languageService,
@@ -122,7 +120,7 @@ function SparqlEditorCtrl($rootScope,
      * @param {boolean} clearYasguiState if set to true, the Yasgui will reinitialize and clear all tab results. Queries will remain.
      */
     $scope.updateConfig = (clearYasguiState) => {
-        const yasrToolbarPlugins = $scope.embedded ? [] : [exploreVisualGraphYasrToolbarElementBuilder];
+        const yasrToolbarPlugins = $scope.embedded ? [] : [exploreVisualGraphYasrToolbarElementBuilder, exploreReactodiaYasrToolbarElementBuilder];
         const yasguiConfig = {
             endpoint: getEndpoint,
             componentId: VIEW_SPARQL_EDITOR,
@@ -363,20 +361,20 @@ function SparqlEditorCtrl($rootScope,
             paramsToParse.config = visGraphConfigId;
         }
 
-        const navigate = function() {
-            $location.path('graphs-visualizations').search(paramsToParse);
-        };
-        // This button is embedded in the Yasr toolbar, which is outside the Angular context, so we need to
-        // manually trigger the navigation inside the Angular context. Otherwise, the navigation will be
-        // triggered on the next digest cycle that might never happen. In our case there is a constant server
-        // polling that triggers the digest cycle, so the navigation will be triggered, but it can lead to a
-        // noticeable delay. By manually triggering the navigation inside the Angular context, we ensure that
-        // the navigation is triggered immediately.
-        if ($scope.$$phase || $rootScope.$$phase) {
-            navigate();
-        } else {
-            $scope.$apply(navigate);
-        }
+        navigate('graphs-visualizations', paramsToParse);
+    };
+
+    /**
+     * Navigates to the Reactodia visualization page, passing the current query.
+     *
+     * @param yasr - YASR result renderer instance containing the current query context.
+     */
+    const navigateToReactodia = (yasr) => {
+        navigate('reactodia', {
+            query: yasr.yasqe.getValue(),
+            sameAs: yasr.yasqe.getSameAs(),
+            inference: yasr.yasqe.getInfer(),
+        });
     };
 
     /**
@@ -434,6 +432,38 @@ function SparqlEditorCtrl($rootScope,
             if (element._exploreVisualGraphHandler) {
                 element.removeEventListener('graphExplore', element._exploreVisualGraphHandler);
             }
+            element.remove();
+        },
+    };
+
+    /**
+     * Factory for the YASR toolbar element that opens the current query in Reactodia.
+     */
+    const exploreReactodiaYasrToolbarElementBuilder = {
+        createElement: (yasr) => {
+            const exploreReactodiaButton = document.createElement('button');
+            exploreReactodiaButton.type = 'button';
+            exploreReactodiaButton.classList.add('btn', 'btn-primary', 'explore-reactodia');
+            exploreReactodiaButton.textContent = $translate.instant('query.editor.reactodia.btn');
+            exploreReactodiaButton.addEventListener('click', () => navigateToReactodia(yasr));
+            return exploreReactodiaButton;
+        },
+        updateElement: (element, yasr) => {
+            element.classList.add('hidden');
+            if (!yasr.hasResults()) {
+                return;
+            }
+            const queryType = yasr.yasqe.getQueryType();
+
+            if (QueryType.CONSTRUCT === queryType || QueryType.DESCRIBE === queryType) {
+                element.classList.remove('hidden');
+            }
+        },
+        getOrder: () => {
+            return 3;
+        },
+
+        destroy(element) {
             element.remove();
         },
     };
@@ -678,6 +708,7 @@ function SparqlEditorCtrl($rootScope,
         });
     });
 
+    let pendingReplayTimer = null;
     const locationChangeHandler = (eventPayload) => {
         if (internallyReloaded || skipLocationChangeHandler) {
             internallyReloaded = false;
@@ -691,8 +722,9 @@ function SparqlEditorCtrl($rootScope,
         const handler = () => {
             skipLocationChangeHandler = true;
             // Use setTimeout to ensure that the navigation is triggered after the current call stack is cleared.
-            setTimeout(() => {
-                navigateTo(newUrl)();
+            // Cancel it on destroy to avoid re-navigation in the timeout, after the component has been destroyed
+            pendingReplayTimer = setTimeout(() => {
+                navigate(newUrl);
             });
         };
         confirmAbortQueries('view.sparql-editor.leave_page.run_queries.confirmation', handler, handler);
@@ -703,6 +735,7 @@ function SparqlEditorCtrl($rootScope,
     );
 
     const removeAllListeners = () => {
+        clearTimeout(pendingReplayTimer);
         subscriptions.forEach((subscription) => subscription());
         window.removeEventListener('beforeunload', beforeunloadHandler);
     };

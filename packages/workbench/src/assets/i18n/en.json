@@ -151,7 +151,10 @@
           "toolbar": {
             "btn": {
               "visual_graph_btn": {
-                "label": "Visualize"
+                "label": "VizGraph"
+              },
+              "reactodia_btn": {
+                "label": "Visualize Reactodia"
               }
             }
           }
