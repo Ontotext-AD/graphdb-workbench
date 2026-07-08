@@ -12,10 +12,12 @@ const assertRedirectLink = (index, textValue) => {
   OperationsNotificationSteps.getDropdownButton().click();
   OperationsNotificationSteps.getOperationsDropdownElements().eq(index).click();
 
-  OperationsNotificationSteps.getRedirectUrl()
-    .last()
-    .invoke('text')
-    .should('equal', `redirect to ${textValue}`);
+  cy.location('origin').then((origin) => {
+    OperationsNotificationSteps.getRedirectUrl()
+      .last()
+      .invoke('text')
+      .should('equal', `redirect to ${origin}/${textValue}`);
+  });
 }
 
 describe('onto-operations-notification', () => {
