@@ -20,6 +20,7 @@ export default [
                 cy: 'readonly',
                 Cypress: 'readonly',
                 describe: 'readonly',
+                context: 'readonly',
                 it: 'readonly',
                 beforeEach: 'readonly',
                 afterEach: 'readonly',
