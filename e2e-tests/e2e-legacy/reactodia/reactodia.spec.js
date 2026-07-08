@@ -6,7 +6,10 @@ const FILE_TO_IMPORT = 'resource-test-data.ttl';
 const SEED_RESOURCE_ENCODED = 'http:%2F%2Fexample.com%2Fontology%23CustomerLoyalty';
 const SEED_RESOURCE_LABEL = 'CustomerLoyalty';
 
-describe('Reactodia view', () => {
+const CONSTRUCT_QUERY = 'CONSTRUCT { <http://example.com/ontology#CustomerLoyalty> ?p ?o } WHERE { <http://example.com/ontology#CustomerLoyalty> ?p ?o }';
+const CONSTRUCT_TARGET_LABEL = 'Metric';
+
+describe('Reactodia graph explorer', () => {
     let repositoryId;
 
     beforeEach(() => {
@@ -39,6 +42,16 @@ describe('Reactodia view', () => {
         // Then I expect the start resource to be placed on the canvas as a seed element.
         ReactodiaSteps.getElements().should('have.length', 1);
         ReactodiaSteps.getElement(SEED_RESOURCE_LABEL).should('exist');
+    });
+
+    it('should seed the canvas with the graph computed from a CONSTRUCT query', () => {
+        // Given I open the reactodia view with a CONSTRUCT query, as sent from the SPARQL editor.
+        ReactodiaSteps.visitWithQuery(CONSTRUCT_QUERY);
+
+        // Then I expect the computed graph to be seeded on the canvas: the subject and its related resource.
+        ReactodiaSteps.getElements().should('have.length', 2);
+        ReactodiaSteps.getElement(SEED_RESOURCE_LABEL).should('exist');
+        ReactodiaSteps.getElement(CONSTRUCT_TARGET_LABEL).should('exist');
     });
 
     it('should keep the displayed resources when the language is switched', () => {
