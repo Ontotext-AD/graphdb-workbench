@@ -90,9 +90,12 @@ export class OntoLayout {
     WindowService.getWindow().addEventListener('storage', this.handleStorageChange);
   }
 
+  componentDidRender() {
+    this.windowResizeHandler();
+  }
+
   componentDidLoad() {
     this.updateShowSolrDeprecationBanner();
-    this.windowResizeHandler();
   }
 
   connectedCallback() {
@@ -204,7 +207,7 @@ export class OntoLayout {
 
     if (navbar) {
       const cookieBanner = document.querySelector('.cookie-consent-banner');
-      const header = document.querySelector('.header-component');
+      const header = document.querySelector('.wb-header');
 
       const headerHeight = header?.getBoundingClientRect()?.height ?? 0;
       const bannerHeight = cookieBanner?.getBoundingClientRect()?.height ?? 0;
