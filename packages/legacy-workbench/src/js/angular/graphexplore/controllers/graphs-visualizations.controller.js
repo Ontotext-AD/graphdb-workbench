@@ -822,7 +822,7 @@ function GraphsVisualizationsCtrl(
 
     const createTriple = (value) => {
         const tripleParts = value.trim().split(' ');
-        return `<<<${tripleParts[0]}> <${tripleParts[1]}> <${tripleParts[2]}>>>`;
+        return `<<(<${tripleParts[0]}> <${tripleParts[1]}> <${tripleParts[2]}>)>>`;
     };
 
     /**
