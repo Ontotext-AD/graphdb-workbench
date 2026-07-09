@@ -20,7 +20,10 @@
          size="100">
     </div>
 
-    <no-agents-view ng-cloak ng-if="initialized && getActiveRepository() && !loadingAgents && !reloadingAgents && (!agents || agents.isEmpty())"></no-agents-view>
+    <no-agents-view
+        ng-cloak ng-if="initialized && getActiveRepository() && !loadingAgents && !reloadingAgents && (!agents || agents.isEmpty())"
+        can-create-agent="canManageRepo">
+    </no-agents-view>
 
     <div id="ttyg-container" class="ttyg-container" ng-show="getActiveRepository() && !loadingAgents && agents && !agents.isEmpty()">
 
@@ -66,8 +69,8 @@
                     <button class="btn btn-link btn-sm edit-current-agent-btn mr-1" guide-selector="edit-current-agent"
                             ng-if="selectedAgent"
                             ng-click="onOpenAgentSettings()"
-                            ng-disabled="!canModifyAgent"
-                            gdb-tooltip="{{ (canModifyAgent ? 'ttyg.agent.btn.edit_agent.tooltip' : 'ttyg.agent.btn.edit_agent.tooltip_disabled') | translate}}">
+                            ng-disabled="!selectedAgent.canEditAgent"
+                            gdb-tooltip="{{ (selectedAgent.canEditAgent ? 'ttyg.agent.btn.edit_agent.tooltip' : 'ttyg.agent.btn.edit_agent.tooltip_disabled') | translate}}">
                         <i class="ri-settings-3-line"></i>
                     </button>
                 </div>
@@ -93,18 +96,17 @@
                     <i class="ri-question-line"></i>
                 </button>
                 <button class="btn btn-link btn-sm create-agent-btn"
-                        ng-disabled="!canModifyAgent"
+                        ng-disabled="!canManageRepo"
                         ng-click="onOpenNewAgentSettings()"
-                        ng-disabled="false"
-                        gdb-tooltip="{{ (canModifyAgent ? 'ttyg.agent.btn.create_agent.tooltip' : 'ttyg.agent.btn.create_agent.tooltip_disabled') | translate}}"
+                        gdb-tooltip="{{ (canManageRepo ? 'ttyg.agent.btn.create_agent.tooltip' : 'ttyg.agent.btn.create_agent.tooltip_disabled') | translate}}"
                         guide-selector="create-agent-btn">
                     <i class="ri-add-circle-line"></i>
                 </button>
                 <button class="btn btn-link btn-sm toggle-agents-sidebar-btn"
                         ng-if="!showAgents"
                         ng-click="toggleAgentsListSidebar()"
-                        ng-disabled="!canModifyAgent"
-                        gdb-tooltip="{{'ttyg.agent.btn.open_sidebar.' + (canModifyAgent ? 'tooltip' : 'tooltip_disabled') | translate}}">
+                        ng-disabled="!canManageRepo"
+                        gdb-tooltip="{{'ttyg.agent.btn.open_sidebar.' + (canManageRepo ? 'tooltip' : 'tooltip_disabled') | translate}}">
                     <i class="ri-robot-2-line"></i>
                 </button>
                 <button class="btn btn-link btn-sm toggle-agents-sidebar-btn"
