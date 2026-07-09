@@ -281,7 +281,7 @@ function fedxRepoDirective($uibModal, RepositoriesRestService, toastr, $translat
                     password: $scope.model.password,
                     writable: $scope.model.writable,
                 };
-                if (checkEditMode() && $scope.fedxMembers.find((el) => el.repositoryName === member.repositoryName
+                if (checkEditMode() && $scope.fedxMembers.some((el) => el.repositoryName === member.repositoryName
                     && el.repositoryServer === member.repositoryServer)) {
                     const resolvedName = $scope.resolveName(member);
                     toastr.error($translate.instant('fedx.repo.already.added.member.error', {name: resolvedName}));
@@ -300,7 +300,7 @@ function fedxRepoDirective($uibModal, RepositoriesRestService, toastr, $translat
                     writable: $scope.model.writable,
                 };
 
-                if (checkEditMode() && $scope.fedxMembers.find((el) => el.endpoint === member.endpoint)) {
+                if (checkEditMode() && $scope.fedxMembers.some((el) => el.endpoint === member.endpoint)) {
                     const resolvedName = $scope.resolveName(member);
                     toastr.error($translate.instant('fedx.repo.already.added.sparql.endpoint.error', {name: resolvedName}));
                     $scope.$uibModalInstance.close();
