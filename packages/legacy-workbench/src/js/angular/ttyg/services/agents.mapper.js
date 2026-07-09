@@ -15,6 +15,7 @@ import {
 import {NumericRangeModel, TextFieldModel} from '../../models/form-fields';
 import {md5HashGenerator} from '../../utils/hash-utils';
 import {AGENT_OPERATION} from "./constants";
+import {AgentViewModel} from '../model/agent-view';
 
 /**
  * Converts an agent model to an agent form model.
@@ -245,4 +246,35 @@ const agentInstructionsMapper = (data) => {
         systemInstruction: data.systemInstruction,
         userInstruction: data.userInstruction,
     });
+};
+
+/**
+ * Converts an agent list containing {@link AgentModel} instances into an agent list
+ * containing {@link AgentViewModel} instances enriched with UI permissions.
+ *
+ * @param {AgentListModel} agentList The agent list to convert.
+ * @param {AuthorizationService} authorizationService The authorization service used to determine user permissions.
+ * @returns {AgentListModel} An agent list containing {@link AgentViewModel} instances.
+ */
+export const mapAgentListModelToAgentViewListModel = (agentList, authorizationService) => {
+    return new AgentListModel(agentList.agents.map((agent) => mapAgentModelToAgentViewModel(agent, authorizationService)));
+};
+
+/**
+ * Converts an {@link AgentModel} into an {@link AgentViewModel} by enriching it
+ * with UI-specific permissions based on the current user's repository management rights.
+ *
+ * @param {AgentModel} agent The agent to convert.
+ * @param {AuthorizationService} authorizationService The authorization service used to determine user permissions.
+ * @returns {AgentViewModel} The converted agent view model.
+ */
+export const mapAgentModelToAgentViewModel = (agent, authorizationService) => {
+    const viewAgent = new AgentViewModel(agent);
+    const canManageRepo = authorizationService.canManageRepo({id: agent.repositoryId, location: ''});
+    viewAgent.canEditAgent = canManageRepo;
+    viewAgent.canCopyAgent = true;
+    viewAgent.canDeleteAgent = canManageRepo;
+    viewAgent.canOpenExternalIntegrationConfiguration = canManageRepo;
+
+    return viewAgent;
 };
