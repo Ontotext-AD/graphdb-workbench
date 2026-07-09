@@ -183,6 +183,10 @@ export class AuthorizationService implements Service {
    * @returns {boolean} `true` if the user is a repository manager or can manage at least one repository, otherwise `false`.
    */
   canManageRepo(repository: RepositoryReference): boolean {
+    if (!repository || repository.id === '') {
+      return false;
+    }
+
     if (this.isAdminOrRepoManager()) {
       return true;
     }

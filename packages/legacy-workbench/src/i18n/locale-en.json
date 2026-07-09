@@ -1094,7 +1094,9 @@
                 }
             },
             "warnings": {
-                "unexpected_remote_repository": "The selected repository is in a remote location, and its endpoints aren’t accessible here. Select a repository from the current location."
+                "unexpected_remote_repository": "The selected repository is in a remote location, and its endpoints aren’t accessible here. Select a repository from the current location.",
+                "no_managed_repository": "Endpoints can only be created for repositories you are authorized to manage.",
+                "no_graphdb_repository": "Endpoints can only be created in GraphDB repositories. Please select a GraphDB repository to continue."
             }
         },
         "create_endpoint": {
@@ -1338,7 +1340,9 @@
                 }
             },
             "warnings": {
-                "unexpected_remote_repository": "Endpoints can only be created for repositories in the current location. Select a local repository to continue."
+                "unexpected_remote_repository": "Endpoints can only be created for repositories in the current location. Select a local repository to continue.",
+                "no_managed_repository": "Endpoints can only be created for repositories you are authorized to manage.",
+                "no_graphdb_repository": "Endpoints can only be created in GraphDB repositories. Please select a GraphDB repository to continue."
             }
         }
     },

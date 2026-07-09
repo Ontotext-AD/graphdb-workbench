@@ -1093,7 +1093,9 @@
                 }
             },
             "warnings": {
-                "unexpected_remote_repository": "Le dépôt sélectionné se trouve dans un emplacement distant et ses endpoints ne sont pas accessibles ici. Sélectionnez un dépôt de l’emplacement actuel."
+                "unexpected_remote_repository": "Le dépôt sélectionné se trouve dans un emplacement distant et ses endpoints ne sont pas accessibles ici. Sélectionnez un dépôt de l’emplacement actuel.",
+                "no_managed_repository": "Les points de terminaison ne peuvent être créés que pour les référentiels que vous êtes autorisé à gérer.",
+                "no_graphdb_repository": "Les endpoints ne peuvent être créés que dans des référentiels GraphDB. Veuillez sélectionner un référentiel GraphDB pour continuer."
             }
         },
         "create_endpoint": {
@@ -1337,7 +1339,9 @@
                 }
             },
             "warnings": {
-                "unexpected_remote_repository": "Les endpoints ne peuvent être créés que pour les dépôts situés dans l’emplacement actuel. Sélectionnez un dépôt local pour continuer."
+                "unexpected_remote_repository": "Les endpoints ne peuvent être créés que pour les dépôts situés dans l’emplacement actuel. Sélectionnez un dépôt local pour continuer.",
+                "no_managed_repository": "Les points de terminaison ne peuvent être créés que pour les référentiels que vous êtes autorisé à gérer.",
+                "no_graphdb_repository": "Les endpoints ne peuvent être créés que dans des référentiels GraphDB. Veuillez sélectionner un référentiel GraphDB pour continuer."
             }
         }
     },
