@@ -13,7 +13,11 @@ import {TTYGEventName} from '../services/ttyg-context.service';
 import {AGENT_OPERATION, AGENTS_FILTER_ALL_KEY, TTYG_ERROR_MSG_LENGTH} from '../services/constants';
 import {AgentListFilterModel, AgentModel} from '../../models/ttyg/agents';
 import {ChatModel, ChatsListModel} from '../../models/ttyg/chats';
-import {agentFormModelMapper} from '../services/agents.mapper';
+import {
+    agentFormModelMapper,
+    mapAgentListModelToAgentViewListModel,
+    mapAgentModelToAgentViewModel,
+} from '../services/agents.mapper';
 import {SelectMenuOptionsModel} from '../../models/form-fields';
 import {repositoryInfoMapper} from '../../rest/mappers/repositories-mapper';
 import {saveAs} from 'lib/FileSaver-patch';
@@ -24,7 +28,6 @@ import {ContinueChatRun} from "../../models/ttyg/chat-answer";
 import {ChatMessageModel} from "../../models/ttyg/chat-message";
 import {
     AuthorizationService,
-    SecurityContextService,
     service,
 } from '@ontotext/workbench-api';
 
@@ -86,7 +89,6 @@ function TTYGViewCtrl(
     // =========================
 
     const authorizationService = service(AuthorizationService);
-    const securityContextService = service(SecurityContextService);
     const subscriptions = [];
 
     const labels = {
@@ -178,10 +180,10 @@ function TTYGViewCtrl(
     $scope.connectorID = undefined;
 
     /**
-     * A flag that determines whether buttons that modify an agent should be disabled.
+     * A flag that determines whether the user has repository management permissions.
      * @type {boolean}
      */
-    $scope.canModifyAgent = false;
+    $scope.canManageRepo = false;
 
     /**
      * A list of available repository IDs as a model for the agent list filter.
@@ -408,7 +410,7 @@ function TTYGViewCtrl(
         $scope.loadingAgents = showLoader;
         return TTYGService.getAgents()
             .then((agents) => {
-                return TTYGContextService.updateAgents(agents);
+                return TTYGContextService.updateAgents(mapAgentListModelToAgentViewListModel(agents, authorizationService));
             })
             .catch((error) => {
                 toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
@@ -427,7 +429,7 @@ function TTYGViewCtrl(
         $scope.reloadingAgents = true;
         return TTYGService.getAgents()
             .then((agents) => {
-                return TTYGContextService.updateAgents(agents);
+                return TTYGContextService.updateAgents(mapAgentListModelToAgentViewListModel(agents, authorizationService));
             })
             .catch((error) => {
                 toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
@@ -435,10 +437,6 @@ function TTYGViewCtrl(
             .finally(() => {
                 $scope.reloadingAgents = false;
             });
-    };
-
-    const updateCanModifyAgent = () => {
-        TTYGContextService.setCanModifyAgent(authorizationService.isRepoManager());
     };
 
     const getActiveRepositoryObjectHandler = (activeRepo) => {
@@ -599,10 +597,6 @@ function TTYGViewCtrl(
         setupChatListPanel(chats);
     };
 
-    const onCanUpdateAgentUpdated = (canModifyAgent) => {
-        $scope.canModifyAgent = canModifyAgent;
-    };
-
     /**
      * @param {ChatsListModel} chats - the new chats list.
      */
@@ -755,7 +749,7 @@ function TTYGViewCtrl(
      * @param {AgentModel} agent
      */
     const onAgentSelected = (agent) => {
-        $scope.selectedAgent = agent;
+        $scope.selectedAgent = agent ? mapAgentModelToAgentViewModel(agent, authorizationService) : undefined;
     };
 
     /**
@@ -876,6 +870,7 @@ function TTYGViewCtrl(
 
     const buildRepositoryList = () => {
         $scope.activeRepositoryList = $repositories.getLocalReadableGraphdbRepositories()
+            .filter((repo) => authorizationService.canManageRepo(repo))
             .map((repo) => (
                 new SelectMenuOptionsModel({
                     value: repo.id,
@@ -901,7 +896,6 @@ function TTYGViewCtrl(
         $scope.$watch($scope.getActiveRepositoryObject, getActiveRepositoryObjectHandler),
         TTYGContextService.onSelectedChatChanged(onSelectedChatChanged),
         TTYGContextService.onChatsListChanged(onChatsChanged),
-        TTYGContextService.onCanUpdateAgentUpdated(onCanUpdateAgentUpdated),
         TTYGContextService.subscribe(TTYGContextService.onAgentsListChanged(onAgentListChanged)),
         TTYGContextService.subscribe(TTYGEventName.CREATE_CHAT, onCreateNewChat),
         TTYGContextService.subscribe(TTYGEventName.RENAME_CHAT, onRenameChat),
@@ -921,7 +915,6 @@ function TTYGViewCtrl(
         TTYGContextService.subscribe(TTYGEventName.GO_TO_CONNECTORS_VIEW, onGoToConnectorsView),
         TTYGContextService.subscribe(TTYGEventName.GO_TO_SPARQL_EDITOR, onGoToSparqlEditorView),
         $rootScope.$on('$translateChangeSuccess', updateLabels),
-        securityContextService.onAuthenticatedUserChanged(updateCanModifyAgent),
     );
     $scope.$on('$destroy', cleanUp);
 
@@ -938,6 +931,6 @@ function TTYGViewCtrl(
                 return loadChats();
             })
             .then(setCurrentChat);
-        updateCanModifyAgent();
+        $scope.canManageRepo = authorizationService.isAdminOrRepoManager() || authorizationService.isManageRepoUser();
     }
 }
