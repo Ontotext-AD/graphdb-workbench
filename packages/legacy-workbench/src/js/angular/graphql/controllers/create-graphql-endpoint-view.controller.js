@@ -12,7 +12,12 @@ import 'angular/graphql/directives/configure-endpoint.directive';
 import 'angular/graphql/directives/generate-endpoint.directive';
 import {GraphqlEventName} from "../services/graphql-context.service";
 import {resolvePlaygroundUrlWithEndpoint} from "../services/endpoint-utils";
-import {RepositoryContextService, service} from '@ontotext/workbench-api';
+import {
+    RepositoryContextService,
+    RepositoryType,
+    service,
+    AuthorizationService,
+} from '@ontotext/workbench-api';
 
 const modules = [
     'graphdb.framework.core.services.graphql-service',
@@ -34,6 +39,7 @@ function CreateGraphqlEndpointViewCtrl($scope, $location, $repositories, $transl
     // =========================
 
     const repositoryContextService = service(RepositoryContextService);
+    const authorizationService = service(AuthorizationService);
 
     const subscriptions = [];
 
@@ -84,6 +90,26 @@ function CreateGraphqlEndpointViewCtrl($scope, $location, $repositories, $transl
      * @type {boolean}
      */
     $scope.isSelectedRepositoryLocal = false;
+
+    /**
+     * A flag indicating whether the selected repository is of type 'graphdb'
+     * @type {boolean}
+     */
+    $scope.isGraphDBRepository = false;
+
+    /**
+     * A flag indicating if user can manage the selected repository.
+     * @type {boolean}
+     */
+    $scope.canManageSelectedRepository = false;
+
+    /**
+     * A flag indicating if there is a selected repository.
+     * @type {boolean}
+     */
+    $scope.hasSelectedRepository = false;
+
+    $scope.RepositoryType = RepositoryType;
 
     // =========================
     // Public methods
@@ -284,16 +310,22 @@ function CreateGraphqlEndpointViewCtrl($scope, $location, $repositories, $transl
      */
     const setupSourceRepositories = () => {
         $scope.sourceRepositories = $repositories.getRepositoriesAsSelectMenuOptions(
-            () => $repositories.getLocalReadableGraphdbRepositories(),
+            () => $repositories.getLocalReadableGraphdbRepositories()
+                .filter((repository) => authorizationService.canManageRepo(repository)),
         );
         const activeRepository = repositoryContextService.getSelectedRepository();
+        $scope.hasSelectedRepository = !!activeRepository;
         $scope.isSelectedRepositoryLocal = !!activeRepository?.local;
+        $scope.isGraphDBRepository = RepositoryType.GRAPH_DB === activeRepository.type;
         // Graphql endpoints can't be created on remote repositories.
         if ($scope.isSelectedRepositoryLocal) {
             $scope.selectedSourceRepository = $scope.sourceRepositories
                 .find((repo) => repo.value === activeRepository.id);
-            GraphqlContextService.updateSourceRepository($scope.selectedSourceRepository.value);
+            GraphqlContextService.updateSourceRepository($scope.selectedSourceRepository?.value);
             $scope.previousSelectedSourceRepository = $scope.selectedSourceRepository;
+
+            // Sets a flag indicating whether the user has management permissions for the selected repository.
+            $scope.canManageSelectedRepository = $scope.hasSelectedRepository && authorizationService.canManageRepo(activeRepository);
         }
     };
 

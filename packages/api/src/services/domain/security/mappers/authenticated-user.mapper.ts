@@ -1,6 +1,4 @@
-import {AuthenticatedUser} from '../../../../models/security';
-import {AuthenticatedUserResponse} from '../../../../models/security';
-import {Authority, AuthorityList} from '../../../../models/security';
+import {AuthenticatedUser, AuthenticatedUserResponse, Authority, AuthorityList} from '../../../../models/security';
 import {AppSettings} from '../../../../models/users';
 import {MapperFn} from '../../../../providers';
 
