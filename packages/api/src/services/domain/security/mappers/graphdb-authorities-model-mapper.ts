@@ -26,29 +26,29 @@ export const mapGraphdbAuthoritiesResponseToModel: MapperFn<AuthorityList, Graph
   let isGraphqlAll = false;
   authorities.forEach((auth) => {
     const repoData = AuthoritiesUtil.getRepoFromAuthority(auth);
-    if (repoData) {
-      const {prefix, repo} = repoData;
-      const entry = getOrCreateRepo(repo);
-      if (prefix === Authority.READ_REPO_PREFIX) {
-        entry.read = true;
-        if (repo === '*') {
-          isReadAll = true;
-        }
-      } else if (prefix === Authority.WRITE_REPO_PREFIX) {
-        entry.write = true;
-        if (repo === '*') {
-          isWriteAll = true;
-        }
-      } else if (prefix === Authority.MANAGE_REPO_PREFIX) {
-        entry.manage = true;
-      } else if (prefix === Authority.GRAPHQL_PREFIX) {
-        entry.graphql = true;
-        if (repo === '*') {
-          isGraphqlAll = true;
-        }
-      }
-    } else {
+    if (!repoData) {
       customAuthorities.push(auth);
+      return;
+    }
+    const {prefix, repo} = repoData;
+    const entry = getOrCreateRepo(repo);
+    if (prefix === Authority.READ_REPO_PREFIX) {
+      entry.read = true;
+      if (repo === '*') {
+        isReadAll = true;
+      }
+    } else if (prefix === Authority.WRITE_REPO_PREFIX) {
+      entry.write = true;
+      if (repo === '*') {
+        isWriteAll = true;
+      }
+    } else if (prefix === Authority.MANAGE_REPO_PREFIX) {
+      entry.manage = true;
+    } else if (prefix === Authority.GRAPHQL_PREFIX) {
+      entry.graphql = true;
+      if (repo === '*') {
+        isGraphqlAll = true;
+      }
     }
   });
 
