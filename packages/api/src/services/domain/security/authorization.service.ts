@@ -325,6 +325,10 @@ export class AuthorizationService implements Service {
     this.securityContextService.updateRestrictedPages(restrictedPages);
   };
 
+  isAdminOrRepoManager() {
+    return this.hasRole(Authority.ROLE_ADMIN) || this.hasRole(Authority.ROLE_REPO_MANAGER);
+  }
+
   private resolveAuthorities(authoritiesList?: string[]) {
     // If no authorities list is provided, return empty array.
     if (!authoritiesList) {
@@ -385,9 +389,5 @@ export class AuthorizationService implements Service {
       user.authorities.hasAuthority(overAllReposGraphql as Authority) ||
       user.authorities.hasWildcardAuthority(overCurrentRepoGraphql, true)
     );
-  }
-
-  private isAdminOrRepoManager() {
-    return this.hasRole(Authority.ROLE_ADMIN) || this.hasRole(Authority.ROLE_REPO_MANAGER);
   }
 }
