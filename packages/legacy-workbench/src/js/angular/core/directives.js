@@ -1,6 +1,14 @@
 import 'angular/utils/local-storage-adapter';
 import {decodeHTML} from "../../../app";
-import {service, LicenseContextService, ResourceSearchStorageService, Suggestion, GuidesService} from '@ontotext/workbench-api';
+import {
+    Authority,
+    AuthorizationService,
+    service,
+    LicenseContextService,
+    ResourceSearchStorageService,
+    Suggestion,
+    GuidesService,
+} from '@ontotext/workbench-api';
 
 angular
     .module('graphdb.framework.core.directives', [
@@ -115,6 +123,12 @@ function coreErrors($timeout, $location) {
         transclude: true,
         templateUrl: 'js/angular/core/templates/core-errors.html',
         link: function(scope, element, attrs) {
+            const authorizationService = service(AuthorizationService);
+
+            const canManageRepositoryFilter = Authority.ROLE_MANAGE_REPO === attrs.role ? (repo) => authorizationService.canManageRepo(repo) : () => true;
+            const filterByType = attrs.filterByType?.split(',');
+            const filterByTypeFilter = (repo) => !filterByType || filterByType.includes(repo.type);
+
             // watch for changes in the active repository hide host element of this directive
             scope.$watch('getActiveRepository()', function(newValue) {
                 if (newValue && !scope.isRestricted) {
@@ -146,11 +160,12 @@ function coreErrors($timeout, $location) {
                 if (!scope.showRemoteLocations) {
                     remoteLocationsFilter = (repo) => repo.local;
                 }
-                if (scope.isRestricted) {
-                    return scope.getWritableRepositories().filter(remoteLocationsFilter);
-                } else {
-                    return scope.getReadableRepositories().filter(remoteLocationsFilter);
-                }
+
+                const repositories = scope.isRestricted ? scope.getWritableRepositories() : scope.getReadableRepositories();
+                return repositories
+                    .filter(remoteLocationsFilter)
+                    .filter(canManageRepositoryFilter)
+                    .filter(filterByTypeFilter);
             };
 
             scope.showPopoverForRepo = function(event, repository) {

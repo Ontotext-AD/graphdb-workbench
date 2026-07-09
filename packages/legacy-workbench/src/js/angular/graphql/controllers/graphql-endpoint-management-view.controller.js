@@ -8,7 +8,12 @@ import {resolvePlaygroundUrlWithEndpoint} from "../services/endpoint-utils";
 import {saveAs} from 'lib/FileSaver-patch';
 import {GraphqlEndpointInfo} from "../../models/graphql/graphql-endpoints-info";
 import {LoggerProvider} from "../../core/services/logger-provider";
-import {RepositoryContextService, service} from '@ontotext/workbench-api';
+import {
+    AuthorizationService,
+    RepositoryContextService,
+    RepositoryType,
+    service,
+} from '@ontotext/workbench-api';
 
 const logger = LoggerProvider.logger;
 const modules = [
@@ -52,6 +57,7 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
      */
     const ENDPOINTS_INFO_POLLING_INTERVAL = 5000;
     const repositoryContextService = service(RepositoryContextService);
+    const authorizationService = service(AuthorizationService);
 
     // =========================
     // Public variables
@@ -122,6 +128,20 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
      * @type {boolean}
      */
     $scope.isSelectedRepositoryLocal = false;
+
+    /**
+     * A flag indicating whether the selected repository is of type 'graphdb'
+     * @type {boolean}
+     */
+    $scope.isGraphDBRepository = false;
+
+    /**
+     * A flag indicating if user can manage the selected repository.
+     * @type {boolean}
+     */
+    $scope.canManageSelectedRepository = false;
+
+    $scope.RepositoryType = RepositoryType;
 
     // =========================
     // Public methods
@@ -369,6 +389,9 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
      */
     const getSelectedRepositoryChangeHandler = (repositoryObject) => {
         if (!repositoryObject) {
+            $scope.isSelectedRepositoryLocal = false;
+            $scope.isGraphDBRepository = false;
+            $scope.canManageSelectedRepository = false;
             return;
         }
         // Close any open dialogs before reloading repository-specific data. Dialogs are tied to the currently selected
@@ -377,6 +400,8 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
         // This can occur when a dialog is open and the repository is changed from another browser tab.
         closeDialogs();
         $scope.isSelectedRepositoryLocal = repositoryObject.local;
+        $scope.isGraphDBRepository = RepositoryType.GRAPH_DB === repositoryObject.type;
+        $scope.canManageSelectedRepository = authorizationService.canManageRepo(repositoryObject);
         if ($scope.isSelectedRepositoryLocal) {
             onInit();
         }
