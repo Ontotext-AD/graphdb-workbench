@@ -44,14 +44,14 @@
                         <i class="ri-more-line"></i>
                     </button>
                     <div class="dropdown-menu dropdown-menu-right agent-actions-menu">
-                        <button ng-if="agent.isCompatible"
+                        <button ng-if="agent.isCompatible && agent.canEditAgent"
                                 class="dropdown-item edit-agent-btn"
                                 type="button"
                                 ng-click="onEditAgent(agent)">
                             <i class="ri-settings-3-line"></i>
                             <span>{{'ttyg.agent.btn.edit_agent.label' | translate}}</span>
                         </button>
-                        <button ng-if="agent.isCompatible"
+                        <button ng-if="agent.isCompatible && agent.canOpenExternalIntegrationConfiguration"
                                 class="dropdown-item ext-integration-agent-btn"
                                 type="button"
                                 ng-click="onExternalIntegration(agent)">
@@ -65,9 +65,12 @@
                             <i class="ri-file-copy-line"></i>
                             <span>{{'ttyg.agent.btn.clone_agent.label' | translate}}</span>
                         </button>
-                        <div ng-if="agent.isCompatible"
+                        <div ng-if="agent.isCompatible && agent.canDeleteAgent"
                              class="dropdown-divider"></div>
-                        <button class="dropdown-item delete-agent-btn" type="button" ng-click="onDeleteAgent(agent)">
+                        <button ng-if="agent.canDeleteAgent"
+                            class="dropdown-item delete-agent-btn"
+                                type="button"
+                                ng-click="onDeleteAgent(agent)">
                             <i class="ri-delete-bin-6-line"></i>
                             <span>{{'ttyg.agent.btn.delete_agent.label' | translate}}</span>
                         </button>

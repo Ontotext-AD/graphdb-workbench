@@ -9,8 +9,8 @@
 
         <div class="actions">
             <button class="btn btn-secondary btn-lg text-xs-left create-agent-btn"
-                    gdb-tooltip="{{!canModifyAgent ? ('ttyg.agent.fat_btn.create_agent.tooltip_disabled' | translate) : ''}}"
-                    ng-disabled="!canModifyAgent"
+                    gdb-tooltip="{{!canCreateAgent ? ('ttyg.agent.fat_btn.create_agent.tooltip_disabled' | translate) : ''}}"
+                    ng-disabled="!canCreateAgent"
                     ng-click="onCreateAgent()" guide-selector="create-agent-btn">
                 <i class="ri-robot-2-line ri-xl"></i>
                 <span class="text">{{'ttyg.agent.fat_btn.create_agent.label' | translate}}</span>
