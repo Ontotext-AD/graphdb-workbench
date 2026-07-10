@@ -336,10 +336,8 @@ export class OntoHeader {
       });
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private canWriteRepoInLocation(_repository: Repository): boolean {
-    // TODO: implement the condition when GDB-10442 is ready
-    return true;
+  private canWriteRepoInLocation(repository: Repository): boolean {
+    return this.authorizationService.canWriteRepo(repository);
   }
 
   private readonly canWriteRepo = (repo: Repository) => {
