@@ -822,7 +822,14 @@ function GraphsVisualizationsCtrl(
 
     const createTriple = (value) => {
         const tripleParts = value.trim().split(' ');
-        return `<<(<${tripleParts[0]}> <${tripleParts[1]}> <${tripleParts[2]}>)>>`;
+        return `<<(${wrapTriplePart(tripleParts[0])} ${wrapTriplePart(tripleParts[1])} ${wrapTriplePart(tripleParts[2])})>>`;
+    };
+
+    const wrapTriplePart = (value) => {
+        if (value.startsWith('_:')) {
+            return value;
+        }
+        return `<${value}>`;
     };
 
     /**
