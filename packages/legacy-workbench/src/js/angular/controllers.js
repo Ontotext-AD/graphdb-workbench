@@ -511,6 +511,11 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         return authorizationService.hasRole(UserRole.ROLE_REPO_MANAGER) && !$repositories.getDegradedReason();
     };
 
+    $scope.canManageSelectedRepository = () => {
+        const selectedRepository = repositoryContextService.getSelectedRepository();
+        return authorizationService.canManageRepo(selectedRepository) && !$repositories.getDegradedReason();
+    };
+
     $scope.getSavedQueries = function() {
         SparqlRestService.getSavedQueries()
             .success(function(data) {
