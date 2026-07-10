@@ -20,5 +20,5 @@ export interface UserResponse {
   };
   dateCreated: number;
   gptThreads: string[];
-  external: boolean;
+  hasExternalLogin: boolean;
 }

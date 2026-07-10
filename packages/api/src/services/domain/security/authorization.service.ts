@@ -3,19 +3,10 @@ import {AuthenticatedUser, Authority, Rights, SecurityConfig} from '../../../mod
 import {service} from '../../../providers';
 import {SecurityContextService} from './security-context.service';
 import {getRepositoryIdWithLocation, Repository, RepositoryReference} from '../../../models/repositories';
-import {
-  RepositoryAuthorityService,
-  RepositoryContextService,
-  RepositoryStorageService
-} from '../repository';
+import {RepositoryAuthorityService, RepositoryContextService, RepositoryStorageService} from '../repository';
 import {RoutingService} from '../../routing/routing.service';
 import {WindowService} from '../../window';
-import {
-  MainMenuExtensionPoint,
-  MainMenuPlugin,
-  RouteExtensionPoint,
-  RoutePlugin
-} from '../../../models/plugins';
+import {MainMenuExtensionPoint, MainMenuPlugin, RouteExtensionPoint, RoutePlugin} from '../../../models/plugins';
 import {getPathName} from '../../utils';
 
 /**
@@ -331,6 +322,11 @@ export class AuthorizationService implements Service {
 
   isAdminOrRepoManager() {
     return this.hasRole(Authority.ROLE_ADMIN) || this.hasRole(Authority.ROLE_REPO_MANAGER);
+  }
+
+  canExtendExternalUsers(): boolean {
+    const config = this.getSecurityConfig();
+    return !!config && config.hasAdditionalAuthSource() && config.hasLocalAdditionalAuthSources();
   }
 
   private resolveAuthorities(authoritiesList?: string[]) {

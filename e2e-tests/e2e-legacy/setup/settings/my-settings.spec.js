@@ -188,7 +188,7 @@ describe('My Settings', () => {
         cy.get('.login-credentials').should('be.visible');
         cy.get('#wb-user-username').should('be.visible')
             .and('have.value', 'admin')
-            .and('have.attr', 'readonly', 'readonly');
+            .and('be.disabled');
     }
 
     function clickLabelBtn(btnId) {

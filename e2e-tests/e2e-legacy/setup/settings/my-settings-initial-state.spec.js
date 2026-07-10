@@ -20,14 +20,10 @@ function verifyInitialState(repositoryId) {
   SettingsSteps.getSparqlEditorPanel().should('be.visible');
   SettingsSteps.getSameAsToggle().should('be.checked');
   SettingsSteps.getSameAsLabel().should('be.visible')
-    .and('contain', 'Expand results over owl:SameAs is')
-    .find('.tag').should('be.visible')
-    .and('contain', 'ON');
+    .and('contain', 'Expand results over owl:SameAs');
   SettingsSteps.getInferenceToggle().should('be.checked');
   SettingsSteps.getInferenceLabel().should('be.visible')
-    .and('contain', 'Inference is')
-    .find('.tag').should('be.visible')
-    .and('contain', 'ON');
+    .and('contain', 'Enable inference');
   SettingsSteps.getCountCheckbox().should('be.checked');
   SettingsSteps.getIgnoreSharedCheckbox().should('not.be.checked');
 

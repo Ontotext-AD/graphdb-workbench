@@ -1,3 +1,25 @@
+<script type="text/ng-template" id="popover-extended-rights.html">
+    <div ng-if="user.isExtended">
+        {{'security.extended.role' | translate: {role: user.userTypeDescription} }}
+    </div>
+    <div ng-show="user.userType === 'user'" class="repository-rights-list" ng-repeat="(repo, rights) in user.repositories track by $index">
+        <em class="ri-eye-line text-tertiary" ng-if="rights.read && !rights.write" gdb-tooltip="{{'security.has.read.access' | translate}}"></em>
+        <em class="ri-edit-line text-tertiary" ng-if="rights.write && !rights.manage" gdb-tooltip="{{'security.has.write.access' | translate}}"></em>
+        <em class="ri-folder-settings-line text-tertiary" ng-if="rights.manage" gdb-tooltip="{{'security.has.manage.access' | translate}}"></em>
+        {{repo}}
+        <em class="icon-graphql text-info" ng-if="rights.graphql" gdb-tooltip="{{rights.write ? 'security.has.mutation_rights' : 'security.no.mutation_rights' | translate}}"></em>
+    </div>
+    <div ng-if="user.userType !== 'user'">{{'security.unrestricted' | translate}}</div>
+    <div data-test="custom-roles">
+        <span ng-repeat="role in user.customRoles" >
+            <span class="tag tag-primary" data-test="custom-role">{{ role }}</span>
+            &nbsp;
+        </span>
+    </div>
+</script>
+
+<link href='css/users.css?v=[AIV]{version}[/AIV]' rel='stylesheet' type='text/css'/>
+
 <h1>
 	{{title}}
     <page-info-tooltip></page-info-tooltip>
@@ -38,15 +60,21 @@
 			</span>
 		</div>
 
-		<a id="wb-users-userCreateLink" ng-show="!hasExternalAuth()" class="btn btn-primary" href="user/create"><span class="ri-add-circle-line"></span> {{'view.create.user.title' | translate}}</a>
+		<a id="wb-users-userCreateLink" ng-show="!hasExternalAuth() || canExtendExternalUserRole" class="btn btn-primary" href="user/create">
+            <span class="ri-add-circle-line"></span> {{'view.create.user.title' | translate}}
+        </a>
 	</div>
 
 	<div ng-show="hasExternalAuth()">
 		<div>&nbsp;</div>
-		<div class="alert alert-info no-icon mt-1">
-			<p>{{'security.using.external.auth.db' | translate}} {{getAuthImplementation()}}.</p>
-			<p>{{'security.user.settings.modification' | translate}}</p>
-			<p>{{'security.user.settings.user_role' | translate}}</p>
+		<div class="alert alert-info mt-1">
+            <div class="auth-info" ng-if="isOpenIDEnabled && !isPasswordLoginEnabled">{{'security.using.external.auth.db.openid' | translate: {authDB: authorizationImplementation} }}</div>
+            <div class="auth-info" ng-if="isOpenIDEnabled && isPasswordLoginEnabled">{{'security.using.external.auth.db.openid.and.password' | translate: {authDB: authorizationImplementation} }}</div>
+            <div class="auth-info" ng-if="!isOpenIDEnabled">{{'security.using.external.auth.db' | translate: {authDB: authorizationImplementation} }}</div>
+            <div ng-if="canExtendExternalUserRole">{{'security.user.settings.modification.extend' | translate: {authDB: authorizationImplementation} }}</div>
+            <div ng-if="additionalAuthSources">{{'security.user.settings.modification.extend.external' | translate: {authDB: authorizationImplementation, additionalAuth: additionalAuthSources} }}</div>
+            <div ng-if="!canExtendExternalUserRole">{{'security.user.settings.modification' | translate}}</div>
+            <div>{{'security.user.settings.user_role' | translate}}</div>
 		</div>
 	</div>
 
@@ -62,28 +90,17 @@
 		</thead>
 		<tbody>
 			<tr ng-repeat="user in usersData | orderBy: 'username'">
-				<td class="username"><span>{{user.username}}</span></td>
+				<td class="username">
+                    <span>{{user.username}}</span>
+                    <div ng-if="canExtendExternalUserRole && user.isExtended" class="is-extended-badge tag tag-info"
+                         uib-popover-template="'popover-extended-rights.html'"
+                         popover-trigger="mouseenter"
+                         popover-placement="top">{{'security.table.tag.extended' | translate}}</div>
+                    <div ng-if="canExtendExternalUserRole && !user.hasExternalLogin" class="has-external-login tag tag-warning">{{'security.table.tag.not_logged_in' | translate}}</div>
+                </td>
 				<td ng-if="!hasExternalAuth()" class="user-type">{{user.userTypeDescription}}</td>
 				<td ng-if="!hasExternalAuth()" class="repository-rights">
-					<div ng-if="user.userType === 'user'" ng-repeat="(repo, rights) in user.repositories track by $index">
-
-                        <em class="ri-eye-line text-tertiary" ng-if="rights.read && !rights.write" gdb-tooltip="{{'security.has.read.access' | translate}}"></em>
-                        <em class="ri-edit-line text-tertiary" ng-if="rights.write && !rights.manage" gdb-tooltip="{{'security.has.write.access' | translate}}"></em>
-                        <em class="ri-folder-settings-line text-tertiary" ng-if="rights.manage" gdb-tooltip="{{'security.has.manage.access' | translate}}"></em>
-                        {{repo}}
-                        <em class="icon-graphql text-info" ng-if="rights.graphql" gdb-tooltip="{{rights.write ? 'security.has.mutation_rights' : 'security.no.mutation_rights' | translate}}"></em>
-
-
-
-
-					</div>
-					<div ng-if="user.userType !== 'user'">{{'security.unrestricted' | translate}}</div>
-                    <div data-test="custom-roles">
-                        <span ng-repeat="role in user.customRoles" >
-                            <span class="tag tag-primary" data-test="custom-role">{{ role }}</span>
-                            &nbsp;
-                        </span>
-                    </div>
+                    <div ng-include="'popover-extended-rights.html'"></div>
 				</td>
 				<td class="date-created"><span>{{user.dateCreated | date: 'yyyy-MM-dd HH:mm:ss'}}</span></td>
 				<td class="actions-bar">
@@ -91,8 +108,24 @@
 						<a class="btn btn-link edit-user-btn" href="user/{{encodeURIComponent(user.username)}}">
                             <em class="ri-edit-line" gdb-tooltip="{{'security.edit.user.tooltip' | translate}}"></em>
                         </a>
-						<a class="btn btn-link secondary delete-user-btn" ng-if="user.username != 'admin'" ng-show="!hasExternalAuth()" href ng-click="removeUser(user.username)">
-                            <em class="ri-delete-bin-6-line" gdb-tooltip="{{'security.delete.user.tooltip' | translate}}"></em>
+                        <!-- Remove locally assigned extended permissions -->
+                        <a class="btn btn-link secondary delete-user-btn"
+                           ng-if="canRemoveExtendedPermissions(user)"
+                           href
+                           ng-click="removeUser(user)">
+                            <em class="ri-arrow-down-double-line"
+                                gdb-tooltip="{{'security.remove_local_permissions.user.tooltip' | translate}}">
+                            </em>
+                        </a>
+
+                        <!-- Delete user -->
+                        <a class="btn btn-link secondary delete-user-btn"
+                           ng-if="canDeleteUser(user)"
+                           href
+                           ng-click="removeUser(user)">
+                            <em class="ri-delete-bin-6-line"
+                                gdb-tooltip="{{'security.delete.user.tooltip' | translate}}">
+                            </em>
                         </a>
 					</span>
 				</td>

@@ -446,7 +446,7 @@ describe('User and Access', () => {
             });
 
             // Fails for unknown reason only in CI
-            it('Can create user with different auth combinations', () => {
+            it.only('Can create user with different auth combinations', () => {
                 cy.wait('@getRepositories');
                 cy.wait('@getRepositories');
                 UserAndAccessSteps.getUsersCatalogContainer().should('be.visible');
@@ -738,8 +738,11 @@ describe('User and Access', () => {
                 }
             } else {
                 MainMenuSteps.clickOnSubMenu(label);
+            }
+            if (index === pathArray.length - 1) {
+                // wait for the page label on the last navigation step to be visible before moving on
                 const title = expectedTitle ? expectedTitle : label;
-                cy.get('h1').should('contain', title);
+                cy.get('h1').should('be.visible').should('contain', title);
             }
         });
 

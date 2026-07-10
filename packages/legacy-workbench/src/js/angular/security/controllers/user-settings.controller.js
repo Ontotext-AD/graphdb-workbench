@@ -105,6 +105,8 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
      */
     $scope.showCookieConsentModal = false;
 
+    $scope.isRoleExtensionEnabled = false;
+
     // =========================
     // Public functions
     // =========================

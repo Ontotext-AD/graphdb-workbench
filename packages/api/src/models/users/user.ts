@@ -19,7 +19,8 @@ export class User extends Model<User> {
   appSettings: AppSettings;
   dateCreated: Date | null;
   gptThreads: string[];
-  external: boolean;
+  // Shows if user has ever logged in when GDB is configured with external auth database (OAuth,LDAP)
+  hasExternalLogin: boolean;
 
   constructor(data?: Partial<User>) {
     super();
@@ -30,7 +31,7 @@ export class User extends Model<User> {
     this.appSettings = data?.appSettings ?? new AppSettings();
     this.dateCreated = data?.dateCreated ?? null;
     this.gptThreads = data?.gptThreads ?? [];
-    this.external = data?.external ?? false;
+    this.hasExternalLogin = data?.hasExternalLogin ?? false;
   }
 
   /**

@@ -279,20 +279,24 @@
                         Green
                     </label><br/>
                     <label class="padding-label" gdb-tooltip="tooltip">
-                        <input type="radio" ng-model="color.name" value="blue">
+                        <input type="radio" ng-model="color.name" ng-checked="true" value="blue">
                         Blue
                     </label><br/>
                     <label class="padding-label" gdb-tooltip="tooltip">
                         <input id="disabled" type="radio" value="disabled" ng-disabled="true"/>
                         Disabled option
+                    </label><br/>
+                    <label class="padding-label" gdb-tooltip="tooltip">
+                        <input id="disabledAndChecked" type="radio" value="disabled" ng-checked="true" ng-disabled="true"/>
+                        Disabled checked option
                     </label>
                 </form>
                 <br>
                 <span gdb-tooltip="{{color.name}}"
                       popover-trigger="mouseenter"
                       popover-placement="top"
-                      ng-repeat="color in colors">
-                    <input id="color.name" type="checkbox" ng-model="checkedItem"/>
+                      ng-repeat="color in colors track by $index">
+                    <input id="color.name" type="checkbox" ng-model="checkedItem" ng-checked="$index % 2"/>
                     <label for="color.name">{{color.name}}</label>
                     <br>
                 </span>
@@ -303,6 +307,16 @@
                                gdb-tooltip="Disabled"
                                popover-trigger="mouseenter"
                                popover-placement="bottom"> Disabled option
+                    </label>
+                </div>
+                <div>
+                    <label>
+                        <input type="checkbox"
+                               disabled
+                               checked
+                               gdb-tooltip="Disabled"
+                               popover-trigger="mouseenter"
+                               popover-placement="bottom"> Disabled checked option
                     </label>
                 </div>
                 <br/>

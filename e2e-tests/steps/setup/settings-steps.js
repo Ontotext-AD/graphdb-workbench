@@ -7,7 +7,7 @@ export class SettingsSteps {
 
     static visitInProdMode() {
         cy.visit('/settings', {
-            onBeforeLoad: (win) => {
+            onBeforeLoad: () => {
                 EnvironmentStubs.stubWbProdMode();
             }
         });
@@ -15,7 +15,7 @@ export class SettingsSteps {
 
     static visitInDevMode() {
         cy.visit('/settings', {
-            onBeforeLoad: (win) => {
+            onBeforeLoad: () => {
                 EnvironmentStubs.stubWbDevMode();
             }
         });
@@ -71,7 +71,7 @@ export class SettingsSteps {
     }
 
     static getUserRolePanel() {
-        return this.getSettingsPage().find('.user-role');
+        return this.getSettingsPage().find('.user-roles');
     }
 
     static getUserRoleRadioButton() {

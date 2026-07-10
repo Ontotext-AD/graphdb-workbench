@@ -46,7 +46,7 @@
     "cypress-file-upload": "^5.0.8",
     "cypress-localstorage-commands": "^2.2.7",
     "cypress-multi-reporters": "^2.0.5",
-    "cypress-real-events": "^1.14.0",
+    "cypress-real-events": "^1.15.0",
     "cypress-terminal-report": "^7.2.0",
     "cypress-wait-until": "^3.0.2",
     "del": "^8.0.0",

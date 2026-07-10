@@ -33,7 +33,7 @@
             </div>
             <div class="row"
                  ng-repeat="repository in getRepositories() | orderBy: ['id', 'location']">
-                <p class="col-xs-9">{{repository.id}}<small> &middot; {{repository.location ? repository.location : 'Local'}}</small></p>
+                <p class="col-xs-9 break-word">{{repository.id}}<small> &middot; {{repository.location ? repository.location : 'Local'}}</small></p>
                 <label class="col-xs-1">
                     <input class="animated read" type="checkbox"
                            ng-model="grantedAuthorities.READ_REPO[createUniqueKey(repository)]"

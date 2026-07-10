@@ -69,6 +69,7 @@ export class OntoFooter {
   // ========================
   connectedCallback(): void {
     this.subscribeToProductInfoChange();
+    this.subscribeToSecurityConfigChange();
     this.subscribeToUserChange();
     this.subscribeToLicenseChange();
     this.subscribeToUserLoginStatusChange();
@@ -82,6 +83,13 @@ export class OntoFooter {
     this.subscriptions.add(this.productInfoContextService.onProductInfoChanged(
       (productInfo) => {
         this.productInfo = productInfo;
+      }));
+  }
+
+  private subscribeToSecurityConfigChange(): void {
+    this.subscriptions.add(
+      this.securityContextService.onSecurityConfigChanged(() => {
+        this.setCookieConsentVisibility();
       }));
   }
 
@@ -107,6 +115,13 @@ export class OntoFooter {
    * provided that tracking is allowed by the license. Otherwise, the banner is hidden.
    */
   private setCookieConsentVisibility() {
+    // The security config may not be loaded yet, e.g. when the component connects before the security bootstrap has
+    // finished. Visibility will be recalculated by the security config subscription once the config is available.
+    if (!this.securityContextService.getSecurityConfig()) {
+      this.shouldShowCookieConsent = false;
+      return;
+    }
+
     if (!this.trackingService.isTrackingAllowed()) {
       this.shouldShowCookieConsent = false;
       return;
