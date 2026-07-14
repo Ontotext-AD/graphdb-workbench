@@ -11,6 +11,7 @@ import {providePrimeNG} from 'primeng/config';
 import {DialogService} from 'primeng/dynamicdialog';
 import {ConfirmationService} from 'primeng/api';
 import {provideTranslocoMessageformat} from '@jsverse/transloco-messageformat';
+import Aura from '@primeuix/themes/aura';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -23,8 +24,16 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(),
     providePrimeNG({
       theme: {
+        preset: Aura,
         options: {
           prefix: 'gw',
+          // Wrap PrimeNG's own generated styles in a cascade layer so the
+          // unlayered `:root` overrides from the styleguide always win,
+          // regardless of stylesheet insertion order.
+          cssLayer: {
+            name: 'primeng',
+            order: 'primeng',
+          },
         }
       }
     }),
