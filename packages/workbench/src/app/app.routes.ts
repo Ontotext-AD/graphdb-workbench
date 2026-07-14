@@ -3,7 +3,7 @@ import {documentationLinkResolve} from './services/route-data-resolver';
 
 export const routes: Routes = [
   {
-    path: 'sparql-new',
+    path: 'sparql',
     data: {
       title: 'sparql_editor.title',
       helpInfo: 'sparql_editor.helpInfo',

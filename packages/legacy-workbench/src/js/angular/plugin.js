@@ -47,12 +47,12 @@ PluginRegistry.add('main.menu', {
     },
 );
 PluginRegistry.add('main.menu', {
-        disabled: true,
+        disabled: false,
         items: [
             {
-                label: 'New YASGUI',
-                labelKey: 'New YASGUI',
-                href: 'sparql-new',
+                label: 'SPARQL',
+                labelKey: 'SPARQL',
+                href: 'sparql',
                 order: 1.9,
                 role: 'IS_AUTHENTICATED_FULLY',
                 icon: "icon-sparql",

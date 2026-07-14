@@ -31,7 +31,8 @@ export class ModalDialogSteps extends BaseSteps {
     }
 
     static getDialogBody() {
-        return ModalDialogSteps.getDialog().find('.modal-body');
+        // the second selector is for the new dialog body
+        return ModalDialogSteps.getDialog().find('.modal-body, [data-pc-section="content"]');
     }
 
     static verifyDialogBody(message) {

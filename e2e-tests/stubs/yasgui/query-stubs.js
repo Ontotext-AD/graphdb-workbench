@@ -1,6 +1,9 @@
 import {SecurityStubs} from "../security-stubs";
 
 export class QueryStubs {
+    static spyQuery(repositoryId) {
+        cy.intercept('POST', `/repositories/${repositoryId}`).as('query');
+    }
 
     static stubInferAndSameAsDefaults(infer = true, sameAs = true) {
         SecurityStubs.stubInferAndSameAsDefaults();
