@@ -50,8 +50,34 @@
     "page_info_tooltip": {
       "documentation_link": "Pour en savoir plus, consultez la documentation GraphDB"
     },
-    "repository_banners": {
-      "no_active_repository": "Certaines fonctionnalités ne sont pas disponibles car vous n'êtes connecté à aucun dépôt."
+    "page_restrictions": {
+      "no_active_repository_select_one": "Certaines fonctionnalités ne sont pas disponibles car vous n'êtes connecté à aucun dépôt. Sélectionnez un dépôt ci-dessous.",
+      "no_active_repository_select_or_create_one": "Certaines fonctionnalités ne sont pas disponibles car vous n'êtes connecté à aucun dépôt. Sélectionnez un dépôt ci-dessous ou créez-en un nouveau.",
+      "no_accessible_repos_create_one": "Il n'y a pas de dépôts accessibles. Vous pouvez créer un nouveau dépôt.",
+      "invalid_license": "Certaines fonctionnalités ne sont pas disponibles car votre licence n'est pas valide.",
+      "set_new_license": "Définir une nouvelle licence",
+      "no_write_permission": "Certaines fonctionnalités ne sont pas disponibles car vous n'avez pas de droit d'écriture sur le dépôt <strong>{{repositoryId}}</strong>.",
+      "read_only_ontop": "Certaines fonctionnalités ne sont pas disponibles car <strong>{{repositoryId}}</strong> est un dépôt virtuel en lecture seule.",
+      "fedx_unsupported": "Certaines fonctionnalités ne sont pas disponibles car la vue <strong>{{pageTitle}}</strong> n'est pas prise en charge par le dépôt FedX.",
+      "no_accessible_writable_repos": "Il n'y a pas de dépôts accessibles en écriture."
+    },
+    "repository_picker_list": {
+      "hide_remote_locations_btn": {
+        "label": "Masquer les emplacements distants"
+      },
+      "create_repository_btn": {
+        "label": "Créer un dépôt"
+      },
+      "select_repository_btn": {
+        "label": "Select"
+      },
+      "location_local_label": "Local",
+      "filter_placeholder": "Filtrer par nom ou titre",
+      "state_filter": {
+        "all": "Tous les dépôts",
+        "running": "En cours",
+        "inactive": "Inactif"
+      }
     }
   },
   "login": {
