@@ -31,7 +31,8 @@ import {
   WindowService,
   AuthorizationService,
   navigateTo,
-  RuntimeConfigurationContextService
+  RuntimeConfigurationContextService,
+  RepositoryPermissionType
 } from '@ontotext/workbench-api';
 import {TranslationService} from '../../services/translation.service';
 import {HtmlUtil} from '../../utils/html-util';
@@ -165,7 +166,7 @@ export class OntoHeader {
               repositorySizeInfoFetcher={this.repositorySizeInfoFetcher}
               totalTripletsFormatter={this.totalTripletsFormatter}
               expansionRatioFormatter={this.expansionRatioFormatter}
-              canWriteRepo={this.canWriteRepo}>
+              getRepositoryPermission={this.getRepositoryPermission}>
             </onto-repository-selector>
             <onto-language-selector dropdown-alignment="right"></onto-language-selector>
             {this.showUserMenu && this.user ?
@@ -336,12 +337,8 @@ export class OntoHeader {
       });
   }
 
-  private canWriteRepoInLocation(repository: Repository): boolean {
-    return this.authorizationService.canWriteRepo(repository);
-  }
-
-  private readonly canWriteRepo = (repo: Repository) => {
-    return this.canWriteRepoInLocation(repo);
+  private readonly getRepositoryPermission = (repo: Repository): RepositoryPermissionType => {
+    return this.authorizationService.getRepositoryPermission(repo);
   };
 
   private readonly repositorySizeInfoFetcher = (repo: Repository) => {

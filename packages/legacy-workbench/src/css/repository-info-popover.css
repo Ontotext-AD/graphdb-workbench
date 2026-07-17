@@ -1,0 +1,54 @@
+/**
+ * Removes the default AngularJS UI popover padding.
+ */
+.popover-title,
+.popover-content {
+    padding: 0;
+}
+
+.popover {
+    box-shadow: none;
+}
+
+.repository-info-popover {
+    min-width: 22rem;
+    background-color: var(--gw-dialog-background);
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    padding: 10px;
+    margin: -4px 0;
+    font-size: 0.875rem;
+    font-weight: 400;
+    box-shadow: var(--gw-dialog-shadow-1-offset-x) var(--gw-dialog-shadow-1-offset-y) var(--gw-dialog-shadow-1-blur) var(--gw-dialog-shadow-1-spread) var(--gw-dialog-shadow-1-color);
+
+    .title {
+        border-bottom: 1px solid var(--gw-dialog-border-color);
+        margin-bottom: 0.5rem;
+    }
+
+    .repository-id {
+        font-size: 1rem;
+        font-weight: 400;
+    }
+
+    .repository-description {
+        margin-bottom: 0.5rem;
+    }
+
+    .property {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .property-label {
+        margin-right: 10px;
+    }
+
+    .property-value {
+        text-align: right;
+        font-weight: 500;
+    }
+}
