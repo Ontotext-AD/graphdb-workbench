@@ -687,22 +687,24 @@ describe('User and Access', () => {
             // with manage permission are not allowed to set the default repository.
             RepositorySteps.getSetDefaultRepositoryButton(manageRepositoryId).should('not.exist');
 
+            // And should see the copy action for all repositories.
+            RepositorySteps.getCopyRepositoryButton(writeRepositoryId).should('be.visible');
+            RepositorySteps.getCopyRepositoryButton(readRepositoryId).should('be.visible');
+            RepositorySteps.getCopyRepositoryButton(graphQLOnlyRepositoryId).should('be.visible');
+
             // And no repository management actions should be available for the other repositories.
-            RepositorySteps.getCopyRepositoryButton(readRepositoryId).should('not.exist');
             RepositorySteps.getEditRepositoryButton(readRepositoryId).should('not.exist');
             RepositorySteps.getDownloadRepositoryConfigurationButton(readRepositoryId).should('not.exist');
             RepositorySteps.getRestartRepositoryButton(readRepositoryId).should('not.exist');
             RepositorySteps.getDeleteRepositoryButton(readRepositoryId).should('not.exist');
             RepositorySteps.getSetDefaultRepositoryButton(readRepositoryId).should('not.exist');
 
-            RepositorySteps.getCopyRepositoryButton(writeRepositoryId).should('not.exist');
             RepositorySteps.getEditRepositoryButton(writeRepositoryId).should('not.exist');
             RepositorySteps.getDownloadRepositoryConfigurationButton(writeRepositoryId).should('not.exist');
             RepositorySteps.getRestartRepositoryButton(writeRepositoryId).should('not.exist');
             RepositorySteps.getDeleteRepositoryButton(writeRepositoryId).should('not.exist');
             RepositorySteps.getSetDefaultRepositoryButton(writeRepositoryId).should('not.exist');
 
-            RepositorySteps.getCopyRepositoryButton(graphQLOnlyRepositoryId).should('not.exist');
             RepositorySteps.getEditRepositoryButton(graphQLOnlyRepositoryId).should('not.exist');
             RepositorySteps.getDownloadRepositoryConfigurationButton(graphQLOnlyRepositoryId).should('not.exist');
             RepositorySteps.getRestartRepositoryButton(graphQLOnlyRepositoryId).should('not.exist');

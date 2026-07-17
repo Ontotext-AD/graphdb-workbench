@@ -93,11 +93,14 @@
         "fedx": "FedX",
         "unknown": "Inconnu"
       },
-      "access": "Accéder",
-      "accesses": {
-        "read": "Lire",
-        "write": "Écrire",
-        "read_write": "Lire/Écrire"
+      "permission": "Permission",
+      "permissions": {
+        "none": "Aucune",
+        "read": "Lecture",
+        "write": "Lecture/Écriture",
+        "manage": "Lecture/Écriture/Gestion",
+        "graphql_read": "Lecture (GraphQL uniquement)",
+        "graphql_write": "Lecture/Écriture (GraphQL uniquement)"
       },
       "repository-size": {
         "total": "Total des déclarations",

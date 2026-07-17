@@ -6,7 +6,7 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { DialogConfig } from "./components/dialogs/onto-dialog";
-import { AuthenticatedUser, AuthenticatedUserResponse, Awaitable, Configuration, GraphConfig, License, MainMenuPlugin, Notification, OperationStatusSummary, ProductInfo, Repository, RepositoryReference, RepositorySizeInfo, SearchButtonConfig, SecurityConfig, ToastMessage, TranslationParameter, User } from "../../api/dist/ontotext-workbench-api.d";
+import { AuthenticatedUser, AuthenticatedUserResponse, Awaitable, Configuration, GraphConfig, License, MainMenuPlugin, Notification, OperationStatusSummary, ProductInfo, Repository, RepositoryPermissionType, RepositoryReference, RepositorySizeInfo, SearchButtonConfig, SecurityConfig, ToastMessage, TranslationParameter, User } from "../../api/dist/ontotext-workbench-api.d";
 import { DropdownItem } from "./models/dropdown/dropdown-item";
 import { OntoTooltipPlacement } from "./components/onto-tooltip/models/onto-tooltip-placement";
 import { DropdownItemAlignment } from "./models/dropdown/dropdown-item-alignment";
@@ -14,7 +14,7 @@ import { GraphExploreEvent } from "./components/onto-graph-explore-split-button/
 import { NavbarToggledEvent } from "./components/onto-navbar/navbar-toggled-event";
 import { ToggleEventPayload } from "./models/toggle-switch/toggle-event-payload";
 export { DialogConfig } from "./components/dialogs/onto-dialog";
-export { AuthenticatedUser, AuthenticatedUserResponse, Awaitable, Configuration, GraphConfig, License, MainMenuPlugin, Notification, OperationStatusSummary, ProductInfo, Repository, RepositoryReference, RepositorySizeInfo, SearchButtonConfig, SecurityConfig, ToastMessage, TranslationParameter, User } from "../../api/dist/ontotext-workbench-api.d";
+export { AuthenticatedUser, AuthenticatedUserResponse, Awaitable, Configuration, GraphConfig, License, MainMenuPlugin, Notification, OperationStatusSummary, ProductInfo, Repository, RepositoryPermissionType, RepositoryReference, RepositorySizeInfo, SearchButtonConfig, SecurityConfig, ToastMessage, TranslationParameter, User } from "../../api/dist/ontotext-workbench-api.d";
 export { DropdownItem } from "./models/dropdown/dropdown-item";
 export { OntoTooltipPlacement } from "./components/onto-tooltip/models/onto-tooltip-placement";
 export { DropdownItemAlignment } from "./models/dropdown/dropdown-item-alignment";
@@ -193,10 +193,6 @@ export namespace Components {
     }
     interface OntoRepositorySelector {
         /**
-          * Determines whether the current user has write access to the repository.
-         */
-        "canWriteRepo": (repo: Repository) => boolean;
-        /**
           * The currently selected repository.
          */
         "currentRepository": Repository;
@@ -204,6 +200,10 @@ export namespace Components {
           * Formatter for numeric values with fraction in tooltips.
          */
         "expansionRatioFormatter": Intl.NumberFormat;
+        /**
+          * Determines whether the current user has write access to the repository.
+         */
+        "getRepositoryPermission": (repository: Repository) => RepositoryPermissionType;
         /**
           * The list of repositories to show in the dropdown.
          */
@@ -963,10 +963,6 @@ declare namespace LocalJSX {
     }
     interface OntoRepositorySelector {
         /**
-          * Determines whether the current user has write access to the repository.
-         */
-        "canWriteRepo"?: (repo: Repository) => boolean;
-        /**
           * The currently selected repository.
          */
         "currentRepository"?: Repository;
@@ -974,6 +970,10 @@ declare namespace LocalJSX {
           * Formatter for numeric values with fraction in tooltips.
          */
         "expansionRatioFormatter"?: Intl.NumberFormat;
+        /**
+          * Determines whether the current user has write access to the repository.
+         */
+        "getRepositoryPermission"?: (repository: Repository) => RepositoryPermissionType;
         /**
           * The list of repositories to show in the dropdown.
          */
