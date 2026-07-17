@@ -334,6 +334,10 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         return authorizationService.canWriteRepo(repository);
     };
 
+    $scope.getRepositoryPermission = (repository) => {
+        return authorizationService.getRepositoryPermission(repository);
+    };
+
     $scope.canWriteActiveRepo = function(noSystem) {
         const activeRepository = $repositories.getActiveRepositoryObject();
         if (activeRepository) {

@@ -68,6 +68,7 @@
   }
 
   .tooltip-content {
+    min-width: 22rem;
     padding: 0;
 
     .repository-tooltip-title {
@@ -78,18 +79,23 @@
 
       .value {
         overflow-wrap: break-word;
+        font-weight: 500;
+      }
+
+      .label {
+        margin-right: 0;
       }
     }
 
     .repository-tooltip-description {
-      padding-left: 1rem;
-      padding-right: 1rem;
+      padding-left: 0.9rem;
+      padding-right: 0.9rem;
       font-size: 0.8rem;
     }
 
     .repository-tooltip-content {
       background-color: var(--gw-dialog-background);
-      padding: 1.5rem 0.5rem;
+      padding: 1.5rem 0.9rem;
       border-top: var(--gw-dialog-border-color) 1px solid;
       display: flex;
       flex-direction: column;
@@ -109,6 +115,7 @@
 
       .value {
         margin-left: .6em;
+        font-weight: 500;
       }
     }
   }

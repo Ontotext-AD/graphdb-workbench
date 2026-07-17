@@ -1,7 +1,7 @@
 import {AuthorizationService} from '../authorization.service';
 import {SecurityContextService} from '../security-context.service';
 import {AuthenticatedUser, Authority, AuthorityList} from '../../../../models/security';
-import {Repository} from '../../../../models/repositories';
+import {Repository, RepositoryPermissionType} from '../../../../models/repositories';
 import {ServiceProvider} from '../../../../providers';
 import {WindowService} from '../../../window';
 import {RoutingService} from '../../../routing/routing.service';
@@ -811,6 +811,194 @@ describe('AuthorizationService', () => {
       const repository = new Repository({id: 'testRepoId', location: 'testLocation' });
       // Then, it should return true
       expect(authorizationService.canReadRepo(repository)).toBe(true);
+    });
+  });
+
+  describe('getRepositoryPermission', () => {
+    test('should return manage permission for administrators on all repositories', () => {
+      const repository = {id: 'testRepo'} as Repository;
+
+      // Given, security is enabled
+      const securityContextService = ServiceProvider.get(SecurityContextService);
+      securityContextService.updateSecurityConfig(getSecurityConfig(true, true));
+      // And, the authenticated user has the ROLE_ADMIN authority
+      const administrator = mapAuthenticatedUserResponseToModel({
+        external: false,
+        authorities: [
+          Authority.ROLE_ADMIN
+        ]
+      } as unknown as AuthenticatedUserResponse);
+      securityContextService.updateAuthenticatedUser(administrator);
+
+      // When, I get the user's permission for the repository
+      const repositoryPermission = authorizationService.getRepositoryPermission(repository);
+      // Then, the user should have manage permission
+      expect(repositoryPermission).toBe(RepositoryPermissionType.MANAGE);
+    });
+
+    test('should return manage permission for repository managers on all repositories', () => {
+      const repository = {id: 'testRepo'} as Repository;
+
+      // Given, security is enabled
+      const securityContextService = ServiceProvider.get(SecurityContextService);
+      securityContextService.updateSecurityConfig(getSecurityConfig(true, true));
+      // And, the authenticated user has the ROLE_REPO_MANAGER authority
+      const repositoryManager = mapAuthenticatedUserResponseToModel({
+        external: false,
+        authorities: [
+          Authority.ROLE_REPO_MANAGER
+        ]
+      } as unknown as AuthenticatedUserResponse);
+      securityContextService.updateAuthenticatedUser(repositoryManager);
+
+      // When, I get the user's permission for the repository
+      const repositoryPermission = authorizationService.getRepositoryPermission(repository);
+      // Then, the user should have manage permission
+      expect(repositoryPermission).toBe(RepositoryPermissionType.MANAGE);
+    });
+
+    test('should return manage permission only for repositories the user is authorized to manage', () => {
+      const managedRepositoryId = 'managedTestRepoId';
+      const managedRepository = {id: managedRepositoryId} as Repository;
+      const readRepositoryId = 'readTestRepoId';
+      const readRepository = {id: readRepositoryId} as Repository;
+
+      // Given, security is enabled
+      const securityContextService = ServiceProvider.get(SecurityContextService);
+      securityContextService.updateSecurityConfig(getSecurityConfig(true, true));
+      // And, the authenticated user can manage one repository and read another
+      const user = mapAuthenticatedUserResponseToModel({
+        external: false,
+        authorities: [
+          Authority.ROLE_USER,
+          Authority.MANAGE_REPO_PREFIX + managedRepositoryId,
+          Authority.READ_REPO_PREFIX + readRepositoryId
+        ]
+      } as unknown as AuthenticatedUserResponse);
+      securityContextService.updateAuthenticatedUser(user);
+
+      // When, I get the user's permission for the managed repository
+      const managedRepositoryPermission = authorizationService.getRepositoryPermission(managedRepository);
+      // Then, the user should have manage permission
+      expect(managedRepositoryPermission).toBe(RepositoryPermissionType.MANAGE);
+
+      // When, I get the user's permission for the repository they can only read
+      const readRepositoryPermission = authorizationService.getRepositoryPermission(readRepository);
+      // Then, the user should not have manage permission
+      expect(readRepositoryPermission).not.toBe(RepositoryPermissionType.MANAGE);
+    });
+
+    test('should return write permission for repositories the user is authorized to write to', () => {
+      const writeRepositoryId = 'writeTestRepoId';
+      const writeRepository = {id: writeRepositoryId} as Repository;
+
+      // Given, security is enabled
+      const securityContextService = ServiceProvider.get(SecurityContextService);
+      securityContextService.updateSecurityConfig(getSecurityConfig(true, true));
+      // And, the authenticated user has write permission for the repository
+      const user = mapAuthenticatedUserResponseToModel({
+        external: false,
+        authorities: [
+          Authority.ROLE_USER,
+          Authority.WRITE_REPO_PREFIX + writeRepositoryId
+        ]
+      } as unknown as AuthenticatedUserResponse);
+      securityContextService.updateAuthenticatedUser(user);
+
+      // When, I get the user's permission for the repository
+      const repositoryPermission = authorizationService.getRepositoryPermission(writeRepository);
+      // Then, the user should have write permission
+      expect(repositoryPermission).toBe(RepositoryPermissionType.WRITE);
+    });
+
+    test('should return read permission for repositories the user is authorized to read', () => {
+      const readRepositoryId = 'readTestRepoId';
+      const readRepository = {id: readRepositoryId} as Repository;
+
+      // Given, security is enabled
+      const securityContextService = ServiceProvider.get(SecurityContextService);
+      securityContextService.updateSecurityConfig(getSecurityConfig(true, true));
+      // And, the authenticated user has read permission for the repository
+      const user = mapAuthenticatedUserResponseToModel({
+        external: false,
+        authorities: [
+          Authority.ROLE_USER,
+          Authority.READ_REPO_PREFIX + readRepositoryId
+        ]
+      } as unknown as AuthenticatedUserResponse);
+      securityContextService.updateAuthenticatedUser(user);
+
+      // When, I get the user's permission for the repository
+      const repositoryPermission = authorizationService.getRepositoryPermission(readRepository);
+      // Then, the user should have read permission
+      expect(repositoryPermission).toBe(RepositoryPermissionType.READ);
+    });
+
+    test('should return GraphQL write permission for repositories the user is authorized to write to (GraphQL only)', () => {
+      const graphqlWriteRepositoryId = 'graphqlWriteTestRepoId';
+      const graphqlWriteRepository = {id: graphqlWriteRepositoryId} as Repository;
+
+      // Given, security is enabled
+      const securityContextService = ServiceProvider.get(SecurityContextService);
+      securityContextService.updateSecurityConfig(getSecurityConfig(true, true));
+      // And, the authenticated user has GraphQL write permission for the repository
+      const user = mapAuthenticatedUserResponseToModel({
+        external: false,
+        authorities: [
+          Authority.ROLE_USER,
+          `${Authority.WRITE_REPO_PREFIX}${graphqlWriteRepositoryId}:${Authority.GRAPHQL}`
+        ]
+      } as unknown as AuthenticatedUserResponse);
+      securityContextService.updateAuthenticatedUser(user);
+
+      // When, I get the user's permission for the repository
+      const repositoryPermission = authorizationService.getRepositoryPermission(graphqlWriteRepository);
+      // Then, the user should have GraphQL write permission
+      expect(repositoryPermission).toBe(RepositoryPermissionType.GRAPHQL_WRITE);
+    });
+
+    test('should return GraphQL read permission for repositories the user is authorized to read (GraphQL only)', () => {
+      const graphqlReadRepositoryId = 'graphqlReadTestRepoId';
+      const graphqlReadRepository = {id: graphqlReadRepositoryId} as Repository;
+
+      // Given, security is enabled
+      const securityContextService = ServiceProvider.get(SecurityContextService);
+      securityContextService.updateSecurityConfig(getSecurityConfig(true, true));
+      // And, the authenticated user has GraphQL read permission for the repository
+      const user = mapAuthenticatedUserResponseToModel({
+        external: false,
+        authorities: [
+          Authority.ROLE_USER,
+          `${Authority.READ_REPO_PREFIX}${graphqlReadRepositoryId}:${Authority.GRAPHQL}`
+        ]
+      } as unknown as AuthenticatedUserResponse);
+      securityContextService.updateAuthenticatedUser(user);
+
+      // When, I get the user's permission for the repository
+      const repositoryPermission = authorizationService.getRepositoryPermission(graphqlReadRepository);
+      // Then, the user should have GraphQL read permission
+      expect(repositoryPermission).toBe(RepositoryPermissionType.GRAPHQL_READ);
+    });
+
+    test('should return no permission for repositories the user is not authorized to access', () => {
+      const repository = {id: 'noPermissionTestRepoId'} as Repository;
+
+      // Given, security is enabled
+      const securityContextService = ServiceProvider.get(SecurityContextService);
+      securityContextService.updateSecurityConfig(getSecurityConfig(true, true));
+      // And, the authenticated user has no permissions for the repository
+      const user = mapAuthenticatedUserResponseToModel({
+        external: false,
+        authorities: [
+          Authority.ROLE_USER
+        ]
+      } as unknown as AuthenticatedUserResponse);
+      securityContextService.updateAuthenticatedUser(user);
+
+      // When, I get the user's permission for the repository
+      const repositoryPermission = authorizationService.getRepositoryPermission(repository);
+      // Then, the user should have no permission
+      expect(repositoryPermission).toBe(RepositoryPermissionType.NONE);
     });
   });
 });

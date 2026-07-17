@@ -1,5 +1,12 @@
 import {Component, h, Host, Prop, State, Watch} from '@stencil/core';
-import {Repository, RepositoryContextService, RepositorySizeInfo, service, UriUtil} from '@ontotext/workbench-api';
+import {
+  Repository,
+  RepositoryContextService,
+  RepositoryPermissionType,
+  RepositorySizeInfo,
+  service,
+  UriUtil
+} from '@ontotext/workbench-api';
 import {DropdownItem} from '../../models/dropdown/dropdown-item';
 import {DropdownItemAlignment} from '../../models/dropdown/dropdown-item-alignment';
 import {RepositorySelection} from './repository-selection';
@@ -57,7 +64,7 @@ export class OntoRepositorySelector {
   /**
    * Determines whether the current user has write access to the repository.
    */
-  @Prop() canWriteRepo: (repo: Repository) => boolean;
+  @Prop() getRepositoryPermission: (repository: Repository) => RepositoryPermissionType;
 
   /**
    * The default name of the toggle button that will be displayed in the dropdown.
@@ -188,8 +195,8 @@ export class OntoRepositorySelector {
         <div class="value">${TranslationService.translate('repository-selector.tooltip.types.' + (repository.type || 'unknown'))}</div>
       </div>
       <div class="repository-tooltip-row">
-        <div class="label">${TranslationService.translate('repository-selector.tooltip.access')}:</div>
-        <div class="value">${TranslationService.translate(this.canWriteRepo(repository) ? 'repository-selector.tooltip.accesses.read_write' : 'repository-selector.tooltip.accesses.read')}</div>
+        <div class="label">${TranslationService.translate('repository-selector.tooltip.permission')}:</div>
+        <div class="value">${TranslationService.translate(`repository-selector.tooltip.permissions.${this.getRepositoryPermission(repository)}`)}</div>
       </div>`;
 
     html += this.buildRepositorySizeInfoHtml(repositorySizeInfo);

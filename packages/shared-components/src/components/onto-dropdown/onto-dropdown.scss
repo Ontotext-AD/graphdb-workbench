@@ -62,6 +62,11 @@
   }
 
   .onto-dropdown-menu {
+    /*
+      Sets the minimum width to match its parent, preventing the dropdown menu from becoming narrower than the parent.
+      This can happen when the selected item's label is longer than the labels of the available items.
+     */
+    min-width: 100%;
     position: absolute;
     margin: 0;
     padding: 0;

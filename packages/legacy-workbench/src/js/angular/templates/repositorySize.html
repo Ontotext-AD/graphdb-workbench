@@ -1,57 +1,75 @@
-<div ng-init="getRepositorySize()" style="margin: -4px 0; padding: 10px">
-    <div class="row" ng-if="popoverRepo.title" style="margin-bottom: .5rem">
-        <span>
+<link href="css/repository-info-popover.css?v=[AIV]{version}[/AIV]" rel="stylesheet">
+<div ng-init="getRepositorySize()" class="repository-info-popover">
+
+    <div class="title">
+        <span class="repository-id">
+            {{'security.repository.title' | translate}}
+        </span>
+        <span class="property-value">
+            {{repository.id}}
+        </span>
+
+        <div ng-if="popoverRepo.title" class="repository-description">
             {{popoverRepo.title}}
+        </div>
+    </div>
+
+    <div class="property">
+        <span class="property-label">{{'location.label' | translate}}</span>
+        <span class="property-value text-right">
+            {{popoverRepo.location ? popoverRepo.location : 'Local'}}
         </span>
     </div>
-    <div class="row">
-        <label style="margin-right: 10px">{{'location.label' | translate}}</label>
-        <span class="text-right pull-right">
-			{{popoverRepo.location ? popoverRepo.location : 'Local'}}
-		</span>
+
+    <div class="property">
+        <span class="property-label">{{'type.label' | translate}}</span>
+        <span class="property-value text-right">
+            {{toHumanReadableType(popoverRepo.type)}}
+        </span>
     </div>
-	<div class="row">
-		<label style="margin-right: 10px">{{'type.label' | translate}}</label>
-		<span class="text-right pull-right">
-			{{toHumanReadableType(popoverRepo.type)}}
-		</span>
-	</div>
-	<div class="row mb-1">
-		<label style="margin-right: 10px">{{'access.label' | translate}}</label>
-		<span class="text-right pull-right">
-			{{(popoverRepo.writable && canWriteRepoInLocation(popoverRepo) && popoverRepo.type !== 'ontop') ? 'read.write.label' : 'read.only.label' | translate}}
-		</span>
-	</div>
-	<div ng-show="repositorySize.total >= 0">
-		<div class="row" ng-show="repositorySize.total >= 0" style="margin-top: 0">
-				<label style="margin-right: 10px">{{'total.statements.label' | translate}}</label>
-			<span class="text-right pull-right">
-				{{repositorySize.total | currency:'':0}}
-			</span>
-		</div>
-		<div class="row" ng-show="repositorySize.explicit >= 0" style="margin-top: 0">
-				<label style="margin-right: 10px">{{'explicit.label' | translate}}</label>
-			<span class="text-right pull-right">
-				{{repositorySize.explicit != 0 ? (repositorySize.explicit | currency:'':0) : 0}}
-			</span>
-		</div>
-		<div class="row" ng-show="repositorySize.inferred >= 0" style="margin-top: 0">
-			<label style="margin-right: 10px">{{'inferred.label' | translate}}</label>
-			<span class="text-right pull-right">
-				{{repositorySize.inferred | currency:'':0}}
-			</span>
-		</div>
-		<div class="row" ng-show="repositorySize.explicit >= 0" style="margin-top: 0">
-				<label style="margin-right: 10px">{{'expansion.ratio.label' | translate}}</label>
-			<span class="text-right pull-right">
-				{{repositorySize.explicit != 0 ? (repositorySize.total/repositorySize.explicit | currency:'') : '-'}}
-			</span>
-		</div>
-	</div>
-	<div class="row" ng-hide="repositorySize.loading || repositorySize.total >= 0">
-		{{'size.info.not.available' | translate}}
-	</div>
-	<div class="row" class="row" ng-show="repositorySize.loading">
-		{{'common.loading' | translate}}
-	</div>
+
+    <div class="property mb-1">
+        <span class="property-label">{{'permission.label' | translate}}</span>
+        <span class="property-value text-right">
+            {{('repository.permission.' + getRepositoryPermission(popoverRepo).toLowerCase()) | translate}}
+        </span>
+    </div>
+
+    <div ng-show="repositorySize.total >= 0">
+        <div class="property">
+            <span class="property-label">{{'total.statements.label' | translate}}</span>
+            <span class="property-value text-right">
+                {{repositorySize.total | currency:'':0}}
+            </span>
+        </div>
+
+        <div class="property" ng-show="repositorySize.explicit >= 0">
+            <span class="property-label">{{'explicit.label' | translate}}</span>
+            <span class="property-value text-right">
+                {{repositorySize.explicit != 0 ? (repositorySize.explicit | currency:'':0) : 0}}
+            </span>
+        </div>
+
+        <div class="property" ng-show="repositorySize.inferred >= 0">
+            <span class="property-label">{{'inferred.label' | translate}}</span>
+            <span class="property-value text-right">
+                {{repositorySize.inferred | currency:'':0}}
+            </span>
+        </div>
+
+        <div class="property" ng-show="repositorySize.explicit >= 0">
+            <span class="property-label">{{'expansion.ratio.label' | translate}}</span>
+            <span class="property-value text-right">
+                {{repositorySize.explicit != 0 ? (repositorySize.total/repositorySize.explicit | currency:'') : '-'}}
+            </span>
+        </div>
+    </div>
+
+    <div ng-hide="repositorySize.loading || repositorySize.total >= 0">
+        {{'size.info.not.available' | translate}}
+    </div>
+
+    <div ng-show="repositorySize.loading">
+        {{'common.loading' | translate}}
+    </div>
 </div>
