@@ -98,8 +98,7 @@
                                                   popover-popup-delay="500"
                                                   popover-trigger="mouseenter"
                                                   popover-placement="bottom-left"
-                                                  uib-popover-template="popoverTemplate"
-                                                  popover-title="{{'security.repository.title' | translate}} {{repository.id}}">
+                                                  uib-popover-template="popoverTemplate">
                                                 <div class="repository-info">
                                                     <span class="icon-lg" ng-class="'icon-repo-' + repository.type"></span>
 
@@ -121,18 +120,17 @@
                                         </div>
                                     </td>
                                     <td class="text-nowrap repository-actions">
-                                        <div ng-if="canManageRepo(repository)">
-                                            <button class="btn btn-link p-0 copy-repository-btn"
-                                                    ng-click="copyToClipboard(repository.externalUrl)"
-                                                    gdb-tooltip="{{'copy.repo.url' | translate}}">
-                                                <span class="ri-links-line"></span>
-                                            </button>
-                                            <span ng-if="location.degradedReason">
+                                        <button class="btn btn-link p-0 copy-repository-btn"
+                                                ng-click="copyToClipboard(repository.externalUrl)"
+                                                gdb-tooltip="{{'copy.repo.url' | translate}}">
+                                            <span class="ri-links-line"></span>
+                                        </button>
+                                        <span ng-if="location.degradedReason">
                                             <em class="ri-alert-line icon-lg text-warning"
                                                 gdb-tooltip="{{location.degradedReason}}{{'repo.not.supported.delete.or.edit' | translate}}"
                                                 tooltip-placement="top"></em>
                                         </span>
-                                            <span ng-if="repository.type !== 'system' && !location.degradedReason">
+                                        <span ng-if="canManageRepo(repository) && repository.type !== 'system' && !location.degradedReason">
                                             <a class="btn btn-link p-0 edit-repository-btn"
                                                href="repository/edit/{{repository.id}}?location={{repository.location}}"
                                                gdb-tooltip="{{'repoTooltips.editRepository' | translate}}"
@@ -162,7 +160,6 @@
                                                 <em class="ri-delete-bin-6-line"></em>
                                             </button>
                                         </span>
-                                        </div>
                                     </td>
                                     <td>
                                         <button class="btn btn-link p-0 pin-repository-btn"
@@ -267,8 +264,7 @@
                                                   popover-popup-delay="500"
                                                   popover-trigger="mouseenter"
                                                   popover-placement="bottom-left"
-                                                  uib-popover-template="popoverTemplate"
-                                                  popover-title="{{'security.repository.title' | translate}} {{repository.id}}">
+                                                  uib-popover-template="popoverTemplate">
                                                 <div class="repository-info">
                                                     <span class="icon-lg" ng-class="'icon-repo-' + repository.type"></span>
 
