@@ -725,6 +725,11 @@ describe('User and Access', () => {
             RepositorySteps.getCopyRepositoryButton(readRepositoryId).should('be.visible');
             RepositorySteps.getCopyRepositoryButton(graphQLOnlyRepositoryId).should('be.visible');
 
+            // And should see the copy action for all repositories.
+            RepositorySteps.getCopyRepositoryButton(writeRepositoryId).should('be.visible');
+            RepositorySteps.getCopyRepositoryButton(readRepositoryId).should('be.visible');
+            RepositorySteps.getCopyRepositoryButton(graphQLOnlyRepositoryId).should('be.visible');
+
             // And no repository management actions should be available for the other repositories.
             RepositorySteps.getEditRepositoryButton(readRepositoryId).should('not.exist');
             RepositorySteps.getDownloadRepositoryConfigurationButton(readRepositoryId).should('not.exist');
