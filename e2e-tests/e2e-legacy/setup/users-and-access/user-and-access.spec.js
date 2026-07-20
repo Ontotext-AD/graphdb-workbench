@@ -7,6 +7,7 @@ import HomeSteps from '../../../steps/home-steps';
 import {LoginSteps} from '../../../steps/login-steps';
 import {MainMenuSteps} from '../../../steps/main-menu-steps';
 import {SecurityStubs} from '../../../stubs/security-stubs.js';
+import {RepositorySteps} from '../../../steps/repository-steps.js';
 
 describe('User and Access', () => {
 
@@ -75,6 +76,11 @@ describe('User and Access', () => {
             it('Create user', () => {
                 //create a normal read/write user
                 createUser(user, PASSWORD, ROLE_USER, {readWrite: true});
+                testForUser(user, false);
+            });
+
+            it('Create manage user', () => {
+                createUser(user, PASSWORD, ROLE_USER, {manage: true, repoName});
                 testForUser(user, false);
             });
 
@@ -601,6 +607,117 @@ describe('User and Access', () => {
                     navigateMenuPath(['Import'], '/import', 'Import');
                 });
             });
+        });
+    });
+
+    context('User with manage permission', () => {
+        let withoutPermissionRepositoryId;
+        let readRepositoryId;
+        let writeRepositoryId;
+        let graphQLOnlyRepositoryId;
+        let manageRepositoryId;
+        const manageUser = 'manageUser';
+
+        beforeEach(() => {
+            RepositoriesStubs.spyGetRepositories();
+            readRepositoryId = 'readRepositoryId-' + Date.now();
+            writeRepositoryId = 'writeRepositoryId-' + Date.now();
+            graphQLOnlyRepositoryId = 'graphQLOnlyRepositoryId-' + Date.now();
+            manageRepositoryId = 'manageRepositoryId-' + Date.now();
+            withoutPermissionRepositoryId = 'withoutPermissionRepositoryId-' + Date.now();
+            cy.createRepository({id: readRepositoryId});
+            cy.createRepository({id: writeRepositoryId});
+            cy.createRepository({id: graphQLOnlyRepositoryId});
+            cy.createRepository({id: manageRepositoryId});
+            cy.createRepository({id: withoutPermissionRepositoryId});
+            UserAndAccessSteps.visit();
+            // Users table should be visible
+            UserAndAccessSteps.getUsersTable().should('be.visible');
+            SecurityStubs.spyOnUserGet();
+        });
+
+        afterEach(() => {
+            cy.loginAsAdmin().then(() => {
+                cy.deleteRepository(readRepositoryId, true);
+                cy.deleteRepository(writeRepositoryId, true);
+                cy.deleteRepository(graphQLOnlyRepositoryId, true);
+                cy.deleteRepository(manageRepositoryId, true);
+                cy.deleteRepository(withoutPermissionRepositoryId, true);
+                cy.deleteUser(manageUser, true);
+                cy.switchOffFreeAccess(true);
+                cy.switchOffSecurity(true);
+            });
+        });
+
+        it('should list all repositories for which a user with manage permission has at least read permission', () => {
+            // Given there are five repositories.
+            // And there is a user with permissions for four of them:
+            // 1. Manage permission for one repository.
+            createUser(manageUser, PASSWORD, ROLE_USER, {manage: true, repoName: manageRepositoryId});
+            // 2. Read permission for one repository.
+            UserAndAccessSteps.openEditUserPage(manageUser);
+            cy.wait('@get-user');
+            setUserAuths({repo: readRepositoryId, read: true});
+            // 3. Write permission for one repository.
+            setUserAuths({repo: writeRepositoryId, write: true});
+            // 4. GraphQL-only permission for one repository.
+            setUserAuths({repo: graphQLOnlyRepositoryId, write: true, graphql: true});
+            UserAndAccessSteps.confirmUserEdit();
+
+            // When I log in as a user with repository management permission.
+            UserAndAccessSteps.toggleSecurity();
+            LoginSteps.loginWithUser(manageUser, PASSWORD);
+            // And navigate to the repository list view.
+            RepositorySteps.visit(false);
+
+            // Then I should see all repositories for which the user has at least read permission.
+            RepositorySteps.getRepositories().should('have.length', 4);
+
+            // And I should see the actions allowed for the repository the user can manage.
+            RepositorySteps.getCopyRepositoryButton(manageRepositoryId).should('be.visible');
+            RepositorySteps.getEditRepositoryButton(manageRepositoryId).should('be.visible');
+            RepositorySteps.getDownloadRepositoryConfigurationButton(manageRepositoryId).should('be.visible');
+            RepositorySteps.getRestartRepositoryButton(manageRepositoryId).should('be.visible');
+
+            // And the delete button should not be available because users with manage permission
+            // are not allowed to delete repositories.
+            RepositorySteps.getDeleteRepositoryButton(manageRepositoryId).should('not.exist');
+
+            // And the "Set as default repository" button should not be available because users
+            // with manage permission are not allowed to set the default repository.
+            RepositorySteps.getSetDefaultRepositoryButton(manageRepositoryId).should('not.exist');
+
+            // And no repository management actions should be available for the other repositories.
+            RepositorySteps.getCopyRepositoryButton(readRepositoryId).should('not.exist');
+            RepositorySteps.getEditRepositoryButton(readRepositoryId).should('not.exist');
+            RepositorySteps.getDownloadRepositoryConfigurationButton(readRepositoryId).should('not.exist');
+            RepositorySteps.getRestartRepositoryButton(readRepositoryId).should('not.exist');
+            RepositorySteps.getDeleteRepositoryButton(readRepositoryId).should('not.exist');
+            RepositorySteps.getSetDefaultRepositoryButton(readRepositoryId).should('not.exist');
+
+            RepositorySteps.getCopyRepositoryButton(writeRepositoryId).should('not.exist');
+            RepositorySteps.getEditRepositoryButton(writeRepositoryId).should('not.exist');
+            RepositorySteps.getDownloadRepositoryConfigurationButton(writeRepositoryId).should('not.exist');
+            RepositorySteps.getRestartRepositoryButton(writeRepositoryId).should('not.exist');
+            RepositorySteps.getDeleteRepositoryButton(writeRepositoryId).should('not.exist');
+            RepositorySteps.getSetDefaultRepositoryButton(writeRepositoryId).should('not.exist');
+
+            RepositorySteps.getCopyRepositoryButton(graphQLOnlyRepositoryId).should('not.exist');
+            RepositorySteps.getEditRepositoryButton(graphQLOnlyRepositoryId).should('not.exist');
+            RepositorySteps.getDownloadRepositoryConfigurationButton(graphQLOnlyRepositoryId).should('not.exist');
+            RepositorySteps.getRestartRepositoryButton(graphQLOnlyRepositoryId).should('not.exist');
+            RepositorySteps.getDeleteRepositoryButton(graphQLOnlyRepositoryId).should('not.exist');
+            RepositorySteps.getSetDefaultRepositoryButton(graphQLOnlyRepositoryId).should('not.exist');
+
+            // And the "Create", "Create from file", and "Attach remote repository" page buttons
+            // should not be available to a user with manage permission.
+            RepositorySteps.getPageButtons().should('not.exist');
+
+            // When I select a repository for which I have GraphQL-only permission.
+            RepositorySelectorSteps.selectRepository(graphQLOnlyRepositoryId);
+
+            // Then I should still see all repositories for which the user has at least read permission.
+            RepositorySteps.getRepositories().should('have.length', 4);
         });
     });
 
