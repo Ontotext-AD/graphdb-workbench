@@ -5,26 +5,26 @@ import {GraphExploreSettings} from '../../../models/graph-explore/graph-explore-
 import {DEFAULT_GRAPH_EXPLORE_SETTINGS} from './graph-explore-settings.config';
 
 type GraphExploreContextFields = {
-  readonly DEFAULT_SETTINGS: string;
+  readonly SETTINGS: string;
 };
 
 type GraphExploreContextFieldParams = {
-  readonly DEFAULT_SETTINGS: GraphExploreSettings;
+  readonly SETTINGS: GraphExploreSettings;
 };
 
 /**
  * Service for managing the graph-explore settings context.
  */
 export class GraphExploreContextService extends ContextService<GraphExploreContextFields> implements DeriveContextServiceContract<GraphExploreContextFields, GraphExploreContextFieldParams> {
-  readonly DEFAULT_SETTINGS = 'graphExploreDefaultSettings';
+  readonly SETTINGS = 'graphExploreSettings';
 
   /**
    * Updates the default graph-explore settings in the context.
    *
    * @param settings - The new default settings object to be set in the context.
    */
-  updateDefaultSettings(settings: GraphExploreSettings): void {
-    this.updateContextProperty(this.DEFAULT_SETTINGS, settings);
+  updateSettings(settings: GraphExploreSettings): void {
+    this.updateContextProperty(this.SETTINGS, settings);
   }
 
   /**
@@ -33,17 +33,17 @@ export class GraphExploreContextService extends ContextService<GraphExploreConte
    * @param callbackFn - A callback function that will be called when the default settings change.
    * @returns A function that, when called, will unsubscribe from the default settings changes.
    */
-  onDefaultSettingsChanged(callbackFn: ValueChangeCallback<GraphExploreSettings | undefined>): () => void {
-    return this.subscribe(this.DEFAULT_SETTINGS, callbackFn);
+  onSettingsChanged(callbackFn: ValueChangeCallback<GraphExploreSettings | undefined>): () => void {
+    return this.subscribe(this.SETTINGS, callbackFn);
   }
 
   /**
-   * Retrieves the default graph-explore settings from the context, falling back to the
-   * {@link DEFAULT_GRAPH_EXPLORE_SETTINGS} configuration when no value has been set.
+   * Retrieves the default graph-explore settings stored in the context. When the context holds no
+   * value yet, falls back to the built-in {@link DEFAULT_GRAPH_EXPLORE_SETTINGS} configuration.
    *
    * @return the default graph-explore settings.
    */
-  getDefaultSettings(): GraphExploreSettings {
-    return this.getContextPropertyValue<GraphExploreSettings>(this.DEFAULT_SETTINGS) ?? DEFAULT_GRAPH_EXPLORE_SETTINGS;
+  getSettings(): GraphExploreSettings {
+    return this.getContextPropertyValue<GraphExploreSettings>(this.SETTINGS) ?? DEFAULT_GRAPH_EXPLORE_SETTINGS;
   }
 }

@@ -17,9 +17,6 @@ export class GraphExploreRestService extends HttpService {
    */
   loadGraph(request: GraphExploreRequest): Promise<GraphExploreLinkResponse[]> {
     return this.post(`${GraphExploreRestService.EXPLORE_GRAPH_ENDPOINT}/graph`, {
-      headers: {
-        'Content-Type': 'application/json'
-      },
       body: request
     });
   }

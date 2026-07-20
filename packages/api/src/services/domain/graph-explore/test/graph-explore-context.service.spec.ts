@@ -12,40 +12,40 @@ describe('GraphExploreContextService', () => {
   describe('getDefaultSettings', () => {
     it('should fall back to the default settings config when no value has been set', () => {
       // Then the configured defaults are returned.
-      expect(graphExploreContextService.getDefaultSettings()).toEqual(DEFAULT_GRAPH_EXPLORE_SETTINGS);
+      expect(graphExploreContextService.getSettings()).toEqual(DEFAULT_GRAPH_EXPLORE_SETTINGS);
     });
 
     it('should return the settings stored in the context', () => {
       // Given custom default settings are set.
       const settings: GraphExploreSettings = {includeInferred: false, sameAs: false, languages: ['fr'], linksLimit: 50};
-      graphExploreContextService.updateDefaultSettings(settings);
+      graphExploreContextService.updateSettings(settings);
 
       // Then the stored settings are returned instead of the config defaults.
-      expect(graphExploreContextService.getDefaultSettings()).toEqual(settings);
+      expect(graphExploreContextService.getSettings()).toEqual(settings);
     });
   });
 
-  describe('updateDefaultSettings', () => {
+  describe('updateSettings', () => {
     it('should update the settings in the context and notify subscribers', () => {
       // Given a subscriber.
       const settings: GraphExploreSettings = {includeInferred: false, sameAs: true, languages: ['de'], linksLimit: 10};
       const mockCallback = jest.fn();
-      graphExploreContextService.onDefaultSettingsChanged(mockCallback);
+      graphExploreContextService.onSettingsChanged(mockCallback);
 
       // When updating the default settings.
-      graphExploreContextService.updateDefaultSettings(settings);
+      graphExploreContextService.updateSettings(settings);
 
       // Then the subscriber is notified with the new settings.
       expect(mockCallback).toHaveBeenLastCalledWith(settings);
     });
   });
 
-  describe('onDefaultSettingsChanged', () => {
+  describe('onSettingsChanged', () => {
     it('should stop receiving updates after unsubscribe', () => {
       // Given a registered subscriber.
       const settings: GraphExploreSettings = {includeInferred: false, sameAs: false, languages: [], linksLimit: 1};
       const mockCallback = jest.fn();
-      const unsubscribe = graphExploreContextService.onDefaultSettingsChanged(mockCallback);
+      const unsubscribe = graphExploreContextService.onSettingsChanged(mockCallback);
       // Clear the immediate call performed on subscription.
       mockCallback.mockClear();
 
@@ -53,7 +53,7 @@ describe('GraphExploreContextService', () => {
       unsubscribe();
 
       // Then the subscriber is not notified of further changes.
-      graphExploreContextService.updateDefaultSettings(settings);
+      graphExploreContextService.updateSettings(settings);
       expect(mockCallback).not.toHaveBeenCalled();
     });
   });

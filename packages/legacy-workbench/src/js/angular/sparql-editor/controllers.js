@@ -18,7 +18,7 @@ import 'angular/core/services/event-emitter-service';
 import {LoggerProvider} from '../core/services/logger-provider';
 import {
     ParentWindowMessageService,
-    navigateTo,
+    navigate,
     openInNewTab,
     LanguageContextService,
     ServiceProvider,
@@ -50,7 +50,6 @@ angular
     .controller('SparqlEditorCtrl', SparqlEditorCtrl);
 
 SparqlEditorCtrl.$inject = [
-    '$rootScope',
     '$scope',
     '$q',
     '$location',
@@ -67,8 +66,7 @@ SparqlEditorCtrl.$inject = [
     'LocalStorageAdapter',
     'LSKeys'];
 
-function SparqlEditorCtrl($rootScope,
-    $scope,
+function SparqlEditorCtrl($scope,
     $q,
     $location,
     $languageService,
@@ -363,20 +361,7 @@ function SparqlEditorCtrl($rootScope,
             paramsToParse.config = visGraphConfigId;
         }
 
-        const navigate = function() {
-            $location.path('graphs-visualizations').search(paramsToParse);
-        };
-        // This button is embedded in the Yasr toolbar, which is outside the Angular context, so we need to
-        // manually trigger the navigation inside the Angular context. Otherwise, the navigation will be
-        // triggered on the next digest cycle that might never happen. In our case there is a constant server
-        // polling that triggers the digest cycle, so the navigation will be triggered, but it can lead to a
-        // noticeable delay. By manually triggering the navigation inside the Angular context, we ensure that
-        // the navigation is triggered immediately.
-        if ($scope.$$phase || $rootScope.$$phase) {
-            navigate();
-        } else {
-            $scope.$apply(navigate);
-        }
+        navigate('graphs-visualizations', paramsToParse);
     };
 
     /**
@@ -385,23 +370,11 @@ function SparqlEditorCtrl($rootScope,
      * @param yasr - YASR result renderer instance containing the current query context.
      */
     const navigateToReactodia = (yasr) => {
-        const paramsToParse = {
+        navigate('reactodia', {
             query: yasr.yasqe.getValue(),
             sameAs: yasr.yasqe.getSameAs(),
             inference: yasr.yasqe.getInfer(),
-        };
-
-        const navigate = function() {
-            $location.path('reactodia').search(paramsToParse);
-        };
-        // This button is embedded in the Yasr toolbar, which is outside the Angular context, so we need to
-        // manually trigger the navigation inside the Angular context. See the note in
-        // "navigateToGraphsVisualizations" for more details.
-        if ($scope.$$phase || $rootScope.$$phase) {
-            navigate();
-        } else {
-            $scope.$apply(navigate);
-        }
+        });
     };
 
     /**
@@ -749,7 +722,7 @@ function SparqlEditorCtrl($rootScope,
             skipLocationChangeHandler = true;
             // Use setTimeout to ensure that the navigation is triggered after the current call stack is cleared.
             setTimeout(() => {
-                navigateTo(newUrl)();
+                navigate(newUrl);
             });
         };
         confirmAbortQueries('view.sparql-editor.leave_page.run_queries.confirmation', handler, handler);

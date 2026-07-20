@@ -21,7 +21,7 @@ export class GraphExploreService implements Service {
    * @returns A Promise that resolves to the list of graph links.
    */
   async loadGraphForQuery(query: string, includeInferred?: boolean, sameAs?: boolean): Promise<GraphExploreLink[]> {
-    const defaultSettings = this.graphExploreContextService.getDefaultSettings();
+    const defaultSettings = this.graphExploreContextService.getSettings();
     const response = await this.graphExploreRestService.loadGraph({
       query,
       linksLimit: defaultSettings.linksLimit,
