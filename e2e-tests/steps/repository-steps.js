@@ -3,13 +3,17 @@ import {BaseSteps} from "./base-steps.js";
 
 export class RepositorySteps extends BaseSteps {
 
-    static visit() {
+    static visit(waitPageLoaded = true) {
         cy.intercept('/rest/locations').as('getLocations');
         cy.intercept(REPOSITORIES_URL + '/all').as('getRepositories');
         cy.visit('/repository');
-        RepositorySteps.waitLoader();
+        if (waitPageLoaded) {
+            RepositorySteps.waitLoader();
+        }
         cy.wait('@getLocations');
-        RepositorySteps.waitUntilRepositoriesPageIsLoaded();
+        if (waitPageLoaded) {
+            RepositorySteps.waitUntilRepositoriesPageIsLoaded();
+        }
     }
 
     static visitEditPage(repositoryId) {
@@ -62,6 +66,11 @@ export class RepositorySteps extends BaseSteps {
         return this.getRepositoriesList().find('.repository.active');
     }
 
+    static getRepositories() {
+        return RepositorySteps.getRepositoriesList()
+            .find('.repository');
+    }
+
     static getRepositoryFromList(repository) {
         RepositorySteps.waitLoader();
         return RepositorySteps.getRepositoriesList()
@@ -103,6 +112,38 @@ export class RepositorySteps extends BaseSteps {
             .should('be.visible')
             .and('not.be.disabled')
             .click();
+    }
+
+    static getRepositoryActions(repositoryId) {
+        return  RepositorySteps.getRepositoryFromList(repositoryId).find('.repository-actions');
+    }
+
+    static getCopyRepositoryButton(repositoryId) {
+        return RepositorySteps.getRepositoryActions(repositoryId).find('.copy-repository-btn');
+    }
+
+    static getEditRepositoryButton(repositoryId) {
+        return RepositorySteps.getRepositoryActions(repositoryId).find('.edit-repository-btn');
+    }
+
+    static getDownloadRepositoryConfigurationButton(repositoryId) {
+        return RepositorySteps.getRepositoryActions(repositoryId).find('.download-repository-config-btn');
+    }
+
+    static getRestartRepositoryButton(repositoryId) {
+        return RepositorySteps.getRepositoryActions(repositoryId).find('.restart-repository-btn');
+    }
+
+    static getDeleteRepositoryButton(repositoryId) {
+        return RepositorySteps.getRepositoryActions(repositoryId).find('.delete-repository-btn');
+    }
+
+    static getSetDefaultRepositoryButton(repositoryId) {
+        return RepositorySteps.getRepositoryActions(repositoryId).find('.pin-repository-btn');
+    }
+
+    static getPageButtons() {
+        return RepositorySteps.getRepositoriesPage().find('.btns-all');
     }
 
     static editRepository(repositoryId) {

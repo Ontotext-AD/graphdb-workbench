@@ -434,7 +434,7 @@ function LocationsAndRepositoriesCtrl($scope, $rootScope, $uibModal, toastr, $re
             return repositoriesFromLocation;
         }
 
-        return repositoriesFromLocation.filter((repo) => authorizationService.canReadRepo(repo));
+        return repositoriesFromLocation.filter((repo) => authorizationService.canReadRepo(repo) || authorizationService.canReadGqlRepo(repo));
     };
 
     $scope.isRepoManager = () => {

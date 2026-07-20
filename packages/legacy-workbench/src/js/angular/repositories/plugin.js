@@ -9,7 +9,7 @@ PluginRegistry.add('route', [
         'title': 'menu.repositories.label',
         'helpInfo': 'view.repositories.helpInfo',
         'documentationUrl': 'creating-a-repository.html',
-        'allowAuthorities': ['READ_REPO_{repoId}'],
+        'allowAuthorities': ['READ_REPO_{repoId}', 'READ_REPO_{repoId}:GRAPHQL'],
     }, {
         'url': '/repository/create',
         'module': 'graphdb.framework.repositories',
