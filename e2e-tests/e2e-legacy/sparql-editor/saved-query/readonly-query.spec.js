@@ -32,7 +32,7 @@ describe('Readonly saved query', () => {
     });
 
     it('Should not allow modifying a saved query if it is readonly', () => {
-        SparqlEditorSteps.visitSparqlEditorPage()
+        SparqlEditorSteps.visitSparqlEditorPage();
         // Given: There is a public saved query created by a user.
         LoginSteps.loginWithUser(USER_NAME, PASSWORD);
         YasguiSteps.getYasgui().should('be.visible');
