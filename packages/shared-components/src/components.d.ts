@@ -399,11 +399,11 @@ export namespace Components {
      */
     interface TranslateLabel {
         /**
-          * Represents a label key.
+          * The translation label key.
          */
         "labelKey": string;
         /**
-          * Represents an array of translation parameters.
+          * The parameters passed to the translation.
           * @default []
          */
         "translationParameters": TranslationParameter[];
@@ -1082,11 +1082,11 @@ declare namespace LocalJSX {
      */
     interface TranslateLabel {
         /**
-          * Represents a label key.
+          * The translation label key.
          */
         "labelKey"?: string;
         /**
-          * Represents an array of translation parameters.
+          * The parameters passed to the translation.
           * @default []
          */
         "translationParameters"?: TranslationParameter[];
