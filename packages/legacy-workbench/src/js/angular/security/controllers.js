@@ -378,9 +378,6 @@ securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 't
 
         $scope.canExtendExternalUserRole = authorizationService.canExtendExternalUsers();
         $scope.authSource = securityContextService.getSecurityConfig()?.getAuthSourceType();
-        $scope.isOpenIDEnabled = securityContextService.getSecurityConfig()?.isOpenIdEnabled();
-        $scope.isPasswordLoginEnabled = securityContextService.getSecurityConfig()?.isPasswordLoginEnabled();
-        $scope.additionalAuthSources = securityContextService.getSecurityConfig()?.additionalAuthSources.join(', ');
 
         $rootScope.$on('$translateChangeSuccess', function() {
             $scope.passwordPlaceholder = $translate.instant(passwordPlaceholder);
@@ -509,7 +506,7 @@ securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 't
         };
 
         $scope.readCheckDisabled = function(repoOrWildCard) {
-            if ($scope.canExtendExternalUserRole && !$scope.isRoleExtensionEnabled) {
+            if ($scope.canExtendExternalUserRole && !$scope.allowRoleExtension) {
                 return true;
             }
             return $scope.hasWritePermission(repoOrWildCard)
@@ -518,7 +515,7 @@ securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 't
         };
 
         $scope.writeCheckDisabled = function(repoOrWildCard) {
-            if ($scope.canExtendExternalUserRole && !$scope.isRoleExtensionEnabled) {
+            if ($scope.canExtendExternalUserRole && !$scope.allowRoleExtension) {
                 return true;
             }
             return $scope.hasManageRepositoryPermission(repoOrWildCard)
@@ -527,7 +524,7 @@ securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 't
         };
 
         $scope.manageRepoCheckDisabled = function() {
-            if ($scope.canExtendExternalUserRole && !$scope.isRoleExtensionEnabled) {
+            if ($scope.canExtendExternalUserRole && !$scope.allowRoleExtension) {
                 return true;
             }
             return $scope.userType === UserType.ADMIN
@@ -551,7 +548,7 @@ securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 't
                 return true;
             }
 
-            if ($scope.canExtendExternalUserRole && !$scope.isRoleExtensionEnabled) {
+            if ($scope.canExtendExternalUserRole && !$scope.allowRoleExtension) {
                 return true;
             }
 
@@ -624,7 +621,7 @@ securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 't
                 return false;
             }
 
-            if ($scope.isLocalAuthentication() || ($scope.canExtendExternalUserRole && $scope.isRoleExtensionEnabled)) {
+            if ($scope.isLocalAuthentication() || ($scope.canExtendExternalUserRole && $scope.allowRoleExtension)) {
                 $scope.setGrantedAuthorities();
             }
 
@@ -736,7 +733,14 @@ securityModule.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window'
          *
          * @type {boolean}
          */
-        $scope.isRoleExtensionEnabled = true;
+        $scope.allowRoleExtension = true;
+
+        /**
+         * Disablel role extension toggle for new users and user settings
+         *
+         * @type {boolean}
+         */
+        $scope.disableRoleExtension = true;
 
         if ($scope.canExtendExternalUserRole) {
             $scope.noPassword = true;
@@ -852,7 +856,14 @@ securityModule.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window
          *
          * @type {boolean}
          */
-        $scope.isRoleExtensionEnabled = false;
+        $scope.allowRoleExtension = false;
+
+        /**
+         * Disablel role extension toggle for new users and user settings
+         *
+         * @type {boolean}
+         */
+        $scope.disableRoleExtension = false;
 
         if (!authorizationService.hasRole(UserRole.ROLE_ADMIN)) {
             $location.url('settings');
@@ -867,7 +878,7 @@ securityModule.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window
                 $scope.grantedAuthorities = data.authorities.toUIModel();
                 $scope.customRoles = data.authorities.getCustomRoles();
                 $scope.user.isExtended = $scope.canExtendExternalUserRole && !!data.authorities.size();
-                $scope.isRoleExtensionEnabled = $scope.user?.isExtended ?? false;
+                $scope.allowRoleExtension = $scope.user?.isExtended ?? false;
             }).catch(function(data) {
                 const msg = getError(data);
                 toastr.error(msg, $translate.instant('common.error'));

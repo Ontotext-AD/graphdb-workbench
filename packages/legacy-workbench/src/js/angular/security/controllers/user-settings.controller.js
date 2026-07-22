@@ -110,7 +110,14 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
      *
      * @type {boolean}
      */
-    $scope.isRoleExtensionEnabled = false;
+    $scope.allowRoleExtension = false;
+
+    /**
+     * Disablel role extension toggle for new users and user settings
+     *
+     * @type {boolean}
+     */
+    $scope.disableRoleExtension = true;
 
     // =========================
     // Public functions

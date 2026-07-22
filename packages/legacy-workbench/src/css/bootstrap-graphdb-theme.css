@@ -1312,6 +1312,10 @@ input.switch:checked ~ label:hover:before {
     background-color: var(--gw-toggleswitch-checked-hover-background);
 }
 
+input.switch:checked:disabled ~ label:hover:before {
+    background-color: var(--gw-toggleswitch-disabled-background);
+}
+
 input.switch:checked ~ label:after {
     left: 1.05em;
     background-color: var(--gw-toggleswitch-handle-checked-background);
@@ -1319,6 +1323,14 @@ input.switch:checked ~ label:after {
 
 input.switch:checked ~ label:hover:after {
     background-color: var(--gw-toggleswitch-handle-checked-hover-background);
+}
+
+input.switch:disabled ~ label:before {
+    background-color: var(--gw-toggleswitch-disabled-background);
+}
+
+input.switch:disabled ~ label:before, input.switch:disabled ~ label:after {
+    cursor: not-allowed;
 }
 
 .card.active input.switch:checked ~ label:before {
