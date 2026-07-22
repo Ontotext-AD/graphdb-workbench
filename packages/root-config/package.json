@@ -28,7 +28,7 @@
     "ts-jest": "^29.2.0",
     "ts-node": "^10.9.0",
     "typescript": "^5.7.0",
-    "webpack-dev-server": "^5.2.2"
+    "webpack-dev-server": "^6.0.0"
   },
   "dependencies": {
     "dompurify": "^3.4.7",
