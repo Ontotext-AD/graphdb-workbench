@@ -446,7 +446,7 @@ describe('User and Access', () => {
             });
 
             // Fails for unknown reason only in CI
-            it.only('Can create user with different auth combinations', () => {
+            it('Can create user with different auth combinations', () => {
                 cy.wait('@getRepositories');
                 cy.wait('@getRepositories');
                 UserAndAccessSteps.getUsersCatalogContainer().should('be.visible');
