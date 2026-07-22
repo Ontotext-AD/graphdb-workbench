@@ -225,8 +225,9 @@
   },
   "deprecation-banner": {
     "solr": {
-      "header": "Solr Connector Deprecation Notice",
-      "content": "The Solr connector has been deprecated and will be removed in version 12 of GraphDB. If you are using it, please contact us via the available support channels to discuss the alternatives."
+      "content_1": "The Solr connector is deprecated and will be removed in GraphDB 12. If you use it,",
+      "content_2": " contact us ",
+      "content_3": "through the available support channels."
     }
   }
 }

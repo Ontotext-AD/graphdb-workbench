@@ -21,10 +21,6 @@ export class OntoDeprecationBanner {
       <Host>
         <div class="deprecation-banner">
           <div class="banner-content">
-            <h3 class="banner-header">
-              <slot name="header"></slot>
-            </h3>
-
             <div class="banner-message">
               <slot name="content"></slot>
             </div>

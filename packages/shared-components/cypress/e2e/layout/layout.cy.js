@@ -171,7 +171,7 @@ describe('Layout', () => {
     // THEN: I expect the Solr deprecation banner to be visible.
     DeprecationSteps.getDeprecationBanner()
       .should('be.visible')
-      .should('contain.text', 'Solr Connector Deprecation Notice');
+      .should('contain.text', 'The Solr connector is deprecated and will be removed in GraphDB 12');
 
     // WHEN: I click the close button.
     DeprecationSteps.closeBanner();
@@ -183,6 +183,6 @@ describe('Layout', () => {
     // THEN: I expect the Solr deprecation banner to be visible again.
     DeprecationSteps.getDeprecationBanner()
       .should('be.visible')
-      .should('contain.text', 'Solr Connector Deprecation Notice');
+      .should('contain.text', 'The Solr connector is deprecated and will be removed in GraphDB 12');
   });
 });
