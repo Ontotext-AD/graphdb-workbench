@@ -41,11 +41,11 @@
 
 <div ng-if="!isLocalAuthentication() && mode !== 'settings'" class="mb-2 external-user-info">
     <div class="alert alert-info">
-        <div class="auth-info" ng-if="isOpenIDEnabled && !isPasswordLoginEnabled">{{'security.using.external.auth.db.openid' | translate: {authDB: authorizationImplementation} }}</div>
-        <div class="auth-info" ng-if="isOpenIDEnabled && isPasswordLoginEnabled">{{'security.using.external.auth.db.openid.and.password' | translate: {authDB: authorizationImplementation} }}</div>
-        <div class="auth-info" ng-if="!isOpenIDEnabled">{{'security.using.external.auth.db' | translate: {authDB: authorizationImplementation} }}</div>
-        <div ng-if="canExtendExternalUserRole">{{'security.user.settings.modification.extend' | translate: {authDB: authorizationImplementation} }}</div>
-        <div ng-if="additionalAuthSources">{{'security.user.settings.modification.extend.external' | translate: {authDB: authorizationImplementation, additionalAuth: additionalAuthSources} }}</div>
+        <div class="auth-info" ng-if="isOpenIDEnabled && !isPasswordLoginEnabled">{{'security.using.external.auth.db.openid' | translate: {authSource: authSource} }}</div>
+        <div class="auth-info" ng-if="isOpenIDEnabled && isPasswordLoginEnabled">{{'security.using.external.auth.db.openid.and.password' | translate: {authSource: authSource} }}</div>
+        <div class="auth-info" ng-if="!isOpenIDEnabled">{{'security.using.external.auth.db' | translate: {authSource: authSource} }}</div>
+        <div ng-if="canExtendExternalUserRole">{{'security.user.settings.modification.extend' | translate: {authSource: authSource} }}</div>
+        <div ng-if="additionalAuthSources">{{'security.user.settings.modification.extend.external' | translate: {authSource: authSource, additionalAuth: additionalAuthSources} }}</div>
         <div ng-if="!canExtendExternalUserRole">{{'security.user.settings.modification' | translate}}</div>
         <div>{{'security.user.settings.user_role' | translate}}</div>
     </div>
@@ -89,7 +89,7 @@
                     </div>
                     <div ng-if="!isLocalAuthentication() && (mode !== 'edit' && canExtendExternalUserRole)" class="external-user-info">
                         <div class="alert alert-info">
-                            {{'security.authorization.db' | translate: {authDB: authorizationImplementation} }}
+                            {{'security.authorization.db' | translate: {authSource: authSource} }}
                         </div>
                     </div>
                 </div>
@@ -193,7 +193,7 @@
                                 <input id="enable-extend-btn" type="checkbox" class="switch" ng-model="isRoleExtensionEnabled"/>
                                 <label for="enable-extend-btn"></label>
                             </span>
-                            {{'security.user.extend_role_toggle' | translate: {authDB: authorizationImplementation} }}
+                            {{'security.user.extend_role_toggle' | translate: {authSource: authSource} }}
                         </div>
 
                         <h5 class="mb-0">{{'security.user.role' | translate}}</h5>
@@ -357,6 +357,3 @@
                            ng-custom-element
                            ngce-on-close_dialog="onDialogClose($event)"></onto-cookie-policy-dialog>
 <div onto-loader size="50" ng-show="loader"></div>
-
-
-

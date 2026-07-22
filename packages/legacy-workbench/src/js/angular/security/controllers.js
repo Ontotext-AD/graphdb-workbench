@@ -52,7 +52,7 @@ securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$windo
         $scope.isSecurityToggleAllowed = securityContextService.getSecurityConfig()?.isSecurityToggleAllowed();
         $scope.isPasswordLoginEnabled = securityContextService.getSecurityConfig()?.isPasswordLoginEnabled();
         $scope.isOpenIDEnabled = securityContextService.getSecurityConfig()?.isOpenIdEnabled();
-        $scope.authorizationImplementation = securityContextService.getSecurityConfig()?.getAuthenticationImplementation();
+        $scope.authSource = securityContextService.getSecurityConfig()?.getAuthSourceType();
         $scope.canExtendExternalUserRole = authorizationService.canExtendExternalUsers();
         $scope.additionalAuthSources = securityContextService.getSecurityConfig()?.additionalAuthSources.join(', ');
         $scope.toggleState = {hovered: false};
@@ -88,20 +88,64 @@ securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$windo
             return authorizationService.hasFreeAccess();
         };
 
+        const canDeleteUser = (user) => {
+            if (user.canRemoveExtendedPermissions) {
+                return false;
+            }
+
+            if ($scope.canExtendExternalUserRole) {
+                return user.isExtended;
+            }
+
+            return !$scope.hasExternalAuth() && user.username !== 'admin';
+        };
+
+        const mapRepositoryRights = (repositories) => Object.entries(repositories).map(([repository, rights]) => {
+            let iconClass;
+            let tooltipKey;
+            if (rights.manage) {
+                iconClass = 'ri-folder-settings-line';
+                tooltipKey = 'security.has.manage.access';
+            } else if (rights.write) {
+                iconClass = 'ri-edit-line';
+                tooltipKey = 'security.has.write.access';
+            } else if (rights.read) {
+                iconClass = 'ri-eye-line';
+                tooltipKey = 'security.has.read.access';
+            }
+
+            return {
+                repository,
+                iconClass,
+                tooltipKey,
+                hasGraphqlAccess: rights.graphql,
+                graphqlTooltipKey: rights.write ? 'security.has.mutation_rights' : 'security.no.mutation_rights',
+            };
+        });
+
+        const createUserViewModel = (user) => {
+            const userType = user.getUserType();
+            const isExtended = $scope.canExtendExternalUserRole && !!user.authorities.size();
+            const viewModel = {
+                username: user.username,
+                dateCreated: user.dateCreated,
+                userTypeDescription: user.getUserTypeDescription(),
+                repositoryRights: mapRepositoryRights(user.authorities.getRepositoriesPermissions()),
+                customRoles: user.authorities.getCustomRoles(),
+                isExtended,
+                showRepositoryRights: userType === UserType.USER,
+                showUnrestrictedRights: userType !== UserType.USER,
+                showPendingExternalLogin: $scope.canExtendExternalUserRole && !user.hasExternalLogin,
+                canRemoveExtendedPermissions: isExtended && user.hasExternalLogin,
+            };
+            viewModel.canDelete = canDeleteUser(viewModel);
+            return viewModel;
+        };
+
         $scope.getUsers = () => {
             return usersService.getUsers()
                 .then(function(data) {
-                    $scope.usersData = data.map((user) => ({
-                        username: user.username,
-                        dateCreated: user.dateCreated,
-                        userType: user.getUserType(),
-                        userTypeDescription: user.getUserTypeDescription(),
-                        repositories: user.authorities.getRepositoriesPermissions(),
-                        customRoles: user.authorities.getCustomRoles(),
-                        hasExternalLogin: user.hasExternalLogin,
-                        authorities: user.authorities,
-                        isExtended: $scope.canExtendExternalUserRole && !!user.authorities.size(),
-                    }));
+                    $scope.usersData = data.map(createUserViewModel);
                     $scope.loader = false;
                 }).catch(function(data) {
                     const msg = getError(data);
@@ -233,29 +277,20 @@ securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$windo
             $scope.toggleFreeAccess(true);
         };
 
-        $scope.canRemoveExtendedPermissions = (user) => $scope.canExtendExternalUserRole && user.isExtended && user.hasExternalLogin;
-
-        $scope.canDeleteUser = (user) => {
-            if ($scope.canRemoveExtendedPermissions(user)) {
-                return false;
-            }
-
-            if ($scope.canExtendExternalUserRole) {
-                return user.isExtended;
-            }
-
-            return !$scope.hasExternalAuth() && user.username !== 'admin';
-        };
-
+        /**
+         * Removes a user or the locally assigned permissions of an established external user.
+         *
+         * @param {object} user - User view model selected from the users table.
+         */
         $scope.removeUser = function(user) {
             let title = $translate.instant('common.confirm.delete');
             let message = $translate.instant('security.confirm.delete.user', {name: user.username});
             if ($scope.canExtendExternalUserRole) {
-                const canDowngradedUserPermissions = $scope.canRemoveExtendedPermissions(user);
+                const canDowngradedUserPermissions = user.canRemoveExtendedPermissions;
                 const dialogTitleKey = canDowngradedUserPermissions ? 'security.confirm.remove.extended.user.permissions.title' : 'security.confirm.delete.extended.user.title';
                 const dialogMessageKey = canDowngradedUserPermissions ? 'security.confirm.remove.extended.user.permissions.body' : 'security.confirm.delete.extended.user.body';
                 title = decodeHTML($translate.instant(dialogTitleKey, {name: user.username}));
-                message = decodeHTML($translate.instant(dialogMessageKey, {name: user.username, authDB: $scope.authorizationImplementation}));
+                message = decodeHTML($translate.instant(dialogMessageKey, {name: user.username, authSource: $scope.authSource}));
             }
             ModalService.openSimpleModal({
                 title,
@@ -342,7 +377,7 @@ securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 't
         const securityContextService = service(SecurityContextService);
 
         $scope.canExtendExternalUserRole = authorizationService.canExtendExternalUsers();
-        $scope.authorizationImplementation = securityContextService.getSecurityConfig()?.getAuthenticationImplementation();
+        $scope.authSource = securityContextService.getSecurityConfig()?.getAuthSourceType();
         $scope.isOpenIDEnabled = securityContextService.getSecurityConfig()?.isOpenIdEnabled();
         $scope.isPasswordLoginEnabled = securityContextService.getSecurityConfig()?.isPasswordLoginEnabled();
         $scope.additionalAuthSources = securityContextService.getSecurityConfig()?.additionalAuthSources.join(', ');
@@ -696,6 +731,11 @@ securityModule.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window'
             },
         };
 
+        /**
+         * Controls whether role and repository permission editing is enabled for an external user.
+         *
+         * @type {boolean}
+         */
         $scope.isRoleExtensionEnabled = true;
 
         if ($scope.canExtendExternalUserRole) {
@@ -807,6 +847,11 @@ securityModule.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window
             'DEFAULT_VIS_GRAPH_SCHEMA': true,
         };
 
+        /**
+         * Controls whether role and repository permission editing is enabled for an external user.
+         *
+         * @type {boolean}
+         */
         $scope.isRoleExtensionEnabled = false;
 
         if (!authorizationService.hasRole(UserRole.ROLE_ADMIN)) {

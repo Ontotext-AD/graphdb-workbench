@@ -3,14 +3,14 @@ import {AuthSettings} from './auth-settings';
 import {OpenidSecurityConfig} from './openid-security-config';
 import {mapAuthSettingsResponseToModel} from '../../services/domain/security/mappers/auth-settings.mapper';
 import {AuthSettingsResponseModel} from './response-models';
-import {AuthenticationImplementation} from './authentication-implementation';
+import {AuthSourceType} from './auth-source-type';
 import {toEnum} from '../../services/utils';
 
 /**
  * Represents the security configuration for the application.
  */
 export class SecurityConfig extends Model<SecurityConfig> {
-  authImplementation: AuthenticationImplementation;
+  authImplementation: AuthSourceType;
   enabled?: boolean;
   passwordLoginEnabled?: boolean;
   freeAccess: AuthSettings;
@@ -21,11 +21,11 @@ export class SecurityConfig extends Model<SecurityConfig> {
   hasExternalAuth?: boolean;
   openidSecurityConfig?: OpenidSecurityConfig;
   allowSecurityToggle?: boolean;
-  additionalAuthSources: AuthenticationImplementation[];
+  additionalAuthSources: AuthSourceType[];
 
   constructor(config: Partial<SecurityConfig & {methodSettings: {openid: Partial<OpenidSecurityConfig>}}>) {
     super();
-    this.authImplementation = toEnum(AuthenticationImplementation, config.authImplementation ?? AuthenticationImplementation.LOCAL);
+    this.authImplementation = toEnum(AuthSourceType, config.authImplementation ?? AuthSourceType.LOCAL);
     this.enabled = config.enabled;
     this.passwordLoginEnabled = config.passwordLoginEnabled;
     this.freeAccess = mapAuthSettingsResponseToModel(config.freeAccess as unknown as Partial<AuthSettingsResponseModel>);
@@ -37,7 +37,7 @@ export class SecurityConfig extends Model<SecurityConfig> {
     if (config.methodSettings?.openid) {
       this.openidSecurityConfig = new OpenidSecurityConfig(config.methodSettings?.openid);
     }
-    this.additionalAuthSources = (config.additionalAuthSources ?? []).map((source) => toEnum(AuthenticationImplementation, source));
+    this.additionalAuthSources = (config.additionalAuthSources ?? []).map((source) => toEnum(AuthSourceType, source));
   }
 
   isEnabled() {
@@ -70,7 +70,7 @@ export class SecurityConfig extends Model<SecurityConfig> {
     return !!this.additionalAuthSources.length;
   }
 
-  getAuthenticationImplementation(): AuthenticationImplementation {
+  getAuthSourceType(): AuthSourceType {
     return this.authImplementation;
   }
 
@@ -83,6 +83,6 @@ export class SecurityConfig extends Model<SecurityConfig> {
   }
 
   hasLocalAdditionalAuthSources(): boolean {
-    return this.additionalAuthSources.includes(AuthenticationImplementation.LOCAL);
+    return this.additionalAuthSources.includes(AuthSourceType.LOCAL);
   }
 }

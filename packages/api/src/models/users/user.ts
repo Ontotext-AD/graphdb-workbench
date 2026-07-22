@@ -19,7 +19,11 @@ export class User extends Model<User> {
   appSettings: AppSettings;
   dateCreated: Date | null;
   gptThreads: string[];
-  // Shows if user has ever logged in when GDB is configured with external auth database (OAuth,LDAP)
+  /**
+   * Whether the user has logged in through an external authentication source at least once.
+   *
+   * On the first external login, GraphDB adds the user to its local user pool, where application settings are stored.
+   */
   hasExternalLogin: boolean;
 
   constructor(data?: Partial<User>) {
