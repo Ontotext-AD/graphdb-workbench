@@ -131,9 +131,6 @@ export class OntoLayout {
         {!this.isEmbedded &&<div class="wb-header">
           {!this.hideSolrDeprecationBanner &&
             <onto-deprecation-banner class='onto-deprecation-banner' onCloseBanner={this.onSolrDeprecationBannerClosedHandler()}>
-              <span slot='header'>
-                <translate-label labelKey='deprecation-banner.solr.header'></translate-label>
-              </span>
               <span slot='content'>
                 <translate-label labelKey='deprecation-banner.solr.content'></translate-label>
               </span>
