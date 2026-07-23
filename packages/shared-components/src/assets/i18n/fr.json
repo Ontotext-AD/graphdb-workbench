@@ -225,9 +225,7 @@
   },
   "deprecation-banner": {
     "solr": {
-      "content_1": "Le connecteur Solr est obsolète et sera supprimé dans GraphDB 12. Si vous l'utilisez,",
-      "content_2": " contactez-nous ",
-      "content_3": "via les canaux d'assistance disponibles."
+      "content": "Le connecteur Solr est obsolète et sera supprimé dans GraphDB 12. Si vous l'utilisez, <b>contactez-nous</b> via les canaux d'assistance disponibles."
     }
   }
 }

@@ -132,9 +132,7 @@ export class OntoLayout {
           {!this.hideSolrDeprecationBanner &&
             <onto-deprecation-banner class='onto-deprecation-banner' onCloseBanner={this.onSolrDeprecationBannerClosedHandler()}>
               <span slot='content'>
-                <translate-label labelKey='deprecation-banner.solr.content_1'></translate-label>
-                <b><translate-label labelKey='deprecation-banner.solr.content_2'></translate-label></b>
-                <translate-label labelKey='deprecation-banner.solr.content_3'></translate-label>
+                <translate-label labelKey='deprecation-banner.solr.content'></translate-label>
               </span>
             </onto-deprecation-banner>
           }
