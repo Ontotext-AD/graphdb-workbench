@@ -11,6 +11,14 @@ export class BaseSteps {
     return cy.get('.redirect-url');
   }
 
+  static verifyRedirectUrl(path) {
+    const origin = Cypress.config('baseUrl').replace(/\/$/, '');
+    cy.document().then((document) => {
+      const basePath = document.querySelector('base')?.getAttribute('href') ?? '/';
+      this.getRedirectUrl().should('have.text', `redirect to ${origin}${basePath}${path}`);
+    });
+  }
+
   static reloadPage(force = false) {
     cy.reload(force);
   }
