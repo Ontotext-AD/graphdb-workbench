@@ -5,7 +5,7 @@ import {
   getCurrentRoute,
   REPOSITORY_ID_PARAM,
   RepositoryContextService,
-  WindowService,
+  WindowService, isLoginPage,
 } from '@ontotext/workbench-api';
 import {ConfirmationProviderService} from './dialog/confirmation-provider.service';
 import {TranslocoService} from '@jsverse/transloco';
@@ -47,6 +47,10 @@ export class RepositoryUrlSyncService {
     const isSameRepository = !!selectedRepository && repositoryIdParam === selectedRepository.id;
 
     try {
+      // --- if on login page, do nothing
+      if (isLoginPage()) {
+        return;
+      }
       // --- no selected repository ---
 
       if (!selectedRepository) {
