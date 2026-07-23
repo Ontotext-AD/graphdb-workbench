@@ -37,6 +37,18 @@ export class SecurityStubs {
             statusCode: 200
         }).as('getAdminUser');
     }
+    static stubGetLDAPAdminUser() {
+        cy.intercept('GET', 'rest/security/users/admin', {
+            fixture: '/security/get-ldap-admin-user.json',
+            statusCode: 200
+        }).as('getAdminUser');
+    }
+    static stubGetOpenIDAdminUser() {
+        cy.intercept('GET', 'rest/security/users/admin', {
+            fixture: '/security/get-openid-admin-user.json',
+            statusCode: 200
+        }).as('getAdminUser');
+    }
 
     /**
      * Disables the globally configured interceptor for the GET request to get the admin user.

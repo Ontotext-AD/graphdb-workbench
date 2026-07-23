@@ -29,6 +29,42 @@ Cypress.Commands.add('loginAsAdmin', () => {
     });
 });
 
+Cypress.Commands.add('loginAsLDAPAdmin', () => {
+    return cy.request({
+        method: 'POST',
+        url: '/rest/login',
+        body: {
+            username: 'onto-user',
+            password: 'ontotext',
+        },
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        failOnStatusCode: true,
+    }).then((response) => {
+        const authHeader = response.headers['authorization'];
+        Cypress.env('adminToken', authHeader);
+    });
+});
+
+Cypress.Commands.add('loginAsOpenIDAdmin', () => {
+    return cy.request({
+        method: 'POST',
+        url: '/rest/login',
+        body: {
+            username: 'admin-fusion@ontotext.com',
+            password: 'ontotext',
+        },
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        failOnStatusCode: true,
+    }).then((response) => {
+        const authHeader = response.headers['authorization'];
+        Cypress.env('adminToken', authHeader);
+    });
+});
+
 Cypress.Commands.add('switchOffSecurity', (secured = false) => {
     let headers = {'Content-Type': 'application/json'};
     if (secured) {
