@@ -35,7 +35,7 @@ export const ProviderResponseMocks = {
     },
     dateCreated: 1754309863184,
     gptThreads: [],
-    external: false
+    hasExternalLogin: false
   } as UserResponse,
 
   loginResponse: {

@@ -350,6 +350,11 @@ export class AuthorizationService implements Service {
     return this.hasRole(Authority.ROLE_ADMIN) || this.hasRole(Authority.ROLE_REPO_MANAGER);
   }
 
+  canExtendExternalUsers(): boolean {
+    const config = this.getSecurityConfig();
+    return !!config && config.hasAdditionalAuthSource() && config.hasLocalAdditionalAuthSources();
+  }
+
   private resolveAuthorities(authoritiesList?: string[]) {
     // If no authorities list is provided, return empty array.
     if (!authoritiesList) {
