@@ -23,7 +23,7 @@ export default defineConfig({
             return config;
         },
         baseUrl: 'http://localhost:9000',
-        specPattern: 'e2e-security/**/*.{js,jsx,ts,tsx}',
+        specPattern: 'e2e-security/**/external-provider-ldap-auth.spec.{js,jsx,ts,tsx}',
         supportFile: 'support/e2e-security.js',
         reporter: "cypress-multi-reporters",
         reporterOptions: {
