@@ -1,5 +1,8 @@
 import {Component, Host, h, Prop, State} from '@stencil/core';
-import {TranslationParameter} from '@ontotext/workbench-api';
+import {
+  TranslationParameter,
+  HtmlUtil,
+} from '@ontotext/workbench-api';
 import {TranslationService} from '../../services/translation.service';
 
 /**
@@ -17,23 +20,28 @@ import {TranslationService} from '../../services/translation.service';
   styleUrl: 'translate-label.scss',
 })
 export class TranslateLabel {
-
   private unsubscribeTranslationChanged: (() => void) | null = null;
 
   /**
-   * Represents a label key.
+   * The translation label key.
    */
   @Prop() labelKey: string;
 
   /**
-   * Represents an array of translation parameters.
+   * The parameters passed to the translation.
    */
   @Prop() translationParameters: TranslationParameter[] = [];
 
   @State() translatedLabel: string;
 
-  connectedCallback() {
-    this.unsubscribeTranslationChanged = TranslationService.onTranslate(this.labelKey, this.translationParameters, (translatedLabel) => this.translatedLabel = translatedLabel);
+  connectedCallback(): void {
+    this.unsubscribeTranslationChanged = TranslationService.onTranslate(
+      this.labelKey,
+      this.translationParameters,
+      (translatedLabel) => {
+        this.translatedLabel = HtmlUtil.sanitize(translatedLabel);
+      }
+    );
   }
 
   disconnectedCallback(): void {
@@ -44,10 +52,6 @@ export class TranslateLabel {
   }
 
   render() {
-    return (
-      <Host>
-        {this.translatedLabel}
-      </Host>
-    );
+    return <Host innerHTML={this.translatedLabel}></Host>;
   }
 }
