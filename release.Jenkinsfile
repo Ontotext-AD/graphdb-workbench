@@ -3,7 +3,7 @@
 def performCleanup = {
     dir("${env.WORKSPACE}") {
         sh "git restore .npmrc || git checkout HEAD -- .npmrc"
-        dir("test-cypress") {
+        dir("e2e-tests") {
             sh "rm -f .npmrc"
         }
     }
