@@ -708,6 +708,7 @@ function SparqlEditorCtrl($scope,
         });
     });
 
+    let pendingReplayTimer = null;
     const locationChangeHandler = (eventPayload) => {
         if (internallyReloaded || skipLocationChangeHandler) {
             internallyReloaded = false;
@@ -721,7 +722,8 @@ function SparqlEditorCtrl($scope,
         const handler = () => {
             skipLocationChangeHandler = true;
             // Use setTimeout to ensure that the navigation is triggered after the current call stack is cleared.
-            setTimeout(() => {
+            // Cancel it on destroy to avoid re-navigation in the timeout, after the component has been destroyed
+            pendingReplayTimer = setTimeout(() => {
                 navigate(newUrl);
             });
         };
@@ -733,6 +735,7 @@ function SparqlEditorCtrl($scope,
     );
 
     const removeAllListeners = () => {
+        clearTimeout(pendingReplayTimer);
         subscriptions.forEach((subscription) => subscription());
         window.removeEventListener('beforeunload', beforeunloadHandler);
     };
