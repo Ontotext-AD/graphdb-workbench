@@ -21,6 +21,7 @@ import {
     User,
     UsersService,
 } from '@ontotext/workbench-api';
+import {decodeHTML} from '../../../app';
 
 const modules = [
     'ngCookies',
@@ -49,6 +50,11 @@ securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$windo
 
         $scope.loader = true;
         $scope.isSecurityToggleAllowed = securityContextService.getSecurityConfig()?.isSecurityToggleAllowed();
+        $scope.isPasswordLoginEnabled = securityContextService.getSecurityConfig()?.isPasswordLoginEnabled();
+        $scope.isOpenIDEnabled = securityContextService.getSecurityConfig()?.isOpenIdEnabled();
+        $scope.authSource = securityContextService.getSecurityConfig()?.getAuthSourceType();
+        $scope.canExtendExternalUserRole = authorizationService.canExtendExternalUsers();
+        $scope.additionalAuthSources = securityContextService.getSecurityConfig()?.additionalAuthSources.join(', ');
         $scope.toggleState = {hovered: false};
 
         const getSecurityToggleTooltip = () => {
@@ -77,23 +83,69 @@ securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$windo
         $scope.hasExternalAuth = function() {
             return $jwtAuth.hasExternalAuth();
         };
-        $scope.getAuthImplementation = function() {
-            return $jwtAuth.getAuthImplementation();
-        };
+
         $scope.freeAccessEnabled = function() {
             return authorizationService.hasFreeAccess();
         };
+
+        const canDeleteUser = (user) => {
+            if (user.canRemoveExtendedPermissions) {
+                return false;
+            }
+
+            if ($scope.canExtendExternalUserRole) {
+                return user.isExtended;
+            }
+
+            return !$scope.hasExternalAuth() && user.username !== 'admin';
+        };
+
+        const mapRepositoryRights = (repositories) => Object.entries(repositories).map(([repository, rights]) => {
+            let iconClass;
+            let tooltipKey;
+            if (rights.manage) {
+                iconClass = 'ri-folder-settings-line';
+                tooltipKey = 'security.has.manage.access';
+            } else if (rights.write) {
+                iconClass = 'ri-edit-line';
+                tooltipKey = 'security.has.write.access';
+            } else if (rights.read) {
+                iconClass = 'ri-eye-line';
+                tooltipKey = 'security.has.read.access';
+            }
+
+            return {
+                repository,
+                iconClass,
+                tooltipKey,
+                hasGraphqlAccess: rights.graphql,
+                graphqlTooltipKey: rights.write ? 'security.has.mutation_rights' : 'security.no.mutation_rights',
+            };
+        });
+
+        const createUserViewModel = (user) => {
+            const userType = user.getUserType();
+            const isExtended = $scope.canExtendExternalUserRole && !!user.authorities.size();
+            const viewModel = {
+                username: user.username,
+                dateCreated: user.dateCreated,
+                userTypeDescription: user.getUserTypeDescription(),
+                repositoryRights: mapRepositoryRights(user.authorities.getRepositoriesPermissions()),
+                customRoles: user.authorities.getCustomRoles(),
+                isExtended,
+                showRepositoryRights: userType === UserType.USER,
+                showUnrestrictedRights: userType !== UserType.USER,
+                showPendingExternalLogin: $scope.canExtendExternalUserRole && !user.hasExternalLogin,
+                canRemoveExtendedPermissions: isExtended && user.hasExternalLogin,
+            };
+            viewModel.canDelete = canDeleteUser(viewModel);
+            return viewModel;
+        };
+
         $scope.getUsers = () => {
             return usersService.getUsers()
                 .then(function(data) {
-                    $scope.usersData = data.map((user) => ({
-                        username: user.username,
-                        dateCreated: user.dateCreated,
-                        userType: user.getUserType(),
-                        userTypeDescription: user.getUserTypeDescription(),
-                        repositories: user.authorities.getRepositoriesPermissions(),
-                        customRoles: user.authorities.getCustomRoles(),
-                    }));
+                    $scope.usersData = data.map(createUserViewModel);
                     $scope.loader = false;
                 }).catch(function(data) {
                     const msg = getError(data);
@@ -225,14 +277,28 @@ securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$windo
             $scope.toggleFreeAccess(true);
         };
 
-        $scope.removeUser = function(username) {
+        /**
+         * Removes a user or the locally assigned permissions of an established external user.
+         *
+         * @param {object} user - User view model selected from the users table.
+         */
+        $scope.removeUser = function(user) {
+            let title = $translate.instant('common.confirm.delete');
+            let message = $translate.instant('security.confirm.delete.user', {name: user.username});
+            if ($scope.canExtendExternalUserRole) {
+                const canDowngradedUserPermissions = user.canRemoveExtendedPermissions;
+                const dialogTitleKey = canDowngradedUserPermissions ? 'security.confirm.remove.extended.user.permissions.title' : 'security.confirm.delete.extended.user.title';
+                const dialogMessageKey = canDowngradedUserPermissions ? 'security.confirm.remove.extended.user.permissions.body' : 'security.confirm.delete.extended.user.body';
+                title = decodeHTML($translate.instant(dialogTitleKey, {name: user.username}));
+                message = decodeHTML($translate.instant(dialogMessageKey, {name: user.username, authSource: $scope.authSource}));
+            }
             ModalService.openSimpleModal({
-                title: $translate.instant('common.confirm.delete'),
-                message: $translate.instant('security.confirm.delete.user', {name: username}),
+                title,
+                message,
                 warning: true,
             }).result.then(function() {
                 $scope.loader = true;
-                usersService.deleteUser(username)
+                usersService.deleteUser(user.username)
                     .then(() => $scope.getUsers())
                     .catch((data) => {
                         const msg = getError(data);
@@ -308,6 +374,10 @@ securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 't
     function($rootScope, $scope, $http, toastr, $window, $timeout, $location, $jwtAuth, $translate, passwordPlaceholder) {
         const authorizationService = service(AuthorizationService);
         const repositoryAuthorityService = service(RepositoryAuthorityService);
+        const securityContextService = service(SecurityContextService);
+
+        $scope.canExtendExternalUserRole = authorizationService.canExtendExternalUsers();
+        $scope.authSource = securityContextService.getSecurityConfig()?.getAuthSourceType();
 
         $rootScope.$on('$translateChangeSuccess', function() {
             $scope.passwordPlaceholder = $translate.instant(passwordPlaceholder);
@@ -436,18 +506,27 @@ securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 't
         };
 
         $scope.readCheckDisabled = function(repoOrWildCard) {
+            if ($scope.canExtendExternalUserRole && !$scope.allowRoleExtension) {
+                return true;
+            }
             return $scope.hasWritePermission(repoOrWildCard)
                 || repoOrWildCard.id !== SYSTEM_REPO && repoOrWildCard !== '*' && $scope.grantedAuthorities.READ_REPO['*']
                 || $scope.hasEditRestrictions();
         };
 
         $scope.writeCheckDisabled = function(repoOrWildCard) {
+            if ($scope.canExtendExternalUserRole && !$scope.allowRoleExtension) {
+                return true;
+            }
             return $scope.hasManageRepositoryPermission(repoOrWildCard)
                 || repoOrWildCard.id !== SYSTEM_REPO && repoOrWildCard !== '*' && $scope.grantedAuthorities.WRITE_REPO['*']
                 || $scope.hasEditRestrictions();
         };
 
         $scope.manageRepoCheckDisabled = function() {
+            if ($scope.canExtendExternalUserRole && !$scope.allowRoleExtension) {
+                return true;
+            }
             return $scope.userType === UserType.ADMIN
                 || $scope.userType === UserType.REPO_MANAGER
                 || $scope.hasEditRestrictions();
@@ -466,6 +545,10 @@ securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 't
             }
 
             if ($scope.hasEditRestrictions()) {
+                return true;
+            }
+
+            if ($scope.canExtendExternalUserRole && !$scope.allowRoleExtension) {
                 return true;
             }
 
@@ -538,7 +621,7 @@ securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 't
                 return false;
             }
 
-            if ($scope.isLocalAuthentication()) {
+            if ($scope.isLocalAuthentication() || ($scope.canExtendExternalUserRole && $scope.allowRoleExtension)) {
                 $scope.setGrantedAuthorities();
             }
 
@@ -645,8 +728,27 @@ securityModule.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window'
             },
         };
 
+        /**
+         * Controls whether role and repository permission editing is enabled for an external user.
+         *
+         * @type {boolean}
+         */
+        $scope.allowRoleExtension = true;
+
+        /**
+         * Disablel role extension toggle for new users and user settings
+         *
+         * @type {boolean}
+         */
+        $scope.disableRoleExtension = true;
+
+        if ($scope.canExtendExternalUserRole) {
+            $scope.noPassword = true;
+            $scope.setNoPassword();
+        }
+
         $scope.submit = function() {
-            if ($scope.noPassword && $scope.userType === UserType.ADMIN) {
+            if (!$scope.canExtendExternalUserRole && $scope.noPassword && $scope.userType === UserType.ADMIN) {
                 ModalService.openSimpleModal({
                     title: $translate.instant('security.create.admin'),
                     message: $translate.instant('security.admin.login.warning'),
@@ -749,6 +851,20 @@ securityModule.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window
             'DEFAULT_VIS_GRAPH_SCHEMA': true,
         };
 
+        /**
+         * Controls whether role and repository permission editing is enabled for an external user.
+         *
+         * @type {boolean}
+         */
+        $scope.allowRoleExtension = false;
+
+        /**
+         * Disablel role extension toggle for new users and user settings
+         *
+         * @type {boolean}
+         */
+        $scope.disableRoleExtension = false;
+
         if (!authorizationService.hasRole(UserRole.ROLE_ADMIN)) {
             $location.url('settings');
         }
@@ -757,11 +873,12 @@ securityModule.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window
                 $scope.user = {username: data.username};
                 $scope.user.password = '';
                 $scope.user.confirmpassword = '';
-                $scope.user.external = data.external;
                 $scope.user.appSettings = data.appSettings || defaultUserSettings;
                 $scope.userType = data.getUserType();
                 $scope.grantedAuthorities = data.authorities.toUIModel();
                 $scope.customRoles = data.authorities.getCustomRoles();
+                $scope.user.isExtended = $scope.canExtendExternalUserRole && !!data.authorities.size();
+                $scope.allowRoleExtension = $scope.user?.isExtended ?? false;
             }).catch(function(data) {
                 const msg = getError(data);
                 toastr.error(msg, $translate.instant('common.error'));
@@ -771,7 +888,7 @@ securityModule.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window
         $scope.getUserData();
 
         $scope.submit = function() {
-            if ($scope.noPassword && $scope.userType === UserType.ADMIN) {
+            if (!$scope.canExtendExternalUserRole && $scope.noPassword && $scope.userType === UserType.ADMIN) {
                 ModalService.openSimpleModal({
                     title: $translate.instant('security.save.admin.settings'),
                     message: $translate.instant('security.admin.pass.unset'),

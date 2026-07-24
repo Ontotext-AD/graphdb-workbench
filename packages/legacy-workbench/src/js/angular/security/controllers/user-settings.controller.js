@@ -105,6 +105,20 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
      */
     $scope.showCookieConsentModal = false;
 
+    /**
+     * Controls whether role and repository permission editing is enabled for an external user.
+     *
+     * @type {boolean}
+     */
+    $scope.allowRoleExtension = false;
+
+    /**
+     * Disablel role extension toggle for new users and user settings
+     *
+     * @type {boolean}
+     */
+    $scope.disableRoleExtension = true;
+
     // =========================
     // Public functions
     // =========================

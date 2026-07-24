@@ -319,6 +319,10 @@ h3 [class^=icon-] {
     padding: 1em;
 }
 
+.alert.compact {
+  padding: 0.5rem 0.75rem 0.5rem 3rem;
+}
+
 .alert-warning {
     color: var(--gw-message-warning-color);
     background-color: var(--gw-message-warning-background);
