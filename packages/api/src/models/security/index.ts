@@ -1,6 +1,7 @@
 export * from './authentication-type';
 export * from './authenticated-user';
 export * from './security-config';
+export * from './auth-source-type';
 export * from './authorization/authority';
 export * from './authorization/authority-list';
 export * from './restricted-pages';

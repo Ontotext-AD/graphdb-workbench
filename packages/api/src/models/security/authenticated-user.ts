@@ -28,7 +28,6 @@ export class AuthenticatedUser extends Model<AuthenticatedUser> {
       username: this.username,
       authorities: this.authorities,
       appSettings: this.appSettings,
-      external: this.external,
     });
   }
 
@@ -41,7 +40,6 @@ export class AuthenticatedUser extends Model<AuthenticatedUser> {
       username: user.username,
       authorities: user.authorities,
       appSettings: user.appSettings,
-      external: user.external,
     });
   }
 

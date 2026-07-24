@@ -21,7 +21,7 @@ describe('Welcome', () => {
         cy.deleteRepository(repositoryId);
     });
 
-    it.only('Should shows welcome steps', () => {
+    it('Should shows welcome steps', () => {
         GuideDialogSteps.assertDialogWithTitleIsVisible('Welcome to Welcome — 1/2');
         GuideDialogSteps.assertDialogWithContentIsVisible('Throughout the guide you will see boxes like this one that will provide instructions on what to do.');
         GuideDialogSteps.clickOnNextButton();
