@@ -748,8 +748,8 @@ function GraphsVisualizationsCtrl(
 
     const loadGraphForQuery = (queryString, sameAsParam, inferredParam) => {
         const settings = getSettings();
-        const sendSameAs = (sameAsParam === undefined) ? (settings['sameAsState']) : sameAsParam === true;
-        const sendInferred = (inferredParam === undefined) ? (settings['includeInferred']) : inferredParam === true;
+        const sendSameAs = (sameAsParam === undefined) ? (settings['sameAsState']) : sameAsParam === 'true';
+        const sendInferred = (inferredParam === undefined) ? (settings['includeInferred']) : inferredParam === 'true';
         $scope.loading = true;
         GraphDataRestService.updateGraph({
             query: queryString,
