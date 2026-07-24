@@ -75,10 +75,14 @@ yasgui-component .yasgui-toolbar .btn-orientation {
         background-color: var(--gw-button-secondary-background) !important;
         border-color: var(--gw-button-secondary-border-color) !important;
     }
+
+    .cm-comment {
+        color: var(--gw-neutral-300);
+    }
 }
 
 /*----------------------------------------*/
-/*           Yasqe autocomplete            */
+/*           Yasqe autocomplete           */
 /*----------------------------------------*/
 .CodeMirror-hints {
     border: 1px solid var(--gw-autocomplete-border-color);
@@ -751,6 +755,10 @@ yasgui-component .yasr #explainPlanQuery {
 yasgui-component .yasr .explain-plan-container {
     background-color:  var(--gw-panel-background);
     border: 1px solid var(--gw-dialog-border-color);
+
+    .cm-comment {
+        color: var(--gw-neutral-300);
+    }
 }
 
 yasgui-component .yasr .yasr-header-replacement {
