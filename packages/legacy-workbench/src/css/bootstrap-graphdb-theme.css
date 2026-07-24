@@ -1101,14 +1101,16 @@ fieldset {
 
 /* Override checkbox and radio button styles because they inherit their look from the OS which makes them ugly and
 unresponsive to our theme. */
-input[type="checkbox"],
-input[type="radio"] {
+/*-------------------------------------------------------------
+    Checkbox
+-------------------------------------------------------------*/
+input[type=checkbox] {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    color: var(--gw-form-field-color);
-    background-color: var(--gw-form-field-background);
-    border: 1px solid var(--gw-form-field-border-color);
+    color: var(--gw-checkbox-color);
+    background-color: var(--gw-checkbox-background);
+    border: 1px solid var(--gw-checkbox-border-color);
     width: 1em;
     height: 1em;
     display: inline-block;
@@ -1116,36 +1118,18 @@ input[type="radio"] {
     cursor: pointer;
 }
 
-input[type="radio"] {
-    border-radius: 50%;
+input[type=checkbox]:hover {
+    border-color: var(--gw-checkbox-hover-border-color);
 }
 
-input[type="checkbox"]:checked {
-    background-color: var(--gw-primary-base);
-    border-color: var(--gw-primary-base);
+input[type=checkbox]:hover:checked {
+    background-color: var(--gw-checkbox-checked-hover-background);
+    border-color: var(--gw-checkbox-checked-hover-border-color);
 }
 
-input[type="radio"]:checked {
-    border-color: var(--gw-primary-base);
-}
-
-input[type="checkbox"]:checked::after {
-    content: "\2713"; /* checkmark */
-    display: block;
-    text-align: center;
-    color: var(--gw-body-background);
-    font-size: 0.8em;
-    line-height: 1.2;
-}
-
-input[type="radio"]:checked::after {
-    content: "";
-    display: block;
-    width: 0.5em;
-    height: 0.5em;
-    border-radius: 50%;
-    background-color: var(--gw-primary-base);
-    margin: 0.2em;
+input[type=checkbox]:checked {
+    background-color: var(--gw-checkbox-checked-background);
+    border-color: var(--gw-checkbox-checked-border-color);
 }
 
 input[type=checkbox]:checked:disabled {
@@ -1153,9 +1137,91 @@ input[type=checkbox]:checked:disabled {
     border-color: var(--gw-checkbox-checked-disabled-border-color);
 }
 
-    /*-------------------------------------------------------------
-        List groups
-    -------------------------------------------------------------*/
+input[type=checkbox]:disabled {
+    background-color: var(--gw-checkbox-disabled-background);
+}
+
+input[type=checkbox]:checked::after {
+    content: "\2713"; /* checkmark */
+    display: block;
+    text-align: center;
+    color: var(--gw-checkbox-icon-checked-color);
+    font-size: 0.8em;
+    line-height: 1.2;
+}
+
+input[type=checkbox]:checked:hover::after {
+    color: var(--gw-checkbox-icon-checked-hover-color);
+}
+
+input[type=checkbox]:checked:disabled::after {
+    color: var(--gw-checkbox-icon-disabled-color);
+}
+
+/*-------------------------------------------------------------
+    Radio button
+-------------------------------------------------------------*/
+
+input[type=radio] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    color: var(--gw-radiobutton-label-color);
+    background-color: var(--gw-radiobutton-background);
+    border: 1px solid var(--gw-radiobutton-border-color);
+    width: 1em;
+    height: 1em;
+    display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+    border-radius: 50%;
+}
+
+input[type=radio]:checked {
+    color: var(--gw-radiobutton-checked-label-color);
+    border-color: var(--gw-radiobutton-checked-border-color);
+}
+
+input[type=radio]:checked:hover {
+    background-color: var(--gw-radiobutton-checked-hover-background);
+    border-color: var(--gw-radiobutton-checked-hover-border-color);
+}
+
+input[type=radio]:checked:disabled {
+    color: var(--gw-radiobutton-checked-disabled-label-color);
+    border-color: var(--gw-radiobutton-checked-disabled-border-color);
+}
+
+input[type=radio]:disabled {
+    color: var(--gw-radiobutton-disabled-label-color);
+    background-color: var(--gw-radiobutton-disabled-background);
+}
+
+input[type=radio]:hover {
+    border-color: var(--gw-radiobutton-hover-border-color);
+}
+
+input[type=radio]:checked::after {
+    content: "";
+    display: block;
+    width: 0.5em;
+    height: 0.5em;
+    border-radius: 50%;
+    background-color: var(--gw-radiobutton-checked-background);
+    margin: 0.2em;
+}
+
+input[type=radio]:checked:hover::after {
+    background-color: var(--gw-radiobutton-icon-checked-hover-color);
+}
+
+input[type=radio]:checked:disabled::after {
+    background-color: var(--gw-radiobutton-icon-disabled-color);
+}
+
+/*-------------------------------------------------------------
+    List groups
+-------------------------------------------------------------*/
 
 .list-group-item:last-child,
 .list-group-item:first-child {
@@ -1246,6 +1312,10 @@ input.switch:checked ~ label:hover:before {
     background-color: var(--gw-toggleswitch-checked-hover-background);
 }
 
+input.switch:checked:disabled ~ label:hover:before {
+    background-color: var(--gw-toggleswitch-disabled-background);
+}
+
 input.switch:checked ~ label:after {
     left: 1.05em;
     background-color: var(--gw-toggleswitch-handle-checked-background);
@@ -1253,6 +1323,14 @@ input.switch:checked ~ label:after {
 
 input.switch:checked ~ label:hover:after {
     background-color: var(--gw-toggleswitch-handle-checked-hover-background);
+}
+
+input.switch:disabled ~ label:before {
+    background-color: var(--gw-toggleswitch-disabled-background);
+}
+
+input.switch:disabled ~ label:before, input.switch:disabled ~ label:after {
+    cursor: not-allowed;
 }
 
 .card.active input.switch:checked ~ label:before {

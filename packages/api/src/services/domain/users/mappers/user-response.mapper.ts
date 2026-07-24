@@ -18,7 +18,7 @@ export const mapUserResponseToModel: MapperFn<UserResponse, User> = (data) => {
     }),
     dateCreated: new Date(data.dateCreated),
     gptThreads: data.gptThreads,
-    external: data.external
+    hasExternalLogin: data.hasExternalLogin
   });
 };
 

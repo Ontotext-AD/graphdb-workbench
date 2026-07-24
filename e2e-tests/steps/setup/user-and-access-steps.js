@@ -234,7 +234,9 @@ export class UserAndAccessSteps {
     }
 
     static clickGraphqlAccessAny() {
-        this.getRepositoryRightsLine('*')
+        cy.get('#user-repos')
+            .contains('Global (any data repository)')
+            .parent('tr')
             .find('.graphql')
             .realClick();
     }
@@ -242,6 +244,38 @@ export class UserAndAccessSteps {
     static clickGraphqlAccessRepo(repoName) {
         this.getRepositoryRightsLine(repoName)
             .find('.graphql')
+            .realClick();
+    }
+
+    static clickReadAccessAny() {
+        cy.get('#user-repos')
+            .contains('Global (any data repository)')
+            .parent('tr')
+            .find('.read')
+            .realClick();
+    }
+
+    static clickReadAccessRepo(repoName) {
+        cy.get('#user-repos')
+            .contains(repoName)
+            .parent('tr')
+            .find('.read')
+            .realClick();
+    }
+
+    static clickWriteAccessAny() {
+        cy.get('#user-repos')
+            .contains('Global (any data repository)')
+            .parent('tr')
+            .find('.write')
+            .realClick();
+    }
+
+    static clickWriteAccessRepo(repoName) {
+        cy.get('#user-repos')
+            .contains(repoName)
+            .parent('tr')
+            .find('.write')
             .realClick();
     }
 
@@ -257,7 +291,7 @@ export class UserAndAccessSteps {
 
     static getRepoLine(userRowAlias, matchText) {
         return cy.get(userRowAlias)
-            .find('.repository-rights > div')
+            .find('.repository-rights-list')
             .filter(`:contains("${matchText}")`)
     }
 
@@ -305,7 +339,10 @@ export class UserAndAccessSteps {
     // ============= Read Access Toggles and Validations =============
 
     static getReadAccessForRepo(repoName) {
-        return this.getRepositoryRightsLine(repoName)
+        const matchText = (repoName === '*') ? 'Global (any data repository)' : repoName;
+        return cy.get('#user-repos')
+            .contains(matchText)
+            .parent('tr')
             .find('.read')
     }
 
@@ -325,7 +362,10 @@ export class UserAndAccessSteps {
     // ============= Write Access Toggles and Validations =============
 
     static getWriteAccessForRepo(repoName) {
-        return this.getRepositoryRightsLine(repoName)
+        const matchText = (repoName === '*') ? 'Global (any data repository)' : repoName;
+        return cy.get('#user-repos')
+            .contains(matchText)
+            .parent('tr')
             .find('.write')
     }
 
@@ -365,7 +405,10 @@ export class UserAndAccessSteps {
     // ============= GraphQL Access Toggles and Validations =============
 
     static getGraphqlAccessForRepo(repoName) {
-        return this.getRepositoryRightsLine(repoName)
+        const matchText = (repoName === '*') ? 'Global (any data repository)' : repoName;
+        return cy.get('#user-repos')
+            .contains(matchText)
+            .parent('tr')
             .find('.graphql')
     }
 

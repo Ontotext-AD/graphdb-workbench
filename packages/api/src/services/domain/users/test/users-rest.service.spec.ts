@@ -30,7 +30,7 @@ describe('UsersRestService', () => {
         },
         dateCreated: Date.now(),
         gptThreads: [],
-        external: false,
+        hasExternalLogin: false,
       };
 
       TestUtil.mockResponse(
@@ -57,7 +57,7 @@ describe('UsersRestService', () => {
         },
         dateCreated: Date.now(),
         gptThreads: [],
-        external: false,
+        hasExternalLogin: false,
       };
 
       TestUtil.mockResponse(
@@ -82,7 +82,7 @@ describe('UsersRestService', () => {
           appSettings: { DEFAULT_INFERENCE: true },
           dateCreated: Date.now(),
           gptThreads: [],
-          external: false,
+          hasExternalLogin: false,
         },
         {
           username: 'bob',
@@ -91,7 +91,7 @@ describe('UsersRestService', () => {
           appSettings: { DEFAULT_INFERENCE: false },
           dateCreated: Date.now(),
           gptThreads: ['thread-1'],
-          external: true,
+          hasExternalLogin: true,
         },
       ];
 

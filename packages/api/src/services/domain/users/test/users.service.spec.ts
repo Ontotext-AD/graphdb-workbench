@@ -32,7 +32,7 @@ describe('UsersService', () => {
         },
         dateCreated: now,
         gptThreads: ['thread-1', 'thread-2'],
-        external: false,
+        hasExternalLogin: false,
       };
 
       TestUtil.mockResponse(
@@ -50,7 +50,7 @@ describe('UsersService', () => {
       expect(user.appSettings).toBeInstanceOf(AppSettings);
       expect(user.appSettings.DEFAULT_INFERENCE).toBe(true);
       expect(user.gptThreads).toEqual(['thread-1', 'thread-2']);
-      expect(user.external).toBe(false);
+      expect(user.hasExternalLogin).toBe(false);
       expect(user.dateCreated).toBeInstanceOf(Date);
       expect(user.dateCreated!.getTime()).toBe(now);
     });
@@ -66,7 +66,7 @@ describe('UsersService', () => {
           appSettings: { DEFAULT_INFERENCE: true },
           dateCreated: Date.now(),
           gptThreads: [],
-          external: false,
+          hasExternalLogin: false,
         },
         {
           username: 'bob',
@@ -75,7 +75,7 @@ describe('UsersService', () => {
           appSettings: { DEFAULT_INFERENCE: false },
           dateCreated: Date.now(),
           gptThreads: ['thread-1', 'thread-2'],
-          external: true,
+          hasExternalLogin: true,
         },
       ];
 
@@ -94,7 +94,7 @@ describe('UsersService', () => {
       expect(users[1]).toBeInstanceOf(User);
       expect(users[1].username).toBe('bob');
       expect(users[1].authorities.getItems()).toEqual(['ROLE_ADMIN']);
-      expect(users[1].external).toBe(true);
+      expect(users[1].hasExternalLogin).toBe(true);
     });
 
     it('should handle empty users list', async () => {
@@ -124,7 +124,7 @@ describe('UsersService', () => {
         },
         dateCreated: Date.now(),
         gptThreads: [],
-        external: false,
+        hasExternalLogin: false,
       };
 
       TestUtil.mockResponse(

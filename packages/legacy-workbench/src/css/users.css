@@ -1,0 +1,11 @@
+.is-extended-badge {
+    cursor: pointer;
+}
+
+.repository-rights-list, .repository-rights {
+    word-break: break-all;
+}
+
+.auth-info {
+    font-weight: 700;
+}
