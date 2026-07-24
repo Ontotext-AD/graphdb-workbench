@@ -52,7 +52,7 @@
     "jest-environment-jsdom": "^30.4.1",
     "jest-preset-angular": "^16.2.0",
     "jsdom": "^29.1.1",
-    "sonarqube-scanner": "^3.3.0",
+    "sonarqube-scanner": "^5.0.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.60.1"
   }
