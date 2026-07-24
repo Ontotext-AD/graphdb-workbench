@@ -13,6 +13,7 @@
   "license": "Apache-2.0",
   "description": "",
   "dependencies": {
+    "brace-expansion": "^5.0.7",
     "lighthouse": "^12.6.1",
     "node-fetch": "^3.3.2",
     "pdf-merger-js": "^5.1.2",
