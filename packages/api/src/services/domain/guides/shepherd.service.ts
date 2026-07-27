@@ -18,6 +18,9 @@ import {ApplicationLifecycleContextService} from '../../app-lifecycle';
 const SMOOTH = 'smooth' as const;
 const NEAREST = 'nearest' as const;
 
+export type GuideEndListener = () => void;
+export type UnsubscribeFunction = () => void;
+
 /**
  * Service wrapper around the <a href="https://shepherdjs.dev/docs/">Shepherd.js</a> tour library.
  *
@@ -79,9 +82,8 @@ export class ShepherdService implements Service {
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   onPause: () => void = () => {
   };
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  onCancel: () => void = () => {
-  };
+
+  private endSubscribers: GuideEndListener[] = [];
 
   /**
    * Creates and starts a guide.
@@ -163,14 +165,20 @@ export class ShepherdService implements Service {
   }
 
   /**
-   * Registers a callback to be invoked when the active guide is cancelled or completed.
+   * Registers a callback to be invoked when the active guide ends, regardless of whether it is completed, cancelled, or terminated unexpectedly.
    *
-   * @param onCancel - Callback function to call on guide cancel/complete.
+   * @param subscriber - The callback to invoke when cancellation is requested.
+   * @returns A function that unregisters the subscriber. Calling the returned function multiple times has no effect.
    */
-  subscribeToGuideCancel(onCancel: () => void): void {
-    if (typeof onCancel === 'function') {
-      this.onCancel = onCancel;
-    }
+  subscribeOnGuideEnd(subscriber: GuideEndListener): UnsubscribeFunction {
+    this.endSubscribers.push(subscriber);
+
+    return () => {
+      const index = this.endSubscribers.indexOf(subscriber);
+      if (index !== -1) {
+        this.endSubscribers.splice(index, 1);
+      }
+    };
   }
 
   /**
@@ -242,7 +250,6 @@ export class ShepherdService implements Service {
     if (url && url !== getPathName()) {
       navigate(url);
     }
-
     const attachTo = stepOptions.attachTo;
     if (attachTo?.element) {
       const maxWaitTime = stepOptions.maxWaitTime as number | undefined;
@@ -251,6 +258,7 @@ export class ShepherdService implements Service {
         .catch((error) => {
           this.logger.error(String(error));
           this.toastrService.error(this.guideApi.translate(undefined, 'guide.start.unexpected.error.message'));
+          guide.complete();
         });
     } else {
       guide.show(stepIndex);
@@ -265,9 +273,7 @@ export class ShepherdService implements Service {
         currentStep.hide();
       }
       this.guideAutostarted = null;
-      if (this.onCancel) {
-        this.onCancel();
-      }
+      this.endSubscribers.forEach((subscribe) => subscribe());
     };
 
     if (!this.guideCancelSubscription) {
@@ -423,18 +429,28 @@ export class ShepherdService implements Service {
     guideStep: GuideStep,
   ): (() => Promise<unknown>) | undefined {
     return async () => {
-      await new Promise<void>((resolve) => {
-        setTimeout(() => {
-          if (this.waitForApplicationMount && !this.beforeShowResolver) {
-            this.beforeShowResolver = resolve;
-          } else if (!this.waitForApplicationMount) {
-            resolve();
-          }
+      try {
+        await new Promise<void>((resolve) => {
+          setTimeout(() => {
+            if (this.waitForApplicationMount && !this.beforeShowResolver) {
+              this.beforeShowResolver = resolve;
+            } else if (!this.waitForApplicationMount) {
+              resolve();
+            }
+          });
         });
-      });
+      } catch (err) {
+        guide.complete();
+        throw err;
+      }
 
       if (typeof guideStep.beforeShowPromise === 'function') {
-        return await guideStep.beforeShowPromise(guide, guideStep);
+        try {
+          return await guideStep.beforeShowPromise(guide, guideStep);
+        } catch (err) {
+          guide.complete();
+          throw err;
+        }
       }
       return undefined;
     };

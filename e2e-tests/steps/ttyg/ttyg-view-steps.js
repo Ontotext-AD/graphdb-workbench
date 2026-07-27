@@ -2,9 +2,20 @@ import {BaseSteps} from "../base-steps";
 import {DeprecationSteps} from '../deprecation-banner/deprecation-banner-steps.js';
 
 export class TTYGViewSteps extends BaseSteps {
-    static visit() {
+    /**
+     * Visits the TTYG page and closes the Solr deprecation banner by default.
+     *
+     * @param {boolean} closeSolrBanner Whether to close the banner. Set to `false`
+     * when revisiting the page after the banner has already been closed.
+     */
+    static visit(closeSolrBanner = true) {
         cy.visit('/ttyg');
-        DeprecationSteps.closeBanner();
+        // Temporary workaround until the Solr deprecation banner is removed.
+        // The banner changes the page layout, causing tests to fail randomly.
+        // This quick fix prevents GraphDB build failures and should be deleted together with the banner.
+        if (closeSolrBanner) {
+            DeprecationSteps.closeBanner();
+        }
     }
 
     static getTtygView() {

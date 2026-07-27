@@ -9,6 +9,7 @@ import {
   AuthenticationStorageService,
   Authority,
   AuthorizationService,
+  GuideContextService,
   EventName,
   EventService,
   LocalStorageSubscriptionHandlerService,
@@ -48,6 +49,7 @@ export class OntoLayout {
   private readonly applicationLifecycleContextService = service(ApplicationLifecycleContextService);
   private readonly userPreferencesService = service(UserPreferencesService);
   private readonly userPreferencesContextService = service(UserPreferencesContextService);
+  private readonly guideContextService = service(GuideContextService);
 
   private readonly fullJwtKey = `${StorageKey.GLOBAL_NAMESPACE}.${this.authStorageService.NAMESPACE}.${this.authStorageService.jwtKey}`;
   private readonly fullAuthenticatedKey = `${StorageKey.GLOBAL_NAMESPACE}.${this.authStorageService.NAMESPACE}.${this.authStorageService.authenticatedKey}`;
@@ -95,7 +97,7 @@ export class OntoLayout {
   }
 
   componentDidLoad() {
-    this.updateShowSolrDeprecationBanner();
+    this.updateSolrDeprecationBannerVisibility();
   }
 
   connectedCallback() {
@@ -105,6 +107,7 @@ export class OntoLayout {
     this.subscribeToRuntimeConfigurationChanges();
     this.subscribeToUserPreferencesChange();
     this.subscribeToBeforeMountRouting();
+    this.subscribeToGuideChanges();
     this.loading = false;
   }
 
@@ -191,7 +194,6 @@ export class OntoLayout {
   private onSolrDeprecationBannerClosedHandler(): () => void {
     return () => {
       this.userPreferencesService.dismissSolrDeprecationBanner();
-      this.updateShowSolrDeprecationBanner();
     };
   }
 
@@ -285,6 +287,7 @@ export class OntoLayout {
   }
 
   private updateVisibility() {
+    this.updateSolrDeprecationBannerVisibility();
     if (!this.authenticationService.isSecurityEnabled()) {
       this.showNavbar = true;
       this.showHeader = true;
@@ -358,11 +361,15 @@ export class OntoLayout {
   private subscribeToUserPreferencesChange() {
     this.subscriptions.add(
       this.userPreferencesContextService.onUserPreferencesChanged(() => {
-        this.updateShowSolrDeprecationBanner();
+        this.updateSolrDeprecationBannerVisibility();
       }));
   }
 
-  private updateShowSolrDeprecationBanner(): void {
-    this.hideSolrDeprecationBanner = this.userPreferencesService.isSolrDeprecationBannerDismissed();
+  private subscribeToGuideChanges(): void {
+    this.subscriptions.add(this.guideContextService.onHasRunningGuideChanged(() => this.updateSolrDeprecationBannerVisibility()));
+  }
+
+  private updateSolrDeprecationBannerVisibility() {
+    return this.hideSolrDeprecationBanner = this.userPreferencesService.isSolrDeprecationBannerDismissed() || this.guideContextService.hasRunningGuide();
   }
 }
