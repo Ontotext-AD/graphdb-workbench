@@ -75,6 +75,10 @@ app-yasgui-component-facade .yasgui-toolbar .btn-orientation {
     background-color: var(--gw-button-secondary-background) !important;
     border-color: var(--gw-button-secondary-border-color) !important;
   }
+
+  .cm-comment {
+    color: var(--gw-neutral-300);
+  }
 }
 
 /*----------------------------------------*/
@@ -746,6 +750,10 @@ app-yasgui-component-facade .yasr #explainPlanQuery {
 app-yasgui-component-facade .yasr .explain-plan-container {
   background-color:  var(--gw-panel-background);
   border: 1px solid var(--gw-dialog-border-color);
+
+  .cm-comment {
+    color: var(--gw-neutral-300);
+  }
 }
 
 app-yasgui-component-facade .yasr .yasr-header-replacement {
