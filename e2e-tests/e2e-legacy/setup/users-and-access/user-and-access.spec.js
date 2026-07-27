@@ -250,6 +250,18 @@ describe('User and Access', () => {
         });
 
         context('Login / return URL redirects', () => {
+            it.only('should not add the active repository to the login page URL', () => {
+                cy.presetRepository(repoName);
+                UserAndAccessSteps.visit();
+                cy.url().should('include', `repositoryId=${repoName}`);
+
+                UserAndAccessSteps.toggleSecurity();
+
+                cy.url()
+                    .should('include', '/login')
+                    .and('not.include', 'repositoryId=');
+            });
+
             it('should redirect to previous page after logout and then login', () => {
                 UserAndAccessSteps.toggleSecurity();
                 LoginSteps.loginWithUser('admin', DEFAULT_ADMIN_PASSWORD);
