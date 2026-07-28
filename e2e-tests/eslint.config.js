@@ -35,6 +35,11 @@ export default [
         rules: {
             ...pluginJs.configs.recommended.rules,
             ...pluginCypress.configs.recommended.rules,
+            // Exclusive tests (.only) silently skip the rest of the suite, so they must never be committed.
+            'no-restricted-syntax': ['error', {
+                selector: "MemberExpression[computed=false][property.name='only'][object.name=/^(describe|context|it|specify|test|suite)$/]",
+                message: 'Exclusive tests are not allowed: remove ".only" before committing.'
+            }],
         },
     },
 ];
