@@ -105,13 +105,13 @@ securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$windo
             let tooltipKey;
             if (rights.manage) {
                 iconClass = 'ri-folder-settings-line';
-                tooltipKey = 'security.has.manage.access';
+                tooltipKey = 'security.has.manage.permission';
             } else if (rights.write) {
                 iconClass = 'ri-edit-line';
-                tooltipKey = 'security.has.write.access';
+                tooltipKey = 'security.has.write.permission';
             } else if (rights.read) {
                 iconClass = 'ri-eye-line';
-                tooltipKey = 'security.has.read.access';
+                tooltipKey = 'security.has.read.permission';
             }
 
             return {
@@ -119,7 +119,7 @@ securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$windo
                 iconClass,
                 tooltipKey,
                 hasGraphqlAccess: rights.graphql,
-                graphqlTooltipKey: rights.write ? 'security.has.mutation_rights' : 'security.no.mutation_rights',
+                graphqlTooltipKey: rights.write ? 'security.has.mutation_permission' : 'security.no.mutation_permission',
             };
         });
 
