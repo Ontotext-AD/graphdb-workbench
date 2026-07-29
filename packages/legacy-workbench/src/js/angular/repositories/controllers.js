@@ -12,6 +12,7 @@ import {
     AuthenticationStorageService,
     AuthorizationService,
     GuidesService,
+    AuthenticationService,
 } from '@ontotext/workbench-api';
 import {DocumentationUrlResolver} from "../utils/documentation-url-resolver";
 
@@ -805,6 +806,16 @@ EditRepositoryCtrl.$inject = ['$rootScope', '$scope', '$routeParams', 'toastr', 
     '$translate', 'MonitoringRestService'];
 
 function EditRepositoryCtrl($rootScope, $scope, $routeParams, toastr, $repositories, $location, ModalService, RepositoriesRestService, $translate, MonitoringRestService) {
+    // =========================
+    // Private variables
+    // =========================
+
+    const authenticationService = service(AuthenticationService);
+
+    // =========================
+    // Public variables
+    // =========================
+
     $scope.rulesets = STATIC_RULESETS.slice();
     $scope.repositoryTypes = REPOSITORY_TYPES;
     $scope.entityIndexSizeMin = ENTITY_INDEX_SIZE_MIN;
@@ -824,6 +835,10 @@ function EditRepositoryCtrl($rootScope, $scope, $routeParams, toastr, $repositor
     $scope.hasActiveLocation = function() {
         return $repositories.hasActiveLocation();
     };
+
+    // =========================
+    // Private methods
+    // =========================
 
     const loadRepositoryData = () => {
         return getFilteredLocations($repositories).then((locations) => {
@@ -852,6 +867,12 @@ function EditRepositoryCtrl($rootScope, $scope, $routeParams, toastr, $repositor
         $scope.repositoryInfo.saveId = $scope.saveRepoId;
         $scope.loader = false;
     };
+
+    const initRepositoriesAndNavigate = () => $repositories.init().finally(() => $scope.goBackToPreviousLocation());
+
+    // =========================
+    // Public methods
+    // =========================
 
     $scope.$watch($scope.hasActiveLocation, function() {
         if ($scope.hasActiveLocation) {
@@ -912,7 +933,12 @@ function EditRepositoryCtrl($rootScope, $scope, $routeParams, toastr, $repositor
         RepositoriesRestService.editRepository($scope.repositoryInfo.saveId, $scope.repositoryInfo)
             .success(function() {
                 toastr.success($translate.instant('edit.repo.success.msg', {saveId: $scope.repositoryInfo.saveId}));
-                $repositories.init().finally(() => $scope.goBackToPreviousLocation());
+                if ($scope.repositoryInfo.saveId !== $scope.repositoryInfo.id) {
+                    // If the repository ID has changed, update the authenticated user because the permissions become stale
+                    authenticationService.updateAuthenticatedUser().then(initRepositoriesAndNavigate);
+                } else {
+                    initRepositoriesAndNavigate();
+                }
                 if ($scope.repositoryInfo.saveId === $scope.repositoryInfo.id && $scope.repositoryInfo.restartRequested) {
                     $repositories.restartRepository($scope.repositoryInfo);
                 }
@@ -979,6 +1005,10 @@ function EditRepositoryCtrl($rootScope, $scope, $routeParams, toastr, $repositor
     $scope.getShaclOptionsClass = function() {
         return getShaclOptionsClass();
     };
+
+    // =================================
+    // Subscriptions and event handlers
+    // =================================
 
     const languageChangedSubscription = $rootScope.$on('$translateChangeSuccess', () => {
         $scope.pageTitle = $translate.instant('view.edit.repo.title', {repositoryId: $scope.params.repositoryId});

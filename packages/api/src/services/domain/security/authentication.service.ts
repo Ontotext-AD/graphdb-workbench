@@ -43,6 +43,16 @@ export class AuthenticationService implements Service {
   }
 
   /**
+   * Updates the authenticated user in the security context.
+   * This method should be called whenever the authenticated user's permissions might have changed,
+   * such as after a repository save operation.
+   */
+  async updateAuthenticatedUser(): Promise<void> {
+    const authenticatedUser = await this.getCurrentUser();
+    this.securityContextService.updateAuthenticatedUser(authenticatedUser);
+  }
+
+  /**
    * Authenticates the user with username and password.
    *
    * Stores the auth token (if returned), updates the security context
