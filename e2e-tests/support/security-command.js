@@ -29,6 +29,30 @@ Cypress.Commands.add('loginAsAdmin', () => {
     });
 });
 
+Cypress.Commands.add('loginAs', (username, password) => {
+    return cy.request({
+        method: 'POST',
+        url: '/rest/login',
+        body: {
+            username,
+            password,
+        },
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        failOnStatusCode: true,
+    }).then((response) => {
+        const authHeader = response.headers['authorization'];
+        const token = Array.isArray(authHeader)
+            ? authHeader[0]
+            : authHeader;
+        cy.window().then((win) => {
+            win.localStorage.setItem('ontotext.gdb.auth.jwt', token);
+            win.localStorage.setItem('ontotext.gdb.auth.authenticated', 'true');
+        });
+    });
+});
+
 Cypress.Commands.add('switchOffSecurity', (secured = false) => {
     let headers = {'Content-Type': 'application/json'};
     if (secured) {
@@ -62,5 +86,24 @@ Cypress.Commands.add('switchOffFreeAccess', (secured = false) => {
         },
         headers,
         failOnStatusCode: true,
+    });
+});
+
+Cypress.Commands.add('switchOnFreeAccess', (secured = false) => {
+    let headers = {'Content-Type': 'application/json'};
+    if (secured) {
+        const authHeader = Cypress.env('adminToken');
+        headers = {...headers,
+            'Authorization': authHeader
+        }
+    }
+    return cy.request({
+        method: 'POST',
+        url: '/rest/security/free-access',
+        body: {
+            'enabled': true
+        },
+        headers,
+        failOnStatusCode: false,
     });
 });

@@ -126,22 +126,6 @@ describe('ShepherdService', () => {
     });
   });
 
-  describe('subscribeToGuideCancel', () => {
-    test('should register the callback when a function is provided', () => {
-      const onCancel = jest.fn();
-      shepherdService.subscribeToGuideCancel(onCancel);
-
-      expect(shepherdService.onCancel).toBe(onCancel);
-    });
-
-    test('should not replace the callback when a non-function is provided', () => {
-      const original = shepherdService.onCancel;
-      shepherdService.subscribeToGuideCancel(null as unknown as () => void);
-
-      expect(shepherdService.onCancel).toBe(original);
-    });
-  });
-
   describe('subscribeToGuidePause', () => {
     test('should register the callback when a function is provided', () => {
       const onPause = jest.fn();

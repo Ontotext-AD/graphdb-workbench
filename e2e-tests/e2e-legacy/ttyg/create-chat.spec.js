@@ -61,7 +61,7 @@ describe('TTYG create chat', () => {
         // and returns to the TTYG page
         TTYGStubs.stubChatsListGet("/ttyg/chats/create/get-chats-after-create.json");
         TTYGStubs.stubAgentGet();
-        TTYGViewSteps.visit();
+        TTYGViewSteps.visit(false);
         cy.wait('@get-chat-list');
         // Then I expect newly created chat be selected.
         TTYGViewSteps.getChatFromGroup(0, 0).should('contain', 'New chat of Han Solo is a character');
