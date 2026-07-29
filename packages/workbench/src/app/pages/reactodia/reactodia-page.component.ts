@@ -1,13 +1,17 @@
 import {Component, inject, OnDestroy, OnInit, signal} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {
+  EventName,
+  EventService,
   GraphExploreLink,
   GraphExploreService,
   LanguageContextService,
   RepositoryContextService,
   service,
-  SubscriptionList
+  SubscriptionList,
+  WindowService
 } from '@ontotext/workbench-api';
+import {CLEAR_DIAGRAM_STORAGE_EVENT} from 'graphwise-reactodia';
 import {
   ReactodiaComponentFacadeComponent
 } from '../../components/reactodia-component-facade/reactodia-component-facade.component';
@@ -34,6 +38,7 @@ export class ReactodiaPageComponent implements OnInit, OnDestroy {
   private readonly repositoryContextService = service(RepositoryContextService);
   private readonly languageContextService = service(LanguageContextService);
   private readonly graphExploreService = service(GraphExploreService);
+  private readonly eventService = service(EventService);
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly logger = LoggerProvider.logger;
 
@@ -54,7 +59,8 @@ export class ReactodiaPageComponent implements OnInit, OnDestroy {
   private initSubscriptions() {
     this.subscriptions.addAll([
       this.subscribeToRepositoryChanged(),
-      this.subscribeToLanguageChanged()
+      this.subscribeToLanguageChanged(),
+      this.subscribeToNavigationEnd()
     ]);
   }
 
@@ -67,6 +73,16 @@ export class ReactodiaPageComponent implements OnInit, OnDestroy {
       if (language) {
         this.language.set(language);
       }
+    });
+  }
+
+  /**
+   * Tells the `graphwise-reactodia` web component to drop its persisted diagram state whenever a
+   * navigation ends. This means the user navigated away from the page, so we clear the state.
+   */
+  private subscribeToNavigationEnd() {
+    return this.eventService.subscribe(EventName.NAVIGATION_START, () => {
+      WindowService.getWindow().dispatchEvent(new CustomEvent(CLEAR_DIAGRAM_STORAGE_EVENT));
     });
   }
 
