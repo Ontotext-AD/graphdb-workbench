@@ -776,12 +776,12 @@ function AddRepositoryCtrl($rootScope, $scope, toastr, $repositories, $location,
     });
 }
 
-EditRepositoryFileCtrl.$inject = ['$scope', '$uibModalInstance', 'RepositoriesRestService', 'file', 'toastr', '$translate', 'dialogTitle', 'location'];
+EditRepositoryFileCtrl.$inject = ['$scope', '$uibModalInstance', 'RepositoriesRestService', 'file', 'toastr', '$translate', 'dialogTitle', 'repositoryReference'];
 
-function EditRepositoryFileCtrl($scope, $uibModalInstance, RepositoriesRestService, file, toastr, $translate, dialogTitle, location) {
+function EditRepositoryFileCtrl($scope, $uibModalInstance, RepositoriesRestService, file, toastr, $translate, dialogTitle, repositoryReference) {
     $scope.dialogTitle = dialogTitle ? dialogTitle : $translate.instant('update.file.content.header');
     if (file) {
-        RepositoriesRestService.getRepositoryFileContent(file, location).success(function(data) {
+        RepositoriesRestService.getRepositoryFileContent(file, repositoryReference).success(function(data) {
             $scope.fileContent = data;
         }).error(function(data) {
             const msg = getError(data);
