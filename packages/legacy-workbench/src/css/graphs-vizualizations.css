@@ -145,6 +145,7 @@
     height: 100%;
     align-content: center;
     color: var(--gw-body-color);
+    line-height: 1.3;
 }
 
 /* Safari misaligns text when the element has `display: -webkit-box`. Other browsers (Chrome, FF) require this value for line clamping,
