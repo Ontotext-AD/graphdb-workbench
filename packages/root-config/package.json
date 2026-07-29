@@ -32,7 +32,7 @@
   },
   "dependencies": {
     "dompurify": "^3.4.7",
-    "graphwise-styleguide": "^1.2.1",
+    "graphwise-styleguide": "^1.2.2",
     "regenerator-runtime": "^0.14.1",
     "remixicon": "^4.7.0",
     "shepherd.js": "^11.2.0",
