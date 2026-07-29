@@ -230,7 +230,7 @@ describe('TTYG chat list', () => {
         HomeSteps.visit();
         cy.wait('@get-chat');
         // and came back to the ttyg page
-        TTYGViewSteps.visit();
+        TTYGViewSteps.visit(false);
 
         // Then I expect to last used chat be selected.
         TTYGViewSteps.getChatFromGroup(0, 2).should('have.class', 'selected');

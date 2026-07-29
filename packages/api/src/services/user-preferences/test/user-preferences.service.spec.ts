@@ -70,16 +70,22 @@ describe('UserPreferencesService', () => {
       expect(updateUserPreferencesSpy).toHaveBeenCalledWith(SOLR_BANNER_DISMISSED_USER_PREFERENCES);
     });
 
-    it('should update only context when user is not logged in', () => {
+    it('should persist preferences under the anonymous user key and update the context when the user is not logged in', () => {
       // GIVEN: No user is authenticated.
       mockIsLoggedIn(false);
+      const expectedStorageObject = new UsersPreferences({
+        preferences: {
+          admin: ADMIN_STORED_PREFERENCES,
+          anonymous: new UserPreferences({isSolrDeprecationBannerDismissed: true})
+        }
+      });
 
       // WHEN: The Solr deprecation banner is dismissed.
       userPreferencesService.dismissSolrDeprecationBanner();
 
-      // THEN: I expect the preference not to be persisted.
-      expect(setUsersPreferencesSpy).not.toHaveBeenCalled();
-      // AND: I expect only the context to be updated.
+      // THEN: I expect the preferences to be persisted under the shared anonymous user.
+      expect(setUsersPreferencesSpy).toHaveBeenCalledWith(expectedStorageObject);
+      // AND: I expect the context to be updated.
       expect(updateUserPreferencesSpy).toHaveBeenCalledWith(SOLR_BANNER_DISMISSED_USER_PREFERENCES);
     });
   });

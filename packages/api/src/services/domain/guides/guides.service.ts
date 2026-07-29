@@ -72,6 +72,13 @@ export class GuidesService implements Service {
       }
     });
 
+    this.guideContextService.updateHasRunningGuide(true);
+
+    const unsubscribeOnGuideEnd = this.shepherdService.subscribeOnGuideEnd(() => {
+      this.guideContextService.updateHasRunningGuide(false);
+      unsubscribeOnGuideEnd();
+    });
+
     if (startStepId) {
       this.shepherdService.resumeGuide(guide.getId(), stepDescriptions, startStepId);
     } else {

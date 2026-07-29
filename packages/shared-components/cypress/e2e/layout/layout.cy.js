@@ -164,7 +164,7 @@ describe('Layout', () => {
     NavbarSteps.getRootMenuItems().should('have.length', 7);
   });
 
-  it('should hide the Solr deprecation notice until the page is refreshed when security is disabled', () => {
+  it('should hide the Solr deprecation notice when security is disabled', () => {
     // GIVEN: I have visited the layout page with security disabled.
     LayoutSteps.visit();
 
@@ -178,11 +178,14 @@ describe('Layout', () => {
     // THEN: I expect the Solr deprecation banner to not be visible.
     DeprecationSteps.getDeprecationBanner().should('not.exist');
 
-    // WHEN: I refresh the page.
-    LayoutSteps.visit();
-    // THEN: I expect the Solr deprecation banner to be visible again.
-    DeprecationSteps.getDeprecationBanner()
-      .should('be.visible')
-      .should('contain.text', 'The Solr connector is deprecated and will be removed in GraphDB 12');
+    // AND: I expect the dismissed state to be persisted for the anonymous user.
+    cy.window().then((win) => {
+      const preferences = JSON.parse(
+        win.localStorage.getItem('ontotext.gdb.userPreferences.preferences')
+      );
+
+      expect(preferences.preferences.anonymous.isSolrDeprecationBannerDismissed)
+        .to.equal(true);
+    });
   });
 });
