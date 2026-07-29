@@ -1758,6 +1758,8 @@
     "security.confirm.delete.extended.user.body": "Cette action supprime uniquement l'entrée <strong>{{name}}</strong> de GraphDB. Utilisez cette option si le nom d'utilisateur a été saisi de manière incorrecte ou si l'utilisateur n'existe plus dans <b>{{authSource}}</b>.",
     "security.confirm.remove.extended.user.permissions.title": "Supprimer les autorisations étendues ?",
     "security.confirm.remove.extended.user.permissions.body": "Cette action supprime de GraphDB les autorisations étendues attribuées localement à <strong>{{name}}</strong>. L'utilisateur <b>{{authSource}}</b> n'est pas affecté.",
+    "security.confirm.save.extended.user.remove.permissions.title": "Enregistrer et supprimer les autorisations étendues ?",
+    "security.confirm.save.extended.user.remove.permissions.body": "L'enregistrement supprimera de GraphDB les autorisations étendues attribuées localement à <strong>{{name}}</strong>. L'utilisateur <b>{{authSource}}</b> ne sera pas affecté.<br><br>Si l'utilisateur ne s'est jamais connecté, son entrée GraphDB sera également supprimée de la liste des utilisateurs.",
     "security.enter.password": "Entrez le mot de passe !",
     "security.confirm.password": "Confirmez le mot de passe !",
     "security.password.placeholder": "Mot de passe",

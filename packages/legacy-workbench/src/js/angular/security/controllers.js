@@ -870,6 +870,7 @@ securityModule.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window
         }
         $scope.getUserData = function() {
             usersService.getUser($scope.params.userId).then(function(data) {
+                const isExtended = $scope.canExtendExternalUserRole && !!data.authorities.size();
                 $scope.user = {username: data.username};
                 $scope.user.password = '';
                 $scope.user.confirmpassword = '';
@@ -877,8 +878,9 @@ securityModule.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window
                 $scope.userType = data.getUserType();
                 $scope.grantedAuthorities = data.authorities.toUIModel();
                 $scope.customRoles = data.authorities.getCustomRoles();
-                $scope.user.isExtended = $scope.canExtendExternalUserRole && !!data.authorities.size();
-                $scope.allowRoleExtension = $scope.user?.isExtended ?? false;
+                $scope.user.isExtended = isExtended;
+                $scope.user.canRemoveExtendedPermissions = isExtended && data.hasExternalLogin;
+                $scope.allowRoleExtension = isExtended ?? false;
             }).catch(function(data) {
                 const msg = getError(data);
                 toastr.error(msg, $translate.instant('common.error'));
@@ -892,6 +894,16 @@ securityModule.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window
                 ModalService.openSimpleModal({
                     title: $translate.instant('security.save.admin.settings'),
                     message: $translate.instant('security.admin.pass.unset'),
+                    warning: true,
+                }).result.then(function() {
+                    $scope.updateUser();
+                });
+            } else if ($scope.user.isExtended && !$scope.allowRoleExtension) {
+                const title = decodeHTML($translate.instant('security.confirm.save.extended.user.remove.permissions.title', {name: $scope.user.username}));
+                const message = decodeHTML($translate.instant('security.confirm.save.extended.user.remove.permissions.body', {name: $scope.user.username, authSource: $scope.authSource}));
+                ModalService.openSimpleModal({
+                    title,
+                    message,
                     warning: true,
                 }).result.then(function() {
                     $scope.updateUser();

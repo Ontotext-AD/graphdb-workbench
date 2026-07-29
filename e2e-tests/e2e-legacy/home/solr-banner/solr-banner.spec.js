@@ -107,7 +107,7 @@ describe('Solr deprecation banner', () => {
     });
 
     context('User guides', () => {
-        it.only('should hide the Solr deprecation banner while a guide is running', () => {
+        it('should hide the Solr deprecation banner while a guide is running', () => {
             // GIVEN: The guides are loaded and ready to be started.
             GuidesStubs.stubMainMenuGuide();
             GuideSteps.visit();
