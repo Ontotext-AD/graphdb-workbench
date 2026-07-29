@@ -1,41 +1,43 @@
 import { service } from '../../providers';
 import { UserPreferencesStorageService } from './user-preferences-storage.service';
-import {AuthenticationService, SecurityContextService} from '../domain/security';
+import { AuthenticationService, SecurityContextService } from '../domain/security';
 import { UserPreferencesContextService } from './user-preferences-context.service';
 import { UserPreferences } from '../../models/user-preference/user-preferences';
 
 /**
  * Service for loading, updating, and persisting user preferences.
  *
- * Preferences are persisted only when the current user is authenticated.
- * Anonymous users keep their preferences only in the current application context,
- * so their choices are reset after a page refresh.
+ * Preferences are stored per current user:
+ * - A currently logged-in user has an individual set of preferences.
+ * - The anonymous user, used when security is disabled or free access is enabled,
+ *   has a shared persisted set of preferences identified by the {@link ANONYMOUS_USER} key.
  */
 export class UserPreferencesService {
+
+  private static readonly ANONYMOUS_USER = 'anonymous';
+
   private readonly userPreferencesStorageService = service(UserPreferencesStorageService);
   private readonly userPreferencesContextService = service(UserPreferencesContextService);
   private readonly securityContextService = service(SecurityContextService);
   private readonly authenticationService = service(AuthenticationService);
 
   /**
-   * Marks the Solr deprecation banner as dismissed.
+   * Marks the Solr deprecation banner as dismissed for the current user.
    *
-   * For authenticated users, the preference is persisted and restored after refresh.
-   * For anonymous users, including non-secured access and free-access mode, the preference is stored
-   * only in the current application context.
+   * The preference is updated in the application context and persisted for the current user.
+   * A currently logged-in user has individual preferences, while the anonymous user shares
+   * a common persisted set of preferences.
    */
   dismissSolrDeprecationBanner(): void {
     const userPreferences = this.getCurrentUserPreferences();
     userPreferences.isSolrDeprecationBannerDismissed = true;
-    this.userPreferencesContextService.updateUserPreferences(userPreferences);
 
-    if (this.authenticationService.isLoggedIn()) {
-      this.persistCurrentUserPreferences(userPreferences);
-    }
+    this.userPreferencesContextService.updateUserPreferences(userPreferences);
+    this.persistCurrentUserPreferences(userPreferences);
   }
 
   /**
-   * Checks whether the Solr deprecation banner has been dismissed.
+   * Checks whether the Solr deprecation banner has been dismissed by the current user.
    *
    * @returns {@code true} if the banner was dismissed, otherwise {@code false}.
    */
@@ -46,54 +48,74 @@ export class UserPreferencesService {
   /**
    * Loads the preferences for the current user into the application context.
    *
-   * Authenticated users receive their persisted preferences.
-   * Anonymous users receive a new in-memory preferences instance.
+   * A currently logged-in user receives their individual persisted preferences.
+   * The anonymous user receives the shared anonymous preferences.
    */
   loadUserPreferences(): void {
-    if (this.authenticationService.isLoggedIn()) {
-      this.userPreferencesContextService.updateUserPreferences(this.loadCurrentUserPreferences() ?? new UserPreferences());
-    } else {
-      this.userPreferencesContextService.updateUserPreferences(new UserPreferences());
+    const currentUsername = this.getCurrentUsername();
+
+    // The username is expected to be available for a currently logged-in user,
+    // but the service API allows it to be undefined.
+    if (!currentUsername) {
+      return;
     }
+
+    const currentUserPreferences = this.loadCurrentUserPreferences(currentUsername) ?? new UserPreferences();
+    this.userPreferencesContextService.updateUserPreferences(currentUserPreferences);
   }
 
   /**
-   * Loads preferences for the current user.
+   * Returns the username of the current user.
    *
-   * @returns Persisted preferences for authenticated users, or a new preferences instance for anonymous users.
+   * A currently logged-in user is identified by their username.
+   * The anonymous user is identified by the {@link ANONYMOUS_USER} key.
+   *
+   * @returns The username of the current user, or {@code undefined} if the username
+   * of the currently logged-in user cannot be determined.
    */
-  private loadCurrentUserPreferences(): UserPreferences | undefined {
-    const username = this.getAuthenticatedUsername();
-
-    // The username is expected to be available for authenticated users, but the service API allows it to be undefined.
-    if (!username) {
-      return new UserPreferences();
+  private getCurrentUsername(): string | undefined {
+    if (this.authenticationService.isLoggedIn()) {
+      return this.securityContextService.getAuthenticatedUser()?.toUser().username;
     }
 
+    return UserPreferencesService.ANONYMOUS_USER;
+  }
+
+  /**
+   * Loads the persisted preferences for the specified user.
+   *
+   * @param username - The username of the user whose preferences should be loaded.
+   * @returns The persisted preferences, or {@code undefined} if no preferences exist.
+   */
+  private loadCurrentUserPreferences(username: string): UserPreferences | undefined {
     return this.userPreferencesStorageService
       .getPreferences()
       .getUserPreferences(username);
   }
 
   /**
-   * Returns the current user preferences from the context.
+   * Returns the current user's preferences from the application context.
    *
    * If no preferences exist in the context, a new preferences instance is created.
    *
-   * @returns The current user preferences.
+   * @returns The current user's preferences.
    */
   private getCurrentUserPreferences(): UserPreferences {
     return this.userPreferencesContextService.getUserPreferences() ?? new UserPreferences();
   }
 
   /**
-   * Persists the preferences for the current authenticated user.
+   * Persists the preferences for the current user.
    *
-   * @param userPreferences - Preferences to persist for the authenticated user.
+   * A currently logged-in user's preferences are stored under their username.
+   * The anonymous user's preferences are stored under the {@link ANONYMOUS_USER} key.
+   *
+   * @param userPreferences - The current user's preferences to persist.
    */
   private persistCurrentUserPreferences(userPreferences: UserPreferences): void {
-    const username = this.getAuthenticatedUsername();
+    const username = this.getCurrentUsername();
 
+    // The username is expected to be available for a currently logged-in user, but the service API allows it to be undefined.
     if (!username) {
       return;
     }
@@ -101,14 +123,5 @@ export class UserPreferencesService {
     const usersPreferences = this.userPreferencesStorageService.getPreferences();
     usersPreferences.setUserPreferences(username, userPreferences);
     this.userPreferencesStorageService.setUsersPreferences(usersPreferences);
-  }
-
-  /**
-   * Returns the username of the authenticated user.
-   *
-   * @returns The authenticated username, or {@code undefined} if no user is authenticated.
-   */
-  private getAuthenticatedUsername(): string | undefined {
-    return this.securityContextService.getAuthenticatedUser()?.toUser().username;
   }
 }
