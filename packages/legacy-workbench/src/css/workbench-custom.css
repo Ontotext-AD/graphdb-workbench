@@ -100,7 +100,6 @@
 /* Styles for the shortcuts directive */
 
 #keyboardShortcuts {
-    background-color: var(--gw-panel-background);
     padding: 0px 5px;
     position: absolute;
     bottom: 0;

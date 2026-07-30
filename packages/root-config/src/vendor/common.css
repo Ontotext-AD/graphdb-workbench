@@ -112,6 +112,10 @@ h1 .btn {
     border-color: var(--gw-button-secondary-border-color);
 }
 
+.btn-secondary.editor-button {
+    background-color: var(--gw-shortcuts-secondary-button-background);
+}
+
 .btn-secondary.focus,
 .btn-secondary:hover, .btn-secondary:focus, .btn-secondary:active,
 .btn-secondary:active.focus, .btn-secondary:active:focus, .btn-secondary:active:hover,
