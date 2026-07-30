@@ -1,3 +1,27 @@
+export class RepositoryReference {
+    constructor(id, location) {
+        /**
+         * @type {string}
+         * @private
+         */
+        this._id = id;
+
+        /**
+         * @type {string}
+         * @private
+         */
+        this._location = location;
+    }
+
+    get id() {
+        return this._id;
+    }
+
+    get location() {
+        return this._location;
+    }
+}
+
 export class RepositoryInfoModel {
     constructor(data = {}) {
         /**
@@ -402,5 +426,5 @@ export const REPOSITORY_PARAMS = {
     entityIdSize: 'entityIdSize',
     repositoryType: 'repositoryType',
     eclipseRdf4jShaclExtensions: 'eclipseRdf4jShaclExtensions',
-    validationResultsLimitTotal: 'validationResultsLimitTotal'
+    validationResultsLimitTotal: 'validationResultsLimitTotal',
 };

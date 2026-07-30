@@ -6,6 +6,7 @@ import {OntopRepositoryError} from "../models/ontop/ontop-repository-error";
 import {OntopDriverData} from "../models/ontop/ontop-driver-data";
 import {JdbcDriverType} from "../models/ontop/jdbc-driver-type";
 import {LoggerProvider} from "../core/services/logger-provider";
+import {RepositoryReference} from '../models/repository/repository';
 
 const logger = LoggerProvider.logger;
 // A link to Ontop's website with all Ontop configuration keys
@@ -34,6 +35,13 @@ function ontopRepoDirective($uibModal, RepositoriesRestService, toastr, Upload, 
         const BACKSPACE = 8;
         const KEY_C = 67;
         const KEY_A = 65;
+        /**
+         * A reference to the otnop repository when the form was initialized.
+         * It preserves access to the initial repository object while `$scope.repositoryInfo`
+         * may be replaced or modified by the form.
+         * @type {RepositoryReference|undefined}
+         */
+        let repositoryReference = undefined;
         $scope.isGenericDriver = true;
         $scope.defaultUrlTemplate = 'jdbc:database://localhost:port/database_name';
         $scope.ontopProperiesLink = ONTOP_PROPERTIES_LINK;
@@ -175,15 +183,15 @@ function ontopRepoDirective($uibModal, RepositoriesRestService, toastr, Upload, 
                     dialogTitle: () => {
                         return title;
                     },
-                    location: () => {
-                        return $scope.repositoryInfo.location;
+                    repositoryReference: () => {
+                        return repositoryReference;
                     },
                 },
             });
 
             modalInstance.result.then((data) => {
                 // send data to backend
-                RepositoriesRestService.updateRepositoryFileContent(data.fileLocation, data.content, $scope.repositoryInfo.location)
+                RepositoriesRestService.updateRepositoryFileContent(data.fileLocation, data.content, repositoryReference)
                     .success((result) => {
                         ontopFileInfo.fileName = getFileName(result.fileLocation);
                         $scope.repositoryInfo.params[ontopFileInfo.type].value = result.fileLocation;
@@ -198,8 +206,12 @@ function ontopRepoDirective($uibModal, RepositoriesRestService, toastr, Upload, 
                 const uploadFile = files[0];
                 ontopFileInfo.loading = true;
                 const uploadData = {
-                    url: 'rest/repositories/file/upload',
-                    data: {file: uploadFile, location: $scope.repositoryInfo.location},
+                    url: `rest/repositories/file/upload`,
+                    data: {
+                        file: uploadFile,
+                        location: repositoryReference?.location,
+                        repositoryID: repositoryReference?.id,
+                    },
                 };
                 Upload.upload(uploadData)
                     .success((data) => {
@@ -371,9 +383,22 @@ function ontopRepoDirective($uibModal, RepositoriesRestService, toastr, Upload, 
             });
         };
 
+        /**
+         * Creates a reference to the repository being edited.
+         *
+         * @param {object} repositoryInfo Information about the repository.
+         * @returns {RepositoryReference|undefined} The repository reference when the edit page is open, otherwise, `undefined`.
+         */
+        const getRepositoryReference = (repositoryInfo) => {
+            if ($scope.editRepoPage) {
+                return new RepositoryReference(repositoryInfo.id, repositoryInfo.location);
+            }
+            return undefined;
+        };
+
         const loadPropertiesFile = () => {
             setLoading(true);
-            RepositoriesRestService.loadPropertiesFile($scope.repositoryInfo.params.propertiesFile.value, $scope.repositoryInfo.location, $scope.selectedDriver.driverType)
+            RepositoriesRestService.loadPropertiesFile($scope.repositoryInfo.params.propertiesFile.value, repositoryReference, $scope.selectedDriver.driverType)
                 .success((driverData) => {
                     let driver = $scope.supportedDriversData.find((driver) => driver.driverClass === driverData.driverClass);
                     // If driver not found this means that driver is generic.
@@ -433,7 +458,7 @@ function ontopRepoDirective($uibModal, RepositoriesRestService, toastr, Upload, 
             };
 
             return RepositoriesRestService
-                .updatePropertiesFile($scope.repositoryInfo.params.propertiesFile.value, jdbc, $scope.repositoryInfo.location, $scope.selectedDriver.driverType)
+                .updatePropertiesFile($scope.repositoryInfo.params.propertiesFile.value, jdbc, repositoryReference, $scope.selectedDriver.driverType)
                 .success((data) => {
                     $scope.repositoryInfo.params.propertiesFile.value = data.fileLocation;
                 }).error((data) => {
@@ -518,16 +543,21 @@ function ontopRepoDirective($uibModal, RepositoriesRestService, toastr, Upload, 
             $scope.getOntopFileInfo(OntopFileType.OBDA).required = true;
         };
 
+        const init = () => {
+            repositoryReference = getRepositoryReference($scope.repositoryInfo);
+            loadSupportedDriversData()
+                .then(() => {
+                    if ($scope.editRepoPage) {
+                        loadPropertiesFile();
+                    } else {
+                        $scope.selectDriver(JdbcDriverType.GENERIC);
+                    }
+                });
+        };
+
         // =========================
         // Initialize component data
         // =========================
-        loadSupportedDriversData()
-            .then(() => {
-                if ($scope.editRepoPage) {
-                    loadPropertiesFile();
-                } else {
-                    $scope.selectDriver(JdbcDriverType.GENERIC);
-                }
-            });
+        init();
     }
 }
