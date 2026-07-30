@@ -107,6 +107,15 @@ export class MainMenuSteps {
         this.getSubMenuButton('sub-menu-visual-graph').click();
     }
 
+    static clickOnReactodia() {
+        this.clickOnExplore();
+        this.clickOnSubmenuReactodia();
+    }
+
+    static clickOnSubmenuReactodia() {
+        this.getSubMenuButton('menu-reactodia').click();
+    }
+
     static clickOnClassRelationships() {
         this.clickOnExplore();
         this.clickOnSubmenuClassRelationships();
