@@ -1,7 +1,7 @@
 import 'angular/core/directives/ascii-validator.directive';
 import 'angular/core/directives/length-validator.directive';
-import {ClusterConfiguration, ClusterModel} from "../../../models/clustermanagement/cluster";
-import {NodeState, TopologyState} from "../../../models/clustermanagement/states";
+import {ClusterConfiguration, ClusterModel} from '../../../models/clustermanagement/cluster';
+import {NodeState, TopologyState} from '../../../models/clustermanagement/states';
 import {
     AuthorizationService,
     AuthenticationService,
@@ -10,12 +10,12 @@ import {
 
 const modules = [
     'graphdb.framework.core.directives.ascii-validator',
-    'graphdb.framework.core.directives.length-validator'
+    'graphdb.framework.core.directives.length-validator',
 ];
 
 const TagLengthConstraints = {
     minLen: '3',
-    maxLen: '255'
+    maxLen: '255',
 };
 
 angular
@@ -30,7 +30,7 @@ function MultiRegion($jwtAuth, $translate, $timeout, toastr, ModalService, Clust
         templateUrl: 'js/angular/clustermanagement/templates/cluster-configuration/multi-region.html',
         scope: {
             clusterModel: '=',
-            clusterConfiguration: '='
+            clusterConfiguration: '=',
         },
         link: ($scope) => {
             // =========================
@@ -53,6 +53,8 @@ function MultiRegion($jwtAuth, $translate, $timeout, toastr, ModalService, Clust
             $scope.loaderTimeout = undefined;
             $scope.secondaryTag = undefined;
             $scope.TagLengthConstraints = TagLengthConstraints;
+            $scope.loader = false;
+            $scope.statusLoader = false;
 
             // =========================
             // Public functions
@@ -67,7 +69,7 @@ function MultiRegion($jwtAuth, $translate, $timeout, toastr, ModalService, Clust
 
             $scope.createTag = (tag) => {
                 const payload = {
-                    tag
+                    tag,
                 };
                 setLoader(true);
                 return ClusterRestService.addCusterTag(payload)
@@ -88,7 +90,7 @@ function MultiRegion($jwtAuth, $translate, $timeout, toastr, ModalService, Clust
                     message: $translate.instant('cluster_management.cluster_configuration_multi_region.confirm.warning'),
                     warning: true,
                     backdrop: 'static',
-                    stopPropagation: true
+                    stopPropagation: true,
                 }).result
                     .then(() => {
                         setLoader(true);
@@ -113,7 +115,7 @@ function MultiRegion($jwtAuth, $translate, $timeout, toastr, ModalService, Clust
                     warning: true,
                     backdrop: 'static',
                     confirmButtonKey: 'common.ok.btn',
-                    stopPropagation: true
+                    stopPropagation: true,
                 };
 
                 ModalService.openSimpleModal(confirmConfig).result
@@ -139,7 +141,7 @@ function MultiRegion($jwtAuth, $translate, $timeout, toastr, ModalService, Clust
                     message: $translate.instant('cluster_management.cluster_configuration_multi_region.confirm.disable_secondary_mode_warning'),
                     warning: true,
                     backdrop: 'static',
-                    stopPropagation: true
+                    stopPropagation: true,
                 }).result
                     .then(() => {
                         setLoader(true);
@@ -168,10 +170,10 @@ function MultiRegion($jwtAuth, $translate, $timeout, toastr, ModalService, Clust
                 const secondaryModalConfig = {
                     title: $translate.instant('cluster_management.cluster_configuration_multi_region.secondary_cluster_settings'),
                     templateUrl: 'js/angular/clustermanagement/templates/modal/secondary-mode-modal.html',
-                    controller:  ['$scope', '$uibModalInstance', 'config', secondaryModeModalController],
+                    controller: ['$scope', '$uibModalInstance', 'config', secondaryModeModalController],
                     size: 'lg',
                     warning: true,
-                    backdrop: 'static'
+                    backdrop: 'static',
                 };
 
                 return ModalService.openCustomModal(secondaryModalConfig).result;
@@ -186,7 +188,7 @@ function MultiRegion($jwtAuth, $translate, $timeout, toastr, ModalService, Clust
                     $scope.ok = () => {
                         $uibModalInstance.close({
                             primaryNode: $scope.rpcAddress,
-                            tag: $scope.tag
+                            tag: $scope.tag,
                         });
                     };
                     $scope.cancel = () => {
@@ -196,16 +198,16 @@ function MultiRegion($jwtAuth, $translate, $timeout, toastr, ModalService, Clust
             };
 
             const updateClusterData = (clusterModel) => {
-                setLoader(true);
+                setStatusLoader(true);
                 ClusterRestService.getClusterConfig()
                     .then((response) => {
                         $scope.secondaryTag = ClusterConfiguration.fromJSON(response.data).secondaryTag;
                         setTopology(ClusterModel.fromJSON(clusterModel));
                     }).catch((response) => {
-                        const msg = getError(response);
-                        toastr.error(msg, $translate.instant('cluster_management.cluster_configuration_multi_region.error.disabling'));
-                    })
-                    .finally(() => setLoader(false));
+                    const msg = getError(response);
+                    toastr.error(msg, $translate.instant('cluster_management.cluster_configuration_multi_region.error.disabling'));
+                })
+                    .finally(() => setStatusLoader(false));
             };
 
             const handleClusterConfigurationPanelVisibility = (show) => {
@@ -226,6 +228,18 @@ function MultiRegion($jwtAuth, $translate, $timeout, toastr, ModalService, Clust
                 }
             };
 
+            const setStatusLoader = (loader, message) => {
+                $timeout.cancel($scope.loaderTimeout);
+                if (loader) {
+                    $scope.loaderMessage = message;
+                    $scope.loaderTimeout = $timeout(() => {
+                        $scope.statusLoader = loader;
+                    }, 150);
+                } else {
+                    $scope.statusLoader = false;
+                }
+            };
+
             // =========================
             // Events and watchers
             // =========================
@@ -242,7 +256,7 @@ function MultiRegion($jwtAuth, $translate, $timeout, toastr, ModalService, Clust
                 subscriptions.forEach((subscription) => subscription());
             };
 
-            $scope.$on('$destroy', function () {
+            $scope.$on('$destroy', function() {
                 removeAllListeners();
             });
 
@@ -255,6 +269,6 @@ function MultiRegion($jwtAuth, $translate, $timeout, toastr, ModalService, Clust
                 updateClusterData($scope.clusterModel);
             };
             init();
-        }
+        },
     };
 }

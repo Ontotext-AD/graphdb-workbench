@@ -425,3 +425,15 @@ ul.nodes-list li a:hover {
     padding: .4rem;
     border-bottom: 1px solid #eceeef;
 }
+
+.cluster-status-loader {
+    color: var(--gw-foreground-on-surface-secondary);
+    font-size: 1.5rem;
+}
+
+.multi-region-loader .ot-loader-new-content {
+    background-color: var(--gw-neutral-50-alpha-50);
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
