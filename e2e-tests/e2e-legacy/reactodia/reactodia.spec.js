@@ -1,6 +1,7 @@
 import {ReactodiaSteps} from '../../steps/reactodia-steps.js';
 import {LanguageSelectorSteps} from '../../steps/language-selector-steps.js';
 import {RepositorySelectorSteps} from '../../steps/repository-selector-steps.js';
+import {MainMenuSteps} from '../../steps/main-menu-steps.js';
 
 const FILE_TO_IMPORT = 'resource-test-data.ttl';
 const SEED_RESOURCE_ENCODED = 'http:%2F%2Fexample.com%2Fontology%23CustomerLoyalty';
@@ -66,6 +67,31 @@ describe('Reactodia graph explorer', () => {
         // Then I expect the same resources to remain visible because the layout is carried across the remount.
         ReactodiaSteps.getElements().should('have.length', 1);
         ReactodiaSteps.getElement(SEED_RESOURCE_LABEL).should('exist');
+    });
+
+    it('should keep the diagram on refresh but clear it when navigating away and back', () => {
+        // Given the reactodia view is opened with a start resource that gets seeded on the canvas.
+        ReactodiaSteps.visit(SEED_RESOURCE_ENCODED);
+        ReactodiaSteps.getElements().should('have.length', 1);
+        ReactodiaSteps.getElement(SEED_RESOURCE_LABEL).should('exist');
+
+        // When I refresh the page.
+        cy.reload();
+
+        // Then I expect the diagram state to be preserved across the refresh.
+        ReactodiaSteps.getElements().should('have.length', 1);
+        ReactodiaSteps.getElement(SEED_RESOURCE_LABEL).should('exist');
+
+        // When I navigate to another view via the navigation bar.
+        MainMenuSteps.clickOnSparqlMenu();
+        ReactodiaSteps.getComponent().should('not.exist');
+
+        // And I return to the reactodia view via the navigation bar.
+        MainMenuSteps.clickOnReactodia();
+
+        // Then I expect the canvas to be cleared, because leaving the view drops the persisted diagram state.
+        ReactodiaSteps.getWorkspace().should('exist');
+        ReactodiaSteps.getElements().should('not.exist');
     });
 
     describe('Repository switch', () => {
