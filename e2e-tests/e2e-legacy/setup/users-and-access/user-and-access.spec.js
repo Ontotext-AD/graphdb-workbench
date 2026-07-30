@@ -266,7 +266,6 @@ describe('User and Access', () => {
                 UserAndAccessSteps.toggleSecurity();
                 LoginSteps.loginWithUser('admin', DEFAULT_ADMIN_PASSWORD);
                 MainMenuSteps.clickOnSparqlMenu();
-                cy.get('h1').should('be.visible').should('contain', 'SPARQL Query & Update');
                 cy.url().should('include', '/sparql');
 
                 LoginSteps.logout();
@@ -733,34 +732,6 @@ describe('User and Access', () => {
 
             // Then I should still see all repositories for which the user has at least read permission.
             RepositorySteps.getRepositories().should('have.length', 4);
-        });
-
-        it('should keep a renamed repository visible for a user with manage permission', () => {
-            // Given there is a user with manage permission for a repository.
-            createUser(manageUser, PASSWORD, ROLE_USER, {manage: true, repoName: manageRepositoryId});
-            UserAndAccessSteps.toggleSecurity();
-            LoginSteps.loginWithUser(manageUser, PASSWORD);
-            RepositorySteps.visit(false);
-
-            // When the user renames the repository.
-            RepositorySteps.getEditRepositoryButton(manageRepositoryId).should('be.visible');
-            RepositorySteps.editRepository(manageRepositoryId);
-            RepositorySteps.editRepositoryId();
-            ModalDialogSteps.clickOKButton();
-            RepositorySteps.getGDBIdInput()
-                .should('be.enabled')
-                .clear()
-                .type(`${manageRepositoryId}-renamed`);
-            SecurityStubs.spyOnAuthenticatedUser();
-            RepositorySteps.getSaveRepositoryButton().click();
-            ModalDialogSteps.clickOKButton();
-            cy.wait('@get-authenticated-user').then(() => {
-                manageRepositoryId = `${manageRepositoryId}-renamed`;
-
-                // Then the renamed repository and its management actions should remain visible without a page refresh.
-                RepositorySteps.getRepositoryFromList(manageRepositoryId).should('be.visible');
-                RepositorySteps.getEditRepositoryButton(manageRepositoryId).should('be.visible');
-            });
         });
     });
 

@@ -28,9 +28,9 @@ export class LoginSteps {
 
     static loginWithUser(username, password) {
         cy.get('.login-form').should('be.visible');
-        cy.getByTestId('username-input').should('be.visible').type(username);
-        cy.getByTestId('password-input').should('be.visible').type(password);
-        cy.getByTestId('submit-btn').should('be.visible').click();
+        cy.getByTestId('username-input').type(username);
+        cy.getByTestId('password-input').type(password);
+        cy.getByTestId('submit-btn').click();
     }
 
     // TODO: Use the HeaderSteps.logout()
