@@ -210,7 +210,7 @@ function ontopRepoDirective($uibModal, RepositoriesRestService, toastr, Upload, 
                     data: {
                         file: uploadFile,
                         location: repositoryReference?.location,
-                        repositoryId: repositoryReference?.id,
+                        repositoryID: repositoryReference?.id,
                     },
                 };
                 Upload.upload(uploadData)
