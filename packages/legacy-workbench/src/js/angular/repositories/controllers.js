@@ -805,12 +805,25 @@ EditRepositoryCtrl.$inject = ['$rootScope', '$scope', '$routeParams', 'toastr', 
     '$translate', 'MonitoringRestService'];
 
 function EditRepositoryCtrl($rootScope, $scope, $routeParams, toastr, $repositories, $location, ModalService, RepositoriesRestService, $translate, MonitoringRestService) {
+    // =========================
+    // Private variables
+    // =========================
+
+    const authorizationService = service(AuthorizationService);
+
+    // =========================
+    // Public variables
+    // =========================
+
     $scope.rulesets = STATIC_RULESETS.slice();
     $scope.repositoryTypes = REPOSITORY_TYPES;
     $scope.entityIndexSizeMin = ENTITY_INDEX_SIZE_MIN;
 
     $scope.editRepoPage = true;
     $scope.canEditRepoId = false;
+    // Renaming a repository is allowed only for administrators and repository managers. Users with a repository
+    // specific maintain permission may change the repository configuration, but not its id.
+    $scope.canRenameRepo = false;
     $scope.isRepoInCluster = true;
     $scope.params = $routeParams;
     $scope.loader = true;
@@ -825,6 +838,10 @@ function EditRepositoryCtrl($rootScope, $scope, $routeParams, toastr, $repositor
         return $repositories.hasActiveLocation();
     };
 
+    // =========================
+    // Private methods
+    // =========================
+
     const loadRepositoryData = () => {
         return getFilteredLocations($repositories).then((locations) => {
             $scope.locations = locations;
@@ -834,6 +851,7 @@ function EditRepositoryCtrl($rootScope, $scope, $routeParams, toastr, $repositor
 
     const initView = (repositoryInfoResponse) => {
         const repositoryInfo = repositoryInfoResponse.data;
+        $scope.canRenameRepo = authorizationService.isAdminOrRepoManager();
         if (angular.isDefined(repositoryInfo.params.ruleset)) {
             let ifRulesetExists = false;
             angular.forEach($scope.rulesets, function(item) {
@@ -852,6 +870,10 @@ function EditRepositoryCtrl($rootScope, $scope, $routeParams, toastr, $repositor
         $scope.repositoryInfo.saveId = $scope.saveRepoId;
         $scope.loader = false;
     };
+
+    // =========================
+    // Public methods
+    // =========================
 
     $scope.$watch($scope.hasActiveLocation, function() {
         if ($scope.hasActiveLocation) {
@@ -956,6 +978,9 @@ function EditRepositoryCtrl($rootScope, $scope, $routeParams, toastr, $repositor
     };
 
     $scope.editRepositoryId = function() {
+        if (!$scope.canRenameRepo) {
+            return;
+        }
         const msg = decodeHTML($translate.instant('edit.repo.id.warning.msg'));
 
         ModalService.openSimpleModal({
@@ -979,6 +1004,10 @@ function EditRepositoryCtrl($rootScope, $scope, $routeParams, toastr, $repositor
     $scope.getShaclOptionsClass = function() {
         return getShaclOptionsClass();
     };
+
+    // =================================
+    // Subscriptions and event handlers
+    // =================================
 
     const languageChangedSubscription = $rootScope.$on('$translateChangeSuccess', () => {
         $scope.pageTitle = $translate.instant('view.edit.repo.title', {repositoryId: $scope.params.repositoryId});
