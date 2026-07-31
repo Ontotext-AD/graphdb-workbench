@@ -130,7 +130,7 @@
                                                 gdb-tooltip="{{location.degradedReason}}{{'repo.not.supported.delete.or.edit' | translate}}"
                                                 tooltip-placement="top"></em>
                                         </span>
-                                        <span ng-if="canManageRepo(repository) && repository.type !== 'system' && !location.degradedReason">
+                                        <span ng-if="canMaintainRepo(repository) && repository.type !== 'system' && !location.degradedReason">
                                             <a class="btn btn-link p-0 edit-repository-btn"
                                                href="repository/edit/{{repository.id}}?location={{repository.location}}"
                                                gdb-tooltip="{{'repoTooltips.editRepository' | translate}}"
@@ -286,7 +286,7 @@
                                             </div>
                                         </td>
                                         <td class="text-nowrap repository-actions">
-                                            <div ng-if="canManageRepo(repository)">
+                                            <div ng-if="canMaintainRepo(repository)">
                                                 <button class="btn btn-link p-0"
                                                         ng-click="copyToClipboard(repository.externalUrl)"
                                                         gdb-tooltip="{{'copy.repo.url' | translate}}">

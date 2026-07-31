@@ -1,5 +1,5 @@
 import {Service} from '../../../providers/service/service';
-import {Repository} from '../../../models/repositories';
+import {RepositoryReference} from '../../../models/repositories';
 
 /**
  * Service responsible for generating authority strings related to repository access control.
@@ -13,7 +13,7 @@ export class RepositoryAuthorityService implements Service {
    * @param repository The repository to check.
    * @returns True if the repository is a system repository, false otherwise.
    */
-  isSystemRepository(repository: Repository): boolean {
+  isSystemRepository(repository: RepositoryReference): boolean {
     return repository.id === this.SYSTEM_REPOSITORY_ID;
   }
 
@@ -42,7 +42,7 @@ export class RepositoryAuthorityService implements Service {
    * @param repository The repository for which to generate the location-specific identifier.
    * @returns The location-specific identifier for the repository.
    */
-  getLocationSpecificId(repository: Repository): string {
+  getLocationSpecificId(repository: RepositoryReference): string {
     return repository.location ? `${repository.id}@${repository.location}` : repository.id;
   }
 

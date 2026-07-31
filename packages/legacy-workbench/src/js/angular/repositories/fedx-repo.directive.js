@@ -48,7 +48,7 @@ function fedxRepoDirective($uibModal, RepositoriesRestService, toastr, $translat
         function populateKnownRepos() {
             for (const member of $scope.fedxMembers) {
                 $scope.knownRepos = $scope.knownRepos
-                    .filter((repo) => authorizationService.canManageRepo(repo))
+                    .filter((repo) => authorizationService.canMaintainRepo(repo))
                     .filter((repo) => {
                     if (member.repositoryServer) {
                         // if the member is a remote attached member
@@ -77,8 +77,8 @@ function fedxRepoDirective($uibModal, RepositoriesRestService, toastr, $translat
             return member.writable === 'true' ? ' active' : '';
         };
 
-        $scope.canManageRepo = (fedxMember) => {
-            return authorizationService.canManageRepo({id: fedxMember.repositoryName, location: fedxMember.repositoryServer});
+        $scope.canMaintainRepo = (fedxMember) => {
+            return authorizationService.canMaintainRepo({id: fedxMember.repositoryName, location: fedxMember.repositoryServer});
         };
 
         function getWritableRepo() {

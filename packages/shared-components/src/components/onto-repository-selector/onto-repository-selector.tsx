@@ -195,8 +195,8 @@ export class OntoRepositorySelector {
         <div class="value">${TranslationService.translate('repository-selector.tooltip.types.' + (repository.type || 'unknown'))}</div>
       </div>
       <div class="repository-tooltip-row">
-        <div class="label">${TranslationService.translate('repository-selector.tooltip.permission')}:</div>
-        <div class="value">${TranslationService.translate(`repository-selector.tooltip.permissions.${this.getRepositoryPermission(repository)}`)}</div>
+        <div class="label">${TranslationService.translate('repository-selector.tooltip.permissions_label')}:</div>
+        <div class="value">${TranslationService.translate(`repository-selector.tooltip.permissions.${this.getRepositoryPermission(repository).toLowerCase()}`)}</div>
       </div>`;
 
     html += this.buildRepositorySizeInfoHtml(repositorySizeInfo);

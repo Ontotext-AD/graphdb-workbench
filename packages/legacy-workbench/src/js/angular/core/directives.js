@@ -124,8 +124,8 @@ function coreErrors($timeout, $location) {
         link: function(scope, element, attrs) {
             const authorizationService = service(AuthorizationService);
 
-            const filterByRole = attrs.filterByRole;
-            const filterByRoleFilter = (repo) => !filterByRole || authorizationService.hasRole(filterByRole, repo);
+            const filterByRepoPermissionType = attrs.filterByRepoPermissionType;
+            const filterByRepoPermissionTypeFilter = (repo) => !filterByRepoPermissionType || authorizationService.hasRepoPermission(filterByRepoPermissionType, repo);
             const filterByType = attrs.filterByType?.split(',');
             const filterByTypeFilter = (repo) => !filterByType || filterByType.includes(repo.type);
 
@@ -164,7 +164,7 @@ function coreErrors($timeout, $location) {
                 const repositories = scope.isRestricted ? scope.getWritableRepositories() : scope.getReadableRepositories();
                 return repositories
                     .filter(remoteLocationsFilter)
-                    .filter(filterByRoleFilter)
+                    .filter(filterByRepoPermissionTypeFilter)
                     .filter(filterByTypeFilter);
             };
 
