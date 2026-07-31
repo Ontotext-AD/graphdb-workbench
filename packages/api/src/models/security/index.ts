@@ -6,6 +6,5 @@ export * from './authorization/authority';
 export * from './authorization/authority-list';
 export * from './restricted-pages';
 export * from './openid-security-config';
-export * from './rights';
 export * from './response-models';
 export * from './auth-settings';

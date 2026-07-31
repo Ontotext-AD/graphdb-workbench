@@ -515,9 +515,9 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         return authorizationService.hasRole(UserRole.ROLE_REPO_MANAGER) && !$repositories.getDegradedReason();
     };
 
-    $scope.canManageSelectedRepository = () => {
+    $scope.canMaintainSelectedRepository = () => {
         const selectedRepository = repositoryContextService.getSelectedRepository();
-        return authorizationService.canManageRepo(selectedRepository) && !$repositories.getDegradedReason();
+        return authorizationService.canMaintainRepo(selectedRepository) && !$repositories.getDegradedReason();
     };
 
     $scope.getSavedQueries = function() {

@@ -12,11 +12,11 @@ export const mapGraphdbAuthoritiesResponseToModel: MapperFn<AuthorityList, Graph
   }
 
   const customAuthorities: string[] = [];
-  const repoMap: Record<string, { read: boolean, write: boolean, manage: boolean, graphql: boolean }> = {};
+  const repoMap: Record<string, { read: boolean, write: boolean, maintain: boolean, graphql: boolean }> = {};
   // Helper to ensure a fresh entry for each repository.
   const getOrCreateRepo = (repoId: string) => {
     if (!repoMap[repoId]) {
-      repoMap[repoId] = {read: false, write: false, manage: false, graphql: false};
+      repoMap[repoId] = {read: false, write: false, maintain: false, graphql: false};
     }
     return repoMap[repoId];
   };
@@ -42,8 +42,8 @@ export const mapGraphdbAuthoritiesResponseToModel: MapperFn<AuthorityList, Graph
       if (repo === '*') {
         isWriteAll = true;
       }
-    } else if (prefix === Authority.MANAGE_REPO_PREFIX) {
-      entry.manage = true;
+    } else if (prefix === Authority.MAINTAIN_REPO_PREFIX) {
+      entry.maintain = true;
     } else if (prefix === Authority.GRAPHQL_PREFIX) {
       entry.graphql = true;
       if (repo === '*') {
@@ -55,9 +55,9 @@ export const mapGraphdbAuthoritiesResponseToModel: MapperFn<AuthorityList, Graph
   const graphDBAuthorities: string[] = [];
   Object.keys(repoMap).forEach((repoId) => {
     const perms = repoMap[repoId];
-    if (perms.manage) {
+    if (perms.maintain) {
       graphDBAuthorities.push(
-        `${Authority.MANAGE_REPO_PREFIX}${repoId}`,
+        `${Authority.MAINTAIN_REPO_PREFIX}${repoId}`,
         `${Authority.WRITE_REPO_PREFIX}${repoId}`,
         `${Authority.READ_REPO_PREFIX}${repoId}`);
     } else if (perms.graphql || isGraphqlAll) {

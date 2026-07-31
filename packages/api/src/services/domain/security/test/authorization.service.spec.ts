@@ -815,7 +815,7 @@ describe('AuthorizationService', () => {
   });
 
   describe('getRepositoryPermission', () => {
-    test('should return manage permission for administrators on all repositories', () => {
+    test('should return maintain permission for administrators on all repositories', () => {
       const repository = {id: 'testRepo'} as Repository;
 
       // Given, security is enabled
@@ -832,11 +832,11 @@ describe('AuthorizationService', () => {
 
       // When, I get the user's permission for the repository
       const repositoryPermission = authorizationService.getRepositoryPermission(repository);
-      // Then, the user should have manage permission
-      expect(repositoryPermission).toBe(RepositoryPermissionType.MANAGE);
+      // Then, the user should have maintain permission
+      expect(repositoryPermission).toBe(RepositoryPermissionType.MAINTAIN);
     });
 
-    test('should return manage permission for repository managers on all repositories', () => {
+    test('should return maintain permission for repository managers on all repositories', () => {
       const repository = {id: 'testRepo'} as Repository;
 
       // Given, security is enabled
@@ -853,39 +853,39 @@ describe('AuthorizationService', () => {
 
       // When, I get the user's permission for the repository
       const repositoryPermission = authorizationService.getRepositoryPermission(repository);
-      // Then, the user should have manage permission
-      expect(repositoryPermission).toBe(RepositoryPermissionType.MANAGE);
+      // Then, the user should have maintain permission
+      expect(repositoryPermission).toBe(RepositoryPermissionType.MAINTAIN);
     });
 
-    test('should return manage permission only for repositories the user is authorized to manage', () => {
-      const managedRepositoryId = 'managedTestRepoId';
-      const managedRepository = {id: managedRepositoryId} as Repository;
+    test('should return maintain permission only for repositories the user is authorized to maintain', () => {
+      const maintainedRepositoryId = 'maintainedTestRepoId';
+      const maintainedRepository = {id: maintainedRepositoryId} as Repository;
       const readRepositoryId = 'readTestRepoId';
       const readRepository = {id: readRepositoryId} as Repository;
 
       // Given, security is enabled
       const securityContextService = ServiceProvider.get(SecurityContextService);
       securityContextService.updateSecurityConfig(getSecurityConfig(true, true));
-      // And, the authenticated user can manage one repository and read another
+      // And, the authenticated user can maintain one repository and read another
       const user = mapAuthenticatedUserResponseToModel({
         external: false,
         authorities: [
           Authority.ROLE_USER,
-          Authority.MANAGE_REPO_PREFIX + managedRepositoryId,
+          Authority.MAINTAIN_REPO_PREFIX + maintainedRepositoryId,
           Authority.READ_REPO_PREFIX + readRepositoryId
         ]
       } as unknown as AuthenticatedUserResponse);
       securityContextService.updateAuthenticatedUser(user);
 
-      // When, I get the user's permission for the managed repository
-      const managedRepositoryPermission = authorizationService.getRepositoryPermission(managedRepository);
-      // Then, the user should have manage permission
-      expect(managedRepositoryPermission).toBe(RepositoryPermissionType.MANAGE);
+      // When, I get the user's permission for the maintain repository
+      const maintainedRepositoryPermission = authorizationService.getRepositoryPermission(maintainedRepository);
+      // Then, the user should have maintain permission
+      expect(maintainedRepositoryPermission).toBe(RepositoryPermissionType.MAINTAIN);
 
       // When, I get the user's permission for the repository they can only read
       const readRepositoryPermission = authorizationService.getRepositoryPermission(readRepository);
-      // Then, the user should not have manage permission
-      expect(readRepositoryPermission).not.toBe(RepositoryPermissionType.MANAGE);
+      // Then, the user should not have maintain permission
+      expect(readRepositoryPermission).not.toBe(RepositoryPermissionType.MAINTAIN);
     });
 
     test('should return write permission for repositories the user is authorized to write to', () => {

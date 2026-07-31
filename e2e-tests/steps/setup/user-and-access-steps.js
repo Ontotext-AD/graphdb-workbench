@@ -303,7 +303,7 @@ export class UserAndAccessSteps {
         return cy.get(repoLineAlias).find('.ri-edit-line');
     }
 
-    static findManageIconAlias(repoLineAlias) {
+    static findMaintainIconAlias(repoLineAlias) {
         return cy.get(repoLineAlias).find('.ri-folder-settings-line');
     }
 
@@ -382,24 +382,24 @@ export class UserAndAccessSteps {
         this.validateRightsForRepo(repoName, writeAccessCheckbox, expectedState);
     }
 
-    // ============= Manange Repository Access Toggles and Validations =============
+    // ============= Maintain Repository Access Toggles and Validations =============
 
-    static getManageAccessRepoCheckbox(repoName) {
+    static getMaintainAccessRepoCheckbox(repoName) {
         return this.getRepositoryRightsLine(repoName)
-            .find('.manage-repository');
+            .find('.maintain-repository');
     }
 
-    static clickManageAccessRepo(repoName) {
-        UserAndAccessSteps.getManageAccessRepoCheckbox(repoName).realClick();
+    static clickMaintainAccessRepo(repoName) {
+        UserAndAccessSteps.getMaintainAccessRepoCheckbox(repoName).realClick();
     }
 
-    static toggleManageRepoForRepo(repoName) {
-        return this.clickManageAccessRepo(repoName);
+    static toggleMaintainRepoForRepo(repoName) {
+        return this.clickMaintainAccessRepo(repoName);
     }
 
-    static validateManageAccessForRepo(repoName, expectedState) {
-        const manageAccessCheckbox = this.getManageAccessRepoCheckbox(repoName);
-        this.validateRightsForRepo(repoName, manageAccessCheckbox, expectedState);
+    static validateMaintainAccessForRepo(repoName, expectedState) {
+        const maintainAccessCheckbox = this.getMaintainAccessRepoCheckbox(repoName);
+        this.validateRightsForRepo(repoName, maintainAccessCheckbox, expectedState);
     }
 
     // ============= GraphQL Access Toggles and Validations =============
