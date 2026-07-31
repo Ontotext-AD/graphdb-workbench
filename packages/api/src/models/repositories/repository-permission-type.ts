@@ -5,31 +5,31 @@ export enum RepositoryPermissionType {
   /**
    * The user has no permission for the repository.
    */
-  NONE = 'none',
+  NONE = 'NONE',
 
   /**
    * The user has read permission for the repository.
    */
-  READ = 'read',
+  READ = 'READ',
 
   /**
    * The user has read and write permissions for the repository.
    */
-  WRITE = 'write',
+  WRITE = 'WRITE',
 
   /**
-   * The user has repository management permissions, including read and write operations,
+   * The user has repository maintain permissions, including read and write operations,
    * but not creating or deleting repositories.
    */
-  MANAGE = 'manage',
+  MAINTAIN = 'MAINTAIN',
 
   /**
    * The user has permission to execute GraphQL queries.
    */
-  GRAPHQL_READ = 'graphql_read',
+  GRAPHQL_READ = 'GRAPHQL_READ',
 
   /**
    * The user has permission to execute GraphQL queries and mutations.
    */
-  GRAPHQL_WRITE = 'graphql_write'
+  GRAPHQL_WRITE = 'GRAPHQL_WRITE'
 }

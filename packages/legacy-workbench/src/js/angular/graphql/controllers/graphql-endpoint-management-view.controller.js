@@ -11,6 +11,7 @@ import {LoggerProvider} from "../../core/services/logger-provider";
 import {
     AuthorizationService,
     RepositoryContextService,
+    RepositoryPermissionType,
     RepositoryType,
     service,
 } from '@ontotext/workbench-api';
@@ -62,6 +63,7 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
     // =========================
     // Public variables
     // =========================
+    $scope.RepositoryPermissionType = RepositoryPermissionType;
 
     /**
      * Flag indicating if there are any GraphQL endpoints.
@@ -136,10 +138,10 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
     $scope.isGraphDBRepository = false;
 
     /**
-     * A flag indicating if user can manage the selected repository.
+     * A flag indicating if user can maintain the selected repository.
      * @type {boolean}
      */
-    $scope.canManageSelectedRepository = false;
+    $scope.canMaintainSelectedRepository = false;
 
     $scope.RepositoryType = RepositoryType;
 
@@ -391,7 +393,7 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
         if (!repositoryObject) {
             $scope.isSelectedRepositoryLocal = false;
             $scope.isGraphDBRepository = false;
-            $scope.canManageSelectedRepository = false;
+            $scope.canMaintainSelectedRepository = false;
             return;
         }
         // Close any open dialogs before reloading repository-specific data. Dialogs are tied to the currently selected
@@ -401,7 +403,7 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
         closeDialogs();
         $scope.isSelectedRepositoryLocal = repositoryObject.local;
         $scope.isGraphDBRepository = RepositoryType.GRAPH_DB === repositoryObject.type;
-        $scope.canManageSelectedRepository = authorizationService.canManageRepo(repositoryObject);
+        $scope.canMaintainSelectedRepository = authorizationService.canMaintainRepo(repositoryObject);
         if ($scope.isSelectedRepositoryLocal) {
             onInit();
         }

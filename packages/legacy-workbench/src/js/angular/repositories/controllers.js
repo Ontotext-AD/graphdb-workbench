@@ -173,7 +173,7 @@ function LocationsAndRepositoriesCtrl($scope, $rootScope, $uibModal, toastr, $re
         }
 
         // Users without the repository manager role can access only locations where they have
-        // repository-specific management permission for at least one repository.
+        // repository-specific maintain permission for at least one repository.
         return remoteLocationModel.filter((location) => $scope.getRepositoriesFromLocation(location.uri)?.length > 0);
     };
 
@@ -441,8 +441,8 @@ function LocationsAndRepositoriesCtrl($scope, $rootScope, $uibModal, toastr, $re
         return authorizationService.isRepoManager();
     };
 
-    $scope.canManageRepo = (repo) => {
-        return authorizationService.canManageRepo(repo);
+    $scope.canMaintainRepo = (repo) => {
+        return authorizationService.canMaintainRepo(repo);
     };
 }
 

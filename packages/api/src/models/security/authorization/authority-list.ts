@@ -81,19 +81,19 @@ export class AuthorityList extends ModelList<string> {
     const grantedAuthorities: AuthoritiesUiModel = {
       [Authority.READ_REPO]: {},
       [Authority.WRITE_REPO]: {},
-      [Authority.MANAGE_REPO]: {},
+      [Authority.MAINTAIN_REPO]: {},
       [Authority.GRAPHQL]: {}
     };
 
     const uiModel = mapGrantedAuthoritiesResponseToModel(this.getItems());
     const auths = uiModel.getItems();
     auths.forEach(role => {
-      if (role.startsWith(Authority.READ_REPO_PREFIX) || role.startsWith(Authority.WRITE_REPO_PREFIX) || role.startsWith(Authority.MANAGE_REPO_PREFIX) || role.startsWith(Authority.GRAPHQL_PREFIX)) {
+      if (role.startsWith(Authority.READ_REPO_PREFIX) || role.startsWith(Authority.WRITE_REPO_PREFIX) || role.startsWith(Authority.MAINTAIN_REPO_PREFIX) || role.startsWith(Authority.GRAPHQL_PREFIX)) {
         const repoData = AuthoritiesUtil.getRepoFromAuthority(role);
         if (repoData) {
           const {prefix, repo} = repoData;
-          if (prefix === Authority.MANAGE_REPO_PREFIX) {
-            grantedAuthorities[Authority.MANAGE_REPO][repo] = true;
+          if (prefix === Authority.MAINTAIN_REPO_PREFIX) {
+            grantedAuthorities[Authority.MAINTAIN_REPO][repo] = true;
           } else if (prefix === Authority.READ_REPO_PREFIX) {
             grantedAuthorities[Authority.READ_REPO][repo] = true;
           } else if (prefix === Authority.WRITE_REPO_PREFIX) {
@@ -128,16 +128,16 @@ export class AuthorityList extends ModelList<string> {
       const repoData = AuthoritiesUtil.getRepoFromAuthority(authority);
       if (repoData) {
         const {prefix, repo} = repoData;
-        const permissions = repositories[repo] ?? {read: false, write: false, manage:false, graphql: false};
+        const permissions = repositories[repo] ?? {read: false, write: false, maintain: false, graphql: false};
         if (prefix === Authority.READ_REPO_PREFIX) {
           permissions.read = true;
         } else if (prefix === Authority.WRITE_REPO_PREFIX) {
           permissions.write = true;
-        } else if (prefix === Authority.MANAGE_REPO_PREFIX) {
-          permissions.manage = true;
+        } else if (prefix === Authority.MAINTAIN_REPO_PREFIX) {
+          permissions.maintain = true;
         }
 
-        if (repo.split(':')[1] === Authority.GRAPHQL && !permissions.manage) {
+        if (repo.split(':')[1] === Authority.GRAPHQL && !permissions.maintain) {
           permissions.graphql = true;
         }
         repositories[repo] = permissions;

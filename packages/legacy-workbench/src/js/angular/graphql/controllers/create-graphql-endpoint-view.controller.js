@@ -14,6 +14,7 @@ import {GraphqlEventName} from "../services/graphql-context.service";
 import {resolvePlaygroundUrlWithEndpoint} from "../services/endpoint-utils";
 import {
     RepositoryContextService,
+    RepositoryPermissionType,
     RepositoryType,
     service,
     AuthorizationService,
@@ -46,6 +47,7 @@ function CreateGraphqlEndpointViewCtrl($scope, $location, $repositories, $transl
     // =========================
     // Public variables
     // =========================
+    $scope.RepositoryPermissionType = RepositoryPermissionType;
 
     /**
      * The source repositories select menu model.
@@ -98,10 +100,10 @@ function CreateGraphqlEndpointViewCtrl($scope, $location, $repositories, $transl
     $scope.isGraphDBRepository = false;
 
     /**
-     * A flag indicating if user can manage the selected repository.
+     * A flag indicating if user can maintain the selected repository.
      * @type {boolean}
      */
-    $scope.canManageSelectedRepository = false;
+    $scope.canMaintainSelectedRepository = false;
 
     /**
      * A flag indicating if there is a selected repository.
@@ -311,7 +313,7 @@ function CreateGraphqlEndpointViewCtrl($scope, $location, $repositories, $transl
     const setupSourceRepositories = () => {
         $scope.sourceRepositories = $repositories.getRepositoriesAsSelectMenuOptions(
             () => $repositories.getLocalReadableGraphdbRepositories()
-                .filter((repository) => authorizationService.canManageRepo(repository)),
+                .filter((repository) => authorizationService.canMaintainRepo(repository)),
         );
         const activeRepository = repositoryContextService.getSelectedRepository();
         $scope.hasSelectedRepository = !!activeRepository;
@@ -324,8 +326,8 @@ function CreateGraphqlEndpointViewCtrl($scope, $location, $repositories, $transl
             GraphqlContextService.updateSourceRepository($scope.selectedSourceRepository?.value);
             $scope.previousSelectedSourceRepository = $scope.selectedSourceRepository;
 
-            // Sets a flag indicating whether the user has management permissions for the selected repository.
-            $scope.canManageSelectedRepository = $scope.hasSelectedRepository && authorizationService.canManageRepo(activeRepository);
+            // Sets a flag indicating whether the user has maintenance permission for the selected repository.
+            $scope.canMaintainSelectedRepository = $scope.hasSelectedRepository && authorizationService.canMaintainRepo(activeRepository);
         }
     };
 

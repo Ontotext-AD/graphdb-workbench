@@ -258,7 +258,7 @@
                                         class="ri-eye-line icon-lg" gdb-tooltip="{{'security.tooltip.read' | translate}}"></em></th>
                                     <th id="writeRightColumn" class="text-xs-center write-column auth-column"><span class="auth-column-label">{{'security.label.write' | translate}}</span><em
                                         class="ri-edit-line icon-lg" gdb-tooltip="{{'security.tooltip.write' | translate}}"></em></th>
-                                    <th id="manageRepositoryColumn" class="text-xs-center manage-repository-column auth-column"><span class="auth-column-label">{{'security.label.manage_repository' | translate}}</span><em class="ri-folder-settings-line icon-lg" gdb-tooltip="{{'security.tooltip.manage_repository' | translate}}"></em></th>
+                                    <th id="maintainRepositoryColumn" class="text-xs-center maintain-repository-column auth-column"><span class="auth-column-label">{{'security.label.maintain_repository' | translate}}</span><em class="ri-folder-settings-line icon-lg" gdb-tooltip="{{'security.tooltip.maintain_repository' | translate}}"></em></th>
                                         <th id="graphql" class="text-xs-center auth-column graphql-column"><span
                                         class="auth-column-label">{{'security.label.graphql' | translate}}</span></th>
                                 </tr>
@@ -279,9 +279,9 @@
                                         </span>
                                     </th>
 
-                                    <th class="text-xs-center manage-repository-any">
+                                    <th class="text-xs-center maintain-repository-any">
                                             <span>
-                                                <input class="manage-repository" type="checkbox" ng-checked="hasManageRepositoryPermission('*')" ng-disabled="true">
+                                                <input class="maintain-repository" type="checkbox" ng-checked="hasMaintainRepositoryPermission('*')" ng-disabled="true">
                                             </span>
                                         </th>
 
@@ -317,9 +317,9 @@
                                             </span>
                                         </td>
 
-                                            <td class="text-xs-center manage-repository-rights">
+                                            <td class="text-xs-center maintain-repository-rights">
                                                 <span ng-click="setGrantedAuthorities()">
-                                                    <input class="manage-repository" type="checkbox" ng-model="grantedAuthorities.MANAGE_REPO[createUniqueKey(repository)]" ng-checked="hasManageRepositoryPermission(repository)" ng-disabled="manageRepoCheckDisabled(repository)">
+                                                    <input class="maintain-repository" type="checkbox" ng-model="grantedAuthorities.MAINTAIN_REPO[createUniqueKey(repository)]" ng-checked="hasMaintainRepositoryPermission(repository)" ng-disabled="maintainRepoCheckDisabled(repository)">
                                                 </span>
                                             </td>
 
