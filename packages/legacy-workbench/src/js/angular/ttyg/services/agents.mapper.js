@@ -262,7 +262,7 @@ export const mapAgentListModelToAgentViewListModel = (agentList, authorizationSe
 
 /**
  * Converts an {@link AgentModel} into an {@link AgentViewModel} by enriching it
- * with UI-specific permissions based on the current user's repository management rights.
+ * with UI-specific permissions based on the current user's repository maintain rights.
  *
  * @param {AgentModel} agent The agent to convert.
  * @param {AuthorizationService} authorizationService The authorization service used to determine user permissions.
@@ -270,11 +270,11 @@ export const mapAgentListModelToAgentViewListModel = (agentList, authorizationSe
  */
 export const mapAgentModelToAgentViewModel = (agent, authorizationService) => {
     const viewAgent = new AgentViewModel(agent);
-    const canManageRepo = authorizationService.canManageRepo({id: agent.repositoryId, location: ''});
-    viewAgent.canEditAgent = canManageRepo;
+    const canMaintainRepo = authorizationService.canMaintainRepo({id: agent.repositoryId, location: ''});
+    viewAgent.canEditAgent = canMaintainRepo;
     viewAgent.canCopyAgent = true;
-    viewAgent.canDeleteAgent = canManageRepo;
-    viewAgent.canOpenExternalIntegrationConfiguration = canManageRepo;
+    viewAgent.canDeleteAgent = canMaintainRepo;
+    viewAgent.canOpenExternalIntegrationConfiguration = canMaintainRepo;
 
     return viewAgent;
 };

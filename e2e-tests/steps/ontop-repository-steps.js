@@ -9,8 +9,20 @@ export class OntopRepositorySteps {
         return cy.get('div').contains("OBDA or R2RML file *").parent();
     }
 
+    static getPage() {
+        return cy.get('#wb-repository');
+    }
+
     static getOBDAUploadButton() {
         return cy.get('span[for="obdaFile"]').contains("Upload file...");
+    }
+
+    static getOBDAFileFieldEditButton() {
+        return OntopRepositorySteps.getOBDAFileField().find('.ot-edit-input');
+    }
+
+    static editOBDAFile() {
+        OntopRepositorySteps.getOBDAFileFieldEditButton().click();
     }
 
     static getOntologyFileField() {
@@ -119,9 +131,17 @@ export class OntopRepositorySteps {
         OntopRepositorySteps.getOBDAUploadButton().click();
     }
 
+    static getAdditionalJDBCProperties() {
+        return OntopRepositorySteps.getPage().find('.additional-jdbc-properties');
+    }
+
     static uploadObdaFile(file) {
         // The label for the input has visibility: hidden, so force must be used
         // eq() index 0 for location of OBDA field input
         cy.get('input[type=file]').eq(0).selectFile(file, {force: true});
+    }
+
+    static getOntopSaveButton() {
+        return  cy.get('#addEditOntopRepository');
     }
 }

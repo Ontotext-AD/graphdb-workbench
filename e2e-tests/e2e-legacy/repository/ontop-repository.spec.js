@@ -241,4 +241,136 @@ describe('Ontop repositories', () => {
         // Then I expect url to be calculated properly
         OntopRepositorySteps.getUrlInput().should('have.value', 'jdbc:snowflake://someHostName.snowflakecomputing.com:1234/?warehouse=test_database');
     });
+
+    context('Repository maintenance permission', () => {
+
+        const PASSWORD = 'root';
+        const REPOSITORY_MAINTAINER_USERNAME = 'repoMaintainer';
+        const REPOSITORY_MANAGER_USERNAME = 'repoManager';
+
+        beforeEach(() => {
+            cy.createUser({
+                username: REPOSITORY_MAINTAINER_USERNAME,
+                password: PASSWORD,
+                grantedAuthorities: [
+                    `READ_REPO_${repositoryId}`,
+                    `MAINTAIN_REPO_${repositoryId}`,
+                    `WRITE_REPO_${repositoryId}`
+                ]
+            });
+            cy.createUser({
+                username: REPOSITORY_MANAGER_USERNAME,
+                password: PASSWORD,
+                grantedAuthorities: [
+                    'ROLE_USER',
+                    'ROLE_MONITORING',
+                    'ROLE_REPO_MANAGER'
+                ]
+            });
+            cy.switchOnSecurity();
+        });
+
+        afterEach(() => {
+            cy.loginAsAdmin()
+                .then(() => {
+                    cy.deleteUser(REPOSITORY_MAINTAINER_USERNAME, true);
+                    cy.deleteUser(REPOSITORY_MANAGER_USERNAME, true);
+                    cy.switchOffSecurity(true);
+                });
+        });
+        it('should allow a repository maintainer to edit an Ontop repository', () => {
+            RepositoryStubs.spyGetJDBCProperties();
+            // GIVEN: An Ontop repository exists
+            cy.loginAs(REPOSITORY_MANAGER_USERNAME, PASSWORD);
+            OntopRepositorySteps.visitCreate();
+            createOntopRepository(repositoryId);
+
+            // WHEN: I log in as a user with maintenance permission
+            cy.loginAs(REPOSITORY_MAINTAINER_USERNAME, PASSWORD);
+            RepositorySteps.visit(false);
+
+            // THEN: The repository is visible because the user can maintain it
+            RepositorySteps.getRepositoryFromList(repositoryId).should('exist');
+
+            // WHEN: I edit the repository
+            RepositorySteps.editRepository(repositoryId);
+            cy.wait('@getJDBCProperties');
+            RepositorySteps.getUsernameFieldEditRepo()
+                .should('have.value', '')
+                .type('username');
+
+            // Uploading an OBDA file verifies that the repository maintainer can access rest/repositories/file/upload
+            OntopRepositorySteps.clickObdaFileUploadButton();
+            OntopRepositorySteps.uploadObdaFile('fixtures/ontop/university-complete_edited.obda');
+
+            // Saving the form verifies that the repository maintainer can access rest/repositories/ontop/jdbc-properties
+            OntopRepositorySteps.getAdditionalJDBCProperties()
+                .should('have.value', '')
+                .type('ontop.cardinalityMode=LOOSE');
+
+            RepositorySteps.clickSaveEditedRepo();
+            ModalDialogSteps.clickOnConfirmButton();
+
+            // THEN: The changes are persisted
+            RepositorySteps.visit(false);
+            RepositorySteps.getRepositoryFromList(repositoryId).should('exist');
+            RepositorySteps.editRepository(repositoryId);
+            cy.wait('@getJDBCProperties');
+
+            OntopRepositorySteps.getOntopSaveButton().should('be.visible');
+            RepositorySteps.getUsernameFieldEditRepo()
+                .should('have.value', 'username');
+
+            // Loading the saved properties verifies GET access to rest/repositories/ontop/jdbc-properties
+            OntopRepositorySteps.getAdditionalJDBCProperties()
+                .should('contain.value', 'ontop.cardinalityMode=LOOSE');
+            // Saving of the OBDA file verifies that the repository maintainer can access rest/repositories/file/upload
+            OntopRepositorySteps.editOBDAFile();
+            ModalDialogSteps.getDialogBody()
+                .find('textarea')
+                .invoke('val')
+                .should('include', 'edited ODBA file');
+            ModalDialogSteps.close();
+
+            // WHEN: I edit and save the OBDA file
+            // Opening the editor verifies access to rest/repositories/file,
+            // while saving verifies access to rest/repositories/file/update.
+            OntopRepositorySteps.editOBDAFile();
+            ModalDialogSteps.getDialogHeader()
+                .should('contain', 'Edit "OBDA or R2RML file" contents');
+
+            ModalDialogSteps.getDialogBody()
+                .find('textarea')
+                .type('{moveToStart}Add commentary for testing purpose');
+
+            ModalDialogSteps.clickOKButton();
+            RepositorySteps.clickSaveEditedRepo();
+            ModalDialogSteps.clickOnConfirmButton();
+
+            // THEN: The OBDA file changes are persisted
+            RepositorySteps.visit(false);
+            RepositorySteps.getRepositoryFromList(repositoryId).should('exist');
+            RepositorySteps.editRepository(repositoryId);
+            cy.wait('@getJDBCProperties');
+            OntopRepositorySteps.editOBDAFile();
+
+            ModalDialogSteps.getDialogBody()
+                .find('textarea')
+                .invoke('val')
+                .should('include', 'Add commentary for testing purpose');
+        });
+    });
 });
+
+const createOntopRepository = (repositoryId) => {
+    RepositorySteps.typeRepositoryId(repositoryId);
+    OntopRepositorySteps.selectOracleDatabase();
+    OntopRepositorySteps.typeHostName('localhost');
+    OntopRepositorySteps.typePort(5423);
+    OntopRepositorySteps.typeDatabaseName('database-name');
+    OntopRepositorySteps.clickObdaFileUploadButton();
+    OntopRepositorySteps.uploadObdaFile('fixtures/ontop/university-complete.obda');
+    // Wait edit OBDA edit button be visible to ensure that file is uploaded.
+    OntopRepositorySteps.getOBDAFileFieldEditButton().should('be.visible');
+    OntopRepositorySteps.clickOnCreateRepositoryButton();
+};

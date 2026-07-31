@@ -180,10 +180,10 @@ function TTYGViewCtrl(
     $scope.connectorID = undefined;
 
     /**
-     * A flag that determines whether the user has repository management permissions.
+     * A flag that determines whether the user has repository maintain permissions.
      * @type {boolean}
      */
-    $scope.canManageRepo = false;
+    $scope.canMaintainRepo = false;
 
     /**
      * A list of available repository IDs as a model for the agent list filter.
@@ -870,7 +870,7 @@ function TTYGViewCtrl(
 
     const buildRepositoryList = () => {
         $scope.activeRepositoryList = $repositories.getLocalReadableGraphdbRepositories()
-            .filter((repo) => authorizationService.canManageRepo(repo))
+            .filter((repo) => authorizationService.canMaintainRepo(repo))
             .map((repo) => (
                 new SelectMenuOptionsModel({
                     value: repo.id,
@@ -931,6 +931,6 @@ function TTYGViewCtrl(
                 return loadChats();
             })
             .then(setCurrentChat);
-        $scope.canManageRepo = authorizationService.isAdminOrRepoManager() || authorizationService.isManageRepoUser();
+        $scope.canMaintainRepo = authorizationService.isAdminOrRepoManager() || authorizationService.isRepoMaintainer();
     }
 }

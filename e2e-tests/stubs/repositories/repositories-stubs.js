@@ -247,4 +247,8 @@ export class RepositoriesStubs extends Stubs {
             }
         });
     }
+
+    static spyGetJDBCProperties() {
+        cy.intercept('GET', '/rest/repositories/ontop/jdbc-properties?**').as('getJDBCProperties');
+    }
 }

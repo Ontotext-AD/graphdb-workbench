@@ -1095,7 +1095,7 @@
             },
             "warnings": {
                 "unexpected_remote_repository": "The selected repository is in a remote location, and its endpoints aren’t accessible here. Select a repository from the current location.",
-                "no_managed_repository": "Endpoints can only be created for repositories you are authorized to manage.",
+                "no_maintained_repository": "Endpoints can only be created for repositories you are authorized to maintain.",
                 "no_graphdb_repository": "Endpoints can only be created in GraphDB repositories. Please select a GraphDB repository to continue."
             }
         },
@@ -1341,7 +1341,7 @@
             },
             "warnings": {
                 "unexpected_remote_repository": "Endpoints can only be created for repositories in the current location. Select a local repository to continue.",
-                "no_managed_repository": "Endpoints can only be created for repositories you are authorized to manage.",
+                "no_maintained_repository": "Endpoints can only be created for repositories you are authorized to maintain.",
                 "no_graphdb_repository": "Endpoints can only be created in GraphDB repositories. Please select a GraphDB repository to continue."
             }
         }
@@ -1665,11 +1665,11 @@
     "security.repository.title": "Repository",
     "security.tooltip.read": "Read permissions",
     "security.tooltip.write": "Write permissions",
-    "security.tooltip.manage_repository": "Manage permissions",
+    "security.tooltip.maintain_repository": "Maintain permissions",
     "security.tooltip.graphql": "GraphQL only rights",
     "security.label.read": "Read",
     "security.label.write": "Write",
-    "security.label.manage_repository": "Manage",
+    "security.label.maintain_repository": "Maintain",
     "security.label.graphql": "GraphQL only",
     "security.user.may": "User may:",
     "security.use.gdb": "Use GraphDB",
@@ -1742,7 +1742,7 @@
     "security.has.read.permission": "Has read permission",
     "security.no.read.access": "Does not have read access",
     "security.has.write.permission": "Has write permission",
-    "security.has.manage.permission": "Has repository manage permission",
+    "security.has.maintain.permission": "Has repository maintenance permission",
     "security.has.mutation_permission": "Has mutation permission",
     "security.no.mutation_permission": "Does not have mutation permission",
     "security.no.write.access": "Does not have write access",
@@ -2789,11 +2789,11 @@
     "no.file.selected.error": "No file selected",
     "selected.file.msg": "Selected: {{name}}",
     "type.label": "Type:",
-    "permission.label": "Permission:",
+    "permissions.label": "Permissions:",
     "repository.permission.none": "None",
     "repository.permission.read": "Read",
     "repository.permission.write": "Read/Write",
-    "repository.permission.manage": "Read/Write/Manage",
+    "repository.permission.maintain": "Read/Write/Maintain",
     "repository.permission.graphql_read": "Read (GraphQL only)",
     "repository.permission.graphql_write": "Read/Write (GraphQL only)",
     "total.statements.label": "Total statements:",
