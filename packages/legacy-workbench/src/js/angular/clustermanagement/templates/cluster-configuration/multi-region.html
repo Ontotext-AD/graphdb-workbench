@@ -2,7 +2,9 @@
 
 <div class="multi-region">
     <div ng-if="topology.state === TopologyState.PRIMARY_NODE">
-        <h4 class="title">{{'cluster_management.cluster_configuration_multi_region.primary_cluster' | translate}}</h4>
+        <h4 class="title">{{'cluster_management.cluster_configuration_multi_region.primary_cluster' | translate}}
+            <span ng-if="statusLoader" class="ri-reset-left-line icon-1-25x loader cluster-status-loader"></span>
+        </h4>
         <div class="mb-2" ng-if="isAdmin">
             <button type="button" class="btn btn-primary create-tag-btn"
                     ng-click="add()"
@@ -106,7 +108,9 @@
     </div>
 
     <div ng-if="topology.state === TopologyState.SECONDARY_NODE">
-        <h4>{{'cluster_management.cluster_configuration_multi_region.secondary_cluster' | translate}}</h4>
+        <h4>{{'cluster_management.cluster_configuration_multi_region.secondary_cluster' | translate}}
+            <span ng-if="statusLoader" class="ri-reset-left-line icon-1-25x loader cluster-status-loader"></span>
+        </h4>
         <div class="primary-leader mb-2">{{'cluster_management.cluster_configuration_multi_region.primary_leader' | translate: {primaryLeader:topology.primaryLeader} }}
         </div>
         <div class="mb-2" ng-if="isAdmin">
