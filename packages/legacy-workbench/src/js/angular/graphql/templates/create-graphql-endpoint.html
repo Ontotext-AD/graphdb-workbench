@@ -7,7 +7,7 @@
         <page-info-tooltip></page-info-tooltip>
     </h1>
 
-    <div class="core-errors-container" core-errors filter-by-role="ROLE_MANAGE_REPO" filter-by-type="{{RepositoryType.GRAPH_DB}}"></div>
+    <div class="core-errors-container" core-errors filter-by-repo-permission-type="{{RepositoryPermissionType.MAINTAIN}}" filter-by-type="{{RepositoryType.GRAPH_DB}}"></div>
 
     <div class="create-graphql-endpoint-container" ng-if="hasSelectedRepository">
 
@@ -19,11 +19,11 @@
             <div class="alert alert-warning">{{'graphql.create_endpoint.warnings.no_graphdb_repository' | translate}}</div>
         </div>
 
-        <div ng-if="!canManageSelectedRepository && isSelectedRepositoryLocal && isGraphDBRepository">
-            <div class="alert alert-warning">{{'graphql.create_endpoint.warnings.no_managed_repository' | translate}}</div>
+        <div ng-if="!canMaintainSelectedRepository && isSelectedRepositoryLocal && isGraphDBRepository">
+            <div class="alert alert-warning">{{'graphql.create_endpoint.warnings.no_maintained_repository' | translate}}</div>
         </div>
 
-        <div class="content" ng-if="selectedSourceRepository && isSelectedRepositoryLocal && isGraphDBRepository && canManageSelectedRepository">
+        <div class="content" ng-if="selectedSourceRepository && isSelectedRepositoryLocal && isGraphDBRepository && canMaintainSelectedRepository">
             <div class="toolbar">
                 <div class="form-inline">
                     <label

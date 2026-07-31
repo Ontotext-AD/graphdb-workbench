@@ -3,7 +3,7 @@ import 'angular/core/services/jwt-auth.service';
 import 'angular/core/services/security.service';
 import {UserRole, UserType} from 'angular/utils/user-utils';
 import 'angular/security/directives/custom-prefix-tags-input.directive';
-import {GRAPHQL, GRAPHQL_PREFIX, MANAGE_REPO, MANAGE_REPO_PREFIX, READ_REPO, READ_REPO_PREFIX, SYSTEM_REPO, WRITE_REPO, WRITE_REPO_PREFIX} from './services/constants';
+import {GRAPHQL, GRAPHQL_PREFIX, MAINTAIN_REPO, MAINTAIN_REPO_PREFIX, READ_REPO, READ_REPO_PREFIX, SYSTEM_REPO, WRITE_REPO, WRITE_REPO_PREFIX} from './services/constants';
 import {DocumentationUrlResolver} from '../utils/documentation-url-resolver';
 import {
     AppSettings,
@@ -103,9 +103,9 @@ securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$windo
         const mapRepositoryRights = (repositories) => Object.entries(repositories).map(([repository, rights]) => {
             let iconClass;
             let tooltipKey;
-            if (rights.manage) {
+            if (rights.maintain) {
                 iconClass = 'ri-folder-settings-line';
-                tooltipKey = 'security.has.manage.permission';
+                tooltipKey = 'security.has.maintain.permission';
             } else if (rights.write) {
                 iconClass = 'ri-edit-line';
                 tooltipKey = 'security.has.write.permission';
@@ -398,10 +398,10 @@ securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 't
         };
 
         $scope.isGraphQlOnlyRight = function(repository) {
-            const isManageRepoUser = $scope.hasManageRepositoryPermission(repository);
+            const isRepoMaintainer = $scope.hasMaintainRepositoryPermission(repository);
             const hasGraphQlPermissions = $scope.hasGraphqlPermission(repository) || $scope.hasGraphqlPermission('*');
             const hasReadWritePermissions = $scope.hasReadPermission(repository) || $scope.hasReadPermission('*') || $scope.hasWritePermission(repository) || $scope.hasWritePermission('*');
-            return !isManageRepoUser && hasGraphQlPermissions && hasReadWritePermissions;
+            return !isRepoMaintainer && hasGraphQlPermissions && hasReadWritePermissions;
         };
 
         $scope.setGrantedAuthorities = function() {
@@ -424,10 +424,10 @@ securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 't
                 pushAuthority(UserRole.ROLE_REPO_MANAGER);
             } else {
                 pushAuthority(UserRole.ROLE_USER);
-                for (const index in $scope.grantedAuthorities.MANAGE_REPO) {
-                    if ($scope.grantedAuthorities.MANAGE_REPO[index]) {
+                for (const index in $scope.grantedAuthorities.MAINTAIN_REPO) {
+                    if ($scope.grantedAuthorities.MAINTAIN_REPO[index]) {
                         $scope.repositoryCheckError = false;
-                        pushAuthority(MANAGE_REPO_PREFIX + index, WRITE_REPO_PREFIX + index, READ_REPO_PREFIX + index);
+                        pushAuthority(MAINTAIN_REPO_PREFIX + index, WRITE_REPO_PREFIX + index, READ_REPO_PREFIX + index);
                     }
                 }
 
@@ -476,7 +476,7 @@ securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 't
                 || $scope.grantedAuthorities.WRITE_REPO['*'])
                 || $scope.grantedAuthorities.READ_REPO[uniqueKey]
                 || $scope.grantedAuthorities.WRITE_REPO[uniqueKey]
-                || $scope.grantedAuthorities.MANAGE_REPO[uniqueKey];
+                || $scope.grantedAuthorities.MAINTAIN_REPO[uniqueKey];
         };
 
         $scope.hasWritePermission = function(repoOrWildCard) {
@@ -484,25 +484,25 @@ securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 't
             return $scope.userType === UserType.ADMIN
                 || $scope.userType === UserType.REPO_MANAGER
                 || repoOrWildCard.id !== SYSTEM_REPO && $scope.grantedAuthorities.WRITE_REPO['*']
-                || $scope.grantedAuthorities.MANAGE_REPO[uniqueKey]
+                || $scope.grantedAuthorities.MAINTAIN_REPO[uniqueKey]
                 || $scope.grantedAuthorities.WRITE_REPO[uniqueKey];
         };
 
-        $scope.hasManageRepositoryPermission = function(repoOrWildCard) {
+        $scope.hasMaintainRepositoryPermission = function(repoOrWildCard) {
             const uniqueKey = repositoryAuthorityService.getLocationSpecificId(repoOrWildCard);
             return $scope.userType === UserType.ADMIN
                 || $scope.userType === UserType.REPO_MANAGER
-                || $scope.grantedAuthorities.MANAGE_REPO[uniqueKey];
+                || $scope.grantedAuthorities.MAINTAIN_REPO[uniqueKey];
         };
 
         $scope.hasGraphqlPermission = function(repository) {
             const uniqueKey = repositoryAuthorityService.getLocationSpecificId(repository);
-            const isManageRepoUser = $scope.hasManageRepositoryPermission(repository);
+            const isRepoMaintainer = $scope.hasMaintainRepositoryPermission(repository);
             const hasGraphQlPermissions = $scope.grantedAuthorities.GRAPHQL['*'] || $scope.grantedAuthorities.GRAPHQL[uniqueKey];
             const hasReadWritePermissions = $scope.hasReadPermission(repository);
             const isSystemRepo = repository.id === SYSTEM_REPO;
 
-            return !isManageRepoUser && (!isSystemRepo && hasGraphQlPermissions && hasReadWritePermissions);
+            return !isRepoMaintainer && (!isSystemRepo && hasGraphQlPermissions && hasReadWritePermissions);
         };
 
         $scope.readCheckDisabled = function(repoOrWildCard) {
@@ -518,12 +518,12 @@ securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 't
             if ($scope.canExtendExternalUserRole && !$scope.allowRoleExtension) {
                 return true;
             }
-            return $scope.hasManageRepositoryPermission(repoOrWildCard)
+            return $scope.hasMaintainRepositoryPermission(repoOrWildCard)
                 || repoOrWildCard.id !== SYSTEM_REPO && repoOrWildCard !== '*' && $scope.grantedAuthorities.WRITE_REPO['*']
                 || $scope.hasEditRestrictions();
         };
 
-        $scope.manageRepoCheckDisabled = function() {
+        $scope.maintainRepoCheckDisabled = function() {
             if ($scope.canExtendExternalUserRole && !$scope.allowRoleExtension) {
                 return true;
             }
@@ -540,7 +540,7 @@ securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 't
          * @returns {boolean} true if disabled, false if enabled
          */
         $scope.graphqlCheckDisabled = function(repoOrWildCard) {
-            if ($scope.hasManageRepositoryPermission(repoOrWildCard)) {
+            if ($scope.hasMaintainRepositoryPermission(repoOrWildCard)) {
                 return true;
             }
 
@@ -586,7 +586,7 @@ securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 't
         $scope.grantedAuthorities = {
             [READ_REPO]: {},
             [WRITE_REPO]: {},
-            [MANAGE_REPO]: {},
+            [MAINTAIN_REPO]: {},
             [GRAPHQL]: {},
         };
 

@@ -1094,7 +1094,7 @@
             },
             "warnings": {
                 "unexpected_remote_repository": "Le dépôt sélectionné se trouve dans un emplacement distant et ses endpoints ne sont pas accessibles ici. Sélectionnez un dépôt de l’emplacement actuel.",
-                "no_managed_repository": "Les points de terminaison ne peuvent être créés que pour les référentiels que vous êtes autorisé à gérer.",
+                "no_maintained_repository": "Les endpoints ne peuvent être créés que pour les dépôts que vous êtes autorisé à maintenir.",
                 "no_graphdb_repository": "Les endpoints ne peuvent être créés que dans des référentiels GraphDB. Veuillez sélectionner un référentiel GraphDB pour continuer."
             }
         },
@@ -1340,7 +1340,7 @@
             },
             "warnings": {
                 "unexpected_remote_repository": "Les endpoints ne peuvent être créés que pour les dépôts situés dans l’emplacement actuel. Sélectionnez un dépôt local pour continuer.",
-                "no_managed_repository": "Les points de terminaison ne peuvent être créés que pour les référentiels que vous êtes autorisé à gérer.",
+                "no_maintained_repository": "Les endpoints ne peuvent être créés que pour les dépôts que vous êtes autorisé à maintenir.",
                 "no_graphdb_repository": "Les endpoints ne peuvent être créés que dans des référentiels GraphDB. Veuillez sélectionner un référentiel GraphDB pour continuer."
             }
         }
@@ -1665,10 +1665,10 @@
     "security.tooltip.read": "Permissions de lecture",
     "security.tooltip.write": "Permissions d'écriture",
     "security.tooltip.graphql": "Droits GraphQL uniquement",
-    "security.tooltip.manage_repository": "Permissions de gestion",
+    "security.tooltip.maintain_repository": "Autorisations de maintenance",
     "security.label.read": "Lire",
     "security.label.write": "Ecriture",
-    "security.label.manage_repository": "Diriger",
+    "security.label.maintain_repository": "Maintenance",
     "security.label.graphql": "GraphQL uniquement",
     "security.user.may": "L'utilisateur peut :",
     "security.use.gdb": "Utiliser GraphDB",
@@ -1741,7 +1741,7 @@
     "security.has.read.permission": "Dispose de la permission de lecture",
     "security.no.read.access": "N'a pas l'accès en lecture",
     "security.has.write.permission": "A la permission d'écriture",
-    "security.has.manage.permission": "Possède la permission de gérer le dépôt",
+    "security.has.maintain.permission": "Dispose de l’autorisation de maintenance du dépôt",
     "security.has.mutation_permission": "A une permission de mutation",
     "security.no.mutation_permission": "N'a pas la permission de mutation",
     "security.no.write.access": "N'a pas d'accès en écriture",
@@ -2787,11 +2787,11 @@
     "no.file.selected.error": "Aucun fichier sélectionné",
     "selected.file.msg": "Sélectionné : {{name}}",
     "type.label": "Type :",
-    "permission.label": "Permission:",
+    "permissions.label": "Permissions:",
     "repository.permission.none": "Aucune",
     "repository.permission.read": "Lecture",
     "repository.permission.write": "Lecture/Écriture",
-    "repository.permission.manage": "Lecture/Écriture/Gestion",
+    "repository.permission.maintain": "Lecture/Écriture/Maintenance",
     "repository.permission.graphql_read": "Lecture (GraphQL uniquement)",
     "repository.permission.graphql_write": "Lecture/Écriture (GraphQL uniquement)",
     "total.statements.label": "Total des déclarations :",

@@ -93,12 +93,12 @@
         "fedx": "FedX",
         "unknown": "Inconnu"
       },
-      "permission": "Permission",
+      "permissions_label": "Permissions",
       "permissions": {
         "none": "Aucune",
         "read": "Lecture",
         "write": "Lecture/Écriture",
-        "manage": "Lecture/Écriture/Gestion",
+        "maintain": "Lecture/Écriture/Maintenance",
         "graphql_read": "Lecture (GraphQL uniquement)",
         "graphql_write": "Lecture/Écriture (GraphQL uniquement)"
       },

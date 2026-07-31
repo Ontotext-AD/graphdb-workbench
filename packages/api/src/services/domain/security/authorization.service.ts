@@ -1,5 +1,5 @@
 import {Service} from '../../../providers/service/service';
-import {AuthenticatedUser, Authority, Rights, SecurityConfig} from '../../../models/security';
+import {AuthenticatedUser, Authority, SecurityConfig} from '../../../models/security';
 import {service} from '../../../providers';
 import {SecurityContextService} from './security-context.service';
 import {getRepositoryIdWithLocation, Repository, RepositoryReference} from '../../../models/repositories';
@@ -83,12 +83,12 @@ export class AuthorizationService implements Service {
   }
 
   /**
-   * Checks whether the current user has repository-specific management permissions for at least one repository.
+   * Checks whether the current user is a repository maintainer for at least one repository.
    *
-   * @returns {boolean} `true` if the user can manage at least one repository; otherwise `false`.
+   * @returns {boolean} `true` if the user has maintenance permission for at least one repository; otherwise, `false`.
    */
-  isManageRepoUser(): boolean {
-    return this.hasRole(Authority.ROLE_MANAGE_REPO);
+  isRepoMaintainer(): boolean {
+    return this.hasRole(Authority.ROLE_REPO_MAINTAINER);
   }
 
   /**
@@ -124,27 +124,7 @@ export class AuthorizationService implements Service {
    * @returns {boolean} True if the user has read permissions for the repository, false otherwise.
    */
   canReadRepo(repository?: Repository): boolean {
-    if (!repository || repository.id === '') {
-      return false;
-    }
-
-    const config = this.getSecurityConfig();
-    const user = this.getAuthenticatedUser();
-
-    if (config?.isEnabled()) {
-      if (!user) {
-        return false;
-      }
-      if (this.isAdminOrRepoManager() || this.canManageRepo(repository)) {
-        return true;
-      }
-      if (this.repositoryAuthorityService.isSystemRepository(repository)) {
-        return false;
-      }
-      return this.hasBaseRights(Rights.READ, repository);
-    }
-
-    return true;
+    return this.hasRepoPermission(RepositoryPermissionType.READ, repository);
   }
 
   /**
@@ -155,51 +135,17 @@ export class AuthorizationService implements Service {
    * @returns True if the user has write permissions for the repository, false otherwise.
    */
   canWriteRepo(repository?: Repository): boolean {
-    if (!repository || repository.id === '') {
-      return false;
-    }
-
-    const config = this.getSecurityConfig();
-    const user = this.getAuthenticatedUser();
-
-    if (config?.isEnabled() || config?.hasOverrideAuth()) {
-      if (!user) {
-        return false;
-      }
-      if (this.isAdminOrRepoManager() || this.canManageRepo(repository)) {
-        return true;
-      }
-      if (this.repositoryAuthorityService.isSystemRepository(repository)) {
-        return false;
-      }
-      return this.hasBaseRights(Rights.WRITE, repository);
-    }
-
-    return true;
+    return this.hasRepoPermission(RepositoryPermissionType.WRITE, repository);
   }
 
   /**
-   * Checks whether the current user can manage the specified repository.
+   * Checks whether the current user can maintain the specified repository.
    *
    * @param {RepositoryReference} repository The repository to check.
-   * @returns {boolean} `true` if the user is a repository manager or can manage at least one repository, otherwise `false`.
+   * @returns {boolean} `true` if the user can maintain the specified repository; otherwise, `false`.
    */
-  canManageRepo(repository: RepositoryReference): boolean {
-    if (!repository || repository.id === '') {
-      return false;
-    }
-
-    if (this.isAdminOrRepoManager()) {
-      return true;
-    }
-
-    const config = this.getSecurityConfig();
-    if (!config?.isEnabled() && !config?.hasOverrideAuth()) {
-      return true;
-    }
-
-    const manageRepoAuthority = Authority.MANAGE_REPO_PREFIX + getRepositoryIdWithLocation(repository);
-    return !!this.getAuthenticatedUser()?.authorities.find((authority) => authority === manageRepoAuthority);
+  canMaintainRepo(repository: RepositoryReference): boolean {
+    return this.hasRepoPermission(RepositoryPermissionType.MAINTAIN, repository);
   }
 
   /**
@@ -210,10 +156,7 @@ export class AuthorizationService implements Service {
    * @returns {boolean} True if the user has GraphQL read permissions for the repository, false otherwise.
    */
   canReadGqlRepo(repository?: Repository): boolean {
-    if (!repository || repository.id === '') {
-      return false;
-    }
-    return this.hasGraphqlAuthority(Rights.READ, repository);
+    return this.hasGraphqlPermissions(RepositoryPermissionType.GRAPHQL_READ, repository);
   }
 
   /**
@@ -224,10 +167,7 @@ export class AuthorizationService implements Service {
    * @returns {boolean} True if the user has GraphQL write permissions for the repository, false otherwise.
    */
   canWriteGqlRepo(repository?: Repository): boolean {
-    if (!repository || repository.id === '') {
-      return false;
-    }
-    return this.hasGraphqlAuthority(Rights.WRITE, repository);
+    return this.hasGraphqlPermissions(RepositoryPermissionType.GRAPHQL_WRITE, repository);
   }
 
   /**
@@ -385,7 +325,42 @@ export class AuthorizationService implements Service {
     return service(SecurityContextService).getAuthenticatedUser();
   }
 
-  private hasBaseRights(action: string, repo: Repository): boolean {
+  /**
+   * Checks whether the current user has the specified permission for a repository.
+   *
+   * @param {string} permission - The permission to check.
+   * @param {RepositoryReference} [repo] - The repository to check.
+   * @returns {boolean} `true` if the user has the specified repository permission; otherwise, `false`.
+   */
+  hasRepoPermission(permission: RepositoryPermissionType, repo?: RepositoryReference): boolean {
+    if (!repo || repo.id === '') {
+      return false;
+    }
+
+    const config = this.getSecurityConfig();
+    const user = this.getAuthenticatedUser();
+
+    if (config?.isEnabled() || config?.hasOverrideAuth()) {
+      if (!user) {
+        return false;
+      }
+      if (this.isAdminOrRepoManager()) {
+        return true;
+      }
+      if (this.repositoryAuthorityService.isSystemRepository(repo)) {
+        return false;
+      }
+
+      if (RepositoryPermissionType.GRAPHQL_WRITE === permission || RepositoryPermissionType.GRAPHQL_READ === permission) {
+        return this.hasGraphqlPermissions(permission, repo);
+      }
+
+      return this.hasBasePermissions(permission, repo);
+    }
+    return true;
+  }
+
+  private hasBasePermissions(action: RepositoryPermissionType, repo: RepositoryReference): boolean {
     const repoId = this.repositoryAuthorityService.getLocationSpecificId(repo);
     const overCurrentRepo = this.repositoryAuthorityService.getCurrentRepoAuthority(action, repoId);
     const overAllRepos = this.repositoryAuthorityService.getOverallRepoAuthority(action);
@@ -399,7 +374,11 @@ export class AuthorizationService implements Service {
     );
   }
 
-  private hasGraphqlAuthority(action: string, repo: Repository): boolean {
+  private hasGraphqlPermissions(permission: RepositoryPermissionType.GRAPHQL_WRITE | RepositoryPermissionType.GRAPHQL_READ, repo?: RepositoryReference): boolean {
+    if (!repo || repo.id === '') {
+      return false;
+    }
+    const action = permission === RepositoryPermissionType.GRAPHQL_WRITE ? 'WRITE' : 'READ';
     const user = this.securityContextService.getAuthenticatedUser();
 
     if (!user) {
@@ -426,8 +405,8 @@ export class AuthorizationService implements Service {
     return [
       {
         priority: 100,
-        permission: RepositoryPermissionType.MANAGE,
-        matches: (repository: Repository) => this.isAdminOrRepoManager() || this.canManageRepo(repository),
+        permission: RepositoryPermissionType.MAINTAIN,
+        matches: (repository: Repository) => this.isAdminOrRepoManager() || this.canMaintainRepo(repository),
       },
       {
         priority: 90,

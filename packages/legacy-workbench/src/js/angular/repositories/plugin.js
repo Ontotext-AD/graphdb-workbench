@@ -47,7 +47,7 @@ PluginRegistry.add('main.menu', {
             labelKey: 'menu.repositories.label',
             href: 'repository',
             order: 1,
-            role: 'ROLE_MANAGE_REPO',
+            role: 'ROLE_REPO_MAINTAINER',
             parent: 'Setup',
             children: [
                 {
