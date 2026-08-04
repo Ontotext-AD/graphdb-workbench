@@ -91,6 +91,11 @@ pipeline {
     }
 
     post {
+        always {
+            script {
+              currentBuild.displayName = "${params.RELEASE_VERSION ?: currentBuild.displayName}"
+            }
+        }
         success {
             script {
                 performCleanup()
