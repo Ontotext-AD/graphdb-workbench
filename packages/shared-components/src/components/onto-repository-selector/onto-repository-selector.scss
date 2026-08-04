@@ -59,7 +59,7 @@
   background-color: var(--gw-dialog-background) !important;
   border: 1px solid var(--gw-dialog-border-color) !important;
   box-shadow: var(--gw-dialog-shadow-1-offset-x) var(--gw-dialog-shadow-1-offset-y) var(--gw-dialog-shadow-1-blur) var(--gw-dialog-shadow-1-spread) var(--gw-dialog-shadow-1-color);
-  max-width: 350px;
+  min-width: 22rem;
   opacity: 1 !important;
 
   .tooltip-arrow::before {
@@ -68,7 +68,6 @@
   }
 
   .tooltip-content {
-    min-width: 22rem;
     padding: 0;
 
     .repository-tooltip-title {
