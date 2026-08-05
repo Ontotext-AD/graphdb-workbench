@@ -1406,31 +1406,35 @@ function GraphsVisualizationsCtrl(
     const styles = getComputedStyle(document.documentElement);
     const getPropertyStyleValue = (property) => styles.getPropertyValue(property).trim();
 
-    let interpolation1Colors;
-    let interpolation2Colors;
+    const NODE_COLORS_VARIABLES = [
+        '--gw-foreground-visual-categorical-01',
+        '--gw-foreground-visual-categorical-02',
+        '--gw-foreground-visual-categorical-03',
+        '--gw-foreground-visual-categorical-04',
+        '--gw-foreground-visual-categorical-05',
+        '--gw-foreground-visual-categorical-06',
+        '--gw-foreground-visual-categorical-07',
+        '--gw-foreground-visual-categorical-08',
+        '--gw-foreground-visual-categorical-09',
+        '--gw-foreground-visual-categorical-10',
+        '--gw-foreground-visual-categorical-11',
+        '--gw-foreground-visual-categorical-12',
+        '--gw-foreground-visual-categorical-13',
+        '--gw-foreground-visual-categorical-14',
+        '--gw-foreground-visual-categorical-15',
+        '--gw-foreground-visual-categorical-16',
+        '--gw-foreground-visual-categorical-17',
+        '--gw-foreground-visual-categorical-18',
+        '--gw-foreground-visual-categorical-19',
+        '--gw-foreground-visual-categorical-20',
+    ];
 
-    let color1;
-    let color2;
+    let nodeColors = [];
 
     const resetColors = () => {
-        interpolation1Colors = [
-            '--gw-vizgraph-node-color1-1',
-            '--gw-vizgraph-node-color2-1',
-            '--gw-vizgraph-node-color3-1'].map(getPropertyStyleValue);
-        interpolation2Colors = [
-            '--gw-vizgraph-node-color1-2',
-            '--gw-vizgraph-node-color2-2',
-            '--gw-vizgraph-node-color3-2'].map(getPropertyStyleValue);
         type2color = {};
+        nodeColors = NODE_COLORS_VARIABLES.map(getPropertyStyleValue);
         colorIndex = 0;
-        color1 = d3.interpolateRgbBasis(interpolation1Colors);
-        color2 = d3.interpolateRgbBasis(interpolation2Colors);
-    };
-
-    const getInterpolationIndex = (index) => {
-        // returns a value between 0 and 1 for color interpolation based on the index,
-        // with a non-linear distribution to give more distinct colors for the first 20 types
-        return (index + (index / 2.6)) % 1;
     };
 
     $scope.getColor = function(type) {
@@ -1440,13 +1444,7 @@ function GraphsVisualizationsCtrl(
         }
 
         const index = type2color[type];
-        if (index > 39) {
-            return getPropertyStyleValue('--gw-vizgraph-node-color4');
-        } else if (index % 2 === 0) {
-            return color1(getInterpolationIndex(index));
-        } else {
-            return color2(getInterpolationIndex(index));
-        }
+        return nodeColors[index % nodeColors.length];
     };
 
     const forceX = d3.forceX(width / 2).strength(0.03);
