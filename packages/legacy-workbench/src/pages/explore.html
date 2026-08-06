@@ -37,17 +37,17 @@
             </a>
         </div>
         <h1 fit-text fit-text-min="30">
-            <a href="sparql?query=describe%20{{encodeURIComponent(resourceInfo.triple)}}"
+            <a href="{{getTripleTermLookupLink(resourceInfo.triple)}}"
                gdb-tooltip="{{resourceInfo.triple}}"
             class="triple-resource-link">
-                {{getRdfStarLocalNames(resourceInfo.triple)}}
+                {{getTripleTermLocalNames(resourceInfo.triple)}}
             </a>
         </h1>
 
         <p ng-show="resourceInfo.details.comment" data-escape="false">{{resourceInfo.details.comment}}</p>
         <p>
             <span>{{'target.label' | translate}}:</span>&nbsp;
-            <a href="sparql?query=describe%20{{encodeURIComponent(resourceInfo.triple)}}"
+            <a href="{{getTripleTermLookupLink(resourceInfo.triple)}}"
                class="target-link">
                 {{resourceInfo.triple}}
             </a>
@@ -57,11 +57,11 @@
     <div class="action-header" ng-show="resourceInfo">
         <div id="selection" class="selection">
             <ul class="nav nav-tabs">
-                <li ng-repeat="role in roles" class="nav-item">
+                <li ng-repeat="role in roles" ng-if="isRoleTabVisible(role)" class="nav-item">
                     <a class="nav-link" href
                        ng-click="changeRole(role)"
-                       ng-class="resourceInfo.role === role ? 'active' : (loading ? 'disabled': '')"
-                       ng-disabled="loading"
+                       ng-class="resourceInfo.role === role ? 'active' : isLoading || resourceInfo.triple ? 'disabled': ''"
+                       ng-attr-tabindex="{{isLoading || (resourceInfo.triple && resourceInfo.role !== role) ? -1 : 0}}"
                        guide-selector="role-{{role}}">
                         {{role | translate}}
                     </a>
@@ -74,7 +74,7 @@
                         class="form-control form-control-sm"
                         ng-model="currentContextTypeId"
                         ng-change="changeInference(currentContextTypeId)"
-                        ng-disabled="loading || resourceInfo.role === 'context' || getActiveRepository() === 'SYSTEM'">
+                        ng-disabled="isLoading || resourceInfo.role === 'context' || getActiveRepository() === 'SYSTEM'">
                     <option ng-repeat="contextType in contextTypes"
                             value="{{contextType.id}}"
                             ng-selected="resourceInfo.contextType.id === contextType.id">
@@ -85,7 +85,7 @@
 
             <button type="button" class="btn btn-link same-as-btn btn-sm"
                     ng-model="sameAs"
-                    ng-class="loading ? 'disabled' : ''"
+                    ng-class="isLoading ? 'disabled' : ''"
                     ng-if="resourceInfo.contextType !== ContextTypes.EXPLICIT"
                     ng-click="toggleSameAs()"
                     uib-popover="{{'sidepanel.expand.results.sameas' | translate}}: {{resourceInfo.sameAs ? 'common.on.btn' : 'common.off.btn' | translate}}"
@@ -97,7 +97,7 @@
 
             <button type="button"
                     class="btn btn-sm show-blank-nodes-btn" ng-model="resourceInfo.blanks"
-                    ng-class="loading ? 'disabled' : (resourceInfo.blanks ? 'btn-primary' : 'btn-secondary')"
+                    ng-class="isLoading ? 'disabled' : (resourceInfo.blanks ? 'btn-primary' : 'btn-secondary')"
                     uib-btn-checkbox
                     btn-checkbox-true="true"
                     btn-checkbox-false="false"
@@ -108,7 +108,7 @@
             <div class="btn-group" uib-dropdown is-open="isopen">
                 <button type="button"
                         class="btn btn-sm btn-secondary dropdown-toggle download-as"
-                        ng-class="loading ? 'disabled' : ''"
+                        ng-class="isLoading ? 'disabled' : ''"
                         uib-dropdown-toggle>
                     {{'download.as.label' | translate}}
                 </button>

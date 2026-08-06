@@ -73,7 +73,7 @@ function ExploreCtrl(
     $scope.ContextTypes = ContextTypes;
     $scope.contextTypes = ContextType.getAllType();
     $scope.currentContextTypeId = ContextTypes.EXPLICIT.id;
-    $scope.roles = [RoleType.SUBJECT, RoleType.PREDICATE, RoleType.OBJECT, RoleType.CONTEXT, RoleType.ALL];
+    $scope.roles = [RoleType.TRIPLE_TERM, RoleType.SUBJECT, RoleType.PREDICATE, RoleType.OBJECT, RoleType.CONTEXT, RoleType.ALL];
 
     $scope.resourceInfo = undefined;
 
@@ -96,21 +96,47 @@ function ExploreCtrl(
     };
 
     $scope.isTripleResource = () => {
-        return !!$scope.resourceInfo.triple;
+        return !!$scope.resourceInfo?.triple;
     };
 
-    // TODO move this to core
-    $scope.encodeURIComponent = (param) => {
-        return encodeURIComponent(param);
+    /**
+     * The "triple term" role applies to triple terms only, so its tab is not rendered for any other resource.
+     *
+     * @param {string} role the role of the tab
+     * @return {boolean} true if the tab of the given role has to be rendered
+     */
+    $scope.isRoleTabVisible = (role) => {
+        return role !== RoleType.TRIPLE_TERM || $scope.isTripleResource();
     };
 
-    $scope.getRdfStarLocalNames = (triple) => {
-        let localNames = triple.slice();
-        const trimmed = triple.replace(/[<>]+/g, '');
-        trimmed.split(' ').forEach((uri) => {
-            localNames = localNames.replace(uri, ClassInstanceDetailsService.getLocalName(uri));
-        });
-        return localNames;
+    /**
+     * Shortens the IRIs of a triple term to their local names, e.g.
+     * <<(<http://example.com/s> <http://example.com/p> <http://example.com/o>)>> becomes <<(<s> <p> <o>)>>.
+     * Blank nodes and literals are left as they are.
+     *
+     * @param {string} tripleTerm the triple term, wrapped in <<( )>>
+     * @return {string} the triple term with its IRIs replaced by their local names
+     */
+    $scope.getTripleTermLocalNames = (tripleTerm) => {
+        return tripleTerm.replace(/<([^<>\s]*)>/g, (match, iri) => `<${ClassInstanceDetailsService.getLocalName(iri)}>`);
+    };
+
+    /**
+     * Builds a link to the SPARQL editor holding a query which looks up all statements
+     * that have the given triple term as their object.
+     *
+     * @param {string} tripleTerm the triple term, wrapped in <<( )>>
+     * @return {string} a relative link to the SPARQL editor with the query as a parameter
+     */
+    $scope.getTripleTermLookupLink = (tripleTerm) => {
+        const query = `SELECT ?s ?p ?tt
+WHERE {
+    VALUES ?tt {
+        ${tripleTerm}
+    }
+    ?s ?p ?tt .
+}`;
+        return `sparql?query=${encodeURIComponent(query)}`;
     };
 
     $scope.getLocalName = (uri) => {
@@ -276,6 +302,9 @@ function ExploreCtrl(
     };
 
     $scope.changeRole = (role) => {
+        if ($scope.resourceInfo.triple) {
+            return;
+        }
         $scope.resourceInfo.role = role;
         if ($scope.resourceInfo.role === RoleType.CONTEXT) {
             $scope.resourceInfo.contextType = ContextTypes.EXPLICIT;
@@ -342,7 +371,22 @@ function ExploreCtrl(
             $scope.resourceInfo.context = $routeParams.context;
         }
 
-        $scope.resourceInfo.role = $location.search().role ? $location.search().role : RoleType.SUBJECT;
+        $scope.resourceInfo.role = resolveRole();
+    };
+
+    /**
+     * Resolves the role of the loaded resource. A triple term always takes the "triple term" role, and that
+     * role applies to nothing else, so a "triple term" role coming from the url is discarded for any other
+     * resource in favour of the default one.
+     *
+     * @return {string} the role of the loaded resource
+     */
+    const resolveRole = () => {
+        if ($scope.resourceInfo.triple) {
+            return RoleType.TRIPLE_TERM;
+        }
+        const role = $location.search().role;
+        return role && role !== RoleType.TRIPLE_TERM ? role : RoleType.SUBJECT;
     };
 
     const toggleOntoLoader = (showLoader) => {
