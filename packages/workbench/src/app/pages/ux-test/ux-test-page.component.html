@@ -1,14 +1,16 @@
 <hr>
 <div>Buttons:</div>
-<p-button label="Check" />
-<p-button severity="secondary" label="Check" />
-<p-button label="Success" severity="success" />
-<p-button label="Info" severity="info" />
-<p-button label="Warn" severity="warn" />
-<p-button label="Help" severity="help" />
-<p-button label="Danger" severity="danger" />
-<p-button label="Contrast" severity="contrast" />
-<p-button severity="contrast" icon="ri-information-2-line" />
+<p-button label="Check" [disabled]="disableButtons" />
+<p-button severity="secondary" label="Check" [disabled]="disableButtons" />
+<p-button label="Success" severity="success" [disabled]="disableButtons" />
+<p-button label="Info" severity="info" [disabled]="disableButtons" />
+<p-button label="Warn" severity="warn" [disabled]="disableButtons" />
+<p-button label="Help" severity="help" [disabled]="disableButtons" />
+<p-button label="Danger" severity="danger" [disabled]="disableButtons" />
+<p-button label="Contrast" severity="contrast" [disabled]="disableButtons" />
+<p-button severity="contrast" icon="ri-information-2-line" [disabled]="disableButtons" />
+<div>Options:s</div>
+Disable: <p-checkbox [(ngModel)]="disableButtons" [binary]="true" />
 
 <hr>
 <div>Checkbox</div>

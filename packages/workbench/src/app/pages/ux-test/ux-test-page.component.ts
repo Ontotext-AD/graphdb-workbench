@@ -51,6 +51,8 @@ export class UxTestPageComponent implements OnDestroy {
   loginForm: FormGroup;
   error = false;
 
+  disableButtons = false;
+
   constructor() {
     this.loginForm = this.fb.group({
       username: ['', Validators.required],

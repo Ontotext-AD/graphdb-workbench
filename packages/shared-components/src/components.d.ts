@@ -53,6 +53,11 @@ export namespace Components {
          */
         "autoClose": boolean;
         /**
+          * Indicates whether the dropdown is disabled.
+          * @default false
+         */
+        "disabled": boolean;
+        /**
           * Specifies the dropdown items' alignment. If not provided, the items and the dropdown button will be aligned to the left.
           * @default DropdownItemAlignment.LEFT
          */
@@ -114,6 +119,10 @@ export namespace Components {
      * when the primary button is clicked or a specific configuration is selected.
      */
     interface OntoGraphExploreSplitButton {
+        /**
+          * Indicates whether the primary action button is disabled.
+         */
+        "disabled": boolean;
         /**
           * Callback invoked when the dropdown is opened to fetch graph configurations.
          */
@@ -807,6 +816,11 @@ declare namespace LocalJSX {
          */
         "autoClose"?: boolean;
         /**
+          * Indicates whether the dropdown is disabled.
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
           * Specifies the dropdown items' alignment. If not provided, the items and the dropdown button will be aligned to the left.
           * @default DropdownItemAlignment.LEFT
          */
@@ -876,6 +890,10 @@ declare namespace LocalJSX {
      * when the primary button is clicked or a specific configuration is selected.
      */
     interface OntoGraphExploreSplitButton {
+        /**
+          * Indicates whether the primary action button is disabled.
+         */
+        "disabled"?: boolean;
         /**
           * Callback invoked when the dropdown is opened to fetch graph configurations.
          */
