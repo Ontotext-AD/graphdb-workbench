@@ -1,6 +1,6 @@
 {
     "name": "graphdb-workbench",
-    "version": "3.4.3-RC",
+    "version": "3.4.3",
     "description": "The web application for GraphDB APIs",
     "engines": {
         "node": ">=22.17"
