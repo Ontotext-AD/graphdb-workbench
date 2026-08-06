@@ -16,6 +16,7 @@ when the primary button is clicked or a specific configuration is selected.
 
 | Property            | Attribute             | Description                                                                 | Type                           | Default     |
 | ------------------- | --------------------- | --------------------------------------------------------------------------- | ------------------------------ | ----------- |
+| `disabled`          | `disabled`            | Indicates whether the primary action button is disabled.                    | `boolean`                      | `undefined` |
 | `fetchGraphConfigs` | `fetch-graph-configs` | Callback invoked when the dropdown is opened to fetch graph configurations. | `() => Promise<GraphConfig[]>` | `undefined` |
 | `label`             | `label`               | Label displayed on the primary action button.                               | `string`                       | `undefined` |
 

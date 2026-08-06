@@ -35,6 +35,11 @@ export class OntoGraphExploreSplitButton {
   @Prop() label: string;
 
   /**
+   * Indicates whether the primary action button is disabled.
+   */
+  @Prop() disabled: boolean;
+
+  /**
    * Callback invoked when the dropdown is opened to fetch graph configurations.
    *
    */
@@ -121,20 +126,22 @@ export class OntoGraphExploreSplitButton {
         <button class='explore-visual-graph-button icon-data'
           onClick={this.handleDefaultClick}
           guide-selector='explore-visual'
-          tooltip-content={TranslationService.translate('graph_explore_split_button.buttons.explore_visual_graph.tooltip')}
-          tooltip-placement={OntoTooltipPlacement.TOP}>
+          tooltip-content={!this.disabled ? TranslationService.translate('graph_explore_split_button.buttons.explore_visual_graph.tooltip') : undefined}
+          tooltip-placement={OntoTooltipPlacement.TOP}
+          disabled={this.disabled}>
           {this.label}
         </button>
         <div class='dropdown-wrapper'>
           <onto-dropdown
             class='explore-visual-graph-dropdown'
             autoClose={true}
+            disabled={this.disabled}
             items={this.items}
             onToggle={this.handleToggle}
             onValueChanged={this.handleValueChanged}
             dropdownAlignment={DropdownItemAlignment.RIGHT}
             tooltipPlacement={OntoTooltipPlacement.TOP}
-            dropdownButtonTooltip={TranslationService.translate('graph_explore_split_button.buttons.explore_visual_graph_dropdown.tooltip')}>
+            dropdownButtonTooltip={!this.disabled ? TranslationService.translate('graph_explore_split_button.buttons.explore_visual_graph_dropdown.tooltip') : undefined}>
           </onto-dropdown>
           {this.isDropdownOpen && this.items.length === 0 ? (
             <div class="no-configurations-message">

@@ -14,7 +14,12 @@
     padding-left: 1em;
     padding-right: 1em;
 
-    &:hover {
+    &:disabled {
+      background-color: var(--gw-button-primary-disabled-background);
+      color: var(--gw-button-primary-disabled-color);
+    }
+
+    &:hover:not(:disabled) {
       background-color: var(--gw-button-primary-hover-background);
       color: var(--gw-button-primary-hover-color);
       cursor: pointer;
@@ -27,8 +32,6 @@
 
   .explore-visual-graph-dropdown .onto-dropdown,
   .explore-visual-graph-dropdown .onto-dropdown-button {
-    background-color: var(--gw-button-primary-background);
-    color: var(--gw-button-primary-color);
     height: 100%;
   }
 
@@ -38,7 +41,12 @@
     gap: 0;
     padding: 0 0.3em;
 
-    &:hover {
+    &:disabled {
+      background-color: var(--gw-button-primary-disabled-background);
+      color: var(--gw-button-primary-disabled-color);
+    }
+
+    &:hover:not(:disabled) {
       background-color: var(--gw-button-primary-hover-background);
       color: var(--gw-button-primary-hover-color);
     }
