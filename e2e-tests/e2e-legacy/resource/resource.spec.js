@@ -1,5 +1,5 @@
 import HomeSteps from "../../steps/home-steps";
-import {ResourceSteps} from "../../steps/resource/resource-steps";
+import {ResourceSteps, TRIPLE_TERM_ROLE_LABEL} from "../../steps/resource/resource-steps";
 import {QueryStubs} from "../../stubs/yasgui/query-stubs";
 import {VisualGraphSteps} from "../../steps/visual-graph-steps";
 import {SparqlEditorSteps} from "../../steps/sparql-editor-steps";
@@ -17,7 +17,36 @@ const PREDICATE_SOURCE = 'http:%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23subCl
 const CONTEXT_EXPLICIT = 'http://www.ontotext.com/explicit';
 const OBJECT_RESOURCE = 'http:%2F%2Fexample.com%2Fontology%23Metric';
 const IMPLICIT_EXPLICIT_RESOURCE = 'http:%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23type';
-const TRIPLE_RESOURCE = '%3C%3C%3Chttp:%2F%2Fexample.com%2Fresource%2Fperson%2FW6J1827%3E%20%3Chttp:%2F%2Fexample.com%2Fontology%23hasAddress%3E%20%3Chttp:%2F%2Fexample.com%2Fresource%2Fperson%2FW6J1827%2Faddress%3E%3E%3E';
+// A triple term in the SPARQL 1.2 syntax. The resource view expects it wrapped in <<( )>>.
+const TRIPLE_RESOURCE_DECODED = '<<(<http://example.com/resource/person/W6J1827> <http://example.com/ontology#hasAddress> <http://example.com/resource/person/W6J1827/address>)>>';
+const TRIPLE_RESOURCE = encodeURIComponent(TRIPLE_RESOURCE_DECODED);
+const TRIPLE_RESOURCE_LOCAL_NAMES = '<<(<W6J1827> <hasAddress> <address>)>>';
+// A triple term whose object is a literal. It is deliberately not part of the test data, because it is
+// used only to verify that shortening the IRIs of a triple term leaves its literals untouched.
+const LITERAL_TRIPLE_RESOURCE_DECODED = '<<(<http://example.com/resource/person/W6J1827> <http://example.com/ontology#firstName> "Burgunda")>>';
+const LITERAL_TRIPLE_RESOURCE = encodeURIComponent(LITERAL_TRIPLE_RESOURCE_DECODED);
+const LITERAL_TRIPLE_RESOURCE_LOCAL_NAMES = '<<(<W6J1827> <firstName> "Burgunda")>>';
+// The number of statements the resource view lists for the triple term - the four statements which
+// annotate it in the test data plus the "rdf:reifies" statement which binds its reifier to it.
+const TRIPLE_RESOURCE_STATEMENTS_COUNT = 5;
+// The query which the resource view builds for a triple term - it looks up all statements having the triple term as an object.
+const TRIPLE_TERM_LOOKUP_QUERY = `SELECT ?s ?p ?tt
+WHERE {
+    VALUES ?tt {
+        ${TRIPLE_RESOURCE_DECODED}
+    }
+    ?s ?p ?tt .
+}`;
+// The link which both the header and the target link of a triple term point to.
+const TRIPLE_TERM_LOOKUP_HREF = `sparql?query=${encodeURIComponent(TRIPLE_TERM_LOOKUP_QUERY)}`;
+// The statement counts of the test data. The data annotates eleven triples with the RDF 1.2 reification
+// syntax (<<s p o>>), and GraphDB expands each of them to a reifier plus an "rdf:reifies" statement
+// pointing at the triple term. Those eleven extra statements are the reason why these counts are higher
+// than the ones expected before the SPARQL 1.2 support was added.
+const EXPLICIT_TYPE_STATEMENTS_COUNT = 24;
+const IMPLICIT_TYPE_STATEMENTS_COUNT = 68;
+const ALL_TYPE_STATEMENTS_COUNT = EXPLICIT_TYPE_STATEMENTS_COUNT + IMPLICIT_TYPE_STATEMENTS_COUNT;
+const EXPLICIT_GRAPH_STATEMENTS_COUNT = 97;
 
 describe('Resource view', () => {
     let repositoryId;
@@ -98,26 +127,26 @@ describe('Resource view', () => {
         ResourceSteps.visit(`uri=${IMPLICIT_EXPLICIT_RESOURCE}&role=all`);
 
         // Then I expect to see all triples of explicit context, because default value of the dropdown is "Explicit only".
-        YasrSteps.getResults().should('have.length', 24);
+        YasrSteps.getResults().should('have.length', EXPLICIT_TYPE_STATEMENTS_COUNT);
         YasrSteps.getResultLink(0, 4).should('contain', CONTEXT_EXPLICIT);
 
         // When I chose to display implicit only.
         ResourceSteps.selectImplicitOnlyInference();
 
         // Then I expect triples of implicit context to be displayed only.
-        YasrSteps.getResults().should('have.length', 67);
+        YasrSteps.getResults().should('have.length', IMPLICIT_TYPE_STATEMENTS_COUNT);
 
         // When I chose to display both context.
         ResourceSteps.selectExplicitAndImplicitInference();
 
         // Then  I expect the triples of both context to be displayed.
-        YasrSteps.getResults().should('have.length', 91);
+        YasrSteps.getResults().should('have.length', ALL_TYPE_STATEMENTS_COUNT);
 
         // When I chose to display explicit context only.
         ResourceSteps.selectExplicitOnlyInference();
 
         // Then I expect triples of explicit context to be displayed only.
-        YasrSteps.getResults().should('have.length', 24);
+        YasrSteps.getResults().should('have.length', EXPLICIT_TYPE_STATEMENTS_COUNT);
     });
 
     context('Same as', () => {
@@ -330,7 +359,7 @@ describe('Resource view', () => {
             ResourceSteps.selectContextRole();
 
             // Then I expect to see all triples of resource without mater of its role,
-            YasrSteps.getResults().should('have.length', 86);
+            YasrSteps.getResults().should('have.length', EXPLICIT_GRAPH_STATEMENTS_COUNT);
             // and inference dropdown should be disabled.
             ResourceSteps.getInferenceSelectElement().should('be.disabled');
 
@@ -338,46 +367,141 @@ describe('Resource view', () => {
             ResourceSteps.selectAllRole();
 
             // Then I expect to see all triples of resource without mater of its role.
-            YasrSteps.getResults().should('have.length', 86);
+            YasrSteps.getResults().should('have.length', EXPLICIT_GRAPH_STATEMENTS_COUNT);
+        });
+
+        it('should keep all role tabs enabled when the resource is not a triple term', () => {
+            // When I load a resource which is not a triple term.
+            ResourceSteps.visit(`uri=${SUBJECT_RESOURCE_ENCODED}&role=subject`);
+
+            // Then I expect all role tabs to be enabled,
+            ResourceSteps.getAllRoles().forEach((role) => ResourceSteps.verifyRoleTabEnabled(role));
+
+            // and the triple term links to not be rendered,
+            ResourceSteps.getTripleResourceLink().should('not.exist');
+            ResourceSteps.getTargetLink().should('not.exist');
+
+            // but the source link of a plain resource to be rendered instead.
+            ResourceSteps.getSourceLink().should('exist');
+        });
+
+        it('should not offer the "triple term" role tab when the resource is not a triple term', () => {
+            // When I load a resource which is not a triple term.
+            ResourceSteps.visit(`uri=${SUBJECT_RESOURCE_ENCODED}&role=subject`);
+
+            // Then I expect the "triple term" tab to not be rendered at all, because that role
+            // applies to triple terms only,
+            ResourceSteps.verifyRoleTabMissing(TRIPLE_TERM_ROLE_LABEL);
+            // and only the roles of a plain resource to be offered.
+            ResourceSteps.getRoleTabs().should('have.length', ResourceSteps.getAllRoles().length);
+        });
+
+        it('should fall back to the subject role when the url asks for the "triple term" role of a plain resource', () => {
+            // When I load a resource which is not a triple term with the triple term role.
+            ResourceSteps.visit(`uri=${SUBJECT_RESOURCE_ENCODED}&role=triple-term`);
+
+            // Then I expect the role to fall back to the default one,
+            ResourceSteps.verifyActiveRoleTab('subject');
+            // and the role url parameter to be corrected as well.
+            cy.getQueryParam('role').should('eq', 'subject');
+
+            // And I expect the triples of the resource as subject to be listed.
+            YasrSteps.getResults().should('have.length', 1);
+            YasrSteps.getResultLink(0, 1).should('contain', SUBJECT_RESOURCE);
         });
     });
 
     context('Triple resource', () => {
-        it('should show triple resource', () => {
+        it('should show triple resource shortened in the header and in full as a target', () => {
             // When I visit resource view with triple resource.
             ResourceSteps.visit(`triple=${TRIPLE_RESOURCE}&role=subject`);
 
-            // Then I expect resource link to exist.
-            ResourceSteps.getTripleResourceLink().should('contain.text', '<<<W6J1827> <hasAddress> <address>>>');
+            // Then I expect the header link to show the triple term with shortened IRIs,
+            ResourceSteps.verifyTrimmedText(ResourceSteps.getTripleResourceLink(), TRIPLE_RESOURCE_LOCAL_NAMES);
+            // and the full triple term to be shown as a tooltip.
+            ResourceSteps.getTripleResourceLink().should('have.attr', 'gdb-tooltip', TRIPLE_RESOURCE_DECODED);
 
-            // And I expect to see data table
+            // And I expect the target link to show the triple term with its full IRIs.
+            ResourceSteps.verifyTrimmedText(ResourceSteps.getTargetLink(), TRIPLE_RESOURCE_DECODED);
+
+            // And I expect the source link of a plain resource to not be rendered.
+            ResourceSteps.getSourceLink().should('not.exist');
+
+            // And I expect to see data table with the statements annotating the triple term.
             ResourceSteps.getDataTable().should('exist').and('be.visible');
-            // When I click on the link.
-            ResourceSteps.clickOnTripleResourceLink();
+            YasrSteps.getResults().should('have.length', TRIPLE_RESOURCE_STATEMENTS_COUNT);
+        });
 
-            // Then I expect to see sparql query view,
-            SparqlEditorSteps.verifyUrl();
-            YasguiSteps.getTabs().should('have.length', 2);
-            // and a describe query to be present
-            YasqeSteps.getActiveTabQuery().should('contain', 'describe <<<http://example.com/resource/person/W6J1827> <http://example.com/ontology#hasAddress> <http://example.com/resource/person/W6J1827/address>>>');
+        it('should shorten only the IRIs of a triple term and leave its literals unchanged', () => {
+            // When I visit resource view with a triple term whose object is a literal.
+            ResourceSteps.visit(`triple=${LITERAL_TRIPLE_RESOURCE}&role=subject`);
 
+            // Then I expect the header link to show the IRIs shortened and the literal as it is,
+            ResourceSteps.verifyTrimmedText(ResourceSteps.getTripleResourceLink(), LITERAL_TRIPLE_RESOURCE_LOCAL_NAMES);
+            // and the target link to show the whole triple term as it is.
+            ResourceSteps.verifyTrimmedText(ResourceSteps.getTargetLink(), LITERAL_TRIPLE_RESOURCE_DECODED);
+        });
+
+        it('should point both the header and the target link to the triple term lookup query', () => {
             // When I visit resource view with triple resource.
             ResourceSteps.visit(`triple=${TRIPLE_RESOURCE}&role=subject`);
 
-            // Then I expect target link to exist.
-            ResourceSteps.getTargetLink().should('contain.text', '<<<http://example.com/resource/person/W6J1827> <http://example.com/ontology#hasAddress> <http://example.com/resource/person/W6J1827/address>>>');
+            // Then I expect both links to point to the sparql editor with the triple term lookup query.
+            ResourceSteps.getTripleResourceLink().should('have.attr', 'href', TRIPLE_TERM_LOOKUP_HREF);
+            ResourceSteps.getTargetLink().should('have.attr', 'href', TRIPLE_TERM_LOOKUP_HREF);
+        });
 
-            // And I expect to see data table
-            ResourceSteps.getDataTable().should('exist').and('be.visible');
-            // When I click on the link.
-            ResourceSteps.clickOnTripleResourceLink();
+        it('should activate the "triple term" role tab and disable all other role tabs', () => {
+            // When I visit resource view with triple resource.
+            ResourceSteps.visit(`triple=${TRIPLE_RESOURCE}&role=subject`);
 
-            // Then I expect to see sparql query view,
-            SparqlEditorSteps.verifyUrl();
-            YasguiSteps.getTabs().should('have.length', 2);
-            // and a describe query to be present
-            YasqeSteps.getActiveTabQuery().should('contain', 'describe <<<http://example.com/resource/person/W6J1827> <http://example.com/ontology#hasAddress> <http://example.com/resource/person/W6J1827/address>>>');
-            YasguiSteps.getCurrentTab().should('contain', 'Unnamed 1');
+            // Then I expect the "triple term" tab to be the active one, regardless of the role url parameter,
+            ResourceSteps.verifyActiveRoleTab(TRIPLE_TERM_ROLE_LABEL);
+            // and the role url parameter to be corrected to the triple term role.
+            cy.getQueryParam('role').should('eq', 'triple-term');
+
+            // And I expect all other role tabs to be disabled.
+            ResourceSteps.getRoleTabs().should('have.length', ResourceSteps.getAllRoleLabels().length);
+            ResourceSteps.getAllRoles().forEach((role) => ResourceSteps.verifyRoleTabDisabled(role));
+
+            // When I click on a disabled role tab.
+            ResourceSteps.selectSubjectRole();
+
+            // Then I expect the role to remain unchanged.
+            ResourceSteps.verifyActiveRoleTab(TRIPLE_TERM_ROLE_LABEL);
+            cy.getQueryParam('role').should('eq', 'triple-term');
+        });
+
+        it('should activate the "triple term" role tab when the role url parameter is missing', () => {
+            // When I visit resource view with a triple resource and without a role parameter.
+            ResourceSteps.visit(`triple=${TRIPLE_RESOURCE}`);
+
+            // Then I expect the "triple term" tab to be the active one,
+            ResourceSteps.verifyActiveRoleTab(TRIPLE_TERM_ROLE_LABEL);
+            // and the role url parameter to be set to the triple term role.
+            cy.getQueryParam('role').should('eq', 'triple-term');
+        });
+
+        // The header link and the target link render the same triple term, so both of them have to lead
+        // to the same lookup query in the sparql editor.
+        [
+            {label: 'header', click: () => ResourceSteps.clickOnTripleResourceLink()},
+            {label: 'target', click: () => ResourceSteps.clickOnTargetLink()}
+        ].forEach(({label, click}) => {
+            it(`should open the sparql editor with a triple term lookup query when the ${label} link is clicked`, () => {
+                // When I visit resource view with triple resource.
+                ResourceSteps.visit(`triple=${TRIPLE_RESOURCE}&role=subject`);
+
+                // When I click on the link.
+                click();
+
+                // Then I expect to see sparql query view,
+                SparqlEditorSteps.verifyUrl();
+                YasguiSteps.getTabs().should('have.length', 2);
+                YasguiSteps.getCurrentTab().should('contain', 'Unnamed 1');
+                // and the triple term lookup query to be present.
+                YasqeSteps.getActiveTabQuery().should('eq', TRIPLE_TERM_LOOKUP_QUERY);
+            });
         });
     });
 
