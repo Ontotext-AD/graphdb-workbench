@@ -286,18 +286,17 @@
                                             </div>
                                         </td>
                                         <td class="text-nowrap repository-actions">
-                                            <div ng-if="canMaintainRepo(repository)">
-                                                <button class="btn btn-link p-0"
-                                                        ng-click="copyToClipboard(repository.externalUrl)"
-                                                        gdb-tooltip="{{'copy.repo.url' | translate}}">
-                                                    <span class="ri-links-line"></span>
-                                                </button>
-                                                <span ng-if="location.degradedReason">
+                                            <button class="btn btn-link p-0"
+                                                    ng-click="copyToClipboard(repository.externalUrl)"
+                                                    gdb-tooltip="{{'copy.repo.url' | translate}}">
+                                                <span class="ri-links-line"></span>
+                                            </button>
+                                            <span ng-if="location.degradedReason">
                                                 <em class="ri-alert-line icon-lg text-warning"
                                                     gdb-tooltip="{{location.degradedReason}}{{'repo.not.supported.delete.or.edit' | translate}}"
                                                     tooltip-placement="top"></em>
                                             </span>
-                                                <span ng-if="repository.type !== 'system' && !location.degradedReason">
+                                            <span ng-if="canMaintainRepo(repository) && repository.type !== 'system' && !location.degradedReason">
                                                 <a class="btn btn-link p-0 edit-repository-btn"
                                                    href="repository/edit/{{repository.id}}?location={{repository.location}}"
                                                    gdb-tooltip="{{'repoTooltips.editRepository' | translate}}"
@@ -327,7 +326,6 @@
                                                     <em class="ri-delete-bin-6-line"></em>
                                                 </button>
                                             </span>
-                                            </div>
                                         </td>
                                         <td>
                                             <button class="btn btn-link p-0 pin-repository-btn"
