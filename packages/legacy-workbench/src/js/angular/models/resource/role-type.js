@@ -3,5 +3,6 @@ export const RoleType = {
     'PREDICATE': 'predicate',
     'OBJECT': 'object',
     'CONTEXT': 'context',
-    'ALL': 'all'
+    'ALL': 'all',
+    'TRIPLE_TERM': 'triple-term',
 };
