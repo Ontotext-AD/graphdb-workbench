@@ -3258,6 +3258,7 @@
     "subject": "sujet",
     "predicate": "prédicat",
     "object": "objet",
+    "triple-term": "terme triple",
     "context": "contexte",
     "all": "tous",
     "clear.tooltip": "Clair",
