@@ -3251,6 +3251,7 @@
     "subject": "subject",
     "predicate": "predicate",
     "object": "object",
+    "triple-term": "triple term",
     "context": "context",
     "all": "all",
     "clear.tooltip": "Clear",

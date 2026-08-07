@@ -250,6 +250,20 @@ footer.footer .container-fluid.main-container p {
     border-bottom-color: var(--gw-tabs-tab-border-bottom-color);
 }
 
+.nav-tabs .nav-link.disabled {
+    color: var(--gw-tabs-tab-disabled-color);
+    background-color: var(--gw-tabs-tab-disabled-background);
+    border-color: var(--gw-tabs-tab-disabled-border-color);
+    border-bottom-color: var(--gw-tabs-tab-disabled-border-bottom-color);
+}
+
+.nav-tabs .nav-link.disabled:focus {
+    color: var(--gw-tabs-tab-disabled-color);
+    background-color: var(--gw-tabs-tab-disabled-background);
+    border-color: var(--gw-tabs-tab-hover-border-color);
+    border-bottom-color: var(--gw-tabs-tab-hover-border-bottom-color);
+}
+
 .nav-tabs .nav-link:hover {
     color: var(--gw-tabs-tab-hover-color);
     background-color: var(--gw-tabs-tab-hover-background);
@@ -1156,6 +1170,14 @@ input[type=checkbox]:checked:hover::after {
 
 input[type=checkbox]:checked:disabled::after {
     color: var(--gw-checkbox-icon-disabled-color);
+}
+
+/*-------------------------------------------------------------
+    Buttons
+-------------------------------------------------------------*/
+
+button:disabled {
+    opacity: var(--gw-button-disabled-opacity);
 }
 
 /*-------------------------------------------------------------
