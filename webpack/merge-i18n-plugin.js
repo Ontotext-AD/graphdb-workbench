@@ -13,7 +13,7 @@ class MergeI18nPlugin {
   constructor(options) {
     this.outputDirectory = options.outputDirectory;
     this.startDirectory = options.startDirectory;
-    this.replaceVersion = options.replaceVersion;
+    this.replaceVersion = options.replaceVersion ?? ((content) => content);
   }
 
   apply(compiler) {
