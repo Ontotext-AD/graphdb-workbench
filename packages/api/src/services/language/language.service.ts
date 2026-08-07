@@ -37,7 +37,7 @@ export class LanguageService implements Service {
    * containing the translations for the specified language.
    */
   getLanguage(languageCode: string): Promise<TranslationBundle> {
-    return this.languageRestService.getLanguage(languageCode);
+    return this.languageRestService.getLanguage(languageCode, this.languageContextService.getLanguageConfig()?.languageBundleVersion);
   }
 
   /**

@@ -12,10 +12,14 @@ export class LanguageRestService extends HttpService {
    * Retrieves the translation bundle for a specific language.
    *
    * @param languageCode - The code of the language for which to fetch translations.
+   * @param languageBundleVersion - A language bundle version identifier used for cache busting
    * @returns A Promise that resolves to a TranslationBundle containing the translations for the specified language.
    */
-  getLanguage(languageCode: string): Promise<TranslationBundle> {
-    return this.get<TranslationBundle>(`${this.I18N_ENDPOINT}/${languageCode}.json`);
+  getLanguage(languageCode: string, languageBundleVersion?: string): Promise<TranslationBundle> {
+    return this.get<TranslationBundle>(
+      `${this.I18N_ENDPOINT}/${languageCode}.json`,
+      languageBundleVersion ? {params: {version: languageBundleVersion}} : undefined
+    );
   }
 
   /**

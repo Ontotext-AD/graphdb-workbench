@@ -9,7 +9,8 @@ import {AvailableLanguage} from '../../../models/language/available-language';
 export const mapLanguageConfigResponseToModel: MapperFn<LanguageConfigResponse, LanguageConfig> = (data) => {
   return new LanguageConfig({
     defaultLanguage: data.defaultLanguage,
-    availableLanguages: mapAvailableLanguagesListToModel(data.availableLanguages)
+    availableLanguages: mapAvailableLanguagesListToModel(data.availableLanguages),
+    languageBundleVersion: data.languageBundleVersion,
   });
 };
 

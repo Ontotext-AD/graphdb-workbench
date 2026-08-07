@@ -4,6 +4,7 @@ import {AvailableLanguagesList, LanguageConfig} from '../../../models/language';
 
 const languageConfigResponse: LanguageConfigResponse = {
   defaultLanguage: 'en',
+  languageBundleVersion: '1',
   availableLanguages: [
     {key: 'de', name: 'German'},
     {key: 'es', name: 'Spanish'}
@@ -17,6 +18,7 @@ export const createlanguageConfig = (customResponse?: LanguageConfigResponse) =>
   });
   return new LanguageConfig({
     defaultLanguage: response.defaultLanguage,
-    availableLanguages: new AvailableLanguagesList(availableLanguageList)
+    availableLanguages: new AvailableLanguagesList(availableLanguageList),
+    languageBundleVersion: response.languageBundleVersion
   });
 };

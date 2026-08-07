@@ -13,6 +13,7 @@ class MergeI18nPlugin {
   constructor(options) {
     this.outputDirectory = options.outputDirectory;
     this.startDirectory = options.startDirectory;
+    this.replaceVersion = options.replaceVersion ?? ((content) => content);
   }
 
   apply(compiler) {
@@ -87,7 +88,7 @@ class MergeI18nPlugin {
           console.log(`Processing file: ${file}`);
           const language = path.basename(file, '.json');
           const filePath = path.join(i18nPath, file);
-          const fileContent = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+          const fileContent = JSON.parse(this.replaceVersion(fs.readFileSync(filePath, 'utf-8')));
 
           if (!mergedBundles[language]) {
             mergedBundles[language] = {};
