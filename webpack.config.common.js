@@ -120,7 +120,8 @@ module.exports = (webpackConfigEnv, argv) => {
             }),
             new MergeI18nPlugin({
               startDirectory: './packages',
-              outputDirectory: 'assets/i18n'
+              outputDirectory: 'assets/i18n',
+              replaceVersion
             }),
             new MergeJsonPlugin({
                 files: [
