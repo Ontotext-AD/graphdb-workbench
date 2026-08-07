@@ -126,7 +126,7 @@
             </div>
             <onto-graph-explore-split-button
                 ng-custom-element
-                ngce-prop-disabled="isLoading && resourceInfo.triple"
+                ngce-prop-disabled="isLoading || !!resourceInfo.triple"
                 label="{{'query.editor.visual.btn' | translate}}"
                 ngce-prop-fetch_graph_configs="fetchGraphConfigs"
                 ngce-on-graph_explore="goToGraphsViz($event)">

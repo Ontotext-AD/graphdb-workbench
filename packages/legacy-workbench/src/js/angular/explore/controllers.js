@@ -17,6 +17,12 @@ import {
 } from '@ontotext/workbench-api';
 import {ObjectUtils} from '../utils/object-utils';
 
+/**
+ * The roles which apply to a resource which is not a triple term.
+ * @type {string[]}
+ */
+const PLAIN_RESOURCE_ROLES = [RoleType.SUBJECT, RoleType.PREDICATE, RoleType.OBJECT, RoleType.CONTEXT, RoleType.ALL];
+
 const modules = [
     'ngCookies',
     'ngRoute',
@@ -73,7 +79,7 @@ function ExploreCtrl(
     $scope.ContextTypes = ContextTypes;
     $scope.contextTypes = ContextType.getAllType();
     $scope.currentContextTypeId = ContextTypes.EXPLICIT.id;
-    $scope.roles = [RoleType.TRIPLE_TERM, RoleType.SUBJECT, RoleType.PREDICATE, RoleType.OBJECT, RoleType.CONTEXT, RoleType.ALL];
+    $scope.roles = [RoleType.TRIPLE_TERM, ...PLAIN_RESOURCE_ROLES];
 
     $scope.resourceInfo = undefined;
 
@@ -376,8 +382,8 @@ WHERE {
 
     /**
      * Resolves the role of the loaded resource. A triple term always takes the "triple term" role, and that
-     * role applies to nothing else, so a "triple term" role coming from the url is discarded for any other
-     * resource in favour of the default one.
+     * role applies to nothing else, so an unknown role, or a "triple term" role, coming from the url is
+     * discarded for any other resource in favour of the default one.
      *
      * @return {string} the role of the loaded resource
      */
@@ -386,7 +392,7 @@ WHERE {
             return RoleType.TRIPLE_TERM;
         }
         const role = $location.search().role;
-        return role && role !== RoleType.TRIPLE_TERM ? role : RoleType.SUBJECT;
+        return PLAIN_RESOURCE_ROLES.includes(role) ? role : RoleType.SUBJECT;
     };
 
     const toggleOntoLoader = (showLoader) => {

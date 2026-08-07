@@ -165,15 +165,15 @@ export class ResourceSteps {
     /**
      * @return {string[]} the roles which can be selected for a resource which is not a triple term.
      */
-    static getAllRoles() {
+    static getPlainResourceRoles() {
         return ['subject', 'predicate', 'object', 'context', 'all'];
     }
 
     /**
      * @return {string[]} the labels of all role tabs, including the "triple term" one.
      */
-    static getAllRoleLabels() {
-        return [TRIPLE_TERM_ROLE_LABEL, ...ResourceSteps.getAllRoles()];
+    static getAllRoles() {
+        return [TRIPLE_TERM_ROLE_LABEL, ...ResourceSteps.getPlainResourceRoles()];
     }
 
     static getTargetLink() {

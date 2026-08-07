@@ -63,7 +63,7 @@ describe('Resource view', () => {
     });
 
     it('should open resource view with active role tab depend on url role parameter', () => {
-        ResourceSteps.getAllRoles().forEach((role) => {
+        ResourceSteps.getPlainResourceRoles().forEach((role) => {
             ResourceSteps.visit(`uri=${SUBJECT_RESOURCE_ENCODED}&role=${role}`);
             ResourceSteps.verifyActiveRoleTab(role);
         });
@@ -375,7 +375,7 @@ describe('Resource view', () => {
             ResourceSteps.visit(`uri=${SUBJECT_RESOURCE_ENCODED}&role=subject`);
 
             // Then I expect all role tabs to be enabled,
-            ResourceSteps.getAllRoles().forEach((role) => ResourceSteps.verifyRoleTabEnabled(role));
+            ResourceSteps.getPlainResourceRoles().forEach((role) => ResourceSteps.verifyRoleTabEnabled(role));
 
             // and the triple term links to not be rendered,
             ResourceSteps.getTripleResourceLink().should('not.exist');
@@ -393,7 +393,7 @@ describe('Resource view', () => {
             // applies to triple terms only,
             ResourceSteps.verifyRoleTabMissing(TRIPLE_TERM_ROLE_LABEL);
             // and only the roles of a plain resource to be offered.
-            ResourceSteps.getRoleTabs().should('have.length', ResourceSteps.getAllRoles().length);
+            ResourceSteps.getRoleTabs().should('have.length', ResourceSteps.getPlainResourceRoles().length);
         });
 
         it('should fall back to the subject role when the url asks for the "triple term" role of a plain resource', () => {
@@ -461,8 +461,8 @@ describe('Resource view', () => {
             cy.getQueryParam('role').should('eq', 'triple-term');
 
             // And I expect all other role tabs to be disabled.
-            ResourceSteps.getRoleTabs().should('have.length', ResourceSteps.getAllRoleLabels().length);
-            ResourceSteps.getAllRoles().forEach((role) => ResourceSteps.verifyRoleTabDisabled(role));
+            ResourceSteps.getRoleTabs().should('have.length', ResourceSteps.getAllRoles().length);
+            ResourceSteps.getPlainResourceRoles().forEach((role) => ResourceSteps.verifyRoleTabDisabled(role));
 
             // When I click on a disabled role tab.
             ResourceSteps.selectSubjectRole();
