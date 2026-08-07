@@ -72,6 +72,7 @@ describe('LanguageService', () => {
   test('Should retrieve the language configuration', async () => {
     // Given, I have a mocked language configuration
     const languageConfigResponse: LanguageConfigResponse = {
+      languageBundleVersion: '1',
       defaultLanguage: 'en',
       availableLanguages: [
         {key: 'de', name: 'German'},
