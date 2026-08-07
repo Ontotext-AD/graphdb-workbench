@@ -171,6 +171,7 @@ yasgui-component .yasqe_querySplitWrapper .yasqe_querySplitToggle:hover {
 }
 
 yasgui-component  .ontotext-run-dropdown-menu {
+    background-color: var(--gw-tieredmenu-background) !important;
     border: 1px solid var(--gw-tieredmenu-border-color);
     box-shadow: var(--gw-tieredmenu-shadow-1-offset-x) var(--gw-tieredmenu-shadow-1-offset-y) var(--gw-tieredmenu-shadow-1-blur) var(--gw-tieredmenu-shadow-1-spread) var(--gw-tieredmenu-shadow-1-color);
     border-radius: 0;
@@ -178,7 +179,6 @@ yasgui-component  .ontotext-run-dropdown-menu {
 
 yasgui-component .ontotext-run-dropdown-menu-item {
     color: var(--gw-tieredmenu-color) !important;
-    background-color: var(--gw-tieredmenu-background) !important;
 }
 
 yasgui-component .ontotext-run-dropdown-menu-item:hover {
