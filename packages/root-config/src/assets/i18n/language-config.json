@@ -1,5 +1,6 @@
 {
   "defaultLanguage": "en",
+  "languageBundleVersion": "[AIV]{version}[/AIV]",
   "availableLanguages": [
     {
       "key": "en",
