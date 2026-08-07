@@ -827,7 +827,7 @@ interceptorService.registerResponseInterceptors(new HttpInterceptorList([new MyR
 The system ensures that translations from different modules are merged into a single bundle per language,
 using the [merge-i18n-plugin.js](./webpack/merge-i18n-plugin.js). After they are merged, all `.json`
 files from `src/assets/i18n` directories are transferred to the webpack output directory. That includes
-[language-config.json](packages/root-config/src/assets/i18n/language-config.json), which contains the default language
+[language-config.json](packages/root-config/src/assets/i18n/language-config.json), which contains the default language, the translation bundle version
 and the available languages for the application. The configuration file is read, upon starting the application inside
 [ontotext-root-config.js#getLanguageConfig](packages/root-config/src/ontotext-root-config.js). The default language
 is loaded and the app starts listening for [ontotext-root-config.js#onLanguageChange](packages/root-config/src/ontotext-root-config.js)
