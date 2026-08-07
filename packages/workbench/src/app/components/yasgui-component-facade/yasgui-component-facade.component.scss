@@ -171,6 +171,7 @@ app-yasgui-component-facade .yasqe_querySplitWrapper .yasqe_querySplitToggle:hov
 }
 
 app-yasgui-component-facade  .ontotext-run-dropdown-menu {
+  background-color: var(--gw-tieredmenu-background) !important;
   border: 1px solid var(--gw-tieredmenu-border-color);
   box-shadow: var(--gw-tieredmenu-shadow-1-offset-x) var(--gw-tieredmenu-shadow-1-offset-y) var(--gw-tieredmenu-shadow-1-blur) var(--gw-tieredmenu-shadow-1-spread) var(--gw-tieredmenu-shadow-1-color);
   border-radius: 0;
@@ -178,7 +179,6 @@ app-yasgui-component-facade  .ontotext-run-dropdown-menu {
 
 app-yasgui-component-facade .ontotext-run-dropdown-menu-item {
   color: var(--gw-tieredmenu-color) !important;
-  background-color: var(--gw-tieredmenu-background) !important;
 }
 
 app-yasgui-component-facade .ontotext-run-dropdown-menu-item:hover {
