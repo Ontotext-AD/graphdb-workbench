@@ -26,11 +26,11 @@ describe('ACL Management: edit rule', () => {
     it('Should hide all unnecessary actions during rule editing', () => {
         // When there is no rule opened for edit
         // Then I expect that move up, move down, edit rule, create rule, delete rule buttons to be visible
-        AclManagementSteps.getMoveUpButtons().should('have.length', 4);
-        AclManagementSteps.getMoveDownButtons().should('have.length', 4);
-        AclManagementSteps.deleteRuleButtons().should('have.length', 5);
-        AclManagementSteps.editRuleButtons().should('have.length', 5);
-        AclManagementSteps.createRuleButtons().should('have.length', 5);
+        AclManagementSteps.getMoveUpButtons().should('have.length', 3);
+        AclManagementSteps.getMoveDownButtons().should('have.length', 3);
+        AclManagementSteps.deleteRuleButtons().should('have.length', 4);
+        AclManagementSteps.editRuleButtons().should('have.length', 4);
+        AclManagementSteps.createRuleButtons().should('have.length', 4);
         // When a rule is in edit mode
         AclManagementSteps.editRule(1);
         // Then I expect that move up, move down, edit rule, create rule, delete rule buttons to be hidden
@@ -43,23 +43,23 @@ describe('ACL Management: edit rule', () => {
 
     it('Should be able to edit rule', () => {
         // When I edit a rule
-        AclManagementSteps.getAclRules().should('have.length', 5);
+        AclManagementSteps.getAclRules().should('have.length', 4);
         AclManagementSteps.editRule(2);
         // Then I expect rule edit form to be opened
-        AclManagementSteps.getAclRules().should('have.length', 5);
+        AclManagementSteps.getAclRules().should('have.length', 4);
         AclManagementSteps.checkRuleEditForm(2, {
-            subject: '<<<http://example.com/test> <http://www.w3.org/2000/01/rdf-schema#label> "test aber auf Deutsch"@de>>',
-            predicate: '*',
-            object: '"test aber auf Deutsch"@en',
-            context: '<http://example.com/graph1>',
-            role: 'ROLE3',
-            policy: 'deny'
+            subject: "*",
+            predicate: "*",
+            object: "\"15\"^^<http://www.w3.org/2001/XMLSchema#int>",
+            context: "*",
+            role: "ROLE3",
+            policy: "allow"
         });
         AclManagementSteps.checkIfRuleSavingIsAllowed(2);
         // When I cancel the edit operation
         AclManagementSteps.cancelRuleEditing(2);
         // Then I expect that the rule will be opened in preview mode again with the same values
-        AclManagementSteps.getAclRules().should('have.length', 5);
+        AclManagementSteps.getAclRules().should('have.length', 4);
         AclManagementSteps.checkStatementRules(ACL_VIEW);
         // When I edit the rule again
         AclManagementSteps.editRule(2);
@@ -84,7 +84,7 @@ describe('ACL Management: edit rule', () => {
             object: '*',
             context: '*'
         };
-        AclManagementSteps.checkStatementRules([ACL_VIEW[0], ACL_VIEW[1], editedRule, ACL_VIEW[3], ACL_VIEW[4]]);
+        AclManagementSteps.checkStatementRules([ACL_VIEW[0], ACL_VIEW[1], editedRule, ACL_VIEW[3]]);
     });
 });
 
