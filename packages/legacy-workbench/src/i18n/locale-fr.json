@@ -110,8 +110,8 @@
                 "enable_secondary_warning": "En activant le mode secondaire, ce cluster deviendrait une réplique en lecture seule du cluster principal spécifié."
             },
             "error": {
-                "ascii": "Caractères non valides détectés. Seuls les caractères ASCII imprimables sont autorisés.",
-                "length": "La longueur d'entrée doit être comprise entre {{minLen}} et {{maxLen}} caractères.",
+                "ascii": "Saisie invalide. Seuls les caractères ASCII imprimables sont autorisés.",
+                "length": "La saisie doit comporter entre {{minLen}} et {{maxLen}} caractères.",
                 "creating": "Erreur lors de la création de la balise",
                 "deleting": "Erreur lors de la suppression de la balise",
                 "disabling": "Erreur lors de la désactivation du mode secondaire",

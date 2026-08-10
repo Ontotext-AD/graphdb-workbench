@@ -1,0 +1,23 @@
+.cluster-configuration {
+     /*Add top margin to match the other side panels.*/
+    margin-top: 48px;
+    height: calc(100vh - 48px);
+    color: var(--gw-panel-color);
+    background-color: var(--gw-panel-background);
+    border: 1px solid var(--gw-panel-border-color);
+    -webkit-box-shadow: var(--gw-dialog-shadow-1-offset-x) var(--gw-dialog-shadow-1-offset-y) var(--gw-dialog-shadow-1-blur) var(--gw-dialog-shadow-1-spread) var(--gw-dialog-shadow-1-color);
+    box-shadow: var(--gw-dialog-shadow-1-offset-x) var(--gw-dialog-shadow-1-offset-y) var(--gw-dialog-shadow-1-blur) var(--gw-dialog-shadow-1-spread) var(--gw-dialog-shadow-1-color);
+
+    display: flex;
+    flex-direction: column;
+}
+
+.cluster-configuration .cluster-configuration-tabs-content {
+    flex: 1;
+    min-height: 0;
+}
+
+.cluster-configuration .multi-region-tab-content {
+    height: 100%;
+    min-height: 0;
+}
