@@ -1,8 +1,11 @@
+<link href="css/cluster-configuration/cluster-configuration.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 <div class="cluster-configuration break-word-alt p-1 pt-2">
-    <button class="close mb-1 ml-1" ng-click="closeClusterConfigurationPanel()"></button>
-    <h3 class="hovered-parent">
-        {{'cluster_management.cluster_configuration.label' | translate}}
-    </h3>
+    <div class="cluster-configuration-title">
+        <button class="close mb-1 ml-1" ng-click="closeClusterConfigurationPanel()"></button>
+        <h3 class="hovered-parent">
+            {{'cluster_management.cluster_configuration.label' | translate}}
+        </h3>
+    </div>
 
     <ul class="nav nav-tabs configuration-tabs">
         <li class="properties-tab nav-item">
@@ -22,16 +25,18 @@
         </li>
     </ul>
 
-    <div class="tab-pane fade in mt-1" ng-if="activeTab === CONFIGURATION_TABS.PROPERTIES" id="properties">
-        <cluster-properties cluster-configuration="clusterConfiguration"></cluster-properties>
-    </div>
+    <div class="cluster-configuration-tabs-content">
+        <div class="tab-pane fade in mt-1" ng-if="activeTab === CONFIGURATION_TABS.PROPERTIES" id="properties">
+            <cluster-properties cluster-configuration="clusterConfiguration"></cluster-properties>
+        </div>
 
-    <div class="tab-pane fade in mt-1" ng-if="activeTab === CONFIGURATION_TABS.NODES" id="nodes">
-        <cluster-nodes current-node="currentNode"
-                       cluster-model="clusterModel"></cluster-nodes>
-    </div>
+        <div class="tab-pane fade in mt-1" ng-if="activeTab === CONFIGURATION_TABS.NODES" id="nodes">
+            <cluster-nodes current-node="currentNode"
+                           cluster-model="clusterModel"></cluster-nodes>
+        </div>
 
-    <div class="tab-pane fade in mt-1" ng-if="activeTab === CONFIGURATION_TABS.MULTI_REGION" id="multi-region">
-        <multi-region cluster-model="clusterModel"></multi-region>
+        <div class="tab-pane fade in mt-1 multi-region-tab-content" ng-if="activeTab === CONFIGURATION_TABS.MULTI_REGION" id="multi-region">
+            <multi-region cluster-model="clusterModel"></multi-region>
+        </div>
     </div>
 </div>

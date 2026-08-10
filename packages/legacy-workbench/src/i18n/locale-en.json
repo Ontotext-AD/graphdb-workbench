@@ -111,8 +111,8 @@
 
             },
             "error": {
-                "ascii": "Invalid characters detected. Only printable ASCII characters are allowed.",
-                "length": "The input length must be between {{minLen}} and {{maxLen}} characters.",
+                "ascii": "Invalid input. Only printable ASCII characters are allowed.",
+                "length": "Input must be {{minLen}}–{{maxLen}} characters long.",
                 "creating": "Error during Tag creation",
                 "deleting": "Error during Tag deletion",
                 "disabling": "Error during secondary mode disabling",
