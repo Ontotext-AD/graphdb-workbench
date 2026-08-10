@@ -390,16 +390,6 @@ export const ACL_VIEW = [
     },
     {
         "scope": "statement",
-        "policy": "deny",
-        "role": "ROLE3",
-        "operation": "read",
-        "subject": "<<<http://example.com/test> <http://www.w3.org/2000/01/rdf-schema#label> \"test aber auf Deutsch\"@de>>",
-        "predicate": "*",
-        "object": "\"test aber auf Deutsch\"@en",
-        "context": "<http://example.com/graph1>"
-    },
-    {
-        "scope": "statement",
         "policy": "allow",
         "role": "ROLE3",
         "operation": "write",
@@ -415,7 +405,7 @@ export const ACL_VIEW = [
         "operation": "write",
         "subject": "<urn:Cat>",
         "predicate": "*",
-        "object": "<<<http://example.com/test> <http://www.w3.org/2000/01/rdf-schema#label> \"test aber auf Deutsch\"@de>>",
+        "object": "<<( <http://example.com/test> <http://www.w3.org/2000/01/rdf-schema#label> \"test aber auf Deutsch\"@de )>>",
         "context": "*"
     }
 ];
@@ -442,16 +432,6 @@ export const ACL = [
     },
     {
         "scope": "statement",
-        "policy": "deny",
-        "role": "CUSTOM_ROLE3",
-        "operation": "read",
-        "subject": "<<<http://example.com/test> <http://www.w3.org/2000/01/rdf-schema#label> \"test aber auf Deutsch\"@de>>",
-        "predicate": "*",
-        "object": "\"test aber auf Deutsch\"@en",
-        "context": "<http://example.com/graph1>"
-    },
-    {
-        "scope": "statement",
         "policy": "allow",
         "role": "CUSTOM_ROLE3",
         "operation": "write",
@@ -467,7 +447,7 @@ export const ACL = [
         "operation": "write",
         "subject": "<urn:Cat>",
         "predicate": "*",
-        "object": "<<<http://example.com/test> <http://www.w3.org/2000/01/rdf-schema#label> \"test aber auf Deutsch\"@de>>",
+        "object": "<<( <http://example.com/test> <http://www.w3.org/2000/01/rdf-schema#label> \"test aber auf Deutsch\"@de )>>",
         "context": "*"
     }
 ];
