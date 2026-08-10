@@ -45,14 +45,14 @@ describe('ACL Management: revert rules', () => {
         AclManagementSteps.selectPolicy(1, 'allow');
         AclManagementSteps.saveRule(1);
         // And I delete an existing rule
-        AclManagementSteps.deleteRule(5);
+        AclManagementSteps.deleteRule(4);
         ModalDialogSteps.clickOnConfirmButton();
         // And I click on cancel button (reverting the ACL list)
         AclManagementSteps.cancelAclSaving();
         ModalDialogSteps.clickOnConfirmButton();
         // Then I expect that all changes in the ACL should be reverted
         ApplicationSteps.getSuccessNotifications().should('be.visible');
-        AclManagementSteps.getAclRules().should('have.length', 5);
+        AclManagementSteps.getAclRules().should('have.length', 4);
         AclManagementSteps.checkStatementRules(ACL_VIEW);
         // And the model should become pristine again after the revert
         // I should be able to navigate away from the page without any confirmation

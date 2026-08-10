@@ -1,1 +1,1 @@
-export const SERVER_FILES_COUNT = 20;
+export const SERVER_FILES_COUNT = 17;

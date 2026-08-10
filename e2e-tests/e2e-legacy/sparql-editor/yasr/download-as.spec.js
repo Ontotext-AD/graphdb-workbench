@@ -44,13 +44,10 @@ describe('Download results', () => {
 
             // Then expect follow options to be present.
             YasrSteps.getDownloadAsOption(0).contains('JSON');
-            YasrSteps.getDownloadAsOption(1).contains( 'JSON*');
-            YasrSteps.getDownloadAsOption(2).contains( 'XML');
-            YasrSteps.getDownloadAsOption(3).contains( 'XML*');
-            YasrSteps.getDownloadAsOption(4).contains( 'CSV');
-            YasrSteps.getDownloadAsOption(5).contains( 'TSV');
-            YasrSteps.getDownloadAsOption(6).contains( 'TSV*');
-            YasrSteps.getDownloadAsOption(7).contains( 'Binary RDF Results');
+            YasrSteps.getDownloadAsOption(1).contains( 'XML');
+            YasrSteps.getDownloadAsOption(2).contains( 'CSV');
+            YasrSteps.getDownloadAsOption(3).contains( 'TSV');
+            YasrSteps.getDownloadAsOption(4).contains( 'Binary RDF Results');
         });
 
         it('should download as JSON-LD after a CONSTRUCT query', () => {

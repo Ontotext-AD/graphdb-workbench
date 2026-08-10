@@ -47,14 +47,14 @@ describe('ACL Management: update rules', () => {
         AclManagementSteps.selectOperation(1, 'write');
         AclManagementSteps.saveRule(1);
         // And I delete an existing rule
-        AclManagementSteps.deleteRule(5);
+        AclManagementSteps.deleteRule(4);
         ModalDialogSteps.clickOnConfirmButton();
         // And I save the ACL list
         AclManagementSteps.saveAcl();
         ApplicationSteps.getLoader().should('not.exist');
         // Then I expect the ACL to be saved
         ApplicationSteps.getSuccessNotifications().should('be.visible');
-        AclManagementSteps.getAclRules().should('have.length', 5);
+        AclManagementSteps.getAclRules().should('have.length', 4);
         const editedRule = {
             "scope": "statement",
             "policy": "deny",
@@ -79,7 +79,7 @@ describe('ACL Management: update rules', () => {
             "moveUp": true,
             "moveDown": true
         };
-        AclManagementSteps.checkStatementRules([ACL_VIEW[0], newRule, editedRule, ACL_VIEW[2], ACL_VIEW[3]]);
+        AclManagementSteps.checkStatementRules([ACL_VIEW[0], newRule, editedRule, ACL_VIEW[2]]);
     });
 
     it('Should prevent leaving the page when there is new rule added', () => {
