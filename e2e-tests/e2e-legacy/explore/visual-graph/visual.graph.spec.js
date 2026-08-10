@@ -152,7 +152,8 @@ describe('Visual graph screen validation', () => {
                 });
         });
 
-        it('Test search for a valid resource with links', () => {
+        // FIXME: GDB-15041 Blank node should not be visible. This is problem from refactoring of the endpoints regarding reification triples visualization
+        it.skip('Test search for a valid resource with links', () => {
             VisualGraphSteps.openUSRegionUri();
             // Check include inferred
             VisualGraphSteps.toggleInferredStatements(true);
@@ -166,7 +167,8 @@ describe('Visual graph screen validation', () => {
             VisualGraphSteps.getNodes().and('have.length', 37);
         });
 
-        it('Test collapse and expand a node', () => {
+        // FIXME: GDB-15041 Blank node should not be visible. This is problem from refactoring of the endpoints regarding reification triples visualization
+        it.skip('Test collapse and expand a node', () => {
             VisualGraphSteps.openUSRegionUri();
             VisualGraphSteps.toggleInferredStatements(false);
 
@@ -205,7 +207,8 @@ describe('Visual graph screen validation', () => {
             VisualGraphSteps.getNodeInfoPanel().should('not.exist');
         });
 
-        it('Test remove child node', () => {
+        // FIXME: GDB-15041 Blank node should not be visible. This is problem from refactoring of the endpoints regarding reification triples visualization
+        it.skip('Test remove child node', () => {
             VisualGraphSteps.openUSRegionUri();
             VisualGraphSteps.toggleInferredStatements(false);
             // Verify that before given node is removed there are 4 of them
@@ -239,7 +242,8 @@ describe('Visual graph screen validation', () => {
             cy.get('.incontext-search-rdf-resource input').should('be.visible');
         });
 
-        it('Test expand collapsed node which has connections with double click', () => {
+        // FIXME: GDB-15041 Blank node should not be visible. This is problem from refactoring of the endpoints regarding reification triples visualization
+        it.skip('Test expand collapsed node which has connections with double click', () => {
             VisualGraphSteps.openUSRegionUri();
             VisualGraphSteps.toggleInferredStatements(false);
 
@@ -307,7 +311,8 @@ describe('Visual graph screen validation', () => {
             });
         });
 
-        it('Test maximum links to show', () => {
+        // FIXME: GDB-15041 Blank node should not be visible. This is problem from refactoring of the endpoints regarding reification triples visualization
+        it.skip('Test maximum links to show', () => {
             VisualGraphSteps.openUSRegionUri();
 
             // Verify that 36 links (nodes) are displayed

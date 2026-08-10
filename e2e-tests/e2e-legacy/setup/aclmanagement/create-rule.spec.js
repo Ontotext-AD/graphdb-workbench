@@ -27,16 +27,16 @@ describe('ACL Management: create rule', () => {
 
     it('Should add a new rule in the beginning of the list and cancel operation', () => {
         AclManagementSteps.addRuleInBeginning();
-        AclManagementSteps.getAclRules().should('have.length', 6);
-        AclManagementSteps.cancelRuleEditing(0);
         AclManagementSteps.getAclRules().should('have.length', 5);
+        AclManagementSteps.cancelRuleEditing(0);
+        AclManagementSteps.getAclRules().should('have.length', 4);
     });
 
     it('Should add a new rule in the list and cancel operation', () => {
         AclManagementSteps.addRule(1);
-        AclManagementSteps.getAclRules().should('have.length', 6);
-        AclManagementSteps.cancelRuleEditing(2);
         AclManagementSteps.getAclRules().should('have.length', 5);
+        AclManagementSteps.cancelRuleEditing(2);
+        AclManagementSteps.getAclRules().should('have.length', 4);
     });
 
     it('Should add a new rule in the list', () => {
@@ -80,7 +80,7 @@ describe('ACL Management: create rule', () => {
         // When I save the rule
         AclManagementSteps.saveRule(2);
         // Then the rule should be saved
-        AclManagementSteps.getAclRules().should('have.length', 6);
+        AclManagementSteps.getAclRules().should('have.length', 5);
         const newRule = {
             "scope": "statement",
             "policy": "deny",
@@ -93,7 +93,7 @@ describe('ACL Management: create rule', () => {
             "moveUp": true,
             "moveDown": true
         };
-        AclManagementSteps.checkStatementRules([ACL_VIEW[0], ACL_VIEW[1], newRule, ACL_VIEW[2], ACL_VIEW[3], ACL_VIEW[4]]);
+        AclManagementSteps.checkStatementRules([ACL_VIEW[0], ACL_VIEW[1], newRule, ACL_VIEW[2], ACL_VIEW[3]]);
 
         cy.intercept('PUT', '/rest/repositories/acl-management-*/acl').as('putCall');
         // When I save the rules
@@ -136,17 +136,6 @@ describe('ACL Management: create rule', () => {
                 },
                 {
                     "scope": "statement",
-                    "policy": "deny",
-                    "role": "CUSTOM_ROLE3",
-                    "operation": "read",
-                    "subject": "<<<http://example.com/test> <http://www.w3.org/2000/01/rdf-schema#label> \"test aber auf Deutsch\"@de>>",
-                    "predicate": "*",
-                    "object": "\"test aber auf Deutsch\"@en",
-                    "context": "<http://example.com/graph1>",
-                    "warnForPrefix": false
-                },
-                {
-                    "scope": "statement",
                     "policy": "allow",
                     "role": "CUSTOM_ROLE3",
                     "operation": "write",
@@ -163,7 +152,7 @@ describe('ACL Management: create rule', () => {
                     "operation": "write",
                     "subject": "<urn:Cat>",
                     "predicate": "*",
-                    "object": "<<<http://example.com/test> <http://www.w3.org/2000/01/rdf-schema#label> \"test aber auf Deutsch\"@de>>",
+                    "object": "<<( <http://example.com/test> <http://www.w3.org/2000/01/rdf-schema#label> \"test aber auf Deutsch\"@de )>>",
                     "context": "*",
                     "warnForPrefix": false
                 }
@@ -175,11 +164,11 @@ describe('ACL Management: create rule', () => {
     it('Should hide all unnecessary actions during rule creation', () => {
         // When there is no rule opened for edit
         // Then I expect that move up, move down, edit rule, create rule, delete rule buttons to be visible
-        AclManagementSteps.getMoveUpButtons().should('have.length', 4);
-        AclManagementSteps.getMoveDownButtons().should('have.length', 4);
-        AclManagementSteps.deleteRuleButtons().should('have.length', 5);
-        AclManagementSteps.editRuleButtons().should('have.length', 5);
-        AclManagementSteps.createRuleButtons().should('have.length', 5);
+        AclManagementSteps.getMoveUpButtons().should('have.length', 3);
+        AclManagementSteps.getMoveDownButtons().should('have.length', 3);
+        AclManagementSteps.deleteRuleButtons().should('have.length', 4);
+        AclManagementSteps.editRuleButtons().should('have.length', 4);
+        AclManagementSteps.createRuleButtons().should('have.length', 4);
         // When a rule is in edit mode
         AclManagementSteps.addRule(1);
         // Then I expect that move up, move down, edit rule, create rule, delete rule buttons to be hidden
@@ -228,7 +217,7 @@ describe('ACL Management: create rule', () => {
 
     it('should allow creating a new rule if CUSTOM ROLE is a wildcard (*)', () => {
         // Given I have a defined number of rules at the beginning
-        AclManagementSteps.getAclRules().should('have.length', 5);
+        AclManagementSteps.getAclRules().should('have.length', 4);
         // When I am on "ACL Management" page and create a new rule with a CUSTOM ROLE of 1 symbol (a wildcard)
         AclManagementSteps.addRuleInBeginning();
         AclManagementSteps.selectPolicy(0, 'allow');
@@ -247,7 +236,7 @@ describe('ACL Management: create rule', () => {
         AclManagementSteps.saveAcl();
         // Then the table should contain the new rule
         AclManagementSteps.getSavedRoleField(0).should('contain', '*');
-        AclManagementSteps.getAclRules().should('have.length', 6);
+        AclManagementSteps.getAclRules().should('have.length', 5);
     });
 
     it('should show message if role prefix is CUSTOM_', () => {
