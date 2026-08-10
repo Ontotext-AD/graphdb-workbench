@@ -1,11 +1,13 @@
+<link href="css/cluster-configuration/multi-region.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
+
 <div onto-loader ng-if="loader" class="multi-region-loader" message="getLoaderMessage" size="100"></div>
 
 <div class="multi-region">
-    <div ng-if="topology.state === TopologyState.PRIMARY_NODE">
+    <div class="multi-region-content" ng-if="topology.state === TopologyState.PRIMARY_NODE">
         <h4 class="title">{{'cluster_management.cluster_configuration_multi_region.primary_cluster' | translate}}
             <span ng-if="statusLoader" class="ri-reset-left-line icon-1-25x loader cluster-status-loader"></span>
         </h4>
-        <div class="mb-2" ng-if="isAdmin">
+        <div ng-if="isAdmin">
             <button type="button" class="btn btn-primary create-tag-btn"
                     ng-click="add()"
                     gdb-tooltip="{{'cluster_management.cluster_configuration_multi_region.create_tag_tooltip' | translate}}"
@@ -20,8 +22,9 @@
                 {{'cluster_management.cluster_configuration_multi_region.enable_secondary_mode' | translate}}
             </button>
         </div>
-        <div class="table-responsive" ng-if="topology.primaryTags.length || addingTag">
-            <form name="tagForm">
+
+        <form class="multi-region-form" name="tagForm" ng-if="topology.primaryTags.length || addingTag">
+            <div class="multi-region-table">
                 <table class="tags-table table-striped table-hover table" aria-describedby="tags table">
                     <thead>
                     <tr class="labels-row">
@@ -72,8 +75,7 @@
                         </td>
                     </tr>
 
-                    <tr ng-repeat-start="tag in topology.primaryTags track by $index" ng-if="0"></tr>
-                    <tr class="preview-tag-row">
+                    <tr ng-repeat="tag in topology.primaryTags track by $index">
                         <td class="index-cell"><span>{{$index + 1}}</span></td>
                         <td class="tag-name-cell">
                             {{tag[0]}}
@@ -94,17 +96,16 @@
                             </div>
                         </td>
                     </tr>
-                    <tr ng-repeat-end ng-if="0"></tr>
                     </tbody>
                 </table>
-                <div ng-show="tagForm.asciiInput.$error.asciiValidator && !tagForm.asciiInput.$pristine">
-                    <span class="error-message">{{ 'cluster_management.cluster_configuration_multi_region.error.ascii' | translate }}</span>
-                </div>
-                <div ng-show="tagForm.asciiInput.$error.lengthValidator && !tagForm.asciiInput.$pristine">
-                    <span class="error-message">{{ 'cluster_management.cluster_configuration_multi_region.error.length' | translate: {minLen: TagLengthConstraints.minLen, maxLen: TagLengthConstraints.maxLen} }}</span>
-                </div>
-            </form>
-        </div>
+            </div>
+            <div class="multi-region-error alert alert-danger" ng-show="tagForm.asciiInput.$error.asciiValidator && !tagForm.asciiInput.$pristine">
+                <span class="error-message">{{ 'cluster_management.cluster_configuration_multi_region.error.ascii' | translate }}</span>
+            </div>
+            <div class="multi-region-error alert alert-danger" ng-show="tagForm.asciiInput.$error.lengthValidator && !tagForm.asciiInput.$pristine">
+                <span class="error-message">{{ 'cluster_management.cluster_configuration_multi_region.error.length' | translate: {minLen: TagLengthConstraints.minLen, maxLen: TagLengthConstraints.maxLen} }}</span>
+            </div>
+        </form>
     </div>
 
     <div ng-if="topology.state === TopologyState.SECONDARY_NODE">
