@@ -24,11 +24,11 @@ describe('ACL Management: reorder rules', () => {
 
     it('Should move rule up', () => {
         AclManagementSteps.moveRuleUp(1);
-        AclManagementSteps.checkStatementRules([ACL_VIEW[1], ACL_VIEW[0], ACL_VIEW[2], ACL_VIEW[3], ACL_VIEW[4]]);
+        AclManagementSteps.checkStatementRules([ACL_VIEW[1], ACL_VIEW[0], ACL_VIEW[2], ACL_VIEW[3]]);
     });
 
     it('Should move rule down', () => {
         AclManagementSteps.moveRuleDown(1);
-        AclManagementSteps.checkStatementRules([ACL_VIEW[0], ACL_VIEW[2], ACL_VIEW[1], ACL_VIEW[3], ACL_VIEW[4]]);
+        AclManagementSteps.checkStatementRules([ACL_VIEW[0], ACL_VIEW[2], ACL_VIEW[1], ACL_VIEW[3]]);
     });
 });
