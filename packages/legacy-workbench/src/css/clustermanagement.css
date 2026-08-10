@@ -239,6 +239,8 @@ div.nodetooltip {
 }
 
 .cluster-configuration-panel {
+    /* adapt to view width but at least 300px, menu size ignored for all practical screen sizes */
+    max-width: max(300px, 25vw);
     z-index: 1016 !important;
 }
 
@@ -337,11 +339,6 @@ div.nodetooltip {
     background-color: var(--gw-autocomplete-option-focus-background);
 }
 
-.error-message {
-    font-size: small;
-    color: var(--gw-warning-dark);
-}
-
 .alert-save {
     margin-left: 12px;
     margin-right: 12px;
@@ -377,34 +374,8 @@ ul.nodes-list li a:hover {
     text-decoration: underline;
 }
 
-.tags-table .tag-column {
-    width: auto;
-}
-
-.tags-table .tag-index-column {
-    width: 16%;
-}
-
-
-.tags-table .index-column {
-    width: 10%;
-}
-
 .actions-column {
     width: 80px;
-}
-
-.tag-input.ng-invalid.ng-dirty {
-    border-color: var(--gw-tag-danger-color) !important;
-}
-
-.tag-input.ng-valid.ng-dirty {
-    border-color: initial;
-}
-
-.tags-table td, .tags-table th {
-    padding: .4rem;
-    border-bottom: 1px solid #eceeef;
 }
 
 .index-cell {
@@ -419,21 +390,4 @@ ul.nodes-list li a:hover {
 
 .actions-cell .btn-link, .actions-cell .btn-link a {
     padding: 0.2em .2em;
-}
-
-.secondary-tag-table td, .secondary-tag-table th {
-    padding: .4rem;
-    border-bottom: 1px solid #eceeef;
-}
-
-.cluster-status-loader {
-    color: var(--gw-foreground-on-surface-secondary);
-    font-size: 1.5rem;
-}
-
-.multi-region-loader .ot-loader-new-content {
-    background-color: var(--gw-neutral-50-alpha-50);
-    position: absolute;
-    width: 100%;
-    height: 100%;
 }

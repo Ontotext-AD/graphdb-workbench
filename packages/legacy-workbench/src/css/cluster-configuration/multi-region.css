@@ -1,0 +1,81 @@
+.multi-region {
+    display: flex;
+    height: 100%;
+}
+
+.multi-region .multi-region-content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.multi-region .multi-region-form {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.multi-region .multi-region-table {
+    overflow: auto;
+}
+
+.multi-region .multi-region-error {
+    flex: 0 0 auto;
+}
+
+.multi-region-loader .ot-loader-new-content {
+    background-color: var(--gw-neutral-50-alpha-50);
+    height: 100%;
+    position: absolute;
+    width: 100%;
+}
+
+.cluster-status-loader {
+    color: var(--gw-foreground-on-surface-secondary);
+    font-size: 1.5rem;
+}
+
+.multi-region .tags-table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.multi-region .tags-table td,
+.multi-region .tags-table th {
+    padding: .4rem;
+}
+
+.multi-region .tags-table .tag-column {
+    width: auto;
+}
+
+.multi-region .tags-table .tag-index-column {
+    width: 16%;
+}
+
+.multi-region .tags-table .index-column {
+    width: 10%;
+}
+
+.multi-region .multi-region-table thead th {
+    border-bottom: var(--gw-datatable-header-background);
+    height: 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.multi-region .multi-region-table .add-tag-row {
+    position: sticky;
+    top: 2.4rem;
+    z-index: 1;
+}
+
+.multi-region .tag-input.ng-invalid.ng-dirty {
+    border-color: var(--gw-tag-danger-color) !important;
+}
+
+.multi-region .tag-input.ng-valid.ng-dirty {
+    border-color: initial;
+}
