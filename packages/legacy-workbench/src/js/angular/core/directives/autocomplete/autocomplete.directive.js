@@ -1,5 +1,5 @@
-import {decodeHTML} from "../../../../../app";
-import {mapUriAsNtripleAutocompleteResponse} from "../../../rest/mappers/autocomplete-mapper";
+import {decodeHTML} from '../../../../../app';
+import {mapUriAsNtripleAutocompleteResponse} from '../../../rest/mappers/autocomplete-mapper';
 
 angular
     .module('graphdb.framework.core.directives.autocomplete', [])
@@ -23,16 +23,15 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
             keypress: '&',
             required: '=?',
             validateUri: '=?',
-            validateSimpleRdfStarValue: '=?',
+            validateTripleTermValue: '=?',
             validateLiteralValue: '=?',
-            validateDefaultValue: '=?'
+            validateDefaultValue: '=?',
         },
         templateUrl: 'js/angular/core/directives/autocomplete/templates/autocomplete.html',
-        link: linkFunction
+        link: linkFunction,
     };
 
     function linkFunction($scope, element, attrs, ngModel) {
-
         //
         // Private variables
         //
@@ -155,13 +154,16 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
                 $scope.searchInput = resource.value;
                 $scope.autoCompleteUriResults = [];
                 SEARCH_INPUT_FIELD.focus();
-            } else if (resource && typeof resource === 'string' && validateRdfUri(resource)) {
-                $scope.searchInput = resource;
+            } else if (resource && typeof resource === 'string') {
+                // Normalize to a proper IRIREF: SPARQL/N-Triples require an absolute IRI to be
+                // enclosed in angle brackets, so wrap it even if the user typed it without them.
+                // (The value has already been validated by the caller, e.g. checkIfValidAndSearch.)
+                $scope.searchInput = wrapInAngleBrackets(resource);
                 $scope.autoCompleteUriResults = [];
             } else {
                 $scope.searchInput = '<' + resource.value + '>';
                 $scope.autoCompleteUriResults = [];
-        }
+            }
         };
 
         $scope.setActiveItemIndex = (index) => {
@@ -235,7 +237,7 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
         // Validators
         //
         ngModel.$validators.custom = function(modelValue) {
-            if (!$scope.validateUri && !$scope.validateLiteralValue && !$scope.validateDefaultValue || !modelValue) {
+            if (!$scope.validateUri && !$scope.validateLiteralValue && !$scope.validateDefaultValue && !$scope.validateTripleTermValue || !modelValue) {
                 return true;
             }
 
@@ -243,7 +245,7 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
                 element.find('.autocomplete-editable').removeClass('invalid');
                 return true;
             }
-            if ($scope.validateSimpleRdfStarValue && validateSimpleRdfStar(modelValue)) {
+            if ($scope.validateTripleTermValue && validateSimpleTripleTerm(modelValue)) {
                 element.find('.autocomplete-editable').removeClass('invalid');
                 return true;
             }
@@ -264,20 +266,52 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
         //
 
         const validateRdfUri = (value) => {
-            const hasAngleBrackets = value.indexOf("<") >= 0 && value.indexOf(">") >= 0;
-            const noAngleBrackets = value.indexOf("<") === -1 && value.lastIndexOf(">") === -1;
-            const validProtocol = /^<?(http|urn).*>?/.test(value) && (hasAngleBrackets || noAngleBrackets);
+            const validProtocol = /^<(http|urn).*>$/.test(value);
             let validPath = false;
 
             if (validProtocol) {
-                if (value.indexOf("http") >= 0) {
-                    const schemaSlashesIdx = value.indexOf('//');
-                    validPath = schemaSlashesIdx > 4 && value.substring(schemaSlashesIdx + 2).length > 0;
-                } else if (value.indexOf("urn") >= 0) {
-                    validPath = value.substring(4).length > 0;
+                // Strip the enclosing angle brackets before inspecting the content so that the
+                // closing '>' is not mistakenly counted as part of the path/urn body.
+                const stripped = value.slice(1, -1);
+                if (stripped.indexOf('http') >= 0) {
+                    const schemaSlashesIdx = stripped.indexOf('//');
+                    validPath = schemaSlashesIdx > 4 && stripped.substring(schemaSlashesIdx + 2).length > 0;
+                } else if (stripped.indexOf('urn') >= 0) {
+                    validPath = stripped.startsWith('urn:') && stripped.substring(4).length > 0;
                 }
             }
             return validProtocol && validPath;
+        };
+
+        /**
+         * Ensures an absolute IRI is wrapped in angle brackets, as required by the SPARQL/N-Triples
+         * IRIREF grammar. If the value already has both `<` and `>`, it is returned unchanged.
+         * @param {string} value
+         * @return {string}
+         */
+        const wrapInAngleBrackets = (value) => {
+            const isAlreadyWrapped = value.startsWith('<') && value.endsWith('>');
+            return isAlreadyWrapped ? value : `<${value}>`;
+        };
+
+        /**
+         * Loosely detects whether a value looks like an absolute IRI (http/urn), regardless of
+         * whether it is wrapped in angle brackets. This is intentionally more permissive than
+         * `validateRdfUri` because it is used while the user is still typing, in order to decide
+         * whether to split off the local name for autocomplete filtering (see `handleAbsUris`).
+         * It must not be used to determine the final validity of the field's value.
+         * @param {string} value
+         * @return {boolean}
+         */
+        const looksLikeAbsoluteUri = (value) => {
+            const stripped = (value.startsWith('<') && value.endsWith('>')) ? value.slice(1, -1) : value;
+            if (stripped.indexOf('http') >= 0) {
+                const schemaSlashesIdx = stripped.indexOf('//');
+                return schemaSlashesIdx > 4 && stripped.substring(schemaSlashesIdx + 2).length > 0;
+            } else if (stripped.indexOf('urn') >= 0) {
+                return stripped.startsWith('urn:') && stripped.substring(4).length > 0;
+            }
+            return false;
         };
 
         const expandPrefix = (str) => {
@@ -303,16 +337,16 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
 
 
         /**
-         * Validates if the given value is a RDF* (RDF Star) statement.
-         * This function checks whether the value strictly starts with '<<' and ends with '>>',
-         * indicating a basic RDF* pattern. It does not validate the internal structure of the RDF* statement.
+         * Validates if the given value is a Triple Term.
+         * This function checks whether the value strictly starts with '<<(' and ends with ')>>',
+         * indicating a Triple Term. It does not validate the internal structure of the Triple Term.
          *
-         * @param {string} value - The string value to be validated as a simple RDF* statement.
-         * @return {boolean} Returns `true` if the value matches the simple RDF* pattern, otherwise `false`.
+         * @param {string} value - The string value to be validated as a simple Triple Term.
+         * @return {boolean} Returns `true` if the value matches the simple Triple Term pattern, otherwise `false`.
          */
-        const validateSimpleRdfStar = (value) => {
-            const rdfStarWrapper = /^<<.*>>$/;
-            return rdfStarWrapper.test(value);
+        const validateSimpleTripleTerm = (value) => {
+            const tripleTermWrapper = /^<<\((.*)\)>>$/;
+            return tripleTermWrapper.test(value);
         };
 
         const validateDefault = (value) => {
@@ -340,7 +374,7 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
                     $scope.selectResource({
                         type: selectedResource.type,
                         value: selectedResource.value,
-                        description: selectedResource.description
+                        description: selectedResource.description,
                     });
                 }
             } else {
@@ -358,11 +392,13 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
 
         const handleAbsUris = (absUri) => {
             let uri = absUri;
-            if (uri.indexOf(';') === -1 && validateRdfUri(uri)) {
-                uri = uri.replace(/<|>/g, '');
+            if (uri.indexOf(';') === -1 && looksLikeAbsoluteUri(uri)) {
+                uri = uri.replace(/[<>]/g, '');
                 const localName = /[^/^#]*$/.exec(uri)[0];
-                const uriPart = uri.split(localName)[0];
-                return uriPart + ";" + localName;
+                // localName is anchored to the end of uri, so slice off exactly its length
+                // instead of using split, which would cut at the first (possibly wrong) occurrence.
+                const uriPart = uri.slice(0, uri.length - localName.length);
+                return uriPart + ';' + localName;
             }
             return uri;
         };
@@ -390,7 +426,7 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
                             $scope.autoCompleteUriResults = filterAndCombineDefaultResults(
                                 $scope.defaultresults,
                                 $scope.searchInput,
-                                suggestions
+                                suggestions,
                             );
                         } else {
                             $scope.autoCompleteUriResults = suggestions;
@@ -474,11 +510,11 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
         const filterAndCombineDefaultResults = (defaultResults, currentInput, backendSuggestions) => {
             // Filter default words based on current input
             const filteredDefaultResults = defaultResults.filter((result) =>
-                result && result.value.toLowerCase().includes(currentInput.toLowerCase())
+                result && result.value.toLowerCase().includes(currentInput.toLowerCase()),
             ).map((result) => ({
                 type: result.type,
                 value: result.value,
-                description: highlightMatch($translate.instant(result.description), currentInput)
+                description: highlightMatch($translate.instant(result.description), currentInput),
             }));
 
             // Concatenate filtered default words with backend suggestions
