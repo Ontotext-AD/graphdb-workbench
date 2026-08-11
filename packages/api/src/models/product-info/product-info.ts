@@ -19,7 +19,7 @@ export class ProductInfo {
   }
 
   private resolveShortVersion(data: Partial<ProductInfo>) {
-    const productVersion = data.productVersion;
+    const productVersion = data.productVersion?.trim();
 
     if (!productVersion) {
       return '';
@@ -28,13 +28,15 @@ export class ProductInfo {
     // Extract major.minor version (e.g., "10.0" from "10.0.0-M3-RC1")
     const majorMinorRegex = /^(\d+\.\d+)/;
     const majorMinorMatch = majorMinorRegex.exec(productVersion);
-    const baseVersion = majorMinorMatch?.[1] ?? productVersion;
 
-    // Extract first attribute after dash (e.g., "M3" from "10.0.0-M3-RC1")
-    const attributeRegex = /(-[^-]+)/;
-    const attributeMatch = attributeRegex.exec(productVersion);
-    const firstAttribute = attributeMatch?.[1] ?? '';
+    if (majorMinorMatch) {
+      // Extract first attribute after dash (e.g., "M3" from "10.0.0-M3-RC1")
+      const attributeRegex = /(-[^-]+)/;
+      const attributeMatch = attributeRegex.exec(productVersion);
+      const firstAttribute = attributeMatch?.[1] ?? '';
 
-    return baseVersion + firstAttribute;
+      return majorMinorMatch[1] + firstAttribute;
+    }
+    return productVersion;
   }
 }

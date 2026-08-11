@@ -215,7 +215,7 @@ function AgentSettingsModalController(
      */
     $scope.vectorFields = [];
 
-    $scope.documentationUrlForSimilarity = DocumentationUrlResolver.getDocumentationUrl(productInfo.productShortVersion, 'talk-to-graph.html#prerequisites-and-configuration');
+    $scope.documentationUrlForSimilarity = DocumentationUrlResolver.getDocumentationUrl(productInfo.shortVersion, 'talk-to-graph.html#prerequisites-and-configuration');
 
     /**
      * The similarity index select options grouped by provider for the similarity search extraction method.
@@ -275,7 +275,7 @@ function AgentSettingsModalController(
     $scope.helpInfoForModel = {
         ttygHelpInfo: getModelHelpMessage(),
         linkText: $translate.instant('ttyg.agent.create_agent_modal.form.model.link_text'),
-        documentationUrl: DocumentationUrlResolver.getDocumentationUrl(productInfo.productShortVersion, 'talk-to-graph.html#prerequisites-and-configuration'),
+        documentationUrl: DocumentationUrlResolver.getDocumentationUrl(productInfo.shortVersion, 'talk-to-graph.html#prerequisites-and-configuration'),
     };
 
     /**

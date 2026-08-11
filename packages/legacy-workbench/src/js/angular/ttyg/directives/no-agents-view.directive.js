@@ -18,7 +18,7 @@ function NoAgentsView(TTYGContextService, productInfo) {
             // =========================
             // Public variables
             // =========================
-            $scope.talkToGraphDocumentationLink = DocumentationUrlResolver.getDocumentationUrl(productInfo.productShortVersion, 'talk-to-graph.html');
+            $scope.talkToGraphDocumentationLink = DocumentationUrlResolver.getDocumentationUrl(productInfo.shortVersion, 'talk-to-graph.html');
 
             // =========================
             // Public functions
