@@ -93,7 +93,7 @@ const getNumberFormatError = function(params, $translate) {
 };
 
 const getDocBase = function(productInfo) {
-    return `https://graphdb.ontotext.com/documentation/${productInfo.productShortVersion}`;
+    return `https://graphdb.ontotext.com/documentation/${productInfo.shortVersion}`;
 };
 const filterLocations = function(result) {
     return result.filter((location) => location.isGraphDBLocation() && !location.errorMsg && !location.degradedReason);
@@ -543,7 +543,7 @@ function AddRepositoryCtrl($rootScope, $scope, toastr, $repositories, $location,
     $scope.repositoryType = $routeParams.repositoryType;
     $scope.enable = true;
     $scope.entityIndexSizeMin = ENTITY_INDEX_SIZE_MIN;
-    $scope.documentationUrlForStorageEncryption = DocumentationUrlResolver.getDocumentationUrl(productInfo.productShortVersion, 'creating-a-repository.html#using-workbench');
+    $scope.documentationUrlForStorageEncryption = DocumentationUrlResolver.getDocumentationUrl(productInfo.shortVersion, 'creating-a-repository.html#using-workbench');
     $scope.encryptInput = {hovered: false};
 
     $scope.loader = true;

@@ -254,7 +254,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     $scope.licenseIsSet = false;
     $scope.hideRdfResourceSearch = false;
     $scope.graphdbVersion = $scope.engineVersion = productInfo.productVersion;
-    $scope.workbenchVersion = productInfo.Workbench;
+    $scope.workbenchVersion = productInfo.workbench;
     $scope.connectorsVersion = productInfo.connectors;
     $scope.sesameVersion = productInfo.sesame;
     $scope.isActiveRepoPopoverOpen = false;
@@ -550,7 +550,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
             },
             {
                 'title': $translate.instant('main.info.title.create.repo.page'),
-                'info': decodeHTML($translate.instant('main.info.create.repo.page', {link: '<a href="https://graphdb.ontotext.com/documentation/' + productInfo.productShortVersion + '/configuring-a-repository.html" target="_blank">'})),
+                'info': decodeHTML($translate.instant('main.info.create.repo.page', {link: '<a href="https://graphdb.ontotext.com/documentation/' + productInfo.shortVersion + '/configuring-a-repository.html" target="_blank">'})),
             },
             {
                 'title': $translate.instant('main.info.title.load.sample.dataset'),

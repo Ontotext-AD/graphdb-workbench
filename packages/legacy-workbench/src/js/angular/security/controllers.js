@@ -62,7 +62,7 @@ securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$windo
             return $translate.instant('security.toggle.tooltip', {action});
         };
 
-        $scope.securityToggleNotAllowedDocUrl = DocumentationUrlResolver.getDocumentationUrl(productInfo.productShortVersion, 'security.html');
+        $scope.securityToggleNotAllowedDocUrl = DocumentationUrlResolver.getDocumentationUrl(productInfo.shortVersion, 'security.html');
 
         $scope.securityEnabled = function() {
             return authenticationService.isSecurityEnabled();

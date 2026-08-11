@@ -33,7 +33,7 @@ function ManageRemoteLocationDialogController($scope, $uibModalInstance, product
     $scope.RemoteLocationType = RemoteLocationType;
     $scope.RemoteLocationAuthType = RemoteLocationAuthType;
     $scope.isEdit = !!data.remoteLocation;
-    $scope.docBase = `https://graphdb.ontotext.com/documentation/${productInfo.productShortVersion}`;
+    $scope.docBase = `https://graphdb.ontotext.com/documentation/${productInfo.shortVersion}`;
 
     $scope.ok = () => {
         if ($scope.remoteLocationForm.$pristine || $scope.remoteLocationForm.$invalid) {
