@@ -357,7 +357,7 @@ export class AclManagementSteps {
     }
 
     static checkIfRuleSavingIsForbidden(index) {
-        AclManagementSteps.getSaveRuleButton(index).should('not.exist');
+        AclManagementSteps.getSaveRuleButton(index).should('be.visible');
         AclManagementSteps.getSaveRuleDisabledButton(index).should('be.disabled');
     }
 
