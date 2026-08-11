@@ -41,7 +41,7 @@ PluginRegistry.add('main.menu', {
             icon: 'ri-external-link-line',
             documentationHref: 'index.html',
             hrefFun: function(productInfo, urlResolver) {
-                return urlResolver(productInfo.productShortVersion, 'index.html');
+                return urlResolver(productInfo.shortVersion, 'index.html');
             },
             guideSelector: 'sub-menu-documentation',
         }, {
@@ -52,7 +52,7 @@ PluginRegistry.add('main.menu', {
             icon: 'ri-external-link-line',
             documentationHref: 'tutorials.html',
             hrefFun: function(productInfo, urlResolver) {
-                return urlResolver(productInfo.productShortVersion, 'tutorials.html');
+                return urlResolver(productInfo.shortVersion, 'tutorials.html');
             },
             guideSelector: 'sub-menu-developer-hub',
         }, {
@@ -63,7 +63,7 @@ PluginRegistry.add('main.menu', {
             icon: 'ri-external-link-line',
             documentationHref: 'support.html',
             hrefFun: function(productInfo, urlResolver) {
-                return urlResolver(productInfo.productShortVersion, 'support.html');
+                return urlResolver(productInfo.shortVersion, 'support.html');
             },
             guideSelector: 'sub-menu-support',
         },

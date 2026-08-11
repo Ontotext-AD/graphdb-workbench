@@ -30,7 +30,8 @@ import {NumberUtils} from "./js/angular/utils/number-utils";
 import {HtmlUtil} from "./js/angular/utils/html-util";
 import {LoggerProvider} from "./js/angular/core/services/logger-provider";
 import {
-    ServiceProvider,
+    ProductInfoContextService,
+    service,
     LanguageContextService,
     ByteUtils,
 } from "@ontotext/workbench-api";
@@ -88,9 +89,12 @@ const providers = [
 
 const workbench = angular.module('graphdb.workbench', modules);
 
-const moduleDefinition = function(productInfo, translations) {
+const moduleDefinition = function(translations) {
     defineYasguiElements();
     defineGraphQlElements();
+
+    const productInfoContextService = service(ProductInfoContextService);
+    const productInfo = productInfoContextService.getProductInfo();
 
     workbench.config([...providers,
         function($routeProvider, $locationProvider, $menuItemsProvider, toastrConfig, localStorageServiceProvider,
@@ -248,7 +252,7 @@ const moduleDefinition = function(productInfo, translations) {
 
                 $rootScope.helpInfo = $route.current.helpInfo && $sce.trustAsHtml(decodeHTML($translate.instant($route.current.helpInfo)));
                 $rootScope.title = decodeHTML($translate.instant($route.current.title));
-                $rootScope.documentationUrl = DocumentationUrlResolver.getDocumentationUrl(productInfo.productShortVersion, $route.current.documentationUrl);
+                $rootScope.documentationUrl = DocumentationUrlResolver.getDocumentationUrl(productInfo.shortVersion, $route.current.documentationUrl);
             }
 
             GuidesService.init();
@@ -256,7 +260,7 @@ const moduleDefinition = function(productInfo, translations) {
             // =========================
             // Functions and configurations for integration with the shared-components module.
             // =========================
-            const languageContextService = ServiceProvider.get(LanguageContextService);
+            const languageContextService = service(LanguageContextService);
 
             const languageChangeSubscriptions = languageContextService
                 .onSelectedLanguageChanged((language) => {
@@ -330,38 +334,10 @@ function loadTranslations(language) {
         });
 }
 
-// Fetch the product version information before bootstrapping the app
-function loadAppInfo() {
-    return new Promise((resolve, reject) => {
-        $.get('rest/info/version?local=1', function(data) {
-            // Extract major.minor version as short version
-            const versionArray = data.productVersion.match(/^(\d+\.\d+)/);
-            if (versionArray.length) {
-                data.productShortVersion = versionArray[1];
-            } else {
-                data.productShortVersion = data.productVersion;
-            }
-
-            // Add the first attribute to the short version, e.g. if the full version is 10.0.0-M3-RC1,
-            // the first attribute is M3 so the short version will be 10.0-M3.
-            const attributeArray = data.productVersion.match(/(-.*?)(-|$)/);
-            if (attributeArray && attributeArray.length) {
-                data.productShortVersion = data.productShortVersion + attributeArray[1];
-            }
-            return resolve(data);
-        });
-    });
-}
-
 function startWorkbench() {
-    let translations;
     return initTranslations()
         .then((translationData) => {
-            translations = translationData;
-            return loadAppInfo();
-        })
-        .then((appInfo) => {
-            moduleDefinition(appInfo, translations);
+            moduleDefinition(translationData);
             return wbInit();
         })
         .catch((error) => {
