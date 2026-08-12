@@ -84,6 +84,12 @@ h1 .btn {
     transition: all 0.15s ease-out;
 }
 
+.btn:disabled,
+.btn-link.secondary:disabled,
+.text-btn:disabled {
+  opacity: var(--gw-button-disabled-opacity);
+}
+
 .btn, .btn-group > .btn:first-child:not(:last-child):not(.dropdown-toggle) {
     border-radius: 0;
 }
