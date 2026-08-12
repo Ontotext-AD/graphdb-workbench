@@ -1135,10 +1135,12 @@ input[type=checkbox]:checked {
 input[type=checkbox]:checked:disabled {
     background-color: var(--gw-checkbox-checked-disabled-background);
     border-color: var(--gw-checkbox-checked-disabled-border-color);
+    opacity: var(--gw-checkbox-disabled-opacity);
 }
 
 input[type=checkbox]:disabled {
     background-color: var(--gw-checkbox-disabled-background);
+    opacity: var(--gw-checkbox-disabled-opacity);
 }
 
 input[type=checkbox]:checked::after {
@@ -1190,11 +1192,13 @@ input[type=radio]:checked:hover {
 input[type=radio]:checked:disabled {
     color: var(--gw-radiobutton-checked-disabled-label-color);
     border-color: var(--gw-radiobutton-checked-disabled-border-color);
+    opacity: var(--gw-button-disabled-opacity);
 }
 
 input[type=radio]:disabled {
     color: var(--gw-radiobutton-disabled-label-color);
     background-color: var(--gw-radiobutton-disabled-background);
+    opacity: var(--gw-button-disabled-opacity);
 }
 
 input[type=radio]:hover {
