@@ -39,10 +39,12 @@ export class ReactodiaComponentFacadeComponent {
   readonly currentRepository = input.required<string>();
   /** The selected UI language passed to the web component. */
   readonly language = input<string>();
-  /** The resource IRIs the diagram starts from (Reactodia's `seed`). */
+  /** The applied theme passed to the web component. */
+  readonly theme = input<string>();
+  /** The resource IRIs to seed the diagram with */
   readonly seedIris = input<string[]>([]);
   /**
-   * Pre-resolved edges to place on the canvas (Reactodia's `seedGraph`). Used for query-driven
+   * Pre-resolved graph to place on the canvas. Used for query-driven
    * graphs (e.g. CONSTRUCT results) whose links are not persisted in the repository and therefore
    * cannot be resolved lazily from the SPARQL endpoint.
    */

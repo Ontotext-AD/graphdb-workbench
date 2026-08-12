@@ -7,9 +7,11 @@ import {
   GraphExploreService,
   LanguageContextService,
   RepositoryContextService,
+  RuntimeConfigurationContextService,
   service,
   SubscriptionList,
-  WindowService
+  WindowService,
+  ThemeMode
 } from '@ontotext/workbench-api';
 import {CLEAR_DIAGRAM_STORAGE_EVENT} from 'graphwise-reactodia';
 import {
@@ -19,10 +21,10 @@ import {PageLayoutComponent} from '../../components/page-layout/page-layout.comp
 import {LoggerProvider} from '../../services/logger/logger-provider';
 
 /**
- * Page that hosts the Reactodia graph. It owns the context subscriptions (repository and language),
- * gates between the "repository required" banner and the {@link ReactodiaComponentFacadeComponent}
+ * Page that hosts the Reactodia graph. It owns the context subscriptions (repository, language and
+ * theme), gates between the "repository required" banner and the {@link ReactodiaComponentFacadeComponent}
  * (which owns the `graphwise-reactodia` web component and its wiring) based on the active
- * repository, and feeds the current repository/language down to the facade.
+ * repository, and feeds the current repository/language/theme down to the facade.
  */
 @Component({
   selector: 'app-reactodia-page',
@@ -39,6 +41,7 @@ export class ReactodiaPageComponent implements OnInit, OnDestroy {
   private readonly languageContextService = service(LanguageContextService);
   private readonly graphExploreService = service(GraphExploreService);
   private readonly eventService = service(EventService);
+  private readonly runtimeConfigurationContextService = service(RuntimeConfigurationContextService);
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly logger = LoggerProvider.logger;
 
@@ -46,6 +49,7 @@ export class ReactodiaPageComponent implements OnInit, OnDestroy {
 
   readonly currentRepository = signal('');
   readonly language = signal(this.languageContextService.getSelectedLanguage());
+  readonly theme = signal<ThemeMode | undefined>(undefined);
   readonly seedIris = signal<string[]>([]);
   readonly seedGraph = signal<GraphExploreLink[]>([]);
   readonly loading = signal(false);
@@ -60,7 +64,8 @@ export class ReactodiaPageComponent implements OnInit, OnDestroy {
     this.subscriptions.addAll([
       this.subscribeToRepositoryChanged(),
       this.subscribeToLanguageChanged(),
-      this.subscribeToNavigationEnd()
+      this.subscribeToNavigationStart(),
+      this.subscribeToThemeChanged()
     ]);
   }
 
@@ -78,11 +83,19 @@ export class ReactodiaPageComponent implements OnInit, OnDestroy {
 
   /**
    * Tells the `graphwise-reactodia` web component to drop its persisted diagram state whenever a
-   * navigation ends, so a stale diagram is not restored on the next visit to the page.
+   * navigation to another view is made, so a stale diagram is not restored on the next visit to the page.
    */
-  private subscribeToNavigationEnd() {
-    return this.eventService.subscribe(EventName.NAVIGATION_END, () => {
+  private subscribeToNavigationStart() {
+    return this.eventService.subscribe(EventName.NAVIGATION_START, () => {
       WindowService.getWindow().dispatchEvent(new CustomEvent(CLEAR_DIAGRAM_STORAGE_EVENT));
+    });
+  }
+
+  private subscribeToThemeChanged() {
+    return this.runtimeConfigurationContextService.onThemeModeChanged((themeMode) => {
+      if (themeMode) {
+        this.theme.set(themeMode);
+      }
     });
   }
 
