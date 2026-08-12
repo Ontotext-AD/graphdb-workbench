@@ -315,7 +315,10 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             let canceler;
 
             $scope.showClearInputIcon = false;
-            $scope.searchType = LocalStorageAdapter.get(LSKeys.RDF_SEARCH_TYPE) || SEARCH_DISPLAY_TYPE.table;
+            $scope.searchType = SEARCH_DISPLAY_TYPE.table;
+            if ($scope.radioButtons) {
+                $scope.searchType = LocalStorageAdapter.get(LSKeys.RDF_SEARCH_TYPE) || SEARCH_DISPLAY_TYPE.table;
+            }
             $scope.searchInput = "";
 
             $scope.changeSearchType = function(type) {

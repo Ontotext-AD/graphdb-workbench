@@ -72,7 +72,7 @@ describe('Routing Util Functions', () => {
 
       navigateToLoginPage();
 
-      expect(WindowService.navigateSingleSpa).toHaveBeenCalledWith('login?r=%2Fsparql');
+      expect(WindowService.navigateSingleSpa).toHaveBeenCalledWith('http://localhost/login?r=%2Fsparql');
     });
 
     it('should keep the query params of the current page in the return url', () => {
@@ -82,7 +82,7 @@ describe('Routing Util Functions', () => {
       navigateToLoginPage();
 
       expect(WindowService.navigateSingleSpa).toHaveBeenCalledWith(
-        'login?r=%2Fsparql%3Fquery%3DSELECT%2520*%26name%3Dq1'
+        'http://localhost/login?r=%2Fsparql%3Fquery%3DSELECT%2520*%26name%3Dq1'
       );
     });
 
@@ -92,7 +92,7 @@ describe('Routing Util Functions', () => {
 
       navigateToLoginPage();
 
-      expect(WindowService.navigateSingleSpa).toHaveBeenCalledWith('login?r=%2Fgraphql%2Fendpoints');
+      expect(WindowService.navigateSingleSpa).toHaveBeenCalledWith('http://localhost/graphdb/login?r=%2Fgraphql%2Fendpoints');
     });
 
     it('should add the home page as return url when on the home page', () => {
@@ -100,7 +100,7 @@ describe('Routing Util Functions', () => {
 
       navigateToLoginPage();
 
-      expect(WindowService.navigateSingleSpa).toHaveBeenCalledWith('login?r=%2F');
+      expect(WindowService.navigateSingleSpa).toHaveBeenCalledWith('http://localhost/login?r=%2F');
     });
   });
 
