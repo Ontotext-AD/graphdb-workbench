@@ -148,6 +148,10 @@ app-yasgui-component-facade .custom-button {
   background-color: var(--gw-editor-content-background) !important;
 }
 
+app-yasgui-component-facade .yasgui .yasqe .yasqe_expandResultsButton.custom-button.disabled {
+  opacity: var(--gw-button-disabled-opacity);
+}
+
 app-yasgui-component-facade .custom-button:disabled:hover, app-yasgui-component-facade .custom-button:disabled:focus {
   color: #818a91 !important;
 }
