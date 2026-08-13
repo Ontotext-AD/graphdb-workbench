@@ -57,11 +57,13 @@ export class Rdf4jRestService extends HttpService {
       .map(([property, value]) => `${property}=${encodeURIComponent(value)}`);
     const payloadString = properties.join('&');
 
+    const version12AcceptHeader = acceptHeader + ';version=1.2';
+
     return this.post(`${this.REPOSITORIES_ENDPOINT}/${repositoryId}`, {
       responseType: 'blob',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
-        'Accept': acceptHeader,
+        'Accept': version12AcceptHeader,
         'Link': linkHeader
       },
       body: payloadString,
@@ -85,11 +87,12 @@ export class Rdf4jRestService extends HttpService {
    * @returns A promise resolving to the raw SPARQL SELECT results.
    */
   executeSparqlQuery(repositoryId: string, query: string): Promise<SparqlResultsResponse> {
+    const version12AcceptHeader = 'application/sparql-results+json;version=1.2';
     return this.post<SparqlResultsResponse>(`${this.REPOSITORIES_ENDPOINT}/${repositoryId}`, {
       body: new URLSearchParams({query}),
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
-        'Accept': 'application/sparql-results+json',
+        'Accept': version12AcceptHeader,
         'X-GraphDB-Local-Consistency': 'updating',
       }
     });

@@ -80,7 +80,7 @@ function RDF4JRepositoriesRestService($http, $translate) {
                 query: CHECK_PLUGIN_ACTIVE_QUERY.replace('{{pluginName}}', pluginName)
             },
             headers: {
-                'Accept': '*/*'
+                'Accept': '*/*;version=1.2'
             }
         });
     }
@@ -90,7 +90,8 @@ function RDF4JRepositoriesRestService($http, $translate) {
     }
 
     function getGraphs(repositoryId, limit) {
-        return $http.get(`${REPOSITORIES_ENDPOINT}/${repositoryId}/contexts`, {params: {limit}});
+        const version12AcceptHeader = 'application/sparql-results+json;version=1.2';
+        return $http.get(`${REPOSITORIES_ENDPOINT}/${repositoryId}/contexts`, {params: {limit}, headers: {'Accept': version12AcceptHeader}});
     }
 
 
@@ -135,12 +136,15 @@ function RDF4JRepositoriesRestService($http, $translate) {
             .filter(([property, value]) => value !== undefined)
             .map(([property, value]) => `${property}=${encodeURIComponent(value)}`);
         const payloadString = properties.join('&');
+
+        const version12AcceptHeader = acceptHeader + ';version=1.2';
+
         return $http({
             method: 'POST',
             url: `${REPOSITORIES_ENDPOINT}/${repositoryId}`,
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
-                'Accept': acceptHeader,
+                'Accept': version12AcceptHeader,
                 'Link': linkHeader
             },
             data: payloadString,
@@ -156,11 +160,16 @@ function RDF4JRepositoriesRestService($http, $translate) {
      * @return {Promise<{data: Blob, filename: string}>} A promise resolving to an object containing the file data (Blob) and its filename.
      */
     function downloadGraphsAsFile(repositoryId, limit) {
+        const version12AcceptHeader = 'version=1.2';
+
         return $http({
             method: 'GET',
             url: `${REPOSITORIES_ENDPOINT}/${repositoryId}/contexts`,
             params: { limit },
-            responseType: "blob"
+            responseType: "blob",
+            headers: {
+                'Accept': version12AcceptHeader
+            }
         }).then((response) => HttpUtils.extractFileFromResponse(response));
     }
 }
