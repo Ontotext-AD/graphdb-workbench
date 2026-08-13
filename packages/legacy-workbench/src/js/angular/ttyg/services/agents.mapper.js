@@ -3,7 +3,7 @@ import {
     AdditionalExtractionMethodModel,
     AgentInstructionsModel,
     AgentListModel,
-    AgentModel,
+    AgentModel, DEFAULT_TEMPERATURE_RANGE, DEFAULT_TOP_P_RANGE,
     ExtractionMethodModel,
 } from '../../models/ttyg/agents';
 import {
@@ -35,8 +35,19 @@ export const agentFormModelMapper = (agentModel, defaultAgentModel, operation ) 
     agentFormModel.model = agentModel.model || defaultAgentModel.model;
     agentFormModel.contextSize = agentModel.contextSize || defaultAgentModel.contextSize;
     agentFormModel.contextSizeCopy = defaultAgentModel.contextSize;
-    agentFormModel.temperature.value = agentModel.temperature !== undefined ? agentModel.temperature : defaultAgentModel.temperature;
-    agentFormModel.topP.value = agentModel.topP !== undefined ? agentModel.topP : defaultAgentModel.topP;
+
+    // Set temperature related properties.
+    const temperatureFormModel = new NumericRangeModel({...DEFAULT_TEMPERATURE_RANGE});
+    temperatureFormModel.value = agentModel.temperature !== undefined ? agentModel.temperature : defaultAgentModel.temperature;
+    agentFormModel.temperature = temperatureFormModel;
+    agentFormModel.temperatureEnabled = agentFormModel.temperature.value !== undefined && agentFormModel.temperature.value !== null;
+
+    // Set topP related properties.
+    const topPFormModel = new NumericRangeModel({...DEFAULT_TOP_P_RANGE});
+    topPFormModel.value = agentModel.topP !== undefined ? agentModel.topP : defaultAgentModel.topP;
+    agentFormModel.topP = topPFormModel;
+    agentFormModel.topPEnabled = agentFormModel.topP.value !== undefined && agentFormModel.topP.value !== null;
+
     agentFormModel.seed = agentModel.seed || defaultAgentModel.seed;
     agentFormModel.instructions = agentInstructionsFormMapper(agentModel.instructions, defaultAgentModel.instructions);
     extractionMethodsFormMapper(agentFormModel, operation, defaultAgentModel.assistantExtractionMethods, agentModel.assistantExtractionMethods);
