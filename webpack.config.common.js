@@ -491,7 +491,7 @@ module.exports = (webpackConfigEnv, argv) => {
                     }
                 },
                 {
-                    test: /\.(ttl|ttls|trig|trigs)$/,
+                    test: /\.(ttl|trig)$/,
                     type: 'asset/resource',
                     generator: {
                         filename: '[name].[hash].[ext]'

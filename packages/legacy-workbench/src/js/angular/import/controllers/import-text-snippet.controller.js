@@ -19,10 +19,8 @@ function ImportTextSnippetController($scope, $uibModalInstance, text, format) {
         {name: 'N-Triples', type: 'text/plain'},
         {name: 'N-Quads', type: 'text/x-nquads'},
         {name: 'Turtle', type: 'text/turtle'},
-        {name: 'Turtle*', type: 'application/x-turtlestar'},
         {name: 'TriX', type: 'application/trix'},
         {name: 'TriG', type: 'application/x-trig'},
-        {name: 'TriG*', type: 'application/x-trigstar'}
     ];
     $scope.rdfText = text;
     $scope.importFormat = $scope.importFormats.find((formatModel) => formatModel.type === format);
