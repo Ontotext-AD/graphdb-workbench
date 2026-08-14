@@ -145,4 +145,36 @@
   border-left-color: var(--gw-secondary-base);
 }
 
+/*
+ * Tooltips for disabled elements.
+ *
+ * Disabled controls do not emit mouse events, so a gdb-tooltip placed on them, or on a wrapper that
+ * hugs them, never triggers. Add an empty overlay element carrying the tooltip instead - it covers
+ * its parent and is hovered in place of the disabled element:
+ *
+ *   <td>
+ *       <span class="tooltip-on-disabled" ng-if="isDisabled"
+ *             gdb-tooltip="{{'some.translation.key' | translate}}"></span>
+ *       <input type="checkbox" ng-disabled="isDisabled">
+ *   </td>
+ *
+ * Add the overlay with ng-if rather than toggling the tooltip text, because gdb-tooltip binds its
+ * mouse handlers once at link time and does nothing when the text is empty by then.
+ *
+ * The overlay swallows clicks, so keep it in the DOM only while the element below it is disabled.
+ */
+:has(> .tooltip-on-disabled) {
+  position: relative;
+}
+
+.tooltip-on-disabled {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  cursor: not-allowed;
+}
+
 

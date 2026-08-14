@@ -286,18 +286,22 @@
                                         </th>
 
                                         <th class="text-xs-center graphql-any">
+                                        <span class="tooltip-on-disabled" ng-if="!isUser()" data-test="graphql-any-role-tooltip"
+                                              gdb-tooltip="{{'security.tooltip.not.available.for.role' | translate}}"></span>
                                         <span ng-click="setGrantedAuthorities()">
-                                            <input class="graphql" type="checkbox" ng-model="grantedAuthorities.GRAPHQL['*']" ng-checked="hasGraphqlPermission('*')"
+                                            <input class="graphql" type="checkbox" data-test="graphql-any-checkbox" ng-model="grantedAuthorities.GRAPHQL['*']" ng-checked="hasGraphqlPermission('*')"
                                                    ng-disabled="graphqlCheckDisabled('*')">
                                         </span>
                                     </th>
 
                                 </tr>
                                 </thead>
-                                <tbody>
+                                <tbody ng-if="isUser()" data-test="repository-rights-rows">
                                 <div>
                                     <tr ng-repeat="repository in getReadableRepositories() | orderBy: ['location', 'id']">
-                                        <td class="repository-name">{{repository.id}}
+                                        <td class="repository-name">
+                                            <em class="icon-lg" ng-class="'icon-repo-' + repository.type"></em>
+                                            {{repository.id}}
                                             <small class="text-muted">
                                                 <em ng-if="isGraphQlOnlyRight(repository)"
                                                     class="icon-graphql graphql-icon text-info" gdb-tooltip="{{'security.tooltip.graphql' | translate}}"></em> &middot;
@@ -324,9 +328,13 @@
                                             </td>
 
                                         <td class="text-xs-center graphql-rights">
+                                            <span class="tooltip-on-disabled" ng-if="isGraphqlUnsupportedRepository(repository)"
+                                                  data-test="graphql-repository-type-tooltip"
+                                                  gdb-tooltip="{{'security.tooltip.not.available.for.repository.type' | translate}}"></span>
                                             <span ng-click="setGrantedAuthorities()">
-                                                <input class="graphql" type="checkbox" ng-model="grantedAuthorities.GRAPHQL[createUniqueKey(repository)]"
-                                                       ng-checked="hasGraphqlPermission(repository)" ng-disabled="graphqlCheckDisabled(repository)">
+                                                <input class="graphql" type="checkbox" data-test="graphql-repository-checkbox" ng-model="grantedAuthorities.GRAPHQL[createUniqueKey(repository)]"
+                                                       ng-checked="hasGraphqlPermission(repository)"
+                                                       ng-disabled="graphqlCheckDisabled(repository) || isGraphqlUnsupportedRepository(repository)">
                                             </span>
                                         </td>
                                     </tr>

@@ -405,11 +405,8 @@ export class UserAndAccessSteps {
     // ============= GraphQL Access Toggles and Validations =============
 
     static getGraphqlAccessForRepo(repoName) {
-        const matchText = (repoName === '*') ? 'Global (any data repository)' : repoName;
-        return cy.get('#user-repos')
-            .contains(matchText)
-            .parent('tr')
-            .find('.graphql')
+        const testId = (repoName === '*') ? 'graphql-any-checkbox' : 'graphql-repository-checkbox';
+        return this.getRepositoryRightsLine(repoName).getByTestId(testId);
     }
 
     static toggleGraphqlAccessForRepo(repoName) {
@@ -419,6 +416,30 @@ export class UserAndAccessSteps {
     static validateGraphqlAccessForRepo(repoName, expectedState) {
         const graphqlAccessCheckbox = this.getGraphqlAccessForRepo(repoName);
         this.validateRightsForRepo(repoName, graphqlAccessCheckbox, expectedState);
+    }
+
+    static getRepositoryRightsRows() {
+        return cy.getByTestId('repository-rights-rows');
+    }
+
+    static getGraphqlAnyRoleTooltip() {
+        return cy.getByTestId('graphql-any-role-tooltip');
+    }
+
+    static getGraphqlRepositoryTypeTooltipForRepo(repoName) {
+        return this.getRepositoryRightsLine(repoName).getByTestId('graphql-repository-type-tooltip');
+    }
+
+    static hoverGraphQlRightsCheckbox(repoName) {
+        this.getGraphqlRepositoryTypeTooltipForRepo(repoName).trigger('mouseover');
+    }
+
+    static blurGraphQlRightsCheckbox(repoName) {
+        this.getGraphqlRepositoryTypeTooltipForRepo(repoName).trigger('mouseout');
+    }
+
+    static getAngularTooltip() {
+        return cy.get('.angular-tooltip');
     }
 
     static clickMenuItem(label) {
