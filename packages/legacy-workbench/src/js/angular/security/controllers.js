@@ -15,6 +15,7 @@ import {
     mapGrantedAuthoritiesResponseToModel,
     OntoToastrService,
     RepositoryAuthorityService,
+    RepositoryType,
     SecurityContextService,
     SecurityService as SecurityServiceAPI,
     service,
@@ -530,6 +531,16 @@ securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 't
             return $scope.userType === UserType.ADMIN
                 || $scope.userType === UserType.REPO_MANAGER
                 || $scope.hasEditRestrictions();
+        };
+
+        /**
+         * Determines whether a repository is of a type which does not support GraphQL.
+         *
+         * @param {Object} repository - A repo object
+         * @returns {boolean} true if the repository type does not support GraphQL, false otherwise
+         */
+        $scope.isGraphqlUnsupportedRepository = function(repository) {
+            return RepositoryType.ONTOP === repository.type || RepositoryType.FEDX === repository.type;
         };
 
         /**
