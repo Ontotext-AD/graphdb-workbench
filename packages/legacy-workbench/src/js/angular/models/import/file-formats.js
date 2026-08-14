@@ -1,4 +1,4 @@
-export const FILE_FORMATS = ['ttl', 'ttls', 'rdf', 'rj', 'n3', 'nt', 'nq', 'trig', 'trigs', 'trix', 'brf', 'owl', 'jsonld', 'xml', 'rdfs',
+export const FILE_FORMATS = ['ttl', 'rdf', 'rj', 'n3', 'nt', 'nq', 'trig', 'trix', 'brf', 'owl', 'jsonld', 'xml', 'rdfs',
     'ndjsonld', 'ndjson', 'jsonl'];
 
 export class FileFormats {
