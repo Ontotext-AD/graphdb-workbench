@@ -2,7 +2,7 @@ import {MainMenuSteps} from "../../../steps/main-menu-steps";
 import HomeSteps from "../../../steps/home-steps";
 import {SettingsSteps} from "../../../steps/setup/settings-steps";
 
-function verifyInitialState(repositoryId) {
+function verifyInitialState() {
   // Password change field is for admin.
   // explicitly state that the fields must be of type password
   SettingsSteps.getPasswordField().should('be.visible')
@@ -43,14 +43,8 @@ function verifyInitialState(repositoryId) {
   // Repository rights
   // - Admin has read and write access to all repositories."
   SettingsSteps.getUserRepositoryTable().should('be.visible');
-  SettingsSteps.getReadRightsCheckbox(repositoryId)
-    .should('be.visible')
-    .and('be.checked')
-    .and('be.disabled');
-  SettingsSteps.getWriteRightsCheckbox(repositoryId)
-    .should('be.visible')
-    .and('be.checked')
-    .and('be.disabled');
+  // And Admin doesn't see the list of the repositories
+  SettingsSteps.getRepositoryRightsRows().should('not.exist');
 }
 
 describe('My Settings initial state', () => {
@@ -69,7 +63,7 @@ describe('My Settings initial state', () => {
     // Given, I visit the My Settings page via URL
     SettingsSteps.visit();
     // Then,
-    verifyInitialState(repositoryId);
+    verifyInitialState();
   });
 
   it('Should display the correct initial state when navigating via the navigation bar', () => {
@@ -77,6 +71,6 @@ describe('My Settings initial state', () => {
     HomeSteps.visit();
     MainMenuSteps.clickOnMySettings();
     // Then,
-    verifyInitialState(repositoryId);
+    verifyInitialState();
   });
 });

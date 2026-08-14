@@ -318,6 +318,8 @@ describe('User and Access', () => {
             verifyDisabledUserAuth('*', {read: false, write: false, maintain: true, graphql: true});
             verifyCheckedUserAuth(repoName, {read: false, write: false, maintain: false, graphql: false});
             verifyDisabledUserAuth(repoName, {read: false, write: false, maintain: false, graphql: true});
+            // The GraphQL checkbox is disabled for the lack of read/write rights, not because of the role
+            UserAndAccessSteps.getGraphqlAnyRoleTooltip().should('not.exist');
         });
 
         context('for non user roles', () => {
@@ -327,8 +329,7 @@ describe('User and Access', () => {
                 verifyCheckedUserAuth('*', {read: true, write: true, maintain: true, graphql: false});
                 verifyDisabledUserAuth('*', {read: true, write: true, maintain: true, graphql: true});
 
-                verifyCheckedUserAuth(repoName, {read: true, write: true, maintain: true, graphql: false});
-                verifyDisabledUserAuth(repoName, {read: true, write: true, maintain: true, graphql: true});
+                UserAndAccessSteps.getRepositoryRightsRows().should('not.exist');
             });
 
             it('repository manager', () => {
@@ -338,8 +339,7 @@ describe('User and Access', () => {
                 verifyCheckedUserAuth('*', {read: true, write: true, maintain: true, graphql: false});
                 verifyDisabledUserAuth('*', {read: true, write: true, maintain: true, graphql: true});
 
-                verifyCheckedUserAuth(repoName, {read: true, write: true, maintain: true, graphql: false});
-                verifyDisabledUserAuth(repoName, {read: true, write: true, maintain: true, graphql: true});
+                UserAndAccessSteps.getRepositoryRightsRows().should('not.exist');
             });
         });
 
@@ -462,6 +462,27 @@ describe('User and Access', () => {
             it('Create user with GraphQL-only access', () => {
                 cy.wait('@getRepositories');
                 createUser(graphqlUser, PASSWORD, ROLE_USER, {read: true, graphql: true, repoName: repositoryId2});
+            });
+
+            it('Should not allow GraphQL access for Ontop and FedX repositories', () => {
+                // GIVEN Ontop and FedX repositories alongside a GraphDB one
+                RepositoriesStubs.stubRepositories(0, '/repositories/get-repositories-with-unsupported-graphql-types.json');
+                UserAndAccessSteps.visit();
+                UserAndAccessSteps.clickCreateNewUserButton();
+                // WHEN the user is granted read access to all of them
+                UserAndAccessSteps.toggleReadAccessAny();
+
+                // THEN GraphQL should be available only for the GraphDB repository
+                UserAndAccessSteps.validateGraphqlAccessForRepo('graphdb-repo', {disabled: false});
+                UserAndAccessSteps.getGraphqlRepositoryTypeTooltipForRepo('graphdb-repo').should('not.exist');
+
+                // AND it should be permanently disabled for the Ontop and the FedX ones
+                ['ontop-repo', 'fedx-repo'].forEach((repository) => {
+                    UserAndAccessSteps.validateGraphqlAccessForRepo(repository, {checked: false, disabled: true});
+                    UserAndAccessSteps.hoverGraphQlRightsCheckbox(repository)
+                    UserAndAccessSteps.getAngularTooltip().should('have.text', 'Not available for this repository type');
+                    UserAndAccessSteps.blurGraphQlRightsCheckbox(repository)
+                });
             });
 
             // Fails for unknown reason only in CI
