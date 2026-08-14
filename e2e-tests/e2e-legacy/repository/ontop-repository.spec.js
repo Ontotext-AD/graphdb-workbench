@@ -242,7 +242,8 @@ describe('Ontop repositories', () => {
         OntopRepositorySteps.getUrlInput().should('have.value', 'jdbc:snowflake://someHostName.snowflakecomputing.com:1234/?warehouse=test_database');
     });
 
-    context('Repository maintenance permission', () => {
+    // FIXME: Skipped until GDB with RDF/SPARQL 1.2 is rebased and includes the maintain permission for repositories
+    context.skip('Repository maintenance permission', () => {
 
         const PASSWORD = 'root';
         const REPOSITORY_MAINTAINER_USERNAME = 'repoMaintainer';

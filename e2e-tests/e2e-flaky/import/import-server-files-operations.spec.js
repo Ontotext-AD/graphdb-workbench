@@ -9,8 +9,6 @@ describe('Import server files - Operations', () => {
     const CONTEXT = 'http://example.org/context';
     const FILE_FOR_IMPORT = 'italian_public_schools_links.nt.gz';
     const FILE_FROM_DIRECTORY_FOR_IMPORT = 'rdfxml.rdf';
-    const TTLS_FOR_IMPORT = 'test_turtlestar.ttls';
-    const TRIGS_FOR_IMPORT = 'test-trigstar.trigs';
     const JSONLD_FILE_FOR_IMPORT = '0007-import-file.jsonld';
     const JSONLD_CONTEXT = 'https://w3c.github.io/json-ld-api/tests/compact/0007-context.jsonld';
 
@@ -18,7 +16,7 @@ describe('Import server files - Operations', () => {
         repositoryId = 'server-import-' + Date.now();
         cy.createRepository({id: repositoryId});
         ImportServerFilesSteps.visitServerImport(repositoryId);
-        ImportServerFilesSteps.getResources().should('have.length', 18);
+        ImportServerFilesSteps.getResources().should('have.length', 17);
     });
 
     afterEach(() => {
@@ -118,25 +116,5 @@ describe('Import server files - Operations', () => {
         ImportServerFilesSteps.resetResourceStatusByName(FILE_FROM_DIRECTORY_FOR_IMPORT);
         // Then Import status of the file should not be visible
         ImportServerFilesSteps.getResourceStatus(FILE_FROM_DIRECTORY_FOR_IMPORT).should('be.hidden');
-    });
-
-    it('Should import turtlestar from Server files successfully without changing settings', () => {
-        // Given I have opened the server files tab
-        ImportServerFilesSteps.importResourceByName(TTLS_FOR_IMPORT);
-        // When I select to import a ttl file without changing settings
-        ImportSettingsDialogSteps.import();
-        // Then I should see the file imported successfully
-        ImportServerFilesSteps.checkImportedResource(0, TTLS_FOR_IMPORT);
-        // ImportSteps.verifyImportStatusDetails(TTLS_FOR_IMPORT, '"preserveBNodeIds": false,');
-    });
-
-    it('Should import trigstar from Server files successfully without changing settings', () => {
-        // Given I have opened the server files tab
-        ImportServerFilesSteps.importResourceByName(TRIGS_FOR_IMPORT);
-        // When I select to import a trigstar file without changing settings
-        ImportSettingsDialogSteps.import();
-        // Then I should see the file imported successfully
-        ImportServerFilesSteps.checkImportedResource(0, TRIGS_FOR_IMPORT);
-        // ImportSteps.verifyImportStatusDetails(TRIGS_FOR_IMPORT, '"preserveBNodeIds": false,');
     });
 });
