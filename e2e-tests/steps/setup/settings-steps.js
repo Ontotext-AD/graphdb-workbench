@@ -94,6 +94,10 @@ export class SettingsSteps {
         return this.getSettingsPage().find('.user-repositories .table');
     }
 
+    static getRepositoryRightsRows() {
+        return this.getUserRepositoryTable().getByTestId('repository-rights-rows');
+    }
+
     static getUserRepository(name) {
         return this.getUserRepositoryTable().find(`.repository-name:contains('${name}')`).closest('tr');
     }
