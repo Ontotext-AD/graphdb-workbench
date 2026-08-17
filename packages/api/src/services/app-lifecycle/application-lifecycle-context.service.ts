@@ -7,14 +7,12 @@ type LifecycleDataContextFields = {
   readonly APPLICATION_DATA_STATE: string;
   readonly APPLICATIONS_STATE: string;
   readonly APPLICATIONS_STATE_BEFORE_CHANGE: string;
-  readonly NAVIGATION_BEFORE_MOUNT_ROUTING: string;
 }
 
 type LifecycleDataContextFieldParams = {
   readonly APPLICATION_DATA_STATE: LifecycleState;
   readonly APPLICATIONS_STATE: ApplicationsState;
   readonly APPLICATIONS_STATE_BEFORE_CHANGE: ApplicationsState;
-  readonly NAVIGATION_BEFORE_MOUNT_ROUTING: ApplicationsState;
 }
 
 /**
@@ -26,7 +24,6 @@ export class ApplicationLifecycleContextService extends ContextService<Lifecycle
   readonly APPLICATION_DATA_STATE = 'applicationDataLoaded';
   readonly APPLICATIONS_STATE = 'applicationsState';
   readonly APPLICATIONS_STATE_BEFORE_CHANGE = 'applicationsStateBeforeChange';
-  readonly NAVIGATION_BEFORE_MOUNT_ROUTING = 'navigationBeforeMountRouting';
 
   /**
    * Updates the application data state in the context.
@@ -100,19 +97,5 @@ export class ApplicationLifecycleContextService extends ContextService<Lifecycle
    */
   onApplicationsStateBeforeChange(callbackFn: ValueChangeCallback<ApplicationsState | undefined>): () => void {
     return this.subscribe(this.APPLICATIONS_STATE_BEFORE_CHANGE, callbackFn);
-  }
-
-  /**
-   * Set the application state before-mount-routing payload.
-   */
-  updateNavigationBeforeMountRouting(payload: ApplicationsState): void {
-    this.updateContextProperty(this.NAVIGATION_BEFORE_MOUNT_ROUTING, payload);
-  }
-
-  /**
-   * Subscribe to application state before-mount-routing events.
-   */
-  onNavigationBeforeMountRouting(callbackFn: ValueChangeCallback<ApplicationsState | undefined>, skipFirst = false): () => void {
-    return this.subscribe(this.NAVIGATION_BEFORE_MOUNT_ROUTING, callbackFn, undefined, undefined, skipFirst);
   }
 }

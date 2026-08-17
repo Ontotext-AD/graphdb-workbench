@@ -14,5 +14,6 @@ export const EventName = {
   APPLICATION_MOUNTED: 'applicationMounted',
   APPLICATION_UNMOUNTED: 'applicationUnmounted',
   APPLICATION_CHANGED: 'applicationChanged',
-  APPLICATION_BEFORE_CHANGE: 'applicationBeforeChange'
+  APPLICATION_BEFORE_CHANGE: 'applicationBeforeChange',
+  BEFORE_MOUNT_ROUTING_EVENT: 'beforeMountRoutingEvent'
 };
