@@ -3,7 +3,6 @@ import {NavbarToggledEvent} from '../onto-navbar/navbar-toggled-event';
 import {debounce} from '../../utils/function-utils';
 import {WINDOW_WIDTH_FOR_COLLAPSED_NAVBAR} from '../../models/constants';
 import {
-  ApplicationLifecycleContextService,
   AuthenticatedUser,
   AuthenticationService,
   AuthenticationStorageService,
@@ -46,7 +45,6 @@ export class OntoLayout {
   private readonly authStorageService = service(AuthenticationStorageService);
   private readonly runtimeConfigurationContextService = service(RuntimeConfigurationContextService);
   private readonly eventService = service(EventService);
-  private readonly applicationLifecycleContextService = service(ApplicationLifecycleContextService);
   private readonly userPreferencesService = service(UserPreferencesService);
   private readonly userPreferencesContextService = service(UserPreferencesContextService);
   private readonly guideContextService = service(GuideContextService);
@@ -108,7 +106,6 @@ export class OntoLayout {
     this.subscribeToUserPreferencesChange();
     this.subscribeToBeforeMountRouting();
     this.subscribeToGuideChanges();
-    this.loading = false;
   }
 
   /**
@@ -351,10 +348,8 @@ export class OntoLayout {
 
   private subscribeToBeforeMountRouting() {
     this.subscriptions.add(
-      this.applicationLifecycleContextService.onNavigationBeforeMountRouting((payload) => {
-        if (payload) {
-          this.loading = true;
-        }
+      this.eventService.subscribe(EventName.BEFORE_MOUNT_ROUTING_EVENT, () => {
+        this.loading = true;
       }));
   }
 

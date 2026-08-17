@@ -58,3 +58,9 @@ const authorityToRolesMap = {
     'ROLE_USER'
   ]
 };
+
+waitForElement('onto-loader').then(() => {
+  // Mimic the single spa navigation end, since there is no single spa in stencil's dev server
+  // This is for convenience to hide the loader
+  emitNavigationEndEvent('/oldUrl', '/newUrl');
+});
