@@ -166,7 +166,7 @@ exportCtrl.controller('ExportCtrl',
                 }
                 const win = window.open(url);
                 $timeout(function() {
-                    if (win.document.location.href !== 'about:blank') {
+                    if (!win.closed && win.location.href !== 'about:blank') {
                         win.close();
                         toastr.error('Could not export graph. Check GraphDB logs for detailed reason.');
                     }
