@@ -13,6 +13,7 @@ import {
 import {bootstrapWorkbench} from './bootstrap/bootstrap';
 import {
   ApplicationLifecycleContextService,
+  BeforeMountRouting,
   ConfigurationContextService,
   EventService,
   getBasePath,
@@ -101,7 +102,7 @@ function registerSingleSpaRouterListeners(): void {
   WindowService.getWindow().addEventListener('single-spa:before-mount-routing-event', (evt: Event) => {
     // 3rd event emitted by SingleSpa, next is single-spa:before-first-mount
     const d = (evt as AppChangeEvent).detail;
-    service(ApplicationLifecycleContextService).updateNavigationBeforeMountRouting(new ApplicationsState(d.newAppStatuses));
+    service(EventService).emit(new BeforeMountRouting(new ApplicationsState(d.newAppStatuses)));
   });
 
   WindowService.getWindow().addEventListener('single-spa:app-change', (evt: Event) => {

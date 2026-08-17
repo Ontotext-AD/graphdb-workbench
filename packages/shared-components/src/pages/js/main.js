@@ -76,6 +76,28 @@ const openConfirmCancelDialog = (dontShowAgain) => {
   testContext.openConfirmCancel(dontShowAgain);
 };
 
+const emitNavigationEndEvent = (oldUrl, newUrl) => {
+  testContext.emitNavigateEndEvent(oldUrl, newUrl);
+};
+
+const waitForElement = (selector) => {
+  return new Promise((resolve, reject) => {
+    const observer = new MutationObserver(() => {
+      try {
+        const element = document.querySelector(selector);
+        if (element) {
+          observer.disconnect();
+          resolve(element);
+        }
+      } catch (error) {
+        observer.disconnect();
+        reject(error);
+      }
+    });
+    observer.observe(document.body, { subtree: true, childList: true, attributes: true });
+  });
+};
+
 window.PluginRegistry = {
   get: () => menuItems
 };
