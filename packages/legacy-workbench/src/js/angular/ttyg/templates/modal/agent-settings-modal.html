@@ -98,23 +98,64 @@
                        uib-popover="{{'ttyg.agent.create_agent_modal.form.temperature.high_temperature_warning' | translate}}"
                        popover-trigger="mouseenter"></i>
                 </label>
+                <span class="mr-0 temperature-toggle pull-right"
+                      uib-popover="{{(agentFormModel.temperatureEnabled ? 'ttyg.agent.create_agent_modal.form.temperature.toggle_tooltip_enabled' : 'ttyg.agent.create_agent_modal.form.temperature.toggle_tooltip_disabled') | translate}}"
+                      popover-trigger="mouseenter">
+                        <input type="checkbox" id="temperature_checkbox"
+                               class="switch"
+                               ng-click="toggleTemperature()"
+                               ng-model="agentFormModel.temperatureEnabled"/>
+                        <label for="temperature_checkbox"></label>
+                </span>
                 <input type="text" id="temperature" name="temperature" readonly
                        class="form-control" ng-class="{'has-warning': showHighTemperatureWarning}"
-                       ng-model="agentFormModel.temperature.value">
+                       ng-model="agentFormModel.temperature.value"
+                       ng-disabled="!agentFormModel.temperatureEnabled">
+                <!--
+                   Set min, max, and step dynamically because rerendering a disabled input causes
+                   its default value to be displayed instead of leaving it empty.
+                   Steps to reproduce:
+                      1. Disable the temperature setting.
+                      2. Click the top P input to focus it.
+                      3. Click outside the input.
+                 -->
                 <input id="temperatureSlider" name="temperature" type="range" guide-selector="temperature-control-input"
-                       min="{{agentFormModel.temperature.minValue}}"
-                       max="{{agentFormModel.temperature.maxValue}}" step="{{agentFormModel.temperature.step}}"
+                       ng-attr-min="{{agentFormModel.temperatureEnabled ? agentFormModel.temperature.minValue : undefined}}"
+                       ng-attr-max="{{agentFormModel.temperatureEnabled ? agentFormModel.temperature.maxValue : undefined}}"
+                       ng-attr-step="{{agentFormModel.temperatureEnabled ? agentFormModel.temperature.step : undefined}}"
+                       ng-disabled="!agentFormModel.temperatureEnabled"
                        ng-change="onTemperatureChange()"
                        ng-model="agentFormModel.temperature.value"/>
             </div>
             <div class="form-group top-p" ng-class="{'col-md-3': showContextSize, 'col-md-4': !showContextSize}" guide-selector="top-p-control">
                 <label for="topP" uib-popover="{{'ttyg.agent.create_agent_modal.form.top_p.tooltip' | translate}}"
-                       popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.top_p.label' |
-                translate}}</label>
+                       popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.top_p.label' | translate}}
+                </label>
+                <span class="mr-0 top-p-toggle pull-right"
+                      uib-popover="{{(agentFormModel.topPEnabled ? 'ttyg.agent.create_agent_modal.form.top_p.toggle_tooltip_enabled' : 'ttyg.agent.create_agent_modal.form.top_p.toggle_tooltip_disabled') | translate}}"
+                      popover-trigger="mouseenter">
+                        <input type="checkbox" id="top_p_checkbox"
+                               class="switch"
+                               ng-click="toggleTopP()"
+                               ng-model="agentFormModel.topPEnabled"/>
+                        <label for="top_p_checkbox"></label>
+                </span>
                 <input type="text" class="form-control" id="topP" name="topP" readonly
+                       ng-disabled="!agentFormModel.topPEnabled"
                        ng-model="agentFormModel.topP.value">
-                <input id="topPSlider" name="topP" type="range" min="{{agentFormModel.topP.minValue}}" guide-selector="top-p-control-input"
-                       max="{{agentFormModel.topP.maxValue}}" step="{{agentFormModel.topP.step}}"
+                <!--
+                   Set min, max, and step dynamically because rerendering a disabled input causes its default value
+                   to be displayed instead of leaving it empty.
+                   Steps to reproduce:
+                      1. Disable the topP setting.
+                      2. Click the temperatur input to focus it.
+                      3. Click outside the input.
+                 -->
+                <input id="topPSlider" name="topP" type="range" guide-selector="top-p-control-input"
+                       ng-attr-min="{{agentFormModel.topPEnabled ? agentFormModel.topP.minValue : undefined}}"
+                       ng-attr-max="{{agentFormModel.topPEnabled ? agentFormModel.topP.maxValue : undefined}}"
+                       ng-attr-step="{{agentFormModel.topPEnabled ? agentFormModel.topP.step : undefined}}"
+                       ng-disabled="!agentFormModel.topPEnabled"
                        ng-model="agentFormModel.topP.value"/>
             </div>
             <!--            Hidden for now because currently this property doesn't work in openai, but in the future it will -->

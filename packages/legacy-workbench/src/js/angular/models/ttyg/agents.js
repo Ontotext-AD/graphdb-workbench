@@ -583,3 +583,6 @@ export const AgentCompatibility = {
      */
     'INCOMPATIBLE': 'INCOMPATIBLE',
 };
+
+export const DEFAULT_TEMPERATURE_RANGE = {value: 0.7, minValue: 0, maxValue: 2, step: 0.1};
+export const DEFAULT_TOP_P_RANGE = {value: 1, minValue: 0, maxValue: 1, step: 0.1};
