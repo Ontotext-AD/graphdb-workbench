@@ -1,5 +1,10 @@
 import {decodeHTML} from "../../../../app";
-import {AdditionalExtractionMethod, ExtractionMethod} from "../../models/ttyg/agents";
+import {
+    AdditionalExtractionMethod,
+    DEFAULT_TEMPERATURE_RANGE,
+    DEFAULT_TOP_P_RANGE,
+    ExtractionMethod,
+} from "../../models/ttyg/agents";
 import 'angular/core/services/similarity.service';
 import 'angular/core/services/connectors.service';
 import 'angular/core/services/ttyg.service';
@@ -13,7 +18,7 @@ import {AGENT_OPERATION, TTYG_ERROR_MSG_LENGTH} from "../services/constants";
 import {mapUriAsNtripleAutocompleteResponse} from "../../rest/mappers/autocomplete-mapper";
 import {DocumentationUrlResolver} from "../../utils/documentation-url-resolver";
 import {LoggerProvider} from "../../core/services/logger-provider";
-import {SelectMenuOptionsModel} from "../../models/form-fields";
+import {NumericRangeModel, SelectMenuOptionsModel} from "../../models/form-fields";
 import {SimilarityInstanceType} from '../../models/similarity/similarity-instance-type';
 
 const logger = LoggerProvider.logger;
@@ -238,6 +243,33 @@ function AgentSettingsModalController(
         $scope.agentSettingsForm.extractionMethods.$setTouched();
         setExtractionMethodValidityStatus();
         extractionPanelToggleHandlers[extractionMethod.method](extractionMethod);
+    };
+
+    /**
+     * Toggles whether the temperature value is included in the agent configuration.
+     *
+     * When disabled, the temperature value is cleared so that it is not passed in the agent configuration.
+     */
+    $scope.toggleTemperature = () => {
+        const temperature = new NumericRangeModel({...DEFAULT_TEMPERATURE_RANGE});
+        if (!$scope.agentFormModel.temperatureEnabled) {
+            temperature.value = undefined;
+        }
+        $scope.agentFormModel.temperature = temperature;
+        updateShowHighTemperatureWarning();
+    };
+
+    /**
+     * Toggles whether the top P value is included in the agent configuration.
+     *
+     * When disabled, the top P value is cleared so that it is not passed in the agent configuration.
+     */
+    $scope.toggleTopP = () => {
+        const topP = new NumericRangeModel({...DEFAULT_TOP_P_RANGE});
+        if (!$scope.agentFormModel.topPEnabled) {
+            topP.value = undefined;
+        }
+        $scope.agentFormModel.topP = topP;
     };
 
     /**
@@ -483,7 +515,7 @@ function AgentSettingsModalController(
      * when the temperature is higher than 1.
      */
     $scope.onTemperatureChange = () => {
-        $scope.showHighTemperatureWarning = $scope.agentFormModel.temperature.value > 1;
+        updateShowHighTemperatureWarning();
     };
 
     /**
@@ -968,6 +1000,10 @@ function AgentSettingsModalController(
         if (slider) {
             slider.value = value;
         }
+    };
+
+    const updateShowHighTemperatureWarning = () => {
+        $scope.showHighTemperatureWarning = $scope.agentFormModel.temperature.value > 1;
     };
 
     // =========================

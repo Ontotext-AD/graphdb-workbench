@@ -451,6 +451,14 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
         return this.getDialog().find('.temperature');
     }
 
+    static getTemperatureToggle() {
+        return TtygAgentSettingsModalSteps.getTemperatureFormGroup().find('.temperature-toggle label');
+    }
+
+    static toggleTemperature() {
+        TtygAgentSettingsModalSteps.getTemperatureToggle().click();
+    }
+
     static getTemperatureField() {
         return this.getTemperatureFormGroup().find('#temperature');
     }
@@ -475,6 +483,14 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
 
     static getTopPFormGroup() {
         return this.getDialog().find('.top-p');
+    }
+
+    static getTopPToggle() {
+        return TtygAgentSettingsModalSteps.getTopPFormGroup().find('.top-p-toggle label');
+    }
+
+    static toggleTop() {
+        TtygAgentSettingsModalSteps.getTopPToggle().click();
     }
 
     static getTopPField() {

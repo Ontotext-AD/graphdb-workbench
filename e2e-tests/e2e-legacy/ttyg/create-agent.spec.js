@@ -172,6 +172,60 @@ describe('TTYG create new agent', () => {
         TTYGViewSteps.getAgent(0).should('contain', 'Test Agent').and('contain', 'starwars');
     });
 
+    it('should create an agent without temperature or topP parameters', () => {
+        // GIVEN: I have opened the Create Agent dialog and filled in the minimum required fields.
+        openCreateAgentDialog(repositoryId)
+        TtygAgentSettingsModalSteps.getDialog().should('be.visible');
+
+        fillAgentName('Test Agent');
+        TtygAgentSettingsModalSteps.enableSparqlExtractionMethod();
+        TtygAgentSettingsModalSteps.selectSparqlMethodSparqlQuery();
+
+        // WHEN: I disable the temperature setting.
+        TtygAgentSettingsModalSteps.toggleTemperature();
+
+        // AND: I disable the topP setting.
+        TtygAgentSettingsModalSteps.toggleTop();
+
+        // AND: I save the agent.
+        TTYGStubs.stubAgentCreate(1000);
+        TTYGStubs.stubAgentListGet(
+            '/ttyg/agent/get-agent-list-new-agent.json',
+            1000,
+        );
+
+        TtygAgentSettingsModalSteps.saveAgent();
+        TtygAgentSettingsModalSteps.getCreatingAgentLoader().should('be.visible');
+
+        // THEN: I expect the create-agent request not to contain the temperature and topP parameters.
+        cy.wait('@create-agent').then((interception) => {
+            // eslint-disable-next-line no-undef
+            assert.deepEqual(interception.request.body, {
+                id: 'id',
+                name: 'Test Agent',
+                repositoryId: 'starwars',
+                model: 'gpt-4o',
+                contextSize: 128000,
+                seed: 0,
+                assistantsInstructions: {
+                    systemInstruction: '',
+                    userInstruction: 'If you need to write a SPARQL query, use only the classes and properties provided in the schema and don\'t invent or guess any. Always try to return human-readable names or labels and not only the IRIs. If SPARQL fails to provide the necessary information you can try another tool too.',
+                },
+                assistantExtractionMethods: [
+                    {
+                        method: 'sparql_search',
+                        sparqlQuery: 'CONSTRUCT {?s ?p ?o} WHERE {GRAPH <http://example.org/ontology> {?s ?p ?o .}}',
+                        addMissingNamespaces: false,
+                    },
+                ],
+                additionalExtractionMethods: [],
+            });
+        });
+
+        // AND: I expect the modal to be closed.
+        TtygAgentSettingsModalSteps.getDialog().should('not.exist');
+    });
+
     it('Should require FTS to be enabled for selected repository when creating agent with FTS extraction method', () => {
         RepositoriesStubs.stubGetRepositoryConfig(repositoryId, '/repositories/get-repository-config-starwars-disabled-fts.json');
         TTYGStubs.stubChatsListGetNoResults();
@@ -461,6 +515,51 @@ describe('TTYG create new agent', () => {
         TtygAgentSettingsModalSteps.getTemperatureField().should('not.have.class', 'has-warning');
     });
 
+    it('should toggle the temperature setting', () => {
+        // GIVEN: I have opened the Create Agent dialog.
+        openCreateAgentDialog(repositoryId);
+
+        // WHEN: I set a high temperature value.
+        TtygAgentSettingsModalSteps.setTemperature('1.2');
+        // THEN: I expect a warning message to be displayed.
+        TtygAgentSettingsModalSteps.getTemperatureField().should('have.class', 'has-warning');
+        TtygAgentSettingsModalSteps.getTemperatureSliderField().should('have.value', '1.2');
+
+        // WHEN: I disable the temperature setting.
+        TtygAgentSettingsModalSteps.toggleTemperature();
+        // THEN: I expect the high-temperature warning to be hidden.
+        TtygAgentSettingsModalSteps.getTemperatureWarning().should('not.exist');
+        TtygAgentSettingsModalSteps.getTemperatureField().should('not.have.class', 'has-warning');
+        // AND: I expect the temperature controls to be disabled.
+        TtygAgentSettingsModalSteps.getTemperatureField().should('be.disabled');
+        TtygAgentSettingsModalSteps.getTemperatureSliderField().should('be.disabled');
+
+        // WHEN: I enable the temperature setting.
+        TtygAgentSettingsModalSteps.toggleTemperature();
+        // THEN: I expect the default temperature value to be restored.
+        TtygAgentSettingsModalSteps.getTemperatureSliderField().should('have.value', '0.7');
+    });
+
+    it('should toggle the topP setting', () => {
+        // GIVEN: I have opened the Create Agent dialog.
+        openCreateAgentDialog(repositoryId);
+
+        // WHEN: I set a custom topP value.
+        TtygAgentSettingsModalSteps.setTopP('0.3');
+        // THEN: I expect the topP value to be updated.
+        TtygAgentSettingsModalSteps.getTopPField().should('have.value', '0.3');
+
+        // WHEN: I disable the topP setting.
+        TtygAgentSettingsModalSteps.toggleTop();
+        // THEN: I expect the topP control to be disabled.
+        TtygAgentSettingsModalSteps.getTopPField().should('be.disabled');
+
+        // WHEN: I enable the topP setting.
+        TtygAgentSettingsModalSteps.toggleTop();
+        // THEN: I expect the default topP value to be restored.
+        TtygAgentSettingsModalSteps.getTopPField().should('have.value', '1');
+    });
+
     it('Should warn the user when he changes the default value of the base instruction', () => {
         RepositoriesStubs.stubGetRepositoryConfig(repositoryId, '/repositories/get-repository-config-starwars-enabled-fts.json');
         TTYGStubs.stubChatsListGetNoResults();
@@ -540,4 +639,14 @@ function fillAgentName(name) {
     TtygAgentSettingsModalSteps.clearAgentName();
     TtygAgentSettingsModalSteps.getAgentNameError().should('be.visible').and('contain', 'This field is required');
     TtygAgentSettingsModalSteps.typeAgentName(name);
+}
+
+const openCreateAgentDialog = (repositoryId) => {
+    TTYGStubs.stubChatsListGetNoResults();
+    TTYGStubs.stubAgentListGet('/ttyg/agent/get-agent-list-0.json');
+    ConnectorStubs.stubGetConnectors();
+    TTYGStubs.getSimilarityIndexesForRepo(repositoryId );
+    TTYGViewSteps.visit();
+    cy.wait('@get-all-repositories');
+    TTYGViewSteps.createFirstAgent();
 }
