@@ -1,5 +1,8 @@
 import {NumericRangeModel, TextFieldModel} from '../form-fields';
 import {AdditionalExtractionMethod, ExtractionMethod} from './agents';
+import {
+    ObjectUtil,
+} from '@ontotext/workbench-api';
 
 const splitConnectorSelection = (value) => {
     if (!value || typeof value !== 'string') {
@@ -57,11 +60,26 @@ export class AgentFormModel {
          * @private
          */
         this._temperature = data && data.temperature || new NumericRangeModel({value: 0.7, minValue: 0, maxValue: 2, step: 0.1});
+
+        /**
+         *
+         * @type {boolean}
+         * @private
+         */
+        this._temperatureEnabled = !ObjectUtil.isNullOrUndefined(this._temperature.value);
+
         /**
          * @type {NumericRangeModel}
          * @private
          */
         this._topP = data && data.topP || new NumericRangeModel({value: 1, minValue: 0, maxValue: 1, step: 0.1});
+
+        /**
+         *
+         * @type {boolean}
+         * @private
+         */
+        this._topPEnabled = !ObjectUtil.isNullOrUndefined(this._topP.value);
         /**
          * @type {number}
          * @private
@@ -212,12 +230,28 @@ export class AgentFormModel {
         this._temperature = value;
     }
 
+    get temperatureEnabled() {
+        return this._temperatureEnabled;
+    }
+
+    set temperatureEnabled(enabled) {
+        this._temperatureEnabled = enabled;
+    }
+
     get topP() {
         return this._topP;
     }
 
     set topP(value) {
         this._topP = value;
+    }
+
+    get topPEnabled() {
+        return this._topPEnabled;
+    }
+
+    set topPEnabled(enabled) {
+        this._topPEnabled = enabled;
     }
 
     get seed() {

@@ -487,11 +487,15 @@
                     "temperature": {
                         "label": "Température",
                         "tooltip": "La température d'échantillonnage à utiliser, entre 0 et 2. Des valeurs plus élevées comme 0,8 rendront la sortie plus aléatoire, tandis que des valeurs plus faibles comme 0,2 la rendront plus ciblée et déterministe.",
+                        "toggle_tooltip_enabled": "Supprimer la valeur",
+                        "toggle_tooltip_disabled": "Réinitialiser à la valeur par défaut du modèle",
                         "high_temperature_warning": "Une température supérieure à 1,0 peut amener le modèle à générer des réponses allant de créatives à incohérentes, voire incompréhensibles. Pensez à baisser la température pour des résultats plus fiables."
                     },
                     "top_p": {
                         "label": "Top P",
-                        "tooltip": "Une alternative à l'échantillonnage avec température, appelée échantillonnage du noyau, où le modèle considère les résultats des jetons avec la masse de probabilité Top P. Ainsi, 0,1 signifie que seuls les jetons comprenant la masse de probabilité supérieure de 10 % sont pris en compte. OpenAI recommande de modifier cela ou la température, mais pas les deux."
+                        "tooltip": "Une alternative à l'échantillonnage avec température, appelée échantillonnage du noyau, où le modèle considère les résultats des jetons avec la masse de probabilité Top P. Ainsi, 0,1 signifie que seuls les jetons comprenant la masse de probabilité supérieure de 10 % sont pris en compte. OpenAI recommande de modifier cela ou la température, mais pas les deux.",
+                        "toggle_tooltip_enabled": "Supprimer la valeur",
+                        "toggle_tooltip_disabled": "Réinitialiser à la valeur par défaut du modèle"
                     },
                     "seed": {
                         "label": "Graine",
