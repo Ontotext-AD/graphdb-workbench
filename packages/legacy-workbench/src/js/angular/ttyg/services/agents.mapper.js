@@ -16,6 +16,9 @@ import {NumericRangeModel, TextFieldModel} from '../../models/form-fields';
 import {md5HashGenerator} from '../../utils/hash-utils';
 import {AGENT_OPERATION} from "./constants";
 import {AgentViewModel} from '../model/agent-view';
+import {
+    ObjectUtil,
+} from '@ontotext/workbench-api';
 
 /**
  * Converts an agent model to an agent form model.
@@ -40,13 +43,13 @@ export const agentFormModelMapper = (agentModel, defaultAgentModel, operation ) 
     const temperatureFormModel = new NumericRangeModel({...DEFAULT_TEMPERATURE_RANGE});
     temperatureFormModel.value = agentModel.temperature !== undefined ? agentModel.temperature : defaultAgentModel.temperature;
     agentFormModel.temperature = temperatureFormModel;
-    agentFormModel.temperatureEnabled = agentFormModel.temperature.value !== undefined && agentFormModel.temperature.value !== null;
+    agentFormModel.temperatureEnabled = !ObjectUtil.isNullOrUndefined(agentFormModel.temperature.value);
 
     // Set topP related properties.
     const topPFormModel = new NumericRangeModel({...DEFAULT_TOP_P_RANGE});
     topPFormModel.value = agentModel.topP !== undefined ? agentModel.topP : defaultAgentModel.topP;
     agentFormModel.topP = topPFormModel;
-    agentFormModel.topPEnabled = agentFormModel.topP.value !== undefined && agentFormModel.topP.value !== null;
+    agentFormModel.topPEnabled = !ObjectUtil.isNullOrUndefined(agentFormModel.topP.value);
 
     agentFormModel.seed = agentModel.seed || defaultAgentModel.seed;
     agentFormModel.instructions = agentInstructionsFormMapper(agentModel.instructions, defaultAgentModel.instructions);

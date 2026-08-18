@@ -1,5 +1,8 @@
 import {NumericRangeModel, TextFieldModel} from '../form-fields';
 import {AdditionalExtractionMethod, ExtractionMethod} from './agents';
+import {
+    ObjectUtil,
+} from '@ontotext/workbench-api';
 
 const splitConnectorSelection = (value) => {
     if (!value || typeof value !== 'string') {
@@ -63,7 +66,7 @@ export class AgentFormModel {
          * @type {boolean}
          * @private
          */
-        this._temperatureEnabled = !!this._temperature.value;
+        this._temperatureEnabled = !ObjectUtil.isNullOrUndefined(this._temperature.value);
 
         /**
          * @type {NumericRangeModel}
@@ -76,7 +79,7 @@ export class AgentFormModel {
          * @type {boolean}
          * @private
          */
-        this._topPEnabled = !!this._topP.value;
+        this._topPEnabled = !ObjectUtil.isNullOrUndefined(this._topP.value);
         /**
          * @type {number}
          * @private
