@@ -75,10 +75,7 @@ export class GuideApi implements Service, GuideStepBridge {
       );
     }
 
-    const serviceBundle =
-      this.languageContextService.getLanguageBundle() ??
-      this.languageContextService.getDefaultBundle();
-
+    const serviceBundle = this.languageContextService.getLanguageBundleOrDefault();
     const currentBundle = bundle
       ? this.resolveLanguageBundle(bundle, currentLanguage)
       : serviceBundle;

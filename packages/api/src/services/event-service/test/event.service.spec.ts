@@ -116,7 +116,7 @@ class TestEvent extends Event<string> {
  * @param event - The event to emit.
  */
 export async function emitAndWait<T extends {} | undefined>(eventService: EventService, event: Event<T>): Promise<void> {
-  eventService.emit(event);
+  await eventService.emit(event);
   // emit() returns void, but it performs an asynchronous cancellation check before notifying subscribers.
   // Wait for the pending promise chain to complete before verifying that the callbacks were called.
   await new Promise(process.nextTick);

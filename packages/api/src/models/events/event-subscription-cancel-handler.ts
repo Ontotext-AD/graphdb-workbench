@@ -4,4 +4,4 @@
  * The handler resolves to <code>true</code> when the event emission should be canceled,
  * or <code>false</code> when the event should be allowed to proceed.
  */
-export type EventSubscriptionCancelHandler = () => Promise<boolean>;
+export type EventSubscriptionCancelHandler = <T extends {} | undefined>(eventPayload: T) => Promise<boolean>;

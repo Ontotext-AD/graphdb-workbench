@@ -92,7 +92,7 @@ export class OpenIdService implements Service {
       notify(notification);
 
       this.softLogout();
-      service(EventService).emit(new LoggedOut());
+      void service(EventService).emit(new LoggedOut());
     }
   }
 

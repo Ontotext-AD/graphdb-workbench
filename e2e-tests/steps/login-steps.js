@@ -1,12 +1,12 @@
 import {EnvironmentStubs} from "../stubs/environment-stubs";
-
+const VIEW_URL = '/login';
 export class LoginSteps {
     static visitLoginPage() {
-        cy.visit('/login');
+        cy.visit(VIEW_URL);
     }
 
     static visitInProdMode() {
-        cy.visit('/login', {
+        cy.visit(VIEW_URL, {
             onBeforeLoad: () => {
                 EnvironmentStubs.stubWbProdMode();
             }
@@ -16,6 +16,10 @@ export class LoginSteps {
     static visitLoginPageWithReturnUrl(returnURL) {
         const returnURLEncoded = encodeURIComponent(returnURL);
         cy.visit(`/login?r=${returnURLEncoded}`);
+    }
+
+    static verifyUrl() {
+        cy.url().should('include', `${Cypress.config('baseUrl')}${VIEW_URL}`);
     }
 
     static getLoginPage() {

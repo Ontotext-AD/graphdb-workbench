@@ -119,6 +119,42 @@ describe('LanguageContextService', () => {
     expect(returnedBundle).toEqual(defaultBundle);
   });
 
+  test('should return the language bundle when getLanguageBundleOrDefault is called and a language bundle is set', () => {
+    // Given I have both a language bundle and a default bundle
+    const languageBundle: TranslationBundle = {key: 'language-value', language: 'en'} as TranslationBundle;
+    const defaultBundle: TranslationBundle = {key: 'default-value', language: 'en'} as TranslationBundle;
+    languageContextService.updateLanguageBundle(languageBundle);
+    languageContextService.updateDefaultBundle(defaultBundle);
+
+    // When I call getLanguageBundleOrDefault
+    const returnedBundle = languageContextService.getLanguageBundleOrDefault();
+
+    // Then I expect the returned bundle to be the language bundle
+    expect(returnedBundle).toEqual(languageBundle);
+  });
+
+  test('should return the default bundle when getLanguageBundleOrDefault is called and no language bundle is set', () => {
+    // Given I have a default bundle but no language bundle
+    const defaultBundle: TranslationBundle = {key: 'default-value', language: 'en'} as TranslationBundle;
+    languageContextService.updateDefaultBundle(defaultBundle);
+
+    // When I call getLanguageBundleOrDefault
+    const returnedBundle = languageContextService.getLanguageBundleOrDefault();
+
+    // Then I expect the returned bundle to be the default bundle
+    expect(returnedBundle).toEqual(defaultBundle);
+  });
+
+  test('should return undefined when getLanguageBundleOrDefault is called and neither bundle is set', () => {
+    // Given neither the language bundle nor the default bundle is set
+
+    // When I call getLanguageBundleOrDefault
+    const returnedBundle = languageContextService.getLanguageBundleOrDefault();
+
+    // Then I expect the returned bundle to be undefined
+    expect(returnedBundle).toBeUndefined();
+  });
+
   test('should return the language configuration when getLanguageConfig is called', () => {
     // Given I have a language configuration
     languageContextService.setLanguageConfig(createlanguageConfig());

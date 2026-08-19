@@ -61,7 +61,7 @@ export class AuthenticationService implements Service {
     const authUser = await authStrategy.login(loginData);
     this.securityContextService.updateIsLoggedIn(true);
     this.securityContextService.updateAuthenticatedUser(authUser);
-    this.eventService.emit(new Login());
+    await this.eventService.emit(new Login());
   }
 
   /**
@@ -80,10 +80,10 @@ export class AuthenticationService implements Service {
         this.securityContextService.updateIsLoggedIn(false);
         if (this.authorizationService.hasFreeAccess()) {
           this.authorizationService.initializeFreeAccess();
-          this.eventService.emit(new Login());
+          void this.eventService.emit(new Login());
         } else {
           navigate('login');
-          this.eventService.emit(new LoggedOut());
+          void this.eventService.emit(new LoggedOut());
         }
       });
   }

@@ -27,19 +27,20 @@ export class EventService implements Service {
    * @template T - The type of the event payload.
    * @param event - The event to emit, containing its name and payload.
    */
-  emit<T extends {} | undefined>(event: Event<T>): void {
+  emit<T extends {} | undefined>(event: Event<T>): Promise<boolean> {
     const subscribers = this.eventSubscribers.get(event.NAME);
     if (!subscribers) {
-      return;
+      return Promise.resolve(false);
     }
 
-    this.shouldCancelEvent(subscribers)
+    return this.shouldCancelEvent(subscribers, event)
       .then((cancelEvent) => {
         if (!cancelEvent) {
           subscribers.forEach((subscriber) => {
             subscriber.notify(ObjectUtil.deepCopy(event.payload));
           });
         }
+        return Promise.resolve(cancelEvent);
       });
   }
 
@@ -54,9 +55,9 @@ export class EventService implements Service {
    * or <code>false</code> if no handler requests cancellation.
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private async shouldCancelEvent(observers: EventObserver<any>[]): Promise<boolean> {
+  private async shouldCancelEvent<T extends {} | undefined>(observers: EventObserver<any>[], event: Event<T>): Promise<boolean> {
     for (const observer of observers) {
-      const shouldCancel = await observer.shouldCancelEventHandler?.();
+      const shouldCancel = await observer.shouldCancelEventHandler?.(event.payload);
       if (shouldCancel) {
         return true;
       }

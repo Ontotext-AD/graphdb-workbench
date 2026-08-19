@@ -78,12 +78,12 @@ const resolveNavigation = (): void => {
     const returnUrl = returnUrlParam ? decodeURIComponent(returnUrlParam) : './';
 
     navigate(returnUrl);
-    eventService.emit(new Login());
+    void eventService.emit(new Login());
   } else if (isLoginPage() && !isLoggedIn) {
     // On login page but not logged in, do nothing and let the user log in
   } else if (authorizationService.hasFreeAccess() || isLoggedIn) {
     // Not on login page and has access, do nothing and let the user see the page
-    eventService.emit(new Login());
+    void eventService.emit(new Login());
   } else if (!authStrategy.isAuthenticated()) {
     // Not on login page and not authenticated, navigate to login page with return url
     const returnUrl = encodeURIComponent(getLocationPathWithQueryParams());

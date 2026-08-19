@@ -65,7 +65,7 @@ export class OntoUserMenu {
   * Log out the current user.
   */
   private readonly logout = (): void => {
-    this.eventService.emit(new Logout());
+    void this.eventService.emit(new Logout());
   };
 
   /**
