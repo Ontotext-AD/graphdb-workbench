@@ -21,7 +21,7 @@ export const registerAuthenticationEventHandlers = (): void => {
   service(EventService).subscribe(EventName.LOGOUT, () => service(AuthenticationService).logout());
   service(EventService).subscribe(EventName.LOGGED_OUT, () => {
     const languageContextService = service(LanguageContextService);
-    const bundle = languageContextService.getLanguageBundleOrDefault();
+    const bundle = languageContextService.getLanguageBundle();
     const title = TranslationUtil.translate(bundle, 'logout.success') ?? 'logout.success';
     notify(
       new Notification('')

@@ -56,11 +56,10 @@ export class GuideApi implements Service, GuideStepBridge {
    * @returns The translated string, or the key itself if no translation is found.
    */
   _translate(bundle: TranslationBundle | undefined, key: string | Record<string, string>, parameters: Record<string, string> = {}): string {
-    const defaultLanguage = this.languageContextService.getDefaultLanguage();
-    const currentLanguage = this.languageContextService.getSelectedLanguage() ?? defaultLanguage;
+    const currentLanguage = this.languageContextService.getSelectedLanguage();
 
     if (typeof key === 'object') {
-      const translation = key[currentLanguage] ?? key[defaultLanguage];
+      const translation = key[currentLanguage];
 
       if (!translation) {
         this.logger.warn(
@@ -75,7 +74,7 @@ export class GuideApi implements Service, GuideStepBridge {
       );
     }
 
-    const serviceBundle = this.languageContextService.getLanguageBundleOrDefault();
+    const serviceBundle = this.languageContextService.getLanguageBundle();
     const currentBundle = bundle
       ? this.resolveLanguageBundle(bundle, currentLanguage)
       : serviceBundle;

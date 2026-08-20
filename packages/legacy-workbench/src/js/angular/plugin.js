@@ -47,7 +47,7 @@ PluginRegistry.add('main.menu', {
     },
 );
 PluginRegistry.add('main.menu', {
-        disabled: false,
+        disabled: true,
         items: [
             {
                 label: 'New YASGUI',
