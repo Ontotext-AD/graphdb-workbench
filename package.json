@@ -1,6 +1,6 @@
 {
     "name": "graphdb-workbench",
-    "version": "4.0.0-reactodia-blank-nodes-TR1",
+    "version": "4.0.0-reactodia-blank-nodes-TR2",
     "description": "The web application for GraphDB APIs",
     "engines": {
         "node": ">=22.17"
