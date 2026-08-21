@@ -1,5 +1,6 @@
 import {Routes} from '@angular/router';
 import {documentationLinkResolve} from './services/route-data-resolver';
+import {WorkbenchRouteData} from './WorkbenchRouteData';
 
 export const routes: Routes = [
   {
@@ -7,8 +8,8 @@ export const routes: Routes = [
     data: {
       title: 'sparql_editor.title',
       helpInfo: 'sparql_editor.helpInfo',
-      documentationUrl: 'sparql-queries.html'
-    },
+      documentationUrl: 'sparql-queries.html',
+    } satisfies WorkbenchRouteData,
     resolve: {documentationLink: documentationLinkResolve},
     loadComponent: () => import('./pages/sparql-editor/sparql-editor-page.component').then(m => m.SparqlEditorPageComponent)
   },
