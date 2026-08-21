@@ -10,7 +10,7 @@
                  (ngModelChange)="onFilterQueryChange($event)" />
           <p-inputicon class="ri-search-line" />
         </p-iconfield>
-        <p-select class="state-filter"
+        <p-select class="filter-state"
                   [options]="vm().stateFilterOptions"
                   [ngModel]="vm().stateFilter"
                   (ngModelChange)="onStateFilterChange($event)"
@@ -23,6 +23,14 @@
             {{ option.label | transloco }}
           </ng-template>
         </p-select>
+        <div class="filter-local-only">
+          <p-checkbox
+            [binary]="true"
+            [ngModel]="vm().localOnly"
+            (ngModelChange)="onLocalOnlyChange($event)"
+            inputId="localOnly"/>
+          <label for="localOnly">{{'components.page_restrictions.repository_filter_local_only' | transloco}}</label>
+        </div>
       </span>
     }
 
