@@ -5,6 +5,8 @@ import {
   Repository,
   SubscriptionList,
   RepositoryList,
+  RepositoryPermissionType,
+  RepositoryType,
 } from '@ontotext/workbench-api';
 import {RepositoryPickerListComponent} from '../repository-picker-list/repository-picker-list.component';
 import {Message} from 'primeng/message';
@@ -37,6 +39,18 @@ export class PageRestrictionsComponent implements OnInit, OnDestroy {
   selectedRepository = signal<Repository | undefined>(undefined);
   isRestricted = signal<boolean>(false);
 
+  /**
+   * The repository types allowed by the page restriction.
+   * If undefined or empty, repositories of all types are allowed.
+   */
+  allowedRepositoryTypes = input<RepositoryType[] | undefined>(undefined);
+
+  /**
+   * The repository permission required to access the page.
+   * If undefined, no repository-specific permission is required.
+   */
+  requiredRepositoryPermission  = input<RepositoryPermissionType | undefined>(undefined);
+
   private readonly subscriptions = new SubscriptionList();
 
   readonly restrictions = computed(() =>
@@ -48,13 +62,10 @@ export class PageRestrictionsComponent implements OnInit, OnDestroy {
   );
 
   ngOnInit(): void {
-    this.selectedRepository.set(this.repositoryContextService.getSelectedRepository());
-    this.repositoryList.set(this.repositoryContextService.getRepositoryList());
-
-    this.subscriptions.add(
-      this.repositoryContextService.onSelectedRepositoryChanged((repo) => {
-        this.selectedRepository.set(repo);
-      })
+    this.subscriptions.addAll([
+      this.repositoryContextService.onSelectedRepositoryChanged((repo) => this.selectedRepository.set(repo)),
+      this.repositoryContextService.onRepositoryListChanged((repositories) => this.repositoryList.set(repositories))
+    ]
     );
   }
 

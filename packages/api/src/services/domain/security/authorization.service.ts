@@ -322,16 +322,16 @@ export class AuthorizationService implements Service {
   /**
    * Retrieves a list of repositories that the user has access to, based on the specified parameters.
    * @param includeRemote - If true, includes remote repositories in the list; otherwise, only local repositories are included.
-   * @param isRestricted - If true, returns repositories that the user has write access to; if false, returns repositories that the user has read access to.
+   * @param requireWriteAccess - If true, returns repositories that the user has write access to; if false, returns repositories that the user has read access to.
    * @returns A list of repositories that the user has access to, filtered based on the provided parameters.
    */
-  getAccessibleRepositories(includeRemote = false, isRestricted = true): RepositoryList {
+  getAccessibleRepositories(includeRemote = false, requireWriteAccess = true): RepositoryList {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let remoteLocationsFilter = (_repo: Repository) => true;
     if (!includeRemote) {
       remoteLocationsFilter = (repo) => !!repo.local;
     }
-    if (isRestricted) {
+    if (requireWriteAccess) {
       return new RepositoryList(this.getWritableRepositories().filter(remoteLocationsFilter));
     } else {
       return new RepositoryList(this.getReadableRepositories().filter(remoteLocationsFilter));
