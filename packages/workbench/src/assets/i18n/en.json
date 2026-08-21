@@ -59,7 +59,8 @@
       "no_write_permission": "Some functionalities are not available because you have no write permission to the repository <strong>{{repositoryId}}</strong>.",
       "read_only_ontop": "Some functionalities are not available because <strong>{{repositoryId}}</strong> is read-only Virtual Repository.",
       "fedx_unsupported": "Some functionalities are not available because <strong>{{pageTitle}}</strong> view is not supported by FedX Repository.",
-      "no_accessible_writable_repos": "There are no accessible writable repositories."
+      "no_accessible_writable_repos": "There are no accessible writable repositories.",
+      "repository_filter_local_only": "Local only"
     },
     "repository_picker_list": {
       "hide_remote_locations_btn": {

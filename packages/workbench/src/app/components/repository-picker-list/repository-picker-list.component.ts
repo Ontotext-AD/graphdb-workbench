@@ -24,6 +24,7 @@ import {Select} from 'primeng/select';
 import {FormsModule} from '@angular/forms';
 import {Tooltip} from 'primeng/tooltip';
 import {RepositoryPickerListViewModel} from './repository-picker-list.view-model';
+import {Checkbox} from 'primeng/checkbox';
 
 @Component({
   selector: 'app-repository-picker-list',
@@ -38,6 +39,7 @@ import {RepositoryPickerListViewModel} from './repository-picker-list.view-model
     Select,
     FormsModule,
     Tooltip,
+    Checkbox,
   ],
   templateUrl: './repository-picker-list.component.html',
   styleUrl: './repository-picker-list.component.scss',
@@ -136,6 +138,17 @@ export class RepositoryPickerListComponent implements OnInit, OnDestroy {
   onStateFilterChange(state: RepositoryState | null): void {
     this.vm.update((vm) => {
       vm.stateFilter = state;
+      return vm;
+    });
+  }
+
+  /**
+   * Updates the localOnly filter on the view model when the user selects a local only checkbox.
+   * @param state The new state filter value.
+   */
+  onLocalOnlyChange(localOnly: boolean): void {
+    this.vm.update((vm) => {
+      vm.localOnly = localOnly;
       return vm;
     });
   }
