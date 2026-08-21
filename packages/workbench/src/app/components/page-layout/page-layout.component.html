@@ -9,7 +9,11 @@
       }
     </h1>
 
-    <app-page-restrictions [title]="title()"></app-page-restrictions>
+    <app-page-restrictions
+      [title]="title()"
+      [allowedRepositoryTypes]="allowedRepositoryTypes()"
+      [requiredRepositoryPermission]="requiredRepositoryPermission()">
+    </app-page-restrictions>
   }
 
   <ng-content></ng-content>

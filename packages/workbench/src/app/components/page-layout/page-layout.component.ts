@@ -5,6 +5,10 @@ import {ApplicationQueryParams} from '../../models/application-query-params';
 import {TranslocoPipe} from '@jsverse/transloco';
 import {PageInfoTooltipComponent} from '../page-info-tooltip/page-info-tooltip.component';
 import {PageRestrictionsComponent} from '../page-restrictions/page-restrictions.component';
+import {
+  RepositoryPermissionType,
+  RepositoryType,
+} from '@ontotext/workbench-api';
 
 @Component({
   selector: 'app-page-layout',
@@ -25,6 +29,17 @@ export class PageLayoutComponent implements OnInit {
   title = signal<string | undefined>(undefined);
   helpInfo = signal<string | undefined>(undefined);
   documentationLink = signal<string | undefined>(undefined);
+  /**
+   * The repository types allowed by the page.
+   * If undefined or empty, repositories of all types are allowed.
+   */
+  allowedRepositoryTypes = signal<RepositoryType[] | undefined>(undefined);
+
+  /**
+   * The repository permission required to access the page.
+   * If undefined, no repository-specific permission is required.
+   */
+  requiredRepositoryPermission = signal<RepositoryPermissionType | undefined>(undefined);
 
   ngOnInit(): void {
     this.getPageData();
@@ -39,5 +54,7 @@ export class PageLayoutComponent implements OnInit {
     this.title.set(routeData['title']);
     this.helpInfo.set(routeData['helpInfo']);
     this.documentationLink.set(routeData['documentationLink']);
+    this.allowedRepositoryTypes.set(routeData['allowedRepositoryTypes']);
+    this.requiredRepositoryPermission.set(routeData['requiredRepositoryPermission']);
   }
 }
