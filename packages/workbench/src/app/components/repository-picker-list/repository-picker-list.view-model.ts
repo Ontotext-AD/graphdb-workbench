@@ -36,6 +36,11 @@ export class RepositoryPickerListViewModel {
   stateFilter: RepositoryState | null = null;
 
   /**
+   * Whether only local repositories should be displayed.
+   */
+  localOnly = true;
+
+  /**
    * Fixed set of options for the state filter dropdown.
    */
   readonly stateFilterOptions: StateFilterOption[] = [
@@ -50,14 +55,16 @@ export class RepositoryPickerListViewModel {
   get filteredRepositoryList(): Repository[] {
     const query = this.filterQuery.trim().toLowerCase();
     const state = this.stateFilter;
-    return this.repositoryList.filter((repo) => {
-      const matchesQuery =
-        !query ||
-        repo.id?.toLowerCase().includes(query) ||
-        repo.title?.toLowerCase().includes(query);
-      const matchesState = state === null || repo.state === state;
-      return matchesQuery && matchesState;
-    });
+    return this.repositoryList
+      .filter((repo) => !this.localOnly || this.localOnly && repo.local === true)
+      .filter((repo) => {
+        const matchesQuery =
+          !query ||
+          repo.id?.toLowerCase().includes(query) ||
+          repo.title?.toLowerCase().includes(query);
+        const matchesState = state === null || repo.state === state;
+        return matchesQuery && matchesState;
+      });
   }
 
   /**
