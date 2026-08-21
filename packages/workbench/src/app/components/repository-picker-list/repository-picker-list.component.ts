@@ -4,6 +4,8 @@ import {Button} from 'primeng/button';
 import {
   service,
   RepositoryContextService,
+  RepositoryPermissionType,
+  RepositoryType,
   LicenseContextService,
   Repository,
   navigate,
@@ -11,6 +13,7 @@ import {
   RepositoryState,
   SubscriptionList,
   AuthorizationService,
+  RepositoryReference,
 } from '@ontotext/workbench-api';
 import {NgClass} from '@angular/common';
 import {TableModule} from 'primeng/table';
@@ -45,9 +48,23 @@ export class RepositoryPickerListComponent implements OnInit, OnDestroy {
   private readonly authorizationService = service(AuthorizationService);
 
   /**
-   * If the user has permissions to manage repositories for example.
+   * Whether the component should show only repositories to which the user has write access
+   * (e.g. when managing repositories), rather than all accessible repositories.
+   * Defaults to <code>true</code>.
    */
-  isRestricted = input<boolean>(true);
+  requireWriteAccess = input<boolean>(true);
+
+  /**
+   * The repository types used to filter the list. Only repositories whose type is included in this list are shown.
+   * If the value is undefined or the array is empty, no type-based filtering is applied.
+   */
+  filterByTypes = input<RepositoryType[] | undefined>(undefined);
+
+  /**
+   * The repository permission the user must have for a repository to be included in the list.
+   * If undefined, no permission-based filtering is applied.
+   */
+  filterByPermission = input<RepositoryPermissionType | undefined>(undefined);
 
   /**
    * List of subscriptions to context changes, to be unsubscribed on component destroy.
@@ -68,7 +85,7 @@ export class RepositoryPickerListComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.vm.update((vm) => {
-      vm.repositoryList = this.authorizationService.getAccessibleRepositories(true, this.isRestricted()).getItems();
+      vm.repositoryList = this.getAllowedRepositories();
       vm.license = this.licenseContextService.getLicenseSnapshot();
       vm.canManageRepositories = this.authorizationService.isRepoManager();
       return vm;
@@ -125,8 +142,31 @@ export class RepositoryPickerListComponent implements OnInit, OnDestroy {
 
   private onRepositoryListChanged(): void {
     this.vm.update((vm) => {
-      vm.repositoryList = this.authorizationService.getAccessibleRepositories(true, this.isRestricted()).getItems();
+      vm.repositoryList = this.getAllowedRepositories();
       return vm;
     });
+  }
+
+  /**
+   * Returns the repositories accessible to the current user after applying all
+   * configured restrictions.
+   *
+   * @returns The filtered collection of accessible repositories.
+   */
+  private getAllowedRepositories() {
+    return this.authorizationService.getAccessibleRepositories(true, this.requireWriteAccess())
+      .filterByType(this.filterByTypes())
+      .filter(this.createRepositoryPermissionFilter());
+  }
+
+  /**
+   * Creates a predicate that filters repositories by the configured permission.
+   * If no permission is configured, the predicate allows all repositories.
+   *
+   * @returns A predicate that determines whether a repository is permitted.
+   */
+  private createRepositoryPermissionFilter() {
+    const filterByPermission = this.filterByPermission();
+    return (repo: RepositoryReference) =>  !filterByPermission || this.authorizationService.hasRepoPermission(filterByPermission, repo);
   }
 }
