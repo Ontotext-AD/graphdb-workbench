@@ -3,6 +3,10 @@
 .repository-picker-list {
   color: var(--gw-panel-color);
 
+  .repository-results-count {
+    margin-bottom: 0;
+  }
+
   .toolbar {
     display: flex;
     align-items: center;
