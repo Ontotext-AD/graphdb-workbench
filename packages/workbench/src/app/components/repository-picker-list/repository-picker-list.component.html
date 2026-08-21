@@ -1,4 +1,9 @@
 <div class="repository-picker-list">
+  @let filteredRepositoryList = vm().filteredRepositoryList;
+
+  <h6 class="repository-results-count">
+    {{ 'components.page_restrictions.repository_count' | transloco: {repositoryCount: filteredRepositoryList.length} }}
+  </h6>
   <div class="toolbar">
     @if (vm().showFilters) {
       <span class="filters">
@@ -44,7 +49,7 @@
   </div>
 
   @if (vm().showRepositoryList) {
-    <p-table [value]="vm().filteredRepositoryList" class="repository-list">
+    <p-table [value]="filteredRepositoryList" class="repository-list">
       <ng-template #body let-repository>
         <tr>
           <td class="type-column">
