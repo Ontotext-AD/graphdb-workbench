@@ -59,7 +59,8 @@
       "no_write_permission": "Certaines fonctionnalités ne sont pas disponibles car vous n'avez pas de droit d'écriture sur le dépôt <strong>{{repositoryId}}</strong>.",
       "read_only_ontop": "Certaines fonctionnalités ne sont pas disponibles car <strong>{{repositoryId}}</strong> est un dépôt virtuel en lecture seule.",
       "fedx_unsupported": "Certaines fonctionnalités ne sont pas disponibles car la vue <strong>{{pageTitle}}</strong> n'est pas prise en charge par le dépôt FedX.",
-      "no_accessible_writable_repos": "Il n'y a pas de dépôts accessibles en écriture."
+      "no_accessible_writable_repos": "Il n'y a pas de dépôts accessibles en écriture.",
+      "repository_filter_local_only": "Uniquement en local"
     },
     "repository_picker_list": {
       "hide_remote_locations_btn": {

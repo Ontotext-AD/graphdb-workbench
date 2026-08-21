@@ -13,6 +13,16 @@
     .filters {
       display: flex;
       gap: .4em;
+
+      .filter-local-only {
+        display: flex;
+        align-items: center;
+        gap: .25em;
+
+        label {
+          margin-bottom: 0;
+        }
+      }
     }
 
     .create-repository-btn {
