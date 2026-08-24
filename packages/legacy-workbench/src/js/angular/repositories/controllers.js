@@ -851,7 +851,7 @@ function EditRepositoryCtrl($rootScope, $scope, $routeParams, toastr, $repositor
 
     const initView = (repositoryInfoResponse) => {
         const repositoryInfo = repositoryInfoResponse.data;
-        $scope.canRenameRepo = authorizationService.isAdminOrRepoManager();
+        $scope.canRenameRepo = authorizationService.isAdminOrRepoManager() && repositoryInfo.type === REPOSITORY_TYPES.graphdbRepo;
         if (angular.isDefined(repositoryInfo.params.ruleset)) {
             let ifRulesetExists = false;
             angular.forEach($scope.rulesets, function(item) {
@@ -965,6 +965,8 @@ function EditRepositoryCtrl($rootScope, $scope, $routeParams, toastr, $repositor
             toastr.error(numberFormatError);
         } else if ($scope.isInvalidEntityIndexSizeMin) {
             toastr.error($translate.instant('repo.error.entityIndex.min'));
+        } else if (!$scope.canRenameRepo && $scope.repositoryInfo.saveId !== $scope.repositoryInfo.id) {
+            toastr.error($translate.instant('edit.repo.id.change.error', {repoType: $scope.repositoryInfo.type}));
         } else {
             ModalService.openSimpleModal({
                 title: $translate.instant('common.confirm.save'),

@@ -2472,6 +2472,7 @@
     "edit.repo.restart.requested.msg": "<span class=\"ri-2x ri-alert-line\" style=\"color: var(--gw-primary-dark)\"></span>Le dépôt sera redémarré.",
     "edit.repo.restart.needed.msg": "<span class=\"ri-2x ri-alert-line\" style=\"color: var(--gw-primary-dark)\"></span>Le redémarrage du dépôt est nécessaire pour que les changements prennent effet.",
     "edit.repo.id.warning.msg": "<p>Changer l'ID du dépôt est une opération dangereuse puisqu'elle renomme le dossier du dépôt et impose l'arrêt du dépôt.</p>",
+    "edit.repo.id.change.error": "Impossible de changer le nom du dépôt {{repoType}}",
     "confirm.enable.edit": "Confirmation de l'activation de l'édition",
     "repo.description": "Description du dépôt",
     "repo.indexing.section": "Indexage",
