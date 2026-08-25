@@ -106,7 +106,7 @@ function _evaluateSparqlQuery(http, repository, query) {
         {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                'Accept': 'application/sparql-results+json',
+                'Accept': 'application/sparql-results+json;version=1.2',
                 'X-GraphDB-Local-Consistency': 'updating',
             },
         });
