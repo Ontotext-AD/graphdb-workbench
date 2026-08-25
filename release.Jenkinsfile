@@ -78,7 +78,7 @@ pipeline {
                         ]
                     ]) {
                         sh "echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} > .npmrc"
-                        sh "npm whoami || echo 'whoami failed'"
+                        sh "npm whoami || { echo 'ERROR: NPM authentication failed! Invalid or expired NPM_TOKEN.'; exit 1; }"
                         sh "npm publish"
                         dir("e2e-tests/") {
                             sh "echo //registry.npmjs.org/:_authToken=\${NPM_TOKEN} > .npmrc"
