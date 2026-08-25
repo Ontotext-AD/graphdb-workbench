@@ -1672,6 +1672,7 @@
     "security.tooltip.maintain_repository": "Autorisations de maintenance",
     "security.tooltip.not.available.for.role": "Non disponible pour le rôle sélectionné",
     "security.tooltip.not.available.for.repository.type": "Non disponible pour ce type de dépôt",
+    "security.label.permissions": "Autorisations",
     "security.label.read": "Lire",
     "security.label.write": "Ecriture",
     "security.label.maintain_repository": "Maintenance",

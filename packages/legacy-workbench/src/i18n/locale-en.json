@@ -1673,6 +1673,7 @@
     "security.tooltip.not.available.for.role": "Not available for the selected role",
     "security.tooltip.not.available.for.repository.type": "Not available for this repository type",
     "security.tooltip.graphql": "GraphQL only rights",
+    "security.label.permissions": "Permissions",
     "security.label.read": "Read",
     "security.label.write": "Write",
     "security.label.maintain_repository": "Maintain",
