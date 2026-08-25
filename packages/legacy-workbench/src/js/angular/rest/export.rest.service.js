@@ -27,7 +27,7 @@ function ExportRestService($http, $repositories, $translate) {
         };
 
         const httpHeaders = {
-            accept: headers.accept
+            accept: headers.accept + ';version=1.2'
         };
 
         if (Array.isArray(context)) {
