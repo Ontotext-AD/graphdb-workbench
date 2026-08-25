@@ -23,3 +23,13 @@
 #ux-test-slider {
     width: 50%;
 }
+
+.upload-button {
+    display: flex;
+    align-items: baseline;
+    gap: 0.25rem;
+}
+
+.upload-button .label {
+    color: #8a8a8a;
+}
