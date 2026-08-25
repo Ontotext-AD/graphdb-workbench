@@ -121,7 +121,7 @@ function SparqlRestService($http) {
         return $http.get(`repositories/${repositoryId}`, {
             params: sendData,
             headers: {
-                Accept: accept
+                Accept: accept + ';version=1.2'
             }
         });
     }

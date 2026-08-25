@@ -201,7 +201,7 @@ function RepositoriesRestService($http) {
     function getRepositoryTurtleConfig(repository) {
         return $http.get('rest/repositories/' + repository.id, {
             headers: {
-                'Accept': 'text/turtle',
+                'Accept': 'text/turtle;version=1.2',
             },
         });
     }
