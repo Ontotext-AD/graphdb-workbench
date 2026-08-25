@@ -103,7 +103,7 @@ function JdbcRestService($http, $translate) {
             params: {
                 limit
             },
-            headers: {Accept: 'application/sparql-results+json'}
+            headers: {Accept: 'application/sparql-results+json;version=1.2'}
         });
     }
 }

@@ -53,7 +53,7 @@ function SimilarityCtrl(
 
     const PREFIX = 'http://www.ontotext.com/graphdb/similarity/';
     const PREFIX_PREDICATION = 'http://www.ontotext.com/graphdb/similarity/psi/';
-    const acceptContent = 'application/x-sparqlstar-results+json, application/sparql-results+json;q=0.9, */*;q=0.8';
+    const acceptContent = 'application/x-sparqlstar-results+json, application/sparql-results+json;q=0.9, */*;q=0.8;version=1.2';
     const PREFIX_INSTANCE = PREFIX + 'instance/';
     const ANY_PREDICATE = PREFIX_PREDICATION + 'any';
     const licenseContextService = service(LicenseContextService);

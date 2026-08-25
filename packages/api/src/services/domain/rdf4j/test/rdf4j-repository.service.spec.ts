@@ -74,6 +74,7 @@ describe('Rdf4jRepositoryService', () => {
       const repositoryId = 'my-repository';
       const data = {query: 'SELECT * WHERE { ?s ?p ?o }', infer: true};
       const acceptHeader = 'application/sparql-results+json';
+      const expectedAcceptHeader = 'application/sparql-results+json;version=1.2';
       const linkHeader = '<http://example.org>; rel="related"';
       const mockBlob = new Blob(['{}'], {type: 'application/json'});
       TestUtil.mockResponse(new ResponseMock(`repositories/${repositoryId}`).setBlob(mockBlob));
@@ -84,7 +85,7 @@ describe('Rdf4jRepositoryService', () => {
       // Then fetch should have been called with the correct URL and headers
       const request = TestUtil.getRequest(`repositories/${repositoryId}`);
       expect(request).toBeDefined();
-      expect((request!.headers as Record<string, string>)['Accept']).toBe(acceptHeader);
+      expect((request!.headers as Record<string, string>)['Accept']).toBe(expectedAcceptHeader);
       expect((request!.headers as Record<string, string>)['Link']).toBe(linkHeader);
     });
 
