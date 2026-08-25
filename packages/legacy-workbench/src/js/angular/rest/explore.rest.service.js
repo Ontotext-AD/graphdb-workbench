@@ -16,7 +16,7 @@ function ExploreRestService($http) {
                 context
             },
             headers: {
-                'Accept': accept || 'application/json'
+                'Accept': accept || 'application/json' + ';version=1.2'
             }
         });
     };
@@ -41,7 +41,7 @@ function ExploreRestService($http) {
                 context: resourceInfo.context
             },
             headers: {
-                'Accept': accept || 'application/x-graphdb-table-results+json',
+                'Accept': accept || 'application/x-graphdb-table-results+json' + ';version=1.2',
                 'Link': link ? '<' + link + '>' : ""
             }
         })

@@ -159,7 +159,7 @@ exportCtrl.controller('ExportCtrl',
             };
 
             $scope.downloadExport = function(downloadUrl, format) {
-                let url = downloadUrl + '&Accept=' + encodeURIComponent(format.type);
+                let url = downloadUrl + '&Accept=' + encodeURIComponent(format.type + ';version=1.2');
                 const auth = authStorageService.getAuthToken().getValue();
                 if (auth) {
                     url = url + '&authToken=' + encodeURIComponent(auth);

@@ -299,7 +299,7 @@ function ClassInstanceDetailsService($http) {
             //   uri: encodedUri
             //},
             headers: {
-                Accept: 'application/rdf+json',
+                Accept: 'application/rdf+json;version=1.2',
             },
         });
     }
