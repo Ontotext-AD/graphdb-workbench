@@ -3,7 +3,8 @@
 }
 
 .wb-user .repository-column {
-    width: 50%;
+    width: 40%;
+    vertical-align: top;
 }
 
 .wb-user .read-column {
@@ -22,6 +23,8 @@
     width: 15%;
 }
 
+.wb-user .permissions-column,
+.wb-user .read-column,
 .wb-user .graphql-column,
 .wb-user .graphql-rights,
 .wb-user .graphql-any {
@@ -35,8 +38,12 @@
 
 .wb-user .bordered-table {
     border: 1px solid var(--gw-datatable-border-color);
-    border-collapse: collapse;
+    border-collapse: separate;
     width: 100%;
+}
+
+.wb-user .permissions-subheader th {
+    border-bottom: 1px solid var(--gw-datatable-header-cell-border-color);
 }
 
 .wb-user .graphql-icon {
