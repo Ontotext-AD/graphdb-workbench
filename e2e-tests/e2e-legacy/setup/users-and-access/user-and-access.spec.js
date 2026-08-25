@@ -128,7 +128,6 @@ describe('User and Access', () => {
                 UserAndAccessSteps.getCustomRoleFieldError().should('not.be.visible');
 
                 // When I create the user with a valid custom role
-                UserAndAccessSteps.toggleWriteAccessAny();
                 SecurityStubs.spyOnUserCreate();
                 UserAndAccessSteps.confirmUserCreate();
                 // Then the user should be created with that custom role

@@ -1,5 +1,7 @@
 import {EnvironmentStubs} from "../../stubs/environment-stubs";
 
+const CENTER_SCROLL = {scrollBehavior: 'center'};
+
 export class UserAndAccessSteps {
     static visit() {
         cy.visit('/users');
@@ -118,7 +120,9 @@ export class UserAndAccessSteps {
     }
 
     static typeUsername(text) {
-        this.getUsernameField().type(text);
+        this.getUsernameField()
+            .focus()
+            .type(text);
     }
 
     static getPasswordField() {
@@ -238,13 +242,13 @@ export class UserAndAccessSteps {
             .contains('Global (any data repository)')
             .parent('tr')
             .find('.graphql')
-            .realClick();
+            .click(CENTER_SCROLL);
     }
 
     static clickGraphqlAccessRepo(repoName) {
         this.getRepositoryRightsLine(repoName)
             .find('.graphql')
-            .realClick();
+            .click(CENTER_SCROLL);
     }
 
     static clickReadAccessAny() {
@@ -252,7 +256,7 @@ export class UserAndAccessSteps {
             .contains('Global (any data repository)')
             .parent('tr')
             .find('.read')
-            .realClick();
+            .click(CENTER_SCROLL);
     }
 
     static clickReadAccessRepo(repoName) {
@@ -260,7 +264,7 @@ export class UserAndAccessSteps {
             .contains(repoName)
             .parent('tr')
             .find('.read')
-            .realClick();
+            .click(CENTER_SCROLL);
     }
 
     static clickWriteAccessAny() {
@@ -268,7 +272,7 @@ export class UserAndAccessSteps {
             .contains('Global (any data repository)')
             .parent('tr')
             .find('.write')
-            .realClick();
+            .click(CENTER_SCROLL);
     }
 
     static clickWriteAccessRepo(repoName) {
@@ -276,7 +280,7 @@ export class UserAndAccessSteps {
             .contains(repoName)
             .parent('tr')
             .find('.write')
-            .realClick();
+            .click(CENTER_SCROLL);
     }
 
     static findUserRowAlias(username, aliasName = 'userRow') {
@@ -351,7 +355,7 @@ export class UserAndAccessSteps {
     }
 
     static toggleReadAccessForRepo(repoName) {
-        return this.getReadAccessForRepo(repoName).realClick();
+        return this.getReadAccessForRepo(repoName).click(CENTER_SCROLL);
     }
 
     static validateReadAccessForRepo(repoName, expectedState) {
@@ -374,7 +378,7 @@ export class UserAndAccessSteps {
     }
 
     static toggleWriteAccessForRepo(repoName) {
-        return this.getWriteAccessForRepo(repoName).realClick();
+        return this.getWriteAccessForRepo(repoName).click(CENTER_SCROLL);
     }
 
     static validateWriteAccessForRepo(repoName, expectedState) {
@@ -390,7 +394,7 @@ export class UserAndAccessSteps {
     }
 
     static clickMaintainAccessRepo(repoName) {
-        UserAndAccessSteps.getMaintainAccessRepoCheckbox(repoName).realClick();
+        UserAndAccessSteps.getMaintainAccessRepoCheckbox(repoName).click(CENTER_SCROLL);
     }
 
     static toggleMaintainRepoForRepo(repoName) {
@@ -410,7 +414,7 @@ export class UserAndAccessSteps {
     }
 
     static toggleGraphqlAccessForRepo(repoName) {
-        return this.getGraphqlAccessForRepo(repoName).realClick();
+        return this.getGraphqlAccessForRepo(repoName).click(CENTER_SCROLL);
     }
 
     static validateGraphqlAccessForRepo(repoName, expectedState) {
@@ -455,19 +459,19 @@ export class UserAndAccessSteps {
             .contains(repoName)
             .parent('.row')
             .find('.read')
-            .realClick();
+            .click(CENTER_SCROLL);
     }
 
     static clickFreeWriteAccessRepo(repoName) {
         cy.get('.repo-fields').contains(repoName).parent('.row').as('row');
         cy.get('@row').scrollIntoView();
-        cy.get('@row').find('.write').realClick();
+        cy.get('@row').find('.write').click(CENTER_SCROLL);
     }
 
     static clickFreeGraphqlAccessRepo(repoName) {
         cy.get('.repo-fields').contains(repoName).parent('.row').as('row');
         cy.get('@row').scrollIntoView();
-        cy.get('@row').find('.graphql').realClick();
+        cy.get('@row').find('.graphql').click(CENTER_SCROLL);
     }
 
 }
