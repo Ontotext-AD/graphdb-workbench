@@ -160,7 +160,7 @@ function RDF4JRepositoriesRestService($http, $translate) {
      * @return {Promise<{data: Blob, filename: string}>} A promise resolving to an object containing the file data (Blob) and its filename.
      */
     function downloadGraphsAsFile(repositoryId, limit) {
-        const version12AcceptHeader = 'version=1.2';
+        const version12AcceptHeader = 'application/json, text/plain, */*;version=1.2';
 
         return $http({
             method: 'GET',
