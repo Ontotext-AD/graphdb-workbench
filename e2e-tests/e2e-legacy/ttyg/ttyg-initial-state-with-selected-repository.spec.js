@@ -38,7 +38,7 @@ describe.skip('TTYG initial state with selected repository', () => {
     it('Should display the correct initial state when navigating via the navigation menu', () => {
         // Given, I visit the TTYG page via the navigation menu with a repository selected
         HomeSteps.visit();
-        MainMenuSteps.clickOnTTYG();
+        MainMenuSteps.clickOnMenuTTYG();
         // Then,
         verifyStateWithSelectedRepository();
     });

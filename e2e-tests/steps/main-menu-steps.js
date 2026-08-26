@@ -272,23 +272,14 @@ export class MainMenuSteps {
     }
 
     // --------------------------
-    // --     Lab menu  --
+    // --     TTYG menu  --
     // --------------------------
-    static getMenuLab() {
-        return this.getMainMenu().getByTestId('menu-lab');
+    static getMenuTTYG() {
+        return this.getMainMenu().getByTestId('menu-ttyg');
     }
 
-    static clickOnMenuLab() {
-        return this.getMenuLab().click();
-    }
-
-    static clickOnTTYG() {
-        this.clickOnMenuLab();
-        this.clickOnTTYGSubmenu()
-    }
-
-    static clickOnTTYGSubmenu() {
-        this.getSubMenuButton('sub-menu-ttyg').click();
+    static clickOnMenuTTYG() {
+        return this.getMenuTTYG().click();
     }
 
     // --------------------------

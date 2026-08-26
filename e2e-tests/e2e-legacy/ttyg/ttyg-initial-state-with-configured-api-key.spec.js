@@ -39,7 +39,7 @@ describe('TTYG initial state with API key', () => {
     it('Should display the correct initial state when navigating via the navigation menu', () => {
         // Given, I visit the TTYG page via the navigation menu
         HomeSteps.visit();
-        MainMenuSteps.clickOnTTYG();
+        MainMenuSteps.clickOnMenuTTYG();
         // Then,
         verifyStateWithApiKey();
     });

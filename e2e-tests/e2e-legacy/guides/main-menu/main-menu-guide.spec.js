@@ -106,17 +106,13 @@ describe('Main Menu Guide steps', () => {
         BaseSteps.validateUrl('/sparql');
 
         // TTYG
-        GuideDialogSteps.assertDialogWithTitleIsVisible('Create an agent — 1/3');
-        GuideDialogSteps.assertDialogWithContentIsVisible('The following steps show how to use the Talk to Your Graph view to create an agen');
+        GuideDialogSteps.assertDialogWithTitleIsVisible('Create an agent — 1/2');
+        GuideDialogSteps.assertDialogWithContentIsVisible('The following steps show how to use the Talk to Your Graph view to create an agent.');
         GuideDialogSteps.clickOnNextButton();
 
-        GuideDialogSteps.assertDialogWithTitleIsVisible('Create an agent — 2/3');
-        GuideDialogSteps.assertDialogWithContentIsVisible('Click on the Lab menu.');
-        MainMenuSteps.clickOnMenuLab();
-
-        GuideDialogSteps.assertDialogWithTitleIsVisible('Create an agent — 3/3');
+        GuideDialogSteps.assertDialogWithTitleIsVisible('Create an agent — 2/2');
         GuideDialogSteps.assertDialogWithContentIsVisible('Click on the Talk to Your Graph menu.');
-        MainMenuSteps.clickOnTTYGSubmenu();
+        MainMenuSteps.clickOnMenuTTYG();
         BaseSteps.validateUrl('/ttyg');
 
         // Autocomplete
@@ -249,15 +245,11 @@ describe('Main Menu Guide steps', () => {
         BaseSteps.validateUrl('/sparql');
 
         // TTYG
-        GuideDialogSteps.assertDialogWithTitleIsVisible('Create an agent — 1/3');
+        GuideDialogSteps.assertDialogWithTitleIsVisible('Create an agent — 1/2');
         GuideDialogSteps.assertDialogWithContentIsVisible('The following steps show how to use the Talk to Your Graph view to create an agen');
         GuideDialogSteps.clickOnNextButton();
 
-        GuideDialogSteps.assertDialogWithTitleIsVisible('Create an agent — 2/3');
-        GuideDialogSteps.assertDialogWithContentIsVisible('Click on the Lab menu.');
-        GuideDialogSteps.clickOnNextButton();
-
-        GuideDialogSteps.assertDialogWithTitleIsVisible('Create an agent — 3/3');
+        GuideDialogSteps.assertDialogWithTitleIsVisible('Create an agent — 2/2');
         GuideDialogSteps.assertDialogWithContentIsVisible('Click on the Talk to Your Graph menu.');
         GuideDialogSteps.clickOnNextButton();
         BaseSteps.validateUrl('/ttyg');

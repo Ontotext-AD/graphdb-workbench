@@ -28,15 +28,11 @@ describe('Edit TTYG agent guide', () => {
     it('should end guide when no api key is present', () => {
         TTYGStubs.stubAgentListGetError('Set the config property \'graphdb.llm.api-key\' to your LLM API key');
 
-        GuideDialogSteps.assertDialogWithTitleIsVisible('Edit an agent — 1/18');
-        GuideDialogSteps.assertDialogWithContentIsVisible('Click on the Lab menu.');
-        MainMenuSteps.clickOnMenuLab();
-
-        GuideDialogSteps.assertDialogWithTitleIsVisible('Edit an agent — 2/18');
+        GuideDialogSteps.assertDialogWithTitleIsVisible('Edit an agent — 1/17');
         GuideDialogSteps.assertDialogWithContentIsVisible('Click on the Talk to Your Graph menu.');
-        MainMenuSteps.clickOnTTYGSubmenu();
+        MainMenuSteps.clickOnMenuTTYG();
 
-        GuideDialogSteps.assertDialogWithTitleIsVisible('Missing OpenAI key — 3/18');
+        GuideDialogSteps.assertDialogWithTitleIsVisible('Missing OpenAI key — 2/17');
         GuideDialogSteps.assertDialogWithContentIsVisible('To use Talk to Your Graph, GraphDB must first be configured to work with LLM API.');
         GuideDialogSteps.clickOnCloseButton();
     });
@@ -48,39 +44,35 @@ describe('Edit TTYG agent guide', () => {
         TTYGStubs.stubAgentEdit();
         RepositoriesStubs.stubRepositoryModel(repositoryId);
 
-        GuideDialogSteps.assertDialogWithTitleIsVisible('Edit an agent — 1/18');
-        GuideDialogSteps.assertDialogWithContentIsVisible('Click on the Lab menu.');
-        MainMenuSteps.clickOnMenuLab();
-
-        GuideDialogSteps.assertDialogWithTitleIsVisible('Edit an agent — 2/18');
+        GuideDialogSteps.assertDialogWithTitleIsVisible('Edit an agent — 1/17');
         GuideDialogSteps.assertDialogWithContentIsVisible('Click on the Talk to Your Graph menu.');
-        MainMenuSteps.clickOnTTYGSubmenu();
+        MainMenuSteps.clickOnMenuTTYG();
 
-        GuideDialogSteps.assertDialogWithTitleIsVisible('Edit an agent — 4/18');
+        GuideDialogSteps.assertDialogWithTitleIsVisible('Edit an agent — 3/17');
         GuideDialogSteps.assertDialogWithContentIsVisible('An agent\'s configuration such as the extraction methods can be reconfigured at any time');
         GuideDialogSteps.clickOnNextButton();
 
-        GuideDialogSteps.assertDialogWithTitleIsVisible('Edit an agent — 11/18');
+        GuideDialogSteps.assertDialogWithTitleIsVisible('Edit an agent — 10/17');
         GuideDialogSteps.assertDialogWithContentIsVisible('Click on the edit agent button to edit the configuration of the selected agent.');
         TTYGViewSteps.editCurrentAgent();
 
-        GuideDialogSteps.assertDialogWithTitleIsVisible('SPARQL search query method — 13/18');
+        GuideDialogSteps.assertDialogWithTitleIsVisible('SPARQL search query method — 12/17');
         GuideDialogSteps.assertDialogWithContentIsVisible('Enabling SPARQL search allows the agent to answers questions by performing a SPARQL query');
         GuideDialogSteps.clickOnNextButton();
 
-        GuideDialogSteps.assertDialogWithTitleIsVisible('SPARQL search query method — 14/18');
+        GuideDialogSteps.assertDialogWithTitleIsVisible('SPARQL search query method — 13/17');
         GuideDialogSteps.assertDialogWithContentIsVisible('Click on the toggle to enable SPARQL search query method.');
         TtygAgentSettingsModalSteps.enableSparqlExtractionMethod();
 
-        GuideDialogSteps.assertDialogWithTitleIsVisible('SPARQL search query method — 15/18');
+        GuideDialogSteps.assertDialogWithTitleIsVisible('SPARQL search query method — 14/17');
         GuideDialogSteps.assertDialogWithContentIsVisible('Click on the toggle to enable providing an ontology in a named graph.');
         TtygAgentSettingsModalSteps.selectSparqlMethodOntologyGraph();
 
-        GuideDialogSteps.assertDialogWithTitleIsVisible('SPARQL search query method — 16/18');
+        GuideDialogSteps.assertDialogWithTitleIsVisible('SPARQL search query method — 15/17');
         GuideDialogSteps.assertDialogWithContentIsVisible('Type http://example.com as the named graph which contains the ontology.');
         GuideDialogSteps.clickOnNextButton();
 
-        GuideDialogSteps.assertDialogWithTitleIsVisible('Edit an agent — 17/18');
+        GuideDialogSteps.assertDialogWithTitleIsVisible('Edit an agent — 16/17');
         GuideDialogSteps.assertDialogWithContentIsVisible('Click to save the agent settings.');
         TtygAgentSettingsModalSteps.saveAgent();
         ModalDialogSteps.getDialog().should('not.exist');

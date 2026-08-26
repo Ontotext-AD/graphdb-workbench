@@ -20,8 +20,8 @@ describe('Layout', () => {
     LayoutSteps.visit();
     LayoutSteps.disableSecurity();
 
-    const monitoringMenuIndex = 3;
-    const setupMenuIndex = 4;
+    const monitoringMenuIndex = 4;
+    const setupMenuIndex = 5;
     const helpMenuIndex = 6;
 
     // And, I enable security
