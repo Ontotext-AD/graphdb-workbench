@@ -177,23 +177,14 @@ menuItems = [
   {
     items: [
       {
-        label: 'Lab',
-        labelKey: 'menu.lab.label',
-        href: '#',
-        order: 6,
-        role: 'IS_AUTHENTICATED_FULLY',
-        icon: 'ri-flask-line',
-        guideSelector: 'menu-lab',
-        shouldShow: true
-      },
-      {
         label: 'Talk to Your Graph',
         labelKey: 'menu.ttyg.label',
-        href: 'chatgpt',
-        order: 20,
+        href: 'ttyg',
+        order: 3,
         role: 'ROLE_USER',
-        parent: 'Lab',
-        guideSelector: 'sub-menu-ttyg',
+        icon: 'ri-robot-2-line',
+        guideSelector: 'menu-ttyg',
+        testSelector: 'menu-ttyg',
         shouldShow: true
       }
     ]

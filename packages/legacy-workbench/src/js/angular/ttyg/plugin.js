@@ -8,8 +8,8 @@ PluginRegistry.add('route', [
         'title': 'menu.ttyg.label',
         'helpInfo': 'ttyg.helpInfo',
         'documentationUrl': 'talk-to-graph.html',
-        'allowAuthorities': ['READ_REPO_{repoId}']
-    }
+        'allowAuthorities': ['READ_REPO_{repoId}'],
+    },
 ]);
 
 PluginRegistry.add('main.menu', {
@@ -18,10 +18,10 @@ PluginRegistry.add('main.menu', {
             label: 'Talk to Your Graph',
             labelKey: 'menu.ttyg.label',
             href: 'ttyg',
-            order: 20,
+            order: 2,
             role: 'ROLE_USER',
-            parent: 'Lab',
-            guideSelector: 'sub-menu-ttyg',
-            testSelector: 'sub-menu-ttyg'
-        }]
+            icon: 'ri-robot-2-line',
+            guideSelector: 'menu-ttyg',
+            testSelector: 'menu-ttyg',
+        }],
 });

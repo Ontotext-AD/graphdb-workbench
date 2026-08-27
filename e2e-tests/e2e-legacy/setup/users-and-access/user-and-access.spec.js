@@ -977,14 +977,14 @@ describe('User and Access', () => {
     };
 
     const MENU_ITEMS_WITHOUT_GRAPHQL = [
-        // 1) Import
+        // Import
         {
             path: ['Import'],
             expectedUrl: '/import',
             checks: noAuthChecks,
         },
 
-        // 2) Explore
+        // Explore
         {
             path: ['Explore', 'Graphs overview'],
             expectedUrl: '/graphs',
@@ -1012,7 +1012,7 @@ describe('User and Access', () => {
             checks: noAuthChecks,
         },
 
-        // 3) SPARQL
+        // SPARQL
         {
             path: ['SPARQL'],
             expectedTitle: 'SPARQL Query & Update',
@@ -1020,9 +1020,16 @@ describe('User and Access', () => {
             checks: noAuthChecks,
         },
 
-        // 4) GraphQL
+        // TTYG
+        {
+            path: ['Talk to Your Graph'],
+            expectedUrl: '/ttyg',
+            checks: noAuthChecks,
+        },
 
-        // 5) Monitor
+        // GraphQL
+
+        // Monitor
         {
             path: ['Monitor', 'Queries and Updates'],
             expectedUrl: '/monitor/queries',
@@ -1030,7 +1037,7 @@ describe('User and Access', () => {
             checks: noAuthChecks,
         },
 
-        // 6) Setup
+        // Setup
         {
             path: ['Setup', 'My Settings'],
             expectedUrl: '/settings',
@@ -1082,14 +1089,7 @@ describe('User and Access', () => {
             checks: noAuthChecks,
         },
 
-        // 7) Lab
-        {
-            path: ['Lab', 'Talk to Your Graph'],
-            expectedUrl: '/ttyg',
-            checks: noAuthChecks,
-        },
-
-        // 8) Help
+        // Help
         {
             path: ['Help', 'REST API'],
             expectedUrl: '/webapi',
@@ -1129,14 +1129,14 @@ describe('User and Access', () => {
     ];
 
     const FREE_ACCESS_MENU_ITEMS_WITHOUT_GRAPHQL = [
-        // 1) Import
+        // Import
         {
             path: ['Import'],
             expectedUrl: '/import',
             checks: noAuthChecks,
         },
 
-        // 2) Explore
+        // Explore
         {
             path: ['Explore', 'Graphs overview'],
             expectedUrl: '/graphs',
@@ -1164,7 +1164,7 @@ describe('User and Access', () => {
             checks: noAuthChecks,
         },
 
-        // 3) SPARQL
+        // SPARQL
         {
             path: ['SPARQL'],
             expectedTitle: 'SPARQL Query & Update',
@@ -1172,7 +1172,7 @@ describe('User and Access', () => {
             checks: noAuthChecks,
         },
 
-        // 6) Setup
+        // Setup
         {
             path: ['Setup', 'Connectors'],
             expectedUrl: '/connectors',

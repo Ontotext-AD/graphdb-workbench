@@ -32,6 +32,12 @@ PluginRegistry.add('main.menu', {
                 testSelector: 'menu-monitoring',
                 children: [],
             },
+        ],
+    },
+);
+PluginRegistry.add('main.menu', {
+        disabled: true,
+        items: [
             {
                 label: 'Lab',
                 labelKey: 'menu.lab.label',

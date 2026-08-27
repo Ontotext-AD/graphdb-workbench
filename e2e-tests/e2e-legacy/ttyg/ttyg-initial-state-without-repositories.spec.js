@@ -14,7 +14,7 @@ describe('TTYG initial state without selected repository', () => {
     it('Should display the correct initial state when navigating via the navigation menu', () => {
         // Given, I visit the TTYG page via the navigation menu without a repository selected
         HomeSteps.visit();
-        MainMenuSteps.clickOnTTYG();
+        MainMenuSteps.clickOnMenuTTYG();
         // Then,
         ErrorSteps.verifyNoConnectedRepoMessage();
     });
