@@ -536,8 +536,10 @@ describe('TTYG create new agent', () => {
 
         // WHEN: I enable the temperature setting.
         TtygAgentSettingsModalSteps.toggleTemperature();
-        // THEN: I expect the default temperature value to be restored.
-        TtygAgentSettingsModalSteps.getTemperatureSliderField().should('have.value', '0.7');
+        // THEN: I expect the last set temperature value to be restored instead of the default one.
+        TtygAgentSettingsModalSteps.getTemperatureSliderField().should('have.value', '1.2');
+        // AND: I expect the high-temperature warning to be displayed again.
+        TtygAgentSettingsModalSteps.getTemperatureField().should('have.class', 'has-warning');
     });
 
     it('should toggle the topP setting', () => {
@@ -556,8 +558,8 @@ describe('TTYG create new agent', () => {
 
         // WHEN: I enable the topP setting.
         TtygAgentSettingsModalSteps.toggleTop();
-        // THEN: I expect the default topP value to be restored.
-        TtygAgentSettingsModalSteps.getTopPField().should('have.value', '1');
+        // THEN: I expect the last set topP value to be restored instead of the default one.
+        TtygAgentSettingsModalSteps.getTopPField().should('have.value', '0.3');
     });
 
     it('Should warn the user when he changes the default value of the base instruction', () => {
