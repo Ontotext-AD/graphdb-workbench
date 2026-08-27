@@ -74,7 +74,7 @@
                                             </div>
                                             <div ng-if="value != null" class="col-xs-10">
                                                 <div ng-if="option.__type == 'String'">
-                                                    <input class="form-control" type="text" readonly value="{{value}}"/>
+                                                    <input class="form-control" ng-attr-type="{{option.__sensitive ? 'password' : 'text'}}" readonly value="{{value}}"/>
                                                 </div>
                                                 <div ng-if="option.__type == 'BigString'">
                                                     <textarea class="form-control" ng-model="value" readonly>
@@ -127,7 +127,7 @@
                                                                  guide-selector="{{child.__name}}-connector-subproperty">
                                                                 <label class="col-xs-2 col-form-label">{{child.__label}}</label>
                                                                 <div class="col-xs-10">
-                                                                    <input type="text" class="form-control"
+                                                                    <input ng-attr-type="{{child.__sensitive ? 'password' : 'text'}}" class="form-control"
                                                                            ng-if="child.__type == 'String'"
                                                                            ng-model="field[child.__name]" readonly>
                                                                     <textarea class="form-control"
@@ -175,7 +175,7 @@
                                                                      guide-selector="{{child.__name}}-connector-subproperty">
                                                                     <label class="col-xs-2 col-form-label">{{child.__label}}</label>
                                                                     <div class="col-xs-10">
-                                                                        <input type="text" class="form-control"
+                                                                        <input ng-attr-type="{{child.__sensitive ? 'password' : 'text'}}" class="form-control"
                                                                                ng-if="child.__type == 'String'"
                                                                                ng-model="field[child.__name]" readonly>
                                                                         <textarea class="form-control"
