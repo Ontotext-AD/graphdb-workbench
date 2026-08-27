@@ -24,7 +24,7 @@
                         </label>
                     </div>
                     <div ng-if="option.__type == 'String'">
-                        <input type="text" class="form-control" placeholder="{{option.__hint}}" ng-model="values[option.__name]" ng-required="option.__required" uib-popover="{{option.__description}}" popover-trigger="focus" popover-placement="bottom">
+                        <input ng-attr-type="{{option.__sensitive ? 'password' : 'text'}}" class="form-control" placeholder="{{option.__hint}}" ng-model="values[option.__name]" ng-required="option.__required" uib-popover="{{option.__description}}" popover-trigger="focus" popover-placement="bottom">
                     </div>
                     <div ng-if="option.__type == 'BigString'">
                     <textarea type="text" class="form-control" placeholder="{{option.__hint}}" ng-model="values[option.__name]" ng-required="option.__required" uib-popover="{{option.__description}}" popover-trigger="focus" popover-placement="bottom">
@@ -59,7 +59,7 @@
                                                ng-class="{'col-form-label': true, 'font-weight-bold':child.__required }">{{child.__label}}<sup ng-if="child.__required">*</sup></label>
                                         <div class="col-xs-9">
                                             <div ng-if="child.__type == 'String'">
-                                                <input type="text" class="form-control" placeholder="{{child.__hint}}" ng-model="values[option.__name][fieldIndex][child.__name]" ng-required="child.__required" uib-popover="{{child.__description}}" popover-trigger="focus" popover-placement="bottom">
+                                                <input ng-attr-type="{{child.__sensitive ? 'password' : 'text'}}" class="form-control" placeholder="{{child.__hint}}" ng-model="values[option.__name][fieldIndex][child.__name]" ng-required="child.__required" uib-popover="{{child.__description}}" popover-trigger="focus" popover-placement="bottom">
                                             </div>
                                             <div ng-if="child.__type == 'JsonString'">
                                                 <input type="text" class="form-control" placeholder="{{child.__hint}}" ng-model="values[option.__name][fieldIndex][child.__name]" ng-required="child.__required" uib-popover="{{child.__description}}" popover-trigger="focus" popover-placement="bottom">
