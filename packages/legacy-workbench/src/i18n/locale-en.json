@@ -96,6 +96,7 @@
             "secondary_enabled": "Successfully enabled secondary mode",
             "disabled_secondary_mode": "Secondary mode is disabled",
             "secondary_cluster_settings": "Secondary cluster settings",
+            "leader_not_elected": "Leader is not elected",
             "column": {
                 "index": "",
                 "tag": "Identifier tag",

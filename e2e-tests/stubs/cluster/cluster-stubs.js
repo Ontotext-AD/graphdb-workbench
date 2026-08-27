@@ -132,7 +132,7 @@ export class ClusterStubs extends Stubs {
         added.forEach((node) => {
             response[node] = "Node was successfully added in the cluster.";
         });
-        added.forEach((node) => {
+        removed.forEach((node) => {
             response[node] = "Node was successfully removed from the cluster.";
         });
 
@@ -208,6 +208,13 @@ export class ClusterStubs extends Stubs {
             fixture: '/cluster/3-nodes-cluster-group-status-with-tag.json',
             statusCode: 200
         }).as('3-nodes-cluster-group-status-tag');
+    }
+
+    static stubClusterGroupStatusWithoutLeader() {
+        cy.intercept('/rest/cluster/group/status', {
+            fixture: '/cluster/3-nodes-cluster-group-status-no-leader.json',
+            statusCode: 200
+        }).as('3-nodes-cluster-group-status-no-leader');
     }
 
     static stubDeleteTag(uri) {
