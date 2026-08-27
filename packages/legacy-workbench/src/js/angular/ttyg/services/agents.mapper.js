@@ -31,6 +31,7 @@ export const agentFormModelMapper = (agentModel, defaultAgentModel, operation ) 
     if (!agentModel) {
         return;
     }
+    const isNewAgent = operation === AGENT_OPERATION.CREATE;
     const agentFormModel = new AgentFormModel();
     agentFormModel.id = agentModel.id || defaultAgentModel.id;
     agentFormModel.name = agentModel.name || defaultAgentModel.name;
@@ -38,16 +39,15 @@ export const agentFormModelMapper = (agentModel, defaultAgentModel, operation ) 
     agentFormModel.model = agentModel.model || defaultAgentModel.model;
     agentFormModel.contextSize = agentModel.contextSize || defaultAgentModel.contextSize;
     agentFormModel.contextSizeCopy = defaultAgentModel.contextSize;
-
     // Set temperature related properties.
     const temperatureFormModel = new NumericRangeModel({...DEFAULT_TEMPERATURE_RANGE});
-    temperatureFormModel.value = agentModel.temperature !== undefined ? agentModel.temperature : defaultAgentModel.temperature;
+    temperatureFormModel.value = isNewAgent ? defaultAgentModel.temperature : agentModel.temperature;
     agentFormModel.temperature = temperatureFormModel;
     agentFormModel.temperatureEnabled = !ObjectUtil.isNullOrUndefined(agentFormModel.temperature.value);
 
     // Set topP related properties.
     const topPFormModel = new NumericRangeModel({...DEFAULT_TOP_P_RANGE});
-    topPFormModel.value = agentModel.topP !== undefined ? agentModel.topP : defaultAgentModel.topP;
+    topPFormModel.value = isNewAgent ? defaultAgentModel.topP : agentModel.topP;
     agentFormModel.topP = topPFormModel;
     agentFormModel.topPEnabled = !ObjectUtil.isNullOrUndefined(agentFormModel.topP.value);
 
