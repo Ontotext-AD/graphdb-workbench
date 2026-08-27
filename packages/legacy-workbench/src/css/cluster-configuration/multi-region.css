@@ -1,13 +1,9 @@
-.multi-region {
-    display: flex;
-    height: 100%;
-}
-
 .multi-region .multi-region-content {
     display: flex;
     flex: 1;
     flex-direction: column;
     gap: 1.5rem;
+    height: 100%;
 }
 
 .multi-region .multi-region-form {

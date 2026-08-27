@@ -3,7 +3,11 @@
 <div onto-loader ng-if="loader" class="multi-region-loader" message="getLoaderMessage" size="100"></div>
 
 <div class="multi-region">
-    <div class="multi-region-content" ng-if="topology.state === TopologyState.PRIMARY_NODE">
+    <div ng-if="!topology" class="no-leader-alert">
+        <div class="alert alert-info">{{'cluster_management.cluster_configuration_multi_region.leader_not_elected' | translate}}</div>
+    </div>
+
+    <div ng-if="topology.state === TopologyState.PRIMARY_NODE" class="multi-region-content">
         <h4 class="title">{{'cluster_management.cluster_configuration_multi_region.primary_cluster' | translate}}
             <span ng-if="statusLoader" class="ri-reset-left-line icon-1-25x loader cluster-status-loader"></span>
         </h4>

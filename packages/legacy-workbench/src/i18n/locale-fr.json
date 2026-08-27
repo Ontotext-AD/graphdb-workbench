@@ -96,6 +96,7 @@
             "secondary_enabled": "Mode secondaire activé avec succès",
             "disabled_secondary_mode": "Le mode secondaire est désactivé",
             "secondary_cluster_settings": "Paramètres du cluster secondaire",
+            "leader_not_elected": "Aucun leader n'est élu",
             "column": {
                 "index": "",
                 "tag": "Balise d'identification",

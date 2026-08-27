@@ -163,7 +163,7 @@ function MultiRegion($jwtAuth, $translate, $timeout, toastr, ModalService, Clust
             // =========================
             const setTopology = (clusterModel) => {
                 const leader = clusterModel.nodes.find((node) => node.nodeState === NodeState.LEADER);
-                $scope.topology = leader.topologyStatus;
+                $scope.topology = leader?.topologyStatus;
             };
 
             const openSecondaryModeModal = () => {
