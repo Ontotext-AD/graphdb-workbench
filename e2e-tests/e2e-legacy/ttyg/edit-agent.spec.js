@@ -45,6 +45,55 @@ describe('TTYG edit an agent', () => {
         ToasterSteps.verifySuccess('The agent \'agent-1\' was saved successfully.');
     });
 
+    it('should preserve the temperature and topP values of the edited agent', () => {
+        TTYGStubs.stubChatsListGet();
+        TTYGStubs.stubAgentListGet();
+        TTYGStubs.stubChatGet();
+        // GIVEN: I have opened the ttyg page
+        TTYGViewSteps.visit();
+        cy.wait('@get-chat-list');
+        cy.wait('@get-agent-list');
+        cy.wait('@get-chat');
+
+        // WHEN: I open the settings of an agent whose temperature and topP differ from the default values
+        TTYGViewSteps.openAgentSettingsModalForAgent(0);
+
+        // THEN: I expect the values of the agent to be loaded instead of the default ones
+        TtygAgentSettingsModalSteps.getTemperatureSliderField().should('have.value', '0');
+        TtygAgentSettingsModalSteps.getTopPField().should('have.value', '0');
+
+        // WHEN: I disable the temperature setting
+        TtygAgentSettingsModalSteps.toggleTemperature();
+        // THEN: I expect the temperature controls to be disabled
+        TtygAgentSettingsModalSteps.getTemperatureField().should('be.disabled');
+        TtygAgentSettingsModalSteps.getTemperatureSliderField().should('be.disabled');
+
+        // WHEN: I enable the temperature setting again
+        TtygAgentSettingsModalSteps.toggleTemperature();
+        // THEN: I expect the temperature value of the agent to be restored instead of the default one
+        TtygAgentSettingsModalSteps.getTemperatureSliderField().should('have.value', '0');
+
+        // WHEN: I disable the topP setting
+        TtygAgentSettingsModalSteps.toggleTop();
+        // THEN: I expect the topP control to be disabled
+        TtygAgentSettingsModalSteps.getTopPField().should('be.disabled');
+
+        // WHEN: I enable the topP setting again
+        TtygAgentSettingsModalSteps.toggleTop();
+        // THEN: I expect the topP value of the agent to be restored instead of the default one
+        TtygAgentSettingsModalSteps.getTopPField().should('have.value', '0');
+
+        // WHEN: I save the agent
+        TTYGStubs.stubAgentEdit();
+        TtygAgentSettingsModalSteps.saveAgent();
+        // THEN: I expect the values of the agent to be sent instead of the default ones
+        cy.wait('@edit-agent').then((interception) => {
+            expect(interception.request.body.temperature).to.equal(0);
+            expect(interception.request.body.topP).to.equal(0);
+        });
+        ToasterSteps.verifySuccess('The agent \'agent-1\' was saved successfully.');
+    });
+
     it('should not be able to edit an agent if an extraction method is selected but the precondition has failed', () => {
         TTYGStubs.stubChatsListGet();
         TTYGStubs.stubAgentListGet();

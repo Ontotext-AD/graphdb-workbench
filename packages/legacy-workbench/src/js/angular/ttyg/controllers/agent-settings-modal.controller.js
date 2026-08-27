@@ -103,6 +103,8 @@ function AgentSettingsModalController(
     // =========================
 
     const CHAT_GPT_RETRIEVAL_CONNECTOR_NAME = 'ChatGPT Retrieval';
+    let lastTemperatureValue = DEFAULT_TEMPERATURE_RANGE.value;
+    let lastTopPValue = DEFAULT_TOP_P_RANGE.value;
 
     // =========================
     // Public variables
@@ -253,7 +255,10 @@ function AgentSettingsModalController(
     $scope.toggleTemperature = () => {
         const temperature = new NumericRangeModel({...DEFAULT_TEMPERATURE_RANGE});
         if (!$scope.agentFormModel.temperatureEnabled) {
+            lastTemperatureValue = $scope.agentFormModel.temperature.value;
             temperature.value = undefined;
+        } else {
+            temperature.value = lastTemperatureValue;
         }
         $scope.agentFormModel.temperature = temperature;
         updateShowHighTemperatureWarning();
@@ -267,7 +272,10 @@ function AgentSettingsModalController(
     $scope.toggleTopP = () => {
         const topP = new NumericRangeModel({...DEFAULT_TOP_P_RANGE});
         if (!$scope.agentFormModel.topPEnabled) {
+            lastTopPValue = $scope.agentFormModel.topP.value;
             topP.value = undefined;
+        } else {
+            topP.value = lastTopPValue;
         }
         $scope.agentFormModel.topP = topP;
     };
@@ -987,6 +995,7 @@ function AgentSettingsModalController(
         $scope.updateSimilaritySearchPanel(clearIndexSelection);
         $scope.updateRetrievalConnectorPanel(clearRetrievalConnectorSelection);
         $scope.checkAutocompleteIndexEnabled();
+        updateShowHighTemperatureWarning();
     };
 
     const onTabVisibilityChanged = () => {
