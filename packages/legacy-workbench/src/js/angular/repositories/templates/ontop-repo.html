@@ -193,13 +193,11 @@
         </div>
 
         <div class="col-xs-4 col-md-2">
-            <div class="btn btn-secondary btn-sm">
-                <div ngf-select ngf-change="uploadOntopFile($files, ontopFileInfo)" ngf-multiple="false "
-                     class="selectFiles pointer clearfix">
+            <div class="btn btn-secondary" ngf-select ngf-change="uploadOntopFile($files, ontopFileInfo)" ngf-multiple="false">
+                <div class="upload-button selectFiles">
                     <em ng-hide="ontopFileInfo.loading" class="ri-upload-2-line ri-2x"></em>&nbsp;
                     <div ng-show="ontopFileInfo.loading" onto-loader size="24" class="spinner-container ot-loader"></div>
-                    <span for="{{ontopFileInfo.type}}" class="pageInfo"
-                          style="vertical-align: super; color: #8a8a8a;">{{'upload.file' | translate}}</span>
+                    <span for="{{ontopFileInfo.type}}" class="label">{{'upload.file' | translate}}</span>
                 </div>
             </div>
         </div>

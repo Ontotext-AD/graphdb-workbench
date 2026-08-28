@@ -112,15 +112,14 @@
                                 </select>
                             </div>
                             <div class="form-group col-xs-4 col-md-4 col-lg-3" ng-if="!editRepoPage">
-                                <div class="btn btn-secondary btn-sm">
-                                    <div ngf-select ngf-change="uploadRuleset($files)" ngf-multiple="false"
-                                         class="selectFiles pointer clearfix"
-                                         accept=".pie"
-                                         gdb-tooltip="{{'upload.custom.ruleset.file' | translate}}">
-                                        <em ng-hide="uploadFileLoader" class="ri-upload-2-line ri-2x"></em>&nbsp;
+                                <div class="btn btn-secondary" ngf-select ngf-change="uploadRuleset($files)" ngf-multiple="false"
+                                     accept=".pie"
+                                     gdb-tooltip="{{'upload.custom.ruleset.file' | translate}}">
+                                    <div class="upload-button selectFiles">
+                                        <em ng-hide="uploadFileLoader" class="ri-upload-2-line ri-2x"></em>
                                         <div ng-show="uploadFileLoader" onto-loader size="24"
                                              class="spinner-container ot-loader"></div>
-                                        <span class="pageInfo" style="vertical-align: super; color: #8a8a8a;">{{'custom.ruleset' | translate}}</span>
+                                        <span class="label">{{'custom.ruleset' | translate}}</span>
                                     </div>
                                 </div>
                                 <input class="form-control" id="customRuleSet" type="file" name="ruleset"

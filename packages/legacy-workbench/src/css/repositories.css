@@ -297,14 +297,6 @@ span.label {
     margin-right: 10px
 }
 
-.spinner-container {
-    display: inline-block;
-    margin-left: -4px;
-    margin-bottom: -3px;
-    margin-top: 0;
-}
-
-
 .main-loader {
     margin: 200px auto;
     display: block
@@ -518,4 +510,14 @@ span.label {
 
 .location-url {
     font-size: 1.1rem;
+}
+
+.upload-button {
+    display: flex;
+    align-items: baseline;
+    gap: 0.25rem;
+}
+
+.upload-button .label {
+    color: #8a8a8a;
 }
