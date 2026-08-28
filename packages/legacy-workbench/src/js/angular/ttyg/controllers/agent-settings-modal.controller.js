@@ -286,8 +286,22 @@ function AgentSettingsModalController(
      * @param {ExtractionMethodFormModel} extractionMethod
      */
     $scope.onExtractionMethodPanelToggle = (extractionMethod) => {
+        if ($scope.isExtractionMethodPanelLocked(extractionMethod)) {
+            return;
+        }
         extractionMethod.toggleCollapse();
         extractionPanelToggleHandlers[extractionMethod.method](extractionMethod);
+    };
+
+    /**
+     * Checks whether the panel of the extraction method must stay expanded. A panel whose preconditions are not met
+     * can't be collapsed, so that the reason for the disabled save button remains visible until it is resolved.
+     *
+     * @param {ExtractionMethodFormModel|AdditionalExtractionMethodFormModel} extractionMethod
+     * @return {boolean} true if the expanded panel can't be collapsed.
+     */
+    $scope.isExtractionMethodPanelLocked = (extractionMethod) => {
+        return extractionMethod.expanded && hasPreconditionError(extractionMethod);
     };
 
     /**
@@ -308,6 +322,9 @@ function AgentSettingsModalController(
      * @param {AdditionalExtractionMethodFormModel} extractionMethod
      */
     $scope.onAdditionalExtractionMethodPanelToggle = (extractionMethod) => {
+        if ($scope.isExtractionMethodPanelLocked(extractionMethod)) {
+            return;
+        }
         extractionMethod.toggleCollapse();
         additionalExtractionPanelToggleHandlers[extractionMethod.method](extractionMethod);
     };
@@ -391,7 +408,7 @@ function AgentSettingsModalController(
         const similaritySearchExtractionMethod = $scope.agentFormModel.assistantExtractionMethods.getSimilarityExtractionMethod();
         if (!similaritySearchExtractionMethod.selected) {
             // clear the validation status if the method is deselected.
-            $scope.agentSettingsForm.$setValidity('FTSDisabled', true);
+            setPreconditionValidity(ExtractionMethod.SIMILARITY, true);
             return;
         }
 
@@ -423,14 +440,14 @@ function AgentSettingsModalController(
      */
     $scope.checkIfFTSEnabled = () => {
         if (!$scope.agentFormModel.repositoryId) {
-            $scope.agentSettingsForm.$setValidity('FTSDisabled', false);
+            setPreconditionValidity(ExtractionMethod.FTS_SEARCH, false);
             return;
         }
 
         const ftsSearchExtractionMethod = $scope.agentFormModel.assistantExtractionMethods.getFTSSearchExtractionMethod();
         if (!ftsSearchExtractionMethod.selected) {
             // clear the validation status if method is deselected.
-            $scope.agentSettingsForm.$setValidity('FTSDisabled', true);
+            setPreconditionValidity(ExtractionMethod.FTS_SEARCH, true);
             return;
         }
 
@@ -445,7 +462,7 @@ function AgentSettingsModalController(
             })
             .finally(() => {
                 $scope.extractionMethodLoaderFlags[ExtractionMethod.FTS_SEARCH] = false;
-                $scope.agentSettingsForm.$setValidity('FTSDisabled', $scope.ftsEnabled);
+                setPreconditionValidity(ExtractionMethod.FTS_SEARCH, $scope.ftsEnabled);
             });
     };
 
@@ -489,10 +506,10 @@ function AgentSettingsModalController(
         AutocompleteService.checkAutocompleteStatus(selectedRepositoryInfo.repositoryId, selectedRepositoryInfo.repositoryLocation)
             .then((autocompleteEnabled) => {
                 $scope.autocompleteEnabled = autocompleteEnabled;
-                $scope.agentSettingsForm.$setValidity('autocompleteDisabled', autocompleteEnabled);
+                setPreconditionValidity(AdditionalExtractionMethod.AUTOCOMPLETE_IRI_DISCOVERY_SEARCH, autocompleteEnabled);
             })
             .catch((error) => {
-                $scope.agentSettingsForm.$setValidity('autocompleteDisabled', false);
+                setPreconditionValidity(AdditionalExtractionMethod.AUTOCOMPLETE_IRI_DISCOVERY_SEARCH, false);
                 toastr.error(getError(error));
             });
     };
@@ -823,7 +840,7 @@ function AgentSettingsModalController(
     const handleSimilaritySearchExtractionMethodPanelToggle = (extractionMethod, clearSelectedVectorField = false) => {
         if (!extractionMethod.selected) {
             // clear the validation status if the method is deselected.
-            $scope.agentSettingsForm.$setValidity('missingIndex', true);
+            setPreconditionValidity(ExtractionMethod.SIMILARITY, true);
             return;
         }
         // Check if the connector instances select is pristine (unchanged). Treat the field as pristine until it exists.
@@ -849,7 +866,7 @@ function AgentSettingsModalController(
                 updateSelectedSimilarityIndex(indexes, extractionMethod);
                 updateVectorFields(extractionMethod);
 
-                $scope.agentSettingsForm.$setValidity('missingIndex', !extractionMethod.selected || $scope.hasConnectorData());
+                setPreconditionValidity(ExtractionMethod.SIMILARITY, !extractionMethod.selected || $scope.hasConnectorData());
                 // Initially, when there is no selection, the first index is selected, and we need to trigger the
                 // onSimilarityIndexChange to set the connector fields.
                 if (clearSelectedVectorField || (extractionMethod.connectorFields && extractionMethod.connectorFields.length === 0)) {
@@ -858,7 +875,7 @@ function AgentSettingsModalController(
             })
             .catch((error) => {
                 $scope.connectorMap = null;
-                $scope.agentSettingsForm.$setValidity('missingIndex', false);
+                setPreconditionValidity(ExtractionMethod.SIMILARITY, false);
                 logAndShowError(error, 'ttyg.agent.messages.error_similarity_indexes_loading');
             })
             .finally(() => {
@@ -926,7 +943,7 @@ function AgentSettingsModalController(
         }
         if (!extractionMethod.selected) {
             // clear the validation status if method is deselected.
-            $scope.agentSettingsForm.$setValidity('missingConnector', true);
+            setPreconditionValidity(ExtractionMethod.RETRIEVAL, true);
             return;
         }
 
@@ -936,11 +953,11 @@ function AgentSettingsModalController(
             .then((prefix) => ConnectorsService.getConnectorsByTypeAsSelectMenuOptions(prefix, selectedRepositoryInfo.repositoryId, selectedRepositoryInfo.repositoryLocation))
             .then((connectors) => {
                 $scope.retrievalConnectors = connectors;
-                $scope.agentSettingsForm.$setValidity('missingConnector', !extractionMethod.selected || !!(connectors && connectors.length));
+                setPreconditionValidity(ExtractionMethod.RETRIEVAL, !extractionMethod.selected || !!(connectors && connectors.length));
                 updateSelectedRetrievalConnector($scope.retrievalConnectors, extractionMethod);
             })
             .catch((error) => {
-                $scope.agentSettingsForm.$setValidity('missingConnector', false);
+                setPreconditionValidity(ExtractionMethod.RETRIEVAL, false);
                 logAndShowError(error, 'ttyg.agent.messages.error_retrieval_connectors_loading');
             })
             .finally(() => {
@@ -985,9 +1002,56 @@ function AgentSettingsModalController(
     const handleAutocompleteExtractionMethodPanelToggle = (extractionMethod) => {
         if (!extractionMethod.selected) {
             // clear the validation status if method is deselected.
-            $scope.agentSettingsForm.$setValidity('autocompleteDisabled', true);
+            setPreconditionValidity(AdditionalExtractionMethod.AUTOCOMPLETE_IRI_DISCOVERY_SEARCH, true);
         }
         $scope.checkAutocompleteIndexEnabled(extractionMethod);
+    };
+
+    /**
+     * Maps an extraction method to the form validation which reports its preconditions
+     */
+    const PRECONDITION_ERROR_KEYS = {
+        [ExtractionMethod.FTS_SEARCH]: 'FTSDisabled',
+        [ExtractionMethod.SIMILARITY]: 'missingIndex',
+        [ExtractionMethod.RETRIEVAL]: 'missingConnector',
+        [AdditionalExtractionMethod.AUTOCOMPLETE_IRI_DISCOVERY_SEARCH]: 'autocompleteDisabled',
+    };
+
+    /**
+     * Maps an extraction method key to its method implementation
+     */
+    const extractionMethodsToMethod = [
+        ...$scope.agentFormModel.assistantExtractionMethods.extractionMethods,
+        ...$scope.agentFormModel.additionalExtractionMethods.additionalExtractionMethods,
+    ].reduce((keyToMethod, extractionMethod) => {
+        keyToMethod[extractionMethod.method] = extractionMethod;
+        return keyToMethod;
+    }, {});
+
+    /**
+     * Checks if the preconditions of the extraction method are not met.
+     *
+     * @param extractionMethod the method, whose form validity is checked
+     * @return {boolean} true if the method is selected, but its preconditions are not met.
+     */
+    const hasPreconditionError = (extractionMethod) => {
+        const errorKey = PRECONDITION_ERROR_KEYS[extractionMethod.method];
+        return !!(extractionMethod.selected && errorKey && $scope.agentSettingsForm?.$error[errorKey]);
+    };
+
+    /**
+     * Sets a precondition validation on the form and expands invalid panels
+     *
+     * @param {string} method - The method the validation belongs to, e.g. ExtractionMethod.SIMILARITY.
+     * @param {boolean} isValid - The validation status to be set on the form.
+     */
+    const setPreconditionValidity = (method, isValid) => {
+        const errorKey = PRECONDITION_ERROR_KEYS[method];
+        $scope.agentSettingsForm.$setValidity(errorKey, isValid);
+        const extractionMethod = extractionMethodsToMethod[method];
+        if (!isValid && extractionMethod?.selected) {
+            extractionMethod.expanded = true;
+        }
     };
 
     const refreshValidations = (clearIndexSelection = false, clearRetrievalConnectorSelection = false) => {

@@ -109,6 +109,14 @@ describe('TTYG edit an agent', () => {
 
         // THEN: The Save Agent button should be disabled
         TtygAgentSettingsModalSteps.getSaveAgentButton().should('be.disabled');
+        // AND: The panel of the FTS extraction method should be expanded, so that the reason is visible
+        TtygAgentSettingsModalSteps.getFtsDisabledHelp().should('be.visible');
+
+        // WHEN: I try to collapse the panel of the FTS extraction method
+        TtygAgentSettingsModalSteps.toggleFTSExtractionMethodPanel();
+        // THEN: The panel should remain expanded, because the precondition error is not resolved yet
+        TtygAgentSettingsModalSteps.getFtsDisabledHelp().should('be.visible');
+        TtygAgentSettingsModalSteps.getSaveAgentButton().should('be.disabled');
     });
 
     it('should be able to edit Autocomplete extraction method option', () => {
