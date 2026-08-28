@@ -64,6 +64,26 @@ describe('Cluster configuration', () => {
         });
     });
 
+    it('should show an alert when there is no elected leader in the cluster', () => {
+        // Given there is no elected leader in the cluster
+        ClusterStubs.stubClusterGroupStatusWithoutLeader();
+
+        // When I have opened the cluster management page
+        ClusterPageSteps.visit();
+        // And I click on edit properties and open Multi-region tab
+        ClusterPageSteps.previewClusterConfig();
+        ClusterConfigurationSteps.selectMultiRegionConfigTab();
+
+        // Then I expect to see an alert that the leader is not elected
+        ClusterConfigurationSteps.getNoLeaderAlert().should('be.visible')
+            .and('contain.text', 'Leader is not elected');
+        // And no primary or secondary cluster configuration should be rendered
+        ClusterConfigurationSteps.getMultiRegionHeader().should('not.exist');
+        ClusterConfigurationSteps.getAddTagButton().should('not.exist');
+        ClusterConfigurationSteps.getEnableSecondaryModeButton().should('not.exist');
+        ClusterConfigurationSteps.getTagsTable().should('not.exist');
+    });
+
     it('should be able to switch modes', () => {
         ClusterStubs.stubEnableSecondaryMode();
         const rpcAddress = 'node-name:7300';

@@ -119,6 +119,10 @@ export class ClusterConfigurationSteps {
         return this.getMultiRegionTabContent().find('.title');
     }
 
+    static getNoLeaderAlert() {
+        return this.getMultiRegionTabContent().find('.no-leader-alert');
+    }
+
     static getAddTagButton() {
         return this.getMultiRegionTabContent().find('.create-tag-btn');
     }
