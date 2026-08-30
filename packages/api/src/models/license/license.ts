@@ -17,7 +17,7 @@ export class License extends Model<License> {
   readonly licenseCapabilities?: CapabilityList;
   readonly version?: string;
   readonly installationId?: string;
-  readonly valid?: boolean;
+  readonly valid: boolean;
   readonly message?: string;
   readonly present?: boolean;
   readonly usageRestriction?: string;
@@ -42,7 +42,7 @@ export class License extends Model<License> {
     this.licenseCapabilities = data?.licenseCapabilities;
     this.version = data?.version || '';
     this.installationId = data?.installationId || '';
-    this.valid = data?.valid;
+    this.valid = data?.valid ?? false;
     this.typeOfUse = data?.typeOfUse || '';
     this.message = data?.message || '';
     this.present = data?.present || false;

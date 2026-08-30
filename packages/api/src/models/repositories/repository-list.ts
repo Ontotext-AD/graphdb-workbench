@@ -1,5 +1,6 @@
 import {Repository} from './repository';
 import {ModelList} from '../common';
+import {RepositoryType} from './repository-type';
 
 const REPOSITORY_LOCATION_ID_COMPARATOR = (r1: Repository, r2: Repository) => {
   // Compare locations.
@@ -20,6 +21,10 @@ export class RepositoryList extends ModelList<Repository> {
 
   constructor(repositories?: Repository[]) {
     super(repositories);
+  }
+
+  filterWithCallback(filterCallback: (repository: Repository) => boolean): RepositoryList {
+    return new RepositoryList(super.filter(filterCallback));
   }
 
   /**
@@ -49,6 +54,19 @@ export class RepositoryList extends ModelList<Repository> {
    */
   filterByRepository(repositories: Repository[]): Repository[] {
     return super.filter(this.createIdLocationFilter(repositories));
+  }
+
+  /**
+   * Filters the repository list to include only repositories whose type matches one of the specified repository types.
+   *
+   * @param repositoryTypes - The repository types to filter by. If empty, no filtering is applied and all items are returned.
+   *
+   * @returns The filtered list of repositories matching one of the specified types, or all items if no repository types are provided.
+   */
+  filterByType(repositoryTypes: RepositoryType[] = []) {
+    return repositoryTypes.length === 0 ?
+      this.items :
+      super.filter((repository) => !!repository.type && repositoryTypes.includes(repository.type));
   }
 
   /**
