@@ -4,7 +4,7 @@ import {service} from '../../../../providers';
 import {AuthenticationStorageService} from '../authentication-storage.service';
 import {SecurityContextService} from '../security-context.service';
 import {EventService} from '../../../event-service';
-import {Logout} from '../../../../models/events';
+import {LoggedOut} from '../../../../models/events/auth/logged-out';
 import {WindowService} from '../../../window';
 import {AuthStrategy, AuthStrategyType} from '../../../../models/security/authentication';
 import {AuthStrategyResolver} from '../auth-strategy-resolver';
@@ -108,7 +108,7 @@ describe('AuthenticationService', () => {
       const testAuthStrategySpy = jest.spyOn(testAuthStrategy, 'logout');
       await authService.logout();
       expect(emitSpy).toHaveBeenCalledTimes(1);
-      expect(emitSpy).toHaveBeenCalledWith(expect.any(Logout));
+      expect(emitSpy).toHaveBeenCalledWith(expect.any(LoggedOut));
       expect(testAuthStrategySpy).toHaveBeenCalled();
     });
 

@@ -2,7 +2,6 @@ import HomeSteps from "../../steps/home-steps";
 import {OperationsStatusesComponentSteps} from "../../steps/operations-statuses-component-steps";
 import {GlobalOperationsStatusesStub} from "../../stubs/global-operations-statuses-stub";
 import {ImportUserDataSteps} from "../../steps/import/import-user-data-steps";
-import {BrowserStubs} from "../../stubs/browser-stubs";
 
 describe('Operations Status Component', () => {
 
@@ -141,8 +140,8 @@ describe('Operations Status Component', () => {
     });
 
     function checkOperationElementUrl(expectedUrl, operationIndex = 0) {
-        BrowserStubs.spyNavigateToUrl();
-        OperationsStatusesComponentSteps.getOperationStatuses().eq(operationIndex).click();
-        cy.get(BrowserStubs.NAVIGATE_TO_URL_ALIAS()).should('have.been.calledWithMatch', expectedUrl)
+        OperationsStatusesComponentSteps.getOperationStatuses().eq(operationIndex)
+            .should('have.attr', 'href', expectedUrl)
+            .should('have.attr', 'target', '_blank');
     }
 });

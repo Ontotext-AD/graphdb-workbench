@@ -22,6 +22,7 @@ import {start} from 'single-spa';
 import {defineCustomElements} from '../../../shared-components/loader';
 import {registerInterceptors} from './interceptors/interceptors-registration';
 import {runtimeConfigurationBootstrap} from './runtime-configuration/runtime-configuration';
+import {registerAuthenticationEventHandlers} from './security/authentication-event-handlers';
 
 const logger = LoggerProvider.logger;
 let isInitialBootstrap = true;
@@ -136,6 +137,7 @@ export const bootstrapWorkbench = (): Promise<void> => {
     .then(() => {
       subscribeToAuthenticatedUserChange();
       defineCustomElements();
+      registerAuthenticationEventHandlers();
       return start();
     });
 };

@@ -2,7 +2,7 @@ import {Service} from '../../../providers/service/service';
 import {AuthenticatedUser, SecurityConfig} from '../../../models/security';
 import {service} from '../../../providers';
 import {EventService} from '../../event-service';
-import {Logout} from '../../../models/events';
+import {LoggedOut} from '../../../models/events/auth/logged-out';
 import {SecurityContextService} from './security-context.service';
 import {AuthStrategyResolver} from './auth-strategy-resolver';
 import {Login} from '../../../models/events/auth/login';
@@ -61,7 +61,7 @@ export class AuthenticationService implements Service {
     const authUser = await authStrategy.login(loginData);
     this.securityContextService.updateIsLoggedIn(true);
     this.securityContextService.updateAuthenticatedUser(authUser);
-    this.eventService.emit(new Login());
+    await this.eventService.emit(new Login());
   }
 
   /**
@@ -80,10 +80,10 @@ export class AuthenticationService implements Service {
         this.securityContextService.updateIsLoggedIn(false);
         if (this.authorizationService.hasFreeAccess()) {
           this.authorizationService.initializeFreeAccess();
-          this.eventService.emit(new Login());
+          void this.eventService.emit(new Login());
         } else {
           navigate('login');
-          this.eventService.emit(new Logout());
+          void this.eventService.emit(new LoggedOut());
         }
       });
   }

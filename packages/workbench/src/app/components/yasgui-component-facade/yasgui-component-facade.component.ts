@@ -175,7 +175,7 @@ export class YasguiComponentFacadeComponent implements OnInit, OnDestroy {
    * The currently selected language in the application. This is used to set the language of the ontotext-yasgui
    * component and to update it when the selected language changes in the application.
    */
-  language = signal<string | undefined>(this.languageContextService.getSelectedLanguage() || this.languageContextService.getDefaultLanguage());
+  language = signal<string | undefined>(this.languageContextService.getSelectedLanguage());
 
   // ===================================
   // Outputs

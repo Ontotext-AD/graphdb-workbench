@@ -6,7 +6,7 @@ import {LoggerProvider} from '../../logging/logger-provider';
 import {GuideStepBridge} from './guide-step-bridge';
 import {WindowService} from '../../window';
 import {ScrollLocation} from '../../../models/interactive-guide/scroll-location';
-import {getCurrentRoute, HtmlUtil, navigate, UriUtil} from '../../utils';
+import {getCurrentRoute, HtmlUtil, navigate, TranslationUtil, UriUtil} from '../../utils';
 import {ProductInfoContextService} from '../product-info';
 
 /**
@@ -56,42 +56,60 @@ export class GuideApi implements Service, GuideStepBridge {
    * @returns The translated string, or the key itself if no translation is found.
    */
   _translate(bundle: TranslationBundle | undefined, key: string | Record<string, string>, parameters: Record<string, string> = {}): string {
-    const currentLanguage = this.languageContextService.getSelectedLanguage() ?? this.languageContextService.getDefaultLanguage();
+    const currentLanguage = this.languageContextService.getSelectedLanguage();
 
     if (typeof key === 'object') {
-      const translation = key[currentLanguage] ?? key[this.languageContextService.getDefaultLanguage()];
-      if (translation) {
-        return HtmlUtil.sanitize(this.applyParameters(translation, parameters));
+      const translation = key[currentLanguage];
+
+      if (!translation) {
+        this.logger.warn(
+          `Missing translation for language [${currentLanguage}] in message object`,
+        );
+
+        return '';
       }
-      this.logger.warn(`Missing translation for language [${currentLanguage}] in message object`);
-      return '';
+
+      return HtmlUtil.sanitize(
+        TranslationUtil.applyParameters(translation, parameters),
+      );
     }
 
-    let languageBundle: TranslationBundle | undefined;
-    if (bundle) {
-      const byLanguage = bundle[currentLanguage];
-      languageBundle = (typeof byLanguage === 'object' ? byLanguage : undefined) ?? bundle;
-    } else {
-      languageBundle = this.languageContextService.getLanguageBundle() ?? this.languageContextService.getDefaultBundle();
+    const serviceBundle = this.languageContextService.getLanguageBundle();
+    const currentBundle = bundle
+      ? this.resolveLanguageBundle(bundle, currentLanguage)
+      : serviceBundle;
+
+    if (!currentBundle) {
+      this.logger.warn(
+        `Translation bundle is not provided for translation key: ${JSON.stringify(key)}`,
+      );
+
+      return key;
     }
 
-    if (!languageBundle) {
-      this.logger.warn('Translation bundle is not provided for translation key: ' + JSON.stringify(key));
-      return key?.toString() ?? '';
-    }
+    const translation =
+      TranslationUtil.translate(currentBundle, key, parameters) ??
+      (bundle
+        ? TranslationUtil.translate(serviceBundle, key, parameters)
+        : undefined);
 
-    let translation = languageBundle[key];
-    if (!translation && bundle) {
-      // Fallback to the language service bundle when the provided bundle does not contain the key
-      translation = (this.languageContextService.getLanguageBundle() ?? this.languageContextService.getDefaultBundle())?.[key];
-    }
-
-    if (translation) {
-      return HtmlUtil.sanitize(this.applyParameters(translation as string, parameters));
+    if (translation !== undefined) {
+      return translation;
     }
 
     this.logger.warn(`Missing translation for [${key}] key`);
-    return key?.toString();
+    return key;
+  }
+
+  private resolveLanguageBundle(
+    bundle: TranslationBundle,
+    language: string,
+  ): TranslationBundle {
+    const languageBundle = bundle[language];
+
+    return typeof languageBundle === 'object'
+      ? languageBundle
+      : bundle;
   }
 
   private _resolveDocumentationUrl(endpoint: string): string {
@@ -115,14 +133,11 @@ export class GuideApi implements Service, GuideStepBridge {
    * @returns The translation with parameters applied.
    */
   applyParameters(translation: string, parameters: Record<string, string> = {}): string {
-    return Object.entries(parameters).reduce(
-      (result, [paramKey, paramValue]) => this.replaceAll(result, paramKey, paramValue),
-      translation,
-    );
+    return TranslationUtil.applyParameters(translation, parameters);
   }
 
   replaceAll(translation: string, key: string, value: string): string {
-    return translation.split(`{{${key}}}`).join(value);
+    return TranslationUtil.replaceAll(translation, key, value);
   };
 
   /**
