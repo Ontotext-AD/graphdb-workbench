@@ -10,6 +10,8 @@ services:
         -Dgraphdb.stats.default=disabled
         -Dgraphdb.foreground=
         -Dgraphdb.logger.root.level=ERROR
+        -Dgraphdb.llm.url=http://workbench:${WORKBENCH_PORT}/llm-mock
+        -Dgraphdb.llm.api-key=e2e-mock-key
     ports:
       - '7200:7200'
     volumes:
