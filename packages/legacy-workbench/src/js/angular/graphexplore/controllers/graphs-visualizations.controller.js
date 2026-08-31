@@ -11,6 +11,8 @@ import {removeSpecialChars} from "../../utils/string-utils";
 import {NamespacesListModel} from "../../models/namespaces/namespaces-list";
 import {HtmlUtil} from "../../utils/html-util";
 import {
+    EventName,
+    EventService,
     OntoToastrService,
     ParentWindowMessageService,
     RepositoryContextService,
@@ -101,6 +103,7 @@ function GraphsVisualizationsCtrl(
     const guidesService = service(GuidesService);
     const ontoToastrService = service(OntoToastrService);
     const runtimeConfigContextService = service(RuntimeConfigurationContextService);
+    const eventService = service(EventService);
     // Multiplier to calculate the height of the labels element based on the font size.
     // Based on this, we display different numbers of rows. Currently, this results in 3 rows of text
     const heightMultiplier = 4.2;
@@ -495,6 +498,14 @@ function GraphsVisualizationsCtrl(
                 $scope.goToHome();
                 initGraphFromQueryParam();
             }
+        }
+    }));
+
+    // close the sidepanel (if open), if the user navigates to the viz graph menu
+    subscriptions.push(eventService.subscribe(EventName.NAVIGATION_END, () => {
+        if ($scope.showInfoPanel) {
+            $scope.showFilter = false;
+            $scope.closeInfoPanel();
         }
     }));
 
