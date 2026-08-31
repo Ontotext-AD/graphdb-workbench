@@ -8,6 +8,19 @@ import HomeSteps from '../../../steps/home-steps.js';
 const FILE_TO_IMPORT = 'wine.rdf';
 const VALID_RESOURCE = 'USRegion';
 
+/**
+ * Updates the links limit and waits for the graph reload it triggers to complete.
+ *
+ * @param {string} value the new links limit
+ */
+function updateLinksLimit(value) {
+    VisualGraphSteps.updateLinksLimitField(value);
+    VisualGraphSteps.getLinksNumberField().should('have.value', value);
+    VisualGraphSteps.getUrl().should('match', new RegExp(`[?&]linksLimit=${value}(&|$)`));
+    VisualGraphSteps.getGraphVisualizationPane().should('be.visible');
+    VisualGraphSteps.getNodes();
+}
+
 describe('Visual graph screen validation', () => {
 
     let repositoryId;
@@ -311,6 +324,20 @@ describe('Visual graph screen validation', () => {
             VisualGraphSteps.getPredicates().should('have.length', 36);
         });
 
+        it('Should close the settings panel when navigating away from the graph', () => {
+            // Given I have opened a graph
+            VisualGraphSteps.openUSRegionUri();
+            // And I have opened the visual graph settings
+            VisualGraphSteps.openVisualGraphSettings();
+            VisualGraphSteps.getSettingsPanel().should('be.visible');
+
+            // When I click the visual graph submenu
+            MainMenuSteps.clickOnSubmenuVisualGraph();
+
+            // Then I expect the settings panel to be closed
+            VisualGraphSteps.getSettingsPanel().should('not.exist');
+        });
+
         it('Test include inferred Statements', () => {
             VisualGraphSteps.openUSRegionUri();
             // Check include inferred
@@ -361,9 +388,11 @@ describe('Visual graph screen validation', () => {
             // Pick a type that is displayed in the diagram for example "vin:Zinfandel"
             VisualGraphSteps.getNodes().and('contain', 'Zinfandel');
 
+            // Set the connections limit to 10 and wait for the graph reload it triggers,
+            // so that the settings are opened after the navigation has completed
+            updateLinksLimit('10');
+
             VisualGraphSteps.openVisualGraphSettings();
-            // Set the connections limit to 10
-            VisualGraphSteps.updateLinksLimitField('10');
             // Go to Settings and set "vin:Zinfandel" as an ignored type
             VisualGraphSteps.getIgnoredTypesField().clear().type('vin:Zinfandel').type('{enter}');
 
@@ -395,12 +424,14 @@ describe('Visual graph screen validation', () => {
             // Pick a type that is displayed in the diagram for example "vin:Zinfandel"
             VisualGraphSteps.getPredicates().should('contain', 'hasSugar');
 
+            // Set the connections limit to 10 and wait for the graph reload it triggers,
+            // so that the settings are opened after the navigation has completed
+            updateLinksLimit('10');
+
             VisualGraphSteps.openVisualGraphSettings();
             // Go to predicates tab
             VisualGraphSteps.openPredicatesTab();
 
-            // Set the connections limit to 10
-            VisualGraphSteps.updateLinksLimitField('10');
             // Set "vin:hasSugar" as an ignored predicate
             VisualGraphSteps.getIgnoredPredicatesField().clear().type('vin:hasSugar').type('{enter}');
 
