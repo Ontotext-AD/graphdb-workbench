@@ -54,15 +54,16 @@
       -ms-user-select: none;
       transition: all .15s ease-out;
       user-select: none;
-      border: 1px solid transparent;
+      border: 1px solid var(--gw-button-secondary-border-color);
       padding: .5rem 1rem;
       font-size: 1rem;
       color: var(--gw-button-secondary-color);
       background-color: var(--gw-button-secondary-background);
 
       &.selected {
-        background-color: var(--gw-button-primary-background);
-        color: var(--gw-button-primary-color);
+        background-color: var(--gw-togglebutton-checked-background);
+        color: var(--gw-togglebutton-checked-color);
+        border-color: var(--gw-togglebutton-checked-border-color);
       }
 
       &:focus {

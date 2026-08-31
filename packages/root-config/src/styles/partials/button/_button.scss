@@ -18,8 +18,10 @@
 
   &:focus {
     outline: 0;
-    background-color: var(--gw-button-primary-background);
-    border-color: var(--gw-button-primary-focus-ring-color);
+  }
+
+  &:disabled {
+    opacity: var(--gw-button-disabled-opacity);
   }
 }
 
@@ -36,6 +38,24 @@
   &:hover {
     background-color: var(--gw-button-primary-hover-background);
     border-color: var(--gw-button-primary-hover-border-color);
+    color: var(--gw-button-primary-hover-color);
+  }
+
+  &:active {
+    background-color: var(--gw-button-primary-active-background);
+    border-color: var(--gw-button-primary-active-border-color);
+    color: var(--gw-button-primary-active-color);
+  }
+
+  &:focus {
+    outline: var(--gw-button-focus-ring-width) var(--gw-button-focus-ring-style) var(--gw-button-primary-focus-ring-color);
+    outline-offset: var(--gw-button-focus-ring-offset);
+  }
+
+  &:disabled {
+    background-color: var(--gw-button-primary-disabled-background);
+    border-color: var(--gw-button-primary-disabled-border-color);
+    color: var(--gw-button-primary-disabled-color);
   }
 }
 
@@ -47,5 +67,23 @@
   &:hover {
     background-color: var(--gw-button-secondary-hover-background);
     border-color: var(--gw-button-secondary-hover-border-color);
+    color: var(--gw-button-secondary-hover-color);
+  }
+
+  &:active {
+    background-color: var(--gw-button-secondary-active-background);
+    border-color: var(--gw-button-secondary-active-border-color);
+    color: var(--gw-button-secondary-active-color);
+  }
+
+  &:focus {
+    outline: var(--gw-button-focus-ring-width) var(--gw-button-focus-ring-style) var(--gw-button-secondary-focus-ring-color);
+    outline-offset: var(--gw-button-focus-ring-offset);
+  }
+
+  &:disabled {
+    background-color: var(--gw-button-secondary-disabled-background);
+    border-color: var(--gw-button-secondary-disabled-border-color);
+    color: var(--gw-button-secondary-disabled-color);
   }
 }

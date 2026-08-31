@@ -1,15 +1,30 @@
 .onto-btn-primary.shepherd-button:hover {
     background-color: var(--gw-button-primary-hover-background);
+    border-color: var(--gw-button-primary-hover-border-color);
     color: var(--gw-button-primary-hover-color);
 }
 
-.onto-btn-primary.shepherd-button[disabled]{
-    opacity: 0.5;
+.onto-btn-primary.shepherd-button:active {
+    background-color: var(--gw-button-primary-active-background);
+    border-color: var(--gw-button-primary-active-border-color);
+    color: var(--gw-button-primary-active-color);
 }
 
 .onto-btn-secondary.shepherd-button:hover {
     background-color: var(--gw-button-secondary-hover-background);
+    border-color: var(--gw-button-secondary-hover-border-color);
     color: var(--gw-button-secondary-hover-color);
+}
+
+.onto-btn-secondary.shepherd-button:active {
+    background-color: var(--gw-button-secondary-active-background);
+    border-color: var(--gw-button-secondary-active-border-color);
+    color: var(--gw-button-secondary-active-color);
+}
+
+.onto-btn-primary.shepherd-button[disabled],
+.onto-btn-secondary.shepherd-button[disabled] {
+    opacity: var(--gw-button-disabled-opacity);
 }
 
 .shepherd-element {
