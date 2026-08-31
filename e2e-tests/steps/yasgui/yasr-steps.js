@@ -135,6 +135,21 @@ export class YasrSteps extends BaseSteps {
         return YasrSteps.getYasr().find('.dataTables_wrapper');
     }
 
+    static getExplainPlanPlugin() {
+        return YasrSteps.getYasr().find('.yasr-explain-plan-plugin');
+    }
+
+    /**
+     * While an explain plan is rendered, the regular yasr header is replaced with a plain title.
+     */
+    static getExplainPlanHeader() {
+        return YasrSteps.getYasr().find('.yasr-header-replacement');
+    }
+
+    static getExplainPlan() {
+        return YasrSteps.getExplainPlanPlugin().find('.explainPlanQuery');
+    }
+
     static getFullscreenButton() {
         return cy.get('.yasr-fullscreen-button');
     }

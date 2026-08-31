@@ -218,4 +218,64 @@ export class YasqeSteps {
     static getActionButton(index) {
         return YasqeSteps.getActionButtons().eq(index);
     }
+
+    static getRunSplitButton() {
+        return YasqeSteps.getYasqe().find('query-split-button');
+    }
+
+    static getRunSplitButtonToggle() {
+        return YasqeSteps.getRunSplitButton().find('.yasqe_querySplitToggle');
+    }
+
+    static openRunDropdown() {
+        YasqeSteps.getRunSplitButtonToggle().click({scrollBehavior: false});
+    }
+
+    static getRunDropdownMenu() {
+        return YasqeSteps.getRunSplitButton().find('.ontotext-run-dropdown-menu');
+    }
+
+    static getRunDropdownItems() {
+        return YasqeSteps.getRunDropdownMenu().find('.ontotext-run-dropdown-menu-item');
+    }
+
+    static getRunDropdownItem(index) {
+        return YasqeSteps.getRunDropdownItems().eq(index);
+    }
+
+    static selectRunDropdownItem(index) {
+        YasqeSteps.openRunDropdown();
+        YasqeSteps.getRunDropdownItem(index).click({scrollBehavior: false});
+        // Hides the tooltip of the split button, which otherwise stays visible and overlaps both
+        // the run button and the toggle itself. The mouseleave has to be forced, because the
+        // tooltip covers the very element it is triggered on, which fails Cypress's actionability
+        // check. This mirrors YasqeSteps.clickExecuteQueryButtonAndHideTooltip.
+        YasqeSteps.getRunSplitButtonToggle().trigger('mouseleave', {force: true});
+    }
+
+    static executeExplainQueryPlan() {
+        YasqeSteps.selectRunDropdownItem(RunDropdownOption.EXPLAIN_PLAN);
+    }
+
+    static executeLlmExplainAll() {
+        YasqeSteps.selectRunDropdownItem(RunDropdownOption.LLM_EXPLAIN_ALL);
+    }
+
+    static executeLlmExplainQuery() {
+        YasqeSteps.selectRunDropdownItem(RunDropdownOption.LLM_EXPLAIN_QUERY);
+    }
+
+    static executeLlmExplainResults() {
+        YasqeSteps.selectRunDropdownItem(RunDropdownOption.LLM_EXPLAIN_RESULTS);
+    }
 }
+
+/**
+ * The order of the options in the run dropdown of the query split button.
+ */
+export const RunDropdownOption = {
+    'EXPLAIN_PLAN': 0,
+    'LLM_EXPLAIN_ALL': 1,
+    'LLM_EXPLAIN_QUERY': 2,
+    'LLM_EXPLAIN_RESULTS': 3
+};
