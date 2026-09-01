@@ -23,8 +23,8 @@ export default defineConfig({
             return config;
         },
         baseUrl: 'http://localhost:9000',
-        specPattern: 'e2e-security/**/*.spec.{js,jsx,ts,tsx}',
-        supportFile: 'support/e2e-security.js',
+        specPattern: 'e2e-security-openid/external-provider-openid-auth.spec.{js,jsx,ts,tsx}',
+        supportFile: 'support/e2e-security-openid.js',
         reporter: "cypress-multi-reporters",
         reporterOptions: {
             configFile: 'cypress-reporter-config.json'
@@ -32,6 +32,7 @@ export default defineConfig({
     },
     env: {
         set_default_user_data: true,
-        security_provider: 'basic'
+        security_provider: 'openid'
+
     }
 });

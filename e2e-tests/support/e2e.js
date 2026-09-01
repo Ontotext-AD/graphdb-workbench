@@ -50,6 +50,18 @@ beforeEach(() => {
         // to modify it because for some reason this request gets a 401 response
         // for some reason.
         // It'll be good to investigate it a bit sometime.
-        SecurityStubs.stubGetAdminUser();
+        if (Cypress.env('security_provider') === 'ldap') {
+            SecurityStubs.stubGetLDAPAdminUser();
+        } else if (Cypress.env('security_provider') === 'openid') {
+            SecurityStubs.stubGetOpenIDAdminUser();
+            // To keep consistency with types of security,
+            // basic was added to the default configuration as a variable.
+        } else if (Cypress.env('security_provider') === 'basic') {
+
+            SecurityStubs.stubGetAdminUser();
+        } else {
+            // Fallback to basic to avoid NPE
+             SecurityStubs.stubGetAdminUser();
+        }
     }
 });
