@@ -79,6 +79,11 @@
       .value {
         overflow-wrap: break-word;
         font-weight: 500;
+        display: -webkit-inline-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
       .label {
@@ -90,6 +95,11 @@
       padding-left: 0.9rem;
       padding-right: 0.9rem;
       font-size: 0.8rem;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 3;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .repository-tooltip-content {
