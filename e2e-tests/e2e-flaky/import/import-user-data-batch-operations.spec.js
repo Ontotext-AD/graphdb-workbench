@@ -56,7 +56,7 @@ describe('Import user data: Batch operations', () => {
         ImportSettingsDialogSteps.getDialog().should('be.visible');
         ImportSettingsDialogSteps.import();
         ImportUserDataSteps.getResources().should('have.length', 3);
-        ImportUserDataSteps.checkImportedResource(0, 'jsonld-2.jsonld');
+        ImportUserDataSteps.checkImportedResourceByIndex(0, 'jsonld-2.jsonld');
         // When I select Imported from the menu
         ImportUserDataSteps.selectImportedResources();
         // Then I should see only imported files selected
@@ -83,7 +83,7 @@ describe('Import user data: Batch operations', () => {
         ImportUserDataSteps.batchImport();
         ImportSettingsDialogSteps.import();
         // Then the file should be imported
-        ImportUserDataSteps.checkImportedResource(0, 'jsonld-2.jsonld');
+        ImportUserDataSteps.checkImportedResourceByIndex(0, 'jsonld-2.jsonld');
         ImportUserDataSteps.selectImportedResources();
         ImportUserDataSteps.getSelectedResources().should('have.length', 1);
         ImportUserDataSteps.deselectAllResources();
@@ -94,8 +94,8 @@ describe('Import user data: Batch operations', () => {
         ImportUserDataSteps.batchImport();
         ImportSettingsDialogSteps.import();
         // Then the files should be imported
-        ImportUserDataSteps.checkImportedResource(1, 'jsonld.jsonld');
-        ImportUserDataSteps.checkImportedResource(2, 'bnodes.ttl');
+        ImportUserDataSteps.checkImportedResourceByIndex(1, 'jsonld.jsonld');
+        ImportUserDataSteps.checkImportedResourceByIndex(2, 'bnodes.ttl');
         ImportUserDataSteps.selectImportedResources();
         ImportUserDataSteps.getSelectedResources().should('have.length', 3);
     });
@@ -162,9 +162,9 @@ function uploadWithImportFiles(files) {
     ImportUserDataSteps.selectFile([file1, file2, file3]);
     ImportSettingsDialogSteps.import();
     ImportUserDataSteps.getResources().should('have.length', 3);
-    ImportUserDataSteps.checkImportedResource(0, 'jsonld-2.jsonld');
-    ImportUserDataSteps.checkImportedResource(1, 'jsonld.jsonld');
-    ImportUserDataSteps.checkImportedResource(2, 'bnodes.ttl');
+    ImportUserDataSteps.checkImportedResourceByIndex(0, 'jsonld-2.jsonld');
+    ImportUserDataSteps.checkImportedResourceByIndex(1, 'jsonld.jsonld');
+    ImportUserDataSteps.checkImportedResourceByIndex(2, 'bnodes.ttl');
 }
 
 function uploadFiles(data) {

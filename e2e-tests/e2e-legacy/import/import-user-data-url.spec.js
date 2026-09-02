@@ -59,7 +59,7 @@ describe('Import user data: URL import', () => {
         ImportUserDataSteps.clickImportUrlButton();
         // Without changing settings
         ImportSettingsDialogSteps.import();
-        ImportUserDataSteps.checkImportedResource(0, IMPORT_URL);
+        ImportUserDataSteps.checkImportedResourceByIndex(0, IMPORT_URL);
     });
 
     it('Test import file via URL with invalid RDF format selected', () => {
@@ -67,7 +67,7 @@ describe('Import user data: URL import', () => {
         ImportUserDataSteps.selectRDFFormat(JSONLD_FORMAT);
         ImportUserDataSteps.clickImportUrlButton();
         ImportSettingsDialogSteps.import();
-        ImportUserDataSteps.checkImportedResource(0, IMPORT_URL, RDF_ERROR_MESSAGE);
+        ImportUserDataSteps.checkImportedResourceByIndex(0, IMPORT_URL, RDF_ERROR_MESSAGE);
     });
 
     it('Test import file via URL successfully with valid RDF format selected', () => {
@@ -75,6 +75,6 @@ describe('Import user data: URL import', () => {
         ImportUserDataSteps.selectRDFFormat(VALID_URL_RDF_FORMAT);
         ImportUserDataSteps.clickImportUrlButton();
         ImportSettingsDialogSteps.import();
-        ImportUserDataSteps.checkImportedResource(0, IMPORT_URL);
+        ImportUserDataSteps.checkImportedResourceByIndex(0, IMPORT_URL);
     });
 });

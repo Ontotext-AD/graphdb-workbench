@@ -33,7 +33,7 @@ describe('Confirm duplicate RDF file', () => {
         GuideDialogSteps.assertDialogWithTitleIsVisible('Import file');
         GuideDialogSteps.assertDialogWithContentIsVisible('Click on the Import button.');
         ImportSettingsDialogSteps.import();
-        ImportUserDataSteps.checkImportedResource(0, GUIDE_RESOURCE_FILE);
+        ImportUserDataSteps.checkImportedResourceByIndex(0, GUIDE_RESOURCE_FILE);
 
         // WHEN: I run a guide that includes the Import RDF File step.
         GuideDialogSteps.assertDialogWithTitleIsVisible('Import file — 1/6');

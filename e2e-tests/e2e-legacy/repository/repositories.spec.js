@@ -452,7 +452,7 @@ describe('Repositories', () => {
             .selectRDFFormat("TriG")
             .clickImportTextSnippetButton();
         ImportSettingsDialogSteps.import();
-        ImportUserDataSteps.checkImportedResource(0, 'Text snippet');
+        ImportUserDataSteps.checkImportedResourceByIndex(0, 'Text snippet');
         // Import data that conforms with the shape - import is successfully
         // The newly imported file is first in the list
         ImportUserDataSteps
@@ -461,7 +461,7 @@ describe('Repositories', () => {
             .selectRDFFormat("Turtle")
             .clickImportTextSnippetButton();
         ImportSettingsDialogSteps.import();
-        ImportUserDataSteps.checkImportedResource(0, 'Text snippet');
+        ImportUserDataSteps.checkImportedResourceByIndex(0, 'Text snippet');
         // Import data that does not conform with the shape - GraphDBShaclSailValidationException
         // The newly imported file is first in the list
         ImportUserDataSteps
@@ -470,7 +470,7 @@ describe('Repositories', () => {
             .selectRDFFormat("Turtle")
             .clickImportTextSnippetButton();
         ImportSettingsDialogSteps.import();
-        ImportUserDataSteps.checkImportedResource(0, 'Text snippet', 'org.eclipse.rdf4j.sail.shacl.GraphDBShaclSailValidationException: Failed SHACL validation');
+        ImportUserDataSteps.checkImportedResourceByIndex(0, 'Text snippet', 'org.eclipse.rdf4j.sail.shacl.GraphDBShaclSailValidationException: Failed SHACL validation');
     });
 
     it('should allow editing of repository name if repository is in cluster', () => {

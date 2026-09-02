@@ -87,8 +87,8 @@ describe('Import server files', () => {
         // Then I expect all files to be successfully imported.
         // TODO: this check is failing right now because the fix https://ontotext.atlassian.net/browse/GDB-10295 is not yet completed.
         // ImportServerFilesSteps.checkImportedResource(0, 'more-files', 'Imported successfully in');
-        ImportServerFilesSteps.checkImportedResource(1, 'jsonld-file.jsonld', 'Imported successfully in');
-        ImportServerFilesSteps.checkImportedResource(2, 'rdfxml.rdf', 'Imported successfully in');
+        ImportServerFilesSteps.checkImportedResourceByIndex(1, 'jsonld-file.jsonld', 'Imported successfully in');
+        ImportServerFilesSteps.checkImportedResourceByIndex(2, 'rdfxml.rdf', 'Imported successfully in');
 
         // When I try to import a directory that contains resources with incorrect rdf data.
         ImportServerFilesSteps.importResourceByName('more-files-with-error');
@@ -119,7 +119,7 @@ describe('Import server files', () => {
         ImportSettingsDialogSteps.import();
 
         // I expect only part of the error be displayed,
-        ImportServerFilesSteps.checkImportedResource(0, importResourceName, 'RDF Parse Error: The element type ');
+        ImportServerFilesSteps.checkImportedResourceByName(importResourceName, 'RDF Parse Error: The element type ');
         // and when click on that error
         ImportServerFilesSteps.openErrorDialog(importResourceName);
 
@@ -152,39 +152,39 @@ describe('Import server files', () => {
         ImportServerFilesSteps.orderBySize();
 
         // Then I expect the directories to be sorted in ascending order,
-        ImportServerFilesSteps.getResource(0).should('contain', "more-files");
-        ImportServerFilesSteps.getResource(3).should('contain', "more-files-with-error");
+        ImportServerFilesSteps.getResourceTitleRow(0).should('contain', "more-files");
+        ImportServerFilesSteps.getResourceTitleRow(3).should('contain', "more-files-with-error");
 
         // and inner files to be sorted ascending as well.
         // checks first folder files
-        ImportServerFilesSteps.getResource(1).should('contain', "jsonld-file.jsonld");
-        ImportServerFilesSteps.getResource(2).should('contain', "rdfxml.rdf");
+        ImportServerFilesSteps.getResourceTitleRow(1).should('contain', "jsonld-file.jsonld");
+        ImportServerFilesSteps.getResourceTitleRow(2).should('contain', "rdfxml.rdf");
         // checks second folder files
-        ImportServerFilesSteps.getResource(4).should('contain', "import-resource-with-correct-data.jsonld");
-        ImportServerFilesSteps.getResource(5).should('contain', "import-resource-with-incorrect-data.rdf");
-        ImportServerFilesSteps.getResource(6).should('contain', "import-resource-with-long-error.rdf");
+        ImportServerFilesSteps.getResourceTitleRow(4).should('contain', "import-resource-with-correct-data.jsonld");
+        ImportServerFilesSteps.getResourceTitleRow(5).should('contain', "import-resource-with-incorrect-data.rdf");
+        ImportServerFilesSteps.getResourceTitleRow(6).should('contain', "import-resource-with-long-error.rdf");
         // checks files in root
-        ImportServerFilesSteps.getResource(7).should('contain', "bnodes.ttl");
-        ImportServerFilesSteps.getResource(8).should('contain', "test_turtlestar.ttls");
-        ImportServerFilesSteps.getResource(9).should('contain', "0007-import-file.jsonld");
+        ImportServerFilesSteps.getResourceTitleRow(7).should('contain', "bnodes.ttl");
+        ImportServerFilesSteps.getResourceTitleRow(8).should('contain', "test_turtlestar.ttls");
+        ImportServerFilesSteps.getResourceTitleRow(9).should('contain', "0007-import-file.jsonld");
 
         // When I change the order by size.
         ImportServerFilesSteps.orderBySize();
 
         // Then I expect the directories to be sorted in descending order,
-        ImportServerFilesSteps.getResource(0).should('contain', "more-files-with-error");
-        ImportServerFilesSteps.getResource(4).should('contain', "more-files");
+        ImportServerFilesSteps.getResourceTitleRow(0).should('contain', "more-files-with-error");
+        ImportServerFilesSteps.getResourceTitleRow(4).should('contain', "more-files");
         // checks first folder files
-        ImportServerFilesSteps.getResource(1).should('contain', "import-resource-with-long-error.rdf");
-        ImportServerFilesSteps.getResource(2).should('contain', "import-resource-with-incorrect-data.rdf");
-        ImportServerFilesSteps.getResource(3).should('contain', "import-resource-with-correct-data.jsonld");
+        ImportServerFilesSteps.getResourceTitleRow(1).should('contain', "import-resource-with-long-error.rdf");
+        ImportServerFilesSteps.getResourceTitleRow(2).should('contain', "import-resource-with-incorrect-data.rdf");
+        ImportServerFilesSteps.getResourceTitleRow(3).should('contain', "import-resource-with-correct-data.jsonld");
         // checks second folder files
-        ImportServerFilesSteps.getResource(5).should('contain', "rdfxml.rdf");
-        ImportServerFilesSteps.getResource(6).should('contain', "jsonld-file.jsonld");
+        ImportServerFilesSteps.getResourceTitleRow(5).should('contain', "rdfxml.rdf");
+        ImportServerFilesSteps.getResourceTitleRow(6).should('contain', "jsonld-file.jsonld");
         // checks files in root
-        ImportServerFilesSteps.getResource(17).should('contain', "0007-import-file.jsonld");
-        ImportServerFilesSteps.getResource(18).should('contain', "test_turtlestar.ttls");
-        ImportServerFilesSteps.getResource(19).should('contain', "bnodes.ttl");
+        ImportServerFilesSteps.getResourceTitleRow(17).should('contain', "0007-import-file.jsonld");
+        ImportServerFilesSteps.getResourceTitleRow(18).should('contain', "test_turtlestar.ttls");
+        ImportServerFilesSteps.getResourceTitleRow(19).should('contain', "bnodes.ttl");
     });
 
     it('should allow importing jsonld with empty "JSON-LD Context"', () => {

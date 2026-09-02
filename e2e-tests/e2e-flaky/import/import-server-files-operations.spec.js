@@ -31,7 +31,7 @@ describe('Import server files - Operations', () => {
         ImportServerFilesSteps.importResourceByName(FILE_FOR_IMPORT);
         ImportSettingsDialogSteps.import();
         // Then I should see the file imported successfully
-        ImportServerFilesSteps.checkImportedResource(0, FILE_FOR_IMPORT);
+        ImportServerFilesSteps.checkImportedResourceByIndex(0, FILE_FOR_IMPORT);
         // TODO: this and all similar check in the tests below are a checking for the default import settings which we probably should not verify here.
         // ImportServerFilesSteps.verifyImportStatusDetails(FILE_FOR_IMPORT, '"preserveBNodeIds": false,');
     });
@@ -42,7 +42,7 @@ describe('Import server files - Operations', () => {
         ImportServerFilesSteps.importResourceByName(FILE_FROM_DIRECTORY_FOR_IMPORT);
         ImportSettingsDialogSteps.import();
         // Then I should see the file imported successfully
-        ImportServerFilesSteps.checkImportedResource(0, FILE_FROM_DIRECTORY_FOR_IMPORT);
+        ImportServerFilesSteps.checkImportedResourceByIndex(0, FILE_FROM_DIRECTORY_FOR_IMPORT);
     });
 
     it('Should import Server files successfully with changing settings', () => {
@@ -57,7 +57,7 @@ describe('Import server files - Operations', () => {
         ImportSettingsDialogSteps.enablePreserveBNodes();
         ImportSettingsDialogSteps.import();
         // Then I should see the file imported successfully
-        ImportServerFilesSteps.checkImportedResource(0, FILE_FOR_IMPORT);
+        ImportServerFilesSteps.checkImportedResourceByIndex(0, FILE_FOR_IMPORT);
         // ImportSteps.verifyImportStatusDetails(FILE_FOR_IMPORT, [CONTEXT, BASE_URI, '"preserveBNodeIds": true,']);
     });
 
@@ -75,7 +75,7 @@ describe('Import server files - Operations', () => {
         ImportSettingsDialogSteps.enablePreserveBNodes();
         ImportSettingsDialogSteps.import();
         // Then I should see the file imported successfully
-        ImportServerFilesSteps.checkImportedResource(0, JSONLD_FILE_FOR_IMPORT);
+        ImportServerFilesSteps.checkImportedResourceByIndex(0, JSONLD_FILE_FOR_IMPORT);
         // ImportSteps.verifyImportStatusDetails(JSONLD_FILE_FOR_IMPORT, [CONTEXT, BASE_URI, '"preserveBNodeIds": true,', JSONLD_CONTEXT]);
     });
 
@@ -92,7 +92,7 @@ describe('Import server files - Operations', () => {
         ImportSettingsDialogSteps.enablePreserveBNodes();
         ImportSettingsDialogSteps.import();
         // Then I should see the file imported successfully
-        ImportServerFilesSteps.checkImportedResource(0, JSONLD_FILE_FOR_IMPORT);
+        ImportServerFilesSteps.checkImportedResourceByIndex(0, JSONLD_FILE_FOR_IMPORT);
         // ImportSteps.verifyImportStatusDetails(JSONLD_FILE_FOR_IMPORT, [CONTEXT, BASE_URI, '"preserveBNodeIds": true,']);
     });
 
@@ -101,7 +101,7 @@ describe('Import server files - Operations', () => {
         // And I have imported a file
         ImportServerFilesSteps.importResourceByName(FILE_FOR_IMPORT);
         ImportSettingsDialogSteps.import();
-        ImportServerFilesSteps.checkImportedResource(0, FILE_FOR_IMPORT);
+        ImportServerFilesSteps.checkImportedResourceByIndex(0, FILE_FOR_IMPORT);
         // When I reset the status of the imported file
         ImportServerFilesSteps.resetResourceStatusByName(FILE_FOR_IMPORT);
         // Then Import status of the file should not be visible
@@ -113,7 +113,7 @@ describe('Import server files - Operations', () => {
         // And I have imported a file
         ImportServerFilesSteps.importResourceByName(FILE_FROM_DIRECTORY_FOR_IMPORT);
         ImportSettingsDialogSteps.import();
-        ImportServerFilesSteps.checkImportedResource(0, FILE_FROM_DIRECTORY_FOR_IMPORT);
+        ImportServerFilesSteps.checkImportedResourceByIndex(0, FILE_FROM_DIRECTORY_FOR_IMPORT);
         // When I reset the status of the imported file
         ImportServerFilesSteps.resetResourceStatusByName(FILE_FROM_DIRECTORY_FOR_IMPORT);
         // Then Import status of the file should not be visible
@@ -126,7 +126,7 @@ describe('Import server files - Operations', () => {
         // When I select to import a ttl file without changing settings
         ImportSettingsDialogSteps.import();
         // Then I should see the file imported successfully
-        ImportServerFilesSteps.checkImportedResource(0, TTLS_FOR_IMPORT);
+        ImportServerFilesSteps.checkImportedResourceByIndex(0, TTLS_FOR_IMPORT);
         // ImportSteps.verifyImportStatusDetails(TTLS_FOR_IMPORT, '"preserveBNodeIds": false,');
     });
 
@@ -136,7 +136,7 @@ describe('Import server files - Operations', () => {
         // When I select to import a trigstar file without changing settings
         ImportSettingsDialogSteps.import();
         // Then I should see the file imported successfully
-        ImportServerFilesSteps.checkImportedResource(0, TRIGS_FOR_IMPORT);
+        ImportServerFilesSteps.checkImportedResourceByIndex(0, TRIGS_FOR_IMPORT);
         // ImportSteps.verifyImportStatusDetails(TRIGS_FOR_IMPORT, '"preserveBNodeIds": false,');
     });
 });

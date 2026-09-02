@@ -58,6 +58,6 @@ describe('Import user data: URL import', () => {
                 return xhr.response.body[0]?.status === 'ERROR'
             }), {timeout: 10000, interval: 1000}
         )
-        ImportUserDataSteps.checkImportedResource(0, IMPORT_JSONLD_URL, 'https://example.com/0007-context.jsonld');
+        ImportUserDataSteps.checkImportedResourceByIndex(0, IMPORT_JSONLD_URL, 'https://example.com/0007-context.jsonld');
     });
 });
