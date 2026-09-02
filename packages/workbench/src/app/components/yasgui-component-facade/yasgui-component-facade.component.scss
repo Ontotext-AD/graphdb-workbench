@@ -130,11 +130,11 @@ app-yasgui-component-facade .yasqe .yasqe_buttons {
   background-color: var(--gw-editor-content-background);
 }
 
-app-yasgui-component-facade .tabPanel .yasqe  .yasqe-footer-buttons {
+app-yasgui-component-facade .tabPanel .yasqe .yasqe-footer-buttons {
   padding-top: 15px;
 }
 
-app-yasgui-component-facade .tabPanel .yasqe  .yasqe-footer-buttons .abort-button {
+app-yasgui-component-facade .tabPanel .yasqe .yasqe-footer-buttons .abort-button {
   font-family: var(--main-font);
   font-weight: 400;
   height: 38px;
@@ -174,7 +174,7 @@ app-yasgui-component-facade .yasqe_querySplitWrapper .yasqe_querySplitToggle:hov
   background-color: var(--gw-button-primary-hover-background) !important;
 }
 
-app-yasgui-component-facade  .ontotext-run-dropdown-menu {
+app-yasgui-component-facade .ontotext-run-dropdown-menu {
   background-color: var(--gw-tieredmenu-background) !important;
   border: 1px solid var(--gw-tieredmenu-border-color);
   box-shadow: var(--gw-tieredmenu-shadow-1-offset-x) var(--gw-tieredmenu-shadow-1-offset-y) var(--gw-tieredmenu-shadow-1-blur) var(--gw-tieredmenu-shadow-1-spread) var(--gw-tieredmenu-shadow-1-color);
@@ -365,6 +365,7 @@ app-yasgui-component-facade .saved-queries-container {
   -webkit-box-shadow: var(--gw-dialog-shadow-1-offset-x) var(--gw-dialog-shadow-1-offset-y) var(--gw-dialog-shadow-1-blur) var(--gw-dialog-shadow-1-spread) var(--gw-dialog-shadow-1-color);
   box-shadow: var(--gw-dialog-shadow-1-offset-x) var(--gw-dialog-shadow-1-offset-y) var(--gw-dialog-shadow-1-blur) var(--gw-dialog-shadow-1-spread) var(--gw-dialog-shadow-1-color);
 }
+
 app-yasgui-component-facade .saved-queries-container .arrow:before {
   border-left-color: var(--gw-dialog-border-color);
 }
@@ -393,7 +394,7 @@ app-yasgui-component-facade .saved-queries-container .saved-query-actions .saved
   border-bottom-color: var(--gw-dialog-border-color) !important;
 }
 
-.dialog  .dialog-header .close-button {
+.dialog .dialog-header .close-button {
   color: var(--gw-dialog-color) !important;
   background-color: var(--gw-dialog-background) !important;
 }
@@ -722,11 +723,11 @@ app-yasgui-component-facade .yasr .dataTables_wrapper .dataTable tbody tr:hover 
 }
 
 app-yasgui-component-facade .yasr .dataTables_wrapper .dataTable tbody tr.odd,
-app-yasgui-component-facade .yasr .dataTables_wrapper .dataTable.withRowNumber tr.odd>td:first-child {
+app-yasgui-component-facade .yasr .dataTables_wrapper .dataTable.withRowNumber tr.odd > td:first-child {
   background-color: var(--gw-datatable-row-striped-background) !important;
 }
 
-app-yasgui-component-facade .yasr .dataTables_wrapper .dataTable.withRowNumber tr.even>td:first-child {
+app-yasgui-component-facade .yasr .dataTables_wrapper .dataTable.withRowNumber tr.even > td:first-child {
   background-color: var(--gw-datatable-row-background) !important;
 }
 
@@ -748,11 +749,11 @@ app-yasgui-component-facade .yasr .dataTable .nonUri sup {
 
 app-yasgui-component-facade .yasr #explainPlanQuery {
   font-family: var(--mono-font);
-  background-color:  var(--gw-panel-background);
+  background-color: var(--gw-panel-background);
 }
 
 app-yasgui-component-facade .yasr .explain-plan-container {
-  background-color:  var(--gw-panel-background);
+  background-color: var(--gw-panel-background);
   border: 1px solid var(--gw-dialog-border-color);
 
   .cm-comment {
@@ -897,7 +898,7 @@ app-yasgui-component-facade .yasr .pivot-table-plugin .pvtFilterBox .pvtSearch {
 app-yasgui-component-facade .yasr .explain-plan-copy-btn {
   font-weight: 400;
   color: var(--gw-button-secondary-color);
-  background-color: var(--gw-shortcuts-secondary-button-background);
+  background-color: var(--gw-shortcuts-editor-button-background);
   border-color: var(--gw-button-secondary-border-color);
   margin-right: 1px;
   margin-top: 1px;
@@ -928,7 +929,7 @@ app-yasgui-component-facade .hidden {
 
   app-yasgui-component-facade .yasqe_queryButton,
   app-yasgui-component-facade .ontotext-dropdown-button,
-  app-yasgui-component-facade .tabPanel .yasqe  .yasqe-footer-buttons .abort-button {
+  app-yasgui-component-facade .tabPanel .yasqe .yasqe-footer-buttons .abort-button {
     height: 33px !important;
   }
 }

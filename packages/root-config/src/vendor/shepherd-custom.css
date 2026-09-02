@@ -147,9 +147,9 @@
     margin-top: -52px;
 }
 
-.guide-copy-to-input-query-button,
-.guide-copy-to-editor-query-button {
+button.guide-copy-to-input-query-button,
+button.guide-copy-to-editor-query-button {
     color: var(--gw-button-secondary-color);
-    background-color: var(--gw-shortcuts-secondary-button-background);
+    background-color: var(--gw-shortcuts-editor-button-background);
     border-color: var(--gw-button-secondary-border-color);
 }
