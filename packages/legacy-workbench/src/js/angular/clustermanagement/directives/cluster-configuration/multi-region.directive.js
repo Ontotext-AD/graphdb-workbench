@@ -14,7 +14,7 @@ const modules = [
 ];
 
 const TagLengthConstraints = {
-    minLen: '3',
+    minLen: '1',
     maxLen: '255',
 };
 
