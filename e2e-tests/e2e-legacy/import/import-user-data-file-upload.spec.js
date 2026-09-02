@@ -46,7 +46,7 @@ describe('Import user data: File upload', () => {
         ImportSettingsDialogSteps.getDialog().should('not.exist');
         // Then I should see the uploaded file
         ImportUserDataSteps.getResources().should('have.length', 1);
-        ImportUserDataSteps.checkImportedResource(0, 'bnodes.ttl');
+        ImportUserDataSteps.checkImportedResourceByIndex(0, 'bnodes.ttl');
         // When I try to import the same file again
         ImportUserDataSteps.importFile(0);
         // Then I should not see the upload only option
@@ -56,7 +56,7 @@ describe('Import user data: File upload', () => {
         ImportSettingsDialogSteps.import();
         ImportSettingsDialogSteps.getDialog().should('not.exist');
         ImportUserDataSteps.getResources().should('have.length', 1);
-        ImportUserDataSteps.checkImportedResource(0, 'bnodes.ttl');
+        ImportUserDataSteps.checkImportedResourceByIndex(0, 'bnodes.ttl');
     });
 
     it('Should be able to cancel the file upload', () => {
@@ -106,15 +106,15 @@ describe('Import user data: File upload', () => {
         ImportSettingsDialogSteps.getDialog().should('be.visible');
         ImportSettingsDialogSteps.import();
         // Then I should see the uploaded file
-        ImportUserDataSteps.checkImportedResource(0, 'bnodes.ttl');
+        ImportUserDataSteps.checkImportedResourceByIndex(0, 'bnodes.ttl');
         // When I upload another file
         const file2 = ImportUserDataSteps.createFile(testFiles[1], jsonld);
         ImportUserDataSteps.selectFile(file2);
         ImportSettingsDialogSteps.getDialog().should('be.visible');
         ImportSettingsDialogSteps.import();
         // Then I should see the uploaded file - it becomes first in the list
-        ImportUserDataSteps.checkImportedResource(0, 'jsonld.jsonld');
-        ImportUserDataSteps.checkImportedResource(1, 'bnodes.ttl');
+        ImportUserDataSteps.checkImportedResourceByIndex(0, 'jsonld.jsonld');
+        ImportUserDataSteps.checkImportedResourceByIndex(1, 'bnodes.ttl');
         // When I override the first file
         const file3 = ImportUserDataSteps.createFile(testFiles[0], bnodes);
         ImportUserDataSteps.selectFile(file3);
@@ -123,16 +123,16 @@ describe('Import user data: File upload', () => {
         ImportSettingsDialogSteps.import();
         // Then I should see the uploaded file - it becomes first in the list
         // TODO: timestamps currently seems to not be changed on reimport
-        ImportUserDataSteps.checkImportedResource(0, 'jsonld.jsonld');
-        ImportUserDataSteps.checkImportedResource(1, 'bnodes.ttl');
+        ImportUserDataSteps.checkImportedResourceByIndex(0, 'jsonld.jsonld');
+        ImportUserDataSteps.checkImportedResourceByIndex(1, 'bnodes.ttl');
         // When I override the second file
         ImportUserDataSteps.selectFile(file2);
         FileOverwriteDialogSteps.overwrite();
         ImportSettingsDialogSteps.getDialog().should('be.visible');
         ImportSettingsDialogSteps.import();
         // Then I should see the uploaded file - it becomes first in the list
-        ImportUserDataSteps.checkImportedResource(0, 'jsonld.jsonld');
-        ImportUserDataSteps.checkImportedResource(1, 'bnodes.ttl');
+        ImportUserDataSteps.checkImportedResourceByIndex(0, 'jsonld.jsonld');
+        ImportUserDataSteps.checkImportedResourceByIndex(1, 'bnodes.ttl');
     });
 
     it('should be able to only upload a single file without importing it', () => {
@@ -165,8 +165,8 @@ describe('Import user data: File upload', () => {
         ImportSettingsDialogSteps.import();
         // Then I should see the uploaded file
         ImportUserDataSteps.getResources().should('have.length', 2);
-        ImportUserDataSteps.checkImportedResource(0, 'jsonld.jsonld');
-        ImportUserDataSteps.checkImportedResource(1, 'bnodes.ttl');
+        ImportUserDataSteps.checkImportedResourceByIndex(0, 'jsonld.jsonld');
+        ImportUserDataSteps.checkImportedResourceByIndex(1, 'bnodes.ttl');
         // And the files should really be there
         HeaderSteps.openHomePage();
         ImportUserDataSteps.visit();
@@ -182,7 +182,7 @@ describe('Import user data: File upload', () => {
         ImportSettingsDialogSteps.getDialog().should('be.visible');
         ImportSettingsDialogSteps.import();
         ImportUserDataSteps.getResources().should('have.length', 1);
-        ImportUserDataSteps.checkImportedResource(0, 'bnodes.ttl');
+        ImportUserDataSteps.checkImportedResourceByIndex(0, 'bnodes.ttl');
         // When I upload a file with the same name
         ImportUserDataSteps.selectFile(file1);
         // Then I should see a file override confirmation dialog
@@ -193,7 +193,7 @@ describe('Import user data: File upload', () => {
         ImportSettingsDialogSteps.import();
         // Then The file should be overridden
         ImportUserDataSteps.getResources().should('have.length', 1);
-        ImportUserDataSteps.checkImportedResource(0, 'bnodes.ttl');
+        ImportUserDataSteps.checkImportedResourceByIndex(0, 'bnodes.ttl');
     });
 
     it('Should be able to upload file with same name and preserve the existing file', () => {
@@ -205,7 +205,7 @@ describe('Import user data: File upload', () => {
         ImportSettingsDialogSteps.getDialog().should('be.visible');
         ImportSettingsDialogSteps.import();
         ImportUserDataSteps.getResources().should('have.length', 1);
-        ImportUserDataSteps.checkImportedResource(0, 'bnodes.ttl');
+        ImportUserDataSteps.checkImportedResourceByIndex(0, 'bnodes.ttl');
         // When I upload a file with the same name
         ImportUserDataSteps.selectFile(file1);
         // Then I should see a file override confirmation dialog
@@ -215,8 +215,8 @@ describe('Import user data: File upload', () => {
         ImportSettingsDialogSteps.import();
         // Then The file should not be overridden but prefixed instead
         ImportUserDataSteps.getResources().should('have.length', 2);
-        ImportUserDataSteps.checkImportedResource(0, 'bnodes-0.ttl');
-        ImportUserDataSteps.checkImportedResource(1, 'bnodes.ttl');
+        ImportUserDataSteps.checkImportedResourceByIndex(0, 'bnodes-0.ttl');
+        ImportUserDataSteps.checkImportedResourceByIndex(1, 'bnodes.ttl');
         // When I upload two files, one with the same name and second new one
         const file2 = ImportUserDataSteps.createFile(testFiles[1], jsonld);
         ImportUserDataSteps.selectFile([file1, file2]);
@@ -225,10 +225,10 @@ describe('Import user data: File upload', () => {
         ImportSettingsDialogSteps.import();
         // Then The file should not be overridden but prefixed with increased index instead
         ImportUserDataSteps.getResources().should('have.length', 4);
-        ImportUserDataSteps.checkImportedResource(0, 'jsonld.jsonld');
-        ImportUserDataSteps.checkImportedResource(1, 'bnodes-1.ttl');
-        ImportUserDataSteps.checkImportedResource(2, 'bnodes-0.ttl');
-        ImportUserDataSteps.checkImportedResource(3, 'bnodes.ttl');
+        ImportUserDataSteps.checkImportedResourceByIndex(0, 'jsonld.jsonld');
+        ImportUserDataSteps.checkImportedResourceByIndex(1, 'bnodes-1.ttl');
+        ImportUserDataSteps.checkImportedResourceByIndex(2, 'bnodes-0.ttl');
+        ImportUserDataSteps.checkImportedResourceByIndex(3, 'bnodes.ttl');
     });
 
     it('should see error message when uploaded file has invalid format', () => {
@@ -242,6 +242,6 @@ describe('Import user data: File upload', () => {
         ImportSettingsDialogSteps.import();
         // Then I should see an error message
         ImportUserDataSteps.getResources().should('have.length', 1);
-        ImportUserDataSteps.checkImportedResource(0, 'invalid-format.json', 'RDF Parse Error: Invalid file format');
+        ImportUserDataSteps.checkImportedResourceByIndex(0, 'invalid-format.json', 'RDF Parse Error: Invalid file format');
     });
 });

@@ -57,7 +57,7 @@ describe('Import server files - Batch operations', () => {
         // precondition for the next step
         ImportServerFilesSteps.importResourceByName(FILE_FOR_IMPORT);
         ImportSettingsDialogSteps.import();
-        ImportServerFilesSteps.checkImportedResource(0, FILE_FOR_IMPORT);
+        ImportServerFilesSteps.checkImportedResourceByName(FILE_FOR_IMPORT);
         // When I select Imported from the menu
         ImportServerFilesSteps.selectImportedResources();
         // Then I should see only imported files selected
@@ -97,8 +97,8 @@ describe('Import server files - Batch operations', () => {
         // Then the files should be imported
         // We send only the files in the folder for import
         // ImportServerFilesSteps.checkImportedResource(0, 'more-files');
-        ImportServerFilesSteps.checkImportedResource(0, 'jsonld-file.jsonld');
-        ImportServerFilesSteps.checkImportedResource(0, 'rdfxml.rdf');
+        ImportServerFilesSteps.checkImportedResourceByName('jsonld-file.jsonld');
+        ImportServerFilesSteps.checkImportedResourceByName('rdfxml.rdf');
         ImportServerFilesSteps.deselectFileByName('more-files');
         // When I select the folder and click on the batch reset button
         ImportServerFilesSteps.selectFileByName('more-files');
@@ -116,7 +116,7 @@ describe('Import server files - Batch operations', () => {
         // Then the files should be imported
         // We send only the files in the folder for import
         // ImportServerFilesSteps.checkImportedResource(0, 'more-files');
-        ImportServerFilesSteps.checkImportedResource(0, 'jsonld-file.jsonld');
-        ImportServerFilesSteps.checkImportedResource(0, 'rdfxml.rdf');
+        ImportServerFilesSteps.checkImportedResourceByName('jsonld-file.jsonld');
+        ImportServerFilesSteps.checkImportedResourceByName('rdfxml.rdf');
     });
 });

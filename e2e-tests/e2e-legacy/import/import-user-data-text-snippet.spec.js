@@ -75,7 +75,7 @@ describe('Import user data: Text snippet', () => {
         ImportUserDataSteps.fillRDFTextSnippet(RDF_TEXT_SNIPPET_1);
         ImportUserDataSteps.clickImportTextSnippetButton();
         ImportSettingsDialogSteps.import();
-        ImportUserDataSteps.checkImportedResource(0, TEXT_SNIPPET);
+        ImportUserDataSteps.checkImportedResourceByIndex(0, TEXT_SNIPPET);
     });
 
     it('Should import RDF text snippet with invalid RDF format selected', () => {
@@ -84,7 +84,7 @@ describe('Import user data: Text snippet', () => {
         ImportUserDataSteps.selectRDFFormat(JSONLD_FORMAT);
         ImportUserDataSteps.clickImportTextSnippetButton();
         ImportSettingsDialogSteps.import();
-        ImportUserDataSteps.checkImportedResource(0, TEXT_SNIPPET, RDF_ERROR_MESSAGE);
+        ImportUserDataSteps.checkImportedResourceByIndex(0, TEXT_SNIPPET, RDF_ERROR_MESSAGE);
     });
 
     it('Should import RDF text snippet successfully with valid RDF format selected', () => {
@@ -93,7 +93,7 @@ describe('Import user data: Text snippet', () => {
         ImportUserDataSteps.selectRDFFormat(VALID_SNIPPET_RDF_FORMAT);
         ImportUserDataSteps.clickImportTextSnippetButton();
         ImportSettingsDialogSteps.import();
-        ImportUserDataSteps.checkImportedResource(0, TEXT_SNIPPET);
+        ImportUserDataSteps.checkImportedResourceByIndex(0, TEXT_SNIPPET);
     });
 
     it('Should import Turtle* text snippet successfully with valid RDF star format selected', () => {
@@ -102,7 +102,7 @@ describe('Import user data: Text snippet', () => {
         ImportUserDataSteps.selectRDFFormat(VALID_SNIPPET_TURTLESTAR_FORMAT);
         ImportUserDataSteps.clickImportTextSnippetButton();
         ImportSettingsDialogSteps.import();
-        ImportUserDataSteps.checkImportedResource(0, TEXT_SNIPPET);
+        ImportUserDataSteps.checkImportedResourceByIndex(0, TEXT_SNIPPET);
     });
 
     it('Should import TriG* text snippet successfully with valid RDF star format selected', () => {
@@ -111,7 +111,7 @@ describe('Import user data: Text snippet', () => {
         ImportUserDataSteps.selectRDFFormat(VALID_SNIPPET_TRIGSTAR_FORMAT);
         ImportUserDataSteps.clickImportTextSnippetButton();
         ImportSettingsDialogSteps.import();
-        ImportUserDataSteps.checkImportedResource(0, TEXT_SNIPPET);
+        ImportUserDataSteps.checkImportedResourceByIndex(0, TEXT_SNIPPET);
     });
 
     it('Should import RDF text snippet successfully with filled base URI and context', () => {
@@ -123,7 +123,7 @@ describe('Import user data: Text snippet', () => {
         ImportSettingsDialogSteps.selectNamedGraph();
         ImportSettingsDialogSteps.fillNamedGraph(CONTEXT);
         ImportSettingsDialogSteps.import();
-        ImportUserDataSteps.checkImportedResource(0, TEXT_SNIPPET);
+        ImportUserDataSteps.checkImportedResourceByIndex(0, TEXT_SNIPPET);
 
         // Go to Graphs overview
         cy.visit('/graphs');
@@ -211,7 +211,7 @@ describe('Import user data: Text snippet', () => {
         ImportSettingsDialogSteps.selectNamedGraph();
         ImportSettingsDialogSteps.fillNamedGraph(CONTEXT);
         ImportSettingsDialogSteps.import();
-        ImportUserDataSteps.checkImportedResource(0, TEXT_SNIPPET);
+        ImportUserDataSteps.checkImportedResourceByIndex(0, TEXT_SNIPPET);
 
         // Go to Graphs overview
         cy.visit('/graphs');
@@ -235,7 +235,7 @@ describe('Import user data: Text snippet', () => {
         ImportSettingsDialogSteps.fillContextLink('https://w3c.github.io/json-ld-api/tests/compact/0007-context.jsonld');
         // ImportUserDataSteps.importFromSettingsDialog();
         ImportSettingsDialogSteps.import();
-        ImportUserDataSteps.checkImportedResource(0, TEXT_SNIPPET);
+        ImportUserDataSteps.checkImportedResourceByIndex(0, TEXT_SNIPPET);
         const graphName = CONTEXT.slice(0, CONTEXT.lastIndexOf('.'));
         // Verify that created graph can be found
         ImportUserDataSteps.verifyGraphData(graphName, "rdf:Property", "rdf:Property", "rdf:Property", "http://example.org/graph", false);

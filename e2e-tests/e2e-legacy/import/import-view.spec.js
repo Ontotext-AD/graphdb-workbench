@@ -46,7 +46,7 @@ describe('Import view', () => {
         // Then I should see the uploaded file
         ImportUserDataSteps.getResources().should('have.length', 1);
         ImportUserDataSteps.getResourceByName('bnodes.ttl').should('be.visible');
-        ImportUserDataSteps.checkImportedResource(0, 'bnodes.ttl');
+        ImportUserDataSteps.checkImportedResourceByIndex(0, 'bnodes.ttl');
     });
 
     it('Should display/hide help message depends on resource result', () => {
@@ -108,7 +108,7 @@ describe('Import view', () => {
         ImportSettingsDialogSteps.getDialog().should('be.visible');
         ImportSettingsDialogSteps.import();
         ImportUserDataSteps.getResources().should('have.length', 1);
-        ImportUserDataSteps.checkImportedResource(0, 'bnodes.ttl');
+        ImportUserDataSteps.checkImportedResourceByIndex(0, 'bnodes.ttl');
 
         // Then I expect the help message not exist, because user because there are resource displayed
         ImportUserDataSteps.getHelpMessage().should('not.exist');

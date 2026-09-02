@@ -146,7 +146,7 @@
         </thead>
         <tbody>
         <tr ng-repeat-start="resource in displayResources track by resource.importResource.hash"
-            class="row title-row"
+            class="row title-row" data-test="resource-{{$index}}"
             ng-class="{ 'even-row-start': $even, 'odd-row-start': $odd}">
             <td class="cell cell-select">
                 <input type="checkbox" ng-model="resource.selected" ng-click="selectionChanged(resource)"
@@ -223,7 +223,7 @@
                 </div>
             </td>
         </tr>
-        <tr ng-repeat-end class="row info-row" ng-class="{ 'even-row-end': $even, 'odd-row-end': $odd}">
+        <tr ng-repeat-end class="row info-row" ng-class="{ 'even-row-end': $even, 'odd-row-end': $odd}" data-test="resource-{{$index}}">
             <td class="cell cell-select"></td>
             <td colspan="6" ng-style="{'padding-left': (filterByType !== TYPE_FILTER_OPTIONS.FILE ? resource.indent : '8px')}"
                 class="cell">

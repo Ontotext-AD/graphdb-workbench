@@ -161,8 +161,20 @@ class ImportSteps {
         return this.getSelectedResources().eq(index).closest('.title-row');
     }
 
-    static getResource(index) {
+    static getResourceTitleRow(index) {
         return this.getResources().eq(index);
+    }
+
+    static getResourceByIndex(index) {
+        return this.getResourcesTable().find(`[data-test="resource-${index}"]`);
+    }
+
+    static getResourceNameByIndex(index) {
+        return this.getResourceByIndex(index).find('.cell-title').invoke('text');
+    }
+
+    static getResourceStatusByIndex(index) {
+        return this.getResourceByIndex(index).find('.import-resource-message');
     }
 
     static getResourceByName(name) {
@@ -171,7 +183,7 @@ class ImportSteps {
     }
 
     static selectFileByIndex(index) {
-        this.getResource(index).find('.select-checkbox').click();
+        this.getResourceTitleRow(index).find('.select-checkbox').click();
     }
 
     static selectFileByName(name) {
@@ -194,8 +206,16 @@ class ImportSteps {
         return this.getResources().find('.import-resource-message');
     }
 
-    static checkImportedResource(index, resourceName, expectedStatus) {
+    static checkImportedResourceByIndex(index, resourceName, expectedStatus) {
         const status = expectedStatus || 'Imported successfully';
+
+        this.getResourceNameByIndex(index).should('contain', resourceName);
+        this.getResourceStatusByIndex(index).should('contain', status);
+    }
+
+    static checkImportedResourceByName(resourceName, expectedStatus) {
+        const status = expectedStatus || 'Imported successfully';
+
         this.getResourceByName(resourceName).should('contain', resourceName);
         this.getResourceStatus(resourceName).should('contain', status);
     }
@@ -263,11 +283,11 @@ class ImportSteps {
     }
 
     static deleteUploadedFile(index) {
-        this.getResource(index).find('.import-resource-action-remove-btn').invoke('show').trigger('click');
+        this.getResourceTitleRow(index).find('.import-resource-action-remove-btn').invoke('show').trigger('click');
     }
 
     static importFile(index) {
-        this.getResource(index).find('.import-resource-action-import-btn').invoke('show').trigger('click');
+        this.getResourceTitleRow(index).find('.import-resource-action-import-btn').invoke('show').trigger('click');
     }
 
     static importResourceByName(name) {
@@ -275,7 +295,7 @@ class ImportSteps {
     }
 
     static resetFileStatus(index) {
-        this.getResource(index).find('.import-resource-action-reset-btn').click();
+        this.getResourceTitleRow(index).find('.import-resource-action-reset-btn').click();
     }
 
     static resetResourceStatusByName(name) {
