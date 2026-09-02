@@ -8,8 +8,7 @@ describe('LDAP - CRUD, User Management and Permissions, Corner Cases', () => {
     let testRepo;
 
     beforeEach(() => {
-        cy.logInAsLDAPAdmin();
-
+        cy.loginAsLDAPAdmin();
         // cy.loginAsLDAPAdmin();
 
         // cy.setDefaultUserData();
@@ -23,14 +22,7 @@ describe('LDAP - CRUD, User Management and Permissions, Corner Cases', () => {
 
     });
 
-    afterEach(() => {
-        // Clean up repository
-        cy.logInAsLDAPAdmin().then(() => {
-            cy.deleteRepository(testRepo, true);
-            // cy.deleteUser(graphqlUser, true);
-            cy.switchOffFreeAccess(true);
-            cy.switchOffSecurity(true);
-        });
+
 
         it('Should validate initial state of page elements when LDAP is configured', () => {
 
@@ -49,7 +41,16 @@ describe('LDAP - CRUD, User Management and Permissions, Corner Cases', () => {
             LoginSteps.visitLoginPage();
             LoginSteps.loginWithUser("onto-user", "ontotext");
 
-
         });
-    });
+
+    afterEach(() => {
+        // Clean up repository
+        cy.loginAsLDAPAdmin().then(() => {
+            cy.deleteRepository(testRepo, true);
+            // cy.deleteUser(graphqlUser, true);
+            cy.switchOffFreeAccess(true);
+            cy.switchOffSecurity(true);
+        }); });
+
+
 });
