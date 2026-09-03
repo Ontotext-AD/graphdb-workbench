@@ -1,5 +1,6 @@
 import {hextob64u, KJUR} from 'jsrsasign';
 import {WindowService} from '../../../window';
+import {getOrigin} from '../../../utils';
 import {AuthFlowParams} from '../../../../models/security/authentication/openid-auth-flow-models';
 
 export type OpenIdQueryParams = {
@@ -10,6 +11,15 @@ export type OpenIdQueryParams = {
 }
 
 export class OpenIdUtils {
+  /**
+   * Returns the redirect URI used in the OpenID authentication flows.
+   *
+   * @returns {string} The redirect URI.
+   */
+  static getRedirectUri(): string {
+    return `${getOrigin()}`;
+  };
+
   /**
    * Returns the base64-urlencoded SHA-256 hash for the PKCE challenge.
    *

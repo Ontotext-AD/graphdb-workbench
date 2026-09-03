@@ -2,9 +2,10 @@ import {service} from '../../../../providers';
 import {AuthenticationService, AuthenticationStorageService, OpenidStorageService, SecurityContextService, SecurityService} from '../index';
 import {LoggerProvider} from '../../../logging/logger-provider';
 import {OpenIdService} from '../openid/openid-service';
-import {getOrigin, navigate} from '../../../utils';
+import {navigate} from '../../../utils';
 import {AuthStrategy, AuthStrategyType, OpenIdAuthFlowType} from '../../../../models/security/authentication';
 import {OpenidTokenUtils} from '../openid/openid-token-utils';
+import {OpenIdUtils} from '../openid/openid-utils';
 import {AuthenticatedUser, OpenidSecurityConfig} from '../../../../models/security';
 import {GeneratorUtils} from '../../../utils/generator-utils';
 import {MissingOpenidConfiguration} from '../errors/openid/missing-openid-configuration';
@@ -93,7 +94,7 @@ export class OpenidAuthStrategy implements AuthStrategy {
   login(): Promise<AuthenticatedUser> {
     this.validateConfiguration();
 
-    const returnToUrl = this.getReturnUrl();
+    const returnToUrl = OpenIdUtils.getRedirectUri();
     const state = GeneratorUtils.generateRandomString(28);
     const authFlow = this.openIdSecurityConfig!.authFlow as OpenIdAuthFlowType;
 
@@ -203,16 +204,6 @@ export class OpenidAuthStrategy implements AuthStrategy {
     this.logger.debug('OpenID: not logged or login error');
     this.logger.error(ERRORS.INIT_FAILED, error);
     this.openIdService.clearAuthentication();
-  }
-
-  /**
-   * Gets the return URL for authentication redirect.
-   * @private
-   * @returns The return URL
-   */
-  private getReturnUrl(): string {
-    // Must return to root to finish the workflow
-    return `${getOrigin()}`;
   }
 
   /**

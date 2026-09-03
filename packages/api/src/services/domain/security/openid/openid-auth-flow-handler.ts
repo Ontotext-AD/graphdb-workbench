@@ -1,7 +1,6 @@
 import {service} from '../../../../providers';
 import {OpenidSecurityConfig} from '../../../../models/security';
 import {LoggerProvider} from '../../../logging/logger-provider';
-import {getOrigin} from '../../../utils';
 import {OpenidStorageService} from './openid-storage.service';
 import {OpenidTokenUtils} from './openid-token-utils';
 import {OpenIdUtils} from './openid-utils';
@@ -38,7 +37,7 @@ export class OpenIdAuthFlowHandler {
       throw new MissingAuthorizationCode();
     }
 
-    const redirectUri = `${getOrigin()}`;
+    const redirectUri = OpenIdUtils.getRedirectUri();
 
     if (config.authFlow === OpenIdAuthFlowType.CODE) {
       await this.handlePkceFlow(params, redirectUri, exchangeTokensCallback);

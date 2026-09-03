@@ -9,6 +9,22 @@ afterEach(() => {
 });
 
 describe('OpenIdUtils', () => {
+  describe('getRedirectUri', () => {
+    it('should return the application origin', () => {
+      jest.spyOn(WindowService, 'getLocationOrigin').mockReturnValue('http://localhost:9000');
+      jest.spyOn(WindowService, 'getBaseHref').mockReturnValue('/');
+
+      expect(OpenIdUtils.getRedirectUri()).toBe('http://localhost:9000/');
+    });
+
+    it('should include the context path when the application is deployed under one', () => {
+      jest.spyOn(WindowService, 'getLocationOrigin').mockReturnValue('http://localhost:9000');
+      jest.spyOn(WindowService, 'getBaseHref').mockReturnValue('/graphdb/');
+
+      expect(OpenIdUtils.getRedirectUri()).toBe('http://localhost:9000/graphdb/');
+    });
+  });
+
   describe('pkceChallengeFromVerifier', () => {
     it('should return the correct base64-encoded SHA-256 hash', () => {
       const verifier = 'test_verifier';
