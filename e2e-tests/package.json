@@ -1,6 +1,6 @@
 {
   "name": "graphdb-workbench-tests",
-  "version": "4.0.0-revert-explain-query-tests",
+  "version": "4.0.0-revert-explain-query-tests-TR2",
   "description": "Cypress tests for GraphDB workbench",
   "type": "module",
   "scripts": {
