@@ -8,6 +8,7 @@ const modules = [
 ];
 
 const logger = LoggerProvider.logger;
+const SENSITIVE_FIELD_MASK = 'MASKED_SENSITIVE_FIELD';
 
 angular
     .module('graphdb.framework.externalsync.controllers', modules)
@@ -143,6 +144,8 @@ function createConnectorQuery(name, prefix, fields, options, reportError) {
                 fcopy[options[i].__name] = fromArrayMap(fcopy[options[i].__name], $translate);
             } else if (options[i].__type === 'JsonString') {
                 fcopy[options[i].__name] = angular.fromJson(fcopy[options[i].__name]);
+            } else if (options[i].__sensitive === true && fcopy[options[i].__name]) {
+                fcopy[options[i].__name] = SENSITIVE_FIELD_MASK;
             }
         } catch (e) {
             reportError(options[i].__label, e.message);
@@ -159,6 +162,7 @@ function createConnectorQuery(name, prefix, fields, options, reportError) {
     finalString += 'INSERT DATA {\n';
     finalString += "\tinst:" + name + " :createConnector '''\n";
     finalString += angular.toJson(fcopy, 2);
+    finalString = finalString.replaceAll(`"${SENSITIVE_FIELD_MASK}"`, SENSITIVE_FIELD_MASK);
     finalString += "\n''' .\n}\n";
     finalString = finalString.replace(/\\/g, '\\\\\\');
     return finalString;
