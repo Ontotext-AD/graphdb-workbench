@@ -122,9 +122,8 @@ describe('Import user data: File upload', () => {
         ImportSettingsDialogSteps.getDialog().should('be.visible');
         ImportSettingsDialogSteps.import();
         // Then I should see the uploaded file - it becomes first in the list
-        // TODO: timestamps currently seems to not be changed on reimport
-        ImportUserDataSteps.checkImportedResourceByIndex(0, 'jsonld.jsonld');
-        ImportUserDataSteps.checkImportedResourceByIndex(1, 'bnodes.ttl');
+        ImportUserDataSteps.checkImportedResourceByIndex(0, 'bnodes.ttl');
+        ImportUserDataSteps.checkImportedResourceByIndex(1, 'jsonld.jsonld');
         // When I override the second file
         ImportUserDataSteps.selectFile(file2);
         FileOverwriteDialogSteps.overwrite();
