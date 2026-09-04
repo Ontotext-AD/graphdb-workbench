@@ -77,6 +77,13 @@ export class ClusterStubs extends Stubs {
         }).as('cluster-config');
     }
 
+    static stubClusterConfigWithTag() {
+        cy.intercept('/rest/cluster/config', {
+            fixture: '/cluster/cluster-config-with-tag.json',
+            statusCode: 200
+        }).as('cluster-config-with-tag');
+    }
+
     static stubDeleteCluster() {
         cy.intercept('/rest/cluster/config?force=false', {
             fixture: '/cluster/delete-cluster.json',

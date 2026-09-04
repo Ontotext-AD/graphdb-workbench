@@ -195,11 +195,11 @@ export class Node {
 export class TopologyStatus {
     /**
      * @param {string} state - The current state of the topology.
-     * @param {{string, number}[]} [primaryTags=[]] - A map of primary tags and their associated values (optional).
+     * @param {Object<string, number>} [primaryTags={}] - Map of primary cluster tags to their values.
      * @param {number} [primaryIndex] - The index of the primary cluster.
      * @param {string} [primaryLeader] - The leader's rpc address of the primary cluster.
      */
-    constructor(state, primaryTags = new Map(), primaryIndex, primaryLeader) {
+    constructor(state, primaryTags = {}, primaryIndex, primaryLeader) {
         this._state = state;
         this._primaryTags = primaryTags;
         this._primaryIndex = primaryIndex;
@@ -210,6 +210,7 @@ export class TopologyStatus {
         return this._state;
     }
 
+    /** @return {Object<string, number>} Map of primary cluster tags to their values. */
     get primaryTags() {
         return this._primaryTags;
     }
@@ -228,9 +229,8 @@ export class TopologyStatus {
      * @param {Object} json - The JSON data.
      * @return {TopologyStatus} The mapped TopologyStatus instance.
      */
-    static fromJSON({state, primaryTags = {}, primaryIndex, primaryLeader}) {
-        const primaryTagsMap = Object.entries(primaryTags);
-        return new TopologyStatus(state, primaryTagsMap, primaryIndex, primaryLeader);
+    static fromJSON({state, primaryTags, primaryIndex, primaryLeader}) {
+        return new TopologyStatus(state, primaryTags, primaryIndex, primaryLeader);
     }
 }
 
@@ -496,7 +496,7 @@ export class ClusterViewModel {
         const removeNodes = Array.from(this._deleteFromCluster.values()).map((node) => node.endpoint);
         const updateActions = {
             addNodes,
-            removeNodes
+            removeNodes,
         };
 
         const updatedClusterConfig = this.updateClusterConfiguration(addNodes);
@@ -722,8 +722,9 @@ export class ClusterConfiguration {
                     transactionLogMaximumSizeGB = 50,
                     batchUpdateInterval = 5000,
                     nodes = [],
+                    primaryTags,
                     secondaryTag,
-                    primaryNodes
+                    primaryNodes,
                 } = {}) {
         this._electionMinTimeout = electionMinTimeout;
         this._electionRangeTimeout = electionRangeTimeout;
@@ -733,6 +734,7 @@ export class ClusterConfiguration {
         this._transactionLogMaximumSizeGB = transactionLogMaximumSizeGB;
         this._batchUpdateInterval = batchUpdateInterval;
         this._nodes = nodes;
+        this._primaryTags = primaryTags;
         this._secondaryTag = secondaryTag;
         this._primaryNodes = primaryNodes;
     }
@@ -821,6 +823,14 @@ export class ClusterConfiguration {
         this._primaryNodes = value;
     }
 
+    get primaryTags() {
+        return this._primaryTags;
+    }
+
+    set primaryTags(value) {
+        this._primaryTags = value;
+    }
+
     toJSON() {
         const json = {
             electionMinTimeout: this._electionMinTimeout,
@@ -830,10 +840,17 @@ export class ClusterConfiguration {
             verificationTimeout: this._verificationTimeout,
             transactionLogMaximumSizeGB: this._transactionLogMaximumSizeGB,
             batchUpdateInterval: this._batchUpdateInterval,
-            nodes: this._nodes
+            nodes: this._nodes,
         };
-        if (this._secondaryTag !== undefined) json.secondaryTag = this._secondaryTag;
-        if (this._primaryNodes !== undefined) json.primaryNodes = this._primaryNodes;
+        if (this._secondaryTag !== undefined) {
+            json.secondaryTag = this._secondaryTag;
+        }
+        if (this._primaryNodes !== undefined) {
+            json.primaryNodes = this._primaryNodes;
+        }
+        if (this._primaryTags !== undefined) {
+            json.primaryTags = this._primaryTags;
+        }
         return json;
     }
 }
