@@ -225,25 +225,6 @@ export class QueryStubs {
     static interceptSavedQueryCreation() {
         cy.intercept('POST', '/rest/sparql/saved-queries').as('saveQuery');
     }
-
-    /**
-     * Aliases the requests towards the repository endpoint, so that an explain plan query can be
-     * told apart from a regular query and from the count query which yasgui sends for the
-     * pagination. They all go to the same endpoint and can only be distinguished by their body.
-     * @param {string} repositoryId - the repository against which the queries are executed.
-     */
-    static interceptQueries(repositoryId) {
-        cy.intercept('POST', `/repositories/${repositoryId}`, (req) => {
-            const body = typeof req.body === 'string' ? req.body : '';
-            if (body.includes('count=1')) {
-                req.alias = 'countQuery';
-            } else if (body.includes('explain=true')) {
-                req.alias = 'explainQuery';
-            } else {
-                req.alias = 'plainQuery';
-            }
-        });
-    }
 }
 
 export class QueryStubDescription {
