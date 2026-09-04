@@ -26,7 +26,8 @@ import {
   MainMenuItem,
   MainMenuExtensionPoint,
   UserPreferencesService,
-  UserPreferencesContextService
+  UserPreferencesContextService,
+  navigateToLoginPage
 } from '@ontotext/workbench-api';
 import {TranslationService} from '../../services/translation.service';
 
@@ -234,7 +235,7 @@ export class OntoLayout {
       if (authenticated) {
         navigate(this.navigationContextService.getPreviousRoute() ?? './');
       } else {
-        navigate('login');
+        navigateToLoginPage();
       }
       WindowService.getWindow().location.reload();
     }
@@ -270,7 +271,7 @@ export class OntoLayout {
       this.eventService.subscribe(EventName.LOGOUT, () => {
         this.setNavbarItemVisibility();
         this.updateVisibility();
-        navigate('login');
+        navigateToLoginPage();
       })
     );
   }

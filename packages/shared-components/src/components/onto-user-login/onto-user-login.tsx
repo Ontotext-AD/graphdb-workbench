@@ -1,5 +1,5 @@
 import {Component, h} from '@stencil/core';
-import {getCurrentRoute, navigate} from '@ontotext/workbench-api';
+import {navigateToLoginPage} from '@ontotext/workbench-api';
 
 @Component({
   tag: 'onto-user-login',
@@ -11,8 +11,7 @@ export class OntoUserLogin {
   private navigateToLogin() {
     return (event: PointerEvent) => {
       event.preventDefault();
-      const returnUrl = encodeURIComponent(getCurrentRoute());
-      navigate(`login?r=${encodeURIComponent(returnUrl)}`);
+      navigateToLoginPage();
     };
   }
 
