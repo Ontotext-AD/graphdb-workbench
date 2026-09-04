@@ -10,9 +10,8 @@ import {
   SecurityService,
   service,
   WindowService,
-  UrlPathParams,
   SecurityConfig,
-  getLocationPathWithQueryParams,
+  navigateToLoginPage,
 } from '@ontotext/workbench-api';
 import {LoggerProvider} from '../../services/logger-provider';
 
@@ -75,7 +74,8 @@ const resolveNavigation = (): void => {
     // On login page but already logged in, navigate to return url or home page
     const params = new URLSearchParams(WindowService.getLocationQueryParams());
     const returnUrlParam = params.get('r');
-    const returnUrl = returnUrlParam ? decodeURIComponent(returnUrlParam) : './';
+    // `URLSearchParams.get` already decodes the value, so no further decoding is needed here.
+    const returnUrl = returnUrlParam || './';
 
     navigate(returnUrl);
     eventService.emit(new Login());
@@ -86,8 +86,7 @@ const resolveNavigation = (): void => {
     eventService.emit(new Login());
   } else if (!authStrategy.isAuthenticated()) {
     // Not on login page and not authenticated, navigate to login page with return url
-    const returnUrl = encodeURIComponent(getLocationPathWithQueryParams());
-    navigate(`login?${UrlPathParams.RETURN_URL}=${returnUrl}`);
+    navigateToLoginPage();
   }
 };
 

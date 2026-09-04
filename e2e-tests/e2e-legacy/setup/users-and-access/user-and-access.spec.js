@@ -280,7 +280,7 @@ describe('User and Access', () => {
                 LoginSteps.loginWithUser('admin', DEFAULT_ADMIN_PASSWORD);
                 UserAndAccessSteps.getUsersTable().should('be.visible');
 
-                cy.visit('/login?r=%252Fsparql');
+                cy.visit('/login?r=%2Fsparql');
                 cy.reload();
                 UserAndAccessSteps.getUrl().should('include', '/sparql');
             });

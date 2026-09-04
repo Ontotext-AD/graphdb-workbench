@@ -9,14 +9,6 @@ import {WindowService} from '../../../window';
 import {AuthStrategy, AuthStrategyType} from '../../../../models/security/authentication';
 import {AuthStrategyResolver} from '../auth-strategy-resolver';
 import {SecurityConfigTestUtil} from '../../../utils/test/security-config-test-util';
-import {NavigationContextService} from '../../../navigation';
-import {getPathName, isLoginPage} from '../../../utils';
-
-jest.mock('@api/services/utils/routing-utils', () => ({
-  ...(jest.requireActual('@api/services/utils/routing-utils')),
-  getPathName: jest.fn(),
-  isLoginPage: jest.fn(() => false)
-}));
 
 class TestAuthStrategy implements AuthStrategy {
   type = AuthStrategyType.NO_SECURITY;
@@ -110,22 +102,6 @@ describe('AuthenticationService', () => {
       expect(emitSpy).toHaveBeenCalledTimes(1);
       expect(emitSpy).toHaveBeenCalledWith(expect.any(Logout));
       expect(testAuthStrategySpy).toHaveBeenCalled();
-    });
-
-    test('should store returnUrl on logout if not on login page', async () => {
-      const navigationContextService = service(NavigationContextService);
-      jest.spyOn(navigationContextService, 'updateReturnUrl');
-      (getPathName as jest.Mock).mockReturnValue('/sparql');
-      await authService.logout();
-      expect(navigationContextService.updateReturnUrl).toHaveBeenCalledWith('/sparql');
-    });
-
-    test('should not store returnUrl on logout if on login page', async () => {
-      const navigationContextService = service(NavigationContextService);
-      jest.spyOn(navigationContextService, 'updateReturnUrl');
-      (isLoginPage as jest.Mock).mockReturnValue(true);
-      await authService.logout();
-      expect(navigationContextService.updateReturnUrl).not.toHaveBeenCalled();
     });
   });
 

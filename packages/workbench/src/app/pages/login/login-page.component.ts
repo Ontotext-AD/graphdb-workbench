@@ -5,7 +5,6 @@ import {TranslocoPipe, TranslocoService} from '@jsverse/transloco';
 import {
   AuthenticationService,
   ConfigurationContextService,
-  NavigationContextService,
   OntoToastrService,
   OpenidStorageService,
   RuntimeConfigurationContextService,
@@ -35,7 +34,6 @@ export class LoginPageComponent implements OnInit, OnDestroy {
   private readonly securityService = service(SecurityService);
   private readonly authenticationService = service(AuthenticationService);
   private readonly openidStorageService = service(OpenidStorageService);
-  private readonly navigationContextService = service(NavigationContextService);
   private readonly configurationContextService = service(ConfigurationContextService);
   private readonly runtimeConfigurationContextService = service(RuntimeConfigurationContextService);
 
@@ -55,7 +53,7 @@ export class LoginPageComponent implements OnInit, OnDestroy {
       username: ['', Validators.required],
       password: ['', Validators.required]
     });
-    this.returnUrl = '/';
+    this.returnUrl = './';
   }
 
   ngOnInit(): void {
@@ -70,7 +68,8 @@ export class LoginPageComponent implements OnInit, OnDestroy {
   private handleQueryParams(): void {
     const params = this.route.snapshot.queryParamMap;
     const rawReturnUrl = params.get(UrlPathParams.RETURN_URL);
-    this.returnUrl = rawReturnUrl ? decodeURIComponent(rawReturnUrl) : this.navigationContextService.getReturnUrl() ?? '/';
+    // `queryParamMap.get` already decodes the value, so no further decoding is needed here.
+    this.returnUrl = rawReturnUrl || './';
 
     if (params.has(UrlPathParams.NO_ACCESS)) {
       this.toastrService.error(
@@ -108,7 +107,6 @@ export class LoginPageComponent implements OnInit, OnDestroy {
     this.authenticationService.login(loginData)
       .then(() => {
         this.router.navigateByUrl(this.returnUrl);
-        this.navigationContextService.clearReturnUrl();
       })
       .catch((err) => {
         if (err.status === 401) {
