@@ -2,6 +2,7 @@ import {RepositorySteps} from "../../steps/repository-steps";
 import {OntopRepositorySteps} from "../../steps/ontop-repository-steps";
 import {ToasterSteps} from "../../steps/toaster-steps";
 import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
+import {RepositoriesStubs} from '../../stubs/repositories/repositories-stubs.js';
 
 describe('Repository rename restrictions', () => {
 
@@ -34,13 +35,14 @@ describe('Repository rename restrictions', () => {
     });
 
     it('should not allow renaming of an Ontop repository', () => {
+        RepositoriesStubs.spyGetRepository(repositoryId);
         // Given there is an Ontop repository.
         createOntopRepository(repositoryId);
 
         // When I open its edit page.
         RepositorySteps.visit();
         RepositorySteps.editRepository(repositoryId);
-
+        cy.wait('@getRepository');
         // Then the repository id should be rendered as read only,
         RepositorySteps.getGDBIdInput()
             .should('have.value', repositoryId)
@@ -62,6 +64,7 @@ describe('Repository rename restrictions', () => {
     });
 
     it('should not allow renaming of a FedX repository', () => {
+        RepositoriesStubs.spyGetRepository(repositoryId);
         // Given there is a FedX repository.
         cy.createRepository({id: memberRepositoryId});
         createFedxRepository(repositoryId, memberRepositoryId);
@@ -69,6 +72,7 @@ describe('Repository rename restrictions', () => {
         // When I open its edit page.
         RepositorySteps.visit();
         RepositorySteps.editRepository(repositoryId);
+        cy.wait('@getRepository');
 
         // Then the repository id should be rendered as read only,
         RepositorySteps.getGDBIdInput()

@@ -20,6 +20,10 @@ export class RepositoriesStubs extends Stubs {
         cy.intercept('GET', '/rest/locations/active').as('getActiveLocations');
     }
 
+    static spyGetRepository(id) {
+        cy.intercept(`GET`, `${REPOSITORIES_URL}/${id}?location=`).as('getRepository');
+    }
+
     static stubLocations(withDelay = 0) {
         RepositoriesStubs.stubQueryResponse('/rest/locations', '/repositories/get-locations.json', 'get-locations', withDelay);
     }
