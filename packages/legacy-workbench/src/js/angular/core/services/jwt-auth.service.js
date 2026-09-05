@@ -65,7 +65,8 @@ angular.module('graphdb.framework.core.services.jwtauth', [
 
                 const params = {};
                 if ($rootScope.returnToUrl) {
-                    params.r = encodeURIComponent($rootScope.returnToUrl);
+                    // `$location.search` encodes the value when serializing it, so it must be passed raw.
+                    params.r = $rootScope.returnToUrl;
                 }
 
                 if (noaccess) {

@@ -9,7 +9,7 @@ describe('UnauthenticatedInterceptor', () => {
   const authStorage = service(AuthenticationStorageService);
   const authService = service(AuthenticationService);
 
-  let navigateSpy: jest.SpyInstance;
+  let navigateToLoginPageSpy: jest.SpyInstance;
   let windowReloadSpy: jest.SpyInstance;
   let clearAuthTokenSpy: jest.SpyInstance;
   let isExternalUserSpy: jest.SpyInstance;
@@ -18,8 +18,8 @@ describe('UnauthenticatedInterceptor', () => {
   beforeEach(() => {
     interceptor = new UnauthenticatedInterceptor();
 
-    // Mock navigate function
-    navigateSpy = jest.spyOn(routingUtils, 'navigate').mockImplementation(() => {
+    // Mock navigateToLoginPage function
+    navigateToLoginPageSpy = jest.spyOn(routingUtils, 'navigateToLoginPage').mockImplementation(() => {
       // Mock implementation
     });
 
@@ -153,7 +153,7 @@ describe('UnauthenticatedInterceptor', () => {
       // Then it should clear auth token, navigate to login, reload page, and reject
       await expect(resultPromise).rejects.toBe(response);
       expect(clearAuthTokenSpy).toHaveBeenCalledTimes(1);
-      expect(navigateSpy).toHaveBeenCalledWith('login');
+      expect(navigateToLoginPageSpy).toHaveBeenCalledTimes(1);
       expect(windowReloadSpy).toHaveBeenCalledTimes(1);
     });
 
@@ -168,7 +168,7 @@ describe('UnauthenticatedInterceptor', () => {
       // Then it should resolve without redirecting
       expect(result).toBe(response);
       expect(clearAuthTokenSpy).not.toHaveBeenCalled();
-      expect(navigateSpy).not.toHaveBeenCalled();
+      expect(navigateToLoginPageSpy).not.toHaveBeenCalled();
       expect(windowReloadSpy).not.toHaveBeenCalled();
     });
 
@@ -183,7 +183,7 @@ describe('UnauthenticatedInterceptor', () => {
       // Then it should resolve without redirecting
       expect(result).toBe(response);
       expect(clearAuthTokenSpy).not.toHaveBeenCalled();
-      expect(navigateSpy).not.toHaveBeenCalled();
+      expect(navigateToLoginPageSpy).not.toHaveBeenCalled();
       expect(windowReloadSpy).not.toHaveBeenCalled();
     });
 
@@ -198,7 +198,7 @@ describe('UnauthenticatedInterceptor', () => {
       // Then it should resolve without redirecting
       expect(result).toBe(response);
       expect(clearAuthTokenSpy).not.toHaveBeenCalled();
-      expect(navigateSpy).not.toHaveBeenCalled();
+      expect(navigateToLoginPageSpy).not.toHaveBeenCalled();
       expect(windowReloadSpy).not.toHaveBeenCalled();
     });
 
@@ -213,7 +213,7 @@ describe('UnauthenticatedInterceptor', () => {
       // Then it should not redirect (because indexOf finds "authenticated-user" substring in the URL)
       expect(result).toBe(response);
       expect(clearAuthTokenSpy).not.toHaveBeenCalled();
-      expect(navigateSpy).not.toHaveBeenCalled();
+      expect(navigateToLoginPageSpy).not.toHaveBeenCalled();
       expect(windowReloadSpy).not.toHaveBeenCalled();
     });
 
@@ -229,7 +229,7 @@ describe('UnauthenticatedInterceptor', () => {
       // Then it should clear auth token but not navigate or reload
       await expect(resultPromise).rejects.toBe(response);
       expect(clearAuthTokenSpy).toHaveBeenCalledTimes(1);
-      expect(navigateSpy).not.toHaveBeenCalled();
+      expect(navigateToLoginPageSpy).not.toHaveBeenCalled();
       expect(windowReloadSpy).not.toHaveBeenCalled();
     });
   });

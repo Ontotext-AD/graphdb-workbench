@@ -75,7 +75,8 @@ const resolveNavigation = (): void => {
     // On login page but already logged in, navigate to return url or home page
     const params = new URLSearchParams(WindowService.getLocationQueryParams());
     const returnUrlParam = params.get('r');
-    const returnUrl = returnUrlParam ? decodeURIComponent(returnUrlParam) : './';
+    // `URLSearchParams.get` already decodes the value, so no further decoding is needed here.
+    const returnUrl = returnUrlParam || './';
 
     navigate(returnUrl);
     eventService.emit(new Login());

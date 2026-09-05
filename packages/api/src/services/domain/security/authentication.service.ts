@@ -6,7 +6,7 @@ import {Logout} from '../../../models/events';
 import {SecurityContextService} from './security-context.service';
 import {AuthStrategyResolver} from './auth-strategy-resolver';
 import {Login} from '../../../models/events/auth/login';
-import {getPathName, isLoginPage, navigate} from '../../utils';
+import {getPathName, isLoginPage} from '../../utils';
 import {AuthorizationService} from './authorization.service';
 import {AuthenticationStrategyNotSet} from './errors/authentication-strategy-not-set';
 import {AuthStrategy} from '../../../models/security/authentication';
@@ -82,7 +82,6 @@ export class AuthenticationService implements Service {
           this.authorizationService.initializeFreeAccess();
           this.eventService.emit(new Login());
         } else {
-          navigate('login');
           this.eventService.emit(new Logout());
         }
       });

@@ -70,7 +70,8 @@ export class LoginPageComponent implements OnInit, OnDestroy {
   private handleQueryParams(): void {
     const params = this.route.snapshot.queryParamMap;
     const rawReturnUrl = params.get(UrlPathParams.RETURN_URL);
-    this.returnUrl = rawReturnUrl ? decodeURIComponent(rawReturnUrl) : this.navigationContextService.getReturnUrl() ?? '/';
+    // `queryParamMap.get` already decodes the value, so no further decoding is needed here.
+    this.returnUrl = rawReturnUrl || this.navigationContextService.getReturnUrl() || '/';
 
     if (params.has(UrlPathParams.NO_ACCESS)) {
       this.toastrService.error(
