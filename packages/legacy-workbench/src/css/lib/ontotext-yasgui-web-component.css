@@ -931,7 +931,7 @@ yasgui-component .yasr .yasr_fallback_info:not(:empty) {
 yasgui-component .yasr .explain-plan-copy-btn {
     font-weight: 400;
     color: var(--gw-button-secondary-color);
-    background-color: var(--gw-shortcuts-secondary-button-background);
+    background-color: var(--gw-shortcuts-editor-button-background);
     border-color: var(--gw-button-secondary-border-color);
     margin-right: 1px;
     margin-top: 1px;
