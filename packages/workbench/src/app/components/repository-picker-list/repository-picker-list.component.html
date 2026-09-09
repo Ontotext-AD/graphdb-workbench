@@ -1,9 +1,19 @@
 <div class="repository-picker-list">
   @let filteredRepositoryList = vm().filteredRepositoryList;
 
-  <h6 class="repository-results-count">
-    {{ 'components.page_restrictions.repository_count' | transloco: {repositoryCount: filteredRepositoryList.length} }}
-  </h6>
+  <div class="header">
+    <h6 class="repository-results-count">
+      {{ 'components.page_restrictions.repository_count' | transloco: {repositoryCount: filteredRepositoryList.length} }}
+    </h6>
+    @if (vm().canCreateRepository) {
+      <p-button class="create-repository-btn"
+                [label]="'components.repository_picker_list.create_repository_btn.label' | transloco"
+                [icon]="'ri-add-circle-line'"
+                (click)="createRepository()">
+      </p-button>
+    }
+  </div>
+
   <div class="toolbar">
     @if (vm().showFilters) {
       <span class="filters">
@@ -39,24 +49,21 @@
       </span>
     }
 
-    @if (vm().canCreateRepository) {
-      <p-button class="create-repository-btn"
-                [label]="'components.repository_picker_list.create_repository_btn.label' | transloco"
-                [icon]="'ri-add-circle-line'"
-                (click)="createRepository()">
-      </p-button>
-    }
   </div>
 
   @if (vm().showRepositoryList) {
-    <p-table [value]="filteredRepositoryList" class="repository-list">
+    <p-table
+      [value]="filteredRepositoryList"
+      [scrollable]="true"
+      scrollHeight="flex"
+      class="repository-list">
       <ng-template #body let-repository>
         <tr>
           <td class="type-column">
             <em [ngClass]="['type-icon', 'icon-lg', 'icon-repo-' + repository.type]"></em>
           </td>
           <td class="name-column">
-            <div>
+            <div class="repository-header">
               <span class="repository-state"
                     [pTooltip]="'components.repository_picker_list.state_filter.' + repository.stateLowercase | transloco"
                     tooltipEvent="both"
