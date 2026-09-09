@@ -203,6 +203,7 @@ function MultiRegion($jwtAuth, $translate, $timeout, toastr, ModalService, Clust
                     .then((response) => {
                         $scope.secondaryTag = ClusterConfiguration.fromJSON(response.data).secondaryTag;
                         setTopology(ClusterModel.fromJSON(clusterModel));
+                        $scope.primaryTags = ClusterConfiguration.fromJSON(response.data).primaryTags;
                     }).catch((response) => {
                     const msg = getError(response);
                     toastr.error(msg, $translate.instant('cluster_management.cluster_configuration_multi_region.error.disabling'));
@@ -217,12 +218,9 @@ function MultiRegion($jwtAuth, $translate, $timeout, toastr, ModalService, Clust
             };
 
             const setLoader = (loader, message) => {
-                $timeout.cancel($scope.loaderTimeout);
                 if (loader) {
                     $scope.loaderMessage = message;
-                    $scope.loaderTimeout = $timeout(() => {
-                        $scope.loader = loader;
-                    }, 150);
+                    $scope.loader = true;
                 } else {
                     $scope.loader = false;
                 }
