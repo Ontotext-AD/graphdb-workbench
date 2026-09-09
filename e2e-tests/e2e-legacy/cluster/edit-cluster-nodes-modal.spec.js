@@ -460,7 +460,7 @@ describe('Cluster management', () => {
                 "verificationTimeout": 1500,
                 "transactionLogMaximumSizeGB": 50.0,
                 "batchUpdateInterval": 5000,
-                "nodes": ['http://pc-desktop:7200', 'http://pc-desktop:7203']
+                "nodes": ['http://pc-desktop:7200', 'http://pc-desktop:7203'],
             });
         });
         // And expect success message to be displayed.

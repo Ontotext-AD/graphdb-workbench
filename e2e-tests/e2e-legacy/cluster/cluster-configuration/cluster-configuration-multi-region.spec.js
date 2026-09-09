@@ -42,7 +42,9 @@ describe('Cluster configuration', () => {
         });
 
         ClusterStubs.stubClusterGroupStatusWithTag();
+        ClusterStubs.stubClusterConfigWithTag();
         cy.wait('@3-nodes-cluster-group-status-tag');
+        cy.wait('@cluster-config-with-tag');
         // Assert the tags table contains the expected tag
         ClusterConfigurationSteps.getTagsTable().should('be.visible');
         ClusterConfigurationSteps.getTagsTableRows().should('contain.text', tagName);
@@ -62,6 +64,11 @@ describe('Cluster configuration', () => {
         cy.wait('@delete-tag').then((interception) => {
             expect(interception.request.body).to.deep.equal({tag: tagName});
         });
+        ClusterStubs.stubClusterGroupStatus();
+        ClusterStubs.stubClusterConfig();
+        cy.wait('@3-nodes-cluster-group-status');
+        cy.wait('@cluster-config');
+        ClusterConfigurationSteps.getTagsTable().should('not.exist');
     });
 
     it('should show an alert when there is no elected leader in the cluster', () => {

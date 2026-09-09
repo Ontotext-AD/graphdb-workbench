@@ -27,7 +27,7 @@
             </button>
         </div>
 
-        <form class="multi-region-form" name="tagForm" ng-if="topology.primaryTags.length || addingTag">
+        <form class="multi-region-form" name="tagForm" ng-if="primaryTags.length || addingTag">
             <div class="multi-region-table">
                 <table class="tags-table table-striped table-hover table" aria-describedby="tags table">
                     <thead>
@@ -79,18 +79,18 @@
                         </td>
                     </tr>
 
-                    <tr ng-repeat="tag in topology.primaryTags track by $index">
+                    <tr ng-repeat="tag in primaryTags track by $index">
                         <td class="index-cell"><span>{{$index + 1}}</span></td>
                         <td class="tag-name-cell">
-                            {{tag[0]}}
+                            {{tag}}
                         </td>
                         <td class="tag-index-cell">
-                            <span>{{tag[1]}}</span>
+                            <span>{{topology.primaryTags[tag]}}</span>
                         </td>
                         <td class="actions-cell">
                             <div class="actions">
                                 <button ng-if="isAdmin"
-                                        ng-click="deleteTag(tag[0])"
+                                        ng-click="deleteTag(tag)"
                                         ng-disabled="addingTag"
                                         class="btn btn-link delete-tag-btn secondary"
                                         gdb-tooltip="{{ 'cluster_management.cluster_configuration_multi_region.delete_tag_tooltip' | translate }}"
