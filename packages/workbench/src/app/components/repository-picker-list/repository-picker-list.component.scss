@@ -1,22 +1,27 @@
-@use 'src/styles/variables' as *;
-
 .repository-picker-list {
   color: var(--gw-panel-color);
+  display: flex;
+  flex-direction: column;
 
-  .repository-results-count {
-    margin-bottom: 0;
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
   }
 
   .toolbar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: .8em 0;
-    gap: .5em;
+    flex-wrap: wrap;
 
     .filters {
       display: flex;
       gap: .4em;
+      min-width: 0;
+      flex-wrap: wrap;
+      padding-bottom: 1em;
 
       .filter-local-only {
         display: flex;
@@ -28,32 +33,11 @@
         }
       }
     }
-
-    .create-repository-btn {
-      margin-left: auto;
-    }
   }
 
   .repository-list {
-    width: 100%;
-    table-layout: fixed;
+    max-height: 300px;
     border: 1px solid var(--gw-datatable-border-color);
-
-    tr > td {
-      padding: .4em;
-    }
-
-    .info-column {
-      width: 4rem;
-    }
-
-    .actions-column {
-      width: 7rem;
-
-      .select-repository-btn {
-        visibility: hidden;
-      }
-    }
 
     tr:hover {
       background-color: var(--gw-datatable-row-hover-background);
@@ -66,7 +50,7 @@
     .type-column {
       width: 2.5rem;
       padding-right: 0 !important;
-      text-align: center;
+      vertical-align: top;
 
       .type-icon {
         font-size: 1.2em;
@@ -75,38 +59,20 @@
     }
 
     .name-column {
-      padding-left: 0 !important;
-      overflow: hidden;
+      // Prevent long content from expanding the table beyond its container.
+      // The table layout still assigns the available space to this column.
+      max-width: 0;
+      padding-left: .1em;
+      vertical-align: top;
 
-      // wrapper div for state icon + id
-      div:first-child {
+      .repository-header {
         display: flex;
         align-items: baseline;
-        overflow: hidden;
         min-width: 0;
-      }
-
-      .repository-description,
-      .repository-location {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-
-      .repository-id {
-        font-weight: 500;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        min-width: 0;
-        flex: 1;
-      }
-
-      .repository-location {
-        color: var(--gw-info-light);
       }
 
       .repository-state {
+        flex-shrink: 0;
         font-size: .8em;
         margin-right: .5em;
 
@@ -122,6 +88,27 @@
           color: var(--gw-button-warn-background);
         }
       }
+
+      .repository-id {
+        flex: 1;
+        min-width: 0;
+      }
+    }
+
+    .actions-column {
+      width: 7rem;
+
+      .select-repository-btn {
+        visibility: hidden;
+      }
+    }
+
+    .repository-id,
+    .repository-description,
+    .repository-location {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
   }
 }
