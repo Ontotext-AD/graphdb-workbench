@@ -17,7 +17,8 @@
       class="repository-list"
       [requireWriteAccess]="isRestricted()"
       [filterByTypes]="allowedRepositoryTypes()"
-      [filterByPermission]="requiredRepositoryPermission()">
+      [filterByPermission]="requiredRepositoryPermission()"
+      [showStateFilter]="false">
     </app-repository-picker-list>
   }
 </div>

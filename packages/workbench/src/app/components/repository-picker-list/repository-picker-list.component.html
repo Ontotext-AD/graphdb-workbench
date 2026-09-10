@@ -17,38 +17,45 @@
   <div class="toolbar">
     @if (vm().showFilters) {
       <span class="filters">
-        <p-iconfield class="filter-input">
-          <input pInputText
-                 type="text"
-                 [placeholder]="'components.repository_picker_list.filter_placeholder' | transloco"
-                 [ngModel]="vm().filterQuery"
-                 (ngModelChange)="onFilterQueryChange($event)" />
-          <p-inputicon class="ri-search-line" />
-        </p-iconfield>
-        <p-select class="filter-state"
-                  [options]="vm().stateFilterOptions"
-                  [ngModel]="vm().stateFilter"
-                  (ngModelChange)="onStateFilterChange($event)"
-                  optionLabel="label"
-                  optionValue="value">
-          <ng-template #selectedItem let-option>
-            {{ option.label | transloco }}
-          </ng-template>
-          <ng-template #item let-option>
-            {{ option.label | transloco }}
-          </ng-template>
-        </p-select>
-        <div class="filter-local-only">
-          <p-checkbox
-            [binary]="true"
-            [ngModel]="vm().localOnly"
-            (ngModelChange)="onLocalOnlyChange($event)"
-            inputId="localOnly"/>
-          <label for="localOnly">{{'components.page_restrictions.repository_filter_local_only' | transloco}}</label>
-        </div>
+         @if (showNameFilter()) {
+           <p-iconfield class="filter-name">
+             <input pInputText
+                    type="text"
+                    [placeholder]="'components.repository_picker_list.filter_placeholder' | transloco"
+                    [ngModel]="vm().filterQuery"
+                    (ngModelChange)="onFilterQueryChange($event)"/>
+             <p-inputicon class="ri-search-line"/>
+           </p-iconfield>
+         }
+
+        @if (showStateFilter()) {
+          <p-select class="filter-state"
+                    [options]="vm().stateFilterOptions"
+                    [ngModel]="vm().stateFilter"
+                    (ngModelChange)="onStateFilterChange($event)"
+                    optionLabel="label"
+                    optionValue="value">
+            <ng-template #selectedItem let-option>
+              {{ option.label | transloco }}
+            </ng-template>
+            <ng-template #item let-option>
+              {{ option.label | transloco }}
+            </ng-template>
+          </p-select>
+        }
+
+        @if (showLocalOnlyFilter()) {
+          <div class="filter-local-only">
+            <p-checkbox
+              [binary]="true"
+              [ngModel]="vm().localOnly"
+              (ngModelChange)="onLocalOnlyChange($event)"
+              inputId="localOnly"/>
+            <label for="localOnly">{{ 'components.page_restrictions.repository_filter_local_only' | transloco }}</label>
+          </div>
+        }
       </span>
     }
-
   </div>
 
   @if (vm().showRepositoryList) {
@@ -76,13 +83,13 @@
                   <em [ngClass]="['ri-circle-line', 'transitioning']"></em>
                 }
               </span>
-              <span class="repository-id">{{repository.id}}</span>
+              <span class="repository-id">{{ repository.id }}</span>
             </div>
             <div class="repository-description">
-              {{repository.title}}
+              {{ repository.title }}
             </div>
             <div class="repository-location">
-              <small>{{repository.location ?? 'components.repository_picker_list.location_local_label' | transloco}}</small>
+              <small>{{ repository.location ?? 'components.repository_picker_list.location_local_label' | transloco }}</small>
             </div>
           </td>
           <td class="actions-column">
