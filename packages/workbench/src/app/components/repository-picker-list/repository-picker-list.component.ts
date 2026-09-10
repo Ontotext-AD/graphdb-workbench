@@ -69,6 +69,24 @@ export class RepositoryPickerListComponent implements OnInit, OnDestroy {
   filterByPermission = input<RepositoryPermissionType | undefined>(undefined);
 
   /**
+   * Whether to display the repository name filter.
+   * Defaults to `true`.
+   */
+  showNameFilter = input(true);
+
+  /**
+   * Whether to display the repository state filter.
+   * Defaults to `true`.
+   */
+  showStateFilter = input(true);
+
+  /**
+   * Whether to display the filter for showing only local repositories.
+   * Defaults to `true`.
+   */
+  showLocalOnlyFilter = input(true);
+
+  /**
    * List of subscriptions to context changes, to be unsubscribed on component destroy.
    */
   private readonly subscriptions = new SubscriptionList();
@@ -143,8 +161,9 @@ export class RepositoryPickerListComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Updates the localOnly filter on the view model when the user selects a local only checkbox.
-   * @param state The new state filter value.
+   * Updates the localOnly filter on the view model when the user toggle the local only checkbox.
+   *
+   * @param localOnly The new state filter value.
    */
   onLocalOnlyChange(localOnly: boolean): void {
     this.vm.update((vm) => {
@@ -153,6 +172,12 @@ export class RepositoryPickerListComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Returns the repositories accessible to the current user after applying
+   * the configured write-access, type, and permission restrictions.
+   *
+   * @returns The filtered collection of accessible repositories.
+   */
   private onRepositoryListChanged(): void {
     this.vm.update((vm) => {
       vm.repositoryList = this.getAllowedRepositories();
