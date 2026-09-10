@@ -1,4 +1,4 @@
-<div class="page-restrictions">
+<div class="page-restrictions" [style.height.px]="availableHeight()">
   @if (restrictions().length) {
     @for (reason of restrictions(); track reason.translationKey) {
       <p-message [severity]="reason.severity" icon="ri-alert-line">
