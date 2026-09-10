@@ -18,7 +18,7 @@
 
     .filters {
       display: flex;
-      gap: .4em;
+      gap: 1em;
       min-width: 0;
       flex-wrap: wrap;
       padding-bottom: 1em;
@@ -38,6 +38,14 @@
   .repository-list {
     max-height: 300px;
     border: 1px solid var(--gw-datatable-border-color);
+
+    .actions-column {
+      width: 7rem;
+
+      .select-repository-btn {
+        visibility: hidden;
+      }
+    }
 
     tr:hover {
       background-color: var(--gw-datatable-row-hover-background);
@@ -89,26 +97,23 @@
         }
       }
 
+      .repository-description {
+        font-weight: 400;
+      }
+
+      .repository-id,
+      .repository-description,
+      .repository-location {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
       .repository-id {
         flex: 1;
         min-width: 0;
+        font-weight: 600;
       }
-    }
-
-    .actions-column {
-      width: 7rem;
-
-      .select-repository-btn {
-        visibility: hidden;
-      }
-    }
-
-    .repository-id,
-    .repository-description,
-    .repository-location {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
     }
   }
 }
