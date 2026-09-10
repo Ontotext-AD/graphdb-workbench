@@ -4,7 +4,10 @@ import {BuildUtil} from './build-util';
  * Utility class for handling and manipulating URIs.
  */
 export class UriUtil {
-  private static readonly ABS_URI_REGEX = /^<?(http|urn).*>?/;
+  private static readonly IRI_SCHEME_REGEX = /^[a-zA-Z][a-zA-Z0-9+\-.]*$/;
+  private static readonly AUTHORITY_PREFIX = '//';
+  // http(s) IRIs are always hierarchical, so they stay rejected without an authority.
+  private static readonly HIERARCHICAL_SCHEMES = ['http', 'https'];
   static GRAPHS_VISUALIZATIONS_URL = 'graphs-visualizations';
   static RESOURCE_URL = 'resource';
   static BASE_DOCUMENTATION_URL = 'https://graphdb.ontotext.com/documentation/';
@@ -98,28 +101,39 @@ export class UriUtil {
   }
 
   /**
-   * Validates if a string is a properly formatted URI.
+   * Validates if a string is a properly formatted absolute URI.
    *
-   * The function checks if the URI has a valid protocol (http(s) or urn)
-   * and proper structure. For HTTP URIs, it verifies the presence of
-   * schema slashes (//) and content after them. For URN URIs, it checks
-   * if there's content after the "urn:" prefix.
+   * The function checks that the URI carries a syntactically valid scheme
+   * (a letter followed by letters, digits, `+`, `-` or `.`) and a non-empty
+   * scheme-specific part. Any registered or custom scheme is accepted, so
+   * `ftp:`, `mailto:`, `file:` and `did:` IRIs validate the same way `http:`
+   * and `urn:` ones do. Hierarchical URIs must carry an authority after the
+   * schema slashes (//), and angle brackets, when present, must be balanced.
    *
    * @param uri - The string to validate as a URI.
    * @returns `true` if the string is a valid URI, otherwise `false`.
    */
   static isValidUri(uri: string): boolean {
-    let valid = false;
-    if (this.hasValidProtocol(uri)) {
-      if (uri.indexOf('http') >= 0) {
-        const schemaSlashesIdx = uri.indexOf('//');
-        valid = schemaSlashesIdx > 4
-          && uri.substring(schemaSlashesIdx + 2).length > 0;
-      } else if (uri.indexOf('urn') >= 0) {
-        valid = uri.substring(4).length > 0;
-      }
+    if (!uri || !this.hasBalancedAngleBrackets(uri)) {
+      return false;
     }
-    return valid;
+
+    const iri = this.removeAngleBrackets(uri);
+    const schemeSeparatorIdx = iri.indexOf(':');
+    if (schemeSeparatorIdx < 0) {
+      return false;
+    }
+
+    const scheme = iri.substring(0, schemeSeparatorIdx);
+    if (!this.IRI_SCHEME_REGEX.test(scheme)) {
+      return false;
+    }
+
+    const schemeSpecificPart = iri.substring(schemeSeparatorIdx + 1);
+    if (schemeSpecificPart.startsWith(this.AUTHORITY_PREFIX)) {
+      return schemeSpecificPart.length > this.AUTHORITY_PREFIX.length;
+    }
+    return !this.HIERARCHICAL_SCHEMES.includes(scheme.toLowerCase()) && schemeSpecificPart.length > 0;
   }
 
   /**
@@ -157,7 +171,7 @@ export class UriUtil {
     return !uri.startsWith('<') && !uri.endsWith('>');
   }
 
-  private static hasValidProtocol(uri: string): boolean {
-    return this.ABS_URI_REGEX.test(uri) && (this.hasNoAngleBrackets(uri) || this.hasAngleBrackets(uri));
+  private static hasBalancedAngleBrackets(uri: string): boolean {
+    return this.hasNoAngleBrackets(uri) || this.hasAngleBrackets(uri);
   }
 }
