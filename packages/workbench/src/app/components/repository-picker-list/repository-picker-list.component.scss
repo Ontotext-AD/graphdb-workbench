@@ -1,7 +1,16 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
 .repository-picker-list {
   color: var(--gw-panel-color);
   display: flex;
   flex-direction: column;
+  flex: 1;
+  min-height: 0;
 
   .header {
     display: flex;
@@ -36,7 +45,8 @@
   }
 
   .repository-list {
-    max-height: 300px;
+    flex: 1;
+    min-height: 200px;
     border: 1px solid var(--gw-datatable-border-color);
 
     .actions-column {
