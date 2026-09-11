@@ -50,21 +50,60 @@ export class RepositoryPickerListViewModel {
   ];
 
   /**
-   * Returns the repositories matching the current filterQuery and stateFilter.
+   * Returns the repositories matching the filters.
    */
   get filteredRepositoryList(): Repository[] {
-    const query = this.filterQuery.trim().toLowerCase();
-    const state = this.stateFilter;
     return this.repositoryList
-      .filter((repo) => !this.localOnly || this.localOnly && repo.local === true)
-      .filter((repo) => {
-        const matchesQuery =
-          !query ||
-          repo.id?.toLowerCase().includes(query) ||
-          repo.title?.toLowerCase().includes(query);
-        const matchesState = state === null || repo.state === state;
-        return matchesQuery && matchesState;
-      });
+      .filter((repository) => this.matchesLocationFilter(repository))
+      .filter((repository) => this.matchesSearchQuery(repository))
+      .filter((repository) => this.matchesStateFilter(repository))
+      .sort((repository1, repository2) =>
+        this.sortLocalRepositoriesFirst(repository1, repository2)
+      );
+  }
+
+  /**
+   * Checks whether the repository matches the location filter.
+   *
+   * When {@link localOnly} is enabled, only local repositories are included.
+   */
+  private matchesLocationFilter(repository: Repository): boolean {
+    return !this.localOnly || repository.local === true;
+  }
+
+  /**
+   * Checks whether the repository matches the current search query.
+   *
+   * The search is case-insensitive and matches against the repository ID
+   * and title. An empty query matches all repositories.
+   */
+  private matchesSearchQuery(repository: Repository): boolean {
+    const query = this.filterQuery.trim().toLowerCase();
+
+    return !query
+      || repository.id?.toLowerCase().includes(query)
+      || repository.title?.toLowerCase().includes(query);
+  }
+
+  /**
+   * Checks whether the repository matches the selected state.
+   *
+   * When no state is selected, repositories in all states are included.
+   */
+  private matchesStateFilter(repository: Repository): boolean {
+    return this.stateFilter === null || repository.state === this.stateFilter;
+  }
+
+  /**
+   * Sorts repositories with local repositories first.
+   *
+   * Repositories within the same location type are sorted alphabetically by ID.
+   */
+  private sortLocalRepositoriesFirst(repository1: Repository, repository2: Repository): number {
+    if (repository1.local === repository2.local) {
+      return repository1.id.localeCompare(repository2.id);
+    }
+    return repository1.local ? -1 : 1;
   }
 
   /**
