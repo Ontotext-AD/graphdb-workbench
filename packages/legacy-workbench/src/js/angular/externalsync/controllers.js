@@ -117,7 +117,7 @@ function buildNamePrefix(prefix) {
     return prefix.substring(0, prefix.length - 1) + '/instance#';
 }
 
-function createConnectorQuery(name, prefix, fields, options, reportError) {
+function createConnectorQuery(name, prefix, fields, options, reportError, maskSensitiveFields = true) {
     // Returns a copy of the parameter obj sorted according to the order in options
     function sortObject(obj, options) {
         const newObject = {};
@@ -144,7 +144,7 @@ function createConnectorQuery(name, prefix, fields, options, reportError) {
                 fcopy[options[i].__name] = fromArrayMap(fcopy[options[i].__name], $translate);
             } else if (options[i].__type === 'JsonString') {
                 fcopy[options[i].__name] = angular.fromJson(fcopy[options[i].__name]);
-            } else if (options[i].__sensitive === true && fcopy[options[i].__name]) {
+            } else if (maskSensitiveFields && options[i].__sensitive === true && fcopy[options[i].__name]) {
                 fcopy[options[i].__name] = SENSITIVE_FIELD_MASK;
             }
         } catch (e) {
@@ -620,16 +620,16 @@ function ExtendNewConnectorCtrl($scope, $uibModalInstance, connector, $uibModal,
         array.splice(index, 1);
     };
 
-    function toQuery() {
+    function toQuery(maskSensitiveFields = true) {
         return createConnectorQuery($scope.name, connector.value, $scope.values, $scope.options,
             function(label, error) {
                 toastr.error(error, label);
-            });
+            }, maskSensitiveFields);
     }
 
     $scope.ok = function() {
         if ($scope.form.$valid) {
-            const query = toQuery();
+            const query = toQuery(false);
 
             if (query) {
                 $uibModalInstance.close({name: $scope.name, values: $scope.values, options: $scope.options, query: query});
@@ -638,7 +638,7 @@ function ExtendNewConnectorCtrl($scope, $uibModalInstance, connector, $uibModal,
     };
 
     $scope.viewQuery = function() {
-        const query = toQuery();
+        const query = toQuery(true);
 
         if (query) {
             $uibModal.open({
