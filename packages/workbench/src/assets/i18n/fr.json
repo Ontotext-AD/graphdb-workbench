@@ -54,6 +54,7 @@
       "no_active_repository_select_one": "Certaines fonctionnalités ne sont pas disponibles car vous n'êtes connecté à aucun dépôt. Sélectionnez un dépôt ci-dessous.",
       "no_active_repository_select_or_create_one": "Certaines fonctionnalités ne sont pas disponibles car vous n'êtes connecté à aucun dépôt. Sélectionnez un dépôt ci-dessous ou créez-en un nouveau.",
       "no_accessible_repos_create_one": "Il n'y a pas de dépôts accessibles. Vous pouvez créer un nouveau dépôt.",
+      "no_accessible_repositories": "Aucun dépôt n’est accessible. Contactez un utilisateur disposant des autorisations de gestion des dépôts pour créer un dépôt ou vous accorder l’accès.",
       "invalid_license": "Certaines fonctionnalités ne sont pas disponibles car votre licence n'est pas valide.",
       "set_new_license": "Définir une nouvelle licence",
       "no_write_permission": "Certaines fonctionnalités ne sont pas disponibles car vous n'avez pas de droit d'écriture sur le dépôt <strong>{{repositoryId}}</strong>.",
