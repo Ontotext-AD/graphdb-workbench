@@ -54,6 +54,7 @@
       "no_active_repository_select_one": "Some functionalities are not available because you are not connected to any repository. Select a repository below.",
       "no_active_repository_select_or_create_one": "Some functionalities are not available because you are not connected to any repository. Select a repository below or create a new one.",
       "no_accessible_repos_create_one": "There are no accessible repositories. You can create a new repository.",
+      "no_accessible_repositories": "There are no accessible repositories. Contact a user with repository management permissions to create a repository or grant you access.",
       "invalid_license": "Some functionalities are not available because your license is not valid.",
       "set_new_license": "Set a new license",
       "no_write_permission": "Some functionalities are not available because you have no write permission to the repository <strong>{{repositoryId}}</strong>.",
