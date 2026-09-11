@@ -1,0 +1,194 @@
+/** # region Fixes the issue with the color of the sequence of < or > characters.
+This resolves the problem described in more detail in the issue tracker: "https://ontotext.atlassian.net/browse/GDB-9233" */
+.CodeMirror pre.CodeMirror-line, .CodeMirror pre.CodeMirror-line-like {
+    font-variant-ligatures: none;
+    -webkit-font-variant-ligatures: none;
+}
+/* #endregion Fixes the issue with the color of the sequence of < or > characters. */
+
+/* #region Overrides for the YASQE theme */
+.yasgui-host-element .yasgui .CodeMirror[class*="cm-s-"]:not(.cm-s-default) {
+    border-color: var(--gw-tabs-tab-active-border-color);
+    background-color: #1C1C1C;
+
+    /* Line numbers */
+    .CodeMirror-linenumber {
+        color: #777777;
+    }
+
+    /* Match highlight */
+    .cm-matchhighlight {
+        background-color: #dbdeed;
+    }
+
+    .yasqe_buttons .custom-button {
+        background-color: #1C1C1C !important;
+    }
+
+    .notification {
+        color: var(--gw-button-secondary-color) !important;
+        background-color: var(--gw-button-secondary-background) !important;
+        border-color: var(--gw-button-secondary-border-color) !important;
+    }
+
+    .cm-comment {
+        color: var(--gw-neutral-300);
+    }
+}
+/* #endregion Overrides for the YASQE theme */
+
+yasgui-component .yasqe .CodeMirror {
+    font-family: var(--mono-font) !important;
+}
+
+/* #region YASQE - side buttons */
+yasgui-component .yasqe .yasqe_buttons {
+    right: 21px;
+    background-color: var(--gw-editor-content-background);
+}
+
+yasgui-component .custom-button {
+    /* There is a generic font-size rule that overrides the font size of the YASGUI component, */
+    /* so we set it explicitly to match the intended size of the YASQE buttons. */
+    font-size: 1.5em !important;
+    color: var(--gw-primary-base) !important;
+    background-color: var(--gw-editor-content-background) !important;
+}
+
+yasgui-component .yasgui .yasqe .yasqe_expandResultsButton.custom-button.disabled {
+    opacity: var(--gw-button-disabled-opacity);
+}
+
+yasgui-component .custom-button:disabled:hover,
+yasgui-component .custom-button:disabled:focus {
+    color: #818a91 !important;
+}
+
+yasgui-component .yasqe_queryButton {
+    font-family: var(--main-font);
+    font-weight: 400;
+    height: 38px !important;
+}
+
+yasgui-component .yasqe_queryButton,
+yasgui-component .yasqe_querySplitWrapper .yasqe_querySplitToggle {
+    color: var(--gw-button-primary-color) !important;
+    background-color: var(--gw-button-primary-background) !important;
+}
+
+yasgui-component .yasqe_queryButton:hover,
+yasgui-component .yasqe_querySplitWrapper .yasqe_querySplitToggle:hover {
+    color: var(--gw-button-primary-hover-color) !important;
+    background-color: var(--gw-button-primary-hover-background) !important;
+}
+
+yasgui-component  .ontotext-run-dropdown-menu {
+    background-color: var(--gw-tieredmenu-background) !important;
+    border: 1px solid var(--gw-tieredmenu-border-color);
+    box-shadow: var(--gw-tieredmenu-shadow-1-offset-x) var(--gw-tieredmenu-shadow-1-offset-y) var(--gw-tieredmenu-shadow-1-blur) var(--gw-tieredmenu-shadow-1-spread) var(--gw-tieredmenu-shadow-1-color);
+    border-radius: 0;
+}
+
+yasgui-component .ontotext-run-dropdown-menu-item {
+    color: var(--gw-tieredmenu-color) !important;
+}
+
+yasgui-component .ontotext-run-dropdown-menu-item:hover {
+    color: var(--gw-tieredmenu-item-focus-color) !important;
+    background-color: var(--gw-tieredmenu-item-focus-background) !important;
+}
+/* #endregion YASQE - side buttons */
+
+/* #region YASQE - autocomplete */
+.CodeMirror-hints {
+    border: 1px solid var(--gw-autocomplete-border-color);
+    box-shadow: var(--gw-autocomplete-shadow-offset-x) var(--gw-autocomplete-shadow-offset-y) var(--gw-autocomplete-shadow-blur) var(--gw-autocomplete-shadow-spread) var(--gw-autocomplete-shadow-color);
+}
+
+.CodeMirror-hints,
+.CodeMirror-hints .CodeMirror-hint {
+    font-family: inherit;
+    color: var(--gw-autocomplete-color);
+    background-color: var(--gw-autocomplete-background);
+    
+    b {
+        color: var(--gw-autocomplete-dropdown-match-color);
+        font-weight: bolder;
+    }
+}
+
+.CodeMirror-hints .CodeMirror-hint-active {
+    color: var(--gw-autocomplete-option-selected-color);
+    background-color: var(--gw-autocomplete-option-selected-background);
+}
+
+.CodeMirror-hints .CodeMirror-hint:not(.CodeMirror-hint-active):hover {
+    color: var(--gw-autocomplete-option-focus-color);
+    background-color: var(--gw-autocomplete-option-focus-background);
+}
+
+.yasqe-autocomplete-hint {
+    color: var(--gw-autocomplete-color);
+    background-color: var(--gw-autocomplete-background);
+}
+/* #endregion YASQE - autocomplete */
+
+.yasqe .resizeChip {
+    background-color: var(--gw-button-secondary-background) !important;
+    color: var(--gw-button-secondary-color) !important;
+}
+
+/* #region YASQE - saved queries */
+yasgui-component .saved-queries-container { 
+    color: var(--gw-dialog-color) !important;
+    background-color: var(--gw-dialog-background) !important;
+    border-color: var(--gw-dialog-border-color);
+    -webkit-box-shadow: var(--gw-dialog-shadow-1-offset-x) var(--gw-dialog-shadow-1-offset-y) var(--gw-dialog-shadow-1-blur) var(--gw-dialog-shadow-1-spread) var(--gw-dialog-shadow-1-color);
+    box-shadow: var(--gw-dialog-shadow-1-offset-x) var(--gw-dialog-shadow-1-offset-y) var(--gw-dialog-shadow-1-blur) var(--gw-dialog-shadow-1-spread) var(--gw-dialog-shadow-1-color);
+}
+
+yasgui-component .saved-queries-container .arrow:before {
+    border-left-color: var(--gw-dialog-border-color);
+}
+
+yasgui-component .saved-queries-container .arrow:after {
+    border-left-color: var(--gw-dialog-background);
+}
+
+yasgui-component .saved-queries-container .saved-queries-popup .saved-query-actions .saved-query-action {
+    color: var(--gw-button-primary-link-color) !important;
+    background-color: var(--gw-dialog-background) !important;
+    font-size: 1.25em;
+}
+
+yasgui-component .saved-queries-container .saved-queries-popup {
+    overflow-y: auto;
+}
+
+yasgui-component .saved-queries-container .saved-queries-popup .saved-query {
+    padding: 0;
+}
+
+yasgui-component .saved-queries-container .saved-queries-popup .saved-query a {
+    color: var(--gw-secondary-base);
+    font-size: 14px;
+    font-weight: bolder;
+}
+/* #endregion YASQE - saved queries */
+
+/* #region YASQE FOOTER BUTTONS */
+yasgui-component .tabPanel .yasqe  .yasqe-footer-buttons {
+    padding-top: 15px; 
+}
+
+yasgui-component .tabPanel .yasqe  .yasqe-footer-buttons .abort-button {
+    background-color: var(--gw-primary-base) !important;
+    font-family: var(--main-font);
+    font-weight: 400;
+    height: 38px;
+}
+
+yasgui-component .tabPanel .yasqe  .yasqe-footer-buttons .abort-button:hover {
+    background-color: var(--gw-primary-dark) !important;
+}
+/* #endregion YASQE FOOTER BUTTONS */

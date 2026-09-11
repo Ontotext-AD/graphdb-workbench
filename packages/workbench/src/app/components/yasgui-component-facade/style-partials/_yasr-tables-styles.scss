@@ -1,0 +1,236 @@
+app-yasgui-component-facade {
+  .yasr {
+    .yasr_results {
+      /* #region YASR - overlay content and buttons */
+      .overlay_content {
+        background: unset;
+      }
+
+      .yasr_btn.overlay_btn {
+        color: var(--gw-button-secondary-color) !important;
+        background: var(--gw-button-secondary-background) !important;
+        border-color: var(--gw-button-secondary-border-color) !important;
+      }
+
+      a {
+        color: var(--gw-secondary-base) !important;
+      }
+
+      /* #endregion YASR - overlay content and buttons */
+
+      /* #region YASR - raw response area */
+      .CodeMirror {
+        color: var(--gw-editor-content-color) !important;
+        background-color: var(--gw-editor-content-background) !important;
+
+        &.overflow::before {
+          background: unset;
+        }
+
+        .CodeMirror-gutters {
+          color: var(--gw-editor-content-color) !important;
+          background-color: var(--gw-editor-content-background) !important;
+        }
+      }
+
+      /* #endregion YASR - raw response area */
+
+      /* #region - YASR pivot table plugin */
+      .pivot-table-plugin {
+        select {
+          color: var(--gw-body-color);
+          background-color: var(--gw-body-background);
+        }
+
+        .pvtUi .pvtTable .pvtAxisLabel,
+        .pvtUi .pvtTable .pvtTotalLabel {
+          color: var(--gw-datatable-header-color);
+          background-color: var(--gw-datatable-header-background);
+          border-color: var(--gw-datatable-header-cell-border-color);
+        }
+
+        .pvtFilterBox {
+          color: var(--gw-dialog-color);
+          background-color: var(--gw-dialog-background);
+          border-color: var(--gw-dialog-border-color);
+        }
+
+        .pvtFilterBox .pvtSearch {
+          color: var(--gw-form-field-color);
+          background-color: var(--gw-form-field-background);
+          border-color: var(--gw-form-field-border-color);
+        }
+
+        .yasr_fallback_info:not(:empty) {
+          border: 1px solid var(--gw-message-info-border-color);
+          color: var(--gw-message-info-color);
+          background-color: var(--gw-message-info-background);
+        }
+      }
+
+    }
+
+    table.pvtTable tbody tr td,
+    .pivot-table-plugin .pvtUi .pvtTable .pvtRowLabel {
+      color: var(--gw-datatable-row-color);
+      background-color: var(--gw-datatable-row-background);
+    }
+
+    /* #endregion - YASR pivot table plugin */
+
+    /* #region - YASR extended boolean plugin */
+    .error-response-plugin {
+      background-color: var(--gw-error-lighter) !important;
+    }
+
+    .extended-boolean-plugin>* {
+      font-size: 3rem !important;
+    }
+
+    .extended-boolean-plugin {
+      .response-error {
+        background-color: var(--gw-error-lighter) !important;
+      }
+
+      .response-success {
+        background-color: var(--gw-success-lighter) !important;
+      }
+    }
+
+    /* #endregion - YASR extended boolean plugin */
+
+    /* #region - YASR google visualization table */
+    .google-visualization-table-table {
+      color: var(--gw-datatable-row-color) !important;
+      background: var(--gw-datatable-row-background) !important;
+      border-color: var(--gw-datatable-border-color) !important;
+
+      .google-visualization-table-tr-head {
+        color: var(--gw-datatable-header-color) !important;
+        background-color: var(--gw-datatable-header-background) !important;
+        border-color: var(--gw-datatable-header-cell-border-color) !important;
+      }
+
+      .google-visualization-table-tr-even {
+        background-color: var(--gw-datatable-row-background) !important;
+      }
+
+      .google-visualization-table-tr-odd {
+        background-color: var(--gw-datatable-row-striped-background) !important;
+      }
+
+      .google-visualization-table-td {
+        border-color: var(--gw-datatable-border-color) !important;
+      }
+
+      .google-visualization-table-th {
+        border-color: var(--gw-datatable-header-cell-border-color) !important;
+      }
+    }
+
+    /* #endregion - YASR google visualization table */
+
+    /* #region - YASR dataTables */
+    .dataTables_wrapper {
+      .dataTable {
+        border-collapse: collapse;
+
+        th {
+          font-weight: 500;
+          color: var(--gw-datatable-header-color) !important;
+          background-color: var(--gw-datatable-header-background) !important;
+          border-color: var(--gw-datatable-header-cell-border-color) !important;
+        }
+
+        /* Override the sorting icon coming from the yasr to make it themeable */
+        thead .sorting,
+        thead .sorting_asc,
+        thead .sorting_desc {
+          background-image: none !important;
+          position: relative;
+        }
+
+        thead .sorting::after,
+        thead .sorting_asc::after,
+        thead .sorting_desc::after {
+          content: '';
+          position: absolute;
+          right: 8px;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 0.9em;
+          height: 0.9em;
+          background-color: var(--gw-datatable-sort-icon-color);
+          mask-size: contain;
+          -webkit-mask-size: contain;
+          mask-repeat: no-repeat;
+          -webkit-mask-repeat: no-repeat;
+        }
+
+        thead .sorting::after {
+          mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M18 9 12 3 6 9H18ZM18 15 12 21 6 15H18Z'%3E%3C/path%3E%3C/svg%3E");
+          -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M18 9 12 3 6 9H18ZM18 15 12 21 6 15H18Z'%3E%3C/path%3E%3C/svg%3E");
+        }
+
+        thead .sorting_asc::after {
+          mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M4.86885 11H2.6665L6 3H8L11.3334 11H9.13113L8.7213 10H5.27869L4.86885 11ZM6.09836 8H7.90163L7 5.8L6.09836 8ZM18.9999 16V3H16.9999V16H13.9999L17.9999 21L21.9999 16H18.9999ZM10.9999 13H2.99992V15H7.85414L2.99992 19V21H10.9999V19H6.14605L10.9999 15V13Z'%3E%3C/path%3E%3C/svg%3E");
+          -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M4.86885 11H2.6665L6 3H8L11.3334 11H9.13113L8.7213 10H5.27869L4.86885 11ZM6.09836 8H7.90163L7 5.8L6.09836 8ZM18.9999 16V3H16.9999V16H13.9999L17.9999 21L21.9999 16H18.9999ZM10.9999 13H2.99992V15H7.85414L2.99992 19V21H10.9999V19H6.14605L10.9999 15V13Z'%3E%3C/path%3E%3C/svg%3E");
+        }
+
+        thead .sorting_desc::after {
+          mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M4.86885 11H2.6665L6 3H8L11.3334 11H9.13113L8.7213 10H5.27869L4.86885 11ZM6.09836 8H7.90163L7 5.8L6.09836 8ZM21.9999 8L17.9999 3L13.9999 8H16.9999V21H18.9999V8H21.9999ZM10.9999 13H2.99992V15H7.85414L2.99992 19V21H10.9999V19H6.14605L10.9999 15V13Z'%3E%3C/path%3E%3C/svg%3E");
+          -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M4.86885 11H2.6665L6 3H8L11.3334 11H9.13113L8.7213 10H5.27869L4.86885 11ZM6.09836 8H7.90163L7 5.8L6.09836 8ZM21.9999 8L17.9999 3L13.9999 8H16.9999V21H18.9999V8H21.9999ZM10.9999 13H2.99992V15H7.85414L2.99992 19V21H10.9999V19H6.14605L10.9999 15V13Z'%3E%3C/path%3E%3C/svg%3E");
+        }
+
+
+        tbody tr {
+          vertical-align: top;
+          color: var(--gw-datatable-row-color) !important;
+          background-color: var(--gw-datatable-row-background) !important;
+        }
+
+        tbody tr:hover {
+          background-color: var(--gw-datatable-row-hover-background) !important;
+        }
+
+        tbody tr td {
+          border-color: var(--gw-datatable-border-color) !important;
+        }
+
+        tbody tr.odd {
+          background-color: var(--gw-datatable-row-striped-background) !important;
+        }
+
+        &.withRowNumber tr.odd>td:first-child {
+          background-color: var(--gw-datatable-row-striped-background) !important;
+        }
+
+        &.withRowNumber tr.even>td:first-child {
+          background-color: var(--gw-datatable-row-background) !important;
+        }
+
+        .rowNumber {
+          color: var(--gw-datatable-row-color) !important;
+        }
+
+        a {
+          font-size: 16px;
+        }
+
+        .nonUri {
+          color: inherit !important;
+        }
+
+        .nonUri sup {
+            color: inherit !important;
+        }
+
+        .triple-cell .triple-link {
+          color: var(--foreground-visual-sequential-4-1) !important;
+        }
+      }
+    }
+
+    /* #endregion - YASR dataTables */
+  }
+}

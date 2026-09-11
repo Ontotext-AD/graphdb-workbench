@@ -1,0 +1,243 @@
+/* #region YASR - toolbar right */
+yasgui-component .yasr-toolbar {
+    align-items: stretch !important;
+    padding-left: 10px;
+    font-size: 16px;
+    line-height: 1.25;
+}
+
+/* Make all buttons in the yasr toolbar having equal height same as the other WB buttons. */
+yasgui-component .yasr-toolbar .yasr-toolbar-element {
+    height: 38px;
+}
+
+/* #endregion YASR - toolbar right */
+
+/* #region YASR - tab bar */
+yasgui-component .yasr .yasr_btnGroup {
+    background-color: var(--gw-panel-background) !important;
+
+    /*
+    Remove overflow restriction on the YASR button group container. This allows dropdown menus
+    (for the "Open in Visual Graph" button) to fully expand outside the container, ensuring they are visible above
+    the results panel without being clipped.
+    */
+    overflow: unset;
+}
+
+yasgui-component .yasr .yasr_btnGroup .yasr_btn {
+    padding: .52em;
+    margin-left: 0;
+    margin-right: .2rem;
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--gw-tabs-tab-color) !important;
+    background-color: var(--gw-tabs-tab-background) !important;
+    fill: var(--gw-tabs-tab-color) !important;
+    border: 1px solid;
+    border-color: var(--gw-tabs-tab-border-color) !important;
+    border-bottom: 1px solid transparent !important;
+}
+
+yasgui-component .yasr .yasr_btnGroup .yasr_btn.selected {
+    color: var(--gw-tabs-tab-active-color) !important;
+    background-color: var(--gw-tabs-tab-active-background) !important;
+    border-color: var(--gw-tabs-tab-active-border-color) var(--gw-tabs-tab-active-border-color) transparent !important;
+}
+
+yasgui-component .yasr .yasr_btnGroup .yasr_btn:not(.disabled):hover {
+    color: var(--gw-tabs-tab-hover-color) !important;
+    background-color: var(--gw-tabs-tab-hover-background) !important;
+    fill: var(--gw-tabs-tab-hover-color) !important;
+    border-color: var(--gw-tabs-tab-hover-border-color) var(--gw-tabs-tab-hover-border-color) transparent !important;
+    border-bottom-width: 1px !important;
+}
+
+yasgui-component .yasr .yasr_btnGroup .yasr-fullscreen-button {
+    background-color: var(--gw-button-tertiary-background);
+    color: var(--gw-button-tertiary-color);
+    padding-left: .73em;
+    padding-right: .73em;
+}
+
+yasgui-component .yasr .yasr_btnGroup .yasr-fullscreen-button:hover {
+    background-color: var(--gw-button-tertiary-hover-background);
+    color: var(--gw-button-tertiary-hover-color);
+}
+
+/* #endregion YASR - tab bar  */
+
+/* #region YASR - download as buttons */
+yasgui-component .yasr-toolbar .chart-download-as-button,
+yasgui-component .yasr-toolbar .pivot-table-download-as-button {
+    color: var(--gw-button-primary-color) !important;
+    background-color: var(--gw-button-primary-background) !important;
+}
+
+yasgui-component .yasr-toolbar .chart-download-as-button:hover,
+yasgui-component .yasr-toolbar .pivot-table-download-as-button:hover {
+    color: var(--gw-button-primary-hover-color) !important;
+    background-color: var(--gw-button-primary-hover-background) !important;
+}
+
+yasgui-component .ontotext-dropdown-button {
+    height: 40px;
+    color: var(--gw-button-primary-color) !important;
+    background-color: var(--gw-button-primary-background) !important;
+}
+
+yasgui-component .ontotext-download-as .ontotext-dropdown-button {
+    height: 38px;
+}
+
+yasgui-component .ontotext-dropdown-button:hover,
+yasgui-component .ontotext-dropdown-button.ri-arrow-down-s-line:hover:after,
+yasgui-component .ontotext-dropdown-button.ri-arrow-up-s-line:hover:after {
+    background-color: var(--gw-button-primary-hover-background) !important;
+    color: var(--gw-button-primary-hover-color);
+}
+
+yasgui-component .ontotext-dropdown-button.ri-arrow-down-s-line:after,
+yasgui-component .ontotext-dropdown-button.ri-arrow-up-s-line:after {
+    background-color: var(--gw-button-primary-background) !important;
+    color: var(--gw-button-primary-color);
+}
+
+yasgui-component .ontotext-download-as .ontotext-dropdown-button .button-name {
+    font-family: var(--main-font);
+    font-weight: 400;
+}
+
+yasgui-component .ontotext-dropdown-menu.open {
+    border: 1px solid var(--gw-tieredmenu-border-color) !important;
+    box-shadow: var(--gw-tieredmenu-shadow-1-offset-x) var(--gw-tieredmenu-shadow-1-offset-y) var(--gw-tieredmenu-shadow-1-blur) var(--gw-tieredmenu-shadow-1-spread) var(--gw-tieredmenu-shadow-1-color);
+}
+
+yasgui-component .ontotext-dropdown-menu .ontotext-dropdown-menu-item {
+    padding: .5em 1.2em;
+    font-size: 1rem;
+}
+
+yasgui-component .ontotext-dropdown-menu.open .ontotext-dropdown-menu-item {
+    color: var(--gw-tieredmenu-item-color) !important;
+    background-color: var(--gw-tieredmenu-background) !important;
+}
+
+yasgui-component .ontotext-dropdown-menu .ontotext-dropdown-menu-item:hover {
+    color: var(--gw-tieredmenu-item-focus-color) !important;
+    background-color: var(--gw-tieredmenu-item-focus-background) !important;
+}
+
+/* #endregion YASR - download as buttons */
+
+/* #region YASR - pagination */
+yasgui-component .yasr .ontotext-pagination .page-selector {
+    color: var(--gw-paginator-nav-button-color);
+    background-color: var(--gw-paginator-nav-button-background);
+}
+
+yasgui-component .yasr .ontotext-pagination .page-button.selected-page {
+    color: var(--gw-paginator-nav-button-selected-color);
+    background-color: var(--gw-paginator-nav-button-selected-background);
+}
+
+yasgui-component .yasr .ontotext-pagination .page-button.selected-page:hover,
+yasgui-component .yasr .ontotext-pagination .page-selector:hover {
+    color: var(--gw-paginator-nav-button-hover-color);
+    background-color: var(--gw-paginator-nav-button-hover-background);
+}
+
+/* #endregion YASR - pagination */
+
+/* #region YASR - plugin control  */
+yasgui-component .yasr_plugin_control label .label {
+    margin-right: 5px;
+}
+
+yasgui-component .yasr_plugin_control label {
+    color: var(--gw-secondary-base) !important;
+    margin-bottom: 0;
+}
+
+yasgui-component .yasr .yasr_header {
+    background-color: var(--gw-info-lighter) !important;
+}
+
+yasgui-component .yasr .yasr_header .yasr_response_chip {
+    background-color: unset !important;
+}
+
+yasgui-component .ontotext-yasgui .yasr .yasr_header .tableControls .tableFilter {
+    background-color: var(--gw-form-field-background);
+    color: var(--gw-form-field-color);
+}
+
+/* #endregion YASR - plugin control  */
+
+/* #region YASR - response chip */
+yasgui-component .yasr_response_chip {
+    font-size: 16px;
+    color: var(--gw-secondary-base) !important;
+}
+
+yasgui-component .yasr_response_chip .response-info-message {
+    padding-left: 10px;
+}
+
+/* #endregion YASR - response chip */
+
+/* #region YASR - explain query */
+yasgui-component .yasr #explainPlanQuery {
+    font-family: var(--mono-font);
+    background-color: var(--gw-panel-background);
+}
+
+yasgui-component .yasr .explain-plan-container {
+    background-color: var(--gw-panel-background);
+    border: 1px solid var(--gw-dialog-border-color);
+
+    .cm-comment {
+        color: var(--gw-neutral-300);
+    }
+}
+
+yasgui-component .yasr .yasr-header-replacement {
+    color: inherit;
+    font-size: 20px;
+}
+
+yasgui-component .yasr .explain-plan-copy-btn {
+    font-weight: 400;
+    color: var(--gw-button-secondary-color);
+    background-color: var(--gw-shortcuts-editor-button-background);
+    border-color: var(--gw-button-secondary-border-color);
+    margin-right: 1px;
+    margin-top: 1px;
+}
+
+/* #endregion YASR - explain query */
+
+/* #region YASR ALERT BOX */
+yasgui-component .yasr .alert-box {
+    padding-right: 35px;
+}
+
+yasgui-component .yasr .alert-box .close-button {
+    font-size: 21px !important;
+}
+
+/* #endregion YASR ALERT BOX */
+
+/* #region YASR - overlay content and buttons */
+yasgui-component .yasr .yasr_results .overlay_content {
+    background: unset;
+}
+
+yasgui-component .yasr .yasr_results .yasr_btn.overlay_btn,
+yasgui-component .yasr .yasr_header .chart-config-control #openChartConfigBtn {
+    color: var(--gw-button-secondary-color) !important;
+    background: var(--gw-button-secondary-background) !important;
+    border-color: var(--gw-button-secondary-border-color) !important;
+}
+
+/* #endregion YASR - overlay content and buttons */

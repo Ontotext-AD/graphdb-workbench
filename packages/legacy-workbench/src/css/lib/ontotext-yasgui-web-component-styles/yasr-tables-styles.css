@@ -1,0 +1,226 @@
+/* #region YASR result table */
+yasgui-component .yasr a {
+    color: var(--gw-secondary-base) !important;
+}
+
+/* #endregion - YASR result table */
+
+/* #region YASR - raw response area */
+yasgui-component .yasr .yasr_results .CodeMirror {
+    /*YASR response area */
+    color: var(--gw-editor-content-color) !important;
+    background-color: var(--gw-editor-content-background) !important;
+}
+
+yasgui-component .yasr .yasr_results .CodeMirror.overflow:before {
+    background: unset;
+}
+
+yasgui-component .yasr .yasr_results .CodeMirror-gutters {
+    color: var(--gw-editor-content-color) !important;
+    background-color: var(--gw-editor-content-background) !important;
+}
+
+/* #endregion YASR - raw response area */
+
+/* #region - YASR pivot table plugin */
+yasgui-component .yasr .pivot-table-plugin select {
+    color: var(--gw-body-color);
+    background-color: var(--gw-body-background);
+}
+
+yasgui-component .yasr .pivot-table-plugin .pvtUi .pvtTable .pvtAxisLabel,
+yasgui-component .yasr .pivot-table-plugin .pvtUi .pvtTable .pvtTotalLabel {
+    color: var(--gw-datatable-header-color);
+    background-color: var(--gw-datatable-header-background);
+    border-color: var(--gw-datatable-header-cell-border-color);
+}
+
+yasgui-component .yasr table.pvtTable tbody tr td,
+yasgui-component .yasr .pivot-table-plugin .pvtUi .pvtTable .pvtRowLabel {
+    color: var(--gw-datatable-row-color);
+    background-color: var(--gw-datatable-row-background);
+}
+
+yasgui-component .yasr .pivot-table-plugin .pvtFilterBox {
+    color: var(--gw-dialog-color);
+    background-color: var(--gw-dialog-background);
+    border-color: var(--gw-dialog-border-color);
+}
+
+yasgui-component .yasr .pivot-table-plugin .pvtFilterBox button {
+    color: var(--gw-button-secondary-color);
+    background-color: var(--gw-dialog-background);
+    border-color: var(--gw-button-secondary-border-color);
+}
+
+yasgui-component .yasr .pivot-table-plugin .pvtFilterBox button:hover {
+    background-color: var(--gw-button-secondary-hover-background);
+    cursor: pointer;
+}
+
+yasgui-component .yasr .pivot-table-plugin .pvtFilterBox .pvtSearch {
+    color: var(--gw-form-field-color);
+    background-color: var(--gw-form-field-background);
+    border-color: var(--gw-form-field-border-color);
+}
+
+yasgui-component .yasr .yasr_fallback_info:not(:empty) {
+    border: 1px solid var(--gw-message-info-border-color);
+    color: var(--gw-message-info-color);
+    background-color: var(--gw-message-info-background);
+}
+
+/* #endregion - YASR pivot table plugin */
+
+/* #region - YASR extended boolean plugin */
+yasgui-component .yasr .error-response-plugin {
+    /*check with footer notification*/
+    background-color: var(--gw-error-lighter) !important;
+}
+
+yasgui-component .yasr .extended-boolean-plugin>* {
+    font-size: 3rem !important;
+}
+
+yasgui-component .yasr .extended-boolean-plugin .response-error {
+    background-color: var(--gw-error-lighter) !important;
+}
+
+yasgui-component .yasr .extended-boolean-plugin .response-success {
+    background-color: var(--gw-success-lighter) !important;
+}
+
+/* #endregion - YASR extended boolean plugin */
+
+/* #region - YASR google visualization table */
+yasgui-component .yasr .google-visualization-table-table {
+    /* Override google chart's fixed inline height and apply with max-height constraint to prevent stretching the table
+    when there are few results but still maintain the scrollable table behavior for more results. */
+    height: auto !important;
+    max-height: 600px !important;
+    color: var(--gw-datatable-row-color) !important;
+    background: var(--gw-datatable-row-background) !important;
+    border-color: var(--gw-datatable-border-color) !important;
+}
+
+yasgui-component .yasr .google-visualization-table-table .google-visualization-table-tr-head {
+    color: var(--gw-datatable-header-color) !important;
+    background-color: var(--gw-datatable-header-background) !important;
+    border-color: var(--gw-datatable-header-cell-border-color) !important;
+}
+
+yasgui-component .yasr .google-visualization-table-table .google-visualization-table-tr-even {
+    background-color: var(--gw-datatable-row-background) !important;
+}
+
+yasgui-component .yasr .google-visualization-table-table .google-visualization-table-tr-odd {
+    background-color: var(--gw-datatable-row-striped-background) !important;
+}
+
+yasgui-component .yasr .google-visualization-table-table .google-visualization-table-td {
+    border-color: var(--gw-datatable-border-color) !important;
+}
+
+yasgui-component .yasr .google-visualization-table-table .google-visualization-table-th {
+    border-color: var(--gw-datatable-header-cell-border-color) !important;
+}
+
+/* #endregion - YASR google visualization table */
+
+/* #region - YASR dataTables */
+yasgui-component .yasr .dataTables_wrapper .dataTable {
+    border-collapse: collapse;
+}
+
+yasgui-component .yasr .dataTables_wrapper .dataTable th {
+    font-weight: 500;
+    color: var(--gw-datatable-header-color) !important;
+    background-color: var(--gw-datatable-header-background) !important;
+    border-color: var(--gw-datatable-header-cell-border-color) !important;
+}
+
+/* Override the sorting icon coming from the yasr to make it themeable */
+yasgui-component .yasr .dataTables_wrapper .dataTable thead .sorting,
+yasgui-component .yasr .dataTables_wrapper .dataTable thead .sorting_asc,
+yasgui-component .yasr .dataTables_wrapper .dataTable thead .sorting_desc {
+    background-image: none !important;
+    position: relative;
+}
+
+yasgui-component .yasr .dataTables_wrapper .dataTable thead .sorting::after,
+yasgui-component .yasr .dataTables_wrapper .dataTable thead .sorting_asc::after,
+yasgui-component .yasr .dataTables_wrapper .dataTable thead .sorting_desc::after {
+    content: '';
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0.9em;
+    height: 0.9em;
+    background-color: var(--gw-datatable-sort-icon-color);
+    mask-size: contain;
+    -webkit-mask-size: contain;
+    mask-repeat: no-repeat;
+    -webkit-mask-repeat: no-repeat;
+}
+
+yasgui-component .yasr .dataTables_wrapper .dataTable thead .sorting::after {
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M18 9 12 3 6 9H18ZM18 15 12 21 6 15H18Z'%3E%3C/path%3E%3C/svg%3E");
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M18 9 12 3 6 9H18ZM18 15 12 21 6 15H18Z'%3E%3C/path%3E%3C/svg%3E");
+}
+
+yasgui-component .yasr .dataTables_wrapper .dataTable thead .sorting_asc::after {
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M4.86885 11H2.6665L6 3H8L11.3334 11H9.13113L8.7213 10H5.27869L4.86885 11ZM6.09836 8H7.90163L7 5.8L6.09836 8ZM18.9999 16V3H16.9999V16H13.9999L17.9999 21L21.9999 16H18.9999ZM10.9999 13H2.99992V15H7.85414L2.99992 19V21H10.9999V19H6.14605L10.9999 15V13Z'%3E%3C/path%3E%3C/svg%3E");
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M4.86885 11H2.6665L6 3H8L11.3334 11H9.13113L8.7213 10H5.27869L4.86885 11ZM6.09836 8H7.90163L7 5.8L6.09836 8ZM18.9999 16V3H16.9999V16H13.9999L17.9999 21L21.9999 16H18.9999ZM10.9999 13H2.99992V15H7.85414L2.99992 19V21H10.9999V19H6.14605L10.9999 15V13Z'%3E%3C/path%3E%3C/svg%3E");
+}
+
+yasgui-component .yasr .dataTables_wrapper .dataTable thead .sorting_desc::after {
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M4.86885 11H2.6665L6 3H8L11.3334 11H9.13113L8.7213 10H5.27869L4.86885 11ZM6.09836 8H7.90163L7 5.8L6.09836 8ZM21.9999 8L17.9999 3L13.9999 8H16.9999V21H18.9999V8H21.9999ZM10.9999 13H2.99992V15H7.85414L2.99992 19V21H10.9999V19H6.14605L10.9999 15V13Z'%3E%3C/path%3E%3C/svg%3E");
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M4.86885 11H2.6665L6 3H8L11.3334 11H9.13113L8.7213 10H5.27869L4.86885 11ZM6.09836 8H7.90163L7 5.8L6.09836 8ZM21.9999 8L17.9999 3L13.9999 8H16.9999V21H18.9999V8H21.9999ZM10.9999 13H2.99992V15H7.85414L2.99992 19V21H10.9999V19H6.14605L10.9999 15V13Z'%3E%3C/path%3E%3C/svg%3E");
+}
+
+yasgui-component .yasr .dataTables_wrapper .dataTable tbody tr {
+    vertical-align: top;
+    color: var(--gw-datatable-row-color) !important;
+    background-color: var(--gw-datatable-row-background) !important;
+}
+
+yasgui-component .yasr .dataTables_wrapper .dataTable tbody tr td {
+    border-color: var(--gw-datatable-border-color) !important;
+}
+
+yasgui-component .yasr .dataTables_wrapper .dataTable tbody tr:hover {
+    background-color: var(--gw-datatable-row-hover-background) !important;
+}
+
+yasgui-component .yasr .dataTables_wrapper .dataTable tbody tr.odd,
+yasgui-component .yasr .dataTables_wrapper .dataTable.withRowNumber tr.odd>td:first-child {
+    background-color: var(--gw-datatable-row-striped-background) !important;
+}
+
+yasgui-component .yasr .dataTables_wrapper .dataTable.withRowNumber tr.even>td:first-child {
+    background-color: var(--gw-datatable-row-background) !important;
+}
+
+yasgui-component .yasr .dataTables_wrapper .dataTable .rowNumber {
+    color: var(--gw-datatable-row-color) !important;
+}
+
+yasgui-component .yasr .dataTable a {
+    font-size: 16px;
+}
+
+yasgui-component .yasr .dataTable .nonUri {
+    color: inherit !important;
+}
+
+yasgui-component .yasr .dataTable .nonUri sup {
+    color: inherit !important;
+}
+
+yasgui-component .yasr .dataTable .triple-cell .triple-link {
+    color: var(--foreground-visual-sequential-4-1) !important;
+}
+
+/* #endregion - YASR dataTables */

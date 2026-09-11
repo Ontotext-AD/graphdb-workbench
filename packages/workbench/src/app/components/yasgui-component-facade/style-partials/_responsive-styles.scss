@@ -1,0 +1,49 @@
+/* Media queries ensuring proper responsive layout on different screen resolutions And scale it down on given viewport width */
+@media (max-width: 1439px) {
+  
+  /* Omit the heading  tags */
+  app-yasgui-component-facade:not(h3, h4, .dialog-body, .custom-button, .btn-orientation, sup) {
+      font-size: 14px !important;
+  }
+
+  app-yasgui-component-facade {
+    .yasgui-toolbar {
+      .yasgui-btn {
+        font-size: 12px !important;
+        height: 24px !important;
+      }
+
+      .btn-orientation {
+        font-size: 24px !important;
+      }
+    }
+
+    .yasqe_queryButton,
+    .ontotext-dropdown-button,
+    .tabPanel .yasqe .yasqe-footer-buttons .abort-button {
+      height: 33px !important;
+    }
+  }
+}
+
+@media (max-width: 1200px) {
+  app-yasgui-component-facade .yasr .yasr_btnGroup .yasr_btn {
+    padding: .73em;
+
+    span {
+      display: none;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .ontotext-dropdown {
+    .button-name {
+      display: inline;
+    }
+
+    .ontotext-dropdown-button:after {
+      padding-left: 10px !important;
+    }
+  }
+}

@@ -1,0 +1,162 @@
+/* #region YASQE - autocomplete */
+.CodeMirror-hints,
+.CodeMirror-hints .CodeMirror-hint {
+  font-family: inherit;
+  color: var(--gw-autocomplete-color);
+  background-color: var(--gw-autocomplete-background);
+
+  b {
+    color: var(--gw-autocomplete-dropdown-match-color);
+    font-weight: bolder;
+  }
+}
+
+.CodeMirror-hints {
+  border: 1px solid var(--gw-autocomplete-border-color);
+  box-shadow: var(--gw-autocomplete-shadow-offset-x) var(--gw-autocomplete-shadow-offset-y) var(--gw-autocomplete-shadow-blur) var(--gw-autocomplete-shadow-spread) var(--gw-autocomplete-shadow-color);
+
+  .CodeMirror-hint-active {
+    color: var(--gw-autocomplete-option-selected-color);
+    background-color: var(--gw-autocomplete-option-selected-background);
+  }
+
+  .CodeMirror-hint:not(.CodeMirror-hint-active):hover {
+    color: var(--gw-autocomplete-option-focus-color);
+    background-color: var(--gw-autocomplete-option-focus-background);
+  }
+}
+
+.yasqe-autocomplete-hint {
+  color: var(--gw-autocomplete-color);
+}
+
+/* #endregion YASQE - autocomplete */
+
+.yasqe .resizeChip {
+  background-color: var(--gw-button-secondary-background) !important;
+  color: var(--gw-button-secondary-color) !important;
+}
+
+app-yasgui-component-facade {
+  .yasqe .CodeMirror {
+    font-family: var(--mono-font) !important;
+  }
+
+  /* #region YASQE - side buttons */
+  .yasqe_queryButton,
+  .yasqe_querySplitWrapper .yasqe_querySplitToggle {
+    color: var(--gw-button-primary-color) !important;
+    background-color: var(--gw-button-primary-background) !important;
+  }
+
+  .yasqe_queryButton:hover,
+  .yasqe_querySplitWrapper .yasqe_querySplitToggle:hover {
+    color: var(--gw-button-primary-hover-color) !important;
+    background-color: var(--gw-button-primary-hover-background) !important;
+  }
+  
+  .yasqe .yasqe_buttons {
+    right: 21px;
+    background-color: var(--gw-editor-content-background);
+
+    .yasqe_expandResultsButton.custom-button.disabled {
+      opacity: var(--gw-button-disabled-opacity);
+    }
+
+    .custom-button {
+      /* There is a generic font-size rule that overrides the font size of the YASGUI component, so we set it explicitly to match the intended size of the YASQE buttons. */
+      font-size: 1.5em !important;
+      color: var(--gw-primary-base) !important;
+      background-color: var(--gw-editor-content-background) !important;
+
+      &:disabled:hover,
+      &:disabled:focus {
+        color: #818a91 !important;
+      }
+    }
+
+    .yasqe_queryButton {
+      font-family: var(--main-font);
+      font-weight: 400;
+      height: 38px !important;
+    }
+  }
+
+
+
+  .ontotext-run-dropdown-menu {
+    background-color: var(--gw-tieredmenu-background) !important;
+    border: 1px solid var(--gw-tieredmenu-border-color);
+    box-shadow: var(--gw-tieredmenu-shadow-1-offset-x) var(--gw-tieredmenu-shadow-1-offset-y) var(--gw-tieredmenu-shadow-1-blur) var(--gw-tieredmenu-shadow-1-spread) var(--gw-tieredmenu-shadow-1-color);
+    border-radius: 0;
+
+    .ontotext-run-dropdown-menu-item {
+      color: var(--gw-tieredmenu-color) !important;
+
+      &:hover {
+        color: var(--gw-tieredmenu-item-focus-color) !important;
+        background-color: var(--gw-tieredmenu-item-focus-background) !important;
+      }
+    }
+  }
+
+  /* #endregion YASQE - side buttons */
+
+  /* #region YASQE - saved queries */
+  .saved-queries-container {
+    color: var(--gw-dialog-color) !important;
+    background-color: var(--gw-dialog-background) !important;
+    border-color: var(--gw-dialog-border-color);
+    -webkit-box-shadow: var(--gw-dialog-shadow-1-offset-x) var(--gw-dialog-shadow-1-offset-y) var(--gw-dialog-shadow-1-blur) var(--gw-dialog-shadow-1-spread) var(--gw-dialog-shadow-1-color);
+    box-shadow: var(--gw-dialog-shadow-1-offset-x) var(--gw-dialog-shadow-1-offset-y) var(--gw-dialog-shadow-1-blur) var(--gw-dialog-shadow-1-spread) var(--gw-dialog-shadow-1-color);
+
+    .arrow::before {
+      border-left-color: var(--gw-dialog-border-color);
+    }
+
+    .arrow::after {
+      border-left-color: var(--gw-dialog-background);
+    }
+
+    .saved-queries-popup {
+      overflow-y: auto;
+
+      .saved-query {
+        padding: 0;
+
+        a {
+          color: var(--gw-secondary-base);
+          font-size: 14px;
+          font-weight: bolder;
+        }
+      }
+
+      .saved-query-actions .saved-query-action {
+        color: var(--gw-button-primary-link-color) !important;
+        background-color: var(--gw-dialog-background) !important;
+        font-size: 1.25em;
+      }
+    }
+
+  }
+
+  /* #endregion YASQE - saved queries */
+
+  /* #region YASQE FOOTER BUTTONS */
+  .tabPanel .yasqe .yasqe-footer-buttons {
+    padding-top: 15px;
+
+    .abort-button {
+      font-family: var(--main-font);
+      font-weight: 400;
+      height: 38px;
+      background-color: var(--gw-primary-base) !important;
+
+      &:hover {
+        background-color: var(--gw-primary-dark) !important;
+      }
+    }
+  }
+
+  /* #endregion YASQE FOOTER BUTTONS */
+}
