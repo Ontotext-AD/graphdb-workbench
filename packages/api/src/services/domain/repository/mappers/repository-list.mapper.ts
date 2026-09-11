@@ -1,5 +1,5 @@
 import {Repository, RepositoryList, RepositoryState, RepositoryType} from '../../../../models/repositories';
-import {MapperFn} from '../../../../providers/mapper/mapper-fn';
+import {MapperFn} from '../../../../providers';
 import {RepositoryListResponse} from '../response/repository-response';
 import {toEnum} from '../../../utils';
 
@@ -28,7 +28,6 @@ export const mapRepositoryListResponseToModel: MapperFn<RepositoryListResponse, 
           externalUrl: repositoryData.externalUrl,
           location: repositoryData.location,
           state: toEnum(RepositoryState, repositoryData.state),
-          stateLowercase: repositoryData.state ? repositoryData.state.toLowerCase() : undefined,
           local: repositoryData.local,
           readable: repositoryData.readable,
           writable: repositoryData.writable,
