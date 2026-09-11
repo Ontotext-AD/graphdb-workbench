@@ -9,6 +9,7 @@ const packagesDir = path.join(baseDir, 'packages');
 // Verified identical translations - no warnings or errors about them
 const identicalTranslations = [
   "#",
+  "Select",
   "Active",
   "Action",
   "Actions",

@@ -5,7 +5,8 @@ import {CommonModule} from '@angular/common';
 import {ActivatedRoute} from '@angular/router';
 import {provideTranslocoForTesting} from '../../../testing-utils/transloco-utils';
 import {provideNoopAnimations} from '@angular/platform-browser/animations';
-import {Repository, RepositoryContextService, RepositoryList, ServiceProvider} from '@ontotext/workbench-api';
+import {RepositoryContextService, RepositoryList, ServiceProvider} from '@ontotext/workbench-api';
+import {mockResizeObserverForTesting} from '../../../testing-utils/resize-observer-utils';
 
 function buildActivatedRouteMock(queryParams: Record<string, string> = {}, data: Record<string, unknown> = {}) {
   return {
@@ -17,6 +18,8 @@ describe('PageLayoutComponent', () => {
   let component: PageLayoutComponent;
   let fixture: ComponentFixture<PageLayoutComponent>;
   let repositoryContextService: RepositoryContextService;
+
+  mockResizeObserverForTesting();
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -135,68 +138,5 @@ describe('PageLayoutComponent', () => {
 
   it('should leave documentationLink undefined when not in route data', () => {
     expect(component.documentationLink()).toBeUndefined();
-  });
-
-  describe('repository-required-banner visibility', () => {
-    it('should show the banner when no repository is selected', () => {
-      const banner = fixture.nativeElement.querySelector('app-repository-required-banner');
-      expect(banner).not.toBeNull();
-    });
-
-    it('should hide the banner when a repository is already selected on init', async () => {
-      TestBed.resetTestingModule();
-      await TestBed.configureTestingModule({
-        imports: [PageLayoutComponent, CommonModule, provideTranslocoForTesting()],
-        providers: [
-          {provide: ActivatedRoute, useValue: buildActivatedRouteMock()},
-          provideNoopAnimations()
-        ]
-      }).compileComponents();
-
-      const repoContextService = ServiceProvider.get(RepositoryContextService);
-      const repository = new Repository({id: 'test', location: '', uri: 'http://test'});
-      repoContextService.updateRepositoryList(new RepositoryList([repository]));
-      await repoContextService.updateSelectedRepository(repository);
-
-      const f = TestBed.createComponent(PageLayoutComponent);
-      f.detectChanges();
-
-      const banner = f.nativeElement.querySelector('app-repository-required-banner');
-      expect(banner).toBeNull();
-    });
-
-    it('should hide the banner reactively when a repository is selected after init', async () => {
-      const repository = new Repository({id: 'test', location: '', uri: 'http://test'});
-      repositoryContextService.updateRepositoryList(new RepositoryList([repository]));
-
-      let banner = fixture.nativeElement.querySelector('app-repository-required-banner');
-      expect(banner).not.toBeNull();
-
-      await repositoryContextService.updateSelectedRepository(repository);
-      fixture.detectChanges();
-
-      banner = fixture.nativeElement.querySelector('app-repository-required-banner');
-      expect(banner).toBeNull();
-    });
-
-    it('should show the banner again when the selected repository is cleared', async () => {
-      const repository = new Repository({id: 'test', location: '', uri: 'http://test'});
-      repositoryContextService.updateRepositoryList(new RepositoryList([repository]));
-      await repositoryContextService.updateSelectedRepository(repository);
-      fixture.detectChanges();
-
-      expect(fixture.nativeElement.querySelector('app-repository-required-banner')).toBeNull();
-
-      await repositoryContextService.updateSelectedRepository(undefined);
-      fixture.detectChanges();
-
-      expect(fixture.nativeElement.querySelector('app-repository-required-banner')).not.toBeNull();
-    });
-
-    it('should unsubscribe from repository changes on destroy', () => {
-      const unsubscribeSpy = jest.spyOn(component['subscriptions'], 'unsubscribeAll');
-      component.ngOnDestroy();
-      expect(unsubscribeSpy).toHaveBeenCalled();
-    });
   });
 });

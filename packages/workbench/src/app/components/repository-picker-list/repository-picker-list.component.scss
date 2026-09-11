@@ -1,0 +1,129 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.repository-picker-list {
+  color: var(--gw-panel-color);
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+
+    .filters {
+      display: flex;
+      gap: 1em;
+      min-width: 0;
+      flex-wrap: wrap;
+      padding-bottom: 1em;
+
+      .filter-local-only {
+        display: flex;
+        align-items: center;
+        gap: .25em;
+
+        label {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+
+  .repository-list {
+    flex: 1;
+    min-height: 200px;
+    border: 1px solid var(--gw-datatable-border-color);
+
+    .actions-column {
+      width: 7rem;
+
+      .select-repository-btn {
+        visibility: hidden;
+      }
+    }
+
+    tr:hover {
+      background-color: var(--gw-datatable-row-hover-background);
+
+      .actions-column .select-repository-btn {
+        visibility: visible;
+      }
+    }
+
+    .type-column {
+      width: 2.5rem;
+      padding-right: 0 !important;
+      vertical-align: top;
+
+      .type-icon {
+        font-size: 1.2em;
+        color: var(--gw-button-primary-link-hover-color);
+      }
+    }
+
+    .name-column {
+      // Prevent long content from expanding the table beyond its container.
+      // The table layout still assigns the available space to this column.
+      max-width: 0;
+      padding-left: .1em;
+      vertical-align: top;
+
+      .repository-header {
+        display: flex;
+        align-items: baseline;
+        min-width: 0;
+      }
+
+      .repository-state {
+        flex-shrink: 0;
+        font-size: .8em;
+        margin-right: .5em;
+
+        .running {
+          color: var(--gw-button-success-background);
+        }
+
+        .inactive {
+          color: var(--gw-button-info-background);
+        }
+
+        .transitioning {
+          color: var(--gw-button-warn-background);
+        }
+      }
+
+      .repository-description {
+        font-weight: 400;
+      }
+
+      .repository-id,
+      .repository-description,
+      .repository-location {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .repository-id {
+        flex: 1;
+        min-width: 0;
+        font-weight: 600;
+      }
+    }
+  }
+}
