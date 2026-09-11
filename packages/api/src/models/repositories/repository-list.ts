@@ -23,8 +23,8 @@ export class RepositoryList extends ModelList<Repository> {
     super(repositories);
   }
 
-  filterWithCallback(filterCallback: (repository: Repository) => boolean): RepositoryList {
-    return new RepositoryList(super.filter(filterCallback));
+  filterAsList(filterFunction: (repository: Repository) => boolean): RepositoryList {
+    return new RepositoryList(super.filter(filterFunction));
   }
 
   /**
