@@ -304,7 +304,7 @@ export class AuthorizationService implements Service {
    * @returns {RepositoryList} A list of repositories that the user can write to.
    */
   getWritableRepositories(): RepositoryList {
-    return this.repositoryContextService.getRepositoryList().filterWithCallback(repository => this.canWriteRepo(repository));
+    return this.repositoryContextService.getRepositoryList().filterAsList(repository => this.canWriteRepo(repository));
   }
 
   /**
@@ -314,7 +314,7 @@ export class AuthorizationService implements Service {
    * @returns {RepositoryList} A list of repositories that the user can read.
    */
   getReadableRepositories(): RepositoryList {
-    return this.repositoryContextService.getRepositoryList().filterWithCallback(repository =>
+    return this.repositoryContextService.getRepositoryList().filterAsList(repository =>
       this.canReadRepo(repository) || this.canReadGqlRepo(repository)
     );
   }
