@@ -6,6 +6,7 @@ import {ActivatedRoute} from '@angular/router';
 import {provideTranslocoForTesting} from '../../../testing-utils/transloco-utils';
 import {provideNoopAnimations} from '@angular/platform-browser/animations';
 import {RepositoryContextService, RepositoryList, ServiceProvider} from '@ontotext/workbench-api';
+import {mockResizeObserverForTesting} from '../../../testing-utils/resize-observer-utils';
 
 function buildActivatedRouteMock(queryParams: Record<string, string> = {}, data: Record<string, unknown> = {}) {
   return {
@@ -17,6 +18,8 @@ describe('PageLayoutComponent', () => {
   let component: PageLayoutComponent;
   let fixture: ComponentFixture<PageLayoutComponent>;
   let repositoryContextService: RepositoryContextService;
+
+  mockResizeObserverForTesting();
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

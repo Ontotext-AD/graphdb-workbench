@@ -35,7 +35,7 @@ export class Repository extends Model<Repository> implements RepositoryReference
     this.externalUrl = data.externalUrl || '';
     this.location = data.location || '';
     this.state = data.state;
-    this.stateLowercase = data.stateLowercase;
+    this.stateLowercase = data.state ? data.state.toLowerCase() : undefined;
     this.local = data.local;
     this.readable = data.readable;
     this.writable = data.writable;

@@ -3,10 +3,13 @@ import { provideRouter } from '@angular/router';
 
 import { PageRestrictionsComponent } from './page-restrictions.component';
 import {provideTranslocoForTesting} from '../../../testing-utils/transloco-utils';
+import {mockResizeObserverForTesting} from '../../../testing-utils/resize-observer-utils';
 
 describe('PageRestrictionsComponent', () => {
   let component: PageRestrictionsComponent;
   let fixture: ComponentFixture<PageRestrictionsComponent>;
+
+  mockResizeObserverForTesting();
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
