@@ -29,27 +29,32 @@ export class RestrictionResolverService {
     const isLicenseValid = this.licenseContextService.getLicenseSnapshot()?.valid ?? false;
     const isSecurityEnabled = this.securityContextService.getSecurityConfig()?.isEnabled() ?? false;
     const canWrite = this.authorizationService.canWriteRepo(repo);
-    const canManage = this.authorizationService.isRepoManager();
+    const canCreateRepository = this.authorizationService.isRepoManager();
     const accessibleRepositoriesCount = this.authorizationService.getAccessibleRepositories(true, ctx.isRestricted).size();
     const hasAccessibleRepositories = accessibleRepositoriesCount > 0;
 
     const reasons: RestrictionReason[] = [];
 
     if (!repo && isLicenseValid) {
-      if (canManage && !hasAccessibleRepositories) {
+      if (canCreateRepository && !hasAccessibleRepositories) {
         reasons.push({
           severity: 'info',
           translationKey: 'components.page_restrictions.no_accessible_repos_create_one',
         });
-      } else if (canManage && hasAccessibleRepositories) {
+      } else if (canCreateRepository && hasAccessibleRepositories) {
         reasons.push({
           severity: 'info',
           translationKey: 'components.page_restrictions.no_active_repository_select_or_create_one',
         });
-      } else if (!canManage && hasAccessibleRepositories) {
+      } else if (!canCreateRepository && hasAccessibleRepositories) {
         reasons.push({
           severity: 'info',
           translationKey: 'components.page_restrictions.no_active_repository_select_one',
+        });
+      } else {
+        reasons.push({
+          severity: 'info',
+          translationKey: 'components.page_restrictions.no_accessible_repositories',
         });
       }
     }
