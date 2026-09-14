@@ -471,6 +471,12 @@ span.label {
     display: block;
 }
 
+/* Removes the native tooltip, which safari adds to long text with text-overflow: ellipsis */
+.repository .repository-title:after {
+    content: '';
+    display: block;
+}
+
 .repository .inactive-repo {
     color: var(--gw-foreground-on-surface-subtile);
 }
