@@ -25,15 +25,6 @@
     .title {
         border-bottom: 1px solid var(--gw-dialog-border-color);
         margin-bottom: 0.5rem;
-
-        .property-value {
-            overflow-wrap: break-word;
-            display: -webkit-inline-box;
-            -webkit-box-orient: vertical;
-            -webkit-line-clamp: 3;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
     }
 
     .repository-id {
