@@ -1,5 +1,4 @@
-import {inject, Injectable} from '@angular/core';
-import {TranslocoService} from '@jsverse/transloco';
+import {Injectable} from '@angular/core';
 import {
   AuthorizationService,
   LicenseContextService,
@@ -13,13 +12,13 @@ export interface RestrictionContext {
   selectedRepository: Repository | undefined;
   isRestricted: boolean;
   pageTitle: string;
-  ctaKey?: string;
-  ctaLink?: string;
+  actionLabelKey?: string;
+  actionLink?: string;
+  isExternalAction?: boolean;
 }
 
 @Injectable({ providedIn: 'root' })
 export class RestrictionResolverService {
-  private readonly transloco = inject(TranslocoService);
   private readonly licenseContextService = service(LicenseContextService);
   private readonly securityContextService = service(SecurityContextService);
   private readonly authorizationService = service(AuthorizationService);
@@ -89,8 +88,8 @@ export class RestrictionResolverService {
       reasons.push({
         severity: 'warn',
         translationKey: 'components.page_restrictions.invalid_license',
-        ctaKey: 'components.page_restrictions.set_new_license',
-        ctaLink: '/license',
+        actionLabelKey: 'components.page_restrictions.set_new_license',
+        actionLink: '/license',
       });
     }
 

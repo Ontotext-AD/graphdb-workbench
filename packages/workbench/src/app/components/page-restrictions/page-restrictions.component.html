@@ -5,8 +5,12 @@
 
         <div>
           {{ reason.translationKey | transloco: reason.translationParams }}
-          @if (reason.ctaKey) {
-            <a [routerLink]="reason.ctaLink">{{ reason.ctaKey | transloco }}</a>
+          @if (reason.actionLabelKey && reason.actionLink) {
+            @if (reason.isExternalAction) {
+              <a [href]="reason.actionLink" target="_blank" rel="noopener noreferrer">{{ reason.actionLabelKey | transloco }}</a>
+            } @else {
+              <a [routerLink]="reason.actionLink">{{ reason.actionLabelKey | transloco }}</a>
+            }
           }
         </div>
       </p-message>
