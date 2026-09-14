@@ -8,6 +8,7 @@ export class TooltipUtil {
   private static readonly ATTR_THEME = 'tooltip-theme';
   private static readonly ATTR_PLACEMENT = 'tooltip-placement';
   private static readonly ATTR_APPEND_TO = 'tooltip-append-to';
+  private static readonly ATTR_CLASS = 'tooltip-class';
   private static readonly TOOLTIP_CLASS = 'onto-tooltip';
 
   /**
@@ -50,7 +51,8 @@ export class TooltipUtil {
       .setContent(element.getAttribute(TooltipUtil.ATTR_CONTENT))
       .setTheme(element.getAttribute(TooltipUtil.ATTR_THEME))
       .setPlacement(element.getAttribute(TooltipUtil.ATTR_PLACEMENT) as OntoTooltipPlacement)
-      .setAppendTo(element.getAttribute(TooltipUtil.ATTR_APPEND_TO));
+      .setAppendTo(element.getAttribute(TooltipUtil.ATTR_APPEND_TO))
+      .setTooltipClass(element.getAttribute(TooltipUtil.ATTR_CLASS));
   }
 
   /**
@@ -89,7 +91,7 @@ export class TooltipUtil {
   }
 
   static getTooltip(element: HTMLElement): HTMLTooltipElement | null {
-    while (element && !element.classList.contains('tooltip-box')) {
+    while (element && !element.classList.contains('onto-tooltip-box')) {
       element = element.parentElement;
     }
     return element as HTMLTooltipElement;

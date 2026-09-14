@@ -217,7 +217,8 @@
         "tooltip": "Utiliser la configuration par défaut"
       },
       "explore_visual_graph_dropdown": {
-        "tooltip": "Sélectionner la configuration"
+        "tooltip": "Sélectionner la configuration",
+        "hint": "Indice : {{hint}}"
       }
     },
     "messages": {

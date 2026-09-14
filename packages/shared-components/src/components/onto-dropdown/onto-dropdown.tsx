@@ -22,6 +22,7 @@ export class OntoDropdown {
 
   private readonly logger = LoggerProvider.logger;
   private readonly GUIDE_SELECTOR_ATTR = 'guide-selector';
+  private readonly pendingItemTooltips = new Map<HTMLElementWithTooltip, symbol>();
   private dropdownButtonElement: HTMLElementWithTooltip;
 
   @Element() hostElement: HTMLOntoDropdownElement;
@@ -79,9 +80,19 @@ export class OntoDropdown {
   @Prop() items: DropdownItem<unknown>[];
 
   /**
-   *  The tooltip theme to be used. For more information {@link OntoTooltipConfiguration#theme}.
+   *  The tooltip theme to be used for the trigger. For more information {@link OntoTooltipConfiguration#theme}.
    */
   @Prop() tooltipTheme: string;
+
+  /**
+   *  The tooltip theme to be used for the items. For more information {@link OntoTooltipConfiguration#theme}.
+   */
+  @Prop() itemTooltipTheme: string;
+
+  /**
+   *  The tooltip class to be used. For more information {@link OntoTooltipConfiguration#tooltipClass}.
+   */
+  @Prop() tooltipClass: string;
 
   /**
    * Specifies the items tooltip placement. Accepts a string of the placement or a function that returns the placement.
@@ -155,6 +166,7 @@ export class OntoDropdown {
     const dropdownAlignmentClass = this.dropdownAlignment === DropdownItemAlignment.RIGHT
       ? 'onto-dropdown-right-item-alignment' : 'onto-dropdown-left-item-alignment';
     const tooltipPlacement = typeof this.tooltipPlacement === 'function' ? this.tooltipPlacement(this.open) : this.tooltipPlacement;
+    const menuItemTooltipTheme = this.itemTooltipTheme ?? this.tooltipTheme;
 
     return (
       <div class={`onto-dropdown ${this.open ? 'open' : 'closed'}`}>
@@ -163,6 +175,7 @@ export class OntoDropdown {
           {...(this.dropdownButtonGuideSelector ? { [this.GUIDE_SELECTOR_ATTR]: this.dropdownButtonGuideSelector } : {})}
           tooltip-placement={tooltipPlacement}
           tooltip-content={this.buttonTooltipContent}
+          tooltip-class={this.tooltipClass}
           {...(this.tooltipTheme ? {'tooltip-theme': this.tooltipTheme} : {})}
           onMouseEnter={this.setDropdownButtonTooltip()}
           onClick={this.toggleButtonClickHandler}>
@@ -179,8 +192,10 @@ export class OntoDropdown {
             <button class={'onto-dropdown-menu-item ' + item.cssClass}
               {...(item.guideSelector ? { [this.GUIDE_SELECTOR_ATTR]: item.guideSelector } : {})}
               tooltip-placement={OntoTooltipPlacement.LEFT}
-              {...(this.tooltipTheme ? {'tooltip-theme': this.tooltipTheme} : {})}
+              tooltip-class={this.tooltipClass}
+              {...(menuItemTooltipTheme ? {'tooltip-theme': menuItemTooltipTheme} : {})}
               onMouseEnter={this.setDropdownItemTooltip(item)}
+              onMouseLeave={this.clearPendingDropdownItemTooltip}
               onClick={this.itemClickHandler(item.value)}>
               {item.iconClass ? <span class={'onto-dropdown-option-icon ' + item.iconClass}></span> : ''}
               {item.iconImage ? <img class='onto-dropdown-option-image-icon' src={item.iconImage} alt={item.name ?? this.translate(item.nameLabelKey)}></img> : '' }
@@ -205,18 +220,35 @@ export class OntoDropdown {
 
   private setDropdownItemTooltip(item) {
     return async (event: MouseEvent) => {
-      const target = event.currentTarget as HTMLElement;
-      if (typeof item.tooltip === 'function') {
-        let tooltipContent = await this.getTooltipContent(item.tooltip);
-        target.setAttribute('tooltip-content', tooltipContent);
-      } else {
-        target.setAttribute(
-          'tooltip-content',
-          item.tooltip ?? this.translate(item.tooltipLabelKey)
-        );
+      const target = event.currentTarget as HTMLElementWithTooltip;
+      const request = Symbol();
+      this.pendingItemTooltips.set(target, request);
+      const tooltipContent = typeof item.tooltip === 'function'
+        ? await this.getTooltipContent(item.tooltip)
+        : (item.tooltip ?? this.translate(item.tooltipLabelKey));
+
+      if (this.pendingItemTooltips.get(target) !== request || !target.isConnected) {
+        return;
       }
+      this.pendingItemTooltips.delete(target);
+
+      target.setAttribute('tooltip-content', tooltipContent);
+      // Push the (possibly asynchronously resolved) content into an already created
+      // tooltip instance, since setting the attribute alone does not update it.
+      TooltipUtil.updateTooltipContent(target, tooltipContent);
+
+      // Re-dispatch a bubbling 'mouseover' event so the document-level tooltip listener
+      // (onto-tooltip) re-evaluates the target and shows the tooltip with the resolved
+      // content. This is required because 'mouseenter' does not bubble to that listener,
+      // and its handler may already have run (with a stale/empty attribute) before the
+      // async tooltip content above was resolved.
+      target.dispatchEvent(new MouseEvent('mouseover', {bubbles: true}));
     };
   }
+
+  private readonly clearPendingDropdownItemTooltip = (event: MouseEvent): void => {
+    this.pendingItemTooltips.delete(event.currentTarget as HTMLElementWithTooltip);
+  };
 
   private readonly toggleButtonClickHandler = () => {
     TooltipUtil.destroyTooltip(this.dropdownButtonElement);
@@ -226,6 +258,7 @@ export class OntoDropdown {
   };
 
   private clearDropdownItemTooltips(): void {
+    this.pendingItemTooltips.clear();
     this.hostElement
       .querySelectorAll<HTMLElement>('.onto-dropdown-menu-item')
       .forEach((el) => {
@@ -243,6 +276,7 @@ export class OntoDropdown {
   }
 
   private onSelect<T>(value: T): void {
+    this.clearDropdownItemTooltips();
     this.open = false;
     this.toggle.emit(this.open);
     this.valueChanged.emit(value);
@@ -254,6 +288,7 @@ export class OntoDropdown {
   }
 
   private closeMenu(): void {
+    this.clearDropdownItemTooltips();
     this.open = false;
     this.toggle.emit(this.open);
   }

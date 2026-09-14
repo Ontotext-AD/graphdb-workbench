@@ -103,7 +103,8 @@ export class OntoGraphExploreSplitButton {
             .sort((a, b) => a.name.localeCompare(b.name))
             .map(config =>
               new DropdownItem<GraphConfig>()
-                .setTooltip(config.name)
+                .setTooltip(this.buildGraphConfigTooltipHtml(config))
+                .setCssClass('explore-visual-graph-dropdown-item')
                 .setName(config.name)
                 .setIconImage(START_MODE_IMAGE_MAP[config.startMode])
                 .setValue(config));
@@ -113,6 +114,53 @@ export class OntoGraphExploreSplitButton {
           this.logger.error('Failed to load graph configurations ', error);
         });
     }
+  }
+
+  /**
+   * Builds the HTML content for the tooltip of a graph configuration dropdown item.
+   * @param config
+   * @private
+   */
+  private buildGraphConfigTooltipHtml(config: GraphConfig): string {
+    const name = this.escapeHtml(config.name);
+
+    const description = config.description
+      ? `<div class="description"><div class="clamp-text">${this.escapeHtml(config.description)}</div></div>`
+      : '';
+
+    let hint = '';
+    if (config.hint) {
+      const translatedHint = TranslationService.translate(
+        'graph_explore_split_button.buttons.explore_visual_graph_dropdown.hint',
+        [{ key: 'hint', value: config.hint }]
+      );
+
+      hint = `
+      <div class="hint alert alert-info no-icon compact mb-0" role="alert">
+        <div class="clamp-text">${this.escapeHtml(translatedHint)}</div>
+      </div>
+    `.trim();
+    }
+
+    return `
+    <div class="graph-config-tooltip">
+      <div class="name">${name}</div>
+      ${description}
+      ${hint}
+    </div>
+  `.trim();
+  }
+
+  private escapeHtml(str: string): string {
+    if (!str) {
+      return '';
+    }
+    return str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
   }
 
   render() {
@@ -134,7 +182,9 @@ export class OntoGraphExploreSplitButton {
             onValueChanged={this.handleValueChanged}
             dropdownAlignment={DropdownItemAlignment.RIGHT}
             tooltipPlacement={OntoTooltipPlacement.TOP}
-            dropdownButtonTooltip={TranslationService.translate('graph_explore_split_button.buttons.explore_visual_graph_dropdown.tooltip')}>
+            dropdownButtonTooltip={TranslationService.translate('graph_explore_split_button.buttons.explore_visual_graph_dropdown.tooltip')}
+            itemTooltipTheme="light-border"
+            tooltipClass="graph-config-dropdown-tooltip">
           </onto-dropdown>
           {this.isDropdownOpen && this.items.length === 0 ? (
             <div class="no-configurations-message">

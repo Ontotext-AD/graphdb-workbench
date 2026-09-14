@@ -69,7 +69,7 @@ describe('TooltipInstance', () => {
     test('should create floating element with correct structure', () => {
       tooltipInstance = new TooltipInstance(referenceElement, config);
 
-      const floatingElements = page.body.querySelectorAll<HTMLElement>('.tooltip-box');
+      const floatingElements = page.body.querySelectorAll<HTMLElement>('.onto-tooltip-box');
       expect(floatingElements.length).toBe(0); // Not appended until show() is called
     });
 
@@ -112,14 +112,14 @@ describe('TooltipInstance', () => {
     test('should append tooltip to document body by default', () => {
       tooltipInstance.show();
 
-      const tooltip = page.body.querySelector<HTMLElement>('.tooltip-box');
+      const tooltip = page.body.querySelector<HTMLElement>('.onto-tooltip-box');
       expect(tooltip?.parentElement).toBe(page.body);
     });
 
     test('should make tooltip visible', () => {
       tooltipInstance.show();
 
-      const tooltip = page.body.querySelector<HTMLElement>('.tooltip-box');
+      const tooltip = page.body.querySelector<HTMLElement>('.onto-tooltip-box');
       expect(tooltip.style.visibility).toBe('visible');
       expect(tooltip.style.opacity).toBe('0.9');
     });
@@ -138,7 +138,7 @@ describe('TooltipInstance', () => {
       tooltipInstance.show();
 
       // Verify tooltip is visible, which means auto-update was set up successfully
-      const tooltip = page.body.querySelector<HTMLElement>('.tooltip-box');
+      const tooltip = page.body.querySelector<HTMLElement>('.onto-tooltip-box');
       expect(tooltip).toBeTruthy();
       expect(tooltip.style.visibility).toBe('visible');
     });
@@ -162,7 +162,7 @@ describe('TooltipInstance', () => {
 
       tooltipInstance.show();
 
-      const tooltip = page.body.querySelector<HTMLElement>('.tooltip-box');
+      const tooltip = page.body.querySelector<HTMLElement>('.onto-tooltip-box');
       expect(tooltip?.parentElement).toBe(parent);
     });
 
@@ -174,7 +174,7 @@ describe('TooltipInstance', () => {
 
       tooltipInstance.show();
 
-      const tooltip = page.body.querySelector<HTMLElement>('.tooltip-box');
+      const tooltip = page.body.querySelector<HTMLElement>('.onto-tooltip-box');
       expect(tooltip?.parentElement).toBe(customContainer);
     });
 
@@ -186,7 +186,7 @@ describe('TooltipInstance', () => {
 
       tooltipInstance.show();
 
-      const tooltip = page.body.querySelector<HTMLElement>('.tooltip-box');
+      const tooltip = page.body.querySelector<HTMLElement>('.onto-tooltip-box');
       expect(tooltip?.parentElement).toBe(customContainer);
     });
   });
@@ -200,7 +200,7 @@ describe('TooltipInstance', () => {
       tooltipInstance.show();
       tooltipInstance.hide();
 
-      const tooltip = page.body.querySelector<HTMLElement>('.tooltip-box');
+      const tooltip = page.body.querySelector<HTMLElement>('.onto-tooltip-box');
       expect(tooltip.style.visibility).toBe('hidden');
       expect(tooltip.style.opacity).toBe('0');
     });
@@ -221,7 +221,7 @@ describe('TooltipInstance', () => {
       tooltipInstance.hide();
 
       // Verify tooltip is hidden
-      const tooltip = page.body.querySelector<HTMLElement>('.tooltip-box');
+      const tooltip = page.body.querySelector<HTMLElement>('.onto-tooltip-box');
       expect(tooltip.style.visibility).toBe('hidden');
     });
 
@@ -281,11 +281,11 @@ describe('TooltipInstance', () => {
       tooltipInstance.destroy();
 
       // Before delay
-      expect(page.body.querySelector<HTMLElement>('.tooltip-box')).toBeTruthy();
+      expect(page.body.querySelector<HTMLElement>('.onto-tooltip-box')).toBeTruthy();
 
       // After delay
       jest.advanceTimersByTime(100);
-      expect(page.body.querySelector<HTMLElement>('.tooltip-box')).toBeNull();
+      expect(page.body.querySelector<HTMLElement>('.onto-tooltip-box')).toBeNull();
     });
 
     test('should hide tooltip before removal', () => {
@@ -331,7 +331,7 @@ describe('TooltipInstance', () => {
       jest.advanceTimersByTime(100);
 
       // Tooltip should still exist
-      expect(page.body.querySelector<HTMLElement>('.tooltip-box')).toBeTruthy();
+      expect(page.body.querySelector<HTMLElement>('.onto-tooltip-box')).toBeTruthy();
     });
   });
 
@@ -344,7 +344,7 @@ describe('TooltipInstance', () => {
       tooltipInstance.show();
 
       // Verify tooltip is positioned (has position styles)
-      const tooltip = page.body.querySelector<HTMLElement>('.tooltip-box');
+      const tooltip = page.body.querySelector<HTMLElement>('.onto-tooltip-box');
       expect(tooltip).toBeTruthy();
       expect(tooltip.style.position).toBe('absolute');
     });
@@ -353,7 +353,7 @@ describe('TooltipInstance', () => {
       tooltipInstance.show();
       await new Promise(resolve => setTimeout(resolve, 10));
 
-      const tooltip = page.body.querySelector<HTMLElement>('.tooltip-box');
+      const tooltip = page.body.querySelector<HTMLElement>('.onto-tooltip-box');
       expect(tooltip).toBeTruthy();
       // Position should be set (not the initial 0)
       expect(tooltip.style.left).toBeDefined();
@@ -382,7 +382,7 @@ describe('TooltipInstance', () => {
       tooltipInstance.show();
       await new Promise(resolve => setTimeout(resolve, 10));
 
-      const tooltip = page.body.querySelector<HTMLElement>('.tooltip-box');
+      const tooltip = page.body.querySelector<HTMLElement>('.onto-tooltip-box');
       // Tooltip should either be hidden or visible depending on mock result
       expect(tooltip).toBeTruthy();
     });
@@ -391,7 +391,7 @@ describe('TooltipInstance', () => {
       tooltipInstance.show();
       await new Promise(resolve => setTimeout(resolve, 10));
 
-      const tooltip = page.body.querySelector<HTMLElement>('.tooltip-box');
+      const tooltip = page.body.querySelector<HTMLElement>('.onto-tooltip-box');
       expect(tooltip).toBeTruthy();
       // Placement attribute should be set
       expect(tooltip.dataset.theme).toBe('onto-tooltip');
@@ -459,7 +459,7 @@ describe('TooltipInstance', () => {
       tooltipInstance = new TooltipInstance(referenceElement, config);
       tooltipInstance.show();
 
-      const tooltip = page.body.querySelector<HTMLElement>('.tooltip-box');
+      const tooltip = page.body.querySelector<HTMLElement>('.onto-tooltip-box');
       expect(tooltip).toBeTruthy();
       expect(tooltip.style.position).toBe('absolute');
     });
@@ -469,7 +469,7 @@ describe('TooltipInstance', () => {
       tooltipInstance = new TooltipInstance(referenceElement, config);
       tooltipInstance.show();
 
-      const tooltip = page.body.querySelector<HTMLElement>('.tooltip-box');
+      const tooltip = page.body.querySelector<HTMLElement>('.onto-tooltip-box');
       expect(tooltip).toBeTruthy();
       expect(tooltip.style.position).toBe('absolute');
     });
@@ -479,7 +479,7 @@ describe('TooltipInstance', () => {
       tooltipInstance = new TooltipInstance(referenceElement, config);
       tooltipInstance.show();
 
-      const tooltip = page.body.querySelector<HTMLElement>('.tooltip-box');
+      const tooltip = page.body.querySelector<HTMLElement>('.onto-tooltip-box');
       expect(tooltip).toBeTruthy();
       expect(tooltip.style.position).toBe('absolute');
     });
@@ -491,7 +491,7 @@ describe('TooltipInstance', () => {
       tooltipInstance = new TooltipInstance(referenceElement, config);
       tooltipInstance.show();
 
-      const tooltip = page.body.querySelector<HTMLElement>('.tooltip-box');
+      const tooltip = page.body.querySelector<HTMLElement>('.onto-tooltip-box');
       expect(tooltip.dataset.theme).toBe('custom-theme');
     });
   });
@@ -501,7 +501,7 @@ describe('TooltipInstance', () => {
       tooltipInstance = new TooltipInstance(referenceElement, config);
       tooltipInstance.show();
 
-      const tooltip = page.body.querySelector<HTMLElement>('.tooltip-box') as HTMLTooltipElement;
+      const tooltip = page.body.querySelector<HTMLElement>('.onto-tooltip-box') as HTMLTooltipElement;
       expect(tooltip.tooltipTarget).toBe(referenceElement);
     });
 
@@ -513,7 +513,7 @@ describe('TooltipInstance', () => {
       referenceElement.hideTooltip?.();
       jest.advanceTimersByTime(100);
 
-      expect(page.body.querySelector<HTMLElement>('.tooltip-box')).toBeNull();
+      expect(page.body.querySelector<HTMLElement>('.onto-tooltip-box')).toBeNull();
       jest.useRealTimers();
     });
   });
