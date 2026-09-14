@@ -131,6 +131,7 @@ export class OntoRepositorySelector {
           dropdownAlignment={DropdownItemAlignment.RIGHT}
           tooltipPlacement={this.tooltipAlignment}
           tooltipTheme="light-border"
+          tooltipClass="repository-selector-tooltip"
           items={this.dropdownItems}
           auto-close>
         </onto-dropdown>

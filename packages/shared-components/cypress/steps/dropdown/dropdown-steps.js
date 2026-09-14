@@ -26,6 +26,6 @@ export class DropdownSteps extends BaseSteps {
   }
 
   static getTooltip() {
-    return cy.get('.tooltip-box');
+    return cy.get('.onto-tooltip-box');
   }
 }

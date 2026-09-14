@@ -990,8 +990,20 @@ yasgui-component .yasr .explain-plan-copy-btn {
 .yasgui-floating-tooltip,
 .yasgui-floating-tooltip-arrow,
 .ontotext-yasgui-tooltip .tooltip-box {
-    background-color: var(--gw-tooltip-background);
+    /*make it look like the onto-tooltip*/
+    width: max-content;
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.5;
+    max-width: var(--gw-tooltip-max-width);
+    pointer-events: auto;
+    opacity: 1 !important;
     color: var(--gw-tooltip-color);
+    background-color: var(--gw-tooltip-background);
+    border-radius: var(--gw-tooltip-border-radius);
+    box-shadow: var(--gw-tooltip-shadow-1-offset-x) var(--gw-tooltip-shadow-1-offset-y) var(--gw-tooltip-shadow-1-blur) var(--gw-tooltip-shadow-1-spread) var(--gw-tooltip-shadow-1-color),
+    var(--gw-tooltip-shadow-2-offset-x) var(--gw-tooltip-shadow-2-offset-y) var(--gw-tooltip-shadow-2-blur) var(--gw-tooltip-shadow-2-spread) var(--gw-tooltip-shadow-2-color);
+    padding: var(--gw-tooltip-padding);
 }
 
 .ontotext-yasgui-tooltip .tooltip-arrow {
