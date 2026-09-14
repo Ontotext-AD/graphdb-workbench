@@ -1,0 +1,29 @@
+<div class="page-restrictions" [style.height.px]="availableHeight()">
+  @if (restrictions().length) {
+    @for (reason of restrictions(); track reason.translationKey) {
+      <p-message [severity]="reason.severity" icon="ri-alert-line">
+
+        <div>
+          {{ reason.translationKey | transloco: reason.translationParams }}
+          @if (reason.actionLabelKey && reason.actionLink) {
+            @if (reason.isExternalAction) {
+              <a [href]="reason.actionLink" target="_blank" rel="noopener noreferrer">{{ reason.actionLabelKey | transloco }}</a>
+            } @else {
+              <a [routerLink]="reason.actionLink">{{ reason.actionLabelKey | transloco }}</a>
+            }
+          }
+        </div>
+      </p-message>
+    }
+  }
+  @if (repositoryList() && !selectedRepository()) {
+    <app-repository-picker-list
+      class="repository-list"
+      [requireWriteAccess]="isRestricted()"
+      [filterByTypes]="allowedRepositoryTypes()"
+      [filterByPermission]="requiredRepositoryPermission()"
+      [showStateFilter]="false">
+    </app-repository-picker-list>
+  }
+</div>
+
