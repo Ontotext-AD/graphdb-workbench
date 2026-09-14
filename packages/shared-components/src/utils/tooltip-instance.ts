@@ -124,7 +124,10 @@ export class TooltipInstance {
    */
   private createFloatingElement(): void {
     this.floatingElement = document.createElement('div');
-    this.floatingElement.className = 'tooltip-box';
+    this.floatingElement.className = 'onto-tooltip-box';
+    if (this.config.tooltipClass) {
+      this.floatingElement.classList.add(this.config.tooltipClass);
+    }
     this.floatingElement.dataset.theme = this.config.theme;
     this.floatingElement.style.position = 'absolute';
     this.floatingElement.style.top = '0';

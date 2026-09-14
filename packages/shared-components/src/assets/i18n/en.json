@@ -217,7 +217,8 @@
         "tooltip": "Use default config"
       },
       "explore_visual_graph_dropdown": {
-        "tooltip": "Select config"
+        "tooltip": "Select config",
+        "hint": "Hint: {{hint}}"
       }
     },
     "messages": {

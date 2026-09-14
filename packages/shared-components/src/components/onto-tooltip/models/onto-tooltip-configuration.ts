@@ -39,9 +39,14 @@ export class OntoTooltipConfiguration {
   allowHTML = true;
 
   /**
-   * Determines the theme of the tooltip element. Themes are created by including a class on the tooltip-box element as part of a selector in the form .tooltip-box[data-theme~='onto-tooltip']
+   * Determines the theme of the tooltip element. Themes are created by including a class on the onto-tooltip-box element as part of a selector in the form .onto-tooltip-box[data-theme~='onto-tooltip']
    */
   theme = 'onto-tooltip';
+
+  /**
+   * Sets the CSS class for the tooltip element. This class is added to the tooltip element and can be used to style the tooltip.
+   */
+  tooltipClass: string;
 
   /**
    * Invoked once the tooltip begins to show.
@@ -52,6 +57,11 @@ export class OntoTooltipConfiguration {
    * Invoked once the tooltip begins to hide.
    */
   onHide = () => document.querySelectorAll('.jfk-tooltip').forEach(popper => popper.classList.remove('hidden'));
+
+  setTooltipClass(tooltipClass: string): OntoTooltipConfiguration {
+    this.tooltipClass = tooltipClass;
+    return this;
+  }
 
   setHideOnClick(hideOnClick: boolean): OntoTooltipConfiguration {
     this.hideOnClick = hideOnClick;

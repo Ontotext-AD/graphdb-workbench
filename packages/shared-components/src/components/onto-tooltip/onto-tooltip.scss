@@ -3,7 +3,7 @@
 }
 
 // Base tooltip styles
-.tooltip-box {
+.onto-tooltip-box {
   width: max-content;
   font-size: 0.875rem;
   font-weight: 400;
@@ -11,9 +11,13 @@
   max-width: var(--gw-tooltip-max-width);
   pointer-events: auto;
   opacity: 1 !important;
-  color: var(--gw-tooltip-color) !important;
-  background-color: var(--gw-tooltip-background) !important;
-  border-radius: var(--gw-tooltip-border-radius) !important;
+  color: var(--gw-tooltip-color);
+  background-color: var(--gw-tooltip-background);
+  border-radius: var(--gw-tooltip-border-radius);
+  box-shadow: var(--gw-tooltip-shadow-1-offset-x) var(--gw-tooltip-shadow-1-offset-y) var(--gw-tooltip-shadow-1-blur) var(--gw-tooltip-shadow-1-spread) var(--gw-tooltip-shadow-1-color),
+    var(--gw-tooltip-shadow-2-offset-x) var(--gw-tooltip-shadow-2-offset-y) var(--gw-tooltip-shadow-2-blur) var(--gw-tooltip-shadow-2-spread) var(--gw-tooltip-shadow-2-color);
+  padding: var(--gw-tooltip-padding);
+  border: 1px solid var(--gw-tooltip-border-color);
 
   .tooltip-arrow {
     width: 10px;
@@ -29,23 +33,23 @@
     }
 
     &[data-placement="top"]::before {
-      border-bottom-color: transparent;
-      border-right-color: transparent;
+      border-bottom-color: transparent !important;
+      border-right-color: transparent !important;
     }
 
     &[data-placement="bottom"]::before {
-      border-top-color: transparent;
-      border-left-color: transparent;
+      border-top-color: transparent !important;
+      border-left-color: transparent !important;
     }
 
     &[data-placement="right"]::before {
-      border-bottom-color: transparent;
-      border-left-color: transparent;
+      border-bottom-color: transparent !important;
+      border-left-color: transparent !important;
     }
 
     &[data-placement="left"]::before {
-      border-top-color: transparent;
-      border-right-color: transparent;
+      border-top-color: transparent !important;
+      border-right-color: transparent !important;
     }
   }
 
@@ -53,6 +57,18 @@
     overflow-wrap: anywhere;
     position: relative;
     z-index: 1;
-    padding: var(--gw-tooltip-padding);
+  }
+}
+
+.onto-tooltip-box[data-theme="light-border"] {
+  color: var(--gw-dialog-color);
+  background-color: var(--gw-dialog-background);
+  border: 1px solid var(--gw-dialog-border-color);
+  box-shadow: var(--gw-dialog-shadow-1-offset-x) var(--gw-dialog-shadow-1-offset-y) var(--gw-dialog-shadow-1-blur) var(--gw-dialog-shadow-1-spread) var(--gw-dialog-shadow-1-color);
+  opacity: 1;
+
+  .tooltip-arrow::before {
+    border: 1px solid var(--gw-dialog-border-color);
+    background-color: var(--gw-dialog-background);
   }
 }
