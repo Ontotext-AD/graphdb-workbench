@@ -1,8 +1,12 @@
-import { Data } from '@angular/router';
+import {Data, Route} from '@angular/router';
 import {
   RepositoryPermissionType,
   RepositoryType,
 } from '@ontotext/workbench-api';
+
+export interface WorkbenchRoute extends Route {
+  data?: WorkbenchRouteData;
+}
 
 /**
  * Defines the metadata associated with a Workbench route.
