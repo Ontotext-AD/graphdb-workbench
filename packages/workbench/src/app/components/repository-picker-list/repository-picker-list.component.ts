@@ -9,11 +9,11 @@ import {
   LicenseContextService,
   Repository,
   navigate,
-  WindowService,
   RepositoryState,
   SubscriptionList,
   AuthorizationService,
   RepositoryReference,
+  getPathName,
 } from '@ontotext/workbench-api';
 import {NgClass} from '@angular/common';
 import {TableModule} from 'primeng/table';
@@ -126,8 +126,8 @@ export class RepositoryPickerListComponent implements OnInit, OnDestroy {
    * after repository creation.
    */
   createRepository(): void {
-    const currentPage = WindowService.getLocationPathname();
-    navigate(`/repository/create?previous=${currentPage}`);
+    const currentPage = getPathName();
+    navigate(`repository/create?previous=${currentPage}`);
   }
 
   /**
