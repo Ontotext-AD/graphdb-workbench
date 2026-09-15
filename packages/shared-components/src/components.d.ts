@@ -88,16 +88,24 @@ export namespace Components {
          */
         "iconImage": string;
         /**
+          * The tooltip theme to be used for the items. For more information {@link OntoTooltipConfiguration#theme }.
+         */
+        "itemTooltipTheme": string;
+        /**
           * Array of dropdown options.
          */
         "items": DropdownItem<unknown>[];
+        /**
+          * The tooltip class to be used. For more information {@link OntoTooltipConfiguration#tooltipClass }.
+         */
+        "tooltipClass": string;
         /**
           * Specifies the items tooltip placement. Accepts a string of the placement or a function that returns the placement. The function takes the isOpen parameter as a boolean and returns the placement as a string. If not provided, the tooltip will be placed to the left.
           * @default OntoTooltipPlacement.LEFT
          */
         "tooltipPlacement": OntoTooltipPlacement | ((isOpen: boolean) => OntoTooltipPlacement);
         /**
-          * The tooltip theme to be used. For more information {@link OntoTooltipConfiguration#theme }.
+          * The tooltip theme to be used for the trigger. For more information {@link OntoTooltipConfiguration#theme }.
          */
         "tooltipTheme": string;
     }
@@ -842,6 +850,10 @@ declare namespace LocalJSX {
          */
         "iconImage"?: string;
         /**
+          * The tooltip theme to be used for the items. For more information {@link OntoTooltipConfiguration#theme }.
+         */
+        "itemTooltipTheme"?: string;
+        /**
           * Array of dropdown options.
          */
         "items"?: DropdownItem<unknown>[];
@@ -854,12 +866,16 @@ declare namespace LocalJSX {
          */
         "onValueChanged"?: (event: OntoDropdownCustomEvent<any>) => void;
         /**
+          * The tooltip class to be used. For more information {@link OntoTooltipConfiguration#tooltipClass }.
+         */
+        "tooltipClass"?: string;
+        /**
           * Specifies the items tooltip placement. Accepts a string of the placement or a function that returns the placement. The function takes the isOpen parameter as a boolean and returns the placement as a string. If not provided, the tooltip will be placed to the left.
           * @default OntoTooltipPlacement.LEFT
          */
         "tooltipPlacement"?: OntoTooltipPlacement | ((isOpen: boolean) => OntoTooltipPlacement);
         /**
-          * The tooltip theme to be used. For more information {@link OntoTooltipConfiguration#theme }.
+          * The tooltip theme to be used for the trigger. For more information {@link OntoTooltipConfiguration#theme }.
          */
         "tooltipTheme"?: string;
     }
