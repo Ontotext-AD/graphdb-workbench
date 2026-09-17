@@ -19,7 +19,6 @@ describe('User and Access', () => {
         repositoryId2 = 'user-access-repo2-' + Date.now();
         cy.createRepository({id: repositoryId1});
         cy.createRepository({id: repositoryId2});
-        cy.presetRepository(repositoryId1);
         UserAndAccessSteps.visit();
         // Users table should be visible
         UserAndAccessSteps.getUsersTable().should('be.visible');

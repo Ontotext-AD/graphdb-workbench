@@ -12,6 +12,7 @@ pipeline {
         DOCKER_COMPOSE_FILE = "docker-compose-security-test.yaml"
         SONAR_ENVIRONMENT = "SonarCloud"
         NPM_CONFIG_REGISTRY = 'https://registry.npmjs.org/'
+        SLACK_CHANNEL = '#frontend-notifications'
     }
 
     stages {
@@ -95,6 +96,13 @@ pipeline {
         }
 
         failure {
+            script {
+                try {
+                    slack.notifyResult(channel: env.SLACK_CHANNEL, message:":rotating_light: The security tests for graphdb-workbench have failed! :rotating_light:")
+                } catch (e) {
+                    echo "Slack notification failed: ${e.getMessage()}"
+                }
+            }
             wrap([$class: 'BuildUser']) {
                 sendMail(env.BUILD_USER_EMAIL)
             }
