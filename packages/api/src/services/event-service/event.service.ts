@@ -45,17 +45,17 @@ export class EventService implements Service {
   }
 
   /**
-   * Evaluates cancellation handlers for the provided observers.
+   * Evaluates the cancellation handlers of the provided observers.
    *
-   * Handlers are evaluated sequentially until one of them requests cancellation of the event.
+   * Cancellation handlers are evaluated sequentially until one of them requests cancellation.
+   * If a handler requests cancellation, the remaining handlers are not evaluated.
    *
+   * @template T - The type of the event payload.
    * @param observers - The observers whose cancellation handlers should be evaluated.
-   *
-   * @returns A promise that resolves to <code>true</code> if the event should be canceled,
-   * or <code>false</code> if no handler requests cancellation.
+   * @param event - The event whose payload is passed to the cancellation handlers.
+   * @returns A promise that resolves to <code>true</code> if the event is canceled, or <code>false</code> if no.
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private async shouldCancelEvent<T extends {} | undefined>(observers: EventObserver<any>[], event: Event<T>): Promise<boolean> {
+  private async shouldCancelEvent<T extends {} | undefined>(observers: EventObserver<unknown>[], event: Event<T>): Promise<boolean> {
     for (const observer of observers) {
       const shouldCancel = await observer.shouldCancelEventHandler?.(event.payload);
       if (shouldCancel) {

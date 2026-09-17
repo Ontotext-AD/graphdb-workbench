@@ -77,16 +77,11 @@ describe('SPARQL Editor Navigation', () => {
 
         // WHEN: I visit a page with the ontotext-yasgui-web-component on it.
         SparqlEditorSteps.visitSparqlEditorPage();
-        // AND: I change the repository
-        RepositorySelectorSteps.selectRepository(secondRepositoryId);
-        // THEN: I expect the repository to be changed without confirmation, because there are no running queries.
-        RepositorySelectorSteps.getSelectedRepository().should('contain', secondRepositoryId);
-
-        // WHEN: I run a long-running query
-        QueryStubs.stubLongRunningQuery(secondRepositoryId, LONG_RUNNING_QUERY_DELAY);
+        // AND: I run a long-running query
+        QueryStubs.stubLongRunningQuery(repositoryId, LONG_RUNNING_QUERY_DELAY);
         YasqeSteps.executeQueryWithoutWaiteResult();
         // AND: I try to change the repository
-        RepositorySelectorSteps.selectRepository(repositoryId);
+        RepositorySelectorSteps.selectRepository(secondRepositoryId);
         // THEN: I expect to see a confirmation dialog
         ModalDialogSteps.getDialog().should('exist');
         ModalDialogSteps.getDialogBody().should('contain.text', 'You have running 1 query, that will be aborted.');
@@ -94,19 +89,25 @@ describe('SPARQL Editor Navigation', () => {
         // WHEN: I cancel the dialog
         ModalDialogSteps.cancel();
         // THEN: I expect the repository not to be changed.
-        RepositorySelectorSteps.getSelectedRepository().should('contain', secondRepositoryId);
+        RepositorySelectorSteps.getSelectedRepository().should('contain', repositoryId);
         // AND: I expect the query not to be aborted
         cy.get('@abortQuery.all').should('have.length', 0);
 
         // WHEN: I confirm changing of repository
-        RepositorySelectorSteps.selectRepository(repositoryId);
+        RepositorySelectorSteps.selectRepository(secondRepositoryId);
         ModalDialogSteps.getDialog().should('exist');
         ModalDialogSteps.getDialogBody().should('contain.text', 'You have running 1 query, that will be aborted.');
         ModalDialogSteps.confirm();
         // THEN: I expect the active repository to be changed
-        RepositorySelectorSteps.getSelectedRepository().should('contain', repositoryId);
+        RepositorySelectorSteps.getSelectedRepository().should('contain', secondRepositoryId);
         // AND: I expect the query to be aborted
         cy.get('@abortQuery.all').should('have.length', 1);
+
+        // WHEN: I change the repository again, but this time there is no running query
+        RepositorySelectorSteps.selectRepository(repositoryId);
+        // THEN: I expect the repository to be changed without confirmation, because there are no running queries.
+        RepositorySelectorSteps.getSelectedRepository().should('contain', repositoryId);
+        ModalDialogSteps.getDialog().should('not.exist');
     });
 
     it('should change application language if user confirmed', () => {

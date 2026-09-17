@@ -65,7 +65,7 @@ export class AuthenticationService implements Service {
    * Logs out the current user and emits logout event.
    * Updates security context for logout request.
    */
-  logout(): Promise<void> {
+  logout(): Promise<boolean> {
     const authStrategy = this.getAuthenticationStrategy();
     this.authenticationStorageService.setAuthenticated(false);
     return authStrategy.logout()
@@ -73,9 +73,9 @@ export class AuthenticationService implements Service {
         this.securityContextService.updateIsLoggedIn(false);
         if (this.authorizationService.hasFreeAccess()) {
           this.authorizationService.initializeFreeAccess();
-          void this.eventService.emit(new Login());
+          return this.eventService.emit(new Login());
         } else {
-          void this.eventService.emit(new LoggedOut());
+          return this.eventService.emit(new LoggedOut());
         }
       });
   }
