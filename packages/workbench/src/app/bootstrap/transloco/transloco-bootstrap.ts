@@ -14,12 +14,11 @@ import {environment} from '../../../environments/environment';
 const translocoInitializeProvider = provideAppInitializer(() => {
   const translocoService = inject(TranslocoService);
   const languageContextService = ServiceProvider.get(LanguageContextService);
-  const languageService = ServiceProvider.get(LanguageService);
 
   return new Promise<void>((resolve) => {
     languageContextService.onLanguageBundleChanged((languageBundle?: TranslationBundle) => {
       if (languageBundle) {
-        const languageCode = languageContextService.getSelectedLanguage() || languageService.getDefaultLanguage();
+        const languageCode = languageContextService.getSelectedLanguage();
         translocoService.setTranslation(languageBundle, languageCode);
         translocoService.setActiveLang(languageCode);
         resolve();

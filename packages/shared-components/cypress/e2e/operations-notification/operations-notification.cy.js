@@ -1,5 +1,4 @@
 import {OperationsNotificationSteps} from "../../steps/operations-notification/operations-notification.steps";
-import {HeaderSteps} from "../../steps/header/header-steps";
 
 const assertGroupCount = (index, textValue) => {
   OperationsNotificationSteps.getHeaderGroups()
@@ -9,13 +8,9 @@ const assertGroupCount = (index, textValue) => {
 };
 
 const assertRedirectLink = (index, textValue) => {
-  OperationsNotificationSteps.getDropdownButton().click();
-  OperationsNotificationSteps.getOperationsDropdownElements().eq(index).click();
-
-  OperationsNotificationSteps.getRedirectUrl()
-    .last()
-    .invoke('text')
-    .should('equal', `redirect to ${textValue}`);
+  OperationsNotificationSteps.getOperationsDropdownElements().eq(index)
+    .should('have.attr', 'href', textValue)
+    .should('have.attr', 'target', '_blank');
 }
 
 describe('onto-operations-notification', () => {
@@ -62,6 +57,7 @@ describe('onto-operations-notification', () => {
     OperationsNotificationSteps.loadRepositories();
     OperationsNotificationSteps.getRepositoryItems().should('have.length', 6);
     OperationsNotificationSteps.setMarvelRepo();
+    OperationsNotificationSteps.getDropdownButton().click();
 
     const operationLinks = ['cluster', 'monitor/backup-and-restore', 'import', 'monitor/queries', 'monitor/queries'];
 

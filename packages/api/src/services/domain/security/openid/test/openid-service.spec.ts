@@ -9,7 +9,7 @@ import {WindowService} from '../../../../window';
 import {service} from '../../../../../providers';
 import {OpenidSecurityConfig, SecurityConfig} from '../../../../../models/security';
 import {OpenIdAuthFlowType, OpenIdTokens} from '../../../../../models/security/authentication/openid-auth-flow-models';
-import {Logout} from '../../../../../models/events';
+import {LoggedOut} from '../../../../../models/events/auth/logged-out';
 import {MissingOpenidConfiguration} from '../../errors/openid/missing-openid-configuration';
 import {ResponseMock} from '../../../../http/test/response-mock';
 import {TestUtil} from '../../../../utils/test/test-util';
@@ -194,7 +194,7 @@ describe('OpenIdService', () => {
       await openIdService.refreshTokens('invalid-token');
 
       expect(clearAuthenticationSpy).toHaveBeenCalled();
-      expect(emitSpy).toHaveBeenCalledWith(expect.any(Logout));
+      expect(emitSpy).toHaveBeenCalledWith(expect.any(LoggedOut));
     });
 
     it('should throw MissingOpenidConfiguration when config is missing', async () => {

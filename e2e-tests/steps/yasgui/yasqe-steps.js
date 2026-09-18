@@ -1,4 +1,5 @@
 import {YasrSteps} from "./yasr-steps";
+import {YasguiLoader} from './yasgui-loader.js';
 
 export class YasqeSteps {
     static getYasqe() {
@@ -66,6 +67,8 @@ export class YasqeSteps {
 
     static executeQueryWithoutWaiteResult() {
         this.clickExecuteQueryButtonAndHideTooltip();
+        // Make sure that the query is executed before Cypress continues.
+        YasqeSteps.getAbortQueryButton().should('be.visible');
     }
 
     static executeErrorQuery() {
