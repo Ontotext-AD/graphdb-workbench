@@ -5,10 +5,13 @@ import {provideTranslocoForTesting} from '../../../testing-utils/transloco-utils
 import {provideRouter} from '@angular/router';
 import {DialogService} from 'primeng/dynamicdialog';
 import {ConfirmationService} from 'primeng/api';
+import {mockResizeObserverForTesting} from '../../../testing-utils/resize-observer-utils';
 
 describe('SparqlEditorPageComponent', () => {
   let component: SparqlEditorPageComponent;
   let fixture: ComponentFixture<SparqlEditorPageComponent>;
+
+  mockResizeObserverForTesting();
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
