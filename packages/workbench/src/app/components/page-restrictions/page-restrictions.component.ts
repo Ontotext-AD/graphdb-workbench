@@ -5,6 +5,7 @@ import {
 import {
   service,
   RepositoryContextService,
+  RestrictionContextService,
   Repository,
   SubscriptionList,
   RepositoryList,
@@ -41,6 +42,7 @@ export class PageRestrictionsComponent implements OnInit, AfterViewInit, OnDestr
 
   private readonly restrictionResolverService = inject(RestrictionResolverService);
   private readonly repositoryContextService = service(RepositoryContextService);
+  private readonly restrictionContextService = service(RestrictionContextService);
   private readonly elementRef = inject(ElementRef<HTMLElement>);
   private resizeObserver?: ResizeObserver;
 
@@ -90,7 +92,8 @@ export class PageRestrictionsComponent implements OnInit, AfterViewInit, OnDestr
   ngOnInit(): void {
     this.subscriptions.addAll([
       this.repositoryContextService.onSelectedRepositoryChanged((repo) => this.selectedRepository.set(repo)),
-      this.repositoryContextService.onRepositoryListChanged((repositories) => this.repositoryList.set(repositories))
+      this.repositoryContextService.onRepositoryListChanged((repositories) => this.repositoryList.set(repositories)),
+      this.restrictionContextService.onIsViewRestrictedChanged((isRestricted) => this.isRestricted.set(isRestricted))
     ]
     );
   }
