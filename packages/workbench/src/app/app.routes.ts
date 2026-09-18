@@ -1,4 +1,4 @@
-import {WorkbenchRoute} from './workbench-route';
+import {WorkbenchRoute} from './models/route/workbench-route';
 import {documentationLinkResolve} from './services/route-data-resolver';
 
 export const routes: WorkbenchRoute[] = [
