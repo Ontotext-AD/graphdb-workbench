@@ -10,7 +10,7 @@
         "clean-install": "sh scripts/clean.sh && npm run install:local",
         "install:ci": "sh scripts/install.sh && sh scripts/postinstall.sh",
         "install:local": "sh scripts/install-local.sh && sh scripts/postinstall.sh",
-        "prebuild": "npm run license-report-api && npm run license-report-root-config && npm run license-report-legacy-workbench && npm run license-report-shared-components && npm run license-report-workbench",
+        "prebuild": "npm run license-report-api && npm run license-report-root-config && npm run license-report-legacy-workbench && npm run license-report-shared-components && npm run license-report-workbench && npm run license-report-graphwise-reactodia",
         "build": "sh scripts/build.sh",
         "postbuild": "webpack --env BUILD_MODE=production --config=webpack.config.prod.js",
         "build-dev": "sh scripts/build.sh",
@@ -29,6 +29,7 @@
         "license-report-legacy-workbench": "npx license-checker --production --json --customPath license-checker/license-checker-format.json --start packages/legacy-workbench --out packages/legacy-workbench/dist/license-checker.json",
         "license-report-shared-components": "npx license-checker --production --json --customPath license-checker/license-checker-format.json --start packages/shared-components --out packages/shared-components/dist/license-checker.json",
         "license-report-workbench": "npx license-checker --production --json --customPath license-checker/license-checker-format.json --start packages/workbench --out packages/workbench/dist/license-checker.json",
+        "license-report-graphwise-reactodia": "npx license-checker --production --json --customPath license-checker/license-checker-format.json --start node_modules/graphwise-reactodia --out packages/workbench/dist/license-checker-graphwise-reactodia.json",
         "lint": "sh scripts/lint.sh",
         "lint-staged": "lint-staged",
         "validate": "sh scripts/validate.sh",
@@ -115,7 +116,7 @@
     "dependencies": {
         "@single-spa/import-map-injector": "^2.0.2",
         "graphdb-workbench-plugins": "^1.0.3",
-        "graphwise-reactodia": "^0.0.1-TR10",
+        "graphwise-reactodia": "^0.0.1-TR11",
         "import-map-overrides": "^6.1.0"
     }
 }
