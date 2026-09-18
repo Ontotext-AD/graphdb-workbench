@@ -17,7 +17,7 @@ import {
  *
  * This function should be called once during application bootstrap to avoid registering duplicate event subscriptions.
  */
-export const registerAuthenticationEventHandlers = (): void => {
+export const registerAuthenticationEventHandlers = (): Promise<void> => {
   service(EventService).subscribe(EventName.LOGOUT, () => service(AuthenticationService).logout());
   service(EventService).subscribe(EventName.LOGGED_OUT, () => {
     const languageContextService = service(LanguageContextService);
@@ -32,4 +32,5 @@ export const registerAuthenticationEventHandlers = (): void => {
         }),
     );
   });
+  return Promise.resolve();
 };
