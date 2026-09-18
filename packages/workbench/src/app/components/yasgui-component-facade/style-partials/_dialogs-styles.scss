@@ -1,0 +1,165 @@
+/* #region - scoped dialogs under the yasgui-component class. */
+app-yasgui-component-facade {
+   .cancel-button {
+    &:focus,
+    &:hover {
+      /* TODO change this */
+      background-color: #d4d4d4 !important;
+      border-color: #d4d4d4 !important;
+    }
+  }
+
+  .dialog,
+  .confirmation-dialog {
+    /* Dialog body should have slightly bigger font-size. When it is attached directly to the html body. */
+    .dialog-body {
+      font-size: 1.25rem !important;
+    }
+
+    .cancel-button {
+      margin-right: 3px;
+      
+      /* TODO change this */
+      background-color: #ebebeb;
+      border-color: #ebebeb;
+    }
+  }
+
+  .ok-button,
+  .primary-button,
+  .confirm-button {
+    background-color: var(--gw-button-primary-background) !important;
+    border-color: var(--gw-button-primary-border-color) !important;
+    color: var(--gw-button-primary-color) !important;
+  }
+
+  .ok-button:focus,
+  .ok-button:hover,
+  .primary-button:focus,
+  .primary-button:hover,
+  .confirm-button:focus,
+  .confirm-button:hover {
+    background-color: var(--gw-button-primary-hover-background) !important;
+    border-color: var(--gw-button-primary-hover-border-color) !important;
+    color: var(--gw-button-primary-hover-color) !important;
+  }
+
+  .confirmation-dialog .dialog-footer .confirm-button {
+    background-color: var(--gw-button-primary-background) !important;
+    border-color: var(--gw-button-primary-border-color) !important;
+    color: var(--gw-button-primary-color) !important;
+  }
+
+  .confirmation-dialog .dialog-footer .confirm-button:focus,
+  .confirmation-dialog .dialog-footer .confirm-button:hover {
+    background-color: var(--gw-button-primary-hover-background) !important;
+    border-color: var(--gw-button-primary-hover-border-color) !important;
+    color: var(--gw-button-primary-hover-color) !important;
+  }
+}
+
+/* #endregion - scoped dialogs under the yasgui-component class. */
+
+/* #region Dialogs from the yasgui component. Those are not scoped under the yasgui-component class. */
+.dialog {
+  color: var(--gw-dialog-color) !important;
+  background-color: var(--gw-dialog-background) !important;
+  border: 1px solid var(--gw-panel-border-color);
+  -webkit-box-shadow: var(--gw-dialog-shadow-1-offset-x) var(--gw-dialog-shadow-1-offset-y) var(--gw-dialog-shadow-1-blur) var(--gw-dialog-shadow-1-spread) var(--gw-dialog-shadow-1-color);
+  box-shadow: var(--gw-dialog-shadow-1-offset-x) var(--gw-dialog-shadow-1-offset-y) var(--gw-dialog-shadow-1-blur) var(--gw-dialog-shadow-1-spread) var(--gw-dialog-shadow-1-color);
+
+  .dialog-header {
+    border-bottom-color: var(--gw-dialog-border-color) !important;
+
+    .close-button {
+      color: var(--gw-dialog-color) !important;
+      background-color: var(--gw-dialog-background) !important;
+    }
+  }
+
+  /* Forms in the dialog */
+  .form-field {
+    :is(input:not([type="checkbox"]), select, textarea) {
+      color: var(--gw-form-field-color) !important;
+      background-color: var(--gw-form-field-background) !important;
+      border-color: var(--gw-form-field-border-color) !important;
+    }
+
+    input[type="checkbox"]:checked {
+      background-color: var(--gw-primary-base);
+      border-color: var(--gw-primary-base);
+    }
+
+    input[type="text"]:focus,
+    textarea:focus {
+      border-color: var(--gw-form-field-focus-border-color) !important;
+    }
+  }
+
+  /* Forms in the dialog */
+
+  .dialog-footer {
+    border-top-color: var(--gw-dialog-border-color) !important;
+
+    .cancel-button {
+      color: var(--gw-button-secondary-color) !important;
+      background-color: var(--gw-button-secondary-background) !important;
+      border-color: var(--gw-button-secondary-border-color) !important;
+
+      &:hover {
+        color: var(--gw-button-secondary-hover-color) !important;
+        background-color: var(--gw-button-secondary-hover-background) !important;
+        border-color: var(--gw-button-secondary-hover-border-color) !important;
+      }
+    }
+  }
+}
+
+/* #region - Keyboard shortcuts dialog specific styles */
+.keyboard-shortcuts-dialog-button {
+  font-weight: 400;
+  color: var(--gw-button-secondary-color) !important;
+  background-color: var(--gw-button-secondary-background) !important;
+  border-color: var(--gw-button-secondary-border-color) !important;
+}
+
+.keyboard-shortcuts-dialog-wrapper {
+  height: 20px;
+  line-height: 18px;
+  font-size: 90%;
+
+  &.resizeable-on {
+    margin-top: -31px;
+  }
+
+  .dialog .dialog-header .close-button {
+    color: var(--gw-button-secondary-color);
+    background-color: var(--gw-button-secondary-background);
+    border-color: var(--gw-button-secondary-border-color);
+
+    &:hover {
+      color: var(--gw-button-primary-link-hover-color) !important;
+    }
+  }
+
+  .keyboard-shortcut-section-title {
+    color: var(--gw-shortcuts-panel-heading-color);
+  }
+}
+
+.keyboard-shortcut-description-item {
+  justify-content: flex-start !important;
+}
+
+.keyboard-shortcuts-content {
+  kbd {
+    color: var(--gw-tag-info-color) !important;
+    background-color: var(--gw-tag-info-background) !important;
+  }
+
+  .keyboard-shortcut-description-item-description {
+    color: var(--gw-message-info-color) !important;
+  }
+}
+
+/* #endregion - DIALOGS - KEYBOARD SHORTCUTS */

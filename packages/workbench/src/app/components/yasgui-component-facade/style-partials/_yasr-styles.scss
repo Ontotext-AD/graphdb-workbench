@@ -1,0 +1,244 @@
+app-yasgui-component-facade {
+  /* #region YASR - toolbar right */
+  .yasr-toolbar {
+    align-items: stretch !important;
+    padding-left: 10px;
+    font-size: 16px;
+    line-height: 1.25;
+
+    /* Make all buttons in the yasr toolbar having equal height same as the other WB buttons. */
+    .yasr-toolbar-element {
+      height: 38px;
+    }
+
+    .chart-download-as-button,
+    .pivot-table-download-as-button {
+      color: var(--gw-button-primary-color) !important;
+      background-color: var(--gw-button-primary-background) !important;
+
+      &:hover {
+        color: var(--gw-button-primary-hover-color) !important;
+        background-color: var(--gw-button-primary-hover-background) !important;
+      }
+    }
+
+    .ontotext-dropdown-button {
+      height: 40px;
+      color: var(--gw-button-primary-color) !important;
+      background-color: var(--gw-button-primary-background) !important;
+
+      &.ri-arrow-down-s-line::after,
+      &.ri-arrow-up-s-line::after {
+        background-color: var(--gw-button-primary-background) !important;
+        color: var(--gw-button-primary-color);
+      }
+
+      &:hover,
+      &.ri-arrow-down-s-line:hover::after,
+      &.ri-arrow-up-s-line:hover::after {
+        background-color: var(--gw-button-primary-hover-background) !important;
+        color: var(--gw-button-primary-hover-color);
+      }
+    }
+
+    .ontotext-download-as .ontotext-dropdown-button {
+      height: 38px;
+
+      .button-name {
+        font-family: var(--main-font);
+        font-weight: 400;
+      }
+    }
+
+    .ontotext-dropdown-menu .ontotext-dropdown-menu-item {
+      padding: .5em 1.2em;
+      font-size: 1rem;
+
+      &:hover {
+        color: var(--gw-tieredmenu-item-focus-color) !important;
+        background-color: var(--gw-tieredmenu-item-focus-background) !important;
+      }
+
+      &.open {
+        border: 1px solid var(--gw-tieredmenu-border-color) !important;
+        box-shadow: var(--gw-tieredmenu-shadow-1-offset-x) var(--gw-tieredmenu-shadow-1-offset-y) var(--gw-tieredmenu-shadow-1-blur) var(--gw-tieredmenu-shadow-1-spread) var(--gw-tieredmenu-shadow-1-color);
+
+        .ontotext-dropdown-menu-item {
+          color: var(--gw-tieredmenu-item-color) !important;
+          background-color: var(--gw-tieredmenu-background) !important;
+        }
+      }
+    }
+  }
+
+  /* #endregion YASR - toolbar right */
+
+  /* #region YASR - tab bar */
+  .ontotext-yasgui .yasr {
+    .yasr_header {
+      background-color: var(--gw-info-lighter) !important;
+
+      .yasr_btnGroup {
+        background-color: var(--gw-panel-background) !important;
+
+        /* Remove overflow restriction on the YASR button group container. This allows dropdown menus
+          (for the "Open in Visual Graph" button) to fully expand outside the container, ensuring they are visible above
+          the results panel without being clipped. */
+        overflow: unset;
+      }
+
+      .yasr_btnGroup .yasr_btn {
+        padding: .52em;
+        margin-left: 0;
+        margin-right: .2rem;
+        font-size: 16px;
+        font-weight: 400;
+        color: var(--gw-tabs-tab-color) !important;
+        background-color: var(--gw-tabs-tab-background) !important;
+        fill: var(--gw-tabs-tab-color) !important;
+        border: 1px solid;
+        border-color: var(--gw-tabs-tab-border-color) !important;
+        border-bottom: 1px solid transparent !important;
+      }
+
+      .yasr_btnGroup .yasr_btn.selected {
+        color: var(--gw-tabs-tab-active-color) !important;
+        background-color: var(--gw-tabs-tab-active-background) !important;
+        border-color: var(--gw-tabs-tab-active-border-color) var(--gw-tabs-tab-active-border-color) transparent !important;
+        border-bottom: none;
+      }
+
+      .yasr_btnGroup .yasr_btn.selected:not(.disabled):hover {
+        color: var(--gw-tabs-tab-hover-color) !important;
+        background-color: var(--gw-tabs-tab-hover-background) !important;
+        fill: var(--gw-tabs-tab-hover-color) !important;
+        border-color: var(--gw-tabs-tab-hover-border-color) var(--gw-tabs-tab-hover-border-color) transparent !important;
+        border-bottom-width: 1px !important;
+      }
+
+      .yasr_btnGroup .yasr_btn .yasr-fullscreen-button {
+        background-color: var(--gw-button-tertiary-background);
+        color: var(--gw-button-tertiary-color);
+        padding-left: .73em;
+        padding-right: .73em;
+
+        &:hover {
+          background-color: var(--gw-button-tertiary-hover-background);
+          color: var(--gw-button-tertiary-hover-color);
+        }
+      }
+
+      /* #region YASR - response chip */
+      .yasr_response_chip {
+        background-color: unset !important;
+        color: var(--gw-secondary-base) !important;
+        font-size: 16px;
+
+        .response-info-message {
+          padding-left: 10px;
+        }
+      }
+
+      /* #endregion YASR - response chip */
+
+      /* #region YASR - plugin control  */
+      .yasr_plugin_control label {
+        color: var(--gw-secondary-base) !important;
+        margin-bottom: 0;
+
+        .label {
+          margin-right: 5px;
+        }
+      }
+
+      /* #endregion YASR - plugin control  */
+
+      .tableControls .tableFilter {
+        background-color: var(--gw-form-field-background);
+        color: var(--gw-form-field-color);
+      }
+
+      .chart-config-control #openChartConfigBtn {
+        color: var(--gw-button-secondary-color) !important;
+        background: var(--gw-button-secondary-background) !important;
+        border-color: var(--gw-button-secondary-border-color) !important;
+      }
+    }
+
+    /* #region YASR - pagination */
+    .ontotext-pagination {
+      .page-selector {
+        color: var(--gw-paginator-nav-button-color);
+        background-color: var(--gw-paginator-nav-button-background);
+      }
+
+      .page-button.selected-page {
+        color: var(--gw-paginator-nav-button-selected-color);
+        background-color: var(--gw-paginator-nav-button-selected-background);
+      }
+
+      .page-button.selected-page:hover,
+      .page-selector:hover {
+        color: var(--gw-paginator-nav-button-hover-color);
+        background-color: var(--gw-paginator-nav-button-hover-background);
+      }
+    }
+
+    /* #endregion YASR - pagination */
+
+    /* #region YASR - explain query */
+    #explainPlanQuery {
+      font-family: var(--mono-font);
+      background-color: var(--gw-panel-background);
+    }
+
+    .explain-plan-container {
+      background-color: var(--gw-panel-background);
+      border: 1px solid var(--gw-dialog-border-color);
+
+      .cm-comment {
+        color: var(--gw-neutral-300);
+      }
+    }
+
+    .yasr-header-replacement {
+      color: inherit;
+      font-size: 20px;
+    }
+
+    .explain-plan-copy-btn {
+      font-weight: 400;
+      color: var(--gw-button-secondary-color);
+      background-color: var(--gw-shortcuts-editor-button-background);
+      border-color: var(--gw-button-secondary-border-color);
+      margin-right: 1px;
+      margin-top: 1px;
+    }
+
+    /* #endregion YASR - explain query */
+
+    /* #region YASR ALERT BOX */
+    .alert-box {
+      padding-right: 35px;
+
+      .close-button {
+        font-size: 21px !important;
+      }
+    }
+
+    /* #endregion YASR ALERT BOX */
+
+
+    /* #region LOADER COMPONENT */
+    .loader-component {
+      svg circle {
+        fill: var(--gw-loader-color);
+      }
+    }
+
+    /* #endregion LOADER COMPONENT */
+
+  }
+
+  /* #endregion YASR - tab bar */
+}

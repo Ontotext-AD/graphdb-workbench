@@ -1,0 +1,225 @@
+app-yasgui-component-facade {
+  /* #region GLOBAL STYLES FOR BOTH YASQE, YASR AND OTHER COMPONENTS Resets the default font-size for every tag in the yasgui Omit the heading  tags */
+  :not(h3, h4, sup, .no-force-default-font) {
+    font-size: 1rem !important;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  /* #endregion GLOBAL STYLES FOR BOTH YASQE, YASR AND OTHER COMPONENTS */
+
+  .run_query_confirmation {
+    margin-bottom: 20px;
+  }
+
+  /** # region Fixes the issue with the color of the sequence of < or > characters.
+    This resolves the problem described in more detail in the issue tracker: "https://ontotext.atlassian.net/browse/GDB-9233" */
+  .CodeMirror pre.CodeMirror-line,
+  .CodeMirror pre.CodeMirror-line-like {
+    font-variant-ligatures: none;
+    -webkit-font-variant-ligatures: none;
+  }
+
+  /* #endregion Fixes the issue with the color of the sequence of < or > characters. */
+
+  /* #region Overrides for the YASQE theme */
+  .yasgui-host-element .yasgui .CodeMirror[class*="cm-s-"]:not(.cm-s-default) {
+    border-color: var(--gw-tabs-tab-active-border-color);
+    background-color: #1C1C1C;
+
+    /* Line numbers */
+    .CodeMirror-linenumber {
+      color: #787878;
+    }
+
+    /* Match highlight */
+    .cm-matchhighlight {
+      background-color: #dbdeed;
+    }
+
+    .yasqe_buttons .custom-button {
+      background-color: #1C1C1C !important;
+    }
+
+    .notification {
+      color: var(--gw-button-secondary-color) !important;
+      background-color: var(--gw-button-secondary-background) !important;
+      border-color: var(--gw-button-secondary-border-color) !important;
+    }
+
+    .cm-comment {
+      color: var(--gw-neutral-300);
+    }
+  }
+
+  /* #endregion Overrides for the YASQE theme */
+
+
+  /* #region YASGUI - TOOLBAR TOP RIGHT */
+  .yasgui-toolbar {
+    .yasgui-btn {
+      color: var(--gw-button-secondary-color) !important;
+      background-color: var(--gw-button-secondary-background) !important;
+      border-color: var(--gw-button-secondary-border-color) !important;
+      font-size: 14px !important;
+      padding-left: 8px;
+      padding-right: 8px;
+
+      &:hover {
+        color: var(--gw-button-secondary-hover-color) !important;
+        background-color: var(--gw-button-secondary-hover-background) !important;
+        border-color: var(--gw-button-secondary-hover-border-color) !important;
+      }
+
+      &.btn-selected {
+        color: var(--gw-button-primary-color) !important;
+        background-color: var(--gw-button-primary-background) !important;
+        border-color: var(--gw-button-primary-border-color) !important;
+
+        &:hover {
+          color: var(--gw-button-primary-hover-color) !important;
+          background-color: var(--gw-button-primary-hover-background) !important;
+          border-color: var(--gw-button-primary-hover-border-color) !important;
+        }
+      }
+    }
+
+    .btn-orientation {
+      font-size: 28px !important;
+      margin-left: 1rem;
+      color: var(--gw-button-secondary-color) !important;
+      background-color: transparent !important;
+    }
+  }
+
+  /* #endregion YASGUI - TOOLBAR TOP RIGHT */
+
+  /* #region YASGUI QUERY TABS */
+  .yasgui {
+    .tab .closeTab:hover,
+    .addTab:hover {
+      color: var(--gw-button-primary-link-hover-color) !important;
+    }
+
+    .tab .closeTab .ri-close-line,
+    .addTab .ri-add-circle-line {
+      font-size: 1.225em !important;
+      font-weight: 100;
+    }
+
+    .tabsList {
+      .tab {
+        padding: 0.46em !important;
+        color: var(--gw-tabs-tab-color) !important;
+        background-color: var(--gw-tabs-tab-background) !important;
+        border-color: var(--gw-tabs-tab-border-color) var(--gw-tabs-tab-border-color) transparent !important;
+        font-weight: 400;
+      }
+
+      .tab.active {
+        color: var(--gw-tabs-tab-active-color) !important;
+        background-color: var(--gw-tabs-tab-active-background) !important;
+        border-color: var(--gw-tabs-tab-active-border-color) var(--gw-tabs-tab-active-border-color) transparent !important;
+
+        &:hover {
+          color: var(--gw-tabs-tab-active-color) !important;
+          background-color: var(--gw-tabs-tab-active-background) !important;
+          border-color: var(--gw-tabs-tab-active-border-color) var(--gw-tabs-tab-active-border-color) transparent !important;
+        }
+      }
+
+      .tab:hover {
+        color: var(--gw-tabs-tab-hover-color) !important;
+        background-color: var(--gw-tabs-tab-hover-background) !important;
+        border-color: var(--gw-tabs-tab-hover-border-color) var(--gw-tabs-tab-hover-border-color) transparent !important;
+      }
+
+      .tab .editable-text-field-wrapper .editable-text-field {
+        color: var(--gw-form-field-color) !important;
+        background-color: var(--gw-form-field-background) !important;
+        border-color: var(--gw-form-field-border-color) !important;
+
+      }
+
+      .tab .editable-text-field-wrapper .save-btn {
+        color: var(--gw-button-primary-color) !important;
+        background-color: var(--gw-button-primary-background) !important;
+
+        &:hover {
+          color: var(--gw-button-primary-hover-color) !important;
+          background-color: var(--gw-button-primary-hover-background) !important;
+        }
+      }
+
+      .tab .editable-text-field-wrapper .cancel-btn {
+        color: var(--gw-button-secondary-color);
+        background-color: var(--gw-button-secondary-background);
+        border-color: var(--gw-button-secondary-border-color);
+
+        &:hover {
+          color: var(--gw-button-secondary-hover-color);
+          background-color: var(--gw-button-secondary-hover-background);
+          border-color: var(--gw-button-secondary-hover-border-color);
+        }
+      }
+
+      .tab .editable-text-field-wrapper .save-btn span,
+      .tab .editable-text-field-wrapper .cancel-btn span {
+        font-weight: 900;
+      }
+
+      .tab .closeTab {
+        color: inherit !important;
+      }
+
+      .create-tab-tab {
+        color: var(--gw-tabs-tab-active-color) !important;
+        background-color: var(--gw-tabs-tab-active-background) !important;
+        border-color: var(--gw-tabs-tab-active-border-color) var(--gw-tabs-tab-active-border-color) transparent !important;
+
+        .addTab {
+          color: var(--gw-button-secondary-color) !important;
+          background-color: var(--gw-tabs-tab-background);
+          border-color: var(--gw-tabs-tab-border-color) var(--gw-tabs-tab-border-color) transparent;
+        }
+      }
+    }
+  }
+
+  /* #endregion YASGUI QUERY TABS */
+}
+
+/* #region YASGUI FLOATING TOOLTIP */
+.yasgui-floating-tooltip,
+.yasgui-floating-tooltip-arrow,
+.ontotext-yasgui-tooltip .tooltip-box {
+  background-color: var(--gw-tooltip-background);
+  color: var(--gw-tooltip-color);
+}
+
+.ontotext-yasgui-tooltip {
+  .tooltip-arrow {
+    color: var(--gw-tooltip-background);
+  }
+
+  &[data-placement^="top"] .tooltip-arrow::before {
+    border-top-color: var(--gw-tooltip-background);
+  }
+
+  &[data-placement^="left"] .tooltip-arrow::before {
+    border-left-color: var(--gw-tooltip-background);
+  }
+
+  &[data-placement^="right"] .tooltip-arrow::before {
+    border-right-color: var(--gw-tooltip-background);
+  }
+
+  &[data-placement^="bottom"] .tooltip-arrow::before {
+    border-bottom-color: var(--gw-tooltip-background);
+  }
+
+}
+
+/* #endregion YASGUI FLOATING TOOLTIP */

@@ -1,0 +1,177 @@
+/* #region GLOBAL STYLES FOR BOTH YASQE, YASR AND OTHER COMPONENTS */
+/* Resets the default font-size for every tag in the yasgui */
+/* Omit the heading  tags */
+yasgui-component :not(h3,h4,sup,.no-force-default-font) {
+    font-size: 1rem !important;
+}
+
+.hidden {
+    display: none;
+}
+/* #endregion GLOBAL STYLES FOR BOTH YASQE, YASR AND OTHER COMPONENTS */
+
+.run_query_confirmation {
+    margin-bottom: 20px;
+}
+
+/* #region YASGUI - TOOLBAR TOP RIGHT */
+yasgui-component .yasgui-toolbar .yasgui-btn {
+    color: var(--gw-button-secondary-color) !important;
+    background-color: var(--gw-button-secondary-background) !important;
+    border-color: var(--gw-button-secondary-border-color) !important;
+    font-size: 14px !important;
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+yasgui-component .yasgui-btn:hover {
+    color: var(--gw-button-secondary-hover-color) !important;
+    background-color: var(--gw-button-secondary-hover-background) !important;
+    border-color: var(--gw-button-secondary-hover-border-color) !important;
+}
+
+yasgui-component .yasgui-btn.btn-selected {
+    color: var(--gw-button-primary-color) !important;
+    background-color: var(--gw-button-primary-background) !important;
+    border-color: var(--gw-button-primary-border-color) !important;
+}
+
+yasgui-component .yasgui-btn.btn-selected:hover {
+    color: var(--gw-button-primary-hover-color) !important;
+    background-color: var(--gw-button-primary-hover-background) !important;
+    border-color: var(--gw-button-primary-hover-border-color) !important;
+}
+
+yasgui-component .yasgui-toolbar .btn-orientation {
+    font-size: 28px !important;
+    margin-left: 1rem;
+    color: var(--gw-button-secondary-color) !important;
+    background-color: transparent !important;
+}
+/* #endregion YASGUI - TOOLBAR TOP RIGHT */
+
+/* #region YASGUI QUERY TABS */
+yasgui-component .yasgui .tabsList .tab {
+    padding: 0.46em !important;
+    color: var(--gw-tabs-tab-color) !important;
+    background-color: var(--gw-tabs-tab-background) !important;
+    border-color: var(--gw-tabs-tab-border-color) var(--gw-tabs-tab-border-color) transparent !important;
+    font-weight: 400; 
+}
+
+yasgui-component .yasgui .tabsList .tab:hover {
+    color: var(--gw-tabs-tab-hover-color) !important;
+    background-color: var(--gw-tabs-tab-hover-background) !important;
+    border-color: var(--gw-tabs-tab-hover-border-color) var(--gw-tabs-tab-hover-border-color) transparent !important;
+}
+
+yasgui-component .yasgui .tabsList .tab.active {
+    color: var(--gw-tabs-tab-active-color) !important;
+    background-color: var(--gw-tabs-tab-active-background) !important;
+    border-color: var(--gw-tabs-tab-active-border-color) var(--gw-tabs-tab-active-border-color) transparent !important;
+}
+
+yasgui-component .yasgui .tabsList .tab.active:hover {
+    color: var(--gw-tabs-tab-active-color) !important;
+    background-color: var(--gw-tabs-tab-active-background) !important;
+    border-color: var(--gw-tabs-tab-active-border-color) var(--gw-tabs-tab-active-border-color) transparent !important;
+}
+
+yasgui-component .yasgui .tabsList .tab .editable-text-field {
+    color: var(--gw-form-field-color) !important;
+    background-color: var(--gw-form-field-background) !important;
+    border-color: var(--gw-form-field-border-color) !important;
+}
+
+yasgui-component .editable-text-field-wrapper .save-btn {
+    color: var(--gw-button-primary-color) !important;
+    background-color: var(--gw-button-primary-background) !important;
+}
+
+yasgui-component .editable-text-field-wrapper .save-btn:hover {
+    color: var(--gw-button-primary-hover-color) !important;
+    background-color: var(--gw-button-primary-hover-background) !important;
+}
+
+yasgui-component .editable-text-field-wrapper .cancel-btn {
+    color: var(--gw-button-secondary-color);
+    background-color: var(--gw-button-secondary-background);
+    border-color: var(--gw-button-secondary-border-color);
+}
+
+yasgui-component .editable-text-field-wrapper .cancel-btn:hover {
+    color: var(--gw-button-secondary-hover-color);
+    background-color: var(--gw-button-secondary-hover-background);
+    border-color: var(--gw-button-secondary-hover-border-color);
+}
+
+yasgui-component .editable-text-field-wrapper .save-btn span,
+yasgui-component .editable-text-field-wrapper .cancel-btn span {
+    font-weight: 900;
+}
+
+yasgui-component .yasgui .tabsList .tab .closeTab {
+    color: inherit !important;
+}
+
+yasgui-component .yasgui .tabsList .create-tab-tab {
+    color: var(--gw-tabs-tab-active-color) !important;
+    background-color: var(--gw-tabs-tab-active-background) !important;
+    border-color: var(--gw-tabs-tab-active-border-color) var(--gw-tabs-tab-active-border-color) transparent !important;
+}
+
+yasgui-component .yasgui .tabsList .addTab {
+    color: var(--gw-button-secondary-color) !important;
+    background-color: var(--gw-tabs-tab-background);
+    border-color: var(--gw-tabs-tab-border-color) var(--gw-tabs-tab-border-color) transparent;
+}
+
+yasgui-component .yasgui .tabsList .tab .closeTab:hover,
+yasgui-component .yasgui .tabsList .addTab:hover {
+    color: var(--gw-button-primary-link-hover-color) !important;
+}
+
+yasgui-component .yasgui .tabsList .tab .closeTab .ri-close-line,
+yasgui-component .yasgui .tabsList .addTab .ri-add-circle-line {
+    font-size: 1.225em !important;
+    font-weight: 100;
+}
+/* #endregion YASGUI QUERY TABS */
+
+/* #region YASGUI FLOATING TOOLTIP */
+.yasgui-floating-tooltip,
+.yasgui-floating-tooltip-arrow,
+.ontotext-yasgui-tooltip .tooltip-box {
+    background-color: var(--gw-tooltip-background);
+    color: var(--gw-tooltip-color);
+}
+
+.ontotext-yasgui-tooltip .tooltip-arrow {
+    color: var(--gw-tooltip-background);
+}
+
+.ontotext-yasgui-tooltip[data-placement^=top] .tooltip-arrow::before {
+    border-top-color: var(--gw-tooltip-background);
+
+}
+
+.ontotext-yasgui-tooltip[data-placement^=left] .tooltip-arrow::before {
+    border-left-color: var(--gw-tooltip-background);
+}
+
+.ontotext-yasgui-tooltip[data-placement^=right] .tooltip-arrow::before {
+    border-right-color: var(--gw-tooltip-background);
+}
+
+.ontotext-yasgui-tooltip[data-placement^=bottom] .tooltip-arrow::before {
+    border-bottom-color: var(--gw-tooltip-background);
+}
+/* #endregion YASGUI FLOATING TOOLTIP */
+
+/* #region LOADER COMPONENT */
+yasgui-component .yasr .loader-component {
+    svg circle {
+        fill: var(--gw-loader-color);
+    }
+}
+/* #endregion LOADER COMPONENT */
