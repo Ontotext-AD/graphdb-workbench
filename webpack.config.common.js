@@ -130,6 +130,7 @@ module.exports = (webpackConfigEnv, argv) => {
                     'packages/root-config/dist/license-checker.json',
                     'packages/shared-components/dist/license-checker.json',
                     'packages/workbench/dist/license-checker.json',
+                    'packages/workbench/dist/license-checker-graphwise-reactodia.json',
                 ],
                 output: 'license-checker.json'
             }),
@@ -138,6 +139,11 @@ module.exports = (webpackConfigEnv, argv) => {
                     {
                       from: 'assets',
                       to: 'assets'
+                    },
+                    {
+                      context: 'node_modules/graphwise-reactodia',
+                      from: '{NOTICE,COPYING,COPYING.LESSER}',
+                      to: 'licenses/graphwise-reactodia'
                     },
                     {
                       from: 'node_modules/graphdb-workbench-plugins/dist',
