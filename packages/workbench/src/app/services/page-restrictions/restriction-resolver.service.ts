@@ -3,6 +3,8 @@ import {
   AuthorizationService,
   LicenseContextService,
   Repository,
+  RepositoryPermissionType,
+  RepositoryType,
   SecurityContextService,
   service,
 } from '@ontotext/workbench-api';
@@ -15,6 +17,8 @@ export interface RestrictionContext {
   actionLabelKey?: string;
   actionLink?: string;
   isExternalAction?: boolean;
+  allowedRepositoryTypes?: RepositoryType[];
+  requiredRepositoryPermission?: RepositoryPermissionType;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -24,13 +28,21 @@ export class RestrictionResolverService {
   private readonly authorizationService = service(AuthorizationService);
 
   resolve(ctx: RestrictionContext): RestrictionReason[] {
-    const repo = ctx.selectedRepository;
     const isLicenseValid = this.licenseContextService.getLicenseSnapshot()?.valid ?? false;
     const isSecurityEnabled = this.securityContextService.getSecurityConfig()?.isEnabled() ?? false;
-    const canWrite = this.authorizationService.canWriteRepo(repo);
     const canCreateRepository = this.authorizationService.isRepoManager();
-    const accessibleRepositoriesCount = this.authorizationService.getAccessibleRepositories(true, ctx.isRestricted).size();
+
+    const accessibleRepositoriesCount = this.authorizationService.getAccessibleRepositories(true, ctx.isRestricted)
+      .filterByType(ctx.allowedRepositoryTypes)
+      .filter((repository) => !ctx.requiredRepositoryPermission ||
+        this.authorizationService.hasRepoPermission(ctx.requiredRepositoryPermission, repository)).length;
     const hasAccessibleRepositories = accessibleRepositoriesCount > 0;
+
+    // A repository selected outside this page's filters (e.g. wrong type, or missing the
+    // permission this route requires) is not usable here even though it's the active selection,
+    // so treat the page as if no repository were selected.
+    const repo = this.isSelectedRepositoryAllowed(ctx) ? ctx.selectedRepository : undefined;
+    const canWrite = this.authorizationService.canWriteRepo(repo);
 
     const reasons: RestrictionReason[] = [];
 
@@ -103,5 +115,54 @@ export class RestrictionResolverService {
     }
 
     return reasons;
+  }
+
+  /**
+   * Determines whether the currently selected repository is allowed by this route's filters
+   * (repository type and required permission). A repository can be selected globally while not
+   * being one of the repositories this specific page would offer in its picker; in that case it
+   * must not be treated as a valid selection here.
+   *
+   * @param ctx The restriction context, carrying the selected repository and the route's filters.
+   * @returns `true` if there is a selected repository and it passes both filters.
+   */
+  private isSelectedRepositoryAllowed(ctx: RestrictionContext): boolean {
+    const repo = ctx.selectedRepository;
+    if (!repo) {
+      return false;
+    }
+
+    return this.matchesAllowedType(repo, ctx.allowedRepositoryTypes) &&
+      this.matchesRequiredPermission(repo, ctx.requiredRepositoryPermission);
+  }
+
+  /**
+   * Checks the repository's type against the route's allowed types.
+   *
+   * @param repo The repository to check.
+   * @param allowedRepositoryTypes The repository types this route allows. An empty or missing list means no restriction.
+   * @returns `true` if no type restriction applies, or the repository's type is one of the allowed ones.
+   */
+  private matchesAllowedType(repo: Repository, allowedRepositoryTypes: RepositoryType[] | undefined): boolean {
+    if (!allowedRepositoryTypes?.length) {
+      return true;
+    }
+
+    return !!repo.type && allowedRepositoryTypes.includes(repo.type);
+  }
+
+  /**
+   * Checks whether the user has the permission this route requires on the repository.
+   *
+   * @param repo The repository to check.
+   * @param requiredRepositoryPermission The permission this route requires. `undefined` means no restriction.
+   * @returns `true` if no permission restriction applies, or the user has the required permission.
+   */
+  private matchesRequiredPermission(repo: Repository, requiredRepositoryPermission: RepositoryPermissionType | undefined): boolean {
+    if (!requiredRepositoryPermission) {
+      return true;
+    }
+
+    return this.authorizationService.hasRepoPermission(requiredRepositoryPermission, repo);
   }
 }

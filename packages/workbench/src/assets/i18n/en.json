@@ -79,7 +79,10 @@
       "state_filter": {
         "all": "All repositories",
         "running": "Running",
-        "inactive": "Inactive"
+        "inactive": "Inactive",
+        "starting": "Starting",
+        "restarting": "Restarting",
+        "stopping": "Stopping"
       }
     }
   },

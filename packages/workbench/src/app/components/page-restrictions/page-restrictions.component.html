@@ -4,7 +4,7 @@
       <p-message [severity]="reason.severity" icon="ri-alert-line">
 
         <div>
-          {{ reason.translationKey | transloco: reason.translationParams }}
+          <span [innerHTML]="reason.translationKey | transloco: reason.translationParams"></span>
           @if (reason.actionLabelKey && reason.actionLink) {
             @if (reason.isExternalAction) {
               <a [href]="reason.actionLink" target="_blank" rel="noopener noreferrer">{{ reason.actionLabelKey | transloco }}</a>

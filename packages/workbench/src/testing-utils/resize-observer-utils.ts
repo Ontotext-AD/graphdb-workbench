@@ -48,13 +48,13 @@ export function mockResizeObserverForTesting(): void {
       unobserve(target: Element): void {
         const targets = observedTargets.get(target);
         if (targets) {
-          observedTargets.set(target, targets.filter((entry) => entry.callback !== this.callback));
+          observedTargets.set(target, targets.filter((entry) => entry.observer !== this));
         }
       }
 
       disconnect(): void {
         observedTargets.forEach((targets, target) => {
-          observedTargets.set(target, targets.filter((entry) => entry.callback !== this.callback));
+          observedTargets.set(target, targets.filter((entry) => entry.observer !== this));
         });
       }
     };

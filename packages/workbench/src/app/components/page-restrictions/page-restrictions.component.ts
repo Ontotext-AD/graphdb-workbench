@@ -82,6 +82,8 @@ export class PageRestrictionsComponent implements OnInit, AfterViewInit, OnDestr
       selectedRepository: this.selectedRepository(),
       isRestricted: this.isRestricted(),
       pageTitle: this.title() ?? 'Missing page title',
+      allowedRepositoryTypes: this.allowedRepositoryTypes(),
+      requiredRepositoryPermission: this.requiredRepositoryPermission(),
     })
   );
 

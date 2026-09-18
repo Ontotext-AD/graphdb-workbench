@@ -72,14 +72,17 @@
         "label": "Créer un dépôt"
       },
       "select_repository_btn": {
-        "label": "Select"
+        "label": "Sélectionner"
       },
       "location_local_label": "Local",
       "filter_placeholder": "Filtrer par nom ou titre",
       "state_filter": {
         "all": "Tous les dépôts",
         "running": "En cours",
-        "inactive": "Inactif"
+        "inactive": "Inactif",
+        "starting": "Démarrage",
+        "restarting": "Redémarrage",
+        "stopping": "Arrêt"
       }
     }
   },
