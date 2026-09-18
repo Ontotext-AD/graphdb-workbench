@@ -39,22 +39,22 @@ export function mockResizeObserverForTesting(): void {
       constructor(private readonly callback: ResizeObserverCallback) {
       }
 
-      observe(target: Element): void {
-        const targets = observedTargets.get(target) ?? [];
+      observe(targetElement: Element): void {
+        const targets = observedTargets.get(targetElement) ?? [];
         targets.push({callback: this.callback, observer: this});
-        observedTargets.set(target, targets);
+        observedTargets.set(targetElement, targets);
       }
 
-      unobserve(target: Element): void {
-        const targets = observedTargets.get(target);
+      unobserve(targetElement: Element): void {
+        const targets = observedTargets.get(targetElement);
         if (targets) {
-          observedTargets.set(target, targets.filter((entry) => entry.observer !== this));
+          observedTargets.set(targetElement, targets.filter((entry) => entry.observer !== this));
         }
       }
 
       disconnect(): void {
-        observedTargets.forEach((targets, target) => {
-          observedTargets.set(target, targets.filter((entry) => entry.observer !== this));
+        observedTargets.forEach((targets, targetElement) => {
+          observedTargets.set(targetElement, targets.filter((entry) => entry.observer !== this));
         });
       }
     };
@@ -70,14 +70,14 @@ export function mockResizeObserverForTesting(): void {
  * Simulates a resize of `target` by invoking the callback of every ResizeObserver currently
  * observing it, as registered by the stub installed via `mockResizeObserverForTesting`.
  */
-export function triggerResize(target: Element, contentRect: Partial<DOMRectReadOnly> = {}): void {
-  const targets = observedTargets.get(target);
+export function triggerResize(targetElement: Element, contentRect: Partial<DOMRectReadOnly> = {}): void {
+  const targets = observedTargets.get(targetElement);
   if (!targets || targets.length === 0) {
     throw new Error('triggerResize: no ResizeObserver is currently observing the given element');
   }
 
   const entry = {
-    target,
+    target: targetElement,
     contentRect: {
       x: 0, y: 0, top: 0, left: 0, bottom: 0, right: 0, width: 0, height: 0,
       ...contentRect
