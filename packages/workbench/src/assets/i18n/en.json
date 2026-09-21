@@ -108,6 +108,14 @@
     "url_not_found_msg": "The requested URL was not found on this server. That’s all I know.",
     "back_to_home": "Back Home"
   },
+  "reactodia": {
+    "title": "Reactodia",
+    "helpInfo": "The Reactodia view provides an interactive visual representation of parts of the RDF graph. The visualisation starts from a set of resources or from a graph query result. Expand resources to grow the diagram with their connections and save the diagram for later use.",
+    "errors": {
+      "query_execution_failed": "Error! Could not load the graph data.",
+      "graph_load_failed": "Error! Could not compute the graph for the query."
+    }
+  },
   "sparql_editor": {
     "title": "SPARQL Query & Update",
     "helpInfo": "The SPARQL Query & Update view is a unified editor for queries and updates. Enter any SPARQL query or update and click Run to execute it. The view also allows you to save queries for future retrieval and execution in the SPARQL editor.",
@@ -183,7 +191,7 @@
           "toolbar": {
             "btn": {
               "visual_graph_btn": {
-                "label": "VizGraph"
+                "label": "Visualize"
               },
               "reactodia_btn": {
                 "label": "Visualize Reactodia"

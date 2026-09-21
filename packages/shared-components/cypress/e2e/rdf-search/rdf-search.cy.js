@@ -27,14 +27,18 @@ describe('RDF Search', () => {
     // And the search icon should not be visible
     RdfSearchSteps.getSearchIcon().should('not.exist');
     // And I should see 3 radio buttons for Table and Visual display
-    const buttons = ['Table', 'VizGraph', 'Reactodia'];
-    // And the Table button should be selected
-    const classes = ['onto-btn-primary', 'onto-btn-secondary', 'onto-btn-secondary'];
-    RdfSearchSteps.getSearchAreaButtons().each(($button, index) => {
-      cy.wrap($button)
-        .should('have.text', buttons[index])
-        .and('have.class', classes[index]);
-    });
+    RdfSearchSteps.getSearchAreaButtons().should('have.length', 3);
+    // And only the Table button should be selected
+    const selectedClass = 'selected';
+    RdfSearchSteps.getSearchAreaButtons().eq(0)
+      .should('have.text', 'Table')
+      .and('have.class', selectedClass);
+    RdfSearchSteps.getSearchAreaButtons().eq(1)
+      .should('have.text', 'Visual')
+      .and('not.have.class', selectedClass);
+    RdfSearchSteps.getSearchAreaButtons().eq(2)
+      .should('have.text', 'Reactodia')
+      .and('not.have.class', selectedClass);
 
     // When, I close the search area
     RdfSearchSteps.closeSearchArea();

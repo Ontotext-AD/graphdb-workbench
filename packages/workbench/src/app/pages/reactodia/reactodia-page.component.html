@@ -1,8 +1,9 @@
 <app-page-layout class="sparql-editor-page">
   <div>
-    @if (language() && currentRepository() && !loading()) {
+    @let repository = currentRepository();
+    @if (language() && !loading() && repository) {
       <app-reactodia-component-facade
-        [currentRepository]="currentRepository()"
+        [currentRepository]="repository"
         [language]="language()"
         [theme]="theme()"
         [seedIris]="seedIris()"

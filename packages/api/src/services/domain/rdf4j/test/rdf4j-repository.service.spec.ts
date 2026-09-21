@@ -84,8 +84,25 @@ describe('Rdf4jRepositoryService', () => {
       const result = await rdf4jRepositoryService.executeSparqlRequest(repositoryId, query, accept);
 
       // Then it should delegate with the same arguments and return the unwrapped originalResponse
-      expect(spy).toHaveBeenCalledWith(repositoryId, query, accept);
+      expect(spy).toHaveBeenCalledWith(repositoryId, query, accept, undefined);
       expect(result).toBe(originalResponse);
+    });
+
+    test('should forward the abort signal to Rdf4jRestService.executeSparqlRequest', async () => {
+      // Given an abort signal and a spy returning an HTTP response
+      const repositoryId = 'test-repo';
+      const query = 'SELECT * WHERE { ?s ?p ?o }';
+      const accept = 'application/rdf+json;';
+      const controller = new AbortController();
+      const restService = ServiceProvider.get(Rdf4jRestService);
+      const spy = jest.spyOn(restService, 'executeSparqlRequest')
+        .mockResolvedValue({originalResponse: {ok: true} as Response} as HttpResponse);
+
+      // When I call executeSparqlRequest with the signal
+      await rdf4jRepositoryService.executeSparqlRequest(repositoryId, query, accept, controller.signal);
+
+      // Then the signal should be passed on to the REST service
+      expect(spy).toHaveBeenCalledWith(repositoryId, query, accept, controller.signal);
     });
   });
 

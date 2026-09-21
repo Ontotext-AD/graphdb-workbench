@@ -85,10 +85,11 @@ export class Rdf4jRepositoryService implements Service {
    * @param repositoryId - The ID of the repository to query.
    * @param query - The SPARQL query string.
    * @param accept - Value for the `Accept` header, selecting the response format.
+   * @param signal - Optional AbortSignal to cancel the request if needed.
    * @returns A promise resolving to the raw {@link Response}.
    */
-  async executeSparqlRequest(repositoryId: string, query: string, accept?: string): Promise<Response | undefined> {
-    const response = await this.rdf4jRestService.executeSparqlRequest(repositoryId, query, accept);
+  async executeSparqlRequest(repositoryId: string, query: string, accept: string, signal?: AbortSignal): Promise<Response | undefined> {
+    const response = await this.rdf4jRestService.executeSparqlRequest(repositoryId, query, accept, signal);
     return response.originalResponse;
   }
 

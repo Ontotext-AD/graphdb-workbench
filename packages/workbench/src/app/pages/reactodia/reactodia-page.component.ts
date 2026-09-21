@@ -6,6 +6,7 @@ import {
   GraphExploreLink,
   GraphExploreService,
   LanguageContextService,
+  OntoToastrService,
   RepositoryContextService,
   RuntimeConfigurationContextService,
   service,
@@ -13,6 +14,7 @@ import {
   WindowService,
   ThemeMode
 } from '@ontotext/workbench-api';
+import {translate} from '@jsverse/transloco';
 import {CLEAR_DIAGRAM_STORAGE_EVENT} from 'graphwise-reactodia';
 import {
   ReactodiaComponentFacadeComponent
@@ -42,12 +44,13 @@ export class ReactodiaPageComponent implements OnInit, OnDestroy {
   private readonly graphExploreService = service(GraphExploreService);
   private readonly eventService = service(EventService);
   private readonly runtimeConfigurationContextService = service(RuntimeConfigurationContextService);
+  private readonly ontoToastrService = service(OntoToastrService);
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly logger = LoggerProvider.logger;
 
   private readonly subscriptions = new SubscriptionList();
 
-  readonly currentRepository = signal('');
+  readonly currentRepository = signal<string | undefined>(undefined);
   readonly language = signal(this.languageContextService.getSelectedLanguage());
   readonly theme = signal<ThemeMode | undefined>(undefined);
   readonly seedIris = signal<string[]>([]);
@@ -101,7 +104,7 @@ export class ReactodiaPageComponent implements OnInit, OnDestroy {
 
   private subscribeToRepositoryChanged() {
     return this.repositoryContextService.onSelectedRepositoryChanged((repository) => {
-      this.currentRepository.set(repository?.id || '');
+      this.currentRepository.set(repository?.id);
     });
   }
 
@@ -131,7 +134,10 @@ export class ReactodiaPageComponent implements OnInit, OnDestroy {
     const sameAs = this.toOptionalBoolean(queryParams['sameAs']);
     this.graphExploreService.loadGraphForQuery(query, inference, sameAs)
       .then((links) => this.seedGraph.set(links))
-      .catch((error) => this.logger.error('Failed to load graph for query', error))
+      .catch((error) => {
+        this.logger.error('Failed to load graph for query', error);
+        this.ontoToastrService.error(translate('reactodia.errors.graph_load_failed'));
+      })
       .finally(() => this.loading.set(false));
   }
 
@@ -143,7 +149,7 @@ export class ReactodiaPageComponent implements OnInit, OnDestroy {
    * @param value - The raw query-param value.
    * @returns `true`/`false` for an explicit value, or `undefined` when the param is absent or empty.
    */
-  private toOptionalBoolean(value: string | undefined): boolean | undefined {
+  private toOptionalBoolean(value?: string): boolean | undefined {
     return value ? value === 'true' : undefined;
   }
 }

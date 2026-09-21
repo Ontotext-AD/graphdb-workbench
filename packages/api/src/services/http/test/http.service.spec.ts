@@ -98,6 +98,26 @@ describe('HttpService', () => {
     });
   });
 
+  test('get should forward the abort signal to fetch', async () => {
+    const url = 'http://localhost:8080';
+    const controller = new AbortController();
+    TestUtil.mockResponse(new ResponseMock(url).setResponse({message: 'Success'}));
+
+    await httpService.get(url, {signal: controller.signal});
+
+    expect(fetch).toHaveBeenCalledWith(url, expect.objectContaining({signal: controller.signal}));
+  });
+
+  test('post should forward the abort signal to fetch', async () => {
+    const url = 'http://localhost:8080';
+    const controller = new AbortController();
+    TestUtil.mockResponse(new ResponseMock(url).setResponse({message: 'Success'}));
+
+    await httpService.post(url, {body: {name: 'Test'}, signal: controller.signal});
+
+    expect(fetch).toHaveBeenCalledWith(url, expect.objectContaining({signal: controller.signal}));
+  });
+
   test('put should return a response', async () => {
     const response = { message: 'Updated' };
     const url = 'http://localhost:8080';

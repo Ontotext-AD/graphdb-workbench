@@ -181,7 +181,7 @@
     },
     "buttons": {
       "table": "Table",
-      "visual": "VizGraph",
+      "visual": "Visual",
       "reactodia": "Reactodia"
     },
     "tooltips": {
