@@ -1,6 +1,7 @@
 import {Component, computed, CUSTOM_ELEMENTS_SCHEMA, input} from '@angular/core';
+import {translate} from '@jsverse/transloco';
 import {defineCustomElements} from 'graphwise-reactodia/loader';
-import {GraphExploreLink, Rdf4jRepositoryService, service} from '@ontotext/workbench-api';
+import {GraphExploreLink, OntoToastrService, Rdf4jRepositoryService, service} from '@ontotext/workbench-api';
 import {LoggerProvider} from '../../services/logger/logger-provider';
 
 /**
@@ -9,7 +10,7 @@ import {LoggerProvider} from '../../services/logger/logger-provider';
  */
 interface SparqlQueryParams {
   url: string;
-  body: string;
+  body?: string;
   headers: Record<string, string>;
   method: string;
   signal?: AbortSignal;
@@ -33,6 +34,7 @@ defineCustomElements();
 })
 export class ReactodiaComponentFacadeComponent {
   private readonly rdf4jRepositoryService = service(Rdf4jRepositoryService);
+  private readonly ontoToastrService = service(OntoToastrService);
   private readonly logger = LoggerProvider.logger;
 
   /** The active repository id; re-points (and resets) the diagram when it changes at runtime. */
@@ -57,13 +59,34 @@ export class ReactodiaComponentFacadeComponent {
    * the raw `Response` which Reactodia expects.
    */
   readonly queryFunction = (params: SparqlQueryParams) =>
-    this.rdf4jRepositoryService
-      .executeSparqlRequest(params.url, params.body ?? '', params.headers['Accept'])
-      .catch((error) => this.logger.error('Failed to execute query', error));
+    this.executeRequest(params)
+      .catch((error) => {
+        // An aborted request is a cancellation Reactodia asked for so don't show toast
+        if (error?.name !== 'AbortError') {
+          this.logger.error('Failed to execute query', error);
+          this.ontoToastrService.error(translate('reactodia.errors.query_execution_failed'));
+        }
+        throw error;
+      });
 
   readonly config = computed(() => ({
     queryFunction: this.queryFunction,
     seedIris: this.seedIris(),
     seedGraph: this.seedGraph()
   }));
+
+  /**
+   * Sends one Reactodia request through the workbench HTTP layer. GDB requires the query to be
+   * sent in the body of a POST request, but it is optional in the params, so reject, when we don't have a query.
+   *
+   * @param params - The request descriptor Reactodia supplied.
+   * @returns A promise resolving to the raw response.
+   */
+  private async executeRequest(params: SparqlQueryParams): Promise<Response | undefined> {
+    if (!params.body) {
+      throw new Error(`Unsupported Reactodia ${params.method} request: the SPARQL query is missing`);
+    }
+    return this.rdf4jRepositoryService
+      .executeSparqlRequest(params.url, params.body, params.headers['Accept'], params.signal);
+  }
 }

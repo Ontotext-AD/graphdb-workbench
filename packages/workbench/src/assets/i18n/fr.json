@@ -108,6 +108,14 @@
     "url_not_found_msg": "L'URL demandée n'a pas été trouvée sur ce serveur. C'est tout ce que je sais.",
     "back_to_home": "Retour à la page d'accueil"
   },
+  "reactodia": {
+    "title": "Reactodia ",
+    "helpInfo": "La vue Reactodia fournit une représentation visuelle interactive de parties du graphe RDF. La visualisation part d'un ensemble de ressources ou du résultat d'une requête de graphe. Développez les ressources pour enrichir le diagramme avec leurs connexions et enregistrez le diagramme pour une utilisation ultérieure.",
+    "errors": {
+      "query_execution_failed": "Erreur! Impossible de charger les données du graphe.",
+      "graph_load_failed": "Erreur! Impossible de calculer le graphe pour la requête."
+    }
+  },
   "sparql_editor": {
     "title": "Requête et mise à jour SPARQL",
     "helpInfo": "La vue Requête et mise à jour SPARQL est un éditeur unifié pour les requêtes et les mises à jour. Entrez n'importe quelle requête ou mise à jour SPARQL et cliquez sur Exécuter pour l'exécuter. La vue vous permet également d'enregistrer des requêtes pour une récupération et une exécution futures dans l'éditeur SPARQL.",
@@ -183,7 +191,7 @@
           "toolbar": {
             "btn": {
               "visual_graph_btn": {
-                "label": "VizGraph "
+                "label": "Visualiser"
               },
               "reactodia_btn": {
                 "label": "Visualiser Reactodia"

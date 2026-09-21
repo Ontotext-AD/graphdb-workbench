@@ -109,16 +109,18 @@ export class Rdf4jRestService extends HttpService {
    * @param query - The SPARQL query string.
    * @param accept - Value for the `Accept` header, selecting the response format, e.g.
    * `application/sparql-results+json` for SELECT/ASK or `application/rdf+json;` for CONSTRUCT/DESCRIBE.
+   * @param signal - Optional AbortSignal to cancel the request if needed.
    * @returns A promise resolving to the HTTP response.
    */
-  executeSparqlRequest(repositoryId: string, query: string, accept = 'application/sparql-results+json'): Promise<HttpResponse> {
+  executeSparqlRequest(repositoryId: string, query: string, accept: string, signal?: AbortSignal): Promise<HttpResponse> {
     return this.post(`${this.REPOSITORIES_ENDPOINT}/${repositoryId}`, {
       responseType: 'response',
       body: new URLSearchParams({query}),
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         'Accept': accept,
-      }
+      },
+      signal
     });
   }
 }

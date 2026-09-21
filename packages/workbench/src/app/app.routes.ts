@@ -22,6 +22,10 @@ export const routes: WorkbenchRoute[] = [
   },
   {
     path: 'reactodia',
+    data: {
+      title: 'reactodia.title',
+      helpInfo: 'reactodia.helpInfo'
+    },
     loadComponent: () => import('./pages/reactodia/reactodia-page.component').then(m => m.ReactodiaPageComponent)
   },
   {

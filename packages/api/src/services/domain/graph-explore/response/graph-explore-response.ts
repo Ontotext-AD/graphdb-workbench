@@ -6,8 +6,8 @@ export interface GraphExploreLinkResponse {
   source: string;
   /** Target element IRI. */
   target: string;
-  /** Full predicate IRIs of the relationship(s) between source and target. */
+  /** Display/short predicate values for the relationship(s). */
   predicates: string[];
-  /** Raw (absolute) IRIs. */
+  /** Full (absolute) predicate IRIs. */
   rawPredicates: string[];
 }

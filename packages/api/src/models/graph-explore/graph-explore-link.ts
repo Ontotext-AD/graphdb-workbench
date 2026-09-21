@@ -13,9 +13,9 @@ export class GraphExploreLink extends Model<GraphExploreLink> {
   source: string;
   /** Target element IRI. */
   target: string;
-  /** Full predicate IRIs of the relationship(s) between source and target. */
+  /** Display/short predicate values of the relationship(s) between source and target. */
   predicates: string[];
-  /** Raw, unresolved predicate values of the relationship(s) between source and target. */
+  /** Full (absolute) predicate IRIs of the relationship(s) between source and target. */
   rawPredicates: string[];
 
   constructor(data: Omit<GraphExploreLink, 'copy'>) {

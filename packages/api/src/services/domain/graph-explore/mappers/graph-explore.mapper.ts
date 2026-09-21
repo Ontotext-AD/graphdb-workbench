@@ -5,8 +5,8 @@ import {GraphExploreLink} from '../../../../models/graph-explore';
 /**
  * Maps the {@link GraphExploreLinkResponse[]} server data to a list of {@link GraphExploreLink} models.
  *
- * The response's `links[].predicates` are already the full predicate IRIs, so they are carried
- * through unchanged.
+ * The response's `links[].predicates` are display/short values and `links[].rawPredicates`
+ * are full predicate IRIs; both arrays are carried through unchanged.
  *
  * @param data - The server response containing the graph links.
  * @returns A list of {@link GraphExploreLink} instances.

@@ -59,14 +59,14 @@ export class HttpService {
   get<T>(url: string, options?: HttpOptionsHttpResponse): Promise<HttpResponse<T>>
 
   get<T>(url: string, options?: HttpOptionsTypedResponse): Promise<HttpResponseResult<T>> {
-    const {params, headers, responseType = 'body'} = options ?? {};
+    const {params, headers, signal, responseType = 'body'} = options ?? {};
     if (responseType === 'response') {
-      return this.request<T>(url, 'GET', {params, headers}, 'response');
+      return this.request<T>(url, 'GET', {params, headers, signal}, 'response');
     }
     if (responseType === 'blob') {
-      return this.request<T>(url, 'GET', {params, headers}, 'blob');
+      return this.request<T>(url, 'GET', {params, headers, signal}, 'blob');
     }
-    return this.request<T>(url, 'GET', {params, headers}, 'body');
+    return this.request<T>(url, 'GET', {params, headers, signal}, 'body');
   }
 
   /**
@@ -105,14 +105,14 @@ export class HttpService {
   post<T>(url: string, options?: HttpOptionsHttpResponse): Promise<HttpResponse<T>>
 
   post<T>(url: string, options?: HttpOptionsTypedResponse): Promise<HttpResponseResult<T>> {
-    const {body, headers, responseType = 'body'} = options ?? {};
+    const {body, headers, signal, responseType = 'body'} = options ?? {};
     if (responseType === 'response') {
-      return this.request<T>(url, 'POST', {body, headers}, 'response');
+      return this.request<T>(url, 'POST', {body, headers, signal}, 'response');
     }
     if (responseType === 'blob') {
-      return this.request<T>(url, 'POST', {body, headers}, 'blob');
+      return this.request<T>(url, 'POST', {body, headers, signal}, 'blob');
     }
-    return this.request<T>(url, 'POST', {body, headers}, 'body');
+    return this.request<T>(url, 'POST', {body, headers, signal}, 'body');
   }
 
   /**
@@ -277,8 +277,8 @@ export class HttpService {
    * @returns A Promise that resolves with HttpResponse<T>, or is rejected with HttpErrorResponse if the request fails.
    */
   private request<T>(url: string, method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH', options: HttpOptions = {}, responseType: SupportedResponseType = 'response'): Promise<HttpResponseResult<T>> {
-    const {fullUrl, headers} = this.getRequestConfig(url, options);
-    const requestConfig = new HttpRequest({url: fullUrl, method, headers, body: options.body});
+    const {fullUrl, headers, signal} = this.getRequestConfig(url, options);
+    const requestConfig = new HttpRequest({url: fullUrl, method, headers, body: options.body, signal});
     let originalResponse: Response;
 
     return this.executeRequest(requestConfig)

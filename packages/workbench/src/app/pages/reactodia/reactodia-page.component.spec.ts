@@ -2,6 +2,7 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {NO_ERRORS_SCHEMA} from '@angular/core';
 import {ReactodiaPageComponent} from './reactodia-page.component';
 import {provideTranslocoForTesting} from '../../../testing-utils/transloco-utils';
+import {mockResizeObserverForTesting} from '../../../testing-utils/resize-observer-testing-utils';
 import {GraphExploreLink, GraphExploreService, LanguageContextService, ServiceProvider} from '@ontotext/workbench-api';
 import {ActivatedRoute} from '@angular/router';
 
@@ -10,6 +11,8 @@ jest.mock('graphwise-reactodia/loader', () => ({
 }));
 
 describe('ReactodiaPageComponent', () => {
+  mockResizeObserverForTesting();
+
   const QUERY = 'CONSTRUCT WHERE { ?s ?p ?o }';
   let component: ReactodiaPageComponent;
   let fixture: ComponentFixture<ReactodiaPageComponent>;
