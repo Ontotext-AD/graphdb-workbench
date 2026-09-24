@@ -22,7 +22,7 @@ export class RestrictionResolverService {
     const isSecurityEnabled = this.securityContextService.getSecurityConfig()?.isEnabled() ?? false;
     const canCreateRepository = this.authorizationService.isRepoManager();
 
-    const accessibleRepositoriesCount = this.authorizationService.getAccessibleRepositories(true, ctx.isRestricted)
+    const accessibleRepositoriesCount = this.authorizationService.getAccessibleRepositories(true, ctx.isViewRestricted)
       .filterByType(ctx.allowedRepositoryTypes)
       .filter((repository) => !ctx.requiredRepositoryPermission ||
         this.authorizationService.hasRepoPermission(ctx.requiredRepositoryPermission, repository)).length;
@@ -96,7 +96,7 @@ export class RestrictionResolverService {
     }
 
     if (!hasAccessibleRepositories) {
-      if (ctx.isRestricted) {
+      if (ctx.isViewRestricted) {
         reasons.push({
           severity: 'info',
           translationKey: 'components.page_restrictions.no_accessible_writable_repos',

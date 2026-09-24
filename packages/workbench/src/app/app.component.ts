@@ -1,6 +1,6 @@
 import {Component, inject, OnDestroy, OnInit} from '@angular/core';
-import {Router, RouterOutlet} from '@angular/router';
-import {Subscription} from 'rxjs';
+import {NavigationEnd, Router, RouterOutlet} from '@angular/router';
+import {filter, Subscription} from 'rxjs';
 import {ConfirmDialogModule} from 'primeng/confirmdialog';
 import {RepositoryUrlSyncService} from './services/repository-url-sync.service';
 import {
@@ -10,11 +10,14 @@ import {
   getCurrentRoute, GuideApi,
   Repository,
   RepositoryContextService,
+  RestrictionService,
   service,
+  ViewRestriction,
   WindowService,
 } from '@ontotext/workbench-api';
 import {NotificationProviderService} from './services/notification/notification-provider.service';
 import {YasguiComponentUtil} from './components/yasgui-component-facade/yasgui-component-util';
+import {WorkbenchRouteData} from './models/route/workbench-route';
 
 @Component({
   selector: 'app-root',
@@ -29,6 +32,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly repositoryUrlSyncService = inject(RepositoryUrlSyncService);
   private readonly repositoryContextService = service(RepositoryContextService);
+  private readonly restrictionService = service(RestrictionService);
   private readonly eventService = service(EventService);
   private readonly subscriptions = new Subscription();
   private readonly appLifecyleService = service(ApplicationLifecycleContextService);
@@ -38,19 +42,9 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscribeToRoutingEvents();
-    this.subscriptions.add(
-      this.repositoryContextService.onSelectedRepositoryChanged((repo) => this.onSelectedRepositoryChangedHandler(repo))
-    );
-
-    // Part of the micro-frontend guide-sync protocol (see ShepherdService class JSDoc):
-    // detects when this frontend is the one being loaded so updateGuideServices can inject services.
-    const applicationsStateBeforeChangeSubscription = this.appLifecyleService.onApplicationsStateBeforeChange((applicationsState) => {
-      const isThisFELoading = applicationsState?.isNewAngularLoaded() ?? false;
-      if (isThisFELoading) {
-        this.updateGuideServices();
-      }
-    });
-    this.subscriptions.add(applicationsStateBeforeChangeSubscription);
+    this.subscribeToRepositoryChanges();
+    this.subscribeToApplicationsStateBeforeChange();
+    this.subscribeToViewRestrictionUpdates();
   }
 
   /**
@@ -98,5 +92,54 @@ export class AppComponent implements OnInit, OnDestroy {
           });
       })
     );
+  }
+
+  /**
+   * Subscribes to selected repository changes and syncs the repository id into the URL,
+   * ignoring the initial emission fired when the subscription is first registered.
+   */
+  private subscribeToRepositoryChanges(): void {
+    this.subscriptions.add(
+      this.repositoryContextService.onSelectedRepositoryChanged((repo) => this.onSelectedRepositoryChangedHandler(repo))
+    );
+  }
+
+  /**
+   * Part of the micro-frontend guide-sync protocol (see ShepherdService class JSDoc):
+   * detects when this frontend is the one being loaded so updateGuideServices can inject services.
+   */
+  private subscribeToApplicationsStateBeforeChange(): void {
+    this.subscriptions.add(
+      this.appLifecyleService.onApplicationsStateBeforeChange((applicationsState) => {
+        const isThisFELoading = applicationsState?.isNewAngularLoaded() ?? false;
+        if (isThisFELoading) {
+          this.updateGuideServices();
+        }
+      })
+    );
+  }
+
+  /**
+   * Recalculates the view restriction on every completed Angular navigation.
+   */
+  private subscribeToViewRestrictionUpdates(): void {
+    this.subscriptions.add(
+      this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
+        const routeData = this.getActiveRouteData();
+        const restrictions = routeData?.viewRestrictions ?? [];
+        this.restrictionService.updateViewRestriction(new ViewRestriction({restrictions}));
+      })
+    );
+  }
+
+  /**
+   * Returns the route data of the deepest currently activated route.
+   */
+  private getActiveRouteData(): WorkbenchRouteData | undefined {
+    let route = this.router.routerState.snapshot.root;
+    while (route.firstChild) {
+      route = route.firstChild;
+    }
+    return route.data as WorkbenchRouteData;
   }
 }

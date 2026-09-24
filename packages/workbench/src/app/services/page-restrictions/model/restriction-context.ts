@@ -6,7 +6,7 @@ import {
 
 export interface RestrictionContext {
   selectedRepository?: Repository;
-  isRestricted: boolean;
+  isViewRestricted: boolean;
   pageTitle: string;
   actionLabelKey?: string;
   actionLink?: string;

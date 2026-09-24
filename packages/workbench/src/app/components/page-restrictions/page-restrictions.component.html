@@ -17,7 +17,7 @@
   @if (repositoryList() && !selectedRepository()) {
     <app-repository-picker-list
       class="repository-list"
-      [requireWriteAccess]="isRestricted()"
+      [requireWriteAccess]="isViewRestricted()"
       [filterByTypes]="allowedRepositoryTypes()"
       [filterByPermission]="requiredRepositoryPermission()"
       [showStateFilter]="false">

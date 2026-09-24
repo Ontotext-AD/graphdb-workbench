@@ -5,6 +5,7 @@ import {
 import {
   service,
   RepositoryContextService,
+  RestrictionContextService,
   Repository,
   SubscriptionList,
   RepositoryList,
@@ -41,12 +42,13 @@ export class PageRestrictionsComponent implements OnInit, AfterViewInit, OnDestr
 
   private readonly restrictionResolverService = inject(RestrictionResolverService);
   private readonly repositoryContextService = service(RepositoryContextService);
+  private readonly restrictionContextService = service(RestrictionContextService);
   private readonly elementRef = inject(ElementRef<HTMLElement>);
   private resizeObserver?: ResizeObserver;
 
   repositoryList = signal<RepositoryList | undefined>(undefined);
   selectedRepository = signal<Repository | undefined>(undefined);
-  isRestricted = signal<boolean>(false);
+  isViewRestricted = signal<boolean>(false);
 
   readonly hasContent = computed(() =>
     this.restrictions().length > 0 || (!!this.repositoryList() && !this.selectedRepository())
@@ -80,7 +82,7 @@ export class PageRestrictionsComponent implements OnInit, AfterViewInit, OnDestr
   readonly restrictions = computed(() =>
     this.restrictionResolverService.resolve({
       selectedRepository: this.selectedRepository(),
-      isRestricted: this.isRestricted(),
+      isViewRestricted: this.isViewRestricted(),
       pageTitle: this.title() ?? '',
       allowedRepositoryTypes: this.allowedRepositoryTypes(),
       requiredRepositoryPermission: this.requiredRepositoryPermission(),
@@ -90,7 +92,8 @@ export class PageRestrictionsComponent implements OnInit, AfterViewInit, OnDestr
   ngOnInit(): void {
     this.subscriptions.addAll([
       this.repositoryContextService.onSelectedRepositoryChanged((repo) => this.selectedRepository.set(repo)),
-      this.repositoryContextService.onRepositoryListChanged((repositories) => this.repositoryList.set(repositories))
+      this.repositoryContextService.onRepositoryListChanged((repositories) => this.repositoryList.set(repositories)),
+      this.restrictionContextService.onIsViewRestrictedChanged((isViewRestricted) => this.isViewRestricted.set(isViewRestricted))
     ]
     );
   }
