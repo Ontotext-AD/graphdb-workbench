@@ -84,78 +84,80 @@ describe('Cookie policy', () => {
     });
 
     // Scenario 7
-    it('should update cookie policy and give cookie consent when security is ON', () => {
-        // Given I open user and access page in prod mode
-        UserAndAccessSteps.visitInProdMode();
-        // And I enable security
-        UserAndAccessSteps.toggleSecurity();
-        // And I login with admin
-        LoginSteps.loginWithUser('admin', 'root');
-        // When I click on the cookie policy link in the banner
-        CookieConsentBannerSteps.clickCookiePolicyLink();
-        // Then I see the cookie policy
-        CookiePolicyModalSteps.getDialogComponent().should('be.visible');
-        CookiePolicyModalSteps.validateCookiePolicyDialog(true, true);
-        // When I toggle off the analytics cookie checkbox
-        CookiePolicyModalSteps.toggleStatisticCookies();
-        // And I close the dialog
-        CookiePolicyModalSteps.closeDialog();
-        CookiePolicyModalSteps.getDialog().should('not.exist');
-        // When I reload the page
-        cy.reload();
-        // Then I expect to see that analytic cookies are not allowed and third party cookies are allowed
-        CookieConsentBannerSteps.clickCookiePolicyLink();
-        CookiePolicyModalSteps.validateCookiePolicyDialog(false, true);
-        // And I close the cookie policy dialog
-        CookiePolicyModalSteps.closeDialog();
-        // When I open my settings page
-        MainMenuSteps.clickOnMySettings();
-        // And I open cookie policy modal using the button in the my settings widget
-        SettingsSteps.clickCookiePolicyLink();
-        // Then I should see the cookie policy
-        CookiePolicyModalSteps.getDialogComponent().should('be.visible');
-        // And I expect to see that analytic cookies are not allowed and third party cookies are allowed
-        CookiePolicyModalSteps.validateCookiePolicyDialog(false, true);
-        // When I toggle off third party cookies checkbox
-        CookiePolicyModalSteps.toggleThirdPartyCookies();
-        // And I close the modal
-        CookiePolicyModalSteps.closeDialog();
-        // When I reopen modal from the widget
-        SettingsSteps.clickCookiePolicyLink();
-        // Then I expect to see that analytic cookies are not allowed and third party cookies are not allowed
-        CookiePolicyModalSteps.validateCookiePolicyDialog(false, false);
-        CookiePolicyModalSteps.closeDialog();
-        // When I click OK in the banner
-        CookieConsentBannerSteps.giveCookieConsent();
-        // Then I expect the banner to be hidden
-        CookieConsentBannerSteps.getCookieConsentBanner().should('not.exist');
-        // When I reload the page
-        cy.reload();
-        // Then I expect the banner to be hidden
-        CookieConsentBannerSteps.getCookieConsentBanner().should('not.exist');
-        // When I logout
-        LoginSteps.logout();
-        // Then I should see the login page
-        LoginSteps.getLoginPage().should('be.visible');
-        // And the cookie policy banner should be hidden
-        CookieConsentBannerSteps.getCookieConsentBanner().should('not.exist');
-        // When I login with admin
-        LoginSteps.loginWithUser('admin', 'root');
-        // Then the cookie policy banner should be hidden
-        CookieConsentBannerSteps.getCookieConsentBanner().should('not.exist');
-        // When I open cookie policy modal from the widget
-        SettingsSteps.clickCookiePolicyLink();
-        // Then I expect to see that analytic cookies are not allowed and third party cookies are not allowed
-        CookiePolicyModalSteps.validateCookiePolicyDialog(false, false);
-        // When I toggle on third party cookies checkbox
-        CookiePolicyModalSteps.toggleThirdPartyCookies();
-        // And I close the modal
-        CookiePolicyModalSteps.closeDialog();
-        // When I reload the page
-        cy.reload();
-        // Then I expect to see that analytic cookies are not allowed and third party cookies are allowed
-        SettingsSteps.clickCookiePolicyLink();
-        CookiePolicyModalSteps.validateCookiePolicyDialog(false, true);
+    Cypress._.times(20, (_i) => {
+        it.only('should update cookie policy and give cookie consent when security is ON', () => {
+            // Given I open user and access page in prod mode
+            UserAndAccessSteps.visitInProdMode();
+            // And I enable security
+            UserAndAccessSteps.toggleSecurity();
+            // And I login with admin
+            LoginSteps.loginWithUser('admin', 'root');
+            // When I click on the cookie policy link in the banner
+            CookieConsentBannerSteps.clickCookiePolicyLink();
+            // Then I see the cookie policy
+            CookiePolicyModalSteps.getDialogComponent().should('be.visible');
+            CookiePolicyModalSteps.validateCookiePolicyDialog(true, true);
+            // When I toggle off the analytics cookie checkbox
+            CookiePolicyModalSteps.toggleStatisticCookies();
+            // And I close the dialog
+            CookiePolicyModalSteps.closeDialog();
+            CookiePolicyModalSteps.getDialog().should('not.exist');
+            // When I reload the page
+            cy.reload();
+            // Then I expect to see that analytic cookies are not allowed and third party cookies are allowed
+            CookieConsentBannerSteps.clickCookiePolicyLink();
+            CookiePolicyModalSteps.validateCookiePolicyDialog(false, true);
+            // And I close the cookie policy dialog
+            CookiePolicyModalSteps.closeDialog();
+            // When I open my settings page
+            MainMenuSteps.clickOnMySettings();
+            // And I open cookie policy modal using the button in the my settings widget
+            SettingsSteps.clickCookiePolicyLink();
+            // Then I should see the cookie policy
+            CookiePolicyModalSteps.getDialogComponent().should('be.visible');
+            // And I expect to see that analytic cookies are not allowed and third party cookies are allowed
+            CookiePolicyModalSteps.validateCookiePolicyDialog(false, true);
+            // When I toggle off third party cookies checkbox
+            CookiePolicyModalSteps.toggleThirdPartyCookies();
+            // And I close the modal
+            CookiePolicyModalSteps.closeDialog();
+            // When I reopen modal from the widget
+            SettingsSteps.clickCookiePolicyLink();
+            // Then I expect to see that analytic cookies are not allowed and third party cookies are not allowed
+            CookiePolicyModalSteps.validateCookiePolicyDialog(false, false);
+            CookiePolicyModalSteps.closeDialog();
+            // When I click OK in the banner
+            CookieConsentBannerSteps.giveCookieConsent();
+            // Then I expect the banner to be hidden
+            CookieConsentBannerSteps.getCookieConsentBanner().should('not.exist');
+            // When I reload the page
+            cy.reload();
+            // Then I expect the banner to be hidden
+            CookieConsentBannerSteps.getCookieConsentBanner().should('not.exist');
+            // When I logout
+            LoginSteps.logout();
+            // Then I should see the login page
+            LoginSteps.getLoginPage().should('be.visible');
+            // And the cookie policy banner should be hidden
+            CookieConsentBannerSteps.getCookieConsentBanner().should('not.exist');
+            // When I login with admin
+            LoginSteps.loginWithUser('admin', 'root');
+            // Then the cookie policy banner should be hidden
+            CookieConsentBannerSteps.getCookieConsentBanner().should('not.exist');
+            // When I open cookie policy modal from the widget
+            SettingsSteps.clickCookiePolicyLink();
+            // Then I expect to see that analytic cookies are not allowed and third party cookies are not allowed
+            CookiePolicyModalSteps.validateCookiePolicyDialog(false, false);
+            // When I toggle on third party cookies checkbox
+            CookiePolicyModalSteps.toggleThirdPartyCookies();
+            // And I close the modal
+            CookiePolicyModalSteps.closeDialog();
+            // When I reload the page
+            cy.reload();
+            // Then I expect to see that analytic cookies are not allowed and third party cookies are allowed
+            SettingsSteps.clickCookiePolicyLink();
+            CookiePolicyModalSteps.validateCookiePolicyDialog(false, true);
+        });
     });
 
     // Scenario 8

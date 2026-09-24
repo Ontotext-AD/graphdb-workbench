@@ -96,7 +96,8 @@ function registerSingleSpaRouterListeners(): void {
   WindowService.getWindow().addEventListener('single-spa:before-routing-event', (evt: Event) => {
     // 2nd event emitted by SingleSpa, next is single-spa:before-mount-routing-event
     const d = (evt as NavigationEvent).detail;
-    service(EventService).emit(new NavigationStart(d.oldUrl, d.newUrl, d.cancelNavigation));
+    const cancelNavigation = service(EventService).emit(new NavigationStart(d.oldUrl, d.newUrl, d.cancelNavigation));
+    (evt as NavigationEvent).detail.cancelNavigation(cancelNavigation);
   });
 
   WindowService.getWindow().addEventListener('single-spa:before-mount-routing-event', (evt: Event) => {
