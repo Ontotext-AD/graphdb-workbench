@@ -1,6 +1,5 @@
 import {ContextService} from '../context';
 import {DeriveContextServiceContract} from '../../models/context/update-context-method';
-import {ValueChangeCallback} from '../../models/context/value-change-callback';
 import {LifecycleHooks} from '../../providers/service/lifecycle-hooks';
 import {ViewRestriction} from '../../models/restrictions';
 
@@ -65,15 +64,5 @@ export class RestrictionContextService extends ContextService<RestrictionContext
    */
   viewRestrictionSnapshot(): ViewRestriction | undefined {
     return this.getContextPropertyValue(this.VIEW_RESTRICTION);
-  }
-
-  /**
-   * Registers the <code>callbackFunction</code> to be called whenever the view restriction changes.
-   *
-   * @param callbackFunction - The function to call when the view restriction changes.
-   * @returns A function to unsubscribe from updates.
-   */
-  onViewRestrictionChanged(callbackFunction: ValueChangeCallback<ViewRestriction | undefined>): () => void {
-    return this.subscribe(this.VIEW_RESTRICTION, callbackFunction);
   }
 }

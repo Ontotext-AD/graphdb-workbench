@@ -72,35 +72,6 @@ describe('RestrictionContextService', () => {
     expect(restrictionContextService.isViewRestrictedSnapshot()).toBe(false);
   });
 
-  test('updateViewRestriction should update the view restriction and notify subscribers', () => {
-    // GIVEN: There is a subscriber to view restriction changes
-    const newViewRestriction = new ViewRestriction({restrictions: ['write', 'ontop']});
-    let actualViewRestriction: ViewRestriction | undefined;
-    const mockCallback = jest.fn((viewRestriction) => actualViewRestriction = viewRestriction);
-    restrictionContextService.onViewRestrictionChanged(mockCallback);
-
-    // WHEN: updating the view restriction
-    restrictionContextService.updateViewRestriction(newViewRestriction);
-    // THEN: the context should be updated and subscribers notified with the new view restriction
-    expect(mockCallback).toHaveBeenLastCalledWith(newViewRestriction);
-    expect(actualViewRestriction).toEqual(newViewRestriction);
-  });
-
-  test('should stop receiving view restriction updates after unsubscribe', () => {
-    // GIVEN: There is a subscription to view restriction changes
-    const mockCallback = jest.fn();
-    const unsubscribe = restrictionContextService.onViewRestrictionChanged(mockCallback);
-    // Clear the callback call when the callback function is registered
-    mockCallback.mockClear();
-
-    // WHEN: unsubscribing from view restriction changes
-    unsubscribe();
-    // AND: updating the view restriction
-    restrictionContextService.updateViewRestriction(new ViewRestriction({restrictions: ['license']}));
-    // THEN: the subscriber should not be notified
-    expect(mockCallback).not.toHaveBeenCalled();
-  });
-
   test('viewRestrictionSnapshot should return the view restriction from the context', () => {
     // GIVEN: a view restriction is set in the context
     const newViewRestriction = new ViewRestriction({restrictions: ['fedx']});
