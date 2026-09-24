@@ -7,11 +7,6 @@ import {ViewRestrictionCondition} from './view-restriction-condition';
 export class ViewRestriction extends Model<ViewRestriction> {
   readonly restrictions: ViewRestrictionCondition[];
 
-  /**
-   * Creates a new ViewRestriction instance.
-   *
-   * @param data - Partial data to initialize the ViewRestriction object.
-   */
   constructor(data?: Partial<ViewRestriction>) {
     super();
     this.restrictions = data?.restrictions || [];
