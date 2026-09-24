@@ -1,6 +1,5 @@
 import {ContextService} from '../context';
 import {DeriveContextServiceContract} from '../../models/context/update-context-method';
-import {LifecycleHooks} from '../../providers/service/lifecycle-hooks';
 import {ViewRestriction} from '../../models/restrictions';
 
 type RestrictionContextFields = {
@@ -16,7 +15,7 @@ type RestrictionContextFieldParams = {
 /**
  * Service for managing restriction context in the application.
  */
-export class RestrictionContextService extends ContextService<RestrictionContextFields> implements DeriveContextServiceContract<RestrictionContextFields, RestrictionContextFieldParams>, LifecycleHooks {
+export class RestrictionContextService extends ContextService<RestrictionContextFields> implements DeriveContextServiceContract<RestrictionContextFields, RestrictionContextFieldParams> {
   readonly IS_VIEW_RESTRICTED = 'isViewRestricted';
   readonly VIEW_RESTRICTION = 'viewRestriction';
 
