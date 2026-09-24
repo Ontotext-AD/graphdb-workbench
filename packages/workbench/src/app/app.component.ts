@@ -44,7 +44,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.subscribeToRoutingEvents();
     this.subscribeToRepositoryChanges();
     this.subscribeToApplicationsStateBeforeChange();
-    this.subscribeToViewRestrictionUpdates();
+    this.subscribeToNavigationEndEvent();
   }
 
   /**
@@ -122,7 +122,7 @@ export class AppComponent implements OnInit, OnDestroy {
   /**
    * Recalculates the view restriction on every completed Angular navigation.
    */
-  private subscribeToViewRestrictionUpdates(): void {
+  private subscribeToNavigationEndEvent(): void {
     this.subscriptions.add(
       this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
         const routeData = this.getActiveRouteData();

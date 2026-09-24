@@ -31,6 +31,7 @@ export class RestrictionService implements Service, LifecycleHooks {
     this.subscribeToRepositoryChanges();
     this.subscribeToLicenseChanges();
     this.subscribeToSecurityConfigChanges();
+    this.subscribeToAuthenticatedUserChanges();
   }
 
   /**
@@ -62,6 +63,13 @@ export class RestrictionService implements Service, LifecycleHooks {
    */
   private subscribeToSecurityConfigChanges(): void {
     this.securityContextService.onSecurityConfigChanged(() => this.recalculateIsViewRestricted());
+  }
+
+  /**
+   * Subscribes to authenticated user changes to recalculate the view restriction.
+   */
+  private subscribeToAuthenticatedUserChanges(): void {
+    this.securityContextService.onAuthenticatedUserChanged(() => this.recalculateIsViewRestricted());
   }
 
   /**

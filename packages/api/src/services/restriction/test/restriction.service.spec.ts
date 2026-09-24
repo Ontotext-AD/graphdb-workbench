@@ -132,17 +132,33 @@ describe('RestrictionService', () => {
     });
 
     test('should recalculate when the selected repository changes', async () => {
-      // GIVEN: A view restriction with the write condition, enabled security and a user without write access
+      // GIVEN: A view restriction with the write condition, enabled security, no selected repository
+      // and a user with write access only to a specific repository
+      const writableRepository = new Repository({id: 'writableRepo'});
+      repositoryContextService.updateRepositoryList(new RepositoryList([writableRepository]));
+      securityContextService.updateSecurityConfig(getSecurityConfig(true));
+      securityContextService.updateAuthenticatedUser(getUserWithAuthorities(Authority.ROLE_USER, `WRITE_REPO_${writableRepository.id}` as Authority));
+      restrictionService.updateViewRestriction(new ViewRestriction({restrictions: [ViewRestrictionCondition.WRITE]}));
+      expect(restrictionContextService.isViewRestricted()).toBe(true);
+
+      // WHEN: The selected repository changes to the one the user can write to
+      await repositoryContextService.updateSelectedRepository(writableRepository);
+      // THEN: The view should no longer be restricted without updating the view restriction again
+      expect(restrictionContextService.isViewRestricted()).toBe(false);
+    });
+
+    test('should recalculate when the authenticated user changes', async () => {
+      // GIVEN: A view restriction with the write condition, an active repository, enabled security and a user without write access
+      const repository = new Repository({id: 'testRepo'});
+      repositoryContextService.updateRepositoryList(new RepositoryList([repository]));
+      await repositoryContextService.updateSelectedRepository(repository);
       securityContextService.updateSecurityConfig(getSecurityConfig(true));
       securityContextService.updateAuthenticatedUser(getUserWithAuthorities(Authority.ROLE_USER));
       restrictionService.updateViewRestriction(new ViewRestriction({restrictions: [ViewRestrictionCondition.WRITE]}));
       expect(restrictionContextService.isViewRestricted()).toBe(true);
 
-      // WHEN: The selected repository changes to one the user can write to
-      const writableRepository = new Repository({id: 'writableRepo'});
-      repositoryContextService.updateRepositoryList(new RepositoryList([writableRepository]));
+      // WHEN: The authenticated user changes to one who can write to the active repository
       securityContextService.updateAuthenticatedUser(getUserWithAuthorities(Authority.ROLE_ADMIN));
-      await repositoryContextService.updateSelectedRepository(writableRepository);
       // THEN: The view should no longer be restricted without updating the view restriction again
       expect(restrictionContextService.isViewRestricted()).toBe(false);
     });
