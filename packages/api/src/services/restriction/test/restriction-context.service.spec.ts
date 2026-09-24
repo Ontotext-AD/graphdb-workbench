@@ -1,5 +1,5 @@
 import {RestrictionContextService} from '../restriction-context.service';
-import {ViewRestriction} from '../../../models/restrictions';
+import {ViewRestriction, ViewRestrictionCondition} from '../../../models/restrictions';
 
 describe('RestrictionContextService', () => {
   let restrictionContextService: RestrictionContextService;
@@ -74,7 +74,7 @@ describe('RestrictionContextService', () => {
 
   test('viewRestrictionSnapshot should return the view restriction from the context', () => {
     // GIVEN: a view restriction is set in the context
-    const newViewRestriction = new ViewRestriction({restrictions: ['fedx']});
+    const newViewRestriction = new ViewRestriction({restrictions: [ViewRestrictionCondition.FEDX]});
     restrictionContextService.updateViewRestriction(newViewRestriction);
 
     // WHEN: getting the view restriction snapshot

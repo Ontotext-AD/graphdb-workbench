@@ -21,10 +21,10 @@ export class RestrictionService implements Service, LifecycleHooks {
   private readonly authorizationService = service(AuthorizationService);
 
   private readonly conditionCheckers: Record<ViewRestrictionCondition, () => boolean> = {
-    license: () => this.isViewLicenseRestricted(),
-    write: () => this.isViewWriteRestricted(),
-    ontop: () => this.isViewOntopRestricted(),
-    fedx: () => this.isViewFedxRestricted(),
+    [ViewRestrictionCondition.LICENSE]: () => this.isViewLicenseRestricted(),
+    [ViewRestrictionCondition.WRITE]: () => this.isViewWriteRestricted(),
+    [ViewRestrictionCondition.ONTOP]: () => this.isViewOntopRestricted(),
+    [ViewRestrictionCondition.FEDX]: () => this.isViewFedxRestricted(),
   };
 
   onCreated(): void {

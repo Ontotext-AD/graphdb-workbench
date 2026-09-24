@@ -1,9 +1,5 @@
 import {Model} from '../common';
-
-/**
- * The restriction conditions that can apply to a view.
- */
-export type ViewRestrictionCondition = 'write' | 'ontop' | 'fedx' | 'license';
+import {ViewRestrictionCondition} from './view-restriction-condition';
 
 /**
  * Describes the conditions that restrict a given view.
