@@ -1,20 +1,39 @@
 <div class="page-view">
-  @if (!this.embedded()) {
+  @if (!embedded()) {
     <h1 class="title-container">
-      <span class="page-title-label">{{ title() | transloco}}</span>
+      <span class="page-title-label">{{ title() | transloco }}</span>
+
       @if (helpInfo()) {
-        <app-page-info-tooltip [title]="title() | transloco"
-                               [helpInfo]="helpInfo() | transloco"
-                               [documentationLink]="documentationLink()"></app-page-info-tooltip>
+        <app-page-info-tooltip
+          [title]="title() | transloco"
+          [helpInfo]="helpInfo() | transloco"
+          [documentationLink]="documentationLink()">
+        </app-page-info-tooltip>
       }
     </h1>
 
     <app-page-restrictions
+      #restrictions
       [title]="title()"
       [allowedRepositoryTypes]="allowedRepositoryTypes()"
       [requiredRepositoryPermission]="requiredRepositoryPermission()">
     </app-page-restrictions>
-  }
 
-  <ng-content></ng-content>
+    @if (!restrictions.hasContent()) {
+      <ng-container [ngTemplateOutlet]="pageContent"></ng-container>
+    }
+  } @else {
+    <ng-container [ngTemplateOutlet]="pageContent"></ng-container>
+  }
 </div>
+
+<!--
+  The page content, wrapped in a template so it can be rendered from both branches above.
+  There must be only one <ng-content>: projected content is assigned to a slot at compile time, and with more than one
+  unnamed <ng-content>, Angular projects everything into the last one, leaving the others empty.
+  Note: the content is created by the page, not by this layout, so while restrictions are shown it is only removed
+  from the DOM, not destroyed.
+-->
+<ng-template #pageContent>
+  <ng-content></ng-content>
+</ng-template>
