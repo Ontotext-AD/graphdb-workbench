@@ -43,6 +43,44 @@ describe('UriUtil', () => {
     expect(UriUtil.isValidUri('<http://example.com')).toBe(false);
   });
 
+  test('should validate absolute URIs with schemes other than http and urn', () => {
+    expect(UriUtil.isValidUri('https://example.com/resource')).toBe(true);
+    expect(UriUtil.isValidUri('<ftp://example.com/data.rdf>')).toBe(true);
+    expect(UriUtil.isValidUri('mailto:user@example.com')).toBe(true);
+    expect(UriUtil.isValidUri('file:///data/graph.ttl')).toBe(true);
+    expect(UriUtil.isValidUri('did:example:123')).toBe(true);
+    expect(UriUtil.isValidUri('doi:10.1000/182')).toBe(true);
+    expect(UriUtil.isValidUri('xyz://abc#thing')).toBe(true);
+  });
+
+  test('should validate a urn whose namespace specific string contains "http"', () => {
+    expect(UriUtil.isValidUri('urn:example:http-server')).toBe(true);
+    expect(UriUtil.isValidUri('<urn:example:https>')).toBe(true);
+  });
+
+  test('should validate URIs with an upper case scheme', () => {
+    expect(UriUtil.isValidUri('HTTP://example.com')).toBe(true);
+    expect(UriUtil.isValidUri('URN:alabala')).toBe(true);
+  });
+
+  test('should reject URIs without a scheme or a scheme specific part', () => {
+    expect(UriUtil.isValidUri('')).toBe(false);
+    expect(UriUtil.isValidUri(undefined as unknown as string)).toBe(false);
+    expect(UriUtil.isValidUri('example.com/resource')).toBe(false);
+    expect(UriUtil.isValidUri(':no-scheme')).toBe(false);
+    expect(UriUtil.isValidUri('1nvalid:scheme')).toBe(false);
+    expect(UriUtil.isValidUri('invalid scheme:value')).toBe(false);
+    expect(UriUtil.isValidUri('urn:')).toBe(false);
+    expect(UriUtil.isValidUri('mailto:')).toBe(false);
+  });
+
+  test('should reject hierarchical URIs without an authority', () => {
+    expect(UriUtil.isValidUri('http://')).toBe(false);
+    expect(UriUtil.isValidUri('https://')).toBe(false);
+    expect(UriUtil.isValidUri('http:example.com')).toBe(false);
+    expect(UriUtil.isValidUri('ftp://')).toBe(false);
+  });
+
   test('should resolve documentation URL', () => {
     const productVersion = '7.0.0';
     const endpointPath = 'endpoint/path';
