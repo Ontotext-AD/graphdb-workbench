@@ -5,17 +5,17 @@ import {
 import {
   service,
   RepositoryContextService,
+  RestrictionContextService,
   Repository,
   SubscriptionList,
-  RepositoryList,
-  RepositoryPermissionType,
-  RepositoryType,
+  ViewRestriction,
 } from '@ontotext/workbench-api';
 import {RepositoryPickerListComponent} from '../repository-picker-list/repository-picker-list.component';
 import {Message} from 'primeng/message';
 import {TranslocoPipe} from '@jsverse/transloco';
 import {RouterLink} from '@angular/router';
 import {RestrictionResolverService} from '../../services/page-restrictions/restriction-resolver.service';
+import {RestrictionContext} from '../../services/page-restrictions/model/restriction-context';
 
 @Component({
   selector: 'app-page-restrictions',
@@ -41,18 +41,74 @@ export class PageRestrictionsComponent implements OnInit, AfterViewInit, OnDestr
 
   private readonly restrictionResolverService = inject(RestrictionResolverService);
   private readonly repositoryContextService = service(RepositoryContextService);
+  private readonly restrictionContextService = service(RestrictionContextService);
   private readonly elementRef = inject(ElementRef<HTMLElement>);
+
   private resizeObserver?: ResizeObserver;
+  private readonly subscriptions = new SubscriptionList();
 
-  repositoryList = signal<RepositoryList | undefined>(undefined);
-  selectedRepository = signal<Repository | undefined>(undefined);
-  isRestricted = signal<boolean>(false);
+  /**
+   * The globally selected repository, kept in sync with the repository context.
+   */
+  private readonly selectedRepository = signal<Repository | undefined>(undefined);
 
-  readonly hasContent = computed(() =>
-    this.restrictions().length > 0 || (!!this.repositoryList() && !this.selectedRepository())
-  );
+  /**
+   * The restriction declared by the current view, kept in sync with the restriction context.
+   */
+  private readonly viewRestriction = signal<ViewRestriction | undefined>(undefined);
 
+  /**
+   * The input for the restriction resolver, shared by the restriction messages and the picker visibility,
+   * so both are calculated from the same state.
+   */
+  private readonly restrictionContext = computed<RestrictionContext>(() => ({
+    selectedRepository: this.selectedRepository(),
+    viewRestriction: this.viewRestriction(),
+    pageTitle: this.title() ?? '',
+  }));
+
+  /**
+   * Determines whether the view content should be restricted.
+   *
+   * The view is restricted when a restriction applies or the repository picker is shown.
+   * In that case, restriction messages and the repository picker are shown instead of the view content.
+   */
+  private readonly isViewRestricted = computed(() => this.restrictions().length > 0 || this.isRepositoryPickerShown());
+
+  /**
+   * The height, in pixels, that fills the space between the top of this component and the footer.
+   * Undefined when the view is not restricted, so the component takes no space.
+   */
   readonly availableHeight = signal<number | undefined>(undefined);
+
+  /**
+   * The restriction messages to show, in display order.
+   */
+  readonly restrictions = computed(() => this.restrictionResolverService.resolve(this.restrictionContext()));
+
+  /**
+   * Determines whether the repository picker is shown, so the user can pick another repository.
+   *
+   * It is shown when the page requires a selected repository and none is selected, or when the selected repository
+   * can't be used on the page. The repositories it offers are controlled by the page's allowed repository types
+   * and required permission.
+   */
+  readonly isRepositoryPickerShown = computed(() => this.restrictionResolverService.isRepositoryPickerRequired(this.restrictionContext()));
+
+  /**
+   * Whether the page requires write access. If so, the picker offers only writable repositories.
+   */
+  readonly requiresWriteAccess = computed(() => this.viewRestriction()?.requiresWriteAccess() ?? false);
+
+  /**
+   * The repository types allowed by the page. If empty, repositories of all types are allowed.
+   */
+  readonly allowedRepositoryTypes = computed(() => this.viewRestriction()?.allowedRepositoryTypes ?? []);
+
+  /**
+   * The repository permission required by the page. If undefined, no repository-specific permission is required.
+   */
+  readonly requiredRepositoryPermission = computed(() => this.viewRestriction()?.requiredRepositoryPermission);
 
   constructor() {
     // Recalculate within Angular's own change detection whenever content appears or disappears,
@@ -63,34 +119,10 @@ export class PageRestrictionsComponent implements OnInit, AfterViewInit, OnDestr
     });
   }
 
-  /**
-   * The repository types allowed by the page restriction.
-   * If undefined or empty, repositories of all types are allowed.
-   */
-  allowedRepositoryTypes = input<RepositoryType[] | undefined>(undefined);
-
-  /**
-   * The repository permission required to access the page.
-   * If undefined, no repository-specific permission is required.
-   */
-  requiredRepositoryPermission  = input<RepositoryPermissionType | undefined>(undefined);
-
-  private readonly subscriptions = new SubscriptionList();
-
-  readonly restrictions = computed(() =>
-    this.restrictionResolverService.resolve({
-      selectedRepository: this.selectedRepository(),
-      isRestricted: this.isRestricted(),
-      pageTitle: this.title() ?? '',
-      allowedRepositoryTypes: this.allowedRepositoryTypes(),
-      requiredRepositoryPermission: this.requiredRepositoryPermission(),
-    })
-  );
-
   ngOnInit(): void {
     this.subscriptions.addAll([
       this.repositoryContextService.onSelectedRepositoryChanged((repo) => this.selectedRepository.set(repo)),
-      this.repositoryContextService.onRepositoryListChanged((repositories) => this.repositoryList.set(repositories))
+      this.restrictionContextService.onViewRestrictionChanged((viewRestriction) => this.viewRestriction.set(viewRestriction))
     ]
     );
   }
@@ -108,7 +140,7 @@ export class PageRestrictionsComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   private updateAvailableHeight(): void {
-    if (!this.hasContent()) {
+    if (!this.isViewRestricted()) {
       // Nothing to show: leave the natural (empty) size instead of reserving space.
       this.availableHeight.set(undefined);
       return;

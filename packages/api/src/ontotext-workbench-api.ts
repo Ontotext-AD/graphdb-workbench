@@ -34,6 +34,7 @@ export * from './models/connector';
 export * from './models/graph-config';
 export * from './models/graph-explore';
 export * from './models/http';
+export * from './models/restrictions';
 
 // Export enums for external usages.
 export * from './models/url';
@@ -82,6 +83,7 @@ export * from './services/ui/dialog';
 export * from './services/domain/connector';
 export * from './services/domain/graph-config';
 export * from './services/domain/graph-explore';
+export * from './services/restriction';
 
 // Export interceptors for external usages.
 export * from './interceptor';

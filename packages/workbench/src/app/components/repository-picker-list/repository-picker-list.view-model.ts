@@ -127,11 +127,4 @@ export class RepositoryPickerListViewModel {
   get showRepositoryList(): boolean {
     return this.repositoryList.length > 0;
   }
-
-  /**
-   * Whether the select repository button should be shown for a row.
-   */
-  get canSelectRepository(): boolean {
-    return !!this.license?.valid;
-  }
 }

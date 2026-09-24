@@ -14,10 +14,10 @@
       </div>
     </p-message>
   }
-  @if (repositoryList() && !selectedRepository()) {
+  @if (isRepositoryPickerShown()) {
     <app-repository-picker-list
       class="repository-list"
-      [requireWriteAccess]="isRestricted()"
+      [requireWriteAccess]="requiresWriteAccess()"
       [filterByTypes]="allowedRepositoryTypes()"
       [filterByPermission]="requiredRepositoryPermission()"
       [showStateFilter]="false">
