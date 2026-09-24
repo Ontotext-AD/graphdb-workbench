@@ -52,41 +52,41 @@ describe('RestrictionContextService', () => {
     expect(mockCallback).not.toHaveBeenCalled();
   });
 
-  test('isViewRestrictedSnapshot should return the isViewRestricted value from the context', () => {
+  test('isViewRestricted should return the isViewRestricted value from the context', () => {
     // WHEN: updating isViewRestricted to true
     restrictionContextService.updateIsViewRestricted(true);
     // THEN: the snapshot should return true
-    expect(restrictionContextService.isViewRestrictedSnapshot()).toBe(true);
+    expect(restrictionContextService.isViewRestricted()).toBe(true);
 
     // WHEN: updating isViewRestricted to false
     restrictionContextService.updateIsViewRestricted(false);
     // THEN: the snapshot should return false
-    expect(restrictionContextService.isViewRestrictedSnapshot()).toBe(false);
+    expect(restrictionContextService.isViewRestricted()).toBe(false);
   });
 
-  test('isViewRestrictedSnapshot should return false when not set', () => {
+  test('isViewRestricted should return false when not set', () => {
     // GIVEN: isViewRestricted has not been set
 
     // WHEN: getting the isViewRestricted snapshot
     // THEN: the snapshot should default to false
-    expect(restrictionContextService.isViewRestrictedSnapshot()).toBe(false);
+    expect(restrictionContextService.isViewRestricted()).toBe(false);
   });
 
-  test('viewRestrictionSnapshot should return the view restriction from the context', () => {
+  test('viewRestriction should return the view restriction from the context', () => {
     // GIVEN: a view restriction is set in the context
     const newViewRestriction = new ViewRestriction({restrictions: [ViewRestrictionCondition.FEDX]});
     restrictionContextService.updateViewRestriction(newViewRestriction);
 
     // WHEN: getting the view restriction snapshot
     // THEN: the snapshot should equal the view restriction that was set
-    expect(restrictionContextService.viewRestrictionSnapshot()).toEqual(newViewRestriction);
+    expect(restrictionContextService.viewRestriction()).toEqual(newViewRestriction);
   });
 
-  test('viewRestrictionSnapshot should return undefined when not set', () => {
+  test('viewRestriction should return undefined when not set', () => {
     // GIVEN: a view restriction has not been set
 
     // WHEN: getting the view restriction snapshot
     // THEN: the snapshot should return undefined
-    expect(restrictionContextService.viewRestrictionSnapshot()).toBeUndefined();
+    expect(restrictionContextService.viewRestriction()).toBeUndefined();
   });
 });

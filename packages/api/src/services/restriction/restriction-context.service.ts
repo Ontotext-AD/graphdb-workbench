@@ -34,7 +34,7 @@ export class RestrictionContextService extends ContextService<RestrictionContext
    *
    * @returns The current isViewRestricted value, or `false` if not set.
    */
-  isViewRestrictedSnapshot(): boolean {
+  isViewRestricted(): boolean {
     return this.getContextPropertyValue(this.IS_VIEW_RESTRICTED) ?? false;
   }
 
@@ -62,7 +62,7 @@ export class RestrictionContextService extends ContextService<RestrictionContext
    *
    * @returns The current view restriction, or `undefined` if not set.
    */
-  viewRestrictionSnapshot(): ViewRestriction | undefined {
+  viewRestriction(): ViewRestriction | undefined {
     return this.getContextPropertyValue(this.VIEW_RESTRICTION);
   }
 }

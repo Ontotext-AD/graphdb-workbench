@@ -70,7 +70,7 @@ export class RestrictionService implements Service, LifecycleHooks {
    * The view is considered restricted when at least one of its conditions is satisfied.
    */
   private recalculateIsViewRestricted(): void {
-    const restrictions = this.restrictionContextService.viewRestrictionSnapshot()?.restrictions ?? [];
+    const restrictions = this.restrictionContextService.viewRestriction()?.restrictions ?? [];
     const isViewRestricted = restrictions.some((condition) => this.conditionCheckers[condition]());
     this.restrictionContextService.updateIsViewRestricted(isViewRestricted);
   }
