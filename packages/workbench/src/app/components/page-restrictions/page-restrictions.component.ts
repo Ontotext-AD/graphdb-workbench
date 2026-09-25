@@ -11,6 +11,7 @@ import {
   RepositoryList,
   RepositoryPermissionType,
   RepositoryType,
+  ViewRestriction,
 } from '@ontotext/workbench-api';
 import {RepositoryPickerListComponent} from '../repository-picker-list/repository-picker-list.component';
 import {Message} from 'primeng/message';
@@ -48,7 +49,8 @@ export class PageRestrictionsComponent implements OnInit, AfterViewInit, OnDestr
 
   repositoryList = signal<RepositoryList | undefined>(undefined);
   selectedRepository = signal<Repository | undefined>(undefined);
-  isViewRestricted = signal<boolean>(false);
+  viewRestriction = signal<ViewRestriction | undefined>(undefined);
+  readonly requiresWriteAccess = computed(() => this.viewRestriction()?.requiresWriteAccess() ?? false);
 
   readonly hasContent = computed(() =>
     this.restrictions().length > 0 || (!!this.repositoryList() && !this.selectedRepository())
@@ -82,7 +84,7 @@ export class PageRestrictionsComponent implements OnInit, AfterViewInit, OnDestr
   readonly restrictions = computed(() =>
     this.restrictionResolverService.resolve({
       selectedRepository: this.selectedRepository(),
-      isViewRestricted: this.isViewRestricted(),
+      viewRestriction: this.viewRestriction(),
       pageTitle: this.title() ?? '',
       allowedRepositoryTypes: this.allowedRepositoryTypes(),
       requiredRepositoryPermission: this.requiredRepositoryPermission(),
@@ -93,7 +95,7 @@ export class PageRestrictionsComponent implements OnInit, AfterViewInit, OnDestr
     this.subscriptions.addAll([
       this.repositoryContextService.onSelectedRepositoryChanged((repo) => this.selectedRepository.set(repo)),
       this.repositoryContextService.onRepositoryListChanged((repositories) => this.repositoryList.set(repositories)),
-      this.restrictionContextService.onIsViewRestrictedChanged((isViewRestricted) => this.isViewRestricted.set(isViewRestricted))
+      this.restrictionContextService.onViewRestrictionChanged((viewRestriction) => this.viewRestriction.set(viewRestriction))
     ]
     );
   }

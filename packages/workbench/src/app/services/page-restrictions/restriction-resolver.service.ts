@@ -7,6 +7,7 @@ import {
   RepositoryType,
   SecurityContextService,
   service,
+  ViewRestrictionCondition,
 } from '@ontotext/workbench-api';
 import {RestrictionReason} from './restriction-reason';
 import {RestrictionContext} from './model/restriction-context';
@@ -21,8 +22,12 @@ export class RestrictionResolverService {
     const isLicenseValid = this.licenseContextService.getLicenseSnapshot()?.valid ?? false;
     const isSecurityEnabled = this.securityContextService.getSecurityConfig()?.isEnabled() ?? false;
     const canCreateRepository = this.authorizationService.isRepoManager();
+    const requiresWriteAccess = ctx.viewRestriction?.requiresWriteAccess() ?? false;
+    // Only the conditions declared by the page produce restriction reasons, e.g. an invalid license doesn't
+    // restrict a page that doesn't declare the license condition.
+    const isLicenseRestricted = this.isRestrictedBy(ctx, ViewRestrictionCondition.LICENSE) && !isLicenseValid;
 
-    const accessibleRepositoriesCount = this.authorizationService.getAccessibleRepositories(true, ctx.isViewRestricted)
+    const accessibleRepositoriesCount = this.authorizationService.getAccessibleRepositories(true, requiresWriteAccess)
       .filterByType(ctx.allowedRepositoryTypes)
       .filter((repository) => !ctx.requiredRepositoryPermission ||
         this.authorizationService.hasRepoPermission(ctx.requiredRepositoryPermission, repository)).length;
@@ -36,7 +41,7 @@ export class RestrictionResolverService {
 
     const reasons: RestrictionReason[] = [];
 
-    if (!repo && isLicenseValid) {
+    if (!repo && !isLicenseRestricted) {
       if (canCreateRepository && !hasAccessibleRepositories) {
         reasons.push({
           severity: 'info',
@@ -61,7 +66,8 @@ export class RestrictionResolverService {
     }
 
     if (repo) {
-      if (isSecurityEnabled && !canWrite) {
+      const isWriteRestricted = this.isRestrictedBy(ctx, ViewRestrictionCondition.WRITE) && isSecurityEnabled && !canWrite;
+      if (isWriteRestricted) {
         reasons.push({
           severity: 'warn',
           translationKey: 'components.page_restrictions.no_write_permission',
@@ -69,7 +75,7 @@ export class RestrictionResolverService {
         });
       }
 
-      if (canWrite && repo.isOntop()) {
+      if (!isWriteRestricted && this.isRestrictedBy(ctx, ViewRestrictionCondition.ONTOP) && repo.isOntop()) {
         reasons.push({
           severity: 'warn',
           translationKey: 'components.page_restrictions.read_only_ontop',
@@ -77,7 +83,7 @@ export class RestrictionResolverService {
         });
       }
 
-      if (canWrite && repo.isFedx()) {
+      if (!isWriteRestricted && this.isRestrictedBy(ctx, ViewRestrictionCondition.FEDX) && repo.isFedx()) {
         reasons.push({
           severity: 'warn',
           translationKey: 'components.page_restrictions.fedx_unsupported',
@@ -86,7 +92,7 @@ export class RestrictionResolverService {
       }
     }
 
-    if (!isLicenseValid) {
+    if (isLicenseRestricted) {
       reasons.push({
         severity: 'warn',
         translationKey: 'components.page_restrictions.invalid_license',
@@ -96,7 +102,7 @@ export class RestrictionResolverService {
     }
 
     if (!hasAccessibleRepositories) {
-      if (ctx.isViewRestricted) {
+      if (requiresWriteAccess) {
         reasons.push({
           severity: 'info',
           translationKey: 'components.page_restrictions.no_accessible_writable_repos',
@@ -105,6 +111,17 @@ export class RestrictionResolverService {
     }
 
     return reasons;
+  }
+
+  /**
+   * Checks whether the page declares the given restriction condition.
+   *
+   * @param ctx The restriction context, carrying the page's declared view restriction.
+   * @param condition The restriction condition to look for.
+   * @returns `true` if the page declares the condition.
+   */
+  private isRestrictedBy(ctx: RestrictionContext, condition: ViewRestrictionCondition): boolean {
+    return ctx.viewRestriction?.isRestrictedBy(condition) ?? false;
   }
 
   /**

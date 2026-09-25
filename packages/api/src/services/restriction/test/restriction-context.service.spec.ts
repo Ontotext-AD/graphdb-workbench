@@ -89,4 +89,34 @@ describe('RestrictionContextService', () => {
     // THEN: the snapshot should return undefined
     expect(restrictionContextService.viewRestriction()).toBeUndefined();
   });
+
+  test('onViewRestrictionChanged should notify subscribers when the view restriction changes', () => {
+    // GIVEN: There is a subscriber to view restriction changes
+    const mockCallback = jest.fn();
+    restrictionContextService.onViewRestrictionChanged(mockCallback);
+    // THEN: the subscriber should be notified with undefined on registration
+    expect(mockCallback).toHaveBeenLastCalledWith(undefined);
+
+    // WHEN: updating the view restriction
+    const newViewRestriction = new ViewRestriction({restrictions: [ViewRestrictionCondition.WRITE]});
+    restrictionContextService.updateViewRestriction(newViewRestriction);
+    // THEN: the subscriber should be notified with the new view restriction
+    expect(mockCallback).toHaveBeenLastCalledWith(newViewRestriction);
+  });
+
+  test('view restriction should require write access only when it declares the write condition', () => {
+    // WHEN: the view restriction declares the write condition among others
+    restrictionContextService.updateViewRestriction(new ViewRestriction({
+      restrictions: [ViewRestrictionCondition.LICENSE, ViewRestrictionCondition.WRITE]
+    }));
+    // THEN: it should require write access
+    expect(restrictionContextService.viewRestriction()?.requiresWriteAccess()).toBe(true);
+
+    // WHEN: the view restriction declares only non-write conditions
+    restrictionContextService.updateViewRestriction(new ViewRestriction({
+      restrictions: [ViewRestrictionCondition.LICENSE, ViewRestrictionCondition.ONTOP, ViewRestrictionCondition.FEDX]
+    }));
+    // THEN: it should not require write access
+    expect(restrictionContextService.viewRestriction()?.requiresWriteAccess()).toBe(false);
+  });
 });
