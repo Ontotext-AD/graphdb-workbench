@@ -12,6 +12,7 @@ import {
     RepositoryContextService,
     AuthenticationStorageService,
     REPOSITORY_ID_PARAM,
+    RdfVersionUtil,
 } from '@ontotext/workbench-api';
 
 const modules = [
@@ -159,7 +160,7 @@ exportCtrl.controller('ExportCtrl',
             };
 
             $scope.downloadExport = function(downloadUrl, format) {
-                let url = downloadUrl + '&Accept=' + encodeURIComponent(format.type + ';version=1.2');
+                let url = downloadUrl + '&Accept=' + encodeURIComponent(RdfVersionUtil.withVersion(format.type));
                 const auth = authStorageService.getAuthToken().getValue();
                 if (auth) {
                     url = url + '&authToken=' + encodeURIComponent(auth);

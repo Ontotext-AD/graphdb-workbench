@@ -1,4 +1,5 @@
 import {HttpUtils} from "../utils/http-utils";
+import {RdfVersionUtil} from '@ontotext/workbench-api';
 
 angular
     .module('graphdb.framework.rest.rdf4j.repositories.service', [])
@@ -27,7 +28,7 @@ function RDF4JRepositoriesRestService($http, $translate) {
         getGraphs,
         resolveGraphs,
         downloadResultsAsFile,
-        downloadGraphsAsFile
+        downloadGraphsAsFile,
     };
 
     function getNamespaces(repositoryId) {
@@ -42,14 +43,14 @@ function RDF4JRepositoriesRestService($http, $translate) {
         return $http({
             url: `${REPOSITORIES_ENDPOINT}/${repositoryId}/namespaces/${prefix}`,
             method: 'PUT',
-            data: namespace
+            data: namespace,
         });
     }
 
     function deleteNamespacePrefix(repositoryId, prefix) {
         return $http({
             url: `${REPOSITORIES_ENDPOINT}/${repositoryId}/namespaces/${prefix}`,
-            method: 'DELETE'
+            method: 'DELETE',
         });
     }
 
@@ -58,7 +59,7 @@ function RDF4JRepositoriesRestService($http, $translate) {
             url: `${REPOSITORIES_ENDPOINT}/${repositoryId}/statements`,
             method: 'POST',
             data,
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         });
     }
 
@@ -67,8 +68,8 @@ function RDF4JRepositoriesRestService($http, $translate) {
             method: 'POST',
             url: `${REPOSITORIES_ENDPOINT}/${repositoryId}/statements`,
             params: {
-                update: ACTIVATE_PLUGIN_QUERY.replace('{{pluginName}}', pluginName)
-            }
+                update: ACTIVATE_PLUGIN_QUERY.replace('{{pluginName}}', pluginName),
+            },
         });
     }
 
@@ -77,11 +78,11 @@ function RDF4JRepositoriesRestService($http, $translate) {
             method: 'GET',
             url: `${REPOSITORIES_ENDPOINT}/${repositoryId}`,
             params: {
-                query: CHECK_PLUGIN_ACTIVE_QUERY.replace('{{pluginName}}', pluginName)
+                query: CHECK_PLUGIN_ACTIVE_QUERY.replace('{{pluginName}}', pluginName),
             },
             headers: {
-                'Accept': '*/*;version=1.2'
-            }
+                'Accept': RdfVersionUtil.withVersion('*/*'),
+            },
         });
     }
 
@@ -90,23 +91,22 @@ function RDF4JRepositoriesRestService($http, $translate) {
     }
 
     function getGraphs(repositoryId, limit) {
-        const version12AcceptHeader = 'application/sparql-results+json;version=1.2';
-        return $http.get(`${REPOSITORIES_ENDPOINT}/${repositoryId}/contexts`, {params: {limit}, headers: {'Accept': version12AcceptHeader}});
+        return $http.get(`${REPOSITORIES_ENDPOINT}/${repositoryId}/contexts`, {params: {limit}, headers: {'Accept': RdfVersionUtil.withVersion('application/sparql-results+json')}});
     }
 
 
     function resolveGraphs(repositoryId, limit) {
         let graphsInRepo = [];
         if (repositoryId) {
-            return getGraphs(repositoryId, limit).success(function (graphs) {
+            return getGraphs(repositoryId, limit).success(function(graphs) {
                     graphs.results.bindings.unshift({
                         contextID: {
                             type: "default",
-                            value: 'import.default.graph'
-                        }
+                            value: 'import.default.graph',
+                        },
                     });
 
-                    Object.keys(graphs.results.bindings).forEach(function (key) {
+                    Object.keys(graphs.results.bindings).forEach(function(key) {
                         const binding = graphs.results.bindings[key];
                         if (binding.contextID.type === "bnode") {
                             binding.contextID.value = `_:${binding.contextID.value}`;
@@ -137,18 +137,16 @@ function RDF4JRepositoriesRestService($http, $translate) {
             .map(([property, value]) => `${property}=${encodeURIComponent(value)}`);
         const payloadString = properties.join('&');
 
-        const version12AcceptHeader = acceptHeader + ';version=1.2';
-
         return $http({
             method: 'POST',
             url: `${REPOSITORIES_ENDPOINT}/${repositoryId}`,
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
-                'Accept': version12AcceptHeader,
-                'Link': linkHeader
+                'Accept': RdfVersionUtil.withVersion(acceptHeader),
+                'Link': linkHeader,
             },
             data: payloadString,
-            responseType: "blob"
+            responseType: "blob",
         }).then((response) => HttpUtils.extractFileFromResponse(response));
     }
 
@@ -160,16 +158,14 @@ function RDF4JRepositoriesRestService($http, $translate) {
      * @return {Promise<{data: Blob, filename: string}>} A promise resolving to an object containing the file data (Blob) and its filename.
      */
     function downloadGraphsAsFile(repositoryId, limit) {
-        const version12AcceptHeader = 'application/json, text/plain, */*;version=1.2';
-
         return $http({
             method: 'GET',
             url: `${REPOSITORIES_ENDPOINT}/${repositoryId}/contexts`,
-            params: { limit },
+            params: {limit},
             responseType: "blob",
             headers: {
-                'Accept': version12AcceptHeader
-            }
+                'Accept': RdfVersionUtil.withVersion('application/json, text/plain, */*'),
+            },
         }).then((response) => HttpUtils.extractFileFromResponse(response));
     }
 }

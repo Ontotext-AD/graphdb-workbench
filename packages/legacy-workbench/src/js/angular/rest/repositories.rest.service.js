@@ -1,4 +1,5 @@
 import {repositoryConfigMapper} from "./mappers/repositories-mapper";
+import {RdfVersionUtil} from '@ontotext/workbench-api';
 
 angular
     .module('graphdb.framework.rest.repositories.service', [])
@@ -201,7 +202,7 @@ function RepositoriesRestService($http) {
     function getRepositoryTurtleConfig(repository) {
         return $http.get('rest/repositories/' + repository.id, {
             headers: {
-                'Accept': 'text/turtle;version=1.2',
+                'Accept': RdfVersionUtil.withVersion('text/turtle'),
             },
         });
     }
