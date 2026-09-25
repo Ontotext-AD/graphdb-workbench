@@ -165,8 +165,7 @@ describe('Import server files', () => {
         ImportServerFilesSteps.getResourceTitleRow(6).should('contain', "import-resource-with-long-error.rdf");
         // checks files in root
         ImportServerFilesSteps.getResourceTitleRow(7).should('contain', "bnodes.ttl");
-        ImportServerFilesSteps.getResourceTitleRow(8).should('contain', "test_turtlestar.ttls");
-        ImportServerFilesSteps.getResourceTitleRow(9).should('contain', "0007-import-file.jsonld");
+        ImportServerFilesSteps.getResourceTitleRow(8).should('contain', "0007-import-file.jsonld");
 
         // When I change the order by size.
         ImportServerFilesSteps.orderBySize();
@@ -182,9 +181,8 @@ describe('Import server files', () => {
         ImportServerFilesSteps.getResourceTitleRow(5).should('contain', "rdfxml.rdf");
         ImportServerFilesSteps.getResourceTitleRow(6).should('contain', "jsonld-file.jsonld");
         // checks files in root
-        ImportServerFilesSteps.getResourceTitleRow(17).should('contain', "0007-import-file.jsonld");
-        ImportServerFilesSteps.getResourceTitleRow(18).should('contain', "test_turtlestar.ttls");
-        ImportServerFilesSteps.getResourceTitleRow(19).should('contain', "bnodes.ttl");
+        ImportServerFilesSteps.getResourceTitleRow(15).should('contain', "0007-import-file.jsonld");
+        ImportServerFilesSteps.getResourceTitleRow(16).should('contain', "bnodes.ttl");
     });
 
     it('should allow importing jsonld with empty "JSON-LD Context"', () => {

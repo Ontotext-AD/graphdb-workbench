@@ -114,6 +114,11 @@ export class OntoDropdown {
   @Prop() autoClose = false;
 
   /**
+   * Indicates whether the dropdown is disabled.
+   */
+  @Prop() disabled = false;
+
+  /**
    * Event emitted when a dropdown item is selected.
    * The event payload contains the value of the selected item.
    */
@@ -178,7 +183,8 @@ export class OntoDropdown {
           tooltip-class={this.tooltipClass}
           {...(this.tooltipTheme ? {'tooltip-theme': this.tooltipTheme} : {})}
           onMouseEnter={this.setDropdownButtonTooltip()}
-          onClick={this.toggleButtonClickHandler}>
+          onClick={this.toggleButtonClickHandler}
+          disabled={this.disabled}>
           {this.iconClass ? <i class={'button-icon ri-lg ' + this.iconClass}></i> : ''}
           <span class='button-name'>
             {this.dropdownButtonName ?? this.translate(this.dropdownButtonNameLabelKey)}
@@ -196,7 +202,8 @@ export class OntoDropdown {
               {...(menuItemTooltipTheme ? {'tooltip-theme': menuItemTooltipTheme} : {})}
               onMouseEnter={this.setDropdownItemTooltip(item)}
               onMouseLeave={this.clearPendingDropdownItemTooltip}
-              onClick={this.itemClickHandler(item.value)}>
+              onClick={this.itemClickHandler(item.value)}
+              disabled={this.disabled}>
               {item.iconClass ? <span class={'onto-dropdown-option-icon ' + item.iconClass}></span> : ''}
               {item.iconImage ? <img class='onto-dropdown-option-image-icon' src={item.iconImage} alt={item.name ?? this.translate(item.nameLabelKey)}></img> : '' }
               <span>{item.name ?? this.translate(item.nameLabelKey)}</span>

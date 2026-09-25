@@ -1,3 +1,5 @@
+import {RdfVersionUtil} from '@ontotext/workbench-api';
+
 angular
     .module('graphdb.framework.rest.export.service', [])
     .factory('ExportRestService', ExportRestService);
@@ -7,7 +9,7 @@ ExportRestService.$inject = ['$http', '$repositories', '$translate'];
 const REPOSITORIES_ENDPOINT = 'repositories';
 function ExportRestService($http, $repositories, $translate) {
     return {
-        getExportedStatementsAsJSONLD
+        getExportedStatementsAsJSONLD,
     };
 
     /*
@@ -23,11 +25,11 @@ function ExportRestService($http, $repositories, $translate) {
     function getExportedStatementsAsJSONLD(context, repo, graphsByValue, auth, headers) {
         const url = `${REPOSITORIES_ENDPOINT}/${repo.id}/statements?infer=false`;
         const params = {
-            location: repo.location
+            location: repo.location,
         };
 
         const httpHeaders = {
-            accept: headers.accept
+            accept: RdfVersionUtil.withVersion(headers.accept),
         };
 
         if (Array.isArray(context)) {
@@ -51,8 +53,8 @@ function ExportRestService($http, $repositories, $translate) {
             method: 'GET',
             params: params,
             headers: httpHeaders,
-            responseType: 'blob'
-        }).then(function (res) {
+            responseType: 'blob',
+        }).then(function(res) {
             const data = res.data;
             const headers = res.headers();
             const contentDisposition = headers['content-disposition'];

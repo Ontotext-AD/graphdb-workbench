@@ -12,6 +12,7 @@ import {
     RepositoryContextService,
     AuthenticationStorageService,
     REPOSITORY_ID_PARAM,
+    RdfVersionUtil,
 } from '@ontotext/workbench-api';
 
 const modules = [
@@ -159,7 +160,7 @@ exportCtrl.controller('ExportCtrl',
             };
 
             $scope.downloadExport = function(downloadUrl, format) {
-                let url = downloadUrl + '&Accept=' + encodeURIComponent(format.type);
+                let url = downloadUrl + '&Accept=' + encodeURIComponent(RdfVersionUtil.withVersion(format.type));
                 const auth = authStorageService.getAuthToken().getValue();
                 if (auth) {
                     url = url + '&authToken=' + encodeURIComponent(auth);
@@ -223,7 +224,7 @@ exportCtrl.controller('ExportCtrl',
 
             /// <summary>Fill the hidden form and submit it to start download document.</summary>
             $scope.exportRepo = function(format, contextID) {
-                if (format.type === 'application/rdf+xml' || format.type === 'text/plain' || format.type === 'text/turtle' || format.type === 'application/x-turtlestar' || format.type === 'text/rdf+n3') {
+                if (format.type === 'application/rdf+xml' || format.type === 'text/plain' || format.type === 'text/turtle' || format.type === 'text/rdf+n3') {
                     ModalService.openSimpleModal({
                         title: $translate.instant('common.warning'),
                         message: decodeHTML($translate.instant('export.format.warning.msg')),
@@ -342,7 +343,7 @@ exportCtrl.controller('ExportCtrl',
                         $scope.downloadExport(downloadUrl, format);
                     };
 
-                    if (format.type === 'application/rdf+xml' || format.type === 'text/plain' || format.type === 'text/turtle' || format.type === 'application/x-turtlestar' || format.type === 'text/rdf+n3') {
+                    if (format.type === 'application/rdf+xml' || format.type === 'text/plain' || format.type === 'text/turtle' || format.type === 'text/rdf+n3') {
                         ModalService.openSimpleModal({
                             title: $translate.instant('common.warning'),
                             message: decodeHTML($translate.instant('export.format.warning.msg')),

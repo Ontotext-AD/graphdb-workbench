@@ -1,6 +1,7 @@
 import {HttpService} from '../../http/http.service';
 import {NamespacesResponse} from './response/namespaces-response';
 import {SparqlResultsResponse} from '../../../models/sparql';
+import {RdfVersionUtil} from '../../utils/rdf-version-util';
 
 /**
  * Service for interacting with the external RDF4J REST API.
@@ -61,7 +62,7 @@ export class Rdf4jRestService extends HttpService {
       responseType: 'blob',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
-        'Accept': acceptHeader,
+        'Accept': RdfVersionUtil.withVersion(acceptHeader),
         'Link': linkHeader
       },
       body: payloadString,
@@ -89,7 +90,7 @@ export class Rdf4jRestService extends HttpService {
       body: new URLSearchParams({query}),
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
-        'Accept': 'application/sparql-results+json',
+        'Accept': RdfVersionUtil.withVersion('application/sparql-results+json'),
         'X-GraphDB-Local-Consistency': 'updating',
       }
     });

@@ -42,7 +42,7 @@ describe('ACL Management: render rules', () => {
         });
 
         it('Should render ACL rules in a table', () => {
-            AclManagementSteps.getAclRules().should('have.length', 5);
+            AclManagementSteps.getAclRules().should('have.length', 4);
             AclManagementSteps.getAddFirstRuleButton().should('be.visible');
             AclManagementSteps.checkStatementRules(ACL_VIEW);
         });

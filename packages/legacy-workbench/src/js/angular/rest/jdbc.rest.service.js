@@ -1,3 +1,5 @@
+import {RdfVersionUtil} from '@ontotext/workbench-api';
+
 angular
     .module('graphdb.framework.rest.jdbc.service', [])
     .factory('JdbcRestService', JdbcRestService);
@@ -7,7 +9,6 @@ JdbcRestService.$inject = ['$http', '$repositories', '$translate'];
 const JDBC_ENDPOINT = 'rest/sql-views';
 
 function JdbcRestService($http, $translate) {
-
     return {
         getJdbcConfigurations,
         getJdbcConfiguration,
@@ -17,7 +18,7 @@ function JdbcRestService($http, $translate) {
         getColumnNames,
         getColumnsTypeSuggestion,
         getExistingSqlTablePreview,
-        getNewSqlTablePreview
+        getNewSqlTablePreview,
     };
 
     function getJdbcConfigurations() {
@@ -37,9 +38,9 @@ function JdbcRestService($http, $translate) {
                 data: {
                     name: configuration.name,
                     query: configuration.query,
-                    columns: configuration.columns || []
-                }
-            }
+                    columns: configuration.columns || [],
+                },
+            },
         );
     }
 
@@ -59,8 +60,8 @@ function JdbcRestService($http, $translate) {
         const headers = {
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'text/plain'
-            }
+                'Content-Type': 'text/plain',
+            },
         };
 
         return $http.post(`${JDBC_ENDPOINT}/columns`, query, headers);
@@ -76,9 +77,9 @@ function JdbcRestService($http, $translate) {
                 url: `${JDBC_ENDPOINT}/types`,
                 data: {
                     query: query,
-                    column_names: columns
-                }
-            }
+                    column_names: columns,
+                },
+            },
         );
     }
     function getExistingSqlTablePreview(name, limit) {
@@ -87,8 +88,8 @@ function JdbcRestService($http, $translate) {
             method: 'GET',
             url: `rest/sql-views/preview/${name}`,
             params: {
-                limit
-            }
+                limit,
+            },
         });
     }
 
@@ -101,9 +102,9 @@ function JdbcRestService($http, $translate) {
             dataType: 'json',
             data: sqlView,
             params: {
-                limit
+                limit,
             },
-            headers: {Accept: 'application/sparql-results+json'}
+            headers: {Accept: RdfVersionUtil.withVersion('application/sparql-results+json')},
         });
     }
 }
