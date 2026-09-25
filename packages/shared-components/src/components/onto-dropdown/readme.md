@@ -40,6 +40,20 @@ internationalization.
 | `valueChanged` | Event emitted when a dropdown item is selected. The event payload contains the value of the selected item. | `CustomEvent<any>`     |
 
 
+## Methods
+
+### `refreshButtonTooltip() => Promise<void>`
+
+Allows callers to force an immediate button tooltip refresh (e.g. on a repository list change),
+instead of waiting for the next poll.
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+
 ## Dependencies
 
 ### Used by

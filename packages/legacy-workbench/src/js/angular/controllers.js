@@ -45,11 +45,13 @@ import {
     WindowService,
     BroadcastService,
     MessageType,
+    RepositoryState,
 } from '@ontotext/workbench-api';
 import {EventConstants} from './utils/event-constants';
 import {CookieConsent} from './models/cookie-policy/cookie-consent';
 import {GuideUtils} from './guides/guide-utils';
 import {YasguiComponentDirectiveUtil} from './core/directives/yasgui-component/yasgui-component-directive.util';
+import {LoggerProvider} from './core/services/logger-provider';
 
 angular
     .module('graphdb.workbench.se.controllers', [
@@ -264,6 +266,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     $scope.connectorsVersion = productInfo.connectors;
     $scope.sesameVersion = productInfo.sesame;
     $scope.isActiveRepoPopoverOpen = false;
+    $scope.repoStates = RepositoryState;
 
     // =========================
     // Public functions
@@ -482,10 +485,20 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     $scope.getRepositorySize = function() {
         $scope.repositorySize = {};
         if ($scope.popoverRepo) {
-            $scope.repositorySize.loading = true;
-            RepositoriesRestService.getSize($scope.popoverRepo).then(function(res) {
-                $scope.repositorySize = res.data;
-            });
+            const isLoading = $scope.popoverRepo.state === RepositoryState.RUNNING;
+            if (isLoading) {
+                $scope.repositorySize.loading = isLoading;
+                RepositoriesRestService.getSize($scope.popoverRepo)
+                .then(function(res) {
+                    $scope.repositorySize = res.data;
+                })
+                .catch(function(err) {
+                    LoggerProvider.logger.error('Failed to fetch repository size.', err);
+                })
+                .finally(function() {
+                    $scope.repositorySize.loading = false;
+                });
+            }
         }
     };
 
