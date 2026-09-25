@@ -89,6 +89,8 @@ export class OntoHeader {
   @State() isHomePage = isHomePage();
   /** The list of repositories in the database. */
   @State() repositoryList: RepositoryList;
+  /** The dropdown items derived from the repository list, passed down to the repository selector. */
+  @State() repositoryItems: DropdownItem<Repository>[] = [];
   @State() currentRoute: string;
   /** The model of the currently selected repository, if any. */
   @State() currentRepository: Repository | undefined;
@@ -103,7 +105,6 @@ export class OntoHeader {
   // ========================
   private isActiveLocationLoading = false;
   private pollingInterval: number;
-  private repositoryItems: DropdownItem<Repository>[] = [];
   private totalTripletsFormatter: Intl.NumberFormat;
   private expansionRatioFormatter: Intl.NumberFormat;
   /** Array of subscription cleanup functions */
@@ -308,6 +309,13 @@ export class OntoHeader {
 
   private initOnRepositoryListChanged(repositories: RepositoryList): void {
     this.repositoryList = repositories;
+    // Re-sync to the fresh object from the new list, since only the list (not the selection) may have changed.
+    if (this.currentRepository) {
+      this.currentRepository =
+        repositories.findRepository(this.currentRepository.id, this.currentRepository.location) ??
+        this.currentRepository;
+    }
+
     this.updateRepositoryItems();
   }
 

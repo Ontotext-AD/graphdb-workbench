@@ -2,12 +2,12 @@
 <div ng-init="getRepositorySize()" class="repository-info-popover">
 
     <div class="title">
-        <span class="repository-id">
-            {{'security.repository.title' | translate}}
-        </span>
-        <span class="property-value">
-            {{repository.id}}
-        </span>
+        <h6 class="property-value" ng-class="{'inactive': repository.state === repoStates.INACTIVE }">
+            <i ng-show="repository.state === repoStates.RUNNING" class="ri-checkbox-blank-circle-fill"></i>
+            <i ng-show="repository.state === repoStates.INACTIVE" class="ri-stop-large-fill"></i>
+            <i ng-show="repository.state !== repoStates.RUNNING && repository.state !== repoStates.INACTIVE" class="ri-loop-left-fill"></i>
+            <span>{{repository.id}}</span>
+        </h6>
 
         <div ng-if="popoverRepo.title" class="repository-description">
             {{popoverRepo.title}}
@@ -35,7 +35,7 @@
         </span>
     </div>
 
-    <div ng-show="repositorySize.total >= 0">
+    <div ng-show="repositorySize.total >= 0 && repository.state === repoStates.RUNNING">
         <div class="property">
             <span class="property-label">{{'total.statements.label' | translate}}</span>
             <span class="property-value text-right">
@@ -65,11 +65,16 @@
         </div>
     </div>
 
-    <div ng-hide="repositorySize.loading || repositorySize.total >= 0">
+    <div ng-hide="repositorySize.loading || repositorySize.total >= 0 || repository.state !== repoStates.RUNNING">
         {{'size.info.not.available' | translate}}
     </div>
 
-    <div ng-show="repositorySize.loading">
-        {{'common.loading' | translate}}
+    <div class="inactive-repo-message" ng-show="repository.state !== repoStates.RUNNING">
+        <div class="icon">
+            <i class="ri-information-2-line"></i>
+        </div>
+        <div class="message">
+            <p>{{'size.info.repository.inactive' | translate}}</p>
+        </div>
     </div>
 </div>

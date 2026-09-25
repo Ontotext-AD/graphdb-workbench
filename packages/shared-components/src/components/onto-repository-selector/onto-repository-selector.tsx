@@ -4,6 +4,7 @@ import {
   RepositoryContextService,
   RepositoryPermissionType,
   RepositorySizeInfo,
+  RepositoryState,
   service,
   UriUtil
 } from '@ontotext/workbench-api';
@@ -35,6 +36,7 @@ import {OntoTooltipPlacement} from '../onto-tooltip/models/onto-tooltip-placemen
 export class OntoRepositorySelector {
   private readonly repositoryContextService = service(RepositoryContextService);
   private readonly subscriptions: (() => void)[] = [];
+  private dropdownElement?: HTMLOntoDropdownElement;
 
   /**
    * The currently selected repository.
@@ -81,7 +83,7 @@ export class OntoRepositorySelector {
    *
    * Tooltip generation is centralized here to ensure consistency and avoid redundant operations.
    */
-  private dropdownItems: DropdownItem<Repository>[];
+  @State() dropdownItems: DropdownItem<Repository>[];
 
   /**
    * Re-applies tooltip functions to all dropdown items when the items prop changes.
@@ -92,12 +94,11 @@ export class OntoRepositorySelector {
       this.dropdownItems = [];
       return;
     }
-
     this.dropdownItems = this.attachTooltipsToItems(this.items);
   }
 
   connectedCallback() {
-    this.subscriptions.push(...this.subscribeToTranslationChanged());
+    this.subscriptions.push(...this.subscribeToTranslationChanged(), this.subscribeToRepositoryListChanged());
 
     // Manually apply tooltip functions to each item on first mount.
     if (this.items?.length) {
@@ -122,6 +123,7 @@ export class OntoRepositorySelector {
     return (
       <Host>
         <onto-dropdown
+          ref={(elementRef) => this.dropdownElement = elementRef}
           class="onto-repository-selector"
           data-test={'onto-repository-selector'}
           onValueChanged={this.onValueChanged()}
@@ -166,7 +168,11 @@ export class OntoRepositorySelector {
         return '';
       }
 
-      const repositorySizeInfo = await this.repositorySizeInfoFetcher(repository);
+      const repositorySizeInfo = await
+      (repository.state === RepositoryState.INACTIVE ?
+        Promise.resolve(undefined) :
+        this.repositorySizeInfoFetcher(repository));
+
       return this.buildRepositoryTooltipHtml(repository, repositorySizeInfo);
     };
   }
@@ -174,11 +180,10 @@ export class OntoRepositorySelector {
   /**
    * Builds the complete HTML string used as tooltip content for a repository.
    */
-  private buildRepositoryTooltipHtml(repository: Repository, repositorySizeInfo: RepositorySizeInfo): string {
+  private buildRepositoryTooltipHtml(repository: Repository, repositorySizeInfo?: RepositorySizeInfo): string {
     let html = `
     <div class="repository-tooltip-title">
-      <span class="label">${TranslationService.translate('repository-selector.tooltip.repository')}</span>
-      <span class="value">${repository.id}</span>
+        ${this.buildRepositoryTooltipTitle(repository)}
     </div>`;
 
     if (repository.title) {
@@ -200,15 +205,40 @@ export class OntoRepositorySelector {
         <div class="value">${TranslationService.translate(`repository-selector.tooltip.permissions.${this.getRepositoryPermission(repository).toLowerCase()}`)}</div>
       </div>`;
 
-    html += this.buildRepositorySizeInfoHtml(repositorySizeInfo);
+    html += 
+    repository.state === RepositoryState.RUNNING ?
+      this.buildRepositorySizeInfoHtml(repositorySizeInfo) :
+      this.buildInactiveRepositoryHtml();
     html += '</div>';
+    return html;
+  }
+
+  private buildRepositoryTooltipTitle(repository: Repository): string {
+    let stateIndicatorIconClass = '';
+    let steteIndicatorClass = 'inactive';
+    
+    if (repository.state === RepositoryState.RUNNING) {
+      stateIndicatorIconClass = 'ri-checkbox-blank-circle-fill';
+      steteIndicatorClass = '';
+    } else if (repository.state === RepositoryState.INACTIVE) {
+      stateIndicatorIconClass = 'ri-stop-large-fill';
+    } else {
+      stateIndicatorIconClass = 'ri-loop-left-fill';
+    }
+
+    let html = `
+      <h6 class="title ${steteIndicatorClass}">
+        <i class="${stateIndicatorIconClass}"></i>
+        <span>${repository.id}</span>
+      </h6>`;
+
     return html;
   }
 
   /**
    * Builds the repository size section of the tooltip.
    */
-  private buildRepositorySizeInfoHtml(repositorySizeInfo: RepositorySizeInfo): string {
+  private buildRepositorySizeInfoHtml(repositorySizeInfo?: RepositorySizeInfo): string {
     if (!repositorySizeInfo || repositorySizeInfo.total < 0) {
       return '';
     }
@@ -249,6 +279,32 @@ export class OntoRepositorySelector {
     }
 
     return html;
+  }
+
+  /**
+   * Builds the repository size section for inactive repositories.
+   */
+  private buildInactiveRepositoryHtml(): string {
+    let html = `
+       <div class="repository-tooltip-row inactive-repo-message" ng-show="repositorySize.loading || repository.state === repoStates.INACTIVE">
+        <div class="icon">
+            <i class="ri-information-2-line"></i>
+        </div>
+        <div class="message">
+            <p>${TranslationService.translate('repository-selector.tooltip.repository-size.repository_inactive')}</p>
+        </div>
+    </div>`;
+
+    return html;
+  }
+
+  /**
+   * Forces an immediate button tooltip refresh when the repository list changes.
+   */
+  private subscribeToRepositoryListChanged(): () => void {
+    return this.repositoryContextService.onRepositoryListChanged(() => {
+      this.dropdownElement?.refreshButtonTooltip();
+    });
   }
 
   private subscribeToTranslationChanged(): (() => void)[] {

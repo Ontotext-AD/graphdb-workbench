@@ -1,4 +1,4 @@
-import {Component, Element, Event, EventEmitter, h, Listen, Prop, State} from '@stencil/core';
+import {Component, Element, Event, EventEmitter, h, Listen, Method, Prop, State} from '@stencil/core';
 import {DropdownItem} from '../../models/dropdown/dropdown-item';
 import {TranslationService} from '../../services/translation.service';
 import {DropdownItemAlignment} from '../../models/dropdown/dropdown-item-alignment';
@@ -24,6 +24,11 @@ export class OntoDropdown {
   private readonly GUIDE_SELECTOR_ATTR = 'guide-selector';
   private readonly pendingItemTooltips = new Map<HTMLElementWithTooltip, symbol>();
   private dropdownButtonElement: HTMLElementWithTooltip;
+  // The item currently hovered, so its tooltip can be refreshed if `items` changes while it's open.
+  private activeItemTooltip: {target: HTMLElementWithTooltip; index: number} | null = null;
+  private uniqueTooltipRequest: symbol | null = null;
+  // Whether the button tooltip is currently hovered, so its content can be refreshed if it changes while it's open.
+  private isButtonTooltipActive = false;
 
   @Element() hostElement: HTMLOntoDropdownElement;
 
@@ -158,13 +163,79 @@ export class OntoDropdown {
   }
 
   componentDidUpdate() {
-    if (this.dropdownButtonElement) {
+    this.refreshActiveButtonTooltip();
+    this.refreshActiveItemTooltip();
+  }
+
+  /**
+ * Allows callers to force an immediate button tooltip refresh (e.g. on a repository list change),
+ * instead of waiting for the next poll.
+ */
+  @Method()
+  async refreshButtonTooltip(): Promise<void> {
+    this.refreshActiveButtonTooltip();
+    this.refreshActiveItemTooltip();
+  }
+
+  /**
+   * Recomputes the button tooltip content if it's currently hovered, since `dropdownButtonTooltip`
+   * may have been rebuilt (new function/data) while the tooltip was already showing.
+   */
+  private refreshActiveButtonTooltip(): void {
+    if (!this.dropdownButtonElement) {
+      return;
+    }
+    if (!this.isButtonTooltipActive) {
       if (this.buttonTooltipContent && this.buttonTooltipContent !== '') {
         TooltipUtil.updateTooltipContent(this.dropdownButtonElement, this.buttonTooltipContent);
       } else {
         TooltipUtil.destroyTooltip(this.dropdownButtonElement);
       }
+      return;
     }
+
+    const tempUniqueId = Symbol();
+    this.uniqueTooltipRequest = tempUniqueId;
+    (typeof this.dropdownButtonTooltip === 'function'
+      ? this.getTooltipContent(this.dropdownButtonTooltip)
+      : Promise.resolve(this.dropdownButtonTooltip ?? this.translate(this.dropdownButtonTooltipLabelKey)))
+      .then((tooltipContent) => {
+        if (this.uniqueTooltipRequest !== tempUniqueId) {
+          return;
+        }
+        this.buttonTooltipContent = tooltipContent;
+        TooltipUtil.updateTooltipContent(this.dropdownButtonElement, tooltipContent);
+      });
+  }
+
+  /**
+   * Recomputes the tooltip content for the item currently under the mouse, since `items` may
+   * have been rebuilt (new tooltip function/data) while the tooltip was already showing.
+   */
+  private refreshActiveItemTooltip(): void {
+    const active = this.activeItemTooltip;
+    if (!active?.target.isConnected) {
+      return;
+    }
+
+    const item = this.items?.[active.index];
+    if (!item) {
+      return;
+    }
+
+    const tempUniqueId = Symbol();
+    this.pendingItemTooltips.set(active.target, tempUniqueId);
+    (typeof item.tooltip === 'function' ?
+      this.getTooltipContent(item.tooltip) :
+      Promise.resolve(item.tooltip ?? this.translate(item.tooltipLabelKey)))
+      .then((tooltipContent) => {
+        if (this.pendingItemTooltips.get(active.target) !== tempUniqueId || !active.target.isConnected) {
+          return;
+        }
+        this.pendingItemTooltips.delete(active.target);
+        active.target.setAttribute('tooltip-content', tooltipContent);
+        TooltipUtil.updateTooltipContent(active.target, tooltipContent);
+      });
   }
 
   render() {
@@ -183,6 +254,7 @@ export class OntoDropdown {
           tooltip-class={this.tooltipClass}
           {...(this.tooltipTheme ? {'tooltip-theme': this.tooltipTheme} : {})}
           onMouseEnter={this.setDropdownButtonTooltip()}
+          onMouseLeave={this.clearButtonTooltip}
           onClick={this.toggleButtonClickHandler}
           disabled={this.disabled}>
           {this.iconClass ? <i class={'button-icon ri-lg ' + this.iconClass}></i> : ''}
@@ -194,13 +266,13 @@ export class OntoDropdown {
 
         <div
           class={'onto-dropdown-menu ' + dropdownAlignmentClass}>
-          {this.items?.map((item) =>
+          {this.items?.map((item, index) =>
             <button class={'onto-dropdown-menu-item ' + item.cssClass}
               {...(item.guideSelector ? { [this.GUIDE_SELECTOR_ATTR]: item.guideSelector } : {})}
               tooltip-placement={OntoTooltipPlacement.LEFT}
               tooltip-class={this.tooltipClass}
               {...(menuItemTooltipTheme ? {'tooltip-theme': menuItemTooltipTheme} : {})}
-              onMouseEnter={this.setDropdownItemTooltip(item)}
+              onMouseEnter={this.setDropdownItemTooltip(item, index)}
               onMouseLeave={this.clearPendingDropdownItemTooltip}
               onClick={this.itemClickHandler(item.value)}
               disabled={this.disabled}>
@@ -215,17 +287,28 @@ export class OntoDropdown {
 
   private setDropdownButtonTooltip() {
     return async () => {
+      const tempUniqueId = Symbol();
+      this.uniqueTooltipRequest = tempUniqueId;
       let tooltipContent: string;
       if (typeof this.dropdownButtonTooltip === 'function') {
         tooltipContent = await this.getTooltipContent(this.dropdownButtonTooltip);
       } else {
         tooltipContent =  this.dropdownButtonTooltip ?? this.translate(this.dropdownButtonTooltipLabelKey);
       }
+      if (this.uniqueTooltipRequest !== tempUniqueId) {
+        return;
+      }
+      this.isButtonTooltipActive = true;
       this.buttonTooltipContent = tooltipContent;
     };
   }
 
-  private setDropdownItemTooltip(item) {
+  private readonly clearButtonTooltip = (): void => {
+    this.uniqueTooltipRequest = null;
+    this.isButtonTooltipActive = false;
+  };
+
+  private setDropdownItemTooltip(item, index: number) {
     return async (event: MouseEvent) => {
       const target = event.currentTarget as HTMLElementWithTooltip;
       const request = Symbol();
@@ -238,6 +321,7 @@ export class OntoDropdown {
         return;
       }
       this.pendingItemTooltips.delete(target);
+      this.activeItemTooltip = {target, index};
 
       target.setAttribute('tooltip-content', tooltipContent);
       // Push the (possibly asynchronously resolved) content into an already created
@@ -254,18 +338,24 @@ export class OntoDropdown {
   }
 
   private readonly clearPendingDropdownItemTooltip = (event: MouseEvent): void => {
-    this.pendingItemTooltips.delete(event.currentTarget as HTMLElementWithTooltip);
+    const target = event.currentTarget as HTMLElementWithTooltip;
+    this.pendingItemTooltips.delete(target);
+    if (this.activeItemTooltip?.target === target) {
+      this.activeItemTooltip = null;
+    }
   };
 
   private readonly toggleButtonClickHandler = () => {
     TooltipUtil.destroyTooltip(this.dropdownButtonElement);
     this.buttonTooltipContent = '';
+    this.clearButtonTooltip();
     this.clearDropdownItemTooltips();
     this.toggleComponent();
   };
 
   private clearDropdownItemTooltips(): void {
     this.pendingItemTooltips.clear();
+    this.activeItemTooltip = null;
     this.hostElement
       .querySelectorAll<HTMLElement>('.onto-dropdown-menu-item')
       .forEach((el) => {
