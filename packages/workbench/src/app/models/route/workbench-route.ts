@@ -2,6 +2,7 @@ import {Data, Route} from '@angular/router';
 import {
   RepositoryPermissionType,
   RepositoryType,
+  ViewRestrictionCondition,
 } from '@ontotext/workbench-api';
 
 export interface WorkbenchRoute extends Route {
@@ -38,4 +39,9 @@ export interface WorkbenchRouteData extends Data {
    * If undefined, no repository-specific permission is required.
    */
   requiredRepositoryPermission?: RepositoryPermissionType;
+
+  /**
+   * The restriction conditions that apply to this route. If undefined or empty, none apply.
+   */
+  viewRestrictions?: ViewRestrictionCondition[];
 }

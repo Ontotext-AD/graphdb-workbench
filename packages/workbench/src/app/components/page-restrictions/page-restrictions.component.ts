@@ -5,11 +5,13 @@ import {
 import {
   service,
   RepositoryContextService,
+  RestrictionContextService,
   Repository,
   SubscriptionList,
   RepositoryList,
   RepositoryPermissionType,
   RepositoryType,
+  ViewRestriction,
 } from '@ontotext/workbench-api';
 import {RepositoryPickerListComponent} from '../repository-picker-list/repository-picker-list.component';
 import {Message} from 'primeng/message';
@@ -41,14 +43,20 @@ export class PageRestrictionsComponent implements OnInit, AfterViewInit, OnDestr
 
   private readonly restrictionResolverService = inject(RestrictionResolverService);
   private readonly repositoryContextService = service(RepositoryContextService);
+  private readonly restrictionContextService = service(RestrictionContextService);
   private readonly elementRef = inject(ElementRef<HTMLElement>);
   private resizeObserver?: ResizeObserver;
 
   repositoryList = signal<RepositoryList | undefined>(undefined);
   selectedRepository = signal<Repository | undefined>(undefined);
-  isRestricted = signal<boolean>(false);
+  viewRestriction = signal<ViewRestriction | undefined>(undefined);
+  readonly requiresWriteAccess = computed(() => this.viewRestriction()?.requiresWriteAccess() ?? false);
 
-  readonly hasContent = computed(() =>
+  /**
+   * Whether the page can't be used: a restriction applies, or no repository is selected. In that case the restriction
+   * messages and the repository picker are shown instead of the page content.
+   */
+  readonly isPageBlocked = computed(() =>
     this.restrictions().length > 0 || (!!this.repositoryList() && !this.selectedRepository())
   );
 
@@ -80,7 +88,7 @@ export class PageRestrictionsComponent implements OnInit, AfterViewInit, OnDestr
   readonly restrictions = computed(() =>
     this.restrictionResolverService.resolve({
       selectedRepository: this.selectedRepository(),
-      isRestricted: this.isRestricted(),
+      viewRestriction: this.viewRestriction(),
       pageTitle: this.title() ?? '',
       allowedRepositoryTypes: this.allowedRepositoryTypes(),
       requiredRepositoryPermission: this.requiredRepositoryPermission(),
@@ -90,7 +98,8 @@ export class PageRestrictionsComponent implements OnInit, AfterViewInit, OnDestr
   ngOnInit(): void {
     this.subscriptions.addAll([
       this.repositoryContextService.onSelectedRepositoryChanged((repo) => this.selectedRepository.set(repo)),
-      this.repositoryContextService.onRepositoryListChanged((repositories) => this.repositoryList.set(repositories))
+      this.repositoryContextService.onRepositoryListChanged((repositories) => this.repositoryList.set(repositories)),
+      this.restrictionContextService.onViewRestrictionChanged((viewRestriction) => this.viewRestriction.set(viewRestriction))
     ]
     );
   }
@@ -108,7 +117,7 @@ export class PageRestrictionsComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   private updateAvailableHeight(): void {
-    if (!this.hasContent()) {
+    if (!this.isPageBlocked()) {
       // Nothing to show: leave the natural (empty) size instead of reserving space.
       this.availableHeight.set(undefined);
       return;

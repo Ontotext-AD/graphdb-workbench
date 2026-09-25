@@ -1,20 +1,30 @@
 <div class="page-view">
-  @if (!this.embedded()) {
+  @if (!embedded()) {
     <h1 class="title-container">
-      <span class="page-title-label">{{ title() | transloco}}</span>
+      <span class="page-title-label">{{ title() | transloco }}</span>
+
       @if (helpInfo()) {
-        <app-page-info-tooltip [title]="title() | transloco"
-                               [helpInfo]="helpInfo() | transloco"
-                               [documentationLink]="documentationLink()"></app-page-info-tooltip>
+        <app-page-info-tooltip
+          [title]="title() | transloco"
+          [helpInfo]="helpInfo() | transloco"
+          [documentationLink]="documentationLink()">
+        </app-page-info-tooltip>
       }
     </h1>
-
-    <app-page-restrictions
-      [title]="title()"
-      [allowedRepositoryTypes]="allowedRepositoryTypes()"
-      [requiredRepositoryPermission]="requiredRepositoryPermission()">
-    </app-page-restrictions>
   }
 
-  <ng-content></ng-content>
+  <app-page-restrictions
+    #restrictions
+    [title]="title()"
+    [allowedRepositoryTypes]="allowedRepositoryTypes()"
+    [requiredRepositoryPermission]="requiredRepositoryPermission()">
+  </app-page-restrictions>
+
+  <!--
+    Note: the content is created by the page, not by this layout, so while restrictions are shown it is only removed
+    from the DOM, not destroyed.
+  -->
+  @if (!restrictions.isPageBlocked()) {
+    <ng-content></ng-content>
+  }
 </div>

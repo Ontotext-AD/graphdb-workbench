@@ -1,11 +1,11 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {Component} from '@angular/core';
 
 import {PageLayoutComponent} from './page-layout.component';
-import {CommonModule} from '@angular/common';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, provideRouter} from '@angular/router';
 import {provideTranslocoForTesting} from '../../../testing-utils/transloco-utils';
 import {provideNoopAnimations} from '@angular/platform-browser/animations';
-import {RepositoryContextService, RepositoryList, ServiceProvider} from '@ontotext/workbench-api';
+import {Repository, RepositoryContextService, RepositoryList, ServiceProvider} from '@ontotext/workbench-api';
 import {mockResizeObserverForTesting} from '../../../testing-utils/resize-observer-testing-utils';
 
 function buildActivatedRouteMock(queryParams: Record<string, string> = {}, data: Record<string, unknown> = {}) {
@@ -13,6 +13,12 @@ function buildActivatedRouteMock(queryParams: Record<string, string> = {}, data:
     snapshot: {queryParams, data}
   };
 }
+
+@Component({
+  imports: [PageLayoutComponent],
+  template: '<app-page-layout><div class="projected-content">Page content</div></app-page-layout>'
+})
+class PageLayoutHostComponent {}
 
 describe('PageLayoutComponent', () => {
   let component: PageLayoutComponent;
@@ -23,7 +29,7 @@ describe('PageLayoutComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PageLayoutComponent, CommonModule, provideTranslocoForTesting()],
+      imports: [PageLayoutComponent, provideTranslocoForTesting()],
       providers: [
         {provide: ActivatedRoute, useValue: buildActivatedRouteMock()},
         provideNoopAnimations()
@@ -66,7 +72,7 @@ describe('PageLayoutComponent', () => {
   it('should set embedded to true when the embedded query parameter is present', async () => {
     TestBed.resetTestingModule();
     await TestBed.configureTestingModule({
-      imports: [PageLayoutComponent, CommonModule, provideTranslocoForTesting()],
+      imports: [PageLayoutComponent, provideTranslocoForTesting()],
       providers: [
         {provide: ActivatedRoute, useValue: buildActivatedRouteMock({embedded: ''})},
         provideNoopAnimations()
@@ -83,7 +89,7 @@ describe('PageLayoutComponent', () => {
   it('should set title from route data', async () => {
     TestBed.resetTestingModule();
     await TestBed.configureTestingModule({
-      imports: [PageLayoutComponent, CommonModule, provideTranslocoForTesting()],
+      imports: [PageLayoutComponent, provideTranslocoForTesting()],
       providers: [
         {provide: ActivatedRoute, useValue: buildActivatedRouteMock({}, {title: 'my.title.key'})},
         provideNoopAnimations()
@@ -99,7 +105,7 @@ describe('PageLayoutComponent', () => {
   it('should set helpInfo from route data', async () => {
     TestBed.resetTestingModule();
     await TestBed.configureTestingModule({
-      imports: [PageLayoutComponent, CommonModule, provideTranslocoForTesting()],
+      imports: [PageLayoutComponent, provideTranslocoForTesting()],
       providers: [
         {provide: ActivatedRoute, useValue: buildActivatedRouteMock({}, {helpInfo: 'my.help.key'})},
         provideNoopAnimations()
@@ -115,7 +121,7 @@ describe('PageLayoutComponent', () => {
   it('should set documentationLink from route data', async () => {
     TestBed.resetTestingModule();
     await TestBed.configureTestingModule({
-      imports: [PageLayoutComponent, CommonModule, provideTranslocoForTesting()],
+      imports: [PageLayoutComponent, provideTranslocoForTesting()],
       providers: [
         {provide: ActivatedRoute, useValue: buildActivatedRouteMock({}, {documentationLink: 'https://docs.example.com'})},
         provideNoopAnimations()
@@ -138,5 +144,55 @@ describe('PageLayoutComponent', () => {
 
   it('should leave documentationLink undefined when not in route data', () => {
     expect(component.documentationLink()).toBeUndefined();
+  });
+
+  describe('embedded', () => {
+    let hostFixture: ComponentFixture<PageLayoutHostComponent>;
+
+    const renderEmbedded = async () => {
+      TestBed.resetTestingModule();
+      await TestBed.configureTestingModule({
+        imports: [PageLayoutHostComponent, provideTranslocoForTesting()],
+        providers: [
+          provideRouter([]),
+          {provide: ActivatedRoute, useValue: buildActivatedRouteMock({embedded: ''})},
+          provideNoopAnimations()
+        ]
+      }).compileComponents();
+
+      hostFixture = TestBed.createComponent(PageLayoutHostComponent);
+      hostFixture.detectChanges();
+      await hostFixture.whenStable();
+      hostFixture.detectChanges();
+    };
+
+    const getProjectedContent = (): HTMLElement | null => hostFixture.nativeElement.querySelector('.projected-content');
+    const getRestrictions = (): HTMLElement => hostFixture.nativeElement.querySelector('app-page-restrictions');
+
+    it('should show the restrictions instead of the page content when no repository is selected', async () => {
+      // GIVEN: A repository list without a selected repository
+      repositoryContextService.updateRepositoryList(new RepositoryList([new Repository({id: 'repo'})]));
+
+      // WHEN: The page is rendered embedded
+      await renderEmbedded();
+
+      // THEN: The restrictions are shown and the page content is not rendered
+      expect(getRestrictions().querySelector('p-message')).not.toBeNull();
+      expect(getProjectedContent()).toBeNull();
+    });
+
+    it('should render the page content when a repository is selected', async () => {
+      // GIVEN: A selected repository
+      const repository = new Repository({id: 'repo'});
+      repositoryContextService.updateRepositoryList(new RepositoryList([repository]));
+      await repositoryContextService.updateSelectedRepository(repository);
+
+      // WHEN: The page is rendered embedded
+      await renderEmbedded();
+
+      // THEN: No restrictions are shown and the page content is rendered
+      expect(getRestrictions().querySelector('p-message')).toBeNull();
+      expect(getProjectedContent()).not.toBeNull();
+    });
   });
 });
