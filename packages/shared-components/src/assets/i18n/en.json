@@ -106,7 +106,8 @@
         "total": "Total statements",
         "explicit": "Explicit",
         "inferred": "Inferred",
-        "expansion_ratio": "Expansion ratio (total/explicit)"
+        "expansion_ratio": "Expansion ratio (total/explicit)",
+        "repository_inactive": "Activate the repository to view statement information"
       }
     }
   },

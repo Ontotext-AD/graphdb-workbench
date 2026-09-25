@@ -2809,6 +2809,7 @@
     "explicit.label": "Explicit:",
     "inferred.label": "Inferred:",
     "expansion.ratio.label": "Expansion ratio (total/explicit):",
+    "size.info.repository.inactive": "Activate the repository to view statement information",
     "size.info.not.available": "Size info not available.",
     "main.gdb.description": "An application for searching, exploring and managing GraphDB semantic repositories.",
     "main.info.title.welcome.page": "Welcome to GraphDB",

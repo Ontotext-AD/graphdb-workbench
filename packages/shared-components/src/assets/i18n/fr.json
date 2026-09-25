@@ -106,7 +106,8 @@
         "total": "Total des déclarations",
         "explicit": "Explicite",
         "inferred": "Déduit",
-        "expansion_ratio": "Taux d'expansion (total/explicite)"
+        "expansion_ratio": "Taux d'expansion (total/explicite)",
+        "repository_inactive": "Activez le dépôt pour consulter les informations du relevé."
       }
     }
   },

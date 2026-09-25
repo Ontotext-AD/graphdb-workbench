@@ -2807,6 +2807,7 @@
     "explicit.label": "Explicite :",
     "inferred.label": "Déduit :",
     "expansion.ratio.label": "Taux d'expansion (total/explicite) :",
+    "size.info.repository.inactive": "Activez le dépôt pour consulter les informations du relevé.",
     "size.info.not.available": "Info de taille non disponible.",
     "main.gdb.description": "Une application pour la recherche, l'exploration et la gestion des dépôts sémantiques GraphDB.",
     "main.info.title.welcome.page": "Bienvenue sur GraphDB",
