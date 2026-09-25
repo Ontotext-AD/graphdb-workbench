@@ -58,12 +58,11 @@
   min-width: 22rem;
 
   .tooltip-content {
-    padding: 0;
+    padding: 12px;
 
     .repository-tooltip-title {
       font-size: 1rem;
       font-weight: 400;
-      padding: 0.5rem 0.9rem 0.2rem;
       background-color: var(--gw-dialog-background);
 
       .value {
@@ -73,6 +72,35 @@
 
       .label {
         margin-right: 0;
+      }
+
+      .title {
+        font-size: 1.14em;
+        font-weight: 600;
+        line-height: 1;
+        text-align: left; 
+        margin-bottom: 0.285em;
+      }
+
+      .title:not(.inactive) {
+        color: #05070B;
+      }
+
+      .title.inactive,
+      .title .ri-stop-large-fill,
+      .title .ri-loop-left-fill {
+        color: var(--gw-iconfield-icon-color);
+      }
+
+      .title .ri-checkbox-blank-circle-fill {
+        color: var(--gw-success-600);
+      }
+
+
+      .title i {
+        font-size: inherit;
+        vertical-align: baseline;
+        margin-right: 0.55em;
       }
     }
 
@@ -89,11 +117,9 @@
 
     .repository-tooltip-content {
       background-color: var(--gw-dialog-background);
-      padding: 1.5rem 0.9rem;
-      border-top: 1px solid var(--gw-dialog-border-color);
       display: flex;
       flex-direction: column;
-      gap: 0.8em;
+      gap: 0.2em;
       font-weight: 400;
       font-size: 0.875rem;
     }
@@ -111,6 +137,27 @@
         margin-left: .6em;
         font-weight: 500;
       }
+
+      &.inactive-repo-message {
+        background-color: #f0f2f4;
+        color: #121921;
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        padding: 4px 8px;
+        gap: 0.57em;
+        border: 1px solid var(--gw-border-color-default);
+    }
+
+    .inactive-repo-message p {
+        font-size: 1.14em;
+        font-weight: 400;
+        margin: 0;
+    }
+
+    .inactive-repo-message .icon {
+        font-size: 1.14em;
     }
   }
+}
 }
