@@ -346,7 +346,7 @@ h3 [class^=icon-] {
 }
 
 .text-warning {
-    color: var(--gw-message-warning-color) !important;
+    color: var(--gw-message-warn-color) !important;
 }
 
 .text-info {
@@ -372,9 +372,9 @@ h3 [class^=icon-] {
 }
 
 .alert-warning {
-    color: var(--gw-message-warning-color);
-    background-color: var(--gw-message-warning-background);
-    border-color: var(--gw-message-warning-border-color);
+    color: var(--gw-message-warn-color);
+    background-color: var(--gw-message-warn-background);
+    border-color: var(--gw-message-warn-border-color);
 }
 
 .alert-info {
@@ -424,7 +424,7 @@ h3 [class^=icon-] {
 }
 
 .alert-warning:before {
-    color: var(--gw-message-warning-color);
+    color: var(--gw-message-warn-color);
 }
 
 .alert-help:before {
