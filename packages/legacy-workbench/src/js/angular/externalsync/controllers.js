@@ -1,6 +1,7 @@
 import 'angular/rest/rdf4j.repositories.rest.service';
 import 'angular/rest/connectors.rest.service';
 import {LoggerProvider} from "../core/services/logger-provider";
+import {RdfVersionUtil} from '@ontotext/workbench-api';
 
 const modules = [
     'graphdb.framework.rest.rdf4j.repositories.service',
@@ -107,7 +108,7 @@ function _evaluateSparqlQuery(http, repository, query) {
         {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                'Accept': 'application/sparql-results+json;version=1.2',
+                'Accept': RdfVersionUtil.withVersion('application/sparql-results+json'),
                 'X-GraphDB-Local-Consistency': 'updating',
             },
         });

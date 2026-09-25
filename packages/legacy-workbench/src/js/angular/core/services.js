@@ -1,4 +1,5 @@
 import 'angular-animate/angular-animate.min';
+import {RdfVersionUtil} from '@ontotext/workbench-api';
 import 'angular-cookies/angular-cookies.min';
 import 'angular-route/angular-route.min';
 import 'angular-local-storage/dist/angular-local-storage.min';
@@ -299,7 +300,7 @@ function ClassInstanceDetailsService($http) {
             //   uri: encodedUri
             //},
             headers: {
-                Accept: 'application/rdf+json;version=1.2',
+                Accept: RdfVersionUtil.withVersion('application/rdf+json'),
             },
         });
     }

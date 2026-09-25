@@ -2,6 +2,7 @@ import {HttpService} from '../../http/http.service';
 import {NamespacesResponse} from './response/namespaces-response';
 import {SparqlResultsResponse} from '../../../models/sparql';
 import {HttpResponse} from '../../../models/http';
+import {RdfVersionUtil} from '../../utils/rdf-version-util';
 
 /**
  * Service for interacting with the external RDF4J REST API.
@@ -58,13 +59,11 @@ export class Rdf4jRestService extends HttpService {
       .map(([property, value]) => `${property}=${encodeURIComponent(value)}`);
     const payloadString = properties.join('&');
 
-    const version12AcceptHeader = acceptHeader + ';version=1.2';
-
     return this.post(`${this.REPOSITORIES_ENDPOINT}/${repositoryId}`, {
       responseType: 'blob',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
-        'Accept': version12AcceptHeader,
+        'Accept': RdfVersionUtil.withVersion(acceptHeader),
         'Link': linkHeader
       },
       body: payloadString,
@@ -88,12 +87,11 @@ export class Rdf4jRestService extends HttpService {
    * @returns A promise resolving to the raw SPARQL SELECT results.
    */
   executeSparqlQuery(repositoryId: string, query: string): Promise<SparqlResultsResponse> {
-    const version12AcceptHeader = 'application/sparql-results+json;version=1.2';
     return this.post<SparqlResultsResponse>(`${this.REPOSITORIES_ENDPOINT}/${repositoryId}`, {
       body: new URLSearchParams({query}),
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
-        'Accept': version12AcceptHeader,
+        'Accept': RdfVersionUtil.withVersion('application/sparql-results+json'),
         'X-GraphDB-Local-Consistency': 'updating',
       }
     });
@@ -121,7 +119,7 @@ export class Rdf4jRestService extends HttpService {
       body: new URLSearchParams({query}),
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
-        'Accept': accept,
+        'Accept': RdfVersionUtil.withVersion(accept),
       },
       signal
     });
