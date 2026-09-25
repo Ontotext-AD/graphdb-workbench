@@ -9,8 +9,7 @@ import {MainMenuSteps} from '../../../steps/main-menu-steps';
 import {SecurityStubs} from '../../../stubs/security-stubs.js';
 import {RepositorySteps} from '../../../steps/repository-steps.js';
 
-// FIXME: Unskip when GDB branch is up to date as it is missing maintain permission feature
-describe.skip('User and Access', () => {
+describe('User and Access', () => {
 
     const PASSWORD = 'password';
     const ROLE_USER = '#roleUser';
