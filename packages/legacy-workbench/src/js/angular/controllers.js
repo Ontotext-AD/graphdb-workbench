@@ -45,6 +45,7 @@ import {
     WindowService,
     BroadcastService,
     MessageType,
+    RepositoryState,
 } from '@ontotext/workbench-api';
 import {EventConstants} from './utils/event-constants';
 import {CookieConsent} from './models/cookie-policy/cookie-consent';
@@ -264,6 +265,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     $scope.connectorsVersion = productInfo.connectors;
     $scope.sesameVersion = productInfo.sesame;
     $scope.isActiveRepoPopoverOpen = false;
+    $scope.repoStates = RepositoryState;
 
     // =========================
     // Public functions
@@ -482,10 +484,14 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     $scope.getRepositorySize = function() {
         $scope.repositorySize = {};
         if ($scope.popoverRepo) {
-            $scope.repositorySize.loading = true;
-            RepositoriesRestService.getSize($scope.popoverRepo).then(function(res) {
-                $scope.repositorySize = res.data;
-            });
+            if ($scope.popoverRepo.state !== RepositoryState.INACTIVE) {
+                $scope.repositorySize.loading = true;
+                RepositoriesRestService.getSize($scope.popoverRepo).then(function(res) {
+                    $scope.repositorySize = res.data;
+                });
+            } else {
+                $scope.repositorySize.loading = false;
+            }
         }
     };
 
