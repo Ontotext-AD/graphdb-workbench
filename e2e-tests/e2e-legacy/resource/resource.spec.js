@@ -19,12 +19,12 @@ const OBJECT_RESOURCE = 'http:%2F%2Fexample.com%2Fontology%23Metric';
 const IMPLICIT_EXPLICIT_RESOURCE = 'http:%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23type';
 // A triple term in the SPARQL 1.2 syntax. The resource view expects it wrapped in <<( )>>.
 const TRIPLE_RESOURCE_DECODED = '<<(<http://example.com/resource/person/W6J1827> <http://example.com/ontology#hasAddress> <http://example.com/resource/person/W6J1827/address>)>>';
-const TRIPLE_RESOURCE = encodeURIComponent(TRIPLE_RESOURCE_DECODED);
+const TRIPLE_RESOURCE_ENCODED = encodeURIComponent(TRIPLE_RESOURCE_DECODED);
 const TRIPLE_RESOURCE_LOCAL_NAMES = '<<(<W6J1827> <hasAddress> <address>)>>';
 // A triple term whose object is a literal. It is deliberately not part of the test data, because it is
 // used only to verify that shortening the IRIs of a triple term leaves its literals untouched.
 const LITERAL_TRIPLE_RESOURCE_DECODED = '<<(<http://example.com/resource/person/W6J1827> <http://example.com/ontology#firstName> "Burgunda")>>';
-const LITERAL_TRIPLE_RESOURCE = encodeURIComponent(LITERAL_TRIPLE_RESOURCE_DECODED);
+const LITERAL_TRIPLE_RESOURCE_ENCODED = encodeURIComponent(LITERAL_TRIPLE_RESOURCE_DECODED);
 const LITERAL_TRIPLE_RESOURCE_LOCAL_NAMES = '<<(<W6J1827> <firstName> "Burgunda")>>';
 // The number of statements the resource view lists for the triple term - the four statements which
 // annotate it in the test data plus the "rdf:reifies" statement which binds its reifier to it.
@@ -414,7 +414,7 @@ describe('Resource view', () => {
     context('Triple resource', () => {
         it('should show triple resource shortened in the header and in full as a target', () => {
             // When I visit resource view with triple resource.
-            ResourceSteps.visit(`triple=${TRIPLE_RESOURCE}&role=subject`);
+            ResourceSteps.visit(`triple=${TRIPLE_RESOURCE_ENCODED}&role=subject`);
 
             // Then I expect the header link to show the triple term with shortened IRIs,
             ResourceSteps.verifyTrimmedText(ResourceSteps.getTripleResourceLink(), TRIPLE_RESOURCE_LOCAL_NAMES);
@@ -434,7 +434,7 @@ describe('Resource view', () => {
 
         it('should shorten only the IRIs of a triple term and leave its literals unchanged', () => {
             // When I visit resource view with a triple term whose object is a literal.
-            ResourceSteps.visit(`triple=${LITERAL_TRIPLE_RESOURCE}&role=subject`);
+            ResourceSteps.visit(`triple=${LITERAL_TRIPLE_RESOURCE_ENCODED}&role=subject`);
 
             // Then I expect the header link to show the IRIs shortened and the literal as it is,
             ResourceSteps.verifyTrimmedText(ResourceSteps.getTripleResourceLink(), LITERAL_TRIPLE_RESOURCE_LOCAL_NAMES);
@@ -444,7 +444,7 @@ describe('Resource view', () => {
 
         it('should point both the header and the target link to the triple term lookup query', () => {
             // When I visit resource view with triple resource.
-            ResourceSteps.visit(`triple=${TRIPLE_RESOURCE}&role=subject`);
+            ResourceSteps.visit(`triple=${TRIPLE_RESOURCE_ENCODED}&role=subject`);
 
             // Then I expect both links to point to the sparql editor with the triple term lookup query.
             ResourceSteps.getTripleResourceLink().should('have.attr', 'href', TRIPLE_TERM_LOOKUP_HREF);
@@ -453,7 +453,7 @@ describe('Resource view', () => {
 
         it('should activate the "triple term" role tab and disable all other role tabs', () => {
             // When I visit resource view with triple resource.
-            ResourceSteps.visit(`triple=${TRIPLE_RESOURCE}&role=subject`);
+            ResourceSteps.visit(`triple=${TRIPLE_RESOURCE_ENCODED}&role=subject`);
 
             // Then I expect the "triple term" tab to be the active one, regardless of the role url parameter,
             ResourceSteps.verifyActiveRoleTab(TRIPLE_TERM_ROLE_LABEL);
@@ -474,7 +474,7 @@ describe('Resource view', () => {
 
         it('should activate the "triple term" role tab when the role url parameter is missing', () => {
             // When I visit resource view with a triple resource and without a role parameter.
-            ResourceSteps.visit(`triple=${TRIPLE_RESOURCE}`);
+            ResourceSteps.visit(`triple=${TRIPLE_RESOURCE_ENCODED}`);
 
             // Then I expect the "triple term" tab to be the active one,
             ResourceSteps.verifyActiveRoleTab(TRIPLE_TERM_ROLE_LABEL);
@@ -490,7 +490,7 @@ describe('Resource view', () => {
         ].forEach(({label, click}) => {
             it(`should open the sparql editor with a triple term lookup query when the ${label} link is clicked`, () => {
                 // When I visit resource view with triple resource.
-                ResourceSteps.visit(`triple=${TRIPLE_RESOURCE}&role=subject`);
+                ResourceSteps.visit(`triple=${TRIPLE_RESOURCE_ENCODED}&role=subject`);
 
                 // When I click on the link.
                 click();
