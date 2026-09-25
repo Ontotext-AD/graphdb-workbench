@@ -48,8 +48,7 @@ const IMPLICIT_TYPE_STATEMENTS_COUNT = 68;
 const ALL_TYPE_STATEMENTS_COUNT = EXPLICIT_TYPE_STATEMENTS_COUNT + IMPLICIT_TYPE_STATEMENTS_COUNT;
 const EXPLICIT_GRAPH_STATEMENTS_COUNT = 97;
 
-// FIXME: Unskip when triple terms are implemented for resource view
-describe.skip('Resource view', () => {
+describe('Resource view', () => {
     let repositoryId;
     beforeEach(() => {
         repositoryId = 'repository-' + Date.now();
