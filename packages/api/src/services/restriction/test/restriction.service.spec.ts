@@ -38,7 +38,7 @@ describe('RestrictionService', () => {
 
   test('updateViewRestriction should store the given view restriction in the context', () => {
     // GIVEN: A view restriction
-    const viewRestriction = new ViewRestriction({restrictions: [ViewRestrictionCondition.WRITE, ViewRestrictionCondition.ONTOP]});
+    const viewRestriction = new ViewRestriction([ViewRestrictionCondition.WRITE, ViewRestrictionCondition.ONTOP]);
 
     // WHEN: Updating the view restriction
     restrictionService.updateViewRestriction(viewRestriction);
@@ -62,7 +62,7 @@ describe('RestrictionService', () => {
       licenseContextService.updateGraphdbLicense(new License({valid: false}));
 
       // WHEN: Updating the view restriction with the license condition
-      restrictionService.updateViewRestriction(new ViewRestriction({restrictions: [ViewRestrictionCondition.LICENSE]}));
+      restrictionService.updateViewRestriction(new ViewRestriction([ViewRestrictionCondition.LICENSE]));
       // THEN: The view should be restricted
       expect(restrictionContextService.isViewRestricted()).toBe(true);
     });
@@ -72,14 +72,14 @@ describe('RestrictionService', () => {
       licenseContextService.updateGraphdbLicense(new License({valid: true}));
 
       // WHEN: Updating the view restriction with the license condition
-      restrictionService.updateViewRestriction(new ViewRestriction({restrictions: [ViewRestrictionCondition.LICENSE]}));
+      restrictionService.updateViewRestriction(new ViewRestriction([ViewRestrictionCondition.LICENSE]));
       // THEN: The view should not be restricted
       expect(restrictionContextService.isViewRestricted()).toBe(false);
     });
 
     test('should recalculate when the license changes', () => {
       // GIVEN: A view restriction with the license condition and a valid license
-      restrictionService.updateViewRestriction(new ViewRestriction({restrictions: [ViewRestrictionCondition.LICENSE]}));
+      restrictionService.updateViewRestriction(new ViewRestriction([ViewRestrictionCondition.LICENSE]));
       expect(restrictionContextService.isViewRestricted()).toBe(false);
 
       // WHEN: The license becomes invalid
@@ -99,7 +99,7 @@ describe('RestrictionService', () => {
       securityContextService.updateAuthenticatedUser(getUserWithAuthorities(Authority.ROLE_USER));
 
       // WHEN: Updating the view restriction with the write condition
-      restrictionService.updateViewRestriction(new ViewRestriction({restrictions: [ViewRestrictionCondition.WRITE]}));
+      restrictionService.updateViewRestriction(new ViewRestriction([ViewRestrictionCondition.WRITE]));
       // THEN: The view should be restricted
       expect(restrictionContextService.isViewRestricted()).toBe(true);
     });
@@ -112,7 +112,7 @@ describe('RestrictionService', () => {
       securityContextService.updateSecurityConfig(getSecurityConfig(false));
 
       // WHEN: Updating the view restriction with the write condition
-      restrictionService.updateViewRestriction(new ViewRestriction({restrictions: [ViewRestrictionCondition.WRITE]}));
+      restrictionService.updateViewRestriction(new ViewRestriction([ViewRestrictionCondition.WRITE]));
       // THEN: The view should not be restricted
       expect(restrictionContextService.isViewRestricted()).toBe(false);
     });
@@ -126,7 +126,7 @@ describe('RestrictionService', () => {
       securityContextService.updateAuthenticatedUser(getUserWithAuthorities(Authority.ROLE_ADMIN));
 
       // WHEN: Updating the view restriction with the write condition
-      restrictionService.updateViewRestriction(new ViewRestriction({restrictions: [ViewRestrictionCondition.WRITE]}));
+      restrictionService.updateViewRestriction(new ViewRestriction([ViewRestrictionCondition.WRITE]));
       // THEN: The view should not be restricted
       expect(restrictionContextService.isViewRestricted()).toBe(false);
     });
@@ -138,7 +138,7 @@ describe('RestrictionService', () => {
       repositoryContextService.updateRepositoryList(new RepositoryList([writableRepository]));
       securityContextService.updateSecurityConfig(getSecurityConfig(true));
       securityContextService.updateAuthenticatedUser(getUserWithAuthorities(Authority.ROLE_USER, `WRITE_REPO_${writableRepository.id}` as Authority));
-      restrictionService.updateViewRestriction(new ViewRestriction({restrictions: [ViewRestrictionCondition.WRITE]}));
+      restrictionService.updateViewRestriction(new ViewRestriction([ViewRestrictionCondition.WRITE]));
       expect(restrictionContextService.isViewRestricted()).toBe(true);
 
       // WHEN: The selected repository changes to the one the user can write to
@@ -154,7 +154,7 @@ describe('RestrictionService', () => {
       await repositoryContextService.updateSelectedRepository(repository);
       securityContextService.updateSecurityConfig(getSecurityConfig(true));
       securityContextService.updateAuthenticatedUser(getUserWithAuthorities(Authority.ROLE_USER));
-      restrictionService.updateViewRestriction(new ViewRestriction({restrictions: [ViewRestrictionCondition.WRITE]}));
+      restrictionService.updateViewRestriction(new ViewRestriction([ViewRestrictionCondition.WRITE]));
       expect(restrictionContextService.isViewRestricted()).toBe(true);
 
       // WHEN: The authenticated user changes to one who can write to the active repository
@@ -172,7 +172,7 @@ describe('RestrictionService', () => {
       await repositoryContextService.updateSelectedRepository(ontopRepository);
 
       // WHEN: Updating the view restriction with the ontop condition
-      restrictionService.updateViewRestriction(new ViewRestriction({restrictions: [ViewRestrictionCondition.ONTOP]}));
+      restrictionService.updateViewRestriction(new ViewRestriction([ViewRestrictionCondition.ONTOP]));
       // THEN: The view should be restricted
       expect(restrictionContextService.isViewRestricted()).toBe(true);
     });
@@ -184,7 +184,7 @@ describe('RestrictionService', () => {
       await repositoryContextService.updateSelectedRepository(repository);
 
       // WHEN: Updating the view restriction with the ontop condition
-      restrictionService.updateViewRestriction(new ViewRestriction({restrictions: [ViewRestrictionCondition.ONTOP]}));
+      restrictionService.updateViewRestriction(new ViewRestriction([ViewRestrictionCondition.ONTOP]));
       // THEN: The view should not be restricted
       expect(restrictionContextService.isViewRestricted()).toBe(false);
     });
@@ -198,7 +198,7 @@ describe('RestrictionService', () => {
       await repositoryContextService.updateSelectedRepository(fedxRepository);
 
       // WHEN: Updating the view restriction with the fedx condition
-      restrictionService.updateViewRestriction(new ViewRestriction({restrictions: [ViewRestrictionCondition.FEDX]}));
+      restrictionService.updateViewRestriction(new ViewRestriction([ViewRestrictionCondition.FEDX]));
       // THEN: The view should be restricted
       expect(restrictionContextService.isViewRestricted()).toBe(true);
     });
@@ -210,7 +210,7 @@ describe('RestrictionService', () => {
       await repositoryContextService.updateSelectedRepository(repository);
 
       // WHEN: Updating the view restriction with the fedx condition
-      restrictionService.updateViewRestriction(new ViewRestriction({restrictions: [ViewRestrictionCondition.FEDX]}));
+      restrictionService.updateViewRestriction(new ViewRestriction([ViewRestrictionCondition.FEDX]));
       // THEN: The view should not be restricted
       expect(restrictionContextService.isViewRestricted()).toBe(false);
     });
@@ -221,7 +221,7 @@ describe('RestrictionService', () => {
     licenseContextService.updateGraphdbLicense(new License({valid: false}));
 
     // WHEN: Updating the view restriction with multiple declared conditions
-    restrictionService.updateViewRestriction(new ViewRestriction({restrictions: [ViewRestrictionCondition.WRITE, ViewRestrictionCondition.ONTOP, ViewRestrictionCondition.FEDX, ViewRestrictionCondition.LICENSE]}));
+    restrictionService.updateViewRestriction(new ViewRestriction([ViewRestrictionCondition.WRITE, ViewRestrictionCondition.ONTOP, ViewRestrictionCondition.FEDX, ViewRestrictionCondition.LICENSE]));
     // THEN: The view should be restricted because the license condition holds
     expect(restrictionContextService.isViewRestricted()).toBe(true);
   });

@@ -74,7 +74,7 @@ describe('RestrictionContextService', () => {
 
   test('viewRestriction should return the view restriction from the context', () => {
     // GIVEN: a view restriction is set in the context
-    const newViewRestriction = new ViewRestriction({restrictions: [ViewRestrictionCondition.FEDX]});
+    const newViewRestriction = new ViewRestriction([ViewRestrictionCondition.FEDX]);
     restrictionContextService.updateViewRestriction(newViewRestriction);
 
     // WHEN: getting the view restriction snapshot
@@ -98,7 +98,7 @@ describe('RestrictionContextService', () => {
     expect(mockCallback).toHaveBeenLastCalledWith(undefined);
 
     // WHEN: updating the view restriction
-    const newViewRestriction = new ViewRestriction({restrictions: [ViewRestrictionCondition.WRITE]});
+    const newViewRestriction = new ViewRestriction([ViewRestrictionCondition.WRITE]);
     restrictionContextService.updateViewRestriction(newViewRestriction);
     // THEN: the subscriber should be notified with the new view restriction
     expect(mockCallback).toHaveBeenLastCalledWith(newViewRestriction);
@@ -106,16 +106,12 @@ describe('RestrictionContextService', () => {
 
   test('view restriction should require write access only when it declares the write condition', () => {
     // WHEN: the view restriction declares the write condition among others
-    restrictionContextService.updateViewRestriction(new ViewRestriction({
-      restrictions: [ViewRestrictionCondition.LICENSE, ViewRestrictionCondition.WRITE]
-    }));
+    restrictionContextService.updateViewRestriction(new ViewRestriction([ViewRestrictionCondition.LICENSE, ViewRestrictionCondition.WRITE]));
     // THEN: it should require write access
     expect(restrictionContextService.viewRestriction()?.requiresWriteAccess()).toBe(true);
 
     // WHEN: the view restriction declares only non-write conditions
-    restrictionContextService.updateViewRestriction(new ViewRestriction({
-      restrictions: [ViewRestrictionCondition.LICENSE, ViewRestrictionCondition.ONTOP, ViewRestrictionCondition.FEDX]
-    }));
+    restrictionContextService.updateViewRestriction(new ViewRestriction([ViewRestrictionCondition.LICENSE, ViewRestrictionCondition.ONTOP, ViewRestrictionCondition.FEDX]));
     // THEN: it should not require write access
     expect(restrictionContextService.viewRestriction()?.requiresWriteAccess()).toBe(false);
   });

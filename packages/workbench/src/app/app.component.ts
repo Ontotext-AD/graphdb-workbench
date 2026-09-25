@@ -127,7 +127,7 @@ export class AppComponent implements OnInit, OnDestroy {
       this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
         const routeData = this.getActiveRouteData();
         const restrictions = routeData?.viewRestrictions ?? [];
-        this.restrictionService.updateViewRestriction(new ViewRestriction({restrictions}));
+        this.restrictionService.updateViewRestriction(new ViewRestriction(restrictions));
       })
     );
   }

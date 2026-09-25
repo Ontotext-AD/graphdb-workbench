@@ -82,7 +82,7 @@ describe('PageRestrictionsComponent', () => {
   };
 
   const givenDeclaredRestrictions = (restrictions: ViewRestrictionCondition[]) => {
-    restrictionContextService.updateViewRestriction(new ViewRestriction({restrictions}));
+    restrictionContextService.updateViewRestriction(new ViewRestriction(restrictions));
   };
 
   const render = async () => {
