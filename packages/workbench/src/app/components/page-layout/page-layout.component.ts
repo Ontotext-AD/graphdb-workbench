@@ -1,5 +1,4 @@
 import {Component, inject, OnInit, signal} from '@angular/core';
-import {CommonModule} from '@angular/common';
 import {ActivatedRoute} from '@angular/router';
 import {ApplicationQueryParams} from '../../models/application-query-params';
 import {TranslocoPipe} from '@jsverse/transloco';
@@ -14,7 +13,6 @@ import {
   selector: 'app-page-layout',
   standalone: true,
   imports: [
-    CommonModule,
     TranslocoPipe,
     PageInfoTooltipComponent,
     PageRestrictionsComponent

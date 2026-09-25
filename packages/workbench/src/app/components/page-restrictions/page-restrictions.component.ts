@@ -52,7 +52,11 @@ export class PageRestrictionsComponent implements OnInit, AfterViewInit, OnDestr
   viewRestriction = signal<ViewRestriction | undefined>(undefined);
   readonly requiresWriteAccess = computed(() => this.viewRestriction()?.requiresWriteAccess() ?? false);
 
-  readonly hasContent = computed(() =>
+  /**
+   * Whether the page can't be used: a restriction applies, or no repository is selected. In that case the restriction
+   * messages and the repository picker are shown instead of the page content.
+   */
+  readonly isPageBlocked = computed(() =>
     this.restrictions().length > 0 || (!!this.repositoryList() && !this.selectedRepository())
   );
 
@@ -113,7 +117,7 @@ export class PageRestrictionsComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   private updateAvailableHeight(): void {
-    if (!this.hasContent()) {
+    if (!this.isPageBlocked()) {
       // Nothing to show: leave the natural (empty) size instead of reserving space.
       this.availableHeight.set(undefined);
       return;
