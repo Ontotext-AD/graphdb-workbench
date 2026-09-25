@@ -25,6 +25,7 @@ import {
     LanguageContextService,
     RuntimeConfigurationContextService,
     AuthenticationStorageService,
+    RdfVersionUtil,
 } from '@ontotext/workbench-api';
 import {LoggerProvider} from "../../services/logger-provider";
 
@@ -593,12 +594,13 @@ function yasguiComponentDirective(
 
                 const queryType = yasqe.getQueryType();
                 if (QueryMode.UPDATE === yasqe.getQueryMode()) {
-                    headers['Accept'] = 'text/plain,/;q=0.9;version=1.2';
+                    headers['Accept'] = 'text/plain,*/*;q=0.9';
                 } else if (QueryType.CONSTRUCT === queryType || QueryType.DESCRIBE === queryType) {
-                    headers['Accept'] = 'application/x-graphdb-table-results+json, application/rdf+json;q=0.9, */*;q=0.8;version=1.2';
+                    headers['Accept'] = 'application/x-graphdb-table-results+json, application/rdf+json;q=0.9, */*;q=0.8';
                 } else {
-                    headers['Accept'] = 'application/x-sparqlstar-results+json, application/sparql-results+json;q=0.9, */*;q=0.8;version=1.2';
+                    headers['Accept'] = 'application/x-sparqlstar-results+json, application/sparql-results+json;q=0.9, */*;q=0.8';
                 }
+                headers['Accept'] = RdfVersionUtil.withVersion(headers['Accept']);
                 return headers;
             };
 

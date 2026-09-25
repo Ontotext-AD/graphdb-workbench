@@ -1,3 +1,5 @@
+import {RdfVersionUtil} from '@ontotext/workbench-api';
+
 angular
     .module('graphdb.framework.rest.sparql.service', [])
     .factory('SparqlRestService', SparqlRestService);
@@ -15,7 +17,7 @@ function SparqlRestService($http) {
         editSavedQuery,
         deleteSavedQuery,
         addNewSavedQuery,
-        getQueryResult
+        getQueryResult,
     };
 
     /**
@@ -40,7 +42,7 @@ function SparqlRestService($http) {
      */
     function getSavedQuery(savedQueryName, owner) {
         let ownerQuery = '';
-        if (owner != null) {
+        if (owner !== null && owner !== undefined) {
             ownerQuery = `&owner=${encodeURIComponent(owner)}`;
         }
         return $http.get(`${SAVED_QUERIES_ENDPOINT}?name=${encodeURIComponent(savedQueryName)}${ownerQuery}`);
@@ -121,8 +123,8 @@ function SparqlRestService($http) {
         return $http.get(`repositories/${repositoryId}`, {
             params: sendData,
             headers: {
-                Accept: accept + ';version=1.2'
-            }
+                Accept: RdfVersionUtil.withVersion(accept),
+            },
         });
     }
 }
