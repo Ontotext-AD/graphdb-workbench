@@ -1,0 +1,17 @@
+.reactodia-settings {
+  & .settings-header {
+    & h4 {
+      margin-bottom: 0;
+    }
+
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.75rem;
+  }
+
+  // PrimeNG always renders a thumbnail, but sets its src only for images, so a .ttl file shows a broken image
+  /* stylelint-disable-next-line selector-pseudo-element-no-unknown */
+  & ::ng-deep .p-fileupload-file-thumbnail {
+    display: none;
+  }
+}

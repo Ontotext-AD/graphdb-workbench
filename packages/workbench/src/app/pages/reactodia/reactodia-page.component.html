@@ -1,14 +1,26 @@
 <app-page-layout class="sparql-editor-page">
-  <div>
-    @let repository = currentRepository();
-    @if (language() && !loading() && repository) {
-      <app-reactodia-component-facade
-        [currentRepository]="repository"
-        [language]="language()"
-        [theme]="theme()"
-        [seedIris]="seedIris()"
-        [seedGraph]="seedGraph()">
-      </app-reactodia-component-facade>
-    }
-  </div>
+  @let repository = currentRepository();
+  @let providerSettings = settings();
+  @if (repository && providerSettings) {
+    <app-reactodia-settings class="reactodia-settings-toolbar"
+                            *appRestrictAccess="[ViewPermissions.CAN_MAINTAIN_ACTIVE_REPO]"
+                            [settings]="providerSettings"
+                            [loading]="loading()"
+                            (uploadSettings)="onUploadSettings($event, repository)"
+                            (resetSettings)="onResetSettings(repository)"
+                            (exportSettings)="onExportSettings(repository)">
+    </app-reactodia-settings>
+    <div>
+      @if (language() && !loading()) {
+        <app-reactodia-component-facade
+          [currentRepository]="repository"
+          [language]="language()"
+          [theme]="theme()"
+          [seedIris]="seedIris()"
+          [seedGraph]="seedGraph()"
+          [providerSettings]="providerSettings">
+        </app-reactodia-component-facade>
+      }
+    </div>
+  }
 </app-page-layout>

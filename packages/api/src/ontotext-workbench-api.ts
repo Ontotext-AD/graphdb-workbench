@@ -33,6 +33,7 @@ export * from './models/interactive-guide';
 export * from './models/connector';
 export * from './models/graph-config';
 export * from './models/graph-explore';
+export * from './models/graph-navigator';
 export * from './models/http';
 export * from './models/restrictions';
 
@@ -84,6 +85,7 @@ export * from './services/domain/connector';
 export * from './services/domain/graph-config';
 export * from './services/domain/graph-explore';
 export * from './services/restriction';
+export * from './services/domain/graph-navigator';
 
 // Export interceptors for external usages.
 export * from './interceptor';

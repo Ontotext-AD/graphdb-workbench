@@ -1,10 +1,13 @@
 import {Component, inject, OnDestroy, OnInit, signal} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
+import {saveAs} from 'file-saver';
 import {
   EventName,
   EventService,
   GraphExploreLink,
   GraphExploreService,
+  GraphNavigatorService,
+  GraphNavigatorSettings,
   LanguageContextService,
   OntoToastrService,
   RepositoryContextService,
@@ -21,12 +24,17 @@ import {
 } from '../../components/reactodia-component-facade/reactodia-component-facade.component';
 import {PageLayoutComponent} from '../../components/page-layout/page-layout.component';
 import {LoggerProvider} from '../../services/logger/logger-provider';
+import {ReactodiaSettingsComponent} from './reactodia-settings/reactodia-settings.component';
+import {RestrictAccessDirective, ViewPermissions} from '../../directives/restrict-access.directive';
 
 /**
  * Page that hosts the Reactodia graph. It owns the context subscriptions (repository, language and
  * theme), gates between the "repository required" banner and the {@link ReactodiaComponentFacadeComponent}
  * (which owns the `graphwise-reactodia` web component and its wiring) based on the active
  * repository, and feeds the current repository/language/theme down to the facade.
+ *
+ * It also owns the repository's graph-navigator settings: the facade is rendered only once they are
+ * loaded, so the diagram is always built with the settings of the active repository.
  */
 @Component({
   selector: 'app-reactodia-page',
@@ -35,6 +43,8 @@ import {LoggerProvider} from '../../services/logger/logger-provider';
   imports: [
     ReactodiaComponentFacadeComponent,
     PageLayoutComponent,
+    ReactodiaSettingsComponent,
+    RestrictAccessDirective,
   ],
   styleUrl: './reactodia-page.component.scss'
 })
@@ -42,9 +52,10 @@ export class ReactodiaPageComponent implements OnInit, OnDestroy {
   private readonly repositoryContextService = service(RepositoryContextService);
   private readonly languageContextService = service(LanguageContextService);
   private readonly graphExploreService = service(GraphExploreService);
+  private readonly graphNavigatorService = service(GraphNavigatorService);
+  private readonly toastrService = service(OntoToastrService);
   private readonly eventService = service(EventService);
   private readonly runtimeConfigurationContextService = service(RuntimeConfigurationContextService);
-  private readonly ontoToastrService = service(OntoToastrService);
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly logger = LoggerProvider.logger;
 
@@ -56,6 +67,8 @@ export class ReactodiaPageComponent implements OnInit, OnDestroy {
   readonly seedIris = signal<string[]>([]);
   readonly seedGraph = signal<GraphExploreLink[]>([]);
   readonly loading = signal(false);
+  readonly settings = signal<GraphNavigatorSettings | undefined>(undefined);
+  protected readonly ViewPermissions = ViewPermissions;
 
   ngOnInit(): void {
     this.initSubscriptions();
@@ -104,8 +117,88 @@ export class ReactodiaPageComponent implements OnInit, OnDestroy {
 
   private subscribeToRepositoryChanged() {
     return this.repositoryContextService.onSelectedRepositoryChanged((repository) => {
-      this.currentRepository.set(repository?.id);
+      const repositoryId = repository?.id;
+      // Clear the settings together with the repository change, so the facade is removed and mounted again
+      // once, with the new repository and its settings together.
+      this.settings.set(undefined);
+      this.currentRepository.set(repositoryId);
+      if (repositoryId) {
+        this.loadSettings(repositoryId);
+      }
     });
+  }
+
+  /**
+   * Uploads the settings file chosen in the settings controls and applies the settings the backend returns.
+   */
+  onUploadSettings(file: File, repositoryId: string): void {
+    this.runSettingsRequest(
+      this.graphNavigatorService.uploadSettings(repositoryId, file),
+      'reactodia.settings.messages.upload_success',
+      'reactodia.settings.messages.upload_failed'
+    );
+  }
+
+  /**
+   * Removes the repository's settings and applies the defaults the backend falls back to.
+   */
+  onResetSettings(repositoryId: string): void {
+    this.runSettingsRequest(
+      this.graphNavigatorService.deleteSettings(repositoryId).then(() => this.graphNavigatorService.getSettings(repositoryId)),
+      'reactodia.settings.messages.reset_success',
+      'reactodia.settings.messages.reset_failed'
+    );
+  }
+
+  /**
+   * Downloads the current settings as a Turtle file named after the repository, so they can be edited and
+   * uploaded again.
+   */
+  onExportSettings(repositoryId: string): void {
+    this.graphNavigatorService.exportSettings(repositoryId)
+      .then((turtle) => saveAs(new Blob([turtle], {type: 'text/turtle'}), `graph-navigator-settings-${repositoryId}.ttl`))
+      .catch((error) => {
+        const message = translate('reactodia.settings.messages.export_failed');
+        this.logger.error(message, error);
+        this.toastrService.error(message);
+      });
+  }
+
+  private runSettingsRequest(request: Promise<GraphNavigatorSettings>, successKey: string, failureKey: string): void {
+    this.loading.set(true);
+    request
+      .then((settings) => {
+        this.settings.set(settings);
+        this.toastrService.success(translate(successKey));
+      })
+      .catch((error) => this.logAndToast(failureKey, error))
+      .finally(() => this.loading.set(false));
+  }
+
+  /**
+   * Shows and logs the translated message of a failed settings request.
+   */
+  private logAndToast(messageKey: string, error: unknown): void {
+    const message = translate(messageKey);
+    this.logger.error(message, error);
+    this.toastrService.error(message);
+  }
+
+  private loadSettings(repositoryId: string): void {
+    this.graphNavigatorService.getSettings(repositoryId)
+      .then((settings) => {
+        // Drop a late response for a repository that is no longer selected.
+        if (repositoryId === this.currentRepository()) {
+          this.settings.set(settings);
+        }
+      })
+      .catch((error) => {
+        if (repositoryId !== this.currentRepository()) {
+          return;
+        }
+        this.logger.error('Failed to load the graph-navigator settings', error);
+        this.toastrService.error(translate('reactodia.settings.messages.load_failed'));
+      });
   }
 
   /**
@@ -136,7 +229,7 @@ export class ReactodiaPageComponent implements OnInit, OnDestroy {
       .then((links) => this.seedGraph.set(links))
       .catch((error) => {
         this.logger.error('Failed to load graph for query', error);
-        this.ontoToastrService.error(translate('reactodia.errors.graph_load_failed'));
+        this.toastrService.error(translate('reactodia.errors.graph_load_failed'));
       })
       .finally(() => this.loading.set(false));
   }
