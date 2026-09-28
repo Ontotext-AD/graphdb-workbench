@@ -170,6 +170,8 @@ securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$windo
                     // reload UI
                     // TODO: Not sure if we really need to reload the page here. The UI state is updated just fine. But maybe the reload is needed for something else?
                     // Remove and fix this when migrated
+                    // GDB-13798 The page HAS to be reloaded if X.509 is used, because the certificate is selected during the TLS handshake.
+                    // Refreshing will reinitiate the UI and the TLS handshake.
                     $window.location.reload();
                 });
         };
