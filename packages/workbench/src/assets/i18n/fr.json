@@ -114,6 +114,34 @@
     "errors": {
       "query_execution_failed": "Erreur! Impossible de charger les données du graphe.",
       "graph_load_failed": "Erreur! Impossible de calculer le graphe pour la requête."
+    },
+    "settings": {
+      "button": "Paramètres",
+      "upload": {
+        "title": "Importer un fichier de paramètres",
+        "browse": "Parcourir",
+        "drop_hint": "Glissez-déposez ici les fichiers à importer."
+      },
+      "export": "Exporter les paramètres actuels",
+      "reset": "Rétablir les valeurs par défaut",
+      "confirm": {
+        "upload": {
+          "title": "Importer les paramètres",
+          "message": "L'importation de nouveaux paramètres effacera le diagramme. Voulez-vous continuer ?"
+        },
+        "reset": {
+          "title": "Rétablir les valeurs par défaut",
+          "message": "Le rétablissement des paramètres par défaut effacera le diagramme. Voulez-vous continuer ?"
+        }
+      },
+      "messages": {
+        "load_failed": "Les paramètres du diagramme n'ont pas pu être chargés pour ce dépôt.",
+        "upload_success": "Les paramètres ont été importés",
+        "upload_failed": "Impossible d'importer les paramètres",
+        "reset_success": "Les paramètres par défaut ont été rétablis",
+        "reset_failed": "Impossible de rétablir les paramètres",
+        "export_failed": "Impossible d'exporter les paramètres"
+      }
     }
   },
   "sparql_editor": {

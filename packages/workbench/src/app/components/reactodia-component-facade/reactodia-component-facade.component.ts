@@ -1,7 +1,7 @@
 import {Component, computed, CUSTOM_ELEMENTS_SCHEMA, input} from '@angular/core';
 import {translate} from '@jsverse/transloco';
 import {defineCustomElements} from 'graphwise-reactodia/loader';
-import {GraphExploreLink, OntoToastrService, Rdf4jRepositoryService, service} from '@ontotext/workbench-api';
+import {GraphExploreLink, OntoToastrService, Rdf4jRepositoryService, service, SparqlDataProviderSettings} from '@ontotext/workbench-api';
 import {LoggerProvider} from '../../services/logger/logger-provider';
 
 /**
@@ -51,6 +51,11 @@ export class ReactodiaComponentFacadeComponent {
    * cannot be resolved lazily from the SPARQL endpoint.
    */
   readonly seedGraph = input<GraphExploreLink[]>([]);
+  /**
+   * The repository's graph-navigator query preset (Reactodia `SparqlDataProviderSettings`). Changing it
+   * rebuilds the data provider and resets the canvas.
+   */
+  readonly providerSettings = input<SparqlDataProviderSettings>();
 
   /**
    * Transport for Reactodia's SPARQL requests. Reactodia chooses the `Accept` per query

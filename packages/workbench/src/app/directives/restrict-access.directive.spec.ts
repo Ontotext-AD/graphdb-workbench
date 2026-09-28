@@ -250,6 +250,50 @@ describe('RestrictAccessDirective', () => {
     });
   });
 
+  describe('CAN_MAINTAIN_ACTIVE_REPO permission', () => {
+    const selectTestRepository = async () => {
+      const repository = new Repository({id: 'test', title: 'Test Repo', location: '', uri: 'http://test', readable: true, writable: true});
+      repositoryContextService.updateRepositoryList(new RepositoryList([repository]));
+      await repositoryContextService.updateSelectedRepository(repository);
+    };
+
+    const authenticateWith = (authorities: string[]) => {
+      const user = new AuthenticatedUser();
+      user.username = 'user';
+      user.setAuthorities(new AuthorityList(authorities));
+      securityContextService.updateAuthenticatedUser(user);
+      securityContextService.updateSecurityConfig(getSecurityConfig(true));
+    };
+
+    const renderWithMaintainPermission = async () => {
+      component.permissions = [ViewPermissions.CAN_MAINTAIN_ACTIVE_REPO];
+      fixture.detectChanges();
+      await fixture.whenStable();
+      return fixture.nativeElement.querySelector('.restricted-content');
+    };
+
+    it('should show content when user can maintain the active repository', async () => {
+      authenticateWith(['MAINTAIN_REPO_test']);
+      await selectTestRepository();
+
+      expect(await renderWithMaintainPermission()).toBeTruthy();
+    });
+
+    it('should show content when user is a repository manager', async () => {
+      authenticateWith([Authority.ROLE_REPO_MANAGER]);
+      await selectTestRepository();
+
+      expect(await renderWithMaintainPermission()).toBeTruthy();
+    });
+
+    it('should hide content when user can only write to the active repository', async () => {
+      authenticateWith(['WRITE_REPO_test', 'READ_REPO_test']);
+      await selectTestRepository();
+
+      expect(await renderWithMaintainPermission()).toBeFalsy();
+    });
+  });
+
   describe('IS_FEDEX_REPO permission', () => {
     it('should show content when active repository is FedX', async () => {
       const repository = new Repository({

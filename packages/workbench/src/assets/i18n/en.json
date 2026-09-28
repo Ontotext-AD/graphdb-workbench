@@ -114,6 +114,34 @@
     "errors": {
       "query_execution_failed": "Error! Could not load the graph data.",
       "graph_load_failed": "Error! Could not compute the graph for the query."
+    },
+    "settings": {
+      "button": "Settings",
+      "upload": {
+        "title": "Upload settings file",
+        "browse": "Browse",
+        "drop_hint": "Drag and drop files to here to upload."
+      },
+      "export": "Export current settings",
+      "reset": "Reset to default",
+      "confirm": {
+        "upload": {
+          "title": "Upload settings",
+          "message": "Uploading new settings will clear the diagram. Do you want to proceed?"
+        },
+        "reset": {
+          "title": "Reset to default",
+          "message": "Resetting the settings to the defaults will clear the diagram. Do you want to proceed?"
+        }
+      },
+      "messages": {
+        "load_failed": "The diagram settings could not be loaded for this repository.",
+        "upload_success": "The settings were uploaded",
+        "upload_failed": "Could not upload the settings",
+        "reset_success": "The settings were reset to the defaults",
+        "reset_failed": "Could not reset the settings",
+        "export_failed": "Could not export the settings"
+      }
     }
   },
   "sparql_editor": {
