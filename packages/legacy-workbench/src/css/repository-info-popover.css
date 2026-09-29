@@ -31,17 +31,20 @@
     }
 
     .title h6:not(.inactive) {
-        color: var(--gw-heading-h6-color);
+        color: var(--gw-foreground-on-surface-default);
     }
 
     .title h6.inactive,
-    .title h6 .ri-stop-large-fill,
     .title h6 .ri-loop-left-fill{
-        color: var(--gw-iconfield-icon-color);
+       color: var(--gw-foreground-on-surface-subtle);
+    }
+
+    .title h6 .ri-stop-large-fill{
+        color: var(--gw-foreground-on-surface-disabled);
     }
 
     .title h6 .ri-checkbox-blank-circle-fill {
-        color: var(	--gw-success-600);
+        color: var(--gw-success-base);
     }
 
 
@@ -86,13 +89,13 @@
     }
 
     .inactive-repo-message {
-        background-color: var(--gw-color-grey-100);    
-        color: var(--gw-color-grey-800);
+        background-color: var(--gw-message-help-background);    
+        color: var(--gw-message-help-color);
         display: flex;
         flex-wrap: nowrap;
         padding: 4px 8px;
         gap: 0.57em;
-        border: 1px solid var(--gw-border-color-default);
+        border: 1px solid var(--gw-message-help-border-color);
     }
 
     .inactive-repo-message p {
