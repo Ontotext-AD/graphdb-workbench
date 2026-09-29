@@ -286,7 +286,7 @@ export class OntoRepositorySelector {
    */
   private buildInactiveRepositoryHtml(): string {
     let html = `
-       <div class="repository-tooltip-row inactive-repo-message" ng-show="repositorySize.loading || repository.state === repoStates.INACTIVE">
+       <div class="repository-tooltip-row inactive-repo-message">
         <div class="icon">
             <i class="ri-information-2-line"></i>
         </div>
