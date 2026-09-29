@@ -61,7 +61,7 @@
     "jest-cli": "^30.2.0",
     "jest-stencil-runner": "^0.0.9",
     "puppeteer": "^24.30.0",
-    "sonarqube-scanner": "^3.3.0",
+    "sonarqube-scanner": "^5.0.1",
     "ts-jest": "^29.4.5"
   },
   "dependencies": {

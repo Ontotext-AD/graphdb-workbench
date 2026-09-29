@@ -1,5 +1,5 @@
 const argv = require('minimist')(process.argv.slice(2));
-const sonarqubeScanner = require('sonarqube-scanner');
+const { scan } = require('sonarqube-scanner');
 
 const branch = argv['branch'];
 const targetBranch = argv['target-branch'];
@@ -11,16 +11,20 @@ const sourcePaths = [
   './packages/shared-components/src',
   './packages/workbench/src',
 ];
+// Exclusion patterns are matched against paths relative to the base dir, so they must not start with './'.
 const exclusionPaths = [
-  './packages/api/src/assets/**/*',
-  './packages/legacy-workbench/src/res/**/*',
-  './packages/legacy-workbench/src/font/**/*',
-  './packages/legacy-workbench/src/js/lib/**/*',
-  './packages/legacy-workbench/src/css/fonts/**/*',
-  './packages/legacy-workbench/src/css/lib/**/*',
-  './packages/root-config/src/assets/**/*',
-  './packages/shared-components/src/assets/**/*',
-  './packages/workbench/src/assets/**/*',
+  'packages/api/src/assets/**/*',
+  'packages/legacy-workbench/src/res/**/*',
+  'packages/legacy-workbench/src/font/**/*',
+  'packages/legacy-workbench/src/img/**/*',
+  'packages/legacy-workbench/src/js/lib/**/*',
+  'packages/legacy-workbench/src/css/fonts/**/*',
+  'packages/legacy-workbench/src/css/images/**/*',
+  'packages/legacy-workbench/src/css/lib/**/*',
+  'packages/root-config/src/assets/**/*',
+  'packages/root-config/src/styles/fonts/**/*',
+  'packages/shared-components/src/assets/**/*',
+  'packages/workbench/src/assets/**/*',
 ];
 
 const sonarOptions = {
@@ -41,11 +45,9 @@ if (pullRequestId) {
   sonarOptions['sonar.branch.name'] = branch;
 }
 
-sonarqubeScanner(
-  {
-    options: sonarOptions
-  },
-  () => {
-    console.log('Finished SonarQube scan');
-  },
-);
+scan({ options: sonarOptions })
+  .then(() => console.log('Finished SonarQube scan'))
+  .catch((error) => {
+    console.error('SonarQube scan failed', error);
+    process.exitCode = 1;
+  });

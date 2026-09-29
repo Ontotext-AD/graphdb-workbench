@@ -62,6 +62,8 @@ pipeline {
                             if (scmUtil.isMaster()) {
                                 sh "node sonar-project.js --branch='${scmUtil.getCurrentBranch()}'"
                             } else {
+                                // The PR checkout has no target branch ref, which Sonar needs to detect the changed lines.
+                                sh "git fetch --no-tags origin '+refs/heads/${scmUtil.getTargetBranch()}:refs/remotes/origin/${scmUtil.getTargetBranch()}'"
                                 sh "node sonar-project.js --branch='${scmUtil.getSourceBranch()}' --target-branch='${scmUtil.getTargetBranch()}' --pull-request-id='${scmUtil.getMergeRequestId()}'"
                             }
                         } catch (e) {
