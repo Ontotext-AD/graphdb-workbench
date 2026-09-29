@@ -168,10 +168,11 @@ export class OntoRepositorySelector {
         return '';
       }
 
-      const repositorySizeInfo = await
-      (repository.state === RepositoryState.INACTIVE ?
-        Promise.resolve(undefined) :
-        this.repositorySizeInfoFetcher(repository));
+      let repositorySizeInfo = undefined;
+
+      if (repository.state !== RepositoryState.INACTIVE) {
+        repositorySizeInfo = await this.repositorySizeInfoFetcher(repository);
+      }
 
       return this.buildRepositoryTooltipHtml(repository, repositorySizeInfo);
     };
