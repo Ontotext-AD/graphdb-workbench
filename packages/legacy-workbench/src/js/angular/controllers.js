@@ -486,8 +486,15 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         if ($scope.popoverRepo) {
             if ($scope.popoverRepo.state === RepositoryState.RUNNING) {
                 $scope.repositorySize.loading = true;
-                RepositoriesRestService.getSize($scope.popoverRepo).then(function(res) {
+                RepositoriesRestService.getSize($scope.popoverRepo)
+                .then(function(res) {
                     $scope.repositorySize = res.data;
+                })
+                .catch(function(err) {
+                    console.error(err);
+                })
+                .finally(function() {
+                    $scope.repositorySize.loading = false;
                 });
             } else {
                 $scope.repositorySize.loading = false;
