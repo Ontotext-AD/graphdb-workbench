@@ -1,5 +1,5 @@
 const argv = require('minimist')(process.argv.slice(2));
-const sonarqubeScanner = require("sonarqube-scanner");
+const { scan } = require("sonarqube-scanner");
 
 const branch = argv['branch'];
 const targetBranch = argv['target-branch'];
@@ -24,11 +24,9 @@ if (pullRequestId) {
   sonarOptions["sonar.branch.name"] = branch;
 }
 
-sonarqubeScanner(
-  {
-    options: sonarOptions
-  },
-  () => {
-    console.log('Finished SonarQube scan');
-  },
-);
+scan({ options: sonarOptions })
+  .then(() => console.log('Finished SonarQube scan'))
+  .catch((error) => {
+    console.error('SonarQube scan failed', error);
+    process.exitCode = 1;
+  });
