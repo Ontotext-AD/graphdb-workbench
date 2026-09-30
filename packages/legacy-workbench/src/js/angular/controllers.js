@@ -485,8 +485,9 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     $scope.getRepositorySize = function() {
         $scope.repositorySize = {};
         if ($scope.popoverRepo) {
-            if ($scope.popoverRepo.state === RepositoryState.RUNNING) {
-                $scope.repositorySize.loading = true;
+            const isLoading = $scope.popoverRepo.state === RepositoryState.RUNNING;
+            if (isLoading) {
+                $scope.repositorySize.loading = isLoading;
                 RepositoriesRestService.getSize($scope.popoverRepo)
                 .then(function(res) {
                     $scope.repositorySize = res.data;
