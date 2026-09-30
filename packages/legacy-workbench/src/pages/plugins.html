@@ -29,7 +29,7 @@
     <table ng-if="isLicenseValid() && canWriteActiveRepo() && !isRestricted"
            id="wb-plugins-pluginInPlugins"
            data-test="plugins-list"
-           class="table table-hover" aria-describedby="Plugins table">
+           class="table table-hover" aria-label="{{'plugins.table.label' | translate}}">
         <tbody>
         <tr ng-repeat="(key, plugin) in displayedPlugins" class="wb-plugins-row plugin" loader-post-repeat-directive>
             <td id="wb-plugins-td" ng-show="!loader">

@@ -1,9 +1,9 @@
-<h1>
+<h1 id="roles-mapping-title">
     {{title}}
 </h1>
 <div core-errors></div>
 <div ng-show="getActiveRepository()">
-    <table class="table table-striped" aria-describedby="Role mappings table">
+    <table class="table table-striped" aria-labelledby="roles-mapping-title">
         <thead>
         <th id="mappingsColumn"><strong>{{'security.mapping.header' | translate}}</strong></th>
         <th ng-repeat="role in roles" id="rolesColumn">

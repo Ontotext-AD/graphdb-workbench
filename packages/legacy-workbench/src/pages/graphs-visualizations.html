@@ -151,11 +151,11 @@
                                 ng-href="graphs-visualizations/config/save"
                                 guide-selector="create-graph-config-btn"
                                 class="btn btn-link pull-right create-graph-config"><span class="ri-add-circle-line"></span> {{'visual.create.graph.config' | translate}}</a>
-                            <h3>{{'visual.advanced.graph.config' | translate}}</h3>
+                            <h3 id="graph-configurations-title">{{'visual.advanced.graph.config' | translate}}</h3>
                             <p>{{'visual.advanced.graph.config.info' | translate}}</p>
                         </div>
                         <div ng-show="graphConfigs.length == 0">{{'visual.no.configs' | translate}}</div>
-                        <table guide-selector="graph-config-table" class="table table-hover mb-0 graph-configurations-list" aria-describedby="Graph configurations table">
+                        <table guide-selector="graph-config-table" class="table table-hover mb-0 graph-configurations-list" aria-labelledby="graph-configurations-title">
                             <tbody>
                             <tr ng-repeat="config in graphConfigs">
                                 <td width="20">
@@ -183,9 +183,9 @@
 
                 <div ng-show="isFreeAccessEnabled() || isUser()" data-test="saved-graphs-area" class="card mb-2">
                     <div class="card-block">
-                        <h3 class="mb-2">{{'visual.saved.graphs' | translate}}</h3>
+                        <h3 id="saved-graphs-title" class="mb-2">{{'visual.saved.graphs' | translate}}</h3>
                         <div ng-show="savedGraphs.length == 0">{{'visual.no.saved.graphs' | translate}}</div>
-                        <table class="table table-hover mb-0" ng-init="refreshSavedGraphs()" aria-describedby="Saved graphs table" data-cy="saved-graphs-table">
+                        <table class="table table-hover mb-0" ng-init="refreshSavedGraphs()" aria-labelledby="saved-graphs-title" data-cy="saved-graphs-table">
                             <tbody>
                             <tr ng-repeat="graph in savedGraphs">
                                 <td>

@@ -203,7 +203,7 @@
 						<p ng-switch-when="0" class="alert alert-warning">{{'no.instances.found.label' | translate}}</p>
 
                         <div ng-switch-default ui-scroll-viewport class="rdf-list" ng-class="rdfsComment ? 'rdf-list-comment' : ''">
-							<table class="table table-sm table-striped" aria-describedby="Class instances table">
+							<table class="table table-sm table-striped" aria-label="{{'class.instances.table.label' | translate}}">
 								<tbody>
 									<tr ui-scroll='item in datasource' adapter="adapterContainer.adapter" padding='li' class="hovered-parent">
 										<td class="break-word-alt" guide-selector="instance-{{ item.resolvedUri }}">

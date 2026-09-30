@@ -29,7 +29,7 @@
 
         <form class="multi-region-form" name="tagForm" ng-if="primaryTags.length || addingTag">
             <div class="multi-region-table">
-                <table class="tags-table table-striped table-hover table" aria-describedby="tags table">
+                <table class="tags-table table-striped table-hover table" aria-label="{{'cluster_management.cluster_configuration_multi_region.primary_tags_table_label' | translate}}">
                     <thead>
                     <tr class="labels-row">
                         <th scope="col" class="index-column">
@@ -128,7 +128,7 @@
             </button>
         </div>
         <div class="table-responsive">
-            <table class="secondary-tag-table table-striped table-hover table" aria-describedby="tag table">
+            <table class="secondary-tag-table table-striped table-hover table" aria-label="{{'cluster_management.cluster_configuration_multi_region.secondary_tag_table_label' | translate}}">
                 <thead>
                 <tr class="labels-row">
                     <th scope="col" class="tag-column">

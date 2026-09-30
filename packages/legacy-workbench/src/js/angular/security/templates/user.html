@@ -243,14 +243,14 @@
                     </div>
 
                     <div class="user-repositories" id="user-repos">
-                        <h3 class="user-repositories-label">{{'security.repo.rights' | translate}}</h3>
+                        <h3 id="user-repositories-title" class="user-repositories-label">{{'security.repo.rights' | translate}}</h3>
                         <div class="has-danger">
                             <p ng-show="repositoryCheckError" class="form-control-feedback">
                                 {{'security.user.rights' | translate}}
                             </p>
                         </div>
                         <div class="scrollable-table">
-                            <table class="table table-hover table-sm table-fixed bordered-table" aria-describedby="User rights table">
+                            <table class="table table-hover table-sm table-fixed bordered-table" aria-labelledby="user-repositories-title">
                                 <thead>
                                 <tr>
                                     <th id="repositoryIdColumn" rowspan="2" class="repository-column auth-column">{{'security.repository.title' | translate}}</th>

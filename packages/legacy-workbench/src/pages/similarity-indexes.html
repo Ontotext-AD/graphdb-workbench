@@ -27,13 +27,13 @@
 				<a ng-href="similarity/index/create" ng-if="canEditRepo" class="btn btn-link pull-right" data-test="create-similarity-index-btn" guide-selector="create-similarity-index">
 					<span class="ri-add-circle-line create-similarity-index"></span>{{'view.create.similarity.index.title' | translate}}
 				</a>
-				<h3 class="mb-0"><span class="collapsible-heading" data-toggle="collapse" data-target="#indexes-table"><em class="ri-arrow-down-s-line text-muted"></em> {{'existing.indexes' | translate}}</span></h3>
+				<h3 id="existing-similarity-indexes-title" class="mb-0"><span class="collapsible-heading" data-toggle="collapse" data-target="#indexes-table"><em class="ri-arrow-down-s-line text-muted"></em> {{'existing.indexes' | translate}}</span></h3>
 				<div class="mt-1" ng-if="selectedSimilarityIndex === undefined">{{'select.existing.similarity.index' | translate}}</div>
 			</div>
 			<div class="no-indexes" ng-if="similarityIndexes.length == 0"><em>{{'no.indexes' | translate}}</em></div>
 
 			<div class="collapse in mt-1" id="indexes-table" guide-selector="similarity-indexes-table">
-				<table class="table table-hover mb-0" aria-describedby="Similarity index table">
+				<table class="table table-hover mb-0" aria-labelledby="existing-similarity-indexes-title">
 					<tbody>
 					<tr ng-repeat="similarityIndex in similarityIndexes track by similarityIndex.name" guide-selector="similarity-index-row-{{$index}}"
                         class="index-row"

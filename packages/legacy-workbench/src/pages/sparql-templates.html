@@ -24,7 +24,7 @@
                    class="btn btn-link pull-right create-sparql-template">
                     <span class="ri-add-circle-line create-sql-table-configuration"></span>{{'create.new.sparql.template' | translate}}
                 </a>
-                <h3 class="mb-0"><span class="collapsible-heading" data-toggle="collapse"
+                <h3 id="sparql-templates-title" class="mb-0"><span class="collapsible-heading" data-toggle="collapse"
                                        data-target="#configurations-table"><em class="ri-arrow-down-s-line text-muted"></em> {{'existing.sparql.templates' | translate}}</span>
                 </h3>
             </div>
@@ -33,7 +33,7 @@
                 <div class="no-indexes"
                      data-test="no-sparql-templates-message"
                      ng-if="!sparqlTemplateIds.items.length"><em>{{'no.sparql.templates.defined' | translate}}</em></div>
-                <table class="table table-hover mb-0" aria-describedby="SPARQL templates">
+                <table class="table table-hover mb-0" aria-labelledby="sparql-templates-title">
                     <tbody>
                     <tr ng-repeat="template in sparqlTemplateIds.items track by $index"
                         class="configuration-row">
