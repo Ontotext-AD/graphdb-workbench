@@ -16,6 +16,7 @@ import {
   ApplicationLifecycleContextService,
   ApplicationSettingsStorageService,
   LifecycleState,
+  RestrictionService,
   UserPreferencesService,
 } from '@ontotext/workbench-api';
 import {start} from 'single-spa';
@@ -95,13 +96,22 @@ const subscribeToAuthenticatedUserChange = () => {
       // (when we are coming from the login page).
       const isDataLoaded = applicationLifecycleContextService.getApplicationDataState() === LifecycleState.DATA_LOADED;
       if (!isInitialBootstrap || !isDataLoaded) {
-        loadApplicationData();
+        void loadApplicationData();
       }
       isInitialBootstrap = false;
     }
     // Updates user preferences when the authenticated user changes.
     service(UserPreferencesService).loadUserPreferences();
   });
+};
+
+/**
+ * Creates the restriction service, which subscribes to the state the view restriction depends on (selected repository,
+ * license, security and the view's declared restrictions) and keeps the restricted state in the context up to date.
+ * Services are created on first use, so without this nothing would create it.
+ */
+const initializeRestrictions = (): void => {
+  service(RestrictionService);
 };
 
 /**
@@ -135,6 +145,7 @@ export const bootstrapWorkbench = (): Promise<void> => {
     .then(loadApplicationData)
     .then(() => {
       subscribeToAuthenticatedUserChange();
+      initializeRestrictions();
       defineCustomElements();
       return start();
     });
