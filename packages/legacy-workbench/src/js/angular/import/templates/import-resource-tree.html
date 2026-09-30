@@ -5,6 +5,9 @@
         <div class="import-resources-actions">
             <div class="import-resource-status-dropdown btn-group" uib-dropdown>
                 <button type="button" uib-dropdown-toggle class="btn btn-secondary dropdown-toggle"
+                        aria-label="{{selectedByStatus
+                            ? ('import.import_resource_tree.select_by_status_selected' | translate: {status: ('import.import_resource_tree.status.' + selectedByStatus | translate)})
+                            : ('import.import_resource_tree.select_by_status' | translate)}}"
                         ng-class="{'selected': selectedByStatus}">
                     <input type="checkbox" prop-indeterminate="areAllDisplayedImportResourcesPartialSelected"
                            ng-model="areAllDisplayedImportResourcesSelected">
@@ -93,6 +96,7 @@
             </div>
 
             <div class="import-resource-filter btn-group">
+                <label for="fileQuery" class="import-resource-filter-label">{{'import.import_resource_tree.filter_by_name' | translate}}</label>
                 <div class="input-group">
                     <input id="fileQuery" class="form-control" type="text" ng-model="filterByFileName"
                            autocomplete="off"
@@ -150,6 +154,7 @@
             ng-class="{ 'even-row-start': $even, 'odd-row-start': $odd}">
             <td class="cell cell-select">
                 <input type="checkbox" ng-model="resource.selected" ng-click="selectionChanged(resource)"
+                       aria-label="{{'import.import_resource_tree.action.select' | translate: {name: resource.path || resource.name} }}"
                        prop-indeterminate="resource.partialSelected" class="select-checkbox">
             </td>
             <td ng-style="{'padding-left': (filterByType !== TYPE_FILTER_OPTIONS.FILE ? resource.indent : '8px')}"
@@ -178,7 +183,7 @@
                 {{ resource.importResource.importedOn ? (resource.importResource.importedOn | date:'yyyy-MM-dd, HH:mm') : '' }}
             </td>
             <td class="cell">
-                <a if="resource.importResource.context"
+                <a ng-if="resource.importResource.context"
                    title="{{resource.importResource.context}}"
                    class="uri-link"
                    href="{{'resource?uri=' + resource.importResource.context + '&role=context'}}">
@@ -194,23 +199,26 @@
                             ng-click="resetStatus(resource)"
                             ng-if="resource.canResetStatus"
                             ng-disabled="hasSelection"
-                            gdb-tooltip="{{'import.reset.status' | translate}}">
-                        <span class="ri-close-line"></span>
+                            gdb-tooltip="{{'import.reset.status' | translate}}"
+                            aria-label="{{'import.import_resource_tree.action.reset_status' | translate: {name: resource.path || resource.name} }}">
+                        <span class="ri-close-line" aria-hidden="true"></span>
                     </button>
                     <button ng-if="canRemoveResource && resource.importResource.status !== ImportResourceStatus.UPLOADING && resource.importResource.status !== ImportResourceStatus.UPLOADED && resource.importResource.status !== ImportResourceStatus.UPLOAD_ERROR"
                             class="btn btn-link btn-sm secondary import-resource-action-remove-btn"
                             ng-disabled="hasSelection"
                             ng-click="removeResource(resource)"
-                            gdb-tooltip="{{'import.remove.btn' | translate}}">
-                        <em class="ri-delete-bin-6-line"></em>
+                            gdb-tooltip="{{'import.remove.btn' | translate}}"
+                            aria-label="{{'import.import_resource_tree.action.remove' | translate: {name: resource.path || resource.name} }}">
+                        <em class="ri-delete-bin-6-line" aria-hidden="true"></em>
                     </button>
                     <button class="btn btn-secondary btn-sm import-resource-action-import-btn"
                             ng-if="resource.isImportable"
                             ng-click="onImport({resource: resource})"
                             ng-disabled="hasSelection"
                             guide-selector="import-file-{{resource.name}}"
-                            gdb-tooltip="{{'import.import.btn' | translate}}">
-                        <span class="icon-import"></span>
+                            gdb-tooltip="{{'import.import.btn' | translate}}"
+                            aria-label="{{'import.import_resource_tree.action.import' | translate: {name: resource.path || resource.name} }}">
+                        <span class="icon-import" aria-hidden="true"></span>
                     </button>
                     <button class="btn btn-sm"
                             ng-click="stopImport(resource)"

@@ -312,7 +312,8 @@ class ImportSteps {
 
     static selectFile(files) {
         cy.wait(1000)
-        cy.get('#wb-import-uploadFile label').selectFile(files, { force: true });
+        // The file input is created by ng-file-upload and appended to the body.
+        cy.get('#ngf-wb-import-uploadFile').selectFile(files, { force: true });
     }
 
     static uploadFile(filePath) {

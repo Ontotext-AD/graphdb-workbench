@@ -2273,8 +2273,15 @@
             },
             "action": {
                 "interrupt_import": "Interrupt import",
-                "abort": "Abort"
-            }
+                "abort": "Abort",
+                "select": "Select {{name}}",
+                "import": "Import {{name}}",
+                "remove": "Remove {{name}}",
+                "reset_status": "Reset status of {{name}}"
+            },
+            "select_by_status": "Select resources by status",
+            "select_by_status_selected": "Select resources by status, selected: {{status}}",
+            "filter_by_name": "Filter by name"
         },
         "status-info": {
             "last_import_settings": "Last import settings",
