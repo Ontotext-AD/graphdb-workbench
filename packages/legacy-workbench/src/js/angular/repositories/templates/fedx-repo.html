@@ -1,9 +1,9 @@
 <div id="fedx-content" class="pt-1">
     <div id="fedx-members">
         <div class="form-repo-members col-md-6 col-lg-5 col-xl-4 mb-1">
-            <h4>{{'fedx.repo.federation.members' | translate}}</h4>
+            <h4 id="fedx-members-title">{{'fedx.repo.federation.members' | translate}}</h4>
             <div class="alert alert-warning" ng-if="fedxMembers.length === 0">{{'fedx.repo.no.members.warning' | translate}}</div>
-            <ul id="fedx-members-table" class="list-group" aria-describedby="Repositories table">
+            <ul id="fedx-members-table" class="list-group" aria-labelledby="fedx-members-title">
                 <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center repository"
                     ng-repeat="member in fedxMembers | orderBy: ['type === \'system\'', 'endpoint', 'repositoryServer', 'repositoryName'] : true ">
                     <div class="name">

@@ -67,7 +67,7 @@
                 </div>
             </div>
             <div class="form-group row" ng-show="enableReplace">
-                <label class="col-lg-3 col-form-label">
+                <label id="import-replaced-graphs-label" class="col-lg-3 col-form-label">
                     {{'import.replaced.graphs' | translate}}
                     <span class="btn btn-link p-0"
                           uib-popover="{{'import.replaced.graphs.for.update' | translate}}"
@@ -114,7 +114,7 @@
                         </div>
                     </div>
                     <div>
-                        <table aria-describedby="Replaced graphs table">
+                        <table aria-labelledby="import-replaced-graphs-label">
                             <tr>
                                 <th id="graphsColumn">
                                     <span

@@ -16,7 +16,7 @@
                    class="btn btn-link pull-right d-flex">
                     <span class="ri-add-circle-line create-sql-table-configuration"></span>{{'jdbc.create.new.configuration' | translate}}
                 </a>
-                <h3 class="mb-0"><span class="collapsible-heading" data-toggle="collapse"
+                <h3 id="jdbc-configurations-title" class="mb-0"><span class="collapsible-heading" data-toggle="collapse"
                                        data-target="#configurations-table"><em class="ri-arrow-down-s-line text-muted"></em> {{'jdbc.sql.configurations.list' | translate}}</span>
                 </h3>
             </div>
@@ -25,7 +25,7 @@
                 <div class="no-indexes"
                      data-test="no-sql-configurations-message"
                      ng-if="jdbcConfigurations.length == 0"><em>{{'jdbc.no.tables.defined' | translate}}</em></div>
-                <table class="table table-hover mb-0" aria-describedby="JDBC configurations table">
+                <table class="table table-hover mb-0" aria-labelledby="jdbc-configurations-title">
                     <tbody>
                     <tr ng-repeat="index in jdbcConfigurations track by $index"
                         class="configuration-row">

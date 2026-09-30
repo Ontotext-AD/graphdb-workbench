@@ -46,7 +46,7 @@
             <div ng-if="!loading" class="acl-scope-tabs" ng-class="isEditMode() ? 'edit-mode': 'preview-mode'">
                 <div class="table-responsive tab-pane fade in" ng-if="activeTabScope === ACL_SCOPE.STATEMENT" id="statementTab">
                     <form name="ruleData" novalidate ng-if="rulesModel.getRulesByScope(activeTabScope) && !loading">
-                        <table class="acl-rules table table-striped table-hover" aria-describedby="ACL rules table">
+                        <table class="acl-rules table table-striped table-hover" aria-label="{{'acl_management.rulestable.table_label' | translate}}">
                             <thead>
                                 <tr class="labels-row">
                                     <th scope="col" class="index-column">
@@ -274,7 +274,7 @@
                 </div>
                 <div class="table-responsive tab-pane fade in" ng-if="activeTabScope === ACL_SCOPE.CLEAR_GRAPH" id="graphTab">
                     <form name="ruleData" novalidate ng-if="rulesModel && !loading">
-                        <table class="acl-rules table table-striped table-hover" aria-describedby="ACL rules table">
+                        <table class="acl-rules table table-striped table-hover" aria-label="{{'acl_management.rulestable.table_label' | translate}}">
                             <thead>
                                 <tr class="labels-row">
                                     <th scope="col" class="index-column">
@@ -432,7 +432,7 @@
                 </div>
                 <div class="table-responsive tab-pane fade in" ng-if="activeTabScope === ACL_SCOPE.PLUGIN" id="pluginTab">
                     <form name="ruleData" novalidate ng-if="rulesModel && !loading">
-                        <table class="acl-rules table table-striped table-hover" aria-describedby="ACL rules table">
+                        <table class="acl-rules table table-striped table-hover" aria-label="{{'acl_management.rulestable.table_label' | translate}}">
                             <thead>
                                 <tr class="labels-row">
                                     <th scope="col" class="index-column">
@@ -603,7 +603,7 @@
                 </div>
                 <div class="table-responsive tab-pane fade in" ng-if="activeTabScope === ACL_SCOPE.SYSTEM" id="systemTab">
                     <form name="ruleData" novalidate ng-if="rulesModel && !loading">
-                        <table class="acl-rules table table-striped table-hover" aria-describedby="ACL rules table">
+                        <table class="acl-rules table table-striped table-hover" aria-label="{{'acl_management.rulestable.table_label' | translate}}">
                             <thead>
                                 <tr class="labels-row">
                                     <th scope="col" class="index-column">

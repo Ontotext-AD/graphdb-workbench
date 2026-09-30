@@ -13,7 +13,7 @@
     <div onto-loader size="50" ng-show="loader"></div>
     <!-- Local GraphDB instance -->
     <div ng-if="getLocalLocation(true, RemoteLocationType.GRAPH_DB).length && hasActiveLocation()" class="mb-1">
-        <table id="wb-locations-locationInGetLocations" class="table" aria-describedby="Locations repository table">
+        <table id="wb-locations-locationInGetLocations" class="table" aria-label="{{'repositories.location.local.graph_db.instance' | translate}}">
             <tbody>
             <tr class="location"
                 ng-repeat="location in getLocalLocation(true, RemoteLocationType.GRAPH_DB) | orderBy: ['uri']">
@@ -65,7 +65,7 @@
                         </div>
                         <div ng-if="getRepositoriesFromLocation(location.uri).length" class="mb-1">
                             <table id="wb-repositories-repositoryInGetRepositories"
-                                   class="table table-hover table-striped" aria-describedby="Repositories table">
+                                   class="table table-hover table-striped" aria-label="{{'repositories.table.label' | translate}}">
                                 <colgroup>
                                     <col class="select-repository-button-column">
                                     <col class="repository-info-column">
@@ -182,9 +182,9 @@
     </div>
     <!-- Remote GraphDB instances -->
     <div ng-if="getLocalLocation(false, RemoteLocationType.GRAPH_DB).length && hasActiveLocation()" class="mb-1">
-        <h4 class="location-type-title">{{'repositories.location.remote.graph_db.instances' | translate}}</h4>
+        <h4 id="remote-graphdb-instances-title" class="location-type-title">{{'repositories.location.remote.graph_db.instances' | translate}}</h4>
 
-        <table id="wb-locations-locationInGetRemoteLocations" class="table" aria-describedby="Locations repository table">
+        <table id="wb-locations-locationInGetRemoteLocations" class="table" aria-labelledby="remote-graphdb-instances-title">
             <tbody>
                 <tr class="location"
                     ng-repeat="location in getLocalLocation(false, RemoteLocationType.GRAPH_DB) | orderBy: ['uri']">
@@ -236,7 +236,7 @@
                             </div>
                             <div ng-if="getRepositoriesFromLocation(location.uri).length" class="mb-1">
                                 <table id="wb-repositories-repositoryInRemoteGetRepositories"
-                                       class="table table-hover table-striped" aria-describedby="Repositories table">
+                                       class="table table-hover table-striped" aria-label="{{'repositories.table.label' | translate}}">
                                     <colgroup>
                                         <col class="select-repository-button-column">
                                         <col class="repository-info-column">
@@ -348,9 +348,9 @@
     </div>
     <!-- Remote Ontopic and SPARQL instances -->
     <div ng-if="isRepoManager() && hasAnyRemoteLocation(false, [RemoteLocationType.SPARQL, RemoteLocationType.ONTOPIC])" class="mb-1 ontopic-instances">
-        <h4 class="remote-location-type-title">{{'repositories.location.sparql.instances' | translate}}</h4>
+        <h4 id="remote-sparql-instances-title" class="remote-location-type-title">{{'repositories.location.sparql.instances' | translate}}</h4>
         <table id="wb-repositories-ontopic-sparql-repositoryInGetRepositories"
-               class="table table-hover table-striped" aria-describedby="Repositories table">
+               class="table table-hover table-striped" aria-labelledby="remote-sparql-instances-title">
             <tbody>
             <tr ng-repeat="location in getLocalLocation(false, RemoteLocationType.ONTOPIC) | orderBy: ['type === \'system\'', 'location', 'id']"
                 ng-class="{'table-info text-secondary': isRepoActive(location)}">
