@@ -1,6 +1,6 @@
-<div class="page-restrictions" [style.height.px]="availableHeight()">
+<div class="page-restrictions" data-test="page-restrictions" [style.height.px]="availableHeight()">
   @for (reason of restrictions(); track reason.translationKey) {
-    <p-message [severity]="reason.severity" icon="ri-alert-line">
+    <p-message data-test="page-restriction-message" [severity]="reason.severity" icon="ri-alert-line">
 
       <div>
         <span [innerHTML]="reason.translationKey | transloco: reason.translationParams"></span>
@@ -8,7 +8,7 @@
           @if (reason.isExternalAction) {
             <a [href]="reason.actionLink" target="_blank" rel="noopener noreferrer">{{ reason.actionLabelKey | transloco }}</a>
           } @else {
-            <a [routerLink]="reason.actionLink">{{ reason.actionLabelKey | transloco }}</a>
+            <a [routerLink]="reason.actionLink" data-test="restriction-internal-link">{{ reason.actionLabelKey | transloco }}</a>
           }
         }
       </div>

@@ -87,7 +87,11 @@ describe('Reactodia graph explorer', () => {
         MainMenuSteps.clickOnSparqlMenu();
         ReactodiaSteps.getComponent().should('not.exist');
 
-        // Wait for the SPARQL Query & Update view to be loaded to ensure that the main menu with the Reactodia submenu is visible.
+        // Wait for the SPARQL Query & Update view to be loaded before continuing.
+        // Without this wait, Cypress may try to click the Reactodia menu item before the page is fully loaded,
+        // causing the test to fail intermittently with the error:
+        // "This element `<li.sub-menu-item>` is not visible because it has CSS property: `display: none`"
+        // when trying to click the Reactodia submenu.
         YasqeSteps.getEditor().should('be.visible');
         // And I return to the reactodia view via the navigation bar.
         MainMenuSteps.clickOnReactodia();

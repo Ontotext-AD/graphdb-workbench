@@ -20,6 +20,10 @@ export class RepositorySteps extends BaseSteps {
         cy.visit(`repository/edit/${repositoryId}?location=`);
     }
 
+    static verifyRepositoryCreateViewUrl() {
+        return cy.url().should('include', '/repository/create');
+    }
+
     static getRepositoryPage() {
         return cy.get('#wb-repository');
     }

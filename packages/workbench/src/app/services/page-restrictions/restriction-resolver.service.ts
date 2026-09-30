@@ -3,6 +3,7 @@ import {
   AuthorizationService,
   LicenseContextService,
   Repository,
+  RepositoryService,
   SecurityContextService,
   service,
   ViewRestrictionCondition,
@@ -19,6 +20,7 @@ export class RestrictionResolverService {
   private readonly licenseContextService = service(LicenseContextService);
   private readonly securityContextService = service(SecurityContextService);
   private readonly authorizationService = service(AuthorizationService);
+  private readonly repositoryService = service(RepositoryService);
   private readonly viewRestrictionService = service(ViewRestrictionService);
   private readonly translocoService = inject(TranslocoService);
 
@@ -149,7 +151,7 @@ export class RestrictionResolverService {
    * page's repository type and permission filters.
    */
   private hasAccessibleRepositories(ctx: RestrictionContext): boolean {
-    return this.authorizationService
+    return this.repositoryService
       .getAccessibleRepositories(true, this.requiresWriteAccess(ctx))
       .getItems()
       .some((repository) => this.isRepositoryAllowed(ctx, repository));
