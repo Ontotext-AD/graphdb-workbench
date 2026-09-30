@@ -51,6 +51,7 @@ import {EventConstants} from './utils/event-constants';
 import {CookieConsent} from './models/cookie-policy/cookie-consent';
 import {GuideUtils} from './guides/guide-utils';
 import {YasguiComponentDirectiveUtil} from './core/directives/yasgui-component/yasgui-component-directive.util';
+import {LoggerProvider} from './core/services/logger-provider';
 
 angular
     .module('graphdb.workbench.se.controllers', [
@@ -489,9 +490,10 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
                 RepositoriesRestService.getSize($scope.popoverRepo)
                 .then(function(res) {
                     $scope.repositorySize = res.data;
+                    LoggerProvider.logger.error('Failed to fetch repository size.');
                 })
                 .catch(function(err) {
-                    console.error(err);
+                    LoggerProvider.logger.error('Failed to fetch repository size.', err);
                 })
                 .finally(function() {
                     $scope.repositorySize.loading = false;
