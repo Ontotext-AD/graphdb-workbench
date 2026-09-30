@@ -490,7 +490,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
                 RepositoriesRestService.getSize($scope.popoverRepo)
                 .then(function(res) {
                     $scope.repositorySize = res.data;
-                    LoggerProvider.logger.error('Failed to fetch repository size.');
                 })
                 .catch(function(err) {
                     LoggerProvider.logger.error('Failed to fetch repository size.', err);
