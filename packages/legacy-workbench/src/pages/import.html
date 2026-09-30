@@ -23,8 +23,9 @@
             <li class="nav-item">
                 <button type="button" ng-click="toggleHelp()"
                         gdb-tooltip="{{'import.help.buttons.toggle_help.tooltip' | translate}}"
+                        aria-label="{{'import.help.buttons.toggle_help.tooltip' | translate}}"
                         class="btn btn-link toggle-help-btn pull-right">
-                    <span class="ri-question-line text-tertiary"></span>
+                    <span class="ri-question-line text-tertiary" aria-hidden="true"></span>
                 </button>
             </li>
         </ul>
@@ -54,16 +55,14 @@
                                ngf-change="fileSelected($files, $file, $newFiles, $duplicateFiles, $invalidFiles)"
                                ngf-max-size="maxUploadFileSizeBytes">
                                 <div class="grid-container">
-                                    <em class="ri-upload-2-line icon-lg"></em>
-                                    <!-- Keep this a label, it points to the input element created by ngFileUpload
-                                         and makes cypress happy -->
-                                    <label for="ngf-wb-import-uploadFile" class="text m-0">
+                                    <em class="ri-upload-2-line icon-lg" aria-hidden="true"></em>
+                                    <div class="text m-0">
                                         <div>{{'upload.rdf.files.label' | translate}}</div>
                                         <small
                                             class="text-muted">{{'all.rdf.formats.label' | translate}}{{'up.to' | translate}}
                                             {{maxUploadFileSizeBytes | bytes}}
                                         </small>
-                                    </label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
