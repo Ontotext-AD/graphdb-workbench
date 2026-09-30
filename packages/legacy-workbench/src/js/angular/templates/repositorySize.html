@@ -35,41 +35,47 @@
         </span>
     </div>
 
-    <div ng-show="repositorySize.total >= 0 && repository.state === repoStates.RUNNING">
-        <div class="property">
-            <span class="property-label">{{'total.statements.label' | translate}}</span>
-            <span class="property-value text-right">
-                {{repositorySize.total | currency:'':0}}
-            </span>
-        </div>
+    <div ng-show="repository.state === repoStates.RUNNING">
+        <div ng-show="repositorySize.total >= 0">
+            <div class="property">
+                <span class="property-label">{{'total.statements.label' | translate}}</span>
+                <span class="property-value text-right">
+                    {{repositorySize.total | currency:'':0}}
+                </span>
+            </div>
 
-        <div class="property" ng-show="repositorySize.explicit >= 0">
-            <span class="property-label">{{'explicit.label' | translate}}</span>
-            <span class="property-value text-right">
-                {{repositorySize.explicit != 0 ? (repositorySize.explicit | currency:'':0) : 0}}
-            </span>
-        </div>
+            <div class="property" ng-show="repositorySize.explicit >= 0">
+                <span class="property-label">{{'explicit.label' | translate}}</span>
+                <span class="property-value text-right">
+                    {{repositorySize.explicit != 0 ? (repositorySize.explicit | currency:'':0) : 0}}
+                </span>
+            </div>
 
-        <div class="property" ng-show="repositorySize.inferred >= 0">
-            <span class="property-label">{{'inferred.label' | translate}}</span>
-            <span class="property-value text-right">
-                {{repositorySize.inferred | currency:'':0}}
-            </span>
-        </div>
+            <div class="property" ng-show="repositorySize.inferred >= 0">
+                <span class="property-label">{{'inferred.label' | translate}}</span>
+                <span class="property-value text-right">
+                    {{repositorySize.inferred | currency:'':0}}
+                </span>
+            </div>
 
-        <div class="property" ng-show="repositorySize.explicit >= 0">
-            <span class="property-label">{{'expansion.ratio.label' | translate}}</span>
-            <span class="property-value text-right">
-                {{repositorySize.explicit != 0 ? (repositorySize.total/repositorySize.explicit | currency:'') : '-'}}
-            </span>
+            <div class="property" ng-show="repositorySize.explicit >= 0">
+                <span class="property-label">{{'expansion.ratio.label' | translate}}</span>
+                <span class="property-value text-right">
+                    {{repositorySize.explicit != 0 ? (repositorySize.total/repositorySize.explicit | currency:'') : '-'}}
+                </span>
+            </div>
+        </div>
+        
+        <div ng-show="repositorySize.loading">
+            <onto-loader loading="repositorySize.loading" size="50"></onto-loader>
+        </div>
+        
+        <div ng-hide="repositorySize.total >= 0 || repositorySize.loading"> 
+            {{'size.info.not.available' | translate}}
         </div>
     </div>
 
-    <div ng-hide="repositorySize.loading || repositorySize.total >= 0 || repository.state !== repoStates.RUNNING">
-        {{'size.info.not.available' | translate}}
-    </div>
-
-    <div class="inactive-repo-message" ng-show="repository.state !== repoStates.RUNNING">
+    <div ng-hide="repository.state === repoStates.RUNNING" class="inactive-repo-message" >
         <div class="icon">
             <i class="ri-information-2-line"></i>
         </div>
