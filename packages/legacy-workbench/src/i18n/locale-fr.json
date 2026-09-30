@@ -2271,8 +2271,15 @@
             },
             "action": {
                 "interrupt_import": "Interrompre l'importation",
-                "abort": "Abandonner"
-            }
+                "abort": "Abandonner",
+                "select": "Sélectionner {{name}}",
+                "import": "Importer {{name}}",
+                "remove": "Supprimer {{name}}",
+                "reset_status": "Réinitialiser l'état de {{name}}"
+            },
+            "select_by_status": "Sélectionner les ressources par état",
+            "select_by_status_selected": "Sélectionner les ressources par état, sélection : {{status}}",
+            "filter_by_name": "Filtrer par nom"
         },
         "status-info": {
             "last_import_settings": "Paramètres de la dernière importation",
