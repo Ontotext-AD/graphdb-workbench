@@ -18,7 +18,7 @@ describe('Graphs overview screen validation', () => {
         cy.window();
 
         cy.fixture('graph/rdf.txt').then((rdf) => {
-            return new Cypress.Promise((resolve, reject) => {
+            return new Cypress.Promise((resolve) => {
                 cy.importRDFTextSnippet(repositoryId, rdf, {format: "application/x-trig"});
                 resolve();
             });
@@ -76,6 +76,7 @@ describe('Graphs overview screen validation', () => {
         it('Should switch pages', () => {
             // Makes this less flaky - is it possible the page elements don't have an event attached
             // yet when this fails? It looks like the click has never happened
+            // eslint-disable-next-line cypress/no-unnecessary-waiting
             cy.wait(100);
 
             // Switch through pages and verify that the respective pager button is active.
@@ -111,6 +112,31 @@ describe('Graphs overview screen validation', () => {
         verifyGraphExistence('urn:11', false);
     });
 
+    it('Should give the controls on the page accessible names', () => {
+        // Then the search field should have a visible label
+        GraphsOverviewSteps.getGraphsSearchLabel()
+            .should('be.visible')
+            .and('contain.text', 'Search Graphs');
+        GraphsOverviewSteps.getGraphsSearchInput().should('have.attr', 'id', 'search-graphs');
+        // And the table and the header controls should have accessible names
+        GraphsOverviewSteps.getResultsElement().should('have.attr', 'aria-label', 'Graphs')
+            .and('not.have.attr', 'aria-describedby');
+        GraphsOverviewSteps.getSelectAllGraphsCheckbox().should('have.attr', 'aria-label', 'Select all graphs');
+        GraphsOverviewSteps.getExportSelectedGraphsButton().should('have.attr', 'aria-label', 'Export selected graphs');
+        GraphsOverviewSteps.getDeleteSelectedGraphsButton().should('have.attr', 'aria-label', 'Removes all data from the selected graphs');
+        GraphsOverviewSteps.getActionsColumnHeader().should('contain.text', 'Actions');
+        // And no empty label should wrap the checkbox
+        GraphsOverviewSteps.getResultsHeader().find('label').should('not.exist');
+        // And the controls in each row should include the graph name
+        GraphsOverviewSteps.getSelectGraphCheckbox('urn:9').should('have.attr', 'aria-label', 'Select graph urn:9');
+        GraphsOverviewSteps.getExportGraphButton('urn:9').should('have.attr', 'aria-label', 'Export graph urn:9');
+        GraphsOverviewSteps.getDeleteGraphButton('urn:9').should('have.attr', 'aria-label', 'Remove all data from graph urn:9');
+        GraphsOverviewSteps.getGraphRow('urn:9').find('label').should('not.exist');
+        // And the default graph row should use the translated graph name
+        GraphsOverviewSteps.getDefaultGraphRow().find('.select-graph-checkbox')
+            .should('have.attr', 'aria-label', 'Select graph The default graph');
+    });
+
     it('Delete graph', () => {
         let graphToDelete = 'urn:9';
         cy.get(`${EXPORT_GRAPHS_TABLE_ID} tbody a[title="${graphToDelete}"]`)
@@ -125,7 +151,8 @@ describe('Graphs overview screen validation', () => {
         verifyVisibleGraphsCount(1);
         verifyGraphExistence('The default graph');
         // open default graph through the link and verify that the table view is rendered
-        cy.getByTestId('graph-is-not-shaql').contains('The default graph').trigger('mouseover').click();
+        cy.getByTestId('graph-is-not-shaql').contains('The default graph').trigger('mouseover');
+        cy.getByTestId('graph-is-not-shaql').contains('The default graph').click();
         cy.url().should('contain', Cypress.config('baseUrl') + '/resource');
         YasrSteps.getResultTableHeader().should('be.visible');
         YasrSteps.getResultTableHeaderColumns().should('have.length', 5);

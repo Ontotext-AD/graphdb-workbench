@@ -86,6 +86,50 @@ export class GraphsOverviewSteps {
         return this.getGraphsOverviewComponent().find('.search-graphs');
     }
 
+    static getGraphsSearchLabel() {
+        return this.getGraphsOverviewComponent().find('label[for="search-graphs"]');
+    }
+
+    static getResultsHeader() {
+        return this.getResultsElement().find('thead');
+    }
+
+    static getSelectAllGraphsCheckbox() {
+        return this.getResultsHeader().find('.select-all-graphs-checkbox');
+    }
+
+    static getExportSelectedGraphsButton() {
+        return this.getResultsHeader().find('.export-selected-graphs-btn');
+    }
+
+    static getDeleteSelectedGraphsButton() {
+        return this.getResultsHeader().find('.delete-selected-graphs-btn');
+    }
+
+    static getActionsColumnHeader() {
+        return this.getResultsHeader().find('#actionsColumn');
+    }
+
+    static getGraphRow(graphName) {
+        return this.getResultsElement().find(`tbody a[title="${graphName}"]`).closest('tr');
+    }
+
+    static getDefaultGraphRow() {
+        return cy.getByTestId('graph-is-not-shaql').contains('The default graph').closest('tr');
+    }
+
+    static getSelectGraphCheckbox(graphName) {
+        return this.getGraphRow(graphName).find('.select-graph-checkbox');
+    }
+
+    static getExportGraphButton(graphName) {
+        return this.getGraphRow(graphName).find('.export-graph');
+    }
+
+    static getDeleteGraphButton(graphName) {
+        return this.getGraphRow(graphName).find('.delete-graph-btn');
+    }
+
     static getGraphsPaginator() {
         return this.getGraphsOverviewComponent().find('.graphs-overview-paginator');
     }
