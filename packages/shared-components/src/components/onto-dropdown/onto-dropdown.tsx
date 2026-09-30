@@ -185,6 +185,7 @@ export class OntoDropdown {
     if (!this.dropdownButtonElement) {
       return;
     }
+
     if (!this.isButtonTooltipActive) {
       if (this.buttonTooltipContent && this.buttonTooltipContent !== '') {
         TooltipUtil.updateTooltipContent(this.dropdownButtonElement, this.buttonTooltipContent);
@@ -194,18 +195,14 @@ export class OntoDropdown {
       return;
     }
 
-    const tempUniqueId = Symbol();
-    this.uniqueTooltipRequest = tempUniqueId;
-    (typeof this.dropdownButtonTooltip === 'function'
-      ? this.getTooltipContent(this.dropdownButtonTooltip)
-      : Promise.resolve(this.dropdownButtonTooltip ?? this.translate(this.dropdownButtonTooltipLabelKey)))
-      .then((tooltipContent) => {
-        if (this.uniqueTooltipRequest !== tempUniqueId) {
-          return;
-        }
-        this.buttonTooltipContent = tooltipContent;
-        TooltipUtil.updateTooltipContent(this.dropdownButtonElement, tooltipContent);
-      });
+    this.extractDropdownTooltipContent().then((tooltipContent) => {
+      if (tooltipContent === undefined) {
+        return;
+      }
+
+      this.buttonTooltipContent = tooltipContent;
+      TooltipUtil.updateTooltipContent( this.dropdownButtonElement, tooltipContent );
+    });
   }
 
   /**
@@ -287,20 +284,33 @@ export class OntoDropdown {
 
   private setDropdownButtonTooltip() {
     return async () => {
-      const tempUniqueId = Symbol();
-      this.uniqueTooltipRequest = tempUniqueId;
-      let tooltipContent: string;
-      if (typeof this.dropdownButtonTooltip === 'function') {
-        tooltipContent = await this.getTooltipContent(this.dropdownButtonTooltip);
-      } else {
-        tooltipContent =  this.dropdownButtonTooltip ?? this.translate(this.dropdownButtonTooltipLabelKey);
-      }
-      if (this.uniqueTooltipRequest !== tempUniqueId) {
+      let tooltipContent = await this.extractDropdownTooltipContent();
+
+      if (!tooltipContent) {
         return;
       }
+
       this.isButtonTooltipActive = true;
       this.buttonTooltipContent = tooltipContent;
     };
+  }
+
+  private async extractDropdownTooltipContent(): Promise<string | undefined> {
+    const tempUniqueId = Symbol();
+    this.uniqueTooltipRequest = tempUniqueId;
+    let tooltipContent: string;
+
+    if (typeof this.dropdownButtonTooltip === 'function') {
+      tooltipContent = await this.getTooltipContent(this.dropdownButtonTooltip);  
+    } else {
+      tooltipContent =  this.dropdownButtonTooltip ?? this.translate(this.dropdownButtonTooltipLabelKey);
+    }
+
+    if (this.uniqueTooltipRequest !== tempUniqueId) {
+      return;
+    }
+
+    return  tooltipContent;
   }
 
   private readonly clearButtonTooltip = (): void => {
