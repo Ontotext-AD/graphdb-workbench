@@ -2,13 +2,16 @@
 
 <div id="search-resource-box" class="input-group btn-group" ng-class="{'input-group-lg': !radioButtons}" style="white-space: nowrap">
     <input type="text" class="form-control view-res-input" placeholder="{{placeholder}}" ng-model="searchInput"
+           ng-attr-aria-labelledby="{{labelledBy || undefined}}"
            guide-selector="search-resource-input"
            data-test="rdf-resource-input"
            ng-change="onChange()"
            ng-keydown="onKeyDown($event)">
-    <button ng-if="clearInputIcon && showClearInputIcon" class="btn btn-link clear-icon" data-test="rdf-resource-clear-button"
-            gdb-tooltip="{{'clear.tooltip' | translate}}" tooltip-placement="bottom">
-        <i class="ri-close-line" aria-hidden="true" ng-click="clearInput()"></i>
+    <button type="button" ng-if="clearInputIcon && showClearInputIcon" class="btn btn-link clear-icon" data-test="rdf-resource-clear-button"
+            gdb-tooltip="{{'clear.tooltip' | translate}}" tooltip-placement="bottom"
+            aria-label="{{'clear.tooltip' | translate}}"
+            ng-click="onClearButtonClick()">
+        <i class="ri-close-line" aria-hidden="true"></i>
     </button>
     <span ng-if="!radioButtons" class="input-group-btn">
         <button ng-if="textButton !== ''" type="button" class="btn btn-primary autocomplete-text-btn" ng-click="checkIfValidAndSearchText()">
