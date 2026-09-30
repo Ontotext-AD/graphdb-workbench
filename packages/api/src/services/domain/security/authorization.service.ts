@@ -2,7 +2,7 @@ import {Service} from '../../../providers/service/service';
 import {AuthenticatedUser, Authority, SecurityConfig} from '../../../models/security';
 import {service} from '../../../providers';
 import {SecurityContextService} from './security-context.service';
-import {getRepositoryIdWithLocation, Repository, RepositoryReference, RepositoryList} from '../../../models/repositories';
+import {getRepositoryIdWithLocation, Repository, RepositoryReference} from '../../../models/repositories';
 import {RepositoryAuthorityService, RepositoryContextService, RepositoryStorageService} from '../repository';
 import {RoutingService} from '../../routing/routing.service';
 import {WindowService} from '../../window';
@@ -296,50 +296,6 @@ export class AuthorizationService implements Service {
   canExtendExternalUsers(): boolean {
     const config = this.getSecurityConfig();
     return !!config && config.hasAdditionalAuthSource() && config.hasLocalAdditionalAuthSources();
-  }
-
-  /**
-   * Retrieves a list of repositories that the user has write access to.
-   *
-   * @returns {RepositoryList} A list of repositories that the user can write to.
-   */
-  getWritableRepositories(): RepositoryList {
-    // TODO GDB-15286 the legacy is doing the following
-    //  return authorizationService.canWriteRepo(repo) && !that.isActiveRepoOntopType(repo);
-    // Ontop repositories are read-only, but canWriteRepo only checks the write permission. Investigate where the
-    // "is repository writable" check belongs and why write permission can be granted on Ontop repositories at all.
-    return this.repositoryContextService.getRepositoryList().filterAsList(repository => this.canWriteRepo(repository));
-  }
-
-  /**
-   * Retrieves a list of repositories that the user has read access to, including those that are readable through
-   * GraphQL permissions.
-   *
-   * @returns {RepositoryList} A list of repositories that the user can read.
-   */
-  getReadableRepositories(): RepositoryList {
-    return this.repositoryContextService.getRepositoryList().filterAsList(repository =>
-      this.canReadRepo(repository) || this.canReadGqlRepo(repository)
-    );
-  }
-
-  /**
-   * Retrieves a list of repositories that the user has access to, based on the specified parameters.
-   * @param includeRemote - If true, includes remote repositories in the list; otherwise, only local repositories are included.
-   * @param requireWriteAccess - If true, returns repositories that the user has write access to; if false, returns repositories that the user has read access to.
-   * @returns A list of repositories that the user has access to, filtered based on the provided parameters.
-   */
-  getAccessibleRepositories(includeRemote = false, requireWriteAccess = true): RepositoryList {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    let remoteLocationsFilter = (_repo: Repository) => true;
-    if (!includeRemote) {
-      remoteLocationsFilter = (repo) => repo.local;
-    }
-    if (requireWriteAccess) {
-      return new RepositoryList(this.getWritableRepositories().filter(remoteLocationsFilter));
-    } else {
-      return new RepositoryList(this.getReadableRepositories().filter(remoteLocationsFilter));
-    }
   }
 
   private resolveAuthorities(authoritiesList?: string[]) {

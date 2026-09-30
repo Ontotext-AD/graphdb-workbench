@@ -26,4 +26,8 @@ export class BaseSteps {
   static validateUrl(url) {
     this.getUrl().should('include', url);
   }
+
+  static buildTestIdAttr(testId) {
+    return `[data-test="${testId}"]`;
+  }
 }

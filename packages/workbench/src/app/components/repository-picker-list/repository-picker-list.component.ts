@@ -14,6 +14,7 @@ import {
   AuthorizationService,
   RepositoryReference,
   getPathName,
+  RepositoryService,
 } from '@ontotext/workbench-api';
 import {NgClass} from '@angular/common';
 import {TableModule} from 'primeng/table';
@@ -48,6 +49,7 @@ export class RepositoryPickerListComponent implements OnInit, OnDestroy {
   private readonly repositoryContextService = service(RepositoryContextService);
   private readonly licenseContextService = service(LicenseContextService);
   private readonly authorizationService = service(AuthorizationService);
+  private readonly repositoryService = service(RepositoryService);
 
   /**
    * Whether the component should show only repositories to which the user has write access
@@ -192,7 +194,7 @@ export class RepositoryPickerListComponent implements OnInit, OnDestroy {
    * @returns The filtered collection of accessible repositories.
    */
   private getAllowedRepositories() {
-    return this.authorizationService.getAccessibleRepositories(true, this.requireWriteAccess())
+    return this.repositoryService.getAccessibleRepositories(true, this.requireWriteAccess())
       .filterByType(this.filterByTypes())
       .filter(this.createRepositoryPermissionFilter());
   }
