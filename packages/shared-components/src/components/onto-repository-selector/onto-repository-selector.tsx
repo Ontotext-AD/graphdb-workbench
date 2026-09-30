@@ -170,7 +170,7 @@ export class OntoRepositorySelector {
 
       let repositorySizeInfo = undefined;
 
-      if (repository.state !== RepositoryState.INACTIVE) {
+      if (repository.state === RepositoryState.RUNNING) {
         repositorySizeInfo = await this.repositorySizeInfoFetcher(repository);
       }
 

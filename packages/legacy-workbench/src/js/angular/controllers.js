@@ -497,8 +497,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
                 .finally(function() {
                     $scope.repositorySize.loading = false;
                 });
-            } else {
-                $scope.repositorySize.loading = false;
             }
         }
     };

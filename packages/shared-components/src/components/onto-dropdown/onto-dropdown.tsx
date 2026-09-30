@@ -163,8 +163,7 @@ export class OntoDropdown {
   }
 
   componentDidUpdate() {
-    this.refreshActiveButtonTooltip();
-    this.refreshActiveItemTooltip();
+    this.refreshButtonTooltip();
   }
 
   /**
