@@ -2,6 +2,7 @@ import {ReactodiaSteps} from '../../steps/reactodia-steps.js';
 import {LanguageSelectorSteps} from '../../steps/language-selector-steps.js';
 import {RepositorySelectorSteps} from '../../steps/repository-selector-steps.js';
 import {MainMenuSteps} from '../../steps/main-menu-steps.js';
+import {YasqeSteps} from '../../steps/yasgui/yasqe-steps.js';
 
 const FILE_TO_IMPORT = 'resource-test-data.ttl';
 const SEED_RESOURCE_ENCODED = 'http:%2F%2Fexample.com%2Fontology%23CustomerLoyalty';
@@ -86,6 +87,8 @@ describe('Reactodia graph explorer', () => {
         MainMenuSteps.clickOnSparqlMenu();
         ReactodiaSteps.getComponent().should('not.exist');
 
+        // Wait for the SPARQL Query & Update view to be loaded to ensure that the main menu with the Reactodia submenu is visible.
+        YasqeSteps.getEditor().should('be.visible');
         // And I return to the reactodia view via the navigation bar.
         MainMenuSteps.clickOnReactodia();
 
