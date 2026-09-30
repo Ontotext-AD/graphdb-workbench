@@ -297,6 +297,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             preserveSearch: '@',
             radioButtons: '@',
             clearInputIcon: '@',
+            labelledBy: '@',
         },
         templateUrl: 'js/angular/core/templates/search-resource-input.html',
         link: function($scope, element, attrs) {
@@ -344,6 +345,12 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                 LocalStorageAdapter.remove(LSKeys.RDF_SEARCH_INPUT);
                 LocalStorageAdapter.remove(LSKeys.RDF_SEARCH_EXPANDED_URI);
                 LocalStorageAdapter.remove(LSKeys.RDF_RESOURCE_DESCRIPTION);
+            };
+
+            $scope.onClearButtonClick = function() {
+                $scope.clearInput();
+                // The clear button is removed once the input is empty, so move the focus back to the input.
+                SEARCH_INPUT_FIELD.focus();
             };
 
             $scope.$watch('repositoryNamespaces', function() {

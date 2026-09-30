@@ -55,6 +55,7 @@
                             empty="empty"
                             radio-buttons="true"
                             clear-input-icon="true"
+                            labelled-by="view-resource-label-home"
                             data-test="search-rdf-resource-component"
                             id="search-resource-input-home">
                     </search-resource-input>
@@ -74,11 +75,13 @@
                     <h6>{{getActiveRepositoryObject().location ? getActiveRepositoryObject().location : 'Local'}}</h6>
                     <div class="actions-bar pull-right">
                         <button type="button" gdb-tooltip="{{'copy.repo.url' | translate}}" class="btn btn-link"
-                                ng-click="copyToClipboard(getActiveRepositoryObject().externalUrl)"><span class="ri-links-line"></span>
+                                aria-label="{{'copy.repo.url' | translate}}"
+                                ng-click="copyToClipboard(getActiveRepositoryObject().externalUrl)"><span class="ri-links-line" aria-hidden="true"></span>
                         </button>
                         <button type="button" ng-click="goToEditRepo(getActiveRepositoryObject())" class="btn btn-link" gdb-tooltip="{{'repoTooltips.editRepository' | translate}}"
+                                aria-label="{{'repoTooltips.editRepository' | translate}}"
                                 ng-if="canMaintainSelectedRepository() && getActiveRepositoryObject().type !== 'system'">
-                            <span class="ri-edit-line"></span>
+                            <span class="ri-edit-line" aria-hidden="true"></span>
                         </button>
                         <span ng-show="getDegradedReason()">
                             <em class="ri-alert-line icon-lg text-warning"
@@ -86,8 +89,9 @@
                                 tooltip-placement="top"></em>
                         </span>
                         <button type="button" gdb-tooltip="{{'refresh.repo.info' | translate}}" class="btn btn-link"
+                                aria-label="{{'refresh.repo.info' | translate}}"
                                 ng-if="activeRepositorySize && !activeRepositorySizeError"
-                                ng-click="getActiveRepositorySize()"><span class="ri-reset-right-line"></span>
+                                ng-click="getActiveRepositorySize()"><span class="ri-reset-right-line" aria-hidden="true"></span>
                         </button>
                     </div>
                     <h3 class="card-title ellipsis-block repo-info-home">
