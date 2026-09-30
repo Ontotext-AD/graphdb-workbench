@@ -96,7 +96,7 @@ const subscribeToAuthenticatedUserChange = () => {
       // (when we are coming from the login page).
       const isDataLoaded = applicationLifecycleContextService.getApplicationDataState() === LifecycleState.DATA_LOADED;
       if (!isInitialBootstrap || !isDataLoaded) {
-        loadApplicationData();
+        void loadApplicationData();
       }
       isInitialBootstrap = false;
     }

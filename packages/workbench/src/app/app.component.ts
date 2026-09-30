@@ -87,7 +87,7 @@ export class AppComponent implements OnInit, OnDestroy {
         const queryParams = Object.fromEntries(
           new URLSearchParams(WindowService.getLocationQueryParams())
         );
-        this.router.navigate([getCurrentRoute()], {queryParams})
+        void this.router.navigate([getCurrentRoute()], {queryParams})
           .then(() => {
             this.repositoryUrlSyncService.syncRepositoryIdWithUrl();
           });
