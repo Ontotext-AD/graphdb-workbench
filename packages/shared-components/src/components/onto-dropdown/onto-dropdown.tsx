@@ -172,8 +172,13 @@ export class OntoDropdown {
  */
   @Method()
   async refreshButtonTooltip(): Promise<void> {
-    this.refreshActiveButtonTooltip();
-    this.refreshActiveItemTooltip();
+    if (this.isButtonTooltipActive) {
+      this.refreshActiveButtonTooltip();
+    }
+
+    if (this.activeItemTooltip) {
+      this.refreshActiveItemTooltip();
+    }
   }
 
   /**
