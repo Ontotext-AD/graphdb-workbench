@@ -38,6 +38,8 @@
   .explore-visual-graph-dropdown .onto-dropdown-button {
     gap: 0;
     padding: 0 0.3em;
+    background-color: var(--gw-button-primary-background);
+    color: var(--gw-button-primary-color);
 
     &:disabled {
       background-color: var(--gw-button-primary-disabled-background);
