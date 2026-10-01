@@ -120,18 +120,19 @@
       "upload": {
         "title": "Upload settings file",
         "browse": "Browse",
-        "drop_hint": "Drag and drop files to here to upload."
+        "drop_hint": "Drag and drop files to here to upload.",
+        "pending": "Pending"
       },
       "export": "Export current settings",
       "reset": "Reset to default",
       "confirm": {
         "upload": {
-          "title": "Upload settings",
-          "message": "Uploading new settings will clear the diagram. Do you want to proceed?"
+          "title": "Confirm upload",
+          "message": "<div class=\"alert alert-warning\">The diagram might behave unexpectedly with the new settings.</div><div>Do you want to proceed?</div>"
         },
         "reset": {
-          "title": "Reset to default",
-          "message": "Resetting the settings to the defaults will clear the diagram. Do you want to proceed?"
+          "title": "Confirm reset",
+          "message": "<div class=\"alert alert-warning\">The diagram might behave unexpectedly with the default settings.</div><div>Do you want to proceed?</div>"
         }
       },
       "messages": {

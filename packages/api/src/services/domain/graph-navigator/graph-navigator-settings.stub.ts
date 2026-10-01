@@ -1,11 +1,11 @@
-import {SparqlDataProviderSettings} from '../../../models/graph-navigator';
+import {GraphNavigatorSettingsResponse} from './response/graph-navigator-settings-response';
 
 // TODO: GDB-15242 remove this file together with the REST stubs.
 
 /**
  * A copy of Reactodia's `OwlRdfsSettings`, returned by the stubbed settings endpoint.
  */
-export const DEFAULT_SETTINGS_STUB: SparqlDataProviderSettings = {
+export const DEFAULT_SETTINGS_STUB: Omit<GraphNavigatorSettingsResponse, 'uploaded'> = {
   linkConfigurations: [],
   openWorldLinks: false,
   propertyConfigurations: [],

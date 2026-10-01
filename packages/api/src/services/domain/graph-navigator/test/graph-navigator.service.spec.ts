@@ -1,6 +1,8 @@
 import {GraphNavigatorService} from '../graph-navigator.service';
 import {GraphNavigatorRestService} from '../graph-navigator-rest.service';
 import {service} from '../../../../providers';
+import {DEFAULT_SETTINGS_STUB} from '../graph-navigator-settings.stub';
+import {GraphNavigatorSettings} from '../../../../models/graph-navigator';
 
 describe('GraphNavigatorService', () => {
   const REPOSITORY_ID = 'test-repo';
@@ -20,14 +22,14 @@ describe('GraphNavigatorService', () => {
     it('should load the settings of the repository and map them', async () => {
       // GIVEN: the rest service returns the default settings.
       const getSpy = jest.spyOn(restService, 'getSettings')
-        .mockResolvedValue({uploaded: false, dataLabelProperty: 'rdfs:label'});
+        .mockResolvedValue({...DEFAULT_SETTINGS_STUB, uploaded: false});
 
       // WHEN: the settings are loaded.
       const settings = await graphNavigatorService.getSettings(REPOSITORY_ID);
 
       // THEN: the repository's settings are requested and mapped.
       expect(getSpy).toHaveBeenCalledWith(REPOSITORY_ID);
-      expect(settings).toEqual({uploaded: false, dataLabelProperty: 'rdfs:label'});
+      expect(settings).toEqual(new GraphNavigatorSettings({uploaded: false, providerSettings: DEFAULT_SETTINGS_STUB}));
     });
   });
 
@@ -36,14 +38,17 @@ describe('GraphNavigatorService', () => {
       // GIVEN: the rest service returns the uploaded settings.
       const file = new File(['@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .'], 'settings.ttl', {type: 'text/turtle'});
       const uploadSpy = jest.spyOn(restService, 'uploadSettings')
-        .mockResolvedValue({uploaded: true, dataLabelProperty: 'skos:prefLabel'});
+        .mockResolvedValue({...DEFAULT_SETTINGS_STUB, uploaded: true, dataLabelProperty: 'skos:prefLabel'});
 
       // WHEN: the file is uploaded.
       const settings = await graphNavigatorService.uploadSettings(REPOSITORY_ID, file);
 
       // THEN: the file is sent for the repository and the returned settings are mapped.
       expect(uploadSpy).toHaveBeenCalledWith(REPOSITORY_ID, file);
-      expect(settings).toEqual({uploaded: true, dataLabelProperty: 'skos:prefLabel'});
+      expect(settings).toEqual(new GraphNavigatorSettings({
+        uploaded: true,
+        providerSettings: {...DEFAULT_SETTINGS_STUB, dataLabelProperty: 'skos:prefLabel'}
+      }));
     });
 
     it('should reject with the rest error when the file is rejected', async () => {

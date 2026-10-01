@@ -14,7 +14,8 @@ import {
   Repository,
   RepositoryContextService,
   RepositoryList,
-  ServiceProvider
+  ServiceProvider,
+  SparqlDataProviderSettings
 } from '@ontotext/workbench-api';
 import {ActivatedRoute} from '@angular/router';
 import {By} from '@angular/platform-browser';
@@ -39,8 +40,26 @@ describe('ReactodiaPageComponent', () => {
   let repositoryContextService: RepositoryContextService;
   const REPOSITORY_A = new Repository({id: 'repo-a', location: '', uri: 'http://repo-a'});
   const REPOSITORY_B = new Repository({id: 'repo-b', location: '', uri: 'http://repo-b'});
-  const SETTINGS_A: GraphNavigatorSettings = {uploaded: false, dataLabelProperty: 'rdfs:label'};
-  const SETTINGS_B: GraphNavigatorSettings = {uploaded: true, dataLabelProperty: 'skos:prefLabel'};
+  const createProviderSettings = (dataLabelProperty: string): SparqlDataProviderSettings => ({
+    defaultPrefix: '',
+    schemaLabelProperty: 'rdfs:label',
+    dataLabelProperty,
+    elementInfoQuery: '',
+    linksInfoQuery: '',
+    imageQueryPattern: '',
+    linkTypesOfQuery: '',
+    linkTypesStatisticsQuery: '',
+    lookupQuery: '',
+    filterRefElementLinkPattern: '',
+    filterTypePattern: '',
+    filterElementInfoPattern: '',
+    filterAdditionalRestriction: '',
+    fullTextSearch: {prefix: '', queryPattern: ''},
+    linkConfigurations: [],
+    propertyConfigurations: []
+  });
+  const SETTINGS_A = new GraphNavigatorSettings({uploaded: false, providerSettings: createProviderSettings('rdfs:label')});
+  const SETTINGS_B = new GraphNavigatorSettings({uploaded: true, providerSettings: createProviderSettings('skos:prefLabel')});
   const activatedRouteStub = {snapshot: {queryParams: {} as Record<string, string>, data: {}}};
 
   beforeEach(async () => {
@@ -126,7 +145,7 @@ describe('ReactodiaPageComponent', () => {
       // AND: then it is rendered with them.
       const facade = getFacade().componentInstance as ReactodiaComponentFacadeComponent;
       expect(facade.currentRepository()).toBe(REPOSITORY_A.id);
-      expect(facade.providerSettings()).toEqual(SETTINGS_A);
+      expect(facade.providerSettings()).toEqual(SETTINGS_A.getProviderSettings());
     });
 
     it('should reload the settings and mount the diagram once with the new repository when the repository changes', async () => {
@@ -150,7 +169,7 @@ describe('ReactodiaPageComponent', () => {
       await settle();
       const facade = getFacade().componentInstance as ReactodiaComponentFacadeComponent;
       expect(facade.currentRepository()).toBe(REPOSITORY_B.id);
-      expect(facade.providerSettings()).toEqual(SETTINGS_B);
+      expect(facade.providerSettings()).toEqual(SETTINGS_B.getProviderSettings());
     });
 
     it('should ignore settings that arrive for a repository that is no longer selected', async () => {
@@ -169,7 +188,7 @@ describe('ReactodiaPageComponent', () => {
       // THEN: the diagram keeps the settings of the selected repository.
       const facade = getFacade().componentInstance as ReactodiaComponentFacadeComponent;
       expect(facade.currentRepository()).toBe(REPOSITORY_B.id);
-      expect(facade.providerSettings()).toEqual(SETTINGS_B);
+      expect(facade.providerSettings()).toEqual(SETTINGS_B.getProviderSettings());
     });
 
     it('should not render the diagram and should notify when the settings cannot be loaded', async () => {
@@ -205,7 +224,7 @@ describe('ReactodiaPageComponent', () => {
       expect(uploadSpy).toHaveBeenCalledWith(REPOSITORY_A.id, file);
       expect(toastrSuccessSpy).toHaveBeenCalled();
       const facade = getFacade().componentInstance as ReactodiaComponentFacadeComponent;
-      expect(facade.providerSettings()).toEqual(SETTINGS_B);
+      expect(facade.providerSettings()).toEqual(SETTINGS_B.getProviderSettings());
     });
 
     it('should report the failure and keep the settings when the upload is rejected', async () => {
@@ -224,7 +243,7 @@ describe('ReactodiaPageComponent', () => {
       // THEN: the failure is reported and the diagram keeps the settings it had.
       expect(toastrErrorSpy).toHaveBeenCalled();
       const facade = getFacade().componentInstance as ReactodiaComponentFacadeComponent;
-      expect(facade.providerSettings()).toEqual(SETTINGS_A);
+      expect(facade.providerSettings()).toEqual(SETTINGS_A.getProviderSettings());
     });
 
     it('should reset the settings by deleting them and loading the defaults', async () => {
@@ -243,7 +262,7 @@ describe('ReactodiaPageComponent', () => {
       expect(deleteSpy).toHaveBeenCalledWith(REPOSITORY_A.id);
       expect(getSettingsSpy).toHaveBeenLastCalledWith(REPOSITORY_A.id);
       const facade = getFacade().componentInstance as ReactodiaComponentFacadeComponent;
-      expect(facade.providerSettings()).toEqual(SETTINGS_B);
+      expect(facade.providerSettings()).toEqual(SETTINGS_B.getProviderSettings());
     });
 
     it('should show the settings controls when the user can maintain the repository', async () => {
