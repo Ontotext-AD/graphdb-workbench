@@ -1,10 +1,10 @@
 <app-page-layout class="sparql-editor-page">
   @let repository = currentRepository();
-  @let providerSettings = settings();
-  @if (repository && providerSettings) {
+  @let graphNavigatorSettings = settings();
+  @if (repository && graphNavigatorSettings) {
     <app-reactodia-settings class="reactodia-settings-toolbar"
                             *appRestrictAccess="[ViewPermissions.CAN_MAINTAIN_ACTIVE_REPO]"
-                            [settings]="providerSettings"
+                            [settings]="graphNavigatorSettings"
                             [loading]="loading()"
                             (uploadSettings)="onUploadSettings($event, repository)"
                             (resetSettings)="onResetSettings(repository)"
@@ -18,7 +18,7 @@
           [theme]="theme()"
           [seedIris]="seedIris()"
           [seedGraph]="seedGraph()"
-          [providerSettings]="providerSettings">
+          [providerSettings]="graphNavigatorSettings.getProviderSettings()">
         </app-reactodia-component-facade>
       }
     </div>

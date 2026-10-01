@@ -8,16 +8,16 @@
 <p-popover #popover [dismissable]="dismissable()" styleClass="reactodia-settings-popover">
   <ng-template #content>
     <div class="reactodia-settings" data-test="reactodia-settings-popover">
-      <div class="settings-header">
+      <header class="settings-header">
         <h4>{{ 'reactodia.settings.upload.title' | transloco }}</h4>
-        @if (settings().uploaded) {
+        @if (settings().isUploaded()) {
           <p-button [link]="true"
                     [label]="'reactodia.settings.reset' | transloco"
                     [disabled]="loading()"
                     data-test="reactodia-settings-reset-btn"
                     (onClick)="confirmReset()"/>
         }
-      </div>
+      </header>
 
       <p-fileupload #fileUpload
                     mode="advanced"
@@ -30,9 +30,19 @@
                     chooseIcon="ri-file-search-line"
                     uploadIcon="ri-upload-2-line"
                     cancelIcon="ri-close-line"
+                    data-test="reactodia-settings-upload"
                     (uploadHandler)="confirmUpload($event)">
+        <ng-template #file let-file>
+          <div class="p-fileupload-file" data-test="reactodia-settings-upload-file">
+            <div class="p-fileupload-file-info">
+              <div class="p-fileupload-file-name">{{ file.name }}</div>
+              <data class="p-fileupload-file-size" [value]="file.size">{{ fileUpload.formatSize(file.size) }}</data>
+            </div>
+            <p-badge class="p-fileupload-file-badge" [value]="'reactodia.settings.upload.pending' | transloco"/>
+          </div>
+        </ng-template>
         <ng-template #empty>
-          <div class="upload-drop-hint">{{ 'reactodia.settings.upload.drop_hint' | transloco }}</div>
+          <p class="upload-drop-hint">{{ 'reactodia.settings.upload.drop_hint' | transloco }}</p>
         </ng-template>
       </p-fileupload>
 

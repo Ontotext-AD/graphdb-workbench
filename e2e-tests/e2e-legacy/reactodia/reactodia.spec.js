@@ -3,7 +3,7 @@ import {LanguageSelectorSteps} from '../../steps/language-selector-steps.js';
 import {RepositorySelectorSteps} from '../../steps/repository-selector-steps.js';
 import {MainMenuSteps} from '../../steps/main-menu-steps.js';
 import {YasqeSteps} from '../../steps/yasgui/yasqe-steps.js';
-import {ApplicationSteps} from '../../steps/application-steps.js';
+import {ToasterSteps} from '../../steps/toaster-steps.js';
 
 const FILE_TO_IMPORT = 'resource-test-data.ttl';
 const SEED_RESOURCE_ENCODED = 'http:%2F%2Fexample.com%2Fontology%23CustomerLoyalty';
@@ -150,8 +150,9 @@ describe('Reactodia graph explorer', () => {
             // When I upload it.
             ReactodiaSteps.clickUpload();
 
-            // Then I expect a confirmation that warns the diagram will be cleared.
-            ReactodiaSteps.getConfirmDialog().should('be.visible').and('contain', 'will clear the diagram');
+            // Then I expect a confirmation that warns the diagram may behave unexpectedly.
+            ReactodiaSteps.getConfirmDialog().should('be.visible')
+                .and('contain', 'The diagram might behave unexpectedly with the new settings.');
 
             // When I cancel.
             ReactodiaSteps.cancelDialog();
@@ -164,9 +165,8 @@ describe('Reactodia graph explorer', () => {
             ReactodiaSteps.clickUpload();
             ReactodiaSteps.confirmDialog();
 
-            // Then I expect a success message, the popover to close and the diagram to be rendered.
-            ApplicationSteps.getSuccessNotifications().should('be.visible');
-            ReactodiaSteps.getSettingsPopover().should('not.exist');
+            // Then I expect a success message and the diagram to be rendered.
+            ToasterSteps.verifySuccess('The settings were uploaded');
             ReactodiaSteps.getWorkspace().should('exist');
         });
 
@@ -177,6 +177,12 @@ describe('Reactodia graph explorer', () => {
             ReactodiaSteps.selectSettingsFile();
             ReactodiaSteps.clickUpload();
             ReactodiaSteps.confirmDialog();
+            ToasterSteps.verifySuccess('The settings were uploaded');
+
+            // When I click outside the settings.
+            ReactodiaSteps.closeSettings();
+
+            // Then I expect the popover to close.
             ReactodiaSteps.getSettingsPopover().should('not.exist');
 
             // When I reset them.
@@ -184,14 +190,15 @@ describe('Reactodia graph explorer', () => {
             ReactodiaSteps.getResetButton().should('be.visible');
             ReactodiaSteps.clickReset();
 
-            // Then I expect a confirmation that warns the diagram will be cleared.
-            ReactodiaSteps.getConfirmDialog().should('be.visible').and('contain', 'will clear the diagram');
+            // Then I expect a confirmation that warns the diagram may behave unexpectedly.
+            ReactodiaSteps.getConfirmDialog().should('be.visible')
+                .and('contain', 'The diagram might behave unexpectedly with the default settings.');
 
             // When I confirm.
             ReactodiaSteps.confirmDialog();
 
-            // Then I expect the popover to close and the diagram to be rendered.
-            ReactodiaSteps.getSettingsPopover().should('not.exist');
+            // Then I expect a success message and the diagram to be rendered.
+            ToasterSteps.verifySuccess('The settings were reset to the defaults');
             ReactodiaSteps.getWorkspace().should('exist');
         });
 

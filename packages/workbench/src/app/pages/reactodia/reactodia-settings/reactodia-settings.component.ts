@@ -1,5 +1,6 @@
 import {Component, computed, effect, inject, input, output, signal, viewChild} from '@angular/core';
 import {TranslocoPipe, TranslocoService} from '@jsverse/transloco';
+import {Badge} from 'primeng/badge';
 import {Button} from 'primeng/button';
 import {Popover} from 'primeng/popover';
 import {FileUpload, FileUploadHandlerEvent} from 'primeng/fileupload';
@@ -17,6 +18,7 @@ import {ConfirmationProviderService} from '../../../services/dialog/confirmation
   selector: 'app-reactodia-settings',
   standalone: true,
   imports: [
+    Badge,
     Button,
     Popover,
     FileUpload,

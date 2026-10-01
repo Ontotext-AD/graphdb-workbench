@@ -48,12 +48,21 @@ export class ReactodiaSteps extends BaseSteps {
         ReactodiaSteps.getSettingsButton().click();
     }
 
+    static closeSettings() {
+        ReactodiaSteps.getCanvas().click('bottomLeft');
+    }
+
     static getSettingsPopover() {
         return cy.get('[data-test="reactodia-settings-popover"]');
     }
 
+    static getSettingsFileInput() {
+        return this.getByTestId('reactodia-settings-upload').find('.p-fileupload-choose-button input[type=file]');
+    }
+
     static selectSettingsFile(fileName = 'settings.ttl', contents = '@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .') {
-        ReactodiaSteps.getSettingsPopover().find('input[type=file]')
+        // PrimeNG hides the file input (display: none), so force is needed to select a file on it.
+        this.getSettingsFileInput()
             .selectFile({contents: Cypress.Buffer.from(contents), fileName, mimeType: 'text/turtle'}, {force: true});
     }
 

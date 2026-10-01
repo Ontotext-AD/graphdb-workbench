@@ -120,18 +120,19 @@
       "upload": {
         "title": "Importer un fichier de paramètres",
         "browse": "Parcourir",
-        "drop_hint": "Glissez-déposez ici les fichiers à importer."
+        "drop_hint": "Glissez-déposez ici les fichiers à importer.",
+        "pending": "En attente"
       },
       "export": "Exporter les paramètres actuels",
       "reset": "Rétablir les valeurs par défaut",
       "confirm": {
         "upload": {
-          "title": "Importer les paramètres",
-          "message": "L'importation de nouveaux paramètres effacera le diagramme. Voulez-vous continuer ?"
+          "title": "Confirmer l'importation",
+          "message": "<div class=\"alert alert-warning\">Le diagramme peut se comporter de façon inattendue avec les nouveaux paramètres.</div><div>Voulez-vous continuer ?</div>"
         },
         "reset": {
-          "title": "Rétablir les valeurs par défaut",
-          "message": "Le rétablissement des paramètres par défaut effacera le diagramme. Voulez-vous continuer ?"
+          "title": "Confirmer le rétablissement",
+          "message": "<div class=\"alert alert-warning\">Le diagramme peut se comporter de façon inattendue avec les paramètres par défaut.</div><div>Voulez-vous continuer ?</div>"
         }
       },
       "messages": {
