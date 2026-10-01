@@ -171,7 +171,7 @@ export class OntoDropdown {
  * instead of waiting for the next poll.
  */
   @Method()
-  async refreshButtonTooltip(): Promise<void> {
+  refreshButtonTooltip(): void {
     if (this.isButtonTooltipActive) {
       this.refreshActiveButtonTooltip();
     }
@@ -199,7 +199,7 @@ export class OntoDropdown {
       return;
     }
 
-    this.extractDropdownTooltipContent().then((tooltipContent) => {
+    void this.extractDropdownTooltipContent().then((tooltipContent) => {
       if (tooltipContent === undefined) {
         return;
       }
@@ -226,7 +226,7 @@ export class OntoDropdown {
 
     const tempUniqueId = Symbol();
     this.pendingItemTooltips.set(active.target, tempUniqueId);
-    (typeof item.tooltip === 'function' ?
+    void(typeof item.tooltip === 'function' ?
       this.getTooltipContent(item.tooltip) :
       Promise.resolve(item.tooltip ?? this.translate(item.tooltipLabelKey)))
       .then((tooltipContent) => {
