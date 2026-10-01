@@ -110,12 +110,16 @@
     }
 
     .repository-tooltip-content {
-      background-color: var(--gw-dialog-background);
       display: flex;
       flex-direction: column;
       gap: 0.2em;
       font-weight: 400;
       font-size: 0.875rem;
+
+      .repository-size-loading {
+        justify-content: center;
+        align-items: center;
+      }
     }
 
     .repository-tooltip-row {
