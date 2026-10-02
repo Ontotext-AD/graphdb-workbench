@@ -1,0 +1,19 @@
+.reactodia-settings {
+  width: 28rem;
+  max-width: calc(100vw - 2rem);
+
+  & .settings-header {
+    & h4 {
+      margin-bottom: 0;
+    }
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+  }
+
+  & .upload-drop-hint {
+    margin: 0;
+  }
+}

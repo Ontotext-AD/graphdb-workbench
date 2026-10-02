@@ -1,0 +1,56 @@
+<p-button icon="ri-settings-3-line"
+          severity="primary"
+          [outlined]="true"
+          [label]="'reactodia.settings.button' | transloco"
+          data-test="reactodia-settings-btn"
+          (onClick)="popover.toggle($event)"/>
+
+<p-popover #popover [dismissable]="dismissable()" styleClass="reactodia-settings-popover">
+  <ng-template #content>
+    <div class="reactodia-settings" data-test="reactodia-settings-popover">
+      <header class="settings-header">
+        <h4>{{ 'reactodia.settings.upload.title' | transloco }}</h4>
+        @if (settings().isUploaded()) {
+          <p-button [link]="true"
+                    [label]="'reactodia.settings.reset' | transloco"
+                    [disabled]="loading()"
+                    data-test="reactodia-settings-reset-btn"
+                    (onClick)="confirmReset()"/>
+        }
+      </header>
+
+      <p-fileupload #fileUpload
+                    mode="advanced"
+                    accept=".ttl"
+                    [multiple]="false"
+                    [customUpload]="true"
+                    [disabled]="loading()"
+                    styleClass="reactodia-settings-upload"
+                    [chooseLabel]="'reactodia.settings.upload.browse' | transloco"
+                    chooseIcon="ri-file-search-line"
+                    uploadIcon="ri-upload-2-line"
+                    cancelIcon="ri-close-line"
+                    data-test="reactodia-settings-upload"
+                    (uploadHandler)="confirmUpload($event)">
+        <ng-template #file let-file>
+          <div class="p-fileupload-file" data-test="reactodia-settings-upload-file">
+            <div class="p-fileupload-file-info">
+              <div class="p-fileupload-file-name">{{ file.name }}</div>
+              <data class="p-fileupload-file-size" [value]="file.size">{{ fileUpload.formatSize(file.size) }}</data>
+            </div>
+            <p-badge class="p-fileupload-file-badge" [value]="'reactodia.settings.upload.pending' | transloco"/>
+          </div>
+        </ng-template>
+        <ng-template #empty>
+          <p class="upload-drop-hint">{{ 'reactodia.settings.upload.drop_hint' | transloco }}</p>
+        </ng-template>
+      </p-fileupload>
+
+      <p-button [link]="true"
+                icon="ri-download-2-line"
+                [label]="'reactodia.settings.export' | transloco"
+                data-test="reactodia-settings-export-btn"
+                (onClick)="exportSettings.emit()"/>
+    </div>
+  </ng-template>
+</p-popover>

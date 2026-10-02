@@ -3,6 +3,7 @@ import {LanguageSelectorSteps} from '../../steps/language-selector-steps.js';
 import {RepositorySelectorSteps} from '../../steps/repository-selector-steps.js';
 import {MainMenuSteps} from '../../steps/main-menu-steps.js';
 import {YasqeSteps} from '../../steps/yasgui/yasqe-steps.js';
+import {ToasterSteps} from '../../steps/toaster-steps.js';
 
 const FILE_TO_IMPORT = 'resource-test-data.ttl';
 const SEED_RESOURCE_ENCODED = 'http:%2F%2Fexample.com%2Fontology%23CustomerLoyalty';
@@ -99,6 +100,119 @@ describe('Reactodia graph explorer', () => {
         // Then I expect the canvas to be cleared, because leaving the view drops the persisted diagram state.
         ReactodiaSteps.getWorkspace().should('exist');
         ReactodiaSteps.getElements().should('not.exist');
+    });
+
+    // These run against the in-code REST stub. TODO: GDB-15242 switch to intercepts when the endpoints are available.
+    describe('Settings', () => {
+        it('should open the settings popover', () => {
+            // Given I open the reactodia view.
+            ReactodiaSteps.visit();
+
+            // When I click the Settings button.
+            ReactodiaSteps.openSettings();
+
+            // Then I expect the settings popover to be open.
+            ReactodiaSteps.getSettingsPopover().should('be.visible');
+            ReactodiaSteps.getBrowseButton().should('contain', 'Browse');
+        });
+
+        it('should not offer reset when the default settings are in use', () => {
+            // Given I open the settings of a repository without uploaded settings.
+            ReactodiaSteps.visit();
+            ReactodiaSteps.openSettings();
+
+            // Then I expect no reset action, because there is nothing to reset to.
+            ReactodiaSteps.getSettingsPopover().should('be.visible');
+            ReactodiaSteps.getResetButton().should('not.exist');
+        });
+
+        it('should cancel a selected file', () => {
+            // Given I have selected a settings file.
+            ReactodiaSteps.visit();
+            ReactodiaSteps.openSettings();
+            ReactodiaSteps.selectSettingsFile();
+            ReactodiaSteps.getSelectedSettingsFile().should('exist');
+
+            // When I cancel it.
+            ReactodiaSteps.clickCancelFile();
+
+            // Then I expect the file to be removed.
+            ReactodiaSteps.getSettingsPopover().should('not.contain', 'settings.ttl');
+            ReactodiaSteps.getUploadButton().should('be.disabled');
+        });
+
+        it('should ask for confirmation before uploading', () => {
+            // Given I have selected a settings file.
+            ReactodiaSteps.visit();
+            ReactodiaSteps.openSettings();
+            ReactodiaSteps.selectSettingsFile();
+
+            // When I upload it.
+            ReactodiaSteps.clickUpload();
+
+            // Then I expect a confirmation that warns the diagram may behave unexpectedly.
+            ReactodiaSteps.getConfirmDialog().should('be.visible')
+                .and('contain', 'The diagram might behave unexpectedly with the new settings.');
+
+            // When I cancel.
+            ReactodiaSteps.cancelDialog();
+
+            // Then I expect the popover to stay open with the file still selected.
+            ReactodiaSteps.getSettingsPopover().should('be.visible');
+            ReactodiaSteps.getSelectedSettingsFile().should('exist');
+
+            // When I upload and confirm.
+            ReactodiaSteps.clickUpload();
+            ReactodiaSteps.confirmDialog();
+
+            // Then I expect a success message and the diagram to be rendered.
+            ToasterSteps.verifySuccess('The settings were uploaded');
+            ReactodiaSteps.getWorkspace().should('exist');
+        });
+
+        it('should ask for confirmation before resetting', () => {
+            // Given the repository has uploaded settings.
+            ReactodiaSteps.visit();
+            ReactodiaSteps.openSettings();
+            ReactodiaSteps.selectSettingsFile();
+            ReactodiaSteps.clickUpload();
+            ReactodiaSteps.confirmDialog();
+            ToasterSteps.verifySuccess('The settings were uploaded');
+
+            // When I click outside the settings.
+            ReactodiaSteps.closeSettings();
+
+            // Then I expect the popover to close.
+            ReactodiaSteps.getSettingsPopover().should('not.exist');
+
+            // When I reset them.
+            ReactodiaSteps.openSettings();
+            ReactodiaSteps.getResetButton().should('be.visible');
+            ReactodiaSteps.clickReset();
+
+            // Then I expect a confirmation that warns the diagram may behave unexpectedly.
+            ReactodiaSteps.getConfirmDialog().should('be.visible')
+                .and('contain', 'The diagram might behave unexpectedly with the default settings.');
+
+            // When I confirm.
+            ReactodiaSteps.confirmDialog();
+
+            // Then I expect a success message and the diagram to be rendered.
+            ToasterSteps.verifySuccess('The settings were reset to the defaults');
+            ReactodiaSteps.getWorkspace().should('exist');
+        });
+
+        it('should export the current settings as a .ttl file', () => {
+            // Given I open the settings.
+            ReactodiaSteps.visit();
+            ReactodiaSteps.openSettings();
+
+            // When I export them.
+            ReactodiaSteps.clickExport();
+
+            // Then I expect a .ttl file named after the repository to be downloaded.
+            ReactodiaSteps.verifyFileDownloaded(`graph-navigator-settings-${repositoryId}.ttl`);
+        });
     });
 
     describe('Repository switch', () => {

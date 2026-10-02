@@ -1,11 +1,11 @@
 import {Component, computed, CUSTOM_ELEMENTS_SCHEMA, input} from '@angular/core';
 import {translate} from '@jsverse/transloco';
 import {defineCustomElements} from 'graphwise-reactodia/loader';
-import {GraphExploreLink, OntoToastrService, Rdf4jRepositoryService, service} from '@ontotext/workbench-api';
+import {GraphExploreLink, OntoToastrService, Rdf4jRepositoryService, service, SparqlDataProviderSettings} from '@ontotext/workbench-api';
 import {LoggerProvider} from '../../services/logger/logger-provider';
 
 /**
- * The request descriptor Reactodia's `SparqlQueryFunction` passes to the transport. Declared
+ * The request descriptor graphwise-reactodia's `SparqlQueryFunction` passes to the transport. Declared
  * locally so the facade does not depend on `@reactodia/workspace`; it mirrors that contract.
  */
 interface SparqlQueryParams {
@@ -19,11 +19,10 @@ interface SparqlQueryParams {
 defineCustomElements();
 
 /**
- * Hosts the Reactodia graph (`graphwise-reactodia`) web component and wires it to the active
- * repository. This replaces the legacy AngularJS `reactodia-sparql-graph` directive: it injects a
- * `queryFunction` that routes Reactodia's SPARQL requests through the workbench HTTP layer (auth
+ * Hosts the graphwise-reactodia web component and wires it to the active
+ * repository. It injects a `queryFunction` that routes graphwise-reactodia's SPARQL requests through the workbench HTTP layer (auth
  * interceptors included). The `currentRepository`/`language` it renders with are provided by the
- * page; this component holds no context subscriptions of its own.
+ * page;
  */
 @Component({
   selector: 'app-reactodia-component-facade',
@@ -51,17 +50,21 @@ export class ReactodiaComponentFacadeComponent {
    * cannot be resolved lazily from the SPARQL endpoint.
    */
   readonly seedGraph = input<GraphExploreLink[]>([]);
+  /**
+   * The repository's graph-navigator query preset (graphwise-reactodia `SparqlDataProviderSettings`).
+   */
+  readonly providerSettings = input<SparqlDataProviderSettings>();
 
   /**
-   * Transport for Reactodia's SPARQL requests. Reactodia chooses the `Accept` per query
+   * Transport for graphwise-reactodia's SPARQL requests. graphwise-reactodia chooses the `Accept` per query
    * (SPARQL-results JSON for SELECT lookups, RDF/Turtle for CONSTRUCT element info) and passes
    * it in `params.headers`; we forward it so GraphDB returns the matching format, then hand back
-   * the raw `Response` which Reactodia expects.
+   * the raw `Response` which graphwise-reactodia expects.
    */
   readonly queryFunction = (params: SparqlQueryParams) =>
     this.executeRequest(params)
       .catch((error) => {
-        // An aborted request is a cancellation Reactodia asked for so don't show toast
+        // An aborted request is a cancellation graphwise-reactodia asked for so don't show toast
         if (error?.name !== 'AbortError') {
           this.logger.error('Failed to execute query', error);
           this.ontoToastrService.error(translate('reactodia.errors.query_execution_failed'));
@@ -76,15 +79,15 @@ export class ReactodiaComponentFacadeComponent {
   }));
 
   /**
-   * Sends one Reactodia request through the workbench HTTP layer. GDB requires the query to be
+   * Sends one graphwise-reactodia request through the workbench HTTP layer. GDB requires the query to be
    * sent in the body of a POST request, but it is optional in the params, so reject, when we don't have a query.
    *
-   * @param params - The request descriptor Reactodia supplied.
+   * @param params - The request descriptor graphwise-reactodia supplied.
    * @returns A promise resolving to the raw response.
    */
   private async executeRequest(params: SparqlQueryParams): Promise<Response | undefined> {
     if (!params.body) {
-      throw new Error(`Unsupported Reactodia ${params.method} request: the SPARQL query is missing`);
+      throw new Error(`Unsupported graphwise-reactodia ${params.method} request: the SPARQL query is missing`);
     }
     return this.rdf4jRepositoryService
       .executeSparqlRequest(params.url, params.body, params.headers['Accept'], params.signal);

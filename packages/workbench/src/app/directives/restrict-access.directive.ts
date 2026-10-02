@@ -8,6 +8,8 @@ export enum ViewPermissions {
   CAN_NOT_READ_ACTIVE_REPO = '!canReadActiveRepo',
   CAN_WRITE_ACTIVE_REPO = 'canWriteActiveRepo',
   CAN_NOT_WRITE_ACTIVE_REPO = '!canWriteActiveRepo',
+  CAN_MAINTAIN_ACTIVE_REPO = 'canMaintainActiveRepo',
+  CAN_NOT_MAINTAIN_ACTIVE_REPO = '!canMaintainActiveRepo',
   HAS_GRAPHQL_RIGHTS = 'hasGraphQLRights',
   HAS_NO_GRAPHQL_RIGHTS = '!hasGraphQLRights',
   IS_FEDEX_REPO = 'isFedexRepo',
@@ -55,6 +57,8 @@ export type PermissionType = `${ViewPermissions}`;
  * - `!canReadActiveRepo` / `Permission.CAN_NOT_READ_ACTIVE_REPO`: User must not have read access to the active repository.
  * - `canWriteActiveRepo` / `Permission.CAN_WRITE_ACTIVE_REPO`: User must have write access to the active repository.
  * - `!canWriteActiveRepo` / `Permission.CAN_NOT_WRITE_ACTIVE_REPO`: User must not have write access to the active repository.
+ * - `canMaintainActiveRepo` / `Permission.CAN_MAINTAIN_ACTIVE_REPO`: User must be an admin or a repository manager, or be able to maintain the active repository.
+ * - `!canMaintainActiveRepo` / `Permission.CAN_NOT_MAINTAIN_ACTIVE_REPO`: User must not be able to maintain the active repository.
  * - `hasGraphQLRights` / `Permission.HAS_GRAPHQL_RIGHTS`: User must have GraphQL rights for the active repository.
  * - `!hasGraphQLRights` / `Permission.HAS_NO_GRAPHQL_RIGHTS`: User must not have GraphQL rights for the active repository.
  * - `isFedexRepo` / `Permission.IS_FEDEX_REPO`: The active repository must be a FedX repository.
@@ -103,6 +107,7 @@ export class RestrictAccessDirective implements OnInit, OnChanges, OnDestroy {
     this.evaluationHandlersMap.set(ViewPermissions.IS_ADMIN, () => this.authorizationService.isAdmin());
     this.evaluationHandlersMap.set(ViewPermissions.CAN_READ_ACTIVE_REPO, (activeRepository) => activeRepository ? this.authorizationService.canReadRepo(activeRepository) : false);
     this.evaluationHandlersMap.set(ViewPermissions.CAN_WRITE_ACTIVE_REPO, (activeRepository) => activeRepository ? this.authorizationService.canWriteRepo(activeRepository) : false);
+    this.evaluationHandlersMap.set(ViewPermissions.CAN_MAINTAIN_ACTIVE_REPO, (activeRepository) => activeRepository ? this.authorizationService.canMaintainRepo(activeRepository) : false);
     this.evaluationHandlersMap.set(ViewPermissions.HAS_GRAPHQL_RIGHTS, (activeRepository) => activeRepository ? this.authorizationService.hasGqlRights(activeRepository) : false);
     this.evaluationHandlersMap.set(ViewPermissions.IS_FEDEX_REPO, (activeRepository) => activeRepository?.isFedx() ?? false);
     this.evaluationHandlersMap.set(ViewPermissions.IS_ONTOP_REPO, (activeRepository) => activeRepository?.isOntop() ?? false);

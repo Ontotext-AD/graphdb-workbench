@@ -39,4 +39,78 @@ export class ReactodiaSteps extends BaseSteps {
     static getElement(text) {
         return ReactodiaSteps.getCanvas().find(`[data-element-id]`).contains(text).first();
     }
+
+    static getSettingsButton() {
+        return cy.get('[data-test="reactodia-settings-btn"]');
+    }
+
+    static openSettings() {
+        ReactodiaSteps.getSettingsButton().click();
+    }
+
+    static closeSettings() {
+        ReactodiaSteps.getCanvas().click('bottomLeft');
+    }
+
+    static getSettingsPopover() {
+        return cy.get('[data-test="reactodia-settings-popover"]');
+    }
+
+    static getSettingsFileInput() {
+        return this.getByTestId('reactodia-settings-upload').find('.p-fileupload-choose-button input[type=file]');
+    }
+
+    static selectSettingsFile(fileName = 'settings.ttl', contents = '@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .') {
+        // PrimeNG hides the file input (display: none), so force is needed to select a file on it.
+        this.getSettingsFileInput()
+            .selectFile({contents: Cypress.Buffer.from(contents), fileName, mimeType: 'text/turtle'}, {force: true});
+    }
+
+    static getSelectedSettingsFile(fileName = 'settings.ttl') {
+        return ReactodiaSteps.getSettingsPopover().contains(fileName);
+    }
+
+    static getUploadButton() {
+        return ReactodiaSteps.getSettingsPopover().find('.p-fileupload-upload-button');
+    }
+
+    static clickUpload() {
+        ReactodiaSteps.getUploadButton().click();
+    }
+
+    static clickCancelFile() {
+        ReactodiaSteps.getSettingsPopover().find('.p-fileupload-cancel-button').click();
+    }
+
+    static getBrowseButton() {
+        return ReactodiaSteps.getSettingsPopover().find('.p-fileupload-choose-button');
+    }
+
+    static clickExport() {
+        cy.get('[data-test="reactodia-settings-export-btn"] button').click();
+    }
+
+    static getResetButton() {
+        return cy.get('[data-test="reactodia-settings-reset-btn"] button');
+    }
+
+    static clickReset() {
+        ReactodiaSteps.getResetButton().click();
+    }
+
+    static getConfirmDialog() {
+        return cy.get('.modal-dialog');
+    }
+
+    static confirmDialog() {
+        ReactodiaSteps.getConfirmDialog().find('.confirm-btn').click();
+    }
+
+    static cancelDialog() {
+        ReactodiaSteps.getConfirmDialog().find('.cancel-btn').click();
+    }
+
+    static verifyFileDownloaded(fileName) {
+        cy.readFile('cypress/downloads/' + fileName);
+    }
 }
