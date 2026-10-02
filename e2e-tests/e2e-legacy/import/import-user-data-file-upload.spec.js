@@ -159,18 +159,15 @@ describe('Import user data: File upload', () => {
         ImportSettingsDialogSteps.uploadOnly();
         ImportUserDataSteps.getResources().should('have.length', 1);
         // Then the icon-only buttons and the row checkbox should have accessible names
-        ImportUserDataSteps.getView().find('.toggle-help-btn').should('have.attr', 'aria-label', 'Get help on import');
-        ImportUserDataSteps.getResourcesTable().find('.import-resource-status-dropdown .dropdown-toggle')
-            .should('have.attr', 'aria-label', 'Select resources by status');
-        ImportUserDataSteps.getResourceByName('bnodes.ttl').within(() => {
-            cy.get('.select-checkbox').should('have.attr', 'aria-label', 'Select bnodes.ttl');
-            cy.get('.import-resource-action-import-btn').should('have.attr', 'aria-label', 'Import bnodes.ttl');
-            cy.get('.import-resource-action-remove-btn').should('have.attr', 'aria-label', 'Remove bnodes.ttl');
-            // And no empty context link should be rendered
-            cy.get('.uri-link').should('not.exist');
-        });
+        ImportUserDataSteps.getHelpToggleButton().should('have.attr', 'aria-label', 'Get help on import');
+        ImportUserDataSteps.getStatusSelectMenuToggle().should('have.attr', 'aria-label', 'Select resources by status');
+        ImportUserDataSteps.getResourceSelectCheckbox('bnodes.ttl').should('have.attr', 'aria-label', 'Select bnodes.ttl');
+        ImportUserDataSteps.getResourceImportButton('bnodes.ttl').should('have.attr', 'aria-label', 'Import bnodes.ttl');
+        ImportUserDataSteps.getResourceRemoveButton('bnodes.ttl').should('have.attr', 'aria-label', 'Remove bnodes.ttl');
+        // And no empty context link should be rendered
+        ImportUserDataSteps.getResourceContextLink('bnodes.ttl').should('not.exist');
         // And the filter field should have a visible label
-        ImportUserDataSteps.getResourcesTable().find('label[for="fileQuery"]')
+        ImportUserDataSteps.getFilterFieldLabel()
             .should('be.visible')
             .and('contain.text', 'Filter by name');
         // When I import the file
@@ -178,8 +175,7 @@ describe('Import user data: File upload', () => {
         ImportSettingsDialogSteps.import();
         ImportUserDataSteps.checkImportedResourceByIndex(0, 'bnodes.ttl');
         // Then the reset status button should have an accessible name
-        ImportUserDataSteps.getResourceByName('bnodes.ttl').find('.import-resource-action-reset-btn')
-            .should('have.attr', 'aria-label', 'Reset status of bnodes.ttl');
+        ImportUserDataSteps.getResourceResetButton('bnodes.ttl').should('have.attr', 'aria-label', 'Reset status of bnodes.ttl');
     });
 
     it('Should be able to upload multiple unique files', () => {
