@@ -244,3 +244,13 @@
 .download-all-graphs-btn .ri-download-2-line {
     margin-top: -0.1em;
 }
+
+.graphs-search {
+    display: inline-flex;
+    align-items: center;
+}
+
+.graphs-search .graphs-search-label {
+    margin: 0 0.5rem 0 0;
+    white-space: nowrap;
+}

@@ -35,10 +35,10 @@
 						</div>
 					</div>
 
-					<label class="mr-1 mb-0">
-						<input type="text" class="form-control search-graphs" ng-model="exportFilter" ng-keyup="onGraphSearch()"
-							placeholder="{{'search.graphs.label' | translate}}"/>
-					</label>
+					<div class="graphs-search">
+						<label for="search-graphs" class="graphs-search-label">{{'search.graphs.label' | translate}}</label>
+						<input id="search-graphs" type="text" class="form-control search-graphs" ng-model="exportFilter" ng-keyup="onGraphSearch()"/>
+					</div>
 				</div>
 
 				<div class="clearfix" ng-class="{'mb-2': !hasMoreGraphs }">
@@ -87,14 +87,16 @@
 						<thead>
 							<tr>
 								<th id="selectionColumn" class="text-nowrap" style="width: 100px">
-									<label class="form-check-label" gdb-tooltip="{{'select.all.tooltip' | translate}}">
-										<input class="form-check-input" type="checkbox" ng-model="selectedAll" ng-click="checkAll()">
-									</label>
+									<span class="form-check-label" gdb-tooltip="{{'select.all.tooltip' | translate}}">
+										<input class="form-check-input select-all-graphs-checkbox" type="checkbox" ng-model="selectedAll" ng-click="checkAll()"
+											   aria-label="{{'export.select.all.graphs' | translate}}">
+									</span>
 									<div class="btn-group btn-group-sm" uib-dropdown>
 										<!-- Keep the closing button tag right after the closing span tag, otherwise
 											 an extra space is rendered in HTML -->
-										<button type="button" class="btn btn-link dropdown-toggle" uib-dropdown-toggle gdb-tooltip="{{'export.selected.graphs.tooltip' | translate}}" ng-disabled="!hasMultipleSelected()">
-											<span class="icon-export"></span></button>
+										<button type="button" class="btn btn-link dropdown-toggle export-selected-graphs-btn" uib-dropdown-toggle gdb-tooltip="{{'export.selected.graphs.tooltip' | translate}}" ng-disabled="!hasMultipleSelected()"
+												aria-label="{{'export.selected.graphs.tooltip' | translate}}">
+											<span class="icon-export" aria-hidden="true"></span></button>
 										<ul class="dropdown-menu" role="menu">
                                             <li ng-repeat="format in exportFormats">
                                                 <a href="javascript:" ng-click="openJSONLDExportSettingsForSelectedGraphs(format)"
@@ -106,26 +108,28 @@
                                             </li>
 										</ul>
 									</div>
-									<button type="button" class="btn btn-link secondary"
+									<button type="button" class="btn btn-link secondary delete-selected-graphs-btn"
 										ng-click="dropContext()"
 											gdb-tooltip="{{'remove.data.from.selected.graph.tooltip' | translate}}" tooltip-placement="top"
+										aria-label="{{'remove.data.from.selected.graph.tooltip' | translate}}"
 										ng-disabled="!canWriteActiveRepo(true) || !hasMultipleSelected()">
-										<span class="ri-delete-bin-6-line"></span>
+										<span class="ri-delete-bin-6-line" aria-hidden="true"></span>
 									</button>
 								</th>
 								<th id="graphColumn">{{'graphs.label' | translate}}</th>
-								<th id="actionsColumn" style="width: 150px"></th>
+								<th id="actionsColumn" style="width: 150px"><span class="sr-only">{{'export.graph.actions.label' | translate}}</span></th>
 							</tr>
 						</thead>
 						<tbody>
 						<tr ng-repeat="graph in displayGraphs track by $index">
 							<td>
-								<label class="form-check-label">
+								<span class="form-check-label">
 									<input type="checkbox"
 										ng-model="selectedGraphs.exportGraphs[graph.contextID.value]"
-                                        ng-disabled="!graph.contextID.uri"
-                                        class="form-check-input"/>
-								</label>
+										ng-disabled="!graph.contextID.uri"
+										aria-label="{{'export.select.graph' | translate: {graph: (graph.contextID.value | translate)} }}"
+										class="form-check-input select-graph-checkbox"/>
+								</span>
 							</td>
                             <td ng-if="graph.contextID.uri && isShacl(graph.contextID.uri)">
                                 <a ng-href="{{graph.contextID.href}}"
@@ -143,8 +147,9 @@
 									<!-- Keep the closing button tag right after the closing span tag, otherwise
 										 an extra space is rendered in HTML -->
 									<button type="button" class="btn btn-link dropdown-toggle export-graph" uib-dropdown-toggle gdb-tooltip="{{'export.graph.label' | translate}}"
+											aria-label="{{'export.graph.with.name' | translate: {graph: (graph.contextID.value | translate)} }}"
 											ng-disabled="!graph.contextID.uri">
-										<span class="icon-export"></span></button>
+										<span class="icon-export" aria-hidden="true"></span></button>
 									<ul class="dropdown-menu" role="menu">
                                         <li ng-repeat="format in exportFormats">
                                             <a href="javascript:" ng-click="openJSONLDExportSettings(format, graph.contextID, false)"
@@ -160,8 +165,9 @@
 								<button class="btn btn-link secondary delete-graph-btn"
 										ng-click="dropContext(graph)"
 										gdb-tooltip="{{'remove.data.from.this.graph.tooltip' | translate}}" tooltip-placement="top"
+										aria-label="{{'remove.data.from.graph.label' | translate: {graph: (graph.contextID.value | translate)} }}"
 										ng-disabled="!canWriteActiveRepo(true) || !graph.contextID.uri">
-									<span class="ri-delete-bin-6-line"></span>
+									<span class="ri-delete-bin-6-line" aria-hidden="true"></span>
 								</button>
 
 							</td>
