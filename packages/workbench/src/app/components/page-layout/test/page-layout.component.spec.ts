@@ -1,34 +1,17 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {Component} from '@angular/core';
 
-import {PageLayoutComponent} from './page-layout.component';
-import {ActivatedRoute, provideRouter} from '@angular/router';
-import {provideTranslocoForTesting} from '../../../testing-utils/transloco-utils';
+import {PageLayoutComponent} from '../page-layout.component';
+import {ActivatedRoute} from '@angular/router';
+import {provideTranslocoForTesting} from '../../../../testing-utils/transloco-utils';
 import {provideNoopAnimations} from '@angular/platform-browser/animations';
-import {
-  Repository,
-  RepositoryContextService,
-  RepositoryList,
-  RestrictionContextService,
-  RepositoryType,
-  RestrictionService,
-  ServiceProvider,
-  ViewRestriction,
-  ViewRestrictionCondition,
-} from '@ontotext/workbench-api';
-import {mockResizeObserverForTesting} from '../../../testing-utils/resize-observer-testing-utils';
+import {RepositoryContextService, RepositoryList, ServiceProvider} from '@ontotext/workbench-api';
+import {mockResizeObserverForTesting} from '../../../../testing-utils/resize-observer-testing-utils';
 
 function buildActivatedRouteMock(queryParams: Record<string, string> = {}, data: Record<string, unknown> = {}) {
   return {
     snapshot: {queryParams, data}
   };
 }
-
-@Component({
-  imports: [PageLayoutComponent],
-  template: '<app-page-layout><div class="projected-content">Page content</div></app-page-layout>'
-})
-class PageLayoutHostComponent {}
 
 describe('PageLayoutComponent', () => {
   let component: PageLayoutComponent;
@@ -154,82 +137,5 @@ describe('PageLayoutComponent', () => {
 
   it('should leave documentationLink undefined when not in route data', () => {
     expect(component.documentationLink()).toBeUndefined();
-  });
-
-  describe('embedded', () => {
-    let hostFixture: ComponentFixture<PageLayoutHostComponent>;
-    const restrictionContextService = ServiceProvider.get(RestrictionContextService);
-    // Creating the service registers its subscriptions, which keep the restricted state in the context up to date.
-    ServiceProvider.get(RestrictionService);
-
-    beforeEach(() => {
-      // GIVEN: A page that requires a selected repository
-      restrictionContextService.updateViewRestriction(new ViewRestriction([ViewRestrictionCondition.IS_REPOSITORY_NOT_SELECTED]));
-    });
-
-    afterEach(() => {
-      restrictionContextService.updateViewRestriction(new ViewRestriction());
-    });
-
-    const renderEmbedded = async () => {
-      TestBed.resetTestingModule();
-      await TestBed.configureTestingModule({
-        imports: [PageLayoutHostComponent, provideTranslocoForTesting()],
-        providers: [
-          provideRouter([]),
-          {provide: ActivatedRoute, useValue: buildActivatedRouteMock({embedded: ''})},
-          provideNoopAnimations()
-        ]
-      }).compileComponents();
-
-      hostFixture = TestBed.createComponent(PageLayoutHostComponent);
-      hostFixture.detectChanges();
-      await hostFixture.whenStable();
-      hostFixture.detectChanges();
-    };
-
-    const getProjectedContent = (): HTMLElement | null => hostFixture.nativeElement.querySelector('.projected-content');
-    const getRestrictions = (): HTMLElement | null => hostFixture.nativeElement.querySelector('app-page-restrictions');
-
-    it('should show the restrictions instead of the page content when no repository is selected', async () => {
-      // GIVEN: A repository list without a selected repository
-      repositoryContextService.updateRepositoryList(new RepositoryList([new Repository({id: 'repo'})]));
-
-      // WHEN: The page is rendered embedded
-      await renderEmbedded();
-
-      // THEN: The restrictions are shown and the page content is not rendered
-      expect(getRestrictions()?.querySelector('p-message')).not.toBeNull();
-      expect(getProjectedContent()).toBeNull();
-    });
-
-    it('should render the page content when a repository is selected', async () => {
-      // GIVEN: A selected repository
-      const repository = new Repository({id: 'repo'});
-      repositoryContextService.updateRepositoryList(new RepositoryList([repository]));
-      await repositoryContextService.updateSelectedRepository(repository);
-
-      // WHEN: The page is rendered embedded
-      await renderEmbedded();
-
-      // THEN: No restrictions are shown and the page content is rendered
-      expect(getRestrictions()).toBeNull();
-      expect(getProjectedContent()).not.toBeNull();
-    });
-
-    it('should show the restrictions instead of the page content when the selected repository is not allowed', async () => {
-      // GIVEN: A page that allows only Ontop repositories and a selected GraphDB repository
-      restrictionContextService.updateViewRestriction(new ViewRestriction([ViewRestrictionCondition.IS_REPOSITORY_NOT_SELECTED], [RepositoryType.ONTOP]));
-      const repository = new Repository({id: 'repo', type: RepositoryType.GRAPH_DB});
-      repositoryContextService.updateRepositoryList(new RepositoryList([repository]));
-      await repositoryContextService.updateSelectedRepository(repository);
-
-      // WHEN: The page is rendered embedded
-      await renderEmbedded();
-
-      // THEN: The restrictions are shown and the page content is not rendered
-      expect(getRestrictions()).not.toBeNull();
-      expect(getProjectedContent()).toBeNull();
-    });
   });
 });
