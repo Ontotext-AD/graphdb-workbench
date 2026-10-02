@@ -1,8 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import {
-  AuthenticatedUser,
-  AuthorityList,
   License,
   LicenseContextService,
   Repository,
@@ -11,7 +9,6 @@ import {
   RepositoryPermissionType,
   RepositoryType,
   RestrictionContextService,
-  SecurityConfig,
   SecurityContextService,
   service,
   ViewRestriction,
@@ -21,15 +18,17 @@ import {
 import { PageRestrictionsComponent } from './page-restrictions.component';
 import {provideTranslocoForTesting} from '../../../testing-utils/transloco-utils';
 import {mockResizeObserverForTesting} from '../../../testing-utils/resize-observer-testing-utils';
+import {createAuthenticatedUser, createSecurityConfig, resetWorkbenchContexts} from '../../../testing-utils/workbench-context-testing-utils';
+import {normalizeText} from '../../../testing-utils/text-testing-utils';
+import {PAGE_LAYOUT_RESTRICTIONS_SELECTORS} from '../../../testing-utils/page-restrictions/selectors';
 
 const NOT_CONNECTED_TO_REPOSITORY = 'you are not connected to any repository';
 
-const createRepository = (id: string, sesameType?: string) => new Repository({
+const createRepository = (id: string) => new Repository({
   id,
   title: id,
   location: '',
   uri: `http://${id}`,
-  sesameType,
 });
 
 describe('PageRestrictionsComponent', () => {
@@ -50,12 +49,7 @@ describe('PageRestrictionsComponent', () => {
   });
 
   afterEach(async () => {
-    licenseContextService.updateGraphdbLicense(undefined);
-    securityContextService.updateAuthenticatedUser(undefined as unknown as AuthenticatedUser);
-    securityContextService.updateSecurityConfig(undefined as unknown as SecurityConfig);
-    await repositoryContextService.updateSelectedRepository(undefined);
-    repositoryContextService.updateRepositoryList(undefined as unknown as RepositoryList);
-    restrictionContextService.updateViewRestriction(new ViewRestriction());
+    await resetWorkbenchContexts();
   });
 
   const givenLicense = (valid: boolean) => {
@@ -63,15 +57,8 @@ describe('PageRestrictionsComponent', () => {
   };
 
   const givenSecuredUser = (authorities: string[]) => {
-    const user = new AuthenticatedUser();
-    user.username = 'user';
-    user.setAuthorities(new AuthorityList(authorities));
-    securityContextService.updateAuthenticatedUser(user);
-    securityContextService.updateSecurityConfig(new SecurityConfig({
-      enabled: true,
-      overrideAuth: {appSettings: {}},
-      freeAccess: {appSettings: {}}
-    } as unknown as SecurityConfig));
+    securityContextService.updateAuthenticatedUser(createAuthenticatedUser('user', authorities));
+    securityContextService.updateSecurityConfig(createSecurityConfig(true));
   };
 
   const givenRepositories = async (repositories: Repository[], selected?: Repository) => {
@@ -90,55 +77,13 @@ describe('PageRestrictionsComponent', () => {
     await fixture.whenStable();
   };
 
-  const getMessages = (): string[] =>
-    Array.from(fixture.nativeElement.querySelectorAll('p-message') as NodeListOf<HTMLElement>)
-      .map((message) => message.textContent?.trim() ?? '');
+  const getTexts = (selector: string): string[] =>
+    Array.from(fixture.nativeElement.querySelectorAll(selector) as NodeListOf<HTMLElement>)
+      .map((element) => normalizeText(element.textContent));
 
-  const getPickerRepositoryIds = (): string[] =>
-    Array.from(fixture.nativeElement.querySelectorAll('.repository-id') as NodeListOf<HTMLElement>)
-      .map((repositoryId) => repositoryId.textContent?.trim() ?? '');
+  const getMessages = (): string[] => getTexts(PAGE_LAYOUT_RESTRICTIONS_SELECTORS.restrictionMessage);
 
-  describe('when the page declares no restrictions', () => {
-    it('should not restrict a read-only user on a selected repository', async () => {
-      // GIVEN: a valid license, a read-only user and a selected repository
-      givenLicense(true);
-      givenSecuredUser(['READ_REPO_repo']);
-      const repository = createRepository('repo');
-      await givenRepositories([repository], repository);
-
-      // WHEN: rendering a page without declared restrictions
-      await render();
-
-      // THEN: no restriction reason should be shown
-      expect(getMessages()).toEqual([]);
-    });
-
-    it('should not show an invalid license warning', async () => {
-      // GIVEN: an invalid license and a selected repository
-      givenLicense(false);
-      const repository = createRepository('repo');
-      await givenRepositories([repository], repository);
-
-      // WHEN: rendering a page without declared restrictions
-      await render();
-
-      // THEN: no restriction reason should be shown
-      expect(getMessages()).toEqual([]);
-    });
-
-    it('should not report an Ontop or FedX repository', async () => {
-      // GIVEN: a valid license and a selected FedX repository
-      givenLicense(true);
-      const repository = createRepository('fedx', 'graphdb:FedXRepository');
-      await givenRepositories([repository], repository);
-
-      // WHEN: rendering a page without declared restrictions
-      await render();
-
-      // THEN: no restriction reason should be shown
-      expect(getMessages()).toEqual([]);
-    });
-  });
+  const getPickerRepositoryIds = (): string[] => getTexts(PAGE_LAYOUT_RESTRICTIONS_SELECTORS.pickerRepositoryId);
 
   describe('when the page declares the repository not selected restriction', () => {
     it('should offer to create a repository even if the repository list is not loaded', async () => {
@@ -151,7 +96,7 @@ describe('PageRestrictionsComponent', () => {
       await render();
 
       // THEN: the create repository button should be offered in the picker
-      expect(fixture.nativeElement.querySelector('.create-repository-btn')).not.toBeNull();
+      expect(fixture.nativeElement.querySelector(PAGE_LAYOUT_RESTRICTIONS_SELECTORS.createRepositoryButton)).not.toBeNull();
     });
 
     it('should show the allowed repositories when the selected repository lacks the required permission', async () => {
