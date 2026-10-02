@@ -5,11 +5,11 @@ import {ViewRestrictionScenario, ViewRestrictionScenarioBuilder} from './view-re
 const {IS_REPOSITORY_NOT_SELECTED, MISSING_WRITE_PERMISSIONS, IS_ONTOP, IS_FEDEX, IS_LICENSE_INVALID} = ViewRestrictionCondition;
 const ALL_CONDITIONS = [IS_REPOSITORY_NOT_SELECTED, MISSING_WRITE_PERMISSIONS, IS_ONTOP, IS_FEDEX, IS_LICENSE_INVALID];
 
-const REPO_A_ID = 'repo-a';
-const REPO_B_ID = 'repo-b';
+export const REPO_A_ID = 'repo-a';
+export const REPO_B_ID = 'repo-b';
 const FEDX_REPO_ID = 'fedx-repo';
 const ONTOP_REPO_ID = 'ontop-repo';
-const REMOTE_REPO_ID = 'remote-repo';
+export const REMOTE_REPO_ID = 'remote-repo';
 
 const REPO_A = new Repository({id: REPO_A_ID, title: REPO_A_ID, type: RepositoryType.GRAPH_DB, sesameType: 'graphdb:SailRepository'});
 const REPO_B = new Repository({id: REPO_B_ID, title: REPO_B_ID, type: RepositoryType.GRAPH_DB, sesameType: 'graphdb:SailRepository'});
@@ -26,50 +26,64 @@ const REPOSITORIES = [REPO_A, REPO_B, FEDX_REPO, ONTOP_REPO];
 export const ALL_LOCAL_REPOSITORY_IDS = [FEDX_REPO_ID, ONTOP_REPO_ID, REPO_A_ID, REPO_B_ID];
 
 /**
+ * The users from the test data, with their authorities defined in `USERS`.
+ */
+export type TestUser = 'admin' | 'reader' | 'mixed' | 'maintainer';
+
+/**
  * The users from the test data. Without a user, security is OFF.
  */
-export const USERS: Record<string, string[]> = {
+export const USERS: Record<TestUser, string[]> = {
   admin: ['ROLE_ADMIN', 'ROLE_REPO_MANAGER', 'ROLE_USER'],
   reader: ['ROLE_USER', 'READ_REPO_*'],
   mixed: ['ROLE_USER', 'READ_REPO_*', `WRITE_REPO_${REPO_A_ID}`],
+  maintainer: ['ROLE_USER', 'READ_REPO_*', `WRITE_REPO_${REPO_A_ID}`, `MAINTAIN_REPO_${REPO_A_ID}`],
 };
 
 /**
- * Creates the new workbench scenarios from the GDB-14749 manual test scenarios.
+ * Fetches all defined page restriction scenarios.
  */
 export function getScenarios(): ViewRestrictionScenario[] {
   return [
-    createScenario1(),
-    createScenario2(),
-    createScenario3(),
-    createScenario4(),
-    createScenario5(),
-    createScenario6(),
-    createScenario7(),
-    createScenario8(),
-    createScenario9(),
-    createScenario10(),
-    createScenario11(),
-    createScenario12(),
-    createScenario13(),
-    createScenario14(),
-    createScenario15(),
-    createScenario16(),
-    createScenario17(),
+    getNoRepositorySelectedWithCreateRightsScenario(),
+    getNoRepositorySelectedWithoutCreateRightsScenario(),
+    getNoRepositorySelectedWithUndeclaredInvalidLicenseScenario(),
+    getAllRestrictionsDeclaredNoneAppliesScenario(),
+    getSeveralRestrictionsApplyScenario(),
+    getInvalidLicenseWithSecurityOffAndNoRepositorySelectedScenario(),
+    getFedxRepositorySelectedWithCreateRightsScenario(),
+    getOntopRepositorySelectedWithWriteRightsScenario(),
+    getOntopRepositorySelectedWithoutWriteRightsScenario(),
+    getWriteRequiredOnOntopRepositoryWithOneWritableRepositoryScenario(),
+    getWriteRequiredWithoutWritableRepositoriesScenario(),
+    getWriteRequiredWithoutWritableRepositoriesAndNoRepositorySelectedScenario(),
+    getNoRepositoryOfAllowedTypeWithCreateRightsScenario(),
+    getFedxRepositorySelectedWithoutCreateRightsScenario(),
+    getWriteRequiredWithSecurityOffScenario(),
+    getNoRepositorySelectedWithRemoteLocationScenario(),
+    getNoRepositoriesWithCreateRightsScenario(),
+    getSelectedRepositoryOfNotAllowedTypeScenario(),
+    getInvalidLicenseWithRepositorySelectedScenario(),
+    getNoRepositorySelectedWithOneWritableRepositoryScenario(),
+    getOnlyWriteRequiredWithoutWritableRepositoriesScenario(),
+    getNoRestrictionsDeclaredScenario(),
+    getNoRepositorySelectedForRepositoryMaintainerScenario(),
+    getMissingLicenseWithRepositorySelectedScenario(),
+    getOntopRepositorySelectedWithoutRequiredSelectionScenario(),
+    getFedxRepositorySelectedWithoutRequiredSelectionScenario(),
   ];
 }
 
 /**
- * **S1**: No repository selected, the user can create one.
+ * No repository selected, the user can create one.
  *
  * **Given**: an admin with a valid license opens a page that requires a selected repository, and no repository is selected.
  *
  * **Expected**: the page content is hidden and the user is asked to select or create a repository. The picker offers all
  * local repositories and the create repository button is shown.
  */
-export function createScenario1(): ViewRestrictionScenario {
+export function getNoRepositorySelectedWithCreateRightsScenario(): ViewRestrictionScenario {
   return new ViewRestrictionScenarioBuilder()
-    .withId('S1')
     .withRestrictions([IS_REPOSITORY_NOT_SELECTED])
     .withValidLicense()
     .withUser('admin')
@@ -82,7 +96,7 @@ export function createScenario1(): ViewRestrictionScenario {
 }
 
 /**
- * **S2**: No repository selected, the user can't create one.
+ * No repository selected, the user can't create one.
  *
  * **Given**: a user with read-only rights and a valid license opens a page that requires a selected repository, and no
  * repository is selected.
@@ -90,9 +104,8 @@ export function createScenario1(): ViewRestrictionScenario {
  * **Expected**: the page content is hidden and the user is asked to select a repository. The picker offers all local
  * repositories, but the create repository button is not shown.
  */
-export function createScenario2(): ViewRestrictionScenario {
+export function getNoRepositorySelectedWithoutCreateRightsScenario(): ViewRestrictionScenario {
   return new ViewRestrictionScenarioBuilder()
-    .withId('S2')
     .withRestrictions([IS_REPOSITORY_NOT_SELECTED])
     .withValidLicense()
     .withUser('reader')
@@ -105,7 +118,7 @@ export function createScenario2(): ViewRestrictionScenario {
 }
 
 /**
- * **S3**: Invalid license, no repository selected, the page doesn't declare the license restriction.
+ * Invalid license, no repository selected, the page doesn't declare the license restriction.
  *
  * **Given**: an admin with an invalid license opens a page that requires a selected repository, but doesn't declare the
  * license restriction, and no repository is selected.
@@ -114,9 +127,8 @@ export function createScenario2(): ViewRestrictionScenario {
  * message. The picker offers all local repositories, but the create repository button is not shown, because a
  * repository can't be created with an invalid license.
  */
-export function createScenario3(): ViewRestrictionScenario {
+export function getNoRepositorySelectedWithUndeclaredInvalidLicenseScenario(): ViewRestrictionScenario {
   return new ViewRestrictionScenarioBuilder()
-    .withId('S3')
     .withRestrictions([IS_REPOSITORY_NOT_SELECTED])
     .withInvalidLicense()
     .withUser('admin')
@@ -129,16 +141,15 @@ export function createScenario3(): ViewRestrictionScenario {
 }
 
 /**
- * **S4**: All restrictions declared, none applies.
+ * All restrictions declared, none applies.
  *
  * **Given**: an admin with a valid license opens a page that declares all restrictions and works only with GraphDB
  * repositories, and a GraphDB repository is selected.
  *
  * **Expected**: the page content is shown, without restriction messages, picker or create repository button.
  */
-export function createScenario4(): ViewRestrictionScenario {
+export function getAllRestrictionsDeclaredNoneAppliesScenario(): ViewRestrictionScenario {
   return new ViewRestrictionScenarioBuilder()
-    .withId('S4')
     .withRestrictions(ALL_CONDITIONS)
     .withAllowedRepositoryTypes([RepositoryType.GRAPH_DB])
     .withValidLicense()
@@ -152,7 +163,7 @@ export function createScenario4(): ViewRestrictionScenario {
 }
 
 /**
- * **S5**: Several restrictions apply at once.
+ * Several restrictions apply at once.
  *
  * **Given**: a user with read-only rights and an invalid license opens a page that declares all restrictions and works
  * only with GraphDB repositories, and a GraphDB repository is selected.
@@ -161,9 +172,8 @@ export function createScenario4(): ViewRestrictionScenario {
  * to set a new license), there are no writable repositories, and the user can't write to the selected repository.
  * The picker is empty and the create repository button is not shown.
  */
-export function createScenario5(): ViewRestrictionScenario {
+export function getSeveralRestrictionsApplyScenario(): ViewRestrictionScenario {
   return new ViewRestrictionScenarioBuilder()
-    .withId('S5')
     .withRestrictions(ALL_CONDITIONS)
     .withAllowedRepositoryTypes([RepositoryType.GRAPH_DB])
     .withInvalidLicense()
@@ -182,7 +192,7 @@ export function createScenario5(): ViewRestrictionScenario {
 }
 
 /**
- * **S6**: Invalid license, security OFF, no repository selected.
+ * Invalid license, security OFF, no repository selected.
  *
  * **Given**: security is OFF and the license is invalid. A page that requires a selected repository and declares the
  * license restriction is opened, and no repository is selected.
@@ -191,9 +201,8 @@ export function createScenario5(): ViewRestrictionScenario {
  * set a new license), and the user is asked to select a repository. The picker offers all local repositories, but the
  * create repository button is not shown.
  */
-export function createScenario6(): ViewRestrictionScenario {
+export function getInvalidLicenseWithSecurityOffAndNoRepositorySelectedScenario(): ViewRestrictionScenario {
   return new ViewRestrictionScenarioBuilder()
-    .withId('S6')
     .withRestrictions([IS_REPOSITORY_NOT_SELECTED, IS_LICENSE_INVALID])
     .withInvalidLicense()
     .withSecurityOff()
@@ -209,7 +218,7 @@ export function createScenario6(): ViewRestrictionScenario {
 }
 
 /**
- * **S7**: FedX repository selected.
+ * FedX repository selected.
  *
  * **Given**: an admin with a valid license opens a page that doesn't support Ontop and FedX repositories and works only
  * with GraphDB repositories, and a FedX repository is selected.
@@ -217,9 +226,8 @@ export function createScenario6(): ViewRestrictionScenario {
  * **Expected**: the page content is hidden and a message says that the page doesn't support FedX repositories. The picker
  * offers only the GraphDB repositories and the create repository button is shown.
  */
-export function createScenario7(): ViewRestrictionScenario {
+export function getFedxRepositorySelectedWithCreateRightsScenario(): ViewRestrictionScenario {
   return new ViewRestrictionScenarioBuilder()
-    .withId('S7')
     .withRestrictions([IS_REPOSITORY_NOT_SELECTED, IS_ONTOP, IS_FEDEX])
     .withAllowedRepositoryTypes([RepositoryType.GRAPH_DB])
     .withValidLicense()
@@ -234,7 +242,7 @@ export function createScenario7(): ViewRestrictionScenario {
 }
 
 /**
- * **S8**: Ontop repository selected, the user has write rights.
+ * Ontop repository selected, the user has write rights.
  *
  * **Given**: an admin with a valid license opens a page that doesn't support Ontop repositories and works with GraphDB and
  * FedX repositories, and an Ontop repository is selected.
@@ -242,9 +250,8 @@ export function createScenario7(): ViewRestrictionScenario {
  * **Expected**: the page content is hidden and a message says that the selected Ontop repository is read-only. The picker
  * offers the GraphDB and FedX repositories and the create repository button is shown.
  */
-export function createScenario8(): ViewRestrictionScenario {
+export function getOntopRepositorySelectedWithWriteRightsScenario(): ViewRestrictionScenario {
   return new ViewRestrictionScenarioBuilder()
-    .withId('S8')
     .withRestrictions([IS_REPOSITORY_NOT_SELECTED, IS_ONTOP])
     .withAllowedRepositoryTypes([RepositoryType.GRAPH_DB, RepositoryType.FEDX])
     .withValidLicense()
@@ -259,7 +266,7 @@ export function createScenario8(): ViewRestrictionScenario {
 }
 
 /**
- * **S9**: Ontop repository selected, the user has no write rights.
+ * Ontop repository selected, the user has no write rights.
  *
  * **Given**: a user with read-only rights and a valid license opens a page that doesn't support Ontop repositories and
  * works with GraphDB and FedX repositories, and an Ontop repository is selected.
@@ -267,9 +274,8 @@ export function createScenario8(): ViewRestrictionScenario {
  * **Expected**: the page content is hidden and a message says that the selected Ontop repository is read-only. The picker
  * offers the GraphDB and FedX repositories, but the create repository button is not shown.
  */
-export function createScenario9(): ViewRestrictionScenario {
+export function getOntopRepositorySelectedWithoutWriteRightsScenario(): ViewRestrictionScenario {
   return new ViewRestrictionScenarioBuilder()
-    .withId('S9')
     .withRestrictions([IS_REPOSITORY_NOT_SELECTED, IS_ONTOP])
     .withAllowedRepositoryTypes([RepositoryType.GRAPH_DB, RepositoryType.FEDX])
     .withValidLicense()
@@ -284,7 +290,7 @@ export function createScenario9(): ViewRestrictionScenario {
 }
 
 /**
- * **S10**: Missing write permission on an Ontop repository.
+ * Missing write permission on an Ontop repository.
  *
  * **Given**: a user who can write only to `repo-a`, with a valid license, opens a page that requires write access, doesn't
  * support Ontop repositories and works with GraphDB and FedX repositories, and an Ontop repository is selected.
@@ -292,9 +298,8 @@ export function createScenario9(): ViewRestrictionScenario {
  * **Expected**: the page content is hidden and only the message that the user can't write to the selected repository is
  * shown. The picker offers only `repo-a`, the one writable repository, and the create repository button is not shown.
  */
-export function createScenario10(): ViewRestrictionScenario {
+export function getWriteRequiredOnOntopRepositoryWithOneWritableRepositoryScenario(): ViewRestrictionScenario {
   return new ViewRestrictionScenarioBuilder()
-    .withId('S10')
     .withRestrictions([IS_REPOSITORY_NOT_SELECTED, MISSING_WRITE_PERMISSIONS, IS_ONTOP])
     .withAllowedRepositoryTypes([RepositoryType.GRAPH_DB, RepositoryType.FEDX])
     .withValidLicense()
@@ -309,7 +314,7 @@ export function createScenario10(): ViewRestrictionScenario {
 }
 
 /**
- * **S11**: Missing write permission, no writable repositories.
+ * Missing write permission, no writable repositories.
  *
  * **Given**: a user with read-only rights and a valid license opens a page that requires write access, and a GraphDB
  * repository is selected.
@@ -317,9 +322,8 @@ export function createScenario10(): ViewRestrictionScenario {
  * **Expected**: the page content is hidden and two messages are shown, in order: there are no writable repositories, and
  * the user can't write to the selected repository. The picker is empty and the create repository button is not shown.
  */
-export function createScenario11(): ViewRestrictionScenario {
+export function getWriteRequiredWithoutWritableRepositoriesScenario(): ViewRestrictionScenario {
   return new ViewRestrictionScenarioBuilder()
-    .withId('S11')
     .withRestrictions([IS_REPOSITORY_NOT_SELECTED, MISSING_WRITE_PERMISSIONS, IS_ONTOP])
     .withAllowedRepositoryTypes([RepositoryType.GRAPH_DB, RepositoryType.FEDX])
     .withValidLicense()
@@ -337,7 +341,7 @@ export function createScenario11(): ViewRestrictionScenario {
 }
 
 /**
- * **S12**: No repository selected, no writable repositories.
+ * No repository selected, no writable repositories.
  *
  * **Given**: a user with read-only rights and a valid license opens a page that requires write access, and no repository
  * is selected.
@@ -345,9 +349,8 @@ export function createScenario11(): ViewRestrictionScenario {
  * **Expected**: the page content is hidden and only the message that there are no writable repositories is shown. The
  * picker is empty and the create repository button is not shown.
  */
-export function createScenario12(): ViewRestrictionScenario {
+export function getWriteRequiredWithoutWritableRepositoriesAndNoRepositorySelectedScenario(): ViewRestrictionScenario {
   return new ViewRestrictionScenarioBuilder()
-    .withId('S12')
     .withRestrictions([IS_REPOSITORY_NOT_SELECTED, MISSING_WRITE_PERMISSIONS, IS_ONTOP])
     .withAllowedRepositoryTypes([RepositoryType.GRAPH_DB, RepositoryType.FEDX])
     .withValidLicense()
@@ -361,7 +364,7 @@ export function createScenario12(): ViewRestrictionScenario {
 }
 
 /**
- * **S13**: No accessible repositories, the user can create one.
+ * No accessible repositories, the user can create one.
  *
  * **Given**: an admin with a valid license opens a page that requires a selected repository and works only with
  * repositories of a type that none of the existing repositories has, and no repository is selected.
@@ -369,9 +372,8 @@ export function createScenario12(): ViewRestrictionScenario {
  * **Expected**: the page content is hidden and a message says that there are no accessible repositories and offers to
  * create one. The picker is empty and the create repository button is shown.
  */
-export function createScenario13(): ViewRestrictionScenario {
+export function getNoRepositoryOfAllowedTypeWithCreateRightsScenario(): ViewRestrictionScenario {
   return new ViewRestrictionScenarioBuilder()
-    .withId('S13')
     .withRestrictions([IS_REPOSITORY_NOT_SELECTED])
     .withAllowedRepositoryTypes([RepositoryType.OTHER])
     .withValidLicense()
@@ -385,7 +387,7 @@ export function createScenario13(): ViewRestrictionScenario {
 }
 
 /**
- * **S14**: FedX repository selected, the user has no write rights, the page doesn't require write access.
+ * FedX repository selected, the user has no write rights, the page doesn't require write access.
  *
  * **Given**: a user with read-only rights and a valid license opens a page that doesn't support Ontop and FedX repositories
  * and works only with GraphDB repositories, and a FedX repository is selected.
@@ -393,9 +395,8 @@ export function createScenario13(): ViewRestrictionScenario {
  * **Expected**: the page content is hidden and a message says that the page doesn't support FedX repositories. The picker
  * offers only the GraphDB repositories, but the create repository button is not shown.
  */
-export function createScenario14(): ViewRestrictionScenario {
+export function getFedxRepositorySelectedWithoutCreateRightsScenario(): ViewRestrictionScenario {
   return new ViewRestrictionScenarioBuilder()
-    .withId('S14')
     .withRestrictions([IS_REPOSITORY_NOT_SELECTED, IS_ONTOP, IS_FEDEX])
     .withAllowedRepositoryTypes([RepositoryType.GRAPH_DB])
     .withValidLicense()
@@ -410,7 +411,7 @@ export function createScenario14(): ViewRestrictionScenario {
 }
 
 /**
- * **S15**: A page that requires write access, security OFF.
+ * A page that requires write access, security OFF.
  *
  * **Given**: security is OFF and the license is valid. A page that requires write access is opened, and a GraphDB
  * repository is selected.
@@ -418,9 +419,8 @@ export function createScenario14(): ViewRestrictionScenario {
  * **Expected**: the page content is shown, because with security OFF everyone can write. No restriction messages, picker
  * or create repository button are shown.
  */
-export function createScenario15(): ViewRestrictionScenario {
+export function getWriteRequiredWithSecurityOffScenario(): ViewRestrictionScenario {
   return new ViewRestrictionScenarioBuilder()
-    .withId('S15')
     .withRestrictions([IS_REPOSITORY_NOT_SELECTED, MISSING_WRITE_PERMISSIONS, IS_ONTOP])
     .withAllowedRepositoryTypes([RepositoryType.GRAPH_DB, RepositoryType.FEDX])
     .withValidLicense()
@@ -434,7 +434,7 @@ export function createScenario15(): ViewRestrictionScenario {
 }
 
 /**
- * **S16**: No repository selected, a remote location is attached.
+ * No repository selected, a remote location is attached.
  *
  * **Given**: an admin with a valid license opens a page that requires a selected repository, a remote location with its own
  * repository is attached, and no repository is selected.
@@ -442,9 +442,8 @@ export function createScenario15(): ViewRestrictionScenario {
  * **Expected**: the page content is hidden and the user is asked to select or create a repository. The picker offers only
  * the local repositories, not the remote one, and the create repository button is shown.
  */
-export function createScenario16(): ViewRestrictionScenario {
+export function getNoRepositorySelectedWithRemoteLocationScenario(): ViewRestrictionScenario {
   return new ViewRestrictionScenarioBuilder()
-    .withId('S16')
     .withRestrictions([IS_REPOSITORY_NOT_SELECTED])
     .withValidLicense()
     .withUser('admin')
@@ -457,16 +456,15 @@ export function createScenario16(): ViewRestrictionScenario {
 }
 
 /**
- * **S17**: No repositories at all, the user can create one.
+ * No repositories at all, the user can create one.
  *
  * **Given**: an admin with a valid license opens a page that requires a selected repository, and there are no repositories.
  *
  * **Expected**: the page content is hidden and a message says that there are no accessible repositories and offers to
  * create one. The picker is empty and the create repository button is shown.
  */
-export function createScenario17(): ViewRestrictionScenario {
+export function getNoRepositoriesWithCreateRightsScenario(): ViewRestrictionScenario {
   return new ViewRestrictionScenarioBuilder()
-    .withId('S17')
     .withRestrictions([IS_REPOSITORY_NOT_SELECTED])
     .withValidLicense()
     .withUser('admin')
@@ -474,6 +472,216 @@ export function createScenario17(): ViewRestrictionScenario {
     .withExpectedContentHidden()
     .withExpectedMessages([{key: 'no_accessible_repos_create_one'}])
     .withExpectedPicker([])
+    .withExpectedCreateButtonShown()
+    .build();
+}
+
+/**
+ * The selected repository is excluded only by the allowed repository types.
+ *
+ * **Given**: an admin with a valid license opens a page that declares no restriction conditions, but works only with Ontop
+ * repositories, and a GraphDB repository is selected.
+ *
+ * **Expected**: the page content is hidden and the user is asked to select or create a repository, as the selected one is
+ * not allowed. The picker offers only the Ontop repository and the create repository button is shown.
+ */
+export function getSelectedRepositoryOfNotAllowedTypeScenario(): ViewRestrictionScenario {
+  return new ViewRestrictionScenarioBuilder()
+    .withRestrictions([])
+    .withAllowedRepositoryTypes([RepositoryType.ONTOP])
+    .withValidLicense()
+    .withUser('admin')
+    .withRepositories(REPOSITORIES)
+    .withSelectedRepository(REPO_A)
+    .withExpectedContentHidden()
+    .withExpectedMessages([{key: 'no_active_repository_select_or_create_one'}])
+    .withExpectedPicker([ONTOP_REPO_ID])
+    .withExpectedCreateButtonShown()
+    .build();
+}
+
+/**
+ * Invalid license, a repository is selected.
+ *
+ * **Given**: security is OFF and the license is invalid. A page that declares only the license restriction is opened, and
+ * a GraphDB repository is selected.
+ *
+ * **Expected**: the page content is hidden and only the invalid license message is shown (with a link to set a new
+ * license). The picker is not shown, as selecting another repository doesn't help.
+ */
+export function getInvalidLicenseWithRepositorySelectedScenario(): ViewRestrictionScenario {
+  return new ViewRestrictionScenarioBuilder()
+    .withRestrictions([IS_LICENSE_INVALID])
+    .withInvalidLicense()
+    .withSecurityOff()
+    .withRepositories(REPOSITORIES)
+    .withSelectedRepository(REPO_A)
+    .withExpectedContentHidden()
+    .withExpectedMessages([{key: 'invalid_license', hasLicenseLink: true}])
+    .withExpectedPickerHidden()
+    .withExpectedCreateButtonHidden()
+    .build();
+}
+
+/**
+ * No repository selected, the user can write to some repositories.
+ *
+ * **Given**: a user who can write only to `repo-a`, with a valid license, opens a page that requires a selected repository
+ * and write access, and no repository is selected.
+ *
+ * **Expected**: the page content is hidden and the user is asked to select a repository. The picker offers only `repo-a`,
+ * the one writable repository, and the create repository button is not shown.
+ */
+export function getNoRepositorySelectedWithOneWritableRepositoryScenario(): ViewRestrictionScenario {
+  return new ViewRestrictionScenarioBuilder()
+    .withRestrictions([IS_REPOSITORY_NOT_SELECTED, MISSING_WRITE_PERMISSIONS])
+    .withValidLicense()
+    .withUser('mixed')
+    .withRepositories(REPOSITORIES)
+    .withExpectedContentHidden()
+    .withExpectedMessages([{key: 'no_active_repository_select_one'}])
+    .withExpectedPicker([REPO_A_ID])
+    .withExpectedCreateButtonHidden()
+    .build();
+}
+
+/**
+ * Write access required without a required selected repository, no writable repositories.
+ *
+ * **Given**: a user with read-only rights and a valid license opens a page that requires write access, but doesn't
+ * require a selected repository, and a GraphDB repository is selected.
+ *
+ * **Expected**: the page content is hidden and two messages are shown, in order: there are no writable repositories, and
+ * the user can't write to the selected repository. The picker is empty and the create repository button is not shown.
+ */
+export function getOnlyWriteRequiredWithoutWritableRepositoriesScenario(): ViewRestrictionScenario {
+  return new ViewRestrictionScenarioBuilder()
+    .withRestrictions([MISSING_WRITE_PERMISSIONS])
+    .withValidLicense()
+    .withUser('reader')
+    .withRepositories(REPOSITORIES)
+    .withSelectedRepository(REPO_A)
+    .withExpectedContentHidden()
+    .withExpectedMessages([
+      {key: 'no_accessible_writable_repos'},
+      {key: 'no_write_permission', params: {repositoryId: REPO_A_ID}},
+    ])
+    .withExpectedPicker([])
+    .withExpectedCreateButtonHidden()
+    .build();
+}
+
+/**
+ * No restrictions declared, all of them would apply.
+ *
+ * **Given**: a user with read-only rights and an invalid license opens a page that declares no restrictions, and a FedX
+ * repository is selected.
+ *
+ * **Expected**: the page content is shown, because a condition that the page doesn't declare never restricts it. No
+ * restriction messages, picker or create repository button are shown.
+ */
+export function getNoRestrictionsDeclaredScenario(): ViewRestrictionScenario {
+  return new ViewRestrictionScenarioBuilder()
+    .withRestrictions([])
+    .withInvalidLicense()
+    .withUser('reader')
+    .withRepositories(REPOSITORIES)
+    .withSelectedRepository(FEDX_REPO)
+    .withExpectedContentShown()
+    .withExpectedPickerHidden()
+    .withExpectedCreateButtonHidden()
+    .build();
+}
+
+/**
+ * No repository selected, the user maintains a repository, but can't manage repositories.
+ *
+ * **Given**: a user who can read all repositories, and write to and maintain `repo-a`, with a valid license, opens a page
+ * that requires a selected repository, and no repository is selected.
+ *
+ * **Expected**: the page content is hidden and the user is asked to select a repository. The picker offers all local
+ * repositories, but the create repository button is not shown, because maintaining a repository doesn't allow creating
+ * repositories.
+ */
+export function getNoRepositorySelectedForRepositoryMaintainerScenario(): ViewRestrictionScenario {
+  return new ViewRestrictionScenarioBuilder()
+    .withRestrictions([IS_REPOSITORY_NOT_SELECTED])
+    .withValidLicense()
+    .withUser('maintainer')
+    .withRepositories(REPOSITORIES)
+    .withExpectedContentHidden()
+    .withExpectedMessages([{key: 'no_active_repository_select_one'}])
+    .withExpectedPicker(ALL_LOCAL_REPOSITORY_IDS)
+    .withExpectedCreateButtonHidden()
+    .build();
+}
+
+/**
+ * No license loaded, a repository is selected.
+ *
+ * **Given**: an admin opens a page that declares the license restriction, no license is loaded, and a GraphDB repository
+ * is selected.
+ *
+ * **Expected**: the page content is hidden and only the invalid license message is shown (with a link to set a new
+ * license), as a missing license is treated as an invalid one. The picker is not shown.
+ */
+export function getMissingLicenseWithRepositorySelectedScenario(): ViewRestrictionScenario {
+  return new ViewRestrictionScenarioBuilder()
+    .withRestrictions([IS_LICENSE_INVALID])
+    .withMissingLicense()
+    .withUser('admin')
+    .withRepositories(REPOSITORIES)
+    .withSelectedRepository(REPO_A)
+    .withExpectedContentHidden()
+    .withExpectedMessages([{key: 'invalid_license', hasLicenseLink: true}])
+    .withExpectedPickerHidden()
+    .withExpectedCreateButtonHidden()
+    .build();
+}
+
+/**
+ * Ontop repository selected, the user has no write rights, the page doesn't require a selected repository.
+ *
+ * **Given**: a user with read-only rights and a valid license opens a page that declares only the Ontop and FedX
+ * restrictions and allows repositories of all types, and an Ontop repository is selected.
+ *
+ * **Expected**: the page content is hidden and only the message that the selected Ontop repository is read-only is shown,
+ * even though the user can't write to it. The picker offers all local repositories, but the create repository button is
+ * not shown.
+ */
+export function getOntopRepositorySelectedWithoutRequiredSelectionScenario(): ViewRestrictionScenario {
+  return new ViewRestrictionScenarioBuilder()
+    .withRestrictions([IS_ONTOP, IS_FEDEX])
+    .withValidLicense()
+    .withUser('reader')
+    .withRepositories(REPOSITORIES)
+    .withSelectedRepository(ONTOP_REPO)
+    .withExpectedContentHidden()
+    .withExpectedMessages([{key: 'read_only_ontop', params: {repositoryId: ONTOP_REPO_ID}}])
+    .withExpectedPicker(ALL_LOCAL_REPOSITORY_IDS)
+    .withExpectedCreateButtonHidden()
+    .build();
+}
+
+/**
+ * FedX repository selected, the page doesn't require a selected repository.
+ *
+ * **Given**: security is OFF and the license is valid. A page that declares only the Ontop and FedX restrictions and
+ * allows repositories of all types is opened, and a FedX repository is selected.
+ *
+ * **Expected**: the page content is hidden and only the message that the page doesn't support FedX repositories is shown.
+ * The picker offers all local repositories and the create repository button is shown.
+ */
+export function getFedxRepositorySelectedWithoutRequiredSelectionScenario(): ViewRestrictionScenario {
+  return new ViewRestrictionScenarioBuilder()
+    .withRestrictions([IS_ONTOP, IS_FEDEX])
+    .withValidLicense()
+    .withSecurityOff()
+    .withRepositories(REPOSITORIES)
+    .withSelectedRepository(FEDX_REPO)
+    .withExpectedContentHidden()
+    .withExpectedMessages([{key: 'fedx_unsupported', params: {pageTitle: 'Reactodia'}}])
+    .withExpectedPicker(ALL_LOCAL_REPOSITORY_IDS)
     .withExpectedCreateButtonShown()
     .build();
 }

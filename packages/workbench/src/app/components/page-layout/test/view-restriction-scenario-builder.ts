@@ -1,10 +1,27 @@
 import {Repository, RepositoryType, ViewRestrictionCondition} from '@ontotext/workbench-api';
+import {TestUser} from './view-restriction-scenarios';
+
+/**
+ * The restriction message keys under `components.page_restrictions`.
+ */
+export type PageRestrictionMessageKey =
+  | 'no_active_repository_select_one'
+  | 'no_active_repository_select_or_create_one'
+  | 'no_accessible_repos_create_one'
+  | 'no_accessible_repositories'
+  | 'invalid_license'
+  | 'no_write_permission'
+  | 'read_only_ontop'
+  | 'fedx_unsupported'
+  | 'no_accessible_writable_repos';
+
+/**
+ * The GraphDB license state. `missing` means that no license is loaded.
+ */
+export type TestLicense = 'valid' | 'invalid' | 'missing';
 
 export interface ExpectedViewRestrictionMessage {
-  /**
-   * The key under `components.page_restrictions`.
-   */
-  key: string;
+  key: PageRestrictionMessageKey;
   params?: Record<string, string>;
   /**
    * Whether the message offers the "Set a new license" link.
@@ -13,15 +30,14 @@ export interface ExpectedViewRestrictionMessage {
 }
 
 export interface ViewRestrictionScenario {
-  id: string;
   description: string;
   restrictions: ViewRestrictionCondition[];
   allowedRepositoryTypes?: RepositoryType[];
-  licenseValid: boolean;
+  license: TestLicense;
   /**
    * The logged-in user. Undefined means that security is OFF.
    */
-  user?: string;
+  user?: TestUser;
   repositories: Repository[];
   selectedRepository?: Repository;
   expected: {
@@ -39,25 +55,16 @@ export interface ViewRestrictionScenario {
  * Builds a {@link ViewRestrictionScenario}. The description is generated from the scenario input, so it always matches it.
  */
 export class ViewRestrictionScenarioBuilder {
-  private id = '';
   private restrictions: ViewRestrictionCondition[] = [];
   private allowedRepositoryTypes?: RepositoryType[];
-  private licenseValid = true;
-  private user?: string;
+  private license: TestLicense = 'valid';
+  private user?: TestUser;
   private repositories: Repository[] = [];
   private selectedRepository?: Repository;
   private contentShown = false;
   private messages: ExpectedViewRestrictionMessage[] = [];
   private pickerRepositoryIds?: string[];
   private createButton = false;
-
-  /**
-   * Sets the scenario id, e.g. 'S1'. It prefixes the test name, so a failing test points back to its scenario.
-   */
-  withId(id: string): this {
-    this.id = id;
-    return this;
-  }
 
   /**
    * Sets the restriction conditions the page declares. The page is checked only against these conditions; an undeclared
@@ -81,7 +88,7 @@ export class ViewRestrictionScenarioBuilder {
    * Sets a valid GraphDB license. This is the default.
    */
   withValidLicense(): this {
-    this.licenseValid = true;
+    this.license = 'valid';
     return this;
   }
 
@@ -90,7 +97,15 @@ export class ViewRestrictionScenarioBuilder {
    * {@link ViewRestrictionCondition.IS_LICENSE_INVALID}, and prevents the user from creating a repository.
    */
   withInvalidLicense(): this {
-    this.licenseValid = false;
+    this.license = 'invalid';
+    return this;
+  }
+
+  /**
+   * Sets no GraphDB license, as when none is loaded. It restricts the page like an invalid license.
+   */
+  withMissingLicense(): this {
+    this.license = 'missing';
     return this;
   }
 
@@ -99,7 +114,7 @@ export class ViewRestrictionScenarioBuilder {
    * The user's rights decide the write permission checks, the writable repositories in the picker and whether the
    * create repository button is offered.
    */
-  withUser(user: string): this {
+  withUser(user: TestUser): this {
     this.user = user;
     return this;
   }
@@ -189,11 +204,10 @@ export class ViewRestrictionScenarioBuilder {
    */
   build(): ViewRestrictionScenario {
     return {
-      id: this.id,
       description: this.describe(),
       restrictions: this.restrictions,
       allowedRepositoryTypes: this.allowedRepositoryTypes,
-      licenseValid: this.licenseValid,
+      license: this.license,
       user: this.user,
       repositories: this.repositories,
       selectedRepository: this.selectedRepository,
@@ -213,7 +227,7 @@ export class ViewRestrictionScenarioBuilder {
   private describe(): string {
     const parts = [
       this.user ? `user '${this.user}'` : 'security OFF',
-      this.licenseValid ? 'valid license' : 'invalid license',
+      this.license === 'missing' ? 'no license' : `${this.license} license`,
       this.selectedRepository ? `repository '${this.selectedRepository.id}' selected` : 'no repository selected',
       this.repositories.length
         ? `repositories [${this.repositories.map(({id}) => id).join(', ')}]`

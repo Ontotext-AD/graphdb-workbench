@@ -1,11 +1,11 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {PageLayoutComponent} from '../page-layout.component';
+import {PageLayoutComponent} from './page-layout.component';
 import {ActivatedRoute} from '@angular/router';
-import {provideTranslocoForTesting} from '../../../../testing-utils/transloco-utils';
+import {provideTranslocoForTesting} from '../../../testing-utils/transloco-utils';
 import {provideNoopAnimations} from '@angular/platform-browser/animations';
 import {RepositoryContextService, RepositoryList, ServiceProvider} from '@ontotext/workbench-api';
-import {mockResizeObserverForTesting} from '../../../../testing-utils/resize-observer-testing-utils';
+import {mockResizeObserverForTesting} from '../../../testing-utils/resize-observer-testing-utils';
 
 function buildActivatedRouteMock(queryParams: Record<string, string> = {}, data: Record<string, unknown> = {}) {
   return {
