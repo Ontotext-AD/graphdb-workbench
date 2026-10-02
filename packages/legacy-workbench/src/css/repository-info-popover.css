@@ -16,15 +16,46 @@
     display: flex;
     flex-direction: column;
     gap: 0.2rem;
-    padding: 10px;
+    padding: 12px;
     margin: -4px 0;
     font-size: 0.875rem;
     font-weight: 400;
     box-shadow: var(--gw-dialog-shadow-1-offset-x) var(--gw-dialog-shadow-1-offset-y) var(--gw-dialog-shadow-1-blur) var(--gw-dialog-shadow-1-spread) var(--gw-dialog-shadow-1-color);
 
-    .title {
-        border-bottom: 1px solid var(--gw-dialog-border-color);
-        margin-bottom: 0.5rem;
+    .title h6 {
+        font-size: 1.14em;
+        font-weight: 600;
+        line-height: 1;
+        text-align: left; 
+        margin-bottom: 0.285em;
+    }
+
+    .title h6:not(.inactive) {
+        color: var(--gw-foreground-on-surface-default);
+    }
+
+    .title h6.inactive,
+    .title h6 .ri-loop-left-fill{
+       color: var(--gw-foreground-on-surface-subtle);
+    }
+
+    .title h6 .ri-stop-large-fill{
+        color: var(--gw-foreground-on-surface-disabled);
+    }
+
+    .title h6 .ri-checkbox-blank-circle-fill {
+        color: var(--gw-success-base);
+    }
+
+
+    .title h6 i {
+        font-size: inherit;
+        vertical-align: baseline;
+        margin-right: 0.55em;
+        
+        &::before {
+            font-size: 0.9em;
+        }
     }
 
     .repository-id {
@@ -55,5 +86,25 @@
     .property-value {
         text-align: right;
         font-weight: 500;
+    }
+
+    .inactive-repo-message {
+        background-color: var(--gw-message-help-background);    
+        color: var(--gw-message-help-color);
+        display: flex;
+        flex-wrap: nowrap;
+        padding: 4px 8px;
+        gap: 0.57em;
+        border: 1px solid var(--gw-message-help-border-color);
+    }
+
+    .inactive-repo-message p {
+        font-size: 1.14em;
+        font-weight: 400;
+        margin: 0;
+    }
+
+    .inactive-repo-message .icon {
+        font-size: 1.14em;
     }
 }

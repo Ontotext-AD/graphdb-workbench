@@ -93,6 +93,11 @@ export namespace Components {
          */
         "iconImage": string;
         /**
+          * Flag indicating whether this dropdown is used as a repository selector.
+          * @default false
+         */
+        "isRepositorySelector": boolean;
+        /**
           * The tooltip theme to be used for the items. For more information {@link OntoTooltipConfiguration#theme }.
          */
         "itemTooltipTheme": string;
@@ -100,6 +105,10 @@ export namespace Components {
           * Array of dropdown options.
          */
         "items": DropdownItem<unknown>[];
+        /**
+          * Allows callers to force an immediate button tooltip refresh (e.g. on a repository list change), instead of waiting for the next poll.
+         */
+        "refreshButtonTooltip": () => Promise<void>;
         /**
           * The tooltip class to be used. For more information {@link OntoTooltipConfiguration#tooltipClass }.
          */
@@ -863,6 +872,11 @@ declare namespace LocalJSX {
           * @default ''
          */
         "iconImage"?: string;
+        /**
+          * Flag indicating whether this dropdown is used as a repository selector.
+          * @default false
+         */
+        "isRepositorySelector"?: boolean;
         /**
           * The tooltip theme to be used for the items. For more information {@link OntoTooltipConfiguration#theme }.
          */

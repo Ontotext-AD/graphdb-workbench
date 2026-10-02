@@ -25,6 +25,7 @@ internationalization.
 | `dropdownButtonTooltipLabelKey` | `dropdown-button-tooltip-label-key` | The translation label key for the dropdown button tooltip. It will be used if {@link OntoDropdown#dropdownButtonTooltip } is not present.                                                                                                                               | `string`                                                                                                                                                                                         | `undefined`                  |
 | `iconClass`                     | `icon-class`                        | Icon class for the main dropdown button.                                                                                                                                                                                                                                | `string`                                                                                                                                                                                         | `''`                         |
 | `iconImage`                     | `icon-image`                        | Path or URL to the image used as icon for main dropdown button.                                                                                                                                                                                                         | `string`                                                                                                                                                                                         | `''`                         |
+| `isRepositorySelector`          | `is-repository-selector`            | Flag indicating whether this dropdown is used as a repository selector.                                                                                                                                                                                                 | `boolean`                                                                                                                                                                                        | `false`                      |
 | `itemTooltipTheme`              | `item-tooltip-theme`                | The tooltip theme to be used for the items. For more information {@link OntoTooltipConfiguration#theme }.                                                                                                                                                               | `string`                                                                                                                                                                                         | `undefined`                  |
 | `items`                         | `items`                             | Array of dropdown options.                                                                                                                                                                                                                                              | `DropdownItem<unknown>[]`                                                                                                                                                                        | `undefined`                  |
 | `tooltipClass`                  | `tooltip-class`                     | The tooltip class to be used. For more information {@link OntoTooltipConfiguration#tooltipClass }.                                                                                                                                                                      | `string`                                                                                                                                                                                         | `undefined`                  |
@@ -38,6 +39,20 @@ internationalization.
 | -------------- | ---------------------------------------------------------------------------------------------------------- | ---------------------- |
 | `toggle`       | Event emitted when the dropdown opens or closes. The event detail is true when open and false when closed. | `CustomEvent<boolean>` |
 | `valueChanged` | Event emitted when a dropdown item is selected. The event payload contains the value of the selected item. | `CustomEvent<any>`     |
+
+
+## Methods
+
+### `refreshButtonTooltip() => Promise<void>`
+
+Allows callers to force an immediate button tooltip refresh (e.g. on a repository list change),
+instead of waiting for the next poll.
+
+#### Returns
+
+Type: `Promise<void>`
+
+
 
 
 ## Dependencies
