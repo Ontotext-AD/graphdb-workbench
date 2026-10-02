@@ -302,11 +302,10 @@ export class OntoDropdown {
         }
         this.isButtonTooltipActive = true;
       } else {
-        if (typeof this.dropdownButtonTooltip === 'function') {
-          tooltipContent = await this.getTooltipContent(this.dropdownButtonTooltip);
-        } else {
-          tooltipContent = this.dropdownButtonTooltip ?? this.translate(this.dropdownButtonTooltipLabelKey);
-        }
+        tooltipContent =
+          typeof this.dropdownButtonTooltip === 'function' ?
+            await this.getTooltipContent(this.dropdownButtonTooltip) :
+            (this.dropdownButtonTooltip ?? this.translate(this.dropdownButtonTooltipLabelKey));
       }
       this.buttonTooltipContent = tooltipContent;
     };
