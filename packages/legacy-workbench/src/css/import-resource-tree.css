@@ -176,6 +176,16 @@
     display: flex;
 }
 
+.import-resource-tree .import-resource-filter {
+    display: flex;
+}
+
+.import-resource-tree .import-resource-filter-label {
+    align-self: center;
+    margin: 0 0.5rem 0 0;
+    white-space: nowrap;
+}
+
 .import-resource-tree .import-resource-tree-filter .input-group-addon {
     background-color: #ebebeb;
     padding: 0.5rem;

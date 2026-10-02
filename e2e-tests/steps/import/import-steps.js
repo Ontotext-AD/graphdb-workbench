@@ -84,6 +84,10 @@ class ImportSteps {
         return this.getResourcesTable().find('#fileQuery');
     }
 
+    static getFilterFieldLabel() {
+        return this.getResourcesTable().find('label[for="fileQuery"]');
+    }
+
     static typeInFilterField(query) {
         return this.getFilterField().type(query);
     }
@@ -140,9 +144,13 @@ class ImportSteps {
         return this.getImportUserDataHelp().find('.copy-btn').click();
     }
 
+    static getHelpToggleButton() {
+        return this.getView().find('.toggle-help-btn');
+    }
+
     static toggleHelpMessage() {
         // For some reason the page info box opens unexpectedly and covers the help info icon.
-        this.getView().find('.toggle-help-btn').click({force: true});
+        this.getHelpToggleButton().click({force: true});
     }
 
     static closeHelpMessage() {
@@ -186,12 +194,32 @@ class ImportSteps {
         this.getResourceTitleRow(index).find('.select-checkbox').click();
     }
 
+    static getResourceSelectCheckbox(name) {
+        return this.getResourceByName(name).find('.select-checkbox');
+    }
+
+    static getResourceImportButton(name) {
+        return this.getResourceByName(name).find('.import-resource-action-import-btn');
+    }
+
+    static getResourceRemoveButton(name) {
+        return this.getResourceByName(name).find('.import-resource-action-remove-btn');
+    }
+
+    static getResourceResetButton(name) {
+        return this.getResourceByName(name).find('.import-resource-action-reset-btn');
+    }
+
+    static getResourceContextLink(name) {
+        return this.getResourceByName(name).find('.uri-link');
+    }
+
     static selectFileByName(name) {
-        this.getResourceByName(name).find('.select-checkbox').click();
+        this.getResourceSelectCheckbox(name).click();
     }
 
     static deselectFileByName(name) {
-        this.getResourceByName(name).find('.select-checkbox').click();
+        this.getResourceSelectCheckbox(name).click();
     }
 
     static getResourceStatus(name) {
@@ -231,6 +259,10 @@ class ImportSteps {
 
     static getStatusSelectMenu() {
         return this.getResourcesTable().find('.import-resource-status-dropdown');
+    }
+
+    static getStatusSelectMenuToggle() {
+        return this.getStatusSelectMenu().find('.dropdown-toggle');
     }
 
     static openStatusSelectMenu() {
@@ -291,7 +323,7 @@ class ImportSteps {
     }
 
     static importResourceByName(name) {
-        this.getResourceByName(name).find('.import-resource-action-import-btn').click();
+        this.getResourceImportButton(name).click();
     }
 
     static resetFileStatus(index) {
@@ -299,7 +331,7 @@ class ImportSteps {
     }
 
     static resetResourceStatusByName(name) {
-        this.getResourceByName(name).find('.import-resource-action-reset-btn').click();
+        this.getResourceResetButton(name).click();
     }
 
     static getServerFilesTable() {
@@ -312,7 +344,8 @@ class ImportSteps {
 
     static selectFile(files) {
         cy.wait(1000)
-        cy.get('#wb-import-uploadFile label').selectFile(files, { force: true });
+        // The file input is created by ng-file-upload and appended to the body.
+        cy.get('#ngf-wb-import-uploadFile').selectFile(files, { force: true });
     }
 
     static uploadFile(filePath) {

@@ -152,6 +152,32 @@ describe('Import user data: File upload', () => {
         ImportUserDataSteps.getResources().should('have.length', 1);
     });
 
+    it('Should give the controls on the page accessible names', () => {
+        // Given I have uploaded a file without importing it
+        const file = ImportUserDataSteps.createFile(testFiles[0], bnodes);
+        ImportUserDataSteps.selectFile(file);
+        ImportSettingsDialogSteps.uploadOnly();
+        ImportUserDataSteps.getResources().should('have.length', 1);
+        // Then the icon-only buttons and the row checkbox should have accessible names
+        ImportUserDataSteps.getHelpToggleButton().should('have.attr', 'aria-label', 'Get help on import');
+        ImportUserDataSteps.getStatusSelectMenuToggle().should('have.attr', 'aria-label', 'Select resources by status');
+        ImportUserDataSteps.getResourceSelectCheckbox('bnodes.ttl').should('have.attr', 'aria-label', 'Select bnodes.ttl');
+        ImportUserDataSteps.getResourceImportButton('bnodes.ttl').should('have.attr', 'aria-label', 'Import bnodes.ttl');
+        ImportUserDataSteps.getResourceRemoveButton('bnodes.ttl').should('have.attr', 'aria-label', 'Remove bnodes.ttl');
+        // And no empty context link should be rendered
+        ImportUserDataSteps.getResourceContextLink('bnodes.ttl').should('not.exist');
+        // And the filter field should have a visible label
+        ImportUserDataSteps.getFilterFieldLabel()
+            .should('be.visible')
+            .and('contain.text', 'Filter by name');
+        // When I import the file
+        ImportUserDataSteps.importFile(0);
+        ImportSettingsDialogSteps.import();
+        ImportUserDataSteps.checkImportedResourceByIndex(0, 'bnodes.ttl');
+        // Then the reset status button should have an accessible name
+        ImportUserDataSteps.getResourceResetButton('bnodes.ttl').should('have.attr', 'aria-label', 'Reset status of bnodes.ttl');
+    });
+
     it('Should be able to upload multiple unique files', () => {
         // Given there are no files uploaded yet
         ImportUserDataSteps.getResourcesTable().should('be.hidden');
