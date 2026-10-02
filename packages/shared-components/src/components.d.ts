@@ -93,6 +93,11 @@ export namespace Components {
          */
         "iconImage": string;
         /**
+          * Flag indicating whether this dropdown is used as a repository selector.
+          * @default false
+         */
+        "isRepositorySelector": boolean;
+        /**
           * The tooltip theme to be used for the items. For more information {@link OntoTooltipConfiguration#theme }.
          */
         "itemTooltipTheme": string;
@@ -867,6 +872,11 @@ declare namespace LocalJSX {
           * @default ''
          */
         "iconImage"?: string;
+        /**
+          * Flag indicating whether this dropdown is used as a repository selector.
+          * @default false
+         */
+        "isRepositorySelector"?: boolean;
         /**
           * The tooltip theme to be used for the items. For more information {@link OntoTooltipConfiguration#theme }.
          */

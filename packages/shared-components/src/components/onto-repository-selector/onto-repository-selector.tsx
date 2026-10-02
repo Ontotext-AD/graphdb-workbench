@@ -139,7 +139,8 @@ export class OntoRepositorySelector {
           tooltipClass="repository-selector-tooltip"
           items={this.dropdownItems}
           onMouseLeave={this.clearRepositorySizeInfo}
-          auto-close>
+          auto-close
+          isRepositorySelector={true}>
         </onto-dropdown>
       </Host>
     );

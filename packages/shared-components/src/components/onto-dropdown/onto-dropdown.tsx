@@ -124,6 +124,11 @@ export class OntoDropdown {
   @Prop() disabled = false;
 
   /**
+   * Flag indicating whether this dropdown is used as a repository selector.
+   */
+  @Prop() isRepositorySelector = false;
+
+  /**
    * Event emitted when a dropdown item is selected.
    * The event payload contains the value of the selected item.
    */
@@ -288,13 +293,21 @@ export class OntoDropdown {
 
   private setDropdownButtonTooltip() {
     return async () => {
-      let tooltipContent = await this.extractDropdownTooltipContent();
+      let tooltipContent: string | undefined = '';
+      if (this.isRepositorySelector) {
+        tooltipContent = await this.extractDropdownTooltipContent();
 
-      if (!tooltipContent) {
-        return;
+        if (!tooltipContent) {
+          return;
+        }
+        this.isButtonTooltipActive = true;
+      } else {
+        if (typeof this.dropdownButtonTooltip === 'function') {
+          tooltipContent = await this.getTooltipContent(this.dropdownButtonTooltip);
+        } else {
+          tooltipContent = this.dropdownButtonTooltip ?? this.translate(this.dropdownButtonTooltipLabelKey);
+        }
       }
-
-      this.isButtonTooltipActive = true;
       this.buttonTooltipContent = tooltipContent;
     };
   }
