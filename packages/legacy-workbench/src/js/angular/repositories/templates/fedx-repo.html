@@ -15,22 +15,26 @@
                     </div>
                     <div class="actions" ng-if="canMaintainRepo(member)">
                         <button class="btn btn-link p-0 edit-repository-btn"
-                                type="button">
-                                <span id="{{member.repositoryName}}-icon-edit" class="ri-edit-line"
-                                      ng-click="editFedXRepository(member)"
-                                      ng-if="member.store !== 'NativeStore'"
-                                      gdb-tooltip="{{'repoTooltips.editRepository' | translate}}"></span>
+                                type="button"
+                                ng-click="editFedXRepository(member)"
+                                ng-if="member.store !== 'NativeStore'"
+                                gdb-tooltip="{{'repoTooltips.editRepository' | translate}}"
+                                aria-label="{{'repos.edit.repo.label' | translate: {repositoryId: resolveName(member)} }}">
+                                <span id="{{member.repositoryName}}-icon-edit" class="ri-edit-line" aria-hidden="true"></span>
                         </button>
-                        <button class="btn btn-link p-0 secondary" type="button">
-                                <span id="{{member.repositoryName}}-icon-close" ng-click="removeMember(member)"
-                                      class="ri-close-line"
-                                      gdb-tooltip="{{'repoTooltips.fedx.removeMember' | translate}}"></span>
+                        <button class="btn btn-link p-0 secondary" type="button"
+                                ng-click="removeMember(member)"
+                                gdb-tooltip="{{'repoTooltips.fedx.removeMember' | translate}}"
+                                aria-label="{{'fedx.repo.remove.member.label' | translate: {repositoryId: resolveName(member)} }}">
+                                <span id="{{member.repositoryName}}-icon-close" class="ri-close-line" aria-hidden="true"></span>
                         </button>
-                        <button class="btn btn-link p-0 secondary">
+                        <button class="btn btn-link p-0 secondary" type="button"
+                                ng-click="setWritableRepo(member)"
+                                gdb-tooltip="{{'repoTooltips.fedx.setAsWritable' | translate}}"
+                                aria-label="{{'fedx.repo.set.as.writable.label' | translate: {repositoryId: resolveName(member)} }}"
+                                aria-pressed="{{member.writable === 'true'}}">
                                 <span id="{{member.repositoryName}}-icon-writable"
-                                      ng-click="setWritableRepo(member)"
-                                      class="icon-import{{getActiveClass(member)}}"
-                                      gdb-tooltip="{{'repoTooltips.fedx.setAsWritable' | translate}}"></span>
+                                      class="icon-import{{getActiveClass(member)}}" aria-hidden="true"></span>
                         </button>
                     </div>
                 </li>
