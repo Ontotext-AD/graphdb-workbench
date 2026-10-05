@@ -34,14 +34,14 @@ describe('My Settings', () => {
             .then(() => {
                 cy.get('#sameas-on')
                     .find('.switch:checkbox')
-                    .should('not.be.visible');
+                    .should('not.be.checked');
             });
 
         clickLabelBtn('#inference-on')
             .then(() => {
                 cy.get('#inference-on')
                     .find('.switch:checkbox')
-                    .should('not.be.visible');
+                    .should('not.be.checked');
             });
 
         cy.get('#defaultCount:checkbox').uncheck();
@@ -97,7 +97,7 @@ describe('My Settings', () => {
         clickLabelBtn('#schema-on').then(() => {
             cy.get('#schema-on')
                 .find('.switch:checkbox')
-                .should('not.be.visible');
+                .should('not.be.checked');
         });
 
         getSaveButton()
@@ -154,12 +154,30 @@ describe('My Settings', () => {
             .then(() => {
                 cy.get('#inference-on')
                     .find('.switch:checkbox')
-                    .should('not.be.visible');
+                    .should('not.be.checked');
             });
 
         cy.get('#sameas-on')
             .find('.switch:checkbox')
-            .should('not.be.visible');
+            .should('be.disabled')
+            .and('not.be.checked');
+    });
+
+    it('should give the settings form controls accessible names', () => {
+        cy.get('label[for="wb-user-username"]').should('be.visible').and('contain', 'Username');
+
+        cy.get('label[for="sameAsCheck"]').should('contain', 'Expand results over owl:SameAs');
+        cy.get('label[for="inferenceCheck"]').should('contain', 'Enable inference');
+        cy.get('label[for="schemaCheck"]').should('contain', 'Show schema');
+
+        cy.get('.any-repo .read:checkbox')
+            .should('have.attr', 'aria-label', 'Read access to Global (any data repository)');
+        cy.get('.any-repo .write:checkbox')
+            .should('have.attr', 'aria-label', 'Write access to Global (any data repository)');
+        cy.get('.any-repo .maintain-repository:checkbox')
+            .should('have.attr', 'aria-label', 'Maintain access to Global (any data repository)');
+        cy.get('.any-repo .graphql:checkbox')
+            .should('have.attr', 'aria-label', 'Restrict Global (any data repository) to GraphQL');
     });
 
     function getSaveButton() {

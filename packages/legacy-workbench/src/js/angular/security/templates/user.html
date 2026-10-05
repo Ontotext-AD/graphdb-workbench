@@ -47,6 +47,7 @@
                 <div class="card-block">
                     <h3>{{'view.login.title' | translate}}</h3>
                     <div class="form-group" ng-class="{'has-danger': usernameError}">
+                        <label class="form-control-label" for="wb-user-username">{{'security.table.username' | translate}}</label>
                         <div class="input-group">
                             <span class="input-group-addon" gdb-tooltip="{{'security.table.username' | translate}}"><i class="ri-user-line ri-xl text-muted"></i></span>
                             <input id="wb-user-username" placeholder="{{'security.table.username' | translate}}" name="username" class="form-control form-control-lg" type="text" ng-model="user.username" ng-disabled="mode !== 'add'" >
@@ -54,6 +55,7 @@
                         <div ng-show="usernameError" class="form-control-feedback">{{usernameError}}</div>
                     </div>
                     <div class="form-group" ng-class="{'has-danger': passwordError}" ng-hide="user.external || hasExternalAuthUser() || canExtendExternalUserRole" >
+                        <label class="form-control-label" for="wb-user-password">{{passwordPlaceholder | translate}}</label>
                         <div class="input-group">
                             <span class="input-group-addon" gdb-tooltip="{{'security.password.placeholder' | translate}}"><em class="ri-lock-line ri-xl text-muted"></em></span>
                             <input id="wb-user-password" autocomplete="new-password" placeholder="{{passwordPlaceholder | translate}}" name="password" class="form-control form-control-lg" type="password"	ng-model="user.password" ng-readonly="noPassword || canExtendExternalUserRole">
@@ -62,6 +64,7 @@
                         <div ng-show="passwordError" class="form-control-feedback">{{passwordError}}</div>
                     </div>
                     <div class="form-group" ng-class="{'has-danger': confirmPasswordError}" ng-hide="user.external || hasExternalAuthUser() || canExtendExternalUserRole">
+                        <label class="form-control-label" for="wb-user-confirmpassword">{{'security.password.confirm' | translate}}</label>
                         <div class="input-group">
                             <span class="input-group-addon" gdb-tooltip="{{'security.password.confirm' | translate}}"><em class="ri-lock-line ri-xl text-muted"></em></span>
                             <input id="wb-user-confirmpassword" placeholder="{{'security.password.confirm' | translate}}" name="password_confirm" class="form-control form-control-lg" type="password" ng-model="user.confirmpassword" ng-readonly="noPassword || canExtendExternalUserRole">
@@ -90,15 +93,14 @@
 
                     <div id="sameas-on" class="mb-1">
                         <div class="setting-toggle">
-                            <div class="sameas-label label">
+                            <div class="sameas-label label" aria-hidden="true">
                                 {{'security.expand.sameAs.is' | translate}}
                             </div>
-                            <div ng-click="user.appSettings.DEFAULT_SAMEAS = !user.appSettings.DEFAULT_SAMEAS"
-                                 class="switch mr-0">
+                            <div class="switch mr-0">
                                 <input id="sameAsCheck" type="checkbox" class="switch"
-                                       ng-checked="user.appSettings.DEFAULT_SAMEAS"
+                                       ng-model="user.appSettings.DEFAULT_SAMEAS"
                                        ng-disabled="shouldDisableSameAs()"/>
-                                <label for="sameas-on"></label>
+                                <label for="sameAsCheck"><span class="sr-only">{{'security.expand.sameAs.is' | translate}}</span></label>
                             </div>
                         </div>
                         <small class="text-muted">{{'security.default.editor.graph' | translate}}</small>
@@ -106,13 +108,12 @@
 
                     <div id="inference-on" class="mb-1">
                         <div class="setting-toggle">
-                            <div class="inference-label label">
+                            <div class="inference-label label" aria-hidden="true">
                                 {{'security.inference.is' | translate}}
                             </div>
-                            <div ng-click="user.appSettings.DEFAULT_INFERENCE = !user.appSettings.DEFAULT_INFERENCE"
-                                 class="switch mr-0">
-                                <input type="checkbox" class="switch" ng-checked="user.appSettings.DEFAULT_INFERENCE"/>
-                                <label for="inference-on"></label>
+                            <div class="switch mr-0">
+                                <input id="inferenceCheck" type="checkbox" class="switch" ng-model="user.appSettings.DEFAULT_INFERENCE"/>
+                                <label for="inferenceCheck"><span class="sr-only">{{'security.inference.is' | translate}}</span></label>
                             </div>
                         </div>
                         <small class="text-muted">{{'security.default.editor.graph' | translate}}</small>
@@ -120,13 +121,12 @@
 
                     <div id="schema-on" class="mb-1">
                         <div class="setting-toggle">
-                            <div class="schema-label label">
+                            <div class="schema-label label" aria-hidden="true">
                                 {{'security.show.schema' | translate}}
                             </div>
-                            <div ng-click="user.appSettings.DEFAULT_VIS_GRAPH_SCHEMA = !user.appSettings.DEFAULT_VIS_GRAPH_SCHEMA"
-                                 class="switch mr-0">
-                                <input type="checkbox" class="switch" ng-checked="user.appSettings.DEFAULT_VIS_GRAPH_SCHEMA"/>
-                                <label for="schema-on"></label>
+                            <div class="switch mr-0">
+                                <input id="schemaCheck" type="checkbox" class="switch" ng-model="user.appSettings.DEFAULT_VIS_GRAPH_SCHEMA"/>
+                                <label for="schemaCheck"><span class="sr-only">{{'security.show.schema' | translate}}</span></label>
                             </div>
                         </div>
                         <small class="text-muted">{{'security.default.visual.graph' | translate}}</small>
@@ -179,9 +179,9 @@
                         <div class="enable-extend-button" ng-show="canExtendExternalUserRole">
                             <span class="switch mr-0">
                                 <input id="enable-extend-btn" type="checkbox" class="switch" ng-model="allowRoleExtension" ng-disabled="disableRoleExtension"/>
-                                <label for="enable-extend-btn"></label>
+                                <label for="enable-extend-btn"><span class="sr-only">{{'security.user.extend_role_toggle' | translate: {authSource: authSource} }}</span></label>
                             </span>
-                            {{'security.user.extend_role_toggle' | translate: {authSource: authSource} }}
+                            <span aria-hidden="true">{{'security.user.extend_role_toggle' | translate: {authSource: authSource} }}</span>
                         </div>
                         <div ng-if="!isLocalAuthentication() && mode !== 'settings'" class="mb-2 external-user-info">
                             <div class="alert alert-info compact">
@@ -271,20 +271,20 @@
                                     </th>
                                     <th class="text-xs-center">
                                         <span ng-click="setGrantedAuthorities()">
-                                            <input class="read" type="checkbox" ng-model="grantedAuthorities.READ_REPO['*']" ng-checked="hasReadPermission('*')"
+                                            <input class="read" type="checkbox" aria-label="{{'security.user.rights.read.label' | translate: {repository: ('security.any.data.repo' | translate)} }}" ng-model="grantedAuthorities.READ_REPO['*']" ng-checked="hasReadPermission('*')"
                                                    ng-disabled="readCheckDisabled('*')">
                                        </span>
                                     </th>
                                     <th class="text-xs-center write-any">
                                         <span ng-click="setGrantedAuthorities()">
-                                            <input class="write" type="checkbox" ng-model="grantedAuthorities.WRITE_REPO['*']" ng-checked="hasWritePermission('*')"
+                                            <input class="write" type="checkbox" aria-label="{{'security.user.rights.write.label' | translate: {repository: ('security.any.data.repo' | translate)} }}" ng-model="grantedAuthorities.WRITE_REPO['*']" ng-checked="hasWritePermission('*')"
                                                    ng-disabled="writeCheckDisabled('*')">
                                         </span>
                                     </th>
 
                                     <th class="text-xs-center maintain-repository-any">
                                             <span>
-                                                <input class="maintain-repository" type="checkbox" ng-checked="hasMaintainRepositoryPermission('*')" ng-disabled="true">
+                                                <input class="maintain-repository" type="checkbox" aria-label="{{'security.user.rights.maintain_repository.label' | translate: {repository: ('security.any.data.repo' | translate)} }}" ng-checked="hasMaintainRepositoryPermission('*')" ng-disabled="true">
                                             </span>
                                         </th>
 
@@ -292,7 +292,7 @@
                                         <span class="tooltip-on-disabled" ng-if="!isUser()" data-test="graphql-any-role-tooltip"
                                               gdb-tooltip="{{'security.tooltip.not.available.for.role' | translate}}"></span>
                                         <span ng-click="setGrantedAuthorities()">
-                                            <input class="graphql" type="checkbox" data-test="graphql-any-checkbox" ng-model="grantedAuthorities.GRAPHQL['*']" ng-checked="hasGraphqlPermission('*')"
+                                            <input class="graphql" type="checkbox" data-test="graphql-any-checkbox" aria-label="{{'security.user.rights.graphql.label' | translate: {repository: ('security.any.data.repo' | translate)} }}" ng-model="grantedAuthorities.GRAPHQL['*']" ng-checked="hasGraphqlPermission('*')"
                                                    ng-disabled="graphqlCheckDisabled('*')">
                                         </span>
                                     </th>
@@ -313,20 +313,20 @@
                                         </td>
                                         <td class="text-xs-center read-rights">
                                             <span ng-click="setGrantedAuthorities()">
-                                                <input class="read" type="checkbox" ng-model="grantedAuthorities.READ_REPO[createUniqueKey(repository)]"
+                                                <input class="read" type="checkbox" aria-label="{{'security.user.rights.read.label' | translate: {repository: createUniqueKey(repository)} }}" ng-model="grantedAuthorities.READ_REPO[createUniqueKey(repository)]"
                                                        ng-checked="hasReadPermission(repository)" ng-disabled="readCheckDisabled(repository)">
                                             </span>
                                         </td>
                                         <td class="text-xs-center write-rights">
                                             <span ng-click="setGrantedAuthorities()">
-                                                <input class="write" type="checkbox" ng-model="grantedAuthorities.WRITE_REPO[createUniqueKey(repository)]"
+                                                <input class="write" type="checkbox" aria-label="{{'security.user.rights.write.label' | translate: {repository: createUniqueKey(repository)} }}" ng-model="grantedAuthorities.WRITE_REPO[createUniqueKey(repository)]"
                                                        ng-checked="hasWritePermission(repository)" ng-disabled="writeCheckDisabled(repository)">
                                             </span>
                                         </td>
 
                                             <td class="text-xs-center maintain-repository-rights">
                                                 <span ng-click="setGrantedAuthorities()">
-                                                    <input class="maintain-repository" type="checkbox" ng-model="grantedAuthorities.MAINTAIN_REPO[createUniqueKey(repository)]" ng-checked="hasMaintainRepositoryPermission(repository)" ng-disabled="maintainRepoCheckDisabled(repository)">
+                                                    <input class="maintain-repository" type="checkbox" aria-label="{{'security.user.rights.maintain_repository.label' | translate: {repository: createUniqueKey(repository)} }}" ng-model="grantedAuthorities.MAINTAIN_REPO[createUniqueKey(repository)]" ng-checked="hasMaintainRepositoryPermission(repository)" ng-disabled="maintainRepoCheckDisabled(repository)">
                                                 </span>
                                             </td>
 
@@ -335,7 +335,7 @@
                                                   data-test="graphql-repository-type-tooltip"
                                                   gdb-tooltip="{{'security.tooltip.not.available.for.repository.type' | translate}}"></span>
                                             <span ng-click="setGrantedAuthorities()">
-                                                <input class="graphql" type="checkbox" data-test="graphql-repository-checkbox" ng-model="grantedAuthorities.GRAPHQL[createUniqueKey(repository)]"
+                                                <input class="graphql" type="checkbox" data-test="graphql-repository-checkbox" aria-label="{{'security.user.rights.graphql.label' | translate: {repository: createUniqueKey(repository)} }}" ng-model="grantedAuthorities.GRAPHQL[createUniqueKey(repository)]"
                                                        ng-checked="hasGraphqlPermission(repository)"
                                                        ng-disabled="graphqlCheckDisabled(repository) || isGraphqlUnsupportedRepository(repository)">
                                             </span>

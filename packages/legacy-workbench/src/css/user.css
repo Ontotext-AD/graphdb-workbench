@@ -116,3 +116,21 @@
     align-items: center;
     justify-content: space-between;
 }
+
+/* Keep the switch checkboxes in the accessibility tree and in the tab order, but visually hidden. */
+.wb-user input.switch:empty {
+    display: block;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+.wb-user input.switch:focus-visible ~ label:before {
+    outline: var(--gw-toggleswitch-focus-ring-width) var(--gw-toggleswitch-focus-ring-style) var(--gw-toggleswitch-focus-ring-color);
+    outline-offset: var(--gw-toggleswitch-focus-ring-offset);
+}
