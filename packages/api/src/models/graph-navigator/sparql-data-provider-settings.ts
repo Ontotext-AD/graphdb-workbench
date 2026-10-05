@@ -1,11 +1,6 @@
 /**
- * Reactodia `SparqlDataProviderSettings`: the query preset the diagram uses to resolve types, labels
- * and links. The object is passed to the diagram as-is.
- *
- * A copy of the type from `@reactodia/workspace` rather than a re-export from `graphwise-reactodia`:
- * that package keeps `@reactodia/workspace` as a `file:` devDependency and does not publish it, so a
- * re-export would leave an unresolvable import in the typings, which `skipLibCheck` turns into `any`.
- * Keep it in sync with Reactodia's `sparqlDataProviderSettings.ts`.
+ * graphise-reactodia `SparqlDataProviderSettings`: the query preset the diagram uses to resolve types, labels
+ * and links.
  */
 export interface SparqlDataProviderSettings {
   defaultPrefix: string;
@@ -39,7 +34,7 @@ export interface SparqlDataProviderSettings {
 }
 
 /**
- * Reactodia `FullTextSearchSettings`: how the lookup query matches text.
+ * graphwise-reactodia `FullTextSearchSettings`: how the lookup query matches text.
  */
 export interface FullTextSearchSettings {
   prefix: string;
@@ -48,7 +43,7 @@ export interface FullTextSearchSettings {
 }
 
 /**
- * Reactodia `LinkConfiguration`: a link type resolved through a SPARQL property path.
+ * graphwise-reactodia `LinkConfiguration`: a link type resolved through a SPARQL property path.
  */
 export interface LinkConfiguration {
   id: string;
@@ -58,7 +53,7 @@ export interface LinkConfiguration {
 }
 
 /**
- * Reactodia `PropertyConfiguration`: an element property resolved through a SPARQL property path.
+ * graphwise-reactodia `PropertyConfiguration`: an element property resolved through a SPARQL property path.
  */
 export interface PropertyConfiguration {
   id: string;

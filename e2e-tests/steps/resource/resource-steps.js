@@ -207,11 +207,11 @@ export class ResourceSteps {
         return cy.get('.dataTable');
     }
 
-    static getVisualizeReactodiaButton() {
-        return cy.getByTestId('visualize-reactodia-button');
+    static getVisualizeGraphNavigatorButton() {
+        return cy.getByTestId('visualize-graph-navigator-button');
     }
 
-    static clickOnVisualizeReactodiaButton() {
-        ResourceSteps.getVisualizeReactodiaButton().click();
+    static clickOnVisualizeGraphNavigatorButton() {
+        ResourceSteps.getVisualizeGraphNavigatorButton().click();
     }
 }

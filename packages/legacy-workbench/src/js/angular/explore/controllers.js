@@ -199,9 +199,9 @@ WHERE {
             .search('config', payload.graphConfig?.id);
     };
 
-    $scope.goToReactodia = () => {
+    $scope.goToGraphNavigator = () => {
         $location
-            .path('reactodia')
+            .path('graph-navigator')
             .search('uri', $scope.resourceInfo.uri);
     };
 

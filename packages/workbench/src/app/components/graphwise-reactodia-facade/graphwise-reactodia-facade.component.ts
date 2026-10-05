@@ -5,8 +5,7 @@ import {GraphExploreLink, OntoToastrService, Rdf4jRepositoryService, service, Sp
 import {LoggerProvider} from '../../services/logger/logger-provider';
 
 /**
- * The request descriptor graphwise-reactodia's `SparqlQueryFunction` passes to the transport. Declared
- * locally so the facade does not depend on `@reactodia/workspace`; it mirrors that contract.
+ * The request descriptor graphwise-reactodia's `SparqlQueryFunction` passes to the transport.
  */
 interface SparqlQueryParams {
   url: string;
@@ -25,13 +24,13 @@ defineCustomElements();
  * page;
  */
 @Component({
-  selector: 'app-reactodia-component-facade',
+  selector: 'app-graphwise-reactodia-facade',
   standalone: true,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  templateUrl: './reactodia-component-facade.component.html',
-  styleUrl: './reactodia-component-facade.component.scss'
+  templateUrl: './graphwise-reactodia-facade.component.html',
+  styleUrl: './graphwise-reactodia-facade.component.scss'
 })
-export class ReactodiaComponentFacadeComponent {
+export class GraphwiseReactodiaFacadeComponent {
   private readonly rdf4jRepositoryService = service(Rdf4jRepositoryService);
   private readonly ontoToastrService = service(OntoToastrService);
   private readonly logger = LoggerProvider.logger;
@@ -67,7 +66,7 @@ export class ReactodiaComponentFacadeComponent {
         // An aborted request is a cancellation graphwise-reactodia asked for so don't show toast
         if (error?.name !== 'AbortError') {
           this.logger.error('Failed to execute query', error);
-          this.ontoToastrService.error(translate('reactodia.errors.query_execution_failed'));
+          this.ontoToastrService.error(translate('graph_navigator.errors.query_execution_failed'));
         }
         throw error;
       });

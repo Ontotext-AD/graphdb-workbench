@@ -8,14 +8,14 @@ import {GraphNavigatorSettings} from '@ontotext/workbench-api';
 import {ConfirmationProviderService} from '../../../services/dialog/confirmation-provider.service';
 
 /**
- * The Settings button of the Reactodia page and its popover, where a repository maintainer uploads,
+ * The Settings button of the Graph Navigator page and its popover, where a repository maintainer uploads,
  * exports or resets the repository's graph-navigator settings.
  *
  * The component only renders and asks: it confirms the destructive actions and emits them, and reflects
  * the {@link loading} state the page reports back. The page owns the settings and performs the requests.
  */
 @Component({
-  selector: 'app-reactodia-settings',
+  selector: 'app-graph-navigator-settings',
   standalone: true,
   imports: [
     Badge,
@@ -24,10 +24,10 @@ import {ConfirmationProviderService} from '../../../services/dialog/confirmation
     FileUpload,
     TranslocoPipe
   ],
-  templateUrl: './reactodia-settings.component.html',
-  styleUrl: './reactodia-settings.component.scss'
+  templateUrl: './graph-navigator-settings.component.html',
+  styleUrl: './graph-navigator-settings.component.scss'
 })
-export class ReactodiaSettingsComponent {
+export class GraphNavigatorSettingsComponent {
   private readonly confirmationProviderService = inject(ConfirmationProviderService);
   private readonly translocoService = inject(TranslocoService);
 
@@ -69,16 +69,16 @@ export class ReactodiaSettingsComponent {
       return;
     }
     this.confirm(
-      'reactodia.settings.confirm.upload.title',
-      'reactodia.settings.confirm.upload.message',
+      'graph_navigator.settings.confirm.upload.title',
+      'graph_navigator.settings.confirm.upload.message',
       () => this.uploadSettings.emit(file)
     );
   }
 
   confirmReset(): void {
     this.confirm(
-      'reactodia.settings.confirm.reset.title',
-      'reactodia.settings.confirm.reset.message',
+      'graph_navigator.settings.confirm.reset.title',
+      'graph_navigator.settings.confirm.reset.message',
       () => this.resetSettings.emit()
     );
   }

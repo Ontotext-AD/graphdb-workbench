@@ -1,7 +1,7 @@
 /**
  * Graph settings used when computing the graph for a SPARQL query.
  *
- * In visual graph these come from the graph-config settings, which are not present for reactodia,
+ * In visual graph these come from the graph-config settings, which are not present for the graph navigator,
  * so these mirror the legacy default settings.
  */
 export interface GraphExploreSettings {

@@ -23,16 +23,16 @@ export const routes: WorkbenchRoute[] = [
     loadComponent: () => import('./pages/ux-test/ux-test-page.component').then(m => m.UxTestPageComponent)
   },
   {
-    path: 'reactodia',
+    path: 'graph-navigator',
     data: {
-      title: 'reactodia.title',
-      helpInfo: 'reactodia.helpInfo',
+      title: 'graph_navigator.title',
+      helpInfo: 'graph_navigator.helpInfo',
       viewRestrictions: [
         ViewRestrictionCondition.IS_REPOSITORY_NOT_SELECTED,
         ViewRestrictionCondition.IS_LICENSE_INVALID,
       ],
     },
-    loadComponent: () => import('./pages/reactodia/reactodia-page.component').then(m => m.ReactodiaPageComponent)
+    loadComponent: () => import('./pages/graph-navigator/graph-navigator-page.component').then(m => m.GraphNavigatorPageComponent)
   },
   {
     path: '**',

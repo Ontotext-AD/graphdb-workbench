@@ -15,7 +15,7 @@ export function getWorkbenchRoutes(): Route[] {
       default: false,
     },
     {
-      path: 'reactodia',
+      path: 'graph-navigator',
       default: false,
     },
     {

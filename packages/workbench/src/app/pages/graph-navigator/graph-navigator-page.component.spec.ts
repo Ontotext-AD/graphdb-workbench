@@ -1,6 +1,6 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {NO_ERRORS_SCHEMA} from '@angular/core';
-import {ReactodiaPageComponent} from './reactodia-page.component';
+import {GraphNavigatorPageComponent} from './graph-navigator-page.component';
 import {provideTranslocoForTesting} from '../../../testing-utils/transloco-utils';
 import {mockResizeObserverForTesting} from '../../../testing-utils/resize-observer-testing-utils';
 import {
@@ -21,19 +21,19 @@ import {ActivatedRoute} from '@angular/router';
 import {By} from '@angular/platform-browser';
 import {ConfirmationService} from 'primeng/api';
 import {
-  ReactodiaComponentFacadeComponent
-} from '../../components/reactodia-component-facade/reactodia-component-facade.component';
+  GraphwiseReactodiaFacadeComponent
+} from '../../components/graphwise-reactodia-facade/graphwise-reactodia-facade.component';
 
 jest.mock('graphwise-reactodia/loader', () => ({
   defineCustomElements: jest.fn()
 }));
 
-describe('ReactodiaPageComponent', () => {
+describe('GraphNavigatorPageComponent', () => {
   mockResizeObserverForTesting();
 
   const QUERY = 'CONSTRUCT WHERE { ?s ?p ?o }';
-  let component: ReactodiaPageComponent;
-  let fixture: ComponentFixture<ReactodiaPageComponent>;
+  let component: GraphNavigatorPageComponent;
+  let fixture: ComponentFixture<GraphNavigatorPageComponent>;
   let loadGraphForQuerySpy: jest.SpyInstance;
   let getSettingsSpy: jest.SpyInstance;
   let canMaintainRepoSpy: jest.SpyInstance;
@@ -82,7 +82,7 @@ describe('ReactodiaPageComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [
-        ReactodiaPageComponent,
+        GraphNavigatorPageComponent,
         provideTranslocoForTesting()
       ],
       providers: [
@@ -93,7 +93,7 @@ describe('ReactodiaPageComponent', () => {
     })
       .compileComponents();
 
-    fixture = TestBed.createComponent(ReactodiaPageComponent);
+    fixture = TestBed.createComponent(GraphNavigatorPageComponent);
     component = fixture.componentInstance;
   });
 
@@ -113,7 +113,7 @@ describe('ReactodiaPageComponent', () => {
     fixture.detectChanges();
   };
 
-  const getFacade = () => fixture.debugElement.query(By.directive(ReactodiaComponentFacadeComponent));
+  const getFacade = () => fixture.debugElement.query(By.directive(GraphwiseReactodiaFacadeComponent));
 
   const deferred = <T>() => {
     let resolve!: (value: T) => void;
@@ -143,7 +143,7 @@ describe('ReactodiaPageComponent', () => {
       await settle();
 
       // AND: then it is rendered with them.
-      const facade = getFacade().componentInstance as ReactodiaComponentFacadeComponent;
+      const facade = getFacade().componentInstance as GraphwiseReactodiaFacadeComponent;
       expect(facade.currentRepository()).toBe(REPOSITORY_A.id);
       expect(facade.providerSettings()).toEqual(SETTINGS_A.getProviderSettings());
     });
@@ -167,7 +167,7 @@ describe('ReactodiaPageComponent', () => {
       // AND: it is mounted with the new repository and its settings together.
       settingsRequest.resolve(SETTINGS_B);
       await settle();
-      const facade = getFacade().componentInstance as ReactodiaComponentFacadeComponent;
+      const facade = getFacade().componentInstance as GraphwiseReactodiaFacadeComponent;
       expect(facade.currentRepository()).toBe(REPOSITORY_B.id);
       expect(facade.providerSettings()).toEqual(SETTINGS_B.getProviderSettings());
     });
@@ -186,7 +186,7 @@ describe('ReactodiaPageComponent', () => {
       await settle();
 
       // THEN: the diagram keeps the settings of the selected repository.
-      const facade = getFacade().componentInstance as ReactodiaComponentFacadeComponent;
+      const facade = getFacade().componentInstance as GraphwiseReactodiaFacadeComponent;
       expect(facade.currentRepository()).toBe(REPOSITORY_B.id);
       expect(facade.providerSettings()).toEqual(SETTINGS_B.getProviderSettings());
     });
@@ -223,7 +223,7 @@ describe('ReactodiaPageComponent', () => {
       // THEN: the file is uploaded for the repository and the diagram uses the new settings.
       expect(uploadSpy).toHaveBeenCalledWith(REPOSITORY_A.id, file);
       expect(toastrSuccessSpy).toHaveBeenCalled();
-      const facade = getFacade().componentInstance as ReactodiaComponentFacadeComponent;
+      const facade = getFacade().componentInstance as GraphwiseReactodiaFacadeComponent;
       expect(facade.providerSettings()).toEqual(SETTINGS_B.getProviderSettings());
     });
 
@@ -242,7 +242,7 @@ describe('ReactodiaPageComponent', () => {
 
       // THEN: the failure is reported and the diagram keeps the settings it had.
       expect(toastrErrorSpy).toHaveBeenCalled();
-      const facade = getFacade().componentInstance as ReactodiaComponentFacadeComponent;
+      const facade = getFacade().componentInstance as GraphwiseReactodiaFacadeComponent;
       expect(facade.providerSettings()).toEqual(SETTINGS_A.getProviderSettings());
     });
 
@@ -261,7 +261,7 @@ describe('ReactodiaPageComponent', () => {
       // THEN: the settings are deleted and the ones the backend falls back to are applied.
       expect(deleteSpy).toHaveBeenCalledWith(REPOSITORY_A.id);
       expect(getSettingsSpy).toHaveBeenLastCalledWith(REPOSITORY_A.id);
-      const facade = getFacade().componentInstance as ReactodiaComponentFacadeComponent;
+      const facade = getFacade().componentInstance as GraphwiseReactodiaFacadeComponent;
       expect(facade.providerSettings()).toEqual(SETTINGS_B.getProviderSettings());
     });
 
@@ -275,7 +275,7 @@ describe('ReactodiaPageComponent', () => {
       await settle();
 
       // THEN: the settings controls are shown.
-      expect(fixture.nativeElement.querySelector('app-reactodia-settings')).not.toBeNull();
+      expect(fixture.nativeElement.querySelector('app-graph-navigator-settings')).not.toBeNull();
     });
 
     it('should hide the settings controls when the user cannot maintain the repository', async () => {
@@ -288,7 +288,7 @@ describe('ReactodiaPageComponent', () => {
       await settle();
 
       // THEN: the settings controls are not shown, but the diagram is.
-      expect(fixture.nativeElement.querySelector('app-reactodia-settings')).toBeNull();
+      expect(fixture.nativeElement.querySelector('app-graph-navigator-settings')).toBeNull();
       expect(getFacade()).not.toBeNull();
     });
   });

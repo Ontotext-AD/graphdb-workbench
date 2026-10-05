@@ -1597,7 +1597,7 @@ input.switch:disabled ~ label:before, input.switch:disabled ~ label:after {
 
     .display-type-table-btn.active,
     .display-type-visual-btn.active,
-    .display-type-reactodia-btn.active {
+    .display-type-graph-navigator-btn.active {
         color: var(--gw-togglebutton-checked-color);
         background-color: var(--gw-togglebutton-checked-background);
         border-color: var(--gw-togglebutton-checked-border-color);

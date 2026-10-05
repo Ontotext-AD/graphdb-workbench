@@ -1,8 +1,8 @@
 import {BaseSteps} from "./base-steps.js";
 
-const VIEW_URL = '/reactodia';
+const VIEW_URL = '/graph-navigator';
 
-export class ReactodiaSteps extends BaseSteps {
+export class GraphNavigatorSteps extends BaseSteps {
 
     static visit(uri) {
         cy.visit(`${VIEW_URL}${uri ? ('?uri=' + uri) : ''}`);
@@ -25,39 +25,39 @@ export class ReactodiaSteps extends BaseSteps {
     }
 
     static getWorkspace() {
-        return ReactodiaSteps.getComponent().find('.reactodia-workspace');
+        return GraphNavigatorSteps.getComponent().find('.reactodia-workspace');
     }
 
     static getCanvas() {
-        return ReactodiaSteps.getComponent().find('.reactodia-canvas');
+        return GraphNavigatorSteps.getComponent().find('.reactodia-canvas');
     }
 
     static getElements() {
-        return ReactodiaSteps.getCanvas().find('[data-element-id]');
+        return GraphNavigatorSteps.getCanvas().find('[data-element-id]');
     }
 
     static getElement(text) {
-        return ReactodiaSteps.getCanvas().find(`[data-element-id]`).contains(text).first();
+        return GraphNavigatorSteps.getCanvas().find(`[data-element-id]`).contains(text).first();
     }
 
     static getSettingsButton() {
-        return cy.get('[data-test="reactodia-settings-btn"]');
+        return cy.get('[data-test="graph-navigator-settings-btn"]');
     }
 
     static openSettings() {
-        ReactodiaSteps.getSettingsButton().click();
+        GraphNavigatorSteps.getSettingsButton().click();
     }
 
     static closeSettings() {
-        ReactodiaSteps.getCanvas().click('bottomLeft');
+        GraphNavigatorSteps.getCanvas().click('bottomLeft');
     }
 
     static getSettingsPopover() {
-        return cy.get('[data-test="reactodia-settings-popover"]');
+        return cy.get('[data-test="graph-navigator-settings-popover"]');
     }
 
     static getSettingsFileInput() {
-        return this.getByTestId('reactodia-settings-upload').find('.p-fileupload-choose-button input[type=file]');
+        return this.getByTestId('graph-navigator-settings-upload').find('.p-fileupload-choose-button input[type=file]');
     }
 
     static selectSettingsFile(fileName = 'settings.ttl', contents = '@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .') {
@@ -67,35 +67,35 @@ export class ReactodiaSteps extends BaseSteps {
     }
 
     static getSelectedSettingsFile(fileName = 'settings.ttl') {
-        return ReactodiaSteps.getSettingsPopover().contains(fileName);
+        return GraphNavigatorSteps.getSettingsPopover().contains(fileName);
     }
 
     static getUploadButton() {
-        return ReactodiaSteps.getSettingsPopover().find('.p-fileupload-upload-button');
+        return GraphNavigatorSteps.getSettingsPopover().find('.p-fileupload-upload-button');
     }
 
     static clickUpload() {
-        ReactodiaSteps.getUploadButton().click();
+        GraphNavigatorSteps.getUploadButton().click();
     }
 
     static clickCancelFile() {
-        ReactodiaSteps.getSettingsPopover().find('.p-fileupload-cancel-button').click();
+        GraphNavigatorSteps.getSettingsPopover().find('.p-fileupload-cancel-button').click();
     }
 
     static getBrowseButton() {
-        return ReactodiaSteps.getSettingsPopover().find('.p-fileupload-choose-button');
+        return GraphNavigatorSteps.getSettingsPopover().find('.p-fileupload-choose-button');
     }
 
     static clickExport() {
-        cy.get('[data-test="reactodia-settings-export-btn"] button').click();
+        cy.get('[data-test="graph-navigator-settings-export-btn"] button').click();
     }
 
     static getResetButton() {
-        return cy.get('[data-test="reactodia-settings-reset-btn"] button');
+        return cy.get('[data-test="graph-navigator-settings-reset-btn"] button');
     }
 
     static clickReset() {
-        ReactodiaSteps.getResetButton().click();
+        GraphNavigatorSteps.getResetButton().click();
     }
 
     static getConfirmDialog() {
@@ -103,11 +103,11 @@ export class ReactodiaSteps extends BaseSteps {
     }
 
     static confirmDialog() {
-        ReactodiaSteps.getConfirmDialog().find('.confirm-btn').click();
+        GraphNavigatorSteps.getConfirmDialog().find('.confirm-btn').click();
     }
 
     static cancelDialog() {
-        ReactodiaSteps.getConfirmDialog().find('.cancel-btn').click();
+        GraphNavigatorSteps.getConfirmDialog().find('.cancel-btn').click();
     }
 
     static verifyFileDownloaded(fileName) {

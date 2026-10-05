@@ -20,16 +20,16 @@ import {
 import {translate} from '@jsverse/transloco';
 import {CLEAR_DIAGRAM_STORAGE_EVENT} from 'graphwise-reactodia';
 import {
-  ReactodiaComponentFacadeComponent
-} from '../../components/reactodia-component-facade/reactodia-component-facade.component';
+  GraphwiseReactodiaFacadeComponent
+} from '../../components/graphwise-reactodia-facade/graphwise-reactodia-facade.component';
 import {PageLayoutComponent} from '../../components/page-layout/page-layout.component';
 import {LoggerProvider} from '../../services/logger/logger-provider';
-import {ReactodiaSettingsComponent} from './reactodia-settings/reactodia-settings.component';
+import {GraphNavigatorSettingsComponent} from './graph-navigator-settings/graph-navigator-settings.component';
 import {RestrictAccessDirective, ViewPermissions} from '../../directives/restrict-access.directive';
 
 /**
- * Page that hosts the Reactodia graph. It owns the context subscriptions (repository, language and
- * theme), gates between the "repository required" banner and the {@link ReactodiaComponentFacadeComponent}
+ * Page that hosts the Graph Navigator. It owns the context subscriptions (repository, language and
+ * theme), gates between the "repository required" banner and the {@link GraphwiseReactodiaFacadeComponent}
  * (which owns the `graphwise-reactodia` web component and its wiring) based on the active
  * repository, and feeds the current repository/language/theme down to the facade.
  *
@@ -37,18 +37,18 @@ import {RestrictAccessDirective, ViewPermissions} from '../../directives/restric
  * loaded, so the diagram is always built with the settings of the active repository.
  */
 @Component({
-  selector: 'app-reactodia-page',
+  selector: 'app-graph-navigator-page',
   standalone: true,
-  templateUrl: './reactodia-page.component.html',
+  templateUrl: './graph-navigator-page.component.html',
   imports: [
-    ReactodiaComponentFacadeComponent,
+    GraphwiseReactodiaFacadeComponent,
     PageLayoutComponent,
-    ReactodiaSettingsComponent,
+    GraphNavigatorSettingsComponent,
     RestrictAccessDirective,
   ],
-  styleUrl: './reactodia-page.component.scss'
+  styleUrl: './graph-navigator-page.component.scss'
 })
-export class ReactodiaPageComponent implements OnInit, OnDestroy {
+export class GraphNavigatorPageComponent implements OnInit, OnDestroy {
   private readonly repositoryContextService = service(RepositoryContextService);
   private readonly languageContextService = service(LanguageContextService);
   private readonly graphExploreService = service(GraphExploreService);
@@ -134,8 +134,8 @@ export class ReactodiaPageComponent implements OnInit, OnDestroy {
   onUploadSettings(file: File, repositoryId: string): void {
     this.runSettingsRequest(
       this.graphNavigatorService.uploadSettings(repositoryId, file),
-      'reactodia.settings.messages.upload_success',
-      'reactodia.settings.messages.upload_failed'
+      'graph_navigator.settings.messages.upload_success',
+      'graph_navigator.settings.messages.upload_failed'
     );
   }
 
@@ -145,8 +145,8 @@ export class ReactodiaPageComponent implements OnInit, OnDestroy {
   onResetSettings(repositoryId: string): void {
     this.runSettingsRequest(
       this.graphNavigatorService.deleteSettings(repositoryId).then(() => this.graphNavigatorService.getSettings(repositoryId)),
-      'reactodia.settings.messages.reset_success',
-      'reactodia.settings.messages.reset_failed'
+      'graph_navigator.settings.messages.reset_success',
+      'graph_navigator.settings.messages.reset_failed'
     );
   }
 
@@ -158,7 +158,7 @@ export class ReactodiaPageComponent implements OnInit, OnDestroy {
     this.graphNavigatorService.exportSettings(repositoryId)
       .then((turtle) => saveAs(new Blob([turtle], {type: 'text/turtle'}), `graph-navigator-settings-${repositoryId}.ttl`))
       .catch((error) => {
-        const message = translate('reactodia.settings.messages.export_failed');
+        const message = translate('graph_navigator.settings.messages.export_failed');
         this.logger.error(message, error);
         this.toastrService.error(message);
       });
@@ -197,7 +197,7 @@ export class ReactodiaPageComponent implements OnInit, OnDestroy {
           return;
         }
         this.logger.error('Failed to load the graph-navigator settings', error);
-        this.toastrService.error(translate('reactodia.settings.messages.load_failed'));
+        this.toastrService.error(translate('graph_navigator.settings.messages.load_failed'));
       });
   }
 
@@ -229,7 +229,7 @@ export class ReactodiaPageComponent implements OnInit, OnDestroy {
       .then((links) => this.seedGraph.set(links))
       .catch((error) => {
         this.logger.error('Failed to load graph for query', error);
-        this.toastrService.error(translate('reactodia.errors.graph_load_failed'));
+        this.toastrService.error(translate('graph_navigator.errors.graph_load_failed'));
       })
       .finally(() => this.loading.set(false));
   }

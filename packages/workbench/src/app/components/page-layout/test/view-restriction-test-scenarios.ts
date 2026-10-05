@@ -235,7 +235,7 @@ export function getFedxRepositorySelectedWithCreateRightsScenario(): ViewRestric
     .withRepositories(REPOSITORIES)
     .withSelectedRepository(FEDX_REPO)
     .withExpectedContentHidden()
-    .withExpectedMessages([{key: 'fedx_unsupported', params: {pageTitle: 'Reactodia'}}])
+    .withExpectedMessages([{key: 'fedx_unsupported', params: {pageTitle: 'Graph Navigator'}}])
     .withExpectedPicker([REPO_A_ID, REPO_B_ID])
     .withExpectedCreateButtonShown()
     .build();
@@ -404,7 +404,7 @@ export function getFedxRepositorySelectedWithoutCreateRightsScenario(): ViewRest
     .withRepositories(REPOSITORIES)
     .withSelectedRepository(FEDX_REPO)
     .withExpectedContentHidden()
-    .withExpectedMessages([{key: 'fedx_unsupported', params: {pageTitle: 'Reactodia'}}])
+    .withExpectedMessages([{key: 'fedx_unsupported', params: {pageTitle: 'Graph Navigator'}}])
     .withExpectedPicker([REPO_A_ID, REPO_B_ID])
     .withExpectedCreateButtonHidden()
     .build();
@@ -680,7 +680,7 @@ export function getFedxRepositorySelectedWithoutRequiredSelectionScenario(): Vie
     .withRepositories(REPOSITORIES)
     .withSelectedRepository(FEDX_REPO)
     .withExpectedContentHidden()
-    .withExpectedMessages([{key: 'fedx_unsupported', params: {pageTitle: 'Reactodia'}}])
+    .withExpectedMessages([{key: 'fedx_unsupported', params: {pageTitle: 'Graph Navigator'}}])
     .withExpectedPicker(ALL_LOCAL_REPOSITORY_IDS)
     .withExpectedCreateButtonShown()
     .build();

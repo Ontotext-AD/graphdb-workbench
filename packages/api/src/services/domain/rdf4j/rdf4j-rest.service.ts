@@ -104,7 +104,7 @@ export class Rdf4jRestService extends HttpService {
    * Unlike {@link executeSparqlQuery}, the caller chooses the response format via the `accept`
    * option (e.g. `application/sparql-results+json` for SELECT/ASK or `application/rdf+json;` for
    * CONSTRUCT/DESCRIBE) and reads the raw payload from {@link HttpResponse.originalResponse}.
-   * This suits consumers that need the unparsed response, such as Reactodia.
+   * This suits consumers that need the unparsed response
    *
    * @param repositoryId - The ID of the repository to query.
    * @param query - The SPARQL query string.

@@ -1,4 +1,4 @@
-import {ReactodiaSteps} from '../../steps/reactodia-steps.js';
+import {GraphNavigatorSteps} from '../../steps/graph-navigator-steps.js';
 import {PageRestrictionsSteps} from '../../steps/page-restrictions-steps.js';
 import {RepositoryPickerListSteps} from '../../steps/repository-picker-list-steps.js';
 import {LicenseStubs} from '../../stubs/license-stubs.js';
@@ -9,11 +9,11 @@ const INVALID_LICENSE_MESSAGE = 'your license is not valid';
 const SELECT_OR_CREATE_REPOSITORY_MESSAGE = 'Select a repository below or create a new one.';
 const SELECT_REPOSITORY_MESSAGE = 'Select a repository below.';
 
-describe('Reactodia view restrictions', () => {
+describe('Graph Navigator view restrictions', () => {
     let repositoryId;
 
     beforeEach(() => {
-        repositoryId = 'reactodia-view-restrictions-' + Date.now();
+        repositoryId = 'graph-navigator-view-restrictions-' + Date.now();
         cy.createRepository({id: repositoryId});
     });
 
@@ -24,36 +24,36 @@ describe('Reactodia view restrictions', () => {
     it('should show the repository picker when no repository is selected', () => {
         // GIVEN no repository is selected
 
-        // WHEN I open the Reactodia view
-        ReactodiaSteps.visit();
+        // WHEN I open the Graph Navigator view
+        GraphNavigatorSteps.visit();
         // THEN I expect the repository restriction is shown
         PageRestrictionsSteps.getMessages().should('have.length', 1);
         PageRestrictionsSteps.getMessage(NO_REPOSITORY_MESSAGE).should('be.visible');
         // AND the existing repository is available in the picker
         RepositoryPickerListSteps.getRepositoryRow(repositoryId).should('be.visible');
         // AND the graph is not rendered
-        ReactodiaSteps.getComponent().should('not.exist');
+        GraphNavigatorSteps.getComponent().should('not.exist');
     });
 
     it('should render the graph when a repository is selected from the picker', () => {
-        // GIVEN the Reactodia view is open with no repository selected
-        ReactodiaSteps.visit();
+        // GIVEN the Graph Navigator view is open with no repository selected
+        GraphNavigatorSteps.visit();
 
         // WHEN I select a repository
         RepositoryPickerListSteps.selectRepository(repositoryId);
         // THEN I expect the restriction is removed and the graph is rendered
         PageRestrictionsSteps.getRestrictions().should('not.exist');
-        ReactodiaSteps.getWorkspace().should('exist');
+        GraphNavigatorSteps.getWorkspace().should('exist');
     });
 
     it('should not restrict the view when the license is valid and a repository is selected', () => {
         // GIVEN a valid license and a selected repository
         cy.presetRepository(repositoryId);
 
-        // WHEN I open the Reactodia view
-        ReactodiaSteps.visit();
+        // WHEN I open the Graph Navigator view
+        GraphNavigatorSteps.visit();
         // THEN I expect the view is not restricted
-        ReactodiaSteps.getWorkspace().should('exist');
+        GraphNavigatorSteps.getWorkspace().should('exist');
         PageRestrictionsSteps.getRestrictions().should('not.exist');
     });
 
@@ -66,8 +66,8 @@ describe('Reactodia view restrictions', () => {
             // GIVEN an invalid license and a selected repository
             cy.presetRepository(repositoryId);
 
-            // WHEN I open the Reactodia view
-            ReactodiaSteps.visit();
+            // WHEN I open the Graph Navigator view
+            GraphNavigatorSteps.visit();
             // THEN I expect the license restriction is shown
             PageRestrictionsSteps.getMessages().should('have.length', 1);
             PageRestrictionsSteps.getMessage(INVALID_LICENSE_MESSAGE).should('be.visible');
@@ -78,14 +78,14 @@ describe('Reactodia view restrictions', () => {
                 .and('include', '/license');
             // AND the repository picker and graph are not rendered
             RepositoryPickerListSteps.getRepositoryPickerList().should('not.exist');
-            ReactodiaSteps.getComponent().should('not.exist');
+            GraphNavigatorSteps.getComponent().should('not.exist');
         });
 
         it('should show both restrictions when no repository is selected', () => {
             // GIVEN an invalid license and no repository selected
 
-            // WHEN I open the Reactodia view
-            ReactodiaSteps.visit();
+            // WHEN I open the Graph Navigator view
+            GraphNavigatorSteps.visit();
             // THEN both restrictions are shown
             PageRestrictionsSteps.getMessages().should('have.length', 2);
             PageRestrictionsSteps.getMessage(INVALID_LICENSE_MESSAGE).should('be.visible');
@@ -96,14 +96,14 @@ describe('Reactodia view restrictions', () => {
             RepositoryPickerListSteps.getRepositoryRow(repositoryId).should('be.visible');
             RepositoryPickerListSteps.getCreateRepositoryButton().should('not.exist');
             // AND the graph is not rendered
-            ReactodiaSteps.getComponent().should('not.exist');
+            GraphNavigatorSteps.getComponent().should('not.exist');
         });
     });
 
     context('with security enabled', () => {
-        const readOnlyUser = 'reactodia-reader-' + Date.now();
-        const repoManagerUser = 'reactodia-repo-manager-' + Date.now();
-        const repoMaintainerUser = 'reactodia-repo-maintainer-' + Date.now();
+        const readOnlyUser = 'graph-navigator-reader-' + Date.now();
+        const repoManagerUser = 'graph-navigator-repo-manager-' + Date.now();
+        const repoMaintainerUser = 'graph-navigator-repo-maintainer-' + Date.now();
         const password = 'root';
 
         beforeEach(() => {
@@ -144,10 +144,10 @@ describe('Reactodia view restrictions', () => {
             cy.loginAs(readOnlyUser, password);
             cy.presetRepository(repositoryId);
 
-            // WHEN I open the Reactodia view
-            ReactodiaSteps.visit();
+            // WHEN I open the Graph Navigator view
+            GraphNavigatorSteps.visit();
             // THEN I expect the view is not restricted
-            ReactodiaSteps.getWorkspace().should('exist');
+            GraphNavigatorSteps.getWorkspace().should('exist');
             PageRestrictionsSteps.getRestrictions().should('not.exist');
         });
 
@@ -155,8 +155,8 @@ describe('Reactodia view restrictions', () => {
             // GIVEN the administrator is logged in with no repository selected
             cy.loginAs('admin', password);
 
-            // WHEN I open the Reactodia view
-            ReactodiaSteps.visit();
+            // WHEN I open the Graph Navigator view
+            GraphNavigatorSteps.visit();
             // THEN I expect the option to select or create a repository is displayed
             PageRestrictionsSteps.getMessage(SELECT_OR_CREATE_REPOSITORY_MESSAGE).should('be.visible');
             RepositoryPickerListSteps.getRepositoryRow(repositoryId).should('be.visible');
@@ -167,8 +167,8 @@ describe('Reactodia view restrictions', () => {
             // GIVEN a repository manager is logged in with no repository selected
             cy.loginAs(repoManagerUser, password);
 
-            // WHEN I open the Reactodia view
-            ReactodiaSteps.visit();
+            // WHEN I open the Graph Navigator view
+            GraphNavigatorSteps.visit();
             // THEN the option to select or create a repository is displayed
             PageRestrictionsSteps.getMessage(SELECT_OR_CREATE_REPOSITORY_MESSAGE).should('be.visible');
             RepositoryPickerListSteps.getRepositoryRow(repositoryId).should('be.visible');
@@ -176,7 +176,7 @@ describe('Reactodia view restrictions', () => {
             // WHEN I click the create repository button
             RepositoryPickerListSteps.clickCreateRepositoryButton();
             // THEN the create repository view is opened
-            RepositorySteps.verifyRepositoryCreateViewUrl().and('include', 'previous=%2Freactodia');
+            RepositorySteps.verifyRepositoryCreateViewUrl().and('include', 'previous=%2Fgraph-navigator');
         });
 
         [
@@ -187,8 +187,8 @@ describe('Reactodia view restrictions', () => {
                 // GIVEN a user without repository management rights is logged in with no repository selected
                 cy.loginAs(username, password);
 
-                // WHEN I open the Reactodia view
-                ReactodiaSteps.visit();
+                // WHEN I open the Graph Navigator view
+                GraphNavigatorSteps.visit();
                 // THEN only the option to select a repository is displayed
                 PageRestrictionsSteps.getMessage(SELECT_REPOSITORY_MESSAGE).should('be.visible');
                 PageRestrictionsSteps.getMessages().should('not.contain.text', 'create a new one');

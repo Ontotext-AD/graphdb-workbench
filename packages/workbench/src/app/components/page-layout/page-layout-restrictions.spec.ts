@@ -36,7 +36,7 @@ import {mockResizeObserverForTesting} from '../../../testing-utils/resize-observ
 import {getTextWithoutLinks, htmlToPlainText, normalizeText} from '../../../testing-utils/text-testing-utils';
 import {createAuthenticatedUser, createSecurityConfig, resetWorkbenchContexts} from '../../../testing-utils/workbench-context-testing-utils';
 
-const PAGE_TITLE_KEY = 'reactodia.title';
+const PAGE_TITLE_KEY = 'graph_navigator.title';
 
 @Component({
   imports: [PageLayoutComponent],
@@ -187,7 +187,7 @@ describe('PageLayoutComponent restrictions', () => {
   it('should open the create repository page, with a way back to the current page, when creating a repository', async () => {
     // GIVEN: a user who can create repositories opens a page that requires a selected repository, and no repository is
     // selected
-    jest.spyOn(WindowService, 'getLocationPathname').mockReturnValue('/reactodia');
+    jest.spyOn(WindowService, 'getLocationPathname').mockReturnValue('/graph-navigator');
     const navigateSingleSpa = jest.spyOn(WindowService, 'navigateSingleSpa').mockImplementation(() => undefined);
     await givenScenario(getNoRepositorySelectedWithCreateRightsScenario());
     await render();
@@ -199,7 +199,7 @@ describe('PageLayoutComponent restrictions', () => {
     expect(navigateSingleSpa).toHaveBeenCalledTimes(1);
     const url = new URL(navigateSingleSpa.mock.calls[0][0]);
     expect(url.pathname).toBe('/repository/create');
-    expect(url.searchParams.get('previous')).toBe('/reactodia');
+    expect(url.searchParams.get('previous')).toBe('/graph-navigator');
   });
 
   it('should offer only the local repositories, each with its location', async () => {

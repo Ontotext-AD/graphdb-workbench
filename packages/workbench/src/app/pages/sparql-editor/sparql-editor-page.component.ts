@@ -159,14 +159,14 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
       element.remove();
     }
   };
-  private readonly exploreReactodiaYasrToolbarElementBuilder: YasrToolbarPlugin = {
+  private readonly exploreGraphNavigatorYasrToolbarElementBuilder: YasrToolbarPlugin = {
     createElement: (yasr: Yasr) => {
-      const exploreReactodiaButton = document.createElement('button');
-      exploreReactodiaButton.type = 'button';
-      exploreReactodiaButton.classList.add('onto-btn', 'onto-btn-primary', 'explore-reactodia');
-      exploreReactodiaButton.textContent = this.translocoService.translate('sparql_editor.yasgui.yasr.yasr_header.toolbar.btn.reactodia_btn.label');
-      exploreReactodiaButton.addEventListener('click', () => this.navigateToReactodia(yasr));
-      return exploreReactodiaButton;
+      const exploreGraphNavigatorButton = document.createElement('button');
+      exploreGraphNavigatorButton.type = 'button';
+      exploreGraphNavigatorButton.classList.add('onto-btn', 'onto-btn-primary', 'explore-graph-navigator');
+      exploreGraphNavigatorButton.textContent = this.translocoService.translate('sparql_editor.yasgui.yasr.yasr_header.toolbar.btn.graph_navigator_btn.label');
+      exploreGraphNavigatorButton.addEventListener('click', () => this.navigateToGraphNavigator(yasr));
+      return exploreGraphNavigatorButton;
     },
     updateElement: (element: HTMLElement, yasr: Yasr) => {
       element.classList.add('hidden');
@@ -252,12 +252,12 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Navigates to the Reactodia visualization page, passing the current query.
+   * Navigates to the Graph Navigator visualization page, passing the current query.
    *
    * @param yasr - YASR result renderer instance containing the current query context.
    */
-  private navigateToReactodia(yasr: Yasr) {
-    this.router.navigate(['reactodia'], {
+  private navigateToGraphNavigator(yasr: Yasr) {
+    this.router.navigate(['graph-navigator'], {
       queryParams: {
         query: yasr.yasqe.getValue(),
         sameAs: yasr.yasqe.getSameAs(),
@@ -300,7 +300,7 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
     config.prefixes = this.prefixes?.namespaces;
     config.infer = this.isOntopRepo || this.inferUserSetting;
     config.sameAs = this.isOntopRepo || this.sameAsUserSetting;
-    config.yasrToolbarPlugins = this.embedded ? [] : [this.exploreVisualGraphYasrToolbarElementBuilder, this.exploreReactodiaYasrToolbarElementBuilder];
+    config.yasrToolbarPlugins = this.embedded ? [] : [this.exploreVisualGraphYasrToolbarElementBuilder, this.exploreGraphNavigatorYasrToolbarElementBuilder];
     config.beforeUpdateQuery = (query: string, tabId: string) => this.getBeforeUpdateQueryHandler(query, tabId);
     config.outputHandlers = {
       [EventDataType.QUERY_EXECUTED]: (event: QueryExecutedEvent) => this.queryExecutedHandler(event),
