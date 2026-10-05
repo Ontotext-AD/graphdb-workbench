@@ -1,10 +1,10 @@
 import {Repository, RepositoryType, ViewRestrictionCondition} from '@ontotext/workbench-api';
-import {TestUser} from './view-restriction-scenarios';
+import {TestUser} from './view-restriction-test-scenarios';
 
 /**
  * The restriction message keys under `components.page_restrictions`.
  */
-export type PageRestrictionMessageKey =
+export type PageRestrictionTestMessageKey =
   | 'no_active_repository_select_one'
   | 'no_active_repository_select_or_create_one'
   | 'no_accessible_repos_create_one'
@@ -20,8 +20,8 @@ export type PageRestrictionMessageKey =
  */
 export type TestLicense = 'valid' | 'invalid' | 'missing';
 
-export interface ExpectedViewRestrictionMessage {
-  key: PageRestrictionMessageKey;
+export interface ExpectedViewRestrictionTestMessage {
+  key: PageRestrictionTestMessageKey;
   params?: Record<string, string>;
   /**
    * Whether the message offers the "Set a new license" link.
@@ -29,7 +29,7 @@ export interface ExpectedViewRestrictionMessage {
   hasLicenseLink?: boolean;
 }
 
-export interface ViewRestrictionScenario {
+export interface ViewRestrictionTestScenario {
   description: string;
   restrictions: ViewRestrictionCondition[];
   allowedRepositoryTypes?: RepositoryType[];
@@ -42,7 +42,7 @@ export interface ViewRestrictionScenario {
   selectedRepository?: Repository;
   expected: {
     contentShown: boolean;
-    messages: ExpectedViewRestrictionMessage[];
+    messages: ExpectedViewRestrictionTestMessage[];
     /**
      * The repository ids offered by the picker, in display order. Undefined means that the picker is not shown.
      */
@@ -52,9 +52,9 @@ export interface ViewRestrictionScenario {
 }
 
 /**
- * Builds a {@link ViewRestrictionScenario}. The description is generated from the scenario input, so it always matches it.
+ * Builds a {@link ViewRestrictionTestScenario}. The description is generated from the scenario input, so it always matches it.
  */
-export class ViewRestrictionScenarioBuilder {
+export class ViewRestrictionTestScenarioBuilder {
   private restrictions: ViewRestrictionCondition[] = [];
   private allowedRepositoryTypes?: RepositoryType[];
   private license: TestLicense = 'valid';
@@ -62,7 +62,7 @@ export class ViewRestrictionScenarioBuilder {
   private repositories: Repository[] = [];
   private selectedRepository?: Repository;
   private contentShown = false;
-  private messages: ExpectedViewRestrictionMessage[] = [];
+  private messages: ExpectedViewRestrictionTestMessage[] = [];
   private pickerRepositoryIds?: string[];
   private createButton = false;
 
@@ -162,7 +162,7 @@ export class ViewRestrictionScenarioBuilder {
   /**
    * Sets the restriction messages expected on the page, in display order. Defaults to no messages.
    */
-  withExpectedMessages(messages: ExpectedViewRestrictionMessage[]): this {
+  withExpectedMessages(messages: ExpectedViewRestrictionTestMessage[]): this {
     this.messages = messages;
     return this;
   }
@@ -202,7 +202,7 @@ export class ViewRestrictionScenarioBuilder {
   /**
    * Builds the scenario, generating its description from the scenario input.
    */
-  build(): ViewRestrictionScenario {
+  build(): ViewRestrictionTestScenario {
     return {
       description: this.describe(),
       restrictions: this.restrictions,
