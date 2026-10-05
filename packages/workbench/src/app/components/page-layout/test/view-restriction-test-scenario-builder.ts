@@ -18,7 +18,7 @@ export type PageRestrictionTestMessageKey =
 /**
  * The GraphDB license state. `missing` means that no license is loaded.
  */
-export type TestLicense = 'valid' | 'invalid' | 'missing';
+export type TestLicenseState = 'valid' | 'invalid' | 'missing';
 
 export interface ExpectedViewRestrictionTestMessage {
   key: PageRestrictionTestMessageKey;
@@ -33,7 +33,7 @@ export interface ViewRestrictionTestScenario {
   description: string;
   restrictions: ViewRestrictionCondition[];
   allowedRepositoryTypes?: RepositoryType[];
-  license: TestLicense;
+  license: TestLicenseState;
   /**
    * The logged-in user. Undefined means that security is OFF.
    */
@@ -57,7 +57,7 @@ export interface ViewRestrictionTestScenario {
 export class ViewRestrictionTestScenarioBuilder {
   private restrictions: ViewRestrictionCondition[] = [];
   private allowedRepositoryTypes?: RepositoryType[];
-  private license: TestLicense = 'valid';
+  private license: TestLicenseState = 'valid';
   private user?: TestUser;
   private repositories: Repository[] = [];
   private selectedRepository?: Repository;
