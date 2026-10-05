@@ -126,11 +126,11 @@ export class OntoRdfSearch {
           false
         ),
         this.createSearchButton(
-          ResourceSearchConstants.REACTODIA_VIEW,
-          'rdf_search.buttons.reactodia',
+          ResourceSearchConstants.GRAPH_NAVIGATOR_VIEW,
+          'rdf_search.buttons.graph_navigator',
           () => {
-            this.redirectUrl = UriUtil.REACTODIA_URL;
-            this.resourceSearchStorageService.setSelectedView(ResourceSearchConstants.REACTODIA_VIEW);
+            this.redirectUrl = UriUtil.GRAPH_NAVIGATOR_URL;
+            this.resourceSearchStorageService.setSelectedView(ResourceSearchConstants.GRAPH_NAVIGATOR_VIEW);
           },
           false
         ),

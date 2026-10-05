@@ -1,4 +1,4 @@
-import {ReactodiaSteps} from '../../steps/reactodia-steps.js';
+import {GraphNavigatorSteps} from '../../steps/graph-navigator-steps.js';
 import {LanguageSelectorSteps} from '../../steps/language-selector-steps.js';
 import {RepositorySelectorSteps} from '../../steps/repository-selector-steps.js';
 import {MainMenuSteps} from '../../steps/main-menu-steps.js';
@@ -12,7 +12,7 @@ const SEED_RESOURCE_LABEL = 'CustomerLoyalty';
 const CONSTRUCT_QUERY = 'CONSTRUCT { <http://example.com/ontology#CustomerLoyalty> ?p ?o } WHERE { <http://example.com/ontology#CustomerLoyalty> ?p ?o }';
 const CONSTRUCT_TARGET_LABEL = 'Metric';
 
-describe('Reactodia graph explorer', () => {
+describe('Graph Navigator', () => {
     let repositoryId;
 
     beforeEach(() => {
@@ -26,192 +26,192 @@ describe('Reactodia graph explorer', () => {
         cy.deleteRepository(repositoryId);
     });
 
-    it('should mount the reactodia workspace when a repository is active', () => {
-        // Given I open the reactodia view without a start resource.
-        ReactodiaSteps.visit();
+    it('should mount the Graph Navigator workspace when a repository is active', () => {
+        // Given I open the Graph Navigator view without a start resource.
+        GraphNavigatorSteps.visit();
 
-        // Then I expect the reactodia workspace and its canvas to be rendered.
-        ReactodiaSteps.getWorkspace().should('exist');
-        ReactodiaSteps.getCanvas().should('exist');
+        // Then I expect the Graph Navigator workspace and its canvas to be rendered.
+        GraphNavigatorSteps.getWorkspace().should('exist');
+        GraphNavigatorSteps.getCanvas().should('exist');
 
         // And I expect the canvas to start empty because no start resource was provided.
-        ReactodiaSteps.getElements().should('not.exist');
+        GraphNavigatorSteps.getElements().should('not.exist');
     });
 
     it('should place the start resource on the canvas as a seed', () => {
-        // Given I open the reactodia view with a start resource.
-        ReactodiaSteps.visit(SEED_RESOURCE_ENCODED);
+        // Given I open the Graph Navigator view with a start resource.
+        GraphNavigatorSteps.visit(SEED_RESOURCE_ENCODED);
 
         // Then I expect the start resource to be placed on the canvas as a seed element.
-        ReactodiaSteps.getElements().should('have.length', 1);
-        ReactodiaSteps.getElement(SEED_RESOURCE_LABEL).should('exist');
+        GraphNavigatorSteps.getElements().should('have.length', 1);
+        GraphNavigatorSteps.getElement(SEED_RESOURCE_LABEL).should('exist');
     });
 
     it('should seed the canvas with the graph computed from a CONSTRUCT query', () => {
-        // Given I open the reactodia view with a CONSTRUCT query, as sent from the SPARQL editor.
-        ReactodiaSteps.visitWithQuery(CONSTRUCT_QUERY);
+        // Given I open the Graph Navigator view with a CONSTRUCT query, as sent from the SPARQL editor.
+        GraphNavigatorSteps.visitWithQuery(CONSTRUCT_QUERY);
 
         // Then I expect the computed graph to be seeded on the canvas: the subject and its related resource.
-        ReactodiaSteps.getElements().should('have.length', 2);
-        ReactodiaSteps.getElement(SEED_RESOURCE_LABEL).should('exist');
-        ReactodiaSteps.getElement(CONSTRUCT_TARGET_LABEL).should('exist');
+        GraphNavigatorSteps.getElements().should('have.length', 2);
+        GraphNavigatorSteps.getElement(SEED_RESOURCE_LABEL).should('exist');
+        GraphNavigatorSteps.getElement(CONSTRUCT_TARGET_LABEL).should('exist');
     });
 
     it('should keep the displayed resources when the language is switched', () => {
-        // Given the reactodia view is opened with a start resource that gets seeded on the canvas.
-        ReactodiaSteps.visit(SEED_RESOURCE_ENCODED);
-        ReactodiaSteps.getElement(SEED_RESOURCE_LABEL).should('exist');
-        ReactodiaSteps.getElements().should('have.length', 1);
+        // Given the Graph Navigator view is opened with a start resource that gets seeded on the canvas.
+        GraphNavigatorSteps.visit(SEED_RESOURCE_ENCODED);
+        GraphNavigatorSteps.getElement(SEED_RESOURCE_LABEL).should('exist');
+        GraphNavigatorSteps.getElements().should('have.length', 1);
 
         // When I switch the language.
         LanguageSelectorSteps.switchToFr();
 
         // Then I expect the same resources to remain visible because the layout is carried across the remount.
-        ReactodiaSteps.getElements().should('have.length', 1);
-        ReactodiaSteps.getElement(SEED_RESOURCE_LABEL).should('exist');
+        GraphNavigatorSteps.getElements().should('have.length', 1);
+        GraphNavigatorSteps.getElement(SEED_RESOURCE_LABEL).should('exist');
     });
 
     it('should keep the diagram on refresh but clear it when navigating away and back', () => {
-        // Given the reactodia view is opened with a start resource that gets seeded on the canvas.
-        ReactodiaSteps.visit(SEED_RESOURCE_ENCODED);
-        ReactodiaSteps.getElements().should('have.length', 1);
-        ReactodiaSteps.getElement(SEED_RESOURCE_LABEL).should('exist');
+        // Given the Graph Navigator view is opened with a start resource that gets seeded on the canvas.
+        GraphNavigatorSteps.visit(SEED_RESOURCE_ENCODED);
+        GraphNavigatorSteps.getElements().should('have.length', 1);
+        GraphNavigatorSteps.getElement(SEED_RESOURCE_LABEL).should('exist');
 
         // When I refresh the page.
         cy.reload();
 
         // Then I expect the diagram state to be preserved across the refresh.
-        ReactodiaSteps.getElements().should('have.length', 1);
-        ReactodiaSteps.getElement(SEED_RESOURCE_LABEL).should('exist');
+        GraphNavigatorSteps.getElements().should('have.length', 1);
+        GraphNavigatorSteps.getElement(SEED_RESOURCE_LABEL).should('exist');
 
         // When I navigate to another view via the navigation bar.
         MainMenuSteps.clickOnSparqlMenu();
-        ReactodiaSteps.getComponent().should('not.exist');
+        GraphNavigatorSteps.getComponent().should('not.exist');
 
         // Wait for the SPARQL Query & Update view to be loaded before continuing.
-        // Without this wait, Cypress may try to click the Reactodia menu item before the page is fully loaded,
+        // Without this wait, Cypress may try to click the Graph Navigator menu item before the page is fully loaded,
         // causing the test to fail intermittently with the error:
         // "This element `<li.sub-menu-item>` is not visible because it has CSS property: `display: none`"
-        // when trying to click the Reactodia submenu.
+        // when trying to click the Graph Navigator submenu.
         YasqeSteps.getEditor().should('be.visible');
-        // And I return to the reactodia view via the navigation bar.
-        MainMenuSteps.clickOnReactodia();
+        // And I return to the Graph Navigator view via the navigation bar.
+        MainMenuSteps.clickOnGraphNavigator();
 
         // Then I expect the canvas to be cleared, because leaving the view drops the persisted diagram state.
-        ReactodiaSteps.getWorkspace().should('exist');
-        ReactodiaSteps.getElements().should('not.exist');
+        GraphNavigatorSteps.getWorkspace().should('exist');
+        GraphNavigatorSteps.getElements().should('not.exist');
     });
 
     // These run against the in-code REST stub. TODO: GDB-15242 switch to intercepts when the endpoints are available.
     describe('Settings', () => {
         it('should open the settings popover', () => {
-            // Given I open the reactodia view.
-            ReactodiaSteps.visit();
+            // Given I open the Graph Navigator view.
+            GraphNavigatorSteps.visit();
 
             // When I click the Settings button.
-            ReactodiaSteps.openSettings();
+            GraphNavigatorSteps.openSettings();
 
             // Then I expect the settings popover to be open.
-            ReactodiaSteps.getSettingsPopover().should('be.visible');
-            ReactodiaSteps.getBrowseButton().should('contain', 'Browse');
+            GraphNavigatorSteps.getSettingsPopover().should('be.visible');
+            GraphNavigatorSteps.getBrowseButton().should('contain', 'Browse');
         });
 
         it('should not offer reset when the default settings are in use', () => {
             // Given I open the settings of a repository without uploaded settings.
-            ReactodiaSteps.visit();
-            ReactodiaSteps.openSettings();
+            GraphNavigatorSteps.visit();
+            GraphNavigatorSteps.openSettings();
 
             // Then I expect no reset action, because there is nothing to reset to.
-            ReactodiaSteps.getSettingsPopover().should('be.visible');
-            ReactodiaSteps.getResetButton().should('not.exist');
+            GraphNavigatorSteps.getSettingsPopover().should('be.visible');
+            GraphNavigatorSteps.getResetButton().should('not.exist');
         });
 
         it('should cancel a selected file', () => {
             // Given I have selected a settings file.
-            ReactodiaSteps.visit();
-            ReactodiaSteps.openSettings();
-            ReactodiaSteps.selectSettingsFile();
-            ReactodiaSteps.getSelectedSettingsFile().should('exist');
+            GraphNavigatorSteps.visit();
+            GraphNavigatorSteps.openSettings();
+            GraphNavigatorSteps.selectSettingsFile();
+            GraphNavigatorSteps.getSelectedSettingsFile().should('exist');
 
             // When I cancel it.
-            ReactodiaSteps.clickCancelFile();
+            GraphNavigatorSteps.clickCancelFile();
 
             // Then I expect the file to be removed.
-            ReactodiaSteps.getSettingsPopover().should('not.contain', 'settings.ttl');
-            ReactodiaSteps.getUploadButton().should('be.disabled');
+            GraphNavigatorSteps.getSettingsPopover().should('not.contain', 'settings.ttl');
+            GraphNavigatorSteps.getUploadButton().should('be.disabled');
         });
 
         it('should ask for confirmation before uploading', () => {
             // Given I have selected a settings file.
-            ReactodiaSteps.visit();
-            ReactodiaSteps.openSettings();
-            ReactodiaSteps.selectSettingsFile();
+            GraphNavigatorSteps.visit();
+            GraphNavigatorSteps.openSettings();
+            GraphNavigatorSteps.selectSettingsFile();
 
             // When I upload it.
-            ReactodiaSteps.clickUpload();
+            GraphNavigatorSteps.clickUpload();
 
             // Then I expect a confirmation that warns the diagram may behave unexpectedly.
-            ReactodiaSteps.getConfirmDialog().should('be.visible')
+            GraphNavigatorSteps.getConfirmDialog().should('be.visible')
                 .and('contain', 'The diagram might behave unexpectedly with the new settings.');
 
             // When I cancel.
-            ReactodiaSteps.cancelDialog();
+            GraphNavigatorSteps.cancelDialog();
 
             // Then I expect the popover to stay open with the file still selected.
-            ReactodiaSteps.getSettingsPopover().should('be.visible');
-            ReactodiaSteps.getSelectedSettingsFile().should('exist');
+            GraphNavigatorSteps.getSettingsPopover().should('be.visible');
+            GraphNavigatorSteps.getSelectedSettingsFile().should('exist');
 
             // When I upload and confirm.
-            ReactodiaSteps.clickUpload();
-            ReactodiaSteps.confirmDialog();
+            GraphNavigatorSteps.clickUpload();
+            GraphNavigatorSteps.confirmDialog();
 
             // Then I expect a success message and the diagram to be rendered.
             ToasterSteps.verifySuccess('The settings were uploaded');
-            ReactodiaSteps.getWorkspace().should('exist');
+            GraphNavigatorSteps.getWorkspace().should('exist');
         });
 
         it('should ask for confirmation before resetting', () => {
             // Given the repository has uploaded settings.
-            ReactodiaSteps.visit();
-            ReactodiaSteps.openSettings();
-            ReactodiaSteps.selectSettingsFile();
-            ReactodiaSteps.clickUpload();
-            ReactodiaSteps.confirmDialog();
+            GraphNavigatorSteps.visit();
+            GraphNavigatorSteps.openSettings();
+            GraphNavigatorSteps.selectSettingsFile();
+            GraphNavigatorSteps.clickUpload();
+            GraphNavigatorSteps.confirmDialog();
             ToasterSteps.verifySuccess('The settings were uploaded');
 
             // When I click outside the settings.
-            ReactodiaSteps.closeSettings();
+            GraphNavigatorSteps.closeSettings();
 
             // Then I expect the popover to close.
-            ReactodiaSteps.getSettingsPopover().should('not.exist');
+            GraphNavigatorSteps.getSettingsPopover().should('not.exist');
 
             // When I reset them.
-            ReactodiaSteps.openSettings();
-            ReactodiaSteps.getResetButton().should('be.visible');
-            ReactodiaSteps.clickReset();
+            GraphNavigatorSteps.openSettings();
+            GraphNavigatorSteps.getResetButton().should('be.visible');
+            GraphNavigatorSteps.clickReset();
 
             // Then I expect a confirmation that warns the diagram may behave unexpectedly.
-            ReactodiaSteps.getConfirmDialog().should('be.visible')
+            GraphNavigatorSteps.getConfirmDialog().should('be.visible')
                 .and('contain', 'The diagram might behave unexpectedly with the default settings.');
 
             // When I confirm.
-            ReactodiaSteps.confirmDialog();
+            GraphNavigatorSteps.confirmDialog();
 
             // Then I expect a success message and the diagram to be rendered.
             ToasterSteps.verifySuccess('The settings were reset to the defaults');
-            ReactodiaSteps.getWorkspace().should('exist');
+            GraphNavigatorSteps.getWorkspace().should('exist');
         });
 
         it('should export the current settings as a .ttl file', () => {
             // Given I open the settings.
-            ReactodiaSteps.visit();
-            ReactodiaSteps.openSettings();
+            GraphNavigatorSteps.visit();
+            GraphNavigatorSteps.openSettings();
 
             // When I export them.
-            ReactodiaSteps.clickExport();
+            GraphNavigatorSteps.clickExport();
 
             // Then I expect a .ttl file named after the repository to be downloaded.
-            ReactodiaSteps.verifyFileDownloaded(`graph-navigator-settings-${repositoryId}.ttl`);
+            GraphNavigatorSteps.verifyFileDownloaded(`graph-navigator-settings-${repositoryId}.ttl`);
         });
     });
 
@@ -228,16 +228,16 @@ describe('Reactodia graph explorer', () => {
         });
 
         it('should clear the canvas when the repository is switched', () => {
-            // Given the reactodia view is opened with a start resource that gets seeded on the canvas.
-            ReactodiaSteps.visit(SEED_RESOURCE_ENCODED);
-            ReactodiaSteps.getElements().should('have.length', 1);
+            // Given the Graph Navigator view is opened with a start resource that gets seeded on the canvas.
+            GraphNavigatorSteps.visit(SEED_RESOURCE_ENCODED);
+            GraphNavigatorSteps.getElements().should('have.length', 1);
 
             // When I switch to another repository.
             RepositorySelectorSteps.selectRepository(secondRepositoryId);
 
             // Then I expect the workspace to still be mounted, but the canvas to be cleared.
-            ReactodiaSteps.getWorkspace().should('exist');
-            ReactodiaSteps.getElements().should('not.exist');
+            GraphNavigatorSteps.getWorkspace().should('exist');
+            GraphNavigatorSteps.getElements().should('not.exist');
         });
     });
 });

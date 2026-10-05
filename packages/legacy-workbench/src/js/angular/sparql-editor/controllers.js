@@ -120,7 +120,7 @@ function SparqlEditorCtrl($scope,
      * @param {boolean} clearYasguiState if set to true, the Yasgui will reinitialize and clear all tab results. Queries will remain.
      */
     $scope.updateConfig = (clearYasguiState) => {
-        const yasrToolbarPlugins = $scope.embedded ? [] : [exploreVisualGraphYasrToolbarElementBuilder, exploreReactodiaYasrToolbarElementBuilder];
+        const yasrToolbarPlugins = $scope.embedded ? [] : [exploreVisualGraphYasrToolbarElementBuilder, exploreGraphNavigatorYasrToolbarElementBuilder];
         const yasguiConfig = {
             endpoint: getEndpoint,
             componentId: VIEW_SPARQL_EDITOR,
@@ -365,12 +365,12 @@ function SparqlEditorCtrl($scope,
     };
 
     /**
-     * Navigates to the Reactodia visualization page, passing the current query.
+     * Navigates to the Graph Navigator visualization page, passing the current query.
      *
      * @param yasr - YASR result renderer instance containing the current query context.
      */
-    const navigateToReactodia = (yasr) => {
-        navigate('reactodia', {
+    const navigateToGraphNavigator = (yasr) => {
+        navigate('graph-navigator', {
             query: yasr.yasqe.getValue(),
             sameAs: yasr.yasqe.getSameAs(),
             inference: yasr.yasqe.getInfer(),
@@ -437,16 +437,16 @@ function SparqlEditorCtrl($scope,
     };
 
     /**
-     * Factory for the YASR toolbar element that opens the current query in Reactodia.
+     * Factory for the YASR toolbar element that opens the current query in Graph Navigator.
      */
-    const exploreReactodiaYasrToolbarElementBuilder = {
+    const exploreGraphNavigatorYasrToolbarElementBuilder = {
         createElement: (yasr) => {
-            const exploreReactodiaButton = document.createElement('button');
-            exploreReactodiaButton.type = 'button';
-            exploreReactodiaButton.classList.add('btn', 'btn-primary', 'explore-reactodia');
-            exploreReactodiaButton.textContent = $translate.instant('query.editor.reactodia.btn');
-            exploreReactodiaButton.addEventListener('click', () => navigateToReactodia(yasr));
-            return exploreReactodiaButton;
+            const exploreGraphNavigatorButton = document.createElement('button');
+            exploreGraphNavigatorButton.type = 'button';
+            exploreGraphNavigatorButton.classList.add('btn', 'btn-primary', 'explore-graph-navigator');
+            exploreGraphNavigatorButton.textContent = $translate.instant('query.editor.graph.navigator.btn');
+            exploreGraphNavigatorButton.addEventListener('click', () => navigateToGraphNavigator(yasr));
+            return exploreGraphNavigatorButton;
         },
         updateElement: (element, yasr) => {
             element.classList.add('hidden');

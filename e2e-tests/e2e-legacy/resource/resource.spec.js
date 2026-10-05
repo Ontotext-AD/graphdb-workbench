@@ -9,7 +9,7 @@ import {YasguiSteps} from "../../steps/yasgui/yasgui-steps";
 import {JsonLdModalSteps} from "../../steps/json-ld-modal-steps";
 import {GraphConfigStubs} from '../../stubs/graph-config-stubs.js';
 import {VisualGraphSplitButtonSteps} from '../../steps/visual-graph-split-button-steps.js';
-import {ReactodiaSteps} from '../../steps/reactodia-steps.js';
+import {GraphNavigatorSteps} from '../../steps/graph-navigator-steps.js';
 
 const FILE_TO_IMPORT = 'resource-test-data.ttl';
 const SUBJECT_RESOURCE_ENCODED = 'http:%2F%2Fexample.com%2Fontology%23CustomerLoyalty';
@@ -105,16 +105,16 @@ describe('Resource view', () => {
         VisualGraphSteps.verifyUrl();
     });
 
-    it('should open reactodia view when click on the "Visualize Reactodia" button', () => {
+    it('should open the Graph Navigator view when click on the "Visualize Graph Navigator" button', () => {
         // When I am on resource view and page loaded a resource.
         ResourceSteps.visit(`uri=${SUBJECT_RESOURCE_ENCODED}`);
 
-        // When I click on "Visualize Reactodia" button.
-        ResourceSteps.clickOnVisualizeReactodiaButton();
+        // When I click on "Visualize Graph Navigator" button.
+        ResourceSteps.clickOnVisualizeGraphNavigatorButton();
 
-        // Then I expect to be redirected to the reactodia view with the resource as the start uri.
-        ReactodiaSteps.verifyUrl();
-        ReactodiaSteps.verifyStartResourceUri(SUBJECT_RESOURCE);
+        // Then I expect to be redirected to the Graph Navigator view with the resource as the start uri.
+        GraphNavigatorSteps.verifyUrl();
+        GraphNavigatorSteps.verifyStartResourceUri(SUBJECT_RESOURCE);
     });
 
     it('should open graphs-visualizations view when select a graph configuration', () => {

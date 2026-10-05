@@ -99,13 +99,13 @@ PluginRegistry.add('main.menu', {
     disabled: false,
     items: [
         {
-            label: 'Reactodia',
-            labelKey: 'menu.reactodia.label',
-            href: 'reactodia',
+            label: 'Graph Navigator',
+            labelKey: 'menu.graph-navigator.label',
+            href: 'graph-navigator',
             order: 6,
             parent: 'Explore',
-            guideSelector: 'menu-reactodia',
-            testSelector:'menu-reactodia',
+            guideSelector: 'menu-graph-navigator',
+            testSelector:'menu-graph-navigator',
         },
     ],
 });

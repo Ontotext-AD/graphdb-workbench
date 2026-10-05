@@ -107,13 +107,13 @@ export class MainMenuSteps {
         this.getSubMenuButton('sub-menu-visual-graph').click();
     }
 
-    static clickOnReactodia() {
+    static clickOnGraphNavigator() {
         this.clickOnExplore();
-        this.clickOnSubmenuReactodia();
+        this.clickOnSubmenuGraphNavigator();
     }
 
-    static clickOnSubmenuReactodia() {
-        this.getSubMenuButton('menu-reactodia').click();
+    static clickOnSubmenuGraphNavigator() {
+        this.getSubMenuButton('menu-graph-navigator').click();
     }
 
     static clickOnClassRelationships() {

@@ -1,12 +1,7 @@
 import {Model} from '../common/model';
 
 /**
- * A pre-resolved graph edge derived from a graph-explore query result.
- *
- * Mirrors the neutral shape Reactodia's `config.seedGraph` expects: a source/target pair with the
- * full predicate IRIs of the relationship(s) between them. Used to visualize the result of a
- * CONSTRUCT query, whose relationships are computed and therefore not persisted in the repository,
- * so they cannot be fetched lazily through the SPARQL provider and must be supplied directly.
+ * A pre-resolved graph link derived from a graph-explore query result.
  */
 export class GraphExploreLink extends Model<GraphExploreLink> {
   /** Source element IRI. */

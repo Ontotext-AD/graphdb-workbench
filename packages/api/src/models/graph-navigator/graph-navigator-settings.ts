@@ -2,7 +2,7 @@ import {Model} from '../common';
 import {SparqlDataProviderSettings} from './sparql-data-provider-settings';
 
 /**
- * The graph-navigator settings of a repository: the Reactodia query preset and where it comes from.
+ * The graph-navigator settings of a repository
  */
 export class GraphNavigatorSettings extends Model<GraphNavigatorSettings> {
   /** Whether the settings were uploaded for the repository. `false` means the defaults are in use. */

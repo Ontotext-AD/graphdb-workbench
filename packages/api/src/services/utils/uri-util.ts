@@ -7,7 +7,7 @@ export class UriUtil {
   private static readonly ABS_URI_REGEX = /^<?(http|urn).*>?/;
   static readonly GRAPHS_VISUALIZATIONS_URL = 'graphs-visualizations';
   static readonly RESOURCE_URL = 'resource';
-  static readonly REACTODIA_URL = 'reactodia';
+  static readonly GRAPH_NAVIGATOR_URL = 'graph-navigator';
   static readonly BASE_DOCUMENTATION_URL = 'https://graphdb.ontotext.com/documentation/';
   static readonly LATEST_UNOFFICIAL_VERSION = 'master';
 

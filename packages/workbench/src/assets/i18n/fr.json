@@ -108,9 +108,9 @@
     "url_not_found_msg": "L'URL demandée n'a pas été trouvée sur ce serveur. C'est tout ce que je sais.",
     "back_to_home": "Retour à la page d'accueil"
   },
-  "reactodia": {
-    "title": "Reactodia ",
-    "helpInfo": "La vue Reactodia fournit une représentation visuelle interactive de parties du graphe RDF. La visualisation part d'un ensemble de ressources ou du résultat d'une requête de graphe. Développez les ressources pour enrichir le diagramme avec leurs connexions et enregistrez le diagramme pour une utilisation ultérieure.",
+  "graph_navigator": {
+    "title": "Navigateur de graphe",
+    "helpInfo": "La vue Navigateur de graphe fournit une représentation visuelle interactive de parties du graphe RDF. La visualisation part d'un ensemble de ressources ou du résultat d'une requête de graphe. Développez les ressources pour enrichir le diagramme avec leurs connexions et enregistrez le diagramme pour une utilisation ultérieure.",
     "errors": {
       "query_execution_failed": "Erreur! Impossible de charger les données du graphe.",
       "graph_load_failed": "Erreur! Impossible de calculer le graphe pour la requête."
@@ -222,8 +222,8 @@
               "visual_graph_btn": {
                 "label": "Visualiser"
               },
-              "reactodia_btn": {
-                "label": "Visualiser Reactodia"
+              "graph_navigator_btn": {
+                "label": "Visualiser dans le Navigateur de graphe"
               }
             }
           }

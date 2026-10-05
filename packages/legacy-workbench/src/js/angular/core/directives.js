@@ -271,7 +271,7 @@ function multiRequired() {
     };
 }
 
-const SEARCH_DISPLAY_TYPE = {table: 'table', visual: 'visual', reactodia: 'reactodia'};
+const SEARCH_DISPLAY_TYPE = {table: 'table', visual: 'visual', graphNavigator: 'graph-navigator'};
 
 const URI_PARAM = 'uri';
 
@@ -311,7 +311,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             const SEARCH_INPUT_FIELD = element.find('.view-res-input');
             $scope.textButtonLabel = $scope.textButton || 'query.editor.table.btn';
             $scope.visualButtonLabel = $scope.visualButton || 'query.editor.visual.btn';
-            $scope.reactodiaButtonLabel = 'query.editor.reactodia.radio.btn';
+            $scope.graphNavigatorButtonLabel = 'query.editor.graph.navigator.radio.btn';
             const resourceSearchStorage = service(ResourceSearchStorageService);
 
             // use a global var to keep old uri in order to change it when a new one appears
@@ -402,11 +402,11 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                 }
             };
 
-            const defaultReactodiaCallback = function(params) {
+            const defaultGraphNavigatorCallback = function(params) {
                 if ($scope.openInNewTab === 'true') {
-                    openInNewWindowTab(UriUtil.REACTODIA_URL, params);
+                    openInNewWindowTab(UriUtil.GRAPH_NAVIGATOR_URL, params);
                 } else {
-                    $location.path(UriUtil.REACTODIA_URL).search(URI_PARAM, params.uri);
+                    $location.path(UriUtil.GRAPH_NAVIGATOR_URL).search(URI_PARAM, params.uri);
                 }
             };
 
@@ -422,7 +422,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                 $scope.visualCallback = defaultVisualCallback;
             }
 
-            $scope.reactodiaCallback = defaultReactodiaCallback;
+            $scope.graphNavigatorCallback = defaultGraphNavigatorCallback;
 
             if (attrs.$attr.textButton && !$scope.textButton) {
                 $scope.textCallback = $scope.visualCallback;
@@ -495,8 +495,8 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             $scope.searchRdfResourceByEvent = function(uri, event) {
                 if ($scope.searchType === SEARCH_DISPLAY_TYPE.visual || event.ctrlKey || event.metaKey) {
                     $scope.searchRdfResource(uri, $scope.visualCallback);
-                } else if ($scope.searchType === SEARCH_DISPLAY_TYPE.reactodia) {
-                    $scope.searchRdfResource(uri, $scope.reactodiaCallback);
+                } else if ($scope.searchType === SEARCH_DISPLAY_TYPE.graphNavigator) {
+                    $scope.searchRdfResource(uri, $scope.graphNavigatorCallback);
                 } else {
                     $scope.searchRdfResource(uri, $scope.textCallback);
                 }
@@ -539,8 +539,8 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             $scope.checkIfValidAndSearchEvent = function(event) {
                 if ($scope.searchType === SEARCH_DISPLAY_TYPE.visual || event.ctrlKey || event.metaKey) {
                     checkIfValidAndSearch($scope.visualCallback);
-                } else if ($scope.searchType === SEARCH_DISPLAY_TYPE.reactodia) {
-                    checkIfValidAndSearch($scope.reactodiaCallback);
+                } else if ($scope.searchType === SEARCH_DISPLAY_TYPE.graphNavigator) {
+                    checkIfValidAndSearch($scope.graphNavigatorCallback);
                 } else {
                     checkIfValidAndSearch($scope.textCallback);
                 }

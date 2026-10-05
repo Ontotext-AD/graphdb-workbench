@@ -2,24 +2,24 @@
   @let repository = currentRepository();
   @let graphNavigatorSettings = settings();
   @if (repository && graphNavigatorSettings) {
-    <app-reactodia-settings class="reactodia-settings-toolbar"
+    <app-graph-navigator-settings class="graph-navigator-settings-toolbar"
                             *appRestrictAccess="[ViewPermissions.CAN_MAINTAIN_ACTIVE_REPO]"
                             [settings]="graphNavigatorSettings"
                             [loading]="loading()"
                             (uploadSettings)="onUploadSettings($event, repository)"
                             (resetSettings)="onResetSettings(repository)"
                             (exportSettings)="onExportSettings(repository)">
-    </app-reactodia-settings>
+    </app-graph-navigator-settings>
     <div>
       @if (language() && !loading()) {
-        <app-reactodia-component-facade
+        <app-graphwise-reactodia-facade
           [currentRepository]="repository"
           [language]="language()"
           [theme]="theme()"
           [seedIris]="seedIris()"
           [seedGraph]="seedGraph()"
           [providerSettings]="graphNavigatorSettings.getProviderSettings()">
-        </app-reactodia-component-facade>
+        </app-graphwise-reactodia-facade>
       }
     </div>
   }

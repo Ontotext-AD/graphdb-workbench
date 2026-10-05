@@ -52,7 +52,7 @@
   "menu.graphql.label": "GraphQL",
   "menu.graphql-endpoint-management.label": "Gestion des points de terminaison",
   "menu.graphql-playground.label": "GraphQL Playground",
-  "menu.reactodia.label": "Reactodia ",
+  "menu.graph-navigator.label": "Navigateur de graphe",
   "visual.graph.label": "Graphique visuel",
   "view.rdf.rank.title": "Rang RDF",
   "language_selector": {
@@ -184,7 +184,7 @@
     "buttons": {
       "table": "Tableau",
       "visual": "Visuel",
-      "reactodia": "Reactodia "
+      "graph_navigator": "Navigateur de graphe"
     },
     "tooltips": {
       "close_search_area": "Fermer la recherche",

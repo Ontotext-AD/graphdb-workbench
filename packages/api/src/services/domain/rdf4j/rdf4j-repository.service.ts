@@ -80,7 +80,7 @@ export class Rdf4jRepositoryService implements Service {
    * Delegates to {@link Rdf4jRestService.executeSparqlRequest} and unwraps
    * {@link HttpResponse.originalResponse}. The caller chooses the response format via the `accept`
    * argument (e.g. `application/sparql-results+json` for SELECT/ASK or `application/rdf+json;` for
-   * CONSTRUCT/DESCRIBE). Suits consumers that need the unparsed response, such as Reactodia.
+   * CONSTRUCT/DESCRIBE). Suits consumers that need the unparsed response
    *
    * @param repositoryId - The ID of the repository to query.
    * @param query - The SPARQL query string.
