@@ -47,7 +47,7 @@
                 <div class="card-block">
                     <h3>{{'view.login.title' | translate}}</h3>
                     <div class="form-group" ng-class="{'has-danger': usernameError}">
-                        <label class="form-control-label" for="wb-user-username">{{'security.table.username' | translate}}</label>
+                        <label class="sr-only" for="wb-user-username">{{'security.table.username' | translate}}</label>
                         <div class="input-group">
                             <span class="input-group-addon" gdb-tooltip="{{'security.table.username' | translate}}"><i class="ri-user-line ri-xl text-muted"></i></span>
                             <input id="wb-user-username" placeholder="{{'security.table.username' | translate}}" name="username" class="form-control form-control-lg" type="text" ng-model="user.username" ng-disabled="mode !== 'add'" >
@@ -55,7 +55,7 @@
                         <div ng-show="usernameError" class="form-control-feedback">{{usernameError}}</div>
                     </div>
                     <div class="form-group" ng-class="{'has-danger': passwordError}" ng-hide="user.external || hasExternalAuthUser() || canExtendExternalUserRole" >
-                        <label class="form-control-label" for="wb-user-password">{{passwordPlaceholder | translate}}</label>
+                        <label class="sr-only" for="wb-user-password">{{passwordPlaceholder | translate}}</label>
                         <div class="input-group">
                             <span class="input-group-addon" gdb-tooltip="{{'security.password.placeholder' | translate}}"><em class="ri-lock-line ri-xl text-muted"></em></span>
                             <input id="wb-user-password" autocomplete="new-password" placeholder="{{passwordPlaceholder | translate}}" name="password" class="form-control form-control-lg" type="password"	ng-model="user.password" ng-readonly="noPassword || canExtendExternalUserRole">
@@ -64,7 +64,7 @@
                         <div ng-show="passwordError" class="form-control-feedback">{{passwordError}}</div>
                     </div>
                     <div class="form-group" ng-class="{'has-danger': confirmPasswordError}" ng-hide="user.external || hasExternalAuthUser() || canExtendExternalUserRole">
-                        <label class="form-control-label" for="wb-user-confirmpassword">{{'security.password.confirm' | translate}}</label>
+                        <label class="sr-only" for="wb-user-confirmpassword">{{'security.password.confirm' | translate}}</label>
                         <div class="input-group">
                             <span class="input-group-addon" gdb-tooltip="{{'security.password.confirm' | translate}}"><em class="ri-lock-line ri-xl text-muted"></em></span>
                             <input id="wb-user-confirmpassword" placeholder="{{'security.password.confirm' | translate}}" name="password_confirm" class="form-control form-control-lg" type="password" ng-model="user.confirmpassword" ng-readonly="noPassword || canExtendExternalUserRole">

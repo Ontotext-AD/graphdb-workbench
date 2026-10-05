@@ -164,7 +164,7 @@ describe('My Settings', () => {
     });
 
     it('should give the settings form controls accessible names', () => {
-        cy.get('label[for="wb-user-username"]').should('be.visible').and('contain', 'Username');
+        cy.get('label[for="wb-user-username"]').should('contain', 'Username');
 
         cy.get('label[for="sameAsCheck"]').should('contain', 'Expand results over owl:SameAs');
         cy.get('label[for="inferenceCheck"]').should('contain', 'Enable inference');
