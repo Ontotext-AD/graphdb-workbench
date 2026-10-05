@@ -17,7 +17,7 @@ import {
 } from '@ontotext/workbench-api';
 
 import {PageLayoutComponent} from './page-layout.component';
-import {ExpectedViewRestrictionMessage, ViewRestrictionScenario} from './test/view-restriction-scenario-builder';
+import {ExpectedViewRestrictionTestMessage, ViewRestrictionTestScenario} from './test/view-restriction-test-scenario-builder';
 import {
   ALL_LOCAL_REPOSITORY_IDS,
   getAllRestrictionsDeclaredNoneAppliesScenario,
@@ -29,7 +29,7 @@ import {
   REPO_A_ID,
   REPO_B_ID,
   USERS,
-} from './test/view-restriction-scenarios';
+} from './test/view-restriction-test-scenarios';
 import {PAGE_LAYOUT_RESTRICTIONS_SELECTORS} from '../../../testing-utils/page-restrictions/selectors';
 import {provideTranslocoForTesting} from '../../../testing-utils/transloco-utils';
 import {mockResizeObserverForTesting} from '../../../testing-utils/resize-observer-testing-utils';
@@ -75,7 +75,7 @@ describe('PageLayoutComponent restrictions', () => {
     await resetWorkbenchContexts();
   });
 
-  const givenScenario = async (scenario: ViewRestrictionScenario) => {
+  const givenScenario = async (scenario: ViewRestrictionTestScenario) => {
     if (scenario.license !== 'missing') {
       licenseContextService.updateGraphdbLicense(new License({valid: scenario.license === 'valid'}));
     }
@@ -109,7 +109,7 @@ describe('PageLayoutComponent restrictions', () => {
   const translate = (key: string, params?: Record<string, string>): string =>
     TestBed.inject(TranslocoService).translate(key, params);
 
-  const toExpectedText = (message: ExpectedViewRestrictionMessage): string =>
+  const toExpectedText = (message: ExpectedViewRestrictionTestMessage): string =>
     htmlToPlainText(translate(`components.page_restrictions.${message.key}`, message.params));
 
   const getMessages = (): HTMLElement[] => Array.from(page.querySelectorAll<HTMLElement>(PAGE_LAYOUT_RESTRICTIONS_SELECTORS.restrictionMessage));

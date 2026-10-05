@@ -1,6 +1,6 @@
 import {Repository, RepositoryType, ViewRestrictionCondition} from '@ontotext/workbench-api';
 
-import {ViewRestrictionScenario, ViewRestrictionScenarioBuilder} from './view-restriction-scenario-builder';
+import {ViewRestrictionTestScenario, ViewRestrictionTestScenarioBuilder} from './view-restriction-test-scenario-builder';
 
 const {IS_REPOSITORY_NOT_SELECTED, MISSING_WRITE_PERMISSIONS, IS_ONTOP, IS_FEDEX, IS_LICENSE_INVALID} = ViewRestrictionCondition;
 const ALL_CONDITIONS = [IS_REPOSITORY_NOT_SELECTED, MISSING_WRITE_PERMISSIONS, IS_ONTOP, IS_FEDEX, IS_LICENSE_INVALID];
@@ -43,7 +43,7 @@ export const USERS: Record<TestUser, string[]> = {
 /**
  * Fetches all defined page restriction scenarios.
  */
-export function getScenarios(): ViewRestrictionScenario[] {
+export function getScenarios(): ViewRestrictionTestScenario[] {
   return [
     getNoRepositorySelectedWithCreateRightsScenario(),
     getNoRepositorySelectedWithoutCreateRightsScenario(),
@@ -82,8 +82,8 @@ export function getScenarios(): ViewRestrictionScenario[] {
  * **Expected**: the page content is hidden and the user is asked to select or create a repository. The picker offers all
  * local repositories and the create repository button is shown.
  */
-export function getNoRepositorySelectedWithCreateRightsScenario(): ViewRestrictionScenario {
-  return new ViewRestrictionScenarioBuilder()
+export function getNoRepositorySelectedWithCreateRightsScenario(): ViewRestrictionTestScenario {
+  return new ViewRestrictionTestScenarioBuilder()
     .withRestrictions([IS_REPOSITORY_NOT_SELECTED])
     .withValidLicense()
     .withUser('admin')
@@ -104,8 +104,8 @@ export function getNoRepositorySelectedWithCreateRightsScenario(): ViewRestricti
  * **Expected**: the page content is hidden and the user is asked to select a repository. The picker offers all local
  * repositories, but the create repository button is not shown.
  */
-export function getNoRepositorySelectedWithoutCreateRightsScenario(): ViewRestrictionScenario {
-  return new ViewRestrictionScenarioBuilder()
+export function getNoRepositorySelectedWithoutCreateRightsScenario(): ViewRestrictionTestScenario {
+  return new ViewRestrictionTestScenarioBuilder()
     .withRestrictions([IS_REPOSITORY_NOT_SELECTED])
     .withValidLicense()
     .withUser('reader')
@@ -127,8 +127,8 @@ export function getNoRepositorySelectedWithoutCreateRightsScenario(): ViewRestri
  * message. The picker offers all local repositories, but the create repository button is not shown, because a
  * repository can't be created with an invalid license.
  */
-export function getNoRepositorySelectedWithUndeclaredInvalidLicenseScenario(): ViewRestrictionScenario {
-  return new ViewRestrictionScenarioBuilder()
+export function getNoRepositorySelectedWithUndeclaredInvalidLicenseScenario(): ViewRestrictionTestScenario {
+  return new ViewRestrictionTestScenarioBuilder()
     .withRestrictions([IS_REPOSITORY_NOT_SELECTED])
     .withInvalidLicense()
     .withUser('admin')
@@ -148,8 +148,8 @@ export function getNoRepositorySelectedWithUndeclaredInvalidLicenseScenario(): V
  *
  * **Expected**: the page content is shown, without restriction messages, picker or create repository button.
  */
-export function getAllRestrictionsDeclaredNoneAppliesScenario(): ViewRestrictionScenario {
-  return new ViewRestrictionScenarioBuilder()
+export function getAllRestrictionsDeclaredNoneAppliesScenario(): ViewRestrictionTestScenario {
+  return new ViewRestrictionTestScenarioBuilder()
     .withRestrictions(ALL_CONDITIONS)
     .withAllowedRepositoryTypes([RepositoryType.GRAPH_DB])
     .withValidLicense()
@@ -172,8 +172,8 @@ export function getAllRestrictionsDeclaredNoneAppliesScenario(): ViewRestriction
  * to set a new license), there are no writable repositories, and the user can't write to the selected repository.
  * The picker is empty and the create repository button is not shown.
  */
-export function getSeveralRestrictionsApplyScenario(): ViewRestrictionScenario {
-  return new ViewRestrictionScenarioBuilder()
+export function getSeveralRestrictionsApplyScenario(): ViewRestrictionTestScenario {
+  return new ViewRestrictionTestScenarioBuilder()
     .withRestrictions(ALL_CONDITIONS)
     .withAllowedRepositoryTypes([RepositoryType.GRAPH_DB])
     .withInvalidLicense()
@@ -201,8 +201,8 @@ export function getSeveralRestrictionsApplyScenario(): ViewRestrictionScenario {
  * set a new license), and the user is asked to select a repository. The picker offers all local repositories, but the
  * create repository button is not shown.
  */
-export function getInvalidLicenseWithSecurityOffAndNoRepositorySelectedScenario(): ViewRestrictionScenario {
-  return new ViewRestrictionScenarioBuilder()
+export function getInvalidLicenseWithSecurityOffAndNoRepositorySelectedScenario(): ViewRestrictionTestScenario {
+  return new ViewRestrictionTestScenarioBuilder()
     .withRestrictions([IS_REPOSITORY_NOT_SELECTED, IS_LICENSE_INVALID])
     .withInvalidLicense()
     .withSecurityOff()
@@ -226,8 +226,8 @@ export function getInvalidLicenseWithSecurityOffAndNoRepositorySelectedScenario(
  * **Expected**: the page content is hidden and a message says that the page doesn't support FedX repositories. The picker
  * offers only the GraphDB repositories and the create repository button is shown.
  */
-export function getFedxRepositorySelectedWithCreateRightsScenario(): ViewRestrictionScenario {
-  return new ViewRestrictionScenarioBuilder()
+export function getFedxRepositorySelectedWithCreateRightsScenario(): ViewRestrictionTestScenario {
+  return new ViewRestrictionTestScenarioBuilder()
     .withRestrictions([IS_REPOSITORY_NOT_SELECTED, IS_ONTOP, IS_FEDEX])
     .withAllowedRepositoryTypes([RepositoryType.GRAPH_DB])
     .withValidLicense()
@@ -250,8 +250,8 @@ export function getFedxRepositorySelectedWithCreateRightsScenario(): ViewRestric
  * **Expected**: the page content is hidden and a message says that the selected Ontop repository is read-only. The picker
  * offers the GraphDB and FedX repositories and the create repository button is shown.
  */
-export function getOntopRepositorySelectedWithWriteRightsScenario(): ViewRestrictionScenario {
-  return new ViewRestrictionScenarioBuilder()
+export function getOntopRepositorySelectedWithWriteRightsScenario(): ViewRestrictionTestScenario {
+  return new ViewRestrictionTestScenarioBuilder()
     .withRestrictions([IS_REPOSITORY_NOT_SELECTED, IS_ONTOP])
     .withAllowedRepositoryTypes([RepositoryType.GRAPH_DB, RepositoryType.FEDX])
     .withValidLicense()
@@ -274,8 +274,8 @@ export function getOntopRepositorySelectedWithWriteRightsScenario(): ViewRestric
  * **Expected**: the page content is hidden and a message says that the selected Ontop repository is read-only. The picker
  * offers the GraphDB and FedX repositories, but the create repository button is not shown.
  */
-export function getOntopRepositorySelectedWithoutWriteRightsScenario(): ViewRestrictionScenario {
-  return new ViewRestrictionScenarioBuilder()
+export function getOntopRepositorySelectedWithoutWriteRightsScenario(): ViewRestrictionTestScenario {
+  return new ViewRestrictionTestScenarioBuilder()
     .withRestrictions([IS_REPOSITORY_NOT_SELECTED, IS_ONTOP])
     .withAllowedRepositoryTypes([RepositoryType.GRAPH_DB, RepositoryType.FEDX])
     .withValidLicense()
@@ -298,8 +298,8 @@ export function getOntopRepositorySelectedWithoutWriteRightsScenario(): ViewRest
  * **Expected**: the page content is hidden and only the message that the user can't write to the selected repository is
  * shown. The picker offers only `repo-a`, the one writable repository, and the create repository button is not shown.
  */
-export function getWriteRequiredOnOntopRepositoryWithOneWritableRepositoryScenario(): ViewRestrictionScenario {
-  return new ViewRestrictionScenarioBuilder()
+export function getWriteRequiredOnOntopRepositoryWithOneWritableRepositoryScenario(): ViewRestrictionTestScenario {
+  return new ViewRestrictionTestScenarioBuilder()
     .withRestrictions([IS_REPOSITORY_NOT_SELECTED, MISSING_WRITE_PERMISSIONS, IS_ONTOP])
     .withAllowedRepositoryTypes([RepositoryType.GRAPH_DB, RepositoryType.FEDX])
     .withValidLicense()
@@ -322,8 +322,8 @@ export function getWriteRequiredOnOntopRepositoryWithOneWritableRepositoryScenar
  * **Expected**: the page content is hidden and two messages are shown, in order: there are no writable repositories, and
  * the user can't write to the selected repository. The picker is empty and the create repository button is not shown.
  */
-export function getWriteRequiredWithoutWritableRepositoriesScenario(): ViewRestrictionScenario {
-  return new ViewRestrictionScenarioBuilder()
+export function getWriteRequiredWithoutWritableRepositoriesScenario(): ViewRestrictionTestScenario {
+  return new ViewRestrictionTestScenarioBuilder()
     .withRestrictions([IS_REPOSITORY_NOT_SELECTED, MISSING_WRITE_PERMISSIONS, IS_ONTOP])
     .withAllowedRepositoryTypes([RepositoryType.GRAPH_DB, RepositoryType.FEDX])
     .withValidLicense()
@@ -349,8 +349,8 @@ export function getWriteRequiredWithoutWritableRepositoriesScenario(): ViewRestr
  * **Expected**: the page content is hidden and only the message that there are no writable repositories is shown. The
  * picker is empty and the create repository button is not shown.
  */
-export function getWriteRequiredWithoutWritableRepositoriesAndNoRepositorySelectedScenario(): ViewRestrictionScenario {
-  return new ViewRestrictionScenarioBuilder()
+export function getWriteRequiredWithoutWritableRepositoriesAndNoRepositorySelectedScenario(): ViewRestrictionTestScenario {
+  return new ViewRestrictionTestScenarioBuilder()
     .withRestrictions([IS_REPOSITORY_NOT_SELECTED, MISSING_WRITE_PERMISSIONS, IS_ONTOP])
     .withAllowedRepositoryTypes([RepositoryType.GRAPH_DB, RepositoryType.FEDX])
     .withValidLicense()
@@ -372,8 +372,8 @@ export function getWriteRequiredWithoutWritableRepositoriesAndNoRepositorySelect
  * **Expected**: the page content is hidden and a message says that there are no accessible repositories and offers to
  * create one. The picker is empty and the create repository button is shown.
  */
-export function getNoRepositoryOfAllowedTypeWithCreateRightsScenario(): ViewRestrictionScenario {
-  return new ViewRestrictionScenarioBuilder()
+export function getNoRepositoryOfAllowedTypeWithCreateRightsScenario(): ViewRestrictionTestScenario {
+  return new ViewRestrictionTestScenarioBuilder()
     .withRestrictions([IS_REPOSITORY_NOT_SELECTED])
     .withAllowedRepositoryTypes([RepositoryType.OTHER])
     .withValidLicense()
@@ -395,8 +395,8 @@ export function getNoRepositoryOfAllowedTypeWithCreateRightsScenario(): ViewRest
  * **Expected**: the page content is hidden and a message says that the page doesn't support FedX repositories. The picker
  * offers only the GraphDB repositories, but the create repository button is not shown.
  */
-export function getFedxRepositorySelectedWithoutCreateRightsScenario(): ViewRestrictionScenario {
-  return new ViewRestrictionScenarioBuilder()
+export function getFedxRepositorySelectedWithoutCreateRightsScenario(): ViewRestrictionTestScenario {
+  return new ViewRestrictionTestScenarioBuilder()
     .withRestrictions([IS_REPOSITORY_NOT_SELECTED, IS_ONTOP, IS_FEDEX])
     .withAllowedRepositoryTypes([RepositoryType.GRAPH_DB])
     .withValidLicense()
@@ -419,8 +419,8 @@ export function getFedxRepositorySelectedWithoutCreateRightsScenario(): ViewRest
  * **Expected**: the page content is shown, because with security OFF everyone can write. No restriction messages, picker
  * or create repository button are shown.
  */
-export function getWriteRequiredWithSecurityOffScenario(): ViewRestrictionScenario {
-  return new ViewRestrictionScenarioBuilder()
+export function getWriteRequiredWithSecurityOffScenario(): ViewRestrictionTestScenario {
+  return new ViewRestrictionTestScenarioBuilder()
     .withRestrictions([IS_REPOSITORY_NOT_SELECTED, MISSING_WRITE_PERMISSIONS, IS_ONTOP])
     .withAllowedRepositoryTypes([RepositoryType.GRAPH_DB, RepositoryType.FEDX])
     .withValidLicense()
@@ -442,8 +442,8 @@ export function getWriteRequiredWithSecurityOffScenario(): ViewRestrictionScenar
  * **Expected**: the page content is hidden and the user is asked to select or create a repository. The picker offers only
  * the local repositories, not the remote one, and the create repository button is shown.
  */
-export function getNoRepositorySelectedWithRemoteLocationScenario(): ViewRestrictionScenario {
-  return new ViewRestrictionScenarioBuilder()
+export function getNoRepositorySelectedWithRemoteLocationScenario(): ViewRestrictionTestScenario {
+  return new ViewRestrictionTestScenarioBuilder()
     .withRestrictions([IS_REPOSITORY_NOT_SELECTED])
     .withValidLicense()
     .withUser('admin')
@@ -463,8 +463,8 @@ export function getNoRepositorySelectedWithRemoteLocationScenario(): ViewRestric
  * **Expected**: the page content is hidden and a message says that there are no accessible repositories and offers to
  * create one. The picker is empty and the create repository button is shown.
  */
-export function getNoRepositoriesWithCreateRightsScenario(): ViewRestrictionScenario {
-  return new ViewRestrictionScenarioBuilder()
+export function getNoRepositoriesWithCreateRightsScenario(): ViewRestrictionTestScenario {
+  return new ViewRestrictionTestScenarioBuilder()
     .withRestrictions([IS_REPOSITORY_NOT_SELECTED])
     .withValidLicense()
     .withUser('admin')
@@ -485,8 +485,8 @@ export function getNoRepositoriesWithCreateRightsScenario(): ViewRestrictionScen
  * **Expected**: the page content is hidden and the user is asked to select or create a repository, as the selected one is
  * not allowed. The picker offers only the Ontop repository and the create repository button is shown.
  */
-export function getSelectedRepositoryOfNotAllowedTypeScenario(): ViewRestrictionScenario {
-  return new ViewRestrictionScenarioBuilder()
+export function getSelectedRepositoryOfNotAllowedTypeScenario(): ViewRestrictionTestScenario {
+  return new ViewRestrictionTestScenarioBuilder()
     .withRestrictions([])
     .withAllowedRepositoryTypes([RepositoryType.ONTOP])
     .withValidLicense()
@@ -509,8 +509,8 @@ export function getSelectedRepositoryOfNotAllowedTypeScenario(): ViewRestriction
  * **Expected**: the page content is hidden and only the invalid license message is shown (with a link to set a new
  * license). The picker is not shown, as selecting another repository doesn't help.
  */
-export function getInvalidLicenseWithRepositorySelectedScenario(): ViewRestrictionScenario {
-  return new ViewRestrictionScenarioBuilder()
+export function getInvalidLicenseWithRepositorySelectedScenario(): ViewRestrictionTestScenario {
+  return new ViewRestrictionTestScenarioBuilder()
     .withRestrictions([IS_LICENSE_INVALID])
     .withInvalidLicense()
     .withSecurityOff()
@@ -532,8 +532,8 @@ export function getInvalidLicenseWithRepositorySelectedScenario(): ViewRestricti
  * **Expected**: the page content is hidden and the user is asked to select a repository. The picker offers only `repo-a`,
  * the one writable repository, and the create repository button is not shown.
  */
-export function getNoRepositorySelectedWithOneWritableRepositoryScenario(): ViewRestrictionScenario {
-  return new ViewRestrictionScenarioBuilder()
+export function getNoRepositorySelectedWithOneWritableRepositoryScenario(): ViewRestrictionTestScenario {
+  return new ViewRestrictionTestScenarioBuilder()
     .withRestrictions([IS_REPOSITORY_NOT_SELECTED, MISSING_WRITE_PERMISSIONS])
     .withValidLicense()
     .withUser('mixed')
@@ -554,8 +554,8 @@ export function getNoRepositorySelectedWithOneWritableRepositoryScenario(): View
  * **Expected**: the page content is hidden and two messages are shown, in order: there are no writable repositories, and
  * the user can't write to the selected repository. The picker is empty and the create repository button is not shown.
  */
-export function getOnlyWriteRequiredWithoutWritableRepositoriesScenario(): ViewRestrictionScenario {
-  return new ViewRestrictionScenarioBuilder()
+export function getOnlyWriteRequiredWithoutWritableRepositoriesScenario(): ViewRestrictionTestScenario {
+  return new ViewRestrictionTestScenarioBuilder()
     .withRestrictions([MISSING_WRITE_PERMISSIONS])
     .withValidLicense()
     .withUser('reader')
@@ -580,8 +580,8 @@ export function getOnlyWriteRequiredWithoutWritableRepositoriesScenario(): ViewR
  * **Expected**: the page content is shown, because a condition that the page doesn't declare never restricts it. No
  * restriction messages, picker or create repository button are shown.
  */
-export function getNoRestrictionsDeclaredScenario(): ViewRestrictionScenario {
-  return new ViewRestrictionScenarioBuilder()
+export function getNoRestrictionsDeclaredScenario(): ViewRestrictionTestScenario {
+  return new ViewRestrictionTestScenarioBuilder()
     .withRestrictions([])
     .withInvalidLicense()
     .withUser('reader')
@@ -603,8 +603,8 @@ export function getNoRestrictionsDeclaredScenario(): ViewRestrictionScenario {
  * repositories, but the create repository button is not shown, because maintaining a repository doesn't allow creating
  * repositories.
  */
-export function getNoRepositorySelectedForRepositoryMaintainerScenario(): ViewRestrictionScenario {
-  return new ViewRestrictionScenarioBuilder()
+export function getNoRepositorySelectedForRepositoryMaintainerScenario(): ViewRestrictionTestScenario {
+  return new ViewRestrictionTestScenarioBuilder()
     .withRestrictions([IS_REPOSITORY_NOT_SELECTED])
     .withValidLicense()
     .withUser('maintainer')
@@ -625,8 +625,8 @@ export function getNoRepositorySelectedForRepositoryMaintainerScenario(): ViewRe
  * **Expected**: the page content is hidden and only the invalid license message is shown (with a link to set a new
  * license), as a missing license is treated as an invalid one. The picker is not shown.
  */
-export function getMissingLicenseWithRepositorySelectedScenario(): ViewRestrictionScenario {
-  return new ViewRestrictionScenarioBuilder()
+export function getMissingLicenseWithRepositorySelectedScenario(): ViewRestrictionTestScenario {
+  return new ViewRestrictionTestScenarioBuilder()
     .withRestrictions([IS_LICENSE_INVALID])
     .withMissingLicense()
     .withUser('admin')
@@ -649,8 +649,8 @@ export function getMissingLicenseWithRepositorySelectedScenario(): ViewRestricti
  * even though the user can't write to it. The picker offers all local repositories, but the create repository button is
  * not shown.
  */
-export function getOntopRepositorySelectedWithoutRequiredSelectionScenario(): ViewRestrictionScenario {
-  return new ViewRestrictionScenarioBuilder()
+export function getOntopRepositorySelectedWithoutRequiredSelectionScenario(): ViewRestrictionTestScenario {
+  return new ViewRestrictionTestScenarioBuilder()
     .withRestrictions([IS_ONTOP, IS_FEDEX])
     .withValidLicense()
     .withUser('reader')
@@ -672,8 +672,8 @@ export function getOntopRepositorySelectedWithoutRequiredSelectionScenario(): Vi
  * **Expected**: the page content is hidden and only the message that the page doesn't support FedX repositories is shown.
  * The picker offers all local repositories and the create repository button is shown.
  */
-export function getFedxRepositorySelectedWithoutRequiredSelectionScenario(): ViewRestrictionScenario {
-  return new ViewRestrictionScenarioBuilder()
+export function getFedxRepositorySelectedWithoutRequiredSelectionScenario(): ViewRestrictionTestScenario {
+  return new ViewRestrictionTestScenarioBuilder()
     .withRestrictions([IS_ONTOP, IS_FEDEX])
     .withValidLicense()
     .withSecurityOff()
