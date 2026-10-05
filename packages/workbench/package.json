@@ -16,20 +16,20 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "^21.2.23",
-    "@angular/common": "^21.2.23",
-    "@angular/compiler": "^21.2.23",
-    "@angular/core": "^21.2.23",
-    "@angular/forms": "^21.2.23",
-    "@angular/platform-browser": "^21.2.23",
-    "@angular/platform-browser-dynamic": "^21.2.23",
-    "@angular/router": "^21.2.23",
+    "@angular/animations": "^21.2.25",
+    "@angular/common": "^21.2.25",
+    "@angular/compiler": "^21.2.25",
+    "@angular/core": "^21.2.25",
+    "@angular/forms": "^21.2.25",
+    "@angular/platform-browser": "^21.2.25",
+    "@angular/platform-browser-dynamic": "^21.2.25",
+    "@angular/router": "^21.2.25",
     "@jsverse/transloco": "^8.3.0",
     "@jsverse/transloco-messageformat": "^8.3.0",
     "@primeuix/themes": "^2.0.3",
     "file-saver": "^2.0.5",
     "ontotext-yasgui-web-component": "^1.8.2",
-    "primeng": "^21.1.8",
+    "primeng": "^21.1.10",
     "rxjs": "~7.8.2",
     "single-spa": "^6.0.3",
     "single-spa-angular": "^21.0.2",
@@ -42,7 +42,7 @@
     "@angular-devkit/build-angular": "^21.2.24",
     "@angular/build": "^21.2.24",
     "@angular/cli": "^21.2.24",
-    "@angular/compiler-cli": "^21.2.23",
+    "@angular/compiler-cli": "^21.2.25",
     "@types/file-saver": "^2.0.7",
     "@types/jest": "^30.0.0",
     "angular-eslint": "21.4.0",
@@ -55,5 +55,11 @@
     "sonarqube-scanner": "^5.0.1",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.60.1"
+  },
+  "overrides": {
+    "piscina": "^5.3.2",
+    "sockjs": {
+      "uuid": "^11.1.1"
+    }
   }
 }
