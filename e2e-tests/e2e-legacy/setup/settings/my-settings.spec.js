@@ -3,6 +3,7 @@ import {YasqeSteps} from '../../../steps/yasgui/yasqe-steps';
 import {SecurityStubs} from '../../../stubs/security-stubs';
 import {VisualGraphSteps} from '../../../steps/visual-graph-steps';
 import {ToasterSteps} from '../../../steps/toaster-steps';
+import {SettingsSteps} from '../../../steps/setup/settings-steps';
 
 describe('My Settings', () => {
 
@@ -32,16 +33,12 @@ describe('My Settings', () => {
         //turn off inference, sameAs and count total results
         clickLabelBtn('#sameas-on')
             .then(() => {
-                cy.get('#sameas-on')
-                    .find('.switch:checkbox')
-                    .should('not.be.checked');
+                SettingsSteps.getSameAsToggle().should('not.be.checked');
             });
 
         clickLabelBtn('#inference-on')
             .then(() => {
-                cy.get('#inference-on')
-                    .find('.switch:checkbox')
-                    .should('not.be.checked');
+                SettingsSteps.getInferenceToggle().should('not.be.checked');
             });
 
         cy.get('#defaultCount:checkbox').uncheck();
@@ -95,9 +92,7 @@ describe('My Settings', () => {
         visitSettingsView();
 
         clickLabelBtn('#schema-on').then(() => {
-            cy.get('#schema-on')
-                .find('.switch:checkbox')
-                .should('not.be.checked');
+            SettingsSteps.getSchemaToggle().should('not.be.checked');
         });
 
         getSaveButton()
@@ -152,31 +147,28 @@ describe('My Settings', () => {
     it('sameAs button should be disabled if inference is turned off', () => {
         clickLabelBtn('#inference-on')
             .then(() => {
-                cy.get('#inference-on')
-                    .find('.switch:checkbox')
-                    .should('not.be.checked');
+                SettingsSteps.getInferenceToggle().should('not.be.checked');
             });
 
-        cy.get('#sameas-on')
-            .find('.switch:checkbox')
+        SettingsSteps.getSameAsToggle()
             .should('be.disabled')
             .and('not.be.checked');
     });
 
     it('should give the settings form controls accessible names', () => {
-        cy.get('label[for="wb-user-username"]').should('contain', 'Username');
+        SettingsSteps.getUsernameLabel().should('contain', 'Username');
 
-        cy.get('label[for="sameAsCheck"]').should('contain', 'Expand results over owl:SameAs');
-        cy.get('label[for="inferenceCheck"]').should('contain', 'Enable inference');
-        cy.get('label[for="schemaCheck"]').should('contain', 'Show schema');
+        SettingsSteps.getSameAsToggleLabel().should('contain', 'Expand results over owl:SameAs');
+        SettingsSteps.getInferenceToggleLabel().should('contain', 'Enable inference');
+        SettingsSteps.getSchemaToggleLabel().should('contain', 'Show schema');
 
-        cy.get('.any-repo .read:checkbox')
+        SettingsSteps.getAnyRepositoryReadCheckbox()
             .should('have.attr', 'aria-label', 'Read access to Global (any data repository)');
-        cy.get('.any-repo .write:checkbox')
+        SettingsSteps.getAnyRepositoryWriteCheckbox()
             .should('have.attr', 'aria-label', 'Write access to Global (any data repository)');
-        cy.get('.any-repo .maintain-repository:checkbox')
+        SettingsSteps.getAnyRepositoryMaintainCheckbox()
             .should('have.attr', 'aria-label', 'Maintain access to Global (any data repository)');
-        cy.get('.any-repo .graphql:checkbox')
+        SettingsSteps.getAnyRepositoryGraphqlCheckbox()
             .should('have.attr', 'aria-label', 'Restrict Global (any data repository) to GraphQL');
     });
 

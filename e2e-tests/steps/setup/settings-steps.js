@@ -29,6 +29,10 @@ export class SettingsSteps {
         return this.getSettingsPage().find('.login-credentials')
     }
 
+    static getUsernameLabel() {
+        return this.getLoginPanel().find('label[for="wb-user-username"]');
+    }
+
     static getPasswordField() {
         return this.getLoginPanel().find('#wb-user-password:password');
     }
@@ -62,6 +66,24 @@ export class SettingsSteps {
         return this.getSparqlEditorPanel().find('.inference-label');
     }
 
+    static getSchemaToggle() {
+        return this.getSparqlEditorPanel()
+            .find('#schema-on')
+            .find('.switch:checkbox');
+    }
+
+    static getSameAsToggleLabel() {
+        return this.getSparqlEditorPanel().find('label[for="sameAsCheck"]');
+    }
+
+    static getInferenceToggleLabel() {
+        return this.getSparqlEditorPanel().find('label[for="inferenceCheck"]');
+    }
+
+    static getSchemaToggleLabel() {
+        return this.getSparqlEditorPanel().find('label[for="schemaCheck"]');
+    }
+
     static getCountCheckbox() {
         return this.getSparqlEditorPanel().find('#defaultCount:checkbox');
     }
@@ -92,6 +114,26 @@ export class SettingsSteps {
 
     static getUserRepositoryTable() {
         return this.getSettingsPage().find('.user-repositories .table');
+    }
+
+    static getAnyRepositoryRow() {
+        return this.getUserRepositoryTable().find('.any-repo');
+    }
+
+    static getAnyRepositoryReadCheckbox() {
+        return this.getAnyRepositoryRow().find('.read:checkbox');
+    }
+
+    static getAnyRepositoryWriteCheckbox() {
+        return this.getAnyRepositoryRow().find('.write:checkbox');
+    }
+
+    static getAnyRepositoryMaintainCheckbox() {
+        return this.getAnyRepositoryRow().find('.maintain-repository:checkbox');
+    }
+
+    static getAnyRepositoryGraphqlCheckbox() {
+        return this.getAnyRepositoryRow().find('.graphql:checkbox');
     }
 
     static getRepositoryRightsRows() {
