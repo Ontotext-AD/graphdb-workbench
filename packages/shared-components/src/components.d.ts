@@ -101,6 +101,10 @@ export namespace Components {
          */
         "items": DropdownItem<unknown>[];
         /**
+          * Allows callers to force an immediate button tooltip refresh (e.g. on a repository list change), instead of waiting for the next poll.
+         */
+        "refreshButtonTooltip": () => Promise<void>;
+        /**
           * The tooltip class to be used. For more information {@link OntoTooltipConfiguration#tooltipClass }.
          */
         "tooltipClass": string;
