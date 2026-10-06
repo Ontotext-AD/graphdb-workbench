@@ -1,4 +1,4 @@
-<app-page-layout class="sparql-editor-page">
+<app-page-layout>
   @let repository = currentRepository();
   @let graphNavigatorSettings = settings();
   @if (repository && graphNavigatorSettings) {
@@ -10,7 +10,7 @@
                             (resetSettings)="onResetSettings(repository)"
                             (exportSettings)="onExportSettings(repository)">
     </app-graph-navigator-settings>
-    <div>
+    <div class="graph-navigator-wrapper">
       @if (language() && !loading()) {
         <app-graphwise-reactodia-facade
           [currentRepository]="repository"
