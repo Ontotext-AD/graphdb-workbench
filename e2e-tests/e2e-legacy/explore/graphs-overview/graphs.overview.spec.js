@@ -113,11 +113,13 @@ describe('Graphs overview screen validation', () => {
     });
 
     it('Should give the controls on the page accessible names', () => {
-        // Then the search field should have a visible label
+        // Then the search field should have a screen reader label and a placeholder
         GraphsOverviewSteps.getGraphsSearchLabel()
-            .should('be.visible')
+            .should('have.class', 'sr-only')
             .and('contain.text', 'Search Graphs');
-        GraphsOverviewSteps.getGraphsSearchInput().should('have.attr', 'id', 'search-graphs');
+        GraphsOverviewSteps.getGraphsSearchInput()
+            .should('have.attr', 'id', 'search-graphs')
+            .and('have.attr', 'placeholder', 'Search Graphs');
         // And the table and the header controls should have accessible names
         GraphsOverviewSteps.getResultsElement().should('have.attr', 'aria-label', 'Graphs')
             .and('not.have.attr', 'aria-describedby');
