@@ -166,9 +166,9 @@ describe('Import user data: File upload', () => {
         ImportUserDataSteps.getResourceRemoveButton('bnodes.ttl').should('have.attr', 'aria-label', 'Remove bnodes.ttl');
         // And no empty context link should be rendered
         ImportUserDataSteps.getResourceContextLink('bnodes.ttl').should('not.exist');
-        // And the filter field should have a visible label
+        // And the filter field should have a screen reader label
         ImportUserDataSteps.getFilterFieldLabel()
-            .should('be.visible')
+            .should('have.class', 'sr-only')
             .and('contain.text', 'Filter by name');
         // When I import the file
         ImportUserDataSteps.importFile(0);

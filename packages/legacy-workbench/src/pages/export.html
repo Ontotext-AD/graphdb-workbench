@@ -36,8 +36,9 @@
 					</div>
 
 					<div class="graphs-search">
-						<label for="search-graphs" class="graphs-search-label">{{'search.graphs.label' | translate}}</label>
-						<input id="search-graphs" type="text" class="form-control search-graphs" ng-model="exportFilter" ng-keyup="onGraphSearch()"/>
+						<label for="search-graphs" class="graphs-search-label sr-only">{{'search.graphs.label' | translate}}</label>
+						<input id="search-graphs" type="text" class="form-control search-graphs" placeholder="{{'search.graphs.label' | translate}}"
+						       ng-model="exportFilter" ng-keyup="onGraphSearch()"/>
 					</div>
 				</div>
 
