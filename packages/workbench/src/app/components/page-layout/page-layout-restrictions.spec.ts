@@ -201,7 +201,7 @@ describe('PageLayoutComponent restrictions', () => {
     expect(url.searchParams.get('previous')).toBe('/graph-navigator');
   });
 
-  it('should offer only the local repositories, each with its location', async () => {
+  it('should offer only the local repositories, without their location', async () => {
     // GIVEN: an attached remote location with a repository
     await givenScenario(getNoRepositorySelectedWithRemoteLocationScenario());
 
@@ -210,9 +210,10 @@ describe('PageLayoutComponent restrictions', () => {
 
     // THEN: the "Local only" filter is checked
     expect(page.querySelector<HTMLInputElement>(PAGE_LAYOUT_RESTRICTIONS_SELECTORS.localOnlyFilter)?.checked).toBe(true);
-    // AND: each offered repository shows that it is local
-    const localLocation = `@ ${translate('components.repository_picker_list.location_local_label')}`;
-    expect(getPickerRepositoryLocations()).toEqual(ALL_LOCAL_REPOSITORY_IDS.map((id) => ({id, location: localLocation})));
+    // AND: only the local repositories are offered
+    expect(getPickerRepositoryIds()).toEqual(ALL_LOCAL_REPOSITORY_IDS);
+    // AND: the location is not shown, because all offered repositories are local
+    expect(page.querySelectorAll(PAGE_LAYOUT_RESTRICTIONS_SELECTORS.repositoryLocation).length).toBe(0);
   });
 
   it('should offer each repository as a button named after the repository and its location', async () => {

@@ -66,6 +66,7 @@
       scrollHeight="flex"
       class="repository-list">
       <ng-template #body let-repository>
+        @let repositoryLocation = repository.location || ('components.repository_picker_list.location_local_label' | transloco);
         <tr data-test="repository-picker-row">
           <td class="type-column">
             <em [ngClass]="['type-icon', 'icon-lg', 'icon-repo-' + repository.type]"></em>
@@ -89,15 +90,17 @@
                       data-test="repository-picker-repository-id"
                       [attr.aria-label]="'components.repository_picker_list.select_repository_aria_label' | transloco: {
                         repositoryId: repository.id,
-                        location: repository.location || ('components.repository_picker_list.location_local_label' | transloco)
+                        location: repositoryLocation
                       }"
                       (click)="selectRepository(repository)">{{ repository.id }}</button>
+              @if (!vm().localOnly) {
+                <small class="repository-location" data-test="repository-picker-repository-location">
+                  &#64; {{ repositoryLocation }}
+                </small>
+              }
             </div>
             <div class="repository-description">
               {{ repository.title }}
-            </div>
-            <div class="repository-location">
-              <small>&#64; {{ repository.location ? repository.location : ('components.repository_picker_list.location_local_label' | transloco) }}</small>
             </div>
           </td>
         </tr>

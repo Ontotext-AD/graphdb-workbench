@@ -31,6 +31,8 @@ describe('Graph Navigator view restrictions', () => {
         PageRestrictionsSteps.getMessage(NO_REPOSITORY_MESSAGE).should('be.visible');
         // AND the existing repository is available in the picker
         RepositoryPickerListSteps.getRepositoryRow(repositoryId).should('be.visible');
+        // AND its location is not shown, because only the local repositories are listed
+        RepositoryPickerListSteps.getRepositoryLocation(repositoryId).should('not.exist');
         // AND the graph is not rendered
         GraphNavigatorSteps.getComponent().should('not.exist');
     });
