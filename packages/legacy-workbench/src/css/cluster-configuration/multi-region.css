@@ -50,10 +50,6 @@
     width: auto;
 }
 
-.multi-region .tags-table .tag-index-column {
-    width: 16%;
-}
-
 .multi-region .tags-table .index-column {
     width: 10%;
 }
@@ -78,4 +74,9 @@
 
 .multi-region .tag-input.ng-valid.ng-dirty {
     border-color: initial;
+}
+
+.secondary-tag-table th,
+.tags-table th {
+    white-space: nowrap;
 }

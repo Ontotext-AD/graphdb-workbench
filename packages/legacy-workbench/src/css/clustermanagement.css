@@ -374,18 +374,18 @@ ul.nodes-list li a:hover {
     text-decoration: underline;
 }
 
-.actions-column {
-    width: 80px;
-}
-
 .index-cell {
     padding-left: 12px;
     border-left: 1px solid #eceeef;
 }
 
 .actions-cell {
-    width: 85px;
+    width: 44px;
     border-right: 1px solid #eceeef;
+}
+
+.actions-cell:has(.save-rule-btn) {
+    width: 85px;
 }
 
 .actions-cell .btn-link, .actions-cell .btn-link a {
