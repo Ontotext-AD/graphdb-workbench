@@ -71,9 +71,7 @@
       "create_repository_btn": {
         "label": "Create new repository"
       },
-      "select_repository_btn": {
-        "label": "Select"
-      },
+      "select_repository_aria_label": "Select repository {{repositoryId}} at {{location}}",
       "location_local_label": "Local",
       "filter_placeholder": "Filter by name or title",
       "state_filter": {

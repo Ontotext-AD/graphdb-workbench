@@ -97,10 +97,9 @@ describe('PageLayoutComponent restrictions', () => {
   };
 
   const selectRepositoryInPicker = async (repositoryId: string) => {
-    const row = Array.from(page.querySelectorAll(PAGE_LAYOUT_RESTRICTIONS_SELECTORS.pickerRepositoryId))
+    Array.from(page.querySelectorAll<HTMLButtonElement>(PAGE_LAYOUT_RESTRICTIONS_SELECTORS.pickerRepositoryId))
       .find((idElement) => normalizeText(idElement.textContent) === repositoryId)
-      ?.closest('tr');
-    row?.querySelector<HTMLButtonElement>(PAGE_LAYOUT_RESTRICTIONS_SELECTORS.selectRepositoryButton)?.click();
+      ?.click();
     await fixture.whenStable();
     fixture.detectChanges();
   };
@@ -214,6 +213,32 @@ describe('PageLayoutComponent restrictions', () => {
     // AND: each offered repository shows that it is local
     const localLocation = `@ ${translate('components.repository_picker_list.location_local_label')}`;
     expect(getPickerRepositoryLocations()).toEqual(ALL_LOCAL_REPOSITORY_IDS.map((id) => ({id, location: localLocation})));
+  });
+
+  it('should offer each repository as a button named after the repository and its location', async () => {
+    // GIVEN: an attached remote location with a repository, and the picker offers only the local repositories
+    await givenScenario(getNoRepositorySelectedWithRemoteLocationScenario());
+    await render();
+
+    // WHEN: unchecking "Local only"
+    page.querySelector<HTMLInputElement>(PAGE_LAYOUT_RESTRICTIONS_SELECTORS.localOnlyFilter)!.click();
+    fixture.detectChanges();
+
+    // THEN: each repository is offered as a native, enabled button
+    const selectControls = Array.from(page.querySelectorAll<HTMLButtonElement>(PAGE_LAYOUT_RESTRICTIONS_SELECTORS.pickerRepositoryId));
+    selectControls.forEach((selectControl) => {
+      expect(selectControl.tagName).toBe('BUTTON');
+      expect(selectControl.type).toBe('button');
+      expect(selectControl.disabled).toBe(false);
+    });
+    // AND: the accessible name of each button says which repository, at which location, it selects
+    const toExpectedAccessibleName = (repositoryId: string, location: string): string =>
+      translate('components.repository_picker_list.select_repository_aria_label', {repositoryId, location});
+    const localLocation = translate('components.repository_picker_list.location_local_label');
+    expect(selectControls.map((selectControl) => selectControl.getAttribute('aria-label'))).toEqual([
+      ...ALL_LOCAL_REPOSITORY_IDS.map((id) => toExpectedAccessibleName(id, localLocation)),
+      toExpectedAccessibleName(REMOTE_REPO_ID, 'https://remote-host:7200'),
+    ]);
   });
 
   it('should offer only the repositories that match the text typed in the picker filter', async () => {

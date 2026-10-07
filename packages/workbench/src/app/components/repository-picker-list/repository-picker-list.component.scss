@@ -47,21 +47,14 @@
   .repository-list {
     flex: 1;
     min-height: 200px;
-    border: 1px solid var(--gw-datatable-border-color);
 
-    .actions-column {
-      width: 7rem;
+    tr {
+      // Anchors the click area of the repository id button, which is stretched over the whole row.
+      position: relative;
+      cursor: pointer;
 
-      .select-repository-btn {
-        visibility: hidden;
-      }
-    }
-
-    tr:hover {
-      background-color: var(--gw-datatable-row-hover-background);
-
-      .actions-column .select-repository-btn {
-        visibility: visible;
+      &:hover {
+        background-color: var(--gw-datatable-row-hover-background);
       }
     }
 
@@ -90,6 +83,9 @@
       }
 
       .repository-state {
+        // Kept above the stretched click area of the repository id button, so that the tooltip is still reachable.
+        position: relative;
+        z-index: 1;
         flex-shrink: 0;
         font-size: .8em;
         margin-right: .5em;
@@ -119,10 +115,35 @@
         white-space: nowrap;
       }
 
+      // A native button, styled as plain text, which selects the repository.
       .repository-id {
         flex: 1;
         min-width: 0;
+        padding: 0;
+        border: 0;
+        background: none;
+        color: inherit;
+        font: inherit;
         font-weight: 600;
+        text-align: left;
+        cursor: pointer;
+
+        // Stretches the click area over the whole row.
+        &::after {
+          content: '';
+          position: absolute;
+          inset: 0;
+        }
+
+        &:focus {
+          outline: none;
+        }
+
+        // The focus ring is drawn around the row instead of the id.
+        &:focus-visible::after {
+          outline: 2px solid var(--gw-focus-ring-color);
+          outline-offset: -2px;
+        }
       }
     }
   }
