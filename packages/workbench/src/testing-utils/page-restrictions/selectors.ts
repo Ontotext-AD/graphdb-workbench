@@ -11,6 +11,6 @@ export const PAGE_LAYOUT_RESTRICTIONS_SELECTORS = {
   createRepositoryButton: '[data-test="repository-picker-create-btn"]',
   nameFilter: '.filter-name input',
   localOnlyFilter: '#localOnly',
-  repositoryLocation: '.repository-location',
+  repositoryLocation: '[data-test="repository-picker-repository-location"]',
   pageTitle: '.title-container',
 };

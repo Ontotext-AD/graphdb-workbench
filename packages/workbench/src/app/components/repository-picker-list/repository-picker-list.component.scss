@@ -117,7 +117,7 @@
 
       // A native button, styled as plain text, which selects the repository.
       .repository-id {
-        flex: 1;
+        flex: 0 1 auto;
         min-width: 0;
         padding: 0;
         border: 0;
@@ -144,6 +144,14 @@
           outline: 2px solid var(--gw-focus-ring-color);
           outline-offset: -2px;
         }
+      }
+
+      // Shown after the repository id, on the same line. It reserves at least 30% of the line, which limits the id
+      // to the remaining 70%. Without a location, the id can use the full available width.
+      .repository-location {
+        flex: 1;
+        min-width: 30%;
+        margin-left: .5em;
       }
     }
   }

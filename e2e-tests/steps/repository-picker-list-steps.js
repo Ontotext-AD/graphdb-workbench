@@ -20,6 +20,10 @@ export class RepositoryPickerListSteps extends BaseSteps {
             .parents(this.buildTestIdAttr('repository-picker-row'));
     }
 
+    static getRepositoryLocation(repositoryId) {
+        return this.getRepositoryRow(repositoryId).find(this.buildTestIdAttr('repository-picker-repository-location'));
+    }
+
     static selectRepository(repositoryId) {
         this.getRepositoryRow(repositoryId).click();
     }
