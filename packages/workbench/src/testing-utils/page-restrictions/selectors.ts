@@ -9,7 +9,6 @@ export const PAGE_LAYOUT_RESTRICTIONS_SELECTORS = {
   repositoryPicker: 'app-repository-picker-list',
   pickerRepositoryId: '[data-test="repository-picker-repository-id"]',
   createRepositoryButton: '[data-test="repository-picker-create-btn"]',
-  selectRepositoryButton: '[data-test="repository-picker-select-btn"] button',
   nameFilter: '.filter-name input',
   localOnlyFilter: '#localOnly',
   repositoryLocation: '.repository-location',

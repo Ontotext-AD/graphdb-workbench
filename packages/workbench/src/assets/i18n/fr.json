@@ -71,9 +71,7 @@
       "create_repository_btn": {
         "label": "Créer un dépôt"
       },
-      "select_repository_btn": {
-        "label": "Sélectionner"
-      },
+      "select_repository_aria_label": "Sélectionner le dépôt {{repositoryId}} à l'emplacement {{location}}",
       "location_local_label": "Local",
       "filter_placeholder": "Filtrer par nom ou titre",
       "state_filter": {

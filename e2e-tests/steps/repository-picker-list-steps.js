@@ -20,14 +20,8 @@ export class RepositoryPickerListSteps extends BaseSteps {
             .parents(this.buildTestIdAttr('repository-picker-row'));
     }
 
-    static getRepositorySelectButton(repositoryId) {
-        return this.getRepositoryRow(repositoryId).find(this.buildTestIdAttr('repository-picker-select-btn'));
-    }
-
     static selectRepository(repositoryId) {
-        // The select button is shown only while the row is hovered.
-        this.getRepositoryRow(repositoryId).realHover();
-        this.getRepositorySelectButton(repositoryId).click();
+        this.getRepositoryRow(repositoryId).click();
     }
 
     static getCreateRepositoryButton() {
