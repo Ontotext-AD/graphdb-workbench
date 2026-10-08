@@ -20,6 +20,10 @@ export class GraphNavigatorSteps extends BaseSteps {
         cy.getQueryParam('uri').should('eq', uri);
     }
 
+    static verifyOnlyRepositoryParam(repositoryId) {
+        cy.location('search').should('eq', `?repositoryId=${repositoryId}`);
+    }
+
     static getComponent() {
         return cy.get('graphwise-reactodia');
     }

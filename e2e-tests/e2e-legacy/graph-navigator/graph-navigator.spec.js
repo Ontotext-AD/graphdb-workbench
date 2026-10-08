@@ -3,6 +3,7 @@ import {LanguageSelectorSteps} from '../../steps/language-selector-steps.js';
 import {RepositorySelectorSteps} from '../../steps/repository-selector-steps.js';
 import {MainMenuSteps} from '../../steps/main-menu-steps.js';
 import {YasqeSteps} from '../../steps/yasgui/yasqe-steps.js';
+import {YasrSteps} from '../../steps/yasgui/yasr-steps.js';
 import {ToasterSteps} from '../../steps/toaster-steps.js';
 
 const FILE_TO_IMPORT = 'resource-test-data.ttl';
@@ -52,6 +53,27 @@ describe('Graph Navigator', () => {
         GraphNavigatorSteps.visitWithQuery(CONSTRUCT_QUERY);
 
         // Then I expect the computed graph to be seeded on the canvas: the subject and its related resource.
+        GraphNavigatorSteps.getElements().should('have.length', 2);
+        GraphNavigatorSteps.getElement(SEED_RESOURCE_LABEL).should('exist');
+        GraphNavigatorSteps.getElement(CONSTRUCT_TARGET_LABEL).should('exist');
+    });
+
+    it('should unmount and mount the diagram component without errors', () => {
+        // Given I have opened the Graph Navigator view, so its diagram component is already loaded.
+        GraphNavigatorSteps.visit();
+        GraphNavigatorSteps.getWorkspace().should('exist');
+        // And I have navigated to the SPARQL editor and executed a CONSTRUCT query.
+        MainMenuSteps.clickOnSparqlMenu();
+        YasqeSteps.getEditor().should('be.visible');
+        YasqeSteps.pasteQuery(CONSTRUCT_QUERY);
+        YasqeSteps.executeQuery();
+
+        // When I click on the "Graph Navigator" button.
+        YasrSteps.visualizeInGraphNavigator();
+
+        // Then I expect to be navigated to the Graph Navigator view, so it renders a second time
+        GraphNavigatorSteps.getComponent().should('exist');
+        // And I expect the computed graph to be seeded on the canvas: the subject and its related resource.
         GraphNavigatorSteps.getElements().should('have.length', 2);
         GraphNavigatorSteps.getElement(SEED_RESOURCE_LABEL).should('exist');
         GraphNavigatorSteps.getElement(CONSTRUCT_TARGET_LABEL).should('exist');
@@ -235,9 +257,35 @@ describe('Graph Navigator', () => {
             // When I switch to another repository.
             RepositorySelectorSteps.selectRepository(secondRepositoryId);
 
+            // Then I expect a confirmation that warns the diagram will be cleared.
+            GraphNavigatorSteps.getConfirmDialog().should('be.visible')
+                .and('contain', 'The diagram will be cleared.');
+
+            // When I cancel.
+            GraphNavigatorSteps.cancelDialog();
+
+            // Then I expect the repository, the canvas and the start resource in the URL to be kept.
+            GraphNavigatorSteps.getElements().should('have.length', 1);
+            GraphNavigatorSteps.verifyStartResourceUri(decodeURIComponent(SEED_RESOURCE_ENCODED));
+
+            // When I switch to another repository and confirm.
+            RepositorySelectorSteps.selectRepository(secondRepositoryId);
+            GraphNavigatorSteps.confirmDialog();
+
             // Then I expect the workspace to still be mounted, but the canvas to be cleared.
             GraphNavigatorSteps.getWorkspace().should('exist');
             GraphNavigatorSteps.getElements().should('not.exist');
+
+            // And I expect the URL to hold only the new repository.
+            GraphNavigatorSteps.verifyOnlyRepositoryParam(secondRepositoryId);
+
+            // When I refresh the page.
+            cy.reload();
+
+            // Then I expect the canvas to stay empty, because the start resource is no longer in the URL.
+            GraphNavigatorSteps.getWorkspace().should('exist');
+            GraphNavigatorSteps.getElements().should('not.exist');
+            GraphNavigatorSteps.verifyOnlyRepositoryParam(secondRepositoryId);
         });
     });
 });

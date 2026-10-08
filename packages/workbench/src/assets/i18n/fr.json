@@ -121,6 +121,12 @@
       "query_execution_failed": "Erreur! Impossible de charger les données du graphe.",
       "graph_load_failed": "Erreur! Impossible de calculer le graphe pour la requête."
     },
+    "confirmation": {
+      "on_repository_change": {
+        "title": "Confirmer le changement de dépôt sélectionné",
+        "message": "<div class=\"alert alert-warning\">Le diagramme sera effacé.</div><div>Voulez-vous vraiment changer le dépôt sélectionné ?</div>"
+      }
+    },
     "settings": {
       "button": "Paramètres",
       "upload": {

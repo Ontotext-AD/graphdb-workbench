@@ -142,4 +142,12 @@ export class YasrSteps extends BaseSteps {
     static toggleFullscreen() {
         YasrSteps.getFullscreenButton().click();
     }
+
+    static getGraphNavigatorButton() {
+        return YasrSteps.getYasr().find('.explore-graph-navigator');
+    }
+
+    static visualizeInGraphNavigator() {
+        YasrSteps.getGraphNavigatorButton().click();
+    }
 }

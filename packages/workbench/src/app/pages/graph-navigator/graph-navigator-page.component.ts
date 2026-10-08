@@ -1,5 +1,5 @@
 import {Component, inject, OnDestroy, OnInit, signal} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Params, Router} from '@angular/router';
 import {saveAs} from 'file-saver';
 import {
   EventName,
@@ -26,6 +26,14 @@ import {PageLayoutComponent} from '../../components/page-layout/page-layout.comp
 import {LoggerProvider} from '../../services/logger/logger-provider';
 import {GraphNavigatorSettingsComponent} from './graph-navigator-settings/graph-navigator-settings.component';
 import {RestrictAccessDirective, ViewPermissions} from '../../directives/restrict-access.directive';
+import {GraphNavigatorQueryParams} from '../../models/graph-navigator/graph-navigator-query-params';
+import {ConfirmationProviderService} from '../../services/dialog/confirmation-provider.service';
+
+/**
+ * The query params that seed the canvas. They are removed from the URL when the repository is switched and
+ * the diagram is cleared. All others are kept.
+ */
+const PARAMS_TO_REMOVE: string[] = [GraphNavigatorQueryParams.URI, GraphNavigatorQueryParams.QUERY];
 
 /**
  * Page that hosts the Graph Navigator. It owns the context subscriptions (repository, language and
@@ -57,6 +65,8 @@ export class GraphNavigatorPageComponent implements OnInit, OnDestroy {
   private readonly eventService = service(EventService);
   private readonly runtimeConfigurationContextService = service(RuntimeConfigurationContextService);
   private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly confirmationProviderService = inject(ConfirmationProviderService);
+  private readonly router = inject(Router);
   private readonly logger = LoggerProvider.logger;
 
   private readonly subscriptions = new SubscriptionList();
@@ -118,6 +128,9 @@ export class GraphNavigatorPageComponent implements OnInit, OnDestroy {
   private subscribeToRepositoryChanged() {
     return this.repositoryContextService.onSelectedRepositoryChanged((repository) => {
       const repositoryId = repository?.id;
+      if (this.currentRepository()) {
+        this.clearDiagram();
+      }
       // Clear the settings together with the repository change, so the facade is removed and mounted again
       // once, with the new repository and its settings together.
       this.settings.set(undefined);
@@ -125,7 +138,49 @@ export class GraphNavigatorPageComponent implements OnInit, OnDestroy {
       if (repositoryId) {
         this.loadSettings(repositoryId);
       }
+    }, () => this.repositoryBeforeChangeHandler());
+  }
+
+  /**
+   * Asks the user to confirm the repository switch, because it clears the diagram.
+   *
+   * @returns A Promise that resolves to `true` if the user confirmed, or `false` to cancel the switch.
+   */
+  private repositoryBeforeChangeHandler(): Promise<boolean> {
+    if (!this.currentRepository()) {
+      return Promise.resolve(true);
+    }
+    return new Promise((resolve) => {
+      this.confirmationProviderService.confirm({
+        header: translate('graph_navigator.confirmation.on_repository_change.title'),
+        message: translate('graph_navigator.confirmation.on_repository_change.message'),
+        acceptHandler: () => resolve(this.clearSeedQueryParams().then(() => true)),
+        rejectHandler: () => resolve(false)
+      });
     });
+  }
+
+  /**
+   * Removes the query params in {@link PARAMS_TO_REMOVE} from the URL before the repository is switched, while
+   * the URL still holds the current repository.
+   *
+   * @returns The Promise of the navigation. It resolves to `false` when there is nothing to remove, because
+   * a navigation to the same URL is skipped.
+   */
+  private clearSeedQueryParams(): Promise<boolean> {
+    const queryParams: Params = {...this.activatedRoute.snapshot.queryParams};
+    PARAMS_TO_REMOVE.forEach((param) => delete queryParams[param]);
+    return this.router.navigate([], {relativeTo: this.activatedRoute, queryParams, replaceUrl: true});
+  }
+
+  /**
+   * Clears everything the diagram was started with (the seed and the persisted diagram state), so the next
+   * repository opens with an empty canvas.
+   */
+  private clearDiagram(): void {
+    this.seedIris.set([]);
+    this.seedGraph.set([]);
+    this.dispatchClearDiagramEvent();
   }
 
   /**
@@ -206,7 +261,7 @@ export class GraphNavigatorPageComponent implements OnInit, OnDestroy {
    * no `uri` is provided (e.g. the page is opened directly), the diagram starts empty.
    */
   private initSeedFromQueryParams(): void {
-    const uri = this.activatedRoute.snapshot.queryParams['uri'];
+    const uri = this.activatedRoute.snapshot.queryParams[GraphNavigatorQueryParams.URI];
     this.seedIris.set(uri ? [uri] : []);
   }
 
@@ -218,13 +273,13 @@ export class GraphNavigatorPageComponent implements OnInit, OnDestroy {
   private initSeedGraphFromQueryParams(): void {
     this.loading.set(true);
     const queryParams = this.activatedRoute.snapshot.queryParams;
-    const query = queryParams['query'];
+    const query = queryParams[GraphNavigatorQueryParams.QUERY];
     if (!query) {
       this.loading.set(false);
       return;
     }
-    const inference = this.toOptionalBoolean(queryParams['inference']);
-    const sameAs = this.toOptionalBoolean(queryParams['sameAs']);
+    const inference = this.toOptionalBoolean(queryParams[GraphNavigatorQueryParams.INFERENCE]);
+    const sameAs = this.toOptionalBoolean(queryParams[GraphNavigatorQueryParams.SAME_AS]);
     this.graphExploreService.loadGraphForQuery(query, inference, sameAs)
       .then((links) => this.seedGraph.set(links))
       .catch((error) => {
@@ -244,5 +299,9 @@ export class GraphNavigatorPageComponent implements OnInit, OnDestroy {
    */
   private toOptionalBoolean(value?: string): boolean | undefined {
     return value ? value === 'true' : undefined;
+  }
+
+  private dispatchClearDiagramEvent() {
+    WindowService.getWindow().dispatchEvent(new CustomEvent(CLEAR_DIAGRAM_STORAGE_EVENT));
   }
 }

@@ -17,9 +17,11 @@ import {
   ServiceProvider,
   SparqlDataProviderSettings
 } from '@ontotext/workbench-api';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {By} from '@angular/platform-browser';
 import {ConfirmationService} from 'primeng/api';
+import {ConfirmationProviderService} from '../../services/dialog/confirmation-provider.service';
+import {ConfirmationConfig} from '../../services/dialog/model/confirmation-config';
 import {
   GraphwiseReactodiaFacadeComponent
 } from '../../components/graphwise-reactodia-facade/graphwise-reactodia-facade.component';
@@ -37,6 +39,8 @@ describe('GraphNavigatorPageComponent', () => {
   let loadGraphForQuerySpy: jest.SpyInstance;
   let getSettingsSpy: jest.SpyInstance;
   let canMaintainRepoSpy: jest.SpyInstance;
+  let confirmSpy: jest.SpyInstance;
+  let navigateSpy: jest.SpyInstance;
   let repositoryContextService: RepositoryContextService;
   const REPOSITORY_A = new Repository({id: 'repo-a', location: '', uri: 'http://repo-a'});
   const REPOSITORY_B = new Repository({id: 'repo-b', location: '', uri: 'http://repo-b'});
@@ -92,6 +96,11 @@ describe('GraphNavigatorPageComponent', () => {
       schemas: [NO_ERRORS_SCHEMA]
     })
       .compileComponents();
+
+    // Confirm the repository switch by default.
+    confirmSpy = jest.spyOn(TestBed.inject(ConfirmationProviderService), 'confirm')
+      .mockImplementation((config: ConfirmationConfig) => config.acceptHandler?.());
+    navigateSpy = jest.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
 
     fixture = TestBed.createComponent(GraphNavigatorPageComponent);
     component = fixture.componentInstance;
@@ -290,6 +299,58 @@ describe('GraphNavigatorPageComponent', () => {
       // THEN: the settings controls are not shown, but the diagram is.
       expect(fixture.nativeElement.querySelector('app-graph-navigator-settings')).toBeNull();
       expect(getFacade()).not.toBeNull();
+    });
+  });
+
+  describe('repository switch', () => {
+    it('should not ask for confirmation when the first repository is selected', async () => {
+      // WHEN: a repository is selected for the first time.
+      fixture.detectChanges();
+      await selectRepository(REPOSITORY_A);
+
+      // THEN: the repository is applied without a confirmation.
+      expect(confirmSpy).not.toHaveBeenCalled();
+      expect(component.currentRepository()).toBe(REPOSITORY_A.id);
+    });
+
+    it('should remove the seed query params and clear the seed when the switch is confirmed', async () => {
+      // GIVEN: the diagram is seeded from the URL for the first repository.
+      activatedRouteStub.snapshot.queryParams = {uri: 'urn:a', query: QUERY, embedded: 'true', repositoryId: REPOSITORY_A.id};
+      fixture.detectChanges();
+      await selectRepository(REPOSITORY_A);
+      await settle();
+
+      // WHEN: the repository is switched and the user confirms.
+      await selectRepository(REPOSITORY_B);
+
+      // THEN: only the seed query params are removed from the URL.
+      expect(confirmSpy).toHaveBeenCalledTimes(1);
+      expect(navigateSpy).toHaveBeenCalledWith([], {
+        relativeTo: activatedRouteStub,
+        queryParams: {embedded: 'true', repositoryId: REPOSITORY_A.id},
+        replaceUrl: true
+      });
+      // AND: the repository is switched with an empty seed.
+      expect(component.currentRepository()).toBe(REPOSITORY_B.id);
+      expect(component.seedIris()).toEqual([]);
+      expect(component.seedGraph()).toEqual([]);
+    });
+
+    it('should keep the repository, the seed and the URL when the switch is rejected', async () => {
+      // GIVEN: the diagram is seeded from the URL for the first repository.
+      activatedRouteStub.snapshot.queryParams = {uri: 'urn:a'};
+      fixture.detectChanges();
+      await selectRepository(REPOSITORY_A);
+      await settle();
+
+      // WHEN: the repository is switched and the user rejects.
+      confirmSpy.mockImplementation((config: ConfirmationConfig) => config.rejectHandler?.());
+      await selectRepository(REPOSITORY_B);
+
+      // THEN: nothing changes.
+      expect(navigateSpy).not.toHaveBeenCalled();
+      expect(component.currentRepository()).toBe(REPOSITORY_A.id);
+      expect(component.seedIris()).toEqual(['urn:a']);
     });
   });
 
