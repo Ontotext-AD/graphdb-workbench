@@ -121,6 +121,12 @@
       "query_execution_failed": "Error! Could not load the graph data.",
       "graph_load_failed": "Error! Could not compute the graph for the query."
     },
+    "confirmation": {
+      "on_repository_change": {
+        "title": "Confirm selected repository change",
+        "message": "<div class=\"alert alert-warning\">The diagram will be cleared.</div><div>Are you sure that you want to change the selected repository?</div>"
+      }
+    },
     "settings": {
       "button": "Settings",
       "upload": {
