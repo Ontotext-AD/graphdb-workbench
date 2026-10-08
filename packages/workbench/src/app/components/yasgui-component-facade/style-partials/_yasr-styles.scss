@@ -196,8 +196,11 @@ app-yasgui-component-facade {
       background-color: var(--gw-panel-background);
       border: 1px solid var(--gw-dialog-border-color);
 
-      .cm-comment {
-        color: var(--gw-neutral-300);
+      // Override the comment color for dark (moxer theme) only
+      .explainPlanQuery.cm-s-moxer {
+        .cm-comment {
+          color: var(--gw-neutral-300);
+        }
       }
     }
 
