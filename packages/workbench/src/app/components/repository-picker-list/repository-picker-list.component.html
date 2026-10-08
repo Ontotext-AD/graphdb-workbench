@@ -65,43 +65,58 @@
       [scrollable]="true"
       scrollHeight="flex"
       class="repository-list">
-      <ng-template #body let-repository>
+      <ng-template #body let-repository let-rowIndex="rowIndex">
         @let repositoryLocation = repository.location || ('components.repository_picker_list.location_local_label' | transloco);
         <tr data-test="repository-picker-row">
           <td class="type-column">
-            <em [ngClass]="['type-icon', 'icon-lg', 'icon-repo-' + repository.type]"></em>
+            @let typeLabel = 'components.repository_picker_list.repository_type.' + repository.type | transloco;
+            <em [ngClass]="['type-icon', 'icon-lg', 'icon-repo-' + repository.type]"
+                aria-hidden="true"
+                data-test="repository-picker-repository-type"
+                [pTooltip]="typeLabel"
+                tooltipEvent="both"
+                tooltipPosition="top"></em>
+            <span class="screen-reader-only" data-test="repository-picker-repository-type-label">{{ typeLabel }}</span>
           </td>
           <td class="name-column">
-            <div class="repository-header">
-              <span class="repository-state"
-                    [pTooltip]="'components.repository_picker_list.state_filter.' + repository.stateLowercase | transloco"
+            @let stateLabel = 'components.repository_picker_list.state_filter.' + repository.stateLowercase | transloco;
+            @let stateElementId = 'repository-picker-repository-state-' + rowIndex;
+            @let isRunning = repository.state === RepositoryState.RUNNING;
+            @let isInactive = repository.state === RepositoryState.INACTIVE;
+            <button type="button"
+                    class="repository-select"
+                    data-test="repository-picker-select-btn"
+                    [attr.aria-label]="'components.repository_picker_list.select_repository_aria_label' | transloco: {
+                      repositoryId: repository.id,
+                      location: repositoryLocation
+                    }"
+                    [attr.aria-describedby]="stateElementId"
+                    (click)="selectRepository(repository)">
+              <span class="repository-header">
+                <em [ngClass]="[
+                      'repository-state',
+                      isRunning ? 'ri-circle-fill' : 'ri-circle-line',
+                      isRunning || isInactive ? repository.stateLowercase : 'transitioning'
+                    ]"
+                    aria-hidden="true"
+                    data-test="repository-picker-repository-state"
+                    [pTooltip]="stateLabel"
                     tooltipEvent="both"
-                    tooltipPosition="top">
-                @if (repository.state === RepositoryState.RUNNING) {
-                  <em [ngClass]="['ri-circle-fill', repository.stateLowercase]"></em>
-                } @else if (repository.state === RepositoryState.INACTIVE) {
-                  <em [ngClass]="['ri-circle-line', repository.stateLowercase]"></em>
-                } @else {
-                  <em [ngClass]="['ri-circle-line', 'transitioning']"></em>
+                    tooltipPosition="top"></em>
+                <span class="screen-reader-only"
+                      data-test="repository-picker-repository-state-label"
+                      [id]="stateElementId">{{ stateLabel }}</span>
+                <span class="repository-id" data-test="repository-picker-repository-id">{{ repository.id }}</span>
+                @if (!vm().localOnly) {
+                  <small class="repository-location" data-test="repository-picker-repository-location">
+                    &#64; {{ repositoryLocation }}
+                  </small>
                 }
               </span>
-              <button type="button"
-                      class="repository-id"
-                      data-test="repository-picker-repository-id"
-                      [attr.aria-label]="'components.repository_picker_list.select_repository_aria_label' | transloco: {
-                        repositoryId: repository.id,
-                        location: repositoryLocation
-                      }"
-                      (click)="selectRepository(repository)">{{ repository.id }}</button>
-              @if (!vm().localOnly) {
-                <small class="repository-location" data-test="repository-picker-repository-location">
-                  &#64; {{ repositoryLocation }}
-                </small>
-              }
-            </div>
-            <div class="repository-description">
-              {{ repository.title }}
-            </div>
+              <span class="repository-description">
+                {{ repository.title }}
+              </span>
+            </button>
           </td>
         </tr>
       </ng-template>

@@ -97,7 +97,7 @@ describe('PageLayoutComponent restrictions', () => {
   };
 
   const selectRepositoryInPicker = async (repositoryId: string) => {
-    Array.from(page.querySelectorAll<HTMLButtonElement>(PAGE_LAYOUT_RESTRICTIONS_SELECTORS.pickerRepositoryId))
+    Array.from(page.querySelectorAll<HTMLElement>(PAGE_LAYOUT_RESTRICTIONS_SELECTORS.pickerRepositoryId))
       .find((idElement) => normalizeText(idElement.textContent) === repositoryId)
       ?.click();
     await fixture.whenStable();
@@ -226,7 +226,7 @@ describe('PageLayoutComponent restrictions', () => {
     fixture.detectChanges();
 
     // THEN: each repository is offered as a native, enabled button
-    const selectControls = Array.from(page.querySelectorAll<HTMLButtonElement>(PAGE_LAYOUT_RESTRICTIONS_SELECTORS.pickerRepositoryId));
+    const selectControls = Array.from(page.querySelectorAll<HTMLButtonElement>(PAGE_LAYOUT_RESTRICTIONS_SELECTORS.pickerSelectButton));
     selectControls.forEach((selectControl) => {
       expect(selectControl.tagName).toBe('BUTTON');
       expect(selectControl.type).toBe('button');
@@ -240,6 +240,28 @@ describe('PageLayoutComponent restrictions', () => {
       ...ALL_LOCAL_REPOSITORY_IDS.map((id) => toExpectedAccessibleName(id, localLocation)),
       toExpectedAccessibleName(REMOTE_REPO_ID, 'https://remote-host:7200'),
     ]);
+  });
+
+  it('should tell the state and the type of a repository to assistive technologies', async () => {
+    // GIVEN: a list of repositories, the first of which is a starting FedX repository
+    await givenScenario(getNoRepositorySelectedWithCreateRightsScenario());
+
+    // WHEN: rendering the page
+    await render();
+
+    // THEN: the state icon of the repository is decorative, and the state is told by a text next to it
+    const stateIcon = page.querySelector(PAGE_LAYOUT_RESTRICTIONS_SELECTORS.pickerRepositoryState);
+    const stateLabel = page.querySelector(PAGE_LAYOUT_RESTRICTIONS_SELECTORS.pickerRepositoryStateLabel);
+    expect(stateIcon?.getAttribute('aria-hidden')).toBe('true');
+    expect(stateLabel?.textContent?.trim()).toBe('Starting');
+    // AND: the button of the repository is described by that text
+    const selectControl = page.querySelector(PAGE_LAYOUT_RESTRICTIONS_SELECTORS.pickerSelectButton);
+    expect(selectControl?.getAttribute('aria-describedby')).toBe(stateLabel?.id);
+    // AND: the type icon of the repository is decorative, and the type is told by a text next to it
+    const typeIcon = page.querySelector(PAGE_LAYOUT_RESTRICTIONS_SELECTORS.pickerRepositoryType);
+    const typeLabel = page.querySelector(PAGE_LAYOUT_RESTRICTIONS_SELECTORS.pickerRepositoryTypeLabel);
+    expect(typeIcon?.getAttribute('aria-hidden')).toBe('true');
+    expect(typeLabel?.textContent?.trim()).toBe('FedX repository');
   });
 
   it('should offer only the repositories that match the text typed in the picker filter', async () => {

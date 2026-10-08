@@ -1,0 +1,13 @@
+// Text which is not shown on the screen, but is read by screen readers. Use it to name an element which has no
+// visible text, for example an icon hidden from assistive technologies with aria-hidden="true".
+.screen-reader-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
