@@ -213,7 +213,7 @@ describe('PageLayoutComponent restrictions', () => {
     // AND: only the local repositories are offered
     expect(getPickerRepositoryIds()).toEqual(ALL_LOCAL_REPOSITORY_IDS);
     // AND: the location is not shown, because all offered repositories are local
-    expect(page.querySelectorAll(PAGE_LAYOUT_RESTRICTIONS_SELECTORS.repositoryLocation).length).toBe(0);
+    expect(page.querySelectorAll(PAGE_LAYOUT_RESTRICTIONS_SELECTORS.repositoryLocation)).toHaveLength(0);
   });
 
   it('should offer each repository as a button named after the repository and its location', async () => {
