@@ -1,26 +1,18 @@
 /*
  * Maps the styleguide tokens onto the Theme API of the graphwise-reactodia component
  */
+
+@use 'sass:string';
+
+$type-color-count: 20;
+
 :host {
   /* Graph Navigator type colors */
-  --graphwise-reactodia-type-color-01: var(--gw-foreground-visual-diagram-categorical-01);
-  --graphwise-reactodia-type-color-02: var(--gw-foreground-visual-diagram-categorical-02);
-  --graphwise-reactodia-type-color-03: var(--gw-foreground-visual-diagram-categorical-03);
-  --graphwise-reactodia-type-color-04: var(--gw-foreground-visual-diagram-categorical-04);
-  --graphwise-reactodia-type-color-05: var(--gw-foreground-visual-diagram-categorical-05);
-  --graphwise-reactodia-type-color-06: var(--gw-foreground-visual-diagram-categorical-06);
-  --graphwise-reactodia-type-color-07: var(--gw-foreground-visual-diagram-categorical-07);
-  --graphwise-reactodia-type-color-08: var(--gw-foreground-visual-diagram-categorical-08);
-  --graphwise-reactodia-type-color-09: var(--gw-foreground-visual-diagram-categorical-09);
-  --graphwise-reactodia-type-color-10: var(--gw-foreground-visual-diagram-categorical-10);
-  --graphwise-reactodia-type-color-11: var(--gw-foreground-visual-diagram-categorical-11);
-  --graphwise-reactodia-type-color-12: var(--gw-foreground-visual-diagram-categorical-12);
-  --graphwise-reactodia-type-color-13: var(--gw-foreground-visual-diagram-categorical-13);
-  --graphwise-reactodia-type-color-14: var(--gw-foreground-visual-diagram-categorical-14);
-  --graphwise-reactodia-type-color-15: var(--gw-foreground-visual-diagram-categorical-15);
-  --graphwise-reactodia-type-color-16: var(--gw-foreground-visual-diagram-categorical-16);
-  --graphwise-reactodia-type-color-17: var(--gw-foreground-visual-diagram-categorical-17);
-  --graphwise-reactodia-type-color-18: var(--gw-foreground-visual-diagram-categorical-18);
-  --graphwise-reactodia-type-color-19: var(--gw-foreground-visual-diagram-categorical-19);
-  --graphwise-reactodia-type-color-20: var(--gw-foreground-visual-diagram-categorical-20);
+  @for $i from 1 through $type-color-count {
+    $slot: string.slice('0#{$i}', -2);
+
+    --graphwise-reactodia-type-color-#{$slot}: var(--gw-foreground-visual-diagram-categorical-#{$slot});
+  }
+
+  --graphwise-reactodia-type-color-contrast: var(--gw-foreground-visual-diagram-categorical-contrast);
 }
