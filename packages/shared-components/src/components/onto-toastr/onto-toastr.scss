@@ -33,9 +33,9 @@
     }
 
     &.warning {
-      color: var(--gw-toast-warn-color);
-      background-color: var(--gw-toast-warn-background);
-      border-color: var(--gw-toast-warn-border-color);
+      color: var(--gw-toast-warning-color);
+      background-color: var(--gw-toast-warning-background);
+      border-color: var(--gw-toast-warning-border-color);
     }
 
     &.success {
