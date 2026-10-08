@@ -1425,18 +1425,18 @@ input.switch:disabled ~ label:before, input.switch:disabled ~ label:after {
 }
 
 .toast-warning {
-    background-color: var(--gw-toast-warn-background) !important;
-    border-color: var(--gw-toast-warn-border-color) !important;
-    color: var(--gw-toast-warn-color) !important;
+    background-color: var(--gw-toast-warning-background) !important;
+    border-color: var(--gw-toast-warning-border-color) !important;
+    color: var(--gw-toast-warning-color) !important;
 }
 
 .toast-warning button.toast-close-button {
-    color: var(--gw-toast-warn-color);
+    color: var(--gw-toast-warning-color);
     opacity: 1;
 }
 
 .toast-warning button.toast-close-button:hover {
-    color: var(--gw-toast-warn-close-button-focus-ring-color);
+    color: var(--gw-toast-warning-close-button-focus-ring-color);
 }
 
 .toast-info {
