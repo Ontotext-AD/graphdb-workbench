@@ -57,6 +57,7 @@
 .node {
     cursor: pointer;
     fill: var(--gw-neutral-base);
+    stroke-width: 3px;
 }
 
 .node.leader {
@@ -76,7 +77,7 @@
 
 .node.other {
     fill: var(--gw-cluster-node-outofsync-background);
-    stroke: var(--gw-cluster-node-outofsync-background);
+    stroke: var(--gw-cluster-node-outofsync-border-color);
 }
 
 #node-group.legend .node {
