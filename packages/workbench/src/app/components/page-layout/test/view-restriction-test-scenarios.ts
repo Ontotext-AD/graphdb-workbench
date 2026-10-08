@@ -1,4 +1,4 @@
-import {Repository, RepositoryType, ViewRestrictionCondition} from '@ontotext/workbench-api';
+import {Repository, RepositoryState, RepositoryType, ViewRestrictionCondition} from '@ontotext/workbench-api';
 
 import {ViewRestrictionTestScenario, ViewRestrictionTestScenarioBuilder} from './view-restriction-test-scenario-builder';
 
@@ -11,15 +11,16 @@ const FEDX_REPO_ID = 'fedx-repo';
 const ONTOP_REPO_ID = 'ontop-repo';
 export const REMOTE_REPO_ID = 'remote-repo';
 
-const REPO_A = new Repository({id: REPO_A_ID, title: REPO_A_ID, type: RepositoryType.GRAPH_DB, sesameType: 'graphdb:SailRepository'});
-const REPO_B = new Repository({id: REPO_B_ID, title: REPO_B_ID, type: RepositoryType.GRAPH_DB, sesameType: 'graphdb:SailRepository'});
-const FEDX_REPO = new Repository({id: FEDX_REPO_ID, title: FEDX_REPO_ID, type: RepositoryType.FEDX, sesameType: 'graphdb:FedXRepository'});
-const ONTOP_REPO = new Repository({id: ONTOP_REPO_ID, title: ONTOP_REPO_ID, type: RepositoryType.ONTOP, sesameType: 'graphdb:OntopRepository'});
+const REPO_A = new Repository({id: REPO_A_ID, title: REPO_A_ID, type: RepositoryType.GRAPH_DB, sesameType: 'graphdb:SailRepository', state: RepositoryState.RUNNING});
+const REPO_B = new Repository({id: REPO_B_ID, title: REPO_B_ID, type: RepositoryType.GRAPH_DB, sesameType: 'graphdb:SailRepository', state: RepositoryState.INACTIVE});
+const FEDX_REPO = new Repository({id: FEDX_REPO_ID, title: FEDX_REPO_ID, type: RepositoryType.FEDX, sesameType: 'graphdb:FedXRepository', state: RepositoryState.STARTING});
+const ONTOP_REPO = new Repository({id: ONTOP_REPO_ID, title: ONTOP_REPO_ID, type: RepositoryType.ONTOP, sesameType: 'graphdb:OntopRepository', state: RepositoryState.RUNNING});
 const REMOTE_REPO = new Repository({
   id: REMOTE_REPO_ID,
   title: REMOTE_REPO_ID,
   type: RepositoryType.GRAPH_DB,
   sesameType: 'graphdb:SailRepository',
+  state: RepositoryState.RUNNING,
   location: 'https://remote-host:7200'
 });
 const REPOSITORIES = [REPO_A, REPO_B, FEDX_REPO, ONTOP_REPO];

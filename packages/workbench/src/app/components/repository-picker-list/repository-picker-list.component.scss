@@ -49,10 +49,6 @@
     min-height: 200px;
 
     tr {
-      // Anchors the click area of the repository id button, which is stretched over the whole row.
-      position: relative;
-      cursor: pointer;
-
       &:hover {
         background-color: var(--gw-datatable-row-hover-background);
       }
@@ -60,7 +56,7 @@
 
     .type-column {
       width: 2.5rem;
-      padding-right: 0 !important;
+      padding-right: 0;
       vertical-align: top;
 
       .type-icon {
@@ -73,8 +69,36 @@
       // Prevent long content from expanding the table beyond its container.
       // The table layout still assigns the available space to this column.
       max-width: 0;
-      padding-left: .1em;
+
+      // The padding of the cell is moved to the select button, so that the button fills the whole cell.
+      padding: 0;
       vertical-align: top;
+
+      // A native button, styled as plain text, which fills the cell and selects the repository.
+      .repository-select {
+        display: block;
+        width: 100%;
+
+        // The PrimeNG design token "datatable.body.cell.padding", with the "gw" prefix configured in app.config.ts.
+        // PrimeNG uses the same variable for the padding of the table cells, so the button stays aligned with them.
+        padding: var(--gw-datatable-body-cell-padding);
+        padding-left: .1em;
+        border: 0;
+        background: none;
+        color: inherit;
+        font: inherit;
+        text-align: left;
+        cursor: pointer;
+
+        &:focus {
+          outline: none;
+        }
+
+        &:focus-visible {
+          outline: 2px solid var(--gw-focus-ring-color);
+          outline-offset: -2px;
+        }
+      }
 
       .repository-header {
         display: flex;
@@ -82,28 +106,33 @@
         min-width: 0;
       }
 
+      // Shown before the repository id, on the same line.
       .repository-state {
-        // Kept above the stretched click area of the repository id button, so that the tooltip is still reachable.
-        position: relative;
-        z-index: 1;
         flex-shrink: 0;
-        font-size: .8em;
         margin-right: .5em;
+        font-size: .8em;
 
-        .running {
+        &.running {
           color: var(--gw-button-success-background);
         }
 
-        .inactive {
+        &.inactive {
           color: var(--gw-button-info-background);
         }
 
-        .transitioning {
+        &.transitioning {
           color: var(--gw-button-warn-background);
         }
       }
 
+      .repository-id {
+        flex: 0 1 auto;
+        min-width: 0;
+        font-weight: 600;
+      }
+
       .repository-description {
+        display: block;
         font-weight: 400;
       }
 
@@ -113,37 +142,6 @@
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-      }
-
-      // A native button, styled as plain text, which selects the repository.
-      .repository-id {
-        flex: 0 1 auto;
-        min-width: 0;
-        padding: 0;
-        border: 0;
-        background: none;
-        color: inherit;
-        font: inherit;
-        font-weight: 600;
-        text-align: left;
-        cursor: pointer;
-
-        // Stretches the click area over the whole row.
-        &::after {
-          content: '';
-          position: absolute;
-          inset: 0;
-        }
-
-        &:focus {
-          outline: none;
-        }
-
-        // The focus ring is drawn around the row instead of the id.
-        &:focus-visible::after {
-          outline: 2px solid var(--gw-focus-ring-color);
-          outline-offset: -2px;
-        }
       }
 
       // Shown after the repository id, on the same line. It reserves at least 30% of the line, which limits the id

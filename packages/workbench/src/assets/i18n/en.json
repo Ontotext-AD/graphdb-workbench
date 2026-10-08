@@ -81,6 +81,13 @@
         "starting": "Starting",
         "restarting": "Restarting",
         "stopping": "Stopping"
+      },
+      "repository_type": {
+        "graphdb": "GraphDB repository",
+        "ontop": "Ontop repository",
+        "fedx": "FedX repository",
+        "system": "System repository",
+        "other": "Other repository type"
       }
     }
   },

@@ -81,6 +81,13 @@
         "starting": "Démarrage",
         "restarting": "Redémarrage",
         "stopping": "Arrêt"
+      },
+      "repository_type": {
+        "graphdb": "Dépôt GraphDB",
+        "ontop": "Dépôt Ontop",
+        "fedx": "Dépôt FedX",
+        "system": "Dépôt système",
+        "other": "Autre type de dépôt"
       }
     }
   },
