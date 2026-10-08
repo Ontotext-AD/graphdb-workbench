@@ -1,6 +1,7 @@
 import {
     FILENAME_PATTERN,
     NUMBER_PATTERN,
+    SIGNED_NUMBER_PATTERN,
     REPOSITORY_TYPES,
     STATIC_RULESETS,
 } from "./repository.constants";
@@ -87,7 +88,13 @@ const getNumberFormatError = function(params, $translate) {
 
     const errorEntry = Object.keys(params).find((key) => {
         const param = params[key];
-        return param.isNumber && !NUMBER_PATTERN.test(param.value);
+        let pattern = NUMBER_PATTERN;
+
+        if (key === 'queryTimeout' || key === 'queryLimitResults') {
+            pattern = SIGNED_NUMBER_PATTERN;
+        }
+
+        return param.isNumber && !pattern.test(param.value);
     });
 
     return errorEntry && numberParamToErrorKey[errorEntry]
