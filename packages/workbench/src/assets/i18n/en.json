@@ -74,7 +74,6 @@
       "select_repository_aria_label": "Select repository {{repositoryId}} at {{location}}",
       "location_local_label": "Local",
       "filter_placeholder": "Filter by name or title",
-      "filter_aria_label": "Filter by name or title",
       "state_filter_aria_label": "Filter by state",
       "state_filter": {
         "all": "All repositories",
