@@ -60,13 +60,12 @@ export class GraphNavigatorSteps extends BaseSteps {
         return this.getByTestId('graph-navigator-settings-upload').find('.p-fileupload-choose-button input[type=file]');
     }
 
-    static selectSettingsFile(fileName = 'settings.ttl', contents = '@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .') {
+    static selectSettingsFile(file) {
         // PrimeNG hides the file input (display: none), so force is needed to select a file on it.
-        this.getSettingsFileInput()
-            .selectFile({contents: Cypress.Buffer.from(contents), fileName, mimeType: 'text/turtle'}, {force: true});
+        this.getSettingsFileInput().selectFile(file, {force: true});
     }
 
-    static getSelectedSettingsFile(fileName = 'settings.ttl') {
+    static getSelectedSettingsFile(fileName) {
         return GraphNavigatorSteps.getSettingsPopover().contains(fileName);
     }
 
