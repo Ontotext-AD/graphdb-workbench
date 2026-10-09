@@ -1,5 +1,6 @@
 import {Component, h, Host, Prop, State, Watch} from '@stencil/core';
 import {
+  getRepositoryIdWithLocation,
   Repository,
   RepositoryContextService,
   RepositoryPermissionType,
@@ -13,6 +14,7 @@ import {DropdownItemAlignment} from '../../models/dropdown/dropdown-item-alignme
 import {RepositorySelection} from './repository-selection';
 import {TranslationService} from '../../services/translation.service';
 import {OntoTooltipPlacement} from '../onto-tooltip/models/onto-tooltip-placement';
+import {escapeHtml} from '../../utils/html-utils';
 import { LoggerProvider } from 'src/services/logger-provider';
 
 @Component({
@@ -30,14 +32,15 @@ import { LoggerProvider } from 'src/services/logger-provider';
  *             currentRepository={this.currentRepository}
  *             items={this.items}
  *             repositorySizeInfoFetcher={...}
- *             totalTripletsFormatter={...}
- *             canWriteRepo={...}>
+ *             getRepositoryPermission={...}>
  *           </onto-repository-selector>
  */
 export class OntoRepositorySelector {
   private readonly repositoryContextService = service(RepositoryContextService);
   private readonly subscriptions: (() => void)[] = [];
-  private readonly repositorySizeInfoCache = new Map<string, RepositorySizeInfo | null>();
+  // Both maps are keyed by the repository id with its location, because repositories in different locations can have
+  // the same id.
+  private readonly repositorySizeInfoCache = new Map<string, RepositorySizeInfo>();
   private readonly repositorySizeInfoRequests = new Map<string, Promise<RepositorySizeInfo>>();
   private dropdownElement?: HTMLOntoDropdownElement;
 
@@ -55,16 +58,6 @@ export class OntoRepositorySelector {
    * Fetches repository size info used to build tooltips.
    */
   @Prop() repositorySizeInfoFetcher: (repo: Repository) => Promise<RepositorySizeInfo>;
-
-  /**
-   * Formatter for numeric values in tooltips.
-   */
-  @Prop() totalTripletsFormatter: Intl.NumberFormat;
-
-  /**
-   * Formatter for numeric values with fraction in tooltips.
-   */
-  @Prop() expansionRatioFormatter: Intl.NumberFormat;
 
   /**
    * Determines whether the current user has write access to the repository.
@@ -176,13 +169,14 @@ export class OntoRepositorySelector {
         return this.buildRepositoryTooltipHtml(repository);
       }
 
-      const repositorySizeInfo = this.repositorySizeInfoCache.get(repository.id);
+      const repositoryKey = getRepositoryIdWithLocation(repository);
+      const repositorySizeInfo = this.repositorySizeInfoCache.get(repositoryKey);
 
       if (repositorySizeInfo) {
         return this.buildRepositoryTooltipHtml(repository, repositorySizeInfo);
       }
 
-      if (!this.repositorySizeInfoRequests.has(repository.id)) {
+      if (!this.repositorySizeInfoRequests.has(repositoryKey)) {
         this.fetchRepositorySizeInfo(repository);
       }
 
@@ -191,154 +185,43 @@ export class OntoRepositorySelector {
   }
 
   private fetchRepositorySizeInfo(repository: Repository): void {
+    const repositoryKey = getRepositoryIdWithLocation(repository);
     const repositorySizeInfoRequest = this.repositorySizeInfoFetcher(repository);
 
-    this.repositorySizeInfoRequests.set(repository.id, repositorySizeInfoRequest);
+    this.repositorySizeInfoRequests.set(repositoryKey, repositorySizeInfoRequest);
 
     repositorySizeInfoRequest.then((repositorySizeInfo) => {
-      this.repositorySizeInfoCache.set(repository.id, repositorySizeInfo);
+      this.repositorySizeInfoCache.set(repositoryKey, repositorySizeInfo);
     }).catch((err) => {
       LoggerProvider.logger.error('Failed to fetch repository size.', err);
     }).finally(() => {
-      this.repositorySizeInfoRequests.delete(repository.id);
+      // The map may have been emptied in the meantime and may hold a newer request for the same repository.
+      if (this.repositorySizeInfoRequests.get(repositoryKey) === repositorySizeInfoRequest) {
+        this.repositorySizeInfoRequests.delete(repositoryKey);
+      }
       void this.dropdownElement?.refreshButtonTooltip();
     });
   }
 
   /**
-   * Builds the complete HTML string used as tooltip content for a repository.
+   * Builds the HTML string used as tooltip content for a repository. The content is rendered by the
+   * <code>onto-repository-info</code> component, which gets its data as escaped JSON attributes.
    */
   private buildRepositoryTooltipHtml(repository: Repository, repositorySizeInfo?: RepositorySizeInfo, isLoadingRepositorySize = false): Promise<string> {
-    let html = `
-    <div class="repository-tooltip-title">
-      ${this.buildRepositoryTooltipTitle(repository)}
-    </div>`;
+    const attributes = [
+      `repository="${escapeHtml(JSON.stringify(repository))}"`,
+      `permission="${escapeHtml(this.getRepositoryPermission(repository))}"`
+    ];
 
-    if (repository.title) {
-      html += `<div class="repository-tooltip-description">${repository.title}</div>`;
+    if (isLoadingRepositorySize) {
+      attributes.push('loading="true"');
     }
 
-    html += `
-    <div class="repository-tooltip-content">
-      <div class="repository-tooltip-row">
-        <div class="label">${TranslationService.translate('repository-selector.tooltip.location')}:</div>
-        <div class="value">${repository.location ? repository.location : TranslationService.translate('repository-selector.tooltip.local')}</div>
-      </div>
-      <div class="repository-tooltip-row">
-        <div class="label">${TranslationService.translate('repository-selector.tooltip.type')}:</div>
-        <div class="value">${TranslationService.translate('repository-selector.tooltip.types.' + (repository.type || 'unknown'))}</div>
-      </div>
-      <div class="repository-tooltip-row">
-        <div class="label">${TranslationService.translate('repository-selector.tooltip.permissions_label')}:</div>
-        <div class="value">${TranslationService.translate(`repository-selector.tooltip.permissions.${this.getRepositoryPermission(repository).toLowerCase()}`)}</div>
-      </div>`;
-
-    if (repository.state !== RepositoryState.RUNNING) {
-      html += this.buildInactiveRepositoryHtml();
-    } else if (isLoadingRepositorySize) {
-      html += this.buildRepositorySizeLoadingHtml();
-    } else {
-      html += this.buildRepositorySizeInfoHtml(repositorySizeInfo);
+    if (repositorySizeInfo) {
+      attributes.push(`size-info="${escapeHtml(JSON.stringify(repositorySizeInfo))}"`);
     }
 
-    html += '</div>';
-
-    return Promise.resolve(html);
-  }
-
-  private buildRepositorySizeLoadingHtml(): string {
-    return `
-      <div class="repository-tooltip-row repository-size-loading">
-         <onto-loader loading="true" size="25"></onto-loader>
-      </div>`;
-  }
-
-  private buildRepositoryTooltipTitle(repository: Repository): string {
-    let stateIndicatorIconClass = '';
-    let stateIndicatorClass = 'inactive';
-    
-    if (repository.state === RepositoryState.RUNNING) {
-      stateIndicatorIconClass = 'ri-checkbox-blank-circle-fill';
-      stateIndicatorClass = '';
-    } else if (repository.state === RepositoryState.INACTIVE) {
-      stateIndicatorIconClass = 'ri-stop-large-fill';
-    } else {
-      stateIndicatorIconClass = 'ri-loop-left-fill';
-    }
-
-    let html = `
-      <h6 class="title ${stateIndicatorClass}">
-        <i class="${stateIndicatorIconClass}"></i>
-        <span>${repository.id}</span>
-      </h6>`;
-
-    return html;
-  }
-
-  /**
-   * Builds the repository size section of the tooltip.
-   */
-  private buildRepositorySizeInfoHtml(repositorySizeInfo?: RepositorySizeInfo): string {
-    if (!repositorySizeInfo || repositorySizeInfo.total < 0) {
-      return `
-      <div>
-        ${TranslationService.translate('repository-selector.tooltip.repository-size.repository-info-not-available')}
-      </div>`;
-    }
-
-    let html = `
-    <div class="repository-tooltip-row total">
-      <div class="label">${TranslationService.translate('repository-selector.tooltip.repository-size.total')}:</div>
-      <div class="value">${this.totalTripletsFormatter.format(repositorySizeInfo.total)}</div>
-    </div>`;
-
-    if (repositorySizeInfo.explicit >= 0) {
-      html += `
-      <div class="repository-tooltip-row">
-        <div class="label">${TranslationService.translate('repository-selector.tooltip.repository-size.explicit')}:</div>
-        <div class="value">${this.totalTripletsFormatter.format(repositorySizeInfo.explicit)}</div>
-      </div>`;
-    }
-
-    if (repositorySizeInfo.inferred >= 0) {
-      html += `
-      <div class="repository-tooltip-row">
-        <div class="label">${TranslationService.translate('repository-selector.tooltip.repository-size.inferred')}:</div>
-        <div class="value">${this.totalTripletsFormatter.format(repositorySizeInfo.inferred)}</div>
-      </div>`;
-    }
-
-    if (repositorySizeInfo.total >= 0) {
-      let value = '-';
-      if (repositorySizeInfo.explicit > 0) {
-        value = this.expansionRatioFormatter.format(repositorySizeInfo.total / repositorySizeInfo.explicit);
-      }
-
-      html += `
-      <div class="repository-tooltip-row">
-        <div class="label">${TranslationService.translate('repository-selector.tooltip.repository-size.expansion_ratio')}:</div>
-        <div class="value">${value}</div>
-      </div>`;
-    }
-
-    return html;
-  }
-
-  /**
-   * Builds the repository size section for inactive repositories.
-   */
-  private buildInactiveRepositoryHtml(): string {
-    let html = `
-       <div class="repository-tooltip-row inactive-repo-message">
-        <div class="icon">
-            <i class="ri-information-2-line"></i>
-        </div>
-        <div class="message">
-            <p>${TranslationService.translate('repository-selector.tooltip.repository-size.repository_inactive')}</p>
-        </div>
-    </div>`;
-
-    return html;
+    return Promise.resolve(`<onto-repository-info ${attributes.join(' ')}></onto-repository-info>`);
   }
 
   /**

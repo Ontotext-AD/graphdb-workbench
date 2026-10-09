@@ -107,6 +107,10 @@
                       location: repositoryLocation
                     }"
                     [attr.aria-describedby]="stateElementId"
+                    (mouseenter)="scheduleShowRepositoryInfo(repository, $event.currentTarget)"
+                    (focus)="scheduleShowRepositoryInfo(repository, $event.currentTarget)"
+                    (mouseleave)="scheduleHideRepositoryInfo()"
+                    (blur)="scheduleHideRepositoryInfo()"
                     (click)="selectRepository(repository)">
               <span class="repository-header">
                 <em [ngClass]="[
@@ -137,5 +141,26 @@
         </tr>
       </ng-template>
     </p-table>
+
+    <!-- One popover with the repository information, for all rows. It is opened for the row under the mouse or with
+         the keyboard focus. -->
+    <p-popover #repositoryInfoPopover
+               [focusOnShow]="false"
+               (onShow)="observeInfoPopoverPosition()"
+               (onHide)="stopObservingInfoPopoverPosition()">
+      <ng-template #content>
+        @let info = repositoryInfo();
+        @if (info) {
+          <div class="repository-info-popover-content"
+               (mouseenter)="clearRepositoryInfoTimeouts()"
+               (mouseleave)="scheduleHideRepositoryInfo()">
+            <onto-repository-info [repository]="info.repository"
+                                  [permission]="info.permission"
+                                  [loading]="info.loading"
+                                  [sizeInfo]="info.sizeInfo"></onto-repository-info>
+          </div>
+        }
+      </ng-template>
+    </p-popover>
   }
 </div>

@@ -159,3 +159,19 @@
     }
   }
 }
+
+// The content of the repository information popover: the element around onto-repository-info.
+// PrimeNG places the popover once, at the moment it opens. onto-repository-info is a Stencil component and renders a
+// moment later, so at that moment the popover is almost empty. The sizes below give it a size before the content is
+// there.
+.repository-info-popover-content {
+  // The widths are those of the content, without the padding below.
+  box-sizing: content-box;
+  max-width: 30rem;
+  min-width: 22rem;
+
+  // The element takes over the padding of the popover, so that the mouse is on it everywhere inside the popover.
+  // Otherwise the popover starts to close when the mouse moves from the content onto the padding around it.
+  margin: calc(-1 * var(--gw-popover-content-padding));
+  padding: var(--gw-popover-content-padding);
+}

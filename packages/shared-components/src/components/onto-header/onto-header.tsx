@@ -23,8 +23,6 @@ import {
   RepositoryList,
   Repository,
   RepositoryService,
-  LanguageService,
-  LanguageContextService,
   ObjectUtil,
   getCurrentRoute,
   AuthenticationService,
@@ -68,7 +66,6 @@ export class OntoHeader {
   private readonly toastrService = ServiceProvider.get(OntoToastrService);
   private readonly namespacesService = ServiceProvider.get(NamespacesService);
   private readonly namespaceContextService = ServiceProvider.get(NamespacesContextService);
-  private readonly languageService: LanguageService = ServiceProvider.get(LanguageService);
   private readonly authService = ServiceProvider.get(AuthenticationService);
   private readonly authorizationService = ServiceProvider.get(AuthorizationService);
   private readonly eventService = ServiceProvider.get(EventService);
@@ -105,8 +102,6 @@ export class OntoHeader {
   // ========================
   private isActiveLocationLoading = false;
   private pollingInterval: number;
-  private totalTripletsFormatter: Intl.NumberFormat;
-  private expansionRatioFormatter: Intl.NumberFormat;
   /** Array of subscription cleanup functions */
   private readonly subscriptions: SubscriptionList = new SubscriptionList();
   private skipUpdateActiveOperationsTimes = 0;
@@ -125,8 +120,6 @@ export class OntoHeader {
 
   connectedCallback() {
     this.currentRepository = this.repositoryContextService.getSelectedRepository();
-    this.setupTotalRepositoryFormater();
-    this.setupExpansionRatioFormater();
     this.subscribeToEvents();
     this.currentRoute = getCurrentRoute();
     this.startOperationPolling();
@@ -165,8 +158,6 @@ export class OntoHeader {
               currentRepository={this.currentRepository}
               items={this.repositoryItems}
               repositorySizeInfoFetcher={this.repositorySizeInfoFetcher}
-              totalTripletsFormatter={this.totalTripletsFormatter}
-              expansionRatioFormatter={this.expansionRatioFormatter}
               getRepositoryPermission={this.getRepositoryPermission}>
             </onto-repository-selector>
             <onto-language-selector dropdown-alignment="right"></onto-language-selector>
@@ -190,7 +181,6 @@ export class OntoHeader {
     this.subscribeToActiveRepositoryLocationChange();
     this.subscribeToActiveRepoLoadingChange();
     this.subscribeToNavigationEnd();
-    this.subscribeToLanguageChanged();
     this.subscribeToAuthenticatedUserChange();
     this.subscribeToThemeModeChange();
   }
@@ -277,15 +267,6 @@ export class OntoHeader {
         }
       )
     );
-  }
-
-  private subscribeToLanguageChanged(): void {
-    this.subscriptions.add(
-      ServiceProvider.get(LanguageContextService)
-        .onSelectedLanguageChanged((language) => {
-          this.setupTotalRepositoryFormater(language);
-          this.setupExpansionRatioFormater(language);
-        }));
   }
 
   private onTranslate(key: string): void {
@@ -436,29 +417,4 @@ export class OntoHeader {
     HtmlUtil.focusElement('#search-resource-input-home input');
     this.eventService.emit({NAME: ResourceSearchConstants.RDF_SEARCH_ICON_CLICKED});
   };
-
-  // ========================
-  // Language, formatting
-  // ========================
-  private setupTotalRepositoryFormater(language?: string): void {
-    if (!language) {
-      language = this.languageService.getDefaultLanguage();
-    }
-    this.totalTripletsFormatter = new Intl.NumberFormat(language, {
-      style: 'decimal',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0
-    });
-  }
-
-  private setupExpansionRatioFormater(language?: string): void {
-    if (!language) {
-      language = this.languageService.getDefaultLanguage();
-    }
-    this.expansionRatioFormatter = new Intl.NumberFormat(language, {
-      style: 'decimal',
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    });
-  }
 }

@@ -18,7 +18,6 @@ interface SelectorItemProps {
 export const SelectorItemButton: FunctionalComponent<SelectorItemProps> = ({repository}) => {
   return (
     <div class="repository-selector-dropdown-item">
-      {/* TODO: add tooltip with repository info*/}
       <i class={'item-icon icon-repo-' + repository.type}></i>
       <div class="item-label">
         <div class="repository-id">

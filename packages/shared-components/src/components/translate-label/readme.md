@@ -38,6 +38,7 @@ Example of usage:
  - [onto-navbar](../onto-navbar)
  - [onto-operations-notification](../onto-operations-notification)
  - [onto-permission-banner](../onto-permission-banner)
+ - [onto-repository-info](../onto-repository-info)
  - [onto-toggle-switch](../onto-toggle-switch)
  - [onto-user-login](../onto-user-login)
  - [onto-user-menu](../onto-user-menu)
@@ -55,6 +56,7 @@ graph TD;
   onto-navbar --> translate-label
   onto-operations-notification --> translate-label
   onto-permission-banner --> translate-label
+  onto-repository-info --> translate-label
   onto-toggle-switch --> translate-label
   onto-user-login --> translate-label
   onto-user-menu --> translate-label

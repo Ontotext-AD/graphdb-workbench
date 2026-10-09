@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0" />
+  <title>Onto Repository Info</title>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "@ontotext/workbench-api": "/resources/ontotext-workbench-api.js"
+      }
+    }
+  </script>
+
+  <script type="module" src="/build/shared-components.esm.js"></script>
+  <script nomodule src="/build/shared-components.js"></script>
+  <script src="../js/main.js" defer></script>
+  <link rel="stylesheet" href="../css/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/remixicon.css">
+  <style>
+    /* The demo pages do not load the design tokens, so the opened language menu would be transparent over the table. */
+    :root {
+      --gw-tieredmenu-background: #fff;
+    }
+
+    /* The component has no width of its own. Its consumer gives it one; here it is the width of the header tooltip. */
+    onto-repository-info {
+      min-width: 22rem;
+    }
+  </style>
+</head>
+<body class="p-3">
+  <onto-language-selector dropdown-alignment="left"></onto-language-selector>
+  <h3>Repository info variations</h3>
+  <table class="table table-bordered w-auto">
+    <thead class="table-light">
+      <tr><th>Description</th><th>Example</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Running repository with statement counts</td>
+        <td>
+          <onto-repository-info
+            data-test="repository-info-running"
+            repository='{"id": "starwars", "title": "Star Wars data", "location": "", "type": "graphdb", "state": "RUNNING"}'
+            permission="WRITE"
+            size-info='{"total": 4425, "explicit": 3978, "inferred": 447}'></onto-repository-info>
+        </td>
+      </tr>
+      <tr>
+        <td>Running remote repository, statement counts loading</td>
+        <td>
+          <onto-repository-info
+            data-test="repository-info-loading-counts"
+            repository='{"id": "remote-repo", "location": "http://remote:7200", "type": "ontop", "state": "RUNNING"}'
+            permission="READ"
+            loading="true"></onto-repository-info>
+        </td>
+      </tr>
+      <tr>
+        <td>Running repository without statement counts</td>
+        <td>
+          <onto-repository-info
+            data-test="repository-info-no-counts"
+            repository='{"id": "no-counts", "location": "", "type": "fedx", "state": "RUNNING"}'
+            permission="MAINTAIN"></onto-repository-info>
+        </td>
+      </tr>
+      <tr>
+        <td>Inactive repository</td>
+        <td>
+          <onto-repository-info
+            data-test="repository-info-inactive-repository"
+            repository='{"id": "inactive-repo", "title": "A repository that is not running", "location": "", "type": "graphdb", "state": "INACTIVE"}'
+            permission="READ"
+            size-info='{"total": 4425, "explicit": 3978, "inferred": 447}'></onto-repository-info>
+        </td>
+      </tr>
+      <tr>
+        <td>Starting repository</td>
+        <td>
+          <onto-repository-info
+            data-test="repository-info-starting-repository"
+            repository='{"id": "starting-repo", "location": "", "type": "graphdb", "state": "STARTING"}'
+            permission="READ"></onto-repository-info>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</body>
+</html>
