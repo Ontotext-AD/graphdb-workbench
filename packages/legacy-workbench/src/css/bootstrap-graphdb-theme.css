@@ -1138,6 +1138,12 @@ input[type=checkbox] {
     cursor: pointer;
 }
 
+/* Like PrimeNG checkboxes, show the focus ring on keyboard focus only. */
+input[type=checkbox]:focus-visible {
+    outline: var(--gw-checkbox-focus-ring-width) var(--gw-checkbox-focus-ring-style) var(--gw-checkbox-focus-ring-color);
+    outline-offset: var(--gw-checkbox-focus-ring-offset);
+}
+
 input[type=checkbox]:hover {
     border-color: var(--gw-checkbox-hover-border-color);
 }

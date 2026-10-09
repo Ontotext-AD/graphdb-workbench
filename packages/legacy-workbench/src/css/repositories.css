@@ -332,11 +332,6 @@ span.label {
     cursor: pointer;
 }
 
-.text-btn:focus, .text-btn {
-    outline: none !important;
-    box-shadow: none
-}
-
 .padding-label {
     padding-left: 15px;
     padding-right: 15px;

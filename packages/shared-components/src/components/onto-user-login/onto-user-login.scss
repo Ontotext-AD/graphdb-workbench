@@ -32,8 +32,9 @@
       }
     }
 
-    &:focus {
-      outline: none;
+    &:focus-visible {
+      outline: var(--gw-button-focus-ring-width) var(--gw-button-focus-ring-style) var(--gw-button-tertiary-focus-ring-color);
+      outline-offset: var(--gw-button-focus-ring-offset);
     }
 
 
@@ -44,7 +45,7 @@
       transition: 0.15s ease-out;
 
       &.ri-arrow-down-s-line {
-        color: rgba(0, 0, 0, .35);
+        color: rgb(0 0 0 / 35%);
         font-size: 1.1em;
         transition: all 0.2s ease-in;
       }

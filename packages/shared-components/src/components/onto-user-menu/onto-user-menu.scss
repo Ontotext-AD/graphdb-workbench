@@ -35,8 +35,8 @@
     }
 
     &:focus-visible {
-      outline: 2px solid var(--gw-focus-ring-color);
-      outline-offset: 2px;
+      outline: var(--gw-button-focus-ring-width) var(--gw-button-focus-ring-style) var(--gw-button-tertiary-focus-ring-color);
+      outline-offset: var(--gw-button-focus-ring-offset);
     }
 
     &:focus:not(:focus-visible) {

@@ -25,5 +25,10 @@
     background: transparent;
     color: inherit;
     cursor: pointer;
+
+    &:focus-visible {
+      outline: var(--gw-button-focus-ring-width) var(--gw-button-focus-ring-style) var(--gw-button-secondary-focus-ring-color);
+      outline-offset: var(--gw-button-focus-ring-offset);
+    }
   }
 }

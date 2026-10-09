@@ -95,8 +95,45 @@ h1 .btn {
     border-radius: 0;
 }
 
+/* Bootstrap's reboot sets the browser focus ring on every button. As an unlayered rule it overrides the PrimeNG
+   focus ring, which lives in a cascade layer, so revert it to the layered value. */
+button:focus {
+    outline: revert-layer;
+}
+
+button:-moz-focusring {
+    outline: revert-layer;
+}
+
+/* Like PrimeNG buttons, show the focus ring on keyboard focus only. */
+.btn {
+    --btn-focus-ring-color: var(--gw-button-primary-focus-ring-color);
+}
+
+.btn-secondary {
+    --btn-focus-ring-color: var(--gw-button-secondary-focus-ring-color);
+}
+
+.btn-info {
+    --btn-focus-ring-color: var(--gw-button-info-focus-ring-color);
+}
+
 .btn.active.focus, .btn.active:focus, .btn.focus, .btn:active.focus, .btn:active:focus, .btn:focus {
     outline: 0;
+}
+
+.btn.active:focus-visible, .btn:active:focus-visible, .btn:focus-visible {
+    outline: var(--gw-button-focus-ring-width) var(--gw-button-focus-ring-style) var(--btn-focus-ring-color);
+    outline-offset: var(--gw-button-focus-ring-offset);
+}
+
+.text-btn:focus {
+    outline: 0;
+}
+
+.text-btn:focus-visible {
+    outline: var(--gw-button-focus-ring-width) var(--gw-button-focus-ring-style) var(--gw-button-tertiary-link-focus-ring-color);
+    outline-offset: var(--gw-button-focus-ring-offset);
 }
 
 .btn-primary {

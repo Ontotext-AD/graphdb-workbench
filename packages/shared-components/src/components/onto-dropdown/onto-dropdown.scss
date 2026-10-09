@@ -67,8 +67,8 @@
 
   // A disabled button cannot get the focus; :not(:disabled) only matches the specificity of the hover rule.
   .onto-dropdown-button:focus-visible:not(:disabled) {
-    outline: 2px solid var(--gw-focus-ring-color);
-    outline-offset: 2px;
+    outline: var(--gw-button-focus-ring-width) var(--gw-button-focus-ring-style) var(--gw-button-secondary-focus-ring-color);
+    outline-offset: var(--gw-button-focus-ring-offset);
   }
 
   .onto-dropdown-button:focus:not(:focus-visible) {
