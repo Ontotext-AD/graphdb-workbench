@@ -38,5 +38,8 @@
     "shepherd.js": "^11.2.0",
     "single-spa": "^6.0.3",
     "single-spa-layout": "^3.0.0"
+  },
+  "overrides": {
+    "compression": "^1.8.2"
   }
 }

@@ -41,7 +41,7 @@
     "@angular-builders/jest": "^21.0.4",
     "@angular-devkit/build-angular": "^21.2.24",
     "@angular/build": "^21.2.24",
-    "@angular/cli": "^21.2.24",
+    "@angular/cli": "^21.2.26",
     "@angular/compiler-cli": "^21.2.25",
     "@types/file-saver": "^2.0.7",
     "@types/jest": "^30.0.0",
