@@ -19,11 +19,12 @@
     @if (vm().showFilters) {
       <span class="filters">
          @if (showNameFilter()) {
+           @let filterPlaceholder = 'components.repository_picker_list.filter_placeholder' | transloco;
            <p-iconfield class="filter-name">
              <input pInputText
                     type="text"
-                    [placeholder]="'components.repository_picker_list.filter_placeholder' | transloco"
-                    [attr.aria-label]="'components.repository_picker_list.filter_aria_label' | transloco"
+                    [placeholder]="filterPlaceholder"
+                    [attr.aria-label]="filterPlaceholder"
                     [ngModel]="vm().filterQuery"
                     (ngModelChange)="onFilterQueryChange($event)"/>
              <p-inputicon class="ri-search-line"/>
