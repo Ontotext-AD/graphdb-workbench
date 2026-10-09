@@ -23,6 +23,7 @@
              <input pInputText
                     type="text"
                     [placeholder]="'components.repository_picker_list.filter_placeholder' | transloco"
+                    [attr.aria-label]="'components.repository_picker_list.filter_aria_label' | transloco"
                     [ngModel]="vm().filterQuery"
                     (ngModelChange)="onFilterQueryChange($event)"/>
              <p-inputicon class="ri-search-line"/>
@@ -31,6 +32,7 @@
 
         @if (showStateFilter()) {
           <p-select class="filter-state"
+                    [ariaLabel]="'components.repository_picker_list.state_filter_aria_label' | transloco"
                     [options]="vm().stateFilterOptions"
                     [ngModel]="vm().stateFilter"
                     (ngModelChange)="onStateFilterChange($event)"
