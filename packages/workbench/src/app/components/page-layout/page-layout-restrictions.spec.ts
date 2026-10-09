@@ -264,6 +264,18 @@ describe('PageLayoutComponent restrictions', () => {
     expect(typeLabel?.textContent?.trim()).toBe('FedX repository');
   });
 
+  it('should name the picker name filter for assistive technologies', async () => {
+    // GIVEN: a page that requires a selected repository, and no repository is selected
+    await givenScenario(getNoRepositorySelectedWithCreateRightsScenario());
+
+    // WHEN: rendering the page
+    await render();
+
+    // THEN: the name filter has an accessible name
+    expect(page.querySelector(PAGE_LAYOUT_RESTRICTIONS_SELECTORS.nameFilter)?.getAttribute('aria-label'))
+      .toBe('Filter by name or title');
+  });
+
   it('should offer only the repositories that match the text typed in the picker filter', async () => {
     // GIVEN: a page that requires a selected repository, and no repository is selected
     await givenScenario(getNoRepositorySelectedWithCreateRightsScenario());
