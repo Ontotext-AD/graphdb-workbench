@@ -141,7 +141,8 @@
         "title": "Importer un fichier de paramètres",
         "browse": "Parcourir",
         "drop_hint": "Glissez-déposez ici les fichiers à importer.",
-        "pending": "En attente"
+        "pending": "En attente",
+        "validation_errors": "Erreurs de validation"
       },
       "export": "Exporter les paramètres actuels",
       "reset": "Rétablir les valeurs par défaut",

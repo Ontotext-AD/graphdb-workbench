@@ -1,4 +1,4 @@
-import {Component, computed, effect, inject, input, output, signal, viewChild} from '@angular/core';
+import {Component, computed, effect, inject, input, output, signal, untracked, viewChild} from '@angular/core';
 import {TranslocoPipe, TranslocoService} from '@jsverse/transloco';
 import {Badge} from 'primeng/badge';
 import {Button} from 'primeng/button';
@@ -37,6 +37,8 @@ export class GraphNavigatorSettingsComponent {
   readonly settings = input.required<GraphNavigatorSettings>();
   /** Whether the page is running the request of the last emitted action. */
   readonly loading = input(false);
+  /** The validation errors the backend returned for the last uploaded file. */
+  readonly uploadErrors = input<string[]>([]);
 
   /** Emits the settings file the user confirmed to upload. */
   readonly uploadSettings = output<File>();
@@ -44,23 +46,36 @@ export class GraphNavigatorSettingsComponent {
   readonly resetSettings = output<void>();
   /** Emits when the user asked for the current settings to be exported. */
   readonly exportSettings = output<void>();
+  /** Emits when the selected file changed, so the validation errors of the previous file are dropped. */
+  readonly clearUploadErrors = output<void>();
 
   /** Whether a confirmation dialog is open. */
   private readonly confirming = signal(false);
+  /** Whether the validation errors popover is open. */
+  readonly errorsShown = signal(false);
 
   /**
-   * The popover must not close while the user clicks in the confirmation dialog, or while the request is
-   * running, so that it stays open, with the file still selected, when the upload fails.
+   * The popover must not close while the user clicks in the confirmation dialog or the validation errors
+   * popover, or while the request is running, so that it stays open, with the file still selected, when the
+   * upload fails.
    */
-  readonly dismissable = computed(() => !this.confirming() && !this.loading());
+  readonly dismissable = computed(() => !this.confirming() && !this.errorsShown() && !this.loading());
 
   constructor() {
     // New settings mean the page applied an upload or a reset, so the selected file is done with. A failed
     // request leaves the settings, and therefore the file, as they are, so the user can correct it and retry.
     effect(() => {
       this.settings();
-      this.fileUpload()?.clear();
+      // Untracked, so re-rendering the popover content does not clear the file upload, and the errors with it.
+      untracked(() => this.fileUpload()?.clear());
     });
+  }
+
+  onFileChanged(): void {
+    if (this.uploadErrors().length) {
+      this.errorsShown.set(false);
+      this.clearUploadErrors.emit();
+    }
   }
 
   confirmUpload(event: FileUploadHandlerEvent): void {
@@ -81,6 +96,21 @@ export class GraphNavigatorSettingsComponent {
       'graph_navigator.settings.confirm.reset.message',
       () => this.resetSettings.emit()
     );
+  }
+
+  /**
+   * Keeps the popover open on outside clicks while the validation errors popover is shown.
+   */
+  holdSettingsPopover(): void {
+    this.errorsShown.set(true);
+  }
+
+  /**
+   * Lets the popover close on outside clicks again once the validation errors popover is hidden. Deferred, like
+   * {@link releasePopover}.
+   */
+  releaseSettingsPopover(): void {
+    setTimeout(() => this.errorsShown.set(false));
   }
 
   private confirm(headerKey: string, messageKey: string, acceptHandler: () => void): void {

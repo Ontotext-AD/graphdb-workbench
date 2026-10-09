@@ -9,6 +9,8 @@ import {
   GraphExploreService,
   GraphNavigatorService,
   GraphNavigatorSettings,
+  HttpErrorResponse,
+  HttpRequest,
   LanguageContextService,
   OntoToastrService,
   Repository,
@@ -253,6 +255,30 @@ describe('GraphNavigatorPageComponent', () => {
       expect(toastrErrorSpy).toHaveBeenCalled();
       const facade = getFacade().componentInstance as GraphwiseReactodiaFacadeComponent;
       expect(facade.providerSettings()).toEqual(SETTINGS_A.getProviderSettings());
+    });
+
+    it('should show the validation errors the backend returns for a rejected upload', async () => {
+      // GIVEN: the backend rejects the file with validation errors.
+      const errors = ['acceptBlankNodes has a value of the wrong type'];
+      jest.spyOn(ServiceProvider.get(GraphNavigatorService), 'uploadSettings')
+        .mockRejectedValue(new HttpErrorResponse({
+          status: 400,
+          statusText: 'Bad Request',
+          headers: {},
+          config: {url: ''} as HttpRequest,
+          originalResponse: {} as Response,
+          data: {errors}
+        }));
+      fixture.detectChanges();
+      await selectRepository(REPOSITORY_A);
+      await settle();
+
+      // WHEN: a file is uploaded.
+      component.onUploadSettings(new File([''], 'settings.ttl'), REPOSITORY_A.id);
+      await settle();
+
+      // THEN: the errors are passed to the settings controls.
+      expect(component.uploadErrors()).toEqual(errors);
     });
 
     it('should reset the settings by deleting them and loading the defaults', async () => {

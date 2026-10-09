@@ -8,9 +8,23 @@ const NO_REPOSITORY_MESSAGE = 'you are not connected to any repository';
 const INVALID_LICENSE_MESSAGE = 'your license is not valid';
 const SELECT_OR_CREATE_REPOSITORY_MESSAGE = 'Select a repository below or create a new one.';
 const SELECT_REPOSITORY_MESSAGE = 'Select a repository below.';
+// TODO: Remove once GraphDB creates the system repository itself.
+// The graph-navigator settings endpoint requires this repository.
+const SYSTEM_REPOSITORY_ID = 'SystemRepository';
 
 describe('Graph Navigator view restrictions', () => {
     let repositoryId;
+
+    // TODO: Remove once GraphDB creates the system repository itself.
+    before(() => {
+        cy.deleteRepository(SYSTEM_REPOSITORY_ID);
+        cy.createRepository({id: SYSTEM_REPOSITORY_ID});
+    });
+
+    // TODO: Remove once GraphDB creates the system repository itself.
+    after(() => {
+        cy.deleteRepository(SYSTEM_REPOSITORY_ID);
+    });
 
     beforeEach(() => {
         repositoryId = 'graph-navigator-view-restrictions-' + Date.now();
