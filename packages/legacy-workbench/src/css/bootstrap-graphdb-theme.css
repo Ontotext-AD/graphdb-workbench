@@ -33,6 +33,12 @@
     height: initial !important;
 }
 
+/* Ovverides the google visualization chart editor dialog font with the default app font (Inter) */
+.google-visualization-charteditor-dialog > *{
+    font-family: var(--gw-font-family-body) !important;
+}
+
+
 .google-visualization-charteditor-dialog .charts-flat-menu-button {
     height: 26px !important;
 }

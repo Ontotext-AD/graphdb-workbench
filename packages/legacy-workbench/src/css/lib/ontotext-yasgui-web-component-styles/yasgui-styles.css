@@ -139,6 +139,11 @@ yasgui-component .yasgui .tabsList .addTab .ri-add-circle-line {
 /* #endregion YASGUI QUERY TABS */
 
 /* #region YASGUI FLOATING TOOLTIP */
+/* override the Roboto font-family with the new default font-family (Inter) for the yasgui tooltip component */
+yasgui-tooltip {
+  font-family: var(--main-font);
+}
+
 .yasgui-floating-tooltip,
 .yasgui-floating-tooltip-arrow,
 .ontotext-yasgui-tooltip .tooltip-box {

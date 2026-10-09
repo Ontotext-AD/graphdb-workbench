@@ -1,9 +1,9 @@
 /*-------------------------------------------------------------
 	Variables
 -------------------------------------------------------------*/
-:root {
-    --main-font: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
-    --main-font-weight: 300;
+:root { 
+    --main-font: var(--gw-font-family-body);
+    --main-font-weight: var(--gw-font-weight-400);
     --mono-font: 'JetBrains Mono', Menlo, Consolas, 'Ubuntu Mono', monospace;
     --fa-style: 400;
 

@@ -67,6 +67,8 @@ app-yasgui-component-facade {
   border: 1px solid var(--gw-panel-border-color);
   -webkit-box-shadow: var(--gw-dialog-shadow-1-offset-x) var(--gw-dialog-shadow-1-offset-y) var(--gw-dialog-shadow-1-blur) var(--gw-dialog-shadow-1-spread) var(--gw-dialog-shadow-1-color);
   box-shadow: var(--gw-dialog-shadow-1-offset-x) var(--gw-dialog-shadow-1-offset-y) var(--gw-dialog-shadow-1-blur) var(--gw-dialog-shadow-1-spread) var(--gw-dialog-shadow-1-color);
+  /* override the Roboto font-family with the new default font-family (Inter) for the dialog */
+  font-family: var(--gw-font-family-body) !important;
 
   .dialog-header {
     border-bottom-color: var(--gw-dialog-border-color) !important;
