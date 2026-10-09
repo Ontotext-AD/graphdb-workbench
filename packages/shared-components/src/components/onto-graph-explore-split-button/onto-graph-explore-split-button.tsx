@@ -6,6 +6,7 @@ import {GraphExploreAction, GraphExploreEvent} from './models/graph-explore-type
 import {LoggerProvider} from '../../services/logger-provider';
 import {TranslationService} from '../../services/translation.service';
 import {OntoTooltipPlacement} from '../onto-tooltip/models/onto-tooltip-placement';
+import {escapeHtml} from '../../utils/html-utils';
 
 import {GraphConfig, StartMode} from '@ontotext/workbench-api';
 
@@ -127,10 +128,10 @@ export class OntoGraphExploreSplitButton {
    * @private
    */
   private buildGraphConfigTooltipHtml(config: GraphConfig): string {
-    const name = this.escapeHtml(config.name);
+    const name = escapeHtml(config.name);
 
     const description = config.description
-      ? `<div class="description"><div class="clamp-text">${this.escapeHtml(config.description)}</div></div>`
+      ? `<div class="description"><div class="clamp-text">${escapeHtml(config.description)}</div></div>`
       : '';
 
     let hint = '';
@@ -142,7 +143,7 @@ export class OntoGraphExploreSplitButton {
 
       hint = `
       <div class="hint alert alert-info no-icon compact mb-0" role="alert">
-        <div class="clamp-text">${this.escapeHtml(translatedHint)}</div>
+        <div class="clamp-text">${escapeHtml(translatedHint)}</div>
       </div>
     `.trim();
     }
@@ -154,18 +155,6 @@ export class OntoGraphExploreSplitButton {
       ${hint}
     </div>
   `.trim();
-  }
-
-  private escapeHtml(str: string): string {
-    if (!str) {
-      return '';
-    }
-    return str
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;');
   }
 
   render() {

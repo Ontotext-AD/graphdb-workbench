@@ -84,36 +84,35 @@
     "btn": {
       "toggle": "Choose repository",
       "no_repositories": "No accessible repositories"
+    }
+  },
+  "repository-info": {
+    "location": "Location",
+    "local": "Local",
+    "type": "Type",
+    "types": {
+      "graphdb": "Graphdb",
+      "system": "System",
+      "ontop": "Ontop",
+      "fedx": "FedX",
+      "unknown": "Unknown"
     },
-    "tooltip": {
-      "repository": "Repository",
-      "location": "Location",
-      "local": "Local",
-      "type": "Type",
-      "types": {
-        "graphdb": "Graphdb",
-        "system": "System",
-        "ontop": "Ontop",
-        "fedx": "FedX",
-        "unknown": "Unknown"
-      },
-      "permissions_label": "Permissions",
-      "permissions": {
-        "none": "None",
-        "read": "Read",
-        "write": "Read/Write",
-        "maintain": "Read/Write/Maintain",
-        "graphql_read": "Read (GraphQL only)",
-        "graphql_write": "Read/Write (GraphQL only)"
-      },
-      "repository-size": {
-        "total": "Total statements",
-        "explicit": "Explicit",
-        "inferred": "Inferred",
-        "expansion_ratio": "Expansion ratio (total/explicit)",
-        "repository_inactive": "Activate the repository to view statement information",
-        "repository-info-not-available": "Size info not available."
-      }
+    "permissions_label": "Permissions",
+    "permissions": {
+      "none": "None",
+      "read": "Read",
+      "write": "Read/Write",
+      "maintain": "Read/Write/Maintain",
+      "graphql_read": "Read (GraphQL only)",
+      "graphql_write": "Read/Write (GraphQL only)"
+    },
+    "repository-size": {
+      "total": "Total statements",
+      "explicit": "Explicit",
+      "inferred": "Inferred",
+      "expansion_ratio": "Expansion ratio (total/explicit)",
+      "repository_inactive": "Activate the repository to view statement information",
+      "repository-info-not-available": "Size info not available."
     }
   },
   "license_alert": {

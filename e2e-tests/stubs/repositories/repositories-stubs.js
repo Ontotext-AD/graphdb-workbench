@@ -3,6 +3,14 @@ import {REPOSITORIES_URL} from '../../support/repository-commands';
 import {GlobalOperationsStatusesStub} from '../global-operations-statuses-stub.js';
 import repoTemplate from "../../fixtures/repo-template.json";
 
+/**
+ * Returns the pattern that matches the request for the size of a repository, on any host and with any query.
+ *
+ * @param {string} repositoryId The id of the repository.
+ * @return {string} The pattern.
+ */
+const getRepositorySizeUrl = (repositoryId) => `**${REPOSITORIES_URL}/${repositoryId}/size*`;
+
 export class RepositoriesStubs extends Stubs {
     static stubRepositories(withDelay = 0, fixture = '/repositories/get-repositories.json') {
         RepositoriesStubs.stubGetQueryResponse('/rest/repositories/all', fixture, 'get-all-repositories', withDelay);
@@ -22,6 +30,38 @@ export class RepositoriesStubs extends Stubs {
 
     static spyGetRepository(id) {
         cy.intercept(`GET`, `${REPOSITORIES_URL}/${id}?location=`).as('getRepository');
+    }
+
+    /**
+     * Spies on the request for the size of a repository, without changing its response.
+     *
+     * @param {string} repositoryId The id of the repository.
+     * @param {string} alias The alias of the request, to wait for it with <code>cy.wait('@alias')</code>.
+     */
+    static spyGetRepositorySize(repositoryId, alias = 'getRepositorySize') {
+        cy.intercept('GET', getRepositorySizeUrl(repositoryId)).as(alias);
+    }
+
+    /**
+     * Records the requests for the size of a repository in a spy, without changing their response. Use it to check
+     * that the size was not requested: <code>cy.get('@alias').should('not.have.been.called')</code>.
+     *
+     * @param {string} repositoryId The id of the repository.
+     * @param {string} alias The alias of the spy.
+     */
+    static spyGetRepositorySizeCalls(repositoryId, alias = 'getRepositorySizeCalls') {
+        cy.intercept('GET', getRepositorySizeUrl(repositoryId), cy.spy().as(alias));
+    }
+
+    /**
+     * Makes the request for the size of a repository fail with a server error.
+     *
+     * @param {string} repositoryId The id of the repository.
+     * @param {string} alias The alias of the request, to wait for it with <code>cy.wait('@alias')</code>.
+     */
+    static stubGetRepositorySizeError(repositoryId, alias = 'getRepositorySizeError') {
+        cy.intercept('GET', getRepositorySizeUrl(repositoryId),
+            {statusCode: 500, body: 'Internal Server Error'}).as(alias);
     }
 
     static stubLocations(withDelay = 0) {

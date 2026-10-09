@@ -1,0 +1,101 @@
+onto-repository-info {
+  display: block;
+  padding: 0.5rem 0;
+
+  .repository-info-title {
+    font-size: 1rem;
+    margin-bottom: 0.375em;
+
+    // The icon and the id are laid out in a row, so that a long id without spaces breaks next to the icon instead of
+    // moving as a whole to the line below it.
+    .title {
+      display: flex;
+      align-items: baseline;
+      font-weight: 600;
+      color: var(--gw-foreground-on-surface-default);
+    }
+
+    .title.inactive {
+      color: var(--gw-foreground-on-surface-subtle);
+    }
+
+    .title span {
+      overflow-wrap: anywhere;
+    }
+
+    .title i {
+      flex-shrink: 0;
+      font-size: inherit;
+
+      // Keeps the distance the icon had from the id in the header tooltip.
+      margin-right: 0.8em;
+    }
+
+    .title i::before {
+      font-size: 0.9em;
+    }
+
+    .title .ri-stop-large-fill {
+      color: var(--gw-foreground-on-surface-disabled);
+    }
+
+    .title .ri-checkbox-blank-circle-fill {
+      color: var(--gw-success-base);
+    }
+  }
+
+  .repository-info-description {
+    margin-bottom: 0.375em;
+    font-size: 0.8rem;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  // The line above separates the id and the description from the rest of the information.
+  .repository-info-content {
+    border-top: 1px solid var(--gw-dialog-border-color);
+    padding-top: 0.5em;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2em;
+    font-weight: 400;
+    font-size: 0.875rem;
+  }
+
+  .repository-info-row {
+    display: flex;
+    justify-content: space-between;
+
+    &.total {
+      margin-top: 1.2em;
+    }
+
+    .value {
+      margin-left: .6em;
+      font-weight: 500;
+    }
+
+    &.repository-size-loading {
+      justify-content: center;
+      align-items: center;
+    }
+
+    &.inactive-repo-message {
+      font-size: 1.15em;
+      background-color: var(--gw-message-help-background);
+      color: var(--gw-message-help-color);
+      justify-content: flex-start;
+      margin-top: 0.75rem;
+      padding: 0.25rem 0.5rem;
+      gap: 0.57em;
+      border: 1px solid var(--gw-message-help-border-color);
+
+      p {
+        margin: 0;
+      }
+    }
+  }
+}

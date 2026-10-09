@@ -23,4 +23,20 @@ export class RepositorySelectorSteps {
     static getSelectedRepository() {
         return RepositorySelectorSteps.getRepositorySelectorDropdown().find('.active-repository');
     }
+
+    static getRepositoryItem(repositoryId) {
+        return RepositorySelectorSteps.getRepositorySelectorButton(repositoryId).closest('.onto-dropdown-menu-item');
+    }
+
+    static hoverRepositoryItem(repositoryId) {
+        RepositorySelectorSteps.getRepositoryItem(repositoryId).realHover();
+    }
+
+    static getRepositoryTooltip() {
+        return cy.get('.onto-tooltip-box onto-repository-info');
+    }
+
+    static getRepositoryTooltipPart(name) {
+        return RepositorySelectorSteps.getRepositoryTooltip().find(`[data-test="repository-info-${name}"]`);
+    }
 }

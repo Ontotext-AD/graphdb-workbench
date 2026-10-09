@@ -24,6 +24,22 @@ export class RepositoryPickerListSteps extends BaseSteps {
         return this.getRepositoryRow(repositoryId).find(this.buildTestIdAttr('repository-picker-repository-location'));
     }
 
+    static getSelectRepositoryButton(repositoryId) {
+        return this.getRepositoryRow(repositoryId).find(this.buildTestIdAttr('repository-picker-select-btn'));
+    }
+
+    static focusRepository(repositoryId) {
+        this.getSelectRepositoryButton(repositoryId).focus();
+    }
+
+    static getRepositoryInfo() {
+        return cy.get('.repository-info-popover-content onto-repository-info');
+    }
+
+    static getRepositoryInfoPart(name) {
+        return this.getRepositoryInfo().find(this.buildTestIdAttr(`repository-info-${name}`));
+    }
+
     static selectRepository(repositoryId) {
         this.getRepositoryRow(repositoryId).click();
     }

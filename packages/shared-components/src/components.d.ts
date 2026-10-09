@@ -212,15 +212,43 @@ export namespace Components {
      */
     interface OntoRdfSearch {
     }
+    /**
+     * A StencilJS component that renders the information about a repository: its id and state, description, location,
+     * type, the permissions of the current user and the statement counts.
+     * The component is for presentation only. It does not load anything; the consumer loads the statement counts and
+     * passes them in. The <code>repository</code> and <code>sizeInfo</code> properties accept an object, or the same
+     * data as JSON text for consumers that can only write the component as a tag in an HTML string.
+     * @example  <onto-repository-info
+     *             repository={this.repository}
+     *             permission={this.permission}
+     *             loading={this.loading}
+     *             sizeInfo={this.sizeInfo}>
+     *   </onto-repository-info>
+     */
+    interface OntoRepositoryInfo {
+        /**
+          * Whether the statement counts are being loaded. A spinner is shown in their place.
+          * @default false
+         */
+        "loading": boolean;
+        /**
+          * The permission of the current user for the repository. The permissions row shows a dash without it.
+         */
+        "permission": RepositoryPermissionType;
+        /**
+          * The repository to display, provided as a `Repository` object or a JSON string representing a repository.
+         */
+        "repository": Repository | string;
+        /**
+          * The statement counts to display, provided as a `RepositorySizeInfo` object or a JSON string representing a repository size info.
+         */
+        "sizeInfo"?: RepositorySizeInfo | string;
+    }
     interface OntoRepositorySelector {
         /**
           * The currently selected repository.
          */
         "currentRepository": Repository;
-        /**
-          * Formatter for numeric values with fraction in tooltips.
-         */
-        "expansionRatioFormatter": Intl.NumberFormat;
         /**
           * Determines whether the current user has write access to the repository.
          */
@@ -233,10 +261,6 @@ export namespace Components {
           * Fetches repository size info used to build tooltips.
          */
         "repositorySizeInfoFetcher": (repo: Repository) => Promise<RepositorySizeInfo>;
-        /**
-          * Formatter for numeric values in tooltips.
-         */
-        "totalTripletsFormatter": Intl.NumberFormat;
     }
     interface OntoSearchIcon {
     }
@@ -657,6 +681,25 @@ declare global {
         prototype: HTMLOntoRdfSearchElement;
         new (): HTMLOntoRdfSearchElement;
     };
+    /**
+     * A StencilJS component that renders the information about a repository: its id and state, description, location,
+     * type, the permissions of the current user and the statement counts.
+     * The component is for presentation only. It does not load anything; the consumer loads the statement counts and
+     * passes them in. The <code>repository</code> and <code>sizeInfo</code> properties accept an object, or the same
+     * data as JSON text for consumers that can only write the component as a tag in an HTML string.
+     * @example  <onto-repository-info
+     *             repository={this.repository}
+     *             permission={this.permission}
+     *             loading={this.loading}
+     *             sizeInfo={this.sizeInfo}>
+     *   </onto-repository-info>
+     */
+    interface HTMLOntoRepositoryInfoElement extends Components.OntoRepositoryInfo, HTMLStencilElement {
+    }
+    var HTMLOntoRepositoryInfoElement: {
+        prototype: HTMLOntoRepositoryInfoElement;
+        new (): HTMLOntoRepositoryInfoElement;
+    };
     interface HTMLOntoRepositorySelectorElement extends Components.OntoRepositorySelector, HTMLStencilElement {
     }
     var HTMLOntoRepositorySelectorElement: {
@@ -772,6 +815,7 @@ declare global {
         "onto-operations-notification": HTMLOntoOperationsNotificationElement;
         "onto-permission-banner": HTMLOntoPermissionBannerElement;
         "onto-rdf-search": HTMLOntoRdfSearchElement;
+        "onto-repository-info": HTMLOntoRepositoryInfoElement;
         "onto-repository-selector": HTMLOntoRepositorySelectorElement;
         "onto-search-icon": HTMLOntoSearchIconElement;
         "onto-search-resource-input": HTMLOntoSearchResourceInputElement;
@@ -999,15 +1043,43 @@ declare namespace LocalJSX {
      */
     interface OntoRdfSearch {
     }
+    /**
+     * A StencilJS component that renders the information about a repository: its id and state, description, location,
+     * type, the permissions of the current user and the statement counts.
+     * The component is for presentation only. It does not load anything; the consumer loads the statement counts and
+     * passes them in. The <code>repository</code> and <code>sizeInfo</code> properties accept an object, or the same
+     * data as JSON text for consumers that can only write the component as a tag in an HTML string.
+     * @example  <onto-repository-info
+     *             repository={this.repository}
+     *             permission={this.permission}
+     *             loading={this.loading}
+     *             sizeInfo={this.sizeInfo}>
+     *   </onto-repository-info>
+     */
+    interface OntoRepositoryInfo {
+        /**
+          * Whether the statement counts are being loaded. A spinner is shown in their place.
+          * @default false
+         */
+        "loading"?: boolean;
+        /**
+          * The permission of the current user for the repository. The permissions row shows a dash without it.
+         */
+        "permission"?: RepositoryPermissionType;
+        /**
+          * The repository to display, provided as a `Repository` object or a JSON string representing a repository.
+         */
+        "repository"?: Repository | string;
+        /**
+          * The statement counts to display, provided as a `RepositorySizeInfo` object or a JSON string representing a repository size info.
+         */
+        "sizeInfo"?: RepositorySizeInfo | string;
+    }
     interface OntoRepositorySelector {
         /**
           * The currently selected repository.
          */
         "currentRepository"?: Repository;
-        /**
-          * Formatter for numeric values with fraction in tooltips.
-         */
-        "expansionRatioFormatter"?: Intl.NumberFormat;
         /**
           * Determines whether the current user has write access to the repository.
          */
@@ -1020,10 +1092,6 @@ declare namespace LocalJSX {
           * Fetches repository size info used to build tooltips.
          */
         "repositorySizeInfoFetcher"?: (repo: Repository) => Promise<RepositorySizeInfo>;
-        /**
-          * Formatter for numeric values in tooltips.
-         */
-        "totalTripletsFormatter"?: Intl.NumberFormat;
     }
     interface OntoSearchIcon {
     }
@@ -1147,6 +1215,7 @@ declare namespace LocalJSX {
         "onto-operations-notification": OntoOperationsNotification;
         "onto-permission-banner": OntoPermissionBanner;
         "onto-rdf-search": OntoRdfSearch;
+        "onto-repository-info": OntoRepositoryInfo;
         "onto-repository-selector": OntoRepositorySelector;
         "onto-search-icon": OntoSearchIcon;
         "onto-search-resource-input": OntoSearchResourceInput;
@@ -1209,6 +1278,20 @@ declare module "@stencil/core" {
              * This component is responsible for showing/hiding the search menu in the header
              */
             "onto-rdf-search": LocalJSX.OntoRdfSearch & JSXBase.HTMLAttributes<HTMLOntoRdfSearchElement>;
+            /**
+             * A StencilJS component that renders the information about a repository: its id and state, description, location,
+             * type, the permissions of the current user and the statement counts.
+             * The component is for presentation only. It does not load anything; the consumer loads the statement counts and
+             * passes them in. The <code>repository</code> and <code>sizeInfo</code> properties accept an object, or the same
+             * data as JSON text for consumers that can only write the component as a tag in an HTML string.
+             * @example  <onto-repository-info
+             *             repository={this.repository}
+             *             permission={this.permission}
+             *             loading={this.loading}
+             *             sizeInfo={this.sizeInfo}>
+             *   </onto-repository-info>
+             */
+            "onto-repository-info": LocalJSX.OntoRepositoryInfo & JSXBase.HTMLAttributes<HTMLOntoRepositoryInfoElement>;
             "onto-repository-selector": LocalJSX.OntoRepositorySelector & JSXBase.HTMLAttributes<HTMLOntoRepositorySelectorElement>;
             "onto-search-icon": LocalJSX.OntoSearchIcon & JSXBase.HTMLAttributes<HTMLOntoSearchIconElement>;
             /**

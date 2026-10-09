@@ -20,11 +20,13 @@
 ### Used by
 
  - [onto-layout](../onto-layout)
+ - [onto-repository-info](../onto-repository-info)
 
 ### Graph
 ```mermaid
 graph TD;
   onto-layout --> onto-loader
+  onto-repository-info --> onto-loader
   style onto-loader fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

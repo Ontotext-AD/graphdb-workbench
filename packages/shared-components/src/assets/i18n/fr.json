@@ -84,36 +84,35 @@
     "btn": {
       "toggle": "Choisissez le dépôt",
       "no_repositories": "Aucun dépôt accessible"
+    }
+  },
+  "repository-info": {
+    "location": "L'emplacement",
+    "local": "Local",
+    "type": "Type",
+    "types": {
+      "graphdb": "Graphdb",
+      "system": "Système",
+      "ontop": "Ontop",
+      "fedx": "FedX",
+      "unknown": "Inconnu"
     },
-    "tooltip": {
-      "repository": "Dépôt",
-      "location": "L'emplacement",
-      "local": "Local",
-      "type": "Type",
-      "types": {
-        "graphdb": "Graphdb",
-        "system": "Système",
-        "ontop": "Ontop",
-        "fedx": "FedX",
-        "unknown": "Inconnu"
-      },
-      "permissions_label": "Permissions",
-      "permissions": {
-        "none": "Aucune",
-        "read": "Lecture",
-        "write": "Lecture/Écriture",
-        "maintain": "Lecture/Écriture/Maintenance",
-        "graphql_read": "Lecture (GraphQL uniquement)",
-        "graphql_write": "Lecture/Écriture (GraphQL uniquement)"
-      },
-      "repository-size": {
-        "total": "Total des déclarations",
-        "explicit": "Explicite",
-        "inferred": "Déduit",
-        "expansion_ratio": "Taux d'expansion (total/explicite)",
-        "repository_inactive": "Activez le dépôt pour consulter les informations du relevé.",
-        "repository-info-not-available": "Info de taille non disponible."
-      }
+    "permissions_label": "Permissions",
+    "permissions": {
+      "none": "Aucune",
+      "read": "Lecture",
+      "write": "Lecture/Écriture",
+      "maintain": "Lecture/Écriture/Maintenance",
+      "graphql_read": "Lecture (GraphQL uniquement)",
+      "graphql_write": "Lecture/Écriture (GraphQL uniquement)"
+    },
+    "repository-size": {
+      "total": "Total des déclarations",
+      "explicit": "Explicite",
+      "inferred": "Déduit",
+      "expansion_ratio": "Taux d'expansion (total/explicite)",
+      "repository_inactive": "Activez le dépôt pour consulter les informations du relevé.",
+      "repository-info-not-available": "Info de taille non disponible."
     }
   },
   "license_alert": {
