@@ -456,7 +456,6 @@ graphql-playground {
 .graphql-playground-view #graphiql .graphiql-history .graphiql-history-item.editable button:focus,
 .graphql-playground-view #graphiql .graphiql-history .graphiql-history-item.editable button:active {
     background-color: hsla(219, 28%, 32%, 0.1);;
-    outline: none;
 }
 
 .graphql-playground-view #graphiql .graphiql-history .graphiql-history-item.editable button:nth-of-type(2) {

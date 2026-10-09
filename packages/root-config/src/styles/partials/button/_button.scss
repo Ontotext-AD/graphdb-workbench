@@ -15,9 +15,16 @@
   font-size: 1rem;
   transition: all .15s ease-in-out;
   border-radius: 0;
+  --onto-btn-focus-ring-color: var(--gw-button-primary-focus-ring-color);
 
+  // Like PrimeNG buttons, show the focus ring on keyboard focus only.
   &:focus {
     outline: 0;
+  }
+
+  &:focus-visible {
+    outline: var(--gw-button-focus-ring-width) var(--gw-button-focus-ring-style) var(--onto-btn-focus-ring-color);
+    outline-offset: var(--gw-button-focus-ring-offset);
   }
 
   &:disabled {
@@ -47,11 +54,6 @@
     color: var(--gw-button-primary-active-color);
   }
 
-  &:focus {
-    outline: var(--gw-button-focus-ring-width) var(--gw-button-focus-ring-style) var(--gw-button-primary-focus-ring-color);
-    outline-offset: var(--gw-button-focus-ring-offset);
-  }
-
   &:disabled {
     background-color: var(--gw-button-primary-disabled-background);
     border-color: var(--gw-button-primary-disabled-border-color);
@@ -60,6 +62,7 @@
 }
 
 .onto-btn-secondary {
+  --onto-btn-focus-ring-color: var(--gw-button-secondary-focus-ring-color);
   background-color: var(--gw-button-secondary-background);
   border-color: var(--gw-button-secondary-border-color);
   color: var(--gw-button-secondary-color);
@@ -74,11 +77,6 @@
     background-color: var(--gw-button-secondary-active-background);
     border-color: var(--gw-button-secondary-active-border-color);
     color: var(--gw-button-secondary-active-color);
-  }
-
-  &:focus {
-    outline: var(--gw-button-focus-ring-width) var(--gw-button-focus-ring-style) var(--gw-button-secondary-focus-ring-color);
-    outline-offset: var(--gw-button-focus-ring-offset);
   }
 
   &:disabled {

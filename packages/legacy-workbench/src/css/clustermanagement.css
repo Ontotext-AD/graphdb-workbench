@@ -185,11 +185,6 @@ text.links-statuses {
     cursor: pointer;
 }
 
-.text-btn:focus, .text-btn {
-    outline: none !important;
-    box-shadow: none
-}
-
 .no-margin-list ul {
     margin-bottom: 0;
 }

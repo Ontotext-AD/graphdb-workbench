@@ -14,6 +14,11 @@
     padding-left: 1em;
     padding-right: 1em;
 
+    &:focus-visible {
+      outline: var(--gw-button-focus-ring-width) var(--gw-button-focus-ring-style) var(--gw-button-primary-focus-ring-color);
+      outline-offset: var(--gw-button-focus-ring-offset);
+    }
+
     &:disabled {
       background-color: var(--gw-button-primary-disabled-background);
       color: var(--gw-button-primary-disabled-color);
@@ -40,6 +45,10 @@
     padding: 0 0.3em;
     background-color: var(--gw-button-primary-background);
     color: var(--gw-button-primary-color);
+
+    &:focus-visible {
+      outline-color: var(--gw-button-primary-focus-ring-color);
+    }
 
     &:disabled {
       background-color: var(--gw-button-primary-disabled-background);

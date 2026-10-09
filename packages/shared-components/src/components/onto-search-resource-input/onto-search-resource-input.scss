@@ -74,19 +74,12 @@
       color: var(--gw-button-secondary-color);
       background-color: var(--gw-button-secondary-background);
 
+      --onto-btn-focus-ring-color: var(--gw-button-secondary-focus-ring-color);
+
       &.selected {
         background-color: var(--gw-togglebutton-checked-background);
         color: var(--gw-togglebutton-checked-color);
         border-color: var(--gw-togglebutton-checked-border-color);
-      }
-
-      &:focus-visible {
-        outline: 2px solid var(--gw-focus-ring-color);
-        outline-offset: 2px;
-      }
-
-      &:focus:not(:focus-visible) {
-        outline: none;
       }
 
       &:hover:not(.selected) {
