@@ -8,6 +8,7 @@ import {
   GraphExploreService,
   GraphNavigatorService,
   GraphNavigatorSettings,
+  HttpErrorResponse,
   LanguageContextService,
   OntoToastrService,
   RepositoryContextService,
@@ -78,6 +79,7 @@ export class GraphNavigatorPageComponent implements OnInit, OnDestroy {
   readonly seedGraph = signal<GraphExploreLink[]>([]);
   readonly loading = signal(false);
   readonly settings = signal<GraphNavigatorSettings | undefined>(undefined);
+  readonly uploadErrors = signal<string[]>([]);
   protected readonly ViewPermissions = ViewPermissions;
 
   ngOnInit(): void {
@@ -134,6 +136,7 @@ export class GraphNavigatorPageComponent implements OnInit, OnDestroy {
       // Clear the settings together with the repository change, so the facade is removed and mounted again
       // once, with the new repository and its settings together.
       this.settings.set(undefined);
+      this.uploadErrors.set([]);
       this.currentRepository.set(repositoryId);
       if (repositoryId) {
         this.loadSettings(repositoryId);
@@ -188,7 +191,11 @@ export class GraphNavigatorPageComponent implements OnInit, OnDestroy {
    */
   onUploadSettings(file: File, repositoryId: string): void {
     this.runSettingsRequest(
-      this.graphNavigatorService.uploadSettings(repositoryId, file),
+      this.graphNavigatorService.uploadSettings(repositoryId, file)
+        .catch((error: HttpErrorResponse<{errors?: string[]}>) => {
+          this.uploadErrors.set(error.data?.errors ?? []);
+          throw error;
+        }),
       'graph_navigator.settings.messages.upload_success',
       'graph_navigator.settings.messages.upload_failed'
     );
@@ -220,6 +227,7 @@ export class GraphNavigatorPageComponent implements OnInit, OnDestroy {
   }
 
   private runSettingsRequest(request: Promise<GraphNavigatorSettings>, successKey: string, failureKey: string): void {
+    this.uploadErrors.set([]);
     this.loading.set(true);
     request
       .then((settings) => {
