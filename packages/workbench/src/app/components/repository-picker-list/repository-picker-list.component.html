@@ -2,8 +2,21 @@
   @let filteredRepositoryList = vm().filteredRepositoryList;
 
   <div class="header">
-    <h6 class="repository-results-count">
-      {{ 'components.page_restrictions.repository_count' | transloco: {repositoryCount: filteredRepositoryList.length} }}
+    <!-- A live region, so that the count is announced to assistive technologies when the filters change it. -->
+    <h6 class="repository-results-count" aria-live="polite" aria-atomic="true">
+      <span aria-hidden="true" data-test="repository-picker-results-count">
+        {{ 'components.page_restrictions.repository_count' | transloco: {repositoryCount: vm().repositoryCount} }}
+      </span>
+      <span class="screen-reader-only" data-test="repository-picker-results-count-accessible">
+        @if (vm().hasFilteredOutRepositories) {
+          {{ 'components.page_restrictions.repository_count_filtered_accessible' | transloco: {
+            filteredCount: filteredRepositoryList.length,
+            totalCount: vm().repositoryList.length
+          } }}
+        } @else {
+          {{ 'components.page_restrictions.repository_count_accessible' | transloco: {repositoryCount: vm().repositoryList.length} }}
+        }
+      </span>
     </h6>
     @if (vm().canCreateRepository) {
       <p-button class="create-repository-btn"

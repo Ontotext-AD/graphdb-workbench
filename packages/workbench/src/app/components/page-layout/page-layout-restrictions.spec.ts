@@ -116,6 +116,15 @@ describe('PageLayoutComponent restrictions', () => {
   const getPickerRepositoryIds = (): string[] =>
     Array.from(page.querySelectorAll(PAGE_LAYOUT_RESTRICTIONS_SELECTORS.pickerRepositoryId)).map((element) => normalizeText(element.textContent));
 
+  const getPickerRepositoryCount = (): string =>
+    normalizeText(page.querySelector(PAGE_LAYOUT_RESTRICTIONS_SELECTORS.pickerRepositoryCount)?.textContent);
+
+  const getPickerAccessibleRepositoryCount = (): string =>
+    normalizeText(page.querySelector(PAGE_LAYOUT_RESTRICTIONS_SELECTORS.pickerRepositoryCountAccessible)?.textContent);
+
+  const toExpectedRepositoryCount = (repositoryCount: string): string =>
+    translate('components.page_restrictions.repository_count', {repositoryCount});
+
   const getPickerRepositoryLocations = (): {id: string, location: string}[] =>
     Array.from(page.querySelectorAll(PAGE_LAYOUT_RESTRICTIONS_SELECTORS.pickerRepositoryId)).map((idElement) => ({
       id: normalizeText(idElement.textContent),
@@ -212,6 +221,9 @@ describe('PageLayoutComponent restrictions', () => {
     expect(page.querySelector<HTMLInputElement>(PAGE_LAYOUT_RESTRICTIONS_SELECTORS.localOnlyFilter)?.checked).toBe(true);
     // AND: only the local repositories are offered
     expect(getPickerRepositoryIds()).toEqual(ALL_LOCAL_REPOSITORY_IDS);
+    // AND: the count tells how many of all repositories are offered, because the remote one is filtered out
+    expect(getPickerRepositoryCount())
+      .toBe(toExpectedRepositoryCount(`${ALL_LOCAL_REPOSITORY_IDS.length}/${ALL_LOCAL_REPOSITORY_IDS.length + 1}`));
     // AND: the location is not shown, because all offered repositories are local
     expect(page.querySelectorAll(PAGE_LAYOUT_RESTRICTIONS_SELECTORS.repositoryLocation)).toHaveLength(0);
   });
@@ -289,6 +301,16 @@ describe('PageLayoutComponent restrictions', () => {
 
     // THEN: only the repositories whose id or title contains the text, ignoring case, are offered
     expect(getPickerRepositoryIds()).toEqual([REPO_A_ID, REPO_B_ID]);
+    // AND: the count tells how many of all repositories are offered
+    expect(getPickerRepositoryCount()).toBe(toExpectedRepositoryCount(`2/${ALL_LOCAL_REPOSITORY_IDS.length}`));
+    // AND: the count is announced to assistive technologies in words, instead of the visual one
+    const visualCount = page.querySelector(PAGE_LAYOUT_RESTRICTIONS_SELECTORS.pickerRepositoryCount);
+    expect(visualCount?.getAttribute('aria-hidden')).toBe('true');
+    expect(visualCount?.closest('[aria-live]')?.getAttribute('aria-live')).toBe('polite');
+    expect(getPickerAccessibleRepositoryCount()).toBe(translate('components.page_restrictions.repository_count_filtered_accessible', {
+      filteredCount: '2',
+      totalCount: `${ALL_LOCAL_REPOSITORY_IDS.length}`,
+    }));
   });
 
   it('should also offer the remote repositories, each with its location, when "Local only" is unchecked', async () => {
@@ -306,6 +328,11 @@ describe('PageLayoutComponent restrictions', () => {
       ...ALL_LOCAL_REPOSITORY_IDS.map((id) => ({id, location: localLocation})),
       {id: REMOTE_REPO_ID, location: '@ https://remote-host:7200'},
     ]);
+    // AND: the count is just the number of all repositories, because none of them is filtered out
+    expect(getPickerRepositoryCount()).toBe(toExpectedRepositoryCount(`${ALL_LOCAL_REPOSITORY_IDS.length + 1}`));
+    expect(getPickerAccessibleRepositoryCount()).toBe(translate('components.page_restrictions.repository_count_accessible', {
+      repositoryCount: `${ALL_LOCAL_REPOSITORY_IDS.length + 1}`,
+    }));
   });
 
   it.each([

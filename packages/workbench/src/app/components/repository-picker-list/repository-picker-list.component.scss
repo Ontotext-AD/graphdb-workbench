@@ -17,6 +17,11 @@
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
+
+    // Without the create button the header collapses to the height of the count, so it needs its own spacing.
+    &:not(:has(.create-repository-btn)) {
+      margin-bottom: .5em;
+    }
   }
 
   .toolbar {
@@ -117,11 +122,11 @@
         }
 
         &.inactive {
-          color: var(--gw-button-info-background);
+          color: var(--gw-foreground-on-surface-subtle);
         }
 
         &.transitioning {
-          color: var(--gw-button-warn-background);
+          color: var(--gw-foreground-on-surface-subtle);
         }
       }
 
