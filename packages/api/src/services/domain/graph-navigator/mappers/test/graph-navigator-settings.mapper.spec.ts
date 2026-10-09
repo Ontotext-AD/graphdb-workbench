@@ -1,6 +1,6 @@
 import {mapGraphNavigatorSettingsResponseToModel} from '../graph-navigator-settings.mapper';
 import {GraphNavigatorSettingsResponse} from '../../response/graph-navigator-settings-response';
-import {DEFAULT_SETTINGS_STUB} from '../../graph-navigator-settings.stub';
+import {DEFAULT_SETTINGS_STUB} from '../../test/graph-navigator-settings-mock';
 import {GraphNavigatorSettings} from '../../../../../models/graph-navigator';
 
 describe('GraphNavigatorSettingsMapper', () => {

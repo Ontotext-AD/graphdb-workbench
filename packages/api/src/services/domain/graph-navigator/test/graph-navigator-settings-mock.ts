@@ -1,9 +1,7 @@
-import {GraphNavigatorSettingsResponse} from './response/graph-navigator-settings-response';
-
-// TODO: GDB-15242 remove this file together with the REST stubs.
+import {GraphNavigatorSettingsResponse} from '../response/graph-navigator-settings-response';
 
 /**
- * A copy of Reactodia's `OwlRdfsSettings`, returned by the stubbed settings endpoint.
+ * A copy of Reactodia's `OwlRdfsSettings`, used as the settings response in tests.
  */
 export const DEFAULT_SETTINGS_STUB: Omit<GraphNavigatorSettingsResponse, 'uploaded'> = {
   linkConfigurations: [],
@@ -148,13 +146,3 @@ export const DEFAULT_SETTINGS_STUB: Omit<GraphNavigatorSettingsResponse, 'upload
         }
     `
 };
-
-/**
- * A minimal placeholder Turtle file returned by the stubbed settings export.
- */
-export const SETTINGS_TURTLE_STUB = `@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix gn: <http://www.ontotext.com/graph-navigator#> .
-
-gn:settings gn:dataLabelProperty "rdfs:label" ;
-    gn:schemaLabelProperty "rdfs:label" .
-`;
