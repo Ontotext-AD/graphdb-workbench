@@ -63,6 +63,23 @@ export class RepositoryPickerListViewModel {
   }
 
   /**
+   * The repository count shown in the header. When the filters hide some of the repositories, it is the number of
+   * the matching repositories out of all of them, e.g. "5/12". Otherwise, it is just the number of all repositories.
+   */
+  get repositoryCount(): string {
+    const totalCount = this.repositoryList.length;
+    const filteredCount = this.filteredRepositoryList.length;
+    return this.hasFilteredOutRepositories ? `${filteredCount}/${totalCount}` : `${totalCount}`;
+  }
+
+  /**
+   * Whether the filters hide some of the repositories.
+   */
+  get hasFilteredOutRepositories(): boolean {
+    return this.filteredRepositoryList.length !== this.repositoryList.length;
+  }
+
+  /**
    * Checks whether the repository matches the location filter.
    *
    * When {@link localOnly} is enabled, only local repositories are included.

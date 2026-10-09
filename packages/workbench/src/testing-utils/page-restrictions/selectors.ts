@@ -8,6 +8,8 @@ export const PAGE_LAYOUT_RESTRICTIONS_SELECTORS = {
   restrictionLink: '[data-test="restriction-internal-link"]',
   repositoryPicker: 'app-repository-picker-list',
   pickerSelectButton: '[data-test="repository-picker-select-btn"]',
+  pickerRepositoryCount: '[data-test="repository-picker-results-count"]',
+  pickerRepositoryCountAccessible: '[data-test="repository-picker-results-count-accessible"]',
   pickerRepositoryId: '[data-test="repository-picker-repository-id"]',
   pickerRepositoryState: '[data-test="repository-picker-repository-state"]',
   pickerRepositoryStateLabel: '[data-test="repository-picker-repository-state-label"]',
