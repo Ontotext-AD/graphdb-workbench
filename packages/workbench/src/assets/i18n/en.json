@@ -141,7 +141,8 @@
         "title": "Upload settings file",
         "browse": "Browse",
         "drop_hint": "Drag and drop files to here to upload.",
-        "pending": "Pending"
+        "pending": "Pending",
+        "validation_errors": "Validation errors"
       },
       "export": "Export current settings",
       "reset": "Reset to default",

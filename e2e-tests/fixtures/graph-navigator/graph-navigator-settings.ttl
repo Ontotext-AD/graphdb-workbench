@@ -1,0 +1,148 @@
+@prefix gn: <http://www.ontotext.com/graph-navigator#> .
+
+gn:settings gn:defaultPrefix """PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+                        PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                        PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+                        """;
+  gn:schemaLabelProperty "rdfs:label";
+  gn:dataLabelProperty "rdfs:label";
+  gn:classTreeQuery """
+                        SELECT ?class ?label ?parent
+                        WHERE {
+                            {
+                                ?class a rdfs:Class
+                            } UNION {
+                                ?class a owl:Class
+                            }
+                            FILTER ISIRI(?class)
+                            OPTIONAL {
+                                ?class rdfs:label ?label
+                                ${labelLanguageFilter}
+                            }
+                            OPTIONAL {?class rdfs:subClassOf ?parent. FILTER ISIRI(?parent)}
+                        }
+                    """;
+  gn:classInfoQuery """SELECT ?class ?label ?instcount WHERE {
+                        VALUES(?class) {${ids}}
+                        OPTIONAL {
+                            ?class ${schemaLabelProperty} ?label
+                            ${labelLanguageFilter}
+                        }
+                        BIND(\"\" as ?instcount)
+                    }""";
+  gn:linkTypesQuery """SELECT DISTINCT ?link ?instcount ?label WHERE {
+                        ${linkTypesPattern}
+                        OPTIONAL {
+                            ?link ${schemaLabelProperty} ?label
+                            ${labelLanguageFilter}
+                        }
+                    }""";
+  gn:linkTypesPattern """
+                        { ?link a rdf:Property }
+                        UNION
+                        { ?link a owl:ObjectProperty }
+                        BIND('' as ?instcount)
+                    """;
+  gn:linkTypesInfoQuery """SELECT ?link ?label WHERE {
+                        VALUES(?link) {${ids}}
+                        OPTIONAL {
+                            ?link ${schemaLabelProperty} ?label
+                            ${labelLanguageFilter}
+                        }
+                    }""";
+  gn:propertyInfoQuery """SELECT ?property ?label WHERE {
+                        VALUES(?property) {${ids}}
+                        OPTIONAL {
+                            ?property ${schemaLabelProperty} ?label
+                            ${labelLanguageFilter}
+                        }
+                    }""";
+  gn:elementInfoQuery """
+                        CONSTRUCT {
+                            ?inst <urn:reactodia:sparql:type> ?class .
+                            ?inst <urn:reactodia:sparql:label> ?label .
+                            ?inst ?propType ?propValue.
+                        } WHERE {
+                            VALUES (?inst) {${ids}}
+                            OPTIONAL { ?inst a ?class }
+                            OPTIONAL {
+                                ?inst ${dataLabelProperty} ?label
+                                ${labelLanguageFilter}
+                            }
+                            OPTIONAL {
+                                ${propertyConfigurations}
+                                FILTER (isLiteral(?propValue))
+                                ${valueLanguageFilter}
+                            }
+                        }
+                    """;
+  gn:linksInfoQuery """SELECT ?source ?type ?target
+                        WHERE {
+                            ${linkConfigurations}
+                            VALUES (?source) {${sourceIris}}
+                            VALUES (?target) {${targetIris}}
+                        }""";
+  gn:imageQueryPattern "{ ?inst ?linkType ?image } UNION { [] ?linkType ?inst. BIND(?inst as ?image) }";
+  gn:linkTypesOfQuery """
+                        SELECT DISTINCT ?link ?direction
+                        WHERE {
+                            ${linkConfigurations}
+                        }
+                    """;
+  gn:linkTypesStatisticsQuery """
+                        SELECT ?link ?outCount ?inCount
+                        WHERE {
+                            {
+                                SELECT (${linkId} as ?link) (count(?outObject) as ?outCount) WHERE {
+                                    ${linkConfigurationOut}
+                                    ${navigateElementFilterOut}
+                                } LIMIT 101
+                            } {
+                                SELECT (${linkId} as ?link) (count(?inObject) as ?inCount) WHERE {
+                                    ${linkConfigurationIn}
+                                    ${navigateElementFilterIn}
+                                } LIMIT 101
+                            }
+                        }
+                    """;
+  gn:lookupQuery """SELECT ${outerProjection} WHERE {
+                        ${filterInnerPrelude}
+                        {
+                            SELECT DISTINCT ${innerProjection} WHERE {
+                                ${filterByType}
+                                ${filterByRefElementLink}
+                                ${filterByText}
+                                ${filterAdditionalRestriction}
+                            } ${orderBy} ${limit}
+                        }
+                        ${queryTypes}
+                        ${queryElementInfo}
+                    } ${orderBy}""";
+  gn:filterInnerPrelude "";
+  gn:filterRefElementLinkPattern "";
+  gn:filterTypePattern "?inst a ?instType. ?instType rdfs:subClassOf* ?class";
+  gn:filterElementInfoPattern """
+                        OPTIONAL {?inst rdf:type ?foundClass}
+                        BIND (coalesce(?foundClass, owl:Thing) as ?class)
+                        OPTIONAL {
+                            ?inst ${dataLabelProperty} ?label
+                            ${labelLanguageFilter}
+                        }
+                    """;
+  gn:filterAdditionalRestriction "";
+  gn:openWorldLinks false;
+  gn:openWorldProperties false;
+  gn:acceptBlankNodes false;
+  gn:blankNodeStatementLimit "20"^^<http://www.w3.org/2001/XMLSchema#int>;
+  gn:filterOnlyLanguages [ a <http://www.w3.org/1999/02/22-rdf-syntax-ns#List>;
+      <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "en";
+      <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil>
+    ];
+  gn:fullTextSearch [
+      gn:prefix "";
+      gn:queryPattern """?inst ${dataLabelProperty} ?search1
+                        FILTER regex(COALESCE(str(?search1)), \"${text}\", \"i\")
+                        BIND(0 as ?score)
+                    """;
+      gn:extractLabel true
+    ] .
