@@ -8,6 +8,8 @@ import {ToasterSteps} from '../../steps/toaster-steps.js';
 const FILE_TO_IMPORT = 'resource-test-data.ttl';
 const SEED_RESOURCE_ENCODED = 'http:%2F%2Fexample.com%2Fontology%23CustomerLoyalty';
 const SEED_RESOURCE_LABEL = 'CustomerLoyalty';
+const SETTINGS_FILE_NAME = 'graph-navigator-settings.ttl';
+const SETTINGS_FILE = `fixtures/graph-navigator/${SETTINGS_FILE_NAME}`;
 
 const CONSTRUCT_QUERY = 'CONSTRUCT { <http://example.com/ontology#CustomerLoyalty> ?p ?o } WHERE { <http://example.com/ontology#CustomerLoyalty> ?p ?o }';
 const CONSTRUCT_TARGET_LABEL = 'Metric';
@@ -102,7 +104,6 @@ describe('Graph Navigator', () => {
         GraphNavigatorSteps.getElements().should('not.exist');
     });
 
-    // These run against the in-code REST stub. TODO: GDB-15242 switch to intercepts when the endpoints are available.
     describe('Settings', () => {
         it('should open the settings popover', () => {
             // Given I open the Graph Navigator view.
@@ -130,14 +131,14 @@ describe('Graph Navigator', () => {
             // Given I have selected a settings file.
             GraphNavigatorSteps.visit();
             GraphNavigatorSteps.openSettings();
-            GraphNavigatorSteps.selectSettingsFile();
-            GraphNavigatorSteps.getSelectedSettingsFile().should('exist');
+            GraphNavigatorSteps.selectSettingsFile(SETTINGS_FILE);
+            GraphNavigatorSteps.getSelectedSettingsFile(SETTINGS_FILE_NAME).should('exist');
 
             // When I cancel it.
             GraphNavigatorSteps.clickCancelFile();
 
             // Then I expect the file to be removed.
-            GraphNavigatorSteps.getSettingsPopover().should('not.contain', 'settings.ttl');
+            GraphNavigatorSteps.getSettingsPopover().should('not.contain', SETTINGS_FILE_NAME);
             GraphNavigatorSteps.getUploadButton().should('be.disabled');
         });
 
@@ -145,7 +146,7 @@ describe('Graph Navigator', () => {
             // Given I have selected a settings file.
             GraphNavigatorSteps.visit();
             GraphNavigatorSteps.openSettings();
-            GraphNavigatorSteps.selectSettingsFile();
+            GraphNavigatorSteps.selectSettingsFile(SETTINGS_FILE);
 
             // When I upload it.
             GraphNavigatorSteps.clickUpload();
@@ -159,7 +160,7 @@ describe('Graph Navigator', () => {
 
             // Then I expect the popover to stay open with the file still selected.
             GraphNavigatorSteps.getSettingsPopover().should('be.visible');
-            GraphNavigatorSteps.getSelectedSettingsFile().should('exist');
+            GraphNavigatorSteps.getSelectedSettingsFile(SETTINGS_FILE_NAME).should('exist');
 
             // When I upload and confirm.
             GraphNavigatorSteps.clickUpload();
@@ -174,7 +175,7 @@ describe('Graph Navigator', () => {
             // Given the repository has uploaded settings.
             GraphNavigatorSteps.visit();
             GraphNavigatorSteps.openSettings();
-            GraphNavigatorSteps.selectSettingsFile();
+            GraphNavigatorSteps.selectSettingsFile(SETTINGS_FILE);
             GraphNavigatorSteps.clickUpload();
             GraphNavigatorSteps.confirmDialog();
             ToasterSteps.verifySuccess('The settings were uploaded');

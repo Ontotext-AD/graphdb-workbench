@@ -1,7 +1,7 @@
 import {GraphNavigatorService} from '../graph-navigator.service';
 import {GraphNavigatorRestService} from '../graph-navigator-rest.service';
 import {service} from '../../../../providers';
-import {DEFAULT_SETTINGS_STUB} from '../graph-navigator-settings.stub';
+import {DEFAULT_SETTINGS_STUB} from './graph-navigator-settings-mock';
 import {GraphNavigatorSettings} from '../../../../models/graph-navigator';
 
 describe('GraphNavigatorService', () => {

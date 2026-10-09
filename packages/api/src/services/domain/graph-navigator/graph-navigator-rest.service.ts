@@ -1,10 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars -- TODO: GDB-15242 remove together with the stubs. */
 import {HttpService} from '../../http/http.service';
 import {GraphNavigatorSettingsResponse} from './response/graph-navigator-settings-response';
-import {DEFAULT_SETTINGS_STUB, SETTINGS_TURTLE_STUB} from './graph-navigator-settings.stub';
 
 /**
- * Service for interacting with the graph-navigator REST API: `repositories/{repositoryId}/graph-navigator/settings`.
+ * Service for interacting with the graph-navigator REST API
  */
 export class GraphNavigatorRestService extends HttpService {
   /**
@@ -14,8 +12,7 @@ export class GraphNavigatorRestService extends HttpService {
    * @returns A Promise that resolves to the current settings.
    */
   getSettings(repositoryId: string): Promise<GraphNavigatorSettingsResponse> {
-    // TODO: GDB-15242 replace the stub with a GET to the settings endpoint with `Accept: application/json`.
-    return Promise.resolve({...DEFAULT_SETTINGS_STUB, uploaded: false});
+    return this.get(this.getSettingsEndpoint(repositoryId), {headers: {Accept: 'application/json'}});
   }
 
   /**
@@ -26,9 +23,9 @@ export class GraphNavigatorRestService extends HttpService {
    * @returns A Promise that resolves to the new settings.
    */
   uploadSettings(repositoryId: string, file: File): Promise<GraphNavigatorSettingsResponse> {
-    // TODO: GDB-15242 replace the stub with a multipart PUT to the settings endpoint, with the file in
-    //  the `settingsFile` part and `Accept: application/json`.
-    return Promise.resolve({...DEFAULT_SETTINGS_STUB, uploaded: true});
+    const body = new FormData();
+    body.append('settingsFile', file, file.name);
+    return this.put(this.getSettingsEndpoint(repositoryId), {body, headers: {Accept: 'application/json'}});
   }
 
   /**
@@ -37,8 +34,7 @@ export class GraphNavigatorRestService extends HttpService {
    * @param repositoryId - The id of the repository.
    */
   deleteSettings(repositoryId: string): Promise<void> {
-    // TODO: GDB-15242 replace the stub with a DELETE to the settings endpoint.
-    return Promise.resolve();
+    return this.delete(this.getSettingsEndpoint(repositoryId));
   }
 
   /**
@@ -48,7 +44,10 @@ export class GraphNavigatorRestService extends HttpService {
    * @returns A Promise that resolves to the settings as Turtle text.
    */
   exportSettings(repositoryId: string): Promise<string> {
-    // TODO: GDB-15242 replace the stub with a GET to the settings endpoint with `Accept: text/turtle`.
-    return Promise.resolve(SETTINGS_TURTLE_STUB);
+    return this.get(this.getSettingsEndpoint(repositoryId), {headers: {Accept: 'text/turtle'}});
+  }
+
+  private getSettingsEndpoint(repositoryId: string): string {
+    return `rest/repositories/${this.encodeURIComponentStrict(repositoryId)}/graph-navigator/settings`;
   }
 }
