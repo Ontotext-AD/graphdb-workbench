@@ -1,8 +1,10 @@
-import {Component, computed, CUSTOM_ELEMENTS_SCHEMA, input} from '@angular/core';
+import {Component, computed, CUSTOM_ELEMENTS_SCHEMA, inject, input} from '@angular/core';
 import {translate} from '@jsverse/transloco';
+import type {ErrorReport} from 'graphwise-reactodia';
 import {defineCustomElements} from 'graphwise-reactodia/loader';
-import {GraphExploreLink, OntoToastrService, Rdf4jRepositoryService, service, SparqlDataProviderSettings} from '@ontotext/workbench-api';
+import {GraphExploreLink, Rdf4jRepositoryService, service, SparqlDataProviderSettings} from '@ontotext/workbench-api';
 import {LoggerProvider} from '../../services/logger/logger-provider';
+import {NotificationProviderService} from '../../services/notification/notification-provider.service';
 
 /**
  * The request descriptor graphwise-reactodia's `SparqlQueryFunction` passes to the transport.
@@ -14,6 +16,8 @@ interface SparqlQueryParams {
   method: string;
   signal?: AbortSignal;
 }
+
+const ERROR_MESSAGES_PREFIX = 'graph_navigator.errors';
 
 defineCustomElements();
 
@@ -32,7 +36,7 @@ defineCustomElements();
 })
 export class GraphwiseReactodiaFacadeComponent {
   private readonly rdf4jRepositoryService = service(Rdf4jRepositoryService);
-  private readonly ontoToastrService = service(OntoToastrService);
+  private readonly notificationProviderService = inject(NotificationProviderService);
   private readonly logger = LoggerProvider.logger;
 
   /** The active repository id; re-points (and resets) the diagram when it changes at runtime. */
@@ -57,25 +61,30 @@ export class GraphwiseReactodiaFacadeComponent {
   /**
    * Transport for graphwise-reactodia's SPARQL requests. graphwise-reactodia chooses the `Accept` per query
    * (SPARQL-results JSON for SELECT lookups, RDF/Turtle for CONSTRUCT element info) and passes
-   * it in `params.headers`; we forward it so GraphDB returns the matching format, then hand back
-   * the raw `Response` which graphwise-reactodia expects.
+   * it in `params.headers`
    */
-  readonly queryFunction = (params: SparqlQueryParams) =>
-    this.executeRequest(params)
-      .catch((error) => {
-        // An aborted request is a cancellation graphwise-reactodia asked for so don't show toast
-        if (error?.name !== 'AbortError') {
-          this.logger.error('Failed to execute query', error);
-          this.ontoToastrService.error(translate('graph_navigator.errors.query_execution_failed'));
-        }
-        throw error;
-      });
+  readonly queryFunction = (params: SparqlQueryParams) => this.executeRequest(params);
 
   readonly config = computed(() => ({
     queryFunction: this.queryFunction,
     seedIris: this.seedIris(),
     seedGraph: this.seedGraph()
   }));
+
+  /**
+   * Logs an error reported by graphwise-reactodia and shows a user-friendly message. If a translation does not exist,
+   * a default message is shown.
+   *
+   * @param event - The `graphwiseReactodiaError` event.
+   */
+  onGraphwiseReactodiaError(event: Event): void {
+    const {code, error} = (event as CustomEvent<ErrorReport>).detail;
+    const messageKey = `${ERROR_MESSAGES_PREFIX}.${code.toLowerCase()}`;
+    const translated = translate(messageKey);
+    const message = translated !== messageKey ? translated : translate(`${ERROR_MESSAGES_PREFIX}.default`);
+    this.logger.error(message, error);
+    this.notificationProviderService.error(message);
+  }
 
   /**
    * Sends one graphwise-reactodia request through the workbench HTTP layer. GDB requires the query to be
