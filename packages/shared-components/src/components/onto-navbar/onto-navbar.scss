@@ -3,25 +3,23 @@
 }
 
 .navbar-component {
+  background-color: var(--gw-sidenav-background);
   width: 15rem;
   position: fixed;
   font-weight: 400;
   z-index: 1010;
   margin: 0;
   padding: 0;
-  -moz-transition: width 0.2s ease-in; /* FF4+ */
-  -o-transition: width 0.2s ease-in; /* Opera 10.5+ */
-  -webkit-transition: width 0.2s ease-in; /* Saf3.2+, Chrome */
   transition: width 0.2s ease-in;
+
   /* Adjust height to leave space for header */
   height: calc(100% - 60px);
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: hidden auto;
 }
 
-/*Make collapsed menu with absolute position if window height is smaller than the
-main menu height*/
-@media screen and (max-height: 475px) {
+/* Make collapsed menu with absolute position if window height is smaller than the
+main menu height */
+@media screen and (height <= 475px) {
   .navbar-component.collapsed {
     position: absolute;
   }
@@ -36,36 +34,6 @@ main menu height*/
   text-decoration: none;
 }
 
-.navbar-component li a.sub-menu-link:not([href=""]):not([tabindex]):hover {
-  // Overriding !important in _anchor.scss
-  text-decoration: none !important;
-}
-
-.navbar-component .sub-menu-item a.sub-menu-link:not([href]) translate-label.menu-item {
-  padding-right: 3.5px;
-}
-
-.navbar-component a.sub-menu-link:not([href]):hover .menu-item,
-.navbar-component a.sub-menu-link[href=""]:hover .menu-item {
-  // Overriding !important in _anchor.scss
-  text-decoration-line: underline !important;
-}
-
-.navbar-component li .menu-element-root:hover,
-.navbar-component .sub-menu li:hover {
-  // Overriding !important in _anchor.scss
-  text-decoration-line: none !important;
-}
-
-.navbar-component li .menu-element-root:hover .menu-item-icon,
-.navbar-component .menu-element.open .menu-item-icon {
-  transform: scale(1.1);
-}
-
-.navbar-component .menu-element.open .sub-menu .menu-item-icon {
-  transform: scale(0.5);
-}
-
 .navbar-component .menu-element {
   position: relative;
 }
@@ -77,14 +45,20 @@ main menu height*/
   line-height: 2.5rem;
   position: relative;
   z-index: 100;
-  -moz-transition: all 0.18s ease-out; /* FF4+ */
-  -o-transition: all 0.18s ease-out; /* Opera 10.5+ */
-  -webkit-transition: all 0.18s ease-out; /* Saf3.2+, Chrome */
-  transition: all 0.18s ease-out;
+  transition: all 0.18s ease-out, outline 0s, outline-offset 0s; // Show the focus ring at once, not animated
   cursor: pointer;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+}
+
+.navbar-component button.menu-element-root {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  text-align: left;
 }
 
 .navbar-component .menu-item-icon {
@@ -94,9 +68,6 @@ main menu height*/
   text-align: center;
   transform: scale(0.9);
   display: inline-block;
-  -moz-transition: all 0.18s ease-out; /* FF4+ */
-  -o-transition: all 0.18s ease-out; /* Opera 10.5+ */
-  -webkit-transition: all 0.18s ease-out; /* Saf3.2+, Chrome */
   transition: all 0.18s ease-out;
   pointer-events: none;
 }
@@ -137,6 +108,11 @@ main menu height*/
   display: none;
 }
 
+.navbar-component .sub-menu li:hover {
+  // Overriding !important in _anchor.scss
+  text-decoration-line: none !important;
+}
+
 .navbar-component .sub-menu li a {
   padding: 0.5em 0.8em 0.5em 1.3em;
   display: block;
@@ -163,26 +139,17 @@ main menu height*/
   width: 15rem;
 }
 
-.navbar-component.collapsed .menu-element .menu-item,
-.navbar-component.collapsed .menu-element .sub-menu li {
-  display: none;
-}
-
-.navbar-component.collapsed .menu-element.open .menu-item,
-.navbar-component.collapsed .menu-element.open .sub-menu li {
-  display: block;
-}
-
-.navbar-component.collapsed .menu-element.open .menu-element-root .menu-item {
-  display: none;
-}
-
 .navbar-component.collapsed .menu-element.open .sub-menu-item .sub-menu-link {
   background-color: var(--gw-sidenav-submenuitem-open-background);
 }
 
 .navbar-component.collapsed .menu-element-root {
   overflow: visible;
+}
+
+.navbar-component li .menu-element-root:hover {
+  // Overriding !important in _anchor.scss
+  text-decoration-line: none !important;
 }
 
 .navbar-component .menu-element.open ul li.submenu-title,
@@ -196,7 +163,7 @@ main menu height*/
   font-weight: 500;
   text-overflow: ellipsis;
   overflow: hidden;
-  padding: 0.5em 0.8rem 0.7em 0.8rem;
+  padding: 0.5em 0.8rem 0.7em;
   background-color: var(--gw-sidenav-submenuitem-open-background);
 }
 
@@ -205,7 +172,7 @@ main menu height*/
   top: auto;
 }
 
-.navbar-component.collapsed .menu-element ul:before {
+.navbar-component.collapsed .menu-element ul::before {
   display: none;
 }
 
@@ -215,9 +182,13 @@ main menu height*/
 }
 
 .toggle-menu {
+  width: 100%;
+  min-height: 24px; // The minimum target size for pointer inputs (WCAG 2.5.8)
+  border: 0;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+  justify-content: center;
   font-size: 1em;
   line-height: 1.5;
   padding: 0 0.3em;
@@ -241,10 +212,6 @@ main menu height*/
   transform: scale(1.1);
 }
 
-.navbar-component {
-  background-color: var(--gw-sidenav-background);
-}
-
 /* ---------------- Top-Level Menus ---------------- */
 .navbar-component .menu-element .menu-element-root:not(.active) {
   background-color: var(--gw-sidenav-menuitem-background);
@@ -254,6 +221,15 @@ main menu height*/
 .navbar-component .menu-element .menu-element-root .menu-item-icon,
 .navbar-component .menu-element .menu-element-root .menu-item {
   color: var(--gw-sidenav-menuitem-icon-color);
+}
+
+.navbar-component .menu-element.open .menu-item-icon,
+.navbar-component li .menu-element-root:hover .menu-item-icon {
+  transform: scale(1.1);
+}
+
+.navbar-component .menu-element.open .sub-menu .menu-item-icon {
+  transform: scale(0.5);
 }
 
 /* ---------------- Top-Level Menus Hover ---------------- */
@@ -296,8 +272,8 @@ main menu height*/
   color: var(--gw-sidenav-menuitem-selected-icon-color);
 }
 
-//* ---------------- Submenu ---------------- */
-.navbar-component .menu-element .sub-menu-item .menu-item {
+// * ---------------- Submenu ---------------- */
+.navbar-component .menu-element .sub-menu .sub-menu-item .menu-item {
   color: var(--gw-sidenav-submenuitem-color);
   font-weight: 400;
 }
@@ -306,7 +282,7 @@ main menu height*/
   color: var(--gw-sidenav-submenuitem-hover-color);
 }
 
-//* ---------------- Active Submenu ---------------- */
+// * ---------------- Active Submenu ---------------- */
 .navbar-component .menu-element .sub-menu-item.active {
   color: var(--gw-sidenav-submenuitem-selected-color);
   background-color: var(--gw-sidenav-submenuitem-selected-background);
@@ -315,4 +291,57 @@ main menu height*/
 
 .navbar-component .menu-element .sub-menu-item.active .menu-item {
   color: var(--gw-sidenav-submenuitem-selected-color);
+}
+
+/* ---------------- Collapsed Labels ---------------- */
+.navbar-component.collapsed .menu-element .sub-menu li {
+  display: none;
+}
+
+.navbar-component.collapsed .menu-element.open .menu-item,
+.navbar-component.collapsed .menu-element.open .sub-menu li {
+  display: block;
+}
+
+// Hide the labels of the icon-only root items visually only, so they still give the items an accessible name.
+// Same technique as .screen-reader-only in root-config, which is not available to the shared components.
+.navbar-component.collapsed li.menu-element .menu-element-root .menu-item {
+  display: block;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------------- Submenu Links ---------------- */
+.navbar-component li a.sub-menu-link:not([href=""], [tabindex]):hover {
+  // Overriding !important in _anchor.scss
+  text-decoration: none !important;
+}
+
+.navbar-component .sub-menu-item a.sub-menu-link:not([href]) translate-label.menu-item {
+  padding-right: 3.5px;
+}
+
+.navbar-component a.sub-menu-link:not([href]):hover .menu-item,
+.navbar-component a.sub-menu-link[href=""]:hover .menu-item {
+  // Overriding !important in _anchor.scss
+  text-decoration-line: underline !important;
+}
+
+/* ---------------- Focus ---------------- */
+// The navbar clips its overflow, so draw the focus ring inside the focused element.
+.navbar-component .navbar-toggle .toggle-menu:focus-visible,
+.navbar-component .menu-element .menu-element-root:focus-visible,
+.navbar-component .menu-element .sub-menu .sub-menu-item .sub-menu-link:focus-visible {
+  outline: 2px solid var(--gw-focus-ring-color);
+  outline-offset: -2px;
+}
+
+// Override the Bootstrap focus style of buttons, which is shown on mouse click too.
+.navbar-component .navbar-toggle .toggle-menu:focus:not(:focus-visible),
+.navbar-component .menu-element .menu-element-root:focus:not(:focus-visible) {
+  outline: none;
 }

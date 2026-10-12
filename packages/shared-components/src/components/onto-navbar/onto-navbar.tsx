@@ -6,6 +6,7 @@ import {
   Fragment,
   h,
   Host,
+  Listen,
   Prop,
   State,
   Watch
@@ -131,10 +132,7 @@ export class OntoNavbar {
           this.menuModel.deselectItem(menuItem);
         }
       } else {
-        this.menuModel.closeAll();
-        if (this.menuModel.hasSelectedSubmenu(menuItem)) {
-          this.menuModel.selectItem(menuItem);
-        }
+        this.closeSubmenusAndRestoreSelection(menuItem);
       }
     } else {
       this.menuModel.closeOtherParents(menuItem);
@@ -148,6 +146,13 @@ export class OntoNavbar {
 
     this.refreshNavbar();
     this.adjustAllSubmenus(this.hostElement);
+  }
+
+  private closeSubmenusAndRestoreSelection(menuItem: NavbarItemModel): void {
+    this.menuModel.closeAll();
+    if (this.menuModel.hasSelectedSubmenu(menuItem)) {
+      this.menuModel.selectItem(menuItem);
+    }
   }
 
   private subscribeToNavigationEnd() {
@@ -347,6 +352,58 @@ export class OntoNavbar {
     window.removeEventListener('resize', this.resizeHandler);
   }
 
+  /**
+   * Closes the flyout submenu of a collapsed navbar on Escape and returns the focus to its menu group button.
+   */
+  @Listen('keydown')
+  onKeyDown(event: KeyboardEvent): void {
+    const openedFlyout = this.getOpenedFlyout();
+    if (event.key !== 'Escape' || !openedFlyout?.contains(event.target as Node)) {
+      return;
+    }
+    event.preventDefault();
+    event.stopPropagation();
+    openedFlyout.querySelector<HTMLElement>('.menu-element-root').focus();
+    this.closeOpenedFlyout();
+  }
+
+  /**
+   * Closes the flyout submenu of a collapsed navbar when the focus leaves it.
+   */
+  @Listen('focusout')
+  onFocusOut(event: FocusEvent): void {
+    const openedFlyout = this.getOpenedFlyout();
+    if (!openedFlyout?.contains(event.target as Node) || openedFlyout.contains(event.relatedTarget as Node)) {
+      return;
+    }
+    this.closeOpenedFlyout();
+  }
+
+  /**
+   * Returns the menu element whose submenu is opened as a flyout, which happens only when the navbar is collapsed.
+   */
+  private getOpenedFlyout(): HTMLElement | null {
+    return this.isCollapsed ? this.hostElement.querySelector<HTMLElement>('li.menu-element.open') : null;
+  }
+
+  private closeOpenedFlyout(): void {
+    const openedItem = this.menuModel.items.find((item) => item.open);
+    this.clearAllOpenedSubmenuStyles();
+    this.closeSubmenusAndRestoreSelection(openedItem);
+    this.refreshNavbar();
+  }
+
+  /**
+   * Stencil leaves a stale value when a boolean aria attribute changes to false, so pass "true"/"false" strings.
+   */
+  private toAriaBoolean(value: boolean): 'true' | 'false' {
+    return value ? 'true' : 'false';
+  }
+
+  private getSubmenuId(index: number): string {
+    return `navbar-submenu-${index}`;
+  }
+
   private handleSelectMenuItem(item: NavbarItemModel) {
     return (event: MouseEvent) => {
       this.select(event, item);
@@ -357,28 +414,30 @@ export class OntoNavbar {
     if (!this.menuModel) {
       return;
     }
+    const toggleLabel = this.isCollapsed ? this.labels[labelKeys.EXPAND] : this.labels[labelKeys.COLLAPSE];
     return (
       <Host>
         <ul class="navbar-component">
           <li class="navbar-toggle">
-            <a class="toggle-menu no-underline" title={
-              this.isCollapsed ? this.labels[labelKeys.EXPAND] : this.labels[labelKeys.COLLAPSE]
-            } onClick={this.toggleNavbarHandler()}>
-              <i class={`chevron ${this.isCollapsed ? 'ri-arrow-right-s-line' : 'ri-arrow-left-s-line'}`}></i>
-            </a>
+            <button type="button" class="toggle-menu" title={toggleLabel} onClick={this.toggleNavbarHandler()}>
+              <i class={`chevron ${this.isCollapsed ? 'ri-arrow-right-s-line' : 'ri-arrow-left-s-line'}`}
+                aria-hidden="true"></i>
+            </button>
           </li>
-          {this.menuModel.items.map((item) => (
+          {this.menuModel.items.map((item, index) => (
             <li key={item.labelKey} class={{'menu-element': true, 'open': item.open}}
               data-test={item.testSelector} guide-selector={item.guideSelector}>
               {item.children.length > 0 &&
                 <Fragment>
-                  <div class={{'menu-element-root': true, 'active': item.selected}}
+                  <button type="button" class={{'menu-element-root': true, 'active': item.selected}}
+                    aria-expanded={this.toAriaBoolean(!!item.open)} aria-controls={this.getSubmenuId(index)}
                     onClick={this.handleSelectMenuItem(item)}>
-                    <span class={`menu-item-icon ${item.icon}`}></span>&nbsp;
+                    <span class={`menu-item-icon ${item.icon}`} aria-hidden="true"></span>&nbsp;
                     <translate-label class="menu-item" labelKey={item.labelKey}></translate-label>
-                    {!this.isCollapsed && <i class={`chevron ri-arrow-right-s-line ${item.open ? ' open' : ''}`}></i>}
-                  </div>
-                  <ul class="sub-menu">
+                    {!this.isCollapsed &&
+                      <i class={`chevron ri-arrow-right-s-line ${item.open ? ' open' : ''}`} aria-hidden="true"></i>}
+                  </button>
+                  <ul class="sub-menu" id={this.getSubmenuId(index)} hidden={!item.open}>
                     <li key={item.labelKey} class="submenu-title">
                       <translate-label labelKey={item.labelKey}></translate-label>
                     </li>
@@ -412,7 +471,7 @@ export class OntoNavbar {
               {item.children.length === 0 &&
                 <a class={{'menu-element-root': true, 'active': item.selected}}
                   href={item.href} onClick={this.handleSelectMenuItem(item)}>
-                  <span class={`menu-item-icon ${item.icon}`}></span>&nbsp;
+                  <span class={`menu-item-icon ${item.icon}`} aria-hidden="true"></span>&nbsp;
                   <translate-label class="menu-item" labelKey={item.labelKey}></translate-label>
                 </a>
               }
