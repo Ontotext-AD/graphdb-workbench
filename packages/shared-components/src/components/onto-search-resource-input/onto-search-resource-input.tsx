@@ -109,6 +109,11 @@ export class OntoSearchResourceInput {
   }
 
   render() {
+    const searchLabel = TranslationService.translate('rdf_search.labels.search');
+    const listboxId = `${this.context}-suggestions`;
+    const hintId = `${this.context}-hint`;
+    const suggestions = this.searchResult?.suggestions.getItems() ?? [];
+    const hoveredIndex = suggestions.findIndex((suggestion) => suggestion.isHovered());
     return (
       <section class="search-resources-input">
         <div class="input-row">
@@ -116,29 +121,49 @@ export class OntoSearchResourceInput {
             <input value={this.inputValue}
               id={this.context}
               type="text"
+              role="combobox"
+              aria-label={searchLabel}
+              aria-autocomplete="list"
+              aria-expanded={suggestions.length ? 'true' : 'false'}
+              aria-controls={listboxId}
+              aria-activedescendant={hoveredIndex >= 0 ? this.getSuggestionId(hoveredIndex) : undefined}
+              aria-describedby={hintId}
               autocomplete="off"
-              placeholder={`${TranslationService.translate('rdf_search.labels.search')}...`}
+              placeholder={`${searchLabel}...`}
               ref={(ref) => this.inputRef = ref}
               onKeyDown={this.onKeyDown}
               data-test={this.context}
               onInput={this.handleInput}/>
             {this.inputValue?.length ?
-              <i onClick={this.clearInput}
+              <button type="button"
+                onClick={this.clearInputAndFocus}
+                aria-label={TranslationService.translate('rdf_search.tooltips.clear')}
                 tooltip-content={TranslationService.translate('rdf_search.tooltips.clear')}
                 tooltip-placement={OntoTooltipPlacement.BOTTOM}
-                class="ri-close-line clear-input"></i> : ''
+                class="clear-input">
+                <i class="ri-close-line" aria-hidden="true"></i>
+              </button> : ''
             }
           </span>
           {this.buttonConfig?.getButtons().getItems().map((button) => (
             <button key={button.label}
+              type="button"
+              aria-pressed={button.selected ? 'true' : 'false'}
               onClick={this.handleButtonClick(button)}
               class={`onto-btn ${button.selected ? 'selected' : ''}`}>{button.label}</button>
           ))}
         </div>
-        <span class="hint">{TranslationService.translate('rdf_search.labels.hint')}</span>
-        <section class="autocomplete-results-wrapper" data-test='onto-autocomplete-results'>
-          {this.searchResult?.suggestions.getItems().map((suggestion) => (
+        <span class="hint" id={hintId}>{TranslationService.translate('rdf_search.labels.hint')}</span>
+        <section class="autocomplete-results-wrapper"
+          id={listboxId}
+          role="listbox"
+          aria-label={searchLabel}
+          data-test='onto-autocomplete-results'>
+          {suggestions.map((suggestion, index) => (
             <p key={suggestion.getId()}
+              id={this.getSuggestionId(index)}
+              role="option"
+              aria-selected={suggestion.isHovered() ? 'true' : 'false'}
               onClick={this.onSuggestionClick(suggestion)}
               data-test='onto-autocomplete-suggestion'
               onMouseMove={this.hoverSuggestion(suggestion)}
@@ -148,6 +173,10 @@ export class OntoSearchResourceInput {
         </section>
       </section>
     );
+  }
+
+  private getSuggestionId(index: number): string {
+    return `${this.context}-suggestion-${index}`;
   }
 
   /**
@@ -194,6 +223,14 @@ export class OntoSearchResourceInput {
     if(this.preserveSearch) {
       this.resourceSearchStorageService.clearStoredSearch();
     }
+  };
+
+  /**
+   * Clears the search input field and returns the focus to it, because the clear button disappears.
+   */
+  private readonly clearInputAndFocus = () => {
+    this.clearInput();
+    this.inputRef.focus();
   };
 
   private hoverSuggestion(suggestion: Suggestion) {

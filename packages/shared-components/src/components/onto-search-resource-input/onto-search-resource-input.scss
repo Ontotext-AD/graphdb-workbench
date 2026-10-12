@@ -21,7 +21,6 @@
         color: var(--gw-form-field-color);
         background-color: var(--gw-form-field-background);
         background-image: none;
-        -webkit-background-clip: padding-box;
         background-clip: padding-box;
         border: 1px solid var(--gw-form-field-border-color);
 
@@ -33,15 +32,29 @@
       }
     }
 
-    & i.ri-close-line {
+    & .clear-input {
       position: absolute;
       right: 10px;
       top: 7px;
       z-index: 10;
+      padding: 0;
       font-size: 1.6rem;
+      line-height: 1;
+      color: var(--gw-button-tertiary-icon-color);
+      background: none;
+      border: none;
+      cursor: pointer;
+
+      &:focus-visible {
+        outline: 2px solid var(--gw-focus-ring-color);
+      }
+
+      &:focus:not(:focus-visible) {
+        outline: none;
+      }
     }
 
-    & button {
+    & > button {
       display: inline-block;
       font-weight: 400;
       line-height: 1.25;
@@ -49,9 +62,6 @@
       white-space: nowrap;
       vertical-align: middle;
       cursor: pointer;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
       transition: all .15s ease-out;
       user-select: none;
       border: 1px solid var(--gw-button-secondary-border-color);
@@ -66,7 +76,12 @@
         border-color: var(--gw-togglebutton-checked-border-color);
       }
 
-      &:focus {
+      &:focus-visible {
+        outline: 2px solid var(--gw-focus-ring-color);
+        outline-offset: 2px;
+      }
+
+      &:focus:not(:focus-visible) {
         outline: none;
       }
 

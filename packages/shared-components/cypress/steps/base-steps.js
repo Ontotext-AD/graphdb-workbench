@@ -30,4 +30,16 @@ export class BaseSteps {
   static typeEscapeKey() {
     cy.get('body').type('{esc}');
   }
+
+  static pressTab() {
+    cy.realPress('Tab');
+  }
+
+  static pressEnter() {
+    cy.realPress('Enter');
+  }
+
+  static pressEscape() {
+    cy.realPress('Escape');
+  }
 }

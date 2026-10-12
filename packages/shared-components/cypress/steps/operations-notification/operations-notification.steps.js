@@ -21,6 +21,14 @@ export class OperationsNotificationSteps extends BaseSteps {
     return this.getOperationsNotification().find('.operations-statuses-dropdown-toggle');
   }
 
+  static getDropdownButtonScreenReaderText() {
+    return this.getDropdownButton().find('.sr-only');
+  }
+
+  static focusDropdownButton() {
+    return this.getDropdownButton().focus();
+  }
+
   static loadRepositories() {
     cy.get('#load-repositories').click();
   }

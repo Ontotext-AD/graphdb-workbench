@@ -37,7 +37,12 @@
       }
     }
 
-    &:focus {
+    &:focus-visible {
+      outline: 2px solid var(--gw-focus-ring-color);
+      outline-offset: 2px;
+    }
+
+    &:focus:not(:focus-visible) {
       outline: none;
     }
 
@@ -67,21 +72,14 @@
     color: var(--gw-contextmenu-color);
     list-style: none;
     padding: 0;
-
-    /* FF4+ */
-    -moz-transition: all 150ms ease-out;
-
-    /* Opera 10.5+ */
-    -o-transition: all 150ms ease-out;
-
-    /* Saf3.2+, Chrome */
-    -webkit-transition: all 150ms ease-out;
     transition: all 150ms ease-out;
 
     .operations-statuses-content {
       display: flex;
       flex-direction: column;
       margin: 0;
+      padding: 0;
+      list-style: none;
 
       li:first-child {
         margin-top: 5px;
@@ -153,6 +151,11 @@
       padding-left: 5px;
       line-height: 0;
       text-align: start;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--gw-focus-ring-color);
+      outline-offset: 2px;
     }
 
     &:hover {

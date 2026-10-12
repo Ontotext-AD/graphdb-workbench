@@ -3,8 +3,10 @@ import {
   OperationGroup,
   OperationStatus,
   OperationStatusSummary,
-  OperationGroupSummaryList, navigateTo
+  OperationGroupSummaryList, navigateTo,
+  SubscriptionList
 } from '@ontotext/workbench-api';
+import {TranslationService} from '../../services/translation.service';
 
 const operationGroupToIcon = {
   [OperationGroup.BACKUP]: 'ri-archive-line',
@@ -37,8 +39,14 @@ export class OntoOperationsNotification {
   /** Whether the dropdown menu is open or closed */
   @State() isOpen = false;
 
+  /** The text for screen readers in the toggle button, which shows icons and counts only */
+  @State() private toggleLabel: string;
+
   /** Grouped info about operations, to be displayed in the button */
   private operationGroups: OperationGroupSummaryList;
+  private toggleButton: HTMLButtonElement;
+  private readonly DROPDOWN_ID = 'onto-operations-dropdown';
+  private readonly subscriptions = new SubscriptionList();
 
   @Listen('click', {target: 'window'})
   handleOutsideClick() {
@@ -47,17 +55,32 @@ export class OntoOperationsNotification {
     }
   }
 
+  connectedCallback() {
+    this.subscriptions.add(
+      TranslationService.onTranslate('operations_notification.toggle_label', [], (translation) => this.toggleLabel = translation)
+    );
+  }
+
+  disconnectedCallback() {
+    this.subscriptions.unsubscribeAll();
+  }
+
   render() {
     this.operationGroups = this.activeOperations.toOperationGroupSummaryList();
 
     return (
-      <section class="operations-statuses">
+      <section class="operations-statuses" onKeyDown={this.onKeyDown}>
         <button
           class={`operations-statuses-dropdown-toggle ${this.isOpen ? 'open' : 'closed'} ${operationStatusToFadeClass[this.activeOperations.status] ?? ''}`}
+          ref={(el) => this.toggleButton = el}
+          aria-expanded={this.isOpen ? 'true' : 'false'}
+          aria-controls={this.DROPDOWN_ID}
           onClick={this.toggleDropdown}>
+          {/* Not aria-label, because it would hide the operation counts from the screen readers */}
+          <span class="sr-only">{this.toggleLabel}</span>
           {this.operationGroups.getItems().map((groupSummary) => (
             <section key={groupSummary.id} class="operation-status-header">
-              <i
+              <i aria-hidden="true"
                 class={`operation-status-icon icon-1-33x ${operationGroupToIcon[groupSummary.group]} ${operationStatusToWarningClass[groupSummary.status]}`}></i>
               {groupSummary.totalOperations
                 ? <sup class="running-operation-count">{groupSummary.totalOperations}</sup>
@@ -65,17 +88,17 @@ export class OntoOperationsNotification {
               }
             </section>
           ))}
-          <i class={`ri-arrow-down-s-line ${this.isOpen ? 'rotate-180' : ''}`}></i>
+          <i class={`ri-arrow-down-s-line ${this.isOpen ? 'rotate-180' : ''}`} aria-hidden="true"></i>
         </button>
         {this.isOpen &&
-            <ul class="operations-dropdown">
-              <section class="operations-statuses-content">
+            <div class="operations-dropdown" id={this.DROPDOWN_ID}>
+              <ul class="operations-statuses-content">
                 {this.activeOperations.allRunningOperations.getItems().map((operation) => (
                   <li key={operation.id}>
                     <a class={`operation-status-content onto-btn no-underline ${operationStatusToWarningClass[operation.status]}`}
-                      target="_blank"
+                      href={operation.href}
                       onClick={navigateTo(operation.href)}>
-                      <i class={operationGroupToIcon[operation.group]}></i>
+                      <i class={operationGroupToIcon[operation.group]} aria-hidden="true"></i>
                       <span class="operation-status-label">
                         <translate-label
                           labelKey={`operations_notification.links.${operation.labelKey}`}>
@@ -91,8 +114,8 @@ export class OntoOperationsNotification {
                     </a>
                   </li>
                 ))}
-              </section>
-            </ul>}
+              </ul>
+            </div>}
       </section>
     );
   }
@@ -100,5 +123,15 @@ export class OntoOperationsNotification {
   private toggleDropdown = (event: Event) => {
     event.stopPropagation();
     this.isOpen = !this.isOpen;
+  };
+
+  /**
+   * Closes the dropdown on Escape and returns the focus to the toggle button.
+   */
+  private readonly onKeyDown = (event: KeyboardEvent): void => {
+    if (event.key === 'Escape' && this.isOpen) {
+      this.isOpen = false;
+      this.toggleButton?.focus();
+    }
   };
 }

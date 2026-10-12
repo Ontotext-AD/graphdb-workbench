@@ -21,6 +21,29 @@ export class FooterSteps extends BaseSteps {
     return FooterSteps.getFooter().contains('a', 'Ontotext AD').first();
   }
 
+  static getExternalLinks() {
+    return FooterSteps.getFooter().find('a[href^="http"]');
+  }
+
+  static getExternalLinkIcon(index) {
+    return FooterSteps.getExternalLinks().eq(index).find('i.ri-external-link-line');
+  }
+
+  static getExternalLinkScreenReaderText(index) {
+    return FooterSteps.getExternalLinks().eq(index).find('.sr-only');
+  }
+
+  /**
+   * The text of the footer without the text for screen readers only.
+   */
+  static getVisibleFooterText() {
+    return FooterSteps.getFooter().then(($footer) => {
+      const footer = $footer[0].cloneNode(true);
+      footer.querySelectorAll('.sr-only').forEach((element) => element.remove());
+      return footer.textContent;
+    });
+  }
+
   static loadProductInfo() {
     return cy.get('#load-product-info').click();
   }

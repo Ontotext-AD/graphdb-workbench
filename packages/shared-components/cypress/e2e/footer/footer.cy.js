@@ -14,8 +14,7 @@ describe('Footer', () => {
     // Then, I expect the product information to be loaded and visible in the footer
     const currentYear = new Date().getFullYear();
     const expectedFooterContent = `GraphDB 11.0-SNAPSHOT • RDF4J 4.3.15 • Connectors 16.2.13-RC2 • Ontop 5.3.0 • Workbench 2.8.0 • © 2002–${currentYear} Ontotext AD`;
-    FooterSteps.getFooter()
-      .invoke('text')
+    FooterSteps.getVisibleFooterText()
       .should('contain', expectedFooterContent);
 
     // And the 'All rights reserved' label should be present and visible and
@@ -24,7 +23,6 @@ describe('Footer', () => {
 
     // And the GraphDB link should be present and valid
     FooterSteps.getGraphDBLink()
-      .should('have.text', 'GraphDB')
       .should('have.attr', 'href', 'http://graphdb.ontotext.com');
 
     // And the RDF4J link to be present and valid
@@ -34,8 +32,22 @@ describe('Footer', () => {
 
     // And the Ontotext AD link to be present and valid
     FooterSteps.getOntotextAdLink()
-      .should('have.text', 'Ontotext AD')
       .should('have.attr', 'href', 'http://ontotext.com');
+  });
+
+  it('Should warn that the external links open in a new window', () => {
+    // Given I visit the footer page
+    FooterSteps.visit();
+
+    // Then every external link should open in a new window
+    // And should tell it with an icon and a text for screen readers
+    FooterSteps.getExternalLinks()
+      .should('have.length', 3)
+      .each((_link, index) => {
+        FooterSteps.getExternalLinks().eq(index).should('have.attr', 'target', '_blank');
+        FooterSteps.getExternalLinkIcon(index).should('have.attr', 'aria-hidden', 'true');
+        FooterSteps.getExternalLinkScreenReaderText(index).should('have.text', ' (opens in a new window)');
+      });
   });
 
   it('Should show/hide cookie consent component', () => {

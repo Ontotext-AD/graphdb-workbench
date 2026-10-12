@@ -28,6 +28,9 @@ export class OntoUserMenu {
   /** Reference to host element for outside click detection */
   @Element() hostElement: HTMLElement;
 
+  private readonly DROPDOWN_ID = 'onto-user-menu-dropdown';
+  private toggleButton: HTMLButtonElement;
+
   connectedCallback() {
     document.addEventListener('click', this.handleOutsideClick);
   }
@@ -38,20 +41,26 @@ export class OntoUserMenu {
 
   render() {
     return (
-      <section class='onto-user-menu'>
-        <div class='dropdown-toggle-wrapper' onClick={this.toggleDropdown}>
-          <button class={`${this.isOpen ? 'open' : ''}`}>
-            <i class='ri-user-line ri-lg'></i>
+      <section class='onto-user-menu' onKeyDown={this.onKeyDown}>
+        <div class='dropdown-toggle-wrapper'>
+          <button class={`onto-user-menu-toggle ${this.isOpen ? 'open' : ''}`}
+            ref={(el) => this.toggleButton = el}
+            aria-expanded={this.isOpen ? 'true' : 'false'}
+            aria-controls={this.DROPDOWN_ID}
+            onClick={this.toggleDropdown}>
+            <i class='ri-user-line ri-lg' aria-hidden='true'></i>
             <span class='username'>{this.user.username}</span>
-            <i class={`ri-arrow-down-s-line ${this.isOpen ? 'rotate-180' : ''}`}></i>
+            <i class={`ri-arrow-down-s-line ${this.isOpen ? 'rotate-180' : ''}`} aria-hidden='true'></i>
           </button>
           {this.isOpen ?
-            <section class='onto-user-menu-dropdown'>
-              <translate-label onClick={navigateTo('settings')}
-                labelKey={'user_menu.my_settings'}></translate-label>
+            <section class='onto-user-menu-dropdown' id={this.DROPDOWN_ID}>
+              <a class='onto-user-menu-item' href='settings' onClick={this.openMySettings}>
+                <translate-label labelKey={'user_menu.my_settings'}></translate-label>
+              </a>
               {!this.authenticationService.isExternalUser() ?
-                <translate-label onClick={this.logout}
-                  labelKey={'user_menu.logout'}></translate-label> : ''}
+                <button class='onto-user-menu-item' onClick={this.logout}>
+                  <translate-label labelKey={'user_menu.logout'}></translate-label>
+                </button> : ''}
             </section> : ''}
         </div>
       </section>
@@ -59,9 +68,18 @@ export class OntoUserMenu {
   }
 
   /**
+   * Navigates to the settings page and closes the dropdown.
+   */
+  private readonly openMySettings = (event: MouseEvent): void => {
+    this.isOpen = false;
+    navigateTo('settings')(event);
+  };
+
+  /**
   * Log out the current user.
   */
   private readonly logout = (): void => {
+    this.isOpen = false;
     this.authenticationService.logout();
   };
 
@@ -72,6 +90,16 @@ export class OntoUserMenu {
    */
   private readonly toggleDropdown = (): void => {
     this.isOpen = !this.isOpen;
+  };
+
+  /**
+   * Closes the dropdown on Escape and returns the focus to the toggle button.
+   */
+  private readonly onKeyDown = (event: KeyboardEvent): void => {
+    if (event.key === 'Escape' && this.isOpen) {
+      this.isOpen = false;
+      this.toggleButton?.focus();
+    }
   };
 
   /**

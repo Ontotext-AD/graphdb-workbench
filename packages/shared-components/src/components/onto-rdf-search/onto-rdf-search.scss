@@ -13,7 +13,6 @@
     z-index: 1;
     display: block;
     width: 60vw;
-    -webkit-transition: top 0.3s ease-in, opacity 0.5s ease;
     transition: top 0.3s ease-in, opacity 0.5s ease;
     border-radius: 0;
     margin-bottom: 1em;
@@ -39,21 +38,31 @@
       position: absolute;
       top: 0;
       right: 0;
-      font-size: 1.5rem;
-    }
-  }
-
-  & i {
-    cursor: pointer;
-    color: var(--gw-button-tertiary-icon-color);
-    transition: all 0.15s ease-out;
-
-    &.ri-search-line, &.close-btn {
       padding: .5rem .8rem;
-    }
+      font-size: 1.5rem;
+      line-height: 1;
+      color: var(--gw-button-tertiary-icon-color);
+      background: none;
+      border: none;
+      cursor: pointer;
 
-    &:hover {
-      transform: scale(1.2);
+      & i {
+        display: inline-block;
+        transition: all 0.15s ease-out;
+      }
+
+      &:hover i {
+        transform: scale(1.2);
+      }
+
+      &:focus-visible {
+        outline: 2px solid var(--gw-focus-ring-color);
+        outline-offset: -2px;
+      }
+
+      &:focus:not(:focus-visible) {
+        outline: none;
+      }
     }
   }
 }

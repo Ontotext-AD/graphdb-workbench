@@ -119,7 +119,8 @@
   },
   "footer": {
     "label": {
-      "all_rights_reserved": "Tous droits réservés."
+      "all_rights_reserved": "Tous droits réservés.",
+      "opens_in_new_window": "(s’ouvre dans une nouvelle fenêtre)"
     }
   },
   "permission_banner": {
@@ -157,6 +158,7 @@
     }
   },
   "operations_notification": {
+    "toggle_label": "Opérations en cours",
     "links": {
       "queries": "Exécution de requêtes",
       "updates": "Exécution de mises à jour",

@@ -33,9 +33,10 @@ export class OntoCookieConsent implements DialogHandler {
           <section class="cookie-consent-content">
             <span>
               <translate-label labelKey={'cookie.cookie_consent'}></translate-label>
-              <a id="cookie-policy-link" href="#" onClick={this.openModal} class="btn btn-link p-0">
+              {/* A button, because it opens a dialog instead of navigating */}
+              <button type="button" id="cookie-policy-link" onClick={this.openModal} class="btn btn-link p-0">
                 <translate-label labelKey={'cookie.cookie_policy_url_label'}></translate-label>
-              </a>.
+              </button>.
             </span>
             <button id="accept-cookie-policy" class="onto-btn onto-btn-primary" onClick={this.handleConsentClick}>
               <translate-label labelKey={'common.button.ok'}></translate-label>
@@ -51,10 +52,8 @@ export class OntoCookieConsent implements DialogHandler {
 
   /**
    * Opens the cookie policy modal.
-   * @param {Event} event - The event that triggered the modal opening.
    */
-  private openModal = (event: Event) => {
-    event.preventDefault();
+  private openModal = () => {
     this.showModal = true;
   };
 

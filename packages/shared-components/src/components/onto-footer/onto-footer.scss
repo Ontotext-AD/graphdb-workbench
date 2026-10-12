@@ -1,7 +1,13 @@
 :host {
   display: block;
 }
+
 .footer-component {
   padding-left: var(--main-content-rl-padding);
   height: 1.875rem;
+}
+
+.footer-component .ri-external-link-line {
+  margin-left: .15em;
+  font-size: .85em;
 }

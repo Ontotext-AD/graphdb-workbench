@@ -2,7 +2,7 @@
   position: relative;
   width: fit-content;
 
-  button {
+  .onto-user-menu-toggle {
     display: flex;
     flex-direction: row;
     line-height: 1.5;
@@ -34,7 +34,12 @@
       }
     }
 
-    &:focus {
+    &:focus-visible {
+      outline: 2px solid var(--gw-focus-ring-color);
+      outline-offset: 2px;
+    }
+
+    &:focus:not(:focus-visible) {
       outline: none;
     }
 
@@ -64,6 +69,7 @@
 
     i {
       transition: 0.15s ease-out;
+
       &.ri-arrow-down-s-line {
         font-size: 1.1em;
         transition: all 0.2s ease-in;
@@ -87,15 +93,32 @@
     border: 1px solid var(--gw-tieredmenu-border-color);
     box-shadow: var(--gw-tieredmenu-shadow-1-offset-x) var(--gw-tieredmenu-shadow-1-offset-y) var(--gw-tieredmenu-shadow-1-blur) var(--gw-tieredmenu-shadow-1-spread) var(--gw-tieredmenu-shadow-1-color);
 
-    translate-label {
+    .onto-user-menu-item {
       padding: .4rem 1rem;
       user-select: none;
       white-space: nowrap;
+      font: inherit;
       font-weight: 400;
+      text-align: start;
+      text-decoration: none;
+      color: inherit;
+      background: none;
+      border: none;
+      cursor: pointer;
 
       &:hover {
         color: var(--gw-tieredmenu-item-focus-color);
         background-color: var(--gw-tieredmenu-item-focus-background);
+      }
+
+      // The dropdown is narrow, so draw the focus ring inside the item.
+      &:focus-visible {
+        outline: 2px solid var(--gw-focus-ring-color);
+        outline-offset: -2px;
+      }
+
+      &:focus:not(:focus-visible) {
+        outline: none;
       }
     }
   }

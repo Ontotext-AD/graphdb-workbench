@@ -16,5 +16,20 @@ describe('CookieConsent', () => {
     // Then I expect the cookie policy dialog to be visible
     CookieConsentSteps.getCookiePolicyDialog().should('be.visible');
   });
-});
 
+  it('should open the cookie policy with the keyboard', () => {
+    // Given I visit the cookie consent page
+    CookieConsentSteps.visit();
+    FooterSteps.getCookieConsentComponent().should('be.visible');
+
+    // Then the cookie policy should be a button, because it opens a dialog
+    CookieConsentSteps.getCookiePolicyButton().should('match', 'button');
+
+    // When I activate it with the keyboard
+    CookieConsentSteps.focusCookiePolicyButton();
+    CookieConsentSteps.pressEnter();
+
+    // Then I expect the cookie policy dialog to be visible
+    CookieConsentSteps.getCookiePolicyDialog().should('be.visible');
+  });
+});
