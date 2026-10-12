@@ -120,8 +120,14 @@
     "title": "Graph Navigator",
     "helpInfo": "The Graph Navigator view provides an interactive visual representation of parts of the RDF graph. The visualisation starts from a set of resources or from a graph query result. Expand resources to grow the diagram with their connections and save the diagram for later use.",
     "errors": {
-      "query_execution_failed": "Error! Could not load the graph data.",
-      "graph_load_failed": "Error! Could not compute the graph for the query."
+      "data-fetch": "Could not load the graph data.",
+      "missing-required-prop": "Could not initialise the graph: a required setting is missing.",
+      "diagram-load": "Could not load the diagram.",
+      "diagram-import": "Could not import the diagram file.",
+      "local-diagram-read": "Could not read the diagram saved in the browser.",
+      "local-diagram-save": "Could not save the diagram in the browser.",
+      "graph_load_failed": "Could not compute the graph for the query.",
+      "default": "Something went wrong in the Graph Navigator."
     },
     "confirmation": {
       "on_repository_change": {
