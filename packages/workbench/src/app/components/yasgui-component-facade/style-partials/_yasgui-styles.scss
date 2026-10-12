@@ -7,7 +7,6 @@ app-yasgui-component-facade {
   .hidden {
     display: none;
   }
-
   /* #endregion GLOBAL STYLES FOR BOTH YASQE, YASR AND OTHER COMPONENTS */
 
   .run_query_confirmation {
@@ -192,6 +191,11 @@ app-yasgui-component-facade {
 }
 
 /* #region YASGUI FLOATING TOOLTIP */
+/* override the Roboto font-family with the new default font-family (Inter) for the yasgui tooltip component */
+yasgui-tooltip {
+  font-family: var(--main-font);
+}
+
 .yasgui-floating-tooltip,
 .yasgui-floating-tooltip-arrow,
 .ontotext-yasgui-tooltip .tooltip-box {
@@ -223,3 +227,4 @@ app-yasgui-component-facade {
 }
 
 /* #endregion YASGUI FLOATING TOOLTIP */
+
