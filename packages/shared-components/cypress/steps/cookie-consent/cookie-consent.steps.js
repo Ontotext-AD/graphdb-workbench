@@ -9,7 +9,15 @@ export class CookieConsentSteps extends BaseSteps {
     return cy.get('onto-cookie-policy-dialog');
   }
 
+  static getCookiePolicyButton() {
+    return cy.get('#cookie-policy-link');
+  }
+
+  static focusCookiePolicyButton() {
+    return this.getCookiePolicyButton().focus();
+  }
+
   static clickCookiePolicyLink() {
-    return cy.get('#cookie-policy-link').click();
+    return this.getCookiePolicyButton().click();
   }
 }

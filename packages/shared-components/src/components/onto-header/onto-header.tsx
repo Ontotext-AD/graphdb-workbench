@@ -138,7 +138,7 @@ export class OntoHeader {
       <Host>
         <div class="header-component">
           <div class="left-section brand">
-            <a class="home-page" onClick={navigateTo('./')}>
+            <a class="home-page" href="./" onClick={navigateTo('./')}>
               <img src={this.applicationLogoPath} class="big-logo" alt={this.labels[labelKeys.LOGO_LINK]}/>
             </a>
           </div>

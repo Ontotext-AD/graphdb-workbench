@@ -4,7 +4,7 @@
   left: 0;
   right: 0;
   background-color: var(--gw-dialog-background);
-  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 -2px 10px rgb(0 0 0 / 10%);
   padding: 20px;
   z-index: 1050;
   width: 100%;
@@ -14,7 +14,7 @@
     justify-content: center;
     align-items: center;
 
-    & button {
+    & > button {
       margin-left: 12px;
     }
   }

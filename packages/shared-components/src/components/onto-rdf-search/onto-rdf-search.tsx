@@ -31,6 +31,10 @@ export class OntoRdfSearch {
 
   private redirectUrl: string = UriUtil.RESOURCE_URL;
   private rdfSearchRef: HTMLElement;
+  /** Whether the search input should get the focus after the next render, i.e. the search area was just opened. */
+  private shouldFocusSearchInput = false;
+  /** Whether the search icon should get the focus after the next render, i.e. the search area was just closed. */
+  private shouldFocusSearchIcon = false;
 
   /**
    * Handles click events on the window.
@@ -57,6 +61,7 @@ export class OntoRdfSearch {
 
   componentDidRender() {
     this.focusSearchInput();
+    this.focusSearchIcon();
   }
 
   componentDidLoad() {
@@ -69,12 +74,18 @@ export class OntoRdfSearch {
         class="onto-rdf-search"
         onKeyDown={this.onKeyDown()}
         data-test='onto-rdf-search-component'>
-        <section class={`search-area ${this.isOpen ? 'visible' : 'invisible'}`}>
-          <i onClick={this.setIsOpen(false)}
+        {/* The closed search area is only moved out of the view, so inert keeps it out of the tab order. */}
+        <section class={`search-area ${this.isOpen ? 'visible' : 'invisible'}`}
+          inert={!this.isOpen}>
+          <button type="button"
+            onClick={this.closeAndFocusSearchIcon}
+            aria-label={TranslationService.translate('rdf_search.tooltips.close_search_area')}
             tooltip-content={TranslationService.translate('rdf_search.tooltips.close_search_area')}
             tooltip-placement={OntoTooltipPlacement.BOTTOM}
             data-test='onto-rdf-resource-search-close-btn'
-            class="ri-close-line close-btn"></i>
+            class="close-btn">
+            <i class="ri-close-line" aria-hidden="true"></i>
+          </button>
           <onto-search-resource-input buttonConfig={this.buttonConfig}
             preserveSearch={true}
             isHidden={!this.isOpen}
@@ -94,10 +105,22 @@ export class OntoRdfSearch {
     return () => {
       this.isOpen = isOpen;
       if (this.isOpen) {
+        this.shouldFocusSearchInput = true;
         this.loadSelectedViewFromStorage();
       }
     };
   }
+
+  /**
+   * Closes the search area and returns the focus to the search icon, which opened it.
+   */
+  private readonly closeAndFocusSearchIcon = () => {
+    if (!this.isOpen) {
+      return;
+    }
+    this.isOpen = false;
+    this.shouldFocusSearchIcon = true;
+  };
 
   /**
    * Creates the configuration for search buttons.
@@ -171,15 +194,27 @@ export class OntoRdfSearch {
   private onKeyDown() {
     return (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        this.isOpen = false;
+        this.closeAndFocusSearchIcon();
       }
     };
   }
 
   private focusSearchInput() {
-    if (this.isOpen) {
+    if (this.isOpen && this.shouldFocusSearchInput) {
+      this.shouldFocusSearchInput = false;
       HtmlUtil.focusElement(`#${this.RDF_CONTEXT}`);
     }
+  }
+
+  private focusSearchIcon() {
+    if (this.isOpen || !this.shouldFocusSearchIcon) {
+      return;
+    }
+    this.shouldFocusSearchIcon = false;
+    // The search icon is rendered again, so wait for its button to be rendered.
+    const searchIcon = this.rdfSearchRef?.querySelector('onto-search-icon') as HTMLOntoSearchIconElement;
+    searchIcon?.componentOnReady()
+      .then(() => searchIcon.querySelector('button')?.focus());
   }
 
   private loadSelectedViewFromStorage() {

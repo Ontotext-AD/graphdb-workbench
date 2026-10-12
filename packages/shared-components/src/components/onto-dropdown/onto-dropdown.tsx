@@ -8,6 +8,9 @@ import {HTMLElementWithTooltip} from '../onto-tooltip/models/html-element-with-t
 import {OntoTooltipPlacement} from '../onto-tooltip/models/onto-tooltip-placement';
 import {LoggerProvider} from '../../services/logger-provider';
 
+/** Used to give each dropdown menu a unique id, which the dropdown button refers to. */
+let dropdownMenuIdCounter = 0;
+
 /**
  * A reusable dropdown component built using StencilJS. This component supports configurable labels, tooltips, icons,
  * and items, making it versatile for various use cases. It also integrates with a translation service to handle
@@ -22,6 +25,7 @@ export class OntoDropdown {
 
   private readonly logger = LoggerProvider.logger;
   private readonly GUIDE_SELECTOR_ATTR = 'guide-selector';
+  private readonly menuId = `onto-dropdown-menu-${++dropdownMenuIdCounter}`;
   private readonly pendingItemTooltips = new Map<HTMLElementWithTooltip, symbol>();
   private dropdownButtonElement: HTMLElementWithTooltip;
   // The item currently hovered, so its tooltip can be refreshed if `items` changes while it's open.
@@ -137,14 +141,19 @@ export class OntoDropdown {
 
   /**
    * Listens for the Escape key keydown event globally.
-   * Closes the dropdown menu if the Escape key is pressed.
+   * Closes the dropdown menu if the Escape key is pressed. If the focus is inside the open dropdown,
+   * it is returned to the dropdown button.
    *
    * @param ev The keyboard event triggered by the Escape key.
    */
   @Listen('keydown', {target: 'window'})
   keydownListener(ev: KeyboardEvent): void {
     if (ev.key === 'Escape') {
+      const shouldReturnFocus = this.open && this.hostElement.contains(document.activeElement);
       this.closeMenu();
+      if (shouldReturnFocus) {
+        this.dropdownButtonElement?.focus();
+      }
     }
   }
 
@@ -266,15 +275,17 @@ export class OntoDropdown {
           onMouseEnter={this.setDropdownButtonTooltip()}
           onMouseLeave={this.clearButtonTooltip}
           onClick={this.toggleButtonClickHandler}
+          aria-expanded={this.open ? 'true' : 'false'}
+          aria-controls={this.menuId}
           disabled={this.disabled}>
-          {this.iconClass ? <i class={'button-icon ri-lg ' + this.iconClass}></i> : ''}
+          {this.iconClass ? <i class={'button-icon ri-lg ' + this.iconClass} aria-hidden="true"></i> : ''}
           <span class='button-name'>
             {this.dropdownButtonName ?? this.translate(this.dropdownButtonNameLabelKey)}
           </span>
-          <i class={`ri-arrow-down-s-line ${this.open ? 'rotate-180' : ''}`}></i>
+          <i class={`ri-arrow-down-s-line ${this.open ? 'rotate-180' : ''}`} aria-hidden="true"></i>
         </button>
 
-        <div
+        <div id={this.menuId}
           class={'onto-dropdown-menu ' + dropdownAlignmentClass}>
           {this.items?.map((item, index) =>
             <button class={'onto-dropdown-menu-item ' + item.cssClass}
@@ -406,6 +417,8 @@ export class OntoDropdown {
     this.open = false;
     this.toggle.emit(this.open);
     this.valueChanged.emit(value);
+    // The selected item is hidden with the menu, so keep the focus on the dropdown.
+    this.dropdownButtonElement?.focus();
   }
 
   private toggleComponent(): void {

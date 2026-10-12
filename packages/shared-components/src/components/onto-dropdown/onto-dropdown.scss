@@ -15,7 +15,6 @@
     font-weight: 400;
     padding: 0.4em 1rem;
     line-height: 1.5;
-    outline: none;
     background-color: var(--gw-button-secondary-background);
     border: 1px solid var(--gw-button-secondary-border-color);
     color: var(--gw-button-secondary-color);
@@ -66,6 +65,16 @@
     border-color: var(--gw-button-primary-hover-border-color);
   }
 
+  // A disabled button cannot get the focus; :not(:disabled) only matches the specificity of the hover rule.
+  .onto-dropdown-button:focus-visible:not(:disabled) {
+    outline: 2px solid var(--gw-focus-ring-color);
+    outline-offset: 2px;
+  }
+
+  .onto-dropdown-button:focus:not(:focus-visible) {
+    outline: none;
+  }
+
   .onto-dropdown-menu {
     /*
       Sets the minimum width to match its parent, preventing the dropdown menu from becoming narrower than the parent.
@@ -100,7 +109,6 @@
     text-align: left;
     white-space: nowrap;
     border: none;
-    outline: none;
     width: 100%;
   }
 
@@ -112,6 +120,16 @@
     .item-icon {
       transform: scale(1.2);
     }
+  }
+
+  // The menu clips its overflow, so draw the focus ring inside the item.
+  .onto-dropdown-menu-item:focus-visible {
+    outline: 2px solid var(--gw-focus-ring-color);
+    outline-offset: -2px;
+  }
+
+  .onto-dropdown-menu-item:focus:not(:focus-visible) {
+    outline: none;
   }
 
   .onto-dropdown-option-icon {

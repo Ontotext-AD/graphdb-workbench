@@ -55,6 +55,7 @@
     "@typescript-eslint/parser": "^8.47.0",
     "concurrently": "^9.2.5",
     "cypress": "^15.9.0",
+    "cypress-real-events": "^1.15.1",
     "eslint": "^9.39.1",
     "eslint-plugin-react": "^7.37.5",
     "jest": "^30.2.0",

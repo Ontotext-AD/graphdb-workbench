@@ -1,13 +1,25 @@
 .onto-search-icon {
-  cursor: pointer;
+  padding: .5rem .8rem;
   color: var(--gw-button-tertiary-icon-color);
-  transition: all 0.15s ease-out;
+  background: none;
+  border: none;
+  cursor: pointer;
 
-  &.ri-search-line {
-    padding: .5rem .8rem;
+  i {
+    display: inline-block;
+    transition: all 0.15s ease-out;
   }
 
-  &:hover {
+  &:hover i {
     transform: scale(1.2);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--gw-focus-ring-color);
+    outline-offset: -2px;
+  }
+
+  &:focus:not(:focus-visible) {
+    outline: none;
   }
 }

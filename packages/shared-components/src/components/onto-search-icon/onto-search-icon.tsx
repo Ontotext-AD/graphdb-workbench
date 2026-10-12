@@ -25,10 +25,15 @@ export class OntoSearchIcon {
   }
 
   render() {
+    // The click handler is set on the host by the parent component; the click of the button bubbles to it.
     return (
-      <i tooltip-content={this.tooltipLabel}
-        tooltip-placement={OntoTooltipPlacement.BOTTOM}
-        class="onto-search-icon ri-search-line ri-lg"></i>
+      <button type="button"
+        class="onto-search-icon"
+        aria-label={this.tooltipLabel}
+        tooltip-content={this.tooltipLabel}
+        tooltip-placement={OntoTooltipPlacement.BOTTOM}>
+        <i class="ri-search-line ri-lg" aria-hidden="true"></i>
+      </button>
     );
   }
 
