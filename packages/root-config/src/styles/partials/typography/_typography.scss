@@ -48,7 +48,7 @@ $caption-sizes: (sm, base);
 }
 
 // Default styling of heading elements, bootstrap-style `.hN` classes and `.heading-hN` utilities.
-
+// hN selectors and .hN classes correspond to heading elements and their utility classes for the legacy components
 @each $level in $heading-levels {
   h#{$level},
   .h#{$level},
@@ -59,8 +59,14 @@ $caption-sizes: (sm, base);
 
 @each $size in $body-sizes {
   @each $weight in $body-weights {
-    .body-#{$size}-#{$weight} {
-      @include body($size, $weight);
+    @if $size == base and $weight == regular {
+      .body-#{$size}-#{$weight} {
+        @include body($size, $weight);
+      }
+    } @else {
+      .body-#{$size}-#{$weight} {
+        @include body($size, $weight);
+      }
     }
   }
 }
