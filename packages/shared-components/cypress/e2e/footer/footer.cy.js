@@ -23,16 +23,16 @@ describe('Footer', () => {
 
     // And the GraphDB link should be present and valid
     FooterSteps.getGraphDBLink()
-      .should('have.attr', 'href', 'http://graphdb.ontotext.com');
+      .should('have.attr', 'href', 'https://graphdb.ontotext.com');
 
     // And the RDF4J link to be present and valid
     FooterSteps.getSesameLink()
       .should('contain.text', 'RDF4J')
-      .should('have.attr', 'href', 'http://rdf4j.org');
+      .should('have.attr', 'href', 'https://rdf4j.org');
 
     // And the Ontotext AD link to be present and valid
     FooterSteps.getOntotextAdLink()
-      .should('have.attr', 'href', 'http://ontotext.com');
+      .should('have.attr', 'href', 'https://ontotext.com');
   });
 
   it('Should warn that the external links open in a new window', () => {
