@@ -13,14 +13,6 @@ export class RdfSearchSteps extends BaseSteps {
     return this.getSearch().find('onto-search-icon');
   }
 
-  static getSearchIconButton() {
-    return this.getSearchIcon().find('button');
-  }
-
-  static focusSearchIconButton() {
-    return this.getSearchIconButton().focus();
-  }
-
   static clickSearchIcon() {
     return this.getSearchIcon().click();
   }
@@ -33,24 +25,8 @@ export class RdfSearchSteps extends BaseSteps {
     return this.getSearch().find('.search-area');
   }
 
-  static getCloseButton() {
-    return this.getSearchArea().find('.close-btn');
-  }
-
-  static focusCloseButton() {
-    return this.getCloseButton().focus();
-  }
-
   static closeSearchArea() {
-    return this.getCloseButton().click();
-  }
-
-  static getClearInputButton() {
-    return this.getSearchArea().find('.clear-input');
-  }
-
-  static focusClearInputButton() {
-    return this.getClearInputButton().focus();
+    return this.getSearchArea().find('.close-btn').click();
   }
 
   static getTooltip() {
@@ -59,10 +35,6 @@ export class RdfSearchSteps extends BaseSteps {
 
   static getSearchAreaButtons() {
     return this.getSearchArea().find('.input-row > button');
-  }
-
-  static focusLastSearchAreaButton() {
-    return this.getSearchAreaButtons().last().focus();
   }
 
   static disableAutocomplete() {
@@ -97,10 +69,6 @@ export class RdfSearchSteps extends BaseSteps {
     return this.getSearchArea().find('.autocomplete-results-wrapper');
   }
 
-  static getSuggestionsListbox() {
-    return this.getAutocompleteResultsWrapper();
-  }
-
   static getSuggestion(index) {
     return this.getAutocompleteResultsWrapper().find('p').eq(index);
   }
@@ -111,10 +79,6 @@ export class RdfSearchSteps extends BaseSteps {
 
   static pressEnter() {
     return this.getInputField().type('{enter}');
-  }
-
-  static pressArrowDown() {
-    return this.getInputField().type('{downArrow}');
   }
 
   static pressEscape() {

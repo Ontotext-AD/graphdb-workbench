@@ -21,18 +21,6 @@ export class FooterSteps extends BaseSteps {
     return FooterSteps.getFooter().contains('a', 'Ontotext AD').first();
   }
 
-  static getExternalLinks() {
-    return FooterSteps.getFooter().find('a[href^="http"]');
-  }
-
-  static getExternalLinkIcon(index) {
-    return FooterSteps.getExternalLinks().eq(index).find('i.ri-external-link-line');
-  }
-
-  static getExternalLinkScreenReaderText(index) {
-    return FooterSteps.getExternalLinks().eq(index).find('.screen-reader-only');
-  }
-
   /**
    * The text of the footer without the text for screen readers only.
    */

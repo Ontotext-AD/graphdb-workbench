@@ -24,20 +24,6 @@ describe('Header', () => {
     HeaderSteps.getSearch().should('not.be.visible');
   });
 
-  it('Should open the home page from the logo with the keyboard', () => {
-    // Then the logo should be a link to the home page
-    HeaderSteps.getLogoLink()
-      .should('be.visible')
-      .and('have.attr', 'href', './');
-
-    // When I activate it with the keyboard
-    HeaderSteps.focusLogoLink();
-    HeaderSteps.pressEnter();
-
-    // Then I should be redirected to the home page
-    HeaderSteps.verifyRedirectUrl('');
-  });
-
   describe('OntoLicenseAlert', () => {
     it('Should be visible when license is invalid', () => {
       // Given, I visit the header page

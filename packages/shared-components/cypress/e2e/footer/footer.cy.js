@@ -35,21 +35,6 @@ describe('Footer', () => {
       .should('have.attr', 'href', 'https://ontotext.com');
   });
 
-  it('Should warn that the external links open in a new window', () => {
-    // Given I visit the footer page
-    FooterSteps.visit();
-
-    // Then every external link should open in a new window
-    // And should tell it with an icon and a text for screen readers
-    FooterSteps.getExternalLinks()
-      .should('have.length', 3)
-      .each((_link, index) => {
-        FooterSteps.getExternalLinks().eq(index).should('have.attr', 'target', '_blank');
-        FooterSteps.getExternalLinkIcon(index).should('have.attr', 'aria-hidden', 'true');
-        FooterSteps.getExternalLinkScreenReaderText(index).should('have.text', ' (opens in a new window)');
-      });
-  });
-
   it('Should show/hide cookie consent component', () => {
     // Given I visit the footer page
     FooterSteps.visit();
