@@ -2,7 +2,6 @@ import HomeSteps from "../../steps/home-steps";
 import {OperationsStatusesComponentSteps} from "../../steps/operations-statuses-component-steps";
 import {GlobalOperationsStatusesStub} from "../../stubs/global-operations-statuses-stub";
 import {ImportUserDataSteps} from "../../steps/import/import-user-data-steps";
-import {BrowserStubs} from "../../stubs/browser-stubs";
 
 describe('Operations Status Component', () => {
 
@@ -63,7 +62,7 @@ describe('Operations Status Component', () => {
 
     });
 
-    it('should redirect to query and update view wen click on queries operation element', () => {
+    it('should link the queries operation element to its view in a new window', () => {
         // When I visit some page and there are running operations.
         GlobalOperationsStatusesStub.stubGlobalOperationsStatusesResponse(repositoryId);
         HomeSteps.visitAndWaitLoader();
@@ -71,14 +70,13 @@ describe('Operations Status Component', () => {
         OperationsStatusesComponentSteps.getOperationsStatusesComponent().should('exist');
 
         OperationsStatusesComponentSteps.openOperationStatusesDialog();
-        // When I click on "Running query" operation element.
-        // Then I expect to be redirected to "Query and Update monitoring" view.
+        // Then I expect "Running query" operation element to link to "Query and Update monitoring" view in a new window.
         checkOperationElementUrl('monitor/queries', 3);
         // Then I expect "Global Operations Component" to still be displayed.
         OperationsStatusesComponentSteps.getOperationsStatusesComponent().should('exist');
     });
 
-    it('should redirect to query and update view wen click on updates operation element', () => {
+    it('should link the updates operation element to its view in a new window', () => {
         // When I visit some page and there are running operations.
         GlobalOperationsStatusesStub.stubGlobalOperationsStatusesResponse(repositoryId);
         HomeSteps.visitAndWaitLoader();
@@ -86,14 +84,13 @@ describe('Operations Status Component', () => {
         OperationsStatusesComponentSteps.getOperationsStatusesComponent().should('exist');
 
         OperationsStatusesComponentSteps.openOperationStatusesDialog();
-        // When I click on "Running updates" operation element.
-        // Then I expect to be redirected to "Query and Update monitoring" view.
+        // Then I expect "Running updates" operation element to link to "Query and Update monitoring" view in a new window.
         checkOperationElementUrl('monitor/queries', 4);
         // Then I expect "Global Operations Component" to still be displayed.
         OperationsStatusesComponentSteps.getOperationsStatusesComponent().should('exist');
     });
 
-    it('should redirect to query and update view wen click on imports operation element', () => {
+    it('should link the imports operation element to its view in a new window', () => {
         // When I visit some page and there are running operations.
         GlobalOperationsStatusesStub.stubGlobalOperationsStatusesResponse(repositoryId);
         HomeSteps.visitAndWaitLoader();
@@ -101,14 +98,13 @@ describe('Operations Status Component', () => {
         OperationsStatusesComponentSteps.getOperationsStatusesComponent().should('exist');
 
         OperationsStatusesComponentSteps.openOperationStatusesDialog();
-        // When I click on "Running imports" operation element.
-        // Then I expect to be redirected to "Query and Update monitoring" view.
+        // Then I expect "Running imports" operation element to link to "Import" view in a new window.
         checkOperationElementUrl('import', 2);
         // Then I expect "Global Operations Component" to still be displayed.
         OperationsStatusesComponentSteps.getOperationsStatusesComponent().should('exist');
     });
 
-    it('should redirect to query and update view wen click on backup and restore operation element', () => {
+    it('should link the backup and restore operation element to its view in a new window', () => {
         // When I visit some page and there are running operations.
         GlobalOperationsStatusesStub.stubGlobalOperationsStatusesResponse(repositoryId);
         HomeSteps.visitAndWaitLoader();
@@ -116,15 +112,14 @@ describe('Operations Status Component', () => {
         OperationsStatusesComponentSteps.getOperationsStatusesComponent().should('exist');
 
         OperationsStatusesComponentSteps.openOperationStatusesDialog();
-        // When I click on "Creating backup" operation element.
-        // Then I expect to be redirected to "Backup and Restore" view.
+        // Then I expect "Creating backup" operation element to link to "Backup and Restore" view in a new window.
         checkOperationElementUrl('monitor/backup-and-restore', 1);
         // Then I expect "Global Operations Component" to still be displayed.
         OperationsStatusesComponentSteps.getOperationsStatusesComponent().should('exist');
 
     });
 
-    it('should redirect to query and update view wen click on cluster operation element', () => {
+    it('should link the cluster operation element to its view in a new window', () => {
         // When I visit some page and there are running operations.
         GlobalOperationsStatusesStub.stubGlobalOperationsStatusesResponse(repositoryId);
         HomeSteps.visitAndWaitLoader();
@@ -132,8 +127,7 @@ describe('Operations Status Component', () => {
         OperationsStatusesComponentSteps.getOperationsStatusesComponent().should('exist');
 
         OperationsStatusesComponentSteps.openOperationStatusesDialog();
-        // When I click on "Unavailable nodes" operation element.
-        // Then I expect to be redirected to "Cluster Monitoring" view.
+        // Then I expect "Unavailable nodes" operation element to link to "Cluster Monitoring" view in a new window.
         checkOperationElementUrl('cluster', 0);
         // Then I expect "Global Operations Component" to still be displayed.
         OperationsStatusesComponentSteps.getOperationsStatusesComponent().should('exist');
@@ -141,8 +135,8 @@ describe('Operations Status Component', () => {
     });
 
     function checkOperationElementUrl(expectedUrl, operationIndex = 0) {
-        BrowserStubs.spyNavigateToUrl();
-        OperationsStatusesComponentSteps.getOperationStatuses().eq(operationIndex).click();
-        cy.get(BrowserStubs.NAVIGATE_TO_URL_ALIAS()).should('have.been.calledWithMatch', expectedUrl)
+        OperationsStatusesComponentSteps.getOperationStatuses().eq(operationIndex)
+            .should('have.attr', 'href', expectedUrl)
+            .and('have.attr', 'target', '_blank');
     }
 });

@@ -17,6 +17,21 @@ export class OperationsNotificationSteps extends BaseSteps {
     return this.getOperationsNotification().find('.operation-status-content');
   }
 
+  /**
+   * The texts of the operations without the texts for screen readers only.
+   */
+  static getVisibleOperationTexts() {
+    return this.getOperationsDropdownElements().then(($operations) => Cypress._.map($operations, (operation) => {
+      const visibleOperation = operation.cloneNode(true);
+      visibleOperation.querySelectorAll('.screen-reader-only').forEach((element) => element.remove());
+      return visibleOperation.textContent;
+    }));
+  }
+
+  static getOperationScreenReaderText(index) {
+    return this.getOperationsDropdownElements().eq(index).find('.screen-reader-only');
+  }
+
   static getDropdownButton() {
     return this.getOperationsNotification().find('.operations-statuses-dropdown-toggle');
   }

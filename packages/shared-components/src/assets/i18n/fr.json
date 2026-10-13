@@ -9,7 +9,10 @@
       "close": "Fermer",
       "cancel": "Annuler"
     },
-    "loading": "Chargement..."
+    "loading": "Chargement...",
+    "label": {
+      "opens_in_new_window": "(s’ouvre dans une nouvelle fenêtre)"
+    }
   },
   "menu.rdf.label": "RDF",
   "menu.explore.label": "Explorez",
@@ -119,8 +122,7 @@
   },
   "footer": {
     "label": {
-      "all_rights_reserved": "Tous droits réservés.",
-      "opens_in_new_window": "(s’ouvre dans une nouvelle fenêtre)"
+      "all_rights_reserved": "Tous droits réservés."
     }
   },
   "permission_banner": {

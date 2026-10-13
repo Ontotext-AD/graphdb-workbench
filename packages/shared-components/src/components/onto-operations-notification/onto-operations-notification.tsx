@@ -3,7 +3,7 @@ import {
   OperationGroup,
   OperationStatus,
   OperationStatusSummary,
-  OperationGroupSummaryList, navigateTo,
+  OperationGroupSummaryList,
   SubscriptionList
 } from '@ontotext/workbench-api';
 import {TranslationService} from '../../services/translation.service';
@@ -97,7 +97,8 @@ export class OntoOperationsNotification {
                   <li key={operation.id}>
                     <a class={`operation-status-content onto-btn no-underline ${operationStatusToWarningClass[operation.status]}`}
                       href={operation.href}
-                      onClick={navigateTo(operation.href)}>
+                      target="_blank"
+                      rel="noopener noreferrer">
                       <i class={operationGroupToIcon[operation.group]} aria-hidden="true"></i>
                       <span class="operation-status-label">
                         <translate-label
@@ -111,6 +112,7 @@ export class OntoOperationsNotification {
                           : ''
                         }
                       </span>
+                      <span class="screen-reader-only"> <translate-label labelKey={'common.label.opens_in_new_window'}></translate-label></span>
                     </a>
                   </li>
                 ))}
