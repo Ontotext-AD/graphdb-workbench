@@ -2,6 +2,7 @@ import HomeSteps from "../../steps/home-steps";
 import {OperationsStatusesComponentSteps} from "../../steps/operations-statuses-component-steps";
 import {GlobalOperationsStatusesStub} from "../../stubs/global-operations-statuses-stub";
 import {ImportUserDataSteps} from "../../steps/import/import-user-data-steps";
+import {BrowserStubs} from "../../stubs/browser-stubs";
 
 describe('Operations Status Component', () => {
 
@@ -135,8 +136,9 @@ describe('Operations Status Component', () => {
     });
 
     function checkOperationElementUrl(expectedUrl, operationIndex = 0) {
-        OperationsStatusesComponentSteps.getOperationStatuses().eq(operationIndex)
-            .should('have.attr', 'href', expectedUrl)
-            .and('have.attr', 'target', '_blank');
+        BrowserStubs.captureLinkClicks();
+        OperationsStatusesComponentSteps.getOperationStatuses().eq(operationIndex).click();
+        // The page must leave the click to the browser, which opens the link in a new window.
+        cy.get(BrowserStubs.LINK_CLICKS_ALIAS()).should('deep.equal', [{href: expectedUrl, target: '_blank', defaultPrevented: false}]);
     }
 });
