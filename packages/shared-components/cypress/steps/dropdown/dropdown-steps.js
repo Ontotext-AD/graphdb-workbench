@@ -13,14 +13,6 @@ export class DropdownSteps extends BaseSteps {
     this.getDropdown(selector).click();
   }
 
-  static getDropdownButton(selector = '') {
-    return this.getDropdown(selector).find('.onto-dropdown-button');
-  }
-
-  static focusDropdownButton(selector = '') {
-    return this.getDropdownButton(selector).focus();
-  }
-
   static getDropdownMenu(selector = '') {
     return this.getDropdown(selector).find('.onto-dropdown-menu');
   }

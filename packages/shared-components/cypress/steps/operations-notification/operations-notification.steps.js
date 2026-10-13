@@ -28,20 +28,8 @@ export class OperationsNotificationSteps extends BaseSteps {
     }));
   }
 
-  static getOperationScreenReaderText(index) {
-    return this.getOperationsDropdownElements().eq(index).find('.screen-reader-only');
-  }
-
   static getDropdownButton() {
     return this.getOperationsNotification().find('.operations-statuses-dropdown-toggle');
-  }
-
-  static getDropdownButtonScreenReaderText() {
-    return this.getDropdownButton().find('.screen-reader-only');
-  }
-
-  static focusDropdownButton() {
-    return this.getDropdownButton().focus();
   }
 
   static loadRepositories() {

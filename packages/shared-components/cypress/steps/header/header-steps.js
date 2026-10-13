@@ -9,14 +9,6 @@ export class HeaderSteps extends BaseSteps {
     return cy.get('.header-component');
   }
 
-  static getLogoLink() {
-    return HeaderSteps.getHeader().find('a.home-page');
-  }
-
-  static focusLogoLink() {
-    return HeaderSteps.getLogoLink().focus();
-  }
-
   static getLanguageSelector() {
     return HeaderSteps.getHeader().find('.onto-language-selector');
   }
