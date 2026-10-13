@@ -4,7 +4,7 @@ export class CookieConsentBannerSteps {
     }
 
     static getCookieConsentButton() {
-        return this.getCookieConsentBanner().find('button');
+        return this.getCookieConsentBanner().find('#accept-cookie-policy');
     }
 
     static giveCookieConsent() {
@@ -12,7 +12,7 @@ export class CookieConsentBannerSteps {
     }
 
     static getCookiePolicyLink() {
-        return cy.get('.cookie-consent-content a');
+        return cy.get('#cookie-policy-link');
     }
 
     static clickCookiePolicyLink() {
