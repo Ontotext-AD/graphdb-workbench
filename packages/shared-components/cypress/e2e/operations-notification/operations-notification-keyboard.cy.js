@@ -26,23 +26,20 @@ describe('onto-operations-notification keyboard access', () => {
     OperationsNotificationSteps.getDropdownButton().should('have.attr', 'aria-expanded', 'true');
   });
 
-  it('should open an operation with the keyboard', () => {
+  it('should reach an operation with the keyboard, which opens in a new window', () => {
     // When, I open the dropdown with the keyboard and tab to the first operation
     OperationsNotificationSteps.focusDropdownButton();
     OperationsNotificationSteps.pressEnter();
     OperationsNotificationSteps.pressTab();
 
-    // Then, the first operation should be a focused link to its view, which opens in the same window
+    // Then, the first operation should be a focused link to its view, which opens in a new window
     OperationsNotificationSteps.getOperationsDropdownElements().eq(0)
       .should('be.focused')
       .and('have.attr', 'href', 'cluster')
-      .and('not.have.attr', 'target');
-
-    // When, I activate it
-    OperationsNotificationSteps.pressEnter();
-
-    // Then, I should be redirected to the operation view
-    OperationsNotificationSteps.verifyRedirectUrl('cluster');
+      .and('have.attr', 'target', '_blank')
+      .and('have.attr', 'rel', 'noopener noreferrer');
+    // And, it should tell the screen readers that it opens in a new window
+    OperationsNotificationSteps.getOperationScreenReaderText(0).should('have.text', ' (opens in a new window)');
   });
 
   it('should close the dropdown on Escape and return the focus to the toggle button', () => {

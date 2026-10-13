@@ -8,16 +8,10 @@ const assertGroupCount = (index, textValue) => {
     .should('equal', textValue)
 };
 
-const assertRedirectLink = (index, textValue) => {
-  OperationsNotificationSteps.getDropdownButton().click();
-  OperationsNotificationSteps.getOperationsDropdownElements().eq(index).click();
-
-  cy.location('origin').then((origin) => {
-    OperationsNotificationSteps.getRedirectUrl()
-      .last()
-      .invoke('text')
-      .should('equal', `redirect to ${origin}/${textValue}`);
-  });
+const assertNewWindowLink = (index, href) => {
+  OperationsNotificationSteps.getOperationsDropdownElements().eq(index)
+    .should('have.attr', 'href', href)
+    .and('have.attr', 'target', '_blank');
 }
 
 describe('onto-operations-notification', () => {
@@ -53,26 +47,21 @@ describe('onto-operations-notification', () => {
     OperationsNotificationSteps.getDropdownButton().click();
 
     // And I expect the dropdown to contain the operation names
-    OperationsNotificationSteps.getOperationsDropdownElements().each(($group, index) => {
-      cy.wrap($group.text()).should('equal', operationNames[index]);
-    })
+    OperationsNotificationSteps.getVisibleOperationTexts().should('deep.equal', operationNames);
   });
 
-  it('should redirect to operation specific href, when clicked', () => {
+  it('should link to the operation specific href in a new window', () => {
     OperationsNotificationSteps.visit();
     // simulate repository selection to trigger request for operations
     OperationsNotificationSteps.loadRepositories();
     OperationsNotificationSteps.getRepositoryItems().should('have.length', 6);
     OperationsNotificationSteps.setMarvelRepo();
 
-    const operationLinks = ['cluster', 'monitor/backup-and-restore', 'import', 'monitor/queries', 'monitor/queries'];
+    // When, I open the dropdown
+    OperationsNotificationSteps.getDropdownButton().click();
 
-    // When, I click on each operation link
-    operationLinks.forEach((link, index) => {
-      // Then, I expect to be redirected to the correct operation specific href
-      assertRedirectLink(index, link);
-    });
+    // Then, I expect each operation to link to its specific href in a new window
+    const operationLinks = ['cluster', 'monitor/backup-and-restore', 'import', 'monitor/queries', 'monitor/queries'];
+    operationLinks.forEach((link, index) => assertNewWindowLink(index, link));
   });
 })
-
-
