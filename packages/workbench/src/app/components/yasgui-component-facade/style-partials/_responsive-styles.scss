@@ -3,16 +3,16 @@
   app-yasgui-component-facade {
     .yasgui-toolbar {
       .yasgui-btn {
-        font-size: 12px;
+        font-size: 0.8571rem;
         height: 24px !important;
       }
 
       .btn-orientation {
-        font-size: 24px;
+        font-size: 1.71rem;
       }
     }
 
-    .yasqe_queryButton,
+    .yasqe .yasqe_buttons .yasqe_queryButton,
     .ontotext-dropdown-button,
     .tabPanel .yasqe .yasqe-footer-buttons .abort-button {
       height: 33px !important;

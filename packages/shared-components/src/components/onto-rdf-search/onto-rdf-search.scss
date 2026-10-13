@@ -6,7 +6,7 @@
   & .search-area {
     white-space: nowrap;
     text-align: start;
-    font-weight: 300;
+    font-weight: var(--gw-body-base-light-font-weight);
     max-width: 100vw;
     position: fixed;
     right: 3em;
@@ -40,7 +40,7 @@
       right: 0;
       padding: .5rem .8rem;
       font-size: 1.5rem;
-      line-height: 1;
+      line-height: var(--gw-auto-line-height);
       color: var(--gw-button-tertiary-icon-color);
       background: none;
       border: none;

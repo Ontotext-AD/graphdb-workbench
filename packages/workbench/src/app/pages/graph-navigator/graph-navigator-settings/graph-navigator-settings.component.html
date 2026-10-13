@@ -4,7 +4,9 @@
           data-test="graph-navigator-settings-btn"
           (onClick)="popover.toggle($event)"/>
 
-<p-popover #popover [dismissable]="dismissable()" styleClass="graph-navigator-settings-popover">
+<p-popover #popover
+           [dismissable]="dismissable()"
+           styleClass="graph-navigator-settings-popover">
   <div class="graph-navigator-settings" data-test="graph-navigator-settings-popover">
     <header class="settings-header">
       <h4>{{ 'graph_navigator.settings.upload.title' | transloco }}</h4>

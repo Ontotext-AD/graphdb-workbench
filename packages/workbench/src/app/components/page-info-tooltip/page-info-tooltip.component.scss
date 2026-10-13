@@ -22,12 +22,5 @@
     &::before, &::after {
       content: unset !important;
     }
-
-    .p-popover-content {
-      .help-info {
-        font-size: .875rem;
-        font-weight: 400;
-      }
-    }
   }
 }

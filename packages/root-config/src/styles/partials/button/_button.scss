@@ -1,6 +1,6 @@
 .onto-btn {
   display: inline-block;
-  font-weight: 400;
+  font-weight: var(--gw-button-label-font-weight);
   line-height: 1.25;
   text-align: center;
   white-space: nowrap;

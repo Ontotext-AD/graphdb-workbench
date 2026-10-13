@@ -6,7 +6,6 @@
   background-color: var(--gw-sidenav-background);
   width: 15rem;
   position: fixed;
-  font-weight: 400;
   z-index: 1010;
   margin: 0;
   padding: 0;
@@ -118,10 +117,6 @@ main menu height */
   display: block;
 }
 
-.navbar-component .sub-menu li.active a {
-  font-weight: 500;
-}
-
 .navbar-component .menu-element.open ul li {
   display: block;
 }
@@ -160,7 +155,6 @@ main menu height */
 .navbar-component.collapsed .menu-element.open ul li.submenu-title {
   display: block;
   font-size: 1.2em;
-  font-weight: 500;
   text-overflow: ellipsis;
   overflow: hidden;
   padding: 0.5em 0.8rem 0.7em;
@@ -190,7 +184,6 @@ main menu height */
   align-items: flex-end;
   justify-content: center;
   font-size: 1em;
-  line-height: 1.5;
   padding: 0 0.3em;
   z-index: 101;
   cursor: pointer;
@@ -255,7 +248,7 @@ main menu height */
   color: var(--gw-sidenav-menuitem-selected-color);
 }
 
-.navbar-component .menu-element .menu-element-root.active .menu-item, {
+.navbar-component .menu-element .menu-element-root.active .menu-item {
   color: var(--gw-sidenav-menuitem-selected-icon-color);
 }
 
@@ -273,9 +266,15 @@ main menu height */
 }
 
 // * ---------------- Submenu ---------------- */
+.sub-menu-item.label-base-medium,
+.sub-menu-item.label-base-regular {
+  // Ensure that the dropdown items line height are 24px and 21px on different views. 
+  // Override the utility classes' line-height to ensure proper spacing for submenu items.
+  line-height: 1.5;
+}
+
 .navbar-component .menu-element .sub-menu .sub-menu-item .menu-item {
   color: var(--gw-sidenav-submenuitem-color);
-  font-weight: 400;
 }
 
 .navbar-component .menu-element .sub-menu-item:hover .menu-item {

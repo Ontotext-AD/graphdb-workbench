@@ -438,12 +438,12 @@ export class OntoNavbar {
                       <i class={`chevron ri-arrow-right-s-line ${item.open ? ' open' : ''}`} aria-hidden="true"></i>}
                   </button>
                   <ul class="sub-menu" id={this.getSubmenuId(index)} hidden={!item.open}>
-                    <li key={item.labelKey} class="submenu-title">
+                    <li key={item.labelKey} class="submenu-title label-lg-medium">
                       <translate-label labelKey={item.labelKey}></translate-label>
                     </li>
                     {
                       item.children.map((submenu) => (
-                        <li key={submenu.labelKey} class={{'sub-menu-item': true, 'active': submenu.selected}}
+                        <li key={submenu.labelKey} class={{'sub-menu-item': true, 'label-base-regular': !submenu.selected, 'active label-base-medium': submenu.selected}}
                           data-test={submenu.testSelector}  guide-selector={submenu.guideSelector}>
                           {submenu.documentationHref ?
                             <a class="sub-menu-link external-link" href={submenu.href} target="_blank"
@@ -500,4 +500,3 @@ export class OntoNavbar {
     );
   }
 }
-

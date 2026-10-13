@@ -23,7 +23,7 @@
       min-height: 0;
       overflow: auto;
       font-size: 1.25rem;
-      font-weight: 300;
+      font-weight: var(--gw-body-sm-light-font-weight);
     }
 
     & .dialog-footer {
@@ -44,4 +44,3 @@
     }
   }
 }
-
