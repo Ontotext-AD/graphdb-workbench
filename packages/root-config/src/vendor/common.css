@@ -62,8 +62,51 @@ a:focus, a:hover {
 -------------------------------------------------------------*/
 h1, h2, h3, h4, h5, h6,
 .h1, .h2, .h3, .h4, .h5, .h6 {
-    font-weight: 400;
     margin-bottom: .5em;
+}
+
+/* current: h2, h3, h4 - fontweight 500, h5, h6 - fontweight 600. Previous: font-weight 400 */
+/* Current: h1 font-size 2.5rem. Previous: h1 default bootstrap size 2rem */
+h1, .h1 {
+    font-family: var(--gw-heading-h1-font-family);
+    font-weight: var(--gw-heading-h1-font-weight);
+    font-size: var(--gw-heading-h1-font-size);
+    line-height: var(--gw-heading-h1-line-height);
+}
+
+h2, .h2 {
+    font-family: var(--gw-heading-h2-font-family);
+    font-weight: var(--gw-heading-h2-font-weight);
+    font-size: var(--gw-heading-h2-font-size);
+    line-height: var(--gw-heading-h2-line-height);
+}
+
+h3, .h3 {
+    font-family: var(--gw-heading-h3-font-family);
+    font-weight: var(--gw-heading-h3-font-weight);
+    font-size: var(--gw-heading-h3-font-size);
+    line-height: var(--gw-heading-h3-line-height);
+}
+
+h4, .h4 {
+    font-family: var(--gw-heading-h4-font-family);
+    font-weight: var(--gw-heading-h4-font-weight);
+    font-size: var(--gw-heading-h4-font-size);
+    line-height:     var(--gw-heading-h4-line-height);
+}
+
+h5, .h5 {
+    font-size: var(--gw-heading-h5-font-size);
+    font-family: var(--gw-heading-h5-font-family);
+    font-weight: var(--gw-heading-h5-font-weight);
+    line-height: var(--gw-heading-h5-line-height);
+}
+
+h6, .h6 {
+    font-size: var(--gw-heading-h6-font-size);
+    font-family: var(--gw-heading-h6-font-family);
+    font-weight: var(--gw-heading-h6-font-weight);
+    line-height: var(--gw-heading-h6-line-height);
 }
 
 h1:only-child, h2:only-child, h3:only-child, h4:only-child, h5:only-child, h6:only-child {
