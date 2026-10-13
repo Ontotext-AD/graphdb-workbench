@@ -79,7 +79,7 @@ export class OntoCookiePolicyDialog {
       <onto-dialog config={config}>
         <div slot={'body'}>
           <section>
-            <h4>
+            <h4 class="heading-h4">
               <translate-label labelKey={'cookie.policy.purpose_heading'}></translate-label>
             </h4>
             <p>
@@ -91,7 +91,7 @@ export class OntoCookiePolicyDialog {
           </section>
 
           <section>
-            <h4>
+            <h4 class="heading-h4">
               <translate-label labelKey={'cookie.policy.privacy_commitment_heading'}></translate-label>
             </h4>
             <p>
@@ -108,7 +108,7 @@ export class OntoCookiePolicyDialog {
           </section>
 
           <section>
-            <h4>
+            <h4 class="heading-h4">
               <translate-label labelKey={'cookie.policy.cookies_heading'}></translate-label>
             </h4>
             <p>
@@ -117,7 +117,7 @@ export class OntoCookiePolicyDialog {
           </section>
 
           <section>
-            <h4>
+            <h4 class="heading-h4">
               <translate-label labelKey={'cookie.policy.manage_cookies_heading'}></translate-label>
             </h4>
             <onto-toggle-switch class="statistic-cookies-toggle" checked={this.cookieConsent?.statistic}
