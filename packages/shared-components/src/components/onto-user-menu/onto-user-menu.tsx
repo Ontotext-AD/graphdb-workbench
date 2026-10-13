@@ -1,8 +1,8 @@
-import {Component, h, Prop, State, Element} from '@stencil/core';
+import {Component, h, Prop, State, Element, Listen} from '@stencil/core';
 import {
   AuthenticatedUser,
   AuthenticationService,
-  navigateTo,
+  navigate,
   SecurityConfig,
   service
 } from '@ontotext/workbench-api';
@@ -41,7 +41,7 @@ export class OntoUserMenu {
 
   render() {
     return (
-      <section class='onto-user-menu' onKeyDown={this.onKeyDown}>
+      <section class='onto-user-menu'>
         <div class='dropdown-toggle-wrapper'>
           <button class={`onto-user-menu-toggle ${this.isOpen ? 'open' : ''}`}
             ref={(el) => this.toggleButton = el}
@@ -71,8 +71,9 @@ export class OntoUserMenu {
    * Navigates to the settings page and closes the dropdown.
    */
   private readonly openMySettings = (event: MouseEvent): void => {
+    event.preventDefault();
     this.isOpen = false;
-    navigateTo('settings')(event);
+    navigate('settings');
   };
 
   /**
@@ -95,12 +96,13 @@ export class OntoUserMenu {
   /**
    * Closes the dropdown on Escape and returns the focus to the toggle button.
    */
-  private readonly onKeyDown = (event: KeyboardEvent): void => {
+  @Listen('keydown')
+  onKeyDown(event: KeyboardEvent): void {
     if (event.key === 'Escape' && this.isOpen) {
       this.isOpen = false;
       this.toggleButton?.focus();
     }
-  };
+  }
 
   /**
    * Closes the dropdown if the user clicks outside the component.

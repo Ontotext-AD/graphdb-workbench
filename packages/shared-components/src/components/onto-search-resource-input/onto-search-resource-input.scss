@@ -63,6 +63,10 @@
       vertical-align: middle;
       cursor: pointer;
       transition: all .15s ease-out;
+
+      // Safari supports user-select only with the prefix, and there is no autoprefixer in the build.
+      // stylelint-disable-next-line property-no-vendor-prefix
+      -webkit-user-select: none;
       user-select: none;
       border: 1px solid var(--gw-button-secondary-border-color);
       padding: .5rem 1rem;

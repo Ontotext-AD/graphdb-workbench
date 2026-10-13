@@ -235,7 +235,7 @@ export class OntoRdfSearch {
     if (this.isOpen) {
       HtmlUtil.focusElement(`#${this.RDF_CONTEXT}`);
     } else {
-      this.searchIconRef?.componentOnReady()
+      void this.searchIconRef?.componentOnReady()
         .then((searchIcon) => searchIcon.querySelector('button')?.focus());
     }
   }

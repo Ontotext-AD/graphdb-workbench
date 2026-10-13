@@ -1,6 +1,8 @@
 import {DropdownSteps} from "../../steps/dropdown/dropdown-steps";
 
 const DROPDOWN = '#dropdown2';
+const FIRST_DROPDOWN = '#dropdown1';
+const OTHER_DROPDOWN = '#dropdown3';
 
 describe('Dropdown keyboard access', () => {
   beforeEach(() => {
@@ -27,7 +29,7 @@ describe('Dropdown keyboard access', () => {
   });
 
   it('should give each dropdown its own menu id', () => {
-    DropdownSteps.getDropdownMenu('#dropdown1').invoke('attr', 'id').then((firstMenuId) => {
+    DropdownSteps.getDropdownMenu(FIRST_DROPDOWN).invoke('attr', 'id').then((firstMenuId) => {
       DropdownSteps.getDropdownMenu(DROPDOWN).should('have.attr', 'id').and('not.equal', firstMenuId);
     });
   });
@@ -70,7 +72,7 @@ describe('Dropdown keyboard access', () => {
   it('should not move the focus, when Escape is pressed outside the dropdown', () => {
     // Given the menu is open, but the focus is in another dropdown
     DropdownSteps.openDropdown(DROPDOWN);
-    DropdownSteps.focusDropdownButton('#dropdown3');
+    DropdownSteps.focusDropdownButton(OTHER_DROPDOWN);
 
     // When I press Escape
     DropdownSteps.pressEscape();
@@ -78,6 +80,6 @@ describe('Dropdown keyboard access', () => {
     // Then the menu should be closed
     DropdownSteps.getDropdownMenu(DROPDOWN).should('be.hidden');
     // And the focus should stay where it was
-    DropdownSteps.getDropdownButton('#dropdown3').should('be.focused');
+    DropdownSteps.getDropdownButton(OTHER_DROPDOWN).should('be.focused');
   });
 });
