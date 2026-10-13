@@ -8,8 +8,8 @@
 }
 
 body {
-    font-family: var(--main-font);
-    font-weight: var(--main-font-weight);
+    font-family: var(--gw-body-base-regular-font-family);
+    font-weight: var(--gw-body-base-regular-font-weight);
     margin-bottom: 0;
     /* Overriding bootstrap's base text color #373a3c */
     color: var(--gw-body-color);
