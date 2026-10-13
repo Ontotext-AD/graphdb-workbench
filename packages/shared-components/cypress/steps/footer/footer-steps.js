@@ -30,7 +30,7 @@ export class FooterSteps extends BaseSteps {
   }
 
   static getExternalLinkScreenReaderText(index) {
-    return FooterSteps.getExternalLinks().eq(index).find('.sr-only');
+    return FooterSteps.getExternalLinks().eq(index).find('.screen-reader-only');
   }
 
   /**
@@ -39,7 +39,7 @@ export class FooterSteps extends BaseSteps {
   static getVisibleFooterText() {
     return FooterSteps.getFooter().then(($footer) => {
       const footer = $footer[0].cloneNode(true);
-      footer.querySelectorAll('.sr-only').forEach((element) => element.remove());
+      footer.querySelectorAll('.screen-reader-only').forEach((element) => element.remove());
       return footer.textContent;
     });
   }

@@ -154,9 +154,11 @@ export class OntoSearchResourceInput {
           ))}
         </div>
         <span class="hint" id={hintId}>{TranslationService.translate('rdf_search.labels.hint')}</span>
+        {/* The browsers make a scrollable element focusable. The input navigates the options with the arrow keys, so tabindex keeps it out of the tab order. */}
         <section class="autocomplete-results-wrapper"
           id={listboxId}
           role="listbox"
+          tabindex={-1}
           aria-label={searchLabel}
           data-test='onto-autocomplete-results'>
           {suggestions.map((suggestion, index) => (

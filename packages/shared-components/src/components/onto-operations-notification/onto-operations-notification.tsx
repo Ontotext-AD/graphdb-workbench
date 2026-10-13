@@ -77,7 +77,7 @@ export class OntoOperationsNotification {
           aria-controls={this.DROPDOWN_ID}
           onClick={this.toggleDropdown}>
           {/* Not aria-label, because it would hide the operation counts from the screen readers */}
-          <span class="sr-only">{this.toggleLabel}</span>
+          <span class="screen-reader-only">{this.toggleLabel}</span>
           {this.operationGroups.getItems().map((groupSummary) => (
             <section key={groupSummary.id} class="operation-status-header">
               <i aria-hidden="true"
