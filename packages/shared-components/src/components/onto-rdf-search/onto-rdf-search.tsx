@@ -31,10 +31,12 @@ export class OntoRdfSearch {
 
   private redirectUrl: string = UriUtil.RESOURCE_URL;
   private rdfSearchRef: HTMLElement;
-  /** Whether the search input should get the focus after the next render, i.e. the search area was just opened. */
-  private shouldFocusSearchInput = false;
-  /** Whether the search icon should get the focus after the next render, i.e. the search area was just closed. */
-  private shouldFocusSearchIcon = false;
+  private searchIconRef: HTMLOntoSearchIconElement;
+  /**
+   * Set when the search area is opened, or closed with the close button or Escape. The focus moves after the next
+   * render, because the search area becomes focusable and the search icon is rendered only then.
+   */
+  private shouldMoveFocus = false;
 
   /**
    * Handles click events on the window.
@@ -60,8 +62,10 @@ export class OntoRdfSearch {
   }
 
   componentDidRender() {
-    this.focusSearchInput();
-    this.focusSearchIcon();
+    if (this.shouldMoveFocus) {
+      this.shouldMoveFocus = false;
+      this.moveFocus();
+    }
   }
 
   componentDidLoad() {
@@ -92,7 +96,7 @@ export class OntoRdfSearch {
             data-test='onto-rdf-resource-search-input'
             context={this.RDF_CONTEXT}></onto-search-resource-input>
         </section>
-        {!this.isOpen ? <onto-search-icon onClick={this.setIsOpen(true)}></onto-search-icon> : ''}
+        {!this.isOpen ? <onto-search-icon ref={(ref) => this.searchIconRef = ref} onClick={this.setIsOpen(true)}></onto-search-icon> : ''}
       </section>
     );
   }
@@ -105,7 +109,7 @@ export class OntoRdfSearch {
     return () => {
       this.isOpen = isOpen;
       if (this.isOpen) {
-        this.shouldFocusSearchInput = true;
+        this.shouldMoveFocus = true;
         this.loadSelectedViewFromStorage();
       }
     };
@@ -119,7 +123,7 @@ export class OntoRdfSearch {
       return;
     }
     this.isOpen = false;
-    this.shouldFocusSearchIcon = true;
+    this.shouldMoveFocus = true;
   };
 
   /**
@@ -195,26 +199,45 @@ export class OntoRdfSearch {
     return (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         this.closeAndFocusSearchIcon();
+      } else if (event.key === 'Tab') {
+        this.keepFocusInSearchArea(event);
       }
     };
   }
 
-  private focusSearchInput() {
-    if (this.isOpen && this.shouldFocusSearchInput) {
-      this.shouldFocusSearchInput = false;
-      HtmlUtil.focusElement(`#${this.RDF_CONTEXT}`);
+  /**
+   * Moves the focus from the last element of the open search area to the first one with Tab, and back with Shift+Tab.
+   * The search area floats over the page, so the focus would otherwise go to the elements it covers.
+   * It is closed with the close button, Escape or a click outside it.
+   */
+  private keepFocusInSearchArea(event: KeyboardEvent) {
+    if (!this.isOpen) {
+      return;
+    }
+    const focusableElements = Array.from(
+      this.rdfSearchRef.querySelectorAll<HTMLElement>('.search-area button:not(:disabled), .search-area input:not(:disabled)')
+    );
+    const first = focusableElements[0];
+    const last = focusableElements[focusableElements.length - 1];
+    const target = event.shiftKey ? last : first;
+    const edge = event.shiftKey ? first : last;
+    if (document.activeElement === edge) {
+      event.preventDefault();
+      target.focus();
     }
   }
 
-  private focusSearchIcon() {
-    if (this.isOpen || !this.shouldFocusSearchIcon) {
-      return;
+  /**
+   * Focuses the search input, when the search area is open, or the search icon, which opened it, when it is closed.
+   * The search icon is a new element after the search area is closed, so it waits for the icon to render its button.
+   */
+  private moveFocus() {
+    if (this.isOpen) {
+      HtmlUtil.focusElement(`#${this.RDF_CONTEXT}`);
+    } else {
+      this.searchIconRef?.componentOnReady()
+        .then((searchIcon) => searchIcon.querySelector('button')?.focus());
     }
-    this.shouldFocusSearchIcon = false;
-    // The search icon is rendered again, so wait for its button to be rendered.
-    const searchIcon = this.rdfSearchRef?.querySelector('onto-search-icon') as HTMLOntoSearchIconElement;
-    searchIcon?.componentOnReady()
-      .then(() => searchIcon.querySelector('button')?.focus());
   }
 
   private loadSelectedViewFromStorage() {

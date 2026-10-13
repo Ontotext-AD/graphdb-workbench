@@ -35,6 +35,10 @@ export class BaseSteps {
     cy.realPress('Tab');
   }
 
+  static pressShiftTab() {
+    cy.realPress(['Shift', 'Tab']);
+  }
+
   static pressEnter() {
     cy.realPress('Enter');
   }

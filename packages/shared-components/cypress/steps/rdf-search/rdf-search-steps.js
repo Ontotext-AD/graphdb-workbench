@@ -61,6 +61,10 @@ export class RdfSearchSteps extends BaseSteps {
     return this.getSearchArea().find('.input-row > button');
   }
 
+  static focusLastSearchAreaButton() {
+    return this.getSearchAreaButtons().last().focus();
+  }
+
   static disableAutocomplete() {
     return cy.get('#disable-autocomplete').click();
   }

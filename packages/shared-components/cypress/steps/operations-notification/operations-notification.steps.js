@@ -22,7 +22,7 @@ export class OperationsNotificationSteps extends BaseSteps {
   }
 
   static getDropdownButtonScreenReaderText() {
-    return this.getDropdownButton().find('.sr-only');
+    return this.getDropdownButton().find('.screen-reader-only');
   }
 
   static focusDropdownButton() {

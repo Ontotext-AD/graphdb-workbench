@@ -17,7 +17,7 @@ const ExternalLink: FunctionalComponent<{href: string}> = ({href}, children) => 
   <a href={href} target="_blank" rel="noopener noreferrer">
     {children}
     <i class="ri-external-link-line" aria-hidden="true"></i>
-    <span class="sr-only"> <translate-label labelKey={'footer.label.opens_in_new_window'}></translate-label></span>
+    <span class="screen-reader-only"> <translate-label labelKey={'footer.label.opens_in_new_window'}></translate-label></span>
   </a>
 );
 

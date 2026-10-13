@@ -119,4 +119,55 @@ describe('RDF Search keyboard access', () => {
       .invoke('attr', 'id')
       .then((optionId) => RdfSearchSteps.getInputField().should('have.attr', 'aria-activedescendant', optionId));
   });
+
+  it('should keep the suggestions list out of the tab order', () => {
+    // Given, I typed something that has suggestions
+    RdfSearchSteps.enableAutocomplete();
+    RdfSearchSteps.loadNamespaces();
+    RdfSearchSteps.focusSearchIconButton();
+    BaseSteps.pressEnter();
+    RdfSearchSteps.typeInSearchInput('li');
+    RdfSearchSteps.getSuggestion(0).should('be.visible');
+
+    // When, I tab away from the last button in the search area
+    RdfSearchSteps.focusLastSearchAreaButton();
+    BaseSteps.pressTab();
+
+    // Then, the suggestions list should not get the focus, because the input navigates it with the arrow keys
+    RdfSearchSteps.getSuggestionsListbox().should('not.be.focused');
+  });
+
+  it('should move the focus from the last element to the close button with Tab', () => {
+    // Given, I opened the search area with the keyboard
+    RdfSearchSteps.disableAutocomplete();
+    RdfSearchSteps.focusSearchIconButton();
+    BaseSteps.pressEnter();
+    RdfSearchSteps.getInputField().should('be.focused');
+
+    // When, I tab away from the last button in the search area
+    RdfSearchSteps.focusLastSearchAreaButton();
+    BaseSteps.pressTab();
+
+    // Then, the focus should move to the close button, so the search area does not cover the focused element
+    RdfSearchSteps.getCloseButton().should('be.focused');
+    // And, the search area should stay open
+    RdfSearchSteps.getSearchArea().should('not.have.attr', 'inert');
+  });
+
+  it('should move the focus from the close button to the last element with Shift+Tab', () => {
+    // Given, I opened the search area with the keyboard
+    RdfSearchSteps.disableAutocomplete();
+    RdfSearchSteps.focusSearchIconButton();
+    BaseSteps.pressEnter();
+    RdfSearchSteps.getInputField().should('be.focused');
+
+    // When, I tab backwards from the close button, which is the first element in the search area
+    RdfSearchSteps.focusCloseButton();
+    BaseSteps.pressShiftTab();
+
+    // Then, the focus should move to the last button in the search area
+    RdfSearchSteps.getSearchAreaButtons().last().should('be.focused');
+    // And, the search area should stay open
+    RdfSearchSteps.getSearchArea().should('not.have.attr', 'inert');
+  });
 });
