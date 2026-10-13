@@ -9,7 +9,7 @@
   <ng-template #content>
     <div class="graph-navigator-settings" data-test="graph-navigator-settings-popover">
       <header class="settings-header">
-        <h4>{{ 'graph_navigator.settings.upload.title' | transloco }}</h4>
+        <h4 class="heading-h4">{{ 'graph_navigator.settings.upload.title' | transloco }}</h4>
         @if (settings().isUploaded()) {
           <p-button [link]="true"
                     [label]="'graph_navigator.settings.reset' | transloco"
