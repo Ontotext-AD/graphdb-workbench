@@ -33,7 +33,6 @@ Example of usage:
  - [onto-cookie-policy-dialog](../dialogs/onto-cookie-policy-dialog)
  - [onto-footer](../onto-footer)
  - [onto-graph-explore-split-button](../onto-graph-explore-split-button)
- - [onto-layout](../onto-layout)
  - [onto-license-alert](../onto-license-alert)
  - [onto-navbar](../onto-navbar)
  - [onto-operations-notification](../onto-operations-notification)
@@ -51,7 +50,6 @@ graph TD;
   onto-cookie-policy-dialog --> translate-label
   onto-footer --> translate-label
   onto-graph-explore-split-button --> translate-label
-  onto-layout --> translate-label
   onto-license-alert --> translate-label
   onto-navbar --> translate-label
   onto-operations-notification --> translate-label

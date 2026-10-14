@@ -233,10 +233,5 @@
       "create_graph_configuration": "Create one",
       "create_graph_configuration_link": "here"
     }
-  },
-  "deprecation-banner": {
-    "solr": {
-      "content": "The Solr connector is deprecated and will be removed in GraphDB 12. If you use it, <b>contact us</b> through the available support channels."
-    }
   }
 }
