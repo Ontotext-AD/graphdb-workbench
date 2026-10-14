@@ -16,7 +16,7 @@
 
       .info-icon {
         color: var(--gw-primary-base);
-        font-size: 1.4em;
+        font-size: var(--gw-xl-font-size); // substitute variable -> 1.5rem
         cursor: pointer;
 
         .icon {
