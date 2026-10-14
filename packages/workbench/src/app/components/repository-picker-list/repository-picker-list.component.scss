@@ -65,7 +65,7 @@
       vertical-align: top;
 
       .type-icon {
-        font-size: 1.2em;
+        font-size: var(--gw-body-lg-regular-font-size); // substitude variable -> 1.25rem
         color: var(--gw-button-primary-link-hover-color);
       }
     }
@@ -115,7 +115,7 @@
       .repository-state {
         flex-shrink: 0;
         margin-right: .5em;
-        font-size: .8em;
+        font-size: var(--gw-body-sm-regular-font-size); // substitude variable -> 0.875rem
 
         &.running {
           color: var(--gw-button-success-background);
@@ -133,12 +133,11 @@
       .repository-id {
         flex: 0 1 auto;
         min-width: 0;
-        font-weight: 600;
+        font-weight: var(--gw-font-weight-600); // substitude variable -> 600
       }
 
       .repository-description {
         display: block;
-        font-weight: 400;
       }
 
       .repository-id,
