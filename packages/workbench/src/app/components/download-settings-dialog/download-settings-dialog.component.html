@@ -1,7 +1,7 @@
 <div class="dialog-content">
   <form class="export-settings-form">
     <div class="form-row">
-      <label for="jsonldMode">
+      <label class="label-base-regular" for="jsonldMode">
         {{ 'components.dialog.download_settings.form.label' | transloco }}
         <span class="info-icon"
               [pTooltip]="'components.dialog.download_settings.form.info' | transloco"
@@ -24,7 +24,7 @@
 
     @if (isFramedMode()) {
       <div class="form-row">
-        <label for="jsonldFrame">
+        <label class="label-base-regular" for="jsonldFrame">
           {{ 'components.dialog.download_settings.frame.link' | transloco }}
           <span class="info-icon"
                 [pTooltip]="'components.dialog.download_settings.frame.info' | transloco"
@@ -43,7 +43,7 @@
 
     @if (isContextMode()) {
       <div class="form-row">
-        <label for="jsonldContext">
+        <label class="label-base-regular" for="jsonldContext">
           {{ 'components.dialog.download_settings.context.link' | transloco }}
           <span class="info-icon"
                 [pTooltip]="'components.dialog.download_settings.context.info' | transloco"
