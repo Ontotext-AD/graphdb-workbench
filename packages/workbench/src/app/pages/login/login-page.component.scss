@@ -35,7 +35,6 @@
 
     .group label {
       margin-bottom: 0.5rem;
-      font-weight: 400;
     }
 
     .group .input-wrapper {
@@ -55,7 +54,7 @@
         z-index: 1;
 
         i {
-          font-size: 1.5rem;
+          font-size: var(--gw-image-action-icon-size);
         }
       }
     }
@@ -65,8 +64,8 @@
       border: 1px solid var(--gw-form-field-border-color);
       border-radius: 0;
       padding: 0.75rem 1.5rem 0.75rem 3rem;
-      font-size: 1.125rem;
-      line-height: 1.25;
+      font-size: var(--gw-inputtext-lg-font-size);
+      line-height: var(--gw-sm-line-height);
       background-clip: padding-box;
       outline: none;
       box-sizing: border-box;
