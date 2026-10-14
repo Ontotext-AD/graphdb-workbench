@@ -165,7 +165,7 @@
                                                     <em class="ri-download-2-line" aria-hidden="true"></em>
                                             </a>
                                             <button class="btn btn-link p-0 restart-repository-btn" type="button"
-                                                    gdb-tooltip="{{('restart.repo.label' | translate) + ' ' + repository.id}}"
+                                                    gdb-tooltip="{{'repos.restart.repo.label' | translate: {repositoryId: repository.id} }}"
                                                     aria-label="{{'repos.restart.repo.label' | translate: {repositoryId: repository.id} }}"
                                                     tooltip-placement="top"
                                                     ng-click="restartRepository(repository)">
@@ -281,8 +281,8 @@
                                     <tbody>
                                     <tr class="repository"
                                         ng-repeat="repository in getRepositoriesFromLocation(location.uri) | orderBy: ['type === \'system\'', 'location', 'id'] track by repository.hash"
-                                        ng-class="{'table-info text-secondary': isRepoActive(repository)}">
-                                        <td width="25">
+                                        ng-class="{'table-info text-secondary active': isRepoActive(repository)}">
+                                        <td class="select-repository-button-wrapper">
                                             <button type="button" class="btn btn-link p-0 connect-repository-btn"
                                                     gdb-tooltip="{{'connect.repo' | translate}}" tooltip-placement="top"
                                                     aria-label="{{'repos.connect.repo.label' | translate: {repositoryId: repository.id} }}" aria-pressed="false"
@@ -290,13 +290,13 @@
                                                     ng-if="!isRepoActive(repository)"
                                                     data-repository-id="{{repository}}"
                                                     guide-selector="repository-{{repository.id}}-plug">
-                                                <span class="icon-connection-off icon-lg text-secondary m-0" aria-hidden="true"></span>
+                                                <span class="icon-connection-off icon-1-5x inactive-repo m-0" aria-hidden="true"></span>
                                             </button>
                                             <button type="button" class="btn btn-link p-0 connect-repository-btn"
                                                     gdb-tooltip="{{'connected.tooltip' | translate}}" tooltip-placement="top"
                                                     aria-label="{{'repos.connect.repo.label' | translate: {repositoryId: repository.id} }}" aria-pressed="true"
                                                     ng-if="isRepoActive(repository)">
-                                                <span class="icon-connection-on icon-lg text-tertiary" aria-hidden="true"></span>
+                                                <span class="icon-connection-on icon-1-5x active-repo" aria-hidden="true"></span>
                                             </button>
                                         </td>
                                         <td>
@@ -327,7 +327,7 @@
                                             </div>
                                         </td>
                                         <td class="text-nowrap repository-actions">
-                                            <button class="btn btn-link p-0"
+                                            <button class="btn btn-link p-0 copy-repository-btn"
                                                     ng-click="copyToClipboard(repository.externalUrl)"
                                                     gdb-tooltip="{{'copy.repo.url' | translate}}"
                                                     aria-label="{{'repos.copy.repo.url.label' | translate: {repositoryId: repository.id} }}">
@@ -356,7 +356,7 @@
                                                         <em class="ri-download-2-line" aria-hidden="true"></em>
                                                 </a>
                                                 <button class="btn btn-link p-0 restart-repository-btn" type="button"
-                                                        gdb-tooltip="{{'restart.repo.label' | translate}} {{repository.id}}"
+                                                        gdb-tooltip="{{'repos.restart.repo.label' | translate: {repositoryId: repository.id} }}"
                                                         aria-label="{{'repos.restart.repo.label' | translate: {repositoryId: repository.id} }}"
                                                         tooltip-placement="top"
                                                         ng-click="restartRepository(repository)">
