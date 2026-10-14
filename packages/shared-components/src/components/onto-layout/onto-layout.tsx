@@ -8,7 +8,6 @@ import {
   AuthenticationStorageService,
   Authority,
   AuthorizationService,
-  GuideContextService,
   EventName,
   EventService,
   LocalStorageSubscriptionHandlerService,
@@ -25,8 +24,6 @@ import {
   MainMenuPlugin,
   MainMenuItem,
   MainMenuExtensionPoint,
-  UserPreferencesService,
-  UserPreferencesContextService,
   navigateToLoginPage
 } from '@ontotext/workbench-api';
 import {TranslationService} from '../../services/translation.service';
@@ -46,9 +43,6 @@ export class OntoLayout {
   private readonly authStorageService = service(AuthenticationStorageService);
   private readonly runtimeConfigurationContextService = service(RuntimeConfigurationContextService);
   private readonly eventService = service(EventService);
-  private readonly userPreferencesService = service(UserPreferencesService);
-  private readonly userPreferencesContextService = service(UserPreferencesContextService);
-  private readonly guideContextService = service(GuideContextService);
 
   private readonly fullJwtKey = `${StorageKey.GLOBAL_NAMESPACE}.${this.authStorageService.NAMESPACE}.${this.authStorageService.jwtKey}`;
   private readonly fullAuthenticatedKey = `${StorageKey.GLOBAL_NAMESPACE}.${this.authStorageService.NAMESPACE}.${this.authStorageService.authenticatedKey}`;
@@ -71,7 +65,6 @@ export class OntoLayout {
   @State() showNavbar = false;
   @State() private isEmbedded = false;
   @State() private loading = true;
-  @State() private hideSolrDeprecationBanner = false;
 
   // ========================
   // Private
@@ -95,18 +88,12 @@ export class OntoLayout {
     this.windowResizeHandler();
   }
 
-  componentDidLoad() {
-    this.updateSolrDeprecationBannerVisibility();
-  }
-
   connectedCallback() {
     this.subscribeToSecurityChanges();
     this.updateVisibility();
     this.subscribeToNavigationEnd();
     this.subscribeToRuntimeConfigurationChanges();
-    this.subscribeToUserPreferencesChange();
     this.subscribeToBeforeMountRouting();
-    this.subscribeToGuideChanges();
   }
 
   /**
@@ -130,13 +117,6 @@ export class OntoLayout {
           <slot name="default"></slot>
         </div>
         {!this.isEmbedded &&<div class="wb-header">
-          {!this.hideSolrDeprecationBanner &&
-            <onto-deprecation-banner class='onto-deprecation-banner' onCloseBanner={this.onSolrDeprecationBannerClosedHandler()}>
-              <span slot='content'>
-                <translate-label labelKey='deprecation-banner.solr.content'></translate-label>
-              </span>
-            </onto-deprecation-banner>
-          }
           <header>
             {this.showHeader && <onto-header></onto-header>}
           </header>
@@ -187,12 +167,6 @@ export class OntoLayout {
   @Listen('resize', {target: 'window'})
   onResize() {
     this.windowResizeObserver();
-  }
-
-  private onSolrDeprecationBannerClosedHandler(): () => void {
-    return () => {
-      this.userPreferencesService.dismissSolrDeprecationBanner();
-    };
   }
 
   // ========================
@@ -285,7 +259,6 @@ export class OntoLayout {
   }
 
   private updateVisibility() {
-    this.updateSolrDeprecationBannerVisibility();
     if (!this.authenticationService.isSecurityEnabled()) {
       this.showNavbar = true;
       this.showHeader = true;
@@ -352,20 +325,5 @@ export class OntoLayout {
       this.eventService.subscribe(EventName.BEFORE_MOUNT_ROUTING_EVENT, () => {
         this.loading = true;
       }));
-  }
-
-  private subscribeToUserPreferencesChange() {
-    this.subscriptions.add(
-      this.userPreferencesContextService.onUserPreferencesChanged(() => {
-        this.updateSolrDeprecationBannerVisibility();
-      }));
-  }
-
-  private subscribeToGuideChanges(): void {
-    this.subscriptions.add(this.guideContextService.onHasRunningGuideChanged(() => this.updateSolrDeprecationBannerVisibility()));
-  }
-
-  private updateSolrDeprecationBannerVisibility() {
-    return this.hideSolrDeprecationBanner = this.userPreferencesService.isSolrDeprecationBannerDismissed() || this.guideContextService.hasRunningGuide();
   }
 }

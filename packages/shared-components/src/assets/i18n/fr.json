@@ -233,10 +233,5 @@
       "create_graph_configuration": "En créer une",
       "create_graph_configuration_link": "ici"
     }
-  },
-  "deprecation-banner": {
-    "solr": {
-      "content": "Le connecteur Solr est obsolète et sera supprimé dans GraphDB 12. Si vous l'utilisez, <b>contactez-nous</b> via les canaux d'assistance disponibles."
-    }
   }
 }

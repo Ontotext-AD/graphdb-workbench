@@ -528,7 +528,7 @@ function ConnectorsCtrl($scope, $http, $repositories, $uibModal, toastr, ModalSe
     };
 
     $scope.delete = function(inst, type) {
-        const isExternal = type.key.indexOf("Elastic") >= 0 || type.key.indexOf("Solr") >= 0;
+        const isExternal = type.key.indexOf("Elastic") >= 0;
 
         $uibModal.open({
             templateUrl: 'js/angular/externalsync/templates/deleteConnector.html',

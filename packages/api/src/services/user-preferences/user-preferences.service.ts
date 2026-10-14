@@ -22,30 +22,6 @@ export class UserPreferencesService {
   private readonly authenticationService = service(AuthenticationService);
 
   /**
-   * Marks the Solr deprecation banner as dismissed for the current user.
-   *
-   * The preference is updated in the application context and persisted for the current user.
-   * A currently logged-in user has individual preferences, while the anonymous user shares
-   * a common persisted set of preferences.
-   */
-  dismissSolrDeprecationBanner(): void {
-    const userPreferences = this.getCurrentUserPreferences();
-    userPreferences.isSolrDeprecationBannerDismissed = true;
-
-    this.userPreferencesContextService.updateUserPreferences(userPreferences);
-    this.persistCurrentUserPreferences(userPreferences);
-  }
-
-  /**
-   * Checks whether the Solr deprecation banner has been dismissed by the current user.
-   *
-   * @returns {@code true} if the banner was dismissed, otherwise {@code false}.
-   */
-  isSolrDeprecationBannerDismissed(): boolean {
-    return this.userPreferencesContextService.getUserPreferences()?.isSolrDeprecationBannerDismissed ?? false;
-  }
-
-  /**
    * Loads the preferences for the current user into the application context.
    *
    * A currently logged-in user receives their individual persisted preferences.
