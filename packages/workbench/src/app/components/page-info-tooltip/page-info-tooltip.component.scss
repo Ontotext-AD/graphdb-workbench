@@ -11,7 +11,7 @@
 ::ng-deep {
   .page-info-icon-button {
     .ri-icon {
-      font-size: 0.6em;
+      font-size: var(--gw-xl-font-size);
     }
   }
 
@@ -21,13 +21,6 @@
 
     &::before, &::after {
       content: unset !important;
-    }
-
-    .p-popover-content {
-      .help-info {
-        font-size: .875rem;
-        font-weight: 400;
-      }
     }
   }
 }
