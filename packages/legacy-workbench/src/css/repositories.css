@@ -429,6 +429,16 @@ span.label {
     width: 25px;
 }
 
+/* The header row is read by screen readers only, so it must not take any space. */
+.table .sr-only-table-header th {
+    padding: 0;
+    border: 0;
+}
+
+.connect-repository-btn {
+    line-height: 1;
+}
+
 .repository-actions-column {
     width: 150px;
 }

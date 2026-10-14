@@ -13,7 +13,7 @@
     <div onto-loader size="50" ng-show="loader"></div>
     <!-- Local GraphDB instance -->
     <div ng-if="getLocalLocation(true, RemoteLocationType.GRAPH_DB).length && hasActiveLocation()" class="mb-1">
-        <table id="wb-locations-locationInGetLocations" class="table" aria-label="{{'repositories.location.local.graph_db.instance' | translate}}">
+        <table id="wb-locations-locationInGetLocations" class="table" role="presentation">
             <tbody>
             <tr class="location"
                 ng-repeat="location in getLocalLocation(true, RemoteLocationType.GRAPH_DB) | orderBy: ['uri']">
@@ -76,6 +76,14 @@
                                     <col class="repository-actions-column">
                                     <col class="default-repository-column">
                                 </colgroup>
+                                <thead class="sr-only-table-header">
+                                    <tr>
+                                        <th scope="col"><span class="sr-only">{{'repositories.table.column.connect' | translate}}</span></th>
+                                        <th scope="col"><span class="sr-only">{{'repositories.table.column.repository' | translate}}</span></th>
+                                        <th scope="col"><span class="sr-only">{{'repositories.table.column.actions' | translate}}</span></th>
+                                        <th scope="col"><span class="sr-only">{{'repositories.table.column.default' | translate}}</span></th>
+                                    </tr>
+                                </thead>
                                 <tbody>
                                 <tr class="repository"
                                     ng-repeat="repository in getRepositoriesFromLocation(location.uri) | orderBy: ['type === \'system\'', 'location', 'id'] track by repository.hash"
@@ -83,20 +91,22 @@
                                     data-test="repository-{{repository.id}}"
                                     guide-selector="repository-{{repository.id}}">
                                     <td class="select-repository-button-wrapper" data-test="select-repository-button-wrapper" guide-selector="select-repository-button-wrapper">
-                                        <span role="button" class="icon-connection-off icon-1-5x inactive-repo m-0"
-                                              gdb-tooltip="{{'connect.repo' | translate}}" tooltip-placement="top"
-                                              aria-label="{{'repos.connect.repo.label' | translate: {repositoryId: repository.id} }}" aria-pressed="false"
-                                              ng-click="setRepository(repository)"
-                                              ng-if="!isRepoActive(repository)"
-                                              data-repository-id="{{repository}}"
-                                              guide-selector="select-repository-button">
-                                        </span>
-                                        <span role="button" class="icon-connection-on icon-1-5x active-repo"
-                                              gdb-tooltip="{{'connected.tooltip' | translate}}" tooltip-placement="top"
-                                              aria-label="{{'repos.connect.repo.label' | translate: {repositoryId: repository.id} }}" aria-pressed="true"
-                                              ng-if="isRepoActive(repository)"
-                                              guide-selector="select-repository-button">
-                                        </span>
+                                        <button type="button" class="btn btn-link p-0 connect-repository-btn"
+                                                gdb-tooltip="{{'connect.repo' | translate}}" tooltip-placement="top"
+                                                aria-label="{{'repos.connect.repo.label' | translate: {repositoryId: repository.id} }}" aria-pressed="false"
+                                                ng-click="setRepository(repository)"
+                                                ng-if="!isRepoActive(repository)"
+                                                data-repository-id="{{repository}}"
+                                                guide-selector="select-repository-button">
+                                            <span class="icon-connection-off icon-1-5x inactive-repo m-0" aria-hidden="true"></span>
+                                        </button>
+                                        <button type="button" class="btn btn-link p-0 connect-repository-btn"
+                                                gdb-tooltip="{{'connected.tooltip' | translate}}" tooltip-placement="top"
+                                                aria-label="{{'repos.connect.repo.label' | translate: {repositoryId: repository.id} }}" aria-pressed="true"
+                                                ng-if="isRepoActive(repository)"
+                                                guide-selector="select-repository-button">
+                                            <span class="icon-connection-on icon-1-5x active-repo" aria-hidden="true"></span>
+                                        </button>
                                     </td>
                                     <td>
                                         <div class="lead repository-lead" ng-mouseover="setPopoverRepo(repository)" ng-focus="setPopoverRepo(repository)">
@@ -195,9 +205,9 @@
     </div>
     <!-- Remote GraphDB instances -->
     <div ng-if="getLocalLocation(false, RemoteLocationType.GRAPH_DB).length && hasActiveLocation()" class="mb-1">
-        <h4 id="remote-graphdb-instances-title" class="location-type-title">{{'repositories.location.remote.graph_db.instances' | translate}}</h4>
+        <h4 class="location-type-title">{{'repositories.location.remote.graph_db.instances' | translate}}</h4>
 
-        <table id="wb-locations-locationInGetRemoteLocations" class="table" aria-labelledby="remote-graphdb-instances-title">
+        <table id="wb-locations-locationInGetRemoteLocations" class="table" role="presentation">
             <tbody>
                 <tr class="location"
                     ng-repeat="location in getLocalLocation(false, RemoteLocationType.GRAPH_DB) | orderBy: ['uri']">
@@ -260,22 +270,34 @@
                                         <col class="repository-actions-column">
                                         <col class="default-repository-column">
                                     </colgroup>
+                                    <thead class="sr-only-table-header">
+                                        <tr>
+                                            <th scope="col"><span class="sr-only">{{'repositories.table.column.connect' | translate}}</span></th>
+                                            <th scope="col"><span class="sr-only">{{'repositories.table.column.repository' | translate}}</span></th>
+                                            <th scope="col"><span class="sr-only">{{'repositories.table.column.actions' | translate}}</span></th>
+                                            <th scope="col"><span class="sr-only">{{'repositories.table.column.default' | translate}}</span></th>
+                                        </tr>
+                                    </thead>
                                     <tbody>
                                     <tr class="repository"
                                         ng-repeat="repository in getRepositoriesFromLocation(location.uri) | orderBy: ['type === \'system\'', 'location', 'id'] track by repository.hash"
                                         ng-class="{'table-info text-secondary': isRepoActive(repository)}">
                                         <td width="25">
-                                            <span role="button" class="icon-connection-off icon-lg text-secondary m-0"
-                                                  gdb-tooltip="{{'connect.repo' | translate}}" tooltip-placement="top"
-                                                  aria-label="{{'repos.connect.repo.label' | translate: {repositoryId: repository.id} }}" aria-pressed="false"
-                                                  ng-click="setRepository(repository)"
-                                                  ng-if="!isRepoActive(repository)"
-                                                  data-repository-id="{{repository}}"
-                                                  guide-selector="repository-{{repository.id}}-plug"></span>
-                                            <span role="button" class="icon-connection-on icon-lg text-tertiary"
-                                                  gdb-tooltip="{{'connected.tooltip' | translate}}" tooltip-placement="top"
-                                                  aria-label="{{'repos.connect.repo.label' | translate: {repositoryId: repository.id} }}" aria-pressed="true"
-                                                  ng-if="isRepoActive(repository)"></span>
+                                            <button type="button" class="btn btn-link p-0 connect-repository-btn"
+                                                    gdb-tooltip="{{'connect.repo' | translate}}" tooltip-placement="top"
+                                                    aria-label="{{'repos.connect.repo.label' | translate: {repositoryId: repository.id} }}" aria-pressed="false"
+                                                    ng-click="setRepository(repository)"
+                                                    ng-if="!isRepoActive(repository)"
+                                                    data-repository-id="{{repository}}"
+                                                    guide-selector="repository-{{repository.id}}-plug">
+                                                <span class="icon-connection-off icon-lg text-secondary m-0" aria-hidden="true"></span>
+                                            </button>
+                                            <button type="button" class="btn btn-link p-0 connect-repository-btn"
+                                                    gdb-tooltip="{{'connected.tooltip' | translate}}" tooltip-placement="top"
+                                                    aria-label="{{'repos.connect.repo.label' | translate: {repositoryId: repository.id} }}" aria-pressed="true"
+                                                    ng-if="isRepoActive(repository)">
+                                                <span class="icon-connection-on icon-lg text-tertiary" aria-hidden="true"></span>
+                                            </button>
                                         </td>
                                         <td>
                                             <div class="lead repository-lead" ng-mouseover="setPopoverRepo(repository)" ng-focus="setPopoverRepo(repository)">
