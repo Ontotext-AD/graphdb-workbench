@@ -50,7 +50,6 @@ export class LicenseStubs {
                 "productType": "enterprise",
                 "licenseCapabilities": [
                     "Lucene connector",
-                    "Solr connector",
                     "Elasticsearch connector",
                     "OpenSearch connector",
                     "Kafka connector",
@@ -114,7 +113,6 @@ export class LicenseStubs {
                 "OpenSearch connector",
                 "Lucene connector",
                 "Kafka connector",
-                "Solr connector",
                 "Cluster",
                 "Elasticsearch connector"
             ],
@@ -140,7 +138,6 @@ export class LicenseStubs {
                 "OpenSearch connector",
                 "Lucene connector",
                 "Kafka connector",
-                "Solr connector",
                 "Cluster",
                 "Elasticsearch connector"
             ],

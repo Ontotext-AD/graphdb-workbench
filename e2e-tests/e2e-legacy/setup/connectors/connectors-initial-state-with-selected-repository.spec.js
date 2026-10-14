@@ -2,7 +2,7 @@ import {ConnectorsSteps} from "../../../steps/setup/connectors-steps";
 import HomeSteps from "../../../steps/home-steps";
 import {MainMenuSteps} from "../../../steps/main-menu-steps";
 
-const expectedButtons = ['elasticsearch', 'opensearch', 'solr', 'lucene', 'kafka', 'chatgpt-retrieval'];
+const expectedButtons = ['elasticsearch', 'opensearch', 'lucene', 'kafka', 'chatgpt-retrieval'];
 
 function verifyConnectorsPage() {
     expectedButtons.forEach(buttonId => {
