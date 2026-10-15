@@ -131,7 +131,7 @@ app-yasgui-component-facade {
 
         a {
           color: var(--gw-secondary-base);
-          font-size: 14px;
+          font-size: 1rem;
           font-weight: bolder;
         }
       }
@@ -139,7 +139,7 @@ app-yasgui-component-facade {
       .saved-query-actions .saved-query-action {
         color: var(--gw-button-primary-link-color) !important;
         background-color: var(--gw-dialog-background) !important;
-        font-size: 1.25em;
+        font-size: 1rem;
       }
     }
 

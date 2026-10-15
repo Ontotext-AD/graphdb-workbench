@@ -162,7 +162,7 @@ yasgui-component .saved-queries-container .arrow:after {
 yasgui-component .saved-queries-container .saved-queries-popup .saved-query-actions .saved-query-action {
     color: var(--gw-button-primary-link-color) !important;
     background-color: var(--gw-dialog-background) !important;
-    font-size: 1.25em;
+    font-size: 1rem;
 }
 
 yasgui-component .saved-queries-container .saved-queries-popup {
@@ -175,7 +175,7 @@ yasgui-component .saved-queries-container .saved-queries-popup .saved-query {
 
 yasgui-component .saved-queries-container .saved-queries-popup .saved-query a {
     color: var(--gw-secondary-base);
-    font-size: 14px;
+    font-size: 1rem;
     font-weight: bolder;
 }
 /* #endregion YASQE - saved queries */

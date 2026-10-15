@@ -146,6 +146,25 @@ yasgui-component .yasgui .tabsList .addTab .ri-add-circle-line {
 }
 /* #endregion YASGUI QUERY TABS */
 
+/* #region YASGUI DIALOGS */
+yasgui-component ontotext-yasgui .dialog .dialog-body {
+    font-size: 1rem !important;
+}
+
+yasgui-component .dialog .dialog-header {
+    font-size: 1rem;
+}
+
+yasgui-component .keyboard-shortcuts-dialog-wrapper {
+    font-size: 1rem;
+}
+
+yasgui-component .keyboard-shortcuts-dialog-wrapper .keyboard-shortcut-section-title,
+yasgui-component .keyboard-shortcuts-dialog-wrapper .key {
+    font-size: 1rem;
+}
+/* #endregion YASGUI DIALOGS */
+
 /* #region YASGUI FLOATING TOOLTIP */
 /* override the Roboto font-family with the new default font-family (Inter) for the yasgui tooltip component */
 yasgui-tooltip {

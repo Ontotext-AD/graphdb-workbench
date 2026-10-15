@@ -194,6 +194,25 @@ app-yasgui-component-facade {
   }
 
   /* #endregion YASGUI QUERY TABS */
+
+  /* #region YASGUI DIALOGS */
+  ontotext-yasgui .dialog .dialog-body {
+    font-size: 1rem !important;
+  }
+
+  .dialog .dialog-header {
+    font-size: 1rem;
+  }
+
+  .keyboard-shortcuts-dialog-wrapper {
+    font-size: 1rem;
+
+    .keyboard-shortcut-section-title,
+    .key {
+      font-size: 1rem;
+    }
+  }
+  /* #endregion YASGUI DIALOGS */
 }
 
 /* #region YASGUI FLOATING TOOLTIP */
