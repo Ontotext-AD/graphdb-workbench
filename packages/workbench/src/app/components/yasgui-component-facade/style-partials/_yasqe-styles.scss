@@ -81,8 +81,7 @@ app-yasgui-component-facade {
     }
 
     .yasqe_queryButton {
-      font-family: var(--main-font);
-      font-weight: 400;
+      font-family: var(--gw-font-family-body);
       height: 38px !important;
     }
   }
@@ -125,6 +124,7 @@ app-yasgui-component-facade {
 
     .saved-queries-popup {
       overflow-y: auto;
+      font-family: var(--gw-font-family-body);
 
       .saved-query {
         padding: 0;
@@ -152,8 +152,8 @@ app-yasgui-component-facade {
     padding-top: 15px;
 
     .abort-button {
-      font-family: var(--main-font);
-      font-weight: 400;
+      font-family: var(--gw-font-family-body);
+      font-weight: var(--gw-label-base-regular-font-weight);
       height: 38px;
       background-color: var(--gw-primary-base) !important;
 

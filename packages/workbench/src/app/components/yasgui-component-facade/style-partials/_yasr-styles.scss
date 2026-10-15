@@ -61,14 +61,12 @@ app-yasgui-component-facade {
       height: 38px;
 
       .button-name {
-        font-family: var(--main-font);
-        font-weight: 400;
+        font-family: var(--gw-font-family-body);
       }
     }
 
     .ontotext-dropdown-menu .ontotext-dropdown-menu-item {
       padding: .5em 1.2em;
-      font-size: 1rem;
 
       &:hover {
         color: var(--gw-tieredmenu-item-focus-color) !important;
@@ -222,11 +220,11 @@ app-yasgui-component-facade {
 
     .yasr-header-replacement {
       color: inherit;
-      font-size: 20px;
+      font-size: var(--gw-heading-h5-font-size);
     }
 
     .explain-plan-copy-btn {
-      font-weight: 400;
+      font-weight: var(--gw-label-base-regular-font-weight);
       color: var(--gw-button-secondary-color);
       background-color: var(--gw-shortcuts-editor-button-background);
       border-color: var(--gw-button-secondary-border-color);

@@ -147,7 +147,7 @@ app-yasgui-component-facade {
         border-collapse: collapse;
 
         th {
-          font-weight: 500;
+          font-weight: var(--gw-label-base-medium-font-weight);
           color: var(--gw-datatable-header-color) !important;
           background-color: var(--gw-datatable-header-background) !important;
           border-color: var(--gw-datatable-header-cell-border-color) !important;

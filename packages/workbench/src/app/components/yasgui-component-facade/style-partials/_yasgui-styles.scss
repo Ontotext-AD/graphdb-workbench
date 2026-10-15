@@ -119,7 +119,6 @@ app-yasgui-component-facade {
         color: var(--gw-tabs-tab-color) !important;
         background-color: var(--gw-tabs-tab-background) !important;
         border-color: var(--gw-tabs-tab-border-color) var(--gw-tabs-tab-border-color) transparent !important;
-        font-weight: 400;
       }
 
       .tab.active {
@@ -171,7 +170,8 @@ app-yasgui-component-facade {
 
       .tab .editable-text-field-wrapper .save-btn span,
       .tab .editable-text-field-wrapper .cancel-btn span {
-        font-weight: 900;
+        // Substitude variable with valuee 700 (closest to the original fontweight)
+        font-weight: var(--gw-label-base-bold-font-weight);
       }
 
       .tab .closeTab {
