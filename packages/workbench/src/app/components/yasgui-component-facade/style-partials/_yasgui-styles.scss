@@ -1,8 +1,7 @@
 app-yasgui-component-facade {
-  /* #region GLOBAL STYLES FOR BOTH YASQE, YASR AND OTHER COMPONENTS Resets the default font-size for every tag in the yasgui Omit the heading  tags */
-  :not(h3, h4, sup, .no-force-default-font) {
-    font-size: 1rem !important;
-  }
+  /* #region GLOBAL STYLES FOR BOTH YASQE, YASR AND OTHER COMPONENTS */
+  /* Base font-size of the yasgui; its elements inherit it unless they set their own */
+  font-size: 1rem;
 
   .hidden {
     display: none;
@@ -179,6 +178,7 @@ app-yasgui-component-facade {
         border-color: var(--gw-tabs-tab-active-border-color) var(--gw-tabs-tab-active-border-color) transparent !important;
 
         .addTab {
+          font-size: 1rem;
           color: var(--gw-button-secondary-color) !important;
           background-color: var(--gw-tabs-tab-background);
           border-color: var(--gw-tabs-tab-border-color) var(--gw-tabs-tab-border-color) transparent;
