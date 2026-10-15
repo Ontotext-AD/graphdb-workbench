@@ -129,6 +129,10 @@ yasgui-component .yasr .google-visualization-table-table .google-visualization-t
 /* #endregion - YASR google visualization table */
 
 /* #region - YASR dataTables */
+yasgui-component .yasr .dataTables_wrapper {
+    font-size: 1rem;
+}
+
 yasgui-component .yasr .dataTables_wrapper .dataTable {
     border-collapse: collapse;
 }
@@ -208,7 +212,7 @@ yasgui-component .yasr .dataTables_wrapper .dataTable .rowNumber {
 }
 
 yasgui-component .yasr .dataTable a {
-    font-size: 16px;
+    font-size: 1rem;
 }
 
 yasgui-component .yasr .dataTable .nonUri {
