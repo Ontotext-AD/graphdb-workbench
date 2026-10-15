@@ -99,6 +99,11 @@ yasgui-component .ontotext-run-dropdown-menu-item:hover {
 /* #endregion YASQE - side buttons */
 
 /* #region YASQE - autocomplete */
+/* The library sets the hints to 90% */
+yasgui-component .CodeMirror-hints {
+    font-size: 1rem;
+}
+
 .CodeMirror-hints {
     border: 1px solid var(--gw-autocomplete-border-color);
     box-shadow: var(--gw-autocomplete-shadow-offset-x) var(--gw-autocomplete-shadow-offset-y) var(--gw-autocomplete-shadow-blur) var(--gw-autocomplete-shadow-spread) var(--gw-autocomplete-shadow-color);
