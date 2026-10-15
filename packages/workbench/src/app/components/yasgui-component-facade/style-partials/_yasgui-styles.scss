@@ -67,7 +67,7 @@ app-yasgui-component-facade {
       color: var(--gw-button-secondary-color) !important;
       background-color: var(--gw-button-secondary-background) !important;
       border-color: var(--gw-button-secondary-border-color) !important;
-      font-size: 14px !important;
+      font-size: 14px;
       padding-left: 8px;
       padding-right: 8px;
 
@@ -91,7 +91,7 @@ app-yasgui-component-facade {
     }
 
     .btn-orientation {
-      font-size: 28px !important;
+      font-size: 28px;
       margin-left: 1rem;
       color: var(--gw-button-secondary-color) !important;
       background-color: transparent !important;
@@ -109,7 +109,7 @@ app-yasgui-component-facade {
 
     .tab .closeTab .ri-close-line,
     .addTab .ri-add-circle-line {
-      font-size: 1.225em !important;
+      font-size: 1.225em;
       font-weight: 100;
     }
 

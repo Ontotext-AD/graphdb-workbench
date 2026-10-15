@@ -232,7 +232,7 @@ yasgui-component .yasr .alert-box {
 }
 
 yasgui-component .yasr .alert-box .close-button {
-    font-size: 21px !important;
+    font-size: 21px;
 }
 
 /* #endregion YASR ALERT BOX */

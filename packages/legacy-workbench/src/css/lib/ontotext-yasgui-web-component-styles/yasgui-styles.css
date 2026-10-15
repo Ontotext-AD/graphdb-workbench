@@ -26,7 +26,7 @@ yasgui-component .yasgui-toolbar .yasgui-btn {
     color: var(--gw-button-secondary-color) !important;
     background-color: var(--gw-button-secondary-background) !important;
     border-color: var(--gw-button-secondary-border-color) !important;
-    font-size: 14px !important;
+    font-size: 14px;
     padding-left: 8px;
     padding-right: 8px;
 }
@@ -50,7 +50,7 @@ yasgui-component .yasgui-btn.btn-selected:hover {
 }
 
 yasgui-component .yasgui-toolbar .btn-orientation {
-    font-size: 28px !important;
+    font-size: 28px;
     margin-left: 1rem;
     color: var(--gw-button-secondary-color) !important;
     background-color: transparent !important;
@@ -141,7 +141,7 @@ yasgui-component .yasgui .tabsList .addTab:hover {
 
 yasgui-component .yasgui .tabsList .tab .closeTab .ri-close-line,
 yasgui-component .yasgui .tabsList .addTab .ri-add-circle-line {
-    font-size: 1.225em !important;
+    font-size: 1.225em;
     font-weight: 100;
 }
 /* #endregion YASGUI QUERY TABS */
