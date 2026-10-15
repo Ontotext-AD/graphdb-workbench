@@ -279,6 +279,19 @@
                 </div>
 
                 <div class="form-group row">
+                    <label class="col-lg-3" for="disallow-doctype-decl">{{'import.label.xml' | translate}}</label>
+                    <div class="col-lg-9">
+                        <label>
+                            <input id="disallow-doctype-decl" name="disallowDoctypeDecl" type="checkbox"
+                                   ng-model="settings['parserSettings']['disallowDoctypeDecl']"
+                                   uib-popover="{{'import.disallow.doctype.decl.info' | translate}}"
+                                   popover-trigger="mouseenter"
+                                   popover-placement="bottom"> {{'import.disallow.doctype.decl' | translate}}
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group row">
                     <label class="col-lg-3">{{'import.error.handling' | translate}}</label>
                     <div class="col-lg-9">
                         <label>
@@ -306,7 +319,7 @@
     </form>
 </div>
 <div class="modal-footer">
-    <button type="button" class="btn btn-link pull-left" ng-click="reset()">
+    <button type="button" class="btn btn-link pull-left restore-defaults-btn" ng-click="reset()">
         {{'import.restore.defaults.btn' | translate}}
     </button>
     <button type="button" ng-if="activeTab === userTabId" ng-click="cancel()"

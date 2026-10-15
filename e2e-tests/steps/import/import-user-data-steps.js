@@ -15,9 +15,9 @@ export class ImportUserDataSteps extends ImportSteps {
     }
 
     static openImportTextSnippetDialog() {
-        cy.get('#import-user .import-rdf-snippet-btn').click()
-            // Forces the popover to disappear as it covers the modal and Cypress refuses to continue
-            .trigger('mouseleave', {force: true});
+        cy.get('#import-user .import-rdf-snippet-btn').click();
+        // Forces the popover to disappear as it covers the modal and Cypress refuses to continue
+        cy.get('#import-user .import-rdf-snippet-btn').trigger('mouseleave', {force: true});
         this.getModal().find('#wb-import-textarea').should('be.visible');
         return this;
     }
@@ -34,7 +34,8 @@ export class ImportUserDataSteps extends ImportSteps {
     static selectRDFFormat(rdfFormat) {
         cy.get('.modal-footer .import-format-dropdown').within(() => {
             cy.get('.import-format-dropdown-btn').click();
-            cy.get('.dropdown-item').contains(rdfFormat).click().should('not.be.visible');
+            cy.get('.dropdown-item').contains(rdfFormat).click();
+            cy.get('.dropdown-item').contains(rdfFormat).should('not.be.visible');
         });
         return this;
     }
@@ -46,6 +47,24 @@ export class ImportUserDataSteps extends ImportSteps {
 
     static stubPostJSONLDFromURL(repositoryId) {
         cy.intercept('POST', `/rest/repositories/${repositoryId}/import/upload/url`).as('postJsonldUrl');
+    }
+
+    static openTextSnippetImportSettings(snippet, rdfFormat) {
+        this.openImportTextSnippetDialog();
+        this.pasteRDFTextSnippet(snippet);
+        if (rdfFormat) {
+            this.selectRDFFormat(rdfFormat);
+        }
+        this.clickImportTextSnippetButton();
+        return this;
+    }
+
+    static interceptTextSnippetImport(repositoryId) {
+        cy.intercept('POST', `/rest/repositories/${repositoryId}/import/upload/text`).as('importTextSnippet');
+    }
+
+    static waitForTextSnippetImportSettings() {
+        return cy.wait('@importTextSnippet').its('request.body');
     }
 
     static getErrors() {
@@ -64,30 +83,11 @@ export class ImportUserDataSteps extends ImportSteps {
         return this.getModal().find('#wb-import-textarea');
     }
 
-    static getImportFromDataRadioButton() {
-        return this.getModal().find('#wb-import-from-data');
-    }
-
-    static getImportInDefaultGraphRadioButton() {
-        return this.getModal().find('#wb-import-in-default-graph');
-    }
-
-    static getExistingDataReplacementCheckbox() {
-        return this.getModal().find('#wb-import-existing-data-replacement');
-    }
-
-    static getReplacedGraphsInputField() {
-        return this.getModal().find('#wb-import-replaced-graphs');
-    }
-
-    static getAddGraphToReplaceButton() {
-        return this.getModal().find('#wb-import-add-graph-to-replace');
-    }
-
     //verifies that the data has been inserted in the given graph and that the new data has replaced the old one.
     static verifyGraphData(graphName, s, p, o, c, checkForReplacedData, oldData) {
         cy.visit('/graphs');
         // wait a bit to give chance page loaded.
+        // eslint-disable-next-line cypress/no-unnecessary-waiting
         cy.wait(1000);
         cy.get(`#export-graphs td a:contains(${graphName})`).click();
         cy.get(`.uri-cell:contains(${s})`).should('be.visible');
