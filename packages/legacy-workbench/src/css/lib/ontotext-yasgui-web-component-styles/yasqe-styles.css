@@ -43,14 +43,13 @@ yasgui-component .yasqe .CodeMirror {
 
 /* #region YASQE - side buttons */
 yasgui-component .yasqe .yasqe_buttons {
+    /* The buttons are inside the CodeMirror element; keep them independent of the editor font-size */
+    font-size: 1rem;
     right: 21px;
     background-color: var(--gw-editor-content-background);
 }
 
 yasgui-component .custom-button {
-    /* There is a generic font-size rule that overrides the font size of the YASGUI component, */
-    /* so we set it explicitly to match the intended size of the YASQE buttons. */
-    font-size: 1.5em !important;
     color: var(--gw-primary-base) !important;
     background-color: var(--gw-editor-content-background) !important;
 }
@@ -100,6 +99,11 @@ yasgui-component .ontotext-run-dropdown-menu-item:hover {
 /* #endregion YASQE - side buttons */
 
 /* #region YASQE - autocomplete */
+/* The library sets the hints to 90% */
+yasgui-component .CodeMirror-hints {
+    font-size: 1rem;
+}
+
 .CodeMirror-hints {
     border: 1px solid var(--gw-autocomplete-border-color);
     box-shadow: var(--gw-autocomplete-shadow-offset-x) var(--gw-autocomplete-shadow-offset-y) var(--gw-autocomplete-shadow-blur) var(--gw-autocomplete-shadow-spread) var(--gw-autocomplete-shadow-color);
@@ -158,7 +162,7 @@ yasgui-component .saved-queries-container .arrow:after {
 yasgui-component .saved-queries-container .saved-queries-popup .saved-query-actions .saved-query-action {
     color: var(--gw-button-primary-link-color) !important;
     background-color: var(--gw-dialog-background) !important;
-    font-size: 1.25em;
+    font-size: 1rem;
 }
 
 yasgui-component .saved-queries-container .saved-queries-popup {
@@ -171,7 +175,7 @@ yasgui-component .saved-queries-container .saved-queries-popup .saved-query {
 
 yasgui-component .saved-queries-container .saved-queries-popup .saved-query a {
     color: var(--gw-secondary-base);
-    font-size: 14px;
+    font-size: 1rem;
     font-weight: bolder;
 }
 /* #endregion YASQE - saved queries */

@@ -35,7 +35,7 @@
 .sparql-editor-view #query-editor .yasgui-toolbar {
     display: inline;
     float: right;
-    font-size: 14px;
+    font-size: 1rem;
     font-weight: 400;
     position: relative;
     z-index: 100;
