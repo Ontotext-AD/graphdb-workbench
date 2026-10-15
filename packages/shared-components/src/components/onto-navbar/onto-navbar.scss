@@ -6,7 +6,6 @@
   background-color: var(--gw-sidenav-background);
   width: 15rem;
   position: fixed;
-  font-weight: 400;
   z-index: 1010;
   margin: 0;
   padding: 0;
@@ -62,7 +61,8 @@ main menu height */
 }
 
 .navbar-component .menu-item-icon {
-  font-size: 1.6rem;
+  // No exact variable available use  --gw-body-base-regular-font-size (1rem) * 1.6
+  font-size: calc(var(--gw-body-base-regular-font-size) * 1.6);
   width: 2.5rem;
   vertical-align: middle;
   text-align: center;
@@ -78,7 +78,7 @@ main menu height */
 
 .navbar-component .chevron {
   margin-left: auto;
-  font-size: 1rem;
+  font-size: var(--gw-body-base-regular-font-size);
   transition: all 0.2s ease-in;
   pointer-events: none;
   color: var(--gw-sidenav-menuitem-icon-second-color);
@@ -89,7 +89,8 @@ main menu height */
 }
 
 .navbar-component :not(.brand) .menu-element-root {
-  font-size: 1.1rem;
+  // No specific variable with size 1.1rem - using --gw-label-lg-regular-font-size 1.125rem
+  font-size: var(--gw-label-lg-regular-font-size);
 }
 
 .navbar-component .brand a {
@@ -116,10 +117,6 @@ main menu height */
 .navbar-component .sub-menu li a {
   padding: 0.5em 0.8em 0.5em 1.3em;
   display: block;
-}
-
-.navbar-component .sub-menu li.active a {
-  font-weight: 500;
 }
 
 .navbar-component .menu-element.open ul li {
@@ -159,8 +156,6 @@ main menu height */
 
 .navbar-component.collapsed .menu-element.open ul li.submenu-title {
   display: block;
-  font-size: 1.2em;
-  font-weight: 500;
   text-overflow: ellipsis;
   overflow: hidden;
   padding: 0.5em 0.8rem 0.7em;
@@ -189,8 +184,6 @@ main menu height */
   flex-direction: column;
   align-items: flex-end;
   justify-content: center;
-  font-size: 1em;
-  line-height: 1.5;
   padding: 0 0.3em;
   z-index: 101;
   cursor: pointer;
@@ -275,7 +268,6 @@ main menu height */
 // * ---------------- Submenu ---------------- */
 .navbar-component .menu-element .sub-menu .sub-menu-item .menu-item {
   color: var(--gw-sidenav-submenuitem-color);
-  font-weight: 400;
 }
 
 .navbar-component .menu-element .sub-menu-item:hover .menu-item {
