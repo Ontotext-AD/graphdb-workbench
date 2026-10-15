@@ -116,6 +116,12 @@ yasgui-component .ontotext-download-as .ontotext-dropdown-button .button-name {
     font-weight: 400;
 }
 
+/* The buttons have a ri-* icon class, so remixicon sets their font-family. Keep it for the icon only. */
+yasgui-component .yasr-toolbar .chart-download-as-button-label,
+yasgui-component .yasr-toolbar .pivot-table-download-as-button-label {
+    font-family: var(--main-font);
+}
+
 yasgui-component .ontotext-dropdown-menu.open {
     border: 1px solid var(--gw-tieredmenu-border-color) !important;
     box-shadow: var(--gw-tieredmenu-shadow-1-offset-x) var(--gw-tieredmenu-shadow-1-offset-y) var(--gw-tieredmenu-shadow-1-blur) var(--gw-tieredmenu-shadow-1-spread) var(--gw-tieredmenu-shadow-1-color);
