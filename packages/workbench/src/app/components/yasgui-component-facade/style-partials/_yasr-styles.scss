@@ -1,9 +1,19 @@
 app-yasgui-component-facade {
   /* #region YASR - toolbar right */
+  /* The library sets the download buttons to 16px */
+  .yasr {
+    .chart-download-as-button,
+    .pivot-table-download-as-button,
+    .ontotext-dropdown .ontotext-dropdown-button,
+    .yasr_downloadIcon {
+      font-size: 1rem;
+    }
+  }
+
   .yasr-toolbar {
     align-items: stretch !important;
     padding-left: 10px;
-    font-size: 16px;
+    font-size: 1rem;
     line-height: 1.25;
 
     /* Make all buttons in the yasr toolbar having equal height same as the other WB buttons. */
@@ -91,7 +101,7 @@ app-yasgui-component-facade {
         padding: .52em;
         margin-left: 0;
         margin-right: .2rem;
-        font-size: 16px;
+        font-size: 1rem;
         font-weight: 400;
         color: var(--gw-tabs-tab-color) !important;
         background-color: var(--gw-tabs-tab-background) !important;
@@ -132,7 +142,7 @@ app-yasgui-component-facade {
       .yasr_response_chip {
         background-color: unset !important;
         color: var(--gw-secondary-base) !important;
-        font-size: 16px;
+        font-size: 1rem;
 
         .response-info-message {
           padding-left: 10px;

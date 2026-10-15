@@ -14,6 +14,14 @@ yasgui-component {
 }
 
 /* #region YASGUI - TOOLBAR TOP RIGHT */
+yasgui-component .yasgui-toolbar {
+    font-size: 1rem;
+}
+
+yasgui-component .yasgui .tabMenu .acceptWrapper .selector .selectorLabel {
+    font-size: 1rem;
+}
+
 yasgui-component .yasgui-toolbar .yasgui-btn {
     color: var(--gw-button-secondary-color) !important;
     background-color: var(--gw-button-secondary-background) !important;
