@@ -1,6 +1,6 @@
 .onto-btn {
   display: inline-block;
-  font-weight: 400;
+  font-weight: var(--gw-label-base-regular-font-weight);
   line-height: 1.25;
   text-align: center;
   white-space: nowrap;
@@ -12,7 +12,7 @@
   user-select: none;
   border: 1px solid transparent;
   padding: .5rem 1rem;
-  font-size: 1rem;
+  font-size: var(--gw-label-base-regular-font-size);
   transition: all .15s ease-in-out;
   border-radius: 0;
   --onto-btn-focus-ring-color: var(--gw-button-primary-focus-ring-color);
@@ -34,7 +34,7 @@
 
 .onto-lg {
   padding: .75em 1.2em;
-  font-size: 1.125em;
+  font-size: var(--gw-label-lg-regular-font-size);
 }
 
 .onto-btn-primary {

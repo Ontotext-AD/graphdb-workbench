@@ -3,7 +3,7 @@
 -------------------------------------------------------------*/
 @media (max-width: 1439px) {
     html {
-        font-size: 14px;
+        font-size: var(--gw-body-sm-regular-font-size);
     }
 }
 
@@ -19,7 +19,7 @@ code, kbd, pre, samp {
 }
 
 select {
-    font-weight: 400;
+    font-weight: var(--gw-label-base-regular-font-weight);
 }
 
 a {
@@ -43,7 +43,7 @@ a:focus, a:hover {
 }
 
 .small, small {
-    font-size: 0.875em;
+    font-size: var(--gw-body-sm-regular-font-size);
     font-weight: inherit;
 }
 
@@ -207,7 +207,7 @@ button:-moz-focusring {
 
 .btn-group-lg > .btn, .btn-lg {
     padding: .75em 1.2em;
-    font-size: 1.125em;
+    font-size: var(--gw-label-lg-regular-font-size);
 }
 
 .btn-link, .btn-link a {
@@ -275,7 +275,8 @@ button:-moz-focusring {
 .btn [class^="ri"],
 .btn [class*=" ri"] {
     line-height: 0.75;
-    font-size: 1.4em;
+    /* Due to the lack of exact variable fot this size we use 1.4 times the base font size */
+    font-size: calc(var(--gw-body-base-regular-font-size) * 1.4); 
     display: inline-block;
     vertical-align: middle;
 }
@@ -291,7 +292,8 @@ button:-moz-focusring {
 .btn .icon-lg[class^="icon-"],
 .btn .icon-lg[class^="ri"],
 .btn .icon-lg[class*=" ri"] {
-    font-size: 2em;
+     /* Due to the lack of exact variable fot this size we use 2 times the base font size */
+    font-size: calc(var(--gw-body-base-regular-font-size) * 2);
     margin-right: 0.3em;
 }
 
@@ -350,8 +352,8 @@ h3 [class^=icon-] {
 }
 
 .multiline-text small {
-    font-weight: 300;
-    font-size: 0.75em;
+    font-weight: var(--gw-body-xs-light-font-weight);
+    font-size: var(--gw-body-xs-regular-font-size);
     margin-top: 0.3em;
     display: inline-block;
     max-width: 120px;
@@ -445,7 +447,8 @@ h3 [class^=icon-] {
 .alert-danger:before,
 .alert-success:before {
     font-family: 'icomoon', sans-serif !important;
-    font-size: 1.5em;
+    /* Due to the lack of exact variable fot this size we use 1.4 times the base font size */
+    font-size: calc(var(--gw-body-base-regular-font-size) * 1.5);
     vertical-align: middle;
     line-height: 1;
     position: absolute;

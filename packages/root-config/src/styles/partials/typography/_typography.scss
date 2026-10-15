@@ -1,6 +1,11 @@
 // GW text styles. Each mixin applies the font-family, font-weight, font-size and line-height
 // tokens of one styleguide text style. The same styles are exposed as global utility classes,
 // e.g. `.heading-h1`, `.body-base-regular`, `.label-sm-bold`, `.caption-base`.
+//
+// Mapping rules:
+// - UI labels (form labels, table headers, menu items, tabs, button labels) use `label-*`;
+// - secondary text uses `body-sm-*` / `body-xs-*`;
+// - small uppercase hints use `caption-*`.
 
 $heading-levels: (1, 2, 3, 4, 5, 6);
 $body-sizes: (xs, sm, base, lg);

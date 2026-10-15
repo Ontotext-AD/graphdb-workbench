@@ -439,33 +439,40 @@
 */
 
 .icon-lg {
-    font-size: 1.4em;
+    /* Due to the lack of exact variable fot this size we use 1.4 times the base font size */
+    font-size: calc(var(--gw-body-base-regular-font-size) * 1.4);
     line-height: 0.75em;
     /*    vertical-align: -15%;*/
 }
 
 .icon-1-33x, .btn .icon-1-33x[class^="icon-"] {
-    font-size: 1.33em;
+    /* Due to the lack of exact variable fot this size we use 1.33 times the base font size */
+    font-size: calc(var(--gw-body-base-regular-font-size) * 1.33);
 }
 
 .icon-1-25x, .btn .icon-1-25x[class^="icon-"] {
-    font-size: 1.25em;
+    /* Substitude variable with 1.25rem */
+    font-size: var(--gw-size-1-25);
 }
 
 .icon-1-5x, .btn .icon-1-5x[class^="icon-"] {
-    font-size: 1.5em;
+    /* Substitude variable with value 1.5rem */
+    font-size: calc(var(--gw-size-1-5));
 }
 
 .icon-2x, .btn .icon-2x[class^="icon-"] {
-    font-size: 2em;
+    /* Substitude variable with value 2rem */
+    font-size: calc(var(--gw-size-2));
 }
 
 .icon-2-5x, .btn .icon-2-5x[class^="icon-"] {
-    font-size: 2.5em;
+     /* Substitude variable with value 2.5rem */
+    font-size: calc(var(--gw-size-2-5));
 }
 
 .icon-3x, .btn .icon-3x[class^="icon-"] {
-    font-size: 3em;
+    /* Due to the lack of exact variable fot this size we use 3 times the base font size */
+    font-size: calc(var(--gw-body-base-regular-font-size) * 3);
 }
 
 .icon-rotate-270:before {
