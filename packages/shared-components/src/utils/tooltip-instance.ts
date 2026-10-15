@@ -124,7 +124,7 @@ export class TooltipInstance {
    */
   private createFloatingElement(): void {
     this.floatingElement = document.createElement('div');
-    this.floatingElement.className = 'onto-tooltip-box';
+    this.floatingElement.className = 'onto-tooltip-box body-sm-regular';
     if (this.config.tooltipClass) {
       this.floatingElement.classList.add(this.config.tooltipClass);
     }

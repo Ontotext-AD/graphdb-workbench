@@ -24,7 +24,7 @@ export const SelectorItemButton: FunctionalComponent<SelectorItemProps> = ({repo
           {repository.id}
         </div>
         {/* TODO: Check the legacy Workbench `template.html`. There are checks for when the location should be displayed. This depends on GDB-10442.*/}
-        <div class="repository-location">
+        <div class="repository-location body-xs-light">
           {repository.location ? repository.location : 'Local'}
         </div>
       </div>
