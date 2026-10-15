@@ -3,7 +3,7 @@
 <link href="css/multiselect-search.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 
 <div class="modal-header">
-    <button type="button" class="close" ng-click="close()"></button>
+    <button type="button" class="close" aria-label="{{'common.close' | translate}}" ng-click="close()"></button>
     <h4 class="modal-title">{{(
         operation === AGENT_OPERATION.EDIT ? 'ttyg.agent.create_agent_modal.title.edit '
         : operation === AGENT_OPERATION.CLONE ? 'ttyg.agent.create_agent_modal.title.clone'
