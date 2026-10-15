@@ -46,7 +46,7 @@ export class OntoConfirmCancelDialog {
     return (
       <onto-dialog data-test={'confirm-cancel-dialog'} class={'confirm-cancel-dialog'} config={config}>
         <div slot="body">
-          <span innerHTML={TranslationService.translate('guides.confirm-cancel-modal.subtitle')}></span>
+          <span class="body-lg-light" innerHTML={TranslationService.translate('guides.confirm-cancel-modal.subtitle')}></span>
         </div>
         <button slot={'footer'} class="onto-btn onto-btn-secondary" data-test={'cancel-btn'} onClick={this.onCancel}>
           <translate-label labelKey={'common.button.cancel'}></translate-label>
