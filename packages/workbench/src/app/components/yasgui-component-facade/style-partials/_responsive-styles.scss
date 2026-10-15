@@ -3,18 +3,18 @@
   
   /* Omit the heading  tags */
   app-yasgui-component-facade:not(h3, h4, .dialog-body, .custom-button, .btn-orientation, sup) {
-      font-size: 14px !important;
+      font-size: var(--gw-body-sm-regular-font-size) !important;
   }
 
   app-yasgui-component-facade {
     .yasgui-toolbar {
       .yasgui-btn {
-        font-size: 12px !important;
+        font-size: var(--gw-body-xs-regular-font-size) !important;
         height: 24px !important;
       }
 
       .btn-orientation {
-        font-size: 24px !important;
+        font-size: var(--gw-xl-font-size) !important;
       }
     }
 

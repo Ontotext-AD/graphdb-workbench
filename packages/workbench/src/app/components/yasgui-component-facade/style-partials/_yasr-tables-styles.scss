@@ -84,7 +84,8 @@ app-yasgui-component-facade {
     }
 
     .extended-boolean-plugin>* {
-      font-size: 3rem !important;
+       // Due to the lack of specific font-size variable with value 3rem multiplied the basic font-size 1rem 3 times
+      font-size: calc(var(--gw-body-base-regular-font-size) * 3) !important;
     }
 
     .extended-boolean-plugin {
@@ -136,7 +137,7 @@ app-yasgui-component-facade {
         border-collapse: collapse;
 
         th {
-          font-weight: 500;
+          font-weight: var(--gw-label-base-medium-font-weight);
           color: var(--gw-datatable-header-color) !important;
           background-color: var(--gw-datatable-header-background) !important;
           border-color: var(--gw-datatable-header-cell-border-color) !important;
@@ -211,10 +212,6 @@ app-yasgui-component-facade {
 
         .rowNumber {
           color: var(--gw-datatable-row-color) !important;
-        }
-
-        a {
-          font-size: 16px;
         }
 
         .nonUri {

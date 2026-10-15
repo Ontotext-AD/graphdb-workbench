@@ -41,11 +41,8 @@
   .yasgui-toolbar {
     display: inline;
     float: right;
-    font-size: 14px;
-    font-weight: 400;
     position: relative;
     /* make sure the toolbar is above the title and error messages */
     z-index: 100;
   }
 }
-

@@ -13,7 +13,7 @@ app-yasgui-component-facade {
   .confirmation-dialog {
     /* Dialog body should have slightly bigger font-size. When it is attached directly to the html body. */
     .dialog-body {
-      font-size: 1.25rem !important;
+      font-size: var(--gw-h5-font-size) !important; //substitution variable -> 1.25rem
     }
 
     .cancel-button {
@@ -119,7 +119,7 @@ app-yasgui-component-facade {
 
 /* #region - Keyboard shortcuts dialog specific styles */
 .keyboard-shortcuts-dialog-button {
-  font-weight: 400;
+  font-weight: var(--gw-label-base-regular-font-weight);
   color: var(--gw-button-secondary-color) !important;
   background-color: var(--gw-button-secondary-background) !important;
   border-color: var(--gw-button-secondary-border-color) !important;
@@ -128,7 +128,6 @@ app-yasgui-component-facade {
 .keyboard-shortcuts-dialog-wrapper {
   height: 20px;
   line-height: 18px;
-  font-size: 90%;
 
   &.resizeable-on {
     margin-top: -31px;

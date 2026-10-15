@@ -65,7 +65,7 @@ app-yasgui-component-facade {
 
     .custom-button {
       /* There is a generic font-size rule that overrides the font size of the YASGUI component, so we set it explicitly to match the intended size of the YASQE buttons. */
-      font-size: 1.5em !important;
+      font-size: var(--gw-xl-font-size) !important;
       color: var(--gw-primary-base) !important;
       background-color: var(--gw-editor-content-background) !important;
 
@@ -76,8 +76,7 @@ app-yasgui-component-facade {
     }
 
     .yasqe_queryButton {
-      font-family: var(--main-font);
-      font-weight: 400;
+      font-family: var(--gw-font-family-body);
       height: 38px !important;
     }
   }
@@ -120,21 +119,21 @@ app-yasgui-component-facade {
 
     .saved-queries-popup {
       overflow-y: auto;
+      font-family: var(--gw-font-family-body);
 
       .saved-query {
         padding: 0;
 
         a {
           color: var(--gw-secondary-base);
-          font-size: 14px;
-          font-weight: bolder;
+          font-weight: var(--gw-body-sm-regular-font-weight);
         }
       }
 
       .saved-query-actions .saved-query-action {
         color: var(--gw-button-primary-link-color) !important;
         background-color: var(--gw-dialog-background) !important;
-        font-size: 1.25em;
+        font-size: var(--gw-heading-h5-font-size); // substitution variable due to lack of
       }
     }
 
@@ -147,8 +146,8 @@ app-yasgui-component-facade {
     padding-top: 15px;
 
     .abort-button {
-      font-family: var(--main-font);
-      font-weight: 400;
+      font-family: var(--gw-font-family-body);
+      font-weight: var(--gw-label-base-regular-font-weight);
       height: 38px;
       background-color: var(--gw-primary-base) !important;
 
