@@ -251,97 +251,98 @@
                         </div>
                         <div class="scrollable-table">
                             <table class="table table-hover table-sm table-fixed bordered-table" aria-labelledby="user-repositories-title">
+                                <colgroup></colgroup>
+                                <colgroup span="3"></colgroup>
+                                <colgroup></colgroup>
                                 <thead>
                                 <tr>
-                                    <th id="repositoryIdColumn" rowspan="2" class="repository-column auth-column">{{'security.repository.title' | translate}}</th>
-                                    <th id="permissionsColumn" colspan="3" class="text-xs-center permissions-column auth-column">{{'security.label.permissions' | translate}}</th>
-                                    <th id="graphql" rowspan="2" class="text-xs-center auth-column graphql-column"><span
+                                    <th id="repositoryIdColumn" scope="col" rowspan="2" class="repository-column auth-column">{{'security.repository.title' | translate}}</th>
+                                    <th id="permissionsColumn" scope="colgroup" colspan="3" class="text-xs-center permissions-column auth-column">{{'security.label.permissions' | translate}}</th>
+                                    <th id="graphql" scope="col" rowspan="2" class="text-xs-center auth-column graphql-column"><span
                                         class="auth-column-label">{{'security.label.graphql' | translate}}</span></th>
                                 </tr>
                                 <tr class="permissions-subheader">
-                                    <th id="readRightsColumn" class="text-xs-center read-column auth-column"><span class="auth-column-label">{{'security.label.read' | translate}}</span><em
+                                    <th id="readRightsColumn" scope="col" headers="permissionsColumn" class="text-xs-center read-column auth-column"><span class="auth-column-label">{{'security.label.read' | translate}}</span><em
                                         class="ri-eye-line icon-lg" gdb-tooltip="{{'security.tooltip.read' | translate}}"></em></th>
-                                    <th id="writeRightColumn" class="text-xs-center write-column auth-column"><span class="auth-column-label">{{'security.label.write' | translate}}</span><em
+                                    <th id="writeRightColumn" scope="col" headers="permissionsColumn" class="text-xs-center write-column auth-column"><span class="auth-column-label">{{'security.label.write' | translate}}</span><em
                                         class="ri-edit-line icon-lg" gdb-tooltip="{{'security.tooltip.write' | translate}}"></em></th>
-                                    <th id="maintainRepositoryColumn" class="text-xs-center maintain-repository-column auth-column"><span class="auth-column-label">{{'security.label.maintain_repository' | translate}}</span><em class="ri-folder-settings-line icon-lg" gdb-tooltip="{{'security.tooltip.maintain_repository' | translate}}"></em></th>
+                                    <th id="maintainRepositoryColumn" scope="col" headers="permissionsColumn" class="text-xs-center maintain-repository-column auth-column"><span class="auth-column-label">{{'security.label.maintain_repository' | translate}}</span><em class="ri-folder-settings-line icon-lg" gdb-tooltip="{{'security.tooltip.maintain_repository' | translate}}"></em></th>
                                 </tr>
                                 <tr class="any-repo">
-                                    <th>{{'security.any.data.repo' | translate}}
+                                    <th scope="row">{{'security.any.data.repo' | translate}}
                                         <em class="ri-information-2-line text-tertiary" gdb-tooltip="{{'security.data.repos' | translate}}"></em>
                                     </th>
-                                    <th class="text-xs-center">
+                                    <td class="text-xs-center">
                                         <span ng-click="setGrantedAuthorities()">
                                             <input class="read" type="checkbox" aria-label="{{'security.user.rights.read.label' | translate: {repository: ('security.any.data.repo' | translate)} }}" ng-model="grantedAuthorities.READ_REPO['*']" ng-checked="hasReadPermission('*')"
                                                    ng-disabled="readCheckDisabled('*')">
                                        </span>
-                                    </th>
-                                    <th class="text-xs-center write-any">
+                                    </td>
+                                    <td class="text-xs-center write-any">
                                         <span ng-click="setGrantedAuthorities()">
                                             <input class="write" type="checkbox" aria-label="{{'security.user.rights.write.label' | translate: {repository: ('security.any.data.repo' | translate)} }}" ng-model="grantedAuthorities.WRITE_REPO['*']" ng-checked="hasWritePermission('*')"
                                                    ng-disabled="writeCheckDisabled('*')">
                                         </span>
-                                    </th>
+                                    </td>
 
-                                    <th class="text-xs-center maintain-repository-any">
+                                    <td class="text-xs-center maintain-repository-any">
                                             <span>
                                                 <input class="maintain-repository" type="checkbox" aria-label="{{'security.user.rights.maintain_repository.label' | translate: {repository: ('security.any.data.repo' | translate)} }}" ng-checked="hasMaintainRepositoryPermission('*')" ng-disabled="true">
                                             </span>
-                                        </th>
+                                        </td>
 
-                                        <th class="text-xs-center graphql-any">
+                                        <td class="text-xs-center graphql-any">
                                         <span class="tooltip-on-disabled" ng-if="!isUser()" data-test="graphql-any-role-tooltip"
                                               gdb-tooltip="{{'security.tooltip.not.available.for.role' | translate}}"></span>
                                         <span ng-click="setGrantedAuthorities()">
                                             <input class="graphql" type="checkbox" data-test="graphql-any-checkbox" aria-label="{{'security.user.rights.graphql.label' | translate: {repository: ('security.any.data.repo' | translate)} }}" ng-model="grantedAuthorities.GRAPHQL['*']" ng-checked="hasGraphqlPermission('*')"
                                                    ng-disabled="graphqlCheckDisabled('*')">
                                         </span>
-                                    </th>
+                                    </td>
 
                                 </tr>
                                 </thead>
                                 <tbody ng-if="isUser()" data-test="repository-rights-rows">
-                                <div>
-                                    <tr ng-repeat="repository in getReadableRepositories() | orderBy: ['location', 'id']">
-                                        <td class="repository-name">
-                                            <em class="icon-lg" ng-class="'icon-repo-' + repository.type"></em>
-                                            {{repository.id}}
-                                            <small class="text-muted">
-                                                <em ng-if="isGraphQlOnlyRight(repository)"
-                                                    class="icon-graphql graphql-icon text-info" gdb-tooltip="{{'security.tooltip.graphql' | translate}}"></em> &middot;
-                                                {{repository.location ? repository.location : 'repo.local' | translate}}
-                                            </small>
-                                        </td>
-                                        <td class="text-xs-center read-rights">
-                                            <span ng-click="setGrantedAuthorities()">
-                                                <input class="read" type="checkbox" aria-label="{{'security.user.rights.read.label' | translate: {repository: createUniqueKey(repository)} }}" ng-model="grantedAuthorities.READ_REPO[createUniqueKey(repository)]"
-                                                       ng-checked="hasReadPermission(repository)" ng-disabled="readCheckDisabled(repository)">
-                                            </span>
-                                        </td>
-                                        <td class="text-xs-center write-rights">
-                                            <span ng-click="setGrantedAuthorities()">
-                                                <input class="write" type="checkbox" aria-label="{{'security.user.rights.write.label' | translate: {repository: createUniqueKey(repository)} }}" ng-model="grantedAuthorities.WRITE_REPO[createUniqueKey(repository)]"
-                                                       ng-checked="hasWritePermission(repository)" ng-disabled="writeCheckDisabled(repository)">
-                                            </span>
-                                        </td>
+                                <tr ng-repeat="repository in getReadableRepositories() | orderBy: ['location', 'id']">
+                                    <th scope="row" class="repository-name">
+                                        <em class="icon-lg" ng-class="'icon-repo-' + repository.type"></em>
+                                        {{repository.id}}
+                                        <small class="text-muted">
+                                            <em ng-if="isGraphQlOnlyRight(repository)"
+                                                class="icon-graphql graphql-icon text-info" gdb-tooltip="{{'security.tooltip.graphql' | translate}}"></em> &middot;
+                                            {{repository.location ? repository.location : 'repo.local' | translate}}
+                                        </small>
+                                    </th>
+                                    <td class="text-xs-center read-rights">
+                                        <span ng-click="setGrantedAuthorities()">
+                                            <input class="read" type="checkbox" aria-label="{{'security.user.rights.read.label' | translate: {repository: createUniqueKey(repository)} }}" ng-model="grantedAuthorities.READ_REPO[createUniqueKey(repository)]"
+                                                   ng-checked="hasReadPermission(repository)" ng-disabled="readCheckDisabled(repository)">
+                                        </span>
+                                    </td>
+                                    <td class="text-xs-center write-rights">
+                                        <span ng-click="setGrantedAuthorities()">
+                                            <input class="write" type="checkbox" aria-label="{{'security.user.rights.write.label' | translate: {repository: createUniqueKey(repository)} }}" ng-model="grantedAuthorities.WRITE_REPO[createUniqueKey(repository)]"
+                                                   ng-checked="hasWritePermission(repository)" ng-disabled="writeCheckDisabled(repository)">
+                                        </span>
+                                    </td>
 
-                                            <td class="text-xs-center maintain-repository-rights">
-                                                <span ng-click="setGrantedAuthorities()">
-                                                    <input class="maintain-repository" type="checkbox" aria-label="{{'security.user.rights.maintain_repository.label' | translate: {repository: createUniqueKey(repository)} }}" ng-model="grantedAuthorities.MAINTAIN_REPO[createUniqueKey(repository)]" ng-checked="hasMaintainRepositoryPermission(repository)" ng-disabled="maintainRepoCheckDisabled(repository)">
-                                                </span>
-                                            </td>
+                                    <td class="text-xs-center maintain-repository-rights">
+                                        <span ng-click="setGrantedAuthorities()">
+                                            <input class="maintain-repository" type="checkbox" aria-label="{{'security.user.rights.maintain_repository.label' | translate: {repository: createUniqueKey(repository)} }}" ng-model="grantedAuthorities.MAINTAIN_REPO[createUniqueKey(repository)]" ng-checked="hasMaintainRepositoryPermission(repository)" ng-disabled="maintainRepoCheckDisabled(repository)">
+                                        </span>
+                                    </td>
 
-                                        <td class="text-xs-center graphql-rights">
-                                            <span class="tooltip-on-disabled" ng-if="isGraphqlUnsupportedRepository(repository)"
-                                                  data-test="graphql-repository-type-tooltip"
-                                                  gdb-tooltip="{{'security.tooltip.not.available.for.repository.type' | translate}}"></span>
-                                            <span ng-click="setGrantedAuthorities()">
-                                                <input class="graphql" type="checkbox" data-test="graphql-repository-checkbox" aria-label="{{'security.user.rights.graphql.label' | translate: {repository: createUniqueKey(repository)} }}" ng-model="grantedAuthorities.GRAPHQL[createUniqueKey(repository)]"
-                                                       ng-checked="hasGraphqlPermission(repository)"
-                                                       ng-disabled="graphqlCheckDisabled(repository) || isGraphqlUnsupportedRepository(repository)">
-                                            </span>
-                                        </td>
-                                    </tr>
-                                </div>
+                                    <td class="text-xs-center graphql-rights">
+                                        <span class="tooltip-on-disabled" ng-if="isGraphqlUnsupportedRepository(repository)"
+                                              data-test="graphql-repository-type-tooltip"
+                                              gdb-tooltip="{{'security.tooltip.not.available.for.repository.type' | translate}}"></span>
+                                        <span ng-click="setGrantedAuthorities()">
+                                            <input class="graphql" type="checkbox" data-test="graphql-repository-checkbox" aria-label="{{'security.user.rights.graphql.label' | translate: {repository: createUniqueKey(repository)} }}" ng-model="grantedAuthorities.GRAPHQL[createUniqueKey(repository)]"
+                                                   ng-checked="hasGraphqlPermission(repository)"
+                                                   ng-disabled="graphqlCheckDisabled(repository) || isGraphqlUnsupportedRepository(repository)">
+                                        </span>
+                                    </td>
+                                </tr>
                                 </tbody>
                             </table>
                         </div>

@@ -50,8 +50,22 @@
     margin-left: 4px;
 }
 
+/* The repository name is a row header, but it keeps the look of a data cell. */
 .wb-user .repository-name {
     word-wrap: break-word;
+    font-weight: normal;
+    text-align: start;
+    color: inherit;
+    background-color: transparent;
+    border-color: var(--gw-datatable-body-cell-border-color);
+}
+
+/* The checkboxes of the "any data repository" row are data cells, but they keep the borders of the header they sit in
+   (the same as the ".table thead th" rule gives the row's header cell). */
+.wb-user .any-repo td {
+    vertical-align: bottom;
+    border-color: var(--gw-datatable-header-cell-border-color);
+    border-bottom: 2px solid #eceeef;
 }
 
 .wb-user .fa-user {
