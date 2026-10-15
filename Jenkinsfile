@@ -160,8 +160,9 @@ pipeline {
                             }
 
                             if (caughtError) {
-                                echo "Tests failed — archiving Cypress video artifacts."
-                                archiveArtifacts allowEmptyArchive: true, artifacts: 'e2e-tests/report/screenshots/**/*.png, e2e-tests/report/videos/**/*.mp4, e2e-tests/cypress/logs/*.log'
+                                echo "Tests failed — archiving Cypress video artifacts and GraphDB diagnostics."
+                                collectGraphdbDiagnostics()
+                                archiveArtifacts allowEmptyArchive: true, artifacts: 'e2e-tests/report/screenshots/**/*.png, e2e-tests/report/videos/**/*.mp4, e2e-tests/cypress/logs/*.log, graphdb-diagnostics/**'
                                 error("Cypress tests failed, job failed.")
                             }
 
@@ -206,6 +207,24 @@ def workspaceCleanup() {
         def scriptContent = readFile(env.CLEANUP_SCRIPT)
         evaluate(scriptContent)
     }
+}
+
+// Copies the GraphDB container output and its logs directory (including the heap dump written on
+// OutOfMemoryError) into the workspace. The containers are only stopped after a failed run, so both
+// `logs` and `cp` still work. Every step is best effort, so a missing file never masks the test failure.
+def collectGraphdbDiagnostics() {
+    sh """
+        mkdir -p graphdb-diagnostics
+        docker compose -f '${env.DOCKER_COMPOSE_FILE}' logs --no-color --timestamps graphdb > graphdb-diagnostics/graphdb-container.log 2>&1 || true
+        container_id=\$(docker compose -f '${env.DOCKER_COMPOSE_FILE}' ps -aq graphdb)
+        if [ -n "\$container_id" ]; then
+            docker cp "\$container_id:/opt/graphdb/home/logs/." graphdb-diagnostics/logs/ || true
+        fi
+        if [ -f graphdb-diagnostics/logs/heapdump.hprof ]; then
+            gzip -1 graphdb-diagnostics/logs/heapdump.hprof || true
+        fi
+        ls -lhR graphdb-diagnostics
+    """
 }
 
 def getUserUidGidPair() {
