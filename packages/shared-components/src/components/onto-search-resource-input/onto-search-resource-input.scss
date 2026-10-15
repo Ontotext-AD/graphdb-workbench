@@ -16,7 +16,7 @@
         min-width: inherit;
         flex: 1;
         padding: .5rem .75rem;
-        font-size: 1rem;
+        font-size: var(--gw-body-base-regular-font-size);
         line-height: 1.25;
         color: var(--gw-form-field-color);
         background-color: var(--gw-form-field-background);
@@ -56,8 +56,6 @@
 
     & > button {
       display: inline-block;
-      font-weight: 400;
-      line-height: 1.25;
       text-align: center;
       white-space: nowrap;
       vertical-align: middle;
@@ -70,7 +68,6 @@
       user-select: none;
       border: 1px solid var(--gw-button-secondary-border-color);
       padding: .5rem 1rem;
-      font-size: 1rem;
       color: var(--gw-button-secondary-color);
       background-color: var(--gw-button-secondary-background);
 
@@ -90,7 +87,6 @@
   }
 
   & .hint {
-    font-size: 0.8rem;
     color: #818a91;
   }
 
@@ -100,8 +96,8 @@
     overflow: auto;
 
     & p {
-      font-size: 1.1rem;
-      line-height: 1.5;
+      // Due to lack of exact font size control in the design system, we scale the base font size slightly.
+      font-size: calc(var(--gw-body-base-regular-font-size) * 1.1);
       color: var(--gw-autocomplete-color);
       background-color: var(--gw-autocomplete-background);
       margin-bottom: 0;
