@@ -1,9 +1,19 @@
 app-yasgui-component-facade {
   /* #region YASR - toolbar right */
+  /* The library sets the download buttons to 16px */
+  .yasr {
+    .chart-download-as-button,
+    .pivot-table-download-as-button,
+    .ontotext-dropdown .ontotext-dropdown-button,
+    .yasr_downloadIcon {
+      font-size: 1rem;
+    }
+  }
+
   .yasr-toolbar {
     align-items: stretch !important;
     padding-left: 10px;
-    font-size: 16px;
+    font-size: 1rem;
     line-height: 1.25;
 
     /* Make all buttons in the yasr toolbar having equal height same as the other WB buttons. */
@@ -19,6 +29,12 @@ app-yasgui-component-facade {
       &:hover {
         color: var(--gw-button-primary-hover-color) !important;
         background-color: var(--gw-button-primary-hover-background) !important;
+      }
+
+      /* The buttons have a ri-* icon class, so remixicon sets their font-family. Keep it for the icon only. */
+      .chart-download-as-button-label,
+      .pivot-table-download-as-button-label {
+        font-family: var(--main-font);
       }
     }
 
@@ -91,7 +107,7 @@ app-yasgui-component-facade {
         padding: .52em;
         margin-left: 0;
         margin-right: .2rem;
-        font-size: 16px;
+        font-size: 1rem;
         font-weight: 400;
         color: var(--gw-tabs-tab-color) !important;
         background-color: var(--gw-tabs-tab-background) !important;
@@ -132,7 +148,7 @@ app-yasgui-component-facade {
       .yasr_response_chip {
         background-color: unset !important;
         color: var(--gw-secondary-base) !important;
-        font-size: 16px;
+        font-size: 1rem;
 
         .response-info-message {
           padding-left: 10px;
@@ -225,7 +241,7 @@ app-yasgui-component-facade {
       padding-right: 35px;
 
       .close-button {
-        font-size: 21px !important;
+        font-size: 21px;
       }
     }
 

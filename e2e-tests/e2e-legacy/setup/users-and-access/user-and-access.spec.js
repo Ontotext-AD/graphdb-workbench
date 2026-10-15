@@ -18,7 +18,7 @@ describe('User and Access', () => {
     const DEFAULT_ADMIN_PASSWORD = 'root';
 
     context('User and access management', () => {
-        const user = 'user';
+        const user = 'user' + Date.now();
         let repoName;
 
         before(() => {
@@ -428,7 +428,7 @@ describe('User and Access', () => {
         let repositoryId1;
         let repositoryId2;
         let repositoryId3;
-        const graphqlUser = 'graphqlUser';
+        const graphqlUser = 'graphqlUser' + Date.now();
 
         beforeEach(() => {
             RepositoriesStubs.spyGetRepositories();
@@ -649,7 +649,7 @@ describe('User and Access', () => {
         let writeRepositoryId;
         let graphQLOnlyRepositoryId;
         let maintainedRepositoryId;
-        const maintainerUser = 'maintainerUser';
+        const maintainerUser = 'maintainerUser' + Date.now();
 
         beforeEach(() => {
             RepositoriesStubs.spyGetRepositories();

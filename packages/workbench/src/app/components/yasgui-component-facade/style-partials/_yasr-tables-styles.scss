@@ -61,6 +61,14 @@ app-yasgui-component-facade {
           border-color: var(--gw-form-field-border-color);
         }
 
+        /* The pivot table library sets the table to 8pt and the filter list to 14px; the filter heading is an h4 */
+        table.pvtTable,
+        table.pvtTable th,
+        .pvtFilterBox .pvtCheckContainer,
+        .pvtFilterBox h4 span {
+          font-size: 1rem;
+        }
+
         .yasr_fallback_info:not(:empty) {
           border: 1px solid var(--gw-message-info-border-color);
           color: var(--gw-message-info-color);
@@ -84,7 +92,7 @@ app-yasgui-component-facade {
     }
 
     .extended-boolean-plugin>* {
-      font-size: 3rem !important;
+      font-size: 3rem;
     }
 
     .extended-boolean-plugin {
@@ -101,6 +109,7 @@ app-yasgui-component-facade {
 
     /* #region - YASR google visualization table */
     .google-visualization-table-table {
+      font-size: 1rem;
       color: var(--gw-datatable-row-color) !important;
       background: var(--gw-datatable-row-background) !important;
       border-color: var(--gw-datatable-border-color) !important;
@@ -132,6 +141,8 @@ app-yasgui-component-facade {
 
     /* #region - YASR dataTables */
     .dataTables_wrapper {
+      font-size: 1rem;
+
       .dataTable {
         border-collapse: collapse;
 
@@ -214,7 +225,7 @@ app-yasgui-component-facade {
         }
 
         a {
-          font-size: 16px;
+          font-size: 1rem;
         }
 
         .nonUri {

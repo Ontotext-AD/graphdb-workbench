@@ -65,6 +65,14 @@ yasgui-component .yasr .pivot-table-plugin .pvtFilterBox .pvtSearch {
     border-color: var(--gw-form-field-border-color);
 }
 
+/* The pivot table library sets the table to 8pt and the filter list to 14px; the filter heading is an h4 */
+yasgui-component .yasr .pivot-table-plugin table.pvtTable,
+yasgui-component .yasr .pivot-table-plugin table.pvtTable th,
+yasgui-component .yasr .pivot-table-plugin .pvtFilterBox .pvtCheckContainer,
+yasgui-component .yasr .pivot-table-plugin .pvtFilterBox h4 span {
+    font-size: 1rem;
+}
+
 yasgui-component .yasr .yasr_fallback_info:not(:empty) {
     border: 1px solid var(--gw-message-info-border-color);
     color: var(--gw-message-info-color);
@@ -80,7 +88,7 @@ yasgui-component .yasr .error-response-plugin {
 }
 
 yasgui-component .yasr .extended-boolean-plugin>* {
-    font-size: 3rem !important;
+    font-size: 3rem;
 }
 
 yasgui-component .yasr .extended-boolean-plugin .response-error {
@@ -99,6 +107,7 @@ yasgui-component .yasr .google-visualization-table-table {
     when there are few results but still maintain the scrollable table behavior for more results. */
     height: auto !important;
     max-height: 600px !important;
+    font-size: 1rem;
     color: var(--gw-datatable-row-color) !important;
     background: var(--gw-datatable-row-background) !important;
     border-color: var(--gw-datatable-border-color) !important;
@@ -129,6 +138,10 @@ yasgui-component .yasr .google-visualization-table-table .google-visualization-t
 /* #endregion - YASR google visualization table */
 
 /* #region - YASR dataTables */
+yasgui-component .yasr .dataTables_wrapper {
+    font-size: 1rem;
+}
+
 yasgui-component .yasr .dataTables_wrapper .dataTable {
     border-collapse: collapse;
 }
@@ -208,7 +221,7 @@ yasgui-component .yasr .dataTables_wrapper .dataTable .rowNumber {
 }
 
 yasgui-component .yasr .dataTable a {
-    font-size: 16px;
+    font-size: 1rem;
 }
 
 yasgui-component .yasr .dataTable .nonUri {

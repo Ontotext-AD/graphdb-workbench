@@ -2,13 +2,21 @@
 yasgui-component .yasr-toolbar {
     align-items: stretch !important;
     padding-left: 10px;
-    font-size: 16px;
+    font-size: 1rem;
     line-height: 1.25;
 }
 
 /* Make all buttons in the yasr toolbar having equal height same as the other WB buttons. */
 yasgui-component .yasr-toolbar .yasr-toolbar-element {
     height: 38px;
+}
+
+/* The library sets the download buttons to 16px */
+yasgui-component .yasr .chart-download-as-button,
+yasgui-component .yasr .pivot-table-download-as-button,
+yasgui-component .yasr .ontotext-dropdown .ontotext-dropdown-button,
+yasgui-component .yasr .yasr_downloadIcon {
+    font-size: 1rem;
 }
 
 /* #endregion YASR - toolbar right */
@@ -29,7 +37,7 @@ yasgui-component .yasr .yasr_btnGroup .yasr_btn {
     padding: .52em;
     margin-left: 0;
     margin-right: .2rem;
-    font-size: 16px;
+    font-size: 1rem;
     font-weight: 400;
     color: var(--gw-tabs-tab-color) !important;
     background-color: var(--gw-tabs-tab-background) !important;
@@ -108,6 +116,12 @@ yasgui-component .ontotext-download-as .ontotext-dropdown-button .button-name {
     font-weight: 400;
 }
 
+/* The buttons have a ri-* icon class, so remixicon sets their font-family. Keep it for the icon only. */
+yasgui-component .yasr-toolbar .chart-download-as-button-label,
+yasgui-component .yasr-toolbar .pivot-table-download-as-button-label {
+    font-family: var(--main-font);
+}
+
 yasgui-component .ontotext-dropdown-menu.open {
     border: 1px solid var(--gw-tieredmenu-border-color) !important;
     box-shadow: var(--gw-tieredmenu-shadow-1-offset-x) var(--gw-tieredmenu-shadow-1-offset-y) var(--gw-tieredmenu-shadow-1-blur) var(--gw-tieredmenu-shadow-1-spread) var(--gw-tieredmenu-shadow-1-color);
@@ -175,8 +189,8 @@ yasgui-component .ontotext-yasgui .yasr .yasr_header .tableControls .tableFilter
 /* #endregion YASR - plugin control  */
 
 /* #region YASR - response chip */
-yasgui-component .yasr_response_chip {
-    font-size: 16px;
+yasgui-component .yasr .yasr_response_chip {
+    font-size: 1rem;
     color: var(--gw-secondary-base) !important;
 }
 
@@ -224,7 +238,7 @@ yasgui-component .yasr .alert-box {
 }
 
 yasgui-component .yasr .alert-box .close-button {
-    font-size: 21px !important;
+    font-size: 21px;
 }
 
 /* #endregion YASR ALERT BOX */
