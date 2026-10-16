@@ -69,6 +69,7 @@
       transition: 0.15s ease-out;
 
       &.ri-arrow-down-s-line {
+        // Original value 1.1em current 1.125rem
         font-size: var(--gw-body-lg-regular-font-size);
         transition: all 0.2s ease-in;
       }

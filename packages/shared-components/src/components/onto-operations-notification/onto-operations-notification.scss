@@ -5,6 +5,8 @@
   .operations-statuses-content i {
     padding-left: 3px;
     padding-right: 3px;
+    
+    // Original value 1.1em current 1.125rem
     font-size: var(--gw-body-lg-regular-font-size);
     line-height: 1.6rem !important;
     align-content: center;
