@@ -69,9 +69,8 @@ function importResourceTreeDirective($timeout, ImportContextService) {
             $scope.filterByType = TYPE_FILTER_OPTIONS.ALL;
             $scope.filterByFileName = '';
             $scope.STATUS_OPTIONS = STATUS_OPTIONS;
-            $scope.selectedByStatus = undefined;
-            $scope.areAllDisplayedImportResourcesSelected = false;
-            $scope.areAllDisplayedImportResourcesPartialSelected = false;
+            $scope.allDisplayedSelected = false;
+            $scope.displayedPartiallySelected = false;
             $scope.ImportResourceStatus = ImportResourceStatus;
             $scope.canRemoveResource = angular.isDefined(attrs.onRemove);
             $scope.canResetSelectedResources = false;
@@ -91,23 +90,33 @@ function importResourceTreeDirective($timeout, ImportContextService) {
              */
             $scope.selectionChanged = ((resource) => {
                 resource.setSelection(resource.selected);
-                updateSelectByStateDropdownModel();
+                updateSelectAllState();
                 setCanResetResourcesFlag();
                 updateHasSelection();
             });
 
             $scope.selectResourceWithStatus = (resourceStatus) => {
-                $scope.selectedByStatus = resourceStatus;
                 $scope.resources.setSelection(false);
 
-                if (STATUS_OPTIONS.ALL === $scope.selectedByStatus) {
+                if (STATUS_OPTIONS.ALL === resourceStatus) {
                     $scope.resources.setSelection(true);
-                } else if (STATUS_OPTIONS.IMPORTED === $scope.selectedByStatus) {
+                } else if (STATUS_OPTIONS.IMPORTED === resourceStatus) {
                     $scope.resources.selectAllWithStatus([ImportResourceStatus.DONE]);
-                } else if (STATUS_OPTIONS.NOT_IMPORTED === $scope.selectedByStatus) {
+                } else if (STATUS_OPTIONS.NOT_IMPORTED === resourceStatus) {
                     $scope.resources.selectAllWithStatus([ImportResourceStatus.IMPORTING, ImportResourceStatus.NONE, ImportResourceStatus.ERROR, ImportResourceStatus.PENDING, ImportResourceStatus.INTERRUPTING]);
                 }
 
+                updateListedImportResources();
+                setCanResetResourcesFlag();
+            };
+
+            /**
+             * Selects all displayed resources, or deselects them if all of them are already selected.
+             * Resources hidden by the type or name filter keep their selection.
+             */
+            $scope.toggleAllDisplayedResources = () => {
+                const select = !$scope.allDisplayedSelected;
+                $scope.displayResources.forEach((resource) => resource.setSelection(select));
                 updateListedImportResources();
                 setCanResetResourcesFlag();
             };
@@ -177,6 +186,30 @@ function importResourceTreeDirective($timeout, ImportContextService) {
                 updateListedImportResources();
             };
 
+            /**
+             * Returns the value of the aria-sort attribute of the column header with the given sorting type.
+             * @param {SortingType} sortingType The sorting type of the column.
+             * @return {string} 'ascending', 'descending' or 'none'.
+             */
+            $scope.getAriaSort = (sortingType) => {
+                if ($scope.sortedBy !== sortingType) {
+                    return 'none';
+                }
+                return $scope.sortAsc ? 'ascending' : 'descending';
+            };
+
+            /**
+             * Returns the CSS class of the sorting icon of the column header with the given sorting type.
+             * @param {SortingType} sortingType The sorting type of the column.
+             * @return {string} 'sorting_asc', 'sorting_desc' or 'sorting' when the column isn't sorted.
+             */
+            $scope.getSortClass = (sortingType) => {
+                if ($scope.sortedBy !== sortingType) {
+                    return 'sorting';
+                }
+                return $scope.sortAsc ? 'sorting_asc' : 'sorting_desc';
+            };
+
             $scope.editResource = (resource) => {
                 $scope.onEditResource({resource});
             };
@@ -201,7 +234,7 @@ function importResourceTreeDirective($timeout, ImportContextService) {
                     .filter(filterByName);
 
                 updateHasSelection();
-                updateSelectByStateDropdownModel();
+                updateSelectAllState();
             };
 
             const updateHasSelection = () => {
@@ -210,11 +243,11 @@ function importResourceTreeDirective($timeout, ImportContextService) {
                 ImportContextService.updateSelectedFilesNames(allSelectedFilesNames);
             };
 
-            const updateSelectByStateDropdownModel = () => {
-                const hasUnselectedDisplayedImportResource = $scope.displayResources.some((resource) => !resource.selected);
-                const hasSelectedDisplayedImportResource = $scope.displayResources.some((resource) => resource.selected);
-                $scope.areAllDisplayedImportResourcesSelected = hasSelectedDisplayedImportResource && !hasUnselectedDisplayedImportResource;
-                $scope.areAllDisplayedImportResourcesPartialSelected = hasSelectedDisplayedImportResource && hasUnselectedDisplayedImportResource;
+            const updateSelectAllState = () => {
+                const hasUnselected = $scope.displayResources.some((resource) => !resource.selected);
+                const hasSelected = $scope.displayResources.some((resource) => resource.selected);
+                $scope.allDisplayedSelected = hasSelected && !hasUnselected;
+                $scope.displayedPartiallySelected = hasSelected && hasUnselected;
             };
 
             const sortResources = () => {

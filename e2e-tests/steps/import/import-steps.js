@@ -92,6 +92,10 @@ class ImportSteps {
         return this.getFilterField().type(query);
     }
 
+    static clearFilterField() {
+        return this.getFilterField().clear();
+    }
+
     static getTabs() {
         return this.getView().find('.nav-tabs .nav-item');
     }
@@ -266,7 +270,16 @@ class ImportSteps {
     }
 
     static openStatusSelectMenu() {
-        return this.getStatusSelectMenu().click().find('.dropdown-menu .dropdown-item');
+        this.getStatusSelectMenuToggle().click();
+        return this.getStatusSelectMenu().find('.dropdown-menu .dropdown-item');
+    }
+
+    static getSelectAllCheckbox() {
+        return this.getStatusSelectMenu().find('.select-all-checkbox');
+    }
+
+    static toggleSelectAllResources() {
+        this.getSelectAllCheckbox().click();
     }
 
     static selectAllResources() {
@@ -339,7 +352,7 @@ class ImportSteps {
     }
 
     static openFileUploadDialog() {
-        this.getUploadRdfFilesButton().find('#wb-import-uploadFile').click();
+        this.getUploadRdfFilesButton().click();
     }
 
     static selectFile(files) {
@@ -518,7 +531,7 @@ class ImportSteps {
     }
 
     static orderBySize() {
-        ImportSteps.getSizeCell().click();
+        ImportSteps.getSizeCell().find('button').click();
     }
 }
 

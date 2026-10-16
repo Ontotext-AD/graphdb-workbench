@@ -2267,7 +2267,9 @@
                 "modified": "Modified",
                 "uploaded": "Uploaded",
                 "imported": "Imported",
-                "context": "Context"
+                "context": "Context",
+                "select": "Select",
+                "actions": "Actions"
             },
             "status": {
                 "ALL": "All",
@@ -2283,11 +2285,12 @@
                 "remove": "Remove {{name}}",
                 "reset_status": "Reset status of {{name}}"
             },
+            "select_all_displayed": "Select all displayed resources",
             "select_by_status": "Select resources by status",
-            "select_by_status_selected": "Select resources by status, selected: {{status}}",
             "filter_by_name": "Filter by name"
         },
         "status-info": {
+            "show": "Show the last import settings of {{name}}",
             "last_import_settings": "Last import settings",
             "context": "Context",
             "replaced_graphs": "Replaced graphs",

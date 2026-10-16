@@ -1186,6 +1186,42 @@ input[type=checkbox]:checked:disabled::after {
     color: var(--gw-checkbox-icon-disabled-color);
 }
 
+/* A partial selection, e.g. a folder with some of its files selected. Looks like the checked state, with a dash. */
+/* TODO: Replace the --gw-checkbox-checked-* and --gw-checkbox-icon-checked-* tokens in the :indeterminate rules
+   below with --gw-checkbox-indeterminate-* tokens once graphwise-styleguide provides them. */
+input[type=checkbox]:indeterminate {
+    background-color: var(--gw-checkbox-checked-background);
+    border-color: var(--gw-checkbox-checked-border-color);
+}
+
+input[type=checkbox]:hover:indeterminate {
+    background-color: var(--gw-checkbox-checked-hover-background);
+    border-color: var(--gw-checkbox-checked-hover-border-color);
+}
+
+input[type=checkbox]:indeterminate:disabled {
+    background-color: var(--gw-checkbox-checked-disabled-background);
+    border-color: var(--gw-checkbox-checked-disabled-border-color);
+    opacity: var(--gw-checkbox-disabled-opacity);
+}
+
+input[type=checkbox]:indeterminate::after {
+    content: "\2013"; /* en dash */
+    display: block;
+    text-align: center;
+    color: var(--gw-checkbox-icon-checked-color);
+    font-size: 0.8em;
+    line-height: 1.2;
+}
+
+input[type=checkbox]:indeterminate:hover::after {
+    color: var(--gw-checkbox-icon-checked-hover-color);
+}
+
+input[type=checkbox]:indeterminate:disabled::after {
+    color: var(--gw-checkbox-icon-disabled-color);
+}
+
 /*-------------------------------------------------------------
     Buttons
 -------------------------------------------------------------*/

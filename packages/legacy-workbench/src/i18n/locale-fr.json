@@ -2265,7 +2265,9 @@
                 "modified": "Modifié",
                 "uploaded": "Téléchargé",
                 "imported": "Importé",
-                "context": "Contexte"
+                "context": "Contexte",
+                "select": "Sélection",
+                "actions": "Actions"
             },
             "status": {
                 "ALL": "Tous",
@@ -2281,11 +2283,12 @@
                 "remove": "Supprimer {{name}}",
                 "reset_status": "Réinitialiser l'état de {{name}}"
             },
+            "select_all_displayed": "Sélectionner toutes les ressources affichées",
             "select_by_status": "Sélectionner les ressources par état",
-            "select_by_status_selected": "Sélectionner les ressources par état, sélection : {{status}}",
             "filter_by_name": "Filtrer par nom"
         },
         "status-info": {
+            "show": "Afficher les paramètres de la dernière importation de {{name}}",
             "last_import_settings": "Paramètres de la dernière importation",
             "context": "Contexte",
             "replaced_graphs": "Graphes remplacés",

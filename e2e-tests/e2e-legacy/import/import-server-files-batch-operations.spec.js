@@ -87,6 +87,39 @@ describe('Import server files - Batch operations', () => {
         ImportServerFilesSteps.getSelectedResources().should('have.length', 0);
     });
 
+    it('Should select all displayed resources with the select all checkbox', () => {
+        // When I check the select all checkbox
+        ImportServerFilesSteps.toggleSelectAllResources();
+        // Then I should see all files selected
+        ImportServerFilesSteps.getSelectedResources().should('have.length', SERVER_FILES_COUNT);
+        ImportServerFilesSteps.getSelectAllCheckbox().should('be.checked');
+        // When I uncheck the select all checkbox
+        ImportServerFilesSteps.toggleSelectAllResources();
+        // Then I should see no files selected
+        ImportServerFilesSteps.getSelectedResources().should('have.length', 0);
+        ImportServerFilesSteps.getSelectAllCheckbox().should('not.be.checked');
+        // When I select a directory via the checkbox on the row
+        ImportServerFilesSteps.selectFileByName('more-files');
+        // Then the select all checkbox should be partially selected
+        ImportServerFilesSteps.getSelectAllCheckbox().should('have.prop', 'indeterminate', true);
+        // When I check the select all checkbox
+        ImportServerFilesSteps.toggleSelectAllResources();
+        // Then I should see all files selected
+        ImportServerFilesSteps.getSelectedResources().should('have.length', SERVER_FILES_COUNT);
+        ImportServerFilesSteps.getSelectAllCheckbox().should('be.checked').and('have.prop', 'indeterminate', false);
+        // When I deselect all and filter the files by name
+        ImportServerFilesSteps.toggleSelectAllResources();
+        ImportServerFilesSteps.typeInFilterField('bnodes');
+        ImportServerFilesSteps.getResources().should('have.length', 1);
+        // and check the select all checkbox
+        ImportServerFilesSteps.toggleSelectAllResources();
+        // Then only the displayed file should be selected
+        ImportServerFilesSteps.clearFilterField();
+        ImportServerFilesSteps.getResources().should('have.length', SERVER_FILES_COUNT);
+        ImportServerFilesSteps.getSelectedResources().should('have.length', 1);
+        ImportServerFilesSteps.getSelectedResourceName(0).should('contain', 'bnodes.ttl');
+    });
+
     it('Should perform batch import and reset of selected server files with changing settings', () => {
         // Given I have opened the server files tab
         // When I select couple of files for import
