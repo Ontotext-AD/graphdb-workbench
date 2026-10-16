@@ -66,7 +66,8 @@ app-yasgui-component-facade {
 
     .ontotext-dropdown-menu .ontotext-dropdown-menu-item {
       padding: .5em 1.2em;
-
+      font-size: var(--gw-body-base-regular-font-size);
+      
       &:hover {
         color: var(--gw-tieredmenu-item-focus-color) !important;
         background-color: var(--gw-tieredmenu-item-focus-background) !important;
@@ -218,7 +219,7 @@ app-yasgui-component-facade {
 
     .yasr-header-replacement {
       color: inherit;
-      font-size: var(--gw-heading-h5-font-size);
+      font-size: var(--gw-size-1-25);
     }
 
     .explain-plan-copy-btn {
@@ -237,8 +238,8 @@ app-yasgui-component-facade {
       padding-right: 35px;
 
       .close-button {
-        //Substitude variable with value 1.25rem
-        font-size: var(--gw-heading-h5-font-size) !important;
+        //Substitude variable with value 1.25rem previously 21px
+        font-size: var(--gw-size-1-25) !important;
       }
     }
 
