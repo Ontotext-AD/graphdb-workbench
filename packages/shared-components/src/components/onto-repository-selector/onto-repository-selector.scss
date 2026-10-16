@@ -27,7 +27,9 @@
     gap: 0.4em;
 
     .item-icon {
-      font-size: 1.4em;
+
+      // Due to lack of exact match we use --gw-base-font-size (1rem) multiplied by 1.4
+      font-size: calc(var(--gw-base-font-size) * 1.4);
     }
 
     .item-label {
@@ -42,8 +44,6 @@
       }
 
       .repository-location {
-        font-weight: 300;
-        font-size: .75em;
         margin-top: .4em;
         display: inline-block;
         max-width: 120px;
@@ -90,14 +90,14 @@
       }
 
       .heading-h6 i::before {
-        font-size: 0.9em;
+        // Original value 0.9em changed to calc(var(--gw-base-font-size) * 0.9)
+        font-size: calc(var(--gw-base-font-size) * 0.9);
       }
     }
 
     .repository-tooltip-description {
       padding-left: 0.9rem;
       padding-right: 0.9rem;
-      font-size: 0.8rem;
       display: -webkit-box;
       -webkit-box-orient: vertical;
       -webkit-line-clamp: 3;
@@ -109,8 +109,6 @@
       display: flex;
       flex-direction: column;
       gap: 0.2em;
-      font-weight: 400;
-      font-size: 0.875rem;
 
       .repository-size-loading {
         justify-content: center;
@@ -129,11 +127,12 @@
 
       .value {
         margin-left: .6em;
-        font-weight: 500;
+        font-weight: var(--gw-label-base-medium-font-weight);
       }
 
       &.inactive-repo-message {
-        font-size: 1.15em;
+        // Original value 1.15em changed to 1.125rem
+        font-size: var(--gw-body-lg-regular-font-size);
         background-color: var(--gw-message-help-background);    
         color: var(--gw-message-help-color);
         flex-wrap: nowrap;
@@ -149,13 +148,12 @@
     }
 
     .inactive-repo-message p {
-        font-size: 1.14em;
-        font-weight: 400;
         margin: 0;
     }
 
     .inactive-repo-message .icon {
-        font-size: 1.14em;
+      // Original value 1.14em changed to 1.125rem
+        font-size: var(--gw-body-lg-regular-font-size);
     }
   }
 }

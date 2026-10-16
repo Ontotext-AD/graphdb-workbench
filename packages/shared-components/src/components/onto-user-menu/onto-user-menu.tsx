@@ -43,7 +43,7 @@ export class OntoUserMenu {
     return (
       <section class='onto-user-menu'>
         <div class='dropdown-toggle-wrapper'>
-          <button class={`onto-user-menu-toggle ${this.isOpen ? 'open' : ''}`}
+          <button class={`onto-user-menu-toggle label-base-regular ${this.isOpen ? 'open' : ''}`}
             ref={(el) => this.toggleButton = el}
             aria-expanded={this.isOpen ? 'true' : 'false'}
             aria-controls={this.DROPDOWN_ID}
@@ -54,11 +54,11 @@ export class OntoUserMenu {
           </button>
           {this.isOpen ?
             <section class='onto-user-menu-dropdown' id={this.DROPDOWN_ID}>
-              <a class='onto-user-menu-item' href='settings' onClick={this.openMySettings}>
+              <a class='onto-user-menu-item label-base-regular' href='settings' onClick={this.openMySettings}>
                 <translate-label labelKey={'user_menu.my_settings'}></translate-label>
               </a>
               {!this.authenticationService.isExternalUser() ?
-                <button class='onto-user-menu-item' onClick={this.logout}>
+                <button class='onto-user-menu-item label-base-regular' onClick={this.logout}>
                   <translate-label labelKey={'user_menu.logout'}></translate-label>
                 </button> : ''}
             </section> : ''}

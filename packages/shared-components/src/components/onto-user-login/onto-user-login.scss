@@ -7,9 +7,7 @@
     color: var(--gw-button-tertiary-color);
     background-color: var(--gw-button-tertiary-background);
     flex-direction: row;
-    line-height: 1.5;
-    font-weight: 400;
-    font-size: 1rem;
+    line-height: var(--gw-base-line-height);
     text-align: center;
     user-select: none;
     border: 1px solid transparent;
@@ -41,12 +39,16 @@
     i {
       color: var(--user-menu-primary-color);
       line-height: .75;
-      font-size: 1.2em;
+
+      // Due to lack of exact match we use --gw-base-font-size (1rem) multiplied by 1.2
+      font-size: calc(var(--gw-base-font-size) * 1.2);
       transition: 0.15s ease-out;
 
       &.ri-arrow-down-s-line {
-        color: rgb(0 0 0 / 35%);
-        font-size: 1.1em;
+        color: rgba(0, 0, 0, .35);
+        
+        //Due to lack of exact match there is a change from 1.1em to 1.125 rem
+        font-size: var(--gw-body-lg-regular-font-size);
         transition: all 0.2s ease-in;
       }
     }
