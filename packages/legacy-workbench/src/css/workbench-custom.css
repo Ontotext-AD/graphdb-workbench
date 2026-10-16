@@ -230,6 +230,11 @@
     cursor: pointer;
 }
 
+.hotkeys .ri-close-line:focus-visible {
+    outline: var(--gw-button-focus-ring-width) var(--gw-button-focus-ring-style) var(--gw-button-secondary-focus-ring-color);
+    outline-offset: var(--gw-button-focus-ring-offset);
+}
+
 .hotkeys .ri-close-line:hover {
     color: var(--gw-button-primary-link-hover-color);
     font-weight: bold;

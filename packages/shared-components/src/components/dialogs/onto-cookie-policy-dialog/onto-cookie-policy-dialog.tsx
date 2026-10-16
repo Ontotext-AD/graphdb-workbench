@@ -30,7 +30,6 @@ export class OntoCookiePolicyDialog {
 
   private user: AuthenticatedUser;
   private cookieConsent: CookieConsent;
-  private closeButton: HTMLButtonElement;
 
   /**
    * Debounced version of the `toggleChanged` method to prevent rapid consecutive calls when the user toggles cookie
@@ -52,10 +51,6 @@ export class OntoCookiePolicyDialog {
     this.toggleChangedDebounced(event);
   }
 
-  componentDidLoad() {
-    this.closeButton.focus();
-  }
-
   private toggleChanged(event: CustomEvent<ToggleEventPayload>) {
     this.setUserCookieConsent(this.updateCookieConsent(event.detail));
     this.securityService.updateAuthenticatedUser(this.user.toUser())
@@ -73,6 +68,7 @@ export class OntoCookiePolicyDialog {
     const config = {
       dialogTitle: TranslationService.translate('cookie.policy.title'),
       modalClass: 'cookie-policy-modal',
+      onClose: this.closePolicyDialog,
     };
 
     return (
@@ -157,7 +153,7 @@ export class OntoCookiePolicyDialog {
         <div slot={'footer'}>
           <button class="onto-btn onto-btn-primary close-btn"
             onClick={this.closePolicyDialog}
-            ref={(el) => (this.closeButton = el)}>
+            autofocus>
             <translate-label labelKey={'common.button.close'}></translate-label>
           </button>
         </div>

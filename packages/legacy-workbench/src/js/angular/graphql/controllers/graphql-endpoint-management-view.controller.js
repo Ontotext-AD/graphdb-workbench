@@ -421,7 +421,6 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
             windowClass: 'endpoint-generation-failure-result-modal',
             size: 'lg',
             backdrop: 'static',
-            keyboard: false,
             resolve: {
                 data: () => {
                     return {

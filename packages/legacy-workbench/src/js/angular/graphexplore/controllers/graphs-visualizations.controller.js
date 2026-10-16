@@ -527,7 +527,8 @@ function GraphsVisualizationsCtrl(
     let openModalCount = 0;
 
     function handleKeyDown(e) {
-        if (modalIsOpen) {
+        // Tab and Escape go through, because the modal traps the focus and closes on them.
+        if (modalIsOpen && e.key !== 'Tab' && e.key !== 'Escape') {
             e.stopPropagation();
         }
     }
