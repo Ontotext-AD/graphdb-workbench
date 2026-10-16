@@ -32,7 +32,14 @@
     padding: 8px;
 }
 
-.import-resource-table .header-cell:hover {
+.import-resource-table .header-cell .sort-btn {
+    color: inherit;
+    background: none;
+    border: none;
+    margin: 0;
+    padding: 0;
+    font: inherit;
+    text-align: inherit;
     cursor: pointer;
 }
 
@@ -97,16 +104,31 @@
     margin-right: .5rem;
 }
 
-.import-resource-tree .import-resources-actions .import-resource-status-dropdown .import-resource-status-checkbox {
-    pointer-events: none;
+.import-resource-tree .import-resources-actions .import-resource-status-dropdown .select-all-control {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    cursor: pointer;
 }
 
 .import-resource-tree .import-resources-actions .import-resource-status-dropdown .dropdown-toggle {
-    padding-left: 0.5rem;
+    padding-left: 0.35rem;
+    padding-right: 0.5rem;
 }
 
-.import-resource-tree .import-resources-actions .import-resource-status-dropdown .dropdown-toggle:not(.selected) {
-    border: none;
+.import-resource-tree .import-resources-actions .import-resource-status-dropdown {
+    margin-right: 1rem;
+}
+
+.import-resource-tree .import-resources-actions .import-resource-status-dropdown .btn {
+    border-color: transparent;
+}
+
+.import-resource-tree .import-resources-actions .import-resource-status-dropdown:hover .btn,
+.import-resource-tree .import-resources-actions .import-resource-status-dropdown.open .btn {
+    border-color: var(--gw-button-secondary-border-color);
 }
 
 .import-resource-tree .import-resources-actions .import-resource-status-dropdown,
@@ -201,6 +223,16 @@
     display: flex;
 }
 
+
+.import-resource-tree .import-status-info {
+    color: inherit;
+    background: none;
+    border: none;
+    margin: 0;
+    padding: 0;
+    line-height: 1;
+    cursor: pointer;
+}
 
 .import-status-info-popover {
     max-width: 80vw;

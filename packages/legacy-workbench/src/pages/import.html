@@ -42,62 +42,61 @@
 
                 <div class="row upload-buttons">
                     <div class="col-xs-12 col-md-6 col-lg-4 mb-2 fat-btn">
-                        <div class="btn btn-secondary btn-lg text-xs-left upload-rdf-files-btn"
-                             uib-popover="{{'supported.import.formats.label' | translate}} {{fileFormatsHuman}}"
-                             popover-trigger="mouseenter"
-                             popover-placement="bottom"
-                             guide-selector="uploadRdfFileButton">
-                            <div id="wb-import-uploadFile" class="pointer clearfix"
-                               accept="{{fileFormatsExtended}}"
-                               ngf-multiple="true"
-                               ngf-select
-                               ngf-keep="false"
-                               ngf-change="fileSelected($files, $file, $newFiles, $duplicateFiles, $invalidFiles)"
-                               ngf-max-size="maxUploadFileSizeBytes">
-                                <div class="grid-container">
-                                    <em class="ri-upload-2-line icon-lg" aria-hidden="true"></em>
-                                    <div class="text m-0">
-                                        <div>{{'upload.rdf.files.label' | translate}}</div>
-                                        <small
-                                            class="text-muted">{{'all.rdf.formats.label' | translate}}{{'up.to' | translate}}
-                                            {{maxUploadFileSizeBytes | bytes}}
-                                        </small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <button type="button" id="wb-import-uploadFile"
+                                class="btn btn-secondary btn-lg text-xs-left upload-rdf-files-btn"
+                                accept="{{fileFormatsExtended}}"
+                                ngf-multiple="true"
+                                ngf-select
+                                ngf-keep="false"
+                                ngf-change="fileSelected($files, $file, $newFiles, $duplicateFiles, $invalidFiles)"
+                                ngf-max-size="maxUploadFileSizeBytes"
+                                uib-popover="{{'supported.import.formats.label' | translate}} {{fileFormatsHuman}}"
+                                popover-trigger="mouseenter"
+                                popover-placement="bottom"
+                                guide-selector="uploadRdfFileButton">
+                            <span class="grid-container">
+                                <em class="ri-upload-2-line icon-lg" aria-hidden="true"></em>
+                                <span class="text m-0">
+                                    <span>{{'upload.rdf.files.label' | translate}}</span>
+                                    <small
+                                        class="text-muted">{{'all.rdf.formats.label' | translate}}{{'up.to' | translate}}
+                                        {{maxUploadFileSizeBytes | bytes}}
+                                    </small>
+                                </span>
+                            </span>
+                        </button>
                     </div>
 
                     <div class="col-xs-12 col-md-6 col-lg-4 mb-2 fat-btn">
-                        <div class="btn btn-secondary btn-lg text-xs-left import-from-url-btn"
-                             role="button" ng-click="rdfDataFromURL()"
-                             uib-popover="{{'supported.import.formats.label' | translate}} {{fileFormatsHuman}}"
-                             popover-trigger="mouseenter"
-                             popover-placement="bottom">
-                            <div class="grid-container">
-                                <em class="ri-links-line icon-lg"></em>
-                                <div class="text">
+                        <button type="button" class="btn btn-secondary btn-lg text-xs-left import-from-url-btn"
+                                ng-click="rdfDataFromURL()"
+                                uib-popover="{{'supported.import.formats.label' | translate}} {{fileFormatsHuman}}"
+                                popover-trigger="mouseenter"
+                                popover-placement="bottom">
+                            <span class="grid-container">
+                                <em class="ri-links-line icon-lg" aria-hidden="true"></em>
+                                <span class="text">
                                     <span>{{'rdf.data.from.url.label' | translate}}</span>
                                     <small class="text-muted">{{'all.rdf.formats.label' | translate}}</small>
-                                </div>
-                            </div>
-                        </div>
+                                </span>
+                            </span>
+                        </button>
                     </div>
 
                     <div class="col-xs-12 col-md-6 col-lg-4 mb-2 fat-btn">
-                        <div class="btn btn-secondary btn-lg text-xs-left import-rdf-snippet-btn"
-                             role="button" ng-click="openTextSnippetDialog()"
-                             uib-popover="{{'supported.import.formats.label' | translate}} {{textFileFormatsHuman}}"
-                             popover-trigger="mouseenter"
-                             popover-placement="bottom">
-                            <div class="grid-container">
-                                <em class="icon-sparql icon-lg"></em>
-                                <div class="text">
-                                    <div>{{'import.rdf.text.snippet.label' | translate}}</div>
+                        <button type="button" class="btn btn-secondary btn-lg text-xs-left import-rdf-snippet-btn"
+                                ng-click="openTextSnippetDialog()"
+                                uib-popover="{{'supported.import.formats.label' | translate}} {{textFileFormatsHuman}}"
+                                popover-trigger="mouseenter"
+                                popover-placement="bottom">
+                            <span class="grid-container">
+                                <em class="icon-sparql icon-lg" aria-hidden="true"></em>
+                                <span class="text">
+                                    <span>{{'import.rdf.text.snippet.label' | translate}}</span>
                                     <small class="text-muted">{{'type.paste.data.label' | translate}}</small>
-                                </div>
-                            </div>
-                        </div>
+                                </span>
+                            </span>
+                        </button>
                     </div>
                 </div>
 

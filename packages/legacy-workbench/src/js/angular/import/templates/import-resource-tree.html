@@ -4,14 +4,15 @@
     <div class="import-resource-tree-header">
         <div class="import-resources-actions">
             <div class="import-resource-status-dropdown btn-group" uib-dropdown>
+                <label class="btn btn-secondary select-all-control">
+                    <input type="checkbox" class="select-all-checkbox"
+                           ng-checked="allDisplayedSelected"
+                           prop-indeterminate="displayedPartiallySelected"
+                           ng-click="toggleAllDisplayedResources()">
+                    <span class="sr-only">{{'import.import_resource_tree.select_all_displayed' | translate}}</span>
+                </label>
                 <button type="button" uib-dropdown-toggle class="btn btn-secondary dropdown-toggle"
-                        aria-label="{{selectedByStatus
-                            ? ('import.import_resource_tree.select_by_status_selected' | translate: {status: ('import.import_resource_tree.status.' + selectedByStatus | translate)})
-                            : ('import.import_resource_tree.select_by_status' | translate)}}"
-                        ng-class="{'selected': selectedByStatus}">
-                    <input type="checkbox" prop-indeterminate="areAllDisplayedImportResourcesPartialSelected"
-                           ng-model="areAllDisplayedImportResourcesSelected">
-                    {{selectedByStatus ? (('import.import_resource_tree.status.' + selectedByStatus) | translate) : ''}}
+                        aria-label="{{'import.import_resource_tree.select_by_status' | translate}}">
                 </button>
                 <ul class="dropdown-menu" role="menu">
                     <li>
@@ -109,48 +110,43 @@
     <table class="import-resource-table mt-2">
         <thead>
         <tr>
-            <th class="header-cell cell-select"></th>
-            <th class="header-cell cell-name" ng-click="sort(SORTING_TYPES.NAME)">
-                <span ng-class="{
-                'sorting_desc': SORTING_TYPES.NAME === sortedBy &&  !sortAsc,
-                'sorting_asc': SORTING_TYPES.NAME === sortedBy && sortAsc,
-                'sorting': SORTING_TYPES.NAME !== sortedBy
-                }">{{columnKeys.name | translate}}</span>
+            <th scope="col" class="header-cell cell-select">
+                <span class="sr-only">{{'import.import_resource_tree.header.select' | translate}}</span>
             </th>
-            <th class="header-cell cell-size" ng-click="sort(SORTING_TYPES.SIZE)">
-                <span ng-class="{
-                'sorting_desc': SORTING_TYPES.SIZE === sortedBy &&  !sortAsc,
-                'sorting_asc': SORTING_TYPES.SIZE === sortedBy && sortAsc,
-                'sorting': SORTING_TYPES.SIZE !== sortedBy
-                }">{{columnKeys.size | translate}}</span>
+            <th scope="col" class="header-cell cell-name" aria-sort="{{getAriaSort(SORTING_TYPES.NAME)}}">
+                <button type="button" class="text-btn sort-btn" ng-click="sort(SORTING_TYPES.NAME)">
+                    <span ng-class="getSortClass(SORTING_TYPES.NAME)">{{columnKeys.name | translate}}</span>
+                </button>
             </th>
-            <th class="header-cell cell-modified" ng-click="sort(SORTING_TYPES.MODIFIED)">
-                <span ng-class="{
-                'sorting_desc': SORTING_TYPES.MODIFIED === sortedBy &&  !sortAsc,
-                'sorting_asc': SORTING_TYPES.MODIFIED === sortedBy && sortAsc,
-                'sorting': SORTING_TYPES.MODIFIED !== sortedBy
-                }">{{columnKeys.modified | translate}}</span>
+            <th scope="col" class="header-cell cell-size" aria-sort="{{getAriaSort(SORTING_TYPES.SIZE)}}">
+                <button type="button" class="text-btn sort-btn" ng-click="sort(SORTING_TYPES.SIZE)">
+                    <span ng-class="getSortClass(SORTING_TYPES.SIZE)">{{columnKeys.size | translate}}</span>
+                </button>
             </th>
-            <th class="header-cell cell-imported" ng-click="sort(SORTING_TYPES.IMPORTED)">
-                <span ng-class="{
-                'sorting_desc': SORTING_TYPES.IMPORTED === sortedBy &&  !sortAsc,
-                'sorting_asc': SORTING_TYPES.IMPORTED === sortedBy && sortAsc,
-                'sorting': SORTING_TYPES.IMPORTED !== sortedBy
-                }">{{columnKeys.imported | translate}}</span>
+            <th scope="col" class="header-cell cell-modified" aria-sort="{{getAriaSort(SORTING_TYPES.MODIFIED)}}">
+                <button type="button" class="text-btn sort-btn" ng-click="sort(SORTING_TYPES.MODIFIED)">
+                    <span ng-class="getSortClass(SORTING_TYPES.MODIFIED)">{{columnKeys.modified | translate}}</span>
+                </button>
             </th>
-            <th class="header-cell cell-context" ng-click="sort(SORTING_TYPES.CONTEXT)">
-                <span ng-class="{
-                'sorting_desc': SORTING_TYPES.CONTEXT === sortedBy &&  !sortAsc,
-                'sorting_asc': SORTING_TYPES.CONTEXT === sortedBy && sortAsc,
-                'sorting': SORTING_TYPES.CONTEXT !== sortedBy
-                }">{{columnKeys.context | translate}}</span>
+            <th scope="col" class="header-cell cell-imported" aria-sort="{{getAriaSort(SORTING_TYPES.IMPORTED)}}">
+                <button type="button" class="text-btn sort-btn" ng-click="sort(SORTING_TYPES.IMPORTED)">
+                    <span ng-class="getSortClass(SORTING_TYPES.IMPORTED)">{{columnKeys.imported | translate}}</span>
+                </button>
             </th>
-            <th class="header-cell import-resource-action"></th>
+            <th scope="col" class="header-cell cell-context" aria-sort="{{getAriaSort(SORTING_TYPES.CONTEXT)}}">
+                <button type="button" class="text-btn sort-btn" ng-click="sort(SORTING_TYPES.CONTEXT)">
+                    <span ng-class="getSortClass(SORTING_TYPES.CONTEXT)">{{columnKeys.context | translate}}</span>
+                </button>
+            </th>
+            <th scope="col" class="header-cell import-resource-action">
+                <span class="sr-only">{{'import.import_resource_tree.header.actions' | translate}}</span>
+            </th>
         </tr>
         </thead>
         <tbody>
         <tr ng-repeat-start="resource in displayResources track by resource.importResource.hash"
             class="row title-row" data-test="resource-{{$index}}"
+            aria-describedby="import-resource-info-{{$id}}"
             ng-class="{ 'even-row-start': $even, 'odd-row-start': $odd}">
             <td class="cell cell-select">
                 <input type="checkbox" ng-model="resource.selected" ng-click="selectionChanged(resource)"
@@ -233,7 +229,8 @@
         </tr>
         <tr ng-repeat-end class="row info-row" ng-class="{ 'even-row-end': $even, 'odd-row-end': $odd}" data-test="resource-{{$index}}">
             <td class="cell cell-select"></td>
-            <td colspan="6" ng-style="{'padding-left': (filterByType !== TYPE_FILTER_OPTIONS.FILE ? resource.indent : '8px')}"
+            <td id="import-resource-info-{{$id}}" colspan="6"
+                ng-style="{'padding-left': (filterByType !== TYPE_FILTER_OPTIONS.FILE ? resource.indent : '8px')}"
                 class="cell">
                 <import-resource-message resource="resource"></import-resource-message>
             </td>

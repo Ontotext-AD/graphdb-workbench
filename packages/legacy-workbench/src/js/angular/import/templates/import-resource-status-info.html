@@ -1,16 +1,19 @@
-<span class="ri-information-2-line text-tertiary import-status-info"
-      uib-popover-template="popoverTemplate"
-      popover-class="import-status-info-popover"
-      popover-trigger="none"
-      ng-click="open()"
-      popover-is-open="popoverIsOpen"
-      popover-placement="left"
-      popover-append-to-body="true">
-</span>
+<button type="button" class="text-btn import-status-info"
+        aria-label="{{'import.status-info.show' | translate: {name: resource.path || resource.name} }}"
+        uib-popover-template="popoverTemplate"
+        popover-class="import-status-info-popover"
+        popover-trigger="none"
+        ng-click="open()"
+        popover-is-open="popoverIsOpen"
+        popover-placement="left"
+        popover-append-to-body="true">
+    <span class="ri-information-2-line text-tertiary" aria-hidden="true"></span>
+</button>
 
 
 <script type="text/ng-template" id="resourceStatusInfoTemplate.html">
-    <sup class="pull-right btn btn-sm close" ng-click="close()"></sup>
+    <button type="button" class="pull-right btn btn-sm close" ng-click="close()"
+            aria-label="{{'common.close' | translate}}"></button>
     <div class="import-resource-status-info-popover">
         <h4>{{'import.status-info.last_import_settings' | translate}}</h4>
 
