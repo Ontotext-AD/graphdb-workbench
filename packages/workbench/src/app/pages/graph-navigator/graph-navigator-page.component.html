@@ -6,9 +6,11 @@
                             *appRestrictAccess="[ViewPermissions.CAN_MAINTAIN_ACTIVE_REPO]"
                             [settings]="graphNavigatorSettings"
                             [loading]="loading()"
+                            [uploadErrors]="uploadErrors()"
                             (uploadSettings)="onUploadSettings($event, repository)"
                             (resetSettings)="onResetSettings(repository)"
-                            (exportSettings)="onExportSettings(repository)">
+                            (exportSettings)="onExportSettings(repository)"
+                            (clearUploadErrors)="uploadErrors.set([])">
     </app-graph-navigator-settings>
     <div class="graph-navigator-wrapper">
       @if (language() && !loading()) {

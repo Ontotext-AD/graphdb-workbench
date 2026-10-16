@@ -1,11 +1,13 @@
 <p-button icon="ri-settings-3-line"
-          severity="primary"
-          [outlined]="true"
+          severity="secondary"
           [label]="'graph_navigator.settings.button' | transloco"
           data-test="graph-navigator-settings-btn"
           (onClick)="popover.toggle($event)"/>
 
-<p-popover #popover [dismissable]="dismissable()" styleClass="graph-navigator-settings-popover">
+<p-popover #popover
+           [dismissable]="dismissable()"
+           styleClass="graph-navigator-settings-popover"
+           (onHide)="errorsShown.set(false)">
   <ng-template #content>
     <div class="graph-navigator-settings" data-test="graph-navigator-settings-popover">
       <header class="settings-header">
@@ -31,6 +33,9 @@
                     uploadIcon="ri-upload-2-line"
                     cancelIcon="ri-close-line"
                     data-test="graph-navigator-settings-upload"
+                    (onSelect)="onFileChanged()"
+                    (onRemove)="onFileChanged()"
+                    (onClear)="onFileChanged()"
                     (uploadHandler)="confirmUpload($event)">
         <ng-template #file let-file>
           <div class="p-fileupload-file" data-test="graph-navigator-settings-upload-file">
@@ -51,6 +56,22 @@
                 [label]="'graph_navigator.settings.export' | transloco"
                 data-test="graph-navigator-settings-export-btn"
                 (onClick)="exportSettings.emit()"/>
+
+      @if (uploadErrors().length) {
+        <p-button [text]="true"
+                  severity="danger"
+                  icon="ri-forbid-line"
+                  [label]="'graph_navigator.settings.upload.validation_errors' | transloco"
+                  data-test="graph-navigator-settings-upload-errors-btn"
+                  (onClick)="errorsPopover.toggle($event)"/>
+        <p-popover #errorsPopover (onShow)="holdSettingsPopover()" (onHide)="releaseSettingsPopover()">
+          <ul class="graph-navigator-settings-upload-errors" data-test="graph-navigator-settings-upload-errors">
+            @for (error of uploadErrors(); track $index) {
+              <li>{{ error }}</li>
+            }
+          </ul>
+        </p-popover>
+      }
     </div>
   </ng-template>
 </p-popover>
