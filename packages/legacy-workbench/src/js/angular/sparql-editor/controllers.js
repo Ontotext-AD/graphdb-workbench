@@ -7,12 +7,14 @@ import 'angular/externalsync/controllers';
 import {YasguiComponentDirectiveUtil} from '../core/directives/yasgui-component/yasgui-component-directive.util';
 import {QueryType} from '../models/ontotext-yasgui/query-type';
 import {ConnectorCommand} from '../models/connectors/connector-command';
-import {BeforeUpdateQueryResult, BeforeUpdateQueryResultStatus} from '../models/ontotext-yasgui/before-update-query-result';
+import {
+    BeforeUpdateQueryResult,
+    BeforeUpdateQueryResultStatus,
+} from '../models/ontotext-yasgui/before-update-query-result';
 import {EventDataType} from '../models/ontotext-yasgui/event-data-type';
 import {decodeHTML} from '../../../app';
 import {toBoolean} from '../utils/string-utils';
 import {VIEW_SPARQL_EDITOR} from '../models/sparql/constants';
-import {CancelAbortingQuery} from '../models/sparql/cancel-aborting-query';
 import {QueryMode} from '../models/ontotext-yasgui/query-mode';
 import 'angular/core/services/event-emitter-service';
 import {LoggerProvider} from '../core/services/logger-provider';
@@ -25,6 +27,7 @@ import {
     EventService,
     EventName,
     SecurityContextService,
+    SparqlStorageService,
     GraphConfigService,
     service,
     RepositoryContextService,
@@ -61,10 +64,7 @@ SparqlEditorCtrl.$inject = [
     'SparqlRestService',
     'ConnectorsRestService',
     'ModalService',
-    'MonitoringRestService',
-    'EventEmitterService',
-    'LocalStorageAdapter',
-    'LSKeys'];
+    'MonitoringRestService'];
 
 function SparqlEditorCtrl($scope,
     $q,
@@ -77,24 +77,21 @@ function SparqlEditorCtrl($scope,
     SparqlRestService,
     ConnectorsRestService,
     ModalService,
-    MonitoringRestService,
-    EventEmitterService,
-    LocalStorageAdapter,
-    LSKeys) {
+    MonitoringRestService) {
     const securityContextService = service(SecurityContextService);
     const guidesService = service(GuidesService);
     const parentWindowMessageService = service(ParentWindowMessageService);
     const graphConfigService = service(GraphConfigService);
     const languageContextService = ServiceProvider.get(LanguageContextService);
     const repositoryContextService = service(RepositoryContextService);
+    const eventService = service(EventService);
+    const sparqlStorageService = service(SparqlStorageService);
 
     this.repository = '';
 
     const QUERY_EDITOR_ID = '#query-editor';
     let activeRepository = $repositories.getActiveRepository();
     let isOntopRepo = $repositories.isActiveRepoOntopType();
-    let initialRepositoryChange = true;
-    let skipLocationChangeHandler = false;
     // This is used to determine whether the view is embedded in another application. When embedded, we want to hide
     // some elements and disable the "go to home" functionality, as it doesn't make sense in that context.
     $scope.embedded = $location.search().embedded;
@@ -111,6 +108,12 @@ function SparqlEditorCtrl($scope,
 
     const tabIdToConnectorProgressModalMapping = new Map();
     let internallyReloaded = false;
+    let isInitialRepositoryChange = true;
+    let shouldBypassNextCancellation = false;
+    // Once the user confirms leaving the view, the next view may still change the URL (e.g. add the repositoryId
+    // parameter) before this controller is destroyed. Canceling and replaying those changes fills the history.
+    let isLeaveConfirmed = false;
+    let pendingReplayTimer = null;
 
     // =========================
     // Public functions
@@ -355,6 +358,8 @@ function SparqlEditorCtrl($scope,
             query: yasr.yasqe.getValue(),
             sameAs: yasr.yasqe.getSameAs(),
             inference: yasr.yasqe.getInfer(),
+            // Without it the next view adds the parameter with a second navigation, which this view cancels and replays.
+            [REPOSITORY_ID_PARAM]: $repositories.getActiveRepository(),
         };
 
         if (visGraphConfigId) {
@@ -374,6 +379,7 @@ function SparqlEditorCtrl($scope,
             query: yasr.yasqe.getValue(),
             sameAs: yasr.yasqe.getSameAs(),
             inference: yasr.yasqe.getInfer(),
+            [REPOSITORY_ID_PARAM]: $repositories.getActiveRepository(),
         });
     };
 
@@ -621,35 +627,12 @@ function SparqlEditorCtrl($scope,
             });
         // TODO: we should also watch for changes in namespaces
         // scope.$watch('namespaces', function () {});
-        initialRepositoryChange = false;
     };
 
     // =========================
     // Event handlers
     // =========================
     const subscriptions = [];
-
-    const repositoryWillChangeHandler = () => {
-        return new Promise((resolve) => {
-            confirmAbortQueries('view.sparql-editor.repository_change.run_queries.confirmation', () => resolve(true), () => resolve(false));
-        });
-    };
-
-    const repositoryChangedHandler = (object) => {
-        if (!object) {
-            return;
-        }
-
-        activeRepository = $repositories.getActiveRepository();
-        isOntopRepo = $repositories.isActiveRepoOntopType(object);
-        skipLocationChangeHandler = !initialRepositoryChange;
-        if (LocalStorageAdapter.get(LSKeys.SPARQL_LAST_REPO) !== activeRepository) {
-            init(true);
-            persistLasstUsedRepository();
-        } else {
-            init(false);
-        }
-    };
 
     const beforeunloadHandler = (event) => {
         const ontotextYasguiElement = YasguiComponentDirectiveUtil.getOntotextYasguiElement(QUERY_EDITOR_ID);
@@ -662,77 +645,162 @@ function SparqlEditorCtrl($scope,
         ontotextYasguiElement.abortAllRequests().then(() => {
         });
     };
-    window.addEventListener('beforeunload', beforeunloadHandler);
 
-    // First, we check if there are any ongoing requests initiated by the user.
-    // If the user has ongoing requests, we request confirmation to abort them.
-    // If the user confirms or there are no ongoing requests, we call the "abortAllRequests" method. This method will abort all requests.
-    const confirmAbortQueries = (messageKey, successCallback, errorCallback, alwaysShowConfirm = false) => {
-        const ontotextYasguiElement = YasguiComponentDirectiveUtil.getOntotextYasguiElement(QUERY_EDITOR_ID);
-        if (!ontotextYasguiElement) {
-            successCallback();
-            return;
-        }
-
-        ontotextYasguiElement
-            .getOngoingRequestsInfo()
-            .then((hasRunQuery) => confirmAbortQueriesDialog(messageKey, hasRunQuery, alwaysShowConfirm))
-            .then(() => ontotextYasguiElement.abortAllRequests())
-            .then(() => {
-                successCallback();
-            })
-            .catch((error) => {
-                if (!(error instanceof CancelAbortingQuery)) {
-                    logger.error(error);
-                    errorCallback();
-                }
-            });
+    /**
+     * Asks to confirm the repository change when queries are running, and aborts them on confirmation.
+     *
+     * The change doesn't proceed when the running queries can't be checked or aborted.
+     *
+     * @return {Promise<boolean>} Resolves to <code>true</code> if the repository change may proceed.
+     */
+    const shouldAllowRepositoryChanged = () => {
+        return confirmAndAbortRunningQueries('view.sparql-editor.repository_change.run_queries.confirmation', false);
     };
 
-    const confirmAbortQueriesDialog = (messageKey, ongoingRequestsInfo, alwaysShowConfirm = false) => new Promise((resolve, reject) => {
-        if (!alwaysShowConfirm && (!ongoingRequestsInfo || ongoingRequestsInfo.queriesCount < 1 && ongoingRequestsInfo.updatesCount < 1)) {
-            resolve();
+    const repositoryChangedHandler = (repositoryReference) => {
+        if (!repositoryReference) {
             return;
         }
+        activeRepository = repositoryReference.id;
+        isOntopRepo = repositoryContextService.isActiveRepoOntopType();
+        // Let the URL update that follows a repository change through; canceling and replaying it adds a history entry.
+        shouldBypassNextCancellation = !isInitialRepositoryChange;
+        isInitialRepositoryChange = false;
+        const lastUsedRepositoryId = sparqlStorageService.getLastUsedRepository();
+        if (lastUsedRepositoryId === activeRepository) {
+            init(false);
+        } else {
+            init(true);
+            persistLastUsedRepository();
+        }
+    };
 
-        const title = $translate.instant('common.confirm');
-        const message = decodeHTML(getExitPageConfirmMessage(messageKey, ongoingRequestsInfo));
-        ModalService.openSimpleModal({
-            title,
-            message,
-            warning: true,
-        }).result.then(function() {
-            resolve();
-        }, function() {
-            reject(new CancelAbortingQuery());
-        });
-    });
+    /**
+     * Asks to confirm the language change, which reloads the page, and aborts the running queries on confirmation.
+     *
+     * The dialog is shown even when no queries are running. The change doesn't proceed when the running queries can't
+     * be checked or aborted.
+     *
+     * @return {Promise<boolean>} Resolves to <code>true</code> if the language change may proceed.
+     */
+    const shouldAllowLanguageChanged = () => {
+        return confirmAndAbortRunningQueries('view.sparql-editor.language_change.run_queries.confirmation', false, true);
+    };
 
-    let pendingReplayTimer = null;
-    const locationChangeHandler = (eventPayload) => {
-        if (internallyReloaded || skipLocationChangeHandler) {
+    const onLanguageChangeHandler = () => {
+        // The page needs to be reloaded, because of the Google charts and Pivot table scripts. When the language is
+        // changed, the correct language for these components is loaded only on the page reload, but we can't be sure
+        // that the user will reload the page by themselves, so we need to do it programmatically. We can't just change
+        // the src of the existing script, because these components don't react to it, so we need to reload the whole page.
+        WindowService.reloadPage();
+    };
+
+    /**
+     * Cancels leaving the page, asks to confirm it when queries are running, and navigates again on confirmation.
+     *
+     * A reload started by the page itself, the navigation started again here, and every navigation after the user
+     * confirmed leaving the view always proceed. Navigation also proceeds when the running queries can't be checked
+     * or aborted.
+     *
+     * @param {object} eventPayload The single-spa navigation event payload, with the target URL.
+     * @return {Promise<boolean>} Resolves to <code>true</code>, except for the navigations that always proceed.
+     */
+    const shouldCancelNavigationOnLocationChange = (eventPayload) => {
+        if (isLeaveConfirmed) {
+            return Promise.resolve(false);
+        }
+        if (internallyReloaded || shouldBypassNextCancellation) {
             internallyReloaded = false;
-            skipLocationChangeHandler = false;
-            return;
+            shouldBypassNextCancellation = false;
+            return Promise.resolve(false);
         }
 
         const url = new URL(eventPayload.newUrl);
         const newUrl = url.pathname + url.search + url.hash;
-        eventPayload.cancelNavigation();
-        const handler = () => {
-            skipLocationChangeHandler = true;
+        const isLeavingView = !eventPayload.oldUrl || new URL(eventPayload.oldUrl).pathname !== url.pathname;
+
+        const onConfirmationResult = (confirmed) => {
             // Use setTimeout to ensure that the navigation is triggered after the current call stack is cleared.
             // Cancel it on destroy to avoid re-navigation in the timeout, after the component has been destroyed
             pendingReplayTimer = setTimeout(() => {
-                navigate(newUrl);
+                if (confirmed) {
+                    isLeaveConfirmed = isLeavingView;
+                    shouldBypassNextCancellation = !isLeavingView;
+                    navigate(newUrl);
+                }
             });
         };
-        confirmAbortQueries('view.sparql-editor.leave_page.run_queries.confirmation', handler, handler);
+
+        // If the running queries can't be checked or aborted, the user still leaves the page.
+        void confirmAndAbortRunningQueries('view.sparql-editor.leave_page.run_queries.confirmation', true).then(onConfirmationResult);
+
+        // Cancel right away instead of waiting for the dialog: in this AngularJS view a canceled promise that resolves
+        // late lets the page navigate away first and come back after "Cancel", which flashes the other view.
+        return Promise.resolve(true);
     };
 
-    subscriptions.push(
-        ServiceProvider.get(EventService).subscribe(EventName.NAVIGATION_START, (eventPayload) => locationChangeHandler(eventPayload)),
-    );
+    /**
+     * Asks to confirm the sign out when queries are running, and aborts them on confirmation.
+     *
+     * The sign out also proceeds when the running queries can't be checked or aborted.
+     *
+     * @return {Promise<boolean>} Resolves to <code>true</code> if the sign out should be canceled.
+     */
+    const shouldCancelLogout = () => {
+        return confirmAndAbortRunningQueries('view.sparql-editor.logout.run_queries.confirmation', true).then((proceed) => !proceed);
+    };
+
+    /**
+     * Asks to confirm aborting the running queries, if any, and aborts them on confirmation.
+     *
+     * @param {string} messageKey The key prefix of the confirmation dialog messages.
+     * @param {boolean} shouldProceedOnError The result when the running queries can't be checked or aborted.
+     * @param {boolean} alwaysShowConfirm Shows the dialog even when no queries are running.
+     * @return {Promise<boolean>} Resolves to <code>true</code> if the action may proceed.
+     */
+    const confirmAndAbortRunningQueries = async (messageKey, shouldProceedOnError, alwaysShowConfirm = false) => {
+        const ontotextYasguiElement = YasguiComponentDirectiveUtil.getOntotextYasguiElement(QUERY_EDITOR_ID);
+        if (!ontotextYasguiElement) {
+            return true;
+        }
+
+        // First, we check if there are any ongoing requests initiated by the user.
+        // If the user has ongoing requests, we request confirmation to abort them.
+        // If the user confirms or there are no ongoing requests, we call the "abortAllRequests" method. This method will abort all requests.
+        try {
+            const ongoingRequestsInfo = await ontotextYasguiElement.getOngoingRequestsInfo();
+            const confirmed = await confirmIfQueriesRunning(messageKey, ongoingRequestsInfo, alwaysShowConfirm);
+            if (confirmed) {
+                await ontotextYasguiElement.abortAllRequests();
+            }
+            return confirmed;
+        } catch (error) {
+            logger.error('Could not check or abort the running queries', error);
+            return shouldProceedOnError;
+        }
+    };
+
+    const confirmIfQueriesRunning = (messageKey, ongoingRequestsInfo, alwaysShowConfirm = false) => {
+        return new Promise((resolve) => {
+            if (!alwaysShowConfirm && (!ongoingRequestsInfo || ongoingRequestsInfo.queriesCount < 1 && ongoingRequestsInfo.updatesCount < 1)) {
+                resolve(true);
+                return;
+            }
+
+            const title = $translate.instant('common.confirm');
+            const message = decodeHTML(getExitPageConfirmMessage(messageKey, ongoingRequestsInfo));
+            ModalService.openSimpleModal({
+                title,
+                message,
+                warning: true,
+            }).result.then(function() {
+                resolve(true);
+            }, function() {
+                logger.info('The user kept the running queries');
+                resolve(false);
+            });
+        });
+    };
 
     const removeAllListeners = () => {
         clearTimeout(pendingReplayTimer);
@@ -741,11 +809,11 @@ function SparqlEditorCtrl($scope,
     };
 
     const finalizeAndDestroy = () => {
-        persistLasstUsedRepository();
+        persistLastUsedRepository();
         removeAllListeners();
     };
 
-    const persistLasstUsedRepository = () => {
+    const persistLastUsedRepository = () => {
         // The active repository is set when the controller is initialized and when the repository is changed.
         // It holds the actual repository when the YASGUI is initialized. DON'T use runtime fetching of the actual repository here, because there is a scenario:
         // 1. Open a tab with the SPARQL view open;
@@ -756,28 +824,21 @@ function SparqlEditorCtrl($scope,
         // In the main controller, a listener has been registered to listen to that event and refresh the page outside of the Angular scope.
         // Reloading the page triggers the destruction of the component and persistence of the active repository. The reloading of the page is out of the Angular scope, so the "activeRepository"
         // holds the real repository when the YASGUI is created. If we use $$repositories.getActiveRepository(), the new value will be fetched, which in this case will be incorrect.
-        LocalStorageAdapter.set(LSKeys.SPARQL_LAST_REPO, activeRepository);
+        sparqlStorageService.setLastUsedRepository(activeRepository);
     };
 
-    const onLanguageChange = () => {
-        WindowService.reloadPage();
+    const subscribeToEvents = () => {
+        window.addEventListener('beforeunload', beforeunloadHandler);
+        subscriptions.push(
+            repositoryContextService.onSelectedRepositoryChanged((repositoryReference) => repositoryChangedHandler(repositoryReference), () => shouldAllowRepositoryChanged()),
+            // Subscribe to language change and ask to reload the page
+            languageContextService.onSelectedLanguageChanged(() => onLanguageChangeHandler(), () => shouldAllowLanguageChanged(), true),
+            eventService.addCancellationHandler(EventName.NAVIGATION_START, (event) => shouldCancelNavigationOnLocationChange(event)),
+            eventService.addCancellationHandler(EventName.LOGOUT, () => shouldCancelLogout()),
+            // Deregister the watcher when the scope/directive is destroyed
+            $scope.$on('$destroy', finalizeAndDestroy),
+        );
     };
 
-    const showLanguageChangeConfirmation = () => {
-        return new Promise((resolve) => {
-            confirmAbortQueries('view.sparql-editor.language_change.run_queries.confirmation', () => resolve(true), () => resolve(false), true);
-        });
-    };
-
-    subscriptions.push(
-        // Subscribe to language change and ask to reload the page
-        languageContextService.onSelectedLanguageChanged(onLanguageChange, showLanguageChangeConfirmation, true),
-        // Deregister the watcher when the scope/directive is destroyed
-        $scope.$on('$destroy', finalizeAndDestroy),
-    );
-
-    // Wait until the active repository object is set, otherwise "canWriteActiveRepo()" may return a wrong result and the "ontotext-yasgui"
-    // readOnly configuration may be incorrect.
-    const repositoryChangeSubscription = repositoryContextService.onSelectedRepositoryChanged(repositoryChangedHandler, repositoryWillChangeHandler);
-    subscriptions.push(repositoryChangeSubscription);
+    subscribeToEvents();
 }

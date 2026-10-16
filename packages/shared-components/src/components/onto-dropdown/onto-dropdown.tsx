@@ -266,6 +266,7 @@ export class OntoDropdown {
     return (
       <div class={`onto-dropdown ${this.open ? 'open' : 'closed'}`}>
         <button class="onto-dropdown-button label-base-regular"
+          data-test={'onto-dropdown-button'}
           ref={(el) => this.dropdownButtonElement = el as unknown as HTMLElementWithTooltip}
           {...(this.dropdownButtonGuideSelector ? { [this.GUIDE_SELECTOR_ATTR]: this.dropdownButtonGuideSelector } : {})}
           tooltip-placement={tooltipPlacement}

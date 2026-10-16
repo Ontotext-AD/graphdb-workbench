@@ -35,6 +35,7 @@ import {RouteProvider} from './services/route-provider';
 import {getWorkbenchRoutes} from './services/workbench-routes-provider';
 import {getLegacyRoutes} from './services/legacy-routes-provider';
 import {AppChangeEvent, AppModules, NavigationEvent, SingleSpaGlobal} from './models/models';
+import {LoggerProvider} from './services/logger-provider';
 
 const SINGLE_SPA_GLOBAL_KEY = 'singleSpa';
 
@@ -96,13 +97,16 @@ function registerSingleSpaRouterListeners(): void {
   WindowService.getWindow().addEventListener('single-spa:before-routing-event', (evt: Event) => {
     // 2nd event emitted by SingleSpa, next is single-spa:before-mount-routing-event
     const d = (evt as NavigationEvent).detail;
-    service(EventService).emit(new NavigationStart(d.oldUrl, d.newUrl, d.cancelNavigation));
+    const navigationCanceled = service(EventService).emit(new NavigationStart(d.oldUrl, d.newUrl));
+    d.cancelNavigation?.(navigationCanceled);
   });
 
   WindowService.getWindow().addEventListener('single-spa:before-mount-routing-event', (evt: Event) => {
     // 3rd event emitted by SingleSpa, next is single-spa:before-first-mount
     const d = (evt as AppChangeEvent).detail;
-    service(EventService).emit(new BeforeMountRouting(new ApplicationsState(d.newAppStatuses)));
+    service(EventService)
+      .emit(new BeforeMountRouting(new ApplicationsState(d.newAppStatuses)))
+      .catch((error) => LoggerProvider.logger.error('Failed to emit BeforeMountRouting event', error));
   });
 
   WindowService.getWindow().addEventListener('single-spa:app-change', (evt: Event) => {
@@ -115,7 +119,9 @@ function registerSingleSpaRouterListeners(): void {
   WindowService.getWindow().addEventListener('single-spa:routing-event', (evt: Event) => {
     // 7th (last) event emitted by SingleSpa, previous is single-spa:app-change or single-spa:no-app-change
     const d = (evt as NavigationEvent).detail;
-    service(EventService).emit(new NavigationEnd(d.oldUrl, d.newUrl));
+    service(EventService)
+      .emit(new NavigationEnd(d.oldUrl, d.newUrl))
+      .catch((error) => LoggerProvider.logger.error('Failed to emit NavigationEnd event', error));
   });
 }
 

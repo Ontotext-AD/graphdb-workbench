@@ -1,5 +1,6 @@
 import {ModalDialogSteps} from "../modal-dialog-steps";
 
+const VIEW_URL = '/import';
 /**
  * Reusable functions for interacting with the import page.
  */
@@ -21,9 +22,13 @@ class ImportSteps {
     }
 
     static visit() {
-        cy.visit('/import');
-        cy.url().should('include', '/import');
+        cy.visit(VIEW_URL);
+        cy.url().should('include', VIEW_URL);
         cy.get('#wb-import h1').should('be.visible');
+    }
+
+    static verifyUrl() {
+        cy.url().should('include', `${Cypress.config('baseUrl')}${VIEW_URL}`);
     }
 
     static getView() {

@@ -28,7 +28,7 @@ describe('Abort query', () => {
         // and execute a query that takes a long time.
         YasqeSteps.pasteQuery(
             'select (count(*) as ?count) where {?s ?p ?o. ?s1 ?p1 ?o1. ?s2 ?p2 ?o2. ?s3 ?p3 ?o3.}');
-        YasqeSteps.executeQueryWithoutWaiteResult();
+        YasqeSteps.executeQueryWithoutWaitingForResult();
 
         // Then I expect to an "Abort query" button to be displayed,
         YasqeSteps.getAbortQueryButton().should('exist');

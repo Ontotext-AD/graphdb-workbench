@@ -2,10 +2,9 @@ import {Service} from '../../../providers/service/service';
 import {AuthenticatedUser, SecurityConfig} from '../../../models/security';
 import {service} from '../../../providers';
 import {EventService} from '../../event-service';
-import {Logout} from '../../../models/events';
+import {Login, LoggedOut} from '../../../models/events';
 import {SecurityContextService} from './security-context.service';
 import {AuthStrategyResolver} from './auth-strategy-resolver';
-import {Login} from '../../../models/events/auth/login';
 import {AuthorizationService} from './authorization.service';
 import {AuthenticationStrategyNotSet} from './errors/authentication-strategy-not-set';
 import {AuthStrategy} from '../../../models/security/authentication';
@@ -58,26 +57,25 @@ export class AuthenticationService implements Service {
     const authUser = await authStrategy.login(loginData);
     this.securityContextService.updateIsLoggedIn(true);
     this.securityContextService.updateAuthenticatedUser(authUser);
-    this.eventService.emit(new Login());
+    await this.eventService.emit(new Login());
   }
 
   /**
-   * Logs out the current user and emits logout event.
-   * Updates security context for logout request.
+   * Logs out the current user and emits the logged-out event, or the login event when free access is on.
+   *
+   * @returns A promise that resolves once the event is emitted.
    */
-  logout(): Promise<void> {
+  async logout(): Promise<void> {
     const authStrategy = this.getAuthenticationStrategy();
     this.authenticationStorageService.setAuthenticated(false);
-    return authStrategy.logout()
-      .then(() => {
-        this.securityContextService.updateIsLoggedIn(false);
-        if (this.authorizationService.hasFreeAccess()) {
-          this.authorizationService.initializeFreeAccess();
-          this.eventService.emit(new Login());
-        } else {
-          this.eventService.emit(new Logout());
-        }
-      });
+    await authStrategy.logout();
+    this.securityContextService.updateIsLoggedIn(false);
+    if (this.authorizationService.hasFreeAccess()) {
+      this.authorizationService.initializeFreeAccess();
+      await this.eventService.emit(new Login());
+    } else {
+      await this.eventService.emit(new LoggedOut());
+    }
   }
 
   /**

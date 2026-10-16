@@ -17,7 +17,7 @@ export interface NavigationEvent extends CustomEvent {
   detail: {
     oldUrl: string;
     newUrl: string;
-    cancelNavigation?: () => void;
+    cancelNavigation?: (cancel?: boolean | Promise<boolean>) => void;
   };
 }
 

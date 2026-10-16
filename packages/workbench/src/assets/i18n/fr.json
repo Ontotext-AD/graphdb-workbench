@@ -222,11 +222,18 @@
         "queries_updates": "{{sparql_editor.confirmation.running_queries_warning.queries_updates}}<div>Changer de langue rechargera la page. Êtes-vous sûr de vouloir continuer ?</div>"
       },
       "on_page_leave": {
-        "title": "Confirmer la sortie",
-        "none_queries_non_updates": "Êtes-vous sûr de vouloir quitter ?",
-        "queries_non_updates": "{{sparql_editor.confirmation.running_queries_warning.queries_non_updates}}<div>Êtes-vous sûr de vouloir quitter ?</div>",
-        "none_queries_updates": "{{sparql_editor.confirmation.running_queries_warning.none_queries_updates}}<div>Êtes-vous sûr de vouloir quitter ?</div>",
-        "queries_updates": "{{sparql_editor.confirmation.running_queries_warning.queries_updates}}<div>Êtes-vous sûr de vouloir quitter ?</div>"
+        "title": "Confirmer la sortie de la page",
+        "none_queries_non_updates": "Êtes-vous sûr de vouloir quitter cette page ?",
+        "queries_non_updates": "{{sparql_editor.confirmation.running_queries_warning.queries_non_updates}}<div>Êtes-vous sûr de vouloir quitter cette page ?</div>",
+        "none_queries_updates": "{{sparql_editor.confirmation.running_queries_warning.none_queries_updates}}<div>Êtes-vous sûr de vouloir quitter cette page ?</div>",
+        "queries_updates": "{{sparql_editor.confirmation.running_queries_warning.queries_updates}}<div>Êtes-vous sûr de vouloir quitter cette page ?</div>"
+      },
+      "on_logout": {
+        "title": "Confirmer la déconnexion",
+        "none_queries_non_updates": "Êtes-vous sûr de vouloir vous déconnecter ?",
+        "queries_non_updates": "{{sparql_editor.confirmation.running_queries_warning.queries_non_updates}}<div>Êtes-vous sûr de vouloir vous déconnecter ?</div>",
+        "none_queries_updates": "{{sparql_editor.confirmation.running_queries_warning.none_queries_updates}}<div>Êtes-vous sûr de vouloir vous déconnecter ?</div>",
+        "queries_updates": "{{sparql_editor.confirmation.running_queries_warning.queries_updates}}<div>Êtes-vous sûr de vouloir vous déconnecter ?</div>"
       },
       "on_repository_change": {
         "title": "Confirmer le changement de dépôt sélectionné",

@@ -222,11 +222,18 @@
         "queries_updates": "{{sparql_editor.confirmation.running_queries_warning.queries_updates}}<div>Changing the language will reload the page. Are you sure you want to continue?</div>"
       },
       "on_page_leave": {
-        "title": "Confirm exit",
-        "none_queries_non_updates": "Are you sure that you want to exit?",
-        "queries_non_updates": "{{sparql_editor.confirmation.running_queries_warning.queries_non_updates}}<div>Are you sure that you want to exit?</div>",
-        "none_queries_updates": "{{sparql_editor.confirmation.running_queries_warning.none_queries_updates}}<div>Are you sure that you want to exit?</div>",
-        "queries_updates": "{{sparql_editor.confirmation.running_queries_warning.queries_updates}}<div>Are you sure that you want to exit?</div>"
+        "title": "Confirm leaving the page",
+        "none_queries_non_updates": "Are you sure that you want to leave this page?",
+        "queries_non_updates": "{{sparql_editor.confirmation.running_queries_warning.queries_non_updates}}<div>Are you sure that you want to leave this page?</div>",
+        "none_queries_updates": "{{sparql_editor.confirmation.running_queries_warning.none_queries_updates}}<div>Are you sure that you want to leave this page?</div>",
+        "queries_updates": "{{sparql_editor.confirmation.running_queries_warning.queries_updates}}<div>Are you sure that you want to leave this page?</div>"
+      },
+      "on_logout": {
+        "title": "Confirm sign out",
+        "none_queries_non_updates": "Are you sure that you want to sign out?",
+        "queries_non_updates": "{{sparql_editor.confirmation.running_queries_warning.queries_non_updates}}<div>Are you sure that you want to sign out?</div>",
+        "none_queries_updates": "{{sparql_editor.confirmation.running_queries_warning.none_queries_updates}}<div>Are you sure that you want to sign out?</div>",
+        "queries_updates": "{{sparql_editor.confirmation.running_queries_warning.queries_updates}}<div>Are you sure that you want to sign out?</div>"
       },
       "on_repository_change": {
         "title": "Confirm selected repository change",

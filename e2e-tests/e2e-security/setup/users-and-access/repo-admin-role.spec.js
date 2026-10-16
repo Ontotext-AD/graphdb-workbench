@@ -55,7 +55,7 @@ describe('Repository Admin – Permissions and Access Control', () => {
             'ex:greeting ex:text "Hello, world!" .\n' +
             '}';
         cy.pasteIntoCodeMirror('.CodeMirror', prefix + query);
-        YasqeSteps.executeQueryWithoutWaiteResult();
+        YasqeSteps.executeQueryWithoutWaitingForResult();
         // Verify read access
         YasrSteps.getResponseInfo()
             .should('not.have.class', 'hidden')
