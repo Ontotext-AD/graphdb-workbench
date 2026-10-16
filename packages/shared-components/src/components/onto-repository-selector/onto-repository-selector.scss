@@ -27,7 +27,6 @@
     gap: 0.4em;
 
     .item-icon {
-
       // Due to lack of exact match we use --gw-base-font-size (1rem) multiplied by 1.4
       font-size: calc(var(--gw-base-font-size) * 1.4);
     }
@@ -154,6 +153,7 @@
     .inactive-repo-message .icon {
       // Original value 1.14em changed to 1.125rem
         font-size: var(--gw-body-lg-regular-font-size);
+    }
     }
   }
 }
