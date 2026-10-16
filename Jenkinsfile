@@ -8,6 +8,11 @@ pipeline {
         nodejs 'nodejs-22'
     }
 
+    options {
+        // A new push to the same branch or PR supersedes the running build, so abort it instead of queueing.
+        disableConcurrentBuilds(abortPrevious: true)
+    }
+
     environment {
         DOCKER_COMPOSE_FILE = "docker-compose-test.yaml"
         SONAR_ENVIRONMENT = "SonarCloud"
