@@ -64,8 +64,10 @@ export class YasqeSteps {
             .should('be.visible');
     }
 
-    static executeQueryWithoutWaiteResult() {
+    static executeQueryWithoutWaitingForResult() {
         this.clickExecuteQueryButtonAndHideTooltip();
+        // Make sure that the query is executed before Cypress continues.
+        YasqeSteps.getAbortQueryButton().should('be.visible');
     }
 
     static executeErrorQuery() {

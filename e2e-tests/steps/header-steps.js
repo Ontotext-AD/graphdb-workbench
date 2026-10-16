@@ -3,12 +3,16 @@ export class HeaderSteps {
         return cy.get('onto-header');
     }
 
+    static getUserMenu() {
+        return HeaderSteps.getHeader().find('onto-user-menu');
+    }
+
     static openHomePage() {
         HeaderSteps.getHeader().find('.home-page').click();
     }
 
     static logout() {
-        this.getHeader().find('onto-user-menu').click();
+        HeaderSteps.getUserMenu().click();
         cy.get('.onto-user-menu-dropdown')
             .contains('Logout')
             .first()

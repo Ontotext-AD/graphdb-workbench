@@ -2,7 +2,6 @@ import {inject, Injectable} from '@angular/core';
 import {
   EventName,
   EventService,
-  NavigationStartPayload,
   service,
   Subscription,
   SubscriptionList
@@ -41,15 +40,19 @@ export class UnsavedChangesService {
   }
 
   private subscribeToNavigationStart() {
-    this.eventService.subscribe(EventName.NAVIGATION_START, (eventPayload: NavigationStartPayload) => this.onNavigationStart(eventPayload));
+    this.eventService.addCancellationHandler(EventName.NAVIGATION_START, () => this.shouldCancelNavigation());
   }
 
-  private async onNavigationStart(eventPayload: NavigationStartPayload) {
+  /**
+   * Asks the user to confirm leaving the page when a registered callback reports unsaved changes.
+   *
+   * @returns A promise that resolves to `true` when the navigation should be canceled.
+   */
+  private shouldCancelNavigation(): Promise<boolean> {
     if (!this.callbacks.size || !this.hasAnyUnsavedChanges()) {
-      return;
+      return Promise.resolve(false);
     }
-
-    eventPayload.cancelNavigation(this.confirmUnsavedChanges());
+    return this.confirmUnsavedChanges();
   }
 
   private hasAnyUnsavedChanges() {

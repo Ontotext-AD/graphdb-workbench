@@ -88,10 +88,10 @@ export class LanguageContextService extends ContextService<LanguageContextFields
   /**
    * Retrieves the current language bundle from the context.
    *
-   * @returns {TranslationBundle | undefined} The current language bundle, or undefined if no bundle is set.
+   * @returns The selected language bundle, or the default bundle when none is set; undefined when neither is loaded.
    */
   getLanguageBundle(): TranslationBundle | undefined {
-    return this.getContextPropertyValue(this.LANGUAGE_BUNDLE);
+    return this.getContextPropertyValue(this.LANGUAGE_BUNDLE) ?? this.getDefaultBundle();
   }
 
   /**
@@ -144,12 +144,10 @@ export class LanguageContextService extends ContextService<LanguageContextFields
   /**
    * Retrieves the currently selected language from the context.
    *
-   * @returns {string | undefined} The code of the currently selected language.
-   *          Returns undefined if no language has been selected or set in the context.
-   *
+   * @returns The code of the selected language, or the default language from the language config when none is selected.
    */
-  getSelectedLanguage(): string | undefined {
-    return this.getContextPropertyValue(this.SELECTED_LANGUAGE);
+  getSelectedLanguage(): string {
+    return this.getContextPropertyValue(this.SELECTED_LANGUAGE) ?? this.getDefaultLanguage();
   }
 
   getDefaultLanguage(): string {

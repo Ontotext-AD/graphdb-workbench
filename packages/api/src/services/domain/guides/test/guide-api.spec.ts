@@ -11,9 +11,7 @@ describe('GuideApi', () => {
   const logger = LoggerProvider.logger;
 
   beforeEach(() => {
-    jest.spyOn(languageContextService, 'getLanguageBundle').mockReturnValue(undefined);
     jest.spyOn(languageContextService, 'getDefaultBundle').mockReturnValue(undefined);
-    jest.spyOn(languageContextService, 'getSelectedLanguage').mockReturnValue('en');
     jest.spyOn(languageContextService, 'getDefaultLanguage').mockReturnValue('en');
     guideApi = new GuideApi();
   });
@@ -61,11 +59,17 @@ describe('GuideApi', () => {
     });
 
     test('should fall back to default language when per-language object does not have the current language', () => {
-      jest.spyOn(languageContextService, 'getSelectedLanguage').mockReturnValue(undefined);
+      // GIVEN: French is selected and English is the default language.
+      jest.spyOn(languageContextService, 'getSelectedLanguage').mockReturnValue('fr');
       jest.spyOn(languageContextService, 'getDefaultLanguage').mockReturnValue('en');
-
+      // AND: The message has only an English text.
       const key = {language: 'test', 'en': 'Hello'};
-      expect(guideApi.translate(undefined, key)).toBe('Hello');
+
+      // WHEN: I translate the message.
+      const result = guideApi.translate(undefined, key);
+
+      // THEN: I expect the English text.
+      expect(result).toBe('Hello');
     });
 
     test('should warn and return empty string when per-language object has no matching language', () => {
@@ -98,7 +102,6 @@ describe('GuideApi', () => {
 
     test('should warn with a styled message and return the key when no bundle is available at all', () => {
       const warnSpy = jest.spyOn(logger, 'warn');
-      // beforeEach already mocks getLanguageBundle and getDefaultBundle to return undefined
 
       const result = guideApi.translate(undefined, 'missing-key');
 

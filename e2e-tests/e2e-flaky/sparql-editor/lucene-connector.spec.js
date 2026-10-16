@@ -36,7 +36,7 @@ describe('Connectors - Lucene', () => {
     it('should create Lucene connector.', () => {
         // When I execute create lucene connector query.
         YasqeSteps.pasteQuery(LuceneConnectorSteps.getCreateConnectorQuery('my_index'));
-        YasqeSteps.executeQueryWithoutWaiteResult();
+        YasqeSteps.executeQueryWithoutWaitingForResult();
 
         // Then I expect Lucene connector to be created.
         TablePluginSteps.getQueryResultInfo().contains('Created connector my_index');

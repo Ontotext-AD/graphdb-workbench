@@ -8,3 +8,4 @@ export * from './enum-util';
 export {DateUtil} from './date-util';
 export {HtmlUtil} from './html-util';
 export {RdfVersionUtil} from './rdf-version-util';
+export {TranslationUtil} from './translation-util';

@@ -7,6 +7,10 @@ export class LanguageSelectorSteps {
         LanguageSelectorSteps.getLanguageSelectorDropdown().should('be.visible').click();
     }
 
+    static getLanguageSelectorDropdownButton() {
+        return LanguageSelectorSteps.getLanguageSelectorDropdown().getByTestId('onto-dropdown-button');
+    }
+
     static changeLanguage(language) {
         LanguageSelectorSteps.openLanguageSelectorDropdown();
         this.getLanguageSelectorDropdown().find(`button.${language}`).click();

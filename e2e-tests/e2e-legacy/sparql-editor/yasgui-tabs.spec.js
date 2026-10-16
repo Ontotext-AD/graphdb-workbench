@@ -93,7 +93,7 @@ describe('Yasgui tabs', () => {
         // When I execute a long-running query,
         QueryStubs.stubLongRunningQuery(repositoryId);
         SparqlEditorSteps.visitSparqlEditorPage();
-        YasqeSteps.executeQueryWithoutWaiteResult();
+        YasqeSteps.executeQueryWithoutWaitingForResult();
         // and try to navigate to other page.
         MainMenuSteps.clickOnMenuImport();
 
