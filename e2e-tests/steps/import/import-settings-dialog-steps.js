@@ -64,6 +64,22 @@ export class ImportSettingsDialogSteps extends ModalDialogSteps {
         this.getSettingsForm().find('input[name="preserveBNodeIDs"]').check();
     }
 
+    static getDisallowDoctypeDeclCheckbox() {
+        return this.getSettingsForm().find('input[name="disallowDoctypeDecl"]');
+    }
+
+    static allowDoctypeDeclarations() {
+        this.getDisallowDoctypeDeclCheckbox().uncheck();
+    }
+
+    static getRestoreDefaultsButton() {
+        return this.getDialog().find('.restore-defaults-btn');
+    }
+
+    static restoreDefaults() {
+        this.getRestoreDefaultsButton().click();
+    }
+
     static fillContextLink(contextLink) {
         this.getSettingsForm().find('input[name="contextLink"]').type(contextLink).should('have.value', contextLink);
     }

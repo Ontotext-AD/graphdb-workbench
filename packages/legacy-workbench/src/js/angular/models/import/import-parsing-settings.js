@@ -13,5 +13,6 @@ export class ImportParsingSettings {
         this.verifyLanguageTags = false;
         this.normalizeLanguageTags = false;
         this.stopOnError = true;
+        this.disallowDoctypeDecl = true;
     }
 }

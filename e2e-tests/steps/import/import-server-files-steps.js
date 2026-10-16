@@ -10,6 +10,14 @@ export class ImportServerFilesSteps extends ImportSteps {
         return this.getView().find('.server-files-import-help');
     }
 
+    static interceptServerFilesImport(repositoryId) {
+        cy.intercept('POST', `/rest/repositories/${repositoryId}/import/server`).as('importServerFiles');
+    }
+
+    static waitForServerFilesImportSettings() {
+        return cy.wait('@importServerFiles').its('request.body.importSettings');
+    }
+
     static getSelectedTypeFilterButton() {
         return this.getResourcesTable().find('.import-resource-type-filter .active');
     }

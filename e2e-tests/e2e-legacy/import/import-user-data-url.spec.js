@@ -9,7 +9,6 @@ describe('Import user data: URL import', () => {
     const JSONLD_FORMAT = 'JSON-LD';
     const VALID_URL_RDF_FORMAT = 'RDF/XML';
     const RDF_ERROR_MESSAGE = 'RDF Parse Error:';
-    const IMPORT_JSONLD_URL = 'https://example.com/0007-context.jsonld';
 
     beforeEach(() => {
         repositoryId = 'user-import-' + Date.now();
@@ -54,17 +53,17 @@ describe('Import user data: URL import', () => {
     });
 
 
-    // FIXME: wine.rdf contains DOCTYPE which is forbidden in the TR for GDB 12
-    it.skip('Test import file via URL successfully with Auto format selected', () => {
+    it('Test import file via URL successfully with Auto format selected', () => {
         ImportUserDataSteps.openImportURLDialog(IMPORT_URL);
         ImportUserDataSteps.clickImportUrlButton();
-        // Without changing settings
+        // wine.rdf contains a DOCTYPE declaration, which is disallowed by default
+        ImportSettingsDialogSteps.expandAdvancedSettings();
+        ImportSettingsDialogSteps.allowDoctypeDeclarations();
         ImportSettingsDialogSteps.import();
         ImportUserDataSteps.checkImportedResourceByIndex(0, IMPORT_URL);
     });
 
-    // FIXME: wine.rdf contains DOCTYPE which is forbidden in the TR for GDB 12. Expected error message is different.
-    it.skip('Test import file via URL with invalid RDF format selected', () => {
+    it('Test import file via URL with invalid RDF format selected', () => {
         ImportUserDataSteps.openImportURLDialog(IMPORT_URL);
         ImportUserDataSteps.selectRDFFormat(JSONLD_FORMAT);
         ImportUserDataSteps.clickImportUrlButton();
@@ -72,11 +71,13 @@ describe('Import user data: URL import', () => {
         ImportUserDataSteps.checkImportedResourceByIndex(0, IMPORT_URL, RDF_ERROR_MESSAGE);
     });
 
-    // FIXME: wine.rdf contains DOCTYPE which is forbidden in the TR for GDB 12
-    it.skip('Test import file via URL successfully with valid RDF format selected', () => {
+    it('Test import file via URL successfully with valid RDF format selected', () => {
         ImportUserDataSteps.openImportURLDialog(IMPORT_URL);
         ImportUserDataSteps.selectRDFFormat(VALID_URL_RDF_FORMAT);
         ImportUserDataSteps.clickImportUrlButton();
+        // wine.rdf contains a DOCTYPE declaration, which is disallowed by default
+        ImportSettingsDialogSteps.expandAdvancedSettings();
+        ImportSettingsDialogSteps.allowDoctypeDeclarations();
         ImportSettingsDialogSteps.import();
         ImportUserDataSteps.checkImportedResourceByIndex(0, IMPORT_URL);
     });

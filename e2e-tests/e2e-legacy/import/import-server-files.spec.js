@@ -206,4 +206,22 @@ describe('Import server files', () => {
         // Then: I expect the import button be enabled, because the "JSON-LD Context" is not mandatory field.
         ImportSettingsDialogSteps.getImportButton().should('be.enabled');
     });
+
+    it('should send the DOCTYPE declarations option with the import settings', () => {
+        // Given: The server files tab is loaded and the import requests are intercepted
+        ImportServerFilesSteps.interceptServerFilesImport(repositoryId);
+
+        // When: I open the import dialog for a file,
+        ImportServerFilesSteps.importResourceByName('bnodes.ttl');
+        ImportSettingsDialogSteps.expandAdvancedSettings();
+        // Then: I expect DOCTYPE declarations to be disallowed by default.
+        ImportSettingsDialogSteps.getDisallowDoctypeDeclCheckbox().should('be.checked');
+
+        // When: I allow DOCTYPE declarations and start the import
+        ImportSettingsDialogSteps.allowDoctypeDeclarations();
+        ImportSettingsDialogSteps.import();
+        // Then: I expect DOCTYPE declarations to be allowed in the request.
+        ImportServerFilesSteps.waitForServerFilesImportSettings()
+            .its('parserSettings.disallowDoctypeDecl').should('equal', false);
+    });
 });
