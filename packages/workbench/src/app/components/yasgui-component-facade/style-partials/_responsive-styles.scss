@@ -1,20 +1,14 @@
 /* Media queries ensuring proper responsive layout on different screen resolutions And scale it down on given viewport width */
 @media (max-width: 1439px) {
-  
-  /* Omit the heading  tags */
-  app-yasgui-component-facade:not(h3, h4, .dialog-body, .custom-button, .btn-orientation, sup) {
-      font-size: var(--gw-body-sm-regular-font-size) !important;
-  }
-
   app-yasgui-component-facade {
     .yasgui-toolbar {
       .yasgui-btn {
-        font-size: var(--gw-body-xs-regular-font-size) !important;
+        font-size: var(--gw-body-xs-regular-font-size);
         height: 24px !important;
       }
 
       .btn-orientation {
-        font-size: var(--gw-xl-font-size) !important;
+        font-size: var(--gw-xl-font-size);
       }
     }
 
