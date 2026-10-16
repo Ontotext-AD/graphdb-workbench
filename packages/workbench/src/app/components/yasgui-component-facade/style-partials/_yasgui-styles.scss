@@ -1,8 +1,7 @@
 app-yasgui-component-facade {
-  /* #region GLOBAL STYLES FOR BOTH YASQE, YASR AND OTHER COMPONENTS Resets the default font-size for every tag in the yasgui Omit the heading  tags */
-  :not(h3, h4, sup, .no-force-default-font) {
-    font-size: 1rem !important;
-  }
+  /* #region GLOBAL STYLES FOR BOTH YASQE, YASR AND OTHER COMPONENTS */
+  /* Base font-size of the yasgui; its elements inherit it unless they set their own */
+  font-size: 1rem;
 
   .hidden {
     display: none;
@@ -57,12 +56,18 @@ app-yasgui-component-facade {
 
 
   /* #region YASGUI - TOOLBAR TOP RIGHT */
+  .yasgui .tabMenu .acceptWrapper .selector .selectorLabel {
+    font-size: 1rem;
+  }
+
   .yasgui-toolbar {
+    font-size: 1rem;
+
     .yasgui-btn {
       color: var(--gw-button-secondary-color) !important;
       background-color: var(--gw-button-secondary-background) !important;
       border-color: var(--gw-button-secondary-border-color) !important;
-      font-size: 14px !important;
+      font-size: 14px;
       padding-left: 8px;
       padding-right: 8px;
 
@@ -86,7 +91,7 @@ app-yasgui-component-facade {
     }
 
     .btn-orientation {
-      font-size: 28px !important;
+      font-size: 28px;
       margin-left: 1rem;
       color: var(--gw-button-secondary-color) !important;
       background-color: transparent !important;
@@ -104,7 +109,7 @@ app-yasgui-component-facade {
 
     .tab .closeTab .ri-close-line,
     .addTab .ri-add-circle-line {
-      font-size: 1.225em !important;
+      font-size: 1.225em;
       font-weight: 100;
     }
 
@@ -179,6 +184,7 @@ app-yasgui-component-facade {
         border-color: var(--gw-tabs-tab-active-border-color) var(--gw-tabs-tab-active-border-color) transparent !important;
 
         .addTab {
+          font-size: 1rem;
           color: var(--gw-button-secondary-color) !important;
           background-color: var(--gw-tabs-tab-background);
           border-color: var(--gw-tabs-tab-border-color) var(--gw-tabs-tab-border-color) transparent;
@@ -188,6 +194,25 @@ app-yasgui-component-facade {
   }
 
   /* #endregion YASGUI QUERY TABS */
+
+  /* #region YASGUI DIALOGS */
+  ontotext-yasgui .dialog .dialog-body {
+    font-size: 1rem !important;
+  }
+
+  .dialog .dialog-header {
+    font-size: 1rem;
+  }
+
+  .keyboard-shortcuts-dialog-wrapper {
+    font-size: 1rem;
+
+    .keyboard-shortcut-section-title,
+    .key {
+      font-size: 1rem;
+    }
+  }
+  /* #endregion YASGUI DIALOGS */
 }
 
 /* #region YASGUI FLOATING TOOLTIP */

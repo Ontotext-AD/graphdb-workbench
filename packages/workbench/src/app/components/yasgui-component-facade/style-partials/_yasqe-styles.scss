@@ -1,4 +1,9 @@
 /* #region YASQE - autocomplete */
+/* The library sets the hints to 90% */
+app-yasgui-component-facade .CodeMirror-hints {
+  font-size: 1rem;
+}
+
 .CodeMirror-hints,
 .CodeMirror-hints .CodeMirror-hint {
   font-family: inherit;
@@ -56,6 +61,8 @@ app-yasgui-component-facade {
   }
   
   .yasqe .yasqe_buttons {
+    /* The buttons are inside the CodeMirror element; keep them independent of the editor font-size */
+    font-size: 1rem;
     right: 21px;
     background-color: var(--gw-editor-content-background);
 
@@ -64,8 +71,6 @@ app-yasgui-component-facade {
     }
 
     .custom-button {
-      /* There is a generic font-size rule that overrides the font size of the YASGUI component, so we set it explicitly to match the intended size of the YASQE buttons. */
-      font-size: 1.5em !important;
       color: var(--gw-primary-base) !important;
       background-color: var(--gw-editor-content-background) !important;
 
@@ -126,7 +131,7 @@ app-yasgui-component-facade {
 
         a {
           color: var(--gw-secondary-base);
-          font-size: 14px;
+          font-size: 1rem;
           font-weight: bolder;
         }
       }
@@ -134,7 +139,7 @@ app-yasgui-component-facade {
       .saved-query-actions .saved-query-action {
         color: var(--gw-button-primary-link-color) !important;
         background-color: var(--gw-dialog-background) !important;
-        font-size: 1.25em;
+        font-size: 1rem;
       }
     }
 
