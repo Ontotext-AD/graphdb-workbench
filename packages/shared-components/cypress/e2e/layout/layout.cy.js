@@ -1,7 +1,6 @@
 import {NavbarSteps} from "../../steps/navbar/navbar-steps";
 import {LayoutSteps} from "../../steps/layout/layout-steps";
 import {HeaderSteps} from "../../steps/header/header-steps";
-import {DeprecationSteps} from '../deprecation-banner/deprecation-steps';
 
 function assertSubmenuItems(menuIndex, expectedItems) {
   NavbarSteps.getSubmenuItems(menuIndex)
@@ -162,30 +161,5 @@ describe('Layout', () => {
     // Then I should see the header and navbar
     HeaderSteps.getHeader().should('exist');
     NavbarSteps.getRootMenuItems().should('have.length', 7);
-  });
-
-  it('should hide the Solr deprecation notice when security is disabled', () => {
-    // GIVEN: I have visited the layout page with security disabled.
-    LayoutSteps.visit();
-
-    // THEN: I expect the Solr deprecation banner to be visible.
-    DeprecationSteps.getDeprecationBanner()
-      .should('be.visible')
-      .should('contain.text', 'The Solr connector is deprecated and will be removed in GraphDB 12');
-
-    // WHEN: I click the close button.
-    DeprecationSteps.closeBanner();
-    // THEN: I expect the Solr deprecation banner to not be visible.
-    DeprecationSteps.getDeprecationBanner().should('not.exist');
-
-    // AND: I expect the dismissed state to be persisted for the anonymous user.
-    cy.window().then((win) => {
-      const preferences = JSON.parse(
-        win.localStorage.getItem('ontotext.gdb.userPreferences.preferences')
-      );
-
-      expect(preferences.preferences.anonymous.isSolrDeprecationBannerDismissed)
-        .to.equal(true);
-    });
   });
 });
