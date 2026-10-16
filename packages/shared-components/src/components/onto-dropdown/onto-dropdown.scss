@@ -11,10 +11,11 @@
     flex-direction: row;
     gap: 0.3em;
     align-items: center;
-    font-size: 1rem;
-    font-weight: 400;
     padding: 0.4em 1rem;
-    line-height: 1.5;
+    
+    // Due to lack of exact icon variable for vertical alignment, 
+    // Set the line height to match the base line height variable.
+    line-height: var(--gw-base-line-height);
     background-color: var(--gw-button-secondary-background);
     border: 1px solid var(--gw-button-secondary-border-color);
     color: var(--gw-button-secondary-color);
@@ -25,7 +26,8 @@
     }
 
     .ri-arrow-down-s-line {
-      font-size: 1.1em;
+      // Original value 1.1em current 1.125rem
+      font-size: var(--gw-label-lg-regular-font-size);
       transition: all 0.2s ease-in;
     }
 
@@ -101,8 +103,6 @@
   .onto-dropdown-menu-item {
     display: block;
     text-decoration: none;
-    font-size: 1rem;
-    font-weight: 400;
     padding: .5em 1.2em;
     color: var(--gw-tieredmenu-item-color);
     background-color: var(--gw-tieredmenu-background);

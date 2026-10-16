@@ -1,10 +1,19 @@
 app-yasgui-component-facade {
   /* #region YASR - toolbar right */
+   /* The library sets the download buttons to 16px */
+  .yasr {
+    .chart-download-as-button,
+    .pivot-table-download-as-button,
+    .ontotext-dropdown .ontotext-dropdown-button,
+    .yasr_downloadIcon {
+      font-size: var(--gw-body-base-regular-font-size);
+    }
+  }
+
   .yasr-toolbar {
     align-items: stretch !important;
-    padding-left: 10px;
-    font-size: 16px;
-    line-height: 1.25;
+      font-size: var(--gw-body-base-regular-font-size);
+      line-height: var(--gw-body-sm-regular-line-height);
 
     /* Make all buttons in the yasr toolbar having equal height same as the other WB buttons. */
     .yasr-toolbar-element {
@@ -19,6 +28,12 @@ app-yasgui-component-facade {
       &:hover {
         color: var(--gw-button-primary-hover-color) !important;
         background-color: var(--gw-button-primary-hover-background) !important;
+      }
+
+      /* The buttons have a ri-* icon class, so remixicon sets their font-family. Keep it for the icon only. */
+      .chart-download-as-button-label,
+      .pivot-table-download-as-button-label {
+        font-family: var(--main-font);
       }
     }
 
@@ -45,15 +60,14 @@ app-yasgui-component-facade {
       height: 38px;
 
       .button-name {
-        font-family: var(--main-font);
-        font-weight: 400;
+        font-family: var(--gw-font-family-body);
       }
     }
 
     .ontotext-dropdown-menu .ontotext-dropdown-menu-item {
       padding: .5em 1.2em;
-      font-size: 1rem;
-
+      font-size: var(--gw-body-base-regular-font-size);
+      
       &:hover {
         color: var(--gw-tieredmenu-item-focus-color) !important;
         background-color: var(--gw-tieredmenu-item-focus-background) !important;
@@ -91,11 +105,10 @@ app-yasgui-component-facade {
         padding: .52em;
         margin-left: 0;
         margin-right: .2rem;
-        font-size: 16px;
-        font-weight: 400;
         color: var(--gw-tabs-tab-color) !important;
         background-color: var(--gw-tabs-tab-background) !important;
         fill: var(--gw-tabs-tab-color) !important;
+        font-size: var(--gw-body-base-regular-font-size);
         border: 1px solid;
         border-color: var(--gw-tabs-tab-border-color) !important;
         border-bottom: 1px solid transparent !important;
@@ -132,8 +145,8 @@ app-yasgui-component-facade {
       .yasr_response_chip {
         background-color: unset !important;
         color: var(--gw-secondary-base) !important;
-        font-size: 16px;
-
+        font-size: var(--gw-body-base-regular-font-size);
+        
         .response-info-message {
           padding-left: 10px;
         }
@@ -206,11 +219,11 @@ app-yasgui-component-facade {
 
     .yasr-header-replacement {
       color: inherit;
-      font-size: 20px;
+      font-size: var(--gw-size-1-25);
     }
 
     .explain-plan-copy-btn {
-      font-weight: 400;
+      font-weight: var(--gw-label-base-regular-font-weight);
       color: var(--gw-button-secondary-color);
       background-color: var(--gw-shortcuts-editor-button-background);
       border-color: var(--gw-button-secondary-border-color);
@@ -225,7 +238,8 @@ app-yasgui-component-facade {
       padding-right: 35px;
 
       .close-button {
-        font-size: 21px !important;
+        //Substitude variable with value 1.25rem previously 21px
+        font-size: var(--gw-size-1-25) !important;
       }
     }
 

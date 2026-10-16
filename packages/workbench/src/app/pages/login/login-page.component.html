@@ -7,10 +7,10 @@
     <form [formGroup]="loginForm" (ngSubmit)="login()" novalidate>
       @if (isGDBLoginEnabled()) {
         @let hasWrongCredentials = loginForm.hasError('wrongCredentials');
-        <h2 class="login-title">{{ 'login.title' | transloco }}</h2>
+        <h2 class="heading-h2 login-title">{{ 'login.title' | transloco }}</h2>
 
         <div class="group">
-          <label for="username">{{ 'login.username' | transloco }}</label>
+          <label class="label-base-regular" for="username">{{ 'login.username' | transloco }}</label>
           <div class="input-wrapper">
             <span class="icon-wrapper">
               <i class="ri-user-line"></i>
@@ -27,7 +27,7 @@
         </div>
 
         <div class="group">
-          <label for="password">{{ 'login.password' | transloco }}</label>
+          <label class="label-base-regular" for="password">{{ 'login.password' | transloco }}</label>
           <div class="input-wrapper">
             <span class="icon-wrapper">
               <i class="ri-lock-line"></i>

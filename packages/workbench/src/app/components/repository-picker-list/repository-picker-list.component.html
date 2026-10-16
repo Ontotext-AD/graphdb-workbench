@@ -3,7 +3,7 @@
 
   <div class="header">
     <!-- A live region, so that the count is announced to assistive technologies when the filters change it. -->
-    <h6 class="repository-results-count" aria-live="polite" aria-atomic="true">
+    <h6 class="heading-h6 repository-results-count" aria-live="polite" aria-atomic="true">
       <span aria-hidden="true" data-test="repository-picker-results-count">
         {{ 'components.page_restrictions.repository_count' | transloco: {repositoryCount: vm().repositoryCount} }}
       </span>
@@ -68,7 +68,7 @@
               [ngModel]="vm().localOnly"
               (ngModelChange)="onLocalOnlyChange($event)"
               inputId="localOnly"/>
-            <label for="localOnly">{{ 'components.page_restrictions.repository_filter_local_only' | transloco }}</label>
+            <label class="label-base-regular" for="localOnly">{{ 'components.page_restrictions.repository_filter_local_only' | transloco }}</label>
           </div>
         }
       </span>
@@ -126,14 +126,14 @@
                 <span class="screen-reader-only"
                       data-test="repository-picker-repository-state-label"
                       [id]="stateElementId">{{ stateLabel }}</span>
-                <span class="repository-id" data-test="repository-picker-repository-id">{{ repository.id }}</span>
+                <span class="repository-id label-base-bold" data-test="repository-picker-repository-id">{{ repository.id }}</span>
                 @if (!vm().localOnly) {
                   <small class="repository-location" data-test="repository-picker-repository-location">
                     &#64; {{ repositoryLocation }}
                   </small>
                 }
               </span>
-              <span class="repository-description">
+              <span class="repository-description body-sm-regular">
                 {{ repository.title }}
               </span>
             </button>

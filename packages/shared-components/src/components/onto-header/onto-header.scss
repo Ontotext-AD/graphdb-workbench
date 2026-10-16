@@ -6,7 +6,8 @@
   display: flex;
   gap: 0.25em;
   padding: .3em 1em;
-  font-size: 1.1em;
+  // No specific variable for font-size, using body large regular font size 1.125rem
+  font-size: var(--gw-body-lg-regular-font-size);
   background-color: var(--gw-topnav-background);
 
   .left-section {

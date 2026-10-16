@@ -37,7 +37,7 @@ export class OntoDialog {
         <div class={`dialog-overlay ${this.config.modalClass ? this.config.modalClass : ''}`}>
           <dialog class="dialog">
             <header class="dialog-header">
-              <h3 class="dialog-title">{this.config.dialogTitle}</h3>
+              <h3 class="heading-h3 dialog-title">{this.config.dialogTitle}</h3>
               {this.config.onClose && (
                 <button data-test={'close-dialog-btn'} class="close-btn onto-btn" onClick={this.handleClose}>
                   <i class="ri-close-line ri-2x"></i>

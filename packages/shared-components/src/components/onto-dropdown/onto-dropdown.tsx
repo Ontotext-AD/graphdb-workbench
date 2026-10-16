@@ -265,7 +265,7 @@ export class OntoDropdown {
 
     return (
       <div class={`onto-dropdown ${this.open ? 'open' : 'closed'}`}>
-        <button class="onto-dropdown-button"
+        <button class="onto-dropdown-button label-base-regular"
           ref={(el) => this.dropdownButtonElement = el as unknown as HTMLElementWithTooltip}
           {...(this.dropdownButtonGuideSelector ? { [this.GUIDE_SELECTOR_ATTR]: this.dropdownButtonGuideSelector } : {})}
           tooltip-placement={tooltipPlacement}
@@ -288,7 +288,7 @@ export class OntoDropdown {
         <div id={this.menuId}
           class={'onto-dropdown-menu ' + dropdownAlignmentClass}>
           {this.items?.map((item, index) =>
-            <button class={'onto-dropdown-menu-item ' + item.cssClass}
+            <button class={'onto-dropdown-menu-item label-base-regular ' + item.cssClass}
               {...(item.guideSelector ? { [this.GUIDE_SELECTOR_ATTR]: item.guideSelector } : {})}
               tooltip-placement={OntoTooltipPlacement.LEFT}
               tooltip-class={this.tooltipClass}

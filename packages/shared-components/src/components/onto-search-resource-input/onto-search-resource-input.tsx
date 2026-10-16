@@ -153,7 +153,7 @@ export class OntoSearchResourceInput {
               class={`onto-btn ${button.selected ? 'selected' : ''}`}>{button.label}</button>
           ))}
         </div>
-        <span class="hint" id={hintId}>{TranslationService.translate('rdf_search.labels.hint')}</span>
+        <span class="hint body-xs-regular" id={hintId}>{TranslationService.translate('rdf_search.labels.hint')}</span>
         {/* The browsers make a scrollable element focusable. The input navigates the options with the arrow keys, so tabindex keeps it out of the tab order. */}
         <div class="autocomplete-results-wrapper"
           id={listboxId}
@@ -252,7 +252,7 @@ export class OntoSearchResourceInput {
     if (this.inputValue.length > 0 && !this.isAutocompleteEnabled && !this.autocompleteWarningShown) {
       this.autocompleteWarningShown = true;
       const message = TranslationService.translate('rdf_search.toasts.autocomplete_is_off');
-      this.toastrService.warning(`<a class="no-underline" style="font-weight: 500">${message}</a>`,
+      this.toastrService.warning(`<a class="no-underline" style="font-weight: var(--gw-label-base-medium-font-weight)">${message}</a>`,
         {
           onClick: navigateTo('autocomplete'),
           removeOnClick: true

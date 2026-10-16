@@ -24,7 +24,8 @@
   & .ri-alert-line {
     margin-right: 0.2em;
     line-height: 0.75;
-    font-size: 1.4em;
+    // No specific variable for font-size, using main font size 1.4 times
+    font-size: calc(var(--gw-main-font-size) * 1.4); 
     display: inline-block;
     vertical-align: middle;
   }

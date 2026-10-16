@@ -1,8 +1,7 @@
 app-yasgui-component-facade {
-  /* #region GLOBAL STYLES FOR BOTH YASQE, YASR AND OTHER COMPONENTS Resets the default font-size for every tag in the yasgui Omit the heading  tags */
-  :not(h3, h4, sup, .no-force-default-font) {
-    font-size: 1rem !important;
-  }
+  /* #region GLOBAL STYLES FOR BOTH YASQE, YASR AND OTHER COMPONENTS */
+  /* Base font-size of the yasgui; its elements inherit it unless they set their own */
+  font-size: var(--gw-body-base-regular-font-size);
 
   .hidden {
     display: none;
@@ -57,12 +56,18 @@ app-yasgui-component-facade {
 
 
   /* #region YASGUI - TOOLBAR TOP RIGHT */
+ .yasgui .tabMenu .acceptWrapper .selector .selectorLabel {
+    font-size: var(--gw-body-base-regular-font-size);
+  }
+
   .yasgui-toolbar {
+    font-size: var(--gw-body-base-regular-font-size);
+
     .yasgui-btn {
       color: var(--gw-button-secondary-color) !important;
       background-color: var(--gw-button-secondary-background) !important;
       border-color: var(--gw-button-secondary-border-color) !important;
-      font-size: 14px !important;
+      font-size: var(--gw-label-sm-regular-font-size);
       padding-left: 8px;
       padding-right: 8px;
 
@@ -86,7 +91,8 @@ app-yasgui-component-facade {
     }
 
     .btn-orientation {
-      font-size: 28px !important;
+      // Not exact match variable so we use --gw-base-font-size (1rem) multiplied by 1.225 to approximate the desired size
+      font-size: calc(var(--gw-base-font-size) * 1.225) !important;
       margin-left: 1rem;
       color: var(--gw-button-secondary-color) !important;
       background-color: transparent !important;
@@ -104,8 +110,9 @@ app-yasgui-component-facade {
 
     .tab .closeTab .ri-close-line,
     .addTab .ri-add-circle-line {
-      font-size: 1.225em !important;
-      font-weight: 100;
+      font-size: var(--gw-body-base-regular-font-size) !important;
+      // Substitude variable with valuee 200 (closest to the original fontweight)
+      font-weight: var(--gw-font-weight-200);
     }
 
     .tabsList {
@@ -114,7 +121,6 @@ app-yasgui-component-facade {
         color: var(--gw-tabs-tab-color) !important;
         background-color: var(--gw-tabs-tab-background) !important;
         border-color: var(--gw-tabs-tab-border-color) var(--gw-tabs-tab-border-color) transparent !important;
-        font-weight: 400;
       }
 
       .tab.active {
@@ -166,7 +172,8 @@ app-yasgui-component-facade {
 
       .tab .editable-text-field-wrapper .save-btn span,
       .tab .editable-text-field-wrapper .cancel-btn span {
-        font-weight: 900;
+        // Substitude variable with valuee 700 (closest to the original fontweight)
+        font-weight: var(--gw-label-base-bold-font-weight);
       }
 
       .tab .closeTab {
@@ -179,6 +186,7 @@ app-yasgui-component-facade {
         border-color: var(--gw-tabs-tab-active-border-color) var(--gw-tabs-tab-active-border-color) transparent !important;
 
         .addTab {
+          font-size: var(--gw-body-base-regular-font-size);
           color: var(--gw-button-secondary-color) !important;
           background-color: var(--gw-tabs-tab-background);
           border-color: var(--gw-tabs-tab-border-color) var(--gw-tabs-tab-border-color) transparent;
@@ -188,13 +196,28 @@ app-yasgui-component-facade {
   }
 
   /* #endregion YASGUI QUERY TABS */
+
+  /* #region YASGUI DIALOGS */
+  ontotext-yasgui .dialog .dialog-body {
+    font-size: var(--gw-body-base-regular-font-size) !important;
+  }
+
+  .dialog .dialog-header {
+    font-size: var(--gw-body-base-regular-font-size);
+  }
+
+  .keyboard-shortcuts-dialog-wrapper {
+    font-size: var(--gw-body-base-regular-font-size);
+
+    .keyboard-shortcut-section-title,
+    .key {
+      font-size: var(--gw-body-base-regular-font-size);
+    }
+  }
+  /* #endregion YASGUI DIALOGS */
 }
 
 /* #region YASGUI FLOATING TOOLTIP */
-/* override the Roboto font-family with the new default font-family (Inter) for the yasgui tooltip component */
-yasgui-tooltip {
-  font-family: var(--main-font);
-}
 
 .yasgui-floating-tooltip,
 .yasgui-floating-tooltip-arrow,
