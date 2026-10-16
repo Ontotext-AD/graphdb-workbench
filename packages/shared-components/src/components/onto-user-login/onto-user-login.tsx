@@ -21,7 +21,7 @@ export class OntoUserLogin {
         <button onClick={this.navigateToLogin()}>
           <i class="ri-arrow-right-circle-line"></i>
           <translate-label
-            class="user-login-label"
+            class="user-login-label label-base-regular"
             labelKey="user_menu.login"
           ></translate-label>
         </button>
