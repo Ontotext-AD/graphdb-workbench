@@ -1,14 +1,5 @@
 /**
- * Fills the gaps in the keyboard and screen reader support of the ui-bootstrap 0.14.3 modals, for every dialog opened
- * with `$uibModal`.
- *
- * ui-bootstrap already moves the focus into the dialog, keeps Tab inside it, closes it on Escape and returns the focus
- * to the opener. What it lacks:
- * - Its window has `role="dialog"`, but no `aria-modal` and no accessible name, so screen readers do not announce
- *   a modal with a title. The window is marked as modal and labelled with the `.modal-title` of the dialog template.
- *   The title is looked up on every digest, because templates switch it with `ng-if`.
- * - When the opener is an item of a dropdown menu, the menu is already closed when the dialog closes, so the opener
- *   cannot take the focus and it is lost to the body. The focus goes to the toggle of that menu instead.
+ * Adds what the ui-bootstrap 0.14.3 modals lack for keyboard and screen reader users, to every `$uibModal` dialog.
  */
 let modalTitleCounter = 0;
 
@@ -17,6 +8,9 @@ const DROPDOWN_TOGGLE_SELECTOR = '[uib-dropdown-toggle], .dropdown-toggle';
 
 angular.module('graphdb.framework.core.directives.modal-window', ['ui.bootstrap.modal'])
     .config(['$provide', function($provide) {
+        // ui-bootstrap gives the modal window `role="dialog"`, but no `aria-modal` and no name.
+        // This marks it as modal and names it by the `.modal-title` of the template. The title is looked up on every
+        // digest, because some templates switch it with `ng-if`.
         $provide.decorator('uibModalWindowDirective', ['$delegate', function($delegate) {
             const directive = $delegate[0];
             const link = directive.link;
@@ -39,6 +33,9 @@ angular.module('graphdb.framework.core.directives.modal-window', ['ui.bootstrap.
             return $delegate;
         }]);
 
+        // ui-bootstrap itself returns the focus to the element that opened the modal, e.g. a button.
+        // This only handles the case when that element is hidden after the close (an item of a closed dropdown
+        // menu): the focus goes to the toggle of its dropdown instead.
         $provide.decorator('$uibModalStack', ['$delegate', function($delegate) {
             ['close', 'dismiss'].forEach((method) => {
                 const original = $delegate[method];
