@@ -63,6 +63,11 @@ export class HtmlUtil {
    * Returns the elements matching the selector that can take the focus: rendered and not disabled.
    * Elements hidden with CSS (e.g. the native input inside a toggle switch) are skipped, because focusing them does
    * nothing and would keep the focus where it is.
+   *
+   * @param parentElement - The parent element containing the focusable elements.
+   * @param activeElementSelector - The CSS selector for identifying focusable elements.
+   *
+   * @return the focusable elements, in document order.
    */
   private static getFocusableElements(parentElement: HTMLElement, activeElementSelector: string): HTMLElement[] {
     return Array.from(parentElement.querySelectorAll<HTMLElement>(activeElementSelector))
