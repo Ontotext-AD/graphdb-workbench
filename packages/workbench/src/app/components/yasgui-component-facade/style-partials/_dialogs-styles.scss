@@ -10,11 +10,6 @@ app-yasgui-component-facade {
 
   .dialog,
   .confirmation-dialog {
-    /* Dialog body should have slightly bigger font-size. When it is attached directly to the html body. */
-    .dialog-body {
-      font-size: var(--gw-size-1-25) !important;
-    }
-
     .cancel-button {
       margin-right: 3px;
       background-color: #ebebeb;
