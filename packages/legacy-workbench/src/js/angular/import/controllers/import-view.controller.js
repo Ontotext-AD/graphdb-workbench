@@ -101,24 +101,22 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
          */
         $scope.setSettingsFor = (fileName, withDefaultSettings, format, operation, onImportRejectHandler = () => {
         }) => {
-            getSettingsFor(fileName, withDefaultSettings)
-                .then((settings) => {
+            void Promise.all([getSettingsFor(fileName, withDefaultSettings), getDefaultSettings()])
+                .then(([settings, defaults]) => {
                     $scope.settingsFor = fileName;
                     $scope.settings = settings;
 
-                    if (fileName === "" ||
+                    const hasContextLink = fileName === "" ||
                         format === "application/ld+json" ||
                         format === "application/x-ld+ndjson" ||
                         fileName.endsWith("jsonld") ||
                         fileName.endsWith("zip") ||
                         fileName.endsWith("gz") ||
-                        $scope.settings.type === "directory") {
-                        $scope.settings.hasContextLink = true;
-                    } else {
-                        $scope.settings.hasContextLink = false;
-                    }
+                        $scope.settings.type === "directory";
+                    $scope.settings.hasContextLink = hasContextLink;
 
-                    const initialSettings = _.cloneDeep($scope.settings);
+                    // "Restore defaults" in the dialog must restore the backend defaults, not the saved settings of the file.
+                    const initialSettings = defaults ? {...defaults, hasContextLink} : structuredClone($scope.settings);
 
                     const options = {
                         templateUrl: 'js/angular/import/templates/settingsModal.html',
