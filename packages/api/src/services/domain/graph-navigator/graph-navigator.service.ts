@@ -1,5 +1,6 @@
 import {GraphNavigatorSettings, GraphNavigatorSettingsUploadError} from '../../../models/graph-navigator';
 import {GraphNavigatorRestService} from './graph-navigator-rest.service';
+import {GraphNavigatorContextService} from './graph-navigator-context.service';
 import {mapGraphNavigatorSettingsResponseToModel} from './mappers/graph-navigator-settings.mapper';
 import {mapGraphNavigatorSettingsErrorResponseToModel} from './mappers/graph-navigator-settings-error.mapper';
 import {GraphNavigatorSettingsErrorResponse} from './response/graph-navigator-settings-error-response';
@@ -13,6 +14,7 @@ import {Service} from '../../../providers/service/service';
  */
 export class GraphNavigatorService implements Service {
   private readonly graphNavigatorRestService = service(GraphNavigatorRestService);
+  private readonly graphNavigatorContextService = service(GraphNavigatorContextService);
 
   /**
    * Loads the settings of a repository.
@@ -22,11 +24,11 @@ export class GraphNavigatorService implements Service {
    */
   async getSettings(repositoryId: string): Promise<GraphNavigatorSettings> {
     const response = await this.graphNavigatorRestService.getSettings(repositoryId);
-    return mapGraphNavigatorSettingsResponseToModel(response);
+    return this.updateContext(mapGraphNavigatorSettingsResponseToModel(response));
   }
 
   /**
-   * Uploads a Turtle settings file for a repository.
+   * Uploads a Turtle settings file for a repository and stores the new settings in the context.
    *
    * @param repositoryId - The id of the repository.
    * @param file - The Turtle settings file.
@@ -36,7 +38,7 @@ export class GraphNavigatorService implements Service {
   async uploadSettings(repositoryId: string, file: File): Promise<GraphNavigatorSettings> {
     try {
       const response = await this.graphNavigatorRestService.uploadSettings(repositoryId, file);
-      return mapGraphNavigatorSettingsResponseToModel(response);
+      return this.updateContext(mapGraphNavigatorSettingsResponseToModel(response));
     } catch (error) {
       if (error instanceof HttpErrorResponse) {
         throw new GraphNavigatorSettingsUploadError(
@@ -64,5 +66,10 @@ export class GraphNavigatorService implements Service {
    */
   exportSettings(repositoryId: string): Promise<string> {
     return this.graphNavigatorRestService.exportSettings(repositoryId);
+  }
+
+  private updateContext(settings: GraphNavigatorSettings): GraphNavigatorSettings {
+    this.graphNavigatorContextService.updateSettings(settings);
+    return settings;
   }
 }

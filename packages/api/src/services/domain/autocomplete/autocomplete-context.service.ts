@@ -33,6 +33,15 @@ export class AutocompleteContextService extends ContextService<AutocompleteConte
   }
 
   /**
+   * Retrieves the autocomplete enabled state of the selected repository.
+   *
+   * @returns Whether autocomplete is enabled, or `false` while the state is not loaded.
+   */
+  isAutocompleteEnabled(): boolean {
+    return this.getContextPropertyValue<boolean>(this.AUTOCOMPLETE_ENABLED) ?? false;
+  }
+
+  /**
    * Subscribes to changes in the autocomplete enabled state.
    *
    * @param callbackFn - Callback function that will be invoked when the autocomplete enabled state changes

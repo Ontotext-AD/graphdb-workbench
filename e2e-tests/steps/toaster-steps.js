@@ -3,6 +3,10 @@ export class ToasterSteps {
         return cy.get('.toast');
     }
 
+    static getWarningToast() {
+        return ToasterSteps.getToast().filter('.warning');
+    }
+
     static verifyTitle(title) {
         return ToasterSteps.getToast()
             .find('.toast-title')

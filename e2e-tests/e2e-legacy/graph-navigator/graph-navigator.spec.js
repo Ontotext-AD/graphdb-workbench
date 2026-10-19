@@ -5,6 +5,7 @@ import {MainMenuSteps} from '../../steps/main-menu-steps.js';
 import {YasqeSteps} from '../../steps/yasgui/yasqe-steps.js';
 import {YasrSteps} from '../../steps/yasgui/yasr-steps.js';
 import {ToasterSteps} from '../../steps/toaster-steps.js';
+import {GraphNavigatorStubs} from '../../stubs/graph-navigator-stubs.js';
 
 const FILE_TO_IMPORT = 'resource-test-data.ttl';
 const SEED_RESOURCE_ENCODED = 'http:%2F%2Fexample.com%2Fontology%23CustomerLoyalty';
@@ -303,6 +304,48 @@ describe('Graph Navigator', () => {
         });
     });
 
+    describe('Autocomplete warning', () => {
+        beforeEach(() => {
+            GraphNavigatorStubs.stubSettingsWithAutocomplete();
+        });
+
+        it('should warn once that autocomplete is off', () => {
+            // Given the settings use autocomplete, but autocomplete is off.
+            GraphNavigatorStubs.spyEntityLookup(SEED_RESOURCE_LABEL);
+            GraphNavigatorSteps.visit();
+            cy.wait('@graph-navigator-settings');
+
+            // When I search for entities.
+            GraphNavigatorSteps.searchEntities(SEED_RESOURCE_LABEL);
+            cy.wait('@entity-lookup');
+
+            // Then I expect a warning that autocomplete is off.
+            ToasterSteps.getWarningToast().should('be.visible').and('contain', 'Autocomplete is OFF');
+
+            // When the warning is gone and I search for entities again.
+            ToasterSteps.getToast().should('not.exist');
+            GraphNavigatorSteps.searchEntities(SEED_RESOURCE_LABEL);
+            cy.wait('@entity-lookup');
+
+            // Then I expect no new warning.
+            ToasterSteps.getToast().should('not.exist');
+        });
+
+        it('should redirect to the autocomplete view when the warning is clicked', () => {
+            // Given the settings use autocomplete, but autocomplete is off.
+            GraphNavigatorSteps.visit();
+            cy.wait('@graph-navigator-settings');
+
+            // When I search for entities and click the warning.
+            GraphNavigatorSteps.searchEntities(SEED_RESOURCE_LABEL);
+            ToasterSteps.getWarningToast().should('be.visible').and('contain', 'Autocomplete is OFF');
+            ToasterSteps.getWarningToast().click();
+
+            // Then I expect to be redirected to the autocomplete view.
+            cy.url().should('include', '/autocomplete');
+        });
+    });
+
     describe('Repository switch', () => {
         let secondRepositoryId;
 
@@ -352,6 +395,39 @@ describe('Graph Navigator', () => {
             GraphNavigatorSteps.getWorkspace().should('exist');
             GraphNavigatorSteps.getElements().should('not.exist');
             GraphNavigatorSteps.verifyOnlyRepositoryParam(secondRepositoryId);
+        });
+
+        it('should warn that autocomplete is off once per repository selection', () => {
+            // Given the settings use autocomplete, but autocomplete is off.
+            GraphNavigatorStubs.stubSettingsWithAutocomplete();
+            GraphNavigatorSteps.visit();
+            cy.wait('@graph-navigator-settings');
+
+            // When I search for entities.
+            GraphNavigatorSteps.searchEntities(SEED_RESOURCE_LABEL);
+
+            // Then I expect a warning that autocomplete is off.
+            ToasterSteps.getWarningToast().should('be.visible').and('contain', 'Autocomplete is OFF');
+
+            // When the warning is gone and I switch to another repository and search for entities.
+            ToasterSteps.getToast().should('not.exist');
+            RepositorySelectorSteps.selectRepository(secondRepositoryId);
+            GraphNavigatorSteps.confirmDialog();
+            cy.wait('@graph-navigator-settings');
+            GraphNavigatorSteps.searchEntities(SEED_RESOURCE_LABEL);
+
+            // Then I expect a new warning, for the new repository.
+            ToasterSteps.getWarningToast().should('be.visible').and('contain', 'Autocomplete is OFF');
+
+            // When the warning is gone and I switch back to the first repository and search for entities.
+            ToasterSteps.getToast().should('not.exist');
+            RepositorySelectorSteps.selectRepository(repositoryId);
+            GraphNavigatorSteps.confirmDialog();
+            cy.wait('@graph-navigator-settings');
+            GraphNavigatorSteps.searchEntities(SEED_RESOURCE_LABEL);
+
+            // Then I expect a new warning, because the repository was selected again.
+            ToasterSteps.getWarningToast().should('be.visible').and('contain', 'Autocomplete is OFF');
         });
     });
 });

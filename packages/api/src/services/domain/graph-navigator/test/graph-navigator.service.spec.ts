@@ -1,5 +1,6 @@
 import {GraphNavigatorService} from '../graph-navigator.service';
 import {GraphNavigatorRestService} from '../graph-navigator-rest.service';
+import {GraphNavigatorContextService} from '../graph-navigator-context.service';
 import {service} from '../../../../providers';
 import {DEFAULT_SETTINGS_STUB} from './graph-navigator-settings-mock';
 import {GraphNavigatorSettings, GraphNavigatorSettingsError, GraphNavigatorSettingsUploadError} from '../../../../models/graph-navigator';
@@ -37,9 +38,10 @@ describe('GraphNavigatorService', () => {
       // WHEN: the settings are loaded.
       const settings = await graphNavigatorService.getSettings(REPOSITORY_ID);
 
-      // THEN: the repository's settings are requested and mapped.
+      // THEN: the repository's settings are requested, mapped and stored in the context.
       expect(getSpy).toHaveBeenCalledWith(REPOSITORY_ID);
       expect(settings).toEqual(new GraphNavigatorSettings({uploaded: false, providerSettings: DEFAULT_SETTINGS_STUB}));
+      expect(service(GraphNavigatorContextService).getSettings()).toEqual(settings);
     });
   });
 
@@ -53,12 +55,13 @@ describe('GraphNavigatorService', () => {
       // WHEN: the file is uploaded.
       const settings = await graphNavigatorService.uploadSettings(REPOSITORY_ID, file);
 
-      // THEN: the file is sent for the repository and the returned settings are mapped.
+      // THEN: the file is sent for the repository and the returned settings are mapped and stored in the context.
       expect(uploadSpy).toHaveBeenCalledWith(REPOSITORY_ID, file);
       expect(settings).toEqual(new GraphNavigatorSettings({
         uploaded: true,
         providerSettings: {...DEFAULT_SETTINGS_STUB, dataLabelProperty: 'skos:prefLabel'}
       }));
+      expect(service(GraphNavigatorContextService).getSettings()).toEqual(settings);
     });
 
     it('should reject with the validation errors when the backend rejects the file', async () => {

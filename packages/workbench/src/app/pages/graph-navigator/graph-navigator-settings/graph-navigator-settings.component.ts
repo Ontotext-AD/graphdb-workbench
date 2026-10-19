@@ -85,7 +85,7 @@ export class GraphNavigatorSettingsComponent {
   translateError(error: GraphNavigatorSettingsError): string {
     const key = `${ERROR_CODES_KEY}.${error.code}`;
     const problem = this.translocoService.translate(key, error.params);
-    return problem === key ? this.translocoService.translate(`${ERROR_CODES_KEY}.unknown`, error.params) : problem;
+    return problem === key ? this.translocoService.translate(`${ERROR_CODES_KEY}.unknown`) : problem;
   }
 
   confirmUpload(event: FileUploadHandlerEvent): void {
