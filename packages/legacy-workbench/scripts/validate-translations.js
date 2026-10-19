@@ -54,6 +54,7 @@ const identicalTranslations = [
     "SPARQL",
     "RDF",
     "RDF-XML",
+    "XML",
     "JDBC",
     "Turtle",
     "TriG",

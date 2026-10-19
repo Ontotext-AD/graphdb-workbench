@@ -690,6 +690,8 @@ describe('User and Access', () => {
             // 2. Read permission for one repository.
             UserAndAccessSteps.openEditUserPage(maintainerUser);
             cy.wait('@get-user');
+            // Wait until the loaded user is bound to the form, otherwise toggling a right fails.
+            UserAndAccessSteps.getUsernameField().should('have.value', maintainerUser);
             setUserAuths({repo: readRepositoryId, read: true});
             // 3. Write permission for one repository.
             setUserAuths({repo: writeRepositoryId, write: true});
@@ -700,6 +702,8 @@ describe('User and Access', () => {
             // When I log in as a user with repository maintain permission.
             UserAndAccessSteps.toggleSecurity();
             LoginSteps.loginWithUser(maintainerUser, PASSWORD);
+            // Wait for the login to complete, otherwise visiting another page aborts it.
+            cy.url().should('not.include', '/login');
             // And navigate to the repository list view.
             RepositorySteps.visit(false);
 
@@ -760,6 +764,8 @@ describe('User and Access', () => {
             createUser(maintainerUser, PASSWORD, ROLE_USER, {maintain: true, repoName: maintainedRepositoryId});
             UserAndAccessSteps.toggleSecurity();
             LoginSteps.loginWithUser(maintainerUser, PASSWORD);
+            // Wait for the login to complete, otherwise visiting another page aborts it.
+            cy.url().should('not.include', '/login');
             RepositorySteps.visit(false);
 
             // When the user opens the edit page of the repository they can maintain.
