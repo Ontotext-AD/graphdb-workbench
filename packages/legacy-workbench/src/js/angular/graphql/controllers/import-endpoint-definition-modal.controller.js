@@ -171,7 +171,6 @@ function ImportEndpointDefinitionModalController($scope, $q, toastr, $uibModal, 
             windowClass: 'endpoint-generation-failure-result-modal',
             size: 'lg',
             backdrop: 'static',
-            keyboard: false,
             resolve: {
                 data: () => {
                     return {

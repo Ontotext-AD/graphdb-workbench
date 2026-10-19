@@ -1,7 +1,7 @@
 <!-- Start save graph modal -->
 
 <div class="modal-header">
-    <button type="button" class="close" ng-click="cancel()"></button>
+    <button type="button" class="close" aria-label="{{'common.close' | translate}}" ng-click="cancel()"></button>
     <h3 class="modal-title">{{title}}</h3>
 </div>
 <div class="modal-body">
@@ -14,7 +14,6 @@
             <input id="share-graph" type="checkbox" ng-model="graph.shared">
             {{'save.graph.share.graph' | translate}}
         </label>
-        <input style="height: 0; border: 0; padding: 0; margin: 0;" autofocus/>
         <br>
         <div ng-show="form.$error.maxlength">
             <div class="alert alert-danger" style="margin-top: 5px;">{{'save.graph.name.too.long' | translate}}</div>

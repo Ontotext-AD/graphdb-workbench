@@ -1,11 +1,18 @@
 import {Component, Host, h, Prop, Element} from '@stencil/core';
 import {HtmlUtil} from '../../utils/html-util';
+import {TranslationService} from '../../services/translation.service';
 
 export type DialogConfig = {
   dialogTitle: string;
+  /**
+   * Called when the user closes the dialog with the close button or the Escape key.
+   * Without it, the dialog has no close button and Escape does nothing.
+   */
   onClose?: (evt: MouseEvent | KeyboardEvent) => void;
   modalClass?: string;
 }
+
+let dialogCounter = 0;
 
 @Component({
   tag: 'onto-dialog',
@@ -13,6 +20,9 @@ export type DialogConfig = {
 })
 export class OntoDialog {
   private documentOverflow: string;
+  private readonly titleId = `onto-dialog-title-${++dialogCounter}`;
+  /** The element that had the focus when the dialog opened. It gets the focus back when the dialog closes. */
+  private opener: HTMLElement;
 
   @Element() hostElement: HTMLElement;
 
@@ -21,32 +31,42 @@ export class OntoDialog {
    */
   @Prop() config: DialogConfig;
 
+  connectedCallback(): void {
+    this.opener = document.activeElement as HTMLElement;
+  }
+
   componentDidLoad(): void {
     this.documentOverflow = HtmlUtil.hideDocumentBodyOverflow();
-    this.hostElement.addEventListener('keydown', this.preventLeavingDialog.bind(this));
+    this.hostElement.addEventListener('keydown', this.onKeydown);
+    // The content is not focusable yet while the dialog is being rendered, so wait for the next frame.
+    requestAnimationFrame(() => this.moveFocusIntoDialog());
   }
 
   disconnectedCallback() {
-    this.hostElement.removeEventListener('keydown', this.preventLeavingDialog.bind(this));
+    this.hostElement.removeEventListener('keydown', this.onKeydown);
     HtmlUtil.setDocumentBodyOverflow(this.documentOverflow);
+    if (this.opener?.isConnected) {
+      this.opener.focus();
+    }
   }
 
   render() {
     return (
       <Host tabindex="-1">
         <div class={`dialog-overlay ${this.config.modalClass ? this.config.modalClass : ''}`}>
-          <dialog class="dialog">
+          <dialog class="dialog" aria-modal="true" aria-labelledby={this.titleId}>
             <header class="dialog-header">
-              <h3 class="dialog-title">{this.config.dialogTitle}</h3>
+              <h3 id={this.titleId} class="dialog-title">{this.config.dialogTitle}</h3>
               {this.config.onClose && (
-                <button data-test={'close-dialog-btn'} class="close-btn onto-btn" onClick={this.handleClose}>
-                  <i class="ri-close-line ri-2x"></i>
+                <button data-test={'close-dialog-btn'} class="close-btn onto-btn" onClick={this.handleClose}
+                  aria-label={TranslationService.translate('common.button.close')}>
+                  <i class="ri-close-line ri-2x" aria-hidden="true"></i>
                 </button>
               )}
             </header>
-            <main class="dialog-body">
+            <div class="dialog-body">
               <slot name="body"/>
-            </main>
+            </div>
             <footer class="dialog-footer">
               <slot name="footer"/>
             </footer>
@@ -56,11 +76,31 @@ export class OntoDialog {
     );
   }
 
-  private handleClose = (evt: MouseEvent) => {
+  private handleClose = (evt: MouseEvent | KeyboardEvent) => {
     this.config.onClose(evt);
   };
 
-  private preventLeavingDialog(ev: KeyboardEvent) {
-    HtmlUtil.preventLeavingDialog(this.hostElement, ev);
+  /**
+   * Focuses the element marked with `autofocus`, or else the first focusable element of the dialog.
+   */
+  private moveFocusIntoDialog(): void {
+    if (this.hostElement.contains(document.activeElement)) {
+      return;
+    }
+    const autofocusElement = this.hostElement.querySelector<HTMLElement>('[autofocus]');
+    if (autofocusElement) {
+      autofocusElement.focus();
+    } else {
+      HtmlUtil.focusNextElement(this.hostElement);
+    }
   }
+
+  private readonly onKeydown = (ev: KeyboardEvent) => {
+    if (ev.key === 'Escape' && this.config.onClose) {
+      ev.stopPropagation();
+      this.handleClose(ev);
+      return;
+    }
+    HtmlUtil.preventLeavingDialog(this.hostElement, ev);
+  };
 }

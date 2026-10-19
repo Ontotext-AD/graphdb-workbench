@@ -1,25 +1,24 @@
 <!-- Start editLocation.html -->
 
 <div class="modal-header">
-	<button class="close" ng-click="cancel();" aria-hidden="true"></button>
+	<button class="close" aria-label="{{'common.close' | translate}}" ng-click="cancel();"></button>
 	<h3 class="modal-title">{{'upload.repo.config.header' | translate}}</h3>
 </div>
 <div class="modal-body">
-	<div class="btn btn-secondary btn-lg btn-block" ng-if="!editRepoPage">
-		<a ngf-select ngf-change="upload($files)" ngf-multiple="false" class="selectFiles pointer clearfix"
-		   accept=".ttl" gdb-tooltip="{{'select.repo.config.tooltip' | translate}}">
-			<em class="ri-upload-2-line icon-lg pull-left" gdb-tooltip="Select files"></em>
-			<div class="pull-left">
-				<span>{{'upload.ttl.file.btn' | translate}}</span>
-				<br>
-				<small ng-hide="uploadFile" class="text-muted">{{'no.file.selected.error' | translate}}</small>
-				<small ng-show="uploadFile" class="text-muted"
-                   translate="selected.file.msg"
-                   translate-value-name="{{uploadFile.name}}"></small>
-			</div>
-			<div ng-show="uploadFileLoader" onto-loader size="48" class="pull-right"></div>
-		</a>
-	</div>
+	<button type="button" class="btn btn-secondary btn-lg btn-block selectFiles clearfix" ng-if="!editRepoPage"
+	        ngf-select ngf-change="upload($files)" ngf-multiple="false" accept=".ttl"
+	        gdb-tooltip="{{'select.repo.config.tooltip' | translate}}">
+		<em class="ri-upload-2-line icon-lg pull-left" aria-hidden="true"></em>
+		<span class="pull-left text-left">
+			<span>{{'upload.ttl.file.btn' | translate}}</span>
+			<br>
+			<small ng-hide="uploadFile" class="text-muted">{{'no.file.selected.error' | translate}}</small>
+			<small ng-show="uploadFile" class="text-muted"
+			       translate="selected.file.msg"
+			       translate-value-name="{{uploadFile.name}}"></small>
+		</span>
+		<span ng-show="uploadFileLoader" onto-loader size="48" class="pull-right"></span>
+	</button>
 </div>
 <div class="modal-footer">
     <button type="button" class="btn btn-secondary" ng-click="cancel()">{{'common.cancel.btn' | translate}}</button>
