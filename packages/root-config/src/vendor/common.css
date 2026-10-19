@@ -447,7 +447,7 @@ h3 [class^=icon-] {
 .alert-danger:before,
 .alert-success:before {
     font-family: 'icomoon', sans-serif !important;
-    /* Due to the lack of exact variable fot this size we use 1.4 times the base font size */
+    /* Due to the lack of exact variable fot this size we use 1.5 times the base font size */
     font-size: calc(var(--gw-body-base-regular-font-size) * 1.5);
     vertical-align: middle;
     line-height: 1;

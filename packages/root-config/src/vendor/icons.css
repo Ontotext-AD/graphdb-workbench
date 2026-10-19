@@ -471,7 +471,7 @@
 }
 
 .icon-3x, .btn .icon-3x[class^="icon-"] {
-    /* Due to the lack of exact variable fot this size we use 3 times the base font size */
+    /* Due to the lack of exact variable for this size we use 3 times the base font size */
     font-size: calc(var(--gw-body-base-regular-font-size) * 3);
 }
 
