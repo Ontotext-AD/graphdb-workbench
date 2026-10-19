@@ -64,14 +64,8 @@ $caption-sizes: (sm, base);
 
 @each $size in $body-sizes {
   @each $weight in $body-weights {
-    @if $size == base and $weight == regular {
-      .body-#{$size}-#{$weight} {
-        @include body($size, $weight);
-      }
-    } @else {
-      .body-#{$size}-#{$weight} {
-        @include body($size, $weight);
-      }
+    .body-#{$size}-#{$weight} {
+      @include body($size, $weight);
     }
   }
 }
