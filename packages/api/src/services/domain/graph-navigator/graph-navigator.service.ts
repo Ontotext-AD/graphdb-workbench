@@ -1,5 +1,6 @@
 import {GraphNavigatorSettings} from '../../../models/graph-navigator';
 import {GraphNavigatorRestService} from './graph-navigator-rest.service';
+import {GraphNavigatorContextService} from './graph-navigator-context.service';
 import {mapGraphNavigatorSettingsResponseToModel} from './mappers/graph-navigator-settings.mapper';
 import {service} from '../../../providers';
 import {Service} from '../../../providers/service/service';
@@ -10,20 +11,22 @@ import {Service} from '../../../providers/service/service';
  */
 export class GraphNavigatorService implements Service {
   private readonly graphNavigatorRestService = service(GraphNavigatorRestService);
+  private readonly graphNavigatorContextService = service(GraphNavigatorContextService);
 
   /**
    * Loads the settings of a repository.
    *
    * @param repositoryId - The id of the repository.
+   * @param signal - Optional AbortSignal to cancel the request if needed.
    * @returns A Promise that resolves to the current settings.
    */
-  async getSettings(repositoryId: string): Promise<GraphNavigatorSettings> {
-    const response = await this.graphNavigatorRestService.getSettings(repositoryId);
-    return mapGraphNavigatorSettingsResponseToModel(response);
+  async getSettings(repositoryId: string, signal?: AbortSignal): Promise<GraphNavigatorSettings> {
+    const response = await this.graphNavigatorRestService.getSettings(repositoryId, signal);
+    return this.updateContext(mapGraphNavigatorSettingsResponseToModel(response));
   }
 
   /**
-   * Uploads a Turtle settings file for a repository.
+   * Uploads a Turtle settings file for a repository and stores the new settings in the context.
    *
    * @param repositoryId - The id of the repository.
    * @param file - The Turtle settings file.
@@ -31,7 +34,7 @@ export class GraphNavigatorService implements Service {
    */
   async uploadSettings(repositoryId: string, file: File): Promise<GraphNavigatorSettings> {
     const response = await this.graphNavigatorRestService.uploadSettings(repositoryId, file);
-    return mapGraphNavigatorSettingsResponseToModel(response);
+    return this.updateContext(mapGraphNavigatorSettingsResponseToModel(response));
   }
 
   /**
@@ -51,5 +54,10 @@ export class GraphNavigatorService implements Service {
    */
   exportSettings(repositoryId: string): Promise<string> {
     return this.graphNavigatorRestService.exportSettings(repositoryId);
+  }
+
+  private updateContext(settings: GraphNavigatorSettings): GraphNavigatorSettings {
+    this.graphNavigatorContextService.updateSettings(settings);
+    return settings;
   }
 }

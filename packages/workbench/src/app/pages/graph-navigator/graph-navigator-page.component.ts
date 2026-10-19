@@ -6,6 +6,7 @@ import {
   EventService,
   GraphExploreLink,
   GraphExploreService,
+  GraphNavigatorContextService,
   GraphNavigatorService,
   GraphNavigatorSettings,
   HttpErrorResponse,
@@ -62,6 +63,7 @@ export class GraphNavigatorPageComponent implements OnInit, OnDestroy {
   private readonly languageContextService = service(LanguageContextService);
   private readonly graphExploreService = service(GraphExploreService);
   private readonly graphNavigatorService = service(GraphNavigatorService);
+  private readonly graphNavigatorContextService = service(GraphNavigatorContextService);
   private readonly toastrService = service(OntoToastrService);
   private readonly eventService = service(EventService);
   private readonly runtimeConfigurationContextService = service(RuntimeConfigurationContextService);
@@ -71,6 +73,7 @@ export class GraphNavigatorPageComponent implements OnInit, OnDestroy {
   private readonly logger = LoggerProvider.logger;
 
   private readonly subscriptions = new SubscriptionList();
+  private settingsRequest?: AbortController;
 
   readonly currentRepository = signal<string | undefined>(undefined);
   readonly language = signal(this.languageContextService.getSelectedLanguage());
@@ -98,6 +101,7 @@ export class GraphNavigatorPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.settingsRequest?.abort();
     this.subscriptions.unsubscribeAll();
   }
 
@@ -135,7 +139,10 @@ export class GraphNavigatorPageComponent implements OnInit, OnDestroy {
       }
       // Clear the settings together with the repository change, so the facade is removed and mounted again
       // once, with the new repository and its settings together.
+      // Abort loading the settings of the previous repository, so they do not override the ones of the new one.
+      this.settingsRequest?.abort();
       this.settings.set(undefined);
+      this.graphNavigatorContextService.updateSettings(undefined);
       this.uploadErrors.set([]);
       this.currentRepository.set(repositoryId);
       if (repositoryId) {
@@ -248,15 +255,11 @@ export class GraphNavigatorPageComponent implements OnInit, OnDestroy {
   }
 
   private loadSettings(repositoryId: string): void {
-    this.graphNavigatorService.getSettings(repositoryId)
-      .then((settings) => {
-        // Drop a late response for a repository that is no longer selected.
-        if (repositoryId === this.currentRepository()) {
-          this.settings.set(settings);
-        }
-      })
+    this.settingsRequest = new AbortController();
+    this.graphNavigatorService.getSettings(repositoryId, this.settingsRequest.signal)
+      .then((settings) => this.settings.set(settings))
       .catch((error) => {
-        if (repositoryId !== this.currentRepository()) {
+        if (error?.name === 'AbortError') {
           return;
         }
         this.logger.error('Failed to load the graph-navigator settings', error);

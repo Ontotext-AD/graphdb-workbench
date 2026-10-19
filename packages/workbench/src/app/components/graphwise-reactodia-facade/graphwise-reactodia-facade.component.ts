@@ -5,6 +5,7 @@ import {GraphExploreLink, Rdf4jRepositoryService, service, SparqlDataProviderSet
 import {LoggerProvider} from '../../services/logger/logger-provider';
 import {GRAPHWISE_REACTODIA_EVENT_HANDLERS} from './models/graphwise-reactodia-event-handlers';
 import {ErrorEventHandler} from './service/error-event-handler.service';
+import {TextSearchEventHandler} from './service/text-search-event-handler.service';
 
 /**
  * The request descriptor graphwise-reactodia's `SparqlQueryFunction` passes to the transport.
@@ -33,7 +34,8 @@ defineCustomElements();
   styleUrl: './graphwise-reactodia-facade.component.scss',
   providers: [
     // Event handlers
-    {provide: GRAPHWISE_REACTODIA_EVENT_HANDLERS, useClass: ErrorEventHandler, multi: true}
+    {provide: GRAPHWISE_REACTODIA_EVENT_HANDLERS, useClass: ErrorEventHandler, multi: true},
+    {provide: GRAPHWISE_REACTODIA_EVENT_HANDLERS, useClass: TextSearchEventHandler, multi: true}
   ]
 })
 export class GraphwiseReactodiaFacadeComponent {
@@ -74,7 +76,7 @@ export class GraphwiseReactodiaFacadeComponent {
   }));
 
   /**
-   * Hands a notification of graphwise-reactodia to the first handler that can handle its type.
+   * Hands an event of graphwise-reactodia to the first handler that can handle its type.
    *
    * @param event - The `graphwiseReactodiaEvent` event.
    */
