@@ -20,6 +20,18 @@ describe('Autocomplete context service', () => {
     expect(mockCallback).toHaveBeenCalledWith(enabled);
   });
 
+  test('should return the autocomplete enabled state', () => {
+    // Given the autocomplete enabled state is not loaded
+    // Then autocomplete is reported as disabled
+    expect(autocompleteService.isAutocompleteEnabled()).toBe(false);
+
+    // When autocomplete is enabled
+    autocompleteService.updateAutocompleteEnabled(true);
+
+    // Then autocomplete is reported as enabled
+    expect(autocompleteService.isAutocompleteEnabled()).toBe(true);
+  });
+
   test('should stop receiving updates, after unsubscribe', () => {
     // Given a new autocomplete enabled state
     const enabled = true;

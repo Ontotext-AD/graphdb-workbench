@@ -7,6 +7,7 @@ import {
   AuthorizationService,
   GraphExploreLink,
   GraphExploreService,
+  GraphNavigatorContextService,
   GraphNavigatorService,
   GraphNavigatorSettings,
   GraphNavigatorSettingsError,
@@ -158,6 +159,36 @@ describe('GraphNavigatorPageComponent', () => {
       const facade = getFacade().componentInstance as GraphwiseReactodiaFacadeComponent;
       expect(facade.currentRepository()).toBe(REPOSITORY_A.id);
       expect(facade.providerSettings()).toEqual(SETTINGS_A.getProviderSettings());
+    });
+
+    it('should clear the shared settings when the repository changes', async () => {
+      // GIVEN: the context holds the settings of the first repository.
+      fixture.detectChanges();
+      await selectRepository(REPOSITORY_A);
+      await settle();
+      const graphNavigatorContextService = ServiceProvider.get(GraphNavigatorContextService);
+      graphNavigatorContextService.updateSettings(SETTINGS_A);
+
+      // WHEN: the repository changes.
+      await selectRepository(REPOSITORY_B);
+
+      // THEN: the context no longer holds the old settings.
+      expect(graphNavigatorContextService.getSettings()).toBeUndefined();
+    });
+
+    it('should reset the autocomplete warning when the repository changes', async () => {
+      // GIVEN: the autocomplete warning was shown for the first repository.
+      fixture.detectChanges();
+      await selectRepository(REPOSITORY_A);
+      await settle();
+      const graphNavigatorContextService = ServiceProvider.get(GraphNavigatorContextService);
+      graphNavigatorContextService.updateAutocompleteWarned(true);
+
+      // WHEN: the repository changes.
+      await selectRepository(REPOSITORY_B);
+
+      // THEN: the warning can be shown again.
+      expect(graphNavigatorContextService.isAutocompleteWarned()).toBe(false);
     });
 
     it('should reload the settings and mount the diagram once with the new repository when the repository changes', async () => {

@@ -8,7 +8,7 @@ import {
   NamespaceMap,
   NamespacesContextService,
   navigateTo,
-  OntoToastrService, ResourceSearchStorageService,
+  OntoToastrService, RepositoryContextService, ResourceSearchStorageService,
   SearchButton,
   SearchButtonConfig,
   ServiceProvider,
@@ -39,6 +39,7 @@ export class OntoSearchResourceInput {
   private readonly toastrService = ServiceProvider.get(OntoToastrService);
   private readonly eventService = ServiceProvider.get(EventService);
   private readonly namespaceContextService = ServiceProvider.get(NamespacesContextService);
+  private readonly repositoryContextService = ServiceProvider.get(RepositoryContextService);
 
   private readonly subscriptions = new SubscriptionList();
   private autocompleteWarningShown = false;
@@ -100,6 +101,7 @@ export class OntoSearchResourceInput {
 
   connectedCallback() {
     this.onAutocompleteEnabledChange();
+    this.onRepositoryChange();
     this.onNamespaceChange();
     this.loadInputFromStorage();
   }
@@ -297,6 +299,14 @@ export class OntoSearchResourceInput {
       this.resourceSearchStorageService.setInputValue(this.inputValue);
     }
     this.loadAutocompleteResults();
+  }
+
+  private onRepositoryChange() {
+    this.subscriptions.add(
+      this.repositoryContextService.onSelectedRepositoryChanged(() => {
+        this.autocompleteWarningShown = false;
+      })
+    );
   }
 
   private onNamespaceChange() {

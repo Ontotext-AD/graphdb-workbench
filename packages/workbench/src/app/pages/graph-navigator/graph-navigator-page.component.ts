@@ -6,6 +6,7 @@ import {
   EventService,
   GraphExploreLink,
   GraphExploreService,
+  GraphNavigatorContextService,
   GraphNavigatorService,
   GraphNavigatorSettings,
   GraphNavigatorSettingsError,
@@ -63,6 +64,7 @@ export class GraphNavigatorPageComponent implements OnInit, OnDestroy {
   private readonly languageContextService = service(LanguageContextService);
   private readonly graphExploreService = service(GraphExploreService);
   private readonly graphNavigatorService = service(GraphNavigatorService);
+  private readonly graphNavigatorContextService = service(GraphNavigatorContextService);
   private readonly toastrService = service(OntoToastrService);
   private readonly eventService = service(EventService);
   private readonly runtimeConfigurationContextService = service(RuntimeConfigurationContextService);
@@ -137,6 +139,8 @@ export class GraphNavigatorPageComponent implements OnInit, OnDestroy {
       // Clear the settings together with the repository change, so the facade is removed and mounted again
       // once, with the new repository and its settings together.
       this.settings.set(undefined);
+      this.graphNavigatorContextService.updateSettings(undefined);
+      this.graphNavigatorContextService.updateAutocompleteWarned(false);
       this.uploadErrors.set([]);
       this.currentRepository.set(repositoryId);
       if (repositoryId) {

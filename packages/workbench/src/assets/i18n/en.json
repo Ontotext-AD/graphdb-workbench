@@ -129,6 +129,9 @@
       "graph_load_failed": "Could not compute the graph for the query.",
       "default": "Something went wrong in the Graph Navigator."
     },
+    "warnings": {
+      "autocomplete_is_off": "Autocomplete is OFF<br>Go to Setup -> Autocomplete"
+    },
     "confirmation": {
       "on_repository_change": {
         "title": "Confirm selected repository change",

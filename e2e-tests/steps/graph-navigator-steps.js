@@ -44,6 +44,20 @@ export class GraphNavigatorSteps extends BaseSteps {
         return GraphNavigatorSteps.getCanvas().find(`[data-element-id]`).contains(text).first();
     }
 
+    static getSearchInput() {
+        return GraphNavigatorSteps.getComponent().find('.reactodia-unified-search__search-input');
+    }
+
+    static getSearchSectionTab(name) {
+        return GraphNavigatorSteps.getComponent().find('.reactodia-unified-search__section-tab').contains(name);
+    }
+
+    static searchEntities(text) {
+        GraphNavigatorSteps.getSearchInput().click();
+        GraphNavigatorSteps.getSearchSectionTab('Entities').click();
+        GraphNavigatorSteps.getSearchInput().clear().type(`${text}{enter}`);
+    }
+
     static getSettingsButton() {
         return cy.get('[data-test="graph-navigator-settings-btn"]');
     }
