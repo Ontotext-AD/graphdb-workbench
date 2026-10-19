@@ -34,7 +34,6 @@ app-yasgui-component-facade .CodeMirror-hints {
 .yasqe-autocomplete-hint {
   color: var(--gw-autocomplete-color);
 }
-
 /* #endregion YASQE - autocomplete */
 
 .yasqe .resizeChip {
@@ -86,8 +85,6 @@ app-yasgui-component-facade {
     }
   }
 
-
-
   .ontotext-run-dropdown-menu {
     background-color: var(--gw-tieredmenu-background) !important;
     border: 1px solid var(--gw-tieredmenu-border-color);
@@ -103,7 +100,6 @@ app-yasgui-component-facade {
       }
     }
   }
-
   /* #endregion YASQE - side buttons */
 
   /* #region YASQE - saved queries */
@@ -142,9 +138,7 @@ app-yasgui-component-facade {
         font-size: 1rem;
       }
     }
-
   }
-
   /* #endregion YASQE - saved queries */
 
   /* #region YASQE FOOTER BUTTONS */
@@ -162,6 +156,5 @@ app-yasgui-component-facade {
       }
     }
   }
-
   /* #endregion YASQE FOOTER BUTTONS */
 }

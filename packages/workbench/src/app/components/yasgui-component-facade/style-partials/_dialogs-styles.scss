@@ -3,7 +3,6 @@ app-yasgui-component-facade {
    .cancel-button {
     &:focus,
     &:hover {
-      /* TODO change this */
       background-color: #d4d4d4 !important;
       border-color: #d4d4d4 !important;
     }
@@ -13,13 +12,11 @@ app-yasgui-component-facade {
   .confirmation-dialog {
     /* Dialog body should have slightly bigger font-size. When it is attached directly to the html body. */
     .dialog-body {
-      font-size: var(--gw-size-1-25) !important; //substitution variable -> 1.25rem
+      font-size: var(--gw-size-1-25) !important;
     }
 
     .cancel-button {
       margin-right: 3px;
-      
-      /* TODO change this */
       background-color: #ebebeb;
       border-color: #ebebeb;
     }
@@ -57,7 +54,6 @@ app-yasgui-component-facade {
     color: var(--gw-button-primary-hover-color) !important;
   }
 }
-
 /* #endregion - scoped dialogs under the yasgui-component class. */
 
 /* #region Dialogs from the yasgui component. Those are not scoped under the yasgui-component class. */
@@ -99,7 +95,6 @@ app-yasgui-component-facade {
   }
 
   /* Forms in the dialog */
-
   .dialog-footer {
     border-top-color: var(--gw-dialog-border-color) !important;
 
@@ -162,5 +157,4 @@ app-yasgui-component-facade {
     color: var(--gw-message-info-color) !important;
   }
 }
-
 /* #endregion - DIALOGS - KEYBOARD SHORTCUTS */

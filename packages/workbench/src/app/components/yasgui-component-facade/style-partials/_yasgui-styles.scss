@@ -19,7 +19,6 @@ app-yasgui-component-facade {
     font-variant-ligatures: none;
     -webkit-font-variant-ligatures: none;
   }
-
   /* #endregion Fixes the issue with the color of the sequence of < or > characters. */
 
   /* #region Overrides for the YASQE theme */
@@ -51,9 +50,7 @@ app-yasgui-component-facade {
       color: var(--gw-neutral-300);
     }
   }
-
   /* #endregion Overrides for the YASQE theme */
-
 
   /* #region YASGUI - TOOLBAR TOP RIGHT */
   .yasgui .tabMenu .acceptWrapper .selector .selectorLabel {
@@ -97,7 +94,6 @@ app-yasgui-component-facade {
       background-color: transparent !important;
     }
   }
-
   /* #endregion YASGUI - TOOLBAR TOP RIGHT */
 
   /* #region YASGUI QUERY TABS */
@@ -170,7 +166,6 @@ app-yasgui-component-facade {
 
       .tab .editable-text-field-wrapper .save-btn span,
       .tab .editable-text-field-wrapper .cancel-btn span {
-        // Substitude variable with valuee 700 (closest to the original fontweight)
         font-weight: var(--gw-label-base-bold-font-weight);
       }
 
@@ -192,7 +187,6 @@ app-yasgui-component-facade {
       }
     }
   }
-
   /* #endregion YASGUI QUERY TABS */
 
   /* #region YASGUI DIALOGS */
@@ -216,7 +210,6 @@ app-yasgui-component-facade {
 }
 
 /* #region YASGUI FLOATING TOOLTIP */
-
 .yasgui-floating-tooltip,
 .yasgui-floating-tooltip-arrow,
 .ontotext-yasgui-tooltip .tooltip-box {
@@ -246,6 +239,4 @@ app-yasgui-component-facade {
   }
 
 }
-
 /* #endregion YASGUI FLOATING TOOLTIP */
-
