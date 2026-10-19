@@ -45,7 +45,7 @@
       transition: 0.15s ease-out;
 
       &.ri-arrow-down-s-line {
-        color: rgba(0, 0, 0, .35);
+        color: rgb(0 0 0 / 35%);
         
         //Due to lack of exact match there is a change from 1.1em to 1.125 rem
         font-size: var(--gw-body-lg-regular-font-size);
