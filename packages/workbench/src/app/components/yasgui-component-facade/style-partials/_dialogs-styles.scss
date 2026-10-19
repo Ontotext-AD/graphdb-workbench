@@ -40,19 +40,6 @@ app-yasgui-component-facade {
     border-color: var(--gw-button-primary-hover-border-color) !important;
     color: var(--gw-button-primary-hover-color) !important;
   }
-
-  .confirmation-dialog .dialog-footer .confirm-button {
-    background-color: var(--gw-button-primary-background) !important;
-    border-color: var(--gw-button-primary-border-color) !important;
-    color: var(--gw-button-primary-color) !important;
-  }
-
-  .confirmation-dialog .dialog-footer .confirm-button:focus,
-  .confirmation-dialog .dialog-footer .confirm-button:hover {
-    background-color: var(--gw-button-primary-hover-background) !important;
-    border-color: var(--gw-button-primary-hover-border-color) !important;
-    color: var(--gw-button-primary-hover-color) !important;
-  }
 }
 /* #endregion - scoped dialogs under the yasgui-component class. */
 
