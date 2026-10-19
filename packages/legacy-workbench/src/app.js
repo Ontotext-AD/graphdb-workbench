@@ -20,6 +20,7 @@ import 'angular/core/directives/operations-statuses-monitor/operations-statuses-
 import 'angular/core/directives/autocomplete/autocomplete.directive';
 import 'angular/core/directives/prop-indeterminate/prop-indeterminate.directive';
 import 'angular/core/directives/page-info-tooltip.directive';
+import 'angular/core/directives/modal-window.decorator';
 import 'angular/core/filters/search-filter';
 import 'angular/core/filters/bytes-filter';
 import 'angular/core/services/language.service';
@@ -63,6 +64,7 @@ const modules = [
     'graphdb.framework.core.directives.uppercased',
     'graphdb.framework.core.directives.prop-indeterminate',
     'graphdb.framework.core.directives.page-info-tooltip',
+    'graphdb.framework.core.directives.modal-window',
     'graphdb.framework.guides.services',
     'graphdb.framework.core.directives.operationsstatusesmonitor',
     'graphdb.framework.core.directives.autocomplete',

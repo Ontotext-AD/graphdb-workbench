@@ -3,7 +3,7 @@
 <link href="css/multiselect-search.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 
 <div class="modal-header">
-    <button type="button" class="close" ng-click="close()"></button>
+    <button type="button" class="close" aria-label="{{'common.close' | translate}}" ng-click="close()"></button>
     <h4 class="modal-title">{{(
         operation === AGENT_OPERATION.EDIT ? 'ttyg.agent.create_agent_modal.title.edit '
         : operation === AGENT_OPERATION.CLONE ? 'ttyg.agent.create_agent_modal.title.clone'
@@ -186,9 +186,9 @@
                                    ng-model="extractionMethod.selected"/>
                             <label for="{{extractionMethod.method + '_checkbox'}}"></label>
                         </div>
-                        <a class="btn btn-link panel-toggle-link"
-                           aria-expanded="false" aria-controls="{{extractionMethod.method + '_method_content'}}"
-                           ng-click="onExtractionMethodPanelToggle(extractionMethod)">
+                        <button type="button" class="btn btn-link panel-toggle-link"
+                                aria-expanded="{{!!extractionMethod.expanded}}" aria-controls="{{extractionMethod.method + '_method_content'}}"
+                                ng-click="onExtractionMethodPanelToggle(extractionMethod)">
                             <span class="mr-1" ng-if="extractionMethod.method !== extractionMethods.SIMILARITY"
                                   uib-popover="{{'ttyg.agent.create_agent_modal.form.' + extractionMethod.method + '.tooltip' | translate}}"
                                   popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.' + extractionMethod.method + '.label' | translate}}</span>
@@ -201,7 +201,7 @@
                             <i class="ri-arrow-down-s-line toggle-icon"
                                ng-class="{'expanded': extractionMethod.expanded}">
                             </i>
-                        </a>
+                        </button>
                     </div>
 
                     <div id="{{extractionMethod.method + '_method_content'}}"

@@ -537,6 +537,12 @@ code {
     outline: 0;
 }
 
+/* Like the .text-btn buttons, show the focus ring on keyboard focus only. */
+.close:focus-visible {
+    outline: var(--gw-button-focus-ring-width) var(--gw-button-focus-ring-style) var(--gw-button-tertiary-link-focus-ring-color);
+    outline-offset: var(--gw-button-focus-ring-offset);
+}
+
 .close::before {
     font-family: 'icomoon', sans-serif !important;
     content: "\e922";
@@ -1249,6 +1255,12 @@ input[type=radio] {
     border-radius: 50%;
 }
 
+/* Like PrimeNG radio buttons, show the focus ring on keyboard focus only. */
+input[type=radio]:focus-visible {
+    outline: var(--gw-radiobutton-focus-ring-width) var(--gw-radiobutton-focus-ring-style) var(--gw-radiobutton-focus-ring-color);
+    outline-offset: var(--gw-radiobutton-focus-ring-offset);
+}
+
 input[type=radio]:checked {
     color: var(--gw-radiobutton-checked-label-color);
     border-color: var(--gw-radiobutton-checked-border-color);
@@ -1330,8 +1342,21 @@ span.switch {
     width: 36px;
 }
 
+/* Hide the native checkbox visually only, so that it stays in the tab order and the switch can be toggled with the
+   keyboard. */
 input.switch:empty {
-    display: none
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    opacity: 0;
+}
+
+input.switch:focus-visible ~ label:before {
+    outline: var(--gw-toggleswitch-focus-ring-width) var(--gw-toggleswitch-focus-ring-style) var(--gw-toggleswitch-focus-ring-color);
+    outline-offset: var(--gw-toggleswitch-focus-ring-offset);
 }
 
 input.switch:empty ~ label {

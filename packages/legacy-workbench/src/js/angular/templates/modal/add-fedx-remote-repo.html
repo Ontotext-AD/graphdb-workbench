@@ -1,12 +1,12 @@
 <!-- Start addRemoteMember.html -->
 <div class="modal-header" ng-if="mode === 'remote'">
-    <button ng-click="cancel();" class="close" aria-hidden="true" data-dismiss="dialog">
+    <button ng-click="cancel();" class="close" aria-label="{{'common.close' | translate}}" data-dismiss="dialog">
     </button>
     <h3 class="modal-title" ng-if="!model.editMode">{{'add.remote.repo' | translate}}</h3>
     <h3 class="modal-title" ng-if="model.editMode">{{'edit.remote.repo' | translate}}</h3>
 </div>
 <div class="modal-header" ng-if="mode === 'local'">
-    <button ng-click="cancel();" class="close" aria-hidden="true" data-dismiss="dialog">
+    <button ng-click="cancel();" class="close" aria-label="{{'common.close' | translate}}" data-dismiss="dialog">
     </button>
     <h3 class="modal-title">{{'edit.local.repo' | translate}}</h3>
 </div>

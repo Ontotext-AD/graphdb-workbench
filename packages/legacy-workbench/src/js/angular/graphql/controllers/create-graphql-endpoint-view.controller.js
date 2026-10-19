@@ -278,7 +278,6 @@ function CreateGraphqlEndpointViewCtrl($scope, $location, $repositories, $transl
             windowClass: 'endpoint-generation-failure-result-modal',
             size: 'lg',
             backdrop: 'static',
-            keyboard: false,
             resolve: {
                 data: () => {
                     return {

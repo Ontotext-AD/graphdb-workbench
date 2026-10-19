@@ -9,9 +9,10 @@
     box-shadow: none;
   }
 
-  &:focus-visible {
-    outline: none;
-    box-shadow: none;
+  // Like PrimeNG toggle switches, show the focus ring around the track on keyboard focus only.
+  &:focus-visible input ~ label::before {
+    outline: var(--gw-toggleswitch-focus-ring-width) var(--gw-toggleswitch-focus-ring-style) var(--gw-toggleswitch-focus-ring-color);
+    outline-offset: var(--gw-toggleswitch-focus-ring-offset);
   }
 
   input {
@@ -25,7 +26,7 @@
         margin: 0.05em 0.6em -0.05em 0;
         vertical-align: text-bottom;
 
-        &:before {
+        &::before {
           display: block;
           content: ' ';
           width: 2.2em;
@@ -35,7 +36,7 @@
           transition: all 100ms ease-in;
         }
 
-        &:after {
+        &::after {
           position: absolute;
           display: block;
           top: 0.08em;
@@ -53,11 +54,11 @@
 
     &:checked {
       & ~ label {
-        &:before {
+        &::before {
           background-color: var(--gw-toggleswitch-checked-background);
         }
 
-        &:after {
+        &::after {
           left: 1.0em;
           background-color: var(--gw-toggleswitch-handle-checked-background);
           border: 1px solid var(--gw-toggleswitch-checked-background);
