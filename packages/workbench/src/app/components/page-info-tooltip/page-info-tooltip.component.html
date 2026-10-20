@@ -12,7 +12,7 @@
          (mouseleave)="hide()"
          (focusin)="cancelHide()"
          (focusout)="hide()">
-      <h4 class="heading-h4">{{ title() }}</h4>
+      <h4>{{ title() }}</h4>
       @if (helpInfo()) {
         <div>
           <p [innerHTML]="helpInfo()">

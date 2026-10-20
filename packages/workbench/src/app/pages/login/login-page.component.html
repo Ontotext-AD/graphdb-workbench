@@ -7,7 +7,7 @@
     <form [formGroup]="loginForm" (ngSubmit)="login()" novalidate>
       @if (isGDBLoginEnabled()) {
         @let hasWrongCredentials = loginForm.hasError('wrongCredentials');
-        <h2 class="heading-h2 login-title">{{ 'login.title' | transloco }}</h2>
+        <h2 class="login-title">{{ 'login.title' | transloco }}</h2>
 
         <div class="group">
           <label class="label-base-regular" for="username">{{ 'login.username' | transloco }}</label>

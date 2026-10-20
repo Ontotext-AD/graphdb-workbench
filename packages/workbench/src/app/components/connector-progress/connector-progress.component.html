@@ -1,6 +1,6 @@
 <div>
   @if (inline) {
-    <h4 class="heading-h4">
+    <h4>
       {{ (buildStatus().repair ? 'sparql_editor.connector_progress.action.repairing' : 'sparql_editor.connector_progress.action.creating') | transloco }} {{ 'sparql_editor.connector_progress.connector_label' | transloco }}
       <strong>{{ connectorProgressData.connectorName }}</strong>...
     </h4>

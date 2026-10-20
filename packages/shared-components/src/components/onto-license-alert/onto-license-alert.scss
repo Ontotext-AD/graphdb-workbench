@@ -4,9 +4,9 @@
 
 .onto-license-alert {
   animation: fade-button 2s infinite;
+  border: 1px solid transparent !important;
 
   --fade-color: var(--gw-error-light);
-  border: 1px solid transparent !important;
 
   &:hover {
     text-decoration: none;

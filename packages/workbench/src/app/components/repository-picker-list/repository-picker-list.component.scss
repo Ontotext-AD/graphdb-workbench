@@ -65,7 +65,7 @@
       vertical-align: top;
 
       .type-icon {
-        font-size: var(--gw-body-lg-regular-font-size); // substitude variable -> 1.25rem
+        font-size: 1.2em;
         color: var(--gw-button-primary-link-hover-color);
       }
     }
@@ -115,7 +115,7 @@
       .repository-state {
         flex-shrink: 0;
         margin-right: .5em;
-        font-size: var(--gw-body-sm-regular-font-size); // substitude variable -> 0.875rem
+        font-size: 0.8em;
 
         &.running {
           color: var(--gw-button-success-background);
