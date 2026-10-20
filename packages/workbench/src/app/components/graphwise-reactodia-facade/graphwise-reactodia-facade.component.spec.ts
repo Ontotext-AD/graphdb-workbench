@@ -45,7 +45,7 @@ describe('GraphwiseReactodiaFacadeComponent', () => {
   const getReactodiaElement = (): HTMLElement => fixture.nativeElement.querySelector('graphwise-reactodia');
 
   const dispatchReactodiaError = (code: string, error: Error): void => {
-    getReactodiaElement().dispatchEvent(new CustomEvent('graphwiseReactodiaError', {detail: {code, error}}));
+    getReactodiaElement().dispatchEvent(new CustomEvent('graphwiseReactodiaEvent', {detail: {type: 'error', payload: {code, error}}}));
   };
 
   it('should create', () => {
@@ -80,6 +80,13 @@ describe('GraphwiseReactodiaFacadeComponent', () => {
       expect(toastrErrorSpy).toHaveBeenCalledWith(ERROR_LABELS.default);
       expect(loggerErrorSpy).toHaveBeenCalledTimes(1);
       expect(loggerErrorSpy).toHaveBeenCalledWith(ERROR_LABELS.default, error);
+    });
+
+    it('should not show a toast or log an error, when the event type has no handler', () => {
+      getReactodiaElement().dispatchEvent(new CustomEvent('graphwiseReactodiaEvent', {detail: {type: 'unknown-type'}}));
+
+      expect(toastrErrorSpy).not.toHaveBeenCalled();
+      expect(loggerErrorSpy).not.toHaveBeenCalled();
     });
 
     it('should not show a toast or log by itself, when the query function fails', async () => {
