@@ -64,6 +64,18 @@ describe('Graph Navigator', () => {
         GraphNavigatorSteps.getElement(SEED_RESOURCE_LABEL).should('exist');
     });
 
+    it('should show an error toast, when a graph request fails', () => {
+        // Given the repository's SPARQL requests fail.
+        cy.intercept('POST', `/repositories/${repositoryId}`, {statusCode: 500}).as('graphRequest');
+
+        // When I open the Graph Navigator view with a start resource.
+        GraphNavigatorSteps.visit(SEED_RESOURCE_ENCODED);
+        cy.wait('@graphRequest');
+
+        // Then I expect an error toast about the graph data.
+        ToasterSteps.getToasterMessage().should('contain', 'Could not load the graph data.');
+    });
+
     it('should seed the canvas with the graph computed from a CONSTRUCT query', () => {
         // Given I open the Graph Navigator view with a CONSTRUCT query, as sent from the SPARQL editor.
         GraphNavigatorSteps.visitWithQuery(CONSTRUCT_QUERY);

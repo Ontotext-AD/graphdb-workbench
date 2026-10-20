@@ -1,10 +1,10 @@
 import {Component, computed, CUSTOM_ELEMENTS_SCHEMA, inject, input} from '@angular/core';
-import {translate} from '@jsverse/transloco';
-import type {ErrorReport} from 'graphwise-reactodia';
+import type {EventDetail} from 'graphwise-reactodia';
 import {defineCustomElements} from 'graphwise-reactodia/loader';
 import {GraphExploreLink, Rdf4jRepositoryService, service, SparqlDataProviderSettings} from '@ontotext/workbench-api';
 import {LoggerProvider} from '../../services/logger/logger-provider';
-import {NotificationProviderService} from '../../services/notification/notification-provider.service';
+import {GRAPHWISE_REACTODIA_EVENT_HANDLERS} from './models/graphwise-reactodia-event-handlers';
+import {ErrorEventHandler} from './service/error-event-handler.service';
 
 /**
  * The request descriptor graphwise-reactodia's `SparqlQueryFunction` passes to the transport.
@@ -16,8 +16,6 @@ interface SparqlQueryParams {
   method: string;
   signal?: AbortSignal;
 }
-
-const ERROR_MESSAGES_PREFIX = 'graph_navigator.errors';
 
 defineCustomElements();
 
@@ -32,11 +30,15 @@ defineCustomElements();
   standalone: true,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './graphwise-reactodia-facade.component.html',
-  styleUrl: './graphwise-reactodia-facade.component.scss'
+  styleUrl: './graphwise-reactodia-facade.component.scss',
+  providers: [
+    // Event handlers
+    {provide: GRAPHWISE_REACTODIA_EVENT_HANDLERS, useClass: ErrorEventHandler, multi: true}
+  ]
 })
 export class GraphwiseReactodiaFacadeComponent {
   private readonly rdf4jRepositoryService = service(Rdf4jRepositoryService);
-  private readonly notificationProviderService = inject(NotificationProviderService);
+  private readonly eventHandlers = inject(GRAPHWISE_REACTODIA_EVENT_HANDLERS);
   private readonly logger = LoggerProvider.logger;
 
   /** The active repository id; re-points (and resets) the diagram when it changes at runtime. */
@@ -72,18 +74,15 @@ export class GraphwiseReactodiaFacadeComponent {
   }));
 
   /**
-   * Logs an error reported by graphwise-reactodia and shows a user-friendly message. If a translation does not exist,
-   * a default message is shown.
+   * Hands a notification of graphwise-reactodia to the first handler that can handle its type.
    *
-   * @param event - The `graphwiseReactodiaError` event.
+   * @param event - The `graphwiseReactodiaEvent` event.
    */
-  onGraphwiseReactodiaError(event: Event): void {
-    const {code, error} = (event as CustomEvent<ErrorReport>).detail;
-    const messageKey = `${ERROR_MESSAGES_PREFIX}.${code.toLowerCase()}`;
-    const translated = translate(messageKey);
-    const message = translated !== messageKey ? translated : translate(`${ERROR_MESSAGES_PREFIX}.default`);
-    this.logger.error(message, error);
-    this.notificationProviderService.error(message);
+  onGraphwiseReactodiaEvent(event: CustomEvent<EventDetail>): void {
+    const eventDetail = event.detail;
+    // TODO: Should we allow multiple handlers for the same event type?
+    const handler = this.eventHandlers.find((eventHandler) => eventHandler.canHandle(eventDetail.type));
+    handler?.handle(eventDetail);
   }
 
   /**
