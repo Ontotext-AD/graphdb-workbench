@@ -51,4 +51,5 @@ A change is usually complete when:
 
 ## See also
 
+- [Pull requests](pull-requests.md) — how to write the PR description
 - [Developers Guide hub](../developers-guide.md)

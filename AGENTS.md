@@ -46,6 +46,7 @@ Changes may span packages, and modern + legacy stacks coexist. **When working in
 - **[Logging](docs/conventions/logging.md)** — centralized logging service and `LoggerProvider`.
 - **[HTTP interceptors](docs/conventions/http-interceptors.md)** — request/response chains.
 - **[Testing](docs/conventions/testing.md)** — unit vs integration, public surface, mocking, coverage.
+- **[Pull requests](docs/conventions/pull-requests.md)** — PR title, description sections, change outline, checklist.
 
 ## Testing
 
