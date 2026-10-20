@@ -114,8 +114,7 @@
     display: block;
     text-align: right;
     padding-right: 1em;
-    /* Due to the lack of exact variable fot this size we use the small body font size 0.875rem. Previous 0.9em */
-    font-size: var(--gw-body-sm-regular-font-size);
+    font-size: 0.9em;
 }
 
 .shepherd-code {

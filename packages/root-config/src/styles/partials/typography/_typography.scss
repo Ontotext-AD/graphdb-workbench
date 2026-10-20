@@ -21,8 +21,8 @@ $caption-sizes: (sm, base);
   line-height: var(--gw-#{$token}-line-height);
 }
 
-/* current: h2, h3, h4 - fontweight 500, h5, h6 - fontweight 600. Previous: font-weight 400 */
-/* Current: h1 font-size 2.5rem. Previous: h1 default bootstrap size 2rem */
+/* Heading weights for h2, h3, h4 - fontweight 500, h5, h6 - fontweight 600. Changed from font-weight 400. Implemented with GDB-15277. */
+/* h1 font-size 2.5rem. Changed from h1 default bootstrap size 2rem. Implemented with GDB-15277. */
 @mixin heading($level) {
   @include text-style('heading-h#{$level}');
 }

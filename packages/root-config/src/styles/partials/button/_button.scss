@@ -12,7 +12,7 @@
   user-select: none;
   border: 1px solid transparent;
   padding: .5rem 1rem;
-  font-size: var(--gw-label-base-regular-font-size);
+  font-size: 1rem;
   transition: all .15s ease-in-out;
   border-radius: 0;
   --onto-btn-focus-ring-color: var(--gw-button-primary-focus-ring-color);
@@ -34,7 +34,7 @@
 
 .onto-lg {
   padding: .75em 1.2em;
-  font-size: var(--gw-label-lg-regular-font-size);
+  font-size: 1.125rem;
 }
 
 .onto-btn-primary {
