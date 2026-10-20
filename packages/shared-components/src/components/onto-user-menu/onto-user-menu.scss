@@ -69,8 +69,7 @@
       transition: 0.15s ease-out;
 
       &.ri-arrow-down-s-line {
-        // Original value 1.1em current 1.125rem
-        font-size: var(--gw-body-lg-regular-font-size);
+        font-size: 1.1em;
         transition: all 0.2s ease-in;
       }
     }
@@ -85,6 +84,7 @@
     text-decoration: none;
     right: 0;
     min-width: 7rem;
+    line-height: var(--gw-base-line-height);
     width: 100%;
     color: var(--gw-tieredmenu-color);
     background-color: var(--gw-tieredmenu-background);

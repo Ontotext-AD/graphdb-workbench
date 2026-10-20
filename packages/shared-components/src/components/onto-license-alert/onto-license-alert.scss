@@ -4,6 +4,7 @@
 
 .onto-license-alert {
   animation: fade-button 2s infinite;
+
   --fade-color: var(--gw-error-light);
   border: 1px solid transparent !important;
 
@@ -24,8 +25,7 @@
   & .ri-alert-line {
     margin-right: 0.2em;
     line-height: 0.75;
-    // No specific variable for font-size, using main font size 1.4 times
-    font-size: calc(var(--gw-label-base-regular-font-size) * 1.4); 
+    font-size: 1.4em; 
     display: inline-block;
     vertical-align: middle;
   }

@@ -16,7 +16,7 @@
         min-width: inherit;
         flex: 1;
         padding: .5rem .75rem;
-        font-size: var(--gw-body-base-regular-font-size);
+        font-size: 1rem;
         line-height: 1.25;
         color: var(--gw-form-field-color);
         background-color: var(--gw-form-field-background);
@@ -87,6 +87,7 @@
   }
 
   & .hint {
+    font-size: 0.8rem;
     color: #818a91;
   }
 
@@ -96,8 +97,7 @@
     overflow: auto;
 
     & p {
-      // Due to lack of exact font size control in the design system, we scale the base font size slightly.
-      font-size: calc(var(--gw-body-base-regular-font-size) * 1.1);
+      font-size: 1.1rem;
       color: var(--gw-autocomplete-color);
       background-color: var(--gw-autocomplete-background);
       margin-bottom: 0;

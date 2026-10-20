@@ -27,8 +27,7 @@
     gap: 0.4em;
 
     .item-icon {
-      // Due to lack of exact match we use --gw-base-font-size (1rem) multiplied by 1.4
-      font-size: calc(var(--gw-base-font-size) * 1.4);
+      font-size: 1.4em;
     }
 
     .item-label {

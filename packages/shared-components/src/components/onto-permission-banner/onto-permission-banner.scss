@@ -10,7 +10,7 @@
   display: flex;
   align-items: center;
   margin: 1rem;
-  padding: 0 2rem 3rem 2rem;
+  padding: 0 2rem 3rem;
 }
 
 .label-container {
@@ -23,6 +23,6 @@
   font-family: 'icomoon', sans-serif;
   content: '\e920';
   display: block;
-  font-size: var(--gw-xl-font-size);
+  font-size: 1.5em;
   pointer-events: none;
 }

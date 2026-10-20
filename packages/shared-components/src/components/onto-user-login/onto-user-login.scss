@@ -39,16 +39,12 @@
     i {
       color: var(--user-menu-primary-color);
       line-height: .75;
-
-      // Due to lack of exact match we use --gw-base-font-size (1rem) multiplied by 1.2
-      font-size: calc(var(--gw-base-font-size) * 1.2);
+      font-size: 1.2em;
       transition: 0.15s ease-out;
 
       &.ri-arrow-down-s-line {
         color: rgb(0 0 0 / 35%);
-        
-        //Due to lack of exact match there is a change from 1.1em to 1.125 rem
-        font-size: var(--gw-body-lg-regular-font-size);
+        font-size: 1.1em;
         transition: all 0.2s ease-in;
       }
     }

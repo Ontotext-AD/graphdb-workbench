@@ -61,8 +61,7 @@ main menu height */
 }
 
 .navbar-component .menu-item-icon {
-  // No exact variable available use  --gw-body-base-regular-font-size (1rem) * 1.6
-  font-size: calc(var(--gw-body-base-regular-font-size) * 1.6);
+  font-size: 1.6rem;
   width: 2.5rem;
   vertical-align: middle;
   text-align: center;
@@ -78,7 +77,7 @@ main menu height */
 
 .navbar-component .chevron {
   margin-left: auto;
-  font-size: var(--gw-body-base-regular-font-size);
+  font-size: 1rem;
   transition: all 0.2s ease-in;
   pointer-events: none;
   color: var(--gw-sidenav-menuitem-icon-second-color);
@@ -89,8 +88,7 @@ main menu height */
 }
 
 .navbar-component :not(.brand) .menu-element-root {
-  // No specific variable with size 1.1rem - using --gw-label-lg-regular-font-size 1.125rem
-  font-size: var(--gw-label-lg-regular-font-size);
+  font-size: 1.1rem;
 }
 
 .navbar-component .brand a {
@@ -156,6 +154,7 @@ main menu height */
 
 .navbar-component.collapsed .menu-element.open ul li.submenu-title {
   display: block;
+  font-size: 1.2em;
   text-overflow: ellipsis;
   overflow: hidden;
   padding: 0.5em 0.8rem 0.7em;
@@ -184,6 +183,7 @@ main menu height */
   flex-direction: column;
   align-items: flex-end;
   justify-content: center;
+  font-size: 1.2em;
   padding: 0 0.3em;
   z-index: 101;
   cursor: pointer;
@@ -336,4 +336,11 @@ main menu height */
 .navbar-component .navbar-toggle .toggle-menu:focus:not(:focus-visible),
 .navbar-component .menu-element .menu-element-root:focus:not(:focus-visible) {
   outline: none;
+}
+
+.sub-menu-item.label-base-medium {
+  // label-base-regular sets the line-height to 1.2rem, 
+  // but the label-base-medium / label-base-bold line-height token in the DS is calc(1rem * 1rem), 
+  // which is invalid. It gets ignored and the active item keeps 24px. - to be removed when the DS is fixed
+  line-height: 1.2;
 }

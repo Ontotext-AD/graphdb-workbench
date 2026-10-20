@@ -57,8 +57,7 @@
     }
 
     & i {
-      // No exact variable available use  --gw-toast-icon-size (1.125rem) * 1.6 = 1.8rem
-      font-size: calc(var(--gw-toast-icon-size) * 1.6);
+      font-size: 1.8rem;
       padding: 0 20px;
       color: inherit;
 
@@ -68,8 +67,7 @@
     }
 
     & .toast-message {
-      // --gw-body-base-regular-font-size = 1.125rem target
-      font-size: var(--gw-body-lg-regular-font-size);
+      font-size: 1.2rem;
       opacity: 1;
       max-width: 370px;
     }
