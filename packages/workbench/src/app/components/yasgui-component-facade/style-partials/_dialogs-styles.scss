@@ -3,6 +3,7 @@ app-yasgui-component-facade {
    .cancel-button {
     &:focus,
     &:hover {
+      /* TODO change this */
       background-color: #d4d4d4 !important;
       border-color: #d4d4d4 !important;
     }
@@ -10,8 +11,15 @@ app-yasgui-component-facade {
 
   .dialog,
   .confirmation-dialog {
+    /* Dialog body should have slightly bigger font-size. When it is attached directly to the html body. */
+    .dialog-body {
+      font-size: 1.25rem !important;
+    }
+
     .cancel-button {
       margin-right: 3px;
+      
+      /* TODO change this */
       background-color: #ebebeb;
       border-color: #ebebeb;
     }
@@ -35,7 +43,21 @@ app-yasgui-component-facade {
     border-color: var(--gw-button-primary-hover-border-color) !important;
     color: var(--gw-button-primary-hover-color) !important;
   }
+
+  .confirmation-dialog .dialog-footer .confirm-button {
+    background-color: var(--gw-button-primary-background) !important;
+    border-color: var(--gw-button-primary-border-color) !important;
+    color: var(--gw-button-primary-color) !important;
+  }
+
+  .confirmation-dialog .dialog-footer .confirm-button:focus,
+  .confirmation-dialog .dialog-footer .confirm-button:hover {
+    background-color: var(--gw-button-primary-hover-background) !important;
+    border-color: var(--gw-button-primary-hover-border-color) !important;
+    color: var(--gw-button-primary-hover-color) !important;
+  }
 }
+
 /* #endregion - scoped dialogs under the yasgui-component class. */
 
 /* #region Dialogs from the yasgui component. Those are not scoped under the yasgui-component class. */
@@ -77,6 +99,7 @@ app-yasgui-component-facade {
   }
 
   /* Forms in the dialog */
+
   .dialog-footer {
     border-top-color: var(--gw-dialog-border-color) !important;
 
@@ -96,7 +119,7 @@ app-yasgui-component-facade {
 
 /* #region - Keyboard shortcuts dialog specific styles */
 .keyboard-shortcuts-dialog-button {
-  font-weight: var(--gw-label-base-regular-font-weight);
+  font-weight: 400;
   color: var(--gw-button-secondary-color) !important;
   background-color: var(--gw-button-secondary-background) !important;
   border-color: var(--gw-button-secondary-border-color) !important;
@@ -105,6 +128,7 @@ app-yasgui-component-facade {
 .keyboard-shortcuts-dialog-wrapper {
   height: 20px;
   line-height: 18px;
+  font-size: 90%;
 
   &.resizeable-on {
     margin-top: -31px;
@@ -139,4 +163,5 @@ app-yasgui-component-facade {
     color: var(--gw-message-info-color) !important;
   }
 }
+
 /* #endregion - DIALOGS - KEYBOARD SHORTCUTS */

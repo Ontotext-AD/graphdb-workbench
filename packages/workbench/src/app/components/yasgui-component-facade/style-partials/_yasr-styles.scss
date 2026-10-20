@@ -30,12 +30,6 @@ app-yasgui-component-facade {
         color: var(--gw-button-primary-hover-color) !important;
         background-color: var(--gw-button-primary-hover-background) !important;
       }
-
-      /* The buttons have a ri-* icon class, so remixicon sets their font-family. Keep it for the icon only. */
-      .chart-download-as-button-label,
-      .pivot-table-download-as-button-label {
-        font-family: var(--main-font);
-      }
     }
 
     .ontotext-dropdown-button {
@@ -61,13 +55,14 @@ app-yasgui-component-facade {
       height: 38px;
 
       .button-name {
-        font-family: var(--gw-font-family-body);
+        font-family: var(--main-font);
+        font-weight: 400;
       }
     }
 
     .ontotext-dropdown-menu .ontotext-dropdown-menu-item {
       padding: .5em 1.2em;
-      font-size: var(--gw-body-base-regular-font-size);
+      font-size: 1rem;
 
       &:hover {
         color: var(--gw-tieredmenu-item-focus-color) !important;
@@ -85,6 +80,7 @@ app-yasgui-component-facade {
       }
     }
   }
+
   /* #endregion YASR - toolbar right */
 
   /* #region YASR - tab bar */
@@ -110,7 +106,6 @@ app-yasgui-component-facade {
         color: var(--gw-tabs-tab-color) !important;
         background-color: var(--gw-tabs-tab-background) !important;
         fill: var(--gw-tabs-tab-color) !important;
-        font-size: var(--gw-body-base-regular-font-size);
         border: 1px solid;
         border-color: var(--gw-tabs-tab-border-color) !important;
         border-bottom: 1px solid transparent !important;
@@ -153,6 +148,7 @@ app-yasgui-component-facade {
           padding-left: 10px;
         }
       }
+
       /* #endregion YASR - response chip */
 
       /* #region YASR - plugin control  */
@@ -164,6 +160,7 @@ app-yasgui-component-facade {
           margin-right: 5px;
         }
       }
+
       /* #endregion YASR - plugin control  */
 
       .tableControls .tableFilter {
@@ -196,6 +193,7 @@ app-yasgui-component-facade {
         background-color: var(--gw-paginator-nav-button-hover-background);
       }
     }
+
     /* #endregion YASR - pagination */
 
     /* #region YASR - explain query */
@@ -208,27 +206,25 @@ app-yasgui-component-facade {
       background-color: var(--gw-panel-background);
       border: 1px solid var(--gw-dialog-border-color);
 
-      // Override the comment color for dark (moxer theme) only
-      .explainPlanQuery.cm-s-moxer {
-        .cm-comment {
-          color: var(--gw-neutral-300);
-        }
+      .cm-comment {
+        color: var(--gw-neutral-300);
       }
     }
 
     .yasr-header-replacement {
       color: inherit;
-      font-size: var(--gw-size-1-25);
+      font-size: 20px;
     }
 
     .explain-plan-copy-btn {
-      font-weight: var(--gw-label-base-regular-font-weight);
+      font-weight: 400;
       color: var(--gw-button-secondary-color);
       background-color: var(--gw-shortcuts-editor-button-background);
       border-color: var(--gw-button-secondary-border-color);
       margin-right: 1px;
       margin-top: 1px;
     }
+
     /* #endregion YASR - explain query */
 
     /* #region YASR ALERT BOX */
@@ -239,7 +235,9 @@ app-yasgui-component-facade {
         font-size: 21px;
       }
     }
+
     /* #endregion YASR ALERT BOX */
+
 
     /* #region LOADER COMPONENT */
     .loader-component {
@@ -247,7 +245,10 @@ app-yasgui-component-facade {
         fill: var(--gw-loader-color);
       }
     }
+
     /* #endregion LOADER COMPONENT */
+
   }
+
   /* #endregion YASR - tab bar */
 }

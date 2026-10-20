@@ -15,6 +15,7 @@ app-yasgui-component-facade {
       a {
         color: var(--gw-secondary-base) !important;
       }
+
       /* #endregion YASR - overlay content and buttons */
 
       /* #region YASR - raw response area */
@@ -31,6 +32,7 @@ app-yasgui-component-facade {
           background-color: var(--gw-editor-content-background) !important;
         }
       }
+
       /* #endregion YASR - raw response area */
 
       /* #region - YASR pivot table plugin */
@@ -81,6 +83,7 @@ app-yasgui-component-facade {
       color: var(--gw-datatable-row-color);
       background-color: var(--gw-datatable-row-background);
     }
+
     /* #endregion - YASR pivot table plugin */
 
     /* #region - YASR extended boolean plugin */
@@ -101,6 +104,7 @@ app-yasgui-component-facade {
         background-color: var(--gw-success-lighter) !important;
       }
     }
+
     /* #endregion - YASR extended boolean plugin */
 
     /* #region - YASR google visualization table */
@@ -132,6 +136,7 @@ app-yasgui-component-facade {
         border-color: var(--gw-datatable-header-cell-border-color) !important;
       }
     }
+
     /* #endregion - YASR google visualization table */
 
     /* #region - YASR dataTables */
@@ -142,7 +147,7 @@ app-yasgui-component-facade {
         border-collapse: collapse;
 
         th {
-          font-weight: var(--gw-label-base-medium-font-weight);
+          font-weight: 500;
           color: var(--gw-datatable-header-color) !important;
           background-color: var(--gw-datatable-header-background) !important;
           border-color: var(--gw-datatable-header-cell-border-color) !important;
@@ -236,6 +241,7 @@ app-yasgui-component-facade {
         }
       }
     }
+
     /* #endregion - YASR dataTables */
   }
 }
