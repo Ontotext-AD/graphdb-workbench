@@ -2,6 +2,10 @@
 
 Documented workbench gotchas, including Chrome silently caching Basic Auth credentials.
 
+## Contents
+
+- [Silent Basic Auth Header Injection by Chrome](#silent-basic-auth-header-injection-by-chrome): Chrome re-sends cached Basic Auth credentials; how to clear them.
+
 ## Silent Basic Auth Header Injection by Chrome
 
 If you've ever filled in a **browser-native Basic Auth popup** in Chrome for the workbench login, **Chrome will silently remember and auto-send** those credentials in every subsequent request to that domain — *even across sessions and after logout*.

@@ -2,23 +2,27 @@
 
 The centralized, context-aware logging service for the GraphDB Workbench microfrontend architecture.
 
-## Centralized Logging Service Implementation in GraphDB Workbench
+## Contents
 
-This guide explains the centralized logging service implementation in the GraphDB Workbench microfrontend architecture. 
-The logging service provides context-aware logging with configurable output destinations and supports multiple logger implementations.
+- [Overview](#overview): per-module, context-aware loggers.
+- [Architecture Components](#architecture-components): the logger interface, levels, types, definitions map, and configuration.
+- [Core Service Classes](#core-service-classes): `LoggerService` and the `Loggers` factory.
+- [How to Add a New Logger Implementation](#how-to-add-a-new-logger-implementation): implement, add the type, register, configure.
+- [Usage Examples](#usage-examples): module-specific loggers and multiple destinations.
+- [Configuration Options](#configuration-options): level filtering.
 
-### Overview
+## Overview
 
-The logging service is designed to provide consistent logging across all microfrontend modules while allowing flexibility in how and 
-where logs are output. Each module can have its own logger instance with automatic context identification, making debugging and monitoring 
-easier across the distributed application.
+The logging service provides consistent logging across all microfrontend modules while allowing flexibility in how and
+where logs are output. Each module has its own logger instance that tags every message with the module name, making
+debugging easier across the distributed application.
 
-### Architecture Components
+## Architecture Components
 
 The logging system consists of several key components:
 
-#### 1. Logger Interface
-The [`Logger`](/packages/api/src/models/logging/logger.ts) interface defines the contract that all logger implementations must follow:
+### 1. Logger Interface
+The [`Logger`](../../packages/api/src/models/logging/logger.ts) interface defines the contract that all logger implementations must follow:
 
 ```typescript
 export interface Logger {
@@ -32,29 +36,30 @@ export interface Logger {
 }
 ```
 
-#### 2. LogLevel Enumeration
-Log levels determine the importance and filtering of messages:
+### 2. LogLevel Enumeration
+Log levels determine the importance and filtering of messages ([`log-level.ts`](../../packages/api/src/models/logging/log-level.ts)).
+The values are strings; `toNumericLogLevel()` maps them to `0`–`3` for comparison:
 
 ```typescript
 export enum LogLevel {
-  DEBUG = 0,
-  INFO = 1,
-  WARN = 2,
-  ERROR = 3
+  DEBUG = 'DEBUG',
+  INFO = 'INFO',
+  WARN = 'WARN',
+  ERROR = 'ERROR'
 }
 ```
 
-#### 3. LoggerType Enumeration
+### 3. LoggerType Enumeration
 Defines the available logger implementations:
 
 ```typescript
 export enum LoggerType {
-  CONSOLE = 'console'
+  CONSOLE = 'console',
 }
 ```
 
-#### 4. Logger Definitions Map
-The [`logger-definitions.ts`](/packages/api/src/models/logging/logger-definitions.ts) file contains a map of available logger implementations:
+### 4. Logger Definitions Map
+The [`logger-definitions.ts`](../../packages/api/src/models/logging/logger-definitions.ts) file contains a map of available logger implementations:
 
 ```typescript
 export const LOGGER_DEFINITIONS = new Map<LoggerType, Logger>([
@@ -62,20 +67,27 @@ export const LOGGER_DEFINITIONS = new Map<LoggerType, Logger>([
 ]);
 ```
 
-#### 5. Configuration
-The [`logger.config.json`](/packages/api/src/services/logging/logger.config.json) file controls which loggers are active:
+### 5. Configuration
+Which loggers are active and the minimum level come from the `loggerConfig` field
+([`LoggerConfig`](../../packages/api/src/models/logging/logger-config.ts)) of the application configuration. The
+default configuration is [`assets/configuration.default.json`](../../assets/configuration.default.json); an `env.json`
+can point `configUrl` at another file (see `packages/api/src/services/configuration/env.default.json`).
 
 ```json
 {
-  "minLogLevel": 0,
-  "loggers": ["console"]
+  "loggerConfig": {
+    "loggers": ["console"],
+    "minLogLevel": "DEBUG"
+  }
 }
 ```
 
-### Core Service Classes
+`LoggerService` reads it from `ConfigurationContextService` on every log call.
 
-#### LoggerService
-The main service that coordinates logging across different implementations ([`logger-service.ts`](/packages/api/src/services/logging/logger-service.ts)):
+## Core Service Classes
+
+### LoggerService
+The main service that coordinates logging across different implementations ([`logger-service.ts`](../../packages/api/src/services/logging/logger-service.ts)):
 
 ```typescript
 export class LoggerService {
@@ -86,16 +98,18 @@ export class LoggerService {
   debug(message: string, ...args: unknown[]): void {
     this.log(LogLevel.DEBUG, message, args);
   }
-  // ...other logging methods
+  // ...info, warn, error
 }
 ```
 
-#### Loggers Factory
-The [`Loggers`](/packages/api/src/services/logging/loggers.ts) class exposes factory method to get module-specific logger instances:
+A logger type listed in `loggerConfig.loggers` but missing from `LOGGER_DEFINITIONS` throws an `Error`.
+
+### Loggers Factory
+The [`Loggers`](../../packages/api/src/services/logging/loggers.ts) class exposes a factory method that returns one logger instance per module:
 
 ```typescript
 export class Loggers {
-  private static loggerInstances = new Map<Module, LoggerService>();
+  private static readonly loggerInstances = new Map<string, LoggerService>();
 
   static getLoggerInstance(module: string): LoggerService {
     if (!this.loggerInstances.has(module)) {
@@ -106,37 +120,34 @@ export class Loggers {
 }
 ```
 
+## How to Add a New Logger Implementation
 
+To add a new logger (e.g., a remote logger), follow these steps:
 
-### How to Add a New Logger Implementation
+### Step 1: Create the Logger Implementation
 
-To add a new logger (e.g., a database logger or file logger), follow these steps:
-
-#### Step 1: Create the Logger Implementation
-
-Create a new logger class that implements the [`Logger`](/packages/api/src/models/logging/logger.ts) interface:
+Create a new logger class that implements the [`Logger`](../../packages/api/src/models/logging/logger.ts) interface:
 
 ```typescript
 // packages/api/src/services/logging/database/database-logger.service.ts
 export class DatabaseLoggerService implements Logger {
   log(level: LogLevel, message: string): void {
     const logEntry = { level, message, timestamp: new Date().toISOString() };
-    
+
     fetch('/api/logs', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(logEntry)
     }).catch(error => {
       console.error('Database logging failed:', error);
-      console.log(`[DB-FALLBACK] ${message}`);
     });
   }
 }
 ```
 
-#### Step 2: Add the Logger Type
+### Step 2: Add the Logger Type
 
-Add your new logger type to the [`LoggerType`](/packages/api/src/models/logging/logger-type.ts) enumeration:
+Add your new logger type to the [`LoggerType`](../../packages/api/src/models/logging/logger-type.ts) enumeration:
 
 ```typescript
 export enum LoggerType {
@@ -145,9 +156,9 @@ export enum LoggerType {
 }
 ```
 
-#### Step 3: Register the Logger
+### Step 3: Register the Logger
 
-Add your logger to the [`LOGGER_DEFINITIONS`](/packages/api/src/models/logging/logger-definitions.ts) map, which will create its instance:
+Add your logger to the [`LOGGER_DEFINITIONS`](../../packages/api/src/models/logging/logger-definitions.ts) map, which will create its instance:
 
 ```typescript
 export const LOGGER_DEFINITIONS = new Map<LoggerType, Logger>([
@@ -156,89 +167,69 @@ export const LOGGER_DEFINITIONS = new Map<LoggerType, Logger>([
 ]);
 ```
 
-#### Step 4: Configure the Logger
+### Step 4: Configure the Logger
 
-Update the [`logger.config.json`](/packages/api/src/services/logging/logger.config.json) to include your new logger:
+Add the new type to `loggerConfig.loggers` in the application configuration
+([`assets/configuration.default.json`](../../assets/configuration.default.json)):
 
 ```json
 {
-  "minLogLevel": 0,
-  "loggers": ["console", "database"]
-}
-```
-
-The `loggers` array determines which logger implementations will be active. You can include multiple loggers to send the same log message to different destinations simultaneously.
-
-### Usage Examples
-
-#### Basic Usage with Module-Specific Loggers
-
-```typescript
-// In any microfrontend module define a module specific wrapper for the logger
-import { Loggers } from '@ontotext/workbench-api';
-
-const MODULE_NAME = 'Workbench';
-
-/**
- * Logger for the Workbench module.
- */
-export class WorkbenchLoggerService {
-
-  /**
-   * Gets the logger instance for the Workbench module.
-   *
-   * @returns LoggerService instance for the Workbench module
-   */
-  static get logger() {
-    return Loggers.getLoggerInstance(MODULE_NAME);
+  "loggerConfig": {
+    "loggers": ["console", "database"],
+    "minLogLevel": "DEBUG"
   }
 }
 ```
 
-Then use it in a file:
+The `loggers` array determines which logger implementations are active. Every message goes to all of them.
+
+## Usage Examples
+
+### Module-Specific Loggers
+
+Each package defines a local `LoggerProvider` that wraps `Loggers.getLoggerInstance(MODULE_NAME)` — see the
+[logging conventions](../conventions/logging.md). Then use it in a file:
 
 ```typescript
-const logger = WorkbenchLoggerService.logger;
+const logger = LoggerProvider.logger;
 logger.info('SPARQL query executed successfully', { duration: 234 });
 logger.error('Database connection failed', { error: 'timeout' });
 ```
 
 Output example:
 ```
-[INFO] [workbench] 9/11/2025, 2:30:45 PM SPARQL query executed successfully {"duration":234}
-[ERROR] [workbench] 9/11/2025, 2:30:46 PM Database connection failed {"error":"timeout"}
+[INFO] [Workbench] [9/11/2025, 2:30:45 PM] SPARQL query executed successfully {duration: 234}
+[ERROR] [Workbench] [9/11/2025, 2:30:46 PM] Database connection failed {error: 'timeout'}
 ```
 
-#### Multiple Logger Destinations
+### Multiple Logger Destinations
 
 When multiple loggers are configured, the same message is sent to all active destinations:
 
 ```json
 {
-  "minLogLevel": 1,
-  "loggers": ["console", "database"]
+  "loggerConfig": {
+    "loggers": ["console", "database"],
+    "minLogLevel": "INFO"
+  }
 }
 ```
 
 With this configuration, calling `logger.info('User logged in')` will:
 1. Display the message in the browser console
-2. Store it in the database
+2. Send it to the database logger
 
-### Configuration Options
+## Configuration Options
 
-#### Log Level Filtering
-The system respects log level filtering. Messages below the configured level are ignored:
+### Log Level Filtering
+Messages below `minLogLevel` are ignored:
 
-- `DEBUG = 0`: Shows all messages
-- `INFO = 1`: Shows info, warning, and error messages
-- `WARN = 2`: Shows only warning and error messages  
-- `ERROR = 3`: Shows only error messages
+- `DEBUG`: Shows all messages
+- `INFO`: Shows info, warning, and error messages
+- `WARN`: Shows only warning and error messages
+- `ERROR`: Shows only error messages
 
-#### Environment-Specific Behavior
-The logging service automatically adjusts behavior based on the environment:
-
-- **Development mode**: Uses the configured log level from `logger.config.json`
-- **Production mode**: Automatically sets minimum level to `INFO` regardless of configuration
+There is no environment-specific override: the level comes only from the configuration file.
 
 ---
 

@@ -13,6 +13,7 @@
 | Task | Command |
 |---|---|
 | Install (CI) | `npm run install:ci` |
+| Install (dev, fresh worktree) | `npm run install:local` |
 | Install (local clean) | `npm run clean-install` |
 | Dev (watch + serve everything) | `npm run start` |
 | Build (production) | `npm run build` |
@@ -34,18 +35,32 @@ Additional dev modes: `npm run dev:with-plugins` (external plugins hot-copied), 
 
 Changes may span packages, and modern + legacy stacks coexist. **When working inside a package, read its `AGENTS.md` first**, then the guides below.
 
+Some changes have a twin outside the file you're editing — make both or say why not:
+- Guide steps live in the separate `graphdb-workbench-plugins` repo; a change to a guided view, its
+  `data-test`/guide selectors or the guide API usually needs a matching change there.
+- YASGUI is styled twice: legacy (`legacy-workbench/src/css/lib/ontotext-yasgui-web-component-styles/`) and the new
+  SPARQL view (`yasgui-component-facade.component.scss`).
+
 ## Conventions & guides (`docs/conventions/`)
 
 - **[Conventions & workflow](docs/conventions/conventions.md)** — house rules, verification order, definition of done. **Start here.**
-- **[Architecture & package boundaries](docs/conventions/architecture.md)** — package map, import rules, `ServiceProvider` / `service()`.
+- **[Architecture & package boundaries](docs/conventions/architecture.md)** — package map, import rules, dependency direction, state ownership, `ServiceProvider` / `service()`.
+  - [API domain layer](docs/conventions/api-domain-layer.md) — REST service → response model → mapper → UI model; models and defaults.
 - **[Modern workbench (Angular)](docs/conventions/frontend-angular.md)** — standalone components, signals, PrimeNG, dialogs, permissions, Transloco.
+  - [Angular](docs/conventions/angular.md) — framework-level rules: no `standalone: true`, lazy routes, `host` instead of `@HostBinding`.
+  - [Components & templates](docs/conventions/components.md) — PrimeNG first, `input()`/`output()`, `OnPush`, native control flow.
+  - [State](docs/conventions/state.md) and [services](docs/conventions/services.md) — signals, `inject()`, `providedIn: 'root'`.
 - **[Shared components (Stencil)](docs/conventions/shared-components-stencil.md)** — `.tsx`, `onto-*` tags, `@State`/`@Prop`.
+- **[TypeScript](docs/conventions/typescript.md)** and **[JSDoc](docs/conventions/jsdoc.md)** — `any`/`unknown`, error classes, doc-comment form and length.
+- **[Naming](docs/conventions/naming.md)** — behaviour over consumer, booleans, abbreviations, renaming a feature end to end.
 - **[Theming & design tokens](docs/conventions/theming.md)** — `graphwise-styleguide`, `--gw-*` variables, light/dark.
+  - [Styling](docs/conventions/styling.md) — `--gw-*` not `--p-*`, checking a token exists, common tokens.
 - **[Internationalization](docs/conventions/i18n.md)** — translation files and validation.
 - **[Plugins & extension points](docs/conventions/plugins.md)** — `plugin.js`, `PluginRegistry`.
 - **[Logging](docs/conventions/logging.md)** — centralized logging service and `LoggerProvider`.
 - **[HTTP interceptors](docs/conventions/http-interceptors.md)** — request/response chains.
 - **[Testing](docs/conventions/testing.md)** — unit vs integration, public surface, mocking, coverage.
+- **[E2E testing](docs/conventions/e2e-testing.md)** — Cypress steps/stubs classes, `data-test` selectors, running one spec.
 
 ## Testing
 

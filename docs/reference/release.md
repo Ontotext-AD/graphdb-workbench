@@ -2,13 +2,11 @@
 
 The Jenkins release pipeline that versions, builds, and publishes the workbench and its Cypress E2E tests to npm.
 
-## Jenkins Release Pipeline Documentation
-
 This Jenkins pipeline facilitates the release process for the `graphdb-workbench` project. It automates versioning, building, and publishing to npm, ensuring a smooth release workflow.
 
 ---
 
-### Key Features
+## Key Features
 
 - Cloud-based execution using `aws-small` agents
 - Publishes both the main project and Cypress E2E tests to npm
@@ -19,7 +17,7 @@ This Jenkins pipeline facilitates the release process for the `graphdb-workbench
 
 ---
 
-### Tools and Environment
+## Tools and Environment
 
 - **Node.js**: Runs using Docker image `node:22-bullseye`
 - **Keeper Secrets Manager (KSM)**: Used for npm and Git credentials
@@ -27,7 +25,7 @@ This Jenkins pipeline facilitates the release process for the `graphdb-workbench
 
 ---
 
-### Pipeline Parameters Details
+## Pipeline Parameters Details
 
 - `GIT_BRANCH`: Git branch to release from (default: `master`)
 - `RELEASE_VERSION`: Required version to release
@@ -36,9 +34,9 @@ This Jenkins pipeline facilitates the release process for the `graphdb-workbench
 
 ---
 
-### Pipeline Stages
+## Pipeline Stages
 
-#### 1. **Prepare & Publish**
+### 1. **Prepare & Publish**
 - Checks out the selected Git branch
 - Runs:
   ```bash
@@ -52,9 +50,9 @@ This Jenkins pipeline facilitates the release process for the `graphdb-workbench
 
 ---
 
-### Post Actions
+## Post Actions
 
-#### On Success:
+### On Success:
 - Commits and tags the release:
   ```bash
   git commit -a -m 'Release ${RELEASE_VERSION}'
@@ -63,13 +61,13 @@ This Jenkins pipeline facilitates the release process for the `graphdb-workbench
 - Uses KSM for Git credentials and pushes changes + tags
 - Optionally sends Slack notification if enabled
 
-#### On Failure:
+### On Failure:
 - Sends an email to the build user
 - Restores `.npmrc` and removes any local tokens
 
 ---
 
-### Notes
+## Notes
 
 - Builds have a timeout of 15 minutes and cannot run concurrently
 - `.npmrc` is mounted into the container and cleaned afterward

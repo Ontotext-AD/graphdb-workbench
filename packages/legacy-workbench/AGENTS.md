@@ -39,11 +39,29 @@ A **typical module folder** contains: `plugin.js` (route + menu registration), `
 - **Registration:** `angular.module('graphdb.framework.<area>.<thing>', [deps])` then chained `.controller()/.factory()/.directive()/.filter()`. Explicit DI arrays: `Fn.$inject = ['$http', ...]`.
 - **PluginRegistry is load-bearing:** each feature registers routes/menu in its `plugin.js` via `PluginRegistry.add('route', ...)` / `PluginRegistry.add('main.menu', ...)`, discovered by the root webpack `plugin.js` glob. Keep the shape intact — renaming/removing breaks routing and the menu. Route objects carry `url`, `module`, `path`, `chunk`, `controller`, `templateUrl`, `title`, `helpInfo`, `documentationUrl`, `allowAuthorities`.
 - **Data access:** use the `.factory('XxxRestService', ...)` services in `js/angular/rest/` (with `rest/...` URL constants), not raw `$http`, in controllers. Controllers are `$scope`-based.
+- **Controller / directive layout (new and changed code):** declare every public `$scope` field at the top, then
+  public functions, then private ones. Put the startup logic in a private `init()` defined last and call it at the
+  end; nothing runs outside a function. Expose on `$scope` only what the template uses — everything else stays a
+  private function.
+- **HTTP calls:** chain promises instead of nesting them, end every chain with a `.catch` that reports the error,
+  and reset loading flags in `.finally`, so a failed request doesn't leave a loader spinning.
+- **Event handlers:** name a handler bound to an event `on<Event>` (`onCopy`, `onMouseLeave`), and use one
+  naming scheme throughout a controller or directive.
+- **Digest-aware async:** use `$timeout`, not `setTimeout`, when the callback changes `$scope`; it triggers a digest.
+- **Cleanup:** unsubscribe, clear intervals and drop references in `$scope.$on('$destroy', …)`.
+- **Bridge services:** resolve `service(X)` once at the top with the other dependencies, not inside functions.
+- **Navigation to another view:** `navigate()` from `@ontotext/workbench-api`, which keeps the context path.
 - **Shared TS bridge:** talk to the modern layer through `@ontotext/workbench-api` (`ServiceProvider`, `service()`, `AuthenticationService`, `SecurityContextService`, `LanguageContextService`, `EventService`, `OntoToastrService`, …) — used in ~53 files. Prefer these over reimplementing.
 - **Web components:** `ontotext-yasgui-web-component` and `ontotext-graphql-playground-component` are registered via `defineCustomElements()` and used through `ng-custom-element`.
+- **Templates in new/changed code:** bind to flags the controller computes (`hasReadAccess`, `isEditable`), not to
+  inline condition chains — same rule as [components](../../docs/conventions/components.md#templates).
+  A template calls no functions except event handlers and filters — a model getter counts as a call. Precompute
+  the value on the model, or format it with a filter.
 - **Templates:** route views use `templateUrl` into `pages/*.html` or a module's `templates/*.html`, cache-busted with `?v=[AIV]{version}[/AIV]`.
 - **i18n:** `angular-translate` (`pascalprecht.translate`), bundles in `i18n/locale-<lang>.json`, languages in `src/i18n/languages.json`. Validate with `npm run validate`.
 - **Styling:** LESS in `src/less/` (+ vendored CSS). Never introduce SCSS.
+  Directives have no style encapsulation: scope every selector under the directive's or view's root class, and
+  don't qualify a class or id selector with a tag name (`.btn`, not `button.btn`).
 
 ## Testing
 
