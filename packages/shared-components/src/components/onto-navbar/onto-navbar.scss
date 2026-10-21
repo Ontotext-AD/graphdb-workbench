@@ -248,7 +248,7 @@ main menu height */
   color: var(--gw-sidenav-menuitem-selected-color);
 }
 
-.navbar-component .menu-element .menu-element-root.active .menu-item, {
+.navbar-component .menu-element .menu-element-root.active .menu-item {
   color: var(--gw-sidenav-menuitem-selected-icon-color);
 }
 
@@ -266,6 +266,13 @@ main menu height */
 }
 
 // * ---------------- Submenu ---------------- */
+.sub-menu-item.label-base-medium,
+.sub-menu-item.label-base-regular {
+  // Ensure that the dropdown items line height are 24px and 21px on different views. 
+  // Override the utility classes' line-height to ensure proper spacing for submenu items.
+  line-height: 1.5;
+}
+
 .navbar-component .menu-element .sub-menu .sub-menu-item .menu-item {
   color: var(--gw-sidenav-submenuitem-color);
 }
@@ -336,11 +343,4 @@ main menu height */
 .navbar-component .navbar-toggle .toggle-menu:focus:not(:focus-visible),
 .navbar-component .menu-element .menu-element-root:focus:not(:focus-visible) {
   outline: none;
-}
-
-.sub-menu-item.label-base-medium {
-  // label-base-regular sets the line-height to 1.2rem, 
-  // but the label-base-medium / label-base-bold line-height token in the DS is calc(1rem * 1rem), 
-  // which is invalid. It gets ignored and the active item keeps 24px. - to be removed when the DS is fixed
-  line-height: 1.2;
 }
