@@ -1,177 +1,159 @@
 # Context API
 
-Stateful context services and the `ContextService` abstraction for managing application state in GraphDB Workbench.
+Stateful context services and the `ContextService` abstraction for managing shared application state in GraphDB Workbench.
 
-## Stateful Context services and Context API implementation in GraphDB Workbench
+## Contents
 
-This guide introduces the `ContextService` API, a versatile abstraction for managing application context in the GraphDB 
-Workbench application. Each view in the application is expected to implement a concrete version of the ContextService 
-API, tailored to its specific requirements.
+- [Overview](#overview): what the `ContextService` API is for.
+- [Core Concepts](#core-concepts): the abstract `ContextService` and its utility types.
+- [Implementation Example: `RepositoryContextService`](#implementation-example-repositorycontextservice): its fields and methods.
+- [Step-by-Step Guide to Using `ContextService`](#step-by-step-guide-to-using-contextservice): define fields, extend, get the service, subscribe.
+- [Subscription behaviour](#subscription-behaviour): immediate callback, validation before a change, `subscribeAll`.
+- [Restoring values from storage](#restoring-values-from-storage): `getDeserializedContext()`.
 
-### Overview
+## Overview
 
-The `ContextService` API facilitates state management by:
+A context service is the single owner of one piece of shared state (selected repository, language, security, …) in
+`packages/api`. Consumers in every package read the current value from it and subscribe to changes. See
+[state ownership](../conventions/architecture.md#state-ownership).
 
-* Allowing context value updates.
-* Notifying subscribers about context changes.
-* Enforcing type safety with generic constraints.
+The `ContextService` API ([`context.service.ts`](../../packages/api/src/services/context/context.service.ts)):
 
-The API is implemented as an abstract class, requiring developers to define specific fields and methods for their 
-application's needs.
+* updates context values;
+* notifies subscribers about changes, optionally after validating them;
+* enforces type safety with generic constraints.
 
-### Core Concepts
+## Core Concepts
 
-#### Abstract `ContextService`
+### Abstract `ContextService`
 
-The `ContextService` class is generic and requires a type parameter `TFields` that defines the fields the service can 
+The `ContextService` class is generic and requires a type parameter `TFields` that defines the fields the service can
 handle. Each field corresponds to a property of the service and is managed via the context map.
 
-Key methods include:
+Key methods:
 
-`updateContextProperty`: Updates the value of a property.
+- `updateContextProperty(name, value)`: sets the value of a property and notifies subscribers.
+- `validatePropertyChange(name, value)`: runs the subscribers' before-change validations; resolves to `false` if any rejects.
+- `getContextPropertyValue(name)` (protected): returns the current value.
+- `subscribe(name, callback, beforeChangeValidation?, afterChangeCallback?, skipFirst?)` (protected): registers a callback; returns an unsubscribe function.
+- `subscribeAll(...)`: subscribes to every field of the service.
 
-`getContextPropertyValue`: Retrieves the current value of a property.
+### Utility Types
 
-`subscribe`: Registers a callback to be notified of property value changes.
+`SnakeToPascalCase` converts `SNAKE_CASE` field names to `PascalCase` for method naming.
 
-#### Utility Types
+`DeriveContextServiceContract` requires an update method for each field. For example, a field `SELECTED_REPOSITORY`
+requires an `updateSelectedRepository` method.
 
-`SnakeToPascalCase`
+## Implementation Example: `RepositoryContextService`
 
-Converts `SNAKE_CASE` field names to `PascalCase` for method naming.
+[`RepositoryContextService`](../../packages/api/src/services/domain/repository/repository-context.service.ts) owns the
+repository list and the selected repository.
 
-`DeriveContextServiceContract`
-
-Generates update methods for each field. For example, a field `SELECTED_REPOSITORY` generates an 
-`updateSelectedRepository` method.
-
----
-
-### Implementation Example: `RepositoryContextService`
-
-The `RepositoryContextService` class manages repository-related application context for views in the GraphDB Workbench. 
-It implements the abstract `ContextService` and provides methods for updating and subscribing to repository-related data.
-
-#### Fields
+### Fields
 ```typescript
 readonly SELECTED_REPOSITORY = 'selectedRepository';
 readonly REPOSITORY_LIST = 'repositoryList';
 ```
-These fields define the context properties managed by the service.
 
-#### Methods
+### Methods
 
-**Updating Context**
+**Updating**
 
-`updateSelectedRepository(repository: Repository | undefined): void`
-Updates the selected repository.
+- `updateSelectedRepository(repositoryReference?: RepositoryReference): Promise<void>` — resolves the reference against
+  the repository list, runs the before-change validations, then persists the selection and updates the context.
+- `updateRepositoryList(repositories: RepositoryList): void`
 
-`updateRepositoryList(repositories: RepositoryList): void`
-Updates the list of repositories.
+**Reading**
 
-**Subscribing to Changes**
+- `getSelectedRepository(): Repository | undefined`
+- `getRepositoryList(): RepositoryList` — an empty list if none is loaded yet.
 
-`onSelectedRepositoryChanged(callbackFunction: ValueChangeCallback<Repository | undefined>): () => void`
-Subscribes to changes in the selected repository.
+**Subscribing**
 
-`onRepositoriesChanged(callbackFunction: ValueChangeCallback<RepositoryList | undefined>): () => void`
-Subscribes to changes in the repository list.
+- `onSelectedRepositoryChanged(callback, beforeChangeValidationPromise?): () => void`
+- `onRepositoryListChanged(callback): () => void`
 
----
-
-### Step-by-Step Guide to Using `ContextService`
+## Step-by-Step Guide to Using `ContextService`
 
 **1. Define Context Fields and Parameters**
 
-Define the fields and their corresponding parameter types:
-
 ```typescript
 type RepositoryContextFields = {
-  readonly SELECTED_REPOSITORY: string;
   readonly REPOSITORY_LIST: string;
+  readonly SELECTED_REPOSITORY: string;
 };
 
 type RepositoryContextFieldParams = {
-  readonly SELECTED_REPOSITORY: Repository;
   readonly REPOSITORY_LIST: RepositoryList;
+  readonly SELECTED_REPOSITORY: RepositoryReference;
 };
 ```
 
 **2. Extend ContextService**
 
-Implement a concrete class that extends `ContextService`:
-
 ```typescript
-export class RepositoryContextService extends ContextService<RepositoryContextFields> implements DeriveContextServiceContract<RepositoryContextFields, RepositoryContextFieldParams> {
+export class RepositoryContextService extends ContextService<RepositoryContextFields>
+  implements DeriveContextServiceContract<RepositoryContextFields, RepositoryContextFieldParams> {
   readonly SELECTED_REPOSITORY = 'selectedRepository';
   readonly REPOSITORY_LIST = 'repositoryList';
-
-  updateSelectedRepository(repository: Repository | undefined): void {
-    this.updateContextProperty(this.SELECTED_REPOSITORY, repository);
-  }
-
-  onSelectedRepositoryChanged(callbackFunction: ValueChangeCallback<Repository | undefined>): () => void {
-    return this.subscribe(this.SELECTED_REPOSITORY, callbackFunction);
-  }
 
   updateRepositoryList(repositories: RepositoryList): void {
     this.updateContextProperty(this.REPOSITORY_LIST, repositories);
   }
 
-  onRepositoriesChanged(callbackFunction: ValueChangeCallback<RepositoryList | undefined>): () => void {
+  getRepositoryList(): RepositoryList {
+    return this.getContextPropertyValue(this.REPOSITORY_LIST) || new RepositoryList([]);
+  }
+
+  onRepositoryListChanged(callbackFunction: ValueChangeCallback<RepositoryList | undefined>): () => void {
     return this.subscribe(this.REPOSITORY_LIST, callbackFunction);
   }
+
+  // updateSelectedRepository, getSelectedRepository, onSelectedRepositoryChanged …
 }
 ```
 
-**3. Using the Service**
-
-Import the Service using the `ServiceProvider` API:
-
-> Warning: Everything in the api package must be imported using the alias `@ontotext/workbench-api` and not by relative 
-> or absolute paths. The reason for this is that the api module is a separate package managed as a microservice which is
-> loaded using import maps where the alias is defined.
-
+**3. Get the Service**
 
 ```typescript
-import { ServiceProvider, RepositoryContextService } from '@ontotext/workbench-api';
-// Get the service instance
-const repositoryContextService = ServiceProvider.get(RepositoryContextService);
+import { service, RepositoryContextService } from '@ontotext/workbench-api';
+
+const repositoryContextService = service(RepositoryContextService);
 ```
 
-Update Context Values:
+**4. Read, Update and Subscribe**
 
 ```typescript
+const selected = repositoryContextService.getSelectedRepository();
 
-const repository: Repository = { id: 1, name: 'Repo1' };
-repositoryContextService.updateSelectedRepository(repository);
+await repositoryContextService.updateSelectedRepository({id: 'my-repo', location: ''});
 
-const repositoryList: RepositoryList = [{ id: 1, name: 'Repo1' }, { id: 2, name: 'Repo2' }];
-repositoryContextService.updateRepositoryList(repositoryList);
-```
-
-**4. Subscribe to Changes**
-
-```typescript
-const unsubscribeSelectedRepository = repositoryContextService.onSelectedRepositoryChanged((newRepository) => {
-  console.log('Selected repository changed:', newRepository);
+const unsubscribe = repositoryContextService.onSelectedRepositoryChanged((repository) => {
+  // runs now with the current value, then on every change
 });
 
-const unsubscribeRepositoryList = repositoryContextService.onRepositoriesChanged((newList) => {
-  console.log('Repository list changed:', newList);
-});
-
-// To unsubscribe:
-unsubscribeSelectedRepository();
-unsubscribeRepositoryList();
+// When the consumer is destroyed:
+unsubscribe();
 ```
----
 
-### Summary
+## Subscription behaviour
 
-The `ContextService` API provides a simple yet powerful mechanism for managing context in GraphDB Workbench views. By
-extending `ContextService`, developers can create view-specific services that streamline state management and improve 
-code maintainability.
+- **The callback runs immediately** with the current value (possibly `undefined`), then on every change. Pass
+  `skipFirst = true` to `subscribe` to get only later changes.
+- **Validation before a change.** A subscriber may pass a `BeforeChangeValidationPromise`. `validatePropertyChange`
+  resolves to `false` if any of them does, and an update method that validates (like `updateSelectedRepository`) then
+  leaves the value unchanged. This is how a page with unsaved changes can block switching the repository.
+- **`subscribeAll`** subscribes to every string-valued field of the service (`getContextFields()`). Override
+  `getContextFields()` if the service has other string properties.
+- Always call the returned unsubscribe function when the consumer goes away.
+
+## Restoring values from storage
+
+When a persisted context value changes in `localStorage` (for example in another tab), the
+[Persistence API](persistence-api.md) passes the raw string to the context service that `canHandle` the property.
+Override `getDeserializedContext()` to map a property to a function that turns that string back into a model;
+`RepositoryContextService` parses the stored `RepositoryReference` and looks the repository up in the list.
 
 ---
 

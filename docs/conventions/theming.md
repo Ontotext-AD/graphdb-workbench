@@ -2,6 +2,12 @@
 
 Rules for styling work across the repo. Applies whenever you touch colors, spacing, or component tokens.
 
+## Contents
+
+- [Source of truth: `graphwise-styleguide`](#source-of-truth-graphwise-styleguide): where the `--gw-*` tokens come from and how they are loaded.
+- [Rules](#rules): reuse tokens, don't duplicate them, check light and dark.
+- [Local styleguide development](#local-styleguide-development): linking a local `graphwise-styleguide`.
+
 ## Source of truth: `graphwise-styleguide`
 
 Design tokens come from Figma Token Studio and are built into theme stylesheets by the external `graphwise-styleguide` npm package. Verified in this repo:
@@ -31,5 +37,5 @@ npm run unlink:styleguide       # unlink
 
 ## See also
 
-- Custom color themes as plugins: [reference/plugin-system.md](../reference/plugin-system.md)
+- Using tokens in component styles (the `--p-*` trap, checking a token exists, common tokens): [styling](styling.md)
 - [Developers Guide hub](../developers-guide.md)

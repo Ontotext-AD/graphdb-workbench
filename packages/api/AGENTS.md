@@ -35,8 +35,25 @@
 - **Never `new` a service.** Obtain singletons via `ServiceProvider.get(MyService)` or `service(MyService)`; instances are shared across all micro-frontends. Intra-service deps are resolved as instance fields the same way.
 - Implement `onCreated()` for post-construction registration (as `ContextService` does with `ContextSubscriptionManager`).
 - **Stateful/subscribable shared state** should extend the abstract `ContextService<TFields>` (`services/context/context.service.ts`) rather than rolling custom pub/sub.
-- REST → model mapping goes through `MapperFn` functions in each service's `mappers/`.
+- REST → model mapping goes through `MapperFn` functions in each service's `mappers/`; the response/UI model split and where defaults and logic go are in [API domain layer](../../docs/conventions/api-domain-layer.md).
 - **Public-export discipline:** to expose a symbol to other packages, add it to `src/ontotext-workbench-api.ts`. Within the package use relative imports (and the `@api/*` alias in tests); never import internal deep paths from consumers.
+
+## Reuse before writing
+
+Check these before writing a helper; reviews keep catching re-implementations.
+
+| Need | Use |
+|---|---|
+| null/undefined check | `ObjectUtil.isNullOrUndefined` |
+| RDF-star `Accept` header | `RdfVersionUtil.withVersion(accept)` |
+| dev-mode check | `BuildUtil.isDevMode()` |
+| navigate / login redirect | `navigate()`, `navigateTo()`, `navigateToLoginPage()` (`routing-utils.ts`) |
+| current user | `SecurityContextService#getAuthenticatedUser()` — not the authorization service |
+| security / free access on? | `SecurityConfig#isEnabled()`, `#isFreeAccessEnabled()` |
+| user logged in? | `AuthenticationService#isLoggedIn()` |
+| show a toast | `notify(Notification.error(code))` |
+| wait for a DOM element (Stencil) | `HtmlUtil.waitForElement` (`shared-components/src/utils/html-util.ts`) |
+| translated label (Stencil) | `<translate-label labelKey=…>`, not a language-change subscription |
 
 ## Testing
 

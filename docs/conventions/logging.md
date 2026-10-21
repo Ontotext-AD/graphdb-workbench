@@ -1,6 +1,6 @@
 # Logging
 
-Rules for adding logging. There is a centralized logging service in `packages/api` — use its shared abstractions instead of ad hoc `console.*`.
+Rules for adding logging. There is a centralized logging service in `packages/api` — use its shared abstractions instead of ad hoc `console.*`. ESLint's `no-console` allows `warn`/`error`/`info`, so `console.error` passes lint — still use the logger.
 
 ## Per-package LoggerProvider pattern
 

@@ -1,65 +1,58 @@
 # Bundling
 
-The webpack build pipeline that bundles and minifies the workbench's scripts, styles, images, and fonts.
+How the packages are built and assembled by webpack into the single `dist/` folder that GraphDB serves.
 
-## Bundling
+## Contents
 
-The workbench application consists of many resources: script files, stylesheets, images, fonts. In
-a non optimized build this would lead to hundreds of http requests. Nowadays web applications are
-usually optimized by bundling their resources and minifying them. The reason for this is to have 
-significantly fewer http requests which leads to faster initial load and less traffic. 
+- [Build steps](#build-steps): package builds, then the root webpack build.
+- [Root webpack build](#root-webpack-build): entry points, `index.html`, plugins, translations, copied packages.
+- [Production vs. development](#production-vs-development): hashing, `publicPath`, the dev server.
 
-Bundling of the workbench is done with webpack. It's configured with three config files:
-* webpack.config.common.js
-* webpack.config.dev.js
-* webpack.config.prod.js
+## Build steps
 
-The common config contains shared configuration for the other two. 
+`npm run build` (root) runs in two phases:
 
-There are two ways the application to be built. First is for production and the other is for dev. 
-See the _Build_ and _Dev server_ sections above.
+1. `scripts/build.sh` builds each package with its own toolchain: `packages/api`, `packages/shared-components`
+   (Stencil) and `packages/workbench` (Angular). Each writes to its own `dist/`.
+2. `postbuild` runs `webpack --config=webpack.config.prod.js`, which bundles `root-config` and `legacy-workbench`
+   and assembles everything into the root `dist/`.
 
-The code for production is build in in the `/dist` folder. The bundling covers the following
-tasks:
-* Processing the template.html and generating an index.html file. The file is also compressed and 
-optimized. During the process, in the file are injected:
-    * the favicon link pointing to the automatically copied icon image 
-    * the bundled and compressed stylesheets
-    
-* Application code is bundled given it's entry point is the `/app.js` and is emitted in `/dist` in a 
-bundle file named `bundle.[hash].js`. The hash is generated and applied in order to allow cache 
-busting. Every change in the application code forces new hash to be generated thus forcing browsers 
-to request the new bundle version. If the application code contains dynamic imports, webpack emits 
-new bundle. This is the case for the `clustermanagement` module which is only imported if the 
-workbench is loaded in enterprise mode.
-* Vendor code is imported in a `vendor.[hash].js` and is bundled by the webpack. Here goes third 
-party libraries like jquery, angularjs and third party libraries stylesheets.
-* Some workbench application source files are imported in a separated file `main.js` which is 
-bundled by the webpack and emitted as `main.[hash].js`. This is needed because importing them in the 
-`app.js` breaks the bundle.
-* Bundle files are injected during build time in the `index.html` at the end of the body tag.
-* The less stylesheets are processed with the `less-loader`, converted to javascript in the bundles
-with `css-loader` and finally injected at the end of the head tag in `index.html`. Not injecting 
-them during the build time would lead to unwanted showing the un-styled application until webpack 
-injects them runtime.
-* Many libraries such as `bootstrap` and `angular` depend on `jquery` to be loaded and present 
-globally. That's why it is mandatory `jquery` to be properly pre-loaded and exposed in the global 
-scope. This is done using the `expose-loader`. It ensures that when requested, it will be available 
-for the libraries.
-* Many resources like view and angular directive templates are directly copied in the `/dist` 
-folder. Resources referenced from within those templates are also directly copied to allow proper
-loading. The copying is done using the `CopyPlugin`.  
-    * **An optimization would be to have separate bundle for every view. Then the main app bundle 
-    would be much tinier thus even faster initial loading.**
-    * **Another optimization is to have those templates emitted with a hash code in their names in
-    order to prevent incorrect caching from browsers.**
-    
-* During the `template.html` processing, referenced images are automatically copied in the `/dist`
-folder. The `file-loader` is used for the purpose.
-* Resources referenced from stylesheets like images and fonts are copied in `/dist` folder using the
-`url-loader`.
-* The `/dist` directory is cleaned up before every build to prevent accumulating bundle files with
-different hashes in their names.
+`npm run build-dev` does the same with `webpack.config.dev.js`.
+
+## Root webpack build
+
+The configuration is split into `webpack.config.common.js` (shared) and `webpack.config.prod.js` /
+`webpack.config.dev.js`, merged with `webpack-merge` on top of `webpack-config-single-spa`.
+
+- **Entry points:** `main` (`packages/root-config/src/ontotext-root-config.ts`, the single-spa root) and
+  `legacyWorkbench` (`packages/legacy-workbench/src/app.js`). `@ontotext/workbench-api` is an external, loaded through
+  the import map.
+- **`index.html`** is generated by `HtmlWebpackPlugin` from `packages/root-config/src/index.ejs`, which receives the
+  bundle names, the build version and the CSP source lists.
+- **`plugins.js`** is the concatenation of every `packages/legacy-workbench/src/**/plugin.js`
+  (`webpack-merge-and-include-globally`). `index.ejs` loads it after root-config starts. See
+  [Plugin system](plugin-system.md).
+- **Translations:** `MergeI18nPlugin` (`webpack/merge-i18n-plugin.js`) merges every `packages/*/src/assets/i18n/*.json`
+  into `dist/assets/i18n/`. See [i18n](i18n.md).
+- **Licenses:** `MergeJsonPlugin` merges the packages' `license-checker.json` reports into one.
+- **Copied as-is (`CopyPlugin`):** `assets/`, the root-config and shared-components assets, root-config and legacy CSS,
+  legacy libraries, and the external plugins from `graphdb-workbench-plugins` into `plugins/`. The production config also
+  copies `packages/api/dist` → `api/`, `packages/workbench/dist` → `workbench/` and `packages/shared-components/dist` →
+  `shared-components/`.
+- **Loaders:** Babel for TS/JS, `string-replace-loader` for the `[AIV]{version}[/AIV]` placeholder, LESS/SCSS/CSS
+  loaders, and `expose-loader` for `jquery` and `d3`, which legacy libraries expect as globals.
+
+If a new top-level folder is published in `dist/`, it must also be allowed in the backend's Spring Security
+configuration (see [CI](ci.md#important)).
+
+## Production vs. development
+
+- **Production** (`webpack.config.prod.js`): file names carry a `[contenthash]` for cache busting, CSS is extracted
+  and minified, and `publicPath` is `./` so the app works behind a context path. `CleanWebpackPlugin` empties `dist/`
+  first.
+- **Development** (`webpack.config.dev.js`): source maps, `single-spa.dev.js`, and `webpack serve` on port 9000
+  (`npm run start-root`, part of `npm run start`). The dev server proxies the backend on `localhost:7200` and serves
+  `wb-plugins/` under `/plugins`.
 
 ---
 

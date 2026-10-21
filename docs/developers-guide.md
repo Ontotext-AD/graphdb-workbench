@@ -9,12 +9,12 @@ Deep-dive reference documentation for GraphDB Workbench internals. Each topic be
 - [Logging](reference/logging.md) — centralized logging service
 
 ## Extending the workbench
-- [Plugin system](reference/plugin-system.md) — extension points, `plugin.js`, and color themes
+- [Plugin system](reference/plugin-system.md) — `PluginRegistry`, extension points, `plugin.js` and external plugins
 - [Icons](reference/icons.md) — Remix + Icomoon icon sets
 - [Internationalization (i18n)](reference/i18n.md) — translation merging and validation
 
 ## Build & delivery
-- [Bundling](reference/bundling.md) — webpack build pipeline
+- [Bundling](reference/bundling.md) — package builds and the root webpack build
 - [CI](reference/ci.md) — Jenkins pipeline and code coverage
 - [Release](reference/release.md) — release pipeline
 

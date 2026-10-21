@@ -1,4 +1,4 @@
-import {Loggers} from '@ontotext/workbench-api';
+import {Loggers, LoggerService} from '@ontotext/workbench-api';
 
 const MODULE_NAME = 'ROOT_CONFIG';
 
@@ -6,7 +6,7 @@ const MODULE_NAME = 'ROOT_CONFIG';
  * Service class that provides logging functionality for the root configuration.
  */
 export class LoggerProvider {
-  static get logger() {
+  static get logger(): LoggerService {
     return Loggers.getLoggerInstance(MODULE_NAME);
   }
 }

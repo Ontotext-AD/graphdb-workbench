@@ -1,45 +1,62 @@
 # Plugin system
 
-The extension-point / `plugin.js` mechanism for extending GraphDB Workbench without coupling, including color themes (implemented as a plugin).
+The extension-point / plugin mechanism for extending GraphDB Workbench without coupling new and existing components.
 
-## Extending the GraphDB Workbench
+## Contents
 
-## Plugin system
+- [Overview](#overview): `PluginRegistry`, extension points, and plugin definitions.
+- [Extension points](#extension-points): the registered ones and how a new one is added.
+- [Plugin definitions](#plugin-definitions): `plugin.js` files, `disabled`, replacing a plugin by id, `order` / `priority`.
+- [Where plugins come from](#where-plugins-come-from): the bundled `plugins.js` and external plugins from the manifest.
+- [Consuming an extension point](#consuming-an-extension-point): reading plugins in application code.
 
-Since v1.2, GraphDB workbench features a plugin system which allows components to be plugged in 
-without introducing coupling between new and existing components. The new system allows extending or 
-replacing existing components, introduction of new single or compositional components. All this 
-could be achieved without any changes in the rest of the system.
+## Overview
 
-_Currently the new system is integrated in the workbench main components registration. These are the
-components which implement the main workbench views (extension point `route`) and their respective 
-main menu entries (extension point `main.menu`). In next versions more extension points might be 
-introduced._
+The plugin system has three parts:
 
-### What is the plugin system and how a developer can use it?
+- **`PluginRegistry`** ([`plugin-registry.ts`](../../packages/api/src/services/plugins/plugin-registry.ts)) keeps the
+  plugins registered to each extension point at runtime. One instance is created in
+  [`ontotext-root-config.ts`](../../packages/root-config/src/ontotext-root-config.ts) and published through
+  `WindowService.setPluginRegistry()`, so it is reachable as `window.PluginRegistry` (legacy code, `plugin.js` files)
+  and `WindowService.getPluginRegistry()` (TypeScript).
+- **Extension points** are the contracts plugins register to. Each is a class extending `ExtensionPoint`.
+- **Plugin definitions** are the objects registered to an extension point.
 
-The plugin system consist of four components. 
-
-The `PluginRegistry` which is a service that has a role to maintain a runtime registry of all 
-registered to given extension point plugins. It has the following interface:
-```javascript
-PluginRegistry {
-    add(extensionPoint:String, pluginDefinition:[Object|Array]),
-    get(extensionPoint:String):Array,
-    clear(extensionPoint:String),
-    listModules()
+```typescript
+class PluginRegistry {
+  registerExtensionPoint(extensionPoint: ExtensionPoint): void;
+  add(extensionPointName: string, plugin: Plugin | Plugin[]): void;
+  get<T extends Plugin>(extensionPointName: string): T[];
+  findPlugin<T extends Plugin>(extensionPointName: string, predicate: (item: T) => boolean): T | undefined;
+  clear(extensionPointName: string): void;
+  clearAll(): void;
 }
 ```
 
-The second component is the plugin definition which a developer can define for each extension point
-where he needs new behavior or customization. When there is a need given component to be extended or 
-customized, the developer declares an extension point which is the contract to which plugins can be 
-registered. Every plugin should conform to that contract. Plugin definitions are javascript files 
-with mandatory name `plugin.js`.
+## Extension points
 
-Example of a plugin definition: 
+Extension points live in `packages/api/src/models/plugins/extension-points/` and are registered explicitly at
+bootstrap, in `ontotext-root-config.ts`:
+
+| Name | Class | Used for |
+|---|---|---|
+| `main.menu` | `MainMenuExtensionPoint` | Main menu items |
+| `route` | `RouteExtensionPoint` | Legacy workbench views (`$routeProvider` in `legacy-workbench/src/app.js`) |
+| `guide.step` | `InteractiveGuideExtensionPoint` | Interactive guide steps |
+| `themes` | `ThemesExtensionPoint` | Registered, currently unused |
+
+- `add()` or `get()` on a name that isn't registered throws `ExtensionPointNotFoundError`.
+- Registering the same name twice throws `ExtensionPointAlreadyRegisteredError`.
+- A new extension point is a new `ExtensionPoint` subclass registered next to the others. The registry itself doesn't
+  list its extension points.
+
+## Plugin definitions
+
+Bundled plugins are declared in files named `plugin.js` in `packages/legacy-workbench/src`. One file may register to
+several extension points:
+
 ```javascript
-// src/js/angular/autocomplete/plugin.js
+// packages/legacy-workbench/src/js/angular/autocomplete/plugin.js
 PluginRegistry.add('route', {
     'url': '/autocomplete',
     'module': 'graphdb.framework.autocomplete',
@@ -48,24 +65,7 @@ PluginRegistry.add('route', {
     'controller': 'AutocompleteCtrl',
     'templateUrl': 'pages/autocomplete.html',
     'title': 'Autocomplete index',
-    'helpInfo': 'The Autocomplete index is used for automatic ...',
-    'documentationUrl': 'autocomplete-index.html'
-});
-```
-
-**In a single plugin.js definition file can be registered plugins to multiple extension points.**
-
-The above `plugin.js` definition can be extended like this: 
-```javascript
-PluginRegistry.add('route', {
-    'url': '/autocomplete',
-    'module': 'graphdb.framework.autocomplete',
-    'path': 'autocomplete/app',
-    'chunk': 'autocomplete',
-    'controller': 'AutocompleteCtrl',
-    'templateUrl': 'pages/autocomplete.html',
-    'title': 'Autocomplete index',
-    'helpInfo': 'The Autocomplete index is used for automatic completion of URIs in the SPARQL editor and the View resource page. Use this view to enable or disable the index and check its status.',
+    'helpInfo': 'The Autocomplete index is used for automatic completion of URIs ...',
     'documentationUrl': 'autocomplete-index.html'
 });
 
@@ -77,96 +77,48 @@ PluginRegistry.add('main.menu', {
 });
 ```
 
-Plugin definitions can have the following optional attributes: `order`, `priority`, `disabled`.
-* The plugin `order` can be used when the extension point contract requires plugins to be loaded in 
-particular order.
-```javascript
-// src/module_1/plugin.js
-PluginRegistry.add('extension.point', {
-    'label': 'plugin-1',
-    'order': 10
-});
-```
-```javascript
-// src/module_2/plugin.js
-PluginRegistry.add('extension.point', {
-    'label': 'plugin-2',
-    'order': 20
-});
-``` 
-```javascript
-// src/main.js
-const plugins = PluginRegistry.get('extension.point');
-// plugins[0] -> `plugin-1`
-// plugins[1] -> `plugin-2`
-```
-If order is not provided, then plugins are loaded in order of their registration which is the order 
-in which the plugin.js files are processed during the application bundling.
+Look at the existing `plugin.js` files for an extension point's shape before adding one.
 
-* The `priority` attribute can be used when an ordered plugin should be overridden by another plugin. 
-If not provided, priority for every plugin is set by default to `0`. Having two plugins with same 
-order but different priority results in overriding the lower priority plugin by the other. If there 
-are two plugins with equal order and priority, then an error is thrown to warn the developer for the 
-issue.
- ```javascript
- // src/module_1/plugin.js
- PluginRegistry.add('extension.point', {
-     'label': 'plugin-1',
-     'order': 10
- });
- ``` 
- ```javascript
- // src/module_2/plugin.js
- PluginRegistry.add('extension.point', {
-     'label': 'plugin-2',
-     'order': 10,
-     'priority': 10
- });
- ``` 
- ```javascript
- // src/main.js
- const plugins = PluginRegistry.get('extension.point');
- // plugins[0] -> `plugin-2`
- ```
- 
- * A plugin can be disabled by setting the `disabled: true` attribute which means that the plugin 
- won't be loaded. All plugins by default are considered enabled. If a plugin is disabled, its 
- definition is not validated and processed - it's just skipped.
- ```javascript
- // src/module_1/plugin.js
- PluginRegistry.add('extension.point', {
-     'label': 'plugin-1',
-     'disabled': true
- });
- ``` 
- ```javascript
- // src/module_2/plugin.js
- PluginRegistry.add('extension.point', {
-     'label': 'plugin-2',
- });
- ``` 
- ```javascript
- // src/main.js
- const plugins = PluginRegistry.get('extension.point');
- // plugins[0] -> `plugin-2`
- ```
+### `disabled`
 
-The third component from the plugin system is the `plugins.js` file which is autogenerated and is 
-composed from all `plugin.js` files during the workbench build. Usually developers don't need to 
-touch this file. 
+A plugin with `disabled: true` is skipped: it isn't validated or registered. Plugins are enabled by default.
 
-The last part are the extension points which the developer implements in the application code. An 
-extension point is the place where plugins are loaded and eventually executed. 
+### Replacing a plugin by id
 
-Below is an example of extension point in the workbench which allows registering modules that can be
-accessed by navigating to different url (routes).
+An extension point may declare a `fieldIdName` (for `guide.step` it is `guideBlockName`). A plugin whose value of that
+field matches an already registered plugin replaces it.
+
+### `order` and `priority`
+
+These apply only to extension points that extend `OrderedExtensionPoint`. **None of the registered extension points
+does today**; main menu items carry their own `order`, which the navbar uses for sorting.
+
+On an ordered extension point:
+
+- plugins are kept sorted by `order`;
+- `priority` (default `0`) decides between two plugins with the same `order`: the higher one replaces the other;
+- the same `order` and the same `priority` throws `DuplicatePluginOrderError`.
+
+## Where plugins come from
+
+1. **Bundled `plugins.js`.** During the build, every `packages/legacy-workbench/src/**/plugin.js` is concatenated into
+   `plugins.js` (see [Bundling](bundling.md)). `index.ejs` appends it as a `<script>` once root-config has loaded, so
+   the `PluginRegistry.add(...)` calls run against the registry created there. Don't edit `plugins.js`; it is generated.
+2. **External plugins.** At bootstrap, `PluginsService.loadPlugins()` (`packages/root-config/src/bootstrap/plugins/`)
+   reads the manifest at `pluginsManifestPath` from the application configuration (default
+   `plugins/plugins-manifest.json`, copied from the `graphdb-workbench-plugins` package). It imports each entry module
+   and calls its `register(registry)` ([`PluginModule`](../../packages/api/src/models/plugins/plugin-module.ts)). If
+   the manifest can't be loaded, the workbench continues with the bundled plugins only. In development, the dev server
+   serves `wb-plugins/` under `/plugins`.
+
+## Consuming an extension point
+
+Application code reads an extension point's plugins and acts on them. The legacy routes are one example:
+
 ```javascript
-// src/app.js
-// 1. Get all registered extension for the "route" extension point. 
-let routes = PluginRegistry.get('route');
-// 2. Loop through all extensions
-routes.forEach(function (route) {
-    // 3. Register every extension with the $routeProvider
+// packages/legacy-workbench/src/app.js
+const routes = PluginRegistry.get('route');
+angular.forEach(routes, function(route) {
     $routeProvider.when(route.url, {
         controller: route.controller,
         templateUrl: route.templateUrl,
@@ -178,143 +130,11 @@ routes.forEach(function (route) {
 });
 ```
 
-### How does the plugin system work? 
+From TypeScript:
 
-* During the workbench packaging with webpack, the source code directory is scanned for plugin 
-definitions.
-* The content of every plugin definition which is found is copied and appended to a file named 
-`plugins.js`. This file is programmatically generated during the bundling.
-* Both `PluginRegistry` and the `plugins.js` are defined in the main application html template.
+```typescript
+const menuItems = WindowService.getPluginRegistry().get<MainMenuPlugin>(MainMenuExtensionPoint.NAME);
 ```
-<head>
-    <script src="plugin-registry.js"></script>
-    <script src="plugins.js"></script>
-</head>
-```  
-This allows the plugins to be registered runtime in the registry immediately after the web 
-application is loaded by issuing calls to `PluginRegistry.add(extensionPoint, pluginDefintion)` 
-method.
-
-## Color themes
-
-The workbench allows custom color themes to be provided by developers. Themes are implemented as plugins
-and can be registered to the `themes` extension point. Any custom theme must be placed in the project's
-src folder a file named `plugin.js`. Example theme plugin can be seen below:
-
-```javascript
-PluginRegistry.add('themes', {
-    // The name of the theme. Must contain only lowercase letters, hyphen, underscore. This is the differentiator
-    // property for all registered themes.
-    'name': 'default-theme',
-    // The theme label or a key for a label from i18n resource bundle.
-    'label': 'security.workbench.settings.theme.default-theme',
-    // CSS variables, "foo: bar" becomes "--foo: bar"
-    'variables': {
-        // Primary color, like a main brand color. This is in a HSL format composed by three values below
-        'primary-color-hue': '13.4',
-        'primary-color-saturation': '87.9%',
-        'primary-color-lightness': '33%',
-        // Secondary color, like a contrast main brand color. This is in a HSL format composed by three values below
-        'secondary-color-hue': '207.3',
-        'secondary-color-saturation': '100%',
-        'secondary-color-lightness': '19.4%',
-        // Tertiary color, like a complimentary color. This is in a HSL format composed by three values below
-        'tertiary-color-hue': '174.6',
-        'tertiary-color-saturation': '97.7%',
-        'tertiary-color-lightness': '33.5%',
-        // A color used for the font/svg icons when placed on a primary color background.
-        'icon-on-primary-color': 'rgba(255, 255, 255, 0.8)',
-        'gray-color': '#97999C',
-        'gray-color-dark': '#575757',
-        // Colors for the toastr notifications, the tag-xxx and the text-xxx classes in any of their four states
-        // (i.e. dark colored things)
-        'color-danger-dark': 'hsl(353, 78%, 36%)',
-        'color-success-dark': 'hsl(var(--tertiary-color-hue), var(--tertiary-color-saturation), calc(var(--tertiary-color-lightness)*0.5))',
-        'color-warning-dark': 'var(--primary-color-dark)',
-        'color-info-dark': 'var(--secondary-color-light)',
-        // Colors for the alert boxes (i.e. light colored things).
-        // Success and info are the same color since we don't use success much if at all
-        'color-danger-light': '#a4142433',
-        'color-success-light': 'hsla(var(--tertiary-color-hsl), 0.15)',
-        'color-warning-light': 'hsla(var(--primary-color-hsl), 0.07)',
-        'color-info-light': 'hsla(var(--tertiary-color-hsl), 0.15)',
-        'color-help-light': 'hsla(var(--secondary-color-hsl), 0.1)',
-        // Colors for the logo - logo proper, text in logo, logo background
-        'logo-color': 'var(--primary-color-light)',
-        'logo-text-color': 'white',
-        'logo-background-color': 'var(--secondary-color-dark)'
-    },
-    // Dark theme
-    'dark': {
-        'variables': {
-            // Dark definition variables that affect things at a global scale
-            'body-filter': 'invert(95%) hue-rotate(180deg)',
-            'html-background': '#0d0d0d',
-            'media-filter': 'invert(100%) hue-rotate(180deg)',
-            'alert-filter': 'contrast(2)',
-            'checkbox-filter': 'invert(100%) hue-rotate(180deg)',
-            'toast-filter': 'invert(95%) hue-rotate(180deg) contrast(1.2)',
-            // Slightly different colors that work better in dark mode
-            'primary-color-lightness': '60%',
-            'secondary-color-saturation': '70%',
-            'color-warning-light': 'hsla(var(--primary-color-hsl), 0.15)',
-            'logo-color': 'var(--primary-color-dark)'
-        },
-        // CSS properties, "foo: bar" becomes "foo: bar"
-        'properties': {
-            // Notify browser that we support dark theme, makes checkboxes look better
-            'color-scheme': 'light dark'
-        }
-    }
-});
-```
-
-The plugin definition is compiled to a stylesheet and embedded in the html document
-
-```css
-:root {
-    --primary-color-hue: 13.4;
-    --primary-color-saturation: 87.9%;
-    --primary-color-lightness: 33%;
-    --primary-color-hsl: var(--primary-color-hue), var(--primary-color-saturation), var(--primary-color-lightness);
-    --primary-color: hsl(var(--primary-color-hsl));
-    --primary-color-light: hsl(var(--primary-color-hue), var(--primary-color-saturation), calc(var(--primary-color-lightness)*1.2));
-    --primary-color-dark: hsl(var(--primary-color-hue), var(--primary-color-saturation), calc(var(--primary-color-lightness)*0.8));
-
-    --secondary-color-hue: 207.3;
-    --secondary-color-saturation: 100%;
-    --secondary-color-lightness: 19.4%;
-    --secondary-color-hsl: var(--secondary-color-hue), var(--secondary-color-saturation), var(--secondary-color-lightness);
-    --secondary-color: hsl(var(--secondary-color-hsl));
-    --secondary-color-light: hsl(var(--secondary-color-hue), var(--secondary-color-saturation), calc(var(--secondary-color-lightness)*1.2));
-    --secondary-color-dark: hsl(var(--secondary-color-hue), var(--secondary-color-saturation), calc(var(--secondary-color-lightness)*0.8));
-
-    ...
-}
-
-:root.dark {
-    --body-filter: invert(95%) hue-rotate(180deg);
-    --html-background: #0d0d0d;
-    --media-filter: invert(100%) hue-rotate(180deg);
-    --alert-filter: contrast(2);
-    --checkbox-filter: invert(100%) hue-rotate(180deg);
-    --toast-filter: invert(95%) hue-rotate(180deg) contrast(1.2);
-    
-    ...
-    
-    color-scheme: light dark;
-}
-```
-
-All available registered themes are loaded using the PluginsRegistry and displayed in a combobox in "my settings" page.
-The definition of the selected in the ‘my settings’ page and saved theme is loaded and applied by default when the 
-workbench is opened. If no theme is selected and saved in the local storage, then the default-theme is applied.
-All properties in the definition are mandatory. Definitions with missing properties are rejected, and an error will be
-reported in the browser log. Theme plugins validation happens when definitions are loaded through the PluginRegistry by 
-the "my settings" page controller. The themes selector menu is in a widget on that page and it lists all available
-registered theme plugins for the user to select from. There are two prebuilt themes in the workbench. The 
-`default-theme` is carefully crafted so that the colors used in the theme comply with the WCAG AAA color contrast 
-standard. The second provided theme uses the Ontotext brand colors and does not comply with the WCAG color standard.
 
 ---
 

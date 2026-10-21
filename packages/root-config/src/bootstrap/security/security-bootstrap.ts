@@ -17,7 +17,7 @@ import {LoggerProvider} from '../../services/logger-provider';
 
 const logger = LoggerProvider.logger;
 
-export const loadSecurityConfig = () => {
+export const loadSecurityConfig = (): Promise<void> => {
   return service(SecurityService).getSecurityConfig()
     .then((securityConfig) => {
       const securityContextService = service(SecurityContextService);

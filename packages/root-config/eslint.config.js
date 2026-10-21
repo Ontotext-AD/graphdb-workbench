@@ -39,6 +39,9 @@ module.exports = [
     plugins: {
       '@typescript-eslint': require('@typescript-eslint/eslint-plugin'),
     },
+    rules: {
+      '@typescript-eslint/explicit-module-boundary-types': 'error',
+    },
   },
   {
     ignores: ['**/*.html'],

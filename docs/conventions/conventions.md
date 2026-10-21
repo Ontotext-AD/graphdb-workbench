@@ -2,6 +2,13 @@
 
 The house rules for making changes, and how to verify them. These apply to every task; the framework-specific specifics live in the sibling docs.
 
+## Contents
+
+- [Golden rules](#golden-rules): the ten house rules every change follows.
+- [Workflow](#workflow): what to check before editing and the verification order after.
+- [Pre-commit hooks](#pre-commit-hooks): Husky + lint-staged and where the ESLint/Stylelint configs live.
+- [Definition of done](#definition-of-done): when a change counts as complete.
+
 ## Golden rules
 
 1. Match the style already used in the target package.
@@ -47,6 +54,7 @@ A change is usually complete when:
 - Translation validation passes (if relevant).
 - Tests pass for the affected scope.
 - Any plugin/interceptor/i18n wiring is updated consistently.
+- A change to a convention doc (`docs/conventions/`, a package `AGENTS.md`) is mirrored in the matching `.github/instructions/*.instructions.md` — the Copilot reviewer reads only those.
 - Styling changes stay compatible with the Graphwise token pipeline and both light/dark themes.
 
 ## See also

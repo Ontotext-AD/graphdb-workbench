@@ -2,6 +2,11 @@
 
 Rules for request/response preprocessing in the API layer, which supports request and response interceptor chains.
 
+## Contents
+
+- [When adding request/response behavior](#when-adding-requestresponse-behavior): prefer an interceptor; mind `priority` ordering.
+- [Relevant locations](#relevant-locations): where interceptors are implemented and registered.
+
 ## When adding request/response behavior
 
 - Prefer implementing an interceptor over scattering request-mutation logic across call sites.

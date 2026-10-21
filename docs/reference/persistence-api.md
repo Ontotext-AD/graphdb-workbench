@@ -2,63 +2,59 @@
 
 Local-storage-backed persistence for GraphDB Workbench, built on the `Persistence` interface and `LocalStorageService`.
 
-## Persistence API and Local Storage Implementation in GraphDB Workbench
+## Contents
 
-This guide explains the `Persistence` API and its local storage implementation in the GraphDB Workbench application. It 
-includes details about the key interfaces, abstract classes, and practical examples for implementing persistent storage
-using local storage.
+- [Overview of the `Persistence` API](#overview-of-the-persistence-api): the generic storage interface.
+- [Key Components](#key-components): the `Persistence` interface and its methods.
+- [Local Storage Implementation](#local-storage-implementation): `LocalStorageService`, namespaces, and key prefixing.
+- [Handling Storage Change Events](#handling-storage-change-events): how storage events from other tabs update the context.
+- [Practical Considerations](#practical-considerations): prefixed keys, specialization, error handling.
 
----
+## Overview of the `Persistence` API
 
-### Overview of the `Persistence` API
+The `Persistence` API provides a generic interface for interacting with a storage system. It supports storing,
+retrieving, and removing data via a `Storage`-compatible implementation (e.g., `localStorage` or `sessionStorage`).
+The code is in [`packages/api/src/services/storage/`](../../packages/api/src/services/storage/).
 
-The `Persistence` API provides a generic interface for interacting with a storage system. It supports storing, 
-retrieving, and removing data via a `Storage` interface-compatible implementation (e.g., localStorage or sessionStorage).
-
-### Key Components
+## Key Components
 
 **`Persistence` Interface**
 
-The `Persistence` interface defines the structure for storage-related services.
+The `Persistence` interface defines the structure for storage-related services:
 
-**Methods:**
+- `getStorage(): Storage` - Returns the underlying storage implementation.
+- `get(key: string): StorageData` - Retrieves the value associated with the provided key.
+- `set(key: string, value: string): void` - Stores the given value under the provided key.
+- `remove(key: string): void` - Deletes the value associated with the provided key.
 
-`getStorage(): Storage` - Returns the underlying storage implementation.
+## Local Storage Implementation
 
-`get(key: string): StorageData` - Retrieves the value associated with the provided key.
+The `LocalStorageService` abstract class implements the `Persistence` interface using `localStorage`. It is the base
+class for specialized storage services.
 
-`set(key: string, value: string): void` - Stores the given value under the provided key.
-
-`remove(key: string): void` - Deletes the value associated with the provided key.
-
----
-
-### Local Storage Implementation
-
-The `LocalStorageService` abstract class implements the `Persistence` interface using the localStorage API. This 
-implementation serves as a base class for specialized storage services.
-
-#### Key Features
+### Key Features
 
 **1. Namespace Support:**
 
 * Each service defines a unique `NAMESPACE` to scope its keys.
-* Keys are prefixed with a global namespace (`StorageKey.GLOBAL_NAMESPACE`) and the service-specific namespace.
+* Keys are stored as `<global>.<NAMESPACE>.<key>`, where the global prefix is `StorageKey.GLOBAL_NAMESPACE`
+  (`ontotext.gdb`).
 
 **2. Storage Methods:**
 
-`get(key: string): StorageData` - Fetches a value from `localStorage`.
+- `get(key: string, usePrefixedKey = true): StorageData` - Reads a value. Pass `false` to read a raw, unprefixed key.
+- `getAsJson<T>(key: string): T | null` - Reads a raw key and parses it as JSON; `null` if missing or invalid.
+- `storeValue(key: string, value: string): void` - Saves a value under the prefixed key.
+- `remove(key: string, usePrefixedKey = true): void` - Removes a value.
 
-`storeValue(key: string, value: string): void` - Saves a value to `localStorage`.
-
-`remove(key: string): void` - Removes a value from `localStorage`.
+Subclasses implement `set(key, value)`, usually by calling `storeValue`.
 
 **3. Key Management:**
 
-* The `getPrefixedKey(key: string): string` method ensures that all keys are prefixed correctly for consistency and 
-collision avoidance.
+* The private `getPrefixedKey(key)` adds whatever part of the prefix is missing: a bare key gets both prefixes, a key
+  that already starts with `<NAMESPACE>.` gets only the global one, and a fully prefixed key is left as is.
 
-#### Implementation Example
+### Implementation Example
 
 ```typescript
 export class LanguageStorageService extends LocalStorageService {
@@ -69,23 +65,24 @@ export class LanguageStorageService extends LocalStorageService {
   }
 }
 ```
-In this example, `LanguageStorageService` manages language-related properties in the `localStorage`, scoped under the 
-i18n namespace.
+`LanguageStorageService` stores language-related properties under the `ontotext.gdb.i18n.` prefix.
 
----
+## Handling Storage Change Events
 
-### Handling Storage Change Events
+`LocalStorageSubscriptionHandlerService` keeps the context in sync when `localStorage` changes in another tab.
+`onto-layout` listens for the window's `storage` event and passes it to `handleStorageChange`.
 
-The `LocalStorageSubscriptionHandlerService` listens to storage change events and updates the application context 
-accordingly. It works in conjunction with `ContextService` implementations to resolve and update the context properties.
+### Workflow
 
-#### Workflow
+1. On a `StorageEvent`, the service strips the global prefix and splits the rest into the namespace and the property
+   name.
+2. It finds the handler among all registered context services (`ServiceProvider.getAllBySuperType(ContextService)`):
+   the first whose `canHandle(propertyName)` is true. The namespace is only required to be present.
+3. The handler's `deserializeProperty()` turns the raw string into a value (see
+   [Context API](context-api.md#restoring-values-from-storage)), and `updateContextProperty()` sets it. A removed key
+   sets `undefined`.
 
-1. On a `StorageEvent`, the service parses the key to extract the namespace and property name.
-2. It resolves the appropriate handler using the `resolveHandler(namespace, propertyName)` method.
-3. If a handler exists, it invokes the handler to update the corresponding context property.
-
-#### Key Method
+### Key Method
 
 ```typescript
 handleStorageChange(event: StorageEvent): void {
@@ -100,30 +97,22 @@ handleStorageChange(event: StorageEvent): void {
 
   const handler = this.resolveHandler(namespace, contextPropertyKey);
   if (handler) {
-    handler.updateContextProperty(contextPropertyKey, event.newValue);
+    let newValue;
+    if (event.newValue !== null) {
+      newValue = handler.deserializeProperty(contextPropertyKey, event.newValue);
+    }
+    handler.updateContextProperty(contextPropertyKey, newValue);
   }
 }
 ```
 
----
+## Practical Considerations
 
-### Practical Considerations
-
-1. Prefixed Keys:
-Always use prefixed keys to ensure isolation and avoid conflicts.
-2. Service Specialization:
-Extend `LocalStorageService` to define domain-specific storage services, specifying the `NAMESPACE` and implementing 
-additional functionality if needed.
-3. Error Handling:
-Handle cases where a key or handler is missing with appropriate logging or fallback mechanisms.
-
----
-
-### Summary
-
-The `Persistence` API and its local storage implementation provide a robust framework for managing persistent data in
-the GraphDB Workbench application. By adhering to the namespace conventions and leveraging the `LocalStorageService` as
-a base class, developers can efficiently implement and maintain storage-related functionality.
+1. **Prefixed keys.** Always go through a `LocalStorageService` subclass so keys are prefixed and isolated.
+2. **Service specialization.** Extend `LocalStorageService` per domain, specifying the `NAMESPACE`.
+3. **Property names.** For cross-tab sync, the stored key's property name must equal a context service field value
+   (e.g. `selectedRepository`), so `canHandle` finds the service.
+4. **Error handling.** A missing namespace or handler is logged at debug level and ignored.
 
 ---
 
