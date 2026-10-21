@@ -9,6 +9,7 @@ import {
   GraphExploreService,
   GraphNavigatorService,
   GraphNavigatorSettings,
+  GraphNavigatorSettingsError,
   HttpErrorResponse,
   HttpRequest,
   LanguageContextService,
@@ -27,6 +28,7 @@ import {ConfirmationConfig} from '../../services/dialog/model/confirmation-confi
 import {
   GraphwiseReactodiaFacadeComponent
 } from '../../components/graphwise-reactodia-facade/graphwise-reactodia-facade.component';
+import {GraphNavigatorSettingsComponent} from './graph-navigator-settings/graph-navigator-settings.component';
 
 jest.mock('graphwise-reactodia/loader', () => ({
   defineCustomElements: jest.fn()
@@ -259,7 +261,13 @@ describe('GraphNavigatorPageComponent', () => {
 
     it('should show the validation errors the backend returns for a rejected upload', async () => {
       // GIVEN: the backend rejects the file with validation errors.
-      const errors = ['acceptBlankNodes has a value of the wrong type'];
+      const error = {
+        code: 'wrong_type',
+        property: 'acceptBlankNodes',
+        message: 'acceptBlankNodes has a value of the wrong type',
+        params: {actual: 'string', expected: 'boolean'},
+        predicate: 'http://www.ontotext.com/graph-navigator#acceptBlankNodes'
+      };
       jest.spyOn(ServiceProvider.get(GraphNavigatorService), 'uploadSettings')
         .mockRejectedValue(new HttpErrorResponse({
           status: 400,
@@ -267,7 +275,7 @@ describe('GraphNavigatorPageComponent', () => {
           headers: {},
           config: {url: ''} as HttpRequest,
           originalResponse: {} as Response,
-          data: {errors}
+          data: {errors: [error]}
         }));
       fixture.detectChanges();
       await selectRepository(REPOSITORY_A);
@@ -278,7 +286,8 @@ describe('GraphNavigatorPageComponent', () => {
       await settle();
 
       // THEN: the errors are passed to the settings controls.
-      expect(component.uploadErrors()).toEqual(errors);
+      const settings = fixture.debugElement.query(By.directive(GraphNavigatorSettingsComponent)).componentInstance as GraphNavigatorSettingsComponent;
+      expect(settings.uploadErrors()).toStrictEqual([new GraphNavigatorSettingsError(error)]);
     });
 
     it('should reset the settings by deleting them and loading the defaults', async () => {

@@ -8,8 +8,11 @@ import {
   GraphExploreService,
   GraphNavigatorService,
   GraphNavigatorSettings,
+  GraphNavigatorSettingsError,
+  GraphNavigatorSettingsErrorResponse,
   HttpErrorResponse,
   LanguageContextService,
+  mapGraphNavigatorSettingsErrorResponseToModel,
   OntoToastrService,
   RepositoryContextService,
   RuntimeConfigurationContextService,
@@ -79,7 +82,7 @@ export class GraphNavigatorPageComponent implements OnInit, OnDestroy {
   readonly seedGraph = signal<GraphExploreLink[]>([]);
   readonly loading = signal(false);
   readonly settings = signal<GraphNavigatorSettings | undefined>(undefined);
-  readonly uploadErrors = signal<string[]>([]);
+  readonly uploadErrors = signal<GraphNavigatorSettingsError[]>([]);
   protected readonly ViewPermissions = ViewPermissions;
 
   ngOnInit(): void {
@@ -192,8 +195,8 @@ export class GraphNavigatorPageComponent implements OnInit, OnDestroy {
   onUploadSettings(file: File, repositoryId: string): void {
     this.runSettingsRequest(
       this.graphNavigatorService.uploadSettings(repositoryId, file)
-        .catch((error: HttpErrorResponse<{errors?: string[]}>) => {
-          this.uploadErrors.set(error.data?.errors ?? []);
+        .catch((error: HttpErrorResponse<GraphNavigatorSettingsErrorResponse>) => {
+          this.uploadErrors.set(mapGraphNavigatorSettingsErrorResponseToModel(error.data));
           throw error;
         }),
       'graph_navigator.settings.messages.upload_success',
