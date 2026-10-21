@@ -13,7 +13,16 @@ app-yasgui-component-facade {
       }
 
       a {
-        color: var(--gw-secondary-base) !important;
+        color: var(--gw-link-idle-color);
+
+        &:visited {
+          color: var(--gw-link-visited-color);
+        }
+
+        &:hover,
+        &:focus {
+          color: var(--gw-link-hover-color);
+        }
       }
 
       /* #endregion YASR - overlay content and buttons */

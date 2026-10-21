@@ -1,6 +1,15 @@
 /* #region YASR result table */
 yasgui-component .yasr a {
-    color: var(--gw-secondary-base) !important;
+    color: var(--gw-link-idle-color);
+}
+
+yasgui-component .yasr a:visited {
+    color: var(--gw-link-visited-color);
+}
+
+yasgui-component .yasr a:hover,
+yasgui-component .yasr a:focus {
+    color: var(--gw-link-hover-color);
 }
 
 /* #endregion - YASR result table */
