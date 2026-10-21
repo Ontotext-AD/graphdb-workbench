@@ -142,7 +142,22 @@
         "browse": "Parcourir",
         "drop_hint": "Glissez-déposez ici les fichiers à importer.",
         "pending": "En attente",
-        "validation_errors": "Erreurs de validation"
+        "invalid": "Non valide",
+        "errors": {
+          "title": "{count} {count, plural, one {erreur} other {erreurs}} de validation",
+          "hint": "Corrigez ces propriétés dans le fichier et importez-le à nouveau.",
+          "property": "Propriété",
+          "problem": "Problème",
+          "codes": {
+            "required": "Est obligatoire",
+            "wrong_type": "Doit être de type {{expected}}",
+            "duplicate": "Spécifiée plusieurs fois",
+            "malformed_value": "A une valeur mal formée",
+            "unknown_property": "N'est pas une propriété connue",
+            "invalid": "Le fichier n'a pas pu être analysé",
+            "unknown": "Erreur inconnue"
+          }
+        }
       },
       "export": "Exporter les paramètres actuels",
       "reset": "Rétablir les valeurs par défaut",

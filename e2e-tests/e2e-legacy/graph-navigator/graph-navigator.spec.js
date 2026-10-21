@@ -11,6 +11,8 @@ const SEED_RESOURCE_ENCODED = 'http:%2F%2Fexample.com%2Fontology%23CustomerLoyal
 const SEED_RESOURCE_LABEL = 'CustomerLoyalty';
 const SETTINGS_FILE_NAME = 'graph-navigator-settings.ttl';
 const SETTINGS_FILE = `fixtures/graph-navigator/${SETTINGS_FILE_NAME}`;
+const INVALID_SETTINGS_FILE_NAME = 'graph-navigator-settings-invalid.ttl';
+const INVALID_SETTINGS_FILE = `fixtures/graph-navigator/${INVALID_SETTINGS_FILE_NAME}`;
 
 const CONSTRUCT_QUERY = 'CONSTRUCT { <http://example.com/ontology#CustomerLoyalty> ?p ?o } WHERE { <http://example.com/ontology#CustomerLoyalty> ?p ?o }';
 const CONSTRUCT_TARGET_LABEL = 'Metric';
@@ -217,6 +219,43 @@ describe('Graph Navigator', () => {
             // Then I expect a success message and the diagram to be rendered.
             ToasterSteps.verifySuccess('The settings were uploaded');
             GraphNavigatorSteps.getWorkspace().should('exist');
+        });
+
+        it('should show the validation errors of a rejected file on its row', () => {
+            // Given I have selected a settings file with invalid values and an unknown property.
+            GraphNavigatorSteps.visit();
+            GraphNavigatorSteps.openSettings();
+            GraphNavigatorSteps.selectSettingsFile(INVALID_SETTINGS_FILE);
+
+            // When I upload it.
+            GraphNavigatorSteps.clickUpload();
+            GraphNavigatorSteps.confirmDialog();
+
+            // Then I expect the errors in a table on the file row.
+            ToasterSteps.verifyNewToasterError('Could not upload the settings');
+            GraphNavigatorSteps.getSelectedSettingsFile(INVALID_SETTINGS_FILE_NAME).should('exist');
+            GraphNavigatorSteps.getUploadErrors().should('be.visible')
+                .and('contain', '3 validation errors')
+                .and('contain', 'Fix these properties in the file and upload it again.');
+            GraphNavigatorSteps.getUploadError('gn:acceptBlankNodes').should('contain', 'Must be of type boolean');
+            GraphNavigatorSteps.getUploadError('gn:openWorldProperties').should('contain', 'Must be of type boolean');
+            GraphNavigatorSteps.getUploadError('gn:unknownSetting')
+                .should('contain', 'Not a known property');
+
+            // When I close and reopen the settings.
+            GraphNavigatorSteps.closeSettings();
+            GraphNavigatorSteps.openSettings();
+
+            // Then I expect the file and its errors to be kept.
+            GraphNavigatorSteps.getSelectedSettingsFile(INVALID_SETTINGS_FILE_NAME).should('exist');
+            GraphNavigatorSteps.getUploadErrors().should('be.visible')
+                .and('contain', '3 validation errors');
+
+            // When I remove the file.
+            GraphNavigatorSteps.clickCancelFile();
+
+            // Then I expect the errors to be cleared.
+            GraphNavigatorSteps.getUploadErrors().should('not.exist');
         });
 
         it('should ask for confirmation before resetting', () => {

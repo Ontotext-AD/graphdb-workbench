@@ -142,7 +142,22 @@
         "browse": "Browse",
         "drop_hint": "Drag and drop files to here to upload.",
         "pending": "Pending",
-        "validation_errors": "Validation errors"
+        "invalid": "Invalid",
+        "errors": {
+          "title": "{count} validation {count, plural, one {error} other {errors}}",
+          "hint": "Fix these properties in the file and upload it again.",
+          "property": "Property",
+          "problem": "Problem",
+          "codes": {
+            "required": "Is required",
+            "wrong_type": "Must be of type {{expected}}",
+            "duplicate": "Specified more than once",
+            "malformed_value": "Has a malformed value",
+            "unknown_property": "Not a known property",
+            "invalid": "The file could not be parsed",
+            "unknown": "Unknown error"
+          }
+        }
       },
       "export": "Export current settings",
       "reset": "Reset to default",
