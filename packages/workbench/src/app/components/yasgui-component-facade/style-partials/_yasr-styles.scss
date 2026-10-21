@@ -30,6 +30,12 @@ app-yasgui-component-facade {
         color: var(--gw-button-primary-hover-color) !important;
         background-color: var(--gw-button-primary-hover-background) !important;
       }
+
+      /* The buttons have a ri-* icon class, so remixicon sets their font-family. Keep it for the icon only. */
+      .chart-download-as-button-label,
+      .pivot-table-download-as-button-label {
+        font-family: var(--main-font);
+      }
     }
 
     .ontotext-dropdown-button {
