@@ -73,6 +73,14 @@ export class GraphNavigatorSteps extends BaseSteps {
         return GraphNavigatorSteps.getSettingsPopover().contains(fileName);
     }
 
+    static getUploadErrors() {
+        return this.getByTestId('graph-navigator-settings-upload-errors');
+    }
+
+    static getUploadError(property) {
+        return GraphNavigatorSteps.getUploadErrors().contains('[data-test="graph-navigator-settings-upload-error"]', property);
+    }
+
     static getUploadButton() {
         return GraphNavigatorSteps.getSettingsPopover().find('.p-fileupload-upload-button');
     }
