@@ -67,7 +67,7 @@ app-yasgui-component-facade {
       color: var(--gw-button-secondary-color) !important;
       background-color: var(--gw-button-secondary-background) !important;
       border-color: var(--gw-button-secondary-border-color) !important;
-      font-size: 14px;
+      font-size: var(--gw-button-sm-label-typography-font-size);
       padding-left: 8px;
       padding-right: 8px;
 
@@ -91,7 +91,7 @@ app-yasgui-component-facade {
     }
 
     .btn-orientation {
-      font-size: 28px;
+      font-size: 1.75rem;
       margin-left: 1rem;
       color: var(--gw-button-secondary-color) !important;
       background-color: transparent !important;
@@ -119,7 +119,7 @@ app-yasgui-component-facade {
         color: var(--gw-tabs-tab-color) !important;
         background-color: var(--gw-tabs-tab-background) !important;
         border-color: var(--gw-tabs-tab-border-color) var(--gw-tabs-tab-border-color) transparent !important;
-        font-weight: 400;
+        font-weight: var(--gw-button-label-font-weight);
       }
 
       .tab.active {
