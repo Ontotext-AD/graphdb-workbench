@@ -1,0 +1,10 @@
+<!-- The content of the repository popover in the core-errors list. It is the same onto-repository-info as in the repository
+     picker list of the new workbench views. Without the statement counts (not loaded yet, or the request failed),
+     onto-repository-info shows the loader or that they are not available. -->
+<div ng-init="getRepositorySize()" class="core-errors-repository-info" keep-core-errors-popover-in-viewport>
+    <onto-repository-info ng-custom-element
+                          ngce-prop-repository="popoverRepo"
+                          ngce-prop-permission="getRepositoryPermission(popoverRepo)"
+                          ngce-prop-loading="!!repositorySize.loading"
+                          ngce-prop-size_info="repositorySize.total >= 0 ? repositorySize : undefined"></onto-repository-info>
+</div>

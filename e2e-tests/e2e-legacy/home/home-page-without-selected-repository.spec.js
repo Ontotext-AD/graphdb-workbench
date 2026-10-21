@@ -29,7 +29,8 @@ describe('Home page: without selected repository', () => {
     HomeSteps.getRepositoryErrorsWidget().should('be.visible');
     RepositoryErrorsWidgetSteps.getInfoMessage().should('contain', 'Some functionalities are not available because you are not connected to any repository.');
     RepositoryErrorsWidgetSteps.getCreateRepositoryBtn().should('be.visible');
-    RepositoryErrorsWidgetSteps.getShowRemoteLocationsBtn().should('be.visible');
+    RepositoryErrorsWidgetSteps.getRepositoryFilter().should('be.visible');
+    RepositoryErrorsWidgetSteps.getLocalOnlyCheckbox().should('be.visible').and('be.checked');
   });
 
   // This test is unreliable with the current implementation of the license widget.
