@@ -1,6 +1,6 @@
 <link href="css/sparql-templates.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 
-<div class="container-fluid fit-content-on-mobile"  ng-if="!queryIsRunning">
+<div class="container-fluid fit-content-on-mobile" ng-if="!queryIsRunning">
     <h1>
         {{title}}
         <span class="btn btn-link"
@@ -19,71 +19,74 @@
         <p>{{repositoryError}}</p>
     </div>
 
-    <div class="card mb-2 sparql-template">
-        <div class="card-block pt-1">
-            <p class="lead">{{'template.iri.header' | translate}}</p>
-            <div>
-                <input required
-                       class="form-control sparql-template-id"
-                       type="text"
-                       ng-change="markDirty()"
-                       ng-mousedown="sparqlTemplateInfo.isValidTemplateId = true"
-                       placeholder="http://exampleuri.com/examplepath ({{'required' | translate}})"
-                       ng-model="sparqlTemplateInfo.templateID"
-                       ng-disabled="!sparqlTemplateInfo.isNewTemplate"/>
-                <div ng-if="saveOrUpdateExecuted">
-                    <div ng-if="sparqlTemplateInfo.templateID && !isTemplateIdValid(sparqlTemplateInfo.templateID)"
-                         class="idError alert alert-danger template-id-invalid"
-                         translate="not.valid.iri"
-                         translate-value-value="{{sparqlTemplateInfo.templateID}}">
+    <!-- The template can be created only in a repository, so the form is shown when one is selected. -->
+    <div ng-if="getActiveRepository()">
+        <div class="card mb-2 sparql-template">
+            <div class="card-block pt-1">
+                <p class="lead">{{'template.iri.header' | translate}}</p>
+                <div>
+                    <input required
+                           class="form-control sparql-template-id"
+                           type="text"
+                           ng-change="markDirty()"
+                           ng-mousedown="sparqlTemplateInfo.isValidTemplateId = true"
+                           placeholder="http://exampleuri.com/examplepath ({{'required' | translate}})"
+                           ng-model="sparqlTemplateInfo.templateID"
+                           ng-disabled="!sparqlTemplateInfo.isNewTemplate"/>
+                    <div ng-if="saveOrUpdateExecuted">
+                        <div ng-if="sparqlTemplateInfo.templateID && !isTemplateIdValid(sparqlTemplateInfo.templateID)"
+                             class="idError alert alert-danger template-id-invalid"
+                             translate="not.valid.iri"
+                             translate-value-value="{{sparqlTemplateInfo.templateID}}">
+                        </div>
+                        <div ng-if="!sparqlTemplateInfo.templateID"
+                             class="idError alert alert-danger template-id-required"
+                             translate="sparql.template.iri.constraint">
+                        </div>
                     </div>
-                    <div ng-if="!sparqlTemplateInfo.templateID"
-                         class="idError alert alert-danger template-id-required"
-                         translate="sparql.template.iri.constraint">
+
+                    <yasgui-component id="query-editor"
+                                      ng-if="yasguiConfig"
+                                      class="pt-1"
+                                      yasgui-config="yasguiConfig">
+                    </yasgui-component>
+
+                    <div ng-if="!sparqlTemplateInfo.isValidQuery"
+                         class="idError alert alert-danger  invalid-query"
+                         translate="sparql.template.query.invalid">
                     </div>
-                </div>
-
-                <yasgui-component id="query-editor"
-                                  ng-if="yasguiConfig"
-                                  class="pt-1"
-                                  yasgui-config="yasguiConfig">
-                </yasgui-component>
-
-                <div ng-if="!sparqlTemplateInfo.isValidQuery"
-                     class="idError alert alert-danger  invalid-query"
-                     translate="sparql.template.query.invalid">
-                </div>
-                <div ng-if="!sparqlTemplateInfo.isValidQueryMode"
-                     class="idError alert alert-danger invalid-query-mode"
-                     translate="sparql.template.query.constraint">
+                    <div ng-if="!sparqlTemplateInfo.isValidQueryMode"
+                         class="idError alert alert-danger invalid-query-mode"
+                         translate="sparql.template.query.constraint">
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="pull-right">
-        <button ng-click="goToSparqlTemplatesView()" class="btn btn-lg btn-secondary cancel-query-btn"
-           uib-popover="{{'cancel.sparql.template.creation.tooltip' | translate}}"
-           popover-placement="top"
-           popover-trigger="mouseenter"
-           ng-if="canEditActiveRepo">
-            {{'common.cancel.btn' | translate}}
-        </button>
-        <button class="btn btn-lg btn-primary save-query-btn" ng-click="saveTemplate()"
-                uib-popover="{{'save.sparql.template.tooltip' | translate}}"
-                popover-placement="top"
-                popover-trigger="mouseenter"
-                popover-class="no-wrap-popover"
-                ng-if="canEditActiveRepo" ng-disabled="!isDirty && !sparqlTemplateInfo.isNewTemplate">
-            {{'common.save.btn' | translate}}
-        </button>
-        <a ng-href="sparql-templates" class="btn btn-lg btn-secondary"
-           uib-popover="{{'cancel.sparql.template.creation.tooltip' | translate}}"
-           popover-placement="top"
-           popover-trigger="mouseenter"
-           ng-if="!canEditActiveRepo">
-            {{'common.close' | translate}}
-        </a>
+        <div class="pull-right">
+            <button ng-click="goToSparqlTemplatesView()" class="btn btn-lg btn-secondary cancel-query-btn"
+               uib-popover="{{'cancel.sparql.template.creation.tooltip' | translate}}"
+               popover-placement="top"
+               popover-trigger="mouseenter"
+               ng-if="canEditActiveRepo">
+                {{'common.cancel.btn' | translate}}
+            </button>
+            <button class="btn btn-lg btn-primary save-query-btn" ng-click="saveTemplate()"
+                    uib-popover="{{'save.sparql.template.tooltip' | translate}}"
+                    popover-placement="top"
+                    popover-trigger="mouseenter"
+                    popover-class="no-wrap-popover"
+                    ng-if="canEditActiveRepo" ng-disabled="!isDirty && !sparqlTemplateInfo.isNewTemplate">
+                {{'common.save.btn' | translate}}
+            </button>
+            <a ng-href="sparql-templates" class="btn btn-lg btn-secondary"
+               uib-popover="{{'cancel.sparql.template.creation.tooltip' | translate}}"
+               popover-placement="top"
+               popover-trigger="mouseenter"
+               ng-if="!canEditActiveRepo">
+                {{'common.close' | translate}}
+            </a>
+        </div>
     </div>
 </div>
 

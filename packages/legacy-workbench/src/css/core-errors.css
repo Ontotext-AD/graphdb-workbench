@@ -1,0 +1,332 @@
+/* The restriction message of the core-errors directive. It looks like the PrimeNG p-message, which the page
+   restrictions use in the new workbench views. The sizes and colors are the message tokens of the styleguide. */
+
+.repository-errors-container .alert.info-message {
+    display: flex;
+    align-items: center;
+    gap: var(--gw-message-content-gap);
+    margin-bottom: 0;
+    padding: var(--gw-message-content-padding);
+    border: 0;
+    border-radius: var(--gw-message-border-radius);
+    outline: var(--gw-message-border-width) solid;
+    font-size: var(--gw-message-text-font-size);
+    font-weight: var(--gw-message-text-font-weight);
+}
+
+/* The icon is the message-icon element, so the global alert icon is not shown. */
+.repository-errors-container .alert.info-message:before {
+    content: none;
+}
+
+.repository-errors-container .alert.info-message.alert-info {
+    outline-color: var(--gw-message-info-border-color);
+}
+
+.repository-errors-container .alert.info-message.alert-warning {
+    outline-color: var(--gw-message-warning-border-color);
+}
+
+.repository-errors-container .alert.info-message .message-icon {
+    flex-shrink: 0;
+    font-size: var(--gw-message-icon-size);
+    width: var(--gw-message-icon-size);
+    height: var(--gw-message-icon-size);
+    line-height: 1;
+}
+
+.repository-errors-container .alert.info-message .message-text {
+    min-width: 0;
+}
+
+/* The hint below the message has the same size as the message. */
+.repository-errors-container .alert.info-message .message-text small {
+    font-size: inherit;
+}
+
+/* The header above the repository list: the repository count and the create button, as in the repository picker list
+   of the new workbench views. */
+.repository-errors-container .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    /* The same space as between the message and the repository list in the page restrictions. */
+    margin-top: 1em;
+}
+
+/* Without the create button the header collapses to the height of the count, so it needs its own spacing. */
+.repository-errors-container .header:not(:has(.create-repository-btn)) {
+    margin-bottom: .5em;
+}
+
+/* The create button looks like the PrimeNG p-button. The sizes are the button tokens of the styleguide. */
+.repository-errors-container .header .create-repository-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gw-button-gap);
+    padding: var(--gw-button-padding-y) var(--gw-button-padding-x);
+    line-height: inherit;
+}
+
+.repository-errors-container .header .create-repository-btn .ri-add-circle-line {
+    font-size: var(--gw-button-icon-size);
+    line-height: 1;
+}
+
+/* The toolbar with the filters of the repository list, as in the repository picker list of the new workbench views. */
+.repository-errors-container .repository-list-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.repository-errors-container .repository-list-toolbar .filters {
+    display: flex;
+    gap: 1em;
+    min-width: 0;
+    flex-wrap: wrap;
+    padding-bottom: 1em;
+}
+
+/* The name filter looks like the PrimeNG p-iconfield: the search icon is inside the input, at its right end. */
+.repository-errors-container .repository-list-toolbar .filter-name {
+    position: relative;
+}
+
+.repository-errors-container .repository-list-toolbar .filter-name input {
+    width: auto;
+    padding: var(--gw-inputtext-padding-y) calc(2 * var(--gw-inputtext-padding-x) + var(--gw-icon-size))
+        var(--gw-inputtext-padding-y) var(--gw-inputtext-padding-x);
+    line-height: inherit;
+    height: auto;
+}
+
+.repository-errors-container .repository-list-toolbar .filter-name .ri-search-line {
+    position: absolute;
+    top: 50%;
+    right: var(--gw-inputtext-padding-x);
+    margin-top: calc(-1 * var(--gw-icon-size) / 2);
+    font-size: var(--gw-icon-size);
+    line-height: 1;
+    color: var(--gw-iconfield-icon-color);
+    pointer-events: none;
+}
+
+.repository-errors-container .repository-list-toolbar .filter-local-only {
+    display: flex;
+    align-items: center;
+    gap: .25em;
+    margin-bottom: 0;
+    font-weight: inherit;
+}
+
+/* The size of the PrimeNG p-checkbox. The colors come from the global checkbox styles. */
+.repository-errors-container .repository-list-toolbar .filter-local-only input[type=checkbox] {
+    flex-shrink: 0;
+    width: var(--gw-checkbox-width);
+    height: var(--gw-checkbox-height);
+    margin: 0;
+}
+
+.repository-errors-container .repository-list-toolbar .filter-local-only input[type=checkbox]:checked::after {
+    font-size: var(--gw-checkbox-icon-size);
+    line-height: calc(var(--gw-checkbox-height) - 2px);
+}
+
+/* The repository list, as in the repository picker list of the new workbench views: one column, one row per
+   repository. */
+.repository-errors-container .repository-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    color: var(--gw-panel-color);
+}
+
+.repository-errors-container .repository-list .repository {
+    display: flex;
+    align-items: flex-start;
+    border-bottom: 1px solid var(--gw-datatable-body-cell-border-color);
+    background-color: var(--gw-datatable-row-background);
+}
+
+.repository-errors-container .repository-list .repository:hover {
+    background-color: var(--gw-datatable-row-hover-background);
+}
+
+/* The padding of the PrimeNG table cells (the "datatable.body.cell.padding" token of the Aura preset, which the
+   styleguide does not override). */
+.repository-errors-container .repository-list .type-column {
+    flex-shrink: 0;
+    width: 2.5rem;
+    padding: .75rem 0 .75rem 1rem;
+}
+
+.repository-errors-container .repository-list .type-icon {
+    font-size: 1.2em;
+}
+
+/* A native button, styled as plain text, which fills the rest of the row and selects the repository. */
+.repository-errors-container .repository-list .repository-select {
+    display: block;
+    flex: 1;
+    min-width: 0;
+    padding: .75rem 1rem .75rem .1em;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.repository-errors-container .repository-list .repository-select:focus {
+    outline: none;
+}
+
+.repository-errors-container .repository-list .repository-select:focus-visible {
+    outline: 2px solid var(--gw-focus-ring-color);
+    outline-offset: -2px;
+}
+
+.repository-errors-container .repository-list .repository-header {
+    display: flex;
+    align-items: baseline;
+    min-width: 0;
+}
+
+/* Shown before the repository id, on the same line. */
+.repository-errors-container .repository-list .repository-state {
+    flex-shrink: 0;
+    margin-right: .5em;
+    font-size: .8em;
+}
+
+.repository-errors-container .repository-list .repository-state.running {
+    color: var(--gw-button-success-background);
+}
+
+.repository-errors-container .repository-list .repository-state.inactive,
+.repository-errors-container .repository-list .repository-state.transitioning {
+    color: var(--gw-foreground-on-surface-subtle);
+}
+
+.repository-errors-container .repository-list .repository-id {
+    flex: 0 1 auto;
+    min-width: 0;
+    font-weight: 600;
+}
+
+.repository-errors-container .repository-list .repository-description {
+    display: block;
+    font-weight: 400;
+}
+
+.repository-errors-container .repository-list .repository-id,
+.repository-errors-container .repository-list .repository-description,
+.repository-errors-container .repository-list .repository-location {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Shown after the repository id, on the same line. It reserves at least 30% of the line, which limits the id to the
+   remaining 70%. Without a location, the id can use the full available width. */
+.repository-errors-container .repository-list .repository-location {
+    flex: 1;
+    min-width: 30%;
+    margin-left: .5em;
+}
+
+/* The repository popover of the list. It looks like the PrimeNG p-popover, which the repository picker list of the new
+   workbench views uses. The popover tokens are those of the styleguide. */
+.core-errors-repository-info-popover.popover {
+    max-width: none;
+    margin-top: var(--gw-popover-gutter);
+    padding: 0;
+    border: 1px solid var(--gw-popover-border-color);
+    border-radius: var(--gw-popover-border-radius);
+    background-color: var(--gw-popover-background);
+    color: var(--gw-popover-color);
+    font-size: inherit;
+    line-height: inherit;
+    /* The shadow of p-popover. Its value is the Aura overlay.popover.shadow, which the styleguide does not override. It
+       is the same as the overlay shadow tokens of the styleguide. */
+    box-shadow: var(--gw-overlay-shadow-1-offset-x) var(--gw-overlay-shadow-1-offset-y) var(--gw-overlay-shadow-1-blur)
+        var(--gw-overlay-shadow-1-spread) var(--gw-overlay-shadow-1-color),
+        var(--gw-overlay-shadow-2-offset-x) var(--gw-overlay-shadow-2-offset-y) var(--gw-overlay-shadow-2-blur)
+        var(--gw-overlay-shadow-2-spread) var(--gw-overlay-shadow-2-color);
+}
+
+/* Hidden until onto-repository-info has rendered, so that the empty popover is not shown below the row before it is
+   placed (see coreErrorsRepositoryInfoPosition). */
+.core-errors-repository-info-popover.popover:not(:has(onto-repository-info.hydrated)) {
+    /* !important is needed because uib-popover sets "visibility: visible" inline when it places the popover, and only
+       !important can override an inline style. */
+    visibility: hidden !important;
+}
+
+.core-errors-repository-info-popover .popover-content {
+    padding: var(--gw-popover-content-padding);
+}
+
+/* The widths are those of the content, without the padding of the popover. */
+.core-errors-repository-info-popover .core-errors-repository-info {
+    box-sizing: content-box;
+    min-width: 22rem;
+    max-width: 30rem;
+}
+
+/* The arrow of p-popover: a border triangle in the border color, with a smaller one in the background color on it. */
+.core-errors-repository-info-popover.popover > .arrow,
+.core-errors-repository-info-popover.popover > .arrow:after {
+    width: 0;
+    height: 0;
+    margin: 0;
+    border-style: solid;
+    border-color: transparent;
+}
+
+.core-errors-repository-info-popover.popover > .arrow {
+    top: auto;
+    bottom: 100%;
+    left: var(--gw-popover-arrow-offset);
+    margin-left: calc(-1 * var(--gw-popover-gutter));
+    border-width: 0 var(--gw-popover-gutter) var(--gw-popover-gutter);
+    border-bottom-color: var(--gw-popover-border-color);
+}
+
+/* It is positioned in the arrow, whose content box is its top edge. The smaller triangle starts 2px lower, so that both
+   end at the top of the popover. */
+.core-errors-repository-info-popover.popover > .arrow:after {
+    content: " ";
+    position: absolute;
+    top: 2px;
+    bottom: auto;
+    left: calc(-1 * (var(--gw-popover-gutter) - 2px));
+    border-width: 0 calc(var(--gw-popover-gutter) - 2px) calc(var(--gw-popover-gutter) - 2px);
+    border-bottom-color: var(--gw-popover-background);
+}
+
+/* Above the row, when the popover does not fit below it (see coreErrorsRepositoryInfoPosition): the arrow is at the
+   bottom and points down, as in the flipped p-popover. */
+.core-errors-repository-info-popover.popover.flipped {
+    margin-top: calc(-1 * var(--gw-popover-gutter));
+}
+
+.core-errors-repository-info-popover.popover.flipped > .arrow {
+    top: 100%;
+    bottom: auto;
+    border-width: var(--gw-popover-gutter) var(--gw-popover-gutter) 0;
+    border-color: transparent;
+    border-top-color: var(--gw-popover-border-color);
+}
+
+/* The content box of the arrow is now its bottom edge. */
+.core-errors-repository-info-popover.popover.flipped > .arrow:after {
+    top: calc(-1 * var(--gw-popover-gutter));
+    border-width: calc(var(--gw-popover-gutter) - 2px) calc(var(--gw-popover-gutter) - 2px) 0;
+    border-color: transparent;
+    border-top-color: var(--gw-popover-background);
+}

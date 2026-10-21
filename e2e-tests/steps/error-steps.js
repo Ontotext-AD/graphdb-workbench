@@ -1,7 +1,7 @@
 export class ErrorSteps {
 
     static getRepositoryErrors() {
-        return cy.get('.card.repository-errors')
+        return cy.get('.repository-errors')
     }
 
     static verifyError(errorMessage) {
