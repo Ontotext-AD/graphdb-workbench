@@ -278,7 +278,6 @@ button:-moz-focusring {
 .btn [class^="ri"],
 .btn [class*=" ri"] {
     line-height: 0.75;
-    /* Due to the lack of exact variable fot this size we use 1.4 times the base font size */
     font-size: 1.4em;
     display: inline-block;
     vertical-align: middle;
