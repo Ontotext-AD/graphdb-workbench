@@ -7,8 +7,12 @@ export class RepositoryErrorsWidgetSteps {
         return RepositoryErrorsWidgetSteps.getWidget().find('.create-repository-btn');
     }
 
-    static getShowRemoteLocationsBtn() {
-        return RepositoryErrorsWidgetSteps.getWidget().find('.show-remote-locations-btn');
+    static getRepositoryFilter() {
+        return RepositoryErrorsWidgetSteps.getWidget().getByTestId('core-errors-repository-filter');
+    }
+
+    static getLocalOnlyCheckbox() {
+        return RepositoryErrorsWidgetSteps.getWidget().getByTestId('core-errors-local-only-checkbox');
     }
 
     static getInfoMessage() {

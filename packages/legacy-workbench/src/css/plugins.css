@@ -43,6 +43,17 @@ table {
     width: 100%;
 }
 
+/* The header row is read by screen readers only, so it must not take any space. The rows are inline-flex (see tr
+   below), which would give it the height of a line, so it is a block-level flex row. */
+#plugins .sr-only-table-header tr {
+    display: flex;
+}
+
+#plugins .sr-only-table-header th {
+    padding: 0;
+    border: 0;
+}
+
 tr {
     display: inline-flex;
 }

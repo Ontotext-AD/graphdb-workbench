@@ -17,6 +17,7 @@ angular
     ])
     .directive('ontoLoader', ontoLoader)
     .directive('coreErrors', coreErrors)
+    .directive('keepCoreErrorsPopoverInViewport', keepCoreErrorsPopoverInViewport)
     .directive('eatClick', eatClick)
     .directive('multiRequired', multiRequired)
     .directive('searchResourceInput', searchResourceInput)
@@ -145,36 +146,66 @@ function coreErrors($timeout, $location) {
 
             let previousElement;
 
-            scope.showRemoteLocations = false;
+            // The filters of the repository list. They are in an object, so that the ng-model in the child scopes of
+            // the template changes them here.
+            scope.repositoryFilter = {
+                query: '',
+                localOnly: true,
+            };
+
+            // The repository popover: the element it is opened for, and its placement. It opens below the row, and
+            // above it when it does not fit below (see keepCoreErrorsPopoverInViewport).
+            scope.repositoryPopover = {
+                anchor: null,
+                placement: 'bottom-left',
+            };
 
             scope.goToAddRepo = function() {
                 const returnTo = $location.url();
                 $location.path('repository/create').search({previous: returnTo});
             };
 
-            scope.toggleShowRemoteLocations = () => {
-                scope.showRemoteLocations = !scope.showRemoteLocations;
-            };
-
+            // All repositories, local and remote, which the user can select on this page.
             scope.getAccessibleRepositories = function() {
-                let remoteLocationsFilter = (repo) => true;
-                if (!scope.showRemoteLocations) {
-                    remoteLocationsFilter = (repo) => repo.local;
-                }
-
                 const repositories = scope.isRestricted ? scope.getWritableRepositories() : scope.getReadableRepositories();
                 return repositories
-                    .filter(remoteLocationsFilter)
                     .filter(filterByRepoPermissionTypeFilter)
                     .filter(filterByTypeFilter);
+            };
+
+            // The accessible repositories which match the filters of the repository list, in the order of the list.
+            scope.getFilteredRepositories = function() {
+                const query = scope.repositoryFilter.query.trim().toLowerCase();
+                const matchesLocation = (repo) => !scope.repositoryFilter.localOnly || repo.local;
+                const matchesQuery = (repo) => !query
+                    || repo.id?.toLowerCase().includes(query)
+                    || repo.title?.toLowerCase().includes(query);
+
+                return scope.getAccessibleRepositories()
+                    .filter(matchesLocation)
+                    .filter(matchesQuery)
+                    .sort(sortLocalRepositoriesFirst);
+            };
+
+            // Whether the filters of the repository list hide some of the accessible repositories.
+            scope.hasFilteredOutRepositories = function() {
+                return scope.getFilteredRepositories().length !== scope.getAccessibleRepositories().length;
+            };
+
+            // The repository count in the header of the list, e.g. "5/12" when the filters hide some repositories.
+            scope.getRepositoryCount = function() {
+                const totalCount = scope.getAccessibleRepositories().length;
+                return scope.hasFilteredOutRepositories() ? `${scope.getFilteredRepositories().length}/${totalCount}` : `${totalCount}`;
             };
 
             scope.showPopoverForRepo = function(event, repository) {
                 scope.hidePopoverForRepo();
                 scope.setPopoverRepo(repository);
+                scope.repositoryPopover.placement = 'bottom-left';
                 $timeout(function() {
-                    const element = $(event.toElement).find('.popover-anchor')[0];
+                    const element = $(event.currentTarget).find('.popover-anchor')[0];
                     previousElement = element;
+                    scope.repositoryPopover.anchor = element;
                     if (element && !scope.getActiveRepository()) {
                         element.dispatchEvent(new Event('show'));
                     }
@@ -205,6 +236,61 @@ function coreErrors($timeout, $location) {
                     event.stopPropagation();
                 }
             };
+
+            // Local repositories first. Repositories with the same location type are sorted by id.
+            const sortLocalRepositoriesFirst = (repo1, repo2) => {
+                if (repo1.local === repo2.local) {
+                    return repo1.id.localeCompare(repo2.id);
+                }
+                return repo1.local ? -1 : 1;
+            };
+        },
+    };
+}
+
+/**
+ * Keeps the repository popover of core-errors in the viewport: below its row, or above it when it does not fit.
+ *
+ * uib-popover places the popover only after the browser has shown it, and not when its content grows, so the
+ * popover is placed here on every size change of the content, as the PrimeNG p-popover does.
+ *
+ * @returns {Object} The directive definition object.
+ */
+keepCoreErrorsPopoverInViewport.$inject = [];
+
+function keepCoreErrorsPopoverInViewport() {
+    return {
+        // Placed on the content of the popover (core-errors-repository-info.html).
+        restrict: 'A',
+        link: function(scope, element) {
+            const updatePlacement = () => {
+                // The content is linked before the popover is added to the page, so it is looked up here.
+                const popover = element.closest('.popover');
+                const anchor = scope.repositoryPopover?.anchor;
+                if (!popover.length || !anchor) {
+                    return;
+                }
+                // The margin is the gap to the row, below or above it (see core-errors.css).
+                const gutter = Math.abs(Number.parseFloat(popover.css('margin-top')) || 0);
+                const popoverHeight = popover.outerHeight();
+                const anchorBox = anchor.getBoundingClientRect();
+                const fitsBelow = anchorBox.bottom + gutter + popoverHeight <= window.innerHeight;
+                // The popover is in the body, so its top is in page coordinates, as uib-popover places it.
+                const top = (fitsBelow ? anchorBox.bottom : anchorBox.top - popoverHeight) + window.pageYOffset;
+                // uib-popover sets the placement class only when the popover is created, so the arrow uses this one.
+                popover.toggleClass('flipped', !fitsBelow);
+                popover.css('top', `${top}px`);
+                // Given to uib-popover too, so that it keeps the popover in this place on the next digests.
+                scope.repositoryPopover.placement = fitsBelow ? 'bottom-left' : 'top-left';
+                scope.$applyAsync();
+            };
+
+            // onto-repository-info renders after the popover has opened, and grows when the statement counts load. The
+            // observer runs before the browser shows the new size, so the popover never shows in the old place.
+            const resizeObserver = new ResizeObserver(updatePlacement);
+            resizeObserver.observe(element[0]);
+
+            scope.$on('$destroy', () => resizeObserver.disconnect());
         },
     };
 }

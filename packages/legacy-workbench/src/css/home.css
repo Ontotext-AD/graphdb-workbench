@@ -20,3 +20,11 @@
     font-weight: bolder;
     font-size: 1.25rem;
 }
+
+/* The repository list of core-errors is at most 20rem high, and scrolls, so that it does not push down the content of
+   the page. It is positioned, so that the screen reader texts of its rows stay in it. */
+#wb-home .repository-errors-container .repository-list {
+    position: relative;
+    max-height: 20rem;
+    overflow-y: auto;
+}

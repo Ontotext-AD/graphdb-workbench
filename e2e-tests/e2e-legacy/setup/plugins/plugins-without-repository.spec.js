@@ -22,7 +22,7 @@ describe('Plugins without selected repository', () => {
     const verifyInitialStateWithoutSelectedRepository = () => {
         ErrorSteps.verifyNoConnectedRepoMessage();
         PluginsSteps.getPluginsView().should('be.visible');
-        PluginsSteps.getSearchPluginBar().should('not.be.visible');
+        PluginsSteps.getSearchPluginBar().should('not.exist');
         PluginsSteps.getPluginsList().should('not.exist');
     };
 })

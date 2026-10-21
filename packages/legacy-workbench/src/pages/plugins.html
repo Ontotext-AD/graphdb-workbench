@@ -14,46 +14,52 @@
 
     <div core-errors write ontop fedx license></div>
 
-    <!--search box-->
-    <div class="search-bar"
-         ng-show="plugins.length > 0 && !loader"
-         data-test="search-plugins-bar">
-            <span class="pull-left" id="searchbox-plugins">
-                <input type="text" class="form-control plugins-filter" placeholder="{{'search.plugins.placeholder' | translate}}"
-                       ng-model="searchPluginsTerm" gdb-tooltip="{{'common.search.btn' | translate}}"
-                       ng-change="onSearchTermChanged()">
-            </span>
-        <span class="showing-info-plugins pull-right">{{'showing.label' | translate}} {{displayedPlugins.length}} {{'results.label' | translate}}</span>
-    </div>
+    <!-- The plugins are shown only when a repository is selected and the page is not restricted. -->
+    <div ng-if="hasActiveRepository && !isRestricted">
+        <!--search box-->
+        <div class="search-bar" ng-show="plugins.length > 0 && !loader"
+             data-test="search-plugins-bar">
+                <span class="pull-left" id="searchbox-plugins">
+                    <input type="text" class="form-control plugins-filter" placeholder="{{'search.plugins.placeholder' | translate}}"
+                           ng-model="pluginsFilter.query" gdb-tooltip="{{'common.search.btn' | translate}}"
+                           ng-change="onSearchTermChanged()">
+                </span>
+            <span class="showing-info-plugins pull-right">{{'showing.label' | translate}} {{displayedPlugins.length}} {{'results.label' | translate}}</span>
+        </div>
 
-    <table ng-if="isLicenseValid() && canWriteActiveRepo() && !isRestricted"
-           id="wb-plugins-pluginInPlugins"
-           data-test="plugins-list"
-           class="table table-hover" aria-label="{{'plugins.table.label' | translate}}">
-        <tbody>
-        <tr ng-repeat="(key, plugin) in displayedPlugins" class="wb-plugins-row plugin" loader-post-repeat-directive>
-            <td id="wb-plugins-td" ng-show="!loader">
-                <div class="lead" id="toggleIndex">
-                    <span class="plugins-header">{{plugin.name}}</span>
-                    <span id="toggleAndTag">
-                    <span class="tag {{plugin.enabled ? 'tag-primary' : 'tag-default'}}">{{plugin.enabled ? 'common.on.btn' :
-                        'common.off.btn' | translate}}</span>
-                    <span gdb-tooltip="{{'click.to' | translate}} {{plugin.enabled ? 'deactivate' : 'activate' | translate}} {{plugin.name}}"
-                          tooltip-placement="top"
-                          ng-click="togglePlugin(plugin.name, plugin.enabled)"
-                          class="switch enable-plugins-switch plugins-switch">
-                    <input type="checkbox" class="switch"
-                           ng-checked="plugin.enabled"/>
-                    <label for="toggleIndex"></label>
-                    </span>
-                    </span>
-                </div>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <div class="alert alert-info no-plugins-match-alert" ng-show="displayedPlugins.length === 0">
-        <p>{{'no.plugins.match.filter.warning' | translate}}</p>
+        <table id="wb-plugins-pluginInPlugins"
+               data-test="plugins-list"
+               class="table table-hover" aria-label="{{'plugins.table.label' | translate}}">
+            <thead class="sr-only-table-header">
+                <tr>
+                    <th scope="col"><span class="screen-reader-only">{{'plugins.table.column.plugin' | translate}}</span></th>
+                </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="(key, plugin) in displayedPlugins" class="wb-plugins-row plugin" loader-post-repeat-directive>
+                <td id="wb-plugins-td" ng-show="!loader">
+                    <div class="lead" id="toggleIndex">
+                        <span class="plugins-header">{{plugin.name}}</span>
+                        <span id="toggleAndTag">
+                        <span class="tag {{plugin.enabled ? 'tag-primary' : 'tag-default'}}">{{plugin.enabled ? 'common.on.btn' :
+                            'common.off.btn' | translate}}</span>
+                        <span gdb-tooltip="{{'click.to' | translate}} {{plugin.enabled ? 'deactivate' : 'activate' | translate}} {{plugin.name}}"
+                              tooltip-placement="top"
+                              ng-click="togglePlugin(plugin.name, plugin.enabled)"
+                              class="switch enable-plugins-switch plugins-switch">
+                        <input type="checkbox" class="switch"
+                               ng-checked="plugin.enabled"/>
+                        <label for="toggleIndex"></label>
+                        </span>
+                        </span>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="alert alert-info no-plugins-match-alert" ng-show="displayedPlugins.length === 0">
+            <p>{{'no.plugins.match.filter.warning' | translate}}</p>
+        </div>
     </div>
 
 </div>

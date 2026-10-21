@@ -31,6 +31,7 @@ const identicalTranslations = [
     "Pause",
     "Performance",
     "Permissions:",
+    "Plugin",
     "Plugins",
     "Port",
     "ROLE1",
