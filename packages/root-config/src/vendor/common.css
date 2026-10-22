@@ -25,7 +25,21 @@ select {
 }
 
 a {
-    color: var(--gw-link-regular-color);
+    color: var(--gw-link-idle-color);
+}
+
+/* :where() keeps the specificity of `a`, so anchors that components color themselves keep their color once visited */
+a:where(:visited) {
+    color: var(--gw-link-visited-color);
+}
+
+/* Links are underlined at rest, so they don't differ from the surrounding text by color alone. Anchors that act as
+   buttons, tabs, menu items or page links keep their own decoration. */
+a:where(:not(.btn, .nav-link, .dropdown-item, .page-link, .menu-element-root, .no-underline, .nav a, .navbar a, .dropdown-menu a, .pagination a)) {
+    text-decoration-line: var(--gw-link-text-decoration);
+    text-decoration-style: solid;
+    text-decoration-thickness: var(--link-decoration-thickness);
+    text-underline-offset: var(--link-underline-offset);
 }
 
 /* General links on hover and actual links that lead to an external site */
@@ -37,7 +51,7 @@ a:hover, a:active, a[href^="http"], a[href^="http"]:hover, a[href^="http"]:activ
 }
 
 a:focus, a:hover {
-    color: var(--gw-link-regular-hover-color);
+    color: var(--gw-link-hover-color);
 }
 
 .font-weight-bold {

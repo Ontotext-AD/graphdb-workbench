@@ -615,10 +615,22 @@ div[data-radix-popper-content-wrapper] * {
     z-index: 1010;
 }
 
+.graphiql-dialog .graphiql-dialog-section a {
+    color: var(--gw-link-idle-color);
+}
+
+.graphiql-dialog .graphiql-dialog-section a:visited {
+    color: var(--gw-link-visited-color);
+}
+
+.graphiql-dialog .graphiql-dialog-section a:hover,
+.graphiql-dialog .graphiql-dialog-section a:focus {
+    color: var(--gw-link-hover-color);
+}
+
 .graphiql-dialog .graphiql-dialog-section a,
 .graphiql-dialog .graphiql-dialog-section a:hover,
 .graphiql-dialog .graphiql-dialog-section a:focus {
-    color: var(--gw-primary-base);
     text-decoration-line: underline;
     text-decoration-style: dotted;
     text-decoration-thickness: var(--link-decoration-thickness);
