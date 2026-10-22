@@ -81,7 +81,7 @@ export class GraphNavigatorSettingsComponent {
   /** The translated problem text of the error, or the backend's message when its code has no translation. */
   translateError(error: GraphNavigatorSettingsError): string {
     const key = `graph_navigator.settings.upload.errors.codes.${error.code}`;
-    const problem = this.translocoService.translate(key, {...error, ...error.params});
+    const problem = this.translocoService.translate(key, error.params);
     return problem === key ? error.message : problem;
   }
 

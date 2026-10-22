@@ -153,7 +153,7 @@
             "wrong_type": "Must be of type {{expected}}",
             "duplicate": "Specified more than once",
             "malformed_value": "Has a malformed value",
-            "unknown_property": "{{unknownProperty}} is not a known property",
+            "unknown_property": "Not a known property",
             "invalid": "The file could not be parsed"
           }
         }

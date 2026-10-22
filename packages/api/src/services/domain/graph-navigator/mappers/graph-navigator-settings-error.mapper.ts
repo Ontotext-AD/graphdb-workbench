@@ -11,7 +11,7 @@ import {GraphNavigatorSettingsErrorResponse} from '../response/graph-navigator-s
 export const mapGraphNavigatorSettingsErrorResponseToModel: MapperFn<GraphNavigatorSettingsErrorResponse | null, GraphNavigatorSettingsError[]> = (data) => {
   return (data?.errors ?? []).map((error) => new GraphNavigatorSettingsError({
     code: error.code,
-    property: error.property ?? undefined,
+    property: error.property ?? '-',
     message: error.message,
     params: {...error.params},
     predicate: error.predicate ?? undefined

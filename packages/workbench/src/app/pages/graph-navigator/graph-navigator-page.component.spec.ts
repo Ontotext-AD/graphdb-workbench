@@ -10,8 +10,6 @@ import {
   GraphNavigatorService,
   GraphNavigatorSettings,
   GraphNavigatorSettingsError,
-  HttpErrorResponse,
-  HttpRequest,
   LanguageContextService,
   OntoToastrService,
   Repository,
@@ -261,22 +259,16 @@ describe('GraphNavigatorPageComponent', () => {
 
     it('should show the validation errors the backend returns for a rejected upload', async () => {
       // GIVEN: the backend rejects the file with validation errors.
-      const error = {
+      const error = new GraphNavigatorSettingsError({
         code: 'wrong_type',
         property: 'acceptBlankNodes',
         message: 'acceptBlankNodes has a value of the wrong type',
         params: {actual: 'string', expected: 'boolean'},
         predicate: 'http://www.ontotext.com/graph-navigator#acceptBlankNodes'
-      };
-      jest.spyOn(ServiceProvider.get(GraphNavigatorService), 'uploadSettings')
-        .mockRejectedValue(new HttpErrorResponse({
-          status: 400,
-          statusText: 'Bad Request',
-          headers: {},
-          config: {url: ''} as HttpRequest,
-          originalResponse: {} as Response,
-          data: {errors: [error]}
-        }));
+      });
+      const graphNavigatorService = ServiceProvider.get(GraphNavigatorService);
+      jest.spyOn(graphNavigatorService, 'uploadSettings').mockRejectedValue(new Error('Bad Request'));
+      jest.spyOn(graphNavigatorService, 'getUploadErrors').mockReturnValue([error]);
       fixture.detectChanges();
       await selectRepository(REPOSITORY_A);
       await settle();
@@ -287,7 +279,7 @@ describe('GraphNavigatorPageComponent', () => {
 
       // THEN: the errors are passed to the settings controls.
       const settings = fixture.debugElement.query(By.directive(GraphNavigatorSettingsComponent)).componentInstance as GraphNavigatorSettingsComponent;
-      expect(settings.uploadErrors()).toStrictEqual([new GraphNavigatorSettingsError(error)]);
+      expect(settings.uploadErrors()).toStrictEqual([error]);
     });
 
     it('should reset the settings by deleting them and loading the defaults', async () => {

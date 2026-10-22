@@ -9,10 +9,7 @@ import {
   GraphNavigatorService,
   GraphNavigatorSettings,
   GraphNavigatorSettingsError,
-  GraphNavigatorSettingsErrorResponse,
-  HttpErrorResponse,
   LanguageContextService,
-  mapGraphNavigatorSettingsErrorResponseToModel,
   OntoToastrService,
   RepositoryContextService,
   RuntimeConfigurationContextService,
@@ -195,8 +192,8 @@ export class GraphNavigatorPageComponent implements OnInit, OnDestroy {
   onUploadSettings(file: File, repositoryId: string): void {
     this.runSettingsRequest(
       this.graphNavigatorService.uploadSettings(repositoryId, file)
-        .catch((error: HttpErrorResponse<GraphNavigatorSettingsErrorResponse>) => {
-          this.uploadErrors.set(mapGraphNavigatorSettingsErrorResponseToModel(error.data));
+        .catch((error) => {
+          this.uploadErrors.set(this.graphNavigatorService.getUploadErrors(error));
           throw error;
         }),
       'graph_navigator.settings.messages.upload_success',

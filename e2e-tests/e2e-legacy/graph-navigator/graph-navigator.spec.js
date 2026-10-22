@@ -239,8 +239,8 @@ describe('Graph Navigator', () => {
                 .and('contain', 'Fix these properties in the file and upload it again.');
             GraphNavigatorSteps.getUploadError('acceptBlankNodes').should('contain', 'Must be of type boolean');
             GraphNavigatorSteps.getUploadError('openWorldProperties').should('contain', 'Must be of type boolean');
-            GraphNavigatorSteps.getUploadError('-')
-                .should('contain', 'unknownSetting is not a known property');
+            GraphNavigatorSteps.getUploadError('unknownSetting')
+                .should('contain', 'Not a known property');
 
             // When I remove the file.
             GraphNavigatorSteps.clickCancelFile();

@@ -66,11 +66,7 @@
                   </ng-template>
                   <ng-template #body let-error>
                     <tr data-test="graph-navigator-settings-upload-error">
-                      <td>
-                        @if (error.property ?? '-'; as property) {
-                          <span>{{ property }}</span>
-                        }
-                      </td>
+                      <td>{{ error.property }}</td>
                       <td>{{ translateError(error) }}</td>
                     </tr>
                   </ng-template>

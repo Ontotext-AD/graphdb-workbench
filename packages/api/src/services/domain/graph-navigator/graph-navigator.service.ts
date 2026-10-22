@@ -1,6 +1,9 @@
-import {GraphNavigatorSettings} from '../../../models/graph-navigator';
+import {GraphNavigatorSettings, GraphNavigatorSettingsError} from '../../../models/graph-navigator';
 import {GraphNavigatorRestService} from './graph-navigator-rest.service';
 import {mapGraphNavigatorSettingsResponseToModel} from './mappers/graph-navigator-settings.mapper';
+import {mapGraphNavigatorSettingsErrorResponseToModel} from './mappers/graph-navigator-settings-error.mapper';
+import {GraphNavigatorSettingsErrorResponse} from './response/graph-navigator-settings-error-response';
+import {HttpErrorResponse} from '../../../models/http';
 import {service} from '../../../providers';
 import {Service} from '../../../providers/service/service';
 
@@ -32,6 +35,18 @@ export class GraphNavigatorService implements Service {
   async uploadSettings(repositoryId: string, file: File): Promise<GraphNavigatorSettings> {
     const response = await this.graphNavigatorRestService.uploadSettings(repositoryId, file);
     return mapGraphNavigatorSettingsResponseToModel(response);
+  }
+
+  /**
+   * Extracts the validation errors from a rejected settings upload.
+   *
+   * @param error - The error the upload was rejected with.
+   * @returns The validation errors, or an empty array when the rejection has none.
+   */
+  getUploadErrors(error: unknown): GraphNavigatorSettingsError[] {
+    return error instanceof HttpErrorResponse
+      ? mapGraphNavigatorSettingsErrorResponseToModel(error.data as GraphNavigatorSettingsErrorResponse)
+      : [];
   }
 
   /**

@@ -153,7 +153,7 @@
             "wrong_type": "Doit être de type {{expected}}",
             "duplicate": "Spécifiée plusieurs fois",
             "malformed_value": "A une valeur mal formée",
-            "unknown_property": "{{unknownProperty}} n'est pas une propriété connue",
+            "unknown_property": "N'est pas une propriété connue",
             "invalid": "Le fichier n'a pas pu être analysé"
           }
         }
