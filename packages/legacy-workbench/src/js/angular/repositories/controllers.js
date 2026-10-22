@@ -16,8 +16,8 @@ import {
     BroadcastService,
     MessageType,
     BroadcastMessage,
+    UriUtil,
 } from '@ontotext/workbench-api';
-import {DocumentationUrlResolver} from "../utils/documentation-url-resolver";
 
 const ENTITY_INDEX_SIZE_MIN = 10000;
 
@@ -102,9 +102,6 @@ const getNumberFormatError = function(params, $translate) {
         : '';
 };
 
-const getDocBase = function(productInfo) {
-    return `https://graphdb.ontotext.com/documentation/${productInfo.shortVersion}`;
-};
 const filterLocations = function(result) {
     return result.filter((location) => location.isGraphDBLocation() && !location.errorMsg && !location.degradedReason);
 };
@@ -131,8 +128,6 @@ const modules = [
 
 angular.module('graphdb.framework.repositories.controllers', modules)
     .controller('LocationsAndRepositoriesCtrl', LocationsAndRepositoriesCtrl)
-    .controller('AddLocationCtrl', AddLocationCtrl)
-    .controller('EditLocationCtrl', EditLocationCtrl)
     .controller('ChooseRepositoryCtrl', ChooseRepositoryCtrl)
     .controller('AddRepositoryCtrl', AddRepositoryCtrl)
     .controller('EditRepositoryCtrl', EditRepositoryCtrl)
@@ -488,52 +483,6 @@ function UploadRepositoryConfigCtrl($scope, $uibModalInstance, Upload, toastr, $
     };
 }
 
-AddLocationCtrl.$inject = ['$scope', '$uibModalInstance', 'toastr', 'productInfo', '$translate'];
-
-function AddLocationCtrl($scope, $uibModalInstance, toastr, productInfo, $translate) {
-    $scope.newLocation = {
-        'uri': '',
-        'authType': 'none',
-        'username': '',
-        'password': '',
-        'active': false,
-    };
-    $scope.docBase = getDocBase(productInfo);
-
-    $scope.isValidLocation = function() {
-        return ($scope.newLocation.uri.length < 6 ||
-                $scope.newLocation.uri.indexOf('http:') === 0 || $scope.newLocation.uri.indexOf('https:') === 0)
-            && $scope.newLocation.uri.indexOf('/repositories') <= -1;
-    };
-
-    $scope.ok = function() {
-        if (!$scope.newLocation) {
-            toastr.error($translate.instant('location.cannot.be.empty.error'));
-            return;
-        }
-        $uibModalInstance.close($scope.newLocation);
-    };
-
-    $scope.cancel = function() {
-        $uibModalInstance.dismiss('cancel');
-    };
-}
-
-EditLocationCtrl.$inject = ['$scope', '$uibModalInstance', 'location', 'productInfo'];
-
-function EditLocationCtrl($scope, $uibModalInstance, location, productInfo) {
-    $scope.editedLocation = _.cloneDeep(location);
-    $scope.docBase = getDocBase(productInfo);
-
-    $scope.ok = function() {
-        $uibModalInstance.close($scope.editedLocation);
-    };
-
-    $scope.cancel = function() {
-        $uibModalInstance.dismiss('cancel');
-    };
-}
-
 ChooseRepositoryCtrl.$inject = ['$scope', '$location'];
 
 function ChooseRepositoryCtrl($scope, $location) {
@@ -555,7 +504,7 @@ function AddRepositoryCtrl($rootScope, $scope, toastr, $repositories, $location,
     $scope.repositoryType = $routeParams.repositoryType;
     $scope.enable = true;
     $scope.entityIndexSizeMin = ENTITY_INDEX_SIZE_MIN;
-    $scope.documentationUrlForStorageEncryption = DocumentationUrlResolver.getDocumentationUrl(productInfo.shortVersion, 'creating-a-repository.html#using-workbench');
+    $scope.documentationUrlForStorageEncryption = UriUtil.resolveDocumentationUrl(productInfo.shortVersion, 'creating-a-repository.html#using-workbench');
     $scope.encryptInput = {hovered: false};
 
     $scope.loader = true;

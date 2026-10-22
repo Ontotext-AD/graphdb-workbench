@@ -7,7 +7,8 @@ import {
   SecurityContextService,
   TrackingService,
   LicenseContextService,
-  WindowService
+  WindowService,
+  UriUtil
 } from '@ontotext/workbench-api';
 
 /**
@@ -63,7 +64,7 @@ export class OntoFooter {
     return (
       <Host>
         <div class="footer-component">
-          <ExternalLink href="https://graphdb.ontotext.com">GraphDB</ExternalLink>&nbsp;{this.productInfo?.productVersion} &bull;&nbsp;<ExternalLink
+          <ExternalLink href={UriUtil.PRODUCT_URL}>GraphDB</ExternalLink>&nbsp;{this.productInfo?.productVersion} &bull;&nbsp;<ExternalLink
             href="https://rdf4j.org">RDF4J</ExternalLink
           >&nbsp;{this.productInfo?.sesame} &bull; Connectors {this.productInfo?.connectors} &bull; Ontop {this.productInfo?.ontop} &bull; Workbench {this.productInfo?.workbench} &bull; &copy;
           2002&ndash;{this.currentYear}&nbsp;<ExternalLink href="https://ontotext.com">Ontotext
