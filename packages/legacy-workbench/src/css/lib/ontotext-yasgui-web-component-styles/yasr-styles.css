@@ -38,7 +38,7 @@ yasgui-component .yasr .yasr_btnGroup .yasr_btn {
     margin-left: 0;
     margin-right: .2rem;
     font-size: 1rem;
-    font-weight: 400;
+    font-weight: var(--gw-button-label-font-weight);
     color: var(--gw-tabs-tab-color) !important;
     background-color: var(--gw-tabs-tab-background) !important;
     fill: var(--gw-tabs-tab-color) !important;
@@ -113,7 +113,7 @@ yasgui-component .ontotext-dropdown-button.ri-arrow-up-s-line:after {
 
 yasgui-component .ontotext-download-as .ontotext-dropdown-button .button-name {
     font-family: var(--main-font);
-    font-weight: 400;
+    font-weight: var(--gw-button-label-font-weight);
 }
 
 /* The buttons have a ri-* icon class, so remixicon sets their font-family. Keep it for the icon only. */
@@ -218,11 +218,11 @@ yasgui-component .yasr .explain-plan-container {
 
 yasgui-component .yasr .yasr-header-replacement {
     color: inherit;
-    font-size: 20px;
+    font-size: 1.25rem;
 }
 
 yasgui-component .yasr .explain-plan-copy-btn {
-    font-weight: 400;
+    font-weight: var(--gw-button-label-font-weight);
     color: var(--gw-button-secondary-color);
     background-color: var(--gw-shortcuts-editor-button-background);
     border-color: var(--gw-button-secondary-border-color);
@@ -238,7 +238,7 @@ yasgui-component .yasr .alert-box {
 }
 
 yasgui-component .yasr .alert-box .close-button {
-    font-size: 21px;
+    font-size: 1.3125rem;
 }
 
 /* #endregion YASR ALERT BOX */

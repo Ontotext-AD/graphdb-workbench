@@ -65,7 +65,7 @@ yasgui-component .custom-button:disabled:focus {
 
 yasgui-component .yasqe_queryButton {
     font-family: var(--main-font);
-    font-weight: 400;
+    font-weight: var(--gw-button-label-font-weight);
     height: 38px !important;
 }
 
@@ -188,7 +188,7 @@ yasgui-component .tabPanel .yasqe  .yasqe-footer-buttons {
 yasgui-component .tabPanel .yasqe  .yasqe-footer-buttons .abort-button {
     background-color: var(--gw-primary-base) !important;
     font-family: var(--main-font);
-    font-weight: 400;
+    font-weight: var(--gw-button-label-font-weight);
     height: 38px;
 }
 
