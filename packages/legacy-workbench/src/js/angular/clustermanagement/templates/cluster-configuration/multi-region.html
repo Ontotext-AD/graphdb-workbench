@@ -9,7 +9,7 @@
 
     <div ng-if="topology.state === TopologyState.PRIMARY_NODE" class="multi-region-content">
         <h4 class="title">{{'cluster_management.cluster_configuration_multi_region.primary_cluster' | translate}}
-            <span ng-if="statusLoader" class="ri-reset-left-line icon-1-25x loader cluster-status-loader"></span>
+            <span ng-if="statusLoader" class="ri-reset-left-line loader cluster-status-loader"></span>
         </h4>
         <div ng-if="isAdmin">
             <button type="button" class="btn btn-primary create-tag-btn"
@@ -32,13 +32,13 @@
                 <table class="tags-table table-striped table-hover table" aria-label="{{'cluster_management.cluster_configuration_multi_region.primary_tags_table_label' | translate}}">
                     <thead>
                     <tr class="labels-row">
-                        <th scope="col" class="index-column">
+                        <th scope="col" class="index-column label-base-regular">
                             {{'cluster_management.cluster_configuration_multi_region.column.index' | translate}}
                         </th>
-                        <th scope="col" class="tag-column">
+                        <th scope="col" class="tag-column label-base-regular">
                             {{'cluster_management.cluster_configuration_multi_region.column.tag' | translate}}
                         </th>
-                        <th scope="col" class="tag-index-column">
+                        <th scope="col" class="tag-index-column label-base-regular">
                             {{'cluster_management.cluster_configuration_multi_region.column.tag_index' | translate}}
                         </th>
                         <th scope="col" class="actions-column"></th>
@@ -131,10 +131,10 @@
             <table class="secondary-tag-table table-striped table-hover table" aria-label="{{'cluster_management.cluster_configuration_multi_region.secondary_tag_table_label' | translate}}">
                 <thead>
                 <tr class="labels-row">
-                    <th scope="col" class="tag-column">
+                    <th scope="col" class="tag-column label-base-regular">
                         {{'cluster_management.cluster_configuration_multi_region.column.tag' | translate}}
                     </th>
-                    <th scope="col" class="tag-index-column">
+                    <th scope="col" class="tag-index-column label-base-regular">
                         {{'cluster_management.cluster_configuration_multi_region.column.tag_index' | translate}}
                     </th>
                 </tr>

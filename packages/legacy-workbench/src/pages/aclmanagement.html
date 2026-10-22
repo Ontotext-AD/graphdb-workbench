@@ -16,7 +16,7 @@
         <div ng-if="!unexpectedFedexRepository" class="acl-management-content">
             <div class="pull-right">
                 <button ng-click="addRule(activeTabScope, 0)" ng-disabled="editedRuleIndex !== undefined"
-                        class="btn btn-primary add-first-rule-btn"
+                        class="btn btn-primary add-first-rule-btn label-base-regular"
                         gdb-tooltip="{{'acl_management.rulestable.actions.add_rule_first' | translate}}">
                     <em class="ri-add-circle-line"></em>{{'acl_management.rulestable.actions.create_rule' | translate}}
                 </button>
@@ -48,7 +48,7 @@
                     <form name="ruleData" novalidate ng-if="rulesModel.getRulesByScope(activeTabScope) && !loading">
                         <table class="acl-rules table table-striped table-hover" aria-label="{{'acl_management.rulestable.table_label' | translate}}">
                             <thead>
-                                <tr class="labels-row">
+                                <tr class="labels-row label-base-medium">
                                     <th scope="col" class="index-column">
                                         {{'acl_management.rulestable.column.index' | translate}}
                                     </th>
@@ -275,10 +275,10 @@
                 <div class="table-responsive tab-pane fade in" ng-if="activeTabScope === ACL_SCOPE.CLEAR_GRAPH" id="graphTab">
                     <form name="ruleData" novalidate ng-if="rulesModel && !loading">
                         <table class="acl-rules table table-striped table-hover" aria-label="{{'acl_management.rulestable.table_label' | translate}}">
-                            <thead>
-                                <tr class="labels-row">
+                            <thead> 
+                                <tr class="labels-row label-base-medium">
                                     <th scope="col" class="index-column">
-                                        {{'acl_management.rulestable.column.index' | translate}}
+                                      {{'acl_management.rulestable.column.index' | translate}}
                                     </th>
                                     <th scope="col" class="reorder-column"></th>
                                     <th scope="col" class="policy-column">
@@ -434,7 +434,7 @@
                     <form name="ruleData" novalidate ng-if="rulesModel && !loading">
                         <table class="acl-rules table table-striped table-hover" aria-label="{{'acl_management.rulestable.table_label' | translate}}">
                             <thead>
-                                <tr class="labels-row">
+                                <tr class="labels-row label-base-medium">
                                     <th scope="col" class="index-column">
                                         {{'acl_management.rulestable.column.index' | translate}}
                                     </th>
@@ -605,7 +605,7 @@
                     <form name="ruleData" novalidate ng-if="rulesModel && !loading">
                         <table class="acl-rules table table-striped table-hover" aria-label="{{'acl_management.rulestable.table_label' | translate}}">
                             <thead>
-                                <tr class="labels-row">
+                                <tr class="labels-row label-base-medium">
                                     <th scope="col" class="index-column">
                                         {{'acl_management.rulestable.column.index' | translate}}
                                     </th>
@@ -758,11 +758,11 @@
         </div>
         <div ng-if="isEditMode()" class="acl-actions text-right">
             <span class="message">{{'acl_management.rulestable.messages.save_acl_to_apply_rules' | translate}}</span>
-            <button class="btn btn-secondary cancel-acl-save-btn"
+            <button class="btn btn-secondary cancel-acl-save-btn label-base-regular"
                     ng-click="cancelAclSave()">
                 {{'acl_management.rulestable.actions.cancel_acl_saving' | translate}}
             </button>
-            <button class="btn btn-primary save-acl-btn"
+            <button class="btn btn-primary save-acl-btn label-base-regular"
                     ng-click="saveAcl()">
                 {{'acl_management.rulestable.actions.save_acl' | translate}}
             </button>

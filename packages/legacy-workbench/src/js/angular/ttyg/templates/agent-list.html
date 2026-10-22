@@ -2,14 +2,14 @@
 
 <div class="agent-list-component">
     <div class="agents-filter-dropdown btn-group" uib-dropdown>
-        <button type="button" uib-dropdown-toggle class="btn btn-secondary dropdown-toggle">
+        <button type="button" uib-dropdown-toggle class="btn btn-secondary dropdown-toggle label-base-regular">
             <i class="icon-repo-graphdb mr-1"></i>
             <span class="selected-filter">{{selectedAgentsFilter.label}}</span>
             <i class="ri-filter-line" gdb-tooltip="{{'ttyg.agent.btn.filter.tooltip' | translate}}"></i>
         </button>
         <ul class="dropdown-menu" role="menu">
             <li ng-repeat="filterModel in agentListFilterModel">
-                <button type="button" class="dropdown-item" ng-click="onAgentsFilterChange(filterModel)"
+                <button type="button" class="dropdown-item label-base-regular" ng-click="onAgentsFilterChange(filterModel)"
                         data-value="{{filterModel.label}}">
                     {{filterModel.label}}
                 </button>
@@ -27,7 +27,7 @@
                  ng-class="{'selected': agent.id === selectedAgent.id}">
                 <div class="agent-info"
                      ng-attr-gdb-tooltip="{{!agent.isCompatible ? ('ttyg.agent.incompatible_agent' | translate) : undefined}}">
-                    <div class="agent-name" ng-class="{'incompatible-agent': !agent.isCompatible}">
+                    <div class="agent-name label-base-regular" ng-class="{'incompatible-agent': !agent.isCompatible}">
                         <i ng-if="!agent.isCompatible"
                            class="ri-alert-line text-warning">
                         </i>

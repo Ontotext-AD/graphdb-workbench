@@ -1,6 +1,5 @@
 <link href="css/jmx.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 
-
 <div class="hiddenVariables" style="display: none;">
     <div class="localUse">${localUse}</div>
     <div class="jmxServer">${jmxServer}</div>
@@ -17,13 +16,13 @@
     <div ng-if="!loader" class="graphics row">
                 <div class="monitor-tabs">
                     <ul class="nav nav-tabs">
-                        <li class="resource-tab nav-item">
+                        <li class="resource-tab nav-item label-base-regular">
                             <span class="nav-link" ng-click="switchTab(AVAILABLE_TABS.RESOURCE_MONITOR)" ng-class="activeTab == AVAILABLE_TABS.RESOURCE_MONITOR ? 'active':''">{{'monitor.resource' | translate}}</span>
                         </li>
-                        <li class="performance-tab nav-item">
+                        <li class="performance-tab nav-item label-base-regular">
                             <span class="nav-link" ng-click="switchTab(AVAILABLE_TABS.PERFORMANCE_MONITOR)" ng-class="activeTab == AVAILABLE_TABS.PERFORMANCE_MONITOR ? 'active':''">{{'monitor.performance.label' | translate}}</span>
                         </li>
-                        <li class="cluster-tab nav-item">
+                        <li class="cluster-tab nav-item label-base-regular">
                             <span class="nav-link" ng-click="switchTab(AVAILABLE_TABS.CLUSTER_HEALTH)" ng-class="activeTab == AVAILABLE_TABS.CLUSTER_HEALTH ? 'active':''">{{'monitor.cluster' | translate}}</span>
                         </li>
                     </ul>
@@ -31,7 +30,7 @@
                         <div class="tab-pane fade in" ng-if="activeTab === AVAILABLE_TABS.RESOURCE_MONITOR" id="resourceTab">
                             <div class="row mt-2">
                                 <div id="CPUUsageGraphic" data-test="cpu-usage-chart" class="col-lg-12 col-xl-6">
-                                    <div class="title h4" style="text-align: center;">
+                                    <div class="title h4">
                                         {{'resource.system.cpu_load.label' | translate}}
                                         <span class="btn btn-link-only-icons" uib-popover="{{'resource.system.cpu_load.tooltip' | translate}}" popover-trigger="mouseenter"
                                               popover-placement="bottom">
@@ -46,7 +45,7 @@
                                          style="width: 100%; height: 500px"></div>
                                 </div>
                                 <div id="openFileDescriptors" data-test="file-descriptor-chart" class="col-lg-12 col-xl-6">
-                                    <div class="title h4" style="text-align: center;">
+                                    <div class="title h4">
                                         {{'resource.system.file_descriptors.label' | translate}}
                                         <span class="btn btn-link-only-icons" uib-popover="{{'resource.system.file_descriptors.tooltip' | translate}}" popover-trigger="mouseenter"
                                               popover-placement="bottom">
@@ -63,7 +62,7 @@
                             </div>
                             <div class="row mt-2">
                                 <div id="heapMemoryGraphic" data-test="heap-memory-chart" class="col-lg-12 col-xl-6">
-                                    <div class="title h4" style="text-align: center;">
+                                    <div class="title h4">
                                         {{'resource.memory.heap.label' | translate}}
                                         <span class="btn btn-link-only-icons" uib-popover="{{'resource.memory.heap.tooltip' | translate}}" popover-trigger="mouseenter"
                                               popover-placement="bottom">
@@ -78,7 +77,7 @@
                                          style="width: 100%; height: 500px"></div>
                                 </div>
                                 <div id="offHeapMemoryGraphic" data-test="off-heap-memory-chart" class="col-lg-12 col-xl-6">
-                                    <div class="title h4" style="text-align: center;">
+                                    <div class="title h4">
                                         {{'resource.memory.non_heap.label' | translate}}
                                         <span class="btn btn-link-only-icons" uib-popover="{{'resource.memory.non_heap.tooltip' | translate}}" popover-trigger="mouseenter"
                                               popover-placement="bottom">
@@ -95,7 +94,7 @@
                             </div>
                             <div class="row mt-2">
                                 <div id="diskStorage" data-test="disk-storage-chart" class="col-lg-12 col-xl-6">
-                                    <div class="title h4" style="text-align: center;">
+                                    <div class="title h4">
                                         {{'resource.storage.label' | translate}}
                                         <span class="btn btn-link-only-icons" uib-popover="{{'resource.storage.tooltip' | translate}}" popover-trigger="mouseenter"
                                               popover-placement="bottom">
@@ -120,7 +119,7 @@
                             <div ng-if="getActiveRepository()">
                                 <div class="row mt-2">
                                     <div id="activeQueries" class="col-lg-12 col-xl-6">
-                                        <div class="title h4" style="text-align: center;">
+                                        <div class="title h4">
                                             {{'resource.queries.label' | translate}}
                                             <span class="btn btn-link-only-icons" uib-popover="{{'resource.queries.tooltip' | translate}}" popover-trigger="mouseenter"
                                                   popover-placement="bottom">
@@ -135,7 +134,7 @@
                                              style="width: 100%; height: 500px"></div>
                                     </div>
                                     <div id="connections" class="col-lg-12 col-xl-6">
-                                        <div class="title h4" style="text-align: center;">
+                                        <div class="title h4">
                                             {{'resource.connections.label' | translate}}
                                             <span class="btn btn-link-only-icons" uib-popover="{{'resource.connections.tooltip' | translate}}" popover-trigger="mouseenter"
                                                   popover-placement="bottom">
@@ -152,7 +151,7 @@
                                 </div>
                                 <div class="row mt-2">
                                     <div id="epool" class="col-lg-12 col-xl-6">
-                                        <div class="title h4" style="text-align: center;">
+                                        <div class="title h4">
                                             {{'resource.epool.label' | translate}}
                                             <span class="btn btn-link-only-icons" uib-popover="{{'resource.epool.tooltip' | translate}}" popover-trigger="mouseenter"
                                                   popover-placement="bottom">
@@ -167,7 +166,7 @@
                                              style="width: 100%; height: 500px"></div>
                                     </div>
                                     <div id="globalCache" class="col-lg-12 col-xl-6">
-                                        <div class="title h4" style="text-align: center;">
+                                        <div class="title h4">
                                             {{'resources.global_cache.label' | translate}}
                                             <span class="btn btn-link-only-icons" uib-popover="{{'resources.global_cache.tooltip' | translate}}" popover-trigger="mouseenter"
                                                   popover-placement="bottom">
@@ -192,7 +191,7 @@
                             </div>
                             <div ng-if="hasCluster" class="row mt-2">
                                 <div id="clusterHealth" class="col-lg-12">
-                                    <div class="title h4" style="text-align: center;">
+                                    <div class="title h4">
                                         {{'resources.cluster_health.label' | translate}}
                                         <span class="btn btn-link-only-icons" uib-popover="{{'resources.cluster_health.tooltip' | translate}}" popover-trigger="mouseenter"
                                               popover-placement="bottom">

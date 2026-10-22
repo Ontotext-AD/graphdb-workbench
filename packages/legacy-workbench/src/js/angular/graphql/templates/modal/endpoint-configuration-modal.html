@@ -5,7 +5,7 @@
     <span ng-click="toggleAdvancedSettings()" class="toggle-advanced-settings">
         <input type="checkbox" class="switch" ng-checked="showAdvancedSettings"/>
         <label></label>
-        <span>{{'graphql.endpoints_management.endpoint_configuration_modal.actions.show_advanced_settings.label' | translate}}</span>
+        <span class="label-base-regular">{{'graphql.endpoints_management.endpoint_configuration_modal.actions.show_advanced_settings.label' | translate}}</span>
     </span>
 </div>
 <div class="modal-body graphql-endpoint-configuration-modal-body">
@@ -22,7 +22,7 @@
     <button type="button" class="btn btn-secondary cancel-btn" ng-click="cancel()">{{'common.cancel.btn' | translate}}
     </button>
     <button id="graphql-endpoint-configuration-modal-submit"
-            class="btn btn-primary"
+            class="btn btn-primary label-base-regular"
             ng-disabled="!endpointConfigurationSettingsValid || savingEndpointSettings || formCtrl.$pristine"
             ng-click="ok()" type="submit">
         <span>{{'save.changes.label' | translate}}</span>

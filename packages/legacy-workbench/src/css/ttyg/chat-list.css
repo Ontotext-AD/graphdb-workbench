@@ -108,5 +108,5 @@
 
 .chat-list-component .chat-name {
     color: var(--gw-secondary-base);
-    font-weight: 400;
+    font-weight: var(--gw-label-base-regular-font-weight);
 }

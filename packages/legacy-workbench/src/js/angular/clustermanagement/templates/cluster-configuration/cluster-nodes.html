@@ -3,10 +3,10 @@
     <ul class="nodes-list">
         <li ng-repeat="node in clusterModel.nodes">
             <a class="data-value endpoint" href="{{node.endpoint}}" target="_blank">{{node.endpoint}}</a>
-            <div class="small rpc-address">{{ 'cluster_management.cluster_status.node.rpc_address' | translate }}: <span
+            <div class="small rpc-address body-xs-regular">{{ 'cluster_management.cluster_status.node.rpc_address' | translate }}: <span
                 class="data-value">{{node.address}}</span>
             </div>
-            <div class="small state">{{ 'cluster_management.cluster_status.node.state' | translate }}: <span
+            <div class="small state body-xs-regular">{{ 'cluster_management.cluster_status.node.state' | translate }}: <span
                 class="data-value">{{node.nodeState}}</span>
             <span ng-if="currentNode.endpoint === node.endpoint">({{ 'cluster_management.cluster_configuration_nodes.local' | translate }})</span>
             </div>

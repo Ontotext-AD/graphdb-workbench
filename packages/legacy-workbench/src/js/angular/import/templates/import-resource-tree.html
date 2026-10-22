@@ -16,19 +16,19 @@
                 </button>
                 <ul class="dropdown-menu" role="menu">
                     <li>
-                        <button type="button" class="dropdown-item"
+                        <button type="button" class="dropdown-item label-base-regular"
                                 ng-click="selectResourceWithStatus(STATUS_OPTIONS.ALL)">
                             {{'import.import_resource_tree.status.ALL' | translate}}
                         </button>
-                        <button type="button" class="dropdown-item"
+                        <button type="button" class="dropdown-item label-base-regular"
                                 ng-click="selectResourceWithStatus(STATUS_OPTIONS.NONE)">
                             {{'import.import_resource_tree.status.NONE' | translate}}
                         </button>
-                        <button type="button" class="dropdown-item"
+                        <button type="button" class="dropdown-item label-base-regular"
                                 ng-click="selectResourceWithStatus(STATUS_OPTIONS.IMPORTED)">
                             {{'import.import_resource_tree.status.IMPORTED' | translate}}
                         </button>
-                        <button type="button" class="dropdown-item"
+                        <button type="button" class="dropdown-item label-base-regular"
                                 ng-click="selectResourceWithStatus(STATUS_OPTIONS.NOT_IMPORTED)">
                             {{'import.import_resource_tree.status.NOT_IMPORTED' | translate}}
                         </button>
@@ -110,30 +110,30 @@
     <table class="import-resource-table mt-2">
         <thead>
         <tr>
-            <th scope="col" class="header-cell cell-select">
+            <th scope="col" class="header-cell cell-select label-sm-bold">
                 <span class="sr-only">{{'import.import_resource_tree.header.select' | translate}}</span>
             </th>
-            <th scope="col" class="header-cell cell-name" aria-sort="{{getAriaSort(SORTING_TYPES.NAME)}}">
+            <th scope="col" class="header-cell cell-name label-sm-bold" aria-sort="{{getAriaSort(SORTING_TYPES.NAME)}}">
                 <button type="button" class="text-btn sort-btn" ng-click="sort(SORTING_TYPES.NAME)">
                     <span ng-class="getSortClass(SORTING_TYPES.NAME)">{{columnKeys.name | translate}}</span>
                 </button>
             </th>
-            <th scope="col" class="header-cell cell-size" aria-sort="{{getAriaSort(SORTING_TYPES.SIZE)}}">
+            <th scope="col" class="header-cell cell-size label-sm-bold" aria-sort="{{getAriaSort(SORTING_TYPES.SIZE)}}">
                 <button type="button" class="text-btn sort-btn" ng-click="sort(SORTING_TYPES.SIZE)">
                     <span ng-class="getSortClass(SORTING_TYPES.SIZE)">{{columnKeys.size | translate}}</span>
                 </button>
             </th>
-            <th scope="col" class="header-cell cell-modified" aria-sort="{{getAriaSort(SORTING_TYPES.MODIFIED)}}">
+            <th scope="col" class="header-cell cell-modified label-sm-bold" aria-sort="{{getAriaSort(SORTING_TYPES.MODIFIED)}}">
                 <button type="button" class="text-btn sort-btn" ng-click="sort(SORTING_TYPES.MODIFIED)">
                     <span ng-class="getSortClass(SORTING_TYPES.MODIFIED)">{{columnKeys.modified | translate}}</span>
                 </button>
             </th>
-            <th scope="col" class="header-cell cell-imported" aria-sort="{{getAriaSort(SORTING_TYPES.IMPORTED)}}">
+            <th scope="col" class="header-cell cell-imported label-sm-bold" aria-sort="{{getAriaSort(SORTING_TYPES.IMPORTED)}}">
                 <button type="button" class="text-btn sort-btn" ng-click="sort(SORTING_TYPES.IMPORTED)">
                     <span ng-class="getSortClass(SORTING_TYPES.IMPORTED)">{{columnKeys.imported | translate}}</span>
                 </button>
             </th>
-            <th scope="col" class="header-cell cell-context" aria-sort="{{getAriaSort(SORTING_TYPES.CONTEXT)}}">
+            <th scope="col" class="header-cell cell-context label-sm-bold" aria-sort="{{getAriaSort(SORTING_TYPES.CONTEXT)}}">
                 <button type="button" class="text-btn sort-btn" ng-click="sort(SORTING_TYPES.CONTEXT)">
                     <span ng-class="getSortClass(SORTING_TYPES.CONTEXT)">{{columnKeys.context | translate}}</span>
                 </button>

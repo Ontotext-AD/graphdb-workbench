@@ -4,12 +4,12 @@
 /* And scale it down on given viewport width */
 @media (max-width: 1439px) {
     yasgui-component .yasgui-toolbar .yasgui-btn {
-        font-size: 12px;
+        font-size: var(--gw-label-sm-regular-font-size);
         height: 24px !important;
     }
 
     yasgui-component .yasgui-toolbar .btn-orientation {
-        font-size: 24px;
+        font-size: 1.71rem;
     }
 
     yasgui-component .yasqe_queryButton,

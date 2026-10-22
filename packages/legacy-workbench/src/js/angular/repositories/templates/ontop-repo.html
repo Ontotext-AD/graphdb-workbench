@@ -5,7 +5,7 @@
 
     <!-- select driver type -->
     <div class="form-group row indented-div">
-        <label class="col-xs-12 col-md-3 col-lg-2 col-form-label">{{'ontop.repo.database.driver' | translate}}</label>
+        <label class="col-xs-12 col-md-3 col-lg-2 col-form-label label-base-regular">{{'ontop.repo.database.driver' | translate}}</label>
         <div class="col-xs-8 col-md-5 col-lg-4" gdb-tooltip="{{'repoTooltips.ontop.driverType' | translate}}">
             <select class="form-control" id="driverType" ng-model="formData.connectionInformation.driverType"
                     ng-change="selectDriver(formData.connectionInformation.driverType)"
@@ -16,7 +16,7 @@
 
     <!-- Host Name -->
     <div class="form-group row indented-div" ng-if="!isGenericDriver">
-        <label for="hostName" class="col-xs-12 col-md-3 col-lg-2 col-form-label">
+        <label for="hostName" class="col-xs-12 col-md-3 col-lg-2 col-form-label label-base-regular">
             {{getHostNameLabel()}}</label>
         <div class="col-xs-12 col-md-5 col-lg-4"
              gdb-tooltip="{{'repoTooltips.ontop.hostName' | translate}}">
@@ -31,7 +31,7 @@
 
     <!-- Port -->
     <div class="form-group row indented-div" ng-if="!isGenericDriver">
-        <label for="port" class="col-xs-12 col-md-3 col-lg-2 col-form-label">
+        <label for="port" class="col-xs-12 col-md-3 col-lg-2 col-form-label label-base-regular">
             {{'ontop.repo.database.port' | translate}} {{selectedDriver.portRequired ? '*' : ''}}</label>
         <div class="col-xs-12 col-md-5 col-lg-4"
              gdb-tooltip="{{'repoTooltips.ontop.port' | translate}}">
@@ -47,7 +47,7 @@
 
     <!-- Data Base Name -->
     <div class="form-group row indented-div" ng-if="!isGenericDriver">
-        <label for="databaseName" class="col-xs-12 col-md-3 col-lg-2 col-form-label">
+        <label for="databaseName" class="col-xs-12 col-md-3 col-lg-2 col-form-label label-base-regular">
             {{getDatabaseNameLabel()}} *</label>
         <div class="col-xs-12 col-md-5 col-lg-4"
              gdb-tooltip="{{'repoTooltips.ontop.databaseName' | translate}}">
@@ -62,7 +62,7 @@
 
     <!-- Username -->
     <div class="form-group row indented-div">
-        <label for="username" class="col-xs-12 col-md-3 col-lg-2 col-form-label">
+        <label for="username" class="col-xs-12 col-md-3 col-lg-2 col-form-label label-base-regular">
             {{'ontop.repo.database.username' | translate}}</label>
         <div class="col-xs-12 col-md-5 col-lg-4"
              gdb-tooltip="{{'repoTooltips.ontop.userName' | translate}}">
@@ -75,7 +75,7 @@
 
     <!-- Password -->
     <div class="form-group row indented-div">
-        <label for="password" class="col-xs-12 col-md-3 col-lg-2 col-form-label">
+        <label for="password" class="col-xs-12 col-md-3 col-lg-2 col-form-label label-base-regular">
             {{'ontop.repo.database.password' | translate}}</label>
         <div class="col-xs-12 col-md-5 col-lg-4"
              gdb-tooltip="{{'repoTooltips.ontop.password' | translate}}">
@@ -89,7 +89,7 @@
 
     <!-- Driver class -->
     <div class="form-group row indented-div">
-        <label for="driverClass" class="col-xs-12 col-md-3 col-lg-2 col-form-label">
+        <label for="driverClass" class="col-xs-12 col-md-3 col-lg-2 col-form-label label-base-regular">
             {{('ontop.repo.database.driver_class' | translate) + ' *'}}</label>
         <div class="col-xs-12 col-md-5 col-lg-4"
              gdb-tooltip="{{'repoTooltips.ontop.driverClass' | translate}}">
@@ -121,7 +121,7 @@
 
     <!-- JDBC URL -->
     <div class="form-group row indented-div">
-        <label for="url" class="col-xs-12 col-md-3 col-lg-2 col-form-label">
+        <label for="url" class="col-xs-12 col-md-3 col-lg-2 col-form-label label-base-regular">
             {{('ontop.repo.database.url' | translate) + ' *'}}</label>
         <div class="col-xs-12 col-md-5 col-lg-4"
              gdb-tooltip="{{'repoTooltips.ontop.url' | translate}}">
@@ -151,7 +151,7 @@
 
     <!-- Additional properties -->
     <div class="form-group row indented-div">
-        <label class="col-xs-12 col-md-3 col-lg-2 col-form-label">
+        <label class="col-xs-12 col-md-3 col-lg-2 col-form-label label-base-regular">
             {{'ontop.repo.properties.label' | translate}}
         </label>
         <div class="col-xs-8 col-md-5 col-lg-4">
@@ -175,7 +175,7 @@
 
     <!-- ontop files -->
     <div ng-repeat="ontopFileInfo in formData.settings.ontopFiles" class="form-group row indented-div">
-        <label for="{{ontopFileInfo.type}}" class="col-xs-12 col-md-3 col-lg-2 col-form-label">
+        <label for="{{ontopFileInfo.type}}" class="col-xs-12 col-md-3 col-lg-2 col-form-label label-base-regular">
             {{(('ontop.repo.file.' + ontopFileInfo.type + '.name') | translate)}} {{ontopFileInfo.required ? ' *' : ''}}
         </label>
 
@@ -193,7 +193,7 @@
         </div>
 
         <div class="col-xs-4 col-md-2">
-            <div class="btn btn-secondary" ngf-select ngf-change="uploadOntopFile($files, ontopFileInfo)" ngf-multiple="false">
+            <div class="btn btn-secondary  label-base-regular" ngf-select ngf-change="uploadOntopFile($files, ontopFileInfo)" ngf-multiple="false">
                 <div class="upload-button selectFiles">
                     <em ng-hide="ontopFileInfo.loading" class="ri-upload-2-line ri-2x"></em>&nbsp;
                     <div ng-show="ontopFileInfo.loading" onto-loader size="24" class="spinner-container ot-loader"></div>
@@ -218,11 +218,11 @@
     </div>
     <div class="form-group row col-xs-12 pb-3">
         <div class="text-right">
-            <a ng-click="goBackToPreviousLocation()" class="btn btn-secondary">{{'common.cancel.btn' | translate}}</a>
-            <button id="addSaveOntopRepository" ng-click="updateOntopRepo()" ng-if="!editRepoPage" type="submit" class="btn btn-primary">
+            <a ng-click="goBackToPreviousLocation()" class="btn btn-secondary  label-base-regular">{{'common.cancel.btn' | translate}}</a>
+            <button id="addSaveOntopRepository" ng-click="updateOntopRepo()" ng-if="!editRepoPage" type="submit" class="btn btn-primary label-base-regular">
                 {{'common.create.btn' | translate}}
             </button>
-            <button id="addEditOntopRepository" ng-click="updateOntopRepo()" ng-if="editRepoPage" type="submit" class="btn btn-primary">
+            <button id="addEditOntopRepository" ng-click="updateOntopRepo()" ng-if="editRepoPage" type="submit" class="btn btn-primary label-base-regular">
                 {{'common.save.btn' | translate}}
             </button>
         </div>

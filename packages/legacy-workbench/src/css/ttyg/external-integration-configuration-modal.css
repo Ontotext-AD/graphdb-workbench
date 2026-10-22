@@ -2,12 +2,6 @@
     margin-top: 16px;
 }
 
-form.form-horizontal .form-group label.control-label[for="agentId"],
-form.form-horizontal .form-group label.control-label[for="queryMethods"],
-form.form-horizontal .form-group label.control-label[for="difyExtension"] {
-    font-weight: 500;
-}
-
 .input-group-addon copy-to-clipboard {
     display: inline-flex;
     align-items: center;

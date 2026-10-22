@@ -13,7 +13,7 @@
     <form name="form" id="updateClusterGroupForm">
         <table class="cluster-group table table-striped table-hover cluster-group-table" aria-label="{{'cluster_management.update_cluster_group_dialog.nodes_table_label' | translate}}">
             <thead>
-            <tr class="labels-row">
+            <tr class="labels-row label-base-medium">
                 <th scope="col" class="index-column">
                     {{'cluster_management.update_cluster_group_dialog.column.index' | translate}}
                 </th>
@@ -235,7 +235,7 @@
                     <div class="form-group">
                         <div class="input-group"
                              ng-class="{'has-danger': clusterConfigurationForm.electionMinTimeout.$invalid}">
-                            <label for="election-minimum-timeout" class="col-xs-4 col-form-label">{{'cluster_management.cluster_configuration_properties.election_min_timeout'
+                            <label for="election-minimum-timeout" class="col-xs-4 col-form-label label-base-regular">{{'cluster_management.cluster_configuration_properties.election_min_timeout'
                                 | translate}}*</label>
                             <div class="col-xs-8"
                                  gdb-tooltip="{{'cluster_management.cluster_configuration_properties.election_min_timeout_tooltip' | translate}}">
@@ -258,7 +258,7 @@
                     <div class="form-group">
                         <div class="input-group"
                              ng-class="{'has-danger': clusterConfigurationForm.electionRangeTimeout.$invalid}">
-                            <label for="election-range-timeout" class="col-xs-4 col-form-label">{{'cluster_management.cluster_configuration_properties.election_range_timeout'
+                            <label for="election-range-timeout" class="col-xs-4 col-form-label label-base-regular">{{'cluster_management.cluster_configuration_properties.election_range_timeout'
                                 | translate}}*</label>
                             <div class="col-xs-8"
                                  gdb-tooltip="{{'cluster_management.cluster_configuration_properties.election_range_timeout_tooltip' | translate}}">
@@ -281,7 +281,7 @@
                     <div class="form-group">
                         <div class="input-group"
                              ng-class="{'has-danger': clusterConfigurationForm.heartbeatInterval.$invalid}">
-                            <label for="heartbeat-interval" class="col-xs-4 col-form-label">{{'cluster_management.cluster_configuration_properties.heartbeat_interval'
+                            <label for="heartbeat-interval" class="col-xs-4 col-form-label label-base-regular">{{'cluster_management.cluster_configuration_properties.heartbeat_interval'
                                 | translate}}*</label>
                             <div class="col-xs-8"
                                  gdb-tooltip="{{'cluster_management.cluster_configuration_properties.heartbeat_interval_tooltip' | translate}}">
@@ -304,7 +304,7 @@
                     <div class="form-group">
                         <div class="input-group"
                              ng-class="{'has-danger': clusterConfigurationForm.messageSizeKB.$invalid}">
-                            <label for="message-size" class="col-xs-4 col-form-label">{{'cluster_management.cluster_configuration_properties.message_size_kb'
+                            <label for="message-size" class="col-xs-4 col-form-label label-base-regular">{{'cluster_management.cluster_configuration_properties.message_size_kb'
                                 | translate}}*</label>
                             <div class="col-xs-8"
                                  gdb-tooltip="{{'cluster_management.cluster_configuration_properties.message_size_kb_tooltip' | translate}}">
@@ -326,7 +326,7 @@
                     <div class="form-group">
                         <div class="input-group"
                              ng-class="{'has-danger': clusterConfigurationForm.verificationTimeout.$invalid}">
-                            <label for="verification-timeout" class="col-xs-4 col-form-label">{{'cluster_management.cluster_configuration_properties.verification_timeout'
+                            <label for="verification-timeout" class="col-xs-4 col-form-label label-base-regular">{{'cluster_management.cluster_configuration_properties.verification_timeout'
                                 | translate}}*</label>
                             <div class="col-xs-8"
                                  gdb-tooltip="{{'cluster_management.cluster_configuration_properties.verification_timeout_tooltip' | translate}}">
@@ -348,7 +348,7 @@
                     <div class="form-group">
                         <div class="input-group"
                              ng-class="{'has-danger': clusterConfigurationForm.transactionLogMaximumSizeGB.$invalid}">
-                            <label for="verification-timeout" class="col-xs-4 col-form-label">{{'cluster_management.cluster_configuration_properties.transaction_log_maximum_size_gb'
+                            <label for="verification-timeout" class="col-xs-4 col-form-label label-base-regular">{{'cluster_management.cluster_configuration_properties.transaction_log_maximum_size_gb'
                                 | translate}}*</label>
                             <div class="col-xs-8"
                                  gdb-tooltip="{{'cluster_management.cluster_configuration_properties.transaction_log_maximum_size_gb_tooltip' | translate}}">
@@ -370,7 +370,7 @@
                     </div>
                     <div class="form-group">
                         <div class="input-group" ng-class="{'has-danger': clusterConfigurationForm.batchUpdateInterval.$invalid}">
-                            <label for="batch-update-interval" class="col-xs-4 col-form-label">
+                            <label for="batch-update-interval" class="col-xs-4 col-form-label label-base-regular">
                                 {{'cluster_management.cluster_configuration_properties.batch_update_interval' | translate}}*
                             </label>
                             <div class="col-xs-8" gdb-tooltip="{{'cluster_management.cluster_configuration_properties.batch_update_interval_tooltip' | translate}}">

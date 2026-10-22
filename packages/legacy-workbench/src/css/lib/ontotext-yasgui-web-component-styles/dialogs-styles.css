@@ -95,7 +95,7 @@ yasgui-component .confirm-button:hover,
 
 /* #region - Keyboard shortcuts dialog specific styles */
 .keyboard-shortcuts-dialog-button {
-    font-weight: 400;
+    font-weight: var(--gw-button-label-font-weight);
     color: var(--gw-button-secondary-color) !important;
     background-color: var(--gw-button-secondary-background) !important;
     border-color: var(--gw-button-secondary-border-color) !important;

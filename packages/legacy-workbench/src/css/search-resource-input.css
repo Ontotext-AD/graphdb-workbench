@@ -1,3 +1,3 @@
 .autocomplete-hint {
-    font-size: 12px;
+    font-size: var(--gw-body-xs-regular-font-size);
 }

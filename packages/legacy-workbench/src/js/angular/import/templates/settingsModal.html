@@ -56,7 +56,7 @@
             </div>
             <div class="form-group row">
                 <div class="col-lg-9 offset-lg-3">
-                    <label class="col-form-label"
+                    <label class="col-form-label label-base-regular"
                            uib-popover="{{isMultiple ? 'import.mode.not.supported.constraint' : 'import.enable.replace.option' | translate}}"
                            popover-trigger="mouseenter"
                            popover-placement="top">
@@ -67,7 +67,7 @@
                 </div>
             </div>
             <div class="form-group row" ng-show="enableReplace">
-                <label id="import-replaced-graphs-label" class="col-lg-3 col-form-label">
+                <label id="import-replaced-graphs-label" class="col-lg-3 col-form-label label-base-regular">
                     {{'import.replaced.graphs' | translate}}
                     <span class="btn btn-link-only-icons p-0"
                           uib-popover="{{'import.replaced.graphs.for.update' | translate}}"
@@ -76,7 +76,7 @@
                                 <em class="icon ri-information-2-line"></em>
                             </span>
                 </label>
-                <label class="col-lg-9 col-form-label" ng-show="target === 'default' || target === 'named'">
+                <label class="col-lg-9 col-form-label label-base-regular" ng-show="target === 'default' || target === 'named'">
                     <span ng-show="target === 'default'">{{'import.default.graph' | translate}}</span>
                     <span ng-show="target === 'named'">{{settings.context}}</span>
                     <span class="text-muted">{{'import.same.as.target' | translate}}</span>
@@ -94,17 +94,17 @@
                         </div>
                         <div class="col-lg-3 col-lg-no-padding">
                             <div class="btn-group" uib-dropdown>
-                                <button type="button" class="btn btn-primary add-graph-btn"
+                                <button type="button" class="btn btn-primary add-graph-btn label-base-regular"
                                         ng-click="addReplaceGraph(replaceGraph)">
                                     <span class="ri-add-circle-line"></span> {{'import.add.graph' | translate}}
                                 </button>
-                                <button type="button" class="btn btn-primary dropdown-toggle-split dropdown-toggle"
+                                <button type="button" class="btn btn-primary dropdown-toggle-split dropdown-toggle label-base-regular"
                                         uib-dropdown-toggle>
                                     <span class="sr-only"></span>
                                 </button>
                                 <ul class="dropdown-menu" role="menu">
                                     <li>
-                                        <button type="button" class="dropdown-item"
+                                        <button type="button" class="dropdown-item label-base-regular"
                                                 ng-click="addReplaceGraph('default')">
                                             {{'import.add.default.graph' | translate}}
                                         </button>
@@ -137,7 +137,7 @@
                     </div>
                 </div>
                 <div class="col-lg-9 offset-lg-3">
-                    <label class="col-form-label">
+                    <label class="col-form-label label-base-regular">
                         <input type="checkbox" class="graph-replace-confirm-checkbox" ng-model="agree"
                                ng-required="enableReplace">
                         <strong>{{'import.data.cleared.before.import' | translate}}</strong>
@@ -146,7 +146,7 @@
             </div>
 
             <div ng-show="settings.hasContextLink" class="form-group row contextLinkRow">
-                <label class="col-lg-3 col-form-label">
+                <label class="col-lg-3 col-form-label label-base-regular">
                     {{'import.context.link' | translate}}
                     <span class="btn btn-link-only-icons p-0"
                           uib-popover="{{'import.context.link.info' | translate}}"
@@ -178,7 +178,7 @@
 
             <div ng-show="hasParserSettings && showAdvancedSettings" class="advanced-settings">
                 <div class="form-group row mt-1">
-                    <label class="col-lg-3 col-form-label">
+                    <label class="col-lg-3 col-form-label label-base-regular">
                         {{'import.label.base.iri' | translate}}
                         <span class="btn btn-link-only-icons p-0"
                               uib-popover="{{'import.popover.relative.iri' | translate}}"
@@ -306,8 +306,8 @@
             </div>
 
             <div ng-show="showAdvancedSettings" class="form-group row">
-                <label class="col-lg-3 col-form-label">{{'import.debug.label' | translate}}</label>
-                <div class="col-lg-9 col-form-label">
+                <label class="col-lg-3 col-form-label label-base-regular">{{'import.debug.label' | translate}}</label>
+                <div class="col-lg-9 col-form-label label-base-regular">
                     <input type="checkbox" ng-model="settings['forceSerial']" id="force-serial">
                     <label for="force-serial"
                            uib-popover="{{'import.forces.serial.statements' | translate}}"

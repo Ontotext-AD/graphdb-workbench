@@ -122,7 +122,7 @@
     box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
     z-index: 9998;
     border-radius: 10px 10px 0 0;
-    font-weight: 300;
+    font-weight: var(--gw-body-base-light-font-weight);
     min-width: 100vw;
     background-color: var(--gw-dialog-background);
     padding: 15px;
@@ -176,14 +176,14 @@
 .hotkeys .hotkey-section {
     width: 100%;
     margin-bottom: 15px;
-    font-size: 1rem;
+    font-size: var(--gw-body-base-regular-font-size);
 }
 
 .hotkey-section .section-title {
     margin-bottom: 10px;
     font-weight: bold;
     color: var(--gw-shortcuts-panel-heading-color);
-    font-size: 1rem;
+    font-size: var(--gw-body-base-regular-font-size);
     break-after: avoid;
 }
 
@@ -203,7 +203,7 @@
     justify-content: center;
     text-align: center;
     height: 28px;
-    font-size: 16px;
+    font-size: var(--gw-body-base-regular-font-size);
     color: var(--gw-shortcuts-panel-key-color);
     background-color: var(--gw-shortcuts-panel-key-background);
     border-color: var(--gw-shortcuts-panel-key-border-color);
@@ -214,7 +214,7 @@
 
 .hotkey-title {
     margin: 0.5rem 0;
-    font-weight: 400;
+    font-weight: var(--gw-label-base-regular-font-weight);
     padding-bottom: 15px;
     flex-shrink: 0;
 }
@@ -309,7 +309,7 @@
 }
 
 .help-info b {
-    font-weight: 500;
+    font-weight: var(--gw-body-base-medium-font-weight);
 }
 
 .dynamic-form .dropdown-menu.multi-select {
@@ -326,7 +326,7 @@
 }
 
 .dynamic-form .dropdown.multi-select > button {
-    font-weight: 400 !important;
+    font-weight: var(--gw-button-label-font-weight) !important;
 }
 
 .dynamic-form .dropdown-item.multi-select {

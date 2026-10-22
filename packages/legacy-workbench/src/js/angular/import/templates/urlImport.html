@@ -27,13 +27,13 @@
               popover-trigger="mouseenter"
               popover-placement="top">
             <input id="import-now-checkbox" type="checkbox" ng-model="startImport"/>
-            <label for="import-now-checkbox">"{{'import.auto.start' | translate}}</label>
+            <label for="import-now-checkbox" class="label-base-regular">{{'import.auto.start' | translate}}</label>
         </span>
     </div>
     <div>
-        <button type="button" ng-click="cancel()" class="btn btn-secondary">{{'common.cancel.btn' | translate}}</button>
+        <button type="button" ng-click="cancel()" class="btn btn-secondary label-base-regular">{{'common.cancel.btn' | translate}}</button>
         <div class="btn-group import-format-dropdown" uib-dropdown>
-            <button class="btn btn-secondary dropdown-toggle import-format-dropdown-btn" uib-dropdown-toggle>
+            <button class="btn btn-secondary dropdown-toggle import-format-dropdown-btn label-base-regular" uib-dropdown-toggle>
                 {{'import.format' | translate}}: {{importFormat.name}}
             </button>
             <ul class="dropdown-menu" role="menu">
@@ -63,7 +63,7 @@
                        class="dropdown-item">BinaryRDF</a></li>
             </ul>
         </div>
-        <button id="wb-import-importUrl" ng-disabled="urlForm.$invalid" ng-click="ok()" class="btn btn-primary">
+        <button id="wb-import-importUrl" ng-disabled="urlForm.$invalid" ng-click="ok()" class="btn btn-primary  label-base-regular">
             <span class="icon-import"></span>  {{'common.import' | translate}}
         </button>
     </div>

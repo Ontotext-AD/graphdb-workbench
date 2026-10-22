@@ -86,7 +86,7 @@ html, body {
 }
 
 .acl-management-view .acl-rules .reorder-cell button em {
-    font-size: 20px;
+    font-size: 1.25rem;
     width: 20px;
 }
 
@@ -198,24 +198,19 @@ input::placeholder {
 
 .subject-cell, .predicate-cell, .object-cell, .context-cell {
     font-family: var(--mono-font);
-    font-size: 100%;
 }
 
 .context-cell-special {
-    font-family: inherit;
-    font-size: inherit;
-    font-weight: 500;
+    font-weight: var(--gw-datatable-header-cell-font-weight);
 }
 
 .plugin-cell:not(.wildcard-cell) {
-    font-family: inherit;
-    font-size: inherit;
-    font-weight: 500;
+    font-weight: var(--gw-datatable-header-cell-font-weight);
 }
 
 .acl-tag {
     padding: 0.25em 0.5em;
-    font-weight: 500;
+    font-weight: var(--gw-datatable-header-cell-font-weight);
 }
 
 .acl-tag-allow {
@@ -283,12 +278,10 @@ input::placeholder {
 
 .select-rule {
     height: 29px !important;
-    font-size: 100%;
 }
 
 tr.acl-rule.edit-rule-row .form-control:not(.select-rule){
     font-family: var(--mono-font);
-    font-size: 100%;
 }
 
 .autocomplete-results-wrapper {
