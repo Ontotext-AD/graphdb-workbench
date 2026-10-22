@@ -4,7 +4,6 @@ import 'angular/core/services/security.service';
 import {UserRole, UserType} from 'angular/utils/user-utils';
 import 'angular/security/directives/custom-prefix-tags-input.directive';
 import {GRAPHQL, GRAPHQL_PREFIX, MAINTAIN_REPO, MAINTAIN_REPO_PREFIX, READ_REPO, READ_REPO_PREFIX, SYSTEM_REPO, WRITE_REPO, WRITE_REPO_PREFIX} from './services/constants';
-import {DocumentationUrlResolver} from '../utils/documentation-url-resolver';
 import {
     AppSettings,
     AuthenticationService,
@@ -21,6 +20,7 @@ import {
     service,
     User,
     UsersService,
+    UriUtil,
 } from '@ontotext/workbench-api';
 import {decodeHTML} from '../../../app';
 
@@ -63,7 +63,7 @@ securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$windo
             return $translate.instant('security.toggle.tooltip', {action});
         };
 
-        $scope.securityToggleNotAllowedDocUrl = DocumentationUrlResolver.getDocumentationUrl(productInfo.shortVersion, 'security.html');
+        $scope.securityToggleNotAllowedDocUrl = UriUtil.resolveDocumentationUrl(productInfo.shortVersion, 'security.html');
 
         $scope.securityEnabled = function() {
             return authenticationService.isSecurityEnabled();

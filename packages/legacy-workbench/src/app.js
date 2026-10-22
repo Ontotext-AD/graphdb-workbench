@@ -26,7 +26,6 @@ import 'angular/core/filters/bytes-filter';
 import 'angular/core/services/language.service';
 import {defineCustomElements as defineYasguiElements} from 'ontotext-yasgui-web-component/loader';
 import {defineCustomElements as defineGraphQlElements} from 'ontotext-graphql-playground-component/loader';
-import {DocumentationUrlResolver} from "./js/angular/utils/documentation-url-resolver";
 import {NumberUtils} from "./js/angular/utils/number-utils";
 import {HtmlUtil} from "./js/angular/utils/html-util";
 import {LoggerProvider} from "./js/angular/core/services/logger-provider";
@@ -35,6 +34,7 @@ import {
     service,
     LanguageContextService,
     ByteUtils,
+    UriUtil,
 } from "@ontotext/workbench-api";
 import 'ng-tags-input/build/ng-tags-input.min';
 
@@ -254,7 +254,10 @@ const moduleDefinition = function(translations) {
 
                 $rootScope.helpInfo = $route.current.helpInfo && $sce.trustAsHtml(decodeHTML($translate.instant($route.current.helpInfo)));
                 $rootScope.title = decodeHTML($translate.instant($route.current.title));
-                $rootScope.documentationUrl = DocumentationUrlResolver.getDocumentationUrl(productInfo.shortVersion, $route.current.documentationUrl);
+                const documentationPath = $route.current.documentationUrl;
+                $rootScope.documentationUrl = documentationPath
+                    ? UriUtil.resolveDocumentationUrl(productInfo.shortVersion, documentationPath)
+                    : undefined;
             }
 
             GuidesService.init();

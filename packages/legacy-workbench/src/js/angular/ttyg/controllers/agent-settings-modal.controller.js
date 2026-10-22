@@ -16,7 +16,7 @@ import {REPOSITORY_PARAMS} from "../../models/repository/repository";
 import {TTYGEventName} from "../services/ttyg-context.service";
 import {AGENT_OPERATION, TTYG_ERROR_MSG_LENGTH} from "../services/constants";
 import {mapUriAsNtripleAutocompleteResponse} from "../../rest/mappers/autocomplete-mapper";
-import {DocumentationUrlResolver} from "../../utils/documentation-url-resolver";
+import {UriUtil} from '@ontotext/workbench-api';
 import {LoggerProvider} from "../../core/services/logger-provider";
 import {NumericRangeModel, SelectMenuOptionsModel} from "../../models/form-fields";
 import {SimilarityInstanceType} from '../../models/similarity/similarity-instance-type';
@@ -222,7 +222,7 @@ function AgentSettingsModalController(
      */
     $scope.vectorFields = [];
 
-    $scope.documentationUrlForSimilarity = DocumentationUrlResolver.getDocumentationUrl(productInfo.shortVersion, 'talk-to-graph.html#prerequisites-and-configuration');
+    $scope.documentationUrlForSimilarity = UriUtil.resolveDocumentationUrl(productInfo.shortVersion, 'talk-to-graph.html#prerequisites-and-configuration');
 
     /**
      * The similarity index select options grouped by provider for the similarity search extraction method.
@@ -332,7 +332,7 @@ function AgentSettingsModalController(
     $scope.helpInfoForModel = {
         ttygHelpInfo: getModelHelpMessage(),
         linkText: $translate.instant('ttyg.agent.create_agent_modal.form.model.link_text'),
-        documentationUrl: DocumentationUrlResolver.getDocumentationUrl(productInfo.shortVersion, 'talk-to-graph.html#prerequisites-and-configuration'),
+        documentationUrl: UriUtil.resolveDocumentationUrl(productInfo.shortVersion, 'talk-to-graph.html#prerequisites-and-configuration'),
     };
 
     /**

@@ -1,5 +1,6 @@
 import {RemoteLocationAuthType, RemoteLocationModel, RemoteLocationType} from "../../models/repository/remote-location.model";
 import 'angular/core/directives/validate-url.directive';
+import {UriUtil} from '@ontotext/workbench-api';
 
 const modules = [
     'graphdb.framework.core.directives.validate-url',
@@ -33,7 +34,7 @@ function ManageRemoteLocationDialogController($scope, $uibModalInstance, product
     $scope.RemoteLocationType = RemoteLocationType;
     $scope.RemoteLocationAuthType = RemoteLocationAuthType;
     $scope.isEdit = !!data.remoteLocation;
-    $scope.docBase = `https://graphdb.ontotext.com/documentation/${productInfo.shortVersion}`;
+    $scope.documentationUrlForAuthentication = UriUtil.resolveDocumentationUrl(productInfo.shortVersion, 'access-control.html#gdb-authentication');
 
     $scope.ok = () => {
         if ($scope.remoteLocationForm.$pristine || $scope.remoteLocationForm.$invalid) {

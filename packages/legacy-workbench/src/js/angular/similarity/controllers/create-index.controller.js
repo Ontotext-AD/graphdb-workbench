@@ -16,7 +16,7 @@ import {SimilarityIndexType} from '../../models/similarity/similarity-index-type
 import {SimilarityIndexError} from '../../models/similarity/similarity-index-error';
 import {QueryType} from '../../models/ontotext-yasgui/query-type';
 import {SimilarityIndexInfo} from '../../models/similarity/similarity-index-info';
-import {RepositoryContextService, service} from '@ontotext/workbench-api';
+import {RepositoryContextService, service, UriUtil} from '@ontotext/workbench-api';
 import {LoggerProvider} from '../../core/services/logger-provider';
 
 angular
@@ -69,6 +69,7 @@ function CreateSimilarityIdxCtrl(
      * @type {ProductInfo}
      */
     $scope.productInfo = productInfo;
+    $scope.documentationUrlForIndexParameters = UriUtil.resolveDocumentationUrl(productInfo.shortVersion, 'semantic-similarity-searches.html#create-index-parameters');
 
     $scope.SimilarityQueryType = SimilarityQueryType;
     $scope.SimilarityIndexType = SimilarityIndexType;

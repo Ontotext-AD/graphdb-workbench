@@ -1,5 +1,5 @@
 import {TTYGEventName} from "../services/ttyg-context.service";
-import {DocumentationUrlResolver} from "../../utils/documentation-url-resolver";
+import {UriUtil} from '@ontotext/workbench-api';
 
 angular
     .module('graphdb.framework.ttyg.directives.no-agents-view', [])
@@ -18,7 +18,7 @@ function NoAgentsView(TTYGContextService, productInfo) {
             // =========================
             // Public variables
             // =========================
-            $scope.talkToGraphDocumentationLink = DocumentationUrlResolver.getDocumentationUrl(productInfo.shortVersion, 'talk-to-graph.html');
+            $scope.talkToGraphDocumentationLink = UriUtil.resolveDocumentationUrl(productInfo.shortVersion, 'talk-to-graph.html');
 
             // =========================
             // Public functions

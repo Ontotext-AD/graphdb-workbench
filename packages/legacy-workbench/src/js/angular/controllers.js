@@ -21,7 +21,6 @@ import './guides/directives';
 import {GUIDE_PAUSE} from './guides/tour-lib-services/shepherd.service';
 import 'angular-pageslide-directive/dist/angular-pageslide-directive';
 import 'angularjs-slider/dist/rzslider.min';
-import {DocumentationUrlResolver} from './utils/documentation-url-resolver';
 import {NamespacesListModel} from './models/namespaces/namespaces-list';
 import {
     ApplicationLifecycleContextService,
@@ -46,6 +45,7 @@ import {
     BroadcastService,
     MessageType,
     RepositoryState,
+    UriUtil,
 } from '@ontotext/workbench-api';
 import {EventConstants} from './utils/event-constants';
 import {CookieConsent} from './models/cookie-policy/cookie-consent';
@@ -288,8 +288,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
     $scope.resumeGuide = function() {
         $rootScope.$broadcast('guideResume');
     };
-
-    $scope.resolveUrl = (productVersion, endpointPath) => DocumentationUrlResolver.getDocumentationUrl(productVersion, endpointPath);
 
     $scope.isSecurityEnabled = function() {
         return authenticationService.isSecurityEnabled();
@@ -569,7 +567,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
             },
             {
                 'title': $translate.instant('main.info.title.create.repo.page'),
-                'info': decodeHTML($translate.instant('main.info.create.repo.page', {link: '<a href="https://graphdb.ontotext.com/documentation/' + productInfo.shortVersion + '/configuring-a-repository.html" target="_blank">'})),
+                'info': decodeHTML($translate.instant('main.info.create.repo.page', {link: '<a href="' + UriUtil.resolveDocumentationUrl(productInfo.shortVersion, 'configuring-a-repository.html') + '" target="_blank">'})),
             },
             {
                 'title': $translate.instant('main.info.title.load.sample.dataset'),

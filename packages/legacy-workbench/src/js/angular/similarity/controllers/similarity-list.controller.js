@@ -9,7 +9,7 @@ import {mapIndexesResponseToSimilarityIndex} from "../../rest/mappers/similarity
 import {SimilaritySearch} from "../../models/similarity/similarity-search";
 import {RenderingMode} from "../../models/ontotext-yasgui/rendering-mode";
 import {NamespacesListModel} from "../../models/namespaces/namespaces-list";
-import {RepositoryContextService, service, LicenseContextService} from "@ontotext/workbench-api";
+import {RepositoryContextService, service, LicenseContextService, UriUtil} from "@ontotext/workbench-api";
 
 const modules = ['graphdb.core.services.workbench-context', 'graphdb.framework.core.services.rdf4j.repositories'];
 angular
@@ -75,6 +75,7 @@ function SimilarityCtrl(
     $scope.resultType = SimilarityResultType.TERM_RESULT;
 
     $scope.info = productInfo;
+    $scope.documentationUrlForSearchParameters = UriUtil.resolveDocumentationUrl(productInfo.shortVersion, 'semantic-similarity-searches.html#search-parameters');
     $scope.isGraphDBRepository = undefined;
     $scope.canEditRepo = $scope.canWriteActiveRepo();
     $scope.loadSimilarityIndexesTimer = undefined;
