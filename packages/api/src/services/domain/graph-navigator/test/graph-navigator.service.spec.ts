@@ -2,7 +2,7 @@ import {GraphNavigatorService} from '../graph-navigator.service';
 import {GraphNavigatorRestService} from '../graph-navigator-rest.service';
 import {service} from '../../../../providers';
 import {DEFAULT_SETTINGS_STUB} from './graph-navigator-settings-mock';
-import {GraphNavigatorSettings, GraphNavigatorSettingsError} from '../../../../models/graph-navigator';
+import {GraphNavigatorSettings, GraphNavigatorSettingsError, GraphNavigatorSettingsUploadError} from '../../../../models/graph-navigator';
 import {HttpErrorResponse, HttpRequest} from '../../../../models/http';
 
 describe('GraphNavigatorService', () => {
@@ -13,6 +13,15 @@ describe('GraphNavigatorService', () => {
   beforeEach(() => {
     graphNavigatorService = new GraphNavigatorService();
     restService = service(GraphNavigatorRestService);
+  });
+
+  const createErrorResponse = (data: unknown) => new HttpErrorResponse({
+    status: 400,
+    statusText: 'Bad Request',
+    headers: {},
+    config: {url: ''} as HttpRequest,
+    originalResponse: {} as Response,
+    data
   });
 
   afterEach(() => {
@@ -52,51 +61,38 @@ describe('GraphNavigatorService', () => {
       }));
     });
 
-    it('should reject with the rest error when the file is rejected', async () => {
-      // GIVEN: the backend rejects the file.
-      const error = new Error('Invalid settings file');
-      jest.spyOn(restService, 'uploadSettings').mockRejectedValue(error);
-
-      // WHEN/THEN: the upload rejects with the same error.
-      await expect(graphNavigatorService.uploadSettings(REPOSITORY_ID, new File([''], 'settings.ttl'))).rejects.toBe(error);
-    });
-  });
-
-  describe('getUploadErrors', () => {
-    const createErrorResponse = (data: unknown) => new HttpErrorResponse({
-      status: 400,
-      statusText: 'Bad Request',
-      headers: {},
-      config: {url: ''} as HttpRequest,
-      originalResponse: {} as Response,
-      data
-    });
-
-    it('should map the validation errors of a rejected upload', () => {
-      // GIVEN: the backend rejected the file with validation errors.
+    it('should reject with the validation errors when the backend rejects the file', async () => {
+      // GIVEN: the backend rejects the file with validation errors.
       const error = {
         code: 'wrong_type',
-        property: 'acceptBlankNodes',
+        property: 'gn:acceptBlankNodes',
         message: 'acceptBlankNodes has a value of the wrong type',
         params: {actual: 'string', expected: 'boolean'},
         predicate: 'http://www.ontotext.com/graph-navigator#acceptBlankNodes'
       };
+      jest.spyOn(restService, 'uploadSettings').mockRejectedValue(createErrorResponse({errors: [error]}));
 
-      // WHEN: the errors are extracted.
-      const errors = graphNavigatorService.getUploadErrors(createErrorResponse({errors: [error]}));
-
-      // THEN: they are mapped to models.
-      expect(errors).toStrictEqual([new GraphNavigatorSettingsError(error)]);
+      // WHEN/THEN: the upload rejects with the mapped errors.
+      await expect(graphNavigatorService.uploadSettings(REPOSITORY_ID, new File([''], 'settings.ttl')))
+        .rejects.toStrictEqual(new GraphNavigatorSettingsUploadError([new GraphNavigatorSettingsError(error)]));
     });
 
-    it('should return no errors when the rejection has no body', () => {
-      // WHEN/THEN: a rejection without a body has no errors.
-      expect(graphNavigatorService.getUploadErrors(createErrorResponse(undefined))).toStrictEqual([]);
+    it('should reject with no validation errors when the rejection has no body', async () => {
+      // GIVEN: the backend rejects the file without a body.
+      jest.spyOn(restService, 'uploadSettings').mockRejectedValue(createErrorResponse(undefined));
+
+      // WHEN/THEN: the upload rejects with no errors.
+      await expect(graphNavigatorService.uploadSettings(REPOSITORY_ID, new File([''], 'settings.ttl')))
+        .rejects.toStrictEqual(new GraphNavigatorSettingsUploadError([]));
     });
 
-    it('should return no errors when the rejection is not an HTTP error', () => {
-      // WHEN/THEN: a non-HTTP error has no errors.
-      expect(graphNavigatorService.getUploadErrors(new Error('Network failure'))).toStrictEqual([]);
+    it('should reject with the original error when it is not an HTTP error', async () => {
+      // GIVEN: the upload fails without a response.
+      const error = new Error('Network failure');
+      jest.spyOn(restService, 'uploadSettings').mockRejectedValue(error);
+
+      // WHEN/THEN: the upload rejects with the same error.
+      await expect(graphNavigatorService.uploadSettings(REPOSITORY_ID, new File([''], 'settings.ttl'))).rejects.toBe(error);
     });
   });
 

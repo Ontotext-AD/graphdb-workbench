@@ -9,6 +9,9 @@ import {GraphNavigatorSettings, GraphNavigatorSettingsError} from '@ontotext/wor
 import {ConfirmationProviderService} from '../../../services/dialog/confirmation-provider.service';
 import {UpperCasePipe} from '@angular/common';
 
+/** The translation key prefix of the upload error codes. */
+const ERROR_CODES_KEY = 'graph_navigator.settings.upload.errors.codes';
+
 /**
  * The Settings button of the Graph Navigator page and its popover, where a repository maintainer uploads,
  * exports or resets the repository's graph-navigator settings.
@@ -78,11 +81,11 @@ export class GraphNavigatorSettingsComponent {
     }
   }
 
-  /** The translated problem text of the error, or the backend's message when its code has no translation. */
+  /** The translated problem text of the error, or a generic one when its code has no translation. */
   translateError(error: GraphNavigatorSettingsError): string {
-    const key = `graph_navigator.settings.upload.errors.codes.${error.code}`;
+    const key = `${ERROR_CODES_KEY}.${error.code}`;
     const problem = this.translocoService.translate(key, error.params);
-    return problem === key ? error.message : problem;
+    return problem === key ? this.translocoService.translate(`${ERROR_CODES_KEY}.unknown`, error.params) : problem;
   }
 
   confirmUpload(event: FileUploadHandlerEvent): void {

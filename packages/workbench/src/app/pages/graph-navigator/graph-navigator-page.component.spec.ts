@@ -10,6 +10,7 @@ import {
   GraphNavigatorService,
   GraphNavigatorSettings,
   GraphNavigatorSettingsError,
+  GraphNavigatorSettingsUploadError,
   LanguageContextService,
   OntoToastrService,
   Repository,
@@ -261,14 +262,13 @@ describe('GraphNavigatorPageComponent', () => {
       // GIVEN: the backend rejects the file with validation errors.
       const error = new GraphNavigatorSettingsError({
         code: 'wrong_type',
-        property: 'acceptBlankNodes',
+        property: 'gn:acceptBlankNodes',
         message: 'acceptBlankNodes has a value of the wrong type',
         params: {actual: 'string', expected: 'boolean'},
         predicate: 'http://www.ontotext.com/graph-navigator#acceptBlankNodes'
       });
       const graphNavigatorService = ServiceProvider.get(GraphNavigatorService);
-      jest.spyOn(graphNavigatorService, 'uploadSettings').mockRejectedValue(new Error('Bad Request'));
-      jest.spyOn(graphNavigatorService, 'getUploadErrors').mockReturnValue([error]);
+      jest.spyOn(graphNavigatorService, 'uploadSettings').mockRejectedValue(new GraphNavigatorSettingsUploadError([error]));
       fixture.detectChanges();
       await selectRepository(REPOSITORY_A);
       await settle();

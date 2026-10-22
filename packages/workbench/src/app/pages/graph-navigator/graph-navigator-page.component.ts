@@ -9,6 +9,7 @@ import {
   GraphNavigatorService,
   GraphNavigatorSettings,
   GraphNavigatorSettingsError,
+  GraphNavigatorSettingsUploadError,
   LanguageContextService,
   OntoToastrService,
   RepositoryContextService,
@@ -193,7 +194,9 @@ export class GraphNavigatorPageComponent implements OnInit, OnDestroy {
     this.runSettingsRequest(
       this.graphNavigatorService.uploadSettings(repositoryId, file)
         .catch((error) => {
-          this.uploadErrors.set(this.graphNavigatorService.getUploadErrors(error));
+          if (error instanceof GraphNavigatorSettingsUploadError) {
+            this.uploadErrors.set(error.errors);
+          }
           throw error;
         }),
       'graph_navigator.settings.messages.upload_success',

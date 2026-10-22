@@ -154,7 +154,8 @@
             "duplicate": "Specified more than once",
             "malformed_value": "Has a malformed value",
             "unknown_property": "Not a known property",
-            "invalid": "The file could not be parsed"
+            "invalid": "The file could not be parsed",
+            "unknown": "Unknown error"
           }
         }
       },

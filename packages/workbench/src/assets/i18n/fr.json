@@ -154,7 +154,8 @@
             "duplicate": "Spécifiée plusieurs fois",
             "malformed_value": "A une valeur mal formée",
             "unknown_property": "N'est pas une propriété connue",
-            "invalid": "Le fichier n'a pas pu être analysé"
+            "invalid": "Le fichier n'a pas pu être analysé",
+            "unknown": "Erreur inconnue"
           }
         }
       },
