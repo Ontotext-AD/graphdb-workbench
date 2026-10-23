@@ -3,12 +3,13 @@
 -------------------------------------------------------------*/
 @media (max-width: 1439px) {
     html {
-        font-size: 14px;
+        font-size: var(--gw-body-sm-regular-font-size);
     }
 }
 
 body {
-    font-family: var(--main-font);
+    font-family: var(--gw-body-base-regular-font-family);
+    font-size: var(--gw-body-base-regular-font-size);
     font-weight: var(--main-font-weight);
     margin-bottom: 0;
     /* Overriding bootstrap's base text color #373a3c */
@@ -21,7 +22,7 @@ code, kbd, pre, samp {
 }
 
 select {
-    font-weight: 400;
+    font-weight: var(--gw-label-base-regular-font-weight);
 }
 
 a {
@@ -76,7 +77,6 @@ a:focus, a:hover {
 -------------------------------------------------------------*/
 h1, h2, h3, h4, h5, h6,
 .h1, .h2, .h3, .h4, .h5, .h6 {
-    font-weight: 400;
     margin-bottom: .5em;
 }
 
@@ -367,7 +367,7 @@ h3 [class^=icon-] {
 }
 
 .multiline-text small {
-    font-weight: 300;
+    font-weight: var(--gw-body-xs-light-font-weight);
     font-size: 0.75em;
     margin-top: 0.3em;
     display: inline-block;

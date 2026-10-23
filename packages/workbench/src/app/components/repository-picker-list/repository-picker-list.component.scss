@@ -115,7 +115,7 @@
       .repository-state {
         flex-shrink: 0;
         margin-right: .5em;
-        font-size: .8em;
+        font-size: 0.8em;
 
         &.running {
           color: var(--gw-button-success-background);
@@ -133,12 +133,11 @@
       .repository-id {
         flex: 0 1 auto;
         min-width: 0;
-        font-weight: 600;
+        font-weight: var(--gw-font-weight-600);
       }
 
       .repository-description {
         display: block;
-        font-weight: 400;
       }
 
       .repository-id,

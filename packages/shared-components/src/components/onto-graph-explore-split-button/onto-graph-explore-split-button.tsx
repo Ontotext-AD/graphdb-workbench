@@ -150,7 +150,7 @@ export class OntoGraphExploreSplitButton {
 
     return `
     <div class="graph-config-tooltip">
-      <div class="name">${name}</div>
+      <div class="name label-small-bold">${name}</div>
       ${description}
       ${hint}
     </div>

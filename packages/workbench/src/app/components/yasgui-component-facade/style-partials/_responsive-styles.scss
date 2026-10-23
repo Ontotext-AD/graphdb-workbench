@@ -3,12 +3,12 @@
   app-yasgui-component-facade {
     .yasgui-toolbar {
       .yasgui-btn {
-        font-size: 12px;
+        font-size: var(--gw-label-sm-regular-font-size);
         height: 24px !important;
       }
 
       .btn-orientation {
-        font-size: 24px;
+        font-size: 1.71rem;
       }
     }
 

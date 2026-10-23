@@ -62,7 +62,7 @@ app-yasgui-component-facade {
 
       .button-name {
         font-family: var(--main-font);
-        font-weight: 400;
+        font-weight: var(--gw-button-label-font-weight);
       }
     }
 
@@ -108,7 +108,7 @@ app-yasgui-component-facade {
         margin-left: 0;
         margin-right: .2rem;
         font-size: 1rem;
-        font-weight: 400;
+        font-weight: var(--gw-button-label-font-weight);
         color: var(--gw-tabs-tab-color) !important;
         background-color: var(--gw-tabs-tab-background) !important;
         fill: var(--gw-tabs-tab-color) !important;
@@ -222,11 +222,11 @@ app-yasgui-component-facade {
 
     .yasr-header-replacement {
       color: inherit;
-      font-size: 20px;
+      font-size: 1.25rem;
     }
 
     .explain-plan-copy-btn {
-      font-weight: 400;
+      font-weight: var(--gw-button-label-font-weight);
       color: var(--gw-button-secondary-color);
       background-color: var(--gw-shortcuts-editor-button-background);
       border-color: var(--gw-button-secondary-border-color);
@@ -241,7 +241,7 @@ app-yasgui-component-facade {
       padding-right: 35px;
 
       .close-button {
-        font-size: 21px;
+        font-size: 1.3125rem;
       }
     }
 
