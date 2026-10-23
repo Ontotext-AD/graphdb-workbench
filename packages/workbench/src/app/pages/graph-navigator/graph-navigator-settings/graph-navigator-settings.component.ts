@@ -70,7 +70,7 @@ export class GraphNavigatorSettingsComponent {
     // request leaves the settings, and therefore the file, as they are, so the user can correct it and retry.
     effect(() => {
       this.settings();
-      // Untracked, so re-rendering the popover content does not clear the file upload, and the errors with it.
+      // Untracked, so a change of the file upload view child does not clear it.
       untracked(() => this.fileUpload()?.clear());
     });
   }

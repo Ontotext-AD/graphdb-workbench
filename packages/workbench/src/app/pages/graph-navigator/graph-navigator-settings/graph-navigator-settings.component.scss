@@ -1,5 +1,5 @@
 .graph-navigator-settings {
-  min-width: 28rem;
+  width: 32rem;
   max-width: calc(100vw - 2rem);
 
   & .settings-header {
@@ -44,6 +44,10 @@
       background: var(--gw-message-error-background);
       border-bottom: 1px solid var(--gw-message-error-border-color);
       color: var(--gw-text-muted-color);
+    }
+
+    & .upload-error-property {
+      overflow-wrap: anywhere;
     }
   }
 }

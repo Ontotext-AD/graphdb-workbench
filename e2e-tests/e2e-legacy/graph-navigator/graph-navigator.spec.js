@@ -242,6 +242,15 @@ describe('Graph Navigator', () => {
             GraphNavigatorSteps.getUploadError('gn:unknownSetting')
                 .should('contain', 'Not a known property');
 
+            // When I close and reopen the settings.
+            GraphNavigatorSteps.closeSettings();
+            GraphNavigatorSteps.openSettings();
+
+            // Then I expect the file and its errors to be kept.
+            GraphNavigatorSteps.getSelectedSettingsFile(INVALID_SETTINGS_FILE_NAME).should('exist');
+            GraphNavigatorSteps.getUploadErrors().should('be.visible')
+                .and('contain', '3 validation errors');
+
             // When I remove the file.
             GraphNavigatorSteps.clickCancelFile();
 
