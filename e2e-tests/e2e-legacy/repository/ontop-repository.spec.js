@@ -287,7 +287,7 @@ describe('Ontop repositories', () => {
 
             // WHEN: I log in as a user with maintenance permission
             cy.loginAs(REPOSITORY_MAINTAINER_USERNAME, PASSWORD);
-            RepositorySteps.visit(false);
+            RepositorySteps.visit();
 
             // THEN: The repository is visible because the user can maintain it
             RepositorySteps.getRepositoryFromList(repositoryId).should('exist');
@@ -312,7 +312,7 @@ describe('Ontop repositories', () => {
             ModalDialogSteps.clickOnConfirmButton();
 
             // THEN: The changes are persisted
-            RepositorySteps.visit(false);
+            RepositorySteps.visit();
             RepositorySteps.getRepositoryFromList(repositoryId).should('exist');
             RepositorySteps.editRepository(repositoryId);
             cy.wait('@getJDBCProperties');
@@ -348,7 +348,7 @@ describe('Ontop repositories', () => {
             ModalDialogSteps.clickOnConfirmButton();
 
             // THEN: The OBDA file changes are persisted
-            RepositorySteps.visit(false);
+            RepositorySteps.visit();
             RepositorySteps.getRepositoryFromList(repositoryId).should('exist');
             RepositorySteps.editRepository(repositoryId);
             cy.wait('@getJDBCProperties');

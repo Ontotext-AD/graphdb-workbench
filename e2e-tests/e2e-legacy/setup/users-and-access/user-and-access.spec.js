@@ -705,7 +705,7 @@ describe('User and Access', () => {
             // Wait for the login to complete, otherwise visiting another page aborts it.
             cy.url().should('not.include', '/login');
             // And navigate to the repository list view.
-            RepositorySteps.visit(false);
+            RepositorySteps.visit();
 
             // Then I should see all repositories for which the user has at least read permission.
             RepositorySteps.getRepositories().should('have.length', 4);
@@ -766,7 +766,7 @@ describe('User and Access', () => {
             LoginSteps.loginWithUser(maintainerUser, PASSWORD);
             // Wait for the login to complete, otherwise visiting another page aborts it.
             cy.url().should('not.include', '/login');
-            RepositorySteps.visit(false);
+            RepositorySteps.visit();
 
             // When the user opens the edit page of the repository they can maintain.
             RepositorySteps.getEditRepositoryButton(maintainedRepositoryId).should('be.visible');
