@@ -3,17 +3,14 @@ import {BaseSteps} from "./base-steps.js";
 
 export class RepositorySteps extends BaseSteps {
 
-    static visit(waitPageLoaded = true) {
+    static visit() {
         cy.intercept('/rest/locations').as('getLocations');
         cy.intercept(REPOSITORIES_URL + '/all').as('getRepositories');
         cy.visit('/repository');
-        if (waitPageLoaded) {
-            RepositorySteps.waitLoader();
-        }
+        RepositorySteps.waitUntilRepositoriesPageIsLoaded();
+        // Consumes the initial locations request, so a later cy.wait('@getLocations') in a test matches the next one.
+        // It must stay after the page-loaded check, which has a longer timeout than cy.wait for the request to start.
         cy.wait('@getLocations');
-        if (waitPageLoaded) {
-            RepositorySteps.waitUntilRepositoriesPageIsLoaded();
-        }
     }
 
     static visitEditPage(repositoryId) {
@@ -36,9 +33,12 @@ export class RepositorySteps extends BaseSteps {
         return cy.get('#wb-repositories-addRepositoryLink');
     }
 
+    // The page loader is hidden once the locations are loaded, regardless of the user's role.
     static waitUntilRepositoriesPageIsLoaded() {
-        RepositorySteps.getRepositoriesDropdown().should('not.be.disabled');
-        RepositorySteps.getCreateRepositoryButton().should('be.visible').and('not.be.disabled');
+        RepositorySteps.getRepositoriesPage()
+            .should('be.visible')
+            .find('.ot-loader-new-content')
+            .should('not.be.visible');
     }
 
     static getRepositoriesDropdown() {
