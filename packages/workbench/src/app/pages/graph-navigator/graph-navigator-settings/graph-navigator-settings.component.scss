@@ -1,5 +1,5 @@
 .graph-navigator-settings {
-  width: 28rem;
+  width: 32rem;
   max-width: calc(100vw - 2rem);
 
   & .settings-header {
@@ -16,10 +16,38 @@
   & .upload-drop-hint {
     margin: 0;
   }
-}
 
-.graph-navigator-settings-upload-errors {
-  max-width: min(32rem, calc(100vw - 2rem));
-  margin: 0;
-  padding-left: 1.25rem;
+  & .p-fileupload-file.invalid {
+    border: 1px solid var(--gw-message-error-border-color);
+    border-radius: var(--gw-content-border-radius);
+    background: var(--gw-message-error-background);
+  }
+
+  & .validation-errors-message {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--gw-message-error-color);
+  }
+
+  & .upload-errors-table {
+    & tr {
+      background: transparent;
+
+      &:not(:last-child) td {
+        border-bottom: 1px solid var(--gw-message-error-border-color);
+      }
+    }
+
+    & th {
+      padding-left: 0;
+      background: var(--gw-message-error-background);
+      border-bottom: 1px solid var(--gw-message-error-border-color);
+      color: var(--gw-text-muted-color);
+    }
+
+    & .upload-error-property {
+      overflow-wrap: anywhere;
+    }
+  }
 }

@@ -1,6 +1,9 @@
-import {GraphNavigatorSettings} from '../../../models/graph-navigator';
+import {GraphNavigatorSettings, GraphNavigatorSettingsUploadError} from '../../../models/graph-navigator';
 import {GraphNavigatorRestService} from './graph-navigator-rest.service';
 import {mapGraphNavigatorSettingsResponseToModel} from './mappers/graph-navigator-settings.mapper';
+import {mapGraphNavigatorSettingsErrorResponseToModel} from './mappers/graph-navigator-settings-error.mapper';
+import {GraphNavigatorSettingsErrorResponse} from './response/graph-navigator-settings-error-response';
+import {HttpErrorResponse} from '../../../models/http';
 import {service} from '../../../providers';
 import {Service} from '../../../providers/service/service';
 
@@ -28,10 +31,20 @@ export class GraphNavigatorService implements Service {
    * @param repositoryId - The id of the repository.
    * @param file - The Turtle settings file.
    * @returns A Promise that resolves to the new settings.
+   * @throws {GraphNavigatorSettingsUploadError} When the backend rejects the file.
    */
   async uploadSettings(repositoryId: string, file: File): Promise<GraphNavigatorSettings> {
-    const response = await this.graphNavigatorRestService.uploadSettings(repositoryId, file);
-    return mapGraphNavigatorSettingsResponseToModel(response);
+    try {
+      const response = await this.graphNavigatorRestService.uploadSettings(repositoryId, file);
+      return mapGraphNavigatorSettingsResponseToModel(response);
+    } catch (error) {
+      if (error instanceof HttpErrorResponse) {
+        throw new GraphNavigatorSettingsUploadError(
+          mapGraphNavigatorSettingsErrorResponseToModel(error.data as GraphNavigatorSettingsErrorResponse)
+        );
+      }
+      throw error;
+    }
   }
 
   /**
