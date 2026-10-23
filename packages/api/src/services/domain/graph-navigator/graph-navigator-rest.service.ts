@@ -10,10 +10,11 @@ export class GraphNavigatorRestService extends HttpService {
    * Loads the graph-navigator settings of a repository.
    *
    * @param repositoryId - The id of the repository.
+   * @param signal - Optional AbortSignal to cancel the request if needed.
    * @returns A Promise that resolves to the current settings.
    */
-  getSettings(repositoryId: string): Promise<GraphNavigatorSettingsResponse> {
-    return this.get(this.getSettingsEndpoint(repositoryId), {headers: {Accept: 'application/json'}});
+  getSettings(repositoryId: string, signal?: AbortSignal): Promise<GraphNavigatorSettingsResponse> {
+    return this.get(this.getSettingsEndpoint(repositoryId), {headers: {Accept: 'application/json'}, signal});
   }
 
   /**

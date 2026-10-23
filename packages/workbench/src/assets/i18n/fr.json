@@ -129,6 +129,9 @@
       "graph_load_failed": "Impossible de calculer le graphe pour la requête.",
       "default": "Une erreur est survenue dans le Navigateur de graphe."
     },
+    "warnings": {
+      "autocomplete_is_off": "L'autocomplétion est désactivée<br>Aller à Configuration -> Autocomplétion"
+    },
     "confirmation": {
       "on_repository_change": {
         "title": "Confirmer le changement de dépôt sélectionné",

@@ -5,6 +5,7 @@ import {MainMenuSteps} from '../../steps/main-menu-steps.js';
 import {YasqeSteps} from '../../steps/yasgui/yasqe-steps.js';
 import {YasrSteps} from '../../steps/yasgui/yasr-steps.js';
 import {ToasterSteps} from '../../steps/toaster-steps.js';
+import {GraphNavigatorStubs} from '../../stubs/graph-navigator-stubs.js';
 
 const FILE_TO_IMPORT = 'resource-test-data.ttl';
 const SEED_RESOURCE_ENCODED = 'http:%2F%2Fexample.com%2Fontology%23CustomerLoyalty';
@@ -264,6 +265,32 @@ describe('Graph Navigator', () => {
         });
     });
 
+    describe('Autocomplete warning', () => {
+        beforeEach(() => {
+            GraphNavigatorStubs.stubSettingsWithAutocomplete();
+        });
+
+        it('should warn once that autocomplete is off and redirect to the autocomplete view', () => {
+            // Given the settings use autocomplete, but autocomplete is off.
+            GraphNavigatorSteps.visit();
+            cy.wait('@graph-navigator-settings');
+
+            // When I search for entities twice.
+            GraphNavigatorSteps.searchEntities(SEED_RESOURCE_LABEL);
+            GraphNavigatorSteps.searchEntities(SEED_RESOURCE_LABEL);
+
+            // Then I expect a single warning that autocomplete is off.
+            ToasterSteps.verifyWarning('Autocomplete is OFF');
+            ToasterSteps.getToast().find('.toast-warning').should('have.length', 1);
+
+            // When I click the warning.
+            ToasterSteps.getToast().find('.toast-warning').click();
+
+            // Then I expect to be redirected to the autocomplete view.
+            cy.url().should('include', '/autocomplete');
+        });
+    });
+
     describe('Repository switch', () => {
         let secondRepositoryId;
 
@@ -313,6 +340,35 @@ describe('Graph Navigator', () => {
             GraphNavigatorSteps.getWorkspace().should('exist');
             GraphNavigatorSteps.getElements().should('not.exist');
             GraphNavigatorSteps.verifyOnlyRepositoryParam(secondRepositoryId);
+        });
+
+        it('should warn that autocomplete is off once per repository', () => {
+            // Given the settings use autocomplete, but autocomplete is off.
+            GraphNavigatorStubs.stubSettingsWithAutocomplete();
+            GraphNavigatorSteps.visit();
+            cy.wait('@graph-navigator-settings');
+
+            // When I search for entities.
+            GraphNavigatorSteps.searchEntities(SEED_RESOURCE_LABEL);
+
+            // Then I expect a warning that autocomplete is off.
+            ToasterSteps.getToast().find('.toast-warning').should('have.length', 1);
+
+            // When I switch to another repository and search for entities.
+            RepositorySelectorSteps.selectRepository(secondRepositoryId);
+            cy.wait('@graph-navigator-settings');
+            GraphNavigatorSteps.searchEntities(SEED_RESOURCE_LABEL);
+
+            // Then I expect a second warning, for the new repository.
+            ToasterSteps.getToast().find('.toast-warning').should('have.length', 2);
+
+            // When I switch back to the first repository and search for entities.
+            RepositorySelectorSteps.selectRepository(repositoryId);
+            cy.wait('@graph-navigator-settings');
+            GraphNavigatorSteps.searchEntities(SEED_RESOURCE_LABEL);
+
+            // Then I expect no new warning, because I was already warned for it.
+            ToasterSteps.getToast().find('.toast-warning').should('have.length', 2);
         });
     });
 });

@@ -7,6 +7,7 @@ import {
   AuthorizationService,
   GraphExploreLink,
   GraphExploreService,
+  GraphNavigatorContextService,
   GraphNavigatorService,
   GraphNavigatorSettings,
   HttpErrorResponse,
@@ -147,7 +148,7 @@ describe('GraphNavigatorPageComponent', () => {
       await selectRepository(REPOSITORY_A);
 
       // THEN: the diagram is not rendered until the settings arrive.
-      expect(getSettingsSpy).toHaveBeenCalledWith(REPOSITORY_A.id);
+      expect(getSettingsSpy).toHaveBeenCalledWith(REPOSITORY_A.id, expect.any(AbortSignal));
       expect(getFacade()).toBeNull();
 
       settingsRequest.resolve(SETTINGS_A);
@@ -157,6 +158,21 @@ describe('GraphNavigatorPageComponent', () => {
       const facade = getFacade().componentInstance as GraphwiseReactodiaFacadeComponent;
       expect(facade.currentRepository()).toBe(REPOSITORY_A.id);
       expect(facade.providerSettings()).toEqual(SETTINGS_A.getProviderSettings());
+    });
+
+    it('should clear the shared settings when the repository changes', async () => {
+      // GIVEN: the context holds the settings of the first repository.
+      fixture.detectChanges();
+      await selectRepository(REPOSITORY_A);
+      await settle();
+      const graphNavigatorContextService = ServiceProvider.get(GraphNavigatorContextService);
+      graphNavigatorContextService.updateSettings(SETTINGS_A);
+
+      // WHEN: the repository changes.
+      await selectRepository(REPOSITORY_B);
+
+      // THEN: the context no longer holds the old settings.
+      expect(graphNavigatorContextService.getSettings()).toBeUndefined();
     });
 
     it('should reload the settings and mount the diagram once with the new repository when the repository changes', async () => {
@@ -172,7 +188,7 @@ describe('GraphNavigatorPageComponent', () => {
       await selectRepository(REPOSITORY_B);
 
       // THEN: the diagram is removed instead of being shown with the old settings.
-      expect(getSettingsSpy).toHaveBeenLastCalledWith(REPOSITORY_B.id);
+      expect(getSettingsSpy).toHaveBeenLastCalledWith(REPOSITORY_B.id, expect.any(AbortSignal));
       expect(getFacade()).toBeNull();
 
       // AND: it is mounted with the new repository and its settings together.
@@ -183,20 +199,28 @@ describe('GraphNavigatorPageComponent', () => {
       expect(facade.providerSettings()).toEqual(SETTINGS_B.getProviderSettings());
     });
 
-    it('should ignore settings that arrive for a repository that is no longer selected', async () => {
+    it('should abort loading the settings of a repository that is no longer selected', async () => {
       // GIVEN: the settings of the first repository are slow.
-      const slowRequest = deferred<GraphNavigatorSettings>();
-      getSettingsSpy.mockReturnValueOnce(slowRequest.promise).mockResolvedValueOnce(SETTINGS_B);
+      const toastrErrorSpy = jest.spyOn(ServiceProvider.get(OntoToastrService), 'error');
+      let firstSignal: AbortSignal | undefined;
+      getSettingsSpy
+        .mockImplementationOnce((_repositoryId: string, signal?: AbortSignal) => {
+          firstSignal = signal;
+          return new Promise<GraphNavigatorSettings>((_resolve, reject) => {
+            signal?.addEventListener('abort', () => reject(new DOMException('Aborted', 'AbortError')));
+          });
+        })
+        .mockResolvedValueOnce(SETTINGS_B);
       fixture.detectChanges();
       await selectRepository(REPOSITORY_A);
 
-      // WHEN: another repository is selected and the first request resolves afterwards.
+      // WHEN: another repository is selected.
       await selectRepository(REPOSITORY_B);
       await settle();
-      slowRequest.resolve(SETTINGS_A);
-      await settle();
 
-      // THEN: the diagram keeps the settings of the selected repository.
+      // THEN: the first request is aborted silently and the diagram uses the settings of the selected repository.
+      expect(firstSignal?.aborted).toBe(true);
+      expect(toastrErrorSpy).not.toHaveBeenCalled();
       const facade = getFacade().componentInstance as GraphwiseReactodiaFacadeComponent;
       expect(facade.currentRepository()).toBe(REPOSITORY_B.id);
       expect(facade.providerSettings()).toEqual(SETTINGS_B.getProviderSettings());

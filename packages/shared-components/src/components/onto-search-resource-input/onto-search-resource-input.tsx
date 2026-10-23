@@ -8,7 +8,7 @@ import {
   NamespaceMap,
   NamespacesContextService,
   navigateTo,
-  OntoToastrService, ResourceSearchStorageService,
+  OntoToastrService, RepositoryContextService, ResourceSearchStorageService,
   SearchButton,
   SearchButtonConfig,
   ServiceProvider,
@@ -39,9 +39,10 @@ export class OntoSearchResourceInput {
   private readonly toastrService = ServiceProvider.get(OntoToastrService);
   private readonly eventService = ServiceProvider.get(EventService);
   private readonly namespaceContextService = ServiceProvider.get(NamespacesContextService);
+  private readonly repositoryContextService = ServiceProvider.get(RepositoryContextService);
 
   private readonly subscriptions = new SubscriptionList();
-  private autocompleteWarningShown = false;
+  private readonly autocompleteWarnedRepositories = new Set<string | undefined>();
   private inputRef: HTMLInputElement;
   private namespaces: NamespaceMap;
 
@@ -249,8 +250,9 @@ export class OntoSearchResourceInput {
   }
 
   private checkForAutocomplete() {
-    if (this.inputValue.length > 0 && !this.isAutocompleteEnabled && !this.autocompleteWarningShown) {
-      this.autocompleteWarningShown = true;
+    const repositoryId = this.repositoryContextService.getSelectedRepository()?.id;
+    if (this.inputValue.length > 0 && !this.isAutocompleteEnabled && !this.autocompleteWarnedRepositories.has(repositoryId)) {
+      this.autocompleteWarnedRepositories.add(repositoryId);
       const message = TranslationService.translate('rdf_search.toasts.autocomplete_is_off');
       this.toastrService.warning(`<a class="no-underline" style="font-weight: 500">${message}</a>`,
         {

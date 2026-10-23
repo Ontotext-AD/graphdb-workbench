@@ -1,8 +1,19 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {NO_ERRORS_SCHEMA} from '@angular/core';
-import {Rdf4jRepositoryService, ServiceProvider} from '@ontotext/workbench-api';
 import {GraphwiseReactodiaFacadeComponent} from './graphwise-reactodia-facade.component';
 import {provideTranslocoForTesting} from '../../../testing-utils/transloco-utils';
+import {
+  Rdf4jRepositoryService,
+  AutocompleteStorageService,
+  GraphNavigatorContextService,
+  GraphNavigatorSettings,
+  OntoToastrService,
+  Repository,
+  RepositoryContextService,
+  ServiceProvider,
+  SparqlDataProviderSettings,
+  WindowService
+} from '@ontotext/workbench-api';
 import {LoggerProvider} from '../../services/logger/logger-provider';
 import EN_labels from '../../../assets/i18n/en.json';
 import {NotificationProviderService} from '../../services/notification/notification-provider.service';
@@ -100,6 +111,142 @@ describe('GraphwiseReactodiaFacadeComponent', () => {
       await expect(request).rejects.toBe(error);
       expect(toastrErrorSpy).not.toHaveBeenCalled();
       expect(loggerErrorSpy).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('text search', () => {
+    const AUTOCOMPLETE_SEARCH = {
+      prefix: 'PREFIX auto: <http://www.ontotext.com/plugins/autocomplete#>',
+      queryPattern: '?inst auto:query "${text}" BIND(0 as ?score)'
+    };
+    const createProviderSettings = (fullTextSearch: SparqlDataProviderSettings['fullTextSearch']): SparqlDataProviderSettings => ({
+      defaultPrefix: '',
+      schemaLabelProperty: 'rdfs:label',
+      dataLabelProperty: 'rdfs:label',
+      elementInfoQuery: '',
+      linksInfoQuery: '',
+      imageQueryPattern: '',
+      linkTypesOfQuery: '',
+      linkTypesStatisticsQuery: '',
+      lookupQuery: '',
+      filterRefElementLinkPattern: '',
+      filterTypePattern: '',
+      filterElementInfoPattern: '',
+      filterAdditionalRestriction: '',
+      fullTextSearch,
+      linkConfigurations: [],
+      propertyConfigurations: []
+    });
+    const setProviderSettings = (providerSettings: SparqlDataProviderSettings): void => {
+      ServiceProvider.get(GraphNavigatorContextService).updateSettings(new GraphNavigatorSettings({uploaded: false, providerSettings}));
+    };
+    const selectRepository = (id: string): void => {
+      jest.spyOn(ServiceProvider.get(RepositoryContextService), 'getSelectedRepository').mockReturnValue({id} as Repository);
+    };
+    let warningSpy: jest.SpyInstance;
+    let navigateSpy: jest.SpyInstance;
+
+    beforeEach(() => {
+      warningSpy = jest.spyOn(ServiceProvider.get(OntoToastrService), 'warning').mockImplementation();
+      navigateSpy = jest.spyOn(WindowService, 'navigateSingleSpa').mockImplementation();
+      selectRepository('test-repo');
+    });
+
+    afterEach(() => {
+      ServiceProvider.get(GraphNavigatorContextService).updateSettings(undefined);
+      jest.restoreAllMocks();
+    });
+
+    const searchByText = () => {
+      getReactodiaElement().dispatchEvent(new CustomEvent('graphwiseReactodiaEvent', {detail: {type: 'text-search'}}));
+    };
+
+    it('should warn that autocomplete is off when the settings use autocomplete', () => {
+      // Given settings that search with autocomplete, while autocomplete is off
+      setProviderSettings(createProviderSettings(AUTOCOMPLETE_SEARCH));
+      ServiceProvider.get(AutocompleteStorageService).setEnabled(false);
+
+      // When the user searches by text
+      searchByText();
+
+      // Then the user is warned that autocomplete is off
+      expect(warningSpy).toHaveBeenCalledTimes(1);
+      const [message, config] = warningSpy.mock.calls[0];
+      expect(message).toContain('Autocomplete is OFF<br>Go to Setup -> Autocomplete');
+      // And the warning leads to the autocomplete page
+      config.onClick();
+      expect(navigateSpy).toHaveBeenCalledWith(expect.stringMatching(/\/autocomplete$/));
+    });
+
+    it('should warn only once', () => {
+      // Given settings that search with autocomplete, while autocomplete is off
+      setProviderSettings(createProviderSettings(AUTOCOMPLETE_SEARCH));
+      ServiceProvider.get(AutocompleteStorageService).setEnabled(false);
+
+      // When the user searches by text twice
+      searchByText();
+      searchByText();
+
+      // Then the user is warned once
+      expect(warningSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('should not warn when autocomplete is on', () => {
+      // Given settings that search with autocomplete, while autocomplete is on
+      setProviderSettings(createProviderSettings(AUTOCOMPLETE_SEARCH));
+      ServiceProvider.get(AutocompleteStorageService).setEnabled(true);
+
+      // When the user searches by text
+      searchByText();
+
+      // Then the user is not warned
+      expect(warningSpy).not.toHaveBeenCalled();
+    });
+
+    it('should not warn when the settings do not use autocomplete', () => {
+      // Given settings that search with a regex, while autocomplete is off
+      setProviderSettings(createProviderSettings({
+        prefix: '',
+        queryPattern: '?inst rdfs:label ?search1 FILTER regex(str(?search1), "${text}", "i") BIND(0 as ?score)'
+      }));
+      ServiceProvider.get(AutocompleteStorageService).setEnabled(false);
+
+      // When the user searches by text
+      searchByText();
+
+      // Then the user is not warned
+      expect(warningSpy).not.toHaveBeenCalled();
+    });
+
+    it('should warn again when the repository changes', () => {
+      // Given settings that search with autocomplete, while autocomplete is off
+      setProviderSettings(createProviderSettings(AUTOCOMPLETE_SEARCH));
+      ServiceProvider.get(AutocompleteStorageService).setEnabled(false);
+      // And the user is already warned
+      searchByText();
+
+      // When the repository changes
+      selectRepository('other-repo');
+      // And the user searches by text
+      searchByText();
+
+      // Then the user is warned again
+      expect(warningSpy).toHaveBeenCalledTimes(2);
+    });
+
+    it('should warn when the default prefix declares autocomplete', () => {
+      // Given settings whose default prefix declares autocomplete, while autocomplete is off
+      setProviderSettings({
+        ...createProviderSettings({prefix: '', queryPattern: '?inst auto:query "${text}" BIND(0 as ?score)'}),
+        defaultPrefix: AUTOCOMPLETE_SEARCH.prefix
+      });
+      ServiceProvider.get(AutocompleteStorageService).setEnabled(false);
+
+      // When the user searches by text
+      searchByText();
+
+      // Then the user is warned that autocomplete is off
+      expect(warningSpy).toHaveBeenCalledTimes(1);
     });
   });
 });
