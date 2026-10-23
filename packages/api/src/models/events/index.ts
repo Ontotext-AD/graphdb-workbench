@@ -11,3 +11,4 @@ export * from './app-lifecycle/application-changed';
 export * from './app-lifecycle/before-mount-routing';
 export * from './auth/logout';
 export * from './auth/login';
+export * from './auth/logged-out';

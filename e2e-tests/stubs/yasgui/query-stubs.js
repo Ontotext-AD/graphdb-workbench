@@ -225,6 +225,11 @@ export class QueryStubs {
     static interceptSavedQueryCreation() {
         cy.intercept('POST', '/rest/sparql/saved-queries').as('saveQuery');
     }
+
+    static spyAbortQuery() {
+        cy.intercept('DELETE', /\/rest\/monitor\/repository\/[^/]+\/query\?query=yasgui-component-.*/)
+            .as('abortQuery');
+    }
 }
 
 export class QueryStubDescription {
