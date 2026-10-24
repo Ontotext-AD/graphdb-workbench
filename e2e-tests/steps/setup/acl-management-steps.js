@@ -190,7 +190,7 @@ export class AclManagementSteps {
     }
 
     static getWarningIcon(index) {
-        return this.getSavedRoleField(index).get('.ri-alert-line');
+        return this.getSavedRoleField(index).find('.ri-alert-line');
     }
 
     static getWarningIconTooltipText(index) {

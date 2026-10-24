@@ -33,7 +33,9 @@ describe('Home page: without repositories', () => {
     HomeSteps.getRepositoryErrorsWidget().should('be.visible');
     RepositoryErrorsWidgetSteps.getInfoMessage().should('contain', 'Some functionalities are not available because you are not connected to any repository.');
     RepositoryErrorsWidgetSteps.getCreateRepositoryBtn().should('be.visible');
-    RepositoryErrorsWidgetSteps.getShowRemoteLocationsBtn().should('be.visible');
+    // There are no repositories to filter.
+    RepositoryErrorsWidgetSteps.getRepositoryFilter().should('not.exist');
+    RepositoryErrorsWidgetSteps.getLocalOnlyCheckbox().should('not.exist');
   });
 
   it('should render license widget', () => {
