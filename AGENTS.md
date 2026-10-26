@@ -61,6 +61,7 @@ Some changes have a twin outside the file you're editing — make both or say wh
 - **[HTTP interceptors](docs/conventions/http-interceptors.md)** — request/response chains.
 - **[Testing](docs/conventions/testing.md)** — unit vs integration, public surface, mocking, coverage.
 - **[E2E testing](docs/conventions/e2e-testing.md)** — Cypress steps/stubs classes, `data-test` selectors, running one spec.
+- **[Pull requests](docs/conventions/pull-requests.md)** — PR title, description sections, change outline, checklist.
 
 ## Testing
 
