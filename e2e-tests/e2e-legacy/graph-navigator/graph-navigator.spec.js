@@ -156,26 +156,38 @@ describe('Graph Navigator', () => {
     });
 
     describe('Settings', () => {
-        it('should open the settings popover', () => {
+        it('should open the settings sidebar', () => {
             // Given I open the Graph Navigator view.
             GraphNavigatorSteps.visit();
 
             // When I click the Settings button.
             GraphNavigatorSteps.openSettings();
 
-            // Then I expect the settings popover to be open.
-            GraphNavigatorSteps.getSettingsPopover().should('be.visible');
+            // Then I expect the settings sidebar to be open.
+            GraphNavigatorSteps.getSettingsSidebar().should('be.visible');
             GraphNavigatorSteps.getBrowseButton().should('contain', 'Browse');
         });
 
-        it('should not offer reset when the default settings are in use', () => {
+        it('should keep the settings sidebar open when clicking on the page', () => {
+            // Given I have opened the settings.
+            GraphNavigatorSteps.visit();
+            GraphNavigatorSteps.openSettings();
+
+            // When I click on the canvas.
+            GraphNavigatorSteps.clickOnCanvas();
+
+            // Then I expect the sidebar to stay open.
+            GraphNavigatorSteps.getSettingsSidebar().should('be.visible');
+        });
+
+        it('should disable reset when the default settings are in use', () => {
             // Given I open the settings of a repository without uploaded settings.
             GraphNavigatorSteps.visit();
             GraphNavigatorSteps.openSettings();
 
-            // Then I expect no reset action, because there is nothing to reset to.
-            GraphNavigatorSteps.getSettingsPopover().should('be.visible');
-            GraphNavigatorSteps.getResetButton().should('not.exist');
+            // Then I expect the reset action to be disabled, because there is nothing to reset to.
+            GraphNavigatorSteps.getSettingsSidebar().should('be.visible');
+            GraphNavigatorSteps.getResetButton().should('be.disabled');
         });
 
         it('should cancel a selected file', () => {
@@ -189,7 +201,7 @@ describe('Graph Navigator', () => {
             GraphNavigatorSteps.clickCancelFile();
 
             // Then I expect the file to be removed.
-            GraphNavigatorSteps.getSettingsPopover().should('not.contain', SETTINGS_FILE_NAME);
+            GraphNavigatorSteps.getSettingsSidebar().should('not.contain', SETTINGS_FILE_NAME);
             GraphNavigatorSteps.getUploadButton().should('be.disabled');
         });
 
@@ -209,8 +221,8 @@ describe('Graph Navigator', () => {
             // When I cancel.
             GraphNavigatorSteps.cancelDialog();
 
-            // Then I expect the popover to stay open with the file still selected.
-            GraphNavigatorSteps.getSettingsPopover().should('be.visible');
+            // Then I expect the sidebar to stay open with the file still selected.
+            GraphNavigatorSteps.getSettingsSidebar().should('be.visible');
             GraphNavigatorSteps.getSelectedSettingsFile(SETTINGS_FILE_NAME).should('exist');
 
             // When I upload and confirm.
@@ -222,7 +234,7 @@ describe('Graph Navigator', () => {
             GraphNavigatorSteps.getWorkspace().should('exist');
         });
 
-        it('should show the validation errors of a rejected file on its row', () => {
+        it('should show the validation errors of a rejected file', () => {
             // Given I have selected a settings file with invalid values and an unknown property.
             GraphNavigatorSteps.visit();
             GraphNavigatorSteps.openSettings();
@@ -232,12 +244,12 @@ describe('Graph Navigator', () => {
             GraphNavigatorSteps.clickUpload();
             GraphNavigatorSteps.confirmDialog();
 
-            // Then I expect the errors in a table on the file row.
+            // Then I expect the errors under the file.
             ToasterSteps.verifyNewToasterError('Could not upload the settings');
             GraphNavigatorSteps.getSelectedSettingsFile(INVALID_SETTINGS_FILE_NAME).should('exist');
             GraphNavigatorSteps.getUploadErrors().should('be.visible')
                 .and('contain', '3 validation errors')
-                .and('contain', 'Fix these properties in the file and upload it again.');
+                .and('contain', 'Fix the errors and upload again.');
             GraphNavigatorSteps.getUploadError('gn:acceptBlankNodes').should('contain', 'Must be of type boolean');
             GraphNavigatorSteps.getUploadError('gn:openWorldProperties').should('contain', 'Must be of type boolean');
             GraphNavigatorSteps.getUploadError('gn:unknownSetting')
@@ -267,16 +279,18 @@ describe('Graph Navigator', () => {
             GraphNavigatorSteps.clickUpload();
             GraphNavigatorSteps.confirmDialog();
             ToasterSteps.verifySuccess('The settings were uploaded');
+            // Wait for the toast to go, so it does not detach while the reset toast is verified.
+            ToasterSteps.getToast().should('not.exist');
 
-            // When I click outside the settings.
+            // When I close the settings.
             GraphNavigatorSteps.closeSettings();
 
-            // Then I expect the popover to close.
-            GraphNavigatorSteps.getSettingsPopover().should('not.exist');
+            // Then I expect the sidebar to close.
+            GraphNavigatorSteps.getSettingsSidebar().should('not.exist');
 
             // When I reset them.
             GraphNavigatorSteps.openSettings();
-            GraphNavigatorSteps.getResetButton().should('be.visible');
+            GraphNavigatorSteps.getResetButton().should('be.enabled');
             GraphNavigatorSteps.clickReset();
 
             // Then I expect a confirmation that warns the diagram may behave unexpectedly.

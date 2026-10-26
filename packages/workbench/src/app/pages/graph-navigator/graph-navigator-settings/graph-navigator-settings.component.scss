@@ -1,4 +1,4 @@
-.graph-navigator-settings {
+.p-drawer.graph-navigator-settings-drawer {
   width: 32rem;
   max-width: calc(100vw - 2rem);
 
@@ -8,42 +8,62 @@
     }
 
     display: flex;
+    flex: 1;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 0.75rem;
   }
 
-  & .upload-drop-hint {
-    margin: 0;
+  & .p-drawer-content {
+    padding-bottom: 6rem;
   }
 
-  & .p-fileupload-file.invalid {
-    border: 1px solid var(--gw-message-error-border-color);
-    border-radius: var(--gw-content-border-radius);
-    background: var(--gw-message-error-background);
-  }
+  & .graph-navigator-settings {
+    & .upload-drop-hint {
+      margin: 0;
+      padding: 3rem 1rem;
+      text-align: center;
+    }
 
-  & .validation-errors-message {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: var(--gw-message-error-color);
-  }
+    & .p-fileupload-upload-button,
+    & .p-fileupload-cancel-button {
+      padding: 0.5rem;
 
-  & .upload-errors-table {
-    & tr {
-      background: transparent;
-
-      &:not(:last-child) td {
-        border-bottom: 1px solid var(--gw-message-error-border-color);
+      // The upload and cancel buttons show only their icons.
+      & .p-button-label {
+        display: none;
       }
     }
 
-    & th {
-      padding-left: 0;
-      background: var(--gw-message-error-background);
-      border-bottom: 1px solid var(--gw-message-error-border-color);
-      color: var(--gw-text-muted-color);
+    & .p-fileupload-file {
+      flex-wrap: wrap;
+    }
+
+    // The errors wrap below the file name.
+    & .upload-errors {
+      flex-basis: 100%;
+    }
+
+    & .upload-errors-hint {
+      margin: 0.75rem 0;
+    }
+
+    & .upload-errors-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    & .upload-error {
+      display: flex;
+      gap: 0.5rem;
+
+      & > i {
+        color: var(--gw-message-error-color);
+        align-self: center;
+      }
     }
 
     & .upload-error-property {

@@ -1,19 +1,18 @@
-import {Component, computed, effect, inject, input, output, signal, untracked, viewChild} from '@angular/core';
+import {Component, effect, inject, input, output, signal, untracked, viewChild, ViewEncapsulation} from '@angular/core';
 import {TranslocoPipe, TranslocoService} from '@jsverse/transloco';
 import {Badge} from 'primeng/badge';
 import {Button} from 'primeng/button';
-import {Popover} from 'primeng/popover';
+import {Drawer} from 'primeng/drawer';
 import {FileUpload, FileUploadHandlerEvent} from 'primeng/fileupload';
-import {TableModule} from 'primeng/table';
+import {Message} from 'primeng/message';
 import {GraphNavigatorSettings, GraphNavigatorSettingsError} from '@ontotext/workbench-api';
 import {ConfirmationProviderService} from '../../../services/dialog/confirmation-provider.service';
-import {UpperCasePipe} from '@angular/common';
 
 /** The translation key prefix of the upload error codes. */
 const ERROR_CODES_KEY = 'graph_navigator.settings.upload.errors.codes';
 
 /**
- * The Settings button of the Graph Navigator page and its popover, where a repository maintainer uploads,
+ * The Settings button of the Graph Navigator page and its sidebar, where a repository maintainer uploads,
  * exports or resets the repository's graph-navigator settings.
  *
  * The component only renders and asks: it confirms the destructive actions and emits them, and reflects
@@ -25,14 +24,15 @@ const ERROR_CODES_KEY = 'graph_navigator.settings.upload.errors.codes';
   imports: [
     Badge,
     Button,
-    Popover,
+    Drawer,
     FileUpload,
-    TableModule,
-    TranslocoPipe,
-    UpperCasePipe
+    Message,
+    TranslocoPipe
   ],
   templateUrl: './graph-navigator-settings.component.html',
-  styleUrl: './graph-navigator-settings.component.scss'
+  styleUrl: './graph-navigator-settings.component.scss',
+  // The drawer is rendered by PrimeNG and appended to the page, outside this component's style scope.
+  encapsulation: ViewEncapsulation.None
 })
 export class GraphNavigatorSettingsComponent {
   private readonly confirmationProviderService = inject(ConfirmationProviderService);
@@ -56,14 +56,8 @@ export class GraphNavigatorSettingsComponent {
   /** Emits when the selected file changed, so the validation errors of the previous file are dropped. */
   readonly clearUploadErrors = output<void>();
 
-  /** Whether a confirmation dialog is open. */
-  private readonly confirming = signal(false);
-
-  /**
-   * The popover must not close while the user clicks in the confirmation dialog, or while the request is
-   * running, so that it stays open, with the file still selected, when the upload fails.
-   */
-  readonly dismissable = computed(() => !this.confirming() && !this.loading());
+  /** Whether the sidebar is open. */
+  readonly isSidebarVisible = signal(false);
 
   constructor() {
     // New settings mean the page applied an upload or a reset, so the selected file is done with. A failed
@@ -109,23 +103,10 @@ export class GraphNavigatorSettingsComponent {
   }
 
   private confirm(headerKey: string, messageKey: string, acceptHandler: () => void): void {
-    this.confirming.set(true);
     this.confirmationProviderService.confirm({
       header: this.translocoService.translate(headerKey),
       message: this.translocoService.translate(messageKey),
-      acceptHandler: () => {
-        this.releasePopover();
-        acceptHandler();
-      },
-      rejectHandler: () => this.releasePopover()
+      acceptHandler
     });
-  }
-
-  /**
-   * Lets the popover close on outside clicks again. Deferred, so the click on the dialog button that is still
-   * being dispatched does not close it.
-   */
-  private releasePopover(): void {
-    setTimeout(() => this.confirming.set(false));
   }
 }

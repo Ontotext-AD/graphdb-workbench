@@ -67,11 +67,15 @@ export class GraphNavigatorSteps extends BaseSteps {
     }
 
     static closeSettings() {
+        cy.get('.graph-navigator-settings-drawer .p-drawer-close-button').click();
+    }
+
+    static clickOnCanvas() {
         GraphNavigatorSteps.getCanvas().click('bottomLeft');
     }
 
-    static getSettingsPopover() {
-        return cy.get('[data-test="graph-navigator-settings-popover"]');
+    static getSettingsSidebar() {
+        return cy.get('[data-test="graph-navigator-settings-sidebar"]');
     }
 
     static getSettingsFileInput() {
@@ -84,7 +88,7 @@ export class GraphNavigatorSteps extends BaseSteps {
     }
 
     static getSelectedSettingsFile(fileName) {
-        return GraphNavigatorSteps.getSettingsPopover().contains(fileName);
+        return GraphNavigatorSteps.getSettingsSidebar().contains(fileName);
     }
 
     static getUploadErrors() {
@@ -96,7 +100,7 @@ export class GraphNavigatorSteps extends BaseSteps {
     }
 
     static getUploadButton() {
-        return GraphNavigatorSteps.getSettingsPopover().find('.p-fileupload-upload-button');
+        return GraphNavigatorSteps.getSettingsSidebar().find('.p-fileupload-upload-button');
     }
 
     static clickUpload() {
@@ -104,11 +108,11 @@ export class GraphNavigatorSteps extends BaseSteps {
     }
 
     static clickCancelFile() {
-        GraphNavigatorSteps.getSettingsPopover().find('.p-fileupload-cancel-button').click();
+        GraphNavigatorSteps.getSettingsSidebar().find('.p-fileupload-cancel-button').click();
     }
 
     static getBrowseButton() {
-        return GraphNavigatorSteps.getSettingsPopover().find('.p-fileupload-choose-button');
+        return GraphNavigatorSteps.getSettingsSidebar().find('.p-fileupload-choose-button');
     }
 
     static clickExport() {
