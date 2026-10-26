@@ -143,14 +143,13 @@
       "upload": {
         "title": "Upload settings file",
         "browse": "Browse",
+        "upload": "Upload",
+        "cancel": "Cancel",
         "drop_hint": "Drag and drop files to here to upload.",
         "pending": "Pending",
-        "invalid": "Invalid",
         "errors": {
           "title": "{count} validation {count, plural, one {error} other {errors}}",
-          "hint": "Fix these properties in the file and upload it again.",
-          "property": "Property",
-          "problem": "Problem",
+          "hint": "Fix the errors and upload again.",
           "codes": {
             "required": "Is required",
             "wrong_type": "Must be of type {{expected}}",

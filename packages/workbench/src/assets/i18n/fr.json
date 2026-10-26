@@ -143,14 +143,13 @@
       "upload": {
         "title": "Importer un fichier de paramètres",
         "browse": "Parcourir",
+        "upload": "Téléverser",
+        "cancel": "Annuler",
         "drop_hint": "Glissez-déposez ici les fichiers à importer.",
         "pending": "En attente",
-        "invalid": "Non valide",
         "errors": {
           "title": "{count} {count, plural, one {erreur} other {erreurs}} de validation",
-          "hint": "Corrigez ces propriétés dans le fichier et importez-le à nouveau.",
-          "property": "Propriété",
-          "problem": "Problème",
+          "hint": "Corrigez les erreurs et importez à nouveau.",
           "codes": {
             "required": "Est obligatoire",
             "wrong_type": "Doit être de type {{expected}}",

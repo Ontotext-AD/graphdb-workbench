@@ -2,22 +2,25 @@
           severity="secondary"
           [label]="'graph_navigator.settings.button' | transloco"
           data-test="graph-navigator-settings-btn"
-          (onClick)="popover.toggle($event)"/>
+          (onClick)="isSidebarVisible.set(!isSidebarVisible())"/>
 
-<p-popover #popover
-           [dismissable]="dismissable()"
-           styleClass="graph-navigator-settings-popover">
-  <div class="graph-navigator-settings" data-test="graph-navigator-settings-popover">
+<p-drawer [(visible)]="isSidebarVisible"
+          position="right"
+          [modal]="false"
+          appendTo="body"
+          styleClass="graph-navigator-settings-drawer">
+  <ng-template #header>
     <header class="settings-header">
       <h4>{{ 'graph_navigator.settings.upload.title' | transloco }}</h4>
-      @if (settings().isUploaded()) {
-        <p-button [link]="true"
-                  [label]="'graph_navigator.settings.reset' | transloco"
-                  [disabled]="loading()"
-                  data-test="graph-navigator-settings-reset-btn"
-                  (onClick)="confirmReset()"/>
-      }
+      <p-button [link]="true"
+                [label]="'graph_navigator.settings.reset' | transloco"
+                [disabled]="loading() || !settings().isUploaded()"
+                data-test="graph-navigator-settings-reset-btn"
+                (onClick)="confirmReset()"/>
     </header>
+  </ng-template>
+
+  <div class="graph-navigator-settings" data-test="graph-navigator-settings-sidebar">
 
     <p-fileupload #fileUpload
                   mode="advanced"
@@ -30,48 +33,42 @@
                   chooseIcon="ri-file-search-line"
                   uploadIcon="ri-upload-2-line"
                   cancelIcon="ri-close-line"
+                  [chooseButtonProps]="{size: 'small'}"
+                  [pt]="{
+                    pcUploadButton: {root: {title: 'graph_navigator.settings.upload.upload' | transloco}},
+                    pcCancelButton: {root: {title: 'graph_navigator.settings.upload.cancel' | transloco}}
+                  }"
+                  [uploadButtonProps]="{size: 'small', ariaLabel: 'graph_navigator.settings.upload.upload' | transloco}"
+                  [cancelButtonProps]="{size: 'small', outlined: true, ariaLabel: 'graph_navigator.settings.upload.cancel' | transloco}"
                   data-test="graph-navigator-settings-upload"
                   (onSelect)="onFileChanged()"
                   (onRemove)="onFileChanged()"
                   (onClear)="onFileChanged()"
                   (uploadHandler)="confirmUpload($event)">
       <ng-template #file let-file>
-        <div class="p-fileupload-file"
-             [class.invalid]="uploadErrors().length"
-             data-test="graph-navigator-settings-upload-file">
+        <div class="p-fileupload-file" data-test="graph-navigator-settings-upload-file">
           <div class="p-fileupload-file-info">
             <div class="p-fileupload-file-name">{{ file.name }}</div>
           </div>
           @if (uploadErrors().length) {
-            <p-badge class="p-fileupload-file-badge"
-                     severity="danger"
-                     [value]="'graph_navigator.settings.upload.invalid' | transloco"/>
             <div class="upload-errors" role="alert" data-test="graph-navigator-settings-upload-errors">
-              <div class="upload-errors-header">
-                <div class="validation-errors-message">
-                  <i class="ri-forbid-line" aria-hidden="true"></i>
-                  <strong>{{ 'graph_navigator.settings.upload.errors.title' | transloco: {count: uploadErrors().length} }}</strong>
-                </div>
-                <p>{{ 'graph_navigator.settings.upload.errors.hint' | transloco }}</p>
-              </div>
-              <p-table class="upload-errors-table"
-                       [value]="uploadErrors()"
-                       [scrollable]="true"
-                       scrollHeight="12rem"
-                       [tableStyle]="{'table-layout': 'fixed'}">
-                <ng-template #header>
-                  <tr>
-                    <th scope="col">{{ 'graph_navigator.settings.upload.errors.property' | transloco | uppercase }}</th>
-                    <th scope="col">{{ 'graph_navigator.settings.upload.errors.problem' | transloco | uppercase }}</th>
-                  </tr>
-                </ng-template>
-                <ng-template #body let-error>
-                  <tr data-test="graph-navigator-settings-upload-error">
-                    <td class="upload-error-property">{{ error.property }}</td>
-                    <td>{{ translateError(error) }}</td>
-                  </tr>
-                </ng-template>
-              </p-table>
+              <p-message severity="error" icon="ri-close-circle-line">
+                {{ 'graph_navigator.settings.upload.errors.title' | transloco: {count: uploadErrors().length} }}
+              </p-message>
+              <p class="upload-errors-hint">{{ 'graph_navigator.settings.upload.errors.hint' | transloco }}</p>
+              <ul class="upload-errors-list">
+                @for (error of uploadErrors(); track $index) {
+                  <li class="upload-error" data-test="graph-navigator-settings-upload-error">
+                    <i class="ri-close-circle-line" aria-hidden="true"></i>
+                    <div>
+                      @if (error.property) {
+                        <strong class="upload-error-property">{{ error.property }}</strong>
+                      }
+                      <div>{{ translateError(error) }}</div>
+                    </div>
+                  </li>
+                }
+              </ul>
             </div>
           } @else {
             <p-badge class="p-fileupload-file-badge" [value]="'graph_navigator.settings.upload.pending' | transloco"/>
@@ -89,4 +86,4 @@
               data-test="graph-navigator-settings-export-btn"
               (onClick)="exportSettings.emit()"/>
   </div>
-</p-popover>
+</p-drawer>

@@ -6,8 +6,8 @@ import {Model} from '../common';
 export class GraphNavigatorSettingsError extends Model<GraphNavigatorSettingsError> {
   /** The kind of the problem, e.g. `required` or `wrong_type`. */
   readonly code: string;
-  /** The predicate with a prefix, e.g. `gn:acceptBlankNodes` */
-  readonly property: string;
+  /** The predicate with a prefix, e.g. `gn:acceptBlankNodes`, or `undefined` when the error is not about a property. */
+  readonly property?: string;
   /** The untranslated description of the problem. */
   readonly message: string;
   /** The details of the problem, e.g. the `expected` and `actual` types of a `wrong_type` error. */
@@ -17,7 +17,7 @@ export class GraphNavigatorSettingsError extends Model<GraphNavigatorSettingsErr
 
   constructor(data: {
     code: string;
-    property: string;
+    property?: string;
     message: string;
     params: Record<string, string>;
     predicate?: string;
