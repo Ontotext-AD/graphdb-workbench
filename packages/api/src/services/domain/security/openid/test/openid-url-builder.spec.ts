@@ -304,6 +304,51 @@ describe('OpenIdUrlBuilder', () => {
       expect(result).toContain('client_id=client-with-special-chars%2F%26%3D');
     });
 
+    it('should add id_token_hint when an ID token is given', () => {
+      // Given I have an OpenID config with an end session endpoint
+      const config = mockOpenIdConfig();
+      const securityConfig = mockSecurityConfig(config);
+      jest.spyOn(securityContextService, 'getSecurityConfig').mockReturnValue(securityConfig);
+      const redirectUrl = 'https://app.example.com/home';
+
+      // When I build the logout URL with an ID token
+      const result = openIdUrlBuilder.buildLogoutUrl(redirectUrl, 'id-token');
+
+      // Then I expect the URL to end with the ID token as id_token_hint
+      expect(result).toBe(
+        `https://auth.example.com/logout?client_id=test-client-id&post_logout_redirect_uri=${encodeURIComponent(redirectUrl)}&id_token_hint=id-token`
+      );
+    });
+
+    it('should properly encode the ID token in id_token_hint', () => {
+      // Given I have an OpenID config with an end session endpoint
+      const config = mockOpenIdConfig();
+      const securityConfig = mockSecurityConfig(config);
+      jest.spyOn(securityContextService, 'getSecurityConfig').mockReturnValue(securityConfig);
+
+      // When I build the logout URL with an ID token that has special characters
+      const result = openIdUrlBuilder.buildLogoutUrl('https://app.example.com/home', 'id+token/&=');
+
+      // Then I expect the ID token to be encoded
+      expect(result).toContain('id_token_hint=id%2Btoken%2F%26%3D');
+    });
+
+    it('should not add id_token_hint when the ID token is missing', () => {
+      // Given I have an OpenID config with an end session endpoint
+      const config = mockOpenIdConfig();
+      const securityConfig = mockSecurityConfig(config);
+      jest.spyOn(securityContextService, 'getSecurityConfig').mockReturnValue(securityConfig);
+      const redirectUrl = 'https://app.example.com/home';
+
+      // When I build the logout URL without an ID token
+      const withNullToken = openIdUrlBuilder.buildLogoutUrl(redirectUrl, null);
+      const withEmptyToken = openIdUrlBuilder.buildLogoutUrl(redirectUrl, '');
+
+      // Then I expect the URL to have no id_token_hint
+      expect(withNullToken).not.toContain('id_token_hint');
+      expect(withEmptyToken).not.toContain('id_token_hint');
+    });
+
     it('should throw OpenIdError when security config is missing', () => {
       jest.spyOn(securityContextService, 'getSecurityConfig').mockReturnValue(undefined);
 

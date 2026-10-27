@@ -331,19 +331,49 @@ describe('OpenidAuthProvider', () => {
   });
 
   describe('logout', () => {
-    it('should call openIdService.logout', async () => {
-      const logoutSpy = jest.spyOn(openIdService, 'logout');
+    it('should log out from the OpenID provider by default', async () => {
+      // Given I have an OpenID config with an end session endpoint
+      setupSecurityConfig(createOpenIdConfig());
+      const logoutSpy = jest.spyOn(openIdService, 'logout').mockImplementation(() => undefined);
 
-      await strategy.logout();
+      // When I log out
+      const promise = strategy.logout();
 
-      expect(logoutSpy).toHaveBeenCalled();
+      // Then I expect a logout from the OpenID provider
+      expect(logoutSpy).toHaveBeenCalledWith(true);
+      // And the promise to never resolve, as the user is redirected
+      const settled = await Promise.race([
+        promise.then(() => 'resolved'),
+        new Promise((resolve) => setTimeout(() => resolve('timeout'), 10))
+      ]);
+      expect(settled).toBe('timeout');
     });
 
-    it('should resolve immediately', async () => {
-      jest.spyOn(openIdService, 'logout');
+    it('should log out locally only when localLogoutOnly is set', async () => {
+      // Given I have an OpenID config with localLogoutOnly set
+      setupSecurityConfig(createOpenIdConfig({localLogoutOnly: true}));
+      const logoutSpy = jest.spyOn(openIdService, 'logout').mockImplementation(() => undefined);
 
+      // When I log out
       const result = await strategy.logout();
 
+      // Then I expect a local logout only
+      expect(logoutSpy).toHaveBeenCalledWith();
+      // And the promise to resolve
+      expect(result).toBeUndefined();
+    });
+
+    it('should log out locally only when the OpenID provider has no end session endpoint', async () => {
+      // Given I have an OpenID config without an end session endpoint
+      setupSecurityConfig(createOpenIdConfig({oidcEndSessionEndpoint: undefined}));
+      const logoutSpy = jest.spyOn(openIdService, 'logout').mockImplementation(() => undefined);
+
+      // When I log out
+      const result = await strategy.logout();
+
+      // Then I expect a local logout only
+      expect(logoutSpy).toHaveBeenCalledWith();
+      // And the promise to resolve
       expect(result).toBeUndefined();
     });
   });
@@ -423,17 +453,44 @@ describe('OpenidAuthProvider', () => {
       expect(securityContextService.getAuthenticatedUser()?.username).toBe('testUser');
     });
 
-    it('should handle complete logout flow', async () => {
+    it('should handle complete local logout flow', async () => {
+      // Given I have an OpenID config with localLogoutOnly set
+      setupSecurityConfig(createOpenIdConfig({localLogoutOnly: true}));
+      // And I am logged in
       authenticationStorageService.setAuthToken('Bearer test-token');
       const authenticatedUser = ProviderResponseMocks.authenticatedUserResponse as unknown as AuthenticatedUser;
       securityContextService.updateAuthenticatedUser(authenticatedUser);
-      jest.spyOn(openIdService, 'logout').mockImplementation(() => {
-        authenticationStorageService.clearAuthToken();
-      });
+      const setLocationHrefSpy = jest.spyOn(WindowService, 'setLocationHref').mockImplementation(() => undefined);
 
+      // When I log out
       await strategy.logout();
 
-      expect(openIdService.logout).toHaveBeenCalled();
+      // Then I expect the auth token to be cleared
+      expect(authenticationStorageService.getAuthToken().getValue()).toBeNull();
+      // And no redirect to the OpenID provider
+      expect(setLocationHrefSpy).not.toHaveBeenCalled();
+    });
+
+    it('should handle complete logout flow from the OpenID provider', () => {
+      // Given I have an OpenID config with an end session endpoint
+      setupSecurityConfig(createOpenIdConfig());
+      jest.spyOn(WindowService, 'getLocationOrigin').mockReturnValue('http://localhost:3000');
+      jest.spyOn(WindowService, 'getBaseHref').mockReturnValue('/');
+      // And I am logged in with an ID token
+      authenticationStorageService.setAuthToken('Bearer test-token');
+      openidStorageService.setIdToken('id-token');
+      const setLocationHrefSpy = jest.spyOn(WindowService, 'setLocationHref').mockImplementation(() => undefined);
+
+      // When I log out
+      void strategy.logout();
+
+      // Then I expect the auth token to be cleared
+      expect(authenticationStorageService.getAuthToken().getValue()).toBeNull();
+      // And to be redirected to the end session endpoint with id_token_hint
+      expect(setLocationHrefSpy).toHaveBeenCalledWith(
+        'https://auth.example.com/logout?client_id=test-client-id'
+        + `&post_logout_redirect_uri=${encodeURIComponent('http://localhost:3000/')}&id_token_hint=id-token`
+      );
     });
   });
 });

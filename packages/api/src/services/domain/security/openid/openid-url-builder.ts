@@ -3,7 +3,7 @@ import {SecurityContextService} from '../security-context.service';
 import {service} from '../../../../providers';
 import {MissingOpenidConfiguration} from '../errors/openid/missing-openid-configuration';
 import {InvalidOpenidAuthFlow} from '../errors/openid/invalid-openid-auth-flow';
-import {OpenIdAuthFlowType, OpenIdResponseType} from '../../../../models/security/authentication/openid-auth-flow-models';
+import {OpenIdAuthFlowType, OpenIdResponseType} from '../../../../models/security/authentication';
 
 /**
  * Builds OpenID Connect URLs for authentication and logout operations.
@@ -34,13 +34,16 @@ export class OpenIdUrlBuilder {
   /**
    * Builds the logout URL with post-logout redirect.
    * @param redirectUrl URL to redirect to after logout
+   * @param idToken ID token sent as id_token_hint. It tells the OpenID provider which session to end, so the provider
+   * can log out without asking the user to confirm. Left out when not available.
    * @returns Complete logout URL
    */
-  buildLogoutUrl(redirectUrl: string): string {
+  buildLogoutUrl(redirectUrl: string, idToken?: string | null): string {
     const config = this.getOpenIdConfig();
     const clientId = config.clientId!;
     const endSessionUrl = config.openIdEndSessionUrl!;
-    return `${endSessionUrl}?client_id=${encodeURIComponent(clientId)}&post_logout_redirect_uri=${encodeURIComponent(redirectUrl)}`;
+    const logoutUrl = `${endSessionUrl}?client_id=${encodeURIComponent(clientId)}&post_logout_redirect_uri=${encodeURIComponent(redirectUrl)}`;
+    return idToken ? `${logoutUrl}&id_token_hint=${encodeURIComponent(idToken)}` : logoutUrl;
   }
 
   /**

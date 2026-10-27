@@ -287,11 +287,19 @@ export class OpenIdService implements Service {
 
   /**
    * Performs hard logout and redirects to provider's logout endpoint.
+   * Falls back to soft logout when the provider has no end session endpoint.
    * @param {string} redirectUrl - Redirect URI after logout
    */
   private hardLogout(redirectUrl: string): void {
+    const endSessionUrl = this.getOpenIdConfig().openIdEndSessionUrl;
+    // Read the ID token before softLogout() clears it, it is sent as id_token_hint.
+    const idToken = this.openidStorageService.getIdToken().getValue();
     this.softLogout();
-    const logoutUrl = this.getLogoutUrl(redirectUrl);
+    if (!endSessionUrl) {
+      this.logger.debug('OpenID: no end session endpoint, logged out locally only');
+      return;
+    }
+    const logoutUrl = this.getLogoutUrl(redirectUrl, idToken);
     this.redirectToUrl(logoutUrl);
   }
 
@@ -318,9 +326,10 @@ export class OpenIdService implements Service {
   /**
    * Builds logout URL for OpenID provider.
    * @param {string} redirectUrl - Redirect URI after logout
+   * @param {string | null} idToken - ID token sent as id_token_hint
    * @returns {string} Logout URL
    */
-  private getLogoutUrl(redirectUrl: string): string {
-    return this.openIdUrlBuilder.buildLogoutUrl(redirectUrl);
+  private getLogoutUrl(redirectUrl: string, idToken: string | null): string {
+    return this.openIdUrlBuilder.buildLogoutUrl(redirectUrl, idToken);
   }
 }

@@ -34,6 +34,10 @@ export class OpenidSecurityConfig extends Model<OpenidSecurityConfig> {
   extraScopes?: string;
   authorizeParameters?: string;
 
+  // Logout behaviour: when true, logout only clears the token stored in the browser and the session in the
+  // OpenID provider stays active. Otherwise, the user is also logged out from the OpenID provider.
+  localLogoutOnly?: boolean;
+
   // Computed URLs (based on proxyOidc setting)
   openIdTokenUrl?: string;
   openIdKeysUri?: string;
@@ -69,6 +73,9 @@ export class OpenidSecurityConfig extends Model<OpenidSecurityConfig> {
     this.authFlow = config.authFlow;
     this.extraScopes = config.extraScopes;
     this.authorizeParameters = config.authorizeParameters;
+
+    // Logout behaviour
+    this.localLogoutOnly = config.localLogoutOnly ?? false;
 
     // Computed properties
     this.openIdTokenUrl = this.proxyOidc ? 'rest/openid/token' : this.oidcTokenEndpoint;
