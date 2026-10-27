@@ -13,12 +13,16 @@ This resolves the problem described in more detail in the issue tracker: "https:
 
     /* Line numbers */
     .CodeMirror-linenumber {
-        color: #777777;
+        color: var(--gw-neutral-300);
+        /* set the background color as the gutter is absolutely positioned */
+        background-color: #090A0F;
     }
 
     /* Match highlight */
     .cm-matchhighlight {
-        background-color: #dbdeed;
+        background: none;
+        outline: 1px solid var(--gw-tertiary-600);
+        border-radius: 2px;
     }
 
     .yasqe_buttons .custom-button {
@@ -32,7 +36,7 @@ This resolves the problem described in more detail in the issue tracker: "https:
     }
 
     .cm-comment {
-        color: var(--gw-neutral-300);
+        color: var(--gw-neutral-400);
     }
 }
 /* #endregion Overrides for the YASQE theme */
@@ -114,7 +118,7 @@ yasgui-component .CodeMirror-hints {
     font-family: inherit;
     color: var(--gw-autocomplete-color);
     background-color: var(--gw-autocomplete-background);
-    
+
     b {
         color: var(--gw-autocomplete-dropdown-match-color);
         font-weight: bolder;
@@ -143,7 +147,7 @@ yasgui-component .CodeMirror-hints {
 }
 
 /* #region YASQE - saved queries */
-yasgui-component .saved-queries-container { 
+yasgui-component .saved-queries-container {
     color: var(--gw-dialog-color) !important;
     background-color: var(--gw-dialog-background) !important;
     border-color: var(--gw-dialog-border-color);
@@ -182,7 +186,7 @@ yasgui-component .saved-queries-container .saved-queries-popup .saved-query a {
 
 /* #region YASQE FOOTER BUTTONS */
 yasgui-component .tabPanel .yasqe  .yasqe-footer-buttons {
-    padding-top: 15px; 
+    padding-top: 15px;
 }
 
 yasgui-component .tabPanel .yasqe  .yasqe-footer-buttons .abort-button {
