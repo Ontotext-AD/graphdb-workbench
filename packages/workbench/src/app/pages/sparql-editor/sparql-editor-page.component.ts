@@ -252,7 +252,6 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
   }
 
   /**
-   *
    * Navigates to the Graph Navigator visualization page, passing the current query.
    *
    * @param yasr - YASR result renderer instance containing the current query context.
