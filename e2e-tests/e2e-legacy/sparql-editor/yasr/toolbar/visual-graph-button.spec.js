@@ -5,7 +5,7 @@ import {GraphConfigStubs} from '../../../../stubs/graph-config-stubs.js';
 import {BrowserStubs} from '../../../../stubs/browser-stubs.js';
 import {VisualGraphSplitButtonSteps} from '../../../../steps/visual-graph-split-button-steps.js';
 
-describe('"Visualize" split button', () => {
+describe('"VizGraph" split button', () => {
     let repositoryId;
 
     beforeEach(() => {
@@ -21,27 +21,27 @@ describe('"Visualize" split button', () => {
         cy.deleteRepository(repositoryId);
     });
 
-    it('should display "Visualize" split button when user execute a CONSTRUCT query', () => {
+    it('should display "VizGraph" split button when user execute a CONSTRUCT query', () => {
         // WHEN: I visit a page with 'ontotext-yasgui-web-component' on it, and execute select query.
         executeSelectQuery();
-        // THEN: I expect the 'Visualize' button to not be visible.
+        // THEN: I expect the 'VizGraph' button to not be visible.
         VisualGraphSplitButtonSteps.getVisualizeMainButton().should('not.be.visible');
 
         // WHEN: I execute a CONSTRUCT query.
         executeConstructQuery();
-        // THEN: I expect the 'Visualize' button to be visible.
+        // THEN: I expect the 'VizGraph' button to be visible.
         VisualGraphSplitButtonSteps.getVisualizeMainButton().should('be.visible');
 
         // WHEN: I execute SELECT query again.
         executeSelectQuery();
-        // THEN: I expect the 'Visualize' button to not be visible.
+        // THEN: I expect the 'VizGraph' button to not be visible.
         VisualGraphSplitButtonSteps.getVisualizeMainButton().should('not.be.visible');
     });
 
     it('should inform user that there no created graph configurations', () => {
         // GIVEN: There are no graph configurations.
         GraphConfigStubs.stubGetEmptyGraphConfigs();
-        // AND: I visit a page with 'ontotext-yasgui-web-component' on it, and the 'Visualize' button is visible.
+        // AND: I visit a page with 'ontotext-yasgui-web-component' on it, and the 'VizGraph' button is visible.
         executeConstructQuery();
 
         // WHEN: I open the dropdown.
@@ -57,7 +57,7 @@ describe('"Visualize" split button', () => {
     });
 
     it('should open graphs-visualizations view when click on main button', () => {
-        // GIVEN: I visit a page with 'ontotext-yasgui-web-component' on it, and the 'Visualize' button is visible.
+        // GIVEN: I visit a page with 'ontotext-yasgui-web-component' on it, and the 'VizGraph' button is visible.
         executeConstructQuery();
 
         // WHEN: I click on main button
@@ -69,7 +69,7 @@ describe('"Visualize" split button', () => {
     });
 
     it('should open graphs-visualizations view when select a graph configuration', () => {
-        // GIVEN: I visit a page with 'ontotext-yasgui-web-component' on it, and the 'Visualize' button is visible.
+        // GIVEN: I visit a page with 'ontotext-yasgui-web-component' on it, and the 'VizGraph' button is visible.
         executeConstructQuery();
         GraphConfigStubs.stubGetGraphConfigs();
 

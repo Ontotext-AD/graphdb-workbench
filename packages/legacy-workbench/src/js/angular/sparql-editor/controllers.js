@@ -443,7 +443,7 @@ function SparqlEditorCtrl($scope,
         createElement: (yasr) => {
             const exploreGraphNavigatorButton = document.createElement('button');
             exploreGraphNavigatorButton.type = 'button';
-            exploreGraphNavigatorButton.classList.add('btn', 'btn-primary', 'explore-graph-navigator');
+            exploreGraphNavigatorButton.classList.add('btn', 'btn-secondary', 'explore-graph-navigator');
             exploreGraphNavigatorButton.textContent = $translate.instant('query.editor.graph.navigator.btn');
             exploreGraphNavigatorButton.addEventListener('click', () => navigateToGraphNavigator(yasr));
             return exploreGraphNavigatorButton;

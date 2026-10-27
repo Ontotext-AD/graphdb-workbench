@@ -259,10 +259,10 @@
           "toolbar": {
             "btn": {
               "visual_graph_btn": {
-                "label": "Visualize"
+                "label": "VizGraph"
               },
               "graph_navigator_btn": {
-                "label": "Visualize Graph Navigator"
+                "label": "Graph Navigator"
               }
             }
           }

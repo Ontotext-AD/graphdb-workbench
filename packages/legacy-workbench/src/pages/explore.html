@@ -39,7 +39,7 @@
         <h1 fit-text fit-text-min="30">
             <a href="{{getTripleTermLookupLink(resourceInfo.triple)}}"
                gdb-tooltip="{{resourceInfo.triple}}"
-               
+
             class="triple-resource-link">
                 {{getTripleTermLocalNames(resourceInfo.triple)}}
             </a>
@@ -68,44 +68,43 @@
                     </a>
                 </li>
             </ul>
+            <div class="view-options">
+                <label class="show-blank-nodes mb-0">
+                    <input type="checkbox"
+                           data-test="show-blank-nodes-checkbox"
+                           ng-model="resourceInfo.blanks"
+                           ng-disabled="isLoading"
+                           ng-change="exploreResource()">
+                    {{'show.blank.nodes.label' | translate}}
+                </label>
+                <label for="inference-select" class="mb-0">
+                    <select id="inference-select"
+                            class="form-control form-control-sm"
+                            ng-model="currentContextTypeId"
+                            ng-change="changeInference(currentContextTypeId)"
+                            ng-disabled="isLoading || resourceInfo.role === 'context' || getActiveRepository() === 'SYSTEM'">
+                        <option ng-repeat="contextType in contextTypes"
+                                value="{{contextType.id}}"
+                                ng-selected="resourceInfo.contextType.id === contextType.id">
+                            {{contextType.labelKey | translate}}
+                        </option>
+                    </select>
+                </label>
+
+                <button type="button" class="btn btn-link same-as-btn btn-sm"
+                        ng-model="sameAs"
+                        ng-class="isLoading ? 'disabled' : ''"
+                        ng-if="resourceInfo.contextType !== ContextTypes.EXPLICIT"
+                        ng-click="toggleSameAs()"
+                        uib-popover="{{'sidepanel.expand.results.sameas' | translate}}: {{resourceInfo.sameAs ? 'common.on.btn' : 'common.off.btn' | translate}}"
+                        popover-trigger="mouseenter"
+                        popover-placement="bottom">
+                    <span class="icon-2x"
+                          ng-class="{'icon-same-as-on':resourceInfo.sameAs, 'icon-same-as-off':!resourceInfo.sameAs}"></span>
+                </button>
+            </div>
         </div>
         <div class="actions">
-            <label for="inference-select" class="mb-0">
-                <select id="inference-select"
-                        class="form-control form-control-sm"
-                        ng-model="currentContextTypeId"
-                        ng-change="changeInference(currentContextTypeId)"
-                        ng-disabled="isLoading || resourceInfo.role === 'context' || getActiveRepository() === 'SYSTEM'">
-                    <option ng-repeat="contextType in contextTypes"
-                            value="{{contextType.id}}"
-                            ng-selected="resourceInfo.contextType.id === contextType.id">
-                        {{contextType.labelKey | translate}}
-                    </option>
-                </select>
-            </label>
-
-            <button type="button" class="btn btn-link same-as-btn btn-sm"
-                    ng-model="sameAs"
-                    ng-class="isLoading ? 'disabled' : ''"
-                    ng-if="resourceInfo.contextType !== ContextTypes.EXPLICIT"
-                    ng-click="toggleSameAs()"
-                    uib-popover="{{'sidepanel.expand.results.sameas' | translate}}: {{resourceInfo.sameAs ? 'common.on.btn' : 'common.off.btn' | translate}}"
-                    popover-trigger="mouseenter"
-                    popover-placement="bottom">
-                <span class="icon-2x"
-                      ng-class="{'icon-same-as-on':resourceInfo.sameAs, 'icon-same-as-off':!resourceInfo.sameAs}"></span>
-            </button>
-
-            <button type="button"
-                    class="btn btn-sm show-blank-nodes-btn" ng-model="resourceInfo.blanks"
-                    ng-class="isLoading ? 'disabled' : (resourceInfo.blanks ? 'btn-primary' : 'btn-secondary')"
-                    uib-btn-checkbox
-                    btn-checkbox-true="true"
-                    btn-checkbox-false="false"
-                    ng-change="exploreResource()">
-                {{'show.blank.nodes.label' | translate}}
-            </button>
-
             <div class="btn-group" uib-dropdown is-open="isopen">
                 <button type="button"
                         class="btn btn-sm btn-secondary dropdown-toggle download-as"

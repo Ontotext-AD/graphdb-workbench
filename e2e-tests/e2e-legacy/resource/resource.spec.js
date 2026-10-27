@@ -88,7 +88,7 @@ describe('Resource view', () => {
         YasrSteps.getResults().should('have.length', 6);
 
         // When I turn off showing of blank nodes.
-        ResourceSteps.clickOnShowBlankNodesButton();
+        ResourceSteps.clickOnShowBlankNodesCheckbox();
 
         // Then I expect to see all triples including this with blank node.
         YasrSteps.getResults().should('have.length', 5);
@@ -105,11 +105,11 @@ describe('Resource view', () => {
         VisualGraphSteps.verifyUrl();
     });
 
-    it('should open the Graph Navigator view when click on the "Visualize Graph Navigator" button', () => {
+    it('should open the Graph Navigator view when click on the "Graph Navigator" button', () => {
         // When I am on resource view and page loaded a resource.
         ResourceSteps.visit(`uri=${SUBJECT_RESOURCE_ENCODED}`);
 
-        // When I click on "Visualize Graph Navigator" button.
+        // When I click on "Graph Navigator" button.
         ResourceSteps.clickOnVisualizeGraphNavigatorButton();
 
         // Then I expect to be redirected to the Graph Navigator view with the resource as the start uri.

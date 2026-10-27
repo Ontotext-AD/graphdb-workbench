@@ -65,6 +65,7 @@ const identicalTranslations = [
   "N3",
   "N-Triples",
   "N-Quads",
+  "VizGraph",
 
   // Repository types
   "Graphdb",

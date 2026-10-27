@@ -163,7 +163,7 @@ export class SparqlEditorPageComponent implements OnInit, OnDestroy {
     createElement: (yasr: Yasr) => {
       const exploreGraphNavigatorButton = document.createElement('button');
       exploreGraphNavigatorButton.type = 'button';
-      exploreGraphNavigatorButton.classList.add('onto-btn', 'onto-btn-primary', 'explore-graph-navigator');
+      exploreGraphNavigatorButton.classList.add('onto-btn', 'onto-btn-secondary', 'explore-graph-navigator');
       exploreGraphNavigatorButton.textContent = this.translocoService.translate('sparql_editor.yasgui.yasr.yasr_header.toolbar.btn.graph_navigator_btn.label');
       exploreGraphNavigatorButton.addEventListener('click', () => this.navigateToGraphNavigator(yasr));
       return exploreGraphNavigatorButton;

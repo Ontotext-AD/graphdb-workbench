@@ -46,6 +46,7 @@ const identicalTranslations = [
     "Types",
     "Google Analytics (GA4)",
     "Index",
+    "VizGraph",
     "<div><span class=\"graph\">GRAPH</span><span class=\"wise\">WISE</span></div><div class=\"thrives\">AI THRIVES ON WHOLE DATA</div>",
 
     // File formats:

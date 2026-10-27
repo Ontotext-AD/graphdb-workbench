@@ -26,7 +26,7 @@ describe('RDF Search', () => {
     RdfSearchSteps.getSearchArea().should('be.visible');
     // And the search icon should not be visible
     RdfSearchSteps.getSearchIcon().should('not.exist');
-    // And I should see 3 radio buttons for Table and Visual display
+    // And I should see 3 radio buttons for Table, VizGraph and Graph Navigator display
     RdfSearchSteps.getSearchAreaButtons().should('have.length', 3);
     // And only the Table button should be selected
     const selectedClass = 'selected';
@@ -34,7 +34,7 @@ describe('RDF Search', () => {
       .should('have.text', 'Table')
       .and('have.class', selectedClass);
     RdfSearchSteps.getSearchAreaButtons().eq(1)
-      .should('have.text', 'Visual')
+      .should('have.text', 'VizGraph')
       .and('not.have.class', selectedClass);
     RdfSearchSteps.getSearchAreaButtons().eq(2)
       .should('have.text', 'Graph Navigator')

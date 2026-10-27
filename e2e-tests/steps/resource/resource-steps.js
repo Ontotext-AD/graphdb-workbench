@@ -50,12 +50,12 @@ export class ResourceSteps {
         ResourceSteps.getSameAsButton().find('.icon-same-as-off').should('have.length', 1);
     }
 
-    static getShowBlankNodesButton() {
-        return cy.get('.show-blank-nodes-btn');
+    static getShowBlankNodesCheckbox() {
+        return cy.getByTestId('show-blank-nodes-checkbox');
     }
 
-    static clickOnShowBlankNodesButton() {
-        ResourceSteps.getShowBlankNodesButton().click();
+    static clickOnShowBlankNodesCheckbox() {
+        ResourceSteps.getShowBlankNodesCheckbox().click();
     }
 
     static getDownloadAsDropdown() {
