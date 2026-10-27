@@ -7,9 +7,7 @@
     color: var(--gw-button-tertiary-color);
     background-color: var(--gw-button-tertiary-background);
     flex-direction: row;
-    line-height: 1.5;
-    font-weight: 400;
-    font-size: 1rem;
+    line-height: var(--gw-base-line-height);
     text-align: center;
     user-select: none;
     border: 1px solid transparent;

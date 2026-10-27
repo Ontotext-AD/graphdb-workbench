@@ -13,7 +13,7 @@
 
   .operations-statuses-dropdown-toggle {
     display: flex;
-    font-weight: 400;
+    font-weight: var(--gw-label-base-regular-font-weight);
     line-height: 1.25;
     text-align: center;
     white-space: nowrap;
@@ -58,7 +58,7 @@
         background-color: var(--gw-badge-primary-background);
         color: var(--gw-badge-primary-color);
         font-size: 0.625rem;
-        font-weight: 600;
+        font-weight: var(--gw-font-weight-600);
       }
     }
   }
@@ -138,7 +138,7 @@
         background-color: var(--gw-badge-primary-background);
         color: var(--gw-badge-primary-color);
         font-size: 0.625rem;
-        font-weight: 600;
+        font-weight: var(--gw-font-weight-600);
       }
     }
 

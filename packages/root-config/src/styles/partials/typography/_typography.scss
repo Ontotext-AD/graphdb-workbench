@@ -1,0 +1,91 @@
+// GW text styles. Each mixin applies the font-family, font-weight, font-size and line-height
+// tokens of one styleguide text style. The same styles are exposed as global utility classes,
+// e.g. `.heading-h1`, `.body-base-regular`, `.label-sm-bold`, `.caption-base`.
+//
+// Mapping rules:
+// - UI labels (form labels, table headers, menu items, tabs, button labels) use `label-*`;
+// - secondary text uses `body-sm-*` / `body-xs-*`;
+// - small uppercase hints use `caption-*`.
+
+$heading-levels: (1, 2, 3, 4, 5, 6);
+$body-sizes: (xs, sm, base, lg);
+$body-weights: (light, regular, medium, bold);
+$label-sizes: (xs, sm, base, lg);
+$label-weights: (regular, medium, bold);
+$caption-sizes: (sm, base);
+
+@mixin text-style($token) {
+  font-family: var(--gw-#{$token}-font-family);
+  font-weight: var(--gw-#{$token}-font-weight);
+  font-size: var(--gw-#{$token}-font-size);
+  line-height: var(--gw-#{$token}-line-height);
+}
+
+/* Heading weights for h2, h3, h4 - fontweight 500, h5, h6 - fontweight 600. Changed from font-weight 400. Implemented with GDB-15277. */
+/* h1 font-size 2.5rem. Changed from h1 default bootstrap size 2rem. Implemented with GDB-15277. */
+@mixin heading($level) {
+  @include text-style('heading-h#{$level}');
+}
+
+@mixin body($size, $weight: regular) {
+  @include text-style('body-#{$size}-#{$weight}');
+}
+
+// Only available for the `base` size with `regular` and `medium` weights.
+@mixin body-underlined($weight: regular) {
+  @include text-style('body-base-#{$weight}-underlined');
+  text-decoration: var(--gw-body-base-#{$weight}-underlined-text-decoration);
+}
+
+@mixin label($size, $weight: regular) {
+  @include text-style('label-#{$size}-#{$weight}');
+
+  // Only the `sm` label tokens define letter spacing.
+  @if $size == sm {
+    letter-spacing: var(--gw-label-sm-#{$weight}-letter-spacing);
+  }
+}
+
+@mixin caption($size: base) {
+  @include text-style('caption-#{$size}');
+  text-transform: var(--gw-caption-#{$size}-text-case);
+  letter-spacing: var(--gw-caption-#{$size}-letter-spacing);
+}
+
+// Default styling of heading elements, bootstrap-style `.hN` classes and `.heading-hN` utilities.
+// hN selectors and .hN classes correspond to heading elements and their utility classes for the legacy components
+@each $level in $heading-levels {
+  h#{$level},
+  .h#{$level},
+  .heading-h#{$level} {
+    @include heading($level);
+  }
+}
+
+@each $size in $body-sizes {
+  @each $weight in $body-weights {
+    .body-#{$size}-#{$weight} {
+      @include body($size, $weight);
+    }
+  }
+}
+
+@each $weight in (regular, medium) {
+  .body-base-#{$weight}-underlined {
+    @include body-underlined($weight);
+  }
+}
+
+@each $size in $label-sizes {
+  @each $weight in $label-weights {
+    .label-#{$size}-#{$weight} {
+      @include label($size, $weight);
+    }
+  }
+}
+
+@each $size in $caption-sizes {
+  .caption-#{$size} {
+    @include caption($size);
+  }
+}

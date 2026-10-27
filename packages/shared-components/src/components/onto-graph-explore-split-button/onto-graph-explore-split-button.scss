@@ -98,7 +98,6 @@
       padding: 0.25rem 0;
 
       .name {
-        font-weight: 700;
         margin-bottom: 0.5rem;
         overflow-wrap: break-word;
       }
@@ -119,7 +118,7 @@
       }
 
       .hint {
-        font-size: 0.75rem;
+        font-size: var(--gw-caption-sm-font-size);
         margin-top: 0.25rem;
       }
     }

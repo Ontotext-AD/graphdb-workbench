@@ -56,8 +56,6 @@
 
     & > button {
       display: inline-block;
-      font-weight: 400;
-      line-height: 1.25;
       text-align: center;
       white-space: nowrap;
       vertical-align: middle;
@@ -70,7 +68,6 @@
       user-select: none;
       border: 1px solid var(--gw-button-secondary-border-color);
       padding: .5rem 1rem;
-      font-size: 1rem;
       color: var(--gw-button-secondary-color);
       background-color: var(--gw-button-secondary-background);
 
@@ -101,7 +98,6 @@
 
     & p {
       font-size: 1.1rem;
-      line-height: 1.5;
       color: var(--gw-autocomplete-color);
       background-color: var(--gw-autocomplete-background);
       margin-bottom: 0;

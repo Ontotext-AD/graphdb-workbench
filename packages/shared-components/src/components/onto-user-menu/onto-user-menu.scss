@@ -5,9 +5,7 @@
   .onto-user-menu-toggle {
     display: flex;
     flex-direction: row;
-    line-height: 1.5;
-    font-weight: 400;
-    font-size: 1rem;
+    line-height: var(--gw-base-line-height);
     text-align: center;
     user-select: none;
     padding: .4em 1rem;
@@ -86,7 +84,7 @@
     text-decoration: none;
     right: 0;
     min-width: 7rem;
-    font-size: 1rem;
+    line-height: var(--gw-base-line-height);
     width: 100%;
     color: var(--gw-tieredmenu-color);
     background-color: var(--gw-tieredmenu-background);
@@ -98,7 +96,7 @@
       user-select: none;
       white-space: nowrap;
       font: inherit;
-      font-weight: 400;
+      font-weight: var(--gw-label-base-regular-font-weight);
       text-align: start;
       text-decoration: none;
       color: inherit;
