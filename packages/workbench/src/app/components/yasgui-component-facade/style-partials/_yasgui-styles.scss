@@ -29,12 +29,17 @@ app-yasgui-component-facade {
 
     /* Line numbers */
     .CodeMirror-linenumber {
-      color: #787878;
+      color: var(--gw-neutral-300);
+
+      /* set the background color as the gutter is absolutely positioned */
+      background-color: #090A0F;
     }
 
     /* Match highlight */
     .cm-matchhighlight {
-      background-color: #dbdeed;
+      background: none;
+      outline: 1px solid var(--gw-tertiary-600);
+      border-radius: 2px;
     }
 
     .yasqe_buttons .custom-button {
@@ -48,7 +53,7 @@ app-yasgui-component-facade {
     }
 
     .cm-comment {
-      color: var(--gw-neutral-300);
+      color: var(--gw-neutral-400);
     }
   }
 
