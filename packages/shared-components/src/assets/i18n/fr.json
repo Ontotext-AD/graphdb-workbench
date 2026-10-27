@@ -186,7 +186,7 @@
     },
     "buttons": {
       "table": "Tableau",
-      "visual": "Visuel",
+      "visual": "VizGraph",
       "graph_navigator": "Navigateur de graphe"
     },
     "tooltips": {
@@ -221,7 +221,7 @@
   "graph_explore_split_button": {
     "buttons": {
       "explore_visual_graph": {
-        "tooltip": "Utiliser la configuration par défaut"
+        "tooltip": "Visualiser avec la configuration VizGraph par défaut"
       },
       "explore_visual_graph_dropdown": {
         "tooltip": "Sélectionner la configuration",

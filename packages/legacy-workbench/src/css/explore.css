@@ -4,6 +4,25 @@
     align-items: flex-start;
 }
 
+.explore-resource .action-header .selection {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.explore-resource .action-header .view-options {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-left: 1rem;
+}
+
+.explore-resource .action-header .view-options .show-blank-nodes {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
 .explore-resource .action-header .actions {
     display: flex;
     flex-wrap: wrap;

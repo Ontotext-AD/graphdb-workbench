@@ -22,39 +22,27 @@ app-yasgui-component-facade {
     }
 
     .chart-download-as-button,
-    .pivot-table-download-as-button {
-      color: var(--gw-button-primary-color) !important;
-      background-color: var(--gw-button-primary-background) !important;
+    .pivot-table-download-as-button,
+    .ontotext-dropdown-button {
+      color: var(--gw-button-secondary-color);
+      background-color: var(--gw-button-secondary-background);
+      border: 1px solid var(--gw-button-secondary-border-color);
 
       &:hover {
-        color: var(--gw-button-primary-hover-color) !important;
-        background-color: var(--gw-button-primary-hover-background) !important;
+        color: var(--gw-button-secondary-hover-color);
+        background-color: var(--gw-button-secondary-hover-background);
+        border-color: var(--gw-button-secondary-hover-border-color);
       }
+    }
 
-      /* The buttons have a ri-* icon class, so remixicon sets their font-family. Keep it for the icon only. */
-      .chart-download-as-button-label,
-      .pivot-table-download-as-button-label {
-        font-family: var(--main-font);
-      }
+    /* The buttons have a ri-* icon class, so remixicon sets their font-family. Keep it for the icon only. */
+    .chart-download-as-button-label,
+    .pivot-table-download-as-button-label {
+      font-family: var(--main-font);
     }
 
     .ontotext-dropdown-button {
       height: 40px;
-      color: var(--gw-button-primary-color) !important;
-      background-color: var(--gw-button-primary-background) !important;
-
-      &.ri-arrow-down-s-line::after,
-      &.ri-arrow-up-s-line::after {
-        background-color: var(--gw-button-primary-background) !important;
-        color: var(--gw-button-primary-color);
-      }
-
-      &:hover,
-      &.ri-arrow-down-s-line:hover::after,
-      &.ri-arrow-up-s-line:hover::after {
-        background-color: var(--gw-button-primary-hover-background) !important;
-        color: var(--gw-button-primary-hover-color);
-      }
     }
 
     .ontotext-download-as .ontotext-dropdown-button {

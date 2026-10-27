@@ -78,20 +78,23 @@ yasgui-component .yasr .yasr_btnGroup .yasr-fullscreen-button:hover {
 /* #region YASR - download as buttons */
 yasgui-component .yasr-toolbar .chart-download-as-button,
 yasgui-component .yasr-toolbar .pivot-table-download-as-button {
-    color: var(--gw-button-primary-color) !important;
-    background-color: var(--gw-button-primary-background) !important;
+    color: var(--gw-button-secondary-color) !important;
+    background-color: var(--gw-button-secondary-background) !important;
+    border: 1px solid var(--gw-button-secondary-border-color) !important;
 }
 
 yasgui-component .yasr-toolbar .chart-download-as-button:hover,
 yasgui-component .yasr-toolbar .pivot-table-download-as-button:hover {
-    color: var(--gw-button-primary-hover-color) !important;
-    background-color: var(--gw-button-primary-hover-background) !important;
+    color: var(--gw-button-secondary-hover-color) !important;
+    background-color: var(--gw-button-secondary-hover-background) !important;
+    border-color: var(--gw-button-secondary-hover-border-color) !important;
 }
 
 yasgui-component .ontotext-dropdown-button {
     height: 40px;
-    color: var(--gw-button-primary-color) !important;
-    background-color: var(--gw-button-primary-background) !important;
+    color: var(--gw-button-secondary-color) !important;
+    background-color: var(--gw-button-secondary-background) !important;
+    border: 1px solid var(--gw-button-secondary-border-color) !important;
 }
 
 yasgui-component .ontotext-download-as .ontotext-dropdown-button {
@@ -101,14 +104,15 @@ yasgui-component .ontotext-download-as .ontotext-dropdown-button {
 yasgui-component .ontotext-dropdown-button:hover,
 yasgui-component .ontotext-dropdown-button.ri-arrow-down-s-line:hover:after,
 yasgui-component .ontotext-dropdown-button.ri-arrow-up-s-line:hover:after {
-    background-color: var(--gw-button-primary-hover-background) !important;
-    color: var(--gw-button-primary-hover-color);
+    background-color: var(--gw-button-secondary-hover-background) !important;
+    border-color: var(--gw-button-secondary-hover-border-color) !important;
+    color: var(--gw-button-secondary-hover-color);
 }
 
 yasgui-component .ontotext-dropdown-button.ri-arrow-down-s-line:after,
 yasgui-component .ontotext-dropdown-button.ri-arrow-up-s-line:after {
-    background-color: var(--gw-button-primary-background) !important;
-    color: var(--gw-button-primary-color);
+    background-color: var(--gw-button-secondary-background) !important;
+    color: var(--gw-button-secondary-color);
 }
 
 yasgui-component .ontotext-download-as .ontotext-dropdown-button .button-name {
