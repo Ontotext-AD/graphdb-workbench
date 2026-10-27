@@ -109,6 +109,14 @@ export class OpenidAuthStrategy implements AuthStrategy {
    * @returns Promise that resolves when logout is complete
    */
   logout(): Promise<void> {
+    if (this.shouldLogoutFromProvider()) {
+      this.openIdService.logout(true);
+      return new Promise(() => {
+        // Never resolves as the browser is already redirected to the OpenID provider. Resolving would let the caller
+        // continue the logout in the Workbench: emit the logout event (navigation to the login page, "signed out"
+        // toast) or, with free access, re-initialize it. This would briefly show up before the page is left.
+      });
+    }
     this.openIdService.logout();
     return Promise.resolve();
   }
@@ -161,6 +169,14 @@ export class OpenidAuthStrategy implements AuthStrategy {
     if (!this.openIdSecurityConfig) {
       throw new MissingOpenidConfiguration();
     }
+  }
+
+  /**
+   * Checks if logout should end the session in the OpenID provider too.
+   * @returns True unless <code>localLogoutOnly</code> is set or the provider has no end session endpoint
+   */
+  private shouldLogoutFromProvider(): boolean {
+    return !this.openIdSecurityConfig?.localLogoutOnly && !!this.openIdSecurityConfig?.openIdEndSessionUrl;
   }
 
   /**

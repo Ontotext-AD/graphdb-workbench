@@ -445,6 +445,56 @@ describe('OpenIdService', () => {
       const logoutUrl = (WindowService.setLocationHref as jest.Mock).mock.calls[0][0];
       expect(logoutUrl).toContain(config.oidcEndSessionEndpoint);
     });
+
+    it('should send the ID token as id_token_hint on hard logout, although the tokens are cleared', () => {
+      // Given I have an OpenID config with an end session endpoint
+      const config = mockOpenIdConfig();
+      const securityConfig = mockSecurityConfig(config);
+      securityContextService.updateSecurityConfig(securityConfig);
+      // And I have a stored ID token
+      openidStorageService.setIdToken('id-token');
+
+      // When I log out from the OpenID provider
+      openIdService.logout(true);
+
+      // Then I expect to be redirected with the ID token as id_token_hint
+      const logoutUrl = (WindowService.setLocationHref as jest.Mock).mock.calls[0][0];
+      expect(logoutUrl).toContain('id_token_hint=id-token');
+      // And the ID token to be cleared
+      expect(openidStorageService.getIdToken().getValue()).toBeNull();
+    });
+
+    it('should not send id_token_hint on hard logout when there is no ID token', () => {
+      // Given I have an OpenID config with an end session endpoint
+      const config = mockOpenIdConfig();
+      const securityConfig = mockSecurityConfig(config);
+      securityContextService.updateSecurityConfig(securityConfig);
+      // And I have no stored ID token
+      openidStorageService.clearIdToken();
+
+      // When I log out from the OpenID provider
+      openIdService.logout(true);
+
+      // Then I expect to be redirected without id_token_hint
+      const logoutUrl = (WindowService.setLocationHref as jest.Mock).mock.calls[0][0];
+      expect(logoutUrl).not.toContain('id_token_hint');
+    });
+
+    it('should perform only soft logout on hard logout when there is no end session endpoint', () => {
+      // Given I have an OpenID config without an end session endpoint
+      const config = mockOpenIdConfig({oidcEndSessionEndpoint: undefined});
+      const securityConfig = mockSecurityConfig(config);
+      securityContextService.updateSecurityConfig(securityConfig);
+      const clearAuthenticationSpy = jest.spyOn(openIdService, 'clearAuthentication');
+
+      // When I log out from the OpenID provider
+      openIdService.logout(true);
+
+      // Then I expect the authentication to be cleared
+      expect(clearAuthenticationSpy).toHaveBeenCalled();
+      // And no redirect to the OpenID provider
+      expect(WindowService.setLocationHref).not.toHaveBeenCalled();
+    });
   });
 
   describe('initializeOpenId - handleAuthenticationFlow', () => {
