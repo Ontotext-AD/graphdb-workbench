@@ -23,7 +23,7 @@ describe('Footer', () => {
 
     // And the GraphDB link should be present and valid
     FooterSteps.getGraphDBLink()
-      .should('have.attr', 'href', 'https://graphdb.ontotext.com');
+      .should('have.attr', 'href', 'https://graphwise.ai/graphdb');
 
     // And the RDF4J link to be present and valid
     FooterSteps.getSesameLink()

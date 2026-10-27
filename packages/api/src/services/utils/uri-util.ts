@@ -8,8 +8,8 @@ export class UriUtil {
   static readonly GRAPHS_VISUALIZATIONS_URL = 'graphs-visualizations';
   static readonly RESOURCE_URL = 'resource';
   static readonly GRAPH_NAVIGATOR_URL = 'graph-navigator';
-  static readonly PRODUCT_URL = 'https://graphdb.ontotext.com';
-  static readonly BASE_DOCUMENTATION_URL = `${UriUtil.PRODUCT_URL}/documentation/`;
+  static readonly PRODUCT_URL = 'https://graphwise.ai/graphdb';
+  static readonly BASE_DOCUMENTATION_URL = 'https://graphdb.ontotext.com/documentation/';
   static readonly LATEST_UNOFFICIAL_VERSION = 'master';
 
   /**
