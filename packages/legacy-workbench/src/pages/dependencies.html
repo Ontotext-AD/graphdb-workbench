@@ -1,5 +1,5 @@
 <link href="css/dependencies.css?v=[AIV]{version}[/AIV]" rel="stylesheet">
-
+<!-- Review after GDB-15277 is merged -->
 
 <title>Explore Class Dependencies</title>
 
@@ -10,6 +10,7 @@
 
 <div class="top-offset" core-errors fedx license></div>
 <div class="top-offset" system-repo-warning></div>
+<!-- label -->
 <div class="top-offset alert alert-danger" ng-show="repositoryError">
     <p>{{'not.usable.active.repo.error' | translate}}</p>
 
@@ -20,16 +21,18 @@
         <div id="selectGraphDropdown" class="btn-group" role="group" ng-show="graphsInRepo.length > 2"
              uib-dropdown
              on-toggle="graphsDropdownToggled(open)">
+             <!-- button label -->
             <button id="graphsBtnGroup" type="button" class="btn btn-lg btn-secondary" guide-selector="graph-select-dropdown"
                     uib-dropdown-toggle>
 
-        <span tooltip-placement="bottom" gdb-tooltip="{{'select.graph.label' | translate}}">
-            {{getSelectedGraphValue() | translate}}
-        </span>
+                <span tooltip-placement="bottom" gdb-tooltip="{{'select.graph.label' | translate}}">
+                    {{getSelectedGraphValue() | translate}}
+                </span>
 
             </button>
             <ul class="dropdown-menu dropdown-menu-right pre-scrollable" aria-labelledby="dropdownMenuButton">
                 <li ng-repeat="graph in graphsInRepo" ng-if="graph.contextID.value !== getSelectedGraphValue()">
+                    <!-- labels -->
                     <a class="dropdown-item" ng-click="selectGraph(graph)">
                         <span class="multiline-text">
 						    {{graph.contextID.value | translate}} <br/>
@@ -99,27 +102,27 @@
                 </div>
                 <div class="row direction-filter">
                     <div class="col-sm-4 col-xs-4 col-md-4">
-                        <label>
+                        <label class="label-sm-regular">
                             <input type="radio" ng-model="direction" value="all">
                             {{'all.label' | translate}}
                         </label>
                     </div>
                     <div class="col-sm-4 col-xs-4 col-md-4">
-                        <label>
+                        <label class="label-sm-regular">
                             <input type="radio" ng-model="direction" value="in">
                             {{'incoming.label' | translate}}
                         </label>
                     </div>
                     <div class="col-sm-4 col-xs-4 col-md-4">
-                        <label>
+                        <label class="label-sm-regular">
                             <input type="radio" ng-model="direction" value="out">
                             {{'outgoing.label' | translate}}
                         </label>
                     </div>
                 </div>
                 <div class="row direction-filter-header">
-                    <div class="col-sm-6">{{'class.label' | translate}}</div>
-                    <div class="col-sm-6">{{'links.label' | translate}}</div>
+                    <div class="col-sm-6 label-lg-regular">{{'class.label' | translate}}</div>
+                    <div class="col-sm-6 label-lg-regular">{{'links.label' | translate}}</div>
                 </div>
                 <ul ui-scroll-viewport id="wb-dependencies-classInClasses" class="rdf-list row" guide-selector="class-list">
                     <li ui-scroll="class in datasource" buffer-size="70" padding="1" adapter="adapterContainer.adapter" class="item class-row col-sm-12 row"
@@ -162,11 +165,13 @@
                     {{classToShow.name}}
                 </div>
                 <div class="back-to-dependencies-list">
-                    <a href="#" ng-click="classToShow = undefined"><em class="ri-arrow-left-line"></em> {{'back.to.main.class.table' | translate}}</a>
+                    <a href="#" ng-click="classToShow = undefined" class="body-sm-regular">
+                        <em class="ri-arrow-left-line"></em> {{'back.to.main.class.table' | translate}}
+                    </a>
                 </div>
                 <div class="row direction-filter-header">
-                    <div class="col-sm-6">{{'class.label' | translate}}</div>
-                    <div class="col-sm-6">{{'links.label' | translate}}</div>
+                    <div class="col-sm-6 label-lg-regular">{{'class.label' | translate}}</div>
+                    <div class="col-sm-6 label-lg-regular">{{'links.label' | translate}}</div>
                 </div>
                 <ul id="wb-dependencies-classToShow" class="rdf-list rdf-list-static row">
                     <li ng-repeat="connection in classToShow.connections.slice(0, 100)" class="col-sm-12 row">
@@ -198,7 +203,7 @@
                         </div>
                     </li>
                 </ul>
-                <div ng-show="classToShow.connections.length > 100">
+                <div ng-show="classToShow.connections.length > 100" class="body-sm-regular">
                     {{'and.label' | translate}} {{classToShow.connections.length - 100}} {{'more.label' | translate}}
                 </div>
             </div>

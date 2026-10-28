@@ -104,9 +104,6 @@ chat area
         "left-sidebar chat-content right-sidebar";
 }
 
-.ttyg-view .chat-content {
-}
-
 .ttyg-view .chat-content .toolbar {
     /*margin: auto;*/
     padding: 0 1rem;
@@ -144,5 +141,5 @@ chat area
 
 .ttyg-view .chat-list-panel-loader > div {
     display: flex;
-    font-weight: 400;
+    font-weight: var(--gw-body-sm-regular-font-weight);
 }
