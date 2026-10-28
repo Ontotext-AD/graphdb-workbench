@@ -21,6 +21,7 @@ import {
 } from '@ontotext/workbench-api';
 import {start} from 'single-spa';
 import {defineCustomElements} from '../../../shared-components/loader';
+import {defineCustomElements as defineYasguiElements} from 'ontotext-yasgui-web-component/loader';
 import {registerInterceptors} from './interceptors/interceptors-registration';
 import {runtimeConfigurationBootstrap} from './runtime-configuration/runtime-configuration';
 import {registerAuthenticationEventHandlers} from './security/authentication-event-handlers';
@@ -151,6 +152,7 @@ export const bootstrapWorkbench = (): Promise<void> => {
       subscribeToAuthenticatedUserChange();
       initializeRestrictions();
       defineCustomElements();
+      void defineYasguiElements();
       return start();
     });
 };
