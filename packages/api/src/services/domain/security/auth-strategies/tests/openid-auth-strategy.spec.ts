@@ -15,6 +15,7 @@ import {AuthenticatedUser, OpenidSecurityConfig, SecurityConfig} from '../../../
 import {OpenIdAuthFlowType} from '../../../../../models/security/authentication';
 import {MissingOpenidConfiguration} from '../../errors/openid/missing-openid-configuration';
 import {InvalidOpenidAuthFlow} from '../../errors/openid/invalid-openid-auth-flow';
+import {MissingOpenIdEndSessionUrl} from '../../errors/openid/missing-open-id-end-session-url';
 import {ProviderResponseMocks} from './provider-response-mocks';
 import {ResponseMock} from '../../../../http/test/response-mock';
 import {WindowService} from '../../../../window';
@@ -138,6 +139,32 @@ describe('OpenidAuthProvider', () => {
 
       await expect(strategy.initialize()).rejects.toThrow(MissingOpenidConfiguration);
       expect(initializeOpenIdSpy).not.toHaveBeenCalled();
+    });
+
+    it('should throw MissingEndSessionEndpoint error when the OpenID provider has no end session endpoint url', async () => {
+      // Given I have an OpenID config without an end session endpoint
+      setupSecurityConfig(createOpenIdConfig({oidcEndSessionEndpoint: undefined}));
+      const initializeOpenIdSpy = jest.spyOn(openIdService, 'initializeOpenId');
+
+      // When I initialize the strategy
+      const result = strategy.initialize();
+
+      // Then I expect a MissingEndSessionEndpoint error
+      await expect(result).rejects.toThrow(MissingOpenIdEndSessionUrl);
+      // And OpenID not to be initialized
+      expect(initializeOpenIdSpy).not.toHaveBeenCalled();
+    });
+
+    it('should initialize OpenID without an end session endpoint when only local logout is configured', async () => {
+      // Given I have an OpenID config without an end session endpoint and with local logout only
+      setupSecurityConfig(createOpenIdConfig({oidcEndSessionEndpoint: undefined, localLogoutOnly: true}));
+      mockSuccessfulAuthentication();
+
+      // When I initialize the strategy
+      const result = await strategy.initialize();
+
+      // Then I expect the user to be logged in
+      expect(result).toBe(true);
     });
 
     it('should initialize OpenID and set auth token when user is authenticated', async () => {
@@ -352,20 +379,6 @@ describe('OpenidAuthProvider', () => {
     it('should log out locally only when localLogoutOnly is set', async () => {
       // Given I have an OpenID config with localLogoutOnly set
       setupSecurityConfig(createOpenIdConfig({localLogoutOnly: true}));
-      const logoutSpy = jest.spyOn(openIdService, 'logout').mockImplementation(() => undefined);
-
-      // When I log out
-      const result = await strategy.logout();
-
-      // Then I expect a local logout only
-      expect(logoutSpy).toHaveBeenCalledWith();
-      // And the promise to resolve
-      expect(result).toBeUndefined();
-    });
-
-    it('should log out locally only when the OpenID provider has no end session endpoint', async () => {
-      // Given I have an OpenID config without an end session endpoint
-      setupSecurityConfig(createOpenIdConfig({oidcEndSessionEndpoint: undefined}));
       const logoutSpy = jest.spyOn(openIdService, 'logout').mockImplementation(() => undefined);
 
       // When I log out

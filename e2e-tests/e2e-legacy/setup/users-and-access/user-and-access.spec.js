@@ -918,6 +918,9 @@ describe('User and Access', () => {
     }
 
     function navigateMenuPath(pathArray, expectedUrl, expectedTitle) {
+        // The layout rebuilds the navbar model when the previous navigation finishes loading, which closes any opened
+        // submenu, so wait for it before opening a menu group.
+        cy.get('onto-layout').should('not.have.class', 'loading');
         pathArray.forEach((label, index) => {
             if (index === 0) {
                 MainMenuSteps.clickOnMenu(label);
