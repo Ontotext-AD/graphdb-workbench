@@ -245,12 +245,31 @@ describe('Ontop repositories', () => {
     context('Repository maintenance permission', () => {
 
         const PASSWORD = 'root';
-        const REPOSITORY_MAINTAINER_USERNAME = 'repoMaintainer';
-        const REPOSITORY_MANAGER_USERNAME = 'repoManager';
+        let repositoryMaintainerUsername;
 
         beforeEach(() => {
+            repositoryMaintainerUsername = 'repo-maintainer-' + Date.now();
+        });
+
+        afterEach(() => {
+            cy.loginAsAdmin()
+                .then(() => {
+                    cy.deleteUser(repositoryMaintainerUsername, true);
+                    cy.switchOffSecurity(true);
+                });
+        });
+        it('should allow a repository maintainer to edit an Ontop repository', () => {
+            RepositoryStubs.spyGetJDBCProperties();
+            // GIVEN: An Ontop repository exists
+            OntopRepositorySteps.visitCreate();
+            createOntopRepository(repositoryId);
+            RepositorySteps.waitUntilRepositoriesPageIsLoaded();
+            RepositorySteps.getRepositoryFromList(repositoryId).should('exist');
+
+            // AND: A user with maintenance permission for it is created after the repository,
+            // because creating a repository removes the permissions already granted for its ID.
             cy.createUser({
-                username: REPOSITORY_MAINTAINER_USERNAME,
+                username: repositoryMaintainerUsername,
                 password: PASSWORD,
                 grantedAuthorities: [
                     `READ_REPO_${repositoryId}`,
@@ -258,35 +277,10 @@ describe('Ontop repositories', () => {
                     `WRITE_REPO_${repositoryId}`
                 ]
             });
-            cy.createUser({
-                username: REPOSITORY_MANAGER_USERNAME,
-                password: PASSWORD,
-                grantedAuthorities: [
-                    'ROLE_USER',
-                    'ROLE_MONITORING',
-                    'ROLE_REPO_MANAGER'
-                ]
-            });
             cy.switchOnSecurity();
-        });
-
-        afterEach(() => {
-            cy.loginAsAdmin()
-                .then(() => {
-                    cy.deleteUser(REPOSITORY_MAINTAINER_USERNAME, true);
-                    cy.deleteUser(REPOSITORY_MANAGER_USERNAME, true);
-                    cy.switchOffSecurity(true);
-                });
-        });
-        it('should allow a repository maintainer to edit an Ontop repository', () => {
-            RepositoryStubs.spyGetJDBCProperties();
-            // GIVEN: An Ontop repository exists
-            cy.loginAs(REPOSITORY_MANAGER_USERNAME, PASSWORD);
-            OntopRepositorySteps.visitCreate();
-            createOntopRepository(repositoryId);
 
             // WHEN: I log in as a user with maintenance permission
-            cy.loginAs(REPOSITORY_MAINTAINER_USERNAME, PASSWORD);
+            cy.loginAs(repositoryMaintainerUsername, PASSWORD);
             RepositorySteps.visit();
 
             // THEN: The repository is visible because the user can maintain it
@@ -326,8 +320,7 @@ describe('Ontop repositories', () => {
                 .should('contain.value', 'ontop.cardinalityMode=LOOSE');
             // Saving of the OBDA file verifies that the repository maintainer can access rest/repositories/file/upload
             OntopRepositorySteps.editOBDAFile();
-            ModalDialogSteps.getDialogBody()
-                .find('textarea')
+            OntopRepositorySteps.getFileContentEditor()
                 .invoke('val')
                 .should('include', 'edited ODBA file');
             ModalDialogSteps.close();
@@ -339,8 +332,7 @@ describe('Ontop repositories', () => {
             ModalDialogSteps.getDialogHeader()
                 .should('contain', 'Edit "OBDA or R2RML file" contents');
 
-            ModalDialogSteps.getDialogBody()
-                .find('textarea')
+            OntopRepositorySteps.getFileContentEditor()
                 .type('{moveToStart}Add commentary for testing purpose');
 
             ModalDialogSteps.clickOKButton();
@@ -354,8 +346,7 @@ describe('Ontop repositories', () => {
             cy.wait('@getJDBCProperties');
             OntopRepositorySteps.editOBDAFile();
 
-            ModalDialogSteps.getDialogBody()
-                .find('textarea')
+            OntopRepositorySteps.getFileContentEditor()
                 .invoke('val')
                 .should('include', 'Add commentary for testing purpose');
         });
