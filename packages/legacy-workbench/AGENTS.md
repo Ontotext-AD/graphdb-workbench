@@ -52,7 +52,7 @@ A **typical module folder** contains: `plugin.js` (route + menu registration), `
 - **Bridge services:** resolve `service(X)` once at the top with the other dependencies, not inside functions.
 - **Navigation to another view:** `navigate()` from `@ontotext/workbench-api`, which keeps the context path.
 - **Shared TS bridge:** talk to the modern layer through `@ontotext/workbench-api` (`ServiceProvider`, `service()`, `AuthenticationService`, `SecurityContextService`, `LanguageContextService`, `EventService`, `OntoToastrService`, …) — used in ~53 files. Prefer these over reimplementing.
-- **Web components:** `ontotext-yasgui-web-component` and `ontotext-graphql-playground-component` are registered via `defineCustomElements()` and used through `ng-custom-element`.
+- **Web components:** `ontotext-graphql-playground-component` is registered via `defineCustomElements()` and used through `ng-custom-element`. `ontotext-yasgui-web-component` is registered in the `root-config` bootstrap.
 - **Templates in new/changed code:** bind to flags the controller computes (`hasReadAccess`, `isEditable`), not to
   inline condition chains — same rule as [components](../../docs/conventions/components.md#templates).
   A template calls no functions except event handlers and filters — a model getter counts as a call. Precompute
