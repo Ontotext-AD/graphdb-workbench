@@ -59,7 +59,7 @@ the environments covered.
 
 - [ ] Branch name follows `GDB-XXXXX-short-description`
 - [ ] Target branch is correct
-- [ ] Commit messages follow `GDB-XXXXX: Description`
+- [ ] Commit messages follow `docs/conventions/commits.md`
 - [ ] Commits are squashed
 - [ ] PR title follows `GDB-XXXXX: Description`
 - [ ] PR description is complete (Why, Change outline, Testing, Screenshots)
