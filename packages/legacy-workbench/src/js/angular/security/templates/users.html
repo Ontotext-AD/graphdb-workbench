@@ -45,7 +45,7 @@
 					</label>
 				</span>
 			</span>
-			<span ng-show="securityEnabled()" id="toggle-freeaccess">
+			<span ng-show="securityEnabled()" id="toggle-freeaccess" class="label-base-regular">
 				<span>{{'security.free.access.is' | translate}} <span class="tag {{freeAccessEnabled() ? 'tag-primary' : 'tag-default'}}">{{freeAccessEnabled() ? 'common.on.btn' : 'common.off.btn' | translate}}</span></span>
 				<span gdb-tooltip="{{'click.to' | translate}} {{freeAccessEnabled() ? 'disable' : 'enable' | translate}} {{'security.free.access.non.admin' | translate}}" tooltip-placement="top" ng-click="toggleFreeAccess()" class="switch">
 					<input type="checkbox" class="switch" ng-checked="freeAccessEnabled()"/>
@@ -58,12 +58,13 @@
 			</span>
 		</div>
 
-		<a id="wb-users-userCreateLink" ng-show="!hasExternalAuth() || canExtendExternalUserRole" class="btn btn-primary" href="user/create">
+        <!-- line-height goes from 1.25 to 1.2 -->
+		<a  id="wb-users-userCreateLink" ng-show="!hasExternalAuth() || canExtendExternalUserRole" class="btn btn-primary label-base-regular" href="user/create">
             <span class="ri-add-circle-line"></span> {{'view.create.user.title' | translate}}
         </a>
 	</div>
 
-	<div ng-show="hasExternalAuth()">
+	<div ng-show="hasExternalAuth()" class="body-base-regular">
 		<div>&nbsp;</div>
 		<div class="alert alert-info mt-1">
             <div class="auth-info" ng-if="isOpenIDEnabled && !isPasswordLoginEnabled">{{'security.using.external.auth.db.openid' | translate: {authSource: authSource} }}</div>
@@ -78,7 +79,7 @@
 
 	<table id="wb-users-userInUsers" class="table table-striped" aria-label="{{'security.users.table.label' | translate}}">
 		<thead>
-			<tr>
+			<tr class="label-base-medium">
 				<th id="usernameColumn">{{'security.table.username' | translate}}</th>
 				<th ng-if="!hasExternalAuth()" id="roleColumn">{{'security.table.role' | translate}}</th>
 				<th ng-if="!hasExternalAuth()" id="repoRightsColumn">{{'security.repo.rights' | translate}}</th>

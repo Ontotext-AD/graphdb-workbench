@@ -6,6 +6,7 @@
     word-break: break-all;
 }
 
+/* check when the GDB-15277 is merged for utility classes  auth-info -> users.html */
 .auth-info {
-    font-weight: 700;
+    font-weight: var(--gw-label-base-bold-font-weight);
 }

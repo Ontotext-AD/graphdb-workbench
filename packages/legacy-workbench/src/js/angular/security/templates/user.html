@@ -78,7 +78,7 @@
                             <span ng-show="mode !== 'add'">{{'security.unset.password' | translate}} </span>
                         </label>
                     </div>
-                    <div ng-if="!isLocalAuthentication() && (mode !== 'edit' && canExtendExternalUserRole)" class="external-user-info">
+                    <div ng-if="!isLocalAuthentication() && (mode !== 'edit' && canExtendExternalUserRole)" class="external-user-info body-base-regular">
                         <div class="alert alert-info">
                             {{'security.authorization.db' | translate: {authSource: authSource} }}
                         </div>
@@ -93,7 +93,8 @@
 
                     <div id="sameas-on" class="mb-1">
                         <div class="setting-toggle">
-                            <div class="sameas-label label" aria-hidden="true">
+                            <!-- line-height from 1 to 1.2 -->
+                            <div class="sameas-label label label-base-regular" aria-hidden="true">
                                 {{'security.expand.sameAs.is' | translate}}
                             </div>
                             <div class="switch mr-0">
@@ -108,7 +109,8 @@
 
                     <div id="inference-on" class="mb-1">
                         <div class="setting-toggle">
-                            <div class="inference-label label" aria-hidden="true">
+                             <!-- line-height from 1 to 1.2 -->
+                            <div class="inference-label label label-base-regular" aria-hidden="true">
                                 {{'security.inference.is' | translate}}
                             </div>
                             <div class="switch mr-0">
@@ -121,7 +123,8 @@
 
                     <div id="schema-on" class="mb-1">
                         <div class="setting-toggle">
-                            <div class="schema-label label" aria-hidden="true">
+                             <!-- line-height from 1 to 1.2 -->
+                            <div class="schema-label label label-base-regular" aria-hidden="true">
                                 {{'security.show.schema' | translate}}
                             </div>
                             <div class="switch mr-0">
@@ -138,12 +141,10 @@
                         <input type="checkbox" ng-model="user.appSettings.EXECUTE_COUNT" id="defaultCount" checked="appSettings.EXECUTE_COUNT">
                         {{'security.count.total.results' | translate}}
                     </label>
-
                     <label class="d-block">
                         <input type="checkbox" ng-model="user.appSettings.IGNORE_SHARED_QUERIES" id="ignore-shared" checked="appSettings.IGNORE_SHARED_QUERIES">
                         {{'security.ignore.shared.queries' | translate}}
                     </label>
-
                     <label class="d-block" ng-if="showCookiePolicyLink">
                         <button class="btn btn-secondary show-cookie-policy-btn" ng-click="showCookiePolicy($event)">{{'cookie.cookie_policy_url_label' | translate}}</button>
                     </label>
@@ -151,7 +152,7 @@
                 </div>
             </div>
 
-            <div class="card" id="workbench-settings" ng-if="showWorkbenchSettings">
+            <div class="card" id="workbench-settings" ng-if="true">
                 <div class="card-block">
                     <h3>{{'security.workbench.settings.title' | translate}}
                         <em class="ri-information-2-line text-tertiary small" gdb-tooltip="{{'security.workbench.settings.theme.tooltip' | translate}}"></em>
@@ -192,21 +193,22 @@
                         <h5 class="mb-0">{{'security.user.role' | translate}}</h5>
                         <div class="user-roles">
                             <div>
-                                <label class="mr-1"
+                                <label class="mr-1 label-base-regular"
                                        uib-popover-template="'popover-content-user.html'"
                                        popover-trigger="mouseenter"
                                        popover-placement="bottom">
                                     <input type="radio" ng-model="userType" id="roleUser" value="user" ng-disabled="(canExtendExternalUserRole && !allowRoleExtension) || hasEditRestrictions()">
                                     {{'security.user.label' | translate}}
                                 </label>
-                                <label class="mr-1"
+                                <label class="mr-1 label-base-regular"
                                        uib-popover-template="'popover-content-repo-manager.html'"
                                        popover-trigger="mouseenter"
                                        popover-placement="bottom">
                                     <input type="radio" ng-model="userType" id="roleRepoAdmin" value="repoManager" ng-disabled="(canExtendExternalUserRole && !allowRoleExtension) || hasEditRestrictions()">
                                     {{'security.repo.manager.label' | translate}}
                                 </label>
-                                <label uib-popover-template="'popover-content-admin.html'"
+                                <label class="label-base-regular"
+                                       uib-popover-template="'popover-content-admin.html'"
                                        popover-trigger="mouseenter"
                                        popover-placement="bottom">
                                     <input type="radio" ng-model="userType" id="roleAdmin" value="admin" ng-disabled="(canExtendExternalUserRole && !allowRoleExtension) || hasEditRestrictions()">
@@ -215,7 +217,7 @@
                             </div>
 
                             <div class="user-custom-roles" id="user-custom-roles">
-                                <div style="font-weight: 400">{{'security.user.custom_role' | translate}}</div>
+                                <div class="label-base-regular">{{'security.user.custom_role' | translate}}</div>
                                 <div class="input-group">
                                     <tags-input name="customRoleTag" class="wb-tags-input" ng-model="customRoles" min-length="1"
                                                 ng-disabled="!isUser() || mode === 'settings' || (canExtendExternalUserRole && !allowRoleExtension)"
@@ -256,20 +258,21 @@
                                 <colgroup></colgroup>
                                 <thead>
                                 <tr>
-                                    <th id="repositoryIdColumn" scope="col" rowspan="2" class="repository-column auth-column">{{'security.repository.title' | translate}}</th>
-                                    <th id="permissionsColumn" scope="colgroup" colspan="3" class="text-xs-center permissions-column auth-column">{{'security.label.permissions' | translate}}</th>
-                                    <th id="graphql" scope="col" rowspan="2" class="text-xs-center auth-column graphql-column"><span
-                                        class="auth-column-label">{{'security.label.graphql' | translate}}</span></th>
+                                    <th id="repositoryIdColumn" scope="col" rowspan="2" class="repository-column auth-column label-base-medium">{{'security.repository.title' | translate}}</th>
+                                    <th id="permissionsColumn" scope="colgroup" colspan="3" class="text-xs-center permissions-column auth-column label-base-medium">{{'security.label.permissions' | translate}}</th>
+                                    <th id="graphql" scope="col" rowspan="2" class="text-xs-center auth-column graphql-column label-base-medium">
+                                        <span class="auth-column-label">{{'security.label.graphql' | translate}}</span>
+                                    </th>
                                 </tr>
                                 <tr class="permissions-subheader">
-                                    <th id="readRightsColumn" scope="col" headers="permissionsColumn" class="text-xs-center read-column auth-column"><span class="auth-column-label">{{'security.label.read' | translate}}</span><em
+                                    <th id="readRightsColumn" scope="col" headers="permissionsColumn" class="text-xs-center read-column auth-column label-base-medium"><span class="auth-column-label">{{'security.label.read' | translate}}</span><em
                                         class="ri-eye-line icon-lg" gdb-tooltip="{{'security.tooltip.read' | translate}}"></em></th>
-                                    <th id="writeRightColumn" scope="col" headers="permissionsColumn" class="text-xs-center write-column auth-column"><span class="auth-column-label">{{'security.label.write' | translate}}</span><em
+                                    <th id="writeRightColumn" scope="col" headers="permissionsColumn" class="text-xs-center write-column auth-column label-base-medium"><span class="auth-column-label">{{'security.label.write' | translate}}</span><em
                                         class="ri-edit-line icon-lg" gdb-tooltip="{{'security.tooltip.write' | translate}}"></em></th>
-                                    <th id="maintainRepositoryColumn" scope="col" headers="permissionsColumn" class="text-xs-center maintain-repository-column auth-column"><span class="auth-column-label">{{'security.label.maintain_repository' | translate}}</span><em class="ri-folder-settings-line icon-lg" gdb-tooltip="{{'security.tooltip.maintain_repository' | translate}}"></em></th>
+                                    <th id="maintainRepositoryColumn" scope="col" headers="permissionsColumn" class="text-xs-center maintain-repository-column auth-column label-base-medium"><span class="auth-column-label">{{'security.label.maintain_repository' | translate}}</span><em class="ri-folder-settings-line icon-lg" gdb-tooltip="{{'security.tooltip.maintain_repository' | translate}}"></em></th>
                                 </tr>
                                 <tr class="any-repo">
-                                    <th scope="row">{{'security.any.data.repo' | translate}}
+                                    <th class="label-base-medium" scope="row">{{'security.any.data.repo' | translate}}
                                         <em class="ri-information-2-line text-tertiary" gdb-tooltip="{{'security.data.repos' | translate}}"></em>
                                     </th>
                                     <td class="text-xs-center">
@@ -304,7 +307,7 @@
                                 </thead>
                                 <tbody ng-if="isUser()" data-test="repository-rights-rows">
                                 <tr ng-repeat="repository in getReadableRepositories() | orderBy: ['location', 'id']">
-                                    <th scope="row" class="repository-name">
+                                    <th scope="row" class="repository-name label-base-medium">
                                         <em class="icon-lg" ng-class="'icon-repo-' + repository.type"></em>
                                         {{repository.id}}
                                         <small class="text-muted">
@@ -353,8 +356,8 @@
         </div>
 
 		<div class="action-buttons text-right">
-            <button id="wb-user-goBack" class="btn btn-secondary" type="button" ng-click="goBack()">{{'common.cancel.btn' | translate}}</button>
-            <button id="wb-user-submit" class="btn btn-primary" type="submit" ng-disabled="!isRoleValid">{{saveButtonText}}</button>
+            <button id="wb-user-goBack" class="btn btn-secondary label-base-regular" type="button" ng-click="goBack()">{{'common.cancel.btn' | translate}}</button>
+            <button id="wb-user-submit" class="btn btn-primary label-base-regular" type="submit" ng-disabled="!isRoleValid">{{saveButtonText}}</button>
 		</div>
 	</form>
 </div>

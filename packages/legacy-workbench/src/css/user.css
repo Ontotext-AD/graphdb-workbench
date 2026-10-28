@@ -118,11 +118,7 @@
 }
 
 .auth-info {
-    font-weight: 700;
-}
-
-.sparql-editor-settings .label {
-    font-weight: 400;
+    font-weight: var(--gw-label-base-bold-font-weight);
 }
 
 .sparql-editor-settings .setting-toggle {
