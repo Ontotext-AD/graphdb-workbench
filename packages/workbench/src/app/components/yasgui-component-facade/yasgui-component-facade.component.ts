@@ -14,7 +14,6 @@ import {
   OnInit,
 } from '@angular/core';
 import {saveAs} from 'file-saver';
-import {defineCustomElements} from 'ontotext-yasgui-web-component/loader';
 import {OntotextYasguiConfig} from './models/yasgui/ontotext-yasgui-config';
 import {SavedQueryConfig} from './models/query/saved-query-config';
 import {QueryMode} from './models/query-mode';
@@ -77,8 +76,6 @@ import {
   RequestAbortedEventPayload,
   SaveQueryOpenedEventPayload
 } from './models/event/event-payload';
-
-defineCustomElements();
 
 @Component({
   selector: 'app-yasgui-component-facade',
