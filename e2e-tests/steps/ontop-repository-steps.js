@@ -25,6 +25,10 @@ export class OntopRepositorySteps {
         OntopRepositorySteps.getOBDAFileFieldEditButton().click();
     }
 
+    static getFileContentEditor() {
+        return cy.getByTestId('repository-file-content');
+    }
+
     static getOntologyFileField() {
         return cy.get('div').contains("Ontology file");
     }
