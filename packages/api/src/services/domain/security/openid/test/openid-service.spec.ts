@@ -479,22 +479,6 @@ describe('OpenIdService', () => {
       const logoutUrl = (WindowService.setLocationHref as jest.Mock).mock.calls[0][0];
       expect(logoutUrl).not.toContain('id_token_hint');
     });
-
-    it('should perform only soft logout on hard logout when there is no end session endpoint', () => {
-      // Given I have an OpenID config without an end session endpoint
-      const config = mockOpenIdConfig({oidcEndSessionEndpoint: undefined});
-      const securityConfig = mockSecurityConfig(config);
-      securityContextService.updateSecurityConfig(securityConfig);
-      const clearAuthenticationSpy = jest.spyOn(openIdService, 'clearAuthentication');
-
-      // When I log out from the OpenID provider
-      openIdService.logout(true);
-
-      // Then I expect the authentication to be cleared
-      expect(clearAuthenticationSpy).toHaveBeenCalled();
-      // And no redirect to the OpenID provider
-      expect(WindowService.setLocationHref).not.toHaveBeenCalled();
-    });
   });
 
   describe('initializeOpenId - handleAuthenticationFlow', () => {

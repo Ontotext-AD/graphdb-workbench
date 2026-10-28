@@ -10,6 +10,7 @@ import {AuthenticatedUser, OpenidSecurityConfig} from '../../../../models/securi
 import {GeneratorUtils} from '../../../utils/generator-utils';
 import {MissingOpenidConfiguration} from '../errors/openid/missing-openid-configuration';
 import {InvalidOpenidAuthFlow} from '../errors/openid/invalid-openid-auth-flow';
+import {MissingOpenIdEndSessionUrl} from '../errors/openid/missing-open-id-end-session-url';
 import {notify} from '../../../notification';
 import {Notification, NotificationParam} from '../../../../models/notification';
 import {UserHasNoAccess} from '../errors/openid/user-has-no-access';
@@ -57,6 +58,7 @@ export class OpenidAuthStrategy implements AuthStrategy {
   async initialize(): Promise<boolean> {
     this.loadSecurityConfiguration();
     this.validateConfiguration();
+    this.validateLogoutConfiguration();
     try {
       const isLoggedIn = await this.openIdService.initializeOpenId();
 
@@ -172,11 +174,21 @@ export class OpenidAuthStrategy implements AuthStrategy {
   }
 
   /**
+   * Validates that logout from the OpenID provider is possible, unless only a local logout is configured.
+   * @throws MissingOpenIdEndSessionUrl if the provider has no end session endpoint
+   */
+  private validateLogoutConfiguration(): void {
+    if (!this.openIdSecurityConfig!.localLogoutOnly && !this.openIdSecurityConfig!.openIdEndSessionUrl) {
+      throw new MissingOpenIdEndSessionUrl();
+    }
+  }
+
+  /**
    * Checks if logout should end the session in the OpenID provider too.
-   * @returns True unless <code>localLogoutOnly</code> is set or the provider has no end session endpoint
+   * @returns True unless <code>localLogoutOnly</code> is set
    */
   private shouldLogoutFromProvider(): boolean {
-    return !this.openIdSecurityConfig?.localLogoutOnly && !!this.openIdSecurityConfig?.openIdEndSessionUrl;
+    return !this.openIdSecurityConfig?.localLogoutOnly;
   }
 
   /**

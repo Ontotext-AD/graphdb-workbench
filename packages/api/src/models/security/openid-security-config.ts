@@ -34,8 +34,8 @@ export class OpenidSecurityConfig extends Model<OpenidSecurityConfig> {
   extraScopes?: string;
   authorizeParameters?: string;
 
-  // Logout behaviour: when true, logout only clears the token stored in the browser and the session in the
-  // OpenID provider stays active. Otherwise, the user is also logged out from the OpenID provider.
+  // Logout behaviour: kept for backward compatibility with the logout behaviour before RP-initiated logout. Defaults to false.
+  // To keep the previous logout behaviour, GraphDB has to be configured with this option set to true.
   localLogoutOnly?: boolean;
 
   // Computed URLs (based on proxyOidc setting)
