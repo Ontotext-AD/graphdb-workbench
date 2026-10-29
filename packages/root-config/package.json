@@ -33,6 +33,7 @@
   "dependencies": {
     "dompurify": "^3.4.7",
     "graphwise-styleguide": "^1.3.2",
+    "ontotext-yasgui-web-component": "^1.8.5",
     "regenerator-runtime": "^0.14.1",
     "remixicon": "^4.7.0",
     "shepherd.js": "^11.2.0",

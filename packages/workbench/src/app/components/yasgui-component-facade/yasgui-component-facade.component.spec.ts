@@ -5,10 +5,6 @@ import {provideTranslocoForTesting} from '../../../testing-utils/transloco-utils
 import {LanguageContextService, RuntimeConfigurationContextService, ServiceProvider} from '@ontotext/workbench-api';
 import {DialogService} from 'primeng/dynamicdialog';
 
-jest.mock('ontotext-yasgui-web-component/loader', () => ({
-  defineCustomElements: jest.fn()
-}));
-
 describe('YasguiComponentFacadeComponent', () => {
   let component: YasguiComponentFacadeComponent;
   let fixture: ComponentFixture<YasguiComponentFacadeComponent>;
@@ -16,7 +12,7 @@ describe('YasguiComponentFacadeComponent', () => {
   beforeEach(async () => {
     // Prevent the immediate theme-change callback from firing when subscribing.
     // The ontotext-yasgui custom element in the test DOM is a bare HTMLElement (because
-    // defineCustomElements is mocked as a no-op), so it lacks the setTheme() method that
+    // the yasgui custom elements are not registered in tests), so it lacks the setTheme() method that
     // the callback would try to invoke.
     jest.spyOn(ServiceProvider.get(RuntimeConfigurationContextService), 'onThemeModeChanged')
       .mockImplementation(() => () => {

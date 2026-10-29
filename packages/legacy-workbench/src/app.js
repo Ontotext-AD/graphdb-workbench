@@ -24,7 +24,6 @@ import 'angular/core/directives/modal-window.decorator';
 import 'angular/core/filters/search-filter';
 import 'angular/core/filters/bytes-filter';
 import 'angular/core/services/language.service';
-import {defineCustomElements as defineYasguiElements} from 'ontotext-yasgui-web-component/loader';
 import {defineCustomElements as defineGraphQlElements} from 'ontotext-graphql-playground-component/loader';
 import {NumberUtils} from "./js/angular/utils/number-utils";
 import {HtmlUtil} from "./js/angular/utils/html-util";
@@ -92,7 +91,6 @@ const providers = [
 const workbench = angular.module('graphdb.workbench', modules);
 
 const moduleDefinition = function(translations) {
-    defineYasguiElements();
     defineGraphQlElements();
 
     const productInfoContextService = service(ProductInfoContextService);
