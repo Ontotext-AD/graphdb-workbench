@@ -43,6 +43,11 @@
 
   main {
     grid-area: main;
+
+    // The main content is focused only by the skip link, the focus ring around the whole page is not needed.
+    &:focus {
+      outline: none;
+    }
   }
 
   &.loading {
@@ -69,5 +74,51 @@
 
   footer {
     grid-area: footer;
+  }
+
+  // Hidden visually until focused, same technique as .screen-reader-only in root-config.
+  .skip-link:not(:focus) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  // Shown as a secondary button above the sticky header.
+  .skip-link:focus {
+    position: fixed;
+    top: 0.5rem;
+    left: 0.5rem;
+    z-index: 1000;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gw-button-gap);
+    padding: var(--gw-button-padding-y) var(--gw-button-padding-x);
+    border: 1px solid var(--gw-button-secondary-border-color);
+    border-radius: var(--gw-button-border-radius);
+
+    // The secondary button background is transparent, an opaque one keeps the link readable over the header.
+    background: var(--gw-background-elevated);
+    color: var(--gw-button-secondary-color);
+    font-family: var(--gw-button-label-typography-font-family);
+    font-size: var(--gw-button-label-typography-font-size);
+    font-weight: var(--gw-button-label-typography-font-weight);
+    line-height: var(--gw-button-label-typography-line-height);
+    text-decoration: none;
+    white-space: nowrap;
+    outline: var(--gw-button-focus-ring-width) var(--gw-button-focus-ring-style) var(--gw-button-secondary-focus-ring-color);
+    outline-offset: var(--gw-button-focus-ring-offset);
+
+    &:hover {
+      border-color: var(--gw-button-secondary-hover-border-color);
+      color: var(--gw-button-secondary-hover-color);
+    }
+
+    &:active {
+      border-color: var(--gw-button-secondary-active-border-color);
+      color: var(--gw-button-secondary-active-color);
+    }
   }
 }

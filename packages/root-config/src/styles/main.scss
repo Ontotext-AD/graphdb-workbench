@@ -5,6 +5,12 @@ html,body {
   scrollbar-color: var(--gw-virtualscroller-loader-mask-color) var(--gw-virtualscroller-loader-mask-background);
 }
 
+// Keeps the element focused by keyboard navigation from being scrolled under the sticky header.
+// --wb-header-height is set by onto-layout.
+html {
+  scroll-padding-top: calc(var(--wb-header-height, 3.75rem) + 0.5rem);
+}
+
 [id^="single-spa-application"],
 #workbench-app,
 [ng-controller="mainCtrl"],
