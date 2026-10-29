@@ -369,6 +369,14 @@ export class VisualGraphSteps extends BaseSteps {
         this.getGraphConfig(name).closest('tr').find('.delete-config').click();
     }
 
+    static getEditConfigButton(name) {
+        return this.getGraphConfig(name).closest('tr').getByTestId('graph-config-edit-btn');
+    }
+
+    static getDeleteConfigButton(name) {
+        return this.getGraphConfig(name).closest('tr').getByTestId('graph-config-delete-btn');
+    }
+
     static getGraphConfigSearchPanel() {
         return cy.get('.search-bar');
     }

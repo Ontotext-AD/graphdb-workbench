@@ -457,6 +457,10 @@ function GraphsVisualizationsCtrl(
         $scope.isAutocompleteEnabled = autocompleteEnabled;
     };
 
+    const onAuthenticatedUserChanged = (authenticatedUser) => {
+        $scope.principal = authenticatedUser;
+    };
+
     const onThemeModeChange = (themeMode) => {
         if (themeMode) {
             resetColors();
@@ -470,14 +474,11 @@ function GraphsVisualizationsCtrl(
 
     const subscriptions = [];
 
-    subscriptions.push($rootScope.$on('$translateChangeSuccess', function() {
+    const onTranslateChangeSuccess = () => {
         $scope.propertiesSearchPlaceholder = $translate.instant("visual.search.instance.placeholder");
-    }));
+    };
 
-    subscriptions.push(runtimeConfigContextService.onThemeModeChanged(onThemeModeChange, true));
-    subscriptions.push(WorkbenchContextService.onAutocompleteEnabledUpdated(onAutocompleteEnabledUpdated));
-    subscriptions.push(repositoryContextService.onSelectedRepositoryChanged(onSelectedRepositoryUpdated));
-    subscriptions.push($scope.$on('repositoryIsSet', function(event, args) {
+    const onRepositoryIsSet = (event, args) => {
         const payload = args || {newRepo: false};
         // New repo set from dropdown, clear init state
         if (payload.newRepo) {
@@ -499,15 +500,25 @@ function GraphsVisualizationsCtrl(
                 initGraphFromQueryParam();
             }
         }
-    }));
+    };
 
     // close the sidepanel (if open), if the user navigates to the viz graph menu
-    subscriptions.push(eventService.subscribe(EventName.NAVIGATION_END, () => {
+    const onNavigationEnd = () => {
         if ($scope.showInfoPanel) {
             $scope.showFilter = false;
             $scope.closeInfoPanel();
         }
-    }));
+    };
+
+    subscriptions.push(
+        $rootScope.$on('$translateChangeSuccess', onTranslateChangeSuccess),
+        runtimeConfigContextService.onThemeModeChanged(onThemeModeChange, true),
+        WorkbenchContextService.onAutocompleteEnabledUpdated(onAutocompleteEnabledUpdated),
+        repositoryContextService.onSelectedRepositoryChanged(onSelectedRepositoryUpdated),
+        securityContextService.onAuthenticatedUserChanged(onAuthenticatedUserChanged),
+        $scope.$on('repositoryIsSet', onRepositoryIsSet),
+        eventService.subscribe(EventName.NAVIGATION_END, onNavigationEnd),
+    );
 
     const rootScopeGenericWatcher = () => $rootScope.key;
     const rootScopeGenericChangeHandler = () => {

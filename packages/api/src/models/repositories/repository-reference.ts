@@ -24,3 +24,14 @@ export interface RepositoryReference {
 export const getRepositoryIdWithLocation = (repository: RepositoryReference): string => {
   return repository.location ? `${repository.id}@${repository.location}` : repository.id;
 };
+
+/**
+ * Checks whether two repository references point to the same repository, i.e. have the same ID and location.
+ *
+ * @param {RepositoryReference} [repository] The first repository reference.
+ * @param {RepositoryReference} [otherRepository] The second repository reference.
+ * @returns {boolean} `true` if both have the same ID and location, or if both are `undefined`.
+ */
+export const isSameRepository = (repository?: RepositoryReference, otherRepository?: RepositoryReference): boolean => {
+  return repository?.id === otherRepository?.id && repository?.location === otherRepository?.location;
+};
