@@ -1,3 +1,4 @@
+/* Analyze template after GDB-15277 merged - repository.html, repositories.html */
 #selectedRepositories {
     float: left;
     width: 98%;
@@ -9,11 +10,11 @@
 }
 
 .form fieldset div label {
-    font-weight: 400;
-    line-height: 24px;
+    font-weight: var(--gw-label-base-regular-font-weight); /*400*/
+    line-height: var(--gw-body-base-regular-line-height); /* 24px == 1.5;  analyze font-weight and line-height for consistency */
     height: 24px;
     vertical-align: middle;
-    padding-right: 8px
+    padding-right: 8px;
 }
 
 .storage-encryption-alert {
@@ -54,21 +55,22 @@
 
 .form div input {
     float: left;
-    font-size: 12px;
+    font-size:var(--gw-body-xs-regular-font-size);
     padding: 2px;
     width: 316px;
-    margin: 0px 0 20px 0
+    margin: 0px 0 20px 0;
 }
 
 .form div input[type="checkbox"] {
-    font-size: 12px;
+    font-size: var(--gw-body-xs-regular-font-size);
     margin: 4px 10px 20px 0px;
-    width: 20px
+    width: 20px;
+
 }
 
 .form div textarea {
     float: left;
-    font-size: 12px;
+    font-size: var(--gw-body-xs-regular-font-size);
     padding: 4px 2px;
     width: 250px;
     margin: 0px 0 20px 10px;
@@ -77,7 +79,7 @@
 
 .form div select {
     float: left;
-    font-size: 12px;
+    font-size: var(--gw-body-xs-regular-font-size);
     width: 265px;
     margin: 2px 0 20px 0
 }
@@ -202,7 +204,7 @@ span.required {
 #sesameRepositories .repositoryMainContainer .repositoryContainer .nameRow {
     min-height: 40px;
     padding-top: 5px;
-    font-size: 20px;
+    font-size: 1.25rem;
     background-color: #D1D1D1;
     color: var(--gw-primary-base);
 }
@@ -218,7 +220,7 @@ span.required {
 
 #sesameRepositories .repositoryMainContainer .repositoryContainer .nameRow div.iconsContainer div i {
     cursor: pointer;
-    font-size: 16px;
+    font-size: var(--gw-form-field-base-font-size); 
     color: var(--gw-primary-base);
     margin-left: 5px
 }
@@ -229,7 +231,7 @@ span.required {
 }
 
 #sesameRepositories .repositoryMainContainer .repositoryContainer .statusRow {
-    font-size: 16px;
+    font-size: 1rem;
     background-color: #E8E8E8
 }
 
@@ -250,7 +252,7 @@ span.required {
 }
 
 #sesameRepositories .repositoryMainContainer .repositoryContainer .readRow i, #sesameRepositories .repositoryMainContainer .repositoryContainer .writeRow i {
-    font-size: 16px
+    font-size: var(--gw-form-field-base-font-size);
 }
 
 #sesameRepositories .repositoryMainContainer .repositoryContainer .readRow i.icon-ok, #sesameRepositories .repositoryMainContainer .repositoryContainer .writeRow i.icon-ok {

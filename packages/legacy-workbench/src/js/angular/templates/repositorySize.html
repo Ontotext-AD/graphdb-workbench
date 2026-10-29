@@ -1,4 +1,5 @@
 <link href="css/repository-info-popover.css?v=[AIV]{version}[/AIV]" rel="stylesheet">
+<!-- Review after GDB-15277 is merged -->
 <div ng-init="getRepositorySize()" class="repository-info-popover">
 
     <div class="title">
@@ -9,28 +10,28 @@
             <span>{{repository.id}}</span>
         </h6>
 
-        <div ng-if="popoverRepo.title" class="repository-description">
-            {{popoverRepo.title}}
+        <div ng-if="true" class="repository-description body-sm-regular">
+            {{popoverRepo.title}} whah
         </div>
     </div>
 
     <div class="property">
-        <span class="property-label">{{'location.label' | translate}}</span>
-        <span class="property-value text-right">
+        <span class="property-label label-sm-regular">{{'location.label' | translate}}</span>
+        <span class="property-value text-right body-sm-medium">
             {{popoverRepo.location ? popoverRepo.location : 'Local'}}
         </span>
     </div>
 
     <div class="property">
-        <span class="property-label">{{'type.label' | translate}}</span>
-        <span class="property-value text-right">
+        <span class="property-label label-sm-regular">{{'type.label' | translate}}</span>
+        <span class="property-value text-right body-sm-medium">
             {{toHumanReadableType(popoverRepo.type)}}
         </span>
     </div>
 
     <div class="property mb-1">
-        <span class="property-label">{{'permissions.label' | translate}}</span>
-        <span class="property-value text-right">
+        <span class="property-label label-sm-regular">{{'permissions.label' | translate}}</span>
+        <span class="property-value text-right body-sm-medium">
             {{('repository.permission.' + getRepositoryPermission(popoverRepo).toLowerCase()) | translate}}
         </span>
     </div>
@@ -38,29 +39,29 @@
     <div ng-show="repository.state === repoStates.RUNNING">
         <div ng-show="repositorySize.total >= 0">
             <div class="property">
-                <span class="property-label">{{'total.statements.label' | translate}}</span>
-                <span class="property-value text-right">
+                <span class="property-label label-sm-regular">{{'total.statements.label' | translate}}</span>
+                <span class="property-value text-right body-sm-regular">
                     {{repositorySize.total | currency:'':0}}
                 </span>
             </div>
 
             <div class="property" ng-show="repositorySize.explicit >= 0">
-                <span class="property-label">{{'explicit.label' | translate}}</span>
-                <span class="property-value text-right">
+                <span class="property-label label-sm-regular">{{'explicit.label' | translate}}</span>
+                <span class="property-value text-right body-sm-regular">
                     {{repositorySize.explicit != 0 ? (repositorySize.explicit | currency:'':0) : 0}}
                 </span>
             </div>
 
             <div class="property" ng-show="repositorySize.inferred >= 0">
-                <span class="property-label">{{'inferred.label' | translate}}</span>
-                <span class="property-value text-right">
+                <span class="property-label label-sm-regular">{{'inferred.label' | translate}}</span>
+                <span class="property-value text-right body-sm-regular">
                     {{repositorySize.inferred | currency:'':0}}
                 </span>
             </div>
 
             <div class="property" ng-show="repositorySize.explicit >= 0">
-                <span class="property-label">{{'expansion.ratio.label' | translate}}</span>
-                <span class="property-value text-right">
+                <span class="property-label label-sm-regular">{{'expansion.ratio.label' | translate}}</span>
+                <span class="property-value text-right body-sm-regular">
                     {{repositorySize.explicit != 0 ? (repositorySize.total/repositorySize.explicit | currency:'') : '-'}}
                 </span>
             </div>
@@ -75,7 +76,7 @@
         </div>
     </div>
 
-    <div ng-hide="repository.state === repoStates.RUNNING" class="inactive-repo-message" >
+    <div ng-hide="false" class="inactive-repo-message body-sm-light" >
         <div class="icon">
             <i class="ri-information-2-line"></i>
         </div>

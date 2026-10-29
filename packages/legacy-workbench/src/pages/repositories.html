@@ -19,7 +19,7 @@
                 ng-repeat="location in getLocalLocation(true, RemoteLocationType.GRAPH_DB) | orderBy: ['uri']">
                 <td>
                     <div>
-                        <div class="pull-left">
+                        <div class="pull-left label-base-regular">
                             <strong>{{'repos.from' | translate}}</strong>
                             <em ng-if="location.degradedReason" class="ri-alert-line icon-lg text-warning"
                                 gdb-tooltip="{{location.degradedReason}}{{'repos.degraded.reason.extra.msg' | translate}}"
@@ -77,7 +77,7 @@
                                     <col class="default-repository-column">
                                 </colgroup>
                                 <thead class="sr-only-table-header">
-                                    <tr>
+                                    <tr class="label-base-regular">
                                         <th scope="col"><span class="sr-only">{{'repositories.table.column.connect' | translate}}</span></th>
                                         <th scope="col"><span class="sr-only">{{'repositories.table.column.repository' | translate}}</span></th>
                                         <th scope="col"><span class="sr-only">{{'repositories.table.column.actions' | translate}}</span></th>
@@ -213,7 +213,7 @@
                     ng-repeat="location in getLocalLocation(false, RemoteLocationType.GRAPH_DB) | orderBy: ['uri']">
                     <td>
                         <div>
-                            <div class="pull-left">
+                            <div class="pull-left label-base-regular">
                                 <strong>{{'repos.from' | translate}}</strong>
                                 <em ng-if="location.degradedReason" class="ri-alert-line icon-lg text-warning"
                                     gdb-tooltip="{{location.degradedReason}}{{'repos.degraded.reason.extra.msg' | translate}}"
@@ -271,7 +271,7 @@
                                         <col class="default-repository-column">
                                     </colgroup>
                                     <thead class="sr-only-table-header">
-                                        <tr>
+                                        <tr class="label-base-regular">
                                             <th scope="col"><span class="sr-only">{{'repositories.table.column.connect' | translate}}</span></th>
                                             <th scope="col"><span class="sr-only">{{'repositories.table.column.repository' | translate}}</span></th>
                                             <th scope="col"><span class="sr-only">{{'repositories.table.column.actions' | translate}}</span></th>
@@ -456,17 +456,20 @@
 
     <div class="btns-all" ng-if="isRepoManager()">
         <div class="btn-group" uib-dropdown>
-            <a id="wb-repositories-addRepositoryLink" class="btn btn-primary" ng-href="repository/create" guide-selector="createRepository"><span
-                class="ri-add-circle-line"></span> {{'repository.create.btn' | translate}}</a>
-            <button type="button" class="btn btn-primary dropdown-toggle-split dropdown-toggle" uib-dropdown-toggle>
+            <a id="wb-repositories-addRepositoryLink" class="btn btn-primary label-base-regular" ng-href="repository/create" guide-selector="createRepository">
+                <span class="ri-add-circle-line"></span> 
+                {{'repository.create.btn' | translate}}
+            </a>
+            <button type="button" class="btn btn-primary dropdown-toggle-split dropdown-toggle  label-base-regular" uib-dropdown-toggle>
                 <span class="sr-only">{{'split.btn' | translate}}</span>
             </button>
             <ul class="dropdown-menu" role="menu">
                 <li><a class="dropdown-item" href ng-click="fromFile()">{{'create.from.file' | translate}}</a></li>
             </ul>
         </div>
-        <button id="addAttachRemoteLocation" ng-click="addLocation()" class="btn btn-primary pull-right"><span
-            class="ri-add-circle-line"></span>{{'attach.remote.location' | translate}}
+        <button id="addAttachRemoteLocation" ng-click="addLocation()" class="btn btn-primary pull-right  label-base-regular">
+            <span class="ri-add-circle-line"></span>
+            {{'attach.remote.location' | translate}}
         </button>
     </div>
 </div>

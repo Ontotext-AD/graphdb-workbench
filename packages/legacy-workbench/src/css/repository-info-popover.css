@@ -18,14 +18,10 @@
     gap: 0.2rem;
     padding: 12px;
     margin: -4px 0;
-    font-size: 0.875rem;
-    font-weight: 400;
     box-shadow: var(--gw-dialog-shadow-1-offset-x) var(--gw-dialog-shadow-1-offset-y) var(--gw-dialog-shadow-1-blur) var(--gw-dialog-shadow-1-spread) var(--gw-dialog-shadow-1-color);
 
     .title h6 {
         font-size: 1.14em;
-        font-weight: 600;
-        line-height: 1;
         text-align: left; 
         margin-bottom: 0.285em;
     }
@@ -58,11 +54,6 @@
         }
     }
 
-    .repository-id {
-        font-size: 1rem;
-        font-weight: 400;
-    }
-
     .repository-description {
         margin-bottom: 0.5rem;
         display: -webkit-box;
@@ -85,7 +76,6 @@
 
     .property-value {
         text-align: right;
-        font-weight: 500;
     }
 
     .inactive-repo-message {
@@ -100,7 +90,6 @@
 
     .inactive-repo-message p {
         font-size: 1.14em;
-        font-weight: 400;
         margin: 0;
     }
 
