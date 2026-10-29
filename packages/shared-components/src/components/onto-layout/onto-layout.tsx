@@ -84,6 +84,10 @@ export class OntoLayout {
     WindowService.getWindow().addEventListener('storage', this.handleStorageChange);
   }
 
+  componentWillLoad() {
+    this.keepMainContentInPlace();
+  }
+
   componentDidRender() {
     this.windowResizeHandler();
   }
@@ -213,6 +217,23 @@ export class OntoLayout {
       }
       WindowService.getWindow().location.reload();
     }
+  }
+
+  // ========================
+  // Main content position
+  // ========================
+  /**
+   * single-spa-layout re-inserts its `<main>` container as the first child of the layout on every routing event,
+   * which puts the main content before the header and the navigation in the Tab order. The layout ignores that move,
+   * so the main content keeps the slot position it got on the first render.
+   */
+  private keepMainContentInPlace() {
+    const host = this.hostElement;
+    const nativeInsertBefore = host.insertBefore.bind(host);
+    host.insertBefore = <T extends Node>(node: T, child: Node | null): T => {
+      const isMainContent = node.parentNode === host && node.nodeName === 'MAIN';
+      return isMainContent && child === host.firstChild ? node : nativeInsertBefore(node, child);
+    };
   }
 
   // ========================
