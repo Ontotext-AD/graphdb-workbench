@@ -66,7 +66,7 @@
 }
 
 .ot-no-graphs .panel-title {
-    font-size: 14px;
+    font-size: var(--gw-label-sm-regular-font-size);
 }
 
 .ot-no-graphs .panel-title > a {
@@ -89,7 +89,7 @@
 
 .arrows-up-down i.fa{
     color: var(--gw-tertiary-base);
-    font-size: 26px;
+    font-size: 1.625rem;
 }
 
 .arrows-up-down i.fa.fa-long-arrow-up{
@@ -155,7 +155,7 @@
     position: absolute;
     top: 20px;
     left: 40px;
-    font-size: 20px;
+    font-size: 1.25rem;
 }
 
 .arrows-up-down.delete-repo:hover{
@@ -181,13 +181,13 @@
 }
 
 #export-graphs .arrows-up-down i.fa.fa-long-arrow-up{
-    font-size: 18px;
+    font-size: var(--gw-label-lg-regular-font-size);
     top: 8px;
     left: 14px;
 }
 
 #export-graphs .arrows-up-down i.fa.fa-long-arrow-down{
-    font-size: 18px;
+    font-size: var(--gw-label-lg-regular-font-size); 
     top: 17px;
     left: 22px;
 }
@@ -197,7 +197,7 @@
     bottom: -450px;
     right: -22px;
     text-align: left;
-    font-size: 14px;
+    font-size: var(--gw-label-sm-regular-font-size);
 }
 
 #export-graphs .arrow-up{

@@ -27,7 +27,7 @@
                            gdb-tooltip="{{'namespace.label' | translate}}" style="width: 260px;"/>
                 </div>
                 <button id="wb-namespaces-addNamespace" type="submit" ng-click="addNamespace()"
-                        class="btn btn-primary add-namespace"
+                        class="btn btn-primary add-namespace label-base-regular"
                         gdb-tooltip="{{'add.namespace.label' | translate}}">
                     <span class="ri-add-circle-line"></span>
                     {{'add.namespace.label' | translate}}
@@ -65,7 +65,7 @@
         <table ng-show="displayedNamespaces.length > 0" id="wb-namespaces-namespaceInNamespaces"
                class="table table-striped table-hover" aria-label="{{'view.namespaces.table.label' | translate}}">
             <thead>
-            <tr>
+            <tr class="label-base-regular">
                 <th id="selectionColumn" style="width: 100px">
                     <label class="form-check-label">
                         <input class="form-check-input select-all-namespaces" type="checkbox" ng-model="selectedAll"

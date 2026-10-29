@@ -7,12 +7,10 @@
         <page-info-tooltip></page-info-tooltip>
     </h1>
 
-
     <div class="main-loader" onto-loader size="50" ng-show="loader"></div>
     <div class="ot-owlim-ctrl" ng-hide="loader">
         <div core-errors></div>
         <div ng-show="getActiveRepository()">
-
 			<div class="alert alert-warning" ng-hide="graphs.length > 0">
 				{{'export.no.graphs.in.repo' | translate}} <a ng-href="sparql">{{'export.sparql.update.form' | translate}}</a> {{'or' | translate}} <a ng-href="import">{{'export.data.import.page' | translate}}</a>.
 			</div>
@@ -20,7 +18,7 @@
 			<div>
 				<div class="clearfix mb-2">
 					<div class="pull-right col-form-label graphs-overview-paginator">
-						<span class="mr-1">{{'showing.label' | translate}} {{(((pageSize * (page - 1)) + 1) | formatNumberToLocaleString)}}-{{pageSize * page >= filteredGraphs.length ? ((filteredGraphs.length) | formatNumberToLocaleString) : ((pageSize * page) | formatNumberToLocaleString)}} {{'of' | translate}} {{((filteredGraphs.length) | formatNumberToLocaleString)}} {{'results.label' | translate}}</span>
+						<span class="mr-1 label-base-regular">{{'showing.label' | translate}} {{(((pageSize * (page - 1)) + 1) | formatNumberToLocaleString)}}-{{pageSize * page >= filteredGraphs.length ? ((filteredGraphs.length) | formatNumberToLocaleString) : ((pageSize * page) | formatNumberToLocaleString)}} {{'of' | translate}} {{((filteredGraphs.length) | formatNumberToLocaleString)}} {{'results.label' | translate}}</span>
 						<span>{{'export.graphs.per.page' | translate}}</span>
 						<div class="btn-group" uib-dropdown>
 							<button type="button" class="btn btn-secondary btn-sm dropdown-toggle" uib-dropdown-toggle
@@ -43,14 +41,14 @@
 				</div>
 
 				<div class="clearfix" ng-class="{'mb-2': !hasMoreGraphs }">
-					<button type="button" class="btn btn-secondary clear-repository-btn"
+					<button type="button" class="btn btn-secondary clear-repository-btn label-base-regular"
 							ng-click="dropRepository()"
 							gdb-tooltip="{{'removes.data.from.repo.label' | translate}}" tooltip-placement="top"
 							ng-disabled="!canWriteActiveRepo(true)">
 						<span class="ri-delete-bin-6-line"></span> {{'clear.repo.label' | translate}}
 					</button>
                     <div class="btn-group" uib-dropdown>
-                        <button type="button" class="btn btn-primary dropdown-toggle export-repository-btn" uib-dropdown-toggle>
+                        <button type="button" class="btn btn-primary dropdown-toggle export-repository-btn label-base-regular" uib-dropdown-toggle>
                             <span class="icon-export"></span> {{'export.repository.label' | translate}}
                         </button>
                         <ul class="dropdown-menu">
@@ -64,7 +62,7 @@
                             </li>
                         </ul>
                     </div>
-                    <button type="button" class="btn btn-primary download-all-graphs-btn" ng-click="downloadAllGraphs()">
+                    <button type="button" class="btn btn-primary download-all-graphs-btn label-base-regular" ng-click="downloadAllGraphs()">
                         <span class="ri-download-2-line"></span>&nbsp;
 						{{'export.all.graphs.btn.label' | translate}}
                     </button>

@@ -19,11 +19,11 @@
   text-align: center;
   font-family: inherit;
   font-style: normal;
-  font-weight: 400;
+  font-weight: var(--gw-body-sm-regular-font-weight);
   letter-spacing: normal;
   line-break: auto;
-  line-height: 1.5;
-  font-size: .875rem;
+  line-height: var(--gw-body-base-regular-line-height);
+  font-size: var(--gw-body-sm-regular-font-size);
 }
 
 .angular-tooltip span {
