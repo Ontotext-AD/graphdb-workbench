@@ -8,11 +8,17 @@
     font-weight: 400;
     color: var(--gw-primary-base);
     cursor: pointer;
-    display: none;
+    padding: 0;
 }
 
-.list-group .list-group-item:hover .execute-saved-query {
-    display: inline-block;
+/* Visually hidden, not display: none, so that the button stays reachable with Tab. It is shown on hover and on focus. */
+#wb-home .list-group .list-group-item:not(:hover) .execute-saved-query:not(:focus-visible) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
 }
 
 .list-group-item samp.query-name {

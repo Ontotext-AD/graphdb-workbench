@@ -597,7 +597,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
             const $pageSlider = $('.pages-wrapper .page-slide');
             $pageSlider.css('left', widthOfParentElm + 'px');
             $($pageSlider[$scope.activePage]).css('left', 0 + 'px');
-            $($('.btn-toolbar.pull-right .btn-group .btn')[0]).focus();
         }, 50);
     };
 

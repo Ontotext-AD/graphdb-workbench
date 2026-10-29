@@ -19,6 +19,11 @@
 
 			<div>
 				<div class="clearfix mb-2">
+					<div class="graphs-search">
+						<label for="search-graphs" class="graphs-search-label screen-reader-only">{{'search.graphs.label' | translate}}</label>
+						<input id="search-graphs" type="text" class="form-control search-graphs" placeholder="{{'search.graphs.label' | translate}}"
+						       ng-model="exportFilter" ng-keyup="onGraphSearch()"/>
+					</div>
 					<div class="pull-right col-form-label graphs-overview-paginator">
 						<span class="mr-1">{{'showing.label' | translate}} {{(((pageSize * (page - 1)) + 1) | formatNumberToLocaleString)}}-{{pageSize * page >= filteredGraphs.length ? ((filteredGraphs.length) | formatNumberToLocaleString) : ((pageSize * page) | formatNumberToLocaleString)}} {{'of' | translate}} {{((filteredGraphs.length) | formatNumberToLocaleString)}} {{'results.label' | translate}}</span>
 						<span>{{'export.graphs.per.page' | translate}}</span>
@@ -29,16 +34,10 @@
 							</button>
 							<ul class="dropdown-menu small">
 								<li ng-repeat="size in pageSizeOptions track by $index" ng-if="size <= filteredGraphs.length">
-									<span class="dropdown-item" ng-click="changePageSize(size)">{{size}}</span>
+									<a href="javascript:" class="dropdown-item" ng-click="changePageSize(size)">{{size}}</a>
 								</li>
 							</ul>
 						</div>
-					</div>
-
-					<div class="graphs-search">
-						<label for="search-graphs" class="graphs-search-label sr-only">{{'search.graphs.label' | translate}}</label>
-						<input id="search-graphs" type="text" class="form-control search-graphs" placeholder="{{'search.graphs.label' | translate}}"
-						       ng-model="exportFilter" ng-keyup="onGraphSearch()"/>
 					</div>
 				</div>
 

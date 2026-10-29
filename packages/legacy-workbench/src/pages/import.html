@@ -105,7 +105,7 @@
                 </div>
 
                 <div ng-if="isHelpVisible" class="alert alert-help user-data-import-help mt-2">
-                    <button type="button" ng-click="toggleHelp()" gdb-tooltip="{{'common.close' | translate}}"
+                    <button type="button" ng-click="closeHelp()" gdb-tooltip="{{'common.close' | translate}}"
                             class="close"
                             aria-label="Close"></button>
                     <div class="ot-view-info">
@@ -140,7 +140,7 @@
                  ng-class="activeTabId == 'server' ? 'active' : ''">
 
                 <div ng-if="isHelpVisible" class="alert alert-help server-files-import-help mb-0">
-                    <button type="button" ng-click="toggleHelp()" gdb-tooltip="{{'common.close' | translate}}"
+                    <button type="button" ng-click="closeHelp()" gdb-tooltip="{{'common.close' | translate}}"
                             class="close" aria-label="Close"></button>
                     <div class="ot-view-info">
                         <h2 class="h4">{{'import.help.on_server_import.import_from_server' | translate}}</h2>
