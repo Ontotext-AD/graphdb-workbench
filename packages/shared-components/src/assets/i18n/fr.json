@@ -14,6 +14,9 @@
       "opens_in_new_window": "(s’ouvre dans une nouvelle fenêtre)"
     }
   },
+  "layout": {
+    "skip_to_main_content": "Aller au contenu principal"
+  },
   "menu.rdf.label": "RDF",
   "menu.explore.label": "Explorez",
   "menu.graphs.overview.label": "Aperçu des graphes",
