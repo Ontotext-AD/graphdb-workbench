@@ -205,7 +205,7 @@
     </div>
     <!-- Remote GraphDB instances -->
     <div ng-if="getLocalLocation(false, RemoteLocationType.GRAPH_DB).length && hasActiveLocation()" class="mb-1">
-        <h4 class="location-type-title">{{'repositories.location.remote.graph_db.instances' | translate}}</h4>
+        <h2 class="h4 location-type-title">{{'repositories.location.remote.graph_db.instances' | translate}}</h2>
 
         <table id="wb-locations-locationInGetRemoteLocations" class="table" role="presentation">
             <tbody>
@@ -396,7 +396,7 @@
     </div>
     <!-- Remote Ontopic and SPARQL instances -->
     <div ng-if="isRepoManager() && hasAnyRemoteLocation(false, [RemoteLocationType.SPARQL, RemoteLocationType.ONTOPIC])" class="mb-1 ontopic-instances">
-        <h4 id="remote-sparql-instances-title" class="remote-location-type-title">{{'repositories.location.sparql.instances' | translate}}</h4>
+        <h2 id="remote-sparql-instances-title" class="h4 remote-location-type-title">{{'repositories.location.sparql.instances' | translate}}</h2>
         <table id="wb-repositories-ontopic-sparql-repositoryInGetRepositories"
                class="table table-hover table-striped" aria-labelledby="remote-sparql-instances-title">
             <tbody>
