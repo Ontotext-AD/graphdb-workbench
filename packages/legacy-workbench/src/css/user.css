@@ -111,6 +111,22 @@
     margin-bottom: 1.5rem;
 }
 
+/* The heading inside each legend keeps its own size and spacing. */
+.wb-user .user-fieldset legend {
+    margin-bottom: 0;
+    font-size: inherit;
+}
+
+/* The heading is the legend's only child, so the global h3:only-child rule would drop its bottom margin. */
+.wb-user .user-fieldset legend > h3 {
+    margin-bottom: .5em;
+}
+
+/* The legend is no longer a flex item of .roles, so restore the gap it had to the role controls. */
+.wb-user .user-roles-fieldset legend {
+    margin-bottom: 1.5rem;
+}
+
 .left-column {
     display: flex;
     flex-direction: column;
