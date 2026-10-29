@@ -13,7 +13,6 @@
     }
 
     yasgui-component .yasqe_queryButton,
-    yasgui-component .ontotext-dropdown-button,
     yasgui-component .tabPanel .yasqe  .yasqe-footer-buttons .abort-button {
         height: 33px !important;
     }

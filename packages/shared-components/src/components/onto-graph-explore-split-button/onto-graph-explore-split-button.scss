@@ -65,6 +65,22 @@
     }
   }
 
+  .explore-visual-graph-dropdown .onto-dropdown.open .onto-dropdown-button {
+    color: var(--gw-button-secondary-color);
+    background-color: var(--gw-button-secondary-background);
+    border-color: var(--gw-button-secondary-border-color);
+
+    .button-icon {
+      color: var(--gw-button-secondary-color);
+    }
+
+    &:hover:not(:disabled) {
+      color: var(--gw-button-secondary-hover-color);
+      background-color: var(--gw-button-secondary-hover-background);
+      border-color: var(--gw-button-secondary-hover-border-color);
+    }
+  }
+
   .explore-visual-graph-dropdown .onto-dropdown-menu-item {
     white-space: nowrap;
     overflow: hidden;

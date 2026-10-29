@@ -8,6 +8,7 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
+    gap: 0.5rem;
 }
 
 .explore-resource .action-header .view-options {
@@ -34,6 +35,10 @@
 .explore-resource .action-header .actions .dropdown-toggle.download-as {
     margin: 0;
     height: 100%;
+}
+
+.explore-resource .action-header .actions .explore-visual-graph-button {
+    font-size: 0.875rem;
 }
 
 .opacity-hide {
