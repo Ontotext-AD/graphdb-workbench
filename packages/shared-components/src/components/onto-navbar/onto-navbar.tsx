@@ -23,6 +23,8 @@ import {
   SubscriptionList,
   MainMenuPlugin,
   openInNewTab,
+  isSameRepository,
+  Repository,
   RepositoryContextService,
   REPOSITORY_ID_PARAM
 } from '@ontotext/workbench-api';
@@ -60,6 +62,11 @@ export class OntoNavbar {
   private isCollapsedByUser = false;
 
   private isFirstRepositoryChange = true;
+
+  /**
+   * The repository that was selected when the menu was built.
+   */
+  private selectedRepository: Repository | undefined;
 
   @Element() hostElement: HTMLOntoNavbarElement;
 
@@ -105,8 +112,8 @@ export class OntoNavbar {
   @Event() navbarToggled: EventEmitter<NavbarToggledEvent>;
 
   private init(menuItems: MainMenuPlugin[]): void {
-    const selectedRepository = this.repositoryContextService.getSelectedRepository();
-    const internalModel = NavbarService.map(menuItems || [], this.productInfo, selectedRepository?.id, REPOSITORY_ID_PARAM);
+    this.selectedRepository = this.repositoryContextService.getSelectedRepository();
+    const internalModel = NavbarService.map(menuItems || [], this.productInfo, this.selectedRepository?.id, REPOSITORY_ID_PARAM);
     internalModel.initSelected(getCurrentRoute());
     this.menuModel = internalModel;
   }
@@ -490,9 +497,14 @@ export class OntoNavbar {
 
   private subscribeToRepositoryChange() {
     this.subscriptions.add(
-      this.repositoryContextService.onSelectedRepositoryChanged(() => {
+      this.repositoryContextService.onSelectedRepositoryChanged((repository) => {
         if (this.isFirstRepositoryChange) {
           this.isFirstRepositoryChange = false;
+          return;
+        }
+        // The same repository is selected again when its data changes, e.g. its state after login. Rebuilding the menu
+        // would close an open submenu, so rebuild it only when another repository is selected.
+        if (isSameRepository(repository, this.selectedRepository)) {
           return;
         }
         this.init(this.menuItems);

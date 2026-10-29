@@ -19,6 +19,25 @@ Cypress.Commands.add('searchEasyVisualGraph', (searchGraph) => {
         });
 });
 
+Cypress.Commands.add('createGraphConfig', (name, repositoryId, secured = false) => {
+    let headers = {'Content-Type': 'application/json', 'X-GraphDB-Repository': repositoryId};
+    if (secured) {
+        headers = {...headers, 'Authorization': Cypress.env('adminToken')};
+    }
+    return cy.request({
+        method: 'POST',
+        url: GRAPH_CONFIG_URL,
+        headers,
+        body: {
+            name,
+            startMode: 'search',
+            startQueryIncludeInferred: true,
+            startQuerySameAs: true,
+            shared: false
+        }
+    });
+});
+
 Cypress.Commands.add('deleteGraphConfig', (name) => {
     cy.request({
         method: 'GET',

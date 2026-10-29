@@ -114,6 +114,7 @@ function homeCtrl($scope,
     const authenticationService = service(AuthenticationService);
     const authorizationService = service(AuthorizationService);
     const repositoryContextService = service(RepositoryContextService);
+    const securityContextService = service(SecurityContextService);
 
     // =========================
     // Public variables
@@ -184,8 +185,15 @@ function homeCtrl($scope,
         $scope.isAutocompleteEnabled = autocompleteEnabled;
     };
 
-    subscriptions.push(repositoryContextService.onSelectedRepositoryChanged(onSelectedRepositoryUpdated));
-    subscriptions.push(WorkbenchContextService.onAutocompleteEnabledUpdated(onAutocompleteEnabledUpdated));
+    const onAuthenticatedUserChanged = (authenticatedUser) => {
+        $scope.isIgnoreSharedQueries = authenticatedUser?.appSettings.IGNORE_SHARED_QUERIES;
+    };
+
+    subscriptions.push(
+        repositoryContextService.onSelectedRepositoryChanged(onSelectedRepositoryUpdated),
+        WorkbenchContextService.onAutocompleteEnabledUpdated(onAutocompleteEnabledUpdated),
+        securityContextService.onAuthenticatedUserChanged(onAuthenticatedUserChanged),
+    );
 
     $scope.$on('$destroy', () => subscriptions.forEach((subscription) => subscription()));
 
@@ -752,11 +760,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         $scope.license = license;
     };
 
-    function setPrincipal() {
-        $scope.principal = securityContextService.getAuthenticatedUser();
-        $scope.isIgnoreSharedQueries = $scope.principal && $scope.principal.appSettings.IGNORE_SHARED_QUERIES;
-    }
-
     function logout() {
         const authorizationService = service(AuthorizationService);
 
@@ -795,8 +798,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
                 $rootScope.redirectToLogin();
             }
         } else {
-            setPrincipal();
-
             $scope.getSavedQueries();
 
             licenseService.updateLicenseStatus()

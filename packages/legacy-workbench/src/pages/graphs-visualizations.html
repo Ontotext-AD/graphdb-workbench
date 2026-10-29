@@ -172,8 +172,8 @@
                                     <samp class="text-muted small text-overflow d-block" ng-if="config.hint">{{config.hint}}</samp>
                                 </td>
                                 <td class="text-xs-right" ng-if="isUser() && config.owner === principal.username">
-                                    <a ng-href="graphs-visualizations/config/save/{{config.id}}" class="btn btn-link btn-edit-config" gdb-tooltip="{{'visual.edit.config' | translate}}"><span class="ri-edit-line"></span></a>
-                                    <button type="button" ng-click="deleteConfig(config)" class="btn btn-link delete-config" gdb-tooltip="{{'visual.delete.config' | translate}}" data-cy="delete-graph-config"><span class="ri-delete-bin-6-line"></span></button>
+                                    <a ng-href="graphs-visualizations/config/save/{{config.id}}" class="btn btn-link btn-edit-config" data-test="graph-config-edit-btn" gdb-tooltip="{{'visual.edit.config' | translate}}"><span class="ri-edit-line"></span></a>
+                                    <button type="button" ng-click="deleteConfig(config)" class="btn btn-link delete-config" gdb-tooltip="{{'visual.delete.config' | translate}}" data-cy="delete-graph-config" data-test="graph-config-delete-btn"><span class="ri-delete-bin-6-line"></span></button>
                                 </td>
                             </tr>
                             </tbody>

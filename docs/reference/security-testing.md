@@ -13,9 +13,9 @@ The **Security Suite** under `e2e-tests/e2e-security/` validates:
   - GraphQL-only users (mutation restrictions)
   - Repository-admin users
 
-> **Note:** For now these security tests are intended for **local** execution only.  
+> **Note:** These security tests run regularly in Jenkins, so a new or changed spec must be stable there too.  
 > They use a dedicated Cypress config file (`e2e-tests/cypress-security.config.js`)  
-> and can be run with:
+> and can be run locally with:
 >
 > ```bash
 > # open interactive:
