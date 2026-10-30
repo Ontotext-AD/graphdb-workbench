@@ -1946,7 +1946,7 @@ input[name=namespace] {
     display: inline-block;
     padding: .25em .4em;
     font-size: 75%;
-    font-weight: var(--gw-label-base-regular-font-weight)
+    font-weight: var(--gw-label-base-regular-font-weight);
     line-height: var(--gw-auto-line-height);
     color: #fff;
     text-align: center;

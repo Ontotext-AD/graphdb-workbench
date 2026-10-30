@@ -6,13 +6,13 @@
         <div ng-bind-html="'supply.license.or.contact.us.warning' | translate | trustAsHtml"></div>
         <div class="mt-1">{{'no.license.restrictions' | translate}}</div>
         <div class="mt-1">
-            <a href="license" ng-hide="!hasRole('ROLE_ADMIN')" class="btn btn-primary">
+            <a href="license" ng-hide="!hasRole('ROLE_ADMIN')" class="btn btn-primary label-base-regular">
                 {{'license.settings.label' | translate}}
             </a>
         </div>
     </div>
     <div class="row" ng-if="!tutorialState">
-        <a href="#" class="btn btn-link float-xs-right show-tutorial" ng-click="showTutorial()">{{'show.welcome.panel' | translate}}</a>
+        <a href="#" class="btn btn-link float-xs-right show-tutorial label-base-regular" ng-click="showTutorial()">{{'show.welcome.panel' | translate}}</a>
     </div>
     <div class="row mb-3 tutorial-container" guide-selector="tutorial-container" ng-init="initTutorial()" ng-if="tutorialState">
         <div class="col-lg-12">
@@ -28,11 +28,11 @@
                     </div>
                 </div>
                 <div class="card-block">
-                    <a href="#" class="btn btn-secondary decline-tutorial" ng-click="declineTutorial()">{{'hide.panel' | translate}}</a>
-                    <a href="guides" class="btn btn-primary">{{'take.me.to.guides' | translate}}</a>
+                    <a href="#" class="btn btn-secondary decline-tutorial label-base-regular" ng-click="declineTutorial()">{{'hide.panel' | translate}}</a>
+                    <a href="guides" class="btn btn-primary label-base-regular">{{'take.me.to.guides' | translate}}</a>
                     <div class="btn-toolbar pull-right" role="toolbar" aria-label="Toolbar with button groups">
                         <div class="btn-group" role="group" aria-label="First group">
-                            <button type="button" class="btn btn-secondary" ng-click="slideToPage($index)"
+                            <button type="button" class="btn btn-secondary label-base-regular" ng-click="slideToPage($index)"
                                     ng-repeat="page in tutorialInfo track by $index">{{$index + 1}}
                             </button>
                         </div>
@@ -138,12 +138,12 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <div>
-                                <a ng-show="canWriteActiveRepo()" class="btn btn-link" href="import">{{'import.rdf.data.label' | translate}}</a>
-                                <button ng-hide="canWriteActiveRepo()" disabled class="btn btn-link" href="import">{{'import.rdf.data.label' | translate}}</button>
+                                <a ng-show="canWriteActiveRepo()" class="btn btn-link label-base-regular" href="import">{{'import.rdf.data.label' | translate}}</a>
+                                <button ng-hide="canWriteActiveRepo()" disabled class="btn btn-link label-base-regular" href="import">{{'import.rdf.data.label' | translate}}</button>
                             </div>
                             <div>
-                                <a ng-show="canReadRepo(getActiveRepositoryObject())" class="btn btn-link" href="graphs">{{'export.rdf.data' | translate}}</a>
-                                <button ng-show="hasGraphqlRightsOverCurrentRepo()" disabled class="btn btn-link" href="export">{{'export.rdf.data' | translate}}</button>
+                                <a ng-show="canReadRepo(getActiveRepositoryObject())" class="btn btn-link label-base-regular" href="graphs">{{'export.rdf.data' | translate}}</a>
+                                <button ng-show="hasGraphqlRightsOverCurrentRepo()" disabled class="btn btn-link  label-base-regular" href="export">{{'export.rdf.data' | translate}}</button>
                             </div>
                         </div>
                     </div>
@@ -157,7 +157,7 @@
                 <div>
                     <ul class="list-group limit-height clearfix {{sampleQueries.length <= 4 ? 'one-column' : 'two-columns'}} saved-queries" ng-show="sampleQueries">
                         <li ng-repeat="query in sampleQueries" ng-hide="isIgnoreSharedQueries && query.owner != null && query.shared" class="list-group-item list-group-item-action">
-                            <span class="help-label execute-saved-query" ng-click="goToSparqlEditor(query)">{{'common.execute' | translate}} <span class="ri-arrow-right-s-line"></span></span>
+                            <span class="help-label execute-saved-query label-base-regular" ng-click="goToSparqlEditor(query)">{{'common.execute' | translate}} <span class="ri-arrow-right-s-line"></span></span>
                             <samp class="query-name">{{query.name}}</samp>
                             <samp class="text-muted small">{{query.body}}</samp>
                         </li>

@@ -5,7 +5,7 @@
 .list-group .list-group-item .execute-saved-query {
     float: right;
     margin-top: 0.7em;
-    font-weight: 400;
+    font-weight: var(--gw-label-base-regular-font-weight);
     color: var(--gw-primary-base);
     cursor: pointer;
     display: none;
