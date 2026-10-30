@@ -45,39 +45,41 @@
         <div class="col-xl-4 col-lg-5 left-column">
             <div class="card login-credentials" ng-show="!isOverrideAuth() && (isLocalAuthentication() || (mode !== 'settings' && canExtendExternalUserRole))">
                 <div class="card-block">
-                    <h3>{{'view.login.title' | translate}}</h3>
-                    <div class="form-group" ng-class="{'has-danger': usernameError}">
-                        <label class="sr-only" for="wb-user-username">{{'security.table.username' | translate}}</label>
-                        <div class="input-group">
-                            <span class="input-group-addon" gdb-tooltip="{{'security.table.username' | translate}}"><i class="ri-user-line ri-xl text-muted"></i></span>
-                            <input id="wb-user-username" placeholder="{{'security.table.username' | translate}}" name="username" class="form-control form-control-lg" type="text" ng-model="user.username" ng-disabled="mode !== 'add'" >
+                    <fieldset class="user-fieldset">
+                        <legend><h3>{{'view.login.title' | translate}}</h3></legend>
+                        <div class="form-group" ng-class="{'has-danger': usernameError}">
+                            <label class="sr-only" for="wb-user-username">{{'security.table.username' | translate}}</label>
+                            <div class="input-group">
+                                <span class="input-group-addon" gdb-tooltip="{{'security.table.username' | translate}}"><i class="ri-user-line ri-xl text-muted"></i></span>
+                                <input id="wb-user-username" placeholder="{{'security.table.username' | translate}}" name="username" class="form-control form-control-lg" type="text" ng-model="user.username" ng-disabled="mode !== 'add'" >
+                            </div>
+                            <div ng-show="usernameError" class="form-control-feedback">{{usernameError}}</div>
                         </div>
-                        <div ng-show="usernameError" class="form-control-feedback">{{usernameError}}</div>
-                    </div>
-                    <div class="form-group" ng-class="{'has-danger': passwordError}" ng-hide="user.external || hasExternalAuthUser() || canExtendExternalUserRole" >
-                        <label class="sr-only" for="wb-user-password">{{passwordPlaceholder | translate}}</label>
-                        <div class="input-group">
-                            <span class="input-group-addon" gdb-tooltip="{{'security.password.placeholder' | translate}}"><em class="ri-lock-line ri-xl text-muted"></em></span>
-                            <input id="wb-user-password" autocomplete="new-password" placeholder="{{passwordPlaceholder | translate}}" name="password" class="form-control form-control-lg" type="password"	ng-model="user.password" ng-readonly="noPassword || canExtendExternalUserRole">
-                            <span ng-show="user.external || hasExternalAuthUser()">{{'security.auth.from.external.module' | translate}}</span>
+                        <div class="form-group" ng-class="{'has-danger': passwordError}" ng-hide="user.external || hasExternalAuthUser() || canExtendExternalUserRole" >
+                            <label class="sr-only" for="wb-user-password">{{passwordPlaceholder | translate}}</label>
+                            <div class="input-group">
+                                <span class="input-group-addon" gdb-tooltip="{{'security.password.placeholder' | translate}}"><em class="ri-lock-line ri-xl text-muted"></em></span>
+                                <input id="wb-user-password" autocomplete="new-password" placeholder="{{passwordPlaceholder | translate}}" name="password" class="form-control form-control-lg" type="password"	ng-model="user.password" ng-readonly="noPassword || canExtendExternalUserRole">
+                                <span ng-show="user.external || hasExternalAuthUser()">{{'security.auth.from.external.module' | translate}}</span>
+                            </div>
+                            <div ng-show="passwordError" class="form-control-feedback">{{passwordError}}</div>
                         </div>
-                        <div ng-show="passwordError" class="form-control-feedback">{{passwordError}}</div>
-                    </div>
-                    <div class="form-group" ng-class="{'has-danger': confirmPasswordError}" ng-hide="user.external || hasExternalAuthUser() || canExtendExternalUserRole">
-                        <label class="sr-only" for="wb-user-confirmpassword">{{'security.password.confirm' | translate}}</label>
-                        <div class="input-group">
-                            <span class="input-group-addon" gdb-tooltip="{{'security.password.confirm' | translate}}"><em class="ri-lock-line ri-xl text-muted"></em></span>
-                            <input id="wb-user-confirmpassword" placeholder="{{'security.password.confirm' | translate}}" name="password_confirm" class="form-control form-control-lg" type="password" ng-model="user.confirmpassword" ng-readonly="noPassword || canExtendExternalUserRole">
+                        <div class="form-group" ng-class="{'has-danger': confirmPasswordError}" ng-hide="user.external || hasExternalAuthUser() || canExtendExternalUserRole">
+                            <label class="sr-only" for="wb-user-confirmpassword">{{'security.password.confirm' | translate}}</label>
+                            <div class="input-group">
+                                <span class="input-group-addon" gdb-tooltip="{{'security.password.confirm' | translate}}"><em class="ri-lock-line ri-xl text-muted"></em></span>
+                                <input id="wb-user-confirmpassword" placeholder="{{'security.password.confirm' | translate}}" name="password_confirm" class="form-control form-control-lg" type="password" ng-model="user.confirmpassword" ng-readonly="noPassword || canExtendExternalUserRole">
+                            </div>
+                            <div ng-show="confirmPasswordError" class="form-control-feedback">{{confirmPasswordError}}</div>
                         </div>
-                        <div ng-show="confirmPasswordError" class="form-control-feedback">{{confirmPasswordError}}</div>
-                    </div>
-                    <div>
-                        <label class="d-block" ng-hide="user.external || hasExternalAuthUser() || canExtendExternalUserRole" >
-                            <input type="checkbox" id="noPassword" ng-model="noPassword" ng-change="setNoPassword()">
-                            <span ng-show="mode === 'add'">{{'security.dont.set.password' | translate}} </span>
-                            <span ng-show="mode !== 'add'">{{'security.unset.password' | translate}} </span>
-                        </label>
-                    </div>
+                        <div>
+                            <label class="d-block" ng-hide="user.external || hasExternalAuthUser() || canExtendExternalUserRole" >
+                                <input type="checkbox" id="noPassword" ng-model="noPassword" ng-change="setNoPassword()">
+                                <span ng-show="mode === 'add'">{{'security.dont.set.password' | translate}} </span>
+                                <span ng-show="mode !== 'add'">{{'security.unset.password' | translate}} </span>
+                            </label>
+                        </div>
+                    </fieldset>
                     <div ng-if="!isLocalAuthentication() && (mode !== 'edit' && canExtendExternalUserRole)" class="external-user-info">
                         <div class="alert alert-info">
                             {{'security.authorization.db' | translate: {authSource: authSource} }}
@@ -88,61 +90,63 @@
 
             <div class="card sparql-editor-settings" id="user-settings">
                 <div class="card-block">
-                    <h3 class="m-0">{{'security.user.settings' | translate}}</h3>
-                    <div class="mb-2"><small class="mb-2 text-muted">{{'security.user.settings.subtitle' | translate}}</small></div>
+                    <fieldset class="user-fieldset">
+                        <legend><h3 class="m-0">{{'security.user.settings' | translate}}</h3></legend>
+                        <div class="mb-2"><small class="mb-2 text-muted">{{'security.user.settings.subtitle' | translate}}</small></div>
 
-                    <div id="sameas-on" class="mb-1">
-                        <div class="setting-toggle">
-                            <div class="sameas-label label" aria-hidden="true">
-                                {{'security.expand.sameAs.is' | translate}}
+                        <div id="sameas-on" class="mb-1">
+                            <div class="setting-toggle">
+                                <div class="sameas-label label" aria-hidden="true">
+                                    {{'security.expand.sameAs.is' | translate}}
+                                </div>
+                                <div class="switch mr-0">
+                                    <input id="sameAsCheck" type="checkbox" class="switch"
+                                           ng-model="user.appSettings.DEFAULT_SAMEAS"
+                                           ng-disabled="shouldDisableSameAs()"/>
+                                    <label for="sameAsCheck"><span class="sr-only">{{'security.expand.sameAs.is' | translate}}</span></label>
+                                </div>
                             </div>
-                            <div class="switch mr-0">
-                                <input id="sameAsCheck" type="checkbox" class="switch"
-                                       ng-model="user.appSettings.DEFAULT_SAMEAS"
-                                       ng-disabled="shouldDisableSameAs()"/>
-                                <label for="sameAsCheck"><span class="sr-only">{{'security.expand.sameAs.is' | translate}}</span></label>
-                            </div>
+                            <small class="text-muted">{{'security.default.editor.graph' | translate}}</small>
                         </div>
-                        <small class="text-muted">{{'security.default.editor.graph' | translate}}</small>
-                    </div>
 
-                    <div id="inference-on" class="mb-1">
-                        <div class="setting-toggle">
-                            <div class="inference-label label" aria-hidden="true">
-                                {{'security.inference.is' | translate}}
+                        <div id="inference-on" class="mb-1">
+                            <div class="setting-toggle">
+                                <div class="inference-label label" aria-hidden="true">
+                                    {{'security.inference.is' | translate}}
+                                </div>
+                                <div class="switch mr-0">
+                                    <input id="inferenceCheck" type="checkbox" class="switch" ng-model="user.appSettings.DEFAULT_INFERENCE"/>
+                                    <label for="inferenceCheck"><span class="sr-only">{{'security.inference.is' | translate}}</span></label>
+                                </div>
                             </div>
-                            <div class="switch mr-0">
-                                <input id="inferenceCheck" type="checkbox" class="switch" ng-model="user.appSettings.DEFAULT_INFERENCE"/>
-                                <label for="inferenceCheck"><span class="sr-only">{{'security.inference.is' | translate}}</span></label>
-                            </div>
+                            <small class="text-muted">{{'security.default.editor.graph' | translate}}</small>
                         </div>
-                        <small class="text-muted">{{'security.default.editor.graph' | translate}}</small>
-                    </div>
 
-                    <div id="schema-on" class="mb-1">
-                        <div class="setting-toggle">
-                            <div class="schema-label label" aria-hidden="true">
-                                {{'security.show.schema' | translate}}
+                        <div id="schema-on" class="mb-1">
+                            <div class="setting-toggle">
+                                <div class="schema-label label" aria-hidden="true">
+                                    {{'security.show.schema' | translate}}
+                                </div>
+                                <div class="switch mr-0">
+                                    <input id="schemaCheck" type="checkbox" class="switch" ng-model="user.appSettings.DEFAULT_VIS_GRAPH_SCHEMA"/>
+                                    <label for="schemaCheck"><span class="sr-only">{{'security.show.schema' | translate}}</span></label>
+                                </div>
                             </div>
-                            <div class="switch mr-0">
-                                <input id="schemaCheck" type="checkbox" class="switch" ng-model="user.appSettings.DEFAULT_VIS_GRAPH_SCHEMA"/>
-                                <label for="schemaCheck"><span class="sr-only">{{'security.show.schema' | translate}}</span></label>
-                            </div>
+                            <small class="text-muted">{{'security.default.visual.graph' | translate}}</small>
                         </div>
-                        <small class="text-muted">{{'security.default.visual.graph' | translate}}</small>
-                    </div>
 
-                    <hr/>
+                        <hr/>
 
-                    <label class="d-block">
-                        <input type="checkbox" ng-model="user.appSettings.EXECUTE_COUNT" id="defaultCount" checked="appSettings.EXECUTE_COUNT">
-                        {{'security.count.total.results' | translate}}
-                    </label>
+                        <label class="d-block">
+                            <input type="checkbox" ng-model="user.appSettings.EXECUTE_COUNT" id="defaultCount" checked="appSettings.EXECUTE_COUNT">
+                            {{'security.count.total.results' | translate}}
+                        </label>
 
-                    <label class="d-block">
-                        <input type="checkbox" ng-model="user.appSettings.IGNORE_SHARED_QUERIES" id="ignore-shared" checked="appSettings.IGNORE_SHARED_QUERIES">
-                        {{'security.ignore.shared.queries' | translate}}
-                    </label>
+                        <label class="d-block">
+                            <input type="checkbox" ng-model="user.appSettings.IGNORE_SHARED_QUERIES" id="ignore-shared" checked="appSettings.IGNORE_SHARED_QUERIES">
+                            {{'security.ignore.shared.queries' | translate}}
+                        </label>
+                    </fieldset>
 
                     <label class="d-block" ng-if="showCookiePolicyLink">
                         <button class="btn btn-secondary show-cookie-policy-btn" ng-click="showCookiePolicy($event)">{{'cookie.cookie_policy_url_label' | translate}}</button>
@@ -153,21 +157,23 @@
 
             <div class="card" id="workbench-settings" ng-if="showWorkbenchSettings">
                 <div class="card-block">
-                    <h3>{{'security.workbench.settings.title' | translate}}
-                        <em class="ri-information-2-line text-tertiary small" gdb-tooltip="{{'security.workbench.settings.theme.tooltip' | translate}}"></em>
-                    </h3>
-                    <div class="form-group theme-select-wrapper">
-                        <label class="mr-1" for="themeSelect">{{'security.workbench.settings.theme.mode.label' | translate}}</label>
-                        <select class="form-control theme-select mr-1 text-overflow"
-                                id="themeSelect"
-                                ng-model="workbenchSettings.themeMode"
-                                ng-change="onThemeChange()"
-                                ng-options="option.mode as (option.labelKey | translate: {currentTheme: (('security.workbench.settings.theme.mode.' + currentSystemTheme) | translate)}) for option in themeModeOptions">
-                        </select>
-                        <div class="alert alert-warning alert-save" ng-if="themeChanged">
-                            {{'security.workbench.settings.theme.mode.save-to-apply' | translate}}
+                    <fieldset class="user-fieldset">
+                        <legend><h3>{{'security.workbench.settings.title' | translate}}
+                            <em class="ri-information-2-line text-tertiary small" gdb-tooltip="{{'security.workbench.settings.theme.tooltip' | translate}}"></em>
+                        </h3></legend>
+                        <div class="form-group theme-select-wrapper">
+                            <label class="mr-1" for="themeSelect">{{'security.workbench.settings.theme.mode.label' | translate}}</label>
+                            <select class="form-control theme-select mr-1 text-overflow"
+                                    id="themeSelect"
+                                    ng-model="workbenchSettings.themeMode"
+                                    ng-change="onThemeChange()"
+                                    ng-options="option.mode as (option.labelKey | translate: {currentTheme: (('security.workbench.settings.theme.mode.' + currentSystemTheme) | translate)}) for option in themeModeOptions">
+                            </select>
+                            <div class="alert alert-warning alert-save" ng-if="themeChanged">
+                                {{'security.workbench.settings.theme.mode.save-to-apply' | translate}}
+                            </div>
                         </div>
-                    </div>
+                    </fieldset>
                 </div>
             </div>
         </div>
@@ -189,57 +195,59 @@
                             </div>
                         </div>
 
-                        <h5 class="mb-0">{{'security.user.role' | translate}}</h5>
-                        <div class="user-roles">
-                            <div>
-                                <label class="mr-1"
-                                       uib-popover-template="'popover-content-user.html'"
-                                       popover-trigger="mouseenter"
-                                       popover-placement="bottom">
-                                    <input type="radio" ng-model="userType" id="roleUser" value="user" ng-disabled="(canExtendExternalUserRole && !allowRoleExtension) || hasEditRestrictions()">
-                                    {{'security.user.label' | translate}}
-                                </label>
-                                <label class="mr-1"
-                                       uib-popover-template="'popover-content-repo-manager.html'"
-                                       popover-trigger="mouseenter"
-                                       popover-placement="bottom">
-                                    <input type="radio" ng-model="userType" id="roleRepoAdmin" value="repoManager" ng-disabled="(canExtendExternalUserRole && !allowRoleExtension) || hasEditRestrictions()">
-                                    {{'security.repo.manager.label' | translate}}
-                                </label>
-                                <label uib-popover-template="'popover-content-admin.html'"
-                                       popover-trigger="mouseenter"
-                                       popover-placement="bottom">
-                                    <input type="radio" ng-model="userType" id="roleAdmin" value="admin" ng-disabled="(canExtendExternalUserRole && !allowRoleExtension) || hasEditRestrictions()">
-                                    {{'security.admin.label' | translate}}
-                                </label>
-                            </div>
+                        <fieldset class="user-fieldset user-roles-fieldset">
+                            <legend><h5 class="mb-0">{{'security.user.role' | translate}}</h5></legend>
+                            <div class="user-roles">
+                                <div>
+                                    <label class="mr-1"
+                                           uib-popover-template="'popover-content-user.html'"
+                                           popover-trigger="mouseenter"
+                                           popover-placement="bottom">
+                                        <input type="radio" ng-model="userType" id="roleUser" value="user" ng-disabled="(canExtendExternalUserRole && !allowRoleExtension) || hasEditRestrictions()">
+                                        {{'security.user.label' | translate}}
+                                    </label>
+                                    <label class="mr-1"
+                                           uib-popover-template="'popover-content-repo-manager.html'"
+                                           popover-trigger="mouseenter"
+                                           popover-placement="bottom">
+                                        <input type="radio" ng-model="userType" id="roleRepoAdmin" value="repoManager" ng-disabled="(canExtendExternalUserRole && !allowRoleExtension) || hasEditRestrictions()">
+                                        {{'security.repo.manager.label' | translate}}
+                                    </label>
+                                    <label uib-popover-template="'popover-content-admin.html'"
+                                           popover-trigger="mouseenter"
+                                           popover-placement="bottom">
+                                        <input type="radio" ng-model="userType" id="roleAdmin" value="admin" ng-disabled="(canExtendExternalUserRole && !allowRoleExtension) || hasEditRestrictions()">
+                                        {{'security.admin.label' | translate}}
+                                    </label>
+                                </div>
 
-                            <div class="user-custom-roles" id="user-custom-roles">
-                                <div style="font-weight: 400">{{'security.user.custom_role' | translate}}</div>
-                                <div class="input-group">
-                                    <tags-input name="customRoleTag" class="wb-tags-input" ng-model="customRoles" min-length="1"
-                                                ng-disabled="!isUser() || mode === 'settings' || (canExtendExternalUserRole && !allowRoleExtension)"
-                                                use-strings="true"
-                                                add-on-space="true"
-                                                add-on-comma="true"
-                                                add-on-paste="true"
-                                                replace-spaces-with-dashes="false"
-                                                paste-split-pattern="[\s+]"
-                                                on-tag-adding="isCustomRoleValid($tag)"
-                                                on-tag-added="addCustomRole($tag)"
-                                                ng-keydown="checkUserInput($event)"
-                                                ng-cut="removeErrorOnCut()"
-                                                placeholder="{{'security.user.add.custom_role.msg' | translate}}"
-                                                custom-prefix-tags-input></tags-input>
-                                    <div class="small" ng-hide="isRoleValid">
-                                        <small>{{'security.user.role.too.short' | translate}}</small>
-                                    </div>
-                                    <div class="small prefix-warning" ng-if="form.customRoleTag.$warning">
-                                        <small>{{'acl_management.rulestable.custom_prefix_warning.text' | translate}}</small>
+                                <div class="user-custom-roles" id="user-custom-roles">
+                                    <div style="font-weight: 400">{{'security.user.custom_role' | translate}}</div>
+                                    <div class="input-group">
+                                        <tags-input name="customRoleTag" class="wb-tags-input" ng-model="customRoles" min-length="1"
+                                                    ng-disabled="!isUser() || mode === 'settings' || (canExtendExternalUserRole && !allowRoleExtension)"
+                                                    use-strings="true"
+                                                    add-on-space="true"
+                                                    add-on-comma="true"
+                                                    add-on-paste="true"
+                                                    replace-spaces-with-dashes="false"
+                                                    paste-split-pattern="[\s+]"
+                                                    on-tag-adding="isCustomRoleValid($tag)"
+                                                    on-tag-added="addCustomRole($tag)"
+                                                    ng-keydown="checkUserInput($event)"
+                                                    ng-cut="removeErrorOnCut()"
+                                                    placeholder="{{'security.user.add.custom_role.msg' | translate}}"
+                                                    custom-prefix-tags-input></tags-input>
+                                        <div class="small" ng-hide="isRoleValid">
+                                            <small>{{'security.user.role.too.short' | translate}}</small>
+                                        </div>
+                                        <div class="small prefix-warning" ng-if="form.customRoleTag.$warning">
+                                            <small>{{'acl_management.rulestable.custom_prefix_warning.text' | translate}}</small>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </fieldset>
                     </div>
 
                     <div class="user-repositories" id="user-repos">
