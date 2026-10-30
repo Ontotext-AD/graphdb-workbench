@@ -21,7 +21,8 @@
                     <button type="button" gdb-tooltip="{{'common.close' | translate}}" class="close" aria-label="Close"
                             ng-click="declineTutorial()"></button>
                     <div class="pages-wrapper">
-                        <div class="page-slide" ng-repeat="page in tutorialInfo track by $index">
+                        <div class="page-slide" ng-repeat="page in tutorialInfo track by $index"
+                             ng-attr-inert="{{$index !== activePage || undefined}}">
                             <h1 class="card-title">{{page.title}}</h1>
                             <p class="card-text lead" ng-bind-html="getTutorialPageHtml(page)"></p>
                         </div>
@@ -157,7 +158,7 @@
                 <div>
                     <ul class="list-group limit-height clearfix {{sampleQueries.length <= 4 ? 'one-column' : 'two-columns'}} saved-queries" ng-show="sampleQueries">
                         <li ng-repeat="query in sampleQueries" ng-hide="isIgnoreSharedQueries && query.owner != null && query.shared" class="list-group-item list-group-item-action">
-                            <span class="help-label execute-saved-query" ng-click="goToSparqlEditor(query)">{{'common.execute' | translate}} <span class="ri-arrow-right-s-line"></span></span>
+                            <button type="button" class="btn btn-link help-label execute-saved-query" ng-click="goToSparqlEditor(query)">{{'common.execute' | translate}} <span class="ri-arrow-right-s-line" aria-hidden="true"></span></button>
                             <samp class="query-name">{{query.name}}</samp>
                             <samp class="text-muted small">{{query.body}}</samp>
                         </li>

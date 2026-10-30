@@ -115,7 +115,7 @@ describe('Graphs overview screen validation', () => {
     it('Should give the controls on the page accessible names', () => {
         // Then the search field should have a screen reader label and a placeholder
         GraphsOverviewSteps.getGraphsSearchLabel()
-            .should('have.class', 'sr-only')
+            .should('have.class', 'screen-reader-only')
             .and('contain.text', 'Search Graphs');
         GraphsOverviewSteps.getGraphsSearchInput()
             .should('have.attr', 'id', 'search-graphs')

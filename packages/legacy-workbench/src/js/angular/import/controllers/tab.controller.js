@@ -7,7 +7,6 @@ angular
 TabController.$inject = ['$scope', '$location', 'ImportContextService'];
 
 function TabController($scope, $location, ImportContextService) {
-
     // =========================
     // Private variables
     // =========================
@@ -43,6 +42,12 @@ function TabController($scope, $location, ImportContextService) {
         updateHelpVisibility();
     };
 
+    $scope.closeHelp = () => {
+        $scope.toggleHelp();
+        // The close button disappears with the help, so move the focus to the button that opens it again.
+        document.querySelector('.toggle-help-btn')?.focus();
+    };
+
     // =========================
     // Private functions
     // =========================
@@ -52,7 +57,7 @@ function TabController($scope, $location, ImportContextService) {
         const activeTabId = $location.hash() || TABS.USER;
         $scope.openTab(activeTabId);
         updateHelpVisibility();
-    }
+    };
 
     // =========================
     // Watchers and event handlers
@@ -78,11 +83,11 @@ class HelpVisibilityPersistence {
     constructor() {
         this._helpVisibility = {
             [TABS.USER]: {
-                isHelpVisible: undefined
+                isHelpVisible: undefined,
             },
             [TABS.SERVER]: {
-                isHelpVisible: undefined
-            }
+                isHelpVisible: undefined,
+            },
         };
     }
 
