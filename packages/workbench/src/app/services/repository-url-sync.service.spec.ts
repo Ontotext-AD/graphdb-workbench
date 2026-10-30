@@ -2,6 +2,7 @@ import {TestBed} from '@angular/core/testing';
 import {ActivatedRoute, Router} from '@angular/router';
 import {
   getCurrentRoute,
+  isLoginPage,
   OntoToastrService,
   RepositoryContextService,
   service,
@@ -16,10 +17,12 @@ jest.mock('@ontotext/workbench-api', () => ({
   ...jest.requireActual('@ontotext/workbench-api'),
   service: jest.fn(),
   getCurrentRoute: jest.fn().mockReturnValue('sparql'),
+  isLoginPage: jest.fn().mockReturnValue(false),
 }));
 
 const mockService = service as jest.MockedFunction<typeof service>;
 const mockGetCurrentRoute = getCurrentRoute as jest.MockedFunction<typeof getCurrentRoute>;
+const mockIsLoginPage = isLoginPage as jest.MockedFunction<typeof isLoginPage>;
 
 describe('RepositoryUrlSyncService', () => {
   let syncService: RepositoryUrlSyncService;
@@ -78,6 +81,7 @@ describe('RepositoryUrlSyncService', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+    mockIsLoginPage.mockReturnValue(false);
   });
 
   it('should be created', () => {
@@ -325,6 +329,15 @@ describe('RepositoryUrlSyncService', () => {
       syncService.onRepositoryChanged('newRepo');
 
       expect(mockNavigate).toHaveBeenCalledTimes(1);
+    });
+
+    it('should not navigate on the login page', () => {
+      mockIsLoginPage.mockReturnValue(true);
+      setUrlParam(null);
+
+      syncService.onRepositoryChanged('newRepo');
+
+      expect(mockNavigate).not.toHaveBeenCalled();
     });
   });
 });
