@@ -22,11 +22,11 @@ describe('onto-layout', () => {
     .filter((child) => child.matches('.wb-header, nav, main, footer'))
     .map((child) => child.matches('.wb-header') ? 'header' : child.tagName.toLowerCase());
 
-  it('should keep the main content after the header and navigation when single-spa-layout re-inserts it', async () => {
+  it('should keep the main content after the header and navigation when the host re-inserts it as the first child', async () => {
     const layout = await render();
     const main = layout.querySelector('main');
 
-    // single-spa-layout does this with its <main> container on every routing event
+    // The host application may do this with its <main> container on every routing event
     layout.insertBefore(main, layout.firstChild);
 
     expect(landmarkOrder(layout)).toEqual(['header', 'nav', 'main', 'footer']);

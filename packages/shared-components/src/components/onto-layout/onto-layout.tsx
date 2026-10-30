@@ -223,7 +223,7 @@ export class OntoLayout {
   // Main content position
   // ========================
   /**
-   * single-spa-layout re-inserts its `<main>` container as the first child of the layout on every routing event,
+   * The host application may re-insert its `<main>` container as the first child of the layout (e.g. on routing),
    * which puts the main content before the header and the navigation in the Tab order. The layout ignores that move,
    * so the main content keeps the slot position it got on the first render.
    */
