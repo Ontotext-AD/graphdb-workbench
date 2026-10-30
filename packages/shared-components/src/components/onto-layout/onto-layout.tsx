@@ -377,8 +377,8 @@ export class OntoLayout {
    * @param navigationEndPayload - The old and the new URL of the navigation.
    */
   private focusMainContentOnPageChange({oldUrl, newUrl}: NavigationEndPayload): void {
-    if (!oldUrl || oldUrl === newUrl || !this.isFocusLostOrInMainContent()) {
-      // The initial load, or the focus is outside the main content, e.g. in the navbar.
+    if (!oldUrl || this.isSamePage(oldUrl, newUrl) || !this.isFocusLostOrInMainContent()) {
+      // The initial load, a query or hash change, or the focus is outside the main content, e.g. in the navbar.
       return;
     }
     if (this.loading) {
@@ -386,6 +386,14 @@ export class OntoLayout {
     } else {
       this.focusMainContent();
     }
+  }
+
+  /**
+   * Whether both URLs point to the same page. Query and hash changes, e.g. the repositoryId param added after a page
+   * change, do not change the page.
+   */
+  private isSamePage(oldUrl: string, newUrl: string): boolean {
+    return new URL(oldUrl).pathname === new URL(newUrl).pathname;
   }
 
   /**
