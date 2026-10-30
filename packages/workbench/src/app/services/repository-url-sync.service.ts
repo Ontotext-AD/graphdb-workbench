@@ -5,6 +5,8 @@ import {
   getCurrentRoute,
   REPOSITORY_ID_PARAM,
   RepositoryContextService,
+  AuthenticationService,
+  AuthorizationService,
   WindowService, isLoginPage,
 } from '@ontotext/workbench-api';
 import {ConfirmationProviderService} from './dialog/confirmation-provider.service';
@@ -23,6 +25,8 @@ export class RepositoryUrlSyncService {
   private readonly translocoService = inject(TranslocoService);
 
   private readonly repositoryContextService = service(RepositoryContextService);
+  private readonly authenticationService = service(AuthenticationService);
+  private readonly authorizationService = service(AuthorizationService);
 
   private isFirstResolution = true;
 
@@ -47,8 +51,8 @@ export class RepositoryUrlSyncService {
     const isSameRepository = !!selectedRepository && repositoryIdParam === selectedRepository.id;
 
     try {
-      // --- if on login page, do nothing
-      if (isLoginPage()) {
+      // --- if on login page without access, do nothing
+      if (this.isLoginPageWithoutAccess()) {
         return;
       }
       // --- no selected repository ---
@@ -122,15 +126,24 @@ export class RepositoryUrlSyncService {
 
   /**
    * Called when the active repository changes — mirrors legacy's onSelectedRepositoryUpdated.
-   * Writes the new repo ID to the URL without adding a history entry. Does nothing on the login page.
+   * Writes the new repo ID to the URL without adding a history entry. Does nothing on the login page when the user
+   * has no access.
    */
   onRepositoryChanged(repositoryId: string): void {
-    if (isLoginPage()) {
+    if (this.isLoginPageWithoutAccess()) {
       return;
     }
     if (this.getRepositoryIdFromUrl() !== repositoryId) {
       this.writeRepositoryIdToUrl(repositoryId);
     }
+  }
+
+  /**
+   * The login page is open to users without access, but also to free access users and to externally authenticated
+   * users (e.g. Kerberos), who can log in as another user from there. Only for the first ones the URL is left alone.
+   */
+  private isLoginPageWithoutAccess(): boolean {
+    return isLoginPage() && !this.authenticationService.isLoggedIn() && !this.authorizationService.hasFreeAccess();
   }
 
   private getRepositoryIdFromUrl(): string | undefined {
