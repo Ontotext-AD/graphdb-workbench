@@ -5,6 +5,7 @@ import {SavedSparqlQueriesWidgetSteps} from './widgets/saved-sparql-queries-widg
 import {RepositorySteps} from './repository-steps';
 import {BaseSteps} from './base-steps';
 import {EnvironmentStubs} from '../stubs/environment-stubs';
+import {LayoutSteps} from './layout-steps';
 
 class HomeSteps extends BaseSteps {
 
@@ -38,10 +39,6 @@ class HomeSteps extends BaseSteps {
         cy.visit(`/?repositoryId=${repositoryId}`);
     }
 
-    static getLayout() {
-        return cy.get('.wb-layout');
-    }
-
     static getView() {
         return cy.get('#wb-home');
     }
@@ -59,11 +56,11 @@ class HomeSteps extends BaseSteps {
     }
 
     static getNavigationMenu() {
-        return this.getLayout().find('.wb-navbar');
+        return LayoutSteps.getLayout().find('.wb-navbar');
     }
 
     static getPageHeader() {
-        return this.getLayout().find('.wb-header');
+        return LayoutSteps.getLayout().find('.wb-header');
     }
 
     // ===========================
