@@ -10,6 +10,7 @@ import {
   AuthorizationService,
   EventName,
   EventService,
+  getOrigin,
   LocalStorageSubscriptionHandlerService,
   navigate,
   NavigationContextService,
@@ -393,7 +394,7 @@ export class OntoLayout {
    * change, do not change the page.
    */
   private isSamePage(oldUrl: string, newUrl: string): boolean {
-    return new URL(oldUrl).pathname === new URL(newUrl).pathname;
+    return new URL(oldUrl, getOrigin()).pathname === new URL(newUrl, getOrigin()).pathname;
   }
 
   /**
