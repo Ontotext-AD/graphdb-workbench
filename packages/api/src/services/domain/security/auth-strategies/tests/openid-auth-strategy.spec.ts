@@ -306,6 +306,20 @@ describe('OpenidAuthProvider', () => {
       expect(setupCodeFlowSpy).not.toHaveBeenCalled();
     });
 
+    it('should throw MissingOpenIdEndSessionUrl error when the OpenID provider has no end session endpoint url', () => {
+      // Given I have an OpenID config without an end session endpoint
+      setupSecurityConfig(createOpenIdConfig({oidcEndSessionEndpoint: undefined}));
+      const setupCodeFlowSpy = jest.spyOn(openIdService, 'setupCodeFlow');
+
+      // When I log in
+      const login = () => strategy.login();
+
+      // Then I expect a MissingOpenIdEndSessionUrl error
+      expect(login).toThrow(MissingOpenIdEndSessionUrl);
+      // And the login flow not to be started
+      expect(setupCodeFlowSpy).not.toHaveBeenCalled();
+    });
+
     it('should initiate code flow with state and return URL for authorization code flow', async () => {
       const openidConfig = createOpenIdConfig({authFlow: OpenIdAuthFlowType.CODE});
       setupSecurityConfig(openidConfig);

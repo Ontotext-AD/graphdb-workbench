@@ -58,7 +58,6 @@ export class OpenidAuthStrategy implements AuthStrategy {
   async initialize(): Promise<boolean> {
     this.loadSecurityConfiguration();
     this.validateConfiguration();
-    this.validateLogoutConfiguration();
     try {
       const isLoggedIn = await this.openIdService.initializeOpenId();
 
@@ -167,22 +166,17 @@ export class OpenidAuthStrategy implements AuthStrategy {
   }
 
   /**
-   * Validates that OpenID configuration is available.
+   * Validates that OpenID configuration is available, and that logout from the OpenID provider is possible, unless
+   * only a local logout is configured.
    * @private
-   * @throws Error if configuration is not found
+   * @throws MissingOpenidConfiguration if configuration is not found
+   * @throws MissingOpenIdEndSessionUrl if the provider has no end session endpoint
    */
   private validateConfiguration(): void {
     if (!this.openIdSecurityConfig) {
       throw new MissingOpenidConfiguration();
     }
-  }
-
-  /**
-   * Validates that logout from the OpenID provider is possible, unless only a local logout is configured.
-   * @throws MissingOpenIdEndSessionUrl if the provider has no end session endpoint
-   */
-  private validateLogoutConfiguration(): void {
-    if (!this.openIdSecurityConfig!.localLogoutOnly && !this.openIdSecurityConfig!.openIdEndSessionUrl) {
+    if (!this.openIdSecurityConfig.localLogoutOnly && !this.openIdSecurityConfig.openIdEndSessionUrl) {
       throw new MissingOpenIdEndSessionUrl();
     }
   }
