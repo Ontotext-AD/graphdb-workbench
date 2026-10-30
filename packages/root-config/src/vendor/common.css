@@ -240,7 +240,6 @@ button:-moz-focusring {
     color: var(--gw-button-primary-link-hover-color);
 }
 
-.btn-link-only-icons,
 .btn-link[href]:has([class^="ri"]),
 .btn-link[href]:has([class*=" ri"]),
 .btn-link[href]:has([class^="ri"]):hover,
@@ -271,6 +270,37 @@ button:-moz-focusring {
 
 .btn-link-text {
     padding-left: 0.2em;
+}
+
+/* icon-only buttons */
+.btn-link-only-icons {
+    padding: .5em .8em;
+    color: var(--gw-button-secondary-icon-color);
+    background-color: transparent;
+    border-color: transparent;
+    text-decoration: none !important;
+}
+
+.btn-link-only-icons:focus, .btn-link-only-icons:hover {
+    color: var(--gw-button-secondary-hover-color);
+}
+
+.btn-link-only-icons.tertiary {
+    color: var(--gw-button-tertiary-icon-color);
+}
+
+.btn-link-only-icons.tertiary:focus, .btn-link-only-icons.tertiary:hover {
+    color: var(--gw-button-tertiary-hover-color);
+}
+
+.btn-link-only-icons.btn-sm {
+    padding: .25rem .5rem;
+}
+
+/* primary tokens kept from .btn-link.active: secondary active tokens have no background to mark the state */
+.btn-link-only-icons.active, .btn-link-only-icons:hover.active, .btn-link-only-icons:focus.active, .btn-link-only-icons:active.active {
+    background-color: var(--gw-button-primary-hover-background);
+    color: var(--gw-button-primary-hover-color);
 }
 
 /* button groups */

@@ -12,7 +12,7 @@
          timeout="[1]"></div>
     <div ng-if="canWriteActiveRepo() && !loader && !isRestricted">
         <div class="pull-right">
-            <button class="btn btn-lg btn-link p-0" type="button"
+            <button class="btn btn-lg btn-link-only-icons p-0" type="button"
                     ng-click="getConnectors()"
                     data-test="reload-all-connectors"
                     gdb-tooltip="{{'reload.all.connector.info' | translate}}" tooltip-placement="left">
@@ -31,17 +31,17 @@
                         <div class="card" ng-repeat="exist in existing[connector.key]" guide-selector="{{exist.name}}-connector-card">
                             <div class="card-header" role="tab" id="heading-{{keyForDom}}{{$index}}">
 								<div class="pull-right">
-									<button class="btn btn-link p-0" type="button"
+									<button class="btn btn-link-only-icons p-0" type="button"
 										    ng-click="copyConnector(connector, exist)"
                                             gdb-tooltip="{{'copy.connector' | translate}} {{exist.name}}">
 										<em class="ri-file-copy-line"></em>
 									</button>
-									<button class="btn btn-link p-0" type="button"
+									<button class="btn btn-link-only-icons p-0" type="button"
 										    ng-click="repair(exist, connector)"
                                             gdb-tooltip="{{'repair.connector' | translate}} {{exist.name}}">
 										<em class="ri-reset-right-line"></em>
 									</button>
-									<button class="btn btn-link secondary p-0" type="button"
+									<button class="btn btn-link-only-icons tertiary p-0" type="button"
 										    ng-click="delete(exist, connector)"
                                             gdb-tooltip="{{'delete.connector' | translate}} {{exist.name}}">
 										<em class="ri-delete-bin-6-line"></em>

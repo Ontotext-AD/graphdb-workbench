@@ -52,18 +52,18 @@
 							<span class="text-muted mr-2" ng-if="similarityIndex.isFailedStatus()" gdb-tooltip="{{'index.building.failed.tooltip' | translate}}">{{'failed.status' | translate}}</span>
 							<span class="text-muted mr-2" ng-if="similarityIndex.isInterruptedStatus()" gdb-tooltip="{{'index.building.interrupted.tooltip' | translate}}">{{'interrupted.status' | translate}}</span>
 							<span class="text-muted mr-2" ng-if="similarityIndex.isObsoleteStatus()" gdb-tooltip="{{'index.obsolete.tooltip' | translate}}">{{'obsolete.status' | translate}}</span>
-							<span class="btn btn-link similarity-index-building-loader" ng-if="similarityIndex.isBuildingStatus() || similarityIndex.isRebuildingStatus() || similarityIndex.isCreatingStatus()">
+							<span class="btn btn-link-only-icons similarity-index-building-loader" ng-if="similarityIndex.isBuildingStatus() || similarityIndex.isRebuildingStatus() || similarityIndex.isCreatingStatus()">
           				        <em class="ri-reset-left-line loader"></em>
       				        </span>
 
-							<span class="btn btn-link view-sparql-query-btn" ng-click="viewCreateQuery(similarityIndex)"
+							<span class="btn btn-link-only-icons view-sparql-query-btn" ng-click="viewCreateQuery(similarityIndex)"
                                   ng-if="similarityIndex.selectQuery && (similarityIndex.isTextType() || similarityIndex.isPredicationType() || similarityIndex.isTextLiteralType())"
                                   gdb-tooltip="{{'view.sparql.query.title' | translate}}">
 									<em class="icon-sparql"></em>
 							</span>
 
                             <span class="actions-bar hovered-item">
-                                <button class="btn btn-link edit-query-btn"
+                                <button class="btn btn-link-only-icons edit-query-btn"
                                         ng-if="canEditRepo && !similarityIndex.isBuildingStatus() && !similarityIndex.isRebuildingStatus() && !similarityIndex.isCreatingStatus()"
                                         ng-click="editSimilarityIndex(similarityIndex)"
                                         gdb-tooltip="{{similarityIndex.isPredicationType() ? 'edit.search.analogical.query.title' : 'edit.search.query.title' | translate}}">
@@ -71,7 +71,7 @@
                                 </button>
                             </span>
 
-                            <button class="btn btn-link clone-index-btn"
+                            <button class="btn btn-link-only-icons clone-index-btn"
                                     ng-if="similarityIndex.selectQuery && (similarityIndex.isTextType() || similarityIndex.isPredicationType() || similarityIndex.isTextLiteralType())"
                                     ng-click="cloneSimilataryIndex(similarityIndex)"
                                     gdb-tooltip="{{'create.index.from.existing.tooltip' | translate}}">
@@ -79,10 +79,10 @@
                             </button>
 
 							<button type="button" ng-if="canEditRepo && !similarityIndex.isBuildingStatus() && !similarityIndex.isRebuildingStatus() && !similarityIndex.isCreatingStatus() && (similarityIndex.isTextType() || similarityIndex.isPredicationType() || similarityIndex.isTextLiteralType())" ng-disabled="!similarityIndex.selectQuery"
-									ng-click="rebuildIndex(similarityIndex)" class="btn btn-link reload-index-btn" gdb-tooltip="{{'rebuild.index.tooltip' | translate}}"><span
+									ng-click="rebuildIndex(similarityIndex)" class="btn btn-link-only-icons reload-index-btn" gdb-tooltip="{{'rebuild.index.tooltip' | translate}}"><span
 									class="ri-reset-right-line similarity-index-icon-reload"></span></button>
 							<button type="button" ng-if="canEditRepo && !similarityIndex.isBuildingStatus() && !similarityIndex.isRebuildingStatus() && !similarityIndex.isCreatingStatus()" ng-click="deleteSimilarityIndex(similarityIndex)"
-									class="btn btn-link delete-index-btn" gdb-tooltip="{{'delete.index.tooltip' | translate}}"><span class="ri-delete-bin-6-line"></span>
+									class="btn btn-link-only-icons tertiary delete-index-btn" gdb-tooltip="{{'delete.index.tooltip' | translate}}"><span class="ri-delete-bin-6-line"></span>
 							</button>
 						</td>
 

@@ -197,7 +197,8 @@ footer.footer .container-fluid.main-container p {
     background-color: var(--gw-tieredmenu-item-focus-background);
 }
 
-.btn-link + .dropdown-menu-right {
+.btn-link + .dropdown-menu-right,
+.btn-link-only-icons + .dropdown-menu-right {
     margin-top: 8px;
 }
 

@@ -38,20 +38,20 @@
                 </li>
             </ul>
         </div>
-        <button class="btn btn-link p-0 remove-all-classes-btn" type="button"
+        <button class="btn btn-link-only-icons tertiary p-0 remove-all-classes-btn" type="button"
                 ng-show="allNotFilteredClasses.length > 0"
                 ng-click="removeAllClasses()"
                 gdb-tooltip="{{'remove.classes.label' | translate}}"
                 tooltip-placement="bottom">
              <em class="ri-close-line ri-2x"></em>
          </button>
-        <button class="btn btn-link p-0 reload-diagram-btn" type="button"
+        <button class="btn btn-link-only-icons p-0 reload-diagram-btn" type="button"
                 gdb-tooltip="{{'reload.diagram.tooltip' | translate}}"
                 tooltip-placement="bottom"
                 ng-click="confirmCalculateDependencies()">
             <em class="ri-reset-right-line ri-2x refresh-button" ></em>
         </button>
-        <a href id="download-svg" class="btn btn-link p-0 export-diagram-btn"
+        <a href id="download-svg" class="btn btn-link-only-icons p-0 export-diagram-btn"
            ng-show="allNotFilteredClasses.length > 0"
            gdb-tooltip="{{'export.diagram.tooltip' | translate}}"
            tooltip-placement="bottom">

@@ -55,7 +55,7 @@ function openInSparqlEditorDirective($repositories, $translate, ModalService, $w
                     font-size: 0.9em;
                 }
             </style>
-            <button class="btn btn-link btn-sm open-in-sparql-editor-btn"
+            <button class="btn btn-link-only-icons btn-sm open-in-sparql-editor-btn"
                    data-test="open-in-sparql-editor-btn"
                    gdb-tooltip="{{'ttyg.chat_panel.btn.open_in_sparql_editor.tooltip' | translate}}" ng-click="onGoToSparqlEditorView()" guide-selector="open-in-sparql-editor-btn">
                 <i class="ri-braces-line"></i>

@@ -21,7 +21,7 @@
                                   content="{{answer.message}}"
                                   options="markdownContentOptions" trusted="true"></markdown-content>
                 <div class="actions" ng-class="{'hidden-actions': !explainResponseModel[answer.id].expanded && (!showActions || !$last)}">
-                    <button class="btn btn-link btn-sm regenerate-question-btn"
+                    <button class="btn btn-link-only-icons btn-sm regenerate-question-btn"
                             ng-click="regenerateQuestion()"
                             ng-disabled="disabled"
                             gdb-tooltip="{{'ttyg.chat_panel.btn.regenerate.tooltip' | translate}}">
@@ -30,7 +30,7 @@
                     <copy-to-clipboard tooltip-text="ttyg.chat_panel.btn.copy_answer.tooltip"
                                        text-to-copy="{{answer.message}}"></copy-to-clipboard>
                     <button ng-if="answer.tokenUsageInfo"
-                         class="btn btn-link btn-sm token-usage-info-btn"
+                         class="btn btn-link-only-icons btn-sm token-usage-info-btn"
                          uib-popover-template="'token-usage-info.html'"
                          ng-click="onTokenUsageInfo($event)"
                          popover-class="token-usage-info"
@@ -38,7 +38,7 @@
                          popover-trigger="mouseenter">
                         <i class="ri-coin-line"></i>
                     </button>
-                    <button class="btn btn-link btn-link-only-icons btn-sm explain-response-btn" guide-selector="explain-response-btn"
+                    <button class="btn btn-link-only-icons btn-sm explain-response-btn" guide-selector="explain-response-btn"
                             ng-click="explainResponse(answer.id)"
                             ng-disabled="answer.isTerminalState || (disabled && !explainResponseModel[answer.id])"
                             gdb-tooltip="{{'ttyg.chat_panel.btn.explain_response.tooltip' | translate}}">

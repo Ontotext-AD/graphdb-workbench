@@ -150,3 +150,7 @@
 .disable-rdf-class.rdf-class {
     pointer-events: none;
 }
+
+.hierarchy-error .btn-link-only-icons {
+    color: inherit;
+}

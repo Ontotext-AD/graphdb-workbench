@@ -4,7 +4,7 @@
 
     <h1>
         {{isEditViewMode() ? (similarityIndexInfo.isSearchQueryTypeSelected() ? 'edit.search.query' : (similarityIndexInfo.isAnalogicalQueryTypeSelected() ? 'edit.analogical.query' : 'edit.select.query')) : title | translate}}
-        <span ng-hide="editSearchQuery" class="btn btn-link"
+        <span ng-hide="editSearchQuery" class="btn btn-link-only-icons"
               uib-popover-template="'js/angular/templates/titlePopoverTemplate.html'"
               popover-trigger="mouseenter"
               popover-placement="bottom-right"

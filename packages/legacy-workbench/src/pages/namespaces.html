@@ -71,7 +71,7 @@
                         <input class="form-check-input select-all-namespaces" type="checkbox" ng-model="selectedAll"
                                ng-click="checkAll();checkIfSelectedNamespace()" ng-disabled="!canWriteActiveRepo()">
                     </label>
-                    <button type="button" class="btn btn-link btn-sm secondary p-0 delete-namespaces-btn" ng-click="deleteSelected()"
+                    <button type="button" class="btn btn-link-only-icons btn-sm tertiary p-0 delete-namespaces-btn" ng-click="deleteSelected()"
                             ng-disabled="!canWriteActiveRepo() || !haveSelected"
                             gdb-tooltip="{{'delete.selected' | translate}}" data-cy="delete-several-prefixes"><span class="ri-delete-bin-6-line"></span></button>
                 </th>
@@ -114,10 +114,10 @@
                     </form>
                 </td>
                 <td class="actions-bar"><!--ng-show="!rowform.$visible && canWriteActiveRepo()"-->
-                    <button class="btn btn-link edit-namespace-btn" ng-click="rowform.$show()"
+                    <button class="btn btn-link-only-icons edit-namespace-btn" ng-click="rowform.$show()"
                             ng-disabled="!canWriteActiveRepo()"
                             gdb-tooltip="{{'edit.namespace' | translate}}"><span class="ri-edit-line"></span></button>
-                    <button class="btn btn-link secondary delete-namespace-btn" ng-click="removeNamespace(namespace)"
+                    <button class="btn btn-link-only-icons tertiary delete-namespace-btn" ng-click="removeNamespace(namespace)"
                             ng-disabled="!canWriteActiveRepo()" gdb-tooltip="{{'delete.namespace' | translate}}"
                             data-cy="{{'delete-pref_' + namespace.prefix}}">
                         <span class="ri-delete-bin-6-line"></span></button>

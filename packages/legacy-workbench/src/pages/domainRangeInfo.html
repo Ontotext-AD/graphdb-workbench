@@ -5,7 +5,7 @@
 
 <h1>
     {{title}}
-    <span class="btn btn-link"
+    <span class="btn btn-link-only-icons"
           ng-class="{ 'help-button': showExternalElements, 'help-button-disabled': !showExternalElements && !(!loader && !classHierarchyData.children.length) }"
           uib-popover-template="'js/angular/templates/titlePopoverTemplate.html'"
           popover-trigger="mouseenter"
@@ -16,14 +16,14 @@
 <div class="explore">
     <div class="toolbar-holder pull-right"
          ng-class="{ 'pushed-toolbar': showPredicatesInfoPanel }">
-        <button class="btn btn-link p-0" type="button"
+        <button class="btn btn-link-only-icons p-0" type="button"
                 ng-click="goToClassHierarchyView()"
                 gdb-tooltip="{{'back.to.class.hierarchy.label' | translate}}"
                 tooltip-placement="bottom">
             <em class="ri-arrow-left-circle-line ri-2x"></em>
         </button>
 
-        <button class="btn btn-link p-0 compact-mode-toggle" type="button"
+        <button class="btn btn-link-only-icons p-0 compact-mode-toggle" type="button"
                 ng-click="toggleCollapseEdgesState()"
                 gdb-tooltip="{{collapseEdges ? 'show.preds' : 'show.collapsed.preds' | translate}}"
                 tooltip-placement="bottom">
@@ -31,7 +31,7 @@
                 ng-class="{'ri-toggle-line': collapseEdges, 'ri-toggle-fill': !collapseEdges}"></em>
         </button>
 
-        <a id="download-svg" href class="btn btn-link p-0"
+        <a id="download-svg" href class="btn btn-link-only-icons p-0"
            gdb-tooltip="{{'export.diagram.tooltip' | translate}}"
            tooltip-placement="bottom">
 			<em class="icon-export icon-1-5x"></em>
@@ -63,7 +63,7 @@
                        ng-switch-default>
                         {{sourceTargetObjectNodeName}}
                     </a>
-                    <button ng-show="sourceTargetObjectNodeName.indexOf('Literal') == -1" class="btn btn-link btn-sm p-0" title="{{'copy.to.clipboard.modal.ok.btn' | translate}}" ng-click="copyToClipboard(sourceTargetObjectNodeUri)">
+                    <button ng-show="sourceTargetObjectNodeName.indexOf('Literal') == -1" class="btn btn-link-only-icons btn-sm p-0" title="{{'copy.to.clipboard.modal.ok.btn' | translate}}" ng-click="copyToClipboard(sourceTargetObjectNodeUri)">
                         <span class="ri-links-line"></span>
                     </button>
                 </h3>
@@ -95,7 +95,7 @@
                     <ul ng-switch-default ui-scroll-viewport class="rdf-list">
                         <li ui-scroll='item in datasource' class="item clearfix break-word-alt" adapter="adapterContainer.adapter" padding='li'>
                             <a class="uri pull-left" href="resource?uri={{item.absUri}}">{{item.resolvedUri}}</a>
-                            <button class="btn btn-link btn-sm p-0 hovered-item" title="{{'copy.to.clipboard.modal.ok.btn' | translate}}" ng-click="copyToClipboard(item.absUriNonEncoded)">
+                            <button class="btn btn-link-only-icons btn-sm p-0 hovered-item" title="{{'copy.to.clipboard.modal.ok.btn' | translate}}" ng-click="copyToClipboard(item.absUriNonEncoded)">
                                 <span class="ri-links-line"></span>
                             </button>
                             <svg class="pull-right" ng-switch on="item.isImplicit" height="7" width="240">

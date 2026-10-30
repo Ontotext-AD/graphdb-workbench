@@ -384,6 +384,6 @@ ul.nodes-list li a:hover {
     width: 85px;
 }
 
-.actions-cell .btn-link, .actions-cell .btn-link a {
+.actions-cell .btn-link, .actions-cell .btn-link a, .actions-cell .btn-link-only-icons {
     padding: 0.2em .2em;
 }

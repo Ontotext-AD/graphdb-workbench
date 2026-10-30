@@ -35,14 +35,14 @@
 
                         <td class="text-xs-right">
                             <span class="actions-bar hovered-item">
-                                    <a class="btn btn-link edit-query-btn"
+                                    <a class="btn btn-link-only-icons edit-query-btn"
                                        ng-if="canWriteActiveRepo()" href="jdbc/configuration/create?name={{index}}"
                                        gdb-tooltip="{{'jdbc.edit.configuration' | translate}}">
                                         <em class="ri-edit-line"></em>
                                     </a>
                                 </span>
                             <button type="button" ng-if="canWriteActiveRepo()" ng-click="deleteConfiguration(index)"
-                                    class="btn btn-link delete-configuration-btn" gdb-tooltip="{{'jdbc.delete.configuration' | translate}}"><span
+                                    class="btn btn-link-only-icons tertiary delete-configuration-btn" gdb-tooltip="{{'jdbc.delete.configuration' | translate}}"><span
                                 class="ri-delete-bin-6-line"></span>
                             </button>
                         </td>

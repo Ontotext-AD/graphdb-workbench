@@ -108,14 +108,14 @@ function copyToClipboard($translate, toastr) {
                 }
             </style>
             <button
-                class="btn btn-link btn-sm copy-btn"
+                class="btn btn-link-only-icons btn-sm copy-btn"
                 ng-if="!customTooltipStyle"
                 gdb-tooltip="{{tooltipText | translate}}"
                 ng-click="copyToClipboard($event)">
                 <i class="ri-file-copy-line link-icon" aria-hidden="true"></i>
             </button>
             <button
-                class="btn btn-link btn-sm copy-btn"
+                class="btn btn-link-only-icons btn-sm copy-btn"
                 ng-if="customTooltipStyle"
                 ng-click="copyToClipboard($event)">
                 <i class="ri-file-copy-line custom-link-icon" aria-hidden="true" ng-class="{'visible': alwaysShowIcon === 'true'}"></i>

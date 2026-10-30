@@ -40,28 +40,28 @@
 			searched-obj-callback="searchedClassCallback">
 	</search-icon-input>
 
-	<button class="btn btn-link p-0 prefix-toggle-btn" type="button"
+	<button class="btn btn-link-only-icons p-0 prefix-toggle-btn" type="button"
 		ng-click="toggleHidePrefixes()"
 		gdb-tooltip="{{hidePrefixes ? 'show.prefixes.btn' : 'hide.prefixes.btn' | translate}}"
 		tooltip-placement="bottom">
 		<em class="ri-2x" ng-class="{'ri-toggle-line': hidePrefixes, 'ri-toggle-fill': !hidePrefixes}"></em>
 	</button>
 
-	<button class="btn btn-link p-0 focus-diagram-btn"
+	<button class="btn btn-link-only-icons p-0 focus-diagram-btn"
 		gdb-tooltip="{{'focus.diagram.tooltip' | translate}}"
 		tooltip-placement="bottom"
 		ng-click="focusOnRoot()">
 		<em class="ri-zoom-out-line ri-2x"></em>
 	</button>
 
-	<button class="btn btn-link p-0 reload-diagram-btn"
+	<button class="btn btn-link-only-icons p-0 reload-diagram-btn"
 		gdb-tooltip="{{'reload.diagram.tooltip' | translate}}"
 		tooltip-placement="bottom"
 		ng-click="confirmReloadClassHierarchy()">
 		<em class="ri-reset-right-line ri-2x"></em>
 	</button>
 
-	<a href class="btn btn-link p-0" id="download-svg"
+	<a href class="btn btn-link-only-icons p-0" id="download-svg"
 		gdb-tooltip="{{'export.diagram.tooltip' | translate}}"
 		tooltip-placement="bottom">
 		<em class="icon-export icon-1-5x"></em>
@@ -89,7 +89,7 @@
     <div class="row class-cnt-slider animate-show" ng-show="showExternalElements && hasClassHierarchy()" style="margin-left: 20px;">
 		<p class="slider-help-button">
 			{{'class.count.label' | translate}}
-			<span class="btn btn-link help-button"
+			<span class="btn btn-link-only-icons help-button"
 				  uib-popover-template="'js/angular/graphexplore/templates/rdfClassHierarchyClassCountSliderHelpTemplate.html'"
 				  popover-trigger="mouseenter"
 				  popover-placement="bottom-right"
@@ -105,7 +105,7 @@
     <div class='explore_results'>
 		<div class="top-offset alert alert-danger hierarchy-error" ng-show="hierarchyError">
 			<p>{{'cannot.load.classhierarchy.for.repo.warning' | translate}}
-				<button class="btn btn-link p-0 pull-right"
+				<button class="btn btn-link-only-icons p-0 pull-right"
 						gdb-tooltip="{{'reload.diagram.tooltip' | translate}}"
 						tooltip-placement="bottom"
 						ng-click="confirmReloadClassHierarchy()">
@@ -150,7 +150,7 @@
 
 				<h3 class="hovered-parent">
 					<a class="uri" href="resource?uri={{encodedUri}}">{{selectedClass.data.name}}</a>
-					<button class="btn btn-link btn-sm px-0 hovered-item"
+					<button class="btn btn-link-only-icons btn-sm px-0 hovered-item"
 						ng-click="copyToClipboard(selectedClass.data.fullName)"
 						title="{{'copy.to.clipboard.modal.ok.btn' | translate}}">
 						<span class="ri-links-line"></span>
@@ -207,7 +207,7 @@
 								<tbody>
 									<tr ui-scroll='item in datasource' adapter="adapterContainer.adapter" padding='li' class="hovered-parent">
 										<td class="break-word-alt" guide-selector="instance-{{ item.resolvedUri }}">
-											<button class="btn btn-link btn-sm p-0 hovered-item pull-right"
+											<button class="btn btn-link-only-icons btn-sm p-0 hovered-item pull-right"
 												title="{{'copy.to.clipboard.modal.ok.btn' | translate}}"
 												ng-click="copyToClipboard(item.absUriNonEncoded)">
 												<span class="ri-links-line"></span>
