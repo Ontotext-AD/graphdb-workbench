@@ -91,7 +91,7 @@
 }
 
 .chat-panel .messages-hint .hint1 .graph {
-    font-weight: 500;
+    font-weight:var(--gw-body-base-medium-font-weight);
     animation-name: change-color-graph;
 }
 
@@ -101,7 +101,7 @@
 
 .chat-panel .messages-hint .hint1 .thrives {
     font-size: 0.425em;
-    font-weight: 400;
+    font-weight: var(--gw-body-base-regular-underlined-font-weight);
 }
 
 @keyframes change-color-graph {
@@ -132,7 +132,7 @@
 }
 
 .chat-panel .messages-hint .hint2 {
-    font-size: 1.5rem;
+    font-size: var(--gw-xl-font-size);
 }
 
 .chat-panel .new-question {
@@ -162,7 +162,7 @@
 }
 
 .chat-panel .text-warning {
-    font-weight: 300;
+    font-weight: var(--gw-body-base-light-font-weight);
 }
 
 
