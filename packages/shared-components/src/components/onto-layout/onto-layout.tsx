@@ -15,6 +15,7 @@ import {
   navigate,
   NavigationContextService,
   NavigationEndPayload,
+  NavigationStartPayload,
   RuntimeConfigurationContextService,
   SecurityConfig,
   SecurityContextService,
@@ -82,6 +83,10 @@ export class OntoLayout {
    * The main content is hidden while loading and cannot keep the focus, so it is focused after the loading ends.
    */
   private shouldFocusMainContentAfterLoading = false;
+  /**
+   * Whether the ongoing navigation changes the page. Query and hash changes keep the page, so the loader is not shown.
+   */
+  private isPageChanging = false;
 
   // ========================
   // Lifecycle methods
@@ -111,6 +116,7 @@ export class OntoLayout {
     this.updateVisibility();
     this.subscribeToNavigationEnd();
     this.subscribeToRuntimeConfigurationChanges();
+    this.subscribeToNavigationStart();
     this.subscribeToBeforeMountRouting();
   }
 
@@ -406,10 +412,20 @@ export class OntoLayout {
       || !!document.getElementById(MAIN_CONTENT_ID)?.contains(activeElement);
   }
 
+  private subscribeToNavigationStart() {
+    this.subscriptions.add(
+      this.eventService.subscribe(EventName.NAVIGATION_START, ({oldUrl, newUrl}: NavigationStartPayload) => {
+        this.isPageChanging = !oldUrl || !newUrl || !this.isSamePage(oldUrl, newUrl);
+      }));
+  }
+
   private subscribeToBeforeMountRouting() {
     this.subscriptions.add(
       this.eventService.subscribe(EventName.BEFORE_MOUNT_ROUTING_EVENT, () => {
-        this.loading = true;
+        // Hiding the main content on a query or hash change only flashes the loader and drops the focus.
+        if (this.isPageChanging) {
+          this.loading = true;
+        }
       }));
   }
 }
