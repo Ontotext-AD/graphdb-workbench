@@ -19,22 +19,17 @@
     bottom: -3px;
 }
 
-.agent-settings-modal .agent-settings-form label {
-    font-weight: var(--field-label-weight);
-}
-
 .agent-settings-modal .agent-settings-form .external-config-btn {
     all: unset;
     cursor: pointer;
     color: inherit;
-    font: inherit;
     padding: 0 8px;
     margin: 8px 0 24px 8px;
 }
 
 .agent-settings-modal .agent-settings-form .llm-model .page-info-icon .ri-information-2-line {
     vertical-align: baseline;
-    font-size: 1rem;
+    font-size: var(--gw-body-base-regular-font-size);
     color: var(--gw-primary-dark);
 }
 
@@ -162,7 +157,7 @@
 
 .agent-settings-modal .agent-settings-form #sparqlQuery,
 .agent-settings-modal .agent-settings-form #queryTemplate {
-    font-size: 1rem;
+    font-size: var(--gw-body-base-regular-font-size);
     font-family: var(--mono-font) !important;
 }
 

@@ -3,6 +3,7 @@
     flex-direction: column;
     height: 100%;
     clip: rect(0, auto, auto, 0);
+    background-color: blue!important;
 }
 
 .agent-list-component .agent-list {
@@ -142,7 +143,6 @@
 
 .agent-list-component .selected-filter, .agent-list-component .agent-name {
     color: var(--gw-secondary-base);
-    font-weight: 400;
 }
 
 .agent-list-component .agent-name.incompatible-agent {
