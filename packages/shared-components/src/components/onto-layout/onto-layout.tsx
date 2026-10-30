@@ -77,6 +77,10 @@ export class OntoLayout {
   private readonly subscriptions: SubscriptionList = new SubscriptionList();
   private readonly windowResizeObserver: () => void;
   private isNavbarCollapsed = false;
+  /**
+   * The main content is hidden while loading and cannot keep the focus, so it is focused after the loading ends.
+   */
+  private shouldFocusMainContentAfterLoading = false;
 
   // ========================
   // Lifecycle methods
@@ -92,6 +96,13 @@ export class OntoLayout {
 
   componentDidRender() {
     this.windowResizeHandler();
+    if (this.shouldFocusMainContentAfterLoading && !this.loading) {
+      this.shouldFocusMainContentAfterLoading = false;
+      // The new page or the user may have moved the focus while loading.
+      if (this.isFocusLostOrInMainContent()) {
+        this.focusMainContent();
+      }
+    }
   }
 
   connectedCallback() {
@@ -186,8 +197,12 @@ export class OntoLayout {
   private readonly onSkipLinkClick = (event: MouseEvent) => {
     // Keep the hash out of the URL, single-spa would treat it as a route change.
     event.preventDefault();
-    document.getElementById(MAIN_CONTENT_ID)?.focus();
+    this.focusMainContent();
   };
+
+  private focusMainContent(): void {
+    document.getElementById(MAIN_CONTENT_ID)?.focus();
+  }
 
   private windowResizeHandler(): void {
     this.isLowResolution = WindowService.getWindow().innerWidth <= WINDOW_WIDTH_FOR_COLLAPSED_NAVBAR;
@@ -347,11 +362,39 @@ export class OntoLayout {
     this.subscriptions.add(
       this.eventService.subscribe(EventName.NAVIGATION_END, (navigationEndPayload: NavigationEndPayload) => {
         this.navigationContextService.updatePreviousRoute(navigationEndPayload.oldUrl);
+        this.focusMainContentOnPageChange(navigationEndPayload);
         // NAVIGATION_END appears to happen in the same tick as BeforeMountRouting, so the loader never gets shown
         setTimeout(() => {
           this.loading = false;
         });
       }));
+  }
+
+  /**
+   * Moves the focus to the main content after an in-app page change, when the focus was in the old page content or
+   * already lost to the body, so that it does not fall back to the body.
+   *
+   * @param navigationEndPayload - The old and the new URL of the navigation.
+   */
+  private focusMainContentOnPageChange({oldUrl, newUrl}: NavigationEndPayload): void {
+    if (!oldUrl || oldUrl === newUrl || !this.isFocusLostOrInMainContent()) {
+      // The initial load, or the focus is outside the main content, e.g. in the navbar.
+      return;
+    }
+    if (this.loading) {
+      this.shouldFocusMainContentAfterLoading = true;
+    } else {
+      this.focusMainContent();
+    }
+  }
+
+  /**
+   * Whether the focus is lost to the body or is in the main content.
+   */
+  private isFocusLostOrInMainContent(): boolean {
+    const activeElement = document.activeElement;
+    return !activeElement || activeElement === document.body
+      || !!document.getElementById(MAIN_CONTENT_ID)?.contains(activeElement);
   }
 
   private subscribeToBeforeMountRouting() {
