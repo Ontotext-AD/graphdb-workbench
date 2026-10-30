@@ -18,6 +18,10 @@
     margin-left: 1rem;
 }
 
+.explore-resource .action-header .view-options .same-as-btn {
+    color: var(--gw-button-secondary-color);
+}
+
 .explore-resource .action-header .view-options .show-blank-nodes {
     display: flex;
     align-items: center;

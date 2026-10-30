@@ -68,6 +68,10 @@
     background-color: var(--gw-panel-background);
 }
 
+.visual-graph-view .toolbar-holder .btn-link {
+    color: var(--gw-button-secondary-color);
+}
+
 .rdf-list .node-info {
     overflow-y: auto;
     height: 70vh;
