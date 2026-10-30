@@ -76,6 +76,7 @@ describe('OpenIdService', () => {
     openidStorageService.clearPkceState();
     openidStorageService.clearPkceCodeVerifier();
     openidStorageService.clearNonce();
+    openidStorageService.clearReturnUrl();
   });
 
   describe('getJSONWebKeySet', () => {
@@ -478,6 +479,37 @@ describe('OpenIdService', () => {
       // Then I expect to be redirected without id_token_hint
       const logoutUrl = (WindowService.setLocationHref as jest.Mock).mock.calls[0][0];
       expect(logoutUrl).not.toContain('id_token_hint');
+    });
+
+    it('should store the current page and redirect back to the base URL on hard logout', () => {
+      // Given I have an OpenID config with an end session endpoint
+      const config = mockOpenIdConfig();
+      const securityConfig = mockSecurityConfig(config);
+      securityContextService.updateSecurityConfig(securityConfig);
+      // And I am on a page under a context path
+      jest.spyOn(WindowService, 'getBaseHref').mockReturnValue('/graphdb/');
+      jest.spyOn(WindowService, 'getLocationPathname').mockReturnValue('/graphdb/sparql');
+      jest.spyOn(WindowService, 'getLocationQueryParams').mockReturnValue('?name=q1');
+
+      // When I log out from the OpenID provider
+      openIdService.logout(true);
+
+      // Then I expect the current page to be stored without the context path
+      expect(openidStorageService.getReturnUrl().getValue()).toEqual('/sparql?name=q1');
+      // And the provider to redirect back to the base URL
+      const logoutUrl = (WindowService.setLocationHref as jest.Mock).mock.calls[0][0];
+      expect(logoutUrl).toContain(`post_logout_redirect_uri=${encodeURIComponent('http://localhost/graphdb/')}`);
+    });
+
+    it('should not store the current page on soft logout', () => {
+      // Given I am on a page
+      jest.spyOn(WindowService, 'getLocationPathname').mockReturnValue('/sparql');
+
+      // When I log out from the Workbench only
+      openIdService.logout();
+
+      // Then I expect no page to be stored
+      expect(openidStorageService.getReturnUrl().getValue()).toBeNull();
     });
   });
 

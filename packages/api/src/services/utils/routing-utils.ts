@@ -56,10 +56,10 @@ export function buildUrl(url: string, queryParams?: Record<string, unknown>): st
 
 /**
  * Navigates to the login page and adds a return url along with all query params
+ * @param returnUrl - The page to return to after login, without the context path. Defaults to the current page.
  */
-export function navigateToLoginPage() {
-  const returnUrl = encodeURIComponent(getLocationPathWithQueryParams());
-  navigate(`login?${UrlPathParams.RETURN_URL}=${returnUrl}`);
+export function navigateToLoginPage(returnUrl = getLocationPathWithQueryParams()) {
+  navigate(`login?${UrlPathParams.RETURN_URL}=${encodeURIComponent(returnUrl)}`);
 }
 
 /**
