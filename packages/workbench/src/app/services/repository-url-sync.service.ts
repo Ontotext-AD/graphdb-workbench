@@ -122,9 +122,12 @@ export class RepositoryUrlSyncService {
 
   /**
    * Called when the active repository changes — mirrors legacy's onSelectedRepositoryUpdated.
-   * Writes the new repo ID to the URL without adding a history entry.
+   * Writes the new repo ID to the URL without adding a history entry. Does nothing on the login page.
    */
   onRepositoryChanged(repositoryId: string): void {
+    if (isLoginPage()) {
+      return;
+    }
     if (this.getRepositoryIdFromUrl() !== repositoryId) {
       this.writeRepositoryIdToUrl(repositoryId);
     }
