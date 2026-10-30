@@ -739,6 +739,14 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         return $location.url().startsWith('/login');
     };
 
+    /**
+     * The login page is open to users without access, but also to free access users and to externally authenticated
+     * users (e.g. Kerberos), who can log in as another user from there. Only for the first ones the url is left alone.
+     */
+    const isLoginPageWithoutAccess = () => {
+        return isLoginPage() && !authenticationService.isLoggedIn() && !authorizationService.hasFreeAccess();
+    };
+
     const setYears = function() {
         const date = new Date();
         $scope.currentYear = date.getFullYear();
@@ -928,7 +936,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
             // On repository change, update the url param accordingly, but
             // avoid infinite loop by checking if the param is already set to the desired value.
             // And skip the first event which is triggered on bootstrap.
-            if (repository) {
+            if (repository && !isLoginPageWithoutAccess()) {
                 const searchParams = new URLSearchParams(WindowService.getLocationQueryParams());
                 const urlRepositoryParam = searchParams.get(REPOSITORY_ID_PARAM);
                 if (urlRepositoryParam !== repository.id) {
@@ -959,6 +967,10 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         const isSameRepository = !!selectedRepository && repositoryIdParam === selectedRepository.id;
 
         try {
+            // --- if on login page without access, do nothing
+            if (isLoginPageWithoutAccess()) {
+                return;
+            }
             // --- no selected repository ---
 
             if (!selectedRepository) {

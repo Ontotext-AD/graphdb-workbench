@@ -1,7 +1,10 @@
 import {TestBed} from '@angular/core/testing';
 import {ActivatedRoute, Router} from '@angular/router';
 import {
+  AuthenticationService,
+  AuthorizationService,
   getCurrentRoute,
+  isLoginPage,
   OntoToastrService,
   RepositoryContextService,
   service,
@@ -16,10 +19,12 @@ jest.mock('@ontotext/workbench-api', () => ({
   ...jest.requireActual('@ontotext/workbench-api'),
   service: jest.fn(),
   getCurrentRoute: jest.fn().mockReturnValue('sparql'),
+  isLoginPage: jest.fn().mockReturnValue(false),
 }));
 
 const mockService = service as jest.MockedFunction<typeof service>;
 const mockGetCurrentRoute = getCurrentRoute as jest.MockedFunction<typeof getCurrentRoute>;
+const mockIsLoginPage = isLoginPage as jest.MockedFunction<typeof isLoginPage>;
 
 describe('RepositoryUrlSyncService', () => {
   let syncService: RepositoryUrlSyncService;
@@ -30,6 +35,8 @@ describe('RepositoryUrlSyncService', () => {
   let mockRepositoryExists: jest.Mock;
   let mockUpdateSelectedRepository: jest.Mock;
   let mockGetLocationQueryParams: jest.SpyInstance;
+  let mockIsLoggedIn: jest.Mock;
+  let mockHasFreeAccess: jest.Mock;
 
   const REPO_ID_PARAM = 'repositoryId';
 
@@ -45,6 +52,8 @@ describe('RepositoryUrlSyncService', () => {
     mockGetSelectedRepository = jest.fn().mockReturnValue(undefined);
     mockRepositoryExists = jest.fn().mockReturnValue(false);
     mockUpdateSelectedRepository = jest.fn().mockResolvedValue(undefined);
+    mockIsLoggedIn = jest.fn().mockReturnValue(false);
+    mockHasFreeAccess = jest.fn().mockReturnValue(false);
 
     mockService.mockImplementation((serviceClass: unknown) => {
       if (serviceClass === RepositoryContextService) {
@@ -53,6 +62,12 @@ describe('RepositoryUrlSyncService', () => {
           repositoryExists: mockRepositoryExists,
           updateSelectedRepository: mockUpdateSelectedRepository,
         } as unknown as ReturnType<typeof service>;
+      }
+      if (serviceClass === AuthenticationService) {
+        return {isLoggedIn: mockIsLoggedIn} as unknown as ReturnType<typeof service>;
+      }
+      if (serviceClass === AuthorizationService) {
+        return {hasFreeAccess: mockHasFreeAccess} as unknown as ReturnType<typeof service>;
       }
       if (serviceClass === OntoToastrService) {
         return {} as unknown as ReturnType<typeof service>;
@@ -78,6 +93,7 @@ describe('RepositoryUrlSyncService', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+    mockIsLoginPage.mockReturnValue(false);
   });
 
   it('should be created', () => {
@@ -295,6 +311,28 @@ describe('RepositoryUrlSyncService', () => {
     });
   });
 
+  describe('#syncRepositoryIdWithUrl on the login page', () => {
+    beforeEach(() => {
+      mockIsLoginPage.mockReturnValue(true);
+      mockGetSelectedRepository.mockReturnValue({id: 'activeRepo', location: ''});
+      setUrlParam(null);
+    });
+
+    it('should not write the repo id to the URL when the user has no access', () => {
+      syncService.syncRepositoryIdWithUrl();
+
+      expect(mockNavigate).not.toHaveBeenCalled();
+    });
+
+    it('should write the repo id to the URL when the user has free access', () => {
+      mockHasFreeAccess.mockReturnValue(true);
+
+      syncService.syncRepositoryIdWithUrl();
+
+      expect(mockNavigate).toHaveBeenCalledTimes(1);
+    });
+  });
+
   describe('#onRepositoryChanged', () => {
     it('should navigate with the new repo id when it differs from the URL param', () => {
       setUrlParam('oldRepo');
@@ -325,6 +363,35 @@ describe('RepositoryUrlSyncService', () => {
       syncService.onRepositoryChanged('newRepo');
 
       expect(mockNavigate).toHaveBeenCalledTimes(1);
+    });
+
+    describe('on the login page', () => {
+      beforeEach(() => {
+        mockIsLoginPage.mockReturnValue(true);
+        setUrlParam(null);
+      });
+
+      it('should not navigate when the user has no access', () => {
+        syncService.onRepositoryChanged('newRepo');
+
+        expect(mockNavigate).not.toHaveBeenCalled();
+      });
+
+      it('should navigate when the user has free access', () => {
+        mockHasFreeAccess.mockReturnValue(true);
+
+        syncService.onRepositoryChanged('newRepo');
+
+        expect(mockNavigate).toHaveBeenCalledTimes(1);
+      });
+
+      it('should navigate when the user is logged in, e.g. externally', () => {
+        mockIsLoggedIn.mockReturnValue(true);
+
+        syncService.onRepositoryChanged('newRepo');
+
+        expect(mockNavigate).toHaveBeenCalledTimes(1);
+      });
     });
   });
 });
