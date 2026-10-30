@@ -14,7 +14,7 @@
 
             <a gdb-tooltip="{{'edit.resource.label' | translate}}" href="resource/edit?uri={{resourceInfo.details.encodeURI}}"
                ng-if="canWriteActiveRepo(true)"
-               class="btn btn-link edit-resource-link">
+               class="btn btn-link-only-icons edit-resource-link">
                 <span class="ri-edit-line"></span>
             </a>
         </h1>
@@ -90,7 +90,7 @@
                     </select>
                 </label>
 
-                <button type="button" class="btn btn-link same-as-btn btn-sm"
+                <button type="button" class="btn btn-link-only-icons same-as-btn btn-sm"
                         ng-model="sameAs"
                         ng-class="isLoading ? 'disabled' : ''"
                         ng-if="resourceInfo.contextType !== ContextTypes.EXPLICIT"

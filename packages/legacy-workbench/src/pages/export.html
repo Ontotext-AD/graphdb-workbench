@@ -94,7 +94,7 @@
 									<div class="btn-group btn-group-sm" uib-dropdown>
 										<!-- Keep the closing button tag right after the closing span tag, otherwise
 											 an extra space is rendered in HTML -->
-										<button type="button" class="btn btn-link dropdown-toggle export-selected-graphs-btn" uib-dropdown-toggle gdb-tooltip="{{'export.selected.graphs.tooltip' | translate}}" ng-disabled="!hasMultipleSelected()"
+										<button type="button" class="btn btn-link-only-icons dropdown-toggle export-selected-graphs-btn" uib-dropdown-toggle gdb-tooltip="{{'export.selected.graphs.tooltip' | translate}}" ng-disabled="!hasMultipleSelected()"
 												aria-label="{{'export.selected.graphs.tooltip' | translate}}">
 											<span class="icon-export" aria-hidden="true"></span></button>
 										<ul class="dropdown-menu" role="menu">
@@ -108,7 +108,7 @@
                                             </li>
 										</ul>
 									</div>
-									<button type="button" class="btn btn-link secondary delete-selected-graphs-btn"
+									<button type="button" class="btn btn-link-only-icons tertiary delete-selected-graphs-btn"
 										ng-click="dropContext()"
 											gdb-tooltip="{{'remove.data.from.selected.graph.tooltip' | translate}}" tooltip-placement="top"
 										aria-label="{{'remove.data.from.selected.graph.tooltip' | translate}}"
@@ -146,7 +146,7 @@
 								<div class="btn-group" uib-dropdown>
 									<!-- Keep the closing button tag right after the closing span tag, otherwise
 										 an extra space is rendered in HTML -->
-									<button type="button" class="btn btn-link dropdown-toggle export-graph" uib-dropdown-toggle gdb-tooltip="{{'export.graph.label' | translate}}"
+									<button type="button" class="btn btn-link-only-icons dropdown-toggle export-graph" uib-dropdown-toggle gdb-tooltip="{{'export.graph.label' | translate}}"
 											aria-label="{{'export.graph.with.name' | translate: {graph: (graph.contextID.value | translate)} }}"
 											ng-disabled="!graph.contextID.uri">
 										<span class="icon-export" aria-hidden="true"></span></button>
@@ -162,7 +162,7 @@
 									</ul>
 								</div>
 
-								<button class="btn btn-link secondary delete-graph-btn"
+								<button class="btn btn-link-only-icons tertiary delete-graph-btn"
 										ng-click="dropContext(graph)"
 										gdb-tooltip="{{'remove.data.from.this.graph.tooltip' | translate}}" tooltip-placement="top"
 										aria-label="{{'remove.data.from.graph.label' | translate: {graph: (graph.contextID.value | translate)} }}"

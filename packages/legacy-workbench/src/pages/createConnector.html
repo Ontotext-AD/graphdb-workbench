@@ -41,10 +41,10 @@
                         <div class="input-group mb-1 {{'property-' + option.__name}}">
                             <input type="text" class="form-control" placeholder="{{option.__hint}}" ng-model="values[option.__name][$index]" ng-required="option.__required" uib-popover="{{option.__description}}" popover-trigger="focus" popover-placement="bottom">
                             <span class="input-group-btn btn-group-sm">
-                            <button type="button" ng-disabled="values[option.__name].length == 1" class="btn btn-link" uib-popover="{{'delete.connector.delete.btn' | translate}} {{option.__label | singular}}" popover-trigger="mouseenter" popover-placement="bottom" ng-click="deleteOption($index, values[option.__name])">
+                            <button type="button" ng-disabled="values[option.__name].length == 1" class="btn btn-link-only-icons tertiary" uib-popover="{{'delete.connector.delete.btn' | translate}} {{option.__label | singular}}" popover-trigger="mouseenter" popover-placement="bottom" ng-click="deleteOption($index, values[option.__name])">
                                 <em class="ri-indeterminate-circle-line"></em>
                             </button>
-                            <button type="button" class="btn btn-link" uib-popover="{{'common.add' | translate}} {{option.__label | singular}}" popover-trigger="mouseenter" popover-placement="bottom" ng-click="addOption($index, values[option.__name])">
+                            <button type="button" class="btn btn-link-only-icons" uib-popover="{{'common.add' | translate}} {{option.__label | singular}}" popover-trigger="mouseenter" popover-placement="bottom" ng-click="addOption($index, values[option.__name])">
                                 <em class="ri-add-circle-line"></em>
                             </button>
                         </span>
@@ -73,10 +73,10 @@
                                             <div class="input-group mb-1" ng-if="child.__type == 'StringArray'" ng-repeat="value in values[option.__name][fieldIndex][child.__name] track by $index">
                                                 <input type="text" class="form-control" placeholder="{{child.__hint}}" ng-model="values[option.__name][fieldIndex][child.__name][$index]" ng-required="child.__required" uib-popover="{{child.__description}}" popover-trigger="focus" popover-placement="bottom">
                                                 <span class="input-group-btn btn-group-sm">
-                                                <button type="button" ng-disabled="values[option.__name][fieldIndex][child.__name].length == 1" class="btn btn-link btn-sm" uib-popover="{{'delete.connector.delete.btn' | translate}} {{child.__label | singular}}" popover-trigger="mouseenter" popover-placement="bottom" ng-click="deleteOption($index, values[option.__name][fieldIndex][child.__name])">
+                                                <button type="button" ng-disabled="values[option.__name][fieldIndex][child.__name].length == 1" class="btn btn-link-only-icons tertiary btn-sm" uib-popover="{{'delete.connector.delete.btn' | translate}} {{child.__label | singular}}" popover-trigger="mouseenter" popover-placement="bottom" ng-click="deleteOption($index, values[option.__name][fieldIndex][child.__name])">
                                                     <em class="ri-indeterminate-circle-line"></em>
                                                 </button>
-                                                <button type="button" class="btn btn-link btn-sm" uib-popover="{{'common.add' | translate}} {{child.__label | singular}}" popover-trigger="mouseenter" popover-placement="bottom" ng-click="addOption($index, values[option.__name][fieldIndex][child.__name])">
+                                                <button type="button" class="btn btn-link-only-icons btn-sm" uib-popover="{{'common.add' | translate}} {{child.__label | singular}}" popover-trigger="mouseenter" popover-placement="bottom" ng-click="addOption($index, values[option.__name][fieldIndex][child.__name])">
                                                     <em class="ri-add-circle-line"></em>
                                                 </button>
                                             </span>
@@ -99,10 +99,10 @@
                             </div>
                             <div class="col-xs-1 p-0" style="margin-left: -1rem">
                             <span class="input-group-btn btn-group-sm">
-                            <button type="button" ng-disabled="values[option.__name].length == 1" class="btn btn-link" uib-popover="{{'delete.field.popover' | translate}}" popover-trigger="mouseenter" popover-placement="bottom" ng-click="deleteOption($index, values[option.__name])">
+                            <button type="button" ng-disabled="values[option.__name].length == 1" class="btn btn-link-only-icons tertiary" uib-popover="{{'delete.field.popover' | translate}}" popover-trigger="mouseenter" popover-placement="bottom" ng-click="deleteOption($index, values[option.__name])">
                                 <em class="ri-indeterminate-circle-line"></em>
                             </button>
-                            <button type="button" class="btn btn-link" uib-popover="{{'add.field.popover' | translate}}" popover-trigger="mouseenter" popover-placement="bottom" ng-click="addField($index, option.__name)">
+                            <button type="button" class="btn btn-link-only-icons" uib-popover="{{'add.field.popover' | translate}}" popover-trigger="mouseenter" popover-placement="bottom" ng-click="addField($index, option.__name)">
                                 <em class="ri-add-circle-line"></em>
                             </button>
                             </span>
@@ -113,7 +113,7 @@
                         <div class="col-form-label mb-1">
                             <label><em>{{'no.sentence.beginning' | translate}} {{option.__label}} {{'added.label' | translate}}</em></label>
                             <span class="btn-group-sm">
-                            <button type="button" class="btn btn-link" uib-popover="{{'common.add' | translate}} {{option.__label | singular}}" popover-trigger="mouseenter" popover-placement="bottom" ng-click="addMapOption($index, values[option.__name])">
+                            <button type="button" class="btn btn-link-only-icons" uib-popover="{{'common.add' | translate}} {{option.__label | singular}}" popover-trigger="mouseenter" popover-placement="bottom" ng-click="addMapOption($index, values[option.__name])">
                                 <em class="ri-add-circle-line"></em>
                             </button>
                         </span>
@@ -130,10 +130,10 @@
                                 </div>
                             </div>
                             <span class="input-group-btn btn-group-sm">
-                            <button type="button" ng-disabled="values[option.__name].length == 0" class="btn btn-link" uib-popover="{{'delete.connector.delete.btn' | translate}} {{option.__label | singular}}" popover-trigger="mouseenter" popover-placement="bottom" ng-click="deleteMapOption($index, values[option.__name])">
+                            <button type="button" ng-disabled="values[option.__name].length == 0" class="btn btn-link-only-icons tertiary" uib-popover="{{'delete.connector.delete.btn' | translate}} {{option.__label | singular}}" popover-trigger="mouseenter" popover-placement="bottom" ng-click="deleteMapOption($index, values[option.__name])">
                                 <em class="ri-indeterminate-circle-line"></em>
                             </button>
-                            <button type="button" class="btn btn-link" uib-popover="{{'common.add' | translate}} {{option.__label | singular}}" popover-trigger="mouseenter" popover-placement="bottom" ng-click="addMapOption($index, values[option.__name])">
+                            <button type="button" class="btn btn-link-only-icons" uib-popover="{{'common.add' | translate}} {{option.__label | singular}}" popover-trigger="mouseenter" popover-placement="bottom" ng-click="addMapOption($index, values[option.__name])">
                                 <em class="ri-add-circle-line"></em>
                             </button>
                         </span>

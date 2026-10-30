@@ -9,7 +9,7 @@
             <div class="form-group row">
                 <label class="col-lg-3">
                     {{'import.target.graphs' | translate}}
-                    <span class="btn btn-link p-0"
+                    <span class="btn btn-link-only-icons p-0"
                           uib-popover="{{'import.into.graphs' | translate}}"
                           popover-trigger="mouseenter"
                           popover-placement="right">
@@ -69,7 +69,7 @@
             <div class="form-group row" ng-show="enableReplace">
                 <label id="import-replaced-graphs-label" class="col-lg-3 col-form-label">
                     {{'import.replaced.graphs' | translate}}
-                    <span class="btn btn-link p-0"
+                    <span class="btn btn-link-only-icons p-0"
                           uib-popover="{{'import.replaced.graphs.for.update' | translate}}"
                           popover-trigger="mouseenter"
                           popover-placement="right">
@@ -127,7 +127,7 @@
                                 <td>
                                     <span ng-show="g !== 'default'">{{g}}</span>
                                     <span ng-show="g === 'default'">{{'import.default.graph' | translate}}</span>
-                                    <button type="button" class="btn btn-link btn-sm secondary"
+                                    <button type="button" class="btn btn-link-only-icons btn-sm tertiary"
                                             ng-click="settings.replaceGraphs.splice($index, 1)">
                                         <em class="ri-delete-bin-6-line"></em>
                                     </button>
@@ -148,7 +148,7 @@
             <div ng-show="settings.hasContextLink" class="form-group row contextLinkRow">
                 <label class="col-lg-3 col-form-label">
                     {{'import.context.link' | translate}}
-                    <span class="btn btn-link p-0"
+                    <span class="btn btn-link-only-icons p-0"
                           uib-popover="{{'import.context.link.info' | translate}}"
                           popover-trigger="mouseenter"
                           popover-placement="right">
@@ -180,7 +180,7 @@
                 <div class="form-group row mt-1">
                     <label class="col-lg-3 col-form-label">
                         {{'import.label.base.iri' | translate}}
-                        <span class="btn btn-link p-0"
+                        <span class="btn btn-link-only-icons p-0"
                               uib-popover="{{'import.popover.relative.iri' | translate}}"
                               popover-trigger="mouseenter"
                               popover-placement="right">

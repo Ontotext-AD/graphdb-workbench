@@ -266,6 +266,15 @@ span.required {
     right: 5px
 }
 
+/*
+ * bootstrap's color: inherit on anchors without href outranks .btn-link-only-icons, so the icon loses its token color.
+ * Kept as an anchor because a button adds a tab stop and a focus ring that overflows the input.
+ */
+a.ot-edit-input:not([href]):not([tabindex]),
+a.ot-edit-input:not([href]):not([tabindex]):hover {
+    color: var(--gw-button-secondary-icon-color);
+}
+
 .ot-inline-block {
     display: inline-block
 }

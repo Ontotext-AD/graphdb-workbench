@@ -26,7 +26,7 @@
          data-parent="#additionalExtractionMethods">
            <div ng-if="extractionMethod.expanded" class="extraction-method-options"
                 ng-class="{'has-error': (extractionMethod.selected && agentSettingsForm.$error.autocompleteDisabled) || agentSettingsForm.repositoryId.$invalid}">
-               <button ng-if="agentFormModel.repositoryId" class="btn btn-link btn-sm pull-right"
+               <button ng-if="agentFormModel.repositoryId" class="btn btn-link-only-icons btn-sm pull-right"
                        ng-click="checkAutocompleteIndexEnabled(extractionMethod)"
                        ng-disabled="disabled"
                        gdb-tooltip="{{'ttyg.agent.create_agent_modal.form.additional_query_methods.method.autocomplete_iri_discovery_search.btn.reload.tooltip' | translate}}">

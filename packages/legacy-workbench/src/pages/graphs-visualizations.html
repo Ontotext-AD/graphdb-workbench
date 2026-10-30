@@ -22,7 +22,7 @@
             translate}}</label>
         <div class="link-limit-wrapper">
             <div class="link-limit-input-wrapper">
-                <button type="button" class="btn btn-link px-0" ng-disabled="linksLimit.decreaseDisabled"
+                <button type="button" class="btn btn-link-only-icons px-0" ng-disabled="linksLimit.decreaseDisabled"
                         ng-click="changeLimit(-1)">
                     <i class="ri-indeterminate-circle-line"></i>
                 </button>
@@ -33,7 +33,7 @@
                        title="{{'visual.limit.links.tooltip' | translate: {min: linksLimit.min, max: linksLimit.max} }}"
                        min="{{linksLimit.min}}" max="{{linksLimit.max}}" class="ng-pristine ng-valid ng-valid-number"
                        ng-change="updateLinksLimit()">
-                <button type="button" class="btn btn-link px-0" ng-disabled="linksLimit.increaseDisabled"
+                <button type="button" class="btn btn-link-only-icons px-0" ng-disabled="linksLimit.increaseDisabled"
                         ng-click="changeLimit(1)">
                     <i class="ri-add-circle-line"></i>
                 </button>
@@ -47,34 +47,34 @@
                 <button type="button" class="close ml-1" ng-click="linksLimit.showingLimit = false"></button>
             </span>
         </div>
-        <button ng-show="!queryResultsMode && !noGoHome" class="btn btn-link p-0 return-home-btn"
+        <button ng-show="!queryResultsMode && !noGoHome" class="btn btn-link-only-icons p-0 return-home-btn"
                 gdb-tooltip="{{'visual.graph.home.label' | translate}}"
                 tooltip-placement="bottom"
                 ng-click="goToHome()">
             <em class="ri-arrow-up-circle-line ri-2x"></em>
         </button>
-        <button ng-show="!queryResultsMode && configLoaded.startMode == 'search'" class="btn btn-link p-0"
+        <button ng-show="!queryResultsMode && configLoaded.startMode == 'search'" class="btn btn-link-only-icons p-0"
                 gdb-tooltip="{{'search.another.resource.label' | translate}}"
                 tooltip-placement="bottom"
                 ng-disabled="!nodeSelected"
                 ng-click="searchVisible = !searchVisible">
             <em class="ri-search-line ri-2x"></em>
         </button>
-        <button class="btn btn-link p-0"
+        <button class="btn btn-link-only-icons p-0"
                 gdb-tooltip="{{'visual.graph.rotate.graph.left' | translate}}"
                 tooltip-placement="bottom"
                 ng-disabled="!nodeSelected"
                 ng-click="rotate(true)">
             <em class="ri-anticlockwise-line ri-2x"></em>
         </button>
-        <button class="btn btn-link p-0"
+        <button class="btn btn-link-only-icons p-0"
                 gdb-tooltip="{{'visual.graph.rotate.graph.right' | translate}}"
                 tooltip-placement="bottom"
                 ng-disabled="!nodeSelected"
                 ng-click="rotate(false)">
             <em class="ri-clockwise-line ri-2x"></em>
         </button>
-        <button class="btn btn-link p-0"
+        <button class="btn btn-link-only-icons p-0"
                 gdb-tooltip="{{numberOfPinnedNodes > 0 ? 'visual.graph.unpin.nodes' : 'visual.graph.pin.down.nodes' | translate}}"
                 ng-class="numberOfPinnedNodes > 0 ? 'active' : ''"
                 tooltip-placement="bottom"
@@ -82,7 +82,7 @@
                 ng-click="togglePinAllNodes()">
             <em class="ri-pushpin-line ri-2x"></em>
         </button>
-        <button class="btn btn-link p-0"
+        <button class="btn btn-link-only-icons p-0"
                 gdb-tooltip="{{'visual.save.graph.snapshot' | translate}}"
                 tooltip-placement="bottom"
                 ng-if="isUser() && !embedded"
@@ -90,7 +90,7 @@
                 ng-click="saveOrUpdateGraph()" data-cy="save-or-update-graph">
             <em class="ri-save-line ri-2x" ></em>
         </button>
-        <button class="btn btn-link p-0"
+        <button class="btn btn-link-only-icons p-0"
                 guide-selector="graph-settings-button"
                 gdb-tooltip="{{'visual.graph.click.configure.view' | translate}}"
                 tooltip-placement="bottom"
@@ -172,8 +172,8 @@
                                     <samp class="text-muted small text-overflow d-block" ng-if="config.hint">{{config.hint}}</samp>
                                 </td>
                                 <td class="text-xs-right" ng-if="isUser() && config.owner === principal.username">
-                                    <a ng-href="graphs-visualizations/config/save/{{config.id}}" class="btn btn-link btn-edit-config" data-test="graph-config-edit-btn" gdb-tooltip="{{'visual.edit.config' | translate}}"><span class="ri-edit-line"></span></a>
-                                    <button type="button" ng-click="deleteConfig(config)" class="btn btn-link delete-config" gdb-tooltip="{{'visual.delete.config' | translate}}" data-cy="delete-graph-config" data-test="graph-config-delete-btn"><span class="ri-delete-bin-6-line"></span></button>
+                                    <a ng-href="graphs-visualizations/config/save/{{config.id}}" class="btn btn-link-only-icons btn-edit-config" data-test="graph-config-edit-btn" gdb-tooltip="{{'visual.edit.config' | translate}}"><span class="ri-edit-line"></span></a>
+                                    <button type="button" ng-click="deleteConfig(config)" class="btn btn-link-only-icons tertiary delete-config" gdb-tooltip="{{'visual.delete.config' | translate}}" data-cy="delete-graph-config" data-test="graph-config-delete-btn"><span class="ri-delete-bin-6-line"></span></button>
                                 </td>
                             </tr>
                             </tbody>
@@ -196,18 +196,18 @@
                                     <span ng-show="graph.config == 'default'">{{'visual.easy.graph' | translate}}</span>
                                 </td>
                                 <td class="text-xs-right">
-                                    <button class="btn btn-link"
+                                    <button class="btn btn-link-only-icons"
                                             gdb-tooltip="{{'visual.get.graph.url' | translate}}"
                                             ng-click="copyToClipboardSavedGraph(graph)" data-cy="copy-to-clipboard-saved-graph">
                                         <span class="ri-links-line"></span>
                                     </button>
-                                    <button class="btn btn-link"
+                                    <button class="btn btn-link-only-icons"
                                             ng-if="isUser() && graph.owner === principal.username"
                                             gdb-tooltip="{{'visual.rename.graph' | translate}}"
                                             ng-click="renameSavedGraph(graph)" data-cy="rename-saved-graph">
                                         <span class="ri-edit-line"></span>
                                     </button>
-                                    <button class="btn btn-link"
+                                    <button class="btn btn-link-only-icons tertiary"
                                             ng-if="isUser() && graph.owner === principal.username"
                                             gdb-tooltip="{{'visual.delete.graph' | translate}}"
                                             ng-click="deleteSavedGraph(graph)" data-cy="delete-saved-graph">
@@ -283,7 +283,7 @@
                                   id="{{predicate.linkId + predicate.nodeIndex}}"
                                   gdb-tooltip="{{predicate.rawIri}}"
                                   tooltip-placement="top">{{splitPredicate(predicate.value)}}</span>
-                            <button class="btn btn-link btn-sm px-0 mr-1 copy-btn"
+                            <button class="btn btn-link-only-icons btn-sm px-0 mr-1 copy-btn"
                                     ng-click="copyPredicateIri($event, predicate.rawIri)"
                                     gdb-tooltip="{{'common.copy_to_clipboard.btn' | translate}}"
                                     tooltip-placement="top"
@@ -310,7 +310,7 @@
                                       id="{{predicate.linkId + predicate.nodeIndex}}"
                                       gdb-tooltip="{{predicate.rawIri}}"
                                       tooltip-placement="top">{{splitPredicate(predicate.value)}}</span>
-                                <button class="btn btn-link btn-sm px-0 mr-1 copy-btn"
+                                <button class="btn btn-link-only-icons btn-sm px-0 mr-1 copy-btn"
                                         ng-click="copyPredicateIri($event, predicate.rawIri)"
                                         gdb-tooltip="{{'common.copy_to_clipboard.btn' | translate}}"
                                         tooltip-placement="top"
@@ -475,7 +475,7 @@
         <div ng-if="showNodeInfo" class="tab-content">
             <h3 class="hovered-parent">
                 <a class="uri" rel="noopener" target="_blank" href="resource?{{resourceType}}={{encodedIri}}" style="text-decoration: underline;">{{rdfsLabel | htmlAsText}}</a>
-                <button class="btn btn-link btn-sm px-0 hovered-item"
+                <button class="btn btn-link-only-icons btn-sm px-0 hovered-item"
                         style="opacity: 1"
                         ng-click="copyToClipboard(nodeIri)"
                         title="{{'copy.to.clipboard.modal.ok.btn' | translate}}">

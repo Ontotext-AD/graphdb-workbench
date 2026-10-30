@@ -53,7 +53,7 @@
 				</span>
 				<span ng-show="freeAccessEnabled()">
 					{{'security.free.access.settings' | translate}}
-					<a style="padding-left: 0px;"  class="btn btn-link" href="#"><em class="ri-settings-3-line" gdb-tooltip="{{'security.free.access.config.title' | translate}}" ng-click="editFreeAccess()"></em></a>
+					<a style="padding-left: 0px;"  class="btn btn-link-only-icons" href="#"><em class="ri-settings-3-line" gdb-tooltip="{{'security.free.access.config.title' | translate}}" ng-click="editFreeAccess()"></em></a>
 				</span>
 			</span>
 		</div>
@@ -103,11 +103,11 @@
 				<td class="date-created"><span>{{user.dateCreated | date: 'yyyy-MM-dd HH:mm:ss'}}</span></td>
 				<td class="actions-bar">
 					<span>
-						<a class="btn btn-link edit-user-btn" href="user/{{encodeURIComponent(user.username)}}">
+						<a class="btn btn-link-only-icons edit-user-btn" href="user/{{encodeURIComponent(user.username)}}">
                             <em class="ri-edit-line" gdb-tooltip="{{'security.edit.user.tooltip' | translate}}"></em>
                         </a>
                         <!-- Remove locally assigned extended permissions -->
-                        <a class="btn btn-link secondary delete-user-btn"
+                        <a class="btn btn-link-only-icons tertiary delete-user-btn"
                            ng-if="user.canRemoveExtendedPermissions"
                            href
                            ng-click="removeUser(user)">
@@ -117,7 +117,7 @@
                         </a>
 
                         <!-- Delete user -->
-                        <a class="btn btn-link secondary delete-user-btn"
+                        <a class="btn btn-link-only-icons tertiary delete-user-btn"
                            ng-if="user.canDelete"
                            href
                            ng-click="removeUser(user)">

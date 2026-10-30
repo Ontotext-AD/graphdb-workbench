@@ -76,14 +76,14 @@
                 <td class="actions-cell">
                     <div ng-if="editedNodeIndex === undefined && !node.isDeleted" class="actions-group">
                         <button ng-click="deleteNode($index, node)" ng-disabled="(hasCluster && !canDeleteNode) || (!hasCluster && node.isLocal)"
-                                class="btn btn-link delete-node-btn secondary"
+                                class="btn btn-link-only-icons delete-node-btn tertiary"
                                 gdb-tooltip="{{ (hasCluster && canDeleteNode) || (!hasCluster && !node.isLocal) ?
                                 ('cluster_management.update_cluster_group_dialog.actions.delete_node' | translate) :
                                 ('cluster_management.update_cluster_group_dialog.actions.cannot_delete_node' | translate) }}"
                                 title-class="delete-node-tooltip">
                             <i class="ri-close-line"></i>
                         </button>
-                        <button ng-click="replaceNode($index, node)" class="btn btn-link replace-node-btn" ng-disabled="!hasCluster && node.isLocal"
+                        <button ng-click="replaceNode($index, node)" class="btn btn-link-only-icons replace-node-btn" ng-disabled="!hasCluster && node.isLocal"
                                 gdb-tooltip="{{hasCluster || !node.isLocal ?
                                 ('cluster_management.update_cluster_group_dialog.actions.replace_node' | translate) :
                                 ('cluster_management.update_cluster_group_dialog.actions.cannot_replace_node' | translate) }}">
@@ -92,7 +92,7 @@
                     </div>
                     <div ng-if="editedNodeIndex === undefined && node.isDeleted" class="actions-group">
                         <button ng-click="restoreNode(node)"
-                                class="btn btn-link restore-node-btn secondary"
+                                class="btn btn-link-only-icons restore-node-btn tertiary"
                                 gdb-tooltip="{{'cluster_management.update_cluster_group_dialog.actions.restore_node' | translate}}">
                             <i class="ri-reset-left-line"></i>
                         </button>
@@ -142,12 +142,12 @@
                 <td class="actions-cell">
                     <div class="crud-actions-group">
                         <button ng-click="cancel()"
-                                class="btn btn-link cancel-node-replace-btn secondary"
+                                class="btn btn-link-only-icons cancel-node-replace-btn tertiary"
                                 gdb-tooltip="{{'cluster_management.update_cluster_group_dialog.actions.cancel' | translate}}">
                             <i class="ri-close-line"></i>
                         </button>
                         <button ng-click="saveNode(node.endpoint)"
-                                class="btn btn-link save-rule-btn"
+                                class="btn btn-link-only-icons save-rule-btn"
                                 ng-disabled="!form.location.$valid"
                                 gdb-tooltip="{{form.location.$valid ? 'cluster_management.update_cluster_group_dialog.actions.add_node' : 'cluster_management.update_cluster_group_dialog.messages.invalid_form' | translate}}">
                             <i class="ri-check-line"></i>
@@ -188,12 +188,12 @@
                 <td class="actions-cell">
                     <div class="crud-actions-group">
                         <button ng-click="cancel()"
-                                class="btn btn-link cancel-node-replace-btn secondary"
+                                class="btn btn-link-only-icons cancel-node-replace-btn tertiary"
                                 gdb-tooltip="{{'cluster_management.update_cluster_group_dialog.actions.cancel' | translate}}">
                             <i class="ri-close-line"></i>
                         </button>
                         <button ng-click="saveNode(newLocation.endpoint)"
-                                class="btn btn-link save-rule-btn"
+                                class="btn btn-link-only-icons save-rule-btn"
                                 ng-disabled="!form.location.$valid"
                                 gdb-tooltip="{{form.location.$valid ? 'cluster_management.update_cluster_group_dialog.actions.add_node' : 'cluster_management.update_cluster_group_dialog.messages.invalid_form' | translate}}">
                             <i class="ri-check-line"></i>

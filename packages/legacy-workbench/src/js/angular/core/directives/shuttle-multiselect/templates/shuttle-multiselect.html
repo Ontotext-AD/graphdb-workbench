@@ -17,7 +17,7 @@
             <div class="option-item"
                  ng-repeat="item in availableOptions | searchFilter:searchLeft | orderBy:'label' track by $index">
                 <span>{{item.label}}</span>
-                <a href="#" ng-click="selectOption(item)" class="btn-link secondary item-action add-btn"
+                <a href="#" ng-click="selectOption(item)" class="btn-link-only-icons tertiary item-action add-btn"
                    gdb-tooltip="{{labels.selectTooltip | translate}}"
                    tooltip-placement="top">
                     <span class="ri-add-circle-line"></span>
@@ -40,7 +40,7 @@
         <div class="options-list">
             <div class="option-item" ng-repeat="item in selectedOptions | orderBy:'label' track by $index">
                 <span>{{item.label}}</span>
-                <a href="#" ng-click="deselectOption(item)" class="btn-link secondary item-action remove-btn"
+                <a href="#" ng-click="deselectOption(item)" class="btn-link-only-icons tertiary item-action remove-btn"
                    gdb-tooltip="{{labels.deselectTooltip | translate}}"
                    tooltip-placement="top">
                     <span class="ri-indeterminate-circle-line"></span>

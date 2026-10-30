@@ -122,7 +122,7 @@
                         <a href="#"
                            ng-click="onShowEndpointReport(endpoint)"
                            gdb-tooltip="{{'graphql.endpoints_management.table.actions.view_report.tooltip' | translate}}"
-                           class="endpoint-report-link btn btn-link">
+                           class="endpoint-report-link btn btn-link-only-icons">
                             <i ng-if="!endpoint.createdSuccessfully" class="ri-close-circle-line status-failed"></i>
                             <i ng-if="endpoint.createdSuccessfully" class="ri-checkbox-circle-line status-success"></i>
                         </a>
@@ -156,7 +156,7 @@
                     <td class="properties-count numeric">{{endpoint.propertiesCount}}</td>
                     <td class="endpoint-actions">
                         <div class="btn-group">
-                            <button class="btn btn-link secondary btn-sm open-endpoint-actions-btn"
+                            <button class="btn btn-link-only-icons tertiary btn-sm open-endpoint-actions-btn"
                                     data-toggle="dropdown" aria-expanded="false"
                                     ng-if="true"
                                     ng-disabled="false">

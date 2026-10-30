@@ -91,7 +91,7 @@
     border-right: 1px solid #eceeef;
 }
 
-.actions-cell .btn-link, .actions-cell .btn-link a {
+.actions-cell .btn-link, .actions-cell .btn-link a, .actions-cell .btn-link-only-icons {
     padding: 0.2em .2em;
 }
 

@@ -89,12 +89,12 @@
                                     <td class="index-cell">{{$index + 1}}</td>
                                     <td class="reorder-cell">
                                         <span ng-if="editedRuleIndex === undefined" class="reorder-actions-group">
-                                            <button ng-click="moveUp(activeTabScope, $index)" ng-if="$index > 0" class="btn btn-link move-up-btn"
+                                            <button ng-click="moveUp(activeTabScope, $index)" ng-if="$index > 0" class="btn btn-link-only-icons move-up-btn"
                                                     gdb-tooltip="{{'acl_management.rulestable.actions.move_up' | translate}}">
                                                 <em class="ri-arrow-up-s-fill"></em>
                                             </button>
                                             <button ng-click="moveDown(activeTabScope, $index)" ng-if="$index < rulesModel.getRulesByScope(activeTabScope).length - 1"
-                                                    class="btn btn-link move-down-btn"
+                                                    class="btn btn-link-only-icons move-down-btn"
                                                     gdb-tooltip="{{'acl_management.rulestable.actions.move_down' | translate}}">
                                                 <em class="ri-arrow-down-s-fill"></em>
                                             </button>
@@ -129,15 +129,15 @@
                                     <td class="context-cell data" ng-class="{'wildcard-cell': rule.context === '*', 'context-cell-special': !rule.context.startsWith('<') && rule.context !== '*'}">{{rule.context}}</td>
                                     <td class="actions-cell">
                                         <div ng-if="editedRuleIndex === undefined" class="crud-actions-group">
-                                            <button ng-click="editRule(activeTabScope, $index)" class="btn btn-link edit-rule-btn"
+                                            <button ng-click="editRule(activeTabScope, $index)" class="btn btn-link-only-icons edit-rule-btn"
                                                     gdb-tooltip="{{'acl_management.rulestable.actions.edit_rule' | translate}}">
                                                 <em class="ri-edit-line"></em>
                                             </button>
-                                            <button ng-click="addRule(activeTabScope, $index + 1)" class="btn btn-link add-rule-btn"
+                                            <button ng-click="addRule(activeTabScope, $index + 1)" class="btn btn-link-only-icons add-rule-btn"
                                                     gdb-tooltip="{{'acl_management.rulestable.actions.add_rule_next' | translate}}">
                                                 <em class="ri-add-circle-line"></em>
                                             </button>
-                                            <button ng-click="deleteRule(activeTabScope, $index)" class="btn btn-link delete-rule-btn secondary"
+                                            <button ng-click="deleteRule(activeTabScope, $index)" class="btn btn-link-only-icons delete-rule-btn tertiary"
                                                     gdb-tooltip="{{'acl_management.rulestable.actions.delete_rule' | translate}}">
                                                 <em class="ri-delete-bin-6-line"></em>
                                             </button>
@@ -254,12 +254,12 @@
                                     <td class="actions-cell">
                                         <div class="crud-actions-group">
                                             <button ng-click="cancelEditing(activeTabScope, $index)"
-                                                    class="btn btn-link cancel-rule-editing-btn secondary"
+                                                    class="btn btn-link-only-icons cancel-rule-editing-btn tertiary"
                                                     gdb-tooltip="{{'acl_management.rulestable.actions.cancel_rule_editing' | translate}}">
                                                 <em class="ri-close-line"></em>
                                             </button>
                                             <button ng-click="saveRule(activeTabScope)"
-                                                    class="btn btn-link save-rule-btn"
+                                                    class="btn btn-link-only-icons save-rule-btn"
                                                     ng-disabled="!ruleData.$valid"
                                                     gdb-tooltip="{{ruleData.$valid ? 'acl_management.rulestable.actions.apply_rule' : 'acl_management.rulestable.messages.invalid_form' | translate}}">
                                                 <em class="ri-checkbox-circle-line"></em>
@@ -306,12 +306,12 @@
                                     <td class="index-cell">{{$index + 1}}</td>
                                     <td class="reorder-cell">
                                         <span ng-if="editedRuleIndex === undefined" class="reorder-actions-group">
-                                            <button ng-click="moveUp(activeTabScope, $index)" ng-if="$index > 0" class="btn btn-link move-up-btn"
+                                            <button ng-click="moveUp(activeTabScope, $index)" ng-if="$index > 0" class="btn btn-link-only-icons move-up-btn"
                                                     gdb-tooltip="{{'acl_management.rulestable.actions.move_up' | translate}}">
                                                 <em class="ri-arrow-up-s-fill"></em>
                                             </button>
                                             <button ng-click="moveDown(activeTabScope, $index)" ng-if="$index < rulesModel.size(activeTabScope) - 1"
-                                                    class="btn btn-link move-down-btn"
+                                                    class="btn btn-link-only-icons move-down-btn"
                                                     gdb-tooltip="{{'acl_management.rulestable.actions.move_down' | translate}}">
                                                 <em class="ri-arrow-down-s-fill"></em>
                                             </button>
@@ -339,15 +339,15 @@
                                     <td class="empty-cell"></td>
                                     <td class="actions-cell">
                                         <div ng-if="editedRuleIndex === undefined" class="crud-actions-group">
-                                            <button ng-click="editRule(activeTabScope, $index)" class="btn btn-link edit-rule-btn"
+                                            <button ng-click="editRule(activeTabScope, $index)" class="btn btn-link-only-icons edit-rule-btn"
                                                     gdb-tooltip="{{'acl_management.rulestable.actions.edit_rule' | translate}}">
                                                 <em class="ri-edit-line"></em>
                                             </button>
-                                            <button ng-click="addRule(activeTabScope, $index + 1)" class="btn btn-link add-rule-btn"
+                                            <button ng-click="addRule(activeTabScope, $index + 1)" class="btn btn-link-only-icons add-rule-btn"
                                                     gdb-tooltip="{{'acl_management.rulestable.actions.add_rule_next' | translate}}">
                                                 <em class="ri-add-circle-line"></em>
                                             </button>
-                                            <button ng-click="deleteRule(activeTabScope, $index)" class="btn btn-link delete-rule-btn secondary"
+                                            <button ng-click="deleteRule(activeTabScope, $index)" class="btn btn-link-only-icons delete-rule-btn tertiary"
                                                     gdb-tooltip="{{'acl_management.rulestable.actions.delete_rule' | translate}}">
                                                 <em class="ri-delete-bin-6-line"></em>
                                             </button>
@@ -412,12 +412,12 @@
                                     <td class="actions-cell">
                                         <div class="crud-actions-group">
                                             <button ng-click="cancelEditing(activeTabScope, $index)"
-                                                    class="btn btn-link cancel-rule-editing-btn secondary"
+                                                    class="btn btn-link-only-icons cancel-rule-editing-btn tertiary"
                                                     gdb-tooltip="{{'acl_management.rulestable.actions.cancel_rule_editing' | translate}}">
                                                 <em class="ri-close-line"></em>
                                             </button>
                                             <button ng-click="saveRule(activeTabScope)"
-                                                    class="btn btn-link save-rule-btn"
+                                                    class="btn btn-link-only-icons save-rule-btn"
                                                     ng-disabled="!ruleData.$valid"
                                                     gdb-tooltip="{{ruleData.$valid ? 'acl_management.rulestable.actions.apply_rule' : 'acl_management.rulestable.messages.invalid_form' | translate}}">
                                                 <em class="ri-checkbox-circle-line"></em>
@@ -467,12 +467,12 @@
                                     <td class="index-cell">{{$index + 1}}</td>
                                     <td class="reorder-cell">
                                         <span ng-if="editedRuleIndex === undefined" class="reorder-actions-group">
-                                            <button ng-click="moveUp(activeTabScope, $index)" ng-if="$index > 0" class="btn btn-link move-up-btn"
+                                            <button ng-click="moveUp(activeTabScope, $index)" ng-if="$index > 0" class="btn btn-link-only-icons move-up-btn"
                                                     gdb-tooltip="{{'acl_management.rulestable.actions.move_up' | translate}}">
                                                 <em class="ri-arrow-up-s-fill"></em>
                                             </button>
                                             <button ng-click="moveDown(activeTabScope, $index)" ng-if="$index < rulesModel.size(activeTabScope) - 1"
-                                                    class="btn btn-link move-down-btn"
+                                                    class="btn btn-link-only-icons move-down-btn"
                                                     gdb-tooltip="{{'acl_management.rulestable.actions.move_down' | translate}}">
                                                 <em class="ri-arrow-down-s-fill"></em>
                                             </button>
@@ -506,15 +506,15 @@
                                     <td class="empty-cell"></td>
                                     <td class="actions-cell">
                                         <div ng-if="editedRuleIndex === undefined" class="crud-actions-group">
-                                            <button ng-click="editRule(activeTabScope, $index)" class="btn btn-link edit-rule-btn"
+                                            <button ng-click="editRule(activeTabScope, $index)" class="btn btn-link-only-icons edit-rule-btn"
                                                     gdb-tooltip="{{'acl_management.rulestable.actions.edit_rule' | translate}}">
                                                 <em class="ri-edit-line"></em>
                                             </button>
-                                            <button ng-click="addRule(activeTabScope, $index + 1)" class="btn btn-link add-rule-btn"
+                                            <button ng-click="addRule(activeTabScope, $index + 1)" class="btn btn-link-only-icons add-rule-btn"
                                                     gdb-tooltip="{{'acl_management.rulestable.actions.add_rule_next' | translate}}">
                                                 <em class="ri-add-circle-line"></em>
                                             </button>
-                                            <button ng-click="deleteRule(activeTabScope, $index)" class="btn btn-link delete-rule-btn secondary"
+                                            <button ng-click="deleteRule(activeTabScope, $index)" class="btn btn-link-only-icons delete-rule-btn tertiary"
                                                     gdb-tooltip="{{'acl_management.rulestable.actions.delete_rule' | translate}}">
                                                 <em class="ri-delete-bin-6-line"></em>
                                             </button>
@@ -583,12 +583,12 @@
                                     <td class="actions-cell">
                                         <div class="crud-actions-group">
                                             <button ng-click="cancelEditing(activeTabScope, $index)"
-                                                    class="btn btn-link cancel-rule-editing-btn secondary"
+                                                    class="btn btn-link-only-icons cancel-rule-editing-btn tertiary"
                                                     gdb-tooltip="{{'acl_management.rulestable.actions.cancel_rule_editing' | translate}}">
                                                 <em class="ri-close-line"></em>
                                             </button>
                                             <button ng-click="saveRule(activeTabScope)"
-                                                    class="btn btn-link save-rule-btn"
+                                                    class="btn btn-link-only-icons save-rule-btn"
                                                     ng-disabled="!ruleData.$valid"
                                                     gdb-tooltip="{{ruleData.$valid ? 'acl_management.rulestable.actions.apply_rule' : 'acl_management.rulestable.messages.invalid_form' | translate}}">
                                                 <em class="ri-checkbox-circle-line"></em>
@@ -635,12 +635,12 @@
                                     <td class="index-cell">{{$index + 1}}</td>
                                     <td class="reorder-cell">
                                         <span ng-if="editedRuleIndex === undefined" class="reorder-actions-group">
-                                            <button ng-click="moveUp(activeTabScope, $index)" ng-if="$index > 0" class="btn btn-link move-up-btn"
+                                            <button ng-click="moveUp(activeTabScope, $index)" ng-if="$index > 0" class="btn btn-link-only-icons move-up-btn"
                                                     gdb-tooltip="{{'acl_management.rulestable.actions.move_up' | translate}}">
                                                 <em class="ri-arrow-up-s-fill"></em>
                                             </button>
                                             <button ng-click="moveDown(activeTabScope, $index)" ng-if="$index < rulesModel.size(activeTabScope) - 1"
-                                                    class="btn btn-link move-down-btn"
+                                                    class="btn btn-link-only-icons move-down-btn"
                                                     gdb-tooltip="{{'acl_management.rulestable.actions.move_down' | translate}}">
                                                 <em class="ri-arrow-down-s-fill"></em>
                                             </button>
@@ -671,15 +671,15 @@
                                     <td class="empty-cell"></td>
                                     <td class="actions-cell">
                                         <div ng-if="editedRuleIndex === undefined" class="crud-actions-group">
-                                            <button ng-click="editRule(activeTabScope, $index)" class="btn btn-link edit-rule-btn"
+                                            <button ng-click="editRule(activeTabScope, $index)" class="btn btn-link-only-icons edit-rule-btn"
                                                     gdb-tooltip="{{'acl_management.rulestable.actions.edit_rule' | translate}}">
                                                 <em class="ri-edit-line"></em>
                                             </button>
-                                            <button ng-click="addRule(activeTabScope, $index + 1)" class="btn btn-link add-rule-btn"
+                                            <button ng-click="addRule(activeTabScope, $index + 1)" class="btn btn-link-only-icons add-rule-btn"
                                                     gdb-tooltip="{{'acl_management.rulestable.actions.add_rule_next' | translate}}">
                                                 <em class="ri-add-circle-line"></em>
                                             </button>
-                                            <button ng-click="deleteRule(activeTabScope, $index)" class="btn btn-link delete-rule-btn secondary"
+                                            <button ng-click="deleteRule(activeTabScope, $index)" class="btn btn-link-only-icons delete-rule-btn tertiary"
                                                     gdb-tooltip="{{'acl_management.rulestable.actions.delete_rule' | translate}}">
                                                 <em class="ri-delete-bin-6-line"></em>
                                             </button>
@@ -736,12 +736,12 @@
                                     <td class="actions-cell">
                                         <div class="crud-actions-group">
                                             <button ng-click="cancelEditing(activeTabScope, $index)"
-                                                    class="btn btn-link cancel-rule-editing-btn secondary"
+                                                    class="btn btn-link-only-icons cancel-rule-editing-btn tertiary"
                                                     gdb-tooltip="{{'acl_management.rulestable.actions.cancel_rule_editing' | translate}}">
                                                 <em class="ri-close-line"></em>
                                             </button>
                                             <button ng-click="saveRule(activeTabScope)"
-                                                    class="btn btn-link save-rule-btn"
+                                                    class="btn btn-link-only-icons save-rule-btn"
                                                     ng-disabled="!ruleData.$valid"
                                                     gdb-tooltip="{{ruleData.$valid ? 'acl_management.rulestable.actions.apply_rule' : 'acl_management.rulestable.messages.invalid_form' | translate}}">
                                                 <em class="ri-checkbox-circle-line"></em>

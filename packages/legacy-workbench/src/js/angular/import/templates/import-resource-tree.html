@@ -191,7 +191,7 @@
                     <import-resource-status-info class="btn btn-sm import"
                                                  ng-if="resource.hasStatusInfo"
                                                  resource="resource"></import-resource-status-info>
-                    <button role="button" class="btn btn-link btn-sm secondary import-resource-action-reset-btn"
+                    <button role="button" class="btn btn-link-only-icons btn-sm tertiary import-resource-action-reset-btn"
                             ng-click="resetStatus(resource)"
                             ng-if="resource.canResetStatus"
                             ng-disabled="hasSelection"
@@ -200,7 +200,7 @@
                         <span class="ri-close-line" aria-hidden="true"></span>
                     </button>
                     <button ng-if="canRemoveResource && resource.importResource.status !== ImportResourceStatus.UPLOADING && resource.importResource.status !== ImportResourceStatus.UPLOADED && resource.importResource.status !== ImportResourceStatus.UPLOAD_ERROR"
-                            class="btn btn-link btn-sm secondary import-resource-action-remove-btn"
+                            class="btn btn-link-only-icons btn-sm tertiary import-resource-action-remove-btn"
                             ng-disabled="hasSelection"
                             ng-click="removeResource(resource)"
                             gdb-tooltip="{{'import.remove.btn' | translate}}"
