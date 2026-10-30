@@ -218,6 +218,22 @@ describe('OpenidAuthProvider', () => {
       expect(window.singleSpa.navigateToUrl).not.toHaveBeenCalled();
     });
 
+    it('should navigate to the login page with the return URL when I am not logged in', async () => {
+      // Given I have logged out from the OpenID provider on a page
+      setupSecurityConfig(createOpenIdConfig());
+      openidStorageService.setReturnUrl('/sparql?name=q1');
+      // And I am not logged in after the provider redirected me back
+      jest.spyOn(openIdService, 'initializeOpenId').mockResolvedValue(false);
+
+      // When the OpenID authentication is initialized
+      await strategy.initialize();
+
+      // Then I expect to be navigated to the login page with that page as return url
+      expect(window.singleSpa.navigateToUrl).toHaveBeenCalledWith('http://localhost/login?r=%2Fsparql%3Fname%3Dq1');
+      // And the page to be cleared, so it is used only once
+      expect(openidStorageService.getReturnUrl().getValue()).toBeNull();
+    });
+
     it('should return false when loading authenticated user fails', async () => {
       const openidConfig = createOpenIdConfig();
       setupSecurityConfig(openidConfig);

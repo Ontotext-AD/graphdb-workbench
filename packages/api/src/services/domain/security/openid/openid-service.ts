@@ -16,7 +16,7 @@ import {Logout} from '../../../../models/events';
 import {OpenIdError} from '../errors/openid/openid-error';
 import {WindowService} from '../../../window';
 import {MissingOpenidConfiguration} from '../errors/openid/missing-openid-configuration';
-import {getOrigin} from '../../../utils';
+import {getLocationPathWithQueryParams, getOrigin} from '../../../utils';
 import {AuthFlowParams, OpenIdAuthFlowType, OpenIdTokens} from '../../../../models/security/authentication/openid-auth-flow-models';
 import {Notification, NotificationParam} from '../../../../models/notification';
 import {notify} from '../../../notification';
@@ -287,12 +287,15 @@ export class OpenIdService implements Service {
 
   /**
    * Performs hard logout and redirects to provider's logout endpoint.
+   * The current page is stored, so that the user can return to it after the next login.
    * @param {string} redirectUrl - Redirect URI after logout
    */
   private hardLogout(redirectUrl: string): void {
     // Read the ID token before softLogout() clears it, it is sent as id_token_hint.
     const idToken = this.openidStorageService.getIdToken().getValue();
     this.softLogout();
+    // The provider redirects back to the base URL, which is the only registered post logout redirect URI.
+    this.openidStorageService.setReturnUrl(getLocationPathWithQueryParams());
     const logoutUrl = this.getLogoutUrl(redirectUrl, idToken);
     this.redirectToUrl(logoutUrl);
   }

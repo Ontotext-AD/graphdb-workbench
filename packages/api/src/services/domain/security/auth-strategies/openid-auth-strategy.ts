@@ -2,7 +2,7 @@ import {service} from '../../../../providers';
 import {AuthenticationService, AuthenticationStorageService, OpenidStorageService, SecurityContextService, SecurityService} from '../index';
 import {LoggerProvider} from '../../../logging/logger-provider';
 import {OpenIdService} from '../openid/openid-service';
-import {navigate} from '../../../utils';
+import {navigate, navigateToLoginPage} from '../../../utils';
 import {AuthStrategy, AuthStrategyType, OpenIdAuthFlowType} from '../../../../models/security/authentication';
 import {OpenidTokenUtils} from '../openid/openid-token-utils';
 import {OpenIdUtils} from '../openid/openid-utils';
@@ -71,6 +71,10 @@ export class OpenidAuthStrategy implements AuthStrategy {
 
       if (isLoggedIn && returnToUrl) {
         navigate(returnToUrl);
+      } else if (returnToUrl) {
+        // After a logout from the OpenID provider, the provider redirects back to the base URL. The login page gets the
+        // page the user logged out from, so that the user returns to it after the next login.
+        navigateToLoginPage(returnToUrl);
       }
       return isLoggedIn;
     } catch (error) {

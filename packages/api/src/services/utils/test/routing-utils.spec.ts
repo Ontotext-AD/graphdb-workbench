@@ -102,6 +102,18 @@ describe('Routing Util Functions', () => {
 
       expect(WindowService.navigateSingleSpa).toHaveBeenCalledWith('http://localhost/login?r=%2F');
     });
+
+    it('should add the given page as return url instead of the current page', () => {
+      // Given I am on the home page under a context path
+      jest.spyOn(WindowService, 'getBaseHref').mockReturnValue('/graphdb/');
+      jest.spyOn(WindowService, 'getLocationPathname').mockReturnValue('/graphdb/');
+
+      // When I navigate to the login page with another page as return url
+      navigateToLoginPage('/sparql?name=q1');
+
+      // Then I expect the given page to be the return url
+      expect(WindowService.navigateSingleSpa).toHaveBeenCalledWith('http://localhost/graphdb/login?r=%2Fsparql%3Fname%3Dq1');
+    });
   });
 
   describe('navigateToLoginPage return url round trip', () => {
