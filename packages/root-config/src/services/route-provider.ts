@@ -45,6 +45,16 @@ export class RouteProvider {
           name: 'class',
           value: 'page-content',
         },
+        {
+          // The target of the skip link in onto-layout.
+          name: 'id',
+          value: 'main-content',
+        },
+        {
+          // Lets the skip link move the focus to the main content.
+          name: 'tabindex',
+          value: '-1',
+        },
       ],
       routes: [],
     };
