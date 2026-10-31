@@ -1,5 +1,4 @@
 import {OperationsNotificationSteps} from "../../steps/operations-notification/operations-notification.steps";
-import {HeaderSteps} from "../../steps/header/header-steps";
 
 const assertGroupCount = (index, textValue) => {
   OperationsNotificationSteps.getHeaderGroups()

@@ -2,6 +2,8 @@ import {Component, h, Prop, State, Element, Listen} from '@stencil/core';
 import {
   AuthenticatedUser,
   AuthenticationService,
+  EventService,
+  Logout,
   navigate,
   SecurityConfig,
   service
@@ -17,6 +19,7 @@ import {
 })
 export class OntoUserMenu {
   private readonly authenticationService = service(AuthenticationService);
+  private readonly eventService = service(EventService);
   /** Whether the dropdown menu is open or closed */
   @State() private isOpen: boolean;
 
@@ -81,7 +84,7 @@ export class OntoUserMenu {
   */
   private readonly logout = (): void => {
     this.isOpen = false;
-    this.authenticationService.logout();
+    void this.eventService.emit(new Logout());
   };
 
   /**
