@@ -10,10 +10,12 @@ import {
   AuthorizationService,
   EventName,
   EventService,
+  getOrigin,
   LocalStorageSubscriptionHandlerService,
   navigate,
   NavigationContextService,
   NavigationEndPayload,
+  NavigationStartPayload,
   RuntimeConfigurationContextService,
   SecurityConfig,
   SecurityContextService,
@@ -77,6 +79,14 @@ export class OntoLayout {
   private readonly subscriptions: SubscriptionList = new SubscriptionList();
   private readonly windowResizeObserver: () => void;
   private isNavbarCollapsed = false;
+  /**
+   * The main content is hidden while loading and cannot keep the focus, so it is focused after the loading ends.
+   */
+  private shouldFocusMainContentAfterLoading = false;
+  /**
+   * Whether the ongoing navigation changes the page. Query and hash changes keep the page, so the loader is not shown.
+   */
+  private isPageChanging = false;
 
   // ========================
   // Lifecycle methods
@@ -92,6 +102,13 @@ export class OntoLayout {
 
   componentDidRender() {
     this.windowResizeHandler();
+    if (this.shouldFocusMainContentAfterLoading && !this.loading) {
+      this.shouldFocusMainContentAfterLoading = false;
+      // The new page or the user may have moved the focus while loading.
+      if (this.isFocusLostOrInMainContent()) {
+        this.focusMainContent();
+      }
+    }
   }
 
   connectedCallback() {
@@ -99,6 +116,7 @@ export class OntoLayout {
     this.updateVisibility();
     this.subscribeToNavigationEnd();
     this.subscribeToRuntimeConfigurationChanges();
+    this.subscribeToNavigationStart();
     this.subscribeToBeforeMountRouting();
   }
 
@@ -186,8 +204,12 @@ export class OntoLayout {
   private readonly onSkipLinkClick = (event: MouseEvent) => {
     // Keep the hash out of the URL, single-spa would treat it as a route change.
     event.preventDefault();
-    document.getElementById(MAIN_CONTENT_ID)?.focus();
+    this.focusMainContent();
   };
+
+  private focusMainContent(): void {
+    document.getElementById(MAIN_CONTENT_ID)?.focus();
+  }
 
   private windowResizeHandler(): void {
     this.isLowResolution = WindowService.getWindow().innerWidth <= WINDOW_WIDTH_FOR_COLLAPSED_NAVBAR;
@@ -347,6 +369,7 @@ export class OntoLayout {
     this.subscriptions.add(
       this.eventService.subscribe(EventName.NAVIGATION_END, (navigationEndPayload: NavigationEndPayload) => {
         this.navigationContextService.updatePreviousRoute(navigationEndPayload.oldUrl);
+        this.focusMainContentOnPageChange(navigationEndPayload);
         // NAVIGATION_END appears to happen in the same tick as BeforeMountRouting, so the loader never gets shown
         setTimeout(() => {
           this.loading = false;
@@ -354,10 +377,55 @@ export class OntoLayout {
       }));
   }
 
+  /**
+   * Moves the focus to the main content after an in-app page change, when the focus was in the old page content or
+   * already lost to the body, so that it does not fall back to the body.
+   *
+   * @param navigationEndPayload - The old and the new URL of the navigation.
+   */
+  private focusMainContentOnPageChange({oldUrl, newUrl}: NavigationEndPayload): void {
+    if (!oldUrl || this.isSamePage(oldUrl, newUrl) || !this.isFocusLostOrInMainContent()) {
+      // The initial load, a query or hash change, or the focus is outside the main content, e.g. in the navbar.
+      return;
+    }
+    if (this.loading) {
+      this.shouldFocusMainContentAfterLoading = true;
+    } else {
+      this.focusMainContent();
+    }
+  }
+
+  /**
+   * Whether both URLs point to the same page. Query and hash changes, e.g. the repositoryId param added after a page
+   * change, do not change the page.
+   */
+  private isSamePage(oldUrl: string, newUrl: string): boolean {
+    return new URL(oldUrl, getOrigin()).pathname === new URL(newUrl, getOrigin()).pathname;
+  }
+
+  /**
+   * Whether the focus is lost to the body or is in the main content.
+   */
+  private isFocusLostOrInMainContent(): boolean {
+    const activeElement = document.activeElement;
+    return !activeElement || activeElement === document.body
+      || !!document.getElementById(MAIN_CONTENT_ID)?.contains(activeElement);
+  }
+
+  private subscribeToNavigationStart() {
+    this.subscriptions.add(
+      this.eventService.subscribe(EventName.NAVIGATION_START, ({oldUrl, newUrl}: NavigationStartPayload) => {
+        this.isPageChanging = !oldUrl || !newUrl || !this.isSamePage(oldUrl, newUrl);
+      }));
+  }
+
   private subscribeToBeforeMountRouting() {
     this.subscriptions.add(
       this.eventService.subscribe(EventName.BEFORE_MOUNT_ROUTING_EVENT, () => {
-        this.loading = true;
+        // Hiding the main content on a query or hash change only flashes the loader and drops the focus.
+        if (this.isPageChanging) {
+          this.loading = true;
+        }
       }));
   }
 }
