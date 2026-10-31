@@ -12,7 +12,7 @@ before opening the diff.
 |---|---|---|
 | Branch | `GDB-XXXXX-short-description` | `GDB-15269-repositories-page-accessible-names` |
 | PR title | `GDB-XXXXX: Short description` | `GDB-15269: Add accessible names on the Repositories page` |
-| Commit subject | same as the PR title | |
+| Commit subject | same as the PR title, see [Commits](commits.md) | |
 
 ## Sections
 
