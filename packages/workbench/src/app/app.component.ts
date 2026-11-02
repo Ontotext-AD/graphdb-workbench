@@ -9,6 +9,7 @@ import {
   EventService,
   getCurrentRoute,
   GuideApi,
+  LifecycleState,
   Repository,
   RepositoryContextService,
   RestrictionContextService,
@@ -40,10 +41,12 @@ export class AppComponent implements OnInit, OnDestroy {
   private readonly notificationProviderService = inject(NotificationProviderService);
 
   private isFirstRepoChangeEvent = true;
+  private isRepositorySyncPending = false;
 
   ngOnInit(): void {
     this.subscribeToRoutingEvents();
     this.subscribeToRepositoryChanges();
+    this.subscribeToApplicationDataState();
     this.subscribeToApplicationsStateBeforeChange();
     this.subscribeToNavigationEndEvent();
   }
@@ -89,8 +92,34 @@ export class AppComponent implements OnInit, OnDestroy {
         );
         void this.router.navigate([getCurrentRoute()], {queryParams})
           .then(() => {
-            this.repositoryUrlSyncService.syncRepositoryIdWithUrl();
+            this.syncRepositoryIdWhenDataIsLoaded();
           });
+      })
+    );
+  }
+
+  /**
+   * Syncs the repository id with the URL, or defers the sync until the application data is loaded. After a login
+   * from the login page, the navigation ends while the repositories are still loading.
+   */
+  private syncRepositoryIdWhenDataIsLoaded(): void {
+    if (this.appLifecyleService.getApplicationDataState() === LifecycleState.DATA_LOADED) {
+      this.repositoryUrlSyncService.syncRepositoryIdWithUrl();
+    } else {
+      this.isRepositorySyncPending = true;
+    }
+  }
+
+  /**
+   * Runs the repository sync deferred by {@link syncRepositoryIdWhenDataIsLoaded} once the application data is loaded.
+   */
+  private subscribeToApplicationDataState(): void {
+    this.subscriptions.add(
+      this.appLifecyleService.onApplicationDataStateChanged((state) => {
+        if (state === LifecycleState.DATA_LOADED && this.isRepositorySyncPending) {
+          this.isRepositorySyncPending = false;
+          this.repositoryUrlSyncService.syncRepositoryIdWithUrl();
+        }
       })
     );
   }
