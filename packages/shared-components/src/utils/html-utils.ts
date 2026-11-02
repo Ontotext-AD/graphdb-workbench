@@ -22,3 +22,13 @@ export function escapeHtml(text: string): string {
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
 }
+
+/**
+ * Checks whether the focus is lost to the body.
+ *
+ * @returns True if the focus is lost to the body, false otherwise.
+ */
+export function isFocusLost(): boolean {
+  const activeElement = document.activeElement;
+  return !activeElement || activeElement === document.body;
+}

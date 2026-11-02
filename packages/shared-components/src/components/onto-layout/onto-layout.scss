@@ -44,7 +44,7 @@
   main {
     grid-area: main;
 
-    // The main content is focused only by the skip link, the focus ring around the whole page is not needed.
+    // The main content is focused by the skip link and after a page change, the focus ring around the whole page is not needed.
     &:focus {
       outline: none;
     }
