@@ -107,6 +107,14 @@ export function getOrigin(): string {
 }
 
 /**
+ * Whether both URLs point to the same page, excluding query and hash changes.
+ * The URLs are resolved against the current origin to handle relative URLs.
+ */
+export function isSamePage(oldUrl: string, newUrl: string): boolean {
+  return new URL(oldUrl, getOrigin()).pathname === new URL(newUrl, getOrigin()).pathname;
+}
+
+/**
  * Returns the context name (base href) from the `<base>` tag in the document.
  *
  * This is usually the base path under which the app is deployed, e.g. '/graphdb/'.
