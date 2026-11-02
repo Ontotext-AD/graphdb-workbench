@@ -30,5 +30,8 @@ module.exports = (config, options) => {
   // singleSpaWebpackConfig.devServer.client.overlay = false;
   // singleSpaWebpackConfig.devServer.liveReload = false;
 
+  // Angular's SourceMapDevToolPlugin already emits source maps; a second devtool makes them conflict.
+  singleSpaWebpackConfig.devtool = false;
+
   return singleSpaWebpackConfig;
 };
