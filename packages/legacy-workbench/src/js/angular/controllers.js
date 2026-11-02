@@ -739,6 +739,14 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         return $location.url().startsWith('/login');
     };
 
+    /**
+     * The login page is open to users without access, but also to free access users and to externally authenticated
+     * users (e.g. Kerberos), who can log in as another user from there. Only for the first ones the url is left alone.
+     */
+    const isLoginPageWithoutAccess = () => {
+        return isLoginPage() && !authenticationService.isLoggedIn() && !authorizationService.hasFreeAccess();
+    };
+
     const setYears = function() {
         const date = new Date();
         $scope.currentYear = date.getFullYear();
@@ -928,7 +936,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
             // On repository change, update the url param accordingly, but
             // avoid infinite loop by checking if the param is already set to the desired value.
             // And skip the first event which is triggered on bootstrap.
-            if (repository) {
+            if (repository && !isLoginPageWithoutAccess()) {
                 const searchParams = new URLSearchParams(WindowService.getLocationQueryParams());
                 const urlRepositoryParam = searchParams.get(REPOSITORY_ID_PARAM);
                 if (urlRepositoryParam !== repository.id) {
@@ -939,6 +947,34 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         isFirstRepoChangeEvent = false;
         // Notify the $repositories service about the repository change so it can update its state
         $repositories.onRepositorySet(repository);
+    };
+
+    /**
+     * Resolves the repository from the URL when no repository is selected (cases 1-3 of onRouteChangeStart).
+     *
+     * @param {string} repositoryIdParam - The repository id from the URL, if any.
+     * @param {boolean} repositoryExists - Whether the repository from the URL exists.
+     */
+    const resolveRepositoryWithoutSelection = (repositoryIdParam, repositoryExists) => {
+        // 1. active repo no, repo in url no -> no action - just show repo selector
+        if (!repositoryIdParam) {
+            return;
+        }
+
+        // 2. active repo no, repo in url yes, url repo exists -> set active repo same as the url
+        if (repositoryExists) {
+            repositoryContextService.updateSelectedRepository({
+                id: repositoryIdParam,
+                location: '',
+            });
+            return;
+        }
+
+        // 3. active repo no, repo in url yes, url repo missing -> show warning, keep url
+        ModalService.openModalAlert({
+            title: $translate.instant('common.warning'),
+            message: $translate.instant('repository.url_param.invalid_repo', {repositoryId: repositoryIdParam}),
+        }).result;
     };
 
     // 1. active repo no, repo in url no -> no action - just show repo selector
@@ -959,29 +995,14 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         const isSameRepository = !!selectedRepository && repositoryIdParam === selectedRepository.id;
 
         try {
+            // --- if on login page without access, do nothing
+            if (isLoginPageWithoutAccess()) {
+                return;
+            }
             // --- no selected repository ---
 
             if (!selectedRepository) {
-                // 1. active repo no, repo in url no -> no action - just show repo selector
-                if (!repositoryIdParam) {
-                    return;
-                }
-
-                // 2. active repo no, repo in url yes, url repo exists -> set active repo same as the url
-                if (repositoryExists) {
-                    repositoryContextService.updateSelectedRepository({
-                        id: repositoryIdParam,
-                        location: '',
-                    });
-                    return;
-                }
-
-                // 3. active repo no, repo in url yes, url repo missing -> show warning, keep url
-                ModalService.openModalAlert({
-                    title: $translate.instant('common.warning'),
-                    message: $translate.instant('repository.url_param.invalid_repo', {repositoryId: repositoryIdParam}),
-                }).result;
-
+                resolveRepositoryWithoutSelection(repositoryIdParam, repositoryExists);
                 return;
             }
 
