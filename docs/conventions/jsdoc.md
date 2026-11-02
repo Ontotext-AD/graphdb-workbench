@@ -4,11 +4,11 @@ JSDoc is reference text, not prose. A reader skims the first line and stops.
 
 ## Contents
 
-- [Form](#form): multiline vs. single-line comments; `@param`, `@returns`, `@throws`.
+- [Form](#form): what gets a doc comment; multiline vs. single-line comments; `@param`, `@returns`, `@throws`.
 - [Length](#length): one opening sentence and the line budgets.
 - [Content](#content): document the contract and the why, not the how; say each thing once.
 - [Tone](#tone): the literary habits to avoid.
-- [Example](#example): a class, a field, and a method documented by these rules.
+- [Example](#example): a class, a field, and two private methods, one documented and one not.
 
 ## Form
 
@@ -17,8 +17,11 @@ JSDoc is reference text, not prose. A reader skims the first line and stops.
   formatting only — it is not licence to write more.
 - Every exported class and interface, and every public method and property, gets a doc comment — in every
   package, legacy included for new and changed members.
+- Private and protected members get a doc comment only when the name and signature don't already say
+  what they do: a non-obvious contract, a side effect, or a why. A comment that restates the name is
+  noise; leave it out.
 - Single-line `/** ... */` is fine for fields, properties and enum members.
-- Always document every parameter with `@param`, every return value with
+- In a doc comment, always document every parameter with `@param`, every return value with
   `@returns`, and every thrown error with `@throws`. Keep each to one line where
   the name and type already carry the meaning; add the constraint, the unit, or
   the empty/`null` case when there is one.
@@ -86,5 +89,12 @@ export class ProjectsCatalogPage {
   private matching(filter: string): Project[] {
     return this.projects().filter((project) => project.matches(filter));
   }
+
+  private hasProjects(): boolean {
+    return this.projects().length > 0;
+  }
 }
 ```
+
+`matching` is private but documented: its name doesn't say that the match is case-insensitive or that
+an empty filter returns everything. `hasProjects` says it all in its name, so it has no comment.
