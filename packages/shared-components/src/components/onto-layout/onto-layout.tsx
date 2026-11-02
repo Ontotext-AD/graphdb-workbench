@@ -28,6 +28,8 @@ import {
 } from '@ontotext/workbench-api';
 import {TranslationService} from '../../services/translation.service';
 
+const MAIN_CONTENT_ID = 'main-content';
+
 @Component({
   tag: 'onto-layout',
   styleUrl: 'onto-layout.scss',
@@ -116,6 +118,11 @@ export class OntoLayout {
         'hide-navbar': !this.showNavbar,
         'loading': this.loading
       }}>
+        {!this.isEmbedded && this.showNavbar &&
+          <a class="skip-link" href={`#${MAIN_CONTENT_ID}`} onClick={this.onSkipLinkClick}>
+            <translate-label labelKey={'layout.skip_to_main_content'}></translate-label>
+          </a>
+        }
         {/* Default slot is explicitly defined to be able to hide the main content in the user permission check */}
         <div class="default-slot-wrapper">
           <slot name="default"></slot>
@@ -176,15 +183,21 @@ export class OntoLayout {
   // ========================
   // Handlers
   // ========================
+  private readonly onSkipLinkClick = (event: MouseEvent) => {
+    // Keep the hash out of the URL, single-spa would treat it as a route change.
+    event.preventDefault();
+    document.getElementById(MAIN_CONTENT_ID)?.focus();
+  };
+
   private windowResizeHandler(): void {
     this.isLowResolution = WindowService.getWindow().innerWidth <= WINDOW_WIDTH_FOR_COLLAPSED_NAVBAR;
     const navbar = document.querySelector<HTMLElement>('.navbar-component');
+    const headerHeight = document.querySelector('.wb-header')?.getBoundingClientRect()?.height ?? 0;
+    // Used by the global styles to keep the focused element from being scrolled under the sticky header.
+    document.documentElement.style.setProperty('--wb-header-height', `${headerHeight}px`);
 
     if (navbar) {
       const cookieBanner = document.querySelector('.cookie-consent-banner');
-      const header = document.querySelector('.wb-header');
-
-      const headerHeight = header?.getBoundingClientRect()?.height ?? 0;
       const bannerHeight = cookieBanner?.getBoundingClientRect()?.height ?? 0;
 
       navbar.style.height = `calc(100% - ${headerHeight}px - ${bannerHeight}px)`;
