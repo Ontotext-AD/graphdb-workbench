@@ -26,7 +26,8 @@ import {
   MainMenuPlugin,
   MainMenuItem,
   MainMenuExtensionPoint,
-  navigateToLoginPage
+  navigateToLoginPage,
+  isLoginPage
 } from '@ontotext/workbench-api';
 import {TranslationService} from '../../services/translation.service';
 import {isFocusLost} from '../../utils/html-utils';
@@ -249,7 +250,7 @@ export class OntoLayout {
       const authenticated = this.authStorageService.isAuthenticated();
       if (authenticated) {
         navigate(this.navigationContextService.getPreviousRoute() ?? './');
-      } else {
+      } else if (!isLoginPage()) {
         navigateToLoginPage();
       }
       WindowService.getWindow().location.reload();
