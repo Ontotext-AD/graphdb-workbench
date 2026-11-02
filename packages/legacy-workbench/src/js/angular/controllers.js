@@ -949,6 +949,34 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
         $repositories.onRepositorySet(repository);
     };
 
+    /**
+     * Resolves the repository from the URL when no repository is selected (cases 1-3 of onRouteChangeStart).
+     *
+     * @param {string} repositoryIdParam - The repository id from the URL, if any.
+     * @param {boolean} repositoryExists - Whether the repository from the URL exists.
+     */
+    const resolveRepositoryWithoutSelection = (repositoryIdParam, repositoryExists) => {
+        // 1. active repo no, repo in url no -> no action - just show repo selector
+        if (!repositoryIdParam) {
+            return;
+        }
+
+        // 2. active repo no, repo in url yes, url repo exists -> set active repo same as the url
+        if (repositoryExists) {
+            repositoryContextService.updateSelectedRepository({
+                id: repositoryIdParam,
+                location: '',
+            });
+            return;
+        }
+
+        // 3. active repo no, repo in url yes, url repo missing -> show warning, keep url
+        ModalService.openModalAlert({
+            title: $translate.instant('common.warning'),
+            message: $translate.instant('repository.url_param.invalid_repo', {repositoryId: repositoryIdParam}),
+        }).result;
+    };
+
     // 1. active repo no, repo in url no -> no action - just show repo selector
     // 2. active repo no, repo in url yes, url repo exists -> set active repo same as the url
     // 3. active repo no, repo in url yes, url repo missing -> show warning, keep url
@@ -974,26 +1002,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, $location, $repositories,
             // --- no selected repository ---
 
             if (!selectedRepository) {
-                // 1. active repo no, repo in url no -> no action - just show repo selector
-                if (!repositoryIdParam) {
-                    return;
-                }
-
-                // 2. active repo no, repo in url yes, url repo exists -> set active repo same as the url
-                if (repositoryExists) {
-                    repositoryContextService.updateSelectedRepository({
-                        id: repositoryIdParam,
-                        location: '',
-                    });
-                    return;
-                }
-
-                // 3. active repo no, repo in url yes, url repo missing -> show warning, keep url
-                ModalService.openModalAlert({
-                    title: $translate.instant('common.warning'),
-                    message: $translate.instant('repository.url_param.invalid_repo', {repositoryId: repositoryIdParam}),
-                }).result;
-
+                resolveRepositoryWithoutSelection(repositoryIdParam, repositoryExists);
                 return;
             }
 
