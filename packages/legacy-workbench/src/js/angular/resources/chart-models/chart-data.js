@@ -69,6 +69,30 @@ export class ChartData {
         this.chartSetup(this.chartOptions);
     }
 
+    /**
+     * Rebuilds the chart options and the series with the colors of the current theme. Keeps the collected data, the
+     * subtitle and the series selected in the legend.
+     */
+    refreshThemeColors() {
+        const title = this.chartOptions.title;
+        this.chartOptions = this.getDefaultChartOptions(this.translateService);
+        this.chartOptions.title.show = title.show;
+        this.chartOptions.title.text = title.text;
+        if (this.selectedSeries) {
+            this.chartOptions.legend.selected = this.selectedSeries;
+        }
+
+        const dataHolder = this.createDataHolder();
+        dataHolder.forEach((series, index) => {
+            series.data = this.dataHolder[index].data;
+        });
+        this.dataHolder = dataHolder;
+        this.chartOptions.series = dataHolder;
+
+        this.chartSetup(this.chartOptions);
+        this.updateRange(this.dataHolder);
+    }
+
     refresh(dataOnly = false) {
         if (!dataOnly) {
             this.chartSetup(this.chartOptions);
@@ -171,8 +195,14 @@ export class ChartData {
     addNewData(dataHolder, timestamp, data, isFirstLoad) {
     }
 
+    /**
+     * Stores the series selected in the legend, so the selection is kept when the options are set again, e.g. after a
+     * theme change.
+     * @param selectedSeries the selection from the legend, with the series names as keys and whether each is shown
+     */
     setSelectedSeries(selectedSeries) {
         this.selectedSeries = selectedSeries;
+        this.chartOptions.legend.selected = selectedSeries;
     }
 
     /**
