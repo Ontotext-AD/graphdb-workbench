@@ -193,7 +193,7 @@ input::placeholder {
 .wildcard-cell {
     font-family: var(--mono-font);
     font-weight: bold !important;
-    color: rgba(0, 0, 0, 0.5) !important
+    color: var(--gw-foreground-on-surface-muted);
 }
 
 .subject-cell, .predicate-cell, .object-cell, .context-cell {
