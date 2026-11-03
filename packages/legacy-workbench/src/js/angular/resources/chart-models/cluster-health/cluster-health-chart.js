@@ -7,7 +7,10 @@ export class ClusterHealthChart extends ChartData {
     }
 
     createDataHolder() {
-        const [blue, orange, green, grey] = ClusterHealthChart.COLORS;
+        const inSyncColor = ChartData.cssVar('--gw-cluster-node-status-insync-background');
+        const syncingColor = ChartData.cssVar('--gw-cluster-node-status-syncing-background');
+        const outOfSyncColor = ChartData.cssVar('--gw-cluster-node-status-outofsync-background');
+        const disconnectedColor = ChartData.cssVar('--gw-cluster-node-status-disconnected-background');
         return [{
             name: this.translateService.instant('resources.cluster_health.in_sync'),
             type: 'line',
@@ -16,24 +19,23 @@ export class ClusterHealthChart extends ChartData {
             step: 'middle',
             areaStyle: {},
             lineStyle: {
-                width: 0
+                width: 0,
             },
-            color: blue,
-            data: []
-        },{
+            color: inSyncColor,
+            data: [],
+        }, {
             name: this.translateService.instant('resources.cluster_health.syncing'),
             type: 'line',
             stack: 'nodes',
             showSymbol: false,
             step: 'middle',
-
             areaStyle: {},
             lineStyle: {
-                width: 0
+                width: 0,
             },
-            color: green,
-            data: []
-        },{
+            color: syncingColor,
+            data: [],
+        }, {
             name: this.translateService.instant('resources.cluster_health.out_sync'),
             type: 'line',
             stack: 'nodes',
@@ -41,11 +43,11 @@ export class ClusterHealthChart extends ChartData {
             step: 'middle',
             areaStyle: {},
             lineStyle: {
-                width: 0
+                width: 0,
             },
-            color: orange,
-            data: []
-        },{
+            color: outOfSyncColor,
+            data: [],
+        }, {
             name: this.translateService.instant('resources.cluster_health.disconnected'),
             type: 'line',
             stack: 'nodes',
@@ -53,10 +55,10 @@ export class ClusterHealthChart extends ChartData {
             step: 'middle',
             areaStyle: {},
             lineStyle: {
-                width: 0
+                width: 0,
             },
-            color: grey,
-            data: []
+            color: disconnectedColor,
+            data: [],
         }];
     }
     addNewData(dataHolder, timestamp, data) {
@@ -71,33 +73,33 @@ export class ClusterHealthChart extends ChartData {
             nodesSyncing: nodesStatus.nodesSyncing,
             term: data.term,
             failureRecoveriesCount: data.failureRecoveriesCount,
-            failedTransactionsCount: data.failedTransactionsCount
-        }
+            failedTransactionsCount: data.failedTransactionsCount,
+        };
 
         nodesInSync.data.push({
             value: [
                 timestamp,
-                nodesStatus.nodesInSync
-            ]
+                nodesStatus.nodesInSync,
+            ],
         });
         nodesOutOfSync.data.push({
             value: [
                 timestamp,
-                nodesStatus.nodesOutOfSync
-            ]
-        })
+                nodesStatus.nodesOutOfSync,
+            ],
+        });
         nodesDisconnected.data.push({
             value: [
                 timestamp,
-                nodesStatus.nodesDisconnected
-            ]
-        })
+                nodesStatus.nodesDisconnected,
+            ],
+        });
         nodesSyncing.data.push({
             value: [
                 timestamp,
-                nodesStatus.nodesSyncing
-            ]
-        })
+                nodesStatus.nodesSyncing,
+            ],
+        });
 
         this.configureSubtitle();
     }
@@ -119,13 +121,13 @@ export class ClusterHealthChart extends ChartData {
     configureSubtitle() {
         const subTitleKeyValues = [{
             label: this.translateService.instant('resource.cluster_health.leader_elections'),
-            value: this.latestData.term
+            value: this.latestData.term,
         }, {
             label: this.translateService.instant('resource.cluster_health.recoveries'),
-            value: this.latestData.failureRecoveriesCount
+            value: this.latestData.failureRecoveriesCount,
         }, {
             label: this.translateService.instant('resource.cluster_health.failed_transactions'),
-            value: this.latestData.failedTransactionsCount
+            value: this.latestData.failedTransactionsCount,
         }];
 
         this.setSubTitle(subTitleKeyValues);
