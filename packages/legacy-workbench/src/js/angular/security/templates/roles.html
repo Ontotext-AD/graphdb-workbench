@@ -5,8 +5,8 @@
 <div ng-show="getActiveRepository()">
     <table class="table table-striped" aria-labelledby="roles-mapping-title">
         <thead>
-        <th id="mappingsColumn"><strong>{{'security.mapping.header' | translate}}</strong></th>
-        <th ng-repeat="role in roles" id="rolesColumn">
+        <th id="mappingsColumn" class="label-base-regular"><strong>{{'security.mapping.header' | translate}}</strong></th>
+        <th ng-repeat="role in roles" id="rolesColumn" class="label-base-regular">
             <strong>{{role}}</strong>
         </th>
         </thead>

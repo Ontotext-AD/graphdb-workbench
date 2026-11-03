@@ -14,7 +14,7 @@
         <i class="ri-close-line" aria-hidden="true"></i>
     </button>
     <span ng-if="!radioButtons" class="input-group-btn">
-        <button ng-if="textButton !== ''" type="button" class="btn btn-primary autocomplete-text-btn" ng-click="checkIfValidAndSearchText()">
+        <button ng-if="textButton !== ''" type="button" class="btn btn-primary autocomplete-text-btn label-base-regular" ng-click="checkIfValidAndSearchText()">
             {{textButtonLabel | translate}}
         </button>
     </span>
@@ -24,21 +24,21 @@
         </button>
     </span>
     <span ng-if="radioButtons" class="input-group-btn">
-        <button class="btn btn-secondary display-type-table-btn"
+        <button class="btn btn-secondary display-type-table-btn label-base-regular"
                 ng-model="searchType"
                 uib-btn-radio="searchDisplayType.table"
                 data-test="display-table-button"
                 ng-click="changeSearchType(searchDisplayType.table)">
             {{textButtonLabel | translate}}
         </button>
-        <button class="btn btn-secondary display-type-visual-btn"
+        <button class="btn btn-secondary display-type-visual-btn label-base-regular"
                 ng-model="searchType"
                 uib-btn-radio="searchDisplayType.visual"
                 data-test="display-visual-button"
                 ng-click="changeSearchType(searchDisplayType.visual)">
             {{visualButtonLabel | translate}}
         </button>
-        <button class="btn btn-secondary display-type-graph-navigator-btn"
+        <button class="btn btn-secondary display-type-graph-navigator-btn label-base-regular"
                 ng-model="searchType"
                 uib-btn-radio="searchDisplayType.graphNavigator"
                 data-test="display-graph-navigator-button"

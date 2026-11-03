@@ -6,20 +6,19 @@
     <form name="form" id="connectorForm" ng-submit="ok()" novalidate>
 
         <div class="form-horizontal">
-
             <div class="form-group row">
-                <label class="col-xs-2 col-form-label">{{'name.simple.label' | translate}}<sup>*</sup></label>
+                <label class="col-xs-2 col-form-label label-base-regular" for="name">{{'name.simple.label' | translate}}<sup>*</sup></label>
                 <div class="col-xs-10 connector-name-field">
-                    <input type="text" class="form-control" placeholder="{{'connector.name' | translate}}" ng-model="name" required uib-popover="{{'connector.name.popover' | translate}}" popover-trigger="focus" popover-placement="bottom">
+                    <input id="name" type="text" class="form-control" placeholder="{{'connector.name' | translate}}" ng-model="name" required uib-popover="{{'connector.name.popover' | translate}}" popover-trigger="focus" popover-placement="bottom">
                 </div>
             </div>
 
             <div class="form-group row" ng-repeat="option in options" ng-hide="option.__hidden">
-                <label class="col-xs-2"
-                       ng-class="{'col-form-label': option.__type != 'Boolean', 'font-weight-bold':option.__required }">{{option.__label}}<sup ng-if="option.__required">*</sup></label>
+                <label class="col-xs-2 label-base-regular"
+                       ng-class="{'col-form-label': option.__type != 'Boolean', 'label-base-bold':option.__required, 'label-base-regular': !option.__required }">{{option.__label}}<sup ng-if="option.__required">*</sup></label>
                 <div class="col-xs-10">
                     <div ng-if="option.__type == 'Boolean'" class="form-check">
-                        <label class="form-check-label" uib-popover="{{option.__description}}" popover-trigger="mouseenter" popover-placement="bottom">
+                        <label class="form-check-label label-base-regular" uib-popover="{{option.__description}}" popover-trigger="mouseenter" popover-placement="bottom">
                             <input class="form-check-input" type="checkbox" ng-model="values[option.__name]">
                         </label>
                     </div>
@@ -56,7 +55,7 @@
                                 <fieldset class="mb-1 p-1">
                                     <div class="form-group row {{'child-property-' + child.__name}}" ng-repeat="child in option.__childOptions | filter: {__type: '!Boolean'}: true">
                                         <label class="col-xs-3"
-                                               ng-class="{'col-form-label': true, 'font-weight-bold':child.__required }">{{child.__label}}<sup ng-if="child.__required">*</sup></label>
+                                               ng-class="{'col-form-label': true, 'label-base-bold':child.__required, 'label-base-regular': !child.__required }">{{child.__label}}<sup ng-if="child.__required">*</sup></label>
                                         <div class="col-xs-9">
                                             <div ng-if="child.__type == 'String'">
                                                 <input ng-attr-type="{{child.__sensitive ? 'password' : 'text'}}" class="form-control" placeholder="{{child.__hint}}" ng-model="values[option.__name][fieldIndex][child.__name]" ng-required="child.__required" uib-popover="{{child.__description}}" popover-trigger="focus" popover-placement="bottom">
@@ -89,7 +88,7 @@
                                     <div class="form-group row">
                                         <div class="col-xs-3"></div>
                                         <div class="col-xs-9">
-                                            <label ng-repeat="child in option.__childOptions | filter: {__type: 'Boolean'}: true" class="mr-1"
+                                            <label ng-repeat="child in option.__childOptions | filter: {__type: 'Boolean'}: true" class="mr-1 label-base-regular"
                                                    uib-popover="{{boolean.__description}}" popover-trigger="mouseenter" popover-placement="bottom">
                                                 <input type="checkbox" ng-model="values[option.__name][fieldIndex][child.__name]"> {{child.__label}}
                                             </label>
@@ -111,7 +110,7 @@
                     </div>
                     <div ng-if="option.__type == 'Map'" ng-show="values[option.__name].length === 0">
                         <div class="col-form-label mb-1">
-                            <label><em>{{'no.sentence.beginning' | translate}} {{option.__label}} {{'added.label' | translate}}</em></label>
+                            <label class="label-base-regular"><em>{{'no.sentence.beginning' | translate}} {{option.__label}} {{'added.label' | translate}}</em></label>
                             <span class="btn-group-sm">
                             <button type="button" class="btn btn-link-only-icons" uib-popover="{{'common.add' | translate}} {{option.__label | singular}}" popover-trigger="mouseenter" popover-placement="bottom" ng-click="addMapOption($index, values[option.__name])">
                                 <em class="ri-add-circle-line"></em>
@@ -145,7 +144,7 @@
     </form>
 </div>
 <div class="modal-footer">
-        <button type="button" class="btn btn-link pull-left" ng-click="viewQuery()">{{'view.sparql.query' | translate}}</button>
-        <button type="button" class="btn btn-secondary" ng-click="cancel()">{{'common.cancel.btn' | translate}}</button>
-        <button type="submit" form="connectorForm" class="btn btn-primary create-connector-btn" ng-click="ok()">{{'common.ok.btn' | translate}}</button>
+        <button type="button" class="btn btn-link pull-left label-base-regular" ng-click="viewQuery()">{{'view.sparql.query' | translate}}</button>
+        <button type="button" class="btn btn-secondary label-base-regular" ng-click="cancel()">{{'common.cancel.btn' | translate}}</button>
+        <button type="submit" form="connectorForm" class="btn btn-primary create-connector-btn label-base-regular" ng-click="ok()">{{'common.ok.btn' | translate}}</button>
 </div>

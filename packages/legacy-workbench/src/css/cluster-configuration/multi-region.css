@@ -33,7 +33,6 @@
 
 .cluster-status-loader {
     color: var(--gw-foreground-on-surface-secondary);
-    font-size: 1.5rem;
 }
 
 .multi-region .tags-table {

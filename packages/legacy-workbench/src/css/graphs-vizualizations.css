@@ -35,7 +35,7 @@
 /* not used at the moment, see node-label-body */
 .node-labels {
     fill: #000;
-    font-weight: 300;
+    font-weight: var(--gw-body-base-light-font-weight);
 }
 
 .direction-arrow {
@@ -99,7 +99,7 @@
 }
 
 .predicates {
-    font-weight: 500;
+    font-weight: var(--gw-body-base-medium-font-weight);
 }
 
 .expand-button {
@@ -139,7 +139,7 @@
 }
 
 .node-label-body {
-    font-weight: 300;
+    font-weight: var(--gw-body-base-light-font-weight);
     word-break: break-all;
     text-align: center;
     height: 100%;

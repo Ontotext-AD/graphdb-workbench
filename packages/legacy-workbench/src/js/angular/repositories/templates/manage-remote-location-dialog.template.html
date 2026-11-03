@@ -5,7 +5,7 @@
 </div>
 <div class="modal-body">
     <form id="remoteLocationForm" novalidate name="remoteLocationForm">
-        <label class="remote-location-radio-list">
+        <label class="remote-location-radio-list label-base-regular">
             <input type="radio"
                    class="graph-db-instance"
                    ng-model="remoteLocation.locationType"
@@ -15,7 +15,7 @@
             {{'manage.remote.location.dialog.graph_db.location.instance' | translate}}
 
         </label>
-        <label class="padding-label remote-location-radio-list">
+        <label class="padding-label remote-location-radio-list label-base-regular">
             <input type="radio"
                    class="grap ontopic-instance"
                    ng-model="remoteLocation.locationType"
@@ -24,7 +24,7 @@
                    value="{{RemoteLocationType.ONTOPIC}}">
             {{'manage.remote.location.dialog.ontopic.location.instance' | translate}}
         </label>
-        <label class="padding-label remote-location-radio-list">
+        <label class="padding-label remote-location-radio-list label-base-regular">
             <input type="radio"
                    class="graph-sparql-instance"
                    ng-model="remoteLocation.locationType"
@@ -35,7 +35,7 @@
         </label>
 
         <div class="form-group row">
-            <label for="location" class="col-md-4 col-form-label">{{'manage.remote.location.dialog.required.url' | translate}}</label>
+            <label for="location" class="col-md-4 col-form-label label-base-regular">{{'manage.remote.location.dialog.required.url' | translate}}</label>
             <div class="col-md-8">
                 <input id="location" ng-model="remoteLocation.uri" required name="location" class="form-control"
                        placeholder="http://my-hostname:7200" ng-disabled="isEdit" validate-url/>
@@ -58,19 +58,19 @@
             </div>
         </div>
         <div class="form-group row" ng-if="remoteLocation.isGraphDBLocation()">
-            <label class="col-md-4 col-form-label">{{'manage.remote.location.dialog.auth_type.header' | translate}}</label>
+            <label class="col-md-4 col-form-label label-base-regular">{{'manage.remote.location.dialog.auth_type.header' | translate}}</label>
             <div class="col-md-8">
-                <label class="col-form-label" gdb-tooltip="{{'remote.location.no.auth.used.tooltip' | translate}}">
+                <label class="col-form-label label-base-regular" gdb-tooltip="{{'remote.location.no.auth.used.tooltip' | translate}}">
                     <input type="radio" name="authType" ng-model="remoteLocation.authType" value="{{RemoteLocationAuthType.NONE}}" class="none-authentication"/>
                     {{'manage.remote.location.dialog.auth_type.none' | translate}}
                 </label>
                 &nbsp;
-                <label class="col-form-label" gdb-tooltip="{{'basic.auth.type.tooltip' | translate}}. {{'basic.auth.type.admin.constraint.tooltip' | translate}}">
+                <label class="col-form-label label-base-regular" gdb-tooltip="{{'basic.auth.type.tooltip' | translate}}. {{'basic.auth.type.admin.constraint.tooltip' | translate}}">
                     <input type="radio" name="authType" ng-model="remoteLocation.authType" value="{{RemoteLocationAuthType.BASIC}}" class="basic-authentication"/>
                     {{'manage.remote.location.dialog.auth_type.basic' | translate}}
                 </label>
                 &nbsp;
-                <label class="col-form-label" gdb-tooltip="{{'signature.auth.type.tooltip' | translate}}">
+                <label class="col-form-label label-base-regular" gdb-tooltip="{{'signature.auth.type.tooltip' | translate}}">
                     <input type="radio" name="authType" ng-model="remoteLocation.authType" value="{{RemoteLocationAuthType.SIGNATURE}}" class="signature-authentication"/>
                     {{'manage.remote.location.dialog.auth_type.signature' | translate}}
                 </label>
@@ -101,7 +101,7 @@
                 </div>
             </div>
             <div class="form-group row">
-                <label for="username" class="col-md-4 col-form-label">
+                <label for="username" class="col-md-4 col-form-label label-base-regular">
                     {{ (remoteLocation.isGraphDBLocation() ? 'manage.remote.location.dialog.graph_db.username.required.message' :
                     remoteLocation.isSparqlLocation() ? 'manage.remote.location.dialog.sparql.username.required.message' :
                     'manage.remote.location.dialog.ontopic.username.required.message') | translate }}
@@ -115,7 +115,7 @@
                 </div>
             </div>
             <div class="form-group row">
-                <label for="password" class="col-md-4 col-form-label">
+                <label for="password" class="col-md-4 col-form-label label-base-regular">
                     {{ (remoteLocation.isGraphDBLocation() ? 'manage.remote.location.dialog.graph_db.password.required.message' :
                     remoteLocation.isSparqlLocation() ? 'manage.remote.location.dialog.sparql.password.required.message' :
                     'manage.remote.location.dialog.ontopic.password.required.message') | translate }}
@@ -141,10 +141,10 @@
     </form>
 </div>
 <div class="modal-footer">
-    <button type="button" ng-click="cancel();" class="btn btn-secondary cancel-attaching-location" data-dismiss="modal">
+    <button type="button" ng-click="cancel();" class="btn btn-secondary cancel-attaching-location label-base-regular" data-dismiss="modal">
         {{'common.cancel.btn' | translate}}
     </button>
-    <button type="submit" ng-click="ok();" class="btn btn-primary attach-location" form="remoteLocationForm"
+    <button type="submit" ng-click="ok();" class="btn btn-primary attach-location label-base-regular" form="remoteLocationForm"
             ng-disabled="remoteLocationForm.$pristine || remoteLocationForm.$invalid">
         <span ng-if="!isEdit" class="ri-add-circle-line"></span>
         {{(isEdit ? 'common.save.btn' : 'common.attach') | translate}}

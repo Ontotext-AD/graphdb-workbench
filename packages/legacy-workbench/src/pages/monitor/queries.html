@@ -4,7 +4,6 @@
 	<title>${messages.app.title} : ${messages.jmx.QueryMonitoringPage.title}</title>
 
 	<link href="css/jmx.css?v=[AIV]{version}[/AIV]" rel="stylesheet" />
-
 	<h1>
 		{{title}}
         <page-info-tooltip></page-info-tooltip>
@@ -26,7 +25,7 @@
 
 			<div ng-hide="loader || error">
 				<div class="pause-bar">
-					<button type="button" class="btn pull-right pause-btn" ng-click="togglePause()" data-test="pause-button" ng-class="paused ? 'btn-primary' : 'btn-secondary'"
+					<button type="button" class="btn pull-right pause-btn label-base-regular" ng-click="togglePause()" data-test="pause-button" ng-class="paused ? 'btn-primary' : 'btn-secondary'"
 							gdb-tooltip="{{paused ? 'monitoring.restart' : 'temp.pause' | translate}}"
 						tooltip-placement="left">
 						{{paused ? 'paused.btn' : 'pause.btn' | translate}}
@@ -36,14 +35,14 @@
 					<table id="wb-monitoringQueries-queryInQueries" class="table table-striped table-bordered query-table" aria-label="{{'monitoring.queries.table.label' | translate}}">
 						<thead>
 							<tr>
-								<th id="queryIdColumn">id</th>
-								<th id="queryId2Column">{{'node.label' | translate}}</th>
-                                <th id="usernameColumn">{{'username.label' | translate}}</th>
-								<th id="queryTypeColumn">{{'type.label.lower.case' | translate}}</th>
-								<th id="queryColumn">{{'query.label' | translate}}</th>
-								<th id="lifetimeColumn">{{'lifetime.label' | translate}}</th>
-								<th id="queryStateColumn">{{'state.label' | translate}}</th>
-								<th id="actionsColumn"></th>
+								<th id="queryIdColumn" class="label-base-regular">id</th>
+								<th id="queryId2Column" class="label-base-regular">{{'node.label' | translate}}</th>
+                                <th id="usernameColumn" class="label-base-regular">{{'username.label' | translate}}</th>
+								<th id="queryTypeColumn" class="label-base-regular">{{'type.label.lower.case' | translate}}</th>
+								<th id="queryColumn" class="label-base-regular">{{'query.label' | translate}}</th>
+								<th id="lifetimeColumn" class="label-base-regular">{{'lifetime.label' | translate}}</th>
+								<th id="queryStateColumn" class="label-base-regular">{{'state.label' | translate}}</th>
+								<th id="actionsColumn" class="label-base-regular"></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -59,9 +58,9 @@
                                 <td>{{query.username}}</td>
 								<td>{{query.type}}</td>
 								<td>
-									<button class="pull-left btn btn-primary btn-sm" ng-click="downloadQuery(query)">{{'download.btn' | translate}}</button>
+									<button class="pull-left btn btn-primary btn-sm label-base-regular" ng-click="downloadQuery(query)">{{'download.btn' | translate}}</button>
 									<div ng-if="query.sparqlString.length > stringLimit" class="pull-right">
-										<button class="btn btn-link small px-0" ng-click="toggleQueryExpanded(query.trackId)">
+										<button class="btn btn-link small px-0 label-base-regular" ng-click="toggleQueryExpanded(query.trackId)">
 											<span ng-show="!expanded[query.trackId]">{{'show.remaining' | translate}} {{query.sparqlString.length - stringLimit}} {{'characters.label' | translate}}</span>
 											<span ng-show="expanded[query.trackId]">{{'show.first.chars' | translate}}</span>
 										</button>
@@ -79,7 +78,7 @@
 										 popover-trigger="mouseenter"
 										 popover-placement="bottom">
 										<div ng-class="query.isRequestedToStop ? 'disabled' : ''"> <!-- Keep this div -->
-											<button ng-disabled="query.isRequestedToStop" class="abortQuery btn btn-xs btn-primary"
+											<button ng-disabled="query.isRequestedToStop" class="abortQuery btn btn-xs btn-primary  label-base-regular"
 													ng-click="abortQuery(query.trackId)">
 												{{query.isRequestedToStop ? 'stop.was.requested' : (query.type == 'QUERY' ? 'abort.query' : 'abort.update') | translate}}
 											</button>

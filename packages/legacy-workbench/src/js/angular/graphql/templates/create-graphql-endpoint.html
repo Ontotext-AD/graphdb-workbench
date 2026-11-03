@@ -27,7 +27,7 @@
             <div class="toolbar">
                 <div class="form-inline">
                     <label
-                        for="sourceRepositorySelector">{{'graphql.create_endpoint.toolbar.source_repository_selector.label' | translate}}</label>
+                        for="sourceRepositorySelector" class="label-base-regular">{{'graphql.create_endpoint.toolbar.source_repository_selector.label' | translate}}</label>
                     <select id="sourceRepositorySelector" ng-model="selectedSourceRepository"
                             ng-options="repository as repository.label for repository in sourceRepositories"
                             ng-change="onSelectedSourceRepositoryChange(selectedSourceRepository)"

@@ -1,7 +1,7 @@
 .multiselect {
     position: relative;
     display: inline-block;
-    font-size: 14px;
+    font-size: var(--gw-label-sm-regular-font-size);
     width: 100%;
     border-radius: 0;
 }
@@ -58,7 +58,7 @@
 }
 
 .multiselect-button .button-placeholder {
-    font-size: 16px;
+    font-size: var(--gw-button-label-font-size);
     color: #55595c;
 }
 
@@ -108,7 +108,7 @@
 
 .multiselect-count {
     color: #6b7280;
-    font-size: 12px;
+    font-size: var(--gw-body-xs-regular-font-size);
 }
 
 .multiselect-button .multiselect-caret {

@@ -142,7 +142,6 @@
 
 .agent-list-component .selected-filter, .agent-list-component .agent-name {
     color: var(--gw-secondary-base);
-    font-weight: 400;
 }
 
 .agent-list-component .agent-name.incompatible-agent {

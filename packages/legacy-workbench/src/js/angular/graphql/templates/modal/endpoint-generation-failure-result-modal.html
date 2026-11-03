@@ -18,7 +18,7 @@
     <table class="report table table-bordered" aria-label="Endpoint generation failure report table">
         <thead>
         <tr class="labels-row">
-            <th scope="col">
+            <th scope="col" class="label-base-regular">
                 <strong
                     class="errors-count mr-2">{{'graphql.endpoints_management.generation_failure_report_modal.errors' |
                 translate: {errorCount: endpointReport.errors} }}</strong>
@@ -44,12 +44,12 @@
 </div>
 
 <div class="modal-footer mt-0">
-    <button id="download-failure-report" class="btn btn-secondary mr-1" ng-click="downloadReport()">
+    <button id="download-failure-report" class="btn btn-secondary mr-1 label-base-regular" ng-click="downloadReport()">
         <i class="ri-download-2-line"></i>
         <span>{{'graphql.endpoints_management.generation_failure_report_modal.actions.download_report.label' | translate}}</span>
     </button>
     <button ng-if="endpointReport.errors === 0 && endpointReport.warnings > 0" id="delete-warnings"
-            class="btn btn-primary" ng-click="deleteReport()">
+            class="btn btn-primary label-base-regular" ng-click="deleteReport()">
         <span>{{'graphql.endpoints_management.generation_failure_report_modal.actions.delete_report.label' | translate}}</span>
     </button>
 </div>

@@ -53,7 +53,7 @@
 }
 
 .location-cell .autocomplete-container>.textarea-edit {
-    font-size: 1rem;
+    font-size: var(--gw-body-base-regular-font-size);
     min-height: 32px;
 }
 

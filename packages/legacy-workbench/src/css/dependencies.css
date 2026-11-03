@@ -15,7 +15,7 @@
 }
 
 #dependencies-chord text {
-    font-size: 16px;
+    font-size: var(--gw-body-base-regular-font-size);
 }
 
 div.tooltip {
@@ -167,7 +167,6 @@ div.tooltip {
 
 .direction-filter-header {
     color: var(--gw-secondary-base);
-    font-size: 18px;
 }
 
 .ri-add-line {
@@ -220,8 +219,4 @@ body .row {
 .plusminus {
     padding-left: 20px;
     padding-right: 0;
-}
-
-.deps-sidebar {
-    font-size: 14px;
 }

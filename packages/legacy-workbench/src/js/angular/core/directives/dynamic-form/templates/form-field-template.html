@@ -1,7 +1,7 @@
 <div class="form-field">
     <!-- STRING -->
     <div class="form-inline string-field  input-field" ng-if="field.type === FIELD_TYPE.STRING">
-        <label class="field-label" for="{{field.key}}"
+        <label class="field-label label-base-regular" for="{{field.key}}"
                gdb-tooltip="{{(translationKeyPrefix ? (translationKeyPrefix + field.key + '.tooltip') : null) | translate}}">
             {{(translationKeyPrefix ? (translationKeyPrefix + field.key + '.label') : field.label) | translate}}
             <sup ng-if="field.required">*</sup>
@@ -17,7 +17,7 @@
 
     <!-- TEXT-->
     <div class="form-inline string-field text-field" ng-if="field.type === FIELD_TYPE.TEXT">
-        <label class="field-label" for="{{field.key}}"
+        <label class="field-label label-base-regular" for="{{field.key}}"
                gdb-tooltip="{{(translationKeyPrefix ? (translationKeyPrefix + field.key + '.tooltip') : null) | translate}}">
             {{(translationKeyPrefix ? (translationKeyPrefix + field.key + '.label') : field.label) | translate}}
             <sup ng-if="field.required">*</sup>
@@ -32,7 +32,7 @@
 
     <!-- BOOLEAN -->
     <div class="form-inline boolean-field" ng-if="field.type === FIELD_TYPE.BOOLEAN">
-        <label class="field-label" for="{{field.key}}"
+        <label class="field-label label-base-regular" for="{{field.key}}"
                gdb-tooltip="{{(translationKeyPrefix ? (translationKeyPrefix + field.key + '.tooltip') : null) | translate}}">
             {{(translationKeyPrefix ? (translationKeyPrefix + field.key + '.label') : field.label) | translate}}
             <sup ng-if="field.required">*</sup>
@@ -46,7 +46,7 @@
 
     <!-- SINGLE SELECT -->
     <div class="form-inline select-field" ng-if="field.type === FIELD_TYPE.SELECT">
-        <label class="field-label" for="{{field.key}}"
+        <label class="field-label label-base-regular" for="{{field.key}}"
                gdb-tooltip="{{(translationKeyPrefix ? (translationKeyPrefix + field.key + '.tooltip') : null) | translate}}">
             {{(translationKeyPrefix ? (translationKeyPrefix + field.key + '.label') : field.label) | translate}}
             <sup ng-if="field.required">*</sup>
@@ -62,7 +62,7 @@
 
     <!-- MULTI-SELECT -->
     <div class="form-inline multiselect-field" ng-if="field.type === FIELD_TYPE.MULTI_SELECT">
-        <label class="field-label" for="{{field.key}}"
+        <label class="field-label label-base-regular" for="{{field.key}}"
                gdb-tooltip="{{(translationKeyPrefix ? (translationKeyPrefix + field.key + '.tooltip') : null) | translate}}">
             {{(translationKeyPrefix ? (translationKeyPrefix + field.key + '.label') : field.label) | translate}}
             <sup ng-if="field.required">*</sup>
@@ -77,7 +77,7 @@
 
     <!-- JSON -->
     <div class="form-inline json-field" ng-if="field.type === FIELD_TYPE.JSON">
-        <label class="field-label" for="{{field.key}}"
+        <label class="field-label label-base-regular" for="{{field.key}}"
                gdb-tooltip="{{(translationKeyPrefix ? (translationKeyPrefix + field.key + '.tooltip') : null) | translate}}">
             {{(translationKeyPrefix ? (translationKeyPrefix + field.key + '.label') : field.label) | translate}}
             <sup ng-if="field.required">*</sup>

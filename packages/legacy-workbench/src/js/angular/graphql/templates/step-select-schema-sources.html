@@ -7,7 +7,7 @@
     <div class="schema-source-types mt-2">
         <div ng-repeat="type in stepDefinition.schemaSourceTypes"
              class="schema-source-type mr-3">
-            <label gdb-tooltip="{{'graphql.create_endpoint.wizard_steps.select_schema_sources.source_type.' + type.value + '.tooltip' | translate}}">
+            <label class="label-base-regular" gdb-tooltip="{{'graphql.create_endpoint.wizard_steps.select_schema_sources.source_type.' + type.value + '.tooltip' | translate}}">
                 <input type="radio" ng-model="stepDefinition.schemaSourceType" ng-value="type.value"
                        ng-change="onSchemaSourceTypeChange()">
                 {{'graphql.create_endpoint.wizard_steps.select_schema_sources.source_type.' + type.value + '.label' | translate}}
@@ -55,7 +55,8 @@
                 <div class="form-inline endpoint-id">
                     <label for="endpointId"
                            uib-popover="{{'graphql.create_endpoint.wizard_steps.select_schema_sources.shacl_shapes.form.endpoint_id.tooltip' | translate}}"
-                           popover-trigger="mouseenter">{{'graphql.create_endpoint.wizard_steps.select_schema_sources.shacl_shapes.form.endpoint_id.label' | translate}}*</label>
+                           popover-trigger="mouseenter"
+                           class="label-base-regular">{{'graphql.create_endpoint.wizard_steps.select_schema_sources.shacl_shapes.form.endpoint_id.label' | translate}}*</label>
                     <input type="text" class="form-control" id="endpointId" name="endpointId"
                            ng-model="endpointConfiguration.params.endpointId" autocomplete="off"
                            required ng-pattern="/^[\w-]+$/"
@@ -76,7 +77,8 @@
                 <div class="form-inline vocabulary-prefix">
                     <label for="vocabularyPrefix"
                            uib-popover="{{'graphql.create_endpoint.wizard_steps.select_schema_sources.shacl_shapes.form.vocabulary_prefix.tooltip' | translate}}"
-                           popover-trigger="mouseenter">{{'graphql.create_endpoint.wizard_steps.select_schema_sources.shacl_shapes.form.vocabulary_prefix.label' | translate}}</label>
+                           popover-trigger="mouseenter"
+                           class="label-base-regular">{{'graphql.create_endpoint.wizard_steps.select_schema_sources.shacl_shapes.form.vocabulary_prefix.label' | translate}}</label>
                     <select ng-if="!loadingPrefixes" class="form-control" id="vocabularyPrefix" name="vocabularyPrefix"
                             ng-model="endpointConfiguration.params.vocPrefix"
                             ng-options="prefix.value as prefix.label for prefix in prefixList">
@@ -96,7 +98,8 @@
                 <div class="form-inline endpoint-label">
                     <label for="endpointLabel"
                            uib-popover="{{'graphql.create_endpoint.wizard_steps.select_schema_sources.shacl_shapes.form.endpoint_label.tooltip' | translate}}"
-                           popover-trigger="mouseenter">{{'graphql.create_endpoint.wizard_steps.select_schema_sources.shacl_shapes.form.endpoint_label.label' | translate}}</label>
+                           popover-trigger="mouseenter"
+                           class="label-base-regular">{{'graphql.create_endpoint.wizard_steps.select_schema_sources.shacl_shapes.form.endpoint_label.label' | translate}}</label>
                     <input type="text" class="form-control" id="endpointLabel" name="endpointLabel"
                            ng-model="endpointConfiguration.params.endpointLabel" autocomplete="off"
                            placeholder="{{'graphql.create_endpoint.wizard_steps.select_schema_sources.shacl_shapes.form.endpoint_label.placeholder' | translate}}">
@@ -107,7 +110,8 @@
                 <div class="form-inline endpoint-description">
                     <label for="endpointDescription"
                            uib-popover="{{'graphql.create_endpoint.wizard_steps.select_schema_sources.shacl_shapes.form.endpoint_description.tooltip' | translate}}"
-                           popover-trigger="mouseenter">{{'graphql.create_endpoint.wizard_steps.select_schema_sources.shacl_shapes.form.endpoint_description.label' | translate}}</label>
+                           popover-trigger="mouseenter"
+                           class="label-base-regular">{{'graphql.create_endpoint.wizard_steps.select_schema_sources.shacl_shapes.form.endpoint_description.label' | translate}}</label>
                     <textarea class="form-control" id="endpointDescription" name="endpointDescription"
                               ng-model="endpointConfiguration.params.endpointDescription"
                               placeholder="{{'graphql.create_endpoint.wizard_steps.select_schema_sources.shacl_shapes.form.endpoint_description.placeholder' | translate}}">
@@ -119,7 +123,7 @@
         <div class="schema-source-types mt-2">
             <div ng-repeat="type in stepDefinition.ontologyShaclShapeSources"
                  class="graph-source-type mr-3">
-                <label>
+                <label class="label-base-regular">
                     <input type="radio" ng-model="stepDefinition.ontotlogyShaclShapeSource" ng-value="type.value"
                            ng-change="onOntologyShaclShapeSourceChange()">
                     {{'graphql.create_endpoint.wizard_steps.select_schema_sources.shacl_shapes.source.' + type.value + '.label' | translate}}
@@ -167,12 +171,12 @@
     </div>
 
     <div class="wizard-actions mt-2">
-        <button class="btn btn-secondary cancel-btn mr-1" ng-click="cancel()"
+        <button class="btn btn-secondary cancel-btn mr-1 label-base-regular" ng-click="cancel()"
                 gdb-tooltip="{{'graphql.create_endpoint.wizard_steps.actions.cancel.tooltip' | translate}}"
                 tooltip-placement="top">
             {{'graphql.create_endpoint.wizard_steps.actions.cancel.label' | translate}}
         </button>
-        <button ng-click="next()" ng-disabled="!canProceed()" class="btn btn-primary next-btn">
+        <button ng-click="next()" ng-disabled="!canProceed()" class="btn btn-primary next-btn label-base-regular">
             {{'graphql.create_endpoint.wizard_steps.actions.next.label' | translate}}
         </button>
     </div>

@@ -60,7 +60,7 @@ graphql-playground {
 .graphql-playground-view #graphiql {
     & * {
         border-radius: 0;
-        font-size: 1rem !important;
+        font-size: var(--gw-body-base-regular-font-size) !important;
         font-family: var(--main-font);
     }
 
@@ -113,14 +113,14 @@ graphql-playground {
                 height: unset;
                 justify-content: start;
                 padding: 0.25em 0;
-                font-weight: 400;
+                font-weight: var(--gw-body-sm-regular-font-weight);
                 transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
                 color: var(--gw-tabs-tab-color) !important;
 
                 .graphiql-tabs {
                     margin-bottom: 0;
                     padding: 0;
-                    font-size: 1rem;
+                    font-size: var(--gw-body-base-regular-font-size);
                     flex-wrap: wrap;
                     gap: 0.2em;
                     overflow-x: unset;
@@ -270,7 +270,7 @@ graphql-playground {
 
                     .graphiql-editor-tools {
                         padding: 0.25em 0 0;
-                        font-weight: 400;
+                        font-weight: var(--gw-body-sm-regular-font-weight);
                         transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
                         color: var(--gw-tabs-tab-color) !important;
                         column-gap: 0;
@@ -340,7 +340,7 @@ graphql-playground {
                         & * {
                             color: #999;
                         }
-                        font-weight: 300;
+                        font-weight: var(--gw-body-base-light-font-weight);
                         .CodeMirror-linenumber {
                             min-width: 20px;
                             white-space: nowrap;
@@ -366,14 +366,13 @@ graphql-playground {
                     box-shadow: var(--gw-autocomplete-shadow-offset-x) var(--gw-autocomplete-shadow-offset-y) var(--gw-autocomplete-shadow-blur) var(--gw-autocomplete-shadow-spread) var(--gw-autocomplete-shadow-color);
 
                     .CodeMirror-hint {
-                        font-family: inherit;
                         color: var(--gw-autocomplete-color);
                         background-color: var(--gw-autocomplete-background);
                         margin: 0;
 
                         b {
                             color: var(--gw-autocomplete-dropdown-match-color);
-                            font-weight: bolder;
+                            font-weight: var(--gw-label-base-bold-font-weight);
                         }
 
                         &.CodeMirror-hint-active {
@@ -413,7 +412,7 @@ graphql-playground {
     background-color: var(--gw-button-secondary-background);
     color: var(--gw-button-secondary-color);
     border-color: var(--gw-button-secondary-border-color);
-    font-weight: 400;
+    font-weight: var(--gw-button-label-font-weight);
     transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
@@ -446,7 +445,7 @@ graphql-playground {
 .graphql-playground-view #graphiql .graphiql-history .graphiql-history-item.editable input {
     color: var(--gw-form-field-color);
     border: 1px solid var(--gw-form-field-border-color);
-    font-weight: 300;
+    font-weight:  var(--gw-body-base-light-font-weight);
 }
 
 .graphql-playground-view #graphiql .graphiql-history .graphiql-history-item.editable button {
@@ -473,8 +472,8 @@ div[data-radix-popper-content-wrapper] * {
     border-radius: 0;
     padding-top: 1px;
     padding-bottom: 1px;
-    font-size: .875rem;
-    font-weight: 400;
+    font-size: var(--gw-body-sm-regular-font-size);
+    font-weight:   var(--gw-body-base-regular-underlined-font-weight);
 }
 
 /* =============================================== */
@@ -577,15 +576,15 @@ div[data-radix-popper-content-wrapper] * {
 /*     Dropdown overrides     */
 /* =========================*/
 .graphql-playground-view #graphiql .docExplorerWrap select {
-    font-size: 1rem !important;
+    font-size: var(--gw-body-base-regular-font-size);
     height: calc(2rem - 2px);
-    line-height: 1.25;
+    line-height: var(--gw-body-sm-light-line-height);
     color: #55595c !important;
     background-color: #fff !important;
     background-image: none !important;
     border: 1px solid rgba(0, 0, 0, .15);
     border-radius: 0;
-    font-weight: 400;
+    font-weight: var(--gw-label-base-regular-font-weight);
     margin: 1px 8px;
     outline: 0;
 }

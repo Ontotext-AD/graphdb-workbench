@@ -18,13 +18,13 @@
             {{'generic.sparql.endpoint' | translate}}</label>
         <div ng-if="model.store === 'RemoteRepository'">
             <div class="form-group row">
-                <label for="server-url" class="col-lg-3 col-form-label">{{'server.url' | translate}}</label>
+                <label for="server-url" class="col-lg-3 col-form-label label-base-regular">{{'server.url' | translate}}</label>
                 <div class="col-lg-8">
                     <input name="model.repositoryServer" ng-model="model.repositoryServer" type="text" id="server-url" class="form-control" ng-disabled="model.editMode" ng-required='!model.sparqlEndpoint'>
                 </div>
             </div>
             <div class="form-group row">
-                <label for="repository-id" class="col-lg-3 col-form-label">{{'repo.id' | translate}}</label>
+                <label for="repository-id" class="col-lg-3 col-form-label label-base-regular">{{'repo.id' | translate}}</label>
                 <div class="col-lg-8">
                     <input name="model.repositoryName" ng-model="model.repositoryName" type="text" id="repository-id" class="form-control" ng-disabled="model.editMode" ng-required='!model.sparqlEndpoint'>
                 </div>
@@ -32,13 +32,13 @@
         </div>
         <div ng-if="model.store === 'SPARQLEndpoint'">
             <div class="form-group row">
-                <label for="url-endpoint" class="col-lg-3 col-form-label">{{'endpoint.url' | translate}}</label>
+                <label for="url-endpoint" class="col-lg-3 col-form-label label-base-regular">{{'endpoint.url' | translate}}</label>
                 <div class="col-lg-8">
                     <input name="model.sparqlEndpoint" ng-model="model.sparqlEndpoint" type="text" id="url-endpoint" class="form-control" ng-disabled="model.editMode" ng-required='!model.repositoryServer' ng-required='!model.repositoryName'>
                 </div>
             </div>
             <div class="form-group row indented-div">
-                <label for="ask-queries" class="col-lg-7 offset-xs-2">
+                <label for="ask-queries" class="col-lg-7 offset-xs-2 label-base-regular">
                     <input name = "model.supportsASKQueries" ng-model = "model.supportsASKQueries" type="checkbox" id="ask-queries" ng-true-value="'true'" ng-false-value="'false'">  {{'supports.ask.queries' | translate}}
                 </label>
             </div>
@@ -46,13 +46,13 @@
         <div id="auth-credentials">
             <p> <strong>{{'authentication.credentials' | translate}}</strong> </p>
             <div id="username" class="form-group row">
-                <label for="username-credentials" class=" col-lg-3 col-form-label">{{'username' | translate}}</label>
+                <label for="username-credentials" class=" col-lg-3 col-form-label label-base-regular">{{'username' | translate}}</label>
                 <div class="col-lg-8">
                     <input type="text" id="username-credentials" class="form-control" placeholder="my-user" ng-model="model.username">
                 </div>
             </div>
             <div id="password" class="form-group row">
-                <label for="password-credentials" class="col-lg-3 col-form-label">{{'pass' | translate}}</label>
+                <label for="password-credentials" class="col-lg-3 col-form-label label-base-regular">{{'pass' | translate}}</label>
                 <div class="col-lg-8">
                     <input type="password" id="password-credentials" class="form-control" placeholder="my-password" ng-model="model.password">
                 </div>
@@ -75,11 +75,11 @@
     </form>
 </div>
 <div class="modal-footer">
-    <button type="submit" form="addFedXRepositoryForm" ng-click="ok();" class="btn btn-primary"
+    <button type="submit" form="addFedXRepositoryForm" ng-click="ok();" class="btn btn-primary label-base-regular"
             ng-disabled="form.$invalid" ng-if="!model.editMode"> {{'common.add' | translate}}
     </button>
-    <button type="submit" form="addFedXRepositoryForm" ng-click="ok();" class="btn btn-primary"
+    <button type="submit" form="addFedXRepositoryForm" ng-click="ok();" class="btn btn-primary label-base-regular"
             ng-disabled="form.$invalid" ng-if="model.editMode"> {{'edit' | translate}}
     </button>
-    <button type="button" ng-click="cancel();" class="btn btn-secondary" data-dismiss="modal">{{'common.cancel.btn' | translate}}</button>
+    <button type="button" ng-click="cancel();" class="btn btn-secondary label-base-regular" data-dismiss="modal">{{'common.cancel.btn' | translate}}</button>
 </div>

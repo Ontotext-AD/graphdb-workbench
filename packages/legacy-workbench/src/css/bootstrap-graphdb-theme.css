@@ -234,7 +234,7 @@ footer.footer .container-fluid.main-container p {
 	Tabs
 -------------------------------------------------------------*/
 .nav-tabs {
-    font-weight: 400;
+    font-weight: var(--gw-label-base-regular-font-weight);
     border-bottom-color: var(--gw-tabs-tablist-border-color);
 }
 
@@ -335,7 +335,7 @@ ul[class*="style-"] {
 ul[class*="style-"] li {
     padding-left: 1.6em;
     position: relative;
-    line-height: 1.2;
+    line-height: var(--gw-label-lg-regular-line-height);
     margin-bottom: 0.6em;
 }
 
@@ -375,7 +375,7 @@ ul.style-arrow li:before {
 }
 
 .table th {
-    font-weight: 500;
+    font-weight: var(--gw-datatable-header-cell-font-weight);
     vertical-align: middle;
     color: var(--gw-datatable-header-color);
     background-color: var(--gw-datatable-header-background);
@@ -528,7 +528,7 @@ code {
 }
 
 .close {
-    font-weight: 300;
+    font-weight: var(--gw-body-base-light-font-weight);
     font-size: 1.4em;
     opacity: 1;
     text-shadow: none;
@@ -571,7 +571,7 @@ code {
 }
 
 .small, small {
-    line-height: 1.25;
+    line-height: var(--gw-body-sm-regular-line-height);
 }
 
 .break-word {
@@ -585,7 +585,7 @@ code {
 
 .data-value {
     color: var(--gw-secondary-base);
-    font-weight: 400;
+    font-weight: var(--gw-label-base-regular-font-weight);
 }
 
 .data-value.big {
@@ -609,7 +609,7 @@ code {
 }
 
 .tag {
-    font-weight: 500;
+    font-weight: var(--gw-label-base-medium-font-weight);
     border-radius: 0;
     vertical-align: 0.1em;
 }
@@ -715,7 +715,7 @@ code {
 
 .card.button .btn > span {
     display: inline-block;
-    line-height: 1.25;
+    line-height: var(--gw-body-sm-medium-line-height);
     vertical-align: middle;
 }
 
@@ -746,7 +746,7 @@ code {
 
 .card.active .card-footer .text-muted {
     color: #fff !important;
-    font-weight: 500;
+    font-weight: var(--gw-card-title-font-weight);
 }
 
 .card .list-group-item {
@@ -1079,7 +1079,7 @@ li.remote {
 .input-group-lg > .form-control,
 .input-group-lg > .input-group-addon,
 .input-group-lg > .input-group-btn > .btn {
-    font-size: 1.125rem;
+    font-size: var(--gw-inputtext-lg-font-size);
 }
 
 .input-group-btn {
@@ -1182,7 +1182,7 @@ input[type=checkbox]:checked::after {
     text-align: center;
     color: var(--gw-checkbox-icon-checked-color);
     font-size: 0.8em;
-    line-height: 1.2;
+    line-height: var(--gw-body-xs-regular-line-height);
 }
 
 input[type=checkbox]:checked:hover::after {
@@ -1218,7 +1218,7 @@ input[type=checkbox]:indeterminate::after {
     text-align: center;
     color: var(--gw-checkbox-icon-checked-color);
     font-size: 0.8em;
-    line-height: 1.2;
+    line-height: var(--gw-body-xs-regular-line-height);
 }
 
 input[type=checkbox]:indeterminate:hover::after {
@@ -1598,7 +1598,7 @@ input.switch:disabled ~ label:before, input.switch:disabled ~ label:after {
 }
 
 #toast-container .toast-title {
-    font-weight: 500;
+    font-weight: var(--gw-label-base-medium-font-weight);
 }
 
 /*-------------------------------------------------------------
@@ -1746,7 +1746,7 @@ ul.nav.navbar-right.pagination li.disabled a {
 -------------------------------------------------------------*/
 
 .saveAsDropDown.btn-group .btn.btn-primary.btn-sm.dropdown-toggle, .yasr_downloadIcon, .resultsVisualButton button {
-    font-size: 16px;
+    font-size: var(--gw-button-label-font-size);
     padding: 10px 16px;
     margin-top: 4px;
 }
@@ -1778,11 +1778,11 @@ yasgui-component .confirm-button {
 }
 
 yasgui-component .yasr .dataTable a {
-    font-size: 16px;
+    font-size: var(--gw-base-font-size);
 }
 
 yasgui-component .yasr_response_chip {
-    font-size: 16px;
+    font-size: var(--gw-body-base-regular-font-size);
     color: var(--gw-secondary-base) !important;
 }
 
@@ -1947,7 +1947,7 @@ input[name=namespace] {
     display: inline-block;
     padding: .25em .4em;
     font-size: 75%;
-    font-weight: 400;
+    font-weight: var(--gw-label-base-regular-font-weight);
     line-height: 1;
     color: #fff;
     text-align: center;

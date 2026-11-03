@@ -43,15 +43,15 @@
 }
 
 .settings-icon {
-    font-size: 110px !important;
+    font-size: 6.875rem !important;
 }
 
 .settings-icon.small {
-    font-size: 56px !important;
+    font-size: 3.5rem !important;
 }
 
 .toggle-legend-icon {
-    font-size: 40px !important;
+    font-size: 2.5rem !important;
 }
 
 .node {
@@ -86,16 +86,16 @@
 }
 
 #node-group.legend .node-icon {
-    font-size: 25px;
+    font-size: 1.562rem; 
 }
 
 .legend .id-host {
-    font-size: 9px;
+    font-size: 0.562rem;  
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
     text-align: center;
-    font-weight: 400;
+    font-weight: var(--gw-label-base-regular-font-weight);
     color: black;
 }
 
@@ -137,7 +137,7 @@
 
 text.node-icon {
     fill: rgba(255, 255, 255, 0.5);
-    font-size: 40px;
+    font-size: 2.5rem;
 }
 
 .id-host {
@@ -155,13 +155,13 @@ text.node-icon {
 
 text {
     font-family: var(--main-font) !important;
-    font-size: 12px;
+    font-size: var(--gw-body-xs-regular-font-size);
     pointer-events: none;
 }
 
 text.id-host, .node-info-fo {
     text-anchor: middle;
-    font-weight: 400;
+    font-weight: var(--gw-label-base-regular-font-weight);
 }
 
 text.sync-status {

@@ -150,7 +150,10 @@
                             <a  ng-if="isUser()"
                                 ng-href="graphs-visualizations/config/save"
                                 guide-selector="create-graph-config-btn"
-                                class="btn btn-link pull-right create-graph-config"><span class="ri-add-circle-line"></span> {{'visual.create.graph.config' | translate}}</a>
+                                class="btn btn-link pull-right create-graph-config label-base-regular">
+                                <span class="ri-add-circle-line"></span>
+                                {{'visual.create.graph.config' | translate}}
+                            </a>
                             <h3 id="graph-configurations-title">{{'visual.advanced.graph.config' | translate}}</h3>
                             <p>{{'visual.advanced.graph.config.info' | translate}}</p>
                         </div>
@@ -329,7 +332,7 @@
 
             <div>
                 <div class="form-group mb-2" ng-show="shouldShowSettings()">
-                    <label gdb-tooltip="{{'sidepanel.preferred.languages.for.node' | translate}}">{{'sidepanel.preferred.languages' | translate}}</label>
+                    <label gdb-tooltip="{{'sidepanel.preferred.languages.for.node' | translate}}" class="label-base-regular">{{'sidepanel.preferred.languages' | translate}}</label>
                     <div class="input-group preferred-languages">
                         <tags-input class="wb-tags-input" ng-model="settings['languagesMap']" min-length="2" add-on-space="true"
                                     add-on-comma="true" placeholder="{{'sidepanel.add.language.tag' | translate}}"></tags-input>
@@ -337,7 +340,7 @@
                 </div>
                 <div class="form-group mb-2">
                     <div class="checkbox">
-                        <label gdb-tooltip="{{'sidepanel.include.schema.statements.tooltip' | translate}}">
+                        <label gdb-tooltip="{{'sidepanel.include.schema.statements.tooltip' | translate}}" class="label-base-regular">
                             <input type="checkbox" ng-model="settings['includeSchema']" class="include-schema-statements">
                             {{'sidepanel.include.schema.statements' | translate}}
                         </label>
@@ -345,7 +348,7 @@
                 </div>
                 <div class="form-group mb-2">
                     <div class="checkbox">
-                        <label gdb-tooltip="{{'sidepanel.include.inferred.statements.tooltip' | translate}}">
+                        <label gdb-tooltip="{{'sidepanel.include.inferred.statements.tooltip' | translate}}" class="label-base-regular">
                             <input type="checkbox" ng-model="settings['includeInferred']" class="include-inferred-statements">
                             {{'sidepanel.include.inferred.statements' | translate}}
                         </label>
@@ -356,7 +359,7 @@
 
                 <div class="form-group mb-2">
                     <div class="checkbox" gdb-tooltip="{{shouldDisableSameAs() ? 'core.require.inferred' : '' | translate}}">
-                        <label style="{{'opacity: ' + (!settings['includeInferred'] ? '0.5' : '1')}}" >
+                        <label style="{{'opacity: ' + (!settings['includeInferred'] ? '0.5' : '1')}}" class="label-base-regular">
                             <input id="sameAsCheck" type="checkbox" ng-model="settings['sameAsState']"
                                    ng-disabled="shouldDisableSameAs()">
                             {{'sidepanel.expand.results.sameas' | translate}}
@@ -368,7 +371,7 @@
                 <!-- Enable-Disable owl:sameAs checkbox -->
                 <div class="form-group mb-2">
                     <div class="checkbox">
-                        <label gdb-tooltip="{{'sidepanel.show.pred.labels.as.links.titles.tooltip' | translate}}">
+                        <label gdb-tooltip="{{'sidepanel.show.pred.labels.as.links.titles.tooltip' | translate}}" class="label-base-regular">
                             <input type="checkbox" class="show-predicate-labels" ng-model="settings['showLinksText']">
                             {{'sidepanel.show.pred.labels.as.links.titles' | translate}}
                         </label>
@@ -377,7 +380,7 @@
 
                 <div class="form-group mb-2">
                     <div class="checkbox">
-                        <label>
+                        <label class="label-base-regular">
                             <input type="checkbox" data-test="truncate-node-labels-checkbox" ng-model="settings['truncateNodeLabels']">
                             {{'sidepanel.truncate.node.labels' | translate}}
                         </label>
@@ -387,9 +390,9 @@
                 <uib-tabset active="active" ng-show="shouldShowSettings()">
                     <uib-tab>
                         <uib-tab-heading class="nav-item"
-                                     tooltip-placement="bottom"><span class="nav-link">{{'types.label' | translate}}</span></uib-tab-heading>
+                                     tooltip-placement="bottom"><span class="nav-link label-base-regular">{{'types.label' | translate}}</span></uib-tab-heading>
                         <div class="form-group mb-2 mt-1">
-                            <label gdb-tooltip="{{'sidepanel.preferred.types.tooltip' | translate}}">{{'sidepanel.preferred.types' | translate}}</label>
+                            <label gdb-tooltip="{{'sidepanel.preferred.types.tooltip' | translate}}" class="label-base-regular">{{'sidepanel.preferred.types' | translate}}</label>
                             <div>
                                 <tags-input class="preferred-types wb-tags-input" ng-model="settings['preferredTypesMap']" min-length="3" add-on-space="true"
                                             add-on-comma="true" placeholder="{{'sidepanel.add.preferred.type.placeholder' | translate}}"
@@ -399,7 +402,7 @@
                         </div>
                         <div class="form-group mb-2">
                             <div class="checkbox">
-                                <label gdb-tooltip="{{'sidepanel.show.preferred.types.nodes.only.tooltip' | translate}}">
+                                <label gdb-tooltip="{{'sidepanel.show.preferred.types.nodes.only.tooltip' | translate}}" class="label-base-regular">
                                     <input type="checkbox" class="show-preferred-types-only" ng-model="settings['preferredTypesOnly']">
                                     {{'sidepanel.show.preferred.types.nodes.only' | translate}}
                                 </label>
@@ -407,7 +410,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label gdb-tooltip="{{'sidepanel.ignored.types.tooltip' | translate}}">{{'sidepanel.ignored.types' | translate}}</label>
+                            <label gdb-tooltip="{{'sidepanel.ignored.types.tooltip' | translate}}" class="label-base-regular">{{'sidepanel.ignored.types' | translate}}</label>
                             <div>
                                 <tags-input class="ignored-types wb-tags-input" ng-model="settings['rejectedTypesMap']" min-length="3" add-on-space="true"
                                             add-on-comma="true" placeholder="{{'sidepanel.add.ignored.type.placeholder' | translate}}"
@@ -418,10 +421,10 @@
                     </uib-tab>
                     <uib-tab>
                         <uib-tab-heading class="nav-item"
-                                     tooltip-placement="bottom"><span class="nav-link predicates-tab">{{'predicates.label' | translate}}</span></uib-tab-heading>
+                                     tooltip-placement="bottom"><span class="nav-link predicates-tab label-base-regular">{{'predicates.label' | translate}}</span></uib-tab-heading>
                         <div class="form-group mb-2 mt-1">
                             <div>
-                                <label gdb-tooltip="{{'sidepanel.preferred.predicates.tooltip' | translate}}">{{'sidepanel.preferred.predicates' | translate}}</label>
+                                <label gdb-tooltip="{{'sidepanel.preferred.predicates.tooltip' | translate}}" class="label-base-regular">{{'sidepanel.preferred.predicates' | translate}}</label>
 
                                 <tags-input class="preferred-predicates wb-tags-input" ng-model="settings['preferredPredicatesMap']" min-length="3"
                                             add-on-space="true"
@@ -432,7 +435,7 @@
                         </div>
                         <div class="form-group mb-2">
                             <div class="checkbox">
-                                <label gdb-tooltip="{{'sidepanel.show.preferred.predicates.links.only.tooltip' | translate}}">
+                                <label gdb-tooltip="{{'sidepanel.show.preferred.predicates.links.only.tooltip' | translate}}" class="label-base-regular">
                                     <input type="checkbox" class="show-preferred-predicates-only" ng-model="settings['preferredPredicatesOnly']">
                                     {{'sidepanel.show.preferred.predicates.only' | translate}}
                                 </label>
@@ -440,7 +443,7 @@
                         </div>
 
                         <div class="form-group ">
-                            <label gdb-tooltip="{{'sidepanel.ignored.predicates.tooltip' | translate}}">{{'sidepanel.ignored.predicates' | translate}}</label>
+                            <label gdb-tooltip="{{'sidepanel.ignored.predicates.tooltip' | translate}}" class="label-base-regular">{{'sidepanel.ignored.predicates' | translate}}</label>
                             <div>
                                 <tags-input class="ignored-predicates wb-tags-input" ng-model="settings['rejectedPredicatesMap']" min-length="3"
                                             add-on-space="true"
@@ -455,10 +458,10 @@
                 </uib-tabset>
 
                 <div class="mt-1 text-right">
-                    <button type="button" class="btn btn-secondary reset-settings" ng-click="resetSettings()">{{'common.reset' | translate}}</button>
+                    <button type="button" class="btn btn-secondary reset-settings label-base-regularq" ng-click="resetSettings()">{{'common.reset' | translate}}</button>
                     <button type="submit"
                             guide-selector="graph-settings-save-button"
-                            class="btn btn-primary save-settings-btn" ng-click="updateSettings()">{{'common.save.btn' | translate}}</button>
+                            class="btn btn-primary save-settings-btn label-base-regular" ng-click="updateSettings()">{{'common.save.btn' | translate}}</button>
                 </div>
 
                 <script type="text/ng-template" id="ignored-predicates-template">

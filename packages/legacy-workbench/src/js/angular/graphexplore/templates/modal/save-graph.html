@@ -9,7 +9,7 @@
         <input id="wb-graphviz-savegraph-name" required type="text" ng-model="graph.name" class="form-control"
                ng-change="graphExists = false"
                placeholder="{{'save.graph.enter.name' | translate}}" ng-maxlength="100"/>
-        <label for="share-graph"
+        <label for="share-graph" class="label-base-regular"
                gdb-tooltip="{{'save.graph.visible.graph' | translate}}">
             <input id="share-graph" type="checkbox" ng-model="graph.shared">
             {{'save.graph.share.graph' | translate}}
@@ -27,9 +27,9 @@
     </form>
 </div>
 <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" ng-click="cancel()">{{'common.cancel.btn' | translate}}</button>
-    <button ng-if="mode == 'update'" id="wb-graphviz-savegraph-submit2" class="btn btn-tertiary" ng-click="saveNew()" type="button">{{'save.graph.save.as' | translate}}</button>
-    <button id="wb-graphviz-savegraph-submit" form="saveGraphForm" class="btn btn-primary" ng-click="ok()" type="submit">{{okButtonText}}</button>
+    <button type="button" class="btn btn-secondary label-base-regular" ng-click="cancel()">{{'common.cancel.btn' | translate}}</button>
+    <button ng-if="mode == 'update'" id="wb-graphviz-savegraph-submit2" class="btn btn-tertiary label-base-regular" ng-click="saveNew()" type="button">{{'save.graph.save.as' | translate}}</button>
+    <button id="wb-graphviz-savegraph-submit" form="saveGraphForm" class="btn btn-primary label-base-regular" ng-click="ok()" type="submit">{{okButtonText}}</button>
 </div>
 
 <!-- End save graph modal -->

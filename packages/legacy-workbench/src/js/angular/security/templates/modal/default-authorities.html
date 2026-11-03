@@ -1,14 +1,14 @@
 <div class="modal-header">
     <h3 class="modal-title">{{'security.free.access.config.title' | translate}}</h3>
-    <div>{{'security.free.access.config.settings' | translate}}</div>
+    <div class="body-base-regular">{{'security.free.access.config.settings' | translate}}</div>
 </div>
 <div class="modal-body">
     <div class="card" id="user-settings">
         <div class="card-block">
             <h3>{{'security.application.settings' | translate}}</h3>
-            <label class="mr-1"><input type="checkbox" ng-model="appSettings.DEFAULT_SAMEAS" id="defaultSameAs" checked="appSettings.DEFAULT_SAMEAS" > {{'security.default.same.as' | translate}}</label>
-            <label class="mr-1"><input type="checkbox" ng-model="appSettings.DEFAULT_INFERENCE" id="defaultInference" checked="appSettings.DEFAULT_INFERENCE" > {{'security.default.inference' | translate}}</label>
-            <label><input type="checkbox" ng-model="appSettings.EXECUTE_COUNT" id="defaultCount" checked="appSettings.EXECUTE_COUNT"> {{'security.count.all.results' | translate}}</label>
+            <label class="mr-1 label-base-regular"><input type="checkbox" ng-model="appSettings.DEFAULT_SAMEAS" id="defaultSameAs" checked="appSettings.DEFAULT_SAMEAS" > {{'security.default.same.as' | translate}}</label>
+            <label class="mr-1 label-base-regular"><input type="checkbox" ng-model="appSettings.DEFAULT_INFERENCE" id="defaultInference" checked="appSettings.DEFAULT_INFERENCE" > {{'security.default.inference' | translate}}</label>
+            <label class="label-base-regular"><input type="checkbox" ng-model="appSettings.EXECUTE_COUNT" id="defaultCount" checked="appSettings.EXECUTE_COUNT"> {{'security.count.all.results' | translate}}</label>
         </div>
     </div>
     <div class="card">
@@ -59,6 +59,6 @@
     </div>
 </div>
 <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" ng-click="cancel()">{{'common.cancel.btn' | translate}}</button>
-    <button class="btn btn-primary" ng-click="ok()">{{'common.ok.btn' | translate}}</button>
+    <button type="button" class="btn btn-secondary label-base-regular" ng-click="cancel()">{{'common.cancel.btn' | translate}}</button>
+    <button class="btn btn-primary label-base-regular" ng-click="ok()">{{'common.ok.btn' | translate}}</button>
 </div>

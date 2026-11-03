@@ -71,7 +71,7 @@
 .agent-select-menu .agent-option .agent-name,
 .agent-select-menu .agent-option .repository-id {
     color: var(--gw-secondary-base);
-    font-weight: 400;
+    font-weight: var(--gw-label-base-regular-font-weight);
 }
 
 .agent-select-menu .agent-option .agent-name,

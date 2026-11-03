@@ -9,7 +9,7 @@
 
             <div class="form-group row">
                 <div class="checkbox offset-md-3 offset-lg-2">
-                    <label class="padding-label"
+                    <label class="padding-label label-base-regular"
                            gdb-tooltip="{{'cluster_management.delete_cluster_dialog.force_delete_tooltip' | translate}}">
                         <input id="forceDelete" type="checkbox" ng-model="forceDelete"/>
                         {{'cluster_management.delete_cluster_dialog.force_delete_label' | translate}}
@@ -19,8 +19,8 @@
         </form>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" ng-click="cancel()">{{'common.cancel.btn' | translate}}</button>
-        <button id="wb-delete-cluster-submit" form="clusterDeleteForm" class="btn btn-primary" ng-click="ok()"
+        <button type="button" class="btn btn-secondary label-base-regular" ng-click="cancel()">{{'common.cancel.btn' | translate}}</button>
+        <button id="wb-delete-cluster-submit" form="clusterDeleteForm" class="btn btn-primary label-base-regular" ng-click="ok()"
                 type="submit">{{'common.ok.btn' | translate}}
         </button>
     </div>

@@ -6,7 +6,7 @@
     <div class="modal-body">
         <form name="modalForm" novalidate>
             <div class="form-group row">
-                <label for="rpcAddress" class="col-sm-4 col-form-label">
+                <label for="rpcAddress" class="col-sm-4 col-form-label label-base-regular">
                     {{'cluster_management.cluster_configuration_multi_region.secondary_mode_modal.rpc_address' |
                     translate}}
                 </label>
@@ -17,7 +17,7 @@
             </div>
 
             <div class="form-group row">
-                <label for="tag" class="col-sm-4 col-form-label">
+                <label for="tag" class="col-sm-4 col-form-label label-base-regular">
                     {{'cluster_management.cluster_configuration_multi_region.secondary_mode_modal.tag' | translate}}
                 </label>
                 <div class="col-sm-8">
@@ -29,10 +29,10 @@
     </div>
 
     <div class="modal-footer">
-        <button type="button" class="btn btn-secondary cancel-btn" ng-click="cancel($event)">
+        <button type="button" class="btn btn-secondary cancel-btn label-base-regular" ng-click="cancel($event)">
             {{'common.cancel.btn' | translate}}
         </button>
-        <button class="btn btn-primary confirm-btn" ng-click="ok($event)" ng-disabled="modalForm.$invalid">
+        <button class="btn btn-primary confirm-btn label-base-regular" ng-click="ok($event)" ng-disabled="modalForm.$invalid">
             {{ (confirmButtonKey || 'cluster_management.cluster_configuration_multi_region.confirm.enable_secondary') |
             translate}}
         </button>

@@ -7,7 +7,7 @@
     <form name="exportSettingsForm" class="export-settings-form">
         <div class="form-horizontal">
             <div class="form-group row">
-                <label class="col-lg-3 col-form-label" for="wb-JSONLD-mode">
+                <label class="col-lg-3 col-form-label label-base-regular" for="wb-JSONLD-mode">
                     {{'json-ld.form' | translate}}
                     <span class="btn btn-link-only-icons p-0"
                           uib-popover="{{'json-ld.form.info' | translate}}"
@@ -24,7 +24,7 @@
             </div>
 
             <div class="form-group row" ng-if="JSONLDFramedModes.indexOf(currentMode.name) > -1">
-                <label class="col-lg-3 col-form-label" for="wb-JSONLD-frame">
+                <label class="col-lg-3 col-form-label label-base-regular" for="wb-JSONLD-frame">
                     {{'json-ld.frame.link' | translate}}
                     <span class="btn btn-link-only-icons p-0"
                           uib-popover="{{'json-ld.frame.link.info' | translate}}"
@@ -39,7 +39,7 @@
 
             <div class="form-group row"
                  ng-if="JSONLDContextModes.indexOf(currentMode.name) > -1">
-                <label class="col-lg-3 col-form-label" for="wb-JSONLD-context">
+                <label class="col-lg-3 col-form-label label-base-regular" for="wb-JSONLD-context">
                     {{'json-ld.context.link' | translate}}
                     <span class="btn btn-link-only-icons p-0"
                           uib-popover="{{'json-ld.context.link.info' | translate}}"
@@ -57,9 +57,9 @@
 </div>
 
 <div class="modal-footer">
-    <button type="button" class="btn btn-link pull-left restore-defaults" ng-click="reset()">{{'import.restore.defaults.btn' | translate}}</button>
-    <button type="button" ng-click="cancel()" class="btn btn-secondary">{{'common.cancel.btn' | translate}}</button>
-    <button id="wb-export-JSONLD" class="btn btn-primary" type="button"
+    <button type="button" class="btn btn-link pull-left restore-defaults label-base-regular" ng-click="reset()">{{'import.restore.defaults.btn' | translate}}</button>
+    <button type="button" ng-click="cancel()" class="btn btn-secondary label-base-regular">{{'common.cancel.btn' | translate}}</button>
+    <button id="wb-export-JSONLD" class="btn btn-primary label-base-regular" type="button"
             ng-click="exportJsonLD()">
         {{'export' | translate}}
     </button>

@@ -7,5 +7,5 @@
 }
 
 .auth-info {
-    font-weight: 700;
+    font-weight: var(--gw-label-base-bold-font-weight);
 }

@@ -127,7 +127,7 @@
 }
 
 .chat-detail .explain-response .label {
-    font-weight: 400;
+    font-weight: var(--gw-label-base-regular-font-weight);
 }
 
 .chat-detail .explain-response .explain-call .header {
@@ -184,7 +184,7 @@
     max-width: 500px;
     color: var(--gw-dialog-color);
     background-color: var(--gw-dialog-background);
-    font-size: 1rem;
+    font-size: var(--gw-body-base-regular-font-size);
     line-height: 1.7em;
     margin-top: -1.4em;
     margin-left: 0.7em;
@@ -192,7 +192,7 @@
 }
 
 .token-usage-info .description {
-    font-weight: 300;
+    font-weight: var(--gw-body-base-light-font-weight);
     margin-bottom: 0.3em;
     line-height: 1.2em;
 }

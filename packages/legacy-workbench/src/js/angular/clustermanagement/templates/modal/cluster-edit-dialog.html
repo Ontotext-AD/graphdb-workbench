@@ -11,7 +11,7 @@
                 <div class="form-group" ng-repeat="fieldConfig in configFields">
                     <div class="input-group"
                          ng-class="{'has-danger': clusterConfigurationForm[fieldConfig.name].$invalid}">
-                        <label for="{{fieldConfig.id}}" class="col-xs-4 col-form-label">{{fieldConfig.label |
+                        <label for="{{fieldConfig.id}}" class="col-xs-4 col-form-label label-base-regular">{{fieldConfig.label |
                             translate}}*</label>
                         <div class="col-xs-8" gdb-tooltip="{{fieldConfig.tooltip | translate}}">
                             <input

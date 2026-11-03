@@ -1,5 +1,5 @@
 .nvtooltip h3{
-	font-size: 20px !important;
+	font-size: 1.25rem !important;
 }
 .main-loader {
 	margin: 200px auto;
@@ -41,7 +41,7 @@
   text-align: right !important;
   margin-right: 80px;
   min-height: 24px;
-  font-weight: 400;
+  font-weight: var(--gw-body-sm-regular-font-weight);
   overflow-wrap: break-word;
 }
 
@@ -52,4 +52,8 @@
 
 .nv-multiBarHorizontalChart .nv-bar {
   fill-opacity: 0.5;
+}
+
+.monitor-tabs .title {
+  text-align: center;
 }
