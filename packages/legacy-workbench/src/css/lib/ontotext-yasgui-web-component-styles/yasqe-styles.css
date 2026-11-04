@@ -6,6 +6,13 @@ This resolves the problem described in more detail in the issue tracker: "https:
 }
 /* #endregion Fixes the issue with the color of the sequence of < or > characters. */
 
+/* # region Fix for the z-index of the gutter wrapper when a tooltip is displayed 
+This resolves the problem described in more detail in the issue tracker: "https://graphwise.atlassian.net/browse/GDB-15596" */
+.CodeMirror-gutter-wrapper:has(.yasqe_tooltip[style*="display: block"]) {
+    z-index: 5;
+}
+/* #endregion Fix for the z-index of the gutter wrapper when a tooltip is displayed */
+
 /* #region Overrides for the YASQE theme */
 .yasgui-host-element .yasgui .CodeMirror[class*="cm-s-"]:not(.cm-s-default) {
     border-color: var(--gw-tabs-tab-active-border-color);
