@@ -26,7 +26,7 @@ export class ChartData {
     }
 
     static get AREA_BAR_OPACITY() {
-        return 0.5;
+        return 0.7;
     }
 
     /**
