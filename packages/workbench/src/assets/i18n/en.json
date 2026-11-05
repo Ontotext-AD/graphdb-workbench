@@ -117,17 +117,17 @@
     "back_to_home": "Back Home"
   },
   "graph_navigator": {
-    "title": "Graph Navigator",
-    "helpInfo": "The Graph Navigator view provides an interactive visual representation of parts of the RDF graph. The visualisation starts from a set of resources or from a graph query result. Expand resources to grow the diagram with their connections and save the diagram for later use.",
+    "title": "Graph navigator",
+    "helpInfo": "Explore RDF resources and their relationships visually. Start from selected resources or query results, expand connections, and save diagrams for later use.",
     "errors": {
-      "data-fetch": "Could not load the graph data.",
-      "missing-required-prop": "Could not initialise the graph: a required setting is missing.",
-      "diagram-load": "Could not load the diagram.",
-      "diagram-import": "Could not import the diagram file.",
-      "local-diagram-read": "Could not read the diagram saved in the browser.",
-      "local-diagram-save": "Could not save the diagram in the browser.",
-      "graph_load_failed": "Could not compute the graph for the query.",
-      "default": "Something went wrong in the Graph Navigator."
+      "data-fetch": "Failed to load graph data.",
+      "missing-required-prop": "Cannot initialize the graph. A required setting is missing.",
+      "diagram-load": "Failed to load the diagram.",
+      "diagram-import": "Failed to import the diagram file.",
+      "local-diagram-read": "Failed to load the diagram from browser storage.",
+      "local-diagram-save": "Failed to save the diagram to browser storage.",
+      "graph_load_failed": "Failed to build the graph from the CONSTRUCT query.",
+      "default": "Something went wrong in Graph navigator."
     },
     "warnings": {
       "autocomplete_is_off": "Autocomplete is OFF<br>Go to Setup -> Autocomplete"
@@ -261,7 +261,7 @@
                 "label": "VizGraph"
               },
               "graph_navigator_btn": {
-                "label": "Graph Navigator"
+                "label": "Graph navigator"
               }
             }
           }

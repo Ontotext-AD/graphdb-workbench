@@ -99,7 +99,7 @@ PluginRegistry.add('main.menu', {
     disabled: false,
     items: [
         {
-            label: 'Graph Navigator',
+            label: 'Graph navigator',
             labelKey: 'menu.graph-navigator.label',
             href: 'graph-navigator',
             order: 6,
