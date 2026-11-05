@@ -126,6 +126,7 @@
       "diagram-import": "Failed to import the diagram file.",
       "local-diagram-read": "Failed to load the diagram from browser storage.",
       "local-diagram-save": "Failed to save the diagram to browser storage.",
+      "unknown-ui-config": "The graph display settings have an unknown value, which is ignored.",
       "graph_load_failed": "Failed to build the graph from the CONSTRUCT query.",
       "default": "Something went wrong in Graph navigator."
     },
