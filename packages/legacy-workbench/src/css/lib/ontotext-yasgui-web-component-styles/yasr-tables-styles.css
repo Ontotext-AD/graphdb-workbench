@@ -241,8 +241,20 @@ yasgui-component .yasr .dataTable .nonUri sup {
     color: inherit !important;
 }
 
-yasgui-component .yasr .dataTable .triple-cell .triple-link {
-    color: var(--foreground-visual-sequential-4-1) !important;
+yasgui-component .yasr .yasr_results .dataTable .triple-cell .triple-open-link .triple-link,
+yasgui-component .yasr .yasr_results .dataTable .triple-cell .triple-close-link .triple-link {
+    color: var(--gw-link-idle-color);
 }
 
+yasgui-component .yasr .yasr_results .dataTable .triple-cell .triple-open-link .triple-link:visited,
+yasgui-component .yasr .yasr_results .dataTable .triple-cell .triple-close-link .triple-link:visited {
+    color: var(--gw-link-visited-color);
+}
+
+yasgui-component .yasr .yasr_results .dataTable .triple-cell .triple-open-link .triple-link:hover,
+yasgui-component .yasr .yasr_results .dataTable .triple-cell .triple-close-link .triple-link:hover,
+yasgui-component .yasr .yasr_results .dataTable .triple-cell .triple-open-link .triple-link:focus,
+yasgui-component .yasr .yasr_results .dataTable .triple-cell .triple-close-link .triple-link:focus {
+    color: var(--gw-link-hover-color);
+}
 /* #endregion - YASR dataTables */

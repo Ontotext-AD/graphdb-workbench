@@ -245,8 +245,22 @@ app-yasgui-component-facade {
             color: inherit !important;
         }
 
-        .triple-cell .triple-link {
-          color: var(--foreground-visual-sequential-4-1) !important;
+        .triple-cell {
+          .triple-open-link,
+          .triple-close-link {
+            .triple-link {
+              color: var(--gw-link-idle-color);
+
+              &:visited {
+                color: var(--gw-link-visited-color);
+              }
+
+              &:hover,
+              &:focus {
+                color: var(--gw-link-hover-color);
+              }
+            }
+          }
         }
       }
     }
