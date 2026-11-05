@@ -1,22 +1,12 @@
 import {Component, computed, CUSTOM_ELEMENTS_SCHEMA, inject, input} from '@angular/core';
-import type {EventDetail} from 'graphwise-reactodia';
+import type {EventDetail, ReactodiaConfig, SparqlQueryFunction, SparqlQueryParams} from 'graphwise-reactodia';
 import {defineCustomElements} from 'graphwise-reactodia/loader';
 import {GraphExploreLink, Rdf4jRepositoryService, service, SparqlDataProviderSettings} from '@ontotext/workbench-api';
 import {LoggerProvider} from '../../services/logger/logger-provider';
 import {GRAPHWISE_REACTODIA_EVENT_HANDLERS} from './models/graphwise-reactodia-event-handlers';
 import {ErrorEventHandler} from './service/error-event-handler.service';
 import {TextSearchEventHandler} from './service/text-search-event-handler.service';
-
-/**
- * The request descriptor graphwise-reactodia's `SparqlQueryFunction` passes to the transport.
- */
-interface SparqlQueryParams {
-  url: string;
-  body?: string;
-  headers: Record<string, string>;
-  method: string;
-  signal?: AbortSignal;
-}
+import {GRAPHWISE_REACTODIA_UI_CONFIG} from './config/ui-config';
 
 defineCustomElements();
 
@@ -67,12 +57,13 @@ export class GraphwiseReactodiaFacadeComponent {
    * (SPARQL-results JSON for SELECT lookups, RDF/Turtle for CONSTRUCT element info) and passes
    * it in `params.headers`
    */
-  readonly queryFunction = (params: SparqlQueryParams) => this.executeRequest(params);
+  readonly queryFunction: SparqlQueryFunction = (params) => this.executeRequest(params);
 
-  readonly config = computed(() => ({
+  readonly config = computed<ReactodiaConfig>(() => ({
     queryFunction: this.queryFunction,
     seedIris: this.seedIris(),
-    seedGraph: this.seedGraph()
+    seedGraph: this.seedGraph(),
+    ui: GRAPHWISE_REACTODIA_UI_CONFIG
   }));
 
   /**
@@ -93,8 +84,9 @@ export class GraphwiseReactodiaFacadeComponent {
    *
    * @param params - The request descriptor graphwise-reactodia supplied.
    * @returns A promise resolving to the raw response.
+   * @throws Error when the SPARQL query is missing.
    */
-  private async executeRequest(params: SparqlQueryParams): Promise<Response | undefined> {
+  private async executeRequest(params: SparqlQueryParams): Promise<Response> {
     if (!params.body) {
       throw new Error(`Unsupported graphwise-reactodia ${params.method} request: the SPARQL query is missing`);
     }

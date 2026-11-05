@@ -47,7 +47,7 @@ export abstract class HttpResponseBase {
    * The original Response object from the Fetch API.
    * Useful for accessing additional properties or methods not exposed in this model.
    */
-  readonly originalResponse?: Response;
+  readonly originalResponse: Response;
 
   protected constructor(init: HttpResponseBaseInit) {
     this.status = init.status;
