@@ -1,6 +1,8 @@
 :host {
   --page-title-position: relative;
-  --page-title-margin-bottom: -35px;
+  // Pull the toolbar up by half the title (2.5rem) plus half the YASGUI toolbar (~0.93rem), so it is centered on the
+  // title.
+  --page-title-margin-bottom: calc(-1.25rem - 0.93rem);
 }
 
 [page-errors] {

@@ -1,7 +1,7 @@
 .explore-resource .action-header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
 }
 
 .explore-resource .action-header .selection {
@@ -28,7 +28,6 @@
     display: flex;
     flex-wrap: wrap;
     gap: 0.2rem;
-    margin-top: 4px;
 }
 
 #inference-select,
