@@ -58,7 +58,7 @@
   "menu.graphql.label": "GraphQL",
   "menu.graphql-endpoint-management.label": "Endpoint Management",
   "menu.graphql-playground.label": "GraphQL Playground",
-  "menu.graph-navigator.label": "Graph Navigator",
+  "menu.graph-navigator.label": "Graph navigator",
   "visual.graph.label": "Visual graph",
   "view.rdf.rank.title": "RDF Rank",
   "language_selector": {
@@ -190,7 +190,7 @@
     "buttons": {
       "table": "Table",
       "visual": "VizGraph",
-      "graph_navigator": "Graph Navigator"
+      "graph_navigator": "Graph navigator"
     },
     "tooltips": {
       "close_search_area": "Close search",

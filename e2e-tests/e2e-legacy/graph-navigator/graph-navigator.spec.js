@@ -76,7 +76,7 @@ describe('Graph Navigator', () => {
         cy.wait('@graphRequest');
 
         // Then I expect an error toast about the graph data.
-        ToasterSteps.getToasterMessage().should('contain', 'Could not load the graph data.');
+        ToasterSteps.getToasterMessage().should('contain', 'Failed to load graph data.');
     });
 
     it('should seed the canvas with the graph computed from a CONSTRUCT query', () => {

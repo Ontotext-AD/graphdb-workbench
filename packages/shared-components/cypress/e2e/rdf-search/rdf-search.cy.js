@@ -37,7 +37,7 @@ describe('RDF Search', () => {
       .should('have.text', 'VizGraph')
       .and('not.have.class', selectedClass);
     RdfSearchSteps.getSearchAreaButtons().eq(2)
-      .should('have.text', 'Graph Navigator')
+      .should('have.text', 'Graph navigator')
       .and('not.have.class', selectedClass);
 
     // When, I close the search area
