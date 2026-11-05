@@ -1,6 +1,12 @@
+.sparql-editor-view {
+    /* Pull the toolbar up by half the title (2.5rem) plus half the YASGUI toolbar (~0.93rem), so it is centered on
+       the title. */
+    --sparql-title-overlap: calc(1.25rem + 0.93rem);
+}
+
 .sparql-editor-view #title-container {
     position: relative;
-    margin-bottom: -35px;
+    margin-bottom: calc(-1 * var(--sparql-title-overlap));
 }
 
 .sparql-editor-view #sparql-query-update-title-label {
@@ -20,7 +26,7 @@
 
 .sparql-editor-view div[core-errors] {
     /* compensate for the negative margin on the title above */
-    margin-top: calc(47px + 0.5em);
+    margin-top: calc(var(--sparql-title-overlap) + 0.75rem + 0.5em);
 }
 
 .sparql-editor-view #query-editor .yasgui-host-element {
