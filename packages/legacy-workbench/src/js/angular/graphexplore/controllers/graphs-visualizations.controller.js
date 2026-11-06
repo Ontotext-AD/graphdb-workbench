@@ -114,6 +114,8 @@ function GraphsVisualizationsCtrl(
         'lt:https://www.w3.org/ns/iana/media-types/text/markdown#Resource',
         'lt:http://www.w3.org/ns/iana/media-types/text/markdown#Resource',
     ]);
+    const TRIPLE_TERM_START = '<<(';
+    const TRIPLE_TERM_END = ')>>';
 
     // =========================
     // Public fields
@@ -790,13 +792,59 @@ function GraphsVisualizationsCtrl(
     };
 
     /**
+     * Splits a triple from the explore-graph endpoints ("s p o") into its subject, predicate and object.
+     * A nested triple term ("<<( s p o )>>") contains spaces, so it stays one part.
+     * @param {string} triple
+     * @return {string[]}
+     */
+    const splitTripleParts = (triple) => {
+        const parts = [];
+        let currentPart = [];
+        // Track depth to handle nested triples: <<(...>>) keeps nested parts together across spaces
+        let depth = 0;
+        triple.trim().split(/\s+/).forEach((token) => {
+            if (token === TRIPLE_TERM_START) {
+                depth++;
+            } else if (token === TRIPLE_TERM_END) {
+                depth--;
+            }
+            currentPart.push(token);
+
+            // When depth returns to 0, we've completed one triple part (subject, predicate, or object)
+            if (depth === 0) {
+                parts.push(currentPart.join(' '));
+                currentPart = [];
+            }
+        });
+        return parts;
+    };
+
+    const isNestedTriple = (triplePart) => {
+        return triplePart.startsWith(TRIPLE_TERM_START);
+    };
+
+    /**
+     * Returns the triple inside a nested triple term part, in the "s p o" form of the explore-graph endpoints.
+     * @param {string} triplePart
+     * @return {string}
+     */
+    const unwrapNestedTriple = (triplePart) => {
+         return triplePart.slice(TRIPLE_TERM_START.length, -TRIPLE_TERM_END.length).trim();
+    };
+
+    /**
      * Converts triple to link id or generates unique id (needed for arrows)
      * @param {string} triple
      * @param {boolean} tripleLike
      * @return {string}
      */
     const convertTripleToLinkId = (triple, tripleLike) => {
-        const tripleParts = triple.split(' ');
+        // Split the triple into [subject, predicate, object], handling nested triples
+        // A link to a nested triple uses the triple's "s p o" form as its source or target id, so the nested part
+        // is unwrapped to match the link id.
+        const tripleParts = splitTripleParts(triple)
+            .map((triplePart) => isNestedTriple(triplePart) ? unwrapNestedTriple(triplePart) : triplePart);
+        // Link ID format: "subject>predicate>object" for tripleLike, or "subject>object" for regular links
         if (tripleLike) {
             return [tripleParts[0], tripleParts[1], tripleParts[2]].join('>');
         }
@@ -844,11 +892,16 @@ function GraphsVisualizationsCtrl(
     };
 
     const createTriple = (value) => {
-        const tripleParts = value.trim().split(' ');
+        // Convert "s p o" format triple into proper nested triple term format: <<( s p o )>>
+        // Each part is wrapped to handle nested triples (which are already in <<...>> form)
+        const tripleParts = splitTripleParts(value);
         return `<<(${wrapTriplePart(tripleParts[0])} ${wrapTriplePart(tripleParts[1])} ${wrapTriplePart(tripleParts[2])})>>`;
     };
 
     const wrapTriplePart = (value) => {
+        if (isNestedTriple(value)) {
+            return createTriple(unwrapNestedTriple(value));
+        }
         if (value.startsWith('_:')) {
             return value;
         }
@@ -861,8 +914,12 @@ function GraphsVisualizationsCtrl(
      * @return {string}
      */
     const createArrowMarkerUniqueID = (d) => {
-        const source = d.source.isTriple ? convertTripleToLinkId(d.source.iri, true) : d.source.iri;
-        const target = d.target.isTriple ? convertTripleToLinkId(d.target.iri, true) : d.target.iri;
+        let source = d.source.isTriple ? convertTripleToLinkId(d.source.iri, true) : d.source.iri;
+        let target = d.target.isTriple ? convertTripleToLinkId(d.target.iri, true) : d.target.iri;
+
+        // Normalize spaces in ID parts for safe HTML use, preserving separators unchanged
+        source = source.replaceAll(" ", "_");
+        target = target.replaceAll(" ", "_");
         return removeSpecialChars(`${source}>${target}>marker`);
     };
 
@@ -1041,6 +1098,10 @@ function GraphsVisualizationsCtrl(
             // computes the connectedness of each link based on the number of times its nodes were connected
             // (only for links to/from nodes connected to more than one node)
             _.each(this.links, function(link) {
+                // Skip links with missing source or target nodes
+                if (!link.source || !link.target) {
+                    return;
+                }
                 if (counts[link.source.iri] > 1 && counts[link.target.iri] > 1) {
                     link.connectedness = Math.min(5, Math.max(counts[link.source.iri], counts[link.target.iri]) - 1);
                 } else {
@@ -1051,13 +1112,13 @@ function GraphsVisualizationsCtrl(
 
         this.addAndMatchLinks = function(newLinks) {
             const nodes = this.nodes;
-            Array.prototype.push.apply(this.links, matchLinksToNodes(newLinks, nodes));
+            // Filter out null links before pushing to avoid mutation issues with forceLink holding old array reference
+            Array.prototype.push.apply(this.links, _.compact(matchLinksToNodes(newLinks, nodes)));
             for (const key of graph.tripleLinksCopy.keys()) {
                 if (graph.tripleLinksCopy.get(key).length === 1) {
                     graph.tripleLinksCopy.delete(key);
                 }
             }
-            this.links = this.links.filter((link) => link !== null);
             this.computeConnectedness();
         };
 
@@ -1220,22 +1281,14 @@ function GraphsVisualizationsCtrl(
 
         function matchLinksToNodes(newLinks, nodes) {
             return _.map(newLinks, function(link) {
-                let source;
-                let target;
-                if (link.isTripleSource) {
-                    source = getTripleNode(link.source);
-                } else {
-                    source = _.find(nodes, function(o) {
-                        return o.iri === link.source;
-                    });
+                const source = getSourceNodeFromLink(link, nodes);
+                const target = getTargetNodeFromLink(link, nodes);
+
+                // Skip links where source or target node wasn't found
+                if (!source || !target) {
+                    return null;
                 }
-                if (link.isTripleTarget) {
-                    target = getTripleNode(link.target);
-                } else {
-                    target = _.find(nodes, function(o) {
-                        return o.iri === link.target;
-                    });
-                }
+
                 const matchedLink = {
                     "source": source,
                     "target": target,
@@ -1346,6 +1399,26 @@ function GraphsVisualizationsCtrl(
 
             draw();
         };
+    }
+
+    function getTargetNodeFromLink(link, nodes) {
+        if (link.isTripleTarget) {
+            return getTripleNode(link.target);
+        } else {
+            return _.find(nodes, function(o) {
+                return o.iri === link.target;
+            });
+        }
+    }
+
+    function getSourceNodeFromLink(link, nodes) {
+        if (link.isTripleSource) {
+            return getTripleNode(link.source);
+        } else {
+            return _.find(nodes, function(o) {
+                return o.iri === link.source;
+            });
+        }
     }
 
     let graph = new Graph();
@@ -2205,11 +2278,13 @@ function GraphsVisualizationsCtrl(
             }
 
             graph.addAndMatchLinks(linksFound);
+
             draw();
+            loader.setLoadingState(false);
         } else {
             const promises = [];
             const newNodesData = [];
-
+            const failedErrors = new Set();
             const settings = getSettings();
 
             _.forEach(newNodes, function(newNode, index) {
@@ -2222,31 +2297,54 @@ function GraphsVisualizationsCtrl(
                 }).then(function(res) {
                     // Save the data for later
                     newNodesData[index] = res.data;
+                    return res.data; // Return the data so promise resolves
+                }, function(error) {
+                    newNodesData[index] = null;
+                    // Collect unique error messages instead of showing immediately
+                    failedErrors.add(getError(error.data));
                 }));
             });
 
             // Waits for all of the collected promises and then:
-            // - adds each new node
-            // - redraws the graph
+            // - adds each new node (skipping any that failed to load)
+            // - redraws the graph once with all valid data
             $q.all(promises).then(function() {
+                let loadedIndex = 0;
                 _.forEach(newNodesData, function(newNodeData, index) {
+                    if (!newNodeData) {
+                        return;
+                    }
+
                     // Calculate initial positions for the new nodes based on spreading them evenly
-                    // on a circle around the node we came from.
-                    const theta = 2 * Math.PI * index / newNodesData.length;
+                    // on a circle around the node we came from. Take into account the index of the loaded node to spread them evenly.
+                    const theta = 2 * Math.PI * loadedIndex / newNodesData.filter(Boolean).length;
                     const x = (d ? d.x : 0) + Math.cos(theta) * height / 3;
                     const y = (d ? d.y : 0) + Math.sin(theta) * height / 3;
+
                     if (newNodeData.isTriple) {
                         graph.addTriple(newNodeData, x, y);
                     } else {
                         graph.addNode(newNodeData, x, y);
                     }
+
+                    loadedIndex++;
                 });
 
                 graph.addAndMatchLinks(linksFound);
+
                 if (d) {
                     d.isExpanded = true;
                 }
+
                 draw();
+
+                // Show unique error messages if any nodes failed
+                if (failedErrors.size > 0) {
+                    const msg = Array.from(failedErrors).join('\n ');
+                    toastr.error(msg, $translate.instant('graphexplore.error.exploring.node'));
+                }
+            }).finally(function() {
+                $scope.loading = false;
             });
         }
     }
