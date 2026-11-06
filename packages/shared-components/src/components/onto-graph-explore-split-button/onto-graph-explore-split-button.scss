@@ -48,6 +48,16 @@
     background-color: var(--gw-button-secondary-background);
     color: var(--gw-button-secondary-color);
 
+    // The remixicon glyph is drawn above the center of its box; move it down to the level of the other
+    // dropdown carets. The rotated (open) arrow is already low enough, so it is not moved.
+    .ri-arrow-down-s-line {
+      position: relative;
+
+      &:not(.rotate-180) {
+        top: 0.125em;
+      }
+    }
+
     &:focus-visible {
       outline-color: var(--gw-button-secondary-focus-ring-color);
     }
