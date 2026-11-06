@@ -88,7 +88,7 @@ export class Rdf4jRepositoryService implements Service {
    * @param signal - Optional AbortSignal to cancel the request if needed.
    * @returns A promise resolving to the raw {@link Response}.
    */
-  async executeSparqlRequest(repositoryId: string, query: string, accept: string, signal?: AbortSignal): Promise<Response | undefined> {
+  async executeSparqlRequest(repositoryId: string, query: string, accept: string, signal?: AbortSignal): Promise<Response> {
     const response = await this.rdf4jRestService.executeSparqlRequest(repositoryId, query, accept, signal);
     return response.originalResponse;
   }

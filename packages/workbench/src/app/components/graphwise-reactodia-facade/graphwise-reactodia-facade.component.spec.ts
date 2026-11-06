@@ -61,6 +61,15 @@ describe('GraphwiseReactodiaFacadeComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should pass the Workbench UI configuration', () => {
+    const {ui} = (getReactodiaElement() as unknown as {config: {ui: unknown}}).config;
+
+    expect(ui).toEqual({
+      actionsToolbar: {dock: 'ne'},
+      nodeActions: ['group', 'remove', 'expand', 'connections', 'add-to-filter', 'annotate', 'establish-link']
+    });
+  });
+
   describe('graphwise-reactodia errors', () => {
     it.each([
       ['missing-required-prop', ERROR_LABELS['missing-required-prop']],
@@ -78,6 +87,13 @@ describe('GraphwiseReactodiaFacadeComponent', () => {
       expect(toastrErrorSpy).toHaveBeenCalledWith(message);
       expect(loggerErrorSpy).toHaveBeenCalledTimes(1);
       expect(loggerErrorSpy).toHaveBeenCalledWith(message, error);
+    });
+
+    it('should show the matching toast, when an "unknown-ui-config" error is reported', () => {
+      dispatchReactodiaError('unknown-ui-config', new Error('Unknown dock'));
+
+      expect(toastrErrorSpy).toHaveBeenCalledTimes(1);
+      expect(toastrErrorSpy).toHaveBeenCalledWith(ERROR_LABELS['unknown-ui-config']);
     });
 
     it('should show the default toast and log the error, when its code is unknown', () => {

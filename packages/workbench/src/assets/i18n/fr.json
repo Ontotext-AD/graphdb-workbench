@@ -126,6 +126,7 @@
       "diagram-import": "Échec de l'importation du fichier de diagramme.",
       "local-diagram-read": "Échec du chargement du diagramme depuis le stockage du navigateur.",
       "local-diagram-save": "Échec de l'enregistrement du diagramme dans le stockage du navigateur.",
+      "unknown-ui-config": "Les paramètres d'affichage du graphe contiennent une valeur inconnue, qui est ignorée.",
       "graph_load_failed": "Échec de la construction du graphe à partir de la requête CONSTRUCT.",
       "default": "Une erreur est survenue dans le Navigateur de graphe."
     },
