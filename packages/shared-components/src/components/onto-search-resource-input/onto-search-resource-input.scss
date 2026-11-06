@@ -74,9 +74,9 @@
       --onto-btn-focus-ring-color: var(--gw-button-secondary-focus-ring-color);
 
       &.selected {
-        background-color: var(--gw-togglebutton-checked-background);
-        color: var(--gw-togglebutton-checked-color);
-        border-color: var(--gw-togglebutton-checked-border-color);
+        background-color: var(--gw-button-primary-background);
+        color: var(--gw-button-primary-color);
+        border-color: var(--gw-button-primary-border-color);
       }
 
       &:hover:not(.selected) {
