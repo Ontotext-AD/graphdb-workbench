@@ -147,8 +147,20 @@
     margin-top: -52px;
 }
 
+/* Copy buttons became transparent on hover, focus, and press because later-loaded .btn-secondary rules overrode their styles. */
 button.guide-copy-to-input-query-button,
-button.guide-copy-to-editor-query-button {
+button.guide-copy-to-editor-query-button,
+button.guide-copy-to-input-query-button:active,
+button.guide-copy-to-editor-query-button:active,
+button.guide-copy-to-input-query-button:active:focus,
+button.guide-copy-to-editor-query-button:active:focus,
+/* Safari and Firefox on macOS don't focus on click, so a pressed button is :active:hover. */
+button.guide-copy-to-input-query-button:active:hover,
+button.guide-copy-to-editor-query-button:active:hover,
+button.guide-copy-to-input-query-button:focus,
+button.guide-copy-to-editor-query-button:focus,
+button.guide-copy-to-input-query-button:hover,
+button.guide-copy-to-editor-query-button:hover {
     color: var(--gw-button-secondary-color);
     background-color: var(--gw-shortcuts-editor-button-background);
     border-color: var(--gw-button-secondary-border-color);
